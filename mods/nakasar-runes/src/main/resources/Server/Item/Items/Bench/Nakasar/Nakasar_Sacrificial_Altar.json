@@ -28,7 +28,7 @@
     ],
     "VariantRotation": "NESW",
     "PlacementSettings": {
-      "RotationMode": "FACING_PLAYER"
+      "RotationMode": "FacingPlayer"
     },
     "BlockEntity": {
       "Components": {
