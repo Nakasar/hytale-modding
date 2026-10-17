@@ -1,0 +1,32 @@
+{
+  "Environments": [
+    "Nakasar_Env_Halloween",
+    "Nakasar_Env_Halloween_Haunted"
+  ],
+  "NPCs": [
+    {
+      "Id": "Skeleton",
+      "Weight": 30
+    },
+    {
+      "Id": "Skeleton_Archer",
+      "Weight": 12
+    },
+    {
+      "Id": "Zombie",
+      "Weight": 30
+    },
+    {
+      "Id": "Spider",
+      "Weight": 18
+    },
+    {
+      "Id": "Bat",
+      "Weight": 8
+    },
+    {
+      "Id": "Crow",
+      "Weight": 8
+    }
+  ]
+}

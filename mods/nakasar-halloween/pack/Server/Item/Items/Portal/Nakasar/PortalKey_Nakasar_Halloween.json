@@ -1,0 +1,11 @@
+{
+  "Parent": "PortalKey_Taiga",
+  "TranslationProperties": {
+    "Name": "nakasar_halloween.items.PortalKey_Nakasar_Halloween.name",
+    "Description": "nakasar_halloween.items.PortalKey_Nakasar_Halloween.description"
+  },
+  "PortalKey": {
+    "PortalType": "Nakasar_Halloween",
+    "TimeLimitSeconds": 1800
+  }
+}

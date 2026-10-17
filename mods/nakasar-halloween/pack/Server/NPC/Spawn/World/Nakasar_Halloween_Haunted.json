@@ -1,0 +1,39 @@
+{
+  "Environments": [
+    "Nakasar_Env_Halloween_Haunted"
+  ],
+  "NPCs": [
+    {
+      "Id": "Wraith",
+      "Weight": 20
+    },
+    {
+      "Id": "Ghoul",
+      "Weight": 20
+    },
+    {
+      "Id": "Skeleton_Soldier",
+      "Weight": 20
+    },
+    {
+      "Id": "Skeleton_Archmage",
+      "Weight": 8
+    },
+    {
+      "Id": "Zombie_Aberrant",
+      "Weight": 10
+    },
+    {
+      "Id": "Spider_Cave",
+      "Weight": 15
+    },
+    {
+      "Id": "Skeleton_Elite",
+      "Weight": 4
+    },
+    {
+      "Id": "Werewolf",
+      "Weight": 3
+    }
+  ]
+}

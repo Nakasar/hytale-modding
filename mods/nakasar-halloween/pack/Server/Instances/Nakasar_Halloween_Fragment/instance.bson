@@ -1,0 +1,13 @@
+{
+  "DisplayName": "Nakasar Halloween Fragment",
+  "WorldGen": {
+    "Type": "HytaleGenerator",
+    "WorldStructure": "Nakasar_Halloween"
+  },
+  "ForcedWeather": "Nakasar_Weather_Halloween",
+  "GameTime": "0001-01-01T20:00:00Z",
+  "DaytimeDurationSeconds": 300,
+  "NighttimeDurationSeconds": 1200,
+  "IsPvpEnabled": false,
+  "IsSpawningNPC": true
+}

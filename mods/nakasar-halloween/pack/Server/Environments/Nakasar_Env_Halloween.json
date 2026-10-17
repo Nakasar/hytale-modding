@@ -1,0 +1,153 @@
+{
+  "Parent": "Env_Zone1_Plains",
+  "SpawnDensity": 0.6,
+  "BlockModificationAllowed": true,
+  "WaterTint": "#3b5a2e",
+  "WeatherForecastSeed": "Nakasar_Env_Halloween",
+  "WeatherForecasts": {
+    "0": [
+      {
+        "WeatherId": "Nakasar_Weather_Halloween",
+        "Weight": 1
+      }
+    ],
+    "1": [
+      {
+        "WeatherId": "Nakasar_Weather_Halloween",
+        "Weight": 1
+      }
+    ],
+    "2": [
+      {
+        "WeatherId": "Nakasar_Weather_Halloween",
+        "Weight": 1
+      }
+    ],
+    "3": [
+      {
+        "WeatherId": "Nakasar_Weather_Halloween",
+        "Weight": 1
+      }
+    ],
+    "4": [
+      {
+        "WeatherId": "Nakasar_Weather_Halloween",
+        "Weight": 1
+      }
+    ],
+    "5": [
+      {
+        "WeatherId": "Nakasar_Weather_Halloween",
+        "Weight": 1
+      }
+    ],
+    "6": [
+      {
+        "WeatherId": "Nakasar_Weather_Halloween",
+        "Weight": 1
+      }
+    ],
+    "7": [
+      {
+        "WeatherId": "Nakasar_Weather_Halloween",
+        "Weight": 1
+      }
+    ],
+    "8": [
+      {
+        "WeatherId": "Nakasar_Weather_Halloween",
+        "Weight": 1
+      }
+    ],
+    "9": [
+      {
+        "WeatherId": "Nakasar_Weather_Halloween",
+        "Weight": 1
+      }
+    ],
+    "10": [
+      {
+        "WeatherId": "Nakasar_Weather_Halloween",
+        "Weight": 1
+      }
+    ],
+    "11": [
+      {
+        "WeatherId": "Nakasar_Weather_Halloween",
+        "Weight": 1
+      }
+    ],
+    "12": [
+      {
+        "WeatherId": "Nakasar_Weather_Halloween",
+        "Weight": 1
+      }
+    ],
+    "13": [
+      {
+        "WeatherId": "Nakasar_Weather_Halloween",
+        "Weight": 1
+      }
+    ],
+    "14": [
+      {
+        "WeatherId": "Nakasar_Weather_Halloween",
+        "Weight": 1
+      }
+    ],
+    "15": [
+      {
+        "WeatherId": "Nakasar_Weather_Halloween",
+        "Weight": 1
+      }
+    ],
+    "16": [
+      {
+        "WeatherId": "Nakasar_Weather_Halloween",
+        "Weight": 1
+      }
+    ],
+    "17": [
+      {
+        "WeatherId": "Nakasar_Weather_Halloween",
+        "Weight": 1
+      }
+    ],
+    "18": [
+      {
+        "WeatherId": "Nakasar_Weather_Halloween",
+        "Weight": 1
+      }
+    ],
+    "19": [
+      {
+        "WeatherId": "Nakasar_Weather_Halloween",
+        "Weight": 1
+      }
+    ],
+    "20": [
+      {
+        "WeatherId": "Nakasar_Weather_Halloween",
+        "Weight": 1
+      }
+    ],
+    "21": [
+      {
+        "WeatherId": "Nakasar_Weather_Halloween",
+        "Weight": 1
+      }
+    ],
+    "22": [
+      {
+        "WeatherId": "Nakasar_Weather_Halloween",
+        "Weight": 1
+      }
+    ],
+    "23": [
+      {
+        "WeatherId": "Nakasar_Weather_Halloween",
+        "Weight": 1
+      }
+    ]
+  }
+}
