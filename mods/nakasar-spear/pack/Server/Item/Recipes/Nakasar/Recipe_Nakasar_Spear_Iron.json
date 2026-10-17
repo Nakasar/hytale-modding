@@ -11,6 +11,6 @@
     { "ItemId": "Weapon_Nakasar_Spear_Iron", "Quantity": 1 }
   ],
   "BenchRequirement": [
-    { "Type": "Crafting", "Id": "Weapon_Bench", "Categories": ["Sword", "Weapon_Sword", "Spear", "Weapon_Spear"], "RequiredTierLevel": 1 }
+    { "Type": "Crafting", "Id": "Weapon_Bench", "Categories": ["Weapon_Sword"], "RequiredTierLevel": 1 }
   ]
 }

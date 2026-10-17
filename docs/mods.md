@@ -25,10 +25,10 @@ Attributs lisibles par les runes de support : `Damage` (Vampire), `Duration`
 ### Autel sacrificiel (`Nakasar_Sacrificial_Altar`)
 
 Objet-bloc (`Server/Item/Items/Bench/Nakasar/`) avec `BlockType.Bench` de type `Crafting`, id
-`Nakasar_Sacrificial_Altar`, un seul onglet `Nakasar_Altar_Runes` et un seul palier. Le bloc déclare
-`BlockType.State.Definitions` avec les états `CraftCompleted` et `CraftCompletedInstant` que la fenêtre de craft
-bascule (`SimpleCraftingWindow`) ; c'est cet état de bloc qui lui donne une entité de bloc, sur laquelle
-`BenchSystems` pose le composant `BenchBlock`. `DrawType: Model`, `VariantRotation: NESW` +
+`Nakasar_Sacrificial_Altar`, un seul onglet `Nakasar_Altar_Runes` et un seul palier. Comme `Bench_Weapon.json`
+vanilla, le bloc déclare `BlockEntity.Components.BenchBlock` (l'entité de bloc qui porte l'établi) et
+`State.Definitions` avec les états `CraftCompleted` / `CraftCompletedInstant` que la fenêtre de craft bascule
+(`SimpleCraftingWindow`). `DrawType: Model`, `VariantRotation: NESW` +
 `RotationMode: FACING_PLAYER` (l'autel fait face au joueur), hitbox par défaut (cube plein : le modèle occupe
 toute la hauteur du bloc), aucune contrainte de support (se pose comme un bloc plein), et il se redonne
 lui-même à la casse (`Gathering.Breaking`).
@@ -98,9 +98,8 @@ jauge `SignatureEnergy` (+20 max). Les dégâts sont surchargeables par objet vi
 
 `Server/Item/Recipes/Nakasar/Recipe_Nakasar_Spear_Iron.json` : établi de forgeron vanilla (`Bench.Id` `Weapon_Bench`, palier 1),
 4 `Ingredient_Bar_Iron`, 2 `Wood_Trunk` (ressource), 2 `Ingredient_Leather_Light`, 3,5 s. Le
-`BenchRequirement.Categories` liste `Sword`, `Weapon_Sword`, `Spear` et `Weapon_Spear` : seules les
-catégories qui existent sur l'établi affichent la recette, les autres sont ignorées (voir README,
-« Points à vérifier en jeu »).
+L'onglet est `Weapon_Sword` : l'établi vanilla n'a que `Weapon_Sword`, `Weapon_Mace`, `Weapon_Battleaxe`,
+`Weapon_Daggers` et `Weapon_Bow` (lu dans `Bench_Weapon.json` des assets 0.7.2).
 
 ### Réglages
 

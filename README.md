@@ -68,8 +68,8 @@ Démarrer le serveur avec `--validate-assets` la première fois : il vérifie le
   Une fois posé, un clic d'utilisation ouvre son interface de craft.
 - **Runes** : chaque rune du mod coûte **2 éclats de rune** (`Ingredient_Rune_Shard`) sur l'autel, comme les
   runes de capacités du jeu.
-- **Lance** : à l'établi de forgeron de base (`Weapon_Bench`, palier 1) avec 4 lingots de fer, 2 bûches
-  (ressource `Wood_Trunk`) et 2 cuirs légers.
+- **Lance** : à l'établi de forgeron de base (`Weapon_Bench`, onglet « Épées » `Weapon_Sword`, palier 1 ; il n'y a
+  pas d'onglet lance) avec 4 lingots de fer, 2 bûches (ressource `Wood_Trunk`) et 2 cuirs légers.
 
 Les recettes sont des fichiers séparés (`Server/Item/Recipes/Nakasar/`), `KnowledgeRequired: false` (visibles sans
 avoir été apprises). Séparées plutôt qu'inline dans les objets : le serveur valide chaque `ItemId` d'ingrédient et
@@ -93,18 +93,13 @@ repris de la documentation communautaire sans avoir pu être contrôlés :
 - **Visuel des runes** : les 4 runes réutilisent l'icône et la texture de `Rune_Fireball`.
 - **Sens de la ruée** : `ApplyForce` avec `Z: -1` doit pousser vers l'avant ; inverser le signe si le
   joueur recule.
-- **Identifiants vanilla des recettes** : `Workbench` / `Workbench_Crafting`, `Ingredient_Bar_Iron`, ressources `Rock`
-  et `Wood_Trunk` sont cités tels quels dans des fichiers vanilla reproduits par la documentation communautaire.
-  `Weapon_Bench` (établi de forgeron), ses onglets (`Sword` ? `Weapon_Sword` ? la recette en liste quatre, les
-  inconnus sont ignorés sans erreur) et `Ingredient_Rune_Shard` / `Ingredient_Leather_Light` viennent de wikis.
-  Si la lance n'apparaît pas à la forge, lire `Bench.Id` et `Bench.Categories[].Id` dans
-  `Server/Item/Items/Bench/Bench_Weapon.json` des assets du jeu ; si une recette manque, le journal serveur
-  nomme l'id d'ingrédient refusé.
-- **Identifiants référencés par l'autel** (le serveur valide ces ids au chargement ; un id inconnu rejette tout
-  l'objet, le journal le nomme) : `PlayerAnimationsId: Block`, `BlockBreakingDecalId: Breaking_Decals_Rock`,
-  `BlockSoundSetId: Stone`, sons `SFX_Workbench_Open` / `SFX_Workbench_Craft`, `GatherType: Benches`,
-  catégorie créative `Furniture.Benches`. Tous viennent d'exemples communautaires testés en jeu, mais pas sur ce
-  serveur.
+- **Identifiants vanilla** : `Weapon_Bench` / `Weapon_Sword`, `Workbench` / `Workbench_Crafting`,
+  `Ingredient_Bar_Iron`, `Ingredient_Leather_Light`, ressources `Rock` et `Wood_Trunk`, `PlayerAnimationsId: Block`,
+  `BlockSoundSetId: Stone`, `BlockParticleSetId: Stone`, `ISS_Blocks_Wood`, `GatherType: Benches` et
+  `Furniture.Benches` sont lus dans `Server/Item/Items/Bench/Bench_Weapon.json` des assets 0.7.2 du jeu.
+  Restent non vérifiés : `Ingredient_Rune_Shard` (wikis), `BlockBreakingDecalId: Breaking_Decals_Rock` et les
+  sons `SFX_Workbench_Open` / `SFX_Workbench_Craft` (documentation communautaire). Le serveur valide ces ids au
+  chargement : un id inconnu rejette l'asset entier et le journal le nomme.
 - **Modèle de l'autel** : `Common/Blocks/Nakasar/Sacrificial_Altar.blockymodel` est écrit à la main au format
   JSON du plugin Blockbench officiel (3 boîtes, 32 unités = 1 bloc, texture 64×64). Si le rendu ou les UV
   sont faux, l'ouvrir dans Blockbench avec le plugin Hytale et le réexporter. L'icône d'inventaire et celle de
