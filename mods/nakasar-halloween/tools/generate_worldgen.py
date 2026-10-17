@@ -9,6 +9,9 @@ motifs répétés (localisateur de surface, rotations aléatoires) et garde les 
 Hytale Node Editor.
 
 Principe :
+- Forme : une île flottante circulaire au-dessus du vide, comme les fragments d'Orbis du jeu de
+  base (rayon ISLAND_RADIUS). Le dessus descend en pente douce près du bord, le dessous forme un
+  cône rocheux irrégulier ; au-delà du rayon, tout est vide.
 - Terrain : collines douces (bruit simplex) autour d'une hauteur de base. Le relief est aplani
   près des structures, du point d'apparition et du château du comte pour que les prefabs reposent
   à plat.
@@ -31,9 +34,19 @@ LANDMARKS_EXPORT = "Nakasar_Halloween_Landmark_Positions"
 # Première couche d'air au-dessus du sol aplani (le dernier bloc solide est GROUND_Y - 1).
 GROUND_Y = 81
 SPAWN = (0, GROUND_Y, 0)
-DRACULA = (0, GROUND_Y, -190)
+DRACULA = (0, GROUND_Y, -110)
 
-PREFABS = "Prefabs/Nakasar/Halloween"
+# Île : rayon total, début de la pente du bord, et rayon max du centre d'une grande structure
+# (la plus grande fait 41 × 41, le château du comte 49 × 49 : elles restent sur le plat).
+ISLAND_RADIUS = 170.0
+EDGE_START = 140.0
+STRUCTURE_MAX_RADIUS = 116.0
+# Distance minimale entre le centre d'une grande structure et le point d'apparition / le château.
+SPAWN_CLEARANCE = 45.0
+DRACULA_CLEARANCE = 64.0
+
+# Chemins relatifs à Server/Prefabs/ (PrefabPropAsset résout dans <pack>/Server/Prefabs).
+PREFABS = "Nakasar/Halloween"
 # Distance minimale entre un arbre / un décor et le centre d'une structure (demi-diagonale du
 # château du comte, 41 × 41, plus la portée des branches).
 STRUCTURE_CLEARANCE = 34.0
@@ -77,6 +90,16 @@ def distance_to(positions, max_distance, distance_curve):
         "DistanceFunction": {"Type": "Euclidean"},
         "MaxDistance": max_distance,
     }
+
+
+def radial(distance_curve):
+    """Densité = courbe(distance horizontale au centre de l'île, l'axe Y passant par 0, 0)."""
+    return {"Type": "Axis", "Axis": {"X": 0.0, "Y": 1.0, "Z": 0.0}, "IsAnchored": False, "Curve": distance_curve}
+
+
+def within(field, low, high, positions):
+    """Garde les positions dont la densité `field` est dans [low, high]."""
+    return {"Type": "FieldFunction", "FieldFunction": field, "Delimiters": [{"Min": low, "Max": high}], "Positions": positions}
 
 
 def imported(name):
@@ -172,32 +195,45 @@ def biome():
     landmarks = dict(list_positions(SPAWN, DRACULA))
     landmarks["ExportAs"] = LANDMARKS_EXPORT
 
-    # Grandes structures aléatoires, jamais à moins de 110 blocs du point d'apparition ni du château.
-    structure_positions = {
-        "Type": "FieldFunction",
-        "ExportAs": STRUCTURES_EXPORT,
-        "FieldFunction": distance_to(imported(LANDMARKS_EXPORT), 200.0, curve((0, 0), (200, 200))),
-        "Delimiters": [{"Min": 110.0, "Max": 1.0e9}],
-        # Jitter 0,25 : chaque point bouge d'au plus 0,25 × 150 ≈ 37 blocs, donc deux structures
-        # restent à plus de 75 blocs l'une de l'autre (la plus grande en fait 41).
-        "Positions": mesh(150.0, 0.25, "Structures"),
-    }
+    # Grandes structures aléatoires sur le plat de l'île, à l'écart du point d'apparition et du
+    # château. Jitter 0,15 : chaque point bouge d'au plus 0,15 × 60 = 9 blocs, donc deux structures
+    # restent à plus de 42 blocs l'une de l'autre (la plus grande en fait 41).
+    far = lambda point, d: distance_to(list_positions(point), d + 1.0, curve((0, 0), (d + 1.0, d + 1.0)))
+    structure_positions = within(
+        radial(curve((0, 0), (ISLAND_RADIUS, ISLAND_RADIUS))), 0.0, STRUCTURE_MAX_RADIUS,
+        within(far(SPAWN, SPAWN_CLEARANCE), SPAWN_CLEARANCE, 1.0e9,
+               within(far(DRACULA, DRACULA_CLEARANCE), DRACULA_CLEARANCE, 1.0e9,
+                      mesh(60.0, 0.15, "Structures"))))
+    structure_positions["ExportAs"] = STRUCTURES_EXPORT
 
     # Relief : 1 près d'une structure (sol plat), 1 au loin (collines).
     relief = distance_to(
         {"Type": "Union", "Positions": [imported(STRUCTURES_EXPORT), imported(LANDMARKS_EXPORT)]},
-        70.0,
-        curve((0, 0), (34, 0), (62, 1)),
+        52.0,
+        curve((0, 0), (30, 0), (50, 1)),
     )
     hills = add(
         mul(simplex2d(140.0, 3, "Hills"), const(1.0)),
         mul(simplex2d(32.0, 2, "Bumps"), const(0.3)),
     )
-    terrain_density = add(
+    # Dessus de l'île (positif sous le sol) : le sol s'abaisse de 24 blocs entre EDGE_START et le bord.
+    top = add(
         mul({"Type": "YValue"}, const(-0.125)),
         const((GROUND_Y - 0.5) / 8.0),
         mul(hills, relief),
+        radial(curve((0, 0), (EDGE_START, 0), (ISLAND_RADIUS, -3.0))),
     )
+    # Dessous de l'île (positif au-dessus du fond) : un cône dont le fond remonte vers le bord,
+    # bosselé par du bruit ; au-delà du rayon, le fond passe très haut et tout devient du vide.
+    bottom_depth = [(0, 64), (0.4, 52), (0.7, 32), (0.9, 16), (1.0, 8)]
+    bottom_curve = [(f * ISLAND_RADIUS, d / 8.0 - GROUND_Y / 8.0) for f, d in bottom_depth]
+    bottom_curve.append((ISLAND_RADIUS + 1.0, -(GROUND_Y + 200) / 8.0))
+    bottom = add(
+        mul({"Type": "YValue"}, const(0.125)),
+        radial(curve(*bottom_curve)),
+        mul(simplex2d(22.0, 2, "Underside"), const(0.8)),
+    )
+    terrain_density = {"Type": "Min", "Inputs": [top, bottom]}
 
     materials = {
         "Type": "Solidity",
@@ -248,11 +284,15 @@ def biome():
             "Positions": positions,
         }
 
-    small = lambda path, seed: surface_locator(prefab(path, seed), GRASS_FLOOR, 14)
-    trees = runtime(1, "Chunk", outside_structures(mesh(13.0, 0.45, "Trees")), weighted_assignments("TreePick", 0.35, [
+    # Pas d'arbre ni de décor qui dépasse du bord de l'île.
+    def on_island(positions):
+        return within(radial(curve((0, 0), (ISLAND_RADIUS, ISLAND_RADIUS))), 0.0, EDGE_START + 10.0, positions)
+
+    small = lambda path, seed: surface_locator(prefab(path, seed), GRASS_FLOOR, 26)
+    trees = runtime(1, "Chunk", on_island(outside_structures(mesh(13.0, 0.45, "Trees"))), weighted_assignments("TreePick", 0.35, [
         (small("Trees", "Tree"), 1.0),
     ]))
-    decor = runtime(1, "Chunk", outside_structures(mesh(29.0, 0.45, "Decor")), weighted_assignments("DecorPick", 0.3, [
+    decor = runtime(1, "Chunk", on_island(outside_structures(mesh(29.0, 0.45, "Decor"))), weighted_assignments("DecorPick", 0.3, [
         (small("Decor/BonePiles", "Bones"), 2.0),
         (small("Decor/Graves", "Grave"), 2.0),
         (small("Decor/SpiderNests", "Nest"), 1.5),
@@ -260,7 +300,7 @@ def biome():
     ]))
 
     def plant(name):
-        return surface_locator({"Type": "Manual", "Blocks": [{"Position": {"X": 0, "Y": 0, "Z": 0}, "Material": {"Solid": name}}]}, GRASS_FLOOR, 14)
+        return surface_locator({"Type": "Manual", "Blocks": [{"Position": {"X": 0, "Y": 0, "Z": 0}, "Material": {"Solid": name}}]}, GRASS_FLOOR, 26)
 
     plants = runtime(2, "Chunk", mesh(3.0, 0.5, "Plants"), weighted_assignments("PlantPick", 0.45, [
         (plant("Plant_Grass_Gnarled"), 5.0),
