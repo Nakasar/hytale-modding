@@ -5,29 +5,11 @@
   },
   "Quality": "Rare",
   "Categories": ["Furniture.Benches"],
-  "Icon": "Icons/ItemsGenerated/Nakasar_Sacrificial_Altar.png",
-  "IconProperties": {
-    "Scale": 0.5,
-    "Rotation": [22.5, 45, 22.5],
-    "Translation": [13, -14]
-  },
+  "Icon": "Icons/Items/Nakasar/Sacrificial_Altar.png",
   "PlayerAnimationsId": "Block",
   "MaxStack": 1,
-  "ItemSoundSetId": "ISS_Default",
   "Tags": {
     "Type": ["Bench"]
-  },
-  "Recipe": {
-    "TimeSeconds": 5,
-    "KnowledgeRequired": false,
-    "Input": [
-      { "ResourceTypeId": "Rock", "Quantity": 10 },
-      { "ItemId": "Ingredient_Bar_Iron", "Quantity": 2 },
-      { "ItemId": "Ingredient_Rune_Shard", "Quantity": 1 }
-    ],
-    "BenchRequirement": [
-      { "Type": "Crafting", "Id": "Workbench", "Categories": ["Workbench_Crafting"], "RequiredTierLevel": 1 }
-    ]
   },
   "BlockType": {
     "Material": "Solid",
@@ -40,7 +22,6 @@
     "VariantRotation": "NESW",
     "PlacementSettings": { "RotationMode": "FACING_PLAYER" },
     "State": {
-      "Id": "crafting",
       "Definitions": {
         "CraftCompleted": { "Looping": true },
         "CraftCompletedInstant": {}
@@ -49,7 +30,6 @@
     "Gathering": {
       "Breaking": { "GatherType": "Benches", "ItemId": "Nakasar_Sacrificial_Altar" }
     },
-    "Support": { "Down": [ { "FaceType": "Full" } ] },
     "BlockSoundSetId": "Stone",
     "BlockBreakingDecalId": "Breaking_Decals_Rock",
     "ParticleColor": "#7a1020",
@@ -62,7 +42,7 @@
         {
           "Id": "Nakasar_Altar_Runes",
           "Name": "nakasar_runes.benchCategories.nakasar_altar_runes",
-          "Icon": "Icons/CraftingCategories/Workbench/WeaponsCrude.png"
+          "Icon": "Icons/CraftingCategories/Nakasar/Runes.png"
         }
       ],
       "TierLevels": [

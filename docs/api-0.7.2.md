@@ -86,8 +86,16 @@ Le JSON l'utilise ensuite avec `"Type": "Nakasar_MyInteraction"`.
   `CraftingTimeReductionModifier`, `ExtraInputSlot`, `ExtraOutputSlot`), sons `LocalOpenSoundEventId`,
   `LocalCloseSoundEventId`, `CompletedSoundEventId`, `FailedSoundEventId`. `Crafting` ajoute `Categories[]`
   (`Id`, `Name` — défaut `server.benchCategories.{id}` —, `Icon`, `ItemCategories[]`).
-- Le composant `BenchBlock` est posé par `BenchSystems.OnAddOrRemoved` sur les blocs qui ont un `Bench` et un
-  état de bloc ; d'où le `State { Id: "crafting" }` des établis vanilla. Les interactions d'ouverture par
+- Le composant `BenchBlock` est posé par `BenchSystems.OnAddOrRemoved` sur les blocs qui ont un `Bench` et une
+  entité de bloc (état de bloc). `BlockType.State` n'a qu'une clé, `Definitions` (map d'états → BlockType
+  partiels) ; la fenêtre de craft bascule les états `CraftCompleted` / `CraftCompletedInstant`
+  (`SimpleCraftingWindow`). Une clé `Id` dans `State` est ignorée (journal « unused keys »).
+- Validation : `Item.Icon`, `Bench.Categories[].Icon`, `CustomModel`, `CustomModelTexture` sont vérifiés contre
+  les fichiers `Common/` présents (`CommonAssetValidator`) ; `ItemSoundSetId`, `PlayerAnimationsId`,
+  `BlockBreakingDecalId`, `HitboxType` et `MaterialQuantity.ItemId` contre les assets chargés. Un échec de
+  validation rejette **tout** l'asset (`AssetStore.recordFailedToLoad`), pas seulement le champ : d'où les
+  recettes en fichiers séparés. `BlockSoundSetId` et `PhysicalMaterialId` inconnus ne font qu'un avertissement.
+- `Support` = faces de support **requises** (`RequiredBlockFaceSupport`) ; `Supporting` = faces offertes. Les interactions d'ouverture par
   défaut sont `*Simple_Crafting_Default`, `*Diagram_Crafting_Default`, `*Structural_Crafting_Default`.
 - `BlockType` utile : `DrawType` (`Cube`, `Model`, `CubeWithModel`…), `CustomModel`, `CustomModelTexture[]`,
   `Material` (`Solid`/`Empty`), `Opacity` (`Solid`, `Semitransparent`, `Cutout`, `Transparent`),

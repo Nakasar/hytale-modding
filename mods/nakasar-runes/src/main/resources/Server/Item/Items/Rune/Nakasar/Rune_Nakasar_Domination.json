@@ -8,35 +8,12 @@
   "Texture": "Items/Runes/Rune_Textures/Rune_Ability_Fireball.png",
   "Quality": "Epic",
   "MaxStack": 1,
-  "Recipe": {
-    "TimeSeconds": 1,
-    "KnowledgeRequired": false,
-    "Input": [
-      {
-        "ItemId": "Ingredient_Rune_Shard",
-        "Quantity": 2
-      }
-    ],
-    "BenchRequirement": [
-      {
-        "Type": "Crafting",
-        "Id": "Nakasar_Sacrificial_Altar",
-        "Categories": [
-          "Nakasar_Altar_Runes"
-        ]
-      }
-    ]
-  },
   "Ability": {
     "Slot": "Core",
     "Cooldown": 12,
     "Cost": 45,
     "CostType": "Mana",
-    "AbilityKeywords": [
-      "Melee",
-      "Duration",
-      "Nakasar_Control"
-    ],
+    "AbilityKeywords": ["Melee", "Duration", "Nakasar_Control"],
     "Attributes": {
       "Duration": 6
     },

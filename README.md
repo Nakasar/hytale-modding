@@ -71,7 +71,9 @@ Démarrer le serveur avec `--validate-assets` la première fois : il vérifie le
 - **Lance** : à l'établi de forgeron de base (`Weapon_Bench`, palier 1) avec 4 lingots de fer, 2 bûches
   (ressource `Wood_Trunk`) et 2 cuirs légers.
 
-Les recettes sont `KnowledgeRequired: false` : elles sont visibles sans avoir été apprises.
+Les recettes sont des fichiers séparés (`Server/Item/Recipes/Nakasar/`), `KnowledgeRequired: false` (visibles sans
+avoir été apprises). Séparées plutôt qu'inline dans les objets : le serveur valide chaque `ItemId` d'ingrédient et
+rejette l'asset entier en cas d'id inconnu, donc un id d'ingrédient faux ne fait perdre que la recette, pas la rune.
 
 Les runes se lancent avec les touches d'abilities (Ability2 / Ability3) en tenant une arme. La lance :
 clic pour l'enchaînement, maintenir le clic (~0,8 s) pour le coup circulaire, touche Ability1 quand la
@@ -91,16 +93,23 @@ repris de la documentation communautaire sans avoir pu être contrôlés :
 - **Visuel des runes** : les 4 runes réutilisent l'icône et la texture de `Rune_Fireball`.
 - **Sens de la ruée** : `ApplyForce` avec `Z: -1` doit pousser vers l'avant ; inverser le signe si le
   joueur recule.
-- **Identifiants vanilla des recettes** : `Workbench` / `Workbench_Crafting` sont confirmés par les dumps
-  communautaires, mais `Weapon_Bench` (établi de forgeron), ses onglets (`Sword` ? `Weapon_Sword` ? la recette
-  en liste quatre pour être sûre d'apparaître) et `Ingredient_Rune_Shard` / `Ingredient_Leather_Light`
-  viennent de wikis. Si la lance n'apparaît pas à la forge, vérifier `Bench.Id` et `Bench.Categories[].Id`
-  dans `Server/Item/Items/Bench/Bench_Weapon.json` des assets du jeu.
+- **Identifiants vanilla des recettes** : `Workbench` / `Workbench_Crafting`, `Ingredient_Bar_Iron`, ressources `Rock`
+  et `Wood_Trunk` sont cités tels quels dans des fichiers vanilla reproduits par la documentation communautaire.
+  `Weapon_Bench` (établi de forgeron), ses onglets (`Sword` ? `Weapon_Sword` ? la recette en liste quatre, les
+  inconnus sont ignorés sans erreur) et `Ingredient_Rune_Shard` / `Ingredient_Leather_Light` viennent de wikis.
+  Si la lance n'apparaît pas à la forge, lire `Bench.Id` et `Bench.Categories[].Id` dans
+  `Server/Item/Items/Bench/Bench_Weapon.json` des assets du jeu ; si une recette manque, le journal serveur
+  nomme l'id d'ingrédient refusé.
+- **Identifiants référencés par l'autel** (le serveur valide ces ids au chargement ; un id inconnu rejette tout
+  l'objet, le journal le nomme) : `PlayerAnimationsId: Block`, `BlockBreakingDecalId: Breaking_Decals_Rock`,
+  `BlockSoundSetId: Stone`, sons `SFX_Workbench_Open` / `SFX_Workbench_Craft`, `GatherType: Benches`,
+  catégorie créative `Furniture.Benches`. Tous viennent d'exemples communautaires testés en jeu, mais pas sur ce
+  serveur.
 - **Modèle de l'autel** : `Common/Blocks/Nakasar/Sacrificial_Altar.blockymodel` est écrit à la main au format
   JSON du plugin Blockbench officiel (3 boîtes, 32 unités = 1 bloc, texture 64×64). Si le rendu ou les UV
-  sont faux, l'ouvrir dans Blockbench avec le plugin Hytale et le réexporter. L'icône d'inventaire est
-  générée par le client (`Icons/ItemsGenerated/...`) ; l'icône de l'onglet « Runes » réutilise celle des armes
-  rudimentaires de l'atelier.
+  sont faux, l'ouvrir dans Blockbench avec le plugin Hytale et le réexporter. L'icône d'inventaire et celle de
+  l'onglet « Runes » sont des PNG 64×64 dessinés par script dans `Common/Icons/` (le serveur vérifie que les
+  fichiers d'icône existent).
 
 ## Organisation du dépôt
 
