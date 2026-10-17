@@ -10,3 +10,6 @@ items.Rune_Nakasar_SpectralChains.description = Un projectile qui fait jaillir d
 ui.abilityKeywords.Nakasar_Lifesteal = Vol de vie
 ui.abilityKeywords.Nakasar_Control = Contrôle
 ui.abilityKeywords.Nakasar_Teleport = Téléportation
+items.Nakasar_Sacrificial_Altar.name = Autel sacrificiel
+items.Nakasar_Sacrificial_Altar.description = Un autel de pierre taché de sang. Permet de graver les runes de capacités Nakasar à partir d'éclats de rune.
+benchCategories.nakasar_altar_runes = Runes

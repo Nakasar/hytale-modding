@@ -22,6 +22,34 @@ cooldown, mots-clés, attributs) → `Root_Nakasar_Ability_<X>` → `Nakasar_Abi
 Attributs lisibles par les runes de support : `Damage` (Vampire), `Duration`
 (Domination, Chaînes), `Speed` (projectiles).
 
+### Autel sacrificiel (`Nakasar_Sacrificial_Altar`)
+
+Objet-bloc (`Server/Item/Items/Bench/Nakasar/`) avec `BlockType.Bench` de type `Crafting`, id
+`Nakasar_Sacrificial_Altar`, un seul onglet `Nakasar_Altar_Runes` et un seul palier. Le bloc utilise
+`BlockType.State { Id: "crafting" }` (nécessaire pour que l'interface s'ouvre), `DrawType: Model`,
+`VariantRotation: NESW` + `RotationMode: FACING_PLAYER` (l'autel fait face au joueur), hitbox par défaut
+(cube plein), et se redonne lui-même à la casse (`Gathering.Breaking`).
+
+Recette (inline, clé `Recipe` de l'objet) : atelier de base `Workbench` / onglet `Workbench_Crafting`, 10 `Rock`
+(ressource), 2 `Ingredient_Bar_Iron`, 1 `Ingredient_Rune_Shard`, 5 s.
+
+Chaque rune porte sa recette inline : 2 `Ingredient_Rune_Shard`, `BenchRequirement` sur l'autel, onglet
+`Nakasar_Altar_Runes`, 1 s. Le serveur génère l'id de recette et met l'objet lui-même en sortie
+(`Item.collectRecipesToGenerate`).
+
+Modèle `Common/Blocks/Nakasar/Sacrificial_Altar.blockymodel` (3 boîtes, grille centrée, 32 unités = 1 bloc) :
+socle 32×4×32 (y 0–4), pilier 16×16×16 (y 4–20), dalle 28×6×28 (y 20–26). Texture
+`Common/BlockTextures/Nakasar/Sacrificial_Altar.png` (64×64), générée par script, disposition des UV :
+
+| Zone (x, y, l×h) | Faces |
+|------------------|-------|
+| 0,0 32×32 | dessus / dessous du socle |
+| 32,0 28×28 | dessus / dessous de la dalle (rigole et flaque de sang) |
+| 32,28 16×16 | dessus / dessous du pilier |
+| 0,32 32×4 | côtés du socle |
+| 0,36 28×6 | côtés de la dalle (coulures) |
+| 0,42 16×16 et 16,42 16×16 | faces avant/arrière et gauche/droite du pilier (runes rouges) |
+
 ### Interactions Java
 
 - `TeleportCasterToImpactInteraction` : lit la position du projectile (ou `HIT_LOCATION`), recule de
@@ -61,6 +89,14 @@ jauge `SignatureEnergy` (+20 max). Les dégâts sont surchargeables par objet vi
    (petite poussée + estoc 3,5 m, 16 dégâts chacun, cadence ~0,28 s)
 3. `Nakasar_Spear_Signature_Spin` : coup circulaire rayon 4 m, 40 dégâts, forte projection
 4. `CancelChain`
+
+### Recette
+
+Inline dans `Weapon_Nakasar_Spear_Iron.json` : établi de forgeron vanilla (`Bench.Id` `Weapon_Bench`, palier 1),
+4 `Ingredient_Bar_Iron`, 2 `Wood_Trunk` (ressource), 2 `Ingredient_Leather_Light`, 3,5 s. Le
+`BenchRequirement.Categories` liste `Sword`, `Weapon_Sword`, `Spear` et `Weapon_Spear` : seules les
+catégories qui existent sur l'établi affichent la recette, les autres sont ignorées (voir README,
+« Points à vérifier en jeu »).
 
 ### Réglages
 

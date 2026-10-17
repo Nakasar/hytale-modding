@@ -4,7 +4,7 @@ Mods pour **Hytale** (serveur `0.7.x`, « Update 7 »), développés par Nakasar
 
 | Mod | Type | Artefact | Contenu |
 |-----|------|----------|---------|
-| `mods/nakasar-runes` | plugin Java + pack d'assets | `Nakasar-Runes-<version>.jar` | 4 runes d'abilities : Baiser du Vampire, Domination, Téléportation, Chaînes spectrales |
+| `mods/nakasar-runes` | plugin Java + pack d'assets | `Nakasar-Runes-<version>.jar` | 4 runes d'abilities (Baiser du Vampire, Domination, Téléportation, Chaînes spectrales) et l'autel sacrificiel qui les fabrique |
 | `mods/nakasar-spear` | pack d'assets pur | `Nakasar-Spear-<version>.zip` | Lance de fer à deux mains : enchaînement, coup chargé, compétence ultime |
 
 Le détail de chaque mod (fichiers, chaînes d'interactions, réglages) est dans [docs/mods.md](docs/mods.md).
@@ -57,7 +57,21 @@ Démarrer le serveur avec `--validate-assets` la première fois : il vérifie le
 /give Rune_Nakasar_Blink
 /give Rune_Nakasar_SpectralChains
 /give Weapon_Nakasar_Spear_Iron      # la lance
+/give Nakasar_Sacrificial_Altar      # l'autel sacrificiel
+/give Ingredient_Rune_Shard 8        # éclats de rune pour tester les recettes
 ```
+
+### Recettes
+
+- **Autel sacrificiel** (`Nakasar_Sacrificial_Altar`) : à l'atelier de base (`Workbench`, onglet
+  `Workbench_Crafting`, palier 1) avec 10 pierres (ressource `Rock`), 2 lingots de fer et 1 éclat de rune.
+  Une fois posé, un clic d'utilisation ouvre son interface de craft.
+- **Runes** : chaque rune du mod coûte **2 éclats de rune** (`Ingredient_Rune_Shard`) sur l'autel, comme les
+  runes de capacités du jeu.
+- **Lance** : à l'établi de forgeron de base (`Weapon_Bench`, palier 1) avec 4 lingots de fer, 2 bûches
+  (ressource `Wood_Trunk`) et 2 cuirs légers.
+
+Les recettes sont `KnowledgeRequired: false` : elles sont visibles sans avoir été apprises.
 
 Les runes se lancent avec les touches d'abilities (Ability2 / Ability3) en tenant une arme. La lance :
 clic pour l'enchaînement, maintenir le clic (~0,8 s) pour le coup circulaire, touche Ability1 quand la
@@ -77,7 +91,16 @@ repris de la documentation communautaire sans avoir pu être contrôlés :
 - **Visuel des runes** : les 4 runes réutilisent l'icône et la texture de `Rune_Fireball`.
 - **Sens de la ruée** : `ApplyForce` avec `Z: -1` doit pousser vers l'avant ; inverser le signe si le
   joueur recule.
-- Pas de recette de craft pour l'instant : utiliser `/give` ou `/abilities give`.
+- **Identifiants vanilla des recettes** : `Workbench` / `Workbench_Crafting` sont confirmés par les dumps
+  communautaires, mais `Weapon_Bench` (établi de forgeron), ses onglets (`Sword` ? `Weapon_Sword` ? la recette
+  en liste quatre pour être sûre d'apparaître) et `Ingredient_Rune_Shard` / `Ingredient_Leather_Light`
+  viennent de wikis. Si la lance n'apparaît pas à la forge, vérifier `Bench.Id` et `Bench.Categories[].Id`
+  dans `Server/Item/Items/Bench/Bench_Weapon.json` des assets du jeu.
+- **Modèle de l'autel** : `Common/Blocks/Nakasar/Sacrificial_Altar.blockymodel` est écrit à la main au format
+  JSON du plugin Blockbench officiel (3 boîtes, 32 unités = 1 bloc, texture 64×64). Si le rendu ou les UV
+  sont faux, l'ouvrir dans Blockbench avec le plugin Hytale et le réexporter. L'icône d'inventaire est
+  générée par le client (`Icons/ItemsGenerated/...`) ; l'icône de l'onglet « Runes » réutilise celle des armes
+  rudimentaires de l'atelier.
 
 ## Organisation du dépôt
 
