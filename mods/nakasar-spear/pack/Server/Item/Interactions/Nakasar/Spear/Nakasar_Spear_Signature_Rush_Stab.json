@@ -9,14 +9,6 @@
     "Type": "Serial",
     "Interactions": [
       {
-        "Type": "ApplyForce",
-        "Direction": { "X": 0, "Y": 0, "Z": -1 },
-        "Force": 3,
-        "AdjustVertical": false,
-        "WaitForGround": false,
-        "ChangeVelocityType": "Add"
-      },
-      {
         "Type": "Selector",
         "RunTime": 0.08,
         "Selector": {
@@ -30,15 +22,24 @@
           "EndDistance": 3.5
         },
         "HitEntity": {
-          "Interactions": [ {
-            "Type": "Replace",
-            "Var": "Signature_Rush_Damage",
-            "DefaultOk": true,
-            "DefaultValue": { "Interactions": ["Nakasar_Spear_Signature_Rush_Damage"] }
-          } ]
+          "Interactions": [
+            {
+              "Type": "Replace",
+              "Var": "Signature_Rush_Damage",
+              "DefaultOk": true,
+              "DefaultValue": {
+                "Interactions": [
+                  "Nakasar_Spear_Signature_Rush_Damage"
+                ]
+              }
+            }
+          ]
         }
       },
-      { "Type": "Simple", "RunTime": 0.14 }
+      {
+        "Type": "Simple",
+        "RunTime": 0.14
+      }
     ]
   }
 }
