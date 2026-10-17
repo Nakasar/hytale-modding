@@ -3,7 +3,7 @@
   "SystemId": "Ability_GroundSlam_Spike",
   "SoundEventId": "SFX_Ability_Ground_Slam_Spike_Erupt",
   "Scale": 1.5,
-  "Color": "#7fd6ff",
+  "Color": "#5dff8a",
   "Next": {
     "Type": "Serial",
     "Interactions": [

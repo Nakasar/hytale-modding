@@ -2,10 +2,15 @@
   "Duration": 3,
   "OverlapBehavior": "Overwrite",
   "ApplicationEffects": {
-    "EntityTopTint": "#9fe0ff",
-    "EntityBottomTint": "#3c6cff",
+    "EntityTopTint": "#b8ffd0",
+    "EntityBottomTint": "#2fbf62",
     "KnockbackMultiplier": 0,
     "Particles": [
+      {
+        "SystemId": "Nakasar_Spectral_Chains",
+        "TargetEntityPart": "Entity",
+        "ClearParticlesOnRemove": true
+      },
       {
         "SystemId": "Stunned",
         "TargetEntityPart": "Entity",

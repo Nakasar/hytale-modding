@@ -1,0 +1,11 @@
+{
+  "Spawners": [
+    {
+      "SpawnerId": "Nakasar_Spectral_Chain_Rise",
+      "PositionOffset": { "X": 0, "Y": -1.3, "Z": 0 },
+      "FixedRotation": true
+    }
+  ],
+  "CullDistance": 48,
+  "BoundingRadius": 3
+}

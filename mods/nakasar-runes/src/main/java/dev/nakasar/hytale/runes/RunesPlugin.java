@@ -4,6 +4,7 @@ import com.hypixel.hytale.server.core.modules.interaction.interaction.config.Int
 import com.hypixel.hytale.server.core.plugin.JavaPlugin;
 import com.hypixel.hytale.server.core.plugin.JavaPluginInit;
 import dev.nakasar.hytale.runes.interaction.DominateInteraction;
+import dev.nakasar.hytale.runes.interaction.DrainBeamInteraction;
 import dev.nakasar.hytale.runes.interaction.RootNpcInteraction;
 import dev.nakasar.hytale.runes.interaction.TeleportCasterToImpactInteraction;
 
@@ -11,14 +12,16 @@ import dev.nakasar.hytale.runes.interaction.TeleportCasterToImpactInteraction;
  * Point d'entrée du mod "Runes".
  *
  * <p>Les runes elles-mêmes sont des assets JSON (voir {@code src/main/resources/Server}). Ce plugin
- * n'ajoute que les trois types d'interaction que le JSON vanilla ne sait pas faire :
+ * n'ajoute que les quatre types d'interaction que le JSON vanilla ne sait pas faire :
  * <ul>
  *   <li>{@code Nakasar_TeleportCasterToImpact} : téléporte le lanceur au point d'impact d'un projectile
  *       (rune Téléportation) ;</li>
  *   <li>{@code Nakasar_Dominate} : rend un PNJ amical envers le lanceur pendant un temps donné
  *       (rune Domination) ;</li>
  *   <li>{@code Nakasar_RootNpc} : gèle l'IA d'un PNJ pendant un temps donné, car l'effet de statut
- *       {@code MovementEffects.DisableAll} n'arrête que les joueurs (rune Chaînes spectrales).</li>
+ *       {@code MovementEffects.DisableAll} n'arrête que les joueurs (rune Chaînes spectrales) ;</li>
+ *   <li>{@code Nakasar_DrainBeam} : fait voyager des particules de la cible vers le lanceur
+ *       (rune Vol de vie).</li>
  * </ul>
  */
 public final class RunesPlugin extends JavaPlugin {
@@ -43,8 +46,11 @@ public final class RunesPlugin extends JavaPlugin {
                 DominateInteraction.class, DominateInteraction.CODEC);
         interactions.register(RootNpcInteraction.TYPE_ID,
                 RootNpcInteraction.class, RootNpcInteraction.CODEC);
-        getLogger().atInfo().log("Nakasar Runes : 3 types d'interaction enregistrés (%s, %s, %s)",
-                TeleportCasterToImpactInteraction.TYPE_ID, DominateInteraction.TYPE_ID, RootNpcInteraction.TYPE_ID);
+        interactions.register(DrainBeamInteraction.TYPE_ID,
+                DrainBeamInteraction.class, DrainBeamInteraction.CODEC);
+        getLogger().atInfo().log("Nakasar Runes : 4 types d'interaction enregistrés (%s, %s, %s, %s)",
+                TeleportCasterToImpactInteraction.TYPE_ID, DominateInteraction.TYPE_ID, RootNpcInteraction.TYPE_ID,
+                DrainBeamInteraction.TYPE_ID);
     }
 
     @Override

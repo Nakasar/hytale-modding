@@ -23,7 +23,7 @@
             "TrailParticles": "Ability_GroundSlam_Line",
             "TrailInterval": 0.05,
             "TrailScale": 0.8,
-            "TrailColor": "#7fd6ff"
+            "TrailColor": "#5dff8a"
           }
       ] },
       { "Interactions": [ { "Type": "TriggerCooldown", "UseAbilityCooldown": true } ] },

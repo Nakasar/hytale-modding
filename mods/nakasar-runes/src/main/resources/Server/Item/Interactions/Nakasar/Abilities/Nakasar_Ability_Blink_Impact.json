@@ -7,6 +7,7 @@
   "Next": {
     "Type": "Nakasar_TeleportCasterToImpact",
     "BackOffset": 0.6,
-    "VerticalOffset": 0.05
+    "VerticalOffset": 0.05,
+    "MaxDistance": 20
   }
 }

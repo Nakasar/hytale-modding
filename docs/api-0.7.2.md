@@ -68,6 +68,25 @@ Le JSON l'utilise ensuite avec `"Type": "Nakasar_MyInteraction"`.
 - `RunTime` sur un `Repeat` ne cadence pas les itérations : mettre la pause dans la chaîne forkée.
 - `MovementEffects.DisableAll` ne bloque que les joueurs ; les PNJ ont besoin du composant `Frozen`.
 - `EntityStatsOnHit` crédite toujours l'attaquant : `Health` y fait un vol de vie.
+- `WorldSupport.overrideAttitude` n'agit qu'à l'acquisition d'une cible (filtres `Attitude` des capteurs) :
+  un PNJ déjà en combat garde sa cible dans `MarkedEntitySupport` ; vider l'emplacement
+  (`clearMarkedEntity(slot)`) pour qu'il lâche prise.
+- Une condition calculée côté serveur dans une chaîne de joueur : `SimpleInstantInteraction` qui renvoie
+  `WaitForDataFrom.Server` (comme `PlacementCountCondition`), sinon le client prédit la suite (`Next`).
+- Ciblage au regard : `TargetUtil.getTargetEntity(ref, rayon, accessor)` (ignore les blocs ; comparer avec
+  `TargetUtil.getTargetLocation(ref, distance, accessor)`).
+
+## Particules
+
+- `Server/Particles/**/*.particlespawner` et `*.particlesystem` (clé = nom de fichier). Un système liste des
+  `Spawners` (`SpawnerId`, `PositionOffset`, `LifeSpan`…) ; un spawner décrit `Shape`, `EmitOffset`,
+  `SpawnRate`, `ParticleLifeSpan`, `InitialVelocity` (`Pitch` 90 = vers le haut), `RenderMode`,
+  `ParticleRotationInfluence` et `Particle { Texture, InitialAnimationFrame, Animation{"0".."100"} }`.
+- `Texture` est un chemin depuis `Common/` (`Particles/Textures/...png`, comme le vanilla
+  `Particles/Textures/Weather/Dust.png`). Enums en CamelCase (`BlendAdd`, `BillboardY`, `Disable`…).
+- Jouer un système depuis Java : `ParticleUtil.spawnParticleEffect(id, position, accessor)` (joueurs à 75 m).
+  Sur une entité, pendant un effet : `ApplicationEffects.Particles[{SystemId, TargetEntityPart: Entity,
+  ClearParticlesOnRemove}]`.
 
 ## Recettes et établis
 

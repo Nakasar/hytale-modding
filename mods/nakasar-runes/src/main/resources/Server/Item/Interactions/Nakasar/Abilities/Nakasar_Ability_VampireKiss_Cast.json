@@ -29,7 +29,16 @@
               "RollOffset": 30,
               "YawStartOffset": -20
             },
-            "HitEntity": { "Interactions": ["Nakasar_Ability_VampireKiss_Hit"] }
+            "HitEntity": { "Interactions": [
+                "Nakasar_Ability_VampireKiss_Hit",
+                {
+                  "Type": "Nakasar_DrainBeam",
+                  "SystemId": "Nakasar_Blood_Drain",
+                  "Steps": 8,
+                  "StepDelay": 0.04,
+                  "HeightOffset": 1.0
+                }
+            ] }
           }
       ] },
       { "Interactions": [ { "Type": "TriggerCooldown", "UseAbilityCooldown": true } ] },
