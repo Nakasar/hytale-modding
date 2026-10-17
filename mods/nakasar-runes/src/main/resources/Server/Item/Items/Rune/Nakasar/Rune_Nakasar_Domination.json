@@ -19,7 +19,7 @@
     "Cooldown": 12,
     "Cost": 45,
     "CostType": "Mana",
-    "AbilityKeywords": ["Melee", "Duration", "Nakasar_Control"],
+    "AbilityKeywords": ["Duration", "Nakasar_Control"],
     "Attributes": {
       "Duration": 6
     },

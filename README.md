@@ -112,6 +112,11 @@ repris de la documentation communautaire sans avoir pu être contrôlés :
   `Icons/ItemsGenerated/Weapon_Spear_Iron.png` sont les chemins de la lance vanilla. Un modèle dédié
   pourra être ajouté ensuite dans le pack.
 - **Visuel des runes** : les 4 runes réutilisent l'icône et la texture de `Rune_Fireball`.
+- **Particules des runes** (chaînes vertes, gouttes de sang) : le format est celui du serveur 0.7.2 (décodé
+  sans erreur par ses codecs), mais l'unité de `Scale` n'est pas documentée. Si les chaînes sont trop
+  grandes ou trop petites, ajuster `InitialAnimationFrame.Scale` dans
+  `Server/Particles/Nakasar/Nakasar_Spectral_Chain_Rise.particlespawner` (idem `Nakasar_Blood_Drain`).
+  La hauteur de départ (sous le sol) est le `PositionOffset.Y` du `.particlesystem`.
 - **Ruée de l'ultime** (`Nakasar_Spear_Signature_Dash.json`) : poussée continue de 0,55 s (`Duration`)
   lancée en parallèle des estocs. `Z: -1` doit pousser vers l'avant ; inverser le signe si le joueur
   recule. Régler la distance avec `Force` (vitesse) et `Duration`.

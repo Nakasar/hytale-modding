@@ -7,6 +7,7 @@ import com.hypixel.hytale.component.CommandBuffer;
 import com.hypixel.hytale.component.Ref;
 import com.hypixel.hytale.protocol.InteractionState;
 import com.hypixel.hytale.protocol.InteractionType;
+import com.hypixel.hytale.protocol.WaitForDataFrom;
 import com.hypixel.hytale.server.core.asset.type.attitude.Attitude;
 import com.hypixel.hytale.server.core.asset.type.entityeffect.config.EntityEffect;
 import com.hypixel.hytale.server.core.asset.type.entityeffect.config.OverlapBehavior;
@@ -15,11 +16,15 @@ import com.hypixel.hytale.server.core.entity.effect.EffectControllerComponent;
 import com.hypixel.hytale.server.core.modules.interaction.interaction.CooldownHandler;
 import com.hypixel.hytale.server.core.modules.interaction.interaction.config.SimpleInstantInteraction;
 import com.hypixel.hytale.server.core.modules.interaction.interaction.config.data.AbilityAttributeBinding;
+import com.hypixel.hytale.server.core.modules.entity.component.TransformComponent;
+import com.hypixel.hytale.server.core.util.TargetUtil;
 import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
 import com.hypixel.hytale.server.npc.entities.NPCEntity;
+import com.hypixel.hytale.server.npc.role.support.MarkedEntitySupport;
 import com.hypixel.hytale.server.npc.role.support.WorldSupport;
 import dev.nakasar.hytale.runes.RunesPlugin;
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
+import org.joml.Vector3d;
 
 import java.lang.reflect.Field;
 import java.util.function.Consumer;
@@ -27,7 +32,13 @@ import java.util.function.Consumer;
 /**
  * {@code "Type": "Nakasar_Dominate"} : rend le PNJ ciblé amical envers le lanceur pendant {@code Duration}
  * secondes, via la mémoire d'attitude de son rôle (le même mécanisme que l'action de rôle
- * {@code OverrideAttitude}). Un PNJ amical cesse de considérer le lanceur comme une cible.
+ * {@code OverrideAttitude}), et efface le lanceur des cibles mémorisées du PNJ : l'attitude n'est relue
+ * qu'à l'acquisition d'une cible, un PNJ hostile déjà en combat continuerait sinon d'attaquer.
+ *
+ * <p>Sans cible fournie par la chaîne ({@code HitEntity} d'un {@code Selector}), l'interaction vise elle-même
+ * l'entité dans l'axe du regard du lanceur, à {@code Range} blocs au plus et sans traverser de bloc.
+ * Elle attend la réponse du serveur : à utiliser <em>avant</em> le coût et le temps de recharge, qui ne
+ * sont alors dépensés que si la domination réussit.
  *
  * <p>Clés JSON :
  * <ul>
@@ -35,10 +46,11 @@ import java.util.function.Consumer;
  *   <li>{@code DurationAttribute} (string) : attribut d'ability qui remplace {@code Duration} ;</li>
  *   <li>{@code EffectId} (string, optionnel) : effet de statut appliqué à la cible pour la même durée
  *       (retour visuel) ;</li>
+ *   <li>{@code Range} (float, défaut 8) : portée du ciblage au regard ;</li>
  *   <li>{@code Attitude} (string, défaut {@code Friendly}) : {@code Friendly}, {@code Neutral}, {@code Ignore},
  *       {@code Revered} ou {@code Hostile}.</li>
  * </ul>
- * Échoue (branche {@code Failed}) si la cible n'est pas un PNJ.
+ * Échoue (branche {@code Failed}) si aucun PNJ n'est visé.
  */
 public class DominateInteraction extends SimpleInstantInteraction implements AbilityAttributeBinding {
 
@@ -56,6 +68,9 @@ public class DominateInteraction extends SimpleInstantInteraction implements Abi
             .append(new KeyedCodec<>("EffectId", Codec.STRING), (i, v) -> i.effectId = v, i -> i.effectId)
             .documentation("Effet de statut applique a la cible pour la meme duree (optionnel).")
             .add()
+            .append(new KeyedCodec<>("Range", Codec.FLOAT), (i, v) -> i.range = v, i -> i.range)
+            .documentation("Portee (blocs) du ciblage au regard quand la chaine ne fournit pas de cible.")
+            .add()
             .append(new KeyedCodec<>("Attitude", Attitude.CODEC), (i, v) -> i.attitude = v, i -> i.attitude)
             .documentation("Attitude imposee envers le lanceur (defaut Friendly).")
             .add()
@@ -64,6 +79,7 @@ public class DominateInteraction extends SimpleInstantInteraction implements Abi
     protected float duration = 6f;
     protected String durationAttribute;
     protected String effectId;
+    protected float range = 8f;
     protected Attitude attitude = Attitude.FRIENDLY;
 
     public DominateInteraction() {
@@ -72,14 +88,20 @@ public class DominateInteraction extends SimpleInstantInteraction implements Abi
     @Override
     protected void firstRun(InteractionType type, InteractionContext context, CooldownHandler cooldownHandler) {
         CommandBuffer<EntityStore> buffer = context.getCommandBuffer();
-        Ref<EntityStore> target = context.getTargetEntity();
         Ref<EntityStore> caster = AbilityAttributes.caster(context);
-        if (buffer == null || target == null || !target.isValid() || caster == null || !caster.isValid()) {
+        if (buffer == null || caster == null || !caster.isValid()) {
             fail(context);
             return;
         }
-        NPCEntity npc = buffer.getComponent(target, NPCEntity.getComponentType());
-        WorldSupport worldSupport = npc == null ? null : WorldSupport.get(target, buffer);
+        Ref<EntityStore> target = context.getTargetEntity();
+        if (!isNpc(target, buffer)) {
+            target = lookTarget(caster, buffer);
+        }
+        if (!isNpc(target, buffer)) {
+            fail(context);
+            return;
+        }
+        WorldSupport worldSupport = WorldSupport.get(target, buffer);
         if (worldSupport == null) {
             fail(context);
             return;
@@ -95,6 +117,7 @@ public class DominateInteraction extends SimpleInstantInteraction implements Abi
             fail(context);
             return;
         }
+        forgetCaster(target, caster, buffer);
 
         if (effectId != null && !effectId.isBlank()) {
             EntityEffect effect = EntityEffect.getAssetMap().getAsset(effectId);
@@ -109,7 +132,52 @@ public class DominateInteraction extends SimpleInstantInteraction implements Abi
 
     @Override
     protected void simulateFirstRun(InteractionType type, InteractionContext context, CooldownHandler cooldownHandler) {
-        // Serveur uniquement.
+        // Serveur uniquement : le client reprend l'état (réussite ou échec) envoyé par le serveur.
+    }
+
+    @Override
+    public WaitForDataFrom getWaitForDataFrom() {
+        return WaitForDataFrom.Server;
+    }
+
+    private static boolean isNpc(Ref<EntityStore> ref, CommandBuffer<EntityStore> buffer) {
+        return ref != null && ref.isValid() && buffer.getComponent(ref, NPCEntity.getComponentType()) != null;
+    }
+
+    /** L'entité la plus proche dans l'axe du regard, si aucun bloc ne s'interpose avant elle. */
+    private Ref<EntityStore> lookTarget(Ref<EntityStore> caster, CommandBuffer<EntityStore> buffer) {
+        if (range <= 0) {
+            return null;
+        }
+        Ref<EntityStore> target = TargetUtil.getTargetEntity(caster, range, buffer);
+        if (target == null) {
+            return null;
+        }
+        TransformComponent targetTransform = buffer.getComponent(target, TransformComponent.getComponentType());
+        Vector3d block = TargetUtil.getTargetLocation(caster, range, buffer);
+        if (targetTransform != null && block != null) {
+            Vector3d eye = TargetUtil.getLook(caster, buffer).getPosition();
+            if (eye.distance(block) + 1.0 < eye.distance(targetTransform.getPosition())) {
+                return null; // un mur entre le lanceur et le PNJ
+            }
+        }
+        return target;
+    }
+
+    /**
+     * Retire le lanceur des cibles mémorisées par le rôle du PNJ (cible verrouillée de combat, etc.).
+     * Le PNJ ne le reprendra pas tant que l'attitude imposée filtre ses capteurs.
+     */
+    private static void forgetCaster(Ref<EntityStore> target, Ref<EntityStore> caster, CommandBuffer<EntityStore> buffer) {
+        MarkedEntitySupport marked = buffer.getComponent(target, MarkedEntitySupport.getComponentType());
+        if (marked == null) {
+            return;
+        }
+        for (int slot = 0; slot < marked.getMarkedEntitySlotCount(); slot++) {
+            if (caster.equals(marked.getMarkedEntityRef(slot))) {
+                marked.clearMarkedEntity(slot);
+            }
+        }
     }
 
     @Override

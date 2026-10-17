@@ -28,7 +28,9 @@ import org.joml.Vector4d;
  * <ul>
  *   <li>{@code BackOffset} (float, défaut 0.6) : recule l'arrivée de N blocs vers le lanceur, pour ne pas
  *       finir dans le mur touché ;</li>
- *   <li>{@code VerticalOffset} (float, défaut 0.05) : léger décalage vertical à l'arrivée.</li>
+ *   <li>{@code VerticalOffset} (float, défaut 0.05) : léger décalage vertical à l'arrivée ;</li>
+ *   <li>{@code MaxDistance} (float, défaut 0 = illimitée) : portée maximale ; un impact plus lointain
+ *       ramène l'arrivée sur la droite lanceur → impact, à cette distance du lanceur.</li>
  * </ul>
  */
 public class TeleportCasterToImpactInteraction extends SimpleInstantInteraction {
@@ -46,10 +48,15 @@ public class TeleportCasterToImpactInteraction extends SimpleInstantInteraction 
                     (i, v) -> i.verticalOffset = v, i -> i.verticalOffset)
             .documentation("Decalage vertical ajoute a l'arrivee.")
             .add()
+            .append(new KeyedCodec<>("MaxDistance", Codec.FLOAT),
+                    (i, v) -> i.maxDistance = v, i -> i.maxDistance)
+            .documentation("Portee maximale (blocs) de la teleportation ; 0 = illimitee.")
+            .add()
             .build();
 
     protected float backOffset = 0.6f;
     protected float verticalOffset = 0.05f;
+    protected float maxDistance = 0f;
 
     public TeleportCasterToImpactInteraction() {
     }
@@ -73,6 +80,14 @@ public class TeleportCasterToImpactInteraction extends SimpleInstantInteraction 
         TransformComponent casterTransform = buffer.getComponent(caster, TransformComponent.getComponentType());
         Rotation3f rotation = casterTransform != null ? casterTransform.getRotation() : new Rotation3f();
 
+        if (maxDistance > 0 && casterTransform != null) {
+            Vector3d from = casterTransform.getPosition();
+            Vector3d dir = new Vector3d(target).sub(from);
+            double len = dir.length();
+            if (len > maxDistance) {
+                target.set(from).add(dir.mul(maxDistance / len));
+            }
+        }
         if (backOffset > 0 && casterTransform != null) {
             Vector3d from = casterTransform.getPosition();
             Vector3d dir = new Vector3d(target).sub(from);
