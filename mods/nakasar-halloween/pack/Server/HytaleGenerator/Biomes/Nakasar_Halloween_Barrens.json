@@ -1,0 +1,1955 @@
+{
+  "Name": "Nakasar_Halloween_Barrens",
+  "FloatingFunctionNodes": [
+    {
+      "Type": "PositionsCellNoise",
+      "Positions": {
+        "Type": "List",
+        "Positions": [
+          {
+            "X": 0,
+            "Y": 81,
+            "Z": 0
+          },
+          {
+            "X": 0,
+            "Y": 81,
+            "Z": -190
+          }
+        ],
+        "ExportAs": "Nakasar_Halloween_Landmark_Positions"
+      },
+      "ReturnType": {
+        "Type": "Curve",
+        "Curve": {
+          "Type": "Manual",
+          "Points": [
+            {
+              "In": 0,
+              "Out": 0
+            },
+            {
+              "In": 1,
+              "Out": 1
+            }
+          ]
+        }
+      },
+      "DistanceFunction": {
+        "Type": "Euclidean"
+      },
+      "MaxDistance": 1.0
+    }
+  ],
+  "Terrain": {
+    "Type": "DAOTerrain",
+    "Density": {
+      "Type": "Sum",
+      "Inputs": [
+        {
+          "Type": "Multiplier",
+          "Inputs": [
+            {
+              "Type": "YValue"
+            },
+            {
+              "Type": "Constant",
+              "Value": -0.125
+            }
+          ]
+        },
+        {
+          "Type": "Constant",
+          "Value": 10.0625
+        },
+        {
+          "Type": "Multiplier",
+          "Inputs": [
+            {
+              "Type": "Sum",
+              "Inputs": [
+                {
+                  "Type": "Multiplier",
+                  "Inputs": [
+                    {
+                      "Type": "SimplexNoise2D",
+                      "Scale": 140.0,
+                      "Octaves": 3,
+                      "Lacunarity": 2.0,
+                      "Persistence": 0.5,
+                      "Seed": "Hills"
+                    },
+                    {
+                      "Type": "Constant",
+                      "Value": 1.0
+                    }
+                  ]
+                },
+                {
+                  "Type": "Multiplier",
+                  "Inputs": [
+                    {
+                      "Type": "SimplexNoise2D",
+                      "Scale": 32.0,
+                      "Octaves": 2,
+                      "Lacunarity": 2.0,
+                      "Persistence": 0.5,
+                      "Seed": "Bumps"
+                    },
+                    {
+                      "Type": "Constant",
+                      "Value": 0.3
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "Type": "PositionsCellNoise",
+              "Positions": {
+                "Type": "Union",
+                "Positions": [
+                  {
+                    "Type": "Imported",
+                    "Name": "Nakasar_Halloween_Structure_Positions"
+                  },
+                  {
+                    "Type": "Imported",
+                    "Name": "Nakasar_Halloween_Landmark_Positions"
+                  }
+                ]
+              },
+              "ReturnType": {
+                "Type": "Curve",
+                "Curve": {
+                  "Type": "Manual",
+                  "Points": [
+                    {
+                      "In": 0,
+                      "Out": 0
+                    },
+                    {
+                      "In": 34,
+                      "Out": 0
+                    },
+                    {
+                      "In": 62,
+                      "Out": 1
+                    }
+                  ]
+                }
+              },
+              "DistanceFunction": {
+                "Type": "Euclidean"
+              },
+              "MaxDistance": 70.0
+            }
+          ]
+        }
+      ]
+    }
+  },
+  "MaterialProvider": {
+    "Type": "Solidity",
+    "Solid": {
+      "Type": "Queue",
+      "Queue": [
+        {
+          "Type": "SpaceAndDepth",
+          "LayerContext": "DepthIntoFloor",
+          "MaxExpectedDepth": 5,
+          "Layers": [
+            {
+              "Type": "ConstantThickness",
+              "Thickness": 1,
+              "Material": {
+                "Type": "Weighted",
+                "Seed": "Surface",
+                "SkipChance": 0.0,
+                "WeightedMaterials": [
+                  {
+                    "Weight": 8,
+                    "Material": {
+                      "Type": "Constant",
+                      "Material": {
+                        "Solid": "Soil_Grass_Burnt"
+                      }
+                    }
+                  },
+                  {
+                    "Weight": 2,
+                    "Material": {
+                      "Type": "Constant",
+                      "Material": {
+                        "Solid": "Soil_Grass_Burnt_Full"
+                      }
+                    }
+                  },
+                  {
+                    "Weight": 1,
+                    "Material": {
+                      "Type": "Constant",
+                      "Material": {
+                        "Solid": "Soil_Dirt_Burnt"
+                      }
+                    }
+                  }
+                ]
+              }
+            },
+            {
+              "Type": "ConstantThickness",
+              "Thickness": 4,
+              "Material": {
+                "Type": "Weighted",
+                "Seed": "Subsoil",
+                "SkipChance": 0.0,
+                "WeightedMaterials": [
+                  {
+                    "Weight": 3,
+                    "Material": {
+                      "Type": "Constant",
+                      "Material": {
+                        "Solid": "Soil_Dirt_Burnt"
+                      }
+                    }
+                  },
+                  {
+                    "Weight": 2,
+                    "Material": {
+                      "Type": "Constant",
+                      "Material": {
+                        "Solid": "Soil_Dirt"
+                      }
+                    }
+                  },
+                  {
+                    "Weight": 1,
+                    "Material": {
+                      "Type": "Constant",
+                      "Material": {
+                        "Solid": "Soil_Gravel"
+                      }
+                    }
+                  }
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "Type": "Weighted",
+          "Seed": "Bedrock",
+          "SkipChance": 0.0,
+          "WeightedMaterials": [
+            {
+              "Weight": 6,
+              "Material": {
+                "Type": "Constant",
+                "Material": {
+                  "Solid": "Rock_Stone"
+                }
+              }
+            },
+            {
+              "Weight": 2,
+              "Material": {
+                "Type": "Constant",
+                "Material": {
+                  "Solid": "Rock_Slate"
+                }
+              }
+            },
+            {
+              "Weight": 1,
+              "Material": {
+                "Type": "Constant",
+                "Material": {
+                  "Solid": "Rock_Shale"
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    "Empty": {
+      "Type": "Constant",
+      "Material": {
+        "Solid": "Empty"
+      }
+    }
+  },
+  "Props": [
+    {
+      "Runtime": 0,
+      "ContextPrecision": "Prop",
+      "PropDistribution": {
+        "Type": "Assigned",
+        "OverrideAllProps": true,
+        "PropDistribution": {
+          "Type": "Positions",
+          "Positions": {
+            "Type": "FieldFunction",
+            "ExportAs": "Nakasar_Halloween_Structure_Positions",
+            "FieldFunction": {
+              "Type": "PositionsCellNoise",
+              "Positions": {
+                "Type": "Imported",
+                "Name": "Nakasar_Halloween_Landmark_Positions"
+              },
+              "ReturnType": {
+                "Type": "Curve",
+                "Curve": {
+                  "Type": "Manual",
+                  "Points": [
+                    {
+                      "In": 0,
+                      "Out": 0
+                    },
+                    {
+                      "In": 200,
+                      "Out": 200
+                    }
+                  ]
+                }
+              },
+              "DistanceFunction": {
+                "Type": "Euclidean"
+              },
+              "MaxDistance": 200.0
+            },
+            "Delimiters": [
+              {
+                "Min": 110.0,
+                "Max": 1000000000.0
+              }
+            ],
+            "Positions": {
+              "Type": "Mesh2D",
+              "PointsY": 81,
+              "PointGenerator": {
+                "Type": "Mesh",
+                "ScaleX": 150.0,
+                "ScaleY": 150.0,
+                "ScaleZ": 150.0,
+                "Jitter": 0.25,
+                "Seed": "Structures"
+              }
+            }
+          }
+        },
+        "Assignments": {
+          "Type": "Weighted",
+          "Seed": "StructurePick",
+          "SkipChance": 0.0,
+          "WeightedAssignments": [
+            {
+              "Weight": 3.0,
+              "Assignments": {
+                "Type": "Constant",
+                "Prop": {
+                  "Type": "Locator",
+                  "Pattern": {
+                    "Type": "Floor",
+                    "Floor": {
+                      "Type": "Not",
+                      "Pattern": {
+                        "Type": "BlockType",
+                        "Material": {
+                          "Solid": "Empty"
+                        }
+                      }
+                    },
+                    "Origin": {
+                      "Type": "BlockType",
+                      "Material": {
+                        "Solid": "Empty"
+                      }
+                    }
+                  },
+                  "Scanner": {
+                    "Type": "Linear",
+                    "Axis": "Y",
+                    "Range": {
+                      "MinInclusive": -12,
+                      "MaxExclusive": 13
+                    },
+                    "AscendingOrder": false,
+                    "Scanner": {
+                      "Type": "Origin"
+                    }
+                  },
+                  "PlacementCap": 1,
+                  "Prop": {
+                    "Type": "RandomRotator",
+                    "HorizontalRotations": true,
+                    "Seed": "Crypt",
+                    "Prop": {
+                      "Type": "Prefab",
+                      "WeightedPrefabPaths": [
+                        {
+                          "Path": "Prefabs/Nakasar/Halloween/Crypts",
+                          "Weight": 1.0
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            },
+            {
+              "Weight": 1.5,
+              "Assignments": {
+                "Type": "Constant",
+                "Prop": {
+                  "Type": "Locator",
+                  "Pattern": {
+                    "Type": "Floor",
+                    "Floor": {
+                      "Type": "Not",
+                      "Pattern": {
+                        "Type": "BlockType",
+                        "Material": {
+                          "Solid": "Empty"
+                        }
+                      }
+                    },
+                    "Origin": {
+                      "Type": "BlockType",
+                      "Material": {
+                        "Solid": "Empty"
+                      }
+                    }
+                  },
+                  "Scanner": {
+                    "Type": "Linear",
+                    "Axis": "Y",
+                    "Range": {
+                      "MinInclusive": -12,
+                      "MaxExclusive": 13
+                    },
+                    "AscendingOrder": false,
+                    "Scanner": {
+                      "Type": "Origin"
+                    }
+                  },
+                  "PlacementCap": 1,
+                  "Prop": {
+                    "Type": "RandomRotator",
+                    "HorizontalRotations": true,
+                    "Seed": "CemeteryHaunted",
+                    "Prop": {
+                      "Type": "Prefab",
+                      "WeightedPrefabPaths": [
+                        {
+                          "Path": "Prefabs/Nakasar/Halloween/Cemeteries/Haunted",
+                          "Weight": 1.0
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            },
+            {
+              "Weight": 1.5,
+              "Assignments": {
+                "Type": "Constant",
+                "Prop": {
+                  "Type": "Locator",
+                  "Pattern": {
+                    "Type": "Floor",
+                    "Floor": {
+                      "Type": "Not",
+                      "Pattern": {
+                        "Type": "BlockType",
+                        "Material": {
+                          "Solid": "Empty"
+                        }
+                      }
+                    },
+                    "Origin": {
+                      "Type": "BlockType",
+                      "Material": {
+                        "Solid": "Empty"
+                      }
+                    }
+                  },
+                  "Scanner": {
+                    "Type": "Linear",
+                    "Axis": "Y",
+                    "Range": {
+                      "MinInclusive": -12,
+                      "MaxExclusive": 13
+                    },
+                    "AscendingOrder": false,
+                    "Scanner": {
+                      "Type": "Origin"
+                    }
+                  },
+                  "PlacementCap": 1,
+                  "Prop": {
+                    "Type": "RandomRotator",
+                    "HorizontalRotations": true,
+                    "Seed": "CemeterySpiders",
+                    "Prop": {
+                      "Type": "Prefab",
+                      "WeightedPrefabPaths": [
+                        {
+                          "Path": "Prefabs/Nakasar/Halloween/Cemeteries/Spiders",
+                          "Weight": 1.0
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            },
+            {
+              "Weight": 1.5,
+              "Assignments": {
+                "Type": "Constant",
+                "Prop": {
+                  "Type": "Locator",
+                  "Pattern": {
+                    "Type": "Floor",
+                    "Floor": {
+                      "Type": "Not",
+                      "Pattern": {
+                        "Type": "BlockType",
+                        "Material": {
+                          "Solid": "Empty"
+                        }
+                      }
+                    },
+                    "Origin": {
+                      "Type": "BlockType",
+                      "Material": {
+                        "Solid": "Empty"
+                      }
+                    }
+                  },
+                  "Scanner": {
+                    "Type": "Linear",
+                    "Axis": "Y",
+                    "Range": {
+                      "MinInclusive": -12,
+                      "MaxExclusive": 13
+                    },
+                    "AscendingOrder": false,
+                    "Scanner": {
+                      "Type": "Origin"
+                    }
+                  },
+                  "PlacementCap": 1,
+                  "Prop": {
+                    "Type": "RandomRotator",
+                    "HorizontalRotations": true,
+                    "Seed": "CemeteryUndead",
+                    "Prop": {
+                      "Type": "Prefab",
+                      "WeightedPrefabPaths": [
+                        {
+                          "Path": "Prefabs/Nakasar/Halloween/Cemeteries/Undead",
+                          "Weight": 1.0
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            },
+            {
+              "Weight": 3.0,
+              "Assignments": {
+                "Type": "Constant",
+                "Prop": {
+                  "Type": "Locator",
+                  "Pattern": {
+                    "Type": "Floor",
+                    "Floor": {
+                      "Type": "Not",
+                      "Pattern": {
+                        "Type": "BlockType",
+                        "Material": {
+                          "Solid": "Empty"
+                        }
+                      }
+                    },
+                    "Origin": {
+                      "Type": "BlockType",
+                      "Material": {
+                        "Solid": "Empty"
+                      }
+                    }
+                  },
+                  "Scanner": {
+                    "Type": "Linear",
+                    "Axis": "Y",
+                    "Range": {
+                      "MinInclusive": -12,
+                      "MaxExclusive": 13
+                    },
+                    "AscendingOrder": false,
+                    "Scanner": {
+                      "Type": "Origin"
+                    }
+                  },
+                  "PlacementCap": 1,
+                  "Prop": {
+                    "Type": "RandomRotator",
+                    "HorizontalRotations": true,
+                    "Seed": "PumpkinField",
+                    "Prop": {
+                      "Type": "Prefab",
+                      "WeightedPrefabPaths": [
+                        {
+                          "Path": "Prefabs/Nakasar/Halloween/PumpkinFields",
+                          "Weight": 1.0
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            },
+            {
+              "Weight": 2.0,
+              "Assignments": {
+                "Type": "Constant",
+                "Prop": {
+                  "Type": "Locator",
+                  "Pattern": {
+                    "Type": "Floor",
+                    "Floor": {
+                      "Type": "Not",
+                      "Pattern": {
+                        "Type": "BlockType",
+                        "Material": {
+                          "Solid": "Empty"
+                        }
+                      }
+                    },
+                    "Origin": {
+                      "Type": "BlockType",
+                      "Material": {
+                        "Solid": "Empty"
+                      }
+                    }
+                  },
+                  "Scanner": {
+                    "Type": "Linear",
+                    "Axis": "Y",
+                    "Range": {
+                      "MinInclusive": -12,
+                      "MaxExclusive": 13
+                    },
+                    "AscendingOrder": false,
+                    "Scanner": {
+                      "Type": "Origin"
+                    }
+                  },
+                  "PlacementCap": 1,
+                  "Prop": {
+                    "Type": "RandomRotator",
+                    "HorizontalRotations": true,
+                    "Seed": "HauntedCastle",
+                    "Prop": {
+                      "Type": "Prefab",
+                      "WeightedPrefabPaths": [
+                        {
+                          "Path": "Prefabs/Nakasar/Halloween/HauntedCastles",
+                          "Weight": 1.0
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "Runtime": 0,
+      "ContextPrecision": "Prop",
+      "PropDistribution": {
+        "Type": "Assigned",
+        "OverrideAllProps": true,
+        "PropDistribution": {
+          "Type": "Positions",
+          "Positions": {
+            "Type": "List",
+            "Positions": [
+              {
+                "X": 0,
+                "Y": 81,
+                "Z": -190
+              }
+            ]
+          }
+        },
+        "Assignments": {
+          "Type": "Constant",
+          "Prop": {
+            "Type": "Locator",
+            "Pattern": {
+              "Type": "Floor",
+              "Floor": {
+                "Type": "Not",
+                "Pattern": {
+                  "Type": "BlockType",
+                  "Material": {
+                    "Solid": "Empty"
+                  }
+                }
+              },
+              "Origin": {
+                "Type": "BlockType",
+                "Material": {
+                  "Solid": "Empty"
+                }
+              }
+            },
+            "Scanner": {
+              "Type": "Linear",
+              "Axis": "Y",
+              "Range": {
+                "MinInclusive": -12,
+                "MaxExclusive": 13
+              },
+              "AscendingOrder": false,
+              "Scanner": {
+                "Type": "Origin"
+              }
+            },
+            "PlacementCap": 1,
+            "Prop": {
+              "Type": "Prefab",
+              "WeightedPrefabPaths": [
+                {
+                  "Path": "Prefabs/Nakasar/Halloween/DraculaCastle",
+                  "Weight": 1.0
+                }
+              ]
+            }
+          }
+        }
+      }
+    },
+    {
+      "Runtime": 1,
+      "ContextPrecision": "Chunk",
+      "PropDistribution": {
+        "Type": "Assigned",
+        "OverrideAllProps": true,
+        "PropDistribution": {
+          "Type": "Positions",
+          "Positions": {
+            "Type": "FieldFunction",
+            "FieldFunction": {
+              "Type": "PositionsCellNoise",
+              "Positions": {
+                "Type": "Union",
+                "Positions": [
+                  {
+                    "Type": "Imported",
+                    "Name": "Nakasar_Halloween_Structure_Positions"
+                  },
+                  {
+                    "Type": "Imported",
+                    "Name": "Nakasar_Halloween_Landmark_Positions"
+                  }
+                ]
+              },
+              "ReturnType": {
+                "Type": "Curve",
+                "Curve": {
+                  "Type": "Manual",
+                  "Points": [
+                    {
+                      "In": 0,
+                      "Out": 0
+                    },
+                    {
+                      "In": 35.0,
+                      "Out": 35.0
+                    }
+                  ]
+                }
+              },
+              "DistanceFunction": {
+                "Type": "Euclidean"
+              },
+              "MaxDistance": 35.0
+            },
+            "Delimiters": [
+              {
+                "Min": 34.0,
+                "Max": 1000000000.0
+              }
+            ],
+            "Positions": {
+              "Type": "Mesh2D",
+              "PointsY": 81,
+              "PointGenerator": {
+                "Type": "Mesh",
+                "ScaleX": 13.0,
+                "ScaleY": 13.0,
+                "ScaleZ": 13.0,
+                "Jitter": 0.45,
+                "Seed": "Trees"
+              }
+            }
+          }
+        },
+        "Assignments": {
+          "Type": "Weighted",
+          "Seed": "TreePick",
+          "SkipChance": 0.35,
+          "WeightedAssignments": [
+            {
+              "Weight": 1.0,
+              "Assignments": {
+                "Type": "Constant",
+                "Prop": {
+                  "Type": "Locator",
+                  "Pattern": {
+                    "Type": "Floor",
+                    "Floor": {
+                      "Type": "Or",
+                      "Patterns": [
+                        {
+                          "Type": "BlockType",
+                          "Material": {
+                            "Solid": "Soil_Grass_Burnt"
+                          }
+                        },
+                        {
+                          "Type": "BlockType",
+                          "Material": {
+                            "Solid": "Soil_Grass_Burnt_Full"
+                          }
+                        },
+                        {
+                          "Type": "BlockType",
+                          "Material": {
+                            "Solid": "Soil_Dirt_Burnt"
+                          }
+                        }
+                      ]
+                    },
+                    "Origin": {
+                      "Type": "BlockType",
+                      "Material": {
+                        "Solid": "Empty"
+                      }
+                    }
+                  },
+                  "Scanner": {
+                    "Type": "Linear",
+                    "Axis": "Y",
+                    "Range": {
+                      "MinInclusive": -14,
+                      "MaxExclusive": 15
+                    },
+                    "AscendingOrder": false,
+                    "Scanner": {
+                      "Type": "Origin"
+                    }
+                  },
+                  "PlacementCap": 1,
+                  "Prop": {
+                    "Type": "RandomRotator",
+                    "HorizontalRotations": true,
+                    "Seed": "Tree",
+                    "Prop": {
+                      "Type": "Prefab",
+                      "WeightedPrefabPaths": [
+                        {
+                          "Path": "Prefabs/Nakasar/Halloween/Trees",
+                          "Weight": 1.0
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "Runtime": 1,
+      "ContextPrecision": "Chunk",
+      "PropDistribution": {
+        "Type": "Assigned",
+        "OverrideAllProps": true,
+        "PropDistribution": {
+          "Type": "Positions",
+          "Positions": {
+            "Type": "FieldFunction",
+            "FieldFunction": {
+              "Type": "PositionsCellNoise",
+              "Positions": {
+                "Type": "Union",
+                "Positions": [
+                  {
+                    "Type": "Imported",
+                    "Name": "Nakasar_Halloween_Structure_Positions"
+                  },
+                  {
+                    "Type": "Imported",
+                    "Name": "Nakasar_Halloween_Landmark_Positions"
+                  }
+                ]
+              },
+              "ReturnType": {
+                "Type": "Curve",
+                "Curve": {
+                  "Type": "Manual",
+                  "Points": [
+                    {
+                      "In": 0,
+                      "Out": 0
+                    },
+                    {
+                      "In": 35.0,
+                      "Out": 35.0
+                    }
+                  ]
+                }
+              },
+              "DistanceFunction": {
+                "Type": "Euclidean"
+              },
+              "MaxDistance": 35.0
+            },
+            "Delimiters": [
+              {
+                "Min": 34.0,
+                "Max": 1000000000.0
+              }
+            ],
+            "Positions": {
+              "Type": "Mesh2D",
+              "PointsY": 81,
+              "PointGenerator": {
+                "Type": "Mesh",
+                "ScaleX": 29.0,
+                "ScaleY": 29.0,
+                "ScaleZ": 29.0,
+                "Jitter": 0.45,
+                "Seed": "Decor"
+              }
+            }
+          }
+        },
+        "Assignments": {
+          "Type": "Weighted",
+          "Seed": "DecorPick",
+          "SkipChance": 0.3,
+          "WeightedAssignments": [
+            {
+              "Weight": 2.0,
+              "Assignments": {
+                "Type": "Constant",
+                "Prop": {
+                  "Type": "Locator",
+                  "Pattern": {
+                    "Type": "Floor",
+                    "Floor": {
+                      "Type": "Or",
+                      "Patterns": [
+                        {
+                          "Type": "BlockType",
+                          "Material": {
+                            "Solid": "Soil_Grass_Burnt"
+                          }
+                        },
+                        {
+                          "Type": "BlockType",
+                          "Material": {
+                            "Solid": "Soil_Grass_Burnt_Full"
+                          }
+                        },
+                        {
+                          "Type": "BlockType",
+                          "Material": {
+                            "Solid": "Soil_Dirt_Burnt"
+                          }
+                        }
+                      ]
+                    },
+                    "Origin": {
+                      "Type": "BlockType",
+                      "Material": {
+                        "Solid": "Empty"
+                      }
+                    }
+                  },
+                  "Scanner": {
+                    "Type": "Linear",
+                    "Axis": "Y",
+                    "Range": {
+                      "MinInclusive": -14,
+                      "MaxExclusive": 15
+                    },
+                    "AscendingOrder": false,
+                    "Scanner": {
+                      "Type": "Origin"
+                    }
+                  },
+                  "PlacementCap": 1,
+                  "Prop": {
+                    "Type": "RandomRotator",
+                    "HorizontalRotations": true,
+                    "Seed": "Bones",
+                    "Prop": {
+                      "Type": "Prefab",
+                      "WeightedPrefabPaths": [
+                        {
+                          "Path": "Prefabs/Nakasar/Halloween/Decor/BonePiles",
+                          "Weight": 1.0
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            },
+            {
+              "Weight": 2.0,
+              "Assignments": {
+                "Type": "Constant",
+                "Prop": {
+                  "Type": "Locator",
+                  "Pattern": {
+                    "Type": "Floor",
+                    "Floor": {
+                      "Type": "Or",
+                      "Patterns": [
+                        {
+                          "Type": "BlockType",
+                          "Material": {
+                            "Solid": "Soil_Grass_Burnt"
+                          }
+                        },
+                        {
+                          "Type": "BlockType",
+                          "Material": {
+                            "Solid": "Soil_Grass_Burnt_Full"
+                          }
+                        },
+                        {
+                          "Type": "BlockType",
+                          "Material": {
+                            "Solid": "Soil_Dirt_Burnt"
+                          }
+                        }
+                      ]
+                    },
+                    "Origin": {
+                      "Type": "BlockType",
+                      "Material": {
+                        "Solid": "Empty"
+                      }
+                    }
+                  },
+                  "Scanner": {
+                    "Type": "Linear",
+                    "Axis": "Y",
+                    "Range": {
+                      "MinInclusive": -14,
+                      "MaxExclusive": 15
+                    },
+                    "AscendingOrder": false,
+                    "Scanner": {
+                      "Type": "Origin"
+                    }
+                  },
+                  "PlacementCap": 1,
+                  "Prop": {
+                    "Type": "RandomRotator",
+                    "HorizontalRotations": true,
+                    "Seed": "Grave",
+                    "Prop": {
+                      "Type": "Prefab",
+                      "WeightedPrefabPaths": [
+                        {
+                          "Path": "Prefabs/Nakasar/Halloween/Decor/Graves",
+                          "Weight": 1.0
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            },
+            {
+              "Weight": 1.5,
+              "Assignments": {
+                "Type": "Constant",
+                "Prop": {
+                  "Type": "Locator",
+                  "Pattern": {
+                    "Type": "Floor",
+                    "Floor": {
+                      "Type": "Or",
+                      "Patterns": [
+                        {
+                          "Type": "BlockType",
+                          "Material": {
+                            "Solid": "Soil_Grass_Burnt"
+                          }
+                        },
+                        {
+                          "Type": "BlockType",
+                          "Material": {
+                            "Solid": "Soil_Grass_Burnt_Full"
+                          }
+                        },
+                        {
+                          "Type": "BlockType",
+                          "Material": {
+                            "Solid": "Soil_Dirt_Burnt"
+                          }
+                        }
+                      ]
+                    },
+                    "Origin": {
+                      "Type": "BlockType",
+                      "Material": {
+                        "Solid": "Empty"
+                      }
+                    }
+                  },
+                  "Scanner": {
+                    "Type": "Linear",
+                    "Axis": "Y",
+                    "Range": {
+                      "MinInclusive": -14,
+                      "MaxExclusive": 15
+                    },
+                    "AscendingOrder": false,
+                    "Scanner": {
+                      "Type": "Origin"
+                    }
+                  },
+                  "PlacementCap": 1,
+                  "Prop": {
+                    "Type": "RandomRotator",
+                    "HorizontalRotations": true,
+                    "Seed": "Nest",
+                    "Prop": {
+                      "Type": "Prefab",
+                      "WeightedPrefabPaths": [
+                        {
+                          "Path": "Prefabs/Nakasar/Halloween/Decor/SpiderNests",
+                          "Weight": 1.0
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            },
+            {
+              "Weight": 2.0,
+              "Assignments": {
+                "Type": "Constant",
+                "Prop": {
+                  "Type": "Locator",
+                  "Pattern": {
+                    "Type": "Floor",
+                    "Floor": {
+                      "Type": "Or",
+                      "Patterns": [
+                        {
+                          "Type": "BlockType",
+                          "Material": {
+                            "Solid": "Soil_Grass_Burnt"
+                          }
+                        },
+                        {
+                          "Type": "BlockType",
+                          "Material": {
+                            "Solid": "Soil_Grass_Burnt_Full"
+                          }
+                        },
+                        {
+                          "Type": "BlockType",
+                          "Material": {
+                            "Solid": "Soil_Dirt_Burnt"
+                          }
+                        }
+                      ]
+                    },
+                    "Origin": {
+                      "Type": "BlockType",
+                      "Material": {
+                        "Solid": "Empty"
+                      }
+                    }
+                  },
+                  "Scanner": {
+                    "Type": "Linear",
+                    "Axis": "Y",
+                    "Range": {
+                      "MinInclusive": -14,
+                      "MaxExclusive": 15
+                    },
+                    "AscendingOrder": false,
+                    "Scanner": {
+                      "Type": "Origin"
+                    }
+                  },
+                  "PlacementCap": 1,
+                  "Prop": {
+                    "Type": "RandomRotator",
+                    "HorizontalRotations": true,
+                    "Seed": "Pumpkins",
+                    "Prop": {
+                      "Type": "Prefab",
+                      "WeightedPrefabPaths": [
+                        {
+                          "Path": "Prefabs/Nakasar/Halloween/Decor/PumpkinPatches",
+                          "Weight": 1.0
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "Runtime": 2,
+      "ContextPrecision": "Chunk",
+      "PropDistribution": {
+        "Type": "Assigned",
+        "OverrideAllProps": true,
+        "PropDistribution": {
+          "Type": "Positions",
+          "Positions": {
+            "Type": "Mesh2D",
+            "PointsY": 81,
+            "PointGenerator": {
+              "Type": "Mesh",
+              "ScaleX": 3.0,
+              "ScaleY": 3.0,
+              "ScaleZ": 3.0,
+              "Jitter": 0.5,
+              "Seed": "Plants"
+            }
+          }
+        },
+        "Assignments": {
+          "Type": "Weighted",
+          "Seed": "PlantPick",
+          "SkipChance": 0.45,
+          "WeightedAssignments": [
+            {
+              "Weight": 5.0,
+              "Assignments": {
+                "Type": "Constant",
+                "Prop": {
+                  "Type": "Locator",
+                  "Pattern": {
+                    "Type": "Floor",
+                    "Floor": {
+                      "Type": "Or",
+                      "Patterns": [
+                        {
+                          "Type": "BlockType",
+                          "Material": {
+                            "Solid": "Soil_Grass_Burnt"
+                          }
+                        },
+                        {
+                          "Type": "BlockType",
+                          "Material": {
+                            "Solid": "Soil_Grass_Burnt_Full"
+                          }
+                        },
+                        {
+                          "Type": "BlockType",
+                          "Material": {
+                            "Solid": "Soil_Dirt_Burnt"
+                          }
+                        }
+                      ]
+                    },
+                    "Origin": {
+                      "Type": "BlockType",
+                      "Material": {
+                        "Solid": "Empty"
+                      }
+                    }
+                  },
+                  "Scanner": {
+                    "Type": "Linear",
+                    "Axis": "Y",
+                    "Range": {
+                      "MinInclusive": -14,
+                      "MaxExclusive": 15
+                    },
+                    "AscendingOrder": false,
+                    "Scanner": {
+                      "Type": "Origin"
+                    }
+                  },
+                  "PlacementCap": 1,
+                  "Prop": {
+                    "Type": "Manual",
+                    "Blocks": [
+                      {
+                        "Position": {
+                          "X": 0,
+                          "Y": 0,
+                          "Z": 0
+                        },
+                        "Material": {
+                          "Solid": "Plant_Grass_Gnarled"
+                        }
+                      }
+                    ]
+                  }
+                }
+              }
+            },
+            {
+              "Weight": 4.0,
+              "Assignments": {
+                "Type": "Constant",
+                "Prop": {
+                  "Type": "Locator",
+                  "Pattern": {
+                    "Type": "Floor",
+                    "Floor": {
+                      "Type": "Or",
+                      "Patterns": [
+                        {
+                          "Type": "BlockType",
+                          "Material": {
+                            "Solid": "Soil_Grass_Burnt"
+                          }
+                        },
+                        {
+                          "Type": "BlockType",
+                          "Material": {
+                            "Solid": "Soil_Grass_Burnt_Full"
+                          }
+                        },
+                        {
+                          "Type": "BlockType",
+                          "Material": {
+                            "Solid": "Soil_Dirt_Burnt"
+                          }
+                        }
+                      ]
+                    },
+                    "Origin": {
+                      "Type": "BlockType",
+                      "Material": {
+                        "Solid": "Empty"
+                      }
+                    }
+                  },
+                  "Scanner": {
+                    "Type": "Linear",
+                    "Axis": "Y",
+                    "Range": {
+                      "MinInclusive": -14,
+                      "MaxExclusive": 15
+                    },
+                    "AscendingOrder": false,
+                    "Scanner": {
+                      "Type": "Origin"
+                    }
+                  },
+                  "PlacementCap": 1,
+                  "Prop": {
+                    "Type": "Manual",
+                    "Blocks": [
+                      {
+                        "Position": {
+                          "X": 0,
+                          "Y": 0,
+                          "Z": 0
+                        },
+                        "Material": {
+                          "Solid": "Plant_Grass_Gnarled_Short"
+                        }
+                      }
+                    ]
+                  }
+                }
+              }
+            },
+            {
+              "Weight": 2.0,
+              "Assignments": {
+                "Type": "Constant",
+                "Prop": {
+                  "Type": "Locator",
+                  "Pattern": {
+                    "Type": "Floor",
+                    "Floor": {
+                      "Type": "Or",
+                      "Patterns": [
+                        {
+                          "Type": "BlockType",
+                          "Material": {
+                            "Solid": "Soil_Grass_Burnt"
+                          }
+                        },
+                        {
+                          "Type": "BlockType",
+                          "Material": {
+                            "Solid": "Soil_Grass_Burnt_Full"
+                          }
+                        },
+                        {
+                          "Type": "BlockType",
+                          "Material": {
+                            "Solid": "Soil_Dirt_Burnt"
+                          }
+                        }
+                      ]
+                    },
+                    "Origin": {
+                      "Type": "BlockType",
+                      "Material": {
+                        "Solid": "Empty"
+                      }
+                    }
+                  },
+                  "Scanner": {
+                    "Type": "Linear",
+                    "Axis": "Y",
+                    "Range": {
+                      "MinInclusive": -14,
+                      "MaxExclusive": 15
+                    },
+                    "AscendingOrder": false,
+                    "Scanner": {
+                      "Type": "Origin"
+                    }
+                  },
+                  "PlacementCap": 1,
+                  "Prop": {
+                    "Type": "Manual",
+                    "Blocks": [
+                      {
+                        "Position": {
+                          "X": 0,
+                          "Y": 0,
+                          "Z": 0
+                        },
+                        "Material": {
+                          "Solid": "Plant_Grass_Gnarled_Tall"
+                        }
+                      }
+                    ]
+                  }
+                }
+              }
+            },
+            {
+              "Weight": 1.5,
+              "Assignments": {
+                "Type": "Constant",
+                "Prop": {
+                  "Type": "Locator",
+                  "Pattern": {
+                    "Type": "Floor",
+                    "Floor": {
+                      "Type": "Or",
+                      "Patterns": [
+                        {
+                          "Type": "BlockType",
+                          "Material": {
+                            "Solid": "Soil_Grass_Burnt"
+                          }
+                        },
+                        {
+                          "Type": "BlockType",
+                          "Material": {
+                            "Solid": "Soil_Grass_Burnt_Full"
+                          }
+                        },
+                        {
+                          "Type": "BlockType",
+                          "Material": {
+                            "Solid": "Soil_Dirt_Burnt"
+                          }
+                        }
+                      ]
+                    },
+                    "Origin": {
+                      "Type": "BlockType",
+                      "Material": {
+                        "Solid": "Empty"
+                      }
+                    }
+                  },
+                  "Scanner": {
+                    "Type": "Linear",
+                    "Axis": "Y",
+                    "Range": {
+                      "MinInclusive": -14,
+                      "MaxExclusive": 15
+                    },
+                    "AscendingOrder": false,
+                    "Scanner": {
+                      "Type": "Origin"
+                    }
+                  },
+                  "PlacementCap": 1,
+                  "Prop": {
+                    "Type": "Manual",
+                    "Blocks": [
+                      {
+                        "Position": {
+                          "X": 0,
+                          "Y": 0,
+                          "Z": 0
+                        },
+                        "Material": {
+                          "Solid": "Plant_Bush_Dead"
+                        }
+                      }
+                    ]
+                  }
+                }
+              }
+            },
+            {
+              "Weight": 0.7,
+              "Assignments": {
+                "Type": "Constant",
+                "Prop": {
+                  "Type": "Locator",
+                  "Pattern": {
+                    "Type": "Floor",
+                    "Floor": {
+                      "Type": "Or",
+                      "Patterns": [
+                        {
+                          "Type": "BlockType",
+                          "Material": {
+                            "Solid": "Soil_Grass_Burnt"
+                          }
+                        },
+                        {
+                          "Type": "BlockType",
+                          "Material": {
+                            "Solid": "Soil_Grass_Burnt_Full"
+                          }
+                        },
+                        {
+                          "Type": "BlockType",
+                          "Material": {
+                            "Solid": "Soil_Dirt_Burnt"
+                          }
+                        }
+                      ]
+                    },
+                    "Origin": {
+                      "Type": "BlockType",
+                      "Material": {
+                        "Solid": "Empty"
+                      }
+                    }
+                  },
+                  "Scanner": {
+                    "Type": "Linear",
+                    "Axis": "Y",
+                    "Range": {
+                      "MinInclusive": -14,
+                      "MaxExclusive": 15
+                    },
+                    "AscendingOrder": false,
+                    "Scanner": {
+                      "Type": "Origin"
+                    }
+                  },
+                  "PlacementCap": 1,
+                  "Prop": {
+                    "Type": "Manual",
+                    "Blocks": [
+                      {
+                        "Position": {
+                          "X": 0,
+                          "Y": 0,
+                          "Z": 0
+                        },
+                        "Material": {
+                          "Solid": "Plant_Bush_Dead_Tall"
+                        }
+                      }
+                    ]
+                  }
+                }
+              }
+            },
+            {
+              "Weight": 0.4,
+              "Assignments": {
+                "Type": "Constant",
+                "Prop": {
+                  "Type": "Locator",
+                  "Pattern": {
+                    "Type": "Floor",
+                    "Floor": {
+                      "Type": "Or",
+                      "Patterns": [
+                        {
+                          "Type": "BlockType",
+                          "Material": {
+                            "Solid": "Soil_Grass_Burnt"
+                          }
+                        },
+                        {
+                          "Type": "BlockType",
+                          "Material": {
+                            "Solid": "Soil_Grass_Burnt_Full"
+                          }
+                        },
+                        {
+                          "Type": "BlockType",
+                          "Material": {
+                            "Solid": "Soil_Dirt_Burnt"
+                          }
+                        }
+                      ]
+                    },
+                    "Origin": {
+                      "Type": "BlockType",
+                      "Material": {
+                        "Solid": "Empty"
+                      }
+                    }
+                  },
+                  "Scanner": {
+                    "Type": "Linear",
+                    "Axis": "Y",
+                    "Range": {
+                      "MinInclusive": -14,
+                      "MaxExclusive": 15
+                    },
+                    "AscendingOrder": false,
+                    "Scanner": {
+                      "Type": "Origin"
+                    }
+                  },
+                  "PlacementCap": 1,
+                  "Prop": {
+                    "Type": "Manual",
+                    "Blocks": [
+                      {
+                        "Position": {
+                          "X": 0,
+                          "Y": 0,
+                          "Z": 0
+                        },
+                        "Material": {
+                          "Solid": "Plant_Bush_Dead_Twisted"
+                        }
+                      }
+                    ]
+                  }
+                }
+              }
+            },
+            {
+              "Weight": 0.3,
+              "Assignments": {
+                "Type": "Constant",
+                "Prop": {
+                  "Type": "Locator",
+                  "Pattern": {
+                    "Type": "Floor",
+                    "Floor": {
+                      "Type": "Or",
+                      "Patterns": [
+                        {
+                          "Type": "BlockType",
+                          "Material": {
+                            "Solid": "Soil_Grass_Burnt"
+                          }
+                        },
+                        {
+                          "Type": "BlockType",
+                          "Material": {
+                            "Solid": "Soil_Grass_Burnt_Full"
+                          }
+                        },
+                        {
+                          "Type": "BlockType",
+                          "Material": {
+                            "Solid": "Soil_Dirt_Burnt"
+                          }
+                        }
+                      ]
+                    },
+                    "Origin": {
+                      "Type": "BlockType",
+                      "Material": {
+                        "Solid": "Empty"
+                      }
+                    }
+                  },
+                  "Scanner": {
+                    "Type": "Linear",
+                    "Axis": "Y",
+                    "Range": {
+                      "MinInclusive": -14,
+                      "MaxExclusive": 15
+                    },
+                    "AscendingOrder": false,
+                    "Scanner": {
+                      "Type": "Origin"
+                    }
+                  },
+                  "PlacementCap": 1,
+                  "Prop": {
+                    "Type": "Manual",
+                    "Blocks": [
+                      {
+                        "Position": {
+                          "X": 0,
+                          "Y": 0,
+                          "Z": 0
+                        },
+                        "Material": {
+                          "Solid": "Plant_Bramble_Dead_Twisted"
+                        }
+                      }
+                    ]
+                  }
+                }
+              }
+            },
+            {
+              "Weight": 1.0,
+              "Assignments": {
+                "Type": "Constant",
+                "Prop": {
+                  "Type": "Locator",
+                  "Pattern": {
+                    "Type": "Floor",
+                    "Floor": {
+                      "Type": "Or",
+                      "Patterns": [
+                        {
+                          "Type": "BlockType",
+                          "Material": {
+                            "Solid": "Soil_Grass_Burnt"
+                          }
+                        },
+                        {
+                          "Type": "BlockType",
+                          "Material": {
+                            "Solid": "Soil_Grass_Burnt_Full"
+                          }
+                        },
+                        {
+                          "Type": "BlockType",
+                          "Material": {
+                            "Solid": "Soil_Dirt_Burnt"
+                          }
+                        }
+                      ]
+                    },
+                    "Origin": {
+                      "Type": "BlockType",
+                      "Material": {
+                        "Solid": "Empty"
+                      }
+                    }
+                  },
+                  "Scanner": {
+                    "Type": "Linear",
+                    "Axis": "Y",
+                    "Range": {
+                      "MinInclusive": -14,
+                      "MaxExclusive": 15
+                    },
+                    "AscendingOrder": false,
+                    "Scanner": {
+                      "Type": "Origin"
+                    }
+                  },
+                  "PlacementCap": 1,
+                  "Prop": {
+                    "Type": "Manual",
+                    "Blocks": [
+                      {
+                        "Position": {
+                          "X": 0,
+                          "Y": 0,
+                          "Z": 0
+                        },
+                        "Material": {
+                          "Solid": "Plant_Leaves_Dead"
+                        }
+                      }
+                    ]
+                  }
+                }
+              }
+            },
+            {
+              "Weight": 0.15,
+              "Assignments": {
+                "Type": "Constant",
+                "Prop": {
+                  "Type": "Locator",
+                  "Pattern": {
+                    "Type": "Floor",
+                    "Floor": {
+                      "Type": "Or",
+                      "Patterns": [
+                        {
+                          "Type": "BlockType",
+                          "Material": {
+                            "Solid": "Soil_Grass_Burnt"
+                          }
+                        },
+                        {
+                          "Type": "BlockType",
+                          "Material": {
+                            "Solid": "Soil_Grass_Burnt_Full"
+                          }
+                        },
+                        {
+                          "Type": "BlockType",
+                          "Material": {
+                            "Solid": "Soil_Dirt_Burnt"
+                          }
+                        }
+                      ]
+                    },
+                    "Origin": {
+                      "Type": "BlockType",
+                      "Material": {
+                        "Solid": "Empty"
+                      }
+                    }
+                  },
+                  "Scanner": {
+                    "Type": "Linear",
+                    "Axis": "Y",
+                    "Range": {
+                      "MinInclusive": -14,
+                      "MaxExclusive": 15
+                    },
+                    "AscendingOrder": false,
+                    "Scanner": {
+                      "Type": "Origin"
+                    }
+                  },
+                  "PlacementCap": 1,
+                  "Prop": {
+                    "Type": "Manual",
+                    "Blocks": [
+                      {
+                        "Position": {
+                          "X": 0,
+                          "Y": 0,
+                          "Z": 0
+                        },
+                        "Material": {
+                          "Solid": "Plant_Crop_Pumpkin_StageFinal"
+                        }
+                      }
+                    ]
+                  }
+                }
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "EnvironmentProvider": {
+    "Type": "DensityDelimited",
+    "Density": {
+      "Type": "PositionsCellNoise",
+      "Positions": {
+        "Type": "Union",
+        "Positions": [
+          {
+            "Type": "Imported",
+            "Name": "Nakasar_Halloween_Structure_Positions"
+          },
+          {
+            "Type": "List",
+            "Positions": [
+              {
+                "X": 0,
+                "Y": 81,
+                "Z": -190
+              }
+            ]
+          }
+        ]
+      },
+      "ReturnType": {
+        "Type": "Curve",
+        "Curve": {
+          "Type": "Manual",
+          "Points": [
+            {
+              "In": 0,
+              "Out": 0
+            },
+            {
+              "In": 60,
+              "Out": 60
+            }
+          ]
+        }
+      },
+      "DistanceFunction": {
+        "Type": "Euclidean"
+      },
+      "MaxDistance": 60.0
+    },
+    "Delimiters": [
+      {
+        "Range": {
+          "MinInclusive": 0.0,
+          "MaxExclusive": 45.0
+        },
+        "Environment": {
+          "Type": "Constant",
+          "Environment": "Nakasar_Env_Halloween_Haunted"
+        }
+      },
+      {
+        "Range": {
+          "MinInclusive": 45.0,
+          "MaxExclusive": 1000000000000.0
+        },
+        "Environment": {
+          "Type": "Constant",
+          "Environment": "Nakasar_Env_Halloween"
+        }
+      }
+    ]
+  },
+  "TintProvider": {
+    "Type": "Constant",
+    "Color": "#7a6534"
+  }
+}

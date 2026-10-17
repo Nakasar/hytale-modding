@@ -1,0 +1,29 @@
+{
+  "version": 8,
+  "blockIdVersion": 8,
+  "anchorX": 0,
+  "anchorY": 0,
+  "anchorZ": 0,
+  "blocks": [
+    {"x":0,"y":0,"z":-3,"name":"Deco_SpiderWeb_Flat"},
+    {"x":-1,"y":0,"z":-2,"name":"Deco_Bone_Pile"},
+    {"x":0,"y":0,"z":-2,"name":"Deco_SpiderWeb_Flat"},
+    {"x":1,"y":0,"z":-2,"name":"Deco_SpiderWeb_Flat"},
+    {"x":-3,"y":0,"z":-1,"name":"Deco_SpiderWeb_Flat"},
+    {"x":-2,"y":0,"z":-1,"name":"Deco_SpiderWeb_Flat"},
+    {"x":3,"y":0,"z":-1,"name":"Deco_SpiderWeb_Flat"},
+    {"x":-1,"y":0,"z":0,"name":"Deco_SpiderWeb_Flat"},
+    {"x":0,"y":0,"z":0,"name":"Cocoon_Spider_Cave"},
+    {"x":1,"y":0,"z":0,"name":"Deco_SpiderWeb_Flat"},
+    {"x":2,"y":0,"z":0,"name":"Deco_SpiderWeb_Flat"},
+    {"x":3,"y":0,"z":0,"name":"Deco_SpiderWeb_Flat"},
+    {"x":-3,"y":0,"z":1,"name":"Deco_SpiderWeb_Flat"},
+    {"x":0,"y":0,"z":1,"name":"Deco_SpiderWeb_Flat"},
+    {"x":-1,"y":0,"z":2,"name":"Deco_SpiderWeb_Flat"},
+    {"x":0,"y":0,"z":2,"name":"Deco_SpiderWeb_Flat"},
+    {"x":2,"y":0,"z":2,"name":"Cocoon_Spider_Cave"},
+    {"x":-1,"y":0,"z":3,"name":"Deco_SpiderWeb_Flat"},
+    {"x":0,"y":0,"z":3,"name":"Deco_SpiderWeb_Flat"},
+    {"x":1,"y":0,"z":3,"name":"Deco_SpiderWeb_Flat"}
+  ]
+}

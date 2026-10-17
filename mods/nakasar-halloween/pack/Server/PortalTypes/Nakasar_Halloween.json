@@ -1,0 +1,21 @@
+{
+  "InstanceId": "Nakasar_Halloween_Fragment",
+  "Description": {
+    "DisplayName": "nakasar_halloween.portal.name",
+    "FlavorText": "nakasar_halloween.portal.flavor",
+    "ThemeColor": "#ff7518",
+    "DescriptionTags": [
+      { "TranslationKey": "nakasar_halloween.portal.tag.undead", "Color": "#9b59b6" },
+      { "TranslationKey": "nakasar_halloween.portal.tag.vampire", "Color": "#c0392b" },
+      { "TranslationKey": "nakasar_halloween.portal.tag.night", "Color": "#ff7518" }
+    ],
+    "Objectives": [
+      "nakasar_halloween.portal.objective.count",
+      "nakasar_halloween.portal.objective.crypts",
+      "nakasar_halloween.portal.objective.pumpkins"
+    ]
+  },
+  "TimeLimitSeconds": 1800,
+  "CloseWhenEmpty": true,
+  "VoidInvasionEnabled": false
+}

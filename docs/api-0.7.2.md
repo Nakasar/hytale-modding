@@ -106,3 +106,25 @@ Le JSON l'utilise ensuite avec `"Type": "Nakasar_MyInteraction"`.
   `BLOCK_NORMAL`…), `HitboxType` (défaut `Full`), `Gathering.Breaking{GatherType, ItemId, Quantity, DropList}`.
 - `.blockymodel` = JSON : `nodes[]` avec `position`, `orientation` (quaternion), `shape{type, offset, size,
   stretch, textureLayout, settings}`, `children[]` (`BlockyModelBoundsParser`).
+
+## Portails et instances (fragment Halloween)
+
+- L'Ancienne passerelle (`Portal_Device`) accepte tout objet qui a un bloc `PortalKey`
+  (`PortalType`, `TimeLimitSeconds`, `AllowedEntryCount`). Le `PortalType`
+  (`Server/PortalTypes/*.json`) donne `InstanceId`, `Description` (clés de traduction, `ThemeColor`,
+  `DescriptionTags`, `Objectives`), `TimeLimitSeconds`, `CloseWhenEmpty`, `VoidInvasionEnabled`,
+  `Spawn`, `GameplayConfig` (défaut `Portal`).
+- Une instance est un dossier `Server/Instances/<id>/instance.bson` : un `WorldConfig` écrit en JSON.
+  Le générateur moderne s'écrit `"WorldGen": { "Type": "HytaleGenerator", "WorldStructure": "<id>" }`.
+- Les assets du générateur vivent dans `Server/HytaleGenerator/{Biomes,WorldStructures,...}`. Les types
+  (`Density`, `Props`, `Positions`...) sont enregistrés dans l'initialiseur statique de
+  `builtin.hytalegenerator.assets.AssetManager`. Un `ExportAs` déclare un nom global réutilisable
+  par `Imported`.
+- Un prop `Prefab` prend des chemins relatifs à `Server/` (`Prefabs/...`), fichier ou dossier.
+- Format prefab JSON : `version` 8, `blocks[{x,y,z,name,rotation}]`, nom avec préfixe de
+  probabilité possible (`70%Bloc`), rotation = roll×16 + pitch×4 + yaw.
+- `Environment` exige `WeatherForecasts` pour les 24 heures et `WeatherForecastSeed`.
+- Couleurs : `#rrggbb` ou `#rrggbbaa` (aussi `rgb(...)`, `rgba(...)`).
+- Pour décoder un asset hors serveur (`tools/ValidateAssets.java`) : `Options.parse`, un
+  `HytaleServer` factice qui porte un `EventBus`, l'initialisation d'`AssetRegistryLoader`, et un
+  `AssetExtraInfo` pour les codecs `ContainedAssetCodec`.

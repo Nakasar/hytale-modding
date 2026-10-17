@@ -105,3 +105,47 @@ L'onglet est `Weapon_Sword` : l'établi vanilla n'a que `Weapon_Sword`, `Weapon_
 ### Réglages
 
 Toutes les valeurs (dégâts, portées, durées, forces) sont dans les JSON cités ; aucun code.
+
+## nakasar-halloween (pack d'assets)
+
+Fragment d'Orbis ouvert depuis l'Ancienne passerelle vanilla (`Portal_Device`) avec la clé
+`PortalKey_Nakasar_Halloween`. Chaîne : clé (`PortalKey.PortalType`) → `PortalTypes/Nakasar_Halloween`
+(textes, objectifs, 30 min) → `Instances/Nakasar_Halloween_Fragment/instance.bson` (générateur
+`HytaleGenerator`, météo forcée, début à 20 h) → structure de monde `Nakasar_Halloween` → biome
+`Nakasar_Halloween_Barrens`.
+
+### Génération (`tools/generate_worldgen.py`)
+
+- **Terrain** : plaine vallonnée autour de y = 81 (deux bruits simplex), sol d'herbe et de terre
+  brûlées, couches de terre, gravier puis pierre / ardoise / schiste.
+- **Aplanissement** : les positions des structures sont exportées (`ExportAs`) et réutilisées par le
+  terrain : le relief tombe à zéro dans un rayon de 34 blocs autour de chaque structure, pour qu'elle
+  repose à plat.
+- **Structures aléatoires** : une maille de 150 blocs (avec jitter) tire une structure par cellule,
+  à plus de 110 blocs du point d'apparition et du château du comte. Poids : crypte 3, champ de
+  citrouilles 3, château hanté 2, cimetière hanté / araignées / morts-vivants 1,5 chacun.
+- **Château du comte** : toujours à 190 blocs au nord du point d'apparition (objectif du portail).
+- **Décor** : arbres morts et pendus (maille de 13), tas d'os, tombes isolées, nids d'araignées,
+  citrouilles (maille de 29), plantes mortes et toiles (maille de 3).
+- **Environnements** : `Nakasar_Env_Halloween_Haunted` à moins de 45 blocs d'une structure (PNJ plus
+  dangereux, densité plus forte), `Nakasar_Env_Halloween` ailleurs.
+
+### Prefabs (`tools/generate_prefabs.py`, 35 fichiers)
+
+| Dossier | Nombre | Contenu |
+|---------|--------|---------|
+| `Crypts` | 3 | Mausolée (pierre, ardoise, schiste) et salle funéraire enterrée : cercueils, ossements, toiles |
+| `HauntedCastles` | 2 | Château en ruine 33×33 (pierre ou ardoise) : tours, courtines, donjon (table, lustre, chambre), puits |
+| `DraculaCastle` | 1 | Château du comte 41×41 en basalte : flèches, salle du trône au tapis rouge, crypte sous le donjon, roseraie de sang, pendus |
+| `Cemeteries/{Haunted,Spiders,Undead}` | 2 × 3 | Cimetière abandonné : hanté (bougies, citrouilles effrayantes, lanterne), envahi d'araignées (toiles, cocons) ou de morts-vivants (tombes ouvertes, ossements) |
+| `PumpkinFields` | 3 | Champ de citrouilles clôturé de bois mort, avec épouvantail et citrouilles-lanternes |
+| `Trees` | 8 | Arbres morts et arbres de pendus |
+| `Decor/*` | 4 × 3 | Tas d'os, tombes isolées, nids d'araignées, carrés de citrouilles |
+
+Les ruines varient d'une instance à l'autre grâce aux préfixes de probabilité (`70%Bloc`).
+
+### PNJ
+
+- `Nakasar_Halloween_Undead` (tout le fragment) : squelettes, archers, zombies, araignées, chauves-souris, corbeaux.
+- `Nakasar_Halloween_Haunted` (près des structures) : spectres, goules, soldats et archimages squelettes,
+  zombies aberrants, araignées des cavernes, élites et loups-garous (rares).

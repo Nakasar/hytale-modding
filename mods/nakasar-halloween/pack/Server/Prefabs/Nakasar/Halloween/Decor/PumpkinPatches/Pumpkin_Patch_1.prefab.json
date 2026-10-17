@@ -1,0 +1,16 @@
+{
+  "version": 8,
+  "blockIdVersion": 8,
+  "anchorX": 0,
+  "anchorY": 0,
+  "anchorZ": 0,
+  "blocks": [
+    {"x":2,"y":0,"z":-1,"name":"Plant_Crop_Pumpkin_StageFinal"},
+    {"x":1,"y":0,"z":0,"name":"Plant_Crop_Pumpkin_StageFinal","rotation":1},
+    {"x":-1,"y":0,"z":1,"name":"Plant_Crop_Pumpkin_StageFinal"},
+    {"x":2,"y":0,"z":1,"name":"Plant_Crop_Pumpkin_StageFinal","rotation":1},
+    {"x":-2,"y":0,"z":2,"name":"Plant_Crop_Pumpkin_StageFinal","rotation":2},
+    {"x":0,"y":0,"z":2,"name":"Plant_Crop_Pumpkin_StageFinal","rotation":1},
+    {"x":1,"y":0,"z":2,"name":"Plant_Crop_Pumpkin_StageFinal"}
+  ]
+}
