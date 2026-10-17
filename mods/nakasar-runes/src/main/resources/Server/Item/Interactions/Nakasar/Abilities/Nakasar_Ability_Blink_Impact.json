@@ -1,0 +1,12 @@
+{
+  "Type": "TriggerAbilityFX",
+  "SystemId": "Explosion_Big",
+  "SoundEventId": "SFX_Fireball_Death",
+  "Scale": 0.5,
+  "Color": "#b48cff",
+  "Next": {
+    "Type": "Nakasar_TeleportCasterToImpact",
+    "BackOffset": 0.6,
+    "VerticalOffset": 0.05
+  }
+}

@@ -1,0 +1,5 @@
+{
+  "RequireNewClick": true,
+  "Cooldown": { "Cooldown": 1.0 },
+  "Interactions": ["Nakasar_Spear_Signature"]
+}

@@ -1,0 +1,23 @@
+{
+  "TranslationProperties": {
+    "Name": "nakasar_runes.items.Rune_Nakasar_SpectralChains.name",
+    "Description": "nakasar_runes.items.Rune_Nakasar_SpectralChains.description"
+  },
+  "Icon": "Icons/ItemsGenerated/Rune_Fireball.png",
+  "Model": "Items/Runes/Rune_Ability.blockymodel",
+  "Texture": "Items/Runes/Rune_Textures/Rune_Ability_Fireball.png",
+  "Quality": "Epic",
+  "MaxStack": 1,
+  "Ability": {
+    "Slot": "Core",
+    "Cooldown": 10,
+    "Cost": 40,
+    "CostType": "Mana",
+    "AbilityKeywords": ["Projectile", "Duration", "Nakasar_Control"],
+    "Attributes": {
+      "Duration": 3,
+      "Speed": 1
+    },
+    "Cast": "Root_Nakasar_Ability_SpectralChains"
+  }
+}

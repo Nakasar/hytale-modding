@@ -1,0 +1,29 @@
+{
+  "Type": "StatsCondition",
+  "UseAbilityCost": true,
+  "Failed": "Ability_Cast_Fail",
+  "Next": {
+    "Type": "Parallel",
+    "Interactions": [
+      { "Interactions": [
+          {
+            "Type": "Simple",
+            "RunTime": 0.2,
+            "Effects": {
+              "ItemAnimationId": "SwingDown",
+              "LocalSoundEventId": "SFX_Spear_Throw_Charge_Local"
+            }
+          },
+          {
+            "Type": "LaunchAbilityProjectile",
+            "Projectile": "Projectile_Config_Nakasar_Blink",
+            "Scale": 0.8,
+            "SpeedAttribute": "Speed",
+            "Lifetime": 1.5
+          }
+      ] },
+      { "Interactions": [ { "Type": "TriggerCooldown", "UseAbilityCooldown": true } ] },
+      { "Interactions": [ { "Type": "ChangeStat", "UseAbilityCost": true } ] }
+    ]
+  }
+}

@@ -1,0 +1,19 @@
+{
+  "Parent": "DamageEntityParent_Hit_Interrupt",
+  "DamageCalculator": {
+    "BaseDamage": { "Physical": 36 },
+    "Class": "Signature",
+    "RandomPercentageModifier": 0.15
+  },
+  "DamageEffects": {
+    "WorldSoundEventId": "SFX_Axe_Special_Impact",
+    "LocalSoundEventId": "SFX_Axe_Special_Impact",
+    "WorldParticles": [ { "SystemId": "Explosion_Big" } ],
+    "Knockback": {
+      "Type": "Point",
+      "Force": 14,
+      "VelocityY": 0.5,
+      "VelocityType": "Set"
+    }
+  }
+}

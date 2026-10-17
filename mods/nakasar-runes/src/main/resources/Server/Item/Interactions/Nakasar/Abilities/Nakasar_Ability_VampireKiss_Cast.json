@@ -1,0 +1,39 @@
+{
+  "Type": "StatsCondition",
+  "UseAbilityCost": true,
+  "Failed": "Ability_Cast_Fail",
+  "Next": {
+    "Type": "Parallel",
+    "Interactions": [
+      { "Interactions": [
+          {
+            "Type": "Simple",
+            "RunTime": 0.25,
+            "Effects": {
+              "ItemAnimationId": "SwingRight",
+              "WorldSoundEventId": "SFX_Light_Melee_T2_Swing"
+            }
+          },
+          {
+            "Type": "Selector",
+            "RunTime": 0.1,
+            "Selector": {
+              "Id": "Horizontal",
+              "Direction": "ToRight",
+              "TestLineOfSight": true,
+              "ExtendTop": 0.5,
+              "ExtendBottom": 0.5,
+              "StartDistance": 0.1,
+              "EndDistance": 2.8,
+              "Length": 70,
+              "RollOffset": 30,
+              "YawStartOffset": -20
+            },
+            "HitEntity": { "Interactions": ["Nakasar_Ability_VampireKiss_Hit"] }
+          }
+      ] },
+      { "Interactions": [ { "Type": "TriggerCooldown", "UseAbilityCooldown": true } ] },
+      { "Interactions": [ { "Type": "ChangeStat", "UseAbilityCost": true } ] }
+    ]
+  }
+}

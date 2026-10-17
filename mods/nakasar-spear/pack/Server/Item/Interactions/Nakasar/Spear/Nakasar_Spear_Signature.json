@@ -1,0 +1,47 @@
+{
+  "Type": "StatsCondition",
+  "Costs": { "SignatureEnergy": 100 },
+  "ValueType": "Percent",
+  "Failed": {
+    "Type": "Simple",
+    "RunTime": 0.1,
+    "Effects": { "LocalSoundEventId": "SFX_Creative_Play_Error" }
+  },
+  "Next": {
+    "Type": "Serial",
+    "Interactions": [
+      {
+        "Type": "ChangeStat",
+        "StatModifiers": { "SignatureEnergy": -100 },
+        "ValueType": "Percent"
+      },
+      {
+        "Type": "Simple",
+        "RunTime": 0.2,
+        "Effects": {
+          "ItemAnimationId": "StabDashCharging",
+          "WorldSoundEventId": "SFX_Spear_Throw_Charge"
+        }
+      },
+      {
+        "Type": "ApplyForce",
+        "Direction": { "X": 0, "Y": 0.05, "Z": -1 },
+        "Force": 12,
+        "AdjustVertical": false,
+        "WaitForGround": false,
+        "ChangeVelocityType": "Set"
+      },
+      {
+        "Type": "Repeat",
+        "Repeat": 4,
+        "HorizontalSpeedMultiplier": 0.5,
+        "ForkInteractions": {
+          "Interactions": [ "Nakasar_Spear_Signature_Rush_Stab" ]
+        }
+      },
+      { "Type": "Simple", "RunTime": 0.1 },
+      "Nakasar_Spear_Signature_Spin",
+      { "Type": "CancelChain", "ChainId": "Nakasar_Spear_Combo" }
+    ]
+  }
+}

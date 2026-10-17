@@ -1,0 +1,45 @@
+{
+  "Type": "Simple",
+  "RunTime": 0.18,
+  "Effects": {
+    "ItemAnimationId": "SwingDown",
+    "WorldSoundEventId": "SFX_Axe_Special_Swing"
+  },
+  "Next": {
+    "Type": "Serial",
+    "Interactions": [
+      {
+        "Type": "ApplyForce",
+        "Direction": { "X": 0, "Y": 0, "Z": -1 },
+        "Force": 6,
+        "AdjustVertical": false,
+        "WaitForGround": false,
+        "ChangeVelocityType": "Set"
+      },
+      {
+        "Type": "Selector",
+        "RunTime": 0.12,
+        "Selector": {
+          "Id": "Stab",
+          "TestLineOfSight": true,
+          "ExtendTop": 0.5,
+          "ExtendBottom": 0.5,
+          "ExtendLeft": 0.5,
+          "ExtendRight": 0.5,
+          "StartDistance": 0,
+          "EndDistance": 3.8
+        },
+        "HitEntity": {
+          "Interactions": [ {
+            "Type": "Replace",
+            "Var": "Thrust_Damage",
+            "DefaultOk": true,
+            "DefaultValue": { "Interactions": ["Nakasar_Spear_Thrust_Damage"] }
+          } ]
+        }
+      },
+      { "Type": "Simple", "RunTime": 0.35 },
+      { "Type": "CancelChain", "ChainId": "Nakasar_Spear_Combo" }
+    ]
+  }
+}

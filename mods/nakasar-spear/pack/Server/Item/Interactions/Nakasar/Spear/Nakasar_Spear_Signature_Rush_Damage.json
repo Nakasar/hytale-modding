@@ -1,0 +1,19 @@
+{
+  "Parent": "DamageEntityParent",
+  "DamageCalculator": {
+    "BaseDamage": { "Physical": 14 },
+    "Class": "Signature",
+    "RandomPercentageModifier": 0.1
+  },
+  "DamageEffects": {
+    "WorldSoundEventId": "SFX_Sword_T2_Impact",
+    "LocalSoundEventId": "SFX_Sword_T2_Impact",
+    "WorldParticles": [ { "SystemId": "Impact_Sword_Basic_Stronk" } ],
+    "Knockback": {
+      "Type": "Force",
+      "Direction": { "X": 0, "Y": 0, "Z": -1 },
+      "Force": 1.5,
+      "VelocityType": "Set"
+    }
+  }
+}

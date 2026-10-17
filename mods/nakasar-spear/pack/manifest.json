@@ -1,0 +1,9 @@
+{
+  "Group": "${group}",
+  "Name": "Spear",
+  "Version": "${version}",
+  "Description": "Une lance de fer à deux mains : enchaînement latéral / latéral / estoc, coup circulaire chargé et compétence ultime (ruée d'estocs puis coup circulaire).",
+  "Authors": [ { "Name": "${author}" } ],
+  "IncludesAssetPack": true,
+  "ServerVersion": "${serverRange}"
+}

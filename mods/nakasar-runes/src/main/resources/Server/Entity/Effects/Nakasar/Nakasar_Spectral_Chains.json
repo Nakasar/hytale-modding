@@ -1,0 +1,22 @@
+{
+  "Duration": 3,
+  "OverlapBehavior": "Overwrite",
+  "ApplicationEffects": {
+    "EntityTopTint": "#9fe0ff",
+    "EntityBottomTint": "#3c6cff",
+    "KnockbackMultiplier": 0,
+    "Particles": [
+      {
+        "SystemId": "Stunned",
+        "TargetEntityPart": "Entity",
+        "TargetNodeName": "Head"
+      }
+    ],
+    "MovementEffects": {
+      "DisableAll": true
+    },
+    "AbilityEffects": {
+      "Disabled": ["Primary", "Secondary", "Ability1", "Ability2", "Ability3", "Ability4", "Dodge"]
+    }
+  }
+}

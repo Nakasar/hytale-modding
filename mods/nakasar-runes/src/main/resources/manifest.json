@@ -1,0 +1,15 @@
+{
+  "Group": "${group}",
+  "Name": "Runes",
+  "Version": "${version}",
+  "Description": "Quatre runes d'abilities : Baiser du Vampire, Domination, Teleportation, Chaines spectrales.",
+  "Authors": [
+    { "Name": "${author}" }
+  ],
+  "Main": "dev.nakasar.hytale.runes.RunesPlugin",
+  "IncludesAssetPack": true,
+  "ServerVersion": "${serverRange}",
+  "Dependencies": {
+    "Hytale:Abilities": "*"
+  }
+}

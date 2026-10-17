@@ -1,0 +1,22 @@
+{
+  "Parent": "DamageEntityParent_Hit_Interrupt",
+  "DamageCalculator": {
+    "BaseDamage": { "Physical": 20 },
+    "Class": "Light",
+    "RandomPercentageModifier": 0.1
+  },
+  "DamageEffects": {
+    "WorldSoundEventId": "SFX_Axe_Special_Impact",
+    "LocalSoundEventId": "SFX_Axe_Special_Impact",
+    "WorldParticles": [ { "SystemId": "Impact_Sword_Basic_Stronk" } ],
+    "Knockback": {
+      "Type": "Force",
+      "Direction": { "X": 0, "Y": 0.4, "Z": -2.5 },
+      "Force": 7,
+      "VelocityType": "Set"
+    }
+  },
+  "EntityStatsOnHit": [
+    { "EntityStatId": "SignatureEnergy", "Amount": 4 }
+  ]
+}

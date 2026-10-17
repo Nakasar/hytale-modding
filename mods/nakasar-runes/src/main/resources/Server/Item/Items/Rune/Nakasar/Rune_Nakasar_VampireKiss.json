@@ -1,0 +1,22 @@
+{
+  "TranslationProperties": {
+    "Name": "nakasar_runes.items.Rune_Nakasar_VampireKiss.name",
+    "Description": "nakasar_runes.items.Rune_Nakasar_VampireKiss.description"
+  },
+  "Icon": "Icons/ItemsGenerated/Rune_Fireball.png",
+  "Model": "Items/Runes/Rune_Ability.blockymodel",
+  "Texture": "Items/Runes/Rune_Textures/Rune_Ability_Fireball.png",
+  "Quality": "Rare",
+  "MaxStack": 1,
+  "Ability": {
+    "Slot": "Core",
+    "Cooldown": 4,
+    "Cost": 30,
+    "CostType": "Mana",
+    "AbilityKeywords": ["Damage", "Physical", "Melee", "Nakasar_Lifesteal"],
+    "Attributes": {
+      "Damage": 1
+    },
+    "Cast": "Root_Nakasar_Ability_VampireKiss"
+  }
+}

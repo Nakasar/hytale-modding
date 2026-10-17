@@ -1,0 +1,93 @@
+import groovy.json.JsonSlurper
+
+// Configuration commune à tous les mods du dépôt.
+// Chaque mod vit dans mods/<nom> et choisit son type :
+//   - plugin Java (jar) : voir mods/nakasar-runes
+//   - pack d'assets pur (zip) : voir mods/nakasar-spear
+
+val hytaleVersion: String = project.property("hytale_version").toString()
+val modVersion: String = project.property("mod_version").toString()
+
+allprojects {
+    group = "dev.nakasar.hytale"
+    version = modVersion
+}
+
+subprojects {
+    plugins.withId("java") {
+        extensions.configure<JavaPluginExtension> {
+            toolchain.languageVersion.set(JavaLanguageVersion.of(25))
+        }
+        dependencies {
+            // Le serveur n'est jamais embarqué dans le jar : il est fourni à l'exécution.
+            add("compileOnly", "com.hypixel.hytale:Server:$hytaleVersion")
+        }
+        tasks.withType<JavaCompile>().configureEach {
+            options.encoding = "UTF-8"
+            options.release.set(25)
+            options.compilerArgs.add("-Xlint:deprecation")
+        }
+        tasks.withType<Javadoc>().configureEach {
+            (options as StandardJavadocDocletOptions).addStringOption("Xdoclint:none", "-quiet")
+        }
+    }
+}
+
+// Vérifie que chaque fichier JSON d'assets est syntaxiquement valide.
+// Les assets Hytale sont lus par un parseur strict : une virgule en trop fait échouer le chargement.
+val validateJson = tasks.register("validateJson") {
+    group = "verification"
+    description = "Vérifie la syntaxe de tous les fichiers JSON des mods (assets et manifests)."
+    val jsonFiles = fileTree("mods") {
+        include("**/*.json")
+        exclude("**/build/**", "**/.gradle/**")
+    }
+    inputs.files(jsonFiles)
+    doLast {
+        val slurper = JsonSlurper()
+        var errors = 0
+        jsonFiles.forEach { file ->
+            try {
+                slurper.parse(file)
+            } catch (e: Exception) {
+                errors++
+                logger.error("JSON invalide : ${file.relativeTo(rootDir)} -> ${e.message}")
+            }
+        }
+        if (errors > 0) throw GradleException("$errors fichier(s) JSON invalide(s).")
+        logger.lifecycle("validateJson : ${jsonFiles.files.size} fichiers JSON valides.")
+    }
+}
+
+// Chaque `./gradlew check` (et donc `build`) d'un mod valide aussi les JSON.
+subprojects {
+    tasks.matching { it.name == "check" }.configureEach {
+        dependsOn(validateJson)
+    }
+}
+
+// Lit hytale.modsDir depuis -P, gradle.properties ou gradle-local.properties (non versionné).
+fun resolveModsDir(): String? {
+    val fromProject = (project.findProperty("hytale.modsDir") as String?)?.takeIf { it.isNotBlank() }
+    if (fromProject != null) return fromProject
+    val local = rootProject.file("gradle-local.properties")
+    if (!local.exists()) return null
+    val props = java.util.Properties().apply { local.inputStream().use { load(it) } }
+    return props.getProperty("hytale.modsDir")?.takeIf { it.isNotBlank() }
+}
+
+// Copie les mods construits (jar et zip) dans le dossier mods/ d'un serveur local.
+tasks.register<Copy>("deployToServer") {
+    group = "hytale"
+    description = "Copie les jars et zips construits dans le dossier mods/ du serveur (propriété hytale.modsDir)."
+    dependsOn(subprojects.map { it.tasks.matching { t -> t.name == "assemble" } })
+    val modsDir = resolveModsDir()
+    onlyIf {
+        if (modsDir == null) logger.warn("deployToServer : définissez hytale.modsDir (gradle-local.properties ou -Phytale.modsDir=...).")
+        modsDir != null
+    }
+    from(subprojects.map { sp -> sp.layout.buildDirectory.dir("libs") })
+    from(subprojects.map { sp -> sp.layout.buildDirectory.dir("distributions") })
+    include("*.jar", "*.zip")
+    into(modsDir ?: layout.buildDirectory.dir("deploy-noop"))
+}

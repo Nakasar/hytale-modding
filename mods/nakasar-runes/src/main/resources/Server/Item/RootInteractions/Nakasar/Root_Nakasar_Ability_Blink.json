@@ -1,0 +1,5 @@
+{
+  "Interactions": ["Nakasar_Ability_Blink_Cast"],
+  "RequireNewClick": true,
+  "Tags": { "Attack": ["Ranged"] }
+}

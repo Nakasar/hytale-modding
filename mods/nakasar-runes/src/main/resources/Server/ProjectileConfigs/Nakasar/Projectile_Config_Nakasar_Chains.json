@@ -1,0 +1,19 @@
+{
+  "Parent": "Projectile_Config_Ability_Fireball",
+  "Interactions": {
+    "ProjectileHit": {
+      "Interactions": [
+        "Nakasar_Ability_SpectralChains_Impact",
+        "Weapon_Stick_Fire_Projectile_Despawn_Delay",
+        "Weapon_Stick_Fire_Projectile_Despawn"
+      ]
+    },
+    "ProjectileMiss": {
+      "Interactions": [
+        "Nakasar_Ability_SpectralChains_Miss",
+        "Weapon_Stick_Fire_Projectile_Despawn_Delay",
+        "Weapon_Stick_Fire_Projectile_Despawn"
+      ]
+    }
+  }
+}
