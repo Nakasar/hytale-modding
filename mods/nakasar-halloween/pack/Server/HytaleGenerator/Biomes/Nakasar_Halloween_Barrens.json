@@ -333,7 +333,7 @@
                 "ScaleX": 150.0,
                 "ScaleY": 150.0,
                 "ScaleZ": 150.0,
-                "Jitter": 0.4,
+                "Jitter": 0.25,
                 "Seed": "Structures"
               }
             }
@@ -748,15 +748,60 @@
         "PropDistribution": {
           "Type": "Positions",
           "Positions": {
-            "Type": "Mesh2D",
-            "PointsY": 81,
-            "PointGenerator": {
-              "Type": "Mesh",
-              "ScaleX": 13.0,
-              "ScaleY": 13.0,
-              "ScaleZ": 13.0,
-              "Jitter": 0.45,
-              "Seed": "Trees"
+            "Type": "FieldFunction",
+            "FieldFunction": {
+              "Type": "PositionsCellNoise",
+              "Positions": {
+                "Type": "Union",
+                "Positions": [
+                  {
+                    "Type": "Imported",
+                    "Name": "Nakasar_Halloween_Structure_Positions"
+                  },
+                  {
+                    "Type": "Imported",
+                    "Name": "Nakasar_Halloween_Landmark_Positions"
+                  }
+                ]
+              },
+              "ReturnType": {
+                "Type": "Curve",
+                "Curve": {
+                  "Type": "Manual",
+                  "Points": [
+                    {
+                      "In": 0,
+                      "Out": 0
+                    },
+                    {
+                      "In": 35.0,
+                      "Out": 35.0
+                    }
+                  ]
+                }
+              },
+              "DistanceFunction": {
+                "Type": "Euclidean"
+              },
+              "MaxDistance": 35.0
+            },
+            "Delimiters": [
+              {
+                "Min": 34.0,
+                "Max": 1000000000.0
+              }
+            ],
+            "Positions": {
+              "Type": "Mesh2D",
+              "PointsY": 81,
+              "PointGenerator": {
+                "Type": "Mesh",
+                "ScaleX": 13.0,
+                "ScaleY": 13.0,
+                "ScaleZ": 13.0,
+                "Jitter": 0.45,
+                "Seed": "Trees"
+              }
             }
           }
         },
@@ -846,15 +891,60 @@
         "PropDistribution": {
           "Type": "Positions",
           "Positions": {
-            "Type": "Mesh2D",
-            "PointsY": 81,
-            "PointGenerator": {
-              "Type": "Mesh",
-              "ScaleX": 29.0,
-              "ScaleY": 29.0,
-              "ScaleZ": 29.0,
-              "Jitter": 0.45,
-              "Seed": "Decor"
+            "Type": "FieldFunction",
+            "FieldFunction": {
+              "Type": "PositionsCellNoise",
+              "Positions": {
+                "Type": "Union",
+                "Positions": [
+                  {
+                    "Type": "Imported",
+                    "Name": "Nakasar_Halloween_Structure_Positions"
+                  },
+                  {
+                    "Type": "Imported",
+                    "Name": "Nakasar_Halloween_Landmark_Positions"
+                  }
+                ]
+              },
+              "ReturnType": {
+                "Type": "Curve",
+                "Curve": {
+                  "Type": "Manual",
+                  "Points": [
+                    {
+                      "In": 0,
+                      "Out": 0
+                    },
+                    {
+                      "In": 35.0,
+                      "Out": 35.0
+                    }
+                  ]
+                }
+              },
+              "DistanceFunction": {
+                "Type": "Euclidean"
+              },
+              "MaxDistance": 35.0
+            },
+            "Delimiters": [
+              {
+                "Min": 34.0,
+                "Max": 1000000000.0
+              }
+            ],
+            "Positions": {
+              "Type": "Mesh2D",
+              "PointsY": 81,
+              "PointGenerator": {
+                "Type": "Mesh",
+                "ScaleX": 29.0,
+                "ScaleY": 29.0,
+                "ScaleZ": 29.0,
+                "Jitter": 0.45,
+                "Seed": "Decor"
+              }
             }
           }
         },

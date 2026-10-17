@@ -52,7 +52,7 @@ class Prefab:
         for x in range(min(x0, x1), max(x0, x1) + 1):
             for y in range(min(y0, y1), max(y0, y1) + 1):
                 for z in range(min(z0, z1), max(z0, z1) + 1):
-                    self.set(x, y, z, name, rot)
+                    self.set(x, y, z, self.pick(name), rot)
 
     def hollow(self, x0, y0, z0, x1, y1, z1, wall, inside=AIR):
         """Boîte : murs latéraux en `wall`, intérieur en `inside` (sol et plafond non compris)."""
@@ -174,10 +174,10 @@ PUMPKINS = [("Deco_Halloween_Pumpkin_Scary", 4), ("Deco_Halloween_Pumpkin_Cute",
 DEAD_PLANTS = [("Plant_Bush_Dead", 3), ("Plant_Grass_Gnarled", 4), ("Plant_Grass_Gnarled_Short", 3), ("Plant_Bush_Dead_Twisted", 1)]
 
 MATERIALS = {
-    "stone": (STONE_WALL, STONE_FLOOR, "Rock_Stone_Brick_Roof_Steep", "Rock_Stone_Brick_Ornate"),
-    "slate": (SLATE_WALL, SLATE_FLOOR, "Rock_Slate_Brick_Roof_Steep", "Rock_Slate_Brick_Ornate"),
-    "basalt": (BASALT_WALL, BASALT_FLOOR, "Rock_Basalt_Brick_Roof_Steep", "Rock_Basalt_Brick_Ornate"),
-    "shale": (SHALE_WALL, SLATE_FLOOR, "Rock_Shale_Brick_Roof_Steep", "Rock_Shale_Brick_Ornate"),
+    "stone": (STONE_WALL, STONE_FLOOR, "Rock_Stone_Brick", "Rock_Stone_Brick_Ornate"),
+    "slate": (SLATE_WALL, SLATE_FLOOR, "Rock_Slate_Brick", "Rock_Slate_Brick_Ornate"),
+    "basalt": (BASALT_WALL, BASALT_FLOOR, "Rock_Basalt_Brick", "Rock_Basalt_Brick_Ornate"),
+    "shale": (SHALE_WALL, SLATE_FLOOR, "Rock_Shale_Brick", "Rock_Shale_Brick_Ornate"),
 }
 
 
@@ -486,17 +486,27 @@ def crypt(seed, material):
 
 # --- castles ----------------------------------------------------------------------------------
 
+def ladder(p, x, y0, y1, z):
+    """Échelle contre le mur est, de y0 à y1 (inclus) ; la case y1 est la trappe du plancher."""
+    for y in range(y0, y1 + 1):
+        p.set(x, y, z, "Furniture_Human_Ruins_Ladder", WEST)
+
+
 def tower(p, cx, cz, half, height, wall, flr, roof, ornate, spire=False, webs=True):
     x0, x1, z0, z1 = cx - half, cx + half, cz - half, cz + half
     p.floor(x0, z0, x1, z1, -1, flr, FOUNDATION, depth=4)
     p.hollow(x0, 0, z0, x1, height, z1, wall)
+    bottom = 0
     for y in range(4, height, 5):
-        p.fill(x0 + 1, y, z0 + 1, x1 - 1, y, z1 - 1, p.pick(flr))
-        p.set(cx, y, cz, AIR)  # trappe pour monter
+        p.fill(x0 + 1, y, z0 + 1, x1 - 1, y, z1 - 1, flr)
+        ladder(p, x1 - 1, bottom, y, cz)
+        bottom = y + 1
         # meurtrières
         for (wx, wz) in ((cx, z0), (cx, z1), (x0, cz), (x1, cz)):
             p.set(wx, y + 2, wz, "Deco_Iron_Bars")
-    p.fill(x0, height + 1, z0, x1, height + 1, z1, p.pick(flr))
+    p.fill(x0, height + 1, z0, x1, height + 1, z1, flr)
+    if not spire:
+        ladder(p, x1 - 1, bottom, height + 1, cz)  # jusqu'aux créneaux
     if spire:
         p.spire(cx, cz, half + 1, height + 2, roof)
     else:
@@ -543,11 +553,10 @@ def keep(p, x0, z0, x1, z1, height, wall, flr, roof, ornate, levels=2):
     level_h = height // levels
     for lv in range(1, levels):
         y = lv * level_h
-        p.fill(x0 + 1, y, z0 + 1, x1 - 1, y, z1 - 1, p.pick(flr))
+        p.fill(x0 + 1, y, z0 + 1, x1 - 1, y, z1 - 1, flr)
         # trémie d'escalier (échelle) dans un coin
         p.fill(x1 - 2, y, z0 + 1, x1 - 1, y, z0 + 2, AIR)
-        for yy in range(y - level_h + 1, y + 1):
-            p.set(x1 - 1, yy, z0 + 1, "Furniture_Human_Ruins_Ladder", WEST)
+        ladder(p, x1 - 1, y - level_h + 1, y, z0 + 1)
     # fenêtres
     for lv in range(levels):
         y = lv * level_h + 2
@@ -561,7 +570,7 @@ def keep(p, x0, z0, x1, z1, height, wall, flr, roof, ornate, levels=2):
     p.clear(-1, 0, z1, 1, 2, z1)
     p.fill(-2, 3, z1, 2, 3, z1, ornate)
     # toit
-    p.fill(x0, height + 1, z0, x1, height + 1, z1, p.pick(flr))
+    p.fill(x0, height + 1, z0, x1, height + 1, z1, flr)
     p.crenellate(x0, z0, x1, z1, height + 2, wall)
     return level_h
 
@@ -596,8 +605,8 @@ def haunted_castle(seed, material):
     p.set(0, level_h - 1, -7, "Furniture_Tavern_Chandelier")
     for x in (-4, 4):
         p.set(x, 3, -11, "Furniture_Human_Ruins_Banner", SOUTH)
-    p.set(-5, 0, -11, "Furniture_Human_Ruins_Bookshelf", SOUTH)
-    p.set(5, 0, -11, "Furniture_Human_Ruins_Bookshelf", SOUTH)
+    p.set(-4, 0, -11, "Furniture_Human_Ruins_Bookshelf", SOUTH)
+    p.set(4, 0, -11, "Furniture_Human_Ruins_Bookshelf", SOUTH)
     # étage : chambre abandonnée
     y = level_h + 1
     p.set(-4, y, -10, "Furniture_Ancient_Bed", EAST)
@@ -656,7 +665,7 @@ def dracula_castle(seed):
                 p.set(x, 0, z, r.choice(["Plant_Crop_Health1", "Plant_Petals_Blood", "Plant_Crop_Health1"]))
     curtain_wall(p, -s, -s, s, s, 10, wall)
     gatehouse(p, s, 10, wall, ornate)
-    slate_roof = "Rock_Slate_Brick_Roof_Steep"
+    slate_roof = "Rock_Slate_Brick"
     for cx in (-s, s):
         for cz in (-s, s):
             tower(p, cx, cz, 3, 18, wall, flr, slate_roof, ornate, spire=True)
@@ -803,9 +812,9 @@ def main():
         jobs.append((f"Trees/Hanging_Tree_{i + 1}", hanging_tree(1100 + i)))
     for i in range(3):
         jobs.append((f"PumpkinFields/Pumpkin_Field_{i + 1}", pumpkin_field(2000 + i, *[(21, 17), (25, 15), (17, 21)][i])))
-    for theme in ("haunted", "spiders", "undead"):
+    for t, theme in enumerate(("haunted", "spiders", "undead")):
         for i in range(2):
-            jobs.append((f"Cemeteries/{theme.capitalize()}/Cemetery_{theme.capitalize()}_{i + 1}", cemetery(3000 + i * 7 + len(theme), theme)))
+            jobs.append((f"Cemeteries/{theme.capitalize()}/Cemetery_{theme.capitalize()}_{i + 1}", cemetery(3000 + t * 100 + i, theme)))
     for i, material in enumerate(("stone", "slate", "shale")):
         jobs.append((f"Crypts/Crypt_{material.capitalize()}", crypt(4000 + i, material)))
     jobs.append(("HauntedCastles/Haunted_Castle_Stone", haunted_castle(5000, "stone")))

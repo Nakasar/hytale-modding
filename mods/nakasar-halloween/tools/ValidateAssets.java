@@ -126,7 +126,7 @@ public class ValidateAssets {
                 throw t;
             }
             // Le JSON est décodé ; seul le post-traitement (qui lit les assets vanilla chargés) a échoué.
-            notes.add("post-traitement ignoré hors serveur (" + rootCause(t).getClass().getSimpleName() + ")");
+            notes.add("post-traitement ignoré hors serveur : " + rootCause(t).getMessage());
         }
         for (String key : extraInfo.getUnknownKeys()) {
             problems.add("clé inconnue : " + key);
@@ -158,8 +158,17 @@ public class ValidateAssets {
         }
     }
 
+    /**
+     * Vrai seulement si le post-traitement a échoué parce qu'un magasin d'assets n'existe pas hors
+     * serveur (il est rempli par les plugins au démarrage) ; toute autre erreur reste une erreur.
+     */
     private static boolean isAfterDecode(Throwable t) {
-        for (StackTraceElement frame : rootCause(t).getStackTrace()) {
+        Throwable cause = rootCause(t);
+        if (!(cause instanceof NullPointerException) || cause.getMessage() == null
+                || !cause.getMessage().contains("getAssetStore(")) {
+            return false;
+        }
+        for (StackTraceElement frame : cause.getStackTrace()) {
             if (frame.getMethodName().equals("afterDecodeAndValidate")) {
                 return true;
             }

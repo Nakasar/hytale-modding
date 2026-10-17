@@ -34,6 +34,9 @@ SPAWN = (0, GROUND_Y, 0)
 DRACULA = (0, GROUND_Y, -190)
 
 PREFABS = "Prefabs/Nakasar/Halloween"
+# Distance minimale entre un arbre / un décor et le centre d'une structure (demi-diagonale du
+# château du comte, 41 × 41, plus la portée des branches).
+STRUCTURE_CLEARANCE = 34.0
 AIR = {"Solid": "Empty"}
 SURFACE_BLOCKS = ["Soil_Grass_Burnt", "Soil_Grass_Burnt_Full", "Soil_Dirt_Burnt"]
 
@@ -175,7 +178,9 @@ def biome():
         "ExportAs": STRUCTURES_EXPORT,
         "FieldFunction": distance_to(imported(LANDMARKS_EXPORT), 200.0, curve((0, 0), (200, 200))),
         "Delimiters": [{"Min": 110.0, "Max": 1.0e9}],
-        "Positions": mesh(150.0, 0.4, "Structures"),
+        # Jitter 0,25 : chaque point bouge d'au plus 0,25 × 150 ≈ 37 blocs, donc deux structures
+        # restent à plus de 75 blocs l'une de l'autre (la plus grande en fait 41).
+        "Positions": mesh(150.0, 0.25, "Structures"),
     }
 
     # Relief : 1 près d'une structure (sol plat), 1 au loin (collines).
@@ -230,11 +235,24 @@ def biome():
         "Prop": surface_locator(prefab("DraculaCastle", "Dracula", rotate=False), SOLID_FLOOR, 12),
     })
 
+    # Arbres et décor : jamais dans une structure, ni sur le point d'apparition.
+    def outside_structures(positions):
+        return {
+            "Type": "FieldFunction",
+            "FieldFunction": distance_to(
+                {"Type": "Union", "Positions": [imported(STRUCTURES_EXPORT), imported(LANDMARKS_EXPORT)]},
+                STRUCTURE_CLEARANCE + 1.0,
+                curve((0, 0), (STRUCTURE_CLEARANCE + 1.0, STRUCTURE_CLEARANCE + 1.0)),
+            ),
+            "Delimiters": [{"Min": STRUCTURE_CLEARANCE, "Max": 1.0e9}],
+            "Positions": positions,
+        }
+
     small = lambda path, seed: surface_locator(prefab(path, seed), GRASS_FLOOR, 14)
-    trees = runtime(1, "Chunk", mesh(13.0, 0.45, "Trees"), weighted_assignments("TreePick", 0.35, [
+    trees = runtime(1, "Chunk", outside_structures(mesh(13.0, 0.45, "Trees")), weighted_assignments("TreePick", 0.35, [
         (small("Trees", "Tree"), 1.0),
     ]))
-    decor = runtime(1, "Chunk", mesh(29.0, 0.45, "Decor"), weighted_assignments("DecorPick", 0.3, [
+    decor = runtime(1, "Chunk", outside_structures(mesh(29.0, 0.45, "Decor")), weighted_assignments("DecorPick", 0.3, [
         (small("Decor/BonePiles", "Bones"), 2.0),
         (small("Decor/Graves", "Grave"), 2.0),
         (small("Decor/SpiderNests", "Nest"), 1.5),
