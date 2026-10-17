@@ -8,7 +8,8 @@ les types `Nakasar_TeleportCasterToImpact`, `Nakasar_Dominate` et `Nakasar_RootN
 Fichiers communs : `Server/Abilities/Keywords/Nakasar_*.json` (mots-clés affichés sur les runes),
 `Server/Languages/{fr-FR,en-US}/nakasar_runes.lang` (noms et descriptions).
 
-Chaque rune suit le schéma vanilla : objet `Rune_Nakasar_<X>` (`Ability.Slot: Core`, coût en mana,
+Chaque rune suit le schéma vanilla (champs cosmétiques repris de `Rune_Fireball.json` : `Items.Ingredients`,
+`PlayerAnimationsId: Item`, `IconProperties`, `Scale 0.8`, `ISS_Items_Gems`) : objet `Rune_Nakasar_<X>` (`Ability.Slot: Core`, coût en mana,
 cooldown, mots-clés, attributs) → `Root_Nakasar_Ability_<X>` → `Nakasar_Ability_<X>_Cast`
 (`StatsCondition UseAbilityCost` → `Parallel` [ effet, `TriggerCooldown`, `ChangeStat` ]).
 
