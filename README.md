@@ -123,11 +123,13 @@ repris de la documentation communautaire sans avoir pu être contrôlés :
   Restent non vérifiés : `BlockBreakingDecalId: Breaking_Decals_Rock` et les sons `SFX_Workbench_Open` /
   `SFX_Workbench_Craft` (documentation communautaire). Le serveur valide ces ids au
   chargement : un id inconnu rejette l'asset entier et le journal le nomme.
-- **Modèle de l'autel** : `Common/Blocks/Nakasar/Sacrificial_Altar.blockymodel` est écrit à la main au format
-  JSON du plugin Blockbench officiel (3 boîtes, 32 unités = 1 bloc, texture 64×64). Si le rendu ou les UV
-  sont faux, l'ouvrir dans Blockbench avec le plugin Hytale et le réexporter. L'icône d'inventaire et celle de
-  l'onglet « Runes » sont des PNG 64×64 dessinés par script dans `Common/Icons/` (le serveur vérifie que les
-  fichiers d'icône existent).
+- **Modèle de l'autel** : modèle, texture, hitbox et icône sont générés par
+  `mods/nakasar-runes/tools/generate_altar.py` (format JSON du plugin Blockbench officiel, 32 unités = 1 bloc).
+  À vérifier en jeu : l'autel occupe 2×2×1 blocs (large × haut × profond) et doit se poser avec ses blocs de
+  remplissage ; le sens des pièces pivotées (`orientation`), le côté « avant » (crâne et dague d'un côté de la
+  dalle) et le cadrage de l'icône 3D (`IconProperties`, repris de l'établi d'alchimie). Si le rendu ou les UV
+  sont faux, ouvrir le `.blockymodel` dans Blockbench avec le plugin Hytale, ou corriger le script et le
+  relancer.
 
 Fragment Halloween :
 

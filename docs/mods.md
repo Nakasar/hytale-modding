@@ -30,30 +30,30 @@ Objet-bloc (`Server/Item/Items/Bench/Nakasar/`) avec `BlockType.Bench` de type `
 vanilla, le bloc déclare `BlockEntity.Components.BenchBlock` (l'entité de bloc qui porte l'établi) et
 `State.Definitions` avec les états `CraftCompleted` / `CraftCompletedInstant` que la fenêtre de craft bascule
 (`SimpleCraftingWindow`). `DrawType: Model`, `VariantRotation: NESW` +
-`RotationMode: FACING_PLAYER` (l'autel fait face au joueur), hitbox par défaut (cube plein : le modèle occupe
-toute la hauteur du bloc), aucune contrainte de support (se pose comme un bloc plein), et il se redonne
-lui-même à la casse (`Gathering.Breaking`).
+`RotationMode: FacingPlayer` (l'autel fait face au joueur). Comme l'établi d'alchimie vanilla (`Bench_Alchemy`),
+il occupe **2 blocs de large, 2 de haut et 1 de profondeur** : `HitboxType: Nakasar_Sacrificial_Altar`
+(`Server/Item/Block/Hitboxes/Nakasar/`, boîtes en unités de bloc, bloc d'ancrage = [0,1]³) ; le serveur pose
+les blocs de remplissage d'après l'enveloppe de la hitbox (`FillerBlockUtil`, arrondi au bloc supérieur) et la
+fait tourner avec le bloc. `Support.Down: Full` comme le vanilla (il faut un bloc plein dessous), et il se
+redonne lui-même à la casse (`Gathering.Breaking`).
 
 Recettes dans `Server/Item/Recipes/Nakasar/` (fichiers séparés, voir README pour la raison) :
 `Recipe_Nakasar_Sacrificial_Altar` à l'atelier de base `Workbench` / onglet `Workbench_Crafting` (10 `Rock`
 ressource, 2 `Ingredient_Bar_Iron`, 1 `Ingredient_Rune_Shard`, 5 s) et `Recipe_Nakasar_Rune_<X>` sur l'autel,
 onglet `Nakasar_Altar_Runes` (2 `Ingredient_Rune_Shard`, 1 s).
 
-Modèle `Common/Blocks/Nakasar/Sacrificial_Altar.blockymodel` (3 boîtes, grille centrée, 32 unités = 1 bloc) :
-socle 32×4×32 (y 0–4), pilier 16×20×16 (y 4–24), dalle 28×8×28 (y 24–32). Texture
-`Common/BlockTextures/Nakasar/Sacrificial_Altar.png` (64×64), générée par script, disposition des UV :
+Modèle `Common/Blocks/Nakasar/Sacrificial_Altar.blockymodel`, texture
+`Common/BlockTextures/Nakasar/Sacrificial_Altar.png` (256×128), hitbox et icône d'inventaire sont **générés** par
+`mods/nakasar-runes/tools/generate_altar.py` (relancer le script après toute retouche, `--preview DOSSIER`
+écrit des rendus de contrôle). Grille : 32 unités = 1 bloc, origine au centre du bas du bloc d'ancrage, le modèle
+s'étend vers +X (x de -16 à 48). Pièces : socle à deux marches, corps à bandeau de runes, dalle à rigole, vasque
+de sang, deux obélisques surmontés d'un cristal pourpre, bougies (flamme en `shadingMode: fullbright`), crâne et
+dague. Chaque pièce porte sa position dans `position` (pivot) et une rotation Y éventuelle dans `orientation`.
+La texture est peinte en dégradés doux (biseau clair sur les arêtes, bas des faces assombri, variations floutées)
+plutôt qu'en bruit pixel par pixel ; une région par face, faces opposées partagées. Aucune face du dessous ne
+porte de rouge (l'ancien modèle réutilisait la flaque de sang sous la dalle).
 
-| Zone (x, y, l×h) | Faces |
-|------------------|-------|
-| 0,0 32×32 | dessus / dessous du socle |
-| 32,0 28×28 | dessus / dessous de la dalle (rigole et flaque de sang) |
-| 32,28 16×16 | dessus / dessous du pilier |
-| 0,32 32×4 | côtés du socle |
-| 0,36 28×8 | côtés de la dalle (coulures) |
-| 0,44 16×20 et 16,44 16×20 | faces avant/arrière et gauche/droite du pilier (runes rouges) |
-
-Icônes `Common/Icons/Items/Nakasar/Sacrificial_Altar.png` (inventaire) et
-`Common/Icons/CraftingCategories/Nakasar/Runes.png` (onglet), 64×64, générées par le même script.
+L'icône de l'onglet `Common/Icons/CraftingCategories/Nakasar/Runes.png` reste celle d'origine.
 
 ### Interactions Java
 
@@ -116,17 +116,24 @@ Fragment d'Orbis ouvert depuis l'Ancienne passerelle vanilla (`Portal_Device`) a
 
 ### Génération (`tools/generate_worldgen.py`)
 
+- **Forme** : île flottante circulaire au-dessus du vide, comme les fragments du jeu de base. Rayon
+  `ISLAND_RADIUS` = 170 (bord réel vers 155-160 blocs du centre) : le sol descend de 24 blocs à partir
+  de 140 blocs, le dessous est un cône de roche bosselé (jusqu'à y ≈ 17 au centre). Densité du
+  terrain = `Min(dessus, dessous)`, la distance au centre venant d'un nœud `Axis` (axe Y).
 - **Terrain** : plaine vallonnée autour de y = 81 (deux bruits simplex), sol d'herbe et de terre
   brûlées, couches de terre, gravier puis pierre / ardoise / schiste.
 - **Aplanissement** : les positions des structures sont exportées (`ExportAs`) et réutilisées par le
-  terrain : le relief tombe à zéro dans un rayon de 34 blocs autour de chaque structure, pour qu'elle
+  terrain : le relief tombe à zéro dans un rayon de 30 blocs (plein relief à 50) autour de chaque structure, pour qu'elle
   repose à plat.
-- **Structures aléatoires** : une maille de 150 blocs (avec jitter) tire une structure par cellule,
-  à plus de 110 blocs du point d'apparition et du château du comte. Poids : crypte 3, champ de
+- **Structures aléatoires** : une maille de 60 blocs (jitter 0,15) tire une structure par cellule,
+  à moins de 116 blocs du centre, à plus de 45 blocs du point d'apparition et de 64 blocs du château
+  du comte (7 à 9 structures par instance d'après une simulation hors jeu). Poids : crypte 3, champ de
   citrouilles 3, château hanté 2, cimetière hanté / araignées / morts-vivants 1,5 chacun.
-- **Château du comte** : toujours à 190 blocs au nord du point d'apparition (objectif du portail).
+- **Château du comte** : toujours à 110 blocs au nord du point d'apparition (objectif du portail).
 - **Décor** : arbres morts et pendus (maille de 13), tas d'os, tombes isolées, nids d'araignées,
-  citrouilles (maille de 29), plantes mortes et toiles (maille de 3).
+  citrouilles (maille de 29), plantes mortes et toiles (maille de 3). Arbres et décor restent à
+  moins de 150 blocs du centre pour ne pas dépasser du bord.
+- **Chemins des prefabs** : relatifs à `Server/Prefabs/` (`Nakasar/Halloween/Crypts`), pas à `Server/`.
 - **Environnements** : `Nakasar_Env_Halloween_Haunted` à moins de 45 blocs d'une structure (PNJ plus
   dangereux, densité plus forte), `Nakasar_Env_Halloween` ailleurs.
 
