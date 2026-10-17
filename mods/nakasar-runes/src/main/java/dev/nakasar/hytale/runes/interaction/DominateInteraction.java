@@ -120,22 +120,18 @@ public class DominateInteraction extends SimpleInstantInteraction implements Abi
     /**
      * {@link WorldSupport#overrideAttitude} suppose que le rôle a demandé une mémoire d'attitude
      * ({@code requireAttitudeOverrideMemory}, fait par l'action {@code OverrideAttitude}). Pour les rôles
-     * qui ne l'ont jamais demandée la map est {@code null} : on la crée alors par réflexion, une seule fois
-     * par support, avant de réessayer.
+     * qui ne l'ont jamais demandée la map est {@code null} : on la crée par réflexion <em>avant</em> l'appel,
+     * pour ne jamais laisser une NPE partielle derrière nous. {@code WorldSupport.tick} fait expirer les
+     * entrées de cette map comme les autres.
      */
     private boolean overrideAttitude(WorldSupport support, Ref<EntityStore> caster, float seconds) {
-        try {
-            support.overrideAttitude(caster, attitude, seconds);
-            return true;
-        } catch (NullPointerException missingMemory) {
-            if (ensureAttitudeMemory(support)) {
-                support.overrideAttitude(caster, attitude, seconds);
-                return true;
-            }
+        if (!ensureAttitudeMemory(support)) {
             RunesPlugin.get().getLogger().atWarning().log(
                     "%s : impossible d'initialiser la memoire d'attitude du PNJ, domination ignoree", TYPE_ID);
             return false;
         }
+        support.overrideAttitude(caster, attitude, seconds);
+        return true;
     }
 
     private static volatile Field attitudeMemoryField;

@@ -17,7 +17,7 @@ cooldown, mots-clés, attributs) → `Root_Nakasar_Ability_<X>` → `Nakasar_Abi
 | Baiser du Vampire (`Rune_Nakasar_VampireKiss`) | 30 mana / 4 s | mêlée (balayage horizontal 2,8 m) | 18 dégâts physiques (× attribut `Damage`), `EntityStatsOnHit Health +12` au lanceur (vol de vie, dégressif sur plusieurs cibles) |
 | Domination (`Rune_Nakasar_Domination`) | 45 mana / 12 s | mêlée (estoc 3 m) | `Nakasar_Dominate` : attitude `FRIENDLY` forcée pendant `Duration` (6 s), effet visuel `Nakasar_Dominated` (teinte violette). PNJ uniquement |
 | Téléportation (`Rune_Nakasar_Blink`) | 35 mana / 8 s | distance (projectile) | `Projectile_Config_Nakasar_Blink` ; à l'impact (entité ou terrain) `TriggerAbilityFX` puis `Nakasar_TeleportCasterToImpact` téléporte le lanceur 0,6 m en retrait du point d'impact |
-| Chaînes spectrales (`Rune_Nakasar_SpectralChains`) | 40 mana / 10 s | distance (projectile) | `Projectile_Config_Nakasar_Chains` ; sur entité : FX « pointe de terre » bleutée, effet `Nakasar_Spectral_Chains` (`DisableAll`, attaques désactivées, knockback nul, particules `Stunned`) pendant `Duration` (3 s) + `Nakasar_RootNpc` (composant `Frozen`) pour les PNJ |
+| Chaînes spectrales (`Rune_Nakasar_SpectralChains`) | 40 mana / 10 s | distance (projectile) | `Projectile_Config_Nakasar_Chains` ; sur entité : FX « pointe de terre » bleutée, effet `Nakasar_Spectral_Chains` (`DisableAll`, attaques, abilities et esquive désactivées, knockback nul, particules `Stunned`) pendant `Duration` (3 s) + `Nakasar_RootNpc` (composant `Frozen`) pour les PNJ |
 
 Attributs lisibles par les runes de support : `Damage` (Vampire), `Duration`
 (Domination, Chaînes), `Speed` (projectiles).
@@ -29,7 +29,7 @@ Attributs lisibles par les runes de support : `Damage` (Vampire), `Duration`
 - `DominateInteraction` : cible = PNJ avec `WorldSupport` ; `overrideAttitude(lanceur, attitude, durée)`
   ; applique `EffectId` si fourni. Clés JSON : `Duration`, `DurationAttribute`, `EffectId`, `Attitude`.
 - `RootNpcInteraction` : ajoute `Frozen` à la cible PNJ et programme son retrait (`world.scheduleAfter`)
-  ; une seconde application prolonge la durée. Clés : `Duration`, `DurationAttribute`.
+  ; une seconde application prolonge la durée, et un PNJ déjà gelé par quelqu'un d'autre (`/npc freeze`) n'est pas touché. Clés : `Duration`, `DurationAttribute`.
 
 ## nakasar-spear (pack d'assets)
 
@@ -54,11 +54,13 @@ jauge `SignatureEnergy` (+20 max). Les dégâts sont surchargeables par objet vi
 
 `StatsCondition SignatureEnergy 100 %` (sinon son d'erreur) → `Serial` :
 
+0. `ChangeStat SignatureEnergy -100 %` en tête : la jauge est consommée même si la chaîne est
+   interrompue ensuite (coup reçu, changement d'objet)
 1. préparation 0,2 s (animation `StabDashCharging`)
 2. ruée : `ApplyForce` vers l'avant (force 12) puis `Repeat ×4` de `Nakasar_Spear_Signature_Rush_Stab`
    (petite poussée + estoc 3,5 m, 16 dégâts chacun, cadence ~0,28 s)
 3. `Nakasar_Spear_Signature_Spin` : coup circulaire rayon 4 m, 40 dégâts, forte projection
-4. `ChangeStat SignatureEnergy -100 %`, `CancelChain`
+4. `CancelChain`
 
 ### Réglages
 

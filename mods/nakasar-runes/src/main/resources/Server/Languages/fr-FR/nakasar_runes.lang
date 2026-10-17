@@ -1,6 +1,6 @@
 # Runes d'abilités Nakasar — textes français
 items.Rune_Nakasar_VampireKiss.name = Baiser du Vampire
-items.Rune_Nakasar_VampireKiss.description = Un coup de mêlée qui draine la vie de la cible et vous soigne d'autant.
+items.Rune_Nakasar_VampireKiss.description = Un coup de mêlée qui draine la vie de la cible : vous récupérez 12 points de vie par cible touchée.
 items.Rune_Nakasar_Domination.name = Domination
 items.Rune_Nakasar_Domination.description = Une frappe de mêlée qui rend la créature touchée alliée pendant quelques secondes.
 items.Rune_Nakasar_Blink.name = Téléportation

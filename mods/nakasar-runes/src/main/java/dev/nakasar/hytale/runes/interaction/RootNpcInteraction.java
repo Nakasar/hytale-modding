@@ -48,7 +48,10 @@ public class RootNpcInteraction extends SimpleInstantInteraction implements Abil
             .add()
             .build();
 
-    /** Échéance (nanoTime) du gel par entité, pour ne pas dégeler trop tôt quand deux gels se chevauchent. */
+    /**
+     * Échéance (nanoTime) du gel par entité : sert à ne pas dégeler trop tôt quand deux gels se chevauchent,
+     * et à ne retirer {@link Frozen} que si c'est nous qui l'avons posé.
+     */
     private static final Map<Ref<EntityStore>, Long> EXPIRIES = new ConcurrentHashMap<>();
 
     protected float duration = 3f;
@@ -74,15 +77,21 @@ public class RootNpcInteraction extends SimpleInstantInteraction implements Abil
         }
 
         World world = buffer.getExternalData().getWorld();
+        pruneStaleExpiries();
+
+        boolean ours = EXPIRIES.containsKey(target);
+        if (!ours && buffer.getComponent(target, Frozen.getComponentType()) != null) {
+            return; // gelé par quelqu'un d'autre (/npc freeze, builder tools) : on n'y touche pas
+        }
         long expiry = System.nanoTime() + (long) (seconds * 1_000_000_000L);
         EXPIRIES.merge(target, expiry, Math::max);
-
-        if (buffer.getComponent(target, Frozen.getComponentType()) == null) {
-            buffer.addComponent(target, Frozen.getComponentType(), Frozen.get());
-        }
+        // ensureAndGetComponent est idempotent, même pour deux applications dans le même tick
+        // (un addComponent différé en double lèverait "Entity already contains component type").
+        buffer.ensureAndGetComponent(target, Frozen.getComponentType());
 
         long delayMs = (long) Math.ceil(seconds * 1000) + 50;
-        world.scheduleAfter(() -> world.execute(() -> unfreeze(world, target)), delayMs, TimeUnit.MILLISECONDS);
+        // scheduleAfter exécute déjà la tâche sur le thread du monde.
+        world.scheduleAfter(() -> unfreeze(world, target), delayMs, TimeUnit.MILLISECONDS);
     }
 
     @Override
@@ -106,6 +115,11 @@ public class RootNpcInteraction extends SimpleInstantInteraction implements Abil
         }
         Store<EntityStore> store = world.getEntityStore().getStore();
         store.tryRemoveComponent(target, Frozen.getComponentType());
+    }
+
+    /** Retire les entrées dont l'entité n'existe plus (monde déchargé, PNJ mort) : leur tâche ne viendra jamais. */
+    private static void pruneStaleExpiries() {
+        EXPIRIES.keySet().removeIf(ref -> !ref.isValid());
     }
 
     /** Oublie les échéances en cours (arrêt du plugin). Les composants restants partent avec le monde. */

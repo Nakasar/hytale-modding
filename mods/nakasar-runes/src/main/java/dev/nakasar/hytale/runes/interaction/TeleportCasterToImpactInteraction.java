@@ -77,8 +77,9 @@ public class TeleportCasterToImpactInteraction extends SimpleInstantInteraction 
             Vector3d from = casterTransform.getPosition();
             Vector3d dir = new Vector3d(target).sub(from);
             double len = dir.length();
-            if (len > backOffset) {
-                dir.div(len).mul(backOffset);
+            if (len > 1e-6) {
+                // Recule d'au plus BackOffset, sans jamais dépasser le lanceur lui-même.
+                dir.div(len).mul(Math.min(backOffset, len));
                 target.sub(dir);
             }
         }

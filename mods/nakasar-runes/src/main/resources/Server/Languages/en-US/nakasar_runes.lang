@@ -1,6 +1,6 @@
 # Nakasar ability runes — English texts
 items.Rune_Nakasar_VampireKiss.name = Vampire's Kiss
-items.Rune_Nakasar_VampireKiss.description = A melee strike that drains the target's life and heals you for the same amount.
+items.Rune_Nakasar_VampireKiss.description = A melee strike that drains the target's life: you recover 12 health per target hit.
 items.Rune_Nakasar_Domination.name = Domination
 items.Rune_Nakasar_Domination.description = A melee strike that turns the struck creature into an ally for a few seconds.
 items.Rune_Nakasar_Blink.name = Teleportation

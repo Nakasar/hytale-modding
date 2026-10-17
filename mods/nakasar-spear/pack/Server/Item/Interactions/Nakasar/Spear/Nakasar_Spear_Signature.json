@@ -11,6 +11,11 @@
     "Type": "Serial",
     "Interactions": [
       {
+        "Type": "ChangeStat",
+        "StatModifiers": { "SignatureEnergy": -100 },
+        "ValueType": "Percent"
+      },
+      {
         "Type": "Simple",
         "RunTime": 0.2,
         "Effects": {
@@ -36,11 +41,6 @@
       },
       { "Type": "Simple", "RunTime": 0.1 },
       "Nakasar_Spear_Signature_Spin",
-      {
-        "Type": "ChangeStat",
-        "StatModifiers": { "SignatureEnergy": -100 },
-        "ValueType": "Percent"
-      },
       { "Type": "CancelChain", "ChainId": "Nakasar_Spear_Combo" }
     ]
   }
