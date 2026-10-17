@@ -96,9 +96,10 @@ repris de la documentation communautaire sans avoir pu être contrôlés :
 - **Identifiants vanilla** : `Weapon_Bench` / `Weapon_Sword`, `Workbench` / `Workbench_Crafting`,
   `Ingredient_Bar_Iron`, `Ingredient_Leather_Light`, ressources `Rock` et `Wood_Trunk`, `PlayerAnimationsId: Block`,
   `BlockSoundSetId: Stone`, `BlockParticleSetId: Stone`, `ISS_Blocks_Wood`, `GatherType: Benches` et
-  `Furniture.Benches` sont lus dans `Server/Item/Items/Bench/Bench_Weapon.json` des assets 0.7.2 du jeu.
-  Restent non vérifiés : `Ingredient_Rune_Shard` (wikis), `BlockBreakingDecalId: Breaking_Decals_Rock` et les
-  sons `SFX_Workbench_Open` / `SFX_Workbench_Craft` (documentation communautaire). Le serveur valide ces ids au
+  `Furniture.Benches` sont lus dans `Server/Item/Items/Bench/Bench_Weapon.json` des assets 0.7.2 du jeu ;
+  `Ingredient_Rune_Shard` existe (`Server/Item/Items/Ingredient/Goblin/Ingredient_Rune_Shard.json`).
+  Restent non vérifiés : `BlockBreakingDecalId: Breaking_Decals_Rock` et les sons `SFX_Workbench_Open` /
+  `SFX_Workbench_Craft` (documentation communautaire). Le serveur valide ces ids au
   chargement : un id inconnu rejette l'asset entier et le journal le nomme.
 - **Modèle de l'autel** : `Common/Blocks/Nakasar/Sacrificial_Altar.blockymodel` est écrit à la main au format
   JSON du plugin Blockbench officiel (3 boîtes, 32 unités = 1 bloc, texture 64×64). Si le rendu ou les UV
