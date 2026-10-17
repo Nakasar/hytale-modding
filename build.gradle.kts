@@ -40,6 +40,7 @@ val validateJson = tasks.register("validateJson") {
     description = "Vérifie la syntaxe de tous les fichiers JSON des mods (assets et manifests)."
     val jsonFiles = fileTree("mods") {
         include("**/*.json")
+        include("**/*.blockymodel") // JSON aussi (modèles client)
         exclude("**/build/**", "**/.gradle/**")
     }
     inputs.files(jsonFiles)

@@ -8,7 +8,8 @@ les types `Nakasar_TeleportCasterToImpact`, `Nakasar_Dominate` et `Nakasar_RootN
 Fichiers communs : `Server/Abilities/Keywords/Nakasar_*.json` (mots-clés affichés sur les runes),
 `Server/Languages/{fr-FR,en-US}/nakasar_runes.lang` (noms et descriptions).
 
-Chaque rune suit le schéma vanilla : objet `Rune_Nakasar_<X>` (`Ability.Slot: Core`, coût en mana,
+Chaque rune suit le schéma vanilla (champs cosmétiques repris de `Rune_Fireball.json` : `Items.Ingredients`,
+`PlayerAnimationsId: Item`, `IconProperties`, `Scale 0.8`, `ISS_Items_Gems`) : objet `Rune_Nakasar_<X>` (`Ability.Slot: Core`, coût en mana,
 cooldown, mots-clés, attributs) → `Root_Nakasar_Ability_<X>` → `Nakasar_Ability_<X>_Cast`
 (`StatsCondition UseAbilityCost` → `Parallel` [ effet, `TriggerCooldown`, `ChangeStat` ]).
 
@@ -21,6 +22,38 @@ cooldown, mots-clés, attributs) → `Root_Nakasar_Ability_<X>` → `Nakasar_Abi
 
 Attributs lisibles par les runes de support : `Damage` (Vampire), `Duration`
 (Domination, Chaînes), `Speed` (projectiles).
+
+### Autel sacrificiel (`Nakasar_Sacrificial_Altar`)
+
+Objet-bloc (`Server/Item/Items/Bench/Nakasar/`) avec `BlockType.Bench` de type `Crafting`, id
+`Nakasar_Sacrificial_Altar`, un seul onglet `Nakasar_Altar_Runes` et un seul palier. Comme `Bench_Weapon.json`
+vanilla, le bloc déclare `BlockEntity.Components.BenchBlock` (l'entité de bloc qui porte l'établi) et
+`State.Definitions` avec les états `CraftCompleted` / `CraftCompletedInstant` que la fenêtre de craft bascule
+(`SimpleCraftingWindow`). `DrawType: Model`, `VariantRotation: NESW` +
+`RotationMode: FACING_PLAYER` (l'autel fait face au joueur), hitbox par défaut (cube plein : le modèle occupe
+toute la hauteur du bloc), aucune contrainte de support (se pose comme un bloc plein), et il se redonne
+lui-même à la casse (`Gathering.Breaking`).
+
+Recettes dans `Server/Item/Recipes/Nakasar/` (fichiers séparés, voir README pour la raison) :
+`Recipe_Nakasar_Sacrificial_Altar` à l'atelier de base `Workbench` / onglet `Workbench_Crafting` (10 `Rock`
+ressource, 2 `Ingredient_Bar_Iron`, 1 `Ingredient_Rune_Shard`, 5 s) et `Recipe_Nakasar_Rune_<X>` sur l'autel,
+onglet `Nakasar_Altar_Runes` (2 `Ingredient_Rune_Shard`, 1 s).
+
+Modèle `Common/Blocks/Nakasar/Sacrificial_Altar.blockymodel` (3 boîtes, grille centrée, 32 unités = 1 bloc) :
+socle 32×4×32 (y 0–4), pilier 16×20×16 (y 4–24), dalle 28×8×28 (y 24–32). Texture
+`Common/BlockTextures/Nakasar/Sacrificial_Altar.png` (64×64), générée par script, disposition des UV :
+
+| Zone (x, y, l×h) | Faces |
+|------------------|-------|
+| 0,0 32×32 | dessus / dessous du socle |
+| 32,0 28×28 | dessus / dessous de la dalle (rigole et flaque de sang) |
+| 32,28 16×16 | dessus / dessous du pilier |
+| 0,32 32×4 | côtés du socle |
+| 0,36 28×8 | côtés de la dalle (coulures) |
+| 0,44 16×20 et 16,44 16×20 | faces avant/arrière et gauche/droite du pilier (runes rouges) |
+
+Icônes `Common/Icons/Items/Nakasar/Sacrificial_Altar.png` (inventaire) et
+`Common/Icons/CraftingCategories/Nakasar/Runes.png` (onglet), 64×64, générées par le même script.
 
 ### Interactions Java
 
@@ -61,6 +94,13 @@ jauge `SignatureEnergy` (+20 max). Les dégâts sont surchargeables par objet vi
    (petite poussée + estoc 3,5 m, 16 dégâts chacun, cadence ~0,28 s)
 3. `Nakasar_Spear_Signature_Spin` : coup circulaire rayon 4 m, 40 dégâts, forte projection
 4. `CancelChain`
+
+### Recette
+
+`Server/Item/Recipes/Nakasar/Recipe_Nakasar_Spear_Iron.json` : établi de forgeron vanilla (`Bench.Id` `Weapon_Bench`, palier 1),
+4 `Ingredient_Bar_Iron`, 2 `Wood_Trunk` (ressource), 2 `Ingredient_Leather_Light`, 3,5 s. Le
+L'onglet est `Weapon_Sword` : l'établi vanilla n'a que `Weapon_Sword`, `Weapon_Mace`, `Weapon_Battleaxe`,
+`Weapon_Daggers` et `Weapon_Bow` (lu dans `Bench_Weapon.json` des assets 0.7.2).
 
 ### Réglages
 

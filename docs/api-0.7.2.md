@@ -69,6 +69,44 @@ Le JSON l'utilise ensuite avec `"Type": "Nakasar_MyInteraction"`.
 - `MovementEffects.DisableAll` ne bloque que les joueurs ; les PNJ ont besoin du composant `Frozen`.
 - `EntityStatsOnHit` crédite toujours l'attaquant : `Health` y fait un vol de vie.
 
+## Recettes et établis
+
+- Dossiers d'assets (`AssetRegistryLoader`) : `Item/Items`, `Item/Recipes`, `Item/Block/Hitboxes`, `Item/Groups`…
+  Les fichiers client (`.blockymodel`, textures, icônes) vont sous `Common/` du pack (`Blocks/`, `BlockTextures/`,
+  `Items/`, `Icons/`…) et sont référencés sans ce préfixe.
+- `CraftingRecipe` (fichier de `Item/Recipes` ou clé `Recipe` d'un objet) : `Input[]`, `Output[]`, `PrimaryOutput`,
+  `OutputQuantity`, `BenchRequirement[]`, `TimeSeconds`, `KnowledgeRequired`, `RequiredMemoriesLevel`.
+  Une recette inline prend l'objet porteur comme sortie et un id généré.
+- `MaterialQuantity` : `ItemId` **ou** `ResourceTypeId` **ou** `ItemTag`, `Quantity`, `Metadata`.
+- `BenchRequirement` : `Type` (`Crafting`, `Processing`, `DiagramCrafting`, `StructuralCrafting`), `Id`
+  (= `BlockType.Bench.Id`), `Categories[]` (= ids de `Bench.Categories[]`, une recette sans catégorie connue
+  n'apparaît nulle part : `BenchRecipeRegistry.categoryMap`), `RequiredTierLevel`, `RequiredAugmentTags`.
+  Un id d'établi inconnu est accepté sans erreur (`computeIfAbsent`).
+- `BlockType.Bench` : `Type`, `Id`, `DescriptiveLabel`, `TierLevels[]` (`UpgradeRequirement{Material[],TimeSeconds}`,
+  `CraftingTimeReductionModifier`, `ExtraInputSlot`, `ExtraOutputSlot`), sons `LocalOpenSoundEventId`,
+  `LocalCloseSoundEventId`, `CompletedSoundEventId`, `FailedSoundEventId`. `Crafting` ajoute `Categories[]`
+  (`Id`, `Name` — défaut `server.benchCategories.{id}` —, `Icon`, `ItemCategories[]`).
+- Le composant `BenchBlock` est posé par `BenchSystems.OnAddOrRemoved` sur les blocs qui ont un `Bench` et une
+  entité de bloc : les établis vanilla déclarent `BlockType.BlockEntity { Components: { BenchBlock: {} } }`. `BlockType.State` n'a qu'une clé, `Definitions` (map d'états → BlockType
+  partiels) ; la fenêtre de craft bascule les états `CraftCompleted` / `CraftCompletedInstant`
+  (`SimpleCraftingWindow`). Une clé `Id` dans `State` est ignorée (journal « unused keys »).
+- Validation : `Item.Icon`, `Bench.Categories[].Icon`, `CustomModel`, `CustomModelTexture` sont vérifiés contre
+  les fichiers `Common/` présents (`CommonAssetValidator`) ; `ItemSoundSetId`, `PlayerAnimationsId`,
+  `BlockBreakingDecalId`, `HitboxType` et `MaterialQuantity.ItemId` contre les assets chargés.
+- Établi d'armes vanilla (`Bench_Weapon.json`) : `Bench.Id` `Weapon_Bench`, onglets `Weapon_Sword`, `Weapon_Mace`,
+  `Weapon_Battleaxe`, `Weapon_Daggers`, `Weapon_Bow`, 3 paliers, `HitboxType: Bench_Weapon`, sons
+  `SFX_Weapon_Bench_Open/Close/Craft`. Un échec de
+  validation rejette **tout** l'asset (`AssetStore.recordFailedToLoad`), pas seulement le champ : d'où les
+  recettes en fichiers séparés. `BlockSoundSetId` et `PhysicalMaterialId` inconnus ne font qu'un avertissement.
+- `Support` = faces de support **requises** (`RequiredBlockFaceSupport`) ; `Supporting` = faces offertes. Les interactions d'ouverture par
+  défaut sont `*Simple_Crafting_Default`, `*Diagram_Crafting_Default`, `*Structural_Crafting_Default`.
+- `BlockType` utile : `DrawType` (`Cube`, `Model`, `CubeWithModel`…), `CustomModel`, `CustomModelTexture[]`,
+  `Material` (`Solid`/`Empty`), `Opacity` (`Solid`, `Semitransparent`, `Cutout`, `Transparent`),
+  `VariantRotation` (`None`, `NESW`, `UpDownNESW`…), `PlacementSettings.RotationMode` (`FACING_PLAYER`,
+  `BLOCK_NORMAL`…), `HitboxType` (défaut `Full`), `Gathering.Breaking{GatherType, ItemId, Quantity, DropList}`.
+- `.blockymodel` = JSON : `nodes[]` avec `position`, `orientation` (quaternion), `shape{type, offset, size,
+  stretch, textureLayout, settings}`, `children[]` (`BlockyModelBoundsParser`).
+
 ## Portails et instances (fragment Halloween)
 
 - L'Ancienne passerelle (`Portal_Device`) accepte tout objet qui a un bloc `PortalKey`

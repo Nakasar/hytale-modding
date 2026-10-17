@@ -1,0 +1,88 @@
+{
+  "TranslationProperties": {
+    "Name": "nakasar_runes.items.Nakasar_Sacrificial_Altar.name",
+    "Description": "nakasar_runes.items.Nakasar_Sacrificial_Altar.description"
+  },
+  "Quality": "Rare",
+  "Categories": [
+    "Furniture.Benches"
+  ],
+  "Icon": "Icons/Items/Nakasar/Sacrificial_Altar.png",
+  "PlayerAnimationsId": "Block",
+  "MaxStack": 1,
+  "Tags": {
+    "Type": [
+      "Bench"
+    ]
+  },
+  "BlockType": {
+    "Material": "Solid",
+    "DrawType": "Model",
+    "Opacity": "Transparent",
+    "CustomModel": "Blocks/Nakasar/Sacrificial_Altar.blockymodel",
+    "CustomModelTexture": [
+      {
+        "Texture": "BlockTextures/Nakasar/Sacrificial_Altar.png",
+        "Weight": 1
+      }
+    ],
+    "VariantRotation": "NESW",
+    "PlacementSettings": {
+      "RotationMode": "FACING_PLAYER"
+    },
+    "BlockEntity": {
+      "Components": {
+        "BenchBlock": {}
+      }
+    },
+    "State": {
+      "Definitions": {
+        "CraftCompleted": {
+          "Looping": true
+        },
+        "CraftCompletedInstant": {}
+      }
+    },
+    "Gathering": {
+      "Breaking": {
+        "GatherType": "Benches",
+        "ItemId": "Nakasar_Sacrificial_Altar"
+      }
+    },
+    "BlockSoundSetId": "Stone",
+    "BlockBreakingDecalId": "Breaking_Decals_Rock",
+    "ParticleColor": "#7a1020",
+    "Bench": {
+      "Type": "Crafting",
+      "Id": "Nakasar_Sacrificial_Altar",
+      "LocalOpenSoundEventId": "SFX_Workbench_Open",
+      "CompletedSoundEventId": "SFX_Workbench_Craft",
+      "Categories": [
+        {
+          "Id": "Nakasar_Altar_Runes",
+          "Name": "nakasar_runes.benchCategories.nakasar_altar_runes",
+          "Icon": "Icons/CraftingCategories/Nakasar/Runes.png"
+        }
+      ],
+      "TierLevels": [
+        {
+          "CraftingTimeReductionModifier": 0.0
+        }
+      ]
+    },
+    "BlockParticleSetId": "Stone"
+  },
+  "ItemSoundSetId": "ISS_Blocks_Wood",
+  "IconProperties": {
+    "Scale": 0.37,
+    "Translation": [
+      18.7,
+      -15
+    ],
+    "Rotation": [
+      22.5,
+      45,
+      22.5
+    ]
+  }
+}
