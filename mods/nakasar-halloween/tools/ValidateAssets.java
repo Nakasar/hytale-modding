@@ -140,13 +140,17 @@ public class ValidateAssets {
 
     private static final Pattern PREFAB_PATH = Pattern.compile("\"Path\"\\s*:\\s*\"([^\"]+)\"");
 
-    /** Les props Prefab référencent un fichier ou un dossier relatif à Server/ : il doit exister dans le pack. */
+    /**
+     * Les props Prefab référencent un fichier (avec son extension) ou un dossier relatif à Server/Prefabs/,
+     * comme PrefabPropAsset.loadPrefabBuffersFrom : il doit exister dans le pack. Le serveur ignore sans
+     * rien dire un chemin introuvable, d'où cette vérification.
+     */
     private static void checkPrefabPaths(Path root, Path file, List<String> problems) throws Exception {
         Matcher matcher = PREFAB_PATH.matcher(Files.readString(file));
         while (matcher.find()) {
             String path = matcher.group(1);
-            Path target = root.resolve(path);
-            boolean found = Files.isRegularFile(root.resolve(path + ".prefab.json"));
+            Path target = root.resolve("Prefabs").resolve(path);
+            boolean found = Files.isRegularFile(target) && path.endsWith(".json");
             if (!found && Files.isDirectory(target)) {
                 try (Stream<Path> walk = Files.walk(target)) {
                     found = walk.anyMatch(p -> p.toString().endsWith(".prefab.json"));

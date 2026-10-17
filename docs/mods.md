@@ -116,17 +116,24 @@ Fragment d'Orbis ouvert depuis l'Ancienne passerelle vanilla (`Portal_Device`) a
 
 ### Génération (`tools/generate_worldgen.py`)
 
+- **Forme** : île flottante circulaire au-dessus du vide, comme les fragments du jeu de base. Rayon
+  `ISLAND_RADIUS` = 170 (bord réel vers 155-160 blocs du centre) : le sol descend de 24 blocs à partir
+  de 140 blocs, le dessous est un cône de roche bosselé (jusqu'à y ≈ 17 au centre). Densité du
+  terrain = `Min(dessus, dessous)`, la distance au centre venant d'un nœud `Axis` (axe Y).
 - **Terrain** : plaine vallonnée autour de y = 81 (deux bruits simplex), sol d'herbe et de terre
   brûlées, couches de terre, gravier puis pierre / ardoise / schiste.
 - **Aplanissement** : les positions des structures sont exportées (`ExportAs`) et réutilisées par le
-  terrain : le relief tombe à zéro dans un rayon de 34 blocs autour de chaque structure, pour qu'elle
+  terrain : le relief tombe à zéro dans un rayon de 30 blocs (plein relief à 50) autour de chaque structure, pour qu'elle
   repose à plat.
-- **Structures aléatoires** : une maille de 150 blocs (avec jitter) tire une structure par cellule,
-  à plus de 110 blocs du point d'apparition et du château du comte. Poids : crypte 3, champ de
+- **Structures aléatoires** : une maille de 60 blocs (jitter 0,15) tire une structure par cellule,
+  à moins de 116 blocs du centre, à plus de 45 blocs du point d'apparition et de 64 blocs du château
+  du comte (7 à 9 structures par instance d'après une simulation hors jeu). Poids : crypte 3, champ de
   citrouilles 3, château hanté 2, cimetière hanté / araignées / morts-vivants 1,5 chacun.
-- **Château du comte** : toujours à 190 blocs au nord du point d'apparition (objectif du portail).
+- **Château du comte** : toujours à 110 blocs au nord du point d'apparition (objectif du portail).
 - **Décor** : arbres morts et pendus (maille de 13), tas d'os, tombes isolées, nids d'araignées,
-  citrouilles (maille de 29), plantes mortes et toiles (maille de 3).
+  citrouilles (maille de 29), plantes mortes et toiles (maille de 3). Arbres et décor restent à
+  moins de 150 blocs du centre pour ne pas dépasser du bord.
+- **Chemins des prefabs** : relatifs à `Server/Prefabs/` (`Nakasar/Halloween/Crypts`), pas à `Server/`.
 - **Environnements** : `Nakasar_Env_Halloween_Haunted` à moins de 45 blocs d'une structure (PNJ plus
   dangereux, densité plus forte), `Nakasar_Env_Halloween` ailleurs.
 

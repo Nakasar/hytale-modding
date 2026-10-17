@@ -120,7 +120,11 @@ Le JSON l'utilise ensuite avec `"Type": "Nakasar_MyInteraction"`.
   (`Density`, `Props`, `Positions`...) sont enregistrés dans l'initialiseur statique de
   `builtin.hytalegenerator.assets.AssetManager`. Un `ExportAs` déclare un nom global réutilisable
   par `Imported`.
-- Un prop `Prefab` prend des chemins relatifs à `Server/` (`Prefabs/...`), fichier ou dossier.
+- Un prop `Prefab` prend des chemins relatifs à `Server/Prefabs/` de chaque pack (`Nakasar/Halloween/Crypts`),
+  fichier ou dossier (`PrefabPropAsset.loadPrefabBuffersFrom`). Un chemin introuvable ne logue rien et donne
+  un prop vide : écrire `Prefabs/...` faisait disparaître toutes les structures (bug vu en jeu le 2026-10-17).
+- Distance horizontale au centre du monde : densité `Axis` avec `"Axis": {"X": 0, "Y": 1, "Z": 0}` et une
+  `Curve`. Les courbes `Manual` sont plates avant le premier point et après le dernier.
 - Format prefab JSON : `version` 8, `blocks[{x,y,z,name,rotation}]`, nom avec préfixe de
   probabilité possible (`70%Bloc`), rotation = roll×16 + pitch×4 + yaw.
 - `Environment` exige `WeatherForecasts` pour les 24 heures et `WeatherForecastSeed`.
