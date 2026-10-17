@@ -1,0 +1,16 @@
+{
+  "Parent": "DamageEntityParent",
+  "DamageCalculator": {
+    "BaseDamage": { "Physical": 12 },
+    "Class": "Light",
+    "RandomPercentageModifier": 0.1
+  },
+  "DamageEffects": {
+    "WorldSoundEventId": "SFX_Sword_T2_Impact",
+    "LocalSoundEventId": "SFX_Sword_T2_Impact",
+    "WorldParticles": [ { "SystemId": "Impact_Sword_Basic_Stronk" } ]
+  },
+  "EntityStatsOnHit": [
+    { "EntityStatId": "SignatureEnergy", "Amount": 2 }
+  ]
+}

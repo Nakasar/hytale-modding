@@ -1,0 +1,44 @@
+{
+  "Type": "Simple",
+  "RunTime": 0.06,
+  "Effects": {
+    "ItemAnimationId": "SwingDown",
+    "WorldSoundEventId": "SFX_Light_Melee_T2_Swing"
+  },
+  "Next": {
+    "Type": "Serial",
+    "Interactions": [
+      {
+        "Type": "ApplyForce",
+        "Direction": { "X": 0, "Y": 0, "Z": -1 },
+        "Force": 3,
+        "AdjustVertical": false,
+        "WaitForGround": false,
+        "ChangeVelocityType": "Add"
+      },
+      {
+        "Type": "Selector",
+        "RunTime": 0.08,
+        "Selector": {
+          "Id": "Stab",
+          "TestLineOfSight": true,
+          "ExtendTop": 0.6,
+          "ExtendBottom": 0.6,
+          "ExtendLeft": 0.6,
+          "ExtendRight": 0.6,
+          "StartDistance": 0,
+          "EndDistance": 3.5
+        },
+        "HitEntity": {
+          "Interactions": [ {
+            "Type": "Replace",
+            "Var": "Signature_Rush_Damage",
+            "DefaultOk": true,
+            "DefaultValue": { "Interactions": ["Nakasar_Spear_Signature_Rush_Damage"] }
+          } ]
+        }
+      },
+      { "Type": "Simple", "RunTime": 0.14 }
+    ]
+  }
+}

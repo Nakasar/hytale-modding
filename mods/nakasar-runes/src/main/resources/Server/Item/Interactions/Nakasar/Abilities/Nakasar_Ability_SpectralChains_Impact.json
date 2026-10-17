@@ -1,0 +1,24 @@
+{
+  "Type": "TriggerAbilityFX",
+  "SystemId": "Ability_GroundSlam_Spike",
+  "SoundEventId": "SFX_Ability_Ground_Slam_Spike_Erupt",
+  "Scale": 1.5,
+  "Color": "#7fd6ff",
+  "Next": {
+    "Type": "Serial",
+    "Interactions": [
+      {
+        "Type": "ApplyEffect",
+        "EffectId": "Nakasar_Spectral_Chains",
+        "Entity": "Target",
+        "Duration": 3,
+        "DurationAttribute": "Duration"
+      },
+      {
+        "Type": "Nakasar_RootNpc",
+        "Duration": 3,
+        "DurationAttribute": "Duration"
+      }
+    ]
+  }
+}

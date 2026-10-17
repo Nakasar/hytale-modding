@@ -1,0 +1,33 @@
+{
+  "Type": "Simple",
+  "RunTime": 0.2,
+  "Effects": {
+    "ItemAnimationId": "SwingLeft",
+    "WorldSoundEventId": "SFX_Axe_Special_Swing"
+  },
+  "Next": {
+    "Type": "Serial",
+    "Interactions": [
+      {
+        "Type": "Selector",
+        "RunTime": 0.15,
+        "IgnoreOwner": true,
+        "Selector": {
+          "Id": "AOECircle",
+          "Range": 3.5,
+          "Offset": { "X": 0, "Y": 0.8, "Z": 0 }
+        },
+        "HitEntity": {
+          "Interactions": [ {
+            "Type": "Replace",
+            "Var": "Spin_Charged_Damage",
+            "DefaultOk": true,
+            "DefaultValue": { "Interactions": ["Nakasar_Spear_Spin_Charged_Damage"] }
+          } ]
+        }
+      },
+      { "Type": "Simple", "RunTime": 0.45 },
+      { "Type": "CancelChain", "ChainId": "Nakasar_Spear_Combo" }
+    ]
+  }
+}

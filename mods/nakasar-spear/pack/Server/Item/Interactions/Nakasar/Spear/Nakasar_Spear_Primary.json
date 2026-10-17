@@ -1,0 +1,15 @@
+{
+  "Type": "Charging",
+  "Effects": {
+    "ItemAnimationId": "ThrowCharging",
+    "LocalSoundEventId": "SFX_Spear_Throw_Charge_Local",
+    "WorldSoundEventId": "SFX_Spear_Throw_Charge",
+    "ClearAnimationOnFinish": true
+  },
+  "AllowIndefiniteHold": true,
+  "HorizontalSpeedMultiplier": 0.7,
+  "Next": {
+    "0": "Nakasar_Spear_Combo",
+    "0.8": "Nakasar_Spear_Spin_Charged"
+  }
+}

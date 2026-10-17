@@ -1,0 +1,12 @@
+# Runes d'abilités Nakasar — textes français
+items.Rune_Nakasar_VampireKiss.name = Baiser du Vampire
+items.Rune_Nakasar_VampireKiss.description = Un coup de mêlée qui draine la vie de la cible et vous soigne d'autant.
+items.Rune_Nakasar_Domination.name = Domination
+items.Rune_Nakasar_Domination.description = Une frappe de mêlée qui rend la créature touchée alliée pendant quelques secondes.
+items.Rune_Nakasar_Blink.name = Téléportation
+items.Rune_Nakasar_Blink.description = Lance un projectile et vous téléporte à son point d'impact.
+items.Rune_Nakasar_SpectralChains.name = Chaînes spectrales
+items.Rune_Nakasar_SpectralChains.description = Un projectile qui fait jaillir des chaînes du sol et immobilise la cible touchée quelques secondes.
+ui.abilityKeywords.Nakasar_Lifesteal = Vol de vie
+ui.abilityKeywords.Nakasar_Control = Contrôle
+ui.abilityKeywords.Nakasar_Teleport = Téléportation

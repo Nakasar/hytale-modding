@@ -1,0 +1,22 @@
+{
+  "TranslationProperties": {
+    "Name": "nakasar_runes.items.Rune_Nakasar_Domination.name",
+    "Description": "nakasar_runes.items.Rune_Nakasar_Domination.description"
+  },
+  "Icon": "Icons/ItemsGenerated/Rune_Fireball.png",
+  "Model": "Items/Runes/Rune_Ability.blockymodel",
+  "Texture": "Items/Runes/Rune_Textures/Rune_Ability_Fireball.png",
+  "Quality": "Epic",
+  "MaxStack": 1,
+  "Ability": {
+    "Slot": "Core",
+    "Cooldown": 12,
+    "Cost": 45,
+    "CostType": "Mana",
+    "AbilityKeywords": ["Melee", "Duration", "Nakasar_Control"],
+    "Attributes": {
+      "Duration": 6
+    },
+    "Cast": "Root_Nakasar_Ability_Domination"
+  }
+}

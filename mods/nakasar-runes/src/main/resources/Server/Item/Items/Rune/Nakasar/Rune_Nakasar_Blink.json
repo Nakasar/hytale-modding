@@ -1,0 +1,22 @@
+{
+  "TranslationProperties": {
+    "Name": "nakasar_runes.items.Rune_Nakasar_Blink.name",
+    "Description": "nakasar_runes.items.Rune_Nakasar_Blink.description"
+  },
+  "Icon": "Icons/ItemsGenerated/Rune_Fireball.png",
+  "Model": "Items/Runes/Rune_Ability.blockymodel",
+  "Texture": "Items/Runes/Rune_Textures/Rune_Ability_Fireball.png",
+  "Quality": "Rare",
+  "MaxStack": 1,
+  "Ability": {
+    "Slot": "Core",
+    "Cooldown": 8,
+    "Cost": 35,
+    "CostType": "Mana",
+    "AbilityKeywords": ["Projectile", "Nakasar_Teleport"],
+    "Attributes": {
+      "Speed": 1
+    },
+    "Cast": "Root_Nakasar_Ability_Blink"
+  }
+}
