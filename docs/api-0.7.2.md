@@ -128,3 +128,6 @@ Le JSON l'utilise ensuite avec `"Type": "Nakasar_MyInteraction"`.
 - Pour décoder un asset hors serveur (`tools/ValidateAssets.java`) : `Options.parse`, un
   `HytaleServer` factice qui porte un `EventBus`, l'initialisation d'`AssetRegistryLoader`, et un
   `AssetExtraInfo` pour les codecs `ContainedAssetCodec`.
+- Les enums des assets (`EnumCodec` en style `CAMEL_CASE`) s'écrivent en CamelCase : `"RotationMode": "FacingPlayer"`,
+  pas le nom Java `FACING_PLAYER` (refusé : « Failed to find enum value »). Le `BlockType` d'un objet n'est pas
+  décodé par `Item.CODEC` : `ValidateAssets` ne voit donc pas ces erreurs.
