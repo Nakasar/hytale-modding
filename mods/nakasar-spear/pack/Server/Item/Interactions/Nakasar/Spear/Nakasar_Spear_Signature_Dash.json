@@ -1,0 +1,19 @@
+{
+  "Type": "ApplyForce",
+  "RunTime": 0.55,
+  "Duration": 0.55,
+  "Direction": { "X": 0, "Y": 0, "Z": -1 },
+  "Force": 16,
+  "AdjustVertical": false,
+  "ChangeVelocityType": "Set",
+  "WaitForGround": false,
+  "WaitForCollision": false,
+  "VelocityConfig": {
+    "GroundResistance": 0.95,
+    "AirResistance": 0.97
+  },
+  "Effects": {
+    "WorldSoundEventId": "SFX_Light_Melee_T2_Swing",
+    "MovementEffects": { "DisableJump": true, "DisableBackward": true }
+  }
+}

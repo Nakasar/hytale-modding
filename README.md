@@ -117,8 +117,9 @@ repris de la documentation communautaire sans avoir pu être contrôlés :
   grandes ou trop petites, ajuster `InitialAnimationFrame.Scale` dans
   `Server/Particles/Nakasar/Nakasar_Spectral_Chain_Rise.particlespawner` (idem `Nakasar_Blood_Drain`).
   La hauteur de départ (sous le sol) est le `PositionOffset.Y` du `.particlesystem`.
-- **Sens de la ruée** : `ApplyForce` avec `Z: -1` doit pousser vers l'avant ; inverser le signe si le
-  joueur recule.
+- **Ruée de l'ultime** (`Nakasar_Spear_Signature_Dash.json`) : poussée continue de 0,55 s (`Duration`)
+  lancée en parallèle des estocs. `Z: -1` doit pousser vers l'avant ; inverser le signe si le joueur
+  recule. Régler la distance avec `Force` (vitesse) et `Duration`.
 - **Identifiants vanilla** : `Weapon_Bench` / `Weapon_Sword`, `Workbench` / `Workbench_Crafting`,
   `Ingredient_Bar_Iron`, `Ingredient_Leather_Light`, ressources `Rock` et `Wood_Trunk`, `PlayerAnimationsId: Block`,
   `BlockSoundSetId: Stone`, `BlockParticleSetId: Stone`, `ISS_Blocks_Wood`, `GatherType: Benches` et
@@ -127,11 +128,13 @@ repris de la documentation communautaire sans avoir pu être contrôlés :
   Restent non vérifiés : `BlockBreakingDecalId: Breaking_Decals_Rock` et les sons `SFX_Workbench_Open` /
   `SFX_Workbench_Craft` (documentation communautaire). Le serveur valide ces ids au
   chargement : un id inconnu rejette l'asset entier et le journal le nomme.
-- **Modèle de l'autel** : `Common/Blocks/Nakasar/Sacrificial_Altar.blockymodel` est écrit à la main au format
-  JSON du plugin Blockbench officiel (3 boîtes, 32 unités = 1 bloc, texture 64×64). Si le rendu ou les UV
-  sont faux, l'ouvrir dans Blockbench avec le plugin Hytale et le réexporter. L'icône d'inventaire et celle de
-  l'onglet « Runes » sont des PNG 64×64 dessinés par script dans `Common/Icons/` (le serveur vérifie que les
-  fichiers d'icône existent).
+- **Modèle de l'autel** : modèle, texture, hitbox et icône sont générés par
+  `mods/nakasar-runes/tools/generate_altar.py` (format JSON du plugin Blockbench officiel, 32 unités = 1 bloc).
+  À vérifier en jeu : l'autel occupe 2×2×1 blocs (large × haut × profond) et doit se poser avec ses blocs de
+  remplissage ; le sens des pièces pivotées (`orientation`), le côté « avant » (crâne et dague d'un côté de la
+  dalle) et le cadrage de l'icône 3D (`IconProperties`, repris de l'établi d'alchimie). Si le rendu ou les UV
+  sont faux, ouvrir le `.blockymodel` dans Blockbench avec le plugin Hytale, ou corriger le script et le
+  relancer.
 
 Fragment Halloween :
 

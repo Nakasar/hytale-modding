@@ -14,7 +14,7 @@
           {
             "X": 0,
             "Y": 81,
-            "Z": -190
+            "Z": -110
           }
         ],
         "ExportAs": "Nakasar_Halloween_Landmark_Positions"
@@ -44,105 +44,208 @@
   "Terrain": {
     "Type": "DAOTerrain",
     "Density": {
-      "Type": "Sum",
+      "Type": "Min",
       "Inputs": [
         {
-          "Type": "Multiplier",
+          "Type": "Sum",
           "Inputs": [
             {
-              "Type": "YValue"
-            },
-            {
-              "Type": "Constant",
-              "Value": -0.125
-            }
-          ]
-        },
-        {
-          "Type": "Constant",
-          "Value": 10.0625
-        },
-        {
-          "Type": "Multiplier",
-          "Inputs": [
-            {
-              "Type": "Sum",
+              "Type": "Multiplier",
               "Inputs": [
                 {
-                  "Type": "Multiplier",
-                  "Inputs": [
-                    {
-                      "Type": "SimplexNoise2D",
-                      "Scale": 140.0,
-                      "Octaves": 3,
-                      "Lacunarity": 2.0,
-                      "Persistence": 0.5,
-                      "Seed": "Hills"
-                    },
-                    {
-                      "Type": "Constant",
-                      "Value": 1.0
-                    }
-                  ]
+                  "Type": "YValue"
                 },
                 {
-                  "Type": "Multiplier",
-                  "Inputs": [
-                    {
-                      "Type": "SimplexNoise2D",
-                      "Scale": 32.0,
-                      "Octaves": 2,
-                      "Lacunarity": 2.0,
-                      "Persistence": 0.5,
-                      "Seed": "Bumps"
-                    },
-                    {
-                      "Type": "Constant",
-                      "Value": 0.3
-                    }
-                  ]
+                  "Type": "Constant",
+                  "Value": -0.125
                 }
               ]
             },
             {
-              "Type": "PositionsCellNoise",
-              "Positions": {
-                "Type": "Union",
-                "Positions": [
-                  {
-                    "Type": "Imported",
-                    "Name": "Nakasar_Halloween_Structure_Positions"
-                  },
-                  {
-                    "Type": "Imported",
-                    "Name": "Nakasar_Halloween_Landmark_Positions"
-                  }
-                ]
-              },
-              "ReturnType": {
-                "Type": "Curve",
-                "Curve": {
-                  "Type": "Manual",
-                  "Points": [
+              "Type": "Constant",
+              "Value": 10.0625
+            },
+            {
+              "Type": "Multiplier",
+              "Inputs": [
+                {
+                  "Type": "Sum",
+                  "Inputs": [
                     {
-                      "In": 0,
-                      "Out": 0
+                      "Type": "Multiplier",
+                      "Inputs": [
+                        {
+                          "Type": "SimplexNoise2D",
+                          "Scale": 140.0,
+                          "Octaves": 3,
+                          "Lacunarity": 2.0,
+                          "Persistence": 0.5,
+                          "Seed": "Hills"
+                        },
+                        {
+                          "Type": "Constant",
+                          "Value": 1.0
+                        }
+                      ]
                     },
                     {
-                      "In": 34,
-                      "Out": 0
-                    },
-                    {
-                      "In": 62,
-                      "Out": 1
+                      "Type": "Multiplier",
+                      "Inputs": [
+                        {
+                          "Type": "SimplexNoise2D",
+                          "Scale": 32.0,
+                          "Octaves": 2,
+                          "Lacunarity": 2.0,
+                          "Persistence": 0.5,
+                          "Seed": "Bumps"
+                        },
+                        {
+                          "Type": "Constant",
+                          "Value": 0.3
+                        }
+                      ]
                     }
                   ]
+                },
+                {
+                  "Type": "PositionsCellNoise",
+                  "Positions": {
+                    "Type": "Union",
+                    "Positions": [
+                      {
+                        "Type": "Imported",
+                        "Name": "Nakasar_Halloween_Structure_Positions"
+                      },
+                      {
+                        "Type": "Imported",
+                        "Name": "Nakasar_Halloween_Landmark_Positions"
+                      }
+                    ]
+                  },
+                  "ReturnType": {
+                    "Type": "Curve",
+                    "Curve": {
+                      "Type": "Manual",
+                      "Points": [
+                        {
+                          "In": 0,
+                          "Out": 0
+                        },
+                        {
+                          "In": 30,
+                          "Out": 0
+                        },
+                        {
+                          "In": 50,
+                          "Out": 1
+                        }
+                      ]
+                    }
+                  },
+                  "DistanceFunction": {
+                    "Type": "Euclidean"
+                  },
+                  "MaxDistance": 52.0
                 }
+              ]
+            },
+            {
+              "Type": "Axis",
+              "Axis": {
+                "X": 0.0,
+                "Y": 1.0,
+                "Z": 0.0
               },
-              "DistanceFunction": {
-                "Type": "Euclidean"
+              "IsAnchored": false,
+              "Curve": {
+                "Type": "Manual",
+                "Points": [
+                  {
+                    "In": 0,
+                    "Out": 0
+                  },
+                  {
+                    "In": 140.0,
+                    "Out": 0
+                  },
+                  {
+                    "In": 170.0,
+                    "Out": -3.0
+                  }
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "Type": "Sum",
+          "Inputs": [
+            {
+              "Type": "Multiplier",
+              "Inputs": [
+                {
+                  "Type": "YValue"
+                },
+                {
+                  "Type": "Constant",
+                  "Value": 0.125
+                }
+              ]
+            },
+            {
+              "Type": "Axis",
+              "Axis": {
+                "X": 0.0,
+                "Y": 1.0,
+                "Z": 0.0
               },
-              "MaxDistance": 70.0
+              "IsAnchored": false,
+              "Curve": {
+                "Type": "Manual",
+                "Points": [
+                  {
+                    "In": 0.0,
+                    "Out": -2.125
+                  },
+                  {
+                    "In": 68.0,
+                    "Out": -3.625
+                  },
+                  {
+                    "In": 118.99999999999999,
+                    "Out": -6.125
+                  },
+                  {
+                    "In": 153.0,
+                    "Out": -8.125
+                  },
+                  {
+                    "In": 170.0,
+                    "Out": -9.125
+                  },
+                  {
+                    "In": 171.0,
+                    "Out": -35.125
+                  }
+                ]
+              }
+            },
+            {
+              "Type": "Multiplier",
+              "Inputs": [
+                {
+                  "Type": "SimplexNoise2D",
+                  "Scale": 22.0,
+                  "Octaves": 2,
+                  "Lacunarity": 2.0,
+                  "Persistence": 0.5,
+                  "Seed": "Underside"
+                },
+                {
+                  "Type": "Constant",
+                  "Value": 0.8
+                }
+              ]
             }
           ]
         }
@@ -291,52 +394,131 @@
           "Type": "Positions",
           "Positions": {
             "Type": "FieldFunction",
-            "ExportAs": "Nakasar_Halloween_Structure_Positions",
             "FieldFunction": {
-              "Type": "PositionsCellNoise",
-              "Positions": {
-                "Type": "Imported",
-                "Name": "Nakasar_Halloween_Landmark_Positions"
+              "Type": "Axis",
+              "Axis": {
+                "X": 0.0,
+                "Y": 1.0,
+                "Z": 0.0
               },
-              "ReturnType": {
-                "Type": "Curve",
-                "Curve": {
-                  "Type": "Manual",
-                  "Points": [
-                    {
-                      "In": 0,
-                      "Out": 0
-                    },
-                    {
-                      "In": 200,
-                      "Out": 200
-                    }
-                  ]
-                }
-              },
-              "DistanceFunction": {
-                "Type": "Euclidean"
-              },
-              "MaxDistance": 200.0
+              "IsAnchored": false,
+              "Curve": {
+                "Type": "Manual",
+                "Points": [
+                  {
+                    "In": 0,
+                    "Out": 0
+                  },
+                  {
+                    "In": 170.0,
+                    "Out": 170.0
+                  }
+                ]
+              }
             },
             "Delimiters": [
               {
-                "Min": 110.0,
-                "Max": 1000000000.0
+                "Min": 0.0,
+                "Max": 116.0
               }
             ],
             "Positions": {
-              "Type": "Mesh2D",
-              "PointsY": 81,
-              "PointGenerator": {
-                "Type": "Mesh",
-                "ScaleX": 150.0,
-                "ScaleY": 150.0,
-                "ScaleZ": 150.0,
-                "Jitter": 0.25,
-                "Seed": "Structures"
+              "Type": "FieldFunction",
+              "FieldFunction": {
+                "Type": "PositionsCellNoise",
+                "Positions": {
+                  "Type": "List",
+                  "Positions": [
+                    {
+                      "X": 0,
+                      "Y": 81,
+                      "Z": 0
+                    }
+                  ]
+                },
+                "ReturnType": {
+                  "Type": "Curve",
+                  "Curve": {
+                    "Type": "Manual",
+                    "Points": [
+                      {
+                        "In": 0,
+                        "Out": 0
+                      },
+                      {
+                        "In": 46.0,
+                        "Out": 46.0
+                      }
+                    ]
+                  }
+                },
+                "DistanceFunction": {
+                  "Type": "Euclidean"
+                },
+                "MaxDistance": 46.0
+              },
+              "Delimiters": [
+                {
+                  "Min": 45.0,
+                  "Max": 1000000000.0
+                }
+              ],
+              "Positions": {
+                "Type": "FieldFunction",
+                "FieldFunction": {
+                  "Type": "PositionsCellNoise",
+                  "Positions": {
+                    "Type": "List",
+                    "Positions": [
+                      {
+                        "X": 0,
+                        "Y": 81,
+                        "Z": -110
+                      }
+                    ]
+                  },
+                  "ReturnType": {
+                    "Type": "Curve",
+                    "Curve": {
+                      "Type": "Manual",
+                      "Points": [
+                        {
+                          "In": 0,
+                          "Out": 0
+                        },
+                        {
+                          "In": 65.0,
+                          "Out": 65.0
+                        }
+                      ]
+                    }
+                  },
+                  "DistanceFunction": {
+                    "Type": "Euclidean"
+                  },
+                  "MaxDistance": 65.0
+                },
+                "Delimiters": [
+                  {
+                    "Min": 64.0,
+                    "Max": 1000000000.0
+                  }
+                ],
+                "Positions": {
+                  "Type": "Mesh2D",
+                  "PointsY": 81,
+                  "PointGenerator": {
+                    "Type": "Mesh",
+                    "ScaleX": 60.0,
+                    "ScaleY": 60.0,
+                    "ScaleZ": 60.0,
+                    "Jitter": 0.15,
+                    "Seed": "Structures"
+                  }
+                }
               }
-            }
+            },
+            "ExportAs": "Nakasar_Halloween_Structure_Positions"
           }
         },
         "Assignments": {
@@ -389,7 +571,7 @@
                       "Type": "Prefab",
                       "WeightedPrefabPaths": [
                         {
-                          "Path": "Prefabs/Nakasar/Halloween/Crypts",
+                          "Path": "Nakasar/Halloween/Crypts",
                           "Weight": 1.0
                         }
                       ]
@@ -443,7 +625,7 @@
                       "Type": "Prefab",
                       "WeightedPrefabPaths": [
                         {
-                          "Path": "Prefabs/Nakasar/Halloween/Cemeteries/Haunted",
+                          "Path": "Nakasar/Halloween/Cemeteries/Haunted",
                           "Weight": 1.0
                         }
                       ]
@@ -497,7 +679,7 @@
                       "Type": "Prefab",
                       "WeightedPrefabPaths": [
                         {
-                          "Path": "Prefabs/Nakasar/Halloween/Cemeteries/Spiders",
+                          "Path": "Nakasar/Halloween/Cemeteries/Spiders",
                           "Weight": 1.0
                         }
                       ]
@@ -551,7 +733,7 @@
                       "Type": "Prefab",
                       "WeightedPrefabPaths": [
                         {
-                          "Path": "Prefabs/Nakasar/Halloween/Cemeteries/Undead",
+                          "Path": "Nakasar/Halloween/Cemeteries/Undead",
                           "Weight": 1.0
                         }
                       ]
@@ -605,7 +787,7 @@
                       "Type": "Prefab",
                       "WeightedPrefabPaths": [
                         {
-                          "Path": "Prefabs/Nakasar/Halloween/PumpkinFields",
+                          "Path": "Nakasar/Halloween/PumpkinFields",
                           "Weight": 1.0
                         }
                       ]
@@ -659,7 +841,7 @@
                       "Type": "Prefab",
                       "WeightedPrefabPaths": [
                         {
-                          "Path": "Prefabs/Nakasar/Halloween/HauntedCastles",
+                          "Path": "Nakasar/Halloween/HauntedCastles",
                           "Weight": 1.0
                         }
                       ]
@@ -686,7 +868,7 @@
               {
                 "X": 0,
                 "Y": 81,
-                "Z": -190
+                "Z": -110
               }
             ]
           }
@@ -730,7 +912,7 @@
               "Type": "Prefab",
               "WeightedPrefabPaths": [
                 {
-                  "Path": "Prefabs/Nakasar/Halloween/DraculaCastle",
+                  "Path": "Nakasar/Halloween/DraculaCastle",
                   "Weight": 1.0
                 }
               ]
@@ -750,57 +932,88 @@
           "Positions": {
             "Type": "FieldFunction",
             "FieldFunction": {
-              "Type": "PositionsCellNoise",
-              "Positions": {
-                "Type": "Union",
-                "Positions": [
+              "Type": "Axis",
+              "Axis": {
+                "X": 0.0,
+                "Y": 1.0,
+                "Z": 0.0
+              },
+              "IsAnchored": false,
+              "Curve": {
+                "Type": "Manual",
+                "Points": [
                   {
-                    "Type": "Imported",
-                    "Name": "Nakasar_Halloween_Structure_Positions"
+                    "In": 0,
+                    "Out": 0
                   },
                   {
-                    "Type": "Imported",
-                    "Name": "Nakasar_Halloween_Landmark_Positions"
+                    "In": 170.0,
+                    "Out": 170.0
                   }
                 ]
-              },
-              "ReturnType": {
-                "Type": "Curve",
-                "Curve": {
-                  "Type": "Manual",
-                  "Points": [
-                    {
-                      "In": 0,
-                      "Out": 0
-                    },
-                    {
-                      "In": 35.0,
-                      "Out": 35.0
-                    }
-                  ]
-                }
-              },
-              "DistanceFunction": {
-                "Type": "Euclidean"
-              },
-              "MaxDistance": 35.0
+              }
             },
             "Delimiters": [
               {
-                "Min": 34.0,
-                "Max": 1000000000.0
+                "Min": 0.0,
+                "Max": 150.0
               }
             ],
             "Positions": {
-              "Type": "Mesh2D",
-              "PointsY": 81,
-              "PointGenerator": {
-                "Type": "Mesh",
-                "ScaleX": 13.0,
-                "ScaleY": 13.0,
-                "ScaleZ": 13.0,
-                "Jitter": 0.45,
-                "Seed": "Trees"
+              "Type": "FieldFunction",
+              "FieldFunction": {
+                "Type": "PositionsCellNoise",
+                "Positions": {
+                  "Type": "Union",
+                  "Positions": [
+                    {
+                      "Type": "Imported",
+                      "Name": "Nakasar_Halloween_Structure_Positions"
+                    },
+                    {
+                      "Type": "Imported",
+                      "Name": "Nakasar_Halloween_Landmark_Positions"
+                    }
+                  ]
+                },
+                "ReturnType": {
+                  "Type": "Curve",
+                  "Curve": {
+                    "Type": "Manual",
+                    "Points": [
+                      {
+                        "In": 0,
+                        "Out": 0
+                      },
+                      {
+                        "In": 35.0,
+                        "Out": 35.0
+                      }
+                    ]
+                  }
+                },
+                "DistanceFunction": {
+                  "Type": "Euclidean"
+                },
+                "MaxDistance": 35.0
+              },
+              "Delimiters": [
+                {
+                  "Min": 34.0,
+                  "Max": 1000000000.0
+                }
+              ],
+              "Positions": {
+                "Type": "Mesh2D",
+                "PointsY": 81,
+                "PointGenerator": {
+                  "Type": "Mesh",
+                  "ScaleX": 13.0,
+                  "ScaleY": 13.0,
+                  "ScaleZ": 13.0,
+                  "Jitter": 0.45,
+                  "Seed": "Trees"
+                }
               }
             }
           }
@@ -852,8 +1065,8 @@
                     "Type": "Linear",
                     "Axis": "Y",
                     "Range": {
-                      "MinInclusive": -14,
-                      "MaxExclusive": 15
+                      "MinInclusive": -26,
+                      "MaxExclusive": 27
                     },
                     "AscendingOrder": false,
                     "Scanner": {
@@ -869,7 +1082,7 @@
                       "Type": "Prefab",
                       "WeightedPrefabPaths": [
                         {
-                          "Path": "Prefabs/Nakasar/Halloween/Trees",
+                          "Path": "Nakasar/Halloween/Trees",
                           "Weight": 1.0
                         }
                       ]
@@ -893,57 +1106,88 @@
           "Positions": {
             "Type": "FieldFunction",
             "FieldFunction": {
-              "Type": "PositionsCellNoise",
-              "Positions": {
-                "Type": "Union",
-                "Positions": [
+              "Type": "Axis",
+              "Axis": {
+                "X": 0.0,
+                "Y": 1.0,
+                "Z": 0.0
+              },
+              "IsAnchored": false,
+              "Curve": {
+                "Type": "Manual",
+                "Points": [
                   {
-                    "Type": "Imported",
-                    "Name": "Nakasar_Halloween_Structure_Positions"
+                    "In": 0,
+                    "Out": 0
                   },
                   {
-                    "Type": "Imported",
-                    "Name": "Nakasar_Halloween_Landmark_Positions"
+                    "In": 170.0,
+                    "Out": 170.0
                   }
                 ]
-              },
-              "ReturnType": {
-                "Type": "Curve",
-                "Curve": {
-                  "Type": "Manual",
-                  "Points": [
-                    {
-                      "In": 0,
-                      "Out": 0
-                    },
-                    {
-                      "In": 35.0,
-                      "Out": 35.0
-                    }
-                  ]
-                }
-              },
-              "DistanceFunction": {
-                "Type": "Euclidean"
-              },
-              "MaxDistance": 35.0
+              }
             },
             "Delimiters": [
               {
-                "Min": 34.0,
-                "Max": 1000000000.0
+                "Min": 0.0,
+                "Max": 150.0
               }
             ],
             "Positions": {
-              "Type": "Mesh2D",
-              "PointsY": 81,
-              "PointGenerator": {
-                "Type": "Mesh",
-                "ScaleX": 29.0,
-                "ScaleY": 29.0,
-                "ScaleZ": 29.0,
-                "Jitter": 0.45,
-                "Seed": "Decor"
+              "Type": "FieldFunction",
+              "FieldFunction": {
+                "Type": "PositionsCellNoise",
+                "Positions": {
+                  "Type": "Union",
+                  "Positions": [
+                    {
+                      "Type": "Imported",
+                      "Name": "Nakasar_Halloween_Structure_Positions"
+                    },
+                    {
+                      "Type": "Imported",
+                      "Name": "Nakasar_Halloween_Landmark_Positions"
+                    }
+                  ]
+                },
+                "ReturnType": {
+                  "Type": "Curve",
+                  "Curve": {
+                    "Type": "Manual",
+                    "Points": [
+                      {
+                        "In": 0,
+                        "Out": 0
+                      },
+                      {
+                        "In": 35.0,
+                        "Out": 35.0
+                      }
+                    ]
+                  }
+                },
+                "DistanceFunction": {
+                  "Type": "Euclidean"
+                },
+                "MaxDistance": 35.0
+              },
+              "Delimiters": [
+                {
+                  "Min": 34.0,
+                  "Max": 1000000000.0
+                }
+              ],
+              "Positions": {
+                "Type": "Mesh2D",
+                "PointsY": 81,
+                "PointGenerator": {
+                  "Type": "Mesh",
+                  "ScaleX": 29.0,
+                  "ScaleY": 29.0,
+                  "ScaleZ": 29.0,
+                  "Jitter": 0.45,
+                  "Seed": "Decor"
+                }
               }
             }
           }
@@ -995,8 +1239,8 @@
                     "Type": "Linear",
                     "Axis": "Y",
                     "Range": {
-                      "MinInclusive": -14,
-                      "MaxExclusive": 15
+                      "MinInclusive": -26,
+                      "MaxExclusive": 27
                     },
                     "AscendingOrder": false,
                     "Scanner": {
@@ -1012,7 +1256,7 @@
                       "Type": "Prefab",
                       "WeightedPrefabPaths": [
                         {
-                          "Path": "Prefabs/Nakasar/Halloween/Decor/BonePiles",
+                          "Path": "Nakasar/Halloween/Decor/BonePiles",
                           "Weight": 1.0
                         }
                       ]
@@ -1063,8 +1307,8 @@
                     "Type": "Linear",
                     "Axis": "Y",
                     "Range": {
-                      "MinInclusive": -14,
-                      "MaxExclusive": 15
+                      "MinInclusive": -26,
+                      "MaxExclusive": 27
                     },
                     "AscendingOrder": false,
                     "Scanner": {
@@ -1080,7 +1324,7 @@
                       "Type": "Prefab",
                       "WeightedPrefabPaths": [
                         {
-                          "Path": "Prefabs/Nakasar/Halloween/Decor/Graves",
+                          "Path": "Nakasar/Halloween/Decor/Graves",
                           "Weight": 1.0
                         }
                       ]
@@ -1131,8 +1375,8 @@
                     "Type": "Linear",
                     "Axis": "Y",
                     "Range": {
-                      "MinInclusive": -14,
-                      "MaxExclusive": 15
+                      "MinInclusive": -26,
+                      "MaxExclusive": 27
                     },
                     "AscendingOrder": false,
                     "Scanner": {
@@ -1148,7 +1392,7 @@
                       "Type": "Prefab",
                       "WeightedPrefabPaths": [
                         {
-                          "Path": "Prefabs/Nakasar/Halloween/Decor/SpiderNests",
+                          "Path": "Nakasar/Halloween/Decor/SpiderNests",
                           "Weight": 1.0
                         }
                       ]
@@ -1199,8 +1443,8 @@
                     "Type": "Linear",
                     "Axis": "Y",
                     "Range": {
-                      "MinInclusive": -14,
-                      "MaxExclusive": 15
+                      "MinInclusive": -26,
+                      "MaxExclusive": 27
                     },
                     "AscendingOrder": false,
                     "Scanner": {
@@ -1216,7 +1460,7 @@
                       "Type": "Prefab",
                       "WeightedPrefabPaths": [
                         {
-                          "Path": "Prefabs/Nakasar/Halloween/Decor/PumpkinPatches",
+                          "Path": "Nakasar/Halloween/Decor/PumpkinPatches",
                           "Weight": 1.0
                         }
                       ]
@@ -1297,8 +1541,8 @@
                     "Type": "Linear",
                     "Axis": "Y",
                     "Range": {
-                      "MinInclusive": -14,
-                      "MaxExclusive": 15
+                      "MinInclusive": -26,
+                      "MaxExclusive": 27
                     },
                     "AscendingOrder": false,
                     "Scanner": {
@@ -1366,8 +1610,8 @@
                     "Type": "Linear",
                     "Axis": "Y",
                     "Range": {
-                      "MinInclusive": -14,
-                      "MaxExclusive": 15
+                      "MinInclusive": -26,
+                      "MaxExclusive": 27
                     },
                     "AscendingOrder": false,
                     "Scanner": {
@@ -1435,8 +1679,8 @@
                     "Type": "Linear",
                     "Axis": "Y",
                     "Range": {
-                      "MinInclusive": -14,
-                      "MaxExclusive": 15
+                      "MinInclusive": -26,
+                      "MaxExclusive": 27
                     },
                     "AscendingOrder": false,
                     "Scanner": {
@@ -1504,8 +1748,8 @@
                     "Type": "Linear",
                     "Axis": "Y",
                     "Range": {
-                      "MinInclusive": -14,
-                      "MaxExclusive": 15
+                      "MinInclusive": -26,
+                      "MaxExclusive": 27
                     },
                     "AscendingOrder": false,
                     "Scanner": {
@@ -1573,8 +1817,8 @@
                     "Type": "Linear",
                     "Axis": "Y",
                     "Range": {
-                      "MinInclusive": -14,
-                      "MaxExclusive": 15
+                      "MinInclusive": -26,
+                      "MaxExclusive": 27
                     },
                     "AscendingOrder": false,
                     "Scanner": {
@@ -1642,8 +1886,8 @@
                     "Type": "Linear",
                     "Axis": "Y",
                     "Range": {
-                      "MinInclusive": -14,
-                      "MaxExclusive": 15
+                      "MinInclusive": -26,
+                      "MaxExclusive": 27
                     },
                     "AscendingOrder": false,
                     "Scanner": {
@@ -1711,8 +1955,8 @@
                     "Type": "Linear",
                     "Axis": "Y",
                     "Range": {
-                      "MinInclusive": -14,
-                      "MaxExclusive": 15
+                      "MinInclusive": -26,
+                      "MaxExclusive": 27
                     },
                     "AscendingOrder": false,
                     "Scanner": {
@@ -1780,8 +2024,8 @@
                     "Type": "Linear",
                     "Axis": "Y",
                     "Range": {
-                      "MinInclusive": -14,
-                      "MaxExclusive": 15
+                      "MinInclusive": -26,
+                      "MaxExclusive": 27
                     },
                     "AscendingOrder": false,
                     "Scanner": {
@@ -1849,8 +2093,8 @@
                     "Type": "Linear",
                     "Axis": "Y",
                     "Range": {
-                      "MinInclusive": -14,
-                      "MaxExclusive": 15
+                      "MinInclusive": -26,
+                      "MaxExclusive": 27
                     },
                     "AscendingOrder": false,
                     "Scanner": {
@@ -1898,7 +2142,7 @@
               {
                 "X": 0,
                 "Y": 81,
-                "Z": -190
+                "Z": -110
               }
             ]
           }
