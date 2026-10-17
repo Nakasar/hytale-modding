@@ -2,7 +2,7 @@
   "Group": "${group}",
   "Name": "Runes",
   "Version": "${version}",
-  "Description": "Quatre runes d'abilities : Baiser du Vampire, Domination, Teleportation, Chaines spectrales.",
+  "Description": "Quatre runes d'abilities (Baiser du Vampire, Domination, Teleportation, Chaines spectrales) et l'autel sacrificiel pour les graver a partir d'eclats de rune.",
   "Authors": [
     { "Name": "${author}" }
   ],

@@ -10,3 +10,6 @@ items.Rune_Nakasar_SpectralChains.description = A projectile that raises chains 
 ui.abilityKeywords.Nakasar_Lifesteal = Lifesteal
 ui.abilityKeywords.Nakasar_Control = Control
 ui.abilityKeywords.Nakasar_Teleport = Teleport
+items.Nakasar_Sacrificial_Altar.name = Sacrificial Altar
+items.Nakasar_Sacrificial_Altar.description = A blood-stained stone altar. Lets you carve the Nakasar ability runes from rune shards.
+benchCategories.nakasar_altar_runes = Runes
