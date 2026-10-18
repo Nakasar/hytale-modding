@@ -162,14 +162,21 @@ Fragment d'Orbis ouvert depuis l'Ancienne passerelle vanilla (`Portal_Device`) a
 | `Trees` | 16 | Arbres morts en frêne, bois pétrifié ou calciné : squelette en troncs pleins comme les arbres du jeu (fût droit, pied 2×2 des grands, contreforts et racines, branches qui montent en escalier et se divisent), tubes fins au bout des rameaux, feuilles mortes de l'essence posées sur les branches, toiles et buissons pendants ; aucun bloc ne flotte (vérifié à la génération) ; 4 portent une lanterne, une cage ou une corde |
 | `Decor/*` | 7 × 3 + 5 | Affleurements rocheux (parfois des cristaux), troncs couchés, cercles de champignons luisants, autels, tas d'os, tombes isolées, nids d'araignées, carrés de citrouilles |
 
-Les ruines varient d'une instance à l'autre grâce aux préfixes de probabilité (`70%Bloc`).
+Les ruines (châteaux hantés, mausolées, chapelles) sont écroulées à la génération, de façon
+déterministe : plus on monte, plus il manque de blocs, puis tout bloc qui ne repose plus sur le sol
+(contact par une face) est retiré, pour qu'aucun pan de mur ne lévite. Le château du comte est
+habité, donc intact ; les murets et grilles des cimetières et les clôtures restent entiers.
+`floating_blocks` vérifie qu'aucun prefab ne contient de bloc flottant.
 
 Blocs : tous les ids viennent de `tools/vanilla-block-ids-0.7.2.txt` ; `validateAssets` refuse un
 prefab ou un matériau de génération qui en utilise un autre (en jeu, un id inconnu devient le bloc
 « Unknown », un damier rose et noir). Un état de bloc s'écrit `*<Bloc>_State_Definitions_<État>` (clé
 générée par `StateData`), par exemple `*Plant_Crop_Pumpkin_Block_State_Definitions_StageFinal`. Les
 tubes (troncs et branches, `VariantRotation: Pipe`) prennent la rotation 0 (debout), 4 (couché
-nord-sud) ou 5 (couché est-ouest) : index `RotationTuple` = tangage × 4 + lacet.
+nord-sud) ou 5 (couché est-ouest) : index `RotationTuple` = tangage × 4 + lacet. Les clôtures,
+murets (`*_Brick_Wall`) et grilles (`Deco_Iron_Bars`) ne se raccordent pas tout seuls dans un prefab :
+rotation 0 pour une ligne est-ouest (le long de X), 1 pour une ligne nord-sud (le long de Z).
+`Prefab.orient_lines` choisit la rotation d'après les voisins avant l'écriture.
 
 ### PNJ
 

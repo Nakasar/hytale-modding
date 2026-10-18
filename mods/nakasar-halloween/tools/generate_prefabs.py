@@ -22,6 +22,7 @@ par exemple une citrouille mûre : *Plant_Crop_Pumpkin_Block_State_Definitions_S
 
 import json
 import random
+import re
 from pathlib import Path
 
 PACK = Path(__file__).resolve().parent.parent / "pack"
@@ -35,6 +36,8 @@ AIR = "Empty"
 NORTH, EAST, SOUTH, WEST = 0, 1, 2, 3
 # Tuyaux (troncs, branches longues, VariantRotation Pipe) : 0 debout, 4 couché nord-sud, 5 couché est-ouest.
 UPRIGHT, ALONG_Z, ALONG_X = 0, 4, 5
+# Blocs en ligne (clôtures, murets, grilles) : orientés à l'écriture par Prefab.orient_lines.
+LINE_BLOCK = re.compile(r"(_Fence|_Brick_Wall|_Cobble_Wall|Iron_Bars)$")
 
 
 def pumpkin_crop(stage):
@@ -112,12 +115,23 @@ class Prefab:
                 self.set(x1, y, z, self.pick(palette))
 
     def spire(self, cx, cz, half, y, palette, step=2):
-        """Flèche pyramidale à degrés (anneaux pleins) ; chaque anneau monte de `step` blocs."""
+        """Flèche pyramidale à degrés ; chaque anneau monte de `step` blocs.
+
+        La base est une dalle pleine et le haut de chaque anneau déborde d'un cran vers l'intérieur :
+        l'anneau suivant repose dessus (sinon les anneaux ne se touchent que par les arêtes et la
+        flèche flotte en jeu).
+        """
+        for x in range(cx - half, cx + half + 1):
+            for z in range(cz - half, cz + half + 1):
+                self.set(x, y, z, self.pick(palette))
+        y += 1
         for r in range(half, -1, -1):
-            for dy in range(step if r > 0 else 3):
+            layers = step if r > 0 else 3
+            for dy in range(layers):
                 for x in range(cx - r, cx + r + 1):
                     for z in range(cz - r, cz + r + 1):
-                        if r == 0 or abs(x - cx) == r or abs(z - cz) == r:
+                        ring = max(abs(x - cx), abs(z - cz))
+                        if r == 0 or ring == r or (dy == layers - 1 and ring == r - 1):
                             self.set(x, y, z, self.pick(palette))
                 y += 1
         return y
@@ -145,16 +159,24 @@ class Prefab:
                                 self.set(x, y + k, z, self.pick(gable_wall))
 
     def ruin(self, chance, keep_below=0, names=None):
-        """Transforme une partie des blocs en blocs probabilistes (pierre qui s'effrite).
+        """Effrite la structure : garde environ `chance` % des blocs visés, surtout en bas.
 
-        Les blocs sous `keep_below` (sol, fondations) restent pleins pour que la structure tienne.
+        Les blocs retirés le sont à la génération du prefab (pas de bloc probabiliste, tiré à chaque
+        pose, qui laissait des pans de mur suspendus dans le vide). Plus un bloc est haut, plus il a
+        de chances de tomber ; puis tout ce qui ne rejoint plus le sol de face en face est retiré
+        aussi. Les blocs sous `keep_below` (sol, fondations) restent pleins.
         """
-        for pos, (name, rot) in list(self.blocks.items()):
-            if name == AIR or "%" in name or pos[1] < keep_below:
-                continue
-            if names is not None and name not in names:
-                continue
-            self.blocks[pos] = (f"{chance}%{name}", rot)
+        targets = [pos for pos, (name, _) in self.blocks.items()
+                   if name != AIR and pos[1] >= keep_below and (names is None or name in names)]
+        if not targets:
+            return
+        top = max(pos[1] for pos in targets)
+        for pos in targets:
+            h = (pos[1] - keep_below) / max(1, top - keep_below)
+            if self.rng.random() < (100 - chance) / 100 * (0.3 + 1.4 * h):
+                self.blocks[pos] = (AIR, 0)
+        for pos in floating_blocks(self):
+            del self.blocks[pos]
 
     def scatter(self, x0, y, z0, x1, z1, count, palette, require_air=True, rot=None):
         """Pose `count` décorations sur des cases libres d'une surface."""
@@ -182,7 +204,31 @@ class Prefab:
 
     # --- export -----------------------------------------------------------------------------
 
+    def orient_lines(self):
+        """Tourne clôtures, murets et grilles dans le sens de leur ligne.
+
+        Ces blocs (VariantRotation Wall / NESW) se dessinent le long de l'axe x en rotation 0 et
+        le long de z en rotation 1 ; en jeu ils ne se raccordent pas seuls dans un prefab. Le sens
+        se lit sur les voisins de la même famille, à défaut sur les blocs pleins qui les tiennent.
+        """
+        def line(name):
+            return LINE_BLOCK.search(name.split("%")[-1]) is not None
+
+        for (x, y, z), (name, rot) in list(self.blocks.items()):
+            if rot or not line(name):
+                continue
+            def count(pred, axis):
+                ds = ((1, 0), (-1, 0)) if axis == "x" else ((0, 1), (0, -1))
+                return sum(1 for dx, dz in ds if pred(self.blocks.get((x + dx, y, z + dz), (AIR, 0))[0]))
+            along_x, along_z = count(line, "x"), count(line, "z")
+            if along_x == along_z:
+                solid = lambda n: n != AIR and not n.split("%")[-1].startswith(("Plant_", "Deco_Halloween"))
+                along_x, along_z = count(solid, "x"), count(solid, "z")
+            if along_z > along_x:
+                self.blocks[(x, y, z)] = (name, 1)
+
     def write(self, path):
+        self.orient_lines()
         blocks = []
         for (x, y, z), (name, rot) in sorted(self.blocks.items(), key=lambda kv: (kv[0][1], kv[0][2], kv[0][0])):
             entry = {"x": x, "y": y, "z": z, "name": name}
@@ -315,16 +361,17 @@ def is_connected(p):
 
 def floating_blocks(p):
     """Blocs qui ne rejoignent pas le sol (y <= 0) de face en face : ils flotteraient en jeu."""
-    seen = {pos for pos in p.blocks if pos[1] <= 0}
+    solid = {pos for pos, (name, _) in p.blocks.items() if name != AIR}
+    seen = {pos for pos in solid if pos[1] <= 0}
     todo = list(seen)
     while todo:
         x, y, z = todo.pop()
         for d in FACES:
             n = (x + d[0], y + d[1], z + d[2])
-            if n in p.blocks and n not in seen:
+            if n in solid and n not in seen:
                 seen.add(n)
                 todo.append(n)
-    return set(p.blocks) - seen
+    return solid - seen
 
 
 def dead_tree(seed, size="medium", species=None, hanging=None, webs=False):
@@ -549,7 +596,7 @@ def pumpkin_field(seed, w=23, d=19):
     sw, sd = 5, 4
     sx0 = x0 + 1 if r.random() < 0.5 else x1 - sw
     shed(p, sx0, z0 + 1, sw, sd)
-    p.ruin(90, keep_below=1, names={"Wood_Deadwood_Planks", "Wood_Deadwood_Planks_Half", "Wood_Deadwood_Fence"})
+    p.ruin(90, keep_below=1, names={"Wood_Deadwood_Planks", "Wood_Deadwood_Planks_Half"})
     # un arbre mort penché sur la clôture
     p.paste(dead_tree(r.randint(0, 1 << 30), "medium", hanging="noose"), x1 + 4, 0, z0 + 2, min_y=0)
     return p
@@ -799,8 +846,8 @@ def cemetery(seed, theme):
         p.scatter(x0 + 1, 0, z0 + 1, x1 - 1, z1 - 1, 5, [("Deco_Bone_Spike", 2), ("Deco_Bone_Ribs_Long", 1), ("Deco_Bone_Spike_Large", 1)])
         p.scatter(x0 + 1, 0, z0 + 1, x1 - 1, z1 - 1, 8, [("Plant_Crop_Mushroom_Glowing_Green", 2), ("Plant_Crop_Mushroom_Glowing_Purple", 1)])
         p.scatter(x0 + 1, 0, z0 + 1, x1 - 1, z1 - 1, 8, DEAD_PLANTS)
-    p.ruin(85, keep_below=1, names={"Rock_Stone_Brick", "Rock_Stone_Brick_Mossy", "Rock_Stone_Cobble", "Rock_Stone_Cobble_Mossy",
-                                    "Deco_Iron_Bars", "Rock_Stone_Brick_Wall"})
+    # chapelle et caveaux usés par le temps ; le muret et sa grille restent entiers (brèches à part)
+    p.ruin(90, keep_below=1, names={"Rock_Stone_Brick", "Rock_Stone_Brick_Mossy", "Rock_Stone_Cobble", "Rock_Stone_Cobble_Mossy"})
     return p
 
 
@@ -943,7 +990,7 @@ def gatehouse(p, z, height, wall, ornate, gate_half=2):
         p.set(x, height - 2, z, "Deco_Iron_Bars")  # herse relevée
     p.set(-gate_half - 1, height + 3, z, "Deco_Halloween_Pumpkin_Scary", SOUTH)
     p.set(gate_half + 1, height + 3, z, "Deco_Halloween_Pumpkin_Scary", SOUTH)
-    p.set(0, height - 3, z - 1, "Deco_Lantern_Ceiling")
+    p.set(0, height - 1, z - 1, "Deco_Lantern_Ceiling")
     for x in (-gate_half - 2, gate_half + 2):
         p.set(x, 0, z + 1, "Furniture_Village_Brazier")
 
@@ -1104,7 +1151,8 @@ def dracula_castle(seed):
         p.set(0, 7, z, "Furniture_Feran_Chandelier")
     # le comte attend sur le tapis, devant son trône (marqueur invisible du mod nakasar-mobs)
     p.set(0, 0, z0 + 5, "Nakasar_Spawner_Vampire_Count")
-    for x in (-7, 7):
+    # bannières de laine accrochées aux murs du donjon
+    for x in (x0 + 1, x1 - 1):
         for z in range(z0 + 2, z1 - 1, 4):
             p.set(x, 2, z, "Cloth_Block_Wool_Red")
             p.set(x, 3, z, "Cloth_Block_Wool_Red")
@@ -1119,8 +1167,8 @@ def dracula_castle(seed):
     p.scatter(x0 + 1, y, z0 + 1, x1 - 1, z1 - 1, 8, CANDLES)
     for _ in range(30):
         x, z = r.randint(x0 + 1, x1 - 1), r.randint(z0 + 1, z1 - 1)
-        if p.get(x, 15, z) == AIR:
-            p.set(x, 15, z, p.pick(WEBS))
+        if p.get(x, 16, z) == AIR and p.get(x, 17, z) not in (AIR, None):
+            p.set(x, 16, z, p.pick(WEBS))
     # crypte sous le donjon : un escalier part de la salle du trône et plonge le long du mur sud
     # (le plafond de la crypte est le dallage de la salle du trône)
     depth = 5
@@ -1162,7 +1210,7 @@ def dracula_castle(seed):
         p.paste(dead_tree(r.randint(0, 1 << 30), "medium", species="Burnt", hanging=hanging), tx, 0, tz, min_y=0)
     p.scatter(-s + 2, 0, -3, s - 2, s - 2, 8, PUMPKINS)
     p.scatter(-s + 2, 0, -3, s - 2, s - 2, 8, BONES)
-    p.ruin(92, keep_below=1, names={n for n, _ in wall})
+    # le château du comte est habité : intact, contrairement aux châteaux hantés
     return p
 
 
