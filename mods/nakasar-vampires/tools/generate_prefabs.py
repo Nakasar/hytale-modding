@@ -774,7 +774,7 @@ def shed(p, x0, z0, w, d):
         p.set(door, 2, z1 + 1, "Deco_Lantern_Ceiling")
 
 
-GIANT_CLEARING = 6   # rayon de la clairière de la citrouille géante (elle ne bouge pas, ses vrilles frappent autour)
+GIANT_CLEARING = 7   # rayon de la clairière de la citrouille géante (elle ne bouge pas, ses vrilles frappent autour)
 TENDRILS = [("Plant_Bramble_Dead_Twisted", 3), ("Plant_Roots_Leafy", 2), ("Plant_Bush_Bramble", 2), ("Plant_Bush_Dead", 1)]
 ROTTEN_SOIL = [("Soil_Dirt_Burnt", 4), ("Soil_Mud", 2), ("Soil_Dirt", 2), ("Soil_Dirt_Tilled", 1)]
 
