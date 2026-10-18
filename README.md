@@ -55,6 +55,7 @@ Les prefabs et la génération du monde sont produits par des scripts (détermin
 python3 mods/nakasar-vampires/tools/generate_prefabs.py    # 65 prefabs dans src/main/resources/Server/Prefabs/Nakasar/Halloween
 python3 mods/nakasar-vampires/tools/generate_loot.py       # listes de butin des coffres
 python3 mods/nakasar-vampires/tools/generate_worldgen.py   # biome + structure de monde
+python3 mods/nakasar-vampires/tools/generate_pumpkin_models.py  # modèles animés de la citrouille géante et de ses vrilles (--preview DOSSIER : rendus)
 ```
 
 ## Déployer sur un serveur local
@@ -270,6 +271,11 @@ Mobs (voir [docs/npc-0.7.2.md](docs/npc-0.7.2.md)) :
   sens sans chasseur dans un mur, que les chasseurs ne vous attaquent pas mais ripostent, et qu'à la fermeture
   (10 min) le terrain revient et les chasseurs disparaissent. Si rien ne démarre, chercher `Nakasar_Hunter_Breach`
   et `Nakasar_NightCondition` dans le journal.
+- **Citrouille géante et vrilles** (`tools/generate_pumpkin_models.py`) : premiers modèles animés écrits à la main
+  (sans Blockbench). À vérifier : sens des rotations (la vrille doit se pencher vers sa cible pour le coup normal,
+  le haut de la citrouille se soulever par l'avant), yeux et bouche lumineux (plaque `*_Glow` transparente hors des
+  découpes), animations d'attaque jouées par `ItemAnimationId` (`Server/Item/Animations/Nakasar/`). Si un sens est
+  inversé, changer le signe dans la pose de l'animation concernée et relancer le script.
 
 ## Organisation du dépôt
 

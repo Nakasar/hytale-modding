@@ -1,35 +1,54 @@
 {
-  "$Comment": "Vrille combattante de la citrouille géante : le modèle de racines du sort vanilla Root, plus grand (×1,8), qui sort de terre à l'apparition.",
-  "Model": "VFX/Spells/Roots/Model.blockymodel",
-  "Texture": "VFX/Spells/Roots/Model.png",
-  "EyeHeight": 0.9,
+  "$Comment": "Vrille combattante de la citrouille géante, générée par tools/generate_pumpkin_models.py : tige épineuse articulée de 2,8 blocs, sortie d'un monticule de terre, bourgeon lumineux au bout.",
+  "EyeHeight": 2.2,
   "HitBox": {
     "Max": {
-      "X": 0.45,
-      "Y": 1.1,
-      "Z": 0.45
+      "X": 0.4,
+      "Y": 2.7,
+      "Z": 0.4
     },
     "Min": {
-      "X": -0.45,
+      "X": -0.4,
       "Y": 0,
-      "Z": -0.45
+      "Z": -0.4
     }
   },
-  "MinScale": 1.8,
-  "MaxScale": 1.8,
+  "MinScale": 1,
+  "MaxScale": 1,
+  "Light": {
+    "Color": "#ff9a3c",
+    "Radius": 4
+  },
+  "Model": "NPC/Nakasar/Pumpkin_Vine/Model.blockymodel",
+  "Texture": "NPC/Nakasar/Pumpkin_Vine/Texture.png",
   "AnimationSets": {
+    "Idle": {
+      "Animations": [
+        {
+          "Animation": "NPC/Nakasar/Pumpkin_Vine/Animations/Idle.blockyanim"
+        }
+      ]
+    },
     "Spawn": {
       "Animations": [
         {
-          "Animation": "VFX/Spells/Roots/Spawn.blockyanim",
+          "Animation": "NPC/Nakasar/Pumpkin_Vine/Animations/Spawn.blockyanim",
           "Looping": false
         }
       ]
     },
-    "Despawn": {
+    "Hurt": {
       "Animations": [
         {
-          "Animation": "VFX/Spells/Roots/Despawn.blockyanim",
+          "Animation": "NPC/Nakasar/Pumpkin_Vine/Animations/Hurt.blockyanim",
+          "Looping": false
+        }
+      ]
+    },
+    "Death": {
+      "Animations": [
+        {
+          "Animation": "NPC/Nakasar/Pumpkin_Vine/Animations/Death.blockyanim",
           "Looping": false
         }
       ]

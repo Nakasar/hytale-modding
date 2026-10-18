@@ -89,6 +89,7 @@ public class ValidateAssets {
         CODECS.put("Models/", "com.hypixel.hytale.server.core.asset.type.model.config.ModelAsset");
         CODECS.put("Entity/Effects/", "com.hypixel.hytale.server.core.asset.type.entityeffect.config.EntityEffect");
         CODECS.put("Drops/", "com.hypixel.hytale.server.core.asset.type.item.config.ItemDropList");
+        CODECS.put("Item/Animations/", "com.hypixel.hytale.server.core.asset.type.itemanimation.config.ItemPlayerAnimations");
         CODECS.put("Item/RootInteractions/", "com.hypixel.hytale.server.core.modules.interaction.interaction.config.RootInteraction");
         CODECS.put("Item/Interactions/", "com.hypixel.hytale.server.core.modules.interaction.interaction.config.Interaction");
         CODECS.put("WorldEvent/Event/", WE + "event.WorldEventAsset");
@@ -725,12 +726,16 @@ public class ValidateAssets {
     private static final Pattern WORLD_NPC_REF = Pattern.compile("\"Id\"\\s*:\\s*\"([^\"]+)\"");
     private static final Pattern SPAWN_KIND_REF = Pattern.compile("\"Kind\"\\s*:\\s*\"([^\"]+)\"");
     private static final Pattern SPAWN_MARKER_REF = Pattern.compile("\"SpawnMarker\"\\s*:\\s*\"([^\"]+)\"");
+    private static final Pattern ITEM_ANIMATIONS_REF = Pattern.compile("\"ItemPlayerAnimationsId\"\\s*:\\s*\"([^\"]+)\"");
+    /** Fichiers clients cités par les assets serveur (modèles, animations, textures). */
+    private static final Pattern CLIENT_FILE_REF = Pattern.compile("\"([^\"]+\\.(?:blockymodel|blockyanim|png))\"");
 
     private static int checkReferences(Path root, Path refsFile) throws Exception {
         Map<String, Set<String>> known = new HashMap<>();
         known.put("droplist", new HashSet<>(assetIds(root.resolve("Drops"))));
         known.put("npc", new HashSet<>(assetIds(root.resolve("NPC/Roles"))));
         known.put("marker", new HashSet<>(assetIds(root.resolve("NPC/Spawn/Markers"))));
+        known.put("animations", new HashSet<>(assetIds(root.resolve("Item/Animations"))));
         for (String line : Files.readAllLines(refsFile)) {
             String[] parts = line.strip().split("\\s+");
             if (parts.length == 2 && !parts[0].startsWith("#")) {
@@ -756,14 +761,35 @@ public class ValidateAssets {
                 refs += checkRefs(SPAWN_KIND_REF, json, "npc", "rôle de PNJ inconnu", known, problems);
             }
             refs += checkRefs(SPAWN_MARKER_REF, json, "marker", "marqueur d'apparition inconnu", known, problems);
+            refs += checkRefs(ITEM_ANIMATIONS_REF, json, "animations", "jeu d'animations (ItemPlayerAnimationsId) inconnu", known, problems);
+            refs += checkClientFiles(root.resolveSibling("Common"), json, problems);
             if (!problems.isEmpty()) {
                 errors++;
                 System.out.println("ERROR " + rel);
                 problems.forEach(p -> System.out.println("      " + p));
             }
         }
-        System.out.println(refs + " références vers des listes de butin, rôles et marqueurs vérifiées, " + errors + " fichier(s) en erreur");
+        System.out.println(refs + " références vers des listes de butin, rôles, marqueurs, jeux d'animations et fichiers clients vérifiées, " + errors + " fichier(s) en erreur");
         return errors;
+    }
+
+    /**
+     * Les fichiers clients du mod (chemin depuis Common contenant « Nakasar ») doivent exister dans Common : un modèle ou une
+     * animation absente ne se voit qu'en jeu (PNJ invisible, animation figée).
+     */
+    private static int checkClientFiles(Path common, String json, List<String> problems) {
+        int count = 0;
+        Matcher m = CLIENT_FILE_REF.matcher(json);
+        while (m.find()) {
+            String path = m.group(1);
+            if (path.contains("Nakasar") && path.contains("/")) {
+                count++;
+                if (!Files.isRegularFile(common.resolve(path))) {
+                    problems.add("fichier client absent de Common : " + path);
+                }
+            }
+        }
+        return count;
     }
 
     private static int checkRefs(Pattern pattern, String json, String type, String label, Map<String, Set<String>> known,

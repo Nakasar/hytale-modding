@@ -3,6 +3,8 @@
   "Type": "Simple",
   "RunTime": 0.5,
   "Effects": {
+    "ItemPlayerAnimationsId": "Nakasar_Pumpkin_Vine",
+    "ItemAnimationId": "Throw",
     "WorldSoundEventId": "SFX_Bramble_MoveIn",
     "Particles": [
       {
@@ -12,7 +14,7 @@
         "Scale": 0.8,
         "PositionOffset": {
           "X": 0,
-          "Y": 1.0,
+          "Y": 2.3,
           "Z": 0
         }
       }

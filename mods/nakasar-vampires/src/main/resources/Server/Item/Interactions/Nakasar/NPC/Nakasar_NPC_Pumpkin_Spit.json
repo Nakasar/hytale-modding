@@ -3,6 +3,8 @@
   "Type": "Simple",
   "RunTime": 1.0,
   "Effects": {
+    "ItemPlayerAnimationsId": "Nakasar_Giant_Pumpkin",
+    "ItemAnimationId": "Spit",
     "Particles": [
       {
         "SystemId": "Dungeon_Goblin_Spores_Orange",
@@ -11,7 +13,7 @@
         "Scale": 0.9,
         "PositionOffset": {
           "X": 0,
-          "Y": 1.2,
+          "Y": 0.8,
           "Z": 0
         }
       }

@@ -1,5 +1,5 @@
 # Ids vanilla référencés par le mod, que ValidateAssets accepte sans les trouver dans le pack.
-# Une ligne par id : « <type> <id> ». Types : droplist (listes de butin), npc (rôles de PNJ).
+# Une ligne par id : « <type> <id> ». Types : droplist (listes de butin), npc (rôles de PNJ), animations (ItemPlayerAnimationsId).
 # Un id absent du jeu fait échouer en jeu l'asset qui le cite, et parfois tout le mod (rôle sans
 # butin -> marqueur d'apparition sans rôle -> « Asset validation FAILED »). N'ajouter ici qu'un id
 # vu dans les fichiers du jeu ou chargé sans erreur en jeu ; préciser la source.
@@ -24,3 +24,10 @@ npc Werewolf
 npc Wraith
 npc Zombie
 npc Zombie_Aberrant
+
+# Jeux d'animations (Server/Item/Animations) lus dans Assets.zip de Kevin, 2026-10-18.
+animations Crossbow
+animations Hound_Bleached_Default
+animations Rifle
+animations Skeleton_Battleaxe
+animations Sword
