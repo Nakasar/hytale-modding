@@ -80,10 +80,13 @@ packs requis en arguments pour qu'elles soient résolues.
 
 ## Modèles humanoïdes
 
-`"Parent": "Player"`, `"Model": "Characters/Player_With_Face.blockymodel"`, peau
+`"Parent": "Player"`, `"Model": "Characters/Player.blockymodel"`, peau
 `Characters/Player_Textures/Player_Greyscale.png` avec `GradientSet: "Skin"` (`GradientId` numérique, `"28"`
 très pâle). Visage, cheveux et vêtements vont dans `DefaultAttachments[{Model, Texture, GradientSet,
 GradientId}]`, repris de `Cosmetics/CharacterCreator/*.json` (sets `Hair`, `Eyes_Gradient`, `Colored_Cotton`,
 `Fantasy_Cotton`, `Shiny_Fabric`, `Faded_Leather`… avec `Black`, `Red`, `White`). Une pièce sur mesure est un
 `.blockymodel` dont le nœud racine porte le nom d'un os (`Chest`, `Head`…) avec `settings.isPiece: true` ;
 exemple : `mods/nakasar-mobs/tools/generate_vampire_models.py`.
+- La tête (`Head`) n'a pas de face avant : sans l'attachement `Characters/Body_Attachments/Faces/Player_Face_Detached.blockymodel`
+  (texture `Faces_Detached_Textures/*.png`, `GradientSet: "Skin"`, cf. `Cosmetics/CharacterCreator/Faces.json`), la tête est
+  transparente vue de face, même avec `Player_With_Face`.
