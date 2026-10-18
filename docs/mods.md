@@ -1,6 +1,13 @@
-# Conception des mods
+# Conception du mod Vampires
 
-## nakasar-runes (plugin Java + assets)
+Un seul mod, `mods/nakasar-vampires` (plugin Java `dev.nakasar.hytale.vampires.VampiresPlugin` + pack d'assets
+embarqué dans le jar, manifest `Nakasar:Vampires`). Il réunit ce qui était auparavant quatre mods (Runes, Spear,
+Mobs, Halloween) ; les ids d'assets n'ont pas changé (préfixe `Nakasar_`, fichiers de langue `nakasar_runes`,
+`nakasar_spear`, `nakasar_mobs`, `nakasar_halloween`), donc les mondes et prefabs existants restent valides.
+Validation hors jeu : `./gradlew :mods:nakasar-vampires:check` (rôles avec `tools/ValidateRoles.java`, tous les
+autres assets avec `tools/ValidateAssets.java`).
+
+## Runes et autel
 
 Tout est en JSON sauf quatre interactions impossibles en pur asset, écrites en Java et enregistrées sous
 les types `Nakasar_TeleportCasterToImpact`, `Nakasar_Dominate`, `Nakasar_RootNpc` et `Nakasar_DrainBeam`.
@@ -48,7 +55,7 @@ onglet `Nakasar_Altar_Runes` (2 `Ingredient_Rune_Shard`, 1 s).
 
 Modèle `Common/Blocks/Nakasar/Sacrificial_Altar.blockymodel`, texture
 `Common/BlockTextures/Nakasar/Sacrificial_Altar.png` (256×128), hitbox et icône d'inventaire sont **générés** par
-`mods/nakasar-runes/tools/generate_altar.py` (relancer le script après toute retouche, `--preview DOSSIER`
+`mods/nakasar-vampires/tools/generate_altar.py` (relancer le script après toute retouche, `--preview DOSSIER`
 écrit des rendus de contrôle). Grille : 32 unités = 1 bloc, origine au centre du bas du bloc d'ancrage, le modèle
 s'étend vers +X (x de -16 à 48). Pièces : socle à deux marches, corps à bandeau de runes, dalle à rigole, vasque
 de sang, deux obélisques surmontés d'un cristal pourpre, bougies (flamme en `shadingMode: fullbright`), crâne et
@@ -69,12 +76,13 @@ L'icône de l'onglet `Common/Icons/CraftingCategories/Nakasar/Runes.png` reste c
   emplacements de `MarkedEntitySupport` (l'attitude n'est relue qu'à l'acquisition d'une cible) ; applique
   `EffectId` si fourni. `WaitForDataFrom.Server` : le client attend le verdict du serveur, la suite (`Next`)
   ne part qu'en cas de réussite. Clés JSON : `Range`, `Duration`, `DurationAttribute`, `EffectId`, `Attitude`.
+  Avec une attitude amicale (`Friendly`, défaut), le PNJ change aussi de camp (voir « Camps et Domination »).
 - `DrainBeamInteraction` : joue `SystemId` (`ParticleUtil.spawnParticleEffect`) sur `Steps` points entre la
   cible et le lanceur, un pas toutes les `StepDelay` s (`world.scheduleAfter`), à `HeightOffset` au-dessus des pieds.
 - `RootNpcInteraction` : ajoute `Frozen` à la cible PNJ et programme son retrait (`world.scheduleAfter`)
   ; une seconde application prolonge la durée, et un PNJ déjà gelé par quelqu'un d'autre (`/npc freeze`) n'est pas touché. Clés : `Duration`, `DurationAttribute`.
 
-## nakasar-spear (pack d'assets)
+## Lance
 
 Objet `Weapon_Nakasar_Spear_Iron` : rig `PlayerAnimationsId: Spear` (deux mains), famille `Spear`,
 jauge `SignatureEnergy` (+20 max). Les dégâts sont surchargeables par objet via `InteractionVars`
@@ -116,7 +124,7 @@ L'onglet est `Weapon_Sword` : l'établi vanilla n'a que `Weapon_Sword`, `Weapon_
 
 Toutes les valeurs (dégâts, portées, durées, forces) sont dans les JSON cités ; aucun code.
 
-## nakasar-halloween (pack d'assets)
+## Fragment Halloween
 
 Fragment d'Orbis ouvert depuis l'Ancienne passerelle vanilla (`Portal_Device`) avec la clé
 `PortalKey_Nakasar_Halloween`. Chaîne : clé (`PortalKey.PortalType`) → `PortalTypes/Nakasar_Halloween`
@@ -202,7 +210,7 @@ serveur tire à la pose du prefab. Listes générées par `tools/generate_loot.p
 armurerie, capitaine, crypte, château en ruine, et au manoir trésor, alchimie, bibliothèque,
 cuisine, chambres, atelier. Objets du jeu 0.7.2 (vérifiés dans `Server/Item/Items`).
 
-Blocs de `nakasar-mobs` posés dans les prefabs : spawners `Nakasar_Spawner_Zombie_Villager`,
+Blocs des mobs posés dans les prefabs : spawners `Nakasar_Spawner_Zombie_Villager`,
 `_Zombie_Farmer`, `_Zombie_Abomination` (élite, un par ferme zombie), `_Zombie_Rebel`,
 `_Skeleton_Guard`, `_Guard_Captain` (élite, un par garnison), `_Spider`, et `Nakasar_Prison_Cell`
 (invisible) au sol de chaque cellule du poste de garde (trois à l'est, une à l'ouest : toujours une à moins de 24 blocs du Capitaine), dans toutes les variantes : le Capitaine y
@@ -229,15 +237,13 @@ rotation 0 pour une ligne est-ouest (le long de X), 1 pour une ligne nord-sud (l
 - `Nakasar_Halloween_Undead` (tout le fragment) : squelettes, archers, zombies, araignées, chauves-souris, corbeaux.
 - `Nakasar_Halloween_Haunted` (près des structures) : spectres, goules, soldats et archimages squelettes,
   zombies aberrants, araignées des cavernes, élites et loups-garous (rares).
-- Mobs de `nakasar-mobs` (dépendance optionnelle, mais sans lui ces apparitions échouent) : fantômes à toute heure et rejetons de vampire la nuit
+- Mobs du mod : fantômes à toute heure et rejetons de vampire la nuit
   (`Nakasar_Halloween_Ghosts`, `Nakasar_Halloween_Vampire_Spawns_Dusk` / `_Dawn`, environnement hanté), et
   marqueurs d'apparition dans le manoir du comte (le Comte ou la Comtesse devant le trône, une chance sur deux, deux rejetons dans la crypte).
 
-## nakasar-mobs (plugin Java + assets)
+## Mobs
 
-Dépend de `nakasar-runes` (ses interactions et particules sont réutilisées). Validation hors jeu :
-`./gradlew :mods:nakasar-mobs:check` (rôles avec `tools/ValidateRoles.java`, autres assets avec le
-validateur du fragment Halloween).
+Les boss réutilisent les interactions et particules des runes.
 
 | PNJ | PV | Comportement |
 |-----|----|--------------|
@@ -254,7 +260,7 @@ validateur du fragment Halloween).
 
 - **Domination** (Java, `domination/`) : l'interaction `Nakasar_DominatePlayer` enregistre « ce joueur est
   dominé par ce PNJ » pendant `Duration` secondes et applique l'effet `Nakasar_Count_Domination`. Le système
-  `DominationDamageFilter` (groupe de filtrage des dégâts) annule tout dégât de ce joueur, projectiles
+  `AllegianceDamageFilter` (groupe de filtrage des dégâts) annule tout dégât de ce joueur, projectiles
   compris, contre ce PNJ tant que l'effet dure.
 - **Emprisonnement** (Java, `prison/`) : l'interaction `Nakasar_ImprisonPlayer` cherche le bloc invisible
   `Nakasar_Prison_Cell` le plus proche du capitaine (24 blocs, sous la portée de 32 blocs où il abandonne sa cible) et y téléporte le joueur, puis applique
@@ -264,7 +270,8 @@ validateur du fragment Halloween).
   (`Dungeon_Goblin_Mace_Slam`) : effet d'immobilisation, lueur rouge `Dungeon_Goblin_Mace_Slam_Charge`, particules
   d'alerte au sol, puis frappe et temps de récupération.
 - **Groupes** : `Nakasar_Domain_Undead` (morts-vivants du domaine), `Nakasar_Vampires` et `Nakasar_Ghosts` (`DisableDamageGroups`, ils ne se blessent pas entre eux),
-  `Nakasar_Vampire_Spawns` (compté par le comte avant d'invoquer).
+  `Nakasar_Vampire_Spawns` (compté par le comte avant d'invoquer), `Nakasar_Halloween_Faction` (tous les mobs du
+  fragment, voir ci-dessous).
 - **Apparence** : modèles humanoïdes sur le squelette du joueur (`Parent: Player`), vêtements vanilla du créateur de
   personnage recolorés et col victorien généré par `tools/generate_vampire_models.py` (modèles et texture dans
   `Common/NPC/Nakasar/Vampire/`, icônes d'effets dans `Common/UI/StatusEffects/Nakasar/`).
@@ -273,3 +280,29 @@ validateur du fragment Halloween).
   `Nakasar_Vampire_Spawn` (5 min), posés via les blocs invisibles `Nakasar_Spawner_*`. Un marqueur fait apparaître
   un seul PNJ : `Nakasar_Zombie_Villager`, `_Zombie_Farmer`, `_Zombie_Rebel`, `_Skeleton_Guard` (10 min),
   `_Zombie_Abomination`, `_Guard_Captain` (30 min) et `Nakasar_Spider` (araignée ou araignée des cavernes, vanilla).
+
+## Camps et Domination
+
+Java, `allegiance/` et `domination/`. Les mobs du fragment (groupe `Nakasar_Halloween_Faction` : les trois groupes
+du mod et les mobs vanilla de ses apparitions) forment un seul camp ; la Domination fait changer de camp un PNJ le
+temps de son effet.
+
+- **Attitudes** (`AllegianceAttitudeSystem`) : deux fournisseurs ajoutés à l'`AttitudeView` des PNJ, comme le
+  module de réputation du jeu. Priorité -10 (avant les `OverrideAttitude` des rôles, priorité 0) : un PNJ dominé
+  est `Friendly` envers son dominateur et les autres PNJ du même dominateur, `Hostile` envers ses anciens alliés,
+  qui le voient aussi `Hostile`. Priorité 150 (après la lignée d'apparition, avant les groupes d'attitude des
+  rôles) : deux membres du camp sont `Friendly`. Anciens alliés : deux membres du camp, ou deux PNJ dont le rôle
+  est amical envers l'autre dans les groupes d'attitude du jeu (`AttitudeMap`). Les PNJ gardent leurs attitudes
+  en cache 0,1 s.
+- **Rôles du mod** : en plus du capteur `Player`, l'état `Idle` a un capteur `Mob` (même portée, filtre
+  `Attitude: Hostile`) qui passe en combat ; en combat, la cible est relâchée si elle sort de portée **ou devient
+  amicale** (filtre `Attitude: Hostile/Neutral/Ignore` sur le test de perte de cible). Hors Domination, aucun mob
+  du camp n'est hostile à un autre : rien ne change.
+- **Dégâts** (`AllegianceDamageFilter`, groupe de filtrage, juste après le filtre des rôles
+  `NPCDamageSystems.FilterDamageSystem` et avant `FilterUnkillable` / `FilterNPCWorldConfig`) : une victime de la
+  Domination ne blesse pas son dominateur ; un PNJ dominé et un ancien allié se blessent de nouveau (on lève
+  l'annulation posée par `DisableDamageGroups`, seulement quand c'est elle qui a annulé) ; deux membres du camp en
+  paix ne se blessent pas (flèche perdue, coup de zone).
+- **Fin de l'effet** (`DominationExpirySystem`) : le PNJ libéré oublie les cibles prises parmi ses anciens alliés
+  (emplacements de `MarkedEntitySupport`) ; utile pour les mobs vanilla, dont on ne contrôle pas les rôles.
+- La Domination du Comte sur un joueur ne change que les dégâts du joueur contre le Comte.

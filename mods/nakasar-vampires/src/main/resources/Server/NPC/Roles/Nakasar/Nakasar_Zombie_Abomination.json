@@ -1,0 +1,339 @@
+{
+  "$Comment": "Zombie difforme (élite) des fermes envahies : masse lente, coups écrasants, et une onde de choc annoncée (il s'immobilise, rougeoie, un cercle marque le sol) qu'on évite en sautant ou en s'éloignant. Retourne à sa ferme et regagne sa vie si on fuit à plus de 32 blocs.",
+  "Type": "Generic",
+  "Appearance": "Nakasar_Zombie_Abomination",
+  "NameTranslationKey": "nakasar_mobs.npc.Zombie_Abomination.name",
+  "MaxHealth": 450,
+  "DropList": "Nakasar_Drop_Zombie_Abomination",
+  "StartState": "Idle",
+  "DefaultPlayerAttitude": "Hostile",
+  "DefaultNPCAttitude": "Ignore",
+  "DisableDamageGroups": [
+    "Nakasar_Domain_Undead"
+  ],
+  "KnockbackScale": 0.3,
+  "DeathAnimationTime": 2.5,
+  "MotionControllerList": [
+    {
+      "Type": "Walk",
+      "MaxWalkSpeed": 3.8,
+      "Gravity": 10,
+      "MaxFallSpeed": 10,
+      "Acceleration": 12,
+      "JumpHeight": 1.0
+    }
+  ],
+  "InteractionVars": {
+    "Melee_Start": {
+      "Interactions": [
+        {
+          "Parent": "NPC_Attack_Melee_Simple",
+          "Effects": {
+            "ItemPlayerAnimationsId": "Hound_Bleached_Default",
+            "ItemAnimationId": "Bite"
+          },
+          "RunTime": 0.4
+        }
+      ]
+    },
+    "Melee_Damage": {
+      "Interactions": [
+        {
+          "Parent": "NPC_Attack_Melee_Damage",
+          "DamageCalculator": {
+            "Type": "Absolute",
+            "BaseDamage": {
+              "Physical": 34
+            },
+            "RandomPercentageModifier": 0.1
+          }
+        }
+      ]
+    }
+  },
+  "StateTransitions": [
+    {
+      "$Comment": "Entrée en combat : chaque attaque annoncée a sa propre recharge.",
+      "States": [
+        {
+          "From": [
+            "Idle",
+            "ReturnHome"
+          ],
+          "To": [
+            "Combat"
+          ]
+        }
+      ],
+      "Actions": [
+        {
+          "Type": "TimerStart",
+          "Name": "Slam",
+          "StartValueRange": [
+            5,
+            7
+          ],
+          "RestartValueRange": [
+            11,
+            14
+          ]
+        }
+      ]
+    }
+  ],
+  "Instructions": [
+    {
+      "Sensor": {
+        "Type": "State",
+        "State": "Idle"
+      },
+      "Instructions": [
+        {
+          "Sensor": {
+            "Type": "Damage",
+            "Combat": true,
+            "TargetSlot": "LockedTarget"
+          },
+          "Actions": [
+            {
+              "Type": "State",
+              "State": "Combat"
+            }
+          ]
+        },
+        {
+          "Sensor": {
+            "Type": "Player",
+            "Range": 16,
+            "LockOnTarget": true,
+            "Filters": [
+              {
+                "Type": "Attitude",
+                "Attitudes": [
+                  "Hostile"
+                ]
+              },
+              {
+                "Type": "LineOfSight"
+              }
+            ]
+          },
+          "Actions": [
+            {
+              "Type": "State",
+              "State": "Combat"
+            }
+          ]
+        },
+        {
+          "$Comment": "Un mob hostile (ancien allié sous Domination, ou mob dominé) : même réaction qu'envers un joueur.",
+          "Sensor": {
+            "Type": "Mob",
+            "Range": 16,
+            "LockOnTarget": true,
+            "Filters": [
+              {
+                "Type": "Attitude",
+                "Attitudes": [
+                  "Hostile"
+                ]
+              },
+              {
+                "Type": "LineOfSight"
+              }
+            ]
+          },
+          "Actions": [
+            {
+              "Type": "State",
+              "State": "Combat"
+            }
+          ]
+        },
+        {
+          "BodyMotion": {
+            "Type": "WanderInCircle",
+            "Radius": 6,
+            "RelativeSpeed": 0.25,
+            "MaxHeadingChange": 50
+          }
+        }
+      ]
+    },
+    {
+      "Sensor": {
+        "Type": "State",
+        "State": "Combat"
+      },
+      "Instructions": [
+        {
+          "$Comment": "Cible perdue ou partie trop loin : il retourne à son poste.",
+          "Sensor": {
+            "Type": "Not",
+            "Sensor": {
+              "Type": "Target",
+              "Range": 32,
+              "Filters": [
+                {
+                  "Type": "Attitude",
+                  "Attitudes": [
+                    "Hostile",
+                    "Neutral",
+                    "Ignore"
+                  ]
+                }
+              ]
+            }
+          },
+          "Actions": [
+            {
+              "Type": "ReleaseTarget"
+            },
+            {
+              "Type": "State",
+              "State": "ReturnHome"
+            }
+          ]
+        },
+        {
+          "$Comment": "Onde de choc annoncée quand la cible est à moins de 6 blocs.",
+          "Sensor": {
+            "Type": "And",
+            "Sensors": [
+              {
+                "Type": "Target",
+                "Range": 6,
+                "Filters": [
+                  {
+                    "Type": "LineOfSight"
+                  }
+                ]
+              },
+              {
+                "Type": "Timer",
+                "Name": "Slam",
+                "State": "STOPPED"
+              }
+            ]
+          },
+          "HeadMotion": {
+            "Type": "Aim",
+            "RelativeTurnSpeed": 1.2
+          },
+          "ActionsBlocking": true,
+          "Actions": [
+            {
+              "Type": "TimerRestart",
+              "Name": "Slam"
+            },
+            {
+              "Type": "Attack",
+              "Attack": "Root_Nakasar_NPC_Abomination_Slam",
+              "SkipAiming": true,
+              "LineOfSight": false,
+              "AvoidFriendlyFire": false
+            }
+          ]
+        },
+        {
+          "Sensor": {
+            "Type": "Target",
+            "Range": 3.0,
+            "Filters": [
+              {
+                "Type": "LineOfSight"
+              }
+            ]
+          },
+          "HeadMotion": {
+            "Type": "Aim",
+            "RelativeTurnSpeed": 1.5
+          },
+          "ActionsBlocking": true,
+          "Actions": [
+            {
+              "Type": "Attack",
+              "Attack": "Root_NPC_Attack_Melee",
+              "AttackPauseRange": [
+                1.4,
+                2.0
+              ]
+            },
+            {
+              "Type": "Timeout",
+              "Delay": [
+                0.2,
+                0.2
+              ]
+            }
+          ]
+        },
+        {
+          "Sensor": {
+            "Type": "Target",
+            "Range": 32
+          },
+          "BodyMotion": {
+            "Type": "Seek",
+            "RelativeSpeed": 0.9,
+            "SlowDownDistance": 3,
+            "StopDistance": 2.0999999999999996,
+            "UsePathfinder": true
+          },
+          "HeadMotion": {
+            "Type": "Watch",
+            "RelativeTurnSpeed": 1.5
+          }
+        }
+      ]
+    },
+    {
+      "Sensor": {
+        "Type": "State",
+        "State": "ReturnHome"
+      },
+      "Instructions": [
+        {
+          "Sensor": {
+            "Type": "Damage",
+            "Combat": true,
+            "TargetSlot": "LockedTarget"
+          },
+          "Actions": [
+            {
+              "Type": "State",
+              "State": "Combat"
+            }
+          ]
+        },
+        {
+          "Sensor": {
+            "Type": "Leash",
+            "Range": 2
+          },
+          "BodyMotion": {
+            "Type": "Seek",
+            "RelativeSpeed": 0.7,
+            "SlowDownDistance": 3,
+            "StopDistance": 1,
+            "UsePathfinder": true
+          }
+        },
+        {
+          "$Comment": "De retour à son poste : il récupère toute sa vie.",
+          "Actions": [
+            {
+              "Type": "SetStat",
+              "Stat": "Health",
+              "Value": 1000000
+            },
+            {
+              "Type": "State",
+              "State": "Idle"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

@@ -1,6 +1,6 @@
 # Briques des rôles de PNJ (serveur Hytale 0.7.2)
 
-Généré par `java -cp Server-0.7.2.jar mods/nakasar-mobs/tools/ValidateRoles.java --descriptors docs/npc-reference-0.7.2.md`.
+Généré par `java -cp Server-0.7.2.jar mods/nakasar-vampires/tools/ValidateRoles.java --descriptors docs/npc-reference-0.7.2.md`.
 `*` = obligatoire ; `(computable)` = accepte `{"Compute": "..."}`.
 
 ## Action / AdjustPosition  [Experimental]

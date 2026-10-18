@@ -1,0 +1,15 @@
+{
+  "Group": "${group}",
+  "Name": "Vampires",
+  "Version": "${version}",
+  "Description": "Le domaine du Comte vampire : fragment d'Orbis « Halloween » ouvert depuis l'Ancienne passerelle, le Comte et la Comtesse, leurs rejetons et leurs morts-vivants, quatre runes (Baiser du Vampire, Domination, Téléportation, Chaînes spectrales), l'autel sacrificiel et la lance à deux mains.",
+  "Authors": [
+    { "Name": "${author}" }
+  ],
+  "Main": "dev.nakasar.hytale.vampires.VampiresPlugin",
+  "IncludesAssetPack": true,
+  "ServerVersion": "${serverRange}",
+  "Dependencies": {
+    "Hytale:Abilities": "*"
+  }
+}

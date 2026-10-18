@@ -1,6 +1,0 @@
-{
-  "$Comment": "Effet de la Domination du comte sur un joueur touché (type Java Nakasar_DominatePlayer du mod Mobs).",
-  "Type": "Nakasar_DominatePlayer",
-  "Duration": 6,
-  "EffectId": "Nakasar_Count_Domination"
-}
