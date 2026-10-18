@@ -12,6 +12,7 @@ import com.hypixel.hytale.server.npc.asset.builder.BuilderManager;
 import java.lang.reflect.*;
 import java.nio.file.Path;
 import java.util.List;
+@SuppressWarnings({"removal", "unchecked", "rawtypes"})
 public class ValidateRoles {
   public static void main(String[] a) throws Throwable { try { run(a); } catch (Throwable t) { t.printStackTrace(System.out); System.exit(2); } System.exit(0); }
   @SuppressWarnings({"unchecked","rawtypes"})
@@ -33,18 +34,30 @@ public class ValidateRoles {
     for (Field f : c.getDeclaredFields()) if (Modifier.isStatic(f.getModifiers()) && f.getType() == c) { f.setAccessible(true); u.putObject(u.staticFieldBase(f), u.staticFieldOffset(f), o); }
   }
   static void run(String[] a) throws Throwable {
-    // Le journal du serveur signale les clés inconnues ("Unknown JSON attribute") sans lever d'erreur.
+    // Le journal du serveur (sur stdout comme sur stderr) signale les clés inconnues ("Unknown JSON attribute") et les
+    // assets rejetés (SEVERE) sans lever d'erreur : on compte ces lignes comme des erreurs. Hors jeu, les parents vanilla
+    // des interactions en ligne (InteractionVars) n'existent pas : ce rejet-là est attendu, on le note en REF.
+    // Les piles d'appels qui suivent un message ne s'affichent qu'avec VALIDATE_TRACE (elles deviendraient des
+    // annotations d'erreur dans GitHub Actions).
     java.io.PrintStream out = System.out;
     int[] warnings = {0};
-    System.setOut(new java.io.PrintStream(new java.io.OutputStream() {
-      private final java.io.ByteArrayOutputStream line = new java.io.ByteArrayOutputStream();
-      @Override public void write(int b) {
-        if (b != '\n') { line.write(b); return; }
-        String l = line.toString(java.nio.charset.StandardCharsets.UTF_8); line.reset();
-        if (l.contains("Unknown JSON attribute") || l.contains("SEVERE]")) { warnings[0]++; out.println("ERROR " + l.substring(0, Math.min(l.length(), 240))); }
-        else if (!l.contains("INFO]")) out.println(l);
+    java.util.Set<String> vanillaParents = new java.util.TreeSet<>();
+    boolean trace = System.getenv("VALIDATE_TRACE") != null;
+    java.util.function.Consumer<String> filter = l -> {
+      java.util.regex.Matcher parent = MISSING_PARENT.matcher(l);
+      if (parent.find()) {
+        if (parent.group(1).startsWith("Nakasar_")) { warnings[0]++; out.println("ERROR parent du mod introuvable : " + parent.group(1)); }
+        else vanillaParents.add(parent.group(1));
+      } else if (l.contains("Unknown JSON attribute") || l.contains("SEVERE]")) {
+        warnings[0]++; out.println("ERROR " + l.substring(0, Math.min(l.length(), 240)));
+      } else if (l.contains("INFO]") || l.contains("Removing child asset")) {
+        // bruit
+      } else if (trace || !STACK_LINE.matcher(l).find()) {
+        out.println(l);
       }
-    }, true, java.nio.charset.StandardCharsets.UTF_8));
+    };
+    System.setOut(lineStream(filter));
+    System.setErr(lineStream(filter));
     com.hypixel.hytale.server.core.Options.parse(new String[0]);
     sun.misc.Unsafe u = unsafe();
     Class<?> sc = com.hypixel.hytale.server.core.HytaleServer.class;
@@ -55,6 +68,8 @@ public class ValidateRoles {
     try { Class.forName("com.hypixel.hytale.server.core.asset.AssetRegistryLoader"); } catch (Throwable t) { System.out.println("WARN  AssetRegistryLoader : " + t); }
     reg("com.hypixel.hytale.server.core.modules.entitystats.asset.EntityStatType");
     reg("com.hypixel.hytale.builtin.tagset.config.NPCGroup");
+    // Les InteractionVars des rôles déclarent des interactions en ligne : leur magasin doit exister pour les décoder.
+    reg("com.hypixel.hytale.server.core.modules.interaction.interaction.config.Interaction");
     reg("com.hypixel.hytale.server.core.modules.interaction.interaction.config.RootInteraction");
     mod("com.hypixel.hytale.server.core.modules.entity.EntityModule");
     NPCPlugin p = (NPCPlugin) u.allocateInstance(NPCPlugin.class);
@@ -105,6 +120,7 @@ public class ValidateRoles {
     List<String> errs = new java.util.ArrayList<>();
     try { bm.validateAllLoadedBuilders(bm.getAllBuilders(), true, errs); } catch (Throwable t) { errs.add("validation : " + t); t.printStackTrace(System.out); }
     for (String e : errs) { if (MISSING.matcher(e).find()) continue; System.out.println("ERROR " + e); errors++; }
+    vanillaParents.forEach(id -> System.out.println("REF   vanilla " + id + " (Parent d'interaction en ligne)"));
     errors += warnings[0];
     System.setOut(out);
     System.out.println((errors == 0 ? "OK    " : "FAIL  ") + files.size() + " rôle(s), " + errors + " erreur(s)");
@@ -157,6 +173,22 @@ public class ValidateRoles {
     }
   }
   // Les assets (modèles, interactions, groupes...) ne sont pas chargés hors jeu : ces références sont listées, pas comptées.
+  static final java.util.regex.Pattern MISSING_PARENT = java.util.regex.Pattern.compile("Failed to find parent(?: with key)? '([^']+)'");
+  // Lignes d'une pile d'appels ou d'un extrait JSON qui suivent un message d'erreur du serveur.
+  static final java.util.regex.Pattern STACK_LINE = java.util.regex.Pattern.compile(
+      "^(\\s+at |\\s*\\.\\.\\. \\d+ more|Caused by: |com\\.hypixel\\.hytale\\.\\S*Exception|java\\.lang\\.\\S*Exception|From: |Buffer RawJsonReader|L\\s+\\d+>|\\s*\\|-*\\^|-*\\^|'$|\\s*$)");
+
+  static java.io.PrintStream lineStream(java.util.function.Consumer<String> sink) {
+    return new java.io.PrintStream(new java.io.OutputStream() {
+      private final java.io.ByteArrayOutputStream line = new java.io.ByteArrayOutputStream();
+      @Override public synchronized void write(int b) {
+        if (b != '\n') { line.write(b); return; }
+        String l = line.toString(java.nio.charset.StandardCharsets.UTF_8); line.reset();
+        sink.accept(l);
+      }
+    }, true, java.nio.charset.StandardCharsets.UTF_8);
+  }
+
   static final java.util.regex.Pattern MISSING = java.util.regex.Pattern.compile("\"([^\"]+)\" does not exist (?:for|in) attribute \"([^\"]+)\"");
   /**
    * Écrit la référence de toutes les briques de rôle (ce que produit la commande serveur /npc descriptors),
