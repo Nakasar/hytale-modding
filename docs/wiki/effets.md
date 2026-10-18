@@ -2,6 +2,14 @@
 
 Les effets que le mod applique aux joueurs et aux créatures.
 
+## Aura de lumière {#aura-de-lumiere}
+
+![icône](/jeu/UI/StatusEffects/Nakasar/Light_Aura.png)
+
+- **Source :** rune [Aura de lumière](objets/runes.md#aura-de-lumiere)
+- **Durée :** 8 s
+- Flammes blanches autour de vous ; les morts-vivants vous fuient comme un feu purificateur. Teinte blanche et dorée.
+
 ## Chaînes spectrales {#chaines-spectrales}
 
 ![icône](/jeu/UI/StatusEffects/Nakasar/Spectral_Chains.png)
@@ -59,3 +67,11 @@ Les effets que le mod applique aux joueurs et aux créatures.
 ## Effets invisibles
 
 Les élites deviennent **insensibles au recul** pendant leurs attaques annoncées (2,5 s), et la Citrouille géante pendant la charge de son piège (3,5 s).
+
+## Invisible {#invisible}
+
+![icône](/jeu/UI/StatusEffects/Nakasar/Invisible.png)
+
+- **Source :** rune [Invisibilité](objets/runes.md#invisibilite)
+- **Durée :** 30 s au plus, jusqu'à ce que vous bougiez ou frappiez
+- Caché aux joueurs et aux créatures, intouchable. Teinte grise visible de vous seul.

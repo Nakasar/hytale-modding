@@ -394,6 +394,34 @@ Recherche des blocs : sections de blocs chargées (`BlockSection.contains` puis 
 Le rayon de 7 est aussi `PURIFY_RADIUS` dans `tools/generate_prefabs.py`, qui vérifie que chaque case du camp est
 couverte. Les morts-vivants à distance (archers, mages) peuvent encore tirer dans le camp depuis l'extérieur.
 
+## Établi des chasseurs de vampires
+
+`Nakasar_Hunter_Workbench` (`Item/Items/Bench/Nakasar/`), fabriqué à l'établi (`Workbench_Crafting`, niveau 1) :
+10 `Wood_Trunk`, 2 `Ingredient_Bar_Silver`, 4 `Ingredient_Leather_Light`. Modèle, texture, hitbox (2×1 blocs,
+râtelier au dos), icône, icônes d'onglets et d'effets : `tools/generate_hunter_bench.py` (réutilise
+`generate_altar.py`). Deux niveaux (`Bench.TierLevels`) : le serveur lit le coût de passage du niveau N dans
+`TierLevels[N-1].UpgradeRequirement` (`CraftingManager.getBenchUpgradeRequirement`), ici 6 lingots d'argent,
+4 éclats de rune, 2 topazes, 3 s ; le niveau 2 réduit le temps de fabrication de 15 %.
+
+| Onglet (`Categories`) | Niveau | Recette (`Item/Recipes/Nakasar/`) |
+|---|---|---|
+| `Nakasar_Hunter_Fires` | 1 | 4 `Nakasar_Purifying_Torch` (bois, charbon, argent) ; 2 `Nakasar_Purifying_Lantern` (fer, charbon, argent) |
+| `Nakasar_Hunter_Runes` | 2 | `Rune_Nakasar_LightAura` (2 éclats, 2 argent, topaze) ; `Rune_Nakasar_Invisibility` (2 éclats, 3 lin, saphir) |
+| `Nakasar_Hunter_Fragments` | 2 | `PortalKey_Nakasar_Halloween` (3 éclats, 2 argent, rubis, 4 os) |
+
+- **Aura de lumière** (`Nakasar_LightAura`, `purifying/LightAura*`) : 40 mana, recharge 30 s, 8 s (attribut
+  `Duration`). Pose le composant non sauvegardé `LightAura` et une `DynamicLight` copiée de la torche (la lumière
+  d'avant est rendue à la fin ou au déchargement). `LightAuraSystem` publie chaque tick la position du porteur dans
+  `PurifyingFires` ; `PurifyingFireSystem` la compte comme un feu posé (mêmes rayons 7 / 11, abri à 9, brûlure).
+  Effet `Nakasar_Light_Aura` (particules `Nakasar_Light_Aura`).
+- **Invisibilité** (`Nakasar_Invisibility`, `invisibility/`) : 30 mana, recharge 25 s, 30 s au plus. Pose
+  `Intangible` (le jeu ne fait pas détecter une entité intangible par les capteurs des PNJ,
+  `EntityDetectionUtil.isDetectableByNPCs` ; effet de bord : pas de dégâts reçus) et cache le porteur aux autres
+  joueurs (`PlayerRef.getHiddenPlayersManager().hidePlayer`). `InvisibilitySystem` la rompt à 0,3 bloc de
+  l'ancrage (l'ancrage suit le joueur 0,3 s après le lancer), `BreakOnAttack` dès qu'il inflige des dégâts,
+  `ForgetInvisible` efface le porteur des cibles marquées des PNJ, `Unload` défait tout au déchargement
+  (`Intangible` est sauvegardé). Effet `Nakasar_Invisible`.
+
 ## Camps et Domination
 
 Java, `allegiance/` et `domination/`. Les mobs du fragment (groupe `Nakasar_Halloween_Faction` : les trois groupes

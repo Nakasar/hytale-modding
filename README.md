@@ -10,6 +10,7 @@ Un seul mod, **Vampires** (`mods/nakasar-vampires`, plugin Java + pack d'assets,
 | Fragment Halloween | Fragment d'Orbis ouvert depuis l'Ancienne passerelle : manoir du Comte, village abandonné, fermes délaissées, ancien poste de garde, cryptes, châteaux hantés, cimetières, forêts mortes |
 | Mobs | Comte et Comtesse Vampire (boss qui lancent les sorts des runes), rejetons, fantômes, morts-vivants du domaine et leurs élites ; tous les mobs du fragment sont alliés entre eux |
 | Runes et autel | 4 runes d'abilities (Baiser du Vampire, Domination, Téléportation, Chaînes spectrales) et l'autel sacrificiel qui les fabrique ; la Domination fait changer de camp le mob visé |
+| Établi des chasseurs | Établi à 2 niveaux : torches et lanternes de feu purificateur, runes Aura de lumière et Invisibilité, fragment du Comté Vampire |
 | Lance | Lance de fer à deux mains : enchaînement, coup chargé, compétence ultime |
 | Armes en argent | Version en argent de chaque arme standard, de la lance du mod et des flèches : double dégâts contre les vampires (Comte, Comtesse, rejetons) |
 
@@ -203,6 +204,10 @@ repris de la documentation communautaire sans avoir pu être contrôlés :
   dalle) et le cadrage de l'icône 3D (`IconProperties`, repris de l'établi d'alchimie). Si le rendu ou les UV
   sont faux, ouvrir le `.blockymodel` dans Blockbench avec le plugin Hytale, ou corriger le script et le
   relancer.
+- **Établi des chasseurs** (`tools/generate_hunter_bench.py`) : à vérifier en jeu, le bouton d'amélioration vers
+  le niveau 2 et son coût, `BlockParticleSetId: Wood` (id supposé), le cadrage de l'icône, et pour les runes :
+  la lumière portée par l'Aura (copie de la torche), le rendu des particules autour du lanceur, la disparition du
+  lanceur invisible pour les autres joueurs et le retour à la normale quand il bouge, frappe ou se déconnecte.
 
 Fragment Halloween :
 

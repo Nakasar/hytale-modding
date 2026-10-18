@@ -1,0 +1,38 @@
+{
+  "TimeSeconds": 1,
+  "KnowledgeRequired": false,
+  "Input": [
+    {
+      "ResourceTypeId": "Wood_Trunk",
+      "Quantity": 1
+    },
+    {
+      "ItemId": "Ingredient_Charcoal",
+      "Quantity": 1
+    },
+    {
+      "ItemId": "Ingredient_Bar_Silver",
+      "Quantity": 1
+    }
+  ],
+  "PrimaryOutput": {
+    "ItemId": "Nakasar_Purifying_Torch",
+    "Quantity": 4
+  },
+  "Output": [
+    {
+      "ItemId": "Nakasar_Purifying_Torch",
+      "Quantity": 4
+    }
+  ],
+  "BenchRequirement": [
+    {
+      "Type": "Crafting",
+      "Id": "Nakasar_Hunter_Workbench",
+      "Categories": [
+        "Nakasar_Hunter_Fires"
+      ],
+      "RequiredTierLevel": 1
+    }
+  ]
+}

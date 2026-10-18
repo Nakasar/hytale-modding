@@ -1,0 +1,11 @@
+{
+  "$Comment": "Invisibilité (rune) : retour visuel pour le lanceur seulement ; les autres joueurs ne le voient plus (dev.nakasar.hytale.vampires.invisibility).",
+  "Duration": 30,
+  "OverlapBehavior": "Overwrite",
+  "Debuff": false,
+  "StatusEffectIcon": "UI/StatusEffects/Nakasar/Invisible.png",
+  "ApplicationEffects": {
+    "EntityTopTint": "#9aa4b8",
+    "EntityBottomTint": "#3c4252"
+  }
+}
