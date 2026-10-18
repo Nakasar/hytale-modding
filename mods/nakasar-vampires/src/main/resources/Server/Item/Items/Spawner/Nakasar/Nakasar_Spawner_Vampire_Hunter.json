@@ -1,0 +1,22 @@
+{
+  "$Comment": "Bloc invisible posé dans le camp des chasseurs de vampires : son composant SpawnMarkerBlock crée le marqueur Nakasar_Vampire_Hunter (un chasseur tiré au hasard) à cet endroit.",
+  "TranslationProperties": {
+    "Name": "nakasar_mobs.items.Nakasar_Spawner_Vampire_Hunter.name"
+  },
+  "Quality": "Developer",
+  "MaxStack": 64,
+  "BlockType": {
+    "Material": "Empty",
+    "DrawType": "Empty",
+    "Opacity": "Transparent",
+    "BlockEntity": {
+      "Components": {
+        "SpawnMarkerBlock": {
+          "Config": {
+            "SpawnMarker": "Nakasar_Vampire_Hunter"
+          }
+        }
+      }
+    }
+  }
+}

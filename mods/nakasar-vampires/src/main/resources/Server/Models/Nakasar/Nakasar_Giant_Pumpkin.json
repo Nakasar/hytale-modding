@@ -1,0 +1,25 @@
+{
+  "$Comment": "Citrouille géante animée (élite) : la citrouille sculptée vanilla (bloc Deco_Halloween_Pumpkin_Scary), quatre fois plus grande, éclairée de l'intérieur. Elle ne bouge pas ; ses attaques sont faites de vrilles, d'épines et de poison (particules et projectiles).",
+  "Model": "Items/Halloween_Props/Pumpkin_Carve_01.blockymodel",
+  "Texture": "Items/Halloween_Props/Pumpkin_Carve_Texture_02.png",
+  "EyeHeight": 0.45,
+  "HitBox": {
+    "Max": {
+      "X": 0.3,
+      "Y": 0.78,
+      "Z": 0.3
+    },
+    "Min": {
+      "X": -0.3,
+      "Y": 0,
+      "Z": -0.3
+    }
+  },
+  "MinScale": 4,
+  "MaxScale": 4,
+  "Light": {
+    "Color": "#ff8a1c",
+    "Radius": 10
+  },
+  "AnimationSets": {}
+}

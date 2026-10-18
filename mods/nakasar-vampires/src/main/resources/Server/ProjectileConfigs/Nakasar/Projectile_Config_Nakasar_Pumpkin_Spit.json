@@ -1,0 +1,64 @@
+{
+  "Parent": "Projectile_Config_Scarak_Seeker_Spitball",
+  "Model": "Nakasar_Pumpkin_Spit",
+  "Interactions": {
+    "ProjectileHit": {
+      "Cooldown": {
+        "Cooldown": 0
+      },
+      "Interactions": [
+        {
+          "Type": "DamageEntity",
+          "Entity": "Target",
+          "DamageCalculator": {
+            "Type": "Absolute",
+            "BaseDamage": {
+              "Poison": 8
+            },
+            "RandomPercentageModifier": 0.1
+          },
+          "DamageEffects": {
+            "WorldSoundEventId": "SFX_Scarak_Seeker_Spitball_Death",
+            "WorldParticles": [
+              {
+                "SystemId": "Dungeon_Goblin_Spores_Orange"
+              }
+            ]
+          },
+          "Next": {
+            "Type": "ApplyEffect",
+            "Entity": "Target",
+            "EffectId": "Nakasar_Pumpkin_Poison"
+          }
+        },
+        {
+          "Type": "RemoveEntity",
+          "Entity": "User"
+        }
+      ]
+    },
+    "ProjectileMiss": {
+      "Cooldown": {
+        "Cooldown": 0
+      },
+      "Interactions": [
+        {
+          "Type": "Simple",
+          "RunTime": 0,
+          "Effects": {
+            "WorldSoundEventId": "SFX_Scarak_Seeker_Spitball_Death",
+            "WorldParticles": [
+              {
+                "SystemId": "Dungeon_Goblin_Spores_Orange"
+              }
+            ]
+          }
+        },
+        {
+          "Type": "RemoveEntity",
+          "Entity": "User"
+        }
+      ]
+    }
+  }
+}

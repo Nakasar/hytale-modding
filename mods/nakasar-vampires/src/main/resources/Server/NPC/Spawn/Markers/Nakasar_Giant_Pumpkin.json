@@ -1,0 +1,12 @@
+{
+  "$Comment": "Citrouille géante (élite) d'une variante du champ de citrouilles ; repousse 30 minutes après sa mort.",
+  "NPCs": [
+    {
+      "Name": "Nakasar_Giant_Pumpkin",
+      "Weight": 1,
+      "RealtimeRespawnTime": 1800
+    }
+  ],
+  "RealtimeRespawn": true,
+  "ExclusionRadius": 0
+}

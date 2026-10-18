@@ -264,6 +264,10 @@ Les boss réutilisent les interactions et particules des runes.
 | `Nakasar_Zombie_Abomination` | 450 | Élite des fermes (zombie aberrant géant). Morsure 34 ; Écrasement annoncé toutes les 11 à 14 s (lueur rouge, cercle au sol pendant 1,2 s) : onde en anneau de 7 blocs, 30 dégâts et projection. |
 | `Nakasar_Skeleton_Guard` | 120 | Garde squelette en armure rouillée, épée et bouclier, mêlée 18. |
 | `Nakasar_Guard_Captain` | 650 | Élite du poste de garde, hache de bataille. Combo gauche/droite (22) ; Fendant annoncé (1,1 s, 45 dégâts devant lui sur 5 blocs, 9 à 12 s) ; Tourbillon annoncé (1,3 s, 32 dégâts autour sur 4 blocs, 14 à 18 s) ; Emprisonnement (1,5 s d'incantation, rayon jusqu'à 16 blocs, 45 à 60 s) qui envoie le joueur touché dans la cellule du poste de garde. Immobile pendant chaque annonce. |
+| `Nakasar_Giant_Pumpkin` | 600 | Élite du champ de citrouilles (citrouille sculptée vanilla ×4), immobile. Coup de vrille devant elle (18, 4,5 blocs) ; trois épines (9 chacune, 18 blocs, toutes les 2,5 à 3,5 s) ; crachat de poison orange (8 + poison 4/s pendant 6 s, 16 blocs, 6 à 8 s) ; Balayage annoncé (zone rouge de 5 blocs pendant 1,2 s, 26 dégâts et projection, 8 à 11 s) ; Piège de vrilles annoncé (zone rouge de 6,5 blocs qui se charge 2,2 s, 16 à 20 s) : chaque ennemi resté dedans est retenu par une `Nakasar_Pumpkin_Tendril` (12 PV) à ses pieds jusqu'à ce qu'elle soit détruite (20 s au plus). Elle et ses vrilles prennent double dégâts de feu. Se rendort et regagne sa vie si la cible s'éloigne à plus de 20 blocs. |
+| `Nakasar_Vampire_Hunter_Crossbow` | 160 | Chasseuse de vampires, arbalète (carreaux 16, 18 blocs). |
+| `Nakasar_Vampire_Hunter_Gunner` | 170 | Chasseur de vampires, tromblon (balles 22, 14 blocs, lent). |
+| `Nakasar_Vampire_Hunter_Blade` | 200 | Chasseur de vampires, épée d'argent vanilla (`Weapon_Sword_Silversteel`), mêlée 20. |
 
 - **Domination** (Java, `domination/`) : l'interaction `Nakasar_DominatePlayer` enregistre « ce joueur est
   dominé par ce PNJ » pendant `Duration` secondes et applique l'effet `Nakasar_Count_Domination`. Le système
@@ -276,9 +280,26 @@ Les boss réutilisent les interactions et particules des runes.
 - **Attaques annoncées** (abomination, capitaine) : même schéma que les gobelins du donjon Deepworks
   (`Dungeon_Goblin_Mace_Slam`) : effet d'immobilisation, lueur rouge `Dungeon_Goblin_Mace_Slam_Charge`, particules
   d'alerte au sol, puis frappe et temps de récupération.
+- **Piège de vrilles** (Java, `pumpkin/RootTrapInteraction`) : l'interaction `Nakasar_RootTrap`, lancée sur chaque
+  entité du cercle (`Selector` `AOECircle`), fait apparaître le PNJ `Nakasar_Pumpkin_Tendril` à ses pieds (après
+  le tick, `NPCPlugin.spawnNPC`) et l'immobilise : effet `Nakasar_Tendril_Rooted` (`DisableAll`) pour un joueur,
+  composant `Frozen` pour un PNJ. Toutes les 250 ms on vérifie la vrille : morte ou disparue, la victime est libérée ;
+  au bout de 20 s la vrille est retirée. L'immobilisation est reconduite à chaque vérification (effet d'1 s pour un
+  joueur, gel reposé s'il a été retiré). La vrille n'est pas sauvegardée ; une victime qui quitte le monde en plein
+  piège perd le gel posé par le piège (`RootTrapped` + `RootTrapUnloadSystem`). Les alliés de la citrouille (camp du
+  fragment, ou sous Domination son maître et les PNJ du même maître) et les vrilles sont épargnés.
+- **Faiblesse au feu** (Java, `pumpkin/FireWeaknessSystem`) : dans le groupe de filtrage des dégâts, après
+  `AllegianceDamageFilter`, les dégâts de cause `Fire` (ou qui en hérite) sur un membre de `Nakasar_Pumpkin_Patch`
+  sont doublés.
+- **Chasseurs de vampires** : `DefaultPlayerAttitude: Neutral`, ils ne ripostent que si on les frappe (capteur
+  `Damage`) et oublient le joueur une fois revenus au camp. Ennemis jurés des mobs du fragment (voir Camps). Ils ne
+  s'éloignent jamais à plus de 14 blocs de leur poste (capteur `Leash` en combat : ils lâchent la cible et
+  reviennent, puis regagnent leur vie). Tenues de cuir « chasseur de démons » (chapeaux, longs manteaux, masque,
+  bandoulière) en vêtements vanilla. Carreaux et balles : `Projectiles/Nakasar/`.
 - **Groupes** : `Nakasar_Domain_Undead` (morts-vivants du domaine), `Nakasar_Vampires` et `Nakasar_Ghosts` (`DisableDamageGroups`, ils ne se blessent pas entre eux),
-  `Nakasar_Vampire_Spawns` (compté par le comte avant d'invoquer), `Nakasar_Halloween_Faction` (tous les mobs du
-  fragment, voir ci-dessous).
+  `Nakasar_Vampire_Spawns` (compté par le comte avant d'invoquer), `Nakasar_Pumpkin_Patch` (citrouille géante et
+  vrilles : faiblesse au feu), `Nakasar_Vampire_Hunters` (ne se blessent pas entre eux), `Nakasar_Halloween_Faction`
+  (tous les mobs du fragment, voir ci-dessous).
 - **Apparence** : modèles humanoïdes sur le squelette du joueur (`Parent: Player`), vêtements vanilla du créateur de
   personnage recolorés et col victorien généré par `tools/generate_vampire_models.py` (modèles et texture dans
   `Common/NPC/Nakasar/Vampire/`, icônes d'effets dans `Common/UI/StatusEffects/Nakasar/`).
@@ -286,7 +307,9 @@ Les boss réutilisent les interactions et particules des runes.
 - **Apparition** : spawns de monde dans le pack Halloween (voir plus haut), et marqueurs `NPC/Spawn/Markers/Nakasar_Vampire_Count` (Comte ou Comtesse à poids égaux, réapparition 30 min) /
   `Nakasar_Vampire_Spawn` (5 min), posés via les blocs invisibles `Nakasar_Spawner_*`. Un marqueur fait apparaître
   un seul PNJ : `Nakasar_Zombie_Villager`, `_Zombie_Farmer`, `_Zombie_Rebel`, `_Skeleton_Guard` (10 min),
-  `_Zombie_Abomination`, `_Guard_Captain` (30 min) et `Nakasar_Spider` (araignée ou araignée des cavernes, vanilla).
+  `_Zombie_Abomination`, `_Guard_Captain`, `_Giant_Pumpkin` (30 min), `Nakasar_Spider` (araignée ou araignée des
+  cavernes, vanilla) et `Nakasar_Vampire_Hunter` (un chasseur tiré au hasard : arbalète 4, tromblon 3, épée 3 ;
+  20 min).
 
 ## Camps et Domination
 
@@ -297,7 +320,9 @@ temps de son effet.
 - **Attitudes** (`AllegianceAttitudeSystem`) : deux fournisseurs ajoutés à l'`AttitudeView` des PNJ, comme le
   module de réputation du jeu. Priorité -10 (avant les `OverrideAttitude` des rôles, priorité 0) : un PNJ dominé
   est `Friendly` envers son dominateur et les autres PNJ du même dominateur, `Hostile` envers ses anciens alliés,
-  qui le voient aussi `Hostile`. Priorité 150 (après la lignée d'apparition, avant les groupes d'attitude des
+  qui le voient aussi `Hostile`. Priorité 140 : un chasseur de vampires (`Nakasar_Vampire_Hunters`) et un membre
+  du camp sont `Hostile` l'un envers l'autre ; leurs capteurs `Mob` (filtre `Attitude: Hostile`) les lancent au
+  combat à vue. Priorité 150 (après la lignée d'apparition, avant les groupes d'attitude des
   rôles) : deux membres du camp sont `Friendly`. Anciens alliés : deux membres du camp, ou deux PNJ dont le rôle
   est amical envers l'autre dans les groupes d'attitude du jeu (`AttitudeMap`). Les PNJ gardent leurs attitudes
   en cache 0,1 s.
