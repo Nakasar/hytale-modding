@@ -1,5 +1,5 @@
 {
-  "$Comment": "Projection d'épines : trois épines tirées coup sur coup vers la cible. Seule la première LaunchProjectile porte le tag AimingReference (le serveur n'en accepte qu'un par chaîne d'attaque).",
+  "$Comment": "Projection d'épines d'une vrille combattante : deux épines tirées coup sur coup vers la cible. Seule la première LaunchProjectile porte le tag AimingReference (le serveur n'en accepte qu'un par chaîne d'attaque).",
   "Type": "Simple",
   "RunTime": 0.5,
   "Effects": {
@@ -9,10 +9,10 @@
         "SystemId": "Heal_Stick_ThornsUp",
         "TargetEntityPart": "Entity",
         "TargetNodeName": "Origin",
-        "Scale": 1.2,
+        "Scale": 0.8,
         "PositionOffset": {
           "X": 0,
-          "Y": 1.5,
+          "Y": 1.0,
           "Z": 0
         }
       }
@@ -28,12 +28,7 @@
     "Next": {
       "Type": "LaunchProjectile",
       "RunTime": 0.2,
-      "ProjectileId": "Nakasar_Pumpkin_Thorn",
-      "Next": {
-        "Type": "LaunchProjectile",
-        "RunTime": 0.2,
-        "ProjectileId": "Nakasar_Pumpkin_Thorn"
-      }
+      "ProjectileId": "Nakasar_Pumpkin_Thorn"
     }
   }
 }

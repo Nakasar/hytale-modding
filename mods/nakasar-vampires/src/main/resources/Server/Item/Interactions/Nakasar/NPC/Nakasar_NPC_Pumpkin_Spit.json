@@ -1,14 +1,14 @@
 {
-  "$Comment": "Crachat de poison orange vers la cible : 8 dégâts de poison à l'impact puis l'effet Nakasar_Pumpkin_Poison.",
+  "$Comment": "Crachat de poison orange vers la cible, lent à préparer (la citrouille gonfle ses joues de spores pendant 1 s) : 8 dégâts de poison à l'impact puis l'effet Nakasar_Pumpkin_Poison.",
   "Type": "Simple",
-  "RunTime": 0.5,
+  "RunTime": 1.0,
   "Effects": {
     "Particles": [
       {
         "SystemId": "Dungeon_Goblin_Spores_Orange",
         "TargetEntityPart": "Entity",
         "TargetNodeName": "Origin",
-        "Scale": 0.6,
+        "Scale": 0.9,
         "PositionOffset": {
           "X": 0,
           "Y": 1.2,

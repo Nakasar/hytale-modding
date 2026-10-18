@@ -20,6 +20,7 @@ items.Nakasar_Spawner_Spider.name = Marker: Spider
 items.Nakasar_Prison_Cell.name = Prison Cell (imprisonment target)
 npc.Giant_Pumpkin.name = Giant Pumpkin
 npc.Pumpkin_Tendril.name = Tendrils
+npc.Pumpkin_Vine.name = Pumpkin Vine
 npc.Vampire_Hunter_Crossbow.name = Vampire Hunter
 npc.Vampire_Hunter_Gunner.name = Vampire Hunter
 npc.Vampire_Hunter_Blade.name = Vampire Hunter
