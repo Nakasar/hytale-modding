@@ -2709,6 +2709,11 @@ def fallen_log(seed):
 CAMP_HALF = 12   # palissade de 25 × 25 : les chasseurs (fil des mobs, laisse ~14) restent dedans
 CAMP_GROUND = [("Soil_Pathway", 3), ("Soil_Dirt", 2), ("Soil_Grass_Burnt", 2), ("Soil_Gravel", 1)]
 PALISADE = "Wood_Dry_Trunk"
+# Feu purificateur (blocs du pack, tools/generate_assets.py) : les morts-vivants restent à PURIFY_RADIUS blocs
+# de ces blocs (dev.nakasar.hytale.vampires.purifying.PurifyingFireSystem).
+PURIFYING_TORCH = "Nakasar_Purifying_Torch"
+PURIFYING_LANTERN = "Nakasar_Purifying_Lantern"
+PURIFY_RADIUS = 7
 CANVAS = [("Cloth_Block_Wool_Black", 3), ("Cloth_Block_Wool_Red", 1)]
 TENT_ROOF = "Cloth_Roof_Leather"
 
@@ -2773,10 +2778,14 @@ def hunter_camp(seed, variant):
         for z in range(-h, h + 1):
             if max(abs(x), abs(z)) != h or (z == h and abs(x) <= 1):
                 continue
-            p.fill(x, 0, z, x, 2 + (x + z) % 2, z, PALISADE)
+            top = 2 + (x + z) % 2
+            p.fill(x, 0, z, x, top, z, PALISADE)
+            # torche de feu blanc sur un tronc sur six, coins compris : le cercle de chacune recouvre la palissade
+            if (abs(x) == h and abs(z) == h) or (x % 6 == 0 and abs(z) == h) or (z % 6 == 0 and abs(x) == h):
+                p.set(x, top + 1, z, PURIFYING_TORCH)
     for gx in (-2, 2):
         p.fill(gx, 0, h, gx, 3, h, PALISADE)
-        p.set(gx, 4, h, "Deco_Lantern")
+        p.set(gx, 4, h, PURIFYING_LANTERN)
     # portail fermé : les PNJ n'ouvrent pas les portillons, les chasseurs restent dans l'enceinte
     for gx in (-1, 0, 1):
         p.set(gx, 0, h, "Wood_Softwood_Fence_Gate")
@@ -2828,8 +2837,8 @@ def hunter_camp(seed, variant):
     p.fill(11, 0, 9, 11, 1, 9, "Ingredient_Hay")
     p.set(8, 0, 11, "Furniture_Ancient_Sack")
     # lanternes sur poteaux, herbe folle le long de la palissade
-    for lx, lz in ((-4, 4), (4, 4), (-8, -2), (8, -4)):
-        lantern_post(p, lx, lz, 2)
+    for lx, lz in ((-4, 4), (4, 4), (-8, -2), (8, -4), (2, -3)):
+        lantern_post(p, lx, lz, 2, PURIFYING_LANTERN)
     spawners(p, SPAWN_HUNTER, [(-3, 1), (3, -1), (1, 3), (-7, 4), (6, 1), (-3, -2)])
     p.scatter(-h + 1, 0, -h + 1, h - 1, h - 1, 10, [("Plant_Grass_Gnarled", 3), ("Plant_Grass_Gnarled_Short", 2)], rot=0)
     return p

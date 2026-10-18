@@ -32,6 +32,7 @@ TEXTURES = COMMON / "BlockTextures" / "Nakasar" / "Halloween"
 ICONS = COMMON / "Icons" / "Items" / "Nakasar" / "Halloween"
 ITEMS = SERVER / "Item" / "Items" / "Deco" / "Nakasar"
 HITBOXES = SERVER / "Item" / "Block" / "Hitboxes" / "Nakasar"
+FLAME_TEXTURE = COMMON / "Particles" / "Textures" / "Nakasar" / "Purifying_Flame.png"
 
 STONE = (104, 100, 104)
 STONE_DARK = (70, 66, 72)
@@ -166,6 +167,41 @@ def gate():
     for k, x in enumerate((-6, 0, 6)):
         parts.append((f"Ring_{k}", (x, 43, 0), (4, 4, 1), 0, dk, "flat"))
         parts.append((f"Ring_Low_{k}", (x, 16, 0), (4, 4, 1), 0, dk, "flat"))
+    return parts
+
+
+# --- feu purificateur (camp des chasseurs de vampires) -------------------------------------------
+
+WOOD = (92, 68, 44)
+WOOD_DARK = (60, 44, 30)
+HOLY_WHITE = (246, 250, 255)
+HOLY_PALE = (196, 222, 255)
+
+
+def purifying_torch():
+    """Torche plantée au sol : manche de bois, collier de fer, flamme blanche."""
+    w, i = painter(WOOD, "wood"), painter(IRON_DARK, "iron")
+    return [
+        ("Handle", (0, 9, 0), (2.5, 18, 2.5), 0, w, "flat"),
+        ("Collar", (0, 19, 0), (4, 3, 4), 0, i, "flat"),
+        ("Flame_Outer", (0, 22.5, 0), (4.5, 4, 4.5), 45, painter(HOLY_PALE, glow=True), "fullbright"),
+        ("Flame_Core", (0, 25, 0), (2.5, 6, 2.5), 0, painter(HOLY_WHITE, glow=True), "fullbright"),
+    ]
+
+
+def purifying_lantern():
+    """Lanterne de fer posée sur un poteau : cage ouverte autour d'un cœur de feu blanc."""
+    i, dk = painter(IRON, "iron"), painter(IRON_DARK, "iron")
+    parts = [
+        ("Base", (0, 1, 0), (12, 2, 12), 0, dk, "flat"),
+        ("Top", (0, 16, 0), (12, 2, 12), 0, dk, "flat"),
+        ("Cap", (0, 18.5, 0), (6, 3, 6), 0, i, "flat"),
+        ("Ring", (0, 21.5, 0), (4, 3, 1), 0, i, "flat"),
+        ("Glow", (0, 8.5, 0), (6, 11, 6), 0, painter(HOLY_PALE, glow=True), "fullbright"),
+        ("Core", (0, 9, 0), (3.5, 7, 3.5), 0, painter(HOLY_WHITE, glow=True), "fullbright"),
+    ]
+    for k, (x, z) in enumerate(((-5, -5), (5, -5), (-5, 5), (5, 5))):
+        parts.append((f"Post_{k}", (x, 8.5, z), (2, 13, 2), 0, i, "flat"))
     return parts
 
 
@@ -359,7 +395,7 @@ def stained_glass(colors, seed):
 
 # --- définitions d'objets ----------------------------------------------------------------------
 
-def model_item(block_id, icon, model, texture, hitbox, rotation, sound, particles, color, support_down=False):
+def model_item(block_id, icon, model, texture, hitbox, rotation, sound, particles, color, support_down=False, extra=None):
     bt = {
         "Material": "Solid",
         "DrawType": "Model",
@@ -376,6 +412,7 @@ def model_item(block_id, icon, model, texture, hitbox, rotation, sound, particle
     }
     if support_down:
         bt["Support"] = {"Down": [{"FaceType": "Full"}]}
+    bt.update(extra or {})
     return {
         "TranslationProperties": {"Name": f"nakasar_halloween.items.{block_id}.name"},
         "Icon": icon,
@@ -430,7 +467,18 @@ MODEL_BLOCKS = [
     ("Nakasar_Gargoyle", "Gargoyle", gargoyle, "Statue_Small", "NESW", "Stone", "Stone", "#68646a", True, (0, 20, 0)),
     ("Nakasar_Iron_Railing", "Iron_Railing", railing, "Fence_Thin", "Wall", "Metal", "Metal", "#343238", False, (0, 18, 0)),
     ("Nakasar_Iron_Gate", "Iron_Gate", gate, "Nakasar_Iron_Gate", "NESW", "Metal", "Metal", "#343238", False, (0, 34, 0)),
+    ("Nakasar_Purifying_Torch", "Purifying_Torch", purifying_torch, "Nakasar_Purifying_Torch", "None", "Metal", "Metal", "#c4deff", True, (0, 14, 0)),
+    ("Nakasar_Purifying_Lantern", "Purifying_Lantern", purifying_lantern, "Nakasar_Purifying_Lantern", "None", "Metal", "Metal", "#c4deff", True, (0, 11, 0)),
 ]
+# Lumière blanche (« #RGB » : niveaux 0 à F par canal) et flamme en particules des blocs de feu purificateur ;
+# ces blocs repoussent les morts-vivants (dev.nakasar.hytale.vampires.purifying).
+PURIFYING_LIGHT = {"Color": "#eef"}
+PURIFYING = {
+    "Nakasar_Purifying_Torch": {"Light": PURIFYING_LIGHT,
+                                "Particles": [{"SystemId": "Nakasar_Purifying_Flame", "PositionOffset": {"X": 0, "Y": 0.8, "Z": 0}}]},
+    "Nakasar_Purifying_Lantern": {"Light": PURIFYING_LIGHT,
+                                  "Particles": [{"SystemId": "Nakasar_Purifying_Flame", "PositionOffset": {"X": 0, "Y": 0.3, "Z": 0}}]},
+}
 
 
 def main():
@@ -451,12 +499,23 @@ def main():
         big = render(parts, atlas, uv, 256, yaw=-35, pitch=22, scale=scale, center=center)
         big.resize((64, 64), Image.LANCZOS).save(icon)
         write_json(ITEMS / f"{block_id}.json",
-                   model_item(block_id, rel(icon), rel(model), rel(texture), hitbox, rotation, sound, particles, color, support))
+                   model_item(block_id, rel(icon), rel(model), rel(texture), hitbox, rotation, sound, particles, color, support,
+                              PURIFYING.get(block_id)))
         if preview:
             render(parts, atlas, uv, 512, yaw=-35, pitch=22, scale=scale * 2, center=center).save(preview / f"{name}_front.png")
             render(parts, atlas, uv, 512, yaw=145, pitch=22, scale=scale * 2, center=center).save(preview / f"{name}_back.png")
     # le vantail du portail occupe 1 × 2 blocs, un grillage fin au milieu du bloc
     write_json(HITBOXES / "Nakasar_Iron_Gate.json", {"Boxes": [hitbox_box(-16, 0, -2, 16, 64, 2)]})
+    write_json(HITBOXES / "Nakasar_Purifying_Torch.json", {"Boxes": [hitbox_box(-3, 0, -3, 3, 28, 3)]})
+    write_json(HITBOXES / "Nakasar_Purifying_Lantern.json", {"Boxes": [hitbox_box(-6, 0, -6, 6, 23, 6)]})
+    flame = Image.new("RGBA", (32, 32))
+    fp = flame.load()
+    for y in range(32):
+        for x in range(32):
+            d = ((x - 15.5) ** 2 + (y - 15.5) ** 2) ** 0.5 / 15.5
+            fp[x, y] = (255, 255, 255, max(0, int(255 * max(0.0, 1 - d) ** 1.6)))
+    FLAME_TEXTURE.parent.mkdir(parents=True, exist_ok=True)
+    flame.save(FLAME_TEXTURE)
     for i, (colour, palette) in enumerate(GLASS.items()):
         block_id = f"Nakasar_Stained_Glass_{colour}"
         img = stained_glass(palette, seed=200 + i)

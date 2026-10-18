@@ -1,0 +1,7 @@
+{
+  "Spawners": [
+    { "SpawnerId": "Nakasar_Purifying_Flame", "FixedRotation": true }
+  ],
+  "CullDistance": 48,
+  "BoundingRadius": 1
+}

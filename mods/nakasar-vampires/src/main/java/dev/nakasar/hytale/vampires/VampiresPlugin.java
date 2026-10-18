@@ -11,6 +11,7 @@ import dev.nakasar.hytale.vampires.domination.DominationExpirySystem;
 import dev.nakasar.hytale.vampires.domination.Dominations;
 import dev.nakasar.hytale.vampires.prison.ImprisonPlayerInteraction;
 import dev.nakasar.hytale.vampires.pumpkin.FireWeaknessSystem;
+import dev.nakasar.hytale.vampires.purifying.PurifyingFireSystem;
 import dev.nakasar.hytale.vampires.pumpkin.RootTrapInteraction;
 import dev.nakasar.hytale.vampires.pumpkin.RootTrapUnloadSystem;
 import dev.nakasar.hytale.vampires.pumpkin.RootTrapped;
@@ -44,7 +45,9 @@ import dev.nakasar.hytale.vampires.silver.SilverWeapons;
  *       {@link DominationExpirySystem}) : les mobs du fragment sont alliés, ennemis des chasseurs de vampires, et la
  *       Domination retourne leur allégeance ;</li>
  *   <li>{@link SilverDamageSystem} et {@link SilverProjectileSystems} : les armes en argent (et leurs projectiles)
- *       infligent le double de dégâts aux vampires.</li>
+ *       infligent le double de dégâts aux vampires ;</li>
+ *   <li>{@link PurifyingFireSystem} : les torches et lanternes de feu purificateur du camp des chasseurs repoussent
+ *       les morts-vivants.</li>
  * </ul>
  */
 public final class VampiresPlugin extends JavaPlugin {
@@ -88,8 +91,9 @@ public final class VampiresPlugin extends JavaPlugin {
         systems.registerSystem(new SilverProjectileSystems.Launch());
         systems.registerSystem(new SilverProjectileSystems.Legacy());
         systems.registerSystem(new SilverDamageSystem());
+        systems.registerSystem(new PurifyingFireSystem());
 
-        getLogger().atInfo().log("Nakasar Vampires : 7 types d'interaction (%s, %s, %s, %s, %s, %s, %s), systèmes des camps et de l'argent enregistrés",
+        getLogger().atInfo().log("Nakasar Vampires : 7 types d'interaction (%s, %s, %s, %s, %s, %s, %s), systèmes des camps, de l'argent et du feu purificateur enregistrés",
                 TeleportCasterToImpactInteraction.TYPE_ID, DominateInteraction.TYPE_ID, RootNpcInteraction.TYPE_ID,
                 DrainBeamInteraction.TYPE_ID, DominatePlayerInteraction.TYPE_ID, ImprisonPlayerInteraction.TYPE_ID,
                 RootTrapInteraction.TYPE_ID);
