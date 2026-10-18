@@ -1385,12 +1385,17 @@ def stairs_up(p, x0, x1, z_start, dz, rise, base, half, floor_y=-1):
     return zs
 
 
+RETURN_PORTAL_Z = 3   # portail de retour, au sud du point d'arrivée (0, 0, 0) de la crypte
+
+
 def spawn_crypt(seed):
-    """Crypte fermée autour du portail d'arrivée (centre en 0, 0, 0 : le portail apparaît là).
+    """Crypte fermée autour du point d'arrivée (centre en 0, 0, 0 : le joueur apparaît là).
 
     11 × 11, toit pentu en ardoise, porte au nord (vers le manoir), vitraux, cercueils le long des
-    murs, gargouilles aux angles. Le centre (3 × 3 × 3) reste libre : le jeu y vide la place et pose
-    le portail de retour.
+    murs, gargouilles aux angles. Le portail de retour (`Portal_Return`) est posé ici, 3 blocs au
+    sud du centre, et non par le jeu (`SpawnReturnPortal: false` dans PortalTypes) : posé par le
+    jeu, il tombe sur le point d'arrivée, et un joueur dont l'écran charge encore au bout de
+    15 secondes repart aussitôt chargé (il est déjà dans le portail).
     """
     p = Prefab(seed)
     r = p.rng
@@ -1445,6 +1450,10 @@ def spawn_crypt(seed):
     for x, z in ((-7, -9), (7, -9), (-7, 7), (7, 7)):
         grave(p, x, z, r, r.choice(["haunted", "plain"]))
     p.scatter(-8, 0, -12, 8, 8, 6, DEAD_PLANTS)
+    # point d'arrivée et portail de retour : 3 × 3 × 3 blocs libres chacun (le modèle du portail
+    # déborde d'un bloc autour de sa case)
+    p.fill(-1, 0, -1, 1, 2, 4, AIR)
+    p.set(0, 0, RETURN_PORTAL_Z, "Portal_Return")
     return p
 
 

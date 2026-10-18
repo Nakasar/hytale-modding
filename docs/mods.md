@@ -159,8 +159,15 @@ Fragment d'Orbis ouvert depuis l'Ancienne passerelle vanilla (`Portal_Device`) a
 - **Manoir du comte** : toujours à 220 blocs au nord du point d'apparition (objectif du portail).
 - **Arrivée** : `PortalTypes/Nakasar_Halloween` fixe le point d'apparition (`Spawn.SpawnProviderOverride`,
   fournisseur `Global`) en 0,5 / 81 / 0,5 ; sans lui, le jeu tire un point au hasard dans le tronçon
-  (x et z entre 2 et 13). Le portail de retour y apparaît (le jeu vide 3 × 3 × 3 blocs autour), au
-  centre de la crypte d'arrivée (`SpawnCrypt`) posée au même endroit.
+  (x et z entre 2 et 13). Le joueur apparaît au centre de la crypte d'arrivée (`SpawnCrypt`) posée au
+  même endroit. Le portail de retour (`Portal_Return`) fait partie de la crypte, 3 blocs au sud
+  (`Spawn.SpawnReturnPortal: false`) : posé par le jeu, il tomberait sur le point d'arrivée, et le
+  portail renvoie dans le monde normal tout joueur présent depuis plus de 15 secondes, donc aussi
+  celui dont l'écran a chargé lentement (écran noir puis retour, vu en jeu le 2026-10-18).
+- **Coût de génération** : les distances aux structures et au manoir (relief, ambiance) ne dépendent
+  pas de la hauteur ; elles sont calculées une fois par colonne (`YOverride` à 81 puis `Cache`) et les
+  positions exportées sont mémorisées par sections (`Cache` de positions). Calculées bloc par bloc,
+  elles retardaient l'ouverture du portail d'une trentaine de secondes.
 - **Forêts** : là où un bruit à grande échelle (`Forest`, échelle 95) dépasse 0,2 (environ un tiers
   de l'île), maille serrée de 6,5 blocs : sapins et frênes morts du jeu, chênes et frênes moussus,
   souches, troncs couchés (`FOREST_TREES`), quelques-uns de nos arbres morts. Ailleurs, arbres isolés

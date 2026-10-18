@@ -178,6 +178,22 @@ def imported(name):
     return {"Type": "Imported", "Name": name}
 
 
+def cached_positions(positions):
+    """Positions mémorisées par sections de 32 blocs : la liste filtrée (bruits de répartition et de
+    présence) n'est calculée qu'une fois par section, pas à chaque requête de distance."""
+    return {"Type": "Cache", "SectionSize": 32, "CacheSize": 100, "Positions": positions}
+
+
+def column(density):
+    """Densité calculée une fois par colonne : Y est forcé à GROUND_Y avant le cache, donc tous les
+    blocs d'une colonne relisent la même entrée. Les repères (structures, manoir) sont à GROUND_Y :
+    les distances deviennent horizontales, comme elles l'étaient déjà au niveau du sol. Sans ça,
+    les distances aux structures étaient recalculées pour chaque bloc de hauteur et le fragment
+    mettait de longues secondes à générer son point d'arrivée."""
+    return {"Type": "YOverride", "Value": float(GROUND_Y), "Inputs": [
+        {"Type": "Cache", "Capacity": 64, "Inputs": [density]}]}
+
+
 def material(solid):
     return {"Type": "Constant", "Material": {"Solid": solid}}
 
@@ -349,11 +365,11 @@ def exports():
     structure, leur union, et les repères (point d'apparition, manoir)."""
     nodes = []
     for name, *_ in STRUCTURE_TYPES:
-        positions = slot_positions(name)
+        positions = cached_positions(slot_positions(name))
         positions["ExportAs"] = VILLAGE_EXPORT if name == "Village" else type_export(name)
         nodes.append(distance_to(positions, 1.0, curve((0, 0), (1, 1))))
-    union = {"Type": "Union", "Positions": [
-        imported(VILLAGE_EXPORT if name == "Village" else type_export(name)) for name, *_ in STRUCTURE_TYPES]}
+    union = cached_positions({"Type": "Union", "Positions": [
+        imported(VILLAGE_EXPORT if name == "Village" else type_export(name)) for name, *_ in STRUCTURE_TYPES]})
     union["ExportAs"] = STRUCTURES_EXPORT
     nodes.append(distance_to(union, 1.0, curve((0, 0), (1, 1))))
     landmarks = dict(list_positions(SPAWN, DRACULA))
@@ -380,9 +396,11 @@ def biome():
     # où le dessous coupe le terrain en falaise.
     top = add(
         mul({"Type": "YValue"}, const(-0.125)),
-        const((GROUND_Y - 0.5) / 8.0),
-        mul(hills, relief),
-        radial(curve((0, 0), (EDGE_START, 0), (ISLAND_RADIUS, -1.0))),
+        column(add(
+            const((GROUND_Y - 0.5) / 8.0),
+            mul(hills, relief),
+            radial(curve((0, 0), (EDGE_START, 0), (ISLAND_RADIUS, -1.0))),
+        )),
     )
     # Dessous de l'île (positif au-dessus du fond) : un cône dont le fond remonte vers le bord,
     # bosselé par du bruit ; au-delà du rayon, le fond passe très haut et tout devient du vide.
@@ -393,9 +411,11 @@ def biome():
     rim = mul(simplex2d(46.0, 2, "Rim"), radial(curve((0, 0), (ISLAND_RADIUS - 40.0, 0), (ISLAND_RADIUS - 5.0, 1.8))))
     bottom = add(
         mul({"Type": "YValue"}, const(0.125)),
-        radial(curve(*bottom_curve)),
-        mul(simplex2d(22.0, 2, "Underside"), const(0.8)),
-        rim,
+        column(add(
+            radial(curve(*bottom_curve)),
+            mul(simplex2d(22.0, 2, "Underside"), const(0.8)),
+            rim,
+        )),
     )
     terrain_density = {"Type": "Min", "Inputs": [top, bottom]}
 
@@ -506,11 +526,11 @@ def biome():
 
     environment = {
         "Type": "DensityDelimited",
-        "Density": distance_to(
+        "Density": column(distance_to(
             {"Type": "Union", "Positions": [imported(STRUCTURES_EXPORT), list_positions(DRACULA)]},
             60.0,
             curve((0, 0), (60, 60)),
-        ),
+        )),
         "Delimiters": [
             {"Range": {"MinInclusive": 0.0, "MaxExclusive": 45.0}, "Environment": {"Type": "Constant", "Environment": "Nakasar_Env_Halloween_Haunted"}},
             {"Range": {"MinInclusive": 45.0, "MaxExclusive": 1.0e12}, "Environment": {"Type": "Constant", "Environment": "Nakasar_Env_Halloween"}},
