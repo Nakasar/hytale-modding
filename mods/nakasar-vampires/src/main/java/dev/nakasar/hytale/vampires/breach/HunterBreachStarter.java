@@ -17,8 +17,12 @@ import java.util.UUID;
  * <p>Les évènements vanilla sont lancés par la configuration de gameplay {@code Default} ({@code WorldEvents.Events}),
  * qu'un mod ne peut pas compléter sans la remplacer en entier. On le lance donc nous-mêmes, avec un identifiant
  * fixe : le gestionnaire d'évènements refuse un second évènement du même identifiant, et celui qui a été
- * sauvegardé avec le monde reprend où il en était. Seul le monde par défaut de l'univers est concerné (pas les
- * fragments ni les instances), et pas un monde où les évènements sont désactivés.
+ * sauvegardé avec le monde reprend où il en était (s'il se recharge après notre lancement, le stockage des évènements
+ * remplace le nôtre par lui : WorldEventStorageSystem, état LOADED). Seul le monde par défaut de l'univers est
+ * concerné (pas les fragments ni les instances), et pas un monde où les évènements sont désactivés.
+ *
+ * <p>Une fois l'évènement vu ou lancé, on ne s'en occupe plus jusqu'au prochain démarrage : un admin qui l'arrête
+ * ({@code /worldevent cancel}) n'est pas contredit.
  */
 public final class HunterBreachStarter extends TickingSystem<EntityStore> {
 
@@ -31,12 +35,14 @@ public final class HunterBreachStarter extends TickingSystem<EntityStore> {
     private static final float INTERVAL = 10f;
 
     private float wait = FIRST_DELAY;
+    /** Monde dont l'évènement a déjà été vu ou lancé depuis le démarrage. */
+    private volatile World handled;
 
     @Override
     public void tick(float dt, int systemIndex, Store<EntityStore> store) {
         // Le système est partagé par tous les mondes : seul le monde par défaut fait avancer le compte à rebours.
         World world = store.getExternalData().getWorld();
-        if (world != Universe.get().getDefaultWorld()) {
+        if (world != Universe.get().getDefaultWorld() || world == handled) {
             return;
         }
         wait -= dt;
@@ -47,6 +53,7 @@ public final class HunterBreachStarter extends TickingSystem<EntityStore> {
         if (!WorldEventsWorldConfig.isEnabled(world)) {
             return;
         }
+        handled = world;
         if (store.getResource(WorldEventManager.getResourceType()).get(EVENT_ID) != null) {
             return;
         }

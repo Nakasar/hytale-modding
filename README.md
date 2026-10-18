@@ -133,9 +133,9 @@ Mobs (le manoir du comte, dans le fragment, contient déjà le Comte ou la Comte
 Brèches des chasseurs de vampires (monde principal, toutes les 30 min, la nuit) :
 
 ```text
+/time midnight                                       # les brèches ne s'ouvrent que la nuit
 /worldevent start asset Nakasar_Hunter_Breach_Test   # ouvre tout de suite un campement près de vous, une fois
 /worldevent list                                     # l'évènement Nakasar_Hunter_Breach et son étape en cours
-/time midnight                                       # passer à la nuit pour le cycle normal
 ```
 
 ### Recettes

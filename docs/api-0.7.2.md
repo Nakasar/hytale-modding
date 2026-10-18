@@ -192,7 +192,9 @@ Le JSON l'utilise ensuite avec `"Type": "Nakasar_MyInteraction"`.
   en ligne et masque de blocs), `TimeCondition` (une heure, pas de plage). Conditions maison :
   `WorldEventsPlugin.registerCondition(plugin, type, codec, configCodec)`.
 - `PrefabSpawner` pose le prefab avec y = 0 **sur** le bloc de surface : le sol du prefab doit être en y = -1.
-- Supprimer un `SpawnMarkerEntity` (raison `REMOVE`) laisse ses PNJ en place ; seule l'annulation des outils de
-  construction les retire.
+- Supprimer un `SpawnMarkerEntity` (raison `REMOVE`) laisse ses PNJ ; ils disparaissent 30 s plus tard
+  (`SpawnReference.MARKER_LOST_TIMEOUT`), pas tant qu'ils sont en état occupé (combat).
+- Le stockage des évènements se recharge après le démarrage du monde ; un évènement sauvegardé remplace alors celui
+  de même UUID déjà lancé (`WorldEventStorageSystem`, état `LOADED`).
 - Épingle sur la carte : composant de bloc `BlockMapMarker` (`Name`, `Icon` dans
   `Common/UI/WorldMap/MapMarkers/`, `CompassIcon`) dans `BlockType.BlockEntity`.

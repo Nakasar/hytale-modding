@@ -1,5 +1,5 @@
 {
-  "$Comment": "Cherche un lieu sauvage près d'un joueur (comme la brèche gobeline) et y pose le campement : la brèche, les tentes et les marqueurs des chasseurs (entités du prefab, retirées à la fin de l'évènement). Le bloc de la brèche porte le marqueur de carte. Sans lieu au bout de 10 min, le cycle recommence.",
+  "$Comment": "Cherche un lieu sauvage près d'un joueur (comme la brèche gobeline) et y pose le campement : la brèche, les tentes et les marqueurs des chasseurs (entités du prefab, retirées à la fin de l'évènement). Le bloc de la brèche porte le marqueur de carte. Il doit encore faire nuit au moment de l'ouverture (condition non verrouillée). Sans lieu, ou passé la nuit, au bout de 10 min le cycle recommence.",
   "Forks": [
     {
       "Conditions": [
@@ -39,6 +39,10 @@
               "MaxHeightDelta": 4
             }
           ]
+        },
+        {
+          "Type": "Nakasar_NightCondition",
+          "Latch": false
         }
       ],
       "Actions": [

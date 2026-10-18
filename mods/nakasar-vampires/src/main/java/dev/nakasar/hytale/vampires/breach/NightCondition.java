@@ -17,7 +17,8 @@ import javax.annotation.Nonnull;
  * l'aube » : une nuit qui passe minuit le ferait attendre le soir suivant. Celle-ci compare la progression du
  * jour ({@link WorldTimeResource#getDayProgress()}, 0 à minuit) à une plage qui peut passer minuit : par défaut
  * de 0,8 (19 h 12, coucher du soleil du jeu) à 0,15 (3 h 36, pour ne pas ouvrir une brèche juste avant l'aube).
- * Comme le {@code TimeCondition}, elle reste acquise jusqu'au redémarrage de son étape.
+ * Par défaut, comme le {@code TimeCondition}, elle reste acquise jusqu'au redémarrage de son étape ; avec
+ * {@code "Latch": false}, elle suit l'heure et redevient fausse au matin.
  */
 public final class NightCondition implements EventCondition.Ticking {
 
@@ -46,8 +47,8 @@ public final class NightCondition implements EventCondition.Ticking {
 
     @Override
     public void tick(float dt, @Nonnull Store<EntityStore> store) {
-        if (!complete) {
-            complete = isWithin(store.getResource(WorldTimeResource.getResourceType()).getDayProgress(), config.start, config.end);
+        if (!complete || !config.latch) {
+            complete = store.getResource(WorldTimeResource.getResourceType()).isDayTimeWithinRange(config.start, config.end);
         }
     }
 
@@ -56,11 +57,6 @@ public final class NightCondition implements EventCondition.Ticking {
         if (other instanceof NightCondition night) {
             complete = night.complete;
         }
-    }
-
-    /** {@code progress} est-il dans [start, end), la plage passant minuit quand start > end. */
-    static boolean isWithin(double progress, double start, double end) {
-        return start <= end ? progress >= start && progress < end : progress >= start || progress < end;
     }
 
     public static final class Config implements EventCondition.Config {
@@ -75,12 +71,16 @@ public final class NightCondition implements EventCondition.Ticking {
                 .documentation("Day progress after which the condition no longer completes (default 0.15).")
                 .addValidator(Validators.range(0.0, 1.0))
                 .add()
+                .<Boolean>append(new KeyedCodec<>("Latch", Codec.BOOLEAN), (self, value) -> self.latch = value, self -> self.latch)
+                .documentation("Stays complete once night has been seen (default true); false follows the clock, e.g. to forbid an action after dawn.")
+                .add()
                 .build();
 
         static final Config DEFAULT = new Config();
 
         private double start = 0.8;
         private double end = 0.15;
+        private boolean latch = true;
 
         @Nonnull
         @Override

@@ -16,8 +16,10 @@ import com.hypixel.hytale.server.spawning.spawnmarkers.SpawnMarkerEntity;
  *
  * <p>Les marqueurs d'apparition {@value #MARKER} sont des entités du prefab de la brèche : à la fin de
  * l'évènement, le serveur restaure le terrain et retire ces marqueurs, mais un marqueur retiré laisse ses PNJ
- * dans le monde (seule l'annulation des outils de construction les retire). On retire donc ici les chasseurs
- * d'un marqueur de brèche supprimé ; un déchargement de chunk ({@link RemoveReason#UNLOAD}) ne touche à rien.
+ * dans le monde : le jeu ne les fait disparaître que 30 s plus tard, et pas tant qu'ils combattent
+ * ({@code SpawnReferenceSystems$TickingSpawnMarkerSystem}, « marker lost »). On retire donc ici tout de suite les
+ * chasseurs chargés d'un marqueur de brèche supprimé ; ceux d'un chunk déchargé passent par ce délai vanilla quand
+ * le chunk revient. Un déchargement de chunk ({@link RemoveReason#UNLOAD}) ne touche à rien.
  */
 public final class BreachHunterCleanupSystem extends RefSystem<EntityStore> {
 

@@ -66,6 +66,17 @@ def rift_arch(p, z):
         p.set(x, 0, z, TORCH)
 
 
+def camp_tent(p, x0, z0):
+    """Tente au bord de la clairière : ses colonnes hors du disque reçoivent les mêmes fondations et le même air."""
+    inside = set(disc(RADIUS))
+    for x in range(x0, x0 + 6):
+        for z in range(z0, z0 + 5):
+            if (x, z) not in inside:
+                p.fill(x, 0, z, x, 4, z, AIR)
+                p.fill(x, -5, z, x, -2, z, "Soil_Dirt")
+    tent(p, x0, z0)
+
+
 def post(p, x, z, top=LANTERN):
     p.fill(x, 0, z, x, 1, z, "Wood_Softwood_Beam")
     p.set(x, 2, z, top)
@@ -87,15 +98,15 @@ def breach_camp(seed, variant):
     for sx, sz in stools:
         p.set(sx, 0, sz, "Furniture_Crude_Stool")
     if variant == "tents":
-        tent(p, -9, -3)
-        tent(p, 4, -3)
+        camp_tent(p, -9, -3)
+        camp_tent(p, 4, -3)
         p.set(-4, 0, 5, "Bench_Weapon", EAST)
         p.set(-6, 0, 3, "Furniture_Crude_Table")
         p.set(-6, 1, 3, "Furniture_Crude_Candle")
         hunters = [(-2, 3), (2, 3), (3, -2), (-3, -2), (5, 3)]
         posts = [(-6, 6), (7, 3), (0, 8)]
     else:
-        tent(p, -9, -3)
+        camp_tent(p, -9, -3)
         # pas de tir à l'est : cibles, foin, mannequin
         for z in (-2, 1):
             p.set(7, 0, z, "Deco_Target", WEST)

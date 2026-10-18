@@ -435,7 +435,9 @@ chapitre 1 (`Goblin_Breach_Perpetual_*`). Java, `breach/` :
   `Start` (0,8, coucher du soleil) et `End` (0,15, 3 h 36), plage qui passe minuit (le `TimeCondition` vanilla
   attend une heure précise).
 - `BreachHunterCleanupSystem` : à la fermeture, le jeu restaure le terrain et retire les marqueurs du prefab, mais
-  un marqueur retiré laisse ses PNJ ; ce système retire les chasseurs des marqueurs `Nakasar_Breach_Hunter`.
+  ne fait disparaître leurs PNJ que 30 s plus tard (et pas en plein combat) ; ce système retire tout de suite les
+  chasseurs chargés des marqueurs `Nakasar_Breach_Hunter`.
+- Le lanceur ne relance pas un évènement arrêté par un admin (`/worldevent cancel`) avant le prochain démarrage.
 
 Cycle (étapes `Stage/Nakasar/HunterBreach/`, chacune avec son compte à rebours sur la carte) :
 
@@ -443,7 +445,7 @@ Cycle (étapes `Stage/Nakasar/HunterBreach/`, chacune avec son compte à rebours
 2. `Night` : attend la nuit (« À la tombée de la nuit ») puis prévient dans le chat.
 3. `Warn` : 1 min (« S'ouvre dans »).
 4. `Place` : cherche un coin sauvage à 48–160 blocs d'un joueur (sol, roche ou herbe, dénivelé 4 au plus, dégagé
-   sur 6 blocs) et y colle un des deux campements, avec titre à l'écran (200 blocs), message et son d'ouverture.
+   sur 6 blocs), s'il fait encore nuit, et y colle un des deux campements, avec titre à l'écran (200 blocs), message et son d'ouverture.
 5. `Open` : 10 min (« Se ferme dans »), puis le terrain est restauré et le cycle reprend à `Wait`.
 
 Campements (`tools/generate_breach.py`, qui reprend les briques de `generate_prefabs.py`) :
@@ -453,5 +455,5 @@ boussole), torches de feu purificateur, feu de camp, tentes, et 5 ou 4 marqueurs
 chasseur tiré au hasard, comme le camp du fragment). Les chasseurs gardent leur rôle : neutres envers les joueurs et
 les mobs pacifiques, ils ripostent si on les frappe et restent près de leur point d'apparition.
 
-`Nakasar_Hunter_Breach_Test` (une seule fois, sans attente ni nuit) sert aux essais :
+`Nakasar_Hunter_Breach_Test` (une seule fois, sans attente, mais de nuit) sert aux essais :
 `/worldevent start asset Nakasar_Hunter_Breach_Test`.

@@ -105,6 +105,8 @@ public class ValidateAssets {
             {WE + "action.EventAction#TYPE_CODEC", "EffectsAction", WE + "action.EffectsAction"},
             {WE + "action.EventAction#TYPE_CODEC", "EventStartAction", WE + "action.EventStartAction"},
             {WE + "action.EventAction#TYPE_CODEC", "EventStopAction", WE + "action.EventStopAction"},
+            {WE + "action.EventAction#TYPE_CODEC", "GlobalEventStartAction", WE + "action.GlobalEventStartAction"},
+            {WE + "action.EventAction#TYPE_CODEC", "GlobalEventStopAction", WE + "action.GlobalEventStopAction"},
             {WE + "action.EventAction#TYPE_CODEC", "MapMarkerOverrideAddAction", WE + "action.MapMarkerOverrideAddAction"},
             {WE + "action.EventAction#TYPE_CODEC", "MapMarkerOverrideRemoveAction", WE + "action.MapMarkerOverrideRemoveAction"},
             {WE + "action.EventAction#TYPE_CODEC", "MessageAction", WE + "action.MessageAction"},
@@ -122,8 +124,17 @@ public class ValidateAssets {
             {WE + "condition.EventCondition$Config#TYPE_CODEC", "LocationCondition", WE + "condition.LocationCondition$Config"},
             {WE + "condition.EventCondition$Config#TYPE_CODEC", "ProximityCondition", WE + "condition.ProximityCondition$Config"},
             {WE + "condition.EventCondition$Config#TYPE_CODEC", "TimeCondition", WE + "condition.TimeCondition$Config"},
+            {WE + "condition.EventCondition$Config#TYPE_CODEC", "WorldClosedCondition", WE + "condition.WorldClosedCondition$Config"},
+            {WE + "condition.EventCondition$Config#TYPE_CODEC", "EventEndCondition", WE + "condition.EventEndCondition$Config"},
+            {WE + "condition.EventCondition$Config#TYPE_CODEC", "SignalCondition", WE + "condition.SignalCondition$Config"},
+            {WE + "condition.EventCondition$Config#TYPE_CODEC", "GameFlagLevelCondition",
+                    "com.hypixel.hytale.builtin.gameflags.integration.GameFlagLevelCondition$Config"},
+            {WE + "condition.location.EventLocation$Config#TYPE_CODEC", "None", WE + "condition.location.NoLocation$Config"},
             {WE + "condition.EventCondition$Config#TYPE_CODEC", "Nakasar_NightCondition", "dev.nakasar.hytale.vampires.breach.NightCondition$Config"},
     };
+
+    /** Types d'évènements de monde qui n'ont pas pu être enregistrés : comptés en erreur. */
+    private static int registrationErrors;
 
     @SuppressWarnings({"unchecked", "rawtypes"})
     private static int registerWorldEventTypes() {
@@ -136,7 +147,8 @@ public class ValidateAssets {
                 map.register(row[1], type, (Codec) type.getField("CODEC").get(null));
                 count++;
             } catch (Throwable t) {
-                System.out.println("WARN  type d'évènement " + row[1] + " non enregistré : " + rootCause(t));
+                registrationErrors++;
+                System.out.println("ERROR type d'évènement " + row[1] + " non enregistré : " + rootCause(t));
             }
         }
         return count;
@@ -162,13 +174,25 @@ public class ValidateAssets {
         Map<Object, Object> stageAssets = (Map<Object, Object>) mapField.get(stageMap);
         if (Files.isDirectory(stages)) {
             for (Path file : jsonFiles(stages)) {
-                stageAssets.put(assetKey(file), decodeQuietly(stageClass, file));
+                try {
+                    stageAssets.put(assetKey(file), decodeQuietly(stageClass, file));
+                } catch (Throwable t) {
+                    // Déjà compté en erreur par la boucle principale ; l'évènement qui l'utilise le signalera absent.
+                    System.out.println("WARN  étape " + root.relativize(file) + " non décodée : " + rootCause(t));
+                }
             }
         }
         int errors = 0;
         for (Path file : jsonFiles(events)) {
-            Object asset = decodeQuietly(eventClass, file);
             String rel = root.relativize(file).toString().replace('\\', '/');
+            Object asset;
+            try {
+                asset = decodeQuietly(eventClass, file);
+            } catch (Throwable t) {
+                errors++;
+                System.out.println("ERROR évènement " + rel + " : non décodé : " + rootCause(t));
+                continue;
+            }
             Object result;
             String code;
             while (true) {
@@ -235,12 +259,14 @@ public class ValidateAssets {
         try {
             return codec.decodeJsonAsset(RawJsonReader.fromJsonString(Files.readString(file)), info);
         } catch (Throwable t) {
+            // Le post-traitement d'une liste de prefabs écrite dans l'étape cherche le pack du jeu, absent hors
+            // serveur : PrefabReference#processPrefabPath attrape son erreur et journalise, mais le premier appel au
+            // journal du magasin PrefabListAsset échoue encore (initialisation paresseuse). Un second décodage passe.
             if (!isAfterDecode(t)) {
                 throw t;
             }
-            // Le post-traitement de l'asset contenu (liste de prefabs) cherche le pack du jeu : on décode sans.
-            return codec.decodeJsonAsset(RawJsonReader.fromJsonString(Files.readString(file)), info);
         }
+        return codec.decodeJsonAsset(RawJsonReader.fromJsonString(Files.readString(file)), info);
     }
 
     private static int replayCodecRegistrations(String entry) throws Exception {
@@ -835,7 +861,7 @@ public class ValidateAssets {
             }
         }
         System.out.println(checked + " fichiers vérifiés, " + errors + " en erreur");
-        errors += checkWorldEvents(root);
+        errors += checkWorldEvents(root) + registrationErrors;
         String blocks = System.getProperty("blocks");
         if (blocks != null) {
             errors += checkBlockIds(root, Path.of(blocks));
