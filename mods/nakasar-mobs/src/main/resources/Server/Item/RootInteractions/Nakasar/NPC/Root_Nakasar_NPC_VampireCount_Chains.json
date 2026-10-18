@@ -1,3 +1,10 @@
 {
-  "Interactions": ["Nakasar_NPC_VampireCount_Chains"]
+  "Tags": {
+    "Attack": [
+      "Ranged"
+    ]
+  },
+  "Interactions": [
+    "Nakasar_NPC_VampireCount_Chains"
+  ]
 }

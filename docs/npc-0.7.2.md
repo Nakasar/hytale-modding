@@ -65,3 +65,11 @@ Exemple : `mods/nakasar-mobs/src/main/java/dev/nakasar/hytale/mobs/domination/`.
 vides) pour charger les rôles avec le vrai `BuilderManager`. Les références vers d'autres assets (modèles
 vanilla, interactions) sont listées `REF` sans compter comme erreurs ; passer les dossiers `Server` des
 packs requis en arguments pour qu'elles soient résolues.
+
+## Pièges vus en jeu (0.7.2)
+
+- Une RootInteraction utilisée par l'action `Attack` d'un rôle doit porter le tag `Attack` avec un seul type :
+  `"Tags": {"Attack": ["Melee"]}` (ou `Ranged`, `Block`). Sans lui, le `CombatInteractionValidator` refuse le rôle
+  entier. `tools/ValidateRoles.java` le vérifie hors jeu.
+- `Effects.WorldSoundEventId` exige un son mono : les variantes `*_Local` (stéréo, pour `LocalSoundEventId`) font
+  rejeter toute l'interaction. `ValidateAssets.java` le signale.

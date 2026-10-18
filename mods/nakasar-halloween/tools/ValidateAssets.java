@@ -159,6 +159,8 @@ public class ValidateAssets {
         return new AssetExtraInfo(file, new AssetExtraInfo.Data((Class) assetClass, key, null));
     }
 
+    private static final Pattern STEREO_WORLD_SOUND = Pattern.compile("\"WorldSoundEventId\"\\s*:\\s*\"([^\"]*_Local)\"");
+
     private static void decodeAsset(Class<?> assetClass, Path file, List<String> problems, List<String> notes) throws Exception {
         Codec<?> codec = (Codec<?>) assetClass.getField("CODEC").get(null);
         ExtraInfo extraInfo = newExtraInfo(assetClass, file);
@@ -175,6 +177,12 @@ public class ValidateAssets {
                 return;
             }
             throw t;
+        }
+        // Les sons vanilla ne sont pas chargés hors jeu, donc le validateur MONO de WorldSoundEventId ne tourne pas.
+        // Les variantes "_Local" sont stéréo : en jeu, l'interaction entière est rejetée.
+        Matcher stereo = STEREO_WORLD_SOUND.matcher(json);
+        while (stereo.find()) {
+            problems.add("WorldSoundEventId " + stereo.group(1) + " : son « _Local » (stéréo), refusé par le validateur MONO du serveur ; utiliser la variante sans _Local");
         }
         if (json.contains("\"Parent\"")) {
             // Les champs obligatoires viennent du parent vanilla.
