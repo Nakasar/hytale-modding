@@ -1,4 +1,4 @@
-"""Génère les textures de particules du mod Runes (niveaux de gris, teintées par la couleur du spawner).
+"""Génère les textures de particules du mod (runes, feu purificateur) (niveaux de gris, teintées par la couleur du spawner).
 
 Usage : python3 tools/make_particle_textures.py  (depuis mods/nakasar-vampires)
 """
@@ -62,4 +62,5 @@ if __name__ == "__main__":
     OUT.mkdir(parents=True, exist_ok=True)
     spectral_chain().save(OUT / "Spectral_Chain.png")
     soft_orb().save(OUT / "Blood_Orb.png")
+    soft_orb().save(OUT / "Purifying_Flame.png")  # teintée en blanc par Nakasar_Purifying_Flame.particlespawner
     print("textures écrites dans", OUT)

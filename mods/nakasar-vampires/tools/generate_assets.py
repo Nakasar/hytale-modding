@@ -32,7 +32,6 @@ TEXTURES = COMMON / "BlockTextures" / "Nakasar" / "Halloween"
 ICONS = COMMON / "Icons" / "Items" / "Nakasar" / "Halloween"
 ITEMS = SERVER / "Item" / "Items" / "Deco" / "Nakasar"
 HITBOXES = SERVER / "Item" / "Block" / "Hitboxes" / "Nakasar"
-FLAME_TEXTURE = COMMON / "Particles" / "Textures" / "Nakasar" / "Purifying_Flame.png"
 
 STONE = (104, 100, 104)
 STONE_DARK = (70, 66, 72)
@@ -508,14 +507,6 @@ def main():
     write_json(HITBOXES / "Nakasar_Iron_Gate.json", {"Boxes": [hitbox_box(-16, 0, -2, 16, 64, 2)]})
     write_json(HITBOXES / "Nakasar_Purifying_Torch.json", {"Boxes": [hitbox_box(-3, 0, -3, 3, 28, 3)]})
     write_json(HITBOXES / "Nakasar_Purifying_Lantern.json", {"Boxes": [hitbox_box(-6, 0, -6, 6, 23, 6)]})
-    flame = Image.new("RGBA", (32, 32))
-    fp = flame.load()
-    for y in range(32):
-        for x in range(32):
-            d = ((x - 15.5) ** 2 + (y - 15.5) ** 2) ** 0.5 / 15.5
-            fp[x, y] = (255, 255, 255, max(0, int(255 * max(0.0, 1 - d) ** 1.6)))
-    FLAME_TEXTURE.parent.mkdir(parents=True, exist_ok=True)
-    flame.save(FLAME_TEXTURE)
     for i, (colour, palette) in enumerate(GLASS.items()):
         block_id = f"Nakasar_Stained_Glass_{colour}"
         img = stained_glass(palette, seed=200 + i)

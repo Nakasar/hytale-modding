@@ -2713,7 +2713,8 @@ PALISADE = "Wood_Dry_Trunk"
 # de ces blocs (dev.nakasar.hytale.vampires.purifying.PurifyingFireSystem).
 PURIFYING_TORCH = "Nakasar_Purifying_Torch"
 PURIFYING_LANTERN = "Nakasar_Purifying_Lantern"
-PURIFY_RADIUS = 7
+PURIFY_RADIUS = 7  # = PurifyingFireSystem.RADIUS
+TORCH_STEP = PURIFY_RADIUS - 1  # une torche tous les TORCH_STEP troncs : leurs cercles se chevauchent
 CANVAS = [("Cloth_Block_Wool_Black", 3), ("Cloth_Block_Wool_Red", 1)]
 TENT_ROOF = "Cloth_Roof_Leather"
 
@@ -2781,7 +2782,7 @@ def hunter_camp(seed, variant):
             top = 2 + (x + z) % 2
             p.fill(x, 0, z, x, top, z, PALISADE)
             # torche de feu blanc sur un tronc sur six, coins compris : le cercle de chacune recouvre la palissade
-            if (abs(x) == h and abs(z) == h) or (x % 6 == 0 and abs(z) == h) or (z % 6 == 0 and abs(x) == h):
+            if (abs(x) == h and abs(z) == h) or (x % TORCH_STEP == 0 and abs(z) == h) or (z % TORCH_STEP == 0 and abs(x) == h):
                 p.set(x, top + 1, z, PURIFYING_TORCH)
     for gx in (-2, 2):
         p.fill(gx, 0, h, gx, 3, h, PALISADE)
@@ -2841,7 +2842,17 @@ def hunter_camp(seed, variant):
         lantern_post(p, lx, lz, 2, PURIFYING_LANTERN)
     spawners(p, SPAWN_HUNTER, [(-3, 1), (3, -1), (1, 3), (-7, 4), (6, 1), (-3, -2)])
     p.scatter(-h + 1, 0, -h + 1, h - 1, h - 1, 10, [("Plant_Grass_Gnarled", 3), ("Plant_Grass_Gnarled_Short", 2)], rot=0)
+    check_purified(p, h)
     return p
+
+
+def check_purified(p, h):
+    """Chaque case du camp, palissade comprise, doit être à moins de PURIFY_RADIUS d'un feu purificateur."""
+    fires = [(x, z) for (x, _, z), block in p.blocks.items() if block[0] in (PURIFYING_TORCH, PURIFYING_LANTERN)]
+    for x in range(-h, h + 1):
+        for z in range(-h, h + 1):
+            assert any((x - fx) ** 2 + (z - fz) ** 2 <= PURIFY_RADIUS ** 2 for fx, fz in fires), \
+                f"camp des chasseurs : ({x}, {z}) hors de portée des feux purificateurs"
 
 
 def main():

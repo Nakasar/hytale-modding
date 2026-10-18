@@ -365,13 +365,21 @@ Les boss réutilisent les interactions et particules des runes.
 
 ## Feu purificateur
 
-Java, `purifying/PurifyingFireSystem` (`DelayedEntitySystem`, 4 fois par seconde, PNJ seulement). Un PNJ du groupe
-`Nakasar_Undead` (vampires, zombies, squelettes et fantômes du mod, squelettes, zombies, goules et spectres vanilla)
-à moins de 7 blocs à l'horizontale (5 en hauteur) d'une torche ou d'une lanterne de feu purificateur est repoussé à
-l'opposé du feu le plus proche (`KnockbackComponent`, vitesse posée, comme `/knockback apply`) et oublie les cibles
-qui se tiennent à moins de 9 blocs du feu. Recherche des blocs : sections de blocs chargées
-(`BlockSection.contains` puis `find`), comme la prison du Capitaine. Les morts-vivants à distance (archers, mages)
-peuvent encore tirer dans le camp depuis l'extérieur.
+Java, `purifying/PurifyingFireSystem` (`DelayedEntitySystem`, 4 fois par seconde, PNJ seulement), pour un PNJ du
+groupe `Nakasar_Undead` (vampires, zombies, squelettes et fantômes du mod, squelettes, zombies, goules et spectres
+vanilla) près d'une torche ou d'une lanterne de feu purificateur (distances horizontales, 5 blocs en hauteur) :
+
+- à moins de 11 blocs d'un feu, il oublie à chaque passage les cibles qui se tiennent à moins de 9 blocs d'un feu
+  quelconque : il s'arrête avant d'entrer dans le rayon au lieu de rebondir contre ;
+- à moins de 7 blocs, il est repoussé (`KnockbackComponent`, vitesse posée, comme `/knockback apply`) selon la somme
+  des répulsions de tous les feux proches, sans écraser un recul déjà en attente (coup de chasseur), avec une levée
+  seulement s'il n'est pas déjà au-dessus du feu (les fantômes ne montent pas) ;
+- s'il reste plus de 2 s dans ce rayon (enfermé dans le camp, dominé qui suit le joueur), le feu le brûle : 6 dégâts
+  de cause `Fire` par seconde jusqu'à ce qu'il sorte ou meure.
+
+Recherche des blocs : sections de blocs chargées (`BlockSection.contains` puis `find`), comme la prison du Capitaine.
+Le rayon de 7 est aussi `PURIFY_RADIUS` dans `tools/generate_prefabs.py`, qui vérifie que chaque case du camp est
+couverte. Les morts-vivants à distance (archers, mages) peuvent encore tirer dans le camp depuis l'extérieur.
 
 ## Camps et Domination
 
