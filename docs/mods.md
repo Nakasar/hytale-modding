@@ -166,7 +166,7 @@ Les ruines varient d'une instance à l'autre grâce aux préfixes de probabilit�
 - `Nakasar_Halloween_Undead` (tout le fragment) : squelettes, archers, zombies, araignées, chauves-souris, corbeaux.
 - `Nakasar_Halloween_Haunted` (près des structures) : spectres, goules, soldats et archimages squelettes,
   zombies aberrants, araignées des cavernes, élites et loups-garous (rares).
-- Mobs de `nakasar-mobs` (dépendance requise) : fantômes à toute heure et rejetons de vampire la nuit
+- Mobs de `nakasar-mobs` (dépendance optionnelle, mais sans lui ces apparitions échouent) : fantômes à toute heure et rejetons de vampire la nuit
   (`Nakasar_Halloween_Ghosts`, `Nakasar_Halloween_Vampire_Spawns_Dusk` / `_Dawn`, environnement hanté), et
   marqueurs d'apparition dans le château du comte (le comte devant son trône, deux rejetons dans la crypte).
 

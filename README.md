@@ -6,8 +6,8 @@ Mods pour **Hytale** (serveur `0.7.x`, « Update 7 »), développés par Nakasar
 |-----|------|----------|---------|
 | `mods/nakasar-runes` | plugin Java + pack d'assets | `Nakasar-Runes-<version>.jar` | 4 runes d'abilities (Baiser du Vampire, Domination, Téléportation, Chaînes spectrales) et l'autel sacrificiel qui les fabrique |
 | `mods/nakasar-spear` | pack d'assets pur | `Nakasar-Spear-<version>.zip` | Lance de fer à deux mains : enchaînement, coup chargé, compétence ultime |
-| `mods/nakasar-halloween` | pack d'assets pur | `Nakasar-Halloween-<version>.zip` | Fragment d'Orbis « Halloween » ouvert depuis l'Ancienne passerelle : cryptes, châteaux hantés, château du comte vampire, cimetières, champs de citrouilles ; requiert `nakasar-mobs` (et donc `nakasar-runes`) |
-| `mods/nakasar-mobs` | plugin Java + pack d'assets | `Nakasar-Mobs-<version>.jar` | Comte Vampire (boss qui lance les sorts des runes), rejetons de vampire, fantômes ; requiert `nakasar-runes` |
+| `mods/nakasar-halloween` | pack d'assets pur | `Nakasar-Halloween-<version>.zip` | Fragment d'Orbis « Halloween » ouvert depuis l'Ancienne passerelle : cryptes, châteaux hantés, château du comte vampire, cimetières, champs de citrouilles ; à installer avec `nakasar-mobs` et `nakasar-runes` |
+| `mods/nakasar-mobs` | plugin Java + pack d'assets | `Nakasar-Mobs-<version>.jar` | Comte Vampire (boss qui lance les sorts des runes), rejetons de vampire, fantômes ; à installer avec `nakasar-runes` |
 
 Le détail de chaque mod (fichiers, chaînes d'interactions, réglages) est dans [docs/mods.md](docs/mods.md).
 Les points d'API serveur vérifiés dans le jar `Server-0.7.2` sont notés dans [docs/api-0.7.2.md](docs/api-0.7.2.md).
@@ -64,6 +64,9 @@ puis :
 ```
 
 (ou en une fois : `./gradlew deployToServer -Phytale.modsDir=/chemin/vers/Server/mods`).
+
+Dans un monde solo, activez ensemble Runes, Mobs et Halloween dans la liste des mods du monde : Halloween
+fait apparaître les mobs de Mobs, qui lancent les sorts de Runes.
 
 ## Tester en jeu
 
