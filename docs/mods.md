@@ -450,10 +450,20 @@ Cycle (étapes `Stage/Nakasar/HunterBreach/`, chacune avec son compte à rebours
 
 Campements (`tools/generate_breach.py`, qui reprend les briques de `generate_prefabs.py`) :
 `Prefabs/Nakasar/Breach/Hunter_Breach_Camp_{Tents,Range}` : clairière de rayon 8, arche de faille avec le bloc
-`Nakasar_Breach_Rift` (lumière, particules de faille teintées rouge, épingle `BlockMapMarker` sur la carte et la
-boussole), torches de feu purificateur, feu de camp, tentes, et 5 ou 4 marqueurs `Nakasar_Breach_Hunter` (un
+`Nakasar_Breach_Rift` (lumière, épingle `BlockMapMarker` sur la carte et la boussole, passage vers le Comté Vampire),
+torches de feu purificateur, feu de camp, tentes, et 5 ou 4 marqueurs `Nakasar_Breach_Hunter` (un
 chasseur tiré au hasard, comme le camp du fragment). Les chasseurs gardent leur rôle : neutres envers les joueurs et
 les mobs pacifiques, ils ripostent si on les frappe et restent près de leur point d'apparition.
+
+La faille : le bloc `Nakasar_Breach_Rift` remplit l'ouverture de l'arche (boîte de collision
+`Hitboxes/Nakasar/Nakasar_Breach_Rift`, 3 × 4 blocs, cases « filler » dans le prefab). Ses particules sont des copies
+rouges des systèmes de la brèche gobeline (`Particles/Nakasar/Breach/`, `tools/generate_breach_particles.py
+ASSETS_ZIP`) : le champ `Color` d'une particule de bloc ne teinte pas ces systèmes vanilla. La traverser
+(`CollisionEnter` → `TeleportInstance`, comme `Goblin_Breach_Portal`) ouvre une instance
+`Instances/Nakasar_Hunter_Breach_Fragment` par brèche, partagée par ceux qui la traversent : le même Comté Vampire que
+la clé de portail, configuré par sa section `PortalWorldConfig` (type de portail `Nakasar_Halloween`, 30 min, crypte
+d'arrivée en `SpawnProvider`). Le retour (`Portal_Return` de la crypte) ramène 3 blocs devant l'arche, côté camp.
+L'instance survit à la fermeture du campement (`CloseOnBlockRemove: false`) et se ferme avec son temps.
 
 `Nakasar_Hunter_Breach_Test` (une seule fois, sans attente, mais de nuit) sert aux essais :
 `/worldevent start asset Nakasar_Hunter_Breach_Test`.

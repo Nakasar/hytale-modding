@@ -1,0 +1,116 @@
+{
+  "$Comment": "Large faint outer vortex of the rift.",
+  "RenderMode": "BlendAdd",
+  "ParticleRotationInfluence": "None",
+  "LinearFiltering": true,
+  "ParticleLifeSpan": {
+    "Min": 3,
+    "Max": 3
+  },
+  "ParticleRotateWithSpawner": true,
+  "TrailSpawnerPositionMultiplier": 0,
+  "TrailSpawnerRotationMultiplier": 0,
+  "SpawnRate": {
+    "Min": 1,
+    "Max": 1
+  },
+  "Particle": {
+    "Texture": "Particles/Textures/Circles/Portal_Inside_Bright.png",
+    "ScaleRatioConstraint": "None",
+    "SoftParticles": "Enable",
+    "Animation": {
+      "0": {
+        "Opacity": 0,
+        "Color": "#250008",
+        "Scale": {
+          "X": {
+            "Min": 1,
+            "Max": 1
+          },
+          "Y": {
+            "Min": 1,
+            "Max": 1
+          }
+        },
+        "Rotation": {
+          "Z": {
+            "Min": 0,
+            "Max": 0
+          }
+        }
+      },
+      "5": {
+        "Opacity": 1
+      },
+      "20": {
+        "Opacity": 1
+      },
+      "40": {
+        "FrameIndex": {
+          "Min": 0,
+          "Max": 0
+        },
+        "Opacity": 1
+      },
+      "60": {
+        "Opacity": 1
+      },
+      "80": {
+        "Opacity": 1
+      },
+      "100": {
+        "Opacity": 0,
+        "Color": "#570011",
+        "Scale": {
+          "X": {
+            "Min": 0.75,
+            "Max": 0.75
+          },
+          "Y": {
+            "Min": 0.75,
+            "Max": 0.75
+          }
+        },
+        "Rotation": {
+          "Z": {
+            "Min": -720,
+            "Max": -720
+          }
+        }
+      }
+    },
+    "InitialAnimationFrame": {
+      "Scale": {
+        "X": {
+          "Min": 4,
+          "Max": 5
+        },
+        "Y": {
+          "Min": 4,
+          "Max": 5
+        }
+      },
+      "Opacity": 1
+    },
+    "UVOption": "RandomFlipUV",
+    "SoftParticlesFadeFactor": 1
+  },
+  "InitialVelocity": {
+    "Speed": {
+      "Min": 0.5,
+      "Max": 0.5
+    }
+  },
+  "UVMotion": {
+    "Texture": "Particles/Textures/UVMotion/FlowMapSwirl.png",
+    "SpeedX": 0,
+    "Strength": 5,
+    "Scale": 1
+  },
+  "MaxConcurrentParticles": 5,
+  "SpawnBurst": true,
+  "WaveDelay": {
+    "Min": 1,
+    "Max": 1
+  }
+}

@@ -266,8 +266,9 @@ Mobs (voir [docs/npc-0.7.2.md](docs/npc-0.7.2.md)) :
 
 - **Brèches** : au démarrage du monde principal, la carte doit afficher « Brèche des chasseurs : prochaine dans
   30:00 ». La nuit, un message prévient, puis un campement s'ouvre à 48–160 blocs d'un joueur, avec titre, son
-  et épingle sur la carte et la boussole (icône `Nakasar_HunterBreach.png`). À vérifier : que la faille rouge
-  (particules sur un bloc sans modèle) se voit, que le campement est posé au ras du sol et tourné dans tous les
+  et épingle sur la carte et la boussole (icône `Nakasar_HunterBreach.png`). À vérifier : que la faille est bien
+  rouge (copies rouges des particules de la brèche gobeline), que la traverser mène dans la crypte d'un Comté Vampire
+  et que son portail de retour ramène devant l'arche, que le campement est posé au ras du sol et tourné dans tous les
   sens sans chasseur dans un mur, que les chasseurs ne vous attaquent pas mais ripostent, et qu'à la fermeture
   (10 min) le terrain revient et les chasseurs disparaissent. Si rien ne démarre, chercher `Nakasar_Hunter_Breach`
   et `Nakasar_NightCondition` dans le journal.

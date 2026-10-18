@@ -1,0 +1,82 @@
+{
+  "$Comment": "Adds unstable void lightning around the inner vortex.",
+  "RenderMode": "Erosion",
+  "ParticleRotationInfluence": "None",
+  "ParticleLifeSpan": {
+    "Min": 0.25,
+    "Max": 0.25
+  },
+  "ParticleRotateWithSpawner": true,
+  "TrailSpawnerPositionMultiplier": 0,
+  "TrailSpawnerRotationMultiplier": 0,
+  "SpawnRate": {
+    "Min": 1,
+    "Max": 4
+  },
+  "Particle": {
+    "Texture": "Particles/Textures/Shapes/LightningVoid.png",
+    "UVOption": "RandomFlipU",
+    "Animation": {
+      "0": {
+        "Opacity": 0,
+        "Color": "#f49d9c"
+      },
+      "5": {
+        "Color": "#f49d9c",
+        "Opacity": 0
+      },
+      "30": {
+        "Color": "#f49d9c",
+        "Opacity": 1
+      },
+      "60": {
+        "Opacity": 1,
+        "Color": "#40000d"
+      },
+      "85": {
+        "Color": "#1e0007",
+        "Opacity": 1
+      },
+      "100": {
+        "Opacity": 0,
+        "Color": "#000000"
+      }
+    },
+    "InitialAnimationFrame": {
+      "Scale": {
+        "X": {
+          "Min": 1,
+          "Max": 2
+        },
+        "Y": {
+          "Min": 1,
+          "Max": 2
+        }
+      },
+      "Opacity": 0.136,
+      "Color": "#f49d9c",
+      "FrameIndex": {
+        "Min": 0,
+        "Max": 3
+      },
+      "Rotation": {
+        "Z": {
+          "Min": 0,
+          "Max": 360
+        }
+      }
+    },
+    "ScaleRatioConstraint": "OneToOne",
+    "FrameSize": {
+      "Width": 64,
+      "Height": 128
+    }
+  },
+  "Shape": "Sphere",
+  "SpawnBurst": true,
+  "WaveDelay": {
+    "Min": 0.3,
+    "Max": 1.5
+  },
+  "MaxConcurrentParticles": 5
+}

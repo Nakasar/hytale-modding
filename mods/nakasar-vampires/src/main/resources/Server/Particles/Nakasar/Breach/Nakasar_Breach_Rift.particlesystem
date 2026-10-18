@@ -1,0 +1,34 @@
+{
+  "$Comment": "Copie rouge de Dungeon_Goblin_Void_Rift (vanilla) pour la brèche des chasseurs. Générée par tools/generate_breach_particles.py.",
+  "Spawners": [
+    {
+      "SpawnerId": "Nakasar_Breach_Rift_Vortex1",
+      "PositionOffset": {
+        "Z": -0.4
+      }
+    },
+    {
+      "SpawnerId": "Nakasar_Breach_Rift_Vortex2"
+    },
+    {
+      "SpawnerId": "Nakasar_Breach_Rift_Vortex3"
+    },
+    {
+      "SpawnerId": "Nakasar_Breach_Rift_Vortex4"
+    },
+    {
+      "SpawnerId": "Nakasar_Breach_Rift_Lightning",
+      "PositionOffset": {
+        "Z": -0.1
+      }
+    },
+    {
+      "SpawnerId": "Nakasar_Breach_Rift_Wind_Short"
+    },
+    {
+      "SpawnerId": "Nakasar_Breach_Rift_Wind_Short2"
+    }
+  ],
+  "IsImportant": true,
+  "CullDistance": 32
+}

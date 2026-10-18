@@ -5,7 +5,8 @@
 
 Écrit :
   - les campements posés par l'évènement : src/main/resources/Server/Prefabs/Nakasar/Breach/*.prefab.json ;
-  - le bloc de la brèche, Nakasar_Breach_Rift (déchirure de particules rouges, lumière, marqueur de carte) ;
+  - le bloc de la brèche, Nakasar_Breach_Rift (déchirure de particules rouges, lumière, marqueur de carte,
+    passage vers un fragment du Comté Vampire) et sa boîte de collision ;
   - les icônes de la carte et de la boussole (Common/UI/WorldMap/MapMarkers/Nakasar_HunterBreach*.png) et
     l'icône d'objet du bloc.
 
@@ -29,10 +30,12 @@ from generate_prefabs import AIR, EAST, NORTH, SOUTH, WEST, Prefab, tent
 PACK = Path(__file__).resolve().parent.parent / "src" / "main" / "resources"
 OUT = PACK / "Server" / "Prefabs" / "Nakasar" / "Breach"
 ITEM = PACK / "Server" / "Item" / "Items" / "Deco" / "Nakasar" / "Breach" / "Nakasar_Breach_Rift.json"
+HITBOX = PACK / "Server" / "Item" / "Block" / "Hitboxes" / "Nakasar" / "Nakasar_Breach_Rift.json"
 MAP_MARKERS = PACK / "Common" / "UI" / "WorldMap" / "MapMarkers"
 ITEM_ICON = PACK / "Common" / "Icons" / "Items" / "Nakasar" / "Breach" / "Breach_Rift.png"
 
 RIFT = "Nakasar_Breach_Rift"
+INSTANCE = "Nakasar_Hunter_Breach_Fragment"  # Server/Instances : le Comté Vampire, configuré par PortalType Nakasar_Halloween
 MARKER = "Nakasar_Breach_Hunter"  # = BreachHunterCleanupSystem.MARKER
 MAP_ICON = "Nakasar_HunterBreach.png"
 COMPASS_ICON = "Nakasar_HunterBreachCompass.png"
@@ -208,7 +211,7 @@ def map_icon(size=48, compass=False):
 
 def write_rift_item():
     item = {
-        "$Comment": "Déchirure de la brèche des chasseurs (évènement Nakasar_Hunter_Breach) : bloc invisible sans collision qui porte les particules de la brèche gobeline (portail ouvert et faille du donjon) teintées de rouge, une lumière rouge et le marqueur de carte et de boussole. Posé par le prefab de la brèche, retiré avec lui. Généré par tools/generate_breach.py.",
+        "$Comment": "Déchirure de la brèche des chasseurs (évènement Nakasar_Hunter_Breach) : bloc invisible et traversable qui remplit l'ouverture de l'arche (3 x 4 blocs, cases « filler » du prefab). Il porte les particules rouges de la brèche (tools/generate_breach_particles.py), une lumière rouge et le marqueur de carte et de boussole ; le traverser emmène dans un fragment du Comté Vampire, comme la brèche gobeline mène au sien. Posé par le prefab de la brèche, retiré avec lui. Généré par tools/generate_breach.py.",
         "TranslationProperties": {"Name": "nakasar_breach.items.Nakasar_Breach_Rift.name"},
         "Icon": "Icons/Items/Nakasar/Breach/Breach_Rift.png",
         "Quality": "Developer",
@@ -222,21 +225,44 @@ def write_rift_item():
             "CustomModelTexture": [{"Texture": "Blocks/_Debug/TextureEmpty.png", "Weight": 1}],
             "Opacity": "Transparent",
             "VariantRotation": "NESW",
+            # Toute l'ouverture de l'arche, pour que la traversée la touche ; mêmes cases dans
+            # generate_prefabs.HITBOXES["Breach_Rift"].
+            "HitboxType": RIFT,
+            "Support": {},
             "Gathering": {"Breaking": {"GatherType": "Unbreakable"}},
             "Light": {"Color": "#d23"},
+            "AmbientSoundEventId": "SFX_Goblin_World_Breach_Portal",
+            # La teinte « Color » d'une particule de bloc ne change pas ces systèmes : ce sont des copies rouges.
             "Particles": [
-                # Le portail de la brèche gobeline (Goblin_Breach_Portal, 4 blocs de large), réduit à l'arche (3 de large).
-                {"SystemId": "GoblinBreach_Portal_Active", "Color": "#c8203c", "Scale": 0.8,
-                 "PositionOffset": {"X": 0, "Y": 1.6, "Z": 0}},
-                {"SystemId": "Dungeon_Goblin_Void_Rift", "Color": "#c8203c", "Scale": 1.5, "TargetEntityPart": "Self",
+                {"SystemId": "Nakasar_Breach_Portal", "Scale": 0.8, "PositionOffset": {"X": 0, "Y": 1.6, "Z": 0}},
+                {"SystemId": "Nakasar_Breach_Rift", "Scale": 1.5, "TargetEntityPart": "Self",
                  "PositionOffset": {"X": 0, "Y": 1.5, "Z": 0}},
             ],
+            "Interactions": {"CollisionEnter": {"Interactions": [{
+                # Comme Goblin_Breach_Portal : une instance par brèche, partagée par ceux qui la traversent.
+                # Elle survit au retrait du bloc (fin du campement) et se ferme avec le temps du fragment.
+                "Type": "TeleportInstance",
+                "InstanceName": INSTANCE,
+                "PersonalReturnPoint": True,
+                "CloseOnBlockRemove": False,
+                "OriginSource": "Block",
+                # Retour depuis le milieu de l'ouverture : au sol, 3 blocs côté camp.
+                "PositionOffset": {"X": 0, "Y": -2, "Z": 3},
+                "Next": {"Type": "Simple", "Effects": {"LocalSoundEventId": "SFX_Portal_Neutral_Teleport_Local"}},
+            }]}},
             "BlockEntity": {"Components": {"BlockMapMarker": {
                 "Name": "nakasar_breach.name", "Icon": MAP_ICON, "CompassIcon": COMPASS_ICON}}},
         },
     }
     ITEM.parent.mkdir(parents=True, exist_ok=True)
     ITEM.write_text(json.dumps(item, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
+    cells = gp.HITBOXES["Breach_Rift"]
+    lo = [min(c[i] for c in cells) for i in range(3)]
+    hi = [max(c[i] for c in cells) + 1 for i in range(3)]
+    hitbox = {"Boxes": [{"Min": {"X": float(lo[0]), "Y": float(lo[1]), "Z": 0.375},
+                         "Max": {"X": float(hi[0]), "Y": float(hi[1]), "Z": 0.625}}]}
+    HITBOX.parent.mkdir(parents=True, exist_ok=True)
+    HITBOX.write_text(json.dumps(hitbox, indent=2) + "\n", encoding="utf-8")
 
 
 def main():

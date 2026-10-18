@@ -1,5 +1,5 @@
 {
-  "$Comment": "Déchirure de la brèche des chasseurs (évènement Nakasar_Hunter_Breach) : bloc invisible sans collision qui porte les particules de la brèche gobeline (portail ouvert et faille du donjon) teintées de rouge, une lumière rouge et le marqueur de carte et de boussole. Posé par le prefab de la brèche, retiré avec lui. Généré par tools/generate_breach.py.",
+  "$Comment": "Déchirure de la brèche des chasseurs (évènement Nakasar_Hunter_Breach) : bloc invisible et traversable qui remplit l'ouverture de l'arche (3 x 4 blocs, cases « filler » du prefab). Il porte les particules rouges de la brèche (tools/generate_breach_particles.py), une lumière rouge et le marqueur de carte et de boussole ; le traverser emmène dans un fragment du Comté Vampire, comme la brèche gobeline mène au sien. Posé par le prefab de la brèche, retiré avec lui. Généré par tools/generate_breach.py.",
   "TranslationProperties": {
     "Name": "nakasar_breach.items.Nakasar_Breach_Rift.name"
   },
@@ -20,6 +20,8 @@
     ],
     "Opacity": "Transparent",
     "VariantRotation": "NESW",
+    "HitboxType": "Nakasar_Breach_Rift",
+    "Support": {},
     "Gathering": {
       "Breaking": {
         "GatherType": "Unbreakable"
@@ -28,10 +30,10 @@
     "Light": {
       "Color": "#d23"
     },
+    "AmbientSoundEventId": "SFX_Goblin_World_Breach_Portal",
     "Particles": [
       {
-        "SystemId": "GoblinBreach_Portal_Active",
-        "Color": "#c8203c",
+        "SystemId": "Nakasar_Breach_Portal",
         "Scale": 0.8,
         "PositionOffset": {
           "X": 0,
@@ -40,8 +42,7 @@
         }
       },
       {
-        "SystemId": "Dungeon_Goblin_Void_Rift",
-        "Color": "#c8203c",
+        "SystemId": "Nakasar_Breach_Rift",
         "Scale": 1.5,
         "TargetEntityPart": "Self",
         "PositionOffset": {
@@ -51,6 +52,30 @@
         }
       }
     ],
+    "Interactions": {
+      "CollisionEnter": {
+        "Interactions": [
+          {
+            "Type": "TeleportInstance",
+            "InstanceName": "Nakasar_Hunter_Breach_Fragment",
+            "PersonalReturnPoint": true,
+            "CloseOnBlockRemove": false,
+            "OriginSource": "Block",
+            "PositionOffset": {
+              "X": 0,
+              "Y": -2,
+              "Z": 3
+            },
+            "Next": {
+              "Type": "Simple",
+              "Effects": {
+                "LocalSoundEventId": "SFX_Portal_Neutral_Teleport_Local"
+              }
+            }
+          }
+        ]
+      }
+    },
     "BlockEntity": {
       "Components": {
         "BlockMapMarker": {

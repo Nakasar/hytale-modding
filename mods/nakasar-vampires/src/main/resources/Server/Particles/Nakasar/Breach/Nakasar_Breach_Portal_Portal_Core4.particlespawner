@@ -1,0 +1,116 @@
+{
+  "RenderMode": "Erosion",
+  "ParticleRotationInfluence": "BillboardVelocity",
+  "LinearFiltering": false,
+  "ParticleRotateWithSpawner": true,
+  "ParticleLifeSpan": {
+    "Min": 2,
+    "Max": 2
+  },
+  "Particle": {
+    "Texture": "Particles/Textures/Circles/Portal_Wind_Hollow.png",
+    "ScaleRatioConstraint": "OneToOne",
+    "UVOption": "None",
+    "Animation": {
+      "0": {
+        "FrameIndex": {
+          "Min": 0,
+          "Max": 0
+        },
+        "Opacity": 0,
+        "Color": "#710d1d",
+        "Scale": {
+          "X": {
+            "Min": 1,
+            "Max": 1
+          },
+          "Y": {
+            "Min": 1,
+            "Max": 1
+          }
+        }
+      },
+      "10": {},
+      "20": {
+        "Opacity": 0.584
+      },
+      "50": {
+        "Color": "#6b0416",
+        "Opacity": 0.8
+      },
+      "60": {
+        "Opacity": 0.8
+      },
+      "70": {},
+      "80": {
+        "Color": "#e82e3b"
+      },
+      "90": {
+        "Color": "#6b0416",
+        "Opacity": 0.25
+      },
+      "100": {
+        "Opacity": 0,
+        "Rotation": {
+          "Z": {
+            "Max": -190,
+            "Min": -190
+          }
+        },
+        "Scale": {
+          "X": {
+            "Min": 0.4,
+            "Max": 0.4
+          }
+        },
+        "Color": "#6b0416"
+      },
+      "30": {
+        "Color": "#f7676a"
+      },
+      "40": {
+        "Color": "#6b0416"
+      }
+    },
+    "InitialAnimationFrame": {
+      "Opacity": 1,
+      "FrameIndex": {
+        "Min": 0,
+        "Max": 0
+      },
+      "Scale": {
+        "X": {
+          "Min": 1.4,
+          "Max": 1.4
+        }
+      },
+      "Rotation": {
+        "Z": {
+          "Max": 360
+        }
+      }
+    },
+    "SoftParticles": "Disable"
+  },
+  "SpawnBurst": true,
+  "SpawnRate": {
+    "Min": 0.2,
+    "Max": 0.2
+  },
+  "CameraOffset": -0.16,
+  "UVMotion": {
+    "Texture": "Particles/Textures/UVMotion/FlowMapExplosion.png",
+    "SpeedX": 0.08,
+    "SpeedY": 0.24,
+    "Scale": 1.12
+  },
+  "MaxConcurrentParticles": 20,
+  "EmitOffset": {
+    "X": {
+      "Max": 0.2
+    },
+    "Z": {
+      "Max": 0.2
+    }
+  }
+}

@@ -1,0 +1,30 @@
+{
+  "$Comment": "Copie rouge de GoblinBreach_Portal_Active (vanilla) pour la brèche des chasseurs. Générée par tools/generate_breach_particles.py.",
+  "Spawners": [
+    {
+      "SpawnerId": "Nakasar_Breach_Portal_Portal_Core"
+    },
+    {
+      "SpawnerId": "Nakasar_Breach_Portal_Portal_Core3"
+    },
+    {
+      "SpawnerId": "Nakasar_Breach_Portal_Portal_Core5"
+    },
+    {
+      "SpawnerId": "Nakasar_Breach_Portal_Portal_Scrap"
+    },
+    {
+      "SpawnerId": "Nakasar_Breach_Portal_Portal_Lightning"
+    },
+    {
+      "SpawnerId": "Nakasar_Breach_Portal_Portal_Core4"
+    },
+    {
+      "SpawnerId": "Nakasar_Breach_Portal_Portal_Core7"
+    },
+    {
+      "SpawnerId": "Nakasar_Breach_Portal_Field_Lines2"
+    }
+  ],
+  "CullDistance": 100
+}

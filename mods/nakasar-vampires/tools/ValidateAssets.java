@@ -69,6 +69,9 @@ public class ValidateAssets {
             "com.hypixel.hytale.server.npc.NPCPlugin#setup",
             "com.hypixel.hytale.server.spawning.SpawningPlugin#setup",
             "com.hypixel.hytale.builtin.mounts.MountPlugin#setup",
+            // TeleportInstance (brèche des chasseurs) et sections Instance / PortalWorldConfig des instances.
+            "com.hypixel.hytale.builtin.instances.InstancesPlugin#setup",
+            "com.hypixel.hytale.builtin.portals.PortalsPlugin#setup",
             // Types d'établis (Crafting, Processing...).
             "com.hypixel.hytale.server.core.blocktype.BlockTypeModule#setup",
             // Fournisseurs de point d'apparition (Global, Individual...) : PortalTypes.Spawn.
@@ -654,6 +657,35 @@ public class ValidateAssets {
         return t + (cause != t ? " / cause : " + cause : "");
     }
 
+    /**
+     * InstanceValidator (TeleportInstance.InstanceName) cherche l'instance dans les packs chargés par AssetModule,
+     * absent hors serveur : il est remplacé par la même vérification dans Server/Instances du pack, comptée en
+     * erreur (le message évite « does not exist », réservé aux références notées).
+     */
+    @SuppressWarnings({"unchecked", "rawtypes"})
+    private static void checkInstanceNamesOffline(Path root) throws Exception {
+        Class<?> teleport = Class.forName("com.hypixel.hytale.builtin.instances.interactions.TeleportInstanceInteraction");
+        BuilderCodec<?> codec = (BuilderCodec<?>) teleport.getField("CODEC").get(null);
+        Class<?> original = Class.forName("com.hypixel.hytale.builtin.instances.InstanceValidator");
+        var offline = new com.hypixel.hytale.codec.validation.Validator<String>() {
+            @Override
+            public void accept(String name, ValidationResults results) {
+                if (!Files.exists(root.resolve("Instances").resolve(name).resolve("instance.bson"))) {
+                    results.fail("instance '" + name + "' absente de Server/Instances du pack");
+                }
+            }
+
+            @Override
+            public void updateSchema(com.hypixel.hytale.codec.schema.SchemaContext context,
+                                     com.hypixel.hytale.codec.schema.config.Schema target) {
+            }
+        };
+        for (BuilderField<?, ?> field : codec.getEntries().get("InstanceName")) {
+            List validators = field.getValidators();
+            validators.replaceAll(v -> original.isInstance(v) ? offline : v);
+        }
+    }
+
     /** Les magasins d'assets publient leurs événements sur le bus du serveur : on en fournit un sans démarrer le serveur. */
     private static void fakeServer() throws Exception {
         Field unsafeField = Class.forName("sun.misc.Unsafe").getDeclaredField("theUnsafe");
@@ -838,6 +870,7 @@ public class ValidateAssets {
             System.out.println("INFO  " + count + " types enregistrés depuis " + bootstrap);
         }
         System.out.println("INFO  " + registerWorldEventTypes() + " types d'évènements de monde enregistrés");
+        checkInstanceNamesOffline(root);
         List<Path> files;
         try (Stream<Path> walk = Files.walk(root)) {
             files = walk.filter(Files::isRegularFile)

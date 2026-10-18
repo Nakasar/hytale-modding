@@ -72,6 +72,7 @@ HITBOXES = {
     "Painting_3x2": _box(-1, 1, 0, 1, 0, 0),
     "Carpet_Large": _box(0, 1, 0, 0, 0, 1),
     "Door_Medium": _box(0, 2, 0, 2, 0, 0),
+    "Breach_Rift": _box(-1, 1, 0, 3, 0, 0),  # Nakasar_Breach_Rift (generate_breach.py) : l'ouverture de l'arche
 }
 FURNITURE = {
     **{f"Furniture_{s}_Table": "Table" for s in ("Ancient", "Crude", "Village", "Human_Ruins", "Temple_Dark", "Royal_Magic", "Tavern", "Lumberjack", "Feran")},
@@ -102,6 +103,7 @@ FURNITURE = {
     **{b: "Workstation_Low" for b in ("Bench_WorkBench", "Bench_Lumbermill", "Bench_Trough")},
     "Halloween_Wagon": "Table",
     "Tinkering_Target_Dummy": "Tall",
+    "Nakasar_Breach_Rift": "Breach_Rift",
 }
 
 

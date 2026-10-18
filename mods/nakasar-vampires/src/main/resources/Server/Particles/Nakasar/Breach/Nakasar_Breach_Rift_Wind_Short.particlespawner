@@ -1,0 +1,96 @@
+{
+  "$Comment": "Adds short spiraling wind particles that flow out of the rift.",
+  "RenderMode": "BlendAdd",
+  "MaxConcurrentParticles": 8,
+  "Particle": {
+    "Texture": "Particles/Textures/Smoke/Smoke_Wind2.png",
+    "ScaleRatioConstraint": "OneToOne",
+    "SoftParticles": "Enable",
+    "Animation": {
+      "0": {
+        "Opacity": 0,
+        "Color": "#810e20"
+      },
+      "20": {
+        "Opacity": 1
+      },
+      "50": {
+        "Opacity": 1
+      },
+      "80": {
+        "Opacity": 1,
+        "Color": "#000000"
+      },
+      "100": {
+        "Opacity": 0,
+        "Color": "#000000"
+      }
+    },
+    "InitialAnimationFrame": {
+      "Scale": {
+        "X": {
+          "Min": 1,
+          "Max": 2
+        }
+      },
+      "Opacity": 1,
+      "Color": "#ffc4c2",
+      "Rotation": {
+        "X": {
+          "Min": 90,
+          "Max": 90
+        }
+      }
+    },
+    "UVOption": "RandomFlipUV",
+    "CameraNearFadeStartDistance": 3,
+    "CameraNearFadeEndDistance": 6
+  },
+  "ParticleRotateWithSpawner": true,
+  "SpawnRate": {
+    "Min": 10,
+    "Max": 10
+  },
+  "ParticleRotationInfluence": "Velocity",
+  "TrailSpawnerPositionMultiplier": 0,
+  "TrailSpawnerRotationMultiplier": 0,
+  "InitialVelocity": {
+    "Speed": {
+      "Min": -5,
+      "Max": -5
+    }
+  },
+  "EmitOffset": {
+    "X": {
+      "Min": 2.5,
+      "Max": 3.5
+    },
+    "Y": {
+      "Min": 2.5,
+      "Max": 3.5
+    }
+  },
+  "Attractors": [
+    {
+      "Position": {
+        "Z": 64
+      },
+      "RadialAcceleration": -10,
+      "RadialImpulse": -5
+    },
+    {
+      "Position": {
+        "Z": 64
+      },
+      "RadialTangentImpulse": 10,
+      "RadialTangentAcceleration": 5,
+      "RadialAxis": {
+        "Z": 1
+      }
+    }
+  ],
+  "ParticleLifeSpan": {
+    "Min": 0.8,
+    "Max": 0.8
+  }
+}

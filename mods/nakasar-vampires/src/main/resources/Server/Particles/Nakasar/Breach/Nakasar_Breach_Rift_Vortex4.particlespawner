@@ -1,0 +1,96 @@
+{
+  "$Comment": "Unstable core vortex, creates a bright rift effect.",
+  "RenderMode": "BlendAdd",
+  "MaxConcurrentParticles": 20,
+  "ParticleLifeSpan": {
+    "Min": 1,
+    "Max": 2
+  },
+  "Particle": {
+    "Texture": "Particles/Textures/Circles/Portal_Inside_Contrast.png",
+    "ScaleRatioConstraint": "OneToOne",
+    "SoftParticles": "Enable",
+    "Animation": {
+      "0": {
+        "Opacity": 0,
+        "Rotation": {
+          "Z": {
+            "Min": 0,
+            "Max": 0
+          }
+        },
+        "Scale": {
+          "X": {
+            "Min": 0.25,
+            "Max": 0.25
+          }
+        },
+        "Color": "#ea424b"
+      },
+      "20": {
+        "Opacity": 1
+      },
+      "50": {
+        "Opacity": 1
+      },
+      "80": {
+        "Opacity": 1
+      },
+      "100": {
+        "Opacity": 0,
+        "Rotation": {
+          "Z": {
+            "Min": -90,
+            "Max": -180
+          }
+        },
+        "Scale": {
+          "X": {
+            "Min": 1,
+            "Max": 1
+          }
+        },
+        "Color": "#6c0c1c"
+      }
+    },
+    "InitialAnimationFrame": {
+      "Scale": {
+        "X": {
+          "Min": 1,
+          "Max": 1.5
+        }
+      },
+      "Opacity": 0.6,
+      "Rotation": {
+        "Z": {
+          "Min": 0,
+          "Max": 360
+        }
+      },
+      "Color": "#8b0f22"
+    }
+  },
+  "ParticleRotateWithSpawner": true,
+  "SpawnRate": {
+    "Min": 10,
+    "Max": 10
+  },
+  "ParticleRotationInfluence": "None",
+  "TrailSpawnerPositionMultiplier": 0,
+  "TrailSpawnerRotationMultiplier": 0,
+  "InitialVelocity": {
+    "Speed": {
+      "Min": -0.1,
+      "Max": -0.1
+    }
+  },
+  "UVMotion": {
+    "Texture": "Particles/Textures/UVMotion/FlowMapSwirl.png",
+    "SpeedX": 1,
+    "Strength": 3,
+    "Scale": 1,
+    "SpeedY": 1,
+    "StrengthCurveType": "Constant",
+    "AddRandomUVOffset": true
+  }
+}

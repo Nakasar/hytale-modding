@@ -92,6 +92,9 @@ Le JSON l'utilise ensuite avec `"Type": "Nakasar_MyInteraction"`.
 - Jouer un système depuis Java : `ParticleUtil.spawnParticleEffect(id, position, accessor)` (joueurs à 75 m).
   Sur une entité, pendant un effet : `ApplicationEffects.Particles[{SystemId, TargetEntityPart: Entity,
   ClearParticlesOnRemove}]`.
+- Sur un bloc (`BlockType.Particles[{SystemId, Scale, PositionOffset}]`) : rien n'est dessiné en `DrawType: Empty`
+  (modèle `Blocks/_Debug/Model.blockymodel` + texture `Blocks/_Debug/TextureEmpty.png` pour un bloc invisible), et
+  le champ `Color` ne teinte pas des spawners qui portent leurs couleurs : recopier les spawners sous d'autres ids.
 
 ## Recettes et établis
 
@@ -196,5 +199,11 @@ Le JSON l'utilise ensuite avec `"Type": "Nakasar_MyInteraction"`.
   (`SpawnReference.MARKER_LOST_TIMEOUT`), pas tant qu'ils sont en état occupé (combat).
 - Le stockage des évènements se recharge après le démarrage du monde ; un évènement sauvegardé remplace alors celui
   de même UUID déjà lancé (`WorldEventStorageSystem`, état `LOADED`).
+- Passage vers une instance : `BlockType.Interactions.CollisionEnter` → `TeleportInstance` (`InstanceName` =
+  dossier de `Server/Instances/`, `OriginSource: Block`, `PositionOffset` du retour depuis le milieu de la boîte de
+  collision, tourné avec le bloc, `CloseOnBlockRemove`). Une instance par bloc. Elle n'applique pas de type de
+  portail : la section `Plugin.PortalWorldConfig.Config` (clé de portail en ligne : `PortalType`,
+  `TimeLimitSeconds`) de l'instance le fait au démarrage, mais sans le point d'arrivée du type (mettre un
+  `SpawnProvider` dans l'instance), comme `Portals/Portals_Goblins`.
 - Épingle sur la carte : composant de bloc `BlockMapMarker` (`Name`, `Icon` dans
   `Common/UI/WorldMap/MapMarkers/`, `CompassIcon`) dans `BlockType.BlockEntity`.
