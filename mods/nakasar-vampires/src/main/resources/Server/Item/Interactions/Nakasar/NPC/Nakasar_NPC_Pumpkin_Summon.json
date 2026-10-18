@@ -1,5 +1,5 @@
 {
-  "$Comment": "Invocation des vrilles : la citrouille s'agite, le sol se fend autour d'elle et des vrilles combattantes (Nakasar_Pumpkin_Vine) sortent de terre entre 3 et 6 blocs d'elle, jusqu'à 3 par appel et 4 vivantes à la fois (Nakasar_SummonVines).",
+  "$Comment": "Invocation des vrilles : la citrouille s'agite, le sol se fend autour d'elle et des vrilles combattantes (Nakasar_Pumpkin_Vine) sortent de terre entre 3 et 7 blocs d'elle et à au moins 2,5 blocs l'une de l'autre, jusqu'à 5 par appel et 6 vivantes à la fois (Nakasar_SummonVines).",
   "Type": "Serial",
   "Interactions": [
     {
@@ -53,10 +53,11 @@
       "Next": {
         "Type": "Nakasar_SummonVines",
         "VineRole": "Nakasar_Pumpkin_Vine",
-        "Count": 3,
-        "MaxAlive": 4,
+        "Count": 5,
+        "MaxAlive": 6,
         "MinDistance": 3,
-        "MaxDistance": 6
+        "MaxDistance": 7,
+        "MinSpacing": 2.5
       }
     },
     {

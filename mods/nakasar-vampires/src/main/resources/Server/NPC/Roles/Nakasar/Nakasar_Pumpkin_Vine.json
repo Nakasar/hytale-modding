@@ -12,6 +12,7 @@
   ],
   "KnockbackScale": 0,
   "DeathAnimationTime": 0.8,
+  "SpawnLockTime": 0.5,
   "DeathParticles": "Block_Break_Leaves",
   "MotionControllerList": [
     {

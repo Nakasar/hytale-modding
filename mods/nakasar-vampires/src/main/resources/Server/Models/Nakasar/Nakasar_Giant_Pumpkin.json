@@ -1,5 +1,5 @@
 {
-  "$Comment": "Citrouille géante animée (élite), générée par tools/generate_pumpkin_models.py : sculptée, éclairée de l'intérieur ; le haut se soulève comme une mâchoire (bouche qui s'ouvre, crachat de poison, rugissements). Elle ne se déplace pas.",
+  "$Comment": "Citrouille géante animée (élite), générée par tools/generate_pumpkin_models.py : huit côtes en relief, visage sculpté éclairé de l'intérieur, dents, tige et feuilles ; le haut se soulève comme une mâchoire (bouche qui s'ouvre, crachat de poison, rugissements). Elle ne se déplace pas.",
   "EyeHeight": 0.9,
   "HitBox": {
     "Max": {
@@ -41,6 +41,127 @@
       "Animations": [
         {
           "Animation": "NPC/Nakasar/Giant_Pumpkin/Animations/Death.blockyanim",
+          "Looping": false
+        }
+      ]
+    },
+    "Walk": {
+      "Animations": [
+        {
+          "Animation": "NPC/Nakasar/Giant_Pumpkin/Animations/Idle.blockyanim"
+        }
+      ]
+    },
+    "WalkBackward": {
+      "Animations": [
+        {
+          "Animation": "NPC/Nakasar/Giant_Pumpkin/Animations/Idle.blockyanim"
+        }
+      ]
+    },
+    "Run": {
+      "Animations": [
+        {
+          "Animation": "NPC/Nakasar/Giant_Pumpkin/Animations/Idle.blockyanim"
+        }
+      ]
+    },
+    "Sprint": {
+      "Animations": [
+        {
+          "Animation": "NPC/Nakasar/Giant_Pumpkin/Animations/Idle.blockyanim"
+        }
+      ]
+    },
+    "Jump": {
+      "Animations": [
+        {
+          "Animation": "NPC/Nakasar/Giant_Pumpkin/Animations/Idle.blockyanim"
+        }
+      ]
+    },
+    "JumpWalk": {
+      "Animations": [
+        {
+          "Animation": "NPC/Nakasar/Giant_Pumpkin/Animations/Idle.blockyanim"
+        }
+      ]
+    },
+    "JumpRun": {
+      "Animations": [
+        {
+          "Animation": "NPC/Nakasar/Giant_Pumpkin/Animations/Idle.blockyanim"
+        }
+      ]
+    },
+    "Fall": {
+      "Animations": [
+        {
+          "Animation": "NPC/Nakasar/Giant_Pumpkin/Animations/Idle.blockyanim"
+        }
+      ]
+    },
+    "Sleep": {
+      "Animations": [
+        {
+          "Animation": "NPC/Nakasar/Giant_Pumpkin/Animations/Idle.blockyanim"
+        }
+      ]
+    },
+    "Laydown": {
+      "Animations": [
+        {
+          "Animation": "NPC/Nakasar/Giant_Pumpkin/Animations/Idle.blockyanim"
+        }
+      ]
+    },
+    "Crouch": {
+      "Animations": [
+        {
+          "Animation": "NPC/Nakasar/Giant_Pumpkin/Animations/Idle.blockyanim"
+        }
+      ]
+    },
+    "CrouchWalk": {
+      "Animations": [
+        {
+          "Animation": "NPC/Nakasar/Giant_Pumpkin/Animations/Idle.blockyanim"
+        }
+      ]
+    },
+    "CrouchWalkBackward": {
+      "Animations": [
+        {
+          "Animation": "NPC/Nakasar/Giant_Pumpkin/Animations/Idle.blockyanim"
+        }
+      ]
+    },
+    "SwimIdle": {
+      "Animations": [
+        {
+          "Animation": "NPC/Nakasar/Giant_Pumpkin/Animations/Idle.blockyanim"
+        }
+      ]
+    },
+    "FluidIdle": {
+      "Animations": [
+        {
+          "Animation": "NPC/Nakasar/Giant_Pumpkin/Animations/Idle.blockyanim"
+        }
+      ]
+    },
+    "Alerted": {
+      "Animations": [
+        {
+          "Animation": "NPC/Nakasar/Giant_Pumpkin/Animations/Idle.blockyanim",
+          "Looping": false
+        }
+      ]
+    },
+    "Wake": {
+      "Animations": [
+        {
+          "Animation": "NPC/Nakasar/Giant_Pumpkin/Animations/Idle.blockyanim",
           "Looping": false
         }
       ]
