@@ -1,0 +1,17 @@
+{
+  "$Comment": "Dernière étape : la brèche reste ouverte 10 min (« … restant » sur la carte). À la fin, l'évènement redémarre et restaure le terrain sous le campement ; BreachHunterCleanupSystem renvoie les chasseurs avec leurs marqueurs.",
+  "Forks": [
+    {
+      "Conditions": [
+        {
+          "Type": "IntervalCondition",
+          "IntervalKey": "HunterBreachOpen",
+          "MinSeconds": 600,
+          "MaxSeconds": 600,
+          "ShowOnMap": true,
+          "MapIntervalKey": "server.map.worldEvents.runsFor"
+        }
+      ]
+    }
+  ]
+}

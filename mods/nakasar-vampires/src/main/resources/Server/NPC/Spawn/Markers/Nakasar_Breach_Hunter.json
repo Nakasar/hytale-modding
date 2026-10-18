@@ -1,0 +1,22 @@
+{
+  "$Comment": "Chasseur de vampires de la brèche nocturne (évènement Nakasar_Hunter_Breach), tiré au hasard. Pas de remplaçant pendant la brèche (elle dure 10 minutes) ; quand elle se referme, le plugin retire les chasseurs avec leur marqueur (BreachHunterCleanupSystem).",
+  "NPCs": [
+    {
+      "Name": "Nakasar_Vampire_Hunter_Crossbow",
+      "Weight": 4,
+      "RealtimeRespawnTime": 3600
+    },
+    {
+      "Name": "Nakasar_Vampire_Hunter_Gunner",
+      "Weight": 3,
+      "RealtimeRespawnTime": 3600
+    },
+    {
+      "Name": "Nakasar_Vampire_Hunter_Blade",
+      "Weight": 3,
+      "RealtimeRespawnTime": 3600
+    }
+  ],
+  "RealtimeRespawn": true,
+  "ExclusionRadius": 0
+}

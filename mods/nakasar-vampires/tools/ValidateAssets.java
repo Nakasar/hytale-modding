@@ -44,6 +44,7 @@ import java.util.stream.Stream;
  */
 public class ValidateAssets {
     private static final Map<String, String> CODECS = new LinkedHashMap<>();
+    private static final String WE = "com.hypixel.hytale.builtin.adventure.worldevents.";
 
     private static final List<String> STORES = List.of(
             "com.hypixel.hytale.server.core.asset.AssetRegistryLoader"
@@ -90,6 +91,182 @@ public class ValidateAssets {
         CODECS.put("Drops/", "com.hypixel.hytale.server.core.asset.type.item.config.ItemDropList");
         CODECS.put("Item/RootInteractions/", "com.hypixel.hytale.server.core.modules.interaction.interaction.config.RootInteraction");
         CODECS.put("Item/Interactions/", "com.hypixel.hytale.server.core.modules.interaction.interaction.config.Interaction");
+        CODECS.put("WorldEvent/Event/", WE + "event.WorldEventAsset");
+        CODECS.put("WorldEvent/Stage/", WE + "event.StageAsset");
+    }
+
+    /**
+     * Types des évènements de monde : WorldEventsPlugin#setup les enregistre par appels chaînés et par
+     * registerCondition, que replayCodecRegistrations ne sait pas relire. Ligne = codec à types (classe#champ),
+     * id du type, classe ; la condition « nuit » vient du plugin du mod (build/classes sur le classpath).
+     */
+    private static final String[][] WORLD_EVENT_TYPES = {
+            {WE + "action.EventAction#TYPE_CODEC", "None", WE + "action.NoAction"},
+            {WE + "action.EventAction#TYPE_CODEC", "EffectsAction", WE + "action.EffectsAction"},
+            {WE + "action.EventAction#TYPE_CODEC", "EventStartAction", WE + "action.EventStartAction"},
+            {WE + "action.EventAction#TYPE_CODEC", "EventStopAction", WE + "action.EventStopAction"},
+            {WE + "action.EventAction#TYPE_CODEC", "GlobalEventStartAction", WE + "action.GlobalEventStartAction"},
+            {WE + "action.EventAction#TYPE_CODEC", "GlobalEventStopAction", WE + "action.GlobalEventStopAction"},
+            {WE + "action.EventAction#TYPE_CODEC", "MapMarkerOverrideAddAction", WE + "action.MapMarkerOverrideAddAction"},
+            {WE + "action.EventAction#TYPE_CODEC", "MapMarkerOverrideRemoveAction", WE + "action.MapMarkerOverrideRemoveAction"},
+            {WE + "action.EventAction#TYPE_CODEC", "MessageAction", WE + "action.MessageAction"},
+            {WE + "action.EventAction#TYPE_CODEC", "PrefabPasteAction", WE + "action.PrefabPasteAction"},
+            {WE + "action.EventAction#TYPE_CODEC", "PrefabRemoveAction", WE + "action.PrefabRemoveAction"},
+            {WE + "action.EventAction#TYPE_CODEC", "ShowEventTitleAction", WE + "action.ShowEventTitleAction"},
+            {WE + "action.effect.shape.Shape#TYPE_CODEC", "Point", WE + "action.effect.shape.Point"},
+            {WE + "action.effect.shape.Shape#TYPE_CODEC", "Ring", WE + "action.effect.shape.Ring"},
+            {WE + "condition.spawner.Spawner$Config#TYPE_CODEC", "NoSpawner", WE + "condition.spawner.NoSpawner$Config"},
+            {WE + "condition.spawner.Spawner$Config#TYPE_CODEC", "PrefabSpawner", WE + "condition.spawner.PrefabSpawner$Config"},
+            {WE + "condition.location.EventLocation$Config#TYPE_CODEC", "WildernessLocation",
+                    "com.hypixel.hytale.builtin.adventure.wilderness.component.WildernessLocation$Config"},
+            {WE + "condition.EventCondition$Config#TYPE_CODEC", "None", WE + "condition.NoCondition$Config"},
+            {WE + "condition.EventCondition$Config#TYPE_CODEC", "IntervalCondition", WE + "condition.IntervalCondition$Config"},
+            {WE + "condition.EventCondition$Config#TYPE_CODEC", "LocationCondition", WE + "condition.LocationCondition$Config"},
+            {WE + "condition.EventCondition$Config#TYPE_CODEC", "ProximityCondition", WE + "condition.ProximityCondition$Config"},
+            {WE + "condition.EventCondition$Config#TYPE_CODEC", "TimeCondition", WE + "condition.TimeCondition$Config"},
+            {WE + "condition.EventCondition$Config#TYPE_CODEC", "WorldClosedCondition", WE + "condition.WorldClosedCondition$Config"},
+            {WE + "condition.EventCondition$Config#TYPE_CODEC", "EventEndCondition", WE + "condition.EventEndCondition$Config"},
+            {WE + "condition.EventCondition$Config#TYPE_CODEC", "SignalCondition", WE + "condition.SignalCondition$Config"},
+            {WE + "condition.EventCondition$Config#TYPE_CODEC", "GameFlagLevelCondition",
+                    "com.hypixel.hytale.builtin.gameflags.integration.GameFlagLevelCondition$Config"},
+            {WE + "condition.location.EventLocation$Config#TYPE_CODEC", "None", WE + "condition.location.NoLocation$Config"},
+            {WE + "condition.EventCondition$Config#TYPE_CODEC", "Nakasar_NightCondition", "dev.nakasar.hytale.vampires.breach.NightCondition$Config"},
+    };
+
+    /** Types d'évènements de monde qui n'ont pas pu être enregistrés : comptés en erreur. */
+    private static int registrationErrors;
+
+    @SuppressWarnings({"unchecked", "rawtypes"})
+    private static int registerWorldEventTypes() {
+        int count = 0;
+        for (String[] row : WORLD_EVENT_TYPES) {
+            try {
+                String[] owner = row[0].split("#");
+                var map = (com.hypixel.hytale.codec.lookup.CodecMapCodec) Class.forName(owner[0]).getField(owner[1]).get(null);
+                Class<?> type = Class.forName(row[2]);
+                map.register(row[1], type, (Codec) type.getField("CODEC").get(null));
+                count++;
+            } catch (Throwable t) {
+                registrationErrors++;
+                System.out.println("ERROR type d'évènement " + row[1] + " non enregistré : " + rootCause(t));
+            }
+        }
+        return count;
+    }
+
+    /**
+     * Rejoue la validation que le serveur fait au premier lancement d'un évènement (WorldEventAsset#valid) : étape
+     * racine et étapes « Next » présentes, variables (LocationKey, PrefabKey...) définies avant d'être lues, pas de
+     * cycle. Un évènement invalide ne démarre jamais en jeu, avec un seul avertissement dans le journal.
+     */
+    @SuppressWarnings({"unchecked", "rawtypes"})
+    private static int checkWorldEvents(Path root) throws Exception {
+        Path events = root.resolve("WorldEvent/Event");
+        Path stages = root.resolve("WorldEvent/Stage");
+        if (!Files.isDirectory(events)) {
+            return 0;
+        }
+        Class stageClass = Class.forName(WE + "event.StageAsset");
+        Class eventClass = Class.forName(WE + "event.WorldEventAsset");
+        Object stageMap = stageClass.getField("ASSET_MAP").get(null);
+        Field mapField = com.hypixel.hytale.assetstore.map.DefaultAssetMap.class.getDeclaredField("assetMap");
+        mapField.setAccessible(true);
+        Map<Object, Object> stageAssets = (Map<Object, Object>) mapField.get(stageMap);
+        if (Files.isDirectory(stages)) {
+            for (Path file : jsonFiles(stages)) {
+                try {
+                    stageAssets.put(assetKey(file), decodeQuietly(stageClass, file));
+                } catch (Throwable t) {
+                    // Déjà compté en erreur par la boucle principale ; l'évènement qui l'utilise le signalera absent.
+                    System.out.println("WARN  étape " + root.relativize(file) + " non décodée : " + rootCause(t));
+                }
+            }
+        }
+        int errors = 0;
+        for (Path file : jsonFiles(events)) {
+            String rel = root.relativize(file).toString().replace('\\', '/');
+            Object asset;
+            try {
+                asset = decodeQuietly(eventClass, file);
+            } catch (Throwable t) {
+                errors++;
+                System.out.println("ERROR évènement " + rel + " : non décodé : " + rootCause(t));
+                continue;
+            }
+            Object result;
+            String code;
+            while (true) {
+                Object validator = Class.forName(WE + "event.Validator").getConstructor().newInstance();
+                result = validator.getClass().getMethod("validate", eventClass).invoke(validator, asset);
+                code = String.valueOf(result.getClass().getMethod("code").invoke(result));
+                String message = String.valueOf(result.getClass().getMethod("message").invoke(result));
+                java.util.regex.Matcher inline = INLINE_PREFAB_LIST.matcher(message);
+                if (code.equals("PASS") || !inline.find() || !stubPrefabList(inline.group(1))) {
+                    break;
+                }
+                // Liste de prefabs écrite dans l'étape : le serveur l'enregistre au chargement ; ses chemins sont
+                // vérifiés par checkPrefabPaths, on la remplace donc par une liste non vide pour la suite.
+                System.out.println("NOTE  évènement " + rel + " : liste de prefabs en ligne " + inline.group(1) + " (chemins vérifiés à part)");
+            }
+            if (code.equals("PASS")) {
+                System.out.println("OK    évènement " + rel + " : étapes et variables cohérentes");
+            } else {
+                errors++;
+                System.out.println("ERROR évènement " + rel + " : " + result.getClass().getMethod("message").invoke(result));
+            }
+        }
+        return errors;
+    }
+
+    private static final java.util.regex.Pattern INLINE_PREFAB_LIST = java.util.regex.Pattern.compile("Failed to find PrefabList: (\\*\\S+)");
+
+    /** Ajoute une liste de prefabs non vide sous {@code key} ; faux si elle existait déjà. */
+    @SuppressWarnings({"unchecked", "rawtypes"})
+    private static boolean stubPrefabList(String key) throws Exception {
+        Class<?> listClass = Class.forName("com.hypixel.hytale.server.core.asset.type.buildertool.config.PrefabListAsset");
+        Object map = listClass.getMethod("getAssetMap").invoke(null);
+        Field mapField = com.hypixel.hytale.assetstore.map.DefaultAssetMap.class.getDeclaredField("assetMap");
+        mapField.setAccessible(true);
+        Map<Object, Object> lists = (Map<Object, Object>) mapField.get(map);
+        if (lists.containsKey(key)) {
+            return false;
+        }
+        var constructor = listClass.getDeclaredConstructor();
+        constructor.setAccessible(true);
+        Object stub = constructor.newInstance();
+        Field paths = listClass.getDeclaredField("prefabPaths");
+        paths.setAccessible(true);
+        paths.set(stub, new Path[]{Path.of(key)});
+        lists.put(key, stub);
+        return true;
+    }
+
+    private static List<Path> jsonFiles(Path dir) throws Exception {
+        try (Stream<Path> walk = Files.walk(dir)) {
+            return walk.filter(Files::isRegularFile).filter(p -> p.toString().endsWith(".json")).sorted().toList();
+        }
+    }
+
+    private static String assetKey(Path file) {
+        return file.getFileName().toString().replaceFirst("\\.json$", "");
+    }
+
+    /** Décode un asset pour s'en servir (les erreurs de décodage sont déjà rapportées par la boucle principale). */
+    @SuppressWarnings({"unchecked", "rawtypes"})
+    private static Object decodeQuietly(Class<?> assetClass, Path file) throws Exception {
+        var codec = (com.hypixel.hytale.assetstore.codec.AssetCodec) assetClass.getField("CODEC").get(null);
+        AssetExtraInfo info = (AssetExtraInfo) newExtraInfo(assetClass, file);
+        try {
+            return codec.decodeJsonAsset(RawJsonReader.fromJsonString(Files.readString(file)), info);
+        } catch (Throwable t) {
+            // Le post-traitement d'une liste de prefabs écrite dans l'étape cherche le pack du jeu, absent hors
+            // serveur : PrefabReference#processPrefabPath attrape son erreur et journalise, mais le premier appel au
+            // journal du magasin PrefabListAsset échoue encore (initialisation paresseuse). Un second décodage passe.
+            if (!isAfterDecode(t)) {
+                throw t;
+            }
+        }
+        return codec.decodeJsonAsset(RawJsonReader.fromJsonString(Files.readString(file)), info);
     }
 
     private static int replayCodecRegistrations(String entry) throws Exception {
@@ -421,11 +598,12 @@ public class ValidateAssets {
     private static boolean isAfterDecode(Throwable t) {
         Throwable cause = rootCause(t);
         if (!(cause instanceof NullPointerException) || cause.getMessage() == null
-                || !cause.getMessage().contains("getAssetStore(")) {
+                || !cause.getMessage().contains("getAssetStore(") && !cause.getMessage().contains("AssetModule.get()")) {
             return false;
         }
         for (StackTraceElement frame : cause.getStackTrace()) {
-            if (frame.getMethodName().equals("afterDecodeAndValidate")) {
+            // processPrefabPath : une liste de prefabs résout ses chemins dans le pack du jeu, absent hors serveur.
+            if (frame.getMethodName().equals("afterDecodeAndValidate") || frame.getMethodName().equals("processPrefabPath")) {
                 return true;
             }
         }
@@ -633,6 +811,7 @@ public class ValidateAssets {
             int count = replayCodecRegistrations(bootstrap);
             System.out.println("INFO  " + count + " types enregistrés depuis " + bootstrap);
         }
+        System.out.println("INFO  " + registerWorldEventTypes() + " types d'évènements de monde enregistrés");
         List<Path> files;
         try (Stream<Path> walk = Files.walk(root)) {
             files = walk.filter(Files::isRegularFile)
@@ -663,7 +842,7 @@ public class ValidateAssets {
                 } else {
                     decodeAsset(assetClass, file, problems, notes);
                 }
-                if (rel.startsWith("HytaleGenerator/")) {
+                if (rel.startsWith("HytaleGenerator/") || rel.startsWith("WorldEvent/")) {
                     checkPrefabPaths(root, file, problems);
                 }
             } catch (Throwable t) {
@@ -682,6 +861,7 @@ public class ValidateAssets {
             }
         }
         System.out.println(checked + " fichiers vérifiés, " + errors + " en erreur");
+        errors += checkWorldEvents(root) + registrationErrors;
         String blocks = System.getProperty("blocks");
         if (blocks != null) {
             errors += checkBlockIds(root, Path.of(blocks));

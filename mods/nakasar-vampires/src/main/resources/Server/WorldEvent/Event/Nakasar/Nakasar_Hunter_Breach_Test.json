@@ -1,0 +1,9 @@
+{
+  "$Comment": "Pour tester la brèche sans attendre : /worldevent start asset Nakasar_Hunter_Breach_Test ouvre tout de suite un campement près d'un joueur, une seule fois ; il doit faire nuit (/time midnight). Même étapes que Nakasar_Hunter_Breach à partir de la pose.",
+  "Root": "Nakasar_Hunter_Breach_Place",
+  "Persistent": true,
+  "IterationCount": 1,
+  "InstanceCountMax": 1,
+  "Name": "nakasar_breach.name",
+  "Icon": "UI/WorldMap/MapMarkers/Nakasar_HunterBreach.png"
+}

@@ -421,3 +421,39 @@ temps de son effet.
 - **Fin de l'effet** (`DominationExpirySystem`) : le PNJ libéré oublie les cibles prises parmi ses anciens alliés
   (emplacements de `MarkedEntitySupport`) ; utile pour les mobs vanilla, dont on ne contrôle pas les rôles.
 - La Domination du Comte sur un joueur ne change que les dégâts du joueur contre le Comte.
+
+## Brèches des chasseurs de vampires
+
+Évènement de monde `Nakasar_Hunter_Breach` (`Server/WorldEvent/`), calqué sur la brèche gobeline perpétuelle du
+chapitre 1 (`Goblin_Breach_Perpetual_*`). Java, `breach/` :
+
+- `HunterBreachStarter` lance l'évènement dans le **monde par défaut** de l'univers seulement (pas les fragments ni
+  les instances), avec un identifiant fixe : les évènements vanilla viennent de la config de gameplay `Default`
+  (`WorldEvents.Events`), qu'un mod ne peut pas compléter sans la remplacer. Rien ne démarre si les évènements de
+  monde sont coupés (`/worldevent enable false`).
+- `NightCondition` (`Nakasar_NightCondition`) : condition qui se réalise quand la progression du jour est entre
+  `Start` (0,8, coucher du soleil) et `End` (0,15, 3 h 36), plage qui passe minuit (le `TimeCondition` vanilla
+  attend une heure précise).
+- `BreachHunterCleanupSystem` : à la fermeture, le jeu restaure le terrain et retire les marqueurs du prefab, mais
+  ne fait disparaître leurs PNJ que 30 s plus tard (et pas en plein combat) ; ce système retire tout de suite les
+  chasseurs chargés des marqueurs `Nakasar_Breach_Hunter`.
+- Le lanceur ne relance pas un évènement arrêté par un admin (`/worldevent cancel`) avant le prochain démarrage.
+
+Cycle (étapes `Stage/Nakasar/HunterBreach/`, chacune avec son compte à rebours sur la carte) :
+
+1. `Wait` : 30 min (« Prochaine dans »).
+2. `Night` : attend la nuit (« À la tombée de la nuit ») puis prévient dans le chat.
+3. `Warn` : 1 min (« S'ouvre dans »).
+4. `Place` : cherche un coin sauvage à 48–160 blocs d'un joueur (sol, roche ou herbe, dénivelé 4 au plus, dégagé
+   sur 6 blocs), s'il fait encore nuit, et y colle un des deux campements, avec titre à l'écran (200 blocs), message et son d'ouverture.
+5. `Open` : 10 min (« Se ferme dans »), puis le terrain est restauré et le cycle reprend à `Wait`.
+
+Campements (`tools/generate_breach.py`, qui reprend les briques de `generate_prefabs.py`) :
+`Prefabs/Nakasar/Breach/Hunter_Breach_Camp_{Tents,Range}` : clairière de rayon 8, arche de faille avec le bloc
+`Nakasar_Breach_Rift` (lumière, particules de faille teintées rouge, épingle `BlockMapMarker` sur la carte et la
+boussole), torches de feu purificateur, feu de camp, tentes, et 5 ou 4 marqueurs `Nakasar_Breach_Hunter` (un
+chasseur tiré au hasard, comme le camp du fragment). Les chasseurs gardent leur rôle : neutres envers les joueurs et
+les mobs pacifiques, ils ripostent si on les frappe et restent près de leur point d'apparition.
+
+`Nakasar_Hunter_Breach_Test` (une seule fois, sans attente, mais de nuit) sert aux essais :
+`/worldevent start asset Nakasar_Hunter_Breach_Test`.

@@ -175,3 +175,26 @@ Le JSON l'utilise ensuite avec `"Type": "Nakasar_MyInteraction"`.
 - Les enums des assets (`EnumCodec` en style `CAMEL_CASE`) s'écrivent en CamelCase : `"RotationMode": "FacingPlayer"`,
   pas le nom Java `FACING_PLAYER` (refusé : « Failed to find enum value »). Le `BlockType` d'un objet n'est pas
   décodé par `Item.CODEC` : `ValidateAssets` ne voit donc pas ces erreurs.
+
+## Évènements de monde (brèches)
+
+- Assets `Server/WorldEvent/Event/*.json` (`WorldEventAsset` : `Root`, `Persistent`, `IterationCount` -1 = sans
+  fin, `InstanceCountMax`, `Name`, `Icon`) et `Server/WorldEvent/Stage/*.json` (`StageAsset` : `Forks` de
+  `Conditions`, `Actions`, `Next`). Le graphe des étapes est acyclique : un évènement répété repart de `Root`, ce
+  qui vide son contexte et annule les `PrefabPaste` non permanents (terrain restauré, entités du prefab retirées).
+- Le serveur valide l'évènement au premier lancement (`event.Validator` : étapes présentes, clés `LocationKey`,
+  `PrefabKey`... définies avant lecture) ; un évènement invalide ne démarre jamais. `tools/ValidateAssets.java`
+  rejoue cette validation.
+- Lancement : la config de gameplay (`WorldEvents.Events`) ou `EventStartAction.startEvent(store, new
+  WorldEventRecord(uuid, id, transient))` ; `WorldEventManager.get(uuid)` évite les doublons.
+- Conditions utiles : `IntervalCondition` (`ShowOnMap` + `MapIntervalKey` = compte à rebours dans la liste de la
+  carte, clé avec `{time}`), `LocationCondition` (`WildernessLocation`, `PrefabSpawner` avec liste de prefabs
+  en ligne et masque de blocs), `TimeCondition` (une heure, pas de plage). Conditions maison :
+  `WorldEventsPlugin.registerCondition(plugin, type, codec, configCodec)`.
+- `PrefabSpawner` pose le prefab avec y = 0 **sur** le bloc de surface : le sol du prefab doit être en y = -1.
+- Supprimer un `SpawnMarkerEntity` (raison `REMOVE`) laisse ses PNJ ; ils disparaissent 30 s plus tard
+  (`SpawnReference.MARKER_LOST_TIMEOUT`), pas tant qu'ils sont en état occupé (combat).
+- Le stockage des évènements se recharge après le démarrage du monde ; un évènement sauvegardé remplace alors celui
+  de même UUID déjà lancé (`WorldEventStorageSystem`, état `LOADED`).
+- Épingle sur la carte : composant de bloc `BlockMapMarker` (`Name`, `Icon` dans
+  `Common/UI/WorldMap/MapMarkers/`, `CompassIcon`) dans `BlockType.BlockEntity`.

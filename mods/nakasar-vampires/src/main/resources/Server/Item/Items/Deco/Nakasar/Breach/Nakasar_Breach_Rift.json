@@ -1,0 +1,44 @@
+{
+  "$Comment": "Déchirure de la brèche des chasseurs (évènement Nakasar_Hunter_Breach) : bloc sans forme ni collision, particules de faille rouge, lumière rouge, marqueur sur la carte et la boussole. Posé par le prefab de la brèche, retiré avec lui. Généré par tools/generate_breach.py.",
+  "TranslationProperties": {
+    "Name": "nakasar_breach.items.Nakasar_Breach_Rift.name"
+  },
+  "Icon": "Icons/Items/Nakasar/Breach/Breach_Rift.png",
+  "Quality": "Developer",
+  "Categories": [
+    "Blocks.Deco"
+  ],
+  "BlockType": {
+    "Material": "Empty",
+    "DrawType": "Empty",
+    "Opacity": "Transparent",
+    "Gathering": {
+      "Breaking": {
+        "GatherType": "Unbreakable"
+      }
+    },
+    "Light": {
+      "Color": "#d23"
+    },
+    "Particles": [
+      {
+        "SystemId": "Dungeon_Goblin_Void_Rift",
+        "Color": "#c8203c",
+        "PositionOffset": {
+          "X": 0,
+          "Y": 1.5,
+          "Z": 0
+        }
+      }
+    ],
+    "BlockEntity": {
+      "Components": {
+        "BlockMapMarker": {
+          "Name": "nakasar_breach.name",
+          "Icon": "Nakasar_HunterBreach.png",
+          "CompassIcon": "Nakasar_HunterBreachCompass.png"
+        }
+      }
+    }
+  }
+}

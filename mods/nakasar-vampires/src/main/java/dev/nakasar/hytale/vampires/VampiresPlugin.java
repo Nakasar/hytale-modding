@@ -1,10 +1,14 @@
 package dev.nakasar.hytale.vampires;
 
+import com.hypixel.hytale.builtin.adventure.worldevents.WorldEventsPlugin;
 import com.hypixel.hytale.server.core.modules.interaction.interaction.config.Interaction;
 import com.hypixel.hytale.server.core.plugin.JavaPlugin;
 import com.hypixel.hytale.server.core.plugin.JavaPluginInit;
 import dev.nakasar.hytale.vampires.allegiance.AllegianceAttitudeSystem;
 import dev.nakasar.hytale.vampires.allegiance.AllegianceDamageFilter;
+import dev.nakasar.hytale.vampires.breach.BreachHunterCleanupSystem;
+import dev.nakasar.hytale.vampires.breach.HunterBreachStarter;
+import dev.nakasar.hytale.vampires.breach.NightCondition;
 import dev.nakasar.hytale.vampires.domination.DominateInteraction;
 import dev.nakasar.hytale.vampires.domination.DominatePlayerInteraction;
 import dev.nakasar.hytale.vampires.domination.DominationExpirySystem;
@@ -54,7 +58,10 @@ import dev.nakasar.hytale.vampires.silver.TakeArrowInteraction;
  *   <li>{@link SilverDamageSystem} et {@link SilverProjectileSystems} : les armes en argent (et leurs projectiles)
  *       infligent le double de dégâts aux vampires ;</li>
  *   <li>{@link PurifyingFireSystem} et {@link PurifyingSteeringSystem} : les morts-vivants évitent les torches et
- *       lanternes de feu purificateur du camp des chasseurs.</li>
+ *       lanternes de feu purificateur du camp des chasseurs ;</li>
+ *   <li>la brèche des chasseurs ({@link HunterBreachStarter}, {@link NightCondition},
+ *       {@link BreachHunterCleanupSystem}) : la nuit, toutes les demi-heures, un campement de chasseurs de vampires
+ *       s'ouvre près d'un joueur du monde principal, annoncé dans le chat et sur la carte.</li>
  * </ul>
  */
 public final class VampiresPlugin extends JavaPlugin {
@@ -108,7 +115,12 @@ public final class VampiresPlugin extends JavaPlugin {
         systems.registerSystem(new PurifyingFireSystem(purifyingFires));
         systems.registerSystem(new PurifyingSteeringSystem(purifyingFires));
 
-        getLogger().atInfo().log("Nakasar Vampires : 10 types d'interaction (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s), systèmes des camps, de l'argent et du feu purificateur enregistrés",
+        // Brèche des chasseurs : évènement de monde (Server/WorldEvent) avec notre condition « nuit ».
+        WorldEventsPlugin.registerCondition(this, NightCondition.TYPE, NightCondition.CODEC, NightCondition.Config.CODEC);
+        systems.registerSystem(new HunterBreachStarter());
+        systems.registerSystem(new BreachHunterCleanupSystem());
+
+        getLogger().atInfo().log("Nakasar Vampires : 10 types d'interaction (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s), systèmes des camps, de l'argent, du feu purificateur et de la brèche des chasseurs enregistrés",
                 TeleportCasterToImpactInteraction.TYPE_ID, DominateInteraction.TYPE_ID, RootNpcInteraction.TYPE_ID,
                 DrainBeamInteraction.TYPE_ID, DominatePlayerInteraction.TYPE_ID, ImprisonPlayerInteraction.TYPE_ID,
                 RootTrapInteraction.TYPE_ID, TakeArrowInteraction.TYPE_ID, ReturnArrowInteraction.TYPE_ID,

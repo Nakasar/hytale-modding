@@ -1,0 +1,96 @@
+{
+  "$Comment": "Cherche un lieu sauvage près d'un joueur (comme la brèche gobeline) et y pose le campement : la brèche, les tentes et les marqueurs des chasseurs (entités du prefab, retirées à la fin de l'évènement). Le bloc de la brèche porte le marqueur de carte. Il doit encore faire nuit au moment de l'ouverture (condition non verrouillée). Sans lieu, ou passé la nuit, au bout de 10 min le cycle recommence.",
+  "Forks": [
+    {
+      "Conditions": [
+        {
+          "Type": "LocationCondition",
+          "LocationKey": "HunterBreachLocation",
+          "LocationType": {
+            "Type": "WildernessLocation",
+            "MinHorizontalDistance": 48,
+            "MaxHorizontalDistance": 160,
+            "MinVerticalDistance": 0,
+            "MaxVerticalDistance": 48
+          },
+          "SearchRadius": 16,
+          "Clearance": 6,
+          "Content": [
+            {
+              "Type": "PrefabSpawner",
+              "PrefabKey": "HunterBreachCamp",
+              "Prefab": {
+                "Prefabs": [
+                  {
+                    "RootDirectory": "Asset",
+                    "Path": "Nakasar/Breach/",
+                    "Recursive": true
+                  }
+                ]
+              },
+              "Mask": {
+                "Type": "BlocksOnly",
+                "Blocks": [
+                  "Soils",
+                  "Rock",
+                  "PlantScatter"
+                ]
+              },
+              "MaxHeightDelta": 4
+            }
+          ]
+        },
+        {
+          "Type": "Nakasar_NightCondition",
+          "Latch": false
+        }
+      ],
+      "Actions": [
+        {
+          "Type": "PrefabPasteAction",
+          "PrefabKey": "HunterBreachCamp",
+          "Permanent": false
+        },
+        {
+          "Type": "ShowEventTitleAction",
+          "LocationKey": "HunterBreachLocation",
+          "Radius": 200,
+          "PrimaryTitle": "nakasar_breach.title.primary",
+          "SecondaryTitle": "nakasar_breach.title.secondary",
+          "FadeInDuration": 0.5
+        },
+        {
+          "Type": "MessageAction",
+          "Message": {
+            "MessageId": "nakasar_breach.message.opened"
+          }
+        },
+        {
+          "Type": "EffectsAction",
+          "LocationKey": "HunterBreachLocation",
+          "Radius": 100,
+          "Shape": {
+            "Type": "Point",
+            "Count": 1
+          },
+          "SoundFX": {
+            "Effect": "SFX_Goblin_World_Breach_Open"
+          }
+        }
+      ],
+      "Next": "Nakasar_Hunter_Breach_Open"
+    },
+    {
+      "Conditions": [
+        {
+          "Type": "IntervalCondition",
+          "IntervalKey": "HunterBreachPlaceTimeout",
+          "MinSeconds": 600,
+          "MaxSeconds": 600,
+          "ShowOnMap": true,
+          "MapIntervalKey": "nakasar_breach.map.lookAround"
+        }
+      ]
+    }
+  ]
+}

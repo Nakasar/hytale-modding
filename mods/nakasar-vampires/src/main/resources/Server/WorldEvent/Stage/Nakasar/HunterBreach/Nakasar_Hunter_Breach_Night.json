@@ -1,0 +1,34 @@
+{
+  "$Comment": "Les brèches ne s'ouvrent que la nuit. La seconde branche ne sert qu'à afficher l'attente sur la carte (même astuce que « lookAround » chez les gobelins) ; au bout de 9 h elle relance le cycle.",
+  "Forks": [
+    {
+      "Conditions": [
+        {
+          "Type": "Nakasar_NightCondition"
+        }
+      ],
+      "Actions": [
+        {
+          "Type": "MessageAction",
+          "Message": {
+            "MessageId": "nakasar_breach.message.warning",
+            "Italic": true
+          }
+        }
+      ],
+      "Next": "Nakasar_Hunter_Breach_Warn"
+    },
+    {
+      "Conditions": [
+        {
+          "Type": "IntervalCondition",
+          "IntervalKey": "HunterBreachNightWait",
+          "MinSeconds": 32767,
+          "MaxSeconds": 32767,
+          "ShowOnMap": true,
+          "MapIntervalKey": "nakasar_breach.map.waitingNight"
+        }
+      ]
+    }
+  ]
+}
