@@ -1,10 +1,10 @@
 {
-  "$Comment": "Vrille combattante de la citrouille géante, générée par tools/generate_pumpkin_models.py : tige épineuse articulée de 2,8 blocs, sortie d'un monticule de terre, bourgeon lumineux au bout.",
-  "EyeHeight": 2.2,
+  "$Comment": "Vrille combattante de la citrouille géante, générée par tools/generate_pumpkin_models.py : tige épineuse articulée de 3 blocs sortie d'une motte de terre, épines et feuilles, fleur de citrouille au cœur lumineux.",
+  "EyeHeight": 2.5,
   "HitBox": {
     "Max": {
       "X": 0.4,
-      "Y": 2.7,
+      "Y": 2.9,
       "Z": 0.4
     },
     "Min": {
@@ -50,6 +50,125 @@
         {
           "Animation": "NPC/Nakasar/Pumpkin_Vine/Animations/Death.blockyanim",
           "Looping": false
+        }
+      ]
+    },
+    "Walk": {
+      "Animations": [
+        {
+          "Animation": "NPC/Nakasar/Pumpkin_Vine/Animations/Idle.blockyanim"
+        }
+      ]
+    },
+    "WalkBackward": {
+      "Animations": [
+        {
+          "Animation": "NPC/Nakasar/Pumpkin_Vine/Animations/Idle.blockyanim"
+        }
+      ]
+    },
+    "Run": {
+      "Animations": [
+        {
+          "Animation": "NPC/Nakasar/Pumpkin_Vine/Animations/Idle.blockyanim"
+        }
+      ]
+    },
+    "Sprint": {
+      "Animations": [
+        {
+          "Animation": "NPC/Nakasar/Pumpkin_Vine/Animations/Idle.blockyanim"
+        }
+      ]
+    },
+    "Jump": {
+      "Animations": [
+        {
+          "Animation": "NPC/Nakasar/Pumpkin_Vine/Animations/Idle.blockyanim"
+        }
+      ]
+    },
+    "JumpWalk": {
+      "Animations": [
+        {
+          "Animation": "NPC/Nakasar/Pumpkin_Vine/Animations/Idle.blockyanim"
+        }
+      ]
+    },
+    "JumpRun": {
+      "Animations": [
+        {
+          "Animation": "NPC/Nakasar/Pumpkin_Vine/Animations/Idle.blockyanim"
+        }
+      ]
+    },
+    "Fall": {
+      "Animations": [
+        {
+          "Animation": "NPC/Nakasar/Pumpkin_Vine/Animations/Idle.blockyanim"
+        }
+      ]
+    },
+    "Sleep": {
+      "Animations": [
+        {
+          "Animation": "NPC/Nakasar/Pumpkin_Vine/Animations/Idle.blockyanim"
+        }
+      ]
+    },
+    "Laydown": {
+      "Animations": [
+        {
+          "Animation": "NPC/Nakasar/Pumpkin_Vine/Animations/Idle.blockyanim"
+        }
+      ]
+    },
+    "Crouch": {
+      "Animations": [
+        {
+          "Animation": "NPC/Nakasar/Pumpkin_Vine/Animations/Idle.blockyanim"
+        }
+      ]
+    },
+    "CrouchWalk": {
+      "Animations": [
+        {
+          "Animation": "NPC/Nakasar/Pumpkin_Vine/Animations/Idle.blockyanim"
+        }
+      ]
+    },
+    "CrouchWalkBackward": {
+      "Animations": [
+        {
+          "Animation": "NPC/Nakasar/Pumpkin_Vine/Animations/Idle.blockyanim"
+        }
+      ]
+    },
+    "SwimIdle": {
+      "Animations": [
+        {
+          "Animation": "NPC/Nakasar/Pumpkin_Vine/Animations/Idle.blockyanim"
+        }
+      ]
+    },
+    "FluidIdle": {
+      "Animations": [
+        {
+          "Animation": "NPC/Nakasar/Pumpkin_Vine/Animations/Idle.blockyanim"
+        }
+      ]
+    },
+    "Alerted": {
+      "Animations": [
+        {
+          "Animation": "NPC/Nakasar/Pumpkin_Vine/Animations/Idle.blockyanim"
+        }
+      ]
+    },
+    "Wake": {
+      "Animations": [
+        {
+          "Animation": "NPC/Nakasar/Pumpkin_Vine/Animations/Idle.blockyanim"
         }
       ]
     }
