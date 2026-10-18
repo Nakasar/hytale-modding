@@ -23,10 +23,10 @@ Munitions : l'arc et l'arbalète vanilla ne consomment que Weapon_Arrow_Crude (M
 L'arc et l'arbalète en argent tirent donc les flèches en argent : on recopie les interactions vanilla qui
 retirent ou rendent une flèche, avec l'id de la flèche en argent.
 """
+import argparse
 import colorsys
 import io
 import json
-import sys
 import zipfile
 from pathlib import Path
 
@@ -166,10 +166,12 @@ def write_json(path, data):
 
 
 def main():
-    if len(sys.argv) < 2:
-        sys.exit(__doc__)
-    assets = zipfile.ZipFile(sys.argv[1])
-    preview = sys.argv[sys.argv.index("--preview") + 1] if "--preview" in sys.argv else None
+    parser = argparse.ArgumentParser(description="Génère les armes en argent du mod Vampires.")
+    parser.add_argument("assets", help="Assets.zip du jeu")
+    parser.add_argument("--preview", help="planche PNG des icônes vanilla et en argent")
+    args = parser.parse_args()
+    assets = zipfile.ZipFile(args.assets)
+    preview = args.preview
 
     def vanilla_json(path):
         return json.loads(assets.read("Server/" + path))

@@ -51,11 +51,14 @@ public final class Allegiances {
 
     /** Vrai si les deux entités sont des PNJ du groupe {@value #FACTION_GROUP}. */
     public static boolean bothInFaction(Ref<EntityStore> a, Ref<EntityStore> b, ComponentAccessor<EntityStore> accessor) {
-        int group = NPCGroup.getAssetMap().getIndexOrDefault(FACTION_GROUP, Integer.MIN_VALUE);
-        return group != Integer.MIN_VALUE
-                && isNpc(a, accessor) && isNpc(b, accessor)
-                && WorldSupport.isGroupMember(Integer.MIN_VALUE, a, group, accessor)
-                && WorldSupport.isGroupMember(Integer.MIN_VALUE, b, group, accessor);
+        return inGroup(a, FACTION_GROUP, accessor) && inGroup(b, FACTION_GROUP, accessor);
+    }
+
+    /** Vrai si l'entité est un PNJ du groupe de PNJ {@code groupId} (faux si le groupe n'est pas chargé). */
+    public static boolean inGroup(Ref<EntityStore> ref, String groupId, ComponentAccessor<EntityStore> accessor) {
+        int group = NPCGroup.getAssetMap().getIndexOrDefault(groupId, Integer.MIN_VALUE);
+        return group != Integer.MIN_VALUE && isNpc(ref, accessor)
+                && WorldSupport.isGroupMember(Integer.MIN_VALUE, ref, group, accessor);
     }
 
     /** Vrai si les deux PNJ étaient alliés, domination mise à part. */

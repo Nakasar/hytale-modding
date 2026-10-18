@@ -146,10 +146,17 @@ textures dans `Common/Items/Weapons/Nakasar/Silver/`, icônes dans `Common/Icons
 | `Weapon_Nakasar_Blunderbuss_Silver` | `Weapon_Gun_Blunderbuss` | Arcs |
 | `Weapon_Nakasar_Arrow_Silver` | `Weapon_Arrow_Iron` | Arcs |
 
-- **Dégâts** : `silver/SilverDamageSystem` (groupe de filtrage des dégâts, avant les réductions d'armure et de garde)
-  double les dégâts quand l'attaquant tient une arme taguée `Material: Silver` et que la victime est un PNJ du groupe
-  `Nakasar_Vampires`. Pour un projectile, l'attaquant est le tireur (`Damage.ProjectileSource`). Les PNJ comptent
-  aussi : un chasseur qui tient une arme en argent double ses dégâts. L'épée en acier argenté vanilla compte.
+- **Dégâts** : `silver/SilverDamageSystem` (groupe de filtrage des dégâts, après `AllegianceDamageFilter`, avant les
+  réductions d'armure et de garde) double les dégâts faits à un PNJ du groupe `Nakasar_Vampires` :
+  - coup direct : l'attaquant tient une arme taguée `Material: Silver` (`SilverWeapons.isSilver`) et le coup vient d'une
+    attaque d'arme. Les sorts de runes (`Ability2`, `Ability3`) et les dégâts sans interaction (effets) ne comptent pas ;
+  - projectile : il a été marqué au tir par `SilverProjectileSystems` (arme en argent en main au départ du tir :
+    `ProjectileLaunchEvent` pour l'arc et l'arbalète, création de l'entité `ProjectileComponent` pour les flèches et
+    lances lancées et le tromblon). L'arme tenue à l'impact ne compte pas. Limite : la dernière flèche ou lance de jet
+    lancée peut ne pas être marquée, la main étant vide quand le projectile apparaît.
+
+  Les PNJ comptent aussi (ils ont une barre d'objets, `NPCSystems.OnNPCAdded`) : un chasseur qui tient une arme en
+  argent double ses dégâts. L'épée en acier argenté vanilla compte.
 - **Héritage** : seules l'apparence, la recette, la qualité et les tags changent. La recette est dans l'objet parce
   qu'un objet hérite de celle de son parent. Une table `Interactions` déclarée remplace celle du parent (des objets
   vanilla écrivent `"Interactions": {}` pour vider la leur) : l'arc et l'arbalète en argent écrivent donc leurs

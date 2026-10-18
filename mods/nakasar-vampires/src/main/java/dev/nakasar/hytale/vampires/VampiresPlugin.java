@@ -14,6 +14,8 @@ import dev.nakasar.hytale.vampires.rune.DrainBeamInteraction;
 import dev.nakasar.hytale.vampires.rune.RootNpcInteraction;
 import dev.nakasar.hytale.vampires.rune.TeleportCasterToImpactInteraction;
 import dev.nakasar.hytale.vampires.silver.SilverDamageSystem;
+import dev.nakasar.hytale.vampires.silver.SilverProjectileSystems;
+import dev.nakasar.hytale.vampires.silver.SilverWeapons;
 
 /**
  * Point d'entrée du mod "Vampires".
@@ -33,7 +35,8 @@ import dev.nakasar.hytale.vampires.silver.SilverDamageSystem;
  *   <li>{@code Nakasar_ImprisonPlayer} : téléporte le joueur visé dans la cellule la plus proche du Capitaine ;</li>
  *   <li>les camps ({@link AllegianceAttitudeSystem}, {@link AllegianceDamageFilter},
  *       {@link DominationExpirySystem}) : les mobs du fragment sont alliés, la Domination retourne leur allégeance ;</li>
- *   <li>{@link SilverDamageSystem} : les armes en argent infligent le double de dégâts aux vampires.</li>
+ *   <li>{@link SilverDamageSystem} et {@link SilverProjectileSystems} : les armes en argent (et leurs projectiles)
+ *       infligent le double de dégâts aux vampires.</li>
  * </ul>
  */
 public final class VampiresPlugin extends JavaPlugin {
@@ -69,9 +72,11 @@ public final class VampiresPlugin extends JavaPlugin {
         systems.registerSystem(new AllegianceAttitudeSystem());
         systems.registerSystem(new AllegianceDamageFilter());
         systems.registerSystem(new DominationExpirySystem());
+        systems.registerSystem(new SilverProjectileSystems.Launch());
+        systems.registerSystem(new SilverProjectileSystems.Legacy());
         systems.registerSystem(new SilverDamageSystem());
 
-        getLogger().atInfo().log("Nakasar Vampires : 6 types d'interaction (%s, %s, %s, %s, %s, %s) systèmes des camps et de l'argent enregistrés",
+        getLogger().atInfo().log("Nakasar Vampires : 6 types d'interaction (%s, %s, %s, %s, %s, %s), systèmes des camps et de l'argent enregistrés",
                 TeleportCasterToImpactInteraction.TYPE_ID, DominateInteraction.TYPE_ID, RootNpcInteraction.TYPE_ID,
                 DrainBeamInteraction.TYPE_ID, DominatePlayerInteraction.TYPE_ID, ImprisonPlayerInteraction.TYPE_ID);
     }
@@ -80,5 +85,6 @@ public final class VampiresPlugin extends JavaPlugin {
     protected void shutdown() {
         RootNpcInteraction.clearAll();
         Dominations.clearAll();
+        SilverWeapons.clearAll();
     }
 }
