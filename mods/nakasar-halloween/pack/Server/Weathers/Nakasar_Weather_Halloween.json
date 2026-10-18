@@ -108,7 +108,7 @@
   "SunlightColors": [
     {
       "Hour": 0,
-      "Color": "#3a2a6a"
+      "Color": "#4c3a84"
     },
     {
       "Hour": 6,
@@ -124,7 +124,7 @@
     },
     {
       "Hour": 21,
-      "Color": "#4a2a6a"
+      "Color": "#5a3a80"
     }
   ],
   "SunColors": [

@@ -9,14 +9,16 @@ motifs répétés (localisateur de surface, rotations aléatoires) et garde les 
 Hytale Node Editor.
 
 Principe :
-- Forme : une île flottante circulaire au-dessus du vide, comme les fragments d'Orbis du jeu de
-  base (rayon ISLAND_RADIUS). Le dessus descend en pente douce près du bord, le dessous forme un
-  cône rocheux irrégulier ; au-delà du rayon, tout est vide.
-- Terrain : collines douces (bruit simplex) autour d'une hauteur de base. Le relief est aplani
-  près des structures, du point d'apparition et du château du comte pour que les prefabs reposent
-  à plat.
-- Matériaux : herbe brûlée, terre brûlée puis pierre (et un peu d'ardoise).
-- Props, par étapes : 0 = grandes structures, 1 = arbres morts et petits décors, 2 = végétation.
+- Forme : une île flottante au-dessus du vide, comme les fragments d'Orbis du jeu de base (rayon
+  ISLAND_RADIUS). Le dessus s'abaisse un peu près du bord puis finit en falaise ; le contour est
+  dentelé par du bruit et le dessous forme un cône rocheux irrégulier. Au-delà, tout est vide.
+- Terrain : collines (deux bruits simplex, jusqu'à une quinzaine de blocs de dénivelé) autour d'une
+  hauteur de base. Le relief n'est aplani que sous les structures, le point d'apparition et le
+  château du comte, pour que les prefabs reposent à plat.
+- Matériaux : herbe brûlée en surface, avec des plaques de cendre, de terre brûlée et de gravier
+  moussu (bruit), puis terre, gravier et pierre (et un peu d'ardoise et de schiste).
+- Props, par étapes : 0 = grandes structures, 1 = arbres morts et petits décors (affleurements,
+  cercles de champignons, autels, troncs couchés...), 2 = végétation et champignons luisants.
 - Environnement : « hanté » à proximité des structures (plus de morts-vivants), « lande » ailleurs.
 """
 
@@ -39,8 +41,11 @@ DRACULA = (0, GROUND_Y, -110)
 # Île : rayon total, début de la pente du bord, et rayon max du centre d'une grande structure
 # (la plus grande fait 41 × 41, le château du comte 49 × 49 : elles restent sur le plat).
 ISLAND_RADIUS = 170.0
-EDGE_START = 140.0
+EDGE_START = 148.0
 STRUCTURE_MAX_RADIUS = 116.0
+# Taille de la maille des grandes structures (une par cellule) : plus elle est grande, plus il reste
+# de collines entre elles.
+STRUCTURE_MESH = 66.0
 # Distance minimale entre le centre d'une grande structure et le point d'apparition / le château.
 SPAWN_CLEARANCE = 45.0
 DRACULA_CLEARANCE = 64.0
@@ -51,7 +56,8 @@ PREFABS = "Nakasar/Halloween"
 # château du comte, 41 × 41, plus la portée des branches).
 STRUCTURE_CLEARANCE = 34.0
 AIR = {"Solid": "Empty"}
-SURFACE_BLOCKS = ["Soil_Grass_Burnt", "Soil_Grass_Burnt_Full", "Soil_Dirt_Burnt"]
+SURFACE_BLOCKS = ["Soil_Grass_Burnt", "Soil_Dirt_Burnt", "Soil_Ash", "Soil_Gravel_Mossy"]
+PUMPKIN_RIPE = "*Plant_Crop_Pumpkin_Block_State_Definitions_StageFinal"
 
 
 # --- briques de nœuds -------------------------------------------------------------------------
@@ -116,6 +122,15 @@ def weighted_material(seed, *entries):
         "Seed": seed,
         "SkipChance": 0.0,
         "WeightedMaterials": [{"Weight": w, "Material": material(name)} for name, w in entries],
+    }
+
+
+def field_material(field, *bands):
+    """Matériau choisi selon la valeur d'un champ (bruit) : bandes (de, à, fournisseur)."""
+    return {
+        "Type": "FieldFunction",
+        "FieldFunction": field,
+        "Delimiters": [{"From": a, "To": b, "Material": m} for a, b, m in bands],
     }
 
 
@@ -196,42 +211,48 @@ def biome():
     landmarks["ExportAs"] = LANDMARKS_EXPORT
 
     # Grandes structures aléatoires sur le plat de l'île, à l'écart du point d'apparition et du
-    # château. Jitter 0,15 : chaque point bouge d'au plus 0,15 × 60 = 9 blocs, donc deux structures
-    # restent à plus de 42 blocs l'une de l'autre (la plus grande en fait 41).
+    # château. Jitter 0,15 : chaque point bouge d'au plus 0,15 × 66 ≈ 10 blocs, donc deux structures
+    # restent à plus de 46 blocs l'une de l'autre (la plus grande en fait 41).
     far = lambda point, d: distance_to(list_positions(point), d + 1.0, curve((0, 0), (d + 1.0, d + 1.0)))
     structure_positions = within(
         radial(curve((0, 0), (ISLAND_RADIUS, ISLAND_RADIUS))), 0.0, STRUCTURE_MAX_RADIUS,
         within(far(SPAWN, SPAWN_CLEARANCE), SPAWN_CLEARANCE, 1.0e9,
                within(far(DRACULA, DRACULA_CLEARANCE), DRACULA_CLEARANCE, 1.0e9,
-                      mesh(60.0, 0.15, "Structures"))))
+                      mesh(STRUCTURE_MESH, 0.15, "Structures"))))
     structure_positions["ExportAs"] = STRUCTURES_EXPORT
 
-    # Relief : 1 près d'une structure (sol plat), 1 au loin (collines).
+    # Relief : 0 sous une structure (sol plat), 1 au-delà de 40 blocs de son centre (collines). La
+    # plus grande structure (château du comte, 41 × 41) tient dans un rayon de 22 blocs ; au-delà,
+    # le sol remonte ou descend progressivement autour d'elle.
     relief = distance_to(
         {"Type": "Union", "Positions": [imported(STRUCTURES_EXPORT), imported(LANDMARKS_EXPORT)]},
-        52.0,
-        curve((0, 0), (30, 0), (50, 1)),
+        42.0,
+        curve((0, 0), (24, 0), (40, 1)),
     )
     hills = add(
-        mul(simplex2d(140.0, 3, "Hills"), const(1.0)),
-        mul(simplex2d(32.0, 2, "Bumps"), const(0.3)),
+        mul(simplex2d(110.0, 3, "Hills"), const(1.5)),
+        mul(simplex2d(26.0, 2, "Bumps"), const(0.45)),
     )
-    # Dessus de l'île (positif sous le sol) : le sol s'abaisse de 24 blocs entre EDGE_START et le bord.
+    # Dessus de l'île (positif sous le sol) : le sol s'abaisse de 8 blocs entre EDGE_START et le bord,
+    # où le dessous coupe le terrain en falaise.
     top = add(
         mul({"Type": "YValue"}, const(-0.125)),
         const((GROUND_Y - 0.5) / 8.0),
         mul(hills, relief),
-        radial(curve((0, 0), (EDGE_START, 0), (ISLAND_RADIUS, -3.0))),
+        radial(curve((0, 0), (EDGE_START, 0), (ISLAND_RADIUS, -1.0))),
     )
     # Dessous de l'île (positif au-dessus du fond) : un cône dont le fond remonte vers le bord,
     # bosselé par du bruit ; au-delà du rayon, le fond passe très haut et tout devient du vide.
-    bottom_depth = [(0, 64), (0.4, 52), (0.7, 32), (0.9, 16), (1.0, 8)]
+    bottom_depth = [(0, 64), (0.4, 52), (0.7, 38), (0.88, 28), (0.97, 18), (1.0, 12)]
     bottom_curve = [(f * ISLAND_RADIUS, d / 8.0 - GROUND_Y / 8.0) for f, d in bottom_depth]
     bottom_curve.append((ISLAND_RADIUS + 1.0, -(GROUND_Y + 200) / 8.0))
+    # Le contour est dentelé : près du bord, un bruit à grande échelle avance ou recule la falaise.
+    rim = mul(simplex2d(46.0, 2, "Rim"), radial(curve((0, 0), (ISLAND_RADIUS - 40.0, 0), (ISLAND_RADIUS - 5.0, 1.8))))
     bottom = add(
         mul({"Type": "YValue"}, const(0.125)),
         radial(curve(*bottom_curve)),
         mul(simplex2d(22.0, 2, "Underside"), const(0.8)),
+        rim,
     )
     terrain_density = {"Type": "Min", "Inputs": [top, bottom]}
 
@@ -245,13 +266,18 @@ def biome():
                     "LayerContext": "DepthIntoFloor",
                     "MaxExpectedDepth": 5,
                     "Layers": [
-                        {"Type": "ConstantThickness", "Thickness": 1, "Material": weighted_material(
-                            "Surface", ("Soil_Grass_Burnt", 8), ("Soil_Grass_Burnt_Full", 2), ("Soil_Dirt_Burnt", 1))},
+                        {"Type": "ConstantThickness", "Thickness": 1, "Material": field_material(
+                            simplex2d(23.0, 2, "Patches"),
+                            (-10.0, -0.5, material("Soil_Ash")),
+                            (-0.5, 0.35, weighted_material("Surface", ("Soil_Grass_Burnt", 12), ("Soil_Dirt_Burnt", 1))),
+                            (0.35, 0.6, material("Soil_Dirt_Burnt")),
+                            (0.6, 10.0, weighted_material("Gravel", ("Soil_Gravel_Mossy", 3), ("Soil_Gravel", 1))),
+                        )},
                         {"Type": "ConstantThickness", "Thickness": 4, "Material": weighted_material(
                             "Subsoil", ("Soil_Dirt_Burnt", 3), ("Soil_Dirt", 2), ("Soil_Gravel", 1))},
                     ],
                 },
-                weighted_material("Bedrock", ("Rock_Stone", 6), ("Rock_Slate", 2), ("Rock_Shale", 1)),
+                weighted_material("Bedrock", ("Rock_Stone", 6), ("Rock_Stone_Mossy", 1), ("Rock_Slate", 2), ("Rock_Shale", 1)),
             ],
         },
         "Empty": {"Type": "Constant", "Material": AIR},
@@ -292,11 +318,15 @@ def biome():
     trees = runtime(1, "Chunk", on_island(outside_structures(mesh(13.0, 0.45, "Trees"))), weighted_assignments("TreePick", 0.35, [
         (small("Trees", "Tree"), 1.0),
     ]))
-    decor = runtime(1, "Chunk", on_island(outside_structures(mesh(29.0, 0.45, "Decor"))), weighted_assignments("DecorPick", 0.3, [
-        (small("Decor/BonePiles", "Bones"), 2.0),
-        (small("Decor/Graves", "Grave"), 2.0),
-        (small("Decor/SpiderNests", "Nest"), 1.5),
-        (small("Decor/PumpkinPatches", "Pumpkins"), 2.0),
+    decor = runtime(1, "Chunk", on_island(outside_structures(mesh(21.0, 0.45, "Decor"))), weighted_assignments("DecorPick", 0.25, [
+        (small("Decor/Outcrops", "Outcrop"), 2.5),
+        (small("Decor/FallenLogs", "Log"), 1.5),
+        (small("Decor/MushroomRings", "Ring"), 1.2),
+        (small("Decor/BonePiles", "Bones"), 1.5),
+        (small("Decor/Graves", "Grave"), 1.5),
+        (small("Decor/SpiderNests", "Nest"), 1.0),
+        (small("Decor/PumpkinPatches", "Pumpkins"), 1.5),
+        (small("Decor/Shrines", "Shrine"), 0.8),
     ]))
 
     def plant(name):
@@ -310,8 +340,13 @@ def biome():
         (plant("Plant_Bush_Dead_Tall"), 0.7),
         (plant("Plant_Bush_Dead_Twisted"), 0.4),
         (plant("Plant_Bramble_Dead_Twisted"), 0.3),
-        (plant("Plant_Leaves_Dead"), 1.0),
-        (plant("Plant_Crop_Pumpkin_StageFinal"), 0.15),
+        (plant("Plant_Leaves_Dead"), 0.6),
+        (plant("Wood_Gnarled_Roots"), 0.5),
+        (plant("Plant_Crop_Mushroom_Glowing_Purple"), 0.2),
+        (plant("Plant_Crop_Mushroom_Glowing_Violet"), 0.12),
+        (plant("Plant_Crop_Mushroom_Glowing_Green"), 0.08),
+        (plant(PUMPKIN_RIPE), 0.1),
+        (plant("Deco_Halloween_Pumpkin_Scary"), 0.04),
     ]))
 
     environment = {

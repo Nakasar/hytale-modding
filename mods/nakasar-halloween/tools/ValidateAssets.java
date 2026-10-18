@@ -281,6 +281,52 @@ public class ValidateAssets {
         }
     }
 
+    private static final Pattern PREFAB_BLOCK = Pattern.compile("\"name\":\"(?:\\d+%)?([^\"]+)\"");
+    private static final Pattern WORLDGEN_BLOCK = Pattern.compile("\"Solid\"\\s*:\\s*\"([^\"]+)\"");
+
+    /**
+     * Un id de bloc inconnu dans un prefab ou un matériau du générateur ne fait aucune erreur au
+     * chargement : le serveur pose le bloc « Unknown » (damier rose et noir). On compare donc chaque
+     * id à la liste des blocs vanilla (-Dblocks=fichier, une ligne par id, états compris sous la forme
+     * « *Bloc_State_Definitions_État ») ; nos propres blocs commencent par Nakasar_.
+     */
+    private static int checkBlockIds(Path root, Path idsFile) throws Exception {
+        java.util.Set<String> known = new java.util.HashSet<>();
+        for (String line : Files.readAllLines(idsFile)) {
+            line = line.strip();
+            if (!line.isEmpty() && !line.startsWith("#")) {
+                known.add(line);
+            }
+        }
+        known.add("Empty");
+        List<Path> files;
+        try (Stream<Path> walk = Files.walk(root)) {
+            files = walk.filter(p -> p.toString().endsWith(".prefab.json")
+                            || p.toString().endsWith(".json") && root.relativize(p).toString().replace('\\', '/').startsWith("HytaleGenerator/"))
+                    .sorted()
+                    .toList();
+        }
+        int errors = 0;
+        for (Path file : files) {
+            Pattern pattern = file.toString().endsWith(".prefab.json") ? PREFAB_BLOCK : WORLDGEN_BLOCK;
+            Matcher matcher = pattern.matcher(Files.readString(file));
+            java.util.Set<String> unknown = new java.util.TreeSet<>();
+            while (matcher.find()) {
+                String id = matcher.group(1);
+                if (!known.contains(id) && !id.startsWith("Nakasar_")) {
+                    unknown.add(id);
+                }
+            }
+            if (!unknown.isEmpty()) {
+                errors++;
+                System.out.println("ERROR " + root.relativize(file).toString().replace('\\', '/'));
+                unknown.forEach(id -> System.out.println("      bloc inconnu (damier rose en jeu) : " + id));
+            }
+        }
+        System.out.println(files.size() + " prefabs et fichiers du générateur vérifiés (ids de blocs), " + errors + " en erreur");
+        return errors;
+    }
+
     private static final Pattern PREFAB_PATH = Pattern.compile("\"Path\"\\s*:\\s*\"([^\"]+)\"");
 
     /**
@@ -498,6 +544,10 @@ public class ValidateAssets {
             }
         }
         System.out.println(checked + " fichiers vérifiés, " + errors + " en erreur");
+        String blocks = System.getProperty("blocks");
+        if (blocks != null) {
+            errors += checkBlockIds(root, Path.of(blocks));
+        }
         System.exit(errors == 0 ? 0 : 1);
     }
 }

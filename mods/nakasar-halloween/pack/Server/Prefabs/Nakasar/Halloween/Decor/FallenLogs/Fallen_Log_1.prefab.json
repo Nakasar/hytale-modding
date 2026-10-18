@@ -1,0 +1,19 @@
+{
+  "version": 8,
+  "blockIdVersion": 8,
+  "anchorX": 0,
+  "anchorY": 0,
+  "anchorZ": 0,
+  "blocks": [
+    {"x":-3,"y":0,"z":-1,"name":"Plant_Bramble_Dead_Twisted"},
+    {"x":-1,"y":0,"z":-1,"name":"Plant_Grass_Gnarled"},
+    {"x":-2,"y":0,"z":0,"name":"Wood_Burnt_Trunk","rotation":5},
+    {"x":-1,"y":0,"z":0,"name":"Wood_Burnt_Trunk","rotation":5},
+    {"x":0,"y":0,"z":0,"name":"Wood_Burnt_Trunk","rotation":5},
+    {"x":1,"y":0,"z":0,"name":"Wood_Burnt_Trunk","rotation":5},
+    {"x":2,"y":0,"z":0,"name":"Wood_Burnt_Trunk","rotation":5},
+    {"x":3,"y":0,"z":0,"name":"Wood_Gnarled_Roots"},
+    {"x":2,"y":0,"z":1,"name":"Plant_Grass_Gnarled"},
+    {"x":-1,"y":1,"z":0,"name":"Plant_Grass_Gnarled_Short"}
+  ]
+}
