@@ -1,0 +1,10 @@
+{
+  "$Comment": "Boule de poison orange : le crachat du Scarak éclaireur, dans un nuage de spores orange.",
+  "Parent": "Scarak_Seeker_Spitball",
+  "Particles": [
+    {
+      "SystemId": "Dungeon_Goblin_Spores_Orange",
+      "Scale": 0.35
+    }
+  ]
+}

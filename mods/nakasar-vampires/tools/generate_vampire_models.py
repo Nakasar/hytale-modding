@@ -7,7 +7,7 @@ Génère les pièces de modèle propres aux vampires et les icônes d'effets :
 - Common/NPC/Nakasar/Vampire/Collar_Countess.blockymodel : col Médicis plus large et plus ouvert, pendentif rubis.
 - Common/NPC/Nakasar/Vampire/Collar_Texture.png : texture commune des deux cols.
 - Common/UI/StatusEffects/Nakasar/*.png : icônes des effets (Domination du comte, toucher glacial du fantôme,
-  Emprisonnement du Capitaine de la garde),
+  Emprisonnement du Capitaine de la garde, vrilles de la citrouille géante),
   et dans le mod Runes celles de la rune de Domination et des Chaînes spectrales.
 
 Les cols sont des pièces attachées à l'os « Chest » du squelette du joueur (Player) : elles suivent
@@ -232,6 +232,15 @@ def draw_imprisoned(d, s):
     d.rectangle((26, s - 48, s - 26, s - 40), fill=(120, 128, 140, 255))
 
 
+def draw_tendrils(d, s):
+    # Vrilles vertes enroulées autour d'une cheville, sur fond de terre (piège de la citrouille géante).
+    d.ellipse((6, 6, s - 6, s - 6), fill=(42, 26, 10, 235), outline=(255, 138, 28, 255), width=6)
+    for k, x in enumerate((40, 64, 88)):
+        pts = [(x + math.sin(y / 9 + k) * 10, y) for y in range(s - 24, 22, -4)]
+        d.line(pts, fill=(96, 168, 52, 255), width=9)
+    d.rectangle((26, 58, s - 26, 70), fill=(60, 110, 32, 255))
+
+
 def write_json(path, data):
     path.parent.mkdir(parents=True, exist_ok=True)
     path.write_text(json.dumps(data, indent=2) + "\n", encoding="utf-8")
@@ -245,6 +254,7 @@ def main():
         MOBS_COMMON / "UI/StatusEffects/Nakasar/Count_Domination.png": draw_domination,
         MOBS_COMMON / "UI/StatusEffects/Nakasar/Ghost_Chill.png": draw_chill,
         MOBS_COMMON / "UI/StatusEffects/Nakasar/Imprisoned.png": draw_imprisoned,
+        MOBS_COMMON / "UI/StatusEffects/Nakasar/Tendril_Rooted.png": draw_tendrils,
         RUNES_COMMON / "UI/StatusEffects/Nakasar/Dominated.png": draw_domination,
         RUNES_COMMON / "UI/StatusEffects/Nakasar/Spectral_Chains.png": draw_chains,
     }

@@ -1,9 +1,10 @@
 {
-  "$Comment": "Tous les mobs du fragment Halloween (ceux du mod et les mobs vanilla de ses apparitions) : alliés entre eux, ils ne s'attaquent pas et ne se blessent pas. Sous l'effet de la Domination, un membre change de camp et ses anciens alliés deviennent ses ennemis (dev.nakasar.hytale.vampires.allegiance). Un id vanilla absent du jeu est seulement signalé dans le journal.",
+  "$Comment": "Tous les mobs du fragment Halloween (ceux du mod et les mobs vanilla de ses apparitions) : alliés entre eux, ils ne s'attaquent pas et ne se blessent pas. Ennemis jurés des chasseurs de vampires (Nakasar_Vampire_Hunters). Sous l'effet de la Domination, un membre change de camp et ses anciens alliés deviennent ses ennemis (dev.nakasar.hytale.vampires.allegiance). Un id vanilla absent du jeu est seulement signalé dans le journal.",
   "IncludeGroups": [
     "Nakasar_Vampires",
     "Nakasar_Domain_Undead",
-    "Nakasar_Ghosts"
+    "Nakasar_Ghosts",
+    "Nakasar_Pumpkin_Patch"
   ],
   "IncludeRoles": [
     "Skeleton",

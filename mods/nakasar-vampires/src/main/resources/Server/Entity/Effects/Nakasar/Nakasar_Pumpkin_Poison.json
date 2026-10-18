@@ -1,0 +1,25 @@
+{
+  "$Comment": "Poison orange craché par la citrouille géante : 4 dégâts de poison par seconde pendant 6 s, teinte orange.",
+  "Parent": "Poison",
+  "ApplicationEffects": {
+    "EntityBottomTint": "#2a0f00",
+    "EntityTopTint": "#ff7a00",
+    "EntityAnimationId": "Hurt",
+    "WorldSoundEventId": "SFX_Effect_Poison_World",
+    "LocalSoundEventId": "SFX_Effect_Poison_Local",
+    "Particles": [
+      {
+        "SystemId": "Dungeon_Goblin_Spores_Orange",
+        "Scale": 0.4
+      }
+    ]
+  },
+  "DamageCalculatorCooldown": 1,
+  "DamageCalculator": {
+    "BaseDamage": {
+      "Poison": 4
+    }
+  },
+  "OverlapBehavior": "Overwrite",
+  "Duration": 6
+}

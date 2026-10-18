@@ -124,6 +124,8 @@ Mobs (le manoir du comte, dans le fragment, contient déjà le Comte ou la Comte
 /npc spawn Nakasar_Zombie_Villager   # villageois zombifié (aussi _Zombie_Farmer, _Zombie_Rebel, _Skeleton_Guard)
 /npc spawn Nakasar_Zombie_Abomination  # élite des fermes : écrasement annoncé
 /npc spawn Nakasar_Guard_Captain     # élite du poste de garde : fendant, tourbillon, emprisonnement
+/npc spawn Nakasar_Giant_Pumpkin     # élite du champ de citrouilles : vrilles, épines, poison, piège annoncé
+/npc spawn Nakasar_Vampire_Hunter_Crossbow  # chasseurs de vampires (aussi _Gunner, _Blade) : neutres, ennemis des mobs du fragment
 /give Nakasar_Prison_Cell            # bloc invisible : cellule où le capitaine envoie le joueur
 /give Nakasar_Spawner_Vampire_Count  # bloc invisible qui fait (ré)apparaître le comte là où il est posé
 ```

@@ -1,0 +1,17 @@
+{
+  "$Comment": "Carreau d'arbalète du chasseur de vampires.",
+  "Type": "Simple",
+  "RunTime": 0.8,
+  "Effects": {
+    "ItemPlayerAnimationsId": "Crossbow",
+    "ItemAnimationId": "Shoot"
+  },
+  "Next": {
+    "Type": "LaunchProjectile",
+    "RunTime": 0.3,
+    "ProjectileId": "Nakasar_Hunter_Bolt",
+    "Tags": {
+      "AimingReference": []
+    }
+  }
+}
