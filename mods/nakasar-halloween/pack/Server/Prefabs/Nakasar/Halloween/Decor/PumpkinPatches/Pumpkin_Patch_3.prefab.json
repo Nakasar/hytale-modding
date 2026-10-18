@@ -5,8 +5,28 @@
   "anchorY": 0,
   "anchorZ": 0,
   "blocks": [
-    {"x":-2,"y":0,"z":-1,"name":"Plant_Crop_Pumpkin_StageFinal","rotation":2},
-    {"x":0,"y":0,"z":-1,"name":"Plant_Crop_Pumpkin_StageFinal","rotation":1},
-    {"x":-2,"y":0,"z":2,"name":"Plant_Crop_Pumpkin_StageFinal","rotation":1}
+    {"x":-1,"y":-1,"z":-2,"name":"Soil_Dirt_Burnt"},
+    {"x":1,"y":-1,"z":-2,"name":"Soil_Dirt_Burnt"},
+    {"x":-1,"y":-1,"z":-1,"name":"Soil_Dirt_Burnt"},
+    {"x":0,"y":-1,"z":-1,"name":"Soil_Dirt_Burnt"},
+    {"x":1,"y":-1,"z":-1,"name":"Soil_Dirt_Burnt"},
+    {"x":2,"y":-1,"z":-1,"name":"Soil_Dirt_Burnt"},
+    {"x":-2,"y":-1,"z":0,"name":"Soil_Dirt_Burnt"},
+    {"x":-1,"y":-1,"z":0,"name":"Soil_Dirt_Burnt"},
+    {"x":1,"y":-1,"z":0,"name":"Soil_Dirt_Burnt"},
+    {"x":2,"y":-1,"z":0,"name":"Soil_Dirt_Burnt"},
+    {"x":-1,"y":-1,"z":1,"name":"Soil_Dirt_Burnt"},
+    {"x":0,"y":-1,"z":1,"name":"Soil_Dirt_Burnt"},
+    {"x":2,"y":-1,"z":1,"name":"Soil_Dirt_Burnt"},
+    {"x":0,"y":-1,"z":2,"name":"Soil_Dirt_Burnt"},
+    {"x":1,"y":-1,"z":2,"name":"Soil_Dirt_Burnt"},
+    {"x":-1,"y":0,"z":-2,"name":"*Plant_Crop_Pumpkin_Block_State_Definitions_Stage3","rotation":1},
+    {"x":-1,"y":0,"z":-1,"name":"Deco_Halloween_Pumpkin_Cute","rotation":3},
+    {"x":2,"y":0,"z":-1,"name":"Deco_Halloween_Pumpkin_Scary"},
+    {"x":-1,"y":0,"z":0,"name":"*Plant_Crop_Pumpkin_Block_State_Definitions_StageFinal","rotation":1},
+    {"x":1,"y":0,"z":0,"name":"Deco_Halloween_Pumpkin_Hypixel","rotation":3},
+    {"x":-1,"y":0,"z":1,"name":"*Plant_Crop_Pumpkin_Block_State_Definitions_Stage3"},
+    {"x":0,"y":0,"z":2,"name":"*Plant_Crop_Pumpkin_Block_State_Definitions_Stage3","rotation":2},
+    {"x":1,"y":0,"z":2,"name":"*Plant_Crop_Pumpkin_Block_State_Definitions_StageFinal","rotation":3}
   ]
 }

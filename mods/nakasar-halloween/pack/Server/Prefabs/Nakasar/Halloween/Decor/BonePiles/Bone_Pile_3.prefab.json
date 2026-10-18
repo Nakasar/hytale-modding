@@ -5,9 +5,14 @@
   "anchorY": 0,
   "anchorZ": 0,
   "blocks": [
-    {"x":1,"y":0,"z":-2,"name":"Deco_Bone_Full","rotation":2},
+    {"x":1,"y":-1,"z":-2,"name":"Soil_Ash"},
+    {"x":-1,"y":-1,"z":-1,"name":"Soil_Gravel"},
+    {"x":1,"y":-1,"z":1,"name":"Soil_Gravel"},
+    {"x":1,"y":0,"z":-2,"name":"Deco_Bone_Pile","rotation":2},
+    {"x":2,"y":0,"z":-2,"name":"Plant_Crop_Mushroom_Glowing_Violet"},
     {"x":-2,"y":0,"z":0,"name":"Deco_Bone_Spine","rotation":2},
     {"x":0,"y":0,"z":0,"name":"Deco_Bone_Spike_Large"},
-    {"x":-2,"y":0,"z":2,"name":"Deco_Bone_Ribs","rotation":2}
+    {"x":1,"y":0,"z":0,"name":"Deco_Bone_Ribs","rotation":2},
+    {"x":1,"y":0,"z":2,"name":"Deco_Bone_Pile","rotation":1}
   ]
 }

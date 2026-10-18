@@ -47,12 +47,17 @@ val validateAssets = tasks.register<Exec>("validateAssets") {
     val launcher = javaToolchains.launcherFor { languageVersion.set(JavaLanguageVersion.of(25)) }
     inputs.dir("pack/Server")
     inputs.file("tools/ValidateAssets.java")
+    inputs.file("tools/vanilla-block-ids-0.7.2.txt")
     inputs.files(hytaleServer)
     val marker = layout.buildDirectory.file("validateAssets.ok")
     outputs.file(marker)
     doFirst {
         executable = launcher.get().executablePath.asFile.absolutePath
-        args("-Dstdout.encoding=UTF-8", "-cp", hytaleServer.asPath, file("tools/ValidateAssets.java").absolutePath, file("pack/Server").absolutePath)
+        // -Dblocks : ids de blocs vanilla, pour repérer dans les prefabs les blocs inconnus (damier rose en jeu).
+        args(
+            "-Dstdout.encoding=UTF-8", "-Dblocks=" + file("tools/vanilla-block-ids-0.7.2.txt").absolutePath,
+            "-cp", hytaleServer.asPath, file("tools/ValidateAssets.java").absolutePath, file("pack/Server").absolutePath,
+        )
     }
     doLast {
         marker.get().asFile.writeText("ok")

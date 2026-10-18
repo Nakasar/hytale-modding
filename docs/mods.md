@@ -126,40 +126,50 @@ Fragment d'Orbis ouvert depuis l'Ancienne passerelle vanilla (`Portal_Device`) a
 
 ### Génération (`tools/generate_worldgen.py`)
 
-- **Forme** : île flottante circulaire au-dessus du vide, comme les fragments du jeu de base. Rayon
-  `ISLAND_RADIUS` = 170 (bord réel vers 155-160 blocs du centre) : le sol descend de 24 blocs à partir
-  de 140 blocs, le dessous est un cône de roche bosselé (jusqu'à y ≈ 17 au centre). Densité du
-  terrain = `Min(dessus, dessous)`, la distance au centre venant d'un nœud `Axis` (axe Y).
-- **Terrain** : plaine vallonnée autour de y = 81 (deux bruits simplex), sol d'herbe et de terre
-  brûlées, couches de terre, gravier puis pierre / ardoise / schiste.
+- **Forme** : île flottante au-dessus du vide, comme les fragments du jeu de base. Rayon
+  `ISLAND_RADIUS` = 170 (bord réel vers 160-168 blocs du centre) : le sol s'abaisse de 8 blocs à partir
+  de 148 blocs puis finit en falaise d'une dizaine de blocs, au contour dentelé par un bruit (`Rim`) ;
+  le dessous est un cône de roche bosselé (jusqu'à y ≈ 17 au centre). Densité du terrain =
+  `Min(dessus, dessous)`, la distance au centre venant d'un nœud `Axis` (axe Y).
+- **Terrain** : collines autour de y = 81 (deux bruits simplex, sol entre y ≈ 65 et 91), herbe brûlée
+  en surface avec des plaques de cendre, de terre brûlée et de gravier moussu (matériau `FieldFunction`
+  sur un bruit), puis terre, gravier et pierre / ardoise / schiste.
 - **Aplanissement** : les positions des structures sont exportées (`ExportAs`) et réutilisées par le
-  terrain : le relief tombe à zéro dans un rayon de 30 blocs (plein relief à 50) autour de chaque structure, pour qu'elle
-  repose à plat.
-- **Structures aléatoires** : une maille de 60 blocs (jitter 0,15) tire une structure par cellule,
+  terrain : le relief tombe à zéro dans un rayon de 24 blocs (plein relief à 40) autour de chaque
+  structure, pour qu'elle repose à plat sans aplatir toute l'île.
+- **Structures aléatoires** : une maille de 66 blocs (jitter 0,15) tire une structure par cellule,
   à moins de 116 blocs du centre, à plus de 45 blocs du point d'apparition et de 64 blocs du château
   du comte (7 à 9 structures par instance d'après une simulation hors jeu). Poids : crypte 3, champ de
   citrouilles 3, château hanté 2, cimetière hanté / araignées / morts-vivants 1,5 chacun.
 - **Château du comte** : toujours à 110 blocs au nord du point d'apparition (objectif du portail).
-- **Décor** : arbres morts et pendus (maille de 13), tas d'os, tombes isolées, nids d'araignées,
-  citrouilles (maille de 29), plantes mortes et toiles (maille de 3). Arbres et décor restent à
-  moins de 150 blocs du centre pour ne pas dépasser du bord.
+- **Décor** : arbres morts et pendus, plus les arbres du jeu : calcinés, en feu, frênes morts et tordus, pétrifiés, arbre-nid d'araignées (`VANILLA_TREES`) (maille de 13) ; affleurements rocheux, troncs couchés, cercles
+  de champignons luisants, tas d'os, tombes isolées, nids d'araignées, citrouilles et autels au bord
+  du chemin (maille de 21) ; plantes mortes, racines, champignons luisants et citrouilles (maille de
+  3). Arbres et décor restent à moins de 158 blocs du centre pour ne pas dépasser du bord.
 - **Chemins des prefabs** : relatifs à `Server/Prefabs/` (`Nakasar/Halloween/Crypts`), pas à `Server/`.
 - **Environnements** : `Nakasar_Env_Halloween_Haunted` à moins de 45 blocs d'une structure (PNJ plus
   dangereux, densité plus forte), `Nakasar_Env_Halloween` ailleurs.
 
-### Prefabs (`tools/generate_prefabs.py`, 35 fichiers)
+### Prefabs (`tools/generate_prefabs.py`, 57 fichiers)
 
 | Dossier | Nombre | Contenu |
 |---------|--------|---------|
-| `Crypts` | 3 | Mausolée (pierre, ardoise, schiste) et salle funéraire enterrée : cercueils, ossements, toiles |
+| `Crypts` | 3 | Mausolée (pierre, ardoise, schiste) et salle funéraire enterrée : cercueils, braseros, ossements, cristaux, toiles |
 | `HauntedCastles` | 2 | Château en ruine 33×33 (pierre ou ardoise) : tours, courtines, donjon (table, lustre, chambre), puits |
 | `DraculaCastle` | 1 | Château du comte 41×41 en basalte : flèches, salle du trône au tapis rouge, crypte sous le donjon, roseraie de sang, pendus |
-| `Cemeteries/{Haunted,Spiders,Undead}` | 2 × 3 | Cimetière abandonné : hanté (bougies, citrouilles effrayantes, lanterne), envahi d'araignées (toiles, cocons) ou de morts-vivants (tombes ouvertes, ossements) |
-| `PumpkinFields` | 3 | Champ de citrouilles clôturé de bois mort, avec épouvantail et citrouilles-lanternes |
-| `Trees` | 8 | Arbres morts et arbres de pendus |
-| `Decor/*` | 4 × 3 | Tas d'os, tombes isolées, nids d'araignées, carrés de citrouilles |
+| `Cemeteries/{Haunted,Spiders,Undead}` | 2 × 3 | Cimetière clos (~31×33) : chapelle à clocher (bancs, autel, lustre), caveaux, portail à lanterne, muret à grille et piliers, allées pavées, tombes variées (stèles, croix, obélisques, sarcophages, tombes ouvertes), arbres morts ; hanté (bougies, citrouilles, champignons luisants), araignées (toiles, cocons) ou morts-vivants (fosses à cercueil, ossements) |
+| `PumpkinFields` | 3 | Champ de citrouilles mûres (états de culture) clôturé de bois mort : allée à lanternes, épouvantails, charrette de récolte, meules de foin, cabane, arbre de pendu |
+| `Trees` | 16 | Arbres morts en frêne, bois pétrifié ou calciné : squelette en troncs pleins comme les arbres du jeu (fût droit, pied 2×2 des grands, contreforts et racines, branches qui montent en escalier et se divisent), tubes fins au bout des rameaux, feuilles mortes de l'essence posées sur les branches, toiles et buissons pendants ; aucun bloc ne flotte (vérifié à la génération) ; 4 portent une lanterne, une cage ou une corde |
+| `Decor/*` | 7 × 3 + 5 | Affleurements rocheux (parfois des cristaux), troncs couchés, cercles de champignons luisants, autels, tas d'os, tombes isolées, nids d'araignées, carrés de citrouilles |
 
 Les ruines varient d'une instance à l'autre grâce aux préfixes de probabilité (`70%Bloc`).
+
+Blocs : tous les ids viennent de `tools/vanilla-block-ids-0.7.2.txt` ; `validateAssets` refuse un
+prefab ou un matériau de génération qui en utilise un autre (en jeu, un id inconnu devient le bloc
+« Unknown », un damier rose et noir). Un état de bloc s'écrit `*<Bloc>_State_Definitions_<État>` (clé
+générée par `StateData`), par exemple `*Plant_Crop_Pumpkin_Block_State_Definitions_StageFinal`. Les
+tubes (troncs et branches, `VariantRotation: Pipe`) prennent la rotation 0 (debout), 4 (couché
+nord-sud) ou 5 (couché est-ouest) : index `RotationTuple` = tangage × 4 + lacet.
 
 ### PNJ
 

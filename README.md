@@ -38,14 +38,16 @@ Pour tous les mods, `build` lance aussi `validateAssets` (`mods/nakasar-hallowee
 il décode chaque asset du pack (biome, structure de monde, instance, portail, objets, environnements, météo,
 spawns, modèles, effets, butins, interactions, y compris celles écrites en ligne dans `Next` ou `Parallel`)
 avec les codecs du jar serveur et signale les clés inconnues et les valeurs invalides (par exemple un
-`Parallel` à une seule branche), sans démarrer le jeu. Les ids référencés (PNJ, blocs, sons, stats,
-`PortalKey_Taiga`, `Env_Zone1_Plains`) ne sont pas vérifiés, ni les interactions de type Java de nos
-plugins et les assets qui héritent d'un parent vanilla (notés « non vérifiable hors jeu »).
+`Parallel` à une seule branche), sans démarrer le jeu. Pour le fragment Halloween, il vérifie aussi que
+chaque bloc des prefabs et du générateur existe dans `tools/vanilla-block-ids-0.7.2.txt` (un id inconnu
+devient un damier rose et noir en jeu). Les autres ids référencés (PNJ, sons, stats, `PortalKey_Taiga`,
+`Env_Zone1_Plains`) ne sont pas vérifiés, ni les interactions de type Java de nos plugins et les assets
+qui héritent d'un parent vanilla (notés « non vérifiable hors jeu »).
 
 Les prefabs et la génération du monde sont produits par des scripts (déterministes) :
 
 ```bash
-python3 mods/nakasar-halloween/tools/generate_prefabs.py    # 35 prefabs dans pack/Server/Prefabs/Nakasar/Halloween
+python3 mods/nakasar-halloween/tools/generate_prefabs.py    # 57 prefabs dans pack/Server/Prefabs/Nakasar/Halloween
 python3 mods/nakasar-halloween/tools/generate_worldgen.py   # biome + structure de monde
 ```
 
@@ -172,9 +174,18 @@ Fragment Halloween :
 - **Météo** : `Nakasar_Weather_Halloween` définit brouillard, ciel et lumière (violet / orange) mais
   pas de nuages, d'étoiles ni de texture de lune (chemins inconnus). La densité du brouillard
   (`FogDensities`, `FogDistance`) et la densité de spawn des environnements sont à régler à l'œil.
-- **Prefabs** : l'orientation par défaut des meubles (cercueils, chaises, bancs) et des escaliers n'est
-  pas connue ; les toits et escaliers sont faits de blocs pleins et de demi-dalles pour l'éviter.
-  Les châteaux et cryptes sont posés à plat grâce à un terrain aplani autour des structures.
+- **Prefabs** : l'orientation par défaut des meubles (cercueils, chaises, bancs, charrette) et des escaliers
+  n'est pas connue ; les toits et escaliers sont faits de blocs pleins et de demi-dalles pour l'éviter.
+  Les arbres morts n'utilisent plus de branche couchée : squelette en troncs pleins, tubes fins debout.
+  Seuls les troncs tombés (décor) utilisent les rotations 4 (nord-sud) et 5 (est-ouest) lues dans le
+  serveur : s'ils apparaissent debout, inverser `ALONG_Z` et `ALONG_X` dans `generate_prefabs.py`.
+- **Arbres du jeu** : le worldgen pioche surtout dans les arbres vanilla (calcinés, en feu, frênes
+  morts et tordus, pétrifiés, arbre-nid d'araignées), dossiers lus dans Assets.zip 0.7.2 et listés
+  dans `VANILLA_TREES` (`generate_worldgen.py`). Un dossier renommé par une mise à jour ne place
+  plus rien, sans erreur : vérifier cette liste après chaque mise à jour du jeu. Les châteaux et cryptes sont posés à plat grâce à un terrain aplani autour des structures.
+- **Liste des blocs** : `tools/vanilla-block-ids-0.7.2.txt` vient des fichiers du jeu publiés par
+  hytale.isaacguru.com (ids d'objets qui ont un `BlockType`, états compris). Si un bloc récent manque,
+  l'ajouter à la main ; si un bloc de la liste s'affiche en damier rose, le signaler pour l'en retirer.
 - **Temps** : l'instance démarre à 20 h, avec des jours de 5 min et des nuits de 20 min.
 
 Mobs (`mods/nakasar-mobs`, voir [docs/npc-0.7.2.md](docs/npc-0.7.2.md)) :
