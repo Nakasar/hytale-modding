@@ -1,0 +1,50 @@
+name: wiki
+
+# Construit le wiki joueur (docs/wiki, MkDocs Material) à chaque PR qui le touche, et le publie sur
+# GitHub Pages à chaque push sur main. Prérequis : Settings > Pages > Source = « GitHub Actions ».
+on:
+  push:
+    branches: ["main"]
+    paths: ["docs/wiki/**", "docs/wiki_hooks.py", "docs/requirements-wiki.txt", "mkdocs.yml",
+            "mods/nakasar-vampires/src/main/resources/Common/**", ".github/workflows/wiki.yml"]
+  pull_request:
+    paths: ["docs/wiki/**", "docs/wiki_hooks.py", "docs/requirements-wiki.txt", "mkdocs.yml",
+            "mods/nakasar-vampires/src/main/resources/Common/**", ".github/workflows/wiki.yml"]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: wiki-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+      - run: python -m pip install -r docs/requirements-wiki.txt
+      # --strict : un lien ou une ancre cassé fait échouer la construction.
+      - run: mkdocs build --strict
+      - if: github.event_name != 'pull_request'
+        uses: actions/upload-pages-artifact@v4
+        with:
+          path: build/wiki-site
+
+  deploy:
+    if: github.event_name != 'pull_request'
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4

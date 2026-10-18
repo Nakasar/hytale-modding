@@ -1,5 +1,3 @@
-[← Bestiaire](README.md) · [Accueil du wiki](../README.md)
-
 # Vrille de citrouille
 
 ![Rendu 3D du modèle : au repos et en plein coup de fouet](../images/pnj/Nakasar_Pumpkin_Vine.png)

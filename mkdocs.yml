@@ -1,0 +1,96 @@
+# Wiki joueur du mod Vampires, publié sur GitHub Pages par .github/workflows/wiki.yml.
+# Aperçu local : python3 -m pip install "mkdocs-material==9.6.*" puis mkdocs serve
+site_name: Wiki du mod Vampires
+site_description: Guide du joueur du mod Nakasar Vampires pour Hytale
+site_url: https://nakasar.github.io/hytale-modding/
+repo_url: https://github.com/Nakasar/hytale-modding
+edit_uri: edit/main/docs/wiki/
+docs_dir: docs/wiki
+site_dir: build/wiki-site
+# Les pages gardent leur nom de fichier (pnj/comte-vampire.html) : les chemins relatifs des balises
+# <img> écrites en HTML restent justes.
+use_directory_urls: false
+hooks:
+  - docs/wiki_hooks.py
+extra_css:
+  - stylesheets/extra.css
+
+theme:
+  name: material
+  language: fr
+  palette:
+    scheme: slate
+    primary: custom
+    accent: custom
+  features:
+    - navigation.tabs
+    - navigation.sections
+    - navigation.top
+    - navigation.indexes
+    - search.suggest
+    - search.highlight
+    - content.action.edit
+  icon:
+    repo: fontawesome/brands/github
+
+markdown_extensions:
+  - tables
+  - attr_list
+  - md_in_html
+  - toc:
+      permalink: true
+
+validation:
+  links:
+    not_found: warn
+    anchors: warn
+
+nav:
+  - Accueil: README.md
+  - Comté Vampire:
+      - fragment/README.md
+      - fragment/crypte-d-arrivee.md
+      - fragment/manoir-du-comte.md
+      - fragment/villages.md
+      - fragment/fermes.md
+      - fragment/postes-de-garde.md
+      - fragment/cimetieres.md
+      - fragment/cryptes.md
+      - fragment/chateaux-hantes.md
+      - fragment/champs-de-citrouilles.md
+      - fragment/camps-de-chasseurs.md
+      - fragment/decor.md
+      - fragment/butin-des-coffres.md
+  - Bestiaire:
+      - pnj/README.md
+      - Boss:
+          - pnj/comte-vampire.md
+          - pnj/comtesse-vampire.md
+      - Élites:
+          - pnj/capitaine-de-la-garde.md
+          - pnj/abomination-zombie.md
+          - pnj/citrouille-geante.md
+      - Créatures du Comté:
+          - pnj/rejeton-de-vampire.md
+          - pnj/fantome.md
+          - pnj/villageois-zombifie.md
+          - pnj/fermier-zombifie.md
+          - pnj/paysan-rebelle-zombifie.md
+          - pnj/garde-squelette.md
+          - pnj/vrille-de-citrouille.md
+          - pnj/vrilles.md
+      - Chasseurs de vampires:
+          - pnj/chasseur-epee.md
+          - pnj/chasseuse-arbalete.md
+          - pnj/chasseur-tromblon.md
+  - Brèches: breches.md
+  - Objets:
+      - objets/README.md
+      - objets/runes.md
+      - objets/autel-sacrificiel.md
+      - objets/armes-en-argent.md
+      - objets/lance-a-deux-mains.md
+      - objets/feu-purificateur.md
+      - objets/cle-du-comte.md
+      - objets/blocs-decoratifs.md
+      - effets.md

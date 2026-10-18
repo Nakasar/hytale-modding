@@ -1,5 +1,3 @@
-[← Accueil du wiki](../README.md)
-
 # Le Comté Vampire
 
 ![Carte d'un Comté Vampire : une île ronde flottant dans le vide](../images/lieux/carte_fragment.jpg)

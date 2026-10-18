@@ -1,5 +1,3 @@
-[← Bestiaire](README.md) · [Accueil du wiki](../README.md)
-
 # Citrouille géante
 
 ![Rendu 3D du modèle : au repos et bouche ouverte (crachat)](../images/pnj/Nakasar_Giant_Pumpkin.png)

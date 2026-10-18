@@ -1,5 +1,3 @@
-[← Le Comté Vampire](README.md)
-
 # Décor et arbres
 
 Entre les structures, la lande du Comté est parsemée de petits décors et d'arbres morts. Aucun ne contient de gardien ni de coffre.

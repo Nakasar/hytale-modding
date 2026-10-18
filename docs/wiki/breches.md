@@ -1,8 +1,6 @@
-[← Accueil du wiki](README.md)
-
 # Brèches des chasseurs
 
-<img src="../../mods/nakasar-vampires/src/main/resources/Common/UI/WorldMap/MapMarkers/Nakasar_HunterBreach.png" width="48"> 
+<img src="images/jeu/UI/WorldMap/MapMarkers/Nakasar_HunterBreach.png" width="48"> 
 
 ![Un campement de brèche : tentes, feu purificateur et la faille sous l'arche](images/lieux/breche_camp.jpg)
 

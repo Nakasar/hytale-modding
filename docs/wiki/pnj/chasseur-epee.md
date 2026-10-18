@@ -1,5 +1,3 @@
-[← Bestiaire](README.md) · [Accueil du wiki](../README.md)
-
 # Chasseur de vampires (épée)
 
 ![Le chasseur à l'épée (au centre), en jeu](../images/pnj/Nakasar_Vampire_Hunter_Blade.jpg)

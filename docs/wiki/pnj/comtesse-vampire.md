@@ -1,5 +1,3 @@
-[← Bestiaire](README.md) · [Accueil du wiki](../README.md)
-
 # Comtesse Vampire
 
 ![La Comtesse Vampire, en jeu](../images/pnj/Nakasar_Vampire_Countess.jpg)

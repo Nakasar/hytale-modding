@@ -1,5 +1,3 @@
-[← Le Comté Vampire](README.md)
-
 # Poste de garde
 
 ![Le poste de garde de la garnison (aperçu du générateur)](../images/lieux/Guard_Post_Garrison.png)

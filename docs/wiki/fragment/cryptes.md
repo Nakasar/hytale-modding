@@ -1,5 +1,3 @@
-[← Le Comté Vampire](README.md)
-
 # Crypte
 
 Un mausolée en ruine dont l'escalier descend vers une salle funéraire enterrée.

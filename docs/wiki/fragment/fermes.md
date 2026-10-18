@@ -1,5 +1,3 @@
-[← Le Comté Vampire](README.md)
-
 # Ferme
 
 ![La ferme zombie (aperçu du générateur)](../images/lieux/Farm_Zombies.png)
@@ -31,4 +29,4 @@ Une exploitation du domaine : maison, grange, champs et potager.
 | Variante | Butin |
 |---|---|
 | Zombies, En ruine | [Ferme](butin-des-coffres.md#ferme) : récoltes, graines, outils agricoles, nourriture |
-| Incendiée | [Ferme incendiée](butin-des-coffres.md#ferme-incendiée) : charbon, os, quelques graines |
+| Incendiée | [Ferme incendiée](butin-des-coffres.md#ferme-incendiee) : charbon, os, quelques graines |

@@ -1,5 +1,3 @@
-[← Bestiaire](README.md) · [Accueil du wiki](../README.md)
-
 # Rejeton de vampire
 
 > 📷 Capture en jeu à venir.

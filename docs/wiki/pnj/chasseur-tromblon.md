@@ -1,5 +1,3 @@
-[← Bestiaire](README.md) · [Accueil du wiki](../README.md)
-
 # Chasseur de vampires (tromblon)
 
 ![Le chasseur au tromblon (à gauche), en jeu](../images/pnj/Nakasar_Vampire_Hunter_Gunner.jpg)

@@ -8,6 +8,7 @@ docs/wiki/fragment/butin-des-coffres.md. À relancer après chaque changement de
 Les noms français des objets vanilla sont des traductions d'usage, l'id du jeu est donné à côté.
 """
 import json
+import unicodedata
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[3]
@@ -83,7 +84,9 @@ NAMES = {
 
 
 def anchor(title):
-    return title.lower().replace(" ", "-").replace("'", "")
+    # Même règle que les ancres de titres de MkDocs : accents retirés.
+    ascii_title = unicodedata.normalize("NFKD", title).encode("ascii", "ignore").decode()
+    return ascii_title.lower().replace(" ", "-").replace("'", "")
 
 
 def rolls(lo, hi):
@@ -120,8 +123,6 @@ def table(drop):
 
 def main():
     out = [
-        "[← Le Comté Vampire](README.md)",
-        "",
         "# Butin des coffres",
         "",
         "<!-- Page générée par mods/nakasar-vampires/tools/generate_wiki_loot.py : ne pas modifier à la main. -->",

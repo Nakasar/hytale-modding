@@ -1,8 +1,6 @@
-[← Objets](README.md) · [Accueil du wiki](../README.md)
-
 # Autel sacrificiel
 
-<img src="../../../mods/nakasar-vampires/src/main/resources/Common/Icons/Items/Nakasar/Sacrificial_Altar.png" width="64"> 
+<img src="../images/jeu/Icons/Items/Nakasar/Sacrificial_Altar.png" width="64"> 
 
 ![L'autel sacrificiel (aperçu du générateur)](../images/apercu_autel.png)
 

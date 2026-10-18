@@ -1,5 +1,3 @@
-[← Bestiaire](README.md) · [Accueil du wiki](../README.md)
-
 # Capitaine de la garde
 
 > 📷 Capture en jeu à venir.
@@ -24,7 +22,7 @@ Le chef de la garnison du Comte : grand squelette d'élite (×1,3) en armure de 
 
 | Attaque | Portée | Effet | Fréquence |
 |---|---|---|---|
-| **Emprisonnement** (annoncé) | trait de 18 blocs, cible entre 4 et 16 blocs | vous **téléporte dans la cellule de prison la plus proche** de lui (dans un rayon de 24 blocs) + [Emprisonné](../effets.md#emprisonné) **5 s** (vitesse ×0,6) | toutes les 45 à 60 s (première après 14 à 18 s) |
+| **Emprisonnement** (annoncé) | trait de 18 blocs, cible entre 4 et 16 blocs | vous **téléporte dans la cellule de prison la plus proche** de lui (dans un rayon de 24 blocs) + [Emprisonné](../effets.md#emprisonne) **5 s** (vitesse ×0,6) | toutes les 45 à 60 s (première après 14 à 18 s) |
 | **Tourbillon** (annoncé) | cercle de 4 blocs autour de lui | **32** dégâts physiques (±10 %), projection | toutes les 14 à 18 s |
 | **Fendant** (annoncé) | 5 blocs devant lui, 50° | **45** dégâts physiques (±10 %), recul | toutes les 9 à 12 s |
 | **Coups de hache** | 3,4 blocs, 100° | **22** dégâts physiques (±10 %), gauche puis droite | pause de 1 à 1,5 s |

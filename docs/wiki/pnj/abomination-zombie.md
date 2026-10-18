@@ -1,5 +1,3 @@
-[← Bestiaire](README.md) · [Accueil du wiki](../README.md)
-
 # Abomination zombie
 
 > 📷 Capture en jeu à venir.

@@ -1,11 +1,9 @@
-[← Objets](README.md) · [Accueil du wiki](../README.md)
-
 # Feu purificateur
 
 | | Objet |
 |---|---|
-| <img src="../../../mods/nakasar-vampires/src/main/resources/Common/Icons/Items/Nakasar/Halloween/Purifying_Torch.png" width="48"> | **Torche de feu purificateur** |
-| <img src="../../../mods/nakasar-vampires/src/main/resources/Common/Icons/Items/Nakasar/Halloween/Purifying_Lantern.png" width="48"> | **Lanterne de feu purificateur** |
+| <img src="../images/jeu/Icons/Items/Nakasar/Halloween/Purifying_Torch.png" width="48"> | **Torche de feu purificateur** |
+| <img src="../images/jeu/Icons/Items/Nakasar/Halloween/Purifying_Lantern.png" width="48"> | **Lanterne de feu purificateur** |
 
 Des torches et des lanternes à la **flamme blanche** que les chasseurs de vampires plantent autour de leurs camps. Les morts-vivants ne les supportent pas.
 

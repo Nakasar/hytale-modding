@@ -1,5 +1,3 @@
-[← Bestiaire](README.md) · [Accueil du wiki](../README.md)
-
 # Chasseuse de vampires (arbalète)
 
 ![La chasseuse à l'arbalète (à droite), en jeu](../images/pnj/Nakasar_Vampire_Hunter_Crossbow.jpg)

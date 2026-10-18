@@ -1,5 +1,3 @@
-[← Le Comté Vampire](README.md)
-
 # Butin des coffres
 
 <!-- Page générée par mods/nakasar-vampires/tools/generate_wiki_loot.py : ne pas modifier à la main. -->
@@ -8,21 +6,21 @@ Chaque coffre du Comté est rempli à l'apparition de la structure. Son contenu 
 
 | Coffre | Où |
 |---|---|
-| [Trésor du manoir](#trésor-du-manoir) | [Manoir du Comte](manoir-du-comte.md), crypte |
+| [Trésor du manoir](#tresor-du-manoir) | [Manoir du Comte](manoir-du-comte.md), crypte |
 | [Chambre du manoir](#chambre-du-manoir) | [Manoir du Comte](manoir-du-comte.md), chambres du comte et de la comtesse |
 | [Alchimie du manoir](#alchimie-du-manoir) | [Manoir du Comte](manoir-du-comte.md), laboratoire |
-| [Bibliothèque du manoir](#bibliothèque-du-manoir) | [Manoir du Comte](manoir-du-comte.md), bibliothèque |
+| [Bibliothèque du manoir](#bibliotheque-du-manoir) | [Manoir du Comte](manoir-du-comte.md), bibliothèque |
 | [Atelier du manoir](#atelier-du-manoir) | [Manoir du Comte](manoir-du-comte.md), atelier |
 | [Cuisine du manoir](#cuisine-du-manoir) | [Manoir du Comte](manoir-du-comte.md), cuisine |
 | [Quartiers du capitaine](#quartiers-du-capitaine) | [Poste de garde](postes-de-garde.md) |
 | [Armurerie](#armurerie) | [Poste de garde](postes-de-garde.md) |
 | [Caserne](#caserne) | [Poste de garde](postes-de-garde.md) |
-| [Ruines du château](#ruines-du-château) | [Château hanté](chateaux-hantes.md), chambre du donjon |
+| [Ruines du château](#ruines-du-chateau) | [Château hanté](chateaux-hantes.md), chambre du donjon |
 | [Crypte](#crypte) | [Crypte](cryptes.md), salle funéraire |
 | [Maison du notable](#maison-du-notable) | [Village](villages.md), maison du notable |
 | [Maison du village](#maison-du-village) | [Village](villages.md), 9 coffres |
 | [Ferme](#ferme) | [Fermes](fermes.md) (zombies, en ruine) et [champs de citrouilles](champs-de-citrouilles.md) |
-| [Ferme incendiée](#ferme-incendiée) | [Ferme](fermes.md) incendiée |
+| [Ferme incendiée](#ferme-incendiee) | [Ferme](fermes.md) incendiée |
 | [Camp de chasseurs](#camp-de-chasseurs) | [Camp de chasseurs](camps-de-chasseurs.md), tente ou pavillon |
 | [Armurerie des chasseurs](#armurerie-des-chasseurs) | [Camp de chasseurs](camps-de-chasseurs.md), atelier |
 

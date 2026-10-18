@@ -1,5 +1,3 @@
-[← Le Comté Vampire](README.md)
-
 # Château hanté
 
 Une forteresse abandonnée, aux trois quarts écroulée, où rôdent les monstres de la zone hantée.
@@ -21,4 +19,4 @@ Une forteresse abandonnée, aux trois quarts écroulée, où rôdent les monstre
 
 ## Coffre
 
-[Ruines du château](butin-des-coffres.md#ruines-du-château) : 1 ou 2 armes, des richesses (argent, or, gemmes) et parfois un **éclat de rune**.
+[Ruines du château](butin-des-coffres.md#ruines-du-chateau) : 1 ou 2 armes, des richesses (argent, or, gemmes) et parfois un **éclat de rune**.

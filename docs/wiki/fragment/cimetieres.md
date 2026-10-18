@@ -1,5 +1,3 @@
-[← Le Comté Vampire](README.md)
-
 # Cimetière
 
 ![Un cimetière hanté (aperçu du générateur)](../images/lieux/apercu_cimetiere.png)

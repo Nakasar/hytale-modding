@@ -1,5 +1,3 @@
-[← Bestiaire](README.md) · [Accueil du wiki](../README.md)
-
 # Comte Vampire
 
 ![Le Comte Vampire (à gauche) et la Comtesse, en jeu](../images/pnj/Nakasar_Vampire_Count.jpg)
@@ -27,7 +25,7 @@ Il se bat à distance comme au corps à corps : il paralyse ses proies avec des 
 | Capacité | Portée | Effet | Fréquence |
 |---|---|---|---|
 | **Baiser du Vampire** (mêlée) | 3,2 blocs, balayage de 90° | **22** dégâts physiques (±10 %) par cible, et le Comte **récupère 30 PV par cible touchée** | pause de 1,2 à 1,8 s entre deux coups |
-| **Chaînes spectrales** | trait de 18 blocs, joueurs seulement | [Chaînes spectrales](../effets.md#chaînes-spectrales) **3 s** : immobilisé, plus d'attaque, plus de capacité, plus d'esquive | toutes les 9 à 12 s (première après 4 à 6 s) |
+| **Chaînes spectrales** | trait de 18 blocs, joueurs seulement | [Chaînes spectrales](../effets.md#chaines-spectrales) **3 s** : immobilisé, plus d'attaque, plus de capacité, plus d'esquive | toutes les 9 à 12 s (première après 4 à 6 s) |
 | **Domination** | trait de 12 blocs, joueurs seulement | [Domination du Comte](../effets.md#domination-du-comte) **6 s** : vos coups et vos projectiles ne le blessent plus (vous pouvez toujours bouger et frapper les autres) | toutes les 16 à 20 s (première après 7 à 9 s) |
 | **Téléportation** | cible entre 7 et 30 blocs | réapparaît à 1,5 à 2,5 blocs de vous, tourné vers vous | toutes les 10 à 14 s |
 | **Appel des rejetons** | sous **50 % de PV** | fait surgir **2 ou 3** [rejetons de vampire](rejeton-de-vampire.md) autour de lui, s'il en reste 2 ou moins dans les 40 blocs | toutes les 30 s |

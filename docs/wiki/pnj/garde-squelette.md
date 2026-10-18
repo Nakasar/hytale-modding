@@ -1,5 +1,3 @@
-[← Bestiaire](README.md) · [Accueil du wiki](../README.md)
-
 # Garde squelette
 
 > 📷 Capture en jeu à venir.

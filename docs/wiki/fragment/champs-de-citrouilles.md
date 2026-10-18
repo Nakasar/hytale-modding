@@ -1,5 +1,3 @@
-[← Le Comté Vampire](README.md)
-
 # Champ de citrouilles
 
 ![Un champ de citrouilles simple (aperçu du générateur)](../images/lieux/apercu_champ.png)

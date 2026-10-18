@@ -1,5 +1,3 @@
-[← Le Comté Vampire](README.md)
-
 # Camp de chasseurs de vampires
 
 Le dernier refuge des vivants dans le Comté : une palissade gardée par des chasseurs et protégée par le **feu purificateur**, que les morts-vivants n'osent pas approcher.

@@ -1,5 +1,3 @@
-[← Objets](README.md) · [Accueil du wiki](../README.md)
-
 # Runes de capacité
 
 Quatre runes de sorts, que l'on lance avec les **touches de capacité** en tenant une arme. Elles coûtent du **mana** et ont un temps de recharge. Elles reprennent pour l'instant l'icône et l'apparence de la rune de boule de feu du jeu.
@@ -19,8 +17,8 @@ Quatre runes de sorts, que l'on lance avec les **touches de capacité** en tenan
 |---|---|---|---|---|
 | [Baiser du Vampire](#baiser-du-vampire) | Rare | 30 | 4 s | coup de mêlée, 18 dégâts, +12 PV |
 | [Domination](#domination) | Épique | 45 | 12 s | une créature change de camp 6 s |
-| [Téléportation](#téléportation) | Rare | 35 | 8 s | projectile qui vous téléporte (20 blocs max) |
-| [Chaînes spectrales](#chaînes-spectrales) | Épique | 40 | 10 s | immobilise la cible 3 s |
+| [Téléportation](#teleportation) | Rare | 35 | 8 s | projectile qui vous téléporte (20 blocs max) |
+| [Chaînes spectrales](#chaines-spectrales) | Épique | 40 | 10 s | immobilise la cible 3 s |
 
 ## Baiser du Vampire
 
@@ -44,7 +42,7 @@ Quatre runes de sorts, que l'on lance avec les **touches de capacité** en tenan
   - devient **amicale** envers vous et oublie qu'elle vous combattait ;
   - **change de camp** : elle attaque ses anciens alliés, et eux l'attaquent (leurs coups portent de nouveau) ;
   - ne peut pas vous blesser ;
-  - est teintée de rose et de violet ([Dominé](../effets.md#dominé)).
+  - est teintée de rose et de violet ([Dominé](../effets.md#domine)).
 - À la fin, elle oublie les cibles prises parmi ses anciens alliés et retourne dans son camp.
 - Aucune créature n'est exclue dans le code : boss et élites peuvent être dominés.
 
@@ -63,5 +61,5 @@ Quatre runes de sorts, que l'on lance avec les **touches de capacité** en tenan
 
 - **Coût :** 40 mana · **Recharge :** 10 s · **Durée :** 3 s
 - Projectile à traînée verte (vol de 2 s au plus).
-- La cible touchée est **immobilisée 3 s** : [Chaînes spectrales](../effets.md#chaînes-spectrales) (un joueur ne peut plus bouger, attaquer, lancer de sort ni esquiver ; une créature est figée).
+- La cible touchée est **immobilisée 3 s** : [Chaînes spectrales](../effets.md#chaines-spectrales) (un joueur ne peut plus bouger, attaquer, lancer de sort ni esquiver ; une créature est figée).
 - Sans cible touchée, le sort ne fait rien.

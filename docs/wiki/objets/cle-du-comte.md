@@ -1,5 +1,3 @@
-[← Objets](README.md) · [Accueil du wiki](../README.md)
-
 # Fragment du Comté Vampire (clé de portail)
 
 > Placez-le dans une Ancienne passerelle pour ouvrir un fragment d'Orbis hanté par les morts-vivants et les vampires.

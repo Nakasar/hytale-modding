@@ -1,5 +1,3 @@
-[← Objets](README.md) · [Accueil du wiki](../README.md)
-
 # Lance de fer à deux mains
 
 > Clic : coup latéral, coup latéral, estoc. Maintenir : coup circulaire. Compétence (jauge pleine) : ruée d'estocs puis coup circulaire.

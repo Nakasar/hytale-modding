@@ -1,5 +1,3 @@
-[← Bestiaire](README.md) · [Accueil du wiki](../README.md)
-
 # Vrilles (piège)
 
 > 📷 Capture en jeu à venir. Elles reprennent les racines du sort vanilla d'enracinement.
@@ -13,7 +11,7 @@ Les racines qui jaillissent sous vos pieds quand la [Citrouille géante](citroui
 | | |
 |---|---|
 | Points de vie | **12** (un ou deux coups) |
-| Effet | [Enraciné](../effets.md#enraciné) : impossible de bouger tant qu'elles vivent |
+| Effet | [Enraciné](../effets.md#enracine) : impossible de bouger tant qu'elles vivent |
 | Durée maximale | **20 s** |
 | Faiblesse | feu ×2 |
 

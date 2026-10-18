@@ -1,5 +1,3 @@
-[← Le Comté Vampire](README.md)
-
 # Crypte d'arrivée
 
 ![La crypte d'arrivée (aperçu du générateur)](../images/lieux/apercu_crypte_arrivee.png)

@@ -1,5 +1,3 @@
-[← Le Comté Vampire](README.md)
-
 # Manoir du Comte
 
 ![Le manoir du Comte (aperçu du générateur)](../images/lieux/apercu_manoir.png)
@@ -46,9 +44,9 @@ Le manoir abrite un établi de chaque sorte : alchimie, arcane, cuisine, four, m
 
 | Pièce | Coffre | Butin |
 |---|---|---|
-| Crypte | Grand coffre ancien | [Trésor du manoir](butin-des-coffres.md#trésor-du-manoir) : or, argent, gemmes, **1 pièce d'équipement rare**, potions |
+| Crypte | Grand coffre ancien | [Trésor du manoir](butin-des-coffres.md#tresor-du-manoir) : or, argent, gemmes, **1 pièce d'équipement rare**, potions |
 | Cuisine | Petit coffre de village | [Cuisine du manoir](butin-des-coffres.md#cuisine-du-manoir) |
-| Bibliothèque | Petit coffre ancien | [Bibliothèque du manoir](butin-des-coffres.md#bibliothèque-du-manoir) |
+| Bibliothèque | Petit coffre ancien | [Bibliothèque du manoir](butin-des-coffres.md#bibliotheque-du-manoir) |
 | Chambre de la comtesse | Petit coffre royal | [Chambre du manoir](butin-des-coffres.md#chambre-du-manoir) |
 | Chambre du comte | Grand coffre royal | [Chambre du manoir](butin-des-coffres.md#chambre-du-manoir) |
 | Laboratoire | Petit coffre sombre | [Alchimie du manoir](butin-des-coffres.md#alchimie-du-manoir) |

@@ -1,5 +1,3 @@
-[← Accueil du wiki](../README.md)
-
 # Bestiaire
 
 Toutes les créatures ajoutées par le mod. Les créatures du Comté forment **un seul camp** : elles ne se blessent jamais entre elles (même avec une attaque de zone) et s'allient contre vous et contre les chasseurs de vampires.

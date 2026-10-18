@@ -1,5 +1,3 @@
-[← Bestiaire](README.md) · [Accueil du wiki](../README.md)
-
 # Paysan rebelle zombifié
 
 > 📷 Capture en jeu à venir.

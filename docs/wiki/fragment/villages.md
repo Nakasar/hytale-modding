@@ -1,5 +1,3 @@
-[← Le Comté Vampire](README.md)
-
 # Village
 
 ![Le village zombie (aperçu du générateur, les points magenta sont des blocs sans couleur d'aperçu)](../images/lieux/Village_Zombies.png)
