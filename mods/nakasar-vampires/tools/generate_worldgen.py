@@ -60,14 +60,10 @@ STRUCTURE_TYPES = [
                    ("GuardPosts/Garrison", 1.2)], True, [1.0, 0.5]),
     ("Cemetery", [("Cemeteries/Haunted", 1.0), ("Cemeteries/Spiders", 1.0), ("Cemeteries/Undead", 1.0)], True, [1.0, 0.5]),
     ("Crypt", [("Crypts", 1.0)], True, [1.0, 0.5]),
-    # le champ toujours présent est celui de la citrouille géante, le second (un monde sur deux) est simple
-    ("GiantPumpkinField", [("PumpkinFields/Giant", 1.0)], True, [1.0]),
-    ("PumpkinField", [("PumpkinFields/Plain", 1.0)], True, [0.5]),
+    ("PumpkinField", [("PumpkinFields/Plain", 1.0), ("PumpkinFields/Giant", 1.0)], True, [1.0, 0.5]),
     ("HauntedCastle", [("HauntedCastles", 1.0)], True, [1.0, 0.5]),
     ("HunterCamp", [("HunterCamps/Tents", 1.0), ("HunterCamps/Lodge", 1.0)], True, [0.5]),
 ]
-# Types de la même famille : jamais à moins de 140 blocs l'un de l'autre, comme deux exemplaires d'un type.
-FAMILY = {"GiantPumpkinField": "PumpkinField"}
 # Emplacements (x, z, grand ?) : 14, un par exemplaire. Les grands peuvent recevoir le village
 # (69 × 69) ; entre deux structures, au moins 9 blocs dans le pire des décalages (village et ferme
 # voisins décalés l'un vers l'autre).
@@ -118,7 +114,7 @@ def layouts():
         for slot, role in zip(idx, order):
             layout[slot] = role
         far = all(((SLOTS[i][0] - SLOTS[j][0]) ** 2 + (SLOTS[i][1] - SLOTS[j][1]) ** 2) ** 0.5 > 140
-                  for i in range(len(SLOTS)) for j in range(i + 1, len(SLOTS)) if FAMILY.get(layout[i][0], layout[i][0]) == FAMILY.get(layout[j][0], layout[j][0]))
+                  for i in range(len(SLOTS)) for j in range(i + 1, len(SLOTS)) if layout[i][0] == layout[j][0])
         if far and layout not in out:
             out.append(layout)
     return out
