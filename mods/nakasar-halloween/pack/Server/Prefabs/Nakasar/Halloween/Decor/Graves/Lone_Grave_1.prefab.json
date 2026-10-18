@@ -5,11 +5,10 @@
   "anchorY": 0,
   "anchorZ": 0,
   "blocks": [
-    {"x":-1,"y":0,"z":-1,"name":"Wood_Deadwood_Beam"},
-    {"x":0,"y":0,"z":0,"name":"Furniture_Village_Tombstone","rotation":2},
+    {"x":0,"y":0,"z":0,"name":"Furniture_Village_Tombstone"},
     {"x":0,"y":0,"z":1,"name":"Rock_Stone_Brick_Smooth"},
     {"x":0,"y":0,"z":2,"name":"Rock_Stone_Brick_Smooth"},
-    {"x":-1,"y":1,"z":-1,"name":"Deco_Lantern"},
+    {"x":0,"y":1,"z":0,"name":"Furniture_Village_Tombstone","filler":1024},
     {"x":0,"y":1,"z":1,"name":"Rock_Stone_Brick_Half"},
     {"x":0,"y":1,"z":2,"name":"Rock_Stone_Brick_Half"}
   ]

@@ -31,13 +31,96 @@ OUT = PACK / "Server" / "Prefabs" / "Nakasar" / "Halloween"
 AIR = "Empty"
 
 # Rotations de bloc : index RotationTuple = tangage × 4 + lacet.
-# Lacet seul (meubles, souches de branche) : 0 nord, 1 est, 2 sud, 3 ouest pour les meubles ; une
-# souche de branche (VariantRotation NESW) s'accroche au nord, à l'ouest, au sud puis à l'est.
-NORTH, EAST, SOUTH, WEST = 0, 1, 2, 3
+# Lacet seul : un meuble regarde le sud (+Z) en rotation 0, puis l'est, le nord et l'ouest (lu dans
+# les hitboxes du jeu : dossier de chaise et tableau collés au nord en rotation 0, et dans les
+# maisons du village vanilla). Portes et fenêtres : 0 dans un mur le long de x, 1 le long de z.
+# Une souche de branche (VariantRotation NESW) s'accroche au nord, à l'ouest, au sud puis à l'est.
+SOUTH, EAST, NORTH, WEST = 0, 1, 2, 3
 # Tuyaux (troncs, branches longues, VariantRotation Pipe) : 0 debout, 4 couché nord-sud, 5 couché est-ouest.
 UPRIGHT, ALONG_Z, ALONG_X = 0, 4, 5
 # Blocs en ligne (clôtures, murets, grilles) : orientés à l'écriture par Prefab.orient_lines.
 LINE_BLOCK = re.compile(r"(_Fence|_Brick_Wall|_Cobble_Wall|Iron_Bars|Iron_Railing)$")
+
+
+# Meubles de plusieurs blocs : cases occupées en rotation 0 (dx, dy, dz) depuis le bloc posé, lues
+# dans Server/Item/Block/Hitboxes du jeu (0.7.2). Le prefab liste chaque case en plus du bloc posé,
+# avec son décalage (« filler »), comme les prefabs vanilla ; Prefab.write les ajoute et refuse deux
+# meubles qui se chevauchent ou un meuble qui rentre dans un mur.
+def _box(x0, x1, y0, y1, z0, z1):
+    return [(x, y, z) for x in range(x0, x1 + 1) for y in range(y0, y1 + 1) for z in range(z0, z1 + 1)]
+
+
+HITBOXES = {
+    "Table": _box(0, 1, 0, 0, 0, 1),
+    "Chest_Large": _box(-1, 0, 0, 0, 0, 0),
+    "Wardrobe": _box(-1, 0, 0, 1, 0, 0),
+    "Desk": _box(-1, 0, 0, 0, 0, 0),
+    "Bench": _box(-1, 0, 0, 0, 0, 0),
+    "Bench_Backrest": _box(-1, 0, 0, 0, 0, 0),
+    "Coffin": _box(0, 1, 0, 0, 0, 0),
+    "Bed_Large": _box(0, 1, 0, 1, 0, 2),
+    "Bed_Low": _box(0, 1, 0, 0, 0, 2),
+    "Bed_Royal": _box(0, 2, 0, 2, 0, 3),
+    "Chandelier": _box(-1, 1, -1, 0, -1, 1),
+    "Tall": _box(0, 0, 0, 1, 0, 0),
+    "Taller": _box(0, 0, 0, 2, 0, 0),
+    "Statue_Large": _box(-1, 1, 0, 2, 0, 0),
+    "Workstation": _box(-1, 0, 0, 1, 0, 0),
+    "Workstation_Low": _box(-1, 0, 0, 0, 0, 0),
+    "Painting_2x2": _box(-1, 0, 0, 1, 0, 0),
+    "Painting_3x2": _box(-1, 1, 0, 1, 0, 0),
+    "Carpet_Large": _box(0, 1, 0, 0, 0, 1),
+    "Door_Medium": _box(0, 2, 0, 2, 0, 0),
+}
+FURNITURE = {
+    **{f"Furniture_{s}_Table": "Table" for s in ("Ancient", "Crude", "Village", "Human_Ruins", "Temple_Dark", "Royal_Magic", "Tavern", "Lumberjack", "Feran")},
+    **{f"Furniture_{s}_Chest_Large": "Chest_Large" for s in ("Ancient", "Crude", "Village", "Human_Ruins", "Temple_Dark", "Royal_Magic", "Tavern", "Lumberjack", "Feran")},
+    **{f"Furniture_{s}_Wardrobe": "Wardrobe" for s in ("Ancient", "Crude", "Village", "Human_Ruins", "Temple_Dark", "Royal_Magic", "Tavern", "Lumberjack", "Feran")},
+    **{f"Furniture_{s}_Bed": "Bed_Large" for s in ("Ancient", "Village", "Human_Ruins", "Tavern", "Lumberjack", "Feran")},
+    **{f"Furniture_{s}_Coffin": "Coffin" for s in ("Ancient", "Village", "Human_Ruins", "Temple_Dark")},
+    "Furniture_Temple_Dark_Bed": "Bed_Low",
+    "Furniture_Royal_Magic_Bed": "Bed_Royal",
+    "Furniture_Human_Ruins_Desk": "Desk", "Furniture_Village_Counter": "Desk",
+    "Furniture_Ancient_Bench": "Bench", "Furniture_Castle_Bench": "Bench", "Furniture_Tavern_Bench": "Bench",
+    "Furniture_Royal_Magic_Couch": "Bench", "Furniture_Feran_Bench": "Bench",
+    "Furniture_Village_Bench": "Bench_Backrest", "Furniture_Human_Ruins_Bench": "Bench_Backrest",
+    "Furniture_Feran_Chandelier": "Chandelier", "Furniture_Tavern_Chandelier": "Chandelier",
+    "Furniture_Temple_Dark_Statue": "Tall", "Furniture_Village_Tombstone": "Tall",
+    "Furniture_Temple_Dark_Candle": "Tall", "Furniture_Human_Ruins_Candle": "Tall",
+    "Furniture_Dungeon_Earth_Brazier": "Tall", "Furniture_Village_Painting_1x2": "Tall",
+    "Furniture_Human_Ruins_Statue_Broken": "Taller", "Furniture_Village_Statue": "Taller",
+    "Furniture_Temple_Dark_Statue_Gaia": "Taller", "Deco_Scarecrow": "Taller",
+    "Furniture_Ancient_Statue": "Statue_Large",
+    "Furniture_Village_Painting_2x2": "Painting_2x2", "Furniture_Village_Painting_3x2": "Painting_3x2",
+    "Furniture_Royal_Magic_Carpet": "Carpet_Large",
+    "Furniture_Ancient_Door_Medium": "Door_Medium", "Furniture_Temple_Dark_Door_Medium": "Door_Medium",
+    "Furniture_Human_Ruins_Door_Medium": "Door_Medium",
+    **{f"Furniture_{s}_Door": "Tall" for s in ("Ancient", "Crude", "Village", "Human_Ruins", "Temple_Dark", "Tavern", "Lumberjack")},
+    **{b: "Workstation" for b in ("Bench_Alchemy", "Bench_Arcane", "Bench_Cooking", "Bench_Furnace", "Bench_Weapon",
+                                  "Bench_Armory", "Bench_Armour", "Bench_Loom", "Bench_Tannery", "Bench_Farming")},
+    **{b: "Workstation_Low" for b in ("Bench_WorkBench", "Bench_Lumbermill", "Bench_Trough")},
+    "Halloween_Wagon": "Table",
+    "Tinkering_Target_Dummy": "Tall",
+}
+
+
+def footprint(name, rot):
+    """Cases occupées par un meuble posé en `name` avec le lacet `rot` (rotation du jeu : 90° envoie
+    (x, z) sur (z, -x))."""
+    base = name.split("%")[-1]
+    if base.startswith("*"):
+        base = base[1:].split("_State_Definitions_")[0]
+    cells = HITBOXES.get(FURNITURE.get(base), [(0, 0, 0)])
+    out = []
+    for x, y, z in cells:
+        for _ in range(rot % 4):
+            x, z = z, -x
+        out.append((x, y, z))
+    return out
+
+
+def pack_filler(dx, dy, dz):
+    return (dx & 31) | ((dz & 31) << 5) | ((dy & 31) << 10)
 
 
 def pumpkin_crop(stage):
@@ -49,22 +132,54 @@ class Prefab:
 
     def __init__(self, seed):
         self.blocks = {}
+        self.components = {}  # (x, y, z) -> composants du bloc (coffre et sa liste de butin...)
+        self.claims = {}      # case secondaire d'un meuble -> case du meuble
         self.rng = random.Random(seed)
 
     # --- primitives -------------------------------------------------------------------------
 
     def set(self, x, y, z, name, rot=0):
+        pos = (x, y, z)
+        self.components.pop(pos, None)
+        old = self.blocks.get(pos)
+        if old and old[0] != AIR:
+            for dx, dy, dz in footprint(*old):
+                if self.claims.get((x + dx, y + dy, z + dz)) == pos:
+                    del self.claims[(x + dx, y + dy, z + dz)]
         if name is None:
-            self.blocks.pop((x, y, z), None)
-        else:
-            self.blocks[(x, y, z)] = (name, rot)
+            self.blocks.pop(pos, None)
+            return
+        self.blocks[pos] = (name, rot)
+        if name != AIR:
+            for dx, dy, dz in footprint(name, rot):
+                if (dx, dy, dz) != (0, 0, 0):
+                    self.claims[(x + dx, y + dy, z + dz)] = pos
+
+    def reserved(self):
+        """Cases déjà prises par les parties secondaires des meubles posés."""
+        return set(self.claims)
+
+    def fits(self, x, y, z, name, rot=0, reserved=None):
+        """Le meuble tient-il là : toutes ses cases libres (air ou rien) et posées sur du plein."""
+        cells = footprint(name, rot)
+        taken = self.reserved() if reserved is None else reserved
+        if not all(self.free(x + dx, y + dy, z + dz) and (x + dx, y + dy, z + dz) not in taken for dx, dy, dz in cells):
+            return False
+        return all(not self.free(x + dx, y - 1, z + dz) for dx, dy, dz in cells if dy == 0)
+
+    def chest(self, x, y, z, name, rot, droplist):
+        """Coffre rempli à la pose par le serveur avec la liste de butin `droplist` (Server/Drops)."""
+        self.set(x, y, z, name, rot)
+        capacity = 36 if name.endswith("_Large") else 18
+        self.components[(x, y, z)] = {"Components": {"ItemContainerBlock": {"Droplist": droplist, "Capacity": capacity}}}
 
     def get(self, x, y, z):
         b = self.blocks.get((x, y, z))
         return b[0] if b else None
 
     def free(self, x, y, z):
-        return self.get(x, y, z) in (None, AIR)
+        """Case vide : ni bloc, ni partie d'un meuble de plusieurs blocs."""
+        return self.get(x, y, z) in (None, AIR) and (x, y, z) not in self.claims
 
     def fill(self, x0, y0, z0, x1, y1, z1, name, rot=0):
         for x in range(min(x0, x1), max(x0, x1) + 1):
@@ -205,33 +320,40 @@ class Prefab:
         for pos in targets:
             h = (pos[1] - keep_below) / max(1, top - keep_below)
             if self.rng.random() < (100 - chance) / 100 * (0.3 + 1.4 * h):
-                self.blocks[pos] = (AIR, 0)
+                self.set(*pos, AIR)
         for pos in floating_blocks(self):
-            del self.blocks[pos]
+            self.set(*pos, None)
 
     def scatter(self, x0, y, z0, x1, z1, count, palette, require_air=True, rot=None):
         """Pose `count` décorations sur des cases libres d'une surface."""
         placed = 0
+        taken = self.reserved()
         for _ in range(count * 12):
             if placed >= count:
                 break
             x = self.rng.randint(min(x0, x1), max(x0, x1))
             z = self.rng.randint(min(z0, z1), max(z0, z1))
-            if require_air and not self.free(x, y, z):
+            name = self.pick(palette)
+            r = self.rng.randint(0, 3) if rot is None else rot
+            if require_air and not self.fits(x, y, z, name, r, taken):
                 continue
             if self.free(x, y - 1, z):
                 continue
-            self.set(x, y, z, self.pick(palette), self.rng.randint(0, 3) if rot is None else rot)
+            self.set(x, y, z, name, r)
+            taken.update((x + dx, y + dy, z + dz) for dx, dy, dz in footprint(name, r))
             placed += 1
 
     def paste(self, other, dx, dy, dz, min_y=None, only_free=True):
         """Copie un autre prefab (un arbre dans un cimetière...) décalé de (dx, dy, dz)."""
+        taken = self.reserved()
         for (bx, by, bz), (name, rot) in other.blocks.items():
             if min_y is not None and by < min_y:
                 continue
-            if only_free and not self.free(bx + dx, by + dy, bz + dz):
+            if only_free and (not self.free(bx + dx, by + dy, bz + dz) or (bx + dx, by + dy, bz + dz) in taken):
                 continue
             self.set(bx + dx, by + dy, bz + dz, name, rot)
+            if (bx, by, bz) in other.components:
+                self.components[(bx + dx, by + dy, bz + dz)] = other.components[(bx, by, bz)]
 
     # --- export -----------------------------------------------------------------------------
 
@@ -258,13 +380,45 @@ class Prefab:
             if along_z > along_x:
                 self.blocks[(x, y, z)] = (name, 1)
 
+    def fillers(self):
+        """Cases secondaires des meubles de plusieurs blocs : {(x, y, z): (nom, rotation, décalage)}.
+
+        Échoue si une case tombe sur un bloc déjà posé (mur, autre meuble) : c'est ce qui donnait des
+        tables imbriquées en jeu.
+        """
+        out, clashes = {}, []
+        for (x, y, z), (name, rot) in self.blocks.items():
+            if name == AIR:
+                continue
+            for dx, dy, dz in footprint(name, rot):
+                if (dx, dy, dz) == (0, 0, 0):
+                    continue
+                cell = (x + dx, y + dy, z + dz)
+                if self.get(*cell) not in (None, AIR) or cell in out:
+                    clashes.append(f"{name}@{(x, y, z)} -> {cell} ({self.get(*cell) or out[cell][0]})")
+                out[cell] = (name, rot, pack_filler(dx, dy, dz))
+        if clashes:
+            raise ValueError(f"meubles qui se chevauchent : {clashes[:6]}")
+        return out
+
     def write(self, path):
         self.orient_lines()
+        try:
+            fillers = self.fillers()
+        except ValueError as e:
+            raise ValueError(f"{path.name} : {e}") from None
+        cells = dict(self.blocks)
+        for cell, (name, rot, _) in fillers.items():
+            cells[cell] = (name, rot)
         blocks = []
-        for (x, y, z), (name, rot) in sorted(self.blocks.items(), key=lambda kv: (kv[0][1], kv[0][2], kv[0][0])):
+        for (x, y, z), (name, rot) in sorted(cells.items(), key=lambda kv: (kv[0][1], kv[0][2], kv[0][0])):
             entry = {"x": x, "y": y, "z": z, "name": name}
             if rot:
                 entry["rotation"] = rot
+            if (x, y, z) in fillers:
+                entry["filler"] = fillers[(x, y, z)][2]
+            if (x, y, z) in self.components:
+                entry["components"] = self.components[(x, y, z)]
             blocks.append(entry)
         doc = {"version": 8, "blockIdVersion": 8, "anchorX": 0, "anchorY": 0, "anchorZ": 0}
         path.parent.mkdir(parents=True, exist_ok=True)
@@ -279,6 +433,34 @@ class Prefab:
 
 
 # --- palettes ---------------------------------------------------------------------------------
+
+# Listes de butin des coffres (pack/Server/Drops/Nakasar/Halloween, tools/generate_loot.py).
+LOOT_FARM = "Nakasar_Loot_Farm"
+LOOT_FARM_BURNT = "Nakasar_Loot_Farm_Burnt"
+LOOT_VILLAGE = "Nakasar_Loot_Village_House"
+LOOT_VILLAGE_RICH = "Nakasar_Loot_Village_Rich"
+LOOT_BARRACKS = "Nakasar_Loot_Guard_Barracks"
+LOOT_ARMORY = "Nakasar_Loot_Guard_Armory"
+LOOT_CAPTAIN = "Nakasar_Loot_Guard_Captain"
+LOOT_CRYPT = "Nakasar_Loot_Crypt"
+LOOT_CASTLE = "Nakasar_Loot_Castle_Ruins"
+LOOT_MANOR_TREASURE = "Nakasar_Loot_Manor_Treasure"
+LOOT_MANOR_ALCHEMY = "Nakasar_Loot_Manor_Alchemy"
+LOOT_MANOR_LIBRARY = "Nakasar_Loot_Manor_Library"
+LOOT_MANOR_KITCHEN = "Nakasar_Loot_Manor_Kitchen"
+LOOT_MANOR_BEDROOM = "Nakasar_Loot_Manor_Bedroom"
+LOOT_MANOR_WORKSHOP = "Nakasar_Loot_Manor_Workshop"
+
+# Blocs d'apparition invisibles du mod nakasar-mobs (un marqueur par bloc).
+SPAWN_VILLAGER = "Nakasar_Spawner_Zombie_Villager"
+SPAWN_FARMER = "Nakasar_Spawner_Zombie_Farmer"
+SPAWN_ABOMINATION = "Nakasar_Spawner_Zombie_Abomination"
+SPAWN_REBEL = "Nakasar_Spawner_Zombie_Rebel"
+SPAWN_GUARD = "Nakasar_Spawner_Skeleton_Guard"
+SPAWN_CAPTAIN = "Nakasar_Spawner_Guard_Captain"
+SPAWN_SPIDER = "Nakasar_Spawner_Spider"
+# Sol de cellule : le Capitaine y téléporte sa cible (nakasar-mobs cherche le plus proche).
+PRISON_CELL = "Nakasar_Prison_Cell"
 
 STONE_WALL = [("Rock_Stone_Brick", 6), ("Rock_Stone_Brick_Mossy", 3), ("Rock_Stone_Cobble", 1), ("Rock_Stone_Cobble_Mossy", 1)]
 STONE_FLOOR = [("Rock_Stone_Brick_Smooth", 4), ("Rock_Stone_Cobble", 2), ("Rock_Stone_Cobble_Mossy", 1)]
@@ -295,8 +477,7 @@ GROUND = [("Soil_Grass_Burnt", 6), ("Soil_Dirt_Burnt", 2), ("Soil_Gravel_Mossy",
 PATH = [("Soil_Pathway", 5), ("Soil_Gravel", 2), ("Rock_Stone_Cobble_Mossy", 1)]
 WEBS = [("Deco_SpiderWeb_Full", 3), ("Deco_SpiderWeb", 4)]
 BONES = [("Deco_Bone_Pile", 4), ("Deco_Bone_Skulls", 2), ("Deco_Bone_Ribs", 2), ("Deco_Bone_Full", 2), ("Deco_Bone_Spine", 1)]
-CANDLES = [("Furniture_Ancient_Candle", 3), ("Furniture_Temple_Dark_Candle", 2), ("Furniture_Crude_Candle", 1)]
-PUMPKINS = [("Deco_Halloween_Pumpkin_Scary", 5), ("Deco_Halloween_Pumpkin_Cute", 1), ("Deco_Halloween_Pumpkin_Hypixel", 1)]
+CANDLES = [("Furniture_Ancient_Candle", 3), ("Furniture_Feran_Candle", 2), ("Furniture_Crude_Candle", 1)]
 DEAD_PLANTS = [("Plant_Bush_Dead", 3), ("Plant_Grass_Gnarled", 4), ("Plant_Grass_Gnarled_Short", 3), ("Plant_Grass_Gnarled_Tall", 2),
                ("Plant_Bush_Dead_Twisted", 1), ("Plant_Bramble_Dead_Twisted", 1)]
 GLOW_MUSHROOMS = [("Plant_Crop_Mushroom_Glowing_Purple", 3), ("Plant_Crop_Mushroom_Glowing_Violet", 2), ("Plant_Crop_Mushroom_Glowing_Green", 1)]
@@ -544,6 +725,25 @@ def dead_tree(seed, size="medium", species=None, hanging=None, webs=False):
 
 # --- pumpkin fields ---------------------------------------------------------------------------
 
+def face_toward(x, z, tx, tz):
+    """Lacet d'un objet posé en (x, z) pour qu'il regarde vers (tx, tz), sur l'axe dominant."""
+    dx, dz = tx - x, tz - z
+    if abs(dx) > abs(dz):
+        return EAST if dx > 0 else WEST
+    return SOUTH if dz >= 0 else NORTH
+
+
+def hang_lantern(p, x, y, z):
+    """Lanterne de plafond en (x, y, z), suspendue par une chaîne au premier bloc plein au-dessus."""
+    top = y + 1
+    while p.free(x, top, z):
+        top += 1
+        if top > y + 12:
+            raise ValueError(f"lanterne en ({x}, {y}, {z}) : pas de plafond au-dessus")
+    p.fill(x, y + 1, z, x, top - 1, z, "Deco_Iron_Chains_Vertical")
+    p.set(x, y, z, "Deco_Lantern_Ceiling")
+
+
 def lantern_post(p, x, z, height=2, top="Deco_Lantern"):
     p.fill(x, 0, z, x, height - 1, z, "Wood_Deadwood_Beam")
     p.set(x, height, z, top)
@@ -561,7 +761,7 @@ def shed(p, x0, z0, w, d):
     p.clear(door, 0, z1, door, 1, z1)
     p.set(x0, 1, (z0 + z1) // 2, AIR)  # fenêtre
     p.gable(x0, z0, x1, z1, 3, "Wood_Deadwood_Planks", "Wood_Deadwood_Planks_Half", gable_wall=DEADWOOD)
-    p.set(door + 1, 0, z0 + 1, "Furniture_Crude_Chest_Small", SOUTH)
+    p.chest(door + 1, 0, z0 + 1, "Furniture_Crude_Chest_Small", SOUTH, LOOT_FARM)
     p.set(x0 + 1, 0, z0 + 1, "Ingredient_Hay")
     p.set(x0 + 1, 1, z0 + 1, "Furniture_Crude_Candle")
     p.set(x1 - 1, 2, z1 - 1, p.pick(WEBS))
@@ -570,25 +770,29 @@ def shed(p, x0, z0, w, d):
 
 
 def pumpkin_field(seed, w=23, d=19):
+    """Champ de citrouilles délaissé : rangs de citrouilles, allée, clôture, cabane du fermier.
+
+    Les citrouilles sculptées ne sont qu'à l'entrée, tournées vers le chemin ; les épouvantails et
+    les meules regardent l'allée centrale.
+    """
     p = Prefab(seed)
     r = p.rng
     x0, z0, x1, z1 = -w // 2, -d // 2, w // 2, d // 2
     p.clear(x0 - 1, 0, z0 - 1, x1 + 1, 5, z1 + 1)
+    yard = lambda x, z: z >= z1 - 2 and (x >= x1 - 5 or x <= x0 + 3)   # coin de la récolte, près de l'entrée
     # sillons est-ouest : deux rangs de terre labourée, un rang de terre brûlée ; allée centrale nord-sud
     for x in range(x0, x1 + 1):
         for z in range(z0, z1 + 1):
             aisle = abs(x) <= 1
             on_row = (z - z0) % 3 != 2
-            if aisle:
+            if aisle or yard(x, z):
                 p.set(x, -1, z, p.pick(PATH))
                 continue
             p.set(x, -1, z, "Soil_Dirt_Tilled" if on_row else p.pick(GRAVE_DIRT))
             p.set(x, -2, z, "Soil_Dirt")
             if on_row and r.random() < 0.72:
                 p.set(x, 0, z, p.pick(PUMPKIN_CROPS))
-            elif not on_row and r.random() < 0.12:
-                p.set(x, 0, z, p.pick(PUMPKINS), r.randint(0, 3))
-            elif not on_row and r.random() < 0.08:
+            elif not on_row and r.random() < 0.1:
                 p.set(x, 0, z, p.pick(DEAD_PLANTS))
     # clôture de bois mort, ouverte au milieu des côtés nord et sud
     for x in range(x0 - 1, x1 + 2):
@@ -600,36 +804,38 @@ def pumpkin_field(seed, w=23, d=19):
         for x in (x0 - 1, x1 + 1):
             p.set(x, -1, z, "Soil_Grass_Burnt")
             p.set(x, 0, z, "Wood_Deadwood_Fence")
-    # poteaux : citrouille-lanterne aux coins, lanternes de part et d'autre des entrées et le long de l'allée
+    # poteaux : lanternes aux coins et le long de l'allée, citrouilles sculptées de part et d'autre
+    # des entrées, tournées vers l'extérieur
     for cx, cz in ((x0 - 1, z0 - 1), (x1 + 1, z0 - 1), (x0 - 1, z1 + 1), (x1 + 1, z1 + 1)):
-        lantern_post(p, cx, cz, 2, "Deco_Halloween_Pumpkin_Scary")
-    for cz in (z0 - 1, z1 + 1):
+        lantern_post(p, cx, cz, 2)
+    for cz, facing in ((z0 - 1, NORTH), (z1 + 1, SOUTH)):
         for cx in (-2, 2):
-            lantern_post(p, cx, cz, 2)
-    for x in (x0 - 1, x1 + 1):
-        lantern_post(p, x, 0, 2, "Deco_Halloween_Pumpkin_Scary")
+            p.fill(cx, 0, cz, cx, 1, cz, "Wood_Deadwood_Beam")
+            p.set(cx, 2, cz, "Deco_Halloween_Pumpkin_Scary", facing)
     for z in range(z0 + 3, z1 - 2, 6):
         lantern_post(p, 2 if (z // 6) % 2 else -2, z, 2)
-    # épouvantails dans les rangs
-    for sx, sz in ((x0 + 4, z0 + 3), (x1 - 4, z1 - 4), (r.choice([x0 + 5, x1 - 5]), 0)):
+    # épouvantails dans les rangs, tournés vers l'allée
+    for sx, sz in ((x0 + 4, z0 + 3), (x1 - 4, z0 + 9), (r.choice([x0 + 5, x1 - 5]), z0 + 6)):
         p.set(sx, -1, sz, "Soil_Dirt")
-        p.set(sx, 0, sz, "Deco_Scarecrow", r.choice([SOUTH, EAST, WEST]))
-        p.set(sx, 1, sz, AIR)
+        p.clear(sx, 0, sz, sx, 2, sz)
+        p.set(sx, 0, sz, "Deco_Scarecrow", face_toward(sx, sz, 0, sz))
     # charrette de la récolte près de l'entrée sud, paniers et meules de foin
-    p.set(x1 - 3, 0, z1 - 1, "Halloween_Wagon", WEST)
-    for hx, hz, hh in ((x1 - 1, z1 - 1, 2), (x1 - 1, z1 - 2, 1), (x1 - 2, z1 - 1, 1), (x0 + 1, z1 - 1, 1)):
+    p.set(x1 - 4, 0, z1 - 2, "Halloween_Wagon", WEST)
+    for hx, hz, hh in ((x1, z1 - 1, 2), (x1, z1 - 2, 1), (x1 - 1, z1, 1), (x0, z1, 1)):
         p.fill(hx, 0, hz, hx, hh - 1, hz, "Ingredient_Hay")
-        p.set(hx, hh, hz, p.pick(PUMPKINS), r.randint(0, 3))
+        if r.random() < 0.6:
+            p.set(hx, hh, hz, pumpkin_crop("StageFinal"))
     p.set(2, 0, z1 - 1, "Halloween_Basket_Pumpkin")
     p.set(-2, 0, z1 - 1, "Halloween_Basket_Straw")
     p.set(x0 + 2, 0, z1 - 1, "Halloween_Basket_Pumpkin")
-    # cabane de fermier dans un coin
+    # cabane de fermier dans un coin du nord
     sw, sd = 5, 4
     sx0 = x0 + 1 if r.random() < 0.5 else x1 - sw
-    shed(p, sx0, z0 + 1, sw, sd)
+    p.clear(sx0, 0, z0, sx0 + sw - 1, 5, z0 + sd + 1)
+    shed(p, sx0, z0, sw, sd)
     p.ruin(90, keep_below=1, names={"Wood_Deadwood_Planks", "Wood_Deadwood_Planks_Half"})
     # un arbre mort penché sur la clôture
-    p.paste(dead_tree(r.randint(0, 1 << 30), "medium", hanging="noose"), x1 + 4, 0, z0 + 2, min_y=0)
+    p.paste(dead_tree(r.randint(0, 1 << 30), "medium"), x1 + 4, 0, z0 + 2, min_y=0)
     return p
 
 
@@ -675,15 +881,14 @@ def grave(p, x, z, r, theme):
             p.set(x, -3, z + dz, p.pick(GRAVE_DIRT))
             if r.random() < 0.6:
                 p.set(x + 1, 0, z + dz, "Soil_Dirt_Burnt")
-        p.set(x, -2, z + 1, "Furniture_Village_Coffin", SOUTH)
-        p.set(x, -2, z + 2, p.pick(BONES), r.randint(0, 3))
+        p.set(x, -2, z + 1, "Furniture_Village_Coffin", WEST)  # couché nord-sud dans la fosse
         return
     for dz in (1, 2):
         p.set(x, -1, z + dz, p.pick(GRAVE_DIRT))
     if theme == "haunted" and r.random() < 0.6:
-        p.set(x, 0, z + 1, r.choice([p.pick(CANDLES), "Plant_Petals_Blood", p.pick(PUMPKINS)]), r.randint(0, 3))
+        p.set(x, 0, z + 1, r.choice([p.pick(CANDLES), "Plant_Petals_Blood", "Plant_Petals_Blood"]))
     elif theme == "spiders" and r.random() < 0.5:
-        p.set(x, 1 if kind == "stele" else 0, z + (0 if kind == "stele" else 1), p.pick(WEBS))
+        p.set(x, 0, z + 1, p.pick(WEBS))
     elif theme == "undead" and r.random() < 0.4:
         p.set(x, 0, z + 1, p.pick(BONES), r.randint(0, 3))
     elif r.random() < 0.2:
@@ -755,7 +960,7 @@ def chapel(p, cx, z0, r, theme):
     p.set(cx, 1, z0 + 1, "Furniture_Temple_Dark_Statue", SOUTH)
     p.set(cx - 1, 1, z0 + 1, p.pick(CANDLES))
     p.set(cx + 1, 1, z0 + 1, p.pick(CANDLES))
-    p.set(cx, 0, z0 + 2, "Furniture_Ancient_Coffin", EAST)
+    p.set(cx, 0, z0 + 3, "Furniture_Ancient_Coffin", WEST)   # devant l'autel, dans l'axe de la nef
     p.set(cx - 3, 0, z0 + 1, "Furniture_Temple_Dark_Brazier")
     p.set(cx + 3, 0, z0 + 1, "Furniture_Temple_Dark_Brazier")
     p.set(cx, 5, z0 + 6, "Furniture_Tavern_Chandelier")
@@ -814,7 +1019,7 @@ def cemetery(seed, theme):
         p.set(px, 1, pz, "Rock_Stone_Brick_Pillar_Middle")
         p.set(px, 2, pz, "Rock_Stone_Brick_Ornate")
         if i % 2 == 0:
-            p.set(px, 3, pz, "Deco_Spider_Cocoon" if theme == "spiders" else p.pick(PUMPKINS), r.randint(0, 3))
+            p.set(px, 3, pz, "Deco_Spider_Cocoon" if theme == "spiders" else "Deco_Lantern")
         elif r.random() < 0.6:
             p.set(px, 3, pz, p.pick(CANDLES))
     # portail : deux hauts piliers, linteau, lanterne suspendue
@@ -822,7 +1027,7 @@ def cemetery(seed, theme):
         p.set(gx, 0, z1, "Rock_Stone_Brick_Pillar_Base")
         p.fill(gx, 1, z1, gx, 4, z1, "Rock_Stone_Brick_Pillar_Middle")
         p.set(gx, 5, z1, "Rock_Stone_Brick_Ornate")
-        p.set(gx, 6, z1, "Deco_Halloween_Pumpkin_Scary", SOUTH)
+        p.set(gx, 6, z1, "Deco_Lantern")
         p.set(gx, 0, z1 + 1, "Furniture_Village_Brazier")
     p.fill(-2, 5, z1, 2, 5, z1, "Rock_Stone_Brick_Ornate")
     p.set(0, 6, z1, "Rock_Stone_Brick_Pillar_Middle")
@@ -857,7 +1062,6 @@ def cemetery(seed, theme):
             p.paste(t, tx, 0, tz, min_y=0)
     if theme == "haunted":
         p.scatter(x0 + 1, 0, z0 + 1, x1 - 1, z1 - 1, 14, CANDLES)
-        p.scatter(x0 + 1, 0, z0 + 1, x1 - 1, z1 - 1, 8, PUMPKINS)
         p.scatter(x0 + 1, 0, z0 + 1, x1 - 1, z1 - 1, 10, GLOW_MUSHROOMS)
         p.scatter(x0 + 1, 0, z0 + 1, x1 - 1, z1 - 1, 10, DEAD_PLANTS)
     elif theme == "spiders":
@@ -917,10 +1121,10 @@ def crypt(seed, material):
     p.fill(-2, 4, z1 + 1, 2, 4, z1 + 1, ornate)
     p.fill(-2, 0, z1 + 1, -2, 3, z1 + 1, ornate)
     p.fill(2, 0, z1 + 1, 2, 3, z1 + 1, ornate)
-    p.set(-2, 5, z1 + 1, "Deco_Halloween_Pumpkin_Scary", SOUTH)
-    p.set(2, 5, z1 + 1, "Deco_Halloween_Pumpkin_Scary", SOUTH)
+    p.set(-2, 5, z1 + 1, "Deco_Lantern")
+    p.set(2, 5, z1 + 1, "Deco_Lantern")
     p.set(0, 3, z1, "Deco_Lantern_Ceiling")
-    p.set(0, 7, z1, "Furniture_Ancient_Statue", SOUTH)
+    p.set(0, 7, z1, "Furniture_Temple_Dark_Statue", SOUTH)
     p.set(-3, 0, z1 - 1, p.pick(CANDLES))
     p.set(3, 0, z1 - 1, p.pick(CANDLES))
     p.set(-3, 4, z0 + 1, p.pick(WEBS))
@@ -931,8 +1135,8 @@ def crypt(seed, material):
     for z in range(cz0 + 1, cz1, 3):
         p.set(cx0 + 1, cy0 + 1, z, r.choice(["Furniture_Ancient_Coffin", "Furniture_Temple_Dark_Coffin", "Furniture_Human_Ruins_Coffin"]), EAST)
         p.set(cx1 - 1, cy0 + 1, z, r.choice(["Furniture_Ancient_Coffin", "Furniture_Temple_Dark_Coffin", "Furniture_Village_Coffin"]), WEST)
-    p.set(0, cy0 + 1, cz0 + 1, "Furniture_Temple_Dark_Chest_Large", SOUTH)
-    p.set(-1, cy0 + 1, cz0 + 1, p.pick(CANDLES))
+    p.chest(0, cy0 + 1, cz0 + 1, "Furniture_Temple_Dark_Chest_Large", SOUTH, LOOT_CRYPT)
+    p.set(-2, cy0 + 1, cz0 + 1, p.pick(CANDLES))
     p.set(1, cy0 + 1, cz0 + 1, p.pick(CANDLES))
     if r.random() < 0.5:
         p.set(0, cy0 + 1, cz0 + 5, "Furniture_Temple_Dark_Statue", SOUTH)
@@ -953,7 +1157,6 @@ def crypt(seed, material):
     for z in range(z1 + 1, z1 + 7):
         for x in (-1, 0, 1):
             p.set(x, -1, z, p.pick(PATH))
-    p.set(-1, 0, z1 + 4, p.pick(PUMPKINS), r.randint(0, 3))
     p.paste(dead_tree(r.randint(0, 1 << 30), "medium", webs=True), 7, 0, z1 + 3, min_y=0)
     p.ruin(85, keep_below=0, names={n for n, _ in wall})
     return p
@@ -1019,8 +1222,8 @@ def gatehouse(p, z, height, wall, ornate, gate_half=2):
     p.fill(-gate_half, height - 1, z, gate_half, height + 1, z, p.pick(wall))
     for x in range(-gate_half, gate_half + 1):
         p.set(x, height - 2, z, "Deco_Iron_Bars")  # herse relevée
-    p.set(-gate_half - 1, height + 3, z, "Deco_Halloween_Pumpkin_Scary", SOUTH)
-    p.set(gate_half + 1, height + 3, z, "Deco_Halloween_Pumpkin_Scary", SOUTH)
+    p.set(-gate_half - 1, height + 3, z, "Furniture_Village_Brazier")
+    p.set(gate_half + 1, height + 3, z, "Furniture_Village_Brazier")
     p.set(0, height - 1, z - 1, "Deco_Lantern_Ceiling")
     for x in (-gate_half - 2, gate_half + 2):
         p.set(x, 0, z + 1, "Furniture_Village_Brazier")
@@ -1075,12 +1278,13 @@ def haunted_castle(seed, material):
     # donjon
     level_h = keep(p, -6, -12, 6, -2, 12, wall, flr, roof, ornate, levels=2)
     # salle du bas : longue table, chandelier, bannières
-    p.fill(-1, 0, -10, 1, 0, -5, "Furniture_Human_Ruins_Table")
+    for z in (-10, -8, -6):                       # trois tables de 2 × 2 bout à bout
+        p.set(-1, 0, z, "Furniture_Human_Ruins_Table")
     for z in range(-10, -4):
         p.set(-2, 0, z, "Furniture_Human_Ruins_Chair", EAST)
-        p.set(2, 0, z, "Furniture_Human_Ruins_Chair", WEST)
+        p.set(1, 0, z, "Furniture_Human_Ruins_Chair", WEST)
     for z in (-10, -7, -5):
-        p.set(0, 1, z, p.pick(CANDLES))
+        p.set(-1 + (z % 2), 1, z, p.pick(CANDLES))
     p.set(0, level_h - 1, -7, "Furniture_Tavern_Chandelier")
     for x in (-4, 4):
         p.set(x, 3, -11, "Furniture_Human_Ruins_Banner", SOUTH)
@@ -1092,14 +1296,14 @@ def haunted_castle(seed, material):
     y = level_h + 1
     p.set(-4, y, -10, "Furniture_Ancient_Bed", EAST)
     p.set(-4, y, -6, "Furniture_Human_Ruins_Wardrobe", EAST)
-    p.set(3, y, -10, "Furniture_Ancient_Chest_Large", SOUTH)
-    p.set(0, y, -9, "Furniture_Ancient_Painting", SOUTH)
+    p.chest(3, y, -11, "Furniture_Ancient_Chest_Large", SOUTH, LOOT_CASTLE)
+    p.set(0, y + 1, -11, "Furniture_Ancient_Painting", SOUTH)
     p.scatter(-5, y, -11, 5, -3, 6, CANDLES)
     # toiles d'araignée partout sous les plafonds
-    for _ in range(40):
+    for _ in range(16):
         x, z = r.randint(-5, 5), r.randint(-11, -3)
         for yy in (level_h - 1, 2 * level_h - 1):
-            if p.get(x, yy, z) == AIR and r.random() < 0.5:
+            if p.get(x, yy, z) == AIR and p.free(x, yy, z) and r.random() < 0.5:
                 p.set(x, yy, z, p.pick(WEBS))
     # cour : puits, tombes, arbres morts, citrouilles
     p.hollow(8, 0, 6, 10, 1, 8, wall)
@@ -1116,7 +1320,6 @@ def haunted_castle(seed, material):
             grave(p, x, z, r, "haunted")
     for tx, tz, size in ((-10, 13, "medium"), (12, 12, "medium"), (-12, 2, "small")):
         p.paste(dead_tree(r.randint(0, 1 << 30), size, webs=True), tx, 0, tz, min_y=0)
-    p.scatter(-s + 2, 0, -s + 2, s - 2, s - 2, 12, PUMPKINS)
     p.scatter(-s + 2, 0, -1, s - 2, s - 2, 10, DEAD_PLANTS)
     p.scatter(-s + 2, 0, -1, s - 2, s - 2, 8, BONES)
     p.scatter(-s + 2, 0, -1, s - 2, s - 2, 6, GLOW_MUSHROOMS)
@@ -1221,8 +1424,9 @@ def spawn_crypt(seed):
     p.fill(0, 1, 5, 0, 3, 5, GLASS_RED)
     p.set(0, 4, 5, "Rock_Stone_Brick_Ornate")
     # intérieur : cercueils, bougies, braseros, toiles ; rien à moins de 2 blocs du centre
-    for z in (-3, 3):
+    for z in (-2, 3):                      # cercueils couchés le long des murs (2 blocs vers le nord)
         p.set(-4, 0, z, "Furniture_Ancient_Coffin", EAST)
+    for z in (-3, 2):                      # (2 blocs vers le sud)
         p.set(4, 0, z, "Furniture_Ancient_Coffin", WEST)
     for x in (-4, 4):
         for z in (-4, 4):
@@ -1240,7 +1444,6 @@ def spawn_crypt(seed):
     # abords : tombes et citrouilles
     for x, z in ((-7, -9), (7, -9), (-7, 7), (7, 7)):
         grave(p, x, z, r, r.choice(["haunted", "plain"]))
-    p.scatter(-8, 0, -12, 8, 8, 6, PUMPKINS)
     p.scatter(-8, 0, -12, 8, 8, 6, DEAD_PLANTS)
     return p
 
@@ -1287,7 +1490,7 @@ def vampire_manor(seed):
             continue
         p.fill(x, 0, z, x, 2, z, "Rock_Basalt_Brick")
         p.set(x, 3, z, MANOR_TRIM)
-        p.set(x, 4, z, r.choice(["Deco_Lantern", "Deco_Halloween_Pumpkin_Scary"]), SOUTH)
+        p.set(x, 4, z, "Deco_Lantern")
     for x in (-gate_half - 1, gate_half + 1):
         p.fill(x, 0, Z1, x, 3, Z1, "Rock_Basalt_Brick")
         p.set(x, 4, Z1, MANOR_TRIM)
@@ -1426,15 +1629,33 @@ def vampire_manor(seed):
     rose_window(p, (mz0 + mz1) // 2, top + 4, x=mx1)
     rose_window(p, (mz0 + mz1) // 2, top + 4, x=mx0)
 
-    # --- rez-de-chaussée --------------------------------------------------------------------------
+    # --- intérieur : cloisons ------------------------------------------------------------------------
+    # Le hall occupe le centre (x -6..6) sur les deux niveaux ; de chaque côté, deux pièces de 5 blocs
+    # de large séparées par un mur en z = -10 (les ailes prolongent celles du sud jusqu'à la façade).
+    for y0, y1 in ((0, upper - 1), (upper + 1, top)):
+        for side in (-1, 1):
+            px = 7 * side
+            p.fill(px, y0, mz0 + 1, px, y1, mz1 - 1, MANOR_WALL)
+            for x in range(8, 13):
+                p.set(x * side, y0, -10, p.pick(MANOR_WALL))
+                for y in range(y0 + 1, y1 + 1):
+                    p.set(x * side, y, -10, p.pick(MANOR_WALL))
+    doors = [(-7, 0, -14), (-7, 0, -7), (7, 0, -14), (7, 0, -7),            # cuisine, salle à manger, cabinet, bibliothèque
+             (-7, upper + 1, -13), (-7, upper + 1, -6), (7, upper + 1, -13), (7, upper + 1, -6)]
+    for dx, dy, dz in doors:
+        p.clear(dx, dy, dz, dx, dy + 2, dz + 1)
+        p.set(dx, dy + 3, dz, MANOR_TRIM)
+        p.set(dx, dy + 3, dz + 1, MANOR_TRIM)
+
+    # --- hall : tapis, piliers, trône, escaliers ---------------------------------------------------
     for z in range(mz0 + 1, tz1 + 1):                # tapis rouge de la porte au trône
         for x in (-1, 0, 1):
             p.set(x, -1, z, "Cloth_Block_Wool_Red")
-    for z in range(mz0 + 3, mz1, 4):                 # piliers du hall
-        for x in (-5, 5):
+    for z in (-16, -12, -8):                         # piliers du hall
+        for x in (-3, 3):
             p.set(x, 0, z, "Rock_Basalt_Brick_Pillar_Base")
             p.fill(x, 1, z, x, upper - 1, z, "Rock_Basalt_Brick_Pillar_Middle")
-    for z in (mz0 + 5, mz0 + 11):
+    for z in (-13, -8):
         p.set(0, upper - 1, z, "Furniture_Feran_Chandelier")
     # trône sur une estrade, au fond du hall
     p.fill(-3, 0, mz0 + 1, 3, 0, mz0 + 2, "Rock_Basalt_Brick_Smooth")
@@ -1447,49 +1668,96 @@ def vampire_manor(seed):
         p.set(x, 0, mz0 + 3, "Furniture_Temple_Dark_Brazier")
     # le comte ou la comtesse attend devant son trône (marqueur invisible du mod nakasar-mobs)
     p.set(0, 0, mz0 + 5, "Nakasar_Spawner_Vampire_Count")
-    # cheminées monumentales sur le mur du fond
-    for x in (-9, 9):
-        p.clear(x - 1, 0, mz0, x + 1, 1, mz0)
-        p.set(x, -1, mz0, "Rock_Basalt_Brick_Smooth")
-        p.set(x, 0, mz0, "Furniture_Temple_Dark_Brazier")
-        p.fill(x - 2, 2, mz0 + 1, x + 2, 2, mz0 + 1, MANOR_TRIM)
-        p.fill(x - 2, 0, mz0 + 1, x - 2, 1, mz0 + 1, "Rock_Basalt_Brick")
-        p.fill(x + 2, 0, mz0 + 1, x + 2, 1, mz0 + 1, "Rock_Basalt_Brick")
-        p.set(x, 3, mz0 + 1, "Furniture_Ancient_Painting", SOUTH)
-        p.set(x - 1, 3, mz0 + 1, p.pick(CANDLES))
-        p.set(x + 1, 3, mz0 + 1, p.pick(CANDLES))
-    # salle à manger (aile ouest)
-    wx0, wx1 = wings[0]
-    for z in range(mz1 - 3, wz1):
-        p.set(-10, 0, z, "Furniture_Temple_Dark_Table")
-        p.set(-11, 0, z, "Furniture_Royal_Magic_Chair", EAST)
-        p.set(-9, 0, z, "Furniture_Royal_Magic_Chair", WEST)
-    p.set(-10, upper - 1, mz1 - 1, "Furniture_Tavern_Chandelier")
-    p.set(-12, 0, mz1 - 5, "Furniture_Temple_Dark_Wardrobe", EAST)
-    p.set(-12, 0, wz1 - 1, p.pick(CANDLES))
-    p.set(-8, 0, wz1 - 1, p.pick(CANDLES))
-    # bibliothèque (aile est)
-    for z in range(mz1 - 1, wz1):
-        p.set(12, 0, z, "Furniture_Ancient_Bookshelf", WEST)
-        p.set(12, 1, z, "Furniture_Ancient_Bookshelf", WEST)
-    for x in range(9, 12):
-        p.set(x, 0, mz1 - 6, "Furniture_Human_Ruins_Bookshelf", SOUTH)
-    p.set(10, 0, wz1 - 2, "Furniture_Temple_Dark_Table")
-    p.set(10, 0, wz1 - 1, "Furniture_Royal_Magic_Chair", NORTH)
-    p.set(8, 0, wz1 - 1, "Furniture_Temple_Dark_Candle")
-    p.set(10, upper - 1, mz1 - 1, "Furniture_Tavern_Chandelier")
-    # escalier vers l'étage, le long du mur ouest du hall (monte vers le nord)
-    sx0, sx1 = mx0 + 1, mx0 + 2
-    zs = stairs_up(p, sx0, sx1, mz1 - 1, -1, upper + 1, "Rock_Basalt_Brick", "Rock_Basalt_Brick_Half")
+    # escalier d'honneur le long du mur ouest du hall, qui monte vers le nord jusqu'à la galerie
+    sx0, sx1 = -6, -5
+    zs = stairs_up(p, sx0, sx1, -6, -1, upper + 1, "Rock_Basalt_Brick", "Rock_Basalt_Brick_Half")
     for i, z in enumerate(zs):
         if (i + 1) / 2 >= 2:                         # trémie dans le plancher au-dessus des marches
             for x in (sx0, sx1):
-                if p.get(x, upper, z) in [n for n, _ in WOOD_FLOOR]:
-                    p.set(x, upper, z, AIR)
-        if 4 <= i < len(zs) - 1:
-            p.set(sx1 + 1, upper + 1, z, RAILING)       # garde-corps autour de la trémie
-    # crypte sous le hall : un escalier descend de l'angle sud-est
+                p.set(x, upper, z, AIR)
+        if 3 <= i < len(zs) - 1:
+            p.set(sx1 + 1, upper + 1, z, RAILING)       # garde-corps de la galerie autour de la trémie
+    p.set(sx1 + 1, upper + 1, zs[2], RAILING)
+    for x in (sx0, sx1):
+        p.set(x, upper + 1, zs[2] + 1, RAILING)
+    # escalier de la crypte, côté est du hall, derrière une balustrade
     depth = 5
+    stairs_down(p, (5, -6), (0, -1), depth, "Rock_Basalt_Brick", "Rock_Basalt_Brick_Half", MANOR_WALL, width=2)
+    for z in range(-15, -7):
+        p.set(4, 0, z, RAILING)
+
+    # --- cuisine (nord-ouest) ----------------------------------------------------------------------
+    p.set(-12, 0, -15, "Bench_Cooking", EAST)
+    p.set(-12, 0, -12, "Bench_Furnace", EAST)
+    p.set(-12, 0, -16, "Furniture_Village_Shelf_Full", EAST)
+    p.set(-10, 0, -14, "Furniture_Village_Table")
+    for x, z, item in ((-10, -14, "Deco_Plate"), (-9, -14, "Deco_Mug"), (-10, -13, "Deco_Bucket"), (-9, -13, "Deco_Plate")):
+        p.set(x, 1, z, item, SOUTH)
+    for x, z in ((-9, -19), (-8, -19)):
+        p.set(x, 0, z, "Furniture_Ancient_Barrel")
+    p.set(-8, 0, -18, "Furniture_Ancient_Crate")
+    p.set(-9, 0, -18, "Furniture_Ancient_Sack")
+    p.set(-8, 1, -19, "Furniture_Ancient_Sack")
+    p.chest(-8, 0, -11, "Furniture_Village_Chest_Small", WEST, LOOT_MANOR_KITCHEN)
+    p.set(-10, upper - 1, -12, "Deco_Lantern_Ceiling")
+
+    # --- salle à manger (ouest et aile ouest) -------------------------------------------------------
+    for z in (-8, -6, -4, -2):                       # longue table : quatre tables de 2 × 2 bout à bout
+        p.set(-11, 0, z, "Furniture_Temple_Dark_Table")
+    for z in range(-8, 0):
+        p.set(-12, 0, z, "Furniture_Royal_Magic_Chair", EAST)
+        p.set(-9, 0, z, "Furniture_Royal_Magic_Chair", WEST)
+    p.set(-11, 0, -9, "Furniture_Royal_Magic_Chair", SOUTH)   # bouts de table : le comte, la comtesse
+    p.set(-10, 0, 0, "Furniture_Royal_Magic_Chair", NORTH)
+    for z in (-7, -4, -1):
+        p.set(-11 + (z % 2), 1, z, p.pick(CANDLES))
+    for x, z in ((-10, -6), (-11, -3)):              # sur la table (x -11..-10), entre les bougies
+        p.set(x, 1, z, r.choice(["Deco_Plate", "Deco_Tankard"]), SOUTH)
+    for z in (-6, -2):
+        p.set(-10, upper - 1, z, "Furniture_Tavern_Chandelier")
+    p.set(-9, 0, 1, "Furniture_Village_Counter", NORTH)      # desserte contre la façade
+    p.set(-9, 1, 1, "Deco_Tankard", NORTH)
+
+    # --- cabinet du comte (nord-est) : cheminée, bureau, coffre ----------------------------------------
+    hx = 9
+    p.clear(hx - 1, 0, mz0, hx + 1, 1, mz0)
+    p.set(hx, -1, mz0, "Rock_Basalt_Brick_Smooth")
+    p.set(hx, 0, mz0, "Furniture_Temple_Dark_Brazier")
+    p.fill(hx - 2, 2, mz0 + 1, hx + 2, 2, mz0 + 1, MANOR_TRIM)
+    p.fill(hx - 2, 0, mz0 + 1, hx - 2, 1, mz0 + 1, "Rock_Basalt_Brick")
+    p.fill(hx + 2, 0, mz0 + 1, hx + 2, 1, mz0 + 1, "Rock_Basalt_Brick")
+    p.set(hx, 3, mz0 + 1, "Furniture_Ancient_Painting", SOUTH)
+    p.set(hx - 1, 3, mz0 + 1, p.pick(CANDLES))
+    p.set(hx + 1, 3, mz0 + 1, p.pick(CANDLES))
+    p.set(11, 0, -15, "Furniture_Human_Ruins_Desk", SOUTH)
+    p.set(10, 0, -14, "Furniture_Royal_Magic_Chair", NORTH)
+    p.set(11, 1, -15, "Deco_Map", SOUTH)
+    p.set(10, 1, -15, "Deco_Inkwell", SOUTH)
+    p.set(12, 0, -12, "Furniture_Ancient_Bookshelf", WEST)
+    p.set(12, 1, -12, "Furniture_Ancient_Bookshelf", WEST)
+    p.set(9, 0, -11, "Furniture_Royal_Magic_Couch", SOUTH)
+    p.set(10, upper - 1, -13, "Deco_Lantern_Ceiling")
+
+    # --- bibliothèque (est et aile est) ----------------------------------------------------------------
+    for z in range(-9, 2):
+        if z not in (-5, -4):
+            p.set(12, 0, z, "Furniture_Ancient_Bookshelf", WEST)
+            p.set(12, 1, z, "Furniture_Ancient_Bookshelf", WEST)
+    for x in range(8, 12):
+        p.set(x, 0, -9, "Furniture_Human_Ruins_Bookshelf", SOUTH)
+        p.set(x, 1, -9, "Furniture_Human_Ruins_Bookshelf", SOUTH)
+    p.set(12, 0, -5, "Furniture_Temple_Dark_Statue", WEST)    # statue entre deux rayonnages
+    p.set(9, 0, -5, "Furniture_Royal_Magic_Table")
+    p.set(8, 0, -5, "Furniture_Royal_Magic_Chair", EAST)
+    p.set(11, 0, -4, "Furniture_Royal_Magic_Chair", WEST)
+    p.set(9, 1, -5, "Deco_Book_Pile_Small", SOUTH)
+    p.set(10, 1, -4, p.pick(CANDLES))
+    p.set(10, 1, -5, "Deco_Scroll", EAST)
+    p.set(8, 0, 0, "Deco_Book_Pile_Large", SOUTH)
+    p.chest(8, 0, 1, "Furniture_Ancient_Chest_Small", EAST, LOOT_MANOR_LIBRARY)
+    p.set(10, upper - 1, -1, "Furniture_Tavern_Chandelier")
+
+    # --- crypte sous le hall ----------------------------------------------------------------------
     cy0 = -depth - 1
     cx0, cx1, cz0, cz1 = -10, 10, mz0 + 1, mz1 - 1
     for x in range(cx0 - 1, cx1 + 2):
@@ -1500,59 +1768,85 @@ def vampire_manor(seed):
                 if x in (cx0 - 1, cx1 + 1) or z in (cz0 - 1, cz1 + 1):
                     p.set(x, y, z, p.pick(MANOR_WALL))
     p.floor(cx0, cz0, cx1, cz1, cy0, MANOR_FLOOR)
-    p.clear(cx0, cy0 + 1, cz0, cx1, -2, cz1)
-    stairs_down(p, (cx1 - 1, cz1), (0, -1), depth, "Rock_Basalt_Brick", "Rock_Basalt_Brick_Half", MANOR_WALL, width=2)
-    for x in range(cx0 + 1, cx1 - 3, 3):
+    for x in range(cx0, cx1 + 1):
+        for z in range(cz0, cz1 + 1):
+            for y in range(cy0 + 1, -1):
+                if not (5 <= x <= 6 and -15 <= z <= -6):   # l'escalier de la crypte
+                    p.set(x, y, z, AIR)
+    for x in range(cx0 + 1, 3, 3):
         p.set(x, cy0 + 1, cz0 + 1, r.choice(["Furniture_Temple_Dark_Coffin", "Furniture_Ancient_Coffin"]), SOUTH)
-        p.set(x, cy0 + 1, cz1 - 1, r.choice(["Furniture_Temple_Dark_Coffin", "Furniture_Ancient_Coffin"]), NORTH)
+        p.set(x + 1, cy0 + 1, cz1 - 1, r.choice(["Furniture_Temple_Dark_Coffin", "Furniture_Ancient_Coffin"]), NORTH)
     mid = (cz0 + cz1) // 2
-    p.set(0, cy0 + 1, mid, "Furniture_Ancient_Chest_Large", SOUTH)
-    for x in (-1, 1):
+    p.chest(0, cy0 + 1, mid, "Furniture_Ancient_Chest_Large", SOUTH, LOOT_MANOR_TREASURE)
+    for x in (-2, 1):
         p.set(x, cy0 + 1, mid, "Deco_Treasure_Pile_Small")
     # ses rejetons gardent la crypte (marqueurs invisibles du mod nakasar-mobs)
-    for x in (cx0 + 2, cx1 - 5):
+    for x in (cx0 + 2, 2):
         p.set(x, cy0 + 1, mid + 1, "Nakasar_Spawner_Vampire_Spawn")
-    for px in (-5, 4):
-        p.fill(px, cy0 + 1, mid, px, -2, mid, "Rock_Basalt_Brick_Pillar_Middle")
-        p.set(px, cy0 + 1, mid - 1, "Furniture_Temple_Dark_Brazier")
-    p.scatter(cx0 + 1, cy0 + 1, cz0 + 1, cx1 - 3, cz1 - 1, 10, CANDLES)
-    p.scatter(cx0 + 1, cy0 + 1, cz0 + 1, cx1 - 3, cz1 - 1, 8, BONES)
-    p.scatter(cx0 + 1, cy0 + 1, cz0 + 1, cx1 - 3, cz1 - 1, 4, [("Rock_Crystal_Red_Small", 1)])
+    for px in (-5, 3):
+        p.fill(px, cy0 + 1, mid - 2, px, -2, mid - 2, "Rock_Basalt_Brick_Pillar_Middle")
+        p.set(px, cy0 + 1, mid - 3, "Furniture_Temple_Dark_Brazier")
+    p.scatter(cx0 + 1, cy0 + 1, cz0 + 1, 3, cz1 - 1, 8, CANDLES)
+    p.scatter(cx0 + 1, cy0 + 1, cz0 + 1, 3, cz1 - 1, 5, BONES)
 
-    # --- étage ------------------------------------------------------------------------------------
+    # --- étage -------------------------------------------------------------------------------------
     y = upper + 1
-    # chambre du comte (est) : lit à baldaquin, cercueil, coffre
-    p.fill(6, y, mz0 + 1, 6, top, mz1 - 1, MANOR_WALL)           # cloison
-    p.clear(6, y, mz1 - 3, 6, y + 1, mz1 - 3)                     # porte
-    p.set(10, y, mz0 + 2, "Furniture_Royal_Magic_Bed", SOUTH)
-    p.set(8, y, mz0 + 1, "Furniture_Temple_Dark_Coffin", SOUTH)
-    p.set(12, y, mz0 + 5, "Furniture_Temple_Dark_Chest_Large", WEST)
-    p.set(12, y, mz0 + 8, "Furniture_Royal_Magic_Wardrobe", WEST)
-    p.set(9, top, mz0 + 7, "Furniture_Feran_Chandelier")
-    p.set(7, y, mz0 + 1, p.pick(CANDLES))
-    # boudoir de la comtesse (ouest, derrière l'escalier) : lit, coiffeuse, banquette
-    p.fill(-6, y, mz0 + 1, -6, top, mz1 - 1, MANOR_WALL)
-    p.clear(-6, y, mz1 - 3, -6, y + 1, mz1 - 3)
-    p.set(-10, y, mz0 + 2, "Furniture_Temple_Dark_Bed", SOUTH)
-    p.set(-8, y, mz0 + 1, "Furniture_Royal_Magic_Couch", SOUTH)
-    p.set(-8, y, mz0 + 7, "Furniture_Royal_Magic_Table", WEST)
-    p.set(-8, y + 1, mz0 + 7, "Furniture_Royal_Magic_Potion_Glow")
-    p.set(-9, top, mz0 + 7, "Furniture_Feran_Chandelier")
-    # galerie centrale : tableaux et statues face aux fenêtres
-    for x in (-3, 0, 3):
-        p.set(x, y + 1, mz0 + 1, "Furniture_Ancient_Painting", SOUTH)
-    for x in (-4, 4):
+    # galerie au-dessus du hall : tableaux face aux fenêtres, statues, tapis, salon
+    for x in (-2, 3):
+        p.set(x, y + 1, mz0 + 1, "Furniture_Village_Painting_2x2", SOUTH)
+    for x in (-4, 5):
         p.set(x, y, mz0 + 1, "Furniture_Temple_Dark_Statue", SOUTH)
-    for z in range(mz0 + 2, mz1, 2):
+    for z in range(mz0 + 2, mz1 + 1):
         p.set(0, y - 1, z, "Cloth_Block_Wool_Red")
-    p.set(0, top, mz0 + 8, "Furniture_Feran_Chandelier")
-    # chambres des ailes : armoires et coffres
-    p.set(-12, y, wz1 - 1, "Furniture_Temple_Dark_Wardrobe", EAST)
-    p.set(12, y, wz1 - 1, "Furniture_Temple_Dark_Wardrobe", WEST)
-    p.set(-8, y, wz1 - 1, "Furniture_Temple_Dark_Chest_Large", NORTH)
-    p.set(8, y, wz1 - 1, "Furniture_Ancient_Chest_Large", NORTH)
-    # combles : toiles d'araignée sous le toit
-    for _ in range(40):
+    p.set(4, y, -15, "Furniture_Royal_Magic_Couch", WEST)
+    p.set(3, y, -13, "Furniture_Royal_Magic_Table")
+    p.set(3, y + 1, -13, p.pick(CANDLES))
+    p.set(0, top, -13, "Furniture_Feran_Chandelier")
+    p.set(0, top, -7, "Furniture_Feran_Chandelier")
+    # chambre de la comtesse (nord-ouest) : lit, coiffeuse, armoire, coffre à bijoux
+    p.set(-12, y, -16, "Furniture_Temple_Dark_Bed", SOUTH)
+    p.set(-12, y, -12, "Furniture_Royal_Magic_Wardrobe", EAST)
+    p.set(-9, y, -16, "Furniture_Royal_Magic_Table")
+    p.set(-9, y + 1, -16, "Furniture_Royal_Magic_Potion_Glow")
+    p.set(-8, y + 1, -15, "Deco_Potion")
+    p.set(-10, y, -16, "Furniture_Village_Stool")
+    p.set(-10, y, -13, "Furniture_Royal_Magic_Carpet")
+    p.chest(-8, y, -11, "Furniture_Royal_Magic_Chest_Small", WEST, LOOT_MANOR_BEDROOM)
+    p.set(-10, top, -14, "Furniture_Royal_Magic_Potion_Glow_Ceiling")
+    # laboratoire d'alchimie (ouest et aile ouest)
+    p.set(-12, y, -8, "Bench_Alchemy", EAST)
+    p.set(-12, y, -4, "Alchemy_Cauldron_Big")
+    p.set(-10, y, -5, "Alchemy_Cauldron")
+    p.set(-9, y, 1, "Bench_Arcane", NORTH)
+    p.set(-10, y, -2, "Furniture_Temple_Dark_Table")
+    for x, z, item in ((-10, -2, "Deco_Potion"), (-9, -2, "Rock_Crystal_Red_Small"), (-10, -1, "Deco_Book_Pile_Small"), (-9, -1, "Deco_Bone_Skulls")):
+        p.set(x, y + 1, z, item, SOUTH)
+    for z in (-1, 0):
+        p.set(-12, y, z, "Furniture_Temple_Dark_Shelf", EAST)
+        p.set(-12, y + 1, z, "Deco_Potion", EAST)
+    p.chest(-8, y, -9, "Furniture_Temple_Dark_Chest_Small", WEST, LOOT_MANOR_ALCHEMY)
+    p.set(-10, top, -6, "Furniture_Royal_Magic_Potion_Glow_Ceiling")
+    p.set(-10, top, -1, "Furniture_Royal_Magic_Potion_Glow_Ceiling")
+    # chambre du comte (nord-est) : lit à baldaquin, cercueil au pied, armoire, coffre
+    p.set(9, y, -19, "Furniture_Royal_Magic_Bed", SOUTH)
+    p.set(9, y, -13, "Furniture_Temple_Dark_Coffin", SOUTH)
+    p.set(12, y, -14, "Furniture_Royal_Magic_Wardrobe", WEST)
+    p.chest(12, y, -11, "Furniture_Royal_Magic_Chest_Large", WEST, LOOT_MANOR_BEDROOM)
+    p.set(8, y, -19, p.pick(CANDLES))
+    p.set(10, top, -14, "Furniture_Feran_Chandelier")
+    # atelier (est et aile est) : établi, forge d'armes, métier à tisser, caisses
+    p.set(12, y, -8, "Bench_WorkBench", WEST)
+    p.set(12, y, -5, "Bench_Weapon", WEST)
+    p.set(10, y, 1, "Bench_Loom", NORTH)
+    p.set(8, y, -3, "Furniture_Village_Table")
+    p.set(8, y + 1, -3, "Deco_Bucket", SOUTH)
+    p.set(8, y, 1, "Furniture_Ancient_Crate")
+    p.set(8, y + 1, 1, "Furniture_Ancient_Crate")
+    p.set(12, y, 1, "Furniture_Ancient_Barrel")
+    p.chest(8, y, -9, "Furniture_Village_Chest_Small", EAST, LOOT_MANOR_WORKSHOP)
+    p.set(10, top, -4, "Deco_Lantern_Ceiling")
+    # combles : quelques toiles d'araignée sous le toit
+    for _ in range(12):
         x, z = r.randint(mx0 + 1, mx1 - 1), r.randint(mz0 + 1, mz1 - 1)
         for yy in range(top + 2, top + 14):
             if p.get(x, yy, z) not in (None, AIR):
@@ -1584,9 +1878,620 @@ def vampire_manor(seed):
         for z in (-20, -16, -12):
             grave(p, x, z, r, r.choice(["undead", "haunted"]))
     mausoleum(p, -25, -21, r, door_south=True)
-    p.scatter(-X + 2, 0, Z0 + 2, X - 2, Z1 - 2, 14, PUMPKINS)
     p.scatter(-X + 2, 0, Z0 + 2, X - 2, Z1 - 2, 10, BONES)
     p.scatter(-X + 2, 0, Z0 + 2, X - 2, Z1 - 2, 20, DEAD_PLANTS)
+    return p
+
+
+# --- domaine du comte : maisons, village, fermes, poste de garde ---------------------------------
+#
+# Maisons à la manière du village brûlé vanilla (Monuments/Encounter/Zone4/Tier4/Village) :
+# rez-de-chaussée en moellons, étage à colombages, toit à deux pans en blocs de toit du jeu (45°),
+# fenêtres et portes « Ancient », mobilier contre les murs et jamais imbriqué (Prefab.fits).
+
+TIMBER = [("Wood_Deadwood_Planks", 6), ("Wood_Deadwood_Decorative", 1)]
+COBBLE_WALL = [("Rock_Stone_Cobble", 6), ("Rock_Stone_Cobble_Mossy", 2), ("Rock_Stone", 1)]
+WILD_GROWTH = [("Plant_Grass_Gnarled", 4), ("Plant_Grass_Gnarled_Tall", 2), ("Plant_Bush_Dead", 2), ("Plant_Bush_Dead_Tall", 1),
+               ("Plant_Bramble_Dead_Twisted", 1), ("Plant_Grass_Dry_Tall", 2)]
+RUBBLE = [("Deco_Trash_Pile_Small", 3), ("Rock_Stone_Cobble_Half", 2), ("Wood_Deadwood_Planks_Half", 2), ("Deco_Trash_Pile_Large", 1)]
+BLOOD = "Plant_Petals_Blood"
+WHEAT = "*Plant_Crop_Wheat_Block_State_Definitions_StageFinal"
+WHEAT_YOUNG = "*Plant_Crop_Wheat_Block_State_Definitions_Stage3"
+WHEAT_BURNT = "Plant_Crop_Wheat_Stage_4_Burnt"
+DOOR_ROT = {NORTH: 0, SOUTH: 0, EAST: 1, WEST: 1}   # portes et fenêtres : 0 dans un mur le long de x
+
+
+def roof(p, x0, z0, x1, z1, y, mat="Wood_Deadwood", ridge="x", gable=None, overhang=1):
+    """Toit à deux pans en blocs de toit du jeu (pente 45°) sur des murs dont le haut est en y - 1.
+
+    `ridge` = axe du faîte. La rangée au-dessus d'un mur est en y, le débord en y - 1, chaque rangée
+    vers le faîte monte d'un bloc ; le faîte impair reçoit le bloc « Topper ». Les pignons sont
+    remplis avec `gable`. Rotation des pentes : 0 descend vers +Z (sud), 2 vers le nord, 1 vers l'est,
+    3 vers l'ouest (lu dans les maisons vanilla). Renvoie la hauteur du faîte.
+    """
+    slope, topper = f"{mat}_Roof", f"*{mat}_Roof_State_Definitions_Topper"
+    if ridge == "x":
+        lo, hi, a0, a1, low_rot, high_rot, top_rot = z0, z1, x0, x1, NORTH, SOUTH, 0
+        at = lambda u, v: (v, u)
+    else:
+        lo, hi, a0, a1, low_rot, high_rot, top_rot = x0, x1, z0, z1, WEST, EAST, 1
+        at = lambda u, v: (u, v)
+    height = lambda u: y + min(u - lo, hi - u)
+    peak = y
+    for u in range(lo - overhang, hi + overhang + 1):
+        h = height(u)
+        peak = max(peak, h)
+        if u - lo < hi - u:
+            name, rot = slope, low_rot
+        elif u - lo > hi - u:
+            name, rot = slope, high_rot
+        else:
+            name, rot = topper, top_rot
+        for v in range(a0 - overhang, a1 + overhang + 1):
+            x, z = at(u, v)
+            p.set(x, h, z, name, rot)
+        if gable and lo <= u <= hi:
+            for v in (a0, a1):
+                x, z = at(u, v)
+                for k in range(y, h):
+                    p.set(x, k, z, p.pick(gable))
+    return peak
+
+
+def wall_cells(x0, z0, x1, z1):
+    """Cases au pied des murs intérieurs d'une pièce, avec l'orientation qui regarde la pièce."""
+    out = []
+    for x in range(x0, x1 + 1):
+        out.append((x, z0, SOUTH))
+        out.append((x, z1, NORTH))
+    for z in range(z0 + 1, z1):
+        out.append((x0, z, EAST))
+        out.append((x1, z, WEST))
+    return out
+
+
+def place_along_walls(p, room, y, name, keep=(), tries=None, loot=None):
+    """Pose `name` contre un mur de la pièce `room` = (x0, z0, x1, z1), à un endroit libre."""
+    cells = wall_cells(*room)
+    p.rng.shuffle(cells)
+    taken = p.reserved() | set(keep)
+    for x, z, rot in cells[:tries]:
+        if p.fits(x, y, z, name, rot, taken):
+            if loot:
+                p.chest(x, y, z, name, rot, loot)
+            else:
+                p.set(x, y, z, name, rot)
+            return (x, z, rot)
+    return None
+
+
+def dining_table(p, room, y, table, chair, keep=()):
+    """Table de 2 × 2 au milieu de la pièce, chaises tournées vers elle, bougie ou assiette dessus."""
+    x0, z0, x1, z1 = room
+    spots = [(x, z) for x in range(x0 + 1, x1 - 1) for z in range(z0 + 1, z1 - 1)]
+    p.rng.shuffle(spots)
+    taken = p.reserved() | set(keep)
+    for tx, tz in spots:
+        if not p.fits(tx, y, tz, table, 0, taken):
+            continue
+        p.set(tx, y, tz, table)
+        for cx, cz, rot in ((tx - 1, tz, EAST), (tx + 2, tz + 1, WEST), (tx, tz + 2, NORTH), (tx + 1, tz - 1, SOUTH)):
+            if p.rng.random() < 0.8 and x0 <= cx <= x1 and z0 <= cz <= z1 and p.fits(cx, y, cz, chair, rot, taken | set(keep)):
+                p.set(cx, y, cz, chair, rot)
+        p.set(tx, y + 1, tz, p.pick(CANDLES))
+        p.set(tx + 1, y + 1, tz + 1, p.rng.choice(["Deco_Plate", "Deco_Mug", "Deco_Tankard"]), SOUTH)
+        return (tx, tz)
+    return None
+
+
+def house(p, x0, z0, w, d, door, floors=1, kind="home", loot=LOOT_VILLAGE, wood="Wood_Deadwood"):
+    """Maison de `w` × `d` (murs compris) dont la porte donne vers `door` (NORTH, SOUTH, EAST, WEST).
+
+    Rez-de-chaussée en moellons, étage à colombages, poutres d'angle, toit de bois dans le sens de
+    la longueur, cheminée sur un pignon. `kind` : "home" (pièce à vivre, lit, coffre), "barn"
+    (grange : foin, caisses, auge), "smithy" (forge). Renvoie la case devant la porte.
+    """
+    x1, z1 = x0 + w - 1, z0 + d - 1
+    r = p.rng
+    planks = [(f"{wood}_Planks", 6), (f"{wood}_Decorative", 1)]
+    beam = f"{wood}_Beam"
+    top = 4 * floors - 1
+    p.clear(x0 - 1, 0, z0 - 1, x1 + 1, top + w // 2 + d // 2 + 4, z1 + 1)
+    p.floor(x0, z0, x1, z1, -1, f"{wood}_Planks", FOUNDATION, depth=2)
+    p.hollow(x0, 0, z0, x1, 3, z1, COBBLE_WALL)
+    if floors > 1:
+        p.hollow(x0, 4, z0, x1, top, z1, planks)
+        p.fill(x0 + 1, 4, z0 + 1, x1 - 1, 4, z1 - 1, f"{wood}_Planks")
+        for x in range(x0, x1 + 1):                 # sablière en saillie entre les niveaux
+            for z in (z0, z1):
+                p.set(x, 4, z, beam)
+        for z in range(z0, z1 + 1):
+            for x in (x0, x1):
+                p.set(x, 4, z, beam)
+    for cx in (x0, x1):
+        for cz in (z0, z1):
+            p.fill(cx, 0, cz, cx, top, cz, beam)
+    # toit dans le sens de la longueur, pignons en planches
+    ridge = "x" if w >= d else "z"
+    peak = roof(p, x0, z0, x1, z1, top + 1, wood, ridge, gable=planks)
+    # porte au milieu du mur, petit perron en pavés
+    dx, dz = {NORTH: (0, -1), SOUTH: (0, 1), EAST: (1, 0), WEST: (-1, 0)}[door]
+    if door in (NORTH, SOUTH):
+        px, pz = (x0 + x1) // 2, z0 if door == NORTH else z1
+    else:
+        px, pz = x0 if door == WEST else x1, (z0 + z1) // 2
+    p.clear(px, 0, pz, px, 1, pz)
+    p.set(px, 0, pz, "Furniture_Ancient_Door", DOOR_ROT[door])
+    p.set(px, 2, pz, beam)
+    p.set(px + dx, -1, pz + dz, "Rock_Stone_Cobble")
+    inside = (px - dx, pz - dz)
+    # fenêtres tous les trois blocs, aux deux niveaux, sauf à côté de la porte
+    for level in range(floors):
+        wy = 4 * level + 1 + (level > 0)
+        for x in range(x0 + 2, x1 - 1, 3):
+            for z in (z0, z1):
+                if abs(x - px) > 1 or z != pz:
+                    p.set(x, wy, z, "Furniture_Ancient_Window", 0)
+        for z in range(z0 + 2, z1 - 1, 3):
+            for x in (x0, x1):
+                if abs(z - pz) > 1 or x != px:
+                    p.set(x, wy, z, "Furniture_Ancient_Window", 1)
+    # cheminée contre le pignon opposé à la porte (ou le pignon est)
+    if ridge == "x":
+        chx, chz = (x0 - 1 if door != WEST else x1 + 1), (z0 + z1) // 2
+    else:
+        chx, chz = (x0 + x1) // 2, (z0 - 1 if door != NORTH else z1 + 1)
+    p.fill(chx, -1, chz, chx, peak + 1, chz, COBBLE_WALL)
+    p.set(chx, peak + 2, chz, "Rock_Stone_Cobble_Half")
+    # mobilier
+    room = (x0 + 1, z0 + 1, x1 - 1, z1 - 1)
+    keep = {inside, (inside[0] - dx, inside[1] - dz)}
+    if floors > 1:                                     # échelle et trémie vers l'étage
+        lx, lz = (x1 - 1, z0 + 1) if door != EAST else (x0 + 1, z0 + 1)
+        lrot = WEST if lx == x1 - 1 else EAST
+        for y in range(0, 5):
+            p.set(lx, y, lz, "Furniture_Ancient_Ladder", lrot)
+        keep |= {(lx, lz), (lx - (1 if lrot == WEST else -1), lz)}
+    if kind == "barn":
+        for _ in range(4):
+            place_along_walls(p, room, 0, "Ingredient_Hay", keep)
+        place_along_walls(p, room, 0, "Bench_Trough", keep)
+        for name in ("Furniture_Ancient_Crate", "Furniture_Ancient_Sack", "Furniture_Ancient_Barrel", "Furniture_Ancient_Crate"):
+            place_along_walls(p, room, 0, name, keep)
+        place_along_walls(p, room, 0, "Furniture_Crude_Chest_Small", keep, loot=loot)
+    elif kind == "smithy":
+        place_along_walls(p, room, 0, "Bench_Furnace", keep)
+        place_along_walls(p, room, 0, "Bench_Weapon", keep)
+        place_along_walls(p, room, 0, "Furniture_Ancient_Barrel", keep)
+        place_along_walls(p, room, 0, "Furniture_Ancient_Chest_Large", keep, loot=loot)
+    else:
+        place_along_walls(p, room, 0, "Bench_Cooking", keep)
+        dining_table(p, room, 0, "Furniture_Ancient_Table", "Furniture_Ancient_Chair", keep)
+        place_along_walls(p, room, 0, "Furniture_Ancient_Barrel", keep)
+        place_along_walls(p, room, 0, "Furniture_Village_Shelf_Full", keep)
+        bed_y = 5 if floors > 1 else 0
+        place_along_walls(p, room, bed_y, "Furniture_Ancient_Bed", keep)
+        place_along_walls(p, room, bed_y, "Furniture_Ancient_Wardrobe", keep)
+        place_along_walls(p, room, bed_y, "Furniture_Village_Chest_Small", keep, loot=loot)
+        if floors > 1:
+            place_along_walls(p, room, bed_y, "Furniture_Ancient_Bed", keep)
+            place_along_walls(p, room, 0, "Furniture_Ancient_Crate", keep)
+    hang_lantern(p, (x0 + x1) // 2, top, (z0 + z1) // 2)
+    return (px + dx, pz + dz)
+
+
+def well(p, cx, cz):
+    """Puits de pierre 3 × 3, margelle, deux poteaux et un toit, seau sur le bord."""
+    for x in range(cx - 1, cx + 2):
+        for z in range(cz - 1, cz + 2):
+            if (x, z) != (cx, cz):
+                p.set(x, -1, z, "Rock_Stone_Cobble")
+                p.set(x, 0, z, p.pick(COBBLE_WALL))
+    for y in range(-6, 1):
+        p.set(cx, y, cz, AIR)
+    p.set(cx, -7, cz, "Soil_Mud")
+    for x in (cx - 1, cx + 1):
+        p.fill(x, 1, cz, x, 2, cz, "Wood_Deadwood_Beam")
+    roof(p, cx - 1, cz, cx + 1, cz, 3, "Wood_Deadwood", "z", overhang=0)
+    p.set(cx, 3, cz, "Wood_Deadwood_Beam", ALONG_X)          # treuil sous le faîtage
+    p.set(cx, 1, cz - 1, "Deco_Bucket")
+
+
+def field(p, x0, z0, x1, z1, crop="wheat", state="fine"):
+    """Champ labouré : rangs est-ouest, rigole entre deux rangs. `state` fine / wild / burnt."""
+    r = p.rng
+    for x in range(x0, x1 + 1):
+        for z in range(z0, z1 + 1):
+            furrow = (z - z0) % 4 == 3
+            if state == "burnt":
+                p.set(x, -1, z, "Soil_Ash" if furrow or r.random() < 0.3 else "Soil_Dirt_Burnt")
+                if not furrow and r.random() < 0.75:
+                    p.set(x, 0, z, WHEAT_BURNT)
+                continue
+            p.set(x, -1, z, "Soil_Dirt_Burnt" if furrow else "Soil_Dirt_Tilled")
+            p.set(x, -2, z, "Soil_Dirt")
+            if furrow:
+                if r.random() < 0.15:
+                    p.set(x, 0, z, p.pick(WILD_GROWTH))
+                continue
+            if state == "wild":
+                if r.random() < 0.55:
+                    p.set(x, 0, z, p.pick(WILD_GROWTH) if r.random() < 0.6 else WHEAT_YOUNG)
+            elif crop == "pumpkin":
+                if r.random() < 0.7:
+                    p.set(x, 0, z, p.pick(PUMPKIN_CROPS))
+            elif r.random() < 0.9:
+                p.set(x, 0, z, WHEAT if r.random() < 0.8 else WHEAT_YOUNG)
+
+
+def fence_rect(p, x0, z0, x1, z1, gates=(), broken=0.0, fence="Wood_Deadwood_Fence"):
+    """Clôture autour d'un rectangle, ouverte aux cases `gates` ; `broken` = part de poteaux tombés."""
+    for x in range(x0, x1 + 1):
+        for z in range(z0, z1 + 1):
+            if x in (x0, x1) or z in (z0, z1):
+                if (x, z) in gates or p.rng.random() < broken:
+                    continue
+                p.set(x, 0, z, fence)
+
+
+def scarecrow(p, x, z, facing):
+    p.set(x, -1, z, "Soil_Dirt")
+    p.clear(x, 0, z, x, 2, z)
+    p.set(x, 0, z, "Deco_Scarecrow", facing)
+
+
+def overgrow(p, x0, z0, x1, z1, count, palette=WILD_GROWTH):
+    """Herbes folles posées sur le sol (y = 0) des cases libres."""
+    p.scatter(x0, 0, z0, x1, z1, count, palette, rot=0)
+
+
+def webs_inside(p, x0, z0, x1, z1, y0, y1, count):
+    """Toiles d'araignée accrochées sous les plafonds et dans les coins."""
+    r = p.rng
+    for _ in range(count * 4):
+        if count <= 0:
+            break
+        x, z = r.randint(x0, x1), r.randint(z0, z1)
+        for y in range(y1, y0 - 1, -1):
+            if p.free(x, y, z) and not p.free(x, y + 1, z):
+                p.set(x, y, z, p.pick(WEBS))
+                count -= 1
+                break
+
+
+def spider_lair(p, x0, z0, x1, z1, nests=5):
+    """Toiles au sol, cocons et squelettes : ce qui reste des habitants."""
+    r = p.rng
+    for _ in range(nests):
+        cx, cz = r.randint(x0, x1), r.randint(z0, z1)
+        for dx in range(-2, 3):
+            for dz in range(-2, 3):
+                if abs(dx) + abs(dz) <= 3 and r.random() < 0.55 and p.free(cx + dx, 0, cz + dz) and not p.free(cx + dx, -1, cz + dz):
+                    p.set(cx + dx, 0, cz + dz, "Deco_SpiderWeb_Flat")
+        if p.free(cx, 0, cz):
+            p.set(cx, 0, cz, "Deco_Spider_Cocoon")
+
+
+def spawners(p, name, spots):
+    """Un bloc d'apparition par case (un PNJ chacun), sur une case libre posée sur du plein : la case
+    demandée, sinon la plus proche dans un rayon de 3. Échoue si une case n'a aucune place."""
+    for x, z in spots:
+        ring = sorted(((dx, dz) for dx in range(-3, 4) for dz in range(-3, 4)), key=lambda d: d[0] ** 2 + d[1] ** 2)
+        spot = next(((x + dx, y, z + dz) for dx, dz in ring for y in (0, 5, 1, -1)
+                     if p.free(x + dx, y, z + dz) and p.free(x + dx, y + 1, z + dz) and not p.free(x + dx, y - 1, z + dz)), None)
+        if spot is None:
+            raise ValueError(f"{name} : aucune case libre près de ({x}, {z})")
+        p.set(*spot, name)
+
+
+VILLAGE_PLOTS = [
+    # (x0, z0, largeur, profondeur, porte, étages, type) ; rues : x -2..2 (nord-sud), z -2..2 (est-ouest)
+    (-13, -12, 9, 7, EAST, 2, "home"), (-25, -11, 9, 7, SOUTH, 1, "home"),
+    (5, -13, 7, 9, WEST, 1, "home"), (16, -12, 11, 8, SOUTH, 1, "barn"),
+    (-12, 5, 8, 9, EAST, 1, "smithy"), (-26, 5, 9, 9, NORTH, 2, "home"),
+    (5, 5, 9, 7, WEST, 2, "home"), (17, 5, 9, 9, NORTH, 1, "home"),
+    (-8, -30, 7, 9, SOUTH, 1, "home"), (4, 22, 9, 7, WEST, 1, "home"),
+]
+
+
+def village(seed, variant):
+    """Village abandonné du domaine : dix maisons le long de deux rues, place au puits, jardins.
+
+    `variant` : "zombies" (villageois transformés, portes enfoncées, fenêtres condamnées),
+    "ruins" (désert, en ruine, envahi par les herbes), "spiders" (envahi par les araignées).
+    """
+    p = Prefab(seed)
+    r = p.rng
+    X, Z = 34, 34
+    p.clear(-X, 0, -Z, X, 4, Z)
+    for x in range(-X, X + 1):
+        for z in range(-Z, Z + 1):
+            p.set(x, -1, z, p.pick(GROUND))
+    # rues en terre battue et pavés, place centrale
+    for x in range(-X, X + 1):
+        for z in range(-Z, Z + 1):
+            street = abs(x) <= 2 or abs(z) <= 2
+            square = abs(x) <= 6 and abs(z) <= 6
+            if square or (street and r.random() < 0.92):
+                p.set(x, -1, z, "Rock_Stone_Cobble" if square and r.random() < 0.6 else p.pick(PATH))
+    well(p, 0, 0)
+    doors = []
+    for i, (x0, z0, w, d, door, floors, kind) in enumerate(VILLAGE_PLOTS):
+        loot = LOOT_VILLAGE_RICH if i == 0 else LOOT_VILLAGE
+        doors.append(house(p, x0, z0, w, d, door, floors, kind, loot))
+    # jardins clos derrière quelques maisons, potagers en friche
+    for gx0, gz0, gx1, gz1 in ((-25, -24, -15, -16), (19, 17, 29, 25), (-26, 18, -17, 26)):
+        field(p, gx0 + 1, gz0 + 1, gx1 - 1, gz1 - 1, "wheat", "wild")
+        fence_rect(p, gx0, gz0, gx1, gz1, gates={((gx0 + gx1) // 2, gz1)}, broken=0.15)
+    # place : bancs autour du puits, lanternes, panneau
+    for x, z, rot in ((-4, -4, SOUTH), (4, 4, NORTH)):
+        p.set(x, 0, z, "Furniture_Village_Bench", rot)
+    for x, z in ((-4, 4), (4, -4)):
+        lantern_post(p, x, z, 2)
+    p.set(3, 0, -4, "Furniture_Village_Sign", NORTH)
+    # variantes
+    if variant == "zombies":
+        for (dx, dz) in r.sample(doors, 4):          # portes enfoncées : planches arrachées devant
+            p.set(dx, 0, dz, r.choice(["Wood_Deadwood_Planks_Half", "Deco_Trash_Pile_Small"]))
+        for pos, (name, rot) in list(p.blocks.items()):
+            if name == "Furniture_Ancient_Window" and r.random() < 0.35:
+                p.set(*pos, "Wood_Deadwood_Planks_Half" if pos[1] % 2 else "Wood_Deadwood_Planks", 0)  # condamnées
+            elif name == "Furniture_Ancient_Door" and r.random() < 0.4:
+                p.set(*pos, AIR)
+        p.scatter(-X + 2, 0, -Z + 2, X - 2, Z - 2, 22, [(BLOOD, 3), ("Deco_Bone_Pile", 1), ("Deco_Trash_Pile_Small", 2)], rot=0)
+        overgrow(p, -X + 1, -Z + 1, X - 1, Z - 1, 50)
+        spawners(p, SPAWN_VILLAGER, [(0, 4), (-4, 1), (5, -1), (1, -15), (-1, 17), (-20, 0), (21, -1)] +
+                 [(x + 2, z + 2) for x, z, *_ in VILLAGE_PLOTS[:3]])
+    elif variant == "ruins":
+        p.ruin(62, keep_below=1, names={n for n, _ in COBBLE_WALL + TIMBER} | {"Wood_Deadwood_Roof", "Wood_Deadwood_Planks",
+                                                                                "Wood_Deadwood_Beam", "Furniture_Ancient_Window"})
+        p.scatter(-X + 2, 0, -Z + 2, X - 2, Z - 2, 40, RUBBLE, rot=0)
+        overgrow(p, -X + 1, -Z + 1, X - 1, Z - 1, 220)
+        for _ in range(6):                            # arbres morts qui poussent dans les décombres
+            tx, tz = r.randint(-X + 4, X - 4), r.randint(-Z + 4, Z - 4)
+            if p.free(tx, 0, tz) and p.free(tx, 3, tz):
+                p.paste(dead_tree(r.randint(0, 1 << 30), "small"), tx, 0, tz, min_y=0)
+    else:  # spiders
+        p.ruin(85, keep_below=1, names={n for n, _ in COBBLE_WALL} | {"Wood_Deadwood_Roof"})
+        for x0, z0, w, d, *_ in VILLAGE_PLOTS:
+            webs_inside(p, x0 + 1, z0 + 1, x0 + w - 2, z0 + d - 2, 0, 8, 6)
+        for dx, dz in doors:
+            p.set(dx, 0, dz, "Deco_SpiderWeb_Full")
+        spider_lair(p, -X + 3, -Z + 3, X - 3, Z - 3, 9)
+        p.scatter(-X + 2, 0, -Z + 2, X - 2, Z - 2, 14, [("Deco_Bone_Pile", 2), ("Deco_Bone_Skulls", 1), ("Deco_Spider_Cocoon", 2)])
+        overgrow(p, -X + 1, -Z + 1, X - 1, Z - 1, 60)
+        spawners(p, SPAWN_SPIDER, [(0, 5), (-5, -1), (6, 1), (0, -18), (0, 20), (-22, 0), (22, 0)])
+    return p
+
+
+def farm(seed, variant):
+    """Ferme délaissée : maison du fermier, grange, champs de blé clos, potager, puits.
+
+    `variant` : "zombies" (fermiers transformés et un gros zombie difforme dans la grange),
+    "ruins" (abandonnée, en ruine, champs en friche), "burnt" (incendiée : bois calciné, blé brûlé).
+    """
+    p = Prefab(seed)
+    r = p.rng
+    X, Z = 24, 22
+    p.clear(-X, 0, -Z, X, 4, Z)
+    for x in range(-X, X + 1):
+        for z in range(-Z, Z + 1):
+            p.set(x, -1, z, "Soil_Ash" if variant == "burnt" and r.random() < 0.45 else p.pick(GROUND))
+    burnt = variant == "burnt"
+    wood = "Wood_Blackwood" if burnt else "Wood_Deadwood"
+    # cour en terre battue entre la maison et la grange, chemin vers le sud
+    for x in range(-X, X + 1):
+        for z in range(-6, 1):
+            if r.random() < 0.85:
+                p.set(x, -1, z, p.pick(PATH))
+    for z in range(1, Z + 1):
+        for x in (-1, 0, 1):
+            p.set(x, -1, z, p.pick(PATH))
+    door_house = house(p, -20, -17, 9, 8, SOUTH, 2, "home", LOOT_FARM_BURNT if burnt else LOOT_FARM, wood)
+    door_barn = house(p, 6, -19, 13, 10, SOUTH, 1, "barn", LOOT_FARM_BURNT if burnt else LOOT_FARM, wood)
+    p.clear(11, 0, -10, 13, 2, -10)                   # grande porte de grange
+    p.set(12, 3, -10, f"{wood}_Beam")
+    well(p, -6, -3)
+    # deux champs clos et un potager
+    state = {"zombies": "fine", "ruins": "wild", "burnt": "burnt"}[variant]
+    fences = "Wood_Blackwood_Fence" if burnt else "Wood_Deadwood_Fence"
+    broken = {"zombies": 0.12, "ruins": 0.3, "burnt": 0.45}[variant]
+    for fx0, fz0, fx1, fz1 in ((-22, 3, -4, 19), (4, 3, 22, 19)):
+        field(p, fx0 + 1, fz0 + 1, fx1 - 1, fz1 - 1, "wheat", state)
+        gate = (fx1, (fz0 + fz1) // 2) if fx0 < 0 else (fx0, (fz0 + fz1) // 2)
+        fence_rect(p, fx0, fz0, fx1, fz1, gates={gate}, broken=broken, fence=fences)
+        for fx, fz in ((fx0, fz0), (fx1, fz0), (fx0, fz1), (fx1, fz1)):
+            p.set(fx, 0, fz, f"{wood}_Beam")
+            p.set(fx, 1, fz, "Deco_Lantern" if not burnt else f"{wood}_Beam")
+        sx = (fx0 + fx1) // 2
+        scarecrow(p, sx, (fz0 + fz1) // 2, face_toward(sx, 0, 0, 0) if state != "burnt" else SOUTH)
+    field(p, -10, -13, -5, -8, "pumpkin", state)
+    fence_rect(p, -11, -14, -4, -7, gates={(-7, -7)}, broken=broken, fence=fences)
+    # meules de foin et tas de bois dans la cour
+    for hx, hz in ((19, -6), (20, -6), (19, -5), (-2, -6)):
+        p.set(hx, 0, hz, "Ingredient_Hay" if not burnt else "Soil_Ash")
+    p.set(20, 1, -6, "Plant_Hay_Bundle" if not burnt else "Deco_Trash_Pile_Small")
+    for x in range(-23, -20):
+        p.set(x, 0, -6, "Wood_Ash_Trunk" if not burnt else "Wood_Burnt_Trunk", ALONG_X)
+    if variant == "zombies":
+        p.scatter(-X + 2, 0, -Z + 2, X - 2, Z - 2, 16, [(BLOOD, 3), ("Deco_Bone_Pile", 1)], rot=0)
+        p.set(door_house[0], 0, door_house[1], "Wood_Deadwood_Planks_Half")
+        spawners(p, SPAWN_FARMER, [(-13, 11), (13, 11), (-3, -3), (0, 8)])
+        spawners(p, SPAWN_ABOMINATION, [(12, -14)])          # dans la grange
+    elif variant == "ruins":
+        p.ruin(60, keep_below=1, names={n for n, _ in COBBLE_WALL + TIMBER} | {"Wood_Deadwood_Roof", "Wood_Deadwood_Planks", "Wood_Deadwood_Beam"})
+        overgrow(p, -X + 1, -Z + 1, X - 1, Z - 1, 140)
+        p.scatter(-X + 2, 0, -Z + 2, X - 2, Z - 2, 20, RUBBLE, rot=0)
+    else:  # incendiée
+        p.ruin(45, keep_below=1, names={n for n, _ in COBBLE_WALL} | {f"{wood}_Roof", f"{wood}_Planks", f"{wood}_Decorative",
+                                                                      f"*{wood}_Roof_State_Definitions_Topper", "Furniture_Ancient_Window"})
+        for pos, (name, rot) in list(p.blocks.items()):
+            if name == f"{wood}_Beam" and r.random() < 0.5:
+                p.set(*pos, "Wood_Burnt_Trunk", UPRIGHT)
+            elif name.startswith("Furniture_Ancient_Door") and r.random() < 0.7:
+                p.set(*pos, AIR)
+        p.scatter(-X + 2, 0, -Z + 2, X - 2, Z - 2, 30, [("Deco_Trash_Pile_Small", 2), ("Soil_Ash", 2), ("Wood_Burnt_Branch_Short", 1)], rot=0)
+        p.scatter(-20, 0, -17, 18, -9, 4, [("Deco_Fire", 1)], rot=0)   # braises encore rouges dans les décombres
+    return p
+
+
+def prison_cells(p, x0, z0, count=3, door="Furniture_Temple_Dark_Door"):
+    """Rangée de cellules le long de z : intérieur 2 × 2 (x0 + 1..x0 + 2), barreaux et porte côté ouest
+    (x0), mur du fond en x0 + 3. Le bloc PRISON_CELL au sol de chaque cellule sert au Capitaine."""
+    zs = []
+    for i in range(count):
+        cz = z0 + 3 * i
+        for z in range(cz - 1, cz + 3):
+            for y in range(0, 4):
+                p.set(x0 + 3, y, z, p.pick(STONE_WALL))
+        for z in (cz - 1, cz + 2):
+            for x in range(x0, x0 + 4):
+                p.fill(x, 0, z, x, 3, z, p.pick(STONE_WALL))
+        p.fill(x0 + 1, 3, cz, x0 + 2, 3, cz + 1, "Rock_Stone_Brick")
+        p.clear(x0 + 1, 0, cz, x0 + 2, 2, cz + 1)
+        p.set(x0, 0, cz, door, 1)
+        p.set(x0, 1, cz, AIR)
+        p.fill(x0, 0, cz + 1, x0, 2, cz + 1, "Deco_Iron_Bars")
+        p.set(x0, 2, cz, "Deco_Iron_Bars")
+        p.set(x0, 3, cz, "Rock_Stone_Brick")
+        p.set(x0, 3, cz + 1, "Rock_Stone_Brick")
+        p.set(x0 + 2, 0, cz + 1, p.rng.choice(["Deco_Bone_Pile", "Deco_Bucket", "Ingredient_Hay"]))
+        p.set(x0 + 1, 0, cz, PRISON_CELL)
+        p.set(x0 + 2, 2, cz, "Deco_Iron_Chains_Vertical")
+        zs.append(cz)
+    return zs
+
+
+def guard_post(seed, variant):
+    """Ancien poste de garde : enceinte de pierre, tour de guet, caserne, quartiers du capitaine,
+    armurerie, prison à trois cellules, cachot dans l'armurerie, cour d'entraînement. Le Capitaine
+    trouve toujours une cellule à moins de 24 blocs de lui, d'où que ce soit dans l'enceinte.
+
+    `variant` : "ruins", "spiders", "rebels" (paysans zombifiés qui ont pris le poste), "garrison"
+    (gardes squelettes en armure et leur capitaine).
+    """
+    p = Prefab(seed)
+    r = p.rng
+    S = 17
+    p.clear(-S - 2, 0, -S - 2, S + 2, 16, S + 2)
+    for x in range(-S - 2, S + 3):
+        for z in range(-S - 2, S + 3):
+            p.set(x, -1, z, p.pick(GROUND))
+    for x in range(-S, S + 1):
+        for z in range(-S, S + 1):
+            p.set(x, -1, z, "Rock_Stone_Cobble" if r.random() < 0.55 else p.pick(PATH))
+    curtain_wall(p, -S, -S, S, S, 5, STONE_WALL, gate_half=2)
+    gatehouse(p, S, 5, STONE_WALL, "Rock_Stone_Brick_Ornate")
+    for z in range(S + 1, S + 3):
+        for x in range(-1, 2):
+            p.set(x, -1, z, p.pick(PATH))
+    tower(p, -S + 1, -S + 1, 3, 14, STONE_WALL, STONE_FLOOR, "Rock_Slate_Cobble", "Rock_Stone_Brick_Ornate", webs=False)
+    p.clear(-S + 4, 0, -S + 1, -S + 4, 2, -S + 1)     # porte de la tour sur la cour
+    # caserne au nord : lits, coffres, râtelier
+    bx0, bz0, bx1, bz1 = -11, -16, 2, -9
+    p.floor(bx0, bz0, bx1, bz1, -1, STONE_FLOOR)
+    p.hollow(bx0, 0, bz0, bx1, 3, bz1, STONE_WALL)
+    roof(p, bx0, bz0, bx1, bz1, 4, "Wood_Deadwood", "x", gable=STONE_WALL)
+    p.clear(-4, 0, bz1, -4, 1, bz1)
+    p.set(-4, 0, bz1, "Furniture_Human_Ruins_Door", 0)
+    for x in range(bx0 + 1, bx1, 3):
+        p.set(x, 0, bz0 + 1, "Furniture_Human_Ruins_Bed", SOUTH)
+    p.chest(bx1 - 2, 0, bz1 - 1, "Furniture_Human_Ruins_Chest_Large", NORTH, LOOT_BARRACKS)
+    p.set(bx0 + 1, 0, bz1 - 1, "Bench_Armory", NORTH)
+    p.set(-7, 0, bz1 - 2, "Furniture_Human_Ruins_Table")
+    p.set(-8, 0, bz1 - 2, "Furniture_Human_Ruins_Stool")
+    p.set(-5, 0, bz1 - 1, "Furniture_Human_Ruins_Stool")
+    p.set(-7, 1, bz1 - 2, "Deco_Tankard", SOUTH)
+    for x in (-8, -2):
+        p.set(x, 2, bz1, "Furniture_Ancient_Window", 0)
+    hang_lantern(p, -3, 3, -12)
+    # quartiers du capitaine au nord-est : lit, bureau, coffre
+    qx0, qz0, qx1, qz1 = 5, -16, 15, -9
+    p.floor(qx0, qz0, qx1, qz1, -1, STONE_FLOOR)
+    p.hollow(qx0, 0, qz0, qx1, 3, qz1, STONE_WALL)
+    roof(p, qx0, qz0, qx1, qz1, 4, "Wood_Deadwood", "x", gable=STONE_WALL)
+    p.clear(8, 0, qz1, 8, 1, qz1)
+    p.set(8, 0, qz1, "Furniture_Human_Ruins_Door", 0)
+    p.set(qx1 - 2, 0, qz0 + 1, "Furniture_Human_Ruins_Bed", SOUTH)
+    p.set(qx0 + 2, 0, qz0 + 1, "Furniture_Human_Ruins_Desk", SOUTH)
+    p.set(qx0 + 1, 0, qz0 + 2, "Furniture_Human_Ruins_Chair", NORTH)
+    p.set(qx0 + 2, 1, qz0 + 1, "Deco_Map", SOUTH)
+    p.set(qx0 + 1, 1, qz0 + 1, p.pick(CANDLES))
+    p.chest(qx1 - 1, 0, qz1 - 1, "Furniture_Human_Ruins_Chest_Small", WEST, LOOT_CAPTAIN)
+    p.set(qx1 - 1, 0, qz1 - 3, "Furniture_Human_Ruins_Bookshelf", WEST)
+    p.set(qx0 + 4, 2, qz0, "Furniture_Human_Ruins_Banner", SOUTH)
+    p.set(12, 2, qz1, "Furniture_Ancient_Window", 0)
+    hang_lantern(p, 10, 3, -12)
+    # armurerie à l'ouest
+    ax0, az0, ax1, az1 = -16, -4, -10, 6
+    p.floor(ax0, az0, ax1, az1, -1, STONE_FLOOR)
+    p.hollow(ax0, 0, az0, ax1, 3, az1, STONE_WALL)
+    roof(p, ax0, az0, ax1, az1, 4, "Wood_Deadwood", "z", gable=STONE_WALL)
+    p.clear(ax1, 0, 1, ax1, 1, 1)
+    p.set(ax1, 0, 1, "Furniture_Human_Ruins_Door", 1)
+    p.set(ax0 + 1, 0, az0 + 2, "Bench_Weapon", EAST)
+    p.set(ax0 + 1, 0, az0 + 6, "Bench_Armour", EAST)
+    p.chest(ax0 + 1, 0, az1 - 1, "Furniture_Human_Ruins_Chest_Large", NORTH, LOOT_ARMORY)
+    p.set(ax1 - 1, 0, az0 + 1, "Furniture_Ancient_Barrel")
+    p.set(ax1 - 1, 0, az0 + 2, "Furniture_Ancient_Crate")
+    hang_lantern(p, -13, 3, 1)
+    # cachot à l'ouest, dans l'armurerie : le Capitaine cherche une cellule à moins de 24 blocs de
+    # lui, où qu'il soit dans le poste (les trois autres sont à l'est)
+    prison_cells(p, -13, 3, 1)
+    # prison à l'est : couloir, trois cellules, cachot du geôlier
+    jx0, jz0, jx1, jz1 = 7, -5, 15, 8
+    p.floor(jx0, jz0, jx1, jz1, -1, STONE_FLOOR)
+    p.hollow(jx0, 0, jz0, jx1, 3, jz1, STONE_WALL)
+    p.fill(jx0 + 1, 4, jz0 + 1, jx1 - 1, 4, jz1 - 1, "Rock_Stone_Brick")
+    p.crenellate(jx0, jz0, jx1, jz1, 4, STONE_WALL)
+    p.clear(jx0, 0, 0, jx0, 1, 0)
+    p.set(jx0, 0, 0, "Furniture_Human_Ruins_Door", 1)
+    prison_cells(p, 11, -3, 3)
+    p.set(8, 0, jz1 - 2, "Furniture_Human_Ruins_Table")
+    p.set(10, 0, jz1 - 1, "Furniture_Human_Ruins_Stool", WEST)
+    p.set(8, 1, jz1 - 2, p.pick(CANDLES))
+    p.set(9, 3, 0, "Deco_Lantern_Ceiling")
+    # cour : mannequins d'entraînement, braseros, bannières, râtelier
+    for x, z in ((-5, 3), (-3, 5), (-1, 3)):
+        p.set(x, 0, z, "Tinkering_Target_Dummy", NORTH)
+    for x, z in ((-4, -6), (4, -6), (-4, 12), (4, 12)):
+        p.set(x, 0, z, "Furniture_Human_Ruins_Brazier")
+    for x in (-8, 8):
+        p.set(x, 3, S - 1, "Furniture_Human_Ruins_Banner", NORTH)
+    well(p, 3, 4)
+    for x, z in ((-S + 1, S - 1), (S - 1, S - 1)):
+        p.set(x, 0, z, "Furniture_Ancient_Barrel")
+    p.set(-S + 2, 0, S - 1, "Furniture_Ancient_Crate")
+    p.set(14, 0, 14, "Ingredient_Hay")
+    # variantes
+    if variant == "garrison":
+        spawners(p, SPAWN_CAPTAIN, [(0, 0)])
+        spawners(p, SPAWN_GUARD, [(0, 13), (-6, -7), (10, -6), (9, 2), (-S + 1, -S + 4), (-13, 1)])
+    elif variant == "rebels":
+        # le portail a cédé, barricades de charrettes et de foin, caserne incendiée
+        for x in range(-2, 3):
+            p.set(x, 3, S, AIR)
+        for x, z in ((-6, 9), (-5, 9), (5, 8), (6, 8), (0, 10)):
+            p.set(x, 0, z, r.choice(["Ingredient_Hay", "Furniture_Ancient_Crate", "Wood_Deadwood_Planks"]))
+        for pos, (name, rot) in list(p.blocks.items()):
+            if name == "Wood_Deadwood_Roof" and pos[0] < 3 and pos[2] < -8 and r.random() < 0.6:
+                p.set(*pos, AIR)
+        for pos in floating_blocks(p):                # pans de toit restés en l'air
+            p.set(*pos, None)
+        p.scatter(-S + 2, 0, -S + 2, S - 2, S - 2, 18, [(BLOOD, 3), ("Deco_Bone_Pile", 1), ("Deco_Trash_Pile_Small", 1)], rot=0)
+        spawners(p, SPAWN_REBEL, [(0, 13), (-6, 6), (5, -6), (-3, -12), (10, 3), (-13, 3)])
+    elif variant == "spiders":
+        p.ruin(88, keep_below=1, names={n for n, _ in STONE_WALL})
+        for bx in ((-10, -15, 1, -10), (6, -15, 14, -10), (-15, -3, -11, 5), (8, -4, 14, 7)):
+            webs_inside(p, *bx[:2], *bx[2:], 0, 3, 8)
+        spider_lair(p, -S + 2, -S + 2, S - 2, S - 2, 7)
+        for x in range(-1, 2):
+            p.set(x, 1, S, "Deco_SpiderWeb_Full")
+        spawners(p, SPAWN_SPIDER, [(0, 0), (-6, 8), (6, 10), (-4, -7), (10, -4)])
+    else:  # ruines
+        p.ruin(58, keep_below=1, names={n for n, _ in STONE_WALL} | {"Wood_Deadwood_Roof", "*Wood_Deadwood_Roof_State_Definitions_Topper"})
+        overgrow(p, -S + 1, -S + 1, S - 1, S - 1, 120)
+        p.scatter(-S + 2, 0, -S + 2, S - 2, S - 2, 25, RUBBLE, rot=0)
     return p
 
 
@@ -1612,8 +2517,6 @@ def lone_grave(seed):
     grave(p, 0, 0, r, r.choice(["haunted", "undead", "plain"]))
     if r.random() < 0.5:
         p.set(1, 0, 0, p.pick(CANDLES))
-    if r.random() < 0.4:
-        p.set(-1, 0, 1, p.pick(PUMPKINS), r.randint(0, 3))
     if r.random() < 0.5:
         lantern_post(p, -1, -1, 1)
     return p
@@ -1630,18 +2533,6 @@ def spider_nest(seed):
     for _ in range(3):
         p.set(r.randint(-2, 2), 0, r.randint(-2, 2), r.choice(["Deco_Spider_Cocoon", "Deco_Spider_Cocoon", "Deco_Bone_Pile"]))
     p.paste(dead_tree(r.randint(0, 1 << 30), "small", webs=True), r.choice([-3, 3]), 0, r.choice([-3, 3]), min_y=0)
-    return p
-
-
-def pumpkin_patch(seed):
-    p = Prefab(seed)
-    r = p.rng
-    for dx in range(-2, 3):
-        for dz in range(-2, 3):
-            if dx * dx + dz * dz <= 5 and r.random() < 0.7:
-                p.set(dx, -1, dz, "Soil_Dirt_Burnt")
-                if r.random() < 0.6:
-                    p.set(dx, 0, dz, p.pick(PUMPKIN_CROPS) if r.random() < 0.75 else p.pick(PUMPKINS), r.randint(0, 3))
     return p
 
 
@@ -1717,10 +2608,10 @@ def wayside_shrine(seed):
     p.set(0, 0, -1, "Rock_Stone_Brick_Pillar_Base")
     p.set(0, 1, -1, "Rock_Stone_Brick_Pillar_Middle")
     p.set(0, 2, -1, "Rock_Stone_Brick_Ornate")
-    p.set(0, 3, -1, p.pick(PUMPKINS), SOUTH)
+    p.set(0, 3, -1, p.pick(CANDLES))
     p.set(-1, 0, -1, p.pick(CANDLES))
     p.set(1, 0, -1, p.pick(CANDLES))
-    p.set(0, 0, 0, r.choice(["Furniture_Village_Tombstone", p.pick(PUMPKINS)]), SOUTH)
+    p.set(0, 0, 0, "Furniture_Village_Tombstone", SOUTH)
     lantern_post(p, 2, 1, 2)
     p.set(-1, 0, 1, r.choice(["Halloween_Basket_Pumpkin", "Halloween_Basket_Straw"]))
     return p
@@ -1769,11 +2660,16 @@ def main():
     jobs.append(("HauntedCastles/Haunted_Castle_Slate", haunted_castle(5001, "slate")))
     jobs.append(("VampireManor/Vampire_Manor", vampire_manor(6000)))
     jobs.append(("SpawnCrypt/Spawn_Crypt", spawn_crypt(6100)))
+    for i, variant in enumerate(("zombies", "ruins", "spiders")):
+        jobs.append((f"Villages/{variant.capitalize()}/Village_{variant.capitalize()}", village(8000 + i, variant)))
+    for i, variant in enumerate(("zombies", "ruins", "burnt")):
+        jobs.append((f"Farms/{variant.capitalize()}/Farm_{variant.capitalize()}", farm(8100 + i, variant)))
+    for i, variant in enumerate(("ruins", "spiders", "rebels", "garrison")):
+        jobs.append((f"GuardPosts/{variant.capitalize()}/Guard_Post_{variant.capitalize()}", guard_post(8200 + i, variant)))
     for i in range(3):
         jobs.append((f"Decor/BonePiles/Bone_Pile_{i + 1}", bone_pile(7000 + i)))
         jobs.append((f"Decor/Graves/Lone_Grave_{i + 1}", lone_grave(7100 + i)))
         jobs.append((f"Decor/SpiderNests/Spider_Nest_{i + 1}", spider_nest(7200 + i)))
-        jobs.append((f"Decor/PumpkinPatches/Pumpkin_Patch_{i + 1}", pumpkin_patch(7300 + i)))
         jobs.append((f"Decor/MushroomRings/Mushroom_Ring_{i + 1}", mushroom_ring(7500 + i)))
         jobs.append((f"Decor/Shrines/Wayside_Shrine_{i + 1}", wayside_shrine(7600 + i)))
         jobs.append((f"Decor/FallenLogs/Fallen_Log_{i + 1}", fallen_log(7700 + i)))

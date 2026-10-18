@@ -1,0 +1,160 @@
+{
+  "Container": {
+    "Type": "Multiple",
+    "Containers": [
+      {
+        "Type": "Choice",
+        "RollsMin": 2,
+        "RollsMax": 4,
+        "Containers": [
+          {
+            "Type": "Single",
+            "Weight": 4,
+            "Item": {
+              "ItemId": "Potion_Empty",
+              "QuantityMin": 1,
+              "QuantityMax": 4
+            }
+          },
+          {
+            "Type": "Single",
+            "Weight": 3,
+            "Item": {
+              "ItemId": "Potion_Health",
+              "QuantityMin": 1,
+              "QuantityMax": 2
+            }
+          },
+          {
+            "Type": "Single",
+            "Weight": 2,
+            "Item": {
+              "ItemId": "Potion_Regen_Health",
+              "QuantityMin": 1,
+              "QuantityMax": 1
+            }
+          },
+          {
+            "Type": "Single",
+            "Weight": 2,
+            "Item": {
+              "ItemId": "Potion_Poison",
+              "QuantityMin": 1,
+              "QuantityMax": 2
+            }
+          },
+          {
+            "Type": "Single",
+            "Weight": 2,
+            "Item": {
+              "ItemId": "Potion_Antidote",
+              "QuantityMin": 1,
+              "QuantityMax": 2
+            }
+          },
+          {
+            "Type": "Single",
+            "Weight": 2,
+            "Item": {
+              "ItemId": "Potion_Mana",
+              "QuantityMin": 1,
+              "QuantityMax": 2
+            }
+          },
+          {
+            "Type": "Single",
+            "Weight": 4,
+            "Item": {
+              "ItemId": "Ingredient_Life_Essence",
+              "QuantityMin": 2,
+              "QuantityMax": 6
+            }
+          },
+          {
+            "Type": "Single",
+            "Weight": 2,
+            "Item": {
+              "ItemId": "Ingredient_Crystal_Red",
+              "QuantityMin": 1,
+              "QuantityMax": 3
+            }
+          },
+          {
+            "Type": "Single",
+            "Weight": 2,
+            "Item": {
+              "ItemId": "Ingredient_Crystal_Purple",
+              "QuantityMin": 1,
+              "QuantityMax": 2
+            }
+          },
+          {
+            "Type": "Single",
+            "Weight": 2,
+            "Item": {
+              "ItemId": "Plant_Fruit_Poison",
+              "QuantityMin": 1,
+              "QuantityMax": 3
+            }
+          },
+          {
+            "Type": "Single",
+            "Weight": 2,
+            "Item": {
+              "ItemId": "Ingredient_Bone_Fragment",
+              "QuantityMin": 2,
+              "QuantityMax": 5
+            }
+          },
+          {
+            "Type": "Single",
+            "Weight": 2,
+            "Item": {
+              "ItemId": "Ingredient_Rune_Shard",
+              "QuantityMin": 1,
+              "QuantityMax": 2
+            }
+          }
+        ]
+      },
+      {
+        "Type": "Choice",
+        "RollsMin": 0,
+        "RollsMax": 1,
+        "Containers": [
+          {
+            "Type": "Single",
+            "Weight": 1,
+            "Item": {
+              "ItemId": "Recipe_Plant_Seeds_Health1",
+              "QuantityMin": 1,
+              "QuantityMax": 1
+            }
+          },
+          {
+            "Type": "Single",
+            "Weight": 1,
+            "Item": {
+              "ItemId": "Recipe_Plant_Seeds_Mana1",
+              "QuantityMin": 1,
+              "QuantityMax": 1
+            }
+          },
+          {
+            "Type": "Single",
+            "Weight": 1,
+            "Item": {
+              "ItemId": "Recipe_Plant_Seeds_Stamina1",
+              "QuantityMin": 1,
+              "QuantityMax": 1
+            }
+          },
+          {
+            "Type": "Empty",
+            "Weight": 2
+          }
+        ]
+      }
+    ]
+  }
+}

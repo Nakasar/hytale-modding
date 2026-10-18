@@ -17,8 +17,12 @@ Principe :
   manoir du comte, pour que les prefabs reposent à plat.
 - Matériaux : herbe brûlée en surface, avec des plaques de cendre, de terre brûlée et de gravier
   moussu (bruit), puis terre, gravier et pierre (et un peu d'ardoise et de schiste).
-- Props, par étapes : 0 = grandes structures, 1 = arbres morts et petits décors (affleurements,
-  cercles de champignons, autels, troncs couchés...), 2 = végétation et champignons luisants.
+- Structures : le domaine du Comte. Treize emplacements, décalés de quelques blocs selon la graine
+  du monde (Jitter2d) ; le type de chacun dépend de la répartition choisie par la graine. Le premier
+  exemplaire de chaque type est toujours là, le second une fois sur deux (bruit lu à l'emplacement). D'où 0 ou 1 village, 1 ou 2 fermes, postes de garde,
+  cimetières, cryptes, champs de citrouilles et châteaux hantés, et toujours un seul manoir.
+- Props, par étapes : 0 = grandes structures, 1 = forêts (taches denses de sapins et frênes morts)
+  et arbres isolés, petits décors (affleurements, troncs couchés...), 2 = végétation.
 - Environnement : « hanté » à proximité des structures (plus de morts-vivants), « lande » ailleurs.
 """
 
@@ -31,6 +35,7 @@ GEN = PACK / "Server" / "HytaleGenerator"
 BIOME_ID = "Nakasar_Halloween_Barrens"
 WORLD_STRUCTURE_ID = "Nakasar_Halloween"
 STRUCTURES_EXPORT = "Nakasar_Halloween_Structure_Positions"
+VILLAGE_EXPORT = "Nakasar_Halloween_Village_Positions"
 LANDMARKS_EXPORT = "Nakasar_Halloween_Landmark_Positions"
 
 # Première couche d'air au-dessus du sol aplani (le dernier bloc solide est GROUND_Y - 1).
@@ -43,24 +48,82 @@ DRACULA = (0, GROUND_Y, -220)
 # (la plus grande fait 41 × 41, le domaine du manoir 57 × 51 : elles restent sur le plat).
 ISLAND_RADIUS = 340.0
 EDGE_START = 296.0
-STRUCTURE_MAX_RADIUS = 232.0
-# Taille de la maille des grandes structures (une par cellule) : plus elle est grande, plus il reste
-# de collines entre elles.
-STRUCTURE_MESH = 66.0
-# Distance minimale entre le centre d'une grande structure et le point d'apparition / le manoir.
-SPAWN_CLEARANCE = 45.0
-DRACULA_CLEARANCE = 72.0
+# Décalage maximal d'un emplacement de structure selon la graine du monde.
+STRUCTURE_JITTER = 16.0
+# Types de structures : (nom, [(dossier de prefabs, poids)], tourner ?, [part des mondes où chaque
+# exemplaire existe]) : le premier exemplaire est toujours là, le second une fois sur deux, le
+# village 60 % du temps.
+STRUCTURE_TYPES = [
+    ("Village", [("Villages/Zombies", 1.0), ("Villages/Ruins", 1.0), ("Villages/Spiders", 1.0)], True, [0.6]),
+    ("Farm", [("Farms/Zombies", 1.0), ("Farms/Ruins", 1.0), ("Farms/Burnt", 1.0)], True, [1.0, 0.5]),
+    ("GuardPost", [("GuardPosts/Ruins", 1.0), ("GuardPosts/Spiders", 1.0), ("GuardPosts/Rebels", 1.0),
+                   ("GuardPosts/Garrison", 1.2)], True, [1.0, 0.5]),
+    ("Cemetery", [("Cemeteries/Haunted", 1.0), ("Cemeteries/Spiders", 1.0), ("Cemeteries/Undead", 1.0)], True, [1.0, 0.5]),
+    ("Crypt", [("Crypts", 1.0)], True, [1.0, 0.5]),
+    ("PumpkinField", [("PumpkinFields", 1.0)], True, [1.0, 0.5]),
+    ("HauntedCastle", [("HauntedCastles", 1.0)], True, [1.0, 0.5]),
+]
+# Emplacements (x, z, grand ?) : 13, un par exemplaire. Les grands peuvent recevoir le village
+# (69 × 69) ; entre deux structures, au moins 9 blocs dans le pire des décalages (village et ferme
+# voisins décalés l'un vers l'autre).
+SLOTS = [
+    (-35, 195, True), (115, 165, True), (185, -65, True),
+    (-205, 30, False), (-190, -85, False), (-155, 145, False), (-115, -175, False), (-80, -55, False),
+    (-65, 70, False), (30, -90, False), (75, 35, False), (115, -175, False), (200, 65, False),
+]
+# Le type de chaque emplacement change d'un monde à l'autre : LAYOUTS répartitions (tirées ici une
+# fois pour toutes), le monde en choisit une selon un bruit lu en un point fixe (valeur qui ne dépend
+# que de la graine). Seuils à peu près équiprobables pour un bruit simplex centré.
+LAYOUTS = 8
+LAYOUT_NOISE_SPREAD = 0.35   # écart type supposé du bruit en un point, d'une graine à l'autre
+
+
+def layout_bands():
+    """LAYOUTS + 1 seuils : quantiles d'une loi normale d'écart type LAYOUT_NOISE_SPREAD."""
+    from statistics import NormalDist
+    inner = [NormalDist(0.0, LAYOUT_NOISE_SPREAD).inv_cdf(k / LAYOUTS) for k in range(1, LAYOUTS)]
+    return [-1.0e9] + [round(v, 3) for v in inner] + [1.0e9]
+
+
+LAYOUT_BANDS = layout_bands()
+
+
+def layouts():
+    """Pour chaque répartition, la liste (type, part des mondes) par emplacement. Le village va sur
+    un grand emplacement ; deux structures du même type restent à plus de 140 blocs l'une de l'autre."""
+    import random
+    rng = random.Random(1031)
+    roles = [(name, keep) for name, _, _, keeps in STRUCTURE_TYPES for keep in keeps]
+    out = []
+    while len(out) < LAYOUTS:
+        order = roles[:]
+        rng.shuffle(order)
+        if order[0][0] != "Village":
+            continue
+        big = [i for i, s in enumerate(SLOTS) if s[2]]
+        small = [i for i, s in enumerate(SLOTS) if not s[2]]
+        rng.shuffle(big)
+        rng.shuffle(small)
+        idx = big[:1] + big[1:] + small
+        layout = [None] * len(SLOTS)
+        for slot, role in zip(idx, order):
+            layout[slot] = role
+        far = all(((SLOTS[i][0] - SLOTS[j][0]) ** 2 + (SLOTS[i][1] - SLOTS[j][1]) ** 2) ** 0.5 > 140
+                  for i in range(len(SLOTS)) for j in range(i + 1, len(SLOTS)) if layout[i][0] == layout[j][0])
+        if far and layout not in out:
+            out.append(layout)
+    return out
 # Sol aplani autour du manoir : plat jusqu'à MANOR_FLAT blocs du centre, collines au-delà de MANOR_HILLS.
 MANOR_FLAT, MANOR_HILLS = 38.0, 58.0
 
 # Chemins relatifs à Server/Prefabs/ (PrefabPropAsset résout dans <pack>/Server/Prefabs).
 PREFABS = "Nakasar/Halloween"
-# Distance minimale entre un arbre / un décor et le centre d'une structure (demi-diagonale du
-# plus grande structure aléatoire, 41 × 41, plus la portée des branches).
-STRUCTURE_CLEARANCE = 34.0
+# Distance minimale entre un arbre / un décor et le centre d'une structure (demi-diagonale de la
+# ferme, 49 × 45, plus la portée des branches) ; le village (69 × 69) a sa propre marge.
+STRUCTURE_CLEARANCE = 38.0
+VILLAGE_CLEARANCE = 54.0
 AIR = {"Solid": "Empty"}
 SURFACE_BLOCKS = ["Soil_Grass_Burnt", "Soil_Dirt_Burnt", "Soil_Ash", "Soil_Gravel_Mossy"]
-PUMPKIN_RIPE = "*Plant_Crop_Pumpkin_Block_State_Definitions_StageFinal"
 
 
 # --- briques de nœuds -------------------------------------------------------------------------
@@ -168,18 +231,37 @@ def surface_locator(prop, pattern, reach):
 
 
 # Arbres du jeu (Server/Prefabs d'Assets.zip, lus le 2026-10-18) : chaque dossier est chargé en entier.
-VANILLA_TREES = [
-    ("Trees/Burnt/Stage_2", 1.0),          # calcinés, feuillage noir dense
-    ("Trees/Burnt/Stage_3", 0.35),         # calcinés géants (36 à 46 blocs)
-    ("Trees/Burnt_dead", 0.8),             # calcinés sans feuilles, tordus
-    ("Trees/Fire_Burning/Stage_3", 0.5),   # arbres en feu (braises dans le feuillage)
-    ("Trees/Ash_Dead", 0.8),               # frênes morts, feuillage brun
-    ("Trees/Ash_twisted", 0.4),            # frênes tordus
+# Forêts : sapins et frênes morts, chênes moussus, souches et troncs couchés.
+FOREST_TREES = [
+    ("Trees/Fir_Dead/Stage_2", 1.2),
+    ("Trees/Fir_Dead/Stage_3", 1.6),
+    ("Trees/Fir_Dead_Large/Stage_2", 0.8),
+    ("Trees/Fir_Dead_Large/Stage_3", 0.6),
+    ("Trees/Ash_Dead/Stage_2", 0.9),
+    ("Trees/Ash_Dead/Stage_3", 0.9),
+    ("Trees/Oak_Moss/Stage_4", 0.5),
+    ("Trees/Ash_Moss/Stage_3", 0.3),
+    ("Trees/Ash_swamp_dead/Stage_3", 0.3),
+    ("Trees/Poisoned/Stage_3", 0.15),
+    ("Trees/Beech_Dry/Stage_3", 0.3),
+    ("Trees/Dry_Dead", 0.3),
+    ("Trees/Oak/Stumps", 0.25),
+    ("Trees/Ash/Stumps", 0.25),
+    ("Trees/Logs/Oak/Moss", 0.15),
+    ("Trees/Logs/Ash/Mushroom_Cap_Brown", 0.1),
+]
+# Lande : arbres isolés, morts, tordus, quelques calcinés et de rares repères.
+LONE_TREES = [
+    ("Trees/Ash_Dead/Stage_3", 1.0),
+    ("Trees/Fir_Dead/Stage_1", 0.6),
+    ("Trees/Ash_twisted", 0.5),
     ("Trees/Ash_twisted_Large", 0.4),
-    ("Trees/Petrified_Dead/Stage_1", 0.3),
-    ("Trees/Petrified_Dead/Stage_2", 0.3),
-    ("Trees/Ash_twisted_Giant", 0.06),     # repères rares
-    ("Trees/Burnt_Roots/Spider", 0.06),    # arbre-nid d'araignées géant
+    ("Trees/Burnt_dead/Stage_2", 0.4),
+    ("Trees/Burnt/Stage_2", 0.3),
+    ("Trees/Petrified_Dead/Stage_1", 0.2),
+    ("Trees/Petrified_Dead/Stage_2", 0.2),
+    ("Trees/Ash_twisted_Giant", 0.05),
+    ("Trees/Burnt_Roots/Spider", 0.04),
 ]
 
 
@@ -230,31 +312,64 @@ def runtime(index, precision, positions, assignments):
 
 # --- biome ------------------------------------------------------------------------------------
 
-def biome():
+def type_export(name):
+    return f"Nakasar_Halloween_{name}_Positions"
+
+
+def layout_value():
+    """Bruit lu au même point (x et z forcés) partout : une valeur par graine de monde."""
+    return {"Type": "XOverride", "Value": 7919.5, "Inputs": [
+        {"Type": "ZOverride", "Value": -4441.5, "Inputs": [simplex2d(60.0, 1, "Layout")]}]}
+
+
+def slot_positions(name):
+    """Positions d'un type de structure : dans chaque répartition, ses emplacements, décalés selon la
+    graine du monde, gardés seulement si la répartition est celle du monde ; un exemplaire facultatif
+    n'est gardé que là où un bruit propre à l'emplacement dépasse un seuil (part `keep` des mondes,
+    à peu près : le bruit simplex est symétrique autour de 0)."""
+    out = []
+    for k, layout in enumerate(LAYOUTS_TABLE):
+        for i, (role, keep) in enumerate(layout):
+            if role != name:
+                continue
+            x, z, _ = SLOTS[i]
+            pos = {"Type": "Jitter2d", "Magnitude": STRUCTURE_JITTER, "Seed": f"Slot{i}",
+                   "Positions": list_positions((x, GROUND_Y, z))}
+            if keep < 1.0:
+                pos = within(simplex2d(40.0, 1, f"Keep{i}"), 1.0 - 2.0 * keep, 1.0e9, pos)
+            out.append(within(layout_value(), LAYOUT_BANDS[k], LAYOUT_BANDS[k + 1], pos))
+    return {"Type": "Union", "Positions": out}
+
+
+LAYOUTS_TABLE = layouts()
+
+
+def exports():
+    """Nœuds flottants qui déclarent les positions exportées avant tout import : une par type de
+    structure, leur union, et les repères (point d'apparition, manoir)."""
+    nodes = []
+    for name, *_ in STRUCTURE_TYPES:
+        positions = slot_positions(name)
+        positions["ExportAs"] = VILLAGE_EXPORT if name == "Village" else type_export(name)
+        nodes.append(distance_to(positions, 1.0, curve((0, 0), (1, 1))))
+    union = {"Type": "Union", "Positions": [
+        imported(VILLAGE_EXPORT if name == "Village" else type_export(name)) for name, *_ in STRUCTURE_TYPES]}
+    union["ExportAs"] = STRUCTURES_EXPORT
+    nodes.append(distance_to(union, 1.0, curve((0, 0), (1, 1))))
     landmarks = dict(list_positions(SPAWN, DRACULA))
     landmarks["ExportAs"] = LANDMARKS_EXPORT
+    nodes.append(distance_to(landmarks, 1.0, curve((0, 0), (1, 1))))
+    return nodes
 
-    # Grandes structures aléatoires sur le plat de l'île, à l'écart du point d'apparition et du
-    # manoir. Jitter 0,15 : chaque point bouge d'au plus 0,15 × 66 ≈ 10 blocs, donc deux structures
-    # restent à plus de 46 blocs l'une de l'autre (la plus grande en fait 41).
-    far = lambda point, d: distance_to(list_positions(point), d + 1.0, curve((0, 0), (d + 1.0, d + 1.0)))
-    structure_positions = within(
-        radial(curve((0, 0), (ISLAND_RADIUS, ISLAND_RADIUS))), 0.0, STRUCTURE_MAX_RADIUS,
-        within(far(SPAWN, SPAWN_CLEARANCE), SPAWN_CLEARANCE, 1.0e9,
-               within(far(DRACULA, DRACULA_CLEARANCE), DRACULA_CLEARANCE, 1.0e9,
-                      mesh(STRUCTURE_MESH, 0.15, "Structures"))))
-    structure_positions["ExportAs"] = STRUCTURES_EXPORT
 
-    # Relief : 0 sous une structure (sol plat), 1 au-delà de 40 blocs de son centre (collines). La
-    # plus grande structure aléatoire (41 × 41) tient dans un rayon de 22 blocs ; au-delà,
-    # le sol remonte ou descend progressivement autour d'elle.
-    # Le domaine du manoir est plus grand : sol plat jusqu'à MANOR_FLAT blocs de son centre.
+def biome():
+    # Relief : 0 sous une structure (sol plat), 1 plus loin (collines). Plat jusqu'à 34 blocs du
+    # centre d'une structure (la ferme, 49 × 45, tient dans un rayon de 33), 50 pour le village
+    # (69 × 69), 24 pour la crypte d'arrivée ; le domaine du manoir jusqu'à MANOR_FLAT blocs.
     relief = {"Type": "Min", "Inputs": [
-        distance_to(
-            {"Type": "Union", "Positions": [imported(STRUCTURES_EXPORT), imported(LANDMARKS_EXPORT)]},
-            42.0,
-            curve((0, 0), (24, 0), (40, 1)),
-        ),
+        distance_to(imported(STRUCTURES_EXPORT), 54.0, curve((0, 0), (34, 0), (52, 1))),
+        distance_to(imported(VILLAGE_EXPORT), 72.0, curve((0, 0), (50, 0), (70, 1))),
+        distance_to(imported(LANDMARKS_EXPORT), 42.0, curve((0, 0), (24, 0), (40, 1))),
         distance_to(list_positions(DRACULA), MANOR_HILLS + 2.0, curve((0, 0), (MANOR_FLAT, 0), (MANOR_HILLS, 1))),
     ]}
     hills = add(
@@ -311,15 +426,12 @@ def biome():
         "Empty": {"Type": "Constant", "Material": AIR},
     }
 
-    big = lambda path, seed: surface_locator(prefab(path, seed), SOLID_FLOOR, 12)
-    structures = runtime(0, "Prop", structure_positions, weighted_assignments("StructurePick", 0.0, [
-        (big("Crypts", "Crypt"), 3.0),
-        (big("Cemeteries/Haunted", "CemeteryHaunted"), 1.5),
-        (big("Cemeteries/Spiders", "CemeterySpiders"), 1.5),
-        (big("Cemeteries/Undead", "CemeteryUndead"), 1.5),
-        (big("PumpkinFields", "PumpkinField"), 3.0),
-        (big("HauntedCastles", "HauntedCastle"), 2.0),
-    ]))
+    big = lambda path, seed, rotate: surface_locator(prefab(path, seed, rotate), SOLID_FLOOR, 12)
+    structures = [
+        runtime(0, "Prop", imported(VILLAGE_EXPORT if name == "Village" else type_export(name)),
+                weighted_assignments(f"{name}Pick", 0.0, [(big(path, path.replace("/", ""), rotate), w) for path, w in folders]))
+        for name, folders, rotate, _ in STRUCTURE_TYPES
+    ]
     dracula = runtime(0, "Prop", list_positions(DRACULA), {
         "Type": "Constant",
         "Prop": surface_locator(prefab("VampireManor", "Manor", rotate=False), SOLID_FLOOR, 12),
@@ -335,6 +447,9 @@ def biome():
     def outside_structures(positions):
         manor = distance_to(list_positions(DRACULA), MANOR_FLAT + 9.0, curve((0, 0), (MANOR_FLAT + 9.0, MANOR_FLAT + 9.0)))
         positions = within(manor, MANOR_FLAT + 8.0, 1.0e9, positions)
+        village = distance_to(imported(VILLAGE_EXPORT), VILLAGE_CLEARANCE + 1.0,
+                              curve((0, 0), (VILLAGE_CLEARANCE + 1.0, VILLAGE_CLEARANCE + 1.0)))
+        positions = within(village, VILLAGE_CLEARANCE, 1.0e9, positions)
         return {
             "Type": "FieldFunction",
             "FieldFunction": distance_to(
@@ -351,22 +466,23 @@ def biome():
         return within(radial(curve((0, 0), (ISLAND_RADIUS, ISLAND_RADIUS))), 0.0, EDGE_START + 10.0, positions)
 
     small = lambda path, seed: surface_locator(prefab(path, seed), GRASS_FLOOR, 26)
-    trees = runtime(1, "Chunk", on_island(outside_structures(mesh(13.0, 0.45, "Trees"))), weighted_assignments("TreePick", 0.35, [
-        # nos arbres morts et arbres de pendus, puis les arbres morts, tordus et brûlés du jeu
-        (small("Trees", "Tree"), 0.8),
-    ] + [
-        (surface_locator(prefab(path, f"VanillaTree{i}", vanilla=True), GRASS_FLOOR, 26), w)
-        for i, (path, w) in enumerate(VANILLA_TREES)
-    ]))
-    decor = runtime(1, "Chunk", on_island(outside_structures(mesh(21.0, 0.45, "Decor"))), weighted_assignments("DecorPick", 0.25, [
+    # Forêts : là où un bruit à grande échelle est haut, arbres serrés ; ailleurs, arbres épars.
+    forest = simplex2d(95.0, 2, "Forest")
+    vanilla_tree = lambda path, i: surface_locator(prefab(path, f"VanillaTree{i}", vanilla=True), GRASS_FLOOR, 26)
+    woods = runtime(1, "Chunk", on_island(outside_structures(within(forest, 0.2, 1.0e9, mesh(6.5, 0.45, "Forest")))),
+                    weighted_assignments("ForestPick", 0.15, [(small("Trees", "Tree"), 0.4)] + [
+                        (vanilla_tree(path, i), w) for i, (path, w) in enumerate(FOREST_TREES)]))
+    trees = runtime(1, "Chunk", on_island(outside_structures(within(forest, -1.0e9, 0.2, mesh(16.0, 0.45, "Trees")))),
+                    weighted_assignments("TreePick", 0.35, [(small("Trees", "Tree"), 0.8)] + [
+                        (vanilla_tree(path, 100 + i), w) for i, (path, w) in enumerate(LONE_TREES)]))
+    decor = runtime(1, "Chunk", on_island(outside_structures(mesh(26.0, 0.45, "Decor"))), weighted_assignments("DecorPick", 0.4, [
         (small("Decor/Outcrops", "Outcrop"), 2.5),
-        (small("Decor/FallenLogs", "Log"), 1.5),
-        (small("Decor/MushroomRings", "Ring"), 1.2),
-        (small("Decor/BonePiles", "Bones"), 1.5),
-        (small("Decor/Graves", "Grave"), 1.5),
-        (small("Decor/SpiderNests", "Nest"), 1.0),
-        (small("Decor/PumpkinPatches", "Pumpkins"), 1.5),
-        (small("Decor/Shrines", "Shrine"), 0.8),
+        (small("Decor/FallenLogs", "Log"), 2.0),
+        (small("Decor/MushroomRings", "Ring"), 0.5),
+        (small("Decor/BonePiles", "Bones"), 0.6),
+        (small("Decor/Graves", "Grave"), 0.5),
+        (small("Decor/SpiderNests", "Nest"), 0.4),
+        (small("Decor/Shrines", "Shrine"), 0.6),
     ]))
 
     def plant(name):
@@ -382,11 +498,10 @@ def biome():
         (plant("Plant_Bramble_Dead_Twisted"), 0.3),
         (plant("Plant_Leaves_Dead"), 0.6),
         (plant("Wood_Gnarled_Roots"), 0.5),
-        (plant("Plant_Crop_Mushroom_Glowing_Purple"), 0.2),
-        (plant("Plant_Crop_Mushroom_Glowing_Violet"), 0.12),
-        (plant("Plant_Crop_Mushroom_Glowing_Green"), 0.08),
-        (plant(PUMPKIN_RIPE), 0.1),
-        (plant("Deco_Halloween_Pumpkin_Scary"), 0.04),
+        (plant("Plant_Fern_Forest"), 0.6),
+        (plant("Plant_Crop_Mushroom_Common_Brown"), 0.15),
+        (plant("Plant_Crop_Mushroom_Cap_Brown"), 0.08),
+        (plant("Plant_Crop_Mushroom_Glowing_Purple"), 0.04),
     ]))
 
     environment = {
@@ -404,15 +519,14 @@ def biome():
 
     return {
         "Name": BIOME_ID,
-        "FloatingFunctionNodes": [],
+        # Les positions exportées sont déclarées avant tout import (nœuds flottants, lus en premier).
+        "FloatingFunctionNodes": exports(),
         "Terrain": {"Type": "DAOTerrain", "Density": terrain_density},
         "MaterialProvider": materials,
-        "Props": [structures, dracula, spawn_crypt, trees, decor, plants],
+        "Props": structures + [dracula, spawn_crypt, woods, trees, decor, plants],
         "EnvironmentProvider": environment,
         "TintProvider": {"Type": "Constant", "Color": "#7a6534"},
-        # Les positions exportées sont déclarées ici pour exister même si l'ordre de lecture change.
-        "$Exports": None,
-    }, landmarks
+    }
 
 
 def world_structure():
@@ -434,10 +548,7 @@ def write(path, doc):
 
 
 def main():
-    b, landmarks = biome()
-    del b["$Exports"]
-    # Les exports doivent être déclarés avant leurs imports : les repères sont un nœud flottant.
-    b["FloatingFunctionNodes"] = [distance_to(landmarks, 1.0, curve((0, 0), (1, 1)))]
+    b = biome()
     write(GEN / "Biomes" / f"{BIOME_ID}.json", b)
     write(GEN / "WorldStructures" / f"{WORLD_STRUCTURE_ID}.json", world_structure())
 

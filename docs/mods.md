@@ -134,46 +134,79 @@ Fragment d'Orbis ouvert depuis l'Ancienne passerelle vanilla (`Portal_Device`) a
 - **Terrain** : collines autour de y = 81 (deux bruits simplex, sol entre y ≈ 65 et 91), herbe brûlée
   en surface avec des plaques de cendre, de terre brûlée et de gravier moussu (matériau `FieldFunction`
   sur un bruit), puis terre, gravier et pierre / ardoise / schiste.
-- **Aplanissement** : les positions des structures sont exportées (`ExportAs`) et réutilisées par le
-  terrain : le relief tombe à zéro dans un rayon de 24 blocs (plein relief à 40) autour de chaque
-  structure, pour qu'elle repose à plat sans aplatir toute l'île ; autour du manoir, plat jusqu'à
-  38 blocs (plein relief à 58).
-- **Structures aléatoires** : une maille de 66 blocs (jitter 0,15) tire une structure par cellule,
-  à moins de 232 blocs du centre, à plus de 45 blocs du point d'apparition et de 72 blocs du manoir
-  du comte (environ quatre fois plus de structures qu'avec l'île de rayon 170, qui en avait 7 à 9). Poids : crypte 3, champ de
-  citrouilles 3, château hanté 2, cimetière hanté / araignées / morts-vivants 1,5 chacun.
+- **Aplanissement** : les positions des structures sont exportées (`ExportAs`, nœuds flottants
+  déclarés avant tout import) et réutilisées par le terrain : le relief tombe à zéro dans un rayon de
+  34 blocs (plein relief à 52) autour de chaque structure, 50 (70) autour du village, 24 (40) autour de
+  la crypte d'arrivée ; autour du manoir, plat jusqu'à 38 blocs (plein relief à 58).
+- **Structures (domaine du Comte)** : treize emplacements fixes (`SLOTS`, trois grands pour le
+  village), décalés d'au plus 16 blocs selon la graine du monde (`Jitter2d`). Le type de chaque
+  emplacement change d'un monde à l'autre : huit répartitions sont tirées une fois par le script
+  (`layouts()`, le village toujours sur un grand emplacement, deux structures du même type à plus
+  de 140 blocs), et le monde en choisit une selon un bruit lu en un point fixe (`XOverride` /
+  `ZOverride`, donc une valeur par graine). Le premier exemplaire de chaque type est toujours là, le
+  second une fois sur deux (bruit propre à l'emplacement) : 0 ou 1 village (60 %), 1 ou 2 fermes,
+  postes de garde, cimetières, cryptes, champs de citrouilles et châteaux hantés, toujours un seul
+  manoir. Au moins 9 blocs entre deux structures dans le pire décalage. La variante (village
+  zombies / ruines / araignées, etc.) et l'orientation sont tirées au hasard.
 - **Manoir du comte** : toujours à 220 blocs au nord du point d'apparition (objectif du portail).
 - **Arrivée** : `PortalTypes/Nakasar_Halloween` fixe le point d'apparition (`Spawn.SpawnProviderOverride`,
   fournisseur `Global`) en 0,5 / 81 / 0,5 ; sans lui, le jeu tire un point au hasard dans le tronçon
   (x et z entre 2 et 13). Le portail de retour y apparaît (le jeu vide 3 × 3 × 3 blocs autour), au
   centre de la crypte d'arrivée (`SpawnCrypt`) posée au même endroit.
-- **Décor** : arbres morts et pendus, plus les arbres du jeu : calcinés, en feu, frênes morts et tordus, pétrifiés, arbre-nid d'araignées (`VANILLA_TREES`) (maille de 13) ; affleurements rocheux, troncs couchés, cercles
-  de champignons luisants, tas d'os, tombes isolées, nids d'araignées, citrouilles et autels au bord
-  du chemin (maille de 21) ; plantes mortes, racines, champignons luisants et citrouilles (maille de
-  3). Arbres et décor restent à moins de 306 blocs du centre pour ne pas dépasser du bord, et hors
-  du domaine du manoir.
+- **Forêts** : là où un bruit à grande échelle (`Forest`, échelle 95) dépasse 0,2 (environ un tiers
+  de l'île), maille serrée de 6,5 blocs : sapins et frênes morts du jeu, chênes et frênes moussus,
+  souches, troncs couchés (`FOREST_TREES`), quelques-uns de nos arbres morts. Ailleurs, arbres isolés
+  (maille de 16, `LONE_TREES` : frênes morts et tordus, quelques calcinés et pétrifiés).
+- **Décor** : affleurements rocheux, troncs couchés, quelques cercles de champignons, tas d'os,
+  tombes isolées, nids d'araignées et autels (maille de 26) ; herbes et buissons morts, fougères,
+  racines, champignons (maille de 3). Arbres et décor restent à moins de 306 blocs du centre, hors du
+  domaine du manoir, à 38 blocs d'une structure et 54 du village.
 - **Chemins des prefabs** : relatifs à `Server/Prefabs/` (`Nakasar/Halloween/Crypts`), pas à `Server/`.
 - **Environnements** : `Nakasar_Env_Halloween_Haunted` à moins de 45 blocs d'une structure (PNJ plus
   dangereux, densité plus forte), `Nakasar_Env_Halloween` ailleurs.
 
-### Prefabs (`tools/generate_prefabs.py`, 58 fichiers)
+### Prefabs (`tools/generate_prefabs.py`, 65 fichiers)
 
 | Dossier | Nombre | Contenu |
 |---------|--------|---------|
 | `Crypts` | 3 | Mausolée (pierre, ardoise, schiste) et salle funéraire enterrée : cercueils, braseros, ossements, cristaux, toiles |
 | `HauntedCastles` | 2 | Château en ruine 33×33 (pierre ou ardoise) : tours, courtines, donjon (table, lustre, chambre), puits |
-| `VampireManor` | 1 | Manoir gothique du comte, domaine 57×51 clos d'une grille à lances (portail en fer forgé entre deux piliers à gargouille). Corps de logis en basalte à étage, toits d'ardoise à 45°, deux ailes à pignon, tour-porche à rosace et flèche, tour d'angle, vitraux en ogive, gargouilles. Rez-de-chaussée : hall à piliers et tapis rouge jusqu'au trône (marqueur Comte / Comtesse), cheminées, salle à manger, bibliothèque, escalier ; étage : chambre du comte, boudoir de la comtesse, galerie de tableaux, balcon ; crypte des rejetons sous le hall ; jardin (allée à lanternes, roses de sang, tombes de famille, mausolée, pendus) |
+| `VampireManor` | 1 | Manoir gothique du comte, domaine 57×51 clos d'une grille à lances (portail en fer forgé entre deux piliers à gargouille). Corps de logis en basalte à étage, toits d'ardoise à 45°, deux ailes à pignon, tour-porche à rosace et flèche, vitraux, gargouilles. Habité : rez-de-chaussée avec hall à piliers et trône (marqueur Comte / Comtesse), grand escalier, cuisine (fourneau, four, réserve), salle à manger, cabinet de travail, bibliothèque ; étage avec galerie, chambre de la comtesse, chambre du comte (lit royal et cercueil), laboratoire d'alchimie (établis d'alchimie et arcanes, chaudrons), atelier (établi, forge d'armes, métier à tisser) ; crypte des rejetons et salle du trésor sous le hall ; jardin |
+| `Villages/{Zombies,Ruins,Spiders}` | 3 | Village abandonné 69×69 : dix maisons (rez-de-chaussée en moellons, étage à colombages, toit de bois à 45°, cheminée), grange, forge, place au puits, jardins clos en friche ; envahi par les villageois zombifiés (portes enfoncées, fenêtres condamnées), en ruine et envahi par la végétation, ou envahi par les araignées (toiles, cocons) |
+| `Farms/{Zombies,Ruins,Burnt}` | 3 | Ferme délaissée 49×45 : maison, grange, champs de blé, enclos, épouvantail ; envahie par les fermiers zombifiés et un zombie difforme (élite, dans la grange), abandonnée et en ruine, ou carbonisée (bois noirci, blé brûlé, feux) |
+| `GuardPosts/{Ruins,Spiders,Rebels,Garrison}` | 4 | Ancien poste de garde 39×39 : enceinte crénelée, tour de guet, caserne, quartiers du capitaine, armurerie, prison à trois cellules (barreaux et porte), cachot dans l'armurerie, cour d'entraînement ; en ruine, envahi par les araignées, pris par les paysans zombifiés révoltés, ou tenu par les gardes squelettes et leur capitaine (élite) |
 | `SpawnCrypt` | 1 | Crypte d'arrivée 11×11 fermée autour du portail de retour : porte au nord vers le manoir, rosace et vitraux, cercueils, gargouilles aux angles |
-| `Cemeteries/{Haunted,Spiders,Undead}` | 2 × 3 | Cimetière clos (~31×33) : chapelle à clocher (bancs, autel, lustre), caveaux, portail à lanterne, muret à grille et piliers, allées pavées, tombes variées (stèles, croix, obélisques, sarcophages, tombes ouvertes), arbres morts ; hanté (bougies, citrouilles, champignons luisants), araignées (toiles, cocons) ou morts-vivants (fosses à cercueil, ossements) |
+| `Cemeteries/{Haunted,Spiders,Undead}` | 2 × 3 | Cimetière clos (~31×33) : chapelle à clocher (bancs, autel, lustre), caveaux, portail à lanterne, muret à grille et piliers, allées pavées, tombes variées (stèles, croix, obélisques, sarcophages, tombes ouvertes), arbres morts ; hanté (bougies, champignons luisants), araignées (toiles, cocons) ou morts-vivants (fosses à cercueil, ossements) |
 | `PumpkinFields` | 3 | Champ de citrouilles mûres (états de culture) clôturé de bois mort : allée à lanternes, épouvantails, charrette de récolte, meules de foin, cabane, arbre de pendu |
 | `Trees` | 16 | Arbres morts en frêne, bois pétrifié ou calciné : squelette en troncs pleins comme les arbres du jeu (fût droit, pied 2×2 des grands, contreforts et racines, branches qui montent en escalier et se divisent), tubes fins au bout des rameaux, feuilles mortes de l'essence posées sur les branches, toiles et buissons pendants ; aucun bloc ne flotte (vérifié à la génération) ; 4 portent une lanterne, une cage ou une corde |
-| `Decor/*` | 7 × 3 + 5 | Affleurements rocheux (parfois des cristaux), troncs couchés, cercles de champignons luisants, autels, tas d'os, tombes isolées, nids d'araignées, carrés de citrouilles |
+| `Decor/*` | 6 × 3 + 5 | Affleurements rocheux (parfois des cristaux), troncs couchés, cercles de champignons luisants, autels, tas d'os, tombes isolées, nids d'araignées |
 
 Les ruines (châteaux hantés, mausolées, chapelles) sont écroulées à la génération, de façon
 déterministe : plus on monte, plus il manque de blocs, puis tout bloc qui ne repose plus sur le sol
 (contact par une face) est retiré, pour qu'aucun pan de mur ne lévite. Le manoir du comte est
 habité, donc intact ; les murets et grilles des cimetières et les clôtures restent entiers.
 `floating_blocks` vérifie qu'aucun prefab ne contient de bloc flottant.
+
+Orientation et meubles (vérifiés sur les hitboxes `Server/Item/Block/Hitboxes` et les prefabs de
+village du jeu) : le lacet 0 regarde le sud (+Z), 1 l'est, 2 le nord, 3 l'ouest. Les portes et
+fenêtres prennent 0 dans un mur le long de X, 1 le long de Z ; les toits (`<Bois>_Roof`,
+`Rock_*_Roof`) sont à 45° et descendent vers +Z à 0 (2 vers −Z, 1 vers +X, 3 vers −X), faîtage en
+`*<Bois>_Roof_State_Definitions_Topper`. Les meubles de plusieurs cases (`HITBOXES` / `FURNITURE` :
+tables 2×2, lits, armoires, établis, lustres…) sont posés avec leurs cases secondaires (`filler`
+comme dans les prefabs du jeu) ; la génération échoue si deux meubles se chevauchent ou si un meuble
+déborde dans un mur.
+
+Coffres (`Prefab.chest`) : composant `ItemContainerBlock` avec une liste de butin (`Droplist`) que le
+serveur tire à la pose du prefab. Listes générées par `tools/generate_loot.py` dans
+`Server/Drops/Nakasar/Halloween` : ferme, ferme brûlée, maison, maison du notable, caserne,
+armurerie, capitaine, crypte, château en ruine, et au manoir trésor, alchimie, bibliothèque,
+cuisine, chambres, atelier. Objets du jeu 0.7.2 (vérifiés dans `Server/Item/Items`).
+
+Blocs de `nakasar-mobs` posés dans les prefabs : spawners `Nakasar_Spawner_Zombie_Villager`,
+`_Zombie_Farmer`, `_Zombie_Abomination` (élite, un par ferme zombie), `_Zombie_Rebel`,
+`_Skeleton_Guard`, `_Guard_Captain` (élite, un par garnison), `_Spider`, et `Nakasar_Prison_Cell`
+(invisible) au sol de chaque cellule du poste de garde (trois à l'est, une à l'ouest : toujours une à moins de 24 blocs du Capitaine), dans toutes les variantes : le Capitaine y
+téléporte sa cible (cellule la plus proche à moins de 24 blocs).
 
 Blocs du pack (`tools/generate_assets.py`, modèle, texture, icône et définition générés) :
 `Nakasar_Stained_Glass_Red` / `_Violet` (vitraux, cubes translucides), `Nakasar_Gargoyle` (gargouille

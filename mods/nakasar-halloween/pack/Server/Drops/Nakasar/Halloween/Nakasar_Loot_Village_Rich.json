@@ -1,0 +1,223 @@
+{
+  "Container": {
+    "Type": "Multiple",
+    "Containers": [
+      {
+        "Type": "Choice",
+        "RollsMin": 2,
+        "RollsMax": 3,
+        "Containers": [
+          {
+            "Type": "Single",
+            "Weight": 4,
+            "Item": {
+              "ItemId": "Ingredient_Fabric_Scrap_Linen",
+              "QuantityMin": 1,
+              "QuantityMax": 4
+            }
+          },
+          {
+            "Type": "Single",
+            "Weight": 3,
+            "Item": {
+              "ItemId": "Ingredient_Fabric_Scrap_Wool",
+              "QuantityMin": 1,
+              "QuantityMax": 3
+            }
+          },
+          {
+            "Type": "Single",
+            "Weight": 3,
+            "Item": {
+              "ItemId": "Ingredient_Fibre",
+              "QuantityMin": 2,
+              "QuantityMax": 6
+            }
+          },
+          {
+            "Type": "Single",
+            "Weight": 3,
+            "Item": {
+              "ItemId": "Ingredient_Stick",
+              "QuantityMin": 2,
+              "QuantityMax": 5
+            }
+          },
+          {
+            "Type": "Single",
+            "Weight": 2,
+            "Item": {
+              "ItemId": "Ingredient_Charcoal",
+              "QuantityMin": 1,
+              "QuantityMax": 4
+            }
+          },
+          {
+            "Type": "Single",
+            "Weight": 2,
+            "Item": {
+              "ItemId": "Ingredient_Flour",
+              "QuantityMin": 1,
+              "QuantityMax": 3
+            }
+          },
+          {
+            "Type": "Single",
+            "Weight": 1,
+            "Item": {
+              "ItemId": "Ingredient_Salt",
+              "QuantityMin": 1,
+              "QuantityMax": 2
+            }
+          },
+          {
+            "Type": "Single",
+            "Weight": 1,
+            "Item": {
+              "ItemId": "Ingredient_Leather_Light",
+              "QuantityMin": 1,
+              "QuantityMax": 2
+            }
+          }
+        ]
+      },
+      {
+        "Type": "Choice",
+        "RollsMin": 1,
+        "RollsMax": 2,
+        "Containers": [
+          {
+            "Type": "Single",
+            "Weight": 3,
+            "Item": {
+              "ItemId": "Food_Pie_Meat",
+              "QuantityMin": 1,
+              "QuantityMax": 2
+            }
+          },
+          {
+            "Type": "Single",
+            "Weight": 3,
+            "Item": {
+              "ItemId": "Food_Pie_Apple",
+              "QuantityMin": 1,
+              "QuantityMax": 2
+            }
+          },
+          {
+            "Type": "Single",
+            "Weight": 3,
+            "Item": {
+              "ItemId": "Food_Cheese",
+              "QuantityMin": 1,
+              "QuantityMax": 3
+            }
+          },
+          {
+            "Type": "Single",
+            "Weight": 3,
+            "Item": {
+              "ItemId": "Food_Bread",
+              "QuantityMin": 2,
+              "QuantityMax": 4
+            }
+          },
+          {
+            "Type": "Single",
+            "Weight": 2,
+            "Item": {
+              "ItemId": "Food_Kebab_Meat",
+              "QuantityMin": 1,
+              "QuantityMax": 3
+            }
+          },
+          {
+            "Type": "Single",
+            "Weight": 1,
+            "Item": {
+              "ItemId": "Food_Salad_Mushroom",
+              "QuantityMin": 1,
+              "QuantityMax": 2
+            }
+          },
+          {
+            "Type": "Single",
+            "Weight": 2,
+            "Item": {
+              "ItemId": "Ingredient_Spices",
+              "QuantityMin": 1,
+              "QuantityMax": 3
+            }
+          }
+        ]
+      },
+      {
+        "Type": "Choice",
+        "RollsMin": 1,
+        "RollsMax": 1,
+        "Containers": [
+          {
+            "Type": "Single",
+            "Weight": 3,
+            "Item": {
+              "ItemId": "Ingredient_Bar_Silver",
+              "QuantityMin": 1,
+              "QuantityMax": 3
+            }
+          },
+          {
+            "Type": "Single",
+            "Weight": 2,
+            "Item": {
+              "ItemId": "Ingredient_Bar_Gold",
+              "QuantityMin": 1,
+              "QuantityMax": 2
+            }
+          },
+          {
+            "Type": "Empty",
+            "Weight": 2
+          }
+        ]
+      },
+      {
+        "Type": "Choice",
+        "RollsMin": 0,
+        "RollsMax": 1,
+        "Containers": [
+          {
+            "Type": "Single",
+            "Weight": 5,
+            "Item": {
+              "ItemId": "Recipe_Page",
+              "QuantityMin": 1,
+              "QuantityMax": 2
+            }
+          },
+          {
+            "Type": "Single",
+            "Weight": 1,
+            "Item": {
+              "ItemId": "Recipe_Food_Pie_Meat",
+              "QuantityMin": 1,
+              "QuantityMax": 1
+            }
+          },
+          {
+            "Type": "Single",
+            "Weight": 1,
+            "Item": {
+              "ItemId": "Recipe_Food_Pie_Pumpkin",
+              "QuantityMin": 1,
+              "QuantityMax": 1
+            }
+          },
+          {
+            "Type": "Empty",
+            "Weight": 3
+          }
+        ]
+      }
+    ]
+  }
+}
