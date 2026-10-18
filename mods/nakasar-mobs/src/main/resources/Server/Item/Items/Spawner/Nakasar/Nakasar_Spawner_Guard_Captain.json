@@ -1,0 +1,22 @@
+{
+  "$Comment": "Bloc invisible posé dans les prefabs : son composant SpawnMarkerBlock crée le marqueur d'apparition Nakasar_Guard_Captain à cet endroit.",
+  "TranslationProperties": {
+    "Name": "nakasar_mobs.items.Nakasar_Spawner_Guard_Captain.name"
+  },
+  "Quality": "Developer",
+  "MaxStack": 64,
+  "BlockType": {
+    "Material": "Empty",
+    "DrawType": "Empty",
+    "Opacity": "Transparent",
+    "BlockEntity": {
+      "Components": {
+        "SpawnMarkerBlock": {
+          "Config": {
+            "SpawnMarker": "Nakasar_Guard_Captain"
+          }
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,26 @@
+{
+  "$Comment": "Garde squelette du poste de garde : modèle vanilla Skeleton_Knight (casque et cuirasse rouillés, tabard rouge), yeux rouges.",
+  "Parent": "Skeleton_Knight",
+  "DefaultAttachments": [
+    {
+      "Model": "NPC/Undead/Skeleton/Models/Attachments/Cosmetics/Head/Eyes/Eyes.blockymodel",
+      "Texture": "NPC/Undead/Skeleton/Models/Attachments/Cosmetics/Head/Eyes/Eyes_Red.png"
+    },
+    {
+      "Model": "NPC/Undead/Skeleton/Models/Attachments/Cosmetics/Chest/Tunic_Torn.blockymodel",
+      "Texture": "NPC/Undead/Skeleton/Models/Attachments/Cosmetics/Chest/Tunic_Torn_Textures/Tunic_Torn_Red.png"
+    },
+    {
+      "Model": "Cosmetics/Shoes/BootsBasic.blockymodel",
+      "Texture": "Cosmetics/Shoes/BootsBasic_Textures/Rotten_Leather.png"
+    },
+    {
+      "Model": "NPC/Undead/Skeleton/Models/Attachments/Soldier/Chest.blockymodel",
+      "Texture": "NPC/Undead/Skeleton/Models/Attachments/Soldier/Chest_Rusty.png"
+    },
+    {
+      "Model": "NPC/Undead/Skeleton/Models/Attachments/Soldier/Head.blockymodel",
+      "Texture": "NPC/Undead/Skeleton/Models/Attachments/Soldier/Head_Rusty.png"
+    }
+  ]
+}

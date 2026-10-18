@@ -1,0 +1,8 @@
+{
+  "$Comment": "Effet de l'Emprisonnement sur le joueur touché (type Java Nakasar_ImprisonPlayer du mod Mobs). Sans cellule à moins de 48 blocs du Capitaine, le joueur est seulement ralenti.",
+  "Type": "Nakasar_ImprisonPlayer",
+  "CellBlock": "Nakasar_Prison_Cell",
+  "Radius": 48,
+  "EffectId": "Nakasar_Imprisoned",
+  "Duration": 5
+}

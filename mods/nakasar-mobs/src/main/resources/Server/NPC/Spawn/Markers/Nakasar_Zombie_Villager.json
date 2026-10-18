@@ -1,0 +1,12 @@
+{
+  "$Comment": "Villageois zombifié posé dans les structures du domaine du Comte ; revient 10 minutes après sa mort.",
+  "NPCs": [
+    {
+      "Name": "Nakasar_Zombie_Villager",
+      "Weight": 1,
+      "RealtimeRespawnTime": 600
+    }
+  ],
+  "RealtimeRespawn": true,
+  "ExclusionRadius": 0
+}

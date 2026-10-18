@@ -1,0 +1,19 @@
+{
+  "Container": {
+    "Type": "Multiple",
+    "Containers": [
+      {
+        "Type": "Single",
+        "Item": {
+          "ItemId": "Ingredient_Rune_Shard",
+          "QuantityMin": 1,
+          "QuantityMax": 3
+        }
+      },
+      {
+        "Type": "Droplist",
+        "DroplistId": "Drop_Zombie_Aberrant_Big"
+      }
+    ]
+  }
+}

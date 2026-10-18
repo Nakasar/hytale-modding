@@ -6,7 +6,8 @@ Génère les pièces de modèle propres aux vampires et les icônes d'effets :
   évasées autour de la tête, noir dehors, cramoisi dedans, liseré d'or) avec lavallière rouge et rubis.
 - Common/NPC/Nakasar/Vampire/Collar_Countess.blockymodel : col Médicis plus large et plus ouvert, pendentif rubis.
 - Common/NPC/Nakasar/Vampire/Collar_Texture.png : texture commune des deux cols.
-- Common/UI/StatusEffects/Nakasar/*.png : icônes des effets (Domination du comte, toucher glacial du fantôme),
+- Common/UI/StatusEffects/Nakasar/*.png : icônes des effets (Domination du comte, toucher glacial du fantôme,
+  Emprisonnement du Capitaine de la garde),
   et dans le mod Runes celles de la rune de Domination et des Chaînes spectrales.
 
 Les cols sont des pièces attachées à l'os « Chest » du squelette du joueur (Player) : elles suivent
@@ -222,6 +223,15 @@ def draw_chains(d, s):
         d.ellipse((c - w, c - h, c + w, c + h), outline=(200, 255, 215, 255), width=7)
 
 
+def draw_imprisoned(d, s):
+    # Barreaux de cellule gris fer sur fond sombre (Emprisonnement du Capitaine de la garde).
+    d.ellipse((6, 6, s - 6, s - 6), fill=(30, 32, 38, 235), outline=(154, 164, 176, 255), width=6)
+    for x in (40, 64, 88):
+        d.rectangle((x - 5, 22, x + 5, s - 22), fill=(190, 198, 208, 255))
+    d.rectangle((26, 40, s - 26, 48), fill=(120, 128, 140, 255))
+    d.rectangle((26, s - 48, s - 26, s - 40), fill=(120, 128, 140, 255))
+
+
 def write_json(path, data):
     path.parent.mkdir(parents=True, exist_ok=True)
     path.write_text(json.dumps(data, indent=2) + "\n", encoding="utf-8")
@@ -234,6 +244,7 @@ def main():
     icons = {
         MOBS_COMMON / "UI/StatusEffects/Nakasar/Count_Domination.png": draw_domination,
         MOBS_COMMON / "UI/StatusEffects/Nakasar/Ghost_Chill.png": draw_chill,
+        MOBS_COMMON / "UI/StatusEffects/Nakasar/Imprisoned.png": draw_imprisoned,
         RUNES_COMMON / "UI/StatusEffects/Nakasar/Dominated.png": draw_domination,
         RUNES_COMMON / "UI/StatusEffects/Nakasar/Spectral_Chains.png": draw_chains,
     }
