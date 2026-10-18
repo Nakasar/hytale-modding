@@ -203,7 +203,7 @@ Blocs de `nakasar-mobs` posés dans les prefabs : spawners `Nakasar_Spawner_Zomb
 `_Zombie_Farmer`, `_Zombie_Abomination` (élite, un par ferme zombie), `_Zombie_Rebel`,
 `_Skeleton_Guard`, `_Guard_Captain` (élite, un par garnison), `_Spider`, et `Nakasar_Prison_Cell`
 (invisible) au sol de chaque cellule du poste de garde, dans toutes les variantes : le Capitaine y
-téléporte sa cible (cellule la plus proche à moins de 48 blocs).
+téléporte sa cible (cellule la plus proche à moins de 24 blocs).
 
 Blocs du pack (`tools/generate_assets.py`, modèle, texture, icône et définition générés) :
 `Nakasar_Stained_Glass_Red` / `_Violet` (vitraux, cubes translucides), `Nakasar_Gargoyle` (gargouille
