@@ -142,7 +142,7 @@ Fragment d'Orbis ouvert depuis l'Ancienne passerelle vanilla (`Portal_Device`) a
   du comte (7 à 9 structures par instance d'après une simulation hors jeu). Poids : crypte 3, champ de
   citrouilles 3, château hanté 2, cimetière hanté / araignées / morts-vivants 1,5 chacun.
 - **Château du comte** : toujours à 110 blocs au nord du point d'apparition (objectif du portail).
-- **Décor** : arbres morts et pendus, plus les frênes morts du jeu (`Trees/Ash_Dead`) (maille de 13) ; affleurements rocheux, troncs couchés, cercles
+- **Décor** : arbres morts et pendus, plus les arbres du jeu : calcinés, en feu, frênes morts et tordus, pétrifiés, arbre-nid d'araignées (`VANILLA_TREES`) (maille de 13) ; affleurements rocheux, troncs couchés, cercles
   de champignons luisants, tas d'os, tombes isolées, nids d'araignées, citrouilles et autels au bord
   du chemin (maille de 21) ; plantes mortes, racines, champignons luisants et citrouilles (maille de
   3). Arbres et décor restent à moins de 158 blocs du centre pour ne pas dépasser du bord.

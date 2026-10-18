@@ -179,9 +179,10 @@ Fragment Halloween :
   Les arbres morts n'utilisent plus de branche couchée : squelette en troncs pleins, tubes fins debout.
   Seuls les troncs tombés (décor) utilisent les rotations 4 (nord-sud) et 5 (est-ouest) lues dans le
   serveur : s'ils apparaissent debout, inverser `ALONG_Z` et `ALONG_X` dans `generate_prefabs.py`.
-- **Frênes morts du jeu** : le worldgen pioche aussi dans le dossier vanilla `Trees/Ash_Dead`
-  (chemin déduit de la documentation, pas lu dans Assets.zip). S'il n'existe pas, il ne place rien
-  sans erreur ; corriger `VANILLA_DEAD_TREES` dans `generate_worldgen.py`. Les châteaux et cryptes sont posés à plat grâce à un terrain aplani autour des structures.
+- **Arbres du jeu** : le worldgen pioche surtout dans les arbres vanilla (calcinés, en feu, frênes
+  morts et tordus, pétrifiés, arbre-nid d'araignées), dossiers lus dans Assets.zip 0.7.2 et listés
+  dans `VANILLA_TREES` (`generate_worldgen.py`). Un dossier renommé par une mise à jour ne place
+  plus rien, sans erreur : vérifier cette liste après chaque mise à jour du jeu. Les châteaux et cryptes sont posés à plat grâce à un terrain aplani autour des structures.
 - **Liste des blocs** : `tools/vanilla-block-ids-0.7.2.txt` vient des fichiers du jeu publiés par
   hytale.isaacguru.com (ids d'objets qui ont un `BlockType`, états compris). Si un bloc récent manque,
   l'ajouter à la main ; si un bloc de la liste s'affiche en damier rose, le signaler pour l'en retirer.

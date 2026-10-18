@@ -164,7 +164,20 @@ def surface_locator(prop, pattern, reach):
     }
 
 
-VANILLA_DEAD_TREES = "Trees/Ash_Dead"
+# Arbres du jeu (Server/Prefabs d'Assets.zip, lus le 2026-10-18) : chaque dossier est chargé en entier.
+VANILLA_TREES = [
+    ("Trees/Burnt/Stage_2", 1.0),          # calcinés, feuillage noir dense
+    ("Trees/Burnt/Stage_3", 0.35),         # calcinés géants (36 à 46 blocs)
+    ("Trees/Burnt_dead", 0.8),             # calcinés sans feuilles, tordus
+    ("Trees/Fire_Burning/Stage_3", 0.5),   # arbres en feu (braises dans le feuillage)
+    ("Trees/Ash_Dead", 0.8),               # frênes morts, feuillage brun
+    ("Trees/Ash_twisted", 0.4),            # frênes tordus
+    ("Trees/Ash_twisted_Large", 0.4),
+    ("Trees/Petrified_Dead/Stage_1", 0.3),
+    ("Trees/Petrified_Dead/Stage_2", 0.3),
+    ("Trees/Ash_twisted_Giant", 0.06),     # repères rares
+    ("Trees/Burnt_Roots/Spider", 0.06),    # arbre-nid d'araignées géant
+]
 
 
 def prefab(path, seed, rotate=True, vanilla=False):
@@ -324,9 +337,11 @@ def biome():
 
     small = lambda path, seed: surface_locator(prefab(path, seed), GRASS_FLOOR, 26)
     trees = runtime(1, "Chunk", on_island(outside_structures(mesh(13.0, 0.45, "Trees"))), weighted_assignments("TreePick", 0.35, [
-        (small("Trees", "Tree"), 1.0),
-        # frênes morts du jeu (dossier Server/Prefabs/Trees/Ash_Dead d'Assets.zip, toutes tailles)
-        (surface_locator(prefab(VANILLA_DEAD_TREES, "VanillaTree", vanilla=True), GRASS_FLOOR, 26), 0.8),
+        # nos arbres morts et arbres de pendus, puis les arbres morts, tordus et brûlés du jeu
+        (small("Trees", "Tree"), 0.8),
+    ] + [
+        (surface_locator(prefab(path, f"VanillaTree{i}", vanilla=True), GRASS_FLOOR, 26), w)
+        for i, (path, w) in enumerate(VANILLA_TREES)
     ]))
     decor = runtime(1, "Chunk", on_island(outside_structures(mesh(21.0, 0.45, "Decor"))), weighted_assignments("DecorPick", 0.25, [
         (small("Decor/Outcrops", "Outcrop"), 2.5),
