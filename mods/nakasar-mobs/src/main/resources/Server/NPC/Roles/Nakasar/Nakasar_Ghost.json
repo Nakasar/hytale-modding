@@ -1,0 +1,96 @@
+{
+  "$Comment": "Fantôme des cimetières et de la maison hantée : flotte, dérive, et se jette sur les vivants. Son toucher glacial ralentit ; il disparaît et réapparaît près de sa cible quand elle s'éloigne.",
+  "Type": "Generic",
+  "Appearance": "Nakasar_Ghost",
+  "NameTranslationKey": "nakasar_mobs.npc.Ghost.name",
+  "MaxHealth": 45,
+  "DropList": "Nakasar_Drop_Ghost",
+  "StartState": "Idle",
+  "DefaultPlayerAttitude": "Hostile",
+  "DefaultNPCAttitude": "Ignore",
+  "DisableDamageGroups": ["Nakasar_Ghosts"],
+  "KnockbackScale": 1.5,
+  "MotionControllerList": [
+    {
+      "Type": "Fly",
+      "MaxHorizontalSpeed": 5,
+      "MaxClimbSpeed": 3,
+      "MaxSinkSpeed": 3,
+      "Acceleration": 3,
+      "Deceleration": 3,
+      "Gravity": 1,
+      "MinHeightOverGround": 0.5,
+      "MaxHeightOverGround": 5
+    }
+  ],
+  "StateTransitions": [
+    {
+      "States": [ { "From": ["Idle"], "To": ["Combat"] } ],
+      "Actions": [
+        { "Type": "TimerStart", "Name": "Blink", "StartValueRange": [3, 5], "RestartValueRange": [6, 9] }
+      ]
+    }
+  ],
+  "Instructions": [
+    {
+      "Sensor": { "Type": "State", "State": "Idle" },
+      "Instructions": [
+        {
+          "Sensor": { "Type": "Damage", "Combat": true, "TargetSlot": "LockedTarget" },
+          "Actions": [ { "Type": "State", "State": "Combat" } ]
+        },
+        {
+          "Sensor": {
+            "Type": "Player",
+            "Range": 16,
+            "LockOnTarget": true,
+            "Filters": [ { "Type": "Attitude", "Attitudes": ["Hostile"] } ]
+          },
+          "Actions": [ { "Type": "State", "State": "Combat" } ]
+        },
+        {
+          "BodyMotion": { "Type": "WanderInCircle", "Radius": 12, "RelativeSpeed": 0.3, "MaxHeadingChange": 60 }
+        }
+      ]
+    },
+    {
+      "Sensor": { "Type": "State", "State": "Combat" },
+      "Instructions": [
+        {
+          "Sensor": { "Type": "Not", "Sensor": { "Type": "Target", "Range": 28 } },
+          "Actions": [
+            { "Type": "ReleaseTarget" },
+            { "Type": "State", "State": "Idle" }
+          ]
+        },
+        {
+          "$Comment": "Apparition soudaine près de la cible quand elle s'éloigne.",
+          "Sensor": {
+            "Type": "And",
+            "Sensors": [
+              { "Type": "Target", "Range": 20 },
+              { "Type": "Not", "Sensor": { "Type": "Target", "Range": 6 } },
+              { "Type": "Timer", "Name": "Blink", "State": "STOPPED" }
+            ]
+          },
+          "BodyMotion": { "Type": "Teleport", "OffsetRange": [2, 3], "MaxYOffset": 2, "Orientation": "TowardsTarget" },
+          "Actions": [ { "Type": "TimerRestart", "Name": "Blink" } ]
+        },
+        {
+          "Sensor": { "Type": "Target", "Range": 2.6 },
+          "HeadMotion": { "Type": "Aim", "RelativeTurnSpeed": 1.5 },
+          "ActionsBlocking": true,
+          "Actions": [
+            { "Type": "Attack", "Attack": "Root_Nakasar_NPC_Ghost_Touch", "AttackPauseRange": [1.4, 2.0] },
+            { "Type": "Timeout", "Delay": [0.2, 0.2] }
+          ]
+        },
+        {
+          "Sensor": { "Type": "Target", "Range": 28 },
+          "BodyMotion": { "Type": "Seek", "RelativeSpeed": 0.8, "SlowDownDistance": 3, "StopDistance": 1.6, "UsePathfinder": false },
+          "HeadMotion": { "Type": "Watch", "RelativeTurnSpeed": 1.2 }
+        }
+      ]
+    }
+  ]
+}

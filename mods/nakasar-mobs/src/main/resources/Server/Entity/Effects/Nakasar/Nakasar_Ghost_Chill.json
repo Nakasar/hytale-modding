@@ -1,0 +1,11 @@
+{
+  "$Comment": "Toucher glacial d'un fantôme : ralenti de moitié, teinte bleu pâle.",
+  "Duration": 3,
+  "OverlapBehavior": "Overwrite",
+  "Debuff": true,
+  "ApplicationEffects": {
+    "EntityTopTint": "#d8f4ff",
+    "EntityBottomTint": "#6fb7ff",
+    "HorizontalSpeedMultiplier": 0.5
+  }
+}

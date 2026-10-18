@@ -1,0 +1,11 @@
+{
+  "$Comment": "Rejetons de vampire du mod Mobs près des structures du fragment, la nuit seulement (du coucher du soleil à minuit ; heures relatives à la durée des nuits de l'instance).",
+  "Environments": [
+    "Nakasar_Env_Halloween_Haunted"
+  ],
+  "NPCs": [
+    { "Id": "Nakasar_Vampire_Spawn", "Weight": 6 }
+  ],
+  "DayTimeRange": [18, 24],
+  "ScaleDayTimeRange": true
+}

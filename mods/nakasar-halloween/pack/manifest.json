@@ -5,5 +5,8 @@
   "Description": "Fragment d'Orbis « Halloween » ouvert depuis l'Ancienne passerelle : terres mortes générées au hasard, cryptes, châteaux hantés, château du comte vampire, cimetières et champs de citrouilles.",
   "Authors": [ { "Name": "${author}" } ],
   "IncludesAssetPack": true,
-  "ServerVersion": "${serverRange}"
+  "ServerVersion": "${serverRange}",
+  "Dependencies": {
+    "Nakasar:Mobs": "*"
+  }
 }

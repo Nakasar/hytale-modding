@@ -1,0 +1,29 @@
+{
+  "$Comment": "Chaînes spectrales du comte : il tend la main vers sa cible ; les joueurs sur une ligne de 18 blocs dans l'axe de son regard sont enchaînés par l'impact de la rune (immobilisés 3 s, pointe de terre verte). Seuls les joueurs sont touchés : un rejeton sur la ligne ne bloque pas le sort et n'est pas enchaîné.",
+  "Type": "Simple",
+  "RunTime": 0.6,
+  "Effects": {
+    "ItemAnimationId": "SwingDown",
+    "WorldSoundEventId": "SFX_Spear_Throw_Charge_Local"
+  },
+  "Next": {
+    "Type": "Selector",
+    "RunTime": 0.1,
+    "Selector": {
+      "Id": "Stab",
+      "StartDistance": 0,
+      "EndDistance": 18,
+      "ExtendTop": 0.6,
+      "ExtendBottom": 0.6,
+      "ExtendLeft": 0.6,
+      "ExtendRight": 0.6,
+      "TestLineOfSight": true
+    },
+    "HitEntityRules": [
+      {
+        "Matchers": [ { "Type": "Player" } ],
+        "Next": { "Interactions": [ "Nakasar_Ability_SpectralChains_Impact" ] }
+      }
+    ]
+  }
+}

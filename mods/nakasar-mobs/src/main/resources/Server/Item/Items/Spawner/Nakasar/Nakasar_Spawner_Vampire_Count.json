@@ -1,0 +1,20 @@
+{
+  "$Comment": "Bloc invisible posé dans les prefabs : son composant SpawnMarkerBlock crée le marqueur d'apparition Nakasar_Vampire_Count à cet endroit.",
+  "TranslationProperties": {
+    "Name": "nakasar_mobs.items.Nakasar_Spawner_Vampire_Count.name"
+  },
+  "Quality": "Developer",
+  "MaxStack": 64,
+  "BlockType": {
+    "Material": "Empty",
+    "DrawType": "Empty",
+    "Opacity": "Transparent",
+    "BlockEntity": {
+      "Components": {
+        "SpawnMarkerBlock": {
+          "Config": { "SpawnMarker": "Nakasar_Vampire_Count" }
+        }
+      }
+    }
+  }
+}

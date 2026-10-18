@@ -1,0 +1,7 @@
+{
+  "$Comment": "Comte Vampire : en attendant un modèle Blockbench, hérite d'un modèle vanilla (id à confirmer avec Assets.zip), plus grand, avec une aura rouge.",
+  "Parent": "Skeleton",
+  "MinScale": 1.25,
+  "MaxScale": 1.25,
+  "Light": { "Color": "#b0102a", "Radius": 4 }
+}

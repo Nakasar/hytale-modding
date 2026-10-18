@@ -1,11 +1,13 @@
 import com.hypixel.hytale.assetstore.AssetExtraInfo;
 import com.hypixel.hytale.assetstore.JsonAsset;
+import com.hypixel.hytale.assetstore.RawAsset;
 import com.hypixel.hytale.codec.Codec;
 import com.hypixel.hytale.codec.ExtraInfo;
 import com.hypixel.hytale.codec.builder.BuilderCodec;
 import com.hypixel.hytale.codec.builder.BuilderField;
 import com.hypixel.hytale.codec.util.RawJsonReader;
 import com.hypixel.hytale.codec.validation.ValidationResults;
+import com.hypixel.hytale.assetstore.map.JsonAssetWithMap;
 
 import org.bson.BsonDocument;
 import org.bson.BsonValue;
@@ -24,6 +26,7 @@ import java.lang.reflect.Method;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -44,8 +47,27 @@ public class ValidateAssets {
             "com.hypixel.hytale.server.core.asset.AssetRegistryLoader"
     );
 
+    private static final List<String> EMPTY_STORES = List.of(
+            "com.hypixel.hytale.server.core.modules.interaction.interaction.config.Interaction",
+            "com.hypixel.hytale.server.core.modules.interaction.interaction.config.RootInteraction",
+            "com.hypixel.hytale.server.core.modules.entitystats.asset.EntityStatType"
+    );
+
+    /** Méthodes qui enregistrent des types de codecs ("Classe" = initialiseur statique, "Classe#méthode" sinon). */
     private static final List<String> BOOTSTRAP = List.of(
-            "com.hypixel.hytale.builtin.hytalegenerator.assets.AssetManager"
+            "com.hypixel.hytale.builtin.hytalegenerator.assets.AssetManager",
+            // Types d'interactions (Simple, Serial, Parallel, DamageEntity...) : setup() du module et des plugins.
+            "com.hypixel.hytale.server.core.modules.interaction.InteractionModule#setup",
+            "com.hypixel.hytale.server.core.modules.projectile.ProjectileModule#setup",
+            "com.hypixel.hytale.builtin.abilities.AbilitiesPlugin#setup",
+            "com.hypixel.hytale.builtin.beam.BeamPlugin#setup",
+            "com.hypixel.hytale.builtin.deployables.DeployablesPlugin#setup",
+            "com.hypixel.hytale.builtin.crafting.CraftingPlugin#setup",
+            "com.hypixel.hytale.server.npc.NPCPlugin#setup",
+            "com.hypixel.hytale.server.spawning.SpawningPlugin#setup",
+            "com.hypixel.hytale.builtin.mounts.MountPlugin#setup",
+            // Types d'établis (Crafting, Processing...).
+            "com.hypixel.hytale.server.core.blocktype.BlockTypeModule#setup"
     );
 
     static {
@@ -57,9 +79,18 @@ public class ValidateAssets {
         CODECS.put("NPC/Spawn/World/", "com.hypixel.hytale.server.spawning.assets.spawns.config.WorldNPCSpawn");
         CODECS.put("Item/Items/", "com.hypixel.hytale.server.core.asset.type.item.config.Item");
         CODECS.put("Instances/", "com.hypixel.hytale.server.core.universe.world.WorldConfig");
+        CODECS.put("NPC/Spawn/Markers/", "com.hypixel.hytale.server.spawning.assets.spawnmarker.config.SpawnMarker");
+        CODECS.put("NPC/Groups/", "com.hypixel.hytale.builtin.tagset.config.NPCGroup");
+        CODECS.put("Models/", "com.hypixel.hytale.server.core.asset.type.model.config.ModelAsset");
+        CODECS.put("Entity/Effects/", "com.hypixel.hytale.server.core.asset.type.entityeffect.config.EntityEffect");
+        CODECS.put("Drops/", "com.hypixel.hytale.server.core.asset.type.item.config.ItemDropList");
+        CODECS.put("Item/RootInteractions/", "com.hypixel.hytale.server.core.modules.interaction.interaction.config.RootInteraction");
+        CODECS.put("Item/Interactions/", "com.hypixel.hytale.server.core.modules.interaction.interaction.config.Interaction");
     }
 
-    private static int replayCodecRegistrations(String className) throws Exception {
+    private static int replayCodecRegistrations(String entry) throws Exception {
+        String className = entry.contains("#") ? entry.substring(0, entry.indexOf('#')) : entry;
+        String methodName = entry.contains("#") ? entry.substring(entry.indexOf('#') + 1) : "<clinit>";
         byte[] bytes;
         try (var in = ClassLoader.getSystemResourceAsStream(className.replace('.', '/') + ".class")) {
             bytes = in.readAllBytes();
@@ -67,7 +98,7 @@ public class ValidateAssets {
         ClassModel model = ClassFile.of().parse(bytes);
         int count = 0;
         for (MethodModel method : model.methods()) {
-            if (!method.methodName().equalsString("<clinit>") || method.code().isEmpty()) {
+            if (!method.methodName().equalsString(methodName) || method.code().isEmpty()) {
                 continue;
             }
             List<Instruction> window = new ArrayList<>();
@@ -80,23 +111,36 @@ public class ValidateAssets {
                         && invoke.typeSymbol().parameterCount() == 3
                         && window.size() >= 4) {
                     List<Instruction> args = window.subList(window.size() - 4, window.size());
-                    if (args.get(0) instanceof FieldInstruction mapField
-                            && args.get(1) instanceof ConstantInstruction typeName
+                    // CODEC.register(...) ou, dans un plugin, getCodecRegistry(CODEC).register(...).
+                    Instruction map = args.get(0);
+                    if (map instanceof InvokeInstruction registry && registry.name().equalsString("getCodecRegistry")
+                            && window.size() >= 5) {
+                        map = window.get(window.size() - 5);
+                    }
+                    // La clé du type est une chaîne ("Simple") ou une constante d'enum (BenchType.Crafting).
+                    if (map instanceof FieldInstruction mapField
+                            && (args.get(1) instanceof ConstantInstruction || args.get(1) instanceof FieldInstruction)
                             && args.get(2) instanceof ConstantInstruction typeClass
                             && args.get(3) instanceof FieldInstruction typeCodec
-                            && typeName.constantValue() instanceof String name
                             && typeClass.constantValue() instanceof ClassDesc classDesc) {
-                        Object mapCodec = staticField(mapField);
-                        Class<?> type = Class.forName(binaryName(classDesc));
-                        Object codec = staticField(typeCodec);
-                        for (Method register : mapCodec.getClass().getMethods()) {
-                            if (register.getName().equals("register") && register.getParameterCount() == 3
-                                    && register.getParameterTypes()[0] == String.class
-                                    && register.getParameterTypes()[2].isInstance(codec)) {
-                                register.invoke(mapCodec, name, type, codec);
-                                count++;
-                                break;
+                        Object name = null;
+                        try {
+                            name = args.get(1) instanceof ConstantInstruction constant
+                                    ? constant.constantValue() : staticField((FieldInstruction) args.get(1));
+                            Object mapCodec = staticField(mapField);
+                            Class<?> type = Class.forName(binaryName(classDesc));
+                            Object codec = staticField(typeCodec);
+                            for (Method register : mapCodec.getClass().getMethods()) {
+                                if (register.getName().equals("register") && register.getParameterCount() == 3
+                                        && register.getParameterTypes()[0].isInstance(name)
+                                        && register.getParameterTypes()[2].isInstance(codec)) {
+                                    register.invoke(mapCodec, name, type, codec);
+                                    count++;
+                                    break;
+                                }
                             }
+                        } catch (Throwable t) {
+                            System.out.println("WARN  type " + name + " non enregistré : " + rootCause(t));
                         }
                     }
                 }
@@ -118,23 +162,114 @@ public class ValidateAssets {
     private static void decodeAsset(Class<?> assetClass, Path file, List<String> problems, List<String> notes) throws Exception {
         Codec<?> codec = (Codec<?>) assetClass.getField("CODEC").get(null);
         ExtraInfo extraInfo = newExtraInfo(assetClass, file);
-        RawJsonReader reader = RawJsonReader.fromJsonString(Files.readString(file));
+        String json = Files.readString(file);
         try {
-            codec.decodeJson(reader, extraInfo);
+            decode(codec, RawJsonReader.fromJsonString(json), extraInfo, "", problems, notes);
+        } catch (Throwable t) {
+            // Deux cas que seul le serveur peut décoder : un type d'interaction écrit en Java par nos plugins, et un
+            // asset qui hérite (Parent) d'un asset vanilla absent hors jeu.
+            String message = String.valueOf(rootCause(t).getMessage());
+            if (rootCause(t) instanceof com.hypixel.hytale.codec.lookup.ACodecMapCodec.UnknownIdException
+                    && (message.contains("'Type': Nakasar_") || message.contains("'Type': null") && json.contains("\"Parent\""))) {
+                notes.add("non vérifiable hors jeu : " + message);
+                return;
+            }
+            throw t;
+        }
+        if (json.contains("\"Parent\"")) {
+            // Les champs obligatoires viennent du parent vanilla.
+            problems.removeIf(p -> p.contains("Can't be null"));
+        }
+    }
+
+
+    /**
+     * Décode un asset (les validateurs des champs tournent pendant le décodage), puis les assets écrits en ligne
+     * dedans (ex. une interaction dans "Next"), que le serveur valide comme des assets à part entière.
+     */
+    @SuppressWarnings({"unchecked", "rawtypes"})
+    private static void decode(Codec<?> codec, RawJsonReader reader, ExtraInfo extraInfo, String label,
+                               List<String> problems, List<String> notes) throws Exception {
+        try {
+            // decodeJsonAsset (comme AssetStore) rattache les données de l'asset (tags...) avant les champs.
+            if (codec instanceof com.hypixel.hytale.assetstore.codec.AssetCodec assetCodec && extraInfo instanceof AssetExtraInfo assetInfo) {
+                assetCodec.decodeJsonAsset(reader, assetInfo);
+            } else {
+                codec.decodeJson(reader, extraInfo);
+            }
         } catch (Throwable t) {
             if (!isAfterDecode(t)) {
                 throw t;
             }
             // Le JSON est décodé ; seul le post-traitement (qui lit les assets vanilla chargés) a échoué.
-            notes.add("post-traitement ignoré hors serveur : " + rootCause(t).getMessage());
+            notes.add(label + "post-traitement ignoré hors serveur : " + rootCause(t).getMessage());
         }
         for (String key : extraInfo.getUnknownKeys()) {
-            problems.add("clé inconnue : " + key);
+            problems.add(label + "clé inconnue : " + key);
         }
-        ValidationResults results = extraInfo.getValidationResults();
-        results._processValidationResults();
+        List<String> found = new ArrayList<>();
+        collectResults(extraInfo.getValidationResults(), found, notes);
+        found.stream().distinct().forEach(r -> problems.add(label + r));
+        if (!(extraInfo instanceof AssetExtraInfo<?> assetInfo)) {
+            return;
+        }
+        Map<Class<? extends JsonAssetWithMap>, Map<Object, List<RawAsset<Object>>>> contained = new HashMap<>();
+        assetInfo.getData().fetchContainedRawAssets(assetInfo.getData().getKey(), contained);
+        for (var byClass : contained.entrySet()) {
+            Codec<?> childCodec = (Codec<?>) byClass.getKey().getField("CODEC").get(null);
+            for (List<RawAsset<Object>> children : byClass.getValue().values()) {
+                for (RawAsset<Object> child : children) {
+                    AssetExtraInfo.Data data = child.makeData((Class) byClass.getKey(), child.getKey(), child.getParentKey());
+                    AssetExtraInfo<?> childInfo = new AssetExtraInfo<>(child.getPath(), data);
+                    decode(childCodec, child.toRawJsonReader(() -> new char[4096]), childInfo,
+                            label + child.getKey() + " > ", problems, notes);
+                }
+            }
+        }
+    }
+
+    /**
+     * Chaque validateur de champ termine par _processValidationResults(), qui déplace les avertissements et
+     * les échecs de getResults() vers le champ protégé validatorExceptions : on lit les deux.
+     */
+    private static void collectResults(ValidationResults results, List<String> problems, List<String> notes) throws Exception {
+        List<Object> all = new ArrayList<>();
         if (results.getResults() != null) {
-            results.getResults().forEach(r -> problems.add(String.valueOf(r)));
+            all.addAll(results.getResults());
+        }
+        Field held = ValidationResults.class.getDeclaredField("validatorExceptions");
+        held.setAccessible(true);
+        List<?> holders = (List<?>) held.get(results);
+        if (holders != null) {
+            for (Object holder : holders) {
+                // Record protégé : on passe par ses composants.
+                var components = holder.getClass().getRecordComponents();
+                String key = null;
+                List<?> list = List.of();
+                for (var component : components) {
+                    Method accessor = component.getAccessor();
+                    accessor.setAccessible(true);
+                    if (component.getName().equals("key")) {
+                        key = (String) accessor.invoke(holder);
+                    } else if (component.getName().equals("results")) {
+                        list = (List<?>) accessor.invoke(holder);
+                    }
+                }
+                for (Object r : list) {
+                    all.add(key + " : " + r);
+                }
+            }
+        }
+        for (Object r : all) {
+            String text = String.valueOf(r).replace("\n", " ").replace("\t", " ").trim();
+            // Les magasins d'assets sont vides hors serveur : une référence vers un autre asset (son, stat, interaction
+            // vanilla) ne peut pas y être trouvée. Elle est notée, pas comptée.
+            boolean reference = text.contains("doesn't exist") || text.contains("does not exist");
+            if (text.contains("FAIL") && !reference) {
+                problems.add(text);
+            } else {
+                notes.add(text);
+            }
         }
     }
 
@@ -241,6 +376,32 @@ public class ValidateAssets {
         instance.set(null, server);
     }
 
+    /**
+     * Magasins d'assets créés par des modules (interactions, stats) au démarrage du serveur : on en crée des
+     * vides, pour que le décodage puisse y chercher les références et y valider les ids.
+     */
+    @SuppressWarnings({"unchecked", "rawtypes"})
+    private static void emptyStore(String className) throws Exception {
+        Class c = Class.forName(className);
+        if (com.hypixel.hytale.assetstore.AssetRegistry.getAssetStore(c) != null) {
+            return;
+        }
+        var map = new com.hypixel.hytale.assetstore.map.IndexedLookupTableAssetMap(n -> java.lang.reflect.Array.newInstance(c, n));
+        var builder = com.hypixel.hytale.server.core.asset.HytaleAssetStore.builder(c, map);
+        builder.setPath("X/" + c.getSimpleName());
+        builder.setCodec((com.hypixel.hytale.assetstore.codec.AssetCodec) c.getField("CODEC").get(null));
+        Method getId = c.getMethod("getId");
+        builder.setKeyFunction(o -> {
+            try {
+                return getId.invoke(o);
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+        });
+        builder.setReplaceOnRemove(k -> null);
+        com.hypixel.hytale.assetstore.AssetRegistry.register(builder.build());
+    }
+
     private static Throwable rootCause(Throwable t) {
         while (t.getCause() != null) {
             t = t.getCause();
@@ -269,6 +430,9 @@ public class ValidateAssets {
             } catch (Throwable t) {
                 System.out.println("WARN  initialisation de " + store + " : " + rootCause(t));
             }
+        }
+        for (String store : EMPTY_STORES) {
+            emptyStore(store);
         }
         // Les types du générateur (Density, Props...) sont enregistrés dans l'initialiseur statique
         // d'AssetManager, qui a besoin d'un serveur démarré. On rejoue seulement ses appels

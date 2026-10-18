@@ -25,4 +25,5 @@ rootProject.name = "hytale-modding"
 include(":mods:nakasar-runes")
 include(":mods:nakasar-spear")
 include(":mods:nakasar-halloween")
+include(":mods:nakasar-mobs")
 

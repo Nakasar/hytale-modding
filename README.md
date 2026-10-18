@@ -6,10 +6,12 @@ Mods pour **Hytale** (serveur `0.7.x`, « Update 7 »), développés par Nakasar
 |-----|------|----------|---------|
 | `mods/nakasar-runes` | plugin Java + pack d'assets | `Nakasar-Runes-<version>.jar` | 4 runes d'abilities (Baiser du Vampire, Domination, Téléportation, Chaînes spectrales) et l'autel sacrificiel qui les fabrique |
 | `mods/nakasar-spear` | pack d'assets pur | `Nakasar-Spear-<version>.zip` | Lance de fer à deux mains : enchaînement, coup chargé, compétence ultime |
-| `mods/nakasar-halloween` | pack d'assets pur | `Nakasar-Halloween-<version>.zip` | Fragment d'Orbis « Halloween » ouvert depuis l'Ancienne passerelle : cryptes, châteaux hantés, château du comte vampire, cimetières, champs de citrouilles |
+| `mods/nakasar-halloween` | pack d'assets pur | `Nakasar-Halloween-<version>.zip` | Fragment d'Orbis « Halloween » ouvert depuis l'Ancienne passerelle : cryptes, châteaux hantés, château du comte vampire, cimetières, champs de citrouilles ; requiert `nakasar-mobs` (et donc `nakasar-runes`) |
+| `mods/nakasar-mobs` | plugin Java + pack d'assets | `Nakasar-Mobs-<version>.jar` | Comte Vampire (boss qui lance les sorts des runes), rejetons de vampire, fantômes ; requiert `nakasar-runes` |
 
 Le détail de chaque mod (fichiers, chaînes d'interactions, réglages) est dans [docs/mods.md](docs/mods.md).
 Les points d'API serveur vérifiés dans le jar `Server-0.7.2` sont notés dans [docs/api-0.7.2.md](docs/api-0.7.2.md).
+Création de PNJ (rôles, IA, modèles, apparitions) : [docs/npc-0.7.2.md](docs/npc-0.7.2.md), et la référence complète des 179 briques d'IA générée depuis le jar : [docs/npc-reference-0.7.2.md](docs/npc-reference-0.7.2.md).
 
 ## Prérequis
 
@@ -27,14 +29,18 @@ Les points d'API serveur vérifiés dans le jar `Server-0.7.2` sont notés dans 
 - `mods/nakasar-runes/build/libs/Nakasar-Runes-0.1.0.jar`
 - `mods/nakasar-spear/build/distributions/Nakasar-Spear-0.1.0.zip`
 - `mods/nakasar-halloween/build/distributions/Nakasar-Halloween-0.1.0.zip`
+- `mods/nakasar-mobs/build/libs/Nakasar-Mobs-0.1.0.jar`
 
 `build` lance aussi `validateJson`, qui vérifie la syntaxe de tous les JSON d'assets (le parseur du
 serveur est strict : une virgule en trop fait échouer le chargement du mod).
 
-Pour le fragment Halloween, `build` lance aussi `validateAssets` : il décode chaque asset du pack
-(biome, structure de monde, instance, portail, clé, environnements, météo, spawns) avec les codecs
-du jar serveur et signale les clés inconnues et les valeurs invalides, sans démarrer le jeu. Les ids
-vanilla référencés (PNJ, blocs, `PortalKey_Taiga`, `Env_Zone1_Plains`) ne sont pas vérifiés.
+Pour tous les mods, `build` lance aussi `validateAssets` (`mods/nakasar-halloween/tools/ValidateAssets.java`) :
+il décode chaque asset du pack (biome, structure de monde, instance, portail, objets, environnements, météo,
+spawns, modèles, effets, butins, interactions, y compris celles écrites en ligne dans `Next` ou `Parallel`)
+avec les codecs du jar serveur et signale les clés inconnues et les valeurs invalides (par exemple un
+`Parallel` à une seule branche), sans démarrer le jeu. Les ids référencés (PNJ, blocs, sons, stats,
+`PortalKey_Taiga`, `Env_Zone1_Plains`) ne sont pas vérifiés, ni les interactions de type Java de nos
+plugins et les assets qui héritent d'un parent vanilla (notés « non vérifiable hors jeu »).
 
 Les prefabs et la génération du monde sont produits par des scripts (déterministes) :
 
@@ -80,6 +86,15 @@ Fragment Halloween :
 ```text
 /give PortalKey_Nakasar_Halloween    # la clé, à poser dans une Ancienne passerelle (Portal_Device)
 /instances spawn Nakasar_Halloween_Fragment   # ou ouvrir l'instance directement, sans portail
+```
+
+Mobs (le château du comte, dans le fragment, contient déjà le comte et deux rejetons dans sa crypte) :
+
+```text
+/npc spawn Nakasar_Vampire_Count     # le boss
+/npc spawn Nakasar_Vampire_Spawn     # un rejeton
+/npc spawn Nakasar_Ghost             # un fantôme
+/give Nakasar_Spawner_Vampire_Count  # bloc invisible qui fait (ré)apparaître le comte là où il est posé
 ```
 
 ### Recettes
@@ -152,6 +167,20 @@ Fragment Halloween :
   Les châteaux et cryptes sont posés à plat grâce à un terrain aplani autour des structures.
 - **Temps** : l'instance démarre à 20 h, avec des jours de 5 min et des nuits de 20 min.
 
+Mobs (`mods/nakasar-mobs`, voir [docs/npc-0.7.2.md](docs/npc-0.7.2.md)) :
+
+- **Apparence** : les trois modèles héritent provisoirement de modèles vanilla (`Skeleton` pour le comte,
+  `Ghoul` pour le rejeton, `Wraith` pour le fantôme). Si l'un n'existe pas, le PNJ n'apparaît pas et le
+  journal nomme le modèle : corriger `Parent` dans `Server/Models/Nakasar/*.json`.
+- **Attaques** : les animations (`SwingRight`, `SwingDown`) et le visé des sorts à distance (sélecteur
+  `Stab` en ligne droite depuis le regard du PNJ, joueurs seulement) sont à confirmer.
+- **Domination** : quand le comte vous fixe (teinte violette), vos coups ne doivent plus le blesser
+  pendant 6 s ; ceux des autres joueurs, si.
+- **Téléportation** : le comte et les fantômes doivent réapparaître face à leur cible.
+- **Marqueurs du château** : le bloc invisible `Nakasar_Spawner_*` (composant `SpawnMarkerBlock`) n'a pas
+  pu être décodé hors jeu. Si le comte n'apparaît pas au château, le poser à la main avec `/give`.
+- **Densité** : poids des fantômes et rejetons dans l'environnement hanté à régler à l'œil.
+
 ## Organisation du dépôt
 
 ```text
@@ -163,6 +192,7 @@ mods/<mod>/                 # un sous-projet Gradle par mod
   src/main/resources        # (plugin) manifest.json + Server/** (pack d'assets embarqué)
   pack/                     # (pack pur) manifest.json + Server/**
   tools/                    # (halloween) générateurs de prefabs / worldgen, validateur d'assets
+                            # (mobs) ValidateRoles.java : validateur de rôles PNJ hors jeu
 docs/                       # notes de conception et d'API
 ```
 

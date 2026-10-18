@@ -1,0 +1,8 @@
+{
+  "$Comment": "Le comte dans sa salle du trône ; il revient 30 minutes (temps réel) après sa mort.",
+  "NPCs": [
+    { "Name": "Nakasar_Vampire_Count", "Weight": 1, "RealtimeRespawnTime": 1800 }
+  ],
+  "RealtimeRespawn": true,
+  "ExclusionRadius": 0
+}

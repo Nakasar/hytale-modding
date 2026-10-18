@@ -1,0 +1,77 @@
+{
+  "$Comment": "Rejeton de vampire : rapide et fragile, morsure qui vole un peu de vie. Erre la nuit, chasse les joueurs à vue.",
+  "Type": "Generic",
+  "Appearance": "Nakasar_Vampire_Spawn",
+  "NameTranslationKey": "nakasar_mobs.npc.Vampire_Spawn.name",
+  "MaxHealth": 60,
+  "DropList": "Nakasar_Drop_Vampire_Spawn",
+  "StartState": "Idle",
+  "DefaultPlayerAttitude": "Hostile",
+  "DefaultNPCAttitude": "Ignore",
+  "DisableDamageGroups": ["Nakasar_Vampires"],
+  "KnockbackScale": 0.8,
+  "MotionControllerList": [
+    {
+      "Type": "Walk",
+      "MaxWalkSpeed": 6,
+      "Gravity": 10,
+      "MaxFallSpeed": 10,
+      "Acceleration": 12,
+      "JumpHeight": 1.0
+    }
+  ],
+  "Instructions": [
+    {
+      "Sensor": { "Type": "State", "State": "Idle" },
+      "Instructions": [
+        {
+          "Sensor": { "Type": "Damage", "Combat": true, "TargetSlot": "LockedTarget" },
+          "Actions": [ { "Type": "State", "State": "Combat" } ]
+        },
+        {
+          "Sensor": {
+            "Type": "Player",
+            "Range": 18,
+            "LockOnTarget": true,
+            "Filters": [
+              { "Type": "Attitude", "Attitudes": ["Hostile"] },
+              { "Type": "LineOfSight" }
+            ]
+          },
+          "Actions": [ { "Type": "State", "State": "Combat" } ]
+        },
+        {
+          "BodyMotion": { "Type": "WanderInCircle", "Radius": 10, "RelativeSpeed": 0.35, "MaxHeadingChange": 60 }
+        }
+      ]
+    },
+    {
+      "Sensor": { "Type": "State", "State": "Combat" },
+      "Instructions": [
+        {
+          "$Comment": "Cible perdue ou trop loin : on retourne errer.",
+          "Sensor": { "Type": "Not", "Sensor": { "Type": "Target", "Range": 32 } },
+          "Actions": [
+            { "Type": "ReleaseTarget" },
+            { "Type": "State", "State": "Idle" }
+          ]
+        },
+        {
+          "$Comment": "Morsure au contact.",
+          "Sensor": { "Type": "Target", "Range": 2.2, "Filters": [ { "Type": "LineOfSight" } ] },
+          "HeadMotion": { "Type": "Aim", "RelativeTurnSpeed": 1.6 },
+          "ActionsBlocking": true,
+          "Actions": [
+            { "Type": "Attack", "Attack": "Root_Nakasar_NPC_VampireSpawn_Bite", "AttackPauseRange": [0.8, 1.3] },
+            { "Type": "Timeout", "Delay": [0.2, 0.2] }
+          ]
+        },
+        {
+          "Sensor": { "Type": "Target", "Range": 32 },
+          "BodyMotion": { "Type": "Seek", "RelativeSpeed": 1.0, "SlowDownDistance": 3, "StopDistance": 1.4, "UsePathfinder": true },
+          "HeadMotion": { "Type": "Watch", "RelativeTurnSpeed": 1.6 }
+        }
+      ]
+    }
+  ]
+}

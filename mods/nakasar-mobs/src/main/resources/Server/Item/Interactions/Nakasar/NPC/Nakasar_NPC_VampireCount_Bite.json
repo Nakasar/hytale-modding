@@ -1,0 +1,35 @@
+{
+  "$Comment": "Baiser du Vampire du comte : balayage au corps à corps, chaque cible touchée le soigne (EntityStatsOnHit crédite l'attaquant) et du sang voyage de la cible vers lui.",
+  "Type": "Simple",
+  "RunTime": 0.35,
+  "Effects": {
+    "ItemAnimationId": "SwingRight",
+    "WorldSoundEventId": "SFX_Light_Melee_T2_Swing"
+  },
+  "Next": {
+    "Type": "Selector",
+    "RunTime": 0.15,
+    "Selector": {
+      "Id": "Horizontal",
+      "Direction": "ToRight",
+      "TestLineOfSight": true,
+      "ExtendTop": 0.5,
+      "ExtendBottom": 0.5,
+      "StartDistance": 0.1,
+      "EndDistance": 3.2,
+      "Length": 90,
+      "RollOffset": 30,
+      "YawStartOffset": -30
+    },
+    "HitEntity": { "Interactions": [
+        "Nakasar_NPC_VampireCount_Bite_Hit",
+        {
+          "Type": "Nakasar_DrainBeam",
+          "SystemId": "Nakasar_Blood_Drain",
+          "Steps": 8,
+          "StepDelay": 0.04,
+          "HeightOffset": 1.0
+        }
+    ] }
+  }
+}

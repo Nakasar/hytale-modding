@@ -23,3 +23,34 @@ tasks.named<ProcessResources>("processResources") {
         )
     }
 }
+
+// Décode les assets avec les codecs du serveur (clés inconnues, valeurs invalides, interactions en ligne
+// comprises), grâce à l'outil du fragment Halloween. Les types d'interactions Java du plugin sont notés
+// « non vérifiables hors jeu ».
+val hytaleServer: Configuration by configurations.creating
+dependencies {
+    hytaleServer("com.hypixel.hytale:Server:${rootProject.property("hytale_version")}")
+}
+
+val validateAssets = tasks.register<Exec>("validateAssets") {
+    group = "verification"
+    description = "Valide les assets des runes avec les codecs du serveur Hytale."
+    val launcher = javaToolchains.launcherFor { languageVersion.set(JavaLanguageVersion.of(25)) }
+    val tool = project(":mods:nakasar-halloween").file("tools/ValidateAssets.java")
+    inputs.dir("src/main/resources/Server")
+    inputs.file(tool)
+    inputs.files(hytaleServer)
+    val marker = layout.buildDirectory.file("validateAssets.ok")
+    outputs.file(marker)
+    doFirst {
+        executable = launcher.get().executablePath.asFile.absolutePath
+        args("-Dstdout.encoding=UTF-8", "-cp", hytaleServer.asPath, tool.absolutePath, file("src/main/resources/Server").absolutePath)
+    }
+    doLast {
+        marker.get().asFile.writeText("ok")
+    }
+}
+
+tasks.named("check") {
+    dependsOn(validateAssets)
+}

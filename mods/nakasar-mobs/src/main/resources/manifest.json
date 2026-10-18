@@ -1,0 +1,15 @@
+{
+  "Group": "${group}",
+  "Name": "Mobs",
+  "Version": "${version}",
+  "Description": "Nouveaux mobs : le Comte Vampire (boss qui manie les sorts des runes), ses rejetons et les fantomes des cimetieres.",
+  "Authors": [
+    { "Name": "${author}" }
+  ],
+  "Main": "dev.nakasar.hytale.mobs.MobsPlugin",
+  "IncludesAssetPack": true,
+  "ServerVersion": "${serverRange}",
+  "Dependencies": {
+    "Nakasar:Runes": "*"
+  }
+}
