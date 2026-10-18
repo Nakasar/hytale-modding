@@ -1,0 +1,49 @@
+{
+  "Parent": "Weapon_Gun_Blunderbuss",
+  "TranslationProperties": {
+    "Name": "nakasar_silver.items.Weapon_Nakasar_Blunderbuss_Silver.name",
+    "Description": "nakasar_silver.items.Weapon_Nakasar_Blunderbuss_Silver.description"
+  },
+  "Quality": "Rare",
+  "ItemLevel": 25,
+  "Tags": {
+    "Type": [
+      "Weapon"
+    ],
+    "Family": [
+      "Gun"
+    ],
+    "Material": [
+      "Silver"
+    ]
+  },
+  "Recipe": {
+    "TimeSeconds": 5,
+    "KnowledgeRequired": false,
+    "Input": [
+      {
+        "ItemId": "Ingredient_Bar_Silver",
+        "Quantity": 8
+      },
+      {
+        "ItemId": "Ingredient_Bar_Iron",
+        "Quantity": 4
+      },
+      {
+        "ResourceTypeId": "Wood_Trunk",
+        "Quantity": 2
+      }
+    ],
+    "BenchRequirement": [
+      {
+        "Type": "Crafting",
+        "Id": "Weapon_Bench",
+        "Categories": [
+          "Weapon_Bow"
+        ]
+      }
+    ]
+  },
+  "Texture": "Items/Weapons/Nakasar/Silver/Blunderbuss_Silver_Texture.png",
+  "Icon": "Icons/Items/Nakasar/Silver/Weapon_Nakasar_Blunderbuss_Silver.png"
+}

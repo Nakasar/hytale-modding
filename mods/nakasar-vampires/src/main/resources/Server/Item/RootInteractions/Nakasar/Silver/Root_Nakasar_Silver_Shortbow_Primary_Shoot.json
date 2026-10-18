@@ -1,0 +1,11 @@
+{
+  "RequireNewClick": true,
+  "Interactions": [
+    "Nakasar_Silver_Shortbow_Primary_Shoot"
+  ],
+  "Tags": {
+    "Attack": [
+      "Ranged"
+    ]
+  }
+}
