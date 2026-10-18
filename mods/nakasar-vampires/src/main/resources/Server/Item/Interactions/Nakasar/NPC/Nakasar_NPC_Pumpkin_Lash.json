@@ -1,0 +1,56 @@
+{
+  "$Comment": "Coup de vrille ordinaire : une vrille jaillit du sol sous la cible (jusqu'à 4,5 blocs devant la citrouille).",
+  "Type": "Simple",
+  "RunTime": 0.35,
+  "Effects": {
+    "WorldSoundEventId": "SFX_Bramble_MoveIn",
+    "Particles": [
+      {
+        "SystemId": "Heal_Stick_ThornsUp",
+        "TargetEntityPart": "Entity",
+        "TargetNodeName": "Origin",
+        "Scale": 1.0,
+        "PositionOffset": {
+          "X": 0,
+          "Y": 0.1,
+          "Z": 0
+        }
+      }
+    ]
+  },
+  "Next": {
+    "Type": "Selector",
+    "RunTime": 0.15,
+    "Selector": {
+      "Id": "Stab",
+      "StartDistance": 0,
+      "EndDistance": 4.5,
+      "ExtendTop": 1.0,
+      "ExtendBottom": 1.0,
+      "ExtendLeft": 0.9,
+      "ExtendRight": 0.9,
+      "TestLineOfSight": true
+    },
+    "HitEntity": {
+      "Interactions": [
+        {
+          "Parent": "DamageEntityParent",
+          "DamageCalculator": {
+            "BaseDamage": {
+              "Physical": 18
+            },
+            "RandomPercentageModifier": 0.1
+          },
+          "DamageEffects": {
+            "WorldSoundEventId": "SFX_Bramble_Break",
+            "WorldParticles": [
+              {
+                "SystemId": "Heal_Stick_ThornsUp"
+              }
+            ]
+          }
+        }
+      ]
+    }
+  }
+}

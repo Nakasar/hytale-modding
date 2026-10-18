@@ -1,0 +1,20 @@
+{
+  "$Comment": "Coup de tromblon du chasseur de vampires.",
+  "Type": "Simple",
+  "RunTime": 1.2,
+  "Effects": {
+    "ItemPlayerAnimationsId": "Rifle",
+    "ItemAnimationId": "ShootFlintlock"
+  },
+  "Next": {
+    "Type": "LaunchProjectile",
+    "RunTime": 0.5,
+    "ProjectileId": "Nakasar_Hunter_Bullet",
+    "Effects": {
+      "WorldSoundEventId": "SFX_Blunderbuss_Fire"
+    },
+    "Tags": {
+      "AimingReference": []
+    }
+  }
+}

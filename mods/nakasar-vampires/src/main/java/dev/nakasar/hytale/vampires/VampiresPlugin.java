@@ -10,6 +10,10 @@ import dev.nakasar.hytale.vampires.domination.DominatePlayerInteraction;
 import dev.nakasar.hytale.vampires.domination.DominationExpirySystem;
 import dev.nakasar.hytale.vampires.domination.Dominations;
 import dev.nakasar.hytale.vampires.prison.ImprisonPlayerInteraction;
+import dev.nakasar.hytale.vampires.pumpkin.FireWeaknessSystem;
+import dev.nakasar.hytale.vampires.pumpkin.RootTrapInteraction;
+import dev.nakasar.hytale.vampires.pumpkin.RootTrapUnloadSystem;
+import dev.nakasar.hytale.vampires.pumpkin.RootTrapped;
 import dev.nakasar.hytale.vampires.rune.DrainBeamInteraction;
 import dev.nakasar.hytale.vampires.rune.RootNpcInteraction;
 import dev.nakasar.hytale.vampires.rune.TeleportCasterToImpactInteraction;
@@ -30,8 +34,12 @@ import dev.nakasar.hytale.vampires.rune.TeleportCasterToImpactInteraction;
  *       (rune Vol de vie) ;</li>
  *   <li>{@code Nakasar_DominatePlayer} : Domination du Comte Vampire sur le joueur visé ;</li>
  *   <li>{@code Nakasar_ImprisonPlayer} : téléporte le joueur visé dans la cellule la plus proche du Capitaine ;</li>
+ *   <li>{@code Nakasar_RootTrap} : piège de vrilles de la citrouille géante (une vrille-PNJ retient la cible
+ *       jusqu'à sa destruction) ;</li>
+ *   <li>{@link FireWeaknessSystem} : la citrouille géante et ses vrilles prennent double dégâts de feu ;</li>
  *   <li>les camps ({@link AllegianceAttitudeSystem}, {@link AllegianceDamageFilter},
- *       {@link DominationExpirySystem}) : les mobs du fragment sont alliés, la Domination retourne leur allégeance.</li>
+ *       {@link DominationExpirySystem}) : les mobs du fragment sont alliés, ennemis des chasseurs de vampires, et la
+ *       Domination retourne leur allégeance.</li>
  * </ul>
  */
 public final class VampiresPlugin extends JavaPlugin {
@@ -62,20 +70,27 @@ public final class VampiresPlugin extends JavaPlugin {
                 DominatePlayerInteraction.class, DominatePlayerInteraction.CODEC);
         interactions.register(ImprisonPlayerInteraction.TYPE_ID,
                 ImprisonPlayerInteraction.class, ImprisonPlayerInteraction.CODEC);
+        interactions.register(RootTrapInteraction.TYPE_ID,
+                RootTrapInteraction.class, RootTrapInteraction.CODEC);
 
         var systems = getEntityStoreRegistry();
+        RootTrapped.setComponentType(systems.registerComponent(RootTrapped.class, RootTrapped::new));
         systems.registerSystem(new AllegianceAttitudeSystem());
         systems.registerSystem(new AllegianceDamageFilter());
         systems.registerSystem(new DominationExpirySystem());
+        systems.registerSystem(new FireWeaknessSystem());
+        systems.registerSystem(new RootTrapUnloadSystem());
 
-        getLogger().atInfo().log("Nakasar Vampires : 6 types d'interaction (%s, %s, %s, %s, %s, %s) et systèmes des camps enregistrés",
+        getLogger().atInfo().log("Nakasar Vampires : 7 types d'interaction (%s, %s, %s, %s, %s, %s, %s) et systèmes des camps enregistrés",
                 TeleportCasterToImpactInteraction.TYPE_ID, DominateInteraction.TYPE_ID, RootNpcInteraction.TYPE_ID,
-                DrainBeamInteraction.TYPE_ID, DominatePlayerInteraction.TYPE_ID, ImprisonPlayerInteraction.TYPE_ID);
+                DrainBeamInteraction.TYPE_ID, DominatePlayerInteraction.TYPE_ID, ImprisonPlayerInteraction.TYPE_ID,
+                RootTrapInteraction.TYPE_ID);
     }
 
     @Override
     protected void shutdown() {
         RootNpcInteraction.clearAll();
+        RootTrapInteraction.clearAll();
         Dominations.clearAll();
     }
 }

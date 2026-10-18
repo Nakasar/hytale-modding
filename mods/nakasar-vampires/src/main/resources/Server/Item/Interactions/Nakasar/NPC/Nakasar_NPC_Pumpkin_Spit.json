@@ -1,0 +1,31 @@
+{
+  "$Comment": "Crachat de poison orange vers la cible : 8 dégâts de poison à l'impact puis l'effet Nakasar_Pumpkin_Poison.",
+  "Type": "Simple",
+  "RunTime": 0.5,
+  "Effects": {
+    "Particles": [
+      {
+        "SystemId": "Dungeon_Goblin_Spores_Orange",
+        "TargetEntityPart": "Entity",
+        "TargetNodeName": "Origin",
+        "Scale": 0.6,
+        "PositionOffset": {
+          "X": 0,
+          "Y": 1.2,
+          "Z": 0
+        }
+      }
+    ]
+  },
+  "Next": {
+    "Type": "Projectile",
+    "RunTime": 0.4,
+    "Effects": {
+      "WorldSoundEventId": "SFX_Scarak_Spitball_Fire"
+    },
+    "Config": "Projectile_Config_Nakasar_Pumpkin_Spit",
+    "Tags": {
+      "AimingReference": []
+    }
+  }
+}

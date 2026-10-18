@@ -1,0 +1,22 @@
+{
+  "$Comment": "Bloc invisible posé dans le champ de citrouilles : son composant SpawnMarkerBlock crée le marqueur d'apparition Nakasar_Giant_Pumpkin à cet endroit.",
+  "TranslationProperties": {
+    "Name": "nakasar_mobs.items.Nakasar_Spawner_Giant_Pumpkin.name"
+  },
+  "Quality": "Developer",
+  "MaxStack": 64,
+  "BlockType": {
+    "Material": "Empty",
+    "DrawType": "Empty",
+    "Opacity": "Transparent",
+    "BlockEntity": {
+      "Components": {
+        "SpawnMarkerBlock": {
+          "Config": {
+            "SpawnMarker": "Nakasar_Giant_Pumpkin"
+          }
+        }
+      }
+    }
+  }
+}
