@@ -1,0 +1,110 @@
+{
+  "$Comment": "Adds short spiraling debris pixels that flow out of the rift.",
+  "RenderMode": "Erosion",
+  "MaxConcurrentParticles": 40,
+  "ParticleLifeSpan": {
+    "Min": 0.8,
+    "Max": 0.8
+  },
+  "Particle": {
+    "Texture": "Particles/Textures/Smoke/Sparks_Cloud.png",
+    "ScaleRatioConstraint": "OneToOne",
+    "SoftParticles": "Enable",
+    "Animation": {
+      "0": {
+        "Opacity": 0,
+        "Rotation": {
+          "Z": {
+            "Min": 0,
+            "Max": 0
+          }
+        },
+        "Color": "#440814"
+      },
+      "20": {
+        "Opacity": 1
+      },
+      "50": {
+        "Opacity": 1
+      },
+      "80": {
+        "Opacity": 1,
+        "Color": "#000000"
+      },
+      "100": {
+        "Opacity": 0,
+        "Rotation": {
+          "Z": {
+            "Min": -180,
+            "Max": 180
+          }
+        },
+        "Color": "#000000"
+      }
+    },
+    "InitialAnimationFrame": {
+      "Scale": {
+        "X": {
+          "Min": 0.5,
+          "Max": 1
+        }
+      },
+      "Opacity": 1,
+      "Color": "#ffc4c2",
+      "FrameIndex": {
+        "Min": 0,
+        "Max": 3
+      }
+    },
+    "FrameSize": {
+      "Width": 64,
+      "Height": 64
+    },
+    "CameraNearFadeStartDistance": 3,
+    "CameraNearFadeEndDistance": 6
+  },
+  "ParticleRotateWithSpawner": true,
+  "SpawnRate": {
+    "Min": 40,
+    "Max": 50
+  },
+  "ParticleRotationInfluence": "Billboard",
+  "TrailSpawnerPositionMultiplier": 0,
+  "TrailSpawnerRotationMultiplier": 0,
+  "InitialVelocity": {
+    "Speed": {
+      "Min": 0.1,
+      "Max": 0.1
+    }
+  },
+  "EmitOffset": {
+    "X": {
+      "Min": 1,
+      "Max": 4
+    },
+    "Y": {
+      "Min": 1,
+      "Max": 4
+    }
+  },
+  "Attractors": [
+    {
+      "Position": {
+        "Z": 64
+      },
+      "RadialAcceleration": -10,
+      "RadialImpulse": -5
+    },
+    {
+      "Position": {
+        "Z": 64
+      },
+      "RadialTangentAcceleration": 5,
+      "RadialAxis": {
+        "Z": 1
+      },
+      "Radius": 100,
+      "RadialTangentImpulse": 5
+    }
+  ]
+}
