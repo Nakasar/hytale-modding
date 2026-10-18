@@ -1,5 +1,5 @@
 {
-  "$Comment": "Chasseur de vampires au tromblon : balles d'argent (22 dégâts) jusqu'à 14 blocs, lent à recharger. Pacifique envers les joueurs tant qu'on ne l'attaque pas ; ennemi juré des mobs du fragment. Ne s'éloigne pas à plus de 14 blocs de son poste dans le camp.",
+  "$Comment": "Chasseur de vampires au tromblon en argent : balles d'argent (22 dégâts, doublés contre les vampires) jusqu'à 14 blocs, lent à recharger. Pacifique envers les joueurs tant qu'on ne l'attaque pas ; ennemi juré des mobs du fragment. Ne s'éloigne pas à plus de 14 blocs de son poste dans le camp.",
   "Type": "Generic",
   "Appearance": "Nakasar_Vampire_Hunter_Gunner",
   "NameTranslationKey": "nakasar_mobs.npc.Vampire_Hunter_Gunner.name",
@@ -23,7 +23,7 @@
     }
   ],
   "HotbarItems": [
-    "Weapon_Gun_Blunderbuss"
+    "Weapon_Nakasar_Blunderbuss_Silver"
   ],
   "Instructions": [
     {

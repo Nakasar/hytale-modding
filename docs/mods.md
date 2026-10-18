@@ -311,9 +311,9 @@ Les boss réutilisent les interactions et particules des runes.
 | `Nakasar_Skeleton_Guard` | 120 | Garde squelette en armure rouillée, épée et bouclier, mêlée 18. |
 | `Nakasar_Guard_Captain` | 650 | Élite du poste de garde, hache de bataille. Combo gauche/droite (22) ; Fendant annoncé (1,1 s, 45 dégâts devant lui sur 5 blocs, 9 à 12 s) ; Tourbillon annoncé (1,3 s, 32 dégâts autour sur 4 blocs, 14 à 18 s) ; Emprisonnement (1,5 s d'incantation, rayon jusqu'à 16 blocs, 45 à 60 s) qui envoie le joueur touché dans la cellule du poste de garde. Immobile pendant chaque annonce. |
 | `Nakasar_Giant_Pumpkin` | 600 | Élite du champ de citrouilles (citrouille sculptée vanilla ×4), immobile. Coup de vrille devant elle (18, 4,5 blocs) ; trois épines (9 chacune, 18 blocs, toutes les 2,5 à 3,5 s) ; crachat de poison orange (8 + poison 4/s pendant 6 s, 16 blocs, 6 à 8 s) ; Balayage annoncé (zone rouge de 5 blocs pendant 1,2 s, 26 dégâts et projection, 8 à 11 s) ; Piège de vrilles annoncé (zone rouge de 6,5 blocs qui se charge 2,2 s, 16 à 20 s) : chaque ennemi resté dedans est retenu par une `Nakasar_Pumpkin_Tendril` (12 PV) à ses pieds jusqu'à ce qu'elle soit détruite (20 s au plus). Elle et ses vrilles prennent double dégâts de feu. Se rendort et regagne sa vie si la cible s'éloigne à plus de 20 blocs. |
-| `Nakasar_Vampire_Hunter_Crossbow` | 160 | Chasseuse de vampires, arbalète (carreaux 16, 18 blocs). |
-| `Nakasar_Vampire_Hunter_Gunner` | 170 | Chasseur de vampires, tromblon (balles 22, 14 blocs, lent). |
-| `Nakasar_Vampire_Hunter_Blade` | 200 | Chasseur de vampires, épée d'argent vanilla (`Weapon_Sword_Silversteel`), mêlée 20. |
+| `Nakasar_Vampire_Hunter_Crossbow` | 160 | Chasseuse de vampires, arbalète en argent (`Weapon_Nakasar_Crossbow_Silver`), carreaux 16, 18 blocs. |
+| `Nakasar_Vampire_Hunter_Gunner` | 170 | Chasseur de vampires, tromblon en argent (`Weapon_Nakasar_Blunderbuss_Silver`), balles 22, 14 blocs, lent. |
+| `Nakasar_Vampire_Hunter_Blade` | 200 | Chasseur de vampires, épée en argent (`Weapon_Nakasar_Sword_Silver`), mêlée 20. |
 
 - **Domination** (Java, `domination/`) : l'interaction `Nakasar_DominatePlayer` enregistre « ce joueur est
   dominé par ce PNJ » pendant `Duration` secondes et applique l'effet `Nakasar_Count_Domination`. Le système
@@ -341,7 +341,9 @@ Les boss réutilisent les interactions et particules des runes.
   `Damage`) et oublient le joueur une fois revenus au camp. Ennemis jurés des mobs du fragment (voir Camps). Ils ne
   s'éloignent jamais à plus de 14 blocs de leur poste (capteur `Leash` en combat : ils lâchent la cible et
   reviennent, puis regagnent leur vie). Tenues de cuir « chasseur de démons » (chapeaux, longs manteaux, masque,
-  bandoulière) en vêtements vanilla. Carreaux et balles : `Projectiles/Nakasar/`.
+  bandoulière) en vêtements vanilla. Carreaux et balles : `Projectiles/Nakasar/`. Leurs armes sont les armes en
+  argent du mod : `SilverProjectileSystems.Legacy` marque leurs carreaux et balles (arme en argent en main au tir) et
+  `SilverDamageSystem` double leurs coups contre les vampires.
 - **Groupes** : `Nakasar_Domain_Undead` (morts-vivants du domaine), `Nakasar_Vampires` et `Nakasar_Ghosts` (`DisableDamageGroups`, ils ne se blessent pas entre eux),
   `Nakasar_Vampire_Spawns` (compté par le comte avant d'invoquer), `Nakasar_Pumpkin_Patch` (citrouille géante et
   vrilles : faiblesse au feu), `Nakasar_Vampire_Hunters` (ne se blessent pas entre eux), `Nakasar_Halloween_Faction`

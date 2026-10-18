@@ -1,5 +1,5 @@
 {
-  "$Comment": "Chasseur de vampires à l'épée d'argent : coups d'épée (20 dégâts). Pacifique envers les joueurs tant qu'on ne l'attaque pas ; ennemi juré des mobs du fragment. Ne s'éloigne pas à plus de 14 blocs de son poste dans le camp.",
+  "$Comment": "Chasseur de vampires à l'épée en argent : coups d'épée (20 dégâts, doublés contre les vampires). Pacifique envers les joueurs tant qu'on ne l'attaque pas ; ennemi juré des mobs du fragment. Ne s'éloigne pas à plus de 14 blocs de son poste dans le camp.",
   "Type": "Generic",
   "Appearance": "Nakasar_Vampire_Hunter_Blade",
   "NameTranslationKey": "nakasar_mobs.npc.Vampire_Hunter_Blade.name",
@@ -23,7 +23,7 @@
     }
   ],
   "HotbarItems": [
-    "Weapon_Sword_Silversteel"
+    "Weapon_Nakasar_Sword_Silver"
   ],
   "InteractionVars": {
     "Melee_Start": {
