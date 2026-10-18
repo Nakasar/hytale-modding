@@ -1,13 +1,13 @@
 # Nakasar Halloween fragment — English texts
-portal.name = Lands of the Night of the Dead
-portal.flavor = A fragment of Orbis sunk in an endless night: the vampire count's domain. His villagers, his farmers and even his guards have been turned into the undead; far away, his manor awaits its guests.
+portal.name = Vampire County
+portal.flavor = A fragment of Orbis sunk in an endless night: the vampire count's domain. His villagers, his farmers and even his guards have been turned into the undead; far away, his manor awaits its guests. Only a few vampire hunters still hold their camp.
 portal.tag.undead = Undead
 portal.tag.vampire = Vampires
 portal.tag.night = Endless night
 portal.objective.count = Find the vampire count's manor
 portal.objective.crypts = Loot the crypts and abandoned graveyards
 portal.objective.domain = Explore the abandoned village, farms and guard post
-items.PortalKey_Nakasar_Halloween.name = Fragment of the Night of the Dead
+items.PortalKey_Nakasar_Halloween.name = Fragment of the Vampire County
 items.PortalKey_Nakasar_Halloween.description = Place it in an Ancient Gateway to open a fragment of Orbis haunted by undead and vampires.
 items.Nakasar_Stained_Glass_Red.name = Crimson Stained Glass
 items.Nakasar_Stained_Glass_Violet.name = Violet Stained Glass

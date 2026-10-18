@@ -124,7 +124,7 @@ L'onglet est `Weapon_Sword` : l'établi vanilla n'a que `Weapon_Sword`, `Weapon_
 
 Toutes les valeurs (dégâts, portées, durées, forces) sont dans les JSON cités ; aucun code.
 
-## Fragment Halloween
+## Fragment Halloween (« Comté Vampire »)
 
 Fragment d'Orbis ouvert depuis l'Ancienne passerelle vanilla (`Portal_Device`) avec la clé
 `PortalKey_Nakasar_Halloween`. Chaîne : clé (`PortalKey.PortalType`) → `PortalTypes/Nakasar_Halloween`
@@ -146,13 +146,14 @@ Fragment d'Orbis ouvert depuis l'Ancienne passerelle vanilla (`Portal_Device`) a
   déclarés avant tout import) et réutilisées par le terrain : le relief tombe à zéro dans un rayon de
   34 blocs (plein relief à 52) autour de chaque structure, 50 (70) autour du village, 24 (40) autour de
   la crypte d'arrivée ; autour du manoir, plat jusqu'à 38 blocs (plein relief à 58).
-- **Structures (domaine du Comte)** : treize emplacements fixes (`SLOTS`, trois grands pour le
+- **Structures (domaine du Comte)** : quatorze emplacements fixes (`SLOTS`, trois grands pour le
   village), décalés d'au plus 16 blocs selon la graine du monde (`Jitter2d`). Le type de chaque
   emplacement change d'un monde à l'autre : huit répartitions sont tirées une fois par le script
   (`layouts()`, le village toujours sur un grand emplacement, deux structures du même type à plus
   de 140 blocs), et le monde en choisit une selon un bruit lu en un point fixe (`XOverride` /
   `ZOverride`, donc une valeur par graine). Le premier exemplaire de chaque type est toujours là, le
-  second une fois sur deux (bruit propre à l'emplacement) : 0 ou 1 village (60 %), 1 ou 2 fermes,
+  second une fois sur deux (bruit propre à l'emplacement) : 0 ou 1 village (60 %), 0 ou 1 camp de
+  chasseurs de vampires (50 %), 1 ou 2 fermes,
   postes de garde, cimetières, cryptes, champs de citrouilles et châteaux hantés, toujours un seul
   manoir. Au moins 9 blocs entre deux structures dans le pire décalage. La variante (village
   zombies / ruines / araignées, etc.) et l'orientation sont tirées au hasard.
@@ -180,7 +181,7 @@ Fragment d'Orbis ouvert depuis l'Ancienne passerelle vanilla (`Portal_Device`) a
 - **Environnements** : `Nakasar_Env_Halloween_Haunted` à moins de 45 blocs d'une structure (PNJ plus
   dangereux, densité plus forte), `Nakasar_Env_Halloween` ailleurs.
 
-### Prefabs (`tools/generate_prefabs.py`, 65 fichiers)
+### Prefabs (`tools/generate_prefabs.py`, 69 fichiers)
 
 | Dossier | Nombre | Contenu |
 |---------|--------|---------|
@@ -192,7 +193,8 @@ Fragment d'Orbis ouvert depuis l'Ancienne passerelle vanilla (`Portal_Device`) a
 | `GuardPosts/{Ruins,Spiders,Rebels,Garrison}` | 4 | Ancien poste de garde 39×39 : enceinte crénelée, tour de guet, caserne, quartiers du capitaine, armurerie, prison à trois cellules (barreaux et porte), cachot dans l'armurerie, cour d'entraînement ; en ruine, envahi par les araignées, pris par les paysans zombifiés révoltés, ou tenu par les gardes squelettes et leur capitaine (élite) |
 | `SpawnCrypt` | 1 | Crypte d'arrivée 11×11 fermée autour du portail de retour : porte au nord vers le manoir, rosace et vitraux, cercueils, gargouilles aux angles |
 | `Cemeteries/{Haunted,Spiders,Undead}` | 2 × 3 | Cimetière clos (~31×33) : chapelle à clocher (bancs, autel, lustre), caveaux, portail à lanterne, muret à grille et piliers, allées pavées, tombes variées (stèles, croix, obélisques, sarcophages, tombes ouvertes), arbres morts ; hanté (bougies, champignons luisants), araignées (toiles, cocons) ou morts-vivants (fosses à cercueil, ossements) |
-| `PumpkinFields` | 3 | Champ de citrouilles mûres (états de culture) clôturé de bois mort : allée à lanternes, épouvantails, charrette de récolte, meules de foin, cabane, arbre de pendu |
+| `PumpkinFields/{Plain,Giant}` | 3 + 2 | Champ de citrouilles mûres (états de culture) clôturé de bois mort : allée à lanternes, épouvantails, charrette de récolte, meules de foin, cabane, arbre de pendu. Variante `Giant` (une fois sur deux) : clairière de terre pourrie de rayon 6 au centre, bordée de ronces, de citrouilles entières et de citrouilles sculptées, avec le bloc d'apparition de la citrouille géante (élite immobile) |
+| `HunterCamps/{Tents,Lodge}` | 2 | Camp de chasseurs de vampires 25×25 clos d'une palissade de troncs, porte au sud : feu de camp et tabourets, trois tentes de cuir (ou un pavillon de rondins et une tente) au nord, atelier d'armes et armurerie à l'ouest, pas de tir (cibles, mannequins) à l'est, réserve ; six blocs d'apparition de chasseurs à moins de 9 blocs du centre |
 | `Trees` | 16 | Arbres morts en frêne, bois pétrifié ou calciné : squelette en troncs pleins comme les arbres du jeu (fût droit, pied 2×2 des grands, contreforts et racines, branches qui montent en escalier et se divisent), tubes fins au bout des rameaux, feuilles mortes de l'essence posées sur les branches, toiles et buissons pendants ; aucun bloc ne flotte (vérifié à la génération) ; 4 portent une lanterne, une cage ou une corde |
 | `Decor/*` | 6 × 3 + 5 | Affleurements rocheux (parfois des cristaux), troncs couchés, cercles de champignons luisants, autels, tas d'os, tombes isolées, nids d'araignées |
 
@@ -215,7 +217,7 @@ Coffres (`Prefab.chest`) : composant `ItemContainerBlock` avec une liste de buti
 serveur tire à la pose du prefab. Listes générées par `tools/generate_loot.py` dans
 `Server/Drops/Nakasar/Halloween` : ferme, ferme brûlée, maison, maison du notable, caserne,
 armurerie, capitaine, crypte, château en ruine, et au manoir trésor, alchimie, bibliothèque,
-cuisine, chambres, atelier. Objets du jeu 0.7.2 (vérifiés dans `Server/Item/Items`).
+cuisine, chambres, atelier ; camp de chasseurs (vivres, flèches, potions, argent) et son armurerie. Objets du jeu 0.7.2 (vérifiés dans `Server/Item/Items`).
 
 Blocs des mobs posés dans les prefabs : spawners `Nakasar_Spawner_Zombie_Villager`,
 `_Zombie_Farmer`, `_Zombie_Abomination` (élite, un par ferme zombie), `_Zombie_Rebel`,

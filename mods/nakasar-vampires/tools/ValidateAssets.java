@@ -337,7 +337,8 @@ public class ValidateAssets {
      * Un id de bloc inconnu dans un prefab ou un matériau du générateur ne fait aucune erreur au
      * chargement : le serveur pose le bloc « Unknown » (damier rose et noir). On compare donc chaque
      * id à la liste des blocs vanilla (-Dblocks=fichier, une ligne par id, états compris sous la forme
-     * « *Bloc_State_Definitions_État ») ; nos propres blocs commencent par Nakasar_.
+     * « *Bloc_State_Definitions_État ») ; nos propres blocs (Nakasar_) doivent exister dans le pack
+     * (Item/Items/.../Nakasar_X.json) : un bloc d'apparition attendu d'une autre PR serait sinon un damier.
      */
     private static int checkBlockIds(Path root, Path idsFile) throws Exception {
         java.util.Set<String> known = new java.util.HashSet<>();
@@ -348,6 +349,15 @@ public class ValidateAssets {
             }
         }
         known.add("Empty");
+        java.util.Set<String> ours = new java.util.HashSet<>();
+        Path items = root.resolve("Item").resolve("Items");
+        if (Files.isDirectory(items)) {
+            try (Stream<Path> walk = Files.walk(items)) {
+                walk.map(p -> p.getFileName().toString())
+                        .filter(n -> n.startsWith("Nakasar_") && n.endsWith(".json"))
+                        .forEach(n -> ours.add(n.substring(0, n.length() - ".json".length())));
+            }
+        }
         List<Path> files;
         try (Stream<Path> walk = Files.walk(root)) {
             files = walk.filter(p -> p.toString().endsWith(".prefab.json")
@@ -362,7 +372,7 @@ public class ValidateAssets {
             java.util.Set<String> unknown = new java.util.TreeSet<>();
             while (matcher.find()) {
                 String id = matcher.group(1);
-                if (!known.contains(id) && !id.startsWith("Nakasar_")) {
+                if (!known.contains(id) && !(id.startsWith("Nakasar_") && ours.contains(id))) {
                     unknown.add(id);
                 }
             }

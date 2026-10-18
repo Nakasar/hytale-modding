@@ -21,6 +21,7 @@ par exemple une citrouille mûre : *Plant_Crop_Pumpkin_Block_State_Definitions_S
 """
 
 import json
+import math
 import random
 import re
 from pathlib import Path
@@ -450,6 +451,8 @@ LOOT_MANOR_LIBRARY = "Nakasar_Loot_Manor_Library"
 LOOT_MANOR_KITCHEN = "Nakasar_Loot_Manor_Kitchen"
 LOOT_MANOR_BEDROOM = "Nakasar_Loot_Manor_Bedroom"
 LOOT_MANOR_WORKSHOP = "Nakasar_Loot_Manor_Workshop"
+LOOT_HUNTER_CAMP = "Nakasar_Loot_Hunter_Camp"
+LOOT_HUNTER_ARMORY = "Nakasar_Loot_Hunter_Armory"
 
 # Blocs d'apparition invisibles du mod (un marqueur par bloc).
 SPAWN_VILLAGER = "Nakasar_Spawner_Zombie_Villager"
@@ -459,6 +462,8 @@ SPAWN_REBEL = "Nakasar_Spawner_Zombie_Rebel"
 SPAWN_GUARD = "Nakasar_Spawner_Skeleton_Guard"
 SPAWN_CAPTAIN = "Nakasar_Spawner_Guard_Captain"
 SPAWN_SPIDER = "Nakasar_Spawner_Spider"
+SPAWN_GIANT_PUMPKIN = "Nakasar_Spawner_Giant_Pumpkin"
+SPAWN_HUNTER = "Nakasar_Spawner_Vampire_Hunter"
 # Sol de cellule : le Capitaine y téléporte sa cible (le plugin cherche la plus proche).
 PRISON_CELL = "Nakasar_Prison_Cell"
 
@@ -769,11 +774,17 @@ def shed(p, x0, z0, w, d):
         p.set(door, 2, z1 + 1, "Deco_Lantern_Ceiling")
 
 
-def pumpkin_field(seed, w=23, d=19):
+GIANT_CLEARING = 6   # rayon de la clairière de la citrouille géante (elle ne bouge pas, ses vrilles frappent autour)
+TENDRILS = [("Plant_Bramble_Dead_Twisted", 3), ("Plant_Roots_Leafy", 2), ("Plant_Bush_Bramble", 2), ("Plant_Bush_Dead", 1)]
+ROTTEN_SOIL = [("Soil_Dirt_Burnt", 4), ("Soil_Mud", 2), ("Soil_Dirt", 2), ("Soil_Dirt_Tilled", 1)]
+
+
+def pumpkin_field(seed, w=23, d=19, giant=False):
     """Champ de citrouilles délaissé : rangs de citrouilles, allée, clôture, cabane du fermier.
 
     Les citrouilles sculptées ne sont qu'à l'entrée, tournées vers le chemin ; les épouvantails et
-    les meules regardent l'allée centrale.
+    les meules regardent l'allée centrale. `giant` : la citrouille géante (élite) au centre, dans une
+    clairière de terre pourrie bordée de ronces et de citrouilles entières.
     """
     p = Prefab(seed)
     r = p.rng
@@ -836,7 +847,45 @@ def pumpkin_field(seed, w=23, d=19):
     p.ruin(90, keep_below=1, names={"Wood_Deadwood_Planks", "Wood_Deadwood_Planks_Half"})
     # un arbre mort penché sur la clôture
     p.paste(dead_tree(r.randint(0, 1 << 30), "medium"), x1 + 4, 0, z0 + 2, min_y=0)
+    if giant:
+        giant_clearing(p)
     return p
+
+
+def giant_clearing(p, radius=GIANT_CLEARING):
+    """Clairière de la citrouille géante au centre du champ : rien ne pousse plus à portée de ses
+    vrilles, sauf des ronces sur le bord ; citrouilles entières et lanternes tournées vers l'extérieur
+    en couronne, ossements des curieux. Le bloc d'apparition est au centre."""
+    r = p.rng
+    for x in range(-radius, radius + 1):
+        for z in range(-radius, radius + 1):
+            if x * x + z * z <= radius * radius:
+                p.clear(x, 0, z, x, 5, z)
+                p.set(x, -1, z, p.pick(ROTTEN_SOIL))
+                p.set(x, -2, z, "Soil_Dirt")
+    spawners(p, SPAWN_GIANT_PUMPKIN, [(0, 0)])
+    near_center = lambda x, z: x * x + z * z <= 4
+    for _ in range(30):
+        a = r.random() * 2 * math.pi
+        d = radius - 1.5 + r.random() * 2.5
+        x, z = round(math.cos(a) * d), round(math.sin(a) * d)
+        if p.free(x, 0, z) and not p.free(x, -1, z):
+            p.set(x, 0, z, p.pick(TENDRILS))
+    for _ in range(18):
+        x, z = r.randint(-radius + 1, radius - 1), r.randint(-radius + 1, radius - 1)
+        if not near_center(x, z) and x * x + z * z < (radius - 1) ** 2 and p.free(x, 0, z):
+            p.set(x, 0, z, "Plant_Vine_Rug" if r.random() < 0.7 else p.pick(BONES), r.randint(0, 3))
+    for k in range(6):
+        a = (k + r.random() * 0.5) * math.pi / 3
+        x, z = round(math.cos(a) * (radius + 1)), round(math.sin(a) * (radius + 1))
+        p.clear(x, 0, z, x, 2, z)
+        p.set(x, -1, z, "Soil_Dirt")
+        if k % 2:
+            p.set(x, 0, z, "Plant_Crop_Pumpkin_Block")
+            if r.random() < 0.5:
+                p.set(x, 1, z, "Plant_Crop_Pumpkin_Block")
+        else:
+            p.set(x, 0, z, "Deco_Halloween_Pumpkin_Scary", face_toward(x, z, 2 * x, 2 * z))
 
 
 # --- cemeteries -------------------------------------------------------------------------------
@@ -1910,15 +1959,16 @@ WHEAT_BURNT = "Plant_Crop_Wheat_Stage_4_Burnt"
 DOOR_ROT = {NORTH: 0, SOUTH: 0, EAST: 1, WEST: 1}   # portes et fenêtres : 0 dans un mur le long de x
 
 
-def roof(p, x0, z0, x1, z1, y, mat="Wood_Deadwood", ridge="x", gable=None, overhang=1):
+def roof(p, x0, z0, x1, z1, y, mat="Wood_Deadwood", ridge="x", gable=None, overhang=1, slope=None):
     """Toit à deux pans en blocs de toit du jeu (pente 45°) sur des murs dont le haut est en y - 1.
 
     `ridge` = axe du faîte. La rangée au-dessus d'un mur est en y, le débord en y - 1, chaque rangée
     vers le faîte monte d'un bloc ; le faîte impair reçoit le bloc « Topper ». Les pignons sont
     remplis avec `gable`. Rotation des pentes : 0 descend vers +Z (sud), 2 vers le nord, 1 vers l'est,
-    3 vers l'ouest (lu dans les maisons vanilla). Renvoie la hauteur du faîte.
+    3 vers l'ouest (lu dans les maisons vanilla). `slope` remplace le bloc de pente (toile de tente) :
+    largeur paire alors, il n'y a pas de « Topper » pour toutes les toiles. Renvoie la hauteur du faîte.
     """
-    slope, topper = f"{mat}_Roof", f"*{mat}_Roof_State_Definitions_Topper"
+    slope, topper = slope or f"{mat}_Roof", f"*{mat}_Roof_State_Definitions_Topper"
     if ridge == "x":
         lo, hi, a0, a1, low_rot, high_rot, top_rot = z0, z1, x0, x1, NORTH, SOUTH, 0
         at = lambda u, v: (v, u)
@@ -2651,6 +2701,134 @@ def fallen_log(seed):
 
 # --- main -------------------------------------------------------------------------------------
 
+# --- vampire hunter camp ----------------------------------------------------------------------
+
+CAMP_HALF = 12   # palissade de 25 × 25 : les chasseurs (fil des mobs, laisse ~14) restent dedans
+CAMP_GROUND = [("Soil_Pathway", 3), ("Soil_Dirt", 2), ("Soil_Grass_Burnt", 2), ("Soil_Gravel", 1)]
+PALISADE = "Wood_Dry_Trunk"
+CANVAS = [("Cloth_Block_Wool_Black", 3), ("Cloth_Block_Wool_Red", 1)]
+TENT_ROOF = "Cloth_Roof_Leather"
+
+
+def tent(p, x0, z0, depth=5, loot=None):
+    """Tente de cuir de 6 de large, faîte nord-sud, ouverte au sud : un lit, un coffre ou un sac."""
+    x1, z1 = x0 + 5, z0 + depth - 1
+    p.clear(x0, 0, z0, x1, 3, z1)
+    p.floor(x0, z0, x1, z1, -1, [("Soil_Dirt", 2), ("Soil_Pathway", 1)])
+    roof(p, x0, z0, x1, z1, 0, ridge="z", overhang=0, slope=TENT_ROOF)
+    for x in range(x0 + 1, x1):
+        p.fill(x, 0, z0, x, min(x - x0, x1 - x) - 1, z0, p.pick(CANVAS))
+    p.set(x0 + 2, 0, z0 + 1, "Furniture_Lumberjack_Bed", SOUTH)
+    if loot:
+        p.chest(x0 + 1, 0, z0 + 1, "Furniture_Lumberjack_Chest_Small", EAST, loot)
+    else:
+        p.set(x0 + 1, 0, z0 + 1, "Furniture_Ancient_Sack", EAST)
+    p.set(x1 - 1, 0, z0 + 1, "Furniture_Crude_Torch")
+
+
+def hunter_lodge(p, x0, z0, w=11, d=7):
+    """Pavillon de rondins et de planches : deux lits, une table, le coffre des chasseurs."""
+    x1, z1 = x0 + w - 1, z0 + d - 1
+    p.clear(x0 - 1, 0, z0 - 1, x1 + 1, 7, z1 + 1)
+    p.floor(x0, z0, x1, z1, -1, "Wood_Softwood_Planks", foundation=FOUNDATION, depth=2)
+    p.hollow(x0, 0, z0, x1, 2, z1, [("Wood_Softwood_Planks", 5), ("Wood_Softwood_Decorative", 1)])
+    for cx in (x0, x1):
+        for cz in (z0, z1):
+            p.fill(cx, 0, cz, cx, 2, cz, PALISADE)
+    door = (x0 + x1) // 2
+    p.set(door, 1, z1, AIR)
+    p.set(door, 0, z1, "Furniture_Lumberjack_Door", DOOR_ROT[SOUTH])
+    for wz in (z0 + 2, z0 + 4):
+        p.set(x0, 1, wz, AIR)
+        p.set(x1, 1, wz, AIR)
+    roof(p, x0, z0, x1, z1, 3, "Wood_Softwood", "x", gable="Wood_Softwood_Planks")
+    for bx in (x0 + 1, x0 + 4):
+        p.set(bx, 0, z0 + 1, "Furniture_Lumberjack_Bed", SOUTH)
+    p.set(x1 - 3, 0, z0 + 1, "Furniture_Lumberjack_Table")
+    for sx, sz in ((x1 - 1, z0 + 1), (x1 - 1, z0 + 2), (x1 - 3, z0 + 3)):
+        p.set(sx, 0, sz, "Furniture_Crude_Stool")
+    p.set(x1 - 3, 1, z0 + 1, "Furniture_Crude_Candle")
+    p.chest(x1 - 1, 0, z1 - 1, "Furniture_Lumberjack_Chest_Small", WEST, LOOT_HUNTER_CAMP)
+    p.set(x0 + 1, 0, z1 - 1, "Furniture_Ancient_Sack")
+    hang_lantern(p, door, 2, z0 + 3)
+
+
+def hunter_camp(seed, variant):
+    """Camp de chasseurs de vampires : palissade de rondins, feu de camp, tentes de cuir (« tents »)
+    ou un pavillon de bois (« lodge »), atelier d'armes à l'ouest, pas de tir à l'est, porte au sud.
+
+    Les chasseurs sont pacifiques envers le joueur et ennemis des mobs du domaine ; leurs blocs
+    d'apparition restent à moins de 9 blocs du centre pour qu'ils ne quittent pas l'enceinte.
+    """
+    p = Prefab(seed)
+    r = p.rng
+    h = CAMP_HALF
+    p.clear(-h - 1, 0, -h - 1, h + 1, 7, h + 1)
+    p.floor(-h - 1, -h - 1, h + 1, h + 1, -1, CAMP_GROUND, foundation="Soil_Dirt", depth=3)
+    # palissade de troncs, pointes alternées, porte au sud gardée par deux lanternes
+    for x in range(-h, h + 1):
+        for z in range(-h, h + 1):
+            if max(abs(x), abs(z)) != h or (z == h and abs(x) <= 1):
+                continue
+            p.fill(x, 0, z, x, 2 + (x + z) % 2, z, PALISADE)
+    for gx in (-2, 2):
+        p.fill(gx, 0, h, gx, 3, h, PALISADE)
+        p.set(gx, 4, h, "Deco_Lantern")
+    for z in range(2, h + 2):
+        for x in (-1, 0, 1):
+            p.set(x, -1, z, p.pick(PATH))
+    # feu de camp et tabourets autour
+    p.set(0, -1, 0, "Rock_Stone_Cobble")
+    p.set(0, 0, 0, "Bench_Campfire")
+    for sx, sz in ((2, 0), (-2, 0), (0, -2), (1, 2)):
+        p.set(sx, 0, sz, "Furniture_Crude_Stool")
+    # couchage au nord
+    if variant == "lodge":
+        hunter_lodge(p, -10, -10)
+        tent(p, 4, -10, loot=None)
+    else:
+        tent(p, -10, -10, loot=LOOT_HUNTER_CAMP)
+        tent(p, -3, -10)
+        tent(p, 4, -10)
+    # atelier d'armes à l'ouest : établis, table, caisses, tonneaux, coffre d'armurerie
+    p.set(-11, 0, 0, "Bench_Weapon", EAST)
+    p.set(-11, 0, 3, "Bench_Armory", EAST)
+    p.set(-8, 0, 1, "Furniture_Crude_Table")
+    p.set(-8, 1, 1, "Furniture_Crude_Candle")
+    p.set(-6, 0, 2, "Furniture_Crude_Stool")
+    p.chest(-11, 0, 6, "Furniture_Lumberjack_Chest_Small", EAST, LOOT_HUNTER_ARMORY)
+    for z in range(7, 12):
+        name = r.choice(["Furniture_Village_Crate", "Furniture_Tavern_Barrel", "Furniture_Ancient_Barrel"])
+        p.set(-11, 0, z, name)
+        if name == "Furniture_Village_Crate" and r.random() < 0.5:
+            p.set(-11, 1, z, "Furniture_Village_Crate")
+    p.set(-10, 0, 11, "Furniture_Village_Crate")
+    p.set(-8, 0, 11, "Bench_Tannery", NORTH)
+    # pas de tir à l'est : cibles contre la palissade, mannequins, foin pour arrêter les carreaux
+    for z in range(-3, 4):
+        p.set(11, -1, z, "Soil_Pathway")
+    for z in (-3, 0, 3):
+        p.set(11, 0, z, "Deco_Target", WEST)
+    for z in (-5, 5):
+        p.fill(11, 0, z, 11, 1, z, "Ingredient_Hay")
+    for z in (6, 8):
+        p.set(9, 0, z, "Tinkering_Target_Dummy", WEST)
+    for cz in (-3, 3):
+        p.set(4, 0, cz, "Furniture_Village_Crate")
+    p.set(4, 0, 0, "Furniture_Crude_Stool")
+    # réserve au sud-est
+    for bx, bz in ((11, 10), (11, 11), (10, 11)):
+        p.set(bx, 0, bz, r.choice(["Furniture_Tavern_Barrel", "Furniture_Ancient_Barrel"]))
+    p.fill(11, 0, 9, 11, 1, 9, "Ingredient_Hay")
+    p.set(8, 0, 11, "Furniture_Ancient_Sack")
+    # lanternes sur poteaux, herbe folle le long de la palissade
+    for lx, lz in ((-4, 4), (4, 4), (-8, -2), (8, -4)):
+        lantern_post(p, lx, lz, 2)
+    spawners(p, SPAWN_HUNTER, [(-3, 1), (3, -1), (1, 3), (-7, 4), (6, 1), (-3, -2)])
+    p.scatter(-h + 1, 0, -h + 1, h - 1, h - 1, 10, [("Plant_Grass_Gnarled", 3), ("Plant_Grass_Gnarled_Short", 2)], rot=0)
+    return p
+
+
 def main():
     jobs = []
     sizes = ["small", "small", "medium", "medium", "medium", "large"]
@@ -2659,7 +2837,11 @@ def main():
     for i, hanging in enumerate(("lantern", "cage", "noose", "lantern")):
         jobs.append((f"Trees/Hanging_Tree_{i + 1}", dead_tree(1100 + i, "medium" if i % 2 else "large", hanging=hanging, webs=True)))
     for i in range(3):
-        jobs.append((f"PumpkinFields/Pumpkin_Field_{i + 1}", pumpkin_field(2000 + i, *[(23, 19), (27, 17), (19, 23)][i])))
+        jobs.append((f"PumpkinFields/Plain/Pumpkin_Field_{i + 1}", pumpkin_field(2000 + i, *[(23, 19), (27, 17), (19, 23)][i])))
+    for i in range(2):
+        jobs.append((f"PumpkinFields/Giant/Pumpkin_Field_Giant_{i + 1}", pumpkin_field(2100 + i, *[(27, 23), (25, 25)][i], giant=True)))
+    for i, variant in enumerate(("tents", "lodge")):
+        jobs.append((f"HunterCamps/{variant.capitalize()}/Hunter_Camp_{variant.capitalize()}", hunter_camp(9000 + i, variant)))
     for t, theme in enumerate(("haunted", "spiders", "undead")):
         for i in range(2):
             jobs.append((f"Cemeteries/{theme.capitalize()}/Cemetery_{theme.capitalize()}_{i + 1}", cemetery(3000 + t * 100 + i, theme)))

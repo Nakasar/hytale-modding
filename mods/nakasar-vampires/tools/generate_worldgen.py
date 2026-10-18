@@ -52,7 +52,7 @@ EDGE_START = 296.0
 STRUCTURE_JITTER = 16.0
 # Types de structures : (nom, [(dossier de prefabs, poids)], tourner ?, [part des mondes où chaque
 # exemplaire existe]) : le premier exemplaire est toujours là, le second une fois sur deux, le
-# village 60 % du temps.
+# village 60 % du temps, le camp de chasseurs une fois sur deux.
 STRUCTURE_TYPES = [
     ("Village", [("Villages/Zombies", 1.0), ("Villages/Ruins", 1.0), ("Villages/Spiders", 1.0)], True, [0.6]),
     ("Farm", [("Farms/Zombies", 1.0), ("Farms/Ruins", 1.0), ("Farms/Burnt", 1.0)], True, [1.0, 0.5]),
@@ -60,16 +60,18 @@ STRUCTURE_TYPES = [
                    ("GuardPosts/Garrison", 1.2)], True, [1.0, 0.5]),
     ("Cemetery", [("Cemeteries/Haunted", 1.0), ("Cemeteries/Spiders", 1.0), ("Cemeteries/Undead", 1.0)], True, [1.0, 0.5]),
     ("Crypt", [("Crypts", 1.0)], True, [1.0, 0.5]),
-    ("PumpkinField", [("PumpkinFields", 1.0)], True, [1.0, 0.5]),
+    ("PumpkinField", [("PumpkinFields/Plain", 1.0), ("PumpkinFields/Giant", 1.0)], True, [1.0, 0.5]),
     ("HauntedCastle", [("HauntedCastles", 1.0)], True, [1.0, 0.5]),
+    ("HunterCamp", [("HunterCamps/Tents", 1.0), ("HunterCamps/Lodge", 1.0)], True, [0.5]),
 ]
-# Emplacements (x, z, grand ?) : 13, un par exemplaire. Les grands peuvent recevoir le village
+# Emplacements (x, z, grand ?) : 14, un par exemplaire. Les grands peuvent recevoir le village
 # (69 × 69) ; entre deux structures, au moins 9 blocs dans le pire des décalages (village et ferme
 # voisins décalés l'un vers l'autre).
 SLOTS = [
     (-35, 195, True), (115, 165, True), (185, -65, True),
     (-205, 30, False), (-190, -85, False), (-155, 145, False), (-115, -175, False), (-80, -55, False),
     (-65, 70, False), (30, -90, False), (75, 35, False), (115, -175, False), (200, 65, False),
+    (20, 105, False),
 ]
 # Le type de chaque emplacement change d'un monde à l'autre : LAYOUTS répartitions (tirées ici une
 # fois pour toutes), le monde en choisit une selon un bruit lu en un point fixe (valeur qui ne dépend
