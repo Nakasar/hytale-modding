@@ -1,0 +1,38 @@
+{
+  "$Comment": "Vrille combattante de la citrouille géante : le modèle de racines du sort vanilla Root, plus grand (×1,8), qui sort de terre à l'apparition.",
+  "Model": "VFX/Spells/Roots/Model.blockymodel",
+  "Texture": "VFX/Spells/Roots/Model.png",
+  "EyeHeight": 0.9,
+  "HitBox": {
+    "Max": {
+      "X": 0.45,
+      "Y": 1.1,
+      "Z": 0.45
+    },
+    "Min": {
+      "X": -0.45,
+      "Y": 0,
+      "Z": -0.45
+    }
+  },
+  "MinScale": 1.8,
+  "MaxScale": 1.8,
+  "AnimationSets": {
+    "Spawn": {
+      "Animations": [
+        {
+          "Animation": "VFX/Spells/Roots/Spawn.blockyanim",
+          "Looping": false
+        }
+      ]
+    },
+    "Despawn": {
+      "Animations": [
+        {
+          "Animation": "VFX/Spells/Roots/Despawn.blockyanim",
+          "Looping": false
+        }
+      ]
+    }
+  }
+}

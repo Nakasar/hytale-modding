@@ -1,5 +1,5 @@
 {
-  "$Comment": "Balayage circulaire annoncé : la citrouille rougeoie et une zone rouge de 5 blocs marque le sol pendant 1,2 s, puis des vrilles fouettent tout autour d'elle (26 dégâts, projection). On l'évite en sortant de la zone.",
+  "$Comment": "Balayage circulaire d'une vrille combattante de la citrouille géante : la vrille rougeoie et une zone rouge de 3,5 blocs marque le sol pendant 1,2 s, puis elle fouette tout autour d'elle (20 dégâts, projection). On l'évite en sortant de la zone.",
   "Type": "Serial",
   "Interactions": [
     {
@@ -25,7 +25,7 @@
             "SystemId": "Feastmaster_Slam_Warning",
             "TargetEntityPart": "Entity",
             "TargetNodeName": "Origin",
-            "Scale": 3.4,
+            "Scale": 2.38,
             "PositionOffset": {
               "X": 0,
               "Y": 0.1,
@@ -46,7 +46,7 @@
             "SystemId": "Stick_Slam_Ground_Large",
             "TargetEntityPart": "Entity",
             "TargetNodeName": "Origin",
-            "Scale": 1.0,
+            "Scale": 0.7,
             "PositionOffset": {
               "X": 0,
               "Y": 0.1,
@@ -58,7 +58,7 @@
             "SystemId": "Heal_Stick_ThornsUp",
             "TargetEntityPart": "Entity",
             "TargetNodeName": "Origin",
-            "Scale": 2.0,
+            "Scale": 1.4,
             "PositionOffset": {
               "X": 0,
               "Y": 0.1,
@@ -70,7 +70,7 @@
       },
       "Selector": {
         "Id": "AOECircle",
-        "Range": 5
+        "Range": 3.5
       },
       "HitEntity": {
         "Interactions": [
@@ -78,7 +78,7 @@
             "Parent": "DamageEntityParent",
             "DamageCalculator": {
               "BaseDamage": {
-                "Physical": 26
+                "Physical": 20
               },
               "RandomPercentageModifier": 0.1
             },
@@ -91,7 +91,7 @@
               ],
               "Knockback": {
                 "Type": "Force",
-                "Force": 9,
+                "Force": 7,
                 "VelocityType": "Set",
                 "Direction": {
                   "Y": 1

@@ -1,0 +1,278 @@
+{
+  "$Comment": "Vrille combattante de la citrouille géante, sortie de terre autour d'elle (Nakasar_SummonVines). Immobile, elle a sa propre vie : elle projette des épines sur une cible à distance et, quand on l'approche, fait un balayage circulaire annoncé par une zone rouge. Prend double dégâts de feu. Disparaît avec sa citrouille, ou au bout de 25 s sans combat.",
+  "Type": "Generic",
+  "Appearance": "Nakasar_Pumpkin_Vine",
+  "NameTranslationKey": "nakasar_mobs.npc.Pumpkin_Vine.name",
+  "MaxHealth": 45,
+  "StartState": "Idle",
+  "DefaultPlayerAttitude": "Hostile",
+  "DefaultNPCAttitude": "Ignore",
+  "DisableDamageGroups": [
+    "Nakasar_Halloween_Faction"
+  ],
+  "KnockbackScale": 0,
+  "DeathAnimationTime": 0.3,
+  "DeathParticles": "Block_Break_Leaves",
+  "MotionControllerList": [
+    {
+      "Type": "Walk",
+      "MaxWalkSpeed": 1,
+      "Gravity": 10,
+      "MaxFallSpeed": 10,
+      "Acceleration": 12,
+      "JumpHeight": 0
+    }
+  ],
+  "StateTransitions": [
+    {
+      "$Comment": "Entrée en combat : chaque attaque a sa propre recharge.",
+      "States": [
+        {
+          "From": [
+            "Idle"
+          ],
+          "To": [
+            "Combat"
+          ]
+        }
+      ],
+      "Actions": [
+        {
+          "Type": "TimerStart",
+          "Name": "Sweep",
+          "StartValueRange": [
+            2,
+            3
+          ],
+          "RestartValueRange": [
+            7,
+            10
+          ]
+        },
+        {
+          "Type": "TimerStart",
+          "Name": "Thorns",
+          "StartValueRange": [
+            0.5,
+            1.5
+          ],
+          "RestartValueRange": [
+            3.5,
+            5
+          ]
+        }
+      ]
+    }
+  ],
+  "Instructions": [
+    {
+      "Sensor": {
+        "Type": "State",
+        "State": "Idle"
+      },
+      "Instructions": [
+        {
+          "Sensor": {
+            "Type": "Damage",
+            "Combat": true,
+            "TargetSlot": "LockedTarget"
+          },
+          "Actions": [
+            {
+              "Type": "State",
+              "State": "Combat"
+            }
+          ]
+        },
+        {
+          "Sensor": {
+            "Type": "Player",
+            "Range": 16,
+            "LockOnTarget": true,
+            "Filters": [
+              {
+                "Type": "Attitude",
+                "Attitudes": [
+                  "Hostile"
+                ]
+              },
+              {
+                "Type": "LineOfSight"
+              }
+            ]
+          },
+          "Actions": [
+            {
+              "Type": "State",
+              "State": "Combat"
+            }
+          ]
+        },
+        {
+          "$Comment": "Un mob hostile (chasseur de vampires, mob dominé…) : même réaction qu'envers un joueur.",
+          "Sensor": {
+            "Type": "Mob",
+            "Range": 16,
+            "LockOnTarget": true,
+            "Filters": [
+              {
+                "Type": "Attitude",
+                "Attitudes": [
+                  "Hostile"
+                ]
+              },
+              {
+                "Type": "LineOfSight"
+              }
+            ]
+          },
+          "Actions": [
+            {
+              "Type": "State",
+              "State": "Combat"
+            }
+          ]
+        },
+        {
+          "$Comment": "Sans combat pendant 25 s (citrouille rendormie, cible partie) : elle rentre sous terre.",
+          "Actions": [
+            {
+              "Type": "Timeout",
+              "Delay": [
+                25,
+                25
+              ],
+              "Action": {
+                "Type": "Despawn",
+                "Force": true
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "Sensor": {
+        "Type": "State",
+        "State": "Combat"
+      },
+      "Instructions": [
+        {
+          "$Comment": "Cible perdue ou partie à plus de 18 blocs : retour au repos.",
+          "Sensor": {
+            "Type": "Not",
+            "Sensor": {
+              "Type": "Target",
+              "Range": 18,
+              "Filters": [
+                {
+                  "Type": "Attitude",
+                  "Attitudes": [
+                    "Hostile",
+                    "Neutral",
+                    "Ignore"
+                  ]
+                }
+              ]
+            }
+          },
+          "Actions": [
+            {
+              "Type": "ReleaseTarget"
+            },
+            {
+              "Type": "State",
+              "State": "Idle"
+            }
+          ]
+        },
+        {
+          "$Comment": "Balayage circulaire annoncé (cercle de 3,5 blocs) quand la cible est à moins de 3 blocs.",
+          "Sensor": {
+            "Type": "And",
+            "Sensors": [
+              {
+                "Type": "Target",
+                "Range": 3
+              },
+              {
+                "Type": "Timer",
+                "Name": "Sweep",
+                "State": "STOPPED"
+              }
+            ]
+          },
+          "HeadMotion": {
+            "Type": "Watch",
+            "RelativeTurnSpeed": 1.0
+          },
+          "ActionsBlocking": true,
+          "Actions": [
+            {
+              "Type": "TimerRestart",
+              "Name": "Sweep"
+            },
+            {
+              "Type": "Attack",
+              "Attack": "Root_Nakasar_NPC_Pumpkin_Sweep",
+              "SkipAiming": true,
+              "LineOfSight": false,
+              "AvoidFriendlyFire": false
+            }
+          ]
+        },
+        {
+          "$Comment": "Deux épines projetées sur une cible jusqu'à 16 blocs.",
+          "Sensor": {
+            "Type": "And",
+            "Sensors": [
+              {
+                "Type": "Target",
+                "Range": 16,
+                "Filters": [
+                  {
+                    "Type": "LineOfSight"
+                  }
+                ]
+              },
+              {
+                "Type": "Timer",
+                "Name": "Thorns",
+                "State": "STOPPED"
+              }
+            ]
+          },
+          "HeadMotion": {
+            "Type": "Aim",
+            "RelativeTurnSpeed": 2
+          },
+          "ActionsBlocking": true,
+          "Actions": [
+            {
+              "Type": "TimerRestart",
+              "Name": "Thorns"
+            },
+            {
+              "Type": "Attack",
+              "Attack": "Root_Nakasar_NPC_Pumpkin_Thorns",
+              "AimingTimeRange": [
+                0.3,
+                0.5
+              ]
+            }
+          ]
+        },
+        {
+          "Sensor": {
+            "Type": "Target",
+            "Range": 18
+          },
+          "HeadMotion": {
+            "Type": "Watch",
+            "RelativeTurnSpeed": 1.5
+          }
+        }
+      ]
+    }
+  ]
+}

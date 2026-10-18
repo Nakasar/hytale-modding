@@ -95,7 +95,11 @@ public class RootTrapInteraction extends SimpleInstantInteraction {
         Ref<EntityStore> owner = context.getOwningEntity();
         Ref<EntityStore> caster = owner != null && owner.isValid() ? owner : context.getEntity();
         Ref<EntityStore> victim = context.getTargetEntity();
-        if (buffer == null || victim == null || !victim.isValid() || victim.equals(caster) || TRAPS.containsKey(victim)
+        if (victim == null) {
+            VampiresPlugin.get().getLogger().atWarning().log("%s : lancé sans cible (à placer sous le HitEntity d'un Selector)", TYPE_ID);
+            return;
+        }
+        if (buffer == null || !victim.isValid() || victim.equals(caster) || TRAPS.containsKey(victim)
                 || buffer.getComponent(victim, DeathComponent.getComponentType()) != null
                 || isTendril(victim, buffer)
                 || (caster != null && caster.isValid() && isAlly(caster, victim, buffer))) {
@@ -146,6 +150,8 @@ public class RootTrapInteraction extends SimpleInstantInteraction {
         Trap trap = new Trap(tendril, player, effect, System.nanoTime() + (long) (maxDuration * 1_000_000_000L));
         TRAPS.put(victim, trap);
         hold(store, victim, trap);
+        VampiresPlugin.get().getLogger().atInfo().log("%s : %s retenu par une vrille (%s)", TYPE_ID,
+                player ? "joueur" : "PNJ", trap.effect() != null || !player ? "immobilisé" : "effet introuvable, pas immobilisé");
         world.scheduleAfter(() -> watch(world, victim), POLL_MS, TimeUnit.MILLISECONDS);
     }
 

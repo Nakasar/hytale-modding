@@ -15,6 +15,7 @@ import dev.nakasar.hytale.vampires.purifying.PurifyingFireSystem;
 import dev.nakasar.hytale.vampires.pumpkin.RootTrapInteraction;
 import dev.nakasar.hytale.vampires.pumpkin.RootTrapUnloadSystem;
 import dev.nakasar.hytale.vampires.pumpkin.RootTrapped;
+import dev.nakasar.hytale.vampires.pumpkin.SummonVinesInteraction;
 import dev.nakasar.hytale.vampires.rune.DrainBeamInteraction;
 import dev.nakasar.hytale.vampires.rune.RootNpcInteraction;
 import dev.nakasar.hytale.vampires.rune.TeleportCasterToImpactInteraction;
@@ -40,6 +41,7 @@ import dev.nakasar.hytale.vampires.silver.SilverWeapons;
  *   <li>{@code Nakasar_ImprisonPlayer} : téléporte le joueur visé dans la cellule la plus proche du Capitaine ;</li>
  *   <li>{@code Nakasar_RootTrap} : piège de vrilles de la citrouille géante (une vrille-PNJ retient la cible
  *       jusqu'à sa destruction) ;</li>
+ *   <li>{@code Nakasar_SummonVines} : la citrouille géante fait sortir de terre ses vrilles combattantes ;</li>
  *   <li>{@link FireWeaknessSystem} : la citrouille géante et ses vrilles prennent double dégâts de feu ;</li>
  *   <li>les camps ({@link AllegianceAttitudeSystem}, {@link AllegianceDamageFilter},
  *       {@link DominationExpirySystem}) : les mobs du fragment sont alliés, ennemis des chasseurs de vampires, et la
@@ -80,6 +82,8 @@ public final class VampiresPlugin extends JavaPlugin {
                 ImprisonPlayerInteraction.class, ImprisonPlayerInteraction.CODEC);
         interactions.register(RootTrapInteraction.TYPE_ID,
                 RootTrapInteraction.class, RootTrapInteraction.CODEC);
+        interactions.register(SummonVinesInteraction.TYPE_ID,
+                SummonVinesInteraction.class, SummonVinesInteraction.CODEC);
 
         var systems = getEntityStoreRegistry();
         RootTrapped.setComponentType(systems.registerComponent(RootTrapped.class, RootTrapped::new));
@@ -93,16 +97,17 @@ public final class VampiresPlugin extends JavaPlugin {
         systems.registerSystem(new SilverDamageSystem());
         systems.registerSystem(new PurifyingFireSystem());
 
-        getLogger().atInfo().log("Nakasar Vampires : 7 types d'interaction (%s, %s, %s, %s, %s, %s, %s), systèmes des camps, de l'argent et du feu purificateur enregistrés",
+        getLogger().atInfo().log("Nakasar Vampires : 8 types d'interaction (%s, %s, %s, %s, %s, %s, %s, %s), systèmes des camps, de l'argent et du feu purificateur enregistrés",
                 TeleportCasterToImpactInteraction.TYPE_ID, DominateInteraction.TYPE_ID, RootNpcInteraction.TYPE_ID,
                 DrainBeamInteraction.TYPE_ID, DominatePlayerInteraction.TYPE_ID, ImprisonPlayerInteraction.TYPE_ID,
-                RootTrapInteraction.TYPE_ID);
+                RootTrapInteraction.TYPE_ID, SummonVinesInteraction.TYPE_ID);
     }
 
     @Override
     protected void shutdown() {
         RootNpcInteraction.clearAll();
         RootTrapInteraction.clearAll();
+        SummonVinesInteraction.clearAll();
         Dominations.clearAll();
         SilverWeapons.clearAll();
     }

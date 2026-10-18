@@ -1,5 +1,5 @@
 {
-  "$Comment": "Citrouille géante animée (élite) d'une variante du champ de citrouilles. Elle ne se déplace pas. Coups de vrilles au corps à corps, épines et crachats de poison orange à distance, deux attaques annoncées par une zone rouge au sol : le balayage circulaire et le piège de vrilles (les ennemis restés dans la zone sont retenus par une vrille de 12 PV jusqu'à ce qu'ils la détruisent). Elle et ses vrilles prennent double dégâts de feu. Si on s'éloigne à plus de 20 blocs, elle se rendort et regagne sa vie.",
+  "$Comment": "Citrouille géante animée (élite) d'une variante du champ de citrouilles. Elle ne se déplace pas et se bat surtout par ses vrilles : en combat, elle fait sortir de terre des vrilles combattantes (Nakasar_Pumpkin_Vine, épines et balayages annoncés), 3 à la fois et 4 vivantes au plus, puis en refait sortir toutes les 14 à 18 s. Elle-même crache lentement du poison orange et, avec une longue recharge, lance son piège de vrilles annoncé par une zone rouge (les ennemis restés dedans sont retenus par une vrille de 12 PV jusqu'à ce qu'ils la détruisent). Elle et ses vrilles prennent double dégâts de feu. Si on s'éloigne à plus de 20 blocs, elle se rendort, regagne sa vie et ses vrilles rentrent sous terre.",
   "Type": "Generic",
   "Appearance": "Nakasar_Giant_Pumpkin",
   "NameTranslationKey": "nakasar_mobs.npc.Giant_Pumpkin.name",
@@ -40,50 +40,38 @@
       "Actions": [
         {
           "Type": "TimerStart",
-          "Name": "RootTrap",
+          "Name": "Summon",
           "StartValueRange": [
-            8,
-            10
+            0.2,
+            0.5
           ],
           "RestartValueRange": [
-            16,
-            20
+            14,
+            18
           ]
         },
         {
           "Type": "TimerStart",
-          "Name": "Sweep",
+          "Name": "RootTrap",
           "StartValueRange": [
-            4,
-            5
+            10,
+            12
           ],
           "RestartValueRange": [
-            8,
-            11
+            28,
+            34
           ]
         },
         {
           "Type": "TimerStart",
           "Name": "Spit",
           "StartValueRange": [
-            2,
-            3
+            3,
+            4
           ],
           "RestartValueRange": [
-            6,
-            8
-          ]
-        },
-        {
-          "Type": "TimerStart",
-          "Name": "Thorns",
-          "StartValueRange": [
-            1,
-            2
-          ],
-          "RestartValueRange": [
-            2.5,
-            3.5
+            7,
+            9
           ]
         }
       ]
@@ -204,7 +192,29 @@
           ]
         },
         {
-          "$Comment": "Piège de vrilles annoncé (longue recharge) quand la cible est à moins de 6 blocs.",
+          "$Comment": "Invocation des vrilles combattantes, dès l'entrée en combat puis à chaque recharge.",
+          "Sensor": {
+            "Type": "Timer",
+            "Name": "Summon",
+            "State": "STOPPED"
+          },
+          "ActionsBlocking": true,
+          "Actions": [
+            {
+              "Type": "TimerRestart",
+              "Name": "Summon"
+            },
+            {
+              "Type": "Attack",
+              "Attack": "Root_Nakasar_NPC_Pumpkin_Summon",
+              "SkipAiming": true,
+              "LineOfSight": false,
+              "AvoidFriendlyFire": false
+            }
+          ]
+        },
+        {
+          "$Comment": "Piège de vrilles annoncé (longue recharge, 28 à 34 s) quand la cible est à moins de 6 blocs.",
           "Sensor": {
             "Type": "And",
             "Sensors": [
@@ -239,42 +249,7 @@
           ]
         },
         {
-          "$Comment": "Balayage circulaire annoncé (cercle de 5 blocs) quand la cible est à moins de 4,5 blocs.",
-          "Sensor": {
-            "Type": "And",
-            "Sensors": [
-              {
-                "Type": "Target",
-                "Range": 4.5
-              },
-              {
-                "Type": "Timer",
-                "Name": "Sweep",
-                "State": "STOPPED"
-              }
-            ]
-          },
-          "HeadMotion": {
-            "Type": "Watch",
-            "RelativeTurnSpeed": 1.0
-          },
-          "ActionsBlocking": true,
-          "Actions": [
-            {
-              "Type": "TimerRestart",
-              "Name": "Sweep"
-            },
-            {
-              "Type": "Attack",
-              "Attack": "Root_Nakasar_NPC_Pumpkin_Sweep",
-              "SkipAiming": true,
-              "LineOfSight": false,
-              "AvoidFriendlyFire": false
-            }
-          ]
-        },
-        {
-          "$Comment": "Crachat de poison orange.",
+          "$Comment": "Crachat de poison orange, lent (7 à 9 s entre deux crachats).",
           "Sensor": {
             "Type": "And",
             "Sensors": [
@@ -307,81 +282,6 @@
             {
               "Type": "Attack",
               "Attack": "Root_Nakasar_NPC_Pumpkin_Spit",
-              "AimingTimeRange": [
-                0.3,
-                0.5
-              ]
-            }
-          ]
-        },
-        {
-          "$Comment": "Coup de vrille au corps à corps.",
-          "Sensor": {
-            "Type": "Target",
-            "Range": 4.5,
-            "Filters": [
-              {
-                "Type": "LineOfSight"
-              }
-            ]
-          },
-          "HeadMotion": {
-            "Type": "Aim",
-            "RelativeTurnSpeed": 2
-          },
-          "ActionsBlocking": true,
-          "Actions": [
-            {
-              "Type": "Attack",
-              "Attack": "Root_Nakasar_NPC_Pumpkin_Lash",
-              "AttackPauseRange": [
-                1.2,
-                1.8
-              ]
-            },
-            {
-              "Type": "Timeout",
-              "Delay": [
-                0.2,
-                0.2
-              ]
-            }
-          ]
-        },
-        {
-          "$Comment": "Projection d'épines sur une cible à distance.",
-          "Sensor": {
-            "Type": "And",
-            "Sensors": [
-              {
-                "Type": "Target",
-                "Range": 18,
-                "Filters": [
-                  {
-                    "Type": "LineOfSight"
-                  }
-                ]
-              },
-              {
-                "Type": "Timer",
-                "Name": "Thorns",
-                "State": "STOPPED"
-              }
-            ]
-          },
-          "HeadMotion": {
-            "Type": "Aim",
-            "RelativeTurnSpeed": 2
-          },
-          "ActionsBlocking": true,
-          "Actions": [
-            {
-              "Type": "TimerRestart",
-              "Name": "Thorns"
-            },
-            {
-              "Type": "Attack",
-              "Attack": "Root_Nakasar_NPC_Pumpkin_Thorns",
               "AimingTimeRange": [
                 0.3,
                 0.5
