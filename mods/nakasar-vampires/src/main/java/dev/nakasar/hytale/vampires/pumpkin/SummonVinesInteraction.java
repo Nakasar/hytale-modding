@@ -76,7 +76,7 @@ public class SummonVinesInteraction extends SimpleInstantInteraction {
             .build();
 
     private static final long POLL_MS = 1000;
-    private static final int ATTEMPTS_PER_VINE = 8;
+    private static final int ATTEMPTS_PER_VINE = 6;
 
     /** Vrilles vivantes par citrouille. Lu et modifié sur le thread du monde. */
     private static final Map<Ref<EntityStore>, List<Ref<EntityStore>>> VINES = new ConcurrentHashMap<>();
@@ -133,9 +133,11 @@ public class SummonVinesInteraction extends SimpleInstantInteraction {
         }
         double start = ThreadLocalRandom.current().nextDouble(Math.PI * 2);
         int spawned = 0;
+        // Partagé par les vrilles de l'appel : une sonde qui échoue partout n'est pas retentée.
+        boolean[] probeUsable = {true};
         for (int i = 0; i < wanted; i++) {
             // Angles répartis sur le tour (avec un peu de hasard) : les vrilles encerclent la citrouille.
-            Ref<EntityStore> vine = spawnOne(world, store, center, start + i * Math.PI * 2 / wanted, taken);
+            Ref<EntityStore> vine = spawnOne(world, store, center, start + i * Math.PI * 2 / wanted, taken, probeUsable);
             if (vine != null) {
                 // Jamais sauvegardée : elle ne survit pas à sa citrouille ni au déchargement du chunk.
                 store.ensureAndGetComponent(vine, EntityStore.REGISTRY.getNonSerializedComponentType());
@@ -154,54 +156,69 @@ public class SummonVinesInteraction extends SimpleInstantInteraction {
     }
 
     /**
-     * Fait sortir une vrille sur l'anneau, autour de l'angle donné, posée sur le sol et à distance des positions
-     * déjà prises (la sienne y est ajoutée) ; null si aucune place.
+     * Fait sortir une vrille sur l'anneau, autour de l'angle donné, à distance des positions déjà prises (la sienne y
+     * est ajoutée) ; null si aucune place. D'abord posée sur le sol par la sonde ; si la sonde ne trouve rien, au
+     * niveau de la citrouille et à {@code MinDistance}, là où le terrain est le plus proche de sa hauteur.
      */
-    private Ref<EntityStore> spawnOne(World world, Store<EntityStore> store, Vector3d center, double baseAngle, List<double[]> taken) {
-        ThreadLocalRandom random = ThreadLocalRandom.current();
+    private Ref<EntityStore> spawnOne(World world, Store<EntityStore> store, Vector3d center, double baseAngle,
+                                      List<double[]> taken, boolean[] probeUsable) {
         NPCPlugin npcs = NPCPlugin.get();
-        boolean probe = true;
-        // Deux passes : avec la sonde de sol, puis (si elle n'a rien trouvé) au niveau de la citrouille.
-        for (int attempt = 0; attempt < ATTEMPTS_PER_VINE * 2; attempt++) {
-            if (attempt == ATTEMPTS_PER_VINE) {
-                probe = false;
-            }
-            // D'abord près de l'angle prévu, puis n'importe où sur l'anneau.
-            double angle = attempt % ATTEMPTS_PER_VINE < 3 ? baseAngle + random.nextDouble(-0.35, 0.35) : random.nextDouble(Math.PI * 2);
-            double distance = maxDistance > minDistance ? random.nextDouble(minDistance, maxDistance) : minDistance;
-            // La sonde pose la vrille au centre de la colonne de blocs : on vérifie l'espacement à cet endroit.
-            int bx = MathUtil.floor(center.x + Math.cos(angle) * distance);
-            int bz = MathUtil.floor(center.z + Math.sin(angle) * distance);
-            double x = bx + 0.5;
-            double z = bz + 0.5;
-            if (!free(x, z, taken)) {
+        for (int attempt = 0; attempt < ATTEMPTS_PER_VINE && probeUsable[0]; attempt++) {
+            double[] spot = candidate(center, baseAngle, attempt, maxDistance, taken);
+            if (spot == null) {
                 continue;
             }
-            // Tournée vers la citrouille, dos au combat qui l'entoure.
-            Rotation3f rotation = new Rotation3f(0f, (float) Math.atan2(center.x - x, center.z - z), 0f);
-            Ref<EntityStore> vine = null;
-            if (probe) {
-                Ref<EntityStore>[] result = newRefHolder();
-                SpawnTestResult test = npcs.spawnNPCWithColumnProbe(store, vineRole, null, world, bx, bz, center.y, rotation,
-                        (npc, ref, s) -> result[0] = ref);
-                if (test == SpawnTestResult.TEST_OK) {
-                    vine = result[0];
-                } else if (test == SpawnTestResult.FAIL_NOT_SPAWNABLE || test == SpawnTestResult.FAIL_SPAWN) {
-                    probe = false;
-                }
+            Ref<EntityStore>[] result = newRefHolder();
+            SpawnTestResult test = npcs.spawnNPCWithColumnProbe(store, vineRole, null, world,
+                    MathUtil.floor(spot[0]), MathUtil.floor(spot[1]), center.y, facing(center, spot), (npc, ref, s) -> result[0] = ref);
+            if (test == SpawnTestResult.TEST_OK && result[0] != null) {
+                return keep(store, result[0], spot, taken);
             }
-            if (vine == null && !probe) {
-                // La sonde ne trouve pas de place : on la pose au niveau de la citrouille.
-                Pair<Ref<EntityStore>, INonPlayerCharacter> spawned = npcs.spawnNPC(store, vineRole, null, new Vector3d(x, center.y, z), rotation);
-                vine = spawned == null ? null : spawned.first();
+            if (test == SpawnTestResult.FAIL_NOT_SPAWNABLE || test == SpawnTestResult.FAIL_SPAWN) {
+                // Échec qui ne dépend pas de l'endroit : inutile de sonder pour les vrilles suivantes.
+                probeUsable[0] = false;
             }
-            if (vine != null) {
-                TransformComponent transform = store.getComponent(vine, TransformComponent.getComponentType());
-                taken.add(transform != null ? new double[]{transform.getPosition().x, transform.getPosition().z} : new double[]{x, z});
-                return vine;
+        }
+        for (int attempt = 0; attempt < ATTEMPTS_PER_VINE; attempt++) {
+            double[] spot = candidate(center, baseAngle, attempt, minDistance, taken);
+            if (spot == null) {
+                continue;
+            }
+            Pair<Ref<EntityStore>, INonPlayerCharacter> spawned = npcs.spawnNPC(store, vineRole, null,
+                    new Vector3d(spot[0], center.y, spot[1]), facing(center, spot));
+            if (spawned != null && spawned.first() != null) {
+                return keep(store, spawned.first(), spot, taken);
             }
         }
         return null;
+    }
+
+    /**
+     * Position (x, z) au centre d'une colonne de blocs, entre {@code MinDistance} et {@code ringMax} de la citrouille
+     * (vérifié après recentrage) et libre ; null sinon. Les premiers essais restent près de l'angle prévu.
+     */
+    private double[] candidate(Vector3d center, double baseAngle, int attempt, float ringMax, List<double[]> taken) {
+        ThreadLocalRandom random = ThreadLocalRandom.current();
+        double angle = attempt < 3 ? baseAngle + random.nextDouble(-0.35, 0.35) : random.nextDouble(Math.PI * 2);
+        double distance = ringMax > minDistance ? random.nextDouble(minDistance, ringMax) : minDistance;
+        double x = MathUtil.floor(center.x + Math.cos(angle) * distance) + 0.5;
+        double z = MathUtil.floor(center.z + Math.sin(angle) * distance) + 0.5;
+        double ring = Math.hypot(x - center.x, z - center.z);
+        if (ring < minDistance || ring > Math.max(ringMax, minDistance + 1) || !free(x, z, taken)) {
+            return null;
+        }
+        return new double[]{x, z};
+    }
+
+    /** Tournée vers la citrouille, dos au combat qui l'entoure. */
+    private static Rotation3f facing(Vector3d center, double[] spot) {
+        return new Rotation3f(0f, (float) Math.atan2(center.x - spot[0], center.z - spot[1]), 0f);
+    }
+
+    private static Ref<EntityStore> keep(Store<EntityStore> store, Ref<EntityStore> vine, double[] spot, List<double[]> taken) {
+        TransformComponent transform = store.getComponent(vine, TransformComponent.getComponentType());
+        taken.add(transform != null ? new double[]{transform.getPosition().x, transform.getPosition().z} : spot);
+        return vine;
     }
 
     private boolean free(double x, double z, List<double[]> taken) {

@@ -1,5 +1,5 @@
 {
-  "$Comment": "Piège de vrilles, annoncé comme les boss du donjon gobelin : la citrouille rougeoie et une zone rouge de 6.5 blocs se charge autour d'elle pendant 2,2 s. Tout ennemi encore dedans à la fin est retenu par une vrille à ses pieds (Nakasar_RootTrap) : il reste immobilisé jusqu'à ce que la vrille (12 PV) soit détruite.",
+  "$Comment": "Piège de vrilles, annoncé comme les boss du donjon gobelin : la citrouille rougeoie et une zone rouge de 6.5 blocs se charge autour d'elle pendant 2,2 s. Tout ennemi encore dedans à la fin est retenu par une vrille à ses pieds (Nakasar_RootTrap) : il reste immobilisé jusqu'à ce que la vrille (12 PV) soit détruite, 10 s au plus : la recharge du piège (14 à 18 s) laisse toujours un moment pour s'éloigner.",
   "Type": "Serial",
   "Interactions": [
     {
@@ -80,7 +80,7 @@
             "Type": "Nakasar_RootTrap",
             "TendrilRole": "Nakasar_Pumpkin_Tendril",
             "EffectId": "Nakasar_Tendril_Rooted",
-            "MaxDuration": 20
+            "MaxDuration": 10
           }
         ]
       }

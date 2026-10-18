@@ -902,7 +902,7 @@ def build(key, root, joints, anims, seed, tex_w, model_doc, attacks, preview, pr
     for state in LOCOMOTION:
         sets.setdefault(state, anim_entry(idle))
     for state in ("Alerted", "Wake"):
-        sets.setdefault(state, anim_entry(idle, Looping=False))
+        sets.setdefault(state, anim_entry(idle))
     model_doc["AnimationSets"] = sets
     write_json(SERVER / "Models" / "Nakasar" / f"Nakasar_{key}.json", model_doc)
     write_json(SERVER / "Item" / "Animations" / "Nakasar" / f"Nakasar_{key}.json", item_animations(base, attacks))

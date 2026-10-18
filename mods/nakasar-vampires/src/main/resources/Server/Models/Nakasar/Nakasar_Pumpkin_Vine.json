@@ -161,16 +161,14 @@
     "Alerted": {
       "Animations": [
         {
-          "Animation": "NPC/Nakasar/Pumpkin_Vine/Animations/Idle.blockyanim",
-          "Looping": false
+          "Animation": "NPC/Nakasar/Pumpkin_Vine/Animations/Idle.blockyanim"
         }
       ]
     },
     "Wake": {
       "Animations": [
         {
-          "Animation": "NPC/Nakasar/Pumpkin_Vine/Animations/Idle.blockyanim",
-          "Looping": false
+          "Animation": "NPC/Nakasar/Pumpkin_Vine/Animations/Idle.blockyanim"
         }
       ]
     }
