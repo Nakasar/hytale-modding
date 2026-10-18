@@ -1,0 +1,59 @@
+{
+  "TranslationProperties": {
+    "Name": "nakasar_halloween.items.Nakasar_Purifying_Lantern.name"
+  },
+  "Icon": "Icons/Items/Nakasar/Halloween/Purifying_Lantern.png",
+  "Categories": [
+    "Blocks.Deco"
+  ],
+  "PlayerAnimationsId": "Block",
+  "BlockType": {
+    "Material": "Solid",
+    "DrawType": "Model",
+    "Opacity": "Transparent",
+    "CustomModel": "Blocks/Nakasar/Halloween/Purifying_Lantern.blockymodel",
+    "CustomModelTexture": [
+      {
+        "Texture": "BlockTextures/Nakasar/Halloween/Purifying_Lantern.png",
+        "Weight": 1
+      }
+    ],
+    "HitboxType": "Nakasar_Purifying_Lantern",
+    "VariantRotation": "None",
+    "Flags": {},
+    "Gathering": {
+      "Breaking": {
+        "GatherType": "Rocks"
+      }
+    },
+    "BlockParticleSetId": "Metal",
+    "BlockSoundSetId": "Metal",
+    "ParticleColor": "#c4deff",
+    "Support": {
+      "Down": [
+        {
+          "FaceType": "Full"
+        }
+      ]
+    },
+    "Light": {
+      "Color": "#eef"
+    },
+    "Particles": [
+      {
+        "SystemId": "Nakasar_Purifying_Flame",
+        "PositionOffset": {
+          "X": 0,
+          "Y": 0.3,
+          "Z": 0
+        }
+      }
+    ]
+  },
+  "Tags": {
+    "Type": [
+      "Deco"
+    ]
+  },
+  "ItemSoundSetId": "ISS_Items_Metal"
+}

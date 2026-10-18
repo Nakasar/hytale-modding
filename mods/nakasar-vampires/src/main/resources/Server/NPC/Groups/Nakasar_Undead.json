@@ -1,0 +1,19 @@
+{
+  "$Comment": "Morts-vivants repoussés par le feu purificateur (torches et lanternes blanches du camp des chasseurs de vampires, dev.nakasar.hytale.vampires.purifying) : vampires, zombies, squelettes et fantômes du mod, et les morts-vivants vanilla. Un id vanilla absent du jeu est seulement signalé dans le journal.",
+  "IncludeGroups": [
+    "Nakasar_Vampires",
+    "Nakasar_Domain_Undead",
+    "Nakasar_Ghosts"
+  ],
+  "IncludeRoles": [
+    "Skeleton",
+    "Skeleton_Archer",
+    "Skeleton_Soldier",
+    "Skeleton_Archmage",
+    "Skeleton_Elite",
+    "Zombie",
+    "Zombie_Aberrant",
+    "Ghoul",
+    "Wraith"
+  ]
+}

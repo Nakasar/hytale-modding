@@ -1,0 +1,34 @@
+{
+  "Shape": "Sphere",
+  "EmitOffset": {
+    "X": { "Min": 0, "Max": 0.06 },
+    "Y": { "Min": 0, "Max": 0.04 },
+    "Z": { "Min": 0, "Max": 0.06 }
+  },
+  "SpawnRate": { "Min": 14, "Max": 18 },
+  "MaxConcurrentParticles": 16,
+  "ParticleLifeSpan": { "Min": 0.5, "Max": 0.8 },
+  "InitialVelocity": {
+    "Yaw": { "Min": 0, "Max": 360 },
+    "Pitch": { "Min": 70, "Max": 90 },
+    "Speed": { "Min": 0.25, "Max": 0.45 }
+  },
+  "ParticleRotationInfluence": "Billboard",
+  "RenderMode": "BlendAdd",
+  "LightInfluence": 0,
+  "LinearFiltering": true,
+  "Particle": {
+    "Texture": "Particles/Textures/Nakasar/Purifying_Flame.png",
+    "SoftParticles": "Disable",
+    "InitialAnimationFrame": {
+      "Scale": { "X": { "Min": 0.18, "Max": 0.26 } },
+      "Color": "#ffffff",
+      "Opacity": 0.9
+    },
+    "Animation": {
+      "0": { "Scale": { "X": { "Min": 1, "Max": 1 } }, "Opacity": 0.9 },
+      "50": { "Color": "#cfe4ff" },
+      "100": { "Scale": { "X": { "Min": 0.2, "Max": 0.2 } }, "Opacity": 0 }
+    }
+  }
+}

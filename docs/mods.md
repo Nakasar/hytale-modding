@@ -237,7 +237,7 @@ Fragment d'Orbis ouvert depuis l'Ancienne passerelle vanilla (`Portal_Device`) a
 | `SpawnCrypt` | 1 | Crypte d'arrivée 11×11 fermée autour du portail de retour : porte au nord vers le manoir, rosace et vitraux, cercueils, gargouilles aux angles |
 | `Cemeteries/{Haunted,Spiders,Undead}` | 2 × 3 | Cimetière clos (~31×33) : chapelle à clocher (bancs, autel, lustre), caveaux, portail à lanterne, muret à grille et piliers, allées pavées, tombes variées (stèles, croix, obélisques, sarcophages, tombes ouvertes), arbres morts ; hanté (bougies, champignons luisants), araignées (toiles, cocons) ou morts-vivants (fosses à cercueil, ossements) |
 | `PumpkinFields/{Plain,Giant}` | 3 + 2 | Champ de citrouilles mûres (états de culture) clôturé de bois mort : allée à lanternes, épouvantails, charrette de récolte, meules de foin, cabane, arbre de pendu. Variante `Giant` (une fois sur deux) : clairière de terre pourrie de rayon 7 au centre (portée des attaques en cercle), bordée de ronces, de citrouilles entières et de citrouilles sculptées, avec le bloc d'apparition de la citrouille géante (élite immobile) |
-| `HunterCamps/{Tents,Lodge}` | 2 | Camp de chasseurs de vampires 25×25 clos d'une palissade de troncs, portail de bois au sud (les chasseurs ne sortent pas) : feu de camp et tabourets, trois tentes de cuir (ou un pavillon de rondins et une tente) au nord, atelier d'armes et armurerie à l'ouest, pas de tir (cibles, mannequins) à l'est, réserve ; six blocs d'apparition de chasseurs à moins de 9 blocs du centre |
+| `HunterCamps/{Tents,Lodge}` | 2 | Camp de chasseurs de vampires 25×25 clos d'une palissade de troncs, portail de bois au sud (les chasseurs ne sortent pas) : feu de camp et tabourets, trois tentes de cuir (ou un pavillon de rondins et une tente) au nord, atelier d'armes et armurerie à l'ouest, pas de tir (cibles, mannequins) à l'est, réserve ; 22 torches et lanternes de feu purificateur (sur un tronc de palissade sur six, poteaux et portail : tout l'enclos est à moins de 7 blocs d'un feu) ; six blocs d'apparition de chasseurs à moins de 9 blocs du centre |
 | `Trees` | 16 | Arbres morts en frêne, bois pétrifié ou calciné : squelette en troncs pleins comme les arbres du jeu (fût droit, pied 2×2 des grands, contreforts et racines, branches qui montent en escalier et se divisent), tubes fins au bout des rameaux, feuilles mortes de l'essence posées sur les branches, toiles et buissons pendants ; aucun bloc ne flotte (vérifié à la génération) ; 4 portent une lanterne, une cage ou une corde |
 | `Decor/*` | 6 × 3 + 5 | Affleurements rocheux (parfois des cristaux), troncs couchés, cercles de champignons luisants, autels, tas d'os, tombes isolées, nids d'araignées |
 
@@ -274,6 +274,10 @@ Blocs du pack (`tools/generate_assets.py`, modèle, texture, icône et définiti
 sur socle, NESW), `Nakasar_Iron_Railing` (grille à lances, `VariantRotation: Wall` comme les grilles
 en fer) et `Nakasar_Iron_Gate` (vantail de portail 1 × 2, NESW). Leurs modèles regardent vers +Z (le
 sud) à la rotation 0.
+`Nakasar_Purifying_Torch` (torche plantée, flamme blanche) et `Nakasar_Purifying_Lantern` (lanterne en fer sur
+poteau) : lumière `"Light": {"Color": "#eef"}` (format `#RGB`, un niveau 0 à F par canal, ou `#RRGGBB` divisé
+par 17 ; `Radius` facultatif), flamme en particules (`Particles` du `BlockType` : système
+`Nakasar_Purifying_Flame`, texture `Common/Particles/Textures/Nakasar/Purifying_Flame.png`).
 
 Blocs : tous les autres ids viennent de `tools/vanilla-block-ids-0.7.2.txt` ; `validateAssets` refuse un
 prefab ou un matériau de génération qui en utilise un autre (en jeu, un id inconnu devient le bloc
@@ -358,6 +362,24 @@ Les boss réutilisent les interactions et particules des runes.
   `_Zombie_Abomination`, `_Guard_Captain`, `_Giant_Pumpkin` (30 min), `Nakasar_Spider` (araignée ou araignée des
   cavernes, vanilla) et `Nakasar_Vampire_Hunter` (un chasseur tiré au hasard : arbalète 4, tromblon 3, épée 3 ;
   20 min).
+
+## Feu purificateur
+
+Java, `purifying/PurifyingFireSystem` (`DelayedEntitySystem`, 4 fois par seconde, PNJ seulement), pour un PNJ du
+groupe `Nakasar_Undead` (vampires, zombies, squelettes et fantômes du mod, squelettes, zombies, goules et spectres
+vanilla) près d'une torche ou d'une lanterne de feu purificateur (distances horizontales, 5 blocs en hauteur) :
+
+- à moins de 11 blocs d'un feu, il oublie à chaque passage les cibles qui se tiennent à moins de 9 blocs d'un feu
+  quelconque : il s'arrête avant d'entrer dans le rayon au lieu de rebondir contre ;
+- à moins de 7 blocs, il est repoussé (`KnockbackComponent`, vitesse posée, comme `/knockback apply`) selon la somme
+  des répulsions de tous les feux proches, sans écraser un recul déjà en attente (coup de chasseur), avec une levée
+  seulement s'il n'est pas déjà au-dessus du feu (les fantômes ne montent pas) ;
+- s'il reste plus de 2 s dans ce rayon (enfermé dans le camp, dominé qui suit le joueur), le feu le brûle : 6 dégâts
+  de cause `Fire` par seconde jusqu'à ce qu'il sorte ou meure.
+
+Recherche des blocs : sections de blocs chargées (`BlockSection.contains` puis `find`), comme la prison du Capitaine.
+Le rayon de 7 est aussi `PURIFY_RADIUS` dans `tools/generate_prefabs.py`, qui vérifie que chaque case du camp est
+couverte. Les morts-vivants à distance (archers, mages) peuvent encore tirer dans le camp depuis l'extérieur.
 
 ## Camps et Domination
 
