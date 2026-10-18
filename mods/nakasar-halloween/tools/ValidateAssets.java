@@ -165,6 +165,9 @@ public class ValidateAssets {
         Codec<?> codec = (Codec<?>) assetClass.getField("CODEC").get(null);
         ExtraInfo extraInfo = newExtraInfo(assetClass, file);
         String json = Files.readString(file);
+        if (json.contains("\"GradientSet\"")) {
+            json = checkGradients(json, problems, notes);
+        }
         try {
             decode(codec, RawJsonReader.fromJsonString(json), extraInfo, "", problems, notes);
         } catch (Throwable t) {
@@ -190,6 +193,48 @@ public class ValidateAssets {
         }
     }
 
+
+    /**
+     * Le validateur de GradientSet lit le CosmeticsModule, qui n'existe que dans un serveur démarré : on vérifie
+     * les couples (GradientSet, GradientId) contre la liste vanilla passée en -Dgradients, puis on décode le JSON
+     * sans ces clés.
+     */
+    private static String checkGradients(String json, List<String> problems, List<String> notes) throws Exception {
+        String list = System.getProperty("gradients");
+        Map<String, List<String>> known = new HashMap<>();
+        if (list != null) {
+            for (String line : Files.readAllLines(Path.of(list))) {
+                String[] parts = line.trim().split("\\s+");
+                if (parts.length == 2 && !line.startsWith("#")) {
+                    known.computeIfAbsent(parts[0], k -> new ArrayList<>()).add(parts[1]);
+                }
+            }
+        } else {
+            notes.add("dégradés non vérifiés (pas de -Dgradients)");
+        }
+        BsonDocument document = BsonDocument.parse(json);
+        stripGradients(document, known, list != null, problems);
+        return document.toJson();
+    }
+
+    private static void stripGradients(BsonValue value, Map<String, List<String>> known, boolean check, List<String> problems) {
+        if (value.isArray()) {
+            value.asArray().forEach(v -> stripGradients(v, known, check, problems));
+        } else if (value.isDocument()) {
+            BsonDocument document = value.asDocument();
+            if (document.containsKey("GradientSet")) {
+                String set = document.getString("GradientSet").getValue();
+                String id = document.containsKey("GradientId") ? document.getString("GradientId").getValue() : null;
+                if (check && !known.containsKey(set)) {
+                    problems.add("GradientSet inconnu : " + set);
+                } else if (check && id != null && !known.get(set).contains(id)) {
+                    problems.add("GradientId inconnu dans " + set + " : " + id);
+                }
+                document.remove("GradientSet");
+            }
+            document.values().forEach(v -> stripGradients(v, known, check, problems));
+        }
+    }
 
     /**
      * Décode un asset (les validateurs des champs tournent pendant le décodage), puis les assets écrits en ligne

@@ -1,5 +1,6 @@
 npc.Vampire_Count.name = Comte Vampire
+npc.Vampire_Countess.name = Comtesse Vampire
 npc.Vampire_Spawn.name = Rejeton de vampire
 npc.Ghost.name = Fantôme
-items.Nakasar_Spawner_Vampire_Count.name = Marqueur : Comte Vampire
+items.Nakasar_Spawner_Vampire_Count.name = Marqueur : Comte ou Comtesse Vampire
 items.Nakasar_Spawner_Vampire_Spawn.name = Marqueur : rejeton de vampire

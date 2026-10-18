@@ -57,14 +57,16 @@ val validateAssets = tasks.register<Exec>("validateAssets") {
     description = "Valide les assets du mod Mobs avec les codecs du serveur Hytale."
     val launcher = javaToolchains.launcherFor { languageVersion.set(JavaLanguageVersion.of(25)) }
     val tool = project(":mods:nakasar-halloween").file("tools/ValidateAssets.java")
+    val gradients = file("tools/vanilla-gradient-sets-0.7.2.txt")
     inputs.dir("src/main/resources/Server")
     inputs.file(tool)
+    inputs.file(gradients)
     inputs.files(hytaleServer)
     val marker = layout.buildDirectory.file("validateAssets.ok")
     outputs.file(marker)
     doFirst {
         executable = launcher.get().executablePath.asFile.absolutePath
-        args("-Dstdout.encoding=UTF-8", "-cp", hytaleServer.asPath, tool.absolutePath,
+        args("-Dstdout.encoding=UTF-8", "-Dgradients=" + gradients.absolutePath, "-cp", hytaleServer.asPath, tool.absolutePath,
             file("src/main/resources/Server").absolutePath)
     }
     doLast {

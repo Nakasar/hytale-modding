@@ -7,7 +7,7 @@ Mods pour **Hytale** (serveur `0.7.x`, « Update 7 »), développés par Nakasar
 | `mods/nakasar-runes` | plugin Java + pack d'assets | `Nakasar-Runes-<version>.jar` | 4 runes d'abilities (Baiser du Vampire, Domination, Téléportation, Chaînes spectrales) et l'autel sacrificiel qui les fabrique |
 | `mods/nakasar-spear` | pack d'assets pur | `Nakasar-Spear-<version>.zip` | Lance de fer à deux mains : enchaînement, coup chargé, compétence ultime |
 | `mods/nakasar-halloween` | pack d'assets pur | `Nakasar-Halloween-<version>.zip` | Fragment d'Orbis « Halloween » ouvert depuis l'Ancienne passerelle : cryptes, châteaux hantés, château du comte vampire, cimetières, champs de citrouilles ; à installer avec `nakasar-mobs` et `nakasar-runes` |
-| `mods/nakasar-mobs` | plugin Java + pack d'assets | `Nakasar-Mobs-<version>.jar` | Comte Vampire (boss qui lance les sorts des runes), rejetons de vampire, fantômes ; à installer avec `nakasar-runes` |
+| `mods/nakasar-mobs` | plugin Java + pack d'assets | `Nakasar-Mobs-<version>.jar` | Comte et Comtesse Vampire (boss qui lancent les sorts des runes), rejetons de vampire, fantômes ; à installer avec `nakasar-runes` |
 
 Le détail de chaque mod (fichiers, chaînes d'interactions, réglages) est dans [docs/mods.md](docs/mods.md).
 Les points d'API serveur vérifiés dans le jar `Server-0.7.2` sont notés dans [docs/api-0.7.2.md](docs/api-0.7.2.md).
@@ -100,10 +100,11 @@ Fragment Halloween :
 /instances spawn Nakasar_Halloween_Fragment   # ou ouvrir l'instance directement, sans portail
 ```
 
-Mobs (le château du comte, dans le fragment, contient déjà le comte et deux rejetons dans sa crypte) :
+Mobs (le château du comte, dans le fragment, contient déjà le Comte ou la Comtesse, une chance sur deux, et deux rejetons dans sa crypte) :
 
 ```text
 /npc spawn Nakasar_Vampire_Count     # le boss
+/npc spawn Nakasar_Vampire_Countess  # la boss
 /npc spawn Nakasar_Vampire_Spawn     # un rejeton
 /npc spawn Nakasar_Ghost             # un fantôme
 /give Nakasar_Spawner_Vampire_Count  # bloc invisible qui fait (ré)apparaître le comte là où il est posé
@@ -190,16 +191,19 @@ Fragment Halloween :
 
 Mobs (`mods/nakasar-mobs`, voir [docs/npc-0.7.2.md](docs/npc-0.7.2.md)) :
 
-- **Apparence** : les trois modèles héritent provisoirement de modèles vanilla (`Skeleton` pour le comte,
-  `Ghoul` pour le rejeton, `Wraith` pour le fantôme). Si l'un n'existe pas, le PNJ n'apparaît pas et le
-  journal nomme le modèle : corriger `Parent` dans `Server/Models/Nakasar/*.json`.
+- **Apparence** : le Comte, la Comtesse et le rejeton sont des humanoïdes sur le squelette du joueur
+  (vêtements du créateur de personnage recolorés, peau blafarde, yeux rouges) avec un col victorien dédié
+  généré par `mods/nakasar-mobs/tools/generate_vampire_models.py`. À vérifier : place et orientation du
+  col, couleurs des vêtements. Le fantôme reste sur le modèle vanilla `Wraith`.
+- **Icônes d'effets** : Domination, Chaînes spectrales et Toucher glacial ont une icône dédiée
+  (`Common/UI/StatusEffects/Nakasar/`) ; elle doit remplacer la croix rouge.
 - **Attaques** : les animations (`SwingRight`, `SwingDown`) et le visé des sorts à distance (sélecteur
   `Stab` en ligne droite depuis le regard du PNJ, joueurs seulement) sont à confirmer.
 - **Domination** : quand le comte vous fixe (teinte violette), vos coups ne doivent plus le blesser
   pendant 6 s ; ceux des autres joueurs, si.
 - **Téléportation** : le comte et les fantômes doivent réapparaître face à leur cible.
 - **Marqueurs du château** : le bloc invisible `Nakasar_Spawner_*` (composant `SpawnMarkerBlock`) n'a pas
-  pu être décodé hors jeu. Si le comte n'apparaît pas au château, le poser à la main avec `/give`.
+  pu être décodé hors jeu. Si le boss n'apparaît pas au château, le poser à la main avec `/give`.
 - **Densité** : poids des fantômes et rejetons dans l'environnement hanté à régler à l'œil.
 
 ## Organisation du dépôt

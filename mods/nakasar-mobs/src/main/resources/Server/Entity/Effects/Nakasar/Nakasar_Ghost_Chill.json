@@ -3,6 +3,7 @@
   "Duration": 3,
   "OverlapBehavior": "Overwrite",
   "Debuff": true,
+  "StatusEffectIcon": "UI/StatusEffects/Nakasar/Ghost_Chill.png",
   "ApplicationEffects": {
     "EntityTopTint": "#d8f4ff",
     "EntityBottomTint": "#6fb7ff",

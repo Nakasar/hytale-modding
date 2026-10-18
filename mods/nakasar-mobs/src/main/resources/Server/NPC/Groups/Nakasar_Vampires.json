@@ -1,4 +1,4 @@
 {
-  "$Comment": "Le comte et ses rejetons ne se blessent pas entre eux (DisableDamageGroups).",
-  "IncludeRoles": ["Nakasar_Vampire_Count", "Nakasar_Vampire_Spawn"]
+  "$Comment": "Le comte, la comtesse et leurs rejetons ne se blessent pas entre eux (DisableDamageGroups).",
+  "IncludeRoles": ["Nakasar_Vampire_Count", "Nakasar_Vampire_Countess", "Nakasar_Vampire_Spawn"]
 }

@@ -1,5 +1,5 @@
 {
-  "$Comment": "Fantôme : modèle vanilla (id à confirmer), lueur bleu pâle.",
+  "$Comment": "Fantôme : modèle vanilla Wraith, lueur bleu pâle.",
   "Parent": "Wraith",
   "MinScale": 0.95,
   "MaxScale": 1.1,
