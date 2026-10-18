@@ -9,7 +9,7 @@ Génère les pièces de modèle propres aux vampires et les icônes d'effets :
 - Common/UI/StatusEffects/Nakasar/*.png : icônes des effets (Domination du comte, toucher glacial du fantôme),
   et dans le mod Runes celles de la rune de Domination et des Chaînes spectrales.
 
-Les cols sont des pièces attachées à l'os « Chest » du squelette du joueur (Player_With_Face) : elles suivent
+Les cols sont des pièces attachées à l'os « Chest » du squelette du joueur (Player) : elles suivent
 ses animations, comme les capes vanilla (même repère que Cosmetics/Capes/Cape_King.blockymodel).
 
 Usage : python3 mods/nakasar-mobs/tools/generate_vampire_models.py
