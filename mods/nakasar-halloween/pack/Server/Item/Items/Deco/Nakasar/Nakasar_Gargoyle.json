@@ -1,0 +1,46 @@
+{
+  "TranslationProperties": {
+    "Name": "nakasar_halloween.items.Nakasar_Gargoyle.name"
+  },
+  "Icon": "Icons/Items/Nakasar/Halloween/Gargoyle.png",
+  "Categories": [
+    "Blocks.Deco"
+  ],
+  "PlayerAnimationsId": "Block",
+  "BlockType": {
+    "Material": "Solid",
+    "DrawType": "Model",
+    "Opacity": "Transparent",
+    "CustomModel": "Blocks/Nakasar/Halloween/Gargoyle.blockymodel",
+    "CustomModelTexture": [
+      {
+        "Texture": "BlockTextures/Nakasar/Halloween/Gargoyle.png",
+        "Weight": 1
+      }
+    ],
+    "HitboxType": "Statue_Small",
+    "VariantRotation": "NESW",
+    "Flags": {},
+    "Gathering": {
+      "Breaking": {
+        "GatherType": "Rocks"
+      }
+    },
+    "BlockParticleSetId": "Stone",
+    "BlockSoundSetId": "Stone",
+    "ParticleColor": "#68646a",
+    "Support": {
+      "Down": [
+        {
+          "FaceType": "Full"
+        }
+      ]
+    }
+  },
+  "Tags": {
+    "Type": [
+      "Deco"
+    ]
+  },
+  "ItemSoundSetId": "ISS_Blocks_Stone"
+}

@@ -127,8 +127,8 @@ Fragment d'Orbis ouvert depuis l'Ancienne passerelle vanilla (`Portal_Device`) a
 ### Génération (`tools/generate_worldgen.py`)
 
 - **Forme** : île flottante au-dessus du vide, comme les fragments du jeu de base. Rayon
-  `ISLAND_RADIUS` = 170 (bord réel vers 160-168 blocs du centre) : le sol s'abaisse de 8 blocs à partir
-  de 148 blocs puis finit en falaise d'une dizaine de blocs, au contour dentelé par un bruit (`Rim`) ;
+  `ISLAND_RADIUS` = 340 (bord réel vers 320-338 blocs du centre) : le sol s'abaisse de 8 blocs à partir
+  de 296 blocs puis finit en falaise d'une dizaine de blocs, au contour dentelé par un bruit (`Rim`) ;
   le dessous est un cône de roche bosselé (jusqu'à y ≈ 17 au centre). Densité du terrain =
   `Min(dessus, dessous)`, la distance au centre venant d'un nœud `Axis` (axe Y).
 - **Terrain** : collines autour de y = 81 (deux bruits simplex, sol entre y ≈ 65 et 91), herbe brûlée
@@ -136,27 +136,34 @@ Fragment d'Orbis ouvert depuis l'Ancienne passerelle vanilla (`Portal_Device`) a
   sur un bruit), puis terre, gravier et pierre / ardoise / schiste.
 - **Aplanissement** : les positions des structures sont exportées (`ExportAs`) et réutilisées par le
   terrain : le relief tombe à zéro dans un rayon de 24 blocs (plein relief à 40) autour de chaque
-  structure, pour qu'elle repose à plat sans aplatir toute l'île.
+  structure, pour qu'elle repose à plat sans aplatir toute l'île ; autour du manoir, plat jusqu'à
+  38 blocs (plein relief à 58).
 - **Structures aléatoires** : une maille de 66 blocs (jitter 0,15) tire une structure par cellule,
-  à moins de 116 blocs du centre, à plus de 45 blocs du point d'apparition et de 64 blocs du château
-  du comte (7 à 9 structures par instance d'après une simulation hors jeu). Poids : crypte 3, champ de
+  à moins de 232 blocs du centre, à plus de 45 blocs du point d'apparition et de 72 blocs du manoir
+  du comte (environ quatre fois plus de structures qu'avec l'île de rayon 170, qui en avait 7 à 9). Poids : crypte 3, champ de
   citrouilles 3, château hanté 2, cimetière hanté / araignées / morts-vivants 1,5 chacun.
-- **Château du comte** : toujours à 110 blocs au nord du point d'apparition (objectif du portail).
+- **Manoir du comte** : toujours à 220 blocs au nord du point d'apparition (objectif du portail).
+- **Arrivée** : `PortalTypes/Nakasar_Halloween` fixe le point d'apparition (`Spawn.SpawnProviderOverride`,
+  fournisseur `Global`) en 0,5 / 81 / 0,5 ; sans lui, le jeu tire un point au hasard dans le tronçon
+  (x et z entre 2 et 13). Le portail de retour y apparaît (le jeu vide 3 × 3 × 3 blocs autour), au
+  centre de la crypte d'arrivée (`SpawnCrypt`) posée au même endroit.
 - **Décor** : arbres morts et pendus, plus les arbres du jeu : calcinés, en feu, frênes morts et tordus, pétrifiés, arbre-nid d'araignées (`VANILLA_TREES`) (maille de 13) ; affleurements rocheux, troncs couchés, cercles
   de champignons luisants, tas d'os, tombes isolées, nids d'araignées, citrouilles et autels au bord
   du chemin (maille de 21) ; plantes mortes, racines, champignons luisants et citrouilles (maille de
-  3). Arbres et décor restent à moins de 158 blocs du centre pour ne pas dépasser du bord.
+  3). Arbres et décor restent à moins de 306 blocs du centre pour ne pas dépasser du bord, et hors
+  du domaine du manoir.
 - **Chemins des prefabs** : relatifs à `Server/Prefabs/` (`Nakasar/Halloween/Crypts`), pas à `Server/`.
 - **Environnements** : `Nakasar_Env_Halloween_Haunted` à moins de 45 blocs d'une structure (PNJ plus
   dangereux, densité plus forte), `Nakasar_Env_Halloween` ailleurs.
 
-### Prefabs (`tools/generate_prefabs.py`, 57 fichiers)
+### Prefabs (`tools/generate_prefabs.py`, 58 fichiers)
 
 | Dossier | Nombre | Contenu |
 |---------|--------|---------|
 | `Crypts` | 3 | Mausolée (pierre, ardoise, schiste) et salle funéraire enterrée : cercueils, braseros, ossements, cristaux, toiles |
 | `HauntedCastles` | 2 | Château en ruine 33×33 (pierre ou ardoise) : tours, courtines, donjon (table, lustre, chambre), puits |
-| `DraculaCastle` | 1 | Château du comte 41×41 en basalte : flèches, salle du trône au tapis rouge, crypte sous le donjon, roseraie de sang, pendus |
+| `VampireManor` | 1 | Manoir gothique du comte, domaine 57×51 clos d'une grille à lances (portail en fer forgé entre deux piliers à gargouille). Corps de logis en basalte à étage, toits d'ardoise à 45°, deux ailes à pignon, tour-porche à rosace et flèche, tour d'angle, vitraux en ogive, gargouilles. Rez-de-chaussée : hall à piliers et tapis rouge jusqu'au trône (marqueur Comte / Comtesse), cheminées, salle à manger, bibliothèque, escalier ; étage : chambre du comte, boudoir de la comtesse, galerie de tableaux, balcon ; crypte des rejetons sous le hall ; jardin (allée à lanternes, roses de sang, tombes de famille, mausolée, pendus) |
+| `SpawnCrypt` | 1 | Crypte d'arrivée 11×11 fermée autour du portail de retour : porte au nord vers le manoir, rosace et vitraux, cercueils, gargouilles aux angles |
 | `Cemeteries/{Haunted,Spiders,Undead}` | 2 × 3 | Cimetière clos (~31×33) : chapelle à clocher (bancs, autel, lustre), caveaux, portail à lanterne, muret à grille et piliers, allées pavées, tombes variées (stèles, croix, obélisques, sarcophages, tombes ouvertes), arbres morts ; hanté (bougies, citrouilles, champignons luisants), araignées (toiles, cocons) ou morts-vivants (fosses à cercueil, ossements) |
 | `PumpkinFields` | 3 | Champ de citrouilles mûres (états de culture) clôturé de bois mort : allée à lanternes, épouvantails, charrette de récolte, meules de foin, cabane, arbre de pendu |
 | `Trees` | 16 | Arbres morts en frêne, bois pétrifié ou calciné : squelette en troncs pleins comme les arbres du jeu (fût droit, pied 2×2 des grands, contreforts et racines, branches qui montent en escalier et se divisent), tubes fins au bout des rameaux, feuilles mortes de l'essence posées sur les branches, toiles et buissons pendants ; aucun bloc ne flotte (vérifié à la génération) ; 4 portent une lanterne, une cage ou une corde |
@@ -164,11 +171,17 @@ Fragment d'Orbis ouvert depuis l'Ancienne passerelle vanilla (`Portal_Device`) a
 
 Les ruines (châteaux hantés, mausolées, chapelles) sont écroulées à la génération, de façon
 déterministe : plus on monte, plus il manque de blocs, puis tout bloc qui ne repose plus sur le sol
-(contact par une face) est retiré, pour qu'aucun pan de mur ne lévite. Le château du comte est
+(contact par une face) est retiré, pour qu'aucun pan de mur ne lévite. Le manoir du comte est
 habité, donc intact ; les murets et grilles des cimetières et les clôtures restent entiers.
 `floating_blocks` vérifie qu'aucun prefab ne contient de bloc flottant.
 
-Blocs : tous les ids viennent de `tools/vanilla-block-ids-0.7.2.txt` ; `validateAssets` refuse un
+Blocs du pack (`tools/generate_assets.py`, modèle, texture, icône et définition générés) :
+`Nakasar_Stained_Glass_Red` / `_Violet` (vitraux, cubes translucides), `Nakasar_Gargoyle` (gargouille
+sur socle, NESW), `Nakasar_Iron_Railing` (grille à lances, `VariantRotation: Wall` comme les grilles
+en fer) et `Nakasar_Iron_Gate` (vantail de portail 1 × 2, NESW). Leurs modèles regardent vers +Z (le
+sud) à la rotation 0.
+
+Blocs : tous les autres ids viennent de `tools/vanilla-block-ids-0.7.2.txt` ; `validateAssets` refuse un
 prefab ou un matériau de génération qui en utilise un autre (en jeu, un id inconnu devient le bloc
 « Unknown », un damier rose et noir). Un état de bloc s'écrit `*<Bloc>_State_Definitions_<État>` (clé
 générée par `StateData`), par exemple `*Plant_Crop_Pumpkin_Block_State_Definitions_StageFinal`. Les
@@ -185,7 +198,7 @@ rotation 0 pour une ligne est-ouest (le long de X), 1 pour une ligne nord-sud (l
   zombies aberrants, araignées des cavernes, élites et loups-garous (rares).
 - Mobs de `nakasar-mobs` (dépendance optionnelle, mais sans lui ces apparitions échouent) : fantômes à toute heure et rejetons de vampire la nuit
   (`Nakasar_Halloween_Ghosts`, `Nakasar_Halloween_Vampire_Spawns_Dusk` / `_Dawn`, environnement hanté), et
-  marqueurs d'apparition dans le château du comte (le Comte ou la Comtesse devant le trône, une chance sur deux, deux rejetons dans la crypte).
+  marqueurs d'apparition dans le manoir du comte (le Comte ou la Comtesse devant le trône, une chance sur deux, deux rejetons dans la crypte).
 
 ## nakasar-mobs (plugin Java + assets)
 

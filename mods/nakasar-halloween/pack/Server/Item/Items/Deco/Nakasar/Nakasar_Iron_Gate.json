@@ -1,0 +1,39 @@
+{
+  "TranslationProperties": {
+    "Name": "nakasar_halloween.items.Nakasar_Iron_Gate.name"
+  },
+  "Icon": "Icons/Items/Nakasar/Halloween/Iron_Gate.png",
+  "Categories": [
+    "Blocks.Deco"
+  ],
+  "PlayerAnimationsId": "Block",
+  "BlockType": {
+    "Material": "Solid",
+    "DrawType": "Model",
+    "Opacity": "Transparent",
+    "CustomModel": "Blocks/Nakasar/Halloween/Iron_Gate.blockymodel",
+    "CustomModelTexture": [
+      {
+        "Texture": "BlockTextures/Nakasar/Halloween/Iron_Gate.png",
+        "Weight": 1
+      }
+    ],
+    "HitboxType": "Nakasar_Iron_Gate",
+    "VariantRotation": "NESW",
+    "Flags": {},
+    "Gathering": {
+      "Breaking": {
+        "GatherType": "Rocks"
+      }
+    },
+    "BlockParticleSetId": "Metal",
+    "BlockSoundSetId": "Metal",
+    "ParticleColor": "#343238"
+  },
+  "Tags": {
+    "Type": [
+      "Deco"
+    ]
+  },
+  "ItemSoundSetId": "ISS_Items_Metal"
+}

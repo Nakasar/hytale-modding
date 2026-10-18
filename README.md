@@ -6,7 +6,7 @@ Mods pour **Hytale** (serveur `0.7.x`, « Update 7 »), développés par Nakasar
 |-----|------|----------|---------|
 | `mods/nakasar-runes` | plugin Java + pack d'assets | `Nakasar-Runes-<version>.jar` | 4 runes d'abilities (Baiser du Vampire, Domination, Téléportation, Chaînes spectrales) et l'autel sacrificiel qui les fabrique |
 | `mods/nakasar-spear` | pack d'assets pur | `Nakasar-Spear-<version>.zip` | Lance de fer à deux mains : enchaînement, coup chargé, compétence ultime |
-| `mods/nakasar-halloween` | pack d'assets pur | `Nakasar-Halloween-<version>.zip` | Fragment d'Orbis « Halloween » ouvert depuis l'Ancienne passerelle : cryptes, châteaux hantés, château du comte vampire, cimetières, champs de citrouilles ; à installer avec `nakasar-mobs` et `nakasar-runes` |
+| `mods/nakasar-halloween` | pack d'assets pur | `Nakasar-Halloween-<version>.zip` | Fragment d'Orbis « Halloween » ouvert depuis l'Ancienne passerelle : cryptes, châteaux hantés, manoir gothique du comte vampire, cimetières, champs de citrouilles ; à installer avec `nakasar-mobs` et `nakasar-runes` |
 | `mods/nakasar-mobs` | plugin Java + pack d'assets | `Nakasar-Mobs-<version>.jar` | Comte et Comtesse Vampire (boss qui lancent les sorts des runes), rejetons de vampire, fantômes ; à installer avec `nakasar-runes` |
 
 Le détail de chaque mod (fichiers, chaînes d'interactions, réglages) est dans [docs/mods.md](docs/mods.md).
@@ -100,7 +100,7 @@ Fragment Halloween :
 /instances spawn Nakasar_Halloween_Fragment   # ou ouvrir l'instance directement, sans portail
 ```
 
-Mobs (le château du comte, dans le fragment, contient déjà le Comte ou la Comtesse, une chance sur deux, et deux rejetons dans sa crypte) :
+Mobs (le manoir du comte, dans le fragment, contient déjà le Comte ou la Comtesse, une chance sur deux, et deux rejetons dans sa crypte) :
 
 ```text
 /npc spawn Nakasar_Vampire_Count     # le boss
@@ -184,6 +184,11 @@ Fragment Halloween :
   morts et tordus, pétrifiés, arbre-nid d'araignées), dossiers lus dans Assets.zip 0.7.2 et listés
   dans `VANILLA_TREES` (`generate_worldgen.py`). Un dossier renommé par une mise à jour ne place
   plus rien, sans erreur : vérifier cette liste après chaque mise à jour du jeu. Les châteaux et cryptes sont posés à plat grâce à un terrain aplani autour des structures.
+- **Manoir et crypte d'arrivée** : les blocs générés par `tools/generate_assets.py` (vitraux,
+  gargouille, grille à lances, vantail de portail) sont à vérifier en jeu : transparence des vitraux,
+  sens des gargouilles (elles doivent regarder vers l'extérieur : sinon, corriger `FACING` dans
+  `generate_prefabs.py`), grille alignée avec le muret, vantaux ouverts. On doit apparaître au centre
+  de la crypte, portail de retour compris, la porte donnant au nord vers le manoir.
 - **Liste des blocs** : `tools/vanilla-block-ids-0.7.2.txt` vient des fichiers du jeu publiés par
   hytale.isaacguru.com (ids d'objets qui ont un `BlockType`, états compris). Si un bloc récent manque,
   l'ajouter à la main ; si un bloc de la liste s'affiche en damier rose, le signaler pour l'en retirer.
@@ -202,8 +207,8 @@ Mobs (`mods/nakasar-mobs`, voir [docs/npc-0.7.2.md](docs/npc-0.7.2.md)) :
 - **Domination** : quand le comte vous fixe (teinte violette), vos coups ne doivent plus le blesser
   pendant 6 s ; ceux des autres joueurs, si.
 - **Téléportation** : le comte et les fantômes doivent réapparaître face à leur cible.
-- **Marqueurs du château** : le bloc invisible `Nakasar_Spawner_*` (composant `SpawnMarkerBlock`) n'a pas
-  pu être décodé hors jeu. Si le boss n'apparaît pas au château, le poser à la main avec `/give`.
+- **Marqueurs du manoir** : le bloc invisible `Nakasar_Spawner_*` (composant `SpawnMarkerBlock`) n'a pas
+  pu être décodé hors jeu. Si le boss n'apparaît pas au manoir, le poser à la main avec `/give`.
 - **Densité** : poids des fantômes et rejetons dans l'environnement hanté à régler à l'œil.
 
 ## Organisation du dépôt

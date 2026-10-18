@@ -14,7 +14,7 @@
           {
             "X": 0,
             "Y": 81,
-            "Z": -110
+            "Z": -220
           }
         ],
         "ExportAs": "Nakasar_Halloween_Landmark_Positions"
@@ -108,44 +108,86 @@
                   ]
                 },
                 {
-                  "Type": "PositionsCellNoise",
-                  "Positions": {
-                    "Type": "Union",
-                    "Positions": [
-                      {
-                        "Type": "Imported",
-                        "Name": "Nakasar_Halloween_Structure_Positions"
+                  "Type": "Min",
+                  "Inputs": [
+                    {
+                      "Type": "PositionsCellNoise",
+                      "Positions": {
+                        "Type": "Union",
+                        "Positions": [
+                          {
+                            "Type": "Imported",
+                            "Name": "Nakasar_Halloween_Structure_Positions"
+                          },
+                          {
+                            "Type": "Imported",
+                            "Name": "Nakasar_Halloween_Landmark_Positions"
+                          }
+                        ]
                       },
-                      {
-                        "Type": "Imported",
-                        "Name": "Nakasar_Halloween_Landmark_Positions"
-                      }
-                    ]
-                  },
-                  "ReturnType": {
-                    "Type": "Curve",
-                    "Curve": {
-                      "Type": "Manual",
-                      "Points": [
-                        {
-                          "In": 0,
-                          "Out": 0
-                        },
-                        {
-                          "In": 24,
-                          "Out": 0
-                        },
-                        {
-                          "In": 40,
-                          "Out": 1
+                      "ReturnType": {
+                        "Type": "Curve",
+                        "Curve": {
+                          "Type": "Manual",
+                          "Points": [
+                            {
+                              "In": 0,
+                              "Out": 0
+                            },
+                            {
+                              "In": 24,
+                              "Out": 0
+                            },
+                            {
+                              "In": 40,
+                              "Out": 1
+                            }
+                          ]
                         }
-                      ]
+                      },
+                      "DistanceFunction": {
+                        "Type": "Euclidean"
+                      },
+                      "MaxDistance": 42.0
+                    },
+                    {
+                      "Type": "PositionsCellNoise",
+                      "Positions": {
+                        "Type": "List",
+                        "Positions": [
+                          {
+                            "X": 0,
+                            "Y": 81,
+                            "Z": -220
+                          }
+                        ]
+                      },
+                      "ReturnType": {
+                        "Type": "Curve",
+                        "Curve": {
+                          "Type": "Manual",
+                          "Points": [
+                            {
+                              "In": 0,
+                              "Out": 0
+                            },
+                            {
+                              "In": 38.0,
+                              "Out": 0
+                            },
+                            {
+                              "In": 58.0,
+                              "Out": 1
+                            }
+                          ]
+                        }
+                      },
+                      "DistanceFunction": {
+                        "Type": "Euclidean"
+                      },
+                      "MaxDistance": 60.0
                     }
-                  },
-                  "DistanceFunction": {
-                    "Type": "Euclidean"
-                  },
-                  "MaxDistance": 42.0
+                  ]
                 }
               ]
             },
@@ -165,11 +207,11 @@
                     "Out": 0
                   },
                   {
-                    "In": 148.0,
+                    "In": 296.0,
                     "Out": 0
                   },
                   {
-                    "In": 170.0,
+                    "In": 340.0,
                     "Out": -1.0
                   }
                 ]
@@ -208,27 +250,27 @@
                     "Out": -2.125
                   },
                   {
-                    "In": 68.0,
+                    "In": 136.0,
                     "Out": -3.625
                   },
                   {
-                    "In": 118.99999999999999,
+                    "In": 237.99999999999997,
                     "Out": -5.375
                   },
                   {
-                    "In": 149.6,
+                    "In": 299.2,
                     "Out": -6.625
                   },
                   {
-                    "In": 164.9,
+                    "In": 329.8,
                     "Out": -7.875
                   },
                   {
-                    "In": 170.0,
+                    "In": 340.0,
                     "Out": -8.625
                   },
                   {
-                    "In": 171.0,
+                    "In": 341.0,
                     "Out": -35.125
                   }
                 ]
@@ -278,11 +320,11 @@
                         "Out": 0
                       },
                       {
-                        "In": 130.0,
+                        "In": 300.0,
                         "Out": 0
                       },
                       {
-                        "In": 165.0,
+                        "In": 335.0,
                         "Out": 1.8
                       }
                     ]
@@ -519,8 +561,8 @@
                     "Out": 0
                   },
                   {
-                    "In": 170.0,
-                    "Out": 170.0
+                    "In": 340.0,
+                    "Out": 340.0
                   }
                 ]
               }
@@ -528,7 +570,7 @@
             "Delimiters": [
               {
                 "Min": 0.0,
-                "Max": 116.0
+                "Max": 232.0
               }
             ],
             "Positions": {
@@ -582,7 +624,7 @@
                       {
                         "X": 0,
                         "Y": 81,
-                        "Z": -110
+                        "Z": -220
                       }
                     ]
                   },
@@ -596,8 +638,8 @@
                           "Out": 0
                         },
                         {
-                          "In": 65.0,
-                          "Out": 65.0
+                          "In": 73.0,
+                          "Out": 73.0
                         }
                       ]
                     }
@@ -605,11 +647,11 @@
                   "DistanceFunction": {
                     "Type": "Euclidean"
                   },
-                  "MaxDistance": 65.0
+                  "MaxDistance": 73.0
                 },
                 "Delimiters": [
                   {
-                    "Min": 64.0,
+                    "Min": 72.0,
                     "Max": 1000000000.0
                   }
                 ],
@@ -977,7 +1019,7 @@
               {
                 "X": 0,
                 "Y": 81,
-                "Z": -110
+                "Z": -220
               }
             ]
           }
@@ -1021,7 +1063,74 @@
               "Type": "Prefab",
               "WeightedPrefabPaths": [
                 {
-                  "Path": "Nakasar/Halloween/DraculaCastle",
+                  "Path": "Nakasar/Halloween/VampireManor",
+                  "Weight": 1.0
+                }
+              ]
+            }
+          }
+        }
+      }
+    },
+    {
+      "Runtime": 0,
+      "ContextPrecision": "Prop",
+      "PropDistribution": {
+        "Type": "Assigned",
+        "OverrideAllProps": true,
+        "PropDistribution": {
+          "Type": "Positions",
+          "Positions": {
+            "Type": "List",
+            "Positions": [
+              {
+                "X": 0,
+                "Y": 81,
+                "Z": 0
+              }
+            ]
+          }
+        },
+        "Assignments": {
+          "Type": "Constant",
+          "Prop": {
+            "Type": "Locator",
+            "Pattern": {
+              "Type": "Floor",
+              "Floor": {
+                "Type": "Not",
+                "Pattern": {
+                  "Type": "BlockType",
+                  "Material": {
+                    "Solid": "Empty"
+                  }
+                }
+              },
+              "Origin": {
+                "Type": "BlockType",
+                "Material": {
+                  "Solid": "Empty"
+                }
+              }
+            },
+            "Scanner": {
+              "Type": "Linear",
+              "Axis": "Y",
+              "Range": {
+                "MinInclusive": -12,
+                "MaxExclusive": 13
+              },
+              "AscendingOrder": false,
+              "Scanner": {
+                "Type": "Origin"
+              }
+            },
+            "PlacementCap": 1,
+            "Prop": {
+              "Type": "Prefab",
+              "WeightedPrefabPaths": [
+                {
+                  "Path": "Nakasar/Halloween/SpawnCrypt",
                   "Weight": 1.0
                 }
               ]
@@ -1056,8 +1165,8 @@
                     "Out": 0
                   },
                   {
-                    "In": 170.0,
-                    "Out": 170.0
+                    "In": 340.0,
+                    "Out": 340.0
                   }
                 ]
               }
@@ -1065,7 +1174,7 @@
             "Delimiters": [
               {
                 "Min": 0.0,
-                "Max": 158.0
+                "Max": 306.0
               }
             ],
             "Positions": {
@@ -1113,15 +1222,57 @@
                 }
               ],
               "Positions": {
-                "Type": "Mesh2D",
-                "PointsY": 81,
-                "PointGenerator": {
-                  "Type": "Mesh",
-                  "ScaleX": 13.0,
-                  "ScaleY": 13.0,
-                  "ScaleZ": 13.0,
-                  "Jitter": 0.45,
-                  "Seed": "Trees"
+                "Type": "FieldFunction",
+                "FieldFunction": {
+                  "Type": "PositionsCellNoise",
+                  "Positions": {
+                    "Type": "List",
+                    "Positions": [
+                      {
+                        "X": 0,
+                        "Y": 81,
+                        "Z": -220
+                      }
+                    ]
+                  },
+                  "ReturnType": {
+                    "Type": "Curve",
+                    "Curve": {
+                      "Type": "Manual",
+                      "Points": [
+                        {
+                          "In": 0,
+                          "Out": 0
+                        },
+                        {
+                          "In": 47.0,
+                          "Out": 47.0
+                        }
+                      ]
+                    }
+                  },
+                  "DistanceFunction": {
+                    "Type": "Euclidean"
+                  },
+                  "MaxDistance": 47.0
+                },
+                "Delimiters": [
+                  {
+                    "Min": 46.0,
+                    "Max": 1000000000.0
+                  }
+                ],
+                "Positions": {
+                  "Type": "Mesh2D",
+                  "PointsY": 81,
+                  "PointGenerator": {
+                    "Type": "Mesh",
+                    "ScaleX": 13.0,
+                    "ScaleY": 13.0,
+                    "ScaleZ": 13.0,
+                    "Jitter": 0.45,
+                    "Seed": "Trees"
+                  }
                 }
               }
             }
@@ -2050,8 +2201,8 @@
                     "Out": 0
                   },
                   {
-                    "In": 170.0,
-                    "Out": 170.0
+                    "In": 340.0,
+                    "Out": 340.0
                   }
                 ]
               }
@@ -2059,7 +2210,7 @@
             "Delimiters": [
               {
                 "Min": 0.0,
-                "Max": 158.0
+                "Max": 306.0
               }
             ],
             "Positions": {
@@ -2107,15 +2258,57 @@
                 }
               ],
               "Positions": {
-                "Type": "Mesh2D",
-                "PointsY": 81,
-                "PointGenerator": {
-                  "Type": "Mesh",
-                  "ScaleX": 21.0,
-                  "ScaleY": 21.0,
-                  "ScaleZ": 21.0,
-                  "Jitter": 0.45,
-                  "Seed": "Decor"
+                "Type": "FieldFunction",
+                "FieldFunction": {
+                  "Type": "PositionsCellNoise",
+                  "Positions": {
+                    "Type": "List",
+                    "Positions": [
+                      {
+                        "X": 0,
+                        "Y": 81,
+                        "Z": -220
+                      }
+                    ]
+                  },
+                  "ReturnType": {
+                    "Type": "Curve",
+                    "Curve": {
+                      "Type": "Manual",
+                      "Points": [
+                        {
+                          "In": 0,
+                          "Out": 0
+                        },
+                        {
+                          "In": 47.0,
+                          "Out": 47.0
+                        }
+                      ]
+                    }
+                  },
+                  "DistanceFunction": {
+                    "Type": "Euclidean"
+                  },
+                  "MaxDistance": 47.0
+                },
+                "Delimiters": [
+                  {
+                    "Min": 46.0,
+                    "Max": 1000000000.0
+                  }
+                ],
+                "Positions": {
+                  "Type": "Mesh2D",
+                  "PointsY": 81,
+                  "PointGenerator": {
+                    "Type": "Mesh",
+                    "ScaleX": 21.0,
+                    "ScaleY": 21.0,
+                    "ScaleZ": 21.0,
+                    "Jitter": 0.45,
+                    "Seed": "Decor"
+                  }
                 }
               }
             }
@@ -3820,7 +4013,7 @@
               {
                 "X": 0,
                 "Y": 81,
-                "Z": -110
+                "Z": -220
               }
             ]
           }

@@ -1,11 +1,16 @@
 # Nakasar Halloween fragment — English texts
 portal.name = Lands of the Night of the Dead
-portal.flavor = A fragment of Orbis frozen on an endless Hallows' Eve. Dead trees creak, graves crack open and, far away, the count's castle awaits its guests.
+portal.flavor = A fragment of Orbis frozen on an endless Hallows' Eve. Dead trees creak, graves crack open and, far away, the count's manor awaits its guests.
 portal.tag.undead = Undead
 portal.tag.vampire = Vampires
 portal.tag.night = Endless night
-portal.objective.count = Find the vampire count's castle
+portal.objective.count = Find the vampire count's manor
 portal.objective.crypts = Loot the crypts and abandoned graveyards
 portal.objective.pumpkins = Harvest pumpkins from the cursed fields
 items.PortalKey_Nakasar_Halloween.name = Fragment of the Night of the Dead
 items.PortalKey_Nakasar_Halloween.description = Place it in an Ancient Gateway to open a fragment of Orbis haunted by undead and vampires.
+items.Nakasar_Stained_Glass_Red.name = Crimson Stained Glass
+items.Nakasar_Stained_Glass_Violet.name = Violet Stained Glass
+items.Nakasar_Gargoyle.name = Gargoyle
+items.Nakasar_Iron_Railing.name = Wrought Iron Spear Railing
+items.Nakasar_Iron_Gate.name = Wrought Iron Gate Leaf

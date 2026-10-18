@@ -67,7 +67,9 @@ public class ValidateAssets {
             "com.hypixel.hytale.server.spawning.SpawningPlugin#setup",
             "com.hypixel.hytale.builtin.mounts.MountPlugin#setup",
             // Types d'établis (Crafting, Processing...).
-            "com.hypixel.hytale.server.core.blocktype.BlockTypeModule#setup"
+            "com.hypixel.hytale.server.core.blocktype.BlockTypeModule#setup",
+            // Fournisseurs de point d'apparition (Global, Individual...) : PortalTypes.Spawn.
+            "com.hypixel.hytale.server.core.universe.Universe#setup"
     );
 
     static {

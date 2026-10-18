@@ -1,0 +1,38 @@
+{
+  "TranslationProperties": {
+    "Name": "nakasar_halloween.items.Nakasar_Stained_Glass_Red.name"
+  },
+  "Icon": "Icons/Items/Nakasar/Halloween/Stained_Glass_Red.png",
+  "Categories": [
+    "Blocks.Deco"
+  ],
+  "PlayerAnimationsId": "Block",
+  "BlockType": {
+    "Material": "Solid",
+    "DrawType": "Cube",
+    "Opacity": "Semitransparent",
+    "Textures": [
+      {
+        "Sides": "BlockTextures/Nakasar/Halloween/Stained_Glass_Red.png",
+        "UpDown": "BlockTextures/Nakasar/Halloween/Stained_Glass_Red.png",
+        "Weight": 1
+      }
+    ],
+    "HitboxType": "Full",
+    "Flags": {},
+    "Gathering": {
+      "Breaking": {
+        "GatherType": "Rocks"
+      }
+    },
+    "BlockParticleSetId": "Crystal",
+    "BlockSoundSetId": "Crystal",
+    "ParticleColor": "#96121e"
+  },
+  "Tags": {
+    "Type": [
+      "Deco"
+    ]
+  },
+  "ItemSoundSetId": "ISS_Blocks_Stone"
+}
