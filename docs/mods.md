@@ -224,7 +224,7 @@ validateur du fragment Halloween).
   `DominationDamageFilter` (groupe de filtrage des dégâts) annule tout dégât de ce joueur, projectiles
   compris, contre ce PNJ tant que l'effet dure.
 - **Emprisonnement** (Java, `prison/`) : l'interaction `Nakasar_ImprisonPlayer` cherche le bloc invisible
-  `Nakasar_Prison_Cell` le plus proche du capitaine (48 blocs) et y téléporte le joueur, puis applique
+  `Nakasar_Prison_Cell` le plus proche du capitaine (24 blocs, sous la portée de 32 blocs où il abandonne sa cible) et y téléporte le joueur, puis applique
   `Nakasar_Imprisoned` (ralenti 5 s). Le bloc se pose au niveau des pieds dans la cellule, bloc du dessus libre.
   Sans cellule à portée, seul l'effet s'applique.
 - **Attaques annoncées** (abomination, capitaine) : même schéma que les gobelins du donjon Deepworks

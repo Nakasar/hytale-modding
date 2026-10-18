@@ -1,5 +1,5 @@
 {
-  "$Comment": "Bloc invisible et traversable posé au niveau des pieds dans une cellule du poste de garde : l'Emprisonnement du Capitaine téléporte le joueur sur le plus proche (rayon 48 blocs).",
+  "$Comment": "Bloc invisible et traversable posé au niveau des pieds dans une cellule du poste de garde : l'Emprisonnement du Capitaine téléporte le joueur sur le plus proche (rayon 24 blocs).",
   "TranslationProperties": {
     "Name": "nakasar_mobs.items.Nakasar_Prison_Cell.name"
   },

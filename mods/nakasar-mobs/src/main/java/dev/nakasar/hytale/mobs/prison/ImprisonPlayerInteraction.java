@@ -25,6 +25,7 @@ import com.hypixel.hytale.server.core.universe.world.chunk.section.BlockSection;
 import com.hypixel.hytale.server.core.universe.world.storage.ChunkStore;
 import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
 import dev.nakasar.hytale.mobs.MobsPlugin;
+import it.unimi.dsi.fastutil.ints.IntList;
 import org.joml.Vector3d;
 
 /**
@@ -33,7 +34,7 @@ import org.joml.Vector3d;
  *
  * <p>Une cellule est un bloc invisible et traversable ({@code CellBlock}) posé au niveau des pieds dans le prefab
  * du poste de garde. On cherche le plus proche dans un cube de {@code Radius} blocs autour du lanceur, section
- * par section : une section chargée qui ne contient pas ce bloc est écartée sans être parcourue. Le joueur est
+ * par section : une section chargée qui ne contient pas ce bloc est écartée, les autres sont lues par leur palette. Le joueur est
  * téléporté au centre du bloc trouvé. Sans cellule à portée, il reçoit seulement l'effet.
  *
  * <p>La cible est l'entité fournie par la chaîne (le {@code HitEntity} d'un {@code Selector}). Échoue (branche
@@ -42,7 +43,7 @@ import org.joml.Vector3d;
  * <p>Clés JSON :
  * <ul>
  *   <li>{@code CellBlock} (string, défaut {@code Nakasar_Prison_Cell}) : id du bloc qui marque une cellule ;</li>
- *   <li>{@code Radius} (int, défaut 48) : rayon de recherche autour du lanceur ;</li>
+ *   <li>{@code Radius} (int, défaut 24) : rayon de recherche autour du lanceur ;</li>
  *   <li>{@code EffectId} (string, optionnel) : effet de statut appliqué au joueur ;</li>
  *   <li>{@code Duration} (float, défaut 5) : durée de cet effet en secondes.</li>
  * </ul>
@@ -68,11 +69,8 @@ public class ImprisonPlayerInteraction extends SimpleInstantInteraction {
             .add()
             .build();
 
-    /** Hauteur de monde explorée : les sections hors de [0, MAX_Y] n'existent pas. */
-    private static final int MAX_Y = 319;
-
     protected String cellBlock = "Nakasar_Prison_Cell";
-    protected int radius = 48;
+    protected int radius = 24;
     protected String effectId;
     protected float duration = 5f;
 
@@ -133,9 +131,9 @@ public class ImprisonPlayerInteraction extends SimpleInstantInteraction {
         int cy = (int) Math.floor(from.y);
         int cz = (int) Math.floor(from.z);
         int minY = Math.max(0, cy - radius);
-        int maxY = Math.min(MAX_Y, cy + radius);
-        long best = Long.MAX_VALUE;
-        Vector3d result = null;
+        int maxY = Math.min(ChunkUtil.HEIGHT_MINUS_1, cy + radius);
+        long[] best = {Long.MAX_VALUE};
+        Vector3d[] result = {null};
         for (int sx = (cx - radius) >> ChunkUtil.BITS; sx <= (cx + radius) >> ChunkUtil.BITS; sx++) {
             for (int sy = minY >> ChunkUtil.BITS; sy <= maxY >> ChunkUtil.BITS; sy++) {
                 for (int sz = (cz - radius) >> ChunkUtil.BITS; sz <= (cz + radius) >> ChunkUtil.BITS; sz++) {
@@ -150,26 +148,22 @@ public class ImprisonPlayerInteraction extends SimpleInstantInteraction {
                     if (section == null || !section.contains(blockId)) {
                         continue;
                     }
-                    for (int index = 0; index < ChunkUtil.SIZE_BLOCKS; index++) {
-                        if (section.get(index) != blockId) {
-                            continue;
-                        }
-                        // indexBlock(x, y, z) = y << 10 | z << 5 | x
-                        int x = baseX + (index & ChunkUtil.SIZE_MASK);
-                        int z = baseZ + ((index >> ChunkUtil.BITS) & ChunkUtil.SIZE_MASK);
-                        int y = baseY + (index >> (2 * ChunkUtil.BITS));
+                    section.find(IntList.of(blockId), index -> {
+                        int x = baseX + ChunkUtil.xFromIndex(index);
+                        int y = baseY + ChunkUtil.yFromIndex(index);
+                        int z = baseZ + ChunkUtil.zFromIndex(index);
                         long dx = x - cx;
                         long dy = y - cy;
                         long dz = z - cz;
                         long distance = dx * dx + dy * dy + dz * dz;
-                        if (distance < best && Math.abs(dx) <= radius && Math.abs(dy) <= radius && Math.abs(dz) <= radius) {
-                            best = distance;
-                            result = new Vector3d(x + 0.5, y + 0.05, z + 0.5);
+                        if (distance < best[0] && Math.abs(dx) <= radius && Math.abs(dy) <= radius && Math.abs(dz) <= radius) {
+                            best[0] = distance;
+                            result[0] = new Vector3d(x + 0.5, y + 0.05, z + 0.5);
                         }
-                    }
+                    });
                 }
             }
         }
-        return result;
+        return result[0];
     }
 }

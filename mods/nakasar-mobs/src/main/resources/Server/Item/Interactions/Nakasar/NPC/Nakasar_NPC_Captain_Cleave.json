@@ -90,7 +90,7 @@
         "EndDistance": 5,
         "Length": 50,
         "RollOffset": 90,
-        "YawStartOffset": -25
+        "YawStartOffset": 25
       },
       "HitEntity": {
         "Interactions": [
