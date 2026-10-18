@@ -130,7 +130,8 @@ Mobs (le manoir du comte, dans le fragment, contient déjà le Comte ou la Comte
 /give Nakasar_Spawner_Vampire_Count  # bloc invisible qui fait (ré)apparaître le comte là où il est posé
 ```
 
-Brèches des chasseurs de vampires (monde principal, toutes les 30 min, la nuit) :
+Brèches des chasseurs de vampires (monde principal, toutes les 30 min, la nuit). Le monde doit autoriser les
+évènements de monde et l'apparition des PNJ, sinon le camp reste vide (vu en jeu le 2026-10-18) :
 
 ```text
 /time midnight                                       # les brèches ne s'ouvrent que la nuit

@@ -1,5 +1,5 @@
 {
-  "$Comment": "Déchirure de la brèche des chasseurs (évènement Nakasar_Hunter_Breach) : bloc sans forme ni collision, particules de faille rouge, lumière rouge, marqueur sur la carte et la boussole. Posé par le prefab de la brèche, retiré avec lui. Généré par tools/generate_breach.py.",
+  "$Comment": "Déchirure de la brèche des chasseurs (évènement Nakasar_Hunter_Breach) : bloc invisible sans collision qui porte les particules de la brèche gobeline (portail ouvert et faille du donjon) teintées de rouge, une lumière rouge et le marqueur de carte et de boussole. Posé par le prefab de la brèche, retiré avec lui. Généré par tools/generate_breach.py.",
   "TranslationProperties": {
     "Name": "nakasar_breach.items.Nakasar_Breach_Rift.name"
   },
@@ -10,8 +10,16 @@
   ],
   "BlockType": {
     "Material": "Empty",
-    "DrawType": "Empty",
+    "DrawType": "Model",
+    "CustomModel": "Blocks/_Debug/Model.blockymodel",
+    "CustomModelTexture": [
+      {
+        "Texture": "Blocks/_Debug/TextureEmpty.png",
+        "Weight": 1
+      }
+    ],
     "Opacity": "Transparent",
+    "VariantRotation": "NESW",
     "Gathering": {
       "Breaking": {
         "GatherType": "Unbreakable"
@@ -22,8 +30,20 @@
     },
     "Particles": [
       {
+        "SystemId": "GoblinBreach_Portal_Active",
+        "Color": "#c8203c",
+        "Scale": 0.8,
+        "PositionOffset": {
+          "X": 0,
+          "Y": 1.6,
+          "Z": 0
+        }
+      },
+      {
         "SystemId": "Dungeon_Goblin_Void_Rift",
         "Color": "#c8203c",
+        "Scale": 1.5,
+        "TargetEntityPart": "Self",
         "PositionOffset": {
           "X": 0,
           "Y": 1.5,

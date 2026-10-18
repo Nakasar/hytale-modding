@@ -208,18 +208,29 @@ def map_icon(size=48, compass=False):
 
 def write_rift_item():
     item = {
-        "$Comment": "Déchirure de la brèche des chasseurs (évènement Nakasar_Hunter_Breach) : bloc sans forme ni collision, particules de faille rouge, lumière rouge, marqueur sur la carte et la boussole. Posé par le prefab de la brèche, retiré avec lui. Généré par tools/generate_breach.py.",
+        "$Comment": "Déchirure de la brèche des chasseurs (évènement Nakasar_Hunter_Breach) : bloc invisible sans collision qui porte les particules de la brèche gobeline (portail ouvert et faille du donjon) teintées de rouge, une lumière rouge et le marqueur de carte et de boussole. Posé par le prefab de la brèche, retiré avec lui. Généré par tools/generate_breach.py.",
         "TranslationProperties": {"Name": "nakasar_breach.items.Nakasar_Breach_Rift.name"},
         "Icon": "Icons/Items/Nakasar/Breach/Breach_Rift.png",
         "Quality": "Developer",
         "Categories": ["Blocks.Deco"],
         "BlockType": {
+            # Le client ne dessine pas les particules d'un bloc DrawType "Empty" (vu en jeu le 2026-10-18) : comme les
+            # émetteurs vanilla (VFX_Dungeon_Goblin_Void_Rift), un modèle de bloc avec une texture vide.
             "Material": "Empty",
-            "DrawType": "Empty",
+            "DrawType": "Model",
+            "CustomModel": "Blocks/_Debug/Model.blockymodel",
+            "CustomModelTexture": [{"Texture": "Blocks/_Debug/TextureEmpty.png", "Weight": 1}],
             "Opacity": "Transparent",
+            "VariantRotation": "NESW",
             "Gathering": {"Breaking": {"GatherType": "Unbreakable"}},
             "Light": {"Color": "#d23"},
-            "Particles": [{"SystemId": "Dungeon_Goblin_Void_Rift", "Color": "#c8203c", "PositionOffset": {"X": 0, "Y": 1.5, "Z": 0}}],
+            "Particles": [
+                # Le portail de la brèche gobeline (Goblin_Breach_Portal, 4 blocs de large), réduit à l'arche (3 de large).
+                {"SystemId": "GoblinBreach_Portal_Active", "Color": "#c8203c", "Scale": 0.8,
+                 "PositionOffset": {"X": 0, "Y": 1.6, "Z": 0}},
+                {"SystemId": "Dungeon_Goblin_Void_Rift", "Color": "#c8203c", "Scale": 1.5, "TargetEntityPart": "Self",
+                 "PositionOffset": {"X": 0, "Y": 1.5, "Z": 0}},
+            ],
             "BlockEntity": {"Components": {"BlockMapMarker": {
                 "Name": "nakasar_breach.name", "Icon": MAP_ICON, "CompassIcon": COMPASS_ICON}}},
         },
