@@ -13,6 +13,7 @@ Un seul mod, **Vampires** (`mods/nakasar-vampires`, plugin Java + pack d'assets,
 | Lance | Lance de fer à deux mains : enchaînement, coup chargé, compétence ultime |
 | Armes en argent | Version en argent de chaque arme standard, de la lance du mod et des flèches : double dégâts contre les vampires (Comte, Comtesse, rejetons) |
 
+Le guide du joueur (fragment, structures, bestiaire, brèches, objets) est un wiki publié sur GitHub Pages : https://nakasar.github.io/hytale-modding/ (sources Markdown dans [docs/wiki](docs/wiki/README.md), site Docusaurus dans [wiki](wiki/), aperçu local : `cd wiki && npm ci && npm start`).
 Le détail du mod (fichiers, chaînes d'interactions, camps, réglages) est dans [docs/mods.md](docs/mods.md).
 Les points d'API serveur vérifiés dans le jar `Server-0.7.2` sont notés dans [docs/api-0.7.2.md](docs/api-0.7.2.md).
 Création de PNJ (rôles, IA, modèles, apparitions) : [docs/npc-0.7.2.md](docs/npc-0.7.2.md), et la référence complète des 179 briques d'IA générée depuis le jar : [docs/npc-reference-0.7.2.md](docs/npc-reference-0.7.2.md).

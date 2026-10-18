@@ -1,0 +1,24 @@
+# Crypte d'arrivée
+
+![La crypte d'arrivée (aperçu du générateur)](../images/lieux/apercu_crypte_arrivee.png)
+
+Le point d'arrivée de tous les voyageurs, au centre exact de l'île. Toujours présente, toujours orientée de la même façon.
+
+| | |
+|---|---|
+| Taille | bâtiment de **11 × 11** (structure complète 17 × 19 × 22) |
+| Position | centre de l'île (0, 81, 0) |
+| Gardiens | aucun |
+| Coffres | aucun |
+
+## Description
+
+Petit mausolée de pierre moussue au toit d'ardoise pentu, piliers d'angle et **4 gargouilles** aux yeux rouges. Une **rosace** de vitraux pourpres au cœur violet surmonte la porte nord ; des ogives violettes éclairent les côtés.
+
+À l'intérieur : 4 cercueils anciens le long des murs, bougies aux coins, deux braseros, os, crânes et toiles. Vous apparaissez au centre ; le **portail de retour** est **3 blocs au sud**, devant un vitrail rouge.
+
+Dehors, quatre tombes et deux lanternes sur poteau. Le chemin part vers le **nord**, droit sur le [Manoir du Comte](manoir-du-comte.md) à 220 blocs.
+
+## Bon à savoir
+
+Pour rentrer, marchez dans le portail de retour (il ne fonctionne qu'au bout de 15 s passées dans le fragment). Il est placé à l'écart du point d'arrivée pour qu'un chargement lent ne vous renvoie pas aussitôt.
