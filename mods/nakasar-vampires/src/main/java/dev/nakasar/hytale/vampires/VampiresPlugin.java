@@ -12,6 +12,8 @@ import dev.nakasar.hytale.vampires.domination.Dominations;
 import dev.nakasar.hytale.vampires.prison.ImprisonPlayerInteraction;
 import dev.nakasar.hytale.vampires.pumpkin.FireWeaknessSystem;
 import dev.nakasar.hytale.vampires.purifying.PurifyingFireSystem;
+import dev.nakasar.hytale.vampires.purifying.PurifyingFires;
+import dev.nakasar.hytale.vampires.purifying.PurifyingSteeringSystem;
 import dev.nakasar.hytale.vampires.pumpkin.RootTrapInteraction;
 import dev.nakasar.hytale.vampires.pumpkin.RootTrapUnloadSystem;
 import dev.nakasar.hytale.vampires.pumpkin.RootTrapped;
@@ -49,8 +51,8 @@ import dev.nakasar.hytale.vampires.silver.TakeArrowInteraction;
  *       Domination retourne leur allégeance ;</li>
  *   <li>{@link SilverDamageSystem} et {@link SilverProjectileSystems} : les armes en argent (et leurs projectiles)
  *       infligent le double de dégâts aux vampires ;</li>
- *   <li>{@link PurifyingFireSystem} : les torches et lanternes de feu purificateur du camp des chasseurs repoussent
- *       les morts-vivants.</li>
+ *   <li>{@link PurifyingFireSystem} et {@link PurifyingSteeringSystem} : les morts-vivants évitent les torches et
+ *       lanternes de feu purificateur du camp des chasseurs.</li>
  * </ul>
  */
 public final class VampiresPlugin extends JavaPlugin {
@@ -98,7 +100,9 @@ public final class VampiresPlugin extends JavaPlugin {
         systems.registerSystem(new SilverProjectileSystems.Launch());
         systems.registerSystem(new SilverProjectileSystems.Legacy());
         systems.registerSystem(new SilverDamageSystem());
-        systems.registerSystem(new PurifyingFireSystem());
+        PurifyingFires purifyingFires = new PurifyingFires();
+        systems.registerSystem(new PurifyingFireSystem(purifyingFires));
+        systems.registerSystem(new PurifyingSteeringSystem(purifyingFires));
 
         getLogger().atInfo().log("Nakasar Vampires : 9 types d'interaction (%s, %s, %s, %s, %s, %s, %s, %s, %s), systèmes des camps, de l'argent et du feu purificateur enregistrés",
                 TeleportCasterToImpactInteraction.TYPE_ID, DominateInteraction.TYPE_ID, RootNpcInteraction.TYPE_ID,
