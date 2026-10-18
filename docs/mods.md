@@ -142,7 +142,7 @@ Fragment d'Orbis ouvert depuis l'Ancienne passerelle vanilla (`Portal_Device`) a
   du comte (7 à 9 structures par instance d'après une simulation hors jeu). Poids : crypte 3, champ de
   citrouilles 3, château hanté 2, cimetière hanté / araignées / morts-vivants 1,5 chacun.
 - **Château du comte** : toujours à 110 blocs au nord du point d'apparition (objectif du portail).
-- **Décor** : arbres morts et pendus (maille de 13) ; affleurements rocheux, troncs couchés, cercles
+- **Décor** : arbres morts et pendus, plus les frênes morts du jeu (`Trees/Ash_Dead`) (maille de 13) ; affleurements rocheux, troncs couchés, cercles
   de champignons luisants, tas d'os, tombes isolées, nids d'araignées, citrouilles et autels au bord
   du chemin (maille de 21) ; plantes mortes, racines, champignons luisants et citrouilles (maille de
   3). Arbres et décor restent à moins de 158 blocs du centre pour ne pas dépasser du bord.
@@ -159,7 +159,7 @@ Fragment d'Orbis ouvert depuis l'Ancienne passerelle vanilla (`Portal_Device`) a
 | `DraculaCastle` | 1 | Château du comte 41×41 en basalte : flèches, salle du trône au tapis rouge, crypte sous le donjon, roseraie de sang, pendus |
 | `Cemeteries/{Haunted,Spiders,Undead}` | 2 × 3 | Cimetière clos (~31×33) : chapelle à clocher (bancs, autel, lustre), caveaux, portail à lanterne, muret à grille et piliers, allées pavées, tombes variées (stèles, croix, obélisques, sarcophages, tombes ouvertes), arbres morts ; hanté (bougies, citrouilles, champignons luisants), araignées (toiles, cocons) ou morts-vivants (fosses à cercueil, ossements) |
 | `PumpkinFields` | 3 | Champ de citrouilles mûres (états de culture) clôturé de bois mort : allée à lanternes, épouvantails, charrette de récolte, meules de foin, cabane, arbre de pendu |
-| `Trees` | 16 | Arbres morts en frêne, bois pétrifié ou calciné : tronc penché, contreforts, branches en tubes orientés, feuilles mortes, buissons pendants ; 4 portent une lanterne, une cage ou une corde |
+| `Trees` | 16 | Arbres morts en frêne, bois pétrifié ou calciné : squelette en troncs pleins comme les arbres du jeu (fût droit, pied 2×2 des grands, contreforts et racines, branches qui montent en escalier et se divisent), tubes fins au bout des rameaux, feuilles mortes de l'essence posées sur les branches, toiles et buissons pendants ; aucun bloc ne flotte (vérifié à la génération) ; 4 portent une lanterne, une cage ou une corde |
 | `Decor/*` | 7 × 3 + 5 | Affleurements rocheux (parfois des cristaux), troncs couchés, cercles de champignons luisants, autels, tas d'os, tombes isolées, nids d'araignées, carrés de citrouilles |
 
 Les ruines varient d'une instance à l'autre grâce aux préfixes de probabilité (`70%Bloc`).

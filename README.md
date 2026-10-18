@@ -176,9 +176,12 @@ Fragment Halloween :
   (`FogDensities`, `FogDistance`) et la densité de spawn des environnements sont à régler à l'œil.
 - **Prefabs** : l'orientation par défaut des meubles (cercueils, chaises, bancs, charrette) et des escaliers
   n'est pas connue ; les toits et escaliers sont faits de blocs pleins et de demi-dalles pour l'éviter.
-  Les branches couchées utilisent les rotations 4 (nord-sud) et 5 (est-ouest) lues dans le serveur :
-  si une branche apparaît debout ou en travers, inverser les deux dans `generate_prefabs.py` (`ALONG_Z`,
-  `ALONG_X`). Les châteaux et cryptes sont posés à plat grâce à un terrain aplani autour des structures.
+  Les arbres morts n'utilisent plus de branche couchée : squelette en troncs pleins, tubes fins debout.
+  Seuls les troncs tombés (décor) utilisent les rotations 4 (nord-sud) et 5 (est-ouest) lues dans le
+  serveur : s'ils apparaissent debout, inverser `ALONG_Z` et `ALONG_X` dans `generate_prefabs.py`.
+- **Frênes morts du jeu** : le worldgen pioche aussi dans le dossier vanilla `Trees/Ash_Dead`
+  (chemin déduit de la documentation, pas lu dans Assets.zip). S'il n'existe pas, il ne place rien
+  sans erreur ; corriger `VANILLA_DEAD_TREES` dans `generate_worldgen.py`. Les châteaux et cryptes sont posés à plat grâce à un terrain aplani autour des structures.
 - **Liste des blocs** : `tools/vanilla-block-ids-0.7.2.txt` vient des fichiers du jeu publiés par
   hytale.isaacguru.com (ids d'objets qui ont un `BlockType`, états compris). Si un bloc récent manque,
   l'ajouter à la main ; si un bloc de la liste s'affiche en damier rose, le signaler pour l'en retirer.

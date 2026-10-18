@@ -1205,6 +1205,80 @@
                   }
                 }
               }
+            },
+            {
+              "Weight": 0.8,
+              "Assignments": {
+                "Type": "Constant",
+                "Prop": {
+                  "Type": "Locator",
+                  "Pattern": {
+                    "Type": "Floor",
+                    "Floor": {
+                      "Type": "Or",
+                      "Patterns": [
+                        {
+                          "Type": "BlockType",
+                          "Material": {
+                            "Solid": "Soil_Grass_Burnt"
+                          }
+                        },
+                        {
+                          "Type": "BlockType",
+                          "Material": {
+                            "Solid": "Soil_Dirt_Burnt"
+                          }
+                        },
+                        {
+                          "Type": "BlockType",
+                          "Material": {
+                            "Solid": "Soil_Ash"
+                          }
+                        },
+                        {
+                          "Type": "BlockType",
+                          "Material": {
+                            "Solid": "Soil_Gravel_Mossy"
+                          }
+                        }
+                      ]
+                    },
+                    "Origin": {
+                      "Type": "BlockType",
+                      "Material": {
+                        "Solid": "Empty"
+                      }
+                    }
+                  },
+                  "Scanner": {
+                    "Type": "Linear",
+                    "Axis": "Y",
+                    "Range": {
+                      "MinInclusive": -26,
+                      "MaxExclusive": 27
+                    },
+                    "AscendingOrder": false,
+                    "Scanner": {
+                      "Type": "Origin"
+                    }
+                  },
+                  "PlacementCap": 1,
+                  "Prop": {
+                    "Type": "RandomRotator",
+                    "HorizontalRotations": true,
+                    "Seed": "VanillaTree",
+                    "Prop": {
+                      "Type": "Prefab",
+                      "WeightedPrefabPaths": [
+                        {
+                          "Path": "Trees/Ash_Dead",
+                          "Weight": 1.0
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
             }
           ]
         }

@@ -277,17 +277,14 @@ def stairs_down(p, start, direction, depth, base, half, wall, width=3, headroom=
 # courte (Branch_Short, accrochée au bloc précédent) au bout. Rien ne flotte.
 
 SPECIES = {
-    # essence : (poids, feuillage mort possible)
-    "Ash": (5, True),        # brun sombre, tordu
-    "Petrified": (3, False),  # gris pâle, ressort la nuit
-    "Burnt": (2, False),      # calciné, noir
+    # essence : (poids, feuilles mortes de l'essence, posées sur le dessus des branches)
+    "Ash": (5, "Plant_Leaves_Dead"),        # frêne mort, brun sombre (comme Trees/Ash_Dead du jeu)
+    "Petrified": (3, "Plant_Leaves_Petrified"),  # gris pâle, ressort la nuit
+    "Burnt": (2, "Plant_Leaves_Burnt"),      # calciné, noir
 }
 
 DIRS = [(1, 0), (-1, 0), (0, 1), (0, -1)]
-
-
-def lying(d):
-    return ALONG_X if d[0] else ALONG_Z
+FACES = ((1, 0, 0), (-1, 0, 0), (0, 1, 0), (0, -1, 0), (0, 0, 1), (0, 0, -1))
 
 
 def stub_rotation(d):
@@ -308,7 +305,7 @@ def is_connected(p):
     seen, todo = {start}, [start]
     while todo:
         x, y, z = todo.pop()
-        for d in ((1, 0, 0), (-1, 0, 0), (0, 1, 0), (0, -1, 0), (0, 0, 1), (0, 0, -1)):
+        for d in FACES:
             n = (x + d[0], y + d[1], z + d[2])
             if n in wood and n not in seen:
                 seen.add(n)
@@ -316,129 +313,154 @@ def is_connected(p):
     return seen == wood
 
 
+def floating_blocks(p):
+    """Blocs qui ne rejoignent pas le sol (y <= 0) de face en face : ils flotteraient en jeu."""
+    seen = {pos for pos in p.blocks if pos[1] <= 0}
+    todo = list(seen)
+    while todo:
+        x, y, z = todo.pop()
+        for d in FACES:
+            n = (x + d[0], y + d[1], z + d[2])
+            if n in p.blocks and n not in seen:
+                seen.add(n)
+                todo.append(n)
+    return set(p.blocks) - seen
+
+
 def dead_tree(seed, size="medium", species=None, hanging=None, webs=False):
-    """Arbre mort : `size` small / medium / large, `hanging` None / "lantern" / "cage" / "noose"."""
+    """Arbre mort à la manière des arbres du jeu : `size` small / medium / large, `hanging` None /
+    "lantern" / "cage" / "noose".
+
+    Comme les arbres vanilla, tout le squelette est en blocs pleins : un fût droit de troncs, des
+    branches en troncs pleins qui montent en escalier (chaque bloc touche le précédent par une face),
+    et seulement au bout des rameaux des tubes fins (branche longue debout, souche sur le côté). Les
+    feuilles mortes de l'essence se posent sur le dessus des branches. Aucun bloc ne flotte : c'est
+    vérifié à la génération.
+    """
     p = Prefab(seed)
     r = p.rng
     if species is None:
         species = r.choices(list(SPECIES), [w for w, _ in SPECIES.values()])[0]
     trunk, full = f"Wood_{species}_Trunk", f"Wood_{species}_Trunk_Full"
-    long_branch, stub = f"Wood_{species}_Branch_Long", f"Wood_{species}_Branch_Short"
-    height = {"small": r.randint(5, 7), "medium": r.randint(8, 11), "large": r.randint(12, 15)}[size]
+    twig, stub = f"Wood_{species}_Branch_Long", f"Wood_{species}_Branch_Short"
+    leaves = SPECIES[species][1]
+    height = {"small": r.randint(5, 7), "medium": r.randint(8, 10), "large": r.randint(11, 14)}[size]
+    wide = {"small": 0, "medium": 1, "large": height // 2}[size]  # hauteur du pied élargi 2×2
 
-    # pied élargi : contreforts en tronc plein, racines dessous
-    if size != "small":
-        for d in DIRS:
-            if r.random() < (0.85 if size == "large" else 0.55):
-                p.set(d[0], 0, d[1], full)
-                p.set(d[0], -1, d[1], f"Wood_{species}_Roots")
-                if size == "large" and r.random() < 0.5:
-                    p.set(d[0], 1, d[1], full)
+    # fût : droit, élargi en 2×2 au pied des grands arbres, contreforts et racines au sol
+    for y in range(height):
+        p.set(0, y, 0, trunk)
     if size == "large":
-        for y in range(0, 4):
-            for dx, dz in ((0, 0), (1, 0), (0, 1), (1, 1)):
-                p.set(dx, y, dz, full)
+        for y in range(wide):
+            for dx, dz in ((1, 0), (0, 1), (1, 1)):
+                p.set(dx, y, dz, trunk)
+    foot = [(dx, dz) for dx, dz in ((0, 0), (1, 0), (0, 1), (1, 1)) if p.get(dx, 0, dz)]
+    for fx, fz in foot:
+        for d in DIRS:
+            bx, bz = fx + d[0], fz + d[1]
+            if p.free(bx, 0, bz) and r.random() < (0.6 if size != "small" else 0.3):
+                p.set(bx, 0, bz, full)
+                if size == "large" and r.random() < 0.4 and p.free(bx, 1, bz):
+                    p.set(bx, 1, bz, full)
+                p.set(bx, -1, bz, f"Wood_{species}_Roots")
 
-    # fût penché : à chaque décalage, deux troncs côte à côte à la même hauteur (contact par la face)
-    lean = r.choice(DIRS)
-    x = z = 0
-    column = {}
-    for y in range(0, height):
-        if 3 <= y < height - 2 and r.random() < 0.28:
-            p.set(x, y, z, trunk)
-            if r.random() < 0.3:
-                lean = r.choice(DIRS)
-            x, z = x + lean[0], z + lean[1]
-        p.set(x, y, z, trunk)
-        column[y] = (x, z)
-    top = (x, height, z)
-    for k in range(r.randint(1, 2)):
-        p.set(x, height + k, z, long_branch, UPRIGHT)
+    tips, limbs = [], []
 
-    # branches
-    elbows = []
-    count = {"small": r.randint(2, 3), "medium": r.randint(3, 4), "large": r.randint(4, 6)}[size]
+    def touches_other_wood(cell, prev):
+        x, y, z = cell
+        for d in FACES:
+            n = (x + d[0], y + d[1], z + d[2])
+            if n != prev and n in p.blocks and p.blocks[n][0].startswith("Wood_"):
+                return True
+        return False
+
+    def grow(start, d, length, rise, depth):
+        """Branche en troncs pleins depuis `start` vers d ; `rise` = probabilité de monter d'un cran."""
+        cell = start
+        horizontal = 0
+        for k in range(length):
+            up = horizontal > 0 and r.random() < rise
+            nxt = (cell[0], cell[1] + 1, cell[2]) if up else (cell[0] + d[0], cell[1], cell[2] + d[1])
+            if not p.free(*nxt) or touches_other_wood(nxt, cell):
+                break
+            p.set(*nxt, full)
+            horizontal = 0 if up else horizontal + 1
+            if not up:
+                limbs.append(nxt)
+            cell = nxt
+            rise = min(0.8, rise + 0.08)
+            if depth == 0 and k == length // 2 and length >= 4 and r.random() < 0.6:
+                side = (d[1], d[0]) if r.random() < 0.5 else (-d[1], -d[0])
+                grow(cell, side, r.randint(2, 3), 0.45, 1)
+        if cell != start:
+            tips.append((cell, d))
+
+    # branches le long du fût, tournées dans des directions différentes
+    count = {"small": r.randint(2, 3), "medium": r.randint(3, 4), "large": r.randint(4, 5)}[size]
     dirs = DIRS[:]
     r.shuffle(dirs)
-    for i in range(count):
-        d = dirs[i % 4]
-        y = r.randint(max(2, height // 3), height - 2)
-        bx, bz = column[y]
-        length = r.randint(2, 3) + {"small": 0, "medium": 1, "large": 3}[size]
-        thick = 2 if size == "large" else 1
-        cells = []
-        for k in range(1, length + 1):
-            cx, cz = bx + d[0] * k, bz + d[1] * k
-            if not p.free(cx, y, cz) or p.get(cx, y + 1, cz) or p.get(cx, y - 1, cz):
+    low = max(wide + 2, height // 2 if size == "small" else height // 3 + 1)
+    heights = sorted(r.sample(range(low, height - 1), min(count, height - 1 - low)))
+    for i, y in enumerate(heights):
+        length = r.randint(1, 2) + {"small": 0, "medium": 2, "large": 3}[size]
+        grow((0, y, 0), dirs[i % 4], length, 0.25, 0)
+    # couronne : deux ou trois rameaux qui partent du sommet en remontant
+    for d in r.sample(DIRS, r.randint(2, 3) if size != "small" else 1):
+        grow((0, height - 1, 0), d, r.randint(2, 3) + (size == "large"), 0.5, 1)
+
+    # bouts de rameaux : tube fin debout, parfois une souche qui continue sur le côté
+    for (x, y, z), d in tips + [((0, height - 1, 0), None)]:
+        for k in range(1, r.randint(1, 2) + 1):
+            if not p.free(x, y + k, z):
                 break
-            cells.append((cx, cz))
-        if len(cells) < 2:
-            continue
-        for k, (cx, cz) in enumerate(cells[:-1]):
-            p.set(cx, y, cz, trunk if k < thick else long_branch, lying(d))
-        ex, ez = cells[-1]
-        if r.random() < 0.55:
-            # coude puis tube qui remonte
-            p.set(ex, y, ez, trunk)
-            elbows.append((ex, y, ez))
-            rise = r.randint(1, 3)
-            for k in range(1, rise + 1):
-                if p.free(ex, y + k, ez):
-                    p.set(ex, y + k, ez, long_branch, UPRIGHT)
-            # rameau latéral sur le coude
-            side = (d[1], d[0]) if r.random() < 0.5 else (-d[1], -d[0])
-            if p.free(ex + side[0], y, ez + side[1]):
-                p.set(ex + side[0], y, ez + side[1], stub, stub_rotation(side))
-        else:
-            p.set(ex, y, ez, stub, stub_rotation(d))
-            if len(cells) >= 3:
-                # sous le départ de la branche (tronc couché, plein) : de quoi suspendre
-                elbows.append((cells[0][0], y, cells[0][1]))
+            p.set(x, y + k, z, twig, UPRIGHT)
+        if d and p.free(x + d[0], y, z + d[1]) and r.random() < 0.6:
+            p.set(x + d[0], y, z + d[1], stub, stub_rotation(d))
 
-    # feuillage mort clairsemé autour du sommet et des coudes (essences qui en portent)
-    if SPECIES[species][1] and r.random() < 0.6:
-        for cx, cy, cz in elbows + [top]:
-            for _ in range(r.randint(2, 5)):
-                lx, ly, lz = cx + r.randint(-1, 1), cy + r.randint(0, 2), cz + r.randint(-1, 1)
-                if p.free(lx, ly, lz):
-                    p.set(lx, ly, lz, "Plant_Leaves_Dead")
+    # feuilles mortes posées sur le dessus des branches (le modèle du jeu repose sur un bloc plein)
+    if r.random() < 0.75:
+        for x, y, z in limbs:
+            if p.free(x, y + 1, z) and r.random() < 0.3:
+                p.set(x, y + 1, z, leaves)
 
-    # ce qui pend sous les coudes (troncs pleins) : buissons morts, toiles, lanterne, cage, corde
+    # ce qui pend sous les branches : lanterne, cage, corde, toiles, buissons morts
     hung = False
-    for ex, ey, ez in elbows:
-        below = (ex, ey - 1, ez)
-        if not p.free(*below) or ey < 4:
-            continue
+    r.shuffle(limbs)
+    for x, y, z in limbs:
         drop = {"lantern": 2, "cage": 3, "noose": 2}.get(hanging, 0)
-        if hanging and not hung and all(p.free(ex, ey - k, ez) for k in range(1, drop + 2)):
+        if hanging and not hung and y >= drop + 2 and all(p.free(x, y - k, z) for k in range(1, drop + 2)):
             hung = True
             if hanging == "lantern":
-                p.set(ex, ey - 1, ez, "Deco_Iron_Chains_Vertical")
-                p.set(ex, ey - 2, ez, "Deco_Lantern_Ceiling")
+                p.set(x, y - 1, z, "Deco_Iron_Chains_Vertical")
+                p.set(x, y - 2, z, "Deco_Lantern_Ceiling")
             elif hanging == "cage":
-                p.set(ex, ey - 1, ez, "Deco_Iron_Chains_Vertical")
-                p.set(ex, ey - 2, ez, "Deco_Iron_Bars")
-                p.set(ex, ey - 3, ez, "Deco_Iron_Bars")
-                p.set(ex, 0, ez + 1, "Deco_Bone_Skulls")
+                p.set(x, y - 1, z, "Deco_Iron_Chains_Vertical")
+                p.set(x, y - 2, z, "Deco_Iron_Bars")
+                p.set(x, y - 3, z, "Deco_Iron_Bars")
+                if p.free(x, 0, z):
+                    p.set(x, 0, z, "Deco_Bone_Skulls")
             else:
                 for k in range(1, 3):
-                    p.set(ex, ey - k, ez, "Deco_Rope")
+                    p.set(x, y - k, z, "Deco_Rope")
             continue
-        if webs and r.random() < 0.7:
-            p.set(*below, p.pick(WEBS))
-        elif r.random() < 0.5:
-            p.set(*below, "Plant_Bush_Dead_Hanging")
+        if not p.free(x, y - 1, z) or y < 3:
+            continue
+        if webs and r.random() < 0.35:
+            p.set(x, y - 1, z, p.pick(WEBS))
+        elif r.random() < 0.2:
+            p.set(x, y - 1, z, "Plant_Bush_Dead_Hanging")
 
     # au pied : herbes tordues, racines noueuses, parfois des os ou des champignons qui luisent
     for _ in range(r.randint(2, 5)):
-        gx, gz = r.randint(-2, 2), r.randint(-2, 2)
-        if p.free(gx, 0, gz) and (gx, gz) != (0, 0):
+        gx, gz = r.randint(-2, 3), r.randint(-2, 3)
+        if p.free(gx, 0, gz):
             p.set(gx, 0, gz, r.choice(["Wood_Gnarled_Roots", "Plant_Grass_Gnarled", "Plant_Grass_Gnarled_Short", "Plant_Bush_Dead"]))
     if r.random() < 0.3:
         gx, gz = r.choice([(-2, 1), (2, -1), (1, 2), (-1, -2)])
         if p.free(gx, 0, gz):
             p.set(gx, 0, gz, p.pick(GLOW_MUSHROOMS if r.random() < 0.6 else BONES), r.randint(0, 3))
     assert is_connected(p), f"arbre {seed} : bois détaché"
+    assert not floating_blocks(p), f"arbre {seed} : blocs qui flottent {sorted(floating_blocks(p))[:5]}"
     return p
 
 

@@ -164,8 +164,16 @@ def surface_locator(prop, pattern, reach):
     }
 
 
-def prefab(path, seed, rotate=True):
-    p = {"Type": "Prefab", "WeightedPrefabPaths": [{"Path": f"{PREFABS}/{path}", "Weight": 1.0}]}
+VANILLA_DEAD_TREES = "Trees/Ash_Dead"
+
+
+def prefab(path, seed, rotate=True, vanilla=False):
+    """Prop d'un dossier de prefabs : les nôtres sous Nakasar/Halloween, ou ceux du jeu (`vanilla`).
+
+    Le serveur cherche le chemin dans tous les packs, jeu compris, et charge tous les prefabs du
+    dossier. Un chemin absent ne place rien, sans erreur.
+    """
+    p = {"Type": "Prefab", "WeightedPrefabPaths": [{"Path": path if vanilla else f"{PREFABS}/{path}", "Weight": 1.0}]}
     if rotate:
         p = {"Type": "RandomRotator", "HorizontalRotations": True, "Seed": seed, "Prop": p}
     return p
@@ -317,6 +325,8 @@ def biome():
     small = lambda path, seed: surface_locator(prefab(path, seed), GRASS_FLOOR, 26)
     trees = runtime(1, "Chunk", on_island(outside_structures(mesh(13.0, 0.45, "Trees"))), weighted_assignments("TreePick", 0.35, [
         (small("Trees", "Tree"), 1.0),
+        # frênes morts du jeu (dossier Server/Prefabs/Trees/Ash_Dead d'Assets.zip, toutes tailles)
+        (surface_locator(prefab(VANILLA_DEAD_TREES, "VanillaTree", vanilla=True), GRASS_FLOOR, 26), 0.8),
     ]))
     decor = runtime(1, "Chunk", on_island(outside_structures(mesh(21.0, 0.45, "Decor"))), weighted_assignments("DecorPick", 0.25, [
         (small("Decor/Outcrops", "Outcrop"), 2.5),

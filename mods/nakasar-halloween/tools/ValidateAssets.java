@@ -338,6 +338,9 @@ public class ValidateAssets {
         Matcher matcher = PREFAB_PATH.matcher(Files.readString(file));
         while (matcher.find()) {
             String path = matcher.group(1);
+            if (!path.startsWith("Nakasar/")) {
+                continue; // prefab du jeu (Assets.zip, absent ici) : un chemin absent ne place rien
+            }
             Path target = root.resolve("Prefabs").resolve(path);
             boolean found = Files.isRegularFile(target) && path.endsWith(".json");
             if (!found && Files.isDirectory(target)) {
