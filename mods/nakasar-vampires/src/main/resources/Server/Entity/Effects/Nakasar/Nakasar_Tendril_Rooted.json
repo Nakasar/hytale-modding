@@ -1,6 +1,6 @@
 {
-  "$Comment": "Joueur retenu par les vrilles de la citrouille géante : il ne peut plus bouger tant qu'il n'a pas détruit la vrille à ses pieds. La durée est posée par Nakasar_RootTrap (sécurité : 20 s au plus) et l'effet est retiré dès que la vrille meurt.",
-  "Duration": 20,
+  "$Comment": "Joueur retenu par les vrilles de la citrouille géante : il ne peut plus bouger tant qu'il n'a pas détruit la vrille à ses pieds. Effet court reconduit chaque quart de seconde par Nakasar_RootTrap tant que la vrille vit (20 s au plus), et retiré dès qu'elle meurt.",
+  "Duration": 1,
   "OverlapBehavior": "Overwrite",
   "RemovalBehavior": "Duration",
   "Debuff": true,

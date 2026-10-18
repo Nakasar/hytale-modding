@@ -31,7 +31,20 @@
       },
       "Instructions": [
         {
-          "Actions": []
+          "$Comment": "Filet de sécurité si le plugin ne la retire pas : elle disparaît au bout de 22 s.",
+          "Actions": [
+            {
+              "Type": "Timeout",
+              "Delay": [
+                22,
+                22
+              ],
+              "Action": {
+                "Type": "Despawn",
+                "Force": true
+              }
+            }
+          ]
         }
       ]
     }

@@ -239,7 +239,7 @@
           ]
         },
         {
-          "$Comment": "Balayage circulaire annoncé quand la cible est à moins de 5 blocs.",
+          "$Comment": "Balayage circulaire annoncé (cercle de 5 blocs) quand la cible est à moins de 4,5 blocs.",
           "Sensor": {
             "Type": "And",
             "Sensors": [

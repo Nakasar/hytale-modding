@@ -9,6 +9,7 @@ import com.hypixel.hytale.component.RemoveReason;
 import com.hypixel.hytale.component.Store;
 import com.hypixel.hytale.math.vector.Rotation3f;
 import com.hypixel.hytale.protocol.InteractionType;
+import com.hypixel.hytale.server.core.asset.type.attitude.Attitude;
 import com.hypixel.hytale.server.core.asset.type.entityeffect.config.EntityEffect;
 import com.hypixel.hytale.server.core.asset.type.entityeffect.config.OverlapBehavior;
 import com.hypixel.hytale.server.core.entity.Frozen;
@@ -41,9 +42,15 @@ import java.util.concurrent.TimeUnit;
  * allié) la détruit en un ou deux coups, ce qui la libère. Un joueur est immobilisé par l'effet de statut
  * {@code EffectId} ({@code MovementEffects.DisableAll}), un PNJ par le composant {@link Frozen} (l'effet n'arrête
  * pas l'IA). On surveille chaque piège toutes les {@value #POLL_MS} ms : vrille morte ou disparue, victime morte, ou
- * {@code MaxDuration} écoulée (la vrille est alors retirée) libèrent la victime.
+ * {@code MaxDuration} écoulée (la vrille est alors retirée) libèrent la victime. À chaque passage on reconduit
+ * l'immobilisation : l'effet du joueur ne dure que {@value #EFFECT_SECONDS} s (un joueur déconnecté en plein piège
+ * n'en garde presque rien) et le gel d'un PNJ est reposé si un autre sort l'a retiré (fin des Chaînes spectrales).
  *
- * <p>Sont épargnés : le lanceur, les alliés du lanceur (mobs du fragment), une victime déjà prise et les vrilles.
+ * <p>La vrille n'est pas sauvegardée ({@code NonSerialized}) et la victime porte {@link RootTrapped}, qui retire le
+ * gel posé par le piège si elle quitte le monde en plein piège ({@link RootTrapUnloadSystem}).
+ *
+ * <p>Sont épargnés : le lanceur, ses alliés (mobs du fragment ; sous Domination, son dominateur et les autres PNJ
+ * du même maître), une victime déjà prise et les vrilles.
  *
  * <p>Clés JSON : {@code TendrilRole} (string, défaut {@code Nakasar_Pumpkin_Tendril}), {@code EffectId}
  * (string, défaut {@code Nakasar_Tendril_Rooted}), {@code MaxDuration} (float, défaut 20).
@@ -67,11 +74,12 @@ public class RootTrapInteraction extends SimpleInstantInteraction {
             .build();
 
     private static final long POLL_MS = 250;
+    private static final float EFFECT_SECONDS = 1f;
 
     /** Piège en cours par victime. */
     private static final Map<Ref<EntityStore>, Trap> TRAPS = new ConcurrentHashMap<>();
 
-    private record Trap(Ref<EntityStore> tendril, int effectIndex, boolean frozenByUs, long deadline) {
+    private record Trap(Ref<EntityStore> tendril, boolean player, EntityEffect effect, long deadline) {
     }
 
     protected String tendrilRole = "Nakasar_Pumpkin_Tendril";
@@ -90,7 +98,7 @@ public class RootTrapInteraction extends SimpleInstantInteraction {
         if (buffer == null || victim == null || !victim.isValid() || victim.equals(caster) || TRAPS.containsKey(victim)
                 || buffer.getComponent(victim, DeathComponent.getComponentType()) != null
                 || isTendril(victim, buffer)
-                || (caster != null && caster.isValid() && Allegiances.bothInFaction(caster, victim, buffer))) {
+                || (caster != null && caster.isValid() && isAlly(caster, victim, buffer))) {
             return;
         }
         TransformComponent transform = buffer.getComponent(victim, TransformComponent.getComponentType());
@@ -124,27 +132,39 @@ public class RootTrapInteraction extends SimpleInstantInteraction {
             return;
         }
         Ref<EntityStore> tendril = spawned.first();
+        // Jamais sauvegardée : un chunk déchargé en plein piège ne ramène pas de vrille orpheline.
+        store.ensureAndGetComponent(tendril, EntityStore.REGISTRY.getNonSerializedComponentType());
 
-        int effectIndex = Integer.MIN_VALUE;
-        boolean frozenByUs = false;
+        EntityEffect effect = null;
         if (player) {
-            EntityEffect effect = EntityEffect.getAssetMap().getAsset(effectId);
-            EffectControllerComponent effects = store.getComponent(victim, EffectControllerComponent.getComponentType());
+            effect = EntityEffect.getAssetMap().getAsset(effectId);
             if (effect == null) {
                 VampiresPlugin.get().getLogger().atWarning().log("%s : effet '%s' introuvable", TYPE_ID, effectId);
-            } else if (effects != null) {
-                effects.addEffect(victim, effect, maxDuration, OverlapBehavior.OVERWRITE, store);
-                effectIndex = EntityEffect.getAssetMap().getIndex(effectId);
+            }
+        }
+        store.ensureAndGetComponent(victim, RootTrapped.getComponentType());
+        Trap trap = new Trap(tendril, player, effect, System.nanoTime() + (long) (maxDuration * 1_000_000_000L));
+        TRAPS.put(victim, trap);
+        hold(store, victim, trap);
+        world.scheduleAfter(() -> watch(world, victim), POLL_MS, TimeUnit.MILLISECONDS);
+    }
+
+    /** (Re)pose l'immobilisation : effet court pour un joueur, gel pour un PNJ s'il n'est plus gelé. */
+    private static void hold(Store<EntityStore> store, Ref<EntityStore> victim, Trap trap) {
+        if (trap.player()) {
+            EffectControllerComponent effects = store.getComponent(victim, EffectControllerComponent.getComponentType());
+            if (trap.effect() != null && effects != null) {
+                effects.addEffect(victim, trap.effect(), EFFECT_SECONDS, OverlapBehavior.OVERWRITE, store);
             }
         } else if (store.getComponent(victim, Frozen.getComponentType()) == null) {
-            // Déjà gelé par quelqu'un d'autre (Chaînes spectrales, /npc freeze) : on ne touche pas à son gel.
+            // Gel absent (jamais posé, ou retiré par la fin des Chaînes spectrales) : c'est désormais le nôtre.
+            // Déjà gelé par quelqu'un d'autre (/npc freeze) : on ne touche pas à son gel.
             store.ensureAndGetComponent(victim, Frozen.getComponentType());
-            frozenByUs = true;
+            RootTrapped marker = store.getComponent(victim, RootTrapped.getComponentType());
+            if (marker != null) {
+                marker.frozenByUs = true;
+            }
         }
-
-        long deadline = System.nanoTime() + (long) (maxDuration * 1_000_000_000L);
-        TRAPS.put(victim, new Trap(tendril, effectIndex, frozenByUs, deadline));
-        world.scheduleAfter(() -> watch(world, victim), POLL_MS, TimeUnit.MILLISECONDS);
     }
 
     /** Libère la victime quand sa vrille n'est plus là ; sinon repasse plus tard. Tourne sur le thread du monde. */
@@ -157,6 +177,7 @@ public class RootTrapInteraction extends SimpleInstantInteraction {
         boolean tendrilAlive = alive(trap.tendril(), store);
         boolean expired = System.nanoTime() >= trap.deadline();
         if (tendrilAlive && alive(victim, store) && !expired) {
+            hold(store, victim, trap);
             world.scheduleAfter(() -> watch(world, victim), POLL_MS, TimeUnit.MILLISECONDS);
             return;
         }
@@ -171,19 +192,34 @@ public class RootTrapInteraction extends SimpleInstantInteraction {
         if (!victim.isValid()) {
             return;
         }
-        if (trap.effectIndex() != Integer.MIN_VALUE) {
+        if (trap.effect() != null) {
+            int index = EntityEffect.getAssetMap().getIndex(trap.effect().getId());
             EffectControllerComponent effects = store.getComponent(victim, EffectControllerComponent.getComponentType());
-            if (effects != null && effects.hasEffect(trap.effectIndex())) {
-                effects.removeEffect(victim, trap.effectIndex(), store);
+            if (effects != null && effects.hasEffect(index)) {
+                effects.removeEffect(victim, index, store);
             }
         }
-        if (trap.frozenByUs()) {
+        RootTrapped marker = store.getComponent(victim, RootTrapped.getComponentType());
+        if (marker != null && marker.frozenByUs) {
             store.tryRemoveComponent(victim, Frozen.getComponentType());
         }
+        store.tryRemoveComponent(victim, RootTrapped.getComponentType());
     }
 
     private static boolean alive(Ref<EntityStore> ref, Store<EntityStore> store) {
         return ref.isValid() && store.getComponent(ref, DeathComponent.getComponentType()) == null;
+    }
+
+    /**
+     * Allié du lanceur : sous Domination, son maître et les autres PNJ du même maître (et non plus ses anciens
+     * alliés du fragment) ; sinon, les autres mobs du fragment.
+     */
+    private static boolean isAlly(Ref<EntityStore> caster, Ref<EntityStore> victim, CommandBuffer<EntityStore> buffer) {
+        Attitude domination = Allegiances.dominationAttitude(caster, victim, buffer);
+        if (domination != null) {
+            return domination == Attitude.FRIENDLY;
+        }
+        return Allegiances.bothInFaction(caster, victim, buffer);
     }
 
     private boolean isTendril(Ref<EntityStore> ref, CommandBuffer<EntityStore> buffer) {

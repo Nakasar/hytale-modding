@@ -284,7 +284,10 @@ Les boss réutilisent les interactions et particules des runes.
   entité du cercle (`Selector` `AOECircle`), fait apparaître le PNJ `Nakasar_Pumpkin_Tendril` à ses pieds (après
   le tick, `NPCPlugin.spawnNPC`) et l'immobilise : effet `Nakasar_Tendril_Rooted` (`DisableAll`) pour un joueur,
   composant `Frozen` pour un PNJ. Toutes les 250 ms on vérifie la vrille : morte ou disparue, la victime est libérée ;
-  au bout de 20 s la vrille est retirée. Les alliés de la citrouille (camp du fragment) et les vrilles sont épargnés.
+  au bout de 20 s la vrille est retirée. L'immobilisation est reconduite à chaque vérification (effet d'1 s pour un
+  joueur, gel reposé s'il a été retiré). La vrille n'est pas sauvegardée ; une victime qui quitte le monde en plein
+  piège perd le gel posé par le piège (`RootTrapped` + `RootTrapUnloadSystem`). Les alliés de la citrouille (camp du
+  fragment, ou sous Domination son maître et les PNJ du même maître) et les vrilles sont épargnés.
 - **Faiblesse au feu** (Java, `pumpkin/FireWeaknessSystem`) : dans le groupe de filtrage des dégâts, après
   `AllegianceDamageFilter`, les dégâts de cause `Fire` (ou qui en hérite) sur un membre de `Nakasar_Pumpkin_Patch`
   sont doublés.

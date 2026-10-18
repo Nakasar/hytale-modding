@@ -76,10 +76,10 @@
           ]
         },
         {
-          "$Comment": "Mobs du fragment (ennemis jurés, attitude imposée par le mod) : il les attaque à vue.",
+          "$Comment": "Mobs du fragment (ennemis jurés, attitude imposée par le mod) : il les attaque à vue, jusqu'à 16 blocs (laisse de 14 + portée de l'épée : il ne court pas après une cible qu'il ne pourrait pas atteindre).",
           "Sensor": {
             "Type": "Mob",
-            "Range": 20,
+            "Range": 16,
             "LockOnTarget": true,
             "Filters": [
               {

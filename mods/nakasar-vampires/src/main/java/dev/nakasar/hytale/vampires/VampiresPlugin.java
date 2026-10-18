@@ -12,6 +12,8 @@ import dev.nakasar.hytale.vampires.domination.Dominations;
 import dev.nakasar.hytale.vampires.prison.ImprisonPlayerInteraction;
 import dev.nakasar.hytale.vampires.pumpkin.FireWeaknessSystem;
 import dev.nakasar.hytale.vampires.pumpkin.RootTrapInteraction;
+import dev.nakasar.hytale.vampires.pumpkin.RootTrapUnloadSystem;
+import dev.nakasar.hytale.vampires.pumpkin.RootTrapped;
 import dev.nakasar.hytale.vampires.rune.DrainBeamInteraction;
 import dev.nakasar.hytale.vampires.rune.RootNpcInteraction;
 import dev.nakasar.hytale.vampires.rune.TeleportCasterToImpactInteraction;
@@ -72,10 +74,12 @@ public final class VampiresPlugin extends JavaPlugin {
                 RootTrapInteraction.class, RootTrapInteraction.CODEC);
 
         var systems = getEntityStoreRegistry();
+        RootTrapped.setComponentType(systems.registerComponent(RootTrapped.class, RootTrapped::new));
         systems.registerSystem(new AllegianceAttitudeSystem());
         systems.registerSystem(new AllegianceDamageFilter());
         systems.registerSystem(new DominationExpirySystem());
         systems.registerSystem(new FireWeaknessSystem());
+        systems.registerSystem(new RootTrapUnloadSystem());
 
         getLogger().atInfo().log("Nakasar Vampires : 7 types d'interaction (%s, %s, %s, %s, %s, %s, %s) et systèmes des camps enregistrés",
                 TeleportCasterToImpactInteraction.TYPE_ID, DominateInteraction.TYPE_ID, RootNpcInteraction.TYPE_ID,
