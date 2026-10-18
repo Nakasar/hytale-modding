@@ -95,6 +95,7 @@ public class ValidateRoles {
         System.out.println("ERROR " + root.relativize(file) + " : " + e); errors++;
       }
     }
+    errors += checkAttackTags(files, a);
     for (String r : refs) {
       String id = r.substring(0, r.indexOf(" ("));
       // Nos ids sont préfixés Nakasar_ : s'il n'est fourni par aucun pack, c'est une faute de frappe.
@@ -108,6 +109,52 @@ public class ValidateRoles {
     System.setOut(out);
     System.out.println((errors == 0 ? "OK    " : "FAIL  ") + files.size() + " rôle(s), " + errors + " erreur(s)");
     if (errors > 0) System.exit(1);
+  }
+  /**
+   * Les RootInteractions ne sont pas chargées hors jeu, donc le CombatInteractionValidator du serveur ne tourne pas.
+   * On refait sa vérification sur les fichiers des packs : une interaction utilisée par une action "Attack" doit porter
+   * le tag "Attack" (Tags: {"Attack": ["Melee"|"Ranged"|"Block"]}), avec un seul type d'attaque.
+   */
+  static int checkAttackTags(List<Path> roles, String[] packs) throws Exception {
+    java.util.Map<String, Path> roots = new java.util.HashMap<>();
+    for (String pack : packs) {
+      Path dir = Path.of(pack).resolve("Item/RootInteractions");
+      if (!java.nio.file.Files.isDirectory(dir)) continue;
+      try (var walk = java.nio.file.Files.walk(dir)) {
+        walk.filter(x -> x.toString().endsWith(".json")).forEach(x -> roots.put(x.getFileName().toString().replaceFirst("\\.json$", ""), x));
+      }
+    }
+    int errors = 0;
+    java.util.Set<String> seen = new java.util.HashSet<>();
+    for (Path role : roles) {
+      java.util.List<String> attacks = new java.util.ArrayList<>();
+      collectAttacks(org.bson.BsonDocument.parse(java.nio.file.Files.readString(role)), attacks);
+      for (String id : attacks) {
+        Path file = roots.get(id);
+        if (file == null || !seen.add(id)) continue;
+        org.bson.BsonDocument root = org.bson.BsonDocument.parse(java.nio.file.Files.readString(file));
+        org.bson.BsonValue tags = root.get("Tags");
+        org.bson.BsonValue attack = tags != null && tags.isDocument() ? tags.asDocument().get("Attack") : null;
+        if (attack == null) {
+          System.out.println("ERROR " + id + " : utilisée par une action Attack sans le tag \"Attack\" (ajouter \"Tags\": {\"Attack\": [\"Melee\"]} ou [\"Ranged\"])");
+          errors++;
+        } else if (attack.isArray() && attack.asArray().stream().filter(v -> v.isString() && List.of("Melee", "Ranged", "Block").contains(v.asString().getValue())).count() > 1) {
+          System.out.println("ERROR " + id + " : plusieurs types d'attaque dans le tag \"Attack\" (un seul parmi Melee, Ranged, Block)");
+          errors++;
+        }
+      }
+    }
+    return errors;
+  }
+  static void collectAttacks(org.bson.BsonValue v, List<String> out) {
+    if (v.isDocument()) {
+      org.bson.BsonDocument d = v.asDocument();
+      org.bson.BsonValue type = d.get("Type"), attack = d.get("Attack");
+      if (type != null && type.isString() && type.asString().getValue().equals("Attack") && attack != null && attack.isString()) out.add(attack.asString().getValue());
+      for (org.bson.BsonValue c : d.values()) collectAttacks(c, out);
+    } else if (v.isArray()) {
+      for (org.bson.BsonValue c : v.asArray()) collectAttacks(c, out);
+    }
   }
   // Les assets (modèles, interactions, groupes...) ne sont pas chargés hors jeu : ces références sont listées, pas comptées.
   static final java.util.regex.Pattern MISSING = java.util.regex.Pattern.compile("\"([^\"]+)\" does not exist (?:for|in) attribute \"([^\"]+)\"");
