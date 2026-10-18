@@ -41,7 +41,10 @@ spawns, modèles, effets, butins, interactions, y compris celles écrites en lig
 avec les codecs du jar serveur et signale les clés inconnues et les valeurs invalides (par exemple un
 `Parallel` à une seule branche), sans démarrer le jeu. Il vérifie aussi que
 chaque bloc des prefabs et du générateur existe dans `tools/vanilla-block-ids-0.7.2.txt` (un id inconnu
-devient un damier rose et noir en jeu). Les autres ids référencés (PNJ, sons, stats, `PortalKey_Taiga`,
+devient un damier rose et noir en jeu). Il vérifie enfin les références vers les listes de butin (`DropList`, `DroplistId`, coffres des prefabs), les rôles
+de PNJ (marqueurs et apparitions, invocations `Kind`) et les marqueurs d'apparition (`SpawnMarker`) : chaque id doit
+exister dans le pack ou figurer dans `tools/vanilla-refs-0.7.2.txt`. En jeu, une liste de butin inconnue rejette le
+rôle qui la cite, puis le marqueur qui fait apparaître ce rôle fait échouer tout le mod. Les autres ids référencés (sons, stats, `PortalKey_Taiga`,
 `Env_Zone1_Plains`) ne sont pas vérifiés, ni les interactions de type Java de nos plugins et les assets
 qui héritent d'un parent vanilla (notés « non vérifiable hors jeu »).
 

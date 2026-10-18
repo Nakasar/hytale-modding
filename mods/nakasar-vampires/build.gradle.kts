@@ -64,16 +64,19 @@ val validateAssets = tasks.register<Exec>("validateAssets") {
     val launcher = javaToolchains.launcherFor { languageVersion.set(JavaLanguageVersion.of(25)) }
     val blocks = file("tools/vanilla-block-ids-0.7.2.txt")
     val gradients = file("tools/vanilla-gradient-sets-0.7.2.txt")
+    val refs = file("tools/vanilla-refs-0.7.2.txt")
     inputs.dir(serverAssets)
     inputs.file("tools/ValidateAssets.java")
-    inputs.files(blocks, gradients)
+    inputs.files(blocks, gradients, refs)
     inputs.files(hytaleServer)
     val marker = layout.buildDirectory.file("validateAssets.ok")
     outputs.file(marker)
     doFirst {
         executable = launcher.get().executablePath.asFile.absolutePath
         // -Dblocks : ids de blocs vanilla, pour repérer dans les prefabs les blocs inconnus (damier rose en jeu).
+        // -Drefs : listes de butin et rôles vanilla cités par le mod (un id inconnu fait échouer le mod en jeu).
         args("-Dstdout.encoding=UTF-8", "-Dblocks=" + blocks.absolutePath, "-Dgradients=" + gradients.absolutePath,
+            "-Drefs=" + refs.absolutePath,
             "-cp", hytaleServer.asPath, file("tools/ValidateAssets.java").absolutePath, file(serverAssets).absolutePath)
     }
     doLast {

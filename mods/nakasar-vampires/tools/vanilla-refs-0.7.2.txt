@@ -1,0 +1,26 @@
+# Ids vanilla référencés par le mod, que ValidateAssets accepte sans les trouver dans le pack.
+# Une ligne par id : « <type> <id> ». Types : droplist (listes de butin), npc (rôles de PNJ).
+# Un id absent du jeu fait échouer en jeu l'asset qui le cite, et parfois tout le mod (rôle sans
+# butin -> marqueur d'apparition sans rôle -> « Asset validation FAILED »). N'ajouter ici qu'un id
+# vu dans les fichiers du jeu ou chargé sans erreur en jeu ; préciser la source.
+
+# Chargés sans erreur en jeu (journal de Kevin, 2026-10-18).
+droplist Drop_Zombie
+droplist Drop_Skeleton_Knight
+
+# Rôles vanilla des apparitions du fragment : ids du wiki communautaire, à confirmer en jeu
+# (/npc spawn sans argument liste les vrais ids).
+npc Bat
+npc Crow
+npc Ghoul
+npc Skeleton
+npc Skeleton_Archer
+npc Skeleton_Archmage
+npc Skeleton_Elite
+npc Skeleton_Soldier
+npc Spider
+npc Spider_Cave
+npc Werewolf
+npc Wraith
+npc Zombie
+npc Zombie_Aberrant

@@ -12,7 +12,7 @@
       },
       {
         "Type": "Droplist",
-        "DroplistId": "Drop_Zombie_Aberrant_Big"
+        "DroplistId": "Drop_Zombie"
       }
     ]
   }
