@@ -16,6 +16,8 @@ import dev.nakasar.hytale.vampires.domination.Dominations;
  * <ul>
  *   <li>Les membres du groupe {@value #FACTION_GROUP} (les mobs du fragment Halloween) sont alliés entre eux :
  *       ils ne se ciblent pas et ne se blessent pas.</li>
+ *   <li>Les chasseurs de vampires (groupe {@value #HUNTERS_GROUP}) et les mobs du fragment sont ennemis jurés :
+ *       ils s'attaquent à vue.</li>
  *   <li>Un PNJ dominé change de camp le temps de la Domination : il est l'allié de son dominateur (et des autres
  *       PNJ du même dominateur) et l'ennemi de ses anciens alliés, qui le voient eux aussi comme un ennemi.</li>
  * </ul>
@@ -25,6 +27,7 @@ import dev.nakasar.hytale.vampires.domination.Dominations;
 public final class Allegiances {
 
     public static final String FACTION_GROUP = "Nakasar_Halloween_Faction";
+    public static final String HUNTERS_GROUP = "Nakasar_Vampire_Hunters";
 
     private Allegiances() {
     }
@@ -51,11 +54,22 @@ public final class Allegiances {
 
     /** Vrai si les deux entités sont des PNJ du groupe {@value #FACTION_GROUP}. */
     public static boolean bothInFaction(Ref<EntityStore> a, Ref<EntityStore> b, ComponentAccessor<EntityStore> accessor) {
-        int group = NPCGroup.getAssetMap().getIndexOrDefault(FACTION_GROUP, Integer.MIN_VALUE);
-        return group != Integer.MIN_VALUE
-                && isNpc(a, accessor) && isNpc(b, accessor)
-                && WorldSupport.isGroupMember(Integer.MIN_VALUE, a, group, accessor)
-                && WorldSupport.isGroupMember(Integer.MIN_VALUE, b, group, accessor);
+        return isNpc(a, accessor) && isNpc(b, accessor)
+                && inGroup(a, FACTION_GROUP, accessor) && inGroup(b, FACTION_GROUP, accessor);
+    }
+
+    /** Vrai si l'un est un chasseur de vampires et l'autre un mob du fragment. */
+    public static boolean huntersVsFaction(Ref<EntityStore> a, Ref<EntityStore> b, ComponentAccessor<EntityStore> accessor) {
+        if (!isNpc(a, accessor) || !isNpc(b, accessor)) {
+            return false;
+        }
+        return (inGroup(a, HUNTERS_GROUP, accessor) && inGroup(b, FACTION_GROUP, accessor))
+                || (inGroup(a, FACTION_GROUP, accessor) && inGroup(b, HUNTERS_GROUP, accessor));
+    }
+
+    private static boolean inGroup(Ref<EntityStore> ref, String name, ComponentAccessor<EntityStore> accessor) {
+        int group = NPCGroup.getAssetMap().getIndexOrDefault(name, Integer.MIN_VALUE);
+        return group != Integer.MIN_VALUE && WorldSupport.isGroupMember(Integer.MIN_VALUE, ref, group, accessor);
     }
 
     /** Vrai si les deux PNJ étaient alliés, domination mise à part. */

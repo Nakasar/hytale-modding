@@ -1,0 +1,39 @@
+{
+  "$Comment": "Vrille de la citrouille géante, posée par Nakasar_RootTrap aux pieds d'une victime qu'elle retient. Elle n'attaque pas, ne bouge pas et a peu de vie : un ou deux coups la détruisent et libèrent la victime. Disparaît au bout de 20 s (dev.nakasar.hytale.vampires.pumpkin.RootTrapInteraction).",
+  "Type": "Generic",
+  "Appearance": "Nakasar_Pumpkin_Tendril",
+  "NameTranslationKey": "nakasar_mobs.npc.Pumpkin_Tendril.name",
+  "MaxHealth": 12,
+  "StartState": "Idle",
+  "DefaultPlayerAttitude": "Ignore",
+  "DefaultNPCAttitude": "Ignore",
+  "DisableDamageGroups": [
+    "Nakasar_Halloween_Faction"
+  ],
+  "KnockbackScale": 0,
+  "DeathAnimationTime": 0.3,
+  "DeathParticles": "Block_Break_Leaves",
+  "MotionControllerList": [
+    {
+      "Type": "Walk",
+      "MaxWalkSpeed": 1,
+      "Gravity": 10,
+      "MaxFallSpeed": 10,
+      "Acceleration": 12,
+      "JumpHeight": 0
+    }
+  ],
+  "Instructions": [
+    {
+      "Sensor": {
+        "Type": "State",
+        "State": "Idle"
+      },
+      "Instructions": [
+        {
+          "Actions": []
+        }
+      ]
+    }
+  ]
+}

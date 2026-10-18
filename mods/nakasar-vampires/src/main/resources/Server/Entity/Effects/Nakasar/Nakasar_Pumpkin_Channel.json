@@ -1,0 +1,10 @@
+{
+  "$Comment": "Posé sur la citrouille géante pendant qu'elle charge son piège de vrilles : elle ne recule pas sous les coups.",
+  "Duration": 3.5,
+  "OverlapBehavior": "Overwrite",
+  "RemovalBehavior": "Duration",
+  "Debuff": false,
+  "ApplicationEffects": {
+    "KnockbackMultiplier": 0
+  }
+}

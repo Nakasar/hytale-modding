@@ -21,6 +21,7 @@ import java.util.Set;
  * 200 = groupes d'attitude des rôles, puis attitudes par défaut du rôle.
  * <ul>
  *   <li>priorité -10 : changement de camp par la Domination, avant tout le reste ;</li>
+ *   <li>priorité 140 : chasseurs de vampires et mobs du fragment sont ennemis ;</li>
  *   <li>priorité 150 : deux mobs du fragment sont amis, sauf si un rôle a imposé autre chose.</li>
  * </ul>
  * Les PNJ gardent leurs attitudes en cache 0,1 s : un changement de camp est vu presque aussitôt.
@@ -41,6 +42,8 @@ public final class AllegianceAttitudeSystem extends StoreSystem<EntityStore> {
         AttitudeView view = store.getResource(Blackboard.getResourceType()).getView(AttitudeView.class, 0L);
         view.registerProvider(-10, (IAttitudeProvider) (ref, roleIndex, target, accessor) ->
                 Allegiances.dominationAttitude(ref, target, accessor));
+        view.registerProvider(140, (IAttitudeProvider) (ref, roleIndex, target, accessor) ->
+                Allegiances.huntersVsFaction(ref, target, accessor) ? Attitude.HOSTILE : null);
         view.registerProvider(150, (IAttitudeProvider) (ref, roleIndex, target, accessor) ->
                 Allegiances.bothInFaction(ref, target, accessor) ? Attitude.FRIENDLY : null);
     }

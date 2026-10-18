@@ -1,0 +1,405 @@
+{
+  "$Comment": "Citrouille géante animée (élite) d'une variante du champ de citrouilles. Elle ne se déplace pas. Coups de vrilles au corps à corps, épines et crachats de poison orange à distance, deux attaques annoncées par une zone rouge au sol : le balayage circulaire et le piège de vrilles (les ennemis restés dans la zone sont retenus par une vrille de 12 PV jusqu'à ce qu'ils la détruisent). Elle et ses vrilles prennent double dégâts de feu. Si on s'éloigne à plus de 20 blocs, elle se rendort et regagne sa vie.",
+  "Type": "Generic",
+  "Appearance": "Nakasar_Giant_Pumpkin",
+  "NameTranslationKey": "nakasar_mobs.npc.Giant_Pumpkin.name",
+  "MaxHealth": 600,
+  "DropList": "Nakasar_Drop_Giant_Pumpkin",
+  "StartState": "Idle",
+  "DefaultPlayerAttitude": "Hostile",
+  "DefaultNPCAttitude": "Ignore",
+  "DisableDamageGroups": [
+    "Nakasar_Halloween_Faction"
+  ],
+  "KnockbackScale": 0,
+  "DeathAnimationTime": 1.0,
+  "DeathParticles": "Block_Break_Leaves",
+  "MotionControllerList": [
+    {
+      "Type": "Walk",
+      "MaxWalkSpeed": 1,
+      "Gravity": 10,
+      "MaxFallSpeed": 10,
+      "Acceleration": 12,
+      "JumpHeight": 0
+    }
+  ],
+  "StateTransitions": [
+    {
+      "$Comment": "Entrée en combat : chaque attaque spéciale a sa propre recharge.",
+      "States": [
+        {
+          "From": [
+            "Idle"
+          ],
+          "To": [
+            "Combat"
+          ]
+        }
+      ],
+      "Actions": [
+        {
+          "Type": "TimerStart",
+          "Name": "RootTrap",
+          "StartValueRange": [
+            8,
+            10
+          ],
+          "RestartValueRange": [
+            16,
+            20
+          ]
+        },
+        {
+          "Type": "TimerStart",
+          "Name": "Sweep",
+          "StartValueRange": [
+            4,
+            5
+          ],
+          "RestartValueRange": [
+            8,
+            11
+          ]
+        },
+        {
+          "Type": "TimerStart",
+          "Name": "Spit",
+          "StartValueRange": [
+            2,
+            3
+          ],
+          "RestartValueRange": [
+            6,
+            8
+          ]
+        },
+        {
+          "Type": "TimerStart",
+          "Name": "Thorns",
+          "StartValueRange": [
+            1,
+            2
+          ],
+          "RestartValueRange": [
+            2.5,
+            3.5
+          ]
+        }
+      ]
+    }
+  ],
+  "Instructions": [
+    {
+      "Sensor": {
+        "Type": "State",
+        "State": "Idle"
+      },
+      "Instructions": [
+        {
+          "Sensor": {
+            "Type": "Damage",
+            "Combat": true,
+            "TargetSlot": "LockedTarget"
+          },
+          "Actions": [
+            {
+              "Type": "State",
+              "State": "Combat"
+            }
+          ]
+        },
+        {
+          "Sensor": {
+            "Type": "Player",
+            "Range": 14,
+            "LockOnTarget": true,
+            "Filters": [
+              {
+                "Type": "Attitude",
+                "Attitudes": [
+                  "Hostile"
+                ]
+              },
+              {
+                "Type": "LineOfSight"
+              }
+            ]
+          },
+          "Actions": [
+            {
+              "Type": "State",
+              "State": "Combat"
+            }
+          ]
+        },
+        {
+          "$Comment": "Un mob hostile (chasseur de vampires, mob dominé…) : même réaction qu'envers un joueur.",
+          "Sensor": {
+            "Type": "Mob",
+            "Range": 14,
+            "LockOnTarget": true,
+            "Filters": [
+              {
+                "Type": "Attitude",
+                "Attitudes": [
+                  "Hostile"
+                ]
+              },
+              {
+                "Type": "LineOfSight"
+              }
+            ]
+          },
+          "Actions": [
+            {
+              "Type": "State",
+              "State": "Combat"
+            }
+          ]
+        },
+        {
+          "Actions": []
+        }
+      ]
+    },
+    {
+      "Sensor": {
+        "Type": "State",
+        "State": "Combat"
+      },
+      "Instructions": [
+        {
+          "$Comment": "Cible perdue ou partie à plus de 20 blocs : elle se rendort et regagne toute sa vie.",
+          "Sensor": {
+            "Type": "Not",
+            "Sensor": {
+              "Type": "Target",
+              "Range": 20,
+              "Filters": [
+                {
+                  "Type": "Attitude",
+                  "Attitudes": [
+                    "Hostile",
+                    "Neutral",
+                    "Ignore"
+                  ]
+                }
+              ]
+            }
+          },
+          "Actions": [
+            {
+              "Type": "ReleaseTarget"
+            },
+            {
+              "Type": "SetStat",
+              "Stat": "Health",
+              "Value": 1000000
+            },
+            {
+              "Type": "State",
+              "State": "Idle"
+            }
+          ]
+        },
+        {
+          "$Comment": "Piège de vrilles annoncé (longue recharge) quand la cible est à moins de 6 blocs.",
+          "Sensor": {
+            "Type": "And",
+            "Sensors": [
+              {
+                "Type": "Target",
+                "Range": 6
+              },
+              {
+                "Type": "Timer",
+                "Name": "RootTrap",
+                "State": "STOPPED"
+              }
+            ]
+          },
+          "HeadMotion": {
+            "Type": "Watch",
+            "RelativeTurnSpeed": 1.0
+          },
+          "ActionsBlocking": true,
+          "Actions": [
+            {
+              "Type": "TimerRestart",
+              "Name": "RootTrap"
+            },
+            {
+              "Type": "Attack",
+              "Attack": "Root_Nakasar_NPC_Pumpkin_RootTrap",
+              "SkipAiming": true,
+              "LineOfSight": false,
+              "AvoidFriendlyFire": false
+            }
+          ]
+        },
+        {
+          "$Comment": "Balayage circulaire annoncé quand la cible est à moins de 5 blocs.",
+          "Sensor": {
+            "Type": "And",
+            "Sensors": [
+              {
+                "Type": "Target",
+                "Range": 4.5
+              },
+              {
+                "Type": "Timer",
+                "Name": "Sweep",
+                "State": "STOPPED"
+              }
+            ]
+          },
+          "HeadMotion": {
+            "Type": "Watch",
+            "RelativeTurnSpeed": 1.0
+          },
+          "ActionsBlocking": true,
+          "Actions": [
+            {
+              "Type": "TimerRestart",
+              "Name": "Sweep"
+            },
+            {
+              "Type": "Attack",
+              "Attack": "Root_Nakasar_NPC_Pumpkin_Sweep",
+              "SkipAiming": true,
+              "LineOfSight": false,
+              "AvoidFriendlyFire": false
+            }
+          ]
+        },
+        {
+          "$Comment": "Crachat de poison orange.",
+          "Sensor": {
+            "Type": "And",
+            "Sensors": [
+              {
+                "Type": "Target",
+                "Range": 16,
+                "Filters": [
+                  {
+                    "Type": "LineOfSight"
+                  }
+                ]
+              },
+              {
+                "Type": "Timer",
+                "Name": "Spit",
+                "State": "STOPPED"
+              }
+            ]
+          },
+          "HeadMotion": {
+            "Type": "Aim",
+            "RelativeTurnSpeed": 2
+          },
+          "ActionsBlocking": true,
+          "Actions": [
+            {
+              "Type": "Attack",
+              "Attack": "Root_Nakasar_NPC_Pumpkin_Spit",
+              "AimingTimeRange": [
+                0.3,
+                0.5
+              ]
+            },
+            {
+              "Type": "TimerRestart",
+              "Name": "Spit"
+            }
+          ]
+        },
+        {
+          "$Comment": "Coup de vrille au corps à corps.",
+          "Sensor": {
+            "Type": "Target",
+            "Range": 4.5,
+            "Filters": [
+              {
+                "Type": "LineOfSight"
+              }
+            ]
+          },
+          "HeadMotion": {
+            "Type": "Aim",
+            "RelativeTurnSpeed": 2
+          },
+          "ActionsBlocking": true,
+          "Actions": [
+            {
+              "Type": "Attack",
+              "Attack": "Root_Nakasar_NPC_Pumpkin_Lash",
+              "AttackPauseRange": [
+                1.2,
+                1.8
+              ]
+            },
+            {
+              "Type": "Timeout",
+              "Delay": [
+                0.2,
+                0.2
+              ]
+            }
+          ]
+        },
+        {
+          "$Comment": "Projection d'épines sur une cible à distance.",
+          "Sensor": {
+            "Type": "And",
+            "Sensors": [
+              {
+                "Type": "Target",
+                "Range": 18,
+                "Filters": [
+                  {
+                    "Type": "LineOfSight"
+                  }
+                ]
+              },
+              {
+                "Type": "Timer",
+                "Name": "Thorns",
+                "State": "STOPPED"
+              }
+            ]
+          },
+          "HeadMotion": {
+            "Type": "Aim",
+            "RelativeTurnSpeed": 2
+          },
+          "ActionsBlocking": true,
+          "Actions": [
+            {
+              "Type": "Attack",
+              "Attack": "Root_Nakasar_NPC_Pumpkin_Thorns",
+              "AimingTimeRange": [
+                0.3,
+                0.5
+              ]
+            },
+            {
+              "Type": "TimerRestart",
+              "Name": "Thorns"
+            }
+          ]
+        },
+        {
+          "Sensor": {
+            "Type": "Target",
+            "Range": 20
+          },
+          "HeadMotion": {
+            "Type": "Watch",
+            "RelativeTurnSpeed": 1.5
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,110 @@
+{
+  "$Comment": "Balayage circulaire annoncé : la citrouille rougeoie et une zone rouge de 5 blocs marque le sol pendant 1,2 s, puis des vrilles fouettent tout autour d'elle (26 dégâts, projection). On l'évite en sortant de la zone.",
+  "Type": "Serial",
+  "Interactions": [
+    {
+      "Type": "ClearEntityEffect",
+      "Entity": "User",
+      "EntityEffectId": "Hit_Interrupt_Eligible"
+    },
+    {
+      "Type": "ApplyEffect",
+      "EffectId": "Nakasar_Elite_Rooted"
+    },
+    {
+      "Type": "ApplyEffect",
+      "EffectId": "Dungeon_Goblin_Mace_Slam_Charge"
+    },
+    {
+      "Type": "Simple",
+      "RunTime": 1.2,
+      "Effects": {
+        "WorldSoundEventId": "SFX_Bramble_MoveIn",
+        "Particles": [
+          {
+            "SystemId": "Feastmaster_Slam_Warning",
+            "TargetEntityPart": "Entity",
+            "TargetNodeName": "Origin",
+            "Scale": 3.4,
+            "PositionOffset": {
+              "X": 0,
+              "Y": 0.1,
+              "Z": 0
+            },
+            "DetachedFromModel": true
+          }
+        ]
+      }
+    },
+    {
+      "Type": "Selector",
+      "RunTime": 0.1,
+      "Effects": {
+        "WorldSoundEventId": "SFX_Goblin_Feastmaster_Slam",
+        "Particles": [
+          {
+            "SystemId": "Stick_Slam_Ground_Large",
+            "TargetEntityPart": "Entity",
+            "TargetNodeName": "Origin",
+            "Scale": 1.0,
+            "PositionOffset": {
+              "X": 0,
+              "Y": 0.1,
+              "Z": 0
+            },
+            "DetachedFromModel": true
+          },
+          {
+            "SystemId": "Heal_Stick_ThornsUp",
+            "TargetEntityPart": "Entity",
+            "TargetNodeName": "Origin",
+            "Scale": 2.0,
+            "PositionOffset": {
+              "X": 0,
+              "Y": 0.1,
+              "Z": 0
+            },
+            "DetachedFromModel": true
+          }
+        ]
+      },
+      "Selector": {
+        "Id": "AOECircle",
+        "Range": 5
+      },
+      "HitEntity": {
+        "Interactions": [
+          {
+            "Parent": "DamageEntityParent",
+            "DamageCalculator": {
+              "BaseDamage": {
+                "Physical": 26
+              },
+              "RandomPercentageModifier": 0.1
+            },
+            "DamageEffects": {
+              "WorldSoundEventId": "SFX_Bramble_Break",
+              "WorldParticles": [
+                {
+                  "SystemId": "Heal_Stick_ThornsUp"
+                }
+              ],
+              "Knockback": {
+                "Type": "Force",
+                "Force": 9,
+                "VelocityType": "Set",
+                "Direction": {
+                  "Y": 1
+                }
+              }
+            }
+          }
+        ]
+      }
+    },
+    {
+      "Type": "Simple",
+      "RunTime": 0.6
+    }
+  ]
+}

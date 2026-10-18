@@ -1,0 +1,78 @@
+{
+  "$Comment": "Chasseuse de vampires à l'arbalète : chapeau à large bord, long manteau de cuir noir, masque de bandit, cheveux noués. Humanoïde sur le squelette du joueur.",
+  "Parent": "Player",
+  "Model": "Characters/Player.blockymodel",
+  "Texture": "Characters/Player_Textures/Player_Greyscale.png",
+  "GradientSet": "Skin",
+  "GradientId": "05",
+  "MinScale": 0.95,
+  "MaxScale": 1.05,
+  "DefaultAttachments": [
+    {
+      "Model": "Characters/Body_Attachments/Faces/Player_Face_Detached.blockymodel",
+      "Texture": "Characters/Body_Attachments/Faces/Faces_Detached_Textures/Almond_Eyes_Face.png",
+      "GradientSet": "Skin",
+      "GradientId": "05"
+    },
+    {
+      "Model": "Characters/Body_Attachments/Eyes/Eyes.blockymodel",
+      "Texture": "Characters/Body_Attachments/Eyes/Eyes_Textures/Greyscale.png",
+      "GradientSet": "Eyes_Gradient",
+      "GradientId": "Green"
+    },
+    {
+      "Model": "Characters/Body_Attachments/Eyebrows/Eyebrows_Medium.blockymodel",
+      "Texture": "Characters/Body_Attachments/Eyebrows/Medium_Greyscale.png",
+      "GradientSet": "Hair",
+      "GradientId": "BrownDark"
+    },
+    {
+      "Model": "Characters/Haircuts/LongTied.blockymodel",
+      "Texture": "Characters/Haircuts/LongTied_Greyscale.png",
+      "GradientSet": "Hair",
+      "GradientId": "BrownDark"
+    },
+    {
+      "Model": "Cosmetics/Head/WideBrimHat.blockymodel",
+      "Texture": "Cosmetics/Head/WideBrimHat.png",
+      "GradientSet": "Faded_Leather",
+      "GradientId": "BrownDark"
+    },
+    {
+      "Model": "Cosmetics/Face_Accessories/Blindfold.blockymodel",
+      "Texture": "Cosmetics/Face_Accessories/Blindfold_Textures/Blindfold_Mask.png",
+      "GradientSet": "Colored_Cotton",
+      "GradientId": "Charcoal"
+    },
+    {
+      "Model": "Cosmetics/Undertops/LongSleeveShirtCollar.blockymodel",
+      "Texture": "Cosmetics/Undertops/LongSleeveShirt_Textures/ButtonedShirt.png",
+      "GradientSet": "Pastel_Cotton",
+      "GradientId": "Grey"
+    },
+    {
+      "Model": "Cosmetics/Overtops/TrenchCoat.blockymodel",
+      "Texture": "Cosmetics/Overtops/TrenchCoat_Greyscale.png",
+      "GradientSet": "Faded_Leather",
+      "GradientId": "Black"
+    },
+    {
+      "Model": "Cosmetics/Gloves/Leather_Straps.blockymodel",
+      "Texture": "Cosmetics/Gloves/Leather_Straps_Greyscale.png",
+      "GradientSet": "Faded_Leather",
+      "GradientId": "BrownDark"
+    },
+    {
+      "Model": "Cosmetics/Pants/Pants_Straight.blockymodel",
+      "Texture": "Cosmetics/Pants/Pants_Straight_Textures/Leather_Greyscale.png",
+      "GradientSet": "Faded_Leather",
+      "GradientId": "BrownDark"
+    },
+    {
+      "Model": "Cosmetics/Shoes/Boots_Long.blockymodel",
+      "Texture": "Cosmetics/Shoes/Boots_Long_Textures/Leather_Greyscale.png",
+      "GradientSet": "Faded_Leather",
+      "GradientId": "Black"
+    }
+  ]
+}

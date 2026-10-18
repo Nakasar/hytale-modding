@@ -1,0 +1,45 @@
+{
+  "$Comment": "Projection d'épines : trois épines tirées coup sur coup vers la cible.",
+  "Type": "Simple",
+  "RunTime": 0.5,
+  "Effects": {
+    "WorldSoundEventId": "SFX_Bramble_MoveIn",
+    "Particles": [
+      {
+        "SystemId": "Heal_Stick_ThornsUp",
+        "TargetEntityPart": "Entity",
+        "TargetNodeName": "Origin",
+        "Scale": 1.2,
+        "PositionOffset": {
+          "X": 0,
+          "Y": 1.5,
+          "Z": 0
+        }
+      }
+    ]
+  },
+  "Next": {
+    "Type": "LaunchProjectile",
+    "RunTime": 0.2,
+    "ProjectileId": "Nakasar_Pumpkin_Thorn",
+    "Tags": {
+      "AimingReference": []
+    },
+    "Next": {
+      "Type": "LaunchProjectile",
+      "RunTime": 0.2,
+      "ProjectileId": "Nakasar_Pumpkin_Thorn",
+      "Tags": {
+        "AimingReference": []
+      },
+      "Next": {
+        "Type": "LaunchProjectile",
+        "RunTime": 0.2,
+        "ProjectileId": "Nakasar_Pumpkin_Thorn",
+        "Tags": {
+          "AimingReference": []
+        }
+      }
+    }
+  }
+}

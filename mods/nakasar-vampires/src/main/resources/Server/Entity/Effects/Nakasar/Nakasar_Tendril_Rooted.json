@@ -1,0 +1,16 @@
+{
+  "$Comment": "Joueur retenu par les vrilles de la citrouille géante : il ne peut plus bouger tant qu'il n'a pas détruit la vrille à ses pieds. La durée est posée par Nakasar_RootTrap (sécurité : 20 s au plus) et l'effet est retiré dès que la vrille meurt.",
+  "Duration": 20,
+  "OverlapBehavior": "Overwrite",
+  "RemovalBehavior": "Duration",
+  "Debuff": true,
+  "StatusEffectIcon": "UI/StatusEffects/Nakasar/Tendril_Rooted.png",
+  "ApplicationEffects": {
+    "EntityTopTint": "#3d6b1f",
+    "EntityBottomTint": "#1a0d00",
+    "MovementEffects": {
+      "DisableAll": true
+    },
+    "KnockbackMultiplier": 0
+  }
+}

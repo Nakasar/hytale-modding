@@ -1,0 +1,91 @@
+{
+  "$Comment": "Piège de vrilles, annoncé comme les boss du donjon gobelin : la citrouille rougeoie et une zone rouge de 6.5 blocs se charge autour d'elle pendant 2,2 s. Tout ennemi encore dedans à la fin est retenu par une vrille à ses pieds (Nakasar_RootTrap) : il reste immobilisé jusqu'à ce que la vrille (12 PV) soit détruite.",
+  "Type": "Serial",
+  "Interactions": [
+    {
+      "Type": "ClearEntityEffect",
+      "Entity": "User",
+      "EntityEffectId": "Hit_Interrupt_Eligible"
+    },
+    {
+      "Type": "ApplyEffect",
+      "EffectId": "Nakasar_Pumpkin_Channel"
+    },
+    {
+      "Type": "ApplyEffect",
+      "EffectId": "Dungeon_Goblin_Mace_Slam_Charge"
+    },
+    {
+      "Type": "Simple",
+      "RunTime": 2.2,
+      "Effects": {
+        "WorldSoundEventId": "SFX_Spirit_Root_Alerted",
+        "Particles": [
+          {
+            "SystemId": "Feastmaster_Slam_Warning",
+            "TargetEntityPart": "Entity",
+            "TargetNodeName": "Origin",
+            "Scale": 4.42,
+            "PositionOffset": {
+              "X": 0,
+              "Y": 0.1,
+              "Z": 0
+            },
+            "DetachedFromModel": true
+          },
+          {
+            "SystemId": "Dungeon_Goblin_Spores_Orange",
+            "TargetEntityPart": "Entity",
+            "TargetNodeName": "Origin",
+            "Scale": 1.5,
+            "PositionOffset": {
+              "X": 0,
+              "Y": 0.1,
+              "Z": 0
+            },
+            "DetachedFromModel": true
+          }
+        ]
+      }
+    },
+    {
+      "Type": "Selector",
+      "RunTime": 0.1,
+      "Effects": {
+        "WorldSoundEventId": "SFX_Spirit_Root_Spawn",
+        "Particles": [
+          {
+            "SystemId": "Praetorian_Summon_Ground",
+            "TargetEntityPart": "Entity",
+            "TargetNodeName": "Origin",
+            "Scale": 1.5,
+            "PositionOffset": {
+              "X": 0,
+              "Y": 0.1,
+              "Z": 0
+            },
+            "DetachedFromModel": true
+          }
+        ]
+      },
+      "Selector": {
+        "Id": "AOECircle",
+        "Range": 6.5
+      },
+      "HitEntity": {
+        "Interactions": [
+          {
+            "Type": "Nakasar_RootTrap",
+            "TendrilRole": "Nakasar_Pumpkin_Tendril",
+            "EffectId": "Nakasar_Tendril_Rooted",
+            "MaxDuration": 20
+          }
+        ]
+      }
+    },
+    {
+      "Type": "Simple",
+      "RunTime": 0.8
+    }
+  ]
+}

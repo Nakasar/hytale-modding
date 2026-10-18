@@ -1,0 +1,38 @@
+{
+  "$Comment": "Vrilles qui retiennent une victime de la citrouille géante : le modèle de racines du sort vanilla Root (Status/Root.json), qui sort de terre à l'apparition.",
+  "Model": "VFX/Spells/Roots/Model.blockymodel",
+  "Texture": "VFX/Spells/Roots/Model.png",
+  "EyeHeight": 0.5,
+  "HitBox": {
+    "Max": {
+      "X": 0.5,
+      "Y": 1.2,
+      "Z": 0.5
+    },
+    "Min": {
+      "X": -0.5,
+      "Y": 0,
+      "Z": -0.5
+    }
+  },
+  "MinScale": 1,
+  "MaxScale": 1,
+  "AnimationSets": {
+    "Spawn": {
+      "Animations": [
+        {
+          "Animation": "VFX/Spells/Roots/Spawn.blockyanim",
+          "Looping": false
+        }
+      ]
+    },
+    "Despawn": {
+      "Animations": [
+        {
+          "Animation": "VFX/Spells/Roots/Despawn.blockyanim",
+          "Looping": false
+        }
+      ]
+    }
+  }
+}

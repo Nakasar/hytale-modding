@@ -1,0 +1,22 @@
+{
+  "$Comment": "Un chasseur de vampires du camp, tiré au hasard (arbalète, tromblon ou épée d'argent) ; un remplaçant arrive 20 minutes après sa mort.",
+  "NPCs": [
+    {
+      "Name": "Nakasar_Vampire_Hunter_Crossbow",
+      "Weight": 4,
+      "RealtimeRespawnTime": 1200
+    },
+    {
+      "Name": "Nakasar_Vampire_Hunter_Gunner",
+      "Weight": 3,
+      "RealtimeRespawnTime": 1200
+    },
+    {
+      "Name": "Nakasar_Vampire_Hunter_Blade",
+      "Weight": 3,
+      "RealtimeRespawnTime": 1200
+    }
+  ],
+  "RealtimeRespawn": true,
+  "ExclusionRadius": 0
+}

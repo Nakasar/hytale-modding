@@ -1,0 +1,6 @@
+{
+  "$Comment": "Épine de la citrouille géante (épine de Cactee, plus rapide).",
+  "Parent": "Cactee_Spike",
+  "MuzzleVelocity": 28,
+  "Damage": 9
+}

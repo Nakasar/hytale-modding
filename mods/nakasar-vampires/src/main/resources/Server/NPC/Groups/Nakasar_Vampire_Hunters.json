@@ -1,0 +1,8 @@
+{
+  "$Comment": "Les chasseurs de vampires du camp : ne se blessent pas entre eux (DisableDamageGroups) ; ennemis jurés des mobs du fragment (Nakasar_Halloween_Faction), et réciproquement (dev.nakasar.hytale.vampires.allegiance).",
+  "IncludeRoles": [
+    "Nakasar_Vampire_Hunter_Crossbow",
+    "Nakasar_Vampire_Hunter_Gunner",
+    "Nakasar_Vampire_Hunter_Blade"
+  ]
+}
