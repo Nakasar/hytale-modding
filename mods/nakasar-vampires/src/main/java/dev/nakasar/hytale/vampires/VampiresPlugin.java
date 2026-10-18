@@ -12,6 +12,8 @@ import dev.nakasar.hytale.vampires.domination.Dominations;
 import dev.nakasar.hytale.vampires.prison.ImprisonPlayerInteraction;
 import dev.nakasar.hytale.vampires.pumpkin.FireWeaknessSystem;
 import dev.nakasar.hytale.vampires.purifying.PurifyingFireSystem;
+import dev.nakasar.hytale.vampires.purifying.PurifyingFires;
+import dev.nakasar.hytale.vampires.purifying.PurifyingSteeringSystem;
 import dev.nakasar.hytale.vampires.pumpkin.RootTrapInteraction;
 import dev.nakasar.hytale.vampires.pumpkin.RootTrapUnloadSystem;
 import dev.nakasar.hytale.vampires.pumpkin.RootTrapped;
@@ -19,9 +21,12 @@ import dev.nakasar.hytale.vampires.pumpkin.SummonVinesInteraction;
 import dev.nakasar.hytale.vampires.rune.DrainBeamInteraction;
 import dev.nakasar.hytale.vampires.rune.RootNpcInteraction;
 import dev.nakasar.hytale.vampires.rune.TeleportCasterToImpactInteraction;
+import dev.nakasar.hytale.vampires.silver.ArrowQuiver;
+import dev.nakasar.hytale.vampires.silver.ReturnArrowInteraction;
 import dev.nakasar.hytale.vampires.silver.SilverDamageSystem;
 import dev.nakasar.hytale.vampires.silver.SilverProjectileSystems;
 import dev.nakasar.hytale.vampires.silver.SilverWeapons;
+import dev.nakasar.hytale.vampires.silver.TakeArrowInteraction;
 
 /**
  * Point d'entrée du mod "Vampires".
@@ -48,8 +53,8 @@ import dev.nakasar.hytale.vampires.silver.SilverWeapons;
  *       Domination retourne leur allégeance ;</li>
  *   <li>{@link SilverDamageSystem} et {@link SilverProjectileSystems} : les armes en argent (et leurs projectiles)
  *       infligent le double de dégâts aux vampires ;</li>
- *   <li>{@link PurifyingFireSystem} : les torches et lanternes de feu purificateur du camp des chasseurs repoussent
- *       les morts-vivants.</li>
+ *   <li>{@link PurifyingFireSystem} et {@link PurifyingSteeringSystem} : les morts-vivants évitent les torches et
+ *       lanternes de feu purificateur du camp des chasseurs.</li>
  * </ul>
  */
 public final class VampiresPlugin extends JavaPlugin {
@@ -84,6 +89,10 @@ public final class VampiresPlugin extends JavaPlugin {
                 RootTrapInteraction.class, RootTrapInteraction.CODEC);
         interactions.register(SummonVinesInteraction.TYPE_ID,
                 SummonVinesInteraction.class, SummonVinesInteraction.CODEC);
+        interactions.register(TakeArrowInteraction.TYPE_ID,
+                TakeArrowInteraction.class, TakeArrowInteraction.CODEC);
+        interactions.register(ReturnArrowInteraction.TYPE_ID,
+                ReturnArrowInteraction.class, ReturnArrowInteraction.CODEC);
 
         var systems = getEntityStoreRegistry();
         RootTrapped.setComponentType(systems.registerComponent(RootTrapped.class, RootTrapped::new));
@@ -95,12 +104,15 @@ public final class VampiresPlugin extends JavaPlugin {
         systems.registerSystem(new SilverProjectileSystems.Launch());
         systems.registerSystem(new SilverProjectileSystems.Legacy());
         systems.registerSystem(new SilverDamageSystem());
-        systems.registerSystem(new PurifyingFireSystem());
+        PurifyingFires purifyingFires = new PurifyingFires();
+        systems.registerSystem(new PurifyingFireSystem(purifyingFires));
+        systems.registerSystem(new PurifyingSteeringSystem(purifyingFires));
 
-        getLogger().atInfo().log("Nakasar Vampires : 8 types d'interaction (%s, %s, %s, %s, %s, %s, %s, %s), systèmes des camps, de l'argent et du feu purificateur enregistrés",
+        getLogger().atInfo().log("Nakasar Vampires : 10 types d'interaction (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s), systèmes des camps, de l'argent et du feu purificateur enregistrés",
                 TeleportCasterToImpactInteraction.TYPE_ID, DominateInteraction.TYPE_ID, RootNpcInteraction.TYPE_ID,
                 DrainBeamInteraction.TYPE_ID, DominatePlayerInteraction.TYPE_ID, ImprisonPlayerInteraction.TYPE_ID,
-                RootTrapInteraction.TYPE_ID, SummonVinesInteraction.TYPE_ID);
+                RootTrapInteraction.TYPE_ID, TakeArrowInteraction.TYPE_ID, ReturnArrowInteraction.TYPE_ID,
+                SummonVinesInteraction.TYPE_ID);
     }
 
     @Override
@@ -110,5 +122,6 @@ public final class VampiresPlugin extends JavaPlugin {
         SummonVinesInteraction.clearAll();
         Dominations.clearAll();
         SilverWeapons.clearAll();
+        ArrowQuiver.clearAll();
     }
 }

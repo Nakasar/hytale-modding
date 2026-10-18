@@ -150,21 +150,26 @@ textures dans `Common/Items/Weapons/Nakasar/Silver/`, icônes dans `Common/Icons
   réductions d'armure et de garde) double les dégâts faits à un PNJ du groupe `Nakasar_Vampires` :
   - coup direct : l'attaquant tient une arme taguée `Material: Silver` (`SilverWeapons.isSilver`) et le coup vient d'une
     attaque d'arme. Les sorts de runes (`Ability2`, `Ability3`) et les dégâts sans interaction (effets) ne comptent pas ;
-  - projectile : il a été marqué au tir par `SilverProjectileSystems` (arme en argent en main au départ du tir :
-    `ProjectileLaunchEvent` pour l'arc et l'arbalète, création de l'entité `ProjectileComponent` pour les flèches et
-    lances lancées et le tromblon). L'arme tenue à l'impact ne compte pas. Limite : la dernière flèche ou lance de jet
-    lancée peut ne pas être marquée, la main étant vide quand le projectile apparaît.
+  - projectile : il a été marqué au tir par `SilverProjectileSystems` : flèche en argent tirée (`ArrowQuiver`), ou
+    arme en argent en main au départ du tir (`ProjectileLaunchEvent` pour l'arc et l'arbalète, création de l'entité
+    `ProjectileComponent` pour les lances lancées et le tromblon). L'arme tenue à l'impact ne compte pas. Limites : la
+    dernière lance de jet lancée peut ne pas être marquée, la main étant vide quand le projectile apparaît ; le gros
+    carreau de l'arbalète, qui ne consomme pas de flèche, prend la place de la plus ancienne flèche chargée.
 
   Les PNJ comptent aussi (ils ont une barre d'objets, `NPCSystems.OnNPCAdded`) : un chasseur qui tient une arme en
   argent double ses dégâts. L'épée en acier argenté vanilla compte.
 - **Héritage** : seules l'apparence, la recette, la qualité et les tags changent. La recette est dans l'objet parce
   qu'un objet hérite de celle de son parent. Une table `Interactions` déclarée remplace celle du parent (des objets
-  vanilla écrivent `"Interactions": {}` pour vider la leur) : l'arc et l'arbalète en argent écrivent donc leurs
-  tables entières.
-- **Munitions** : les armes vanilla ne consomment que `Weapon_Arrow_Crude` (`ModifyInventory`, id exact). L'arc et
-  l'arbalète en argent utilisent des copies des interactions qui retirent ou rendent une flèche
-  (`Root_Nakasar_Silver_*`, `Nakasar_Silver_*`) avec `Weapon_Nakasar_Arrow_Silver`, et leurs variables
-  `Arrow_Inventory_Condition` / `Reload_ItemConsume`.
+  vanilla écrivent `"Interactions": {}` pour vider la leur) : la flèche en argent écrit `{}` pour ne plus se lancer
+  ni frapper au couteau comme la flèche en fer dont elle hérite.
+- **Munitions** : les arcs et arbalètes vanilla ne consomment que `Weapon_Arrow_Crude` (`ModifyInventory`, id
+  exact). Le mod réécrit sous leur id vanilla (son pack, chargé après le jeu, les remplace) les interactions et
+  modèles qui retirent ou rendent une flèche : `Weapon_Shortbow_Primary_Shoot`, `Root_Weapon_Shortbow_Secondary_Guard`,
+  `Weapon_Crossbow_Swap_From`, `Weapon_Crossbow_Arrow_Inventory_Condition`, `Common_StatAmmoReload_ItemConsume`,
+  `Template_Weapon_Shortbow`, `Template_Weapon_Crossbow`. Le retrait devient `Nakasar_TakeArrow` (une flèche en
+  argent s'il y en a, sinon une simple ; rien pour un joueur hors mode Aventure) et le retour `Nakasar_ReturnArrow`
+  (`Quantity` flèches, en argent pour celles qui l'étaient). Tous les arcs et arbalètes, vanilla et en argent, tirent
+  donc les deux, les flèches en argent d'abord. Une nouvelle version du jeu demande de relancer le générateur.
 
 ## Fragment Halloween (« Comté Vampire »)
 
@@ -372,16 +377,17 @@ Les boss réutilisent les interactions et particules des runes.
 
 ## Feu purificateur
 
-Java, `purifying/PurifyingFireSystem` (`DelayedEntitySystem`, 4 fois par seconde, PNJ seulement), pour un PNJ du
-groupe `Nakasar_Undead` (vampires, zombies, squelettes et fantômes du mod, squelettes, zombies, goules et spectres
-vanilla) près d'une torche ou d'une lanterne de feu purificateur (distances horizontales, 5 blocs en hauteur) :
+Java, `purifying/` : `PurifyingFireSystem` (`DelayedEntitySystem`, 4 fois par seconde) et `PurifyingSteeringSystem`
+(chaque tick, entre `AvoidanceSystem` et `SteeringSystem` du jeu), pour un PNJ du groupe `Nakasar_Undead` (vampires,
+zombies, squelettes et fantômes du mod, squelettes, zombies, goules et spectres vanilla) près d'une torche ou d'une
+lanterne de feu purificateur (distances horizontales, 5 blocs en hauteur). Aucune poussée : le PNJ marche.
 
-- à moins de 11 blocs d'un feu, il oublie à chaque passage les cibles qui se tiennent à moins de 9 blocs d'un feu
-  quelconque : il s'arrête avant d'entrer dans le rayon au lieu de rebondir contre ;
-- à moins de 7 blocs, il est repoussé (`KnockbackComponent`, vitesse posée, comme `/knockback apply`) selon la somme
-  des répulsions de tous les feux proches, sans écraser un recul déjà en attente (coup de chasseur), avec une levée
-  seulement s'il n'est pas déjà au-dessus du feu (les fantômes ne montent pas) ;
-- s'il reste plus de 2 s dans ce rayon (enfermé dans le camp, dominé qui suit le joueur), le feu le brûle : 6 dégâts
+- à moins de 11 blocs d'un feu, la part de son déplacement qui le rapprocherait du feu est retirée de la direction de
+  marche voulue par son rôle (`Role.getBodySteering`) : il longe la limite au lieu d'avancer. Il oublie aussi à chaque
+  passage les cibles qui se tiennent à moins de 9 blocs d'un feu quelconque ;
+- à moins de 7 blocs, il s'éloigne en marchant (vitesse relative 0,35 au bord, 0,8 contre le feu), selon la somme des
+  répulsions des feux proches ;
+- s'il reste plus de 5 s dans ce rayon (enfermé dans le camp, dominé qui suit le joueur), le feu le brûle : 6 dégâts
   de cause `Fire` par seconde jusqu'à ce qu'il sorte ou meure.
 
 Recherche des blocs : sections de blocs chargées (`BlockSection.contains` puis `find`), comme la prison du Capitaine.

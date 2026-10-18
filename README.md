@@ -101,7 +101,7 @@ Démarrer le serveur avec `--validate-assets` la première fois : il vérifie le
 /give Rune_Nakasar_SpectralChains
 /give Weapon_Nakasar_Spear_Iron      # la lance
 /give Weapon_Nakasar_Spear_Silver    # la lance en argent (toutes les armes en argent : Weapon_Nakasar_*_Silver)
-/give Weapon_Nakasar_Arrow_Silver 40 # flèches en argent, munitions de l'arc et de l'arbalète en argent
+/give Weapon_Nakasar_Arrow_Silver 40 # flèches en argent, munitions de tous les arcs et arbalètes
 /give Ingredient_Bar_Silver 20       # lingots d'argent vanilla pour tester les recettes
 /give Nakasar_Sacrificial_Altar      # l'autel sacrificiel
 /give Ingredient_Rune_Shard 8        # éclats de rune pour tester les recettes
@@ -250,8 +250,9 @@ Mobs (voir [docs/npc-0.7.2.md](docs/npc-0.7.2.md)) :
 
 - **Armes en argent** : contre le Comte, la Comtesse ou un rejeton, un coup doit faire environ le double des dégâts
   de la même arme en fer (le bonus vient de `SilverDamageSystem`, qui lit le tag `Material: Silver` de l'arme tenue).
-  L'arc et l'arbalète en argent ne tirent que des flèches en argent : vérifier qu'ils en consomment bien et qu'en
-  changeant d'arme la flèche chargée revient dans l'inventaire. Teinte des textures repeintes à juger à l'œil.
+  Flèches en argent : tout arc ou arbalète (vanilla compris), en mode Aventure, doit les tirer avant les flèches
+  simples ; relâcher l'arc sans tirer ou changer d'objet arbalète chargée doit rendre les mêmes flèches (argent ou
+  simples). Au chargement, le journal ne doit pas signaler d'erreur sur `Nakasar_TakeArrow` / `Nakasar_ReturnArrow`. Teinte des textures repeintes à juger à l'œil.
 
 ## Organisation du dépôt
 

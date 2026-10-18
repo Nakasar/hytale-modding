@@ -7,9 +7,7 @@ import com.hypixel.hytale.component.Store;
 import com.hypixel.hytale.component.query.Query;
 import com.hypixel.hytale.component.system.tick.DelayedEntitySystem;
 import com.hypixel.hytale.math.util.ChunkUtil;
-import com.hypixel.hytale.protocol.ChangeVelocityType;
 import com.hypixel.hytale.server.core.asset.type.blocktype.config.BlockType;
-import com.hypixel.hytale.server.core.entity.knockback.KnockbackComponent;
 import com.hypixel.hytale.server.core.modules.entity.component.TransformComponent;
 import com.hypixel.hytale.server.core.modules.entity.damage.Damage;
 import com.hypixel.hytale.server.core.modules.entity.damage.DamageCause;
@@ -20,6 +18,7 @@ import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
 import com.hypixel.hytale.server.npc.entities.NPCEntity;
 import com.hypixel.hytale.server.npc.role.support.MarkedEntitySupport;
 import dev.nakasar.hytale.vampires.allegiance.Allegiances;
+import it.unimi.dsi.fastutil.doubles.DoubleArrayList;
 import it.unimi.dsi.fastutil.ints.IntList;
 import java.util.HashMap;
 import java.util.Map;
@@ -32,34 +31,31 @@ import org.joml.Vector3d;
  *
  * <p>Quatre fois par seconde :
  * <ul>
- *   <li>un mort-vivant à moins de {@value #RADIUS} + {@value #APPROACH} blocs d'un feu oublie les cibles qui se
- *       tiennent elles-mêmes près d'un feu ; tant qu'il reste dans cette bande, il les oublie à chaque passage et
- *       s'arrête donc avant d'entrer dans le rayon ;</li>
- *   <li>dans le rayon, il est repoussé hors des feux (somme des répulsions de tous les feux proches, ce qui le
- *       pousse vers le bord le plus proche d'un groupe de feux) ;</li>
- *   <li>s'il y reste plus de {@value #BURN_DELAY} secondes (enfermé dans le camp, par exemple), le feu le brûle
- *       ({@value #BURN_DAMAGE} dégâts de feu par seconde) jusqu'à ce qu'il sorte ou meure.</li>
+ *   <li>les feux à moins de {@value #RADIUS} + {@value #APPROACH} blocs d'un mort-vivant sont relevés pour
+ *       {@link PurifyingSteeringSystem}, qui le fait marcher à l'écart (aucune poussée) ;</li>
+ *   <li>dans cette bande, il oublie à chaque passage les cibles qui se tiennent elles-mêmes près d'un feu : il ne
+ *       cherche pas à les rejoindre ;</li>
+ *   <li>s'il reste plus de {@value #BURN_DELAY} secondes dans le rayon (enfermé dans le camp, par exemple), le feu
+ *       le brûle ({@value #BURN_DAMAGE} dégâts de feu par seconde) jusqu'à ce qu'il sorte ou meure.</li>
  * </ul>
- * Les rôles du jeu n'ont pas de capteur « fuir un bloc », d'où ce système plutôt que du JSON.
+ * Les rôles vanilla (squelettes, zombies...) n'ont pas de capteur « fuir un bloc » qu'on pourrait leur ajouter sans
+ * les remplacer, d'où ces systèmes plutôt que du JSON.
  */
 public final class PurifyingFireSystem extends DelayedEntitySystem<EntityStore> {
 
     public static final String UNDEAD_GROUP = "Nakasar_Undead";
     public static final String TORCH = "Nakasar_Purifying_Torch";
     public static final String LANTERN = "Nakasar_Purifying_Lantern";
-    /** Distance horizontale (blocs) en deçà de laquelle un mort-vivant est repoussé (PURIFY_RADIUS des prefabs). */
+    /** Distance horizontale (blocs) en deçà de laquelle un mort-vivant s'éloigne du feu (PURIFY_RADIUS des prefabs). */
     public static final int RADIUS = 7;
-    /** Bande au-delà du rayon où le mort-vivant renonce déjà aux cibles protégées par le feu. */
-    private static final int APPROACH = 4;
+    /** Bande au-delà du rayon où le mort-vivant ne s'approche plus du feu et renonce aux cibles qu'il protège. */
+    public static final int APPROACH = 4;
     /** Une cible à moins de cette distance d'un feu est protégée. */
     private static final int SHELTER = RADIUS + 2;
     /** Écart de hauteur pris en compte entre le PNJ et le feu (palissade, poteaux). */
     private static final int HEIGHT = 5;
     private static final float INTERVAL = 0.25f;
-    private static final double PUSH_SPEED = 7.0;
-    /** Petite levée pour décoller du sol, seulement si le PNJ n'est pas déjà au-dessus du feu (fantômes). */
-    private static final double PUSH_LIFT = 1.5;
-    private static final float BURN_DELAY = 2f;
+    private static final float BURN_DELAY = 5f;
     private static final float BURN_DAMAGE = 6f;
     private static final int BURN_EVERY = Math.round(1f / INTERVAL);
 
@@ -72,8 +68,11 @@ public final class PurifyingFireSystem extends DelayedEntitySystem<EntityStore> 
     private int lanternId = -1;
     private IntList fireIds = IntList.of();
 
-    public PurifyingFireSystem() {
+    private final PurifyingFires fires;
+
+    public PurifyingFireSystem(PurifyingFires fires) {
         super(INTERVAL);
+        this.fires = fires;
     }
 
     @Override
@@ -83,7 +82,7 @@ public final class PurifyingFireSystem extends DelayedEntitySystem<EntityStore> 
 
     @Override
     public boolean isParallel(int archetypeChunkSize, int taskCount) {
-        return false; // lit les sections de blocs du monde, pose des composants et tient l'état d'exposition
+        return false; // lit les sections de blocs du monde et tient la table des feux et l'état d'exposition
     }
 
     @Override
@@ -98,17 +97,18 @@ public final class PurifyingFireSystem extends DelayedEntitySystem<EntityStore> 
         }
         Vector3d position = chunk.getComponent(index, TransformComponent.getComponentType()).getPosition();
         ChunkStore chunks = buffer.getExternalData().getWorld().getChunkStore();
-        Fires fires = scan(chunks, position, RADIUS + APPROACH);
-        if (fires.nearest == null) {
+        Fires found = scan(chunks, position, RADIUS + APPROACH);
+        if (found.nearest == null) {
+            fires.remove(ref);
             exposure.remove(ref);
             return;
         }
+        fires.put(ref, found.positions.toDoubleArray());
         forgetSheltered(ref, chunks, buffer);
-        if (fires.nearestDistanceSq > (long) RADIUS * RADIUS) {
+        if (found.nearestDistanceSq > (long) RADIUS * RADIUS) {
             exposure.remove(ref);
             return;
         }
-        push(ref, position, fires, buffer);
         burn(ref, buffer);
     }
 
@@ -139,32 +139,6 @@ public final class PurifyingFireSystem extends DelayedEntitySystem<EntityStore> 
                 marked.clearMarkedEntity(slot);
             }
         }
-    }
-
-    /**
-     * Repousse le mort-vivant hors des feux, sauf si un autre recul (coup reçu) est déjà en attente : on ne
-     * l'écrase pas, le feu repoussera au passage suivant.
-     */
-    private static void push(Ref<EntityStore> ref, Vector3d position, Fires fires, CommandBuffer<EntityStore> buffer) {
-        if (buffer.getComponent(ref, KnockbackComponent.getComponentType()) != null) {
-            return;
-        }
-        double dx = fires.awayX;
-        double dz = fires.awayZ;
-        double length = Math.sqrt(dx * dx + dz * dz);
-        if (length < 1.0e-3) {
-            double angle = Math.random() * Math.PI * 2;
-            dx = Math.cos(angle);
-            dz = Math.sin(angle);
-            length = 1;
-        }
-        double lift = position.y <= fires.nearest.y + 1 ? PUSH_LIFT : 0;
-        KnockbackComponent knockback = buffer.ensureAndGetComponent(ref, KnockbackComponent.getComponentType());
-        knockback.setVelocity(new Vector3d(dx / length * PUSH_SPEED, lift, dz / length * PUSH_SPEED));
-        knockback.setVelocityType(ChangeVelocityType.Set);
-        knockback.setVelocityConfig(null);
-        knockback.setDuration(0f);
-        knockback.setTimer(0f);
     }
 
     /** Brûle le mort-vivant resté trop longtemps dans le rayon (enfermé dans le camp, par exemple). */
@@ -217,8 +191,6 @@ public final class PurifyingFireSystem extends DelayedEntitySystem<EntityStore> 
                         if (y < minY || y > maxY) {
                             return;
                         }
-                        double dx = from.x - (x + 0.5);
-                        double dz = from.z - (z + 0.5);
                         long gx = x - cx;
                         long gz = z - cz;
                         long distanceSq = gx * gx + gz * gz;
@@ -229,11 +201,8 @@ public final class PurifyingFireSystem extends DelayedEntitySystem<EntityStore> 
                             fires.nearestDistanceSq = distanceSq;
                             fires.nearest = new Vector3d(x + 0.5, y, z + 0.5);
                         }
-                        // répulsion plus forte près du feu, nulle au bord du rayon de poussée
-                        double d = Math.max(0.5, Math.sqrt(dx * dx + dz * dz));
-                        double weight = Math.max(0, RADIUS - d) / d;
-                        fires.awayX += dx * weight;
-                        fires.awayZ += dz * weight;
+                        fires.positions.add(x + 0.5);
+                        fires.positions.add(z + 0.5);
                     });
                 }
             }
@@ -241,11 +210,10 @@ public final class PurifyingFireSystem extends DelayedEntitySystem<EntityStore> 
         return fires;
     }
 
-    /** Résultat d'une recherche de feux : le plus proche et la direction de fuite. */
+    /** Résultat d'une recherche de feux : le plus proche et les positions (x, z) de tous. */
     private static final class Fires {
         Vector3d nearest;
         long nearestDistanceSq;
-        double awayX;
-        double awayZ;
+        final DoubleArrayList positions = new DoubleArrayList();
     }
 }
