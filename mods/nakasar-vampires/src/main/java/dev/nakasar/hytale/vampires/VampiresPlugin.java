@@ -13,6 +13,7 @@ import dev.nakasar.hytale.vampires.prison.ImprisonPlayerInteraction;
 import dev.nakasar.hytale.vampires.rune.DrainBeamInteraction;
 import dev.nakasar.hytale.vampires.rune.RootNpcInteraction;
 import dev.nakasar.hytale.vampires.rune.TeleportCasterToImpactInteraction;
+import dev.nakasar.hytale.vampires.silver.SilverDamageSystem;
 
 /**
  * Point d'entrée du mod "Vampires".
@@ -31,7 +32,8 @@ import dev.nakasar.hytale.vampires.rune.TeleportCasterToImpactInteraction;
  *   <li>{@code Nakasar_DominatePlayer} : Domination du Comte Vampire sur le joueur visé ;</li>
  *   <li>{@code Nakasar_ImprisonPlayer} : téléporte le joueur visé dans la cellule la plus proche du Capitaine ;</li>
  *   <li>les camps ({@link AllegianceAttitudeSystem}, {@link AllegianceDamageFilter},
- *       {@link DominationExpirySystem}) : les mobs du fragment sont alliés, la Domination retourne leur allégeance.</li>
+ *       {@link DominationExpirySystem}) : les mobs du fragment sont alliés, la Domination retourne leur allégeance ;</li>
+ *   <li>{@link SilverDamageSystem} : les armes en argent infligent le double de dégâts aux vampires.</li>
  * </ul>
  */
 public final class VampiresPlugin extends JavaPlugin {
@@ -67,8 +69,9 @@ public final class VampiresPlugin extends JavaPlugin {
         systems.registerSystem(new AllegianceAttitudeSystem());
         systems.registerSystem(new AllegianceDamageFilter());
         systems.registerSystem(new DominationExpirySystem());
+        systems.registerSystem(new SilverDamageSystem());
 
-        getLogger().atInfo().log("Nakasar Vampires : 6 types d'interaction (%s, %s, %s, %s, %s, %s) et systèmes des camps enregistrés",
+        getLogger().atInfo().log("Nakasar Vampires : 6 types d'interaction (%s, %s, %s, %s, %s, %s) systèmes des camps et de l'argent enregistrés",
                 TeleportCasterToImpactInteraction.TYPE_ID, DominateInteraction.TYPE_ID, RootNpcInteraction.TYPE_ID,
                 DrainBeamInteraction.TYPE_ID, DominatePlayerInteraction.TYPE_ID, ImprisonPlayerInteraction.TYPE_ID);
     }

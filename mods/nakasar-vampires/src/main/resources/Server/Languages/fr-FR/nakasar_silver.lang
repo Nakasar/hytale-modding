@@ -1,0 +1,27 @@
+# Armes en argent — textes français (générés par tools/generate_silver_weapons.py)
+items.Weapon_Nakasar_Sword_Silver.name = Épée en argent
+items.Weapon_Nakasar_Sword_Silver.description = Inflige le double de dégâts aux vampires (Comte, Comtesse, rejetons).
+items.Weapon_Nakasar_Longsword_Silver.name = Épée longue en argent
+items.Weapon_Nakasar_Longsword_Silver.description = Inflige le double de dégâts aux vampires (Comte, Comtesse, rejetons).
+items.Weapon_Nakasar_Axe_Silver.name = Hache en argent
+items.Weapon_Nakasar_Axe_Silver.description = Inflige le double de dégâts aux vampires (Comte, Comtesse, rejetons).
+items.Weapon_Nakasar_Battleaxe_Silver.name = Hache de combat en argent
+items.Weapon_Nakasar_Battleaxe_Silver.description = Inflige le double de dégâts aux vampires (Comte, Comtesse, rejetons).
+items.Weapon_Nakasar_Mace_Silver.name = Massue en argent
+items.Weapon_Nakasar_Mace_Silver.description = Inflige le double de dégâts aux vampires (Comte, Comtesse, rejetons).
+items.Weapon_Nakasar_Club_Silver.name = Gourdin en argent
+items.Weapon_Nakasar_Club_Silver.description = Inflige le double de dégâts aux vampires (Comte, Comtesse, rejetons).
+items.Weapon_Nakasar_Daggers_Silver.name = Dagues en argent
+items.Weapon_Nakasar_Daggers_Silver.description = Inflige le double de dégâts aux vampires (Comte, Comtesse, rejetons).
+items.Weapon_Nakasar_Javelin_Silver.name = Lance de jet en argent
+items.Weapon_Nakasar_Javelin_Silver.description = Inflige le double de dégâts aux vampires (Comte, Comtesse, rejetons).
+items.Weapon_Nakasar_Spear_Silver.name = Lance d'argent à deux mains
+items.Weapon_Nakasar_Spear_Silver.description = Inflige le double de dégâts aux vampires (Comte, Comtesse, rejetons).
+items.Weapon_Nakasar_Shortbow_Silver.name = Arc en argent
+items.Weapon_Nakasar_Shortbow_Silver.description = Inflige le double de dégâts aux vampires (Comte, Comtesse, rejetons). Tire des flèches en argent.
+items.Weapon_Nakasar_Crossbow_Silver.name = Arbalète de poing en argent
+items.Weapon_Nakasar_Crossbow_Silver.description = Inflige le double de dégâts aux vampires (Comte, Comtesse, rejetons). Tire des flèches en argent.
+items.Weapon_Nakasar_Blunderbuss_Silver.name = Tromblon en argent
+items.Weapon_Nakasar_Blunderbuss_Silver.description = Inflige le double de dégâts aux vampires (Comte, Comtesse, rejetons).
+items.Weapon_Nakasar_Arrow_Silver.name = Flèche en argent
+items.Weapon_Nakasar_Arrow_Silver.description = Munition de l'arc et de l'arbalète en argent. Lancée ou en main, double dégâts contre les vampires.

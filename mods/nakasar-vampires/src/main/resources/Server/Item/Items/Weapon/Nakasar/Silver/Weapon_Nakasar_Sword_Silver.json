@@ -1,0 +1,50 @@
+{
+  "Parent": "Weapon_Sword_Iron",
+  "TranslationProperties": {
+    "Name": "nakasar_silver.items.Weapon_Nakasar_Sword_Silver.name",
+    "Description": "nakasar_silver.items.Weapon_Nakasar_Sword_Silver.description"
+  },
+  "Quality": "Rare",
+  "ItemLevel": 25,
+  "Tags": {
+    "Type": [
+      "Weapon"
+    ],
+    "Family": [
+      "Sword"
+    ],
+    "Material": [
+      "Silver"
+    ]
+  },
+  "Recipe": {
+    "TimeSeconds": 3.5,
+    "KnowledgeRequired": false,
+    "Input": [
+      {
+        "ItemId": "Ingredient_Bar_Silver",
+        "Quantity": 6
+      },
+      {
+        "ItemId": "Ingredient_Leather_Light",
+        "Quantity": 3
+      },
+      {
+        "ItemId": "Ingredient_Fabric_Scrap_Linen",
+        "Quantity": 3
+      }
+    ],
+    "BenchRequirement": [
+      {
+        "Type": "Crafting",
+        "Id": "Weapon_Bench",
+        "Categories": [
+          "Weapon_Sword"
+        ]
+      }
+    ]
+  },
+  "Model": "Items/Weapons/Sword/Silversteel.blockymodel",
+  "Texture": "Items/Weapons/Sword/Silversteel_Texture.png",
+  "Icon": "Icons/ItemsGenerated/Weapon_Sword_Silversteel.png"
+}

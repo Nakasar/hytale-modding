@@ -124,6 +124,41 @@ L'onglet est `Weapon_Sword` : l'établi vanilla n'a que `Weapon_Sword`, `Weapon_
 
 Toutes les valeurs (dégâts, portées, durées, forces) sont dans les JSON cités ; aucun code.
 
+## Armes en argent
+
+Générées par `tools/generate_silver_weapons.py ASSETS_ZIP` (objets dans `Server/Item/Items/Weapon/Nakasar/Silver/`,
+textures dans `Common/Items/Weapons/Nakasar/Silver/`, icônes dans `Common/Icons/Items/Nakasar/Silver/`, textes dans
+`nakasar_silver.lang`).
+
+| Id | Hérite de | Onglet du `Weapon_Bench` |
+|----|-----------|--------------------------|
+| `Weapon_Nakasar_Sword_Silver` | `Weapon_Sword_Iron` (modèle de l'épée en acier argenté vanilla) | Épées |
+| `Weapon_Nakasar_Longsword_Silver` | `Weapon_Longsword_Iron` | Épées |
+| `Weapon_Nakasar_Axe_Silver` | `Weapon_Axe_Iron` | Massues |
+| `Weapon_Nakasar_Battleaxe_Silver` | `Weapon_Battleaxe_Iron` | Haches de combat |
+| `Weapon_Nakasar_Mace_Silver` | `Weapon_Mace_Iron` | Massues |
+| `Weapon_Nakasar_Club_Silver` | `Weapon_Club_Iron` | Massues |
+| `Weapon_Nakasar_Daggers_Silver` | `Weapon_Daggers_Iron` | Dagues |
+| `Weapon_Nakasar_Javelin_Silver` | `Weapon_Spear_Iron` (lance de jet vanilla) | Épées |
+| `Weapon_Nakasar_Spear_Silver` | `Weapon_Nakasar_Spear_Iron` (lance à deux mains du mod) | Épées |
+| `Weapon_Nakasar_Shortbow_Silver` | `Weapon_Shortbow_Iron` | Arcs |
+| `Weapon_Nakasar_Crossbow_Silver` | `Weapon_Crossbow_Iron` (arbalète de poing) | Arcs |
+| `Weapon_Nakasar_Blunderbuss_Silver` | `Weapon_Gun_Blunderbuss` | Arcs |
+| `Weapon_Nakasar_Arrow_Silver` | `Weapon_Arrow_Iron` | Arcs |
+
+- **Dégâts** : `silver/SilverDamageSystem` (groupe de filtrage des dégâts, avant les réductions d'armure et de garde)
+  double les dégâts quand l'attaquant tient une arme taguée `Material: Silver` et que la victime est un PNJ du groupe
+  `Nakasar_Vampires`. Pour un projectile, l'attaquant est le tireur (`Damage.ProjectileSource`). Les PNJ comptent
+  aussi : un chasseur qui tient une arme en argent double ses dégâts. L'épée en acier argenté vanilla compte.
+- **Héritage** : seules l'apparence, la recette, la qualité et les tags changent. La recette est dans l'objet parce
+  qu'un objet hérite de celle de son parent. Une table `Interactions` déclarée remplace celle du parent (des objets
+  vanilla écrivent `"Interactions": {}` pour vider la leur) : l'arc et l'arbalète en argent écrivent donc leurs
+  tables entières.
+- **Munitions** : les armes vanilla ne consomment que `Weapon_Arrow_Crude` (`ModifyInventory`, id exact). L'arc et
+  l'arbalète en argent utilisent des copies des interactions qui retirent ou rendent une flèche
+  (`Root_Nakasar_Silver_*`, `Nakasar_Silver_*`) avec `Weapon_Nakasar_Arrow_Silver`, et leurs variables
+  `Arrow_Inventory_Condition` / `Reload_ItemConsume`.
+
 ## Fragment Halloween
 
 Fragment d'Orbis ouvert depuis l'Ancienne passerelle vanilla (`Portal_Device`) avec la clé

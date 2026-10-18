@@ -11,6 +11,7 @@ Un seul mod, **Vampires** (`mods/nakasar-vampires`, plugin Java + pack d'assets,
 | Mobs | Comte et Comtesse Vampire (boss qui lancent les sorts des runes), rejetons, fantômes, morts-vivants du domaine et leurs élites ; tous les mobs du fragment sont alliés entre eux |
 | Runes et autel | 4 runes d'abilities (Baiser du Vampire, Domination, Téléportation, Chaînes spectrales) et l'autel sacrificiel qui les fabrique ; la Domination fait changer de camp le mob visé |
 | Lance | Lance de fer à deux mains : enchaînement, coup chargé, compétence ultime |
+| Armes en argent | Version en argent de chaque arme standard, de la lance du mod et des flèches : double dégâts contre les vampires (Comte, Comtesse, rejetons) |
 
 Le détail du mod (fichiers, chaînes d'interactions, camps, réglages) est dans [docs/mods.md](docs/mods.md).
 Les points d'API serveur vérifiés dans le jar `Server-0.7.2` sont notés dans [docs/api-0.7.2.md](docs/api-0.7.2.md).
@@ -99,6 +100,9 @@ Démarrer le serveur avec `--validate-assets` la première fois : il vérifie le
 /give Rune_Nakasar_Blink
 /give Rune_Nakasar_SpectralChains
 /give Weapon_Nakasar_Spear_Iron      # la lance
+/give Weapon_Nakasar_Spear_Silver    # la lance en argent (toutes les armes en argent : Weapon_Nakasar_*_Silver)
+/give Weapon_Nakasar_Arrow_Silver 40 # flèches en argent, munitions de l'arc et de l'arbalète en argent
+/give Ingredient_Bar_Silver 20       # lingots d'argent vanilla pour tester les recettes
 /give Nakasar_Sacrificial_Altar      # l'autel sacrificiel
 /give Ingredient_Rune_Shard 8        # éclats de rune pour tester les recettes
 ```
@@ -134,9 +138,18 @@ Mobs (le manoir du comte, dans le fragment, contient déjà le Comte ou la Comte
 - **Lance** : à l'établi de forgeron de base (`Weapon_Bench`, onglet « Épées » `Weapon_Sword`, palier 1 ; il n'y a
   pas d'onglet lance) avec 4 lingots de fer, 2 bûches (ressource `Wood_Trunk`) et 2 cuirs légers.
 
-Les recettes sont des fichiers séparés (`Server/Item/Recipes/Nakasar/`), `KnowledgeRequired: false` (visibles sans
+- **Armes en argent** : au `Weapon_Bench` (onglets Épées, Massues, Haches de combat, Dagues et Arcs), avec des
+  lingots d'argent vanilla (`Ingredient_Bar_Silver`) à la place des lingots de fer de l'arme en fer. Flèches en
+  argent : 8 flèches grossières + 1 lingot d'argent donnent 8 flèches en argent. Liste et recettes dans
+  `mods/nakasar-vampires/tools/generate_silver_weapons.py`.
+
+Les recettes (sauf celles des armes en argent, voir plus bas) sont des fichiers séparés (`Server/Item/Recipes/Nakasar/`), `KnowledgeRequired: false` (visibles sans
 avoir été apprises). Séparées plutôt qu'inline dans les objets : le serveur valide chaque `ItemId` d'ingrédient et
 rejette l'asset entier en cas d'id inconnu, donc un id d'ingrédient faux ne fait perdre que la recette, pas la rune.
+
+Les armes en argent héritent (`Parent`) de l'arme en fer : elles portent donc leur recette dans l'objet, sinon elles
+hériteraient de la recette en fer. Elles sont générées par `tools/generate_silver_weapons.py` (à relancer avec le
+chemin de l'`Assets.zip` du jeu : il y lit les textures et icônes en fer à repeindre en argent).
 
 Les runes se lancent avec les touches d'abilities (Ability2 / Ability3) en tenant une arme. La lance :
 clic pour l'enchaînement, maintenir le clic (~0,8 s) pour le coup circulaire, touche Ability1 quand la
@@ -232,6 +245,11 @@ Mobs (voir [docs/npc-0.7.2.md](docs/npc-0.7.2.md)) :
   du fragment à moins de 16 blocs, qui doivent riposter ; à la fin, il redevient hostile envers vous et cesse de
   frapper ses alliés. Les mobs du mod sont réglés pour ça ; pour les mobs vanilla (squelettes, zombies...), cela
   dépend de leurs rôles : s'ils restent passifs une fois dominés, il faudra leur donner un coup de pouce en Java.
+
+- **Armes en argent** : contre le Comte, la Comtesse ou un rejeton, un coup doit faire environ le double des dégâts
+  de la même arme en fer (le bonus vient de `SilverDamageSystem`, qui lit le tag `Material: Silver` de l'arme tenue).
+  L'arc et l'arbalète en argent ne tirent que des flèches en argent : vérifier qu'ils en consomment bien et qu'en
+  changeant d'arme la flèche chargée revient dans l'inventaire. Teinte des textures repeintes à juger à l'œil.
 
 ## Organisation du dépôt
 
