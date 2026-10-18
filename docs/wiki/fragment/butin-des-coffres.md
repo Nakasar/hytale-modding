@@ -1,6 +1,6 @@
 # Butin des coffres
 
-<!-- Page générée par mods/nakasar-vampires/tools/generate_wiki_loot.py : ne pas modifier à la main. -->
+{/* Page générée par mods/nakasar-vampires/tools/generate_wiki_loot.py : ne pas modifier à la main. */}
 
 Chaque coffre du Comté est rempli à l'apparition de la structure. Son contenu se compose de plusieurs **tirages** : chacun est fait un nombre de fois aléatoire, et à chaque fois un objet est choisi selon sa chance. Les noms des objets du jeu de base sont des traductions d'usage ; l'id exact est indiqué entre parenthèses.
 
@@ -24,7 +24,7 @@ Chaque coffre du Comté est rempli à l'apparition de la structure. Son contenu 
 | [Camp de chasseurs](#camp-de-chasseurs) | [Camp de chasseurs](camps-de-chasseurs.md), tente ou pavillon |
 | [Armurerie des chasseurs](#armurerie-des-chasseurs) | [Camp de chasseurs](camps-de-chasseurs.md), atelier |
 
-## Trésor du manoir
+## Trésor du manoir {#tresor-du-manoir}
 
 [Manoir du Comte](manoir-du-comte.md), crypte · liste `Nakasar_Loot_Manor_Treasure`
 
@@ -60,7 +60,7 @@ Chaque coffre du Comté est rempli à l'apparition de la structure. Son contenu 
 | Potion de régénération (`Potion_Regen_Health`) | 1 | 29 % |
 | Potion de poison (`Potion_Poison`) | 1 à 2 | 29 % |
 
-## Chambre du manoir
+## Chambre du manoir {#chambre-du-manoir}
 
 [Manoir du Comte](manoir-du-comte.md), chambres du comte et de la comtesse · liste `Nakasar_Loot_Manor_Bedroom`
 
@@ -94,7 +94,7 @@ Chaque coffre du Comté est rempli à l'apparition de la structure. Son contenu 
 | Potion de régénération (`Potion_Regen_Health`) | 1 | 20 % |
 | Dagues en fer (`Weapon_Daggers_Iron`) | 1 | 20 % |
 
-## Alchimie du manoir
+## Alchimie du manoir {#alchimie-du-manoir}
 
 [Manoir du Comte](manoir-du-comte.md), laboratoire · liste `Nakasar_Loot_Manor_Alchemy`
 
@@ -124,7 +124,7 @@ Chaque coffre du Comté est rempli à l'apparition de la structure. Son contenu 
 | Recette : graines de mana (`Recipe_Plant_Seeds_Mana1`) | 1 | 20 % |
 | Recette : graines d'endurance (`Recipe_Plant_Seeds_Stamina1`) | 1 | 20 % |
 
-## Bibliothèque du manoir
+## Bibliothèque du manoir {#bibliotheque-du-manoir}
 
 [Manoir du Comte](manoir-du-comte.md), bibliothèque · liste `Nakasar_Loot_Manor_Library`
 
@@ -160,7 +160,7 @@ Chaque coffre du Comté est rempli à l'apparition de la structure. Son contenu 
 | Fragment d'os (`Ingredient_Bone_Fragment`) | 2 à 5 | 6 % |
 | **Éclat de rune** (`Ingredient_Rune_Shard`) | 1 à 2 | 6 % |
 
-## Atelier du manoir
+## Atelier du manoir {#atelier-du-manoir}
 
 [Manoir du Comte](manoir-du-comte.md), atelier · liste `Nakasar_Loot_Manor_Workshop`
 
@@ -192,7 +192,7 @@ Chaque coffre du Comté est rempli à l'apparition de la structure. Son contenu 
 | Gourdin en fer rouillé (`Weapon_Club_Iron_Rusty`) | 1 | 8 % |
 | Plastron en fer (`Armor_Iron_Chest`) | 1 | 4 % |
 
-## Cuisine du manoir
+## Cuisine du manoir {#cuisine-du-manoir}
 
 [Manoir du Comte](manoir-du-comte.md), cuisine · liste `Nakasar_Loot_Manor_Kitchen`
 
@@ -226,7 +226,7 @@ Chaque coffre du Comté est rempli à l'apparition de la structure. Son contenu 
 | Farine (`Ingredient_Flour`) | 2 à 5 | 40 % |
 | Pâte (`Ingredient_Dough`) | 1 à 3 | 20 % |
 
-## Quartiers du capitaine
+## Quartiers du capitaine {#quartiers-du-capitaine}
 
 [Poste de garde](postes-de-garde.md) · liste `Nakasar_Loot_Guard_Captain`
 
@@ -272,7 +272,7 @@ Chaque coffre du Comté est rempli à l'apparition de la structure. Son contenu 
 | Épée longue en fer (`Weapon_Longsword_Iron`) | 1 | 33 % |
 | Épée en acier (`Weapon_Sword_Steel`) | 1 | 17 % |
 
-## Armurerie
+## Armurerie {#armurerie}
 
 [Poste de garde](postes-de-garde.md) · liste `Nakasar_Loot_Guard_Armory`
 
@@ -313,7 +313,7 @@ Chaque coffre du Comté est rempli à l'apparition de la structure. Son contenu 
 | Cuir moyen (`Ingredient_Leather_Medium`) | 1 à 3 | 11 % |
 | Potion d'endurance mineure (`Potion_Stamina_Lesser`) | 1 à 2 | 11 % |
 
-## Caserne
+## Caserne {#caserne}
 
 [Poste de garde](postes-de-garde.md) · liste `Nakasar_Loot_Guard_Barracks`
 
@@ -354,7 +354,7 @@ Chaque coffre du Comté est rempli à l'apparition de la structure. Son contenu 
 | Hache de bataille rouillée (`Weapon_Battleaxe_Steel_Rusty`) | 1 | 5 % |
 | Arbalète en fer (`Weapon_Crossbow_Iron`) | 1 | 5 % |
 
-## Ruines du château
+## Ruines du château {#ruines-du-chateau}
 
 [Château hanté](chateaux-hantes.md), chambre du donjon · liste `Nakasar_Loot_Castle_Ruins`
 
@@ -395,7 +395,7 @@ Chaque coffre du Comté est rempli à l'apparition de la structure. Son contenu 
 | Épée en os (`Weapon_Sword_Bone`) | 1 | 6 % |
 | Dagues en os (`Weapon_Daggers_Bone`) | 1 | 6 % |
 
-## Crypte
+## Crypte {#crypte}
 
 [Crypte](cryptes.md), salle funéraire · liste `Nakasar_Loot_Crypt`
 
@@ -412,7 +412,7 @@ Chaque coffre du Comté est rempli à l'apparition de la structure. Son contenu 
 | Épée en os (`Weapon_Sword_Bone`) | 1 | 6 % |
 | Dagues en os (`Weapon_Daggers_Bone`) | 1 | 6 % |
 
-## Maison du notable
+## Maison du notable {#maison-du-notable}
 
 [Village](villages.md), maison du notable · liste `Nakasar_Loot_Village_Rich`
 
@@ -458,7 +458,7 @@ Chaque coffre du Comté est rempli à l'apparition de la structure. Son contenu 
 | Recette : tourte à la viande (`Recipe_Food_Pie_Meat`) | 1 | 10 % |
 | Recette : tarte à la citrouille (`Recipe_Food_Pie_Pumpkin`) | 1 | 10 % |
 
-## Maison du village
+## Maison du village {#maison-du-village}
 
 [Village](villages.md), 9 coffres · liste `Nakasar_Loot_Village_House`
 
@@ -509,7 +509,7 @@ Chaque coffre du Comté est rempli à l'apparition de la structure. Son contenu 
 | Potion de soin mineure (`Potion_Health_Lesser`) | 1 | 22 % |
 | Kit de réparation grossier (`Tool_Repair_Kit_Crude`) | 1 | 11 % |
 
-## Ferme
+## Ferme {#ferme}
 
 [Fermes](fermes.md) (zombies, en ruine) et [champs de citrouilles](champs-de-citrouilles.md) · liste `Nakasar_Loot_Farm`
 
@@ -557,7 +557,7 @@ Chaque coffre du Comté est rempli à l'apparition de la structure. Son contenu 
 | Gibier cuit (`Food_Wildmeat_Cooked`) | 1 à 2 | 13 % |
 | Tourte à la viande (`Food_Pie_Meat`) | 1 | 7 % |
 
-## Ferme incendiée
+## Ferme incendiée {#ferme-incendiee}
 
 [Ferme](fermes.md) incendiée · liste `Nakasar_Loot_Farm_Burnt`
 
@@ -578,7 +578,7 @@ Chaque coffre du Comté est rempli à l'apparition de la structure. Son contenu 
 | *rien* | | 75 % |
 | Houe grossière (`Tool_Hoe_Crude`) | 1 | 25 % |
 
-## Camp de chasseurs
+## Camp de chasseurs {#camp-de-chasseurs}
 
 [Camp de chasseurs](camps-de-chasseurs.md), tente ou pavillon · liste `Nakasar_Loot_Hunter_Camp`
 
@@ -616,7 +616,7 @@ Chaque coffre du Comté est rempli à l'apparition de la structure. Son contenu 
 | **Épée en acier d'argent** (`Weapon_Sword_Silversteel`) | 1 | 5 % |
 | Plastron de corbeau (`Armor_Leather_Raven_Chest`) | 1 | 5 % |
 
-## Armurerie des chasseurs
+## Armurerie des chasseurs {#armurerie-des-chasseurs}
 
 [Camp de chasseurs](camps-de-chasseurs.md), atelier · liste `Nakasar_Loot_Hunter_Armory`
 

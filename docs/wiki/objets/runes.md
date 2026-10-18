@@ -46,7 +46,7 @@ Quatre runes de sorts, que l'on lance avec les **touches de capacité** en tenan
 - À la fin, elle oublie les cibles prises parmi ses anciens alliés et retourne dans son camp.
 - Aucune créature n'est exclue dans le code : boss et élites peuvent être dominés.
 
-## Téléportation
+## Téléportation {#teleportation}
 
 > Lance un projectile et vous téléporte à son point d'impact, à 20 blocs au plus.
 
@@ -55,7 +55,7 @@ Quatre runes de sorts, que l'on lance avec les **touches de capacité** en tenan
 - **Distance maximale : 20 blocs** (un impact plus lointain vous arrête à 20 blocs sur la même ligne).
 - Petite explosion violette à l'arrivée. Le sort n'inflige pas de dégâts.
 
-## Chaînes spectrales
+## Chaînes spectrales {#chaines-spectrales}
 
 > Un projectile qui fait jaillir des chaînes spectrales du sol et immobilise la cible touchée quelques secondes.
 

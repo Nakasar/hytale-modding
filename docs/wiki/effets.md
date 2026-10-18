@@ -1,13 +1,61 @@
 # Effets de statut
 
-| | Effet | Source | Durée | Ce qu'il fait |
-|---|---|---|---|---|
-| <img src="images/jeu/UI/StatusEffects/Nakasar/Spectral_Chains.png" width="40"> | <a id="chaines-spectrales"></a>**Chaînes spectrales** | rune [Chaînes spectrales](objets/runes.md#chaines-spectrales), [Comte Vampire](pnj/comte-vampire.md) | 3 s | Joueur : aucun déplacement, ni attaque, ni capacité, ni esquive, insensible au recul ; chaînes vertes qui montent du sol. Créature : figée. |
-| <img src="images/jeu/UI/StatusEffects/Nakasar/Count_Domination.png" width="40"> | <a id="domination-du-comte"></a>**Domination du Comte** | [Comte](pnj/comte-vampire.md) ou [Comtesse](pnj/comtesse-vampire.md) | 6 s | Vos coups et vos projectiles ne blessent plus le vampire qui vous a dominé. Vous bougez et frappez les autres normalement. Teinte rose et violette. |
-| <img src="images/jeu/UI/StatusEffects/Nakasar/Dominated.png" width="40"> | <a id="domine"></a>**Dominé** | rune [Domination](objets/runes.md#domination), sur une créature | 6 s | La créature passe dans votre camp et se retourne contre ses anciens alliés. |
-| <img src="images/jeu/UI/StatusEffects/Nakasar/Ghost_Chill.png" width="40"> | <a id="froid-spectral"></a>**Froid spectral** | [Fantôme](pnj/fantome.md) | 3 s | Vitesse de déplacement **×0,5**, teinte bleu pâle. |
-| <img src="images/jeu/UI/StatusEffects/Nakasar/Imprisoned.png" width="40"> | <a id="emprisonne"></a>**Emprisonné** | [Capitaine de la garde](pnj/capitaine-de-la-garde.md) | 5 s | Vitesse **×0,6**, teinte grise. Arrive après la téléportation dans une cellule. |
-| <img src="images/jeu/UI/StatusEffects/Nakasar/Tendril_Rooted.png" width="40"> | <a id="enracine"></a>**Enraciné** | [Vrilles](pnj/vrilles.md) de la Citrouille géante | tant que les vrilles vivent (20 s max) | Aucun déplacement, insensible au recul. Détruisez les vrilles pour vous libérer. |
-| | <a id="poison-de-citrouille"></a>**Poison de citrouille** | crachat de la [Citrouille géante](pnj/citrouille-geante.md) | 6 s | **4 dégâts de poison par seconde**, teinte orange (icône du poison du jeu). |
+Les effets que le mod applique aux joueurs et aux créatures.
 
-Deux effets invisibles concernent les monstres : les élites deviennent **insensibles au recul** pendant leurs attaques annoncées (2,5 s), et la Citrouille géante pendant la charge de son piège (3,5 s).
+## Chaînes spectrales {#chaines-spectrales}
+
+![icône](/jeu/UI/StatusEffects/Nakasar/Spectral_Chains.png)
+
+- **Source :** rune [Chaînes spectrales](objets/runes.md#chaines-spectrales), [Comte Vampire](pnj/comte-vampire.md)
+- **Durée :** 3 s
+- **Joueur :** aucun déplacement, ni attaque, ni capacité, ni esquive, insensible au recul ; des chaînes vertes montent du sol. **Créature :** figée.
+
+## Domination du Comte {#domination-du-comte}
+
+![icône](/jeu/UI/StatusEffects/Nakasar/Count_Domination.png)
+
+- **Source :** [Comte](pnj/comte-vampire.md) ou [Comtesse](pnj/comtesse-vampire.md)
+- **Durée :** 6 s
+- Vos coups et vos projectiles ne blessent plus le vampire qui vous a dominé. Vous bougez et frappez les autres normalement. Teinte rose et violette.
+
+## Dominé {#domine}
+
+![icône](/jeu/UI/StatusEffects/Nakasar/Dominated.png)
+
+- **Source :** rune [Domination](objets/runes.md#domination), sur une créature
+- **Durée :** 6 s
+- La créature passe dans votre camp et se retourne contre ses anciens alliés.
+
+## Froid spectral {#froid-spectral}
+
+![icône](/jeu/UI/StatusEffects/Nakasar/Ghost_Chill.png)
+
+- **Source :** [Fantôme](pnj/fantome.md)
+- **Durée :** 3 s
+- Vitesse de déplacement **×0,5**, teinte bleu pâle.
+
+## Emprisonné {#emprisonne}
+
+![icône](/jeu/UI/StatusEffects/Nakasar/Imprisoned.png)
+
+- **Source :** [Capitaine de la garde](pnj/capitaine-de-la-garde.md)
+- **Durée :** 5 s
+- Vitesse **×0,6**, teinte grise. Arrive après la téléportation dans une cellule.
+
+## Enraciné {#enracine}
+
+![icône](/jeu/UI/StatusEffects/Nakasar/Tendril_Rooted.png)
+
+- **Source :** [Vrilles](pnj/vrilles.md) de la Citrouille géante
+- **Durée :** tant que les vrilles vivent (20 s au plus)
+- Aucun déplacement, insensible au recul. Détruisez les vrilles pour vous libérer.
+
+## Poison de citrouille {#poison-de-citrouille}
+
+- **Source :** crachat de la [Citrouille géante](pnj/citrouille-geante.md)
+- **Durée :** 6 s
+- **4 dégâts de poison par seconde**, teinte orange (icône du poison du jeu).
+
+## Effets invisibles
+
+Les élites deviennent **insensibles au recul** pendant leurs attaques annoncées (2,5 s), et la Citrouille géante pendant la charge de son piège (3,5 s).

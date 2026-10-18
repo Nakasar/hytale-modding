@@ -84,7 +84,7 @@ NAMES = {
 
 
 def anchor(title):
-    # Même règle que les ancres de titres de MkDocs : accents retirés.
+    # Ancre explicite sans accents ({#...} de Docusaurus), stable quel que soit le moteur.
     ascii_title = unicodedata.normalize("NFKD", title).encode("ascii", "ignore").decode()
     return ascii_title.lower().replace(" ", "-").replace("'", "")
 
@@ -125,7 +125,7 @@ def main():
     out = [
         "# Butin des coffres",
         "",
-        "<!-- Page générée par mods/nakasar-vampires/tools/generate_wiki_loot.py : ne pas modifier à la main. -->",
+        "{/* Page générée par mods/nakasar-vampires/tools/generate_wiki_loot.py : ne pas modifier à la main. */}",
         "",
         "Chaque coffre du Comté est rempli à l'apparition de la structure. Son contenu se compose de plusieurs "
         "**tirages** : chacun est fait un nombre de fois aléatoire, et à chaque fois un objet est choisi "
@@ -139,7 +139,7 @@ def main():
     out.append("")
     for title, drop_id, where in TABLES:
         drop = json.loads((DROPS / f"{drop_id}.json").read_text(encoding="utf-8"))
-        out += [f"## {title}", "", f"{where} · liste `{drop_id}`", ""]
+        out += [f"## {title} {{#{anchor(title)}}}", "", f"{where} · liste `{drop_id}`", ""]
         out += table(drop)
     OUT.write_text("\n".join(out).rstrip() + "\n", encoding="utf-8")
     print(f"{OUT} écrit ({len(TABLES)} coffres)")

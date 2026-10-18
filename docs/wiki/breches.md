@@ -1,6 +1,6 @@
 # Brèches des chasseurs
 
-<img src="images/jeu/UI/WorldMap/MapMarkers/Nakasar_HunterBreach.png" width="48"> 
+![icône](/jeu/UI/WorldMap/MapMarkers/Nakasar_HunterBreach.png) 
 
 ![Un campement de brèche : tentes, feu purificateur et la faille sous l'arche](images/lieux/breche_camp.jpg)
 
@@ -14,7 +14,7 @@ La nuit, dans le **monde principal**, le voile se déchire parfois près des jou
 |---|---|---|
 | Attente | **30 min** | compte à rebours « prochaine dans » sur la carte |
 | Tombée de la nuit | jusqu'à **19 h 12** | la carte indique « Attend la tombée de la nuit ». La brèche ne s'ouvre qu'entre 19 h 12 et 3 h 36. À la nuit, message : *« Le voile se déchire... Une brèche va s'ouvrir dans la nuit, non loin d'ici. »* |
-| Avertissement | **1 min** | « S'ouvre dans {temps} » sur la carte |
+| Avertissement | **1 min** | « S'ouvre dans \{temps\} » sur la carte |
 | Recherche d'un lieu | jusqu'à 10 min | « Cherche un lieu sauvage près de vous ». Il faut qu'il fasse encore nuit ; sinon le cycle recommence. |
 | **Ouverture** | **10 min** | titre à l'écran **« Brèche des chasseurs »** — *« Des chasseurs de vampires campent devant la brèche »* — et message : *« Une brèche s'est ouverte : des chasseurs de vampires y ont dressé leur camp. Elle est indiquée sur votre carte. »* |
 | Fermeture | | le camp disparaît, le terrain est restauré, les chasseurs partent aussitôt ; le cycle reprend |

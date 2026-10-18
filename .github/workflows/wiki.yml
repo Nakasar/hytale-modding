@@ -1,15 +1,16 @@
 name: wiki
 
-# Construit le wiki joueur (docs/wiki, MkDocs Material) à chaque PR qui le touche, et le publie sur
-# GitHub Pages à chaque push sur main. Prérequis : Settings > Pages > Source = « GitHub Actions ».
+# Construit le wiki joueur (site Docusaurus dans wiki/, pages Markdown dans docs/wiki) à chaque PR qui le
+# touche, et le publie sur GitHub Pages à chaque push sur main. Prérequis : Settings > Pages > Source =
+# « GitHub Actions ».
 on:
   push:
     branches: ["main"]
-    paths: ["docs/wiki/**", "docs/wiki_hooks.py", "docs/requirements-wiki.txt", "mkdocs.yml",
-            "mods/nakasar-vampires/src/main/resources/Common/**", ".github/workflows/wiki.yml"]
+    paths: ["wiki/**", "docs/wiki/**", "mods/nakasar-vampires/src/main/resources/Common/**",
+            ".github/workflows/wiki.yml"]
   pull_request:
-    paths: ["docs/wiki/**", "docs/wiki_hooks.py", "docs/requirements-wiki.txt", "mkdocs.yml",
-            "mods/nakasar-vampires/src/main/resources/Common/**", ".github/workflows/wiki.yml"]
+    paths: ["wiki/**", "docs/wiki/**", "mods/nakasar-vampires/src/main/resources/Common/**",
+            ".github/workflows/wiki.yml"]
   workflow_dispatch:
 
 permissions:
@@ -22,18 +23,23 @@ concurrency:
 jobs:
   build:
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: wiki
     steps:
       - uses: actions/checkout@v6
-      - uses: actions/setup-python@v6
+      - uses: actions/setup-node@v5
         with:
-          python-version: "3.12"
-      - run: python -m pip install -r docs/requirements-wiki.txt
-      # --strict : un lien ou une ancre cassé fait échouer la construction.
-      - run: mkdocs build --strict
+          node-version: "22"
+          cache: npm
+          cache-dependency-path: wiki/package-lock.json
+      - run: npm ci
+      # Liens et ancres cassés font échouer la construction (onBrokenLinks/onBrokenAnchors: "throw").
+      - run: npm run build
       - if: github.event_name != 'pull_request'
         uses: actions/upload-pages-artifact@v4
         with:
-          path: build/wiki-site
+          path: wiki/build
 
   deploy:
     if: github.event_name != 'pull_request'

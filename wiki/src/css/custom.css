@@ -1,0 +1,31 @@
+/* Comté Vampire : rouge sang et orange citrouille, nuit violette. */
+:root {
+  --ifm-color-primary: #a3182b;
+  --ifm-color-primary-dark: #931627;
+  --ifm-color-primary-darker: #8b1425;
+  --ifm-color-primary-darkest: #72111e;
+  --ifm-color-primary-light: #b31a2f;
+  --ifm-color-primary-lighter: #bb1c31;
+  --ifm-color-primary-lightest: #d42139;
+}
+
+[data-theme="dark"] {
+  --ifm-color-primary: #ff8a3d;
+  --ifm-color-primary-dark: #ff781f;
+  --ifm-color-primary-darker: #ff6f10;
+  --ifm-color-primary-darkest: #e65a00;
+  --ifm-color-primary-light: #ff9c5b;
+  --ifm-color-primary-lighter: #ffa56a;
+  --ifm-color-primary-lightest: #ffc196;
+  --ifm-background-color: #17121c;
+  --ifm-background-surface-color: #45070f;
+  --ifm-navbar-background-color: #45070f;
+  --ifm-footer-background-color: #2a0a12;
+}
+
+/* Photos et rendus : jamais plus hauts que l'écran. */
+.markdown img { max-height: 480px; border-radius: 4px; }
+
+/* Icônes d'objets (alt « icône ») et vignettes du bestiaire. */
+.markdown img[alt="icône"] { height: 48px; image-rendering: pixelated; vertical-align: middle; }
+.markdown table img { max-height: 72px; vertical-align: middle; }

@@ -1,6 +1,6 @@
 # Autel sacrificiel
 
-<img src="../images/jeu/Icons/Items/Nakasar/Sacrificial_Altar.png" width="64"> 
+![icône](/jeu/Icons/Items/Nakasar/Sacrificial_Altar.png) 
 
 ![L'autel sacrificiel (aperçu du générateur)](../images/apercu_autel.png)
 

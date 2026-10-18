@@ -6,11 +6,11 @@ Toutes les créatures ajoutées par le mod. Les créatures du Comté forment **u
 
 | | Créature | Rang | PV | Où | Butin notable |
 |---|---|---|---|---|---|
-| <img src="../images/pnj/Nakasar_Vampire_Count.jpg" width="80"> | [Comte Vampire](comte-vampire.md) | Boss | 600 | Manoir du Comte | 4 à 6 éclats de rune + 1 rune |
-| <img src="../images/pnj/Nakasar_Vampire_Countess.jpg" width="80"> | [Comtesse Vampire](comtesse-vampire.md) | Boss | 500 | Manoir du Comte (à la place du Comte, 50 %) | 4 à 6 éclats de rune + 1 rune |
+| ![vignette](../images/pnj/Nakasar_Vampire_Count.jpg) | [Comte Vampire](comte-vampire.md) | Boss | 600 | Manoir du Comte | 4 à 6 éclats de rune + 1 rune |
+| ![vignette](../images/pnj/Nakasar_Vampire_Countess.jpg) | [Comtesse Vampire](comtesse-vampire.md) | Boss | 500 | Manoir du Comte (à la place du Comte, 50 %) | 4 à 6 éclats de rune + 1 rune |
 | | [Capitaine de la garde](capitaine-de-la-garde.md) | Élite | 650 | Poste de garde (garnison) | 2 à 4 éclats, hache rouillée (33 %) |
 | | [Abomination zombie](abomination-zombie.md) | Élite | 450 | Ferme zombie | 1 à 3 éclats |
-| <img src="../images/pnj/Nakasar_Giant_Pumpkin.png" width="80"> | [Citrouille géante](citrouille-geante.md) | Élite immobile | 600 | Champ de citrouilles géant | citrouilles, graines, essence, 1 à 3 éclats |
+| ![vignette](../images/pnj/Nakasar_Giant_Pumpkin.png) | [Citrouille géante](citrouille-geante.md) | Élite immobile | 600 | Champ de citrouilles géant | citrouilles, graines, essence, 1 à 3 éclats |
 
 ## Créatures du Comté
 
@@ -22,7 +22,7 @@ Toutes les créatures ajoutées par le mod. Les créatures du Comté forment **u
 | | [Fermier zombifié](fermier-zombifie.md) | 95 | Ferme zombie |
 | | [Paysan rebelle zombifié](paysan-rebelle-zombifie.md) | 85 | Poste de garde des rebelles |
 | | [Garde squelette](garde-squelette.md) | 120 | Poste de garde (garnison) |
-| <img src="../images/pnj/Nakasar_Pumpkin_Vine.png" width="80"> | [Vrille de citrouille](vrille-de-citrouille.md) | 45 | Invoquée par la Citrouille géante |
+| ![vignette](../images/pnj/Nakasar_Pumpkin_Vine.png) | [Vrille de citrouille](vrille-de-citrouille.md) | 45 | Invoquée par la Citrouille géante |
 | | [Vrilles (piège)](vrilles.md) | 12 | Piège de la Citrouille géante |
 
 ## Chasseurs de vampires (neutres)
@@ -31,9 +31,9 @@ Ils ne vous attaquent que si vous les frappez, et combattent toutes les créatur
 
 | | Chasseur | PV | Arme |
 |---|---|---|---|
-| <img src="../images/pnj/Nakasar_Vampire_Hunter_Blade.jpg" width="80"> | [Chasseur (épée)](chasseur-epee.md) | 200 | Épée en argent |
-| <img src="../images/pnj/Nakasar_Vampire_Hunter_Crossbow.jpg" width="80"> | [Chasseuse (arbalète)](chasseuse-arbalete.md) | 160 | Arbalète de poing en argent |
-| <img src="../images/pnj/Nakasar_Vampire_Hunter_Gunner.jpg" width="80"> | [Chasseur (tromblon)](chasseur-tromblon.md) | 170 | Tromblon en argent |
+| ![vignette](../images/pnj/Nakasar_Vampire_Hunter_Blade.jpg) | [Chasseur (épée)](chasseur-epee.md) | 200 | Épée en argent |
+| ![vignette](../images/pnj/Nakasar_Vampire_Hunter_Crossbow.jpg) | [Chasseuse (arbalète)](chasseuse-arbalete.md) | 160 | Arbalète de poing en argent |
+| ![vignette](../images/pnj/Nakasar_Vampire_Hunter_Gunner.jpg) | [Chasseur (tromblon)](chasseur-tromblon.md) | 170 | Tromblon en argent |
 
 ## Créatures vanilla du Comté
 
