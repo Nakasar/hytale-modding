@@ -1,0 +1,38 @@
+{
+  "TimeSeconds": 5,
+  "KnowledgeRequired": false,
+  "Input": [
+    {
+      "ResourceTypeId": "Wood_Trunk",
+      "Quantity": 10
+    },
+    {
+      "ItemId": "Ingredient_Bar_Silver",
+      "Quantity": 2
+    },
+    {
+      "ItemId": "Ingredient_Leather_Light",
+      "Quantity": 4
+    }
+  ],
+  "PrimaryOutput": {
+    "ItemId": "Nakasar_Hunter_Workbench",
+    "Quantity": 1
+  },
+  "Output": [
+    {
+      "ItemId": "Nakasar_Hunter_Workbench",
+      "Quantity": 1
+    }
+  ],
+  "BenchRequirement": [
+    {
+      "Type": "Crafting",
+      "Id": "Workbench",
+      "Categories": [
+        "Workbench_Crafting"
+      ],
+      "RequiredTierLevel": 1
+    }
+  ]
+}

@@ -1,0 +1,10 @@
+{
+  "Spawners": [
+    {
+      "SpawnerId": "Nakasar_Light_Aura",
+      "FixedRotation": true
+    }
+  ],
+  "CullDistance": 48,
+  "BoundingRadius": 3
+}

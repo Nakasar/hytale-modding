@@ -6,4 +6,4 @@ La clé qui ouvre le [Comté Vampire](../fragment/README.md). Elle reprend l'app
 
 - **Utilisation :** posez-la dans une **Ancienne passerelle**. Le portail s'ouvre sur le Comté (thème orange citrouille, étiquettes *Morts-vivants*, *Vampires*, *Nuit sans fin*).
 - **Durée du fragment :** 30 minutes. Il se ferme aussi quand plus personne n'y est.
-- **Obtention :** aucune recette ni aucun butin pour l'instant (commande administrateur `/give PortalKey_Nakasar_Halloween`). En jeu normal, on entre dans le Comté par une [brèche des chasseurs](../breches.md).
+- **Obtention :** [établi des chasseurs](etabli-des-chasseurs.md) au niveau 2, onglet Fragments : 3 éclats de rune, 2 lingots d'argent, 1 rubis et 4 fragments d'os (5 s). On peut aussi entrer dans le Comté par une [brèche des chasseurs](../breches.md).

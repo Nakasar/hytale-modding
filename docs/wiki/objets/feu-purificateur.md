@@ -21,6 +21,7 @@ Un joueur près d'un feu purificateur est donc à l'abri des morts-vivants au co
 
 ## Où les trouver
 
+- [Établi des chasseurs](etabli-des-chasseurs.md), onglet Feux purificateurs (niveau 1) : 4 torches ou 2 lanternes par fabrication.
 - [Camps de chasseurs](../fragment/camps-de-chasseurs.md) du Comté : 15 torches et 7 lanternes, qui couvrent tout le camp.
 - [Brèches des chasseurs](../breches.md) : 2 torches et 3 lanternes.
 

@@ -1,0 +1,12 @@
+# Vampire hunters' workbench and its runes — English texts
+items.Nakasar_Hunter_Workbench.name = Vampire Hunters' Workbench
+items.Nakasar_Hunter_Workbench.description = The hunters' table: purifying fires from the first level. Upgrade it to engrave their runes and craft the Vampire County fragment.
+benchCategories.nakasar_hunter_fires = Purifying Fires
+benchCategories.nakasar_hunter_runes = Hunter Runes
+benchCategories.nakasar_hunter_fragments = Fragments
+items.Rune_Nakasar_LightAura.name = Aura of Light
+items.Rune_Nakasar_LightAura.description = Wraps you in purifying fire for a few seconds: undead, ghosts and vampires flee from you as from a purifying torch, and burn if they stay too close.
+items.Rune_Nakasar_Invisibility.name = Invisibility
+items.Rune_Nakasar_Invisibility.description = Makes you invisible to creatures and other players as long as you stand still (30 seconds at most). Moving or striking reveals you.
+ui.abilityKeywords.Nakasar_Purify = Purification
+ui.abilityKeywords.Nakasar_Stealth = Stealth

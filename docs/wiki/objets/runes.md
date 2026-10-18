@@ -1,6 +1,6 @@
 # Runes de capacité
 
-Quatre runes de sorts, que l'on lance avec les **touches de capacité** en tenant une arme. Elles coûtent du **mana** et ont un temps de recharge. Elles reprennent pour l'instant l'icône et l'apparence de la rune de boule de feu du jeu.
+Six runes de sorts, que l'on lance avec les **touches de capacité** en tenant une arme. Elles coûtent du **mana** et ont un temps de recharge. Elles reprennent pour l'instant l'icône et l'apparence de la rune de boule de feu du jeu.
 
 ## Obtenir une rune
 
@@ -63,3 +63,33 @@ Quatre runes de sorts, que l'on lance avec les **touches de capacité** en tenan
 - Projectile à traînée verte (vol de 2 s au plus).
 - La cible touchée est **immobilisée 3 s** : [Chaînes spectrales](../effets.md#chaines-spectrales) (un joueur ne peut plus bouger, attaquer, lancer de sort ni esquiver ; une créature est figée).
 - Sans cible touchée, le sort ne fait rien.
+
+## Runes de chasseur {#runes-de-chasseur}
+
+Deux runes des chasseurs de vampires, gravées sur l'[établi des chasseurs](etabli-des-chasseurs.md) amélioré au niveau 2 (onglet Runes de chasseur). Elles reprennent elles aussi l'apparence de la rune de boule de feu.
+
+| Rune | Rareté | Mana | Recharge | Effet |
+|---|---|---|---|---|
+| [Aura de lumière](#aura-de-lumiere) | Rare | 40 | 30 s | les morts-vivants vous fuient 8 s |
+| [Invisibilité](#invisibilite) | Rare | 30 | 25 s | invisible tant que vous ne bougez pas (30 s max) |
+
+## Aura de lumière {#aura-de-lumiere}
+
+> Vous enveloppe de feu purificateur pendant quelques secondes : morts-vivants, fantômes et vampires vous fuient comme une torche de purification, et brûlent s'ils restent trop près.
+
+- **Coût :** 40 mana · **Recharge :** 30 s · **Durée :** 8 s (relancer prolonge l'aura)
+- Vous devenez une [torche de feu purificateur](feu-purificateur.md) ambulante : flammes blanches autour de vous, et vous éclairez comme la torche ([Aura de lumière](../effets.md#aura-de-lumiere)).
+- Les morts-vivants (vampires, zombies, squelettes, fantômes, goules, spectres) ne s'approchent plus à moins de **11 blocs**, s'éloignent à moins de **7 blocs**, et renoncent à vous poursuivre.
+- Une créature qui reste plus de 5 s à moins de 7 blocs **brûle** (6 dégâts de feu par seconde).
+- Les tireurs (archers, mages) peuvent encore vous viser de loin.
+
+## Invisibilité {#invisibilite}
+
+> Vous rend invisible aux créatures et aux autres joueurs tant que vous restez immobile (30 secondes au plus). Bouger ou frapper vous révèle.
+
+- **Coût :** 30 mana · **Recharge :** 25 s · **Durée :** 30 s au plus
+- Les autres joueurs ne vous voient plus, et les créatures cessent de vous voir et oublient le combat en cours.
+- Vous êtes **intouchable** tant que vous êtes caché : coups et projectiles vous traversent.
+- L'invisibilité cesse dès que vous **bougez** (marche, saut, chute, poussée), dès que vous **infligez des dégâts**, ou au bout de 30 s. Tourner la caméra ne la rompt pas.
+- Teinte grise et icône d'œil fermé pour vous ([Invisible](../effets.md#invisible)).
+

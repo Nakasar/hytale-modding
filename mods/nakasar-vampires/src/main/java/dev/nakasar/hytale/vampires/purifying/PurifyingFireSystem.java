@@ -38,7 +38,9 @@ import org.joml.Vector3d;
  *   <li>s'il reste plus de {@value #BURN_DELAY} secondes dans le rayon (enfermé dans le camp, par exemple), le feu
  *       le brûle ({@value #BURN_DAMAGE} dégâts de feu par seconde) jusqu'à ce qu'il sorte ou meure.</li>
  * </ul>
- * Les rôles vanilla (squelettes, zombies...) n'ont pas de capteur « fuir un bloc » qu'on pourrait leur ajouter sans
+ * Le porteur d'une aura de lumière (rune, {@link LightAuraInteraction}) compte comme un feu qui le suit.
+ *
+ * <p>Les rôles vanilla (squelettes, zombies...) n'ont pas de capteur « fuir un bloc » qu'on pourrait leur ajouter sans
  * les remplacer, d'où ces systèmes plutôt que du JSON.
  */
 public final class PurifyingFireSystem extends DelayedEntitySystem<EntityStore> {
@@ -97,14 +99,14 @@ public final class PurifyingFireSystem extends DelayedEntitySystem<EntityStore> 
         }
         Vector3d position = chunk.getComponent(index, TransformComponent.getComponentType()).getPosition();
         ChunkStore chunks = buffer.getExternalData().getWorld().getChunkStore();
-        Fires found = scan(chunks, position, RADIUS + APPROACH);
+        Fires found = scan(chunks, store, position, RADIUS + APPROACH);
         if (found.nearest == null) {
             fires.remove(ref);
             exposure.remove(ref);
             return;
         }
         fires.put(ref, found.positions.toDoubleArray());
-        forgetSheltered(ref, chunks, buffer);
+        forgetSheltered(ref, chunks, store, buffer);
         if (found.nearestDistanceSq > (long) RADIUS * RADIUS) {
             exposure.remove(ref);
             return;
@@ -124,7 +126,8 @@ public final class PurifyingFireSystem extends DelayedEntitySystem<EntityStore> 
     }
 
     /** Oublie les cibles marquées qui se tiennent près d'un feu : le mort-vivant cesse de les poursuivre. */
-    private void forgetSheltered(Ref<EntityStore> ref, ChunkStore chunks, CommandBuffer<EntityStore> buffer) {
+    private void forgetSheltered(Ref<EntityStore> ref, ChunkStore chunks, Store<EntityStore> entities,
+                                 CommandBuffer<EntityStore> buffer) {
         MarkedEntitySupport marked = buffer.getComponent(ref, MarkedEntitySupport.getComponentType());
         if (marked == null) {
             return;
@@ -135,7 +138,7 @@ public final class PurifyingFireSystem extends DelayedEntitySystem<EntityStore> 
                 continue;
             }
             TransformComponent transform = buffer.getComponent(target, TransformComponent.getComponentType());
-            if (transform != null && scan(chunks, transform.getPosition(), SHELTER).nearest != null) {
+            if (transform != null && scan(chunks, entities, transform.getPosition(), SHELTER).nearest != null) {
                 marked.clearMarkedEntity(slot);
             }
         }
@@ -158,8 +161,11 @@ public final class PurifyingFireSystem extends DelayedEntitySystem<EntityStore> 
         }
     }
 
-    /** Feux chargés à moins de {@code radius} blocs (à l'horizontale) de {@code from}. */
-    private Fires scan(ChunkStore chunks, Vector3d from, int radius) {
+    /**
+     * Feux chargés à moins de {@code radius} blocs (à l'horizontale) de {@code from} : blocs de feu purificateur et
+     * porteurs d'une aura de lumière ({@link LightAuraSystem}) du même monde.
+     */
+    private Fires scan(ChunkStore chunks, Store<EntityStore> entities, Vector3d from, int radius) {
         Fires fires = new Fires();
         Store<ChunkStore> store = chunks.getStore();
         int cx = (int) Math.floor(from.x);
@@ -207,6 +213,7 @@ public final class PurifyingFireSystem extends DelayedEntitySystem<EntityStore> 
                 }
             }
         }
+        fires.add(entities, this.fires, cx, cz, minY, maxY, radiusSq);
         return fires;
     }
 
@@ -215,5 +222,27 @@ public final class PurifyingFireSystem extends DelayedEntitySystem<EntityStore> 
         Vector3d nearest;
         long nearestDistanceSq;
         final DoubleArrayList positions = new DoubleArrayList();
+
+        /** Ajoute les auras de lumière du monde dans le rayon, comme des feux centrés sur leurs porteurs. */
+        void add(Store<EntityStore> entities, PurifyingFires registry, int cx, int cz, int minY, int maxY,
+                 long radiusSq) {
+            registry.forEachAura(entities, aura -> {
+                if (aura[1] < minY - 1 || aura[1] > maxY + 1) {
+                    return;
+                }
+                double gx = aura[0] - (cx + 0.5);
+                double gz = aura[2] - (cz + 0.5);
+                double distanceSq = gx * gx + gz * gz;
+                if (distanceSq > radiusSq) {
+                    return;
+                }
+                if (distanceSq < nearestDistanceSq) {
+                    nearestDistanceSq = (long) Math.floor(distanceSq);
+                    nearest = new Vector3d(aura[0], aura[1], aura[2]);
+                }
+                positions.add(aura[0]);
+                positions.add(aura[2]);
+            });
+        }
     }
 }

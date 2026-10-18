@@ -13,8 +13,14 @@ import dev.nakasar.hytale.vampires.domination.DominateInteraction;
 import dev.nakasar.hytale.vampires.domination.DominatePlayerInteraction;
 import dev.nakasar.hytale.vampires.domination.DominationExpirySystem;
 import dev.nakasar.hytale.vampires.domination.Dominations;
+import dev.nakasar.hytale.vampires.invisibility.Invisibility;
+import dev.nakasar.hytale.vampires.invisibility.InvisibilityInteraction;
+import dev.nakasar.hytale.vampires.invisibility.InvisibilitySystem;
 import dev.nakasar.hytale.vampires.prison.ImprisonPlayerInteraction;
 import dev.nakasar.hytale.vampires.pumpkin.FireWeaknessSystem;
+import dev.nakasar.hytale.vampires.purifying.LightAura;
+import dev.nakasar.hytale.vampires.purifying.LightAuraInteraction;
+import dev.nakasar.hytale.vampires.purifying.LightAuraSystem;
 import dev.nakasar.hytale.vampires.purifying.PurifyingFireSystem;
 import dev.nakasar.hytale.vampires.purifying.PurifyingFires;
 import dev.nakasar.hytale.vampires.purifying.PurifyingSteeringSystem;
@@ -59,6 +65,10 @@ import dev.nakasar.hytale.vampires.silver.TakeArrowInteraction;
  *       infligent le double de dégâts aux vampires ;</li>
  *   <li>{@link PurifyingFireSystem} et {@link PurifyingSteeringSystem} : les morts-vivants évitent les torches et
  *       lanternes de feu purificateur du camp des chasseurs ;</li>
+ *   <li>{@code Nakasar_LightAura} ({@link LightAuraSystem}) : aura de feu purificateur autour du lanceur, que les
+ *       morts-vivants fuient comme une torche (rune Aura de lumière) ;</li>
+ *   <li>{@code Nakasar_Invisibility} ({@link InvisibilitySystem}) : le lanceur disparaît pour les joueurs et les PNJ
+ *       tant qu'il reste immobile (rune Invisibilité) ;</li>
  *   <li>la brèche des chasseurs ({@link HunterBreachStarter}, {@link NightCondition},
  *       {@link BreachHunterCleanupSystem}) : la nuit, toutes les demi-heures, un campement de chasseurs de vampires
  *       s'ouvre près d'un joueur du monde principal, annoncé dans le chat et sur la carte.</li>
@@ -100,9 +110,15 @@ public final class VampiresPlugin extends JavaPlugin {
                 TakeArrowInteraction.class, TakeArrowInteraction.CODEC);
         interactions.register(ReturnArrowInteraction.TYPE_ID,
                 ReturnArrowInteraction.class, ReturnArrowInteraction.CODEC);
+        interactions.register(LightAuraInteraction.TYPE_ID,
+                LightAuraInteraction.class, LightAuraInteraction.CODEC);
+        interactions.register(InvisibilityInteraction.TYPE_ID,
+                InvisibilityInteraction.class, InvisibilityInteraction.CODEC);
 
         var systems = getEntityStoreRegistry();
         RootTrapped.setComponentType(systems.registerComponent(RootTrapped.class, RootTrapped::new));
+        LightAura.setComponentType(systems.registerComponent(LightAura.class, LightAura::new));
+        Invisibility.setComponentType(systems.registerComponent(Invisibility.class, Invisibility::new));
         systems.registerSystem(new AllegianceAttitudeSystem());
         systems.registerSystem(new AllegianceDamageFilter());
         systems.registerSystem(new DominationExpirySystem());
@@ -114,17 +130,23 @@ public final class VampiresPlugin extends JavaPlugin {
         PurifyingFires purifyingFires = new PurifyingFires();
         systems.registerSystem(new PurifyingFireSystem(purifyingFires));
         systems.registerSystem(new PurifyingSteeringSystem(purifyingFires));
+        systems.registerSystem(new LightAuraSystem(purifyingFires));
+        systems.registerSystem(new LightAuraSystem.Unload());
+        systems.registerSystem(new InvisibilitySystem());
+        systems.registerSystem(new InvisibilitySystem.BreakOnAttack());
+        systems.registerSystem(new InvisibilitySystem.ForgetInvisible());
+        systems.registerSystem(new InvisibilitySystem.Unload());
 
         // Brèche des chasseurs : évènement de monde (Server/WorldEvent) avec notre condition « nuit ».
         WorldEventsPlugin.registerCondition(this, NightCondition.TYPE, NightCondition.CODEC, NightCondition.Config.CODEC);
         systems.registerSystem(new HunterBreachStarter());
         systems.registerSystem(new BreachHunterCleanupSystem());
 
-        getLogger().atInfo().log("Nakasar Vampires : 10 types d'interaction (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s), systèmes des camps, de l'argent, du feu purificateur et de la brèche des chasseurs enregistrés",
+        getLogger().atInfo().log("Nakasar Vampires : 12 types d'interaction (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s), systèmes des camps, de l'argent, du feu purificateur et de la brèche des chasseurs enregistrés",
                 TeleportCasterToImpactInteraction.TYPE_ID, DominateInteraction.TYPE_ID, RootNpcInteraction.TYPE_ID,
                 DrainBeamInteraction.TYPE_ID, DominatePlayerInteraction.TYPE_ID, ImprisonPlayerInteraction.TYPE_ID,
                 RootTrapInteraction.TYPE_ID, TakeArrowInteraction.TYPE_ID, ReturnArrowInteraction.TYPE_ID,
-                SummonVinesInteraction.TYPE_ID);
+                SummonVinesInteraction.TYPE_ID, LightAuraInteraction.TYPE_ID, InvisibilityInteraction.TYPE_ID);
     }
 
     @Override

@@ -1,0 +1,38 @@
+{
+  "TimeSeconds": 2,
+  "KnowledgeRequired": false,
+  "Input": [
+    {
+      "ItemId": "Ingredient_Rune_Shard",
+      "Quantity": 2
+    },
+    {
+      "ItemId": "Ingredient_Bar_Silver",
+      "Quantity": 2
+    },
+    {
+      "ItemId": "Rock_Gem_Topaz",
+      "Quantity": 1
+    }
+  ],
+  "PrimaryOutput": {
+    "ItemId": "Rune_Nakasar_LightAura",
+    "Quantity": 1
+  },
+  "Output": [
+    {
+      "ItemId": "Rune_Nakasar_LightAura",
+      "Quantity": 1
+    }
+  ],
+  "BenchRequirement": [
+    {
+      "Type": "Crafting",
+      "Id": "Nakasar_Hunter_Workbench",
+      "Categories": [
+        "Nakasar_Hunter_Runes"
+      ],
+      "RequiredTierLevel": 2
+    }
+  ]
+}

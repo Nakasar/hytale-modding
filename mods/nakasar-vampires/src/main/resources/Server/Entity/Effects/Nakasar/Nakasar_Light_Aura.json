@@ -1,0 +1,18 @@
+{
+  "$Comment": "Aura de lumière (rune) : flammes blanches autour du lanceur ; la fuite des morts-vivants vient de dev.nakasar.hytale.vampires.purifying.LightAuraSystem.",
+  "Duration": 8,
+  "OverlapBehavior": "Overwrite",
+  "Debuff": false,
+  "StatusEffectIcon": "UI/StatusEffects/Nakasar/Light_Aura.png",
+  "ApplicationEffects": {
+    "EntityTopTint": "#fff6d8",
+    "EntityBottomTint": "#cfe4ff",
+    "Particles": [
+      {
+        "SystemId": "Nakasar_Light_Aura",
+        "TargetEntityPart": "Entity",
+        "ClearParticlesOnRemove": true
+      }
+    ]
+  }
+}

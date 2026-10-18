@@ -1,0 +1,126 @@
+{
+  "TranslationProperties": {
+    "Name": "nakasar_hunters.items.Nakasar_Hunter_Workbench.name",
+    "Description": "nakasar_hunters.items.Nakasar_Hunter_Workbench.description"
+  },
+  "Quality": "Rare",
+  "Categories": [
+    "Furniture.Benches"
+  ],
+  "Icon": "Icons/Items/Nakasar/Hunter_Workbench.png",
+  "PlayerAnimationsId": "Block",
+  "MaxStack": 1,
+  "Tags": {
+    "Type": [
+      "Bench"
+    ]
+  },
+  "BlockType": {
+    "Material": "Solid",
+    "DrawType": "Model",
+    "Opacity": "Transparent",
+    "CustomModel": "Blocks/Nakasar/Hunter_Workbench.blockymodel",
+    "CustomModelTexture": [
+      {
+        "Texture": "BlockTextures/Nakasar/Hunter_Workbench.png",
+        "Weight": 1
+      }
+    ],
+    "HitboxType": "Nakasar_Hunter_Workbench",
+    "VariantRotation": "NESW",
+    "PlacementSettings": {
+      "RotationMode": "FacingPlayer"
+    },
+    "Support": {
+      "Down": [
+        {
+          "FaceType": "Full"
+        }
+      ]
+    },
+    "BlockEntity": {
+      "Components": {
+        "BenchBlock": {}
+      }
+    },
+    "State": {
+      "Definitions": {
+        "CraftCompleted": {
+          "Looping": true
+        },
+        "CraftCompletedInstant": {}
+      }
+    },
+    "Gathering": {
+      "Breaking": {
+        "GatherType": "Benches",
+        "ItemId": "Nakasar_Hunter_Workbench"
+      }
+    },
+    "BlockSoundSetId": "Wood",
+    "ParticleColor": "#68483a",
+    "Bench": {
+      "Type": "Crafting",
+      "Id": "Nakasar_Hunter_Workbench",
+      "LocalOpenSoundEventId": "SFX_Weapon_Bench_Open",
+      "LocalCloseSoundEventId": "SFX_Weapon_Bench_Close",
+      "CompletedSoundEventId": "SFX_Weapon_Bench_Craft",
+      "Categories": [
+        {
+          "Id": "Nakasar_Hunter_Fires",
+          "Name": "nakasar_hunters.benchCategories.nakasar_hunter_fires",
+          "Icon": "Icons/CraftingCategories/Nakasar/Purifying_Fire.png"
+        },
+        {
+          "Id": "Nakasar_Hunter_Runes",
+          "Name": "nakasar_hunters.benchCategories.nakasar_hunter_runes",
+          "Icon": "Icons/CraftingCategories/Nakasar/Runes.png"
+        },
+        {
+          "Id": "Nakasar_Hunter_Fragments",
+          "Name": "nakasar_hunters.benchCategories.nakasar_hunter_fragments",
+          "Icon": "Icons/CraftingCategories/Nakasar/Fragment.png"
+        }
+      ],
+      "TierLevels": [
+        {
+          "UpgradeRequirement": {
+            "Material": [
+              {
+                "ItemId": "Ingredient_Bar_Silver",
+                "Quantity": 6
+              },
+              {
+                "ItemId": "Ingredient_Rune_Shard",
+                "Quantity": 4
+              },
+              {
+                "ItemId": "Rock_Gem_Topaz",
+                "Quantity": 2
+              }
+            ],
+            "TimeSeconds": 3
+          },
+          "CraftingTimeReductionModifier": 0.0
+        },
+        {
+          "CraftingTimeReductionModifier": 0.15
+        }
+      ]
+    },
+    "BlockParticleSetId": "Wood"
+  },
+  "ItemSoundSetId": "ISS_Blocks_Wood",
+  "IconProperties": {
+    "Scale": 0.435,
+    "Translation": [
+      11.4,
+      -18.6
+    ],
+    "Rotation": [
+      22.5,
+      45,
+      22.5
+    ]
+  }
+}

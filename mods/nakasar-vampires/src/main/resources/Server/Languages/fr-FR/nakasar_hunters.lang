@@ -1,0 +1,12 @@
+# Établi des chasseurs de vampires et ses runes — textes français
+items.Nakasar_Hunter_Workbench.name = Établi des chasseurs de vampires
+items.Nakasar_Hunter_Workbench.description = La table des chasseurs : feux purificateurs dès le premier niveau. Améliorez-la pour graver leurs runes et façonner le fragment du Comté Vampire.
+benchCategories.nakasar_hunter_fires = Feux purificateurs
+benchCategories.nakasar_hunter_runes = Runes de chasseur
+benchCategories.nakasar_hunter_fragments = Fragments
+items.Rune_Nakasar_LightAura.name = Aura de lumière
+items.Rune_Nakasar_LightAura.description = Vous enveloppe de feu purificateur pendant quelques secondes : morts-vivants, fantômes et vampires vous fuient comme une torche de purification, et brûlent s'ils restent trop près.
+items.Rune_Nakasar_Invisibility.name = Invisibilité
+items.Rune_Nakasar_Invisibility.description = Vous rend invisible aux créatures et aux autres joueurs tant que vous restez immobile (30 secondes au plus). Bouger ou frapper vous révèle.
+ui.abilityKeywords.Nakasar_Purify = Purification
+ui.abilityKeywords.Nakasar_Stealth = Discrétion
