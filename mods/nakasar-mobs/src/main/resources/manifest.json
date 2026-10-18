@@ -9,7 +9,7 @@
   "Main": "dev.nakasar.hytale.mobs.MobsPlugin",
   "IncludesAssetPack": true,
   "ServerVersion": "${serverRange}",
-  "Dependencies": {
+  "OptionalDependencies": {
     "Nakasar:Runes": "*"
   }
 }

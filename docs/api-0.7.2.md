@@ -6,6 +6,11 @@ Vérifié avec `javap` sur `com.hypixel.hytale:Server:0.7.2` (Maven officiel). C
 
 - `manifest.json` à la racine du jar : `Group`, `Name`, `Version`, `Description`, `Authors`, `Main`,
   `IncludesAssetPack`, `ServerVersion`, `Dependencies` (`"Groupe:Nom": "plage"`). Identité = `Group:Name`.
+  Attention : si une dépendance de `Dependencies` manque (mod absent ou désactivé pour le monde), le calcul
+  de l'ordre des packs (`Mod.calculateLoadOrder`) lève une exception et **aucun** pack n'est chargé, pas même
+  `Hytale:Hytale` (symptômes : `GameplayConfig 'Default' doesn't exist`, `Missing default DamageCause assets`).
+  Nos mods n'utilisent donc que `OptionalDependencies` entre eux : l'ordre de chargement est le même quand le
+  mod est présent, et son absence ne casse que les assets qui le référencent.
 - Un pack d'assets pur est le même manifest sans `Main`, dans un zip (ou un dossier) avec `Server/**`.
 - `Main` étend `com.hypixel.hytale.server.core.plugin.JavaPlugin` ; `setup()` sert aux
   enregistrements, `shutdown()` au nettoyage.
