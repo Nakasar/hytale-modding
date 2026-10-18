@@ -48,7 +48,7 @@ val validateRoles = tasks.register<Exec>("validateRoles") {
     outputs.file(marker)
     doFirst {
         executable = launcher.get().executablePath.asFile.absolutePath
-        args("-Dstdout.encoding=UTF-8", "-cp", hytaleServer.asPath, file("tools/ValidateRoles.java").absolutePath,
+        args("-Dstdout.encoding=UTF-8", "--sun-misc-unsafe-memory-access=allow", "-cp", hytaleServer.asPath, file("tools/ValidateRoles.java").absolutePath,
             file(serverAssets).absolutePath)
     }
     doLast {
@@ -75,7 +75,7 @@ val validateAssets = tasks.register<Exec>("validateAssets") {
         executable = launcher.get().executablePath.asFile.absolutePath
         // -Dblocks : ids de blocs vanilla, pour repérer dans les prefabs les blocs inconnus (damier rose en jeu).
         // -Drefs : listes de butin et rôles vanilla cités par le mod (un id inconnu fait échouer le mod en jeu).
-        args("-Dstdout.encoding=UTF-8", "-Dblocks=" + blocks.absolutePath, "-Dgradients=" + gradients.absolutePath,
+        args("-Dstdout.encoding=UTF-8", "--sun-misc-unsafe-memory-access=allow", "-Dblocks=" + blocks.absolutePath, "-Dgradients=" + gradients.absolutePath,
             "-Drefs=" + refs.absolutePath,
             "-cp", hytaleServer.asPath, file("tools/ValidateAssets.java").absolutePath, file(serverAssets).absolutePath)
     }

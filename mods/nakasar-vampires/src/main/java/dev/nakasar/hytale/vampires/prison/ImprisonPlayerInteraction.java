@@ -131,7 +131,7 @@ public class ImprisonPlayerInteraction extends SimpleInstantInteraction {
         int cy = (int) Math.floor(from.y);
         int cz = (int) Math.floor(from.z);
         int minY = Math.max(0, cy - radius);
-        int maxY = Math.min(ChunkUtil.HEIGHT_MINUS_1, cy + radius);
+        int maxY = cy + radius;
         long[] best = {Long.MAX_VALUE};
         Vector3d[] result = {null};
         for (int sx = (cx - radius) >> ChunkUtil.BITS; sx <= (cx + radius) >> ChunkUtil.BITS; sx++) {
