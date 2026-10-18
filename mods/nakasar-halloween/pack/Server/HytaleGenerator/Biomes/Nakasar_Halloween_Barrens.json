@@ -4,36 +4,497 @@
     {
       "Type": "PositionsCellNoise",
       "Positions": {
-        "Type": "FieldFunction",
-        "FieldFunction": {
-          "Type": "SimplexNoise2D",
-          "Scale": 40.0,
-          "Octaves": 1,
-          "Lacunarity": 2.0,
-          "Persistence": 0.5,
-          "Seed": "KeepVillage0"
-        },
-        "Delimiters": [
+        "Type": "Union",
+        "Positions": [
           {
-            "Min": -0.19999999999999996,
-            "Max": 1000000000.0
+            "Type": "FieldFunction",
+            "FieldFunction": {
+              "Type": "XOverride",
+              "Value": 7919.5,
+              "Inputs": [
+                {
+                  "Type": "ZOverride",
+                  "Value": -4441.5,
+                  "Inputs": [
+                    {
+                      "Type": "SimplexNoise2D",
+                      "Scale": 60.0,
+                      "Octaves": 1,
+                      "Lacunarity": 2.0,
+                      "Persistence": 0.5,
+                      "Seed": "Layout"
+                    }
+                  ]
+                }
+              ]
+            },
+            "Delimiters": [
+              {
+                "Min": -1000000000.0,
+                "Max": -0.4
+              }
+            ],
+            "Positions": {
+              "Type": "FieldFunction",
+              "FieldFunction": {
+                "Type": "SimplexNoise2D",
+                "Scale": 40.0,
+                "Octaves": 1,
+                "Lacunarity": 2.0,
+                "Persistence": 0.5,
+                "Seed": "Keep0"
+              },
+              "Delimiters": [
+                {
+                  "Min": -0.19999999999999996,
+                  "Max": 1000000000.0
+                }
+              ],
+              "Positions": {
+                "Type": "Jitter2d",
+                "Magnitude": 16.0,
+                "Seed": "Slot0",
+                "Positions": {
+                  "Type": "List",
+                  "Positions": [
+                    {
+                      "X": -35,
+                      "Y": 81,
+                      "Z": 195
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          {
+            "Type": "FieldFunction",
+            "FieldFunction": {
+              "Type": "XOverride",
+              "Value": 7919.5,
+              "Inputs": [
+                {
+                  "Type": "ZOverride",
+                  "Value": -4441.5,
+                  "Inputs": [
+                    {
+                      "Type": "SimplexNoise2D",
+                      "Scale": 60.0,
+                      "Octaves": 1,
+                      "Lacunarity": 2.0,
+                      "Persistence": 0.5,
+                      "Seed": "Layout"
+                    }
+                  ]
+                }
+              ]
+            },
+            "Delimiters": [
+              {
+                "Min": -0.4,
+                "Max": -0.24
+              }
+            ],
+            "Positions": {
+              "Type": "FieldFunction",
+              "FieldFunction": {
+                "Type": "SimplexNoise2D",
+                "Scale": 40.0,
+                "Octaves": 1,
+                "Lacunarity": 2.0,
+                "Persistence": 0.5,
+                "Seed": "Keep0"
+              },
+              "Delimiters": [
+                {
+                  "Min": -0.19999999999999996,
+                  "Max": 1000000000.0
+                }
+              ],
+              "Positions": {
+                "Type": "Jitter2d",
+                "Magnitude": 16.0,
+                "Seed": "Slot0",
+                "Positions": {
+                  "Type": "List",
+                  "Positions": [
+                    {
+                      "X": -35,
+                      "Y": 81,
+                      "Z": 195
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          {
+            "Type": "FieldFunction",
+            "FieldFunction": {
+              "Type": "XOverride",
+              "Value": 7919.5,
+              "Inputs": [
+                {
+                  "Type": "ZOverride",
+                  "Value": -4441.5,
+                  "Inputs": [
+                    {
+                      "Type": "SimplexNoise2D",
+                      "Scale": 60.0,
+                      "Octaves": 1,
+                      "Lacunarity": 2.0,
+                      "Persistence": 0.5,
+                      "Seed": "Layout"
+                    }
+                  ]
+                }
+              ]
+            },
+            "Delimiters": [
+              {
+                "Min": -0.24,
+                "Max": -0.11
+              }
+            ],
+            "Positions": {
+              "Type": "FieldFunction",
+              "FieldFunction": {
+                "Type": "SimplexNoise2D",
+                "Scale": 40.0,
+                "Octaves": 1,
+                "Lacunarity": 2.0,
+                "Persistence": 0.5,
+                "Seed": "Keep2"
+              },
+              "Delimiters": [
+                {
+                  "Min": -0.19999999999999996,
+                  "Max": 1000000000.0
+                }
+              ],
+              "Positions": {
+                "Type": "Jitter2d",
+                "Magnitude": 16.0,
+                "Seed": "Slot2",
+                "Positions": {
+                  "Type": "List",
+                  "Positions": [
+                    {
+                      "X": 185,
+                      "Y": 81,
+                      "Z": -65
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          {
+            "Type": "FieldFunction",
+            "FieldFunction": {
+              "Type": "XOverride",
+              "Value": 7919.5,
+              "Inputs": [
+                {
+                  "Type": "ZOverride",
+                  "Value": -4441.5,
+                  "Inputs": [
+                    {
+                      "Type": "SimplexNoise2D",
+                      "Scale": 60.0,
+                      "Octaves": 1,
+                      "Lacunarity": 2.0,
+                      "Persistence": 0.5,
+                      "Seed": "Layout"
+                    }
+                  ]
+                }
+              ]
+            },
+            "Delimiters": [
+              {
+                "Min": -0.11,
+                "Max": 0.0
+              }
+            ],
+            "Positions": {
+              "Type": "FieldFunction",
+              "FieldFunction": {
+                "Type": "SimplexNoise2D",
+                "Scale": 40.0,
+                "Octaves": 1,
+                "Lacunarity": 2.0,
+                "Persistence": 0.5,
+                "Seed": "Keep1"
+              },
+              "Delimiters": [
+                {
+                  "Min": -0.19999999999999996,
+                  "Max": 1000000000.0
+                }
+              ],
+              "Positions": {
+                "Type": "Jitter2d",
+                "Magnitude": 16.0,
+                "Seed": "Slot1",
+                "Positions": {
+                  "Type": "List",
+                  "Positions": [
+                    {
+                      "X": 115,
+                      "Y": 81,
+                      "Z": 165
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          {
+            "Type": "FieldFunction",
+            "FieldFunction": {
+              "Type": "XOverride",
+              "Value": 7919.5,
+              "Inputs": [
+                {
+                  "Type": "ZOverride",
+                  "Value": -4441.5,
+                  "Inputs": [
+                    {
+                      "Type": "SimplexNoise2D",
+                      "Scale": 60.0,
+                      "Octaves": 1,
+                      "Lacunarity": 2.0,
+                      "Persistence": 0.5,
+                      "Seed": "Layout"
+                    }
+                  ]
+                }
+              ]
+            },
+            "Delimiters": [
+              {
+                "Min": 0.0,
+                "Max": 0.11
+              }
+            ],
+            "Positions": {
+              "Type": "FieldFunction",
+              "FieldFunction": {
+                "Type": "SimplexNoise2D",
+                "Scale": 40.0,
+                "Octaves": 1,
+                "Lacunarity": 2.0,
+                "Persistence": 0.5,
+                "Seed": "Keep0"
+              },
+              "Delimiters": [
+                {
+                  "Min": -0.19999999999999996,
+                  "Max": 1000000000.0
+                }
+              ],
+              "Positions": {
+                "Type": "Jitter2d",
+                "Magnitude": 16.0,
+                "Seed": "Slot0",
+                "Positions": {
+                  "Type": "List",
+                  "Positions": [
+                    {
+                      "X": -35,
+                      "Y": 81,
+                      "Z": 195
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          {
+            "Type": "FieldFunction",
+            "FieldFunction": {
+              "Type": "XOverride",
+              "Value": 7919.5,
+              "Inputs": [
+                {
+                  "Type": "ZOverride",
+                  "Value": -4441.5,
+                  "Inputs": [
+                    {
+                      "Type": "SimplexNoise2D",
+                      "Scale": 60.0,
+                      "Octaves": 1,
+                      "Lacunarity": 2.0,
+                      "Persistence": 0.5,
+                      "Seed": "Layout"
+                    }
+                  ]
+                }
+              ]
+            },
+            "Delimiters": [
+              {
+                "Min": 0.11,
+                "Max": 0.24
+              }
+            ],
+            "Positions": {
+              "Type": "FieldFunction",
+              "FieldFunction": {
+                "Type": "SimplexNoise2D",
+                "Scale": 40.0,
+                "Octaves": 1,
+                "Lacunarity": 2.0,
+                "Persistence": 0.5,
+                "Seed": "Keep1"
+              },
+              "Delimiters": [
+                {
+                  "Min": -0.19999999999999996,
+                  "Max": 1000000000.0
+                }
+              ],
+              "Positions": {
+                "Type": "Jitter2d",
+                "Magnitude": 16.0,
+                "Seed": "Slot1",
+                "Positions": {
+                  "Type": "List",
+                  "Positions": [
+                    {
+                      "X": 115,
+                      "Y": 81,
+                      "Z": 165
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          {
+            "Type": "FieldFunction",
+            "FieldFunction": {
+              "Type": "XOverride",
+              "Value": 7919.5,
+              "Inputs": [
+                {
+                  "Type": "ZOverride",
+                  "Value": -4441.5,
+                  "Inputs": [
+                    {
+                      "Type": "SimplexNoise2D",
+                      "Scale": 60.0,
+                      "Octaves": 1,
+                      "Lacunarity": 2.0,
+                      "Persistence": 0.5,
+                      "Seed": "Layout"
+                    }
+                  ]
+                }
+              ]
+            },
+            "Delimiters": [
+              {
+                "Min": 0.24,
+                "Max": 0.4
+              }
+            ],
+            "Positions": {
+              "Type": "FieldFunction",
+              "FieldFunction": {
+                "Type": "SimplexNoise2D",
+                "Scale": 40.0,
+                "Octaves": 1,
+                "Lacunarity": 2.0,
+                "Persistence": 0.5,
+                "Seed": "Keep1"
+              },
+              "Delimiters": [
+                {
+                  "Min": -0.19999999999999996,
+                  "Max": 1000000000.0
+                }
+              ],
+              "Positions": {
+                "Type": "Jitter2d",
+                "Magnitude": 16.0,
+                "Seed": "Slot1",
+                "Positions": {
+                  "Type": "List",
+                  "Positions": [
+                    {
+                      "X": 115,
+                      "Y": 81,
+                      "Z": 165
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          {
+            "Type": "FieldFunction",
+            "FieldFunction": {
+              "Type": "XOverride",
+              "Value": 7919.5,
+              "Inputs": [
+                {
+                  "Type": "ZOverride",
+                  "Value": -4441.5,
+                  "Inputs": [
+                    {
+                      "Type": "SimplexNoise2D",
+                      "Scale": 60.0,
+                      "Octaves": 1,
+                      "Lacunarity": 2.0,
+                      "Persistence": 0.5,
+                      "Seed": "Layout"
+                    }
+                  ]
+                }
+              ]
+            },
+            "Delimiters": [
+              {
+                "Min": 0.4,
+                "Max": 1000000000.0
+              }
+            ],
+            "Positions": {
+              "Type": "FieldFunction",
+              "FieldFunction": {
+                "Type": "SimplexNoise2D",
+                "Scale": 40.0,
+                "Octaves": 1,
+                "Lacunarity": 2.0,
+                "Persistence": 0.5,
+                "Seed": "Keep0"
+              },
+              "Delimiters": [
+                {
+                  "Min": -0.19999999999999996,
+                  "Max": 1000000000.0
+                }
+              ],
+              "Positions": {
+                "Type": "Jitter2d",
+                "Magnitude": 16.0,
+                "Seed": "Slot0",
+                "Positions": {
+                  "Type": "List",
+                  "Positions": [
+                    {
+                      "X": -35,
+                      "Y": 81,
+                      "Z": 195
+                    }
+                  ]
+                }
+              }
+            }
           }
         ],
-        "Positions": {
-          "Type": "Jitter2d",
-          "Magnitude": 16.0,
-          "Seed": "SlotVillage0",
-          "Positions": {
-            "Type": "List",
-            "Positions": [
-              {
-                "X": 115,
-                "Y": 81,
-                "Z": 170
-              }
-            ]
-          }
-        },
         "ExportAs": "Nakasar_Halloween_Village_Positions"
       },
       "ReturnType": {
@@ -63,49 +524,842 @@
         "Type": "Union",
         "Positions": [
           {
-            "Type": "Jitter2d",
-            "Magnitude": 16.0,
-            "Seed": "SlotFarm0",
-            "Positions": {
-              "Type": "List",
-              "Positions": [
+            "Type": "FieldFunction",
+            "FieldFunction": {
+              "Type": "XOverride",
+              "Value": 7919.5,
+              "Inputs": [
                 {
-                  "X": -145,
-                  "Y": 81,
-                  "Z": 135
+                  "Type": "ZOverride",
+                  "Value": -4441.5,
+                  "Inputs": [
+                    {
+                      "Type": "SimplexNoise2D",
+                      "Scale": 60.0,
+                      "Octaves": 1,
+                      "Lacunarity": 2.0,
+                      "Persistence": 0.5,
+                      "Seed": "Layout"
+                    }
+                  ]
                 }
               ]
+            },
+            "Delimiters": [
+              {
+                "Min": -1000000000.0,
+                "Max": -0.4
+              }
+            ],
+            "Positions": {
+              "Type": "FieldFunction",
+              "FieldFunction": {
+                "Type": "SimplexNoise2D",
+                "Scale": 40.0,
+                "Octaves": 1,
+                "Lacunarity": 2.0,
+                "Persistence": 0.5,
+                "Seed": "Keep7"
+              },
+              "Delimiters": [
+                {
+                  "Min": 0.0,
+                  "Max": 1000000000.0
+                }
+              ],
+              "Positions": {
+                "Type": "Jitter2d",
+                "Magnitude": 16.0,
+                "Seed": "Slot7",
+                "Positions": {
+                  "Type": "List",
+                  "Positions": [
+                    {
+                      "X": -80,
+                      "Y": 81,
+                      "Z": -55
+                    }
+                  ]
+                }
+              }
             }
           },
           {
             "Type": "FieldFunction",
             "FieldFunction": {
-              "Type": "SimplexNoise2D",
-              "Scale": 40.0,
-              "Octaves": 1,
-              "Lacunarity": 2.0,
-              "Persistence": 0.5,
-              "Seed": "KeepFarm1"
+              "Type": "XOverride",
+              "Value": 7919.5,
+              "Inputs": [
+                {
+                  "Type": "ZOverride",
+                  "Value": -4441.5,
+                  "Inputs": [
+                    {
+                      "Type": "SimplexNoise2D",
+                      "Scale": 60.0,
+                      "Octaves": 1,
+                      "Lacunarity": 2.0,
+                      "Persistence": 0.5,
+                      "Seed": "Layout"
+                    }
+                  ]
+                }
+              ]
+            },
+            "Delimiters": [
+              {
+                "Min": -1000000000.0,
+                "Max": -0.4
+              }
+            ],
+            "Positions": {
+              "Type": "Jitter2d",
+              "Magnitude": 16.0,
+              "Seed": "Slot12",
+              "Positions": {
+                "Type": "List",
+                "Positions": [
+                  {
+                    "X": 200,
+                    "Y": 81,
+                    "Z": 65
+                  }
+                ]
+              }
+            }
+          },
+          {
+            "Type": "FieldFunction",
+            "FieldFunction": {
+              "Type": "XOverride",
+              "Value": 7919.5,
+              "Inputs": [
+                {
+                  "Type": "ZOverride",
+                  "Value": -4441.5,
+                  "Inputs": [
+                    {
+                      "Type": "SimplexNoise2D",
+                      "Scale": 60.0,
+                      "Octaves": 1,
+                      "Lacunarity": 2.0,
+                      "Persistence": 0.5,
+                      "Seed": "Layout"
+                    }
+                  ]
+                }
+              ]
+            },
+            "Delimiters": [
+              {
+                "Min": -0.4,
+                "Max": -0.24
+              }
+            ],
+            "Positions": {
+              "Type": "Jitter2d",
+              "Magnitude": 16.0,
+              "Seed": "Slot4",
+              "Positions": {
+                "Type": "List",
+                "Positions": [
+                  {
+                    "X": -190,
+                    "Y": 81,
+                    "Z": -85
+                  }
+                ]
+              }
+            }
+          },
+          {
+            "Type": "FieldFunction",
+            "FieldFunction": {
+              "Type": "XOverride",
+              "Value": 7919.5,
+              "Inputs": [
+                {
+                  "Type": "ZOverride",
+                  "Value": -4441.5,
+                  "Inputs": [
+                    {
+                      "Type": "SimplexNoise2D",
+                      "Scale": 60.0,
+                      "Octaves": 1,
+                      "Lacunarity": 2.0,
+                      "Persistence": 0.5,
+                      "Seed": "Layout"
+                    }
+                  ]
+                }
+              ]
+            },
+            "Delimiters": [
+              {
+                "Min": -0.4,
+                "Max": -0.24
+              }
+            ],
+            "Positions": {
+              "Type": "FieldFunction",
+              "FieldFunction": {
+                "Type": "SimplexNoise2D",
+                "Scale": 40.0,
+                "Octaves": 1,
+                "Lacunarity": 2.0,
+                "Persistence": 0.5,
+                "Seed": "Keep5"
+              },
+              "Delimiters": [
+                {
+                  "Min": 0.0,
+                  "Max": 1000000000.0
+                }
+              ],
+              "Positions": {
+                "Type": "Jitter2d",
+                "Magnitude": 16.0,
+                "Seed": "Slot5",
+                "Positions": {
+                  "Type": "List",
+                  "Positions": [
+                    {
+                      "X": -155,
+                      "Y": 81,
+                      "Z": 145
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          {
+            "Type": "FieldFunction",
+            "FieldFunction": {
+              "Type": "XOverride",
+              "Value": 7919.5,
+              "Inputs": [
+                {
+                  "Type": "ZOverride",
+                  "Value": -4441.5,
+                  "Inputs": [
+                    {
+                      "Type": "SimplexNoise2D",
+                      "Scale": 60.0,
+                      "Octaves": 1,
+                      "Lacunarity": 2.0,
+                      "Persistence": 0.5,
+                      "Seed": "Layout"
+                    }
+                  ]
+                }
+              ]
+            },
+            "Delimiters": [
+              {
+                "Min": -0.24,
+                "Max": -0.11
+              }
+            ],
+            "Positions": {
+              "Type": "FieldFunction",
+              "FieldFunction": {
+                "Type": "SimplexNoise2D",
+                "Scale": 40.0,
+                "Octaves": 1,
+                "Lacunarity": 2.0,
+                "Persistence": 0.5,
+                "Seed": "Keep3"
+              },
+              "Delimiters": [
+                {
+                  "Min": 0.0,
+                  "Max": 1000000000.0
+                }
+              ],
+              "Positions": {
+                "Type": "Jitter2d",
+                "Magnitude": 16.0,
+                "Seed": "Slot3",
+                "Positions": {
+                  "Type": "List",
+                  "Positions": [
+                    {
+                      "X": -205,
+                      "Y": 81,
+                      "Z": 30
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          {
+            "Type": "FieldFunction",
+            "FieldFunction": {
+              "Type": "XOverride",
+              "Value": 7919.5,
+              "Inputs": [
+                {
+                  "Type": "ZOverride",
+                  "Value": -4441.5,
+                  "Inputs": [
+                    {
+                      "Type": "SimplexNoise2D",
+                      "Scale": 60.0,
+                      "Octaves": 1,
+                      "Lacunarity": 2.0,
+                      "Persistence": 0.5,
+                      "Seed": "Layout"
+                    }
+                  ]
+                }
+              ]
+            },
+            "Delimiters": [
+              {
+                "Min": -0.24,
+                "Max": -0.11
+              }
+            ],
+            "Positions": {
+              "Type": "Jitter2d",
+              "Magnitude": 16.0,
+              "Seed": "Slot10",
+              "Positions": {
+                "Type": "List",
+                "Positions": [
+                  {
+                    "X": 75,
+                    "Y": 81,
+                    "Z": 35
+                  }
+                ]
+              }
+            }
+          },
+          {
+            "Type": "FieldFunction",
+            "FieldFunction": {
+              "Type": "XOverride",
+              "Value": 7919.5,
+              "Inputs": [
+                {
+                  "Type": "ZOverride",
+                  "Value": -4441.5,
+                  "Inputs": [
+                    {
+                      "Type": "SimplexNoise2D",
+                      "Scale": 60.0,
+                      "Octaves": 1,
+                      "Lacunarity": 2.0,
+                      "Persistence": 0.5,
+                      "Seed": "Layout"
+                    }
+                  ]
+                }
+              ]
+            },
+            "Delimiters": [
+              {
+                "Min": -0.11,
+                "Max": 0.0
+              }
+            ],
+            "Positions": {
+              "Type": "FieldFunction",
+              "FieldFunction": {
+                "Type": "SimplexNoise2D",
+                "Scale": 40.0,
+                "Octaves": 1,
+                "Lacunarity": 2.0,
+                "Persistence": 0.5,
+                "Seed": "Keep5"
+              },
+              "Delimiters": [
+                {
+                  "Min": 0.0,
+                  "Max": 1000000000.0
+                }
+              ],
+              "Positions": {
+                "Type": "Jitter2d",
+                "Magnitude": 16.0,
+                "Seed": "Slot5",
+                "Positions": {
+                  "Type": "List",
+                  "Positions": [
+                    {
+                      "X": -155,
+                      "Y": 81,
+                      "Z": 145
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          {
+            "Type": "FieldFunction",
+            "FieldFunction": {
+              "Type": "XOverride",
+              "Value": 7919.5,
+              "Inputs": [
+                {
+                  "Type": "ZOverride",
+                  "Value": -4441.5,
+                  "Inputs": [
+                    {
+                      "Type": "SimplexNoise2D",
+                      "Scale": 60.0,
+                      "Octaves": 1,
+                      "Lacunarity": 2.0,
+                      "Persistence": 0.5,
+                      "Seed": "Layout"
+                    }
+                  ]
+                }
+              ]
+            },
+            "Delimiters": [
+              {
+                "Min": -0.11,
+                "Max": 0.0
+              }
+            ],
+            "Positions": {
+              "Type": "Jitter2d",
+              "Magnitude": 16.0,
+              "Seed": "Slot9",
+              "Positions": {
+                "Type": "List",
+                "Positions": [
+                  {
+                    "X": 30,
+                    "Y": 81,
+                    "Z": -90
+                  }
+                ]
+              }
+            }
+          },
+          {
+            "Type": "FieldFunction",
+            "FieldFunction": {
+              "Type": "XOverride",
+              "Value": 7919.5,
+              "Inputs": [
+                {
+                  "Type": "ZOverride",
+                  "Value": -4441.5,
+                  "Inputs": [
+                    {
+                      "Type": "SimplexNoise2D",
+                      "Scale": 60.0,
+                      "Octaves": 1,
+                      "Lacunarity": 2.0,
+                      "Persistence": 0.5,
+                      "Seed": "Layout"
+                    }
+                  ]
+                }
+              ]
             },
             "Delimiters": [
               {
                 "Min": 0.0,
+                "Max": 0.11
+              }
+            ],
+            "Positions": {
+              "Type": "FieldFunction",
+              "FieldFunction": {
+                "Type": "SimplexNoise2D",
+                "Scale": 40.0,
+                "Octaves": 1,
+                "Lacunarity": 2.0,
+                "Persistence": 0.5,
+                "Seed": "Keep5"
+              },
+              "Delimiters": [
+                {
+                  "Min": 0.0,
+                  "Max": 1000000000.0
+                }
+              ],
+              "Positions": {
+                "Type": "Jitter2d",
+                "Magnitude": 16.0,
+                "Seed": "Slot5",
+                "Positions": {
+                  "Type": "List",
+                  "Positions": [
+                    {
+                      "X": -155,
+                      "Y": 81,
+                      "Z": 145
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          {
+            "Type": "FieldFunction",
+            "FieldFunction": {
+              "Type": "XOverride",
+              "Value": 7919.5,
+              "Inputs": [
+                {
+                  "Type": "ZOverride",
+                  "Value": -4441.5,
+                  "Inputs": [
+                    {
+                      "Type": "SimplexNoise2D",
+                      "Scale": 60.0,
+                      "Octaves": 1,
+                      "Lacunarity": 2.0,
+                      "Persistence": 0.5,
+                      "Seed": "Layout"
+                    }
+                  ]
+                }
+              ]
+            },
+            "Delimiters": [
+              {
+                "Min": 0.0,
+                "Max": 0.11
+              }
+            ],
+            "Positions": {
+              "Type": "Jitter2d",
+              "Magnitude": 16.0,
+              "Seed": "Slot12",
+              "Positions": {
+                "Type": "List",
+                "Positions": [
+                  {
+                    "X": 200,
+                    "Y": 81,
+                    "Z": 65
+                  }
+                ]
+              }
+            }
+          },
+          {
+            "Type": "FieldFunction",
+            "FieldFunction": {
+              "Type": "XOverride",
+              "Value": 7919.5,
+              "Inputs": [
+                {
+                  "Type": "ZOverride",
+                  "Value": -4441.5,
+                  "Inputs": [
+                    {
+                      "Type": "SimplexNoise2D",
+                      "Scale": 60.0,
+                      "Octaves": 1,
+                      "Lacunarity": 2.0,
+                      "Persistence": 0.5,
+                      "Seed": "Layout"
+                    }
+                  ]
+                }
+              ]
+            },
+            "Delimiters": [
+              {
+                "Min": 0.11,
+                "Max": 0.24
+              }
+            ],
+            "Positions": {
+              "Type": "FieldFunction",
+              "FieldFunction": {
+                "Type": "SimplexNoise2D",
+                "Scale": 40.0,
+                "Octaves": 1,
+                "Lacunarity": 2.0,
+                "Persistence": 0.5,
+                "Seed": "Keep7"
+              },
+              "Delimiters": [
+                {
+                  "Min": 0.0,
+                  "Max": 1000000000.0
+                }
+              ],
+              "Positions": {
+                "Type": "Jitter2d",
+                "Magnitude": 16.0,
+                "Seed": "Slot7",
+                "Positions": {
+                  "Type": "List",
+                  "Positions": [
+                    {
+                      "X": -80,
+                      "Y": 81,
+                      "Z": -55
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          {
+            "Type": "FieldFunction",
+            "FieldFunction": {
+              "Type": "XOverride",
+              "Value": 7919.5,
+              "Inputs": [
+                {
+                  "Type": "ZOverride",
+                  "Value": -4441.5,
+                  "Inputs": [
+                    {
+                      "Type": "SimplexNoise2D",
+                      "Scale": 60.0,
+                      "Octaves": 1,
+                      "Lacunarity": 2.0,
+                      "Persistence": 0.5,
+                      "Seed": "Layout"
+                    }
+                  ]
+                }
+              ]
+            },
+            "Delimiters": [
+              {
+                "Min": 0.11,
+                "Max": 0.24
+              }
+            ],
+            "Positions": {
+              "Type": "Jitter2d",
+              "Magnitude": 16.0,
+              "Seed": "Slot12",
+              "Positions": {
+                "Type": "List",
+                "Positions": [
+                  {
+                    "X": 200,
+                    "Y": 81,
+                    "Z": 65
+                  }
+                ]
+              }
+            }
+          },
+          {
+            "Type": "FieldFunction",
+            "FieldFunction": {
+              "Type": "XOverride",
+              "Value": 7919.5,
+              "Inputs": [
+                {
+                  "Type": "ZOverride",
+                  "Value": -4441.5,
+                  "Inputs": [
+                    {
+                      "Type": "SimplexNoise2D",
+                      "Scale": 60.0,
+                      "Octaves": 1,
+                      "Lacunarity": 2.0,
+                      "Persistence": 0.5,
+                      "Seed": "Layout"
+                    }
+                  ]
+                }
+              ]
+            },
+            "Delimiters": [
+              {
+                "Min": 0.24,
+                "Max": 0.4
+              }
+            ],
+            "Positions": {
+              "Type": "FieldFunction",
+              "FieldFunction": {
+                "Type": "SimplexNoise2D",
+                "Scale": 40.0,
+                "Octaves": 1,
+                "Lacunarity": 2.0,
+                "Persistence": 0.5,
+                "Seed": "Keep5"
+              },
+              "Delimiters": [
+                {
+                  "Min": 0.0,
+                  "Max": 1000000000.0
+                }
+              ],
+              "Positions": {
+                "Type": "Jitter2d",
+                "Magnitude": 16.0,
+                "Seed": "Slot5",
+                "Positions": {
+                  "Type": "List",
+                  "Positions": [
+                    {
+                      "X": -155,
+                      "Y": 81,
+                      "Z": 145
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          {
+            "Type": "FieldFunction",
+            "FieldFunction": {
+              "Type": "XOverride",
+              "Value": 7919.5,
+              "Inputs": [
+                {
+                  "Type": "ZOverride",
+                  "Value": -4441.5,
+                  "Inputs": [
+                    {
+                      "Type": "SimplexNoise2D",
+                      "Scale": 60.0,
+                      "Octaves": 1,
+                      "Lacunarity": 2.0,
+                      "Persistence": 0.5,
+                      "Seed": "Layout"
+                    }
+                  ]
+                }
+              ]
+            },
+            "Delimiters": [
+              {
+                "Min": 0.24,
+                "Max": 0.4
+              }
+            ],
+            "Positions": {
+              "Type": "Jitter2d",
+              "Magnitude": 16.0,
+              "Seed": "Slot11",
+              "Positions": {
+                "Type": "List",
+                "Positions": [
+                  {
+                    "X": 115,
+                    "Y": 81,
+                    "Z": -175
+                  }
+                ]
+              }
+            }
+          },
+          {
+            "Type": "FieldFunction",
+            "FieldFunction": {
+              "Type": "XOverride",
+              "Value": 7919.5,
+              "Inputs": [
+                {
+                  "Type": "ZOverride",
+                  "Value": -4441.5,
+                  "Inputs": [
+                    {
+                      "Type": "SimplexNoise2D",
+                      "Scale": 60.0,
+                      "Octaves": 1,
+                      "Lacunarity": 2.0,
+                      "Persistence": 0.5,
+                      "Seed": "Layout"
+                    }
+                  ]
+                }
+              ]
+            },
+            "Delimiters": [
+              {
+                "Min": 0.4,
                 "Max": 1000000000.0
               }
             ],
             "Positions": {
               "Type": "Jitter2d",
               "Magnitude": 16.0,
-              "Seed": "SlotFarm1",
+              "Seed": "Slot2",
               "Positions": {
                 "Type": "List",
                 "Positions": [
                   {
-                    "X": 105,
+                    "X": 185,
                     "Y": 81,
-                    "Z": -150
+                    "Z": -65
                   }
                 ]
+              }
+            }
+          },
+          {
+            "Type": "FieldFunction",
+            "FieldFunction": {
+              "Type": "XOverride",
+              "Value": 7919.5,
+              "Inputs": [
+                {
+                  "Type": "ZOverride",
+                  "Value": -4441.5,
+                  "Inputs": [
+                    {
+                      "Type": "SimplexNoise2D",
+                      "Scale": 60.0,
+                      "Octaves": 1,
+                      "Lacunarity": 2.0,
+                      "Persistence": 0.5,
+                      "Seed": "Layout"
+                    }
+                  ]
+                }
+              ]
+            },
+            "Delimiters": [
+              {
+                "Min": 0.4,
+                "Max": 1000000000.0
+              }
+            ],
+            "Positions": {
+              "Type": "FieldFunction",
+              "FieldFunction": {
+                "Type": "SimplexNoise2D",
+                "Scale": 40.0,
+                "Octaves": 1,
+                "Lacunarity": 2.0,
+                "Persistence": 0.5,
+                "Seed": "Keep4"
+              },
+              "Delimiters": [
+                {
+                  "Min": 0.0,
+                  "Max": 1000000000.0
+                }
+              ],
+              "Positions": {
+                "Type": "Jitter2d",
+                "Magnitude": 16.0,
+                "Seed": "Slot4",
+                "Positions": {
+                  "Type": "List",
+                  "Positions": [
+                    {
+                      "X": -190,
+                      "Y": 81,
+                      "Z": -85
+                    }
+                  ]
+                }
               }
             }
           }
@@ -139,47 +1393,840 @@
         "Type": "Union",
         "Positions": [
           {
-            "Type": "Jitter2d",
-            "Magnitude": 16.0,
-            "Seed": "SlotGuardPost0",
-            "Positions": {
-              "Type": "List",
-              "Positions": [
+            "Type": "FieldFunction",
+            "FieldFunction": {
+              "Type": "XOverride",
+              "Value": 7919.5,
+              "Inputs": [
                 {
-                  "X": -115,
-                  "Y": 81,
-                  "Z": -180
+                  "Type": "ZOverride",
+                  "Value": -4441.5,
+                  "Inputs": [
+                    {
+                      "Type": "SimplexNoise2D",
+                      "Scale": 60.0,
+                      "Octaves": 1,
+                      "Lacunarity": 2.0,
+                      "Persistence": 0.5,
+                      "Seed": "Layout"
+                    }
+                  ]
                 }
               ]
+            },
+            "Delimiters": [
+              {
+                "Min": -1000000000.0,
+                "Max": -0.4
+              }
+            ],
+            "Positions": {
+              "Type": "FieldFunction",
+              "FieldFunction": {
+                "Type": "SimplexNoise2D",
+                "Scale": 40.0,
+                "Octaves": 1,
+                "Lacunarity": 2.0,
+                "Persistence": 0.5,
+                "Seed": "Keep1"
+              },
+              "Delimiters": [
+                {
+                  "Min": 0.0,
+                  "Max": 1000000000.0
+                }
+              ],
+              "Positions": {
+                "Type": "Jitter2d",
+                "Magnitude": 16.0,
+                "Seed": "Slot1",
+                "Positions": {
+                  "Type": "List",
+                  "Positions": [
+                    {
+                      "X": 115,
+                      "Y": 81,
+                      "Z": 165
+                    }
+                  ]
+                }
+              }
             }
           },
           {
             "Type": "FieldFunction",
             "FieldFunction": {
-              "Type": "SimplexNoise2D",
-              "Scale": 40.0,
-              "Octaves": 1,
-              "Lacunarity": 2.0,
-              "Persistence": 0.5,
-              "Seed": "KeepGuardPost1"
+              "Type": "XOverride",
+              "Value": 7919.5,
+              "Inputs": [
+                {
+                  "Type": "ZOverride",
+                  "Value": -4441.5,
+                  "Inputs": [
+                    {
+                      "Type": "SimplexNoise2D",
+                      "Scale": 60.0,
+                      "Octaves": 1,
+                      "Lacunarity": 2.0,
+                      "Persistence": 0.5,
+                      "Seed": "Layout"
+                    }
+                  ]
+                }
+              ]
+            },
+            "Delimiters": [
+              {
+                "Min": -1000000000.0,
+                "Max": -0.4
+              }
+            ],
+            "Positions": {
+              "Type": "Jitter2d",
+              "Magnitude": 16.0,
+              "Seed": "Slot11",
+              "Positions": {
+                "Type": "List",
+                "Positions": [
+                  {
+                    "X": 115,
+                    "Y": 81,
+                    "Z": -175
+                  }
+                ]
+              }
+            }
+          },
+          {
+            "Type": "FieldFunction",
+            "FieldFunction": {
+              "Type": "XOverride",
+              "Value": 7919.5,
+              "Inputs": [
+                {
+                  "Type": "ZOverride",
+                  "Value": -4441.5,
+                  "Inputs": [
+                    {
+                      "Type": "SimplexNoise2D",
+                      "Scale": 60.0,
+                      "Octaves": 1,
+                      "Lacunarity": 2.0,
+                      "Persistence": 0.5,
+                      "Seed": "Layout"
+                    }
+                  ]
+                }
+              ]
+            },
+            "Delimiters": [
+              {
+                "Min": -0.4,
+                "Max": -0.24
+              }
+            ],
+            "Positions": {
+              "Type": "Jitter2d",
+              "Magnitude": 16.0,
+              "Seed": "Slot1",
+              "Positions": {
+                "Type": "List",
+                "Positions": [
+                  {
+                    "X": 115,
+                    "Y": 81,
+                    "Z": 165
+                  }
+                ]
+              }
+            }
+          },
+          {
+            "Type": "FieldFunction",
+            "FieldFunction": {
+              "Type": "XOverride",
+              "Value": 7919.5,
+              "Inputs": [
+                {
+                  "Type": "ZOverride",
+                  "Value": -4441.5,
+                  "Inputs": [
+                    {
+                      "Type": "SimplexNoise2D",
+                      "Scale": 60.0,
+                      "Octaves": 1,
+                      "Lacunarity": 2.0,
+                      "Persistence": 0.5,
+                      "Seed": "Layout"
+                    }
+                  ]
+                }
+              ]
+            },
+            "Delimiters": [
+              {
+                "Min": -0.4,
+                "Max": -0.24
+              }
+            ],
+            "Positions": {
+              "Type": "FieldFunction",
+              "FieldFunction": {
+                "Type": "SimplexNoise2D",
+                "Scale": 40.0,
+                "Octaves": 1,
+                "Lacunarity": 2.0,
+                "Persistence": 0.5,
+                "Seed": "Keep2"
+              },
+              "Delimiters": [
+                {
+                  "Min": 0.0,
+                  "Max": 1000000000.0
+                }
+              ],
+              "Positions": {
+                "Type": "Jitter2d",
+                "Magnitude": 16.0,
+                "Seed": "Slot2",
+                "Positions": {
+                  "Type": "List",
+                  "Positions": [
+                    {
+                      "X": 185,
+                      "Y": 81,
+                      "Z": -65
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          {
+            "Type": "FieldFunction",
+            "FieldFunction": {
+              "Type": "XOverride",
+              "Value": 7919.5,
+              "Inputs": [
+                {
+                  "Type": "ZOverride",
+                  "Value": -4441.5,
+                  "Inputs": [
+                    {
+                      "Type": "SimplexNoise2D",
+                      "Scale": 60.0,
+                      "Octaves": 1,
+                      "Lacunarity": 2.0,
+                      "Persistence": 0.5,
+                      "Seed": "Layout"
+                    }
+                  ]
+                }
+              ]
+            },
+            "Delimiters": [
+              {
+                "Min": -0.24,
+                "Max": -0.11
+              }
+            ],
+            "Positions": {
+              "Type": "Jitter2d",
+              "Magnitude": 16.0,
+              "Seed": "Slot7",
+              "Positions": {
+                "Type": "List",
+                "Positions": [
+                  {
+                    "X": -80,
+                    "Y": 81,
+                    "Z": -55
+                  }
+                ]
+              }
+            }
+          },
+          {
+            "Type": "FieldFunction",
+            "FieldFunction": {
+              "Type": "XOverride",
+              "Value": 7919.5,
+              "Inputs": [
+                {
+                  "Type": "ZOverride",
+                  "Value": -4441.5,
+                  "Inputs": [
+                    {
+                      "Type": "SimplexNoise2D",
+                      "Scale": 60.0,
+                      "Octaves": 1,
+                      "Lacunarity": 2.0,
+                      "Persistence": 0.5,
+                      "Seed": "Layout"
+                    }
+                  ]
+                }
+              ]
+            },
+            "Delimiters": [
+              {
+                "Min": -0.24,
+                "Max": -0.11
+              }
+            ],
+            "Positions": {
+              "Type": "FieldFunction",
+              "FieldFunction": {
+                "Type": "SimplexNoise2D",
+                "Scale": 40.0,
+                "Octaves": 1,
+                "Lacunarity": 2.0,
+                "Persistence": 0.5,
+                "Seed": "Keep12"
+              },
+              "Delimiters": [
+                {
+                  "Min": 0.0,
+                  "Max": 1000000000.0
+                }
+              ],
+              "Positions": {
+                "Type": "Jitter2d",
+                "Magnitude": 16.0,
+                "Seed": "Slot12",
+                "Positions": {
+                  "Type": "List",
+                  "Positions": [
+                    {
+                      "X": 200,
+                      "Y": 81,
+                      "Z": 65
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          {
+            "Type": "FieldFunction",
+            "FieldFunction": {
+              "Type": "XOverride",
+              "Value": 7919.5,
+              "Inputs": [
+                {
+                  "Type": "ZOverride",
+                  "Value": -4441.5,
+                  "Inputs": [
+                    {
+                      "Type": "SimplexNoise2D",
+                      "Scale": 60.0,
+                      "Octaves": 1,
+                      "Lacunarity": 2.0,
+                      "Persistence": 0.5,
+                      "Seed": "Layout"
+                    }
+                  ]
+                }
+              ]
+            },
+            "Delimiters": [
+              {
+                "Min": -0.11,
+                "Max": 0.0
+              }
+            ],
+            "Positions": {
+              "Type": "Jitter2d",
+              "Magnitude": 16.0,
+              "Seed": "Slot0",
+              "Positions": {
+                "Type": "List",
+                "Positions": [
+                  {
+                    "X": -35,
+                    "Y": 81,
+                    "Z": 195
+                  }
+                ]
+              }
+            }
+          },
+          {
+            "Type": "FieldFunction",
+            "FieldFunction": {
+              "Type": "XOverride",
+              "Value": 7919.5,
+              "Inputs": [
+                {
+                  "Type": "ZOverride",
+                  "Value": -4441.5,
+                  "Inputs": [
+                    {
+                      "Type": "SimplexNoise2D",
+                      "Scale": 60.0,
+                      "Octaves": 1,
+                      "Lacunarity": 2.0,
+                      "Persistence": 0.5,
+                      "Seed": "Layout"
+                    }
+                  ]
+                }
+              ]
+            },
+            "Delimiters": [
+              {
+                "Min": -0.11,
+                "Max": 0.0
+              }
+            ],
+            "Positions": {
+              "Type": "FieldFunction",
+              "FieldFunction": {
+                "Type": "SimplexNoise2D",
+                "Scale": 40.0,
+                "Octaves": 1,
+                "Lacunarity": 2.0,
+                "Persistence": 0.5,
+                "Seed": "Keep12"
+              },
+              "Delimiters": [
+                {
+                  "Min": 0.0,
+                  "Max": 1000000000.0
+                }
+              ],
+              "Positions": {
+                "Type": "Jitter2d",
+                "Magnitude": 16.0,
+                "Seed": "Slot12",
+                "Positions": {
+                  "Type": "List",
+                  "Positions": [
+                    {
+                      "X": 200,
+                      "Y": 81,
+                      "Z": 65
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          {
+            "Type": "FieldFunction",
+            "FieldFunction": {
+              "Type": "XOverride",
+              "Value": 7919.5,
+              "Inputs": [
+                {
+                  "Type": "ZOverride",
+                  "Value": -4441.5,
+                  "Inputs": [
+                    {
+                      "Type": "SimplexNoise2D",
+                      "Scale": 60.0,
+                      "Octaves": 1,
+                      "Lacunarity": 2.0,
+                      "Persistence": 0.5,
+                      "Seed": "Layout"
+                    }
+                  ]
+                }
+              ]
             },
             "Delimiters": [
               {
                 "Min": 0.0,
+                "Max": 0.11
+              }
+            ],
+            "Positions": {
+              "Type": "Jitter2d",
+              "Magnitude": 16.0,
+              "Seed": "Slot1",
+              "Positions": {
+                "Type": "List",
+                "Positions": [
+                  {
+                    "X": 115,
+                    "Y": 81,
+                    "Z": 165
+                  }
+                ]
+              }
+            }
+          },
+          {
+            "Type": "FieldFunction",
+            "FieldFunction": {
+              "Type": "XOverride",
+              "Value": 7919.5,
+              "Inputs": [
+                {
+                  "Type": "ZOverride",
+                  "Value": -4441.5,
+                  "Inputs": [
+                    {
+                      "Type": "SimplexNoise2D",
+                      "Scale": 60.0,
+                      "Octaves": 1,
+                      "Lacunarity": 2.0,
+                      "Persistence": 0.5,
+                      "Seed": "Layout"
+                    }
+                  ]
+                }
+              ]
+            },
+            "Delimiters": [
+              {
+                "Min": 0.0,
+                "Max": 0.11
+              }
+            ],
+            "Positions": {
+              "Type": "FieldFunction",
+              "FieldFunction": {
+                "Type": "SimplexNoise2D",
+                "Scale": 40.0,
+                "Octaves": 1,
+                "Lacunarity": 2.0,
+                "Persistence": 0.5,
+                "Seed": "Keep7"
+              },
+              "Delimiters": [
+                {
+                  "Min": 0.0,
+                  "Max": 1000000000.0
+                }
+              ],
+              "Positions": {
+                "Type": "Jitter2d",
+                "Magnitude": 16.0,
+                "Seed": "Slot7",
+                "Positions": {
+                  "Type": "List",
+                  "Positions": [
+                    {
+                      "X": -80,
+                      "Y": 81,
+                      "Z": -55
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          {
+            "Type": "FieldFunction",
+            "FieldFunction": {
+              "Type": "XOverride",
+              "Value": 7919.5,
+              "Inputs": [
+                {
+                  "Type": "ZOverride",
+                  "Value": -4441.5,
+                  "Inputs": [
+                    {
+                      "Type": "SimplexNoise2D",
+                      "Scale": 60.0,
+                      "Octaves": 1,
+                      "Lacunarity": 2.0,
+                      "Persistence": 0.5,
+                      "Seed": "Layout"
+                    }
+                  ]
+                }
+              ]
+            },
+            "Delimiters": [
+              {
+                "Min": 0.11,
+                "Max": 0.24
+              }
+            ],
+            "Positions": {
+              "Type": "FieldFunction",
+              "FieldFunction": {
+                "Type": "SimplexNoise2D",
+                "Scale": 40.0,
+                "Octaves": 1,
+                "Lacunarity": 2.0,
+                "Persistence": 0.5,
+                "Seed": "Keep3"
+              },
+              "Delimiters": [
+                {
+                  "Min": 0.0,
+                  "Max": 1000000000.0
+                }
+              ],
+              "Positions": {
+                "Type": "Jitter2d",
+                "Magnitude": 16.0,
+                "Seed": "Slot3",
+                "Positions": {
+                  "Type": "List",
+                  "Positions": [
+                    {
+                      "X": -205,
+                      "Y": 81,
+                      "Z": 30
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          {
+            "Type": "FieldFunction",
+            "FieldFunction": {
+              "Type": "XOverride",
+              "Value": 7919.5,
+              "Inputs": [
+                {
+                  "Type": "ZOverride",
+                  "Value": -4441.5,
+                  "Inputs": [
+                    {
+                      "Type": "SimplexNoise2D",
+                      "Scale": 60.0,
+                      "Octaves": 1,
+                      "Lacunarity": 2.0,
+                      "Persistence": 0.5,
+                      "Seed": "Layout"
+                    }
+                  ]
+                }
+              ]
+            },
+            "Delimiters": [
+              {
+                "Min": 0.11,
+                "Max": 0.24
+              }
+            ],
+            "Positions": {
+              "Type": "Jitter2d",
+              "Magnitude": 16.0,
+              "Seed": "Slot8",
+              "Positions": {
+                "Type": "List",
+                "Positions": [
+                  {
+                    "X": -65,
+                    "Y": 81,
+                    "Z": 70
+                  }
+                ]
+              }
+            }
+          },
+          {
+            "Type": "FieldFunction",
+            "FieldFunction": {
+              "Type": "XOverride",
+              "Value": 7919.5,
+              "Inputs": [
+                {
+                  "Type": "ZOverride",
+                  "Value": -4441.5,
+                  "Inputs": [
+                    {
+                      "Type": "SimplexNoise2D",
+                      "Scale": 60.0,
+                      "Octaves": 1,
+                      "Lacunarity": 2.0,
+                      "Persistence": 0.5,
+                      "Seed": "Layout"
+                    }
+                  ]
+                }
+              ]
+            },
+            "Delimiters": [
+              {
+                "Min": 0.24,
+                "Max": 0.4
+              }
+            ],
+            "Positions": {
+              "Type": "Jitter2d",
+              "Magnitude": 16.0,
+              "Seed": "Slot7",
+              "Positions": {
+                "Type": "List",
+                "Positions": [
+                  {
+                    "X": -80,
+                    "Y": 81,
+                    "Z": -55
+                  }
+                ]
+              }
+            }
+          },
+          {
+            "Type": "FieldFunction",
+            "FieldFunction": {
+              "Type": "XOverride",
+              "Value": 7919.5,
+              "Inputs": [
+                {
+                  "Type": "ZOverride",
+                  "Value": -4441.5,
+                  "Inputs": [
+                    {
+                      "Type": "SimplexNoise2D",
+                      "Scale": 60.0,
+                      "Octaves": 1,
+                      "Lacunarity": 2.0,
+                      "Persistence": 0.5,
+                      "Seed": "Layout"
+                    }
+                  ]
+                }
+              ]
+            },
+            "Delimiters": [
+              {
+                "Min": 0.24,
+                "Max": 0.4
+              }
+            ],
+            "Positions": {
+              "Type": "FieldFunction",
+              "FieldFunction": {
+                "Type": "SimplexNoise2D",
+                "Scale": 40.0,
+                "Octaves": 1,
+                "Lacunarity": 2.0,
+                "Persistence": 0.5,
+                "Seed": "Keep10"
+              },
+              "Delimiters": [
+                {
+                  "Min": 0.0,
+                  "Max": 1000000000.0
+                }
+              ],
+              "Positions": {
+                "Type": "Jitter2d",
+                "Magnitude": 16.0,
+                "Seed": "Slot10",
+                "Positions": {
+                  "Type": "List",
+                  "Positions": [
+                    {
+                      "X": 75,
+                      "Y": 81,
+                      "Z": 35
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          {
+            "Type": "FieldFunction",
+            "FieldFunction": {
+              "Type": "XOverride",
+              "Value": 7919.5,
+              "Inputs": [
+                {
+                  "Type": "ZOverride",
+                  "Value": -4441.5,
+                  "Inputs": [
+                    {
+                      "Type": "SimplexNoise2D",
+                      "Scale": 60.0,
+                      "Octaves": 1,
+                      "Lacunarity": 2.0,
+                      "Persistence": 0.5,
+                      "Seed": "Layout"
+                    }
+                  ]
+                }
+              ]
+            },
+            "Delimiters": [
+              {
+                "Min": 0.4,
+                "Max": 1000000000.0
+              }
+            ],
+            "Positions": {
+              "Type": "FieldFunction",
+              "FieldFunction": {
+                "Type": "SimplexNoise2D",
+                "Scale": 40.0,
+                "Octaves": 1,
+                "Lacunarity": 2.0,
+                "Persistence": 0.5,
+                "Seed": "Keep5"
+              },
+              "Delimiters": [
+                {
+                  "Min": 0.0,
+                  "Max": 1000000000.0
+                }
+              ],
+              "Positions": {
+                "Type": "Jitter2d",
+                "Magnitude": 16.0,
+                "Seed": "Slot5",
+                "Positions": {
+                  "Type": "List",
+                  "Positions": [
+                    {
+                      "X": -155,
+                      "Y": 81,
+                      "Z": 145
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          {
+            "Type": "FieldFunction",
+            "FieldFunction": {
+              "Type": "XOverride",
+              "Value": 7919.5,
+              "Inputs": [
+                {
+                  "Type": "ZOverride",
+                  "Value": -4441.5,
+                  "Inputs": [
+                    {
+                      "Type": "SimplexNoise2D",
+                      "Scale": 60.0,
+                      "Octaves": 1,
+                      "Lacunarity": 2.0,
+                      "Persistence": 0.5,
+                      "Seed": "Layout"
+                    }
+                  ]
+                }
+              ]
+            },
+            "Delimiters": [
+              {
+                "Min": 0.4,
                 "Max": 1000000000.0
               }
             ],
             "Positions": {
               "Type": "Jitter2d",
               "Magnitude": 16.0,
-              "Seed": "SlotGuardPost1",
+              "Seed": "Slot6",
               "Positions": {
                 "Type": "List",
                 "Positions": [
                   {
-                    "X": 205,
+                    "X": -115,
                     "Y": 81,
-                    "Z": -60
+                    "Z": -175
                   }
                 ]
               }
@@ -215,47 +2262,840 @@
         "Type": "Union",
         "Positions": [
           {
-            "Type": "Jitter2d",
-            "Magnitude": 16.0,
-            "Seed": "SlotCemetery0",
-            "Positions": {
-              "Type": "List",
-              "Positions": [
+            "Type": "FieldFunction",
+            "FieldFunction": {
+              "Type": "XOverride",
+              "Value": 7919.5,
+              "Inputs": [
                 {
-                  "X": -10,
-                  "Y": 81,
-                  "Z": -95
+                  "Type": "ZOverride",
+                  "Value": -4441.5,
+                  "Inputs": [
+                    {
+                      "Type": "SimplexNoise2D",
+                      "Scale": 60.0,
+                      "Octaves": 1,
+                      "Lacunarity": 2.0,
+                      "Persistence": 0.5,
+                      "Seed": "Layout"
+                    }
+                  ]
                 }
               ]
+            },
+            "Delimiters": [
+              {
+                "Min": -1000000000.0,
+                "Max": -0.4
+              }
+            ],
+            "Positions": {
+              "Type": "FieldFunction",
+              "FieldFunction": {
+                "Type": "SimplexNoise2D",
+                "Scale": 40.0,
+                "Octaves": 1,
+                "Lacunarity": 2.0,
+                "Persistence": 0.5,
+                "Seed": "Keep6"
+              },
+              "Delimiters": [
+                {
+                  "Min": 0.0,
+                  "Max": 1000000000.0
+                }
+              ],
+              "Positions": {
+                "Type": "Jitter2d",
+                "Magnitude": 16.0,
+                "Seed": "Slot6",
+                "Positions": {
+                  "Type": "List",
+                  "Positions": [
+                    {
+                      "X": -115,
+                      "Y": 81,
+                      "Z": -175
+                    }
+                  ]
+                }
+              }
             }
           },
           {
             "Type": "FieldFunction",
             "FieldFunction": {
-              "Type": "SimplexNoise2D",
-              "Scale": 40.0,
-              "Octaves": 1,
-              "Lacunarity": 2.0,
-              "Persistence": 0.5,
-              "Seed": "KeepCemetery1"
+              "Type": "XOverride",
+              "Value": 7919.5,
+              "Inputs": [
+                {
+                  "Type": "ZOverride",
+                  "Value": -4441.5,
+                  "Inputs": [
+                    {
+                      "Type": "SimplexNoise2D",
+                      "Scale": 60.0,
+                      "Octaves": 1,
+                      "Lacunarity": 2.0,
+                      "Persistence": 0.5,
+                      "Seed": "Layout"
+                    }
+                  ]
+                }
+              ]
+            },
+            "Delimiters": [
+              {
+                "Min": -1000000000.0,
+                "Max": -0.4
+              }
+            ],
+            "Positions": {
+              "Type": "Jitter2d",
+              "Magnitude": 16.0,
+              "Seed": "Slot9",
+              "Positions": {
+                "Type": "List",
+                "Positions": [
+                  {
+                    "X": 30,
+                    "Y": 81,
+                    "Z": -90
+                  }
+                ]
+              }
+            }
+          },
+          {
+            "Type": "FieldFunction",
+            "FieldFunction": {
+              "Type": "XOverride",
+              "Value": 7919.5,
+              "Inputs": [
+                {
+                  "Type": "ZOverride",
+                  "Value": -4441.5,
+                  "Inputs": [
+                    {
+                      "Type": "SimplexNoise2D",
+                      "Scale": 60.0,
+                      "Octaves": 1,
+                      "Lacunarity": 2.0,
+                      "Persistence": 0.5,
+                      "Seed": "Layout"
+                    }
+                  ]
+                }
+              ]
+            },
+            "Delimiters": [
+              {
+                "Min": -0.4,
+                "Max": -0.24
+              }
+            ],
+            "Positions": {
+              "Type": "FieldFunction",
+              "FieldFunction": {
+                "Type": "SimplexNoise2D",
+                "Scale": 40.0,
+                "Octaves": 1,
+                "Lacunarity": 2.0,
+                "Persistence": 0.5,
+                "Seed": "Keep6"
+              },
+              "Delimiters": [
+                {
+                  "Min": 0.0,
+                  "Max": 1000000000.0
+                }
+              ],
+              "Positions": {
+                "Type": "Jitter2d",
+                "Magnitude": 16.0,
+                "Seed": "Slot6",
+                "Positions": {
+                  "Type": "List",
+                  "Positions": [
+                    {
+                      "X": -115,
+                      "Y": 81,
+                      "Z": -175
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          {
+            "Type": "FieldFunction",
+            "FieldFunction": {
+              "Type": "XOverride",
+              "Value": 7919.5,
+              "Inputs": [
+                {
+                  "Type": "ZOverride",
+                  "Value": -4441.5,
+                  "Inputs": [
+                    {
+                      "Type": "SimplexNoise2D",
+                      "Scale": 60.0,
+                      "Octaves": 1,
+                      "Lacunarity": 2.0,
+                      "Persistence": 0.5,
+                      "Seed": "Layout"
+                    }
+                  ]
+                }
+              ]
+            },
+            "Delimiters": [
+              {
+                "Min": -0.4,
+                "Max": -0.24
+              }
+            ],
+            "Positions": {
+              "Type": "Jitter2d",
+              "Magnitude": 16.0,
+              "Seed": "Slot10",
+              "Positions": {
+                "Type": "List",
+                "Positions": [
+                  {
+                    "X": 75,
+                    "Y": 81,
+                    "Z": 35
+                  }
+                ]
+              }
+            }
+          },
+          {
+            "Type": "FieldFunction",
+            "FieldFunction": {
+              "Type": "XOverride",
+              "Value": 7919.5,
+              "Inputs": [
+                {
+                  "Type": "ZOverride",
+                  "Value": -4441.5,
+                  "Inputs": [
+                    {
+                      "Type": "SimplexNoise2D",
+                      "Scale": 60.0,
+                      "Octaves": 1,
+                      "Lacunarity": 2.0,
+                      "Persistence": 0.5,
+                      "Seed": "Layout"
+                    }
+                  ]
+                }
+              ]
+            },
+            "Delimiters": [
+              {
+                "Min": -0.24,
+                "Max": -0.11
+              }
+            ],
+            "Positions": {
+              "Type": "FieldFunction",
+              "FieldFunction": {
+                "Type": "SimplexNoise2D",
+                "Scale": 40.0,
+                "Octaves": 1,
+                "Lacunarity": 2.0,
+                "Persistence": 0.5,
+                "Seed": "Keep0"
+              },
+              "Delimiters": [
+                {
+                  "Min": 0.0,
+                  "Max": 1000000000.0
+                }
+              ],
+              "Positions": {
+                "Type": "Jitter2d",
+                "Magnitude": 16.0,
+                "Seed": "Slot0",
+                "Positions": {
+                  "Type": "List",
+                  "Positions": [
+                    {
+                      "X": -35,
+                      "Y": 81,
+                      "Z": 195
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          {
+            "Type": "FieldFunction",
+            "FieldFunction": {
+              "Type": "XOverride",
+              "Value": 7919.5,
+              "Inputs": [
+                {
+                  "Type": "ZOverride",
+                  "Value": -4441.5,
+                  "Inputs": [
+                    {
+                      "Type": "SimplexNoise2D",
+                      "Scale": 60.0,
+                      "Octaves": 1,
+                      "Lacunarity": 2.0,
+                      "Persistence": 0.5,
+                      "Seed": "Layout"
+                    }
+                  ]
+                }
+              ]
+            },
+            "Delimiters": [
+              {
+                "Min": -0.24,
+                "Max": -0.11
+              }
+            ],
+            "Positions": {
+              "Type": "Jitter2d",
+              "Magnitude": 16.0,
+              "Seed": "Slot9",
+              "Positions": {
+                "Type": "List",
+                "Positions": [
+                  {
+                    "X": 30,
+                    "Y": 81,
+                    "Z": -90
+                  }
+                ]
+              }
+            }
+          },
+          {
+            "Type": "FieldFunction",
+            "FieldFunction": {
+              "Type": "XOverride",
+              "Value": 7919.5,
+              "Inputs": [
+                {
+                  "Type": "ZOverride",
+                  "Value": -4441.5,
+                  "Inputs": [
+                    {
+                      "Type": "SimplexNoise2D",
+                      "Scale": 60.0,
+                      "Octaves": 1,
+                      "Lacunarity": 2.0,
+                      "Persistence": 0.5,
+                      "Seed": "Layout"
+                    }
+                  ]
+                }
+              ]
+            },
+            "Delimiters": [
+              {
+                "Min": -0.11,
+                "Max": 0.0
+              }
+            ],
+            "Positions": {
+              "Type": "FieldFunction",
+              "FieldFunction": {
+                "Type": "SimplexNoise2D",
+                "Scale": 40.0,
+                "Octaves": 1,
+                "Lacunarity": 2.0,
+                "Persistence": 0.5,
+                "Seed": "Keep6"
+              },
+              "Delimiters": [
+                {
+                  "Min": 0.0,
+                  "Max": 1000000000.0
+                }
+              ],
+              "Positions": {
+                "Type": "Jitter2d",
+                "Magnitude": 16.0,
+                "Seed": "Slot6",
+                "Positions": {
+                  "Type": "List",
+                  "Positions": [
+                    {
+                      "X": -115,
+                      "Y": 81,
+                      "Z": -175
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          {
+            "Type": "FieldFunction",
+            "FieldFunction": {
+              "Type": "XOverride",
+              "Value": 7919.5,
+              "Inputs": [
+                {
+                  "Type": "ZOverride",
+                  "Value": -4441.5,
+                  "Inputs": [
+                    {
+                      "Type": "SimplexNoise2D",
+                      "Scale": 60.0,
+                      "Octaves": 1,
+                      "Lacunarity": 2.0,
+                      "Persistence": 0.5,
+                      "Seed": "Layout"
+                    }
+                  ]
+                }
+              ]
+            },
+            "Delimiters": [
+              {
+                "Min": -0.11,
+                "Max": 0.0
+              }
+            ],
+            "Positions": {
+              "Type": "Jitter2d",
+              "Magnitude": 16.0,
+              "Seed": "Slot10",
+              "Positions": {
+                "Type": "List",
+                "Positions": [
+                  {
+                    "X": 75,
+                    "Y": 81,
+                    "Z": 35
+                  }
+                ]
+              }
+            }
+          },
+          {
+            "Type": "FieldFunction",
+            "FieldFunction": {
+              "Type": "XOverride",
+              "Value": 7919.5,
+              "Inputs": [
+                {
+                  "Type": "ZOverride",
+                  "Value": -4441.5,
+                  "Inputs": [
+                    {
+                      "Type": "SimplexNoise2D",
+                      "Scale": 60.0,
+                      "Octaves": 1,
+                      "Lacunarity": 2.0,
+                      "Persistence": 0.5,
+                      "Seed": "Layout"
+                    }
+                  ]
+                }
+              ]
             },
             "Delimiters": [
               {
                 "Min": 0.0,
+                "Max": 0.11
+              }
+            ],
+            "Positions": {
+              "Type": "Jitter2d",
+              "Magnitude": 16.0,
+              "Seed": "Slot6",
+              "Positions": {
+                "Type": "List",
+                "Positions": [
+                  {
+                    "X": -115,
+                    "Y": 81,
+                    "Z": -175
+                  }
+                ]
+              }
+            }
+          },
+          {
+            "Type": "FieldFunction",
+            "FieldFunction": {
+              "Type": "XOverride",
+              "Value": 7919.5,
+              "Inputs": [
+                {
+                  "Type": "ZOverride",
+                  "Value": -4441.5,
+                  "Inputs": [
+                    {
+                      "Type": "SimplexNoise2D",
+                      "Scale": 60.0,
+                      "Octaves": 1,
+                      "Lacunarity": 2.0,
+                      "Persistence": 0.5,
+                      "Seed": "Layout"
+                    }
+                  ]
+                }
+              ]
+            },
+            "Delimiters": [
+              {
+                "Min": 0.0,
+                "Max": 0.11
+              }
+            ],
+            "Positions": {
+              "Type": "FieldFunction",
+              "FieldFunction": {
+                "Type": "SimplexNoise2D",
+                "Scale": 40.0,
+                "Octaves": 1,
+                "Lacunarity": 2.0,
+                "Persistence": 0.5,
+                "Seed": "Keep10"
+              },
+              "Delimiters": [
+                {
+                  "Min": 0.0,
+                  "Max": 1000000000.0
+                }
+              ],
+              "Positions": {
+                "Type": "Jitter2d",
+                "Magnitude": 16.0,
+                "Seed": "Slot10",
+                "Positions": {
+                  "Type": "List",
+                  "Positions": [
+                    {
+                      "X": 75,
+                      "Y": 81,
+                      "Z": 35
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          {
+            "Type": "FieldFunction",
+            "FieldFunction": {
+              "Type": "XOverride",
+              "Value": 7919.5,
+              "Inputs": [
+                {
+                  "Type": "ZOverride",
+                  "Value": -4441.5,
+                  "Inputs": [
+                    {
+                      "Type": "SimplexNoise2D",
+                      "Scale": 60.0,
+                      "Octaves": 1,
+                      "Lacunarity": 2.0,
+                      "Persistence": 0.5,
+                      "Seed": "Layout"
+                    }
+                  ]
+                }
+              ]
+            },
+            "Delimiters": [
+              {
+                "Min": 0.11,
+                "Max": 0.24
+              }
+            ],
+            "Positions": {
+              "Type": "Jitter2d",
+              "Magnitude": 16.0,
+              "Seed": "Slot0",
+              "Positions": {
+                "Type": "List",
+                "Positions": [
+                  {
+                    "X": -35,
+                    "Y": 81,
+                    "Z": 195
+                  }
+                ]
+              }
+            }
+          },
+          {
+            "Type": "FieldFunction",
+            "FieldFunction": {
+              "Type": "XOverride",
+              "Value": 7919.5,
+              "Inputs": [
+                {
+                  "Type": "ZOverride",
+                  "Value": -4441.5,
+                  "Inputs": [
+                    {
+                      "Type": "SimplexNoise2D",
+                      "Scale": 60.0,
+                      "Octaves": 1,
+                      "Lacunarity": 2.0,
+                      "Persistence": 0.5,
+                      "Seed": "Layout"
+                    }
+                  ]
+                }
+              ]
+            },
+            "Delimiters": [
+              {
+                "Min": 0.11,
+                "Max": 0.24
+              }
+            ],
+            "Positions": {
+              "Type": "FieldFunction",
+              "FieldFunction": {
+                "Type": "SimplexNoise2D",
+                "Scale": 40.0,
+                "Octaves": 1,
+                "Lacunarity": 2.0,
+                "Persistence": 0.5,
+                "Seed": "Keep9"
+              },
+              "Delimiters": [
+                {
+                  "Min": 0.0,
+                  "Max": 1000000000.0
+                }
+              ],
+              "Positions": {
+                "Type": "Jitter2d",
+                "Magnitude": 16.0,
+                "Seed": "Slot9",
+                "Positions": {
+                  "Type": "List",
+                  "Positions": [
+                    {
+                      "X": 30,
+                      "Y": 81,
+                      "Z": -90
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          {
+            "Type": "FieldFunction",
+            "FieldFunction": {
+              "Type": "XOverride",
+              "Value": 7919.5,
+              "Inputs": [
+                {
+                  "Type": "ZOverride",
+                  "Value": -4441.5,
+                  "Inputs": [
+                    {
+                      "Type": "SimplexNoise2D",
+                      "Scale": 60.0,
+                      "Octaves": 1,
+                      "Lacunarity": 2.0,
+                      "Persistence": 0.5,
+                      "Seed": "Layout"
+                    }
+                  ]
+                }
+              ]
+            },
+            "Delimiters": [
+              {
+                "Min": 0.24,
+                "Max": 0.4
+              }
+            ],
+            "Positions": {
+              "Type": "FieldFunction",
+              "FieldFunction": {
+                "Type": "SimplexNoise2D",
+                "Scale": 40.0,
+                "Octaves": 1,
+                "Lacunarity": 2.0,
+                "Persistence": 0.5,
+                "Seed": "Keep4"
+              },
+              "Delimiters": [
+                {
+                  "Min": 0.0,
+                  "Max": 1000000000.0
+                }
+              ],
+              "Positions": {
+                "Type": "Jitter2d",
+                "Magnitude": 16.0,
+                "Seed": "Slot4",
+                "Positions": {
+                  "Type": "List",
+                  "Positions": [
+                    {
+                      "X": -190,
+                      "Y": 81,
+                      "Z": -85
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          {
+            "Type": "FieldFunction",
+            "FieldFunction": {
+              "Type": "XOverride",
+              "Value": 7919.5,
+              "Inputs": [
+                {
+                  "Type": "ZOverride",
+                  "Value": -4441.5,
+                  "Inputs": [
+                    {
+                      "Type": "SimplexNoise2D",
+                      "Scale": 60.0,
+                      "Octaves": 1,
+                      "Lacunarity": 2.0,
+                      "Persistence": 0.5,
+                      "Seed": "Layout"
+                    }
+                  ]
+                }
+              ]
+            },
+            "Delimiters": [
+              {
+                "Min": 0.24,
+                "Max": 0.4
+              }
+            ],
+            "Positions": {
+              "Type": "Jitter2d",
+              "Magnitude": 16.0,
+              "Seed": "Slot8",
+              "Positions": {
+                "Type": "List",
+                "Positions": [
+                  {
+                    "X": -65,
+                    "Y": 81,
+                    "Z": 70
+                  }
+                ]
+              }
+            }
+          },
+          {
+            "Type": "FieldFunction",
+            "FieldFunction": {
+              "Type": "XOverride",
+              "Value": 7919.5,
+              "Inputs": [
+                {
+                  "Type": "ZOverride",
+                  "Value": -4441.5,
+                  "Inputs": [
+                    {
+                      "Type": "SimplexNoise2D",
+                      "Scale": 60.0,
+                      "Octaves": 1,
+                      "Lacunarity": 2.0,
+                      "Persistence": 0.5,
+                      "Seed": "Layout"
+                    }
+                  ]
+                }
+              ]
+            },
+            "Delimiters": [
+              {
+                "Min": 0.4,
+                "Max": 1000000000.0
+              }
+            ],
+            "Positions": {
+              "Type": "FieldFunction",
+              "FieldFunction": {
+                "Type": "SimplexNoise2D",
+                "Scale": 40.0,
+                "Octaves": 1,
+                "Lacunarity": 2.0,
+                "Persistence": 0.5,
+                "Seed": "Keep1"
+              },
+              "Delimiters": [
+                {
+                  "Min": 0.0,
+                  "Max": 1000000000.0
+                }
+              ],
+              "Positions": {
+                "Type": "Jitter2d",
+                "Magnitude": 16.0,
+                "Seed": "Slot1",
+                "Positions": {
+                  "Type": "List",
+                  "Positions": [
+                    {
+                      "X": 115,
+                      "Y": 81,
+                      "Z": 165
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          {
+            "Type": "FieldFunction",
+            "FieldFunction": {
+              "Type": "XOverride",
+              "Value": 7919.5,
+              "Inputs": [
+                {
+                  "Type": "ZOverride",
+                  "Value": -4441.5,
+                  "Inputs": [
+                    {
+                      "Type": "SimplexNoise2D",
+                      "Scale": 60.0,
+                      "Octaves": 1,
+                      "Lacunarity": 2.0,
+                      "Persistence": 0.5,
+                      "Seed": "Layout"
+                    }
+                  ]
+                }
+              ]
+            },
+            "Delimiters": [
+              {
+                "Min": 0.4,
                 "Max": 1000000000.0
               }
             ],
             "Positions": {
               "Type": "Jitter2d",
               "Magnitude": 16.0,
-              "Seed": "SlotCemetery1",
+              "Seed": "Slot9",
               "Positions": {
                 "Type": "List",
                 "Positions": [
                   {
-                    "X": 5,
+                    "X": 30,
                     "Y": 81,
-                    "Z": 95
+                    "Z": -90
                   }
                 ]
               }
@@ -291,47 +3131,840 @@
         "Type": "Union",
         "Positions": [
           {
-            "Type": "Jitter2d",
-            "Magnitude": 16.0,
-            "Seed": "SlotCrypt0",
-            "Positions": {
-              "Type": "List",
-              "Positions": [
-                {
-                  "X": -190,
-                  "Y": 81,
-                  "Z": -90
-                }
-              ]
-            }
-          },
-          {
             "Type": "FieldFunction",
             "FieldFunction": {
-              "Type": "SimplexNoise2D",
-              "Scale": 40.0,
-              "Octaves": 1,
-              "Lacunarity": 2.0,
-              "Persistence": 0.5,
-              "Seed": "KeepCrypt1"
+              "Type": "XOverride",
+              "Value": 7919.5,
+              "Inputs": [
+                {
+                  "Type": "ZOverride",
+                  "Value": -4441.5,
+                  "Inputs": [
+                    {
+                      "Type": "SimplexNoise2D",
+                      "Scale": 60.0,
+                      "Octaves": 1,
+                      "Lacunarity": 2.0,
+                      "Persistence": 0.5,
+                      "Seed": "Layout"
+                    }
+                  ]
+                }
+              ]
             },
             "Delimiters": [
               {
-                "Min": 0.0,
-                "Max": 1000000000.0
+                "Min": -1000000000.0,
+                "Max": -0.4
               }
             ],
             "Positions": {
               "Type": "Jitter2d",
               "Magnitude": 16.0,
-              "Seed": "SlotCrypt1",
+              "Seed": "Slot2",
+              "Positions": {
+                "Type": "List",
+                "Positions": [
+                  {
+                    "X": 185,
+                    "Y": 81,
+                    "Z": -65
+                  }
+                ]
+              }
+            }
+          },
+          {
+            "Type": "FieldFunction",
+            "FieldFunction": {
+              "Type": "XOverride",
+              "Value": 7919.5,
+              "Inputs": [
+                {
+                  "Type": "ZOverride",
+                  "Value": -4441.5,
+                  "Inputs": [
+                    {
+                      "Type": "SimplexNoise2D",
+                      "Scale": 60.0,
+                      "Octaves": 1,
+                      "Lacunarity": 2.0,
+                      "Persistence": 0.5,
+                      "Seed": "Layout"
+                    }
+                  ]
+                }
+              ]
+            },
+            "Delimiters": [
+              {
+                "Min": -1000000000.0,
+                "Max": -0.4
+              }
+            ],
+            "Positions": {
+              "Type": "FieldFunction",
+              "FieldFunction": {
+                "Type": "SimplexNoise2D",
+                "Scale": 40.0,
+                "Octaves": 1,
+                "Lacunarity": 2.0,
+                "Persistence": 0.5,
+                "Seed": "Keep5"
+              },
+              "Delimiters": [
+                {
+                  "Min": 0.0,
+                  "Max": 1000000000.0
+                }
+              ],
+              "Positions": {
+                "Type": "Jitter2d",
+                "Magnitude": 16.0,
+                "Seed": "Slot5",
+                "Positions": {
+                  "Type": "List",
+                  "Positions": [
+                    {
+                      "X": -155,
+                      "Y": 81,
+                      "Z": 145
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          {
+            "Type": "FieldFunction",
+            "FieldFunction": {
+              "Type": "XOverride",
+              "Value": 7919.5,
+              "Inputs": [
+                {
+                  "Type": "ZOverride",
+                  "Value": -4441.5,
+                  "Inputs": [
+                    {
+                      "Type": "SimplexNoise2D",
+                      "Scale": 60.0,
+                      "Octaves": 1,
+                      "Lacunarity": 2.0,
+                      "Persistence": 0.5,
+                      "Seed": "Layout"
+                    }
+                  ]
+                }
+              ]
+            },
+            "Delimiters": [
+              {
+                "Min": -0.4,
+                "Max": -0.24
+              }
+            ],
+            "Positions": {
+              "Type": "FieldFunction",
+              "FieldFunction": {
+                "Type": "SimplexNoise2D",
+                "Scale": 40.0,
+                "Octaves": 1,
+                "Lacunarity": 2.0,
+                "Persistence": 0.5,
+                "Seed": "Keep9"
+              },
+              "Delimiters": [
+                {
+                  "Min": 0.0,
+                  "Max": 1000000000.0
+                }
+              ],
+              "Positions": {
+                "Type": "Jitter2d",
+                "Magnitude": 16.0,
+                "Seed": "Slot9",
+                "Positions": {
+                  "Type": "List",
+                  "Positions": [
+                    {
+                      "X": 30,
+                      "Y": 81,
+                      "Z": -90
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          {
+            "Type": "FieldFunction",
+            "FieldFunction": {
+              "Type": "XOverride",
+              "Value": 7919.5,
+              "Inputs": [
+                {
+                  "Type": "ZOverride",
+                  "Value": -4441.5,
+                  "Inputs": [
+                    {
+                      "Type": "SimplexNoise2D",
+                      "Scale": 60.0,
+                      "Octaves": 1,
+                      "Lacunarity": 2.0,
+                      "Persistence": 0.5,
+                      "Seed": "Layout"
+                    }
+                  ]
+                }
+              ]
+            },
+            "Delimiters": [
+              {
+                "Min": -0.4,
+                "Max": -0.24
+              }
+            ],
+            "Positions": {
+              "Type": "Jitter2d",
+              "Magnitude": 16.0,
+              "Seed": "Slot12",
               "Positions": {
                 "Type": "List",
                 "Positions": [
                   {
                     "X": 200,
                     "Y": 81,
-                    "Z": 55
+                    "Z": 65
+                  }
+                ]
+              }
+            }
+          },
+          {
+            "Type": "FieldFunction",
+            "FieldFunction": {
+              "Type": "XOverride",
+              "Value": 7919.5,
+              "Inputs": [
+                {
+                  "Type": "ZOverride",
+                  "Value": -4441.5,
+                  "Inputs": [
+                    {
+                      "Type": "SimplexNoise2D",
+                      "Scale": 60.0,
+                      "Octaves": 1,
+                      "Lacunarity": 2.0,
+                      "Persistence": 0.5,
+                      "Seed": "Layout"
+                    }
+                  ]
+                }
+              ]
+            },
+            "Delimiters": [
+              {
+                "Min": -0.24,
+                "Max": -0.11
+              }
+            ],
+            "Positions": {
+              "Type": "Jitter2d",
+              "Magnitude": 16.0,
+              "Seed": "Slot1",
+              "Positions": {
+                "Type": "List",
+                "Positions": [
+                  {
+                    "X": 115,
+                    "Y": 81,
+                    "Z": 165
+                  }
+                ]
+              }
+            }
+          },
+          {
+            "Type": "FieldFunction",
+            "FieldFunction": {
+              "Type": "XOverride",
+              "Value": 7919.5,
+              "Inputs": [
+                {
+                  "Type": "ZOverride",
+                  "Value": -4441.5,
+                  "Inputs": [
+                    {
+                      "Type": "SimplexNoise2D",
+                      "Scale": 60.0,
+                      "Octaves": 1,
+                      "Lacunarity": 2.0,
+                      "Persistence": 0.5,
+                      "Seed": "Layout"
+                    }
+                  ]
+                }
+              ]
+            },
+            "Delimiters": [
+              {
+                "Min": -0.24,
+                "Max": -0.11
+              }
+            ],
+            "Positions": {
+              "Type": "FieldFunction",
+              "FieldFunction": {
+                "Type": "SimplexNoise2D",
+                "Scale": 40.0,
+                "Octaves": 1,
+                "Lacunarity": 2.0,
+                "Persistence": 0.5,
+                "Seed": "Keep5"
+              },
+              "Delimiters": [
+                {
+                  "Min": 0.0,
+                  "Max": 1000000000.0
+                }
+              ],
+              "Positions": {
+                "Type": "Jitter2d",
+                "Magnitude": 16.0,
+                "Seed": "Slot5",
+                "Positions": {
+                  "Type": "List",
+                  "Positions": [
+                    {
+                      "X": -155,
+                      "Y": 81,
+                      "Z": 145
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          {
+            "Type": "FieldFunction",
+            "FieldFunction": {
+              "Type": "XOverride",
+              "Value": 7919.5,
+              "Inputs": [
+                {
+                  "Type": "ZOverride",
+                  "Value": -4441.5,
+                  "Inputs": [
+                    {
+                      "Type": "SimplexNoise2D",
+                      "Scale": 60.0,
+                      "Octaves": 1,
+                      "Lacunarity": 2.0,
+                      "Persistence": 0.5,
+                      "Seed": "Layout"
+                    }
+                  ]
+                }
+              ]
+            },
+            "Delimiters": [
+              {
+                "Min": -0.11,
+                "Max": 0.0
+              }
+            ],
+            "Positions": {
+              "Type": "Jitter2d",
+              "Magnitude": 16.0,
+              "Seed": "Slot4",
+              "Positions": {
+                "Type": "List",
+                "Positions": [
+                  {
+                    "X": -190,
+                    "Y": 81,
+                    "Z": -85
+                  }
+                ]
+              }
+            }
+          },
+          {
+            "Type": "FieldFunction",
+            "FieldFunction": {
+              "Type": "XOverride",
+              "Value": 7919.5,
+              "Inputs": [
+                {
+                  "Type": "ZOverride",
+                  "Value": -4441.5,
+                  "Inputs": [
+                    {
+                      "Type": "SimplexNoise2D",
+                      "Scale": 60.0,
+                      "Octaves": 1,
+                      "Lacunarity": 2.0,
+                      "Persistence": 0.5,
+                      "Seed": "Layout"
+                    }
+                  ]
+                }
+              ]
+            },
+            "Delimiters": [
+              {
+                "Min": -0.11,
+                "Max": 0.0
+              }
+            ],
+            "Positions": {
+              "Type": "FieldFunction",
+              "FieldFunction": {
+                "Type": "SimplexNoise2D",
+                "Scale": 40.0,
+                "Octaves": 1,
+                "Lacunarity": 2.0,
+                "Persistence": 0.5,
+                "Seed": "Keep11"
+              },
+              "Delimiters": [
+                {
+                  "Min": 0.0,
+                  "Max": 1000000000.0
+                }
+              ],
+              "Positions": {
+                "Type": "Jitter2d",
+                "Magnitude": 16.0,
+                "Seed": "Slot11",
+                "Positions": {
+                  "Type": "List",
+                  "Positions": [
+                    {
+                      "X": 115,
+                      "Y": 81,
+                      "Z": -175
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          {
+            "Type": "FieldFunction",
+            "FieldFunction": {
+              "Type": "XOverride",
+              "Value": 7919.5,
+              "Inputs": [
+                {
+                  "Type": "ZOverride",
+                  "Value": -4441.5,
+                  "Inputs": [
+                    {
+                      "Type": "SimplexNoise2D",
+                      "Scale": 60.0,
+                      "Octaves": 1,
+                      "Lacunarity": 2.0,
+                      "Persistence": 0.5,
+                      "Seed": "Layout"
+                    }
+                  ]
+                }
+              ]
+            },
+            "Delimiters": [
+              {
+                "Min": 0.0,
+                "Max": 0.11
+              }
+            ],
+            "Positions": {
+              "Type": "FieldFunction",
+              "FieldFunction": {
+                "Type": "SimplexNoise2D",
+                "Scale": 40.0,
+                "Octaves": 1,
+                "Lacunarity": 2.0,
+                "Persistence": 0.5,
+                "Seed": "Keep8"
+              },
+              "Delimiters": [
+                {
+                  "Min": 0.0,
+                  "Max": 1000000000.0
+                }
+              ],
+              "Positions": {
+                "Type": "Jitter2d",
+                "Magnitude": 16.0,
+                "Seed": "Slot8",
+                "Positions": {
+                  "Type": "List",
+                  "Positions": [
+                    {
+                      "X": -65,
+                      "Y": 81,
+                      "Z": 70
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          {
+            "Type": "FieldFunction",
+            "FieldFunction": {
+              "Type": "XOverride",
+              "Value": 7919.5,
+              "Inputs": [
+                {
+                  "Type": "ZOverride",
+                  "Value": -4441.5,
+                  "Inputs": [
+                    {
+                      "Type": "SimplexNoise2D",
+                      "Scale": 60.0,
+                      "Octaves": 1,
+                      "Lacunarity": 2.0,
+                      "Persistence": 0.5,
+                      "Seed": "Layout"
+                    }
+                  ]
+                }
+              ]
+            },
+            "Delimiters": [
+              {
+                "Min": 0.0,
+                "Max": 0.11
+              }
+            ],
+            "Positions": {
+              "Type": "Jitter2d",
+              "Magnitude": 16.0,
+              "Seed": "Slot11",
+              "Positions": {
+                "Type": "List",
+                "Positions": [
+                  {
+                    "X": 115,
+                    "Y": 81,
+                    "Z": -175
+                  }
+                ]
+              }
+            }
+          },
+          {
+            "Type": "FieldFunction",
+            "FieldFunction": {
+              "Type": "XOverride",
+              "Value": 7919.5,
+              "Inputs": [
+                {
+                  "Type": "ZOverride",
+                  "Value": -4441.5,
+                  "Inputs": [
+                    {
+                      "Type": "SimplexNoise2D",
+                      "Scale": 60.0,
+                      "Octaves": 1,
+                      "Lacunarity": 2.0,
+                      "Persistence": 0.5,
+                      "Seed": "Layout"
+                    }
+                  ]
+                }
+              ]
+            },
+            "Delimiters": [
+              {
+                "Min": 0.11,
+                "Max": 0.24
+              }
+            ],
+            "Positions": {
+              "Type": "FieldFunction",
+              "FieldFunction": {
+                "Type": "SimplexNoise2D",
+                "Scale": 40.0,
+                "Octaves": 1,
+                "Lacunarity": 2.0,
+                "Persistence": 0.5,
+                "Seed": "Keep4"
+              },
+              "Delimiters": [
+                {
+                  "Min": 0.0,
+                  "Max": 1000000000.0
+                }
+              ],
+              "Positions": {
+                "Type": "Jitter2d",
+                "Magnitude": 16.0,
+                "Seed": "Slot4",
+                "Positions": {
+                  "Type": "List",
+                  "Positions": [
+                    {
+                      "X": -190,
+                      "Y": 81,
+                      "Z": -85
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          {
+            "Type": "FieldFunction",
+            "FieldFunction": {
+              "Type": "XOverride",
+              "Value": 7919.5,
+              "Inputs": [
+                {
+                  "Type": "ZOverride",
+                  "Value": -4441.5,
+                  "Inputs": [
+                    {
+                      "Type": "SimplexNoise2D",
+                      "Scale": 60.0,
+                      "Octaves": 1,
+                      "Lacunarity": 2.0,
+                      "Persistence": 0.5,
+                      "Seed": "Layout"
+                    }
+                  ]
+                }
+              ]
+            },
+            "Delimiters": [
+              {
+                "Min": 0.11,
+                "Max": 0.24
+              }
+            ],
+            "Positions": {
+              "Type": "Jitter2d",
+              "Magnitude": 16.0,
+              "Seed": "Slot5",
+              "Positions": {
+                "Type": "List",
+                "Positions": [
+                  {
+                    "X": -155,
+                    "Y": 81,
+                    "Z": 145
+                  }
+                ]
+              }
+            }
+          },
+          {
+            "Type": "FieldFunction",
+            "FieldFunction": {
+              "Type": "XOverride",
+              "Value": 7919.5,
+              "Inputs": [
+                {
+                  "Type": "ZOverride",
+                  "Value": -4441.5,
+                  "Inputs": [
+                    {
+                      "Type": "SimplexNoise2D",
+                      "Scale": 60.0,
+                      "Octaves": 1,
+                      "Lacunarity": 2.0,
+                      "Persistence": 0.5,
+                      "Seed": "Layout"
+                    }
+                  ]
+                }
+              ]
+            },
+            "Delimiters": [
+              {
+                "Min": 0.24,
+                "Max": 0.4
+              }
+            ],
+            "Positions": {
+              "Type": "FieldFunction",
+              "FieldFunction": {
+                "Type": "SimplexNoise2D",
+                "Scale": 40.0,
+                "Octaves": 1,
+                "Lacunarity": 2.0,
+                "Persistence": 0.5,
+                "Seed": "Keep3"
+              },
+              "Delimiters": [
+                {
+                  "Min": 0.0,
+                  "Max": 1000000000.0
+                }
+              ],
+              "Positions": {
+                "Type": "Jitter2d",
+                "Magnitude": 16.0,
+                "Seed": "Slot3",
+                "Positions": {
+                  "Type": "List",
+                  "Positions": [
+                    {
+                      "X": -205,
+                      "Y": 81,
+                      "Z": 30
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          {
+            "Type": "FieldFunction",
+            "FieldFunction": {
+              "Type": "XOverride",
+              "Value": 7919.5,
+              "Inputs": [
+                {
+                  "Type": "ZOverride",
+                  "Value": -4441.5,
+                  "Inputs": [
+                    {
+                      "Type": "SimplexNoise2D",
+                      "Scale": 60.0,
+                      "Octaves": 1,
+                      "Lacunarity": 2.0,
+                      "Persistence": 0.5,
+                      "Seed": "Layout"
+                    }
+                  ]
+                }
+              ]
+            },
+            "Delimiters": [
+              {
+                "Min": 0.24,
+                "Max": 0.4
+              }
+            ],
+            "Positions": {
+              "Type": "Jitter2d",
+              "Magnitude": 16.0,
+              "Seed": "Slot6",
+              "Positions": {
+                "Type": "List",
+                "Positions": [
+                  {
+                    "X": -115,
+                    "Y": 81,
+                    "Z": -175
+                  }
+                ]
+              }
+            }
+          },
+          {
+            "Type": "FieldFunction",
+            "FieldFunction": {
+              "Type": "XOverride",
+              "Value": 7919.5,
+              "Inputs": [
+                {
+                  "Type": "ZOverride",
+                  "Value": -4441.5,
+                  "Inputs": [
+                    {
+                      "Type": "SimplexNoise2D",
+                      "Scale": 60.0,
+                      "Octaves": 1,
+                      "Lacunarity": 2.0,
+                      "Persistence": 0.5,
+                      "Seed": "Layout"
+                    }
+                  ]
+                }
+              ]
+            },
+            "Delimiters": [
+              {
+                "Min": 0.4,
+                "Max": 1000000000.0
+              }
+            ],
+            "Positions": {
+              "Type": "FieldFunction",
+              "FieldFunction": {
+                "Type": "SimplexNoise2D",
+                "Scale": 40.0,
+                "Octaves": 1,
+                "Lacunarity": 2.0,
+                "Persistence": 0.5,
+                "Seed": "Keep3"
+              },
+              "Delimiters": [
+                {
+                  "Min": 0.0,
+                  "Max": 1000000000.0
+                }
+              ],
+              "Positions": {
+                "Type": "Jitter2d",
+                "Magnitude": 16.0,
+                "Seed": "Slot3",
+                "Positions": {
+                  "Type": "List",
+                  "Positions": [
+                    {
+                      "X": -205,
+                      "Y": 81,
+                      "Z": 30
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          {
+            "Type": "FieldFunction",
+            "FieldFunction": {
+              "Type": "XOverride",
+              "Value": 7919.5,
+              "Inputs": [
+                {
+                  "Type": "ZOverride",
+                  "Value": -4441.5,
+                  "Inputs": [
+                    {
+                      "Type": "SimplexNoise2D",
+                      "Scale": 60.0,
+                      "Octaves": 1,
+                      "Lacunarity": 2.0,
+                      "Persistence": 0.5,
+                      "Seed": "Layout"
+                    }
+                  ]
+                }
+              ]
+            },
+            "Delimiters": [
+              {
+                "Min": 0.4,
+                "Max": 1000000000.0
+              }
+            ],
+            "Positions": {
+              "Type": "Jitter2d",
+              "Magnitude": 16.0,
+              "Seed": "Slot10",
+              "Positions": {
+                "Type": "List",
+                "Positions": [
+                  {
+                    "X": 75,
+                    "Y": 81,
+                    "Z": 35
                   }
                 ]
               }
@@ -367,49 +4000,842 @@
         "Type": "Union",
         "Positions": [
           {
-            "Type": "Jitter2d",
-            "Magnitude": 16.0,
-            "Seed": "SlotPumpkinField0",
-            "Positions": {
-              "Type": "List",
-              "Positions": [
+            "Type": "FieldFunction",
+            "FieldFunction": {
+              "Type": "XOverride",
+              "Value": 7919.5,
+              "Inputs": [
                 {
-                  "X": 95,
-                  "Y": 81,
-                  "Z": -10
+                  "Type": "ZOverride",
+                  "Value": -4441.5,
+                  "Inputs": [
+                    {
+                      "Type": "SimplexNoise2D",
+                      "Scale": 60.0,
+                      "Octaves": 1,
+                      "Lacunarity": 2.0,
+                      "Persistence": 0.5,
+                      "Seed": "Layout"
+                    }
+                  ]
                 }
               ]
+            },
+            "Delimiters": [
+              {
+                "Min": -1000000000.0,
+                "Max": -0.4
+              }
+            ],
+            "Positions": {
+              "Type": "Jitter2d",
+              "Magnitude": 16.0,
+              "Seed": "Slot3",
+              "Positions": {
+                "Type": "List",
+                "Positions": [
+                  {
+                    "X": -205,
+                    "Y": 81,
+                    "Z": 30
+                  }
+                ]
+              }
             }
           },
           {
             "Type": "FieldFunction",
             "FieldFunction": {
-              "Type": "SimplexNoise2D",
-              "Scale": 40.0,
-              "Octaves": 1,
-              "Lacunarity": 2.0,
-              "Persistence": 0.5,
-              "Seed": "KeepPumpkinField1"
+              "Type": "XOverride",
+              "Value": 7919.5,
+              "Inputs": [
+                {
+                  "Type": "ZOverride",
+                  "Value": -4441.5,
+                  "Inputs": [
+                    {
+                      "Type": "SimplexNoise2D",
+                      "Scale": 60.0,
+                      "Octaves": 1,
+                      "Lacunarity": 2.0,
+                      "Persistence": 0.5,
+                      "Seed": "Layout"
+                    }
+                  ]
+                }
+              ]
+            },
+            "Delimiters": [
+              {
+                "Min": -1000000000.0,
+                "Max": -0.4
+              }
+            ],
+            "Positions": {
+              "Type": "FieldFunction",
+              "FieldFunction": {
+                "Type": "SimplexNoise2D",
+                "Scale": 40.0,
+                "Octaves": 1,
+                "Lacunarity": 2.0,
+                "Persistence": 0.5,
+                "Seed": "Keep8"
+              },
+              "Delimiters": [
+                {
+                  "Min": 0.0,
+                  "Max": 1000000000.0
+                }
+              ],
+              "Positions": {
+                "Type": "Jitter2d",
+                "Magnitude": 16.0,
+                "Seed": "Slot8",
+                "Positions": {
+                  "Type": "List",
+                  "Positions": [
+                    {
+                      "X": -65,
+                      "Y": 81,
+                      "Z": 70
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          {
+            "Type": "FieldFunction",
+            "FieldFunction": {
+              "Type": "XOverride",
+              "Value": 7919.5,
+              "Inputs": [
+                {
+                  "Type": "ZOverride",
+                  "Value": -4441.5,
+                  "Inputs": [
+                    {
+                      "Type": "SimplexNoise2D",
+                      "Scale": 60.0,
+                      "Octaves": 1,
+                      "Lacunarity": 2.0,
+                      "Persistence": 0.5,
+                      "Seed": "Layout"
+                    }
+                  ]
+                }
+              ]
+            },
+            "Delimiters": [
+              {
+                "Min": -0.4,
+                "Max": -0.24
+              }
+            ],
+            "Positions": {
+              "Type": "Jitter2d",
+              "Magnitude": 16.0,
+              "Seed": "Slot3",
+              "Positions": {
+                "Type": "List",
+                "Positions": [
+                  {
+                    "X": -205,
+                    "Y": 81,
+                    "Z": 30
+                  }
+                ]
+              }
+            }
+          },
+          {
+            "Type": "FieldFunction",
+            "FieldFunction": {
+              "Type": "XOverride",
+              "Value": 7919.5,
+              "Inputs": [
+                {
+                  "Type": "ZOverride",
+                  "Value": -4441.5,
+                  "Inputs": [
+                    {
+                      "Type": "SimplexNoise2D",
+                      "Scale": 60.0,
+                      "Octaves": 1,
+                      "Lacunarity": 2.0,
+                      "Persistence": 0.5,
+                      "Seed": "Layout"
+                    }
+                  ]
+                }
+              ]
+            },
+            "Delimiters": [
+              {
+                "Min": -0.4,
+                "Max": -0.24
+              }
+            ],
+            "Positions": {
+              "Type": "FieldFunction",
+              "FieldFunction": {
+                "Type": "SimplexNoise2D",
+                "Scale": 40.0,
+                "Octaves": 1,
+                "Lacunarity": 2.0,
+                "Persistence": 0.5,
+                "Seed": "Keep7"
+              },
+              "Delimiters": [
+                {
+                  "Min": 0.0,
+                  "Max": 1000000000.0
+                }
+              ],
+              "Positions": {
+                "Type": "Jitter2d",
+                "Magnitude": 16.0,
+                "Seed": "Slot7",
+                "Positions": {
+                  "Type": "List",
+                  "Positions": [
+                    {
+                      "X": -80,
+                      "Y": 81,
+                      "Z": -55
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          {
+            "Type": "FieldFunction",
+            "FieldFunction": {
+              "Type": "XOverride",
+              "Value": 7919.5,
+              "Inputs": [
+                {
+                  "Type": "ZOverride",
+                  "Value": -4441.5,
+                  "Inputs": [
+                    {
+                      "Type": "SimplexNoise2D",
+                      "Scale": 60.0,
+                      "Octaves": 1,
+                      "Lacunarity": 2.0,
+                      "Persistence": 0.5,
+                      "Seed": "Layout"
+                    }
+                  ]
+                }
+              ]
+            },
+            "Delimiters": [
+              {
+                "Min": -0.24,
+                "Max": -0.11
+              }
+            ],
+            "Positions": {
+              "Type": "FieldFunction",
+              "FieldFunction": {
+                "Type": "SimplexNoise2D",
+                "Scale": 40.0,
+                "Octaves": 1,
+                "Lacunarity": 2.0,
+                "Persistence": 0.5,
+                "Seed": "Keep6"
+              },
+              "Delimiters": [
+                {
+                  "Min": 0.0,
+                  "Max": 1000000000.0
+                }
+              ],
+              "Positions": {
+                "Type": "Jitter2d",
+                "Magnitude": 16.0,
+                "Seed": "Slot6",
+                "Positions": {
+                  "Type": "List",
+                  "Positions": [
+                    {
+                      "X": -115,
+                      "Y": 81,
+                      "Z": -175
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          {
+            "Type": "FieldFunction",
+            "FieldFunction": {
+              "Type": "XOverride",
+              "Value": 7919.5,
+              "Inputs": [
+                {
+                  "Type": "ZOverride",
+                  "Value": -4441.5,
+                  "Inputs": [
+                    {
+                      "Type": "SimplexNoise2D",
+                      "Scale": 60.0,
+                      "Octaves": 1,
+                      "Lacunarity": 2.0,
+                      "Persistence": 0.5,
+                      "Seed": "Layout"
+                    }
+                  ]
+                }
+              ]
+            },
+            "Delimiters": [
+              {
+                "Min": -0.24,
+                "Max": -0.11
+              }
+            ],
+            "Positions": {
+              "Type": "Jitter2d",
+              "Magnitude": 16.0,
+              "Seed": "Slot8",
+              "Positions": {
+                "Type": "List",
+                "Positions": [
+                  {
+                    "X": -65,
+                    "Y": 81,
+                    "Z": 70
+                  }
+                ]
+              }
+            }
+          },
+          {
+            "Type": "FieldFunction",
+            "FieldFunction": {
+              "Type": "XOverride",
+              "Value": 7919.5,
+              "Inputs": [
+                {
+                  "Type": "ZOverride",
+                  "Value": -4441.5,
+                  "Inputs": [
+                    {
+                      "Type": "SimplexNoise2D",
+                      "Scale": 60.0,
+                      "Octaves": 1,
+                      "Lacunarity": 2.0,
+                      "Persistence": 0.5,
+                      "Seed": "Layout"
+                    }
+                  ]
+                }
+              ]
+            },
+            "Delimiters": [
+              {
+                "Min": -0.11,
+                "Max": 0.0
+              }
+            ],
+            "Positions": {
+              "Type": "Jitter2d",
+              "Magnitude": 16.0,
+              "Seed": "Slot2",
+              "Positions": {
+                "Type": "List",
+                "Positions": [
+                  {
+                    "X": 185,
+                    "Y": 81,
+                    "Z": -65
+                  }
+                ]
+              }
+            }
+          },
+          {
+            "Type": "FieldFunction",
+            "FieldFunction": {
+              "Type": "XOverride",
+              "Value": 7919.5,
+              "Inputs": [
+                {
+                  "Type": "ZOverride",
+                  "Value": -4441.5,
+                  "Inputs": [
+                    {
+                      "Type": "SimplexNoise2D",
+                      "Scale": 60.0,
+                      "Octaves": 1,
+                      "Lacunarity": 2.0,
+                      "Persistence": 0.5,
+                      "Seed": "Layout"
+                    }
+                  ]
+                }
+              ]
+            },
+            "Delimiters": [
+              {
+                "Min": -0.11,
+                "Max": 0.0
+              }
+            ],
+            "Positions": {
+              "Type": "FieldFunction",
+              "FieldFunction": {
+                "Type": "SimplexNoise2D",
+                "Scale": 40.0,
+                "Octaves": 1,
+                "Lacunarity": 2.0,
+                "Persistence": 0.5,
+                "Seed": "Keep8"
+              },
+              "Delimiters": [
+                {
+                  "Min": 0.0,
+                  "Max": 1000000000.0
+                }
+              ],
+              "Positions": {
+                "Type": "Jitter2d",
+                "Magnitude": 16.0,
+                "Seed": "Slot8",
+                "Positions": {
+                  "Type": "List",
+                  "Positions": [
+                    {
+                      "X": -65,
+                      "Y": 81,
+                      "Z": 70
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          {
+            "Type": "FieldFunction",
+            "FieldFunction": {
+              "Type": "XOverride",
+              "Value": 7919.5,
+              "Inputs": [
+                {
+                  "Type": "ZOverride",
+                  "Value": -4441.5,
+                  "Inputs": [
+                    {
+                      "Type": "SimplexNoise2D",
+                      "Scale": 60.0,
+                      "Octaves": 1,
+                      "Lacunarity": 2.0,
+                      "Persistence": 0.5,
+                      "Seed": "Layout"
+                    }
+                  ]
+                }
+              ]
             },
             "Delimiters": [
               {
                 "Min": 0.0,
+                "Max": 0.11
+              }
+            ],
+            "Positions": {
+              "Type": "FieldFunction",
+              "FieldFunction": {
+                "Type": "SimplexNoise2D",
+                "Scale": 40.0,
+                "Octaves": 1,
+                "Lacunarity": 2.0,
+                "Persistence": 0.5,
+                "Seed": "Keep4"
+              },
+              "Delimiters": [
+                {
+                  "Min": 0.0,
+                  "Max": 1000000000.0
+                }
+              ],
+              "Positions": {
+                "Type": "Jitter2d",
+                "Magnitude": 16.0,
+                "Seed": "Slot4",
+                "Positions": {
+                  "Type": "List",
+                  "Positions": [
+                    {
+                      "X": -190,
+                      "Y": 81,
+                      "Z": -85
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          {
+            "Type": "FieldFunction",
+            "FieldFunction": {
+              "Type": "XOverride",
+              "Value": 7919.5,
+              "Inputs": [
+                {
+                  "Type": "ZOverride",
+                  "Value": -4441.5,
+                  "Inputs": [
+                    {
+                      "Type": "SimplexNoise2D",
+                      "Scale": 60.0,
+                      "Octaves": 1,
+                      "Lacunarity": 2.0,
+                      "Persistence": 0.5,
+                      "Seed": "Layout"
+                    }
+                  ]
+                }
+              ]
+            },
+            "Delimiters": [
+              {
+                "Min": 0.0,
+                "Max": 0.11
+              }
+            ],
+            "Positions": {
+              "Type": "Jitter2d",
+              "Magnitude": 16.0,
+              "Seed": "Slot9",
+              "Positions": {
+                "Type": "List",
+                "Positions": [
+                  {
+                    "X": 30,
+                    "Y": 81,
+                    "Z": -90
+                  }
+                ]
+              }
+            }
+          },
+          {
+            "Type": "FieldFunction",
+            "FieldFunction": {
+              "Type": "XOverride",
+              "Value": 7919.5,
+              "Inputs": [
+                {
+                  "Type": "ZOverride",
+                  "Value": -4441.5,
+                  "Inputs": [
+                    {
+                      "Type": "SimplexNoise2D",
+                      "Scale": 60.0,
+                      "Octaves": 1,
+                      "Lacunarity": 2.0,
+                      "Persistence": 0.5,
+                      "Seed": "Layout"
+                    }
+                  ]
+                }
+              ]
+            },
+            "Delimiters": [
+              {
+                "Min": 0.11,
+                "Max": 0.24
+              }
+            ],
+            "Positions": {
+              "Type": "Jitter2d",
+              "Magnitude": 16.0,
+              "Seed": "Slot2",
+              "Positions": {
+                "Type": "List",
+                "Positions": [
+                  {
+                    "X": 185,
+                    "Y": 81,
+                    "Z": -65
+                  }
+                ]
+              }
+            }
+          },
+          {
+            "Type": "FieldFunction",
+            "FieldFunction": {
+              "Type": "XOverride",
+              "Value": 7919.5,
+              "Inputs": [
+                {
+                  "Type": "ZOverride",
+                  "Value": -4441.5,
+                  "Inputs": [
+                    {
+                      "Type": "SimplexNoise2D",
+                      "Scale": 60.0,
+                      "Octaves": 1,
+                      "Lacunarity": 2.0,
+                      "Persistence": 0.5,
+                      "Seed": "Layout"
+                    }
+                  ]
+                }
+              ]
+            },
+            "Delimiters": [
+              {
+                "Min": 0.11,
+                "Max": 0.24
+              }
+            ],
+            "Positions": {
+              "Type": "FieldFunction",
+              "FieldFunction": {
+                "Type": "SimplexNoise2D",
+                "Scale": 40.0,
+                "Octaves": 1,
+                "Lacunarity": 2.0,
+                "Persistence": 0.5,
+                "Seed": "Keep10"
+              },
+              "Delimiters": [
+                {
+                  "Min": 0.0,
+                  "Max": 1000000000.0
+                }
+              ],
+              "Positions": {
+                "Type": "Jitter2d",
+                "Magnitude": 16.0,
+                "Seed": "Slot10",
+                "Positions": {
+                  "Type": "List",
+                  "Positions": [
+                    {
+                      "X": 75,
+                      "Y": 81,
+                      "Z": 35
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          {
+            "Type": "FieldFunction",
+            "FieldFunction": {
+              "Type": "XOverride",
+              "Value": 7919.5,
+              "Inputs": [
+                {
+                  "Type": "ZOverride",
+                  "Value": -4441.5,
+                  "Inputs": [
+                    {
+                      "Type": "SimplexNoise2D",
+                      "Scale": 60.0,
+                      "Octaves": 1,
+                      "Lacunarity": 2.0,
+                      "Persistence": 0.5,
+                      "Seed": "Layout"
+                    }
+                  ]
+                }
+              ]
+            },
+            "Delimiters": [
+              {
+                "Min": 0.24,
+                "Max": 0.4
+              }
+            ],
+            "Positions": {
+              "Type": "FieldFunction",
+              "FieldFunction": {
+                "Type": "SimplexNoise2D",
+                "Scale": 40.0,
+                "Octaves": 1,
+                "Lacunarity": 2.0,
+                "Persistence": 0.5,
+                "Seed": "Keep0"
+              },
+              "Delimiters": [
+                {
+                  "Min": 0.0,
+                  "Max": 1000000000.0
+                }
+              ],
+              "Positions": {
+                "Type": "Jitter2d",
+                "Magnitude": 16.0,
+                "Seed": "Slot0",
+                "Positions": {
+                  "Type": "List",
+                  "Positions": [
+                    {
+                      "X": -35,
+                      "Y": 81,
+                      "Z": 195
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          {
+            "Type": "FieldFunction",
+            "FieldFunction": {
+              "Type": "XOverride",
+              "Value": 7919.5,
+              "Inputs": [
+                {
+                  "Type": "ZOverride",
+                  "Value": -4441.5,
+                  "Inputs": [
+                    {
+                      "Type": "SimplexNoise2D",
+                      "Scale": 60.0,
+                      "Octaves": 1,
+                      "Lacunarity": 2.0,
+                      "Persistence": 0.5,
+                      "Seed": "Layout"
+                    }
+                  ]
+                }
+              ]
+            },
+            "Delimiters": [
+              {
+                "Min": 0.24,
+                "Max": 0.4
+              }
+            ],
+            "Positions": {
+              "Type": "Jitter2d",
+              "Magnitude": 16.0,
+              "Seed": "Slot12",
+              "Positions": {
+                "Type": "List",
+                "Positions": [
+                  {
+                    "X": 200,
+                    "Y": 81,
+                    "Z": 65
+                  }
+                ]
+              }
+            }
+          },
+          {
+            "Type": "FieldFunction",
+            "FieldFunction": {
+              "Type": "XOverride",
+              "Value": 7919.5,
+              "Inputs": [
+                {
+                  "Type": "ZOverride",
+                  "Value": -4441.5,
+                  "Inputs": [
+                    {
+                      "Type": "SimplexNoise2D",
+                      "Scale": 60.0,
+                      "Octaves": 1,
+                      "Lacunarity": 2.0,
+                      "Persistence": 0.5,
+                      "Seed": "Layout"
+                    }
+                  ]
+                }
+              ]
+            },
+            "Delimiters": [
+              {
+                "Min": 0.4,
                 "Max": 1000000000.0
               }
             ],
             "Positions": {
               "Type": "Jitter2d",
               "Magnitude": 16.0,
-              "Seed": "SlotPumpkinField1",
+              "Seed": "Slot8",
               "Positions": {
                 "Type": "List",
                 "Positions": [
                   {
-                    "X": -90,
+                    "X": -65,
                     "Y": 81,
-                    "Z": 25
+                    "Z": 70
                   }
                 ]
+              }
+            }
+          },
+          {
+            "Type": "FieldFunction",
+            "FieldFunction": {
+              "Type": "XOverride",
+              "Value": 7919.5,
+              "Inputs": [
+                {
+                  "Type": "ZOverride",
+                  "Value": -4441.5,
+                  "Inputs": [
+                    {
+                      "Type": "SimplexNoise2D",
+                      "Scale": 60.0,
+                      "Octaves": 1,
+                      "Lacunarity": 2.0,
+                      "Persistence": 0.5,
+                      "Seed": "Layout"
+                    }
+                  ]
+                }
+              ]
+            },
+            "Delimiters": [
+              {
+                "Min": 0.4,
+                "Max": 1000000000.0
+              }
+            ],
+            "Positions": {
+              "Type": "FieldFunction",
+              "FieldFunction": {
+                "Type": "SimplexNoise2D",
+                "Scale": 40.0,
+                "Octaves": 1,
+                "Lacunarity": 2.0,
+                "Persistence": 0.5,
+                "Seed": "Keep11"
+              },
+              "Delimiters": [
+                {
+                  "Min": 0.0,
+                  "Max": 1000000000.0
+                }
+              ],
+              "Positions": {
+                "Type": "Jitter2d",
+                "Magnitude": 16.0,
+                "Seed": "Slot11",
+                "Positions": {
+                  "Type": "List",
+                  "Positions": [
+                    {
+                      "X": 115,
+                      "Y": 81,
+                      "Z": -175
+                    }
+                  ]
+                }
               }
             }
           }
@@ -443,47 +4869,840 @@
         "Type": "Union",
         "Positions": [
           {
-            "Type": "Jitter2d",
-            "Magnitude": 16.0,
-            "Seed": "SlotHauntedCastle0",
-            "Positions": {
-              "Type": "List",
-              "Positions": [
+            "Type": "FieldFunction",
+            "FieldFunction": {
+              "Type": "XOverride",
+              "Value": 7919.5,
+              "Inputs": [
                 {
-                  "X": -210,
-                  "Y": 81,
-                  "Z": 20
+                  "Type": "ZOverride",
+                  "Value": -4441.5,
+                  "Inputs": [
+                    {
+                      "Type": "SimplexNoise2D",
+                      "Scale": 60.0,
+                      "Octaves": 1,
+                      "Lacunarity": 2.0,
+                      "Persistence": 0.5,
+                      "Seed": "Layout"
+                    }
+                  ]
                 }
               ]
+            },
+            "Delimiters": [
+              {
+                "Min": -1000000000.0,
+                "Max": -0.4
+              }
+            ],
+            "Positions": {
+              "Type": "FieldFunction",
+              "FieldFunction": {
+                "Type": "SimplexNoise2D",
+                "Scale": 40.0,
+                "Octaves": 1,
+                "Lacunarity": 2.0,
+                "Persistence": 0.5,
+                "Seed": "Keep4"
+              },
+              "Delimiters": [
+                {
+                  "Min": 0.0,
+                  "Max": 1000000000.0
+                }
+              ],
+              "Positions": {
+                "Type": "Jitter2d",
+                "Magnitude": 16.0,
+                "Seed": "Slot4",
+                "Positions": {
+                  "Type": "List",
+                  "Positions": [
+                    {
+                      "X": -190,
+                      "Y": 81,
+                      "Z": -85
+                    }
+                  ]
+                }
+              }
             }
           },
           {
             "Type": "FieldFunction",
             "FieldFunction": {
-              "Type": "SimplexNoise2D",
-              "Scale": 40.0,
-              "Octaves": 1,
-              "Lacunarity": 2.0,
-              "Persistence": 0.5,
-              "Seed": "KeepHauntedCastle1"
+              "Type": "XOverride",
+              "Value": 7919.5,
+              "Inputs": [
+                {
+                  "Type": "ZOverride",
+                  "Value": -4441.5,
+                  "Inputs": [
+                    {
+                      "Type": "SimplexNoise2D",
+                      "Scale": 60.0,
+                      "Octaves": 1,
+                      "Lacunarity": 2.0,
+                      "Persistence": 0.5,
+                      "Seed": "Layout"
+                    }
+                  ]
+                }
+              ]
+            },
+            "Delimiters": [
+              {
+                "Min": -1000000000.0,
+                "Max": -0.4
+              }
+            ],
+            "Positions": {
+              "Type": "Jitter2d",
+              "Magnitude": 16.0,
+              "Seed": "Slot10",
+              "Positions": {
+                "Type": "List",
+                "Positions": [
+                  {
+                    "X": 75,
+                    "Y": 81,
+                    "Z": 35
+                  }
+                ]
+              }
+            }
+          },
+          {
+            "Type": "FieldFunction",
+            "FieldFunction": {
+              "Type": "XOverride",
+              "Value": 7919.5,
+              "Inputs": [
+                {
+                  "Type": "ZOverride",
+                  "Value": -4441.5,
+                  "Inputs": [
+                    {
+                      "Type": "SimplexNoise2D",
+                      "Scale": 60.0,
+                      "Octaves": 1,
+                      "Lacunarity": 2.0,
+                      "Persistence": 0.5,
+                      "Seed": "Layout"
+                    }
+                  ]
+                }
+              ]
+            },
+            "Delimiters": [
+              {
+                "Min": -0.4,
+                "Max": -0.24
+              }
+            ],
+            "Positions": {
+              "Type": "FieldFunction",
+              "FieldFunction": {
+                "Type": "SimplexNoise2D",
+                "Scale": 40.0,
+                "Octaves": 1,
+                "Lacunarity": 2.0,
+                "Persistence": 0.5,
+                "Seed": "Keep8"
+              },
+              "Delimiters": [
+                {
+                  "Min": 0.0,
+                  "Max": 1000000000.0
+                }
+              ],
+              "Positions": {
+                "Type": "Jitter2d",
+                "Magnitude": 16.0,
+                "Seed": "Slot8",
+                "Positions": {
+                  "Type": "List",
+                  "Positions": [
+                    {
+                      "X": -65,
+                      "Y": 81,
+                      "Z": 70
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          {
+            "Type": "FieldFunction",
+            "FieldFunction": {
+              "Type": "XOverride",
+              "Value": 7919.5,
+              "Inputs": [
+                {
+                  "Type": "ZOverride",
+                  "Value": -4441.5,
+                  "Inputs": [
+                    {
+                      "Type": "SimplexNoise2D",
+                      "Scale": 60.0,
+                      "Octaves": 1,
+                      "Lacunarity": 2.0,
+                      "Persistence": 0.5,
+                      "Seed": "Layout"
+                    }
+                  ]
+                }
+              ]
+            },
+            "Delimiters": [
+              {
+                "Min": -0.4,
+                "Max": -0.24
+              }
+            ],
+            "Positions": {
+              "Type": "Jitter2d",
+              "Magnitude": 16.0,
+              "Seed": "Slot11",
+              "Positions": {
+                "Type": "List",
+                "Positions": [
+                  {
+                    "X": 115,
+                    "Y": 81,
+                    "Z": -175
+                  }
+                ]
+              }
+            }
+          },
+          {
+            "Type": "FieldFunction",
+            "FieldFunction": {
+              "Type": "XOverride",
+              "Value": 7919.5,
+              "Inputs": [
+                {
+                  "Type": "ZOverride",
+                  "Value": -4441.5,
+                  "Inputs": [
+                    {
+                      "Type": "SimplexNoise2D",
+                      "Scale": 60.0,
+                      "Octaves": 1,
+                      "Lacunarity": 2.0,
+                      "Persistence": 0.5,
+                      "Seed": "Layout"
+                    }
+                  ]
+                }
+              ]
+            },
+            "Delimiters": [
+              {
+                "Min": -0.24,
+                "Max": -0.11
+              }
+            ],
+            "Positions": {
+              "Type": "FieldFunction",
+              "FieldFunction": {
+                "Type": "SimplexNoise2D",
+                "Scale": 40.0,
+                "Octaves": 1,
+                "Lacunarity": 2.0,
+                "Persistence": 0.5,
+                "Seed": "Keep4"
+              },
+              "Delimiters": [
+                {
+                  "Min": 0.0,
+                  "Max": 1000000000.0
+                }
+              ],
+              "Positions": {
+                "Type": "Jitter2d",
+                "Magnitude": 16.0,
+                "Seed": "Slot4",
+                "Positions": {
+                  "Type": "List",
+                  "Positions": [
+                    {
+                      "X": -190,
+                      "Y": 81,
+                      "Z": -85
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          {
+            "Type": "FieldFunction",
+            "FieldFunction": {
+              "Type": "XOverride",
+              "Value": 7919.5,
+              "Inputs": [
+                {
+                  "Type": "ZOverride",
+                  "Value": -4441.5,
+                  "Inputs": [
+                    {
+                      "Type": "SimplexNoise2D",
+                      "Scale": 60.0,
+                      "Octaves": 1,
+                      "Lacunarity": 2.0,
+                      "Persistence": 0.5,
+                      "Seed": "Layout"
+                    }
+                  ]
+                }
+              ]
+            },
+            "Delimiters": [
+              {
+                "Min": -0.24,
+                "Max": -0.11
+              }
+            ],
+            "Positions": {
+              "Type": "Jitter2d",
+              "Magnitude": 16.0,
+              "Seed": "Slot11",
+              "Positions": {
+                "Type": "List",
+                "Positions": [
+                  {
+                    "X": 115,
+                    "Y": 81,
+                    "Z": -175
+                  }
+                ]
+              }
+            }
+          },
+          {
+            "Type": "FieldFunction",
+            "FieldFunction": {
+              "Type": "XOverride",
+              "Value": 7919.5,
+              "Inputs": [
+                {
+                  "Type": "ZOverride",
+                  "Value": -4441.5,
+                  "Inputs": [
+                    {
+                      "Type": "SimplexNoise2D",
+                      "Scale": 60.0,
+                      "Octaves": 1,
+                      "Lacunarity": 2.0,
+                      "Persistence": 0.5,
+                      "Seed": "Layout"
+                    }
+                  ]
+                }
+              ]
+            },
+            "Delimiters": [
+              {
+                "Min": -0.11,
+                "Max": 0.0
+              }
+            ],
+            "Positions": {
+              "Type": "Jitter2d",
+              "Magnitude": 16.0,
+              "Seed": "Slot3",
+              "Positions": {
+                "Type": "List",
+                "Positions": [
+                  {
+                    "X": -205,
+                    "Y": 81,
+                    "Z": 30
+                  }
+                ]
+              }
+            }
+          },
+          {
+            "Type": "FieldFunction",
+            "FieldFunction": {
+              "Type": "XOverride",
+              "Value": 7919.5,
+              "Inputs": [
+                {
+                  "Type": "ZOverride",
+                  "Value": -4441.5,
+                  "Inputs": [
+                    {
+                      "Type": "SimplexNoise2D",
+                      "Scale": 60.0,
+                      "Octaves": 1,
+                      "Lacunarity": 2.0,
+                      "Persistence": 0.5,
+                      "Seed": "Layout"
+                    }
+                  ]
+                }
+              ]
+            },
+            "Delimiters": [
+              {
+                "Min": -0.11,
+                "Max": 0.0
+              }
+            ],
+            "Positions": {
+              "Type": "FieldFunction",
+              "FieldFunction": {
+                "Type": "SimplexNoise2D",
+                "Scale": 40.0,
+                "Octaves": 1,
+                "Lacunarity": 2.0,
+                "Persistence": 0.5,
+                "Seed": "Keep7"
+              },
+              "Delimiters": [
+                {
+                  "Min": 0.0,
+                  "Max": 1000000000.0
+                }
+              ],
+              "Positions": {
+                "Type": "Jitter2d",
+                "Magnitude": 16.0,
+                "Seed": "Slot7",
+                "Positions": {
+                  "Type": "List",
+                  "Positions": [
+                    {
+                      "X": -80,
+                      "Y": 81,
+                      "Z": -55
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          {
+            "Type": "FieldFunction",
+            "FieldFunction": {
+              "Type": "XOverride",
+              "Value": 7919.5,
+              "Inputs": [
+                {
+                  "Type": "ZOverride",
+                  "Value": -4441.5,
+                  "Inputs": [
+                    {
+                      "Type": "SimplexNoise2D",
+                      "Scale": 60.0,
+                      "Octaves": 1,
+                      "Lacunarity": 2.0,
+                      "Persistence": 0.5,
+                      "Seed": "Layout"
+                    }
+                  ]
+                }
+              ]
             },
             "Delimiters": [
               {
                 "Min": 0.0,
+                "Max": 0.11
+              }
+            ],
+            "Positions": {
+              "Type": "FieldFunction",
+              "FieldFunction": {
+                "Type": "SimplexNoise2D",
+                "Scale": 40.0,
+                "Octaves": 1,
+                "Lacunarity": 2.0,
+                "Persistence": 0.5,
+                "Seed": "Keep2"
+              },
+              "Delimiters": [
+                {
+                  "Min": 0.0,
+                  "Max": 1000000000.0
+                }
+              ],
+              "Positions": {
+                "Type": "Jitter2d",
+                "Magnitude": 16.0,
+                "Seed": "Slot2",
+                "Positions": {
+                  "Type": "List",
+                  "Positions": [
+                    {
+                      "X": 185,
+                      "Y": 81,
+                      "Z": -65
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          {
+            "Type": "FieldFunction",
+            "FieldFunction": {
+              "Type": "XOverride",
+              "Value": 7919.5,
+              "Inputs": [
+                {
+                  "Type": "ZOverride",
+                  "Value": -4441.5,
+                  "Inputs": [
+                    {
+                      "Type": "SimplexNoise2D",
+                      "Scale": 60.0,
+                      "Octaves": 1,
+                      "Lacunarity": 2.0,
+                      "Persistence": 0.5,
+                      "Seed": "Layout"
+                    }
+                  ]
+                }
+              ]
+            },
+            "Delimiters": [
+              {
+                "Min": 0.0,
+                "Max": 0.11
+              }
+            ],
+            "Positions": {
+              "Type": "Jitter2d",
+              "Magnitude": 16.0,
+              "Seed": "Slot3",
+              "Positions": {
+                "Type": "List",
+                "Positions": [
+                  {
+                    "X": -205,
+                    "Y": 81,
+                    "Z": 30
+                  }
+                ]
+              }
+            }
+          },
+          {
+            "Type": "FieldFunction",
+            "FieldFunction": {
+              "Type": "XOverride",
+              "Value": 7919.5,
+              "Inputs": [
+                {
+                  "Type": "ZOverride",
+                  "Value": -4441.5,
+                  "Inputs": [
+                    {
+                      "Type": "SimplexNoise2D",
+                      "Scale": 60.0,
+                      "Octaves": 1,
+                      "Lacunarity": 2.0,
+                      "Persistence": 0.5,
+                      "Seed": "Layout"
+                    }
+                  ]
+                }
+              ]
+            },
+            "Delimiters": [
+              {
+                "Min": 0.11,
+                "Max": 0.24
+              }
+            ],
+            "Positions": {
+              "Type": "Jitter2d",
+              "Magnitude": 16.0,
+              "Seed": "Slot6",
+              "Positions": {
+                "Type": "List",
+                "Positions": [
+                  {
+                    "X": -115,
+                    "Y": 81,
+                    "Z": -175
+                  }
+                ]
+              }
+            }
+          },
+          {
+            "Type": "FieldFunction",
+            "FieldFunction": {
+              "Type": "XOverride",
+              "Value": 7919.5,
+              "Inputs": [
+                {
+                  "Type": "ZOverride",
+                  "Value": -4441.5,
+                  "Inputs": [
+                    {
+                      "Type": "SimplexNoise2D",
+                      "Scale": 60.0,
+                      "Octaves": 1,
+                      "Lacunarity": 2.0,
+                      "Persistence": 0.5,
+                      "Seed": "Layout"
+                    }
+                  ]
+                }
+              ]
+            },
+            "Delimiters": [
+              {
+                "Min": 0.11,
+                "Max": 0.24
+              }
+            ],
+            "Positions": {
+              "Type": "FieldFunction",
+              "FieldFunction": {
+                "Type": "SimplexNoise2D",
+                "Scale": 40.0,
+                "Octaves": 1,
+                "Lacunarity": 2.0,
+                "Persistence": 0.5,
+                "Seed": "Keep11"
+              },
+              "Delimiters": [
+                {
+                  "Min": 0.0,
+                  "Max": 1000000000.0
+                }
+              ],
+              "Positions": {
+                "Type": "Jitter2d",
+                "Magnitude": 16.0,
+                "Seed": "Slot11",
+                "Positions": {
+                  "Type": "List",
+                  "Positions": [
+                    {
+                      "X": 115,
+                      "Y": 81,
+                      "Z": -175
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          {
+            "Type": "FieldFunction",
+            "FieldFunction": {
+              "Type": "XOverride",
+              "Value": 7919.5,
+              "Inputs": [
+                {
+                  "Type": "ZOverride",
+                  "Value": -4441.5,
+                  "Inputs": [
+                    {
+                      "Type": "SimplexNoise2D",
+                      "Scale": 60.0,
+                      "Octaves": 1,
+                      "Lacunarity": 2.0,
+                      "Persistence": 0.5,
+                      "Seed": "Layout"
+                    }
+                  ]
+                }
+              ]
+            },
+            "Delimiters": [
+              {
+                "Min": 0.24,
+                "Max": 0.4
+              }
+            ],
+            "Positions": {
+              "Type": "FieldFunction",
+              "FieldFunction": {
+                "Type": "SimplexNoise2D",
+                "Scale": 40.0,
+                "Octaves": 1,
+                "Lacunarity": 2.0,
+                "Persistence": 0.5,
+                "Seed": "Keep2"
+              },
+              "Delimiters": [
+                {
+                  "Min": 0.0,
+                  "Max": 1000000000.0
+                }
+              ],
+              "Positions": {
+                "Type": "Jitter2d",
+                "Magnitude": 16.0,
+                "Seed": "Slot2",
+                "Positions": {
+                  "Type": "List",
+                  "Positions": [
+                    {
+                      "X": 185,
+                      "Y": 81,
+                      "Z": -65
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          {
+            "Type": "FieldFunction",
+            "FieldFunction": {
+              "Type": "XOverride",
+              "Value": 7919.5,
+              "Inputs": [
+                {
+                  "Type": "ZOverride",
+                  "Value": -4441.5,
+                  "Inputs": [
+                    {
+                      "Type": "SimplexNoise2D",
+                      "Scale": 60.0,
+                      "Octaves": 1,
+                      "Lacunarity": 2.0,
+                      "Persistence": 0.5,
+                      "Seed": "Layout"
+                    }
+                  ]
+                }
+              ]
+            },
+            "Delimiters": [
+              {
+                "Min": 0.24,
+                "Max": 0.4
+              }
+            ],
+            "Positions": {
+              "Type": "Jitter2d",
+              "Magnitude": 16.0,
+              "Seed": "Slot9",
+              "Positions": {
+                "Type": "List",
+                "Positions": [
+                  {
+                    "X": 30,
+                    "Y": 81,
+                    "Z": -90
+                  }
+                ]
+              }
+            }
+          },
+          {
+            "Type": "FieldFunction",
+            "FieldFunction": {
+              "Type": "XOverride",
+              "Value": 7919.5,
+              "Inputs": [
+                {
+                  "Type": "ZOverride",
+                  "Value": -4441.5,
+                  "Inputs": [
+                    {
+                      "Type": "SimplexNoise2D",
+                      "Scale": 60.0,
+                      "Octaves": 1,
+                      "Lacunarity": 2.0,
+                      "Persistence": 0.5,
+                      "Seed": "Layout"
+                    }
+                  ]
+                }
+              ]
+            },
+            "Delimiters": [
+              {
+                "Min": 0.4,
+                "Max": 1000000000.0
+              }
+            ],
+            "Positions": {
+              "Type": "FieldFunction",
+              "FieldFunction": {
+                "Type": "SimplexNoise2D",
+                "Scale": 40.0,
+                "Octaves": 1,
+                "Lacunarity": 2.0,
+                "Persistence": 0.5,
+                "Seed": "Keep7"
+              },
+              "Delimiters": [
+                {
+                  "Min": 0.0,
+                  "Max": 1000000000.0
+                }
+              ],
+              "Positions": {
+                "Type": "Jitter2d",
+                "Magnitude": 16.0,
+                "Seed": "Slot7",
+                "Positions": {
+                  "Type": "List",
+                  "Positions": [
+                    {
+                      "X": -80,
+                      "Y": 81,
+                      "Z": -55
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          {
+            "Type": "FieldFunction",
+            "FieldFunction": {
+              "Type": "XOverride",
+              "Value": 7919.5,
+              "Inputs": [
+                {
+                  "Type": "ZOverride",
+                  "Value": -4441.5,
+                  "Inputs": [
+                    {
+                      "Type": "SimplexNoise2D",
+                      "Scale": 60.0,
+                      "Octaves": 1,
+                      "Lacunarity": 2.0,
+                      "Persistence": 0.5,
+                      "Seed": "Layout"
+                    }
+                  ]
+                }
+              ]
+            },
+            "Delimiters": [
+              {
+                "Min": 0.4,
                 "Max": 1000000000.0
               }
             ],
             "Positions": {
               "Type": "Jitter2d",
               "Magnitude": 16.0,
-              "Seed": "SlotHauntedCastle1",
+              "Seed": "Slot12",
               "Positions": {
                 "Type": "List",
                 "Positions": [
                   {
-                    "X": -25,
+                    "X": 200,
                     "Y": 81,
-                    "Z": 205
+                    "Z": 65
                   }
                 ]
               }

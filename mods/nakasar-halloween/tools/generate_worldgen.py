@@ -17,9 +17,9 @@ Principe :
   manoir du comte, pour que les prefabs reposent à plat.
 - Matériaux : herbe brûlée en surface, avec des plaques de cendre, de terre brûlée et de gravier
   moussu (bruit), puis terre, gravier et pierre (et un peu d'ardoise et de schiste).
-- Structures : le domaine du Comte. Chaque type a des emplacements fixes, décalés de quelques
-  blocs selon la graine du monde (Jitter2d) ; le premier est toujours occupé, le second une fois
-  sur deux (bruit lu à l'emplacement). D'où 0 ou 1 village, 1 ou 2 fermes, postes de garde,
+- Structures : le domaine du Comte. Treize emplacements, décalés de quelques blocs selon la graine
+  du monde (Jitter2d) ; le type de chacun dépend de la répartition choisie par la graine. Le premier
+  exemplaire de chaque type est toujours là, le second une fois sur deux (bruit lu à l'emplacement). D'où 0 ou 1 village, 1 ou 2 fermes, postes de garde,
   cimetières, cryptes, champs de citrouilles et châteaux hantés, et toujours un seul manoir.
 - Props, par étapes : 0 = grandes structures, 1 = forêts (taches denses de sapins et frênes morts)
   et arbres isolés, petits décors (affleurements, troncs couchés...), 2 = végétation.
@@ -50,27 +50,59 @@ ISLAND_RADIUS = 340.0
 EDGE_START = 296.0
 # Décalage maximal d'un emplacement de structure selon la graine du monde.
 STRUCTURE_JITTER = 16.0
-# Types de structures : (nom, [(dossier de prefabs, poids)], tourner ?, [(x, z, part des mondes où
-# l'emplacement est occupé)]). Emplacements choisis pour laisser au moins 30 blocs entre deux
-# structures dans le pire des décalages, et deux structures du même type loin l'une de l'autre.
-# Le poste de garde n'est jamais tourné : ses cellules restent du côté que le Capitaine connaît.
+# Types de structures : (nom, [(dossier de prefabs, poids)], tourner ?, [part des mondes où chaque
+# exemplaire existe]) : le premier exemplaire est toujours là, le second une fois sur deux, le
+# village 60 % du temps. Le poste de garde n'est jamais tourné : ses cellules restent du côté que le
+# Capitaine connaît.
 STRUCTURE_TYPES = [
-    ("Village", [("Villages/Zombies", 1.0), ("Villages/Ruins", 1.0), ("Villages/Spiders", 1.0)], True,
-     [(115, 170, 0.6)]),
-    ("Farm", [("Farms/Zombies", 1.0), ("Farms/Ruins", 1.0), ("Farms/Burnt", 1.0)], True,
-     [(-145, 135, 1.0), (105, -150, 0.5)]),
+    ("Village", [("Villages/Zombies", 1.0), ("Villages/Ruins", 1.0), ("Villages/Spiders", 1.0)], True, [0.6]),
+    ("Farm", [("Farms/Zombies", 1.0), ("Farms/Ruins", 1.0), ("Farms/Burnt", 1.0)], True, [1.0, 0.5]),
     ("GuardPost", [("GuardPosts/Ruins", 1.0), ("GuardPosts/Spiders", 1.0), ("GuardPosts/Rebels", 1.0),
-                   ("GuardPosts/Garrison", 1.2)], False,
-     [(-115, -180, 1.0), (205, -60, 0.5)]),
-    ("Cemetery", [("Cemeteries/Haunted", 1.0), ("Cemeteries/Spiders", 1.0), ("Cemeteries/Undead", 1.0)], True,
-     [(-10, -95, 1.0), (5, 95, 0.5)]),
-    ("Crypt", [("Crypts", 1.0)], True,
-     [(-190, -90, 1.0), (200, 55, 0.5)]),
-    ("PumpkinField", [("PumpkinFields", 1.0)], True,
-     [(95, -10, 1.0), (-90, 25, 0.5)]),
-    ("HauntedCastle", [("HauntedCastles", 1.0)], True,
-     [(-210, 20, 1.0), (-25, 205, 0.5)]),
+                   ("GuardPosts/Garrison", 1.2)], False, [1.0, 0.5]),
+    ("Cemetery", [("Cemeteries/Haunted", 1.0), ("Cemeteries/Spiders", 1.0), ("Cemeteries/Undead", 1.0)], True, [1.0, 0.5]),
+    ("Crypt", [("Crypts", 1.0)], True, [1.0, 0.5]),
+    ("PumpkinField", [("PumpkinFields", 1.0)], True, [1.0, 0.5]),
+    ("HauntedCastle", [("HauntedCastles", 1.0)], True, [1.0, 0.5]),
 ]
+# Emplacements (x, z, grand ?) : 13, un par exemplaire. Les grands peuvent recevoir le village
+# (69 × 69) ; entre deux structures, au moins 17 blocs dans le pire des décalages.
+SLOTS = [
+    (-35, 195, True), (115, 165, True), (185, -65, True),
+    (-205, 30, False), (-190, -85, False), (-155, 145, False), (-115, -175, False), (-80, -55, False),
+    (-65, 70, False), (30, -90, False), (75, 35, False), (115, -175, False), (200, 65, False),
+]
+# Le type de chaque emplacement change d'un monde à l'autre : LAYOUTS répartitions (tirées ici une
+# fois pour toutes), le monde en choisit une selon un bruit lu en un point fixe (valeur qui ne dépend
+# que de la graine). Seuils à peu près équiprobables pour un bruit simplex centré.
+LAYOUTS = 8
+LAYOUT_BANDS = [-1.0e9, -0.4, -0.24, -0.11, 0.0, 0.11, 0.24, 0.4, 1.0e9]
+
+
+def layouts():
+    """Pour chaque répartition, la liste (type, part des mondes) par emplacement. Le village va sur
+    un grand emplacement ; deux structures du même type restent à plus de 140 blocs l'une de l'autre."""
+    import random
+    rng = random.Random(1031)
+    roles = [(name, keep) for name, _, _, keeps in STRUCTURE_TYPES for keep in keeps]
+    out = []
+    while len(out) < LAYOUTS:
+        order = roles[:]
+        rng.shuffle(order)
+        if order[0][0] != "Village":
+            continue
+        big = [i for i, s in enumerate(SLOTS) if s[2]]
+        small = [i for i, s in enumerate(SLOTS) if not s[2]]
+        rng.shuffle(big)
+        rng.shuffle(small)
+        idx = big[:1] + big[1:] + small
+        layout = [None] * len(SLOTS)
+        for slot, role in zip(idx, order):
+            layout[slot] = role
+        far = all(((SLOTS[i][0] - SLOTS[j][0]) ** 2 + (SLOTS[i][1] - SLOTS[j][1]) ** 2) ** 0.5 > 140
+                  for i in range(len(SLOTS)) for j in range(i + 1, len(SLOTS)) if layout[i][0] == layout[j][0])
+        if far and layout not in out:
+            out.append(layout)
+    return out
 # Sol aplani autour du manoir : plat jusqu'à MANOR_FLAT blocs du centre, collines au-delà de MANOR_HILLS.
 MANOR_FLAT, MANOR_HILLS = 38.0, 58.0
 
@@ -274,26 +306,40 @@ def type_export(name):
     return f"Nakasar_Halloween_{name}_Positions"
 
 
-def slot_positions(name, slots):
-    """Emplacements d'un type de structure, décalés selon la graine du monde ; un emplacement
-    facultatif n'est gardé que là où un bruit propre à lui dépasse un seuil (part `keep` des mondes,
+def layout_value():
+    """Bruit lu au même point (x et z forcés) partout : une valeur par graine de monde."""
+    return {"Type": "XOverride", "Value": 7919.5, "Inputs": [
+        {"Type": "ZOverride", "Value": -4441.5, "Inputs": [simplex2d(60.0, 1, "Layout")]}]}
+
+
+def slot_positions(name):
+    """Positions d'un type de structure : dans chaque répartition, ses emplacements, décalés selon la
+    graine du monde, gardés seulement si la répartition est celle du monde ; un exemplaire facultatif
+    n'est gardé que là où un bruit propre à l'emplacement dépasse un seuil (part `keep` des mondes,
     à peu près : le bruit simplex est symétrique autour de 0)."""
     out = []
-    for i, (x, z, keep) in enumerate(slots):
-        pos = {"Type": "Jitter2d", "Magnitude": STRUCTURE_JITTER, "Seed": f"Slot{name}{i}",
-               "Positions": list_positions((x, GROUND_Y, z))}
-        if keep < 1.0:
-            pos = within(simplex2d(40.0, 1, f"Keep{name}{i}"), 1.0 - 2.0 * keep, 1.0e9, pos)
-        out.append(pos)
-    return {"Type": "Union", "Positions": out} if len(out) > 1 else out[0]
+    for k, layout in enumerate(LAYOUTS_TABLE):
+        for i, (role, keep) in enumerate(layout):
+            if role != name:
+                continue
+            x, z, _ = SLOTS[i]
+            pos = {"Type": "Jitter2d", "Magnitude": STRUCTURE_JITTER, "Seed": f"Slot{i}",
+                   "Positions": list_positions((x, GROUND_Y, z))}
+            if keep < 1.0:
+                pos = within(simplex2d(40.0, 1, f"Keep{i}"), 1.0 - 2.0 * keep, 1.0e9, pos)
+            out.append(within(layout_value(), LAYOUT_BANDS[k], LAYOUT_BANDS[k + 1], pos))
+    return {"Type": "Union", "Positions": out}
+
+
+LAYOUTS_TABLE = layouts()
 
 
 def exports():
     """Nœuds flottants qui déclarent les positions exportées avant tout import : une par type de
     structure, leur union, et les repères (point d'apparition, manoir)."""
     nodes = []
-    for name, _, _, slots in STRUCTURE_TYPES:
-        positions = slot_positions(name, slots)
+    for name, *_ in STRUCTURE_TYPES:
+        positions = slot_positions(name)
         positions["ExportAs"] = VILLAGE_EXPORT if name == "Village" else type_export(name)
         nodes.append(distance_to(positions, 1.0, curve((0, 0), (1, 1))))
     union = {"Type": "Union", "Positions": [

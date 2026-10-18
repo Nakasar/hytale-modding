@@ -138,12 +138,15 @@ Fragment d'Orbis ouvert depuis l'Ancienne passerelle vanilla (`Portal_Device`) a
   déclarés avant tout import) et réutilisées par le terrain : le relief tombe à zéro dans un rayon de
   34 blocs (plein relief à 52) autour de chaque structure, 50 (70) autour du village, 24 (40) autour de
   la crypte d'arrivée ; autour du manoir, plat jusqu'à 38 blocs (plein relief à 58).
-- **Structures (domaine du Comte)** : emplacements fixes par type (`STRUCTURE_TYPES`), décalés
-  d'au plus 16 blocs selon la graine du monde (`Jitter2d`). Le premier emplacement de chaque type est
-  toujours occupé, le second une fois sur deux (bruit simplex propre à l'emplacement, lu à sa
-  position) : 0 ou 1 village (60 %), 1 ou 2 fermes, postes de garde, cimetières, cryptes, champs de
-  citrouilles et châteaux hantés, toujours un seul manoir. Au moins 30 blocs entre deux structures
-  dans le pire décalage, deux structures du même type loin l'une de l'autre. La variante (village
+- **Structures (domaine du Comte)** : treize emplacements fixes (`SLOTS`, trois grands pour le
+  village), décalés d'au plus 16 blocs selon la graine du monde (`Jitter2d`). Le type de chaque
+  emplacement change d'un monde à l'autre : huit répartitions sont tirées une fois par le script
+  (`layouts()`, le village toujours sur un grand emplacement, deux structures du même type à plus
+  de 140 blocs), et le monde en choisit une selon un bruit lu en un point fixe (`XOverride` /
+  `ZOverride`, donc une valeur par graine). Le premier exemplaire de chaque type est toujours là, le
+  second une fois sur deux (bruit propre à l'emplacement) : 0 ou 1 village (60 %), 1 ou 2 fermes,
+  postes de garde, cimetières, cryptes, champs de citrouilles et châteaux hantés, toujours un seul
+  manoir. Au moins 17 blocs entre deux structures dans le pire décalage. La variante (village
   zombies / ruines / araignées, etc.) est tirée au hasard ; le poste de garde n'est jamais tourné.
 - **Manoir du comte** : toujours à 220 blocs au nord du point d'apparition (objectif du portail).
 - **Arrivée** : `PortalTypes/Nakasar_Halloween` fixe le point d'apparition (`Spawn.SpawnProviderOverride`,
