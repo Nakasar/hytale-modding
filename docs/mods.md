@@ -153,7 +153,8 @@ Fragment d'Orbis ouvert depuis l'Ancienne passerelle vanilla (`Portal_Device`) a
   de 140 blocs), et le monde en choisit une selon un bruit lu en un point fixe (`XOverride` /
   `ZOverride`, donc une valeur par graine). Le premier exemplaire de chaque type est toujours là, le
   second une fois sur deux (bruit propre à l'emplacement) : 0 ou 1 village (60 %), 0 ou 1 camp de
-  chasseurs de vampires (50 %), 1 ou 2 fermes,
+  chasseurs de vampires (50 %, toujours sur le 14e emplacement, en 20 / 110 : il ne fait que
+  25 × 25 et c'est le seul type qui y tient sans chevaucher ses voisins), 1 ou 2 fermes,
   postes de garde, cimetières, cryptes, champs de citrouilles et châteaux hantés, toujours un seul
   manoir. Au moins 9 blocs entre deux structures dans le pire décalage. La variante (village
   zombies / ruines / araignées, etc.) et l'orientation sont tirées au hasard.
@@ -194,7 +195,7 @@ Fragment d'Orbis ouvert depuis l'Ancienne passerelle vanilla (`Portal_Device`) a
 | `SpawnCrypt` | 1 | Crypte d'arrivée 11×11 fermée autour du portail de retour : porte au nord vers le manoir, rosace et vitraux, cercueils, gargouilles aux angles |
 | `Cemeteries/{Haunted,Spiders,Undead}` | 2 × 3 | Cimetière clos (~31×33) : chapelle à clocher (bancs, autel, lustre), caveaux, portail à lanterne, muret à grille et piliers, allées pavées, tombes variées (stèles, croix, obélisques, sarcophages, tombes ouvertes), arbres morts ; hanté (bougies, champignons luisants), araignées (toiles, cocons) ou morts-vivants (fosses à cercueil, ossements) |
 | `PumpkinFields/{Plain,Giant}` | 3 + 2 | Champ de citrouilles mûres (états de culture) clôturé de bois mort : allée à lanternes, épouvantails, charrette de récolte, meules de foin, cabane, arbre de pendu. Variante `Giant` (une fois sur deux) : clairière de terre pourrie de rayon 7 au centre (portée des attaques en cercle), bordée de ronces, de citrouilles entières et de citrouilles sculptées, avec le bloc d'apparition de la citrouille géante (élite immobile) |
-| `HunterCamps/{Tents,Lodge}` | 2 | Camp de chasseurs de vampires 25×25 clos d'une palissade de troncs, porte au sud : feu de camp et tabourets, trois tentes de cuir (ou un pavillon de rondins et une tente) au nord, atelier d'armes et armurerie à l'ouest, pas de tir (cibles, mannequins) à l'est, réserve ; six blocs d'apparition de chasseurs à moins de 9 blocs du centre |
+| `HunterCamps/{Tents,Lodge}` | 2 | Camp de chasseurs de vampires 25×25 clos d'une palissade de troncs, portail de bois au sud (les chasseurs ne sortent pas) : feu de camp et tabourets, trois tentes de cuir (ou un pavillon de rondins et une tente) au nord, atelier d'armes et armurerie à l'ouest, pas de tir (cibles, mannequins) à l'est, réserve ; six blocs d'apparition de chasseurs à moins de 9 blocs du centre |
 | `Trees` | 16 | Arbres morts en frêne, bois pétrifié ou calciné : squelette en troncs pleins comme les arbres du jeu (fût droit, pied 2×2 des grands, contreforts et racines, branches qui montent en escalier et se divisent), tubes fins au bout des rameaux, feuilles mortes de l'essence posées sur les branches, toiles et buissons pendants ; aucun bloc ne flotte (vérifié à la génération) ; 4 portent une lanterne, une cage ou une corde |
 | `Decor/*` | 6 × 3 + 5 | Affleurements rocheux (parfois des cristaux), troncs couchés, cercles de champignons luisants, autels, tas d'os, tombes isolées, nids d'araignées |
 
@@ -221,7 +222,8 @@ cuisine, chambres, atelier ; camp de chasseurs (vivres, flèches, potions, argen
 
 Blocs des mobs posés dans les prefabs : spawners `Nakasar_Spawner_Zombie_Villager`,
 `_Zombie_Farmer`, `_Zombie_Abomination` (élite, un par ferme zombie), `_Zombie_Rebel`,
-`_Skeleton_Guard`, `_Guard_Captain` (élite, un par garnison), `_Spider`, et `Nakasar_Prison_Cell`
+`_Skeleton_Guard`, `_Guard_Captain` (élite, un par garnison), `_Spider`, `_Giant_Pumpkin` (élite, au centre
+des champs `Giant`), `_Vampire_Hunter` (six par camp de chasseurs), et `Nakasar_Prison_Cell`
 (invisible) au sol de chaque cellule du poste de garde (trois à l'est, une à l'ouest : toujours une à moins de 24 blocs du Capitaine), dans toutes les variantes : le Capitaine y
 téléporte sa cible (cellule la plus proche à moins de 24 blocs).
 

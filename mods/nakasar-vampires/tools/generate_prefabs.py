@@ -1968,6 +1968,9 @@ def roof(p, x0, z0, x1, z1, y, mat="Wood_Deadwood", ridge="x", gable=None, overh
     3 vers l'ouest (lu dans les maisons vanilla). `slope` remplace le bloc de pente (toile de tente) :
     largeur paire alors, il n'y a pas de « Topper » pour toutes les toiles. Renvoie la hauteur du faîte.
     """
+    if slope:
+        span = (x1 - x0) if ridge == "z" else (z1 - z0)
+        assert span % 2 == 1, f"{slope} : largeur paire obligatoire, pas de faîtage pour cette toile"
     slope, topper = slope or f"{mat}_Roof", f"*{mat}_Roof_State_Definitions_Topper"
     if ridge == "x":
         lo, hi, a0, a1, low_rot, high_rot, top_rot = z0, z1, x0, x1, NORTH, SOUTH, 0
@@ -2765,7 +2768,7 @@ def hunter_camp(seed, variant):
     h = CAMP_HALF
     p.clear(-h - 1, 0, -h - 1, h + 1, 7, h + 1)
     p.floor(-h - 1, -h - 1, h + 1, h + 1, -1, CAMP_GROUND, foundation="Soil_Dirt", depth=3)
-    # palissade de troncs, pointes alternées, porte au sud gardée par deux lanternes
+    # palissade de troncs, pointes alternées, portail au sud gardé par deux lanternes
     for x in range(-h, h + 1):
         for z in range(-h, h + 1):
             if max(abs(x), abs(z)) != h or (z == h and abs(x) <= 1):
@@ -2774,6 +2777,9 @@ def hunter_camp(seed, variant):
     for gx in (-2, 2):
         p.fill(gx, 0, h, gx, 3, h, PALISADE)
         p.set(gx, 4, h, "Deco_Lantern")
+    # portail fermé : les PNJ n'ouvrent pas les portillons, les chasseurs restent dans l'enceinte
+    for gx in (-1, 0, 1):
+        p.set(gx, 0, h, "Wood_Softwood_Fence_Gate")
     for z in range(2, h + 2):
         for x in (-1, 0, 1):
             p.set(x, -1, z, p.pick(PATH))

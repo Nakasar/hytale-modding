@@ -372,7 +372,8 @@ public class ValidateAssets {
             java.util.Set<String> unknown = new java.util.TreeSet<>();
             while (matcher.find()) {
                 String id = matcher.group(1);
-                if (!known.contains(id) && !(id.startsWith("Nakasar_") && ours.contains(id))) {
+                String base = id.startsWith("*") ? id.substring(1).split("_State_Definitions_")[0] : id;
+                if (!known.contains(id) && !ours.contains(base)) {
                     unknown.add(id);
                 }
             }
