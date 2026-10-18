@@ -10,7 +10,7 @@ Un fragment d'Orbis plongé dans une nuit presque sans fin : le domaine du Comte
 
 | Accès | Comment |
 |---|---|
-| **Clé de portail** | Placez un [Fragment du Comté Vampire](../objets/cle-du-comte.md) dans une **Ancienne passerelle** (portail vanilla). |
+| **Clé de portail** | Placez un [Fragment du Comté Vampire](../objets/cle-du-comte.md) dans une **Ancienne passerelle** (portail vanilla). La clé se fabrique à l'[établi des chasseurs](../objets/etabli-des-chasseurs.md) de niveau 2. |
 | **Brèche des chasseurs** | La nuit, dans le monde principal, une [brèche des chasseurs](../breches.md) s'ouvre parfois près de vous : entrez dans la faille rouge. |
 
 - **Durée : 30 minutes.** Le fragment se ferme ensuite, et dès qu'il est vide.
