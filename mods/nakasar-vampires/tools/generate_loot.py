@@ -68,6 +68,12 @@ TREASURE = [("Ingredient_Bar_Gold", 4, 2, 5), ("Ingredient_Bar_Silver", 4, 2, 6)
 TREASURE_GEAR = [("Weapon_Shortbow_Vampire", 2, 1, 1), ("Weapon_Sword_Silversteel", 2, 1, 1), ("Weapon_Longsword_Spectral", 1, 1, 1),
                  ("Weapon_Daggers_Doomed", 1, 1, 1), ("Armor_Steel_Ancient_Chest", 1, 1, 1), ("Armor_Leather_Raven_Chest", 2, 1, 1),
                  ("Armor_Leather_Raven_Head", 2, 1, 1)]
+HUNTER_SUPPLIES = [("Weapon_Arrow_Iron", 5, 6, 16), ("Potion_Health_Lesser", 3, 1, 2), ("Potion_Health", 1, 1, 1),
+                   ("Potion_Antidote", 2, 1, 2), ("Potion_Stamina_Lesser", 2, 1, 2), ("Ingredient_Bar_Silver", 3, 1, 3),
+                   ("Ingredient_Leather_Medium", 2, 1, 3), ("Tool_Repair_Kit_Iron", 1, 1, 1)]
+HUNTER_GEAR = [("Weapon_Crossbow_Iron", 3, 1, 1), ("Weapon_Sword_Silversteel", 1, 1, 1), ("Weapon_Daggers_Iron", 2, 1, 1),
+               ("Armor_Leather_Raven_Head", 2, 1, 1), ("Armor_Leather_Raven_Chest", 1, 1, 1),
+               ("Armor_Leather_Medium_Chest", 2, 1, 1), ("Armor_Leather_Medium_Head", 2, 1, 1)]
 
 # Liste -> tirages : (rolls min, rolls max, entrées).
 DROPLISTS = {
@@ -90,6 +96,10 @@ DROPLISTS = {
                                                                          ("Ingredient_Dough", 1, 1, 3)])],
     "Nakasar_Loot_Manor_Bedroom": [(1, 3, CLOTHES), (1, 1, VALUABLES), (0, 1, [("Potion_Regen_Health", 1, 1, 1), ("Weapon_Daggers_Iron", 1, 1, 1),
                                                                               (None, 3, 0, 0)])],
+    "Nakasar_Loot_Hunter_Camp": [(1, 3, HUNTER_SUPPLIES), (1, 2, [("Food_Wildmeat_Cooked", 3, 1, 3), ("Food_Bread", 3, 1, 3),
+                                                                ("Food_Cheese", 1, 1, 2)]),
+                                 (0, 1, HUNTER_GEAR + [(None, 8, 0, 0)])],
+    "Nakasar_Loot_Hunter_Armory": [(2, 3, HUNTER_SUPPLIES), (1, 1, HUNTER_GEAR + [(None, 3, 0, 0)])],
     "Nakasar_Loot_Manor_Workshop": [(2, 3, WORKSHOP), (0, 1, IRON_ARMOR + RUSTY_WEAPONS[:3] + [(None, 6, 0, 0)])],
 }
 

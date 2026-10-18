@@ -52,7 +52,7 @@ EDGE_START = 296.0
 STRUCTURE_JITTER = 16.0
 # Types de structures : (nom, [(dossier de prefabs, poids)], tourner ?, [part des mondes où chaque
 # exemplaire existe]) : le premier exemplaire est toujours là, le second une fois sur deux, le
-# village 60 % du temps.
+# village 60 % du temps, le camp de chasseurs une fois sur deux.
 STRUCTURE_TYPES = [
     ("Village", [("Villages/Zombies", 1.0), ("Villages/Ruins", 1.0), ("Villages/Spiders", 1.0)], True, [0.6]),
     ("Farm", [("Farms/Zombies", 1.0), ("Farms/Ruins", 1.0), ("Farms/Burnt", 1.0)], True, [1.0, 0.5]),
@@ -60,17 +60,21 @@ STRUCTURE_TYPES = [
                    ("GuardPosts/Garrison", 1.2)], True, [1.0, 0.5]),
     ("Cemetery", [("Cemeteries/Haunted", 1.0), ("Cemeteries/Spiders", 1.0), ("Cemeteries/Undead", 1.0)], True, [1.0, 0.5]),
     ("Crypt", [("Crypts", 1.0)], True, [1.0, 0.5]),
-    ("PumpkinField", [("PumpkinFields", 1.0)], True, [1.0, 0.5]),
+    ("PumpkinField", [("PumpkinFields/Plain", 1.0), ("PumpkinFields/Giant", 1.0)], True, [1.0, 0.5]),
     ("HauntedCastle", [("HauntedCastles", 1.0)], True, [1.0, 0.5]),
+    ("HunterCamp", [("HunterCamps/Tents", 1.0), ("HunterCamps/Lodge", 1.0)], True, [0.5]),
 ]
-# Emplacements (x, z, grand ?) : 13, un par exemplaire. Les grands peuvent recevoir le village
+# Emplacements (x, z, grand ?) : 14, un par exemplaire. Les grands peuvent recevoir le village
 # (69 × 69) ; entre deux structures, au moins 9 blocs dans le pire des décalages (village et ferme
 # voisins décalés l'un vers l'autre).
 SLOTS = [
     (-35, 195, True), (115, 165, True), (185, -65, True),
     (-205, 30, False), (-190, -85, False), (-155, 145, False), (-115, -175, False), (-80, -55, False),
     (-65, 70, False), (30, -90, False), (75, 35, False), (115, -175, False), (200, 65, False),
+    (20, 110, False),   # réservé au camp de chasseurs (FIXED_SLOTS) : 27 × 27 seulement, il tient entre ses voisins
 ]
+# Types posés toujours sur le même emplacement (indice dans SLOTS), hors du tirage des répartitions.
+FIXED_SLOTS = {"HunterCamp": len(SLOTS) - 1}
 # Le type de chaque emplacement change d'un monde à l'autre : LAYOUTS répartitions (tirées ici une
 # fois pour toutes), le monde en choisit une selon un bruit lu en un point fixe (valeur qui ne dépend
 # que de la graine). Seuils à peu près équiprobables pour un bruit simplex centré.
@@ -93,19 +97,20 @@ def layouts():
     un grand emplacement ; deux structures du même type restent à plus de 140 blocs l'une de l'autre."""
     import random
     rng = random.Random(1031)
-    roles = [(name, keep) for name, _, _, keeps in STRUCTURE_TYPES for keep in keeps]
+    roles = [(name, keep) for name, _, _, keeps in STRUCTURE_TYPES for keep in keeps if name not in FIXED_SLOTS]
+    fixed = {FIXED_SLOTS[name]: (name, keep) for name, _, _, keeps in STRUCTURE_TYPES for keep in keeps if name in FIXED_SLOTS}
     out = []
     while len(out) < LAYOUTS:
         order = roles[:]
         rng.shuffle(order)
         if order[0][0] != "Village":
             continue
-        big = [i for i, s in enumerate(SLOTS) if s[2]]
-        small = [i for i, s in enumerate(SLOTS) if not s[2]]
+        big = [i for i, s in enumerate(SLOTS) if s[2] and i not in fixed]
+        small = [i for i, s in enumerate(SLOTS) if not s[2] and i not in fixed]
         rng.shuffle(big)
         rng.shuffle(small)
         idx = big[:1] + big[1:] + small
-        layout = [None] * len(SLOTS)
+        layout = [fixed.get(i) for i in range(len(SLOTS))]
         for slot, role in zip(idx, order):
             layout[slot] = role
         far = all(((SLOTS[i][0] - SLOTS[j][0]) ** 2 + (SLOTS[i][1] - SLOTS[j][1]) ** 2) ** 0.5 > 140

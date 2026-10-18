@@ -5777,6 +5777,528 @@
           "Type": "Union",
           "Positions": [
             {
+              "Type": "FieldFunction",
+              "FieldFunction": {
+                "Type": "XOverride",
+                "Value": 7919.5,
+                "Inputs": [
+                  {
+                    "Type": "ZOverride",
+                    "Value": -4441.5,
+                    "Inputs": [
+                      {
+                        "Type": "SimplexNoise2D",
+                        "Scale": 60.0,
+                        "Octaves": 1,
+                        "Lacunarity": 2.0,
+                        "Persistence": 0.5,
+                        "Seed": "Layout"
+                      }
+                    ]
+                  }
+                ]
+              },
+              "Delimiters": [
+                {
+                  "Min": -1000000000.0,
+                  "Max": -0.403
+                }
+              ],
+              "Positions": {
+                "Type": "FieldFunction",
+                "FieldFunction": {
+                  "Type": "SimplexNoise2D",
+                  "Scale": 40.0,
+                  "Octaves": 1,
+                  "Lacunarity": 2.0,
+                  "Persistence": 0.5,
+                  "Seed": "Keep13"
+                },
+                "Delimiters": [
+                  {
+                    "Min": 0.0,
+                    "Max": 1000000000.0
+                  }
+                ],
+                "Positions": {
+                  "Type": "Jitter2d",
+                  "Magnitude": 16.0,
+                  "Seed": "Slot13",
+                  "Positions": {
+                    "Type": "List",
+                    "Positions": [
+                      {
+                        "X": 20,
+                        "Y": 81,
+                        "Z": 110
+                      }
+                    ]
+                  }
+                }
+              }
+            },
+            {
+              "Type": "FieldFunction",
+              "FieldFunction": {
+                "Type": "XOverride",
+                "Value": 7919.5,
+                "Inputs": [
+                  {
+                    "Type": "ZOverride",
+                    "Value": -4441.5,
+                    "Inputs": [
+                      {
+                        "Type": "SimplexNoise2D",
+                        "Scale": 60.0,
+                        "Octaves": 1,
+                        "Lacunarity": 2.0,
+                        "Persistence": 0.5,
+                        "Seed": "Layout"
+                      }
+                    ]
+                  }
+                ]
+              },
+              "Delimiters": [
+                {
+                  "Min": -0.403,
+                  "Max": -0.236
+                }
+              ],
+              "Positions": {
+                "Type": "FieldFunction",
+                "FieldFunction": {
+                  "Type": "SimplexNoise2D",
+                  "Scale": 40.0,
+                  "Octaves": 1,
+                  "Lacunarity": 2.0,
+                  "Persistence": 0.5,
+                  "Seed": "Keep13"
+                },
+                "Delimiters": [
+                  {
+                    "Min": 0.0,
+                    "Max": 1000000000.0
+                  }
+                ],
+                "Positions": {
+                  "Type": "Jitter2d",
+                  "Magnitude": 16.0,
+                  "Seed": "Slot13",
+                  "Positions": {
+                    "Type": "List",
+                    "Positions": [
+                      {
+                        "X": 20,
+                        "Y": 81,
+                        "Z": 110
+                      }
+                    ]
+                  }
+                }
+              }
+            },
+            {
+              "Type": "FieldFunction",
+              "FieldFunction": {
+                "Type": "XOverride",
+                "Value": 7919.5,
+                "Inputs": [
+                  {
+                    "Type": "ZOverride",
+                    "Value": -4441.5,
+                    "Inputs": [
+                      {
+                        "Type": "SimplexNoise2D",
+                        "Scale": 60.0,
+                        "Octaves": 1,
+                        "Lacunarity": 2.0,
+                        "Persistence": 0.5,
+                        "Seed": "Layout"
+                      }
+                    ]
+                  }
+                ]
+              },
+              "Delimiters": [
+                {
+                  "Min": -0.236,
+                  "Max": -0.112
+                }
+              ],
+              "Positions": {
+                "Type": "FieldFunction",
+                "FieldFunction": {
+                  "Type": "SimplexNoise2D",
+                  "Scale": 40.0,
+                  "Octaves": 1,
+                  "Lacunarity": 2.0,
+                  "Persistence": 0.5,
+                  "Seed": "Keep13"
+                },
+                "Delimiters": [
+                  {
+                    "Min": 0.0,
+                    "Max": 1000000000.0
+                  }
+                ],
+                "Positions": {
+                  "Type": "Jitter2d",
+                  "Magnitude": 16.0,
+                  "Seed": "Slot13",
+                  "Positions": {
+                    "Type": "List",
+                    "Positions": [
+                      {
+                        "X": 20,
+                        "Y": 81,
+                        "Z": 110
+                      }
+                    ]
+                  }
+                }
+              }
+            },
+            {
+              "Type": "FieldFunction",
+              "FieldFunction": {
+                "Type": "XOverride",
+                "Value": 7919.5,
+                "Inputs": [
+                  {
+                    "Type": "ZOverride",
+                    "Value": -4441.5,
+                    "Inputs": [
+                      {
+                        "Type": "SimplexNoise2D",
+                        "Scale": 60.0,
+                        "Octaves": 1,
+                        "Lacunarity": 2.0,
+                        "Persistence": 0.5,
+                        "Seed": "Layout"
+                      }
+                    ]
+                  }
+                ]
+              },
+              "Delimiters": [
+                {
+                  "Min": -0.112,
+                  "Max": 0.0
+                }
+              ],
+              "Positions": {
+                "Type": "FieldFunction",
+                "FieldFunction": {
+                  "Type": "SimplexNoise2D",
+                  "Scale": 40.0,
+                  "Octaves": 1,
+                  "Lacunarity": 2.0,
+                  "Persistence": 0.5,
+                  "Seed": "Keep13"
+                },
+                "Delimiters": [
+                  {
+                    "Min": 0.0,
+                    "Max": 1000000000.0
+                  }
+                ],
+                "Positions": {
+                  "Type": "Jitter2d",
+                  "Magnitude": 16.0,
+                  "Seed": "Slot13",
+                  "Positions": {
+                    "Type": "List",
+                    "Positions": [
+                      {
+                        "X": 20,
+                        "Y": 81,
+                        "Z": 110
+                      }
+                    ]
+                  }
+                }
+              }
+            },
+            {
+              "Type": "FieldFunction",
+              "FieldFunction": {
+                "Type": "XOverride",
+                "Value": 7919.5,
+                "Inputs": [
+                  {
+                    "Type": "ZOverride",
+                    "Value": -4441.5,
+                    "Inputs": [
+                      {
+                        "Type": "SimplexNoise2D",
+                        "Scale": 60.0,
+                        "Octaves": 1,
+                        "Lacunarity": 2.0,
+                        "Persistence": 0.5,
+                        "Seed": "Layout"
+                      }
+                    ]
+                  }
+                ]
+              },
+              "Delimiters": [
+                {
+                  "Min": 0.0,
+                  "Max": 0.112
+                }
+              ],
+              "Positions": {
+                "Type": "FieldFunction",
+                "FieldFunction": {
+                  "Type": "SimplexNoise2D",
+                  "Scale": 40.0,
+                  "Octaves": 1,
+                  "Lacunarity": 2.0,
+                  "Persistence": 0.5,
+                  "Seed": "Keep13"
+                },
+                "Delimiters": [
+                  {
+                    "Min": 0.0,
+                    "Max": 1000000000.0
+                  }
+                ],
+                "Positions": {
+                  "Type": "Jitter2d",
+                  "Magnitude": 16.0,
+                  "Seed": "Slot13",
+                  "Positions": {
+                    "Type": "List",
+                    "Positions": [
+                      {
+                        "X": 20,
+                        "Y": 81,
+                        "Z": 110
+                      }
+                    ]
+                  }
+                }
+              }
+            },
+            {
+              "Type": "FieldFunction",
+              "FieldFunction": {
+                "Type": "XOverride",
+                "Value": 7919.5,
+                "Inputs": [
+                  {
+                    "Type": "ZOverride",
+                    "Value": -4441.5,
+                    "Inputs": [
+                      {
+                        "Type": "SimplexNoise2D",
+                        "Scale": 60.0,
+                        "Octaves": 1,
+                        "Lacunarity": 2.0,
+                        "Persistence": 0.5,
+                        "Seed": "Layout"
+                      }
+                    ]
+                  }
+                ]
+              },
+              "Delimiters": [
+                {
+                  "Min": 0.112,
+                  "Max": 0.236
+                }
+              ],
+              "Positions": {
+                "Type": "FieldFunction",
+                "FieldFunction": {
+                  "Type": "SimplexNoise2D",
+                  "Scale": 40.0,
+                  "Octaves": 1,
+                  "Lacunarity": 2.0,
+                  "Persistence": 0.5,
+                  "Seed": "Keep13"
+                },
+                "Delimiters": [
+                  {
+                    "Min": 0.0,
+                    "Max": 1000000000.0
+                  }
+                ],
+                "Positions": {
+                  "Type": "Jitter2d",
+                  "Magnitude": 16.0,
+                  "Seed": "Slot13",
+                  "Positions": {
+                    "Type": "List",
+                    "Positions": [
+                      {
+                        "X": 20,
+                        "Y": 81,
+                        "Z": 110
+                      }
+                    ]
+                  }
+                }
+              }
+            },
+            {
+              "Type": "FieldFunction",
+              "FieldFunction": {
+                "Type": "XOverride",
+                "Value": 7919.5,
+                "Inputs": [
+                  {
+                    "Type": "ZOverride",
+                    "Value": -4441.5,
+                    "Inputs": [
+                      {
+                        "Type": "SimplexNoise2D",
+                        "Scale": 60.0,
+                        "Octaves": 1,
+                        "Lacunarity": 2.0,
+                        "Persistence": 0.5,
+                        "Seed": "Layout"
+                      }
+                    ]
+                  }
+                ]
+              },
+              "Delimiters": [
+                {
+                  "Min": 0.236,
+                  "Max": 0.403
+                }
+              ],
+              "Positions": {
+                "Type": "FieldFunction",
+                "FieldFunction": {
+                  "Type": "SimplexNoise2D",
+                  "Scale": 40.0,
+                  "Octaves": 1,
+                  "Lacunarity": 2.0,
+                  "Persistence": 0.5,
+                  "Seed": "Keep13"
+                },
+                "Delimiters": [
+                  {
+                    "Min": 0.0,
+                    "Max": 1000000000.0
+                  }
+                ],
+                "Positions": {
+                  "Type": "Jitter2d",
+                  "Magnitude": 16.0,
+                  "Seed": "Slot13",
+                  "Positions": {
+                    "Type": "List",
+                    "Positions": [
+                      {
+                        "X": 20,
+                        "Y": 81,
+                        "Z": 110
+                      }
+                    ]
+                  }
+                }
+              }
+            },
+            {
+              "Type": "FieldFunction",
+              "FieldFunction": {
+                "Type": "XOverride",
+                "Value": 7919.5,
+                "Inputs": [
+                  {
+                    "Type": "ZOverride",
+                    "Value": -4441.5,
+                    "Inputs": [
+                      {
+                        "Type": "SimplexNoise2D",
+                        "Scale": 60.0,
+                        "Octaves": 1,
+                        "Lacunarity": 2.0,
+                        "Persistence": 0.5,
+                        "Seed": "Layout"
+                      }
+                    ]
+                  }
+                ]
+              },
+              "Delimiters": [
+                {
+                  "Min": 0.403,
+                  "Max": 1000000000.0
+                }
+              ],
+              "Positions": {
+                "Type": "FieldFunction",
+                "FieldFunction": {
+                  "Type": "SimplexNoise2D",
+                  "Scale": 40.0,
+                  "Octaves": 1,
+                  "Lacunarity": 2.0,
+                  "Persistence": 0.5,
+                  "Seed": "Keep13"
+                },
+                "Delimiters": [
+                  {
+                    "Min": 0.0,
+                    "Max": 1000000000.0
+                  }
+                ],
+                "Positions": {
+                  "Type": "Jitter2d",
+                  "Magnitude": 16.0,
+                  "Seed": "Slot13",
+                  "Positions": {
+                    "Type": "List",
+                    "Positions": [
+                      {
+                        "X": 20,
+                        "Y": 81,
+                        "Z": 110
+                      }
+                    ]
+                  }
+                }
+              }
+            }
+          ]
+        },
+        "ExportAs": "Nakasar_Halloween_HunterCamp_Positions"
+      },
+      "ReturnType": {
+        "Type": "Curve",
+        "Curve": {
+          "Type": "Manual",
+          "Points": [
+            {
+              "In": 0,
+              "Out": 0
+            },
+            {
+              "In": 1,
+              "Out": 1
+            }
+          ]
+        }
+      },
+      "DistanceFunction": {
+        "Type": "Euclidean"
+      },
+      "MaxDistance": 1.0
+    },
+    {
+      "Type": "PositionsCellNoise",
+      "Positions": {
+        "Type": "Cache",
+        "SectionSize": 32,
+        "CacheSize": 100,
+        "Positions": {
+          "Type": "Union",
+          "Positions": [
+            {
               "Type": "Imported",
               "Name": "Nakasar_Halloween_Village_Positions"
             },
@@ -5803,6 +6325,10 @@
             {
               "Type": "Imported",
               "Name": "Nakasar_Halloween_HauntedCastle_Positions"
+            },
+            {
+              "Type": "Imported",
+              "Name": "Nakasar_Halloween_HunterCamp_Positions"
             }
           ]
         },
@@ -7374,12 +7900,66 @@
                   "Prop": {
                     "Type": "RandomRotator",
                     "HorizontalRotations": true,
-                    "Seed": "PumpkinFields",
+                    "Seed": "PumpkinFieldsPlain",
                     "Prop": {
                       "Type": "Prefab",
                       "WeightedPrefabPaths": [
                         {
-                          "Path": "Nakasar/Halloween/PumpkinFields",
+                          "Path": "Nakasar/Halloween/PumpkinFields/Plain",
+                          "Weight": 1.0
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            },
+            {
+              "Weight": 1.0,
+              "Assignments": {
+                "Type": "Constant",
+                "Prop": {
+                  "Type": "Locator",
+                  "Pattern": {
+                    "Type": "Floor",
+                    "Floor": {
+                      "Type": "Not",
+                      "Pattern": {
+                        "Type": "BlockType",
+                        "Material": {
+                          "Solid": "Empty"
+                        }
+                      }
+                    },
+                    "Origin": {
+                      "Type": "BlockType",
+                      "Material": {
+                        "Solid": "Empty"
+                      }
+                    }
+                  },
+                  "Scanner": {
+                    "Type": "Linear",
+                    "Axis": "Y",
+                    "Range": {
+                      "MinInclusive": -12,
+                      "MaxExclusive": 13
+                    },
+                    "AscendingOrder": false,
+                    "Scanner": {
+                      "Type": "Origin"
+                    }
+                  },
+                  "PlacementCap": 1,
+                  "Prop": {
+                    "Type": "RandomRotator",
+                    "HorizontalRotations": true,
+                    "Seed": "PumpkinFieldsGiant",
+                    "Prop": {
+                      "Type": "Prefab",
+                      "WeightedPrefabPaths": [
+                        {
+                          "Path": "Nakasar/Halloween/PumpkinFields/Giant",
                           "Weight": 1.0
                         }
                       ]
@@ -7456,6 +8036,136 @@
                       "WeightedPrefabPaths": [
                         {
                           "Path": "Nakasar/Halloween/HauntedCastles",
+                          "Weight": 1.0
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "Runtime": 0,
+      "ContextPrecision": "Prop",
+      "PropDistribution": {
+        "Type": "Assigned",
+        "OverrideAllProps": true,
+        "PropDistribution": {
+          "Type": "Positions",
+          "Positions": {
+            "Type": "Imported",
+            "Name": "Nakasar_Halloween_HunterCamp_Positions"
+          }
+        },
+        "Assignments": {
+          "Type": "Weighted",
+          "Seed": "HunterCampPick",
+          "SkipChance": 0.0,
+          "WeightedAssignments": [
+            {
+              "Weight": 1.0,
+              "Assignments": {
+                "Type": "Constant",
+                "Prop": {
+                  "Type": "Locator",
+                  "Pattern": {
+                    "Type": "Floor",
+                    "Floor": {
+                      "Type": "Not",
+                      "Pattern": {
+                        "Type": "BlockType",
+                        "Material": {
+                          "Solid": "Empty"
+                        }
+                      }
+                    },
+                    "Origin": {
+                      "Type": "BlockType",
+                      "Material": {
+                        "Solid": "Empty"
+                      }
+                    }
+                  },
+                  "Scanner": {
+                    "Type": "Linear",
+                    "Axis": "Y",
+                    "Range": {
+                      "MinInclusive": -12,
+                      "MaxExclusive": 13
+                    },
+                    "AscendingOrder": false,
+                    "Scanner": {
+                      "Type": "Origin"
+                    }
+                  },
+                  "PlacementCap": 1,
+                  "Prop": {
+                    "Type": "RandomRotator",
+                    "HorizontalRotations": true,
+                    "Seed": "HunterCampsTents",
+                    "Prop": {
+                      "Type": "Prefab",
+                      "WeightedPrefabPaths": [
+                        {
+                          "Path": "Nakasar/Halloween/HunterCamps/Tents",
+                          "Weight": 1.0
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            },
+            {
+              "Weight": 1.0,
+              "Assignments": {
+                "Type": "Constant",
+                "Prop": {
+                  "Type": "Locator",
+                  "Pattern": {
+                    "Type": "Floor",
+                    "Floor": {
+                      "Type": "Not",
+                      "Pattern": {
+                        "Type": "BlockType",
+                        "Material": {
+                          "Solid": "Empty"
+                        }
+                      }
+                    },
+                    "Origin": {
+                      "Type": "BlockType",
+                      "Material": {
+                        "Solid": "Empty"
+                      }
+                    }
+                  },
+                  "Scanner": {
+                    "Type": "Linear",
+                    "Axis": "Y",
+                    "Range": {
+                      "MinInclusive": -12,
+                      "MaxExclusive": 13
+                    },
+                    "AscendingOrder": false,
+                    "Scanner": {
+                      "Type": "Origin"
+                    }
+                  },
+                  "PlacementCap": 1,
+                  "Prop": {
+                    "Type": "RandomRotator",
+                    "HorizontalRotations": true,
+                    "Seed": "HunterCampsLodge",
+                    "Prop": {
+                      "Type": "Prefab",
+                      "WeightedPrefabPaths": [
+                        {
+                          "Path": "Nakasar/Halloween/HunterCamps/Lodge",
                           "Weight": 1.0
                         }
                       ]
