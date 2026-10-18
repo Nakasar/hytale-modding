@@ -1,6 +1,8 @@
 {
   "Duration": 3,
   "OverlapBehavior": "Overwrite",
+  "Debuff": true,
+  "StatusEffectIcon": "UI/StatusEffects/Nakasar/Spectral_Chains.png",
   "ApplicationEffects": {
     "EntityTopTint": "#b8ffd0",
     "EntityBottomTint": "#2fbf62",

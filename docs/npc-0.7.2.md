@@ -73,3 +73,17 @@ packs requis en arguments pour qu'elles soient résolues.
   entier. `tools/ValidateRoles.java` le vérifie hors jeu.
 - `Effects.WorldSoundEventId` exige un son mono : les variantes `*_Local` (stéréo, pour `LocalSoundEventId`) font
   rejeter toute l'interaction. `ValidateAssets.java` le signale.
+- `EntityEffect.StatusEffectIcon` : chemin d'une image sous `Common` (par ex. `UI/StatusEffects/Poison.png`). Sans
+  icône, ou avec un chemin faux, le jeu affiche une croix rouge.
+- Ne pas hériter de `Ghoul` pour un bipède : c'est un prédateur accroupi animé comme un chien (`Hound`), il
+  paraît s'enfoncer dans le sol en marchant.
+
+## Modèles humanoïdes
+
+`"Parent": "Player"`, `"Model": "Characters/Player_With_Face.blockymodel"`, peau
+`Characters/Player_Textures/Player_Greyscale.png` avec `GradientSet: "Skin"` (`GradientId` numérique, `"28"`
+très pâle). Visage, cheveux et vêtements vont dans `DefaultAttachments[{Model, Texture, GradientSet,
+GradientId}]`, repris de `Cosmetics/CharacterCreator/*.json` (sets `Hair`, `Eyes_Gradient`, `Colored_Cotton`,
+`Fantasy_Cotton`, `Shiny_Fabric`, `Faded_Leather`… avec `Black`, `Red`, `White`). Une pièce sur mesure est un
+`.blockymodel` dont le nœud racine porte le nom d'un os (`Chest`, `Head`…) avec `settings.isPiece: true` ;
+exemple : `mods/nakasar-mobs/tools/generate_vampire_models.py`.

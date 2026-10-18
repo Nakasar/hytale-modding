@@ -1,7 +1,8 @@
 {
-  "$Comment": "Le comte dans sa salle du trône ; il revient 30 minutes (temps réel) après sa mort.",
+  "$Comment": "Le maître du manoir dans sa salle du trône : une chance sur deux d'y trouver le Comte ou la Comtesse. Revient 30 minutes (temps réel) après sa mort, tiré au sort à nouveau.",
   "NPCs": [
-    { "Name": "Nakasar_Vampire_Count", "Weight": 1, "RealtimeRespawnTime": 1800 }
+    { "Name": "Nakasar_Vampire_Count", "Weight": 1, "RealtimeRespawnTime": 1800 },
+    { "Name": "Nakasar_Vampire_Countess", "Weight": 1, "RealtimeRespawnTime": 1800 }
   ],
   "RealtimeRespawn": true,
   "ExclusionRadius": 0

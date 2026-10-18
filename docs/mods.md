@@ -185,7 +185,7 @@ rotation 0 pour une ligne est-ouest (le long de X), 1 pour une ligne nord-sud (l
   zombies aberrants, araignées des cavernes, élites et loups-garous (rares).
 - Mobs de `nakasar-mobs` (dépendance optionnelle, mais sans lui ces apparitions échouent) : fantômes à toute heure et rejetons de vampire la nuit
   (`Nakasar_Halloween_Ghosts`, `Nakasar_Halloween_Vampire_Spawns_Dusk` / `_Dawn`, environnement hanté), et
-  marqueurs d'apparition dans le château du comte (le comte devant son trône, deux rejetons dans la crypte).
+  marqueurs d'apparition dans le château du comte (le Comte ou la Comtesse devant le trône, une chance sur deux, deux rejetons dans la crypte).
 
 ## nakasar-mobs (plugin Java + assets)
 
@@ -196,6 +196,7 @@ validateur du fragment Halloween).
 | PNJ | PV | Comportement |
 |-----|----|--------------|
 | `Nakasar_Vampire_Count` | 600 | Boss. Mêlée « Baiser du Vampire » (22 dégâts, +30 PV), Chaînes spectrales à 18 blocs (9 à 12 s), Domination à 12 blocs (16 à 20 s), téléportation près de la cible si elle est à plus de 7 blocs (10 à 14 s), sous 50 % de vie invoque 2 ou 3 rejetons (toutes les 30 s, tant qu'il n'y en a pas plus de 2 à moins de 40 blocs). Chaînes et Domination ne visent que les joueurs, sur une ligne droite : un rejeton devant lui ne les bloque pas. Retourne à son point d'apparition et regagne sa vie si la cible s'éloigne à plus de 40 blocs. |
+| `Nakasar_Vampire_Countess` | 500 | Boss, plus vive que le Comte (vitesse 5,5). Mêmes Baiser du Vampire, Domination (14 à 18 s), téléportation (6 à 9 s), invocation et retour au point d'apparition ; pas de Chaînes spectrales. |
 | `Nakasar_Vampire_Spawn` | 60 | Rapide, morsure 7 dégâts (+4 PV). |
 | `Nakasar_Ghost` | 45 | Vole, toucher glacial (6 dégâts, ralenti 50 % pendant 3 s), réapparaît près de sa cible quand elle s'éloigne. |
 
@@ -205,6 +206,9 @@ validateur du fragment Halloween).
   compris, contre ce PNJ tant que l'effet dure.
 - **Groupes** : `Nakasar_Vampires` et `Nakasar_Ghosts` (`DisableDamageGroups`, ils ne se blessent pas entre eux),
   `Nakasar_Vampire_Spawns` (compté par le comte avant d'invoquer).
-- **Butin** : éclats de rune ; le comte donne aussi une des 4 runes du mod.
-- **Apparition** : spawns de monde dans le pack Halloween (voir plus haut), et marqueurs `NPC/Spawn/Markers/Nakasar_Vampire_Count` (réapparition 30 min) /
+- **Apparence** : modèles humanoïdes sur le squelette du joueur (`Parent: Player`), vêtements vanilla du créateur de
+  personnage recolorés et col victorien généré par `tools/generate_vampire_models.py` (modèles et texture dans
+  `Common/NPC/Nakasar/Vampire/`, icônes d'effets dans `Common/UI/StatusEffects/Nakasar/`).
+- **Butin** : éclats de rune ; le Comte et la Comtesse donnent aussi une des 4 runes du mod.
+- **Apparition** : spawns de monde dans le pack Halloween (voir plus haut), et marqueurs `NPC/Spawn/Markers/Nakasar_Vampire_Count` (Comte ou Comtesse à poids égaux, réapparition 30 min) /
   `Nakasar_Vampire_Spawn` (5 min), posés via les blocs invisibles `Nakasar_Spawner_*`.
