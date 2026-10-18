@@ -34,19 +34,23 @@
         "Interactions": [
           {
             "Interactions": [
+              {
+                "Type": "Repeat",
+                "Repeat": 4,
+                "ForkInteractions": {
+                  "Interactions": [
+                    "Nakasar_Spear_Signature_Rush_Stab"
+                  ]
+                }
+              }
+            ]
+          },
+          {
+            "Interactions": [
               "Nakasar_Spear_Signature_Dash"
             ]
           }
         ]
-      },
-      {
-        "Type": "Repeat",
-        "Repeat": 4,
-        "ForkInteractions": {
-          "Interactions": [
-            "Nakasar_Spear_Signature_Rush_Stab"
-          ]
-        }
       },
       {
         "Type": "Simple",
