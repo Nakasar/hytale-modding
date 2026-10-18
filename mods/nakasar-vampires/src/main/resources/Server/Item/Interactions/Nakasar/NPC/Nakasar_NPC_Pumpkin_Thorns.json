@@ -1,5 +1,5 @@
 {
-  "$Comment": "Projection d'épines : trois épines tirées coup sur coup vers la cible.",
+  "$Comment": "Projection d'épines : trois épines tirées coup sur coup vers la cible. Seule la première LaunchProjectile porte le tag AimingReference (le serveur n'en accepte qu'un par chaîne d'attaque).",
   "Type": "Simple",
   "RunTime": 0.5,
   "Effects": {
@@ -29,16 +29,10 @@
       "Type": "LaunchProjectile",
       "RunTime": 0.2,
       "ProjectileId": "Nakasar_Pumpkin_Thorn",
-      "Tags": {
-        "AimingReference": []
-      },
       "Next": {
         "Type": "LaunchProjectile",
         "RunTime": 0.2,
-        "ProjectileId": "Nakasar_Pumpkin_Thorn",
-        "Tags": {
-          "AimingReference": []
-        }
+        "ProjectileId": "Nakasar_Pumpkin_Thorn"
       }
     }
   }

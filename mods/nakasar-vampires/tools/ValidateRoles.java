@@ -140,6 +140,14 @@ public class ValidateRoles {
         walk.filter(x -> x.toString().endsWith(".json")).forEach(x -> roots.put(x.getFileName().toString().replaceFirst("\\.json$", ""), x));
       }
     }
+    java.util.Map<String, Path> interactions = new java.util.HashMap<>();
+    for (String pack : packs) {
+      Path dir = Path.of(pack).resolve("Item/Interactions");
+      if (!java.nio.file.Files.isDirectory(dir)) continue;
+      try (var walk = java.nio.file.Files.walk(dir)) {
+        walk.filter(x -> x.toString().endsWith(".json")).forEach(x -> interactions.put(x.getFileName().toString().replaceFirst("\\.json$", ""), x));
+      }
+    }
     int errors = 0;
     java.util.Set<String> seen = new java.util.HashSet<>();
     for (Path role : roles) {
@@ -158,9 +166,40 @@ public class ValidateRoles {
           System.out.println("ERROR " + id + " : plusieurs types d'attaque dans le tag \"Attack\" (un seul parmi Melee, Ranged, Block)");
           errors++;
         }
+        int aiming = countAiming(root.get("Interactions"), interactions, new java.util.HashSet<>());
+        if (aiming > 1) {
+          System.out.println("ERROR " + id + " : " + aiming + " interactions portent le tag \"AimingReference\" dans la chaîne (une seule permise : la première LaunchProjectile)");
+          errors++;
+        }
       }
     }
     return errors;
+  }
+  /**
+   * Nombre d'interactions de la chaîne qui portent le tag "AimingReference" (le CombatInteractionValidator du serveur
+   * en accepte une seule) : chaque interaction en ligne compte, une interaction nommée du pack compte une fois.
+   */
+  static int countAiming(org.bson.BsonValue v, java.util.Map<String, Path> interactions, java.util.Set<String> visited) throws Exception {
+    if (v == null) return 0;
+    if (v.isString()) {
+      String id = v.asString().getValue();
+      Path file = interactions.get(id);
+      if (file == null || !visited.add(id)) return 0;
+      return countAiming(org.bson.BsonDocument.parse(java.nio.file.Files.readString(file)), interactions, visited);
+    }
+    int n = 0;
+    if (v.isDocument()) {
+      org.bson.BsonDocument d = v.asDocument();
+      org.bson.BsonValue tags = d.get("Tags");
+      if (tags != null && tags.isDocument() && tags.asDocument().containsKey("AimingReference")) n++;
+      for (var e : d.entrySet()) {
+        if (e.getKey().equals("Tags") || e.getKey().equals("Effects") || e.getKey().startsWith("$")) continue;
+        n += countAiming(e.getValue(), interactions, visited);
+      }
+    } else if (v.isArray()) {
+      for (org.bson.BsonValue c : v.asArray()) n += countAiming(c, interactions, visited);
+    }
+    return n;
   }
   static void collectAttacks(org.bson.BsonValue v, List<String> out) {
     if (v.isDocument()) {
