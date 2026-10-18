@@ -27,7 +27,13 @@
       "Actions": [
         { "Type": "TimerStart", "Name": "Chains", "StartValueRange": [4, 6], "RestartValueRange": [9, 12] },
         { "Type": "TimerStart", "Name": "Domination", "StartValueRange": [7, 9], "RestartValueRange": [16, 20] },
-        { "Type": "TimerStart", "Name": "Blink", "StartValueRange": [5, 7], "RestartValueRange": [10, 14] },
+        { "Type": "TimerStart", "Name": "Blink", "StartValueRange": [5, 7], "RestartValueRange": [10, 14] }
+      ]
+    },
+    {
+      "$Comment": "L'invocation n'est réarmée qu'en sortant du repos (vie pleine) : revenir en combat depuis ReturnHome garde sa recharge en cours.",
+      "States": [ { "From": ["Idle"], "To": ["Combat"] } ],
+      "Actions": [
         { "Type": "TimerStart", "Name": "Summon", "StartValueRange": [0.1, 0.1], "RestartValueRange": [30, 30] }
       ]
     }
@@ -69,11 +75,11 @@
           ]
         },
         {
-          "$Comment": "Seconde phase : sous 50 % de vie, appelle deux ou trois rejetons (toutes les 30 s).",
+          "$Comment": "Seconde phase : sous 50 % de vie, appelle deux ou trois rejetons (toutes les 30 s), tant qu'il n'y en a pas déjà plus de deux autour de lui.",
           "Sensor": {
             "Type": "And",
             "Sensors": [
-              { "Type": "Target", "Range": 40 },
+              { "Type": "Count", "Count": [0, 2], "Range": [0, 40], "IncludeGroups": ["Nakasar_Vampire_Spawns"] },
               {
                 "Type": "Self",
                 "Filters": [
@@ -98,7 +104,7 @@
           ]
         },
         {
-          "$Comment": "Domination : le joueur qu'il fixe ne peut plus le blesser pendant 6 s.",
+          "$Comment": "Domination : les joueurs qu'il fixe ne peuvent plus le blesser pendant 6 s.",
           "Sensor": {
             "Type": "And",
             "Sensors": [

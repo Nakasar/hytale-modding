@@ -21,7 +21,11 @@ public final class Dominations {
     }
 
     public static void dominate(Ref<EntityStore> victim, Ref<EntityStore> dominator, float seconds) {
-        BY_VICTIM.put(victim, new Entry(dominator, System.nanoTime() + (long) (seconds * 1_000_000_000L)));
+        long now = System.nanoTime();
+        // Purge les dominations finies (joueurs partis, mondes déchargés) pour ne pas retenir leurs Ref.
+        BY_VICTIM.entrySet().removeIf(e -> now - e.getValue().expiresAtNanos() >= 0
+                || !e.getKey().isValid() || !e.getValue().dominator().isValid());
+        BY_VICTIM.put(victim, new Entry(dominator, now + (long) (seconds * 1_000_000_000L)));
     }
 
     /** Vrai si {@code attacker} est dominé par {@code target} en ce moment. */

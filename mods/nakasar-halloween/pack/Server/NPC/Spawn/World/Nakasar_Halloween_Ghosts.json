@@ -1,0 +1,9 @@
+{
+  "$Comment": "Fantômes du mod Mobs près des structures du fragment (cimetières, maisons et châteaux hantés), à toute heure.",
+  "Environments": [
+    "Nakasar_Env_Halloween_Haunted"
+  ],
+  "NPCs": [
+    { "Id": "Nakasar_Ghost", "Weight": 18 }
+  ]
+}

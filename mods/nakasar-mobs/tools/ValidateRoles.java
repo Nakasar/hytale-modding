@@ -97,6 +97,8 @@ public class ValidateRoles {
     }
     for (String r : refs) {
       String id = r.substring(0, r.indexOf(" ("));
+      // Nos ids sont préfixés Nakasar_ : s'il n'est fourni par aucun pack, c'est une faute de frappe.
+      if (!provided.contains(id) && id.matches("(Root_)?Nakasar_.*")) { System.out.println("ERROR asset du mod introuvable : " + r); errors++; continue; }
       System.out.println((provided.contains(id) ? "REF   mod     " : "REF   vanilla ") + r);
     }
     List<String> errs = new java.util.ArrayList<>();

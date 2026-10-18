@@ -35,7 +35,13 @@ Référence complète des briques d'IA (sensors, actions, mouvements, avec champ
   `{"Type":"Timer","Name":"X","State":"STOPPED"}`, puis `TimerRestart` après le sort.
 - L'action `Attack` ne démarre pas tant qu'une autre attaque tourne.
 - `LaunchProjectile` utilise les anciens assets `Projectile` ; pour viser un joueur avec une interaction
-  à distance, un sélecteur `{"Type":"Selector","Selector":{"Id":"Raycast","Distance":N}}` suffit.
+  à distance, utiliser un `Selector`. `Raycast` s'arrête à la première entité (un allié devant le PNJ
+  prend le sort) : préférer `{"Id":"Stab","StartDistance":0,"EndDistance":N,...}` (toutes les entités de la
+  ligne) avec `"HitEntityRules":[{"Matchers":[{"Type":"Player"}],"Next":{"Interactions":[...]}}]`, qui ne
+  lance le `Next` que sur les joueurs.
+- Sensor `Count` (`Count`, `Range`, `IncludeGroups`) : plafonner des invocations en comptant un groupe.
+- `Parallel` exige au moins 2 branches (`Interactions`) : la première tourne dans la chaîne, les autres en
+  fork.
 - `EntityEffect` : `ApplicationEffects.HorizontalSpeedMultiplier`, `Debuff`, `Invulnerable`,
   `DamageResistance`, `ModelOverride`.
 - `ItemDropList` : `Container.Type` = `Multiple` / `Choice` / `Single` / `Droplist` / `Empty` ; `Single`

@@ -6,7 +6,7 @@
   "Authors": [ { "Name": "${author}" } ],
   "IncludesAssetPack": true,
   "ServerVersion": "${serverRange}",
-  "OptionalDependencies": {
+  "Dependencies": {
     "Nakasar:Mobs": "*"
   }
 }

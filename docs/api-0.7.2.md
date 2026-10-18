@@ -150,7 +150,12 @@ Le JSON l'utilise ensuite avec `"Type": "Nakasar_MyInteraction"`.
 - Couleurs : `#rrggbb` ou `#rrggbbaa` (aussi `rgb(...)`, `rgba(...)`).
 - Pour décoder un asset hors serveur (`tools/ValidateAssets.java`) : `Options.parse`, un
   `HytaleServer` factice qui porte un `EventBus`, l'initialisation d'`AssetRegistryLoader`, et un
-  `AssetExtraInfo` pour les codecs `ContainedAssetCodec`.
+  `AssetExtraInfo` pour les codecs `ContainedAssetCodec`. Les types d'interactions sont enregistrés dans
+  `setup()` d'`InteractionModule` et des plugins (rejoués depuis leur bytecode), les magasins `Interaction`,
+  `RootInteraction` et `EntityStatType` sont créés vides. Les validateurs de champs tournent pendant le
+  décodage, mais chacun finit par `_processValidationResults()`, qui déplace ses échecs de `getResults()` vers
+  le champ protégé `validatorExceptions` : il faut lire ce champ. Les interactions écrites en ligne sont des
+  assets à part (`fetchContainedRawAssets`), à décoder et valider elles aussi.
 - Les enums des assets (`EnumCodec` en style `CAMEL_CASE`) s'écrivent en CamelCase : `"RotationMode": "FacingPlayer"`,
   pas le nom Java `FACING_PLAYER` (refusé : « Failed to find enum value »). Le `BlockType` d'un objet n'est pas
   décodé par `Item.CODEC` : `ValidateAssets` ne voit donc pas ces erreurs.

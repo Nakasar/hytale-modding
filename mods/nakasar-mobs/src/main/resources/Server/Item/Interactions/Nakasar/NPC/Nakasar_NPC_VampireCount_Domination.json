@@ -1,5 +1,5 @@
 {
-  "$Comment": "Domination du comte : le joueur dans l'axe de son regard (12 blocs) ne peut plus le blesser pendant 6 s (Nakasar_DominatePlayer, mod Mobs).",
+  "$Comment": "Domination du comte : les joueurs sur une ligne de 12 blocs dans l'axe de son regard ne peuvent plus le blesser pendant 6 s. Seuls les joueurs sont visés : un rejeton sur la ligne ne fait pas rater le sort.",
   "Type": "Simple",
   "RunTime": 0.5,
   "Effects": {
@@ -9,13 +9,21 @@
   "Next": {
     "Type": "Selector",
     "RunTime": 0.1,
-    "Selector": { "Id": "Raycast", "Distance": 12 },
-    "HitEntity": { "Interactions": [
-        {
-          "Type": "Nakasar_DominatePlayer",
-          "Duration": 6,
-          "EffectId": "Nakasar_Count_Domination"
-        }
-    ] }
+    "Selector": {
+      "Id": "Stab",
+      "StartDistance": 0,
+      "EndDistance": 12,
+      "ExtendTop": 0.6,
+      "ExtendBottom": 0.6,
+      "ExtendLeft": 0.6,
+      "ExtendRight": 0.6,
+      "TestLineOfSight": true
+    },
+    "HitEntityRules": [
+      {
+        "Matchers": [ { "Type": "Player" } ],
+        "Next": { "Interactions": [ "Nakasar_NPC_VampireCount_Domination_Hit" ] }
+      }
+    ]
   }
 }

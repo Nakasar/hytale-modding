@@ -56,7 +56,8 @@ public class DominatePlayerInteraction extends SimpleInstantInteraction {
     @Override
     protected void firstRun(InteractionType type, InteractionContext context, CooldownHandler cooldownHandler) {
         CommandBuffer<EntityStore> buffer = context.getCommandBuffer();
-        Ref<EntityStore> caster = context.getOwningEntity() != null ? context.getOwningEntity() : context.getEntity();
+        Ref<EntityStore> owner = context.getOwningEntity();
+        Ref<EntityStore> caster = owner != null && owner.isValid() ? owner : context.getEntity();
         Ref<EntityStore> target = context.getTargetEntity();
         if (buffer == null || caster == null || !caster.isValid() || target == null || !target.isValid()
                 || target.equals(caster) || buffer.getComponent(target, Player.getComponentType()) == null
