@@ -111,6 +111,7 @@ public class ValidateRoles {
       }
     }
     errors += checkAttackTags(files, a);
+    errors += checkForcedDespawn(files, root);
     for (String r : refs) {
       String id = r.substring(0, r.indexOf(" ("));
       // Nos ids sont préfixés Nakasar_ : s'il n'est fourni par aucun pack, c'est une faute de frappe.
@@ -125,6 +126,23 @@ public class ValidateRoles {
     System.setOut(out);
     System.out.println((errors == 0 ? "OK    " : "FAIL  ") + files.size() + " rôle(s), " + errors + " erreur(s)");
     if (errors > 0) System.exit(1);
+  }
+  /**
+   * Une action {"Type": "Despawn", "Force": true} retire le PNJ pendant son propre tick : le serveur 0.7.2 relit
+   * ensuite son NPCEntity sur une référence invalide (Role.computeActionsAndSteering) et le monde entier plante.
+   * Sans Force, le PNJ est marqué à retirer (setToDespawn) et part proprement.
+   */
+  static int checkForcedDespawn(List<Path> roles, Path root) throws Exception {
+    int errors = 0;
+    java.util.regex.Pattern forced = java.util.regex.Pattern.compile(
+        "\"Type\"\\s*:\\s*\"Despawn\"\\s*,\\s*\"Force\"\\s*:\\s*true|\"Force\"\\s*:\\s*true\\s*,\\s*\"Type\"\\s*:\\s*\"Despawn\"");
+    for (Path file : roles) {
+      if (forced.matcher(java.nio.file.Files.readString(file)).find()) {
+        System.out.println("ERROR " + root.relativize(file) + " : action Despawn avec \"Force\": true (fait planter le monde en 0.7.2, retirer Force)");
+        errors++;
+      }
+    }
+    return errors;
   }
   /**
    * Les RootInteractions ne sont pas chargées hors jeu, donc le CombatInteractionValidator du serveur ne tourne pas.
