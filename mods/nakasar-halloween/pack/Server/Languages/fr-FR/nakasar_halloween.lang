@@ -1,11 +1,16 @@
 # Fragment Halloween Nakasar — textes français
 portal.name = Terres de la Nuit des Morts
-portal.flavor = Un fragment d'Orbis figé dans une éternelle veille de Toussaint. Les arbres morts y grincent, les tombes s'ouvrent et, au loin, le château du comte attend ses invités.
+portal.flavor = Un fragment d'Orbis figé dans une éternelle veille de Toussaint. Les arbres morts y grincent, les tombes s'ouvrent et, au loin, le manoir du comte attend ses invités.
 portal.tag.undead = Morts-vivants
 portal.tag.vampire = Vampires
 portal.tag.night = Nuit sans fin
-portal.objective.count = Trouver le château du comte vampire
+portal.objective.count = Trouver le manoir du comte vampire
 portal.objective.crypts = Piller les cryptes et les cimetières abandonnés
 portal.objective.pumpkins = Récolter les citrouilles des champs maudits
 items.PortalKey_Nakasar_Halloween.name = Fragment de la Nuit des Morts
 items.PortalKey_Nakasar_Halloween.description = Placez-le dans une Ancienne passerelle pour ouvrir un fragment d'Orbis hanté par les morts-vivants et les vampires.
+items.Nakasar_Stained_Glass_Red.name = Vitrail pourpre
+items.Nakasar_Stained_Glass_Violet.name = Vitrail violet
+items.Nakasar_Gargoyle.name = Gargouille
+items.Nakasar_Iron_Railing.name = Grille à lances en fer forgé
+items.Nakasar_Iron_Gate.name = Vantail de portail en fer forgé

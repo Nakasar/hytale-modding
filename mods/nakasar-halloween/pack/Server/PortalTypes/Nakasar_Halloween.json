@@ -5,15 +5,35 @@
     "FlavorText": "nakasar_halloween.portal.flavor",
     "ThemeColor": "#ff7518",
     "DescriptionTags": [
-      { "TranslationKey": "nakasar_halloween.portal.tag.undead", "Color": "#9b59b6" },
-      { "TranslationKey": "nakasar_halloween.portal.tag.vampire", "Color": "#c0392b" },
-      { "TranslationKey": "nakasar_halloween.portal.tag.night", "Color": "#ff7518" }
+      {
+        "TranslationKey": "nakasar_halloween.portal.tag.undead",
+        "Color": "#9b59b6"
+      },
+      {
+        "TranslationKey": "nakasar_halloween.portal.tag.vampire",
+        "Color": "#c0392b"
+      },
+      {
+        "TranslationKey": "nakasar_halloween.portal.tag.night",
+        "Color": "#ff7518"
+      }
     ],
     "Objectives": [
       "nakasar_halloween.portal.objective.count",
       "nakasar_halloween.portal.objective.crypts",
       "nakasar_halloween.portal.objective.pumpkins"
     ]
+  },
+  "Spawn": {
+    "SpawnProviderOverride": {
+      "Id": "Global",
+      "SpawnPoint": {
+        "X": 0.5,
+        "Y": 81.0,
+        "Z": 0.5,
+        "Yaw": 0.0
+      }
+    }
   },
   "TimeLimitSeconds": 1800,
   "CloseWhenEmpty": true,

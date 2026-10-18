@@ -13,8 +13,8 @@ Principe :
   ISLAND_RADIUS). Le dessus s'abaisse un peu près du bord puis finit en falaise ; le contour est
   dentelé par du bruit et le dessous forme un cône rocheux irrégulier. Au-delà, tout est vide.
 - Terrain : collines (deux bruits simplex, jusqu'à une quinzaine de blocs de dénivelé) autour d'une
-  hauteur de base. Le relief n'est aplani que sous les structures, le point d'apparition et le
-  château du comte, pour que les prefabs reposent à plat.
+  hauteur de base. Le relief n'est aplani que sous les structures, la crypte d'arrivée et le
+  manoir du comte, pour que les prefabs reposent à plat.
 - Matériaux : herbe brûlée en surface, avec des plaques de cendre, de terre brûlée et de gravier
   moussu (bruit), puis terre, gravier et pierre (et un peu d'ardoise et de schiste).
 - Props, par étapes : 0 = grandes structures, 1 = arbres morts et petits décors (affleurements,
@@ -36,24 +36,27 @@ LANDMARKS_EXPORT = "Nakasar_Halloween_Landmark_Positions"
 # Première couche d'air au-dessus du sol aplani (le dernier bloc solide est GROUND_Y - 1).
 GROUND_Y = 81
 SPAWN = (0, GROUND_Y, 0)
-DRACULA = (0, GROUND_Y, -110)
+# Le manoir du comte, loin au nord du point d'apparition (qui est dans la crypte d'arrivée).
+DRACULA = (0, GROUND_Y, -220)
 
 # Île : rayon total, début de la pente du bord, et rayon max du centre d'une grande structure
-# (la plus grande fait 41 × 41, le château du comte 49 × 49 : elles restent sur le plat).
-ISLAND_RADIUS = 170.0
-EDGE_START = 148.0
-STRUCTURE_MAX_RADIUS = 116.0
+# (la plus grande fait 41 × 41, le domaine du manoir 57 × 51 : elles restent sur le plat).
+ISLAND_RADIUS = 340.0
+EDGE_START = 296.0
+STRUCTURE_MAX_RADIUS = 232.0
 # Taille de la maille des grandes structures (une par cellule) : plus elle est grande, plus il reste
 # de collines entre elles.
 STRUCTURE_MESH = 66.0
-# Distance minimale entre le centre d'une grande structure et le point d'apparition / le château.
+# Distance minimale entre le centre d'une grande structure et le point d'apparition / le manoir.
 SPAWN_CLEARANCE = 45.0
-DRACULA_CLEARANCE = 64.0
+DRACULA_CLEARANCE = 72.0
+# Sol aplani autour du manoir : plat jusqu'à MANOR_FLAT blocs du centre, collines au-delà de MANOR_HILLS.
+MANOR_FLAT, MANOR_HILLS = 38.0, 58.0
 
 # Chemins relatifs à Server/Prefabs/ (PrefabPropAsset résout dans <pack>/Server/Prefabs).
 PREFABS = "Nakasar/Halloween"
 # Distance minimale entre un arbre / un décor et le centre d'une structure (demi-diagonale du
-# château du comte, 41 × 41, plus la portée des branches).
+# plus grande structure aléatoire, 41 × 41, plus la portée des branches).
 STRUCTURE_CLEARANCE = 34.0
 AIR = {"Solid": "Empty"}
 SURFACE_BLOCKS = ["Soil_Grass_Burnt", "Soil_Dirt_Burnt", "Soil_Ash", "Soil_Gravel_Mossy"]
@@ -232,7 +235,7 @@ def biome():
     landmarks["ExportAs"] = LANDMARKS_EXPORT
 
     # Grandes structures aléatoires sur le plat de l'île, à l'écart du point d'apparition et du
-    # château. Jitter 0,15 : chaque point bouge d'au plus 0,15 × 66 ≈ 10 blocs, donc deux structures
+    # manoir. Jitter 0,15 : chaque point bouge d'au plus 0,15 × 66 ≈ 10 blocs, donc deux structures
     # restent à plus de 46 blocs l'une de l'autre (la plus grande en fait 41).
     far = lambda point, d: distance_to(list_positions(point), d + 1.0, curve((0, 0), (d + 1.0, d + 1.0)))
     structure_positions = within(
@@ -243,13 +246,17 @@ def biome():
     structure_positions["ExportAs"] = STRUCTURES_EXPORT
 
     # Relief : 0 sous une structure (sol plat), 1 au-delà de 40 blocs de son centre (collines). La
-    # plus grande structure (château du comte, 41 × 41) tient dans un rayon de 22 blocs ; au-delà,
+    # plus grande structure aléatoire (41 × 41) tient dans un rayon de 22 blocs ; au-delà,
     # le sol remonte ou descend progressivement autour d'elle.
-    relief = distance_to(
-        {"Type": "Union", "Positions": [imported(STRUCTURES_EXPORT), imported(LANDMARKS_EXPORT)]},
-        42.0,
-        curve((0, 0), (24, 0), (40, 1)),
-    )
+    # Le domaine du manoir est plus grand : sol plat jusqu'à MANOR_FLAT blocs de son centre.
+    relief = {"Type": "Min", "Inputs": [
+        distance_to(
+            {"Type": "Union", "Positions": [imported(STRUCTURES_EXPORT), imported(LANDMARKS_EXPORT)]},
+            42.0,
+            curve((0, 0), (24, 0), (40, 1)),
+        ),
+        distance_to(list_positions(DRACULA), MANOR_HILLS + 2.0, curve((0, 0), (MANOR_FLAT, 0), (MANOR_HILLS, 1))),
+    ]}
     hills = add(
         mul(simplex2d(110.0, 3, "Hills"), const(1.5)),
         mul(simplex2d(26.0, 2, "Bumps"), const(0.45)),
@@ -315,11 +322,19 @@ def biome():
     ]))
     dracula = runtime(0, "Prop", list_positions(DRACULA), {
         "Type": "Constant",
-        "Prop": surface_locator(prefab("DraculaCastle", "Dracula", rotate=False), SOLID_FLOOR, 12),
+        "Prop": surface_locator(prefab("VampireManor", "Manor", rotate=False), SOLID_FLOOR, 12),
+    })
+    # Crypte d'arrivée : le portail de retour apparaît en son centre (PortalTypes : point d'apparition
+    # fixe en 0, GROUND_Y, 0), la porte donne au nord, vers le manoir.
+    spawn_crypt = runtime(0, "Prop", list_positions(SPAWN), {
+        "Type": "Constant",
+        "Prop": surface_locator(prefab("SpawnCrypt", "SpawnCrypt", rotate=False), SOLID_FLOOR, 12),
     })
 
     # Arbres et décor : jamais dans une structure, ni sur le point d'apparition.
     def outside_structures(positions):
+        manor = distance_to(list_positions(DRACULA), MANOR_FLAT + 9.0, curve((0, 0), (MANOR_FLAT + 9.0, MANOR_FLAT + 9.0)))
+        positions = within(manor, MANOR_FLAT + 8.0, 1.0e9, positions)
         return {
             "Type": "FieldFunction",
             "FieldFunction": distance_to(
@@ -392,7 +407,7 @@ def biome():
         "FloatingFunctionNodes": [],
         "Terrain": {"Type": "DAOTerrain", "Density": terrain_density},
         "MaterialProvider": materials,
-        "Props": [structures, dracula, trees, decor, plants],
+        "Props": [structures, dracula, spawn_crypt, trees, decor, plants],
         "EnvironmentProvider": environment,
         "TintProvider": {"Type": "Constant", "Color": "#7a6534"},
         # Les positions exportées sont déclarées ici pour exister même si l'ordre de lecture change.
