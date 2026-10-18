@@ -365,16 +365,17 @@ Les boss réutilisent les interactions et particules des runes.
 
 ## Feu purificateur
 
-Java, `purifying/PurifyingFireSystem` (`DelayedEntitySystem`, 4 fois par seconde, PNJ seulement), pour un PNJ du
-groupe `Nakasar_Undead` (vampires, zombies, squelettes et fantômes du mod, squelettes, zombies, goules et spectres
-vanilla) près d'une torche ou d'une lanterne de feu purificateur (distances horizontales, 5 blocs en hauteur) :
+Java, `purifying/` : `PurifyingFireSystem` (`DelayedEntitySystem`, 4 fois par seconde) et `PurifyingSteeringSystem`
+(chaque tick, entre `AvoidanceSystem` et `SteeringSystem` du jeu), pour un PNJ du groupe `Nakasar_Undead` (vampires,
+zombies, squelettes et fantômes du mod, squelettes, zombies, goules et spectres vanilla) près d'une torche ou d'une
+lanterne de feu purificateur (distances horizontales, 5 blocs en hauteur). Aucune poussée : le PNJ marche.
 
-- à moins de 11 blocs d'un feu, il oublie à chaque passage les cibles qui se tiennent à moins de 9 blocs d'un feu
-  quelconque : il s'arrête avant d'entrer dans le rayon au lieu de rebondir contre ;
-- à moins de 7 blocs, il est repoussé (`KnockbackComponent`, vitesse posée, comme `/knockback apply`) selon la somme
-  des répulsions de tous les feux proches, sans écraser un recul déjà en attente (coup de chasseur), avec une levée
-  seulement s'il n'est pas déjà au-dessus du feu (les fantômes ne montent pas) ;
-- s'il reste plus de 2 s dans ce rayon (enfermé dans le camp, dominé qui suit le joueur), le feu le brûle : 6 dégâts
+- à moins de 11 blocs d'un feu, la part de son déplacement qui le rapprocherait du feu est retirée de la direction de
+  marche voulue par son rôle (`Role.getBodySteering`) : il longe la limite au lieu d'avancer. Il oublie aussi à chaque
+  passage les cibles qui se tiennent à moins de 9 blocs d'un feu quelconque ;
+- à moins de 7 blocs, il s'éloigne en marchant (vitesse relative 0,35 au bord, 0,8 contre le feu), selon la somme des
+  répulsions des feux proches ;
+- s'il reste plus de 5 s dans ce rayon (enfermé dans le camp, dominé qui suit le joueur), le feu le brûle : 6 dégâts
   de cause `Fire` par seconde jusqu'à ce qu'il sorte ou meure.
 
 Recherche des blocs : sections de blocs chargées (`BlockSection.contains` puis `find`), comme la prison du Capitaine.
