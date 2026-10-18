@@ -130,6 +130,14 @@ Mobs (le manoir du comte, dans le fragment, contient déjà le Comte ou la Comte
 /give Nakasar_Spawner_Vampire_Count  # bloc invisible qui fait (ré)apparaître le comte là où il est posé
 ```
 
+Brèches des chasseurs de vampires (monde principal, toutes les 30 min, la nuit) :
+
+```text
+/worldevent start asset Nakasar_Hunter_Breach_Test   # ouvre tout de suite un campement près de vous, une fois
+/worldevent list                                     # l'évènement Nakasar_Hunter_Breach et son étape en cours
+/time midnight                                       # passer à la nuit pour le cycle normal
+```
+
 ### Recettes
 
 - **Autel sacrificiel** (`Nakasar_Sacrificial_Altar`) : à l'atelier de base (`Workbench`, onglet
@@ -252,6 +260,14 @@ Mobs (voir [docs/npc-0.7.2.md](docs/npc-0.7.2.md)) :
   de la même arme en fer (le bonus vient de `SilverDamageSystem`, qui lit le tag `Material: Silver` de l'arme tenue).
   L'arc et l'arbalète en argent ne tirent que des flèches en argent : vérifier qu'ils en consomment bien et qu'en
   changeant d'arme la flèche chargée revient dans l'inventaire. Teinte des textures repeintes à juger à l'œil.
+
+- **Brèches** : au démarrage du monde principal, la carte doit afficher « Brèche des chasseurs : prochaine dans
+  30:00 ». La nuit, un message prévient, puis un campement s'ouvre à 48–160 blocs d'un joueur, avec titre, son
+  et épingle sur la carte et la boussole (icône `Nakasar_HunterBreach.png`). À vérifier : que la faille rouge
+  (particules sur un bloc sans modèle) se voit, que le campement est posé au ras du sol et tourné dans tous les
+  sens sans chasseur dans un mur, que les chasseurs ne vous attaquent pas mais ripostent, et qu'à la fermeture
+  (10 min) le terrain revient et les chasseurs disparaissent. Si rien ne démarre, chercher `Nakasar_Hunter_Breach`
+  et `Nakasar_NightCondition` dans le journal.
 
 ## Organisation du dépôt
 

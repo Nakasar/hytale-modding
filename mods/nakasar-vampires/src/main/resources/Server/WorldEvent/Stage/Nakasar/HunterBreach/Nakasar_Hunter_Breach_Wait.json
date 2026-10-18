@@ -1,0 +1,18 @@
+{
+  "$Comment": "Une demi-heure entre deux brèches, affichée sur la carte (« Prochain dans … »).",
+  "Forks": [
+    {
+      "Conditions": [
+        {
+          "Type": "IntervalCondition",
+          "IntervalKey": "HunterBreachInterval",
+          "MinSeconds": 1800,
+          "MaxSeconds": 1800,
+          "ShowOnMap": true,
+          "MapIntervalKey": "server.map.worldEvents.nextIn"
+        }
+      ],
+      "Next": "Nakasar_Hunter_Breach_Night"
+    }
+  ]
+}

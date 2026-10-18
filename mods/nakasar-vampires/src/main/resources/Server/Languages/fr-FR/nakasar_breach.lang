@@ -1,0 +1,10 @@
+# Brèche des chasseurs de vampires (évènement de monde nocturne) — textes français
+name = Brèche des chasseurs
+map.waitingNight = Attend la tombée de la nuit
+map.opensIn = S'ouvre dans {time}
+map.lookAround = Cherche un lieu sauvage près de vous
+message.warning = Le voile se déchire... Une brèche va s'ouvrir dans la nuit, non loin d'ici.
+message.opened = Une brèche s'est ouverte : des chasseurs de vampires y ont dressé leur camp. Elle est indiquée sur votre carte.
+title.primary = Brèche des chasseurs
+title.secondary = Des chasseurs de vampires campent devant la brèche
+items.Nakasar_Breach_Rift.name = Brèche

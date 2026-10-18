@@ -69,6 +69,10 @@ val validateAssets = tasks.register<Exec>("validateAssets") {
     inputs.file("tools/ValidateAssets.java")
     inputs.files(blocks, gradients, refs)
     inputs.files(hytaleServer)
+    // Les classes du plugin : types d'assets écrits en Java (condition d'évènement Nakasar_NightCondition).
+    val pluginClasses = sourceSets.main.get().output.classesDirs
+    inputs.files(pluginClasses)
+    dependsOn(tasks.named("classes"))
     val marker = layout.buildDirectory.file("validateAssets.ok")
     outputs.file(marker)
     doFirst {
@@ -77,7 +81,7 @@ val validateAssets = tasks.register<Exec>("validateAssets") {
         // -Drefs : listes de butin et rôles vanilla cités par le mod (un id inconnu fait échouer le mod en jeu).
         args("-Dstdout.encoding=UTF-8", "--sun-misc-unsafe-memory-access=allow", "-Dblocks=" + blocks.absolutePath, "-Dgradients=" + gradients.absolutePath,
             "-Drefs=" + refs.absolutePath,
-            "-cp", hytaleServer.asPath, file("tools/ValidateAssets.java").absolutePath, file(serverAssets).absolutePath)
+            "-cp", (hytaleServer + pluginClasses).asPath, file("tools/ValidateAssets.java").absolutePath, file(serverAssets).absolutePath)
     }
     doLast {
         marker.get().asFile.writeText("ok")

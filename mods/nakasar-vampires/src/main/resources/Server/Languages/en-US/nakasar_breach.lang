@@ -1,0 +1,10 @@
+# Vampire hunters' breach (night-time world event) — English texts
+name = Hunters' Breach
+map.waitingNight = Waiting for nightfall
+map.opensIn = Opens in {time}
+map.lookAround = Looking for a wild spot near you
+message.warning = The veil is tearing... A breach will open in the night, not far from here.
+message.opened = A breach has opened: vampire hunters have set up camp at its mouth. It is marked on your map.
+title.primary = Hunters' Breach
+title.secondary = Vampire hunters are camping by the breach
+items.Nakasar_Breach_Rift.name = Breach

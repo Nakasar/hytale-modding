@@ -1,0 +1,8 @@
+{
+  "$Comment": "Brèche des chasseurs de vampires, sur le modèle de la brèche gobeline perpétuelle (Goblin_Breach_Perpetual_Event). Lancée dans le monde par défaut par le plugin (HunterBreachStarter). Cycle : 30 min d'attente, attente de la nuit, avertissement 1 min, ouverture du campement près d'un joueur, 10 min, puis le terrain est restauré et le cycle recommence.",
+  "Root": "Nakasar_Hunter_Breach_Wait",
+  "Persistent": true,
+  "InstanceCountMax": 1,
+  "Name": "nakasar_breach.name",
+  "Icon": "UI/WorldMap/MapMarkers/Nakasar_HunterBreach.png"
+}

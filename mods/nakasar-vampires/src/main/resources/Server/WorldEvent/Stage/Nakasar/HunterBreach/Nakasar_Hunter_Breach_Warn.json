@@ -1,0 +1,18 @@
+{
+  "$Comment": "Une minute entre l'avertissement dans le chat et l'ouverture, avec le compte à rebours sur la carte.",
+  "Forks": [
+    {
+      "Conditions": [
+        {
+          "Type": "IntervalCondition",
+          "IntervalKey": "HunterBreachWarning",
+          "MinSeconds": 60,
+          "MaxSeconds": 60,
+          "ShowOnMap": true,
+          "MapIntervalKey": "nakasar_breach.map.opensIn"
+        }
+      ],
+      "Next": "Nakasar_Hunter_Breach_Place"
+    }
+  ]
+}
