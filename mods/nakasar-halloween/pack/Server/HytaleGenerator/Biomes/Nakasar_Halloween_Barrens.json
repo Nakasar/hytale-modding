@@ -31,7 +31,7 @@
             "Delimiters": [
               {
                 "Min": -1000000000.0,
-                "Max": -0.4
+                "Max": -0.403
               }
             ],
             "Positions": {
@@ -91,8 +91,8 @@
             },
             "Delimiters": [
               {
-                "Min": -0.4,
-                "Max": -0.24
+                "Min": -0.403,
+                "Max": -0.236
               }
             ],
             "Positions": {
@@ -152,8 +152,8 @@
             },
             "Delimiters": [
               {
-                "Min": -0.24,
-                "Max": -0.11
+                "Min": -0.236,
+                "Max": -0.112
               }
             ],
             "Positions": {
@@ -213,7 +213,7 @@
             },
             "Delimiters": [
               {
-                "Min": -0.11,
+                "Min": -0.112,
                 "Max": 0.0
               }
             ],
@@ -275,7 +275,7 @@
             "Delimiters": [
               {
                 "Min": 0.0,
-                "Max": 0.11
+                "Max": 0.112
               }
             ],
             "Positions": {
@@ -335,8 +335,8 @@
             },
             "Delimiters": [
               {
-                "Min": 0.11,
-                "Max": 0.24
+                "Min": 0.112,
+                "Max": 0.236
               }
             ],
             "Positions": {
@@ -396,8 +396,8 @@
             },
             "Delimiters": [
               {
-                "Min": 0.24,
-                "Max": 0.4
+                "Min": 0.236,
+                "Max": 0.403
               }
             ],
             "Positions": {
@@ -457,7 +457,7 @@
             },
             "Delimiters": [
               {
-                "Min": 0.4,
+                "Min": 0.403,
                 "Max": 1000000000.0
               }
             ],
@@ -548,7 +548,7 @@
             "Delimiters": [
               {
                 "Min": -1000000000.0,
-                "Max": -0.4
+                "Max": -0.403
               }
             ],
             "Positions": {
@@ -609,7 +609,7 @@
             "Delimiters": [
               {
                 "Min": -1000000000.0,
-                "Max": -0.4
+                "Max": -0.403
               }
             ],
             "Positions": {
@@ -652,8 +652,8 @@
             },
             "Delimiters": [
               {
-                "Min": -0.4,
-                "Max": -0.24
+                "Min": -0.403,
+                "Max": -0.236
               }
             ],
             "Positions": {
@@ -696,8 +696,8 @@
             },
             "Delimiters": [
               {
-                "Min": -0.4,
-                "Max": -0.24
+                "Min": -0.403,
+                "Max": -0.236
               }
             ],
             "Positions": {
@@ -757,8 +757,8 @@
             },
             "Delimiters": [
               {
-                "Min": -0.24,
-                "Max": -0.11
+                "Min": -0.236,
+                "Max": -0.112
               }
             ],
             "Positions": {
@@ -818,8 +818,8 @@
             },
             "Delimiters": [
               {
-                "Min": -0.24,
-                "Max": -0.11
+                "Min": -0.236,
+                "Max": -0.112
               }
             ],
             "Positions": {
@@ -862,7 +862,7 @@
             },
             "Delimiters": [
               {
-                "Min": -0.11,
+                "Min": -0.112,
                 "Max": 0.0
               }
             ],
@@ -923,7 +923,7 @@
             },
             "Delimiters": [
               {
-                "Min": -0.11,
+                "Min": -0.112,
                 "Max": 0.0
               }
             ],
@@ -968,7 +968,7 @@
             "Delimiters": [
               {
                 "Min": 0.0,
-                "Max": 0.11
+                "Max": 0.112
               }
             ],
             "Positions": {
@@ -1029,7 +1029,7 @@
             "Delimiters": [
               {
                 "Min": 0.0,
-                "Max": 0.11
+                "Max": 0.112
               }
             ],
             "Positions": {
@@ -1072,8 +1072,8 @@
             },
             "Delimiters": [
               {
-                "Min": 0.11,
-                "Max": 0.24
+                "Min": 0.112,
+                "Max": 0.236
               }
             ],
             "Positions": {
@@ -1133,8 +1133,8 @@
             },
             "Delimiters": [
               {
-                "Min": 0.11,
-                "Max": 0.24
+                "Min": 0.112,
+                "Max": 0.236
               }
             ],
             "Positions": {
@@ -1177,8 +1177,8 @@
             },
             "Delimiters": [
               {
-                "Min": 0.24,
-                "Max": 0.4
+                "Min": 0.236,
+                "Max": 0.403
               }
             ],
             "Positions": {
@@ -1238,8 +1238,8 @@
             },
             "Delimiters": [
               {
-                "Min": 0.24,
-                "Max": 0.4
+                "Min": 0.236,
+                "Max": 0.403
               }
             ],
             "Positions": {
@@ -1282,7 +1282,7 @@
             },
             "Delimiters": [
               {
-                "Min": 0.4,
+                "Min": 0.403,
                 "Max": 1000000000.0
               }
             ],
@@ -1326,7 +1326,7 @@
             },
             "Delimiters": [
               {
-                "Min": 0.4,
+                "Min": 0.403,
                 "Max": 1000000000.0
               }
             ],
@@ -1417,7 +1417,7 @@
             "Delimiters": [
               {
                 "Min": -1000000000.0,
-                "Max": -0.4
+                "Max": -0.403
               }
             ],
             "Positions": {
@@ -1478,7 +1478,7 @@
             "Delimiters": [
               {
                 "Min": -1000000000.0,
-                "Max": -0.4
+                "Max": -0.403
               }
             ],
             "Positions": {
@@ -1521,8 +1521,8 @@
             },
             "Delimiters": [
               {
-                "Min": -0.4,
-                "Max": -0.24
+                "Min": -0.403,
+                "Max": -0.236
               }
             ],
             "Positions": {
@@ -1565,8 +1565,8 @@
             },
             "Delimiters": [
               {
-                "Min": -0.4,
-                "Max": -0.24
+                "Min": -0.403,
+                "Max": -0.236
               }
             ],
             "Positions": {
@@ -1626,8 +1626,8 @@
             },
             "Delimiters": [
               {
-                "Min": -0.24,
-                "Max": -0.11
+                "Min": -0.236,
+                "Max": -0.112
               }
             ],
             "Positions": {
@@ -1670,8 +1670,8 @@
             },
             "Delimiters": [
               {
-                "Min": -0.24,
-                "Max": -0.11
+                "Min": -0.236,
+                "Max": -0.112
               }
             ],
             "Positions": {
@@ -1731,7 +1731,7 @@
             },
             "Delimiters": [
               {
-                "Min": -0.11,
+                "Min": -0.112,
                 "Max": 0.0
               }
             ],
@@ -1775,7 +1775,7 @@
             },
             "Delimiters": [
               {
-                "Min": -0.11,
+                "Min": -0.112,
                 "Max": 0.0
               }
             ],
@@ -1837,7 +1837,7 @@
             "Delimiters": [
               {
                 "Min": 0.0,
-                "Max": 0.11
+                "Max": 0.112
               }
             ],
             "Positions": {
@@ -1881,7 +1881,7 @@
             "Delimiters": [
               {
                 "Min": 0.0,
-                "Max": 0.11
+                "Max": 0.112
               }
             ],
             "Positions": {
@@ -1941,8 +1941,8 @@
             },
             "Delimiters": [
               {
-                "Min": 0.11,
-                "Max": 0.24
+                "Min": 0.112,
+                "Max": 0.236
               }
             ],
             "Positions": {
@@ -2002,8 +2002,8 @@
             },
             "Delimiters": [
               {
-                "Min": 0.11,
-                "Max": 0.24
+                "Min": 0.112,
+                "Max": 0.236
               }
             ],
             "Positions": {
@@ -2046,8 +2046,8 @@
             },
             "Delimiters": [
               {
-                "Min": 0.24,
-                "Max": 0.4
+                "Min": 0.236,
+                "Max": 0.403
               }
             ],
             "Positions": {
@@ -2090,8 +2090,8 @@
             },
             "Delimiters": [
               {
-                "Min": 0.24,
-                "Max": 0.4
+                "Min": 0.236,
+                "Max": 0.403
               }
             ],
             "Positions": {
@@ -2151,7 +2151,7 @@
             },
             "Delimiters": [
               {
-                "Min": 0.4,
+                "Min": 0.403,
                 "Max": 1000000000.0
               }
             ],
@@ -2212,7 +2212,7 @@
             },
             "Delimiters": [
               {
-                "Min": 0.4,
+                "Min": 0.403,
                 "Max": 1000000000.0
               }
             ],
@@ -2286,7 +2286,7 @@
             "Delimiters": [
               {
                 "Min": -1000000000.0,
-                "Max": -0.4
+                "Max": -0.403
               }
             ],
             "Positions": {
@@ -2347,7 +2347,7 @@
             "Delimiters": [
               {
                 "Min": -1000000000.0,
-                "Max": -0.4
+                "Max": -0.403
               }
             ],
             "Positions": {
@@ -2390,8 +2390,8 @@
             },
             "Delimiters": [
               {
-                "Min": -0.4,
-                "Max": -0.24
+                "Min": -0.403,
+                "Max": -0.236
               }
             ],
             "Positions": {
@@ -2451,8 +2451,8 @@
             },
             "Delimiters": [
               {
-                "Min": -0.4,
-                "Max": -0.24
+                "Min": -0.403,
+                "Max": -0.236
               }
             ],
             "Positions": {
@@ -2495,8 +2495,8 @@
             },
             "Delimiters": [
               {
-                "Min": -0.24,
-                "Max": -0.11
+                "Min": -0.236,
+                "Max": -0.112
               }
             ],
             "Positions": {
@@ -2556,8 +2556,8 @@
             },
             "Delimiters": [
               {
-                "Min": -0.24,
-                "Max": -0.11
+                "Min": -0.236,
+                "Max": -0.112
               }
             ],
             "Positions": {
@@ -2600,7 +2600,7 @@
             },
             "Delimiters": [
               {
-                "Min": -0.11,
+                "Min": -0.112,
                 "Max": 0.0
               }
             ],
@@ -2661,7 +2661,7 @@
             },
             "Delimiters": [
               {
-                "Min": -0.11,
+                "Min": -0.112,
                 "Max": 0.0
               }
             ],
@@ -2706,7 +2706,7 @@
             "Delimiters": [
               {
                 "Min": 0.0,
-                "Max": 0.11
+                "Max": 0.112
               }
             ],
             "Positions": {
@@ -2750,7 +2750,7 @@
             "Delimiters": [
               {
                 "Min": 0.0,
-                "Max": 0.11
+                "Max": 0.112
               }
             ],
             "Positions": {
@@ -2810,8 +2810,8 @@
             },
             "Delimiters": [
               {
-                "Min": 0.11,
-                "Max": 0.24
+                "Min": 0.112,
+                "Max": 0.236
               }
             ],
             "Positions": {
@@ -2854,8 +2854,8 @@
             },
             "Delimiters": [
               {
-                "Min": 0.11,
-                "Max": 0.24
+                "Min": 0.112,
+                "Max": 0.236
               }
             ],
             "Positions": {
@@ -2915,8 +2915,8 @@
             },
             "Delimiters": [
               {
-                "Min": 0.24,
-                "Max": 0.4
+                "Min": 0.236,
+                "Max": 0.403
               }
             ],
             "Positions": {
@@ -2976,8 +2976,8 @@
             },
             "Delimiters": [
               {
-                "Min": 0.24,
-                "Max": 0.4
+                "Min": 0.236,
+                "Max": 0.403
               }
             ],
             "Positions": {
@@ -3020,7 +3020,7 @@
             },
             "Delimiters": [
               {
-                "Min": 0.4,
+                "Min": 0.403,
                 "Max": 1000000000.0
               }
             ],
@@ -3081,7 +3081,7 @@
             },
             "Delimiters": [
               {
-                "Min": 0.4,
+                "Min": 0.403,
                 "Max": 1000000000.0
               }
             ],
@@ -3155,7 +3155,7 @@
             "Delimiters": [
               {
                 "Min": -1000000000.0,
-                "Max": -0.4
+                "Max": -0.403
               }
             ],
             "Positions": {
@@ -3199,7 +3199,7 @@
             "Delimiters": [
               {
                 "Min": -1000000000.0,
-                "Max": -0.4
+                "Max": -0.403
               }
             ],
             "Positions": {
@@ -3259,8 +3259,8 @@
             },
             "Delimiters": [
               {
-                "Min": -0.4,
-                "Max": -0.24
+                "Min": -0.403,
+                "Max": -0.236
               }
             ],
             "Positions": {
@@ -3320,8 +3320,8 @@
             },
             "Delimiters": [
               {
-                "Min": -0.4,
-                "Max": -0.24
+                "Min": -0.403,
+                "Max": -0.236
               }
             ],
             "Positions": {
@@ -3364,8 +3364,8 @@
             },
             "Delimiters": [
               {
-                "Min": -0.24,
-                "Max": -0.11
+                "Min": -0.236,
+                "Max": -0.112
               }
             ],
             "Positions": {
@@ -3408,8 +3408,8 @@
             },
             "Delimiters": [
               {
-                "Min": -0.24,
-                "Max": -0.11
+                "Min": -0.236,
+                "Max": -0.112
               }
             ],
             "Positions": {
@@ -3469,7 +3469,7 @@
             },
             "Delimiters": [
               {
-                "Min": -0.11,
+                "Min": -0.112,
                 "Max": 0.0
               }
             ],
@@ -3513,7 +3513,7 @@
             },
             "Delimiters": [
               {
-                "Min": -0.11,
+                "Min": -0.112,
                 "Max": 0.0
               }
             ],
@@ -3575,7 +3575,7 @@
             "Delimiters": [
               {
                 "Min": 0.0,
-                "Max": 0.11
+                "Max": 0.112
               }
             ],
             "Positions": {
@@ -3636,7 +3636,7 @@
             "Delimiters": [
               {
                 "Min": 0.0,
-                "Max": 0.11
+                "Max": 0.112
               }
             ],
             "Positions": {
@@ -3679,8 +3679,8 @@
             },
             "Delimiters": [
               {
-                "Min": 0.11,
-                "Max": 0.24
+                "Min": 0.112,
+                "Max": 0.236
               }
             ],
             "Positions": {
@@ -3740,8 +3740,8 @@
             },
             "Delimiters": [
               {
-                "Min": 0.11,
-                "Max": 0.24
+                "Min": 0.112,
+                "Max": 0.236
               }
             ],
             "Positions": {
@@ -3784,8 +3784,8 @@
             },
             "Delimiters": [
               {
-                "Min": 0.24,
-                "Max": 0.4
+                "Min": 0.236,
+                "Max": 0.403
               }
             ],
             "Positions": {
@@ -3845,8 +3845,8 @@
             },
             "Delimiters": [
               {
-                "Min": 0.24,
-                "Max": 0.4
+                "Min": 0.236,
+                "Max": 0.403
               }
             ],
             "Positions": {
@@ -3889,7 +3889,7 @@
             },
             "Delimiters": [
               {
-                "Min": 0.4,
+                "Min": 0.403,
                 "Max": 1000000000.0
               }
             ],
@@ -3950,7 +3950,7 @@
             },
             "Delimiters": [
               {
-                "Min": 0.4,
+                "Min": 0.403,
                 "Max": 1000000000.0
               }
             ],
@@ -4024,7 +4024,7 @@
             "Delimiters": [
               {
                 "Min": -1000000000.0,
-                "Max": -0.4
+                "Max": -0.403
               }
             ],
             "Positions": {
@@ -4068,7 +4068,7 @@
             "Delimiters": [
               {
                 "Min": -1000000000.0,
-                "Max": -0.4
+                "Max": -0.403
               }
             ],
             "Positions": {
@@ -4128,8 +4128,8 @@
             },
             "Delimiters": [
               {
-                "Min": -0.4,
-                "Max": -0.24
+                "Min": -0.403,
+                "Max": -0.236
               }
             ],
             "Positions": {
@@ -4172,8 +4172,8 @@
             },
             "Delimiters": [
               {
-                "Min": -0.4,
-                "Max": -0.24
+                "Min": -0.403,
+                "Max": -0.236
               }
             ],
             "Positions": {
@@ -4233,8 +4233,8 @@
             },
             "Delimiters": [
               {
-                "Min": -0.24,
-                "Max": -0.11
+                "Min": -0.236,
+                "Max": -0.112
               }
             ],
             "Positions": {
@@ -4294,8 +4294,8 @@
             },
             "Delimiters": [
               {
-                "Min": -0.24,
-                "Max": -0.11
+                "Min": -0.236,
+                "Max": -0.112
               }
             ],
             "Positions": {
@@ -4338,7 +4338,7 @@
             },
             "Delimiters": [
               {
-                "Min": -0.11,
+                "Min": -0.112,
                 "Max": 0.0
               }
             ],
@@ -4382,7 +4382,7 @@
             },
             "Delimiters": [
               {
-                "Min": -0.11,
+                "Min": -0.112,
                 "Max": 0.0
               }
             ],
@@ -4444,7 +4444,7 @@
             "Delimiters": [
               {
                 "Min": 0.0,
-                "Max": 0.11
+                "Max": 0.112
               }
             ],
             "Positions": {
@@ -4505,7 +4505,7 @@
             "Delimiters": [
               {
                 "Min": 0.0,
-                "Max": 0.11
+                "Max": 0.112
               }
             ],
             "Positions": {
@@ -4548,8 +4548,8 @@
             },
             "Delimiters": [
               {
-                "Min": 0.11,
-                "Max": 0.24
+                "Min": 0.112,
+                "Max": 0.236
               }
             ],
             "Positions": {
@@ -4592,8 +4592,8 @@
             },
             "Delimiters": [
               {
-                "Min": 0.11,
-                "Max": 0.24
+                "Min": 0.112,
+                "Max": 0.236
               }
             ],
             "Positions": {
@@ -4653,8 +4653,8 @@
             },
             "Delimiters": [
               {
-                "Min": 0.24,
-                "Max": 0.4
+                "Min": 0.236,
+                "Max": 0.403
               }
             ],
             "Positions": {
@@ -4714,8 +4714,8 @@
             },
             "Delimiters": [
               {
-                "Min": 0.24,
-                "Max": 0.4
+                "Min": 0.236,
+                "Max": 0.403
               }
             ],
             "Positions": {
@@ -4758,7 +4758,7 @@
             },
             "Delimiters": [
               {
-                "Min": 0.4,
+                "Min": 0.403,
                 "Max": 1000000000.0
               }
             ],
@@ -4802,7 +4802,7 @@
             },
             "Delimiters": [
               {
-                "Min": 0.4,
+                "Min": 0.403,
                 "Max": 1000000000.0
               }
             ],
@@ -4893,7 +4893,7 @@
             "Delimiters": [
               {
                 "Min": -1000000000.0,
-                "Max": -0.4
+                "Max": -0.403
               }
             ],
             "Positions": {
@@ -4954,7 +4954,7 @@
             "Delimiters": [
               {
                 "Min": -1000000000.0,
-                "Max": -0.4
+                "Max": -0.403
               }
             ],
             "Positions": {
@@ -4997,8 +4997,8 @@
             },
             "Delimiters": [
               {
-                "Min": -0.4,
-                "Max": -0.24
+                "Min": -0.403,
+                "Max": -0.236
               }
             ],
             "Positions": {
@@ -5058,8 +5058,8 @@
             },
             "Delimiters": [
               {
-                "Min": -0.4,
-                "Max": -0.24
+                "Min": -0.403,
+                "Max": -0.236
               }
             ],
             "Positions": {
@@ -5102,8 +5102,8 @@
             },
             "Delimiters": [
               {
-                "Min": -0.24,
-                "Max": -0.11
+                "Min": -0.236,
+                "Max": -0.112
               }
             ],
             "Positions": {
@@ -5163,8 +5163,8 @@
             },
             "Delimiters": [
               {
-                "Min": -0.24,
-                "Max": -0.11
+                "Min": -0.236,
+                "Max": -0.112
               }
             ],
             "Positions": {
@@ -5207,7 +5207,7 @@
             },
             "Delimiters": [
               {
-                "Min": -0.11,
+                "Min": -0.112,
                 "Max": 0.0
               }
             ],
@@ -5251,7 +5251,7 @@
             },
             "Delimiters": [
               {
-                "Min": -0.11,
+                "Min": -0.112,
                 "Max": 0.0
               }
             ],
@@ -5313,7 +5313,7 @@
             "Delimiters": [
               {
                 "Min": 0.0,
-                "Max": 0.11
+                "Max": 0.112
               }
             ],
             "Positions": {
@@ -5374,7 +5374,7 @@
             "Delimiters": [
               {
                 "Min": 0.0,
-                "Max": 0.11
+                "Max": 0.112
               }
             ],
             "Positions": {
@@ -5417,8 +5417,8 @@
             },
             "Delimiters": [
               {
-                "Min": 0.11,
-                "Max": 0.24
+                "Min": 0.112,
+                "Max": 0.236
               }
             ],
             "Positions": {
@@ -5461,8 +5461,8 @@
             },
             "Delimiters": [
               {
-                "Min": 0.11,
-                "Max": 0.24
+                "Min": 0.112,
+                "Max": 0.236
               }
             ],
             "Positions": {
@@ -5522,8 +5522,8 @@
             },
             "Delimiters": [
               {
-                "Min": 0.24,
-                "Max": 0.4
+                "Min": 0.236,
+                "Max": 0.403
               }
             ],
             "Positions": {
@@ -5583,8 +5583,8 @@
             },
             "Delimiters": [
               {
-                "Min": 0.24,
-                "Max": 0.4
+                "Min": 0.236,
+                "Max": 0.403
               }
             ],
             "Positions": {
@@ -5627,7 +5627,7 @@
             },
             "Delimiters": [
               {
-                "Min": 0.4,
+                "Min": 0.403,
                 "Max": 1000000000.0
               }
             ],
@@ -5688,7 +5688,7 @@
             },
             "Delimiters": [
               {
-                "Min": 0.4,
+                "Min": 0.403,
                 "Max": 1000000000.0
               }
             ],
@@ -6800,13 +6800,18 @@
                   },
                   "PlacementCap": 1,
                   "Prop": {
-                    "Type": "Prefab",
-                    "WeightedPrefabPaths": [
-                      {
-                        "Path": "Nakasar/Halloween/GuardPosts/Ruins",
-                        "Weight": 1.0
-                      }
-                    ]
+                    "Type": "RandomRotator",
+                    "HorizontalRotations": true,
+                    "Seed": "GuardPostsRuins",
+                    "Prop": {
+                      "Type": "Prefab",
+                      "WeightedPrefabPaths": [
+                        {
+                          "Path": "Nakasar/Halloween/GuardPosts/Ruins",
+                          "Weight": 1.0
+                        }
+                      ]
+                    }
                   }
                 }
               }
@@ -6849,13 +6854,18 @@
                   },
                   "PlacementCap": 1,
                   "Prop": {
-                    "Type": "Prefab",
-                    "WeightedPrefabPaths": [
-                      {
-                        "Path": "Nakasar/Halloween/GuardPosts/Spiders",
-                        "Weight": 1.0
-                      }
-                    ]
+                    "Type": "RandomRotator",
+                    "HorizontalRotations": true,
+                    "Seed": "GuardPostsSpiders",
+                    "Prop": {
+                      "Type": "Prefab",
+                      "WeightedPrefabPaths": [
+                        {
+                          "Path": "Nakasar/Halloween/GuardPosts/Spiders",
+                          "Weight": 1.0
+                        }
+                      ]
+                    }
                   }
                 }
               }
@@ -6898,13 +6908,18 @@
                   },
                   "PlacementCap": 1,
                   "Prop": {
-                    "Type": "Prefab",
-                    "WeightedPrefabPaths": [
-                      {
-                        "Path": "Nakasar/Halloween/GuardPosts/Rebels",
-                        "Weight": 1.0
-                      }
-                    ]
+                    "Type": "RandomRotator",
+                    "HorizontalRotations": true,
+                    "Seed": "GuardPostsRebels",
+                    "Prop": {
+                      "Type": "Prefab",
+                      "WeightedPrefabPaths": [
+                        {
+                          "Path": "Nakasar/Halloween/GuardPosts/Rebels",
+                          "Weight": 1.0
+                        }
+                      ]
+                    }
                   }
                 }
               }
@@ -6947,13 +6962,18 @@
                   },
                   "PlacementCap": 1,
                   "Prop": {
-                    "Type": "Prefab",
-                    "WeightedPrefabPaths": [
-                      {
-                        "Path": "Nakasar/Halloween/GuardPosts/Garrison",
-                        "Weight": 1.0
-                      }
-                    ]
+                    "Type": "RandomRotator",
+                    "HorizontalRotations": true,
+                    "Seed": "GuardPostsGarrison",
+                    "Prop": {
+                      "Type": "Prefab",
+                      "WeightedPrefabPaths": [
+                        {
+                          "Path": "Nakasar/Halloween/GuardPosts/Garrison",
+                          "Weight": 1.0
+                        }
+                      ]
+                    }
                   }
                 }
               }

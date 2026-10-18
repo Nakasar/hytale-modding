@@ -478,7 +478,6 @@ PATH = [("Soil_Pathway", 5), ("Soil_Gravel", 2), ("Rock_Stone_Cobble_Mossy", 1)]
 WEBS = [("Deco_SpiderWeb_Full", 3), ("Deco_SpiderWeb", 4)]
 BONES = [("Deco_Bone_Pile", 4), ("Deco_Bone_Skulls", 2), ("Deco_Bone_Ribs", 2), ("Deco_Bone_Full", 2), ("Deco_Bone_Spine", 1)]
 CANDLES = [("Furniture_Ancient_Candle", 3), ("Furniture_Feran_Candle", 2), ("Furniture_Crude_Candle", 1)]
-PUMPKINS = [("Deco_Halloween_Pumpkin_Scary", 5), ("Deco_Halloween_Pumpkin_Cute", 1), ("Deco_Halloween_Pumpkin_Hypixel", 1)]
 DEAD_PLANTS = [("Plant_Bush_Dead", 3), ("Plant_Grass_Gnarled", 4), ("Plant_Grass_Gnarled_Short", 3), ("Plant_Grass_Gnarled_Tall", 2),
                ("Plant_Bush_Dead_Twisted", 1), ("Plant_Bramble_Dead_Twisted", 1)]
 GLOW_MUSHROOMS = [("Plant_Crop_Mushroom_Glowing_Purple", 3), ("Plant_Crop_Mushroom_Glowing_Violet", 2), ("Plant_Crop_Mushroom_Glowing_Green", 1)]
@@ -734,6 +733,17 @@ def face_toward(x, z, tx, tz):
     return SOUTH if dz >= 0 else NORTH
 
 
+def hang_lantern(p, x, y, z):
+    """Lanterne de plafond en (x, y, z), suspendue par une chaîne au premier bloc plein au-dessus."""
+    top = y + 1
+    while p.free(x, top, z):
+        top += 1
+        if top > y + 12:
+            raise ValueError(f"lanterne en ({x}, {y}, {z}) : pas de plafond au-dessus")
+    p.fill(x, y + 1, z, x, top - 1, z, "Deco_Iron_Chains_Vertical")
+    p.set(x, y, z, "Deco_Lantern_Ceiling")
+
+
 def lantern_post(p, x, z, height=2, top="Deco_Lantern"):
     p.fill(x, 0, z, x, height - 1, z, "Wood_Deadwood_Beam")
     p.set(x, height, z, top)
@@ -800,7 +810,7 @@ def pumpkin_field(seed, w=23, d=19):
         lantern_post(p, cx, cz, 2)
     for cz, facing in ((z0 - 1, NORTH), (z1 + 1, SOUTH)):
         for cx in (-2, 2):
-            lantern_post(p, cx, cz, 2, "Deco_Halloween_Pumpkin_Scary")
+            p.fill(cx, 0, cz, cx, 1, cz, "Wood_Deadwood_Beam")
             p.set(cx, 2, cz, "Deco_Halloween_Pumpkin_Scary", facing)
     for z in range(z0 + 3, z1 - 2, 6):
         lantern_post(p, 2 if (z // 6) % 2 else -2, z, 2)
@@ -1701,8 +1711,8 @@ def vampire_manor(seed):
     p.set(-10, 0, 0, "Furniture_Royal_Magic_Chair", NORTH)
     for z in (-7, -4, -1):
         p.set(-11 + (z % 2), 1, z, p.pick(CANDLES))
-    for z in (-6, -3):
-        p.set(-10 + (z % 2), 1, z, r.choice(["Deco_Plate", "Deco_Tankard"]), SOUTH)
+    for x, z in ((-10, -6), (-11, -3)):              # sur la table (x -11..-10), entre les bougies
+        p.set(x, 1, z, r.choice(["Deco_Plate", "Deco_Tankard"]), SOUTH)
     for z in (-6, -2):
         p.set(-10, upper - 1, z, "Furniture_Tavern_Chandelier")
     p.set(-9, 0, 1, "Furniture_Village_Counter", NORTH)      # desserte contre la façade
@@ -1743,7 +1753,8 @@ def vampire_manor(seed):
     p.set(9, 1, -5, "Deco_Book_Pile_Small", SOUTH)
     p.set(10, 1, -4, p.pick(CANDLES))
     p.set(10, 1, -5, "Deco_Scroll", EAST)
-    p.set(8, 0, 1, "Deco_Book_Pile_Large", SOUTH)
+    p.set(8, 0, 0, "Deco_Book_Pile_Large", SOUTH)
+    p.chest(8, 0, 1, "Furniture_Ancient_Chest_Small", EAST, LOOT_MANOR_LIBRARY)
     p.set(10, upper - 1, -1, "Furniture_Tavern_Chandelier")
 
     # --- crypte sous le hall ----------------------------------------------------------------------
@@ -1880,7 +1891,6 @@ def vampire_manor(seed):
 
 TIMBER = [("Wood_Deadwood_Planks", 6), ("Wood_Deadwood_Decorative", 1)]
 COBBLE_WALL = [("Rock_Stone_Cobble", 6), ("Rock_Stone_Cobble_Mossy", 2), ("Rock_Stone", 1)]
-PLANK_FLOOR = [("Wood_Deadwood_Planks", 5), ("Wood_Deadwood_Planks_Half", 0)]
 WILD_GROWTH = [("Plant_Grass_Gnarled", 4), ("Plant_Grass_Gnarled_Tall", 2), ("Plant_Bush_Dead", 2), ("Plant_Bush_Dead_Tall", 1),
                ("Plant_Bramble_Dead_Twisted", 1), ("Plant_Grass_Dry_Tall", 2)]
 RUBBLE = [("Deco_Trash_Pile_Small", 3), ("Rock_Stone_Cobble_Half", 2), ("Wood_Deadwood_Planks_Half", 2), ("Deco_Trash_Pile_Large", 1)]
@@ -2066,7 +2076,7 @@ def house(p, x0, z0, w, d, door, floors=1, kind="home", loot=LOOT_VILLAGE, wood=
         if floors > 1:
             place_along_walls(p, room, bed_y, "Furniture_Ancient_Bed", keep)
             place_along_walls(p, room, 0, "Furniture_Ancient_Crate", keep)
-    p.set((x0 + x1) // 2, top, (z0 + z1) // 2, "Deco_Lantern_Ceiling")
+    hang_lantern(p, (x0 + x1) // 2, top, (z0 + z1) // 2)
     return (px + dx, pz + dz)
 
 
@@ -2083,6 +2093,7 @@ def well(p, cx, cz):
     for x in (cx - 1, cx + 1):
         p.fill(x, 1, cz, x, 2, cz, "Wood_Deadwood_Beam")
     roof(p, cx - 1, cz, cx + 1, cz, 3, "Wood_Deadwood", "z", overhang=0)
+    p.set(cx, 3, cz, "Wood_Deadwood_Beam", ALONG_X)          # treuil sous le faîtage
     p.set(cx, 1, cz - 1, "Deco_Bucket")
 
 
@@ -2162,15 +2173,15 @@ def spider_lair(p, x0, z0, x1, z1, nests=5):
 
 
 def spawners(p, name, spots):
-    """Blocs d'apparition sur des cases libres posées sur du plein (la première qui convient)."""
-    placed = 0
+    """Un bloc d'apparition par case (un PNJ chacun), sur une case libre posée sur du plein : la case
+    demandée, sinon la plus proche dans un rayon de 3. Échoue si une case n'a aucune place."""
     for x, z in spots:
-        for y in (0, 5, 1, -1):
-            if p.free(x, y, z) and p.free(x, y + 1, z) and not p.free(x, y - 1, z):
-                p.set(x, y, z, name)
-                placed += 1
-                break
-    return placed
+        ring = sorted(((dx, dz) for dx in range(-3, 4) for dz in range(-3, 4)), key=lambda d: d[0] ** 2 + d[1] ** 2)
+        spot = next(((x + dx, y, z + dz) for dx, dz in ring for y in (0, 5, 1, -1)
+                     if p.free(x + dx, y, z + dz) and p.free(x + dx, y + 1, z + dz) and not p.free(x + dx, y - 1, z + dz)), None)
+        if spot is None:
+            raise ValueError(f"{name} : aucune case libre près de ({x}, {z})")
+        p.set(*spot, name)
 
 
 VILLAGE_PLOTS = [
@@ -2353,8 +2364,8 @@ def prison_cells(p, x0, z0, count=3, door="Furniture_Temple_Dark_Door"):
 
 def guard_post(seed, variant):
     """Ancien poste de garde : enceinte de pierre, tour de guet, caserne, quartiers du capitaine,
-    armurerie, prison à trois cellules, cour d'entraînement. Jamais tourné par le worldgen (les
-    cellules gardent leur place par rapport au Capitaine).
+    armurerie, prison à trois cellules, cachot dans l'armurerie, cour d'entraînement. Le Capitaine
+    trouve toujours une cellule à moins de 24 blocs de lui, d'où que ce soit dans l'enceinte.
 
     `variant` : "ruins", "spiders", "rebels" (paysans zombifiés qui ont pris le poste), "garrison"
     (gardes squelettes en armure et leur capitaine).
@@ -2393,7 +2404,7 @@ def guard_post(seed, variant):
     p.set(-7, 1, bz1 - 2, "Deco_Tankard", SOUTH)
     for x in (-8, -2):
         p.set(x, 2, bz1, "Furniture_Ancient_Window", 0)
-    p.set(-3, 3, -12, "Deco_Lantern_Ceiling")
+    hang_lantern(p, -3, 3, -12)
     # quartiers du capitaine au nord-est : lit, bureau, coffre
     qx0, qz0, qx1, qz1 = 5, -16, 15, -9
     p.floor(qx0, qz0, qx1, qz1, -1, STONE_FLOOR)
@@ -2410,7 +2421,7 @@ def guard_post(seed, variant):
     p.set(qx1 - 1, 0, qz1 - 3, "Furniture_Human_Ruins_Bookshelf", WEST)
     p.set(qx0 + 4, 2, qz0, "Furniture_Human_Ruins_Banner", SOUTH)
     p.set(12, 2, qz1, "Furniture_Ancient_Window", 0)
-    p.set(10, 3, -12, "Deco_Lantern_Ceiling")
+    hang_lantern(p, 10, 3, -12)
     # armurerie à l'ouest
     ax0, az0, ax1, az1 = -16, -4, -10, 6
     p.floor(ax0, az0, ax1, az1, -1, STONE_FLOOR)
@@ -2420,10 +2431,13 @@ def guard_post(seed, variant):
     p.set(ax1, 0, 1, "Furniture_Human_Ruins_Door", 1)
     p.set(ax0 + 1, 0, az0 + 2, "Bench_Weapon", EAST)
     p.set(ax0 + 1, 0, az0 + 6, "Bench_Armour", EAST)
-    p.chest(ax0 + 2, 0, az1 - 1, "Furniture_Human_Ruins_Chest_Large", NORTH, LOOT_ARMORY)
+    p.chest(ax0 + 1, 0, az1 - 1, "Furniture_Human_Ruins_Chest_Large", NORTH, LOOT_ARMORY)
     p.set(ax1 - 1, 0, az0 + 1, "Furniture_Ancient_Barrel")
     p.set(ax1 - 1, 0, az0 + 2, "Furniture_Ancient_Crate")
-    p.set(-13, 3, 1, "Deco_Lantern_Ceiling")
+    hang_lantern(p, -13, 3, 1)
+    # cachot à l'ouest, dans l'armurerie : le Capitaine cherche une cellule à moins de 24 blocs de
+    # lui, où qu'il soit dans le poste (les trois autres sont à l'est)
+    prison_cells(p, -13, 3, 1)
     # prison à l'est : couloir, trois cellules, cachot du geôlier
     jx0, jz0, jx1, jz1 = 7, -5, 15, 8
     p.floor(jx0, jz0, jx1, jz1, -1, STONE_FLOOR)
@@ -2462,6 +2476,8 @@ def guard_post(seed, variant):
         for pos, (name, rot) in list(p.blocks.items()):
             if name == "Wood_Deadwood_Roof" and pos[0] < 3 and pos[2] < -8 and r.random() < 0.6:
                 p.set(*pos, AIR)
+        for pos in floating_blocks(p):                # pans de toit restés en l'air
+            p.set(*pos, None)
         p.scatter(-S + 2, 0, -S + 2, S - 2, S - 2, 18, [(BLOOD, 3), ("Deco_Bone_Pile", 1), ("Deco_Trash_Pile_Small", 1)], rot=0)
         spawners(p, SPAWN_REBEL, [(0, 13), (-6, 6), (5, -6), (-3, -12), (10, 3), (-13, 3)])
     elif variant == "spiders":

@@ -52,20 +52,20 @@ EDGE_START = 296.0
 STRUCTURE_JITTER = 16.0
 # Types de structures : (nom, [(dossier de prefabs, poids)], tourner ?, [part des mondes où chaque
 # exemplaire existe]) : le premier exemplaire est toujours là, le second une fois sur deux, le
-# village 60 % du temps. Le poste de garde n'est jamais tourné : ses cellules restent du côté que le
-# Capitaine connaît.
+# village 60 % du temps.
 STRUCTURE_TYPES = [
     ("Village", [("Villages/Zombies", 1.0), ("Villages/Ruins", 1.0), ("Villages/Spiders", 1.0)], True, [0.6]),
     ("Farm", [("Farms/Zombies", 1.0), ("Farms/Ruins", 1.0), ("Farms/Burnt", 1.0)], True, [1.0, 0.5]),
     ("GuardPost", [("GuardPosts/Ruins", 1.0), ("GuardPosts/Spiders", 1.0), ("GuardPosts/Rebels", 1.0),
-                   ("GuardPosts/Garrison", 1.2)], False, [1.0, 0.5]),
+                   ("GuardPosts/Garrison", 1.2)], True, [1.0, 0.5]),
     ("Cemetery", [("Cemeteries/Haunted", 1.0), ("Cemeteries/Spiders", 1.0), ("Cemeteries/Undead", 1.0)], True, [1.0, 0.5]),
     ("Crypt", [("Crypts", 1.0)], True, [1.0, 0.5]),
     ("PumpkinField", [("PumpkinFields", 1.0)], True, [1.0, 0.5]),
     ("HauntedCastle", [("HauntedCastles", 1.0)], True, [1.0, 0.5]),
 ]
 # Emplacements (x, z, grand ?) : 13, un par exemplaire. Les grands peuvent recevoir le village
-# (69 × 69) ; entre deux structures, au moins 17 blocs dans le pire des décalages.
+# (69 × 69) ; entre deux structures, au moins 9 blocs dans le pire des décalages (village et ferme
+# voisins décalés l'un vers l'autre).
 SLOTS = [
     (-35, 195, True), (115, 165, True), (185, -65, True),
     (-205, 30, False), (-190, -85, False), (-155, 145, False), (-115, -175, False), (-80, -55, False),
@@ -75,7 +75,17 @@ SLOTS = [
 # fois pour toutes), le monde en choisit une selon un bruit lu en un point fixe (valeur qui ne dépend
 # que de la graine). Seuils à peu près équiprobables pour un bruit simplex centré.
 LAYOUTS = 8
-LAYOUT_BANDS = [-1.0e9, -0.4, -0.24, -0.11, 0.0, 0.11, 0.24, 0.4, 1.0e9]
+LAYOUT_NOISE_SPREAD = 0.35   # écart type supposé du bruit en un point, d'une graine à l'autre
+
+
+def layout_bands():
+    """LAYOUTS + 1 seuils : quantiles d'une loi normale d'écart type LAYOUT_NOISE_SPREAD."""
+    from statistics import NormalDist
+    inner = [NormalDist(0.0, LAYOUT_NOISE_SPREAD).inv_cdf(k / LAYOUTS) for k in range(1, LAYOUTS)]
+    return [-1.0e9] + [round(v, 3) for v in inner] + [1.0e9]
+
+
+LAYOUT_BANDS = layout_bands()
 
 
 def layouts():
