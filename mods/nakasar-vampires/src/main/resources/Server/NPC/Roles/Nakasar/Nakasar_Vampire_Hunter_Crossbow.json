@@ -1,5 +1,5 @@
 {
-  "$Comment": "Chasseuse de vampires à l'arbalète : carreaux à pointe d'argent (16 dégâts) jusqu'à 18 blocs. Pacifique envers les joueurs tant qu'on ne l'attaque pas ; ennemi juré des mobs du fragment. Ne s'éloigne pas à plus de 14 blocs de son poste dans le camp.",
+  "$Comment": "Chasseuse de vampires à l'arbalète en argent : carreaux à pointe d'argent (16 dégâts, doublés contre les vampires) jusqu'à 18 blocs. Pacifique envers les joueurs tant qu'on ne l'attaque pas ; ennemi juré des mobs du fragment. Ne s'éloigne pas à plus de 14 blocs de son poste dans le camp.",
   "Type": "Generic",
   "Appearance": "Nakasar_Vampire_Hunter_Crossbow",
   "NameTranslationKey": "nakasar_mobs.npc.Vampire_Hunter_Crossbow.name",
@@ -23,7 +23,7 @@
     }
   ],
   "HotbarItems": [
-    "Weapon_Crossbow_Iron"
+    "Weapon_Nakasar_Crossbow_Silver"
   ],
   "Instructions": [
     {
