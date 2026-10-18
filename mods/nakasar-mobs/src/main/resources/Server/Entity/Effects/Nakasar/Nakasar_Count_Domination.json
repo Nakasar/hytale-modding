@@ -1,0 +1,10 @@
+{
+  "$Comment": "Posé par le Comte Vampire sur le joueur dominé : retour visuel. L'immunité elle-même vient de Nakasar_DominatePlayer.",
+  "Duration": 6,
+  "OverlapBehavior": "Overwrite",
+  "Debuff": true,
+  "ApplicationEffects": {
+    "EntityTopTint": "#ff9ad5",
+    "EntityBottomTint": "#b23fff"
+  }
+}

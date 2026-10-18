@@ -1,0 +1,7 @@
+{
+  "$Comment": "Rejeton de vampire : modèle vanilla (id à confirmer), un peu plus petit, faible lueur rouge.",
+  "Parent": "Ghoul",
+  "MinScale": 0.85,
+  "MaxScale": 0.95,
+  "Light": { "Color": "#7a0c1c", "Radius": 2 }
+}

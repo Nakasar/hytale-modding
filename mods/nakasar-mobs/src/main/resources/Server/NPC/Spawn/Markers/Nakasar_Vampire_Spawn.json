@@ -1,0 +1,8 @@
+{
+  "$Comment": "Rejetons dans la crypte du château ; reviennent 5 minutes après leur mort.",
+  "NPCs": [
+    { "Name": "Nakasar_Vampire_Spawn", "Weight": 1, "RealtimeRespawnTime": 300 }
+  ],
+  "RealtimeRespawn": true,
+  "ExclusionRadius": 0
+}

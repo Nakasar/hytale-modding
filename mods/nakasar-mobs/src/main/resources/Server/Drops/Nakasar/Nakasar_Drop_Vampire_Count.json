@@ -1,0 +1,17 @@
+{
+  "Container": {
+    "Type": "Multiple",
+    "Containers": [
+      { "Type": "Single", "Item": { "ItemId": "Ingredient_Rune_Shard", "QuantityMin": 4, "QuantityMax": 6 } },
+      {
+        "Type": "Choice",
+        "Containers": [
+          { "Type": "Single", "Weight": 1, "Item": { "ItemId": "Rune_Nakasar_VampireKiss", "QuantityMin": 1, "QuantityMax": 1 } },
+          { "Type": "Single", "Weight": 1, "Item": { "ItemId": "Rune_Nakasar_Domination", "QuantityMin": 1, "QuantityMax": 1 } },
+          { "Type": "Single", "Weight": 1, "Item": { "ItemId": "Rune_Nakasar_Blink", "QuantityMin": 1, "QuantityMax": 1 } },
+          { "Type": "Single", "Weight": 1, "Item": { "ItemId": "Rune_Nakasar_SpectralChains", "QuantityMin": 1, "QuantityMax": 1 } }
+        ]
+      }
+    ]
+  }
+}

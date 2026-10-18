@@ -166,3 +166,28 @@ Les ruines varient d'une instance à l'autre grâce aux préfixes de probabilit�
 - `Nakasar_Halloween_Undead` (tout le fragment) : squelettes, archers, zombies, araignées, chauves-souris, corbeaux.
 - `Nakasar_Halloween_Haunted` (près des structures) : spectres, goules, soldats et archimages squelettes,
   zombies aberrants, araignées des cavernes, élites et loups-garous (rares).
+- Avec `nakasar-mobs` (dépendance optionnelle) : fantômes et rejetons de vampire s'ajoutent à
+  l'environnement hanté, et le château du comte contient des marqueurs d'apparition (le comte devant son
+  trône, deux rejetons dans la crypte).
+
+## nakasar-mobs (plugin Java + assets)
+
+Dépend de `nakasar-runes` (ses interactions et particules sont réutilisées). Validation hors jeu :
+`./gradlew :mods:nakasar-mobs:check` (rôles avec `tools/ValidateRoles.java`, autres assets avec le
+validateur du fragment Halloween).
+
+| PNJ | PV | Comportement |
+|-----|----|--------------|
+| `Nakasar_Vampire_Count` | 600 | Boss. Mêlée « Baiser du Vampire » (22 dégâts, +30 PV), Chaînes spectrales à 18 blocs (9 à 12 s), Domination à 12 blocs (16 à 20 s), téléportation près de la cible si elle est à plus de 7 blocs (10 à 14 s), sous 50 % de vie invoque 2 ou 3 rejetons (toutes les 30 s). Retourne à son point d'apparition et regagne sa vie si la cible s'éloigne à plus de 40 blocs. |
+| `Nakasar_Vampire_Spawn` | 60 | Rapide, morsure 7 dégâts (+4 PV). |
+| `Nakasar_Ghost` | 45 | Vole, toucher glacial (6 dégâts, ralenti 50 % pendant 3 s), réapparaît près de sa cible quand elle s'éloigne. |
+
+- **Domination** (Java, `domination/`) : l'interaction `Nakasar_DominatePlayer` enregistre « ce joueur est
+  dominé par ce PNJ » pendant `Duration` secondes et applique l'effet `Nakasar_Count_Domination`. Le système
+  `DominationDamageFilter` (groupe de filtrage des dégâts) annule tout dégât de ce joueur, projectiles
+  compris, contre ce PNJ tant que l'effet dure.
+- **Groupes** : `Nakasar_Vampires` et `Nakasar_Ghosts` (`DisableDamageGroups`, ils ne se blessent pas entre eux).
+- **Butin** : éclats de rune ; le comte donne aussi une des 4 runes du mod.
+- **Apparition** : `NPC/Spawn/World/Nakasar_Mobs_Halloween_Haunted.json` (environnement hanté du fragment)
+  et marqueurs `NPC/Spawn/Markers/Nakasar_Vampire_Count` (réapparition 30 min) /
+  `Nakasar_Vampire_Spawn` (5 min), posés via les blocs invisibles `Nakasar_Spawner_*`.

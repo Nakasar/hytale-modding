@@ -57,6 +57,12 @@ public class ValidateAssets {
         CODECS.put("NPC/Spawn/World/", "com.hypixel.hytale.server.spawning.assets.spawns.config.WorldNPCSpawn");
         CODECS.put("Item/Items/", "com.hypixel.hytale.server.core.asset.type.item.config.Item");
         CODECS.put("Instances/", "com.hypixel.hytale.server.core.universe.world.WorldConfig");
+        CODECS.put("NPC/Spawn/Markers/", "com.hypixel.hytale.server.spawning.assets.spawnmarker.config.SpawnMarker");
+        CODECS.put("NPC/Groups/", "com.hypixel.hytale.builtin.tagset.config.NPCGroup");
+        CODECS.put("Models/", "com.hypixel.hytale.server.core.asset.type.model.config.ModelAsset");
+        CODECS.put("Entity/Effects/", "com.hypixel.hytale.server.core.asset.type.entityeffect.config.EntityEffect");
+        CODECS.put("Drops/", "com.hypixel.hytale.server.core.asset.type.item.config.ItemDropList");
+        CODECS.put("Item/RootInteractions/", "com.hypixel.hytale.server.core.modules.interaction.interaction.config.RootInteraction");
     }
 
     private static int replayCodecRegistrations(String className) throws Exception {

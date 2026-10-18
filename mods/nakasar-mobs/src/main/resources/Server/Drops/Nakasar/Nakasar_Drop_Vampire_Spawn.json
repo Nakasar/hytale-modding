@@ -1,0 +1,9 @@
+{
+  "Container": {
+    "Type": "Choice",
+    "Containers": [
+      { "Type": "Single", "Weight": 1, "Item": { "ItemId": "Ingredient_Rune_Shard", "QuantityMin": 1, "QuantityMax": 1 } },
+      { "Type": "Empty", "Weight": 3 }
+    ]
+  }
+}

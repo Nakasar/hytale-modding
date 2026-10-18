@@ -1,0 +1,40 @@
+{
+  "$Comment": "Toucher glacial du fantôme : dégâts légers et ralentissement (Nakasar_Ghost_Chill).",
+  "Type": "Simple",
+  "RunTime": 0.35,
+  "Effects": {
+    "ItemAnimationId": "SwingDown",
+    "WorldSoundEventId": "SFX_Light_Melee_T2_Swing"
+  },
+  "Next": {
+    "Type": "Selector",
+    "RunTime": 0.1,
+    "Selector": {
+      "Id": "Horizontal",
+      "Direction": "ToLeft",
+      "TestLineOfSight": false,
+      "ExtendTop": 0.8,
+      "ExtendBottom": 0.8,
+      "StartDistance": 0.1,
+      "EndDistance": 2.6,
+      "Length": 80,
+      "RollOffset": 0,
+      "YawStartOffset": -40
+    },
+    "HitEntity": { "Interactions": [
+        {
+          "Parent": "DamageEntityParent_Hit_Interrupt",
+          "DamageCalculator": {
+            "BaseDamage": { "Physical": 6 },
+            "RandomPercentageModifier": 0.1
+          }
+        },
+        {
+          "Type": "ApplyEffect",
+          "EffectId": "Nakasar_Ghost_Chill",
+          "Entity": "Target",
+          "Duration": 3
+        }
+    ] }
+  }
+}

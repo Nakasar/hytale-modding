@@ -697,6 +697,8 @@ def dracula_castle(seed):
         p.set(x, 4, z0 + 1, "Furniture_Outlander_Banner", SOUTH)
     for z in (z0 + 4, z0 + 9):
         p.set(0, 7, z, "Furniture_Feran_Chandelier")
+    # le comte attend sur le tapis, devant son trône (marqueur invisible du mod nakasar-mobs)
+    p.set(0, 0, z0 + 5, "Nakasar_Spawner_Vampire_Count")
     for x in (-7, 7):
         for z in range(z0 + 2, z1 - 1, 4):
             p.set(x, 2, z, "Cloth_Block_Wool_Red")
@@ -730,6 +732,9 @@ def dracula_castle(seed):
         p.set(x, cy0 + 1, cz0 + 1, r.choice(["Furniture_Temple_Dark_Coffin", "Furniture_Ancient_Coffin"]), SOUTH)
         p.set(x, cy0 + 1, cz1 - 1, r.choice(["Furniture_Temple_Dark_Coffin", "Furniture_Ancient_Coffin"]), NORTH)
     p.set(0, cy0 + 1, (cz0 + cz1) // 2, "Furniture_Ancient_Chest_Large_Treasure", SOUTH)
+    # ses rejetons gardent la crypte (marqueurs invisibles du mod nakasar-mobs)
+    for x in (cx0 + 2, cx1 - 5):
+        p.set(x, cy0 + 1, (cz0 + cz1) // 2 + 1, "Nakasar_Spawner_Vampire_Spawn")
     for px in (-4, 3):
         p.fill(px, cy0 + 1, (cz0 + cz1) // 2, px, -2, (cz0 + cz1) // 2, "Rock_Basalt_Brick_Pillar_Middle")
     p.scatter(cx0 + 1, cy0 + 1, cz0 + 1, cx1 - 3, cz1 - 1, 10, CANDLES)

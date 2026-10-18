@@ -1,0 +1,21 @@
+{
+  "$Comment": "Domination du comte : le joueur dans l'axe de son regard (12 blocs) ne peut plus le blesser pendant 6 s (Nakasar_DominatePlayer, mod Mobs).",
+  "Type": "Simple",
+  "RunTime": 0.5,
+  "Effects": {
+    "ItemAnimationId": "SwingDown",
+    "WorldSoundEventId": "SFX_Light_Melee_T2_Swing"
+  },
+  "Next": {
+    "Type": "Selector",
+    "RunTime": 0.1,
+    "Selector": { "Id": "Raycast", "Distance": 12 },
+    "HitEntity": { "Interactions": [
+        {
+          "Type": "Nakasar_DominatePlayer",
+          "Duration": 6,
+          "EffectId": "Nakasar_Count_Domination"
+        }
+    ] }
+  }
+}

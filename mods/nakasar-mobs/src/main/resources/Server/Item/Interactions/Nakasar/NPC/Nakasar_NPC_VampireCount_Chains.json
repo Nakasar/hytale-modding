@@ -1,0 +1,15 @@
+{
+  "$Comment": "Chaînes spectrales du comte : il tend la main vers sa cible ; le premier être dans l'axe de son regard (18 blocs) est enchaîné par l'impact de la rune (immobilisé 3 s, pointe de terre verte).",
+  "Type": "Simple",
+  "RunTime": 0.6,
+  "Effects": {
+    "ItemAnimationId": "SwingDown",
+    "WorldSoundEventId": "SFX_Spear_Throw_Charge_Local"
+  },
+  "Next": {
+    "Type": "Selector",
+    "RunTime": 0.1,
+    "Selector": { "Id": "Raycast", "Distance": 18 },
+    "HitEntity": { "Interactions": [ "Nakasar_Ability_SpectralChains_Impact" ] }
+  }
+}

@@ -1,0 +1,5 @@
+npc.Vampire_Count.name = Vampire Count
+npc.Vampire_Spawn.name = Vampire Spawn
+npc.Ghost.name = Ghost
+items.Nakasar_Spawner_Vampire_Count.name = Marker: Vampire Count
+items.Nakasar_Spawner_Vampire_Spawn.name = Marker: Vampire Spawn
