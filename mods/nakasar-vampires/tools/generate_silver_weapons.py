@@ -20,8 +20,11 @@ même durabilité. Elle ne change que :
   vampires (groupe de PNJ Nakasar_Vampires).
 
 Munitions : l'arc et l'arbalète vanilla ne consomment que Weapon_Arrow_Crude (ModifyInventory, id exact).
-L'arc et l'arbalète en argent tirent donc les flèches en argent : on recopie les interactions vanilla qui
-retirent ou rendent une flèche, avec l'id de la flèche en argent.
+Le script réécrit donc, sous leur id vanilla (le pack du mod, chargé après le jeu, les remplace), les
+interactions et modèles d'arc et d'arbalète qui retirent ou rendent une flèche : chaque ModifyInventory sur
+Weapon_Arrow_Crude devient Nakasar_TakeArrow (flèche en argent d'abord, sinon simple) ou Nakasar_ReturnArrow
+(rend la dernière flèche prise), deux interactions Java. Tous les arcs et arbalètes, vanilla et en argent,
+tirent ainsi les deux sortes de flèches. La flèche en argent n'est qu'une munition : elle ne se lance pas.
 """
 import argparse
 import colorsys
@@ -38,8 +41,6 @@ SERVER = PACK / "Server"
 TEXTURES = "Items/Weapons/Nakasar/Silver"
 ICONS = "Icons/Items/Nakasar/Silver"
 ITEMS = SERVER / "Item" / "Items" / "Weapon" / "Nakasar" / "Silver"
-ROOTS = SERVER / "Item" / "RootInteractions" / "Nakasar" / "Silver"
-INTERACTIONS = SERVER / "Item" / "Interactions" / "Nakasar" / "Silver"
 LANG = "nakasar_silver"
 
 CRUDE_ARROW = "Weapon_Arrow_Crude"
@@ -115,13 +116,9 @@ DESCRIPTIONS = {
     "fr": "Inflige le double de dégâts aux vampires (Comte, Comtesse, rejetons).",
     "en": "Deals double damage to vampires (Count, Countess, spawns).",
 }
-AMMO_NOTE = {
-    "fr": " Tire des flèches en argent.",
-    "en": " Shoots silver arrows.",
-}
 ARROW_DESCRIPTION = {
-    "fr": "Munition de l'arc et de l'arbalète en argent. Lancée ou en main, double dégâts contre les vampires.",
-    "en": "Ammunition for the silver shortbow and crossbow. Thrown or in hand, double damage against vampires.",
+    "fr": "Munition des arcs et arbalètes, tirée avant les flèches simples. Double dégâts contre les vampires.",
+    "en": "Ammunition for bows and crossbows, shot before crude arrows. Double damage against vampires.",
 }
 
 
@@ -144,20 +141,32 @@ def silver(image):
     return image
 
 
-def replace_arrow(value):
-    if isinstance(value, dict):
-        return {k: replace_arrow(v) for k, v in value.items()}
-    if isinstance(value, list):
-        return [replace_arrow(v) for v in value]
-    return SILVER_ARROW if value == CRUDE_ARROW else value
+def to_quiver(value):
+    """Remplace les ModifyInventory sur la flèche simple par Nakasar_TakeArrow / Nakasar_ReturnArrow.
 
-
-def rename(value, names):
-    if isinstance(value, dict):
-        return {k: rename(v, names) for k, v in value.items()}
+    Un nœud qui hérite (Parent) d'un tel ModifyInventory et ne fait que redonner la flèche perd seulement
+    cette clé : il hérite alors du nouveau type. Rendre plusieurs flèches (arbalète déchargée) devient
+    Nakasar_ReturnArrow avec Quantity.
+    """
     if isinstance(value, list):
-        return [rename(v, names) for v in value]
-    return names.get(value, value)
+        return [to_quiver(v) for v in value]
+    if not isinstance(value, dict):
+        return value
+    node = {k: to_quiver(v) for k, v in value.items()}
+    for key, kind in (("ItemToRemove", "Nakasar_TakeArrow"), ("ItemToAdd", "Nakasar_ReturnArrow")):
+        stack = node.get(key)
+        if not (isinstance(stack, dict) and stack.get("Id") == CRUDE_ARROW):
+            continue
+        quantity = stack.get("Quantity", 1)
+        if key == "ItemToRemove" and quantity != 1:
+            raise SystemExit(f"retrait de {quantity} flèches : Nakasar_TakeArrow n'en prend qu'une")
+        del node[key]
+        node.pop("RequiredGameMode", None)
+        if node.get("Type") == "ModifyInventory":
+            node["Type"] = kind
+        if quantity != 1:
+            node["Quantity"] = quantity
+    return node
 
 
 def write_json(path, data):
@@ -179,45 +188,24 @@ def main():
     def vanilla_png(path):
         return Image.open(io.BytesIO(assets.read("Common/" + path)))
 
-    # Interactions de munitions recopiées avec la flèche en argent.
-    names = {
-        "Weapon_Shortbow_Primary_Shoot": "Nakasar_Silver_Shortbow_Primary_Shoot",
-        "Weapon_Crossbow_Swap_From": "Nakasar_Silver_Crossbow_Swap_From",
-    }
-    copies = [
-        (INTERACTIONS / "Nakasar_Silver_Shortbow_Primary_Shoot.json",
-         "Item/Interactions/Weapons/Shortbow/Primary/Shoot/Weapon_Shortbow_Primary_Shoot.json"),
-        (ROOTS / "Root_Nakasar_Silver_Shortbow_Primary_Shoot.json",
-         "Item/RootInteractions/Weapons/Shortbow/Root_Weapon_Shortbow_Primary_Shoot.json"),
-        (ROOTS / "Root_Nakasar_Silver_Shortbow_Secondary_Guard.json",
-         "Item/RootInteractions/Weapons/Shortbow/Root_Weapon_Shortbow_Secondary_Guard.json"),
-        (INTERACTIONS / "Nakasar_Silver_Crossbow_Swap_From.json",
-         "Item/Interactions/Weapons/Crossbow/Weapon_Crossbow_Swap_From.json"),
-        (ROOTS / "Root_Nakasar_Silver_Crossbow_Swap_From.json",
-         "Item/RootInteractions/Weapons/Crossbow/Root_Weapon_Crossbow_Swap_From.json"),
+    # Arcs et arbalètes vanilla réécrits sous leur id : ils tirent aussi les flèches en argent.
+    quiver = [
+        "Item/Interactions/Weapons/Shortbow/Primary/Shoot/Weapon_Shortbow_Primary_Shoot.json",
+        "Item/RootInteractions/Weapons/Shortbow/Root_Weapon_Shortbow_Secondary_Guard.json",
+        "Item/Interactions/Weapons/Crossbow/Weapon_Crossbow_Swap_From.json",
+        "Item/Interactions/Weapons/Crossbow/Weapon_Crossbow_Arrow_Inventory_Condition.json",
+        "Item/Interactions/Weapons/Common/StatAmmoReload/Common_StatAmmoReload_ItemConsume.json",
+        "Item/Items/Weapon/Shortbow/Template_Weapon_Shortbow.json",
+        "Item/Items/Weapon/Crossbow/Template_Weapon_Crossbow.json",
     ]
-    for target, source in copies:
-        write_json(target, rename(replace_arrow(vanilla_json(source)), names))
+    for path in quiver:
+        rewritten = to_quiver(vanilla_json(path))
+        if CRUDE_ARROW in json.dumps(rewritten):
+            raise SystemExit(f"{path} : {CRUDE_ARROW} encore présent, à traiter dans to_quiver")
+        write_json(SERVER / path, rewritten)
 
-    # Un objet qui déclare Interactions remplace la table de son parent (des objets vanilla écrivent
-    # « Interactions: {} » pour en retirer) : on écrit donc les tables entières, celles du modèle vanilla
-    # complétées par l'arme en fer, avec la flèche en argent.
-    def full_tables(template_path, iron_path, interactions):
-        template = vanilla_json(template_path)
-        iron = vanilla_json(iron_path)
-        variables = {**template.get("InteractionVars", {}), **iron.get("InteractionVars", {})}
-        table = {**template["Interactions"], **iron.get("Interactions", {}), **interactions}
-        return {"Interactions": replace_arrow(table), "InteractionVars": replace_arrow(variables)}
-
-    overrides = {
-        "Weapon_Nakasar_Shortbow_Silver": full_tables(
-            "Item/Items/Weapon/Shortbow/Template_Weapon_Shortbow.json", "Item/Items/Weapon/Shortbow/Weapon_Shortbow_Iron.json",
-            {"Primary": "Root_Nakasar_Silver_Shortbow_Primary_Shoot",
-             "Secondary": "Root_Nakasar_Silver_Shortbow_Secondary_Guard"}),
-        "Weapon_Nakasar_Crossbow_Silver": full_tables(
-            "Item/Items/Weapon/Crossbow/Template_Weapon_Crossbow.json", "Item/Items/Weapon/Crossbow/Weapon_Crossbow_Iron.json",
-            {"SwapFrom": "Root_Nakasar_Silver_Crossbow_Swap_From"}),
-    }
+    # La flèche en argent n'est qu'une munition : pas d'attaque au couteau ni de lancer.
+    overrides = {SILVER_ARROW: {"Interactions": {}, "InteractionVars": {}, "MaxStack": 100}}
 
     lang = {"fr": [f"# Armes en argent — textes français (générés par tools/generate_silver_weapons.py)"],
             "en": [f"# Silver weapons — English texts (generated by tools/generate_silver_weapons.py)"]}
@@ -260,8 +248,6 @@ def main():
                 description = ARROW_DESCRIPTION[language]
             else:
                 description = DESCRIPTIONS[language]
-                if item_id in overrides:
-                    description += AMMO_NOTE[language]
             lang[language].append(f"items.{item_id}.name = {name}")
             lang[language].append(f"items.{item_id}.description = {description}")
 
@@ -277,7 +263,7 @@ def main():
             sheet.alpha_composite(before.resize((size, size)), (i * size, 0))
             sheet.alpha_composite(after.resize((size, size)), (i * size, size))
         sheet.save(preview)
-    print(f"{len(WEAPONS)} armes, {len(copies)} interactions de munitions")
+    print(f"{len(WEAPONS)} armes, {len(quiver)} arcs et arbalètes vanilla réécrits")
 
 
 if __name__ == "__main__":

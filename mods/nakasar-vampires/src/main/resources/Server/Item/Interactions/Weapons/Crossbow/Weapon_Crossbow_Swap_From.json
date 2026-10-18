@@ -10,14 +10,11 @@
       "Ammo": 6
     },
     "Next": {
-      "Type": "ModifyInventory",
-      "ItemToAdd": {
-        "Id": "Weapon_Nakasar_Arrow_Silver",
-        "Quantity": 6
-      },
+      "Type": "Nakasar_ReturnArrow",
       "Next": {
         "Type": "ChangeActiveSlot"
-      }
+      },
+      "Quantity": 6
     },
     "Failed": {
       "Type": "StatsCondition",
@@ -25,14 +22,11 @@
         "Ammo": 5
       },
       "Next": {
-        "Type": "ModifyInventory",
-        "ItemToAdd": {
-          "Id": "Weapon_Nakasar_Arrow_Silver",
-          "Quantity": 5
-        },
+        "Type": "Nakasar_ReturnArrow",
         "Next": {
           "Type": "ChangeActiveSlot"
-        }
+        },
+        "Quantity": 5
       },
       "Failed": {
         "Type": "StatsCondition",
@@ -40,14 +34,11 @@
           "Ammo": 4
         },
         "Next": {
-          "Type": "ModifyInventory",
-          "ItemToAdd": {
-            "Id": "Weapon_Nakasar_Arrow_Silver",
-            "Quantity": 4
-          },
+          "Type": "Nakasar_ReturnArrow",
           "Next": {
             "Type": "ChangeActiveSlot"
-          }
+          },
+          "Quantity": 4
         },
         "Failed": {
           "Type": "StatsCondition",
@@ -55,14 +46,11 @@
             "Ammo": 3
           },
           "Next": {
-            "Type": "ModifyInventory",
-            "ItemToAdd": {
-              "Id": "Weapon_Nakasar_Arrow_Silver",
-              "Quantity": 3
-            },
+            "Type": "Nakasar_ReturnArrow",
             "Next": {
               "Type": "ChangeActiveSlot"
-            }
+            },
+            "Quantity": 3
           },
           "Failed": {
             "Type": "StatsCondition",
@@ -70,14 +58,11 @@
               "Ammo": 2
             },
             "Next": {
-              "Type": "ModifyInventory",
-              "ItemToAdd": {
-                "Id": "Weapon_Nakasar_Arrow_Silver",
-                "Quantity": 2
-              },
+              "Type": "Nakasar_ReturnArrow",
               "Next": {
                 "Type": "ChangeActiveSlot"
-              }
+              },
+              "Quantity": 2
             },
             "Failed": {
               "Type": "StatsCondition",
@@ -85,11 +70,7 @@
                 "Ammo": 1
               },
               "Next": {
-                "Type": "ModifyInventory",
-                "ItemToAdd": {
-                  "Id": "Weapon_Nakasar_Arrow_Silver",
-                  "Quantity": 1
-                },
+                "Type": "Nakasar_ReturnArrow",
                 "Next": {
                   "Type": "ChangeActiveSlot"
                 }

@@ -20,12 +20,14 @@ import java.util.UUID;
  * Marque les projectiles tirés avec une arme en argent, au moment du tir. Deux sortes de projectiles en 0.7.2 :
  * <ul>
  *   <li>{@link Launch} : interaction {@code Projectile} (arc, arbalète, salve), qui envoie un
- *       {@link ProjectileLaunchEvent} au tireur ;</li>
- *   <li>{@link Legacy} : interaction {@code LaunchProjectile} (flèche ou lance de jet lancée, tromblon), entité à
+ *       {@link ProjectileLaunchEvent} au tireur. Le projectile est en argent si l'arme l'est ou si la flèche tirée
+ *       l'est ({@link ArrowQuiver}, d'après {@link TakeArrowInteraction}) ;</li>
+ *   <li>{@link Legacy} : interaction {@code LaunchProjectile} (lance de jet lancée, tromblon), entité à
  *       {@link ProjectileComponent} qui ne connaît que l'UUID de son tireur.</li>
  * </ul>
- * Limite : la dernière flèche ou lance de jet lancée ne laisse rien dans la main ; si le jeu la retire de
- * l'inventaire avant de créer le projectile, ce projectile-là n'est pas marqué.
+ * Limites : la dernière lance de jet lancée ne laisse rien dans la main ; si le jeu la retire de l'inventaire avant
+ * de créer le projectile, ce projectile-là n'est pas marqué. Un tir qui ne consomme pas de flèche (gros carreau de
+ * l'arbalète) prend quand même la plus ancienne flèche notée.
  */
 public final class SilverProjectileSystems {
 
@@ -48,8 +50,12 @@ public final class SilverProjectileSystems {
                            CommandBuffer<EntityStore> buffer, ProjectileLaunchEvent event) {
             Ref<EntityStore> shooter = chunk.getReferenceTo(index);
             Ref<EntityStore> projectile = event.getProjectileRef();
-            if (projectile != null && !projectile.equals(shooter)
-                    && SilverWeapons.isSilver(InventoryComponent.getItemInHand(buffer, shooter))) {
+            if (projectile == null || projectile.equals(shooter)) {
+                return;
+            }
+            // Toujours consommer la flèche notée, même tirée d'un arc en argent, pour garder la liste en phase.
+            boolean silverArrow = ArrowQuiver.fire(shooter);
+            if (silverArrow || SilverWeapons.isSilver(InventoryComponent.getItemInHand(buffer, shooter))) {
                 SilverWeapons.markProjectile(projectile);
             }
         }

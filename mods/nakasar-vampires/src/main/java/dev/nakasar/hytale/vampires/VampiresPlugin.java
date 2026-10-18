@@ -16,15 +16,21 @@ import dev.nakasar.hytale.vampires.domination.Dominations;
 import dev.nakasar.hytale.vampires.prison.ImprisonPlayerInteraction;
 import dev.nakasar.hytale.vampires.pumpkin.FireWeaknessSystem;
 import dev.nakasar.hytale.vampires.purifying.PurifyingFireSystem;
+import dev.nakasar.hytale.vampires.purifying.PurifyingFires;
+import dev.nakasar.hytale.vampires.purifying.PurifyingSteeringSystem;
 import dev.nakasar.hytale.vampires.pumpkin.RootTrapInteraction;
 import dev.nakasar.hytale.vampires.pumpkin.RootTrapUnloadSystem;
 import dev.nakasar.hytale.vampires.pumpkin.RootTrapped;
+import dev.nakasar.hytale.vampires.pumpkin.SummonVinesInteraction;
 import dev.nakasar.hytale.vampires.rune.DrainBeamInteraction;
 import dev.nakasar.hytale.vampires.rune.RootNpcInteraction;
 import dev.nakasar.hytale.vampires.rune.TeleportCasterToImpactInteraction;
+import dev.nakasar.hytale.vampires.silver.ArrowQuiver;
+import dev.nakasar.hytale.vampires.silver.ReturnArrowInteraction;
 import dev.nakasar.hytale.vampires.silver.SilverDamageSystem;
 import dev.nakasar.hytale.vampires.silver.SilverProjectileSystems;
 import dev.nakasar.hytale.vampires.silver.SilverWeapons;
+import dev.nakasar.hytale.vampires.silver.TakeArrowInteraction;
 
 /**
  * Point d'entrée du mod "Vampires".
@@ -44,14 +50,15 @@ import dev.nakasar.hytale.vampires.silver.SilverWeapons;
  *   <li>{@code Nakasar_ImprisonPlayer} : téléporte le joueur visé dans la cellule la plus proche du Capitaine ;</li>
  *   <li>{@code Nakasar_RootTrap} : piège de vrilles de la citrouille géante (une vrille-PNJ retient la cible
  *       jusqu'à sa destruction) ;</li>
+ *   <li>{@code Nakasar_SummonVines} : la citrouille géante fait sortir de terre ses vrilles combattantes ;</li>
  *   <li>{@link FireWeaknessSystem} : la citrouille géante et ses vrilles prennent double dégâts de feu ;</li>
  *   <li>les camps ({@link AllegianceAttitudeSystem}, {@link AllegianceDamageFilter},
  *       {@link DominationExpirySystem}) : les mobs du fragment sont alliés, ennemis des chasseurs de vampires, et la
  *       Domination retourne leur allégeance ;</li>
  *   <li>{@link SilverDamageSystem} et {@link SilverProjectileSystems} : les armes en argent (et leurs projectiles)
  *       infligent le double de dégâts aux vampires ;</li>
- *   <li>{@link PurifyingFireSystem} : les torches et lanternes de feu purificateur du camp des chasseurs repoussent
- *       les morts-vivants ;</li>
+ *   <li>{@link PurifyingFireSystem} et {@link PurifyingSteeringSystem} : les morts-vivants évitent les torches et
+ *       lanternes de feu purificateur du camp des chasseurs ;</li>
  *   <li>la brèche des chasseurs ({@link HunterBreachStarter}, {@link NightCondition},
  *       {@link BreachHunterCleanupSystem}) : la nuit, toutes les demi-heures, un campement de chasseurs de vampires
  *       s'ouvre près d'un joueur du monde principal, annoncé dans le chat et sur la carte.</li>
@@ -87,6 +94,12 @@ public final class VampiresPlugin extends JavaPlugin {
                 ImprisonPlayerInteraction.class, ImprisonPlayerInteraction.CODEC);
         interactions.register(RootTrapInteraction.TYPE_ID,
                 RootTrapInteraction.class, RootTrapInteraction.CODEC);
+        interactions.register(SummonVinesInteraction.TYPE_ID,
+                SummonVinesInteraction.class, SummonVinesInteraction.CODEC);
+        interactions.register(TakeArrowInteraction.TYPE_ID,
+                TakeArrowInteraction.class, TakeArrowInteraction.CODEC);
+        interactions.register(ReturnArrowInteraction.TYPE_ID,
+                ReturnArrowInteraction.class, ReturnArrowInteraction.CODEC);
 
         var systems = getEntityStoreRegistry();
         RootTrapped.setComponentType(systems.registerComponent(RootTrapped.class, RootTrapped::new));
@@ -98,24 +111,29 @@ public final class VampiresPlugin extends JavaPlugin {
         systems.registerSystem(new SilverProjectileSystems.Launch());
         systems.registerSystem(new SilverProjectileSystems.Legacy());
         systems.registerSystem(new SilverDamageSystem());
-        systems.registerSystem(new PurifyingFireSystem());
+        PurifyingFires purifyingFires = new PurifyingFires();
+        systems.registerSystem(new PurifyingFireSystem(purifyingFires));
+        systems.registerSystem(new PurifyingSteeringSystem(purifyingFires));
 
         // Brèche des chasseurs : évènement de monde (Server/WorldEvent) avec notre condition « nuit ».
         WorldEventsPlugin.registerCondition(this, NightCondition.TYPE, NightCondition.CODEC, NightCondition.Config.CODEC);
         systems.registerSystem(new HunterBreachStarter());
         systems.registerSystem(new BreachHunterCleanupSystem());
 
-        getLogger().atInfo().log("Nakasar Vampires : 7 types d'interaction (%s, %s, %s, %s, %s, %s, %s), systèmes des camps, de l'argent, du feu purificateur et de la brèche des chasseurs enregistrés",
+        getLogger().atInfo().log("Nakasar Vampires : 10 types d'interaction (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s), systèmes des camps, de l'argent, du feu purificateur et de la brèche des chasseurs enregistrés",
                 TeleportCasterToImpactInteraction.TYPE_ID, DominateInteraction.TYPE_ID, RootNpcInteraction.TYPE_ID,
                 DrainBeamInteraction.TYPE_ID, DominatePlayerInteraction.TYPE_ID, ImprisonPlayerInteraction.TYPE_ID,
-                RootTrapInteraction.TYPE_ID);
+                RootTrapInteraction.TYPE_ID, TakeArrowInteraction.TYPE_ID, ReturnArrowInteraction.TYPE_ID,
+                SummonVinesInteraction.TYPE_ID);
     }
 
     @Override
     protected void shutdown() {
         RootNpcInteraction.clearAll();
         RootTrapInteraction.clearAll();
+        SummonVinesInteraction.clearAll();
         Dominations.clearAll();
         SilverWeapons.clearAll();
+        ArrowQuiver.clearAll();
     }
 }

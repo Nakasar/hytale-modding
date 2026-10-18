@@ -150,21 +150,26 @@ textures dans `Common/Items/Weapons/Nakasar/Silver/`, icônes dans `Common/Icons
   réductions d'armure et de garde) double les dégâts faits à un PNJ du groupe `Nakasar_Vampires` :
   - coup direct : l'attaquant tient une arme taguée `Material: Silver` (`SilverWeapons.isSilver`) et le coup vient d'une
     attaque d'arme. Les sorts de runes (`Ability2`, `Ability3`) et les dégâts sans interaction (effets) ne comptent pas ;
-  - projectile : il a été marqué au tir par `SilverProjectileSystems` (arme en argent en main au départ du tir :
-    `ProjectileLaunchEvent` pour l'arc et l'arbalète, création de l'entité `ProjectileComponent` pour les flèches et
-    lances lancées et le tromblon). L'arme tenue à l'impact ne compte pas. Limite : la dernière flèche ou lance de jet
-    lancée peut ne pas être marquée, la main étant vide quand le projectile apparaît.
+  - projectile : il a été marqué au tir par `SilverProjectileSystems` : flèche en argent tirée (`ArrowQuiver`), ou
+    arme en argent en main au départ du tir (`ProjectileLaunchEvent` pour l'arc et l'arbalète, création de l'entité
+    `ProjectileComponent` pour les lances lancées et le tromblon). L'arme tenue à l'impact ne compte pas. Limites : la
+    dernière lance de jet lancée peut ne pas être marquée, la main étant vide quand le projectile apparaît ; le gros
+    carreau de l'arbalète, qui ne consomme pas de flèche, prend la place de la plus ancienne flèche chargée.
 
   Les PNJ comptent aussi (ils ont une barre d'objets, `NPCSystems.OnNPCAdded`) : un chasseur qui tient une arme en
   argent double ses dégâts. L'épée en acier argenté vanilla compte.
 - **Héritage** : seules l'apparence, la recette, la qualité et les tags changent. La recette est dans l'objet parce
   qu'un objet hérite de celle de son parent. Une table `Interactions` déclarée remplace celle du parent (des objets
-  vanilla écrivent `"Interactions": {}` pour vider la leur) : l'arc et l'arbalète en argent écrivent donc leurs
-  tables entières.
-- **Munitions** : les armes vanilla ne consomment que `Weapon_Arrow_Crude` (`ModifyInventory`, id exact). L'arc et
-  l'arbalète en argent utilisent des copies des interactions qui retirent ou rendent une flèche
-  (`Root_Nakasar_Silver_*`, `Nakasar_Silver_*`) avec `Weapon_Nakasar_Arrow_Silver`, et leurs variables
-  `Arrow_Inventory_Condition` / `Reload_ItemConsume`.
+  vanilla écrivent `"Interactions": {}` pour vider la leur) : la flèche en argent écrit `{}` pour ne plus se lancer
+  ni frapper au couteau comme la flèche en fer dont elle hérite.
+- **Munitions** : les arcs et arbalètes vanilla ne consomment que `Weapon_Arrow_Crude` (`ModifyInventory`, id
+  exact). Le mod réécrit sous leur id vanilla (son pack, chargé après le jeu, les remplace) les interactions et
+  modèles qui retirent ou rendent une flèche : `Weapon_Shortbow_Primary_Shoot`, `Root_Weapon_Shortbow_Secondary_Guard`,
+  `Weapon_Crossbow_Swap_From`, `Weapon_Crossbow_Arrow_Inventory_Condition`, `Common_StatAmmoReload_ItemConsume`,
+  `Template_Weapon_Shortbow`, `Template_Weapon_Crossbow`. Le retrait devient `Nakasar_TakeArrow` (une flèche en
+  argent s'il y en a, sinon une simple ; rien pour un joueur hors mode Aventure) et le retour `Nakasar_ReturnArrow`
+  (`Quantity` flèches, en argent pour celles qui l'étaient). Tous les arcs et arbalètes, vanilla et en argent, tirent
+  donc les deux, les flèches en argent d'abord. Une nouvelle version du jeu demande de relancer le générateur.
 
 ## Fragment Halloween (« Comté Vampire »)
 
@@ -314,7 +319,8 @@ Les boss réutilisent les interactions et particules des runes.
 | `Nakasar_Zombie_Abomination` | 450 | Élite des fermes (zombie aberrant géant). Morsure 34 ; Écrasement annoncé toutes les 11 à 14 s (lueur rouge, cercle au sol pendant 1,2 s) : onde en anneau de 7 blocs, 30 dégâts et projection. |
 | `Nakasar_Skeleton_Guard` | 120 | Garde squelette en armure rouillée, épée et bouclier, mêlée 18. |
 | `Nakasar_Guard_Captain` | 650 | Élite du poste de garde, hache de bataille. Combo gauche/droite (22) ; Fendant annoncé (1,1 s, 45 dégâts devant lui sur 5 blocs, 9 à 12 s) ; Tourbillon annoncé (1,3 s, 32 dégâts autour sur 4 blocs, 14 à 18 s) ; Emprisonnement (1,5 s d'incantation, rayon jusqu'à 16 blocs, 45 à 60 s) qui envoie le joueur touché dans la cellule du poste de garde. Immobile pendant chaque annonce. |
-| `Nakasar_Giant_Pumpkin` | 600 | Élite du champ de citrouilles (citrouille sculptée vanilla ×4), immobile. Coup de vrille devant elle (18, 4,5 blocs) ; trois épines (9 chacune, 18 blocs, toutes les 2,5 à 3,5 s) ; crachat de poison orange (8 + poison 4/s pendant 6 s, 16 blocs, 6 à 8 s) ; Balayage annoncé (zone rouge de 5 blocs pendant 1,2 s, 26 dégâts et projection, 8 à 11 s) ; Piège de vrilles annoncé (zone rouge de 6,5 blocs qui se charge 2,2 s, 16 à 20 s) : chaque ennemi resté dedans est retenu par une `Nakasar_Pumpkin_Tendril` (12 PV) à ses pieds jusqu'à ce qu'elle soit détruite (20 s au plus). Elle et ses vrilles prennent double dégâts de feu. Se rendort et regagne sa vie si la cible s'éloigne à plus de 20 blocs. |
+| `Nakasar_Giant_Pumpkin` | 600 | Élite du champ de citrouilles (citrouille sculptée vanilla ×4), immobile ; elle se bat surtout par ses vrilles. Dès l'entrée en combat puis toutes les 14 à 18 s, elle fait sortir de terre jusqu'à 3 `Nakasar_Pumpkin_Vine` entre 3 et 6 blocs d'elle (4 vivantes au plus). Elle-même : crachat de poison orange lent (1 s de préparation, 8 + poison 4/s pendant 6 s, 16 blocs, toutes les 7 à 9 s) ; Piège de vrilles annoncé (zone rouge de 6,5 blocs qui se charge 2,2 s, toutes les 28 à 34 s) : chaque ennemi resté dedans est retenu par une `Nakasar_Pumpkin_Tendril` (12 PV) à ses pieds jusqu'à ce qu'elle soit détruite (20 s au plus). Elle et ses vrilles prennent double dégâts de feu. Se rendort et regagne sa vie si la cible s'éloigne à plus de 20 blocs ; ses vrilles rentrent alors sous terre. |
+| `Nakasar_Pumpkin_Vine` | 45 | Vrille combattante de la citrouille géante (racines du sort vanilla Root ×1,8), immobile. Deux épines (9 chacune, 16 blocs, toutes les 3,5 à 5 s) ; Balayage annoncé quand on l'approche à moins de 3 blocs (zone rouge de 3,5 blocs pendant 1,2 s, 20 dégâts et projection, toutes les 7 à 10 s). Disparaît avec sa citrouille, ou après 25 s sans combat. |
 | `Nakasar_Vampire_Hunter_Crossbow` | 160 | Chasseuse de vampires, arbalète en argent (`Weapon_Nakasar_Crossbow_Silver`), carreaux 16, 18 blocs. |
 | `Nakasar_Vampire_Hunter_Gunner` | 170 | Chasseur de vampires, tromblon en argent (`Weapon_Nakasar_Blunderbuss_Silver`), balles 22, 14 blocs, lent. |
 | `Nakasar_Vampire_Hunter_Blade` | 200 | Chasseur de vampires, épée en argent (`Weapon_Nakasar_Sword_Silver`), mêlée 20. |
@@ -338,6 +344,12 @@ Les boss réutilisent les interactions et particules des runes.
   joueur, gel reposé s'il a été retiré). La vrille n'est pas sauvegardée ; une victime qui quitte le monde en plein
   piège perd le gel posé par le piège (`RootTrapped` + `RootTrapUnloadSystem`). Les alliés de la citrouille (camp du
   fragment, ou sous Domination son maître et les PNJ du même maître) et les vrilles sont épargnés.
+- **Vrilles combattantes** (Java, `pumpkin/SummonVinesInteraction`) : l'interaction `Nakasar_SummonVines` fait
+  apparaître des PNJ `Nakasar_Pumpkin_Vine` sur un anneau autour du lanceur, posés au sol
+  (`NPCPlugin.spawnNPCWithColumnProbe`, sinon au niveau du lanceur), sans dépasser `MaxAlive` vrilles vivantes. Elles
+  ne sont pas sauvegardées et sont retirées dès que leur citrouille meurt ou quitte le monde (vérification chaque
+  seconde). Le journal du serveur note chaque sortie (« Nakasar_SummonVines : N vrille(s)… ») et chaque piège qui
+  prend (« Nakasar_RootTrap : joueur retenu… »).
 - **Faiblesse au feu** (Java, `pumpkin/FireWeaknessSystem`) : dans le groupe de filtrage des dégâts, après
   `AllegianceDamageFilter`, les dégâts de cause `Fire` (ou qui en hérite) sur un membre de `Nakasar_Pumpkin_Patch`
   sont doublés.
@@ -350,7 +362,7 @@ Les boss réutilisent les interactions et particules des runes.
   `SilverDamageSystem` double leurs coups contre les vampires.
 - **Groupes** : `Nakasar_Domain_Undead` (morts-vivants du domaine), `Nakasar_Vampires` et `Nakasar_Ghosts` (`DisableDamageGroups`, ils ne se blessent pas entre eux),
   `Nakasar_Vampire_Spawns` (compté par le comte avant d'invoquer), `Nakasar_Pumpkin_Patch` (citrouille géante et
-  vrilles : faiblesse au feu), `Nakasar_Vampire_Hunters` (ne se blessent pas entre eux), `Nakasar_Halloween_Faction`
+  ses deux sortes de vrilles : faiblesse au feu), `Nakasar_Vampire_Hunters` (ne se blessent pas entre eux), `Nakasar_Halloween_Faction`
   (tous les mobs du fragment, voir ci-dessous).
 - **Apparence** : modèles humanoïdes sur le squelette du joueur (`Parent: Player`), vêtements vanilla du créateur de
   personnage recolorés et col victorien généré par `tools/generate_vampire_models.py` (modèles et texture dans
@@ -365,16 +377,17 @@ Les boss réutilisent les interactions et particules des runes.
 
 ## Feu purificateur
 
-Java, `purifying/PurifyingFireSystem` (`DelayedEntitySystem`, 4 fois par seconde, PNJ seulement), pour un PNJ du
-groupe `Nakasar_Undead` (vampires, zombies, squelettes et fantômes du mod, squelettes, zombies, goules et spectres
-vanilla) près d'une torche ou d'une lanterne de feu purificateur (distances horizontales, 5 blocs en hauteur) :
+Java, `purifying/` : `PurifyingFireSystem` (`DelayedEntitySystem`, 4 fois par seconde) et `PurifyingSteeringSystem`
+(chaque tick, entre `AvoidanceSystem` et `SteeringSystem` du jeu), pour un PNJ du groupe `Nakasar_Undead` (vampires,
+zombies, squelettes et fantômes du mod, squelettes, zombies, goules et spectres vanilla) près d'une torche ou d'une
+lanterne de feu purificateur (distances horizontales, 5 blocs en hauteur). Aucune poussée : le PNJ marche.
 
-- à moins de 11 blocs d'un feu, il oublie à chaque passage les cibles qui se tiennent à moins de 9 blocs d'un feu
-  quelconque : il s'arrête avant d'entrer dans le rayon au lieu de rebondir contre ;
-- à moins de 7 blocs, il est repoussé (`KnockbackComponent`, vitesse posée, comme `/knockback apply`) selon la somme
-  des répulsions de tous les feux proches, sans écraser un recul déjà en attente (coup de chasseur), avec une levée
-  seulement s'il n'est pas déjà au-dessus du feu (les fantômes ne montent pas) ;
-- s'il reste plus de 2 s dans ce rayon (enfermé dans le camp, dominé qui suit le joueur), le feu le brûle : 6 dégâts
+- à moins de 11 blocs d'un feu, la part de son déplacement qui le rapprocherait du feu est retirée de la direction de
+  marche voulue par son rôle (`Role.getBodySteering`) : il longe la limite au lieu d'avancer. Il oublie aussi à chaque
+  passage les cibles qui se tiennent à moins de 9 blocs d'un feu quelconque ;
+- à moins de 7 blocs, il s'éloigne en marchant (vitesse relative 0,35 au bord, 0,8 contre le feu), selon la somme des
+  répulsions des feux proches ;
+- s'il reste plus de 5 s dans ce rayon (enfermé dans le camp, dominé qui suit le joueur), le feu le brûle : 6 dégâts
   de cause `Fire` par seconde jusqu'à ce qu'il sorte ou meure.
 
 Recherche des blocs : sections de blocs chargées (`BlockSection.contains` puis `find`), comme la prison du Capitaine.

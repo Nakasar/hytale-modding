@@ -42,5 +42,8 @@
     "OutputQuantity": 8
   },
   "Texture": "Items/Weapons/Nakasar/Silver/Arrow_Silver_Texture.png",
-  "Icon": "Icons/Items/Nakasar/Silver/Weapon_Nakasar_Arrow_Silver.png"
+  "Icon": "Icons/Items/Nakasar/Silver/Weapon_Nakasar_Arrow_Silver.png",
+  "Interactions": {},
+  "InteractionVars": {},
+  "MaxStack": 100
 }

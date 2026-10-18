@@ -20,6 +20,7 @@ items.Nakasar_Spawner_Spider.name = Marqueur : araignée
 items.Nakasar_Prison_Cell.name = Cellule de prison (cible de l'emprisonnement)
 npc.Giant_Pumpkin.name = Citrouille géante
 npc.Pumpkin_Tendril.name = Vrilles
+npc.Pumpkin_Vine.name = Vrille de citrouille
 npc.Vampire_Hunter_Crossbow.name = Chasseuse de vampires
 npc.Vampire_Hunter_Gunner.name = Chasseur de vampires
 npc.Vampire_Hunter_Blade.name = Chasseur de vampires
