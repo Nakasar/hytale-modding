@@ -1,0 +1,49 @@
+{
+  "Parent": "Weapon_Daggers_Iron",
+  "TranslationProperties": {
+    "Name": "nakasar_silver.items.Weapon_Nakasar_Daggers_Silver.name",
+    "Description": "nakasar_silver.items.Weapon_Nakasar_Daggers_Silver.description"
+  },
+  "Quality": "Rare",
+  "ItemLevel": 25,
+  "Tags": {
+    "Type": [
+      "Weapon"
+    ],
+    "Family": [
+      "Dagger"
+    ],
+    "Material": [
+      "Silver"
+    ]
+  },
+  "Recipe": {
+    "TimeSeconds": 3.5,
+    "KnowledgeRequired": false,
+    "Input": [
+      {
+        "ItemId": "Ingredient_Bar_Silver",
+        "Quantity": 4
+      },
+      {
+        "ItemId": "Ingredient_Leather_Light",
+        "Quantity": 2
+      },
+      {
+        "ItemId": "Ingredient_Fabric_Scrap_Linen",
+        "Quantity": 3
+      }
+    ],
+    "BenchRequirement": [
+      {
+        "Type": "Crafting",
+        "Id": "Weapon_Bench",
+        "Categories": [
+          "Weapon_Daggers"
+        ]
+      }
+    ]
+  },
+  "Texture": "Items/Weapons/Nakasar/Silver/Daggers_Silver_Texture.png",
+  "Icon": "Icons/Items/Nakasar/Silver/Weapon_Nakasar_Daggers_Silver.png"
+}

@@ -17,6 +17,9 @@ import dev.nakasar.hytale.vampires.pumpkin.RootTrapped;
 import dev.nakasar.hytale.vampires.rune.DrainBeamInteraction;
 import dev.nakasar.hytale.vampires.rune.RootNpcInteraction;
 import dev.nakasar.hytale.vampires.rune.TeleportCasterToImpactInteraction;
+import dev.nakasar.hytale.vampires.silver.SilverDamageSystem;
+import dev.nakasar.hytale.vampires.silver.SilverProjectileSystems;
+import dev.nakasar.hytale.vampires.silver.SilverWeapons;
 
 /**
  * Point d'entrée du mod "Vampires".
@@ -39,7 +42,9 @@ import dev.nakasar.hytale.vampires.rune.TeleportCasterToImpactInteraction;
  *   <li>{@link FireWeaknessSystem} : la citrouille géante et ses vrilles prennent double dégâts de feu ;</li>
  *   <li>les camps ({@link AllegianceAttitudeSystem}, {@link AllegianceDamageFilter},
  *       {@link DominationExpirySystem}) : les mobs du fragment sont alliés, ennemis des chasseurs de vampires, et la
- *       Domination retourne leur allégeance.</li>
+ *       Domination retourne leur allégeance ;</li>
+ *   <li>{@link SilverDamageSystem} et {@link SilverProjectileSystems} : les armes en argent (et leurs projectiles)
+ *       infligent le double de dégâts aux vampires.</li>
  * </ul>
  */
 public final class VampiresPlugin extends JavaPlugin {
@@ -80,8 +85,11 @@ public final class VampiresPlugin extends JavaPlugin {
         systems.registerSystem(new DominationExpirySystem());
         systems.registerSystem(new FireWeaknessSystem());
         systems.registerSystem(new RootTrapUnloadSystem());
+        systems.registerSystem(new SilverProjectileSystems.Launch());
+        systems.registerSystem(new SilverProjectileSystems.Legacy());
+        systems.registerSystem(new SilverDamageSystem());
 
-        getLogger().atInfo().log("Nakasar Vampires : 7 types d'interaction (%s, %s, %s, %s, %s, %s, %s) et systèmes des camps enregistrés",
+        getLogger().atInfo().log("Nakasar Vampires : 7 types d'interaction (%s, %s, %s, %s, %s, %s, %s), systèmes des camps et de l'argent enregistrés",
                 TeleportCasterToImpactInteraction.TYPE_ID, DominateInteraction.TYPE_ID, RootNpcInteraction.TYPE_ID,
                 DrainBeamInteraction.TYPE_ID, DominatePlayerInteraction.TYPE_ID, ImprisonPlayerInteraction.TYPE_ID,
                 RootTrapInteraction.TYPE_ID);
@@ -92,5 +100,6 @@ public final class VampiresPlugin extends JavaPlugin {
         RootNpcInteraction.clearAll();
         RootTrapInteraction.clearAll();
         Dominations.clearAll();
+        SilverWeapons.clearAll();
     }
 }
