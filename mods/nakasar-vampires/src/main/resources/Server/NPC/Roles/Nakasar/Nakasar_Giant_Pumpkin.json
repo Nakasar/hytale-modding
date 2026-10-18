@@ -301,16 +301,16 @@
           "ActionsBlocking": true,
           "Actions": [
             {
+              "Type": "TimerRestart",
+              "Name": "Spit"
+            },
+            {
               "Type": "Attack",
               "Attack": "Root_Nakasar_NPC_Pumpkin_Spit",
               "AimingTimeRange": [
                 0.3,
                 0.5
               ]
-            },
-            {
-              "Type": "TimerRestart",
-              "Name": "Spit"
             }
           ]
         },
@@ -376,16 +376,16 @@
           "ActionsBlocking": true,
           "Actions": [
             {
+              "Type": "TimerRestart",
+              "Name": "Thorns"
+            },
+            {
               "Type": "Attack",
               "Attack": "Root_Nakasar_NPC_Pumpkin_Thorns",
               "AimingTimeRange": [
                 0.3,
                 0.5
               ]
-            },
-            {
-              "Type": "TimerRestart",
-              "Name": "Thorns"
             }
           ]
         },

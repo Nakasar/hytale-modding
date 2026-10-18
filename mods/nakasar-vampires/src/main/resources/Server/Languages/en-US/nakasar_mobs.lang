@@ -23,5 +23,5 @@ npc.Pumpkin_Tendril.name = Tendrils
 npc.Vampire_Hunter_Crossbow.name = Vampire Hunter
 npc.Vampire_Hunter_Gunner.name = Vampire Hunter
 npc.Vampire_Hunter_Blade.name = Vampire Hunter
-items.Nakasar_Spawner_Giant_Pumpkin.name = Marker: giant pumpkin (elite)
-items.Nakasar_Spawner_Vampire_Hunter.name = Marker: vampire hunter
+items.Nakasar_Spawner_Giant_Pumpkin.name = Marker: Giant Pumpkin (elite)
+items.Nakasar_Spawner_Vampire_Hunter.name = Marker: Vampire Hunter
