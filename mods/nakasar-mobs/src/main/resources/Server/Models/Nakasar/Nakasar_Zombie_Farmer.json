@@ -1,0 +1,64 @@
+{
+  "$Comment": "Fermier zombifié : modèle vanilla Zombie habillé en paysan (chapeau de paille, chemise et salopette).",
+  "Parent": "Zombie",
+  "RandomAttachmentSets": {
+    "Head": {
+      "StrawHat": {
+        "Model": "Cosmetics/Head/StrawHat.blockymodel",
+        "Texture": "Cosmetics/Head/StrawHat_Textures/Straw_Greyscale.png",
+        "GradientSet": "Colored_Cotton",
+        "GradientId": "Cream",
+        "Weight": 2
+      },
+      "StrawHat_Dark": {
+        "Model": "Cosmetics/Head/StrawHat.blockymodel",
+        "Texture": "Cosmetics/Head/StrawHat_Textures/Straw_Greyscale.png",
+        "GradientSet": "Colored_Cotton",
+        "GradientId": "Brown",
+        "Weight": 1
+      },
+      "None": {
+        "Weight": 1
+      }
+    },
+    "Chest": {
+      "FarmerTop": {
+        "Model": "Cosmetics/Undertops/LongSleeveShirt.blockymodel",
+        "Texture": "Cosmetics/Undertops/LongSleeveShirt_Textures/Farmer_Shirt_Greyscale.png",
+        "GradientSet": "Fantasy_Cotton_Dark",
+        "GradientId": "Brown",
+        "Weight": 1
+      },
+      "FarmerVest": {
+        "Model": "Cosmetics/Overtops/Overtops_Long_Waist_NoSleeve.blockymodel",
+        "Texture": "Cosmetics/Overtops/Overtops_Long_Sleeve_Waist_Sleeve/Farmer_Vest_Greyscale.png",
+        "GradientSet": "Fantasy_Cotton_Dark",
+        "GradientId": "Green",
+        "Weight": 1
+      },
+      "Tunic_Villager": {
+        "Model": "Cosmetics/Overtops/Tunic.blockymodel",
+        "Texture": "Cosmetics/Overtops/Tunic_Textures/Villager_Greyscale.png",
+        "GradientSet": "Fantasy_Cotton_Dark",
+        "GradientId": "Brown",
+        "Weight": 1
+      }
+    },
+    "Legs": {
+      "Dungarees": {
+        "Model": "Cosmetics/Pants/LongDungarees.blockymodel",
+        "Texture": "Cosmetics/Pants/LongDungarees_Textures/Long_Dungarees_Greyscale.png",
+        "GradientSet": "Jean_Generic",
+        "GradientId": "Blue_Night",
+        "Weight": 2
+      },
+      "Dungarees_OneShoulder": {
+        "Model": "Cosmetics/Pants/LongDungarees.blockymodel",
+        "Texture": "Cosmetics/Pants/LongDungarees_Textures/Long_Dungarees_One_Shoulder.png",
+        "GradientSet": "Jean_Generic",
+        "GradientId": "GreyDark",
+        "Weight": 1
+      }
+    }
+  }
+}

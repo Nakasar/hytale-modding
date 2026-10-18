@@ -1,0 +1,39 @@
+{
+  "$Comment": "Capitaine de la garde (élite) : grand squelette vanilla Skeleton_Elite en armure de prétorien, cape rouge, yeux rouges. Les armes de dos du modèle vanilla sont retirées (il tient sa hache).",
+  "Parent": "Skeleton_Elite",
+  "MinScale": 1.3,
+  "MaxScale": 1.3,
+  "Light": {
+    "Color": "#7a0c1c",
+    "Radius": 3
+  },
+  "DefaultAttachments": [
+    {
+      "Model": "NPC/Undead/Skeleton_Elite/Models/Attachments/Praetorian/Chest.blockymodel",
+      "Texture": "NPC/Undead/Skeleton_Elite/Models/Attachments/Praetorian/Chest_Texture.png"
+    },
+    {
+      "Model": "NPC/Undead/Skeleton_Elite/Models/Attachments/Praetorian/Legs.blockymodel",
+      "Texture": "NPC/Undead/Skeleton_Elite/Models/Attachments/Praetorian/Legs_Texture.png"
+    },
+    {
+      "Model": "NPC/Undead/Skeleton_Elite/Models/Attachments/Praetorian/Head.blockymodel",
+      "Texture": "NPC/Undead/Skeleton_Elite/Models/Attachments/Praetorian/Head_Texture.png"
+    },
+    {
+      "Model": "NPC/Undead/Skeleton_Elite/Models/Attachments/Praetorian/Hands.blockymodel",
+      "Texture": "NPC/Undead/Skeleton_Elite/Models/Attachments/Praetorian/Hands_Texture.png"
+    },
+    {
+      "Model": "NPC/Undead/Skeleton/Models/Attachments/Cosmetics/Head/Eyes/Eyes.blockymodel",
+      "Texture": "NPC/Undead/Skeleton/Models/Attachments/Cosmetics/Head/Eyes/Eyes_Red.png"
+    },
+    {
+      "Model": "Cosmetics/Capes/Cape_King_NoNeck.blockymodel",
+      "Texture": "Cosmetics/Capes/Cape_King_Texture.png",
+      "GradientSet": "Fantasy_Cotton",
+      "GradientId": "Red"
+    }
+  ],
+  "RandomAttachmentSets": {}
+}

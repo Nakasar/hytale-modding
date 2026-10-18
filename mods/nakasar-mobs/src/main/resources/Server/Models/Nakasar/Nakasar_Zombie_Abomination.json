@@ -1,0 +1,6 @@
+{
+  "$Comment": "Zombie difforme des fermes envahies (élite) : modèle vanilla Zombie_Aberrant_Big, encore plus massif.",
+  "Parent": "Zombie_Aberrant_Big",
+  "MinScale": 1.35,
+  "MaxScale": 1.35
+}

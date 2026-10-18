@@ -1,12 +1,12 @@
 {
-  "$Comment": "Comtesse Vampire : même squelette que le comte, teint livide, yeux rouges, lèvres sombres. Longue robe noire, cape rouge bordée, gants longs rouges, bottes à talons, diadème d'argent, et pièce propre au mod : col Médicis noir et cramoisi avec pendentif rubis (tools/generate_vampire_models.py).",
+  "$Comment": "Comtesse Vampire : même squelette que le comte, teint livide, yeux rouges, lèvres sombres. Longs cheveux noirs ondulés, couronne royale noire et or, longue robe noire, grande cape royale rouge à hermine, gants longs rouges, bottes à talons, et pièce propre au mod : col Médicis noir et cramoisi avec pendentif rubis (tools/generate_vampire_models.py).",
   "Parent": "Player",
   "Model": "Characters/Player.blockymodel",
   "Texture": "Characters/Player_Textures/Player_Greyscale.png",
   "GradientSet": "Skin",
   "GradientId": "28",
-  "MinScale": 1.08,
-  "MaxScale": 1.08,
+  "MinScale": 1.15,
+  "MaxScale": 1.15,
   "Light": {
     "Color": "#b0102a",
     "Radius": 4
@@ -43,14 +43,16 @@
       "GradientId": "28"
     },
     {
-      "Model": "Characters/Haircuts/LongTwindrills.blockymodel",
-      "Texture": "Characters/Haircuts/LongTwindrills.png",
+      "Model": "Characters/Haircuts/WavyLong.blockymodel",
+      "Texture": "Characters/Haircuts/WavyLong_Greyscale.png",
       "GradientSet": "Hair",
       "GradientId": "PitchBlack"
     },
     {
-      "Model": "Cosmetics/Head/Tiara.blockymodel",
-      "Texture": "Cosmetics/Head/Tiara_Silver.png"
+      "Model": "Cosmetics/Head/KingsCrown.blockymodel",
+      "Texture": "Cosmetics/Head/KingsCrown_Red.png",
+      "GradientSet": "Fantasy_Cotton",
+      "GradientId": "Black"
     },
     {
       "Model": "Cosmetics/Overtops/LongDress.blockymodel",
@@ -71,9 +73,9 @@
       "GradientId": "Black"
     },
     {
-      "Model": "Cosmetics/Capes/Cape_Basic_NoNeck.blockymodel",
-      "Texture": "Cosmetics/Capes/Cape_Basic_Textures/Cape_Trimmed_Texture.png",
-      "GradientSet": "Colored_Cotton",
+      "Model": "Cosmetics/Capes/Cape_King_NoNeck.blockymodel",
+      "Texture": "Cosmetics/Capes/Cape_King_Texture.png",
+      "GradientSet": "Fantasy_Cotton",
       "GradientId": "Red"
     },
     {

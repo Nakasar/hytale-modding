@@ -1,12 +1,12 @@
 {
-  "$Comment": "Comte Vampire : humanoïde sur le squelette du joueur (il reprend ses animations), teint livide, yeux rouges, crocs. Redingote noire sur chemise blanche, pantalon rayé, bottes, cape royale rouge, et pièce propre au mod : haut col dressé noir et cramoisi avec lavallière et broche en rubis (tools/generate_vampire_models.py).",
+  "$Comment": "Comte Vampire : humanoïde sur le squelette du joueur (il reprend ses animations), teint livide, yeux rouges, crocs. Cheveux plaqués, couronne royale noire et or, longue redingote noire à galons dorés sur chemise blanche, pantalon rayé, bottes, bracelets d'or et rubis, cape royale rouge, et pièce propre au mod : haut col dressé noir et cramoisi avec lavallière et broche en rubis (tools/generate_vampire_models.py).",
   "Parent": "Player",
   "Model": "Characters/Player.blockymodel",
   "Texture": "Characters/Player_Textures/Player_Greyscale.png",
   "GradientSet": "Skin",
   "GradientId": "28",
-  "MinScale": 1.15,
-  "MaxScale": 1.15,
+  "MinScale": 1.22,
+  "MaxScale": 1.22,
   "Light": {
     "Color": "#b0102a",
     "Radius": 4
@@ -49,15 +49,21 @@
       "GradientId": "PitchBlack"
     },
     {
+      "Model": "Cosmetics/Head/KingsCrown.blockymodel",
+      "Texture": "Cosmetics/Head/KingsCrown_Red.png",
+      "GradientSet": "Fantasy_Cotton",
+      "GradientId": "Black"
+    },
+    {
       "Model": "Cosmetics/Undertops/LongSleeveShirt.blockymodel",
       "Texture": "Cosmetics/Undertops/LongSleeveShirt_Textures/Smart_Shirt_Greyscale.png",
       "GradientSet": "Colored_Cotton",
       "GradientId": "White"
     },
     {
-      "Model": "Cosmetics/Overtops/Overtop_Long_Waist_NoSleeve.blockymodel",
-      "Texture": "Cosmetics/Overtops/Overtop_Long_Sleeve_Waist_Sleeve/Fancy_Coat_Greyscale.png",
-      "GradientSet": "Colored_Cotton",
+      "Model": "Cosmetics/Overtops/Overtops_Long_Waist_Sleeve.blockymodel",
+      "Texture": "Cosmetics/Overtops/Overtops_Long_Sleeve_Waist_Sleeve/Gold_Trim_Greyscale.png",
+      "GradientSet": "Fantasy_Cotton_Dark",
       "GradientId": "Black"
     },
     {
@@ -71,6 +77,12 @@
       "Texture": "Cosmetics/Shoes/Boots_Long_Textures/Leather_Greyscale.png",
       "GradientSet": "Faded_Leather",
       "GradientId": "Black"
+    },
+    {
+      "Model": "Cosmetics/Gloves/GoldenBracelets.blockymodel",
+      "Texture": "Cosmetics/Gloves/GoldenBracelets_Greyscale.png",
+      "GradientSet": "Ornamented_Metal",
+      "GradientId": "Black_Red"
     },
     {
       "Model": "Cosmetics/Capes/Cape_King_NoNeck.blockymodel",

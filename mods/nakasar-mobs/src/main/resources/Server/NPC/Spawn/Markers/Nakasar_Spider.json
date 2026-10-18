@@ -1,0 +1,17 @@
+{
+  "$Comment": "Araignée vanilla (Spider ou Spider_Cave) dans les structures envahies du domaine du Comte ; revient 10 minutes après sa mort.",
+  "NPCs": [
+    {
+      "Name": "Spider",
+      "Weight": 2,
+      "RealtimeRespawnTime": 600
+    },
+    {
+      "Name": "Spider_Cave",
+      "Weight": 1,
+      "RealtimeRespawnTime": 600
+    }
+  ],
+  "RealtimeRespawn": true,
+  "ExclusionRadius": 0
+}

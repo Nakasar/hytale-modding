@@ -1,0 +1,104 @@
+{
+  "$Comment": "Onde de choc du zombie difforme, annoncée : il s'immobilise 1,2 s, rougeoie et un cercle d'alerte s'étend au sol, puis frappe le sol ; un anneau de choc part de lui jusqu'à 7 blocs. On l'évite en sautant au passage de l'anneau ou en restant hors de portée.",
+  "Type": "Serial",
+  "Interactions": [
+    {
+      "Type": "ClearEntityEffect",
+      "Entity": "User",
+      "EntityEffectId": "Hit_Interrupt_Eligible"
+    },
+    {
+      "Type": "ApplyEffect",
+      "EffectId": "Nakasar_Elite_Rooted"
+    },
+    {
+      "Type": "ApplyEffect",
+      "EffectId": "Dungeon_Goblin_Mace_Slam_Charge"
+    },
+    {
+      "Type": "Simple",
+      "RunTime": 1.2,
+      "Effects": {
+        "ItemPlayerAnimationsId": "Hound_Bleached_Default",
+        "ItemAnimationId": "Bite",
+        "Particles": [
+          {
+            "SystemId": "Gobliterator_Slam_Warning",
+            "TargetEntityPart": "Entity",
+            "TargetNodeName": "Origin",
+            "Scale": 0.3,
+            "PositionOffset": {
+              "X": 0,
+              "Y": 0.1,
+              "Z": 0.0
+            }
+          }
+        ],
+        "WorldSoundEventId": "SFX_Zombie_Pursuit"
+      }
+    },
+    {
+      "Type": "Simple",
+      "RunTime": 0.15,
+      "Effects": {
+        "ItemPlayerAnimationsId": "Hound_Bleached_Default",
+        "ItemAnimationId": "Bite"
+      }
+    },
+    {
+      "Type": "Selector",
+      "RunTime": 1.1,
+      "Effects": {
+        "Particles": [
+          {
+            "SystemId": "Dungeon_Goblin_Mace_Slam",
+            "TargetEntityPart": "Entity",
+            "TargetNodeName": "Origin",
+            "Scale": 0.3,
+            "PositionOffset": {
+              "X": 0,
+              "Y": 0.1,
+              "Z": 0.0
+            }
+          }
+        ],
+        "WorldSoundEventId": "SFX_Goblin_Mace_Club_Slam_Impact"
+      },
+      "Selector": {
+        "Id": "Donut",
+        "Height": 1,
+        "Width": 0.75,
+        "MaxRadius": 7
+      },
+      "HitEntity": {
+        "Interactions": [
+          {
+            "Parent": "DamageEntityParent",
+            "DamageCalculator": {
+              "BaseDamage": {
+                "Physical": 30
+              },
+              "RandomPercentageModifier": 0.1
+            },
+            "DamageEffects": {
+              "WorldSoundEventId": "SFX_Mace_T2_Signature_Impact",
+              "CameraEffect": "Impact",
+              "Knockback": {
+                "Type": "Force",
+                "Force": 10,
+                "VelocityType": "Set",
+                "Direction": {
+                  "Y": 1
+                }
+              }
+            }
+          }
+        ]
+      }
+    },
+    {
+      "Type": "Simple",
+      "RunTime": 0.6
+    }
+  ]
+}

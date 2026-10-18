@@ -1,0 +1,10 @@
+{
+  "$Comment": "Posé sur un élite pendant qu'il arme une attaque annoncée : il ne recule plus sous les coups (fenêtre de lecture fixe pour le joueur).",
+  "Duration": 2.5,
+  "OverlapBehavior": "Overwrite",
+  "RemovalBehavior": "Duration",
+  "Debuff": false,
+  "ApplicationEffects": {
+    "KnockbackMultiplier": 0
+  }
+}

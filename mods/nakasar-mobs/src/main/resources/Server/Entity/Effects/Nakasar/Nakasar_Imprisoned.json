@@ -1,0 +1,12 @@
+{
+  "$Comment": "Posé sur le joueur que le Capitaine envoie en cellule : retour visuel (la téléportation vient de Nakasar_ImprisonPlayer).",
+  "Duration": 5,
+  "OverlapBehavior": "Overwrite",
+  "Debuff": true,
+  "StatusEffectIcon": "UI/StatusEffects/Nakasar/Imprisoned.png",
+  "ApplicationEffects": {
+    "HorizontalSpeedMultiplier": 0.6,
+    "EntityTopTint": "#9aa4b0",
+    "EntityBottomTint": "#3a4048"
+  }
+}

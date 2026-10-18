@@ -1,0 +1,81 @@
+{
+  "$Comment": "Emprisonnement du Capitaine, annoncé (longue recharge) : 1,5 s de préparation (il tend la main, lueur rouge, flèches au sol vers sa cible), puis un trait de 18 blocs dans l'axe de son regard. Le premier joueur touché est envoyé dans la cellule (bloc Nakasar_Prison_Cell) la plus proche du Capitaine. On l'évite en sortant de sa ligne de visée.",
+  "Type": "Serial",
+  "Interactions": [
+    {
+      "Type": "ClearEntityEffect",
+      "Entity": "User",
+      "EntityEffectId": "Hit_Interrupt_Eligible"
+    },
+    {
+      "Type": "ApplyEffect",
+      "EffectId": "Nakasar_Elite_Rooted"
+    },
+    {
+      "Type": "ApplyEffect",
+      "EffectId": "Dungeon_Goblin_Mace_Slam_Charge"
+    },
+    {
+      "Type": "Simple",
+      "RunTime": 1.5,
+      "Effects": {
+        "ItemPlayerAnimationsId": "Skeleton_Battleaxe",
+        "ItemAnimationId": "CastLeftCharging",
+        "Particles": [
+          {
+            "SystemId": "Indicator_Chevron3",
+            "TargetEntityPart": "Entity",
+            "TargetNodeName": "Origin",
+            "Scale": 0.5,
+            "PositionOffset": {
+              "X": 0,
+              "Y": 0.1,
+              "Z": 2.0
+            }
+          }
+        ],
+        "WorldSoundEventId": "SFX_Goblin_Mace_VO_Club_Slam_Charge"
+      }
+    },
+    {
+      "Type": "Simple",
+      "RunTime": 0.15,
+      "Effects": {
+        "ItemPlayerAnimationsId": "Skeleton_Battleaxe",
+        "ItemAnimationId": "CastLeft"
+      }
+    },
+    {
+      "Type": "Selector",
+      "RunTime": 0.1,
+      "Selector": {
+        "Id": "Stab",
+        "StartDistance": 0,
+        "EndDistance": 18,
+        "ExtendTop": 0.6,
+        "ExtendBottom": 0.6,
+        "ExtendLeft": 0.6,
+        "ExtendRight": 0.6,
+        "TestLineOfSight": true
+      },
+      "HitEntityRules": [
+        {
+          "Matchers": [
+            {
+              "Type": "Player"
+            }
+          ],
+          "Next": {
+            "Interactions": [
+              "Nakasar_NPC_Captain_Imprison_Hit"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Type": "Simple",
+      "RunTime": 0.5
+    }
+  ]
+}

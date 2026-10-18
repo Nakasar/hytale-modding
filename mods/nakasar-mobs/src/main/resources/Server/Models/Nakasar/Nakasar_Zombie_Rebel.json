@@ -1,0 +1,56 @@
+{
+  "$Comment": "Paysan rebelle zombifié : modèle vanilla Zombie, bandana, tunique usée, fourche (outil tenu, voir le rôle).",
+  "Parent": "Zombie",
+  "RandomAttachmentSets": {
+    "Head": {
+      "Bandana": {
+        "Model": "Cosmetics/Head/Bandana.blockymodel",
+        "Texture": "Cosmetics/Head/Bandana_Textures/Bandana_Skulls_Greyscale_Texture.png",
+        "GradientSet": "Colored_Cotton",
+        "GradientId": "Red",
+        "Weight": 1
+      },
+      "Hood": {
+        "Model": "Cosmetics/Head/Hood.blockymodel",
+        "Texture": "NPC/Undead/Zombie/Models/Attachments/Head/Hood_Texture/Monk_Cap.png",
+        "Weight": 1
+      },
+      "None": {
+        "Weight": 1
+      }
+    },
+    "Face": {
+      "Bandana_Ragged": {
+        "Model": "Cosmetics/Face_Accessories/Bandana.blockymodel",
+        "Texture": "Cosmetics/Face_Accessories/Bandana.png",
+        "GradientSet": "Fantasy_Cotton_Dark",
+        "GradientId": "Brown",
+        "Weight": 1
+      },
+      "None": {
+        "Weight": 2
+      }
+    },
+    "Chest": {
+      "Battleworn": {
+        "Model": "Cosmetics/Overtops/Battleworn_Tunic.blockymodel",
+        "Texture": "Cosmetics/Overtops/Battleworn_Tunic_Texture.png",
+        "GradientSet": "Colored_Cotton",
+        "GradientId": "Brown",
+        "Weight": 1
+      },
+      "Tunic_Villager": {
+        "Model": "Cosmetics/Overtops/Tunic.blockymodel",
+        "Texture": "Cosmetics/Overtops/Tunic_Textures/Villager_Greyscale.png",
+        "GradientSet": "Fantasy_Cotton_Dark",
+        "GradientId": "Green",
+        "Weight": 1
+      },
+      "Tunic": {
+        "Model": "Cosmetics/Overtops/Tunic.blockymodel",
+        "Texture": "NPC/Undead/Zombie/Models/Attachments/Chest/Tunic_Textures/Ragged_Apprentice_Tunic.png",
+        "Weight": 1
+      }
+    }
+  }
+}

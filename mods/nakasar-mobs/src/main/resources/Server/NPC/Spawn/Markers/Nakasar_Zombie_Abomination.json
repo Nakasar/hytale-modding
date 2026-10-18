@@ -1,0 +1,12 @@
+{
+  "$Comment": "Zombie difforme (élite) posé dans les structures du domaine du Comte ; revient 30 minutes après sa mort.",
+  "NPCs": [
+    {
+      "Name": "Nakasar_Zombie_Abomination",
+      "Weight": 1,
+      "RealtimeRespawnTime": 1800
+    }
+  ],
+  "RealtimeRespawn": true,
+  "ExclusionRadius": 0
+}
