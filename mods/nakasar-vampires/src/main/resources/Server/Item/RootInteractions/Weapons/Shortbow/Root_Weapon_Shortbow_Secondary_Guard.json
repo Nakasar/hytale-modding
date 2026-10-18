@@ -18,12 +18,7 @@
           "Ammo": 0
         },
         "Next": {
-          "Type": "ModifyInventory",
-          "RequiredGameMode": "Adventure",
-          "ItemToAdd": {
-            "Id": "Weapon_Nakasar_Arrow_Silver",
-            "Quantity": 1
-          },
+          "Type": "Nakasar_ReturnArrow",
           "Next": {
             "Type": "ChangeStat",
             "Behaviour": "Set",

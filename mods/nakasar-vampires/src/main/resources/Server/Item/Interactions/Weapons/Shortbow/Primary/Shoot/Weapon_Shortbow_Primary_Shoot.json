@@ -33,12 +33,7 @@
         "Type": "Serial",
         "Interactions": [
           {
-            "Type": "ModifyInventory",
-            "RequiredGameMode": "Adventure",
-            "ItemToRemove": {
-              "Id": "Weapon_Nakasar_Arrow_Silver",
-              "Quantity": 1
-            },
+            "Type": "Nakasar_TakeArrow",
             "Next": {
               "Type": "ChangeStat",
               "Behaviour": "Set",
@@ -78,12 +73,7 @@
                 "Ammo": 0
               },
               "Next": {
-                "Type": "ModifyInventory",
-                "RequiredGameMode": "Adventure",
-                "ItemToAdd": {
-                  "Id": "Weapon_Nakasar_Arrow_Silver",
-                  "Quantity": 1
-                }
+                "Type": "Nakasar_ReturnArrow"
               }
             }
           }

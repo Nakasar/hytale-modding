@@ -18,9 +18,12 @@ import dev.nakasar.hytale.vampires.pumpkin.RootTrapped;
 import dev.nakasar.hytale.vampires.rune.DrainBeamInteraction;
 import dev.nakasar.hytale.vampires.rune.RootNpcInteraction;
 import dev.nakasar.hytale.vampires.rune.TeleportCasterToImpactInteraction;
+import dev.nakasar.hytale.vampires.silver.ArrowQuiver;
+import dev.nakasar.hytale.vampires.silver.ReturnArrowInteraction;
 import dev.nakasar.hytale.vampires.silver.SilverDamageSystem;
 import dev.nakasar.hytale.vampires.silver.SilverProjectileSystems;
 import dev.nakasar.hytale.vampires.silver.SilverWeapons;
+import dev.nakasar.hytale.vampires.silver.TakeArrowInteraction;
 
 /**
  * Point d'entrée du mod "Vampires".
@@ -80,6 +83,10 @@ public final class VampiresPlugin extends JavaPlugin {
                 ImprisonPlayerInteraction.class, ImprisonPlayerInteraction.CODEC);
         interactions.register(RootTrapInteraction.TYPE_ID,
                 RootTrapInteraction.class, RootTrapInteraction.CODEC);
+        interactions.register(TakeArrowInteraction.TYPE_ID,
+                TakeArrowInteraction.class, TakeArrowInteraction.CODEC);
+        interactions.register(ReturnArrowInteraction.TYPE_ID,
+                ReturnArrowInteraction.class, ReturnArrowInteraction.CODEC);
 
         var systems = getEntityStoreRegistry();
         RootTrapped.setComponentType(systems.registerComponent(RootTrapped.class, RootTrapped::new));
@@ -93,10 +100,10 @@ public final class VampiresPlugin extends JavaPlugin {
         systems.registerSystem(new SilverDamageSystem());
         systems.registerSystem(new PurifyingFireSystem());
 
-        getLogger().atInfo().log("Nakasar Vampires : 7 types d'interaction (%s, %s, %s, %s, %s, %s, %s), systèmes des camps, de l'argent et du feu purificateur enregistrés",
+        getLogger().atInfo().log("Nakasar Vampires : 9 types d'interaction (%s, %s, %s, %s, %s, %s, %s, %s, %s), systèmes des camps, de l'argent et du feu purificateur enregistrés",
                 TeleportCasterToImpactInteraction.TYPE_ID, DominateInteraction.TYPE_ID, RootNpcInteraction.TYPE_ID,
                 DrainBeamInteraction.TYPE_ID, DominatePlayerInteraction.TYPE_ID, ImprisonPlayerInteraction.TYPE_ID,
-                RootTrapInteraction.TYPE_ID);
+                RootTrapInteraction.TYPE_ID, TakeArrowInteraction.TYPE_ID, ReturnArrowInteraction.TYPE_ID);
     }
 
     @Override
@@ -105,5 +112,6 @@ public final class VampiresPlugin extends JavaPlugin {
         RootTrapInteraction.clearAll();
         Dominations.clearAll();
         SilverWeapons.clearAll();
+        ArrowQuiver.clearAll();
     }
 }
