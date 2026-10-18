@@ -25,6 +25,7 @@
     ]
   },
   "Spawn": {
+    "SpawnReturnPortal": false,
     "SpawnProviderOverride": {
       "Id": "Global",
       "SpawnPoint": {

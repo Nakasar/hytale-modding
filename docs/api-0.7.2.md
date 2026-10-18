@@ -138,6 +138,17 @@ Le JSON l'utilise ensuite avec `"Type": "Nakasar_MyInteraction"`.
   (`Server/PortalTypes/*.json`) donne `InstanceId`, `Description` (clés de traduction, `ThemeColor`,
   `DescriptionTags`, `Objectives`), `TimeLimitSeconds`, `CloseWhenEmpty`, `VoidInvasionEnabled`,
   `Spawn`, `GameplayConfig` (défaut `Portal`).
+- `Spawn` : `SpawnProviderOverride` donne le point exact, `SpawnReturnPortal` (vrai par défaut) pose le
+  bloc `Portal_Return` **sur** ce point (le jeu vide 3 × 3 × 3 blocs autour, le joueur apparaît 0,5
+  bloc plus haut, dans le portail), `ReturnBlock` change le bloc. `ReturnPortalInteraction` refuse
+  le retour pendant 15 s après l'arrivée (`MINIMUM_TIME_IN_WORLD`) puis renvoie quiconque touche le
+  portail : si le client met plus de 15 s à charger, le joueur repart dès que l'écran s'affiche.
+  `PortalDeviceSummonPage` attend la génération des sections autour du point avant de poser le
+  portail : une génération lente retarde d'autant l'ouverture du portail.
+- Générateur : `{"Type": "YOverride", "Value": y, "Inputs": [{"Type": "Cache", "Capacity": n, "Inputs": [...]}]}`
+  calcule une densité une fois par colonne (c'est ce que fait l'ancien `Cache2D`) ; `Cache` de positions
+  (`Positions`, `SectionSize` 32, `CacheSize` 100) mémorise une liste filtrée. Densités construites par
+  fil de génération (`DensityAsset$Argument.workerId`).
 - Une instance est un dossier `Server/Instances/<id>/instance.bson` : un `WorldConfig` écrit en JSON.
   Le générateur moderne s'écrit `"WorldGen": { "Type": "HytaleGenerator", "WorldStructure": "<id>" }`.
 - Les assets du générateur vivent dans `Server/HytaleGenerator/{Biomes,WorldStructures,...}`. Les types
