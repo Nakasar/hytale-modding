@@ -2,8 +2,8 @@ import groovy.json.JsonSlurper
 
 // Configuration commune à tous les mods du dépôt.
 // Chaque mod vit dans mods/<nom> et choisit son type :
-//   - plugin Java (jar) : voir mods/nakasar-runes
-//   - pack d'assets pur (zip) : voir mods/nakasar-spear
+//   - plugin Java (jar) avec pack d'assets embarqué : voir mods/nakasar-vampires
+//   - pack d'assets pur (zip) : tâche Zip sur un dossier pack/ (aucun mod de ce type pour l'instant)
 
 val hytaleVersion: String = project.property("hytale_version").toString()
 val modVersion: String = project.property("mod_version").toString()

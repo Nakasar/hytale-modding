@@ -2,14 +2,17 @@
 
 Mods pour **Hytale** (serveur `0.7.x`, « Update 7 »), développés par Nakasar.
 
-| Mod | Type | Artefact | Contenu |
-|-----|------|----------|---------|
-| `mods/nakasar-runes` | plugin Java + pack d'assets | `Nakasar-Runes-<version>.jar` | 4 runes d'abilities (Baiser du Vampire, Domination, Téléportation, Chaînes spectrales) et l'autel sacrificiel qui les fabrique |
-| `mods/nakasar-spear` | pack d'assets pur | `Nakasar-Spear-<version>.zip` | Lance de fer à deux mains : enchaînement, coup chargé, compétence ultime |
-| `mods/nakasar-halloween` | pack d'assets pur | `Nakasar-Halloween-<version>.zip` | Fragment d'Orbis « Halloween » ouvert depuis l'Ancienne passerelle, domaine du Comte vampire : son manoir, village abandonné, fermes délaissées, ancien poste de garde, cryptes, châteaux hantés, cimetières, forêts mortes ; à installer avec `nakasar-mobs` et `nakasar-runes` |
-| `mods/nakasar-mobs` | plugin Java + pack d'assets | `Nakasar-Mobs-<version>.jar` | Comte et Comtesse Vampire (boss qui lancent les sorts des runes), rejetons de vampire, fantômes ; à installer avec `nakasar-runes` |
+Un seul mod, **Vampires** (`mods/nakasar-vampires`, plugin Java + pack d'assets, artefact
+`Nakasar-Vampires-<version>.jar`) : le domaine du Comte vampire.
 
-Le détail de chaque mod (fichiers, chaînes d'interactions, réglages) est dans [docs/mods.md](docs/mods.md).
+| Partie | Contenu |
+|--------|---------|
+| Fragment Halloween | Fragment d'Orbis ouvert depuis l'Ancienne passerelle : manoir du Comte, village abandonné, fermes délaissées, ancien poste de garde, cryptes, châteaux hantés, cimetières, forêts mortes |
+| Mobs | Comte et Comtesse Vampire (boss qui lancent les sorts des runes), rejetons, fantômes, morts-vivants du domaine et leurs élites ; tous les mobs du fragment sont alliés entre eux |
+| Runes et autel | 4 runes d'abilities (Baiser du Vampire, Domination, Téléportation, Chaînes spectrales) et l'autel sacrificiel qui les fabrique ; la Domination fait changer de camp le mob visé |
+| Lance | Lance de fer à deux mains : enchaînement, coup chargé, compétence ultime |
+
+Le détail du mod (fichiers, chaînes d'interactions, camps, réglages) est dans [docs/mods.md](docs/mods.md).
 Les points d'API serveur vérifiés dans le jar `Server-0.7.2` sont notés dans [docs/api-0.7.2.md](docs/api-0.7.2.md).
 Création de PNJ (rôles, IA, modèles, apparitions) : [docs/npc-0.7.2.md](docs/npc-0.7.2.md), et la référence complète des 179 briques d'IA générée depuis le jar : [docs/npc-reference-0.7.2.md](docs/npc-reference-0.7.2.md).
 
@@ -26,19 +29,17 @@ Création de PNJ (rôles, IA, modèles, apparitions) : [docs/npc-0.7.2.md](docs/
 ./gradlew build
 ```
 
-- `mods/nakasar-runes/build/libs/Nakasar-Runes-0.1.0.jar`
-- `mods/nakasar-spear/build/distributions/Nakasar-Spear-0.1.0.zip`
-- `mods/nakasar-halloween/build/distributions/Nakasar-Halloween-0.1.0.zip`
-- `mods/nakasar-mobs/build/libs/Nakasar-Mobs-0.1.0.jar`
+- `mods/nakasar-vampires/build/libs/Nakasar-Vampires-0.1.0.jar`
 
 `build` lance aussi `validateJson`, qui vérifie la syntaxe de tous les JSON d'assets (le parseur du
 serveur est strict : une virgule en trop fait échouer le chargement du mod).
 
-Pour tous les mods, `build` lance aussi `validateAssets` (`mods/nakasar-halloween/tools/ValidateAssets.java`) :
+`build` lance aussi `validateRoles` (`mods/nakasar-vampires/tools/ValidateRoles.java`, rôles de PNJ) et
+`validateAssets` (`mods/nakasar-vampires/tools/ValidateAssets.java`) :
 il décode chaque asset du pack (biome, structure de monde, instance, portail, objets, environnements, météo,
 spawns, modèles, effets, butins, interactions, y compris celles écrites en ligne dans `Next` ou `Parallel`)
 avec les codecs du jar serveur et signale les clés inconnues et les valeurs invalides (par exemple un
-`Parallel` à une seule branche), sans démarrer le jeu. Pour le fragment Halloween, il vérifie aussi que
+`Parallel` à une seule branche), sans démarrer le jeu. Il vérifie aussi que
 chaque bloc des prefabs et du générateur existe dans `tools/vanilla-block-ids-0.7.2.txt` (un id inconnu
 devient un damier rose et noir en jeu). Les autres ids référencés (PNJ, sons, stats, `PortalKey_Taiga`,
 `Env_Zone1_Plains`) ne sont pas vérifiés, ni les interactions de type Java de nos plugins et les assets
@@ -47,9 +48,9 @@ qui héritent d'un parent vanilla (notés « non vérifiable hors jeu »).
 Les prefabs et la génération du monde sont produits par des scripts (déterministes) :
 
 ```bash
-python3 mods/nakasar-halloween/tools/generate_prefabs.py    # 65 prefabs dans pack/Server/Prefabs/Nakasar/Halloween
-python3 mods/nakasar-halloween/tools/generate_loot.py       # listes de butin des coffres
-python3 mods/nakasar-halloween/tools/generate_worldgen.py   # biome + structure de monde
+python3 mods/nakasar-vampires/tools/generate_prefabs.py    # 65 prefabs dans src/main/resources/Server/Prefabs/Nakasar/Halloween
+python3 mods/nakasar-vampires/tools/generate_loot.py       # listes de butin des coffres
+python3 mods/nakasar-vampires/tools/generate_worldgen.py   # biome + structure de monde
 ```
 
 ## Déployer sur un serveur local
@@ -68,13 +69,18 @@ puis :
 
 (ou en une fois : `./gradlew deployToServer -Phytale.modsDir=/chemin/vers/Server/mods`).
 
-Dans un monde solo, activez ensemble Runes, Mobs et Halloween dans la liste des mods du monde : Halloween
-fait apparaître les mobs de Mobs, qui lancent les sorts de Runes.
+Dans un monde solo, activez **Vampires** dans la liste des mods du monde.
+
+**Mise à jour depuis les anciens mods séparés** : supprimez du dossier `mods/` les fichiers `Nakasar-Runes-*.jar`,
+`Nakasar-Spear-*.zip`, `Nakasar-Halloween-*.zip` et `Nakasar-Mobs-*.jar` avant d'y mettre `Nakasar-Vampires-*.jar`
+(ils déclarent les mêmes assets), puis activez Vampires dans les mondes qui utilisaient les anciens mods. Les ids
+d'objets, de blocs, de PNJ et de prefabs n'ont pas changé : runes, autels posés, coffres et fragments déjà générés
+restent valides.
 
 ### Pack de tous les mods
 
 `./gradlew packMods` construit `build/distributions/Nakasar-Mods-Pack-<version>.zip`, qui contient les jars et
-zips de tous les mods à sa racine : il s'extrait directement dans le dossier `mods/` d'une save ou d'un serveur.
+zips de tous les mods à sa racine (aujourd'hui le seul `Nakasar-Vampires-<version>.jar`) : il s'extrait directement dans le dossier `mods/` d'une save ou d'un serveur.
 La CI publie le même contenu dans l'artefact `Nakasar-Mods-Pack` (onglet « Actions », en bas du run) : le zip
 téléchargé s'extrait lui aussi directement dans `mods/`.
 
@@ -162,7 +168,7 @@ repris de la documentation communautaire sans avoir pu être contrôlés :
   `SFX_Workbench_Craft` (documentation communautaire). Le serveur valide ces ids au
   chargement : un id inconnu rejette l'asset entier et le journal le nomme.
 - **Modèle de l'autel** : modèle, texture, hitbox et icône sont générés par
-  `mods/nakasar-runes/tools/generate_altar.py` (format JSON du plugin Blockbench officiel, 32 unités = 1 bloc).
+  `mods/nakasar-vampires/tools/generate_altar.py` (format JSON du plugin Blockbench officiel, 32 unités = 1 bloc).
   À vérifier en jeu : l'autel occupe 2×2×1 blocs (large × haut × profond) et doit se poser avec ses blocs de
   remplissage ; le sens des pièces pivotées (`orientation`), le côté « avant » (crâne et dague d'un côté de la
   dalle) et le cadrage de l'icône 3D (`IconProperties`, repris de l'établi d'alchimie). Si le rendu ou les UV
@@ -200,11 +206,11 @@ Fragment Halloween :
   l'ajouter à la main ; si un bloc de la liste s'affiche en damier rose, le signaler pour l'en retirer.
 - **Temps** : l'instance démarre à 20 h, avec des jours de 5 min et des nuits de 20 min.
 
-Mobs (`mods/nakasar-mobs`, voir [docs/npc-0.7.2.md](docs/npc-0.7.2.md)) :
+Mobs (voir [docs/npc-0.7.2.md](docs/npc-0.7.2.md)) :
 
 - **Apparence** : le Comte, la Comtesse et le rejeton sont des humanoïdes sur le squelette du joueur
   (vêtements du créateur de personnage recolorés, peau blafarde, yeux rouges) avec un col victorien dédié
-  généré par `mods/nakasar-mobs/tools/generate_vampire_models.py`. À vérifier : place et orientation du
+  généré par `mods/nakasar-vampires/tools/generate_vampire_models.py`. À vérifier : place et orientation du
   col, couleurs des vêtements. Le fantôme reste sur le modèle vanilla `Wraith`.
 - **Icônes d'effets** : Domination, Chaînes spectrales et Toucher glacial ont une icône dédiée
   (`Common/UI/StatusEffects/Nakasar/`) ; elle doit remplacer la croix rouge.
@@ -216,6 +222,13 @@ Mobs (`mods/nakasar-mobs`, voir [docs/npc-0.7.2.md](docs/npc-0.7.2.md)) :
 - **Marqueurs du manoir** : le bloc invisible `Nakasar_Spawner_*` (composant `SpawnMarkerBlock`) n'a pas
   pu être décodé hors jeu. Si le boss n'apparaît pas au manoir, le poser à la main avec `/give`.
 - **Densité** : poids des fantômes et rejetons dans l'environnement hanté à régler à l'œil.
+- **Camps** : dans le fragment, aucun mob ne doit en attaquer un autre, et une flèche de squelette perdue ne doit
+  plus blesser un zombie. Si un mob vanilla du fragment en attaque encore un autre, son id manque dans
+  `NPC/Groups/Nakasar_Halloween_Faction.json` (le journal signale aussi les ids de ce groupe qui n'existent pas).
+- **Domination sur un mob** (rune) : pendant l'effet, le mob visé doit se détourner de vous et attaquer les mobs
+  du fragment à moins de 16 blocs, qui doivent riposter ; à la fin, il redevient hostile envers vous et cesse de
+  frapper ses alliés. Les mobs du mod sont réglés pour ça ; pour les mobs vanilla (squelettes, zombies...), cela
+  dépend de leurs rôles : s'ils restent passifs une fois dominés, il faudra leur donner un coup de pouce en Java.
 
 ## Organisation du dépôt
 
@@ -227,14 +240,14 @@ mods/<mod>/                 # un sous-projet Gradle par mod
   src/main/java             # (plugin) code Java
   src/main/resources        # (plugin) manifest.json + Server/** (pack d'assets embarqué)
   pack/                     # (pack pur) manifest.json + Server/**
-  tools/                    # (halloween) générateurs de prefabs / worldgen, validateur d'assets
-                            # (mobs) ValidateRoles.java : validateur de rôles PNJ hors jeu
+  tools/                    # générateurs (prefabs, worldgen, butin, modèles), validateurs hors jeu
+                            # ValidateAssets.java (assets) et ValidateRoles.java (rôles PNJ)
 docs/                       # notes de conception et d'API
 ```
 
 ## Ajouter un mod
 
-1. Créer `mods/<nom>` avec un `build.gradle.kts` (copier `nakasar-runes` pour un plugin,
-   `nakasar-spear` pour un pack pur).
+1. Créer `mods/<nom>` avec un `build.gradle.kts` (copier `nakasar-vampires` pour un plugin ; pour un pack pur,
+   une tâche `Zip` sur un dossier `pack/`, voir l'historique de `mods/nakasar-spear`).
 2. L'ajouter dans `settings.gradle.kts` (`include(":mods:<nom>")`).
 3. Préfixer tous les ids d'assets par `Nakasar_` (ou `<Mod>_`) pour éviter les collisions avec le jeu.

@@ -2,7 +2,7 @@
 
 Référence complète des briques d'IA (sensors, actions, mouvements, avec champs et valeurs par défaut) :
 [npc-reference-0.7.2.md](npc-reference-0.7.2.md), générée par
-`java mods/nakasar-mobs/tools/ValidateRoles.java --descriptors docs/npc-reference-0.7.2.md`.
+`java mods/nakasar-vampires/tools/ValidateRoles.java --descriptors docs/npc-reference-0.7.2.md`.
 
 ## Fichiers
 
@@ -57,7 +57,17 @@ Référence complète des briques d'IA (sensors, actions, mouvements, avec champ
 Sous-classe de `DamageEventSystem`, groupe `DamageModule.get().getFilterDamageGroup()`, enregistrée avec
 `getEntityStoreRegistry().registerSystem(...)`. `Damage.getSource()` est un `Damage.EntitySource`
 (`ProjectileSource` en hérite, `getRef()` = le tireur) ; `damage.setCancelled(true)` annule le coup.
-Exemple : `mods/nakasar-mobs/src/main/java/dev/nakasar/hytale/mobs/domination/`.
+Exemple : `mods/nakasar-vampires/src/main/java/dev/nakasar/hytale/vampires/allegiance/`.
+Ordre dans le groupe : `getDependencies()` avec `new SystemDependency<>(Order.AFTER, NPCDamageSystems.FilterDamageSystem.class)`
+(le filtre des `DisableDamageGroups`) ; `damage.setCancelled(false)` peut lever une annulation précédente.
+
+## Attitudes calculées en Java
+
+`AttitudeView` (ressource `Blackboard`, `getView(AttitudeView.class, 0L)`) interroge des `IAttitudeProvider` par
+priorité croissante, le premier résultat non nul gagne : 0 = `OverrideAttitude` des rôles, 100 = même
+`SpawnLineage` (`Friendly`), 200 = groupes d'attitude (`AttitudeMap`), puis `DefaultPlayerAttitude` /
+`DefaultNPCAttitude`. `registerProvider(priorité, fournisseur)` dans un `StoreSystem.onSystemAddedToStore`
+(modèle : `ReputationAttitudeSystem`). Chaque PNJ met le résultat en cache 0,1 s (`WorldSupport`).
 
 ## Validation hors jeu
 
@@ -86,7 +96,7 @@ très pâle). Visage, cheveux et vêtements vont dans `DefaultAttachments[{Model
 GradientId}]`, repris de `Cosmetics/CharacterCreator/*.json` (sets `Hair`, `Eyes_Gradient`, `Colored_Cotton`,
 `Fantasy_Cotton`, `Shiny_Fabric`, `Faded_Leather`… avec `Black`, `Red`, `White`). Une pièce sur mesure est un
 `.blockymodel` dont le nœud racine porte le nom d'un os (`Chest`, `Head`…) avec `settings.isPiece: true` ;
-exemple : `mods/nakasar-mobs/tools/generate_vampire_models.py`.
+exemple : `mods/nakasar-vampires/tools/generate_vampire_models.py`.
 - La tête (`Head`) n'a pas de face avant : sans l'attachement `Characters/Body_Attachments/Faces/Player_Face_Detached.blockymodel`
   (texture `Faces_Detached_Textures/*.png`, `GradientSet: "Skin"`, cf. `Cosmetics/CharacterCreator/Faces.json`), la tête est
   transparente vue de face, même avec `Player_With_Face`.

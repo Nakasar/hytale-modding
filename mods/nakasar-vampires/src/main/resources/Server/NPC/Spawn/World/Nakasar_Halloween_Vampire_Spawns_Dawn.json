@@ -1,0 +1,11 @@
+{
+  "$Comment": "Rejetons de vampire près des structures du fragment, la nuit seulement (de minuit au lever du soleil ; heures relatives à la durée des nuits de l'instance).",
+  "Environments": [
+    "Nakasar_Env_Halloween_Haunted"
+  ],
+  "NPCs": [
+    { "Id": "Nakasar_Vampire_Spawn", "Weight": 6 }
+  ],
+  "DayTimeRange": [0, 6],
+  "ScaleDayTimeRange": true
+}
