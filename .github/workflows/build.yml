@@ -19,11 +19,12 @@ jobs:
           distribution: temurin
           java-version: "25"
       - uses: gradle/actions/setup-gradle@v4
-      - name: Build (compile, validateJson, jar, zip)
-        run: ./gradlew build --no-daemon
+      - name: Build (compile, validateJson, jar, zip, pack)
+        run: ./gradlew build packMods --no-daemon
+      # L'artefact téléchargé depuis GitHub est un zip contenant directement les jars et zips des mods :
+      # il s'extrait tel quel dans le dossier mods/ d'une save.
       - uses: actions/upload-artifact@v4
         with:
-          name: mods
-          path: |
-            mods/*/build/libs/*.jar
-            mods/*/build/distributions/*.zip
+          name: Nakasar-Mods-Pack
+          path: build/mods-pack/
+          if-no-files-found: error

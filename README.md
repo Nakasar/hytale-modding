@@ -68,6 +68,13 @@ puis :
 Dans un monde solo, activez ensemble Runes, Mobs et Halloween dans la liste des mods du monde : Halloween
 fait apparaître les mobs de Mobs, qui lancent les sorts de Runes.
 
+### Pack de tous les mods
+
+`./gradlew packMods` construit `build/distributions/Nakasar-Mods-Pack-<version>.zip`, qui contient les jars et
+zips de tous les mods à sa racine : il s'extrait directement dans le dossier `mods/` d'une save ou d'un serveur.
+La CI publie le même contenu dans l'artefact `Nakasar-Mods-Pack` (onglet « Actions », en bas du run) : le zip
+téléchargé s'extrait lui aussi directement dans `mods/`.
+
 ## Tester en jeu
 
 Démarrer le serveur avec `--validate-assets` la première fois : il vérifie les références d'assets et les
@@ -187,7 +194,7 @@ Mobs (`mods/nakasar-mobs`, voir [docs/npc-0.7.2.md](docs/npc-0.7.2.md)) :
 ## Organisation du dépôt
 
 ```text
-build.gradle.kts            # config commune : toolchain Java 25, dépendance serveur, validateJson, deployToServer
+build.gradle.kts            # config commune : toolchain Java 25, dépendance serveur, validateJson, deployToServer, packMods
 settings.gradle.kts         # dépôts Maven (Hytale), liste des mods
 gradle.properties           # version serveur ciblée, identité des mods
 mods/<mod>/                 # un sous-projet Gradle par mod
