@@ -27,9 +27,11 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Stream;
@@ -523,6 +525,81 @@ public class ValidateAssets {
         return descriptor.substring(1, descriptor.length() - 1).replace('/', '.');
     }
 
+    /**
+     * Références entre assets que les codecs ne résolvent pas hors jeu : en jeu, un id manquant rejette l'asset qui
+     * le cite, et la chaîne peut faire échouer tout le mod (liste de butin inconnue -> rôle rejeté -> marqueur
+     * d'apparition sans rôle -> « Asset validation FAILED »). Ids connus : ceux du pack (nom des fichiers) et ceux
+     * du fichier -Drefs (« droplist <id> » ou « npc <id> » par ligne).
+     */
+    private static final Pattern DROPLIST_REF = Pattern.compile("\"(?:DroplistId|DropList|Droplist)\"\\s*:\\s*\"([^\"]+)\"");
+    private static final Pattern MARKER_NPC_REF = Pattern.compile("\"Name\"\\s*:\\s*\"([^\"]+)\"");
+    private static final Pattern WORLD_NPC_REF = Pattern.compile("\"Id\"\\s*:\\s*\"([^\"]+)\"");
+    private static final Pattern SPAWN_KIND_REF = Pattern.compile("\"Kind\"\\s*:\\s*\"([^\"]+)\"");
+    private static final Pattern SPAWN_MARKER_REF = Pattern.compile("\"SpawnMarker\"\\s*:\\s*\"([^\"]+)\"");
+
+    private static int checkReferences(Path root, Path refsFile) throws Exception {
+        Map<String, Set<String>> known = new HashMap<>();
+        known.put("droplist", new HashSet<>(assetIds(root.resolve("Drops"))));
+        known.put("npc", new HashSet<>(assetIds(root.resolve("NPC/Roles"))));
+        known.put("marker", new HashSet<>(assetIds(root.resolve("NPC/Spawn/Markers"))));
+        for (String line : Files.readAllLines(refsFile)) {
+            String[] parts = line.strip().split("\\s+");
+            if (parts.length == 2 && !parts[0].startsWith("#")) {
+                known.computeIfAbsent(parts[0], k -> new HashSet<>()).add(parts[1]);
+            }
+        }
+        List<Path> files;
+        try (Stream<Path> walk = Files.walk(root)) {
+            files = walk.filter(Files::isRegularFile).filter(p -> p.toString().endsWith(".json")).sorted().toList();
+        }
+        int errors = 0;
+        int refs = 0;
+        for (Path file : files) {
+            String rel = root.relativize(file).toString().replace('\\', '/');
+            String json = Files.readString(file);
+            List<String> problems = new ArrayList<>();
+            refs += checkRefs(DROPLIST_REF, json, "droplist", "liste de butin inconnue", known, problems);
+            if (rel.startsWith("NPC/Spawn/Markers/")) {
+                refs += checkRefs(MARKER_NPC_REF, json, "npc", "rôle de PNJ inconnu", known, problems);
+            } else if (rel.startsWith("NPC/Spawn/")) {
+                refs += checkRefs(WORLD_NPC_REF, json, "npc", "rôle de PNJ inconnu", known, problems);
+            } else if (rel.startsWith("NPC/Roles/")) {
+                refs += checkRefs(SPAWN_KIND_REF, json, "npc", "rôle de PNJ inconnu", known, problems);
+            }
+            refs += checkRefs(SPAWN_MARKER_REF, json, "marker", "marqueur d'apparition inconnu", known, problems);
+            if (!problems.isEmpty()) {
+                errors++;
+                System.out.println("ERROR " + rel);
+                problems.forEach(p -> System.out.println("      " + p));
+            }
+        }
+        System.out.println(refs + " références vers des listes de butin, rôles et marqueurs vérifiées, " + errors + " fichier(s) en erreur");
+        return errors;
+    }
+
+    private static int checkRefs(Pattern pattern, String json, String type, String label, Map<String, Set<String>> known,
+                                 List<String> problems) {
+        int count = 0;
+        Matcher m = pattern.matcher(json);
+        while (m.find()) {
+            count++;
+            if (!known.getOrDefault(type, Set.of()).contains(m.group(1))) {
+                problems.add(label + " : " + m.group(1) + " (ni dans le pack, ni dans le fichier des ids vanilla)");
+            }
+        }
+        return count;
+    }
+
+    private static List<String> assetIds(Path dir) throws Exception {
+        if (!Files.isDirectory(dir)) {
+            return List.of();
+        }
+        try (Stream<Path> walk = Files.walk(dir)) {
+            return walk.filter(Files::isRegularFile).map(p -> p.getFileName().toString())
+                    .filter(n -> n.endsWith(".json")).map(n -> n.substring(0, n.length() - 5)).toList();
+        }
+    }
+
     public static void main(String[] args) throws Exception {
         Path root = Path.of(args[0]);
         // Les magasins d'assets lisent les options de ligne de commande du serveur.
@@ -597,6 +674,10 @@ public class ValidateAssets {
         String blocks = System.getProperty("blocks");
         if (blocks != null) {
             errors += checkBlockIds(root, Path.of(blocks));
+        }
+        String refs = System.getProperty("refs");
+        if (refs != null) {
+            errors += checkReferences(root, Path.of(refs));
         }
         System.exit(errors == 0 ? 0 : 1);
     }
