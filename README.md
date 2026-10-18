@@ -6,7 +6,7 @@ Mods pour **Hytale** (serveur `0.7.x`, « Update 7 »), développés par Nakasar
 |-----|------|----------|---------|
 | `mods/nakasar-runes` | plugin Java + pack d'assets | `Nakasar-Runes-<version>.jar` | 4 runes d'abilities (Baiser du Vampire, Domination, Téléportation, Chaînes spectrales) et l'autel sacrificiel qui les fabrique |
 | `mods/nakasar-spear` | pack d'assets pur | `Nakasar-Spear-<version>.zip` | Lance de fer à deux mains : enchaînement, coup chargé, compétence ultime |
-| `mods/nakasar-halloween` | pack d'assets pur | `Nakasar-Halloween-<version>.zip` | Fragment d'Orbis « Halloween » ouvert depuis l'Ancienne passerelle : cryptes, châteaux hantés, manoir gothique du comte vampire, cimetières, champs de citrouilles ; à installer avec `nakasar-mobs` et `nakasar-runes` |
+| `mods/nakasar-halloween` | pack d'assets pur | `Nakasar-Halloween-<version>.zip` | Fragment d'Orbis « Halloween » ouvert depuis l'Ancienne passerelle, domaine du Comte vampire : son manoir, village abandonné, fermes délaissées, ancien poste de garde, cryptes, châteaux hantés, cimetières, forêts mortes ; à installer avec `nakasar-mobs` et `nakasar-runes` |
 | `mods/nakasar-mobs` | plugin Java + pack d'assets | `Nakasar-Mobs-<version>.jar` | Comte et Comtesse Vampire (boss qui lancent les sorts des runes), rejetons de vampire, fantômes ; à installer avec `nakasar-runes` |
 
 Le détail de chaque mod (fichiers, chaînes d'interactions, réglages) est dans [docs/mods.md](docs/mods.md).
@@ -47,7 +47,8 @@ qui héritent d'un parent vanilla (notés « non vérifiable hors jeu »).
 Les prefabs et la génération du monde sont produits par des scripts (déterministes) :
 
 ```bash
-python3 mods/nakasar-halloween/tools/generate_prefabs.py    # 57 prefabs dans pack/Server/Prefabs/Nakasar/Halloween
+python3 mods/nakasar-halloween/tools/generate_prefabs.py    # 65 prefabs dans pack/Server/Prefabs/Nakasar/Halloween
+python3 mods/nakasar-halloween/tools/generate_loot.py       # listes de butin des coffres
 python3 mods/nakasar-halloween/tools/generate_worldgen.py   # biome + structure de monde
 ```
 
@@ -175,14 +176,15 @@ Fragment Halloween :
 - **Météo** : `Nakasar_Weather_Halloween` définit brouillard, ciel et lumière (violet / orange) mais
   pas de nuages, d'étoiles ni de texture de lune (chemins inconnus). La densité du brouillard
   (`FogDensities`, `FogDistance`) et la densité de spawn des environnements sont à régler à l'œil.
-- **Prefabs** : l'orientation par défaut des meubles (cercueils, chaises, bancs, charrette) et des escaliers
-  n'est pas connue ; les toits et escaliers sont faits de blocs pleins et de demi-dalles pour l'éviter.
-  Les arbres morts n'utilisent plus de branche couchée : squelette en troncs pleins, tubes fins debout.
-  Seuls les troncs tombés (décor) utilisent les rotations 4 (nord-sud) et 5 (est-ouest) lues dans le
-  serveur : s'ils apparaissent debout, inverser `ALONG_Z` et `ALONG_X` dans `generate_prefabs.py`.
-- **Arbres du jeu** : le worldgen pioche surtout dans les arbres vanilla (calcinés, en feu, frênes
-  morts et tordus, pétrifiés, arbre-nid d'araignées), dossiers lus dans Assets.zip 0.7.2 et listés
-  dans `VANILLA_TREES` (`generate_worldgen.py`). Un dossier renommé par une mise à jour ne place
+- **Prefabs** : orientation des meubles déduite des hitboxes et des villages du jeu (lacet 0 = sud) :
+  à vérifier en jeu sur le village, la ferme et le poste de garde (portes, lits, chaises autour des
+  tables, toits à 45°). Les troncs tombés utilisent les rotations 4 (nord-sud) et 5 (est-ouest) :
+  s'ils apparaissent debout, inverser `ALONG_Z` et `ALONG_X` dans `generate_prefabs.py`.
+- **Coffres** : remplis à la pose du prefab par le serveur (`ItemContainerBlock.Droplist`) ; si un
+  coffre apparaît vide, vérifier que `IsBlockSpawnersEnabled` n'est pas désactivé dans la config du monde.
+- **Arbres du jeu** : le worldgen pioche surtout dans les arbres vanilla (sapins et frênes morts,
+  chênes moussus en forêt ; frênes tordus, calcinés, pétrifiés isolés), dossiers lus dans Assets.zip
+  0.7.2 et listés dans `FOREST_TREES` et `LONE_TREES` (`generate_worldgen.py`). Un dossier renommé par une mise à jour ne place
   plus rien, sans erreur : vérifier cette liste après chaque mise à jour du jeu. Les châteaux et cryptes sont posés à plat grâce à un terrain aplani autour des structures.
 - **Manoir et crypte d'arrivée** : les blocs générés par `tools/generate_assets.py` (vitraux,
   gargouille, grille à lances, vantail de portail) sont à vérifier en jeu : transparence des vitraux,

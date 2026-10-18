@@ -21,7 +21,7 @@
     "Objectives": [
       "nakasar_halloween.portal.objective.count",
       "nakasar_halloween.portal.objective.crypts",
-      "nakasar_halloween.portal.objective.pumpkins"
+      "nakasar_halloween.portal.objective.domain"
     ]
   },
   "Spawn": {

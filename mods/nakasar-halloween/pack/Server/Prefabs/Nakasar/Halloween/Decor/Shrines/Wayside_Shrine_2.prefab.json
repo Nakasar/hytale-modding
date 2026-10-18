@@ -16,14 +16,15 @@
     {"x":1,"y":-1,"z":1,"name":"Soil_Gravel"},
     {"x":-1,"y":0,"z":-1,"name":"Furniture_Ancient_Candle"},
     {"x":0,"y":0,"z":-1,"name":"Rock_Stone_Brick_Pillar_Base"},
-    {"x":1,"y":0,"z":-1,"name":"Furniture_Temple_Dark_Candle"},
-    {"x":0,"y":0,"z":0,"name":"Deco_Halloween_Pumpkin_Cute","rotation":2},
+    {"x":1,"y":0,"z":-1,"name":"Furniture_Feran_Candle"},
+    {"x":0,"y":0,"z":0,"name":"Furniture_Village_Tombstone"},
     {"x":-1,"y":0,"z":1,"name":"Halloween_Basket_Straw"},
     {"x":2,"y":0,"z":1,"name":"Wood_Deadwood_Beam"},
     {"x":0,"y":1,"z":-1,"name":"Rock_Stone_Brick_Pillar_Middle"},
+    {"x":0,"y":1,"z":0,"name":"Furniture_Village_Tombstone","filler":1024},
     {"x":2,"y":1,"z":1,"name":"Wood_Deadwood_Beam"},
     {"x":0,"y":2,"z":-1,"name":"Rock_Stone_Brick_Ornate"},
     {"x":2,"y":2,"z":1,"name":"Deco_Lantern"},
-    {"x":0,"y":3,"z":-1,"name":"Deco_Halloween_Pumpkin_Cute","rotation":2}
+    {"x":0,"y":3,"z":-1,"name":"Furniture_Crude_Candle"}
   ]
 }

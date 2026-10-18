@@ -7,9 +7,9 @@
   "blocks": [
     {"x":0,"y":-1,"z":1,"name":"Soil_Dirt_Burnt"},
     {"x":0,"y":-1,"z":2,"name":"Soil_Dirt_Burnt"},
-    {"x":0,"y":0,"z":0,"name":"Rock_Stone_Brick_Wall","rotation":1},
-    {"x":-1,"y":0,"z":1,"name":"Deco_Halloween_Pumpkin_Scary","rotation":1},
-    {"x":0,"y":0,"z":1,"name":"Furniture_Ancient_Candle","rotation":1},
+    {"x":0,"y":0,"z":0,"name":"Rock_Stone_Brick_Wall"},
+    {"x":1,"y":0,"z":0,"name":"Furniture_Ancient_Candle"},
+    {"x":0,"y":0,"z":1,"name":"Plant_Petals_Blood"},
     {"x":-1,"y":1,"z":0,"name":"Rock_Stone_Brick_Wall"},
     {"x":0,"y":1,"z":0,"name":"Rock_Stone_Brick_Wall"},
     {"x":1,"y":1,"z":0,"name":"Rock_Stone_Brick_Wall"},
