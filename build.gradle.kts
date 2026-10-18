@@ -92,3 +92,25 @@ tasks.register<Copy>("deployToServer") {
     include("*.jar", "*.zip")
     into(modsDir ?: layout.buildDirectory.dir("deploy-noop"))
 }
+
+// Rassemble les jars et zips de tous les mods à plat dans build/mods-pack/ :
+// le contenu de ce dossier se dépose tel quel dans le dossier mods/ d'une save ou d'un serveur.
+val stageModsPack = tasks.register<Sync>("stageModsPack") {
+    group = "hytale"
+    description = "Copie à plat les jars et zips construits de tous les mods dans build/mods-pack/."
+    dependsOn(subprojects.map { it.tasks.matching { t -> t.name == "assemble" } })
+    from(subprojects.map { sp -> sp.layout.buildDirectory.dir("libs") })
+    from(subprojects.map { sp -> sp.layout.buildDirectory.dir("distributions") })
+    include("*.jar", "*.zip")
+    into(layout.buildDirectory.dir("mods-pack"))
+}
+
+// Le « pack » : un seul zip avec les fichiers des mods à sa racine, à extraire directement dans mods/.
+tasks.register<Zip>("packMods") {
+    group = "hytale"
+    description = "Construit build/distributions/Nakasar-Mods-Pack-<version>.zip (tous les mods, à extraire dans mods/)."
+    archiveBaseName.set("Nakasar-Mods-Pack")
+    archiveVersion.set(modVersion)
+    destinationDirectory.set(layout.buildDirectory.dir("distributions"))
+    from(stageModsPack)
+}
