@@ -1,25 +1,49 @@
 {
-  "$Comment": "Citrouille géante animée (élite) : la citrouille sculptée vanilla (bloc Deco_Halloween_Pumpkin_Scary), quatre fois plus grande, éclairée de l'intérieur. Elle ne bouge pas ; ses attaques sont faites de vrilles, d'épines et de poison (particules et projectiles).",
-  "Model": "Items/Halloween_Props/Pumpkin_Carve_01.blockymodel",
-  "Texture": "Items/Halloween_Props/Pumpkin_Carve_Texture_02.png",
-  "EyeHeight": 0.45,
+  "$Comment": "Citrouille géante animée (élite), générée par tools/generate_pumpkin_models.py : sculptée, éclairée de l'intérieur ; le haut se soulève comme une mâchoire (bouche qui s'ouvre, crachat de poison, rugissements). Elle ne se déplace pas.",
+  "EyeHeight": 0.9,
   "HitBox": {
     "Max": {
-      "X": 0.3,
-      "Y": 0.78,
-      "Z": 0.3
+      "X": 1.15,
+      "Y": 2.1,
+      "Z": 1.15
     },
     "Min": {
-      "X": -0.3,
+      "X": -1.15,
       "Y": 0,
-      "Z": -0.3
+      "Z": -1.15
     }
   },
-  "MinScale": 4,
-  "MaxScale": 4,
+  "MinScale": 1,
+  "MaxScale": 1,
   "Light": {
     "Color": "#ff8a1c",
     "Radius": 10
   },
-  "AnimationSets": {}
+  "Model": "NPC/Nakasar/Giant_Pumpkin/Model.blockymodel",
+  "Texture": "NPC/Nakasar/Giant_Pumpkin/Texture.png",
+  "AnimationSets": {
+    "Idle": {
+      "Animations": [
+        {
+          "Animation": "NPC/Nakasar/Giant_Pumpkin/Animations/Idle.blockyanim"
+        }
+      ]
+    },
+    "Hurt": {
+      "Animations": [
+        {
+          "Animation": "NPC/Nakasar/Giant_Pumpkin/Animations/Hurt.blockyanim",
+          "Looping": false
+        }
+      ]
+    },
+    "Death": {
+      "Animations": [
+        {
+          "Animation": "NPC/Nakasar/Giant_Pumpkin/Animations/Death.blockyanim",
+          "Looping": false
+        }
+      ]
+    }
+  }
 }

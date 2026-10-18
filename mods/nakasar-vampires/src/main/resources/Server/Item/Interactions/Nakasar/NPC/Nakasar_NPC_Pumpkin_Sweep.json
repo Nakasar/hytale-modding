@@ -19,6 +19,8 @@
       "Type": "Simple",
       "RunTime": 1.2,
       "Effects": {
+        "ItemPlayerAnimationsId": "Nakasar_Pumpkin_Vine",
+        "ItemAnimationId": "Sweep",
         "WorldSoundEventId": "SFX_Bramble_MoveIn",
         "Particles": [
           {

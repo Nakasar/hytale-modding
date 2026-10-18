@@ -11,6 +11,8 @@
       "Type": "Simple",
       "RunTime": 0.8,
       "Effects": {
+        "ItemPlayerAnimationsId": "Nakasar_Giant_Pumpkin",
+        "ItemAnimationId": "Summon",
         "WorldSoundEventId": "SFX_Spirit_Root_Alerted",
         "Particles": [
           {
