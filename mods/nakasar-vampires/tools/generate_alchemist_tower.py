@@ -296,7 +296,9 @@ def environment():
 def island(center, radius, flat, seed):
     """Île flottante centrée sur `center` (y = première couche d'air du dessus) : dessus plat jusqu'à `flat`, puis bord
     qui s'abaisse de 6 blocs ; dessous en cône rocheux dentelé. Densité positive dans l'île, négative ailleurs."""
-    here = wg.list_positions(center)
+    # wg.column lit les distances à Y = wg.GROUND_Y : le centre doit être à cette hauteur, sinon l'écart vertical
+    # s'ajoute à la distance (île plus basse au centre, plat rétréci, îlots hauts absents).
+    here = wg.list_positions((center[0], wg.GROUND_Y, center[2]))
     top_y = center[1]
     top = wg.add(
         wg.mul({"Type": "YValue"}, wg.const(-0.125)),
