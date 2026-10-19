@@ -28,20 +28,23 @@ ARRIVAL = {"center": (0, 0), "radius": 24.0, "flat": 17.0}
 PLAZA_EDGE = 10      # le parapet du parvis d'arrivée est à 10 blocs du point d'apparition
 
 # Îles du parcours, dans l'ordre. `plaza` : rayon de la place (le garde-corps est juste au-delà) ; `gates` : entrée puis
-# sortie (N, S, E, O). Les haltes sont de petites îles ; les Jardins et les Ruines, des étapes plus grandes.
+# sortie, soit un point cardinal (N, S, E, O), soit le nom de l'île voisine (ouverture tournée vers son centre, pont
+# droit et en biais) ; `dy` : hauteur du sol de l'île au-dessus de GROUND_Y (Kevin : « des hauteurs un peu
+# différentes », les ponts montent ou descendent en pente douce). Les haltes sont de petites îles ; les Jardins et les
+# Ruines, des étapes plus grandes.
 HALTS = [
-    {"name": "HaltFountain", "center": (0, -40), "radius": 16.0, "flat": 12.0, "plaza": 9, "gates": ("S", "O"),
-     "feature": "fountain"},
-    {"name": "HaltKiosk", "center": (-36, -70), "radius": 16.0, "flat": 12.0, "plaza": 9, "gates": ("S", "N"),
-     "feature": "kiosk"},
-    {"name": "Gardens", "center": (-36, -122), "radius": 31.0, "flat": 26.0, "plaza": 22, "gates": ("S", "E"),
-     "feature": "gardens"},
-    {"name": "HaltSprings", "center": (8, -146), "radius": 16.0, "flat": 12.0, "plaza": 9, "gates": ("S", "N"),
-     "feature": "springs"},
-    {"name": "Ruins", "center": (8, -200), "radius": 31.0, "flat": 26.0, "plaza": 22, "gates": ("S", "N"),
-     "feature": "ruins"},
-    {"name": "HaltArches", "center": (-22, -244), "radius": 16.0, "flat": 12.0, "plaza": 9, "gates": ("E", "N"),
-     "feature": "arches"},
+    {"name": "HaltFountain", "center": (0, -40), "radius": 16.0, "flat": 12.0, "plaza": 9, "gates": ("S", "HaltKiosk"),
+     "feature": "fountain", "dy": 3},
+    {"name": "HaltKiosk", "center": (-36, -70), "radius": 16.0, "flat": 12.0, "plaza": 9, "gates": ("HaltFountain", "N"),
+     "feature": "kiosk", "dy": 8},
+    {"name": "Gardens", "center": (-36, -122), "radius": 31.0, "flat": 26.0, "plaza": 22, "gates": ("S", "HaltSprings"),
+     "feature": "gardens", "dy": 4},
+    {"name": "HaltSprings", "center": (8, -146), "radius": 16.0, "flat": 12.0, "plaza": 9, "gates": ("Gardens", "N"),
+     "feature": "springs", "dy": 9},
+    {"name": "Ruins", "center": (8, -200), "radius": 31.0, "flat": 26.0, "plaza": 22, "gates": ("S", "HaltArches"),
+     "feature": "ruins", "dy": 5},
+    {"name": "HaltArches", "center": (-22, -244), "radius": 16.0, "flat": 12.0, "plaza": 9, "gates": ("Ruins", "N"),
+     "feature": "arches", "dy": 1},
 ]
 HALT = {h["name"]: h for h in HALTS}
 GARDENS, RUINS = HALT["Gardens"], HALT["Ruins"]
@@ -55,23 +58,59 @@ COURT = (-22, 22, 30, 88)  # parvis de la tour et ses abords, sans arbres (x0, x
 TOWER_GATE_X = -22   # le dernier pont arrive au muret du bord à cette abscisse
 
 
+COMPASS = {"N": (0, -1), "S": (0, 1), "E": (1, 0), "O": (-1, 0)}
+
+
+def _gate_dir(island, direction):
+    """Direction (ux, uz) unitaire d'une ouverture : point cardinal, ou vers le centre de l'île nommée."""
+    if direction in COMPASS:
+        return COMPASS[direction]
+    (cx, cz), (tx, tz) = island["center"], HALT[direction]["center"]
+    d = math.hypot(tx - cx, tz - cz)
+    return (tx - cx) / d, (tz - cz) / d
+
+
 def _gate(island, direction):
-    """Point (x, z) au milieu de l'ouverture du garde-corps d'une île, côté `direction` (N, S, E, O)."""
+    """Point (x, z) au milieu de l'ouverture du garde-corps d'une île, côté `direction` (point cardinal ou île voisine)."""
     (cx, cz), r = island["center"], island["plaza"]
-    return {"N": (cx, cz - r), "S": (cx, cz + r), "E": (cx + r, cz), "O": (cx - r, cz)}[direction]
+    ux, uz = _gate_dir(island, direction)
+    return cx + round(r * ux), cz + round(r * uz)
+
+
+def stage_y(island):
+    """Première couche d'air au-dessus du sol d'une île du parcours."""
+    return GROUND_Y + island.get("dy", 0)
+
+
+def stage_trees(island):
+    """Quatre arbres entre le garde-corps et le bord d'une grande île, en diagonale, écartés des ouvertures."""
+    (cx, cz), r = island["center"], island["plaza"] + 5
+    gates = [math.degrees(math.atan2(uz, ux)) for ux, uz in (_gate_dir(island, g) for g in island["gates"])]
+    out = []
+    for a in (35, 145, 215, 325):
+        for g in gates:
+            diff = (a - g + 180) % 360 - 180
+            if abs(diff) < 28:
+                a = g + (28 if diff >= 0 else -28)
+        out.append((cx + round(r * math.cos(math.radians(a))), cz + round(r * math.sin(math.radians(a)))))
+    return out
 
 
 _TC = TOWER["center"]
-# Ponts : lignes brisées à angles droits, d'une ouverture à la suivante.
+# Ponts : chacun est droit, d'une ouverture à la suivante, avec la hauteur du sol à ses deux bouts (relative à
+# GROUND_Y) ; il monte ou descend en pente régulière, par demi-blocs.
 BRIDGES = [
     [(0, -PLAZA_EDGE), _gate(HALTS[0], "S")],
-    [_gate(HALTS[0], "O"), (-36, -40), _gate(HALTS[1], "S")],
+    [_gate(HALTS[0], "HaltKiosk"), _gate(HALTS[1], "HaltFountain")],
     [_gate(HALTS[1], "N"), _gate(GARDENS, "S")],
-    [_gate(GARDENS, "E"), (8, -122), _gate(HALTS[3], "S")],
+    [_gate(GARDENS, "HaltSprings"), _gate(HALTS[3], "Gardens")],
     [_gate(HALTS[3], "N"), _gate(RUINS, "S")],
-    [_gate(RUINS, "N"), (8, -244), _gate(HALTS[5], "E")],
+    [_gate(RUINS, "HaltArches"), _gate(HALTS[5], "Ruins")],
     [_gate(HALTS[5], "N"), (TOWER_GATE_X, _TC[1] + TOWER_RIM)],
 ]
+_DY = [h["dy"] for h in HALTS]
+BRIDGE_LEVELS = [(0, _DY[0]), (_DY[0], _DY[1]), (_DY[1], _DY[2]), (_DY[2], _DY[3]), (_DY[3], _DY[4]),
+                 (_DY[4], _DY[5]), (_DY[5], 0)]
 # Chemin de la forêt, repère de la tour : du muret sud au parvis.
 FOREST_PATH = [(TOWER_GATE_X, TOWER_RIM), (TOWER_GATE_X, 110), (0, 110), (0, COURT_ENTRY)]
 
@@ -84,6 +123,7 @@ TRIM = "Rock_Gold_Brick_Decorative"
 GOLD = "Rock_Gold_Brick"
 ORNATE = "Rock_Gold_Brick_Ornate"
 GLASS = "Nakasar_Stained_Glass_Violet"
+HALF = "Rock_Quartzite_Brick_Smooth_Half"  # demi-marche des ponts en pente
 # Statue des points de contrôle de Deepworks, éteinte ; le volume du point de contrôle la fait changer d'état.
 STATUE = "*Dungeon_Checkpoint_Statue_State_Definitions_Inactive"
 LANTERN = "Furniture_Temple_Light_Lantern"
@@ -117,21 +157,51 @@ def guard(p, x, z, y=0, post=False):
 
 # --- ponts ------------------------------------------------------------------------------------
 
+def _axis(a, b):
+    return a[0] == b[0] or a[1] == b[1]
+
+
+def _unit(a, b):
+    dx, dz = b[0] - a[0], b[1] - a[1]
+    d = math.hypot(dx, dz)
+    return dx / d, dz / d
+
+
 def _segment_cells(a, b, half):
+    """Cases du tablier d'un segment. À angle droit : le rectangle, qui déborde de `half` aux deux bouts (les coudes se
+    remplissent). En biais : la bande de largeur 2 * half + 1, coupée net aux deux bouts."""
     (x0, z0), (x1, z1) = a, b
-    for x in range(min(x0, x1) - half, max(x0, x1) + half + 1):
-        for z in range(min(z0, z1) - half, max(z0, z1) + half + 1):
-            yield x, z
+    if _axis(a, b):
+        for x in range(min(x0, x1) - half, max(x0, x1) + half + 1):
+            for z in range(min(z0, z1) - half, max(z0, z1) + half + 1):
+                yield x, z
+        return
+    ux, uz = _unit(a, b)
+    length = math.hypot(x1 - x0, z1 - z0)
+    for x in range(min(x0, x1) - half - 1, max(x0, x1) + half + 2):
+        for z in range(min(z0, z1) - half - 1, max(z0, z1) + half + 2):
+            along = (x - x0) * ux + (z - z0) * uz
+            if 0 <= along <= length and abs((x - x0) * uz - (z - z0) * ux) <= half + 0.5:
+                yield x, z
 
 
 def _along(line):
-    """Cases de l'axe de la ligne, dans l'ordre, avec leur direction (dx, dz)."""
+    """Cases de l'axe de la ligne, dans l'ordre, avec leur direction (dx, dz) (entiers à angle droit, unitaire en
+    biais)."""
     out = []
-    for (x0, z0), (x1, z1) in zip(line, line[1:]):
-        dx, dz = (x1 > x0) - (x1 < x0), (z1 > z0) - (z1 < z0)
-        n = max(abs(x1 - x0), abs(z1 - z0))
-        for i in range(n + (1 if (x1, z1) == line[-1] else 0)):
-            out.append(((x0 + dx * i, z0 + dz * i), (dx, dz)))
+    for a, b in zip(line, line[1:]):
+        (x0, z0), (x1, z1) = a, b
+        last = 1 if b == line[-1] else 0
+        if _axis(a, b):
+            dx, dz = (x1 > x0) - (x1 < x0), (z1 > z0) - (z1 < z0)
+            n = max(abs(x1 - x0), abs(z1 - z0))
+            for i in range(n + last):
+                out.append(((x0 + dx * i, z0 + dz * i), (dx, dz)))
+        else:
+            ux, uz = _unit(a, b)
+            n = round(math.hypot(x1 - x0, z1 - z0))
+            for i in range(n + last):
+                out.append(((round(x0 + ux * i), round(z0 + uz * i)), (ux, uz)))
     return out
 
 
@@ -142,15 +212,17 @@ def _deck(lines, half):
         for a, b in zip(line, line[1:]):
             deck.update(_segment_cells(a, b, half))
         for end, nxt in ((line[0], line[1]), (line[-1], line[-2])):
-            dx, dz = (end[0] > nxt[0]) - (end[0] < nxt[0]), (end[1] > nxt[1]) - (end[1] < nxt[1])
-            ends.append((end, (dx, dz)))
-    for (ex, ez), (dx, dz) in ends:
-        for k in range(1, half + 1):
-            for w in range(-half - 1, half + 2):
-                deck.discard((ex + dx * k + dz * w, ez + dz * k + dx * w))
+            if _axis(end, nxt):
+                dx, dz = (end[0] > nxt[0]) - (end[0] < nxt[0]), (end[1] > nxt[1]) - (end[1] < nxt[1])
+                for k in range(1, half + 1):
+                    for w in range(-half - 1, half + 2):
+                        deck.discard((end[0] + dx * k + dz * w, end[1] + dz * k + dx * w))
+                ends.append((end, (dx, dz)))
+            else:
+                ends.append((end, _unit(nxt, end)))
 
     def beyond_end(x, z):
-        return any(1 <= (x - ex) * dx + (z - ez) * dz <= half + 1 and abs((x - ex) * dz - (z - ez) * dx) <= half + 1
+        return any(0 < (x - ex) * dx + (z - ez) * dz <= half + 1.5 and abs((x - ex) * dz - (z - ez) * dx) <= half + 1.5
                    for (ex, ez), (dx, dz) in ends)
 
     rails = set()
@@ -163,67 +235,104 @@ def _deck(lines, half):
     return deck, rails
 
 
+def bridge_levels(cells):
+    """Hauteur du sol de chaque case de pont, en demi-blocs au-dessus de GROUND_Y (pente régulière d'un bout à
+    l'autre du pont le plus proche)."""
+    out = {}
+    for x, z in cells:
+        best = None
+        for (a, b), (ya, yb) in zip(BRIDGES, BRIDGE_LEVELS):
+            d = _segment_distance(x, z, a, b)
+            if best is None or d < best[0]:
+                dx, dz = b[0] - a[0], b[1] - a[1]
+                t = max(0.0, min(1.0, ((x - a[0]) * dx + (z - a[1]) * dz) / (dx * dx + dz * dz)))
+                best = (d, round(2 * (ya + (yb - ya) * t)))
+        out[(x, z)] = best[1]
+    return out
+
+
 def bridges_prefab(seed):
     """Tous les ponts du parcours, dans le repère du monde (origine posée en (0, GROUND_Y, 0)).
 
-    Tablier de pierre claire au liseré d'or, garde-corps à poteaux et lanternes tous les 4 blocs, fleurs sur le
-    garde-corps, arches tous les 12 blocs (lanterne suspendue, lianes, lucioles), corniche d'or et lianes sous le
-    tablier, quille qui s'épaissit vers les îles (silhouette d'arche vue de côté) et lanternes suspendues dessous.
+    Tablier de pierre claire au liseré d'or, en pente douce par demi-dalles d'une île à l'autre, garde-corps à poteaux
+    et lanternes tous les 4 blocs, fleurs sur le garde-corps, arches tous les 12 blocs (lanterne suspendue, lianes,
+    lucioles), corniche d'or et lianes sous le tablier, quille qui s'épaissit vers les îles (silhouette d'arche vue de
+    côté) et lanternes suspendues dessous.
     """
     p = pf.Prefab(seed)
     rng = random.Random(seed)
     deck, rails = _deck(BRIDGES, BRIDGE_HALF)
+    level = bridge_levels(deck)
     for x, z in deck:
-        p.set(x, -1, z, p.pick(FLOOR))
-        p.set(x, -2, z, STONE)
-        for y in range(0, 8):
-            p.set(x, y, z, AIR)
+        s = level[(x, z)]
+        y = s // 2
+        p.set(x, y - 1, z, p.pick(FLOOR))
+        p.set(x, y - 2, z, STONE)
+        for k in range(y, y + 9):
+            p.set(x, k, z, AIR)
+        if s % 2:
+            p.set(x, y, z, HALF)
+    rail_level = {}
     for x, z in rails:
-        p.set(x, -1, z, STONE)
-        p.set(x, -2, z, GOLD)
-        for y in range(0, 8):
-            p.set(x, y, z, AIR)
+        near = [level[(x + dx, z + dz)] for dx in (-1, 0, 1) for dz in (-1, 0, 1) if (x + dx, z + dz) in level]
+        rail_level[(x, z)] = max(near)
+    for (x, z), s in rail_level.items():
+        y = s // 2
+        p.set(x, y - 1, z, STONE)
+        p.set(x, y - 2, z, GOLD)
+        for k in range(y, y + 9):
+            p.set(x, k, z, AIR)
         post = (x + z) % 4 == 0
-        guard(p, x, z, post=post)
+        guard(p, x, z, y, post=post)
         if not post and rng.random() < 0.35:
-            p.set(x, 2, z, rng.choice(FLOWERS))
+            p.set(x, y + 2, z, rng.choice(FLOWERS))
         if rng.random() < 0.3:
-            p.set(x, -3, z, VINES)
+            p.set(x, y - 3, z, VINES)
     for line in BRIDGES:
         cells = _along(line)
         n = len(cells)
         for i, ((x, z), (dx, dz)) in enumerate(cells):
-            sx, sz = dz, dx  # en travers du pont
-            if i % 3 == 0 and 2 < i < n - 3:
-                p.set(x, -1, z, TRIM)
+            sx, sz = -dz, dx  # en travers du pont
+            y = level.get((x, z), 0) // 2
+            if i % 3 == 0 and 2 < i < n - 3 and level.get((x, z), 0) % 2 == 0:
+                p.set(x, y - 1, z, TRIM)
             depth = 1 + round(5 * (1 - math.sin(math.pi * min(i, n - 1 - i) / max(n - 1, 1))) ** 2)
             for w in (-1, 0, 1):
-                p.fill(x + sx * w, -2 - depth, z + sz * w, x + sx * w, -3, z + sz * w, STONE)
+                cx, cz = round(x + sx * w), round(z + sz * w)
+                p.fill(cx, y - 2 - depth, cz, cx, y - 3, cz, STONE)
             if i % 12 == 0 and 3 < i < n - 4:
-                p.set(x, -3 - depth, z, LANTERN_HANGING)
+                p.set(x, y - 3 - depth, z, LANTERN_HANGING)
             elif depth > 1:
-                p.set(x, -3 - depth, z, "Rock_Quartzite_Stalactite_Small")
+                p.set(x, y - 3 - depth, z, "Rock_Quartzite_Stalactite_Small")
             if i % 12 == 6 and 3 < i < n - 4:
-                _bridge_arch(p, x, z, sx, sz)
+                _bridge_arch(p, x, y, z, sx, sz)
     return p
 
 
-def _bridge_arch(p, x, z, sx, sz):
+def _bridge_arch(p, x, y, z, sx, sz):
     """Arche en travers du pont : piliers sur les garde-corps, linteau d'or, lanterne suspendue, lianes, lucioles."""
     h = BRIDGE_HALF + 1
+
+    def at(w):
+        return round(x + sx * w), round(z + sz * w)
+
     for w in (-h, h):
-        px, pz = x + sx * w, z + sz * w
-        p.set(px, 0, pz, PILLAR_BASE)
-        for y in range(1, 6):
-            p.set(px, y, pz, PILLAR)
+        px, pz = at(w)
+        p.set(px, y, pz, PILLAR_BASE)
+        for k in range(1, 6):
+            p.set(px, y + k, pz, PILLAR)
     for w in range(-h, h + 1):
-        p.set(x + sx * w, 6, z + sz * w, GOLD if abs(w) < h else ORNATE)
+        p.set(*_xyz(at(w), y + 6), GOLD if abs(w) < h else ORNATE)
     for w in (-h + 1, h - 1):
-        p.set(x + sx * w, 7, z + sz * w, "Rock_Gold_Brick_Half")
-    p.set(x, 7, z, "Nakasar_Tower_Emanation_Fireflies")
-    p.set(x, 5, z, LANTERN_HANGING)
+        p.set(*_xyz(at(w), y + 7), "Rock_Gold_Brick_Half")
+    p.set(x, y + 7, z, "Nakasar_Tower_Emanation_Fireflies")
+    p.set(x, y + 5, z, LANTERN_HANGING)
     for w in (-BRIDGE_HALF, BRIDGE_HALF):
-        p.set(x + sx * w, 5, z + sz * w, VINES)
+        p.set(*_xyz(at(w), y + 5), VINES)
+
+
+def _xyz(xz, y):
+    return xz[0], y, xz[1]
 
 
 # --- places des îles ---------------------------------------------------------------------------
@@ -233,28 +342,41 @@ def _plaza(p, island, rng):
     ouvertures, fleurs au pied du garde-corps. Renvoie les ouvertures (repère de l'île)."""
     (cx, cz), r = island["center"], island["plaza"]
     gates = [(gx - cx, gz - cz) for gx, gz in (_gate(island, g) for g in island["gates"])]
-    open_cells = {(gx + dx, gz + dz) for gx, gz in gates
-                  for dx in range(-BRIDGE_HALF, BRIDGE_HALF + 1) for dz in range(-BRIDGE_HALF, BRIDGE_HALF + 1)}
+    dirs = [_gate_dir(island, g) for g in island["gates"]]
+
+    def opening(x, z, width):
+        """La case est dans l'ouverture (largeur `width` de part et d'autre de l'axe), du côté de l'ouverture."""
+        return any(x * ux + z * uz >= r - 1 and abs(x * uz - z * ux) <= width for ux, uz in dirs)
+
     for x in range(-r - 2, r + 3):
         for z in range(-r - 2, r + 3):
             d = math.hypot(x, z)
-            if d < r + 0.5 or (x, z) in open_cells:
+            if d < r + 0.5 or opening(x, z, BRIDGE_HALF + 0.5):
                 p.set(x, -1, z, TRIM if r - 3.5 <= d < r - 2.7 else p.pick(FLOOR))
                 p.fill(x, -3, z, x, -2, z, STONE)
                 for y in range(0, 8):
                     p.set(x, y, z, AIR)
             elif d < r + 1.5:
                 p.set(x, -1, z, STONE)
-                guard(p, x, z, post=any(max(abs(x - gx), abs(z - gz)) == BRIDGE_HALF + 1 for gx, gz in gates))
+                guard(p, x, z, post=opening(x, z, BRIDGE_HALF + 1.5))
     # Fleurs au pied du garde-corps, hors des ouvertures.
     for x in range(-r, r + 1):
         for z in range(-r, r + 1):
             d = math.hypot(x, z)
-            if r - 0.5 <= d < r + 0.5 and rng.random() < 0.55 and \
-                    all(max(abs(x - gx), abs(z - gz)) > BRIDGE_HALF + 1 for gx, gz in gates):
+            if r - 0.5 <= d < r + 0.5 and rng.random() < 0.55 and not opening(x, z, BRIDGE_HALF + 1.5):
                 p.set(x, -1, z, "Soil_Grass_Full")
                 p.set(x, 0, z, rng.choice(FLOWERS))
     return gates
+
+
+def _in_lane(x, z, gates, width):
+    """La case est dans l'allée qui va du centre de l'île à l'une de ses ouvertures (demi-largeur `width`)."""
+    for gx, gz in gates:
+        n = math.hypot(gx, gz)
+        ux, uz = gx / n, gz / n
+        if -width <= x * ux + z * uz <= n + 1 and abs(x * uz - z * ux) <= width:
+            return True
+    return False
 
 
 def _fountain(p, cx, cz, r, height, rng):
@@ -389,16 +511,19 @@ def gardens_prefab(seed):
     # Tonnelles le long des allées : deux piliers, toit de glycine, lianes.
     for gx, gz in gates:
         for t in (0.45, 0.75):
-            x, z = round(gx * t), round(gz * t)
-            sx, sz = (1, 0) if gx == 0 else (0, 1)
+            n = math.hypot(gx, gz)
+            sx, sz = -gz / n, gx / n  # en travers de l'allée
+            x, z = gx * t, gz * t
             for w in (-3, 3):
-                p.set(x + sx * w, 0, z + sz * w, PILLAR_BASE)
+                px, pz = round(x + sx * w), round(z + sz * w)
+                p.set(px, 0, pz, PILLAR_BASE)
                 for y in range(1, 5):
-                    p.set(x + sx * w, y, z + sz * w, PILLAR)
+                    p.set(px, y, pz, PILLAR)
             for w in range(-3, 4):
-                p.set(x + sx * w, 5, z + sz * w, "Plant_Leaves_Wisteria_Wild")
+                px, pz = round(x + sx * w), round(z + sz * w)
+                p.set(px, 5, pz, "Plant_Leaves_Wisteria_Wild")
                 if abs(w) < 3 and rng.random() < 0.6:
-                    p.set(x + sx * w, 4, z + sz * w, VINES)
+                    p.set(px, 4, pz, VINES)
     return p
 
 
@@ -433,8 +558,8 @@ def ruins_prefab(seed):
     # Colonnes brisées en cercle, cristaux.
     for a in range(0, 360, 30):
         x, z = round(15 * math.cos(math.radians(a))), round(15 * math.sin(math.radians(a)))
-        if abs(x) <= 4:
-            continue  # allée nord-sud
+        if _in_lane(x, z, gates, 4):
+            continue  # allées vers les ouvertures
         h = rng.randint(2, 7)
         p.set(x, 0, z, PILLAR_BASE)
         for y in range(1, h):
@@ -444,17 +569,19 @@ def ruins_prefab(seed):
     for _ in range(16):
         a, r = rng.uniform(0, 360), rng.uniform(7, 20)
         x, z = round(r * math.cos(math.radians(a))), round(r * math.sin(math.radians(a)))
-        if abs(x) <= 3 or not p.free(x, 0, z):
+        if _in_lane(x, z, gates, 3) or not p.free(x, 0, z):
             continue
         p.set(x, 0, z, rng.choice(CRYSTALS))
     for x, z in ((8, 8), (-16, -10), (6, -16)):
         p.set(x, 2, z, "Nakasar_Tower_Emanation_Mist")
-    # Point de contrôle devant la sortie nord.
+    # Point de contrôle devant la sortie (vers la halte des arches), statue à l'est de l'allée, tournée vers elle.
     gx, gz = gates[1]
-    spot = (gx, 0, gz + 6)
-    p.set(gx + 4, -1, gz + 6, ORNATE)
-    p.set(gx + 4, 0, gz + 6, STATUE, pf.WEST)
-    return p, spot, ((gx + 4, 0, gz + 6), pf.WEST)
+    n = math.hypot(gx, gz)
+    sx, sz = round(gx - 6 * gx / n), round(gz - 6 * gz / n)
+    spot = (sx, 0, sz)
+    p.set(sx + 5, -1, sz, ORNATE)
+    p.set(sx + 5, 0, sz, STATUE, pf.WEST)
+    return p, spot, ((sx + 5, 0, sz), pf.WEST)
 
 
 # --- île de la tour : muret du bord et chemin de la forêt ----------------------------------------

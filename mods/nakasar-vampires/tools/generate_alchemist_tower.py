@@ -370,12 +370,12 @@ def biome():
     }
     arrival = wg.runtime(0, "Prop", wg.list_positions(SPAWN), {"Type": "Constant", "Prop": wg.surface_locator(
         prefab_prop("Arrival"), wg.SOLID_FLOOR, 12)})
-    # Prefabs posés à hauteur fixe (le dessus des îles est plat, à GROUND_Y - 1) : ponts, îles du parcours, abords de
+    # Prefabs posés à hauteur fixe (le dessus des îles est plat, à stage_y - 1) : ponts, îles du parcours, abords de
     # la tour (muret du bord, chemin de la forêt), tranches de la tour.
     fixed = [wg.runtime(0, "Prop", wg.list_positions((0, GROUND_Y, 0)), {"Type": "Constant", "Prop": prefab_prop("Bridges")})]
     for stage in STAGES:
         cx, cz = stage["center"]
-        fixed.append(wg.runtime(0, "Prop", wg.list_positions((cx, GROUND_Y, cz)),
+        fixed.append(wg.runtime(0, "Prop", wg.list_positions((cx, arch.stage_y(stage), cz)),
                                 {"Type": "Constant", "Prop": prefab_prop(stage["name"])}))
     fixed.append(wg.runtime(0, "Prop", wg.list_positions(TOWER_CENTER), {"Type": "Constant", "Prop": prefab_prop("Grounds")}))
     for i, y0 in enumerate(TOWER_SLICES[:-1]):
@@ -416,11 +416,8 @@ def biome():
     for stage in STAGES:
         if stage["plaza"] < 20:
             continue
-        cx, cz = stage["center"]
-        for k, a in enumerate((35, 145, 215, 325)):
-            r = stage["plaza"] + 5
-            x, z = cx + round(r * math.cos(math.radians(a))), cz + round(r * math.sin(math.radians(a)))
-            trees.append(wg.runtime(2, "Prop", wg.list_positions((x, GROUND_Y, z)), {"Type": "Constant",
+        for k, (x, z) in enumerate(arch.stage_trees(stage)):
+            trees.append(wg.runtime(2, "Prop", wg.list_positions((x, arch.stage_y(stage), z)), {"Type": "Constant",
                 "Prop": wg.surface_locator(wg.prefab(arch.SMALL_TREES[k % 3], f"{stage['name']}Tree{k}", vanilla=True),
                                            wg.SOLID_FLOOR, 8)}))
     # Ciel : géodes, rochers et cristaux flottants du jeu, posés tels quels dans le vide.
@@ -444,7 +441,7 @@ def biome():
         "Terrain": {"Type": "DAOTerrain", "Density": {"Type": "Max", "Inputs": [
             island(SPAWN, ARRIVAL_RADIUS, ARRIVAL_FLAT, "Arrival"),
             island(TOWER_CENTER, TOWER_RADIUS, TOWER_FLAT, "Tower"),
-        ] + [island((s["center"][0], GROUND_Y, s["center"][1]), s["radius"], s["flat"], s["name"]) for s in STAGES]
+        ] + [island((s["center"][0], arch.stage_y(s), s["center"][1]), s["radius"], s["flat"], s["name"]) for s in STAGES]
           + [island(center, radius, 0.6 * radius, f"Islet{i}") for i, (center, radius, _) in enumerate(ISLETS)]}},
         "MaterialProvider": materials,
         "Props": [arrival] + fixed + [plants] + trees + islet_decor + sky,
@@ -734,8 +731,8 @@ def checkpoint_volumes(tower, ruins_statue, ruins_spot):
     ox, oy, oz = TOWER_CENTER
     rx, rz = arch.RUINS["center"]
     (bx, by, bz), brot = ruins_statue
-    points = [((bx + rx, by + GROUND_Y, bz + rz), brot,
-               (ruins_spot[0] + rx, ruins_spot[1] + GROUND_Y, ruins_spot[2] + rz))]
+    ry = arch.stage_y(arch.RUINS)
+    points = [((bx + rx, by + ry, bz + rz), brot, (ruins_spot[0] + rx, ruins_spot[1] + ry, ruins_spot[2] + rz))]
     for ((x, y, z), rot), (cx, cy, cz) in zip(tower.statues, tower.checkpoints):
         points.append(((x + ox, y + oy, z + oz), rot, (cx + ox, cy + oy, cz + oz)))
     return {str(uuid.uuid5(uuid.NAMESPACE_URL, f"nakasar/alchemist-tower/checkpoint/{n}")):
@@ -750,7 +747,7 @@ def tower_layout(tower, ruins_spot):
     l'Alchimiste (athanor, piliers, fioles, rebord, volumes de tower.AlchemistSystem), en coordonnées du monde."""
     ox, oy, oz = TOWER_CENTER
     rx, rz = arch.RUINS["center"]
-    spots = [(ruins_spot[0] + rx, ruins_spot[1] + GROUND_Y, ruins_spot[2] + rz)]
+    spots = [(ruins_spot[0] + rx, ruins_spot[1] + arch.stage_y(arch.RUINS), ruins_spot[2] + rz)]
     spots += [(x + ox, y + oy, z + oz) for x, y, z in tower.checkpoints]
     rows = ",\n".join(f"            new Vector3d({x + 0.5}, {y}, {z + 0.5})" for x, y, z in spots)
     codex = tower.trap["codex"]
@@ -949,7 +946,7 @@ def main():
         else:
             prefab = arch.halt_prefab(stage, 9610 + k)
         cx, cz = stage["center"]
-        columns.update(extract_barriers(prefab, (cx, GROUND_Y, cz), toward(0, 0)))
+        columns.update(extract_barriers(prefab, (cx, arch.stage_y(stage), cz), toward(0, 0)))
         count = prefab.write(out / stage["name"] / f"{stage['name']}.prefab.json")
         print(f"{stage['name']}: {count} blocs")
     volumes = pushback_volumes(columns)
