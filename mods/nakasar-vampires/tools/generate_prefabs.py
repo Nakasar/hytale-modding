@@ -95,7 +95,8 @@ FURNITURE = {
     "Furniture_Human_Ruins_Statue_Broken": "Taller", "Furniture_Village_Statue": "Taller",
     "Furniture_Temple_Dark_Statue_Gaia": "Taller", "Deco_Scarecrow": "Taller",
     "Furniture_Ancient_Statue": "Statue_Large",
-    "Furniture_Temple_Light_Statue": "Taller",  # statue des points de contrôle de la Tour de l'Alchimiste
+    "Furniture_Temple_Light_Statue": "Taller",
+    "Dungeon_Checkpoint_Statue": "Taller",  # points de contrôle de Deepworks et de la Tour de l'Alchimiste (1 × 2,8)
     # Décor de la Tour de l'Alchimiste (hitboxes lues dans Assets.zip 0.7.2, 19 octobre 2026).
     "Furniture_Temple_Light_Table": "Table", "Furniture_Temple_Wind_Table": "Table",
     "Furniture_Temple_Light_Bench": "Bench", "Furniture_Temple_Wind_Chandelier": "Chandelier",

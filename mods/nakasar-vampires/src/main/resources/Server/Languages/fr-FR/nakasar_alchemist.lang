@@ -15,7 +15,6 @@ exit.message = Vous retournerez dans votre monde. La clé utilisée est perdue.
 exit.leave = Quitter
 exit.stay = Rester
 tower.fallRescue = Les vents de la tour vous ramènent en lieu sûr.
-checkpoint.title = Point de contrôle
 checkpoint.1 = Ruines du premier laboratoire
 checkpoint.2 = Bibliothèque
 checkpoint.3 = Laboratoire

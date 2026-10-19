@@ -15,7 +15,6 @@ exit.message = You will return to your world. The key you used is lost.
 exit.leave = Leave
 exit.stay = Stay
 tower.fallRescue = The tower's winds carry you back to safety.
-checkpoint.title = Checkpoint
 checkpoint.1 = Ruins of the First Laboratory
 checkpoint.2 = Library
 checkpoint.3 = Laboratory

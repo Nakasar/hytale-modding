@@ -21,9 +21,10 @@ du donjon vanilla Deepworks).
   au-dessus des garde-corps qui bordent le vide : places, ponts, coursives et escaliers extérieurs de la tour ;
 - la tour elle-même (tools/alchemist_tower.py), environ 220 blocs de haut, posée en tranches empilées (Tower0 à
   Tower3, TOWER_SLICES) : étages, balcons, escaliers extérieurs, points de vue fermés, points de contrôle ;
-  TowerLayout.java (Java, généré) reprend les positions des points de contrôle, ruines comprises.
-  Un joueur qui tombe quand même dans le vide est ramené à son dernier point de contrôle (TowerFallSystem,
-  TowerCheckpointSystem).
+  TowerLayout.java (Java, généré) reprend les positions des points de contrôle, ruines comprises ;
+- les points de contrôle de Deepworks : statue Dungeon_Checkpoint_Statue et volume qui l'allume, fait du lieu le point
+  d'apparition du groupe et soigne (checkpoint_volumes). Un joueur qui tombe quand même dans le vide est ramené au point
+  d'apparition du monde, donc au dernier point de contrôle (TowerFallSystem).
 
 Repère : x vers l'est, z vers le sud, y vers le haut ; le point d'apparition est en (0, GROUND_Y, 0).
 """
@@ -613,11 +614,116 @@ def pushback_volumes(columns):
 
 def trigger_volumes(volumes):
     """resources/TriggerVolumeData.json de l'instance (même format que celui de The_Deepworks)."""
+    origin = {"X": 0.0, "Y": float(GROUND_Y), "Z": 0.0}
     return {
         "Volumes": volumes,
-        "Groups": {PUSH_GROUP: {"Origin": {"X": 0.0, "Y": float(GROUND_Y), "Z": 0.0}, "TargetTypes": ["Player"],
-                                "Enabled": True, "Color": 16711680, "Name": "Player_Pushback"}},
+        "Groups": {PUSH_GROUP: {"Origin": origin, "TargetTypes": ["Player"], "Enabled": True, "Color": 16711680,
+                                "Name": "Player_Pushback"},
+                   CHECKPOINT_GROUP: {"Origin": origin, "TargetTypes": ["Player"], "Enabled": True,
+                                      "Color": 10879231, "Name": "Checkpoints"}},
     }
+
+
+# --- points de contrôle (comme Deepworks) -------------------------------------------------------
+
+# Kevin (19 octobre 2026) : mêmes statues et effets que Deepworks, soin compris. Chaque statue
+# Dungeon_Checkpoint_Statue a son volume, copie des volumes Checkpoint_NN de The_Deepworks (lus dans Assets.zip 0.7.2) :
+# en entrant, la statue s'anime puis s'allume, devient le point d'apparition du monde pour tout le groupe (les points de
+# réapparition des joueurs sont effacés), titre « Point de contrôle » avec le nom du lieu, soin Dungeon_Checkpoint_Heal
+# pendant 8,5 s ; la statue active précédente s'éteint (état Disabled) et ne se rallume plus.
+CHECKPOINT_GROUP = str(uuid.uuid5(uuid.NAMESPACE_URL, "nakasar/alchemist-tower/checkpoints"))
+CHECKPOINT_STATUE = "Dungeon_Checkpoint_Statue"
+CHECKPOINT_RADIUS, CHECKPOINT_HEIGHT = 6.0, 5.0  # Deepworks : 9 × 7 ; plus petit ici, les rampes de la tour se croisent
+ROTATIONS = ["None", "Ninety", "OneEighty", "TwoSeventy"]
+
+
+def tag_condition(event, source, value, inverted=False, key="Checkpoint", entry=None):
+    c = {"Type": "TagCondition", "Event": event}
+    if entry is not None:
+        c["Entry"] = entry
+    c.update({"Source": source, "TagKey": key, "Comparison": "Exactly", "CompareAgainst": "Value", "TagValue": value,
+              "Inverted": inverted, "MatchKey": "", "MatchValue": "", "Radius": 50.0, "Center": "Volume"})
+    return c
+
+
+def checkpoint_volume(n, statue, rot, spot):
+    """Volume du point de contrôle n (1 = ruines) : `statue` et `spot` (arrêt du joueur) en coordonnées du monde."""
+    sx, sy, sz = statue
+
+    def place(event, state, delay=0.0, entry=None):
+        e = {"Type": "PlaceBlock", "Event": event, "Interval": 0.0, "Delay": delay}
+        if entry is not None:
+            e["Entry"] = entry
+        e.update({"BlockType": CHECKPOINT_STATUE, "BlockState": state, "Position": {"X": 0.0, "Y": 0.0, "Z": 0.0},
+                  "Origin": "VolumeOrigin", "ReplaceMode": "Always", "Rotation": ROTATIONS[rot % 4], "Pitch": "None",
+                  "Roll": "None"})
+        return e
+
+    def tags(event, key, value, match="", delay=0.0, entry=None):
+        e = {"Type": "ModifyTags", "Event": event, "Interval": 0.0, "Delay": delay}
+        if entry is not None:
+            e["Entry"] = entry
+        e.update({"Operation": "Set", "TagKey": key, "TagValue": value, "MatchKey": "Checkpoint", "MatchValue": match,
+                  "Radius": 5.0, "Center": "Volume"})
+        return e
+
+    dx, dz = spot[0] - sx, spot[2] - sz
+    return {
+        "Position": {"X": sx + 0.5, "Y": float(sy), "Z": sz + 0.5},
+        "Shape": {"Type": "Cylinder", "Center": {"X": 0.0, "Y": 0.0, "Z": 0.0}, "Radius": CHECKPOINT_RADIUS,
+                  "Height": CHECKPOINT_HEIGHT},
+        "Conditions": [
+            tag_condition("ENTER", "Self", "Inactive"),
+            tag_condition("ENTER", "Self", "Disabled", inverted=True),
+            tag_condition("SIGNAL_RECEIVED", "Event", "Disable"),
+            tag_condition("SIGNAL_RECEIVED", "Event", "Reset", entry=1),
+            tag_condition("TICK", "Self", "Yes", key="Checkpoint_Healing", entry=1),
+        ],
+        "Effects": [
+            place("ENTER", "Activating"),
+            {"Type": "PlaySound", "Event": "ENTER", "Interval": 0.0, "Delay": 0.0,
+             "SoundEvent": "SFX_Dungeon_Checkpoint_Activate", "Location": "VolumeCenter",
+             "Offset": {"X": 0.0, "Y": 0.0, "Z": 0.0}},
+            {"Type": "SetWorldSpawn", "Event": "ENTER", "Interval": 0.0, "Delay": 0.0, "Origin": "VolumeOrigin",
+             "Position": {"X": float(dx), "Y": 0.0, "Z": float(dz)}, "Yaw": 0.0, "ClearPlayerRespawnPoints": True},
+            {"Type": "ShowEventTitle", "Event": "ENTER", "Interval": 0.0, "Delay": 0.0,
+             "PrimaryTitle": "server.general.checkpoint.title", "SecondaryTitle": f"{LANG}.checkpoint.{n}",
+             "Style": "Major", "Duration": 3.5, "FadeInDuration": 1.0, "FadeOutDuration": 1.0,
+             "Recipient": "AllPlayers"},
+            {"Type": "SendSignal", "Event": "ENTER", "Interval": 0.0, "Delay": 0.0, "MatchKey": "Checkpoint",
+             "MatchValue": "Active", "Radius": 0.0, "Center": "Volume", "SignalKeys": ["Checkpoint"],
+             "SignalValues": ["Disable"]},
+            tags("ENTER", "Checkpoint", "Active"),
+            tags("ENTER", "Checkpoint_Healing", "Yes"),
+            place("ENTER", "Active", delay=8.5),
+            tags("ENTER", "Checkpoint_Healing", "No", delay=8.5),
+            place("SIGNAL_RECEIVED", "Disabled"),
+            tags("SIGNAL_RECEIVED", "Checkpoint", "Disabled", match="Active"),
+            place("SIGNAL_RECEIVED", "Inactive", entry=1),
+            tags("SIGNAL_RECEIVED", "Checkpoint", "Inactive", entry=1),
+            {"Type": "EntityEffect", "Event": "TICK", "Interval": 0.25, "Delay": 0.0, "Entry": 1,
+             "Effect": "Dungeon_Checkpoint_Heal", "Mode": "Apply", "Duration": 0.5},
+        ],
+        "TargetTypes": ["Player"],
+        "Enabled": True,
+        "GroupId": CHECKPOINT_GROUP,
+        "KeepLoaded": False,
+        "Tags": {"Checkpoint": "Inactive", "Checkpoint_Healing": "No"},
+        "Name": f"Checkpoint_{n:02d}",
+    }
+
+
+def checkpoint_volumes(tower, ruins_statue, ruins_spot):
+    """Volumes des points de contrôle, dans l'ordre du parcours : ruines, puis la tour."""
+    ox, oy, oz = TOWER_CENTER
+    rx, rz = arch.RUINS["center"]
+    (bx, by, bz), brot = ruins_statue
+    points = [((bx + rx, by + GROUND_Y, bz + rz), brot,
+               (ruins_spot[0] + rx, ruins_spot[1] + GROUND_Y, ruins_spot[2] + rz))]
+    for ((x, y, z), rot), (cx, cy, cz) in zip(tower.statues, tower.checkpoints):
+        points.append(((x + ox, y + oy, z + oz), rot, (cx + ox, cy + oy, cz + oz)))
+    return {str(uuid.uuid5(uuid.NAMESPACE_URL, f"nakasar/alchemist-tower/checkpoint/{n}")):
+            checkpoint_volume(n, statue, rot, spot) for n, (statue, rot, spot) in enumerate(points, 1)}
 
 
 # --- Java : positions de la tour ---------------------------------------------------------------
@@ -728,7 +834,7 @@ def main():
         if stage["feature"] == "gardens":
             prefab = arch.gardens_prefab(9602)
         elif stage["feature"] == "ruins":
-            prefab, ruins_spot = arch.ruins_prefab(9603)
+            prefab, ruins_spot, ruins_statue = arch.ruins_prefab(9603)
         else:
             prefab = arch.halt_prefab(stage, 9610 + k)
         cx, cz = stage["center"]
@@ -736,6 +842,7 @@ def main():
         count = prefab.write(out / stage["name"] / f"{stage['name']}.prefab.json")
         print(f"{stage['name']}: {count} blocs")
     volumes = pushback_volumes(columns)
+    volumes.update(checkpoint_volumes(tower, ruins_statue, ruins_spot))
     write_json(SERVER / "Instances" / TOWER / "resources" / "TriggerVolumeData.json", trigger_volumes(volumes))
     print(f"Barrières de repoussée : {len(columns)} colonnes, {len(volumes)} volumes")
     JAVA_LAYOUT.write_text(tower_layout(tower, ruins_spot), encoding="utf-8")

@@ -54,7 +54,8 @@ TRIM = "Rock_Gold_Brick_Decorative"
 GOLD = "Rock_Gold_Brick"
 PARAPET, PARAPET_TOP = "Rock_Marble_Brick", "Rock_Marble_Brick_Wall"
 GLASS = "Nakasar_Stained_Glass_Violet"
-STATUE = "Furniture_Temple_Light_Statue"
+# Statue des points de contrôle de Deepworks, éteinte ; le volume du point de contrôle la fait changer d'état.
+STATUE = "*Dungeon_Checkpoint_Statue_State_Definitions_Inactive"
 SHELF = "Furniture_Bookshelf_Single"
 LANTERN = "Furniture_Temple_Light_Lantern"
 GLOW = "Furniture_Royal_Magic_Potion_Glow"
@@ -111,6 +112,7 @@ class Tower:
             return place(x, y, z, *args, **kwargs)
         self.p.set = set_block
         self.checkpoints = []    # (x, y, z) relatifs, dans l'ordre du parcours
+        self.statues = []        # ((x, y, z), lacet) des statues, dans le même ordre
 
     # --- primitives ---------------------------------------------------------------------------
 
@@ -716,7 +718,8 @@ class Tower:
             p.set(x0 + (i + 1) // 2, F_DECK + 2 + i // 2, z0 - i // 2, GOLD if i % 2 else "Rock_Gold_Brick_Ornate")
 
     def checkpoint(self, x, y, z, statue_at):
-        """Point de contrôle : statue de lumière entre deux braseros ; le joueur s'arrête en (x, y, z)."""
+        """Point de contrôle : statue de Deepworks sur un socle doré (son volume est écrit par generate_alchemist_tower) ;
+        le joueur s'arrête en (x, y, z)."""
         sx, sz = statue_at
         for k in range(3):  # la statue peut prendre la place d'un bout de parapet
             if (sx, y + k, sz) in self.parapets:
@@ -727,6 +730,7 @@ class Tower:
             raise RuntimeError(f"tour : pas de place pour la statue du point de contrôle {(sx, y, sz)}")
         self.p.set(sx, y, sz, STATUE, rot)
         self.checkpoints.append((x, y, z))
+        self.statues.append(((sx, y, sz), rot))
         # Le décor laisse libre l'arrêt du joueur.
         self.keep_clear.update((x + dx, y + k, z + dz) for dx in range(-1, 2) for dz in range(-1, 2) for k in range(3)
                                if self.p.free(x + dx, y + k, z + dz))

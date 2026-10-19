@@ -9,20 +9,23 @@ import com.hypixel.hytale.component.query.Query;
 import com.hypixel.hytale.component.system.tick.EntityTickingSystem;
 import com.hypixel.hytale.math.vector.Rotation3f;
 import com.hypixel.hytale.server.core.Message;
+import com.hypixel.hytale.math.vector.Transform;
 import com.hypixel.hytale.server.core.entity.entities.Player;
 import com.hypixel.hytale.server.core.modules.entity.component.TransformComponent;
 import com.hypixel.hytale.server.core.modules.entity.teleport.Teleport;
 import com.hypixel.hytale.server.core.universe.PlayerRef;
+import com.hypixel.hytale.server.core.universe.world.World;
+import com.hypixel.hytale.server.core.universe.world.spawn.GlobalSpawnProvider;
 import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
 import org.joml.Vector3d;
 
 /**
- * Filet de sécurité de la Tour de l'Alchimiste : un joueur tombé dans le vide est ramené à son dernier point de contrôle
- * ({@link TowerCheckpointSystem}), ou sur le parvis d'arrivée s'il n'en a atteint aucun.
+ * Filet de sécurité de la Tour de l'Alchimiste : un joueur tombé dans le vide est ramené au point d'apparition du monde,
+ * c'est-à-dire au dernier point de contrôle allumé (les volumes Checkpoint_NN de l'instance, copiés de Deepworks, le
+ * déplacent avec l'effet SetWorldSpawn), ou sur le parvis d'arrivée si aucun ne l'est.
  *
- * <p>Les points de vue de la tour sont fermés par des murs trop hauts pour être sautés (tools/generate_alchemist_tower.py),
- * comme dans le donjon vanilla Deepworks, qui ajoute en plus des volumes « Fall_Teleport » sous son décor. Nos
- * instances sont générées, sans volumes déclencheurs : ce système joue ce rôle.
+ * <p>Deepworks pose des volumes « Fall_Teleport » vers des points fixes sous son décor ; notre vide est partout et le
+ * point de retour change avec les points de contrôle : ce système joue ce rôle.
  */
 public final class TowerFallSystem extends EntityTickingSystem<EntityStore> {
 
@@ -57,14 +60,22 @@ public final class TowerFallSystem extends EntityTickingSystem<EntityStore> {
         if (buffer.getComponent(ref, Teleport.getComponentType()) != null) {
             return; // déjà en route
         }
-        Player player = chunk.getComponent(index, Player.getComponentType());
-        Vector3d target = TowerCheckpointSystem.respawn(
-                player.getPlayerConfigData().getPerWorldData(store.getExternalData().getWorld().getName()));
-        buffer.putComponent(ref, Teleport.getComponentType(), Teleport.createForPlayer(target, new Rotation3f()));
+        Transform target = spawn(store.getExternalData().getWorld());
+        buffer.putComponent(ref, Teleport.getComponentType(),
+                Teleport.createForPlayer(target));
         PlayerRef playerRef = chunk.getComponent(index, PlayerRef.getComponentType());
         if (playerRef != null) {
             playerRef.sendMessage(Message.translation("nakasar_alchemist.tower.fallRescue"));
         }
+    }
+
+    /** Point d'apparition du monde (déplacé par les points de contrôle), sinon le parvis d'arrivée. */
+    private static Transform spawn(World world) {
+        if (world.getWorldConfig().getSpawnProvider() instanceof GlobalSpawnProvider global
+                && global.getGlobalSpawnPoint() != null) {
+            return new Transform(global.getGlobalSpawnPoint());
+        }
+        return new Transform(new Vector3d(TowerLayout.ARRIVAL), new Rotation3f());
     }
 
     static boolean isTower(Store<EntityStore> store) {

@@ -84,7 +84,8 @@ TRIM = "Rock_Gold_Brick_Decorative"
 GOLD = "Rock_Gold_Brick"
 ORNATE = "Rock_Gold_Brick_Ornate"
 GLASS = "Nakasar_Stained_Glass_Violet"
-STATUE = "Furniture_Temple_Light_Statue"
+# Statue des points de contrôle de Deepworks, éteinte ; le volume du point de contrôle la fait changer d'état.
+STATUE = "*Dungeon_Checkpoint_Statue_State_Definitions_Inactive"
 LANTERN = "Furniture_Temple_Light_Lantern"
 LANTERN_HANGING = "Furniture_Temple_Light_Lantern_Ceiling"
 CRYSTALS = ["Rock_Crystal_Purple_Large", "Rock_Crystal_Purple_Medium", "Rock_Crystal_Green_Medium",
@@ -453,7 +454,7 @@ def ruins_prefab(seed):
     spot = (gx, 0, gz + 6)
     p.set(gx + 4, -1, gz + 6, ORNATE)
     p.set(gx + 4, 0, gz + 6, STATUE, pf.WEST)
-    return p, spot
+    return p, spot, ((gx + 4, 0, gz + 6), pf.WEST)
 
 
 # --- île de la tour : muret du bord et chemin de la forêt ----------------------------------------
