@@ -55,6 +55,7 @@ from PIL import Image
 import generate_altar as ga
 import generate_elites as ge
 import generate_occult as go
+import tower_warnings as tw
 
 PACK = ge.PACK
 SERVER = ge.SERVER
@@ -1232,6 +1233,29 @@ def spawner(role_id):
     }
 
 
+VANILLA_WARNINGS = ("Feastmaster_Slam_Warning", "Gobliterator_Slam_Warning")
+
+
+def telegraph(node):
+    """Annonces des attaques plus lisibles (Kevin : « plus visibles et prévisibles ») : toute étape qui marque le sol
+    d'une zone rouge dure au moins 1,6 s (0,4 s de plus qu'avant), et ses zones deviennent celles de la tour, dont le
+    disque se remplit jusqu'au coup (tools/tower_warnings.py)."""
+    if isinstance(node, list):
+        for item in node:
+            telegraph(item)
+        return node
+    if not isinstance(node, dict):
+        return node
+    marks = [m for m in (node.get("Effects") or {}).get("Particles", []) if m.get("SystemId") in VANILLA_WARNINGS]
+    if node.get("Type") == "Simple" and marks:
+        node["RunTime"] = round(max(1.6, node["RunTime"] + 0.4), 2)
+        for m in marks:
+            m["SystemId"] = tw.system(node["RunTime"])
+    for value in node.values():
+        telegraph(value)
+    return node
+
+
 def main():
     preview = Path(sys.argv[sys.argv.index("--preview") + 1]) if "--preview" in sys.argv else None
     assets = Path(sys.argv[sys.argv.index("--vanilla-textures") + 1]) if "--vanilla-textures" in sys.argv else None
@@ -1242,7 +1266,7 @@ def main():
     for model_id, doc in models().items():
         write_json(MODELS / f"{model_id}.json", doc)
     for name, doc in interactions().items():
-        write_json(INTERACTIONS / f"{name}.json", doc)
+        write_json(INTERACTIONS / f"{name}.json", telegraph(doc))
     for name, doc in roots().items():
         write_json(ROOTS / f"{name}.json", doc)
     for name, doc in projectiles().items():
@@ -1270,6 +1294,7 @@ def main():
     elif not (NPC_TEXTURES / "Brass_Guardian.png").exists():
         sys.exit("Brass_Guardian.png manquant : relancer avec --vanilla-textures <Assets.zip> ou --firesteel-texture <PNG>")
     build_reagents(preview)
+    print(f"Zones d'annonce : {tw.write()} dixièmes de seconde")
 
 
 if __name__ == "__main__":

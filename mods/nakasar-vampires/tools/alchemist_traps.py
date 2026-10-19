@@ -45,6 +45,7 @@ from pathlib import Path
 from PIL import Image, ImageDraw
 
 import alchemist_tower as at
+import tower_warnings as tw
 import generate_assets as gx
 
 PACK = Path(__file__).resolve().parent.parent / "src" / "main" / "resources"
@@ -58,13 +59,14 @@ BRAZIER = "Furniture_Temple_Dark_Brazier"
 
 # Ids du jeu employés par les volumes, tous vus dans Assets.zip 0.7.2 (la plupart dans les volumes de The_Deepworks) :
 # un id inconnu ferait rejeter le volume en jeu, `check_ids` refuse tout ce qui n'est pas ici.
+SPORE_CLOUD = "Nakasar_Spore_Cloud"  # nuage des champignons de la serre (écrit par ce script, spore_cloud_files)
 PARTICLES = {
     "Goblin_Decorative_Steam", "Dungeon_Goblin_Smoke_Pipe_Large", "Effect_Poison", "Magic_Sparks_Heavy_GS",
     "Fire_Green", "Dungeon_Goblin_Mace_Slam_Warning", "Block_Break_Dust", "Smoke_Floor", "Dungeon_Goblin_Spores_Green",
     "Fire_Trap_Preview", "Fire_AoE", "Weapon_Frost_Mist", "Ice_Blast", "Dungeon_Goblin_Toxic_Water", "Impact_Poison",
     "Goblin_Decorative_Sparks", "Lightning", "Dungeon_Goblin_Electric_Fence_Hit", "Fire_Charge_Charging1",
     "Leaves_Oak_Wind", "Wind", "Goblin_Decorative_Lightning", "Ability_Ice_Explosion", "Effect_Health_Pack",
-    "Totem_Heal_AttachOnStatue",
+    "Totem_Heal_AttachOnStatue", "Dungeon_Goblin_Energy_Barrier_Red_Large", SPORE_CLOUD, "Dungeon_Goblin_Energy_Barrier_Reveal",
 }
 SOUNDS = {
     "SFX_Emit_Goblin_Steam_A", "SFX_Env_Geyzer_Burst", "SFX_Lever_Metal_On", "SFX_Emit_Goblin_Pipes_Activate",
@@ -72,11 +74,11 @@ SOUNDS = {
     "SFX_Emit_Goblin_Steam_B", "SFX_Emit_Goblin_Pipes_Flame_Ignite", "SFX_Staff_Flame_Flamethrower",
     "SFX_Emit_Goblin_Flame_Quadrant_Blast", "SFX_Ice_Break", "SFX_Emit_Goblin_Liquid_Bubbling_Steam_Bursts",
     "SFX_Emit_Goblin_Electric_Fence_Zap", "SFX_Emit_Wind_Gusts", "SFX_Emit_Dungeon_Goblin_Void_Thunder",
-    "SFX_Dungeon_Checkpoint_Activate",
+    "SFX_Dungeon_Checkpoint_Activate", "SFX_Gobliterator_Arena_Door_Warning",
 }
 EFFECTS = {"Poison_T1", "Poison_T2", "Burn", "Slow", "Hazard_Electric_Stun", "Health_Pack"}
 BLOCKS = {"Empty", "Fluid_Fire", at.SEAL, at.HEDGE, at.RUBBLE, at.DOOR, "Rock_Marble_Brick", "Rock_Marble_Brick_Smooth",
-          "Rock_Marble_Cobble", at.CONDUIT_LIT, at.EMANATION_LIT, at.EMANATION_FED, at.PIPE_GLOW, at.LEAK}
+          "Rock_Marble_Cobble", at.ARENA_BARRIER, at.SPORE_SHROOM, at.CONDUIT_LIT, at.EMANATION_LIT, at.EMANATION_FED, at.PIPE_GLOW, at.LEAK}
 NPCS = {"Nakasar_Elemental_Fire", "Nakasar_Elemental_Frost", "Nakasar_Elemental_Root", "Nakasar_Elemental_Thunder"}
 
 # Quadrants de la Salle des Transmutations : (signe de x, signe de z), élémentaire du foyer, particules d'annonce et de
@@ -93,10 +95,16 @@ QUADRANTS = {
 }
 QUADRANT_ORDER = ("Fire", "Ice", "Acid", "Lightning")
 ZERO = {"X": 0.0, "Y": 0.0, "Z": 0.0}
-# Zone rouge des jets de gaz : cercle d'annonce du coup de masse des gobelins, échelle 0,68 par bloc de rayon (comme
-# les sorts du Codex), affiché pendant toute l'annonce.
-GAS_WARNING_SCALE = 0.68
-GAS_WARN = 1.6
+# Annonce des jets de gaz (zone rouge qui se remplit, comme toutes les annonces de la tour : tower_warnings.py).
+GAS_WARN = 2.0
+# Champignons de la serre : annonce (il enfle), nuage, cadence de chaque moitié, rayon du nuage.
+SPORE_WARN = 2.0
+SPORE_CLOUD_S = 3.0
+SPORE_PERIOD = 7.0
+SPORE_R = 3.0
+# Barrière d'une arène : elle se lève ces secondes après que le groupe est entré (Deepworks : 4 s).
+ARENA_CLOSE_DELAY = 4.0
+ARENAS = ("Codex", "Chimera", "Alchemist")
 
 
 # --- volumes : briques reprises des volumes de The_Deepworks --------------------------------------------------------
@@ -131,6 +139,12 @@ def vfx(event, system, delay=0.0, entry=None, offset=(0, 0, 0), scale=1.0, durat
                   Scale=float(scale), Rotation=dict(ZERO), Duration=float(duration))
 
 
+def mark(radius, seconds, event="", offset=(0, 0.1, 0), delay=0.0):
+    """Zone rouge d'annonce au sol (tools/tower_warnings.py) : son disque se remplit en `seconds` secondes, jusqu'au
+    coup ; `radius` en blocs."""
+    return vfx(event, tw.system(seconds), delay, offset=offset, scale=tw.scale(radius))
+
+
 def sound(event, name, delay=0.0, entry=None, location="VolumeCenter"):
     return effect("PlaySound", event, delay, entry, SoundEvent=name, Location=location, Offset=dict(ZERO))
 
@@ -163,8 +177,8 @@ def velocity(vx, vy, vz):
     return effect("SetVelocity", "TICK", Velocity=vec(vx, vy, vz), Additive=False, RelativeMode="Absolute")
 
 
-def place(event, block, pos, delay=0.0, entry=None):
-    return effect("PlaceBlock", event, delay, entry, BlockType=block, BlockState="", Position=vec(*pos),
+def place(event, block, pos, delay=0.0, entry=None, state=""):
+    return effect("PlaceBlock", event, delay, entry, BlockType=block, BlockState=state, Position=vec(*pos),
                   Origin="WorldAbsolute", ReplaceMode="Always", Rotation="None", Pitch="None", Roll="None")
 
 
@@ -305,6 +319,37 @@ class Traps:
         self.add(name, group, center, shape, effects, conditions,
                  volume_tags={name: "Closed", **{k: "Off" for k in keys}})
 
+    def arena_gate(self, name, group, cells):
+        """Barrière d'arène, comme les portes du Festin de Deepworks. Le Java (tower.ArenaGate) pose Gate=Close quand
+        un joueur vivant est entré dans l'arène : l'annonce rouge clignote dans la porte, puis la barrière se lève
+        ARENA_CLOSE_DELAY secondes plus tard. Gate=Open quand le groupe a péri (ou est sorti) ou que le boss est vaincu :
+        elle s'abaisse. Les blocs sont posés par pans (ReplaceBlockType agit sur toute la boîte d'un volume)."""
+        piece = f"{name}_Barrier"
+        center, shape = self.bounds(cells)
+        self.add(f"{name}_Gate", group, center, shape, [
+            vfx("TAG_ADDED", "Dungeon_Goblin_Energy_Barrier_Red_Large", duration=ARENA_CLOSE_DELAY),
+            sound("TAG_ADDED", "SFX_Gobliterator_Arena_Door_Warning"),
+            signal("TAG_ADDED", "Close", piece, delay=ARENA_CLOSE_DELAY),
+            vfx("TAG_ADDED", "Dungeon_Goblin_Energy_Barrier_Reveal", ARENA_CLOSE_DELAY),
+            sound("TAG_ADDED", "SFX_Crystal_Break", ARENA_CLOSE_DELAY),
+            dict(signal("TAG_ADDED", "Open", piece), Entry=1),
+            sound("TAG_ADDED", "SFX_Crystal_Break", entry=1)],
+            [tag_is("TAG_ADDED", "Gate", "Close"), tag_is("TAG_ADDED", "Gate", "Open", entry=1)],
+            volume_tags={"Gate": "Open"}, ConditionTiming="BeforeVolumeDelay")
+        for j, pile in enumerate(piles(cells)):
+            pc, ps = self.bounds(pile)
+            self.add(f"{piece}_{j}", group, pc, ps, [
+                replace("SIGNAL_RECEIVED", ["Empty"], at.ARENA_BARRIER),
+                replace("SIGNAL_RECEIVED", [at.ARENA_BARRIER], "Empty", entry=1)],
+                [tag_is("SIGNAL_RECEIVED", "Close", "", source="Event"),
+                 tag_is("SIGNAL_RECEIVED", "Open", "", entry=1, source="Event")],
+                volume_tags={piece: "Piece"}, ConditionTiming="BeforeVolumeDelay")
+
+    def arenas(self):
+        g = self.group("Tower_Arenas", 12597547)
+        for name in ARENAS:
+            self.arena_gate(name, g, self.t["arenas"][name])
+
     # --- les pièges ----------------------------------------------------------------------------------------------
 
     def court(self):
@@ -371,8 +416,7 @@ class Traps:
                 cz = r * math.sin(math.radians(k))
                 base = (cx + self.origin[0], y + self.origin[1], cz + self.origin[2])
                 # Zone rouge au sol pendant l'annonce, comme les jets de flammes de The_Deepworks.
-                warn = [vfx("", "Dungeon_Goblin_Mace_Slam_Warning", offset=(0, 0.1, 0), scale=GAS_WARNING_SCALE * 3.3,
-                            duration=GAS_WARN)]
+                warn = [mark(3.3, GAS_WARN)]
                 hit = []
                 if j == 1:  # une seule bouche joue les particules et le son
                     off = (mouth[0] + 0.5 - cx, 1.0, mouth[1] + 0.5 - cz)
@@ -401,13 +445,28 @@ class Traps:
         self.gate("Leaks_Shortcut", g, self.t["shortcut_seal"], ["Valve"], [title("TAG_ADDED", "valve")])
 
     def greenhouse(self):
+        """Champignons de la serre : tant qu'un joueur est dans la serre, ils lâchent leurs spores à tour de rôle (A puis
+        B, toutes les SPORE_PERIOD secondes). Chacun s'annonce : il enfle (état Swelling, animation du bloc) et sa zone
+        rouge se remplit SPORE_WARN secondes, puis il crache un vrai nuage (Nakasar_Spore_Cloud) qui reste SPORE_CLOUD_S
+        secondes : qui est dedans est ralenti et empoisonné."""
         g = self.group("Tower_Greenhouse_Spores", 6280509)
+        cells = [(x, at.F_LEAKS, z) for x, z, d, a in at.ring(at.R_OUT, at.BALCONY_R) if at.in_arc(a, *at.GREENHOUSE_ARC)]
+        center, _ = self.bounds(cells)
+        _, shape = self.bounds([(x, y + k, z) for x, y, z in cells for k in (0, 4)])
+        self.controller("Greenhouse_Controller", g, center, shape,
+                        [("Spores", "Greenhouse_Spores", "A", 0.0), ("Spores", "Greenhouse_Spores", "B", SPORE_PERIOD / 2)],
+                        interval=SPORE_PERIOD)
         for i, pos in enumerate(self.t["spores"]):
-            self.add(f"Greenhouse_Spores_{i + 1}", g, self.foot(*pos), cylinder(2.5, 3), [
-                vfx("ENTER", "Dungeon_Goblin_Spores_Green", offset=(0, 0.5, 0), duration=2.5),
-                sound("ENTER", "SFX_Emit_Goblin_Steam_B"),
-                status("Slow", 3.0, event="ENTER", delay=0.8)],
-                [cooldown("ENTER", 5.0)], CancelDelayedOnExit=True)
+            here = self.world(*pos)
+            self.pulse(f"Greenhouse_Spores_{i + 1}", g, self.foot(*pos), cylinder(SPORE_R, 3), "Spores",
+                       "Greenhouse_Spores", "AB"[i % 2], warn=SPORE_WARN, active=SPORE_CLOUD_S,
+                       warn_fx=[place("", at.SPORE_SHROOM, here, state="Swelling"), mark(SPORE_R, SPORE_WARN),
+                                sound("", "SFX_Emit_Goblin_Liquid_Bubbling_Steam_Bursts")],
+                       hit_fx=[vfx("", SPORE_CLOUD, offset=(0, 0.2, 0), duration=SPORE_CLOUD_S),
+                               vfx("", "Dungeon_Goblin_Spores_Green", offset=(0, 1.0, 0), duration=SPORE_CLOUD_S),
+                               sound("", "SFX_Env_Geyzer_Burst"), sound("", "SFX_Emit_Goblin_Steam_B", 0.2),
+                               place("", at.SPORE_SHROOM, here, SHROOM_PUFF_END - SPORE_WARN)],
+                       hits=[status("Slow", 2.0, interval=1.0), status("Poison_T1", 3.0, interval=1.0)])
 
     def library(self):
         g = self.group("Tower_Library", 11817792)
@@ -431,8 +490,8 @@ class Traps:
                         [("Books", "Library_Books", "", 0.0)], interval=3.0)
         for i, pos in enumerate(self.t["books"]):
             self.pulse(f"Library_Books_{i + 1}", g, self.foot(*pos), cylinder(1.6, 3), "Books", "Library_Books",
-                       "Zone", warn=1.4, active=0.4,
-                       warn_fx=[vfx("", "Dungeon_Goblin_Mace_Slam_Warning", offset=(0, 0.1, 0), duration=1.4)],
+                       "Zone", warn=2.0, active=0.4,
+                       warn_fx=[mark(1.6, 2.0)],
                        hit_fx=[vfx("", "Block_Break_Dust", offset=(0, 1.5, 0)), vfx("", "Smoke_Floor"),
                                sound("", "SFX_Drop_Weapons_Books")],
                        hits=[damage(12, 1.0), status("Slow", 2.0)], odds=0.3)
@@ -456,8 +515,9 @@ class Traps:
             spots = [(sx * a - (center[0] - self.origin[0]) + 0.5, 0.2, sz * b - (center[2] - self.origin[2]) + 0.5)
                      for a in (5, 13) for b in (5, 13)]
             spots = [(dx, -1.4, dz) for dx, _, dz in spots]  # le centre de la boîte est 1,5 bloc au-dessus du sol
-            self.pulse(f"Quadrant_{el}", g, center, shape, "Transmute", "Quadrant", el, warn=1.6, active=2.4,
-                       warn_fx=[vfx("", warn_p, offset=o, duration=1.6) for o in spots],
+            self.pulse(f"Quadrant_{el}", g, center, shape, "Transmute", "Quadrant", el, warn=2.5, active=2.4,
+                       warn_fx=[vfx("", warn_p, offset=o, duration=2.5) for o in spots]
+                       + [mark(4.6, 2.5, offset=(dx, -1.4, dz)) for dx, _, dz in spots],
                        hit_fx=[vfx("", hit_p, offset=o, duration=2.4) for o in spots] + [sound("", snd)],
                        hits=[status(n, d, interval=i) for n, d, i in statuses] + [damage(pct, 0.5)])
             # Le foyer du quadrant : l'allumer apaise le quadrant, mais un élémentaire sort des dalles.
@@ -491,12 +551,12 @@ class Traps:
             for j, cell in enumerate(cells):
                 base = self.foot(*cell)
                 off = tuple(n - b for n, b in zip(noz, base))
-                warn = [vfx("", "Fire_Trap_Preview", offset=(0, 0.1, 0), duration=1.5)]
+                warn = [vfx("", "Fire_Trap_Preview", offset=(0, 0.1, 0), duration=2.0), mark(2.0, 2.0)]
                 hit = [vfx("", "Fire_AoE", offset=(0, 0.2, 0), duration=1.6)]
                 if j == 0:
-                    warn.append(vfx("", "Fire_Charge_Charging1", offset=off, duration=1.5))
+                    warn.append(vfx("", "Fire_Charge_Charging1", offset=off, duration=2.0))
                     hit.append(sound("", "SFX_Emit_Goblin_Pipes_Flame_Ignite"))
-                self.pulse(f"Wind_Flame_{a}_{j}", g, base, cylinder(2.0, 3), "Flame", "Wind_Flame", pair, warn=1.5,
+                self.pulse(f"Wind_Flame_{a}_{j}", g, base, cylinder(2.0, 3), "Flame", "Wind_Flame", pair, warn=2.0,
                            active=1.6, warn_fx=warn, hit_fx=hit, hits=[status("Burn", 3.0), damage(12, 1.0)])
         for a, pair, cells in self.t["gusts"]:
             for j, cell in enumerate(cells):
@@ -504,16 +564,16 @@ class Traps:
                 # vers l'axe de la tour, donc contre son mur : jamais vers le vide
                 d = math.hypot(base[0] - self.origin[0], base[2] - self.origin[2])
                 push = (-(base[0] - self.origin[0]) / d * 7.0, 0.0, -(base[2] - self.origin[2]) / d * 7.0)
-                warn = [vfx("", "Leaves_Oak_Wind", offset=(0, 1, 0), duration=1.0)]
+                warn = [vfx("", "Leaves_Oak_Wind", offset=(0, 1, 0), duration=1.8), mark(2.6, 1.8)]
                 hit = [vfx("", "Wind", offset=(0, 1, 0), duration=1.8)]
                 if j == 2:
                     hit.append(sound("", "SFX_Emit_Wind_Gusts"))
-                self.pulse(f"Wind_Gust_{a}_{j}", g, base, cylinder(2.6, 3), "Gust", "Wind_Gust", pair, warn=1.0,
+                self.pulse(f"Wind_Gust_{a}_{j}", g, base, cylinder(2.6, 3), "Gust", "Wind_Gust", pair, warn=1.8,
                            active=1.8, warn_fx=warn, hit_fx=hit, hits=[velocity(*push)])
         for i, cell in enumerate(self.t["strikes"]):
             self.pulse(f"Wind_Strike_{i + 1}", g, self.foot(*cell), cylinder(1.8, 3), "Strike", "Wind_Strike", "Zone",
-                       warn=1.5, active=0.5,
-                       warn_fx=[vfx("", "Dungeon_Goblin_Mace_Slam_Warning", offset=(0, 0.1, 0), duration=1.5)],
+                       warn=2.0, active=0.5,
+                       warn_fx=[mark(1.8, 2.0)],
                        hit_fx=[vfx("", "Lightning"), vfx("", "Goblin_Decorative_Lightning", offset=(0, 1, 0)),
                                sound("", "SFX_Emit_Dungeon_Goblin_Void_Thunder")],
                        hits=[status("Hazard_Electric_Stun", 1.0, interval=1.0), damage(15, 1.0)], odds=0.3)
@@ -532,12 +592,11 @@ class Traps:
         c = self.t["codex"]
         cx, y, cz = c["center"]
         self.gate("Codex_Seal", g, c["seal"], ["Codex"], [title("TAG_ADDED", "codex")])
-        warning = "Dungeon_Goblin_Mace_Slam_Warning"
 
-        def spell(name, foot, radius, warn_fx, hit_fx, hits, warn=2.0, active=0.8):
+        def spell(name, foot, radius, warn_fx, hit_fx, hits, warn=2.5, active=0.8):
             self.add(name, g, foot, cylinder(radius, 5), [
                 sound("TAG_ADDED", "SFX_Crystal_Break"),
-                vfx("TAG_ADDED", warning, offset=(0, 0.1, 0), scale=round(0.68 * radius, 2), duration=warn),
+                mark(radius, warn, "TAG_ADDED"),
                 *[dict(e, Event="TAG_ADDED") for e in warn_fx],
                 *[dict(e, Event="TAG_ADDED", Delay=round(e["Delay"] + warn, 2)) for e in hit_fx],
                 tags("TAG_ADDED", "Dmg", "True", warn), tags("TAG_ADDED", "Dmg", "False", warn + active),
@@ -551,12 +610,12 @@ class Traps:
                     for r in radii for k in range(count)]
 
         # Cercle de feu : tout le centre de la rotonde brûle, on s'en sort en gagnant le pourtour.
-        spell("Codex_Fire", self.foot(cx, y, cz), 10, around((3, 6.5, 9), 6, "Fire_Trap_Preview", duration=2.0),
+        spell("Codex_Fire", self.foot(cx, y, cz), 10, around((3, 6.5, 9), 6, "Fire_Trap_Preview", duration=2.5),
               around((0, 4, 8), 5, "Fire_AoE") + [sound("", "SFX_Emit_Goblin_Flame_Quadrant_Blast")],
               [damage(18, 1.0), status("Burn", 4.0)])
         # Onde de givre : autour du pupitre du chapitre, on s'en sort en passant de l'autre côté de la salle.
         for k, pos in enumerate(c["lecterns"]):
-            spell(f"Codex_Frost_{k}", self.foot(*pos), 11, around((4, 8), 5, "Weapon_Frost_Mist", duration=2.0),
+            spell(f"Codex_Frost_{k}", self.foot(*pos), 11, around((4, 8), 5, "Weapon_Frost_Mist", duration=2.5),
                   around((0, 5, 9), 4, "Ice_Blast") + [vfx("", "Ability_Ice_Explosion", offset=(0, 0.5, 0)),
                                                          sound("", "SFX_Ice_Break")],
                   [damage(12, 1.0), status("Slow", 4.0)])
@@ -574,8 +633,8 @@ class Traps:
                 wx, wy, wz = self.world(x, y, z)
                 n += 1
                 self.pulse(f"Codex_Rain_{n}", g, (wx + 0.5, wy, wz + 0.5), cylinder(1.8, 3), "Rain", "Codex_Rain", "Zone",
-                           warn=1.6, active=0.5,
-                           warn_fx=[vfx("", warning, offset=(0, 0.1, 0), scale=1.3, duration=1.6)],
+                           warn=2.0, active=0.5,
+                           warn_fx=[mark(1.9, 2.0)],
                            hit_fx=[vfx("", "Block_Break_Dust", offset=(0, 1.5, 0)), vfx("", "Smoke_Floor"),
                                    sound("", "SFX_Drop_Weapons_Books")],
                            hits=[damage(14, 1.0), status("Slow", 2.0)], odds=0.5)
@@ -590,7 +649,7 @@ class Traps:
                 mx, mz = 24.5 * math.cos(a), 24.5 * math.sin(a)
                 wx, wy, wz = self.world(mx, y, mz)
                 offset = (wx + 0.5 - center[0], wy + 0.1 - center[1], wz + 0.5 - center[2])
-                marks += [vfx("TAG_ADDED", warning, offset=offset, scale=2.0, duration=2.5),
+                marks += [mark(2.9, 2.5, "TAG_ADDED", offset=offset),
                           vfx("TAG_ADDED", "Block_Break_Dust", offset=(offset[0], offset[1] + 4, offset[2]))]
             self.add(f"Codex_Collapse_{i}", g, center, shape, [
                 sound("TAG_ADDED", "SFX_Drop_Weapons_Books"), *marks,
@@ -620,7 +679,6 @@ class Traps:
         c = self.t["chimera"]
         cx, y, cz = c["vat"]
         self.gate("Chimera_Seal", g, c["seal"], ["Chimera"], [title("TAG_ADDED", "chimera")])
-        warning = "Dungeon_Goblin_Mace_Slam_Warning"
         self.add("Chimera_Acid", g, self.foot(cx, y, cz), cylinder(at.R_IN, 8), [
             sound("TAG_ADDED", "SFX_Emit_Goblin_Liquid_Bubbling_Steam_Bursts"),
             vfx("TAG_ADDED", "Dungeon_Goblin_Toxic_Water", offset=(0, 0.5, 0), scale=2.0),
@@ -635,8 +693,8 @@ class Traps:
                 wx, wy, wz = self.world(x, y, z)
                 n += 1
                 self.pulse(f"Chimera_Acid_{n}", g, (wx + 0.5, wy, wz + 0.5), cylinder(1.8, 3), "Acid", "Chimera_Acid",
-                           "Zone", warn=1.8, active=0.6,
-                           warn_fx=[vfx("", warning, offset=(0, 0.1, 0), scale=1.3, duration=1.8),
+                           "Zone", warn=2.2, active=0.6,
+                           warn_fx=[mark(1.9, 2.2),
                                     vfx("", "Dungeon_Goblin_Spores_Green", offset=(0, 0.2, 0))],
                            hit_fx=[vfx("", "Impact_Poison", offset=(0, 0.5, 0)), vfx("", "Effect_Poison"),
                                    sound("", "SFX_Emit_Goblin_Liquid_Bubbling_Steam_Bursts")],
@@ -659,7 +717,6 @@ class Traps:
         c = self.t["alchemist"]
         cx, y, cz = c["center"]
         self.gate("Alchemist_Seal", g, c["seal"], ["Alchemist"], [title("TAG_ADDED", "alchemist")])
-        warning = "Dungeon_Goblin_Mace_Slam_Warning"
         # Levier du mode difficile : une seule fois, et seulement avant le combat.
         self.add("Alchemist_Lever", g, self.block_center(*c["lever"]), box(0.5, 0.5, 0.5), [
             tags("BLOCK_USED", "Hard", "On", 0.1),
@@ -681,7 +738,7 @@ class Traps:
                     a = math.radians(a0 + span * (k + 0.5) / max(2, span // 9))
                     wx, wy, wz = self.world(cx + r * math.cos(a), y, cz + r * math.sin(a))
                     offset = (wx + 0.5 - center[0], wy + 0.1 - center[1], wz + 0.5 - center[2])
-                    marks += [vfx("TAG_ADDED", warning, offset=offset, scale=2.0, duration=2.5),
+                    marks += [mark(2.9, 2.5, "TAG_ADDED", offset=offset),
                               vfx("TAG_ADDED", "Block_Break_Dust", 2.5, offset=offset)]
             self.add(f"Alchemist_Collapse_{i}", g, center, shape, [
                 sound("TAG_ADDED", "SFX_Crystal_Break"), sound("TAG_ADDED", "SFX_Crystal_Break", 2.4), *marks,
@@ -734,6 +791,7 @@ class Traps:
         self.alchemist()
         self.transmutation()
         self.wind_stair()
+        self.arenas()
         check_ids(self.volumes)
         return self.volumes, self.groups
 
@@ -745,6 +803,8 @@ def check_ids(volumes):
     for v in volumes.values():
         for e in v["Effects"]:
             for field, ids in known.items():
+                if field == "ParticleSystem" and e.get(field, "").startswith(tw.PREFIX):
+                    continue  # zones d'annonce de la tour, écrites par tower_warnings.write()
                 if field in e and e[field] not in ids:
                     raise RuntimeError(f"pièges : {field} inconnu {e[field]!r} dans {v['Name']}")
             for b in e.get("FromBlockTypes", ()):
@@ -792,6 +852,11 @@ def codex_ids():
 def court_ids():
     """Id du volume des portes de la tour que tower.CourtGuardSystem étiquette (TowerLayout.java)."""
     return {"door": vid("Court_Door")}
+
+
+def arena_ids():
+    """Ids des volumes des barrières d'arène que tower.ArenaGate étiquette (TowerLayout.java)."""
+    return {name: vid(f"{name}_Gate") for name in ARENAS}
 
 
 def chimera_ids():
@@ -862,6 +927,45 @@ def seal_item(texture, icon):
         "BlockParticleSetId": "Crystal",
         "BlockSoundSetId": "Crystal",
         "ParticleColor": "#58d68d",
+    })
+
+
+def barrier_texture(seed=4405):
+    """Champ de force des arènes : voile cramoisi translucide, mailles hexagonales violettes qui luisent."""
+    rng = random.Random(seed)
+    n = 32
+    img = Image.new("RGBA", (n, n))
+    px = img.load()
+    for y in range(n):
+        for x in range(n):
+            wave = 0.5 + 0.5 * math.sin((x + y) * 0.45) * math.cos((x - y) * 0.3)
+            px[x, y] = (150 + int(70 * wave) + rng.randint(-8, 8), 20 + rng.randint(0, 14),
+                        60 + int(50 * wave) + rng.randint(-8, 8), 110 + int(40 * wave))
+    draw = ImageDraw.Draw(img)
+    mesh = (236, 120, 255, 230)
+    for cy in (0, 16, 32):
+        for cx in (0, 16, 32):
+            ox = 8 if cy == 16 else 0
+            pts = [(cx + ox + 7 * math.cos(math.radians(60 * k + 30)), cy + 7 * math.sin(math.radians(60 * k + 30)))
+                   for k in range(6)]
+            draw.polygon(pts, outline=mesh)
+    draw.rectangle((0, 0, n - 1, n - 1), outline=(255, 90, 90, 240))
+    return img
+
+
+def barrier_item(texture, icon):
+    return block_item(at.ARENA_BARRIER, icon, {
+        "Material": "Solid",
+        "DrawType": "Cube",
+        "Opacity": "Semitransparent",
+        "Textures": [{"Sides": texture, "UpDown": texture, "Weight": 1}],
+        "HitboxType": "Full",
+        "Flags": {},
+        "Gathering": {"Breaking": {"GatherType": "Rocks"}},
+        "Light": {"Color": "#c3a"},
+        "BlockParticleSetId": "Crystal",
+        "BlockSoundSetId": "Crystal",
+        "ParticleColor": "#e0408a",
     })
 
 
@@ -1027,6 +1131,175 @@ def valve_item(model, textures, icon):
     })
 
 
+# --- champignon des spores (serre) ----------------------------------------------------------------------------
+
+SHROOM_FPS = 60                # images par seconde des .blockyanim (Boomshroom_Large_Exploding : 195 = mèche de 3,25 s)
+SHROOM_PIVOT = 31              # bas du chapeau (pixels) : le chapeau enfle autour de ce point
+SHROOM_COLORS = {"default": ((118, 52, 150), (150, 255, 110)), "Swelling": ((170, 60, 120), (225, 255, 90))}
+# Enflure du chapeau (image, facteur) : souffle lent au repos ; à l'annonce il gonfle en tremblant pendant SPORE_WARN s,
+# se vide d'un coup quand le nuage sort, puis reprend sa forme.
+SHROOM_IDLE = [(0, 1.0), (90, 1.05), (180, 1.0)]
+SHROOM_SWELL = [(0, 1.0), (30, 1.08), (60, 1.16), (90, 1.25), (110, 1.32), (118, 1.36), (124, 0.84), (150, 0.96),
+                (180, 1.0)]
+SHROOM_PUFF_END = SHROOM_SWELL[-1][0] / SHROOM_FPS
+
+
+def shroom_parts(state):
+    """Grand champignon violet de la serre, deux blocs de haut : pied crème sur sa volve, anneau, lamelles sombres,
+    chapeau en trois étages semé de points lumineux (plus vifs et rougeâtres quand il enfle)."""
+    cap, glow = SHROOM_COLORS[state]
+    cream, dark = gx.painter((222, 210, 188), "stone"), gx.painter((58, 30, 70), "stone")
+    hat = gx.painter(cap, "stone")
+    light = gx.painter(glow, glow=True)
+    parts = [
+        ("Volva", (0, 2, 0), (13, 4, 13), 0, cream, "flat"),
+        ("Stem", (0, 16, 0), (8, 26, 8), 0, cream, "flat"),
+        ("Ring", (0, 23, 0), (12, 2, 12), 0, cream, "flat"),
+        ("Cap_Gills", (0, 31.5, 0), (26, 1, 26), 0, dark, "flat"),
+        ("Cap", (0, 35, 0), (30, 6, 30), 0, hat, "flat"),
+        ("Cap_Top", (0, 40.5, 0), (22, 5, 22), 0, hat, "flat"),
+        ("Cap_Crown", (0, 44.5, 0), (12, 3, 12), 0, hat, "flat"),
+    ]
+    spots = [(-6, 43, 5), (7, 43, -4), (-3, 46.5, -2), (9, 38.5, 9), (-10, 38.5, -8), (11, 38.5, -10), (-11, 38.5, 9),
+             (2, 43, 9)]
+    for k, (x, y, z) in enumerate(spots):
+        parts.append((f"Cap_Spot_{k}", (x, y, z), (3, 1.2, 3), 0, light, "fullbright"))
+    for k in range(8):  # points sur le bord du chapeau
+        a = math.radians(22.5 + 45 * k)
+        parts.append((f"Cap_Dot_{k}", (round(15.2 * math.cos(a), 2), 35, round(15.2 * math.sin(a), 2)), (1, 2, 2), 0,
+                      light, "fullbright"))
+    return parts
+
+
+def shroom_anim(keys, parts, wobble=False):
+    """Animation du chapeau : chaque pièce du chapeau grandit du facteur et s'écarte du pivot d'autant ; le pied se
+    tasse un peu quand le chapeau enfle."""
+    nodes = {}
+    if wobble:  # images toutes les 6 pendant l'enflure, pour le tremblement
+        dense = dict(keys)
+        for t in range(36, 118, 6):
+            if t not in dense:
+                (t0, f0), (t1, f1) = max((k for k in keys if k[0] < t)), min((k for k in keys if k[0] > t))
+                dense[t] = round(f0 + (f1 - f0) * (t - t0) / (t1 - t0), 3)
+        keys = sorted(dense.items())
+    for name, c, _, _, _, _ in parts:
+        cap = name.startswith("Cap")
+        pos, stretch = [], []
+        for t, f in keys:
+            if cap:
+                d = {"x": round(c[0] * (f - 1), 3), "y": round((c[1] - SHROOM_PIVOT) * (f - 1), 3),
+                     "z": round(c[2] * (f - 1), 3)}
+                if wobble and 36 <= t <= 118:  # de plus en plus fort jusqu'au crachat
+                    amp = 0.25 + 0.75 * (t - 36) / 82
+                    side = 1 if (t // 6) % 2 else -1
+                    d["x"] = round(d["x"] + side * amp, 3)
+                    d["z"] = round(d["z"] - side * amp * 0.6, 3)
+                pos.append({"time": t, "delta": d, "interpolationType": "smooth"})
+                stretch.append({"time": t, "delta": {"x": f, "y": f, "z": f}, "interpolationType": "smooth"})
+            elif name == "Stem":
+                squash = round(1 - 0.25 * (f - 1), 3)
+                stretch.append({"time": t, "delta": {"x": round(1 + 0.3 * (f - 1), 3), "y": squash,
+                                                     "z": round(1 + 0.3 * (f - 1), 3)}, "interpolationType": "smooth"})
+        if pos or stretch:
+            nodes[name] = {"position": pos, "orientation": [], "shapeStretch": stretch, "shapeVisible": [],
+                           "shapeUvOffset": []}
+    return {"formatVersion": 1, "duration": keys[-1][0], "holdLastKeyframe": False, "nodeAnimations": nodes}
+
+
+def shroom_assets():
+    """Modèle, animations, textures des deux états et icône du champignon des spores."""
+    textures = {}
+    model = uv = None
+    for state in SHROOM_COLORS:
+        parts = shroom_parts(state)
+        atlas, uv = gx.build_atlas(parts, seed=4406, tex_w=64)
+        model = gx.build_model("Spore_Shroom", parts, uv)
+        textures[state] = atlas
+    parts = shroom_parts("default")
+    anims = {"Idle": shroom_anim(SHROOM_IDLE, parts), "Swelling": shroom_anim(SHROOM_SWELL, parts, wobble=True)}
+    icon = gx.render(parts, textures["default"], uv, 256, yaw=-35, pitch=18, scale=256 / 60, center=(0, 26, 0))
+    return model, anims, textures, uv, icon.resize((64, 64), Image.LANCZOS)
+
+
+def shroom_item(model, anims, textures, icon):
+    """Champignon des spores : il respire au repos ; les volumes de la serre le passent à l'état Swelling (il enfle et
+    crache), puis le remettent à l'état par défaut. Il ne se cueille pas (bloc des pièges de la tour)."""
+    return block_item(at.SPORE_SHROOM, icon, {
+        "Material": "Solid",
+        "DrawType": "Model",
+        "Opacity": "Transparent",
+        "CustomModel": model,
+        "CustomModelTexture": [{"Texture": textures["default"], "Weight": 1}],
+        "CustomModelAnimation": anims["Idle"],
+        "HitboxType": "Nakasar_Spore_Shroom",
+        "Flags": {},
+        "Gathering": {"Soft": {}},
+        "Light": {"Color": "#848"},
+        "BlockParticleSetId": "Dust",
+        "BlockSoundSetId": "Mushroom",
+        "PhysicalMaterialId": "Foliage",
+        "ParticleColor": "#8a4fb0",
+        "Particles": [{"SystemId": "Dungeon_Goblin_Spores_Green", "Scale": 0.6,
+                       "PositionOffset": {"X": 0, "Y": 1.4, "Z": 0}}],
+        "State": {"Definitions": {"Swelling": {
+            "CustomModelTexture": [{"Texture": textures["Swelling"], "Weight": 1}],
+            "CustomModelAnimation": anims["Swelling"],
+            "Light": {"Color": "#c84"}}}},
+    })
+
+
+def spore_cloud_files():
+    """Nuage de spores des champignons : fumée épaisse vert acide qui vire au violet (d'après Explosion_Shroom_SporeCloud
+    du jeu, mais émise en continu tant que dure l'effet, sur environ SPORE_R blocs autour du pied)."""
+    reach = SPORE_R - 0.4
+    smoke = {
+        "RenderMode": "BlendLinear",
+        "EmitOffset": {"X": {"Min": 0, "Max": reach}, "Y": {"Min": 0.2, "Max": 2.2}, "Z": {"Min": 0, "Max": reach}},
+        "ParticleRotationInfluence": "Billboard",
+        "LinearFiltering": True,
+        "LightInfluence": 0.3,
+        "ParticleRotateWithSpawner": False,
+        "TrailSpawnerPositionMultiplier": 1,
+        "TrailSpawnerRotationMultiplier": 1,
+        "MaxConcurrentParticles": 48,
+        "ParticleLifeSpan": {"Min": 1.8, "Max": 2.8},
+        "SpawnRate": {"Min": 16, "Max": 20},
+        "InitialVelocity": {"Speed": {"Min": 0.05, "Max": 0.35}, "Yaw": {"Min": -180, "Max": 180},
+                            "Pitch": {"Min": 60, "Max": 120}},
+        "Particle": {
+            "Texture": "Particles/Textures/Smoke/Smoke_Smooth2.png",
+            "FrameSize": {"Width": 64, "Height": 64},
+            "ScaleRatioConstraint": "None",
+            "UVOption": "RandomFlipU",
+            "Animation": {
+                "0": {"Opacity": 0, "Color": "#c8ff5a", "Scale": {"X": {"Min": 1, "Max": 1}, "Y": {"Min": 1, "Max": 1}}},
+                "15": {"Opacity": 0.8},
+                "50": {"Opacity": 0.85, "Color": "#86d44a"},
+                "80": {"Opacity": 0.5, "Color": "#7a3a9a"},
+                "100": {"Opacity": 0, "Color": "#5a2a7a",
+                        "Scale": {"X": {"Min": 1.8, "Max": 1.4}, "Y": {"Min": 1.8, "Max": 1.4}}},
+            },
+            "InitialAnimationFrame": {
+                "Rotation": {"X": {"Min": 0, "Max": 0}, "Y": {"Min": 0, "Max": 0}, "Z": {"Min": -90, "Max": 90}},
+                "Scale": {"X": {"Min": 1.6, "Max": 3.4}, "Y": {"Min": 1.6, "Max": 3.4}},
+                "Opacity": 0.5,
+                "Color": "#ffffff",
+                "FrameIndex": {"Min": 0, "Max": 3},
+            },
+        },
+        "UVMotion": {"Texture": "Particles/Textures/UVMotion/FlowMapSmoke.png", "SpeedY": 0.24, "Scale": 1.04,
+                     "StrengthCurveType": "IncreaseQuartOut", "Strength": 7, "SpeedX": 0.08},
+        "TotalParticles": {"Min": 60, "Max": 60},
+        "SpawnBurst": False,
+    }
+    system = {
+        "$Comment": "Nuage de spores des champignons de la serre de la Tour de l'Alchimiste. Généré par tools/alchemist_traps.py.",
+        "Spawners": [{"SpawnerId": f"{SPORE_CLOUD}_Smoke"}, {"SpawnerId": "Dungeon_Goblin_Spores_Green2"}],
+        "CullDistance": 64,
+    }
+    return {f"{SPORE_CLOUD}.particlesystem": system, f"{SPORE_CLOUD}_Smoke.particlespawner": smoke}
+
+
 def door_texture(seed=4404):
     """Portes de la tour : planches de chêne sombre, bandes et rivets de laiton, sceau de la transmutation au centre."""
     rng = random.Random(seed)
@@ -1103,6 +1376,32 @@ def main():
     door_img.resize((64, 64), Image.NEAREST).save(door_icon)
     write_json(ITEMS / f"{at.DOOR}.json", door_item(door.relative_to(COMMON).as_posix(),
                                                     door_icon.relative_to(COMMON).as_posix()))
+    shroom_model, shroom_anims, shroom_textures, shroom_uv, shroom_icon = shroom_assets()
+    shroom = {"model": COMMON / "Blocks" / "Nakasar" / "Alchemist" / "Spore_Shroom.blockymodel",
+              "default": TEXTURES / "Spore_Shroom.png", "Swelling": TEXTURES / "Spore_Shroom_Swelling.png",
+              "icon": ICONS / "Spore_Shroom.png",
+              "Idle": COMMON / "Blocks" / "Nakasar" / "Alchemist" / "Spore_Shroom_Idle.blockyanim",
+              "Swelling_Anim": COMMON / "Blocks" / "Nakasar" / "Alchemist" / "Spore_Shroom_Swelling.blockyanim"}
+    write_json(shroom["model"], shroom_model)
+    write_json(shroom["Idle"], shroom_anims["Idle"])
+    write_json(shroom["Swelling_Anim"], shroom_anims["Swelling"])
+    for state, atlas in shroom_textures.items():
+        atlas.save(shroom[state])
+    shroom_icon.save(shroom["icon"])
+    srel = {k: v.relative_to(COMMON).as_posix() for k, v in shroom.items()}
+    write_json(ITEMS / f"{at.SPORE_SHROOM}.json", shroom_item(
+        srel["model"], {"Idle": srel["Idle"], "Swelling": srel["Swelling_Anim"]},
+        {k: srel[k] for k in shroom_textures}, srel["icon"]))
+    write_json(SERVER / "Item" / "Block" / "Hitboxes" / "Nakasar" / "Nakasar_Spore_Shroom.json",
+               {"Boxes": [gx.hitbox_box(-5, 0, -5, 5, 30, 5), gx.hitbox_box(-14, 30, -14, 14, 46, 14)]})
+    for name, doc in spore_cloud_files().items():
+        write_json(SERVER / "Particles" / "Nakasar" / "Tower" / name, doc)
+    barrier, barrier_icon = TEXTURES / "Arena_Barrier.png", ICONS / "Arena_Barrier.png"
+    barrier_img = barrier_texture()
+    barrier_img.save(barrier)
+    barrier_img.resize((64, 64), Image.NEAREST).save(barrier_icon)
+    write_json(ITEMS / f"{at.ARENA_BARRIER}.json", barrier_item(barrier.relative_to(COMMON).as_posix(),
+                                                               barrier_icon.relative_to(COMMON).as_posix()))
     rubble, rubble_icon = TEXTURES / "Codex_Rubble.png", ICONS / "Codex_Rubble.png"
     rubble_img = rubble_texture()
     rubble_img.save(rubble)
@@ -1114,6 +1413,10 @@ def main():
         img.resize((256, 256), Image.NEAREST).save(preview / "Alchemical_Seal.png")
         rubble_img.resize((256, 256), Image.NEAREST).save(preview / "Codex_Rubble.png")
         door_img.resize((256, 256), Image.NEAREST).save(preview / "Tower_Door.png")
+        barrier_img.resize((256, 256), Image.NEAREST).save(preview / "Arena_Barrier.png")
+        for state in shroom_textures:
+            gx.render(shroom_parts(state), shroom_textures[state], shroom_uv, 512, yaw=-35, pitch=18, scale=512 / 60,
+                      center=(0, 26, 0)).save(preview / f"Spore_Shroom_{state}.png")
         for state in textures:
             valve_render(textures, uv, 512, state).save(preview / f"Valve_{state}.png")
     print("blocs des énigmes générés")

@@ -82,6 +82,7 @@ items.Nakasar_Thorn_Hedge.name = Haie de ronces
 items.Nakasar_Valve_Lever.name = Levier de vanne
 items.Nakasar_Tower_Valve.name = Vanne de gaz
 items.Nakasar_Tower_Door.name = Portes de la tour
+items.Nakasar_Arena_Barrier.name = Barrière de l'arène
 trap.hall.title = Les athanors s'embrasent
 trap.hall.subtitle = Le sceau du couloir se dissout
 trap.valve.title = La vanne est coupée

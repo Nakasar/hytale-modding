@@ -105,13 +105,14 @@ public final class AlchemistSystem extends TickingSystem<EntityStore> {
     static final float RESET_SECONDS = 10f;
     static final float FLASK_RANGE = 30f;
     static final float FALL_DAMAGE = 0.1f;
-    private static final float WARN = 2f;
+    private static final float WARN = 2.5f;
     private static final float INTERVAL = 0.25f;
     private static final double ARENA_MARGIN = 1;
     private static final double ARENA_BELOW = 40;
     private static final double ARENA_ABOVE = 20;
 
-    private static final String WARNING = "Dungeon_Goblin_Mace_Slam_Warning";
+    /** Zone rouge qui se remplit en {@link #WARN} s (tools/tower_warnings.py). */
+    private static final String WARNING = "Nakasar_Warning_25";
     private static final String PARTICLE_ATHANOR = "Fire_Charge_Charging1";
     private static final String SOUND_ATHANOR = "SFX_Emit_Goblin_Pipes_Activate";
 
@@ -243,8 +244,10 @@ public final class AlchemistSystem extends TickingSystem<EntityStore> {
 
     private static void update(World world, Store<EntityStore> store, Ref<EntityStore> boss, Fight fight, long now, float dt) {
         TriggerVolumeManager volumes = store.getResource(TriggerVolumesPlugin.get().getManagerResourceType());
+        ArenaGate gate = ArenaGate.of(world, TowerLayout.ALCHEMIST_GATE, RESET_SECONDS, volumes);
         if (!alive(boss, store)) {
             clearHelpers(fight, store);
+            gate.finish(volumes);
             fight.strikes.clear();
             if (!fight.sealed && volumes != null) {
                 fight.sealed = true;
@@ -258,6 +261,7 @@ public final class AlchemistSystem extends TickingSystem<EntityStore> {
         EntityStatMap stats = store.getComponent(boss, EntityStatMap.getComponentType());
         EntityStatValue health = stats == null ? null : stats.get(DefaultEntityStatTypes.getHealth());
         List<Ref<EntityStore>> players = playersInArena(world, store);
+        gate.update(volumes, !players.isEmpty(), dt);
         boolean engaged = fight.engaged || isEngaged(boss, store, health);
 
         // Remise à zéro : groupe mort ou sorti de l'arène.

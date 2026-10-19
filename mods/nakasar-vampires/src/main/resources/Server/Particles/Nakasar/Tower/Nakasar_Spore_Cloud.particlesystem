@@ -1,0 +1,12 @@
+{
+  "$Comment": "Nuage de spores des champignons de la serre de la Tour de l'Alchimiste. Généré par tools/alchemist_traps.py.",
+  "Spawners": [
+    {
+      "SpawnerId": "Nakasar_Spore_Cloud_Smoke"
+    },
+    {
+      "SpawnerId": "Dungeon_Goblin_Spores_Green2"
+    }
+  ],
+  "CullDistance": 64
+}

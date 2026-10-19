@@ -71,6 +71,10 @@ VALVE = "Nakasar_Tower_Valve"   # vanne de la conduite de gaz du Couloir des fui
 FOYER = "*Furniture_Temple_Dark_Brazier_State_Definitions_Off"
 DOOR = "Nakasar_Tower_Door"   # portes de la tour : elles tombent quand les gardiens d'airain de la cour sont abattus
 GATE_BLOCKS = (SEAL, HEDGE, DOOR)
+# Barrière des arènes (comme les portes de Deepworks) : posée en jeu par les volumes (tools/alchemist_traps.py,
+# Traps.arena_gate) quelques secondes après l'entrée du groupe, retirée quand il a péri ou que le boss est vaincu.
+ARENA_BARRIER = "Nakasar_Arena_Barrier"
+SPORE_SHROOM = "Nakasar_Spore_Shroom"   # champignon animé de la serre : il enfle puis lâche son nuage de spores
 # Hall des Alambics : trois athanors autour du grand alambic, reliés à lui par des conduits d'or incrustés dans le
 # sol ; chaque athanor allumé fait briller son conduit et remplit son tube de l'alambic, et les trois ensemble allument
 # le conduit et la colonne relais qui montent jusqu'au sceau du Couloir des fuites.
@@ -737,9 +741,13 @@ class Tower:
         p = self.p
         y = F_DECK
         for x, z, d, a in ring(22, DECK_R):
-            if not in_arc(a, 200, 275):
+            # Côtés du secteur : au moins un bloc d'épaisseur le long de chaque rayon, sans fente en diagonale (Kevin,
+            # 19 octobre 2026 : la barrière de l'arène doit être le seul passage).
+            margin = min((a - 200 + 180) % 360 - 180, (275 - a + 180) % 360 - 180)
+            side = d * math.radians(margin)
+            if side < -1.0:
                 continue
-            edge = d < 24 or not in_arc(a, 201.5, 273.5)
+            edge = d < 24 or side < 1.2
             for k in range(0, 10):
                 if edge:
                     p.set(x, y + k, z, self.wall())
@@ -1009,9 +1017,13 @@ class Tower:
         t["valve_pipes"], t["valve_leaks"] = glow, leaks
         t["shortcut_seal"] = self.seal([(x, z) for x, z, d, a in ring(20.5, 27.5) if in_arc(a, *SHORTCUT_ARC)],
                                        F_LEAKS, F_LEAKS + 4, force=True)
-        # Serre suspendue : nappes de spores qui ralentissent.
+        # Serre suspendue : un grand champignon par nappe de spores, origine visible du nuage qu'il lâche.
         t["spores"] = [(x, F_LEAKS, z) for x, z in (self.spawn_cell(*at3(40, F_LEAKS, a), reach=3)
                                                     for a in (205, 225, 245, 265, 285))]
+        for x, y, z in t["spores"]:
+            p.set(x, y, z, SPORE_SHROOM)
+            self.keep_clear.update((x + dx, y + k, z + dz) for dx in range(-1, 2) for dz in range(-1, 2)
+                                   for k in range(3) if (dx, dz, k) != (0, 0, 0) and p.free(x + dx, y + k, z + dz))
         # Bibliothèque : une haie de ronces barre le pied de la rampe, jusqu'à ce que la rampe soit trop haute pour qu'on
         # y saute depuis le sol ; le brasero éteint devant elle y met le feu. Des livres tombent des rayonnages.
         hedge = []
@@ -1189,6 +1201,25 @@ class Tower:
             raise RuntimeError(f"tour : le sceau du bureau ne ferme pas sa porte ({len(seal)} blocs)")
         self.trap["alchemist"] = {"center": (0, y, 0), "exits": exits, "pillars": pillars, "heals": heals,
                                   "spawn": spawn, "collapse": collapse, "safe": safe, "lever": lever, "seal": seal}
+
+    def arenas(self):
+        """Barrières des trois arènes de boss, hors de l'arène, là où l'on y entre : couche extérieure de la porte de la
+        bibliothèque, travers de l'escalier des transmutations juste sous le plancher du laboratoire, côté antichambre
+        de la porte de la terrasse. Cases libres que le décor laisse vides ; `self.trap["arenas"]` les donne par boss."""
+        library = [(x, y, z) for x, z, d, a in ring(R_IN - 0.5, R_OUT + 0.5) if abs(a - 50) < 5 and d >= R_OUT - 1
+                   for y in range(F_LIBRARY, F_LIBRARY + 5)]
+        x = 14
+        s = self.trans_stair[(x, -16)]
+        lab = [(x, y, z) for z in (-17, -16, -15, -14) for y in range(s // 2 + s % 2, F_LAB + 3)]
+        deck = [(x, y, z) for x, z, d, a in ring(21.5, 24.6) if abs(a - 245) < 5 and d >= 23
+                for y in range(F_DECK, F_DECK + 5)]
+        arenas = {"Codex": library, "Chimera": lab, "Alchemist": deck}
+        for name, cells in arenas.items():
+            taken = [c for c in cells if not self.p.free(*c)]
+            if taken:
+                raise RuntimeError(f"tour : la barrière de l'arène {name} tombe sur des blocs {taken[:4]}")
+            self.keep_clear.update(cells)
+        self.trap["arenas"] = arenas
 
     # --- décor -----------------------------------------------------------------------------------
 
@@ -1670,14 +1701,17 @@ class Tower:
         self.observatory()
         self.guard(self.wind_ramp)
         # Points de contrôle : bibliothèque, laboratoire, Escalier des vents, antichambre.
-        self.checkpoint(*at3(22, F_LIBRARY, 45), statue_at=at(27, 36))
-        self.checkpoint(22, F_LAB, -16, statue_at=(18, -20))
+        # Comme Deepworks, chaque statue est hors de l'arène de son boss : palier de la rampe de la serre devant la porte de
+        # la bibliothèque, croix d'or de la Salle des Transmutations sous l'escalier du laboratoire.
+        self.checkpoint(*at3(36.5, F_LIBRARY, 47), statue_at=at(40, 48))
+        self.checkpoint(0, F_TRANS, -9, statue_at=(0, -12))
         self.checkpoint(*at3(37, F_LAB, 272), statue_at=at(39, 262))
         self.checkpoint(*at3(33, F_DECK, 255), statue_at=at(37, 265))
         self.traps()
         self.codex()
         self.chimera()
         self.alchemist()
+        self.arenas()
         self.decorate()
         self.mobs()
         self.secure()
@@ -1863,7 +1897,7 @@ def build_checked(seed):
     for name, start, goal in (("portail de la cour", START, GOALS["hall"]),
                               ("sceau du hall", (0, 2 * F_HALL, 16), GOALS["leaks_exit"]),
                               ("ronces de la bibliothèque", (cps[0][0], 2 * cps[0][1], cps[0][2]), GOALS["transmutation"]),
-                              ("sceau des transmutations", (0, 2 * F_TRANS, 4), cps[1])):
+                              ("sceau des transmutations", (0, 2 * F_TRANS, 4), GOALS["lab"])):
         missing, _ = walkable_path(prefab, start, {"goal": goal}, gates_open=False)
         if not missing:
             raise RuntimeError(f"tour : le {name} ne ferme pas le passage")
@@ -1890,6 +1924,13 @@ def build_checked(seed):
                                solid_cells=tower.trap["alchemist"]["seal"])
     if not missing:
         raise RuntimeError("tour : le sceau de l'Alchimiste ne ferme pas la porte du bureau")
+    # Chaque barrière d'arène ferme l'entrée : depuis sa statue, on n'entre plus dans l'arène.
+    arenas = tower.trap["arenas"]
+    for name, start, goal in (("Codex", cps[0], (0, F_LIBRARY, 3)), ("Chimera", cps[1], GOALS["lab"]),
+                              ("Alchemist", cps[3], GOALS["deck"])):
+        missing, _ = walkable_path(prefab, (start[0], 2 * start[1], start[2]), {"goal": goal}, solid_cells=arenas[name])
+        if not missing:
+            raise RuntimeError(f"tour : la barrière de l'arène {name} ne ferme pas son entrée")
     return tower
 
 

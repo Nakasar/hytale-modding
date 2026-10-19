@@ -71,6 +71,8 @@ public final class CodexSystem extends TickingSystem<EntityStore> {
     private static final float INTERVAL = 0.25f;
     /** Marge autour du mur de l'arène (rayon intérieur de la rotonde) où un joueur compte encore comme présent. */
     private static final double ARENA_MARGIN = 4;
+    /** Marge pour la barrière de l'arène ({@link ArenaGate}) : la porte, dans l'épaisseur du mur, n'en fait pas partie. */
+    private static final double GATE_MARGIN = 0.5;
     private static final double ARENA_HEIGHT = 14;
 
     private static final String SOUND_CHARGE = "SFX_Skeleton_Mage_Spellbook_Charge";
@@ -181,14 +183,18 @@ public final class CodexSystem extends TickingSystem<EntityStore> {
 
     private static void update(World world, Store<EntityStore> store, Ref<EntityStore> codex, Fight fight, long now, float dt) {
         TriggerVolumeManager volumes = store.getResource(TriggerVolumesPlugin.get().getManagerResourceType());
+        ArenaGate gate = ArenaGate.of(world, TowerLayout.CODEX_GATE, RESET_SECONDS, volumes);
         if (!alive(codex, store)) {
             removeBook(fight, store);
+            gate.finish(volumes);
             if (!fight.sealed && volumes != null) {
                 fight.sealed = true;
                 volumes.setTag(TowerLayout.CODEX_SEAL, "Codex", "On", null, TriggerVolumeManager.ENVIRONMENT_ACTOR_UUID);
             }
             return;
         }
+        // Barrière de la porte : seulement qui a passé le mur, pas qui attend sur le palier de la rampe.
+        gate.update(volumes, playerInArena(world, store, GATE_MARGIN), dt);
 
         // Fin de l'étourdissement.
         if (fight.frozenByUs && now >= fight.stunnedUntil) {
@@ -216,7 +222,7 @@ public final class CodexSystem extends TickingSystem<EntityStore> {
         boolean engaged = isEngaged(codex, store, health);
 
         // Remise à zéro : groupe mort ou sorti de l'arène.
-        if (engaged && !playerInArena(world, store)) {
+        if (engaged && !playerInArena(world, store, ARENA_MARGIN)) {
             fight.absent += dt;
             if (fight.absent >= RESET_SECONDS) {
                 reset(store, codex, fight, stats, volumes);
@@ -296,9 +302,9 @@ public final class CodexSystem extends TickingSystem<EntityStore> {
         }
     }
 
-    private static boolean playerInArena(World world, Store<EntityStore> store) {
+    private static boolean playerInArena(World world, Store<EntityStore> store, double margin) {
         Vector3d center = TowerLayout.CODEX_CENTER;
-        double radius = TowerLayout.CODEX_ARENA_RADIUS + ARENA_MARGIN;
+        double radius = TowerLayout.CODEX_ARENA_RADIUS + margin;
         for (PlayerRef player : world.getPlayerRefs()) {
             Ref<EntityStore> ref = player.getReference();
             if (!alive(ref, store)) {

@@ -17,12 +17,12 @@
     },
     {
       "Type": "Simple",
-      "RunTime": 1.4,
+      "RunTime": 1.8,
       "Effects": {
         "WorldSoundEventId": "SFX_Spear_Throw_Charge",
         "Particles": [
           {
-            "SystemId": "Feastmaster_Slam_Warning",
+            "SystemId": "Nakasar_Warning_18",
             "TargetEntityPart": "Entity",
             "TargetNodeName": "Origin",
             "Scale": 2.72,

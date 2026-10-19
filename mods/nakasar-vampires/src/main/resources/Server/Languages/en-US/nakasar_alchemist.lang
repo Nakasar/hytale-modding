@@ -82,6 +82,7 @@ items.Nakasar_Thorn_Hedge.name = Thorn Hedge
 items.Nakasar_Valve_Lever.name = Valve Lever
 items.Nakasar_Tower_Valve.name = Gas Valve
 items.Nakasar_Tower_Door.name = Tower Gate
+items.Nakasar_Arena_Barrier.name = Arena Barrier
 trap.hall.title = The athanors blaze
 trap.hall.subtitle = The corridor seal dissolves
 trap.valve.title = The valve is shut

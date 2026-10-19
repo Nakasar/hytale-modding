@@ -17,12 +17,12 @@
     },
     {
       "Type": "Simple",
-      "RunTime": 1.6,
+      "RunTime": 2.0,
       "Effects": {
         "WorldSoundEventId": "SFX_Spirit_Root_Alerted",
         "Particles": [
           {
-            "SystemId": "Feastmaster_Slam_Warning",
+            "SystemId": "Nakasar_Warning_20",
             "TargetEntityPart": "Entity",
             "TargetNodeName": "Origin",
             "Scale": 4.08,

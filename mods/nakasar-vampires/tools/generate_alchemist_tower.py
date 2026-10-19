@@ -42,6 +42,7 @@ from PIL import Image, ImageDraw
 import alchemist_archipelago as arch
 import alchemist_tower
 import alchemist_traps
+import tower_warnings
 import generate_prefabs as pf
 import generate_worldgen as wg
 
@@ -864,6 +865,11 @@ public final class TowerLayout {{
     public static final int COURT_GUARDIANS = {len(alchemist_tower.GUARDIANS)};
     public static final String COURT_DOOR = "{alchemist_traps.court_ids()['door']}";
 
+    /** Barrières des arènes (tools/alchemist_traps.py, Traps.arena_gate ; Gate=Close / Gate=Open, tower.ArenaGate). */
+    public static final String CODEX_GATE = "{alchemist_traps.arena_ids()['Codex']}";
+    public static final String CHIMERA_GATE = "{alchemist_traps.arena_ids()['Chimera']}";
+    public static final String ALCHEMIST_GATE = "{alchemist_traps.arena_ids()['Alchemist']}";
+
     private TowerLayout() {{
     }}
 }}
@@ -960,6 +966,8 @@ def main():
     traps, trap_groups = alchemist_traps.trap_volumes(tower, TOWER_CENTER)
     volumes.update(traps)
     print(f"Pièges et énigmes : {len(traps)} volumes")
+    tower_warnings.system(2.5)  # zones des éléments de l'Alchimiste (AlchemistSystem.WARNING)
+    print(f"Zones d'annonce : {tower_warnings.write()} dixièmes de seconde")
     write_json(SERVER / "Instances" / TOWER / "resources" / "TriggerVolumeData.json", trigger_volumes(volumes, trap_groups))
     JAVA_LAYOUT.write_text(tower_layout(tower, ruins_spot), encoding="utf-8")
     (COMMON / ICON).parent.mkdir(parents=True, exist_ok=True)

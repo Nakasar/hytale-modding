@@ -364,7 +364,9 @@ Mobs (voir [docs/npc-0.7.2.md](docs/npc-0.7.2.md)) :
   vapeur toxique par groupes qui alternent, annoncés par des zones rouges au sol comme les jets de flammes de
   Deepworks, niches de refuge dans le mur, vanne de gaz au fond (derrière la porte ouest), montée sur sa tuyauterie de
   gobelins : la fermer coupe les jets, éteint la conduite luisante, tarit les fuites et ouvre un raccourci vers la rampe
-  du hall. Serre : nappes de spores qui ralentissent. Bibliothèque : le
+  du hall. Serre : cinq grands champignons violets animés (`Nakasar_Spore_Shroom`) crachent leurs spores à tour de rôle
+  tant qu'on est dans la serre : le champignon enfle en tremblant pendant que sa zone rouge se remplit (2 s), puis
+  lâche un vrai nuage vert et violet (`Nakasar_Spore_Cloud`) qui reste 3 s, ralentit et empoisonne. Bibliothèque : le
   brasero met le feu à la haie de ronces qui barre la rampe ; des livres tombent sur des cercles annoncés. Salle des
   Transmutations : les quadrants se transmutent à tour de rôle (feu, glace, acide, foudre ; les croix d'or restent
   sûres), allumer le foyer d'un quadrant l'apaise mais libère un élémentaire, les quatre foyers dissolvent le sceau de
@@ -372,7 +374,21 @@ Mobs (voir [docs/npc-0.7.2.md](docs/npc-0.7.2.md)) :
   marches, rafales qui plaquent contre le mur (jamais vers le vide), foudre sur des cercles annoncés. À vérifier en
   jeu : que l'usage des braseros et de la vanne déclenche bien les volumes (et que les blocs posés par PlaceBlock
   allument conduits et tubes), la conduite luisante qui passe à l'état éteint, la taille des zones rouges du gaz, les particules empruntées (taille, sens),
-  les dégâts, le feu des ronces (Fluid_Fire) et le sceau qui se dissout.
+  les dégâts, le feu des ronces (Fluid_Fire) et le sceau qui se dissout, l'animation des champignons (repos, enflure,
+  crachat) et l'épaisseur du nuage.
+- **Tour de l'Alchimiste, attaques annoncées** (`tools/tower_warnings.py`) : toutes les attaques de zone de la tour
+  (pièges, sorts des boss, coups au sol des mobs) s'annoncent par le même cercle rouge au sol dont le disque se remplit
+  jusqu'au bord à l'instant du coup (`Nakasar_Warning_<dixièmes>`, une durée par système) ; les coups au sol des mobs
+  durent au moins 1,6 s. À vérifier en jeu : la taille des cercles (même rayon que les annonces vanilla) et le
+  remplissage.
+- **Tour de l'Alchimiste, arènes des boss** (`tower/ArenaGate.java`, volumes `<boss>_Gate` dans
+  `alchemist_traps.Traps.arena_gate`) : comme le Festin de Deepworks, la statue de sauvegarde est hors de l'arène (palier
+  de la rampe de la serre devant la bibliothèque, croix d'or de la Salle des Transmutations, antichambre de la
+  terrasse). Un joueur vivant entre dans l'arène : la porte s'illumine en rouge et, 4 s plus tard, la barrière
+  `Nakasar_Arena_Barrier` (champ de force cramoisi, visible) la ferme. Qui meurt revient à la statue et ne peut plus
+  rejoindre le combat. Plus aucun joueur vivant dans l'arène : le boss se remet à zéro, puis la barrière s'abaisse et le
+  groupe peut retenter ; le boss vaincu, elle s'abaisse pour de bon. À vérifier en jeu : la fermeture (et qu'elle ne
+  coince personne dans la porte), la réouverture après la mort du groupe, les particules de la porte.
 - **Tour de l'Alchimiste, le Codex vivant** (`tools/generate_codex_models.py`, rôles dans `generate_tower_mobs.py`,
   zones dans `alchemist_traps.Traps.codex`, combat dans `tower/CodexSystem.java`) : boss de la bibliothèque, grimoire
   flottant (œil, fermoir d'or, chaînes brisées, runes) au centre de la rotonde entre trois pupitres, barre de boss.

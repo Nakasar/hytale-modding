@@ -13,14 +13,14 @@
     },
     {
       "Type": "Simple",
-      "RunTime": 1.0,
+      "RunTime": 1.6,
       "Effects": {
         "ItemPlayerAnimationsId": "Spirit_Root_Default",
         "ItemAnimationId": "SporeGas",
         "WorldSoundEventId": "SFX_Spirit_Root_Alerted",
         "Particles": [
           {
-            "SystemId": "Feastmaster_Slam_Warning",
+            "SystemId": "Nakasar_Warning_16",
             "TargetEntityPart": "Entity",
             "TargetNodeName": "Origin",
             "Scale": 2.38,

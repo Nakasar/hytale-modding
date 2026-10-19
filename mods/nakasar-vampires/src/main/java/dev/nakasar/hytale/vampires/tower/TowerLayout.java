@@ -12,8 +12,8 @@ public final class TowerLayout {
     /** Points de contrôle, dans l'ordre du parcours : ruines du premier laboratoire, bibliothèque, laboratoire, Escalier des vents, antichambre. */
     public static final Vector3d[] CHECKPOINTS = {
             new Vector3d(-0.5, 105, -212.5),
-            new Vector3d(16.5, 136, -423.5),
-            new Vector3d(22.5, 184, -455.5),
+            new Vector3d(25.5, 136, -412.5),
+            new Vector3d(0.5, 166, -448.5),
             new Vector3d(1.5, 184, -476.5),
             new Vector3d(-8.5, 244, -471.5)
     };
@@ -133,6 +133,11 @@ public final class TowerLayout {
      * Traps.court) qui tombent quand ils le sont tous (Guardians=On). */
     public static final int COURT_GUARDIANS = 4;
     public static final String COURT_DOOR = "fc473f7e-7642-5fb7-9bcb-908678463f56";
+
+    /** Barrières des arènes (tools/alchemist_traps.py, Traps.arena_gate ; Gate=Close / Gate=Open, tower.ArenaGate). */
+    public static final String CODEX_GATE = "f73442dd-e02a-55cc-84ab-10d60eea593c";
+    public static final String CHIMERA_GATE = "5e7476ec-d34c-59ad-87c0-ee78dbf21849";
+    public static final String ALCHEMIST_GATE = "d8542a1b-5d14-5e36-aaaa-d2ae0e1fcadc";
 
     private TowerLayout() {
     }

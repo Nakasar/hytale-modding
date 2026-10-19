@@ -149,8 +149,10 @@ public final class ChimeraSystem extends TickingSystem<EntityStore> {
 
     private static void update(World world, Store<EntityStore> store, Ref<EntityStore> chimera, Fight fight, long now, float dt) {
         TriggerVolumeManager volumes = store.getResource(TriggerVolumesPlugin.get().getManagerResourceType());
+        ArenaGate gate = ArenaGate.of(world, TowerLayout.CHIMERA_GATE, RESET_SECONDS, volumes);
         if (!alive(chimera, store)) {
             clearHelpers(fight, store);
+            gate.finish(volumes);
             if (!fight.sealed && volumes != null) {
                 fight.sealed = true;
                 volumes.setTag(TowerLayout.CHIMERA_SEAL, "Chimera", "On", null, TriggerVolumeManager.ENVIRONMENT_ACTOR_UUID);
@@ -165,8 +167,10 @@ public final class ChimeraSystem extends TickingSystem<EntityStore> {
         EntityStatValue health = stats == null ? null : stats.get(DefaultEntityStatTypes.getHealth());
         boolean engaged = fight.regenerating || isEngaged(chimera, store, health);
 
+        boolean present = playerInArena(world, store);
+        gate.update(volumes, present, dt);
         // Remise à zéro : groupe mort ou sorti du laboratoire.
-        if (engaged && !playerInArena(world, store)) {
+        if (engaged && !present) {
             fight.absent += dt;
             if (fight.absent >= RESET_SECONDS) {
                 reset(world, store, chimera, fight, stats);
