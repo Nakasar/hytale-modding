@@ -177,7 +177,7 @@
       },
       "Instructions": [
         {
-          "$Comment": "Cible perdue ou partie trop loin : elle rentre à son trône.",
+          "$Comment": "Cible perdue, partie trop loin ou plus hostile (colère retombée au bout de 45 s, voir LordsWrath) : elle rentre à son trône.",
           "Sensor": {
             "Type": "Not",
             "Sensor": {
@@ -187,9 +187,7 @@
                 {
                   "Type": "Attitude",
                   "Attitudes": [
-                    "Hostile",
-                    "Neutral",
-                    "Ignore"
+                    "Hostile"
                   ]
                 }
               ]
@@ -444,7 +442,7 @@
           ]
         },
         {
-          "$Comment": "En colère, il ne rentre pas tant qu'un autre joueur du groupe est à portée : il change de cible.",
+          "$Comment": "En colère, elle ne rentre pas tant qu'un autre joueur du groupe est à portée : il change de cible.",
           "Sensor": {
             "Type": "Player",
             "Range": 20,

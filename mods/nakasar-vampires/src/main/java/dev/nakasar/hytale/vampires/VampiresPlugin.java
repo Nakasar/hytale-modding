@@ -18,7 +18,6 @@ import dev.nakasar.hytale.vampires.domination.Dominations;
 import dev.nakasar.hytale.vampires.invisibility.Invisibility;
 import dev.nakasar.hytale.vampires.invisibility.InvisibilityInteraction;
 import dev.nakasar.hytale.vampires.invisibility.InvisibilitySystem;
-import dev.nakasar.hytale.vampires.lords.LordsAttitudeSystem;
 import dev.nakasar.hytale.vampires.lore.GiveItemOnceInteraction;
 import dev.nakasar.hytale.vampires.lords.LordsWrath;
 import dev.nakasar.hytale.vampires.lords.LordsWrathSystem;
@@ -75,7 +74,7 @@ import dev.nakasar.hytale.vampires.vampirism.VampireSystem;
  *       Domination retourne leur allégeance ;</li>
  *   <li>{@code Nakasar_GiveItemOnce} : le tableau de contrats de la brèche remet le premier contrat au joueur qui
  *       n'en a pas (les notes de lore elles-mêmes sont des blocs vanilla : page {@code OpenCustomUI} « BlockLore ») ;</li>
- *   <li>{@link LordsAttitudeSystem} et {@link LordsWrathSystem} : le Comte et la Comtesse laissent passer les joueurs,
+ *   <li>{@link LordsWrathSystem} (et le fournisseur d'attitude -5 d'{@link AllegianceAttitudeSystem}) : le Comte et la Comtesse laissent passer les joueurs,
  *       mais un coup porté contre eux les retourne contre tous les joueurs présents ({@link LordsWrath}) ;</li>
  *   <li>{@link SilverDamageSystem} et {@link SilverProjectileSystems} : les armes en argent (et leurs projectiles)
  *       infligent le double de dégâts aux vampires ;</li>
@@ -154,7 +153,6 @@ public final class VampiresPlugin extends JavaPlugin {
         Vampire.setComponentType(systems.registerComponent(Vampire.class, Vampire.ID, Vampire.CODEC));
         systems.registerSystem(new AllegianceAttitudeSystem());
         systems.registerSystem(new AllegianceDamageFilter());
-        systems.registerSystem(new LordsAttitudeSystem());
         systems.registerSystem(new LordsWrathSystem());
         systems.registerSystem(new DominationExpirySystem());
         systems.registerSystem(new FireWeaknessSystem());

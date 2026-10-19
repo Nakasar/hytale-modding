@@ -170,6 +170,24 @@ NOTES_BY_PLACE = {
     "manor": ["Count_Journal", "Countess_Letter", "Servant_Rules", "Ritual_Page", "Blood_Pact"],
 }
 
+# Coffres qui portent du lore, par liste de butin : (lieu, notes posées à côté du coffre, chance d'en poser une,
+# poids du tirage vide quand le coffre tire une note du lieu). Seule source pour generate_prefabs.py et generate_loot.py.
+LORE_BY_LOOT = {
+    "Nakasar_Loot_Hunter_Camp": ("hunter", ["Hunter_Orders"], 1.0, 4),
+    "Nakasar_Loot_Hunter_Armory": ("hunter", NOTES_BY_PLACE["hunter"][:4], 1.0, 3),
+    "Nakasar_Loot_Village_House": ("village", NOTES_BY_PLACE["village"], 0.4, 6),
+    "Nakasar_Loot_Village_Rich": ("village", ["Village_Letter"], 1.0, 3),
+    "Nakasar_Loot_Farm": ("farm", NOTES_BY_PLACE["farm"], 0.6, 6),
+    "Nakasar_Loot_Farm_Burnt": ("farm", ["Farm_Diary", "Village_Last"], 0.6, 4),
+    "Nakasar_Loot_Guard_Barracks": ("guard", ["Guard_Orders"], 1.0, 5),
+    "Nakasar_Loot_Guard_Captain": ("guard", ["Guard_Oath"], 1.0, 2),
+    "Nakasar_Loot_Manor_Library": ("manor", ["Count_Journal"], 1.0, 2),
+    "Nakasar_Loot_Manor_Bedroom": ("manor", ["Countess_Letter"], 1.0, 4),
+    "Nakasar_Loot_Manor_Kitchen": ("manor", ["Servant_Rules"], 1.0, 4),
+    "Nakasar_Loot_Manor_Alchemy": ("manor", ["Ritual_Page"], 1.0, 4),
+    "Nakasar_Loot_Manor_Treasure": ("manor", ["Blood_Pact"], 1.0, 3),
+}
+
 
 def note_id(name):
     return f"Nakasar_Lore_{name}"

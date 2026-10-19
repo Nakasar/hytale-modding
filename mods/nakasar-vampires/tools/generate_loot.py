@@ -106,17 +106,9 @@ DROPLISTS = {
     "Nakasar_Loot_Manor_Workshop": [(2, 3, WORKSHOP), (0, 1, IRON_ARMOR + RUSTY_WEAPONS[:3] + [(None, 6, 0, 0)])],
 }
 
-# Notes de lore (tools/generate_lore.py) : un tirage de plus, souvent vide, parmi les notes du lieu. Une note trouvée
+# Notes de lore (generate_lore.LORE_BY_LOOT) : un tirage de plus, souvent vide, parmi les notes du lieu. Une note trouvée
 # se lit dans l'infobulle de l'objet, ou en la posant puis en l'utilisant.
-LORE_NOTES = {
-    "Nakasar_Loot_Hunter_Camp": ("hunter", 4), "Nakasar_Loot_Hunter_Armory": ("hunter", 3),
-    "Nakasar_Loot_Village_House": ("village", 6), "Nakasar_Loot_Village_Rich": ("village", 3),
-    "Nakasar_Loot_Farm": ("farm", 6), "Nakasar_Loot_Farm_Burnt": ("farm", 4),
-    "Nakasar_Loot_Guard_Barracks": ("guard", 5), "Nakasar_Loot_Guard_Captain": ("guard", 2),
-    "Nakasar_Loot_Manor_Library": ("manor", 2), "Nakasar_Loot_Manor_Bedroom": ("manor", 4),
-    "Nakasar_Loot_Manor_Alchemy": ("manor", 4), "Nakasar_Loot_Manor_Treasure": ("manor", 3),
-}
-for _name, (_place, _empty) in LORE_NOTES.items():
+for _name, (_place, _placed, _chance, _empty) in lore.LORE_BY_LOOT.items():
     DROPLISTS[_name] = DROPLISTS[_name] + [
         (0, 1, [(lore.note_id(n), 1, 1, 1) for n in lore.NOTES_BY_PLACE[_place]] + [(None, _empty, 0, 0)])]
 

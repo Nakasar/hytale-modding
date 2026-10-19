@@ -11,6 +11,7 @@ import com.hypixel.hytale.server.npc.blackboard.Blackboard;
 import com.hypixel.hytale.server.npc.blackboard.view.attitude.AttitudeView;
 import com.hypixel.hytale.server.npc.blackboard.view.attitude.IAttitudeProvider;
 import com.hypixel.hytale.server.npc.systems.BlackboardSystems;
+import dev.nakasar.hytale.vampires.lords.LordsWrath;
 
 import java.util.Set;
 
@@ -21,6 +22,8 @@ import java.util.Set;
  * 200 = groupes d'attitude des rôles, puis attitudes par défaut du rôle.
  * <ul>
  *   <li>priorité -10 : changement de camp par la Domination, avant tout le reste ;</li>
+ *   <li>priorité -5 : colère du Comte et de la Comtesse envers les joueurs ({@link LordsWrath}) ; sans colère,
+ *       rien, et l'attitude neutre de leur rôle s'applique ;</li>
  *   <li>priorité 140 : chasseurs de vampires et mobs du fragment sont ennemis ;</li>
  *   <li>priorité 150 : deux mobs du fragment sont amis, sauf si un rôle a imposé autre chose.</li>
  * </ul>
@@ -42,6 +45,8 @@ public final class AllegianceAttitudeSystem extends StoreSystem<EntityStore> {
         AttitudeView view = store.getResource(Blackboard.getResourceType()).getView(AttitudeView.class, 0L);
         view.registerProvider(-10, (IAttitudeProvider) (ref, roleIndex, target, accessor) ->
                 Allegiances.dominationAttitude(ref, target, accessor));
+        view.registerProvider(-5, (IAttitudeProvider) (ref, roleIndex, target, accessor) ->
+                LordsWrath.attitude(ref, target, accessor));
         view.registerProvider(140, (IAttitudeProvider) (ref, roleIndex, target, accessor) ->
                 Allegiances.huntersVsFaction(ref, target, accessor) ? Attitude.HOSTILE : null);
         view.registerProvider(150, (IAttitudeProvider) (ref, roleIndex, target, accessor) ->

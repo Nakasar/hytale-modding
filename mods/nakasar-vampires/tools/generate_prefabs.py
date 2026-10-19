@@ -2865,22 +2865,8 @@ def check_purified(p, h):
 # prefab) : le reste du prefab ne change pas. Une note se pose au sol, sur une case libre à côté d'un coffre ;
 # certaines stèles des cimetières deviennent des épitaphes lisibles.
 
-LORE_BY_LOOT = {
-    # liste de butin du coffre -> (notes possibles, chance d'en poser une)
-    LOOT_HUNTER_CAMP: (["Hunter_Orders"], 1.0),
-    LOOT_HUNTER_ARMORY: (lore.NOTES_BY_PLACE["hunter"][:4], 1.0),
-    LOOT_VILLAGE: (lore.NOTES_BY_PLACE["village"], 0.4),
-    LOOT_VILLAGE_RICH: (["Village_Letter"], 1.0),
-    LOOT_FARM: (lore.NOTES_BY_PLACE["farm"], 0.6),
-    LOOT_FARM_BURNT: (["Farm_Diary", "Village_Last"], 0.6),
-    LOOT_BARRACKS: (["Guard_Orders"], 1.0),
-    LOOT_CAPTAIN: (["Guard_Oath"], 1.0),
-    LOOT_MANOR_LIBRARY: (["Count_Journal"], 1.0),
-    LOOT_MANOR_BEDROOM: (["Countess_Letter"], 1.0),
-    LOOT_MANOR_KITCHEN: (["Servant_Rules"], 1.0),
-    LOOT_MANOR_ALCHEMY: (["Ritual_Page"], 1.0),
-    LOOT_MANOR_TREASURE: (["Blood_Pact"], 1.0),
-}
+# liste de butin du coffre -> (notes possibles, chance d'en poser une), tiré de generate_lore.LORE_BY_LOOT
+LORE_BY_LOOT = {loot: (notes, chance) for loot, (_place, notes, chance, _empty) in lore.LORE_BY_LOOT.items()}
 NOTE_FLOOR = re.compile(r"^(Rock|Wood|Soil)_")
 NOT_FLOOR = re.compile(r"Half|Stairs|Fence|Wall|Bars|Railing|Pillar|Roof|Ornate|Tilled|Pathway")
 

@@ -13,6 +13,7 @@ import com.hypixel.hytale.server.core.entity.ItemUtils;
 import com.hypixel.hytale.server.core.entity.entities.Player;
 import com.hypixel.hytale.server.core.inventory.InventoryComponent;
 import com.hypixel.hytale.server.core.inventory.ItemStack;
+import com.hypixel.hytale.server.core.inventory.container.CombinedItemContainer;
 import com.hypixel.hytale.server.core.modules.entity.component.TransformComponent;
 import com.hypixel.hytale.server.core.modules.interaction.interaction.CooldownHandler;
 import com.hypixel.hytale.server.core.modules.interaction.interaction.config.SimpleInstantInteraction;
@@ -21,7 +22,7 @@ import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
 /**
  * Donne un objet au joueur qui utilise le bloc, s'il n'en a pas déjà un : le tableau de contrats de la brèche
  * remet ainsi le premier contrat à chaque joueur, une seule fois tant qu'il le garde (multijoueur compris).
- * Ne fait rien si l'objet n'existe pas (id pas encore créé, pack absent) : la suite de la chaîne ({@code Next},
+ * Ne fait rien si le sac est plein ou si l'objet n'existe pas (id pas encore créé, pack absent) : la suite de la chaîne ({@code Next},
  * la page de lore) s'ouvre quand même.
  */
 public class GiveItemOnceInteraction extends SimpleInstantInteraction {
@@ -49,11 +50,14 @@ public class GiveItemOnceInteraction extends SimpleInstantInteraction {
                 || Item.getAssetMap().getAsset(itemId) == null) {
             return;
         }
-        int owned = InventoryComponent.getCombined(buffer, player, InventoryComponent.EVERYTHING)
-                .countItemStacks(stack -> stack != null && itemId.equals(stack.getItemId()));
+        CombinedItemContainer inventory = InventoryComponent.getCombined(buffer, player, InventoryComponent.EVERYTHING);
+        int owned = inventory.countItemStacks(stack -> stack != null && itemId.equals(stack.getItemId()));
+        ItemStack gift = new ItemStack(itemId, 1);
         TransformComponent transform = buffer.getComponent(player, TransformComponent.getComponentType());
-        if (owned == 0 && transform != null) {
-            ItemUtils.interactivelyPickupItem(player, new ItemStack(itemId, 1), transform.getPosition(), buffer);
+        // Sac plein : rien. interactivelyPickupItem jetterait l'objet au sol, et l'objet au sol ne compte pas
+        // dans l'inventaire : chaque usage en redonnerait un.
+        if (owned == 0 && transform != null && inventory.canAddItemStack(gift)) {
+            ItemUtils.interactivelyPickupItem(player, gift, transform.getPosition(), buffer);
         }
     }
 

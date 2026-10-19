@@ -501,7 +501,7 @@ L'instance survit à la fermeture du campement (`CloseOnBlockRemove: false`) et 
 **Comte et Comtesse pacifiques.** Leurs rôles ont `DefaultPlayerAttitude: Neutral`. Le groupe de PNJ
 `Nakasar_Vampire_Lords` les désigne au Java (`lords/`) : `LordsWrathSystem` (groupe d'inspection des dégâts) met le
 seigneur en colère quand un joueur le blesse, et prolonge la colère à chaque coup échangé avec un joueur ;
-`LordsAttitudeSystem` (fournisseur d'attitude, priorité -5) le rend alors hostile à **tous** les joueurs. 45 s sans
+un fournisseur d'attitude de priorité -5 (dans `AllegianceAttitudeSystem`) le rend alors hostile à **tous** les joueurs. 45 s sans
 coup échangé : la colère tombe, il rentre (`ReturnHome`), se soigne et redevient neutre. En `ReturnHome`, un capteur
 `Player` hostile (20 blocs) le relance sur un autre joueur du groupe.
 

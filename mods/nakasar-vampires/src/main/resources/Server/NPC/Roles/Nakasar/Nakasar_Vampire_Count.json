@@ -80,8 +80,8 @@
       "Sensor": { "Type": "State", "State": "Combat" },
       "Instructions": [
         {
-          "$Comment": "Cible perdue ou partie trop loin : il rentre à son trône.",
-          "Sensor": { "Type": "Not", "Sensor": { "Type": "Target", "Range": 40, "Filters": [ { "Type": "Attitude", "Attitudes": ["Hostile", "Neutral", "Ignore"] } ] } },
+          "$Comment": "Cible perdue, partie trop loin ou plus hostile (colère retombée au bout de 45 s, voir LordsWrath) : il rentre à son trône.",
+          "Sensor": { "Type": "Not", "Sensor": { "Type": "Target", "Range": 40, "Filters": [ { "Type": "Attitude", "Attitudes": ["Hostile"] } ] } },
           "Actions": [
             { "Type": "ReleaseTarget" },
             { "Type": "State", "State": "ReturnHome" }

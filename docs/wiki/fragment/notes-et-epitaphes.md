@@ -27,4 +27,4 @@ Les notes sont posées **à côté d'un coffre** : à coup sûr dans les pièces
 
 ## Le tableau des chasseurs
 
-Planté devant chaque [brèche des chasseurs](../breches.md), il porte l'appel de l'Ordre. L'utiliser vous remet aussi **le premier contrat** des chasseurs, [la Bête de la ferme](../objets/contrats.md), si vous n'en avez pas déjà un dans votre inventaire. En multijoueur, chaque joueur reçoit le sien.
+Planté devant chaque [brèche des chasseurs](../breches.md), il porte l'appel de l'Ordre. L'utiliser vous remet aussi **le premier contrat** des chasseurs, [la Bête de la ferme](../objets/contrats.md), si vous n'en avez pas déjà un dans votre inventaire et qu'il vous reste une place libre. En multijoueur, chaque joueur reçoit le sien.

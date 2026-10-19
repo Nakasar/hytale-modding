@@ -273,6 +273,17 @@ Chaque coffre du Comté est rempli à l'apparition de la structure. Son contenu 
 | Farine (`Ingredient_Flour`) | 2 à 5 | 40 % |
 | Pâte (`Ingredient_Dough`) | 1 à 3 | 20 % |
 
+**Tirage 4** (0 à 1 fois)
+
+| Objet | Quantité | Chance par tirage |
+|---|---|---|
+| *rien* | | 44 % |
+| Note : [Journal du Comte](notes-et-epitaphes.md) (`Nakasar_Lore_Count_Journal`) | 1 | 11 % |
+| Note : [Lettre de la Comtesse](notes-et-epitaphes.md) (`Nakasar_Lore_Countess_Letter`) | 1 | 11 % |
+| Note : [Règles de la maison](notes-et-epitaphes.md) (`Nakasar_Lore_Servant_Rules`) | 1 | 11 % |
+| Note : [Page de rituel](notes-et-epitaphes.md) (`Nakasar_Lore_Ritual_Page`) | 1 | 11 % |
+| Note : [Le pacte](notes-et-epitaphes.md) (`Nakasar_Lore_Blood_Pact`) | 1 | 11 % |
+
 ## Quartiers du capitaine {#quartiers-du-capitaine}
 
 [Poste de garde](postes-de-garde.md) · liste `Nakasar_Loot_Guard_Captain`
