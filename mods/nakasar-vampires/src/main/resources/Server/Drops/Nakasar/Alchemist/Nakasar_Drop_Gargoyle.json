@@ -1,0 +1,21 @@
+{
+  "$Comment": "Gargouille : du sel philosophal, une fois sur deux.",
+  "Container": {
+    "Type": "Choice",
+    "Containers": [
+      {
+        "Type": "Single",
+        "Weight": 1,
+        "Item": {
+          "ItemId": "Ingredient_Nakasar_Philosophers_Salt",
+          "QuantityMin": 1,
+          "QuantityMax": 1
+        }
+      },
+      {
+        "Type": "Empty",
+        "Weight": 1
+      }
+    ]
+  }
+}

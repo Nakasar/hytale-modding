@@ -1,0 +1,9 @@
+{
+  "$Comment": "Golem de plomb : le golem d'acier vanilla (Golem_Firesteel), sans ses flammes.",
+  "Parent": "Golem_Firesteel",
+  "Particles": [],
+  "Light": {
+    "Color": "#6d6a80",
+    "Radius": 1
+  }
+}

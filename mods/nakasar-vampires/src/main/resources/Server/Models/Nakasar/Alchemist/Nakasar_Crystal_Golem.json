@@ -1,0 +1,10 @@
+{
+  "$Comment": "Golem de cristal instable (élite) : le golem de cristal de foudre vanilla, plus grand, lueur électrique.",
+  "Parent": "Golem_Crystal_Thunder",
+  "MinScale": 1.4,
+  "MaxScale": 1.4,
+  "Light": {
+    "Color": "#9fd8ff",
+    "Radius": 6
+  }
+}

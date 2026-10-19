@@ -1,0 +1,8 @@
+{
+  "$Comment": "Vrille carnivore : le modèle de la vrille de la citrouille géante, lueur verte.",
+  "Parent": "Nakasar_Pumpkin_Vine",
+  "Light": {
+    "Color": "#8dff7a",
+    "Radius": 3
+  }
+}

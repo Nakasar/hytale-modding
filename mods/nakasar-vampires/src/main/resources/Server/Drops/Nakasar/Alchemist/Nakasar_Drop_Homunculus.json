@@ -1,0 +1,21 @@
+{
+  "$Comment": "Homoncule : du mercure vif, une fois sur trois.",
+  "Container": {
+    "Type": "Choice",
+    "Containers": [
+      {
+        "Type": "Single",
+        "Weight": 1,
+        "Item": {
+          "ItemId": "Ingredient_Nakasar_Quicksilver",
+          "QuantityMin": 1,
+          "QuantityMax": 1
+        }
+      },
+      {
+        "Type": "Empty",
+        "Weight": 2
+      }
+    ]
+  }
+}

@@ -735,6 +735,55 @@ class Tower:
         self.keep_clear.update((x + dx, y + k, z + dz) for dx in range(-1, 2) for dz in range(-1, 2) for k in range(3)
                                if self.p.free(x + dx, y + k, z + dz))
 
+    # --- mobs (étape 3) ---------------------------------------------------------------------------
+
+    def spawn_cell(self, x, y, z, height=3, reach=6):
+        """Case libre la plus proche de (x, y, z) au même niveau : sol plein dessous, `height` blocs d'air au-dessus."""
+        best = None
+        for dx in range(-reach, reach + 1):
+            for dz in range(-reach, reach + 1):
+                cx, cz = x + dx, z + dz
+                if not self.solid(cx, y - 1, cz) or (cx, y, cz) in self.keep_clear:
+                    continue
+                if all(self.p.free(cx, y + k, cz) for k in range(height)):
+                    d = dx * dx + dz * dz
+                    if best is None or d < best[0]:
+                        best = (d, cx, cz)
+        if best is None:
+            raise RuntimeError(f"tour : pas de place pour un mob près de {(x, y, z)}")
+        return best[1], best[2]
+
+    def spawner(self, role, x, y, z, height=3):
+        cx, cz = self.spawn_cell(x, y, z, height)
+        self.p.set(cx, y, cz, SPAWNER_PREFIX + role)
+        self.spawners.append((role, (cx, y, cz)))
+
+    def ramp_cell(self, angle, d_target=37.0):
+        """Case de l'Escalier des vents la plus proche de l'angle donné (degrés), et son premier bloc d'air."""
+        best = None
+        for (x, z), s in self.wind_ramp.items():
+            d, a = polar(x, z)
+            score = abs((a - angle + 180) % 360 - 180) * 2 + abs(d - d_target)
+            if best is None or score < best[0]:
+                best = (score, x, (s + 1) // 2, z)
+        return best[1:]
+
+    def mobs(self):
+        """Blocs d'apparition des mobs (tools/generate_tower_mobs.py), salle par salle. Peu de mobs dans les phases de
+        pièges (Couloir des fuites, Escalier des vents) pour qu'on lise bien le rythme des pièges."""
+        self.spawners = []
+        for role, (r, y, a), h in MOB_LAYOUT:
+            self.spawner(role, *at3(r, y, a), height=h)
+        for role, xyz, h in MOB_FIXED:
+            self.spawner(role, *xyz, height=h)
+        # Gargouilles au-dessus de l'Escalier des vents : elles volent, on les pose deux blocs au-dessus des marches.
+        for angle in GARGOYLE_ANGLES:
+            x, y, z = self.ramp_cell(angle)
+            if not all(self.p.free(x, y + k, z) for k in range(4)):
+                raise RuntimeError(f"tour : pas de place pour une gargouille en {(x, y, z)}")
+            self.p.set(x, y + 2, z, SPAWNER_PREFIX + "Tower_Gargoyle")
+            self.spawners.append(("Tower_Gargoyle", (x, y + 2, z)))
+
     # --- décor -----------------------------------------------------------------------------------
 
     def hang(self, x, y, z, name, rot=0):
@@ -1249,6 +1298,7 @@ class Tower:
         self.checkpoint(*at3(37, F_LAB, 272), statue_at=at(39, 262))
         self.checkpoint(*at3(33, F_DECK, 255), statue_at=at(37, 265))
         self.decorate()
+        self.mobs()
         self.secure()
         self.barriers()
         return self.p
@@ -1380,6 +1430,39 @@ class Tower:
             raise RuntimeError(f"tour : on peut marcher sur des murs invisibles {perched[:8]}")
 
 
+# Mobs (alchemist_tower.Tower.mobs, rôles de tools/generate_tower_mobs.py) : (rôle sans le préfixe Nakasar_,
+# (rayon, niveau, angle), hauteur libre demandée). La case exacte est la plus proche libre au même niveau.
+SPAWNER_PREFIX = "Nakasar_Spawner_"
+MOB_LAYOUT = [
+    # Hall des Alambics : deux groupes d'homoncules, deux golems de plomb, une fiole de poison.
+    ("Homunculus", (12, F_HALL, 40), 2), ("Homunculus", (13, F_HALL, 52), 2), ("Homunculus", (11, F_HALL, 64), 2),
+    ("Homunculus", (14, F_HALL, 150), 2), ("Homunculus", (15, F_HALL, 162), 2),
+    ("Lead_Golem", (16, F_HALL, 345), 4), ("Lead_Golem", (17, F_HALL, 210), 4),
+    ("Living_Flask_Poison", (9, F_HALL, 265), 2),
+    # Couloir des fuites (pièges) : deux fioles seulement.
+    ("Living_Flask_Poison", (25, F_LEAKS, 120), 2), ("Living_Flask_Fire", (25, F_LEAKS, 30), 2),
+    # Serre suspendue : plantes carnivores (vrilles et Snapdragons) sous la verrière, élémentaires de racine.
+    ("Snapdragon", (41, F_LEAKS, 205), 2), ("Carnivorous_Vine", (40, F_LEAKS, 222), 3),
+    ("Snapdragon", (42, F_LEAKS, 240), 2), ("Carnivorous_Vine", (40, F_LEAKS, 258), 3),
+    ("Snapdragon", (41, F_LEAKS, 276), 2),
+    ("Elemental_Root", (40, F_LEAKS, 300), 3), ("Elemental_Root", (40, F_LEAKS, 330), 3),
+    # Bibliothèque : apprentis et homoncules.
+    ("Alchemist_Apprentice", (14, F_LIBRARY, 150), 2), ("Alchemist_Apprentice", (14, F_LIBRARY, 300), 2),
+    ("Homunculus", (10, F_LIBRARY, 220), 2), ("Homunculus", (11, F_LIBRARY, 235), 2),
+    ("Elemental_Frost", (16, F_LIBRARY, 20), 3),
+    # Laboratoire (avant le mini-boss) : apprentis, un golem, une fiole de feu.
+    ("Alchemist_Apprentice", (14, F_LAB, 30), 2), ("Alchemist_Apprentice", (14, F_LAB, 150), 2),
+    ("Lead_Golem", (16, F_LAB, 240), 4), ("Living_Flask_Fire", (12, F_LAB, 100), 2),
+]
+# Salle des Transmutations : un élémentaire par quadrant (feu, glace, racine, foudre) et le golem de cristal au centre.
+MOB_FIXED = [
+    ("Elemental_Fire", (10, F_TRANS, 10), 3), ("Elemental_Frost", (-10, F_TRANS, 10), 3),
+    ("Elemental_Root", (-10, F_TRANS, -10), 3), ("Elemental_Thunder", (10, F_TRANS, -10), 3),
+    ("Crystal_Golem", (0, F_TRANS, 4), 5),
+]
+GARGOYLE_ANGLES = (320, 40, 130, 220)
+
+
 # Salles à atteindre depuis le parvis (x, niveau, z), en plus des points de contrôle.
 GOALS = {"hall": (0, F_HALL, 16), "leaks_exit": (-31, F_LEAKS, 0), "balcony_north": (0, F_LEAKS, -40),
          "library": (0, F_LIBRARY, 12), "transmutation": (0, F_TRANS, 0), "lab": (10, F_LAB, 10),
@@ -1406,7 +1489,7 @@ def at3(r, y, a):
 
 # --- vérification du parcours --------------------------------------------------------------------
 
-PASSABLE_PREFIXES = ("Plant_Grass", "Plant_Flower", "Plant_Crop_Mushroom_Glowing", "Nakasar_Tower_Emanation", "Deco_Potion",
+PASSABLE_PREFIXES = ("Nakasar_Spawner_", "Plant_Grass", "Plant_Flower", "Plant_Crop_Mushroom_Glowing", "Nakasar_Tower_Emanation", "Deco_Potion",
                      "Deco_Scroll", "Plant_Moss_Rug", "Plant_Vine", "Furniture_Royal_Magic_Carpet")
 
 

@@ -1,0 +1,11 @@
+{
+  "$Comment": "Élémentaire de glace : essence de glace.",
+  "Container": {
+    "Type": "Single",
+    "Item": {
+      "ItemId": "Ingredient_Ice_Essence",
+      "QuantityMin": 1,
+      "QuantityMax": 2
+    }
+  }
+}

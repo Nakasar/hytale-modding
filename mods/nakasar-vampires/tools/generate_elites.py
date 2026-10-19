@@ -670,7 +670,7 @@ def groups():
         CONSTRUCTS: {"$Comment": "L'armure enchantée et ses rouages : ils ne se blessent pas entre eux (DisableDamageGroups).",
                      "IncludeRoles": [ARMOR, GEAR]},
         FIRE_IMMUNE: {"$Comment": "Aucun dégât de feu (dev.nakasar.hytale.vampires.elite.FireAffinitySystem).",
-                      "IncludeGroups": [CONSTRUCTS]},
+                      "IncludeGroups": [CONSTRUCTS, "Nakasar_Fire_Elementals"]},
         SHADES: {"$Comment": "Fantômes invoqués par le Spectre : il compte ceux qui restent (capteur Count) pour savoir quand en rappeler.",
                  "IncludeRoles": [SHADE]},
     }

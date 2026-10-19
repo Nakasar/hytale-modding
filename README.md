@@ -323,8 +323,8 @@ Mobs (voir [docs/npc-0.7.2.md](docs/npc-0.7.2.md)) :
   Deepworks), blocs non modifiables. Vérifié en jeu : confirmation du portail de sortie `Nakasar_Tower_Exit`, retour
   au parvis après une chute. À vérifier : les anneaux de fumée du portail, descendus au ras du socle par la copie de
   particules `Nakasar_Tower_Exit_Portal` (spawners `MagicPortal_VoidSmokeMiddle` et `MagicPortal_VoidGlowSmoke`).
-- **Tour de l'Alchimiste, l'archipel et la tour** (`tools/alchemist_archipelago.py`, `tools/alchemist_tower.py`,
-  `tower/TowerCheckpointSystem.java`) : à l'échelle de Deepworks. Parcours : île d'arrivée, puis une chaîne de petites
+- **Tour de l'Alchimiste, l'archipel et la tour** (`tools/alchemist_archipelago.py`, `tools/alchemist_tower.py`) :
+  à l'échelle de Deepworks. Parcours : île d'arrivée, puis une chaîne de petites
   îles reliées par des ponts courts de style elfique (arches, lanternes, fleurs, lianes) : halte de la fontaine, halte
   du kiosque, Jardins des Alambics, halte des sources, Ruines du premier laboratoire (premier point de contrôle),
   halte des arches. La grande île de la tour (340 blocs de large) est couverte d'une forêt traversée par un chemin
@@ -341,6 +341,16 @@ Mobs (voir [docs/npc-0.7.2.md](docs/npc-0.7.2.md)) :
   l'orientation des statues de contrôle de Deepworks (elles s'allument, soignent et la précédente s'éteint), les
   émanations `Nakasar_Tower_Emanation_*`, et qu'on réapparaisse au dernier point de contrôle, après une mort comme après
   une chute.
+- **Tour de l'Alchimiste, les mobs** (`tools/generate_tower_mobs.py`, placement dans `alchemist_tower.Tower.mobs`) :
+  créatures de l'Alchimiste sur des modèles du jeu. Homoncules (petits zombies difformes, en groupe), golems de plomb
+  (frappe au sol annoncée), fioles vivantes de poison et de feu (elles éclatent au contact après une zone rouge),
+  apprentis en robe de mage verte (lancent des fioles), vrilles carnivores et Snapdragons dans la serre, élémentaires
+  de feu, de glace, de foudre et de racine (esprits du jeu), golem de cristal instable en élite de la Salle des
+  Transmutations (barre de boss) et gargouilles (chauve-souris de pierre) sur l'Escalier des vents. Ils lâchent les
+  trois réactifs (Sel philosophal, Soufre ardent, Mercure vif) et les essences du jeu. L'instance reprend les réglages
+  de Deepworks : mode Aventure, aucune perte d'objets à la mort, marqueurs d'apparition actifs. À vérifier en jeu : que
+  les mobs apparaissent (marqueurs dans une instance), les animations empruntées (morsure, golem, lancer de l'apprenti,
+  sort des esprits), la taille des fioles vivantes et de la gargouille, la tenue des apprentis.
 
 ## Organisation du dépôt
 

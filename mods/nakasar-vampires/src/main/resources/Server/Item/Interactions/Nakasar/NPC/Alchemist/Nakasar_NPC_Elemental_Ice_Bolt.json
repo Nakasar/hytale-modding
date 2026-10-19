@@ -1,0 +1,20 @@
+{
+  "$Comment": "Trait de glace de l'élémentaire de glace (10 dégâts).",
+  "Type": "Simple",
+  "RunTime": 0.5,
+  "Effects": {
+    "ItemPlayerAnimationsId": "Spirit_Root_Default",
+    "ItemAnimationId": "SporeGas"
+  },
+  "Next": {
+    "Type": "LaunchProjectile",
+    "RunTime": 0.3,
+    "Effects": {
+      "WorldSoundEventId": "SFX_Ice_Break"
+    },
+    "ProjectileId": "Nakasar_Elemental_Ice_Bolt",
+    "Tags": {
+      "AimingReference": []
+    }
+  }
+}

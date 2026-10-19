@@ -1,0 +1,53 @@
+{
+  "$Comment": "Morsure empoisonnée du Snapdragon (14 dégâts, poison Poison_T1 5 s).",
+  "Type": "Simple",
+  "RunTime": 0.4,
+  "Effects": {
+    "WorldSoundEventId": "SFX_Unarmed_Swing",
+    "ItemPlayerAnimationsId": "Tiger_Sabertooth_Default",
+    "ItemAnimationId": "Bite"
+  },
+  "Next": {
+    "Type": "Selector",
+    "RunTime": 0.15,
+    "Selector": {
+      "Id": "Horizontal",
+      "Direction": "ToLeft",
+      "TestLineOfSight": true,
+      "ExtendTop": 0.8,
+      "ExtendBottom": 0.8,
+      "StartDistance": 0.2,
+      "EndDistance": 3.2,
+      "Length": 80,
+      "RollOffset": 0,
+      "YawStartOffset": 40
+    },
+    "HitEntity": {
+      "Interactions": [
+        {
+          "Parent": "DamageEntityParent",
+          "DamageCalculator": {
+            "BaseDamage": {
+              "Physical": 14
+            },
+            "RandomPercentageModifier": 0.1
+          },
+          "DamageEffects": {
+            "WorldSoundEventId": "SFX_T1_Impact_Blunt",
+            "WorldParticles": [
+              {
+                "SystemId": "Impact_Sword_Basic_Stronk"
+              }
+            ]
+          }
+        },
+        {
+          "Type": "ApplyEffect",
+          "EffectId": "Poison_T1",
+          "Entity": "Target",
+          "Duration": 5
+        }
+      ]
+    }
+  }
+}

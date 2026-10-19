@@ -1,0 +1,20 @@
+{
+  "$Comment": "Épine projetée par l'élémentaire de racine (celle des vrilles de la citrouille).",
+  "Type": "Simple",
+  "RunTime": 0.5,
+  "Effects": {
+    "ItemPlayerAnimationsId": "Spirit_Root_Default",
+    "ItemAnimationId": "SporeGas"
+  },
+  "Next": {
+    "Type": "LaunchProjectile",
+    "RunTime": 0.3,
+    "Effects": {
+      "WorldSoundEventId": "SFX_Bramble_MoveIn"
+    },
+    "ProjectileId": "Nakasar_Pumpkin_Thorn",
+    "Tags": {
+      "AimingReference": []
+    }
+  }
+}

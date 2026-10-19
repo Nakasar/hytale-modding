@@ -162,6 +162,18 @@ def instance():
         "IsSpawningNPC": True,
         "SpawnProvider": {"Id": "Global", "SpawnPoint": {"X": 0.5, "Y": float(GROUND_Y), "Z": 0.5,
                                                          "Pitch": 0, "Yaw": 0, "Roll": 0}},
+        # Comme Server/Instances/The_Deepworks/instance.bson (0.7.2) : mode Aventure, marqueurs d'apparition des mobs
+        # actifs, instance supprimée une minute après le départ du dernier joueur. La mort sans perte d'objets vient
+        # du GameplayConfig (gameplay_config), la réapparition au dernier point de contrôle des volumes SetWorldSpawn.
+        "GameMode": "Adventure",
+        "IsSpawnMarkersEnabled": True,
+        "IsBlockSpawnersEnabled": True,
+        "IsSavingPlayers": True,
+        "DeleteOnRemove": True,
+        "Plugin": {
+            "Instance": {"RemovalConditions": [{"Type": "WorldEmpty", "TimeoutSeconds": 60}]},
+            "PortalWorldConfig": {"Config": {"PortalType": TOWER, "TimeLimitSeconds": -1}},
+        },
     }
 
 

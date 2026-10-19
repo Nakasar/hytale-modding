@@ -20,5 +20,26 @@
       "Yaw": 0,
       "Roll": 0
     }
+  },
+  "GameMode": "Adventure",
+  "IsSpawnMarkersEnabled": true,
+  "IsBlockSpawnersEnabled": true,
+  "IsSavingPlayers": true,
+  "DeleteOnRemove": true,
+  "Plugin": {
+    "Instance": {
+      "RemovalConditions": [
+        {
+          "Type": "WorldEmpty",
+          "TimeoutSeconds": 60
+        }
+      ]
+    },
+    "PortalWorldConfig": {
+      "Config": {
+        "PortalType": "Nakasar_Alchemist_Tower",
+        "TimeLimitSeconds": -1
+      }
+    }
   }
 }

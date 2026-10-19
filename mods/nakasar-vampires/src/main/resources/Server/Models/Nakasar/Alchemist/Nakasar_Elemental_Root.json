@@ -1,0 +1,6 @@
+{
+  "$Comment": "Élémentaire de racine : l'esprit de racine vanilla.",
+  "Parent": "Spirit_Root",
+  "MinScale": 1.2,
+  "MaxScale": 1.2
+}

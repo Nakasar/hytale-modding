@@ -1,0 +1,21 @@
+{
+  "$Comment": "Plantes carnivores : essence de vie, une fois sur deux.",
+  "Container": {
+    "Type": "Choice",
+    "Containers": [
+      {
+        "Type": "Single",
+        "Weight": 1,
+        "Item": {
+          "ItemId": "Ingredient_Life_Essence",
+          "QuantityMin": 1,
+          "QuantityMax": 2
+        }
+      },
+      {
+        "Type": "Empty",
+        "Weight": 1
+      }
+    ]
+  }
+}

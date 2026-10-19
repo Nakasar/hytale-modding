@@ -1,0 +1,20 @@
+{
+  "$Comment": "Boule de feu de l'élémentaire de feu (12 dégâts autour de l'impact).",
+  "Type": "Simple",
+  "RunTime": 0.5,
+  "Effects": {
+    "ItemPlayerAnimationsId": "Spirit_Root_Default",
+    "ItemAnimationId": "SporeGas"
+  },
+  "Next": {
+    "Type": "LaunchProjectile",
+    "RunTime": 0.3,
+    "Effects": {
+      "WorldSoundEventId": "SFX_Fireball_Bounce"
+    },
+    "ProjectileId": "Nakasar_Elemental_Fireball",
+    "Tags": {
+      "AimingReference": []
+    }
+  }
+}

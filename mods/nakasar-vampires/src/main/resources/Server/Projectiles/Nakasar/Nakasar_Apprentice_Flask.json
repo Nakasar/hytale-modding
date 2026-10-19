@@ -1,0 +1,12 @@
+{
+  "$Comment": "Fiole lancée par un apprenti : la fiole de poison vanilla, souffle réduit.",
+  "Parent": "Bomb_Potion_Poison",
+  "Damage": 12,
+  "ExplosionConfig": {
+    "DamageEntities": true,
+    "DamageBlocks": false,
+    "BlockDamageRadius": 0,
+    "EntityDamageRadius": 2.5,
+    "EntityDamageFalloff": 1.0
+  }
+}

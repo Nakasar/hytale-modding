@@ -1,0 +1,17 @@
+{
+  "TranslationProperties": {
+    "Name": "nakasar_alchemist.items.Ingredient_Nakasar_Burning_Sulfur.name",
+    "Description": "nakasar_alchemist.items.Ingredient_Nakasar_Burning_Sulfur.description"
+  },
+  "Icon": "Icons/Items/Nakasar/Alchemist/Burning_Sulfur.png",
+  "Model": "Items/Nakasar/Alchemist/Burning_Sulfur.blockymodel",
+  "Texture": "Items/Nakasar/Alchemist/Burning_Sulfur.png",
+  "Quality": "Uncommon",
+  "Categories": [
+    "Items.Ingredients"
+  ],
+  "PlayerAnimationsId": "Item",
+  "ItemSoundSetId": "ISS_Items_Gems",
+  "Scale": 1.0,
+  "MaxStack": 50
+}
