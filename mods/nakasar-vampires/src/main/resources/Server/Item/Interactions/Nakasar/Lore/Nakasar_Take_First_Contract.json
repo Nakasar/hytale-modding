@@ -1,0 +1,12 @@
+{
+  "$Comment": "Tableau de la brèche : remet le premier contrat au joueur qui n'en a pas, puis affiche la note. Généré par tools/generate_lore.py.",
+  "Type": "Nakasar_GiveItemOnce",
+  "ItemId": "Nakasar_Contract_Farm",
+  "Next": {
+    "Type": "OpenCustomUI",
+    "Page": {
+      "Id": "BlockLore",
+      "TextAlignment": "Left"
+    }
+  }
+}

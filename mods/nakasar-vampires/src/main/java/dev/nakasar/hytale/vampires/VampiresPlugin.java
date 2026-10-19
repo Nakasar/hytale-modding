@@ -16,6 +16,10 @@ import dev.nakasar.hytale.vampires.domination.Dominations;
 import dev.nakasar.hytale.vampires.invisibility.Invisibility;
 import dev.nakasar.hytale.vampires.invisibility.InvisibilityInteraction;
 import dev.nakasar.hytale.vampires.invisibility.InvisibilitySystem;
+import dev.nakasar.hytale.vampires.lords.LordsAttitudeSystem;
+import dev.nakasar.hytale.vampires.lore.GiveItemOnceInteraction;
+import dev.nakasar.hytale.vampires.lords.LordsWrath;
+import dev.nakasar.hytale.vampires.lords.LordsWrathSystem;
 import dev.nakasar.hytale.vampires.prison.ImprisonPlayerInteraction;
 import dev.nakasar.hytale.vampires.pumpkin.FireWeaknessSystem;
 import dev.nakasar.hytale.vampires.purifying.LightAura;
@@ -61,6 +65,10 @@ import dev.nakasar.hytale.vampires.silver.TakeArrowInteraction;
  *   <li>les camps ({@link AllegianceAttitudeSystem}, {@link AllegianceDamageFilter},
  *       {@link DominationExpirySystem}) : les mobs du fragment sont alliés, ennemis des chasseurs de vampires, et la
  *       Domination retourne leur allégeance ;</li>
+ *   <li>{@code Nakasar_GiveItemOnce} : le tableau de contrats de la brèche remet le premier contrat au joueur qui
+ *       n'en a pas (les notes de lore elles-mêmes sont des blocs vanilla : page {@code OpenCustomUI} « BlockLore ») ;</li>
+ *   <li>{@link LordsAttitudeSystem} et {@link LordsWrathSystem} : le Comte et la Comtesse laissent passer les joueurs,
+ *       mais un coup porté contre eux les retourne contre tous les joueurs présents ({@link LordsWrath}) ;</li>
  *   <li>{@link SilverDamageSystem} et {@link SilverProjectileSystems} : les armes en argent (et leurs projectiles)
  *       infligent le double de dégâts aux vampires ;</li>
  *   <li>{@link PurifyingFireSystem} et {@link PurifyingSteeringSystem} : les morts-vivants évitent les torches et
@@ -114,6 +122,8 @@ public final class VampiresPlugin extends JavaPlugin {
                 LightAuraInteraction.class, LightAuraInteraction.CODEC);
         interactions.register(InvisibilityInteraction.TYPE_ID,
                 InvisibilityInteraction.class, InvisibilityInteraction.CODEC);
+        interactions.register(GiveItemOnceInteraction.TYPE_ID,
+                GiveItemOnceInteraction.class, GiveItemOnceInteraction.CODEC);
 
         var systems = getEntityStoreRegistry();
         RootTrapped.setComponentType(systems.registerComponent(RootTrapped.class, RootTrapped::new));
@@ -121,6 +131,8 @@ public final class VampiresPlugin extends JavaPlugin {
         Invisibility.setComponentType(systems.registerComponent(Invisibility.class, Invisibility::new));
         systems.registerSystem(new AllegianceAttitudeSystem());
         systems.registerSystem(new AllegianceDamageFilter());
+        systems.registerSystem(new LordsAttitudeSystem());
+        systems.registerSystem(new LordsWrathSystem());
         systems.registerSystem(new DominationExpirySystem());
         systems.registerSystem(new FireWeaknessSystem());
         systems.registerSystem(new RootTrapUnloadSystem());
@@ -142,11 +154,12 @@ public final class VampiresPlugin extends JavaPlugin {
         systems.registerSystem(new HunterBreachStarter());
         systems.registerSystem(new BreachHunterCleanupSystem());
 
-        getLogger().atInfo().log("Nakasar Vampires : 12 types d'interaction (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s), systèmes des camps, de l'argent, du feu purificateur et de la brèche des chasseurs enregistrés",
+        getLogger().atInfo().log("Nakasar Vampires : 13 types d'interaction (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s), systèmes des camps, de l'argent, du feu purificateur et de la brèche des chasseurs enregistrés",
                 TeleportCasterToImpactInteraction.TYPE_ID, DominateInteraction.TYPE_ID, RootNpcInteraction.TYPE_ID,
                 DrainBeamInteraction.TYPE_ID, DominatePlayerInteraction.TYPE_ID, ImprisonPlayerInteraction.TYPE_ID,
                 RootTrapInteraction.TYPE_ID, TakeArrowInteraction.TYPE_ID, ReturnArrowInteraction.TYPE_ID,
-                SummonVinesInteraction.TYPE_ID, LightAuraInteraction.TYPE_ID, InvisibilityInteraction.TYPE_ID);
+                SummonVinesInteraction.TYPE_ID, LightAuraInteraction.TYPE_ID, InvisibilityInteraction.TYPE_ID,
+                GiveItemOnceInteraction.TYPE_ID);
     }
 
     @Override
@@ -155,6 +168,7 @@ public final class VampiresPlugin extends JavaPlugin {
         RootTrapInteraction.clearAll();
         SummonVinesInteraction.clearAll();
         Dominations.clearAll();
+        LordsWrath.clearAll();
         SilverWeapons.clearAll();
         ArrowQuiver.clearAll();
     }

@@ -1,0 +1,8 @@
+{
+  "$Comment": "Ouvre la page de lore du jeu : nom de l'objet du bloc en titre, sa description en texte. Généré par tools/generate_lore.py.",
+  "Type": "OpenCustomUI",
+  "Page": {
+    "Id": "BlockLore",
+    "TextAlignment": "Left"
+  }
+}

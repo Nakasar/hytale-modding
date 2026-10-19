@@ -26,6 +26,8 @@ import random
 import re
 from pathlib import Path
 
+import generate_lore as lore
+
 PACK = Path(__file__).resolve().parent.parent / "src" / "main" / "resources"
 OUT = PACK / "Server" / "Prefabs" / "Nakasar" / "Halloween"
 
@@ -104,6 +106,7 @@ FURNITURE = {
     "Halloween_Wagon": "Table",
     "Tinkering_Target_Dummy": "Tall",
     "Nakasar_Breach_Rift": "Breach_Rift",
+    "Nakasar_Contract_Board": "Tall",  # tableau de contrats de la brèche (generate_lore.py)
 }
 
 
@@ -2857,6 +2860,75 @@ def check_purified(p, h):
                 f"camp des chasseurs : ({x}, {z}) hors de portée des feux purificateurs"
 
 
+# --- lore implicite ---------------------------------------------------------------------------
+# Notes et épitaphes de tools/generate_lore.py, ajoutées à la fin, avec leur propre tirage (seedé par le nom du
+# prefab) : le reste du prefab ne change pas. Une note se pose au sol, sur une case libre à côté d'un coffre ;
+# certaines stèles des cimetières deviennent des épitaphes lisibles.
+
+LORE_BY_LOOT = {
+    # liste de butin du coffre -> (notes possibles, chance d'en poser une)
+    LOOT_HUNTER_CAMP: (["Hunter_Orders"], 1.0),
+    LOOT_HUNTER_ARMORY: (lore.NOTES_BY_PLACE["hunter"][:4], 1.0),
+    LOOT_VILLAGE: (lore.NOTES_BY_PLACE["village"], 0.4),
+    LOOT_VILLAGE_RICH: (["Village_Letter"], 1.0),
+    LOOT_FARM: (lore.NOTES_BY_PLACE["farm"], 0.6),
+    LOOT_FARM_BURNT: (["Farm_Diary", "Village_Last"], 0.6),
+    LOOT_BARRACKS: (["Guard_Orders"], 1.0),
+    LOOT_CAPTAIN: (["Guard_Oath"], 1.0),
+    LOOT_MANOR_LIBRARY: (["Count_Journal"], 1.0),
+    LOOT_MANOR_BEDROOM: (["Countess_Letter"], 1.0),
+    LOOT_MANOR_KITCHEN: (["Servant_Rules"], 1.0),
+    LOOT_MANOR_ALCHEMY: (["Ritual_Page"], 1.0),
+    LOOT_MANOR_TREASURE: (["Blood_Pact"], 1.0),
+}
+NOTE_FLOOR = re.compile(r"^(Rock|Wood|Soil)_")
+NOT_FLOOR = re.compile(r"Half|Stairs|Fence|Wall|Bars|Railing|Pillar|Roof|Ornate|Tilled|Pathway")
+
+
+def note_spot(p, x, y, z, radius=2, avoid=()):
+    """Case libre au sol (bloc plein dessous) la plus proche de (x, y, z), ou None."""
+    cells = sorted(((dx, dz) for dx in range(-radius, radius + 1) for dz in range(-radius, radius + 1) if (dx, dz) != (0, 0)),
+                   key=lambda d: (abs(d[0]) + abs(d[1]), d))
+    for dx, dz in cells:
+        cx, cz = x + dx, z + dz
+        below = p.get(cx, y - 1, cz) or ""
+        if (cx, cz) in avoid or not p.free(cx, y, cz) or not NOTE_FLOOR.match(below) or NOT_FLOOR.search(below):
+            continue
+        return cx, y, cz
+    return None
+
+
+def add_lore(p, name):
+    r = random.Random(f"lore/{name}")
+    placed = set()
+    for (x, y, z), comp in sorted(p.components.items()):
+        droplist = comp.get("Components", {}).get("ItemContainerBlock", {}).get("Droplist")
+        notes, chance = LORE_BY_LOOT.get(droplist, ((), 0))
+        if notes and r.random() < chance:
+            free = [n for n in notes if n not in placed] or list(notes)
+            spot = note_spot(p, x, y, z)
+            if spot:
+                note = r.choice(free)
+                placed.add(note)
+                p.set(*spot, lore.note_id(note), r.randint(0, 3))
+    cells = sorted(pos for pos, (b, _) in p.blocks.items() if b == PRISON_CELL)
+    if cells:
+        x, y, z = r.choice(cells)
+        spot = note_spot(p, x, y, z, radius=1)
+        if spot:
+            p.set(*spot, lore.note_id("Prisoner"), r.randint(0, 3))
+    if name.startswith("SpawnCrypt/"):
+        # mot des chasseurs près du point d'arrivée, hors de l'allée centrale (arrivée, portail de retour)
+        spot = note_spot(p, 2, 0, 1, avoid={(0, z) for z in range(-5, 6)})
+        if spot:
+            p.set(*spot, lore.note_id("Arrival"), SOUTH)
+    epitaphs = sorted(lore.EPITAPHS)
+    stones = sorted(pos for pos, (b, rot) in p.blocks.items() if b == "Furniture_Village_Tombstone" and rot == SOUTH)
+    for pos in stones:
+        if r.random() < 0.35:
+            p.set(*pos, lore.epitaph_id(r.choice(epitaphs)), SOUTH)
+
+
 def main():
     jobs = []
     sizes = ["small", "small", "medium", "medium", "medium", "large"]
@@ -2900,6 +2972,7 @@ def main():
             old.unlink()
     total = 0
     for name, prefab in jobs:
+        add_lore(prefab, name)
         count = prefab.write(OUT / f"{name}.prefab.json")
         total += count
         print(f"{name}: {count} blocs")

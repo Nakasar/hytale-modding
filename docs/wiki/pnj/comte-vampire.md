@@ -8,6 +8,14 @@ Le maître du Comté. Grand (×1,22), pâle, yeux rouges, couronne noire, long m
 
 Il se bat à distance comme au corps à corps : il paralyse ses proies avec des chaînes spectrales, leur ôte toute volonté de le frapper, apparaît à côté d'elles en une gerbe de sang et se soigne en mordant. Sous la moitié de ses PV, il appelle ses rejetons.
 
+## Un hôte qui vous laisse passer
+
+Dans le Comté, le Comte **ne vous attaque pas** : il vous regarde passer. Tant que personne ne le frappe, vous pouvez traverser le manoir, piller ses coffres et combattre ses gardes sous ses yeux.
+
+**Mais ne levez pas la main sur lui.** Au premier coup porté par un joueur (arme, flèche ou sort), il entre en colère contre **tous les joueurs présents**, pas seulement l'attaquant : il change de cible tant qu'un autre joueur est à portée. Sa colère retombe **45 secondes** après le dernier coup échangé ; il rentre alors à son trône, récupère ses PV et redevient pacifique.
+
+On ne pourra le vaincre pour de bon que plus tard, dans un donjon qui lui sera consacré.
+
 ## Fiche
 
 | | |
@@ -15,9 +23,9 @@ Il se bat à distance comme au corps à corps : il paralyse ses proies avec des 
 | Points de vie | **600** |
 | Vitesse | 4,5 |
 | Recul subi | ×0,2 |
-| Détection | 14 blocs (ligne de vue), ou dès qu'il est frappé |
+| Détection | aucune tant qu'on ne le frappe pas ; en colère : 14 blocs (ligne de vue), 20 blocs pour changer de cible |
 | Abandon | plus de cible à 40 blocs : rentre à son point d'apparition et **récupère tous ses PV** |
-| Attitude | hostile aux joueurs ; allié de toutes les créatures du Comté ; ennemi juré des [chasseurs de vampires](chasseur-epee.md) |
+| Attitude | **neutre envers les joueurs** tant qu'aucun ne le frappe, puis hostile à tous pendant sa colère ; allié de toutes les créatures du Comté ; ennemi juré des [chasseurs de vampires](chasseur-epee.md) |
 | Groupes | Vampires (argent ×2), Morts-vivants (feu purificateur) |
 
 ## Attaques et capacités
@@ -46,6 +54,7 @@ Chaque attaque à distance est précédée d'un temps de visée (0,3 à 0,6 s) p
 
 ## Conseils
 
+- Avant de le frapper, assurez-vous que **tout le groupe** est prêt : sa colère vise chacun de vous.
 - Les **armes en argent** lui infligent **le double de dégâts** ([armes en argent](../objets/armes-en-argent.md)), flèches d'argent comprises.
 - Il est un mort-vivant : il fuit le [feu purificateur](../objets/feu-purificateur.md) et y brûle s'il s'y attarde.
 - Tuez vite les rejetons : ils sont fragiles mais se soignent en mordant.

@@ -495,3 +495,23 @@ L'instance survit à la fermeture du campement (`CloseOnBlockRemove: false`) et 
 
 `Nakasar_Hunter_Breach_Test` (une seule fois, sans attente, mais de nuit) sert aux essais :
 `/worldevent start asset Nakasar_Hunter_Breach_Test`.
+
+## Comté : seigneurs pacifiques et lore implicite
+
+**Comte et Comtesse pacifiques.** Leurs rôles ont `DefaultPlayerAttitude: Neutral`. Le groupe de PNJ
+`Nakasar_Vampire_Lords` les désigne au Java (`lords/`) : `LordsWrathSystem` (groupe d'inspection des dégâts) met le
+seigneur en colère quand un joueur le blesse, et prolonge la colère à chaque coup échangé avec un joueur ;
+`LordsAttitudeSystem` (fournisseur d'attitude, priorité -5) le rend alors hostile à **tous** les joueurs. 45 s sans
+coup échangé : la colère tombe, il rentre (`ReturnHome`), se soigne et redevient neutre. En `ReturnHome`, un capteur
+`Player` hostile (20 blocs) le relance sur un autre joueur du groupe.
+
+**Lore.** `tools/generate_lore.py` écrit les textes (`nakasar_lore.lang`, fr-FR et en-US), les modèles et les objets :
+notes `Nakasar_Lore_*` (bloc non bloquant posé au sol, se ramasse), épitaphes `Nakasar_Epitaph_*` et tableau
+`Nakasar_Contract_Board`. Utiliser le bloc ouvre la page de lore du jeu : interaction `OpenCustomUI` avec
+`"Page": {"Id": "BlockLore", "TextAlignment": "Left"}` (clé `Id`, pas `Type`), qui affiche le nom et la description de
+l'objet du bloc visé ; `\n` dans un `.lang` donne un retour à la ligne. Une note en inventaire se lit dans son
+infobulle. `generate_prefabs.add_lore` pose les notes à côté des coffres (selon leur liste de butin), dans une cellule
+de prison et dans la crypte d'arrivée, et change environ une stèle debout sur trois en épitaphe, avec son propre tirage
+(le reste des prefabs ne bouge pas). `generate_loot.py` ajoute un tirage de note aux coffres des mêmes lieux. Le tableau
+de la brèche (posé par `generate_breach.py`) remet `Nakasar_Contract_Farm` (voie des chasseurs) au joueur qui n'en a pas,
+via l'interaction Java `Nakasar_GiveItemOnce`, puis ouvre sa page.

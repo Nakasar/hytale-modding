@@ -56,6 +56,7 @@ Les prefabs et la génération du monde sont produits par des scripts (détermin
 
 ```bash
 python3 mods/nakasar-vampires/tools/generate_prefabs.py    # 65 prefabs dans src/main/resources/Server/Prefabs/Nakasar/Halloween
+python3 mods/nakasar-vampires/tools/generate_lore.py       # notes, épitaphes et tableau de la brèche (avant prefabs et butin)
 python3 mods/nakasar-vampires/tools/generate_loot.py       # listes de butin des coffres
 python3 mods/nakasar-vampires/tools/generate_worldgen.py   # biome + structure de monde
 python3 mods/nakasar-vampires/tools/generate_pumpkin_models.py  # modèles animés de la citrouille géante et de ses vrilles (--preview DOSSIER : rendus)

@@ -24,6 +24,7 @@ const sidebars = {
       ],
     },
     "fragment/butin-des-coffres",
+    "fragment/notes-et-epitaphes",
     "breches",
   ],
   bestiaire: [
