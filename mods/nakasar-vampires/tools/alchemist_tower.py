@@ -391,6 +391,7 @@ class Tower:
         p = self.p
         ramp = self.helix(70, 205, 23, R_IN, F_LIBRARY, F_TRANS, flat=4)
         self.library_ramp = ramp
+        self.library_vault()
         # Garde-corps intérieur de la rampe (muret d'un bloc).
         for (x, z), s in ramp.items():
             d, a = polar(x, z)
@@ -446,6 +447,44 @@ class Tower:
                 self.door([(x, z)], y, 3)
         self.place(cx, y, cz, GLOW)
 
+    def library_vault(self):
+        """Coupole à gradins sous le plancher de la Salle des Transmutations (Kevin, 19 octobre 2026 : on ne doit plus
+        voir le dessous de la salle du dessus) : oculus d'or, trois gradins de caissons clairs semés d'étoiles de
+        cristal, seize nervures d'or en saillie, anneaux dorés à chaque gradin. Hors de la coupole, un bandeau ferme le
+        haut, sauf au-dessus de la rampe (sa trémie reste ouverte). `vault_low` donne le bloc le plus bas par colonne."""
+        p = self.p
+        rng = self.rng
+        top = F_TRANS - 2
+        tiers = ((7, top), (14, top - 1), (20, top - 2), (23, top - 3))
+        stars = ["Rock_Crystal_Blue_Block", "Rock_Crystal_Purple_Block", "Rock_Crystal_White_Block"]
+        self.vault_low = {}
+        for x, z, d, a in ring(0, R_IN):
+            if (x, z) in self.library_ramp:
+                continue
+            if d >= 23:
+                if self.p.free(x, top, z) and (x, top, z) not in self.keep_clear:
+                    p.set(x, top, z, self.wall())
+                    self.vault_low[(x, z)] = top
+                continue
+            k = next(i for i, (r, _) in enumerate(tiers) if d < r)
+            low = tiers[k][1]
+            edge = k > 0 and d >= tiers[k - 1][0] and d < tiers[k - 1][0] + 1  # gradin : anneau doré
+            rib = k > 0 and min(abs(((a - n) + 180) % 360 - 180) for n in range(0, 360, 360 // 16)) * d * math.pi / 180 < 0.6
+            for y in range(low, top + 1):
+                p.set(x, y, z, "Rock_Quartzite_Brick")
+            if d < 2.5:
+                p.set(x, top, z, "Rock_Gold_Brick_Ornate")
+            elif d < 4:
+                p.set(x, top, z, GOLD)
+            elif rib or edge:
+                p.set(x, low, z, TRIM if edge else GOLD)
+                if k >= 2:
+                    p.set(x, low - 1, z, GOLD if rib else TRIM)
+                    low -= 1
+            else:
+                p.set(x, low, z, rng.choice(stars) if rng.random() < 0.05 else "Rock_Quartzite_Brick_Smooth")
+            self.vault_low[(x, z)] = low
+
     def transmutation(self):
         p = self.p
         y = F_TRANS
@@ -458,9 +497,15 @@ class Tower:
                     continue
                 q = quadrants[(1 if x > 0 else -1, 1 if z > 0 else -1)]
                 p.set(x, y - 1, z, q if (x + z) % 3 == 0 else self.floor())
-        # Couloir depuis la rampe de la bibliothèque, à l'ouest.
+        # Couloir depuis la rampe de la bibliothèque, à l'ouest. Pas de plancher au-dessus des marches de la rampe encore
+        # sous ce niveau : il refermait la trémie et l'on butait en haut de l'escalier (Kevin, 19 octobre 2026).
         for x in range(-27, -SQUARE):
             for z in range(-13, -5):
+                if self.library_ramp.get((x, z), 2 * y) < 2 * y:
+                    for k in range(5):
+                        p.set(x, y + k, z, AIR)
+                        self.keep_clear.add((x, y + k, z))
+                    continue
                 self.door([(x, z)], y, 5)
         # Escalier le long du mur nord, vers le laboratoire.
         stair = {}
@@ -926,12 +971,12 @@ class Tower:
             if not in_arc(a, 60, 215) and rng.random() < 0.12:
                 self.place(x, y, z, rng.choice(["Deco_Book_Pile_Small", "Deco_Book_Pile_Large", "Deco_Scroll"]))
         # Lustres sous la coupole, fioles lumineuses sous les galeries.
-        top = F_TRANS - 2
-        self.hang(0, top, 0, "Furniture_Temple_Wind_Chandelier")
+        low = self.vault_low
+        self.hang(0, low[(0, 0)] - 1, 0, "Furniture_Temple_Wind_Chandelier")
         for r, step, off in ((10, 60, 30), (18, 45, 0)):
             for k in range(off, 360 + off, step):
                 x, z = at(r, k)
-                self.chain(x, top, z, 6, end="Furniture_Royal_Magic_Potion_Glow_Ceiling")
+                self.chain(x, low[(x, z)] - 1, z, 5, end="Furniture_Royal_Magic_Potion_Glow_Ceiling")
         for g in (14, 22):
             for k in range(0, 360, 20):
                 if not in_arc(k, 60, 215):
