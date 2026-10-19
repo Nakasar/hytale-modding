@@ -352,7 +352,7 @@ public class SummonMinionsInteraction extends SimpleInstantInteraction {
                 healing += HEAL.getOrDefault(minion, 0f);
             }
             heal(store, summoner, healing * POLL_MS / 1000f);
-            if (minions.isEmpty()) {
+            if (minions.isEmpty() && MinionShieldSystem.isShielded(summoner, store)) {
                 store.tryRemoveComponent(summoner, Invulnerable.getComponentType());
             }
             world.scheduleAfter(() -> watch(world, summoner), POLL_MS, TimeUnit.MILLISECONDS);

@@ -227,6 +227,13 @@ class Prefab:
                         self.set(x, y - d, z, self.pick(foundation))
 
     def clear(self, x0, y0, z0, x1, y1, z1):
+        """Vide la boîte, y compris les meubles posés dehors dont une partie déborde dedans."""
+        for x in range(min(x0, x1), max(x0, x1) + 1):
+            for y in range(min(y0, y1), max(y0, y1) + 1):
+                for z in range(min(z0, z1), max(z0, z1) + 1):
+                    owner = self.claims.get((x, y, z))
+                    if owner is not None:
+                        self.set(*owner, AIR)
         self.fill(x0, y0, z0, x1, y1, z1, AIR)
 
     def crenellate(self, x0, z0, x1, z1, y, palette):

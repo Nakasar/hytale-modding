@@ -362,10 +362,11 @@ Les boss réutilisent les interactions et particules des runes.
   (`Allegiances.isCasterAlly`, comme le piège de vrilles) ; un `ApplyEffect` vanilla toucherait aussi les alliés
   (vague de froid du Spectre).
 - **Bouclier des serviteurs** (Java, `elite/MinionShieldSystem`) : la citrouille géante et le Spectre ne prennent
-  aucun dégât d'entité tant qu'un serviteur de leur vague vit, sans message au joueur. Elles portent alors le
-  composant vanilla `Invulnerable`, comme les boss du donjon Deepworks : leur barre de boss passe en mode
-  invulnérable. `ShieldUnloadSystem` le retire avant sauvegarde (les serviteurs ne sont pas sauvegardés). Les deux
-  lancent leur première vague au premier coup reçu.
+  aucun dégât tant qu'un serviteur de leur vague vit (vide et environnement compris), sans message au joueur. Elles
+  portent alors le composant vanilla `Invulnerable`, comme les boss du donjon Deepworks : leur barre de boss passe en
+  mode invulnérable. Les serviteurs ne sont pas sauvegardés : `ShieldUnloadSystem` retire le composant au
+  déchargement et au rechargement, et `MinionShieldSystem` lève toute invulnérabilité restée sans vague vivante dès
+  le premier coup reçu. Les deux lancent leur première vague au premier coup reçu (attaquant à 20 blocs au plus).
 - **Feu** (Java, `elite/FireAffinitySystem`) : dans le groupe de filtrage des dégâts, après
   `AllegianceDamageFilter`, les dégâts de cause `Fire` (ou qui en hérite) sont doublés sur un membre de
   `Nakasar_Pumpkin_Patch` et annulés sur un membre de `Nakasar_Fire_Immune` (armure enchantée et rouages).
