@@ -1,0 +1,20 @@
+{
+  "Container": {
+    "Type": "Choice",
+    "Containers": [
+      {
+        "Type": "Single",
+        "Item": {
+          "ItemId": "Nakasar_Trophy_Vampire_Fang",
+          "QuantityMin": 1,
+          "QuantityMax": 1
+        },
+        "Weight": 1
+      },
+      {
+        "Type": "Empty",
+        "Weight": 1
+      }
+    ]
+  }
+}

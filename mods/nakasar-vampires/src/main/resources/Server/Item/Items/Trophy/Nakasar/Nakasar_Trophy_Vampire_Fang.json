@@ -1,0 +1,22 @@
+{
+  "TranslationProperties": {
+    "Name": "nakasar_hunters.items.Nakasar_Trophy_Vampire_Fang.name",
+    "Description": "nakasar_hunters.items.Nakasar_Trophy_Vampire_Fang.description"
+  },
+  "Icon": "Icons/Items/Nakasar/Trophies/Trophy_Vampire_Fang.png",
+  "Model": "Items/Nakasar/Trophies/Trophy_Vampire_Fang.blockymodel",
+  "Texture": "Items/Nakasar/Trophies/Trophy_Vampire_Fang.png",
+  "Quality": "Uncommon",
+  "ItemLevel": 15,
+  "Categories": [
+    "Items.Ingredients"
+  ],
+  "Tags": {
+    "Type": [
+      "Nakasar_Trophy"
+    ]
+  },
+  "PlayerAnimationsId": "Item",
+  "ItemSoundSetId": "ISS_Items_Gems",
+  "MaxStack": 25
+}

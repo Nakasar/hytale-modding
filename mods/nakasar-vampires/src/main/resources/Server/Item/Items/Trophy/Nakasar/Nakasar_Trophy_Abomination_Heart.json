@@ -1,0 +1,22 @@
+{
+  "TranslationProperties": {
+    "Name": "nakasar_hunters.items.Nakasar_Trophy_Abomination_Heart.name",
+    "Description": "nakasar_hunters.items.Nakasar_Trophy_Abomination_Heart.description"
+  },
+  "Icon": "Icons/Items/Nakasar/Trophies/Trophy_Abomination_Heart.png",
+  "Model": "Items/Nakasar/Trophies/Trophy_Abomination_Heart.blockymodel",
+  "Texture": "Items/Nakasar/Trophies/Trophy_Abomination_Heart.png",
+  "Quality": "Rare",
+  "ItemLevel": 25,
+  "Categories": [
+    "Items.Ingredients"
+  ],
+  "Tags": {
+    "Type": [
+      "Nakasar_Trophy"
+    ]
+  },
+  "PlayerAnimationsId": "Item",
+  "ItemSoundSetId": "ISS_Items_Gems",
+  "MaxStack": 10
+}

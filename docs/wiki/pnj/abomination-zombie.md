@@ -31,11 +31,14 @@ Un amas de chair gonflé (gros zombie aberrant vanilla, ×1,35) qui hante la fer
 | Objet | Quantité | Chance |
 |---|---|---|
 | Éclat de rune | 1 à 3 | 100 % |
+| [Cœur d'Abomination](../objets/trophees.md) | 1 | 100 % |
 | Butin habituel des zombies (`Drop_Zombie`) | | |
 
 ## Où le trouver
 
 [Ferme zombie](../fragment/fermes.md) : **1** marqueur, réapparition toutes les **30 minutes**.
+
+Aussi la cible du [contrat « la Bête de la ferme »](../objets/contrats.md).
 
 ## Conseils
 

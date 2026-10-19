@@ -22,7 +22,8 @@ public final class SilverWeapons {
     /** L'épée en acier argenté vanilla compte aussi comme une arme en argent. */
     private static final Set<String> VANILLA_SILVER = Set.of("Weapon_Sword_Silversteel");
 
-    private static final Set<Ref<EntityStore>> SILVER_PROJECTILES = ConcurrentHashMap.newKeySet();
+    /** Projectiles en argent, avec vrai s'ils sont en argent infusé (tag {@code Material: Infused_Silver}). */
+    private static final Map<Ref<EntityStore>, Boolean> SILVER_PROJECTILES = new ConcurrentHashMap<>();
 
     private SilverWeapons() {
     }
@@ -32,25 +33,35 @@ public final class SilverWeapons {
         if (ItemStack.isEmpty(stack)) {
             return false;
         }
-        if (VANILLA_SILVER.contains(stack.getItemId())) {
-            return true;
-        }
+        return VANILLA_SILVER.contains(stack.getItemId()) || hasMaterial(stack, "Silver");
+    }
+
+    /** Vrai si l'objet est une arme en argent infusé (établi des chasseurs, {@code tools/generate_infused_weapons.py}). */
+    public static boolean isInfused(ItemStack stack) {
+        return !ItemStack.isEmpty(stack) && hasMaterial(stack, "Infused_Silver");
+    }
+
+    private static boolean hasMaterial(ItemStack stack, String material) {
         Item item = stack.getItem();
         if (item == null || item.getData() == null || item.getData().getRawTags() == null) {
             return false;
         }
         Map<String, String[]> tags = item.getData().getRawTags();
         String[] materials = tags.get("Material");
-        return materials != null && Arrays.asList(materials).contains("Silver");
+        return materials != null && Arrays.asList(materials).contains(material);
     }
 
-    static void markProjectile(Ref<EntityStore> projectile) {
-        SILVER_PROJECTILES.removeIf(ref -> !ref.isValid());
-        SILVER_PROJECTILES.add(projectile);
+    static void markProjectile(Ref<EntityStore> projectile, boolean infused) {
+        SILVER_PROJECTILES.keySet().removeIf(ref -> !ref.isValid());
+        SILVER_PROJECTILES.put(projectile, infused);
+    }
+
+    static boolean isInfusedProjectile(Ref<EntityStore> projectile) {
+        return projectile != null && SILVER_PROJECTILES.getOrDefault(projectile, false);
     }
 
     static boolean isSilverProjectile(Ref<EntityStore> projectile) {
-        return projectile != null && SILVER_PROJECTILES.contains(projectile);
+        return projectile != null && SILVER_PROJECTILES.containsKey(projectile);
     }
 
     public static void clearAll() {

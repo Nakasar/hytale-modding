@@ -80,6 +80,16 @@
           "Id": "Nakasar_Hunter_Fragments",
           "Name": "nakasar_hunters.benchCategories.nakasar_hunter_fragments",
           "Icon": "Icons/CraftingCategories/Nakasar/Fragment.png"
+        },
+        {
+          "Id": "Nakasar_Hunter_Weapons",
+          "Name": "nakasar_hunters.benchCategories.nakasar_hunter_weapons",
+          "Icon": "Icons/CraftingCategories/Nakasar/Infused_Silver.png"
+        },
+        {
+          "Id": "Nakasar_Hunter_Contracts",
+          "Name": "nakasar_hunters.benchCategories.nakasar_hunter_contracts",
+          "Icon": "Icons/CraftingCategories/Nakasar/Contracts.png"
         }
       ],
       "TierLevels": [
@@ -87,16 +97,16 @@
           "UpgradeRequirement": {
             "Material": [
               {
-                "ItemId": "Ingredient_Bar_Silver",
-                "Quantity": 6
+                "ItemId": "Nakasar_Trophy_Abomination_Heart",
+                "Quantity": 1
               },
               {
-                "ItemId": "Ingredient_Rune_Shard",
+                "ItemId": "Nakasar_Trophy_Vampire_Fang",
                 "Quantity": 4
               },
               {
-                "ItemId": "Rock_Gem_Topaz",
-                "Quantity": 2
+                "ItemId": "Ingredient_Bar_Silver",
+                "Quantity": 4
               }
             ],
             "TimeSeconds": 3
@@ -104,7 +114,35 @@
           "CraftingTimeReductionModifier": 0.0
         },
         {
+          "UpgradeRequirement": {
+            "Material": [
+              {
+                "ItemId": "Nakasar_Trophy_Pumpkin_Seed",
+                "Quantity": 1
+              },
+              {
+                "ItemId": "Nakasar_Trophy_Captain_Insignia",
+                "Quantity": 1
+              },
+              {
+                "ItemId": "Nakasar_Trophy_Vampire_Fang",
+                "Quantity": 8
+              },
+              {
+                "ItemId": "Ingredient_Bar_Silver",
+                "Quantity": 8
+              },
+              {
+                "ItemId": "Ingredient_Rune_Shard",
+                "Quantity": 4
+              }
+            ],
+            "TimeSeconds": 5
+          },
           "CraftingTimeReductionModifier": 0.15
+        },
+        {
+          "CraftingTimeReductionModifier": 0.3
         }
       ]
     },
