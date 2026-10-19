@@ -38,7 +38,16 @@ Pour boire :
 - **[Nova de sang](#nova-de-sang)** : +5 % de sang par cible vivante.
 - ![icône](/jeu/Icons/Items/Nakasar/Occult/Blood_Vial.png) **Fiole de sang** : +35 % de sang. Elle ne se boit pas si votre réserve est pleine. Un vivant qui la boit a la nausée 12 s.
 
-La nuit, un vampire voit dans le noir : une faible lumière rouge l'entoure.
+La nuit, un vampire voit dans le noir : une faible lumière l'entoure, que lui seul voit.
+
+## Rester discret {#discretion}
+
+En multijoueur, rien ne trahit un vampire aux yeux des autres joueurs : ni lumière, ni teint, ni son. Sa soif, ses battements de cœur et sa vision nocturne ne s'affichent que chez lui. Il se trahit seulement :
+
+- en s'exposant au **soleil** sans protection (sa peau brûle, des dégâts s'affichent) ;
+- en lançant des **pouvoirs de vampire** devant témoins ([Baiser du Vampire](runes.md#baiser-du-vampire), [Nova de sang](#nova-de-sang)) ;
+- en restant près d'un **[feu purificateur](feu-purificateur.md)**, qui le blesse ;
+- pendant le **rituel** lui-même, à l'autel (lueur de sang quelques secondes et son entendu autour).
 
 ## Le soleil {#soleil}
 

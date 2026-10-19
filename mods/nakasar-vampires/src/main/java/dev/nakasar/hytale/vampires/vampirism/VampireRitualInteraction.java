@@ -136,10 +136,11 @@ public class VampireRitualInteraction extends SimpleInstantInteraction {
         }
         Vampires.removeEffect(ref, VampireSystem.SUNBURN, buffer);
         Vampires.removeEffect(ref, VampireSystem.SUNBURN_LIGHT, buffer);
-        VampireSystem.removeNightLight(ref, buffer);
+        PrivateNightLightSystem.clear(ref, Vampires.of(ref, buffer), buffer);
+        VampireSystem.removeLegacyNightLight(ref, buffer);
         LightAura aura = buffer.getComponent(ref, LightAura.getComponentType());
         if (aura != null) {
-            aura.forgetPreviousLight(VampireSystem.NIGHT_LIGHT); // sinon l'aura rendrait la lumière du vampire
+            aura.forgetPreviousLight(VampireSystem.LEGACY_NIGHT_LIGHT); // sinon l'aura rendrait l'ancienne lumière
         }
         buffer.tryRemoveComponent(ref, Vampire.getComponentType());
     }

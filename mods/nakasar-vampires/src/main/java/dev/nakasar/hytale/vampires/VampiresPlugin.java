@@ -48,6 +48,7 @@ import dev.nakasar.hytale.vampires.silver.TakeArrowInteraction;
 import dev.nakasar.hytale.vampires.vampirism.BloodFeedInteraction;
 import dev.nakasar.hytale.vampires.vampirism.DrinkBloodInteraction;
 import dev.nakasar.hytale.vampires.vampirism.Vampire;
+import dev.nakasar.hytale.vampires.vampirism.PrivateNightLightSystem;
 import dev.nakasar.hytale.vampires.vampirism.VampireDamageSystem;
 import dev.nakasar.hytale.vampires.vampirism.VampireRitualInteraction;
 import dev.nakasar.hytale.vampires.vampirism.VampireSystem;
@@ -186,6 +187,7 @@ public final class VampiresPlugin extends JavaPlugin {
         systems.registerSystem(new InvisibilitySystem.Unload());
         systems.registerSystem(new VampireSystem(purifyingFireSystem));
         systems.registerSystem(new VampireDamageSystem());
+        systems.registerSystem(new PrivateNightLightSystem());
 
         // Brèche des chasseurs : évènement de monde (Server/WorldEvent) avec notre condition « nuit ».
         WorldEventsPlugin.registerCondition(this, NightCondition.TYPE, NightCondition.CODEC, NightCondition.Config.CODEC);

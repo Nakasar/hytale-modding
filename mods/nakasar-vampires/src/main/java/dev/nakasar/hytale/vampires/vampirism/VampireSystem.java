@@ -29,7 +29,6 @@ import com.hypixel.hytale.server.core.universe.world.SoundUtil;
 import com.hypixel.hytale.server.core.universe.world.World;
 import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
 import com.hypixel.hytale.server.core.util.TargetUtil;
-import dev.nakasar.hytale.vampires.purifying.LightAura;
 import dev.nakasar.hytale.vampires.purifying.PurifyingFireSystem;
 import org.joml.Vector3d;
 
@@ -54,9 +53,9 @@ import java.util.Map;
  *       et le malus d'attaque sont dans {@link VampireDamageSystem}.</li>
  *   <li><b>Lumière purificatrice.</b> Près d'une torche ou d'une lanterne des chasseurs, ou d'une aura de lumière, le
  *       vampire perd {@value #PURIFYING_DPS} point de vie par seconde.</li>
- *   <li><b>Vision nocturne.</b> La nuit, une faible lumière rouge l'entoure (lumière d'entité, vue aussi par les
- *       autres joueurs). Elle ne remplace pas une lumière déjà posée (aura de lumière).</li>
  * </ul>
+ * La vision nocturne, vue du seul vampire, est dans {@link PrivateNightLightSystem} : rien de ce système n'est visible
+ * des autres joueurs, sauf les brûlures du soleil.
  * Tout est par joueur : chaque vampire a son composant {@link Vampire}, sauvegardé avec lui.
  */
 public final class VampireSystem extends DelayedEntitySystem<EntityStore> {
@@ -83,8 +82,11 @@ public final class VampireSystem extends DelayedEntitySystem<EntityStore> {
     private static final Map<String, Float> GARMENT_SUN_LEFT = Map.of(
             "Armor_Nakasar_Occult_Hood", 0.7f,
             "Armor_Nakasar_Occult_Mantle", 0.75f);
-    /** Lumière de vision nocturne : faible et rougeâtre. */
-    static final ColorLight NIGHT_LIGHT = new ColorLight((byte) 6, (byte) 5, (byte) 2, (byte) 2);
+    /**
+     * Ancienne lumière de vision nocturne (rouge, vue de tous), sauvegardée avec les joueurs devenus vampires avant la
+     * lumière privée : retirée à leur retour.
+     */
+    static final ColorLight LEGACY_NIGHT_LIGHT = new ColorLight((byte) 6, (byte) 5, (byte) 2, (byte) 2);
 
     private static final float INTERVAL = 0.25f;
     private static final Query<EntityStore> QUERY = Query.and(Vampire.getComponentType(),
@@ -122,7 +124,7 @@ public final class VampireSystem extends DelayedEntitySystem<EntityStore> {
         hunger(dt, ref, vampire, stats, world, buffer);
         sun(dt, ref, vampire, position, store, buffer);
         purifyingLight(dt, ref, vampire, position, store, buffer);
-        nightVision(ref, vampire, store, buffer);
+        removeLegacyNightLight(ref, buffer);
         if (vampire.getStage() == BloodStage.STARVING) {
             heartbeat(dt, ref, vampire, position, buffer);
         } else {
@@ -242,27 +244,13 @@ public final class VampireSystem extends DelayedEntitySystem<EntityStore> {
         return pending - amount;
     }
 
-    private static void nightVision(Ref<EntityStore> ref, Vampire vampire, Store<EntityStore> store,
-                                    CommandBuffer<EntityStore> buffer) {
-        if (buffer.getComponent(ref, LightAura.getComponentType()) != null) {
-            return; // l'aura de lumière tient la lumière et rendra la nôtre à sa fin
-        }
-        DynamicLight light = buffer.getComponent(ref, DynamicLight.getComponentType());
-        boolean night = !SunExposure.isDay(store);
-        if (night && light == null) {
-            buffer.putComponent(ref, DynamicLight.getComponentType(), new DynamicLight(new ColorLight(NIGHT_LIGHT)));
-        } else if (!night && light != null) {
-            removeNightLight(ref, buffer);
-        }
-    }
-
     /**
-     * Retire la lumière de vision nocturne (matin, guérison). Elle est reconnue à sa couleur : la lumière d'entité est
-     * sauvegardée avec le joueur, un drapeau en mémoire serait perdu à la reconnexion.
+     * Retire l'ancienne lumière rouge de vision nocturne. Elle est reconnue à sa couleur : la lumière d'entité est
+     * sauvegardée avec le joueur.
      */
-    static void removeNightLight(Ref<EntityStore> ref, CommandBuffer<EntityStore> buffer) {
+    static void removeLegacyNightLight(Ref<EntityStore> ref, CommandBuffer<EntityStore> buffer) {
         DynamicLight light = buffer.getComponent(ref, DynamicLight.getComponentType());
-        if (light != null && NIGHT_LIGHT.equals(light.getColorLight())) {
+        if (light != null && LEGACY_NIGHT_LIGHT.equals(light.getColorLight())) {
             buffer.tryRemoveComponent(ref, DynamicLight.getComponentType());
         }
     }
