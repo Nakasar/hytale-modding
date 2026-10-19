@@ -46,6 +46,8 @@ import dev.nakasar.hytale.vampires.silver.SilverDamageSystem;
 import dev.nakasar.hytale.vampires.silver.SilverProjectileSystems;
 import dev.nakasar.hytale.vampires.silver.SilverWeapons;
 import dev.nakasar.hytale.vampires.silver.TakeArrowInteraction;
+import dev.nakasar.hytale.vampires.tower.AlchemistFlaskInteraction;
+import dev.nakasar.hytale.vampires.tower.AlchemistSystem;
 import dev.nakasar.hytale.vampires.tower.ChimeraSystem;
 import dev.nakasar.hytale.vampires.tower.CodexChapterInteraction;
 import dev.nakasar.hytale.vampires.tower.CodexSystem;
@@ -115,6 +117,9 @@ import dev.nakasar.hytale.vampires.vampirism.VampireSystem;
  *       effondrement des rayonnages, remise à zéro, sceau ouvert à sa mort).</li>
  *   <li>{@link ChimeraSystem} : combat de la Chimère du laboratoire (régénération dans la cuve nourrie par les
  *       homoncules porteurs et les étagères de réactifs, acide de la cuve, remise à zéro, sceau ouvert à sa mort).</li>
+ *   <li>{@code Nakasar_AlchemistFlask} ({@link AlchemistSystem}) : combat de l'Alchimiste (vie selon le groupe et le
+ *       mode difficile, trois phases, athanor et homoncules, rebord qui s'effondre, piliers élémentaires, fioles de
+ *       soin, remise à zéro, sceau du bureau ouvert à sa mort).</li>
  * </ul>
  */
 public final class VampiresPlugin extends JavaPlugin {
@@ -171,6 +176,8 @@ public final class VampiresPlugin extends JavaPlugin {
                 OpenBountyBagInteraction.class, OpenBountyBagInteraction.CODEC);
         interactions.register(CodexChapterInteraction.TYPE_ID,
                 CodexChapterInteraction.class, CodexChapterInteraction.CODEC);
+        interactions.register(AlchemistFlaskInteraction.TYPE_ID,
+                AlchemistFlaskInteraction.class, AlchemistFlaskInteraction.CODEC);
 
         var systems = getEntityStoreRegistry();
         RootTrapped.setComponentType(systems.registerComponent(RootTrapped.class, RootTrapped::new));
@@ -211,14 +218,16 @@ public final class VampiresPlugin extends JavaPlugin {
         systems.registerSystem(new TowerFallSystem());
         systems.registerSystem(new CodexSystem());
         systems.registerSystem(new ChimeraSystem());
+        systems.registerSystem(new AlchemistSystem());
 
-        getLogger().atInfo().log("Nakasar Vampires : 19 types d'interaction (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s), systèmes des camps, de l'argent, du feu purificateur, de la voie occulte, de la brèche, des contrats des chasseurs et de la Tour de l'Alchimiste enregistrés",
+        getLogger().atInfo().log("Nakasar Vampires : 20 types d'interaction (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s), systèmes des camps, de l'argent, du feu purificateur, de la voie occulte, de la brèche, des contrats des chasseurs et de la Tour de l'Alchimiste enregistrés",
                 TeleportCasterToImpactInteraction.TYPE_ID, DominateInteraction.TYPE_ID, RootNpcInteraction.TYPE_ID,
                 DrainBeamInteraction.TYPE_ID, DominatePlayerInteraction.TYPE_ID, ImprisonPlayerInteraction.TYPE_ID,
                 RootTrapInteraction.TYPE_ID, TakeArrowInteraction.TYPE_ID, ReturnArrowInteraction.TYPE_ID,
                 SummonMinionsInteraction.TYPE_ID, ApplyEffectToFoesInteraction.TYPE_ID, LightAuraInteraction.TYPE_ID, InvisibilityInteraction.TYPE_ID,
                 VampireRitualInteraction.TYPE_ID, BloodFeedInteraction.TYPE_ID, DrinkBloodInteraction.TYPE_ID,
-                OpenBountyBagInteraction.TYPE_ID, ClaimBreachContractInteraction.TYPE_ID, CodexChapterInteraction.TYPE_ID);
+                OpenBountyBagInteraction.TYPE_ID, ClaimBreachContractInteraction.TYPE_ID, CodexChapterInteraction.TYPE_ID,
+                AlchemistFlaskInteraction.TYPE_ID);
     }
 
     @Override
@@ -235,5 +244,6 @@ public final class VampiresPlugin extends JavaPlugin {
         ClaimBreachContractInteraction.clearAll();
         CodexSystem.clearAll();
         ChimeraSystem.clearAll();
+        AlchemistSystem.clearAll();
     }
 }

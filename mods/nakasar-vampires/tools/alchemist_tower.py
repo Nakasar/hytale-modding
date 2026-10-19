@@ -93,6 +93,19 @@ CHIMERA_SHELF_ANGLES = (20, 110, 175, 235)
 CHIMERA_EXIT_R = 12.5
 CHIMERA_EXIT_ANGLES = (30, 120, 150, 210, 240, 330)
 CHIMERA_DOOR_Z = -30
+# Combat de l'Alchimiste (étape 7), sur la terrasse de l'Observatoire.
+ATHANOR_R = 3.6          # athanor central : murs pour d < ATHANOR_R, chambre (où il s'enferme) pour d < ATHANOR_ROOM
+ATHANOR_ROOM = 1.6
+ALCHEMIST_EXIT_R = 6
+PILLAR_R = 17
+PILLAR_ANGLES = (20, 150, 295, 340)   # piliers de la Convergence : feu, glace, foudre, racine
+HEAL_R = 26
+HEAL_ANGLES = (0, 45, 130, 165, 300, 325)
+SAFE_R = 28              # points de retour sur la terrasse pour qui tombe dans un trou
+DECK_COLLAPSE_ARCS = ((282, 322), (346, 362), (18, 52))  # loin de l'antichambre, du bureau, des pieds des arcs
+DECK_COLLAPSE_R = (34.5, 41.4)
+STUDY_DOOR_Z = 26
+ANTECHAMBER_ARC = (200, 275)
 
 DIRS4 = ((1, 0), (-1, 0), (0, 1), (0, -1))
 DIRS8 = DIRS4 + ((1, 1), (1, -1), (-1, 1), (-1, -1))
@@ -814,6 +827,10 @@ class Tower:
         sx, sy, sz = self.trap["chimera"]["spawn"]
         self.p.set(sx, sy, sz, SPAWNER_PREFIX + "Lab_Chimera")
         self.spawners.append(("Lab_Chimera", (sx, sy, sz)))
+        # L'Alchimiste attend sur la terrasse, face à la porte de l'antichambre (case réservée par `alchemist`).
+        sx, sy, sz = self.trap["alchemist"]["spawn"]
+        self.p.set(sx, sy, sz, SPAWNER_PREFIX + "Alchemist")
+        self.spawners.append(("Alchemist", (sx, sy, sz)))
         # Gargouilles au-dessus de l'Escalier des vents : elles volent, on les pose deux blocs au-dessus des marches.
         for angle in GARGOYLE_ANGLES:
             x, y, z = self.ramp_cell(angle)
@@ -990,6 +1007,81 @@ class Tower:
             raise RuntimeError(f"tour : le sceau de la Chimère ne ferme pas la porte nord ({len(seal)} blocs)")
         self.trap["chimera"] = {"vat": (0, y, 0), "spawn": (sx, y, sz), "shelves": shelves, "exits": exits, "seal": seal}
 
+    # --- l'Alchimiste (étape 7) --------------------------------------------------------------------
+
+    def alchemist(self):
+        """Arène de l'Alchimiste, toute la terrasse de l'Observatoire ; `self.trap["alchemist"]` garde ses positions pour
+        tools/alchemist_traps.py et TowerLayout.java :
+        - l'athanor au centre : un four d'or et de verre dont la chambre (3 × 3, 5 de haut) l'enferme au Grand Œuvre ;
+        - les cases libres autour où il en ressort, les quatre piliers de la Convergence, les fioles de soin ;
+        - les pans du rebord en encorbellement qui s'effondrent (blocs du sol et du dessous), loin de l'antichambre, du
+          bureau et de l'arrivée de l'Escalier des vents ;
+        - le levier du mode difficile dans l'antichambre et le sceau de la porte du bureau, qui tient jusqu'à sa mort."""
+        p = self.p
+        y = F_DECK
+        # Athanor : murs d'or, fenêtres de verre violet, coupole et cheminée.
+        for x, z, d, a in ring(0, ATHANOR_R):
+            if d < ATHANOR_ROOM:
+                p.set(x, y - 1, z, "Rock_Crystal_Purple_Block")
+                for k in range(5):
+                    p.set(x, y + k, z, AIR)
+                    self.keep_clear.add((x, y + k, z))
+                p.set(x, y + 5, z, GOLD)
+            else:
+                window = int(a + 22.5) % 90 < 30
+                for k in range(6):
+                    p.set(x, y + k, z, GLASS if window and 1 <= k <= 3 else (TRIM if k in (0, 5) else GOLD))
+                if d < ATHANOR_R - 1:
+                    p.set(x, y + 6, z, TRIM)
+            self.keep_clear.update((x, y + k, z) for k in range(12))
+        for k in range(6, 11):
+            p.set(0, y + k, 0, "Rock_Gold_Brick_Pillar_Middle")
+        p.set(0, y + 11, 0, "Nakasar_Tower_Emanation_Smoke")
+        # Le décor laisse un tour libre autour de l'athanor.
+        self.keep_clear.update((x, y + k, z) for x, z, d, a in ring(ATHANOR_R, ATHANOR_R + 2.5) for k in range(4))
+
+        def spot(r, a, height=3, reach=2, clear=1):
+            x, z = self.spawn_cell(*at3(r, y, a), height=height, reach=reach)
+            self.keep_clear.update((x + dx, y + k, z + dz) for dx in range(-clear, clear + 1)
+                                   for dz in range(-clear, clear + 1) for k in range(height))
+            return x, y, z
+
+        exits = [spot(ALCHEMIST_EXIT_R, a) for a in range(0, 360, 45)]
+        pillars = [spot(PILLAR_R, a, height=4) for a in PILLAR_ANGLES]
+        heals = [spot(HEAL_R, a) for a in HEAL_ANGLES]
+        spawn = spot(10, 245, height=3, clear=1)
+        # Pans du rebord : le sol (y - 1) et le dessous de l'encorbellement (y - 2), seulement là où le sol est libre.
+        collapse = []
+        for a0, a1 in DECK_COLLAPSE_ARCS:
+            cells = []
+            for x, z, d, a in ring(*DECK_COLLAPSE_R):
+                if not in_arc(a, a0, a1) or p.get(x, y - 1, z) not in [n for n, _ in FLOOR]:
+                    continue
+                if any(not p.free(x, y + k, z) for k in range(3)):
+                    continue
+                cells.append((x, y - 1, z))
+                if p.get(x, y - 2, z) in [n for n, _ in WALL]:
+                    cells.append((x, y - 2, z))
+                self.keep_clear.update((x, y + k, z) for k in range(4))
+            if len(cells) < 40:
+                raise RuntimeError(f"tour : pan du rebord trop petit ({a0}-{a1}° : {len(cells)} blocs)")
+            collapse.append(cells)
+        safe = []
+        for a in range(0, 360, 15):
+            if in_arc(a, *ANTECHAMBER_ARC) or in_arc(a, 60, 120):
+                continue
+            x, z = at(SAFE_R, a)
+            if self.solid(x, y - 1, z) and all(p.free(x, y + k, z) for k in range(2)):
+                safe.append((x, y, z))
+        # Levier du mode difficile, dans l'antichambre, avant la porte de la terrasse.
+        lx, lz = at(31, 228)
+        lever = self.usable(lx, y, lz, LEVER, facing_center(lx, lz), plinth=None)
+        seal = self.seal([(x, STUDY_DOOR_Z) for x in range(-2, 3)], y, y + 5)
+        if len(seal) != 25:
+            raise RuntimeError(f"tour : le sceau du bureau ne ferme pas sa porte ({len(seal)} blocs)")
+        self.trap["alchemist"] = {"center": (0, y, 0), "exits": exits, "pillars": pillars, "heals": heals,
+                                  "spawn": spawn, "collapse": collapse, "safe": safe, "lever": lever, "seal": seal}
+
     # --- décor -----------------------------------------------------------------------------------
 
     def hang(self, x, y, z, name, rot=0):
@@ -1042,25 +1134,6 @@ class Tower:
         p.set(cx, y + height + 2, cz, "Rock_Gold_Brick_Pillar_Middle")
         p.set(cx, y + height + 3, cz, "Nakasar_Tower_Emanation_Motes")
         return True
-
-    def armillary(self, cx, y, cz, r, core="Rock_Crystal_Purple_Block"):
-        """Sphère armillaire : pied d'or, cœur de cristal, trois cercles d'or (équateur et deux méridiens)."""
-        p = self.p
-        cy = y + r + 2
-        for k in range(0, r + 1):
-            p.set(cx, y + k, cz, "Rock_Gold_Brick_Pillar_Base" if k == 0 else "Rock_Gold_Brick_Pillar_Middle")
-        for dx in range(-1, 2):
-            for dy in range(-1, 2):
-                for dz in range(-1, 2):
-                    if abs(dx) + abs(dy) + abs(dz) <= 1:
-                        p.set(cx + dx, cy + dy, cz + dz, core)
-        for i in range(0, 360, 4):
-            c, s = math.cos(math.radians(i)), math.sin(math.radians(i))
-            for px, py, pz in ((round(r * c), 0, round(r * s)), (round(r * c), round(r * s), 0),
-                               (0, round(r * s), round(r * c))):
-                if p.free(cx + px, cy + py, cz + pz):
-                    p.set(cx + px, cy + py, cz + pz, GOLD if (i // 4) % 6 else "Rock_Gold_Brick_Ornate")
-        p.set(cx, cy + r + 1, cz, "Nakasar_Tower_Emanation_Spiral")
 
     def wall_ring(self, y0, y1, arcs_out, every=20, fill=12, names=(SHELF,)):
         """Meubles adossés au mur intérieur (r 28,4 à 29,5) de y0 à y1, par tronçons de `fill` degrés sur `every`."""
@@ -1386,22 +1459,9 @@ class Tower:
     def decor_observatory(self):
         y = F_DECK
         rng = self.rng
-        # Grande sphère armillaire au centre de la terrasse, bancs en cercle tournés vers elle.
-        self.armillary(0, y, 0, 7, core="Rock_Crystal_Blue_Block")
-        for k in range(0, 360, 40):
-            if in_arc(k, 195, 280) or in_arc(k, 70, 110):
-                continue
-            x, z = at(15, k)
-            self.place(x, y, z, "Furniture_Temple_Light_Bench", facing_center(x, z))
-        # Lunettes et cartes du ciel posées sur des lutrins d'or.
+        # Le centre est l'arène de l'Alchimiste, autour de son athanor : le décor reste au pourtour.
         for k in (20, 160, 300):
             self.telescope(k, 38)
-        for k in (0, 40, 130, 185, 230, 320):
-            x, z = at(27, k)
-            if (x, y, z) in self.keep_clear or (x, y + 1, z) in self.keep_clear:
-                continue
-            if self.place(x, y, z, "Rock_Gold_Brick_Pillar_Base"):
-                self.place(x, y + 1, z, "Deco_Map", facing_center(x, z))
         # Massifs de fleurs lumineuses entre les arcs, braseros le long du parapet, cristaux sur socles d'or.
         flowers = ["Plant_Flower_Tall_Cyan", "Plant_Flower_Orchid_Purple", "Plant_Crop_Mushroom_Glowing_Blue",
                    "Plant_Crop_Mushroom_Glowing_Purple", "Plant_Grass_Lush"]
@@ -1512,6 +1572,7 @@ class Tower:
         self.traps()
         self.codex()
         self.chimera()
+        self.alchemist()
         self.decorate()
         self.mobs()
         self.secure()
@@ -1679,7 +1740,7 @@ GARGOYLE_ANGLES = (320, 40, 130, 220)
 # Salles à atteindre depuis le parvis (x, niveau, z), en plus des points de contrôle.
 GOALS = {"hall": (0, F_HALL, 16), "leaks_exit": (-31, F_LEAKS, 0), "balcony_north": (0, F_LEAKS, -40),
          "library": (0, F_LIBRARY, 12), "transmutation": (0, F_TRANS, 0), "lab": (10, F_LAB, 10),
-         "deck": (0, F_DECK, 0), "study": (0, F_DECK, 34)}
+         "deck": (0, F_DECK, -10), "study": (0, F_DECK, 34)}
 
 
 def build_checked(seed):
@@ -1717,6 +1778,12 @@ def build_checked(seed):
                                solid_cells=tower.trap["chimera"]["seal"])
     if not missing:
         raise RuntimeError("tour : le sceau de la Chimère ne ferme pas la porte nord du laboratoire")
+    # Le sceau de l'Alchimiste seul ferme la porte du bureau depuis la terrasse.
+    deck = GOALS["deck"]
+    missing, _ = walkable_path(prefab, (deck[0], 2 * deck[1], deck[2]), {"goal": GOALS["study"]},
+                               solid_cells=tower.trap["alchemist"]["seal"])
+    if not missing:
+        raise RuntimeError("tour : le sceau de l'Alchimiste ne ferme pas la porte du bureau")
     return tower
 
 

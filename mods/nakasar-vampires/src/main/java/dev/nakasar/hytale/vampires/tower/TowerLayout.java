@@ -63,6 +63,72 @@ public final class TowerLayout {
     public static final String CHIMERA_SEAL = "ebf90f00-a380-54f6-8309-d361a492b8ee";
     public static final String CHIMERA_ACID = "72e78f01-8a21-5fd0-9ad7-435fd0d949e4";
 
+    /** Alchimiste : centre de l'athanor, au sol de sa chambre (il s'y enferme au Grand Œuvre). */
+    public static final Vector3d ALCHEMIST_CENTER = new Vector3d(0.5, 244, -439.5);
+    /** Rayon de la terrasse de l'Observatoire. */
+    public static final double ALCHEMIST_DECK_RADIUS = 45.5;
+    /** Antichambre (hors de l'arène) : secteur en degrés (atan2(dz, dx), comme tools/alchemist_tower.py) au-delà du rayon. */
+    public static final double[] ALCHEMIST_ANTECHAMBER_ARC = {200, 275};
+    public static final double ALCHEMIST_ANTECHAMBER_RADIUS = 22;
+    /** Bureau (hors de l'arène) : au-delà de cette coordonnée z du monde. */
+    public static final double ALCHEMIST_STUDY_Z = -414;
+    /** Pans du rebord qui s'effondrent au Grand Œuvre : secteurs en degrés, entre deux rayons. */
+    public static final double[][] ALCHEMIST_COLLAPSE_ARCS = {{282, 322}, {346, 362}, {18, 52}};
+    public static final double[] ALCHEMIST_COLLAPSE_RADII = {34.5, 41.4};
+    /** Cases libres autour de l'athanor où il ressort. */
+    public static final Vector3d[] ALCHEMIST_EXITS = {
+            new Vector3d(7.5, 244, -439.5),
+            new Vector3d(4.5, 244, -434.5),
+            new Vector3d(0.5, 244, -432.5),
+            new Vector3d(-4.5, 244, -435.5),
+            new Vector3d(-6.5, 244, -439.5),
+            new Vector3d(-4.5, 244, -443.5),
+            new Vector3d(0.5, 244, -446.5),
+            new Vector3d(4.5, 244, -444.5)
+    };
+    /** Piliers élémentaires de la Convergence (feu, givre, foudre, racines), au sol. */
+    public static final Vector3d[] ALCHEMIST_PILLARS = {
+            new Vector3d(16.5, 244, -433.5),
+            new Vector3d(-14.5, 244, -431.5),
+            new Vector3d(7.5, 244, -454.5),
+            new Vector3d(16.5, 244, -445.5)
+    };
+    /** Points sûrs du bord intérieur où revient qui tombe d'un pan effondré. */
+    public static final Vector3d[] ALCHEMIST_SAFE = {
+            new Vector3d(28.5, 244, -439.5),
+            new Vector3d(27.5, 244, -432.5),
+            new Vector3d(24.5, 244, -425.5),
+            new Vector3d(20.5, 244, -419.5),
+            new Vector3d(-19.5, 244, -419.5),
+            new Vector3d(-23.5, 244, -425.5),
+            new Vector3d(-26.5, 244, -432.5),
+            new Vector3d(-27.5, 244, -439.5),
+            new Vector3d(-26.5, 244, -446.5),
+            new Vector3d(7.5, 244, -466.5),
+            new Vector3d(14.5, 244, -463.5),
+            new Vector3d(20.5, 244, -459.5),
+            new Vector3d(24.5, 244, -453.5),
+            new Vector3d(27.5, 244, -446.5)
+    };
+    /** Volumes (tools/alchemist_traps.py, Traps.alchemist) : sceau du bureau (Alchemist=On), levier du mode difficile
+     * (lu : Hard ; posé : Locked), remise à zéro (Reset=On), titres des phases (Cast=On), pans (Collapse=On), fioles de
+     * soin (Pack=On, une par case de {@link #ALCHEMIST_HEALS}). */
+    public static final String ALCHEMIST_SEAL = "11be98a7-c0d1-5d35-8504-167199e3a691";
+    public static final String ALCHEMIST_LEVER = "f5885123-832d-59a5-a0cb-8b8cc3579904";
+    public static final String ALCHEMIST_ARENA = "bf45f277-6bf0-5c21-8251-b365d4b829b8";
+    public static final String ALCHEMIST_PHASE_2 = "22a699ed-6eb2-5c24-adcd-4616ece53eb2";
+    public static final String ALCHEMIST_PHASE_3 = "2d3238e3-4c91-5fb4-bd07-35ba570415d6";
+    public static final String[] ALCHEMIST_COLLAPSE = {"343d6b06-7fbd-5bac-924f-16ecc475defa", "012e652b-4b46-5ea3-b941-9ac66f64a26b", "a9c4b840-6f2e-5227-9b34-3059ec1996c6"};
+    public static final String[] ALCHEMIST_HEAL = {"91aa9d85-efd6-57af-934e-353a85369349", "24015491-87d0-5ff0-ba66-dd2f1951e8fa", "caaa3ecc-e4c8-5e8f-b834-dd53b6db9d96", "7e703455-fde9-5d75-857d-c5b09cadd35c", "8529c35d-751c-5723-b783-51cd3a93dd3b", "85ce8128-39c6-5250-9707-4ef4d1f2b8c5"};
+    public static final Vector3d[] ALCHEMIST_HEALS = {
+            new Vector3d(26.5, 244, -439.5),
+            new Vector3d(18.5, 244, -421.5),
+            new Vector3d(-16.5, 244, -419.5),
+            new Vector3d(-24.5, 244, -432.5),
+            new Vector3d(13.5, 244, -462.5),
+            new Vector3d(21.5, 244, -454.5)
+    };
+
     private TowerLayout() {
     }
 }

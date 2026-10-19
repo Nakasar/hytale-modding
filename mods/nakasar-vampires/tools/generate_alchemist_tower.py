@@ -746,8 +746,8 @@ def checkpoint_volumes(tower, ruins_statue, ruins_spot):
 
 def tower_layout(tower, ruins_spot):
     """TowerLayout.java : point d'arrivée, points de contrôle, arènes du Codex vivant (pupitres, volumes que
-    tower.CodexSystem étiquette) et de la Chimère (cuve, étagères, sorties, volumes de tower.ChimeraSystem), en
-    coordonnées du monde."""
+    tower.CodexSystem étiquette), de la Chimère (cuve, étagères, sorties, volumes de tower.ChimeraSystem) et de
+    l'Alchimiste (athanor, piliers, fioles, rebord, volumes de tower.AlchemistSystem), en coordonnées du monde."""
     ox, oy, oz = TOWER_CENTER
     rx, rz = arch.RUINS["center"]
     spots = [(ruins_spot[0] + rx, ruins_spot[1] + GROUND_Y, ruins_spot[2] + rz)]
@@ -763,6 +763,13 @@ def tower_layout(tower, ruins_spot):
     shelves = ",\n".join(f"            new Vector3d({x + ox + 0.5}, {y + oy}, {z + oz + 0.5})" for x, y, z in chimera["shelves"])
     exits = ",\n".join(f"            new Vector3d({x + ox + 0.5}, {y + oy}, {z + oz + 0.5})" for x, y, z in chimera["exits"])
     chimera_ids = alchemist_traps.chimera_ids()
+    alch = tower.trap["alchemist"]
+    ax, ay, az = alch["center"]
+
+    def points(cells, dy=0):
+        return ",\n".join(f"            new Vector3d({x + ox + 0.5}, {y + oy + dy}, {z + oz + 0.5})" for x, y, z in cells)
+    alch_ids = alchemist_traps.alchemist_ids()
+    arcs = ", ".join(f"{{{a0}, {a1}}}" for a0, a1 in alchemist_tower.DECK_COLLAPSE_ARCS)
 
     def strings(values):
         return ", ".join(f'"{v}"' for v in values)
@@ -816,6 +823,44 @@ public final class TowerLayout {{
     /** Volumes (tools/alchemist_traps.py, Traps.chimera) : sceau de la porte nord (Chimera=On), acide de la cuve (Cast=On). */
     public static final String CHIMERA_SEAL = "{chimera_ids['seal']}";
     public static final String CHIMERA_ACID = "{chimera_ids['acid']}";
+
+    /** Alchimiste : centre de l'athanor, au sol de sa chambre (il s'y enferme au Grand Œuvre). */
+    public static final Vector3d ALCHEMIST_CENTER = new Vector3d({ax + ox + 0.5}, {ay + oy}, {az + oz + 0.5});
+    /** Rayon de la terrasse de l'Observatoire. */
+    public static final double ALCHEMIST_DECK_RADIUS = {alchemist_tower.DECK_R};
+    /** Antichambre (hors de l'arène) : secteur en degrés (atan2(dz, dx), comme tools/alchemist_tower.py) au-delà du rayon. */
+    public static final double[] ALCHEMIST_ANTECHAMBER_ARC = {{{alchemist_tower.ANTECHAMBER_ARC[0]}, {alchemist_tower.ANTECHAMBER_ARC[1]}}};
+    public static final double ALCHEMIST_ANTECHAMBER_RADIUS = 22;
+    /** Bureau (hors de l'arène) : au-delà de cette coordonnée z du monde. */
+    public static final double ALCHEMIST_STUDY_Z = {alchemist_tower.STUDY_DOOR_Z + oz};
+    /** Pans du rebord qui s'effondrent au Grand Œuvre : secteurs en degrés, entre deux rayons. */
+    public static final double[][] ALCHEMIST_COLLAPSE_ARCS = {{{arcs}}};
+    public static final double[] ALCHEMIST_COLLAPSE_RADII = {{{alchemist_tower.DECK_COLLAPSE_R[0]}, {alchemist_tower.DECK_COLLAPSE_R[1]}}};
+    /** Cases libres autour de l'athanor où il ressort. */
+    public static final Vector3d[] ALCHEMIST_EXITS = {{
+{points(alch["exits"])}
+    }};
+    /** Piliers élémentaires de la Convergence (feu, givre, foudre, racines), au sol. */
+    public static final Vector3d[] ALCHEMIST_PILLARS = {{
+{points(alch["pillars"])}
+    }};
+    /** Points sûrs du bord intérieur où revient qui tombe d'un pan effondré. */
+    public static final Vector3d[] ALCHEMIST_SAFE = {{
+{points(alch["safe"])}
+    }};
+    /** Volumes (tools/alchemist_traps.py, Traps.alchemist) : sceau du bureau (Alchemist=On), levier du mode difficile
+     * (lu : Hard ; posé : Locked), remise à zéro (Reset=On), titres des phases (Cast=On), pans (Collapse=On), fioles de
+     * soin (Pack=On, une par case de {{@link #ALCHEMIST_HEALS}}). */
+    public static final String ALCHEMIST_SEAL = "{alch_ids['seal']}";
+    public static final String ALCHEMIST_LEVER = "{alch_ids['lever']}";
+    public static final String ALCHEMIST_ARENA = "{alch_ids['arena']}";
+    public static final String ALCHEMIST_PHASE_2 = "{alch_ids['phase2']}";
+    public static final String ALCHEMIST_PHASE_3 = "{alch_ids['phase3']}";
+    public static final String[] ALCHEMIST_COLLAPSE = {{{strings(alch_ids['collapse'])}}};
+    public static final String[] ALCHEMIST_HEAL = {{{strings(alch_ids['heals'])}}};
+    public static final Vector3d[] ALCHEMIST_HEALS = {{
+{points(alch["heals"])}
+    }};
 
     private TowerLayout() {{
     }}

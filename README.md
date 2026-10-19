@@ -386,6 +386,24 @@ Mobs (voir [docs/npc-0.7.2.md](docs/npc-0.7.2.md)) :
   nord (vers l'Escalier des vents) ; trophée Cœur de chimère (sans usage pour l'instant). Le laboratoire n'a plus
   d'autres mobs. À vérifier en jeu : le modèle et ses animations (marche, morsure, poing, queue), la plongée et la
   sortie de la cuve, la marche des porteurs vers la cuve, les étagères (immobiles, cassables), l'acide, le sceau.
+- **Tour de l'Alchimiste, l'Alchimiste** (`tools/generate_alchemist_models.py`, rôles dans `generate_tower_mobs.py`,
+  arène dans `alchemist_tower.Tower.alchemist`, volumes dans `alchemist_traps.Traps.alchemist`, combat dans
+  `tower/AlchemistSystem.java` et `tower/AlchemistFlaskInteraction.java`) : boss final, sur la terrasse de
+  l'Observatoire. Grand et maigre (squelette du joueur, 1,14), robe de mage violette, chapeau à large bord, masque de
+  cuir à bec et verres violets, tablier taché, ceinture de fioles lumineuses ; bâton de cristal ; barre de boss. Vie
+  ×(1 + 0,55 par joueur de plus dans l'arène), ×1,5 si le levier de l'antichambre a été tiré avant le combat (mode
+  difficile : fioles doublées, dégâts +25 %, plus d'homoncules, éléments plus rapides). Phase 1, Transmutation : coups
+  de bâton et fioles des quatre éléments vers chaque joueur (zones annoncées, 2 s). Phase 2, Grand Œuvre (67 %) : trois
+  pans du rebord s'effondrent (qui tombe revient au bord intérieur, blessé), il s'enferme dans l'athanor central,
+  invulnérable, avec 4 homoncules (+2 par joueur de plus) ; le dernier tué, il ressort 30 s puis s'y renferme. Phase 3,
+  Convergence (34 %) : quatre piliers (feu, givre, foudre, racines) ; il prend l'élément d'un pilier debout toutes les
+  20 s (teinte de l'élément) et le fait tomber sur chaque joueur toutes les 5 s (flammes au sol, ralentissement,
+  étourdissement, racines) ; les quatre détruits, il s'effondre 8 s (+50 % de dégâts subis). Fioles de soin sur six
+  socles toutes les 40 s. Remise à zéro si le groupe meurt ou quitte l'arène 10 s (rebord reconstruit, levier
+  déverrouillé). Sa mort dissout le sceau du bureau ; trophée Masque de l'Alchimiste (pour l'établi des chasseurs
+  niveau 4, plus tard). À vérifier en jeu : les pièces du masque et du tablier sur le squelette, la teinte des
+  éléments, le levier, l'effondrement et la reconstruction du rebord, le retour après une chute, la sortie de
+  l'athanor, les piliers, les fioles de soin, la vie selon le groupe.
 
 ## Organisation du dépôt
 

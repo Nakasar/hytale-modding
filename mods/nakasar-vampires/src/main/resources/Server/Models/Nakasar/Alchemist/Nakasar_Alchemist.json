@@ -1,0 +1,46 @@
+{
+  "$Comment": "L'Alchimiste : masque de cuir à bec et verres violets, chapeau à large bord, robe de mage violette, tablier de cuir taché, ceinture de fioles lumineuses, gants longs. Humanoïde sur le squelette du joueur, grand et maigre.",
+  "Parent": "Player",
+  "Model": "Characters/Player.blockymodel",
+  "Texture": "Characters/Player_Textures/Player_Greyscale.png",
+  "GradientSet": "Skin",
+  "GradientId": "01",
+  "MinScale": 1.14,
+  "MaxScale": 1.14,
+  "DefaultAttachments": [
+    {
+      "Model": "Characters/Body_Attachments/Faces/Player_Face_Detached.blockymodel",
+      "Texture": "Characters/Body_Attachments/Faces/Faces_Detached_Textures/Almond_Eyes_Face.png",
+      "GradientSet": "Skin",
+      "GradientId": "01"
+    },
+    {
+      "Model": "Cosmetics/Overtops/Robe_Wizard.blockymodel",
+      "Texture": "Cosmetics/Overtops/Blazen_Wizard_Coat.png"
+    },
+    {
+      "Model": "Cosmetics/Head/WideBrimHat.blockymodel",
+      "Texture": "Cosmetics/Head/WideBrimHat.png",
+      "GradientSet": "Faded_Leather",
+      "GradientId": "Black"
+    },
+    {
+      "Model": "Cosmetics/Gloves/LongDetail_Gloves.blockymodel",
+      "Texture": "Cosmetics/Gloves/LongDetail_Gloves_Textures/Wasteland_Marauder_Texture.png",
+      "GradientSet": "Faded_Leather",
+      "GradientId": "BrownDark"
+    },
+    {
+      "Model": "Cosmetics/Shoes/AngledBoots.blockymodel",
+      "Texture": "Cosmetics/Shoes/AngledBoots_Textures/Blazen_Wizard_Boots.png"
+    },
+    {
+      "Model": "NPC/Nakasar/Alchemist_Garb/Garb.blockymodel",
+      "Texture": "NPC/Nakasar/Alchemist_Garb/Texture.png"
+    }
+  ],
+  "Light": {
+    "Color": "#c47bff",
+    "Radius": 4
+  }
+}

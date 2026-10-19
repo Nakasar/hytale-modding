@@ -89,8 +89,17 @@ CRYSTAL_GOLEM = "Nakasar_Crystal_Golem"
 GARGOYLE = "Nakasar_Tower_Gargoyle"
 CODEX = "Nakasar_Living_Codex"
 CHIMERA = "Nakasar_Lab_Chimera"
+ALCHEMIST = "Nakasar_Alchemist"
 ALL = [HOMUNCULUS, GOLEM, FLASK_POISON, FLASK_FIRE, APPRENTICE, VINE, SNAPDRAGON, FIRE, FROST, THUNDER, ROOT,
-       CRYSTAL_GOLEM, GARGOYLE, CODEX, CHIMERA]
+       CRYSTAL_GOLEM, GARGOYLE, CODEX, CHIMERA, ALCHEMIST]
+# Combat de l'Alchimiste (AlchemistSystem, Java) : homoncules du Grand Œuvre et piliers de la Convergence, jamais posés
+# par un marqueur ; état d'épuisement et aspects élémentaires (teinte et particules de l'élément du moment).
+ATHANOR_HOMUNCULUS = "Nakasar_Athanor_Homunculus"
+ELEMENTS = ("Fire", "Frost", "Thunder", "Root")
+PILLARS = [f"Nakasar_Alchemist_Pillar_{element}" for element in ELEMENTS]
+ALCHEMIST_EXHAUSTED = "Nakasar_Alchemist_Exhausted"
+ASPECTS = {element: f"Nakasar_Alchemist_Aspect_{element}" for element in ELEMENTS}
+MASK_DROP = "Nakasar_Drop_Trophy_Alchemist_Mask"
 # Étagères de réactifs et homoncules porteurs de la Chimère : posés par ChimeraSystem (Java), jamais par un marqueur.
 SHELF = "Nakasar_Chimera_Reagent_Shelf"
 FEEDER = "Nakasar_Chimera_Feeder"
@@ -450,6 +459,20 @@ def chimera_tail():
     }
 
 
+def alchemist_flask():
+    return {
+        "$Comment": "L'Alchimiste lance ses fioles : il arme son bras 0,45 s, puis l'interaction Java Nakasar_AlchemistFlask (AlchemistSystem) jette une fiole vers chaque joueur proche (une zone annoncée au sol, qui éclate 2 s plus tard selon l'élément : feu, givre, foudre ou racines).",
+        "Type": "Serial",
+        "Interactions": [
+            {"Type": "Simple", "RunTime": 0.45, "Effects": {
+                "ItemPlayerAnimationsId": "Throwing_Knife", "ItemAnimationId": "Throw",
+                "WorldSoundEventId": "SFX_Unarmed_Swing"}},
+            {"Type": "Nakasar_AlchemistFlask"},
+            {"Type": "Simple", "RunTime": 0.3},
+        ],
+    }
+
+
 def interactions():
     return {
         "Nakasar_NPC_Homunculus_Bite": swing("Morsure d'homoncule (8 dégâts).", "Hound_Bleached_Default", "Bite",
@@ -490,6 +513,11 @@ def interactions():
                                           0.45, 20, end=3.8, length=80, yaw=40, sound="SFX_Unarmed_Swing"),
         "Nakasar_NPC_Chimera_Slam": chimera_slam(),
         "Nakasar_NPC_Chimera_Tail": chimera_tail(),
+        "Nakasar_NPC_Alchemist_Staff_Left": swing("Coup de bâton de l'Alchimiste (gauche, 18 dégâts, sans recul).",
+                                                  "Staff", "SwingLeft", 0.5, 18, end=3.4),
+        "Nakasar_NPC_Alchemist_Staff_Right": swing("Coup de bâton de l'Alchimiste (droite, 18 dégâts, sans recul).",
+                                                   "Staff", "SwingRight", 0.5, 18, end=3.4, direction="ToRight", yaw=-50),
+        "Nakasar_NPC_Alchemist_Flask": alchemist_flask(),
     }
 
 
@@ -518,6 +546,12 @@ def roots():
         "Root_Nakasar_NPC_Chimera_Bite": melee_tag("Nakasar_NPC_Chimera_Bite"),
         "Root_Nakasar_NPC_Chimera_Slam": melee_tag("Nakasar_NPC_Chimera_Slam"),
         "Root_Nakasar_NPC_Chimera_Tail": melee_tag("Nakasar_NPC_Chimera_Tail"),
+        "Root_Nakasar_NPC_Alchemist_Staff": {
+            "$Comment": "Coups de bâton de l'Alchimiste : gauche puis droite.",
+            "Tags": {"Attack": ["Melee"]},
+            "Interactions": [{"Type": "Chaining", "ChainId": "Nakasar_Alchemist_Staff", "ChainingAllowance": 15,
+                              "Next": ["Nakasar_NPC_Alchemist_Staff_Left", "Nakasar_NPC_Alchemist_Staff_Right"]}]},
+        "Root_Nakasar_NPC_Alchemist_Flask": ranged_tag("Nakasar_NPC_Alchemist_Flask"),
     }
 
 
@@ -748,6 +782,65 @@ def feeder_role():
     }
 
 
+def alchemist_role():
+    return role(ALCHEMIST, "L'Alchimiste, boss final de la Tour, avec barre de vie de boss : coups de bâton, et fioles des quatre éléments lancées vers chaque joueur proche toutes les 6 à 8 s (Nakasar_AlchemistFlask, zones annoncées au sol). AlchemistSystem (Java) mène le reste : vie selon la taille du groupe et le levier du mode difficile, trois phases (Transmutation, Grand Œuvre dans l'athanor avec ses homoncules et le rebord qui s'effondre, Convergence des quatre piliers), fioles de soin, remise à zéro et sceau du bureau.",
+                ALCHEMIST, 3200, [
+                    ge.timed_attack("Flask", "Root_Nakasar_NPC_Alchemist_Flask", rng=30,
+                                    comment="Lance ses fioles quand une cible est à moins de 30 blocs."),
+                    melee("Root_Nakasar_NPC_Alchemist_Staff", 3.2, (0.9, 1.4), turn=1.4),
+                    chase(48, speed=1.0, stop=2.4)],
+                walk(5.0, jump=0.5), drop="Nakasar_Drop_Alchemist", sight=20, leash=50,
+                timers=[timer("Flask", (2, 3), (6, 8))], HotbarItems=["Weapon_Staff_Crystal_Purple"],
+                KnockbackScale=0, DeathAnimationTime=2.0, DeathParticles="Explosion_Medium")
+
+
+def athanor_homunculus_role():
+    return role(ATHANOR_HOMUNCULUS, "Homoncule du Grand Œuvre : sorti de l'athanor par AlchemistSystem pendant la deuxième phase de l'Alchimiste, qui reste invulnérable tant qu'il en reste. Chasse tout le groupe sur la terrasse, sans butin.",
+                HOMUNCULUS, 45, [melee("Root_Nakasar_NPC_Homunculus_Bite", 1.8, (0.7, 1.1)), chase(60, stop=1.0)],
+                walk(6.5), sight=60, los=False, leash=80, home=False, KnockbackScale=1.0, DeathAnimationTime=1.0)
+
+
+def pillar_role(role_id):
+    element = role_id.rsplit("_", 1)[1]
+    return role(role_id, f"Pilier élémentaire de la Convergence ({element}) : posé par AlchemistSystem au début de la troisième phase de l'Alchimiste (gelé, immobile). Tant qu'il tient, l'Alchimiste peut prendre son élément ; le détruire le retire du cycle, et les quatre détruits l'épuisent.",
+                role_id, 260, [], walk(0.1), sight=0.5, los=False, home=False,
+                DefaultPlayerAttitude="Neutral", KnockbackScale=0, DeathAnimationTime=1.0,
+                DeathParticles="Explosion_Medium")
+
+
+def alchemist_exhausted_effect():
+    return {
+        "$Comment": "Alchimiste épuisé (les quatre piliers de la Convergence détruits) : il s'effondre (AlchemistSystem gèle aussi son IA) et subit 50 % de dégâts en plus pendant 8 s.",
+        "ApplicationEffects": {"Particles": [{"SystemId": "Stunned", "TargetEntityPart": "Self", "TargetNodeName": "Head",
+                                             "PositionOffset": {"Y": 0.6}}]},
+        "DamageResistance": {cause: [{"CalculationType": "Percent", "Amount": -0.5}]
+                             for cause in ("Physical", "Projectile", "Elemental")},
+        "OverlapBehavior": "Overwrite",
+        "Infinite": False,
+        "Duration": 8,
+    }
+
+
+def aspect_effect(element):
+    """Élément du moment de l'Alchimiste à la Convergence : teinte et particules (comme Burn, Freeze, Root et
+    Hazard_Electric_Stun vanilla), posé et retiré par AlchemistSystem."""
+    top, bottom, system, node = {
+        "Fire": ("#ff6a1c", "#3a0800", "Effect_Fire", None),
+        "Frost": ("#9fe8ff", "#2a6cc8", "Effect_Snow", None),
+        "Thunder": ("#ffe066", "#ffbc00", "Hazard_Electric_Stun", "Chest"),
+        "Root": ("#5cd04a", "#0c3a10", "Effect_Poison", None),
+    }[element]
+    particle = {"SystemId": system}
+    if node:
+        particle.update({"TargetEntityPart": "Entity", "TargetNodeName": node})
+    return {
+        "$Comment": f"Aspect {element} de l'Alchimiste pendant la Convergence : sa robe, ses fioles et ses verres prennent la couleur de l'élément.",
+        "ApplicationEffects": {"EntityTopTint": top, "EntityBottomTint": bottom, "Particles": [particle]},
+        "OverlapBehavior": "Overwrite",
+        "Infinite": True,
+    }
+
+
 def codex_stunned_effect():
     return {
         "$Comment": "Codex vivant interrompu (livre de chapitre détruit à temps) : étourdi (CodexSystem gèle aussi son IA) et 50 % de dégâts en plus, comme le Festoyeur gobelin (Goblin_Feastmaster_Stunned).",
@@ -781,6 +874,9 @@ def roles():
         CHIMERA: chimera_role(),
         SHELF: shelf_role(),
         FEEDER: feeder_role(),
+        ALCHEMIST: alchemist_role(),
+        ATHANOR_HOMUNCULUS: athanor_homunculus_role(),
+        **{pillar: pillar_role(pillar) for pillar in PILLARS},
     }
 
 
@@ -820,6 +916,37 @@ def apprentice_model():
     }
 
 
+def alchemist_model():
+    """Grand et maigre, sur le squelette du joueur : robe de mage violette, chapeau à large bord noir, gants longs et
+    bottes de cuir vanilla, et les pièces de tools/generate_alchemist_models.py (masque à bec, tablier, fioles)."""
+    def att(model, texture, gradient_set=None, gradient=None):
+        doc = {"Model": model, "Texture": texture}
+        if gradient_set:
+            doc.update({"GradientSet": gradient_set, "GradientId": gradient})
+        return doc
+    return {
+        "$Comment": "L'Alchimiste : masque de cuir à bec et verres violets, chapeau à large bord, robe de mage violette, tablier de cuir taché, ceinture de fioles lumineuses, gants longs. Humanoïde sur le squelette du joueur, grand et maigre.",
+        "Parent": "Player",
+        "Model": "Characters/Player.blockymodel",
+        "Texture": "Characters/Player_Textures/Player_Greyscale.png",
+        "GradientSet": "Skin",
+        "GradientId": "01",
+        "MinScale": 1.14,
+        "MaxScale": 1.14,
+        "DefaultAttachments": [
+            att("Characters/Body_Attachments/Faces/Player_Face_Detached.blockymodel",
+                "Characters/Body_Attachments/Faces/Faces_Detached_Textures/Almond_Eyes_Face.png", "Skin", "01"),
+            att("Cosmetics/Overtops/Robe_Wizard.blockymodel", "Cosmetics/Overtops/Blazen_Wizard_Coat.png"),
+            att("Cosmetics/Head/WideBrimHat.blockymodel", "Cosmetics/Head/WideBrimHat.png", "Faded_Leather", "Black"),
+            att("Cosmetics/Gloves/LongDetail_Gloves.blockymodel",
+                "Cosmetics/Gloves/LongDetail_Gloves_Textures/Wasteland_Marauder_Texture.png", "Faded_Leather", "BrownDark"),
+            att("Cosmetics/Shoes/AngledBoots.blockymodel", "Cosmetics/Shoes/AngledBoots_Textures/Blazen_Wizard_Boots.png"),
+            att("NPC/Nakasar/Alchemist_Garb/Garb.blockymodel", "NPC/Nakasar/Alchemist_Garb/Texture.png"),
+        ],
+        "Light": {"Color": "#c47bff", "Radius": 4},
+    }
+
+
 def flask_model(kind):
     texture = {"Poison": "Items/Weapons/Bomb/Potion_Onion_Poison.png",
                "Fire": "NPC/Nakasar/Alchemist/Living_Flask_Fire.png"}[kind]
@@ -847,6 +974,7 @@ def models():
         FLASK_POISON: flask_model("Poison"),
         FLASK_FIRE: flask_model("Fire"),
         APPRENTICE: apprentice_model(),
+        ALCHEMIST: alchemist_model(),
         VINE: {"$Comment": "Vrille carnivore : le modèle de la vrille de la citrouille géante, lueur verte.",
                "Parent": "Nakasar_Pumpkin_Vine", "Light": {"Color": "#8dff7a", "Radius": 3}},
         FIRE: {"$Comment": "Élémentaire de feu : l'esprit de braise vanilla.", "Parent": "Spirit_Ember",
@@ -1006,13 +1134,19 @@ def drops():
             "Chimère du laboratoire (mini-boss) : son cœur (trophée), les trois principes et de l'essence de vie.",
             {"Type": "Droplist", "DroplistId": HEART_DROP},
             single(SALT, 2, 3), single(SULFUR, 2, 3), single(MERCURY, 2, 3), single("Ingredient_Life_Essence", 1, 2)),
+        "Nakasar_Drop_Alchemist": multiple(
+            "L'Alchimiste (boss final) : son masque à bec (trophée), les trois principes et des essences des quatre éléments. Le sac de butin du donjon viendra avec l'étape 8.",
+            {"Type": "Droplist", "DroplistId": MASK_DROP},
+            single(SALT, 3, 4), single(SULFUR, 3, 4), single(MERCURY, 3, 4),
+            single("Ingredient_Fire_Essence", 2, 3), single("Ingredient_Ice_Essence", 2, 3),
+            single("Ingredient_Lightning_Essence", 2, 3), single("Ingredient_Life_Essence", 2, 3)),
     }
 
 
 def groups():
     return {
         CREATIONS: {"$Comment": "Créatures de l'Alchimiste : elles ne se blessent pas entre elles (DisableDamageGroups).",
-                    "IncludeRoles": ALL + CHAPTERS + [SHELF, FEEDER]},
+                    "IncludeRoles": ALL + CHAPTERS + [SHELF, FEEDER, ATHANOR_HOMUNCULUS] + PILLARS},
         FIRE_ELEMENTALS: {"$Comment": "Créatures de feu de la tour : aucun dégât de feu (dans Nakasar_Fire_Immune).",
                           "IncludeRoles": [FIRE, FLASK_FIRE]},
     }
@@ -1055,6 +1189,9 @@ def main():
     for name, doc in groups().items():
         write_json(GROUPS / f"{name}.json", doc)
     write_json(ge.EFFECTS / f"{CODEX_STUNNED}.json", codex_stunned_effect())
+    write_json(ge.EFFECTS / f"{ALCHEMIST_EXHAUSTED}.json", alchemist_exhausted_effect())
+    for element, effect_id in ASPECTS.items():
+        write_json(ge.EFFECTS / f"{effect_id}.json", aspect_effect(element))
     for role_id in ALL:
         write_json(MARKERS / f"{role_id}.json", marker(role_id))
         write_json(SPAWNERS / f"Nakasar_Spawner_{role_id.removeprefix('Nakasar_')}.json", spawner(role_id))

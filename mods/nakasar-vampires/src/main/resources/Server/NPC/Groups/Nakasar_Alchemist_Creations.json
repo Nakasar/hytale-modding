@@ -16,10 +16,16 @@
     "Nakasar_Tower_Gargoyle",
     "Nakasar_Living_Codex",
     "Nakasar_Lab_Chimera",
+    "Nakasar_Alchemist",
     "Nakasar_Codex_Chapter_Fire",
     "Nakasar_Codex_Chapter_Frost",
     "Nakasar_Codex_Chapter_Rain",
     "Nakasar_Chimera_Reagent_Shelf",
-    "Nakasar_Chimera_Feeder"
+    "Nakasar_Chimera_Feeder",
+    "Nakasar_Athanor_Homunculus",
+    "Nakasar_Alchemist_Pillar_Fire",
+    "Nakasar_Alchemist_Pillar_Frost",
+    "Nakasar_Alchemist_Pillar_Thunder",
+    "Nakasar_Alchemist_Pillar_Root"
   ]
 }

@@ -1,0 +1,22 @@
+{
+  "$Comment": "L'Alchimiste lance ses fioles : il arme son bras 0,45 s, puis l'interaction Java Nakasar_AlchemistFlask (AlchemistSystem) jette une fiole vers chaque joueur proche (une zone annoncée au sol, qui éclate 2 s plus tard selon l'élément : feu, givre, foudre ou racines).",
+  "Type": "Serial",
+  "Interactions": [
+    {
+      "Type": "Simple",
+      "RunTime": 0.45,
+      "Effects": {
+        "ItemPlayerAnimationsId": "Throwing_Knife",
+        "ItemAnimationId": "Throw",
+        "WorldSoundEventId": "SFX_Unarmed_Swing"
+      }
+    },
+    {
+      "Type": "Nakasar_AlchemistFlask"
+    },
+    {
+      "Type": "Simple",
+      "RunTime": 0.3
+    }
+  ]
+}

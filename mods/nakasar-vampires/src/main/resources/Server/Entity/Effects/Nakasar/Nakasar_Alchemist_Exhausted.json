@@ -1,0 +1,38 @@
+{
+  "$Comment": "Alchimiste épuisé (les quatre piliers de la Convergence détruits) : il s'effondre (AlchemistSystem gèle aussi son IA) et subit 50 % de dégâts en plus pendant 8 s.",
+  "ApplicationEffects": {
+    "Particles": [
+      {
+        "SystemId": "Stunned",
+        "TargetEntityPart": "Self",
+        "TargetNodeName": "Head",
+        "PositionOffset": {
+          "Y": 0.6
+        }
+      }
+    ]
+  },
+  "DamageResistance": {
+    "Physical": [
+      {
+        "CalculationType": "Percent",
+        "Amount": -0.5
+      }
+    ],
+    "Projectile": [
+      {
+        "CalculationType": "Percent",
+        "Amount": -0.5
+      }
+    ],
+    "Elemental": [
+      {
+        "CalculationType": "Percent",
+        "Amount": -0.5
+      }
+    ]
+  },
+  "OverlapBehavior": "Overwrite",
+  "Infinite": false,
+  "Duration": 8
+}

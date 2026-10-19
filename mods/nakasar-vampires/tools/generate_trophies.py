@@ -47,6 +47,7 @@ CORE = "Nakasar_Trophy_Armor_Core"
 SHROUD = "Nakasar_Trophy_Spectral_Shroud"
 CLASP = "Nakasar_Trophy_Codex_Clasp"
 CHIMERA_HEART = "Nakasar_Trophy_Chimera_Heart"
+ALCHEMIST_MASK = "Nakasar_Trophy_Alchemist_Mask"
 SILVER_BAR = "Ingredient_Bar_Silver"
 SHARD = "Ingredient_Rune_Shard"
 
@@ -70,6 +71,7 @@ STEEL = (70, 74, 88)
 SHROUD_WHITE = (214, 236, 248)
 SHROUD_BLUE = (132, 186, 226)
 LEATHER = (124, 84, 52)
+MASK_LENS = (196, 120, 255)
 LEATHER_DARK = (88, 58, 38)
 CODEX_LEATHER = (34, 26, 30)
 CODEX_EYE = (200, 120, 255)
@@ -187,6 +189,19 @@ MODELS_DEF = {
         ("Tube", (2, 13.5, -1), (2, 5, 2), 0, glow(CHIMERA_GREEN), "fullbright"),
         ("Tube_Cap", (2, 16.5, -1), (3, 1, 3), 0, flat(GOLD), "flat"),
     ], (0, 8, 0), 11.0),
+    ALCHEMIST_MASK: ("Legendary", 40, 1, [
+        ("Plate", (0, 7, 0), (10, 8, 2), 0, smooth(LEATHER), "flat"),
+        ("Brow", (0, 11.2, 0.2), (10, 1, 2), 0, flat((60, 38, 24)), "flat"),
+        ("Rim_L", (-2.6, 8, 1.2), (4, 4, 1), 0, flat(GOLD), "flat"),
+        ("Rim_R", (2.6, 8, 1.2), (4, 4, 1), 0, flat(GOLD), "flat"),
+        ("Lens_L", (-2.6, 8, 1.8), (2, 2, 1), 0, glow(MASK_LENS), "fullbright"),
+        ("Lens_R", (2.6, 8, 1.8), (2, 2, 1), 0, glow(MASK_LENS), "fullbright"),
+        ("Beak_A", (0, 5, 2.5), (5, 4, 3), 0, smooth(LEATHER), "flat"),
+        ("Beak_Band", (0, 5, 3.8), (5, 4, 1), 0, flat(GOLD), "flat"),
+        ("Beak_B", (0, 4, 5.5), (3, 3, 3), 0, smooth(LEATHER), "flat"),
+        ("Beak_C", (0, 3, 8), (2, 2, 3), 0, smooth((60, 38, 24)), "flat"),
+        ("Strap", (0, 7.5, -1.5), (11, 1, 1), 0, flat((60, 38, 24)), "flat"),
+    ], (0, 7, 2), 11.0),
 }
 
 
@@ -264,6 +279,7 @@ def drops():
         SHROUD: {"Container": single(SHROUD)},
         CLASP: {"Container": single(CLASP)},
         CHIMERA_HEART: {"Container": single(CHIMERA_HEART)},
+        ALCHEMIST_MASK: {"Container": single(ALCHEMIST_MASK)},
     }
 
 

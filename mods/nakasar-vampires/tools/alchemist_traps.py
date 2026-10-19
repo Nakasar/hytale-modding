@@ -62,7 +62,8 @@ PARTICLES = {
     "Fire_Green", "Dungeon_Goblin_Mace_Slam_Warning", "Block_Break_Dust", "Smoke_Floor", "Dungeon_Goblin_Spores_Green",
     "Fire_Trap_Preview", "Fire_AoE", "Weapon_Frost_Mist", "Ice_Blast", "Dungeon_Goblin_Toxic_Water", "Impact_Poison",
     "Goblin_Decorative_Sparks", "Lightning", "Dungeon_Goblin_Electric_Fence_Hit", "Fire_Charge_Charging1",
-    "Leaves_Oak_Wind", "Wind", "Goblin_Decorative_Lightning", "Ability_Ice_Explosion",
+    "Leaves_Oak_Wind", "Wind", "Goblin_Decorative_Lightning", "Ability_Ice_Explosion", "Effect_Health_Pack",
+    "Totem_Heal_AttachOnStatue",
 }
 SOUNDS = {
     "SFX_Emit_Goblin_Steam_A", "SFX_Env_Geyzer_Burst", "SFX_Lever_Metal_On", "SFX_Emit_Goblin_Pipes_Activate",
@@ -72,8 +73,9 @@ SOUNDS = {
     "SFX_Emit_Goblin_Electric_Fence_Zap", "SFX_Emit_Wind_Gusts", "SFX_Emit_Dungeon_Goblin_Void_Thunder",
     "SFX_Dungeon_Checkpoint_Activate",
 }
-EFFECTS = {"Poison_T1", "Poison_T2", "Burn", "Slow", "Hazard_Electric_Stun"}
-BLOCKS = {"Empty", "Fluid_Fire", at.SEAL, at.HEDGE, at.RUBBLE}
+EFFECTS = {"Poison_T1", "Poison_T2", "Burn", "Slow", "Hazard_Electric_Stun", "Health_Pack"}
+BLOCKS = {"Empty", "Fluid_Fire", at.SEAL, at.HEDGE, at.RUBBLE, "Rock_Marble_Brick", "Rock_Marble_Brick_Smooth",
+          "Rock_Marble_Cobble"}
 NPCS = {"Nakasar_Elemental_Fire", "Nakasar_Elemental_Frost", "Nakasar_Elemental_Root", "Nakasar_Elemental_Thunder"}
 
 # Quadrants de la Salle des Transmutations : (signe de x, signe de z), élémentaire du foyer, particules d'annonce et de
@@ -583,6 +585,87 @@ class Traps:
                                    sound("", "SFX_Emit_Goblin_Liquid_Bubbling_Steam_Bursts")],
                            hits=[damage(10, 1.0), status("Poison_T1", 4.0)], odds=0.35)
 
+    def alchemist(self):
+        """Combat de l'Alchimiste sur la terrasse de l'Observatoire (étape 7). Le Java (tower.AlchemistSystem) pose
+        une étiquette sur ces volumes et lit celle du levier, ids dans TowerLayout.java (`alchemist_ids`) :
+        - Alchemist_Seal, Alchemist=On à sa mort : le sceau de la porte du bureau se dissout ;
+        - Alchemist_Lever : le levier de l'antichambre (BLOCK_USED) met Hard=On tant que le combat n'a pas commencé
+          (Locked, posé par le Java à l'engagement) ; le Java le lit pour le mode difficile ;
+        - Alchemist_Collapse_<pan>, Collapse=On au Grand Œuvre : le pan du rebord s'annonce puis ses blocs
+          (Alchemist_Pile_*) tombent dans le vide ;
+        - Alchemist_Heal_<k>, Pack=On : une fiole de soin (comme Health_Pack_Volume de Deepworks) attend 25 s qu'un
+          joueur la ramasse ;
+        - Alchemist_Phase_2 / _3, Cast=On : titre de la phase ;
+        - Alchemist_Arena, Reset=On (groupe parti ou mort, ou Alchimiste vaincu) : le rebord se reconstruit, les
+          fioles s'éteignent."""
+        g = self.group("Tower_Alchemist", 7091352)
+        c = self.t["alchemist"]
+        cx, y, cz = c["center"]
+        self.gate("Alchemist_Seal", g, c["seal"], ["Alchemist"], [title("TAG_ADDED", "alchemist")])
+        warning = "Dungeon_Goblin_Mace_Slam_Warning"
+        # Levier du mode difficile : une seule fois, et seulement avant le combat.
+        self.add("Alchemist_Lever", g, self.block_center(*c["lever"]), box(0.5, 0.5, 0.5), [
+            tags("BLOCK_USED", "Hard", "On", 0.1),
+            sound("BLOCK_USED", "SFX_Lever_Metal_On"),
+            sound("BLOCK_USED", "SFX_Emit_Dungeon_Goblin_Void_Thunder", 0.5),
+            vfx("BLOCK_USED", "Goblin_Decorative_Lightning", 0.4, offset=(0, 1, 0)),
+            title("BLOCK_USED", "alchemist_hard", 0.6)],
+            [tag_is("BLOCK_USED", "Hard", "On", inverted=True), tag_is("BLOCK_USED", "Locked", "On", inverted=True)],
+            volume_tags={"Hard": "Off", "Locked": "Off"}, ConditionTiming="BeforeVolumeDelay")
+        # Pans du rebord : annoncés par des zones rouges, puis les blocs tombent ; la remise à zéro les repose.
+        sources = sorted({n for n, _ in at.FLOOR} | {n for n, _ in at.WALL})
+        for i, cells in enumerate(c["collapse"]):
+            center, shape = self.bounds(cells)
+            a0, a1 = at.DECK_COLLAPSE_ARCS[i]
+            span = (a1 - a0) % 360
+            marks = []
+            for r in (36, 40):
+                for k in range(max(2, span // 9)):
+                    a = math.radians(a0 + span * (k + 0.5) / max(2, span // 9))
+                    wx, wy, wz = self.world(cx + r * math.cos(a), y, cz + r * math.sin(a))
+                    offset = (wx + 0.5 - center[0], wy + 0.1 - center[1], wz + 0.5 - center[2])
+                    marks += [vfx("TAG_ADDED", warning, offset=offset, scale=2.0, duration=2.5),
+                              vfx("TAG_ADDED", "Block_Break_Dust", 2.5, offset=offset)]
+            self.add(f"Alchemist_Collapse_{i}", g, center, shape, [
+                sound("TAG_ADDED", "SFX_Crystal_Break"), sound("TAG_ADDED", "SFX_Crystal_Break", 2.4), *marks,
+                signal("TAG_ADDED", "Collapse", "Alchemist_Pile", str(i), radius=70.0),
+                tags("TAG_ADDED", "Collapse", "Off", 3.0)],
+                [tag_is("TAG_ADDED", "Collapse", "On")], volume_tags={"Collapse": "Off"})
+            for layer, restore in ((y - 1, "Rock_Marble_Brick_Smooth"), (y - 2, "Rock_Marble_Brick")):
+                for j, pile in enumerate(piles([cell for cell in cells if cell[1] == layer])):
+                    pc, ps = self.bounds(pile)
+                    self.add(f"Alchemist_Pile_{i}_{y - layer}_{j}", g, pc, ps, [
+                        replace("SIGNAL_RECEIVED", sources, "Empty", 2.5),
+                        replace("SIGNAL_RECEIVED", ["Empty"], restore, entry=1)],
+                        [tag_is("SIGNAL_RECEIVED", "Collapse", "", source="Event"),
+                         tag_is("SIGNAL_RECEIVED", "Restore", "", entry=1, source="Event")],
+                        volume_tags={"Alchemist_Pile": str(i)}, ConditionTiming="BeforeVolumeDelay")
+        # Fioles de soin : allumées par le Java, ramassées en passant dessus (ou éteintes au bout de 25 s).
+        flasks = ["Effect_Health_Pack", "Totem_Heal_AttachOnStatue"]
+        for k, pos in enumerate(c["heals"]):
+            self.add(f"Alchemist_Heal_{k}", g, self.foot(*pos), cylinder(1.2, 2.5), [
+                vfx("TAG_ADDED", "Effect_Health_Pack", scale=1.2, duration=25.0),
+                vfx("TAG_ADDED", "Totem_Heal_AttachOnStatue", scale=0.5, duration=25.0),
+                tags("TAG_ADDED", "Pack", "Off", 25.0),
+                status("Health_Pack", -1.0),
+                tags("TICK", "Pack", "Off"),
+                effect("CancelParticles", "TICK", ParticleSystems=flasks)],
+                [tag_is("TAG_ADDED", "Pack", "On"), tag_is("TICK", "Pack", "On")],
+                volume_tags={"Alchemist_Heal": str(k), "Pack": "Off"}, ConditionTiming="BeforeVolumeDelay")
+        # Titres des phases.
+        for phase, sfx in ((2, "SFX_Emit_Goblin_Pipes_Activate"), (3, "SFX_Emit_Dungeon_Goblin_Void_Thunder")):
+            self.add(f"Alchemist_Phase_{phase}", g, self.foot(cx, y, cz), cylinder(at.DECK_R, 8), [
+                title("TAG_ADDED", f"alchemist_phase{phase}"), sound("TAG_ADDED", sfx),
+                tags("TAG_ADDED", "Cast", "Off", 3.0)],
+                [tag_is("TAG_ADDED", "Cast", "On")], volume_tags={"Cast": "Off"})
+        # Remise à zéro : le rebord se reconstruit, les fioles s'éteignent.
+        self.add("Alchemist_Arena", g, self.foot(cx, y, cz), cylinder(at.DECK_R, 8), [
+            signal("TAG_ADDED", "Restore", "Alchemist_Pile", radius=70.0),
+            tags("TAG_ADDED", "Pack", "Off", match="Alchemist_Heal", radius=70),
+            effect("CancelParticles", "TAG_ADDED", ParticleSystems=flasks),
+            tags("TAG_ADDED", "Reset", "Off", 1.0)],
+            [tag_is("TAG_ADDED", "Reset", "On")], volume_tags={"Reset": "Off"})
+
     def build(self):
         self.hall()
         self.leaks()
@@ -590,6 +673,7 @@ class Traps:
         self.library()
         self.codex()
         self.chimera()
+        self.alchemist()
         self.transmutation()
         self.wind_stair()
         check_ids(self.volumes)
@@ -650,6 +734,15 @@ def codex_ids():
 def chimera_ids():
     """Ids des volumes que tower.ChimeraSystem étiquette (TowerLayout.java)."""
     return {"seal": vid("Chimera_Seal"), "acid": vid("Chimera_Acid")}
+
+
+def alchemist_ids():
+    """Ids des volumes que tower.AlchemistSystem étiquette ou lit (TowerLayout.java)."""
+    arcs = range(len(at.DECK_COLLAPSE_ARCS))
+    return {"seal": vid("Alchemist_Seal"), "lever": vid("Alchemist_Lever"), "arena": vid("Alchemist_Arena"),
+            "phase2": vid("Alchemist_Phase_2"), "phase3": vid("Alchemist_Phase_3"),
+            "collapse": [vid(f"Alchemist_Collapse_{i}") for i in arcs],
+            "heals": [vid(f"Alchemist_Heal_{k}") for k in range(len(at.HEAL_ANGLES))]}
 
 
 def trap_volumes(tower, origin):
