@@ -71,7 +71,7 @@ SOUNDS = {
     "SFX_Dungeon_Checkpoint_Activate",
 }
 EFFECTS = {"Poison_T1", "Poison_T2", "Burn", "Slow", "Hazard_Electric_Stun"}
-BLOCKS = {"Empty", "Fluid_Fire", at.SEAL, at.HEDGE}
+BLOCKS = {"Empty", "Fluid_Fire", at.SEAL, at.HEDGE, at.RUBBLE}
 NPCS = {"Nakasar_Elemental_Fire", "Nakasar_Elemental_Frost", "Nakasar_Elemental_Root", "Nakasar_Elemental_Thunder"}
 
 # Quadrants de la Salle des Transmutations : (signe de x, signe de z), élémentaire du foyer, particules d'annonce et de
@@ -457,11 +457,104 @@ class Traps:
                                sound("", "SFX_Emit_Dungeon_Goblin_Void_Thunder")],
                        hits=[status("Hazard_Electric_Stun", 1.0, interval=1.0), damage(15, 1.0)], odds=0.3)
 
+    def codex(self):
+        """Combat du Codex vivant (étape 5). Le Java (tower.CodexSystem) pose une étiquette sur ces volumes, ids dans
+        TowerLayout.java (`codex_ids`) :
+        - Codex_Seal, Codex=On à la mort du Codex : le sceau du haut de la rampe se dissout ;
+        - Codex_Fire / Codex_Frost_<pupitre> / Codex_Rain, Cast=On quand un chapitre n'a pas été interrompu : cercle de
+          feu autour du centre, onde de givre autour du pupitre, pluie de livres sur des cercles au hasard, toujours
+          annoncés (zones rouges) ;
+        - Codex_Collapse_<pan>, Collapse=On sous 50 % de vie : un pan d'étagères s'annonce puis s'effondre en éboulis
+          (Nakasar_Codex_Rubble) qui réduisent l'arène ;
+        - Codex_Arena, Reset=On quand le groupe a fui ou péri : les éboulis disparaissent et les pans se relèvent."""
+        g = self.group("Tower_Codex", 9055202)
+        c = self.t["codex"]
+        cx, y, cz = c["center"]
+        self.gate("Codex_Seal", g, c["seal"], ["Codex"], [title("TAG_ADDED", "codex")])
+        warning = "Dungeon_Goblin_Mace_Slam_Warning"
+
+        def spell(name, foot, radius, warn_fx, hit_fx, hits, warn=2.0, active=0.8):
+            self.add(name, g, foot, cylinder(radius, 5), [
+                sound("TAG_ADDED", "SFX_Crystal_Break"),
+                vfx("TAG_ADDED", warning, offset=(0, 0.1, 0), scale=round(0.68 * radius, 2), duration=warn),
+                *[dict(e, Event="TAG_ADDED") for e in warn_fx],
+                *[dict(e, Event="TAG_ADDED", Delay=round(e["Delay"] + warn, 2)) for e in hit_fx],
+                tags("TAG_ADDED", "Dmg", "True", warn), tags("TAG_ADDED", "Dmg", "False", warn + active),
+                tags("TAG_ADDED", "Cast", "Off", warn + active + 0.5),
+                *hits],
+                [tag_is("TAG_ADDED", "Cast", "On"), tag_is("TICK", "Dmg", "True")],
+                volume_tags={"Cast": "Off", "Dmg": "False"}, ConditionTiming="BeforeVolumeDelay")
+
+        def around(radii, count, system, dy=0.3, **kw):
+            return [vfx("", system, offset=(r * math.cos(2 * math.pi * k / count + r), dy, r * math.sin(2 * math.pi * k / count + r)), **kw)
+                    for r in radii for k in range(count)]
+
+        # Cercle de feu : tout le centre de la rotonde brûle, on s'en sort en gagnant le pourtour.
+        spell("Codex_Fire", self.foot(cx, y, cz), 10, around((3, 6.5, 9), 6, "Fire_Trap_Preview", duration=2.0),
+              around((0, 4, 8), 5, "Fire_AoE") + [sound("", "SFX_Emit_Goblin_Flame_Quadrant_Blast")],
+              [damage(18, 1.0), status("Burn", 4.0)])
+        # Onde de givre : autour du pupitre du chapitre, on s'en sort en passant de l'autre côté de la salle.
+        for k, pos in enumerate(c["lecterns"]):
+            spell(f"Codex_Frost_{k}", self.foot(*pos), 11, around((4, 8), 5, "Weapon_Frost_Mist", duration=2.0),
+                  around((0, 5, 9), 4, "Ice_Blast") + [vfx("", "Ability_Ice_Explosion", offset=(0, 0.5, 0)),
+                                                         sound("", "SFX_Ice_Break")],
+                  [damage(12, 1.0), status("Slow", 4.0)])
+        # Pluie de livres : à son signal, environ la moitié des cercles de la rotonde reçoivent des livres.
+        self.add("Codex_Rain", g, self.foot(cx, y, cz), cylinder(at.R_IN, 6), [
+            sound("TAG_ADDED", "SFX_Drop_Weapons_Books"),
+            signal("TAG_ADDED", "Rain", "Codex_Rain", "Zone", radius=60.0),
+            tags("TAG_ADDED", "Cast", "Off", 3.0)],
+            [tag_is("TAG_ADDED", "Cast", "On")], volume_tags={"Cast": "Off"})
+        n = 0
+        for r, count in ((4, 3), (8.5, 6), (13, 9), (17.5, 12), (21.5, 14)):
+            for k in range(count):
+                a = 360 * k / count + 17 * r
+                x, z = cx + r * math.cos(math.radians(a)), cz + r * math.sin(math.radians(a))
+                wx, wy, wz = self.world(x, y, z)
+                n += 1
+                self.pulse(f"Codex_Rain_{n}", g, (wx + 0.5, wy, wz + 0.5), cylinder(1.8, 3), "Rain", "Codex_Rain", "Zone",
+                           warn=1.6, active=0.5,
+                           warn_fx=[vfx("", warning, offset=(0, 0.1, 0), scale=1.3, duration=1.6)],
+                           hit_fx=[vfx("", "Block_Break_Dust", offset=(0, 1.5, 0)), vfx("", "Smoke_Floor"),
+                                   sound("", "SFX_Drop_Weapons_Books")],
+                           hits=[damage(14, 1.0), status("Slow", 2.0)], odds=0.5)
+        # Pans d'étagères : le pan s'annonce (zones rouges le long du mur), puis ses éboulis tombent par blocs.
+        for i, cells in enumerate(c["rubble"]):
+            center, shape = self.bounds(cells)
+            a0, a1 = at.COLLAPSE_ARCS[i]
+            span = (a1 - a0) % 360
+            marks = []
+            for k in range(4):
+                a = math.radians(a0 + span * (k + 0.5) / 4)
+                mx, mz = 24.5 * math.cos(a), 24.5 * math.sin(a)
+                wx, wy, wz = self.world(mx, y, mz)
+                offset = (wx + 0.5 - center[0], wy + 0.1 - center[1], wz + 0.5 - center[2])
+                marks += [vfx("TAG_ADDED", warning, offset=offset, scale=2.0, duration=2.5),
+                          vfx("TAG_ADDED", "Block_Break_Dust", offset=(offset[0], offset[1] + 4, offset[2]))]
+            self.add(f"Codex_Collapse_{i}", g, center, shape, [
+                sound("TAG_ADDED", "SFX_Drop_Weapons_Books"), *marks,
+                signal("TAG_ADDED", "Collapse", "Codex_Pile", str(i), radius=60.0)],
+                [tag_is("TAG_ADDED", "Collapse", "On")], volume_tags={"Codex_Sector": str(i), "Collapse": "Off"})
+            for j, pile in enumerate(piles(cells)):
+                pc, ps = self.bounds(pile)
+                self.pulse(f"Codex_Pile_{i}_{j}", g, pc, ps, "Collapse", "Codex_Pile", str(i), warn=2.5, active=0.6,
+                           warn_fx=[], hit_fx=[replace("", ["Empty"], at.RUBBLE), vfx("", "Block_Break_Dust")],
+                           hits=[damage(20, 1.0), status("Slow", 3.0)])
+        # Remise à zéro de l'arène : éboulis retirés, pans prêts à retomber.
+        lo, hi = -int(at.R_IN), int(at.R_IN)
+        center, shape = self.bounds([(cx + lo, y, cz + lo), (cx + hi, y + 1, cz + hi)])
+        self.add("Codex_Arena", g, center, shape, [
+            replace("TAG_ADDED", [at.RUBBLE], "Empty"),
+            tags("TAG_ADDED", "Collapse", "Off", 0.2, match="Codex_Sector", radius=60),
+            tags("TAG_ADDED", "Reset", "Off", 1.0)],
+            [tag_is("TAG_ADDED", "Reset", "On")], volume_tags={"Reset": "Off"})
+
     def build(self):
         self.hall()
         self.leaks()
         self.greenhouse()
         self.library()
+        self.codex()
         self.transmutation()
         self.wind_stair()
         check_ids(self.volumes)
@@ -480,6 +573,43 @@ def check_ids(volumes):
             for b in e.get("FromBlockTypes", ()):
                 if b not in BLOCKS:
                     raise RuntimeError(f"pièges : bloc inconnu {b!r} dans {v['Name']}")
+
+
+def piles(cells):
+    """Découpe des blocs (x, y, z) en boîtes pleines : colonnes de même hauteur regroupées en bandes, puis en
+    rectangles quand des bandes voisines coïncident."""
+    height = {}
+    for x, y, z in cells:
+        height.setdefault((x, z), []).append(y)
+    cols = {xz: (min(ys), max(ys)) for xz, ys in height.items()}
+    rows = {}
+    for (x, z), span in sorted(cols.items(), key=lambda kv: (kv[0][1], kv[0][0])):
+        runs = rows.setdefault((z, span), [])
+        if runs and runs[-1][1] == x - 1:
+            runs[-1][1] = x
+        else:
+            runs.append([x, x])
+    boxes = {}
+    for (z, span), runs in sorted(rows.items()):
+        for x0, x1 in runs:
+            key = (x0, x1, span)
+            if key in boxes and boxes[key][-1][1] == z - 1:
+                boxes[key][-1][1] = z
+            else:
+                boxes.setdefault(key, []).append([z, z])
+    out = []
+    for (x0, x1, (y0, y1)), zs in sorted(boxes.items()):
+        for z0, z1 in zs:
+            out.append([(x0, y0, z0), (x1, y1, z1)])
+    assert sum((b[1][0] - b[0][0] + 1) * (b[1][1] - b[0][1] + 1) * (b[1][2] - b[0][2] + 1) for b in out) == len(cells)
+    return out
+
+
+def codex_ids():
+    """Ids des volumes que tower.CodexSystem étiquette (TowerLayout.java)."""
+    return {"seal": vid("Codex_Seal"), "arena": vid("Codex_Arena"), "fire": vid("Codex_Fire"),
+            "rain": vid("Codex_Rain"), "frost": [vid(f"Codex_Frost_{k}") for k in range(len(at.LECTERN_ANGLES))],
+            "collapse": [vid(f"Codex_Collapse_{i}") for i in range(len(at.COLLAPSE_ARCS))]}
 
 
 def trap_volumes(tower, origin):
@@ -536,6 +666,51 @@ def seal_item(texture, icon):
         "BlockParticleSetId": "Crystal",
         "BlockSoundSetId": "Crystal",
         "ParticleColor": "#58d68d",
+    })
+
+
+def rubble_texture(seed=4402):
+    """Éboulis de bibliothèque : livres pêle-mêle (dos de couleur, tranches crème), éclats de bois sombre."""
+    rng = random.Random(seed)
+    n = 32
+    img = Image.new("RGBA", (n, n), (58, 40, 30, 255))
+    draw = ImageDraw.Draw(img)
+    spines = [(122, 34, 40), (44, 70, 120), (60, 100, 52), (110, 76, 40), (84, 44, 100), (30, 30, 36)]
+    y = 0
+    while y < n:
+        h = rng.randint(4, 7)
+        x = rng.randint(-3, 0)
+        while x < n:
+            w = rng.randint(3, 6)
+            if rng.random() < 0.25:  # livre couché : la tranche des pages
+                draw.rectangle((x, y + 1, x + w + 3, y + h - 1), fill=(222, 206, 168), outline=(150, 128, 96))
+                x += w + 4
+                continue
+            c = rng.choice(spines)
+            draw.rectangle((x, y, x + w - 1, y + h - 1), fill=c, outline=tuple(int(v * 0.6) for v in c))
+            if h > 4:
+                draw.line((x + 1, y + 2, x + w - 2, y + 2), fill=(214, 172, 70))
+            x += w
+        y += h
+    for _ in range(6):  # planches cassées
+        x0, y0 = rng.randint(0, n - 1), rng.randint(0, n - 1)
+        draw.line((x0, y0, x0 + rng.randint(-8, 8), y0 + rng.randint(-3, 3)), fill=(40, 26, 18), width=2)
+    return img
+
+
+def rubble_item(texture, icon):
+    """Éboulis du combat du Codex : bloc plein (on ne le traverse pas), posé et retiré par les volumes de l'arène."""
+    return block_item(at.RUBBLE, icon, {
+        "Material": "Solid",
+        "DrawType": "Cube",
+        "Opacity": "Solid",
+        "Textures": [{"Sides": texture, "UpDown": texture, "Weight": 1}],
+        "HitboxType": "Full",
+        "Flags": {},
+        "Gathering": {"Soft": {}},
+        "BlockParticleSetId": "Wood",
+        "BlockSoundSetId": "Wood",
+        "ParticleColor": "#6b4a32",
     })
 
 
@@ -597,9 +772,16 @@ def main():
                                                     icon.relative_to(COMMON).as_posix()))
     write_json(ITEMS / f"{at.HEDGE}.json", hedge_item())
     write_json(ITEMS / f"{at.LEVER}.json", lever_item())
+    rubble, rubble_icon = TEXTURES / "Codex_Rubble.png", ICONS / "Codex_Rubble.png"
+    rubble_img = rubble_texture()
+    rubble_img.save(rubble)
+    rubble_img.resize((64, 64), Image.NEAREST).save(rubble_icon)
+    write_json(ITEMS / f"{at.RUBBLE}.json", rubble_item(rubble.relative_to(COMMON).as_posix(),
+                                                       rubble_icon.relative_to(COMMON).as_posix()))
     if preview:
         preview.mkdir(parents=True, exist_ok=True)
         img.resize((256, 256), Image.NEAREST).save(preview / "Alchemical_Seal.png")
+        rubble_img.resize((256, 256), Image.NEAREST).save(preview / "Codex_Rubble.png")
     print("blocs des énigmes générés")
 
 

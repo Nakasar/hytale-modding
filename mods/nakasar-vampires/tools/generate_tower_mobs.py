@@ -20,7 +20,12 @@ Nakasar_Alchemist_Creations). Toutes sont des rôles Generic du mod, sur des mod
 - golem de cristal instable (élite de la Salle des Transmutations, Golem_Crystal_Thunder en grand, barre de boss) :
   combo vanilla du golem de cristal et onde de foudre annoncée par une zone rouge de 6 blocs ;
 - gargouille (chauve-souris vanilla taillée dans la pierre, en grand) : vole autour de l'Escalier des vents, plonge sur
-  sa cible et la griffe. Pas de recul : elle ne doit jamais pousser personne dans le vide.
+  sa cible et la griffe. Pas de recul : elle ne doit jamais pousser personne dans le vide ;
+- Codex vivant (boss de la bibliothèque, modèle tools/generate_codex_models.py, barre de boss) : flotte au centre de la
+  rotonde, lance des nuées de pages tranchantes dans un cône annoncé au sol et ouvre un chapitre toutes les 28 à 32 s
+  (interaction Java Nakasar_CodexChapter, combat suivi par tower/CodexSystem.java) : un livre de chapitre (rôles
+  Nakasar_Codex_Chapter_<sort>, sans marqueur) apparaît sur un pupitre ; le détruire avant la fin de l'incantation
+  étourdit le Codex (Nakasar_Codex_Stunned, dégâts subis +50 %), sinon le sort part (volumes de l'instance).
 
 Réactifs (les trois principes) : Sel philosophal (golems, fioles, gargouilles), Soufre ardent (élémentaires de feu et
 de foudre), Mercure vif (homoncules, apprentis) ; les élémentaires lâchent aussi les essences vanilla de leur élément.
@@ -78,8 +83,13 @@ THUNDER = "Nakasar_Elemental_Thunder"
 ROOT = "Nakasar_Elemental_Root"
 CRYSTAL_GOLEM = "Nakasar_Crystal_Golem"
 GARGOYLE = "Nakasar_Tower_Gargoyle"
+CODEX = "Nakasar_Living_Codex"
 ALL = [HOMUNCULUS, GOLEM, FLASK_POISON, FLASK_FIRE, APPRENTICE, VINE, SNAPDRAGON, FIRE, FROST, THUNDER, ROOT,
-       CRYSTAL_GOLEM, GARGOYLE]
+       CRYSTAL_GOLEM, GARGOYLE, CODEX]
+# Livres de chapitre du Codex : apparus par CodexSystem (Java) sur un pupitre, jamais par un marqueur.
+CHAPTERS = [f"Nakasar_Codex_Chapter_{spell}" for spell in ("Fire", "Frost", "Rain")]
+CODEX_STUNNED = "Nakasar_Codex_Stunned"
+CLASP_DROP = "Nakasar_Drop_Trophy_Codex_Clasp"
 
 SALT = "Ingredient_Nakasar_Philosophers_Salt"
 SULFUR = "Ingredient_Nakasar_Burning_Sulfur"
@@ -89,6 +99,9 @@ GOLEM_SLAM_RADIUS = 4.0
 FLASK_RADIUS = 3.0
 DISCHARGE_RADIUS = 3.5
 SURGE_RADIUS = 6.0
+PAGES_RANGE = 7.0
+PAGES_ARC = 70
+CHAPTER_CAST = 6.0
 RESPAWN = 7200  # une instance vit bien moins longtemps : les mobs tués ne reviennent pas
 
 timer = ge.timer
@@ -347,6 +360,45 @@ def gargoyle_dive():
     }
 
 
+def codex_pages():
+    marks = [{"SystemId": "Feastmaster_Slam_Warning", "TargetEntityPart": "Entity", "TargetNodeName": "Origin",
+              "Scale": round(ge.WARNING_SCALE * r, 2), "PositionOffset": {"X": 0, "Y": 0.1, "Z": z},
+              "DetachedFromModel": True} for z, r in ((2, 1.4), (4, 2.0), (6, 2.6))]
+    return {
+        "$Comment": f"Nuée de pages du Codex vivant, annoncée : il se fige 1,1 s, ses pages s'agitent et un cône de {PAGES_RANGE:g} blocs se marque au sol devant lui (trois zones rouges) ; puis les pages tranchent tout le cône ({PAGES_ARC} degrés, 16 dégâts, sans recul).",
+        "Type": "Serial",
+        "Interactions": [
+            {"Type": "ClearEntityEffect", "Entity": "User", "EntityEffectId": "Hit_Interrupt_Eligible"},
+            {"Type": "ApplyEffect", "EffectId": "Nakasar_Elite_Rooted"},
+            {"Type": "Simple", "RunTime": 1.1, "Effects": {
+                "ItemPlayerAnimationsId": CODEX, "ItemAnimationId": "Pages",
+                "WorldSoundEventId": "SFX_Skeleton_Mage_Spellbook_Charge", "Particles": marks}},
+            {"Type": "Selector", "RunTime": 0.2, "Effects": {"WorldSoundEventId": "SFX_Drop_Weapons_Books"},
+             "Selector": {"Id": "Horizontal", "Direction": "ToLeft", "TestLineOfSight": False, "ExtendTop": 1.5,
+                          "ExtendBottom": 2.5, "StartDistance": 0.2, "EndDistance": PAGES_RANGE, "Length": PAGES_ARC,
+                          "RollOffset": 0, "YawStartOffset": PAGES_ARC // 2},
+             "HitEntity": {"Interactions": damage(16, particles="Impact_Sword_Basic_Stronk")}},
+            {"Type": "Simple", "RunTime": 0.4},
+        ],
+    }
+
+
+def codex_chapter():
+    return {
+        "$Comment": f"Le Codex vivant ouvre un chapitre : il se fige 1,2 s, s'ouvre en grand, puis un livre de chapitre apparaît sur un pupitre (Nakasar_CodexChapter, CodexSystem). Les joueurs ont {CHAPTER_CAST:g} s pour le détruire.",
+        "Type": "Serial",
+        "Interactions": [
+            {"Type": "ClearEntityEffect", "Entity": "User", "EntityEffectId": "Hit_Interrupt_Eligible"},
+            {"Type": "ApplyEffect", "EffectId": "Nakasar_Elite_Rooted"},
+            {"Type": "Simple", "RunTime": 1.2, "Effects": {
+                "ItemPlayerAnimationsId": CODEX, "ItemAnimationId": "Chapter",
+                "WorldSoundEventId": "SFX_Skeleton_Mage_Spellbook_Charge"}},
+            {"Type": "Nakasar_CodexChapter", "CastTime": CHAPTER_CAST},
+            {"Type": "Simple", "RunTime": 0.3},
+        ],
+    }
+
+
 def interactions():
     return {
         "Nakasar_NPC_Homunculus_Bite": swing("Morsure d'homoncule (8 dégâts).", "Hound_Bleached_Default", "Bite",
@@ -381,6 +433,8 @@ def interactions():
         "Nakasar_NPC_Gargoyle_Claw": swing("Coup de griffes de la gargouille (12 dégâts, sans recul).", None, None,
                                            0.35, 12, end=2.6, length=90, yaw=45),
         "Nakasar_NPC_Gargoyle_Dive": gargoyle_dive(),
+        "Nakasar_NPC_Codex_Pages": codex_pages(),
+        "Nakasar_NPC_Codex_Chapter": codex_chapter(),
     }
 
 
@@ -404,6 +458,8 @@ def roots():
         "Root_Nakasar_NPC_Crystal_Golem_Surge": melee_tag("Nakasar_NPC_Crystal_Golem_Surge"),
         "Root_Nakasar_NPC_Gargoyle_Claw": melee_tag("Nakasar_NPC_Gargoyle_Claw"),
         "Root_Nakasar_NPC_Gargoyle_Dive": melee_tag("Nakasar_NPC_Gargoyle_Dive"),
+        "Root_Nakasar_NPC_Codex_Pages": melee_tag("Nakasar_NPC_Codex_Pages"),
+        "Root_Nakasar_NPC_Codex_Chapter": melee_tag("Nakasar_NPC_Codex_Chapter"),
     }
 
 
@@ -558,6 +614,45 @@ def gargoyle_role():
                 DeathAnimationTime=1.2, DeathParticles="Effect_Death_Bones")
 
 
+def codex_role():
+    return role(CODEX, "Codex vivant, gardien de la bibliothèque (boss de l'étape 5), avec barre de vie de boss : flotte au centre de la rotonde entre les trois pupitres, nuée de pages dans un cône annoncé toutes les 4,5 à 6 s, chapitre toutes les 28 à 32 s (CodexSystem : livre à détruire sur un pupitre, sinon feu, givre ou pluie de livres ; sous la moitié de sa vie les rayonnages s'effondrent). Ne quitte pas le centre de l'arène ; remise à zéro par CodexSystem si le groupe meurt ou sort.",
+                CODEX, 1500, [
+                    ge.timed_attack("Chapter", "Root_Nakasar_NPC_Codex_Chapter",
+                                    comment="Ouvre un chapitre à chaque fin de recharge."),
+                    ge.timed_attack("Pages", "Root_Nakasar_NPC_Codex_Pages", rng=PAGES_RANGE - 0.5,
+                                    comment=f"Nuée de pages quand la cible est à moins de {PAGES_RANGE - 0.5:g} blocs."),
+                    {"$Comment": "Ne s'éloigne jamais à plus de 5 blocs du centre de l'arène.",
+                     "Sensor": {"Type": "Leash", "Range": 5},
+                     "BodyMotion": {"Type": "Seek", "RelativeSpeed": 0.6, "SlowDownDistance": 2, "StopDistance": 1,
+                                    "UsePathfinder": False}},
+                    chase(12, speed=0.5, stop=3.5, pathfinder=False),
+                    watch(40)],
+                fly(3, 0.2, 0.8), drop="Nakasar_Drop_Living_Codex", sight=18, los=False, leash=40,
+                timers=[timer("Chapter", (8, 10), (28, 32)), timer("Pages", (2, 3), (4.5, 6))], heal=True,
+                KnockbackScale=0, DeathAnimationTime=1.6, DeathParticles="Explosion_Medium")
+
+
+def chapter_role(role_id):
+    spell = role_id.rsplit("_", 1)[1]
+    return role(role_id, f"Livre de chapitre du Codex vivant ({spell}) : posé sur un pupitre par CodexSystem pendant l'incantation. Fragile, ne se défend pas ; le détruire à temps interrompt le sort et étourdit le Codex.",
+                role_id, 40, [], fly(0.1, 0.2, 0.5), sight=0.5, los=False, home=False,
+                DefaultPlayerAttitude="Neutral", KnockbackScale=0, DeathAnimationTime=0.3,
+                DeathParticles="Explosion_Medium")
+
+
+def codex_stunned_effect():
+    return {
+        "$Comment": "Codex vivant interrompu (livre de chapitre détruit à temps) : étourdi (CodexSystem gèle aussi son IA) et 50 % de dégâts en plus, comme le Festoyeur gobelin (Goblin_Feastmaster_Stunned).",
+        "ApplicationEffects": {"Particles": [{"SystemId": "Stunned", "TargetEntityPart": "Self", "TargetNodeName": "Book",
+                                             "PositionOffset": {"Y": 1.2}}]},
+        "DamageResistance": {cause: [{"CalculationType": "Percent", "Amount": -0.5}]
+                             for cause in ("Physical", "Projectile", "Elemental")},
+        "OverlapBehavior": "Overwrite",
+        "Infinite": False,
+        "Duration": 6,
+    }
+
+
 def roles():
     return {
         HOMUNCULUS: homunculus_role(),
@@ -573,6 +668,8 @@ def roles():
         ROOT: elemental_role(ROOT, "Root"),
         CRYSTAL_GOLEM: crystal_golem_role(),
         GARGOYLE: gargoyle_role(),
+        CODEX: codex_role(),
+        **{chapter: chapter_role(chapter) for chapter in CHAPTERS},
     }
 
 
@@ -790,13 +887,17 @@ def drops():
             single(SALT, 2), single(SULFUR, 2), single(MERCURY, 2)),
         "Nakasar_Drop_Gargoyle": {"$Comment": "Gargouille : du sel philosophal, une fois sur deux.",
                                   "Container": chance(SALT, 1, 1)},
+        "Nakasar_Drop_Living_Codex": multiple(
+            "Codex vivant (boss de la bibliothèque) : son fermoir (trophée) et les trois principes.",
+            {"Type": "Droplist", "DroplistId": CLASP_DROP},
+            single(MERCURY, 2, 3), single(SALT, 2, 3), single(SULFUR, 1, 2)),
     }
 
 
 def groups():
     return {
         CREATIONS: {"$Comment": "Créatures de l'Alchimiste : elles ne se blessent pas entre elles (DisableDamageGroups).",
-                    "IncludeRoles": ALL},
+                    "IncludeRoles": ALL + CHAPTERS},
         FIRE_ELEMENTALS: {"$Comment": "Créatures de feu de la tour : aucun dégât de feu (dans Nakasar_Fire_Immune).",
                           "IncludeRoles": [FIRE, FLASK_FIRE]},
     }
@@ -838,6 +939,7 @@ def main():
         write_json(DROPS / f"{name}.json", doc)
     for name, doc in groups().items():
         write_json(GROUPS / f"{name}.json", doc)
+    write_json(ge.EFFECTS / f"{CODEX_STUNNED}.json", codex_stunned_effect())
     for role_id in ALL:
         write_json(MARKERS / f"{role_id}.json", marker(role_id))
         write_json(SPAWNERS / f"Nakasar_Spawner_{role_id.removeprefix('Nakasar_')}.json", spawner(role_id))

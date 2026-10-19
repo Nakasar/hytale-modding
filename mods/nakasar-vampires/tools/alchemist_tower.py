@@ -69,6 +69,7 @@ HEDGE = "Nakasar_Thorn_Hedge"
 LEVER = "Nakasar_Valve_Lever"
 FOYER = "*Furniture_Temple_Dark_Brazier_State_Definitions_Off"
 GATE_BLOCKS = (SEAL, HEDGE)
+RUBBLE = "Nakasar_Codex_Rubble"  # éboulis de livres et d'étagères, posé en jeu par les volumes du combat du Codex
 HALL_SEAL_ARC = (304, 308)    # sceau du couloir des fuites, juste après l'arrivée de la rampe du hall (300°)
 JET_ARC = (310, 530)          # bouches de vapeur actives : de l'arrivée à la porte ouest (180°)
 SHORTCUT_ARC = (236.5, 243.5)  # barrage du couloir : le levier y ouvre un raccourci
@@ -77,6 +78,14 @@ FOYERS = {"Fire": (6, -11), "Ice": (-6, -11), "Acid": (14, 14), "Lightning": (-1
 FLAME_ANGLES = (295, 340, 385, 430, 475, 520, 565)  # angles de l'Escalier des vents (262 à 602°)
 GUST_SECTORS = (318, 408, 498, 585)
 STRIKE_ANGLES = tuple(range(282, 595, 22))
+# Codex vivant (étape 5) : trois pupitres autour de la rotonde, sceau en haut de la rampe de la bibliothèque, pans
+# d'étagères qui s'effondrent sous 50 % de vie (hors rampe, portes, point de contrôle et passage secret).
+LECTERN = "Rock_Gold_Brick_Ornate"
+LECTERN_R = 9.5
+LECTERN_ANGLES = (30, 150, 270)
+CODEX_SEAL_ARC = (190, 199)
+COLLAPSE_ARCS = ((220, 248), (252, 282), (286, 312), (328, 358), (2, 24))
+COLLAPSE_R = (21.5, 28.4)
 
 DIRS4 = ((1, 0), (-1, 0), (0, 1), (0, -1))
 DIRS8 = DIRS4 + ((1, 1), (1, -1), (-1, 1), (-1, -1))
@@ -791,6 +800,9 @@ class Tower:
             self.spawner(role, *at3(r, y, a), height=h)
         for role, xyz, h in MOB_FIXED:
             self.spawner(role, *xyz, height=h)
+        # Le Codex vivant flotte au centre de la rotonde, entre ses trois pupitres (case réservée par `codex`).
+        self.p.set(0, F_LIBRARY, 0, SPAWNER_PREFIX + "Living_Codex")
+        self.spawners.append(("Living_Codex", (0, F_LIBRARY, 0)))
         # Gargouilles au-dessus de l'Escalier des vents : elles volent, on les pose deux blocs au-dessus des marches.
         for angle in GARGOYLE_ANGLES:
             x, y, z = self.ramp_cell(angle)
@@ -900,6 +912,45 @@ class Tower:
         t["gusts"] = [(a, "A" if i % 2 == 0 else "B", [self.ramp_cell(a + k, 37.2) for k in (-10, -5, 0, 5, 10)])
                       for i, a in enumerate(GUST_SECTORS)]
         t["strikes"] = [self.ramp_cell(a, 35.5 if i % 2 else 38.8) for i, a in enumerate(STRIKE_ANGLES)]
+
+    # --- Codex vivant (étape 5) -------------------------------------------------------------------
+
+    def codex(self):
+        """Arène du Codex vivant, au centre de la rotonde de la bibliothèque ; `self.trap["codex"]` garde ses positions
+        pour tools/alchemist_traps.py et TowerLayout.java : trois pupitres (le Codex y ouvre ses chapitres), le sceau
+        qui ferme le haut de la rampe jusqu'à sa mort, et les éboulis des pans d'étagères qui s'effondrent."""
+        p = self.p
+        y = F_LIBRARY
+        lecterns = []
+        for a in LECTERN_ANGLES:
+            x, z = at(LECTERN_R, a)
+            if not p.free(x, y, z):
+                raise RuntimeError(f"tour : pas de place pour un pupitre du Codex en {(x, y, z)}")
+            p.set(x, y, z, LECTERN)
+            lecterns.append((x, y, z))
+            # Le chapitre flotte au-dessus du pupitre : le décor laisse la place et le passage autour.
+            self.keep_clear.update((x + dx, y + k, z + dz) for dx in range(-1, 2) for dz in range(-1, 2)
+                                   for k in range(4) if (dx, dz, k) != (0, 0, 0))
+        # Le Codex flotte au centre : rien n'y est posé.
+        self.keep_clear.update((x, y + k, z) for x in range(-3, 4) for z in range(-3, 4) for k in range(5)
+                               if math.hypot(x, z) < 3.5)
+        seal = []
+        for (x, z), s in sorted(self.library_ramp.items()):
+            if in_arc(polar(x, z)[1], *CODEX_SEAL_ARC):
+                seal += self.seal([(x, z)], (s + 1) // 2, F_TRANS + 3)
+        rubble = []
+        for a0, a1 in COLLAPSE_ARCS:
+            cells = []
+            for x, z, d, a in ring(*COLLAPSE_R):
+                if not in_arc(a, a0, a1) or not self.solid(x, y - 1, z):
+                    continue
+                for k in range(2 if d >= 25 else 1):
+                    if not p.free(x, y + k, z) or (x, y + k, z) in self.keep_clear:
+                        break
+                    cells.append((x, y + k, z))
+                    self.keep_clear.add((x, y + k, z))
+            rubble.append(cells)
+        self.trap["codex"] = {"center": (0, y, 0), "lecterns": lecterns, "seal": seal, "rubble": rubble}
 
     # --- décor -----------------------------------------------------------------------------------
 
@@ -1126,8 +1177,14 @@ class Tower:
         for k in (245, 265, 285, 318, 350, 15):
             x, z = at(19, k)
             self.table(x, y, z, "Furniture_Temple_Light_Table", rng.sample(reading, 4), "Furniture_Ancient_Chair")
-        # Planétaire au centre, cercle de tapis autour.
-        self.armillary(0, y, 0, 4)
+        # Au centre, l'arène du Codex vivant : cercle d'or incrusté dans le sol, tapis autour.
+        for x in range(-4, 5):
+            for z in range(-4, 5):
+                d = math.hypot(x, z)
+                if d < 1:
+                    self.p.set(x, y - 1, z, "Rock_Gold_Brick_Ornate")
+                elif 2.6 <= d < 3.6:
+                    self.p.set(x, y - 1, z, TRIM)
         for x in range(-8, 8, 2):
             for z in range(-8, 8, 2):
                 if 4.5 <= math.hypot(x + 0.5, z + 0.5) < 8.5:
@@ -1415,6 +1472,7 @@ class Tower:
         self.checkpoint(*at3(37, F_LAB, 272), statue_at=at(39, 262))
         self.checkpoint(*at3(33, F_DECK, 255), statue_at=at(37, 265))
         self.traps()
+        self.codex()
         self.decorate()
         self.mobs()
         self.secure()
@@ -1605,6 +1663,18 @@ def build_checked(seed):
         missing, _ = walkable_path(prefab, start, {"goal": goal}, gates_open=False)
         if not missing:
             raise RuntimeError(f"tour : le {name} ne ferme pas le passage")
+    # Le sceau du Codex seul (ronces brûlées) ferme le haut de la rampe ; les éboulis de toutes les étagères effondrées
+    # ne ferment ni la rampe ni le centre de l'arène.
+    codex = tower.trap["codex"]
+    library = (cps[0][0], 2 * cps[0][1], cps[0][2])
+    missing, _ = walkable_path(prefab, library, {"goal": GOALS["transmutation"]}, solid_cells=codex["seal"])
+    if not missing:
+        raise RuntimeError("tour : le sceau du Codex ne ferme pas la rampe de la bibliothèque")
+    rubble = [c for cells in codex["rubble"] for c in cells]
+    missing, _ = walkable_path(prefab, library, {"transmutation": GOALS["transmutation"], "arena": (0, F_LIBRARY, 3),
+                                                 "vault": at3(37, F_LIBRARY, 320)}, solid_cells=rubble)
+    if missing:
+        raise RuntimeError(f"tour : les éboulis du Codex ferment le passage : {missing}")
     return tower
 
 
@@ -1623,15 +1693,19 @@ def passable(name):
     return name in (None, AIR) or name.startswith(PASSABLE_PREFIXES)
 
 
-def walkable_path(prefab, start, goals, ground_y=0, bounds=(-70, 70, -70, 82), gates_open=True):
+def walkable_path(prefab, start, goals, ground_y=0, bounds=(-70, 70, -70, 82), gates_open=True, solid_cells=()):
     """Parcours en largeur sur les surfaces du prefab (demi-blocs) : un joueur de 2 blocs de haut monte d'un demi-bloc
     en marchant, d'un bloc en sautant, et peut descendre de 4 blocs. Hors du prefab, sous ground_y c'est l'île (plein),
     au-dessus de l'air. Sceaux et ronces (GATE_BLOCKS) sont ouverts si gates_open, comme une fois les énigmes
-    résolues. Renvoie les buts non atteints."""
+    résolues ; `solid_cells` sont pleins quoi qu'il y ait (un sceau seul, des éboulis posés en jeu). Renvoie les buts
+    non atteints."""
     blocks = prefab.blocks
     claims = prefab.claims
+    solid_cells = set(solid_cells)
 
     def cell(x, y, z):
+        if (x, y, z) in solid_cells:
+            return "solid"
         if (x, y, z) in claims:
             return "air" if passable(blocks[claims[(x, y, z)]][0]) else "solid"
         b = blocks.get((x, y, z))

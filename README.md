@@ -363,6 +363,17 @@ Mobs (voir [docs/npc-0.7.2.md](docs/npc-0.7.2.md)) :
   marches, rafales qui plaquent contre le mur (jamais vers le vide), foudre sur des cercles annoncés. À vérifier en
   jeu : que l'usage des braseros et du levier déclenche bien les volumes, les particules empruntées (taille, sens),
   les dégâts, le feu des ronces (Fluid_Fire) et le sceau qui se dissout.
+- **Tour de l'Alchimiste, le Codex vivant** (`tools/generate_codex_models.py`, rôles dans `generate_tower_mobs.py`,
+  zones dans `alchemist_traps.Traps.codex`, combat dans `tower/CodexSystem.java`) : boss de la bibliothèque, grimoire
+  flottant (œil, fermoir d'or, chaînes brisées, runes) au centre de la rotonde entre trois pupitres, barre de boss.
+  Nuée de pages dans un cône annoncé au sol ; toutes les 28 à 32 s il ouvre un chapitre : un livre apparaît sur un
+  pupitre (feu, givre ou pluie de livres) et le détruire en 6 s étourdit le Codex 6 s (+50 % de dégâts subis), sinon
+  le sort part sur des zones annoncées. Sous la moitié de sa vie, un pan de rayonnages s'effondre toutes les 14 s
+  (zones annoncées puis bloc d'éboulis `Nakasar_Codex_Rubble`). Groupe mort ou sorti de l'arène 8 s : éboulis
+  retirés et vie pleine. Sa mort dissout le sceau de la rampe vers la Salle des Transmutations ; trophée Fermoir du
+  Codex (sans usage pour l'instant). À vérifier en jeu : le modèle et ses animations (Pages, Chapter, vol), le sens des
+  marques du cône, l'apparition des livres sur les pupitres, l'étourdissement, les zones de sorts et d'éboulement, la
+  remise à zéro et le sceau.
 
 ## Organisation du dépôt
 

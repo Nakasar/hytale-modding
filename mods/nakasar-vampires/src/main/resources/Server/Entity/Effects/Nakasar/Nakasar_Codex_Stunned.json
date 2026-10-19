@@ -1,0 +1,38 @@
+{
+  "$Comment": "Codex vivant interrompu (livre de chapitre détruit à temps) : étourdi (CodexSystem gèle aussi son IA) et 50 % de dégâts en plus, comme le Festoyeur gobelin (Goblin_Feastmaster_Stunned).",
+  "ApplicationEffects": {
+    "Particles": [
+      {
+        "SystemId": "Stunned",
+        "TargetEntityPart": "Self",
+        "TargetNodeName": "Book",
+        "PositionOffset": {
+          "Y": 1.2
+        }
+      }
+    ]
+  },
+  "DamageResistance": {
+    "Physical": [
+      {
+        "CalculationType": "Percent",
+        "Amount": -0.5
+      }
+    ],
+    "Projectile": [
+      {
+        "CalculationType": "Percent",
+        "Amount": -0.5
+      }
+    ],
+    "Elemental": [
+      {
+        "CalculationType": "Percent",
+        "Amount": -0.5
+      }
+    ]
+  },
+  "OverlapBehavior": "Overwrite",
+  "Infinite": false,
+  "Duration": 6
+}

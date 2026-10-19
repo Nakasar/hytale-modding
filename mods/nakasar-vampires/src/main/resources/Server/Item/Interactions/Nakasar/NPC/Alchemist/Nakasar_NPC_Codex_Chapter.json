@@ -1,0 +1,32 @@
+{
+  "$Comment": "Le Codex vivant ouvre un chapitre : il se fige 1,2 s, s'ouvre en grand, puis un livre de chapitre apparaît sur un pupitre (Nakasar_CodexChapter, CodexSystem). Les joueurs ont 6 s pour le détruire.",
+  "Type": "Serial",
+  "Interactions": [
+    {
+      "Type": "ClearEntityEffect",
+      "Entity": "User",
+      "EntityEffectId": "Hit_Interrupt_Eligible"
+    },
+    {
+      "Type": "ApplyEffect",
+      "EffectId": "Nakasar_Elite_Rooted"
+    },
+    {
+      "Type": "Simple",
+      "RunTime": 1.2,
+      "Effects": {
+        "ItemPlayerAnimationsId": "Nakasar_Living_Codex",
+        "ItemAnimationId": "Chapter",
+        "WorldSoundEventId": "SFX_Skeleton_Mage_Spellbook_Charge"
+      }
+    },
+    {
+      "Type": "Nakasar_CodexChapter",
+      "CastTime": 6.0
+    },
+    {
+      "Type": "Simple",
+      "RunTime": 0.3
+    }
+  ]
+}

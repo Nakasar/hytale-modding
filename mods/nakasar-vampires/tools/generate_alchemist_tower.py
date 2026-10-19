@@ -745,12 +745,21 @@ def checkpoint_volumes(tower, ruins_statue, ruins_spot):
 # --- Java : positions de la tour ---------------------------------------------------------------
 
 def tower_layout(tower, ruins_spot):
-    """TowerLayout.java : point d'arrivée et points de contrôle, en coordonnées du monde."""
+    """TowerLayout.java : point d'arrivée, points de contrôle et arène du Codex vivant (pupitres, volumes que
+    tower.CodexSystem étiquette), en coordonnées du monde."""
     ox, oy, oz = TOWER_CENTER
     rx, rz = arch.RUINS["center"]
     spots = [(ruins_spot[0] + rx, ruins_spot[1] + GROUND_Y, ruins_spot[2] + rz)]
     spots += [(x + ox, y + oy, z + oz) for x, y, z in tower.checkpoints]
     rows = ",\n".join(f"            new Vector3d({x + 0.5}, {y}, {z + 0.5})" for x, y, z in spots)
+    codex = tower.trap["codex"]
+    cx, cy, cz = codex["center"]
+    lecterns = ",\n".join(f"            new Vector3d({x + ox + 0.5}, {y + oy + 1}, {z + oz + 0.5})"
+                           for x, y, z in codex["lecterns"])
+    ids = alchemist_traps.codex_ids()
+
+    def strings(values):
+        return ", ".join(f'"{v}"' for v in values)
     return f"""package dev.nakasar.hytale.vampires.tower;
 
 import org.joml.Vector3d;
@@ -766,6 +775,24 @@ public final class TowerLayout {{
     public static final Vector3d[] CHECKPOINTS = {{
 {rows}
     }};
+
+    /** Codex vivant : centre de la rotonde de la bibliothèque, au sol. */
+    public static final Vector3d CODEX_CENTER = new Vector3d({cx + ox + 0.5}, {cy + oy}, {cz + oz + 0.5});
+    /** Rayon de l'arène du Codex (intérieur de la tour). */
+    public static final double CODEX_ARENA_RADIUS = {alchemist_tower.R_IN};
+    /** Dessus des trois pupitres où le Codex ouvre ses chapitres. */
+    public static final Vector3d[] CODEX_LECTERNS = {{
+{lecterns}
+    }};
+    /** Volumes de l'arène (tools/alchemist_traps.py, Traps.codex) : sceau de la rampe (Codex=On), remise à zéro (Reset=On). */
+    public static final String CODEX_SEAL = "{ids['seal']}";
+    public static final String CODEX_ARENA = "{ids['arena']}";
+    /** Sorts des chapitres (Cast=On) : cercle de feu, pluie de livres, onde de givre de chaque pupitre. */
+    public static final String CODEX_FIRE = "{ids['fire']}";
+    public static final String CODEX_RAIN = "{ids['rain']}";
+    public static final String[] CODEX_FROST = {{{strings(ids['frost'])}}};
+    /** Pans d'étagères qui s'effondrent (Collapse=On). */
+    public static final String[] CODEX_COLLAPSE = {{{strings(ids['collapse'])}}};
 
     private TowerLayout() {{
     }}

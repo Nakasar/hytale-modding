@@ -1,0 +1,212 @@
+{
+  "$Comment": "Codex vivant (mini-boss de la bibliothèque de la Tour de l'Alchimiste), généré par tools/generate_codex_models.py : grand grimoire de cuir noir qui flotte debout, œil luisant sur la couverture, fermoir doré, runes sur le dos, chaînes brisées. La couverture s'ouvre comme une porte et les feuillets battent.",
+  "EyeHeight": 1.5,
+  "HitBox": {
+    "Max": {
+      "X": 0.75,
+      "Y": 2.4,
+      "Z": 0.45
+    },
+    "Min": {
+      "X": -0.75,
+      "Y": 0.6,
+      "Z": -0.45
+    }
+  },
+  "MinScale": 1,
+  "MaxScale": 1,
+  "Light": {
+    "Color": "#c47aff",
+    "Radius": 7
+  },
+  "Model": "NPC/Nakasar/Living_Codex/Model.blockymodel",
+  "Texture": "NPC/Nakasar/Living_Codex/Texture.png",
+  "AnimationSets": {
+    "Idle": {
+      "Animations": [
+        {
+          "Animation": "NPC/Nakasar/Living_Codex/Animations/Idle.blockyanim"
+        }
+      ]
+    },
+    "Hurt": {
+      "Animations": [
+        {
+          "Animation": "NPC/Nakasar/Living_Codex/Animations/Hurt.blockyanim",
+          "Looping": false
+        }
+      ]
+    },
+    "Death": {
+      "Animations": [
+        {
+          "Animation": "NPC/Nakasar/Living_Codex/Animations/Death.blockyanim",
+          "Looping": false
+        }
+      ]
+    },
+    "Walk": {
+      "Animations": [
+        {
+          "Animation": "NPC/Nakasar/Living_Codex/Animations/Idle.blockyanim"
+        }
+      ]
+    },
+    "WalkBackward": {
+      "Animations": [
+        {
+          "Animation": "NPC/Nakasar/Living_Codex/Animations/Idle.blockyanim"
+        }
+      ]
+    },
+    "Run": {
+      "Animations": [
+        {
+          "Animation": "NPC/Nakasar/Living_Codex/Animations/Idle.blockyanim"
+        }
+      ]
+    },
+    "Sprint": {
+      "Animations": [
+        {
+          "Animation": "NPC/Nakasar/Living_Codex/Animations/Idle.blockyanim"
+        }
+      ]
+    },
+    "Jump": {
+      "Animations": [
+        {
+          "Animation": "NPC/Nakasar/Living_Codex/Animations/Idle.blockyanim"
+        }
+      ]
+    },
+    "JumpWalk": {
+      "Animations": [
+        {
+          "Animation": "NPC/Nakasar/Living_Codex/Animations/Idle.blockyanim"
+        }
+      ]
+    },
+    "JumpRun": {
+      "Animations": [
+        {
+          "Animation": "NPC/Nakasar/Living_Codex/Animations/Idle.blockyanim"
+        }
+      ]
+    },
+    "Fall": {
+      "Animations": [
+        {
+          "Animation": "NPC/Nakasar/Living_Codex/Animations/Idle.blockyanim"
+        }
+      ]
+    },
+    "Sleep": {
+      "Animations": [
+        {
+          "Animation": "NPC/Nakasar/Living_Codex/Animations/Idle.blockyanim"
+        }
+      ]
+    },
+    "Laydown": {
+      "Animations": [
+        {
+          "Animation": "NPC/Nakasar/Living_Codex/Animations/Idle.blockyanim"
+        }
+      ]
+    },
+    "Crouch": {
+      "Animations": [
+        {
+          "Animation": "NPC/Nakasar/Living_Codex/Animations/Idle.blockyanim"
+        }
+      ]
+    },
+    "CrouchWalk": {
+      "Animations": [
+        {
+          "Animation": "NPC/Nakasar/Living_Codex/Animations/Idle.blockyanim"
+        }
+      ]
+    },
+    "CrouchWalkBackward": {
+      "Animations": [
+        {
+          "Animation": "NPC/Nakasar/Living_Codex/Animations/Idle.blockyanim"
+        }
+      ]
+    },
+    "SwimIdle": {
+      "Animations": [
+        {
+          "Animation": "NPC/Nakasar/Living_Codex/Animations/Idle.blockyanim"
+        }
+      ]
+    },
+    "FluidIdle": {
+      "Animations": [
+        {
+          "Animation": "NPC/Nakasar/Living_Codex/Animations/Idle.blockyanim"
+        }
+      ]
+    },
+    "Alerted": {
+      "Animations": [
+        {
+          "Animation": "NPC/Nakasar/Living_Codex/Animations/Idle.blockyanim"
+        }
+      ]
+    },
+    "Wake": {
+      "Animations": [
+        {
+          "Animation": "NPC/Nakasar/Living_Codex/Animations/Idle.blockyanim"
+        }
+      ]
+    },
+    "Fly": {
+      "Animations": [
+        {
+          "Animation": "NPC/Nakasar/Living_Codex/Animations/Idle.blockyanim"
+        }
+      ]
+    },
+    "FlyBackward": {
+      "Animations": [
+        {
+          "Animation": "NPC/Nakasar/Living_Codex/Animations/Idle.blockyanim"
+        }
+      ]
+    },
+    "FlyFast": {
+      "Animations": [
+        {
+          "Animation": "NPC/Nakasar/Living_Codex/Animations/Idle.blockyanim"
+        }
+      ]
+    },
+    "FlyIdle": {
+      "Animations": [
+        {
+          "Animation": "NPC/Nakasar/Living_Codex/Animations/Idle.blockyanim"
+        }
+      ]
+    },
+    "HurtFly": {
+      "Animations": [
+        {
+          "Animation": "NPC/Nakasar/Living_Codex/Animations/Hurt.blockyanim",
+          "Looping": false
+        }
+      ]
+    },
+    "DeathFly": {
+      "Animations": [
+        {
+          "Animation": "NPC/Nakasar/Living_Codex/Animations/Death.blockyanim",
+          "Looping": false
+        }
+      ]
+    }
+  }
+}

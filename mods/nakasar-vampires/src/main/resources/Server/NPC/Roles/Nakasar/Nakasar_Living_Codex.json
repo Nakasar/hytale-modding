@@ -1,0 +1,324 @@
+{
+  "$Comment": "Codex vivant, gardien de la bibliothèque (boss de l'étape 5), avec barre de vie de boss : flotte au centre de la rotonde entre les trois pupitres, nuée de pages dans un cône annoncé toutes les 4,5 à 6 s, chapitre toutes les 28 à 32 s (CodexSystem : livre à détruire sur un pupitre, sinon feu, givre ou pluie de livres ; sous la moitié de sa vie les rayonnages s'effondrent). Ne quitte pas le centre de l'arène ; remise à zéro par CodexSystem si le groupe meurt ou sort. Généré par tools/generate_tower_mobs.py.",
+  "Type": "Generic",
+  "Appearance": "Nakasar_Living_Codex",
+  "NameTranslationKey": "nakasar_alchemist.npc.Living_Codex.name",
+  "MaxHealth": 1500,
+  "DropList": "Nakasar_Drop_Living_Codex",
+  "StartState": "Idle",
+  "DefaultPlayerAttitude": "Hostile",
+  "DefaultNPCAttitude": "Ignore",
+  "DisableDamageGroups": [
+    "Nakasar_Alchemist_Creations"
+  ],
+  "MotionControllerList": [
+    {
+      "Type": "Fly",
+      "MaxHorizontalSpeed": 3,
+      "MaxClimbSpeed": 3,
+      "MaxSinkSpeed": 3,
+      "Acceleration": 3,
+      "Deceleration": 3,
+      "Gravity": 1,
+      "MinHeightOverGround": 0.2,
+      "MaxHeightOverGround": 0.8
+    }
+  ],
+  "KnockbackScale": 0,
+  "DeathAnimationTime": 1.6,
+  "DeathParticles": "Explosion_Medium",
+  "StateTransitions": [
+    {
+      "$Comment": "Entrée en combat : chaque attaque spéciale a sa propre recharge.",
+      "States": [
+        {
+          "From": [
+            "Idle",
+            "ReturnHome"
+          ],
+          "To": [
+            "Combat"
+          ]
+        }
+      ],
+      "Actions": [
+        {
+          "Type": "TimerStart",
+          "Name": "Chapter",
+          "StartValueRange": [
+            8,
+            10
+          ],
+          "RestartValueRange": [
+            28,
+            32
+          ]
+        },
+        {
+          "Type": "TimerStart",
+          "Name": "Pages",
+          "StartValueRange": [
+            2,
+            3
+          ],
+          "RestartValueRange": [
+            4.5,
+            6
+          ]
+        }
+      ]
+    }
+  ],
+  "Instructions": [
+    {
+      "Sensor": {
+        "Type": "State",
+        "State": "Idle"
+      },
+      "Instructions": [
+        {
+          "Sensor": {
+            "Type": "Damage",
+            "Combat": true,
+            "TargetSlot": "LockedTarget"
+          },
+          "Actions": [
+            {
+              "Type": "State",
+              "State": "Combat"
+            }
+          ]
+        },
+        {
+          "Sensor": {
+            "Type": "Player",
+            "Range": 18,
+            "LockOnTarget": true,
+            "Filters": [
+              {
+                "Type": "Attitude",
+                "Attitudes": [
+                  "Hostile"
+                ]
+              }
+            ]
+          },
+          "Actions": [
+            {
+              "Type": "State",
+              "State": "Combat"
+            }
+          ]
+        },
+        {
+          "$Comment": "Un mob hostile (chasseur de vampires, mob dominé…) : même réaction qu'envers un joueur.",
+          "Sensor": {
+            "Type": "Mob",
+            "Range": 18,
+            "LockOnTarget": true,
+            "Filters": [
+              {
+                "Type": "Attitude",
+                "Attitudes": [
+                  "Hostile"
+                ]
+              }
+            ]
+          },
+          "Actions": [
+            {
+              "Type": "State",
+              "State": "Combat"
+            }
+          ]
+        },
+        {
+          "Actions": []
+        }
+      ]
+    },
+    {
+      "Sensor": {
+        "Type": "State",
+        "State": "Combat"
+      },
+      "Instructions": [
+        {
+          "$Comment": "Cible perdue ou partie à plus de 40 blocs.",
+          "Sensor": {
+            "Type": "Not",
+            "Sensor": {
+              "Type": "Target",
+              "Range": 40,
+              "Filters": [
+                {
+                  "Type": "Attitude",
+                  "Attitudes": [
+                    "Hostile",
+                    "Neutral",
+                    "Ignore"
+                  ]
+                }
+              ]
+            }
+          },
+          "Actions": [
+            {
+              "Type": "ReleaseTarget"
+            },
+            {
+              "Type": "State",
+              "State": "ReturnHome"
+            }
+          ]
+        },
+        {
+          "$Comment": "Ouvre un chapitre à chaque fin de recharge.",
+          "Sensor": {
+            "Type": "Timer",
+            "Name": "Chapter",
+            "State": "STOPPED"
+          },
+          "ActionsBlocking": true,
+          "Actions": [
+            {
+              "Type": "TimerRestart",
+              "Name": "Chapter"
+            },
+            {
+              "Type": "Attack",
+              "Attack": "Root_Nakasar_NPC_Codex_Chapter",
+              "SkipAiming": true,
+              "LineOfSight": false,
+              "AvoidFriendlyFire": false
+            }
+          ]
+        },
+        {
+          "$Comment": "Nuée de pages quand la cible est à moins de 6.5 blocs.",
+          "Sensor": {
+            "Type": "And",
+            "Sensors": [
+              {
+                "Type": "Target",
+                "Range": 6.5
+              },
+              {
+                "Type": "Timer",
+                "Name": "Pages",
+                "State": "STOPPED"
+              }
+            ]
+          },
+          "ActionsBlocking": true,
+          "Actions": [
+            {
+              "Type": "TimerRestart",
+              "Name": "Pages"
+            },
+            {
+              "Type": "Attack",
+              "Attack": "Root_Nakasar_NPC_Codex_Pages",
+              "SkipAiming": true,
+              "LineOfSight": false,
+              "AvoidFriendlyFire": false
+            }
+          ],
+          "HeadMotion": {
+            "Type": "Watch",
+            "RelativeTurnSpeed": 1.0
+          }
+        },
+        {
+          "$Comment": "Ne s'éloigne jamais à plus de 5 blocs du centre de l'arène.",
+          "Sensor": {
+            "Type": "Leash",
+            "Range": 5
+          },
+          "BodyMotion": {
+            "Type": "Seek",
+            "RelativeSpeed": 0.6,
+            "SlowDownDistance": 2,
+            "StopDistance": 1,
+            "UsePathfinder": false
+          }
+        },
+        {
+          "Sensor": {
+            "Type": "Target",
+            "Range": 12
+          },
+          "BodyMotion": {
+            "Type": "Seek",
+            "RelativeSpeed": 0.5,
+            "SlowDownDistance": 4.5,
+            "StopDistance": 3.5,
+            "UsePathfinder": false
+          },
+          "HeadMotion": {
+            "Type": "Watch",
+            "RelativeTurnSpeed": 1.5
+          }
+        },
+        {
+          "Sensor": {
+            "Type": "Target",
+            "Range": 40
+          },
+          "HeadMotion": {
+            "Type": "Watch",
+            "RelativeTurnSpeed": 1.5
+          }
+        }
+      ]
+    },
+    {
+      "Sensor": {
+        "Type": "State",
+        "State": "ReturnHome"
+      },
+      "Instructions": [
+        {
+          "Sensor": {
+            "Type": "Damage",
+            "Combat": true,
+            "TargetSlot": "LockedTarget"
+          },
+          "Actions": [
+            {
+              "Type": "State",
+              "State": "Combat"
+            }
+          ]
+        },
+        {
+          "Sensor": {
+            "Type": "Leash",
+            "Range": 2
+          },
+          "BodyMotion": {
+            "Type": "Seek",
+            "RelativeSpeed": 0.7,
+            "SlowDownDistance": 3,
+            "StopDistance": 1,
+            "UsePathfinder": true
+          }
+        },
+        {
+          "$Comment": "De retour à son poste. Il récupère toute sa vie.",
+          "Actions": [
+            {
+              "Type": "SetStat",
+              "Stat": "Health",
+              "Value": 1000000
+            },
+            {
+              "Type": "State",
+              "State": "Idle"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

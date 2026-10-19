@@ -1,0 +1,36 @@
+{
+  "$Comment": "Codex vivant (boss de la bibliothèque) : son fermoir (trophée) et les trois principes.",
+  "Container": {
+    "Type": "Multiple",
+    "Containers": [
+      {
+        "Type": "Droplist",
+        "DroplistId": "Nakasar_Drop_Trophy_Codex_Clasp"
+      },
+      {
+        "Type": "Single",
+        "Item": {
+          "ItemId": "Ingredient_Nakasar_Quicksilver",
+          "QuantityMin": 2,
+          "QuantityMax": 3
+        }
+      },
+      {
+        "Type": "Single",
+        "Item": {
+          "ItemId": "Ingredient_Nakasar_Philosophers_Salt",
+          "QuantityMin": 2,
+          "QuantityMax": 3
+        }
+      },
+      {
+        "Type": "Single",
+        "Item": {
+          "ItemId": "Ingredient_Nakasar_Burning_Sulfur",
+          "QuantityMin": 1,
+          "QuantityMax": 2
+        }
+      }
+    ]
+  }
+}

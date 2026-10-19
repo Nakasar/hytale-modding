@@ -46,6 +46,8 @@ import dev.nakasar.hytale.vampires.silver.SilverDamageSystem;
 import dev.nakasar.hytale.vampires.silver.SilverProjectileSystems;
 import dev.nakasar.hytale.vampires.silver.SilverWeapons;
 import dev.nakasar.hytale.vampires.silver.TakeArrowInteraction;
+import dev.nakasar.hytale.vampires.tower.CodexChapterInteraction;
+import dev.nakasar.hytale.vampires.tower.CodexSystem;
 import dev.nakasar.hytale.vampires.tower.TowerFallSystem;
 import dev.nakasar.hytale.vampires.vampirism.BloodFeedInteraction;
 import dev.nakasar.hytale.vampires.vampirism.DrinkBloodInteraction;
@@ -108,6 +110,8 @@ import dev.nakasar.hytale.vampires.vampirism.VampireSystem;
  *       le sac de prime du groupe, que {@code Nakasar_OpenBountyBag} ouvre ;</li>
  *   <li>{@link TowerFallSystem} : dans la Tour de l'Alchimiste, un joueur tombé dans le vide est ramené au point
  *       d'apparition du monde, que les statues de contrôle de Deepworks déplacent (volumes de l'instance).</li>
+ *   <li>{@code Nakasar_CodexChapter} ({@link CodexSystem}) : combat du Codex vivant (chapitres à interrompre,
+ *       effondrement des rayonnages, remise à zéro, sceau ouvert à sa mort).</li>
  * </ul>
  */
 public final class VampiresPlugin extends JavaPlugin {
@@ -162,6 +166,8 @@ public final class VampiresPlugin extends JavaPlugin {
                 DrinkBloodInteraction.class, DrinkBloodInteraction.CODEC);
         interactions.register(OpenBountyBagInteraction.TYPE_ID,
                 OpenBountyBagInteraction.class, OpenBountyBagInteraction.CODEC);
+        interactions.register(CodexChapterInteraction.TYPE_ID,
+                CodexChapterInteraction.class, CodexChapterInteraction.CODEC);
 
         var systems = getEntityStoreRegistry();
         RootTrapped.setComponentType(systems.registerComponent(RootTrapped.class, RootTrapped::new));
@@ -200,14 +206,15 @@ public final class VampiresPlugin extends JavaPlugin {
         systems.registerSystem(new BreachHunterCleanupSystem());
         systems.registerSystem(new ContractBounties());
         systems.registerSystem(new TowerFallSystem());
+        systems.registerSystem(new CodexSystem());
 
-        getLogger().atInfo().log("Nakasar Vampires : 17 types d'interaction (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s), systèmes des camps, de l'argent, du feu purificateur, de la voie occulte, de la brèche, des contrats des chasseurs et de la Tour de l'Alchimiste enregistrés",
+        getLogger().atInfo().log("Nakasar Vampires : 19 types d'interaction (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s), systèmes des camps, de l'argent, du feu purificateur, de la voie occulte, de la brèche, des contrats des chasseurs et de la Tour de l'Alchimiste enregistrés",
                 TeleportCasterToImpactInteraction.TYPE_ID, DominateInteraction.TYPE_ID, RootNpcInteraction.TYPE_ID,
                 DrainBeamInteraction.TYPE_ID, DominatePlayerInteraction.TYPE_ID, ImprisonPlayerInteraction.TYPE_ID,
                 RootTrapInteraction.TYPE_ID, TakeArrowInteraction.TYPE_ID, ReturnArrowInteraction.TYPE_ID,
                 SummonMinionsInteraction.TYPE_ID, ApplyEffectToFoesInteraction.TYPE_ID, LightAuraInteraction.TYPE_ID, InvisibilityInteraction.TYPE_ID,
                 VampireRitualInteraction.TYPE_ID, BloodFeedInteraction.TYPE_ID, DrinkBloodInteraction.TYPE_ID,
-                OpenBountyBagInteraction.TYPE_ID, ClaimBreachContractInteraction.TYPE_ID);
+                OpenBountyBagInteraction.TYPE_ID, ClaimBreachContractInteraction.TYPE_ID, CodexChapterInteraction.TYPE_ID);
     }
 
     @Override
@@ -222,5 +229,6 @@ public final class VampiresPlugin extends JavaPlugin {
         ArrowQuiver.clearAll();
         ContractBounties.clearAll();
         ClaimBreachContractInteraction.clearAll();
+        CodexSystem.clearAll();
     }
 }
