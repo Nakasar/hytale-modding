@@ -13,18 +13,15 @@
   ],
   "MotionControllerList": [
     {
-      "Type": "Walk",
-      "MaxWalkSpeed": 5,
-      "Gravity": 10,
-      "RunThreshold": 0.3,
-      "MaxFallSpeed": 6,
-      "MaxRotationSpeed": 360,
-      "Acceleration": 10,
-      "MinHover": 0.5,
-      "MinHoverDrop": 0,
-      "FloatsDown": true,
-      "MaxHover": 2,
-      "HoverFreq": 0.5
+      "Type": "Fly",
+      "MaxHorizontalSpeed": 5,
+      "MaxClimbSpeed": 3,
+      "MaxSinkSpeed": 3,
+      "Acceleration": 3,
+      "Deceleration": 3,
+      "Gravity": 1,
+      "MinHeightOverGround": 1.5,
+      "MaxHeightOverGround": 3.5
     }
   ],
   "DeathParticles": "Block_Break_Leaves",
@@ -205,35 +202,6 @@
           ]
         },
         {
-          "$Comment": "Garde ses distances : entre 5 et 9 blocs de sa cible, en se décalant sur le côté.",
-          "Sensor": {
-            "Type": "Target",
-            "Range": 18
-          },
-          "BodyMotion": {
-            "Type": "MaintainDistance",
-            "DesiredDistanceRange": [
-              5,
-              9
-            ],
-            "MoveThreshold": 0.5,
-            "RelativeForwardsSpeed": 0.8,
-            "RelativeBackwardsSpeed": 0.8,
-            "StrafingDurationRange": [
-              0.8,
-              1.6
-            ],
-            "StrafingFrequencyRange": [
-              1.5,
-              3.0
-            ]
-          },
-          "HeadMotion": {
-            "Type": "Watch",
-            "RelativeTurnSpeed": 1.5
-          }
-        },
-        {
           "Sensor": {
             "Type": "Target",
             "Range": 24
@@ -241,8 +209,8 @@
           "BodyMotion": {
             "Type": "Seek",
             "RelativeSpeed": 1.0,
-            "SlowDownDistance": 9,
-            "StopDistance": 8,
+            "SlowDownDistance": 8,
+            "StopDistance": 7,
             "UsePathfinder": false
           },
           "HeadMotion": {

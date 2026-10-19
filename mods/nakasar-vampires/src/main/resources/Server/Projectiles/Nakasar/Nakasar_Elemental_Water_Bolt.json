@@ -1,0 +1,15 @@
+{
+  "$Comment": "Orbe d'eau de l'élémentaire d'eau : la boule de glace vanilla en vol, éclaboussure d'eau à l'impact.",
+  "Parent": "Ice_Bolt",
+  "Appearance": "Ice_Ball",
+  "Damage": 9,
+  "MuzzleVelocity": 24,
+  "HitParticles": {
+    "SystemId": "Dungeon_Goblin_Water_Spout_Splash"
+  },
+  "DeathParticles": {
+    "SystemId": "Dungeon_Goblin_Water_Spout_Splash"
+  },
+  "HitSoundEventId": "SFX_Water_MoveIn",
+  "DeathSoundEventId": "SFX_Water_MoveIn"
+}

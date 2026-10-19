@@ -918,6 +918,7 @@ def main():
     out = SERVER / "Prefabs" / PREFABS
     columns = {}
     arrival = arrival_prefab(9600)
+    arch.yield_to_bridges(arrival, (SPAWN[0], SPAWN[2]), PLAZA_RADIUS + 0.5)
     columns.update(extract_barriers(arrival, SPAWN, toward(0, 0)))
     count = arrival.write(out / "Arrival" / "Arrival.prefab.json")
     print(f"Arrival: {count} blocs")
@@ -957,6 +958,7 @@ def main():
         else:
             prefab = arch.halt_prefab(stage, 9610 + k)
         cx, cz = stage["center"]
+        arch.yield_to_bridges(prefab, (cx, cz), stage["plaza"] - 0.5)
         columns.update(extract_barriers(prefab, (cx, arch.stage_y(stage), cz), toward(0, 0)))
         count = prefab.write(out / stage["name"] / f"{stage['name']}.prefab.json")
         print(f"{stage['name']}: {count} blocs")

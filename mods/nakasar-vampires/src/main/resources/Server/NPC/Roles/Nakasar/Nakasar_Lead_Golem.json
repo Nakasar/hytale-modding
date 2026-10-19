@@ -1,9 +1,9 @@
 {
-  "$Comment": "Golem de plomb : lent et solide, coups de poing, et frappe au sol annoncée par une zone rouge de 4 blocs toutes les 9 à 12 s. Généré par tools/generate_tower_mobs.py.",
+  "$Comment": "Golem de plomb : lent et très solide (380 PV), coups de poing, et frappe au sol annoncée par une zone rouge de 4 blocs toutes les 9 à 12 s. Généré par tools/generate_tower_mobs.py.",
   "Type": "Generic",
   "Appearance": "Nakasar_Lead_Golem",
   "NameTranslationKey": "nakasar_alchemist.npc.Lead_Golem.name",
-  "MaxHealth": 240,
+  "MaxHealth": 380,
   "DropList": "Nakasar_Drop_Lead_Golem",
   "StartState": "Idle",
   "DefaultPlayerAttitude": "Hostile",

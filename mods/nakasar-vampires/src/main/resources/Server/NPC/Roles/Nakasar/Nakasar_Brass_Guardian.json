@@ -1,5 +1,5 @@
 {
-  "$Comment": "Gardien d'airain : automate de laiton qui garde la cour de la tour, très solide ; coups de poing lourds et frappe au sol annoncée par une zone rouge de 4,5 blocs toutes les 8 à 11 s. Tous les gardiens abattus, la porte du hall s'ouvre (tower/CourtGuardSystem.java). Il ne quitte pas la cour. Généré par tools/generate_tower_mobs.py.",
+  "$Comment": "Gardien d'airain : automate de laiton qui garde la cour de la tour, très solide ; coups de poing lourds et frappe au sol annoncée par une zone rouge de 4,5 blocs dès l'engagement, puis toutes les 6 à 8 s (Kevin : avant, il mourait avant de la lancer). Tous les gardiens abattus, la porte du hall s'ouvre (tower/CourtGuardSystem.java). Il ne quitte pas la cour. Généré par tools/generate_tower_mobs.py.",
   "Type": "Generic",
   "Appearance": "Nakasar_Brass_Guardian",
   "NameTranslationKey": "nakasar_alchemist.npc.Brass_Guardian.name",
@@ -42,12 +42,12 @@
           "Type": "TimerStart",
           "Name": "Slam",
           "StartValueRange": [
-            3,
-            5
+            0.5,
+            1.5
           ],
           "RestartValueRange": [
-            8,
-            11
+            6,
+            8
           ]
         }
       ]

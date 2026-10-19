@@ -235,6 +235,20 @@ def _deck(lines, half):
     return deck, rails
 
 
+def yield_to_bridges(p, origin, keep_r):
+    """Retire d'un prefab d'île les blocs des colonnes du tablier et des garde-corps des ponts, au-delà de `keep_r` du
+    centre de l'île (`origin` = (x, z) du centre dans le monde). Les îles sont posées après les ponts : sans cela, leur
+    sol et leur air recouvraient le bout des ponts au niveau de l'île, et la première marche hors de l'île faisait un
+    bloc entier, voire un et demi (Kevin : « la première marche est trop haute »)."""
+    deck, rails = _deck(BRIDGES, BRIDGE_HALF)
+    owned = deck | rails
+    ox, oz = origin
+    for pos in [pos for pos in p.blocks if (pos[0] + ox, pos[2] + oz) in owned and math.hypot(pos[0], pos[2]) >= keep_r]:
+        del p.blocks[pos]
+        p.components.pop(pos, None)
+        p.lore_spots.pop(pos, None)
+
+
 def bridge_levels(cells):
     """Hauteur du sol de chaque case de pont, en demi-blocs au-dessus de GROUND_Y (pente régulière d'un bout à
     l'autre du pont le plus proche)."""
@@ -466,11 +480,13 @@ def _arches(p, rng):
 # tools/generate_tower_mobs.py, posés en arc de cercle à `r` du centre, loin des allées ; un groupe par entrée de liste.
 SPAWNER = "Nakasar_Spawner_"
 ISLAND_MOBS = {
-    "HaltFountain": (7.5, [["Homunculus", "Homunculus", "Living_Flask_Poison"]]),
+    "HaltFountain": (7.5, [["Homunculus", "Homunculus", "Homunculus"]]),
     "HaltKiosk": (7.5, [["Alchemist_Apprentice", "Homunculus", "Homunculus"]]),
-    "Gardens": (14.0, [["Snapdragon", "Carnivorous_Vine", "Snapdragon"], ["Elemental_Root", "Homunculus", "Homunculus"]]),
-    "HaltSprings": (7.5, [["Living_Flask_Fire", "Elemental_Frost", "Living_Flask_Fire"]]),
-    "Ruins": (12.0, [["Homunculus", "Lead_Golem", "Homunculus"], ["Alchemist_Apprentice", "Living_Flask_Poison"]]),
+    "Gardens": (14.0, [["Snapdragon", "Carnivorous_Vine", "Snapdragon"], ["Elemental_Root", "Homunculus", "Homunculus"],
+                       ["Carnivorous_Vine", "Snapdragon", "Carnivorous_Vine"], ["Snapdragon", "Carnivorous_Vine"]]),
+    "HaltSprings": (7.5, [["Elemental_Water", "Elemental_Water", "Elemental_Water"]]),
+    "Ruins": (12.0, [["Homunculus", "Lead_Golem", "Homunculus"], ["Alchemist_Apprentice", "Living_Flask_Poison", "Homunculus"],
+                     ["Homunculus", "Alchemist_Apprentice", "Homunculus"]]),
     "HaltArches": (7.5, [["Alchemist_Apprentice", "Living_Flask_Fire", "Alchemist_Apprentice"]]),
 }
 TALL_MOBS = {"Lead_Golem": 4}

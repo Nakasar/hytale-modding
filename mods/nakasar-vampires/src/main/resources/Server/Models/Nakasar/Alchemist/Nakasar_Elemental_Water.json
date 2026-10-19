@@ -1,0 +1,11 @@
+{
+  "$Comment": "Élémentaire d'eau : l'esprit de givre vanilla passé au bleu profond de l'eau (water_elemental_texture), lueur bleue.",
+  "Parent": "Spirit_Frost",
+  "Texture": "NPC/Nakasar/Alchemist/Elemental_Water.png",
+  "MinScale": 1.2,
+  "MaxScale": 1.2,
+  "Light": {
+    "Color": "#3a8cff",
+    "Radius": 3
+  }
+}

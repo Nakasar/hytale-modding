@@ -3,7 +3,7 @@
   "Type": "Generic",
   "Appearance": "Nakasar_Alchemist_Apprentice",
   "NameTranslationKey": "nakasar_alchemist.npc.Alchemist_Apprentice.name",
-  "MaxHealth": 85,
+  "MaxHealth": 140,
   "DropList": "Nakasar_Drop_Apprentice",
   "StartState": "Idle",
   "DefaultPlayerAttitude": "Hostile",

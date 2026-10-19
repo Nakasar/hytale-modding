@@ -20,8 +20,8 @@
       "Acceleration": 3,
       "Deceleration": 3,
       "Gravity": 1,
-      "MinHeightOverGround": 0.5,
-      "MaxHeightOverGround": 3
+      "MinHeightOverGround": 1.2,
+      "MaxHeightOverGround": 3.5
     }
   ],
   "DeathParticles": "Explosion_Medium",

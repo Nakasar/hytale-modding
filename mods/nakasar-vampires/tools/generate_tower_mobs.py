@@ -2,7 +2,7 @@
 """Génère les mobs de la Tour de l'Alchimiste (étape 3 du donjon), leurs attaques, leurs butins et les trois réactifs.
 
     python3 mods/nakasar-vampires/tools/generate_tower_mobs.py [--preview DOSSIER] [--vanilla-textures ASSETS.zip|Potion_Onion_Poison.png]
-        [--firesteel-texture Golem_Firesteel/Models/Texture.png]
+        [--firesteel-texture Golem_Firesteel/Models/Texture.png] [--frost-texture Spirit_Frost/Models/Model_Texture.png]
 
 Ce sont des créatures que l'Alchimiste a fabriquées ou distillées ; elles ne se blessent pas entre elles (groupe
 Nakasar_Alchemist_Creations). Toutes sont des rôles Generic du mod, sur des modèles vanilla :
@@ -16,8 +16,8 @@ Nakasar_Alchemist_Creations). Toutes sont des rôles Generic du mod, sur des mod
 - apprenti (humanoïde en robe de mage verte) : garde ses distances et lance des fioles ;
 - plantes carnivores de la serre : la vrille indépendante (modèle de la vrille de la citrouille géante, mêmes attaques)
   et le Snapdragon vanilla, enraciné, à morsure empoisonnée ;
-- élémentaires (esprits vanilla) : feu (boules de feu), glace (traits de glace), foudre (décharge annoncée autour de lui,
-  étourdit) et racine (épines) ;
+- élémentaires (esprits vanilla, en vol) : feu (boules de feu), glace (traits de glace), foudre (décharge annoncée autour
+  de lui, étourdit), racine (épines) et eau (orbes d'eau, esprit de givre teinté de bleu, sur l'île des sources) ;
 - gardien d'airain (Golem_Firesteel retexturé en laiton à lueur cyan, plus grand) : gardien mécanique de la cour de la
   tour, très solide ; il en faut abattre tous les gardiens pour ouvrir la porte du hall (tower/CourtGuardSystem.java) ;
 - golem de cristal instable (élite de la Salle des Transmutations, Golem_Crystal_Thunder en grand, barre de boss) :
@@ -89,13 +89,14 @@ FIRE = "Nakasar_Elemental_Fire"
 FROST = "Nakasar_Elemental_Frost"
 THUNDER = "Nakasar_Elemental_Thunder"
 ROOT = "Nakasar_Elemental_Root"
+WATER = "Nakasar_Elemental_Water"
 CRYSTAL_GOLEM = "Nakasar_Crystal_Golem"
 BRASS_GUARDIAN = "Nakasar_Brass_Guardian"
 GARGOYLE = "Nakasar_Tower_Gargoyle"
 CODEX = "Nakasar_Living_Codex"
 CHIMERA = "Nakasar_Lab_Chimera"
 ALCHEMIST = "Nakasar_Alchemist"
-ALL = [HOMUNCULUS, GOLEM, BRASS_GUARDIAN, FLASK_POISON, FLASK_FIRE, APPRENTICE, VINE, SNAPDRAGON, FIRE, FROST, THUNDER, ROOT,
+ALL = [HOMUNCULUS, GOLEM, BRASS_GUARDIAN, FLASK_POISON, FLASK_FIRE, APPRENTICE, VINE, SNAPDRAGON, FIRE, FROST, THUNDER, ROOT, WATER,
        CRYSTAL_GOLEM, GARGOYLE, CODEX, CHIMERA, ALCHEMIST]
 # Combat de l'Alchimiste (AlchemistSystem, Java) : homoncules du Grand Œuvre et piliers de la Convergence, jamais posés
 # par un marqueur ; état d'épuisement et aspects élémentaires (teinte et particules de l'élément du moment).
@@ -510,6 +511,10 @@ def interactions():
                                                 "Trait de glace de l'élémentaire de glace (10 dégâts).",
                                                 anim_set="Spirit_Root_Default", anim="SporeGas", wind_up=0.5,
                                                 sound="SFX_Ice_Break"),
+        "Nakasar_NPC_Elemental_Water_Bolt": throw("Nakasar_Elemental_Water_Bolt",
+                                                  "Orbe d'eau de l'élémentaire d'eau (9 dégâts).",
+                                                  anim_set="Spirit_Root_Default", anim="SporeGas", wind_up=0.5,
+                                                  sound="SFX_Water_MoveIn"),
         "Nakasar_NPC_Elemental_Thorns": throw("Nakasar_Pumpkin_Thorn",
                                               "Épine projetée par l'élémentaire de racine (celle des vrilles de la citrouille).",
                                               anim_set="Spirit_Root_Default", anim="SporeGas", wind_up=0.5,
@@ -555,6 +560,7 @@ def roots():
         "Root_Nakasar_NPC_Elemental_Fireball": ranged_tag("Nakasar_NPC_Elemental_Fireball"),
         "Root_Nakasar_NPC_Elemental_Ice_Bolt": ranged_tag("Nakasar_NPC_Elemental_Ice_Bolt"),
         "Root_Nakasar_NPC_Elemental_Thorns": ranged_tag("Nakasar_NPC_Elemental_Thorns"),
+        "Root_Nakasar_NPC_Elemental_Water_Bolt": ranged_tag("Nakasar_NPC_Elemental_Water_Bolt"),
         "Root_Nakasar_NPC_Elemental_Discharge": melee_tag("Nakasar_NPC_Elemental_Discharge"),
         "Root_Nakasar_NPC_Crystal_Golem_Surge": melee_tag("Nakasar_NPC_Crystal_Golem_Surge"),
         "Root_Nakasar_NPC_Gargoyle_Claw": melee_tag("Nakasar_NPC_Gargoyle_Claw"),
@@ -584,6 +590,11 @@ def projectiles():
                                        "ExplosionConfig": small_blast},
         "Nakasar_Elemental_Ice_Bolt": {"$Comment": "Trait de glace de l'élémentaire de glace.",
                                        "Parent": "Ice_Bolt", "Damage": 10, "MuzzleVelocity": 30},
+        "Nakasar_Elemental_Water_Bolt": {"$Comment": "Orbe d'eau de l'élémentaire d'eau : la boule de glace vanilla en vol, éclaboussure d'eau à l'impact.",
+                                         "Parent": "Ice_Bolt", "Appearance": "Ice_Ball", "Damage": 9, "MuzzleVelocity": 24,
+                                         "HitParticles": {"SystemId": "Dungeon_Goblin_Water_Spout_Splash"},
+                                         "DeathParticles": {"SystemId": "Dungeon_Goblin_Water_Spout_Splash"},
+                                         "HitSoundEventId": "SFX_Water_MoveIn", "DeathSoundEventId": "SFX_Water_MoveIn"},
     }
 
 
@@ -597,8 +608,8 @@ def homunculus_role():
 
 
 def golem_role():
-    return role(GOLEM, "Golem de plomb : lent et solide, coups de poing, et frappe au sol annoncée par une zone rouge de 4 blocs toutes les 9 à 12 s.",
-                GOLEM, 240, [
+    return role(GOLEM, "Golem de plomb : lent et très solide (380 PV), coups de poing, et frappe au sol annoncée par une zone rouge de 4 blocs toutes les 9 à 12 s.",
+                GOLEM, 380, [
                     ge.timed_attack("Slam", "Root_Nakasar_NPC_Lead_Golem_Slam", rng=3.8, los=True,
                                     comment="Frappe au sol annoncée quand la cible est à moins de 3,8 blocs."),
                     melee("Root_Nakasar_NPC_Lead_Golem_Attack", 2.8, (1.3, 1.9), turn=0.8),
@@ -608,13 +619,13 @@ def golem_role():
 
 
 def brass_guardian_role():
-    return role(BRASS_GUARDIAN, "Gardien d'airain : automate de laiton qui garde la cour de la tour, très solide ; coups de poing lourds et frappe au sol annoncée par une zone rouge de 4,5 blocs toutes les 8 à 11 s. Tous les gardiens abattus, la porte du hall s'ouvre (tower/CourtGuardSystem.java). Il ne quitte pas la cour.",
+    return role(BRASS_GUARDIAN, "Gardien d'airain : automate de laiton qui garde la cour de la tour, très solide ; coups de poing lourds et frappe au sol annoncée par une zone rouge de 4,5 blocs dès l'engagement, puis toutes les 6 à 8 s (Kevin : avant, il mourait avant de la lancer). Tous les gardiens abattus, la porte du hall s'ouvre (tower/CourtGuardSystem.java). Il ne quitte pas la cour.",
                 BRASS_GUARDIAN, 520, [
                     ge.timed_attack("Slam", "Root_Nakasar_NPC_Brass_Guardian_Slam", rng=4.2, los=True,
                                     comment="Frappe au sol annoncée quand la cible est à moins de 4,2 blocs."),
                     melee("Root_Nakasar_NPC_Brass_Guardian_Attack", 3.2, (1.2, 1.7), turn=0.8),
                     chase(30, speed=0.95, stop=2.6)],
-                walk(3.2, jump=0.5), drop="Nakasar_Drop_Brass_Guardian", timers=[timer("Slam", (3, 5), (8, 11))],
+                walk(3.2, jump=0.5), drop="Nakasar_Drop_Brass_Guardian", timers=[timer("Slam", (0.5, 1.5), (6, 8))],
                 sight=18, leash=30, heal=True, KnockbackScale=0.0, DeathAnimationTime=2.0)
 
 
@@ -634,7 +645,7 @@ def flask_role(role_id, kind):
 
 def apprentice_role():
     return role(APPRENTICE, "Apprenti de l'Alchimiste : mage en robe verte qui garde ses distances et lance des fioles explosives toutes les 2,5 à 3,5 s ; il recule si on le colle.",
-                APPRENTICE, 85, [
+                APPRENTICE, 140, [
                     cast("Throw", "Root_Nakasar_NPC_Apprentice_Throw", 14,
                          "Lance une fiole quand sa cible est en vue à moins de 14 blocs."),
                     keep_distance(16, 5, 9),
@@ -673,10 +684,6 @@ def fly(speed, min_h, max_h):
     return ge.fly(speed, min_h, max_h)
 
 
-def hover(speed, min_h, max_h):
-    return ge.hover(speed, min_h, max_h)
-
-
 def elemental_role(role_id, element):
     common = dict(KnockbackScale=0.8, DeathAnimationTime=1.0)
     if element == "Thunder":
@@ -685,17 +692,21 @@ def elemental_role(role_id, element):
                         ge.timed_attack("Discharge", "Root_Nakasar_NPC_Elemental_Discharge", rng=3.0,
                                         comment="Décharge annoncée quand la cible est à moins de 3 blocs."),
                         chase(24, stop=1.5, pathfinder=False)],
-                    fly(6, 0.5, 3), drop="Nakasar_Drop_Elemental_Thunder", sight=16, los=False,
+                    fly(6, 1.2, 3.5), drop="Nakasar_Drop_Elemental_Thunder", sight=16, los=False,
                     timers=[timer("Discharge", (1, 2), (5, 7))], heal=True, DeathParticles="Explosion_Medium", **common)
     attack, comment, hp, particles = {
         "Fire": ("Root_Nakasar_NPC_Elemental_Fireball", "Élémentaire de feu distillé par l'Alchimiste : vole à distance et lance des boules de feu.", 80, "Effect_Death_Flames"),
         "Frost": ("Root_Nakasar_NPC_Elemental_Ice_Bolt", "Élémentaire de glace distillé par l'Alchimiste : vole à distance et lance des traits de glace.", 70, "Explosion_Medium"),
         "Root": ("Root_Nakasar_NPC_Elemental_Thorns", "Élémentaire de racine distillé par l'Alchimiste : vole à distance et projette des épines.", 60, "Block_Break_Leaves"),
+        "Water": ("Root_Nakasar_NPC_Elemental_Water_Bolt", "Élémentaire d'eau distillé par l'Alchimiste : vole à distance et lance des orbes d'eau.", 75, "Dungeon_Goblin_Water_Spout_Splash"),
     }[element]
+    # Vol (comme les esprits vanilla, Template_Flying_Aggressive), à 1,5 bloc au moins du sol : en lévitation sur un
+    # contrôleur Walk, ils marchaient au sol et leur modèle s'y enfonçait à moitié (vu en jeu par Kevin). Sans Walk,
+    # pas de MaintainDistance : ils s'approchent à 7 blocs et tirent de là.
     return role(role_id, comment, role_id, hp, [
         cast("Cast", attack, 16, "Tir quand la cible est en vue à moins de 16 blocs."),
-        keep_distance(18, 5, 9), chase(24, stop=8, pathfinder=False)],
-        hover(5, 0.5, 2), drop=f"Nakasar_Drop_Elemental_{element}", sight=16, los=False,
+        chase(24, stop=7, pathfinder=False)],
+        fly(5, 1.5, 3.5), drop=f"Nakasar_Drop_Elemental_{element}", sight=16, los=False,
         timers=[timer("Cast", (0.8, 1.6), (2.8, 3.8))], heal=True, DeathParticles=particles, **common)
 
 
@@ -897,6 +908,7 @@ def roles():
         FROST: elemental_role(FROST, "Frost"),
         THUNDER: elemental_role(THUNDER, "Thunder"),
         ROOT: elemental_role(ROOT, "Root"),
+        WATER: elemental_role(WATER, "Water"),
         CRYSTAL_GOLEM: crystal_golem_role(),
         GARGOYLE: gargoyle_role(),
         CODEX: codex_role(),
@@ -1018,6 +1030,9 @@ def models():
                   "MinScale": 1.2, "MaxScale": 1.2},
         ROOT: {"$Comment": "Élémentaire de racine : l'esprit de racine vanilla.", "Parent": "Spirit_Root",
                "MinScale": 1.2, "MaxScale": 1.2},
+        WATER: {"$Comment": "Élémentaire d'eau : l'esprit de givre vanilla passé au bleu profond de l'eau (water_elemental_texture), lueur bleue.",
+                "Parent": "Spirit_Frost", "Texture": "NPC/Nakasar/Alchemist/Elemental_Water.png",
+                "MinScale": 1.2, "MaxScale": 1.2, "Light": {"Color": "#3a8cff", "Radius": 3}},
         CRYSTAL_GOLEM: {"$Comment": "Golem de cristal instable (élite) : le golem de cristal de foudre vanilla, plus grand, lueur électrique.",
                         "Parent": "Golem_Crystal_Thunder", "MinScale": 1.4, "MaxScale": 1.4,
                         "Light": {"Color": "#9fd8ff", "Radius": 6}},
@@ -1066,6 +1081,27 @@ def brass_guardian_texture(assets):
             brass = colorsys.hsv_to_rgb(0.1, 0.62 - 0.2 * bv, bv)
             cyan = colorsys.hsv_to_rgb(0.49, 0.75 - 0.4 * clamp((v - 0.8) / 0.2), clamp(0.55 + v * 0.5))
             px[x, y] = tuple(int(255 * (brass[i] * (1 - glow) + cyan[i] * glow)) for i in range(3)) + (a,)
+    return src
+
+
+def water_elemental_texture(assets):
+    """Élémentaire d'eau : la texture de l'esprit de givre vanilla, bleus pâles passés au bleu profond de l'eau, reflets
+    turquoise. `assets` est Assets.zip, ou le PNG Common/NPC/Elemental/Spirit_Frost/Models/Model_Texture.png extrait."""
+    if assets.suffix == ".png":
+        src = Image.open(assets).convert("RGBA")
+    else:
+        with zipfile.ZipFile(assets) as z:
+            src = Image.open(io.BytesIO(z.read("Common/NPC/Elemental/Spirit_Frost/Models/Model_Texture.png"))).convert("RGBA")
+    px = src.load()
+    for y in range(src.height):
+        for x in range(src.width):
+            r, g, b, a = px[x, y]
+            if not a:
+                continue
+            hue, s, v = colorsys.rgb_to_hsv(r / 255, g / 255, b / 255)
+            hue = 0.64 - 0.07 * v  # sombre : bleu profond ; clair : bleu d'eau
+            r, g, b = (int(c * 255) for c in colorsys.hsv_to_rgb(hue, min(1.0, 0.6 + s * 0.5), 0.12 + v * 0.72))
+            px[x, y] = (r, g, b, a)
     return src
 
 
@@ -1178,6 +1214,8 @@ def drops():
                                                    single("Ingredient_Lightning_Essence", 1, 2), chance(SULFUR, 1, 1)),
         "Nakasar_Drop_Elemental_Frost": {"$Comment": "Élémentaire de glace : essence de glace.",
                                          "Container": single("Ingredient_Ice_Essence", 1, 2)},
+        "Nakasar_Drop_Elemental_Water": multiple("Élémentaire d'eau : mercure vif, et essence de glace une fois sur deux.",
+                                                 single(MERCURY, 1, 2), chance("Ingredient_Ice_Essence", 1, 1)),
         "Nakasar_Drop_Elemental_Root": {"$Comment": "Élémentaire de racine : essence de vie.",
                                         "Container": single("Ingredient_Life_Essence", 1, 2)},
         "Nakasar_Drop_Crystal_Golem": multiple(
@@ -1293,6 +1331,11 @@ def main():
         brass_guardian_texture(firesteel).save(NPC_TEXTURES / "Brass_Guardian.png")
     elif not (NPC_TEXTURES / "Brass_Guardian.png").exists():
         sys.exit("Brass_Guardian.png manquant : relancer avec --vanilla-textures <Assets.zip> ou --firesteel-texture <PNG>")
+    frost = Path(sys.argv[sys.argv.index("--frost-texture") + 1]) if "--frost-texture" in sys.argv else assets
+    if frost:
+        water_elemental_texture(frost).save(NPC_TEXTURES / "Elemental_Water.png")
+    elif not (NPC_TEXTURES / "Elemental_Water.png").exists():
+        sys.exit("Elemental_Water.png manquant : relancer avec --vanilla-textures <Assets.zip> ou --frost-texture <PNG>")
     build_reagents(preview)
     print(f"Zones d'annonce : {tw.write()} dixièmes de seconde")
 
