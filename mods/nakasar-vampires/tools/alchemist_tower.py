@@ -50,6 +50,7 @@ BRIDGE_HALF = 3    # demi-largeur du pont (generate_alchemist_tower.BRIDGE_HALF)
 WALL = [("Rock_Marble_Brick", 7), ("Rock_Marble_Brick_Smooth", 2), ("Rock_Marble_Cobble", 1)]
 FLOOR = [("Rock_Marble_Brick_Smooth", 4), ("Rock_Marble_Brick", 3)]
 HALF = "Rock_Marble_Brick_Half"
+CRACKED = "Rock_Marble_Cobble"   # dallage des pans du rebord qui s'effondrent au Grand Œuvre (alchemist_traps les repose)
 TRIM = "Rock_Gold_Brick_Decorative"
 GOLD = "Rock_Gold_Brick"
 PARAPET, PARAPET_TOP = "Rock_Marble_Brick", "Rock_Marble_Brick_Wall"
@@ -118,6 +119,10 @@ CHIMERA_SHELF_ANGLES = (20, 110, 175, 235)
 CHIMERA_EXIT_R = 12.5
 CHIMERA_EXIT_ANGLES = (30, 120, 150, 210, 240, 330)
 CHIMERA_DOOR_Z = -30
+# Alcôves du laboratoire (angle, genre), le long du mur, symétriques autour de la cuve ; ni devant la porte nord (270°)
+# ni sur l'arrivée de l'escalier des transmutations (environ 320 à 345°).
+LAB_ALCOVES = {22.5: "alembic", 67.5: "bench", 112.5: "alembic", 157.5: "bench", 202.5: "alembic", 247.5: "bench",
+               297.5: "alembic"}
 # Combat de l'Alchimiste (étape 7), sur la terrasse de l'Observatoire.
 ATHANOR_R = 3.6          # athanor central : murs pour d < ATHANOR_R, chambre (où il s'enferme) pour d < ATHANOR_ROOM
 ATHANOR_ROOM = 1.6
@@ -161,6 +166,27 @@ def facing_center(x, z):
     if abs(x) > abs(z):
         return pf.WEST if x > 0 else pf.EAST
     return pf.NORTH if z > 0 else pf.SOUTH
+
+
+DIRS_ROT = {pf.SOUTH: (0, 1), pf.EAST: (1, 0), pf.NORTH: (0, -1), pf.WEST: (-1, 0)}  # devant d'un meuble selon son lacet
+
+
+def facing_to(x, z, tx, tz):
+    """Lacet d'un meuble posé en (x, z) pour qu'il regarde la case (tx, tz)."""
+    dx, dz = tx - x, tz - z
+    if abs(dx) > abs(dz):
+        return pf.EAST if dx > 0 else pf.WEST
+    return pf.SOUTH if dz > 0 else pf.NORTH
+
+
+def wall_facing(x, z, inner=28.4):
+    """Lacet d'un meuble adossé au mur rond (rayon >= inner) : vers le centre, mais toujours vers une case dégagée.
+    Sur les tronçons en diagonale, regarder droit vers le centre mettait le devant contre le meuble voisin."""
+    order = sorted(DIRS_ROT.items(), key=lambda kv: -(kv[1][0] * -x + kv[1][1] * -z))
+    for rot, (dx, dz) in order:
+        if math.hypot(x + dx, z + dz) < inner:
+            return rot
+    return order[0][0]
 
 
 def at(r, a):
@@ -533,18 +559,20 @@ class Tower:
                 y = (s + 1) // 2
                 if p.free(x, y, z):
                     p.set(x, y, z, PARAPET_TOP)
-        # Étagères sur quatre rangs le long du mur, hors rampe, porte et passage secret.
+        # Étagères sur huit rangs le long du mur, hors rampe, porte et passage secret.
         for x, z, d, a in ring(28.4, R_IN):
-            if in_arc(a, 60, 215) or in_arc(a, 44, 56) or in_arc(a, 315, 325) or in_arc(a, 25, 35):
+            if in_arc(a, 60, 215) or in_arc(a, 38, 62) or in_arc(a, 315, 325) or in_arc(a, 25, 35):
                 continue
             for y in range(F_LIBRARY, F_LIBRARY + 8):
-                self.place(x, y, z, SHELF, facing_center(x, z))
-        # Rayonnages en épis et piles de livres.
-        for k in (235, 255, 275, 295, 340, 0):
-            for r in range(15, 24):
-                x, z = at(r, k)
-                for y in range(F_LIBRARY, F_LIBRARY + 4):
-                    self.place(x, y, z, SHELF, facing_center(x, z))
+                self.place(x, y, z, SHELF, wall_facing(x, z))
+        # Deux rayonnages doubles dans l'axe (nord et est), dos à dos : chaque face regarde l'allée, jamais le bout
+        # du rang. Ils prolongent les pupitres du Codex vers le mur.
+        for r in range(15, 24):
+            for y in range(F_LIBRARY, F_LIBRARY + 4):
+                self.place(-1, y, -r, SHELF, pf.WEST)
+                self.place(0, y, -r, SHELF, pf.EAST)
+                self.place(r, y, -1, SHELF, pf.NORTH)
+                self.place(r, y, 0, SHELF, pf.SOUTH)
         for k in range(0, 360, 30):
             x, z = at(11, k + 15)
             self.place(x, F_LIBRARY, z, "Deco_Book_Pile_Large")
@@ -562,7 +590,7 @@ class Tower:
                 if in_arc(a, 60, 215):
                     continue
                 for y in range(F_LIBRARY + g + 1, F_LIBRARY + g + 6):
-                    self.place(x, y, z, SHELF, facing_center(x, z))
+                    self.place(x, y, z, SHELF, wall_facing(x, z))
         # Salle secrète en encorbellement à 320° (le coffre viendra avec le butin).
         cx, cz = at(39, 320)
         y = F_LIBRARY
@@ -675,18 +703,14 @@ class Tower:
             else:
                 p.set(x, y, z, GOLD)
                 p.set(x, y + 1, z, GLASS)
-        for k in range(0, 360, 30):
-            x, z = at(16, k + 15)
-            self.place(x, y, z, "Alchemy_Cauldron", 0)
+        # Rayonnages du mur entre les alcôves (decor_lab) : la salle reste dégagée pour le combat de la Chimère.
         for x, z, d, a in ring(28.4, R_IN):
             if in_arc(a, 255, 285) or (x > 0 and -22 <= z <= -10):
                 continue
-            if int(a) % 20 < 10:
-                for k in range(0, 6):
-                    self.place(x, y + k, z, SHELF, facing_center(x, z))
-        for k in (100, 130, 200, 230):
-            x, z = at(24, k)
-            self.place(x, y, z, "Bench_Alchemy", facing_center(x, z))
+            if any(abs(((a - k) + 180) % 360 - 180) < 7 for k in LAB_ALCOVES):
+                continue
+            for k in range(0, 6):
+                self.place(x, y + k, z, SHELF, wall_facing(x, z))
         self.light_ring(22, y, 30, skip=((255, 285), (320, 355)))
         for x, z in ((0, 12), (0, -12), (12, 0), (-12, 0)):
             self.place(x, F_LAB + 20, z, CHANDELIER)
@@ -860,7 +884,7 @@ class Tower:
         for k in range(3):  # la statue peut prendre la place d'un bout de parapet
             if (sx, y + k, sz) in self.parapets:
                 self.p.set(sx, y + k, sz, AIR)
-        rot = facing_center(sx, sz) if (sx, sz) != (0, 0) else 0
+        rot = facing_to(sx, sz, x, z)  # la statue regarde l'endroit où le joueur s'arrête
         self.p.set(sx, y - 1, sz, "Rock_Gold_Brick_Ornate")
         if not self.p.fits(sx, y, sz, STATUE, rot):
             raise RuntimeError(f"tour : pas de place pour la statue du point de contrôle {(sx, y, sz)}")
@@ -1274,6 +1298,29 @@ class Tower:
         p.set(cx, y + height + 3, cz, "Nakasar_Tower_Emanation_Motes")
         return True
 
+    def inlay(self, cells, y, block, over=None):
+        """Incruste `block` dans le sol (y - 1) des cases (x, z) : seulement sur le dallage (ou les blocs `over`)."""
+        allowed = set(over) if over else {n for n, _ in FLOOR} | {TRIM}
+        for x, z in cells:
+            if self.p.get(x, y - 1, z) in allowed and self.p.free(x, y, z):
+                self.p.set(x, y - 1, z, block)
+
+    def ring_cells(self, r0, r1):
+        return [(x, z) for x, z, d, a in ring(r0, r1)]
+
+    @staticmethod
+    def segment(x0, z0, x1, z1):
+        """Cases d'un trait droit de (x0, z0) à (x1, z1)."""
+        n = max(abs(x1 - x0), abs(z1 - z0), 1)
+        return sorted({(round(x0 + (x1 - x0) * t / n), round(z0 + (z1 - z0) * t / n)) for t in range(n + 1)})
+
+    def gate_braziers(self, y, r, a, spread):
+        """Deux braseros allumés encadrent l'entrée d'une arène, côté arène : le même repère pour les trois boss."""
+        for k in (a - spread, a + spread):
+            x, z = at(r, k)
+            if not self.place(x, y, z, "*Furniture_Temple_Light_Brazier_State_Definitions_On"):
+                raise RuntimeError(f"tour : pas de place pour le brasero de l'entrée de l'arène en {(x, y, z)}")
+
     def wall_ring(self, y0, y1, arcs_out, every=20, fill=12, names=(SHELF,)):
         """Meubles adossés au mur intérieur (r 28,4 à 29,5) de y0 à y1, par tronçons de `fill` degrés sur `every`."""
         for x, z, d, a in ring(28.4, R_IN):
@@ -1281,7 +1328,7 @@ class Tower:
                 continue
             name = names[(int(a) // every) % len(names)]
             for y in range(y0, y1):
-                self.place(x, y, z, name, facing_center(x, z))
+                self.place(x, y, z, name, wall_facing(x, z))
 
     def scatter(self, y, r0, r1, density, names, arcs_out=()):
         """Petit bric-à-brac d'un bloc semé sur le sol (r0 <= d < r1), hors des arcs `arcs_out` et des passages."""
@@ -1420,22 +1467,31 @@ class Tower:
         rng = self.rng
         reading = ["Deco_Book_Pile_Small", "Deco_Scroll", "Furniture_Temple_Wind_Candle", "Deco_Book_Pile_Small",
                    "Furniture_Ancient_Candle", "Deco_Scroll", "Potion_Mana_Large"]
-        # Tables de lecture entre les rayonnages en épis.
-        for k in (245, 265, 285, 318, 350, 15):
+        # Coins de lecture, de part et d'autre des deux rayonnages doubles (dans les quarts libres de la salle).
+        for k in (232, 308, 338):
             x, z = at(19, k)
-            self.table(x, y, z, "Furniture_Temple_Light_Table", rng.sample(reading, 4), "Furniture_Ancient_Chair")
-        # Au centre, l'arène du Codex vivant : cercle d'or incrusté dans le sol, tapis autour.
-        for x in range(-4, 5):
-            for z in range(-4, 5):
-                d = math.hypot(x, z)
-                if d < 1:
-                    self.p.set(x, y - 1, z, "Rock_Gold_Brick_Ornate")
-                elif 2.6 <= d < 3.6:
-                    self.p.set(x, y - 1, z, TRIM)
-        for x in range(-8, 8, 2):
-            for z in range(-8, 8, 2):
-                if 4.5 <= math.hypot(x + 0.5, z + 0.5) < 8.5:
+            self.table(x - 1, y, z - 1, "Furniture_Temple_Light_Table", rng.sample(reading, 4), "Furniture_Ancient_Chair")
+        # Au centre, l'arène du Codex vivant, lisible d'un coup d'œil : cœur d'or sous le Codex, anneau de cristal violet,
+        # trois rayons d'or jusqu'aux pupitres (cerclés d'or), et l'anneau d'or du bord de l'arène.
+        self.inlay([(0, 0)], y, "Rock_Gold_Brick_Ornate")
+        self.inlay([c for c in self.ring_cells(1, 2)], y, GOLD)
+        self.inlay(self.ring_cells(2.6, 3.6), y, "Rock_Crystal_Purple_Block")
+        for a in LECTERN_ANGLES:
+            lx, lz = at(LECTERN_R, a)
+            sx, sz = at(3.6, a)
+            ray = self.segment(sx, sz, *at(LECTERN_R - 1.5, a))
+            around = [(lx + dx, lz + dz) for dx in range(-1, 2) for dz in range(-1, 2) if (dx, dz) != (0, 0)]
+            self.inlay(ray, y, GOLD)
+            self.inlay(around, y, TRIM)
+            self.keep_clear.update((cx, y, cz) for cx, cz in ray + around)  # pas de tapis par-dessus
+        self.inlay(self.ring_cells(12.5, 13.5), y, TRIM)
+        # Tapis entre le cœur et l'anneau, sans recouvrir les rayons ni les pupitres.
+        for x in range(-12, 12, 2):
+            for z in range(-12, 12, 2):
+                if 4.5 <= math.hypot(x + 0.5, z + 0.5) < 11:
                     self.place(x, y, z, "Furniture_Royal_Magic_Carpet")
+        # Entrée de l'arène : deux braseros allumés de part et d'autre de la porte.
+        self.gate_braziers(y, 27, 50, 9)
         # Échelles contre les étagères, piles de livres au pied des murs.
         for k in (232, 300, 345):
             x, z = at(27.4, k)
@@ -1550,6 +1606,9 @@ class Tower:
             self.hang(x, top, z, CHANDELIER)
 
     def decor_lab(self):
+        """Laboratoire, arène de la Chimère : sol dégagé autour de la cuve, deux anneaux d'or et des conduits de cristal
+        vert qui relient la cuve aux grands alambics des alcôves ; le décor est contre le mur, dans des alcôves
+        symétriques (alambics et postes d'alchimiste), et chaque étagère de réactifs (PNJ du combat) a son cercle d'or."""
         y = F_LAB
         p = self.p
         rng = self.rng
@@ -1565,25 +1624,42 @@ class Tower:
                 edge = d >= 2.5 or yy in (top - 7, top)
                 p.set(x, yy, z, (GOLD if yy in (top - 7, top - 3, top) else GLASS) if edge else "Rock_Crystal_Green_Block")
         p.set(0, top - 8, 0, "Nakasar_Tower_Emanation_Motes")
-        # Tables de manipulation et établis arcaniques.
+        # Sol : anneaux d'or, conduits de cristal de la cuve aux alambics, cercles des étagères de réactifs.
+        self.inlay(self.ring_cells(11, 12), y, TRIM)
+        self.inlay(self.ring_cells(20, 21), y, TRIM)
+        for k, kind in LAB_ALCOVES.items():
+            if kind == "alembic":
+                self.inlay(self.segment(*at(9.5, k), *at(23.5, k)), y, "Rock_Crystal_Green_Block", over={n for n, _ in FLOOR} | {TRIM})
+        for x, _, z in self.trap["chimera"]["shelves"]:
+            self.inlay([(x + dx, z + dz) for dx in range(-1, 2) for dz in range(-1, 2) if (dx, dz) != (0, 0)], y, GOLD,
+                       over={n for n, _ in FLOOR} | {TRIM, "Rock_Crystal_Green_Block"})
+        # Alcôves : un grand alambic (verre et cristal de la couleur de son conduit) ou un poste d'alchimiste (établi
+        # tourné vers la cuve, chaudron et tonneau de part et d'autre, fioles au mur).
         potions = ["Potion_Empty_Large", "Potion_Empty", "Deco_Potion", "Potion_Poison_Large", "Potion_Mana",
-                   "Potion_Regen_Health_Large", "Potion_Morph_Frog", "Deco_Scroll"]
-        for k in (0, 90, 180):
-            x, z = at(12, k)
-            self.table(x, y, z, "Furniture_Royal_Magic_Table", rng.sample(potions, 4), "Furniture_Temple_Light_Stool")
-        for k in (45, 160):
-            x, z = at(24, k)
-            self.place(x, y, z, "Bench_Arcane", facing_center(x, z))
-        self.stations(y, 22.5, (60, 80, 215, 245), potions)
-        self.scatter(y, 18, 27, 0.05, potions + ["Deco_Bone_Skulls", "Deco_Book_Pile_Small", "Rock_Crystal_Green_Small",
-                                                 "Furniture_Royal_Magic_Potion_Glow"], ((255, 350),))
-        # Fioles sur les étagères, jarres et tonneaux le long du mur.
+                   "Potion_Regen_Health_Large", "Deco_Scroll"]
+        for k, kind in LAB_ALCOVES.items():
+            if kind == "alembic":
+                x, z = at(25.5, k)
+                if not self.flask(x, y, z, "Rock_Crystal_Green_Block", height=5):
+                    raise RuntimeError(f"tour : pas de place pour l'alambic de l'alcôve {k}° du laboratoire")
+                continue
+            x, z = at(26.5, k)
+            if not self.place(x, y, z, "Bench_Alchemy", facing_center(x, z)):
+                raise RuntimeError(f"tour : pas de place pour l'établi de l'alcôve {k}° du laboratoire")
+            for dk, name in ((-7, "Alchemy_Cauldron"), (7, "Furniture_Ancient_Barrel")):
+                cx, cz = at(26.5, k + dk)
+                self.place(cx, y, cz, name)
+            for dk in (-4, 4):
+                cx, cz = at(27.5, k + dk)
+                self.place(cx, y, cz, rng.choice(potions))
+        # Fioles sur le haut des rayonnages du mur.
         for x, z, d, a in ring(28.4, R_IN):
             if p.get(x, y + 5, z) == SHELF and rng.random() < 0.5:
                 self.place(x, y + 6, z, rng.choice(potions[:6] + ["Furniture_Royal_Magic_Potion_Glow", "Deco_Bone_Skulls"]))
-        for k in range(140, 192, 8):
-            x, z = at(26.5, k)
-            self.place(x, y, z, rng.choice(["Furniture_Temple_Wind_Pot", "Furniture_Ancient_Barrel", "Furniture_Ancient_Crate"]))
+        # Entrée de l'arène : deux braseros allumés de part et d'autre de l'arrivée de l'escalier des transmutations.
+        for x, z in ((21, -19), (21, -12)):
+            if not self.place(x, y, z, "*Furniture_Temple_Light_Brazier_State_Definitions_On"):
+                raise RuntimeError(f"tour : pas de place pour le brasero de l'entrée du laboratoire en {(x, y, z)}")
         # Lustres et lanternes au plafond.
         for k in range(0, 360, 45):
             x, z = at(17, k + 22)
@@ -1595,6 +1671,29 @@ class Tower:
     def decor_observatory(self):
         y = F_DECK
         rng = self.rng
+        alch = self.trap["alchemist"]
+        # L'arène de l'Alchimiste se lit au sol : cercle de transmutation d'or autour de l'athanor (anneau, triangle et
+        # carré inscrits), rosace de cristal de la couleur de chaque pilier élémentaire, socle d'or et de cristal blanc
+        # sous chaque fiole de soin, et dallage fissuré (pavés) sur les pans du rebord qui s'effondrent.
+        circle = 14
+        self.inlay(self.ring_cells(circle - 0.5, circle + 0.5), y, GOLD)
+        for poly in (3, 4):
+            corners = [at(circle, 90 + 360 * i / poly) for i in range(poly)]
+            for (x0, z0), (x1, z1) in zip(corners, corners[1:] + corners[:1]):
+                self.inlay(self.segment(x0, z0, x1, z1), y, TRIM)
+        for (x, _, z), crystal in zip(alch["pillars"], ("Red", "Cyan", "Yellow", "Green")):
+            self.inlay([(x + dx, z + dz) for dx in range(-1, 2) for dz in range(-1, 2)], y, f"Rock_Crystal_{crystal}_Block",
+                       over={n for n, _ in FLOOR} | {TRIM, GOLD})
+        for x, _, z in alch["heals"]:
+            self.inlay([(x + dx, z + dz) for dx in range(-1, 2) for dz in range(-1, 2) if (dx, dz) != (0, 0)], y, GOLD,
+                       over={n for n, _ in FLOOR} | {TRIM})
+            self.inlay([(x, z)], y, "Rock_Crystal_White_Block", over={n for n, _ in FLOOR} | {TRIM, GOLD})
+        for cells in alch["collapse"]:
+            for x, yy, z in cells:
+                if yy == y - 1:
+                    self.p.set(x, yy, z, CRACKED)
+        # Entrée de l'arène : deux braseros allumés de part et d'autre de la porte de l'antichambre.
+        self.gate_braziers(y, 19.5, 245, 9)
         # Le centre est l'arène de l'Alchimiste, autour de son athanor : le décor reste au pourtour.
         for k in (20, 160, 300):
             self.telescope(k, 38)
@@ -1636,11 +1735,15 @@ class Tower:
         y = F_DECK
         top = F_DECK + 9
         for k in range(204, 274, 10):
+            if abs(k - 245) < 12:
+                continue  # rien devant la porte de la terrasse
             x, z = at(25.5, k)
             self.place(x, y, z, "*Furniture_Temple_Light_Brazier_State_Definitions_On")
-        for k in (212, 262):
-            x, z = at(28, k)
-            self.place(x, y, z, "Furniture_Temple_Wind_Statue", facing_center(-x, -z))
+        # Deux gardiens de pierre encadrent la porte de l'arène, tournés vers qui arrive par l'antichambre.
+        for k in (233, 257):
+            x, z = at(27.5, k)
+            if not self.place(x, y, z, "Furniture_Temple_Wind_Statue", facing_to(x, z, *at(34, 245))):
+                raise RuntimeError(f"tour : pas de place pour la statue de l'antichambre en {(x, y, z)}")
         for k in (215, 235, 255):
             x, z = at(40, k)
             self.hang(x, top, z, "Furniture_Temple_Wind_Chandelier")

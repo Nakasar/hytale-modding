@@ -745,7 +745,7 @@ class Traps:
                 signal("TAG_ADDED", "Collapse", "Alchemist_Pile", str(i), radius=70.0),
                 tags("TAG_ADDED", "Collapse", "Off", 3.0)],
                 [tag_is("TAG_ADDED", "Collapse", "On")], volume_tags={"Collapse": "Off"})
-            for layer, restore in ((y - 1, "Rock_Marble_Brick_Smooth"), (y - 2, "Rock_Marble_Brick")):
+            for layer, restore in ((y - 1, at.CRACKED), (y - 2, "Rock_Marble_Brick")):
                 for j, pile in enumerate(piles([cell for cell in cells if cell[1] == layer])):
                     pc, ps = self.bounds(pile)
                     self.add(f"Alchemist_Pile_{i}_{y - layer}_{j}", g, pc, ps, [

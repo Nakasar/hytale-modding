@@ -389,6 +389,15 @@ Mobs (voir [docs/npc-0.7.2.md](docs/npc-0.7.2.md)) :
   rejoindre le combat. Plus aucun joueur vivant dans l'arène : le boss se remet à zéro, puis la barrière s'abaisse et le
   groupe peut retenter ; le boss vaincu, elle s'abaisse pour de bon. À vérifier en jeu : la fermeture (et qu'elle ne
   coince personne dans la porte), la réouverture après la mort du groupe, les particules de la porte.
+  Décor des arènes (`alchemist_tower.Tower.decor_*`) : les meubles muraux font face à l'intérieur
+  (`wall_facing`), les statues des points de contrôle regardent l'endroit où le joueur s'arrête (`facing_to`), deux
+  braseros encadrent chaque porte d'arène. Bibliothèque : doubles rayonnages alignés sur les axes, dos à dos face aux
+  allées, marqueterie d'or reliant le centre aux trois pupitres, tables de lecture. Laboratoire : sol dégagé pour le
+  combat, anneaux de pierre, conduits de cristal vert vers quatre alcôves d'alambics et trois alcôves d'établis, cercles
+  d'or sous les étagères de réactifs. Terrasse : cercle de transmutation (triangle et carré inscrits), rosaces de
+  cristal de la couleur de chaque pilier, socles d'or des fioles de soin, dalles fissurées sur les zones qui
+  s'effondrent ; statues de l'antichambre symétriques, rien devant la porte. Vues : `/mnt/project-files/donjons/vues/
+  9-arene-*.png`. À vérifier en jeu : l'orientation des rayonnages et des statues, la lisibilité des dalles fissurées.
 - **Tour de l'Alchimiste, le Codex vivant** (`tools/generate_codex_models.py`, rôles dans `generate_tower_mobs.py`,
   zones dans `alchemist_traps.Traps.codex`, combat dans `tower/CodexSystem.java`) : boss de la bibliothèque, grimoire
   flottant (œil, fermoir d'or, chaînes brisées, runes) au centre de la rotonde entre trois pupitres, barre de boss.
