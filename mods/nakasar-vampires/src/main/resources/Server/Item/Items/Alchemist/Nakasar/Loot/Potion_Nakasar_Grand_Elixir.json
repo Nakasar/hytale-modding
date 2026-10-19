@@ -1,0 +1,34 @@
+{
+  "TranslationProperties": {
+    "Name": "nakasar_alchemist.items.Potion_Nakasar_Grand_Elixir.name",
+    "Description": "nakasar_alchemist.items.Potion_Nakasar_Grand_Elixir.description"
+  },
+  "Icon": "Icons/Items/Nakasar/Alchemist/Loot/Grand_Elixir.png",
+  "Model": "Items/Nakasar/Alchemist/Loot/Grand_Elixir.blockymodel",
+  "Texture": "Items/Nakasar/Alchemist/Loot/Grand_Elixir.png",
+  "Quality": "Epic",
+  "ItemLevel": 30,
+  "Categories": [
+    "Items.Potions"
+  ],
+  "PlayerAnimationsId": {
+    "Parent": "Item",
+    "Animations": {
+      "Consume": {
+        "FirstPerson": "Characters/Animations/Items/Main_Handed/Item/Attacks/Drink/Drink_FPS.blockyanim",
+        "ThirdPerson": "Characters/Animations/Items/Main_Handed/Item/Attacks/Drink/Drink.blockyanim",
+        "Speed": 1,
+        "Looping": true
+      }
+    }
+  },
+  "ItemSoundSetId": "ISS_Items_Gems",
+  "MaxStack": 10,
+  "Consumable": true,
+  "Utility": {
+    "Compatible": false
+  },
+  "Interactions": {
+    "Secondary": "Root_Potion_Nakasar_Grand_Elixir"
+  }
+}

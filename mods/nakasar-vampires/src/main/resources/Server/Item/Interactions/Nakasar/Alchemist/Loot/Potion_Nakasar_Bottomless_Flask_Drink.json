@@ -1,0 +1,26 @@
+{
+  "Type": "Charging",
+  "FailOnDamage": false,
+  "Effects": {
+    "ItemAnimationId": "Consume",
+    "WorldSoundEventId": "SFX_Nakasar_Drink",
+    "ClearAnimationOnFinish": true,
+    "ClearSoundEventOnFinish": true
+  },
+  "HorizontalSpeedMultiplier": 0.75,
+  "Next": {
+    "1.5": {
+      "Type": "ApplyEffect",
+      "EffectId": "Nakasar_Bottomless_Flask_Heal",
+      "Entity": "User",
+      "Next": {
+        "Type": "ApplyEffect",
+        "EffectId": "Nakasar_Bottomless_Flask_Regen",
+        "Entity": "User"
+      }
+    }
+  },
+  "Failed": {
+    "Type": "Simple"
+  }
+}

@@ -1,0 +1,20 @@
+{
+  "TranslationProperties": {
+    "Name": "nakasar_alchemist.items.Nakasar_Elemental_Lantern.name",
+    "Description": "nakasar_alchemist.items.Nakasar_Elemental_Lantern.description"
+  },
+  "Icon": "Icons/Items/Nakasar/Alchemist/Loot/Elemental_Lantern.png",
+  "Model": "Items/Nakasar/Alchemist/Loot/Elemental_Lantern.blockymodel",
+  "Texture": "Items/Nakasar/Alchemist/Loot/Elemental_Lantern.png",
+  "Quality": "Legendary",
+  "ItemLevel": 30,
+  "Categories": [
+    "Items.Tools"
+  ],
+  "PlayerAnimationsId": "Item",
+  "ItemSoundSetId": "ISS_Items_Gems",
+  "MaxStack": 1,
+  "Utility": {
+    "Compatible": true
+  }
+}

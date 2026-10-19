@@ -1,0 +1,11 @@
+{
+  "Name": "nakasar_alchemist.effects.Nakasar_Bottomless_Flask_Heal",
+  "Duration": 0.1,
+  "OverlapBehavior": "Overwrite",
+  "StatusEffectIcon": "Icons/Items/Nakasar/Alchemist/Loot/Bottomless_Flask.png",
+  "StatModifiers": {
+    "Health": 30
+  },
+  "ValueType": "Percent",
+  "DamageCalculatorCooldown": 0
+}

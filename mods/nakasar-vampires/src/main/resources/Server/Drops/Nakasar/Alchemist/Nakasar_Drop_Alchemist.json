@@ -1,5 +1,5 @@
 {
-  "$Comment": "L'Alchimiste (boss final) : son masque à bec (trophée), les trois principes et des essences des quatre éléments. Le sac de butin du donjon viendra avec l'étape 8.",
+  "$Comment": "L'Alchimiste (boss final) : son masque à bec (trophée) et un peu des trois principes pour le groupe ; chaque joueur reçoit en plus son sac de l'Alchimiste (AlchemistSystem, tools/generate_alchemist_loot.py).",
   "Container": {
     "Type": "Multiple",
     "Containers": [
@@ -11,56 +11,24 @@
         "Type": "Single",
         "Item": {
           "ItemId": "Ingredient_Nakasar_Philosophers_Salt",
-          "QuantityMin": 3,
-          "QuantityMax": 4
+          "QuantityMin": 1,
+          "QuantityMax": 2
         }
       },
       {
         "Type": "Single",
         "Item": {
           "ItemId": "Ingredient_Nakasar_Burning_Sulfur",
-          "QuantityMin": 3,
-          "QuantityMax": 4
+          "QuantityMin": 1,
+          "QuantityMax": 2
         }
       },
       {
         "Type": "Single",
         "Item": {
           "ItemId": "Ingredient_Nakasar_Quicksilver",
-          "QuantityMin": 3,
-          "QuantityMax": 4
-        }
-      },
-      {
-        "Type": "Single",
-        "Item": {
-          "ItemId": "Ingredient_Fire_Essence",
-          "QuantityMin": 2,
-          "QuantityMax": 3
-        }
-      },
-      {
-        "Type": "Single",
-        "Item": {
-          "ItemId": "Ingredient_Ice_Essence",
-          "QuantityMin": 2,
-          "QuantityMax": 3
-        }
-      },
-      {
-        "Type": "Single",
-        "Item": {
-          "ItemId": "Ingredient_Lightning_Essence",
-          "QuantityMin": 2,
-          "QuantityMax": 3
-        }
-      },
-      {
-        "Type": "Single",
-        "Item": {
-          "ItemId": "Ingredient_Life_Essence",
-          "QuantityMin": 2,
-          "QuantityMax": 3
+          "QuantityMin": 1,
+          "QuantityMax": 2
         }
       }
     ]

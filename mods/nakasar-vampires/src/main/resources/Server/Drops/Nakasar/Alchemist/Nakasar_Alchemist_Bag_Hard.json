@@ -1,0 +1,143 @@
+{
+  "$Comment": "Sac de l'Alchimiste, mode difficile : 4 à 5 de chaque principe, 6 à 8 essences, 2 éclats de rune, objet unique 40 %, lunettes de l'Alchimiste 10 %.",
+  "Container": {
+    "Type": "Multiple",
+    "Containers": [
+      {
+        "Type": "Single",
+        "Item": {
+          "ItemId": "Ingredient_Nakasar_Philosophers_Salt",
+          "QuantityMin": 4,
+          "QuantityMax": 5
+        }
+      },
+      {
+        "Type": "Single",
+        "Item": {
+          "ItemId": "Ingredient_Nakasar_Burning_Sulfur",
+          "QuantityMin": 4,
+          "QuantityMax": 5
+        }
+      },
+      {
+        "Type": "Single",
+        "Item": {
+          "ItemId": "Ingredient_Nakasar_Quicksilver",
+          "QuantityMin": 4,
+          "QuantityMax": 5
+        }
+      },
+      {
+        "Type": "Choice",
+        "RollsMin": 6,
+        "RollsMax": 8,
+        "Containers": [
+          {
+            "Type": "Single",
+            "Item": {
+              "ItemId": "Ingredient_Fire_Essence",
+              "QuantityMin": 1,
+              "QuantityMax": 1
+            },
+            "Weight": 1
+          },
+          {
+            "Type": "Single",
+            "Item": {
+              "ItemId": "Ingredient_Ice_Essence",
+              "QuantityMin": 1,
+              "QuantityMax": 1
+            },
+            "Weight": 1
+          },
+          {
+            "Type": "Single",
+            "Item": {
+              "ItemId": "Ingredient_Lightning_Essence",
+              "QuantityMin": 1,
+              "QuantityMax": 1
+            },
+            "Weight": 1
+          },
+          {
+            "Type": "Single",
+            "Item": {
+              "ItemId": "Ingredient_Life_Essence",
+              "QuantityMin": 1,
+              "QuantityMax": 1
+            },
+            "Weight": 1
+          }
+        ]
+      },
+      {
+        "Type": "Single",
+        "Item": {
+          "ItemId": "Ingredient_Rune_Shard",
+          "QuantityMin": 2,
+          "QuantityMax": 2
+        }
+      },
+      {
+        "Type": "Choice",
+        "Containers": [
+          {
+            "Type": "Choice",
+            "Containers": [
+              {
+                "Type": "Single",
+                "Item": {
+                  "ItemId": "Potion_Nakasar_Bottomless_Flask",
+                  "QuantityMin": 1,
+                  "QuantityMax": 1
+                },
+                "Weight": 1
+              },
+              {
+                "Type": "Single",
+                "Item": {
+                  "ItemId": "Armor_Nakasar_Alchemist_Gloves",
+                  "QuantityMin": 1,
+                  "QuantityMax": 1
+                },
+                "Weight": 1
+              },
+              {
+                "Type": "Single",
+                "Item": {
+                  "ItemId": "Nakasar_Elemental_Lantern",
+                  "QuantityMin": 1,
+                  "QuantityMax": 1
+                },
+                "Weight": 1
+              }
+            ],
+            "Weight": 40
+          },
+          {
+            "Type": "Empty",
+            "Weight": 60
+          }
+        ]
+      },
+      {
+        "Type": "Choice",
+        "Containers": [
+          {
+            "Type": "Single",
+            "Item": {
+              "ItemId": "Armor_Nakasar_Alchemist_Goggles",
+              "QuantityMin": 1,
+              "QuantityMax": 1
+            },
+            "Weight": 10
+          },
+          {
+            "Type": "Empty",
+            "Weight": 90
+          }
+        ]
+      }
+    ]
+  }
+}

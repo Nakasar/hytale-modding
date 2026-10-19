@@ -1,0 +1,50 @@
+{
+  "TimeSeconds": 3,
+  "KnowledgeRequired": false,
+  "Input": [
+    {
+      "ItemId": "Potion_Empty",
+      "Quantity": 1
+    },
+    {
+      "ItemId": "Ingredient_Nakasar_Burning_Sulfur",
+      "Quantity": 2
+    },
+    {
+      "ItemId": "Ingredient_Nakasar_Philosophers_Salt",
+      "Quantity": 1
+    },
+    {
+      "ItemId": "Ingredient_Fire_Essence",
+      "Quantity": 1
+    },
+    {
+      "ItemId": "Ingredient_Ice_Essence",
+      "Quantity": 1
+    },
+    {
+      "ItemId": "Ingredient_Lightning_Essence",
+      "Quantity": 1
+    }
+  ],
+  "PrimaryOutput": {
+    "ItemId": "Potion_Nakasar_Elemental_Ward",
+    "Quantity": 1
+  },
+  "Output": [
+    {
+      "ItemId": "Potion_Nakasar_Elemental_Ward",
+      "Quantity": 1
+    }
+  ],
+  "BenchRequirement": [
+    {
+      "Type": "Crafting",
+      "Id": "Alchemybench",
+      "Categories": [
+        "Alchemy_Potions"
+      ],
+      "RequiredTierLevel": 2
+    }
+  ]
+}

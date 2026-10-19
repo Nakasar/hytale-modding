@@ -1,0 +1,25 @@
+{
+  "TranslationProperties": {
+    "Name": "nakasar_alchemist.items.Nakasar_Alchemist_Bag_Hard.name",
+    "Description": "nakasar_alchemist.items.Nakasar_Alchemist_Bag_Hard.description"
+  },
+  "Icon": "Icons/Items/Nakasar/Alchemist/Loot/Alchemist_Bag_Hard.png",
+  "Model": "Items/Nakasar/Alchemist/Loot/Alchemist_Bag_Hard.blockymodel",
+  "Texture": "Items/Nakasar/Alchemist/Loot/Alchemist_Bag_Hard.png",
+  "Quality": "Legendary",
+  "ItemLevel": 30,
+  "Categories": [
+    "Items.Ingredients"
+  ],
+  "PlayerAnimationsId": "Item",
+  "ItemSoundSetId": "ISS_Items_Gems",
+  "MaxStack": 16,
+  "Tags": {
+    "Type": [
+      "Nakasar_Bounty"
+    ]
+  },
+  "Interactions": {
+    "Secondary": "Root_Nakasar_Alchemist_Bag_Hard"
+  }
+}

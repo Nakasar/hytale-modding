@@ -127,6 +127,10 @@
           "UpgradeRequirement": {
             "Material": [
               {
+                "ItemId": "Nakasar_Philosopher_Stone",
+                "Quantity": 1
+              },
+              {
                 "ItemId": "Ingredient_Nakasar_Manor_Relic",
                 "Quantity": 6
               },

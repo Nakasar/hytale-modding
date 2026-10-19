@@ -1,0 +1,11 @@
+{
+  "Name": "nakasar_alchemist.effects.Nakasar_Quicksilver_Burst",
+  "Duration": 0.1,
+  "OverlapBehavior": "Overwrite",
+  "StatusEffectIcon": "Icons/Items/Nakasar/Alchemist/Loot/Quicksilver_Draught.png",
+  "StatModifiers": {
+    "Stamina": 100
+  },
+  "ValueType": "Percent",
+  "DamageCalculatorCooldown": 0
+}

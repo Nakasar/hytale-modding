@@ -1241,11 +1241,10 @@ def drops():
             {"Type": "Droplist", "DroplistId": HEART_DROP},
             single(SALT, 2, 3), single(SULFUR, 2, 3), single(MERCURY, 2, 3), single("Ingredient_Life_Essence", 1, 2)),
         "Nakasar_Drop_Alchemist": multiple(
-            "L'Alchimiste (boss final) : son masque à bec (trophée), les trois principes et des essences des quatre éléments. Le sac de butin du donjon viendra avec l'étape 8.",
+            "L'Alchimiste (boss final) : son masque à bec (trophée) et un peu des trois principes pour le groupe ; chaque "
+            "joueur reçoit en plus son sac de l'Alchimiste (AlchemistSystem, tools/generate_alchemist_loot.py).",
             {"Type": "Droplist", "DroplistId": MASK_DROP},
-            single(SALT, 3, 4), single(SULFUR, 3, 4), single(MERCURY, 3, 4),
-            single("Ingredient_Fire_Essence", 2, 3), single("Ingredient_Ice_Essence", 2, 3),
-            single("Ingredient_Lightning_Essence", 2, 3), single("Ingredient_Life_Essence", 2, 3)),
+            single(SALT, 1, 2), single(SULFUR, 1, 2), single(MERCURY, 1, 2)),
     }
 
 

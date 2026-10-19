@@ -1,0 +1,10 @@
+{
+  "Interactions": [
+    "Potion_Nakasar_Bottomless_Flask_Drink"
+  ],
+  "RequireNewClick": true,
+  "Cooldown": {
+    "Id": "Potion_Nakasar_Bottomless_Flask",
+    "Cooldown": 90
+  }
+}

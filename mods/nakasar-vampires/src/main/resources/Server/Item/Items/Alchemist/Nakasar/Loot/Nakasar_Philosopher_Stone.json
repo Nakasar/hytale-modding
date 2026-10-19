@@ -1,0 +1,21 @@
+{
+  "TranslationProperties": {
+    "Name": "nakasar_alchemist.items.Nakasar_Philosopher_Stone.name",
+    "Description": "nakasar_alchemist.items.Nakasar_Philosopher_Stone.description"
+  },
+  "Icon": "Icons/Items/Nakasar/Alchemist/Loot/Philosopher_Stone.png",
+  "Model": "Items/Nakasar/Alchemist/Loot/Philosopher_Stone.blockymodel",
+  "Texture": "Items/Nakasar/Alchemist/Loot/Philosopher_Stone.png",
+  "Quality": "Legendary",
+  "ItemLevel": 30,
+  "Categories": [
+    "Items.Ingredients"
+  ],
+  "PlayerAnimationsId": "Item",
+  "ItemSoundSetId": "ISS_Items_Gems",
+  "MaxStack": 1,
+  "Light": {
+    "Radius": 2,
+    "Color": "#e33"
+  }
+}

@@ -531,7 +531,9 @@ def build_items():
         "SoundEventId": "SFX_Nakasar_Ritual", "NoteItemId": "Nakasar_Note_Vampire_Awakening",
         "Next": {"Type": "ModifyInventory", "AdjustHeldItemQuantity": -1},
     })
-    recipe("Nakasar_Ritual_Chalice", [("Ingredient_Nakasar_Manor_Relic", 2), ("Potion_Nakasar_Blood", 3),
+    # La pierre philosophale vient du Bureau de l'Alchimiste (generate_alchemist_loot.py) : on ne devient vampire
+    # qu'après avoir fini la tour.
+    recipe("Nakasar_Ritual_Chalice", [("Nakasar_Philosopher_Stone", 1), ("Ingredient_Nakasar_Manor_Relic", 2), ("Potion_Nakasar_Blood", 3),
                                       ("Rock_Gem_Ruby", 2), ("Ingredient_Rune_Shard", 2)], CAT_RITUALS, 3, 5)
     consumable("Nakasar_Purification_Censer", "Purification_Censer", "Root_Nakasar_Ritual_Cure", "Epic", 1)
     root("Root_Nakasar_Ritual_Cure", "Nakasar_Ritual_Cure")
