@@ -22,8 +22,9 @@ Parcours, de bas en haut (niveaux = première couche d'air du sol de chaque sall
 
 Toutes les rampes montent en demi-dalles (pas de bloc orienté à deviner) et tous les bords extérieurs ont un parapet de
 2 blocs au moins. `walkable_path` vérifie, hors ligne, qu'on va du parvis au bureau en passant par chaque point de
-contrôle. Au bord du vide extérieur, des murs invisibles (bloc vanilla Barrier) montent au-dessus des parapets jusqu'à
-4 blocs au-dessus de la plus haute surface voisine (Kevin, 19 octobre 2026 : on ne saute pas des coursives) ; chaque
+contrôle. Au bord du vide extérieur, des blocs Barrier marquent au-dessus des parapets, jusqu'à 4 blocs au-dessus de
+la plus haute surface voisine, la barrière nécessaire (Kevin, 19 octobre 2026 : on ne saute pas des coursives) ;
+generate_alchemist_tower.py les remplace par des volumes de repoussée comme dans Deepworks ; chaque
 salle est meublée selon son thème (`decorate`), sans gêner le parcours.
 """
 import math

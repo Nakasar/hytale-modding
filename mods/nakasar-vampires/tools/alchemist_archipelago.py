@@ -6,8 +6,8 @@ Parcours (Kevin, 19 octobre 2026 : « archipel en étapes », puis « petites î
 dans un style elfique, îles rapprochées ») : île d'arrivée, halte de la fontaine, halte du kiosque, Jardins des
 Alambics, halte des sources, Ruines du premier laboratoire (point de contrôle), halte des arches, puis la grande île de la
 tour, où un chemin traverse la forêt jusqu'au parvis. Toutes les places et tous les ponts sont fermés par un garde-corps
-de 2 blocs surmonté de blocs `Barrier` (solides et invisibles) jusqu'à 4 blocs au-dessus du sol : on ne peut ni sauter
-par-dessus ni grimper dessus.
+de 2 blocs. Au-dessus, des blocs `Barrier` marquent jusqu'à 4 blocs au-dessus du sol la barrière qu'il faut :
+generate_alchemist_tower.py les retire des prefabs et en fait des volumes de repoussée, comme dans Deepworks.
 
 Repère : x vers l'est, z vers le sud ; les positions (x, z) sont celles du monde, le sol des îles est à GROUND_Y.
 """
@@ -17,7 +17,7 @@ import random
 import generate_prefabs as pf
 
 AIR = pf.AIR
-BARRIER = "Barrier"  # bloc vanilla solide et invisible (Server/Item/Items/Hypixel/Barrier.json)
+BARRIER = "Barrier"  # marque une barrière ; remplacé par un volume de repoussée (generate_alchemist_tower.py)
 WALL_TOP = 4         # les garde-corps (parapet + Barrier) montent à 4 blocs au-dessus du sol où l'on marche
 GROUND_Y = 100       # première couche d'air au-dessus du sol des îles (generate_alchemist_tower.GROUND_Y)
 

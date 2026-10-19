@@ -326,18 +326,20 @@ Mobs (voir [docs/npc-0.7.2.md](docs/npc-0.7.2.md)) :
 - **Tour de l'Alchimiste, l'archipel et la tour** (`tools/alchemist_archipelago.py`, `tools/alchemist_tower.py`,
   `tower/TowerCheckpointSystem.java`) : à l'échelle de Deepworks. Parcours : île d'arrivée, puis une chaîne de petites
   îles reliées par des ponts courts de style elfique (arches, lanternes, fleurs, lianes) : halte de la fontaine, halte
-  du kiosque, Jardins des Alambics, halte des sources, Ruines du premier laboratoire (premier point de contrôle), halte
-  des arches. La grande île de la tour (340 blocs de large) est couverte d'une forêt traversée par un chemin jusqu'au
-  parvis. Le ciel est peuplé d'îlots, de géodes, de rochers et de cristaux flottants du jeu. La tour fait environ 67
-  blocs de diamètre et 220 de haut, posée en quatre tranches empilées (`Tower0` à `Tower3`), et ses salles sont
-  meublées selon leur thème. Toutes les places, tous les ponts et les coursives de la tour sont fermés par un
-  garde-corps surmonté de blocs `Barrier` (invisibles) jusqu'à 4 blocs au-dessus du sol. Vérifié hors ligne : parcours
-  continu de l'arrivée au parvis sans accès au vide, chaque salle et chaque point de contrôle de la tour atteignables.
-  À vérifier en jeu : que les grands prefabs se posent entiers et que les tranches s'emboîtent, que les murs invisibles
-  arrêtent bien (y compris en grimpant), l'eau des fontaines (sources `Water_Source` dans les bassins et sur les
-  vasques), les arbres et sous-bois du jeu dans la forêt, les géodes flottantes (prefabs `Geode_Floating` du jeu), les
-  demi-dalles des rampes, l'orientation des statues de contrôle, les émanations `Nakasar_Tower_Emanation_*`, et qu'on
-  réapparaisse au dernier point de contrôle, après une mort comme après une chute.
+  du kiosque, Jardins des Alambics, halte des sources, Ruines du premier laboratoire (premier point de contrôle),
+  halte des arches. La grande île de la tour (340 blocs de large) est couverte d'une forêt traversée par un chemin
+  jusqu'au parvis. Le ciel est peuplé d'îlots, de géodes, de rochers et de cristaux flottants du jeu. La tour fait
+  environ 67 blocs de diamètre et 220 de haut, posée en quatre tranches empilées (`Tower0` à `Tower3`), et ses salles
+  sont meublées selon leur thème. Au-dessus des garde-corps qui bordent le vide (places, ponts, coursives et escaliers
+  extérieurs de la tour), des volumes de repoussée comme les `Player_Pushback` de Deepworks
+  (`Server/Instances/Nakasar_Alchemist_Tower/resources/TriggerVolumeData.json`) renvoient le joueur vers l'intérieur.
+  Vérifié hors ligne : parcours continu de l'arrivée au parvis sans accès au vide, chaque salle et chaque point de
+  contrôle de la tour atteignables. À vérifier en jeu : que les grands prefabs se posent entiers et que les tranches
+  s'emboîtent, que le monde d'instance reprend bien les volumes de repoussée et qu'ils renvoient le joueur (y compris
+  en grimpant), l'eau des fontaines (sources `Water_Source` dans les bassins et sur les vasques), les arbres et
+  sous-bois du jeu dans la forêt, les géodes flottantes (prefabs `Geode_Floating` du jeu), les demi-dalles des rampes,
+  l'orientation des statues de contrôle, les émanations `Nakasar_Tower_Emanation_*`, et qu'on réapparaisse au dernier
+  point de contrôle, après une mort comme après une chute.
 
 ## Organisation du dépôt
 

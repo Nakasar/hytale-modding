@@ -16,7 +16,9 @@ du donjon vanilla Deepworks).
   `Nakasar_Tower_Emanation_*` qui portent des particules du jeu et une lumière), et des géodes, rochers et cristaux
   flottants du jeu dans le ciel ;
 - le parvis d'arrivée (point d'apparition, portail de sortie anticipée), fermé comme tout le parcours par un
-  garde-corps surmonté de blocs Barrier invisibles ;
+  garde-corps ;
+- les barrières de repoussée (resources/TriggerVolumeData.json de l'instance, comme les Player_Pushback de Deepworks)
+  au-dessus des garde-corps qui bordent le vide : places, ponts, coursives et escaliers extérieurs de la tour ;
 - la tour elle-même (tools/alchemist_tower.py), environ 220 blocs de haut, posée en tranches empilées (Tower0 à
   Tower3, TOWER_SLICES) : étages, balcons, escaliers extérieurs, points de vue fermés, points de contrôle ;
   TowerLayout.java (Java, généré) reprend les positions des points de contrôle, ruines comprises.
@@ -28,6 +30,7 @@ Repère : x vers l'est, z vers le sud, y vers le haut ; le point d'apparition es
 import json
 import shutil
 import math
+import uuid
 import sys
 from pathlib import Path
 
@@ -519,6 +522,104 @@ def emanation_icon(kind):
     return img
 
 
+# --- barrières de repoussée (comme Deepworks) ----------------------------------------------------
+
+# Kevin (19 octobre 2026) : pas de blocs invisibles, des barrières comme dans Deepworks. Les générateurs posent des blocs
+# Barrier là où un mur invisible est nécessaire (les vérifications de parcours en tiennent compte) ; on les retire des
+# prefabs et on les remplace par des volumes de repoussée de l'instance (resources/TriggerVolumeData.json, copié dans
+# chaque monde d'instance), comme les volumes Player_Pushback de Deepworks : en y entrant, le joueur est renvoyé vers
+# l'intérieur, avec l'éclat et le son des barrières d'énergie de Deepworks.
+PUSH_SPEED, PUSH_UP = 10.0, 4.0
+PUSH_GROUP = str(uuid.uuid5(uuid.NAMESPACE_URL, "nakasar/alchemist-tower/pushback"))
+PUSH_INSET = 0.2  # les boîtes rentrent un peu dans la colonne : longer le garde-corps ne déclenche rien
+
+
+def extract_barriers(prefab, origin, inward):
+    """Retire les blocs Barrier du prefab ; renvoie leurs colonnes {(x monde, z monde): (bas, haut, direction)}.
+
+    `inward(x, z)` donne la direction (dx, dz) vers l'intérieur, dans le repère du prefab."""
+    ox, oy, oz = origin
+    columns = {}
+    for (x, y, z) in [c for c, (name, _) in prefab.blocks.items() if name == arch.BARRIER]:
+        prefab.set(x, y, z, None)
+        lo, hi, _ = columns.get((x, z), (y, y, None))
+        columns[(x, z)] = (min(lo, y), max(hi, y), inward(x, z))
+    out = {}
+    for (x, z), (lo, hi, (dx, dz)) in columns.items():
+        a = round(math.degrees(math.atan2(dz, dx)) / 45) % 8  # 8 directions
+        out[(x + ox, z + oz)] = (lo + oy, hi + oy + 2, a)
+    return out
+
+
+def toward(cx, cz):
+    return lambda x, z: (cx - x, cz - z)
+
+
+def pushback_volumes(columns):
+    """Boîtes : colonnes de même hauteur et de même direction, fusionnées en rectangles (rangées en x, puis en z)."""
+    rows = {}
+    for (x, z), key in columns.items():
+        rows.setdefault((key, z), []).append(x)
+    runs = {}
+    for (key, z), xs in rows.items():
+        xs.sort()
+        start = prev = xs[0]
+        for x in xs[1:] + [None]:
+            if x is not None and x == prev + 1:
+                prev = x
+                continue
+            runs.setdefault((key, start, prev), []).append(z)
+            if x is not None:
+                start = prev = x
+    boxes = []
+    for (key, x0, x1), zs in runs.items():
+        zs.sort()
+        start = prev = zs[0]
+        for z in zs[1:] + [None]:
+            if z is not None and z == prev + 1:
+                prev = z
+                continue
+            boxes.append((key, x0, x1, start, prev))
+            if z is not None:
+                start = prev = z
+    volumes = {}
+    for k, ((lo, hi, a), x0, x1, z0, z1) in enumerate(sorted(boxes)):
+        rad = math.radians(a * 45)
+        hx, hy, hz = (x1 - x0 + 1) / 2 - PUSH_INSET, (hi - lo) / 2, (z1 - z0 + 1) / 2 - PUSH_INSET
+        vid = str(uuid.uuid5(uuid.NAMESPACE_URL, f"nakasar/alchemist-tower/pushback/{x0},{lo},{z0},{a}"))
+        volumes[vid] = {
+            "Position": {"X": (x0 + x1 + 1) / 2, "Y": (lo + hi) / 2, "Z": (z0 + z1 + 1) / 2},
+            "Shape": {"Type": "Box", "Min": {"X": -hx, "Y": -hy, "Z": -hz}, "Max": {"X": hx, "Y": hy, "Z": hz}},
+            "Effects": [
+                {"Type": "SetVelocity", "Event": "ENTER", "Interval": 0.0, "Delay": 0.0,
+                 "Velocity": {"X": round(PUSH_SPEED * math.cos(rad), 3), "Y": PUSH_UP,
+                              "Z": round(PUSH_SPEED * math.sin(rad), 3)},
+                 "Additive": False, "RelativeMode": "Absolute"},
+                {"Type": "PlayVfx", "Event": "ENTER", "Interval": 0.0, "Delay": 0.0,
+                 "ParticleSystem": "Dungeon_Goblin_Energy_Barrier_Impact", "Offset": {"X": 0.0, "Y": 0.0, "Z": 0.0},
+                 "Anchor": "Entity", "Scale": 1.0, "Rotation": {"X": 0.0, "Y": 0.0, "Z": 0.0}, "Duration": 0.0},
+                {"Type": "PlaySound", "Event": "ENTER", "Interval": 0.0, "Delay": 0.0,
+                 "SoundEvent": "SFX_Deployable_Totem_Heal_Despawn", "PitchSemitones": 6.0, "Location": "Entity",
+                 "Offset": {"X": 0.0, "Y": 0.0, "Z": 0.0}},
+            ],
+            "TargetTypes": ["Player"],
+            "Enabled": True,
+            "GroupId": PUSH_GROUP,
+            "KeepLoaded": False,
+            "Name": f"Player_Pushback_{k + 1:04d}",
+        }
+    return volumes
+
+
+def trigger_volumes(volumes):
+    """resources/TriggerVolumeData.json de l'instance (même format que celui de The_Deepworks)."""
+    return {
+        "Volumes": volumes,
+        "Groups": {PUSH_GROUP: {"Origin": {"X": 0.0, "Y": float(GROUND_Y), "Z": 0.0}, "TargetTypes": ["Player"],
+                                "Enabled": True, "Color": 16711680, "Name": "Player_Pushback"}},
+    }
+
+
 # --- Java : positions de la tour ---------------------------------------------------------------
 
 def tower_layout(tower, ruins_spot):
@@ -590,17 +691,37 @@ def main():
         icon.parent.mkdir(parents=True, exist_ok=True)
         emanation_icon(kind).save(icon)
     out = SERVER / "Prefabs" / PREFABS
-    count = arrival_prefab(9600).write(out / "Arrival" / "Arrival.prefab.json")
+    columns = {}
+    arrival = arrival_prefab(9600)
+    columns.update(extract_barriers(arrival, SPAWN, toward(0, 0)))
+    count = arrival.write(out / "Arrival" / "Arrival.prefab.json")
     print(f"Arrival: {count} blocs")
     tower = alchemist_tower.build_checked(TOWER_SEED)
+    columns.update(extract_barriers(tower.p, TOWER_CENTER, toward(0, 0)))
     shutil.rmtree(out / "Tower", ignore_errors=True)  # ancienne tour d'un seul tenant
     for i, (y0, y1) in enumerate(zip(TOWER_SLICES, TOWER_SLICES[1:])):
         count = tower.p.write(out / f"Tower{i}" / f"Tower{i}.prefab.json", y0, y1)
         print(f"Tower{i} (y {y0}..{y1 - 1}): {count} blocs")
     print(f"Points de contrôle de la tour : {tower.checkpoints}")
-    count = arch.bridges_prefab(9601).write(out / "Bridges" / "Bridges.prefab.json")
+    bridges = arch.bridges_prefab(9601)
+    deck, _ = arch._deck(arch.BRIDGES, arch.BRIDGE_HALF)
+
+    def to_deck(x, z):
+        return (sum(dx for dx in (-1, 0, 1) for dz in (-1, 0, 1) if (x + dx, z + dz) in deck),
+                sum(dz for dx in (-1, 0, 1) for dz in (-1, 0, 1) if (x + dx, z + dz) in deck))
+
+    columns.update(extract_barriers(bridges, (0, GROUND_Y, 0), to_deck))
+    count = bridges.write(out / "Bridges" / "Bridges.prefab.json")
     print(f"Bridges: {count} blocs")
-    count = arch.grounds_prefab(9604).write(out / "Grounds" / "Grounds.prefab.json")
+    grounds = arch.grounds_prefab(9604)
+
+    def grounds_inward(x, z):
+        if abs(x - arch.TOWER_GATE_X) == arch.PATH_HALF + 1 and z > arch.TOWER_RIM - 4:
+            return (arch.TOWER_GATE_X - x, 0)
+        return (-x, -z)
+
+    columns.update(extract_barriers(grounds, TOWER_CENTER, grounds_inward))
+    count = grounds.write(out / "Grounds" / "Grounds.prefab.json")
     print(f"Grounds: {count} blocs, {len(FOREST)} arbres, {len(SKY)} décors flottants, {len(ISLETS)} îlots")
     ruins_spot = None
     for k, stage in enumerate(STAGES):
@@ -610,8 +731,13 @@ def main():
             prefab, ruins_spot = arch.ruins_prefab(9603)
         else:
             prefab = arch.halt_prefab(stage, 9610 + k)
+        cx, cz = stage["center"]
+        columns.update(extract_barriers(prefab, (cx, GROUND_Y, cz), toward(0, 0)))
         count = prefab.write(out / stage["name"] / f"{stage['name']}.prefab.json")
         print(f"{stage['name']}: {count} blocs")
+    volumes = pushback_volumes(columns)
+    write_json(SERVER / "Instances" / TOWER / "resources" / "TriggerVolumeData.json", trigger_volumes(volumes))
+    print(f"Barrières de repoussée : {len(columns)} colonnes, {len(volumes)} volumes")
     JAVA_LAYOUT.write_text(tower_layout(tower, ruins_spot), encoding="utf-8")
     (COMMON / ICON).parent.mkdir(parents=True, exist_ok=True)
     key_icon().save(COMMON / ICON)

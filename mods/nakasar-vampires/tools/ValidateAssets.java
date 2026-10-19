@@ -888,8 +888,8 @@ public class ValidateAssets {
                     .map(Map.Entry::getValue)
                     .findFirst()
                     .orElse(null);
-            if (className == null) {
-                continue;
+            if (className == null || rel.matches("Instances/[^/]+/resources/.*")) {
+                continue; // ressources du monde copiées dans l'instance (TriggerVolumeData...), pas une config de monde
             }
             checked++;
             List<String> problems = new ArrayList<>();
