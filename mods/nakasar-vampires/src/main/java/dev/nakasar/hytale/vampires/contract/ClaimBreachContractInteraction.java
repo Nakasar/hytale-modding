@@ -55,7 +55,7 @@ public class ClaimBreachContractInteraction extends SimpleInstantInteraction {
     public static final String TYPE_ID = "Nakasar_ClaimBreachContract";
     static final String CLAIM_KEY = "Nakasar_BreachContractClaimed";
     private static final ContextKey CLAIM = ContextKey.of(CLAIM_KEY);
-    /** Le tableau est dans le campement (rayon 8) : l'évènement dont le prefab est posé à moins de cette distance. */
+    /** Distance max entre le tableau et l'origine du prefab de brèche (le campement fait ~8 blocs de rayon, marge comprise). */
     private static final double CAMP_RANGE = 32;
     private static final String MESSAGES = "nakasar_hunters.board.";
 
