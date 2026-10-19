@@ -20,6 +20,7 @@ import org.joml.Vector3d;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 import java.util.WeakHashMap;
@@ -35,17 +36,22 @@ import java.util.WeakHashMap;
  */
 public final class ContractBounties extends DeathSystems.OnDeathSystem {
 
-    /** Contrat : rôle de la cible, sac de prime, clé du message. */
-    record Contract(String targetRole, String bag, String messageKey) {
-    }
+    static final String PORTAL_PREFIX = "Nakasar_Contract_";
 
-    static final Map<String, Contract> CONTRACTS = Map.of(
-            "Nakasar_Contract_Farm", new Contract("Nakasar_Zombie_Abomination", "Nakasar_Bounty_Bag_Farm",
-                    "nakasar_hunters.contract.farm.fulfilled"),
-            "Nakasar_Contract_Pumpkin", new Contract("Nakasar_Giant_Pumpkin", "Nakasar_Bounty_Bag_Pumpkin",
-                    "nakasar_hunters.contract.pumpkin.fulfilled"),
-            "Nakasar_Contract_Garrison", new Contract("Nakasar_Guard_Captain", "Nakasar_Bounty_Bag_Garrison",
-                    "nakasar_hunters.contract.garrison.fulfilled"));
+    /**
+     * Rôle de la cible de chaque contrat, par nom court ({@code Nakasar_Contract_<X>}, {@code CONTRACTS} de
+     * {@code tools/generate_contracts.py}). Le sac ({@code Nakasar_Bounty_Bag_<X>}) et le message
+     * ({@code nakasar_hunters.contract.<x>.fulfilled}) se déduisent du nom court.
+     */
+    static final Map<String, String> TARGETS = Map.of(
+            "Farm", "Nakasar_Zombie_Abomination",
+            "Pumpkin", "Nakasar_Giant_Pumpkin",
+            "Garrison", "Nakasar_Guard_Captain");
+
+    /** Île des contrats ({@code generate_contracts.py}) : sol, rayon, et lieu de la cible où tombe le sac par défaut. */
+    static final double GROUND_Y = 81;
+    static final double ISLAND_RADIUS = 112;
+    static final Vector3d TARGET_SITE = new Vector3d(0, GROUND_Y + 1, -54);
 
     private static final Set<World> PAID = Collections.synchronizedSet(Collections.newSetFromMap(new WeakHashMap<>()));
 
@@ -61,20 +67,31 @@ public final class ContractBounties extends DeathSystems.OnDeathSystem {
         if (portal == null || !portal.exists() || portal.getPortalType() == null) {
             return;
         }
-        Contract contract = CONTRACTS.get(portal.getPortalType().getId());
+        String portalId = portal.getPortalType().getId();
+        if (portalId == null || !portalId.startsWith(PORTAL_PREFIX)) {
+            return;
+        }
+        String contract = portalId.substring(PORTAL_PREFIX.length());
+        String targetRole = TARGETS.get(contract);
         NPCEntity npc = buffer.getComponent(ref, NPCEntity.getComponentType());
         TransformComponent transform = buffer.getComponent(ref, TransformComponent.getComponentType());
-        if (contract == null || npc == null || transform == null || !contract.targetRole().equals(npc.getRoleName())) {
+        if (targetRole == null || npc == null || transform == null || !targetRole.equals(npc.getRoleName())) {
             return;
         }
         World world = store.getExternalData().getWorld();
         if (!PAID.add(world)) {
             return;
         }
-        Vector3d position = new Vector3d(transform.getPosition()).add(0, 1, 0);
-        buffer.addEntities(ItemComponent.generateItemDrops(buffer, List.of(new ItemStack(contract.bag(), 1)),
+        Vector3d position = bagPosition(transform.getPosition());
+        buffer.addEntities(ItemComponent.generateItemDrops(buffer, List.of(new ItemStack("Nakasar_Bounty_Bag_" + contract, 1)),
                 position, new Rotation3f(transform.getRotation())), AddReason.SPAWN);
-        world.sendMessage(Message.translation(contract.messageKey()));
+        world.sendMessage(Message.translation("nakasar_hunters.contract." + contract.toLowerCase(Locale.ROOT) + ".fulfilled"));
+    }
+
+    /** Là où la cible est morte, sauf si elle est tombée de l'île (vide en dessous) : le sac tombe alors chez elle. */
+    static Vector3d bagPosition(Vector3d death) {
+        boolean offIsland = death.y() < GROUND_Y - 8 || Math.hypot(death.x(), death.z()) > ISLAND_RADIUS - 4;
+        return offIsland ? new Vector3d(TARGET_SITE) : new Vector3d(death).add(0, 1, 0);
     }
 
     public static void clearAll() {

@@ -11,6 +11,7 @@ import com.hypixel.hytale.component.dependency.SystemDependency;
 import com.hypixel.hytale.component.query.Query;
 import com.hypixel.hytale.protocol.InteractionType;
 import com.hypixel.hytale.server.core.inventory.InventoryComponent;
+import com.hypixel.hytale.server.core.inventory.ItemStack;
 import com.hypixel.hytale.server.core.modules.entity.damage.Damage;
 import com.hypixel.hytale.server.core.modules.entity.damage.DamageEventSystem;
 import com.hypixel.hytale.server.core.modules.entity.damage.DamageModule;
@@ -19,6 +20,7 @@ import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
 import com.hypixel.hytale.server.npc.entities.NPCEntity;
 import dev.nakasar.hytale.vampires.allegiance.AllegianceDamageFilter;
 import dev.nakasar.hytale.vampires.allegiance.Allegiances;
+import dev.nakasar.hytale.vampires.purifying.PurifyingFireSystem;
 
 import java.util.Set;
 
@@ -43,7 +45,7 @@ public final class SilverDamageSystem extends DamageEventSystem {
     public static final String VAMPIRE_GROUP = "Nakasar_Vampires";
     public static final float MULTIPLIER = 2f;
     /** Argent infusé (établi des chasseurs, niveau 3) : plus fort contre les vampires, et contre les autres morts-vivants. */
-    public static final String UNDEAD_GROUP = "Nakasar_Undead";
+    public static final String UNDEAD_GROUP = PurifyingFireSystem.UNDEAD_GROUP;
     public static final float INFUSED_MULTIPLIER = 2.5f;
     public static final float INFUSED_UNDEAD_MULTIPLIER = 1.5f;
 
@@ -83,10 +85,11 @@ public final class SilverDamageSystem extends DamageEventSystem {
         if (attacker == null || target == null || attacker.equals(target)) {
             return;
         }
-        if (!silverHit(damage, source, attacker, buffer)) {
+        Hit hit = silverHit(damage, source, attacker, buffer);
+        if (hit == Hit.NONE) {
             return;
         }
-        boolean infused = infusedHit(source, attacker, buffer);
+        boolean infused = hit == Hit.INFUSED;
         if (Allegiances.inGroup(target, VAMPIRE_GROUP, buffer)) {
             damage.setAmount(damage.getAmount() * (infused ? INFUSED_MULTIPLIER : MULTIPLIER));
         } else if (infused && Allegiances.inGroup(target, UNDEAD_GROUP, buffer)) {
@@ -94,22 +97,26 @@ public final class SilverDamageSystem extends DamageEventSystem {
         }
     }
 
-    /** À n'appeler qu'après {@link #silverHit} : le coup vient d'une arme (ou d'un projectile) en argent infusé. */
-    private static boolean infusedHit(Damage.EntitySource source, Ref<EntityStore> attacker,
-                                      CommandBuffer<EntityStore> buffer) {
-        if (source instanceof Damage.ProjectileSource projectile) {
-            return SilverWeapons.isInfusedProjectile(projectile.getProjectile());
-        }
-        return SilverWeapons.isInfused(InventoryComponent.getItemInHand(buffer, attacker));
-    }
+    /** Ce qui a porté le coup : rien d'argent, de l'argent, ou de l'argent infusé. */
+    private enum Hit { NONE, SILVER, INFUSED }
 
-    private static boolean silverHit(Damage damage, Damage.EntitySource source, Ref<EntityStore> attacker,
-                                     CommandBuffer<EntityStore> buffer) {
+    private static Hit silverHit(Damage damage, Damage.EntitySource source, Ref<EntityStore> attacker,
+                                 CommandBuffer<EntityStore> buffer) {
         if (source instanceof Damage.ProjectileSource projectile) {
-            return SilverWeapons.isSilverProjectile(projectile.getProjectile());
+            Ref<EntityStore> ref = projectile.getProjectile();
+            if (!SilverWeapons.isSilverProjectile(ref)) {
+                return Hit.NONE;
+            }
+            return SilverWeapons.isInfusedProjectile(ref) ? Hit.INFUSED : Hit.SILVER;
         }
         InteractionType type = damage.getMetaObject(Damage.INTERACTION_TYPE);
-        return type != null && !NOT_WEAPON_ATTACKS.contains(type) && attacker.isValid()
-                && SilverWeapons.isSilver(InventoryComponent.getItemInHand(buffer, attacker));
+        if (type == null || NOT_WEAPON_ATTACKS.contains(type) || !attacker.isValid()) {
+            return Hit.NONE;
+        }
+        ItemStack weapon = InventoryComponent.getItemInHand(buffer, attacker);
+        if (!SilverWeapons.isSilver(weapon)) {
+            return Hit.NONE;
+        }
+        return SilverWeapons.isInfused(weapon) ? Hit.INFUSED : Hit.SILVER;
     }
 }

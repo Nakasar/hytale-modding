@@ -23,7 +23,7 @@ La cible d'un [contrat](contrats.md) lâche, en plus de son butin et de son trop
 |---|---|---|
 | ![icône](/jeu/Icons/Items/Nakasar/Trophies/Bounty_Bag_Farm.png) | **La Bête de la ferme** | 2 à 3 lingots d'argent, 2 à 3 éclats de rune, 1 à 2 crocs de vampire ; 1 chance sur 4 d'une topaze |
 | ![icône](/jeu/Icons/Items/Nakasar/Trophies/Bounty_Bag_Pumpkin.png) | **Le Champ maudit** | 3 à 4 lingots d'argent, 2 à 4 éclats de rune, 1 à 2 crocs de vampire, 2 à 3 essences de citrouille ; 1 chance sur 4 d'un rubis |
-| ![icône](/jeu/Icons/Items/Nakasar/Trophies/Bounty_Bag_Garrison.png) | **La Garnison du Capitaine** | 4 à 6 lingots d'argent, 3 à 5 éclats de rune, 2 à 3 crocs de vampire, 1 topaze ; 1 chance sur 4 de saphirs |
+| ![icône](/jeu/Icons/Items/Nakasar/Trophies/Bounty_Bag_Garrison.png) | **La Garnison du Capitaine** | 4 à 6 lingots d'argent, 3 à 5 éclats de rune, 2 à 3 crocs de vampire, 1 topaze ; 1 chance sur 4 d'un saphir |
 
 ## Le parcours type
 

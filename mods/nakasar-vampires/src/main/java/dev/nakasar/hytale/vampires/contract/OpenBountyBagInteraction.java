@@ -17,6 +17,8 @@ import com.hypixel.hytale.server.core.modules.interaction.interaction.config.Sim
 import com.hypixel.hytale.server.core.modules.item.ItemModule;
 import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
 
+import java.util.List;
+
 /**
  * {@code "Type": "Nakasar_OpenBountyBag"} : ouvre le sac de prime tenu en main (lâché par la cible d'un contrat,
  * {@link ContractBounties}). Le sac est retiré de l'inventaire et sa liste de butin est tirée et donnée au joueur
@@ -50,12 +52,15 @@ public class OpenBountyBagInteraction extends SimpleInstantInteraction {
             context.getState().state = InteractionState.Failed;
             return;
         }
+        // Tirage avant de retirer le sac : une liste introuvable ou vide ne doit pas manger le sac.
+        List<ItemStack> contents = ItemModule.get().getRandomItemDrops(droplist);
         var inventory = InventoryComponent.getCombined(buffer, player, InventoryComponent.HOTBAR_STORAGE_BACKPACK);
-        if (!inventory.removeItemStack(new ItemStack(bag.getItemId(), 1), true, true).succeeded()) {
+        if (contents == null || contents.isEmpty()
+                || !inventory.removeItemStack(new ItemStack(bag.getItemId(), 1), true, true).succeeded()) {
             context.getState().state = InteractionState.Failed;
             return;
         }
-        for (ItemStack stack : ItemModule.get().getRandomItemDrops(droplist)) {
+        for (ItemStack stack : contents) {
             SimpleItemContainer.addOrDropItemStack(buffer, player, inventory, stack);
         }
     }

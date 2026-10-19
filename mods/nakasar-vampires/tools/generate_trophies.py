@@ -166,7 +166,7 @@ BAGS = [
     ("Pumpkin", (214, 110, 30), "Rare",
      [(SILVER_BAR, 3, 4), (SHARD, 2, 4), (FANG, 1, 2), ("Ingredient_Life_Essence_Pumpkin", 2, 3)], [("Rock_Gem_Ruby", 1, 1)]),
     ("Garrison", (60, 70, 150), "Epic",
-     [(SILVER_BAR, 4, 6), (SHARD, 3, 5), (FANG, 2, 3), ("Rock_Gem_Topaz", 1, 1)], [("Rock_Gem_Sapphire", 1, 2)]),
+     [(SILVER_BAR, 4, 6), (SHARD, 3, 5), (FANG, 2, 3), ("Rock_Gem_Topaz", 1, 1)], [("Rock_Gem_Sapphire", 1, 1)]),
 ]
 
 

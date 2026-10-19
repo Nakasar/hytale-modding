@@ -81,7 +81,7 @@ def item(short, tier, inputs):
         "TranslationProperties": {"Name": f"{LANG}.items.{i['item']}.name",
                                   "Description": f"{LANG}.items.{i['item']}.description"},
         "Icon": f"{ICONS}/Contract_{short}.png",
-        "Quality": "Epic" if tier >= 3 else "Rare",
+        "Quality": "Rare",
         # Recette écrite dans l'objet : il hériterait sinon de celle de son parent, s'il en a une.
         "Recipe": {
             "TimeSeconds": 3,

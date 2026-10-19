@@ -22,9 +22,8 @@ public final class SilverWeapons {
     /** L'épée en acier argenté vanilla compte aussi comme une arme en argent. */
     private static final Set<String> VANILLA_SILVER = Set.of("Weapon_Sword_Silversteel");
 
-    private static final Set<Ref<EntityStore>> SILVER_PROJECTILES = ConcurrentHashMap.newKeySet();
-    /** Projectiles tirés avec une arme en argent infusé (tag {@code Material: Infused_Silver}), aussi dans la liste ci-dessus. */
-    private static final Set<Ref<EntityStore>> INFUSED_PROJECTILES = ConcurrentHashMap.newKeySet();
+    /** Projectiles en argent, avec vrai s'ils sont en argent infusé (tag {@code Material: Infused_Silver}). */
+    private static final Map<Ref<EntityStore>, Boolean> SILVER_PROJECTILES = new ConcurrentHashMap<>();
 
     private SilverWeapons() {
     }
@@ -52,29 +51,20 @@ public final class SilverWeapons {
         return materials != null && Arrays.asList(materials).contains(material);
     }
 
-    static void markProjectile(Ref<EntityStore> projectile) {
-        markProjectile(projectile, false);
-    }
-
     static void markProjectile(Ref<EntityStore> projectile, boolean infused) {
-        SILVER_PROJECTILES.removeIf(ref -> !ref.isValid());
-        INFUSED_PROJECTILES.removeIf(ref -> !ref.isValid());
-        SILVER_PROJECTILES.add(projectile);
-        if (infused) {
-            INFUSED_PROJECTILES.add(projectile);
-        }
+        SILVER_PROJECTILES.keySet().removeIf(ref -> !ref.isValid());
+        SILVER_PROJECTILES.put(projectile, infused);
     }
 
     static boolean isInfusedProjectile(Ref<EntityStore> projectile) {
-        return projectile != null && INFUSED_PROJECTILES.contains(projectile);
+        return projectile != null && SILVER_PROJECTILES.getOrDefault(projectile, false);
     }
 
     static boolean isSilverProjectile(Ref<EntityStore> projectile) {
-        return projectile != null && SILVER_PROJECTILES.contains(projectile);
+        return projectile != null && SILVER_PROJECTILES.containsKey(projectile);
     }
 
     public static void clearAll() {
         SILVER_PROJECTILES.clear();
-        INFUSED_PROJECTILES.clear();
     }
 }
