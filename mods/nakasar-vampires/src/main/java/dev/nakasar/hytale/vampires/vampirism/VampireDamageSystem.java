@@ -77,10 +77,7 @@ public final class VampireDamageSystem extends DamageEventSystem {
         Ref<EntityStore> target = chunk.getReferenceTo(index);
         Vampire victim = Vampires.of(target, buffer);
         if (victim != null) {
-            float multiplier = 1f;
-            if (SilverDamageSystem.isSilverHit(damage, buffer)) {
-                multiplier *= SilverDamageSystem.MULTIPLIER;
-            }
+            float multiplier = SilverDamageSystem.vampireMultiplier(damage, buffer);
             if (!isOwnBurn(damage)) {
                 multiplier *= 1f + (SUN_VULNERABILITY - 1f) * victim.sun;
             }

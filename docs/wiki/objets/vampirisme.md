@@ -54,7 +54,7 @@ Protections (elles ne se cumulent pas, la meilleure compte) :
 
 ## Autres faiblesses
 
-- **Argent :** les [armes et flèches en argent](armes-en-argent.md) font **×2** dégâts à un joueur vampire, comme aux vampires du Comté.
+- **Argent :** les [armes et flèches en argent](armes-en-argent.md) font **×2** dégâts à un joueur vampire (**×2,5** en argent infusé), comme aux vampires du Comté.
 - **Feu purificateur :** près d'une [torche ou lanterne purificatrice](feu-purificateur.md) (7 blocs), un vampire perd 1 PV par seconde.
 
 ## Nova de sang {#nova-de-sang}

@@ -77,7 +77,7 @@ Sept runes de sorts, que l'on lance avec les **touches de capacité** en tenant 
 
 ## Runes de chasseur {#runes-de-chasseur}
 
-Deux runes des chasseurs de vampires, gravées sur l'[établi des chasseurs](etabli-des-chasseurs.md) amélioré au niveau 2 (onglet Runes de chasseur). Elles reprennent elles aussi l'apparence de la rune de boule de feu.
+Deux runes des chasseurs de vampires, gravées sur l'[établi des chasseurs](etabli-des-chasseurs.md) (onglet Runes de chasseur) : l'Aura de lumière au niveau 2, l'Invisibilité au niveau 3. Elles reprennent elles aussi l'apparence de la rune de boule de feu.
 
 | Rune | Rareté | Mana | Recharge | Effet |
 |---|---|---|---|---|

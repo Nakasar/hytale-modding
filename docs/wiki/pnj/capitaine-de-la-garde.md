@@ -34,12 +34,15 @@ Les attaques annoncées sont précédées d'une préparation lisible (main tendu
 | Objet | Quantité | Chance |
 |---|---|---|
 | Éclat de rune | 2 à 4 | 100 % |
+| [Insigne du Capitaine](../objets/trophees.md) | 1 | 100 % |
 | Hache de bataille en acier rouillée | 1 | 33 % |
 | Butin habituel du chevalier squelette (`Drop_Skeleton_Knight`) | | |
 
 ## Où le trouver
 
 [Poste de garde de la garnison](../fragment/postes-de-garde.md) : **1** marqueur, avec 6 [gardes squelettes](garde-squelette.md) et 4 cellules de prison. Réapparition : **30 minutes**.
+
+Aussi la cible du [contrat « la Garnison du Capitaine »](../objets/contrats.md).
 
 ## Conseils
 

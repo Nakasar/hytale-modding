@@ -11,6 +11,7 @@ import com.hypixel.hytale.component.system.EntityEventSystem;
 import com.hypixel.hytale.component.system.RefSystem;
 import com.hypixel.hytale.server.core.entity.entities.ProjectileComponent;
 import com.hypixel.hytale.server.core.inventory.InventoryComponent;
+import com.hypixel.hytale.server.core.inventory.ItemStack;
 import com.hypixel.hytale.server.core.modules.projectile.event.ProjectileLaunchEvent;
 import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
 
@@ -55,8 +56,9 @@ public final class SilverProjectileSystems {
             }
             // Toujours consommer la flèche notée, même tirée d'un arc en argent, pour garder la liste en phase.
             boolean silverArrow = ArrowQuiver.fire(shooter);
-            if (silverArrow || SilverWeapons.isSilver(InventoryComponent.getItemInHand(buffer, shooter))) {
-                SilverWeapons.markProjectile(projectile);
+            ItemStack weapon = InventoryComponent.getItemInHand(buffer, shooter);
+            if (silverArrow || SilverWeapons.isSilver(weapon)) {
+                SilverWeapons.markProjectile(projectile, SilverWeapons.isInfused(weapon));
             }
         }
     }
@@ -77,9 +79,9 @@ public final class SilverProjectileSystems {
             ProjectileComponent projectile = buffer.getComponent(ref, ProjectileComponent.getComponentType());
             UUID creator = projectile == null ? null : projectile.getCreatorUuid();
             Ref<EntityStore> shooter = creator == null ? null : store.getExternalData().getRefFromUUID(creator);
-            if (shooter != null && shooter.isValid()
-                    && SilverWeapons.isSilver(InventoryComponent.getItemInHand(buffer, shooter))) {
-                SilverWeapons.markProjectile(ref);
+            ItemStack weapon = shooter != null && shooter.isValid() ? InventoryComponent.getItemInHand(buffer, shooter) : null;
+            if (SilverWeapons.isSilver(weapon)) {
+                SilverWeapons.markProjectile(ref, SilverWeapons.isInfused(weapon));
             }
         }
 

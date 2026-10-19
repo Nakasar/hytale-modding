@@ -143,6 +143,17 @@ Brèches des chasseurs de vampires (monde principal, toutes les 30 min, la nuit)
 /worldevent list                                     # l'évènement Nakasar_Hunter_Breach et son étape en cours
 ```
 
+Voie des chasseurs (trophées, contrats, sacs de prime, argent infusé) :
+
+```text
+/give Nakasar_Hunter_Workbench       # l'établi des chasseurs (3 niveaux, améliorés par des trophées précis)
+/give Nakasar_Trophy_Vampire_Fang 10 # crocs (aussi _Abomination_Heart, _Captain_Insignia, _Pumpkin_Seed)
+/give Nakasar_Bounty_Bag_Farm       # sac de prime, clic droit pour l'ouvrir (aussi _Pumpkin, _Garrison)
+/give Nakasar_Contract_Farm          # contrat, à poser dans un Portal_Device (aussi _Pumpkin, _Garrison)
+/instances spawn Nakasar_Contract_Farm   # ou ouvrir le mini-fragment directement
+/give Weapon_Nakasar_Longsword_Infused   # armes en argent infusé : Weapon_Nakasar_*_Infused
+```
+
 ### Recettes
 
 - **Autel sacrificiel** (`Nakasar_Sacrificial_Altar`) : à l'atelier de base (`Workbench`, onglet
@@ -293,6 +304,16 @@ Mobs (voir [docs/npc-0.7.2.md](docs/npc-0.7.2.md)) :
   (`ScreenEffects/Nakasar/Sun_Glare.png`), la lumière de nuit visible par soi, le battement de cœur quand affamé,
   l'état gardé après reconnexion, la capuche et le voile portés. Le malus de vitesse d'attaque réduit les dégâts
   des coups trop rapprochés (le serveur ne peut pas ralentir l'animation).
+
+- **Voie des chasseurs** (`tools/generate_trophies.py`, `generate_contracts.py`, `generate_infused_weapons.py`) :
+  modèles des trophées et sacs de prime écrits comme l'autel (format `prop`, 32 unités = 1 bloc), à vérifier en main et au
+  sol (taille, à corriger avec `Scale` dans l'objet). L'amélioration de l'établi doit demander le cœur d'Abomination
+  puis la graine et l'insigne. Les contrats doivent ouvrir une petite île de nuit : crypte d'arrivée au centre avec le
+  portail de retour, lieu de la cible au nord (vérifier que la cible apparaît, `IsSpawningNPC` est à vrai). Tuer la
+  cible doit lâcher un seul sac de prime avec le message « Contrat rempli », et le clic droit
+  (`Nakasar_OpenBountyBag`) doit l'ouvrir ; sinon chercher une erreur
+  de `ContractBounties` dans le journal (ressource `PortalWorld` du fragment). Argent infusé : teinte dorée et dégâts
+  ×2,5 contre les vampires, ×1,5 contre les zombies et squelettes.
 
 ## Organisation du dépôt
 

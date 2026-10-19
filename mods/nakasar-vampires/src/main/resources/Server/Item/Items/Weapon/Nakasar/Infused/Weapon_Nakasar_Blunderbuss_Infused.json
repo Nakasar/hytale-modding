@@ -1,0 +1,55 @@
+{
+  "Parent": "Weapon_Nakasar_Blunderbuss_Silver",
+  "TranslationProperties": {
+    "Name": "nakasar_infused.items.Weapon_Nakasar_Blunderbuss_Infused.name",
+    "Description": "nakasar_infused.items.Weapon_Nakasar_Blunderbuss_Infused.description"
+  },
+  "Quality": "Epic",
+  "ItemLevel": 35,
+  "Tags": {
+    "Type": [
+      "Weapon"
+    ],
+    "Family": [
+      "Gun"
+    ],
+    "Material": [
+      "Silver",
+      "Infused_Silver"
+    ]
+  },
+  "Recipe": {
+    "TimeSeconds": 4,
+    "KnowledgeRequired": false,
+    "Input": [
+      {
+        "ItemId": "Weapon_Nakasar_Blunderbuss_Silver",
+        "Quantity": 1
+      },
+      {
+        "ItemId": "Ingredient_Bar_Silver",
+        "Quantity": 2
+      },
+      {
+        "ItemId": "Nakasar_Trophy_Vampire_Fang",
+        "Quantity": 2
+      },
+      {
+        "ItemId": "Rock_Gem_Topaz",
+        "Quantity": 1
+      }
+    ],
+    "BenchRequirement": [
+      {
+        "Type": "Crafting",
+        "Id": "Nakasar_Hunter_Workbench",
+        "Categories": [
+          "Nakasar_Hunter_Weapons"
+        ],
+        "RequiredTierLevel": 3
+      }
+    ]
+  },
+  "Texture": "Items/Weapons/Nakasar/Infused/Blunderbuss_Infused_Texture.png",
+  "Icon": "Icons/Items/Nakasar/Infused/Weapon_Nakasar_Blunderbuss_Infused.png"
+}
