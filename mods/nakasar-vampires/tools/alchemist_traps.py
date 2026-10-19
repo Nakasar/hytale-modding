@@ -28,6 +28,8 @@ Les pièges :
 - Salle des Transmutations : les quadrants se transmutent à tour de rôle (feu, glace, acide, foudre), les croix d'or du
   sol restent sûres ; allumer le foyer d'un quadrant l'apaise mais en fait sortir un élémentaire ; les quatre foyers
   allumés dissolvent le sceau de l'escalier du laboratoire ;
+- Laboratoire (combat de la Chimère, tower.ChimeraSystem) : la cuve crache de l'acide sur des cercles annoncés ; le
+  sceau de la porte nord se dissout à la mort de la Chimère ;
 - Escalier des vents (s'éveille quand on franchit la porte nord du laboratoire) : flammes alchimiques qui balaient les
   marches, rafales qui plaquent contre le mur de la tour (jamais vers le vide), foudre sur des cercles annoncés.
 
@@ -549,12 +551,45 @@ class Traps:
             tags("TAG_ADDED", "Reset", "Off", 1.0)],
             [tag_is("TAG_ADDED", "Reset", "On")], volume_tags={"Reset": "Off"})
 
+    def chimera(self):
+        """Combat de la Chimère du laboratoire (étape 6). Le Java (tower.ChimeraSystem) pose une étiquette sur ces
+        volumes, ids dans TowerLayout.java (`chimera_ids`) :
+        - Chimera_Seal, Chimera=On à la mort de la Chimère : le sceau de la porte nord se dissout ;
+        - Chimera_Acid, Cast=On à intervalles pendant le combat (plus souvent quand elle se régénère dans la cuve) :
+          la cuve crache de l'acide sur environ un tiers des cercles du laboratoire, chacun annoncé au sol."""
+        g = self.group("Tower_Chimera", 4569930)
+        c = self.t["chimera"]
+        cx, y, cz = c["vat"]
+        self.gate("Chimera_Seal", g, c["seal"], ["Chimera"], [title("TAG_ADDED", "chimera")])
+        warning = "Dungeon_Goblin_Mace_Slam_Warning"
+        self.add("Chimera_Acid", g, self.foot(cx, y, cz), cylinder(at.R_IN, 8), [
+            sound("TAG_ADDED", "SFX_Emit_Goblin_Liquid_Bubbling_Steam_Bursts"),
+            vfx("TAG_ADDED", "Dungeon_Goblin_Toxic_Water", offset=(0, 0.5, 0), scale=2.0),
+            signal("TAG_ADDED", "Acid", "Chimera_Acid", "Zone", radius=60.0),
+            tags("TAG_ADDED", "Cast", "Off", 3.0)],
+            [tag_is("TAG_ADDED", "Cast", "On")], volume_tags={"Cast": "Off"})
+        n = 0
+        for r, count in ((12, 8), (16.5, 11), (21, 14), (25.5, 17)):
+            for k in range(count):
+                a = 360 * k / count + 23 * r
+                x, z = cx + r * math.cos(math.radians(a)), cz + r * math.sin(math.radians(a))
+                wx, wy, wz = self.world(x, y, z)
+                n += 1
+                self.pulse(f"Chimera_Acid_{n}", g, (wx + 0.5, wy, wz + 0.5), cylinder(1.8, 3), "Acid", "Chimera_Acid",
+                           "Zone", warn=1.8, active=0.6,
+                           warn_fx=[vfx("", warning, offset=(0, 0.1, 0), scale=1.3, duration=1.8),
+                                    vfx("", "Dungeon_Goblin_Spores_Green", offset=(0, 0.2, 0))],
+                           hit_fx=[vfx("", "Impact_Poison", offset=(0, 0.5, 0)), vfx("", "Effect_Poison"),
+                                   sound("", "SFX_Emit_Goblin_Liquid_Bubbling_Steam_Bursts")],
+                           hits=[damage(10, 1.0), status("Poison_T1", 4.0)], odds=0.35)
+
     def build(self):
         self.hall()
         self.leaks()
         self.greenhouse()
         self.library()
         self.codex()
+        self.chimera()
         self.transmutation()
         self.wind_stair()
         check_ids(self.volumes)
@@ -610,6 +645,11 @@ def codex_ids():
     return {"seal": vid("Codex_Seal"), "arena": vid("Codex_Arena"), "fire": vid("Codex_Fire"),
             "rain": vid("Codex_Rain"), "frost": [vid(f"Codex_Frost_{k}") for k in range(len(at.LECTERN_ANGLES))],
             "collapse": [vid(f"Codex_Collapse_{i}") for i in range(len(at.COLLAPSE_ARCS))]}
+
+
+def chimera_ids():
+    """Ids des volumes que tower.ChimeraSystem étiquette (TowerLayout.java)."""
+    return {"seal": vid("Chimera_Seal"), "acid": vid("Chimera_Acid")}
 
 
 def trap_volumes(tower, origin):

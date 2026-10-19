@@ -374,6 +374,18 @@ Mobs (voir [docs/npc-0.7.2.md](docs/npc-0.7.2.md)) :
   Codex (sans usage pour l'instant). À vérifier en jeu : le modèle et ses animations (Pages, Chapter, vol), le sens des
   marques du cône, l'apparition des livres sur les pupitres, l'étourdissement, les zones de sorts et d'éboulement, la
   remise à zéro et le sceau.
+- **Tour de l'Alchimiste, la Chimère du laboratoire** (`tools/generate_chimera_models.py`, rôles dans
+  `generate_tower_mobs.py`, arène dans `alchemist_tower.Tower.chimera`, acide dans `alchemist_traps.Traps.chimera`,
+  combat dans `tower/ChimeraSystem.java`) : second mini-boss, quadrupède rapiécé (patte de golem de plomb, queue de
+  serpent, tubes de liquide vert dans le dos), barre de boss. Morsure, poing de golem annoncé (zone de 4,5 blocs),
+  fauchage de la queue annoncé (4 blocs, poison). Toutes les minutes, et une fois sous la moitié de sa vie, elle plonge
+  dans la cuve centrale : invulnérable, elle se régénère 6 s plus 4 s par étagère de réactifs encore debout, et chaque
+  étagère envoie un homoncule porteur toutes les 4 s qui la soigne s'il atteint la cuve. Casser les étagères raccourcit
+  donc ses régénérations, tuer les porteurs les affaiblit. La cuve crache de l'acide sur des cercles annoncés pendant
+  tout le combat. Remise à zéro si le groupe meurt ou quitte le laboratoire 8 s. Sa mort dissout le sceau de la porte
+  nord (vers l'Escalier des vents) ; trophée Cœur de chimère (sans usage pour l'instant). Le laboratoire n'a plus
+  d'autres mobs. À vérifier en jeu : le modèle et ses animations (marche, morsure, poing, queue), la plongée et la
+  sortie de la cuve, la marche des porteurs vers la cuve, les étagères (immobiles, cassables), l'acide, le sceau.
 
 ## Organisation du dépôt
 

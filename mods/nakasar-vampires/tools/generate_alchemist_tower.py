@@ -745,8 +745,9 @@ def checkpoint_volumes(tower, ruins_statue, ruins_spot):
 # --- Java : positions de la tour ---------------------------------------------------------------
 
 def tower_layout(tower, ruins_spot):
-    """TowerLayout.java : point d'arrivée, points de contrôle et arène du Codex vivant (pupitres, volumes que
-    tower.CodexSystem étiquette), en coordonnées du monde."""
+    """TowerLayout.java : point d'arrivée, points de contrôle, arènes du Codex vivant (pupitres, volumes que
+    tower.CodexSystem étiquette) et de la Chimère (cuve, étagères, sorties, volumes de tower.ChimeraSystem), en
+    coordonnées du monde."""
     ox, oy, oz = TOWER_CENTER
     rx, rz = arch.RUINS["center"]
     spots = [(ruins_spot[0] + rx, ruins_spot[1] + GROUND_Y, ruins_spot[2] + rz)]
@@ -757,6 +758,11 @@ def tower_layout(tower, ruins_spot):
     lecterns = ",\n".join(f"            new Vector3d({x + ox + 0.5}, {y + oy + 1}, {z + oz + 0.5})"
                            for x, y, z in codex["lecterns"])
     ids = alchemist_traps.codex_ids()
+    chimera = tower.trap["chimera"]
+    vx, vy, vz = chimera["vat"]
+    shelves = ",\n".join(f"            new Vector3d({x + ox + 0.5}, {y + oy}, {z + oz + 0.5})" for x, y, z in chimera["shelves"])
+    exits = ",\n".join(f"            new Vector3d({x + ox + 0.5}, {y + oy}, {z + oz + 0.5})" for x, y, z in chimera["exits"])
+    chimera_ids = alchemist_traps.chimera_ids()
 
     def strings(values):
         return ", ".join(f'"{v}"' for v in values)
@@ -793,6 +799,23 @@ public final class TowerLayout {{
     public static final String[] CODEX_FROST = {{{strings(ids['frost'])}}};
     /** Pans d'étagères qui s'effondrent (Collapse=On). */
     public static final String[] CODEX_COLLAPSE = {{{strings(ids['collapse'])}}};
+
+    /** Chimère du laboratoire : centre de la cuve, au niveau du sol de la salle (la Chimère s'y régénère). */
+    public static final Vector3d CHIMERA_VAT = new Vector3d({vx + ox + 0.5}, {vy + oy}, {vz + oz + 0.5});
+    /** Rayon de l'arène de la Chimère (intérieur de la tour) et rayon intérieur de la margelle de la cuve. */
+    public static final double CHIMERA_ARENA_RADIUS = {alchemist_tower.R_IN};
+    public static final double CHIMERA_VAT_RADIUS = 7.5;
+    /** Étagères de réactifs (PNJ posés par ChimeraSystem), au sol. */
+    public static final Vector3d[] CHIMERA_SHELVES = {{
+{shelves}
+    }};
+    /** Cases libres autour de la cuve où la Chimère ressort après sa régénération. */
+    public static final Vector3d[] CHIMERA_EXITS = {{
+{exits}
+    }};
+    /** Volumes (tools/alchemist_traps.py, Traps.chimera) : sceau de la porte nord (Chimera=On), acide de la cuve (Cast=On). */
+    public static final String CHIMERA_SEAL = "{chimera_ids['seal']}";
+    public static final String CHIMERA_ACID = "{chimera_ids['acid']}";
 
     private TowerLayout() {{
     }}

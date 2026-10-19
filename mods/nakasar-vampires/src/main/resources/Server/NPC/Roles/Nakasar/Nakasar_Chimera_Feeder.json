@@ -1,0 +1,52 @@
+{
+  "$Comment": "Homoncule porteur : part d'une étagère de réactifs pendant la régénération de la Chimère et court vers la cuve (son point d'attache, fixé par ChimeraSystem) ; il ne se bat pas. Arrivé à la margelle, il verse ses réactifs (ChimeraSystem le retire et soigne la Chimère). Généré par tools/generate_tower_mobs.py.",
+  "Type": "Generic",
+  "Appearance": "Nakasar_Homunculus",
+  "NameTranslationKey": "nakasar_alchemist.npc.Chimera_Feeder.name",
+  "MaxHealth": 20,
+  "StartState": "Idle",
+  "DefaultPlayerAttitude": "Neutral",
+  "DefaultNPCAttitude": "Ignore",
+  "DisableDamageGroups": [
+    "Nakasar_Alchemist_Creations"
+  ],
+  "MotionControllerList": [
+    {
+      "Type": "Walk",
+      "MaxWalkSpeed": 5.0,
+      "Gravity": 10,
+      "MaxFallSpeed": 10,
+      "Acceleration": 10,
+      "JumpHeight": 1.0
+    }
+  ],
+  "KnockbackScale": 1.2,
+  "DeathAnimationTime": 0.8,
+  "Instructions": [
+    {
+      "Sensor": {
+        "Type": "State",
+        "State": "Idle"
+      },
+      "Instructions": [
+        {
+          "$Comment": "Court vers la cuve.",
+          "Sensor": {
+            "Type": "Leash",
+            "Range": 0.8
+          },
+          "BodyMotion": {
+            "Type": "Seek",
+            "RelativeSpeed": 1.0,
+            "SlowDownDistance": 1.5,
+            "StopDistance": 0.5,
+            "UsePathfinder": true
+          }
+        },
+        {
+          "Actions": []
+        }
+      ]
+    }
+  ]
+}

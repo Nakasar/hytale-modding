@@ -46,6 +46,7 @@ import dev.nakasar.hytale.vampires.silver.SilverDamageSystem;
 import dev.nakasar.hytale.vampires.silver.SilverProjectileSystems;
 import dev.nakasar.hytale.vampires.silver.SilverWeapons;
 import dev.nakasar.hytale.vampires.silver.TakeArrowInteraction;
+import dev.nakasar.hytale.vampires.tower.ChimeraSystem;
 import dev.nakasar.hytale.vampires.tower.CodexChapterInteraction;
 import dev.nakasar.hytale.vampires.tower.CodexSystem;
 import dev.nakasar.hytale.vampires.tower.TowerFallSystem;
@@ -112,6 +113,8 @@ import dev.nakasar.hytale.vampires.vampirism.VampireSystem;
  *       d'apparition du monde, que les statues de contrôle de Deepworks déplacent (volumes de l'instance).</li>
  *   <li>{@code Nakasar_CodexChapter} ({@link CodexSystem}) : combat du Codex vivant (chapitres à interrompre,
  *       effondrement des rayonnages, remise à zéro, sceau ouvert à sa mort).</li>
+ *   <li>{@link ChimeraSystem} : combat de la Chimère du laboratoire (régénération dans la cuve nourrie par les
+ *       homoncules porteurs et les étagères de réactifs, acide de la cuve, remise à zéro, sceau ouvert à sa mort).</li>
  * </ul>
  */
 public final class VampiresPlugin extends JavaPlugin {
@@ -207,6 +210,7 @@ public final class VampiresPlugin extends JavaPlugin {
         systems.registerSystem(new ContractBounties());
         systems.registerSystem(new TowerFallSystem());
         systems.registerSystem(new CodexSystem());
+        systems.registerSystem(new ChimeraSystem());
 
         getLogger().atInfo().log("Nakasar Vampires : 19 types d'interaction (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s), systèmes des camps, de l'argent, du feu purificateur, de la voie occulte, de la brèche, des contrats des chasseurs et de la Tour de l'Alchimiste enregistrés",
                 TeleportCasterToImpactInteraction.TYPE_ID, DominateInteraction.TYPE_ID, RootNpcInteraction.TYPE_ID,
@@ -230,5 +234,6 @@ public final class VampiresPlugin extends JavaPlugin {
         ContractBounties.clearAll();
         ClaimBreachContractInteraction.clearAll();
         CodexSystem.clearAll();
+        ChimeraSystem.clearAll();
     }
 }

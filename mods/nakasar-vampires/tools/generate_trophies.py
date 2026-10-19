@@ -10,7 +10,8 @@ Trophées (lâchés par les créatures du Comté, voir Server/Drops/Nakasar/Trop
   par élite tuée. Les améliorations de l'établi des chasseurs en demandent de précis, de l'élite la
   plus facile à la plus dure : le cœur pour le niveau 2, la graine et l'insigne pour le niveau 3 ;
 - cœur runique de l'armure enchantée, linceul du Spectre, fermoir du Codex vivant (gardien de la bibliothèque
-  de la Tour de l'Alchimiste) : toujours, un par élite tuée (aucune recette ne les demande encore).
+  de la Tour de l'Alchimiste), cœur de chimère (Chimère du laboratoire) : toujours, un par élite tuée (aucune
+  recette ne les demande encore).
 
 Sacs de prime (un par contrat, voir generate_contracts.py) : la cible d'un contrat en lâche un à sa
 mort (ContractBounties, Java), un seul pour tout le groupe. Utilisé (clic droit), le sac disparaît et
@@ -45,6 +46,7 @@ SEED = "Nakasar_Trophy_Pumpkin_Seed"
 CORE = "Nakasar_Trophy_Armor_Core"
 SHROUD = "Nakasar_Trophy_Spectral_Shroud"
 CLASP = "Nakasar_Trophy_Codex_Clasp"
+CHIMERA_HEART = "Nakasar_Trophy_Chimera_Heart"
 SILVER_BAR = "Ingredient_Bar_Silver"
 SHARD = "Ingredient_Rune_Shard"
 
@@ -71,6 +73,8 @@ LEATHER = (124, 84, 52)
 LEATHER_DARK = (88, 58, 38)
 CODEX_LEATHER = (34, 26, 30)
 CODEX_EYE = (200, 120, 255)
+CHIMERA_GREEN = (150, 255, 120)
+CHIMERA_SKIN = (150, 140, 136)
 
 
 def flat(color, top=None):
@@ -172,6 +176,17 @@ MODELS_DEF = {
         ("Chain_A", (-5.5, 7, 0), (2, 2, 1), 0, flat(IRON), "flat"),
         ("Chain_B", (-7, 5.5, 0), (2, 2, 1), 0, flat(IRON), "flat"),
     ], (0, 6, 0), 11.0),
+    CHIMERA_HEART: ("Epic", 30, 10, [
+        ("Core", (0, 6, 0), (8, 8, 7), 0, smooth(FLESH), "flat"),
+        ("Patch", (-2, 8, 3.6), (4, 4, 1), 0, smooth(CHIMERA_SKIN), "flat"),
+        ("Lobe_L", (-2.5, 10.5, 0), (4, 3, 5), 0, smooth(FLESH_DARK), "flat"),
+        ("Lobe_R", (2.5, 10.5, 0), (4, 3, 5), 0, smooth(CHIMERA_SKIN), "flat"),
+        ("Point", (0.5, 1.5, 0), (4, 2, 4), 0, smooth(FLESH_DARK), "flat"),
+        ("Stitch_A", (0, 6, 3.6), (7, 1, 1), 0, flat((30, 20, 18)), "flat"),
+        ("Stitch_B", (-3.6, 6, 0), (1, 6, 1), 0, flat((30, 20, 18)), "flat"),
+        ("Tube", (2, 13.5, -1), (2, 5, 2), 0, glow(CHIMERA_GREEN), "fullbright"),
+        ("Tube_Cap", (2, 16.5, -1), (3, 1, 3), 0, flat(GOLD), "flat"),
+    ], (0, 8, 0), 11.0),
 }
 
 
@@ -248,6 +263,7 @@ def drops():
         CORE: {"Container": single(CORE)},
         SHROUD: {"Container": single(SHROUD)},
         CLASP: {"Container": single(CLASP)},
+        CHIMERA_HEART: {"Container": single(CHIMERA_HEART)},
     }
 
 

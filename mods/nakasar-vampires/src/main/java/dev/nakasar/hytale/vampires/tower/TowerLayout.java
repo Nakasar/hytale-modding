@@ -38,6 +38,31 @@ public final class TowerLayout {
     /** Pans d'étagères qui s'effondrent (Collapse=On). */
     public static final String[] CODEX_COLLAPSE = {"00f64808-4e2c-5a2a-9ad9-582cfaf84967", "7d02473a-a339-5dd9-b38c-332bc146f65c", "11b6c4b0-f282-5f81-9450-bbc71005b7cc", "8f701448-8141-5268-b334-60a5f0d7124f", "d9cfadb3-7f39-5fa4-8be5-4a00213450b8"};
 
+    /** Chimère du laboratoire : centre de la cuve, au niveau du sol de la salle (la Chimère s'y régénère). */
+    public static final Vector3d CHIMERA_VAT = new Vector3d(0.5, 184, -439.5);
+    /** Rayon de l'arène de la Chimère (intérieur de la tour) et rayon intérieur de la margelle de la cuve. */
+    public static final double CHIMERA_ARENA_RADIUS = 29.5;
+    public static final double CHIMERA_VAT_RADIUS = 7.5;
+    /** Étagères de réactifs (PNJ posés par ChimeraSystem), au sol. */
+    public static final Vector3d[] CHIMERA_SHELVES = {
+            new Vector3d(20.5, 184, -432.5),
+            new Vector3d(-6.5, 184, -419.5),
+            new Vector3d(-20.5, 184, -437.5),
+            new Vector3d(-11.5, 184, -456.5)
+    };
+    /** Cases libres autour de la cuve où la Chimère ressort après sa régénération. */
+    public static final Vector3d[] CHIMERA_EXITS = {
+            new Vector3d(11.5, 184, -433.5),
+            new Vector3d(-5.5, 184, -428.5),
+            new Vector3d(-10.5, 184, -433.5),
+            new Vector3d(-10.5, 184, -445.5),
+            new Vector3d(-5.5, 184, -450.5),
+            new Vector3d(11.5, 184, -445.5)
+    };
+    /** Volumes (tools/alchemist_traps.py, Traps.chimera) : sceau de la porte nord (Chimera=On), acide de la cuve (Cast=On). */
+    public static final String CHIMERA_SEAL = "ebf90f00-a380-54f6-8309-d361a492b8ee";
+    public static final String CHIMERA_ACID = "72e78f01-8a21-5fd0-9ad7-435fd0d949e4";
+
     private TowerLayout() {
     }
 }

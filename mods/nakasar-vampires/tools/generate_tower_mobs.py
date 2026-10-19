@@ -25,7 +25,11 @@ Nakasar_Alchemist_Creations). Toutes sont des rôles Generic du mod, sur des mod
   rotonde, lance des nuées de pages tranchantes dans un cône annoncé au sol et ouvre un chapitre toutes les 28 à 32 s
   (interaction Java Nakasar_CodexChapter, combat suivi par tower/CodexSystem.java) : un livre de chapitre (rôles
   Nakasar_Codex_Chapter_<sort>, sans marqueur) apparaît sur un pupitre ; le détruire avant la fin de l'incantation
-  étourdit le Codex (Nakasar_Codex_Stunned, dégâts subis +50 %), sinon le sort part (volumes de l'instance).
+  étourdit le Codex (Nakasar_Codex_Stunned, dégâts subis +50 %), sinon le sort part (volumes de l'instance) ;
+- Chimère du laboratoire (mini-boss, modèle tools/generate_chimera_models.py, barre de boss) : morsure, poing de golem
+  annoncé, fauchage de la queue annoncé ; sa régénération dans la cuve, les étagères de réactifs
+  (Nakasar_Chimera_Reagent_Shelf) et les homoncules porteurs (Nakasar_Chimera_Feeder), posés en jeu sans marqueur,
+  sont menés par tower/ChimeraSystem.java.
 
 Réactifs (les trois principes) : Sel philosophal (golems, fioles, gargouilles), Soufre ardent (élémentaires de feu et
 de foudre), Mercure vif (homoncules, apprentis) ; les élémentaires lâchent aussi les essences vanilla de leur élément.
@@ -84,8 +88,13 @@ ROOT = "Nakasar_Elemental_Root"
 CRYSTAL_GOLEM = "Nakasar_Crystal_Golem"
 GARGOYLE = "Nakasar_Tower_Gargoyle"
 CODEX = "Nakasar_Living_Codex"
+CHIMERA = "Nakasar_Lab_Chimera"
 ALL = [HOMUNCULUS, GOLEM, FLASK_POISON, FLASK_FIRE, APPRENTICE, VINE, SNAPDRAGON, FIRE, FROST, THUNDER, ROOT,
-       CRYSTAL_GOLEM, GARGOYLE, CODEX]
+       CRYSTAL_GOLEM, GARGOYLE, CODEX, CHIMERA]
+# Étagères de réactifs et homoncules porteurs de la Chimère : posés par ChimeraSystem (Java), jamais par un marqueur.
+SHELF = "Nakasar_Chimera_Reagent_Shelf"
+FEEDER = "Nakasar_Chimera_Feeder"
+HEART_DROP = "Nakasar_Drop_Trophy_Chimera_Heart"
 # Livres de chapitre du Codex : apparus par CodexSystem (Java) sur un pupitre, jamais par un marqueur.
 CHAPTERS = [f"Nakasar_Codex_Chapter_{spell}" for spell in ("Fire", "Frost", "Rain")]
 CODEX_STUNNED = "Nakasar_Codex_Stunned"
@@ -102,6 +111,8 @@ SURGE_RADIUS = 6.0
 PAGES_RANGE = 7.0
 PAGES_ARC = 70
 CHAPTER_CAST = 6.0
+CHIMERA_SLAM_RADIUS = 4.5
+CHIMERA_TAIL_RADIUS = 4.0
 RESPAWN = 7200  # une instance vit bien moins longtemps : les mobs tués ne reviennent pas
 
 timer = ge.timer
@@ -399,6 +410,46 @@ def codex_chapter():
     }
 
 
+def chimera_slam():
+    return {
+        "$Comment": f"Poing de golem de la Chimère, annoncé : elle se cabre 1,15 s, le poing levé, et une zone rouge de {CHIMERA_SLAM_RADIUS:g} blocs se charge au sol autour d'elle ; puis le poing s'abat (28 dégâts, ralentit 2 s, sans recul).",
+        "Type": "Serial",
+        "Interactions": [
+            {"Type": "ClearEntityEffect", "Entity": "User", "EntityEffectId": "Hit_Interrupt_Eligible"},
+            {"Type": "ApplyEffect", "EffectId": "Nakasar_Elite_Rooted"},
+            {"Type": "Simple", "RunTime": 1.15, "Effects": {
+                "ItemPlayerAnimationsId": CHIMERA, "ItemAnimationId": "Slam",
+                "WorldSoundEventId": "SFX_Spear_Throw_Charge", "Particles": [warning(CHIMERA_SLAM_RADIUS, 1.15)]}},
+            {"Type": "Selector", "RunTime": 0.15, "Effects": {
+                "WorldSoundEventId": "SFX_Goblin_Feastmaster_Slam",
+                "Particles": [ground_particles("Stick_Slam_Ground_Large", 1.2)]},
+             "Selector": {"Id": "AOECircle", "Range": CHIMERA_SLAM_RADIUS},
+             "HitEntity": {"Interactions": damage(28, sound="SFX_Mace_T2_Signature_Impact",
+                                                  extra=[effect_on_target("Slow", 2)])}},
+            {"Type": "Simple", "RunTime": 0.45},
+        ],
+    }
+
+
+def chimera_tail():
+    return {
+        "$Comment": f"Fauchage de la queue de serpent, annoncé : elle se ramasse 0,75 s, la queue dressée, et une zone rouge de {CHIMERA_TAIL_RADIUS:g} blocs se charge autour d'elle ; puis elle tourne sur elle-même et la queue fauche tout autour (14 dégâts, empoisonne 4 s, sans recul).",
+        "Type": "Serial",
+        "Interactions": [
+            {"Type": "ClearEntityEffect", "Entity": "User", "EntityEffectId": "Hit_Interrupt_Eligible"},
+            {"Type": "ApplyEffect", "EffectId": "Nakasar_Elite_Rooted"},
+            {"Type": "Simple", "RunTime": 0.75, "Effects": {
+                "ItemPlayerAnimationsId": CHIMERA, "ItemAnimationId": "Tail",
+                "WorldSoundEventId": "SFX_Spirit_Root_Alerted", "Particles": [warning(CHIMERA_TAIL_RADIUS, 0.75)]}},
+            {"Type": "Selector", "RunTime": 0.2, "Effects": {"WorldSoundEventId": "SFX_Light_Melee_T2_Swing"},
+             "Selector": {"Id": "AOECircle", "Range": CHIMERA_TAIL_RADIUS},
+             "HitEntity": {"Interactions": damage(14, particles="Impact_Sword_Basic_Stronk",
+                                                  extra=[effect_on_target("Poison_T1", 4)])}},
+            {"Type": "Simple", "RunTime": 0.3},
+        ],
+    }
+
+
 def interactions():
     return {
         "Nakasar_NPC_Homunculus_Bite": swing("Morsure d'homoncule (8 dégâts).", "Hound_Bleached_Default", "Bite",
@@ -435,6 +486,10 @@ def interactions():
         "Nakasar_NPC_Gargoyle_Dive": gargoyle_dive(),
         "Nakasar_NPC_Codex_Pages": codex_pages(),
         "Nakasar_NPC_Codex_Chapter": codex_chapter(),
+        "Nakasar_NPC_Chimera_Bite": swing("Morsure de la Chimère (20 dégâts) : elle se jette gueule ouverte.", CHIMERA, "Bite",
+                                          0.45, 20, end=3.8, length=80, yaw=40, sound="SFX_Unarmed_Swing"),
+        "Nakasar_NPC_Chimera_Slam": chimera_slam(),
+        "Nakasar_NPC_Chimera_Tail": chimera_tail(),
     }
 
 
@@ -460,6 +515,9 @@ def roots():
         "Root_Nakasar_NPC_Gargoyle_Dive": melee_tag("Nakasar_NPC_Gargoyle_Dive"),
         "Root_Nakasar_NPC_Codex_Pages": melee_tag("Nakasar_NPC_Codex_Pages"),
         "Root_Nakasar_NPC_Codex_Chapter": melee_tag("Nakasar_NPC_Codex_Chapter"),
+        "Root_Nakasar_NPC_Chimera_Bite": melee_tag("Nakasar_NPC_Chimera_Bite"),
+        "Root_Nakasar_NPC_Chimera_Slam": melee_tag("Nakasar_NPC_Chimera_Slam"),
+        "Root_Nakasar_NPC_Chimera_Tail": melee_tag("Nakasar_NPC_Chimera_Tail"),
     }
 
 
@@ -640,6 +698,52 @@ def chapter_role(role_id):
                 DeathParticles="Explosion_Medium")
 
 
+def chimera_role():
+    return role(CHIMERA, "Chimère du laboratoire, second mini-boss de la Tour de l'Alchimiste, avec barre de vie de boss : morsure, poing de golem annoncé toutes les 9 à 12 s, fauchage de la queue annoncé toutes les 10 à 13 s. ChimeraSystem (Java) la fait plonger dans la cuve pour se régénérer (toutes les minutes et sous la moitié de sa vie), mène les étagères de réactifs et les homoncules porteurs, l'acide de la cuve et la remise à zéro.",
+                CHIMERA, 1800, [
+                    ge.timed_attack("Slam", "Root_Nakasar_NPC_Chimera_Slam", rng=CHIMERA_SLAM_RADIUS - 1,
+                                    comment="Poing de golem annoncé quand la cible est à portée."),
+                    ge.timed_attack("Tail", "Root_Nakasar_NPC_Chimera_Tail", rng=CHIMERA_TAIL_RADIUS - 0.5,
+                                    comment="Fauchage de la queue annoncé quand la cible est tout près."),
+                    melee("Root_Nakasar_NPC_Chimera_Bite", 3.4, (0.6, 1.0), turn=1.2),
+                    chase(36, speed=1.0, stop=2.6)],
+                walk(4.5, jump=0.5), drop="Nakasar_Drop_Lab_Chimera", sight=16, leash=40,
+                timers=[timer("Slam", (4, 6), (9, 12)), timer("Tail", (6, 8), (10, 13))], heal=True,
+                KnockbackScale=0.1, DeathAnimationTime=1.8, DeathParticles="Explosion_Medium")
+
+
+def shelf_role():
+    return role(SHELF, "Étagère de réactifs du laboratoire : posée par ChimeraSystem (gelée, immobile). Tant qu'elle tient, un homoncule porteur en part pendant chaque régénération de la Chimère, qui dure aussi plus longtemps ; la casser raccourcit la régénération.",
+                SHELF, 60, [], walk(0.1), sight=0.5, los=False, home=False,
+                DefaultPlayerAttitude="Neutral", KnockbackScale=0, DeathAnimationTime=0.8,
+                DeathParticles="Block_Break_Dust")
+
+
+def feeder_role():
+    return {
+        "$Comment": "Homoncule porteur : part d'une étagère de réactifs pendant la régénération de la Chimère et court vers la cuve (son point d'attache, fixé par ChimeraSystem) ; il ne se bat pas. Arrivé à la margelle, il verse ses réactifs (ChimeraSystem le retire et soigne la Chimère). Généré par tools/generate_tower_mobs.py.",
+        "Type": "Generic",
+        "Appearance": HOMUNCULUS,
+        "NameTranslationKey": name_key(FEEDER),
+        "MaxHealth": 20,
+        "StartState": "Idle",
+        "DefaultPlayerAttitude": "Neutral",
+        "DefaultNPCAttitude": "Ignore",
+        "DisableDamageGroups": [CREATIONS],
+        "MotionControllerList": walk(5.0),
+        "KnockbackScale": 1.2,
+        "DeathAnimationTime": 0.8,
+        "Instructions": [
+            {"Sensor": {"Type": "State", "State": "Idle"}, "Instructions": [
+                {"$Comment": "Court vers la cuve.",
+                 "Sensor": {"Type": "Leash", "Range": 0.8},
+                 "BodyMotion": {"Type": "Seek", "RelativeSpeed": 1.0, "SlowDownDistance": 1.5, "StopDistance": 0.5,
+                                "UsePathfinder": True}},
+                {"Actions": []}]},
+        ],
+    }
+
+
 def codex_stunned_effect():
     return {
         "$Comment": "Codex vivant interrompu (livre de chapitre détruit à temps) : étourdi (CodexSystem gèle aussi son IA) et 50 % de dégâts en plus, comme le Festoyeur gobelin (Goblin_Feastmaster_Stunned).",
@@ -670,6 +774,9 @@ def roles():
         GARGOYLE: gargoyle_role(),
         CODEX: codex_role(),
         **{chapter: chapter_role(chapter) for chapter in CHAPTERS},
+        CHIMERA: chimera_role(),
+        SHELF: shelf_role(),
+        FEEDER: feeder_role(),
     }
 
 
@@ -891,13 +998,17 @@ def drops():
             "Codex vivant (boss de la bibliothèque) : son fermoir (trophée) et les trois principes.",
             {"Type": "Droplist", "DroplistId": CLASP_DROP},
             single(MERCURY, 2, 3), single(SALT, 2, 3), single(SULFUR, 1, 2)),
+        "Nakasar_Drop_Lab_Chimera": multiple(
+            "Chimère du laboratoire (mini-boss) : son cœur (trophée), les trois principes et de l'essence de vie.",
+            {"Type": "Droplist", "DroplistId": HEART_DROP},
+            single(SALT, 2, 3), single(SULFUR, 2, 3), single(MERCURY, 2, 3), single("Ingredient_Life_Essence", 1, 2)),
     }
 
 
 def groups():
     return {
         CREATIONS: {"$Comment": "Créatures de l'Alchimiste : elles ne se blessent pas entre elles (DisableDamageGroups).",
-                    "IncludeRoles": ALL + CHAPTERS},
+                    "IncludeRoles": ALL + CHAPTERS + [SHELF, FEEDER]},
         FIRE_ELEMENTALS: {"$Comment": "Créatures de feu de la tour : aucun dégât de feu (dans Nakasar_Fire_Immune).",
                           "IncludeRoles": [FIRE, FLASK_FIRE]},
     }

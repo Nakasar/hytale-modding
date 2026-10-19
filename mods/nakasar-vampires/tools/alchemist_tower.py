@@ -86,6 +86,13 @@ LECTERN_ANGLES = (30, 150, 270)
 CODEX_SEAL_ARC = (190, 199)
 COLLAPSE_ARCS = ((220, 248), (252, 282), (286, 312), (328, 358), (2, 24))
 COLLAPSE_R = (21.5, 28.4)
+# Chimère du laboratoire (étape 6) : étagères de réactifs (PNJ posés par tower.ChimeraSystem, les homoncules y prennent
+# de quoi la régénérer), cases où elle ressort de la cuve, sceau de la porte nord jusqu'à sa mort.
+CHIMERA_SHELF_R = 21
+CHIMERA_SHELF_ANGLES = (20, 110, 175, 235)
+CHIMERA_EXIT_R = 12.5
+CHIMERA_EXIT_ANGLES = (30, 120, 150, 210, 240, 330)
+CHIMERA_DOOR_Z = -30
 
 DIRS4 = ((1, 0), (-1, 0), (0, 1), (0, -1))
 DIRS8 = DIRS4 + ((1, 1), (1, -1), (-1, 1), (-1, -1))
@@ -803,6 +810,10 @@ class Tower:
         # Le Codex vivant flotte au centre de la rotonde, entre ses trois pupitres (case réservée par `codex`).
         self.p.set(0, F_LIBRARY, 0, SPAWNER_PREFIX + "Living_Codex")
         self.spawners.append(("Living_Codex", (0, F_LIBRARY, 0)))
+        # La Chimère rôde au sud de la cuve, face à l'arrivée de l'escalier des transmutations.
+        sx, sy, sz = self.trap["chimera"]["spawn"]
+        self.p.set(sx, sy, sz, SPAWNER_PREFIX + "Lab_Chimera")
+        self.spawners.append(("Lab_Chimera", (sx, sy, sz)))
         # Gargouilles au-dessus de l'Escalier des vents : elles volent, on les pose deux blocs au-dessus des marches.
         for angle in GARGOYLE_ANGLES:
             x, y, z = self.ramp_cell(angle)
@@ -951,6 +962,33 @@ class Tower:
                     self.keep_clear.add((x, y + k, z))
             rubble.append(cells)
         self.trap["codex"] = {"center": (0, y, 0), "lecterns": lecterns, "seal": seal, "rubble": rubble}
+
+    # --- Chimère du laboratoire (étape 6) ---------------------------------------------------------
+
+    def chimera(self):
+        """Arène de la Chimère, tout le laboratoire autour de la cuve centrale ; `self.trap["chimera"]` garde ses
+        positions pour tools/alchemist_traps.py et TowerLayout.java : les étagères de réactifs (PNJ posés en jeu), les
+        cases libres où elle ressort de la cuve, et le sceau de la porte nord (vers l'Escalier des vents) qui tient
+        jusqu'à sa mort."""
+        y = F_LAB
+        shelves = []
+        for a in CHIMERA_SHELF_ANGLES:
+            x, z = self.spawn_cell(*at3(CHIMERA_SHELF_R, y, a), height=3, reach=3)
+            shelves.append((x, y, z))
+            # L'étagère tient sur une case ; le décor laisse la place et le passage autour.
+            self.keep_clear.update((x + dx, y + k, z + dz) for dx in range(-1, 2) for dz in range(-1, 2) for k in range(3))
+        exits = []
+        for a in CHIMERA_EXIT_ANGLES:
+            x, z = self.spawn_cell(*at3(CHIMERA_EXIT_R, y, a), height=3, reach=3)
+            exits.append((x, y, z))
+            self.keep_clear.update((x + dx, y + k, z + dz) for dx in range(-2, 3) for dz in range(-2, 3) for k in range(3))
+        # Elle rôde au sud de la cuve, face à l'arrivée de l'escalier des transmutations : place libre pour sa carrure.
+        sx, sz = self.spawn_cell(*at3(18, y, 70), height=4, reach=3)
+        self.keep_clear.update((sx + dx, y + k, sz + dz) for dx in range(-2, 3) for dz in range(-3, 4) for k in range(4))
+        seal = self.seal([(x, CHIMERA_DOOR_Z) for x in range(-2, 3)], y, y + 5)
+        if len(seal) != 25:
+            raise RuntimeError(f"tour : le sceau de la Chimère ne ferme pas la porte nord ({len(seal)} blocs)")
+        self.trap["chimera"] = {"vat": (0, y, 0), "spawn": (sx, y, sz), "shelves": shelves, "exits": exits, "seal": seal}
 
     # --- décor -----------------------------------------------------------------------------------
 
@@ -1473,6 +1511,7 @@ class Tower:
         self.checkpoint(*at3(33, F_DECK, 255), statue_at=at(37, 265))
         self.traps()
         self.codex()
+        self.chimera()
         self.decorate()
         self.mobs()
         self.secure()
@@ -1626,9 +1665,7 @@ MOB_LAYOUT = [
     ("Alchemist_Apprentice", (14, F_LIBRARY, 150), 2), ("Alchemist_Apprentice", (14, F_LIBRARY, 300), 2),
     ("Homunculus", (10, F_LIBRARY, 220), 2), ("Homunculus", (11, F_LIBRARY, 235), 2),
     ("Elemental_Frost", (16, F_LIBRARY, 20), 3),
-    # Laboratoire (avant le mini-boss) : apprentis, un golem, une fiole de feu.
-    ("Alchemist_Apprentice", (14, F_LAB, 30), 2), ("Alchemist_Apprentice", (14, F_LAB, 150), 2),
-    ("Lead_Golem", (16, F_LAB, 240), 4), ("Living_Flask_Fire", (12, F_LAB, 100), 2),
+    # Laboratoire : l'arène de la Chimère, sans autre mob.
 ]
 # Salle des Transmutations : un élémentaire par quadrant (feu, glace, racine, foudre) et le golem de cristal au centre.
 MOB_FIXED = [
@@ -1675,6 +1712,11 @@ def build_checked(seed):
                                                  "vault": at3(37, F_LIBRARY, 320)}, solid_cells=rubble)
     if missing:
         raise RuntimeError(f"tour : les éboulis du Codex ferment le passage : {missing}")
+    # Le sceau de la Chimère seul ferme la porte nord du laboratoire (vers l'Escalier des vents).
+    missing, _ = walkable_path(prefab, (cps[1][0], 2 * cps[1][1], cps[1][2]), {"goal": cps[2]},
+                               solid_cells=tower.trap["chimera"]["seal"])
+    if not missing:
+        raise RuntimeError("tour : le sceau de la Chimère ne ferme pas la porte nord du laboratoire")
     return tower
 
 

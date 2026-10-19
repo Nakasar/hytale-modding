@@ -1,0 +1,79 @@
+{
+  "$Comment": "Fauchage de la queue de serpent, annoncé : elle se ramasse 0,75 s, la queue dressée, et une zone rouge de 4 blocs se charge autour d'elle ; puis elle tourne sur elle-même et la queue fauche tout autour (14 dégâts, empoisonne 4 s, sans recul).",
+  "Type": "Serial",
+  "Interactions": [
+    {
+      "Type": "ClearEntityEffect",
+      "Entity": "User",
+      "EntityEffectId": "Hit_Interrupt_Eligible"
+    },
+    {
+      "Type": "ApplyEffect",
+      "EffectId": "Nakasar_Elite_Rooted"
+    },
+    {
+      "Type": "Simple",
+      "RunTime": 0.75,
+      "Effects": {
+        "ItemPlayerAnimationsId": "Nakasar_Lab_Chimera",
+        "ItemAnimationId": "Tail",
+        "WorldSoundEventId": "SFX_Spirit_Root_Alerted",
+        "Particles": [
+          {
+            "SystemId": "Feastmaster_Slam_Warning",
+            "TargetEntityPart": "Entity",
+            "TargetNodeName": "Origin",
+            "Scale": 2.72,
+            "PositionOffset": {
+              "X": 0,
+              "Y": 0.1,
+              "Z": 0
+            },
+            "DetachedFromModel": true
+          }
+        ]
+      }
+    },
+    {
+      "Type": "Selector",
+      "RunTime": 0.2,
+      "Effects": {
+        "WorldSoundEventId": "SFX_Light_Melee_T2_Swing"
+      },
+      "Selector": {
+        "Id": "AOECircle",
+        "Range": 4.0
+      },
+      "HitEntity": {
+        "Interactions": [
+          {
+            "Parent": "DamageEntityParent",
+            "DamageCalculator": {
+              "BaseDamage": {
+                "Physical": 14
+              },
+              "RandomPercentageModifier": 0.1
+            },
+            "DamageEffects": {
+              "WorldParticles": [
+                {
+                  "SystemId": "Impact_Sword_Basic_Stronk"
+                }
+              ]
+            }
+          },
+          {
+            "Type": "ApplyEffect",
+            "EffectId": "Poison_T1",
+            "Entity": "Target",
+            "Duration": 4
+          }
+        ]
+      }
+    },
+    {
+      "Type": "Simple",
+      "RunTime": 0.3
+    }
+  ]
+}

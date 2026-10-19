@@ -9,12 +9,14 @@ import com.hypixel.hytale.component.system.HolderSystem;
 import com.hypixel.hytale.server.core.modules.entity.component.Invulnerable;
 import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
 import com.hypixel.hytale.server.npc.entities.NPCEntity;
+import dev.nakasar.hytale.vampires.tower.ChimeraSystem;
 
 /**
  * Invulnérabilité des élites protégées par leurs serviteurs ({@link MinionShieldSystem}) et sauvegarde : leurs
  * serviteurs ne sont jamais sauvegardés, ils ne seront plus là au rechargement pour la lever. On la retire donc quand
  * l'élite quitte le monde (chunk déchargé, arrêt du serveur) et, si elle a quand même été sauvegardée (sauvegarde
- * automatique en plein combat puis plantage), quand l'élite est rechargée.
+ * automatique en plein combat puis plantage), quand l'élite est rechargée. Même chose pour la Chimère du laboratoire,
+ * invulnérable pendant sa régénération dans la cuve ({@link ChimeraSystem}).
  */
 public final class ShieldUnloadSystem extends HolderSystem<EntityStore> {
 
@@ -37,7 +39,8 @@ public final class ShieldUnloadSystem extends HolderSystem<EntityStore> {
 
     private static void unshield(Holder<EntityStore> holder) {
         NPCEntity npc = holder.getComponent(NPCEntity.getComponentType());
-        if (npc != null && MinionShieldSystem.SHIELDS.containsKey(npc.getRoleName())) {
+        if (npc != null && (MinionShieldSystem.SHIELDS.containsKey(npc.getRoleName())
+                || ChimeraSystem.ROLE.equals(npc.getRoleName()))) {
             holder.tryRemoveComponent(Invulnerable.getComponentType());
         }
     }
