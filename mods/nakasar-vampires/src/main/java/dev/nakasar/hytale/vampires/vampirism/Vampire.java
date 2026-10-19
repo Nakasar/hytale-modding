@@ -47,8 +47,6 @@ public final class Vampire implements Component<EntityStore> {
     /** Fraction d'une seconde de dégâts du soleil ou de la lumière purificatrice, cumulée entre deux passages. */
     transient float pendingSunDamage;
     transient float pendingLightDamage;
-    /** Vrai quand la lumière de vision nocturne a été envoyée au client du vampire ({@link PrivateNightLightSystem}). */
-    transient boolean privateLightSent;
 
     public static ComponentType<EntityStore, Vampire> getComponentType() {
         return componentType;

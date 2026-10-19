@@ -6,7 +6,6 @@ import com.hypixel.hytale.component.Ref;
 import com.hypixel.hytale.component.Store;
 import com.hypixel.hytale.component.query.Query;
 import com.hypixel.hytale.component.system.tick.DelayedEntitySystem;
-import com.hypixel.hytale.protocol.ColorLight;
 import com.hypixel.hytale.protocol.SoundCategory;
 import com.hypixel.hytale.server.core.asset.type.entityeffect.config.EntityEffect;
 import com.hypixel.hytale.server.core.asset.type.soundevent.config.SoundEvent;
@@ -16,7 +15,6 @@ import com.hypixel.hytale.server.core.entity.entities.Player;
 import com.hypixel.hytale.server.core.inventory.InventoryComponent;
 import com.hypixel.hytale.server.core.inventory.ItemStack;
 import com.hypixel.hytale.server.core.inventory.container.ItemContainer;
-import com.hypixel.hytale.server.core.modules.entity.component.DynamicLight;
 import com.hypixel.hytale.server.core.modules.entity.component.TransformComponent;
 import com.hypixel.hytale.server.core.modules.entity.damage.Damage;
 import com.hypixel.hytale.server.core.modules.entity.damage.DamageCause;
@@ -82,12 +80,6 @@ public final class VampireSystem extends DelayedEntitySystem<EntityStore> {
     private static final Map<String, Float> GARMENT_SUN_LEFT = Map.of(
             "Armor_Nakasar_Occult_Hood", 0.7f,
             "Armor_Nakasar_Occult_Mantle", 0.75f);
-    /**
-     * Ancienne lumière de vision nocturne (rouge, vue de tous), sauvegardée avec les joueurs devenus vampires avant la
-     * lumière privée : retirée à leur retour.
-     */
-    static final ColorLight LEGACY_NIGHT_LIGHT = new ColorLight((byte) 6, (byte) 5, (byte) 2, (byte) 2);
-
     private static final float INTERVAL = 0.25f;
     private static final Query<EntityStore> QUERY = Query.and(Vampire.getComponentType(),
             Player.getComponentType(), TransformComponent.getComponentType(), EntityStatMap.getComponentType());
@@ -124,7 +116,6 @@ public final class VampireSystem extends DelayedEntitySystem<EntityStore> {
         hunger(dt, ref, vampire, stats, world, buffer);
         sun(dt, ref, vampire, position, store, buffer);
         purifyingLight(dt, ref, vampire, position, store, buffer);
-        removeLegacyNightLight(ref, buffer);
         if (vampire.getStage() == BloodStage.STARVING) {
             heartbeat(dt, ref, vampire, position, buffer);
         } else {
@@ -242,17 +233,6 @@ public final class VampireSystem extends DelayedEntitySystem<EntityStore> {
             DamageSystems.executeDamage(ref, buffer, new Damage(new Damage.EnvironmentSource(causeId), cause, amount));
         }
         return pending - amount;
-    }
-
-    /**
-     * Retire l'ancienne lumière rouge de vision nocturne. Elle est reconnue à sa couleur : la lumière d'entité est
-     * sauvegardée avec le joueur.
-     */
-    static void removeLegacyNightLight(Ref<EntityStore> ref, CommandBuffer<EntityStore> buffer) {
-        DynamicLight light = buffer.getComponent(ref, DynamicLight.getComponentType());
-        if (light != null && LEGACY_NIGHT_LIGHT.equals(light.getColorLight())) {
-            buffer.tryRemoveComponent(ref, DynamicLight.getComponentType());
-        }
     }
 
     /** Affamé : le cœur du vivant le plus proche bat, plus vite à mesure qu'il approche. */

@@ -28,7 +28,6 @@ import com.hypixel.hytale.server.core.universe.world.chunk.section.BlockSection;
 import com.hypixel.hytale.server.core.universe.world.storage.ChunkStore;
 import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
 import com.hypixel.hytale.server.core.util.EventTitleUtil;
-import dev.nakasar.hytale.vampires.purifying.LightAura;
 import it.unimi.dsi.fastutil.ints.IntList;
 import org.joml.Vector3d;
 
@@ -129,19 +128,16 @@ public class VampireRitualInteraction extends SimpleInstantInteraction {
         }
     }
 
-    /** Défait tout ce que l'état vampire avait posé : effets et lumière de vision nocturne. */
+    /**
+     * Défait tout ce que l'état vampire avait posé. La lumière de vision nocturne s'éteint d'elle-même
+     * ({@link PrivateNightLightSystem}).
+     */
     private static void cure(Ref<EntityStore> ref, CommandBuffer<EntityStore> buffer) {
         for (BloodStage stage : BloodStage.values()) {
             Vampires.removeEffect(ref, stage.effectId, buffer);
         }
         Vampires.removeEffect(ref, VampireSystem.SUNBURN, buffer);
         Vampires.removeEffect(ref, VampireSystem.SUNBURN_LIGHT, buffer);
-        PrivateNightLightSystem.clear(ref, Vampires.of(ref, buffer), buffer);
-        VampireSystem.removeLegacyNightLight(ref, buffer);
-        LightAura aura = buffer.getComponent(ref, LightAura.getComponentType());
-        if (aura != null) {
-            aura.forgetPreviousLight(VampireSystem.LEGACY_NIGHT_LIGHT); // sinon l'aura rendrait l'ancienne lumière
-        }
         buffer.tryRemoveComponent(ref, Vampire.getComponentType());
     }
 
