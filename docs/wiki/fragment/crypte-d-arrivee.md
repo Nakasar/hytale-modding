@@ -1,15 +1,15 @@
 # Crypte d'arrivée
 
-![La crypte d'arrivée (aperçu du générateur)](../images/lieux/apercu_crypte_arrivee.png)
+<Infobox title="Crypte d'arrivée" kind="Structure" image={require("../images/lieux/apercu_crypte_arrivee.png").default} caption="La crypte d'arrivée (aperçu du générateur)">
+<Info label="Taille">bâtiment de **11 × 11** (structure complète 17 × 19 × 22)</Info>
+<Info label="Par monde">**1**, toujours présente</Info>
+<Info label="Position">centre de l'île (0, 81, 0)</Info>
+<Info label="Portail de retour">**3 blocs au sud** du point d'arrivée</Info>
+<Info label="Gardiens">aucun</Info>
+<Info label="Coffres">aucun</Info>
+</Infobox>
 
 Le point d'arrivée de tous les voyageurs, au centre exact de l'île. Toujours présente, toujours orientée de la même façon.
-
-| | |
-|---|---|
-| Taille | bâtiment de **11 × 11** (structure complète 17 × 19 × 22) |
-| Position | centre de l'île (0, 81, 0) |
-| Gardiens | aucun |
-| Coffres | aucun |
 
 ## Description
 

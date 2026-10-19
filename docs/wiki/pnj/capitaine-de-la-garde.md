@@ -1,8 +1,14 @@
 # Capitaine de la garde
 
-> 📷 Capture en jeu à venir.
-
-**Élite** · id `Nakasar_Guard_Captain`
+<Infobox pending title="Capitaine de la garde" kind="Élite">
+<Info label="Points de vie">**650**</Info>
+<Info label="Attitude">Hostile</Info>
+<Info label="Lieu">[Poste de garde de la garnison](../fragment/postes-de-garde.md), 1 marqueur</Info>
+<Info label="Réapparition">30 min</Info>
+<Info label="Faiblesses">Feu purificateur</Info>
+<Info label="Butin">2 à 4 éclats de rune, [Insigne du Capitaine](../objets/trophees.md), hache rouillée (33 %)</Info>
+<Info label="Id">`Nakasar_Guard_Captain`</Info>
+</Infobox>
 
 Le chef de la garnison du Comte : grand squelette d'élite (×1,3) en armure de prétorien, cape rouge, hache de bataille rouillée. Il commande le [poste de garde de la garnison](../fragment/postes-de-garde.md) et **jette les intrus dans ses cellules**.
 

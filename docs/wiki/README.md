@@ -1,5 +1,14 @@
 # Wiki du mod Vampires
 
+<Infobox title="Nakasar : Vampires" kind="Mod">
+<Info label="Jeu">Hytale, serveur 0.7.2</Info>
+<Info label="Lieu">[Comté Vampire](fragment/README.md)</Info>
+<Info label="Accès">[Brèches des chasseurs](breches.md) ou [clé de portail](objets/cle-du-comte.md)</Info>
+<Info label="Structures">**10**, plus le [décor](fragment/decor.md)</Info>
+<Info label="Bestiaire">**2** boss, **3** élites, **8** créatures, **3** chasseurs</Info>
+<Info label="Runes">**7** [runes de capacité](objets/runes.md)</Info>
+</Infobox>
+
 Guide du joueur pour le mod **Nakasar : Vampires** (Hytale, serveur 0.7.2) : un fragment d'Orbis hanté gouverné par un comte vampire, des chasseurs de vampires qui ouvrent des brèches dans votre monde, des armes en argent et des runes de sang.
 
 ![La Citrouille géante et ses vrilles dans le Comté Vampire](images/lieux/champ_citrouille_geante.jpg)

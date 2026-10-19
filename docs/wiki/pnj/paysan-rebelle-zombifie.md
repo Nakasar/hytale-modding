@@ -1,8 +1,14 @@
 # Paysan rebelle zombifié
 
-> 📷 Capture en jeu à venir.
-
-**Commun** · id `Nakasar_Zombie_Rebel`
+<Infobox pending title="Paysan rebelle zombifié" kind="Créature">
+<Info label="Points de vie">**85**</Info>
+<Info label="Attitude">Hostile</Info>
+<Info label="Lieu">[Poste de garde des rebelles](../fragment/postes-de-garde.md), 6 marqueurs</Info>
+<Info label="Réapparition">10 min</Info>
+<Info label="Faiblesses">Feu purificateur</Info>
+<Info label="Butin">Butin habituel des zombies</Info>
+<Info label="Id">`Nakasar_Zombie_Rebel`</Info>
+</Infobox>
 
 Des paysans qui s'étaient soulevés contre le Comte et ont pris son poste de garde... avant de mourir et de se relever. Bandana ou capuche, faucille rouillée à la main : plus vifs et plus agressifs que les autres zombies.
 

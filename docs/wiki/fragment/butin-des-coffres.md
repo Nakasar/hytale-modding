@@ -1,5 +1,13 @@
 # Butin des coffres
 
+<Infobox title="Butin des coffres" kind="Coffres" icon="/jeu/Icons/Items/Nakasar/Occult/Manor_Relic.png" caption="Relique du manoir">
+<Info label="Listes de butin">**17**</Info>
+<Info label="Structures">**8**</Info>
+<Info label="Manoir">**6** listes, dont le [Trésor du manoir](#tresor-du-manoir)</Info>
+<Info label="Remplissage">à l'apparition de la structure, par tirages</Info>
+<Info label="Source">`Server/Drops/Nakasar/Halloween`</Info>
+</Infobox>
+
 {/* Page générée par mods/nakasar-vampires/tools/generate_wiki_loot.py : ne pas modifier à la main. */}
 
 Chaque coffre du Comté est rempli à l'apparition de la structure. Son contenu se compose de plusieurs **tirages** : chacun est fait un nombre de fois aléatoire, et à chaque fois un objet est choisi selon sa chance. Les noms des objets du jeu de base sont des traductions d'usage ; l'id exact est indiqué entre parenthèses.

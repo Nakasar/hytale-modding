@@ -1,5 +1,14 @@
 # Runes de capacité
 
+<Infobox title="Runes de capacité" kind="Rune">
+<Info label="Runes">7 (dont 2 [runes de chasseur](#runes-de-chasseur))</Info>
+<Info label="Utilisation">Touches de capacité, en tenant une arme</Info>
+<Info label="Coût">30 à 45 mana</Info>
+<Info label="Recharge">4 à 30 s</Info>
+<Info label="Obtention">[Autel sacrificiel](autel-sacrificiel.md) (2 éclats de rune), Comte et Comtesse</Info>
+<Info label="Runes de chasseur">[Établi des chasseurs](etabli-des-chasseurs.md), niveaux 2 et 3</Info>
+</Infobox>
+
 Sept runes de sorts, que l'on lance avec les **touches de capacité** en tenant une arme. Elles coûtent du **mana** et ont un temps de recharge. Elles reprennent pour l'instant l'icône et l'apparence de la rune de boule de feu du jeu.
 
 ## Obtenir une rune

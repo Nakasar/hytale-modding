@@ -1,8 +1,14 @@
 # Villageois zombifié
 
-> 📷 Capture en jeu à venir.
-
-**Commun** · id `Nakasar_Zombie_Villager`
+<Infobox pending title="Villageois zombifié" kind="Créature">
+<Info label="Points de vie">**80**</Info>
+<Info label="Attitude">Hostile, en groupe</Info>
+<Info label="Lieu">[Village zombie](../fragment/villages.md), 10 marqueurs par village</Info>
+<Info label="Réapparition">10 min</Info>
+<Info label="Faiblesses">Feu purificateur</Info>
+<Info label="Butin">Butin habituel des zombies</Info>
+<Info label="Id">`Nakasar_Zombie_Villager`</Info>
+</Infobox>
 
 Les anciens habitants du village du Comte, relevés en haillons (zombie vanilla aux tenues variées). Ils errent entre les maisons et défendent leur village en groupe.
 

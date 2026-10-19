@@ -1,8 +1,15 @@
 # Brèches des chasseurs
 
-![icône](/jeu/UI/WorldMap/MapMarkers/Nakasar_HunterBreach.png) 
+<Infobox title="Brèches des chasseurs" kind="Évènement" image={require("./images/lieux/breche_camp.jpg").default} caption="Un campement de brèche : tentes, feu purificateur et la faille sous l'arche">
+<Info label="Monde">monde principal, la nuit (19 h 12 à 3 h 36)</Info>
+<Info label="Fréquence">une à la fois, après **30 min** d'attente</Info>
+<Info label="Ouverture">**10 min**</Info>
+<Info label="Distance">**48 à 160 blocs** d'un joueur</Info>
+<Info label="Chasseurs">**4** ou **5**, neutres</Info>
+<Info label="Destination">[Comté Vampire](fragment/README.md), **30 minutes**</Info>
+</Infobox>
 
-![Un campement de brèche : tentes, feu purificateur et la faille sous l'arche](images/lieux/breche_camp.jpg)
+![icône](/jeu/UI/WorldMap/MapMarkers/Nakasar_HunterBreach.png) 
 
 > Le voile se déchire... Une brèche va s'ouvrir dans la nuit, non loin d'ici.
 

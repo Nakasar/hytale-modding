@@ -1,10 +1,15 @@
 # Vrilles (piège)
 
-> 📷 Capture en jeu à venir. Elles reprennent les racines du sort vanilla d'enracinement.
+<Infobox pending title="Vrilles (piège)" kind="Piège">
+<Info label="Points de vie">**12**</Info>
+<Info label="Lancé par">[Citrouille géante](citrouille-geante.md)</Info>
+<Info label="Effet">[Enraciné](../effets.md#enracine), 20 s au plus</Info>
+<Info label="Faiblesses">Feu ×2</Info>
+<Info label="Butin">Aucun</Info>
+<Info label="Id">`Nakasar_Pumpkin_Tendril`</Info>
+</Infobox>
 
-**Piège** · id `Nakasar_Pumpkin_Tendril`
-
-Les racines qui jaillissent sous vos pieds quand la [Citrouille géante](citrouille-geante.md) lance son **piège de vrilles**. Elles n'attaquent pas : elles vous tiennent.
+Les racines qui jaillissent sous vos pieds quand la [Citrouille géante](citrouille-geante.md) lance son **piège de vrilles**. Elles n'attaquent pas : elles vous tiennent. Elles reprennent les racines du sort vanilla d'enracinement.
 
 ## Fiche
 

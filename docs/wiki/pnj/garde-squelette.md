@@ -1,8 +1,14 @@
 # Garde squelette
 
-> 📷 Capture en jeu à venir.
-
-**Commun** · id `Nakasar_Skeleton_Guard`
+<Infobox pending title="Garde squelette" kind="Créature">
+<Info label="Points de vie">**120**</Info>
+<Info label="Attitude">Hostile, pare de face</Info>
+<Info label="Lieu">[Poste de garde de la garnison](../fragment/postes-de-garde.md), 6 marqueurs</Info>
+<Info label="Réapparition">10 min</Info>
+<Info label="Faiblesses">Feu purificateur</Info>
+<Info label="Butin">Butin habituel du chevalier squelette</Info>
+<Info label="Id">`Nakasar_Skeleton_Guard`</Info>
+</Infobox>
 
 La garnison du Comte : chevalier squelette (Skeleton Knight vanilla) aux yeux rouges, tabard rouge, casque et plastron rouillés, bottes pourries. Épée et bouclier rouillés : il pare les coups de face.
 

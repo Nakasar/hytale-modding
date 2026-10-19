@@ -1,5 +1,13 @@
 # Feu purificateur
 
+<Infobox title="Feu purificateur" kind="Bloc" icon="/jeu/Icons/Items/Nakasar/Halloween/Purifying_Torch.png">
+<Info label="Objets">Torche et lanterne de feu purificateur</Info>
+<Info label="Effet">Les morts-vivants s'arrêtent à 11 blocs et s'éloignent à 7 blocs</Info>
+<Info label="Brûlure">**6 dégâts de feu par seconde** après 5 s à 7 blocs ou moins</Info>
+<Info label="Obtention">[Établi des chasseurs](etabli-des-chasseurs.md) (niveau 1) : 4 torches ou 2 lanternes</Info>
+<Info label="Où">[Camps de chasseurs](../fragment/camps-de-chasseurs.md), [brèches des chasseurs](../breches.md)</Info>
+</Infobox>
+
 | | Objet |
 |---|---|
 | ![icône](/jeu/Icons/Items/Nakasar/Halloween/Purifying_Torch.png) | **Torche de feu purificateur** |

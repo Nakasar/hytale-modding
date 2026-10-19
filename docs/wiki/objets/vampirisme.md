@@ -1,5 +1,14 @@
 # Devenir vampire
 
+<Infobox title="Devenir vampire" kind="Voie occulte" icon="/jeu/Icons/Items/Nakasar/Occult/Ritual_Chalice.png">
+<Info label="Devenir vampire">Calice du sang éternel</Info>
+<Info label="Redevenir vivant">Encensoir de purification</Info>
+<Info label="Fabrication">[Autel sacrificiel](autel-sacrificiel.md) niveau 3, onglet Rituels</Info>
+<Info label="Soif de sang">Réserve vide en 1,5 jour de jeu</Info>
+<Info label="Boire">[Baiser du Vampire](runes.md#baiser-du-vampire), [Nova de sang](#nova-de-sang), fiole de sang</Info>
+<Info label="Faiblesses">[Soleil](#soleil), argent ×2, feu purificateur</Info>
+</Infobox>
+
 La voie occulte : à l'[autel sacrificiel](autel-sacrificiel.md), un rituel fait de vous un vampire, un autre vous rend la vie. Chaque joueur a son propre état, sauvegardé avec lui.
 
 ## Le rituel {#le-rituel}

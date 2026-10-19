@@ -1,15 +1,14 @@
 # Cimetière
 
-![Un cimetière hanté (aperçu du générateur)](../images/lieux/apercu_cimetiere.png)
+<Infobox title="Cimetière" kind="Structure" image={require("../images/lieux/apercu_cimetiere.png").default} caption="Un cimetière hanté (aperçu du générateur)">
+<Info label="Taille">enclos d'environ **31 × 33** (structure jusqu'à 36 × 22 × 36)</Info>
+<Info label="Par monde">1 ou 2</Info>
+<Info label="Variantes">Hanté, Araignées, Morts-vivants (deux plans chacune)</Info>
+<Info label="Gardiens">aucun marqueur : les monstres de la **zone hantée** (fantômes, spectres, goules, squelettes...) y rôdent</Info>
+<Info label="Coffres">aucun</Info>
+</Infobox>
 
 Les anciens cimetières du domaine, clos de grilles, avec leur chapelle et leurs caveaux.
-
-| | |
-|---|---|
-| Taille | enclos d'environ **31 × 33** (structure jusqu'à 36 × 22 × 36) |
-| Par monde | 1 ou 2 |
-| Gardiens | aucun marqueur : les monstres de la **zone hantée** (fantômes, spectres, goules, squelettes...) y rôdent |
-| Coffres | aucun |
 
 ## Description
 

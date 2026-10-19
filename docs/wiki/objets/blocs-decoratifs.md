@@ -1,6 +1,11 @@
 # Blocs décoratifs
 
-![Gargouille, grille, vantail et vitraux](../images/lieux/apercu_blocs_manoir.png)
+<Infobox title="Blocs décoratifs" kind="Bloc" image={require("../images/lieux/apercu_blocs_manoir.png").default} caption="Gargouille, grille, vantail et vitraux">
+<Info label="Blocs">5</Info>
+<Info label="Où">[Manoir du Comte](../fragment/manoir-du-comte.md), [crypte d'arrivée](../fragment/crypte-d-arrivee.md)</Info>
+<Info label="Récupérables">Oui, ils se cassent et se ramassent</Info>
+<Info label="Recette">Aucune pour l'instant</Info>
+</Infobox>
 
 Les blocs qui habillent le [Manoir du Comte](../fragment/manoir-du-comte.md) et la [crypte d'arrivée](../fragment/crypte-d-arrivee.md). Ils se cassent et se ramassent ; aucune recette pour l'instant.
 

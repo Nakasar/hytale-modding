@@ -1,8 +1,14 @@
 # Abomination zombie
 
-> 📷 Capture en jeu à venir.
-
-**Élite** · id `Nakasar_Zombie_Abomination`
+<Infobox pending title="Abomination zombie" kind="Élite">
+<Info label="Points de vie">**450**</Info>
+<Info label="Attitude">Hostile</Info>
+<Info label="Lieu">[Ferme zombie](../fragment/fermes.md), 1 marqueur</Info>
+<Info label="Réapparition">30 min</Info>
+<Info label="Faiblesses">Feu purificateur</Info>
+<Info label="Butin">1 à 3 éclats de rune, [Cœur d'Abomination](../objets/trophees.md)</Info>
+<Info label="Id">`Nakasar_Zombie_Abomination`</Info>
+</Infobox>
 
 Un amas de chair gonflé (gros zombie aberrant vanilla, ×1,35) qui hante la ferme zombie. Lent mais massif, il frappe très fort et fait trembler le sol autour de lui.
 

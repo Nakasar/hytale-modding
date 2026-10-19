@@ -1,8 +1,12 @@
 # Autel sacrificiel
 
-![icône](/jeu/Icons/Items/Nakasar/Sacrificial_Altar.png) 
-
-![L'autel sacrificiel (aperçu du générateur)](../images/apercu_autel.png)
+<Infobox title="Autel sacrificiel" kind="Établi" image={require("../images/apercu_autel.png").default} caption="L'autel sacrificiel (aperçu du générateur)">
+<Info label="Taille">2 × 2 blocs</Info>
+<Info label="Recette">Établi (niveau 1) : 10 roches, 2 lingots de fer, 1 éclat de rune</Info>
+<Info label="Utilisation">[Runes](runes.md) : 2 éclats de rune → 1 rune</Info>
+<Info label="Niveaux">4</Info>
+<Info label="Débloque">Recettes de la [voie occulte](vampirisme.md)</Info>
+</Infobox>
 
 > Un autel de pierre taché de sang. Permet de graver les runes de capacités Nakasar à partir d'éclats de rune.
 

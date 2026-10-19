@@ -1,14 +1,17 @@
 # Lance de fer à deux mains
 
+<Infobox title="Lance de fer à deux mains" kind="Arme">
+<Info label="Rareté">Peu commune (niveau 20)</Info>
+<Info label="Durabilité">140 (0,2 par coup)</Info>
+<Info label="Fabrication">**Établi d'armes**, onglet Épées : **4 lingots de fer**, **2 bûches**, **2 cuirs légers**, 3,5 s</Info>
+<Info label="Dégâts">14 à 24 par coup, 40 au coup final de la ruée</Info>
+<Info label="Compétence">Ruée d'estocs puis coup circulaire</Info>
+<Info label="En argent">[Lance d'argent à deux mains](armes-en-argent.md)</Info>
+</Infobox>
+
 > Clic : coup latéral, coup latéral, estoc. Maintenir : coup circulaire. Compétence (jauge pleine) : ruée d'estocs puis coup circulaire.
 
 Une lance tenue à deux mains, avec ses propres enchaînements. Elle reprend pour l'instant le modèle et l'icône de la lance en fer du jeu. Sa version en argent est la [Lance d'argent à deux mains](armes-en-argent.md).
-
-| | |
-|---|---|
-| Rareté | Peu commune (niveau 20) |
-| Durabilité | 140 (0,2 par coup) |
-| Fabrication | **Établi d'armes**, onglet Épées : **4 lingots de fer**, **2 bûches**, **2 cuirs légers**, 3,5 s |
 
 ## Attaques
 

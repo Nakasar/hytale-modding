@@ -1,6 +1,15 @@
 # Le Comté Vampire
 
-![Carte d'un Comté Vampire : une île ronde flottant dans le vide](../images/lieux/carte_fragment.jpg)
+<Infobox title="Le Comté Vampire" kind="Fragment" image={require("../images/lieux/carte_fragment.jpg").default} caption="Carte d'un Comté Vampire : une île ronde flottant dans le vide">
+<Info label="Accès">[Fragment du Comté Vampire](../objets/cle-du-comte.md) ou [brèche des chasseurs](../breches.md)</Info>
+<Info label="Durée">**30 minutes**</Info>
+<Info label="Taille">île flottante d'environ **340 blocs de rayon**</Info>
+<Info label="Arrivée">[Crypte d'arrivée](crypte-d-arrivee.md), au centre de l'île</Info>
+<Info label="Manoir">[Manoir du Comte](manoir-du-comte.md), **220 blocs au nord**</Info>
+<Info label="Structures">**8 à 16** en plus du manoir et de la crypte d'arrivée</Info>
+<Info label="Horloge">arrivée à 20 h ; jour 5 min, nuit 20 min</Info>
+<Info label="JcJ">désactivé</Info>
+</Infobox>
 
 Un fragment d'Orbis plongé dans une nuit presque sans fin : le domaine du Comte Vampire. Ses villageois, ses fermiers et jusqu'à ses gardes ont été changés en morts-vivants ; au loin, son manoir attend ses invités. Seuls quelques chasseurs de vampires tiennent encore leur camp.
 

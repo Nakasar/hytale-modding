@@ -1,8 +1,14 @@
 # Chasseur de vampires (tromblon)
 
-![Le chasseur au tromblon (à gauche), en jeu](../images/pnj/Nakasar_Vampire_Hunter_Gunner.jpg)
-
-**Neutre** · id `Nakasar_Vampire_Hunter_Gunner`
+<Infobox title="Chasseur de vampires (tromblon)" kind="Chasseur" image={require("../images/pnj/Nakasar_Vampire_Hunter_Gunner.jpg").default} caption="Le chasseur au tromblon (à gauche), en jeu">
+<Info label="Points de vie">**170**</Info>
+<Info label="Attitude">Neutre, ennemi des créatures du Comté</Info>
+<Info label="Arme">[Tromblon en argent](../objets/armes-en-argent.md)</Info>
+<Info label="Lieu">[Camps de chasseurs](../fragment/camps-de-chasseurs.md) (30 %), [brèches](../breches.md) la nuit</Info>
+<Info label="Réapparition">20 min</Info>
+<Info label="Butin">Aucun</Info>
+<Info label="Id">`Nakasar_Vampire_Hunter_Gunner`</Info>
+</Infobox>
 
 Le vétéran des chasseurs : cheveux gris, longue moustache, chapeau de cow-boy, bandoulière de cuir, **tromblon en argent**. Il tire lentement mais fort.
 

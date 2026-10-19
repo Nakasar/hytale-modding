@@ -1,8 +1,14 @@
 # Rejeton de vampire
 
-> 📷 Capture en jeu à venir.
-
-**Commun** · id `Nakasar_Vampire_Spawn`
+<Infobox pending title="Rejeton de vampire" kind="Créature">
+<Info label="Points de vie">**60**</Info>
+<Info label="Attitude">Hostile, chasse la nuit</Info>
+<Info label="Lieu">Manoir du Comte, zones hantées la nuit, invoqué par le [Comte](comte-vampire.md) ou la [Comtesse](comtesse-vampire.md)</Info>
+<Info label="Réapparition">5 min (manoir)</Info>
+<Info label="Faiblesses">Argent ×2, feu purificateur</Info>
+<Info label="Butin">1 éclat de rune (25 %), [Croc de vampire](../objets/trophees.md) (50 %)</Info>
+<Info label="Id">`Nakasar_Vampire_Spawn`</Info>
+</Infobox>
 
 Les serviteurs affamés du Comte : peau lilas, oreilles pointues, crocs, tunique d'esclave en haillons. Petits (×0,9 à ×1), rapides et fragiles, ils chassent la nuit autour des lieux hantés et accourent quand leur maître les appelle.
 

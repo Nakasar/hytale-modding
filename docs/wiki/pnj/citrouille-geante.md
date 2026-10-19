@@ -1,10 +1,16 @@
 # Citrouille géante
 
+<Infobox title="Citrouille géante" kind="Élite immobile" image={require("../images/lieux/citrouille_geante_combat.jpg").default} caption="La Citrouille géante et ses vrilles dans un champ du Comté, en jeu">
+<Info label="Points de vie">**600**</Info>
+<Info label="Attitude">Hostile, ne bouge jamais</Info>
+<Info label="Lieu">[Champ de citrouilles géant](../fragment/champs-de-citrouilles.md)</Info>
+<Info label="Réapparition">30 min</Info>
+<Info label="Faiblesses">Feu ×2</Info>
+<Info label="Butin">citrouilles, graines, essence, 1 à 3 éclats, [Graine de la Citrouille géante](../objets/trophees.md)</Info>
+<Info label="Id">`Nakasar_Giant_Pumpkin`</Info>
+</Infobox>
+
 ![Rendu 3D du modèle : au repos et bouche ouverte (crachat)](../images/pnj/Nakasar_Giant_Pumpkin.png)
-
-![La Citrouille géante et ses vrilles dans un champ du Comté, en jeu](../images/lieux/citrouille_geante_combat.jpg)
-
-**Élite immobile** · Champ de citrouilles géant · id `Nakasar_Giant_Pumpkin`
 
 Une citrouille sculptée de plus de deux blocs de large, éclairée de l'intérieur. Le haut se soulève comme une mâchoire pour cracher du poison. Elle ne bouge jamais : elle fait pousser autour d'elle des [vrilles combattantes](vrille-de-citrouille.md) et enracine ceux qui s'approchent trop.
 

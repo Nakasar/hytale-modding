@@ -8,6 +8,7 @@ docs/wiki/fragment/butin-des-coffres.md. À relancer après chaque changement de
 Les noms français des objets vanilla sont des traductions d'usage, l'id du jeu est donné à côté.
 """
 import json
+import re
 import unicodedata
 from pathlib import Path
 
@@ -128,8 +129,19 @@ def table(drop):
 
 
 def main():
+    structures = {link for _, _, where in TABLES for link in re.findall(r"\]\(([^)#]+)\)", where)}
+    manor = sum(where.startswith("[Manoir du Comte]") for _, _, where in TABLES)
     out = [
         "# Butin des coffres",
+        "",
+        '<Infobox title="Butin des coffres" kind="Coffres" icon="/jeu/Icons/Items/Nakasar/Occult/Manor_Relic.png" '
+        'caption="Relique du manoir">',
+        f'<Info label="Listes de butin">**{len(TABLES)}**</Info>',
+        f'<Info label="Structures">**{len(structures)}**</Info>',
+        f'<Info label="Manoir">**{manor}** listes, dont le [Trésor du manoir](#{anchor("Trésor du manoir")})</Info>',
+        '<Info label="Remplissage">à l\'apparition de la structure, par tirages</Info>',
+        '<Info label="Source">`Server/Drops/Nakasar/Halloween`</Info>',
+        "</Infobox>",
         "",
         "{/* Page générée par mods/nakasar-vampires/tools/generate_wiki_loot.py : ne pas modifier à la main. */}",
         "",

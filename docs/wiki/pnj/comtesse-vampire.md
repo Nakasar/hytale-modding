@@ -1,8 +1,14 @@
 # Comtesse Vampire
 
-![La Comtesse Vampire, en jeu](../images/pnj/Nakasar_Vampire_Countess.jpg)
-
-**Boss** · Manoir du Comte · id `Nakasar_Vampire_Countess`
+<Infobox title="Comtesse Vampire" kind="Boss" image={require("../images/pnj/Nakasar_Vampire_Countess.jpg").default} caption="La Comtesse Vampire, en jeu">
+<Info label="Points de vie">**500**</Info>
+<Info label="Attitude">Neutre, hostile à tous les joueurs une fois frappée</Info>
+<Info label="Lieu">[Manoir du Comte](../fragment/manoir-du-comte.md), à la place du Comte (50 %)</Info>
+<Info label="Réapparition">30 min</Info>
+<Info label="Faiblesses">Argent ×2, feu purificateur</Info>
+<Info label="Butin">4 à 6 éclats de rune, 1 [rune](../objets/runes.md)</Info>
+<Info label="Id">`Nakasar_Vampire_Countess`</Info>
+</Infobox>
 
 L'épouse du Comte, et parfois la seule maîtresse des lieux : à chaque apparition dans le [Manoir du Comte](../fragment/manoir-du-comte.md), le jeu tire le [Comte](comte-vampire.md) ou la Comtesse (une chance sur deux). Longue robe noire, gants rouges, couronne et cape royale. Moins robuste que le Comte mais plus rapide, elle se téléporte sans cesse et ne connaît pas les chaînes spectrales.
 

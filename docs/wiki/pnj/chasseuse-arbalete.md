@@ -1,8 +1,14 @@
 # Chasseuse de vampires (arbalète)
 
-![La chasseuse à l'arbalète (à droite), en jeu](../images/pnj/Nakasar_Vampire_Hunter_Crossbow.jpg)
-
-**Neutre** · id `Nakasar_Vampire_Hunter_Crossbow`
+<Infobox title="Chasseuse de vampires (arbalète)" kind="Chasseur" image={require("../images/pnj/Nakasar_Vampire_Hunter_Crossbow.jpg").default} caption="La chasseuse à l'arbalète (à droite), en jeu">
+<Info label="Points de vie">**160**</Info>
+<Info label="Attitude">Neutre, ennemie des créatures du Comté</Info>
+<Info label="Arme">[Arbalète de poing en argent](../objets/armes-en-argent.md)</Info>
+<Info label="Lieu">[Camps de chasseurs](../fragment/camps-de-chasseurs.md) (40 %), [brèches](../breches.md) la nuit</Info>
+<Info label="Réapparition">20 min</Info>
+<Info label="Butin">Aucun</Info>
+<Info label="Id">`Nakasar_Vampire_Hunter_Crossbow`</Info>
+</Infobox>
 
 La tireuse des chasseurs : chapeau à large bord, bandeau sur les yeux, manteau long, **arbalète de poing en argent**. Elle garde ses distances et abat les morts-vivants de loin. C'est la chasseuse la plus fréquente (40 %).
 
