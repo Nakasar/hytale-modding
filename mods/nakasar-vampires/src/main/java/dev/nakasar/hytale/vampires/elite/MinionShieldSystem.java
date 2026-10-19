@@ -34,9 +34,10 @@ import java.util.Set;
  * </ul>
  *
  * <p>Comme les boss du donjon Deepworks, l'élite protégée porte le composant vanilla {@link Invulnerable} pendant ce
- * temps (posé et retiré par {@link SummonMinionsInteraction}) : sa barre de boss passe en mode invulnérable. Aucun
- * message n'explique quoi faire : les joueurs le découvrent. Ce filtre annule en plus les coups d'entité tant que
- * la vague vit, au cas où le composant serait posé un instant trop tard.
+ * temps (posé et retiré par {@link SummonMinionsInteraction}) : sa barre de boss passe en mode invulnérable et, comme
+ * pour eux, plus aucun dégât ne la touche (vide et environnement compris). Aucun message n'explique quoi faire : les
+ * joueurs le découvrent. Ce filtre annule en plus les coups d'entité tant que la vague vit, au cas où le composant
+ * serait posé un instant trop tard, et lève une invulnérabilité restée sans vague vivante.
  *
  * <p>Première vague : si une entité à moins de {@value #LEASH} blocs frappe l'élite alors qu'aucune vague n'est encore
  * sortie depuis son dernier retour au calme, la vague sort tout de suite (la citrouille ne bouge pas et peut être
@@ -85,19 +86,25 @@ public final class MinionShieldSystem extends DamageEventSystem {
     @Override
     public void handle(int index, ArchetypeChunk<EntityStore> chunk, Store<EntityStore> store,
                        CommandBuffer<EntityStore> buffer, Damage damage) {
-        if (damage.isCancelled()) {
-            return;
-        }
         NPCEntity npc = chunk.getComponent(index, NPCEntity.getComponentType());
         SummonMinionsInteraction firstWave = npc == null ? null : SHIELDS.get(npc.getRoleName());
         if (firstWave == null) {
             return;
         }
+        Ref<EntityStore> elite = chunk.getReferenceTo(index);
+        boolean shielded = SummonMinionsInteraction.hasLivingMinions(elite, store);
+        if (!shielded && chunk.getArchetype().contains(Invulnerable.getComponentType())) {
+            // Invulnérabilité orpheline (sauvegarde en plein combat, plugin rechargé…) : sans vague vivante, on la
+            // lève. Ce coup-ci a déjà pu être annulé par le filtre vanilla ; le suivant porte.
+            buffer.tryRemoveComponent(elite, Invulnerable.getComponentType());
+        }
+        if (damage.isCancelled()) {
+            return;
+        }
         if (!(damage.getSource() instanceof Damage.EntitySource source)) {
             return;
         }
-        Ref<EntityStore> elite = chunk.getReferenceTo(index);
-        if (SummonMinionsInteraction.hasLivingMinions(elite, store)) {
+        if (shielded) {
             damage.setCancelled(true);
             return;
         }

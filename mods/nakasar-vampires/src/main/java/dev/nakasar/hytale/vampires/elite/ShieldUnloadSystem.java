@@ -11,9 +11,10 @@ import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
 import com.hypixel.hytale.server.npc.entities.NPCEntity;
 
 /**
- * Quand une élite protégée par ses serviteurs ({@link MinionShieldSystem}) quitte le monde (chunk déchargé, arrêt du
- * serveur), on retire de ce qui sera sauvegardé son invulnérabilité : ses serviteurs, non sauvegardés, ne seront plus
- * là au rechargement pour la lever.
+ * Invulnérabilité des élites protégées par leurs serviteurs ({@link MinionShieldSystem}) et sauvegarde : leurs
+ * serviteurs ne sont jamais sauvegardés, ils ne seront plus là au rechargement pour la lever. On la retire donc quand
+ * l'élite quitte le monde (chunk déchargé, arrêt du serveur) et, si elle a quand même été sauvegardée (sauvegarde
+ * automatique en plein combat puis plantage), quand l'élite est rechargée.
  */
 public final class ShieldUnloadSystem extends HolderSystem<EntityStore> {
 
@@ -24,10 +25,17 @@ public final class ShieldUnloadSystem extends HolderSystem<EntityStore> {
 
     @Override
     public void onEntityAdd(Holder<EntityStore> holder, AddReason reason, Store<EntityStore> store) {
+        if (reason == AddReason.LOAD) {
+            unshield(holder);
+        }
     }
 
     @Override
     public void onEntityRemoved(Holder<EntityStore> holder, RemoveReason reason, Store<EntityStore> store) {
+        unshield(holder);
+    }
+
+    private static void unshield(Holder<EntityStore> holder) {
         NPCEntity npc = holder.getComponent(NPCEntity.getComponentType());
         if (npc != null && MinionShieldSystem.SHIELDS.containsKey(npc.getRoleName())) {
             holder.tryRemoveComponent(Invulnerable.getComponentType());
