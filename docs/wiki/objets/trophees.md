@@ -1,6 +1,12 @@
 # Trophées et sacs de prime
 
-![Les trophées et les sacs de prime (aperçu du générateur)](../images/apercu_trophees.png)
+<Infobox title="Trophées et sacs de prime" kind="Ingrédient" image={require("../images/apercu_trophees.png").default} caption="Les trophées et les sacs de prime (aperçu du générateur)">
+<Info label="Trophées">4 : croc de vampire, cœur d'Abomination, graine de la Citrouille géante, insigne du Capitaine</Info>
+<Info label="Sacs de prime">3, lâchés par les cibles des [contrats](contrats.md)</Info>
+<Info label="Lâchés par">Rejetons et élites du Comté</Info>
+<Info label="Sert à">Améliorer l'[établi des chasseurs](etabli-des-chasseurs.md), contrats, [argent infusé](armes-en-argent.md#argent-infuse)</Info>
+<Info label="Échange">Oui, on peut les donner ou les échanger</Info>
+</Infobox>
 
 Les chasseurs de vampires ne demandent pas d'or : ils veulent des preuves. Chaque élite du Comté laisse un **trophée**, et les rejetons laissent leurs **crocs**. Chaque amélioration de l'[établi des chasseurs](etabli-des-chasseurs.md) demande des trophées **précis** : plus le niveau est haut, plus la cible est dure.
 

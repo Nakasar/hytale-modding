@@ -1,5 +1,14 @@
 # Bestiaire
 
+<Infobox title="Bestiaire" kind="Index" image={require("../images/pnj/Nakasar_Vampire_Count.jpg").default} caption="Le Comte Vampire, maître du Comté">
+<Info label="Boss">2 ([Comte](comte-vampire.md) ou [Comtesse](comtesse-vampire.md), 50 %)</Info>
+<Info label="Élites">3</Info>
+<Info label="Créatures du Comté">8</Info>
+<Info label="Chasseurs">3, neutres</Info>
+<Info label="Camp">toutes les créatures du Comté sont alliées</Info>
+<Info label="Réapparition">5 min (rejetons) à 30 min (boss et élites)</Info>
+</Infobox>
+
 Toutes les créatures ajoutées par le mod. Les créatures du Comté forment **un seul camp** : elles ne se blessent jamais entre elles (même avec une attaque de zone) et s'allient contre vous et contre les chasseurs de vampires.
 
 ## Boss et élites

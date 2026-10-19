@@ -1,8 +1,14 @@
 # Fermier zombifié
 
-> 📷 Capture en jeu à venir.
-
-**Commun** · id `Nakasar_Zombie_Farmer`
+<Infobox pending title="Fermier zombifié" kind="Créature">
+<Info label="Points de vie">**95**</Info>
+<Info label="Attitude">Hostile</Info>
+<Info label="Lieu">[Ferme zombie](../fragment/fermes.md), 4 marqueurs</Info>
+<Info label="Réapparition">10 min</Info>
+<Info label="Faiblesses">Feu purificateur</Info>
+<Info label="Butin">Butin habituel des zombies</Info>
+<Info label="Id">`Nakasar_Zombie_Farmer`</Info>
+</Infobox>
 
 Un fermier mort au champ, chapeau de paille et salopette. Un peu plus coriace que les villageois, il garde les fermes du Comté avec l'[Abomination zombie](abomination-zombie.md).
 

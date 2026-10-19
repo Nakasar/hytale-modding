@@ -1,6 +1,13 @@
 # Armes en argent
 
-![Les icônes des armes en argent](../images/apercu_icones.png)
+<Infobox title="Armes en argent" kind="Arme" image={require("../images/apercu_icones.png").default} caption="Les icônes des armes en argent">
+<Info label="Type">13 armes et munitions</Info>
+<Info label="Établi">Établi d'armes, lingots d'argent</Info>
+<Info label="Rareté">Rare, niveau 25</Info>
+<Info label="Bonus">**×2** contre les vampires</Info>
+<Info label="Argent infusé">×2,5 contre les vampires, ×1,5 contre les morts-vivants ([établi des chasseurs](etabli-des-chasseurs.md), niveau 3)</Info>
+<Info label="Munitions">[Flèches en argent](#fleches-en-argent), 8 par fabrication</Info>
+</Infobox>
 
 Treize armes et munitions en argent, forgées à l'**établi d'armes**. Chacune reprend **exactement** les attaques, les dégâts et la durabilité de sa version en fer : seuls l'aspect, la recette et le bonus changent.
 

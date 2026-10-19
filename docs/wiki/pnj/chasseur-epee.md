@@ -1,8 +1,14 @@
 # Chasseur de vampires (épée)
 
-![Le chasseur à l'épée (au centre), en jeu](../images/pnj/Nakasar_Vampire_Hunter_Blade.jpg)
-
-**Neutre** · id `Nakasar_Vampire_Hunter_Blade`
+<Infobox title="Chasseur de vampires (épée)" kind="Chasseur" image={require("../images/pnj/Nakasar_Vampire_Hunter_Blade.jpg").default} caption="Le chasseur à l'épée (au centre), en jeu">
+<Info label="Points de vie">**200**</Info>
+<Info label="Attitude">Neutre, ennemi juré des créatures du Comté</Info>
+<Info label="Arme">[Épée en argent](../objets/armes-en-argent.md)</Info>
+<Info label="Lieu">[Camps de chasseurs](../fragment/camps-de-chasseurs.md) (30 %), [brèches](../breches.md) la nuit</Info>
+<Info label="Réapparition">20 min</Info>
+<Info label="Butin">Aucun</Info>
+<Info label="Id">`Nakasar_Vampire_Hunter_Blade`</Info>
+</Infobox>
 
 Le combattant au corps à corps des chasseurs : visage balafré, barbe, long manteau de cuir et cape rouge sombre, **épée en argent**. Il ne vous attaque pas : il chasse les créatures du Comté. Avec la [chasseuse à l'arbalète](chasseuse-arbalete.md) et le [chasseur au tromblon](chasseur-tromblon.md), il tient les [camps de chasseurs](../fragment/camps-de-chasseurs.md) et les [brèches](../breches.md).
 

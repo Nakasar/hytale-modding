@@ -1,8 +1,14 @@
 # Vrille de citrouille
 
-![Rendu 3D du modèle : au repos et en plein coup de fouet](../images/pnj/Nakasar_Pumpkin_Vine.png)
-
-**Invocation** · id `Nakasar_Pumpkin_Vine`
+<Infobox title="Vrille de citrouille" kind="Invocation" image={require("../images/pnj/Nakasar_Pumpkin_Vine.png").default} caption="Rendu 3D du modèle : au repos et en plein coup de fouet">
+<Info label="Points de vie">**45**</Info>
+<Info label="Attitude">Hostile, immobile</Info>
+<Info label="Invoquée par">[Citrouille géante](citrouille-geante.md), 4 au maximum</Info>
+<Info label="Disparition">à la mort de la citrouille ou après 25 s sans combat</Info>
+<Info label="Faiblesses">Feu ×2</Info>
+<Info label="Butin">Aucun</Info>
+<Info label="Id">`Nakasar_Pumpkin_Vine`</Info>
+</Infobox>
 
 Une tige épineuse articulée de 2,8 blocs, sortie d'un monticule de terre, avec un bourgeon lumineux au bout. Elle ne bouge pas mais fouette, lance des épines et balaie le sol autour d'elle. Seule la [Citrouille géante](citrouille-geante.md) les fait pousser.
 

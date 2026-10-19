@@ -1,5 +1,13 @@
 # Effets de statut
 
+<Infobox title="Effets de statut" kind="Effet" icon="/jeu/UI/StatusEffects/Nakasar/Spectral_Chains.png">
+<Info label="Effets">10, plus ceux du [joueur vampire](#vampire)</Info>
+<Info label="Immobilisation">[Chaînes spectrales](#chaines-spectrales), [Enraciné](#enracine)</Info>
+<Info label="Ralentissement">[Froid spectral](#froid-spectral), [Emprisonné](#emprisonne)</Info>
+<Info label="Sources">[Runes](objets/runes.md), boss et élites du Comté</Info>
+<Info label="Durées">3 à 30 s</Info>
+</Infobox>
+
 Les effets que le mod applique aux joueurs et aux créatures.
 
 ## Aura de lumière {#aura-de-lumiere}

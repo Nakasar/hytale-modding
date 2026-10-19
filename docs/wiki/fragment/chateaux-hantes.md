@@ -1,14 +1,15 @@
 # Château hanté
 
-Une forteresse abandonnée, aux trois quarts écroulée, où rôdent les monstres de la zone hantée.
+<Infobox title="Château hanté" kind="Structure">
+<Info label="Taille">enceinte de **33 × 33** (structure 40 × 33 × 40)</Info>
+<Info label="Par monde">1 ou 2</Info>
+<Info label="Variantes">Pierre, Ardoise</Info>
+<Info label="Gardiens">aucun marqueur : monstres de la zone hantée</Info>
+<Info label="Coffres">**1**</Info>
+<Info label="Butin">[Ruines du château](butin-des-coffres.md#ruines-du-chateau)</Info>
+</Infobox>
 
-| | |
-|---|---|
-| Taille | enceinte de **33 × 33** (structure 40 × 33 × 40) |
-| Par monde | 1 ou 2 |
-| Variantes | Pierre, Ardoise |
-| Gardiens | aucun marqueur : monstres de la zone hantée |
-| Coffres | **1** |
+Une forteresse abandonnée, aux trois quarts écroulée, où rôdent les monstres de la zone hantée.
 
 ## Description
 

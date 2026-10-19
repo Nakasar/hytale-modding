@@ -1,14 +1,16 @@
 # Camp de chasseurs de vampires
 
-Le dernier refuge des vivants dans le Comté : une palissade gardée par des chasseurs et protégée par le **feu purificateur**, que les morts-vivants n'osent pas approcher.
+<Infobox title="Camp de chasseurs de vampires" kind="Structure">
+<Info label="Taille">palissade de **25 × 25** (structure 27 × 12 × 27)</Info>
+<Info label="Par monde">0 ou 1 (**50 %**), toujours au même emplacement, environ **110 blocs au sud** de l'arrivée</Info>
+<Info label="Variantes">Tentes, Pavillon</Info>
+<Info label="Habitants">**6** [chasseurs de vampires](../pnj/chasseur-epee.md), **neutres** envers vous (réapparition 20 min)</Info>
+<Info label="Protection">[feu purificateur](../objets/feu-purificateur.md) : aucun mort-vivant n'y entre</Info>
+<Info label="Coffres">**2**</Info>
+<Info label="Butin">[Camp de chasseurs](butin-des-coffres.md#camp-de-chasseurs), [Armurerie des chasseurs](butin-des-coffres.md#armurerie-des-chasseurs)</Info>
+</Infobox>
 
-| | |
-|---|---|
-| Taille | palissade de **25 × 25** (structure 27 × 12 × 27) |
-| Par monde | 0 ou 1 (**50 %**), toujours au même emplacement, environ **110 blocs au sud** de l'arrivée |
-| Variantes | Tentes, Pavillon |
-| Habitants | **6** [chasseurs de vampires](../pnj/chasseur-epee.md), **neutres** envers vous (réapparition 20 min) |
-| Coffres | **2** |
+Le dernier refuge des vivants dans le Comté : une palissade gardée par des chasseurs et protégée par le **feu purificateur**, que les morts-vivants n'osent pas approcher.
 
 ## Description
 

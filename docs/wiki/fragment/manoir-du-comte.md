@@ -1,15 +1,16 @@
 # Manoir du Comte
 
-![Le manoir du Comte (aperçu du générateur)](../images/lieux/apercu_manoir.png)
+<Infobox title="Manoir du Comte" kind="Structure" image={require("../images/lieux/apercu_manoir.png").default} caption="Le manoir du Comte (aperçu du générateur)">
+<Info label="Taille">domaine clos de **57 × 51**, structure de 57 × 42 × 51</Info>
+<Info label="Par monde">**1**, toujours au même endroit</Info>
+<Info label="Où">**220 blocs au nord** de la crypte d'arrivée</Info>
+<Info label="Maître">[Comte](../pnj/comte-vampire.md) **ou** [Comtesse](../pnj/comtesse-vampire.md) (une chance sur deux, 30 min)</Info>
+<Info label="Gardiens">**2** [rejetons](../pnj/rejeton-de-vampire.md) dans la crypte (5 min)</Info>
+<Info label="Coffres">**7**</Info>
+<Info label="Butin">[Trésor du manoir](butin-des-coffres.md#tresor-du-manoir) et 5 autres listes</Info>
+</Infobox>
 
 La demeure du [Comte Vampire](../pnj/comte-vampire.md), toujours **220 blocs au nord** de la crypte d'arrivée, façade au sud. Le seul lieu du Comté qui ne tombe pas en ruine : il est habité.
-
-| | |
-|---|---|
-| Taille | domaine clos de **57 × 51**, structure de 57 × 42 × 51 |
-| Par monde | **1**, toujours au même endroit |
-| Gardiens | [Comte](../pnj/comte-vampire.md) **ou** [Comtesse](../pnj/comtesse-vampire.md) (une chance sur deux, 30 min), **2** [rejetons](../pnj/rejeton-de-vampire.md) dans la crypte (5 min) |
-| Coffres | **7** |
 
 ## Le domaine
 

@@ -1,6 +1,12 @@
 # Notes et épitaphes
 
-![Une feuille, une lettre cachetée, un bout de toile, une épitaphe et le tableau des chasseurs](../images/lore/apercu_lore.png)
+<Infobox title="Notes et épitaphes" kind="Lore" image={require("../images/lore/apercu_lore.png").default} caption="Une feuille, une lettre cachetée, un bout de toile, une épitaphe et le tableau des chasseurs">
+<Info label="Lecture">utiliser la note (F par défaut)</Info>
+<Info label="Où">à côté des coffres, sur les stèles</Info>
+<Info label="Épitaphes">environ une stèle sur trois, six défunts</Info>
+<Info label="Tableau des chasseurs">devant chaque [brèche](../breches.md)</Info>
+<Info label="Récompense">premier contrat, [la Bête de la ferme](../objets/contrats.md)</Info>
+</Infobox>
 
 Personne ne vous racontera l'histoire du Comté : il n'y a pas de dialogue. Elle se lit par morceaux, sur des notes laissées par ceux qui y ont vécu, qui y montent la garde ou qui y chassent. À vous de la reconstituer.
 

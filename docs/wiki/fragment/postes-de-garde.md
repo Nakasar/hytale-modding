@@ -1,15 +1,16 @@
 # Poste de garde
 
-![Le poste de garde de la garnison (aperçu du générateur)](../images/lieux/Guard_Post_Garrison.png)
+<Infobox title="Poste de garde" kind="Structure" image={require("../images/lieux/Guard_Post_Garrison.png").default} caption="Le poste de garde de la garnison (aperçu du générateur)">
+<Info label="Taille">enceinte de **35 × 35** (structure 39 × 24 × 39)</Info>
+<Info label="Par monde">1 ou 2</Info>
+<Info label="Variantes">Garnison, Rebelles, Araignées, En ruine</Info>
+<Info label="Gardiens">[Capitaine de la garde](../pnj/capitaine-de-la-garde.md) et **6** [gardes squelettes](../pnj/garde-squelette.md) (Garnison)</Info>
+<Info label="Cellules de prison">**4**</Info>
+<Info label="Coffres">**3**</Info>
+<Info label="Butin">[Caserne](butin-des-coffres.md#caserne), [Quartiers du capitaine](butin-des-coffres.md#quartiers-du-capitaine), [Armurerie](butin-des-coffres.md#armurerie)</Info>
+</Infobox>
 
 Le fort d'où la garde du Comte surveillait le domaine, avec sa prison.
-
-| | |
-|---|---|
-| Taille | enceinte de **35 × 35** (structure 39 × 24 × 39) |
-| Par monde | 1 ou 2 |
-| Coffres | **3** |
-| Cellules de prison | **4** |
 
 ## Plan
 

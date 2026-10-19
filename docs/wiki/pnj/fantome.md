@@ -1,8 +1,13 @@
 # Fantôme
 
-> 📷 Capture en jeu à venir.
-
-**Commun** · id `Nakasar_Ghost`
+<Infobox pending title="Fantôme" kind="Créature">
+<Info label="Points de vie">**45**</Info>
+<Info label="Attitude">Hostile, vole et se téléporte</Info>
+<Info label="Lieu">Zones hantées du Comté, à toute heure</Info>
+<Info label="Faiblesses">Feu purificateur (pas l'argent)</Info>
+<Info label="Butin">1 éclat de rune (20 %)</Info>
+<Info label="Id">`Nakasar_Ghost`</Info>
+</Infobox>
 
 Un spectre pâle (silhouette du Wraith vanilla) qui flotte entre 0,5 et 5 blocs au-dessus du sol en diffusant une lueur bleutée. Il traverse le Comté sans se soucier des murs : il vous repère sans vous voir et surgit soudain à côté de vous.
 

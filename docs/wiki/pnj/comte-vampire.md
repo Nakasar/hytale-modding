@@ -1,8 +1,14 @@
 # Comte Vampire
 
-![Le Comte Vampire (à gauche) et la Comtesse, en jeu](../images/pnj/Nakasar_Vampire_Count.jpg)
-
-**Boss** · Manoir du Comte · id `Nakasar_Vampire_Count`
+<Infobox title="Comte Vampire" kind="Boss" image={require("../images/pnj/Nakasar_Vampire_Count.jpg").default} caption="Le Comte Vampire en jeu">
+<Info label="Points de vie">**600**</Info>
+<Info label="Attitude">Neutre, hostile à tous les joueurs une fois frappé</Info>
+<Info label="Lieu">[Manoir du Comte](../fragment/manoir-du-comte.md), 1 par monde</Info>
+<Info label="Réapparition">30 min</Info>
+<Info label="Faiblesses">Argent ×2, feu purificateur</Info>
+<Info label="Butin">4 à 6 éclats de rune, 1 [rune](../objets/runes.md)</Info>
+<Info label="Id">`Nakasar_Vampire_Count`</Info>
+</Infobox>
 
 Le maître du Comté. Grand (×1,22), pâle, yeux rouges, couronne noire, long manteau à liseré d'or et cape royale rouge. Il règne sur le [Manoir du Comte](../fragment/manoir-du-comte.md) et partage son trône avec la [Comtesse Vampire](comtesse-vampire.md) : à chaque apparition, c'est l'un ou l'autre (une chance sur deux).
 

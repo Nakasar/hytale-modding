@@ -1,8 +1,12 @@
 # Établi des chasseurs de vampires
 
-![icône](/jeu/Icons/Items/Nakasar/Hunter_Workbench.png)
-
-![L'établi des chasseurs (aperçu du générateur)](../images/apercu_etabli_chasseurs.png)
+<Infobox title="Établi des chasseurs de vampires" kind="Établi" image={require("../images/apercu_etabli_chasseurs.png").default} caption="L'établi des chasseurs (aperçu du générateur)">
+<Info label="Taille">2 blocs de large</Info>
+<Info label="Recette">Établi (niveau 1) : 10 bois, 2 lingots d'argent, 4 cuirs légers</Info>
+<Info label="Niveaux">3 : Recrue, Traqueur, Chasseur</Info>
+<Info label="Amélioration">[Trophées](trophees.md) d'élites du Comté</Info>
+<Info label="Débloque">[Feu purificateur](feu-purificateur.md), [contrats](contrats.md), [clé du Comté](cle-du-comte.md), [runes de chasseur](runes.md#runes-de-chasseur), [argent infusé](armes-en-argent.md#argent-infuse)</Info>
+</Infobox>
 
 > La table des chasseurs. Rapportez-leur des trophées précis du Comté pour la faire monter : elle donne leurs runes, leurs contrats de primes, la clé du Comté et l'argent infusé.
 

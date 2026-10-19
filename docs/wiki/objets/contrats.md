@@ -1,6 +1,12 @@
 # Contrats de primes
 
-![icône](/jeu/Icons/Items/Nakasar/Contracts/Contract_Farm.png) ![icône](/jeu/Icons/Items/Nakasar/Contracts/Contract_Pumpkin.png) ![icône](/jeu/Icons/Items/Nakasar/Contracts/Contract_Garrison.png)
+<Infobox title="Contrats de primes" kind="Clé de portail" icon="/jeu/Icons/Items/Nakasar/Contracts/Contract_Farm.png">
+<Info label="Contrats">3 : la Bête de la ferme, le Champ maudit, la Garnison du Capitaine</Info>
+<Info label="Établi">[Établi des chasseurs](etabli-des-chasseurs.md), onglet Contrats (niveaux 1 et 2)</Info>
+<Info label="Utilisation">Dans un Portal Device, pour tout le groupe</Info>
+<Info label="Durée">15 minutes</Info>
+<Info label="Prime">1 [sac de prime](trophees.md#sacs-de-prime) et 1 trophée pour le groupe</Info>
+</Infobox>
 
 Un contrat est une clé de portail fabriquée sur l'[établi des chasseurs](etabli-des-chasseurs.md), onglet **Contrats**. Comme la [clé du Comté](cle-du-comte.md), on la place dans un **Portal Device** : elle ouvre un **mini-fragment de prime**, une petite île flottante plongée dans la nuit, avec une cible, un lieu et une récompense.
 

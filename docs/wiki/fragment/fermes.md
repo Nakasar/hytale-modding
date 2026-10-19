@@ -1,14 +1,15 @@
 # Ferme
 
-![La ferme zombie (aperçu du générateur)](../images/lieux/Farm_Zombies.png)
+<Infobox title="Ferme" kind="Structure" image={require("../images/lieux/Farm_Zombies.png").default} caption="La ferme zombie (aperçu du générateur)">
+<Info label="Taille">**49 × 45** (27 de haut)</Info>
+<Info label="Par monde">1 ou 2</Info>
+<Info label="Variantes">Zombies, En ruine, Incendiée</Info>
+<Info label="Habitants">**4** [fermiers zombifiés](../pnj/fermier-zombifie.md) et l'[Abomination zombie](../pnj/abomination-zombie.md) (variante Zombies)</Info>
+<Info label="Coffres">**2**</Info>
+<Info label="Butin">[Ferme](butin-des-coffres.md#ferme), [Ferme incendiée](butin-des-coffres.md#ferme-incendiee)</Info>
+</Infobox>
 
 Une exploitation du domaine : maison, grange, champs et potager.
-
-| | |
-|---|---|
-| Taille | **49 × 45** (27 de haut) |
-| Par monde | 1 ou 2 |
-| Coffres | **2** |
 
 ## Plan
 

@@ -1,14 +1,16 @@
 # Village
 
-![Le village zombie (aperçu du générateur, les points magenta sont des blocs sans couleur d'aperçu)](../images/lieux/Village_Zombies.png)
+<Infobox title="Village" kind="Structure" image={require("../images/lieux/Village_Zombies.png").default} caption="Le village zombie (aperçu du générateur, les points magenta sont des blocs sans couleur d'aperçu)">
+<Info label="Taille">**69 × 69** (27 de haut), aplani sur 50 blocs</Info>
+<Info label="Par monde">0 ou 1 (60 %)</Info>
+<Info label="Variantes">Zombies, En ruine, Araignées</Info>
+<Info label="Habitants">**10** [villageois zombifiés](../pnj/villageois-zombifie.md) (variante Zombies)</Info>
+<Info label="Maisons">**10**</Info>
+<Info label="Coffres">**10**</Info>
+<Info label="Butin">[Maison du village](butin-des-coffres.md#maison-du-village), [Maison du notable](butin-des-coffres.md#maison-du-notable)</Info>
+</Infobox>
 
 L'ancien village du Comte. Il n'apparaît que dans **6 mondes sur 10**, toujours sur l'un des trois grands emplacements.
-
-| | |
-|---|---|
-| Taille | **69 × 69** (27 de haut), aplani sur 50 blocs |
-| Par monde | 0 ou 1 (60 %) |
-| Coffres | **10** |
 
 ## Plan
 

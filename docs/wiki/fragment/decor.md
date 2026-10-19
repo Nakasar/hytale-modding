@@ -1,5 +1,13 @@
 # Décor et arbres
 
+<Infobox title="Décor et arbres" kind="Décor">
+<Info label="Petits décors">**7** types (23 plans)</Info>
+<Info label="Arbres du mod">**16** (frêne mort, pétrifié, calciné)</Info>
+<Info label="Forêts">environ un tiers de l'île</Info>
+<Info label="Gardiens, coffres">aucun</Info>
+<Info label="Distance">rien à moins de 38 blocs d'une structure</Info>
+</Infobox>
+
 Entre les structures, la lande du Comté est parsemée de petits décors et d'arbres morts. Aucun ne contient de gardien ni de coffre.
 
 ![Petits décors (aperçu du générateur)](../images/lieux/apercu_decor.png)
