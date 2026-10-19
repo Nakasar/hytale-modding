@@ -1,7 +1,7 @@
 # Comte Vampire
 
 <Infobox title="Comte Vampire" kind="Boss" image={require("../images/pnj/Nakasar_Vampire_Count.jpg").default} caption="Le Comte Vampire en jeu">
-<Info label="Points de vie">**900**</Info>
+<Info label="Points de vie">**8000**, régénère 150 PV/s</Info>
 <Info label="Barre de vie">barre de boss en combat</Info>
 <Info label="Attitude">Neutre, hostile à tous les joueurs une fois frappé</Info>
 <Info label="Lieu">[Manoir du Comte](../fragment/manoir-du-comte.md), 1 par monde</Info>
@@ -21,13 +21,14 @@ Dans le Comté, le Comte **ne vous attaque pas** : il vous regarde passer. Tant 
 
 **Mais ne levez pas la main sur lui.** Au premier coup porté par un joueur (arme, flèche ou sort), il entre en colère contre **tous les joueurs présents**, pas seulement l'attaquant : il change de cible tant qu'un autre joueur est à portée. Sa colère retombe **45 secondes** après le dernier coup échangé ; il rentre alors à son trône, récupère ses PV et redevient pacifique.
 
-On ne pourra le vaincre pour de bon que plus tard, dans un donjon qui lui sera consacré.
+Avec ses 8000 PV et sa régénération incessante, il est **presque invincible** : seul un groupe armé d'argent qui frappe sans relâche peut espérer le faire plier. On ne pourra le vaincre pour de bon que plus tard, dans un donjon qui lui sera consacré.
 
 ## Fiche
 
 | | |
 |---|---|
-| Points de vie | **900**, affichés dans une **barre de vie de boss** pendant le combat |
+| Points de vie | **8000**, affichés dans une **barre de vie de boss** pendant le combat |
+| Régénération | **150 PV par seconde**, en permanence, même en plein combat |
 | Vitesse | 4,5 |
 | Recul subi | ×0,2 |
 | Détection | aucune tant qu'on ne le frappe pas ; en colère : 14 blocs (ligne de vue), 20 blocs pour changer de cible |
