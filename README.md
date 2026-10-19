@@ -302,7 +302,8 @@ Mobs (voir [docs/npc-0.7.2.md](docs/npc-0.7.2.md)) :
   retirés au vampire ; les soins instantanés `Food_Health_Restore_*` peuvent passer avant), les paliers de soif
   reprennent leurs débits, et les potions boivent comme `Potion_Template`. À vérifier : la brûlure au soleil cesse
   sous un toit et pendant l'orage (ids de météo reconnus par mots-clés dans `SunExposure`), l'éblouissement
-  (`ScreenEffects/Nakasar/Sun_Glare.png`), la lumière de nuit visible par soi, le battement de cœur quand affamé,
+  (`ScreenEffects/Nakasar/Sun_Glare.png`), la lumière de nuit visible du seul vampire (envoyée à son seul client par
+  `PrivateNightLightSystem`, invisible des autres joueurs, renvoyée toutes les 2 s), le battement de cœur quand affamé,
   l'état gardé après reconnexion, la capuche et le voile portés. Le malus de vitesse d'attaque réduit les dégâts
   des coups trop rapprochés (le serveur ne peut pas ralentir l'animation).
 

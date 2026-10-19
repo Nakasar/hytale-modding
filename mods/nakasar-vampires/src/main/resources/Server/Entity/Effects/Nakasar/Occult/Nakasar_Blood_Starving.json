@@ -3,9 +3,5 @@
   "Infinite": true,
   "OverlapBehavior": "Overwrite",
   "Debuff": true,
-  "StatusEffectIcon": "UI/StatusEffects/Nakasar/Occult/Blood_Starving.png",
-  "ApplicationEffects": {
-    "EntityTopTint": "#d8d0d4",
-    "EntityBottomTint": "#8a7f86"
-  }
+  "StatusEffectIcon": "UI/StatusEffects/Nakasar/Occult/Blood_Starving.png"
 }

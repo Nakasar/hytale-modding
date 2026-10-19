@@ -618,12 +618,9 @@ def build_items():
 
 
 def build_effects():
-    tints = {
-        "Sated": None, "Hunger_3": None, "Hunger_2": None, "Hunger_1": None,
-        "Starving": {"EntityTopTint": "#d8d0d4", "EntityBottomTint": "#8a7f86"},
-    }
-    for stage, tint in tints.items():
-        effect(f"Nakasar_Blood_{stage}", f"Blood_{stage}", infinite=True, debuff=stage != "Sated", **(tint or {}))
+    # Aucun signe visible des autres joueurs : la faim ne se voit que dans la barre d'effets du vampire.
+    for stage in ["Sated", "Hunger_3", "Hunger_2", "Hunger_1", "Starving"]:
+        effect(f"Nakasar_Blood_{stage}", f"Blood_{stage}", infinite=True, debuff=stage != "Sated")
     effect("Nakasar_Sunburn", "Sunburn", duration=1, debuff=True,
            ScreenEffect="ScreenEffects/Nakasar/Sun_Glare.png",
            EntityTopTint="#ffd9a0", EntityBottomTint="#ff9a5a")
