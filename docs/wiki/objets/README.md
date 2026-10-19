@@ -11,7 +11,7 @@
 
 | | Objet | Type | Obtention |
 |---|---|---|---|
-| | [Baiser du Vampire, Domination, Téléportation, Chaînes spectrales, Nova de sang](runes.md) | Runes de capacité | Autel sacrificiel (2 éclats de rune ; Nova au niveau 4), Comte et Comtesse |
+| | [Baiser du Vampire, Domination, Téléportation, Chaînes spectrales, Nova de sang](runes.md) | Runes de capacité | Autel sacrificiel (2 éclats de rune ; Téléportation et Chaînes au niveau 2, Domination au 3, Nova au 4), Comte et Comtesse |
 | | [Aura de lumière, Invisibilité](runes.md#runes-de-chasseur) | Runes de capacité | Établi des chasseurs (niveaux 2 et 3) |
 | ![icône](/jeu/Icons/Items/Nakasar/Sacrificial_Altar.png) | [Autel sacrificiel](autel-sacrificiel.md) | Établi | Établi : 10 roches, 2 lingots de fer, 1 éclat de rune |
 | ![icône](/jeu/Icons/Items/Nakasar/Occult/Ritual_Chalice.png) | [Calice du sang éternel, Encensoir de purification](vampirisme.md#le-rituel) | Rituels | Autel sacrificiel (niveau 3) |

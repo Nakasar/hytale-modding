@@ -1,5 +1,5 @@
 {
-  "$Comment": "Spectre (élite) d'un château hanté sur deux et d'un cimetière sur sept environ (Cemeteries/Spectre, poids 0,5), avec barre de vie de boss (BossBarSystem). Grand fantôme qui flotte bas. Dès le combat (ou dès le premier coup reçu), il invoque trois fantômes et reste invulnérable tant qu'il en reste (MinionShieldSystem, barre de boss en mode invulnérable) ; une fois la vague détruite, il est vulnérable 14 à 16 s, puis en appelle une autre. Toucher glacial, et une vague de froid annoncée par une zone rouge de 6 blocs qui ralentit fortement ceux qui y restent. Disparaît et réapparaît près de sa cible quand elle s'éloigne. Si on le fuit, il se calme et regagne sa vie. Mort-vivant (feu purificateur). Généré par tools/generate_elites.py.",
+  "$Comment": "Spectre (élite) d'un château hanté sur deux et d'un cimetière sur sept environ (Cemeteries/Spectre, poids 0,5), avec barre de vie de boss (BossBarSystem). Grand fantôme qui flotte bas. Dès le combat (ou dès le premier coup reçu), il invoque trois fantômes et reste invulnérable tant qu'il en reste (MinionShieldSystem, barre de boss en mode invulnérable) ; une fois la vague détruite, il est vulnérable 14 à 16 s, puis en appelle une autre. Vif et mobile : il tourne autour de sa cible, plonge sur elle (téléportation suivie d'un coup de griffes) toutes les 5 à 7 s, enchaîne rafales de griffes et toucher glacial, et une vague de froid annoncée par une zone rouge de 6 blocs ralentit fortement ceux qui y restent. Disparaît et réapparaît près de sa cible quand elle s'éloigne. Si on le fuit, il se calme et regagne sa vie. Mort-vivant (feu purificateur). Généré par tools/generate_elites.py.",
   "Type": "Generic",
   "Appearance": "Nakasar_Spectre",
   "NameTranslationKey": "nakasar_mobs.npc.Spectre.name",
@@ -16,7 +16,7 @@
   "MotionControllerList": [
     {
       "Type": "Fly",
-      "MaxHorizontalSpeed": 4.5,
+      "MaxHorizontalSpeed": 7,
       "MaxClimbSpeed": 3,
       "MaxSinkSpeed": 3,
       "Acceleration": 3,
@@ -74,6 +74,30 @@
           "RestartValueRange": [
             8,
             11
+          ]
+        },
+        {
+          "Type": "TimerStart",
+          "Name": "Swoop",
+          "StartValueRange": [
+            2,
+            3
+          ],
+          "RestartValueRange": [
+            5,
+            7
+          ]
+        },
+        {
+          "Type": "TimerStart",
+          "Name": "Flurry",
+          "StartValueRange": [
+            4,
+            5
+          ],
+          "RestartValueRange": [
+            6,
+            8
           ]
         }
       ]
@@ -282,6 +306,50 @@
           }
         },
         {
+          "$Comment": "Plongeon : il surgit près de sa cible (à moins de 14 blocs) et la frappe aussitôt.",
+          "Sensor": {
+            "Type": "And",
+            "Sensors": [
+              {
+                "Type": "Target",
+                "Range": 14
+              },
+              {
+                "Type": "Timer",
+                "Name": "Swoop",
+                "State": "STOPPED"
+              }
+            ]
+          },
+          "BodyMotion": {
+            "Type": "Teleport",
+            "OffsetRange": [
+              1.5,
+              2.5
+            ],
+            "MaxYOffset": 1,
+            "Orientation": "TowardsTarget"
+          },
+          "HeadMotion": {
+            "Type": "Watch",
+            "RelativeTurnSpeed": 1.5
+          },
+          "ActionsBlocking": true,
+          "Actions": [
+            {
+              "Type": "TimerRestart",
+              "Name": "Swoop"
+            },
+            {
+              "Type": "Attack",
+              "Attack": "Root_Nakasar_NPC_Spectre_Swoop",
+              "SkipAiming": true,
+              "LineOfSight": false,
+              "AvoidFriendlyFire": false
+            }
+          ]
+        },
+        {
           "$Comment": "Apparition soudaine près de la cible quand elle s'éloigne.",
           "Sensor": {
             "Type": "And",
@@ -321,6 +389,41 @@
           ]
         },
         {
+          "$Comment": "Rafale de griffes au contact.",
+          "Sensor": {
+            "Type": "And",
+            "Sensors": [
+              {
+                "Type": "Target",
+                "Range": 3.0
+              },
+              {
+                "Type": "Timer",
+                "Name": "Flurry",
+                "State": "STOPPED"
+              }
+            ]
+          },
+          "ActionsBlocking": true,
+          "Actions": [
+            {
+              "Type": "TimerRestart",
+              "Name": "Flurry"
+            },
+            {
+              "Type": "Attack",
+              "Attack": "Root_Nakasar_NPC_Spectre_Flurry",
+              "SkipAiming": true,
+              "LineOfSight": false,
+              "AvoidFriendlyFire": false
+            }
+          ],
+          "HeadMotion": {
+            "Type": "Watch",
+            "RelativeTurnSpeed": 1.0
+          }
+        },
+        {
           "Sensor": {
             "Type": "Target",
             "Range": 3.0
@@ -335,8 +438,8 @@
               "Type": "Attack",
               "Attack": "Root_Nakasar_NPC_Spectre_Touch",
               "AttackPauseRange": [
-                1.2,
-                1.8
+                0.5,
+                0.9
               ]
             },
             {
@@ -349,20 +452,49 @@
           ]
         },
         {
+          "$Comment": "Entre deux coups, il tourne autour de sa cible au lieu de rester planté devant elle.",
+          "Sensor": {
+            "Type": "Target",
+            "Range": 6
+          },
+          "BodyMotion": {
+            "Type": "MaintainDistance",
+            "DesiredDistanceRange": [
+              2.0,
+              3.5
+            ],
+            "MoveThreshold": 0.5,
+            "RelativeForwardsSpeed": 1.0,
+            "RelativeBackwardsSpeed": 0.8,
+            "StrafingDurationRange": [
+              0.8,
+              1.6
+            ],
+            "StrafingFrequencyRange": [
+              1.0,
+              2.0
+            ]
+          },
+          "HeadMotion": {
+            "Type": "Watch",
+            "RelativeTurnSpeed": 1.5
+          }
+        },
+        {
           "Sensor": {
             "Type": "Target",
             "Range": 28
           },
           "BodyMotion": {
             "Type": "Seek",
-            "RelativeSpeed": 0.75,
-            "SlowDownDistance": 3,
-            "StopDistance": 2.0,
+            "RelativeSpeed": 1.0,
+            "SlowDownDistance": 2,
+            "StopDistance": 1.6,
             "UsePathfinder": false
           },
           "HeadMotion": {
             "Type": "Watch",
-            "RelativeTurnSpeed": 1.2
+            "RelativeTurnSpeed": 1.5
           }
         }
       ]

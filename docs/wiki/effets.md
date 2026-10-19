@@ -1,9 +1,10 @@
 # Effets de statut
 
 <Infobox title="Effets de statut" kind="Effet" icon="/jeu/UI/StatusEffects/Nakasar/Spectral_Chains.png">
-<Info label="Effets">11, plus ceux du [joueur vampire](#vampire)</Info>
+<Info label="Effets">12, plus ceux du [joueur vampire](#vampire)</Info>
 <Info label="Immobilisation">[Chaînes spectrales](#chaines-spectrales), [Enraciné](#enracine)</Info>
 <Info label="Ralentissement">[Froid spectral](#froid-spectral), [Vague de froid](#vague-de-froid), [Emprisonné](#emprisonne)</Info>
+<Info label="Dégâts sur la durée">[Flammes bleues](#flammes-bleues), [Poison de citrouille](#poison-de-citrouille)</Info>
 <Info label="Sources">[Runes](objets/runes.md), boss et élites du Comté</Info>
 <Info label="Durées">3 à 30 s</Info>
 </Infobox>
@@ -41,6 +42,12 @@ Les effets que le mod applique aux joueurs et aux créatures.
 - **Source :** rune [Domination](objets/runes.md#domination), sur une créature
 - **Durée :** 6 s
 - La créature passe dans votre camp et se retourne contre ses anciens alliés.
+
+## Flammes bleues {#flammes-bleues}
+
+- **Source :** coups lourds, coup sismique et brasier bleu de l'[Armure enchantée](pnj/armure-enchantee.md)
+- **Durée :** 3 s (5 s pour le brasier bleu), relancée à chaque coup
+- **5** dégâts de feu par seconde, teinte et flammes bleues.
 
 ## Froid spectral {#froid-spectral}
 

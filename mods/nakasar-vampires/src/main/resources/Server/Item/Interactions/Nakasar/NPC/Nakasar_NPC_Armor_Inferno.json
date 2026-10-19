@@ -1,0 +1,145 @@
+{
+  "$Comment": "Brasier bleu de l'armure enchantée, annoncé : elle se fige 1,5 s, les flammes bleues de son corps grandissent et une zone rouge de 6.5 blocs se charge au sol ; puis le brasier jaillit autour d'elle (20 dégâts de feu, projection, flammes bleues Nakasar_Blue_Flame : 5 dégâts de feu par seconde pendant 5 s). On l'évite en sortant de la zone.",
+  "Type": "Serial",
+  "Interactions": [
+    {
+      "Type": "ClearEntityEffect",
+      "Entity": "User",
+      "EntityEffectId": "Hit_Interrupt_Eligible"
+    },
+    {
+      "Type": "ApplyEffect",
+      "EffectId": "Nakasar_Elite_Rooted"
+    },
+    {
+      "Type": "ApplyEffect",
+      "EffectId": "Dungeon_Goblin_Mace_Slam_Charge"
+    },
+    {
+      "Type": "Simple",
+      "RunTime": 1.5,
+      "Effects": {
+        "ItemPlayerAnimationsId": "Mace",
+        "ItemAnimationId": "Guard",
+        "WorldSoundEventId": "SFX_Spirit_Root_Alerted",
+        "Particles": [
+          {
+            "SystemId": "Feastmaster_Slam_Warning",
+            "TargetEntityPart": "Entity",
+            "TargetNodeName": "Origin",
+            "Scale": 4.42,
+            "PositionOffset": {
+              "X": 0,
+              "Y": 0.1,
+              "Z": 0
+            },
+            "DetachedFromModel": true
+          },
+          {
+            "SystemId": "Fire_Blue",
+            "TargetNodeName": "R-Hand",
+            "Scale": 2.5,
+            "PositionOffset": {
+              "Y": 0.3
+            },
+            "RotationOffset": {
+              "Pitch": 180
+            }
+          },
+          {
+            "SystemId": "Fire_Blue",
+            "TargetNodeName": "L-Hand",
+            "Scale": 2.5,
+            "PositionOffset": {
+              "Y": 0.3
+            },
+            "RotationOffset": {
+              "Pitch": 180
+            }
+          },
+          {
+            "SystemId": "Fire_Blue",
+            "TargetNodeName": "Belly",
+            "Scale": 3.0
+          }
+        ]
+      }
+    },
+    {
+      "Type": "Selector",
+      "RunTime": 0.15,
+      "Effects": {
+        "ItemPlayerAnimationsId": "Mace",
+        "ItemAnimationId": "SwingDownCharged",
+        "WorldSoundEventId": "SFX_Goblin_Feastmaster_Slam",
+        "Particles": [
+          {
+            "SystemId": "Fire_Blue",
+            "TargetEntityPart": "Entity",
+            "TargetNodeName": "Origin",
+            "Scale": 5.0,
+            "PositionOffset": {
+              "X": 0,
+              "Y": 0.1,
+              "Z": 0
+            },
+            "DetachedFromModel": true
+          },
+          {
+            "SystemId": "Stick_Slam_Ground_Large",
+            "TargetEntityPart": "Entity",
+            "TargetNodeName": "Origin",
+            "Scale": 1.4,
+            "PositionOffset": {
+              "X": 0,
+              "Y": 0.1,
+              "Z": 0
+            },
+            "DetachedFromModel": true
+          }
+        ]
+      },
+      "Selector": {
+        "Id": "AOECircle",
+        "Range": 6.5
+      },
+      "HitEntity": {
+        "Interactions": [
+          {
+            "Parent": "DamageEntityParent",
+            "DamageCalculator": {
+              "BaseDamage": {
+                "Fire": 20
+              },
+              "RandomPercentageModifier": 0.1
+            },
+            "DamageEffects": {
+              "WorldParticles": [
+                {
+                  "SystemId": "Impact_Sword_Basic_Stronk"
+                }
+              ],
+              "Knockback": {
+                "Type": "Force",
+                "Force": 6,
+                "VelocityType": "Set",
+                "Direction": {
+                  "Y": 1
+                }
+              }
+            }
+          },
+          {
+            "Type": "Nakasar_ApplyEffectToFoes",
+            "EffectId": "Nakasar_Blue_Flame",
+            "Duration": 5
+          }
+        ]
+      }
+    },
+    {
+      "Type": "Simple",
+      "RunTime": 0.8
+    }
+  ]
+}
