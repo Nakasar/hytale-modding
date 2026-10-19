@@ -15,7 +15,7 @@
   - la fiole sans fond (`Potion_Nakasar_Bottomless_Flask`) : un grand soin qui ne se vide jamais, rechargé en 90 s
     (Cooldown de l'interaction racine) ;
   - les gants de l'Alchimiste (`Armor_Nakasar_Alchemist_Gloves`) : résistance aux éléments ; les fioles et bombes
-    lancées par leur porteur volent 40 % plus loin (tower/AlchemistGloves.java) ;
+    lancées par leur porteur volent 40 % plus loin (tower/AlchemistGlovesSystem.java) ;
   - la lanterne élémentaire (`Nakasar_Elemental_Lantern`) : tenue en main ou dans la main secondaire, sa lumière passe
     du feu au givre, à la foudre puis aux racines (tower/ElementalLanternSystem.java).
 - Le cosmétique du mode difficile : les lunettes de l'Alchimiste (`Armor_Nakasar_Alchemist_Goggles`), sans protection,

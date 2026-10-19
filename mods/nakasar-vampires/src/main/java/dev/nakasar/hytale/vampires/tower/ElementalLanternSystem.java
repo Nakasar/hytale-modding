@@ -13,10 +13,11 @@ import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
 import dev.nakasar.hytale.vampires.purifying.LightAura;
 
 import java.util.Collections;
-import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import java.util.UUID;
 import java.util.WeakHashMap;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * Lanterne élémentaire (objet unique du sac de l'Alchimiste) : tenue en main ou dans la main secondaire, elle éclaire
@@ -24,7 +25,9 @@ import java.util.WeakHashMap;
  * {@value #CYCLE_SECONDS} s. Rangée, la lumière s'éteint. Un porteur sous aura de lumière ({@link LightAura}) garde
  * la lumière de l'aura.
  *
- * <p>La lumière est un {@link DynamicLight} (vue de tous, jamais sauvegardée).
+ * <p>La lumière est un {@link DynamicLight} (vue de tous, jamais sauvegardée). Un porteur qui a déjà une autre
+ * lumière la garde : la lanterne ne la remplace pas et ne la retire pas. La couleur est changée sur place, seulement
+ * quand elle change.
  */
 public final class ElementalLanternSystem extends TickingSystem<EntityStore> {
 
@@ -36,8 +39,8 @@ public final class ElementalLanternSystem extends TickingSystem<EntityStore> {
     private static final int[][] COLOURS = {{15, 6, 2}, {6, 12, 15}, {15, 14, 5}, {6, 15, 4}};
 
     private final Map<World, Float> wait = Collections.synchronizedMap(new WeakHashMap<>());
-    /** Porteurs que la lanterne éclaire en ce moment. */
-    private final Set<Ref<EntityStore>> lit = Collections.synchronizedSet(new HashSet<>());
+    /** Porteurs que la lanterne éclaire, par UUID (la lumière suit le joueur d'un monde à l'autre, pas sa Ref). */
+    private final Set<UUID> lit = ConcurrentHashMap.newKeySet();
 
     @Override
     public void tick(float dt, int systemIndex, Store<EntityStore> store) {
@@ -55,17 +58,27 @@ public final class ElementalLanternSystem extends TickingSystem<EntityStore> {
         Store<EntityStore> store = world.getEntityStore().getStore();
         double seconds = System.nanoTime() / 1e9;
         ColorLight light = colour((float) (seconds % CYCLE_SECONDS / CYCLE_SECONDS));
-        lit.removeIf(ref -> !ref.isValid());
         for (PlayerRef player : world.getPlayerRefs()) {
             Ref<EntityStore> ref = player.getReference();
             if (ref == null || !ref.isValid() || store.getComponent(ref, LightAura.getComponentType()) != null) {
                 continue;
             }
+            UUID uuid = player.getUuid();
+            DynamicLight current = store.getComponent(ref, DynamicLight.getComponentType());
+            boolean ours = lit.contains(uuid);
             if (holdsLantern(store, ref)) {
-                lit.add(ref);
-                store.putComponent(ref, DynamicLight.getComponentType(), new DynamicLight(new ColorLight(light)));
-            } else if (lit.remove(ref)) {
-                store.tryRemoveComponent(ref, DynamicLight.getComponentType());
+                if (current == null) {
+                    lit.add(uuid);
+                    store.putComponent(ref, DynamicLight.getComponentType(), new DynamicLight(light));
+                } else if (ours && !light.equals(current.getColorLight())) {
+                    current.setColorLight(light);
+                }
+                // Une autre lumière (pas la nôtre) : on la laisse.
+            } else if (ours) {
+                lit.remove(uuid);
+                if (current != null) {
+                    store.tryRemoveComponent(ref, DynamicLight.getComponentType());
+                }
             }
         }
     }

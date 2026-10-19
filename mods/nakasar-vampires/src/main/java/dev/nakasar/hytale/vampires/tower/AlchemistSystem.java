@@ -198,6 +198,8 @@ public final class AlchemistSystem extends TickingSystem<EntityStore> {
         final List<Strike> strikes = new ArrayList<>();
         float absent;
         boolean sealed;
+        /** Sacoches données (une seule fois, même sans volumes déclencheurs). */
+        boolean rewarded;
     }
 
     /** Sacs de butin donnés à la mort du boss (tools/generate_alchemist_loot.py). */
@@ -257,13 +259,16 @@ public final class AlchemistSystem extends TickingSystem<EntityStore> {
             clearHelpers(fight, store);
             gate.finish(volumes);
             fight.strikes.clear();
+            if (!fight.rewarded) {
+                fight.rewarded = true;
+                VampiresPlugin.get().getLogger().atInfo().log("Alchimiste vaincu (mode difficile : %s, %d joueur(s))",
+                        fight.hard, fight.players);
+                giveBags(world, store, fight.hard);
+            }
             if (!fight.sealed && volumes != null) {
                 fight.sealed = true;
                 tag(volumes, TowerLayout.ALCHEMIST_SEAL, "Alchemist", "On");
                 tag(volumes, TowerLayout.ALCHEMIST_ARENA, "Reset", "On");
-                VampiresPlugin.get().getLogger().atInfo().log("Alchimiste vaincu (mode difficile : %s, %d joueur(s))",
-                        fight.hard, fight.players);
-                giveBags(world, store, fight.hard);
             }
             return;
         }
