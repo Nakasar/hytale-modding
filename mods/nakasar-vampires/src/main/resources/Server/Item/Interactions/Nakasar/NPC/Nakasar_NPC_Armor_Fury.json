@@ -1,0 +1,188 @@
+{
+  "$Comment": "Furie de l'armure enchantée (coups lourds enchaînés) : deux grands revers de massue (32 dégâts chacun, 4 blocs, 120°), puis elle lève la massue en flammes 0,5 s et l'abat (45 dégâts, projection, flammes bleues 3 s). Dure environ 2 s : reculez dès le premier revers.",
+  "Type": "Serial",
+  "Interactions": [
+    {
+      "Type": "ClearEntityEffect",
+      "Entity": "User",
+      "EntityEffectId": "Hit_Interrupt_Eligible"
+    },
+    {
+      "Type": "ApplyEffect",
+      "EffectId": "Nakasar_Elite_Rooted"
+    },
+    {
+      "Type": "Simple",
+      "RunTime": 0.3,
+      "Effects": {
+        "ItemPlayerAnimationsId": "Mace",
+        "ItemAnimationId": "SwingLeft",
+        "WorldSoundEventId": "SFX_Light_Melee_T2_Swing"
+      }
+    },
+    {
+      "Type": "Selector",
+      "RunTime": 0.15,
+      "Selector": {
+        "Id": "Horizontal",
+        "Direction": "ToLeft",
+        "TestLineOfSight": true,
+        "ExtendTop": 0.8,
+        "ExtendBottom": 0.8,
+        "StartDistance": 0.3,
+        "EndDistance": 4.0,
+        "Length": 120,
+        "RollOffset": 15,
+        "YawStartOffset": 60
+      },
+      "HitEntity": {
+        "Interactions": [
+          {
+            "Parent": "DamageEntityParent_Hit_Interrupt",
+            "DamageCalculator": {
+              "BaseDamage": {
+                "Physical": 32
+              },
+              "RandomPercentageModifier": 0.1
+            },
+            "DamageEffects": {
+              "WorldSoundEventId": "SFX_T1_Impact_Blunt",
+              "WorldParticles": [
+                {
+                  "SystemId": "Impact_Sword_Basic_Stronk"
+                }
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "Type": "Simple",
+      "RunTime": 0.3,
+      "Effects": {
+        "ItemPlayerAnimationsId": "Mace",
+        "ItemAnimationId": "SwingRight",
+        "WorldSoundEventId": "SFX_Light_Melee_T2_Swing"
+      }
+    },
+    {
+      "Type": "Selector",
+      "RunTime": 0.15,
+      "Selector": {
+        "Id": "Horizontal",
+        "Direction": "ToRight",
+        "TestLineOfSight": true,
+        "ExtendTop": 0.8,
+        "ExtendBottom": 0.8,
+        "StartDistance": 0.3,
+        "EndDistance": 4.0,
+        "Length": 120,
+        "RollOffset": 15,
+        "YawStartOffset": -60
+      },
+      "HitEntity": {
+        "Interactions": [
+          {
+            "Parent": "DamageEntityParent_Hit_Interrupt",
+            "DamageCalculator": {
+              "BaseDamage": {
+                "Physical": 32
+              },
+              "RandomPercentageModifier": 0.1
+            },
+            "DamageEffects": {
+              "WorldSoundEventId": "SFX_T1_Impact_Blunt",
+              "WorldParticles": [
+                {
+                  "SystemId": "Impact_Sword_Basic_Stronk"
+                }
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "Type": "Simple",
+      "RunTime": 0.5,
+      "Effects": {
+        "ItemPlayerAnimationsId": "Mace",
+        "ItemAnimationId": "SwingDownCharging",
+        "WorldSoundEventId": "SFX_Spear_Throw_Charge",
+        "Particles": [
+          {
+            "SystemId": "Fire_Blue",
+            "TargetNodeName": "R-Hand",
+            "Scale": 2.0,
+            "PositionOffset": {
+              "Y": 0.3
+            },
+            "RotationOffset": {
+              "Pitch": 180
+            }
+          }
+        ]
+      }
+    },
+    {
+      "Type": "Selector",
+      "RunTime": 0.15,
+      "Effects": {
+        "ItemPlayerAnimationsId": "Mace",
+        "ItemAnimationId": "SwingDownCharged",
+        "WorldSoundEventId": "SFX_Goblin_Feastmaster_Slam"
+      },
+      "Selector": {
+        "Id": "Horizontal",
+        "Direction": "ToLeft",
+        "TestLineOfSight": true,
+        "ExtendTop": 1.0,
+        "ExtendBottom": 1.0,
+        "StartDistance": 0.3,
+        "EndDistance": 4.2,
+        "Length": 90,
+        "RollOffset": 0,
+        "YawStartOffset": 45
+      },
+      "HitEntity": {
+        "Interactions": [
+          {
+            "Parent": "DamageEntityParent_Hit_Interrupt",
+            "DamageCalculator": {
+              "BaseDamage": {
+                "Physical": 45
+              },
+              "RandomPercentageModifier": 0.1
+            },
+            "DamageEffects": {
+              "WorldSoundEventId": "SFX_Mace_T2_Signature_Impact",
+              "WorldParticles": [
+                {
+                  "SystemId": "Impact_Sword_Basic_Stronk"
+                }
+              ],
+              "Knockback": {
+                "Type": "Force",
+                "Force": 7,
+                "VelocityType": "Set",
+                "Direction": {
+                  "Y": 1
+                }
+              }
+            }
+          },
+          {
+            "Type": "Nakasar_ApplyEffectToFoes",
+            "EffectId": "Nakasar_Blue_Flame",
+            "Duration": 3
+          }
+        ]
+      }
+    },
+    {
+      "Type": "Simple",
+      "RunTime": 0.7
+    }
+  ]
+}

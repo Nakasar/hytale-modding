@@ -33,3 +33,4 @@ npc.Spectral_Ghost.name = Spectral Ghost
 items.Nakasar_Spawner_Enchanted_Armor.name = Marker: enchanted armor (elite)
 items.Nakasar_Spawner_Spectre.name = Marker: Spectre (elite)
 effects.Nakasar_Spectre_Frost = Cold wave
+effects.Nakasar_Blue_Flame = Blue flames

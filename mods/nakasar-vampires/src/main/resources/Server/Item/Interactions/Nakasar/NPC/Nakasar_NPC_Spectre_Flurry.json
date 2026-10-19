@@ -1,0 +1,148 @@
+{
+  "$Comment": "Rafale de griffes du Spectre : trois coups rapides (10 dégâts chacun) ; le dernier glace aussi (Nakasar_Ghost_Chill).",
+  "Type": "Serial",
+  "Interactions": [
+    {
+      "Type": "Simple",
+      "RunTime": 0.25,
+      "Effects": {
+        "ItemAnimationId": "SwingDown",
+        "WorldSoundEventId": "SFX_Light_Melee_T2_Swing"
+      }
+    },
+    {
+      "Type": "Selector",
+      "RunTime": 0.1,
+      "Selector": {
+        "Id": "Horizontal",
+        "Direction": "ToLeft",
+        "TestLineOfSight": false,
+        "ExtendTop": 1.0,
+        "ExtendBottom": 1.0,
+        "StartDistance": 0.1,
+        "EndDistance": 3.2,
+        "Length": 100,
+        "RollOffset": 0,
+        "YawStartOffset": 50
+      },
+      "HitEntity": {
+        "Interactions": [
+          {
+            "Parent": "DamageEntityParent_Hit_Interrupt",
+            "DamageCalculator": {
+              "BaseDamage": {
+                "Physical": 10
+              },
+              "RandomPercentageModifier": 0.1
+            },
+            "DamageEffects": {
+              "WorldParticles": [
+                {
+                  "SystemId": "Impact_Ice"
+                }
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "Type": "Simple",
+      "RunTime": 0.25,
+      "Effects": {
+        "ItemAnimationId": "SwingDown",
+        "WorldSoundEventId": "SFX_Light_Melee_T2_Swing"
+      }
+    },
+    {
+      "Type": "Selector",
+      "RunTime": 0.1,
+      "Selector": {
+        "Id": "Horizontal",
+        "Direction": "ToRight",
+        "TestLineOfSight": false,
+        "ExtendTop": 1.0,
+        "ExtendBottom": 1.0,
+        "StartDistance": 0.1,
+        "EndDistance": 3.2,
+        "Length": 100,
+        "RollOffset": 0,
+        "YawStartOffset": -50
+      },
+      "HitEntity": {
+        "Interactions": [
+          {
+            "Parent": "DamageEntityParent_Hit_Interrupt",
+            "DamageCalculator": {
+              "BaseDamage": {
+                "Physical": 10
+              },
+              "RandomPercentageModifier": 0.1
+            },
+            "DamageEffects": {
+              "WorldParticles": [
+                {
+                  "SystemId": "Impact_Ice"
+                }
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "Type": "Simple",
+      "RunTime": 0.25,
+      "Effects": {
+        "ItemAnimationId": "SwingDown",
+        "WorldSoundEventId": "SFX_Light_Melee_T2_Swing"
+      }
+    },
+    {
+      "Type": "Selector",
+      "RunTime": 0.1,
+      "Selector": {
+        "Id": "Horizontal",
+        "Direction": "ToLeft",
+        "TestLineOfSight": false,
+        "ExtendTop": 1.0,
+        "ExtendBottom": 1.0,
+        "StartDistance": 0.1,
+        "EndDistance": 3.2,
+        "Length": 100,
+        "RollOffset": 0,
+        "YawStartOffset": 50
+      },
+      "HitEntity": {
+        "Interactions": [
+          {
+            "Parent": "DamageEntityParent_Hit_Interrupt",
+            "DamageCalculator": {
+              "BaseDamage": {
+                "Physical": 10
+              },
+              "RandomPercentageModifier": 0.1
+            },
+            "DamageEffects": {
+              "WorldParticles": [
+                {
+                  "SystemId": "Impact_Ice"
+                }
+              ]
+            }
+          },
+          {
+            "Type": "ApplyEffect",
+            "EffectId": "Nakasar_Ghost_Chill",
+            "Entity": "Target",
+            "Duration": 3
+          }
+        ]
+      }
+    },
+    {
+      "Type": "Simple",
+      "RunTime": 0.2
+    }
+  ]
+}

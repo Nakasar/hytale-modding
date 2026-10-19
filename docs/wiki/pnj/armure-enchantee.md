@@ -32,10 +32,13 @@ Une grande armure vide, animée par une magie runique, qui garde le sous-sol de 
 | Attaque | Portée | Effet | Fréquence |
 |---|---|---|---|
 | **Rouages enchantés** | autour d'elle | fait apparaître des [rouages enchantés](rouage-enchante.md) jusqu'à en avoir **3** ; chacun la **soigne de 5 PV par seconde** | dès le début du combat, puis toutes les 18 à 22 s |
-| **Coup sismique** (annoncé) | cercle de **4,5 blocs** autour d'elle | **40** dégâts physiques (±10 %), projection | toutes les 11 à 14 s, quand la cible est à moins de 4,5 blocs |
+| **Coup sismique** (annoncé) | cercle de **4,5 blocs** autour d'elle | **40** dégâts physiques (±10 %), projection + flammes bleues 3 s | toutes les 11 à 14 s, quand la cible est à moins de 4,5 blocs |
+| **Brasier bleu** (annoncé) | cercle de **6,5 blocs** autour d'elle | **20** dégâts de feu, projection + [Flammes bleues](../effets.md#flammes-bleues) 5 s | toutes les 16 à 20 s, quand la cible est à moins de 8 blocs |
+| **Frappe écrasante** (coup lourd) | 4,6 blocs devant elle | **55** dégâts physiques, forte projection + flammes bleues 3 s | toutes les 7 à 9 s, au contact |
+| **Furie** (coups lourds) | 4 blocs devant elle | deux revers de **32** puis un coup abattu de **45**, projection + flammes bleues 3 s | toutes les 12 à 15 s, au contact |
 | **Coups de masse** | 3,6 blocs | **28** dégâts physiques (±10 %), gauche puis droite | pause de 1,2 à 1,8 s |
 
-Le coup sismique est annoncé par un **cercle rouge qui se charge au sol** pendant 1,4 s, masse levée : sortez du cercle avant qu'il soit plein.
+Le coup sismique est annoncé par un **cercle rouge qui se charge au sol** pendant 1,4 s, masse levée : sortez du cercle avant qu'il soit plein. Le brasier bleu s'annonce de la même façon (1,5 s, garde haute, mains en flammes), sur un cercle plus large. Les coups lourds partent après un élan bien visible (masse levée, flammes bleues dans la main) : reculez ou esquivez sur le côté. L'armure reste plantée sur place pendant ses attaques spéciales.
 
 ## Butin
 

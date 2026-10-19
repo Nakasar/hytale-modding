@@ -1,0 +1,78 @@
+{
+  "$Comment": "Plongeon du Spectre : il surgit à 1,5-2,5 blocs de sa cible (téléportation du rôle) et la frappe aussitôt de ses griffes glacées (22 dégâts, recul, frisson Nakasar_Ghost_Chill 3 s).",
+  "Type": "Serial",
+  "Interactions": [
+    {
+      "Type": "Simple",
+      "RunTime": 0.35,
+      "Effects": {
+        "ItemAnimationId": "SwingDown",
+        "WorldSoundEventId": "SFX_Spirit_Root_Alerted",
+        "Particles": [
+          {
+            "SystemId": "Weapon_Frost_Mist",
+            "TargetNodeName": "Chest",
+            "Scale": 1.5
+          }
+        ]
+      }
+    },
+    {
+      "Type": "Selector",
+      "RunTime": 0.1,
+      "Effects": {
+        "WorldSoundEventId": "SFX_Light_Melee_T2_Swing"
+      },
+      "Selector": {
+        "Id": "Horizontal",
+        "Direction": "ToLeft",
+        "TestLineOfSight": false,
+        "ExtendTop": 1.2,
+        "ExtendBottom": 1.2,
+        "StartDistance": 0.1,
+        "EndDistance": 3.4,
+        "Length": 120,
+        "RollOffset": 0,
+        "YawStartOffset": 60
+      },
+      "HitEntity": {
+        "Interactions": [
+          {
+            "Parent": "DamageEntityParent_Hit_Interrupt",
+            "DamageCalculator": {
+              "BaseDamage": {
+                "Physical": 22
+              },
+              "RandomPercentageModifier": 0.1
+            },
+            "DamageEffects": {
+              "WorldParticles": [
+                {
+                  "SystemId": "Impact_Ice"
+                }
+              ],
+              "Knockback": {
+                "Type": "Force",
+                "Force": 4,
+                "VelocityType": "Set",
+                "Direction": {
+                  "Y": 1
+                }
+              }
+            }
+          },
+          {
+            "Type": "ApplyEffect",
+            "EffectId": "Nakasar_Ghost_Chill",
+            "Entity": "Target",
+            "Duration": 3
+          }
+        ]
+      }
+    },
+    {
+      "Type": "Simple",
+      "RunTime": 0.3
+    }
+  ]
+}
