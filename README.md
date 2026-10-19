@@ -16,6 +16,7 @@ Un seul mod, **Vampires** (`mods/nakasar-vampires`, plugin Java + pack d'assets,
 
 Le guide du joueur (fragment, structures, bestiaire, brèches, objets) est un wiki publié sur GitHub Pages : https://nakasar.github.io/hytale-modding/ (sources Markdown dans [docs/wiki](docs/wiki/README.md), site Docusaurus dans [wiki](wiki/), aperçu local : `cd wiki && npm ci && npm start`).
 Le détail du mod (fichiers, chaînes d'interactions, camps, réglages) est dans [docs/mods.md](docs/mods.md).
+L'histoire et la progression visées (voie des chasseurs, voie occulte, joueur vampire, zones à venir) : [docs/histoire-progression.md](docs/histoire-progression.md).
 Les points d'API serveur vérifiés dans le jar `Server-0.7.2` sont notés dans [docs/api-0.7.2.md](docs/api-0.7.2.md).
 Création de PNJ (rôles, IA, modèles, apparitions) : [docs/npc-0.7.2.md](docs/npc-0.7.2.md), et la référence complète des 179 briques d'IA générée depuis le jar : [docs/npc-reference-0.7.2.md](docs/npc-reference-0.7.2.md).
 
