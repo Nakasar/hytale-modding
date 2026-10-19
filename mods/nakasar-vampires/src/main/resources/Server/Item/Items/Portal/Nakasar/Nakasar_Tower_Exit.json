@@ -31,7 +31,7 @@
     },
     "Particles": [
       {
-        "SystemId": "MagicPortal_VoidKeyArt",
+        "SystemId": "Nakasar_Tower_Exit_Portal",
         "PositionOffset": {
           "Y": 2.5
         }

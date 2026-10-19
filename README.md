@@ -319,11 +319,10 @@ Mobs (voir [docs/npc-0.7.2.md](docs/npc-0.7.2.md)) :
 
 - **Tour de l'Alchimiste, socle** (`tools/generate_alchemist_tower.py`, `tower/TowerFallSystem.java`) : la clé se
   fabrique à l'établi des chasseurs niveau 3 et à l'autel niveau 3 (éclats de rune, essences du vide et élémentaires).
-  L'instance doit ouvrir de nuit (19 h figée, ciel violet et horizon émeraude), sans limite de temps, blocs non
-  modifiables. Arrivée sur une place ronde à parapets, pont vers le pied de la tour (façade encore murée par des
-  barreaux, portail de retour provisoire devant). À vérifier : le portail de sortie anticipée `Nakasar_Tower_Exit`
-  (copie de `Dungeon_Portal_Early_Exit`, posé par prefab sans blocs de remplissage) affiche bien la confirmation et
-  renvoie chez soi ; tomber de l'île (48 blocs sous la place) ramène au point d'arrivée avec un message.
+  L'instance ouvre de nuit (19 h figée, ciel violet), sans limite de temps ni d'entrées (`AllowedEntryCount` 0 comme
+  Deepworks), blocs non modifiables. Vérifié en jeu : confirmation du portail de sortie `Nakasar_Tower_Exit`, retour
+  au parvis après une chute. À vérifier : les anneaux de fumée du portail, descendus au ras du socle par la copie de
+  particules `Nakasar_Tower_Exit_Portal` (spawners `MagicPortal_VoidSmokeMiddle` et `MagicPortal_VoidGlowSmoke`).
 
 ## Organisation du dépôt
 

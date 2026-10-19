@@ -12,8 +12,8 @@ du donjon vanilla Deepworks). Étape 1, le socle :
 - deux îles flottantes au-dessus du vide : l'île d'arrivée et, au nord, l'île de la tour, reliées par un pont ;
 - le parvis d'arrivée (point d'apparition, portail de sortie anticipée), le pont et le pied de la tour, fermés par des
   parapets de 2 blocs : on ne peut pas sauter dans le vide. Un joueur qui y tombe quand même est ramené sur le parvis
-  (TowerFallSystem, Java). La tour elle-même vient à l'étape 2 ; d'ici là, un portail de retour provisoire attend au
-  pied de sa porte scellée.
+  (TowerFallSystem, Java). La tour elle-même vient à l'étape 2 ; d'ici là, un second portail de sortie (avec
+  confirmation) attend au pied de sa porte scellée.
 
 Repère : x vers l'est, z vers le sud, y vers le haut ; le point d'apparition est en (0, GROUND_Y, 0).
 """
@@ -34,6 +34,7 @@ LANG = "nakasar_alchemist"
 TOWER = "Nakasar_Alchemist_Tower"
 KEY = "PortalKey_Nakasar_Alchemist_Tower"
 EXIT = "Nakasar_Tower_Exit"
+EXIT_PARTICLES = "Nakasar_Tower_Exit_Portal"
 PREFABS = "Nakasar/AlchemistTower"
 ICON = "Icons/Items/Nakasar/Tower/PortalKey_Alchemist_Tower.png"
 WEATHER = "Nakasar_Weather_Alchemist_Tower"
@@ -59,7 +60,7 @@ BRIDGE_HALF = 2
 BRIDGE_START, BRIDGE_END = -10, -60
 FOOT = (-8, -72, 8, -60)          # x0, z0, x1, z1 du parvis au pied de la tour
 EXIT_Z = 6                         # portail de sortie anticipée, au sud du point d'apparition
-RETURN_Z = -66                     # portail de retour provisoire, au pied de la tour
+RETURN_Z = -66                     # second portail de sortie, au pied de la tour (provisoire)
 
 # Pierres de la tour : marbre clair, liserés d'or, cristaux violets et verts (les couleurs de l'Alchimiste).
 FLOOR = [("Rock_Marble_Brick", 5), ("Rock_Marble_Brick_Smooth", 2), ("Rock_Marble_Cobble", 1)]
@@ -111,6 +112,7 @@ def portal_type():
             "SpawnProviderOverride": {"Id": "Global", "SpawnPoint": {"X": 0.5, "Y": float(GROUND_Y), "Z": 0.5, "Yaw": 0.0}},
         },
         "TimeLimitSeconds": -1,
+        "AllowedEntryCount": 0,            # 0 = entrées illimitées, comme The_Deepworks
         "CloseWhenEmpty": True,
         "VoidInvasionEnabled": False,
         "AllowPlayersToLeaveViaMap": True,
@@ -147,6 +149,40 @@ def gameplay_config():
     }
 
 
+# Anneaux de fumée horizontaux du portail vanilla : centrés à mi-hauteur de l'ovale, ils flottent.
+# On les descend au ras du socle (2,5 blocs au-dessus du bloc, socle haut de 0,5).
+RING_SPAWNERS = {"MagicPortal_VoidSmokeMiddle", "MagicPortal_VoidGlowSmoke"}
+RING_DROP = -2.0
+
+
+def exit_particles():
+    """Copie de MagicPortal_VoidKeyArt (vanilla 0.7.2) avec les anneaux de fumée posés au sol."""
+    spawners = [
+        {"SpawnerId": "MagicPortal_VoidSpawn"},
+        {"SpawnerId": "MagicPortal_VoidFlash"},
+        {"SpawnerId": "MagicPortal_VoidCenterCircle"},
+        {"SpawnerId": "MagicPortal_VoidSmokeAlpha", "StartDelay": 0, "PositionOffset": {"Y": 0.2}},
+        {"SpawnerId": "MagicPortal_VoidSparks"},
+        {"SpawnerId": "MagicPortal_VoidSparksDark"},
+        {"SpawnerId": "MagicPortal_Center", "StartDelay": 0.5},
+        {"SpawnerId": "MagicPortal_VoidCenterGlow", "StartDelay": 0.5},
+        {"SpawnerId": "MagicPortal_VoidSmokeMiddle", "RotationOffset": {"Pitch": 90.0}},
+        {"SpawnerId": "MagicPortal_VoidGlowSmoke", "RotationOffset": {"Pitch": 90.0}},
+        {"SpawnerId": "MagicPortal_VoidGlowCenterIntense"},
+        {"SpawnerId": "MagicPortal_VoidOuterCircle", "RotationOffset": {"Pitch": 90.0}},
+        {"SpawnerId": "MagicPortal_VoidTentacles", "PositionOffset": {"Z": 0.4}},
+    ]
+    for sp in spawners:
+        if sp["SpawnerId"] in RING_SPAWNERS:
+            sp["PositionOffset"] = {"Y": RING_DROP}
+    return {
+        "$Comment": "Copie de MagicPortal_VoidKeyArt, anneaux au sol. Générée par tools/generate_alchemist_tower.py.",
+        "Spawners": spawners,
+        "CullDistance": 50.0,
+        "IsImportant": True,
+    }
+
+
 def exit_item():
     """Portail de sortie anticipée : celui de Deepworks (Dungeon_Portal_Early_Exit), avec nos textes."""
     return {
@@ -166,7 +202,7 @@ def exit_item():
             "PhysicalMaterialId": "Stone",
             "VariantRotation": "NESW",
             "Gathering": {"Breaking": {"GatherType": "Unbreakable"}},
-            "Particles": [{"SystemId": "MagicPortal_VoidKeyArt", "PositionOffset": {"Y": 2.5}}],
+            "Particles": [{"SystemId": EXIT_PARTICLES, "PositionOffset": {"Y": 2.5}}],
             "TextureComputedColor": "#736940",
             "Interactions": {"Use": {"Interactions": [{
                 "Type": "OpenCustomUI",
@@ -365,7 +401,7 @@ def arrival_prefab(seed):
                 depth = 3 if abs(x) <= 1 else 5
                 p.fill(x, -2 - depth, z, x, -3, z, "Rock_Marble_Brick_Pillar_Middle")
 
-    # Pied de la tour : parvis carré fermé, porte scellée au nord, portail de retour provisoire.
+    # Pied de la tour : parvis carré fermé, porte scellée au nord, portail de sortie provisoire.
     x0, z0, x1, z1 = FOOT
     for x in range(x0, x1 + 1):
         for z in range(z0, z1 + 1):
@@ -384,7 +420,7 @@ def arrival_prefab(seed):
         p.set(x, 0, z0 + 1, p.pick(CRYSTALS))
         p.set(x, 2, z1, "Deco_Lantern")
     p.fill(-1, 0, RETURN_Z - 1, 1, 2, RETURN_Z + 1, pf.AIR)
-    p.set(0, 0, RETURN_Z, "Portal_Return")
+    p.set(0, 0, RETURN_Z, EXIT, pf.SOUTH)
 
     # Point d'apparition : 3 × 3 × 3 blocs libres.
     p.fill(-1, 0, -1, 1, 2, 1, pf.AIR)
@@ -417,6 +453,7 @@ def main():
     preview = Path(sys.argv[sys.argv.index("--preview") + 1]) if "--preview" in sys.argv else None
     write_json(SERVER / "Item/Items/Portal/Nakasar" / f"{KEY}.json", key_item())
     write_json(SERVER / "Item/Items/Portal/Nakasar" / f"{EXIT}.json", exit_item())
+    write_json(SERVER / "Particles/Nakasar/Tower" / f"{EXIT_PARTICLES}.particlesystem", exit_particles())
     write_json(SERVER / "PortalTypes" / f"{TOWER}.json", portal_type())
     write_json(SERVER / "Instances" / TOWER / "instance.bson", instance())
     write_json(SERVER / "GameplayConfigs" / f"{TOWER}.json", gameplay_config())

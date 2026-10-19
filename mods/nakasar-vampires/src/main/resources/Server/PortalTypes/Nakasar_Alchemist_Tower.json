@@ -37,6 +37,7 @@
     }
   },
   "TimeLimitSeconds": -1,
+  "AllowedEntryCount": 0,
   "CloseWhenEmpty": true,
   "VoidInvasionEnabled": false,
   "AllowPlayersToLeaveViaMap": true
