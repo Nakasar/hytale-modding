@@ -28,6 +28,7 @@ Les serviteurs affamés du Comte : peau lilas, oreilles pointues, crocs, tunique
 | Objet | Quantité | Chance |
 |---|---|---|
 | Éclat de rune | 1 | 25 % |
+| [Croc de vampire](../objets/trophees.md) | 1 | 50 % |
 
 ## Où le trouver
 

@@ -1,0 +1,34 @@
+{
+  "TimeSeconds": 2,
+  "KnowledgeRequired": false,
+  "Input": [
+    {
+      "ItemId": "Nakasar_Trophy_Vampire_Fang",
+      "Quantity": 3
+    },
+    {
+      "ItemId": "Nakasar_Trophy_Abomination_Heart",
+      "Quantity": 1
+    }
+  ],
+  "PrimaryOutput": {
+    "ItemId": "Nakasar_Hunter_Seal_Tracker",
+    "Quantity": 1
+  },
+  "Output": [
+    {
+      "ItemId": "Nakasar_Hunter_Seal_Tracker",
+      "Quantity": 1
+    }
+  ],
+  "BenchRequirement": [
+    {
+      "Type": "Crafting",
+      "Id": "Nakasar_Hunter_Workbench",
+      "Categories": [
+        "Nakasar_Hunter_Trophies"
+      ],
+      "RequiredTierLevel": 1
+    }
+  ]
+}

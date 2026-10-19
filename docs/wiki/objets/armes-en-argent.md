@@ -13,6 +13,7 @@ Treize armes et munitions en argent, forgées à l'**établi d'armes**. Chacune 
 - **Corps à corps :** il faut tenir une arme en argent (l'épée en acier d'argent du jeu compte aussi). Les sorts de [runes](runes.md) et les effets (poison...) n'en profitent pas.
 - **Projectiles :** une flèche, un carreau, une balle ou une lance de jet est « en argent » si elle est tirée avec une arme en argent, ou si c'est une [flèche en argent](#fleches-en-argent). Le bonus suit le projectile, même si vous changez d'arme avant l'impact.
 - Les [chasseurs de vampires](../pnj/chasseur-epee.md) portent des armes en argent : eux aussi font double dégâts aux vampires.
+- L'[argent béni](#argent-beni) frappe plus fort : ×2,5 contre les vampires, ×1,5 contre les autres morts-vivants.
 
 ## Les armes
 
@@ -47,3 +48,32 @@ Toutes : rareté **Rare**, niveau 25, recette connue d'office, à l'**établi d'
 ## Où trouver de l'argent
 
 Lingots d'argent dans les coffres du Comté : [trésor du manoir](../fragment/butin-des-coffres.md#tresor-du-manoir) (2 à 6), chambres et atelier du manoir, [quartiers du capitaine](../fragment/butin-des-coffres.md#quartiers-du-capitaine), [ruines du château](../fragment/butin-des-coffres.md#ruines-du-chateau), [cryptes](../fragment/butin-des-coffres.md#crypte), [maison du notable](../fragment/butin-des-coffres.md#maison-du-notable) et [camp de chasseurs](../fragment/butin-des-coffres.md#camp-de-chasseurs).
+
+## Argent béni {#argent-beni}
+
+> Bénie par les chasseurs : ×2,5 dégâts contre les vampires, ×1,5 contre les autres morts-vivants. Compte comme une arme en argent.
+
+Les chasseurs bénissent les armes en argent sur leur [établi](etabli-des-chasseurs.md) amélioré au **niveau 3**, onglet **Armes bénies**. Chaque arme bénie garde les attaques, les dégâts de base et la durabilité de son arme en argent ; elle prend une teinte dorée.
+
+- **×2,5** contre les vampires (au lieu de ×2).
+- **×1,5** contre les autres morts-vivants : zombies et squelettes du Comté, [Abomination](../pnj/abomination-zombie.md), [Capitaine](../pnj/capitaine-de-la-garde.md), [fantômes](../pnj/fantome.md), et les morts-vivants du jeu (squelettes, zombies, goules, spectres).
+- Les projectiles tirés avec un arc, une arbalète ou un tromblon bénis sont bénis aussi. Une flèche en argent tirée d'un arc ordinaire reste en argent simple.
+
+Toutes : rareté **Épique**, niveau 35, **4 s**. Ingrédients : **l'arme en argent**, **2 lingots d'argent**, **2 [crocs de vampire](trophees.md)**, **1 topaze**.
+
+| | Arme bénie | À partir de |
+|---|---|---|
+| | Épée en argent béni | épée en argent |
+| ![icône](/jeu/Icons/Items/Nakasar/Blessed/Weapon_Nakasar_Longsword_Blessed.png) | Épée longue en argent béni | épée longue en argent |
+| ![icône](/jeu/Icons/Items/Nakasar/Blessed/Weapon_Nakasar_Axe_Blessed.png) | Hache en argent béni | hache en argent |
+| ![icône](/jeu/Icons/Items/Nakasar/Blessed/Weapon_Nakasar_Battleaxe_Blessed.png) | Hache de combat en argent béni | hache de combat en argent |
+| ![icône](/jeu/Icons/Items/Nakasar/Blessed/Weapon_Nakasar_Mace_Blessed.png) | Massue en argent béni | massue en argent |
+| ![icône](/jeu/Icons/Items/Nakasar/Blessed/Weapon_Nakasar_Club_Blessed.png) | Gourdin en argent béni | gourdin en argent |
+| ![icône](/jeu/Icons/Items/Nakasar/Blessed/Weapon_Nakasar_Daggers_Blessed.png) | Dagues en argent béni | dagues en argent |
+| ![icône](/jeu/Icons/Items/Nakasar/Blessed/Weapon_Nakasar_Javelin_Blessed.png) | Lance de jet en argent béni | lance de jet en argent |
+| ![icône](/jeu/Icons/Items/Nakasar/Blessed/Weapon_Nakasar_Spear_Blessed.png) | Lance d'argent béni à deux mains | lance d'argent à deux mains |
+| ![icône](/jeu/Icons/Items/Nakasar/Blessed/Weapon_Nakasar_Shortbow_Blessed.png) | Arc en argent béni | arc en argent |
+| ![icône](/jeu/Icons/Items/Nakasar/Blessed/Weapon_Nakasar_Crossbow_Blessed.png) | Arbalète de poing en argent béni | arbalète de poing en argent |
+| ![icône](/jeu/Icons/Items/Nakasar/Blessed/Weapon_Nakasar_Blunderbuss_Blessed.png) | Tromblon en argent béni | tromblon en argent |
+
+L'épée en argent béni garde pour l'instant l'aspect de l'épée en argent.

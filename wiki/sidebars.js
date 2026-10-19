@@ -62,6 +62,8 @@ const sidebars = {
     "objets/runes",
     "objets/autel-sacrificiel",
     "objets/etabli-des-chasseurs",
+    "objets/trophees",
+    "objets/contrats",
     "objets/armes-en-argent",
     "objets/lance-a-deux-mains",
     "objets/feu-purificateur",

@@ -1,0 +1,42 @@
+{
+  "TimeSeconds": 4,
+  "KnowledgeRequired": false,
+  "Input": [
+    {
+      "ItemId": "Nakasar_Trophy_Vampire_Fang",
+      "Quantity": 4
+    },
+    {
+      "ItemId": "Nakasar_Trophy_Captain_Insignia",
+      "Quantity": 1
+    },
+    {
+      "ItemId": "Nakasar_Trophy_Pumpkin_Seed",
+      "Quantity": 1
+    },
+    {
+      "ItemId": "Ingredient_Bar_Silver",
+      "Quantity": 2
+    }
+  ],
+  "PrimaryOutput": {
+    "ItemId": "Nakasar_Hunter_Seal_Hunter",
+    "Quantity": 1
+  },
+  "Output": [
+    {
+      "ItemId": "Nakasar_Hunter_Seal_Hunter",
+      "Quantity": 1
+    }
+  ],
+  "BenchRequirement": [
+    {
+      "Type": "Crafting",
+      "Id": "Nakasar_Hunter_Workbench",
+      "Categories": [
+        "Nakasar_Hunter_Trophies"
+      ],
+      "RequiredTierLevel": 2
+    }
+  ]
+}

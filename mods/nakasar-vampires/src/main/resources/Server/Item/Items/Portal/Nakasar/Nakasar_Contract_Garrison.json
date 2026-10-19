@@ -1,0 +1,45 @@
+{
+  "Parent": "PortalKey_Taiga",
+  "TranslationProperties": {
+    "Name": "nakasar_hunters.items.Nakasar_Contract_Garrison.name",
+    "Description": "nakasar_hunters.items.Nakasar_Contract_Garrison.description"
+  },
+  "Icon": "Icons/Items/Nakasar/Contracts/Contract_Garrison.png",
+  "Quality": "Epic",
+  "Recipe": {
+    "TimeSeconds": 3,
+    "KnowledgeRequired": false,
+    "Input": [
+      {
+        "ItemId": "Nakasar_Trophy_Vampire_Fang",
+        "Quantity": 4
+      },
+      {
+        "ItemId": "Ingredient_Bar_Silver",
+        "Quantity": 2
+      },
+      {
+        "ItemId": "Ingredient_Fabric_Scrap_Linen",
+        "Quantity": 2
+      },
+      {
+        "ItemId": "Ingredient_Rune_Shard",
+        "Quantity": 2
+      }
+    ],
+    "BenchRequirement": [
+      {
+        "Type": "Crafting",
+        "Id": "Nakasar_Hunter_Workbench",
+        "Categories": [
+          "Nakasar_Hunter_Contracts"
+        ],
+        "RequiredTierLevel": 3
+      }
+    ]
+  },
+  "PortalKey": {
+    "PortalType": "Nakasar_Contract_Garrison",
+    "TimeLimitSeconds": 900
+  }
+}

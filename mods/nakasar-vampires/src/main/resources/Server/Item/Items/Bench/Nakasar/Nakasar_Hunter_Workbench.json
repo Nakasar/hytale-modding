@@ -67,6 +67,11 @@
       "CompletedSoundEventId": "SFX_Weapon_Bench_Craft",
       "Categories": [
         {
+          "Id": "Nakasar_Hunter_Trophies",
+          "Name": "nakasar_hunters.benchCategories.nakasar_hunter_trophies",
+          "Icon": "Icons/CraftingCategories/Nakasar/Trophies.png"
+        },
+        {
           "Id": "Nakasar_Hunter_Fires",
           "Name": "nakasar_hunters.benchCategories.nakasar_hunter_fires",
           "Icon": "Icons/CraftingCategories/Nakasar/Purifying_Fire.png"
@@ -80,6 +85,16 @@
           "Id": "Nakasar_Hunter_Fragments",
           "Name": "nakasar_hunters.benchCategories.nakasar_hunter_fragments",
           "Icon": "Icons/CraftingCategories/Nakasar/Fragment.png"
+        },
+        {
+          "Id": "Nakasar_Hunter_Weapons",
+          "Name": "nakasar_hunters.benchCategories.nakasar_hunter_weapons",
+          "Icon": "Icons/CraftingCategories/Nakasar/Blessed_Silver.png"
+        },
+        {
+          "Id": "Nakasar_Hunter_Contracts",
+          "Name": "nakasar_hunters.benchCategories.nakasar_hunter_contracts",
+          "Icon": "Icons/CraftingCategories/Nakasar/Contracts.png"
         }
       ],
       "TierLevels": [
@@ -87,16 +102,12 @@
           "UpgradeRequirement": {
             "Material": [
               {
+                "ItemId": "Nakasar_Hunter_Seal_Tracker",
+                "Quantity": 1
+              },
+              {
                 "ItemId": "Ingredient_Bar_Silver",
-                "Quantity": 6
-              },
-              {
-                "ItemId": "Ingredient_Rune_Shard",
                 "Quantity": 4
-              },
-              {
-                "ItemId": "Rock_Gem_Topaz",
-                "Quantity": 2
               }
             ],
             "TimeSeconds": 3
@@ -104,7 +115,27 @@
           "CraftingTimeReductionModifier": 0.0
         },
         {
+          "UpgradeRequirement": {
+            "Material": [
+              {
+                "ItemId": "Nakasar_Hunter_Seal_Hunter",
+                "Quantity": 1
+              },
+              {
+                "ItemId": "Ingredient_Bar_Silver",
+                "Quantity": 8
+              },
+              {
+                "ItemId": "Ingredient_Rune_Shard",
+                "Quantity": 4
+              }
+            ],
+            "TimeSeconds": 5
+          },
           "CraftingTimeReductionModifier": 0.15
+        },
+        {
+          "CraftingTimeReductionModifier": 0.3
         }
       ]
     },
