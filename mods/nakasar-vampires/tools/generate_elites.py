@@ -323,7 +323,7 @@ def spectre_cold_wave():
                 "Particles": [ground_particles("Ice_Blast", 1.6), ground_particles("Rings_Rings_Ice", 2.0)]},
              "Selector": {"Id": "AOECircle", "Range": COLD_WAVE_RADIUS},
              "HitEntity": {"Interactions": damage(10, particles="Impact_Ice", extra=[
-                 {"Type": "ApplyEffect", "EffectId": FROST, "Entity": "Target", "Duration": 6}])}},
+                 {"Type": "Nakasar_ApplyEffectToFoes", "EffectId": FROST, "Duration": 6}])}},
             {"Type": "Simple", "RunTime": 0.6},
         ],
     }

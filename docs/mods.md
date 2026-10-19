@@ -354,7 +354,13 @@ Les boss réutilisent les interactions et particules des runes.
   ne sont pas sauvegardés et sont retirés dès que leur invocateur meurt ou quitte le monde (vérification chaque
   seconde). Le journal du serveur note chaque sortie (« Nakasar_SummonMinions : N serviteur(s)… ») et chaque piège qui
   prend (« Nakasar_RootTrap : joueur retenu… »).
-  `HealSummonerPerSecond` (rouages : 5) soigne l'invocateur de ce montant par serviteur vivant, chaque seconde.
+  `HealSummonerPerSecond` (rouages : 5) soigne l'invocateur de ce montant par serviteur vivant, chaque seconde
+  (montant retenu par serviteur, à son apparition). Un serviteur à plus de 36 blocs de son invocateur est retiré.
+  Sans `MinionRole`, l'interaction ne fait rien et le note dans le journal.
+- **Effet sur les ennemis seulement** (Java, `elite/ApplyEffectToFoesInteraction`) : `Nakasar_ApplyEffectToFoes`
+  (`EffectId`, `Duration`) sous le `HitEntity` d'un `AOECircle` pose l'effet sauf sur le lanceur et ses alliés
+  (`Allegiances.isCasterAlly`, comme le piège de vrilles) ; un `ApplyEffect` vanilla toucherait aussi les alliés
+  (vague de froid du Spectre).
 - **Bouclier des serviteurs** (Java, `elite/MinionShieldSystem`) : la citrouille géante et le Spectre ne prennent
   aucun dégât d'entité tant qu'un serviteur de leur vague vit (message à l'attaquant). La citrouille lance aussi sa
   première vague au premier coup reçu.

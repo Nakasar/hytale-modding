@@ -19,6 +19,7 @@ import com.hypixel.hytale.server.npc.entities.NPCEntity;
 import com.hypixel.hytale.server.npc.role.support.WorldSupport;
 import dev.nakasar.hytale.vampires.allegiance.AllegianceDamageFilter;
 
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -35,8 +36,11 @@ public final class FireAffinitySystem extends DamageEventSystem {
 
     public static final String WEAK = "Nakasar_Pumpkin_Patch";
     public static final String IMMUNE = "Nakasar_Fire_Immune";
-    /** Multiplicateur des dégâts de feu par groupe ; 0 annule le coup. */
-    private static final Map<String, Float> MULTIPLIERS = Map.of(WEAK, 2f, IMMUNE, 0f);
+    /**
+     * Multiplicateur des dégâts de feu par groupe, dans l'ordre : le premier groupe qui contient la cible l'emporte
+     * (l'immunité d'abord). 0 annule le coup.
+     */
+    private static final List<Map.Entry<String, Float>> MULTIPLIERS = List.of(Map.entry(IMMUNE, 0f), Map.entry(WEAK, 2f));
 
     private static final Set<Dependency<EntityStore>> DEPENDENCIES =
             Set.of(new SystemDependency<>(Order.AFTER, AllegianceDamageFilter.class));
@@ -68,7 +72,7 @@ public final class FireAffinitySystem extends DamageEventSystem {
             return;
         }
         Ref<EntityStore> target = chunk.getReferenceTo(index);
-        for (Map.Entry<String, Float> entry : MULTIPLIERS.entrySet()) {
+        for (Map.Entry<String, Float> entry : MULTIPLIERS) {
             int group = NPCGroup.getAssetMap().getIndexOrDefault(entry.getKey(), Integer.MIN_VALUE);
             if (group == Integer.MIN_VALUE || !WorldSupport.isGroupMember(Integer.MIN_VALUE, target, group, buffer)) {
                 continue;

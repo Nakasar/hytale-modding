@@ -17,6 +17,7 @@ import dev.nakasar.hytale.vampires.domination.DominateInteraction;
 import dev.nakasar.hytale.vampires.domination.DominatePlayerInteraction;
 import dev.nakasar.hytale.vampires.domination.DominationExpirySystem;
 import dev.nakasar.hytale.vampires.domination.Dominations;
+import dev.nakasar.hytale.vampires.elite.ApplyEffectToFoesInteraction;
 import dev.nakasar.hytale.vampires.elite.FireAffinitySystem;
 import dev.nakasar.hytale.vampires.elite.MinionShieldSystem;
 import dev.nakasar.hytale.vampires.elite.SummonMinionsInteraction;
@@ -136,6 +137,8 @@ public final class VampiresPlugin extends JavaPlugin {
                 RootTrapInteraction.class, RootTrapInteraction.CODEC);
         interactions.register(SummonMinionsInteraction.TYPE_ID,
                 SummonMinionsInteraction.class, SummonMinionsInteraction.CODEC);
+        interactions.register(ApplyEffectToFoesInteraction.TYPE_ID,
+                ApplyEffectToFoesInteraction.class, ApplyEffectToFoesInteraction.CODEC);
         interactions.register(TakeArrowInteraction.TYPE_ID,
                 TakeArrowInteraction.class, TakeArrowInteraction.CODEC);
         interactions.register(ReturnArrowInteraction.TYPE_ID,
@@ -194,7 +197,7 @@ public final class VampiresPlugin extends JavaPlugin {
                 TeleportCasterToImpactInteraction.TYPE_ID, DominateInteraction.TYPE_ID, RootNpcInteraction.TYPE_ID,
                 DrainBeamInteraction.TYPE_ID, DominatePlayerInteraction.TYPE_ID, ImprisonPlayerInteraction.TYPE_ID,
                 RootTrapInteraction.TYPE_ID, TakeArrowInteraction.TYPE_ID, ReturnArrowInteraction.TYPE_ID,
-                SummonMinionsInteraction.TYPE_ID, LightAuraInteraction.TYPE_ID, InvisibilityInteraction.TYPE_ID,
+                SummonMinionsInteraction.TYPE_ID, ApplyEffectToFoesInteraction.TYPE_ID, LightAuraInteraction.TYPE_ID, InvisibilityInteraction.TYPE_ID,
                 VampireRitualInteraction.TYPE_ID, BloodFeedInteraction.TYPE_ID, DrinkBloodInteraction.TYPE_ID,
                 OpenBountyBagInteraction.TYPE_ID, ClaimBreachContractInteraction.TYPE_ID);
     }

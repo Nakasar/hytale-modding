@@ -52,6 +52,19 @@ public final class Allegiances {
         return wereAllies(source, target, accessor) ? Attitude.HOSTILE : null;
     }
 
+    /**
+     * Allié du lanceur d'une attaque de zone : sous Domination, son maître et les autres PNJ du même maître (et non
+     * plus ses anciens alliés du fragment) ; sinon, les autres mobs du fragment.
+     */
+    public static boolean isCasterAlly(Ref<EntityStore> caster, Ref<EntityStore> victim,
+                                       ComponentAccessor<EntityStore> accessor) {
+        Attitude domination = dominationAttitude(caster, victim, accessor);
+        if (domination != null) {
+            return domination == Attitude.FRIENDLY;
+        }
+        return bothInFaction(caster, victim, accessor);
+    }
+
     /** Vrai si les deux entités sont des PNJ du groupe {@value #FACTION_GROUP}. */
     public static boolean bothInFaction(Ref<EntityStore> a, Ref<EntityStore> b, ComponentAccessor<EntityStore> accessor) {
         return isNpc(a, accessor) && isNpc(b, accessor)

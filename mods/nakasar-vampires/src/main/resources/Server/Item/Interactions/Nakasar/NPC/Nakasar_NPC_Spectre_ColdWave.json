@@ -92,9 +92,8 @@
             }
           },
           {
-            "Type": "ApplyEffect",
+            "Type": "Nakasar_ApplyEffectToFoes",
             "EffectId": "Nakasar_Spectre_Frost",
-            "Entity": "Target",
             "Duration": 6
           }
         ]

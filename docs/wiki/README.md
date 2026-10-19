@@ -25,7 +25,7 @@ Guide du joueur pour le mod **Nakasar : Vampires** (Hytale, serveur 0.7.2) : un 
 
 - **Boss :** [Comte Vampire](pnj/comte-vampire.md) · [Comtesse Vampire](pnj/comtesse-vampire.md)
 - **Élites :** [Capitaine de la garde](pnj/capitaine-de-la-garde.md) · [Abomination zombie](pnj/abomination-zombie.md) · [Citrouille géante](pnj/citrouille-geante.md) · [Armure enchantée](pnj/armure-enchantee.md) · [Spectre](pnj/spectre.md)
-- **Créatures du Comté :** [Rejeton de vampire](pnj/rejeton-de-vampire.md) · [Fantôme](pnj/fantome.md) · [Villageois zombifié](pnj/villageois-zombifie.md) · [Fermier zombifié](pnj/fermier-zombifie.md) · [Paysan rebelle zombifié](pnj/paysan-rebelle-zombifie.md) · [Garde squelette](pnj/garde-squelette.md) · [Vrille de citrouille](pnj/vrille-de-citrouille.md) · [Vrilles](pnj/vrilles.md)
+- **Créatures du Comté :** [Rejeton de vampire](pnj/rejeton-de-vampire.md) · [Fantôme](pnj/fantome.md) · [Villageois zombifié](pnj/villageois-zombifie.md) · [Fermier zombifié](pnj/fermier-zombifie.md) · [Paysan rebelle zombifié](pnj/paysan-rebelle-zombifie.md) · [Garde squelette](pnj/garde-squelette.md) · [Vrille de citrouille](pnj/vrille-de-citrouille.md) · [Vrilles](pnj/vrilles.md) · [Rouage enchanté](pnj/rouage-enchante.md) · [Fantôme spectral](pnj/fantome-spectral.md)
 - **Chasseurs de vampires :** [épée](pnj/chasseur-epee.md) · [arbalète](pnj/chasseuse-arbalete.md) · [tromblon](pnj/chasseur-tromblon.md)
 
 ## Brèches des chasseurs

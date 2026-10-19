@@ -40,13 +40,15 @@ import java.util.concurrent.TimeUnit;
  *
  * <p>Au plus {@code MaxAlive} serviteurs vivants par élite : un appel n'en fait apparaître que ce qui manque, dans
  * la limite de {@code Count}. Les serviteurs ne sont pas sauvegardés ({@code NonSerialized}) et disparaissent avec
- * leur élite (morte ou retirée du monde) ; on vérifie toutes les {@value #POLL_MS} ms.
+ * leur élite (morte ou retirée du monde) ; on vérifie toutes les {@value #POLL_MS} ms. Un serviteur parti à plus
+ * de {@value #LEASH} blocs de son élite (fantôme qui poursuit un joueur en fuite) est retiré : il ne la protège plus
+ * de loin, et l'IA de l'élite (capteur {@code Count}, 40 blocs) peut rappeler une vague.
  *
  * <p>Les serviteurs apparaissent répartis autour de l'élite et jamais à moins de {@code MinSpacing} blocs d'un autre
  * (déjà là ou du même appel) : deux serviteurs ne se chevauchent pas. S'il ne reste pas de place, il en vient moins.
  *
  * <p>{@code HealSummonerPerSecond} : chaque serviteur vivant rend ce nombre de PV par seconde à son élite (rouages de
- * l'armure enchantée). Tant qu'une élite protégée par {@link MinionShieldSystem} a des serviteurs vivants
+ * l'armure enchantée) ; le montant est celui de l'appel qui l'a fait venir. Tant qu'une élite protégée par {@link MinionShieldSystem} a des serviteurs vivants
  * ({@link #hasLivingMinions}), elle est invulnérable ; il peut aussi faire venir la première vague dès le premier
  * coup reçu ({@link #summonFirstWave}).
  *
@@ -86,10 +88,12 @@ public class SummonMinionsInteraction extends SimpleInstantInteraction {
 
     private static final long POLL_MS = 1000;
     private static final int ATTEMPTS_PER_MINION = 6;
+    /** Au-delà de cette distance horizontale à son élite, un serviteur est retiré. */
+    private static final double LEASH = 36.0;
 
     /** Serviteurs vivants par élite. Lu et modifié sur le thread du monde. */
     private static final Map<Ref<EntityStore>, List<Ref<EntityStore>>> MINIONS = new ConcurrentHashMap<>();
-    /** PV rendus chaque seconde par serviteur vivant, par élite (dernière vague appelée). */
+    /** PV rendus chaque seconde à son élite, par serviteur soigneur (réglage de l'appel qui l'a fait venir). */
     private static final Map<Ref<EntityStore>, Float> HEAL = new ConcurrentHashMap<>();
     /** Dernier appel d'invocation par élite depuis son dernier retour au calme (System.nanoTime), réussi ou non. */
     private static final Map<Ref<EntityStore>, Long> LAST_CALL = new ConcurrentHashMap<>();
@@ -123,7 +127,11 @@ public class SummonMinionsInteraction extends SimpleInstantInteraction {
         CommandBuffer<EntityStore> buffer = context.getCommandBuffer();
         Ref<EntityStore> owner = context.getOwningEntity();
         Ref<EntityStore> summoner = owner != null && owner.isValid() ? owner : context.getEntity();
-        if (buffer == null || summoner == null || !summoner.isValid() || minionRole == null) {
+        if (minionRole == null || minionRole.isBlank()) {
+            VampiresPlugin.get().getLogger().atWarning().log("%s : MinionRole manquant, aucun serviteur", TYPE_ID);
+            return;
+        }
+        if (buffer == null || summoner == null || !summoner.isValid()) {
             return;
         }
         TransformComponent transform = buffer.getComponent(summoner, TransformComponent.getComponentType());
@@ -184,7 +192,6 @@ public class SummonMinionsInteraction extends SimpleInstantInteraction {
             return;
         }
         boolean watched = MINIONS.containsKey(summoner);
-        HEAL.put(summoner, healPerSecond);
         List<Ref<EntityStore>> minions = MINIONS.computeIfAbsent(summoner, k -> new ArrayList<>());
         minions.removeIf(minion -> !alive(minion, store));
         int wanted = Math.min(count, maxAlive - minions.size());
@@ -207,6 +214,9 @@ public class SummonMinionsInteraction extends SimpleInstantInteraction {
                 // Jamais sauvegardé : il ne survit pas à son élite ni au déchargement du chunk.
                 store.ensureAndGetComponent(minion, EntityStore.REGISTRY.getNonSerializedComponentType());
                 minions.add(minion);
+                if (healPerSecond > 0f) {
+                    HEAL.put(minion, healPerSecond);
+                }
                 spawned++;
             }
         }
@@ -303,8 +313,9 @@ public class SummonMinionsInteraction extends SimpleInstantInteraction {
     }
 
     /**
-     * Toutes les {@value #POLL_MS} ms : soigne l'élite par ses serviteurs vivants ({@code HealSummonerPerSecond}) ;
-     * retire les serviteurs d'une élite morte ou disparue. Tourne sur le thread du monde.
+     * Toutes les {@value #POLL_MS} ms : retire les serviteurs partis trop loin ({@value #LEASH} blocs), soigne l'élite
+     * par ses serviteurs vivants ({@code HealSummonerPerSecond}) ; retire les serviteurs d'une élite morte ou
+     * disparue. Tourne sur le thread du monde.
      */
     private static void watch(World world, Ref<EntityStore> summoner) {
         List<Ref<EntityStore>> minions = MINIONS.get(summoner);
@@ -312,16 +323,36 @@ public class SummonMinionsInteraction extends SimpleInstantInteraction {
             return;
         }
         Store<EntityStore> store = world.getEntityStore().getStore();
-        minions.removeIf(minion -> !alive(minion, store));
+        minions.removeIf(minion -> {
+            if (alive(minion, store)) {
+                return false;
+            }
+            HEAL.remove(minion);
+            return true;
+        });
         if (alive(summoner, store)) {
-            heal(store, summoner, minions.size() * HEAL.getOrDefault(summoner, 0f) * POLL_MS / 1000f);
+            TransformComponent home = store.getComponent(summoner, TransformComponent.getComponentType());
+            float healing = 0f;
+            for (var it = minions.iterator(); it.hasNext(); ) {
+                Ref<EntityStore> minion = it.next();
+                TransformComponent at = store.getComponent(minion, TransformComponent.getComponentType());
+                if (home != null && at != null && Math.hypot(at.getPosition().x - home.getPosition().x,
+                        at.getPosition().z - home.getPosition().z) > LEASH) {
+                    it.remove();
+                    HEAL.remove(minion);
+                    store.removeEntity(minion, RemoveReason.REMOVE);
+                    continue;
+                }
+                healing += HEAL.getOrDefault(minion, 0f);
+            }
+            heal(store, summoner, healing * POLL_MS / 1000f);
             world.scheduleAfter(() -> watch(world, summoner), POLL_MS, TimeUnit.MILLISECONDS);
             return;
         }
         MINIONS.remove(summoner);
-        HEAL.remove(summoner);
         LAST_CALL.remove(summoner);
         for (Ref<EntityStore> minion : minions) {
+            HEAL.remove(minion);
             if (minion.isValid()) {
                 store.removeEntity(minion, RemoveReason.REMOVE);
             }
