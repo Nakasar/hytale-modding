@@ -1,0 +1,10 @@
+{
+  "Container": {
+    "Type": "Single",
+    "Item": {
+      "ItemId": "Nakasar_Trophy_Codex_Clasp",
+      "QuantityMin": 1,
+      "QuantityMax": 1
+    }
+  }
+}

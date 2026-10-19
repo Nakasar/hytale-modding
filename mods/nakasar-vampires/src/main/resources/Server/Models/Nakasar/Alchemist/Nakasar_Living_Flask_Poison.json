@@ -1,0 +1,25 @@
+{
+  "$Comment": "Fiole vivante (Poison) : la fiole lancée vanilla (Potion_Onion) en grand, comme le baril explosif du Gobliterator ; elle luit.",
+  "Model": "Items/Weapons/Bomb/Potion_Onion.blockymodel",
+  "Texture": "Items/Weapons/Bomb/Potion_Onion_Poison.png",
+  "EyeHeight": 0.3,
+  "CrouchOffset": 0.0,
+  "HitBox": {
+    "Max": {
+      "X": 0.15,
+      "Y": 0.3,
+      "Z": 0.15
+    },
+    "Min": {
+      "X": -0.15,
+      "Y": 0,
+      "Z": -0.15
+    }
+  },
+  "MinScale": 3.5,
+  "MaxScale": 3.5,
+  "Light": {
+    "Color": "#7dff6a",
+    "Radius": 3
+  }
+}

@@ -1,0 +1,64 @@
+{
+  "$Comment": "Golem de cristal instable (élite) : des essences des quatre éléments et les trois principes.",
+  "Container": {
+    "Type": "Multiple",
+    "Containers": [
+      {
+        "Type": "Single",
+        "Item": {
+          "ItemId": "Ingredient_Lightning_Essence",
+          "QuantityMin": 2,
+          "QuantityMax": 3
+        }
+      },
+      {
+        "Type": "Single",
+        "Item": {
+          "ItemId": "Ingredient_Fire_Essence",
+          "QuantityMin": 1,
+          "QuantityMax": 2
+        }
+      },
+      {
+        "Type": "Single",
+        "Item": {
+          "ItemId": "Ingredient_Ice_Essence",
+          "QuantityMin": 1,
+          "QuantityMax": 2
+        }
+      },
+      {
+        "Type": "Single",
+        "Item": {
+          "ItemId": "Ingredient_Life_Essence",
+          "QuantityMin": 1,
+          "QuantityMax": 2
+        }
+      },
+      {
+        "Type": "Single",
+        "Item": {
+          "ItemId": "Ingredient_Nakasar_Philosophers_Salt",
+          "QuantityMin": 2,
+          "QuantityMax": 2
+        }
+      },
+      {
+        "Type": "Single",
+        "Item": {
+          "ItemId": "Ingredient_Nakasar_Burning_Sulfur",
+          "QuantityMin": 2,
+          "QuantityMax": 2
+        }
+      },
+      {
+        "Type": "Single",
+        "Item": {
+          "ItemId": "Ingredient_Nakasar_Quicksilver",
+          "QuantityMin": 2,
+          "QuantityMax": 2
+        }
+      }
+    ]
+  }
+}

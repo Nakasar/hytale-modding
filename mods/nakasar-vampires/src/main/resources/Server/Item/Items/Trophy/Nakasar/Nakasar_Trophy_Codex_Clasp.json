@@ -1,0 +1,22 @@
+{
+  "TranslationProperties": {
+    "Name": "nakasar_hunters.items.Nakasar_Trophy_Codex_Clasp.name",
+    "Description": "nakasar_hunters.items.Nakasar_Trophy_Codex_Clasp.description"
+  },
+  "Icon": "Icons/Items/Nakasar/Trophies/Trophy_Codex_Clasp.png",
+  "Model": "Items/Nakasar/Trophies/Trophy_Codex_Clasp.blockymodel",
+  "Texture": "Items/Nakasar/Trophies/Trophy_Codex_Clasp.png",
+  "Quality": "Epic",
+  "ItemLevel": 30,
+  "Categories": [
+    "Items.Ingredients"
+  ],
+  "Tags": {
+    "Type": [
+      "Nakasar_Trophy"
+    ]
+  },
+  "PlayerAnimationsId": "Item",
+  "ItemSoundSetId": "ISS_Items_Gems",
+  "MaxStack": 10
+}

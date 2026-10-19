@@ -1,0 +1,37 @@
+{
+  "TranslationProperties": {
+    "Name": "nakasar_alchemist.items.Nakasar_Codex_Rubble.name"
+  },
+  "Icon": "Icons/Items/Nakasar/Alchemist/Codex_Rubble.png",
+  "Categories": [
+    "Blocks.Deco"
+  ],
+  "Quality": "Technical",
+  "PlayerAnimationsId": "Block",
+  "BlockType": {
+    "Material": "Solid",
+    "DrawType": "Cube",
+    "Opacity": "Solid",
+    "Textures": [
+      {
+        "Sides": "BlockTextures/Nakasar/Alchemist/Codex_Rubble.png",
+        "UpDown": "BlockTextures/Nakasar/Alchemist/Codex_Rubble.png",
+        "Weight": 1
+      }
+    ],
+    "HitboxType": "Full",
+    "Flags": {},
+    "Gathering": {
+      "Soft": {}
+    },
+    "BlockParticleSetId": "Wood",
+    "BlockSoundSetId": "Wood",
+    "ParticleColor": "#6b4a32"
+  },
+  "Tags": {
+    "Type": [
+      "Deco"
+    ]
+  },
+  "ItemSoundSetId": "ISS_Blocks_Stone"
+}

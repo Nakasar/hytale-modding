@@ -1,0 +1,42 @@
+{
+  "TranslationProperties": {
+    "Name": "nakasar_alchemist.items.Nakasar_Thorn_Hedge.name"
+  },
+  "Icon": "Icons/ItemsGenerated/Plant_Bramble_Leaves.png",
+  "Categories": [
+    "Blocks.Deco"
+  ],
+  "Quality": "Technical",
+  "PlayerAnimationsId": "Block",
+  "BlockType": {
+    "Material": "Solid",
+    "DrawType": "Model",
+    "Opacity": "Cutout",
+    "CustomModel": "Blocks/Foliage/Leaves/UpShapeSoft.blockymodel",
+    "CustomModelTexture": [
+      {
+        "Texture": "Blocks/Foliage/Leaves/UpShapeSoft_Textures/Gramble.png",
+        "Weight": 1
+      }
+    ],
+    "RandomRotation": "YawStep1",
+    "HitboxType": "Full",
+    "Flags": {},
+    "Gathering": {
+      "Soft": {}
+    },
+    "Interactions": {
+      "CollisionEnter": "Environmental_Block_Damage"
+    },
+    "BlockParticleSetId": "Leaves",
+    "BlockSoundSetId": "Bramble",
+    "PhysicalMaterialId": "Foliage",
+    "ParticleColor": "#b46b26"
+  },
+  "Tags": {
+    "Type": [
+      "Deco"
+    ]
+  },
+  "ItemSoundSetId": "ISS_Blocks_Stone"
+}

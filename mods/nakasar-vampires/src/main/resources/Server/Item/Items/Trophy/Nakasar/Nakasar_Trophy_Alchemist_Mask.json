@@ -1,0 +1,22 @@
+{
+  "TranslationProperties": {
+    "Name": "nakasar_hunters.items.Nakasar_Trophy_Alchemist_Mask.name",
+    "Description": "nakasar_hunters.items.Nakasar_Trophy_Alchemist_Mask.description"
+  },
+  "Icon": "Icons/Items/Nakasar/Trophies/Trophy_Alchemist_Mask.png",
+  "Model": "Items/Nakasar/Trophies/Trophy_Alchemist_Mask.blockymodel",
+  "Texture": "Items/Nakasar/Trophies/Trophy_Alchemist_Mask.png",
+  "Quality": "Legendary",
+  "ItemLevel": 40,
+  "Categories": [
+    "Items.Ingredients"
+  ],
+  "Tags": {
+    "Type": [
+      "Nakasar_Trophy"
+    ]
+  },
+  "PlayerAnimationsId": "Item",
+  "ItemSoundSetId": "ISS_Items_Gems",
+  "MaxStack": 1
+}

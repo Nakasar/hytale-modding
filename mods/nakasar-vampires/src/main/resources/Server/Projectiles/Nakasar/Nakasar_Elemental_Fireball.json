@@ -1,0 +1,13 @@
+{
+  "$Comment": "Boule de feu de l'élémentaire de feu : celle du sort vanilla, bien plus faible.",
+  "Parent": "Fireball",
+  "Damage": 12,
+  "MuzzleVelocity": 22,
+  "ExplosionConfig": {
+    "DamageEntities": true,
+    "DamageBlocks": false,
+    "BlockDamageRadius": 0,
+    "EntityDamageRadius": 2.5,
+    "EntityDamageFalloff": 1.0
+  }
+}

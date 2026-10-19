@@ -1,0 +1,21 @@
+{
+  "Type": "NoiseRange",
+  "DefaultBiome": "Nakasar_Alchemist_Tower",
+  "DefaultTransitionDistance": 16,
+  "MaxBiomeEdgeDistance": 0,
+  "Density": {
+    "Type": "Constant",
+    "Value": 0.0
+  },
+  "Biomes": [],
+  "SpawnPositions": {
+    "Type": "List",
+    "Positions": [
+      {
+        "X": 0,
+        "Y": 100,
+        "Z": 0
+      }
+    ]
+  }
+}

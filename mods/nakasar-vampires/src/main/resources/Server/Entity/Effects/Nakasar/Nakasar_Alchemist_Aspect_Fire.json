@@ -1,0 +1,14 @@
+{
+  "$Comment": "Aspect Fire de l'Alchimiste pendant la Convergence : sa robe, ses fioles et ses verres prennent la couleur de l'élément.",
+  "ApplicationEffects": {
+    "EntityTopTint": "#ff6a1c",
+    "EntityBottomTint": "#3a0800",
+    "Particles": [
+      {
+        "SystemId": "Effect_Fire"
+      }
+    ]
+  },
+  "OverlapBehavior": "Overwrite",
+  "Infinite": true
+}

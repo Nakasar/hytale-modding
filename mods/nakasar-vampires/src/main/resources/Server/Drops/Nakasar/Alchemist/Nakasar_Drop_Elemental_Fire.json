@@ -1,0 +1,34 @@
+{
+  "$Comment": "Élémentaire de feu : essence de feu, soufre ardent une fois sur deux.",
+  "Container": {
+    "Type": "Multiple",
+    "Containers": [
+      {
+        "Type": "Single",
+        "Item": {
+          "ItemId": "Ingredient_Fire_Essence",
+          "QuantityMin": 1,
+          "QuantityMax": 2
+        }
+      },
+      {
+        "Type": "Choice",
+        "Containers": [
+          {
+            "Type": "Single",
+            "Weight": 1,
+            "Item": {
+              "ItemId": "Ingredient_Nakasar_Burning_Sulfur",
+              "QuantityMin": 1,
+              "QuantityMax": 1
+            }
+          },
+          {
+            "Type": "Empty",
+            "Weight": 1
+          }
+        ]
+      }
+    ]
+  }
+}

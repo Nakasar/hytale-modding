@@ -1,0 +1,37 @@
+{
+  "TranslationProperties": {
+    "Name": "nakasar_alchemist.items.Nakasar_Tower_Door.name"
+  },
+  "Icon": "Icons/Items/Nakasar/Alchemist/Tower_Door.png",
+  "Categories": [
+    "Blocks.Deco"
+  ],
+  "Quality": "Technical",
+  "PlayerAnimationsId": "Block",
+  "BlockType": {
+    "Material": "Solid",
+    "DrawType": "Cube",
+    "Opacity": "Solid",
+    "Textures": [
+      {
+        "Sides": "BlockTextures/Nakasar/Alchemist/Tower_Door.png",
+        "UpDown": "BlockTextures/Nakasar/Alchemist/Tower_Door.png",
+        "Weight": 1
+      }
+    ],
+    "HitboxType": "Full",
+    "Flags": {},
+    "Gathering": {
+      "Soft": {}
+    },
+    "BlockParticleSetId": "Wood",
+    "BlockSoundSetId": "Wood",
+    "ParticleColor": "#3e281c"
+  },
+  "Tags": {
+    "Type": [
+      "Deco"
+    ]
+  },
+  "ItemSoundSetId": "ISS_Blocks_Stone"
+}

@@ -1,0 +1,11 @@
+{
+  "$Comment": "Élémentaire de racine : essence de vie.",
+  "Container": {
+    "Type": "Single",
+    "Item": {
+      "ItemId": "Ingredient_Life_Essence",
+      "QuantityMin": 1,
+      "QuantityMax": 2
+    }
+  }
+}

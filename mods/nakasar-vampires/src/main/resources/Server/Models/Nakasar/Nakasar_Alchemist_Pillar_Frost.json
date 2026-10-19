@@ -1,0 +1,168 @@
+{
+  "$Comment": "Pilier élémentaire de la Convergence (Frost), généré par tools/generate_alchemist_models.py : marbre cerclé d'or, cristal de l'élément qui flotte au sommet. Tant qu'il tient, l'Alchimiste peut prendre son élément ; le détruire le retire du cycle.",
+  "EyeHeight": 1.6,
+  "HitBox": {
+    "Max": {
+      "X": 0.4,
+      "Y": 2.3,
+      "Z": 0.4
+    },
+    "Min": {
+      "X": -0.4,
+      "Y": 0,
+      "Z": -0.4
+    }
+  },
+  "MinScale": 1,
+  "MaxScale": 1,
+  "Light": {
+    "Color": "#8fd8ff",
+    "Radius": 5
+  },
+  "Model": "NPC/Nakasar/Alchemist_Pillar_Frost/Model.blockymodel",
+  "Texture": "NPC/Nakasar/Alchemist_Pillar_Frost/Texture.png",
+  "AnimationSets": {
+    "Idle": {
+      "Animations": [
+        {
+          "Animation": "NPC/Nakasar/Alchemist_Pillar_Frost/Animations/Idle.blockyanim"
+        }
+      ]
+    },
+    "Hurt": {
+      "Animations": [
+        {
+          "Animation": "NPC/Nakasar/Alchemist_Pillar_Frost/Animations/Hurt.blockyanim",
+          "Looping": false
+        }
+      ]
+    },
+    "Death": {
+      "Animations": [
+        {
+          "Animation": "NPC/Nakasar/Alchemist_Pillar_Frost/Animations/Death.blockyanim",
+          "Looping": false
+        }
+      ]
+    },
+    "Walk": {
+      "Animations": [
+        {
+          "Animation": "NPC/Nakasar/Alchemist_Pillar_Frost/Animations/Idle.blockyanim"
+        }
+      ]
+    },
+    "WalkBackward": {
+      "Animations": [
+        {
+          "Animation": "NPC/Nakasar/Alchemist_Pillar_Frost/Animations/Idle.blockyanim"
+        }
+      ]
+    },
+    "Run": {
+      "Animations": [
+        {
+          "Animation": "NPC/Nakasar/Alchemist_Pillar_Frost/Animations/Idle.blockyanim"
+        }
+      ]
+    },
+    "Sprint": {
+      "Animations": [
+        {
+          "Animation": "NPC/Nakasar/Alchemist_Pillar_Frost/Animations/Idle.blockyanim"
+        }
+      ]
+    },
+    "Jump": {
+      "Animations": [
+        {
+          "Animation": "NPC/Nakasar/Alchemist_Pillar_Frost/Animations/Idle.blockyanim"
+        }
+      ]
+    },
+    "JumpWalk": {
+      "Animations": [
+        {
+          "Animation": "NPC/Nakasar/Alchemist_Pillar_Frost/Animations/Idle.blockyanim"
+        }
+      ]
+    },
+    "JumpRun": {
+      "Animations": [
+        {
+          "Animation": "NPC/Nakasar/Alchemist_Pillar_Frost/Animations/Idle.blockyanim"
+        }
+      ]
+    },
+    "Fall": {
+      "Animations": [
+        {
+          "Animation": "NPC/Nakasar/Alchemist_Pillar_Frost/Animations/Idle.blockyanim"
+        }
+      ]
+    },
+    "Sleep": {
+      "Animations": [
+        {
+          "Animation": "NPC/Nakasar/Alchemist_Pillar_Frost/Animations/Idle.blockyanim"
+        }
+      ]
+    },
+    "Laydown": {
+      "Animations": [
+        {
+          "Animation": "NPC/Nakasar/Alchemist_Pillar_Frost/Animations/Idle.blockyanim"
+        }
+      ]
+    },
+    "Crouch": {
+      "Animations": [
+        {
+          "Animation": "NPC/Nakasar/Alchemist_Pillar_Frost/Animations/Idle.blockyanim"
+        }
+      ]
+    },
+    "CrouchWalk": {
+      "Animations": [
+        {
+          "Animation": "NPC/Nakasar/Alchemist_Pillar_Frost/Animations/Idle.blockyanim"
+        }
+      ]
+    },
+    "CrouchWalkBackward": {
+      "Animations": [
+        {
+          "Animation": "NPC/Nakasar/Alchemist_Pillar_Frost/Animations/Idle.blockyanim"
+        }
+      ]
+    },
+    "SwimIdle": {
+      "Animations": [
+        {
+          "Animation": "NPC/Nakasar/Alchemist_Pillar_Frost/Animations/Idle.blockyanim"
+        }
+      ]
+    },
+    "FluidIdle": {
+      "Animations": [
+        {
+          "Animation": "NPC/Nakasar/Alchemist_Pillar_Frost/Animations/Idle.blockyanim"
+        }
+      ]
+    },
+    "Alerted": {
+      "Animations": [
+        {
+          "Animation": "NPC/Nakasar/Alchemist_Pillar_Frost/Animations/Idle.blockyanim"
+        }
+      ]
+    },
+    "Wake": {
+      "Animations": [
+        {
+          "Animation": "NPC/Nakasar/Alchemist_Pillar_Frost/Animations/Idle.blockyanim"
+        }
+      ]
+    }
+  }
+}

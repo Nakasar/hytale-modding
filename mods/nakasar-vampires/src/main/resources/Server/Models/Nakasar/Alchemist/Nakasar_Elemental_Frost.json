@@ -1,0 +1,6 @@
+{
+  "$Comment": "Élémentaire de glace : l'esprit de givre vanilla.",
+  "Parent": "Spirit_Frost",
+  "MinScale": 1.2,
+  "MaxScale": 1.2
+}

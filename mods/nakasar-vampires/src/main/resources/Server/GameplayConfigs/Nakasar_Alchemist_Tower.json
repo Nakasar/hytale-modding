@@ -1,0 +1,24 @@
+{
+  "Parent": "Default",
+  "World": {
+    "AllowBlockGathering": false,
+    "AllowBlockPlacement": false,
+    "AllowBlockBreaking": false,
+    "BlockedRootInteractionTags": [
+      "Type=Rail_Kart",
+      "Type=Bed"
+    ]
+  },
+  "Plugin": {
+    "Portal": {},
+    "WorldEvents": {}
+  },
+  "Death": {
+    "ItemsLossMode": "None",
+    "ItemsAmountLossPercentage": 0,
+    "ItemsDurabilityLossPercentage": 0
+  },
+  "WorldMap": {
+    "DisplayDeathMarker": false
+  }
+}

@@ -1,0 +1,152 @@
+{
+  "$Comment": "Tourbillon de pages coupantes invoqué par le Codex vivant (CodexSystem, deuxième et troisième phases) : flotte vers le joueur le plus proche, un peu moins vite qu'un joueur qui court. Il n'attaque pas lui-même : CodexSystem entaille les joueurs à moins de 1,8 bloc et le dissipe au bout de 22 s. Fragile, on peut aussi le détruire. Généré par tools/generate_tower_mobs.py.",
+  "Type": "Generic",
+  "Appearance": "Nakasar_Codex_Page_Vortex",
+  "NameTranslationKey": "nakasar_alchemist.npc.Codex_Page_Vortex.name",
+  "MaxHealth": 50,
+  "StartState": "Idle",
+  "DefaultPlayerAttitude": "Hostile",
+  "DefaultNPCAttitude": "Ignore",
+  "DisableDamageGroups": [
+    "Nakasar_Alchemist_Creations"
+  ],
+  "MotionControllerList": [
+    {
+      "Type": "Fly",
+      "MaxHorizontalSpeed": 5,
+      "MaxClimbSpeed": 3,
+      "MaxSinkSpeed": 3,
+      "Acceleration": 3,
+      "Deceleration": 3,
+      "Gravity": 1,
+      "MinHeightOverGround": 0.2,
+      "MaxHeightOverGround": 0.6
+    }
+  ],
+  "KnockbackScale": 0.4,
+  "DeathAnimationTime": 0.6,
+  "DeathParticles": "Block_Break_Dust",
+  "Instructions": [
+    {
+      "Sensor": {
+        "Type": "State",
+        "State": "Idle"
+      },
+      "Instructions": [
+        {
+          "Sensor": {
+            "Type": "Damage",
+            "Combat": true,
+            "TargetSlot": "LockedTarget"
+          },
+          "Actions": [
+            {
+              "Type": "State",
+              "State": "Combat"
+            }
+          ]
+        },
+        {
+          "Sensor": {
+            "Type": "Player",
+            "Range": 40,
+            "LockOnTarget": true,
+            "Filters": [
+              {
+                "Type": "Attitude",
+                "Attitudes": [
+                  "Hostile"
+                ]
+              }
+            ]
+          },
+          "Actions": [
+            {
+              "Type": "State",
+              "State": "Combat"
+            }
+          ]
+        },
+        {
+          "$Comment": "Un mob hostile (chasseur de vampires, mob dominé…) : même réaction qu'envers un joueur.",
+          "Sensor": {
+            "Type": "Mob",
+            "Range": 40,
+            "LockOnTarget": true,
+            "Filters": [
+              {
+                "Type": "Attitude",
+                "Attitudes": [
+                  "Hostile"
+                ]
+              }
+            ]
+          },
+          "Actions": [
+            {
+              "Type": "State",
+              "State": "Combat"
+            }
+          ]
+        },
+        {
+          "Actions": []
+        }
+      ]
+    },
+    {
+      "Sensor": {
+        "Type": "State",
+        "State": "Combat"
+      },
+      "Instructions": [
+        {
+          "$Comment": "Cible perdue ou partie à plus de 40 blocs.",
+          "Sensor": {
+            "Type": "Not",
+            "Sensor": {
+              "Type": "Target",
+              "Range": 40,
+              "Filters": [
+                {
+                  "Type": "Attitude",
+                  "Attitudes": [
+                    "Hostile",
+                    "Neutral",
+                    "Ignore"
+                  ]
+                }
+              ]
+            }
+          },
+          "Actions": [
+            {
+              "Type": "ReleaseTarget"
+            },
+            {
+              "Type": "State",
+              "State": "Idle"
+            }
+          ]
+        },
+        {
+          "Sensor": {
+            "Type": "Target",
+            "Range": 40
+          },
+          "BodyMotion": {
+            "Type": "Seek",
+            "RelativeSpeed": 0.75,
+            "SlowDownDistance": 2,
+            "StopDistance": 0.3,
+            "UsePathfinder": false
+          },
+          "HeadMotion": {
+            "Type": "Watch",
+            "RelativeTurnSpeed": 1.5
+          }
+        }
+      ]
+    }
+  ]
+}

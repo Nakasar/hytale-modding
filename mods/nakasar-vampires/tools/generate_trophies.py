@@ -9,8 +9,9 @@ Trophées (lâchés par les créatures du Comté, voir Server/Drops/Nakasar/Trop
 - cœur d'Abomination, graine de la Citrouille géante, insigne du Capitaine de la garde : toujours, un
   par élite tuée. Les améliorations de l'établi des chasseurs en demandent de précis, de l'élite la
   plus facile à la plus dure : le cœur pour le niveau 2, la graine et l'insigne pour le niveau 3 ;
-- cœur runique de l'armure enchantée, linceul du Spectre : toujours, un par élite tuée (aucune recette
-  ne les demande encore).
+- cœur runique de l'armure enchantée, linceul du Spectre, fermoir du Codex vivant (gardien de la bibliothèque
+  de la Tour de l'Alchimiste), cœur de chimère (Chimère du laboratoire) : toujours, un par élite tuée (aucune
+  recette ne les demande encore).
 
 Sacs de prime (un par contrat, voir generate_contracts.py) : la cible d'un contrat en lâche un à sa
 mort (ContractBounties, Java), un seul pour tout le groupe. Utilisé (clic droit), le sac disparaît et
@@ -44,6 +45,9 @@ INSIGNIA = "Nakasar_Trophy_Captain_Insignia"
 SEED = "Nakasar_Trophy_Pumpkin_Seed"
 CORE = "Nakasar_Trophy_Armor_Core"
 SHROUD = "Nakasar_Trophy_Spectral_Shroud"
+CLASP = "Nakasar_Trophy_Codex_Clasp"
+CHIMERA_HEART = "Nakasar_Trophy_Chimera_Heart"
+ALCHEMIST_MASK = "Nakasar_Trophy_Alchemist_Mask"
 SILVER_BAR = "Ingredient_Bar_Silver"
 SHARD = "Ingredient_Rune_Shard"
 
@@ -67,7 +71,12 @@ STEEL = (70, 74, 88)
 SHROUD_WHITE = (214, 236, 248)
 SHROUD_BLUE = (132, 186, 226)
 LEATHER = (124, 84, 52)
+MASK_LENS = (196, 120, 255)
 LEATHER_DARK = (88, 58, 38)
+CODEX_LEATHER = (34, 26, 30)
+CODEX_EYE = (200, 120, 255)
+CHIMERA_GREEN = (150, 255, 120)
+CHIMERA_SKIN = (150, 140, 136)
 
 
 def flat(color, top=None):
@@ -158,6 +167,41 @@ MODELS_DEF = {
         ("Eye_L", (-1.5, 11, 3.6), (1, 1, 1), 0, glow(RUNE), "fullbright"),
         ("Eye_R", (1.5, 11, 3.6), (1, 1, 1), 0, glow(RUNE), "fullbright"),
     ], (0, 7, 0), 11.0),
+    CLASP: ("Epic", 30, 10, [
+        ("Strap", (0, 10, -0.5), (4, 9, 1), 0, smooth(CODEX_LEATHER), "flat"),
+        ("Plate", (0, 6, 0), (9, 8, 1), 0, smooth(GOLD), "flat"),
+        ("Rim_Top", (0, 10.5, 0.4), (10, 1, 1), 0, flat(GOLD), "flat"),
+        ("Rim_Bottom", (0, 1.5, 0.4), (10, 1, 1), 0, flat(GOLD), "flat"),
+        ("Hook", (0, 0, 0), (3, 2, 2), 0, smooth(GOLD), "flat"),
+        ("Eye", (0, 6, 0.9), (3, 3, 1), 0, glow(CODEX_EYE), "fullbright"),
+        ("Pupil", (0, 6, 1.3), (1, 2, 1), 0, flat((26, 10, 34)), "flat"),
+        ("Chain_A", (-5.5, 7, 0), (2, 2, 1), 0, flat(IRON), "flat"),
+        ("Chain_B", (-7, 5.5, 0), (2, 2, 1), 0, flat(IRON), "flat"),
+    ], (0, 6, 0), 11.0),
+    CHIMERA_HEART: ("Epic", 30, 10, [
+        ("Core", (0, 6, 0), (8, 8, 7), 0, smooth(FLESH), "flat"),
+        ("Patch", (-2, 8, 3.6), (4, 4, 1), 0, smooth(CHIMERA_SKIN), "flat"),
+        ("Lobe_L", (-2.5, 10.5, 0), (4, 3, 5), 0, smooth(FLESH_DARK), "flat"),
+        ("Lobe_R", (2.5, 10.5, 0), (4, 3, 5), 0, smooth(CHIMERA_SKIN), "flat"),
+        ("Point", (0.5, 1.5, 0), (4, 2, 4), 0, smooth(FLESH_DARK), "flat"),
+        ("Stitch_A", (0, 6, 3.6), (7, 1, 1), 0, flat((30, 20, 18)), "flat"),
+        ("Stitch_B", (-3.6, 6, 0), (1, 6, 1), 0, flat((30, 20, 18)), "flat"),
+        ("Tube", (2, 13.5, -1), (2, 5, 2), 0, glow(CHIMERA_GREEN), "fullbright"),
+        ("Tube_Cap", (2, 16.5, -1), (3, 1, 3), 0, flat(GOLD), "flat"),
+    ], (0, 8, 0), 11.0),
+    ALCHEMIST_MASK: ("Legendary", 40, 1, [
+        ("Plate", (0, 7, 0), (10, 8, 2), 0, smooth(LEATHER), "flat"),
+        ("Brow", (0, 11.2, 0.2), (10, 1, 2), 0, flat((60, 38, 24)), "flat"),
+        ("Rim_L", (-2.6, 8, 1.2), (4, 4, 1), 0, flat(GOLD), "flat"),
+        ("Rim_R", (2.6, 8, 1.2), (4, 4, 1), 0, flat(GOLD), "flat"),
+        ("Lens_L", (-2.6, 8, 1.8), (2, 2, 1), 0, glow(MASK_LENS), "fullbright"),
+        ("Lens_R", (2.6, 8, 1.8), (2, 2, 1), 0, glow(MASK_LENS), "fullbright"),
+        ("Beak_A", (0, 5, 2.5), (5, 4, 3), 0, smooth(LEATHER), "flat"),
+        ("Beak_Band", (0, 5, 3.8), (5, 4, 1), 0, flat(GOLD), "flat"),
+        ("Beak_B", (0, 4, 5.5), (3, 3, 3), 0, smooth(LEATHER), "flat"),
+        ("Beak_C", (0, 3, 8), (2, 2, 3), 0, smooth((60, 38, 24)), "flat"),
+        ("Strap", (0, 7.5, -1.5), (11, 1, 1), 0, flat((60, 38, 24)), "flat"),
+    ], (0, 7, 2), 11.0),
 }
 
 
@@ -233,6 +277,9 @@ def drops():
         SEED: {"Container": single(SEED)},
         CORE: {"Container": single(CORE)},
         SHROUD: {"Container": single(SHROUD)},
+        CLASP: {"Container": single(CLASP)},
+        CHIMERA_HEART: {"Container": single(CHIMERA_HEART)},
+        ALCHEMIST_MASK: {"Container": single(ALCHEMIST_MASK)},
     }
 
 

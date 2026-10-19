@@ -1,0 +1,96 @@
+{
+  "$Comment": "Une fiole vivante arrivée au contact s'immobilise et grésille 1,2 s au-dessus d'une zone rouge de 3 blocs, puis éclate : 16 dégâts et empoisonne (Poison_T2, 6 s) tous ceux restés dans la zone. Elle disparaît dans l'explosion (sans butin).",
+  "Type": "Serial",
+  "Interactions": [
+    {
+      "Type": "ClearEntityEffect",
+      "Entity": "User",
+      "EntityEffectId": "Hit_Interrupt_Eligible"
+    },
+    {
+      "Type": "ApplyEffect",
+      "EffectId": "Nakasar_Elite_Rooted"
+    },
+    {
+      "Type": "Simple",
+      "RunTime": 1.6,
+      "Effects": {
+        "WorldSoundEventId": "SFX_Bomb_Fuse",
+        "Particles": [
+          {
+            "SystemId": "Nakasar_Warning_16",
+            "TargetEntityPart": "Entity",
+            "TargetNodeName": "Origin",
+            "Scale": 2.04,
+            "PositionOffset": {
+              "X": 0,
+              "Y": 0.1,
+              "Z": 0
+            },
+            "DetachedFromModel": true
+          }
+        ]
+      }
+    },
+    {
+      "Type": "Selector",
+      "RunTime": 0.1,
+      "Effects": {
+        "WorldSoundEventId": "SFX_Goblin_Lobber_Bomb_Death",
+        "Particles": [
+          {
+            "SystemId": "Explosion_Medium",
+            "TargetEntityPart": "Entity",
+            "TargetNodeName": "Origin",
+            "Scale": 1.0,
+            "PositionOffset": {
+              "X": 0,
+              "Y": 0.1,
+              "Z": 0
+            },
+            "DetachedFromModel": true
+          },
+          {
+            "SystemId": "Effect_Poison",
+            "TargetEntityPart": "Entity",
+            "TargetNodeName": "Origin",
+            "Scale": 1.5,
+            "PositionOffset": {
+              "X": 0,
+              "Y": 0.1,
+              "Z": 0
+            },
+            "DetachedFromModel": true
+          }
+        ]
+      },
+      "Selector": {
+        "Id": "AOECircle",
+        "Range": 3.0
+      },
+      "HitEntity": {
+        "Interactions": [
+          {
+            "Parent": "DamageEntityParent",
+            "DamageCalculator": {
+              "BaseDamage": {
+                "Physical": 16
+              },
+              "RandomPercentageModifier": 0.1
+            }
+          },
+          {
+            "Type": "ApplyEffect",
+            "EffectId": "Poison_T2",
+            "Entity": "Target",
+            "Duration": 6
+          }
+        ]
+      }
+    },
+    {
+      "Type": "RemoveEntity",
+      "Entity": "User"
+    }
+  ]
+}

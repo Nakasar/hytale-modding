@@ -1,6 +1,7 @@
 {
   "$Comment": "Aucun dégât de feu (dev.nakasar.hytale.vampires.elite.FireAffinitySystem).",
   "IncludeGroups": [
-    "Nakasar_Enchanted_Constructs"
+    "Nakasar_Enchanted_Constructs",
+    "Nakasar_Fire_Elementals"
   ]
 }

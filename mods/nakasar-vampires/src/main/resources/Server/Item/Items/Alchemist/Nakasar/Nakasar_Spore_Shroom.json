@@ -1,0 +1,69 @@
+{
+  "TranslationProperties": {
+    "Name": "nakasar_alchemist.items.Nakasar_Spore_Shroom.name"
+  },
+  "Icon": "Icons/Items/Nakasar/Alchemist/Spore_Shroom.png",
+  "Categories": [
+    "Blocks.Deco"
+  ],
+  "Quality": "Technical",
+  "PlayerAnimationsId": "Block",
+  "BlockType": {
+    "Material": "Solid",
+    "DrawType": "Model",
+    "Opacity": "Transparent",
+    "CustomModel": "Blocks/Nakasar/Alchemist/Spore_Shroom.blockymodel",
+    "CustomModelTexture": [
+      {
+        "Texture": "BlockTextures/Nakasar/Alchemist/Spore_Shroom.png",
+        "Weight": 1
+      }
+    ],
+    "CustomModelAnimation": "Blocks/Nakasar/Alchemist/Spore_Shroom_Idle.blockyanim",
+    "HitboxType": "Nakasar_Spore_Shroom",
+    "Flags": {},
+    "Gathering": {
+      "Soft": {}
+    },
+    "Light": {
+      "Color": "#848"
+    },
+    "BlockParticleSetId": "Dust",
+    "BlockSoundSetId": "Mushroom",
+    "PhysicalMaterialId": "Foliage",
+    "ParticleColor": "#8a4fb0",
+    "Particles": [
+      {
+        "SystemId": "Dungeon_Goblin_Spores_Green",
+        "Scale": 0.6,
+        "PositionOffset": {
+          "X": 0,
+          "Y": 1.4,
+          "Z": 0
+        }
+      }
+    ],
+    "State": {
+      "Definitions": {
+        "Swelling": {
+          "CustomModelTexture": [
+            {
+              "Texture": "BlockTextures/Nakasar/Alchemist/Spore_Shroom_Swelling.png",
+              "Weight": 1
+            }
+          ],
+          "CustomModelAnimation": "Blocks/Nakasar/Alchemist/Spore_Shroom_Swelling.blockyanim",
+          "Light": {
+            "Color": "#c84"
+          }
+        }
+      }
+    }
+  },
+  "Tags": {
+    "Type": [
+      "Deco"
+    ]
+  },
+  "ItemSoundSetId": "ISS_Blocks_Stone"
+}

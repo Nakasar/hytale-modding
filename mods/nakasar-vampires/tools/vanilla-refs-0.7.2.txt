@@ -34,3 +34,13 @@ animations Sword
 
 # Vus dans Assets.zip 0.7.2 (Server/Item/Animations/Mace.json, 2026-10-19).
 animations Mace
+
+# Vus dans Assets.zip 0.7.2 (Server/Item/Animations, 2026-10-19) : mobs de la Tour de l'Alchimiste.
+animations Throwing_Knife
+animations Golem_Firesteel_Default
+animations Golem_Crystal_Thunder_Default
+animations Spirit_Root_Default
+animations Tiger_Sabertooth_Default
+
+# Vus dans Assets.zip 0.7.2 (Server/Item/Animations/Staff.json, 2026-10-19) : bâton de l'Alchimiste.
+animations Staff

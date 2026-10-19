@@ -1,0 +1,16 @@
+{
+  "$Comment": "Aspect Thunder de l'Alchimiste pendant la Convergence : sa robe, ses fioles et ses verres prennent la couleur de l'élément.",
+  "ApplicationEffects": {
+    "EntityTopTint": "#ffe066",
+    "EntityBottomTint": "#ffbc00",
+    "Particles": [
+      {
+        "SystemId": "Hazard_Electric_Stun",
+        "TargetEntityPart": "Entity",
+        "TargetNodeName": "Chest"
+      }
+    ]
+  },
+  "OverlapBehavior": "Overwrite",
+  "Infinite": true
+}

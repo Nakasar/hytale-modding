@@ -1,0 +1,105 @@
+{
+  "$Comment": "Nuée de pages du Codex vivant, annoncée : il se fige 1,1 s, ses pages s'agitent et un cône de 7 blocs se marque au sol devant lui (trois zones rouges) ; puis les pages tranchent tout le cône (70 degrés, 16 dégâts, sans recul).",
+  "Type": "Serial",
+  "Interactions": [
+    {
+      "Type": "ClearEntityEffect",
+      "Entity": "User",
+      "EntityEffectId": "Hit_Interrupt_Eligible"
+    },
+    {
+      "Type": "ApplyEffect",
+      "EffectId": "Nakasar_Elite_Rooted"
+    },
+    {
+      "Type": "Simple",
+      "RunTime": 1.6,
+      "Effects": {
+        "ItemPlayerAnimationsId": "Nakasar_Living_Codex",
+        "ItemAnimationId": "Pages",
+        "WorldSoundEventId": "SFX_Skeleton_Mage_Spellbook_Charge",
+        "Particles": [
+          {
+            "SystemId": "Nakasar_Warning_16",
+            "TargetEntityPart": "Entity",
+            "TargetNodeName": "Origin",
+            "Scale": 0.95,
+            "PositionOffset": {
+              "X": 0,
+              "Y": 0.1,
+              "Z": 2
+            },
+            "DetachedFromModel": true
+          },
+          {
+            "SystemId": "Nakasar_Warning_16",
+            "TargetEntityPart": "Entity",
+            "TargetNodeName": "Origin",
+            "Scale": 1.36,
+            "PositionOffset": {
+              "X": 0,
+              "Y": 0.1,
+              "Z": 4
+            },
+            "DetachedFromModel": true
+          },
+          {
+            "SystemId": "Nakasar_Warning_16",
+            "TargetEntityPart": "Entity",
+            "TargetNodeName": "Origin",
+            "Scale": 1.77,
+            "PositionOffset": {
+              "X": 0,
+              "Y": 0.1,
+              "Z": 6
+            },
+            "DetachedFromModel": true
+          }
+        ]
+      }
+    },
+    {
+      "Type": "Selector",
+      "RunTime": 0.2,
+      "Effects": {
+        "WorldSoundEventId": "SFX_Light_Melee_T2_Swing"
+      },
+      "Selector": {
+        "Id": "Horizontal",
+        "Direction": "ToLeft",
+        "TestLineOfSight": false,
+        "ExtendTop": 1.5,
+        "ExtendBottom": 2.5,
+        "StartDistance": 0.2,
+        "EndDistance": 7.0,
+        "Length": 70,
+        "RollOffset": 0,
+        "YawStartOffset": 35
+      },
+      "HitEntity": {
+        "Interactions": [
+          {
+            "Parent": "DamageEntityParent",
+            "DamageCalculator": {
+              "BaseDamage": {
+                "Physical": 16
+              },
+              "RandomPercentageModifier": 0.1
+            },
+            "DamageEffects": {
+              "WorldParticles": [
+                {
+                  "SystemId": "Impact_Sword_Basic_Stronk"
+                }
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "Type": "Simple",
+      "RunTime": 0.4
+    }
+  ]
+}

@@ -1,0 +1,43 @@
+{
+  "$Comment": "Émanation magique de la Tour de l'Alchimiste : bloc invisible et traversable qui porte des particules du jeu et une lumière (cheminées, cristaux flottants, îlots). Généré par tools/generate_alchemist_tower.py.",
+  "TranslationProperties": {
+    "Name": "nakasar_alchemist.items.Nakasar_Tower_Emanation_Motes.name"
+  },
+  "Icon": "Icons/Items/Nakasar/Tower/Emanation_Motes.png",
+  "Quality": "Developer",
+  "Categories": [
+    "Blocks.Deco"
+  ],
+  "BlockType": {
+    "Material": "Empty",
+    "DrawType": "Model",
+    "CustomModel": "Blocks/_Debug/Model.blockymodel",
+    "CustomModelTexture": [
+      {
+        "Texture": "Blocks/_Debug/TextureEmpty.png",
+        "Weight": 1
+      }
+    ],
+    "Opacity": "Transparent",
+    "Support": {},
+    "Gathering": {
+      "Breaking": {
+        "GatherType": "Unbreakable"
+      }
+    },
+    "Light": {
+      "Color": "#a6f"
+    },
+    "Particles": [
+      {
+        "SystemId": "Dungeon_Goblin_Temple_Motes",
+        "Scale": 1.0,
+        "PositionOffset": {
+          "X": 0,
+          "Y": 0.5,
+          "Z": 0
+        }
+      }
+    ]
+  }
+}

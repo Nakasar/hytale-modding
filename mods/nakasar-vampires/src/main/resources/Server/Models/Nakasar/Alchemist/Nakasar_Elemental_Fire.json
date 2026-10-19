@@ -1,0 +1,6 @@
+{
+  "$Comment": "Élémentaire de feu : l'esprit de braise vanilla.",
+  "Parent": "Spirit_Ember",
+  "MinScale": 1.2,
+  "MaxScale": 1.2
+}

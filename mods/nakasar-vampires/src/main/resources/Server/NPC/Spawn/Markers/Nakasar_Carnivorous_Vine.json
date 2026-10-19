@@ -1,0 +1,12 @@
+{
+  "$Comment": "Nakasar_Carnivorous_Vine dans la Tour de l'Alchimiste ; ne revient pas dans la vie d'une instance.",
+  "NPCs": [
+    {
+      "Name": "Nakasar_Carnivorous_Vine",
+      "Weight": 1,
+      "RealtimeRespawnTime": 7200
+    }
+  ],
+  "RealtimeRespawn": true,
+  "ExclusionRadius": 0
+}

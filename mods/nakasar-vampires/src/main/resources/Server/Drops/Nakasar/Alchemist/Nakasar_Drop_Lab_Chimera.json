@@ -1,0 +1,44 @@
+{
+  "$Comment": "Chimère du laboratoire (mini-boss) : son cœur (trophée), les trois principes et de l'essence de vie.",
+  "Container": {
+    "Type": "Multiple",
+    "Containers": [
+      {
+        "Type": "Droplist",
+        "DroplistId": "Nakasar_Drop_Trophy_Chimera_Heart"
+      },
+      {
+        "Type": "Single",
+        "Item": {
+          "ItemId": "Ingredient_Nakasar_Philosophers_Salt",
+          "QuantityMin": 2,
+          "QuantityMax": 3
+        }
+      },
+      {
+        "Type": "Single",
+        "Item": {
+          "ItemId": "Ingredient_Nakasar_Burning_Sulfur",
+          "QuantityMin": 2,
+          "QuantityMax": 3
+        }
+      },
+      {
+        "Type": "Single",
+        "Item": {
+          "ItemId": "Ingredient_Nakasar_Quicksilver",
+          "QuantityMin": 2,
+          "QuantityMax": 3
+        }
+      },
+      {
+        "Type": "Single",
+        "Item": {
+          "ItemId": "Ingredient_Life_Essence",
+          "QuantityMin": 1,
+          "QuantityMax": 2
+        }
+      }
+    ]
+  }
+}

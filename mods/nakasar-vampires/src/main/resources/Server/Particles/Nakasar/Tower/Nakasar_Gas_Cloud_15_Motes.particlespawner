@@ -1,0 +1,133 @@
+{
+  "RenderMode": "Erosion",
+  "ParticleRotationInfluence": "Velocity",
+  "MaxConcurrentParticles": 4,
+  "ParticleLifeSpan": {
+    "Min": 1.2,
+    "Max": 2.2
+  },
+  "SpawnRate": {
+    "Min": 3,
+    "Max": 6
+  },
+  "Particle": {
+    "Texture": "Particles/Textures/Basic/Spark.png",
+    "ScaleRatioConstraint": "None",
+    "SoftParticles": "Disable",
+    "Animation": {
+      "0": {
+        "Opacity": 0,
+        "Scale": {
+          "X": {
+            "Min": 0,
+            "Max": 0
+          },
+          "Y": {
+            "Min": 0,
+            "Max": 0
+          }
+        },
+        "Color": "#e4ff6a"
+      },
+      "30": {
+        "Opacity": 1,
+        "Scale": {
+          "X": {
+            "Min": 1,
+            "Max": 1
+          },
+          "Y": {
+            "Min": 1,
+            "Max": 1
+          }
+        }
+      },
+      "100": {
+        "Opacity": 0,
+        "Scale": {
+          "X": {
+            "Min": 0,
+            "Max": 0
+          },
+          "Y": {
+            "Min": 0,
+            "Max": 0
+          }
+        },
+        "Color": "#a8d43a"
+      }
+    },
+    "InitialAnimationFrame": {
+      "Scale": {
+        "X": {
+          "Min": 0.33,
+          "Max": 0.47
+        },
+        "Y": {
+          "Min": 0.33,
+          "Max": 0.47
+        }
+      },
+      "Opacity": 1,
+      "Rotation": {
+        "X": {
+          "Min": 0,
+          "Max": 360
+        },
+        "Y": {
+          "Min": 0,
+          "Max": 360
+        },
+        "Z": {
+          "Min": 0,
+          "Max": 360
+        }
+      }
+    },
+    "UVOption": "RandomFlipUV"
+  },
+  "Shape": "Sphere",
+  "EmitOffset": {
+    "X": {
+      "Min": 0,
+      "Max": 1.27
+    },
+    "Y": {
+      "Min": 0,
+      "Max": 1.5
+    },
+    "Z": {
+      "Min": 0,
+      "Max": 1.27
+    }
+  },
+  "Attractors": [
+    {
+      "DampingMultiplier": {
+        "X": 0.94,
+        "Y": 0.94,
+        "Z": 0.94
+      },
+      "LinearAcceleration": {
+        "Y": -0.25
+      }
+    }
+  ],
+  "InitialVelocity": {
+    "Speed": {
+      "Min": 0.05,
+      "Max": 0.3
+    },
+    "Yaw": {
+      "Min": -180,
+      "Max": 180
+    },
+    "Pitch": {
+      "Min": 0,
+      "Max": -30
+    }
+  },
+  "TrailSpawnerPositionMultiplier": 1,
+  "TrailSpawnerRotationMultiplier": 1,
+  "ParticleRotateWithSpawner": true
+}

@@ -1,0 +1,212 @@
+{
+  "$Comment": "Tourbillon de pages coupantes invoqué par le Codex vivant (CodexSystem), généré par tools/generate_codex_models.py : trois anneaux de feuillets qui tournent en sens opposés autour d'un fil d'encre violet lumineux.",
+  "EyeHeight": 0.8,
+  "HitBox": {
+    "Max": {
+      "X": 0.6,
+      "Y": 1.5,
+      "Z": 0.6
+    },
+    "Min": {
+      "X": -0.6,
+      "Y": 0,
+      "Z": -0.6
+    }
+  },
+  "MinScale": 1,
+  "MaxScale": 1,
+  "Light": {
+    "Color": "#b26aff",
+    "Radius": 4
+  },
+  "Model": "NPC/Nakasar/Codex_Page_Vortex/Model.blockymodel",
+  "Texture": "NPC/Nakasar/Codex_Page_Vortex/Texture.png",
+  "AnimationSets": {
+    "Idle": {
+      "Animations": [
+        {
+          "Animation": "NPC/Nakasar/Codex_Page_Vortex/Animations/Idle.blockyanim"
+        }
+      ]
+    },
+    "Hurt": {
+      "Animations": [
+        {
+          "Animation": "NPC/Nakasar/Codex_Page_Vortex/Animations/Hurt.blockyanim",
+          "Looping": false
+        }
+      ]
+    },
+    "Death": {
+      "Animations": [
+        {
+          "Animation": "NPC/Nakasar/Codex_Page_Vortex/Animations/Death.blockyanim",
+          "Looping": false
+        }
+      ]
+    },
+    "Walk": {
+      "Animations": [
+        {
+          "Animation": "NPC/Nakasar/Codex_Page_Vortex/Animations/Idle.blockyanim"
+        }
+      ]
+    },
+    "WalkBackward": {
+      "Animations": [
+        {
+          "Animation": "NPC/Nakasar/Codex_Page_Vortex/Animations/Idle.blockyanim"
+        }
+      ]
+    },
+    "Run": {
+      "Animations": [
+        {
+          "Animation": "NPC/Nakasar/Codex_Page_Vortex/Animations/Idle.blockyanim"
+        }
+      ]
+    },
+    "Sprint": {
+      "Animations": [
+        {
+          "Animation": "NPC/Nakasar/Codex_Page_Vortex/Animations/Idle.blockyanim"
+        }
+      ]
+    },
+    "Jump": {
+      "Animations": [
+        {
+          "Animation": "NPC/Nakasar/Codex_Page_Vortex/Animations/Idle.blockyanim"
+        }
+      ]
+    },
+    "JumpWalk": {
+      "Animations": [
+        {
+          "Animation": "NPC/Nakasar/Codex_Page_Vortex/Animations/Idle.blockyanim"
+        }
+      ]
+    },
+    "JumpRun": {
+      "Animations": [
+        {
+          "Animation": "NPC/Nakasar/Codex_Page_Vortex/Animations/Idle.blockyanim"
+        }
+      ]
+    },
+    "Fall": {
+      "Animations": [
+        {
+          "Animation": "NPC/Nakasar/Codex_Page_Vortex/Animations/Idle.blockyanim"
+        }
+      ]
+    },
+    "Sleep": {
+      "Animations": [
+        {
+          "Animation": "NPC/Nakasar/Codex_Page_Vortex/Animations/Idle.blockyanim"
+        }
+      ]
+    },
+    "Laydown": {
+      "Animations": [
+        {
+          "Animation": "NPC/Nakasar/Codex_Page_Vortex/Animations/Idle.blockyanim"
+        }
+      ]
+    },
+    "Crouch": {
+      "Animations": [
+        {
+          "Animation": "NPC/Nakasar/Codex_Page_Vortex/Animations/Idle.blockyanim"
+        }
+      ]
+    },
+    "CrouchWalk": {
+      "Animations": [
+        {
+          "Animation": "NPC/Nakasar/Codex_Page_Vortex/Animations/Idle.blockyanim"
+        }
+      ]
+    },
+    "CrouchWalkBackward": {
+      "Animations": [
+        {
+          "Animation": "NPC/Nakasar/Codex_Page_Vortex/Animations/Idle.blockyanim"
+        }
+      ]
+    },
+    "SwimIdle": {
+      "Animations": [
+        {
+          "Animation": "NPC/Nakasar/Codex_Page_Vortex/Animations/Idle.blockyanim"
+        }
+      ]
+    },
+    "FluidIdle": {
+      "Animations": [
+        {
+          "Animation": "NPC/Nakasar/Codex_Page_Vortex/Animations/Idle.blockyanim"
+        }
+      ]
+    },
+    "Alerted": {
+      "Animations": [
+        {
+          "Animation": "NPC/Nakasar/Codex_Page_Vortex/Animations/Idle.blockyanim"
+        }
+      ]
+    },
+    "Wake": {
+      "Animations": [
+        {
+          "Animation": "NPC/Nakasar/Codex_Page_Vortex/Animations/Idle.blockyanim"
+        }
+      ]
+    },
+    "Fly": {
+      "Animations": [
+        {
+          "Animation": "NPC/Nakasar/Codex_Page_Vortex/Animations/Idle.blockyanim"
+        }
+      ]
+    },
+    "FlyBackward": {
+      "Animations": [
+        {
+          "Animation": "NPC/Nakasar/Codex_Page_Vortex/Animations/Idle.blockyanim"
+        }
+      ]
+    },
+    "FlyFast": {
+      "Animations": [
+        {
+          "Animation": "NPC/Nakasar/Codex_Page_Vortex/Animations/Idle.blockyanim"
+        }
+      ]
+    },
+    "FlyIdle": {
+      "Animations": [
+        {
+          "Animation": "NPC/Nakasar/Codex_Page_Vortex/Animations/Idle.blockyanim"
+        }
+      ]
+    },
+    "HurtFly": {
+      "Animations": [
+        {
+          "Animation": "NPC/Nakasar/Codex_Page_Vortex/Animations/Hurt.blockyanim",
+          "Looping": false
+        }
+      ]
+    },
+    "DeathFly": {
+      "Animations": [
+        {
+          "Animation": "NPC/Nakasar/Codex_Page_Vortex/Animations/Death.blockyanim",
+          "Looping": false
+        }
+      ]
+    }
+  }
+}

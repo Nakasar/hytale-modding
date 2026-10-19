@@ -1,0 +1,59 @@
+{
+  "TranslationProperties": {
+    "Name": "nakasar_alchemist.items.Nakasar_Valve_Lever.name"
+  },
+  "Icon": "Icons/ItemsGenerated/Deco_Lever.png",
+  "Categories": [
+    "Blocks.Deco"
+  ],
+  "Quality": "Technical",
+  "PlayerAnimationsId": "Block",
+  "BlockType": {
+    "DrawType": "Model",
+    "Opacity": "Transparent",
+    "CustomModel": "Blocks/Tinkering/Lever.blockymodel",
+    "CustomModelTexture": [
+      {
+        "Texture": "Blocks/Tinkering/Lever_Texture.png",
+        "Weight": 1
+      }
+    ],
+    "HitboxType": "Plant_Large",
+    "VariantRotation": "NESW",
+    "Flags": {},
+    "Gathering": {
+      "Soft": {}
+    },
+    "BlockParticleSetId": "Metal",
+    "BlockSoundSetId": "Metal",
+    "PhysicalMaterialId": "Metal",
+    "InteractionHint": "server.interactionHints.activate",
+    "InteractionSoundEventId": "SFX_Lever_Metal_On",
+    "Interactions": {
+      "Use": {
+        "Interactions": [
+          {
+            "Type": "ChangeState",
+            "Changes": {
+              "default": "On",
+              "On": "default"
+            }
+          }
+        ]
+      }
+    },
+    "State": {
+      "Definitions": {
+        "On": {
+          "InteractionSoundEventId": "SFX_Lever_Metal_Off"
+        }
+      }
+    }
+  },
+  "Tags": {
+    "Type": [
+      "Deco"
+    ]
+  },
+  "ItemSoundSetId": "ISS_Blocks_Stone"
+}

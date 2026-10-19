@@ -1,0 +1,83 @@
+{
+  "TranslationProperties": {
+    "Name": "nakasar_alchemist.items.Nakasar_Tower_Exit.name",
+    "Description": "nakasar_alchemist.items.Nakasar_Tower_Exit.description"
+  },
+  "Icon": "Icons/ItemsGenerated/Portal_Return.png",
+  "Categories": [
+    "Blocks.Portals"
+  ],
+  "BlockType": {
+    "AmbientSoundEventId": "SFX_Portal_Neutral",
+    "DrawType": "Model",
+    "Material": "Solid",
+    "Opacity": "Transparent",
+    "CustomModel": "Blocks/Miscellaneous/Platform_Magic_Exit.blockymodel",
+    "CustomModelTexture": [
+      {
+        "Texture": "Blocks/Miscellaneous/Platform_Magic_Blue2.png",
+        "Weight": 1
+      }
+    ],
+    "HitboxType": "Dungeon_Portal",
+    "BlockParticleSetId": "Stone",
+    "BlockSoundSetId": "Stone",
+    "PhysicalMaterialId": "Stone",
+    "VariantRotation": "NESW",
+    "Gathering": {
+      "Breaking": {
+        "GatherType": "Unbreakable"
+      }
+    },
+    "Particles": [
+      {
+        "SystemId": "Nakasar_Tower_Exit_Portal",
+        "PositionOffset": {
+          "Y": 2.5
+        }
+      }
+    ],
+    "TextureComputedColor": "#736940",
+    "Interactions": {
+      "Use": {
+        "Interactions": [
+          {
+            "Type": "OpenCustomUI",
+            "Page": {
+              "Id": "Confirmation",
+              "TitleKey": "nakasar_alchemist.exit.title",
+              "MessageKey": "nakasar_alchemist.exit.message",
+              "ConfirmKey": "nakasar_alchemist.exit.leave",
+              "CancelKey": "nakasar_alchemist.exit.stay",
+              "Success": {
+                "Interactions": [
+                  "Portal_Return"
+                ]
+              }
+            }
+          }
+        ]
+      }
+    }
+  },
+  "PlayerAnimationsId": "Block",
+  "Tags": {
+    "Type": [
+      "Portal"
+    ]
+  },
+  "Quality": "Technical",
+  "IconProperties": {
+    "Scale": 0.35,
+    "Rotation": [
+      22.5,
+      45.0,
+      22.5
+    ],
+    "Translation": [
+      0.0,
+      -13.5
+    ]
+  },
+  "ItemSoundSetId": "ISS_Blocks_Stone"
+}

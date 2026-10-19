@@ -317,6 +317,145 @@ Mobs (voir [docs/npc-0.7.2.md](docs/npc-0.7.2.md)) :
   de `ContractBounties` dans le journal (ressource `PortalWorld` du fragment). Argent infusé : teinte dorée et dégâts
   ×2,5 contre les vampires, ×1,5 contre les zombies et squelettes.
 
+- **Tour de l'Alchimiste, socle** (`tools/generate_alchemist_tower.py`, `tower/TowerFallSystem.java`) : la clé se
+  fabrique à l'établi des chasseurs niveau 3 et à l'autel niveau 3 (éclats de rune, essences du vide et élémentaires).
+  L'instance ouvre de nuit (19 h figée, ciel violet), sans limite de temps ni d'entrées (`AllowedEntryCount` 0 comme
+  Deepworks), blocs non modifiables. Vérifié en jeu : confirmation du portail de sortie `Nakasar_Tower_Exit`, retour
+  au parvis après une chute. À vérifier : les anneaux de fumée du portail, descendus au ras du socle par la copie de
+  particules `Nakasar_Tower_Exit_Portal` (spawners `MagicPortal_VoidSmokeMiddle` et `MagicPortal_VoidGlowSmoke`).
+- **Tour de l'Alchimiste, l'archipel et la tour** (`tools/alchemist_archipelago.py`, `tools/alchemist_tower.py`) :
+  à l'échelle de Deepworks. Parcours : île d'arrivée, puis une chaîne de petites
+  îles reliées par des ponts courts de style elfique (arches, lanternes, fleurs, lianes) : halte de la fontaine, halte
+  du kiosque, Jardins des Alambics, halte des sources, Ruines du premier laboratoire (premier point de contrôle),
+  halte des arches. La grande île de la tour (340 blocs de large) est couverte d'une forêt traversée par un chemin
+  jusqu'au parvis. Le ciel est peuplé d'îlots, de géodes, de rochers et de cristaux flottants du jeu. La tour fait
+  environ 67 blocs de diamètre et 220 de haut, posée en quatre tranches empilées (`Tower0` à `Tower3`), et ses salles
+  sont meublées selon leur thème. Au-dessus des garde-corps qui bordent le vide (places, ponts, coursives et escaliers
+  extérieurs de la tour), des volumes de repoussée comme les `Player_Pushback` de Deepworks
+  (`Server/Instances/Nakasar_Alchemist_Tower/resources/TriggerVolumeData.json`) renvoient le joueur vers l'intérieur.
+  Vérifié hors ligne : parcours continu de l'arrivée au parvis sans accès au vide, chaque salle et chaque point de
+  contrôle de la tour atteignables. À vérifier en jeu : que les grands prefabs se posent entiers et que les tranches
+  s'emboîtent, que le monde d'instance reprend bien les volumes de repoussée et qu'ils renvoient le joueur (y compris
+  en grimpant), l'eau des fontaines (sources `Water_Source` dans les bassins et sur les vasques), les arbres et
+  sous-bois du jeu dans la forêt, les géodes flottantes (prefabs `Geode_Floating` du jeu), les demi-dalles des rampes,
+  l'orientation des statues de contrôle de Deepworks (elles s'allument, soignent et la précédente s'éteint), les
+  émanations `Nakasar_Tower_Emanation_*`, et qu'on réapparaisse au dernier point de contrôle, après une mort comme après
+  une chute.
+- **Tour de l'Alchimiste, les mobs** (`tools/generate_tower_mobs.py`, placement dans `alchemist_tower.Tower.mobs`) :
+  créatures de l'Alchimiste sur des modèles du jeu. Homoncules (petits zombies difformes, en groupe), golems de plomb
+  (frappe au sol annoncée), fioles vivantes de poison et de feu (elles éclatent au contact après une zone rouge),
+  apprentis en robe de mage verte (lancent des fioles), vrilles carnivores et Snapdragons dans la serre, élémentaires
+  de feu, de glace, de foudre et de racine (esprits du jeu), golem de cristal instable en élite de la Salle des
+  Transmutations (barre de boss) et gargouilles (chauve-souris de pierre) sur l'Escalier des vents. Ils lâchent les
+  trois réactifs (Sel philosophal, Soufre ardent, Mercure vif) et les essences du jeu. L'instance reprend les réglages
+  de Deepworks : mode Aventure, aucune perte d'objets à la mort, marqueurs d'apparition actifs. À vérifier en jeu : que
+  les mobs apparaissent (marqueurs dans une instance), les animations empruntées (morsure, golem, lancer de l'apprenti,
+  sort des esprits), la taille des fioles vivantes et de la gargouille, la tenue des apprentis.
+  Petits groupes d'ennemis variés sur chaque île du parcours (`alchemist_archipelago.ISLAND_MOBS`). Cour de la tour :
+  quatre gardiens d'airain (golem de pierre-feu du jeu teint en laiton, 520 PV, frappes lourdes et coup au sol annoncé)
+  gardent les portes de la tour ; `tower/CourtGuardSystem` les fait tomber (volume `Court_Door`) quand les quatre sont
+  morts. À vérifier en jeu : que les quatre morts sont bien comptées (le système voit le cadavre pendant l'animation de
+  mort) et que les portes tombent.
+- **Tour de l'Alchimiste, pièges et énigmes** (`tools/alchemist_traps.py`, blocs posés par
+  `alchemist_tower.Tower.traps`) : volumes déclencheurs comme ceux de Deepworks, vérifiés hors ligne par ValidateAssets.
+  Hall (dégagé autour du grand alambic) : rallumer les trois athanors (braseros éteints devant leurs fours) ; chaque
+  athanor a sa couleur (rouge, bleu, vert : gemmes sur son estrade) et allume de cette couleur son tuyau de verre
+  jusqu'à l'alambic, son tube, sa prise sur la colonne relais et sa prise sur le sceau du couloir ; les trois allument
+  le conduit maître et la colonne relais, qui perce le plafond de verre sous le sceau, puis le sceau se dissout.
+  Couloir : buses de gaz en laiton (`Nakasar_Tower_Gas_Nozzle`, droites et diagonales, tuyau luisant au-dessus) dans
+  les deux murs ; elles crachent en cône à tour de rôle (mur intérieur puis mur extérieur, toutes les 3 s), chaque
+  cône annoncé par trois cercles rouges et rempli d'un nuage taillé à leur rayon : on avance dans le couloir de
+  sécurité de l'autre mur. Vanne au fond (derrière la porte ouest) : la fermer coupe les buses, éteint les tuyaux et
+  ouvre un raccourci vers la rampe du hall. Les fuites du décor sont des émanations (`Nakasar_Tower_Emanation_Leak`)
+  qu'on ne ramasse plus (le bloc vanilla avait une hitbox « Rubble » ramassable). Serre : cinq grands champignons
+  violets animés (`Nakasar_Spore_Shroom`, texture pixel art à la Hytale) crachent leurs spores à tour de rôle tant
+  qu'on est dans la serre : le champignon enfle en tremblant pendant que sa zone rouge se remplit (2 s), puis lâche un
+  nuage (`Nakasar_Spore_Cloud_30`) exactement du rayon de la zone rouge, qui reste 3 s, ralentit et empoisonne.
+  Bibliothèque : le brasero met le feu à la haie de ronces qui barre la rampe ; les livres ne tombent que pendant le
+  combat du Codex (`ArenaGate` active le volume quand la barrière se lève, le coupe à la fin). Salle des
+  Transmutations (ronde, arène du golem de cristal, `tower/TransmutationSystem.java`) : trois quadrants sur quatre sont
+  actifs (Feu : flammes intenses ; Glace : blizzard ; Air : vents forts vers le mur ; Terre : pics de pierre), le
+  quatrième est calme avec un effet léger (petits dégâts, ralentissement, vents légers, petits pics). Toutes les 16 s le
+  calme change de quadrant : 5 s avant, le quadrant calme s'annonce (cercles rouges, son) et le nouveau devient calme,
+  puis l'ancien s'active et fait apparaître ses esprits. La mort du golem éteint les quadrants et dissout le sceau de
+  l'escalier en spirale vers le laboratoire. Les esprits qui passent sous le sol ou sortent de la salle sont ramenés
+  (`tower/FlyerGuardSystem.java` pour tous les volants de la tour). Escalier des vents (s'éveille à la porte nord du laboratoire) : flammes qui balaient les
+  marches, rafales qui plaquent contre le mur (jamais vers le vide), foudre sur des cercles annoncés. À vérifier en
+  jeu : que l'usage des braseros et de la vanne déclenche bien les volumes (et que les blocs posés par PlaceBlock
+  allument conduits et tubes), la conduite luisante qui passe à l'état éteint, la taille des zones rouges du gaz, les particules empruntées (taille, sens),
+  les dégâts, le feu des ronces (Fluid_Fire) et le sceau qui se dissout, l'animation des champignons (repos, enflure,
+  crachat) et l'épaisseur du nuage.
+- **Tour de l'Alchimiste, attaques annoncées** (`tools/tower_warnings.py`) : toutes les attaques de zone de la tour
+  (pièges, sorts des boss, coups au sol des mobs) s'annoncent par le même cercle rouge au sol dont le disque se remplit
+  jusqu'au bord à l'instant du coup (`Nakasar_Warning_<dixièmes>`, une durée par système) ; les coups au sol des mobs
+  durent au moins 1,6 s. À vérifier en jeu : la taille des cercles (même rayon que les annonces vanilla) et le
+  remplissage.
+- **Tour de l'Alchimiste, arènes des boss** (`tower/ArenaGate.java`, volumes `<boss>_Gate` dans
+  `alchemist_traps.Traps.arena_gate`) : comme le Festin de Deepworks, la statue de sauvegarde est hors de l'arène (palier
+  de la rampe de la serre devant la bibliothèque, Escalier des vents à la porte nord du laboratoire, antichambre de la
+  terrasse ; la Salle des Transmutations n'en a plus). Un joueur vivant entre dans l'arène : la porte s'illumine en rouge et, 4 s plus tard, la barrière
+  `Nakasar_Arena_Barrier` (champ de force cramoisi, visible) la ferme. Qui meurt revient à la statue et ne peut plus
+  rejoindre le combat. Plus aucun joueur vivant dans l'arène : le boss se remet à zéro, puis la barrière s'abaisse et le
+  groupe peut retenter ; le boss vaincu, elle s'abaisse pour de bon. À vérifier en jeu : la fermeture (et qu'elle ne
+  coince personne dans la porte), la réouverture après la mort du groupe, les particules de la porte.
+  Décor des arènes (`alchemist_tower.Tower.decor_*`) : les meubles muraux font face à l'intérieur
+  (`wall_facing`), les statues des points de contrôle regardent l'endroit où le joueur s'arrête (`facing_to`), deux
+  braseros encadrent chaque porte d'arène. Bibliothèque : doubles rayonnages alignés sur les axes, dos à dos face aux
+  allées, marqueterie d'or reliant le centre aux trois pupitres, tables de lecture. Laboratoire : sol dégagé pour le
+  combat, anneaux de pierre, conduits de cristal vert vers quatre alcôves d'alambics et trois alcôves d'établis, cuve
+  d'acide vert (`Poison_Source`, comme les gobelins de Deepworks) et quatre bassins secondaires, plafond à caissons de
+  la Salle des Transmutations en dessous. Terrasse : cercle de transmutation (triangle et carré inscrits), rosaces de
+  cristal de la couleur de chaque pilier, socles d'or des fioles de soin, dalles fissurées sur les zones qui
+  s'effondrent ; statues de l'antichambre symétriques, rien devant la porte. Vues : `/mnt/project-files/donjons/vues/
+  9-arene-*.png`. À vérifier en jeu : l'orientation des rayonnages et des statues, la lisibilité des dalles fissurées.
+- **Tour de l'Alchimiste, le Codex vivant** (`tools/generate_codex_models.py`, rôles dans `generate_tower_mobs.py`,
+  zones dans `alchemist_traps.Traps.codex`, combat dans `tower/CodexSystem.java`) : boss de la bibliothèque, grimoire
+  flottant (œil, fermoir d'or, chaînes brisées, runes) au centre de la rotonde entre trois pupitres, barre de boss.
+  Nuée de pages dans un cône annoncé au sol ; toutes les 28 à 32 s il ouvre un chapitre : un livre apparaît sur un
+  pupitre (feu, givre ou pluie de livres) et le détruire en 6 s étourdit le Codex 6 s (+50 % de dégâts subis), sinon
+  le sort part sur des zones annoncées. Trois phases (titre à l'écran ; à 70 % et 40 % de vie une onde annoncée de 8
+  blocs part de lui) : jets d'encre (ligne de six cercles rouges vers un joueur, l'encre court du Codex vers la cible,
+  éclabousse, ralentit et laisse des flaques 4 s ; toutes les 10, 8 puis 6,5 s, deux jets en dernière phase),
+  tourbillons de pages coupantes dès la phase 2 (`Nakasar_Codex_Page_Vortex`, 50 PV, annoncés au sol, poursuivent les
+  joueurs, entaillent à 1,8 bloc, durent 22 s, au plus 4), en phase 3 deux chapitres à la fois (il faut détruire les
+  deux livres pour l'étourdir, chaque livre restant lance son sort) et un pan de rayonnages qui s'effondre toutes les
+  14 s (zones annoncées puis bloc d'éboulis `Nakasar_Codex_Rubble`). Groupe mort ou sorti de l'arène 8 s : éboulis,
+  livres, tourbillons et flaques retirés, vie pleine, retour en phase 1. Sa mort dissout le sceau de la rampe vers la Salle des Transmutations ; trophée Fermoir du
+  Codex (sans usage pour l'instant). À vérifier en jeu : le modèle et ses animations (Pages, Chapter, vol), le sens des
+  marques du cône, l'apparition des livres sur les pupitres, l'étourdissement, les zones de sorts et d'éboulement, la
+  remise à zéro et le sceau ; les titres de phase, l'encre (éclaboussure, flaque), le modèle du tourbillon et sa
+  poursuite, l'équilibre des dégâts.
+- **Tour de l'Alchimiste, la Chimère du laboratoire** (`tools/generate_dragon_models.py`, rôles dans
+  `generate_tower_mobs.py`, arène dans `alchemist_tower.Tower.chimera`, acide dans `alchemist_traps.Traps.chimera`,
+  combat dans `tower/ChimeraSystem.java`) : second mini-boss, un dragon qui ne vole pas (modèle et texture du dragon de
+  feu vanilla, ailes repliées, animations Morsure/Coup/Queue générées), barre de boss. Morsure, coup au sol annoncé
+  (5,5 blocs), fauchage de la queue annoncé (5 blocs, poison). Des zombies porteurs d'acide apparaissent près des quatre
+  bassins secondaires (un toutes les 7 s, 5 s sous la moitié de sa vie, au plus 4), remplissent leur seau 2,5 s puis
+  marchent vers la cuve centrale : s'ils y versent leur acide, la Chimère regagne 5 % de sa vie ; tués avant, pas de
+  soin. La cuve crache de l'acide sur des cercles annoncés pendant tout le combat. Remise à zéro si le groupe meurt ou
+  quitte le laboratoire 8 s. Sa mort dissout le sceau de la porte nord (vers l'Escalier des vents) ; trophée Cœur de
+  chimère (sans usage pour l'instant). La barrière d'entrée est un couvercle horizontal sur le haut de l'escalier en
+  spirale. À vérifier en jeu : les animations du dragon, le seau des zombies, leur marche vers la cuve, l'acide vert
+  dans les bassins, la barrière d'entrée.
+- **Tour de l'Alchimiste, l'Alchimiste** (`tools/generate_alchemist_models.py`, rôles dans `generate_tower_mobs.py`,
+  arène dans `alchemist_tower.Tower.alchemist`, volumes dans `alchemist_traps.Traps.alchemist`, combat dans
+  `tower/AlchemistSystem.java` et `tower/AlchemistFlaskInteraction.java`) : boss final, sur la terrasse de
+  l'Observatoire. Grand et maigre (squelette du joueur, 1,14), robe de mage violette, chapeau à large bord, masque de
+  cuir à bec et verres violets, tablier taché, ceinture de fioles lumineuses ; bâton de cristal ; barre de boss. Vie
+  ×(1 + 0,55 par joueur de plus dans l'arène), ×1,5 si le levier de l'antichambre a été tiré avant le combat (mode
+  difficile : fioles doublées, dégâts +25 %, plus d'homoncules, éléments plus rapides). Phase 1, Transmutation : coups
+  de bâton et fioles des quatre éléments vers chaque joueur (zones annoncées, 2 s). Phase 2, Grand Œuvre (67 %) : trois
+  pans du rebord s'effondrent (qui tombe revient au bord intérieur, blessé), il s'enferme dans l'athanor central,
+  invulnérable, avec 4 homoncules (+2 par joueur de plus) ; le dernier tué, il ressort 30 s puis s'y renferme. Phase 3,
+  Convergence (34 %) : quatre piliers (feu, givre, foudre, racines) ; il prend l'élément d'un pilier debout toutes les
+  20 s (teinte de l'élément) et le fait tomber sur chaque joueur toutes les 5 s (flammes au sol, ralentissement,
+  étourdissement, racines) ; les quatre détruits, il s'effondre 8 s (+50 % de dégâts subis). Fioles de soin sur six
+  socles toutes les 40 s. Remise à zéro si le groupe meurt ou quitte l'arène 10 s (rebord reconstruit, levier
+  déverrouillé). Sa mort dissout le sceau du bureau ; trophée Masque de l'Alchimiste (pour l'établi des chasseurs
+  niveau 4, plus tard). À vérifier en jeu : les pièces du masque et du tablier sur le squelette, la teinte des
+  éléments, le levier, l'effondrement et la reconstruction du rebord, le retour après une chute, la sortie de
+  l'athanor, les piliers, les fioles de soin, la vie selon le groupe.
+
 ## Organisation du dépôt
 
 ```text

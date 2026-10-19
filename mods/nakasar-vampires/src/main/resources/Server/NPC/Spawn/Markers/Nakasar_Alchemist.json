@@ -1,0 +1,12 @@
+{
+  "$Comment": "Nakasar_Alchemist dans la Tour de l'Alchimiste ; ne revient pas dans la vie d'une instance.",
+  "NPCs": [
+    {
+      "Name": "Nakasar_Alchemist",
+      "Weight": 1,
+      "RealtimeRespawnTime": 7200
+    }
+  ],
+  "RealtimeRespawn": true,
+  "ExclusionRadius": 0
+}

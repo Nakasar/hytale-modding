@@ -1,0 +1,95 @@
+{
+  "$Comment": "Frappe au sol annoncée du golem de plomb : il s'immobilise 1,4 s, rougeoie et une zone rouge de 4 blocs se charge au sol, puis il frappe le sol (30 dégâts, projection). On l'évite en sortant de la zone.",
+  "Type": "Serial",
+  "Interactions": [
+    {
+      "Type": "ClearEntityEffect",
+      "Entity": "User",
+      "EntityEffectId": "Hit_Interrupt_Eligible"
+    },
+    {
+      "Type": "ApplyEffect",
+      "EffectId": "Nakasar_Elite_Rooted"
+    },
+    {
+      "Type": "ApplyEffect",
+      "EffectId": "Dungeon_Goblin_Mace_Slam_Charge"
+    },
+    {
+      "Type": "Simple",
+      "RunTime": 1.8,
+      "Effects": {
+        "WorldSoundEventId": "SFX_Spear_Throw_Charge",
+        "Particles": [
+          {
+            "SystemId": "Nakasar_Warning_18",
+            "TargetEntityPart": "Entity",
+            "TargetNodeName": "Origin",
+            "Scale": 2.72,
+            "PositionOffset": {
+              "X": 0,
+              "Y": 0.1,
+              "Z": 0
+            },
+            "DetachedFromModel": true
+          }
+        ]
+      }
+    },
+    {
+      "Type": "Selector",
+      "RunTime": 0.15,
+      "Effects": {
+        "ItemPlayerAnimationsId": "Golem_Firesteel_Default",
+        "ItemAnimationId": "GroundSlam",
+        "WorldSoundEventId": "SFX_Goblin_Feastmaster_Slam",
+        "Particles": [
+          {
+            "SystemId": "Stick_Slam_Ground_Large",
+            "TargetEntityPart": "Entity",
+            "TargetNodeName": "Origin",
+            "Scale": 1.0,
+            "PositionOffset": {
+              "X": 0,
+              "Y": 0.1,
+              "Z": 0
+            },
+            "DetachedFromModel": true
+          }
+        ]
+      },
+      "Selector": {
+        "Id": "AOECircle",
+        "Range": 4.0
+      },
+      "HitEntity": {
+        "Interactions": [
+          {
+            "Parent": "DamageEntityParent",
+            "DamageCalculator": {
+              "BaseDamage": {
+                "Physical": 30
+              },
+              "RandomPercentageModifier": 0.1
+            },
+            "DamageEffects": {
+              "WorldSoundEventId": "SFX_Mace_T2_Signature_Impact",
+              "Knockback": {
+                "Type": "Force",
+                "Force": 7,
+                "VelocityType": "Set",
+                "Direction": {
+                  "Y": 1
+                }
+              }
+            }
+          }
+        ]
+      }
+    },
+    {
+      "Type": "Simple",
+      "RunTime": 0.8
+    }
+  ]
+}

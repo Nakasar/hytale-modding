@@ -1,0 +1,7 @@
+{
+  "$Comment": "Créatures de feu de la tour : aucun dégât de feu (dans Nakasar_Fire_Immune).",
+  "IncludeRoles": [
+    "Nakasar_Elemental_Fire",
+    "Nakasar_Living_Flask_Fire"
+  ]
+}

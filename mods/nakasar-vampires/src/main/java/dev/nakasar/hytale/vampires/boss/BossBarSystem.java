@@ -53,7 +53,11 @@ public final class BossBarSystem extends TickingSystem<EntityStore> {
             "Nakasar_Enchanted_Armor",
             "Nakasar_Spectre",
             "Nakasar_Vampire_Count",
-            "Nakasar_Vampire_Countess");
+            "Nakasar_Vampire_Countess",
+            "Nakasar_Crystal_Golem",
+            "Nakasar_Living_Codex",
+            "Nakasar_Lab_Chimera",
+            "Nakasar_Alchemist");
 
     private static final double RANGE = 40;
     private static final float INTERVAL = 0.25f;

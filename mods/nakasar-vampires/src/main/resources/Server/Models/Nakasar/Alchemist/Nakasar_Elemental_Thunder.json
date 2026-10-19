@@ -1,0 +1,6 @@
+{
+  "$Comment": "Élémentaire de foudre : l'esprit de foudre vanilla.",
+  "Parent": "Spirit_Thunder",
+  "MinScale": 1.2,
+  "MaxScale": 1.2
+}

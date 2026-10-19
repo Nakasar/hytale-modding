@@ -1,0 +1,14 @@
+{
+  "$Comment": "Aspect Root de l'Alchimiste pendant la Convergence : sa robe, ses fioles et ses verres prennent la couleur de l'élément.",
+  "ApplicationEffects": {
+    "EntityTopTint": "#5cd04a",
+    "EntityBottomTint": "#0c3a10",
+    "Particles": [
+      {
+        "SystemId": "Effect_Poison"
+      }
+    ]
+  },
+  "OverlapBehavior": "Overwrite",
+  "Infinite": true
+}

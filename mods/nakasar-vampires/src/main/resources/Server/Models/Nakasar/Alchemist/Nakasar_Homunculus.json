@@ -1,0 +1,10 @@
+{
+  "$Comment": "Homoncule : le petit zombie difforme vanilla, plus petit encore, lueur verdâtre de cuve.",
+  "Parent": "Zombie_Aberrant_Small",
+  "MinScale": 0.7,
+  "MaxScale": 0.8,
+  "Light": {
+    "Color": "#9dff8a",
+    "Radius": 2
+  }
+}

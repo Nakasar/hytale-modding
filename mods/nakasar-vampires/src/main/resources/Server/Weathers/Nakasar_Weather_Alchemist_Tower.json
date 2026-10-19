@@ -1,0 +1,142 @@
+{
+  "FogDistance": [
+    -20,
+    260
+  ],
+  "FogColors": [
+    {
+      "Hour": 0,
+      "Color": "#1a1030"
+    },
+    {
+      "Hour": 12,
+      "Color": "#4a5a70"
+    },
+    {
+      "Hour": 19,
+      "Color": "#3b2a5a"
+    },
+    {
+      "Hour": 22,
+      "Color": "#1c1236"
+    }
+  ],
+  "FogDensities": [
+    {
+      "Hour": 0,
+      "Value": 0.45
+    },
+    {
+      "Hour": 19,
+      "Value": 0.3
+    }
+  ],
+  "SkyTopColors": [
+    {
+      "Hour": 0,
+      "Color": "#0a0620ff"
+    },
+    {
+      "Hour": 12,
+      "Color": "#3a3a7aff"
+    },
+    {
+      "Hour": 19,
+      "Color": "#2a0f4aff"
+    },
+    {
+      "Hour": 22,
+      "Color": "#120830ff"
+    }
+  ],
+  "SkyBottomColors": [
+    {
+      "Hour": 0,
+      "Color": "#123a2aff"
+    },
+    {
+      "Hour": 12,
+      "Color": "#6ab08aff"
+    },
+    {
+      "Hour": 19,
+      "Color": "#2fa36aff"
+    },
+    {
+      "Hour": 22,
+      "Color": "#174a3aff"
+    }
+  ],
+  "SkySunsetColors": [
+    {
+      "Hour": 0,
+      "Color": "#00000000"
+    },
+    {
+      "Hour": 19,
+      "Color": "#b04ad8a0"
+    },
+    {
+      "Hour": 22,
+      "Color": "#00000000"
+    }
+  ],
+  "SunlightColors": [
+    {
+      "Hour": 0,
+      "Color": "#4a3a8a"
+    },
+    {
+      "Hour": 12,
+      "Color": "#c0c8d0"
+    },
+    {
+      "Hour": 19,
+      "Color": "#a07ac8"
+    },
+    {
+      "Hour": 22,
+      "Color": "#5a4a9a"
+    }
+  ],
+  "SunColors": [
+    {
+      "Hour": 0,
+      "Color": "#ffffff"
+    },
+    {
+      "Hour": 19,
+      "Color": "#e070ff"
+    }
+  ],
+  "MoonColors": [
+    {
+      "Hour": 0,
+      "Color": "#d8ffe8ff"
+    },
+    {
+      "Hour": 12,
+      "Color": "#d8ffe8ff"
+    }
+  ],
+  "MoonGlowColors": [
+    {
+      "Hour": 0,
+      "Color": "#3cff9a60"
+    },
+    {
+      "Hour": 12,
+      "Color": "#3cff9a60"
+    }
+  ],
+  "WaterTints": [
+    {
+      "Hour": 0,
+      "Color": "#2a1a4a"
+    },
+    {
+      "Hour": 12,
+      "Color": "#3a6a5a"
+    }
+  ]
+}

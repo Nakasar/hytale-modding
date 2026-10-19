@@ -1,0 +1,56 @@
+{
+  "$Comment": "Piqué de la gargouille : elle surgit à 1,5-2,5 blocs de sa cible (téléportation du rôle) et la griffe aussitôt (16 dégâts, sans recul : jamais dans le vide).",
+  "Type": "Serial",
+  "Interactions": [
+    {
+      "Type": "Simple",
+      "RunTime": 0.3,
+      "Effects": {
+        "WorldSoundEventId": "SFX_Spirit_Root_Alerted"
+      }
+    },
+    {
+      "Type": "Selector",
+      "RunTime": 0.1,
+      "Effects": {
+        "WorldSoundEventId": "SFX_Light_Melee_T2_Swing"
+      },
+      "Selector": {
+        "Id": "Horizontal",
+        "Direction": "ToLeft",
+        "TestLineOfSight": false,
+        "ExtendTop": 1.2,
+        "ExtendBottom": 1.2,
+        "StartDistance": 0.1,
+        "EndDistance": 3.2,
+        "Length": 120,
+        "RollOffset": 0,
+        "YawStartOffset": 60
+      },
+      "HitEntity": {
+        "Interactions": [
+          {
+            "Parent": "DamageEntityParent",
+            "DamageCalculator": {
+              "BaseDamage": {
+                "Physical": 16
+              },
+              "RandomPercentageModifier": 0.1
+            },
+            "DamageEffects": {
+              "WorldParticles": [
+                {
+                  "SystemId": "Impact_Sword_Basic_Stronk"
+                }
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "Type": "Simple",
+      "RunTime": 0.4
+    }
+  ]
+}

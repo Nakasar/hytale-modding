@@ -1,0 +1,32 @@
+{
+  "$Comment": "Animations d'attaque jouées par les interactions (Effects.ItemAnimationId), générées par tools/generate_pumpkin_models.py.",
+  "Animations": {
+    "Bite": {
+      "ThirdPerson": "NPC/Nakasar/Lab_Dragon/Animations/Bite.blockyanim",
+      "Looping": false,
+      "Speed": 1
+    },
+    "Slam": {
+      "ThirdPerson": "NPC/Nakasar/Lab_Dragon/Animations/Slam.blockyanim",
+      "Looping": false,
+      "Speed": 1
+    },
+    "Tail": {
+      "ThirdPerson": "NPC/Nakasar/Lab_Dragon/Animations/Tail.blockyanim",
+      "Looping": false,
+      "Speed": 1
+    }
+  },
+  "WiggleWeights": {
+    "Pitch": 0,
+    "PitchDeceleration": 0.1,
+    "Roll": 0,
+    "RollDeceleration": 0.1,
+    "X": 0,
+    "XDeceleration": 0.1,
+    "Y": 0,
+    "YDeceleration": 0.1,
+    "Z": 0,
+    "ZDeceleration": 0.1
+  }
+}

@@ -95,6 +95,13 @@ FURNITURE = {
     "Furniture_Human_Ruins_Statue_Broken": "Taller", "Furniture_Village_Statue": "Taller",
     "Furniture_Temple_Dark_Statue_Gaia": "Taller", "Deco_Scarecrow": "Taller",
     "Furniture_Ancient_Statue": "Statue_Large",
+    "Furniture_Temple_Light_Statue": "Taller",
+    "Dungeon_Checkpoint_Statue": "Taller",  # points de contrôle de Deepworks et de la Tour de l'Alchimiste (1 × 2,8)
+    # Décor de la Tour de l'Alchimiste (hitboxes lues dans Assets.zip 0.7.2, 19 octobre 2026).
+    "Furniture_Temple_Light_Table": "Table", "Furniture_Temple_Wind_Table": "Table",
+    "Furniture_Temple_Light_Bench": "Bench", "Furniture_Temple_Wind_Chandelier": "Chandelier",
+    "Furniture_Temple_Wind_Statue": "Statue_Large", "Furniture_Temple_Wind_Pot": "Tall",
+    "Furniture_Temple_Emerald_Statue": "Taller",
     "Furniture_Village_Painting_2x2": "Painting_2x2", "Furniture_Village_Painting_3x2": "Painting_3x2",
     "Furniture_Royal_Magic_Carpet": "Carpet_Large",
     "Furniture_Ancient_Door_Medium": "Door_Medium", "Furniture_Temple_Dark_Door_Medium": "Door_Medium",
@@ -141,6 +148,7 @@ class Prefab:
         self.components = {}  # (x, y, z) -> composants du bloc (coffre et sa liste de butin...)
         self.claims = {}      # case secondaire d'un meuble -> case du meuble
         self.lore_spots = {}  # (x, y, z) -> lieu de lore sans coffre (generate_lore.LORE_BY_SPOT)
+        self.fluids = {}      # (x, y, z) -> (fluide, niveau), dans une case d'air (bassins de fontaine)
         self.rng = random.Random(seed)
 
     # --- primitives -------------------------------------------------------------------------
@@ -153,6 +161,8 @@ class Prefab:
             for dx, dy, dz in footprint(*old):
                 if self.claims.get((x + dx, y + dy, z + dz)) == pos:
                     del self.claims[(x + dx, y + dy, z + dz)]
+        if name not in (None, AIR):
+            self.fluids.pop(pos, None)
         if name is None:
             self.blocks.pop(pos, None)
             return
@@ -161,6 +171,11 @@ class Prefab:
             for dx, dy, dz in footprint(name, rot):
                 if (dx, dy, dz) != (0, 0, 0):
                     self.claims[(x + dx, y + dy, z + dz)] = pos
+
+    def fluid(self, x, y, z, name="Water_Source", level=1):
+        """Fluide dans une case d'air, comme les sources d'eau des bassins vanilla (Water_Source, niveau 1)."""
+        self.set(x, y, z, AIR)
+        self.fluids[(x, y, z)] = (name, level)
 
     def reserved(self):
         """Cases déjà prises par les parties secondaires des meubles posés."""
@@ -419,7 +434,10 @@ class Prefab:
             raise ValueError(f"meubles qui se chevauchent : {clashes[:6]}")
         return out
 
-    def write(self, path):
+    def write(self, path, y_min=None, y_max=None):
+        """Écrit le prefab ; avec y_min et y_max, seulement la tranche y_min <= y < y_max, dont le y_min devient le 0
+        (une construction trop haute se pose en plusieurs prefabs empilés). Un meuble ne doit pas chevaucher deux
+        tranches."""
         self.orient_lines()
         try:
             fillers = self.fillers()
@@ -428,15 +446,28 @@ class Prefab:
         cells = dict(self.blocks)
         for cell, (name, rot, _) in fillers.items():
             cells[cell] = (name, rot)
+        shift = 0
+        if y_min is not None:
+            shift = y_min
+            inside = lambda y: y_min <= y < y_max
+            for (x, y, z), (name, rot) in self.blocks.items():
+                rows = [inside(y + dy) for dx, dy, dz in footprint(name, rot)]
+                if any(rows) != all(rows):
+                    raise ValueError(f"{path.name} : {name} en {(x, y, z)} coupé par la tranche {y_min}-{y_max}")
+            cells = {c: v for c, v in cells.items() if inside(c[1])}
+        fluids = [{"x": x, "y": y - shift, "z": z, "name": name, "level": level}
+                  for (x, y, z), (name, level) in sorted(self.fluids.items(), key=lambda kv: (kv[0][1], kv[0][2], kv[0][0]))
+                  if y_min is None or y_min <= y < y_max]
         blocks = []
         for (x, y, z), (name, rot) in sorted(cells.items(), key=lambda kv: (kv[0][1], kv[0][2], kv[0][0])):
+            y -= shift
             entry = {"x": x, "y": y, "z": z, "name": name}
             if rot:
                 entry["rotation"] = rot
-            if (x, y, z) in fillers:
-                entry["filler"] = fillers[(x, y, z)][2]
-            if (x, y, z) in self.components:
-                entry["components"] = self.components[(x, y, z)]
+            if (x, y + shift, z) in fillers:
+                entry["filler"] = fillers[(x, y + shift, z)][2]
+            if (x, y + shift, z) in self.components:
+                entry["components"] = self.components[(x, y + shift, z)]
             blocks.append(entry)
         doc = {"version": 8, "blockIdVersion": 8, "anchorX": 0, "anchorY": 0, "anchorZ": 0}
         path.parent.mkdir(parents=True, exist_ok=True)
@@ -446,7 +477,12 @@ class Prefab:
                 f.write(f'  "{key}": {json.dumps(value)},\n')
             f.write('  "blocks": [\n')
             f.write(",\n".join("    " + json.dumps(b, separators=(",", ":")) for b in blocks))
-            f.write("\n  ]\n}\n")
+            f.write("\n  ]")
+            if fluids:
+                f.write(',\n  "fluids": [\n')
+                f.write(",\n".join("    " + json.dumps(e, separators=(",", ":")) for e in fluids))
+                f.write("\n  ]")
+            f.write("\n}\n")
         return len(blocks)
 
 

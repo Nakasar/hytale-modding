@@ -1,0 +1,33 @@
+{
+  "$Comment": "Créatures de l'Alchimiste : elles ne se blessent pas entre elles (DisableDamageGroups).",
+  "IncludeRoles": [
+    "Nakasar_Homunculus",
+    "Nakasar_Lead_Golem",
+    "Nakasar_Brass_Guardian",
+    "Nakasar_Living_Flask_Poison",
+    "Nakasar_Living_Flask_Fire",
+    "Nakasar_Alchemist_Apprentice",
+    "Nakasar_Carnivorous_Vine",
+    "Nakasar_Snapdragon",
+    "Nakasar_Elemental_Fire",
+    "Nakasar_Elemental_Frost",
+    "Nakasar_Elemental_Thunder",
+    "Nakasar_Elemental_Root",
+    "Nakasar_Elemental_Water",
+    "Nakasar_Crystal_Golem",
+    "Nakasar_Tower_Gargoyle",
+    "Nakasar_Living_Codex",
+    "Nakasar_Lab_Chimera",
+    "Nakasar_Alchemist",
+    "Nakasar_Codex_Chapter_Fire",
+    "Nakasar_Codex_Chapter_Frost",
+    "Nakasar_Codex_Chapter_Rain",
+    "Nakasar_Codex_Page_Vortex",
+    "Nakasar_Chimera_Feeder",
+    "Nakasar_Athanor_Homunculus",
+    "Nakasar_Alchemist_Pillar_Fire",
+    "Nakasar_Alchemist_Pillar_Frost",
+    "Nakasar_Alchemist_Pillar_Thunder",
+    "Nakasar_Alchemist_Pillar_Root"
+  ]
+}

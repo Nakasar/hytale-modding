@@ -1,0 +1,55 @@
+{
+  "$Comment": "Zombie porteur d'acide : ChimeraSystem le fait sortir près d'un bassin secondaire du laboratoire, où il remplit son seau (gelé quelques secondes), puis il marche vers la cuve centrale (son point d'attache, fixé par ChimeraSystem) ; il ne se bat pas. Arrivé à la margelle, il verse son seau (ChimeraSystem le retire et soigne la Chimère) ; tué avant, il ne soigne rien. Généré par tools/generate_tower_mobs.py.",
+  "Type": "Generic",
+  "Appearance": "Zombie",
+  "NameTranslationKey": "nakasar_alchemist.npc.Chimera_Feeder.name",
+  "MaxHealth": 30,
+  "StartState": "Idle",
+  "DefaultPlayerAttitude": "Neutral",
+  "DefaultNPCAttitude": "Ignore",
+  "DisableDamageGroups": [
+    "Nakasar_Alchemist_Creations"
+  ],
+  "MotionControllerList": [
+    {
+      "Type": "Walk",
+      "MaxWalkSpeed": 3.2,
+      "Gravity": 10,
+      "MaxFallSpeed": 10,
+      "Acceleration": 10,
+      "JumpHeight": 1.0
+    }
+  ],
+  "HotbarItems": [
+    "Container_Bucket"
+  ],
+  "KnockbackScale": 1.0,
+  "DeathAnimationTime": 0.8,
+  "Instructions": [
+    {
+      "Sensor": {
+        "Type": "State",
+        "State": "Idle"
+      },
+      "Instructions": [
+        {
+          "$Comment": "Marche vers la cuve.",
+          "Sensor": {
+            "Type": "Leash",
+            "Range": 0.8
+          },
+          "BodyMotion": {
+            "Type": "Seek",
+            "RelativeSpeed": 1.0,
+            "SlowDownDistance": 1.5,
+            "StopDistance": 0.5,
+            "UsePathfinder": true
+          }
+        },
+        {
+          "Actions": []
+        }
+      ]
+    }
+  ]
+}

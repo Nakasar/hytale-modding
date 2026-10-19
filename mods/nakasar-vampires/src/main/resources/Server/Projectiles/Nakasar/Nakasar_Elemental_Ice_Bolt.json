@@ -1,0 +1,6 @@
+{
+  "$Comment": "Trait de glace de l'élémentaire de glace.",
+  "Parent": "Ice_Bolt",
+  "Damage": 10,
+  "MuzzleVelocity": 30
+}

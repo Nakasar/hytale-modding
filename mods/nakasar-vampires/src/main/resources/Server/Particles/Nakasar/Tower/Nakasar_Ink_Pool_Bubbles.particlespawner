@@ -1,0 +1,73 @@
+{
+  "RenderMode": "BlendAdd",
+  "ParticleRotationInfluence": "Billboard",
+  "ParticleLifeSpan": {
+    "Min": 0.6,
+    "Max": 1.1
+  },
+  "Particle": {
+    "Texture": "Particles/Textures/Basic/Spark.png",
+    "ScaleRatioConstraint": "OneToOne",
+    "SoftParticles": "Disable",
+    "Animation": {
+      "0": {
+        "Opacity": 0,
+        "Color": "#a05aff"
+      },
+      "30": {
+        "Opacity": 0.9
+      },
+      "100": {
+        "Opacity": 0,
+        "Color": "#3a1858"
+      }
+    },
+    "InitialAnimationFrame": {
+      "Opacity": 0.9,
+      "Scale": {
+        "X": {
+          "Min": 0.3,
+          "Max": 0.5
+        }
+      }
+    },
+    "UVOption": "RandomFlipUV"
+  },
+  "Shape": "Sphere",
+  "EmitOffset": {
+    "X": {
+      "Min": 0,
+      "Max": 1.1
+    },
+    "Y": {
+      "Min": 0,
+      "Max": 0.1
+    },
+    "Z": {
+      "Min": 0,
+      "Max": 1.1
+    }
+  },
+  "TotalParticles": {
+    "Min": 4,
+    "Max": 6
+  },
+  "SpawnRate": {
+    "Min": 6,
+    "Max": 8
+  },
+  "MaxConcurrentParticles": 6,
+  "InitialVelocity": {
+    "Speed": {
+      "Min": 0.2,
+      "Max": 0.5
+    },
+    "Pitch": {
+      "Min": 80,
+      "Max": 100
+    }
+  },
+  "TrailSpawnerPositionMultiplier": 1,
+  "TrailSpawnerRotationMultiplier": 1,
+  "SpawnBurst": false
+}

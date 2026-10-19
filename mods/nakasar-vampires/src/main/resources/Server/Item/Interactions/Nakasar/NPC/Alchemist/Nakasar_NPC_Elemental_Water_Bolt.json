@@ -1,0 +1,20 @@
+{
+  "$Comment": "Orbe d'eau de l'élémentaire d'eau (9 dégâts).",
+  "Type": "Simple",
+  "RunTime": 0.5,
+  "Effects": {
+    "ItemPlayerAnimationsId": "Spirit_Root_Default",
+    "ItemAnimationId": "SporeGas"
+  },
+  "Next": {
+    "Type": "LaunchProjectile",
+    "RunTime": 0.3,
+    "Effects": {
+      "WorldSoundEventId": "SFX_Water_MoveIn"
+    },
+    "ProjectileId": "Nakasar_Elemental_Water_Bolt",
+    "Tags": {
+      "AimingReference": []
+    }
+  }
+}

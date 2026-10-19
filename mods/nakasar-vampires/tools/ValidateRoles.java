@@ -112,6 +112,7 @@ public class ValidateRoles {
     }
     errors += checkAttackTags(files, a);
     errors += checkForcedDespawn(files, root);
+    errors += checkWalkMotions(files, root);
     for (String r : refs) {
       String id = r.substring(0, r.indexOf(" ("));
       // Nos ids sont préfixés Nakasar_ : s'il n'est fourni par aucun pack, c'est une faute de frappe.
@@ -139,6 +140,26 @@ public class ValidateRoles {
     for (Path file : roles) {
       if (forced.matcher(java.nio.file.Files.readString(file)).find()) {
         System.out.println("ERROR " + root.relativize(file) + " : action Despawn avec \"Force\": true (fait planter le monde en 0.7.2, retirer Force)");
+        errors++;
+      }
+    }
+    return errors;
+  }
+  /**
+   * Certains mouvements (MaintainDistance, TakeOff, Land) exigent un contrôleur Walk : le serveur 0.7.2 refuse le rôle au
+   * chargement (« Missing required motion controller: MotionControllerWalk », NPCLoadTimeValidationHelper), mais cette
+   * vérification a besoin du modèle et ne tourne pas hors jeu. Un PNJ qui vole et garde ses distances lévite donc en
+   * marchant (Walk avec MinHover/MaxHover), comme les esprits et les spectres vanilla.
+   */
+  static int checkWalkMotions(List<Path> roles, Path root) throws Exception {
+    int errors = 0;
+    java.util.regex.Pattern needsWalk = java.util.regex.Pattern.compile("\"Type\"\\s*:\\s*\"(MaintainDistance|TakeOff|Land)\"");
+    java.util.regex.Pattern walk = java.util.regex.Pattern.compile("\"MotionControllerList\"\\s*:\\s*\\[[^\\]]*\"Type\"\\s*:\\s*\"Walk\"");
+    for (Path file : roles) {
+      String text = java.nio.file.Files.readString(file);
+      java.util.regex.Matcher m = needsWalk.matcher(text);
+      if (m.find() && !walk.matcher(text).find()) {
+        System.out.println("ERROR " + root.relativize(file) + " : mouvement " + m.group(1) + " sans contrôleur Walk dans MotionControllerList (rôle refusé en jeu)");
         errors++;
       }
     }

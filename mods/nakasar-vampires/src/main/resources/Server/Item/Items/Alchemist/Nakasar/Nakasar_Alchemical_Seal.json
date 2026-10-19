@@ -1,0 +1,42 @@
+{
+  "TranslationProperties": {
+    "Name": "nakasar_alchemist.items.Nakasar_Alchemical_Seal.name"
+  },
+  "Icon": "Icons/Items/Nakasar/Alchemist/Alchemical_Seal.png",
+  "Categories": [
+    "Blocks.Deco"
+  ],
+  "Quality": "Technical",
+  "PlayerAnimationsId": "Block",
+  "BlockType": {
+    "Material": "Solid",
+    "DrawType": "Cube",
+    "Opacity": "Semitransparent",
+    "Textures": [
+      {
+        "Sides": "BlockTextures/Nakasar/Alchemist/Alchemical_Seal.png",
+        "UpDown": "BlockTextures/Nakasar/Alchemist/Alchemical_Seal.png",
+        "Weight": 1
+      }
+    ],
+    "HitboxType": "Full",
+    "Flags": {},
+    "Gathering": {
+      "Breaking": {
+        "GatherType": "Rocks"
+      }
+    },
+    "Light": {
+      "Color": "#4c8"
+    },
+    "BlockParticleSetId": "Crystal",
+    "BlockSoundSetId": "Crystal",
+    "ParticleColor": "#58d68d"
+  },
+  "Tags": {
+    "Type": [
+      "Deco"
+    ]
+  },
+  "ItemSoundSetId": "ISS_Blocks_Stone"
+}

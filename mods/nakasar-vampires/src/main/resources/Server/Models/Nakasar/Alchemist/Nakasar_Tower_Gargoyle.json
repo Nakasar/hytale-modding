@@ -1,0 +1,7 @@
+{
+  "$Comment": "Gargouille : la chauve-souris vanilla taillée dans la pierre (texture recolorée en pierre), en grand.",
+  "Parent": "Bat",
+  "Texture": "NPC/Nakasar/Alchemist/Gargoyle.png",
+  "MinScale": 2.4,
+  "MaxScale": 2.4
+}

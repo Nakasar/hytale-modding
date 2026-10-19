@@ -23,6 +23,13 @@ from pathlib import Path
 SITE = "https://hytale.isaacguru.com"
 TOOLS = Path(__file__).resolve().parent
 OUT = TOOLS / "vanilla-block-ids-0.7.2.txt"
+# Fluides des prefabs (liste "fluids", même champ "name" que les blocs) : Server/Item/Block/Fluids d'Assets.zip, absents
+# du site ; Water_Source (niveau 1) remplit les bassins des prefabs vanilla.
+FLUIDS = ["Water_Source"]
+# Objets « Developer » absents du site, lus dans Assets.zip 0.7.2 (19 octobre 2026) : statue des points de contrôle de
+# Deepworks et ses états (Server/Item/Items/MISC/Dungeon_Checkpoint_Statue.json).
+EXTRA = ["Dungeon_Checkpoint_Statue"] + [f"*Dungeon_Checkpoint_Statue_State_Definitions_{s}"
+                                         for s in ("Activating", "Active", "Inactive", "Disabled")]
 
 
 def fetch(url, data=None):
@@ -82,6 +89,7 @@ def main():
         lines.append(item_id)
         for state in ((bt.get("State") or {}).get("Definitions") or {}):
             lines.append(f"*{item_id}_State_Definitions_{state}")
+    lines += FLUIDS + EXTRA
     header = [
         "# Ids de blocs vanilla (objets avec un BlockType) et leurs états, pour validateAssets.",
         "# Généré par tools/fetch_vanilla_block_ids.py depuis les fichiers du jeu publiés par hytale.isaacguru.com.",

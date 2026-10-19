@@ -1,0 +1,20 @@
+{
+  "$Comment": "L'apprenti lance une fiole qui éclate à l'impact (12 dégâts autour).",
+  "Type": "Simple",
+  "RunTime": 0.4,
+  "Effects": {
+    "ItemPlayerAnimationsId": "Throwing_Knife",
+    "ItemAnimationId": "Throw"
+  },
+  "Next": {
+    "Type": "LaunchProjectile",
+    "RunTime": 0.3,
+    "Effects": {
+      "WorldSoundEventId": "SFX_Unarmed_Swing"
+    },
+    "ProjectileId": "Nakasar_Apprentice_Flask",
+    "Tags": {
+      "AimingReference": []
+    }
+  }
+}

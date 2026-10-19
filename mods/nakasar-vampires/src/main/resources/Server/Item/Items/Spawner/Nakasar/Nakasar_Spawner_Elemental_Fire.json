@@ -1,0 +1,22 @@
+{
+  "$Comment": "Bloc invisible posé dans la Tour de l'Alchimiste (alchemist_tower.Tower.mobs) : son composant SpawnMarkerBlock crée le marqueur d'apparition Nakasar_Elemental_Fire à cet endroit.",
+  "TranslationProperties": {
+    "Name": "nakasar_alchemist.items.Nakasar_Spawner_Elemental_Fire.name"
+  },
+  "Quality": "Developer",
+  "MaxStack": 64,
+  "BlockType": {
+    "Material": "Empty",
+    "DrawType": "Empty",
+    "Opacity": "Transparent",
+    "BlockEntity": {
+      "Components": {
+        "SpawnMarkerBlock": {
+          "Config": {
+            "SpawnMarker": "Nakasar_Elemental_Fire"
+          }
+        }
+      }
+    }
+  }
+}
