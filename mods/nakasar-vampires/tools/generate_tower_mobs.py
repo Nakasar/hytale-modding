@@ -2,6 +2,7 @@
 """Génère les mobs de la Tour de l'Alchimiste (étape 3 du donjon), leurs attaques, leurs butins et les trois réactifs.
 
     python3 mods/nakasar-vampires/tools/generate_tower_mobs.py [--preview DOSSIER] [--vanilla-textures ASSETS.zip|Potion_Onion_Poison.png]
+        [--firesteel-texture Golem_Firesteel/Models/Texture.png]
 
 Ce sont des créatures que l'Alchimiste a fabriquées ou distillées ; elles ne se blessent pas entre elles (groupe
 Nakasar_Alchemist_Creations). Toutes sont des rôles Generic du mod, sur des modèles vanilla :
@@ -17,6 +18,8 @@ Nakasar_Alchemist_Creations). Toutes sont des rôles Generic du mod, sur des mod
   et le Snapdragon vanilla, enraciné, à morsure empoisonnée ;
 - élémentaires (esprits vanilla) : feu (boules de feu), glace (traits de glace), foudre (décharge annoncée autour de lui,
   étourdit) et racine (épines) ;
+- gardien d'airain (Golem_Firesteel retexturé en laiton à lueur cyan, plus grand) : gardien mécanique de la cour de la
+  tour, très solide ; il en faut abattre tous les gardiens pour ouvrir la porte du hall (tower/CourtGuardSystem.java) ;
 - golem de cristal instable (élite de la Salle des Transmutations, Golem_Crystal_Thunder en grand, barre de boss) :
   combo vanilla du golem de cristal et onde de foudre annoncée par une zone rouge de 6 blocs ;
 - gargouille (chauve-souris vanilla taillée dans la pierre, en grand) : vole autour de l'Escalier des vents, plonge sur
@@ -36,7 +39,7 @@ de foudre), Mercure vif (homoncules, apprentis) ; les élémentaires lâchent au
 Pas d'éclats de rune sur ces mobs (Kevin).
 
 Les blocs d'apparition (Nakasar_Spawner_<mob>) sont posés dans la tour par alchemist_tower.Tower.mobs().
-Les textures dérivées de textures vanilla (fiole de feu) ne sont recalculées qu'avec --vanilla-textures ; sinon le
+Les textures dérivées de textures vanilla (fiole de feu, gardien d'airain) ne sont recalculées qu'avec --vanilla-textures ; sinon le
 fichier déjà présent dans le pack est gardé.
 """
 import colorsys
@@ -86,11 +89,12 @@ FROST = "Nakasar_Elemental_Frost"
 THUNDER = "Nakasar_Elemental_Thunder"
 ROOT = "Nakasar_Elemental_Root"
 CRYSTAL_GOLEM = "Nakasar_Crystal_Golem"
+BRASS_GUARDIAN = "Nakasar_Brass_Guardian"
 GARGOYLE = "Nakasar_Tower_Gargoyle"
 CODEX = "Nakasar_Living_Codex"
 CHIMERA = "Nakasar_Lab_Chimera"
 ALCHEMIST = "Nakasar_Alchemist"
-ALL = [HOMUNCULUS, GOLEM, FLASK_POISON, FLASK_FIRE, APPRENTICE, VINE, SNAPDRAGON, FIRE, FROST, THUNDER, ROOT,
+ALL = [HOMUNCULUS, GOLEM, BRASS_GUARDIAN, FLASK_POISON, FLASK_FIRE, APPRENTICE, VINE, SNAPDRAGON, FIRE, FROST, THUNDER, ROOT,
        CRYSTAL_GOLEM, GARGOYLE, CODEX, CHIMERA, ALCHEMIST]
 # Combat de l'Alchimiste (AlchemistSystem, Java) : homoncules du Grand Œuvre et piliers de la Convergence, jamais posés
 # par un marqueur ; état d'épuisement et aspects élémentaires (teinte et particules de l'élément du moment).
@@ -114,6 +118,7 @@ SULFUR = "Ingredient_Nakasar_Burning_Sulfur"
 MERCURY = "Ingredient_Nakasar_Quicksilver"
 
 GOLEM_SLAM_RADIUS = 4.0
+BRASS_SLAM_RADIUS = 4.5
 FLASK_RADIUS = 3.0
 DISCHARGE_RADIUS = 3.5
 SURGE_RADIUS = 6.0
@@ -271,22 +276,22 @@ def effect_on_target(effect, seconds):
     return {"Type": "ApplyEffect", "EffectId": effect, "Entity": "Target", "Duration": seconds}
 
 
-def golem_slam():
+def golem_slam(who="du golem de plomb", amount=30, radius=GOLEM_SLAM_RADIUS):
     return {
-        "$Comment": f"Frappe au sol annoncée du golem de plomb : il s'immobilise 1,4 s, rougeoie et une zone rouge de {GOLEM_SLAM_RADIUS:g} blocs se charge au sol, puis il frappe le sol (30 dégâts, projection). On l'évite en sortant de la zone.",
+        "$Comment": f"Frappe au sol annoncée {who} : il s'immobilise 1,4 s, rougeoie et une zone rouge de {radius:g} blocs se charge au sol, puis il frappe le sol ({amount} dégâts, projection). On l'évite en sortant de la zone.",
         "Type": "Serial",
         "Interactions": [
             {"Type": "ClearEntityEffect", "Entity": "User", "EntityEffectId": "Hit_Interrupt_Eligible"},
             {"Type": "ApplyEffect", "EffectId": "Nakasar_Elite_Rooted"},
             {"Type": "ApplyEffect", "EffectId": "Dungeon_Goblin_Mace_Slam_Charge"},
             {"Type": "Simple", "RunTime": 1.4, "Effects": {
-                "WorldSoundEventId": "SFX_Spear_Throw_Charge", "Particles": [warning(GOLEM_SLAM_RADIUS, 1.4)]}},
+                "WorldSoundEventId": "SFX_Spear_Throw_Charge", "Particles": [warning(radius, 1.4)]}},
             {"Type": "Selector", "RunTime": 0.15, "Effects": {
                 "ItemPlayerAnimationsId": "Golem_Firesteel_Default", "ItemAnimationId": "GroundSlam",
                 "WorldSoundEventId": "SFX_Goblin_Feastmaster_Slam",
                 "Particles": [ground_particles("Stick_Slam_Ground_Large", 1.0)]},
-             "Selector": {"Id": "AOECircle", "Range": GOLEM_SLAM_RADIUS},
-             "HitEntity": {"Interactions": damage(30, sound="SFX_Mace_T2_Signature_Impact", knockback=7)}},
+             "Selector": {"Id": "AOECircle", "Range": radius},
+             "HitEntity": {"Interactions": damage(amount, sound="SFX_Mace_T2_Signature_Impact", knockback=7)}},
             {"Type": "Simple", "RunTime": 0.8},
         ],
     }
@@ -483,6 +488,12 @@ def interactions():
                                                     "Golem_Firesteel_Default", "SwingRight", 0.55, 18, end=3.2,
                                                     direction="ToRight", yaw=-50),
         "Nakasar_NPC_Lead_Golem_Slam": golem_slam(),
+        "Nakasar_NPC_Brass_Guardian_Swing_Left": swing("Coup de poing du gardien d'airain (gauche, 24 dégâts).",
+                                                       "Golem_Firesteel_Default", "SwingLeft", 0.55, 24, end=3.6),
+        "Nakasar_NPC_Brass_Guardian_Swing_Right": swing("Coup de poing du gardien d'airain (droite, 24 dégâts).",
+                                                        "Golem_Firesteel_Default", "SwingRight", 0.55, 24, end=3.6,
+                                                        direction="ToRight", yaw=-50),
+        "Nakasar_NPC_Brass_Guardian_Slam": golem_slam("du gardien d'airain", 36, BRASS_SLAM_RADIUS),
         "Nakasar_NPC_Flask_Burst_Poison": flask_burst("Poison"),
         "Nakasar_NPC_Flask_Burst_Fire": flask_burst("Fire"),
         "Nakasar_NPC_Apprentice_Throw": throw("Nakasar_Apprentice_Flask",
@@ -530,6 +541,12 @@ def roots():
             "Interactions": [{"Type": "Chaining", "ChainId": "Nakasar_Lead_Golem", "ChainingAllowance": 15,
                               "Next": ["Nakasar_NPC_Lead_Golem_Swing_Left", "Nakasar_NPC_Lead_Golem_Swing_Right"]}]},
         "Root_Nakasar_NPC_Lead_Golem_Slam": melee_tag("Nakasar_NPC_Lead_Golem_Slam"),
+        "Root_Nakasar_NPC_Brass_Guardian_Attack": {
+            "$Comment": "Coups de poing du gardien d'airain : gauche puis droite.",
+            "Tags": {"Attack": ["Melee"]},
+            "Interactions": [{"Type": "Chaining", "ChainId": "Nakasar_Brass_Guardian", "ChainingAllowance": 15,
+                              "Next": ["Nakasar_NPC_Brass_Guardian_Swing_Left", "Nakasar_NPC_Brass_Guardian_Swing_Right"]}]},
+        "Root_Nakasar_NPC_Brass_Guardian_Slam": melee_tag("Nakasar_NPC_Brass_Guardian_Slam"),
         "Root_Nakasar_NPC_Flask_Burst_Poison": melee_tag("Nakasar_NPC_Flask_Burst_Poison"),
         "Root_Nakasar_NPC_Flask_Burst_Fire": melee_tag("Nakasar_NPC_Flask_Burst_Fire"),
         "Root_Nakasar_NPC_Apprentice_Throw": ranged_tag("Nakasar_NPC_Apprentice_Throw"),
@@ -587,6 +604,17 @@ def golem_role():
                     chase(24, speed=0.9, stop=2.2)],
                 walk(2.8, jump=0.5), drop="Nakasar_Drop_Lead_Golem", timers=[timer("Slam", (3, 5), (9, 12))],
                 heal=True, KnockbackScale=0.1, DeathAnimationTime=2.0)
+
+
+def brass_guardian_role():
+    return role(BRASS_GUARDIAN, "Gardien d'airain : automate de laiton qui garde la cour de la tour, très solide ; coups de poing lourds et frappe au sol annoncée par une zone rouge de 4,5 blocs toutes les 8 à 11 s. Tous les gardiens abattus, la porte du hall s'ouvre (tower/CourtGuardSystem.java). Il ne quitte pas la cour.",
+                BRASS_GUARDIAN, 520, [
+                    ge.timed_attack("Slam", "Root_Nakasar_NPC_Brass_Guardian_Slam", rng=4.2, los=True,
+                                    comment="Frappe au sol annoncée quand la cible est à moins de 4,2 blocs."),
+                    melee("Root_Nakasar_NPC_Brass_Guardian_Attack", 3.2, (1.2, 1.7), turn=0.8),
+                    chase(30, speed=0.95, stop=2.6)],
+                walk(3.2, jump=0.5), drop="Nakasar_Drop_Brass_Guardian", timers=[timer("Slam", (3, 5), (8, 11))],
+                sight=18, leash=30, heal=True, KnockbackScale=0.0, DeathAnimationTime=2.0)
 
 
 def flask_role(role_id, kind):
@@ -858,6 +886,7 @@ def roles():
     return {
         HOMUNCULUS: homunculus_role(),
         GOLEM: golem_role(),
+        BRASS_GUARDIAN: brass_guardian_role(),
         FLASK_POISON: flask_role(FLASK_POISON, "Poison"),
         FLASK_FIRE: flask_role(FLASK_FIRE, "Fire"),
         APPRENTICE: apprentice_role(),
@@ -971,6 +1000,9 @@ def models():
                      "Light": {"Color": "#9dff8a", "Radius": 2}},
         GOLEM: {"$Comment": "Golem de plomb : le golem d'acier vanilla (Golem_Firesteel), sans ses flammes.",
                 "Parent": "Golem_Firesteel", "Particles": [], "Light": {"Color": "#6d6a80", "Radius": 1}},
+        BRASS_GUARDIAN: {"$Comment": "Gardien d'airain : le golem d'acier vanilla retexturé en laiton, lueurs cyan au lieu des braises, plus grand.",
+                         "Parent": "Golem_Firesteel", "Texture": "NPC/Nakasar/Alchemist/Brass_Guardian.png",
+                         "Particles": [], "MinScale": 1.3, "MaxScale": 1.3, "Light": {"Color": "#5fe8ff", "Radius": 4}},
         FLASK_POISON: flask_model("Poison"),
         FLASK_FIRE: flask_model("Fire"),
         APPRENTICE: apprentice_model(),
@@ -1006,6 +1038,34 @@ def gargoyle_texture():
             f = noise[y][x] + rng.uniform(-0.03, 0.03)
             px[x, y] = tuple(max(0, min(255, int(c * f))) for c in (128, 125, 118)) + (255,)
     return img
+
+
+def brass_guardian_texture(assets):
+    """Gardien d'airain : la texture du golem d'acier vanilla, métal sombre passé au laiton et braises passées au cyan
+    alchimique. `assets` est Assets.zip, ou le PNG Common/NPC/Elemental/Golem_Firesteel/Models/Texture.png extrait."""
+    if assets.suffix == ".png":
+        src = Image.open(assets).convert("RGBA")
+    else:
+        with zipfile.ZipFile(assets) as z:
+            src = Image.open(io.BytesIO(z.read("Common/NPC/Elemental/Golem_Firesteel/Models/Texture.png"))).convert("RGBA")
+
+    def clamp(t):
+        return max(0.0, min(1.0, t))
+
+    px = src.load()
+    for y in range(src.height):
+        for x in range(src.width):
+            r, g, b, a = px[x, y]
+            if not a:
+                continue
+            hue, s, v = colorsys.rgb_to_hsv(r / 255, g / 255, b / 255)
+            warm = 1.0 if (hue < 0.2 or hue > 0.92) else 0.0
+            glow = max(warm * clamp((s - 0.25) / 0.35) * clamp((v - 0.35) / 0.35), clamp((v - 0.82) / 0.12))
+            bv = clamp(0.10 + v * 1.25)
+            brass = colorsys.hsv_to_rgb(0.1, 0.62 - 0.2 * bv, bv)
+            cyan = colorsys.hsv_to_rgb(0.49, 0.75 - 0.4 * clamp((v - 0.8) / 0.2), clamp(0.55 + v * 0.5))
+            px[x, y] = tuple(int(255 * (brass[i] * (1 - glow) + cyan[i] * glow)) for i in range(3)) + (a,)
+    return src
 
 
 def fire_flask_texture(assets):
@@ -1124,6 +1184,9 @@ def drops():
             single("Ingredient_Lightning_Essence", 2, 3), single("Ingredient_Fire_Essence", 1, 2),
             single("Ingredient_Ice_Essence", 1, 2), single("Ingredient_Life_Essence", 1, 2),
             single(SALT, 2), single(SULFUR, 2), single(MERCURY, 2)),
+        "Nakasar_Drop_Brass_Guardian": multiple("Gardien d'airain : du sel philosophal, du mercure et parfois du fer.",
+                                                single(SALT, 1, 2), single(MERCURY, 1, 2),
+                                                chance("Ingredient_Bar_Iron", 1, 1, 1, 3)),
         "Nakasar_Drop_Gargoyle": {"$Comment": "Gargouille : du sel philosophal, une fois sur deux.",
                                   "Container": chance(SALT, 1, 1)},
         "Nakasar_Drop_Living_Codex": multiple(
@@ -1201,6 +1264,11 @@ def main():
         fire_flask_texture(assets).save(NPC_TEXTURES / "Living_Flask_Fire.png")
     elif not (NPC_TEXTURES / "Living_Flask_Fire.png").exists():
         sys.exit("Living_Flask_Fire.png manquant : relancer avec --vanilla-textures <Assets.zip>")
+    firesteel = Path(sys.argv[sys.argv.index("--firesteel-texture") + 1]) if "--firesteel-texture" in sys.argv else assets
+    if firesteel and firesteel.suffix != ".png" or "--firesteel-texture" in sys.argv:
+        brass_guardian_texture(firesteel).save(NPC_TEXTURES / "Brass_Guardian.png")
+    elif not (NPC_TEXTURES / "Brass_Guardian.png").exists():
+        sys.exit("Brass_Guardian.png manquant : relancer avec --vanilla-textures <Assets.zip> ou --firesteel-texture <PNG>")
     build_reagents(preview)
 
 

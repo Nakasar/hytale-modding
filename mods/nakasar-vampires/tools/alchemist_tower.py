@@ -67,8 +67,29 @@ BARRIER = "Barrier"  # bloc vanilla plein et invisible (Server/Item/Items/Hypixe
 SEAL = "Nakasar_Alchemical_Seal"
 HEDGE = "Nakasar_Thorn_Hedge"
 LEVER = "Nakasar_Valve_Lever"
+VALVE = "Nakasar_Tower_Valve"   # vanne de la conduite de gaz du Couloir des fuites (deux blocs de haut)
 FOYER = "*Furniture_Temple_Dark_Brazier_State_Definitions_Off"
-GATE_BLOCKS = (SEAL, HEDGE)
+DOOR = "Nakasar_Tower_Door"   # portes de la tour : elles tombent quand les gardiens d'airain de la cour sont abattus
+GATE_BLOCKS = (SEAL, HEDGE, DOOR)
+# Hall des Alambics : trois athanors autour du grand alambic, reliés à lui par des conduits d'or incrustés dans le
+# sol ; chaque athanor allumé fait briller son conduit et remplit son tube de l'alambic, et les trois ensemble allument
+# le conduit et la colonne relais qui montent jusqu'au sceau du Couloir des fuites.
+HALL_ATHANOR_ANGLES = (30, 150, 270)
+HALL_ATHANOR_R = 13            # brasero de l'athanor
+HALL_FURNACE_R = 17    # four de l'athanor, derrière le brasero
+ALEMBIC_R = 5             # grand alambic : verre pour 2,5 <= d < ALEMBIC_R
+ALEMBIC_TOP = 13
+CONDUIT = "Rock_Gold_Brick"            # conduit éteint (incrusté dans le sol)
+CONDUIT_LIT = "Rock_Crystal_Purple_Block"
+EMANATION_LIT = "Nakasar_Tower_Emanation_Spiral"   # posée au-dessus d'un athanor allumé
+EMANATION_FED = "Nakasar_Tower_Emanation_Arc"      # au sommet de l'alambic quand les trois athanors brûlent
+RELAY = (306, 20.5)       # colonne relais (angle, rayon), sous le sceau du Couloir des fuites (HALL_SEAL_ARC)
+PIPE = "Metal_Goblin_Iron_Pipe_Large"
+PIPE_GLOW = "Metal_Goblin_Iron_Pipe_Large_Glowy"   # luit tant que la vanne est ouverte (état Off une fois coupée)
+PIPE_THIN = "Metal_Goblin_Iron_Pipe_Long"
+LEAK = "VFX_Dungeon_Goblin_Leaking_Pipe"
+# Cour : gardiens d'airain sur leurs socles (x, z).
+GUARDIANS = ((-8, 44), (8, 44), (-8, 60), (8, 60))
 RUBBLE = "Nakasar_Codex_Rubble"  # éboulis de livres et d'étagères, posé en jeu par les volumes du combat du Codex
 HALL_SEAL_ARC = (304, 308)    # sceau du couloir des fuites, juste après l'arrivée de la rampe du hall (300°)
 JET_ARC = (310, 530)          # bouches de vapeur actives : de l'arrivée à la porte ouest (180°)
@@ -327,7 +348,7 @@ class Tower:
                         p.set(x, 2, z, "Deco_Lantern")
                 else:
                     self.register(x, z, 0)
-        # Porte du hall : arche dorée.
+        # Porte du hall : arche dorée, fermée par les portes de la tour (5 × 8) au nu extérieur du mur.
         door = [(x, z) for x in range(-2, 3) for z in range(27, 35)]
         self.door(door, 0, 8)
         for x in (-3, 3):
@@ -337,30 +358,93 @@ class Tower:
         for x in range(-3, 4):
             for z in (32, 33, 34):
                 p.set(x, 8, z, "Rock_Gold_Brick_Ornate")
+        self.court_door = [(x, y, 33) for x in range(-2, 3) for y in range(0, 8)]
+        for x, y, z in self.court_door:
+            p.set(x, y, z, DOOR)
+        # Socles des gardiens d'airain : dalle d'or ouvragée, lanternes de part et d'autre.
+        for gx, gz in GUARDIANS:
+            for dx in (-1, 0, 1):
+                for dz in (-1, 0, 1):
+                    p.set(gx + dx, -1, gz + dz, "Rock_Gold_Brick_Ornate" if (dx, dz) == (0, 0) else TRIM)
 
     def hall(self):
+        """Hall des Alambics : le grand alambic au centre, trois athanors autour, reliés à lui par des conduits d'or
+        incrustés dans le sol, et la colonne relais sous le sceau du Couloir des fuites. Le sol est dégagé autour des
+        athanors pour qu'on les voie en entrant."""
         cells = self.helix(200, 300, 23, R_IN, F_HALL, F_LEAKS)
         self.hall_ramp = cells
         p = self.p
-        # Alambic central : colonne de verre et d'or autour d'un cœur de cristal.
-        for y in range(0, 14):
-            for x, z, d, a in ring(0, 5):
-                p.set(x, y, z, "Rock_Crystal_Green_Block" if d < 2.5 else (GLASS if 1 <= y <= 11 else GOLD))
+        h = self.hall_parts = {"tubes": [], "conduits": [], "athanors": []}
+        # Mosaïque du sol : deux cercles d'or autour de l'alambic et au pied des athanors.
+        for x, z, d, a in ring(0, 22):
+            if 7 <= d < 7.8 or 17.6 <= d < 18.4:
+                p.set(x, -1, z, TRIM)
+        # Grand alambic : socle, panse de verre, trois tubes vides (un par athanor) autour d'une âme d'or, col et chapiteau.
+        for x, z, d, a in ring(0, ALEMBIC_R + 1.5):
+            p.set(x, 0, z, "Rock_Gold_Brick_Ornate" if d < ALEMBIC_R else HALF)
+        tubes = [at(1.6, k) for k in HALL_ATHANOR_ANGLES]
+        for y in range(1, ALEMBIC_TOP):
+            for x, z, d, a in ring(0, ALEMBIC_R):
+                if (x, z) in tubes:
+                    p.set(x, y, z, AIR)
+                elif d < 1:
+                    p.set(x, y, z, "Rock_Gold_Brick_Pillar_Middle")
+                else:
+                    p.set(x, y, z, GLASS if (d >= 2.5 or y % 4) else GOLD)
+        for x, z in tubes:
+            h["tubes"].append([(x, y, z) for y in range(1, ALEMBIC_TOP)])
+        for x, z, d, a in ring(0, ALEMBIC_R):
+            p.set(x, ALEMBIC_TOP, z, GOLD)
         for x, z, d, a in ring(0, 3.5):
-            p.set(x, 14, z, GOLD)
+            p.set(x, ALEMBIC_TOP + 1, z, GOLD)
         for x, z, d, a in ring(0, 2):
-            p.set(x, 15, z, GOLD)
-        p.set(0, 16, 0, "Rock_Gold_Brick_Ornate")
-        # Fours des athanors (l'énigme des trois feux : `traps`), chaudrons, établis d'alchimie.
-        for k in (30, 150, 330):
-            x, z = at(14, k)
-            self.place(x, 0, z, "Bench_Furnace", facing_center(x, z))
-        for k in range(0, 200, 30):
-            x, z = at(25, k)
-            self.place(x, 0, z, "Alchemy_Cauldron_Big")
-        for k in (90 - 20, 90 + 20, 15, 165):
-            x, z = at(21, k)
-            self.place(x, 0, z, "Bench_Alchemy", facing_center(x, z))
+            p.set(x, ALEMBIC_TOP + 2, z, GLASS)
+        p.set(0, ALEMBIC_TOP + 3, 0, "Rock_Gold_Brick_Ornate")
+        p.set(0, ALEMBIC_TOP + 4, 0, "Nakasar_Tower_Emanation_Spiral")
+        # Athanors : four de marbre cerclé d'or derrière un brasero (l'énigme : `traps`), sur une estrade dorée ; une
+        # cheminée d'or monte au plafond, des émanations flottent autour pour qu'on les remarque.
+        for k in HALL_ATHANOR_ANGLES:
+            fx, fz = at(HALL_FURNACE_R, k)
+            for dx in range(-1, 2):
+                for dz in range(-1, 2):
+                    for y in range(0, 5):
+                        corner = abs(dx) == 1 and abs(dz) == 1
+                        p.set(fx + dx, y, fz + dz, (GOLD if y in (0, 4) else "Rock_Marble_Brick") if corner or y in (0, 4)
+                              else "Rock_Marble_Brick_Smooth")
+            mx, mz = at(HALL_FURNACE_R - 1.5, k)
+            p.set(mx, 1, mz, "Furniture_Royal_Magic_Potion_Glow")  # gueule du four
+            for y in range(5, F_LEAKS - 1):
+                p.set(fx, y, fz, "Metal_Gold_Pipe_Large")  # cheminée jusqu'au plafond
+            for x, z, d, a in ring(0, 3.6):
+                bx, bz = at(HALL_ATHANOR_R, k)
+                if not self.solid(bx + x, -1, bz + z) or self.p.get(bx + x, -1, bz + z) != CONDUIT:
+                    p.set(bx + x, -1, bz + z, TRIM if d >= 2.6 else "Rock_Marble_Brick_Smooth")
+            for j, off in enumerate((-40, 40)):
+                ex, ez = at(HALL_ATHANOR_R + 1.5, k + off * 0.35)
+                p.set(ex, 2 + j, ez, "Nakasar_Tower_Emanation_Motes")
+            # Conduit d'or de l'estrade au pied de l'alambic.
+            conduit = sorted({at(r / 2, k) for r in range(2 * (ALEMBIC_R + 2), 2 * (HALL_ATHANOR_R - 3) + 1)})
+            for x, z in conduit:
+                p.set(x, -1, z, CONDUIT)
+            h["conduits"].append([(x, -1, z) for x, z in conduit])
+        # Conduit maître et colonne relais : de l'alambic au pied du sceau, la colonne de verre monte au plafond.
+        ra, rr = RELAY
+        main = sorted({at(r / 2, ra) for r in range(2 * (ALEMBIC_R + 2), int(2 * (rr - 1)) + 1)})
+        for x, z in main:
+            p.set(x, -1, z, CONDUIT)
+        h["main"] = [(x, -1, z) for x, z in main]
+        rx, rz = at(rr, ra)
+        for dx in range(-1, 2):
+            for dz in range(-1, 2):
+                p.set(rx + dx, -1, rz + dz, "Rock_Gold_Brick_Ornate")
+                for y in range(0, F_LEAKS - 1):
+                    if (dx, dz) == (0, 0):
+                        p.set(rx, y, rz, AIR if y else "Rock_Gold_Brick_Ornate")
+                    else:
+                        p.set(rx + dx, y, rz + dz, GOLD if (abs(dx) + abs(dz) == 2 or y % 5 == 0) else GLASS)
+        h["relay"] = [(rx, y, rz) for y in range(1, F_LEAKS - 1)]
+        floor = h["main"] + [c for cs in h["conduits"] for c in cs]
+        self.keep_clear.update((x, y, z) for x, _, z in floor for y in range(0, 3))
         self.light_ring(27.5, 0, 15, skip=((195, 305), (82, 98)))
         for x, z in ((12, 12), (-12, 12), (12, -12), (-12, -12), (0, 18), (0, -18), (18, 0), (-18, 0)):
             self.place(x, 18, z, CHANDELIER)
@@ -820,6 +904,9 @@ class Tower:
             self.spawner(role, *at3(r, y, a), height=h)
         for role, xyz, h in MOB_FIXED:
             self.spawner(role, *xyz, height=h)
+        # Gardiens d'airain sur leurs socles de la cour : les abattre tous ouvre les portes de la tour (CourtGuardSystem).
+        for gx, gz in GUARDIANS:
+            self.spawner("Brass_Guardian", gx, 0, gz, height=5)
         # Le Codex vivant flotte au centre de la rotonde, entre ses trois pupitres (case réservée par `codex`).
         self.p.set(0, F_LIBRARY, 0, SPAWNER_PREFIX + "Living_Codex")
         self.spawners.append(("Living_Codex", (0, F_LIBRARY, 0)))
@@ -869,7 +956,9 @@ class Tower:
         p = self.p
         # Hall des Alambics : trois athanors éteints devant les fours. Tant qu'ils ne brûlent pas tous les trois, le
         # sceau ferme le Couloir des fuites juste après l'arrivée de la rampe.
-        t["athanors"] = [self.usable(*at3(11, F_HALL, k), FOYER) for k in (30, 150, 330)]
+        t["athanors"] = [self.usable(*at3(HALL_ATHANOR_R, F_HALL, k), FOYER) for k in HALL_ATHANOR_ANGLES]
+        t["hall"] = self.hall_parts
+        t["court_door"] = self.court_door
         t["hall_seal"] = self.seal([(x, z) for x, z, d, a in ring(18, R_IN) if in_arc(a, *HALL_SEAL_ARC)],
                                    F_LEAKS, F_LIBRARY - 1)
         # Couloir des fuites : les bouches de vapeur jettent par groupes de trois (A et B en alternance) ; entre deux
@@ -898,7 +987,26 @@ class Tower:
         # Au fond, derrière la porte ouest, le levier coupe la vanne : les jets cessent et le barrage de 240° s'ouvre
         # en raccourci vers l'arrivée de la rampe du hall.
         lx, lz = at(25, 220)
-        t["lever"] = self.usable(lx, F_LEAKS, lz, LEVER, facing_center(lx, lz), plinth=None)
+        t["lever"] = self.usable(lx, F_LEAKS, lz, VALVE, facing_center(lx, lz), plinth=None)
+        # Tuyauterie de la vanne : la conduite de gaz luisante monte du sol au plafond juste derrière la vanne, entre deux
+        # grosses conduites et deux tuyaux fins ; deux fuites crachent de la vapeur tant que la vanne est ouverte.
+        top = F_LIBRARY - 2
+        for y in range(F_LEAKS + 2, top + 1):  # la vanne (deux blocs de haut) est montée sur sa conduite
+            p.set(lx, y, lz, PIPE)
+        glow, leaks = [], []
+        for r, da, name in ((26.6, 0, PIPE_GLOW), (27.4, -5, PIPE), (27.4, 5, PIPE), (28.4, -9, PIPE_THIN),
+                            (28.4, 9, PIPE_THIN)):
+            px, pz = at(r, 220 + da)
+            for y in range(F_LEAKS, top + 1):
+                p.set(px, y, pz, name)
+                if name == PIPE_GLOW:
+                    glow.append((px, y, pz))
+        for da, dy in ((-3, 3), (3, 6)):
+            vx, vz = at(25.6, 220 + da)
+            if p.free(vx, F_LEAKS + dy, vz):
+                p.set(vx, F_LEAKS + dy, vz, LEAK)
+                leaks.append((vx, F_LEAKS + dy, vz))
+        t["valve_pipes"], t["valve_leaks"] = glow, leaks
         t["shortcut_seal"] = self.seal([(x, z) for x, z, d, a in ring(20.5, 27.5) if in_arc(a, *SHORTCUT_ARC)],
                                        F_LEAKS, F_LEAKS + 4, force=True)
         # Serre suspendue : nappes de spores qui ralentissent.
@@ -1165,46 +1273,43 @@ class Tower:
                 self.place(cx, y, cz, self.rng.choice(potions))
 
     def decor_hall(self):
+        """Hall dégagé : le regard va de la porte au grand alambic et aux trois athanors. Le mobilier reste contre le
+        mur (étagères, postes d'alchimiste, chaudrons), hors des estrades des athanors et de la colonne relais."""
         y = F_HALL
         rng = self.rng
-        # Tables d'alchimiste couvertes de fioles, tabourets autour.
         potions = ["Deco_Potion", "Potion_Mana_Large", "Potion_Health_Large", "Potion_Poison_Large",
                    "Potion_Stamina_Large", "Potion_Empty_Large", "Potion_Regen_Mana_Large", "Potion_Signature_Greater"]
-        for k in (45, 135, 225, 315):
-            x, z = at(10, k)
-            self.table(x, y, z, "Furniture_Royal_Magic_Table", rng.sample(potions, 4), "Furniture_Temple_Light_Stool")
-        # Alambics de verre entre les établis.
-        for k, liquid in ((60, "Rock_Crystal_Green_Block"), (120, "Rock_Crystal_Purple_Block"),
-                          (250, "Rock_Crystal_Cyan_Block"), (290, "Rock_Crystal_Red_Block"), (180, "Rock_Crystal_Yellow_Block"),
-                          (0, "Rock_Crystal_Pink_Block")):
-            x, z = at(17, k)
+        busy = [(k - 22, k + 22) for k in HALL_ATHANOR_ANGLES] + [(RELAY[0] - 10, RELAY[0] + 10), (75, 105), (195, 305)]
+        # Alambics de verre entre les athanors, loin des passages.
+        for k, liquid in ((60, "Rock_Crystal_Green_Block"), (120, "Rock_Crystal_Cyan_Block"),
+                          (210, "Rock_Crystal_Pink_Block"), (345, "Rock_Crystal_Yellow_Block")):
+            x, z = at(21, k)
             self.flask(x, y, z, liquid)
-        # Étagères de réactifs le long du mur, fioles et chaudrons dessus ; tonneaux et caisses près des athanors.
+        # Étagères de réactifs le long du mur, fioles dessus.
         self.wall_ring(y, y + 4, ((195, 305), (78, 102)), every=18, fill=12,
                        names=("Furniture_Village_Shelf_Full", SHELF, "Furniture_Village_Shelf_Full"))
         for x, z, d, a in ring(28.4, R_IN):
             if self.p.get(x, y + 3, z) in ("Furniture_Village_Shelf_Full", SHELF) and rng.random() < 0.6:
                 self.place(x, y + 4, z, rng.choice(potions + ["Deco_Book_Pile_Small", "Furniture_Royal_Magic_Potion_Glow"]))
-        for k in (30, 150, 330):
-            for j, name in enumerate(("Furniture_Ancient_Barrel", "Furniture_Ancient_Crate", "Furniture_Tavern_Barrel")):
-                x, z = at(14, k + 9 + 5 * j)
-                self.place(x, y, z, name)
-        self.stations(y, 24, (330, 350, 10, 50, 130, 165, 185), potions)
-        self.scatter(y, 19, 27.5, 0.06, potions + ["Deco_Book_Pile_Small", "Deco_Bucket", "Furniture_Ancient_Sack",
-                                                   "Rock_Crystal_Purple_Small", "Furniture_Royal_Magic_Potion_Glow"],
-                     ((195, 305), (75, 105)))
-        # Tapis du portail à l'alambic central.
-        for z in range(6, 26, 2):
+        # Postes d'alchimiste et chaudrons contre le mur, de part et d'autre de la porte et entre les athanors.
+        self.stations(y, 24.5, (60, 120, 190, 330), potions)
+        for k in (0, 45, 135, 180):
+            x, z = at(26, k)
+            self.place(x, y, z, "Alchemy_Cauldron_Big")
+        self.scatter(y, 22, 27.5, 0.03, ["Deco_Book_Pile_Small", "Deco_Bucket", "Furniture_Ancient_Sack",
+                                         "Rock_Crystal_Purple_Small"], busy)
+        # Tapis du portail au grand alambic.
+        for z in range(8, 26, 2):
             for x in (-2, 0):
                 self.place(x, y, z, "Furniture_Royal_Magic_Carpet")
         # Lustres et fioles lumineuses au plafond (le plafond est le sol du couloir des fuites).
         top = F_LEAKS - 2
-        for r, step, off in ((12, 45, 22), (21, 30, 0)):
+        for r, step, off in ((10, 60, 0), (22, 30, 15)):
             for k in range(off, 360 + off, step):
                 x, z = at(r, k)
                 self.hang(x, top, z, CHANDELIER)
-        for k in range(10, 370, 20):
-            x, z = at(17, k)
+        for k in range(10, 370, 30):
+            x, z = at(17, k + 15)
             self.chain(x, top, z, 3, end="Furniture_Royal_Magic_Potion_Glow_Ceiling")
 
     def decor_leaks(self):
@@ -1755,7 +1860,8 @@ def build_checked(seed):
         raise RuntimeError(f"tour : inaccessible depuis le parvis : {missing}")
     # Chaque énigme ferme bien son passage : sceaux et ronces fermés, on ne va pas plus loin que la salle.
     cps = tower.checkpoints
-    for name, start, goal in (("sceau du hall", START, GOALS["leaks_exit"]),
+    for name, start, goal in (("portail de la cour", START, GOALS["hall"]),
+                              ("sceau du hall", (0, 2 * F_HALL, 16), GOALS["leaks_exit"]),
                               ("ronces de la bibliothèque", (cps[0][0], 2 * cps[0][1], cps[0][2]), GOALS["transmutation"]),
                               ("sceau des transmutations", (0, 2 * F_TRANS, 4), cps[1])):
         missing, _ = walkable_path(prefab, start, {"goal": goal}, gates_open=False)
@@ -1794,7 +1900,7 @@ def at3(r, y, a):
 
 # --- vérification du parcours --------------------------------------------------------------------
 
-PASSABLE_PREFIXES = ("Nakasar_Spawner_", "Plant_Grass", "Plant_Flower", "Plant_Crop_Mushroom_Glowing", "Nakasar_Tower_Emanation", "Deco_Potion",
+PASSABLE_PREFIXES = ("Nakasar_Spawner_", "VFX_", "Plant_Grass", "Plant_Flower", "Plant_Crop_Mushroom_Glowing", "Nakasar_Tower_Emanation", "Deco_Potion",
                      "Deco_Scroll", "Plant_Moss_Rug", "Plant_Vine", "Furniture_Royal_Magic_Carpet")
 
 

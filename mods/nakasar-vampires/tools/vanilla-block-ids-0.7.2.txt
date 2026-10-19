@@ -4031,3 +4031,11 @@ Dungeon_Checkpoint_Statue
 *Dungeon_Checkpoint_Statue_State_Definitions_Active
 *Dungeon_Checkpoint_Statue_State_Definitions_Inactive
 *Dungeon_Checkpoint_Statue_State_Definitions_Disabled
+# Ajoutés à la main (vus dans Assets.zip 0.7.2, Server/Item/Items/Metal et VFX/Dungeon_Goblin, le 19 octobre 2026) :
+Metal_Gold_Pipe_Large
+Metal_Goblin_Iron_Pipe_Large
+Metal_Goblin_Iron_Pipe_Large_Glowy
+*Metal_Goblin_Iron_Pipe_Large_Glowy_State_Definitions_Off
+Metal_Goblin_Iron_Pipe_Long
+VFX_Dungeon_Goblin_Leaking_Pipe
+VFX_Dungeon_Goblin_Smoke_Pipe_Small

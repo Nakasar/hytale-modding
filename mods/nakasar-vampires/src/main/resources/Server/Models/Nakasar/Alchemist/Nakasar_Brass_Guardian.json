@@ -1,0 +1,12 @@
+{
+  "$Comment": "Gardien d'airain : le golem d'acier vanilla retexturé en laiton, lueurs cyan au lieu des braises, plus grand.",
+  "Parent": "Golem_Firesteel",
+  "Texture": "NPC/Nakasar/Alchemist/Brass_Guardian.png",
+  "Particles": [],
+  "MinScale": 1.3,
+  "MaxScale": 1.3,
+  "Light": {
+    "Color": "#5fe8ff",
+    "Radius": 4
+  }
+}

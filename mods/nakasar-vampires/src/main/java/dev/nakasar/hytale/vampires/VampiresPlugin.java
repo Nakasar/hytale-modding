@@ -49,6 +49,7 @@ import dev.nakasar.hytale.vampires.silver.TakeArrowInteraction;
 import dev.nakasar.hytale.vampires.tower.AlchemistFlaskInteraction;
 import dev.nakasar.hytale.vampires.tower.AlchemistSystem;
 import dev.nakasar.hytale.vampires.tower.ChimeraSystem;
+import dev.nakasar.hytale.vampires.tower.CourtGuardSystem;
 import dev.nakasar.hytale.vampires.tower.CodexChapterInteraction;
 import dev.nakasar.hytale.vampires.tower.CodexSystem;
 import dev.nakasar.hytale.vampires.tower.TowerFallSystem;
@@ -113,6 +114,7 @@ import dev.nakasar.hytale.vampires.vampirism.VampireSystem;
  *       le sac de prime du groupe, que {@code Nakasar_OpenBountyBag} ouvre ;</li>
  *   <li>{@link TowerFallSystem} : dans la Tour de l'Alchimiste, un joueur tombé dans le vide est ramené au point
  *       d'apparition du monde, que les statues de contrôle de Deepworks déplacent (volumes de l'instance).</li>
+ *   <li>{@link CourtGuardSystem} : les portes de la tour tombent quand les gardiens d'airain de la cour sont abattus.</li>
  *   <li>{@code Nakasar_CodexChapter} ({@link CodexSystem}) : combat du Codex vivant (chapitres à interrompre,
  *       effondrement des rayonnages, remise à zéro, sceau ouvert à sa mort).</li>
  *   <li>{@link ChimeraSystem} : combat de la Chimère du laboratoire (régénération dans la cuve nourrie par les
@@ -216,6 +218,7 @@ public final class VampiresPlugin extends JavaPlugin {
         systems.registerSystem(new BreachHunterCleanupSystem());
         systems.registerSystem(new ContractBounties());
         systems.registerSystem(new TowerFallSystem());
+        systems.registerSystem(new CourtGuardSystem());
         systems.registerSystem(new CodexSystem());
         systems.registerSystem(new ChimeraSystem());
         systems.registerSystem(new AlchemistSystem());

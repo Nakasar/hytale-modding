@@ -103309,11 +103309,167 @@
       },
       "Name": "Checkpoint_05"
     },
+    "fc473f7e-7642-5fb7-9bcb-908678463f56": {
+      "Position": {
+        "X": 0.5,
+        "Y": 104.0,
+        "Z": -406.5
+      },
+      "Shape": {
+        "Type": "Box",
+        "Min": {
+          "X": -2.45,
+          "Y": -3.95,
+          "Z": -0.45
+        },
+        "Max": {
+          "X": 2.45,
+          "Y": 3.95,
+          "Z": 0.45
+        }
+      },
+      "Conditions": [
+        {
+          "Type": "TagCondition",
+          "Event": "TAG_ADDED",
+          "Source": "Self",
+          "TagKey": "Guardians",
+          "Comparison": "Exactly",
+          "CompareAgainst": "Value",
+          "TagValue": "On",
+          "Inverted": false,
+          "MatchKey": "",
+          "MatchValue": "",
+          "Radius": 50.0,
+          "Center": "Volume"
+        },
+        {
+          "Type": "TagCondition",
+          "Event": "TAG_ADDED",
+          "Source": "Self",
+          "TagKey": "Court_Door",
+          "Comparison": "Exactly",
+          "CompareAgainst": "Value",
+          "TagValue": "Closed",
+          "Inverted": false,
+          "MatchKey": "",
+          "MatchValue": "",
+          "Radius": 50.0,
+          "Center": "Volume"
+        }
+      ],
+      "Effects": [
+        {
+          "Type": "ModifyTags",
+          "Event": "TAG_ADDED",
+          "Interval": 0.0,
+          "Delay": 0.0,
+          "Operation": "Set",
+          "TagKey": "Court_Door",
+          "TagValue": "Open",
+          "MatchKey": "",
+          "MatchValue": "",
+          "Radius": 1.0,
+          "Center": "Volume"
+        },
+        {
+          "Type": "PlaySound",
+          "Event": "TAG_ADDED",
+          "Interval": 0.0,
+          "Delay": 1.0,
+          "SoundEvent": "SFX_Lever_Metal_On",
+          "Location": "VolumeCenter",
+          "Offset": {
+            "X": 0.0,
+            "Y": 0.0,
+            "Z": 0.0
+          }
+        },
+        {
+          "Type": "ReplaceBlockType",
+          "Event": "TAG_ADDED",
+          "Interval": 0.0,
+          "Delay": 1.2,
+          "FromBlockTypes": [
+            "Nakasar_Tower_Door"
+          ],
+          "FromBlockState": "",
+          "ToBlockType": "Empty",
+          "ToBlockState": "",
+          "Offset": {
+            "X": 0.0,
+            "Y": 0.0,
+            "Z": 0.0
+          },
+          "Origin": "VolumeOrigin",
+          "Rotation": "None",
+          "Pitch": "None",
+          "Roll": "None"
+        },
+        {
+          "Type": "ShowEventTitle",
+          "Event": "TAG_ADDED",
+          "Interval": 0.0,
+          "Delay": 0.4,
+          "PrimaryTitle": "nakasar_alchemist.trap.court.title",
+          "SecondaryTitle": "nakasar_alchemist.trap.court.subtitle",
+          "Style": "Major",
+          "Duration": 3.0,
+          "FadeInDuration": 0.5,
+          "FadeOutDuration": 1.0,
+          "Recipient": "AllPlayers"
+        },
+        {
+          "Type": "PlayVfx",
+          "Event": "TAG_ADDED",
+          "Interval": 0.0,
+          "Delay": 0.8,
+          "ParticleSystem": "Block_Break_Dust",
+          "Offset": {
+            "X": 0.0,
+            "Y": 0.0,
+            "Z": 0.0
+          },
+          "Anchor": "Volume",
+          "Scale": 3.0,
+          "Rotation": {
+            "X": 0.0,
+            "Y": 0.0,
+            "Z": 0.0
+          },
+          "Duration": 0.0
+        },
+        {
+          "Type": "PlaySound",
+          "Event": "TAG_ADDED",
+          "Interval": 0.0,
+          "Delay": 0.0,
+          "SoundEvent": "SFX_Emit_Goblin_Pipes_Activate",
+          "Location": "VolumeCenter",
+          "Offset": {
+            "X": 0.0,
+            "Y": 0.0,
+            "Z": 0.0
+          }
+        }
+      ],
+      "TargetTypes": [
+        "Player"
+      ],
+      "Enabled": true,
+      "GroupId": "f8701ac2-67f5-57e4-adc7-4e00110c0701",
+      "KeepLoaded": false,
+      "Tags": {
+        "Court_Door": "Closed",
+        "Guardians": "Off"
+      },
+      "Name": "Court_Door"
+    },
     "1ca1e107-dca5-5f78-a821-08240b8efb9e": {
       "Position": {
-        "X": 10.5,
+        "X": 11.5,
         "Y": 100.5,
-        "Z": -434.5
+        "Z": -433.5
       },
       "Shape": {
         "Type": "Box",
@@ -103392,10 +103548,365 @@
           "Duration": 0.0
         },
         {
+          "Type": "PlaceBlock",
+          "Event": "BLOCK_USED",
+          "Interval": 0.0,
+          "Delay": 0.3,
+          "BlockType": "Nakasar_Tower_Emanation_Spiral",
+          "BlockState": "",
+          "Position": {
+            "X": 11.0,
+            "Y": 102.0,
+            "Z": -434.0
+          },
+          "Origin": "WorldAbsolute",
+          "ReplaceMode": "Always",
+          "Rotation": "None",
+          "Pitch": "None",
+          "Roll": "None"
+        },
+        {
+          "Type": "PlaceBlock",
+          "Event": "BLOCK_USED",
+          "Interval": 0.0,
+          "Delay": 0.4,
+          "BlockType": "Rock_Crystal_Purple_Block",
+          "BlockState": "",
+          "Position": {
+            "X": 9.0,
+            "Y": 99.0,
+            "Z": -435.0
+          },
+          "Origin": "WorldAbsolute",
+          "ReplaceMode": "Always",
+          "Rotation": "None",
+          "Pitch": "None",
+          "Roll": "None"
+        },
+        {
+          "Type": "PlaceBlock",
+          "Event": "BLOCK_USED",
+          "Interval": 0.0,
+          "Delay": 0.52,
+          "BlockType": "Rock_Crystal_Purple_Block",
+          "BlockState": "",
+          "Position": {
+            "X": 8.0,
+            "Y": 99.0,
+            "Z": -435.0
+          },
+          "Origin": "WorldAbsolute",
+          "ReplaceMode": "Always",
+          "Rotation": "None",
+          "Pitch": "None",
+          "Roll": "None"
+        },
+        {
+          "Type": "PlaceBlock",
+          "Event": "BLOCK_USED",
+          "Interval": 0.0,
+          "Delay": 0.64,
+          "BlockType": "Rock_Crystal_Purple_Block",
+          "BlockState": "",
+          "Position": {
+            "X": 8.0,
+            "Y": 99.0,
+            "Z": -436.0
+          },
+          "Origin": "WorldAbsolute",
+          "ReplaceMode": "Always",
+          "Rotation": "None",
+          "Pitch": "None",
+          "Roll": "None"
+        },
+        {
+          "Type": "PlaceBlock",
+          "Event": "BLOCK_USED",
+          "Interval": 0.0,
+          "Delay": 0.76,
+          "BlockType": "Rock_Crystal_Purple_Block",
+          "BlockState": "",
+          "Position": {
+            "X": 7.0,
+            "Y": 99.0,
+            "Z": -436.0
+          },
+          "Origin": "WorldAbsolute",
+          "ReplaceMode": "Always",
+          "Rotation": "None",
+          "Pitch": "None",
+          "Roll": "None"
+        },
+        {
+          "Type": "PlaceBlock",
+          "Event": "BLOCK_USED",
+          "Interval": 0.0,
+          "Delay": 0.88,
+          "BlockType": "Rock_Crystal_Purple_Block",
+          "BlockState": "",
+          "Position": {
+            "X": 6.0,
+            "Y": 99.0,
+            "Z": -436.0
+          },
+          "Origin": "WorldAbsolute",
+          "ReplaceMode": "Always",
+          "Rotation": "None",
+          "Pitch": "None",
+          "Roll": "None"
+        },
+        {
+          "Type": "PlaceBlock",
+          "Event": "BLOCK_USED",
+          "Interval": 0.0,
+          "Delay": 1.0,
+          "BlockType": "Rock_Crystal_Purple_Block",
+          "BlockState": "",
+          "Position": {
+            "X": 6.0,
+            "Y": 99.0,
+            "Z": -437.0
+          },
+          "Origin": "WorldAbsolute",
+          "ReplaceMode": "Always",
+          "Rotation": "None",
+          "Pitch": "None",
+          "Roll": "None"
+        },
+        {
+          "Type": "PlaceBlock",
+          "Event": "BLOCK_USED",
+          "Interval": 0.0,
+          "Delay": 1.12,
+          "BlockType": "Rock_Crystal_Purple_Block",
+          "BlockState": "",
+          "Position": {
+            "X": 1.0,
+            "Y": 101.0,
+            "Z": -439.0
+          },
+          "Origin": "WorldAbsolute",
+          "ReplaceMode": "Always",
+          "Rotation": "None",
+          "Pitch": "None",
+          "Roll": "None"
+        },
+        {
+          "Type": "PlaceBlock",
+          "Event": "BLOCK_USED",
+          "Interval": 0.0,
+          "Delay": 1.22,
+          "BlockType": "Rock_Crystal_Purple_Block",
+          "BlockState": "",
+          "Position": {
+            "X": 1.0,
+            "Y": 102.0,
+            "Z": -439.0
+          },
+          "Origin": "WorldAbsolute",
+          "ReplaceMode": "Always",
+          "Rotation": "None",
+          "Pitch": "None",
+          "Roll": "None"
+        },
+        {
+          "Type": "PlaceBlock",
+          "Event": "BLOCK_USED",
+          "Interval": 0.0,
+          "Delay": 1.32,
+          "BlockType": "Rock_Crystal_Purple_Block",
+          "BlockState": "",
+          "Position": {
+            "X": 1.0,
+            "Y": 103.0,
+            "Z": -439.0
+          },
+          "Origin": "WorldAbsolute",
+          "ReplaceMode": "Always",
+          "Rotation": "None",
+          "Pitch": "None",
+          "Roll": "None"
+        },
+        {
+          "Type": "PlaceBlock",
+          "Event": "BLOCK_USED",
+          "Interval": 0.0,
+          "Delay": 1.42,
+          "BlockType": "Rock_Crystal_Purple_Block",
+          "BlockState": "",
+          "Position": {
+            "X": 1.0,
+            "Y": 104.0,
+            "Z": -439.0
+          },
+          "Origin": "WorldAbsolute",
+          "ReplaceMode": "Always",
+          "Rotation": "None",
+          "Pitch": "None",
+          "Roll": "None"
+        },
+        {
+          "Type": "PlaceBlock",
+          "Event": "BLOCK_USED",
+          "Interval": 0.0,
+          "Delay": 1.52,
+          "BlockType": "Rock_Crystal_Purple_Block",
+          "BlockState": "",
+          "Position": {
+            "X": 1.0,
+            "Y": 105.0,
+            "Z": -439.0
+          },
+          "Origin": "WorldAbsolute",
+          "ReplaceMode": "Always",
+          "Rotation": "None",
+          "Pitch": "None",
+          "Roll": "None"
+        },
+        {
+          "Type": "PlaceBlock",
+          "Event": "BLOCK_USED",
+          "Interval": 0.0,
+          "Delay": 1.62,
+          "BlockType": "Rock_Crystal_Purple_Block",
+          "BlockState": "",
+          "Position": {
+            "X": 1.0,
+            "Y": 106.0,
+            "Z": -439.0
+          },
+          "Origin": "WorldAbsolute",
+          "ReplaceMode": "Always",
+          "Rotation": "None",
+          "Pitch": "None",
+          "Roll": "None"
+        },
+        {
+          "Type": "PlaceBlock",
+          "Event": "BLOCK_USED",
+          "Interval": 0.0,
+          "Delay": 1.72,
+          "BlockType": "Rock_Crystal_Purple_Block",
+          "BlockState": "",
+          "Position": {
+            "X": 1.0,
+            "Y": 107.0,
+            "Z": -439.0
+          },
+          "Origin": "WorldAbsolute",
+          "ReplaceMode": "Always",
+          "Rotation": "None",
+          "Pitch": "None",
+          "Roll": "None"
+        },
+        {
+          "Type": "PlaceBlock",
+          "Event": "BLOCK_USED",
+          "Interval": 0.0,
+          "Delay": 1.82,
+          "BlockType": "Rock_Crystal_Purple_Block",
+          "BlockState": "",
+          "Position": {
+            "X": 1.0,
+            "Y": 108.0,
+            "Z": -439.0
+          },
+          "Origin": "WorldAbsolute",
+          "ReplaceMode": "Always",
+          "Rotation": "None",
+          "Pitch": "None",
+          "Roll": "None"
+        },
+        {
+          "Type": "PlaceBlock",
+          "Event": "BLOCK_USED",
+          "Interval": 0.0,
+          "Delay": 1.92,
+          "BlockType": "Rock_Crystal_Purple_Block",
+          "BlockState": "",
+          "Position": {
+            "X": 1.0,
+            "Y": 109.0,
+            "Z": -439.0
+          },
+          "Origin": "WorldAbsolute",
+          "ReplaceMode": "Always",
+          "Rotation": "None",
+          "Pitch": "None",
+          "Roll": "None"
+        },
+        {
+          "Type": "PlaceBlock",
+          "Event": "BLOCK_USED",
+          "Interval": 0.0,
+          "Delay": 2.02,
+          "BlockType": "Rock_Crystal_Purple_Block",
+          "BlockState": "",
+          "Position": {
+            "X": 1.0,
+            "Y": 110.0,
+            "Z": -439.0
+          },
+          "Origin": "WorldAbsolute",
+          "ReplaceMode": "Always",
+          "Rotation": "None",
+          "Pitch": "None",
+          "Roll": "None"
+        },
+        {
+          "Type": "PlaceBlock",
+          "Event": "BLOCK_USED",
+          "Interval": 0.0,
+          "Delay": 2.12,
+          "BlockType": "Rock_Crystal_Purple_Block",
+          "BlockState": "",
+          "Position": {
+            "X": 1.0,
+            "Y": 111.0,
+            "Z": -439.0
+          },
+          "Origin": "WorldAbsolute",
+          "ReplaceMode": "Always",
+          "Rotation": "None",
+          "Pitch": "None",
+          "Roll": "None"
+        },
+        {
+          "Type": "PlaceBlock",
+          "Event": "BLOCK_USED",
+          "Interval": 0.0,
+          "Delay": 2.22,
+          "BlockType": "Rock_Crystal_Purple_Block",
+          "BlockState": "",
+          "Position": {
+            "X": 1.0,
+            "Y": 112.0,
+            "Z": -439.0
+          },
+          "Origin": "WorldAbsolute",
+          "ReplaceMode": "Always",
+          "Rotation": "None",
+          "Pitch": "None",
+          "Roll": "None"
+        },
+        {
+          "Type": "PlaySound",
+          "Event": "BLOCK_USED",
+          "Interval": 0.0,
+          "Delay": 0.4,
+          "SoundEvent": "SFX_Emit_Goblin_Pipes_Activate",
+          "Location": "VolumeCenter",
+          "Offset": {
+            "X": 0.0,
+            "Y": 0.0,
+            "Z": 0.0
+          }
+        },
+        {
           "Type": "ModifyTags",
           "Event": "BLOCK_USED",
           "Interval": 0.0,
-          "Delay": 0.2,
+          "Delay": 2.32,
           "Operation": "Set",
           "TagKey": "Athanor_1",
           "TagValue": "On",
@@ -103419,9 +103930,9 @@
     },
     "2d31f193-6341-5f62-a19c-9f9a76865f1a": {
       "Position": {
-        "X": -9.5,
+        "X": -10.5,
         "Y": 100.5,
-        "Z": -434.5
+        "Z": -433.5
       },
       "Shape": {
         "Type": "Box",
@@ -103500,10 +104011,365 @@
           "Duration": 0.0
         },
         {
+          "Type": "PlaceBlock",
+          "Event": "BLOCK_USED",
+          "Interval": 0.0,
+          "Delay": 0.3,
+          "BlockType": "Nakasar_Tower_Emanation_Spiral",
+          "BlockState": "",
+          "Position": {
+            "X": -11.0,
+            "Y": 102.0,
+            "Z": -434.0
+          },
+          "Origin": "WorldAbsolute",
+          "ReplaceMode": "Always",
+          "Rotation": "None",
+          "Pitch": "None",
+          "Roll": "None"
+        },
+        {
+          "Type": "PlaceBlock",
+          "Event": "BLOCK_USED",
+          "Interval": 0.0,
+          "Delay": 0.4,
+          "BlockType": "Rock_Crystal_Purple_Block",
+          "BlockState": "",
+          "Position": {
+            "X": -9.0,
+            "Y": 99.0,
+            "Z": -435.0
+          },
+          "Origin": "WorldAbsolute",
+          "ReplaceMode": "Always",
+          "Rotation": "None",
+          "Pitch": "None",
+          "Roll": "None"
+        },
+        {
+          "Type": "PlaceBlock",
+          "Event": "BLOCK_USED",
+          "Interval": 0.0,
+          "Delay": 0.52,
+          "BlockType": "Rock_Crystal_Purple_Block",
+          "BlockState": "",
+          "Position": {
+            "X": -8.0,
+            "Y": 99.0,
+            "Z": -435.0
+          },
+          "Origin": "WorldAbsolute",
+          "ReplaceMode": "Always",
+          "Rotation": "None",
+          "Pitch": "None",
+          "Roll": "None"
+        },
+        {
+          "Type": "PlaceBlock",
+          "Event": "BLOCK_USED",
+          "Interval": 0.0,
+          "Delay": 0.64,
+          "BlockType": "Rock_Crystal_Purple_Block",
+          "BlockState": "",
+          "Position": {
+            "X": -8.0,
+            "Y": 99.0,
+            "Z": -436.0
+          },
+          "Origin": "WorldAbsolute",
+          "ReplaceMode": "Always",
+          "Rotation": "None",
+          "Pitch": "None",
+          "Roll": "None"
+        },
+        {
+          "Type": "PlaceBlock",
+          "Event": "BLOCK_USED",
+          "Interval": 0.0,
+          "Delay": 0.76,
+          "BlockType": "Rock_Crystal_Purple_Block",
+          "BlockState": "",
+          "Position": {
+            "X": -7.0,
+            "Y": 99.0,
+            "Z": -436.0
+          },
+          "Origin": "WorldAbsolute",
+          "ReplaceMode": "Always",
+          "Rotation": "None",
+          "Pitch": "None",
+          "Roll": "None"
+        },
+        {
+          "Type": "PlaceBlock",
+          "Event": "BLOCK_USED",
+          "Interval": 0.0,
+          "Delay": 0.88,
+          "BlockType": "Rock_Crystal_Purple_Block",
+          "BlockState": "",
+          "Position": {
+            "X": -6.0,
+            "Y": 99.0,
+            "Z": -436.0
+          },
+          "Origin": "WorldAbsolute",
+          "ReplaceMode": "Always",
+          "Rotation": "None",
+          "Pitch": "None",
+          "Roll": "None"
+        },
+        {
+          "Type": "PlaceBlock",
+          "Event": "BLOCK_USED",
+          "Interval": 0.0,
+          "Delay": 1.0,
+          "BlockType": "Rock_Crystal_Purple_Block",
+          "BlockState": "",
+          "Position": {
+            "X": -6.0,
+            "Y": 99.0,
+            "Z": -437.0
+          },
+          "Origin": "WorldAbsolute",
+          "ReplaceMode": "Always",
+          "Rotation": "None",
+          "Pitch": "None",
+          "Roll": "None"
+        },
+        {
+          "Type": "PlaceBlock",
+          "Event": "BLOCK_USED",
+          "Interval": 0.0,
+          "Delay": 1.12,
+          "BlockType": "Rock_Crystal_Purple_Block",
+          "BlockState": "",
+          "Position": {
+            "X": -1.0,
+            "Y": 101.0,
+            "Z": -439.0
+          },
+          "Origin": "WorldAbsolute",
+          "ReplaceMode": "Always",
+          "Rotation": "None",
+          "Pitch": "None",
+          "Roll": "None"
+        },
+        {
+          "Type": "PlaceBlock",
+          "Event": "BLOCK_USED",
+          "Interval": 0.0,
+          "Delay": 1.22,
+          "BlockType": "Rock_Crystal_Purple_Block",
+          "BlockState": "",
+          "Position": {
+            "X": -1.0,
+            "Y": 102.0,
+            "Z": -439.0
+          },
+          "Origin": "WorldAbsolute",
+          "ReplaceMode": "Always",
+          "Rotation": "None",
+          "Pitch": "None",
+          "Roll": "None"
+        },
+        {
+          "Type": "PlaceBlock",
+          "Event": "BLOCK_USED",
+          "Interval": 0.0,
+          "Delay": 1.32,
+          "BlockType": "Rock_Crystal_Purple_Block",
+          "BlockState": "",
+          "Position": {
+            "X": -1.0,
+            "Y": 103.0,
+            "Z": -439.0
+          },
+          "Origin": "WorldAbsolute",
+          "ReplaceMode": "Always",
+          "Rotation": "None",
+          "Pitch": "None",
+          "Roll": "None"
+        },
+        {
+          "Type": "PlaceBlock",
+          "Event": "BLOCK_USED",
+          "Interval": 0.0,
+          "Delay": 1.42,
+          "BlockType": "Rock_Crystal_Purple_Block",
+          "BlockState": "",
+          "Position": {
+            "X": -1.0,
+            "Y": 104.0,
+            "Z": -439.0
+          },
+          "Origin": "WorldAbsolute",
+          "ReplaceMode": "Always",
+          "Rotation": "None",
+          "Pitch": "None",
+          "Roll": "None"
+        },
+        {
+          "Type": "PlaceBlock",
+          "Event": "BLOCK_USED",
+          "Interval": 0.0,
+          "Delay": 1.52,
+          "BlockType": "Rock_Crystal_Purple_Block",
+          "BlockState": "",
+          "Position": {
+            "X": -1.0,
+            "Y": 105.0,
+            "Z": -439.0
+          },
+          "Origin": "WorldAbsolute",
+          "ReplaceMode": "Always",
+          "Rotation": "None",
+          "Pitch": "None",
+          "Roll": "None"
+        },
+        {
+          "Type": "PlaceBlock",
+          "Event": "BLOCK_USED",
+          "Interval": 0.0,
+          "Delay": 1.62,
+          "BlockType": "Rock_Crystal_Purple_Block",
+          "BlockState": "",
+          "Position": {
+            "X": -1.0,
+            "Y": 106.0,
+            "Z": -439.0
+          },
+          "Origin": "WorldAbsolute",
+          "ReplaceMode": "Always",
+          "Rotation": "None",
+          "Pitch": "None",
+          "Roll": "None"
+        },
+        {
+          "Type": "PlaceBlock",
+          "Event": "BLOCK_USED",
+          "Interval": 0.0,
+          "Delay": 1.72,
+          "BlockType": "Rock_Crystal_Purple_Block",
+          "BlockState": "",
+          "Position": {
+            "X": -1.0,
+            "Y": 107.0,
+            "Z": -439.0
+          },
+          "Origin": "WorldAbsolute",
+          "ReplaceMode": "Always",
+          "Rotation": "None",
+          "Pitch": "None",
+          "Roll": "None"
+        },
+        {
+          "Type": "PlaceBlock",
+          "Event": "BLOCK_USED",
+          "Interval": 0.0,
+          "Delay": 1.82,
+          "BlockType": "Rock_Crystal_Purple_Block",
+          "BlockState": "",
+          "Position": {
+            "X": -1.0,
+            "Y": 108.0,
+            "Z": -439.0
+          },
+          "Origin": "WorldAbsolute",
+          "ReplaceMode": "Always",
+          "Rotation": "None",
+          "Pitch": "None",
+          "Roll": "None"
+        },
+        {
+          "Type": "PlaceBlock",
+          "Event": "BLOCK_USED",
+          "Interval": 0.0,
+          "Delay": 1.92,
+          "BlockType": "Rock_Crystal_Purple_Block",
+          "BlockState": "",
+          "Position": {
+            "X": -1.0,
+            "Y": 109.0,
+            "Z": -439.0
+          },
+          "Origin": "WorldAbsolute",
+          "ReplaceMode": "Always",
+          "Rotation": "None",
+          "Pitch": "None",
+          "Roll": "None"
+        },
+        {
+          "Type": "PlaceBlock",
+          "Event": "BLOCK_USED",
+          "Interval": 0.0,
+          "Delay": 2.02,
+          "BlockType": "Rock_Crystal_Purple_Block",
+          "BlockState": "",
+          "Position": {
+            "X": -1.0,
+            "Y": 110.0,
+            "Z": -439.0
+          },
+          "Origin": "WorldAbsolute",
+          "ReplaceMode": "Always",
+          "Rotation": "None",
+          "Pitch": "None",
+          "Roll": "None"
+        },
+        {
+          "Type": "PlaceBlock",
+          "Event": "BLOCK_USED",
+          "Interval": 0.0,
+          "Delay": 2.12,
+          "BlockType": "Rock_Crystal_Purple_Block",
+          "BlockState": "",
+          "Position": {
+            "X": -1.0,
+            "Y": 111.0,
+            "Z": -439.0
+          },
+          "Origin": "WorldAbsolute",
+          "ReplaceMode": "Always",
+          "Rotation": "None",
+          "Pitch": "None",
+          "Roll": "None"
+        },
+        {
+          "Type": "PlaceBlock",
+          "Event": "BLOCK_USED",
+          "Interval": 0.0,
+          "Delay": 2.22,
+          "BlockType": "Rock_Crystal_Purple_Block",
+          "BlockState": "",
+          "Position": {
+            "X": -1.0,
+            "Y": 112.0,
+            "Z": -439.0
+          },
+          "Origin": "WorldAbsolute",
+          "ReplaceMode": "Always",
+          "Rotation": "None",
+          "Pitch": "None",
+          "Roll": "None"
+        },
+        {
+          "Type": "PlaySound",
+          "Event": "BLOCK_USED",
+          "Interval": 0.0,
+          "Delay": 0.4,
+          "SoundEvent": "SFX_Emit_Goblin_Pipes_Activate",
+          "Location": "VolumeCenter",
+          "Offset": {
+            "X": 0.0,
+            "Y": 0.0,
+            "Z": 0.0
+          }
+        },
+        {
           "Type": "ModifyTags",
           "Event": "BLOCK_USED",
           "Interval": 0.0,
-          "Delay": 0.2,
+          "Delay": 2.32,
           "Operation": "Set",
           "TagKey": "Athanor_2",
           "TagValue": "On",
@@ -103527,9 +104393,9 @@
     },
     "f511844c-7136-5e35-84e5-cded1306d73a": {
       "Position": {
-        "X": 10.5,
+        "X": 0.5,
         "Y": 100.5,
-        "Z": -445.5
+        "Z": -452.5
       },
       "Shape": {
         "Type": "Box",
@@ -103608,10 +104474,329 @@
           "Duration": 0.0
         },
         {
+          "Type": "PlaceBlock",
+          "Event": "BLOCK_USED",
+          "Interval": 0.0,
+          "Delay": 0.3,
+          "BlockType": "Nakasar_Tower_Emanation_Spiral",
+          "BlockState": "",
+          "Position": {
+            "X": 0.0,
+            "Y": 102.0,
+            "Z": -453.0
+          },
+          "Origin": "WorldAbsolute",
+          "ReplaceMode": "Always",
+          "Rotation": "None",
+          "Pitch": "None",
+          "Roll": "None"
+        },
+        {
+          "Type": "PlaceBlock",
+          "Event": "BLOCK_USED",
+          "Interval": 0.0,
+          "Delay": 0.4,
+          "BlockType": "Rock_Crystal_Purple_Block",
+          "BlockState": "",
+          "Position": {
+            "X": 0.0,
+            "Y": 99.0,
+            "Z": -450.0
+          },
+          "Origin": "WorldAbsolute",
+          "ReplaceMode": "Always",
+          "Rotation": "None",
+          "Pitch": "None",
+          "Roll": "None"
+        },
+        {
+          "Type": "PlaceBlock",
+          "Event": "BLOCK_USED",
+          "Interval": 0.0,
+          "Delay": 0.52,
+          "BlockType": "Rock_Crystal_Purple_Block",
+          "BlockState": "",
+          "Position": {
+            "X": 0.0,
+            "Y": 99.0,
+            "Z": -449.0
+          },
+          "Origin": "WorldAbsolute",
+          "ReplaceMode": "Always",
+          "Rotation": "None",
+          "Pitch": "None",
+          "Roll": "None"
+        },
+        {
+          "Type": "PlaceBlock",
+          "Event": "BLOCK_USED",
+          "Interval": 0.0,
+          "Delay": 0.64,
+          "BlockType": "Rock_Crystal_Purple_Block",
+          "BlockState": "",
+          "Position": {
+            "X": 0.0,
+            "Y": 99.0,
+            "Z": -448.0
+          },
+          "Origin": "WorldAbsolute",
+          "ReplaceMode": "Always",
+          "Rotation": "None",
+          "Pitch": "None",
+          "Roll": "None"
+        },
+        {
+          "Type": "PlaceBlock",
+          "Event": "BLOCK_USED",
+          "Interval": 0.0,
+          "Delay": 0.76,
+          "BlockType": "Rock_Crystal_Purple_Block",
+          "BlockState": "",
+          "Position": {
+            "X": 0.0,
+            "Y": 99.0,
+            "Z": -447.0
+          },
+          "Origin": "WorldAbsolute",
+          "ReplaceMode": "Always",
+          "Rotation": "None",
+          "Pitch": "None",
+          "Roll": "None"
+        },
+        {
+          "Type": "PlaceBlock",
+          "Event": "BLOCK_USED",
+          "Interval": 0.0,
+          "Delay": 0.88,
+          "BlockType": "Rock_Crystal_Purple_Block",
+          "BlockState": "",
+          "Position": {
+            "X": 0.0,
+            "Y": 101.0,
+            "Z": -442.0
+          },
+          "Origin": "WorldAbsolute",
+          "ReplaceMode": "Always",
+          "Rotation": "None",
+          "Pitch": "None",
+          "Roll": "None"
+        },
+        {
+          "Type": "PlaceBlock",
+          "Event": "BLOCK_USED",
+          "Interval": 0.0,
+          "Delay": 0.98,
+          "BlockType": "Rock_Crystal_Purple_Block",
+          "BlockState": "",
+          "Position": {
+            "X": 0.0,
+            "Y": 102.0,
+            "Z": -442.0
+          },
+          "Origin": "WorldAbsolute",
+          "ReplaceMode": "Always",
+          "Rotation": "None",
+          "Pitch": "None",
+          "Roll": "None"
+        },
+        {
+          "Type": "PlaceBlock",
+          "Event": "BLOCK_USED",
+          "Interval": 0.0,
+          "Delay": 1.08,
+          "BlockType": "Rock_Crystal_Purple_Block",
+          "BlockState": "",
+          "Position": {
+            "X": 0.0,
+            "Y": 103.0,
+            "Z": -442.0
+          },
+          "Origin": "WorldAbsolute",
+          "ReplaceMode": "Always",
+          "Rotation": "None",
+          "Pitch": "None",
+          "Roll": "None"
+        },
+        {
+          "Type": "PlaceBlock",
+          "Event": "BLOCK_USED",
+          "Interval": 0.0,
+          "Delay": 1.18,
+          "BlockType": "Rock_Crystal_Purple_Block",
+          "BlockState": "",
+          "Position": {
+            "X": 0.0,
+            "Y": 104.0,
+            "Z": -442.0
+          },
+          "Origin": "WorldAbsolute",
+          "ReplaceMode": "Always",
+          "Rotation": "None",
+          "Pitch": "None",
+          "Roll": "None"
+        },
+        {
+          "Type": "PlaceBlock",
+          "Event": "BLOCK_USED",
+          "Interval": 0.0,
+          "Delay": 1.28,
+          "BlockType": "Rock_Crystal_Purple_Block",
+          "BlockState": "",
+          "Position": {
+            "X": 0.0,
+            "Y": 105.0,
+            "Z": -442.0
+          },
+          "Origin": "WorldAbsolute",
+          "ReplaceMode": "Always",
+          "Rotation": "None",
+          "Pitch": "None",
+          "Roll": "None"
+        },
+        {
+          "Type": "PlaceBlock",
+          "Event": "BLOCK_USED",
+          "Interval": 0.0,
+          "Delay": 1.38,
+          "BlockType": "Rock_Crystal_Purple_Block",
+          "BlockState": "",
+          "Position": {
+            "X": 0.0,
+            "Y": 106.0,
+            "Z": -442.0
+          },
+          "Origin": "WorldAbsolute",
+          "ReplaceMode": "Always",
+          "Rotation": "None",
+          "Pitch": "None",
+          "Roll": "None"
+        },
+        {
+          "Type": "PlaceBlock",
+          "Event": "BLOCK_USED",
+          "Interval": 0.0,
+          "Delay": 1.48,
+          "BlockType": "Rock_Crystal_Purple_Block",
+          "BlockState": "",
+          "Position": {
+            "X": 0.0,
+            "Y": 107.0,
+            "Z": -442.0
+          },
+          "Origin": "WorldAbsolute",
+          "ReplaceMode": "Always",
+          "Rotation": "None",
+          "Pitch": "None",
+          "Roll": "None"
+        },
+        {
+          "Type": "PlaceBlock",
+          "Event": "BLOCK_USED",
+          "Interval": 0.0,
+          "Delay": 1.58,
+          "BlockType": "Rock_Crystal_Purple_Block",
+          "BlockState": "",
+          "Position": {
+            "X": 0.0,
+            "Y": 108.0,
+            "Z": -442.0
+          },
+          "Origin": "WorldAbsolute",
+          "ReplaceMode": "Always",
+          "Rotation": "None",
+          "Pitch": "None",
+          "Roll": "None"
+        },
+        {
+          "Type": "PlaceBlock",
+          "Event": "BLOCK_USED",
+          "Interval": 0.0,
+          "Delay": 1.68,
+          "BlockType": "Rock_Crystal_Purple_Block",
+          "BlockState": "",
+          "Position": {
+            "X": 0.0,
+            "Y": 109.0,
+            "Z": -442.0
+          },
+          "Origin": "WorldAbsolute",
+          "ReplaceMode": "Always",
+          "Rotation": "None",
+          "Pitch": "None",
+          "Roll": "None"
+        },
+        {
+          "Type": "PlaceBlock",
+          "Event": "BLOCK_USED",
+          "Interval": 0.0,
+          "Delay": 1.78,
+          "BlockType": "Rock_Crystal_Purple_Block",
+          "BlockState": "",
+          "Position": {
+            "X": 0.0,
+            "Y": 110.0,
+            "Z": -442.0
+          },
+          "Origin": "WorldAbsolute",
+          "ReplaceMode": "Always",
+          "Rotation": "None",
+          "Pitch": "None",
+          "Roll": "None"
+        },
+        {
+          "Type": "PlaceBlock",
+          "Event": "BLOCK_USED",
+          "Interval": 0.0,
+          "Delay": 1.88,
+          "BlockType": "Rock_Crystal_Purple_Block",
+          "BlockState": "",
+          "Position": {
+            "X": 0.0,
+            "Y": 111.0,
+            "Z": -442.0
+          },
+          "Origin": "WorldAbsolute",
+          "ReplaceMode": "Always",
+          "Rotation": "None",
+          "Pitch": "None",
+          "Roll": "None"
+        },
+        {
+          "Type": "PlaceBlock",
+          "Event": "BLOCK_USED",
+          "Interval": 0.0,
+          "Delay": 1.98,
+          "BlockType": "Rock_Crystal_Purple_Block",
+          "BlockState": "",
+          "Position": {
+            "X": 0.0,
+            "Y": 112.0,
+            "Z": -442.0
+          },
+          "Origin": "WorldAbsolute",
+          "ReplaceMode": "Always",
+          "Rotation": "None",
+          "Pitch": "None",
+          "Roll": "None"
+        },
+        {
+          "Type": "PlaySound",
+          "Event": "BLOCK_USED",
+          "Interval": 0.0,
+          "Delay": 0.4,
+          "SoundEvent": "SFX_Emit_Goblin_Pipes_Activate",
+          "Location": "VolumeCenter",
+          "Offset": {
+            "X": 0.0,
+            "Y": 0.0,
+            "Z": 0.0
+          }
+        },
+        {
           "Type": "ModifyTags",
           "Event": "BLOCK_USED",
           "Interval": 0.0,
-          "Delay": 0.2,
+          "Delay": 2.08,
           "Operation": "Set",
           "TagKey": "Athanor_3",
           "TagValue": "On",
@@ -103632,6 +104817,94 @@
         "Lit": "No"
       },
       "Name": "Hall_Athanor_3"
+    },
+    "e90c324f-12dd-5106-abc2-6df486db4cc8": {
+      "Position": {
+        "X": 14.5,
+        "Y": 128.5,
+        "Z": -459.0
+      },
+      "Shape": {
+        "Type": "Box",
+        "Min": {
+          "X": -1.0,
+          "Y": -1.0,
+          "Z": -1.0
+        },
+        "Max": {
+          "X": 1.0,
+          "Y": 1.0,
+          "Z": 1.0
+        }
+      },
+      "Effects": [
+        {
+          "Type": "PlayVfx",
+          "Event": "TAG_ADDED",
+          "Interval": 0.0,
+          "Delay": 0.0,
+          "ParticleSystem": "Magic_Sparks_Heavy_GS",
+          "Offset": {
+            "X": 0.0,
+            "Y": 0.0,
+            "Z": 0.0
+          },
+          "Anchor": "Volume",
+          "Scale": 2.0,
+          "Rotation": {
+            "X": 0.0,
+            "Y": 0.0,
+            "Z": 0.0
+          },
+          "Duration": 0.0
+        },
+        {
+          "Type": "PlayVfx",
+          "Event": "TAG_ADDED",
+          "Interval": 0.0,
+          "Delay": 0.2,
+          "ParticleSystem": "Goblin_Decorative_Lightning",
+          "Offset": {
+            "X": 0.0,
+            "Y": 0.0,
+            "Z": 0.0
+          },
+          "Anchor": "Volume",
+          "Scale": 1.5,
+          "Rotation": {
+            "X": 0.0,
+            "Y": 0.0,
+            "Z": 0.0
+          },
+          "Duration": 0.0
+        },
+        {
+          "Type": "PlaySound",
+          "Event": "TAG_ADDED",
+          "Interval": 0.0,
+          "Delay": 0.0,
+          "SoundEvent": "SFX_Emit_Dungeon_Goblin_Void_Thunder",
+          "Location": "VolumeCenter",
+          "Offset": {
+            "X": 0.0,
+            "Y": 0.0,
+            "Z": 0.0
+          }
+        }
+      ],
+      "TargetTypes": [
+        "Player"
+      ],
+      "Enabled": true,
+      "GroupId": "649a46d3-c78f-5639-b925-73f6a9090a9a",
+      "KeepLoaded": false,
+      "Tags": {
+        "Hall_Seal": "Pulse",
+        "Athanor_1": "Off",
+        "Athanor_2": "Off",
+        "Athanor_3": "Off"
+      },
+      "Name": "Hall_Seal_Pulse"
     },
     "f88b755a-acda-5614-8ef2-caec887a3143": {
       "Position": {
@@ -103728,7 +105001,7 @@
           "Type": "PlaySound",
           "Event": "TAG_ADDED",
           "Interval": 0.0,
-          "Delay": 0.6,
+          "Delay": 3.52,
           "SoundEvent": "SFX_Crystal_Break",
           "Location": "VolumeCenter",
           "Offset": {
@@ -103741,7 +105014,7 @@
           "Type": "ReplaceBlockType",
           "Event": "TAG_ADDED",
           "Interval": 0.0,
-          "Delay": 0.8,
+          "Delay": 3.72,
           "FromBlockTypes": [
             "Nakasar_Alchemical_Seal"
           ],
@@ -103759,10 +105032,653 @@
           "Roll": "None"
         },
         {
+          "Type": "PlaceBlock",
+          "Event": "TAG_ADDED",
+          "Interval": 0.0,
+          "Delay": 0.2,
+          "BlockType": "Rock_Crystal_Purple_Block",
+          "BlockState": "",
+          "Position": {
+            "X": 4.0,
+            "Y": 99.0,
+            "Z": -446.0
+          },
+          "Origin": "WorldAbsolute",
+          "ReplaceMode": "Always",
+          "Rotation": "None",
+          "Pitch": "None",
+          "Roll": "None"
+        },
+        {
+          "Type": "PlaceBlock",
+          "Event": "TAG_ADDED",
+          "Interval": 0.0,
+          "Delay": 0.28,
+          "BlockType": "Rock_Crystal_Purple_Block",
+          "BlockState": "",
+          "Position": {
+            "X": 5.0,
+            "Y": 99.0,
+            "Z": -446.0
+          },
+          "Origin": "WorldAbsolute",
+          "ReplaceMode": "Always",
+          "Rotation": "None",
+          "Pitch": "None",
+          "Roll": "None"
+        },
+        {
+          "Type": "PlaceBlock",
+          "Event": "TAG_ADDED",
+          "Interval": 0.0,
+          "Delay": 0.36,
+          "BlockType": "Rock_Crystal_Purple_Block",
+          "BlockState": "",
+          "Position": {
+            "X": 5.0,
+            "Y": 99.0,
+            "Z": -447.0
+          },
+          "Origin": "WorldAbsolute",
+          "ReplaceMode": "Always",
+          "Rotation": "None",
+          "Pitch": "None",
+          "Roll": "None"
+        },
+        {
+          "Type": "PlaceBlock",
+          "Event": "TAG_ADDED",
+          "Interval": 0.0,
+          "Delay": 0.44,
+          "BlockType": "Rock_Crystal_Purple_Block",
+          "BlockState": "",
+          "Position": {
+            "X": 6.0,
+            "Y": 99.0,
+            "Z": -448.0
+          },
+          "Origin": "WorldAbsolute",
+          "ReplaceMode": "Always",
+          "Rotation": "None",
+          "Pitch": "None",
+          "Roll": "None"
+        },
+        {
+          "Type": "PlaceBlock",
+          "Event": "TAG_ADDED",
+          "Interval": 0.0,
+          "Delay": 0.52,
+          "BlockType": "Rock_Crystal_Purple_Block",
+          "BlockState": "",
+          "Position": {
+            "X": 6.0,
+            "Y": 99.0,
+            "Z": -449.0
+          },
+          "Origin": "WorldAbsolute",
+          "ReplaceMode": "Always",
+          "Rotation": "None",
+          "Pitch": "None",
+          "Roll": "None"
+        },
+        {
+          "Type": "PlaceBlock",
+          "Event": "TAG_ADDED",
+          "Interval": 0.0,
+          "Delay": 0.6,
+          "BlockType": "Rock_Crystal_Purple_Block",
+          "BlockState": "",
+          "Position": {
+            "X": 7.0,
+            "Y": 99.0,
+            "Z": -449.0
+          },
+          "Origin": "WorldAbsolute",
+          "ReplaceMode": "Always",
+          "Rotation": "None",
+          "Pitch": "None",
+          "Roll": "None"
+        },
+        {
+          "Type": "PlaceBlock",
+          "Event": "TAG_ADDED",
+          "Interval": 0.0,
+          "Delay": 0.68,
+          "BlockType": "Rock_Crystal_Purple_Block",
+          "BlockState": "",
+          "Position": {
+            "X": 7.0,
+            "Y": 99.0,
+            "Z": -450.0
+          },
+          "Origin": "WorldAbsolute",
+          "ReplaceMode": "Always",
+          "Rotation": "None",
+          "Pitch": "None",
+          "Roll": "None"
+        },
+        {
+          "Type": "PlaceBlock",
+          "Event": "TAG_ADDED",
+          "Interval": 0.0,
+          "Delay": 0.76,
+          "BlockType": "Rock_Crystal_Purple_Block",
+          "BlockState": "",
+          "Position": {
+            "X": 8.0,
+            "Y": 99.0,
+            "Z": -451.0
+          },
+          "Origin": "WorldAbsolute",
+          "ReplaceMode": "Always",
+          "Rotation": "None",
+          "Pitch": "None",
+          "Roll": "None"
+        },
+        {
+          "Type": "PlaceBlock",
+          "Event": "TAG_ADDED",
+          "Interval": 0.0,
+          "Delay": 0.84,
+          "BlockType": "Rock_Crystal_Purple_Block",
+          "BlockState": "",
+          "Position": {
+            "X": 9.0,
+            "Y": 99.0,
+            "Z": -452.0
+          },
+          "Origin": "WorldAbsolute",
+          "ReplaceMode": "Always",
+          "Rotation": "None",
+          "Pitch": "None",
+          "Roll": "None"
+        },
+        {
+          "Type": "PlaceBlock",
+          "Event": "TAG_ADDED",
+          "Interval": 0.0,
+          "Delay": 0.92,
+          "BlockType": "Rock_Crystal_Purple_Block",
+          "BlockState": "",
+          "Position": {
+            "X": 9.0,
+            "Y": 99.0,
+            "Z": -453.0
+          },
+          "Origin": "WorldAbsolute",
+          "ReplaceMode": "Always",
+          "Rotation": "None",
+          "Pitch": "None",
+          "Roll": "None"
+        },
+        {
+          "Type": "PlaceBlock",
+          "Event": "TAG_ADDED",
+          "Interval": 0.0,
+          "Delay": 1.0,
+          "BlockType": "Rock_Crystal_Purple_Block",
+          "BlockState": "",
+          "Position": {
+            "X": 10.0,
+            "Y": 99.0,
+            "Z": -453.0
+          },
+          "Origin": "WorldAbsolute",
+          "ReplaceMode": "Always",
+          "Rotation": "None",
+          "Pitch": "None",
+          "Roll": "None"
+        },
+        {
+          "Type": "PlaceBlock",
+          "Event": "TAG_ADDED",
+          "Interval": 0.0,
+          "Delay": 1.08,
+          "BlockType": "Rock_Crystal_Purple_Block",
+          "BlockState": "",
+          "Position": {
+            "X": 10.0,
+            "Y": 99.0,
+            "Z": -454.0
+          },
+          "Origin": "WorldAbsolute",
+          "ReplaceMode": "Always",
+          "Rotation": "None",
+          "Pitch": "None",
+          "Roll": "None"
+        },
+        {
+          "Type": "PlaceBlock",
+          "Event": "TAG_ADDED",
+          "Interval": 0.0,
+          "Delay": 1.16,
+          "BlockType": "Rock_Crystal_Purple_Block",
+          "BlockState": "",
+          "Position": {
+            "X": 11.0,
+            "Y": 99.0,
+            "Z": -455.0
+          },
+          "Origin": "WorldAbsolute",
+          "ReplaceMode": "Always",
+          "Rotation": "None",
+          "Pitch": "None",
+          "Roll": "None"
+        },
+        {
+          "Type": "PlaceBlock",
+          "Event": "TAG_ADDED",
+          "Interval": 0.0,
+          "Delay": 1.24,
+          "BlockType": "Rock_Crystal_Purple_Block",
+          "BlockState": "",
+          "Position": {
+            "X": 11.0,
+            "Y": 99.0,
+            "Z": -456.0
+          },
+          "Origin": "WorldAbsolute",
+          "ReplaceMode": "Always",
+          "Rotation": "None",
+          "Pitch": "None",
+          "Roll": "None"
+        },
+        {
+          "Type": "PlaceBlock",
+          "Event": "TAG_ADDED",
+          "Interval": 0.0,
+          "Delay": 1.32,
+          "BlockType": "Rock_Crystal_Purple_Block",
+          "BlockState": "",
+          "Position": {
+            "X": 12.0,
+            "Y": 101.0,
+            "Z": -457.0
+          },
+          "Origin": "WorldAbsolute",
+          "ReplaceMode": "Always",
+          "Rotation": "None",
+          "Pitch": "None",
+          "Roll": "None"
+        },
+        {
+          "Type": "PlaceBlock",
+          "Event": "TAG_ADDED",
+          "Interval": 0.0,
+          "Delay": 1.4,
+          "BlockType": "Rock_Crystal_Purple_Block",
+          "BlockState": "",
+          "Position": {
+            "X": 12.0,
+            "Y": 102.0,
+            "Z": -457.0
+          },
+          "Origin": "WorldAbsolute",
+          "ReplaceMode": "Always",
+          "Rotation": "None",
+          "Pitch": "None",
+          "Roll": "None"
+        },
+        {
+          "Type": "PlaceBlock",
+          "Event": "TAG_ADDED",
+          "Interval": 0.0,
+          "Delay": 1.48,
+          "BlockType": "Rock_Crystal_Purple_Block",
+          "BlockState": "",
+          "Position": {
+            "X": 12.0,
+            "Y": 103.0,
+            "Z": -457.0
+          },
+          "Origin": "WorldAbsolute",
+          "ReplaceMode": "Always",
+          "Rotation": "None",
+          "Pitch": "None",
+          "Roll": "None"
+        },
+        {
+          "Type": "PlaceBlock",
+          "Event": "TAG_ADDED",
+          "Interval": 0.0,
+          "Delay": 1.56,
+          "BlockType": "Rock_Crystal_Purple_Block",
+          "BlockState": "",
+          "Position": {
+            "X": 12.0,
+            "Y": 104.0,
+            "Z": -457.0
+          },
+          "Origin": "WorldAbsolute",
+          "ReplaceMode": "Always",
+          "Rotation": "None",
+          "Pitch": "None",
+          "Roll": "None"
+        },
+        {
+          "Type": "PlaceBlock",
+          "Event": "TAG_ADDED",
+          "Interval": 0.0,
+          "Delay": 1.64,
+          "BlockType": "Rock_Crystal_Purple_Block",
+          "BlockState": "",
+          "Position": {
+            "X": 12.0,
+            "Y": 105.0,
+            "Z": -457.0
+          },
+          "Origin": "WorldAbsolute",
+          "ReplaceMode": "Always",
+          "Rotation": "None",
+          "Pitch": "None",
+          "Roll": "None"
+        },
+        {
+          "Type": "PlaceBlock",
+          "Event": "TAG_ADDED",
+          "Interval": 0.0,
+          "Delay": 1.72,
+          "BlockType": "Rock_Crystal_Purple_Block",
+          "BlockState": "",
+          "Position": {
+            "X": 12.0,
+            "Y": 106.0,
+            "Z": -457.0
+          },
+          "Origin": "WorldAbsolute",
+          "ReplaceMode": "Always",
+          "Rotation": "None",
+          "Pitch": "None",
+          "Roll": "None"
+        },
+        {
+          "Type": "PlaceBlock",
+          "Event": "TAG_ADDED",
+          "Interval": 0.0,
+          "Delay": 1.8,
+          "BlockType": "Rock_Crystal_Purple_Block",
+          "BlockState": "",
+          "Position": {
+            "X": 12.0,
+            "Y": 107.0,
+            "Z": -457.0
+          },
+          "Origin": "WorldAbsolute",
+          "ReplaceMode": "Always",
+          "Rotation": "None",
+          "Pitch": "None",
+          "Roll": "None"
+        },
+        {
+          "Type": "PlaceBlock",
+          "Event": "TAG_ADDED",
+          "Interval": 0.0,
+          "Delay": 1.88,
+          "BlockType": "Rock_Crystal_Purple_Block",
+          "BlockState": "",
+          "Position": {
+            "X": 12.0,
+            "Y": 108.0,
+            "Z": -457.0
+          },
+          "Origin": "WorldAbsolute",
+          "ReplaceMode": "Always",
+          "Rotation": "None",
+          "Pitch": "None",
+          "Roll": "None"
+        },
+        {
+          "Type": "PlaceBlock",
+          "Event": "TAG_ADDED",
+          "Interval": 0.0,
+          "Delay": 1.96,
+          "BlockType": "Rock_Crystal_Purple_Block",
+          "BlockState": "",
+          "Position": {
+            "X": 12.0,
+            "Y": 109.0,
+            "Z": -457.0
+          },
+          "Origin": "WorldAbsolute",
+          "ReplaceMode": "Always",
+          "Rotation": "None",
+          "Pitch": "None",
+          "Roll": "None"
+        },
+        {
+          "Type": "PlaceBlock",
+          "Event": "TAG_ADDED",
+          "Interval": 0.0,
+          "Delay": 2.04,
+          "BlockType": "Rock_Crystal_Purple_Block",
+          "BlockState": "",
+          "Position": {
+            "X": 12.0,
+            "Y": 110.0,
+            "Z": -457.0
+          },
+          "Origin": "WorldAbsolute",
+          "ReplaceMode": "Always",
+          "Rotation": "None",
+          "Pitch": "None",
+          "Roll": "None"
+        },
+        {
+          "Type": "PlaceBlock",
+          "Event": "TAG_ADDED",
+          "Interval": 0.0,
+          "Delay": 2.12,
+          "BlockType": "Rock_Crystal_Purple_Block",
+          "BlockState": "",
+          "Position": {
+            "X": 12.0,
+            "Y": 111.0,
+            "Z": -457.0
+          },
+          "Origin": "WorldAbsolute",
+          "ReplaceMode": "Always",
+          "Rotation": "None",
+          "Pitch": "None",
+          "Roll": "None"
+        },
+        {
+          "Type": "PlaceBlock",
+          "Event": "TAG_ADDED",
+          "Interval": 0.0,
+          "Delay": 2.2,
+          "BlockType": "Rock_Crystal_Purple_Block",
+          "BlockState": "",
+          "Position": {
+            "X": 12.0,
+            "Y": 112.0,
+            "Z": -457.0
+          },
+          "Origin": "WorldAbsolute",
+          "ReplaceMode": "Always",
+          "Rotation": "None",
+          "Pitch": "None",
+          "Roll": "None"
+        },
+        {
+          "Type": "PlaceBlock",
+          "Event": "TAG_ADDED",
+          "Interval": 0.0,
+          "Delay": 2.28,
+          "BlockType": "Rock_Crystal_Purple_Block",
+          "BlockState": "",
+          "Position": {
+            "X": 12.0,
+            "Y": 113.0,
+            "Z": -457.0
+          },
+          "Origin": "WorldAbsolute",
+          "ReplaceMode": "Always",
+          "Rotation": "None",
+          "Pitch": "None",
+          "Roll": "None"
+        },
+        {
+          "Type": "PlaceBlock",
+          "Event": "TAG_ADDED",
+          "Interval": 0.0,
+          "Delay": 2.36,
+          "BlockType": "Rock_Crystal_Purple_Block",
+          "BlockState": "",
+          "Position": {
+            "X": 12.0,
+            "Y": 114.0,
+            "Z": -457.0
+          },
+          "Origin": "WorldAbsolute",
+          "ReplaceMode": "Always",
+          "Rotation": "None",
+          "Pitch": "None",
+          "Roll": "None"
+        },
+        {
+          "Type": "PlaceBlock",
+          "Event": "TAG_ADDED",
+          "Interval": 0.0,
+          "Delay": 2.44,
+          "BlockType": "Rock_Crystal_Purple_Block",
+          "BlockState": "",
+          "Position": {
+            "X": 12.0,
+            "Y": 115.0,
+            "Z": -457.0
+          },
+          "Origin": "WorldAbsolute",
+          "ReplaceMode": "Always",
+          "Rotation": "None",
+          "Pitch": "None",
+          "Roll": "None"
+        },
+        {
+          "Type": "PlaceBlock",
+          "Event": "TAG_ADDED",
+          "Interval": 0.0,
+          "Delay": 2.52,
+          "BlockType": "Rock_Crystal_Purple_Block",
+          "BlockState": "",
+          "Position": {
+            "X": 12.0,
+            "Y": 116.0,
+            "Z": -457.0
+          },
+          "Origin": "WorldAbsolute",
+          "ReplaceMode": "Always",
+          "Rotation": "None",
+          "Pitch": "None",
+          "Roll": "None"
+        },
+        {
+          "Type": "PlaceBlock",
+          "Event": "TAG_ADDED",
+          "Interval": 0.0,
+          "Delay": 2.6,
+          "BlockType": "Rock_Crystal_Purple_Block",
+          "BlockState": "",
+          "Position": {
+            "X": 12.0,
+            "Y": 117.0,
+            "Z": -457.0
+          },
+          "Origin": "WorldAbsolute",
+          "ReplaceMode": "Always",
+          "Rotation": "None",
+          "Pitch": "None",
+          "Roll": "None"
+        },
+        {
+          "Type": "PlaceBlock",
+          "Event": "TAG_ADDED",
+          "Interval": 0.0,
+          "Delay": 2.68,
+          "BlockType": "Rock_Crystal_Purple_Block",
+          "BlockState": "",
+          "Position": {
+            "X": 12.0,
+            "Y": 118.0,
+            "Z": -457.0
+          },
+          "Origin": "WorldAbsolute",
+          "ReplaceMode": "Always",
+          "Rotation": "None",
+          "Pitch": "None",
+          "Roll": "None"
+        },
+        {
+          "Type": "PlaceBlock",
+          "Event": "TAG_ADDED",
+          "Interval": 0.0,
+          "Delay": 2.76,
+          "BlockType": "Rock_Crystal_Purple_Block",
+          "BlockState": "",
+          "Position": {
+            "X": 12.0,
+            "Y": 119.0,
+            "Z": -457.0
+          },
+          "Origin": "WorldAbsolute",
+          "ReplaceMode": "Always",
+          "Rotation": "None",
+          "Pitch": "None",
+          "Roll": "None"
+        },
+        {
+          "Type": "PlaceBlock",
+          "Event": "TAG_ADDED",
+          "Interval": 0.0,
+          "Delay": 2.84,
+          "BlockType": "Rock_Crystal_Purple_Block",
+          "BlockState": "",
+          "Position": {
+            "X": 12.0,
+            "Y": 120.0,
+            "Z": -457.0
+          },
+          "Origin": "WorldAbsolute",
+          "ReplaceMode": "Always",
+          "Rotation": "None",
+          "Pitch": "None",
+          "Roll": "None"
+        },
+        {
+          "Type": "PlaceBlock",
+          "Event": "TAG_ADDED",
+          "Interval": 0.0,
+          "Delay": 0.2,
+          "BlockType": "Nakasar_Tower_Emanation_Arc",
+          "BlockState": "",
+          "Position": {
+            "X": 0.0,
+            "Y": 117.0,
+            "Z": -440.0
+          },
+          "Origin": "WorldAbsolute",
+          "ReplaceMode": "Always",
+          "Rotation": "None",
+          "Pitch": "None",
+          "Roll": "None"
+        },
+        {
+          "Type": "PlaySound",
+          "Event": "TAG_ADDED",
+          "Interval": 0.0,
+          "Delay": 0.2,
+          "SoundEvent": "SFX_Emit_Goblin_Pipes_Activate",
+          "Location": "VolumeCenter",
+          "Offset": {
+            "X": 0.0,
+            "Y": 0.0,
+            "Z": 0.0
+          }
+        },
+        {
           "Type": "ShowEventTitle",
           "Event": "TAG_ADDED",
           "Interval": 0.0,
-          "Delay": 0.0,
+          "Delay": 2.92,
           "PrimaryTitle": "nakasar_alchemist.trap.hall.title",
           "SecondaryTitle": "nakasar_alchemist.trap.hall.subtitle",
           "Style": "Major",
@@ -103922,10 +105838,31 @@
           "Center": "Volume"
         },
         {
+          "Type": "PlayVfx",
+          "Event": "SIGNAL_RECEIVED",
+          "Interval": 0.0,
+          "Delay": 0.0,
+          "ParticleSystem": "Dungeon_Goblin_Mace_Slam_Warning",
+          "Offset": {
+            "X": 0.0,
+            "Y": 0.1,
+            "Z": 0.0
+          },
+          "Anchor": "Volume",
+          "Scale": 2.244,
+          "Rotation": {
+            "X": 0.0,
+            "Y": 0.0,
+            "Z": 0.0
+          },
+          "Duration": 1.6,
+          "Entry": 1
+        },
+        {
           "Type": "ModifyTags",
           "Event": "SIGNAL_RECEIVED",
           "Interval": 0.0,
-          "Delay": 1.2,
+          "Delay": 1.6,
           "Entry": 1,
           "Operation": "Set",
           "TagKey": "Dmg",
@@ -103939,7 +105876,7 @@
           "Type": "ModifyTags",
           "Event": "SIGNAL_RECEIVED",
           "Interval": 0.0,
-          "Delay": 2.8,
+          "Delay": 3.2,
           "Entry": 1,
           "Operation": "Set",
           "TagKey": "Dmg",
@@ -103953,7 +105890,7 @@
           "Type": "ModifyTags",
           "Event": "SIGNAL_RECEIVED",
           "Interval": 0.0,
-          "Delay": 2.8,
+          "Delay": 3.2,
           "Entry": 1,
           "Operation": "Set",
           "TagKey": "Busy",
@@ -104078,6 +106015,27 @@
           "Event": "SIGNAL_RECEIVED",
           "Interval": 0.0,
           "Delay": 0.0,
+          "ParticleSystem": "Dungeon_Goblin_Mace_Slam_Warning",
+          "Offset": {
+            "X": 0.0,
+            "Y": 0.1,
+            "Z": 0.0
+          },
+          "Anchor": "Volume",
+          "Scale": 2.244,
+          "Rotation": {
+            "X": 0.0,
+            "Y": 0.0,
+            "Z": 0.0
+          },
+          "Duration": 1.6,
+          "Entry": 1
+        },
+        {
+          "Type": "PlayVfx",
+          "Event": "SIGNAL_RECEIVED",
+          "Interval": 0.0,
+          "Delay": 0.0,
           "ParticleSystem": "Goblin_Decorative_Steam",
           "Offset": {
             "X": -3.926902632476942,
@@ -104091,7 +106049,7 @@
             "Y": 0.0,
             "Z": 0.0
           },
-          "Duration": 1.2,
+          "Duration": 1.6,
           "Entry": 1
         },
         {
@@ -104112,7 +106070,7 @@
           "Type": "PlayVfx",
           "Event": "SIGNAL_RECEIVED",
           "Interval": 0.0,
-          "Delay": 1.2,
+          "Delay": 1.6,
           "ParticleSystem": "Dungeon_Goblin_Smoke_Pipe_Large",
           "Offset": {
             "X": -3.926902632476942,
@@ -104133,7 +106091,7 @@
           "Type": "PlayVfx",
           "Event": "SIGNAL_RECEIVED",
           "Interval": 0.0,
-          "Delay": 1.2,
+          "Delay": 1.6,
           "ParticleSystem": "Effect_Poison",
           "Offset": {
             "X": 0.0,
@@ -104154,7 +106112,7 @@
           "Type": "PlaySound",
           "Event": "SIGNAL_RECEIVED",
           "Interval": 0.0,
-          "Delay": 1.2,
+          "Delay": 1.6,
           "SoundEvent": "SFX_Env_Geyzer_Burst",
           "Location": "VolumeCenter",
           "Offset": {
@@ -104168,7 +106126,7 @@
           "Type": "ModifyTags",
           "Event": "SIGNAL_RECEIVED",
           "Interval": 0.0,
-          "Delay": 1.2,
+          "Delay": 1.6,
           "Entry": 1,
           "Operation": "Set",
           "TagKey": "Dmg",
@@ -104182,7 +106140,7 @@
           "Type": "ModifyTags",
           "Event": "SIGNAL_RECEIVED",
           "Interval": 0.0,
-          "Delay": 2.8,
+          "Delay": 3.2,
           "Entry": 1,
           "Operation": "Set",
           "TagKey": "Dmg",
@@ -104196,7 +106154,7 @@
           "Type": "ModifyTags",
           "Event": "SIGNAL_RECEIVED",
           "Interval": 0.0,
-          "Delay": 2.8,
+          "Delay": 3.2,
           "Entry": 1,
           "Operation": "Set",
           "TagKey": "Busy",
@@ -104317,10 +106275,31 @@
           "Center": "Volume"
         },
         {
+          "Type": "PlayVfx",
+          "Event": "SIGNAL_RECEIVED",
+          "Interval": 0.0,
+          "Delay": 0.0,
+          "ParticleSystem": "Dungeon_Goblin_Mace_Slam_Warning",
+          "Offset": {
+            "X": 0.0,
+            "Y": 0.1,
+            "Z": 0.0
+          },
+          "Anchor": "Volume",
+          "Scale": 2.244,
+          "Rotation": {
+            "X": 0.0,
+            "Y": 0.0,
+            "Z": 0.0
+          },
+          "Duration": 1.6,
+          "Entry": 1
+        },
+        {
           "Type": "ModifyTags",
           "Event": "SIGNAL_RECEIVED",
           "Interval": 0.0,
-          "Delay": 1.2,
+          "Delay": 1.6,
           "Entry": 1,
           "Operation": "Set",
           "TagKey": "Dmg",
@@ -104334,7 +106313,7 @@
           "Type": "ModifyTags",
           "Event": "SIGNAL_RECEIVED",
           "Interval": 0.0,
-          "Delay": 2.8,
+          "Delay": 3.2,
           "Entry": 1,
           "Operation": "Set",
           "TagKey": "Dmg",
@@ -104348,7 +106327,7 @@
           "Type": "ModifyTags",
           "Event": "SIGNAL_RECEIVED",
           "Interval": 0.0,
-          "Delay": 2.8,
+          "Delay": 3.2,
           "Entry": 1,
           "Operation": "Set",
           "TagKey": "Busy",
@@ -104469,10 +106448,31 @@
           "Center": "Volume"
         },
         {
+          "Type": "PlayVfx",
+          "Event": "SIGNAL_RECEIVED",
+          "Interval": 0.0,
+          "Delay": 0.0,
+          "ParticleSystem": "Dungeon_Goblin_Mace_Slam_Warning",
+          "Offset": {
+            "X": 0.0,
+            "Y": 0.1,
+            "Z": 0.0
+          },
+          "Anchor": "Volume",
+          "Scale": 2.244,
+          "Rotation": {
+            "X": 0.0,
+            "Y": 0.0,
+            "Z": 0.0
+          },
+          "Duration": 1.6,
+          "Entry": 1
+        },
+        {
           "Type": "ModifyTags",
           "Event": "SIGNAL_RECEIVED",
           "Interval": 0.0,
-          "Delay": 1.2,
+          "Delay": 1.6,
           "Entry": 1,
           "Operation": "Set",
           "TagKey": "Dmg",
@@ -104486,7 +106486,7 @@
           "Type": "ModifyTags",
           "Event": "SIGNAL_RECEIVED",
           "Interval": 0.0,
-          "Delay": 2.8,
+          "Delay": 3.2,
           "Entry": 1,
           "Operation": "Set",
           "TagKey": "Dmg",
@@ -104500,7 +106500,7 @@
           "Type": "ModifyTags",
           "Event": "SIGNAL_RECEIVED",
           "Interval": 0.0,
-          "Delay": 2.8,
+          "Delay": 3.2,
           "Entry": 1,
           "Operation": "Set",
           "TagKey": "Busy",
@@ -104625,6 +106625,27 @@
           "Event": "SIGNAL_RECEIVED",
           "Interval": 0.0,
           "Delay": 0.0,
+          "ParticleSystem": "Dungeon_Goblin_Mace_Slam_Warning",
+          "Offset": {
+            "X": 0.0,
+            "Y": 0.1,
+            "Z": 0.0
+          },
+          "Anchor": "Volume",
+          "Scale": 2.244,
+          "Rotation": {
+            "X": 0.0,
+            "Y": 0.0,
+            "Z": 0.0
+          },
+          "Duration": 1.6,
+          "Entry": 1
+        },
+        {
+          "Type": "PlayVfx",
+          "Event": "SIGNAL_RECEIVED",
+          "Interval": 0.0,
+          "Delay": 0.0,
           "ParticleSystem": "Goblin_Decorative_Steam",
           "Offset": {
             "X": -4.885066634855466,
@@ -104638,7 +106659,7 @@
             "Y": 0.0,
             "Z": 0.0
           },
-          "Duration": 1.2,
+          "Duration": 1.6,
           "Entry": 1
         },
         {
@@ -104659,7 +106680,7 @@
           "Type": "PlayVfx",
           "Event": "SIGNAL_RECEIVED",
           "Interval": 0.0,
-          "Delay": 1.2,
+          "Delay": 1.6,
           "ParticleSystem": "Dungeon_Goblin_Smoke_Pipe_Large",
           "Offset": {
             "X": -4.885066634855466,
@@ -104680,7 +106701,7 @@
           "Type": "PlayVfx",
           "Event": "SIGNAL_RECEIVED",
           "Interval": 0.0,
-          "Delay": 1.2,
+          "Delay": 1.6,
           "ParticleSystem": "Effect_Poison",
           "Offset": {
             "X": 0.0,
@@ -104701,7 +106722,7 @@
           "Type": "PlaySound",
           "Event": "SIGNAL_RECEIVED",
           "Interval": 0.0,
-          "Delay": 1.2,
+          "Delay": 1.6,
           "SoundEvent": "SFX_Env_Geyzer_Burst",
           "Location": "VolumeCenter",
           "Offset": {
@@ -104715,7 +106736,7 @@
           "Type": "ModifyTags",
           "Event": "SIGNAL_RECEIVED",
           "Interval": 0.0,
-          "Delay": 1.2,
+          "Delay": 1.6,
           "Entry": 1,
           "Operation": "Set",
           "TagKey": "Dmg",
@@ -104729,7 +106750,7 @@
           "Type": "ModifyTags",
           "Event": "SIGNAL_RECEIVED",
           "Interval": 0.0,
-          "Delay": 2.8,
+          "Delay": 3.2,
           "Entry": 1,
           "Operation": "Set",
           "TagKey": "Dmg",
@@ -104743,7 +106764,7 @@
           "Type": "ModifyTags",
           "Event": "SIGNAL_RECEIVED",
           "Interval": 0.0,
-          "Delay": 2.8,
+          "Delay": 3.2,
           "Entry": 1,
           "Operation": "Set",
           "TagKey": "Busy",
@@ -104864,10 +106885,31 @@
           "Center": "Volume"
         },
         {
+          "Type": "PlayVfx",
+          "Event": "SIGNAL_RECEIVED",
+          "Interval": 0.0,
+          "Delay": 0.0,
+          "ParticleSystem": "Dungeon_Goblin_Mace_Slam_Warning",
+          "Offset": {
+            "X": 0.0,
+            "Y": 0.1,
+            "Z": 0.0
+          },
+          "Anchor": "Volume",
+          "Scale": 2.244,
+          "Rotation": {
+            "X": 0.0,
+            "Y": 0.0,
+            "Z": 0.0
+          },
+          "Duration": 1.6,
+          "Entry": 1
+        },
+        {
           "Type": "ModifyTags",
           "Event": "SIGNAL_RECEIVED",
           "Interval": 0.0,
-          "Delay": 1.2,
+          "Delay": 1.6,
           "Entry": 1,
           "Operation": "Set",
           "TagKey": "Dmg",
@@ -104881,7 +106923,7 @@
           "Type": "ModifyTags",
           "Event": "SIGNAL_RECEIVED",
           "Interval": 0.0,
-          "Delay": 2.8,
+          "Delay": 3.2,
           "Entry": 1,
           "Operation": "Set",
           "TagKey": "Dmg",
@@ -104895,7 +106937,7 @@
           "Type": "ModifyTags",
           "Event": "SIGNAL_RECEIVED",
           "Interval": 0.0,
-          "Delay": 2.8,
+          "Delay": 3.2,
           "Entry": 1,
           "Operation": "Set",
           "TagKey": "Busy",
@@ -105016,10 +107058,31 @@
           "Center": "Volume"
         },
         {
+          "Type": "PlayVfx",
+          "Event": "SIGNAL_RECEIVED",
+          "Interval": 0.0,
+          "Delay": 0.0,
+          "ParticleSystem": "Dungeon_Goblin_Mace_Slam_Warning",
+          "Offset": {
+            "X": 0.0,
+            "Y": 0.1,
+            "Z": 0.0
+          },
+          "Anchor": "Volume",
+          "Scale": 2.244,
+          "Rotation": {
+            "X": 0.0,
+            "Y": 0.0,
+            "Z": 0.0
+          },
+          "Duration": 1.6,
+          "Entry": 1
+        },
+        {
           "Type": "ModifyTags",
           "Event": "SIGNAL_RECEIVED",
           "Interval": 0.0,
-          "Delay": 1.2,
+          "Delay": 1.6,
           "Entry": 1,
           "Operation": "Set",
           "TagKey": "Dmg",
@@ -105033,7 +107096,7 @@
           "Type": "ModifyTags",
           "Event": "SIGNAL_RECEIVED",
           "Interval": 0.0,
-          "Delay": 2.8,
+          "Delay": 3.2,
           "Entry": 1,
           "Operation": "Set",
           "TagKey": "Dmg",
@@ -105047,7 +107110,7 @@
           "Type": "ModifyTags",
           "Event": "SIGNAL_RECEIVED",
           "Interval": 0.0,
-          "Delay": 2.8,
+          "Delay": 3.2,
           "Entry": 1,
           "Operation": "Set",
           "TagKey": "Busy",
@@ -105172,6 +107235,27 @@
           "Event": "SIGNAL_RECEIVED",
           "Interval": 0.0,
           "Delay": 0.0,
+          "ParticleSystem": "Dungeon_Goblin_Mace_Slam_Warning",
+          "Offset": {
+            "X": 0.0,
+            "Y": 0.1,
+            "Z": 0.0
+          },
+          "Anchor": "Volume",
+          "Scale": 2.244,
+          "Rotation": {
+            "X": 0.0,
+            "Y": 0.0,
+            "Z": 0.0
+          },
+          "Duration": 1.6,
+          "Entry": 1
+        },
+        {
+          "Type": "PlayVfx",
+          "Event": "SIGNAL_RECEIVED",
+          "Interval": 0.0,
+          "Delay": 0.0,
           "ParticleSystem": "Goblin_Decorative_Steam",
           "Offset": {
             "X": -6.284609690826521,
@@ -105185,7 +107269,7 @@
             "Y": 0.0,
             "Z": 0.0
           },
-          "Duration": 1.2,
+          "Duration": 1.6,
           "Entry": 1
         },
         {
@@ -105206,7 +107290,7 @@
           "Type": "PlayVfx",
           "Event": "SIGNAL_RECEIVED",
           "Interval": 0.0,
-          "Delay": 1.2,
+          "Delay": 1.6,
           "ParticleSystem": "Dungeon_Goblin_Smoke_Pipe_Large",
           "Offset": {
             "X": -6.284609690826521,
@@ -105227,7 +107311,7 @@
           "Type": "PlayVfx",
           "Event": "SIGNAL_RECEIVED",
           "Interval": 0.0,
-          "Delay": 1.2,
+          "Delay": 1.6,
           "ParticleSystem": "Effect_Poison",
           "Offset": {
             "X": 0.0,
@@ -105248,7 +107332,7 @@
           "Type": "PlaySound",
           "Event": "SIGNAL_RECEIVED",
           "Interval": 0.0,
-          "Delay": 1.2,
+          "Delay": 1.6,
           "SoundEvent": "SFX_Env_Geyzer_Burst",
           "Location": "VolumeCenter",
           "Offset": {
@@ -105262,7 +107346,7 @@
           "Type": "ModifyTags",
           "Event": "SIGNAL_RECEIVED",
           "Interval": 0.0,
-          "Delay": 1.2,
+          "Delay": 1.6,
           "Entry": 1,
           "Operation": "Set",
           "TagKey": "Dmg",
@@ -105276,7 +107360,7 @@
           "Type": "ModifyTags",
           "Event": "SIGNAL_RECEIVED",
           "Interval": 0.0,
-          "Delay": 2.8,
+          "Delay": 3.2,
           "Entry": 1,
           "Operation": "Set",
           "TagKey": "Dmg",
@@ -105290,7 +107374,7 @@
           "Type": "ModifyTags",
           "Event": "SIGNAL_RECEIVED",
           "Interval": 0.0,
-          "Delay": 2.8,
+          "Delay": 3.2,
           "Entry": 1,
           "Operation": "Set",
           "TagKey": "Busy",
@@ -105411,10 +107495,31 @@
           "Center": "Volume"
         },
         {
+          "Type": "PlayVfx",
+          "Event": "SIGNAL_RECEIVED",
+          "Interval": 0.0,
+          "Delay": 0.0,
+          "ParticleSystem": "Dungeon_Goblin_Mace_Slam_Warning",
+          "Offset": {
+            "X": 0.0,
+            "Y": 0.1,
+            "Z": 0.0
+          },
+          "Anchor": "Volume",
+          "Scale": 2.244,
+          "Rotation": {
+            "X": 0.0,
+            "Y": 0.0,
+            "Z": 0.0
+          },
+          "Duration": 1.6,
+          "Entry": 1
+        },
+        {
           "Type": "ModifyTags",
           "Event": "SIGNAL_RECEIVED",
           "Interval": 0.0,
-          "Delay": 1.2,
+          "Delay": 1.6,
           "Entry": 1,
           "Operation": "Set",
           "TagKey": "Dmg",
@@ -105428,7 +107533,7 @@
           "Type": "ModifyTags",
           "Event": "SIGNAL_RECEIVED",
           "Interval": 0.0,
-          "Delay": 2.8,
+          "Delay": 3.2,
           "Entry": 1,
           "Operation": "Set",
           "TagKey": "Dmg",
@@ -105442,7 +107547,7 @@
           "Type": "ModifyTags",
           "Event": "SIGNAL_RECEIVED",
           "Interval": 0.0,
-          "Delay": 2.8,
+          "Delay": 3.2,
           "Entry": 1,
           "Operation": "Set",
           "TagKey": "Busy",
@@ -105563,10 +107668,31 @@
           "Center": "Volume"
         },
         {
+          "Type": "PlayVfx",
+          "Event": "SIGNAL_RECEIVED",
+          "Interval": 0.0,
+          "Delay": 0.0,
+          "ParticleSystem": "Dungeon_Goblin_Mace_Slam_Warning",
+          "Offset": {
+            "X": 0.0,
+            "Y": 0.1,
+            "Z": 0.0
+          },
+          "Anchor": "Volume",
+          "Scale": 2.244,
+          "Rotation": {
+            "X": 0.0,
+            "Y": 0.0,
+            "Z": 0.0
+          },
+          "Duration": 1.6,
+          "Entry": 1
+        },
+        {
           "Type": "ModifyTags",
           "Event": "SIGNAL_RECEIVED",
           "Interval": 0.0,
-          "Delay": 1.2,
+          "Delay": 1.6,
           "Entry": 1,
           "Operation": "Set",
           "TagKey": "Dmg",
@@ -105580,7 +107706,7 @@
           "Type": "ModifyTags",
           "Event": "SIGNAL_RECEIVED",
           "Interval": 0.0,
-          "Delay": 2.8,
+          "Delay": 3.2,
           "Entry": 1,
           "Operation": "Set",
           "TagKey": "Dmg",
@@ -105594,7 +107720,7 @@
           "Type": "ModifyTags",
           "Event": "SIGNAL_RECEIVED",
           "Interval": 0.0,
-          "Delay": 2.8,
+          "Delay": 3.2,
           "Entry": 1,
           "Operation": "Set",
           "TagKey": "Busy",
@@ -105719,6 +107845,27 @@
           "Event": "SIGNAL_RECEIVED",
           "Interval": 0.0,
           "Delay": 0.0,
+          "ParticleSystem": "Dungeon_Goblin_Mace_Slam_Warning",
+          "Offset": {
+            "X": 0.0,
+            "Y": 0.1,
+            "Z": 0.0
+          },
+          "Anchor": "Volume",
+          "Scale": 2.244,
+          "Rotation": {
+            "X": 0.0,
+            "Y": 0.0,
+            "Z": 0.0
+          },
+          "Duration": 1.6,
+          "Entry": 1
+        },
+        {
+          "Type": "PlayVfx",
+          "Event": "SIGNAL_RECEIVED",
+          "Interval": 0.0,
+          "Delay": 0.0,
           "ParticleSystem": "Goblin_Decorative_Steam",
           "Offset": {
             "X": -6.052622898861802,
@@ -105732,7 +107879,7 @@
             "Y": 0.0,
             "Z": 0.0
           },
-          "Duration": 1.2,
+          "Duration": 1.6,
           "Entry": 1
         },
         {
@@ -105753,7 +107900,7 @@
           "Type": "PlayVfx",
           "Event": "SIGNAL_RECEIVED",
           "Interval": 0.0,
-          "Delay": 1.2,
+          "Delay": 1.6,
           "ParticleSystem": "Dungeon_Goblin_Smoke_Pipe_Large",
           "Offset": {
             "X": -6.052622898861802,
@@ -105774,7 +107921,7 @@
           "Type": "PlayVfx",
           "Event": "SIGNAL_RECEIVED",
           "Interval": 0.0,
-          "Delay": 1.2,
+          "Delay": 1.6,
           "ParticleSystem": "Effect_Poison",
           "Offset": {
             "X": 0.0,
@@ -105795,7 +107942,7 @@
           "Type": "PlaySound",
           "Event": "SIGNAL_RECEIVED",
           "Interval": 0.0,
-          "Delay": 1.2,
+          "Delay": 1.6,
           "SoundEvent": "SFX_Env_Geyzer_Burst",
           "Location": "VolumeCenter",
           "Offset": {
@@ -105809,7 +107956,7 @@
           "Type": "ModifyTags",
           "Event": "SIGNAL_RECEIVED",
           "Interval": 0.0,
-          "Delay": 1.2,
+          "Delay": 1.6,
           "Entry": 1,
           "Operation": "Set",
           "TagKey": "Dmg",
@@ -105823,7 +107970,7 @@
           "Type": "ModifyTags",
           "Event": "SIGNAL_RECEIVED",
           "Interval": 0.0,
-          "Delay": 2.8,
+          "Delay": 3.2,
           "Entry": 1,
           "Operation": "Set",
           "TagKey": "Dmg",
@@ -105837,7 +107984,7 @@
           "Type": "ModifyTags",
           "Event": "SIGNAL_RECEIVED",
           "Interval": 0.0,
-          "Delay": 2.8,
+          "Delay": 3.2,
           "Entry": 1,
           "Operation": "Set",
           "TagKey": "Busy",
@@ -105958,10 +108105,31 @@
           "Center": "Volume"
         },
         {
+          "Type": "PlayVfx",
+          "Event": "SIGNAL_RECEIVED",
+          "Interval": 0.0,
+          "Delay": 0.0,
+          "ParticleSystem": "Dungeon_Goblin_Mace_Slam_Warning",
+          "Offset": {
+            "X": 0.0,
+            "Y": 0.1,
+            "Z": 0.0
+          },
+          "Anchor": "Volume",
+          "Scale": 2.244,
+          "Rotation": {
+            "X": 0.0,
+            "Y": 0.0,
+            "Z": 0.0
+          },
+          "Duration": 1.6,
+          "Entry": 1
+        },
+        {
           "Type": "ModifyTags",
           "Event": "SIGNAL_RECEIVED",
           "Interval": 0.0,
-          "Delay": 1.2,
+          "Delay": 1.6,
           "Entry": 1,
           "Operation": "Set",
           "TagKey": "Dmg",
@@ -105975,7 +108143,7 @@
           "Type": "ModifyTags",
           "Event": "SIGNAL_RECEIVED",
           "Interval": 0.0,
-          "Delay": 2.8,
+          "Delay": 3.2,
           "Entry": 1,
           "Operation": "Set",
           "TagKey": "Dmg",
@@ -105989,7 +108157,7 @@
           "Type": "ModifyTags",
           "Event": "SIGNAL_RECEIVED",
           "Interval": 0.0,
-          "Delay": 2.8,
+          "Delay": 3.2,
           "Entry": 1,
           "Operation": "Set",
           "TagKey": "Busy",
@@ -106110,10 +108278,31 @@
           "Center": "Volume"
         },
         {
+          "Type": "PlayVfx",
+          "Event": "SIGNAL_RECEIVED",
+          "Interval": 0.0,
+          "Delay": 0.0,
+          "ParticleSystem": "Dungeon_Goblin_Mace_Slam_Warning",
+          "Offset": {
+            "X": 0.0,
+            "Y": 0.1,
+            "Z": 0.0
+          },
+          "Anchor": "Volume",
+          "Scale": 2.244,
+          "Rotation": {
+            "X": 0.0,
+            "Y": 0.0,
+            "Z": 0.0
+          },
+          "Duration": 1.6,
+          "Entry": 1
+        },
+        {
           "Type": "ModifyTags",
           "Event": "SIGNAL_RECEIVED",
           "Interval": 0.0,
-          "Delay": 1.2,
+          "Delay": 1.6,
           "Entry": 1,
           "Operation": "Set",
           "TagKey": "Dmg",
@@ -106127,7 +108316,7 @@
           "Type": "ModifyTags",
           "Event": "SIGNAL_RECEIVED",
           "Interval": 0.0,
-          "Delay": 2.8,
+          "Delay": 3.2,
           "Entry": 1,
           "Operation": "Set",
           "TagKey": "Dmg",
@@ -106141,7 +108330,7 @@
           "Type": "ModifyTags",
           "Event": "SIGNAL_RECEIVED",
           "Interval": 0.0,
-          "Delay": 2.8,
+          "Delay": 3.2,
           "Entry": 1,
           "Operation": "Set",
           "TagKey": "Busy",
@@ -106266,6 +108455,27 @@
           "Event": "SIGNAL_RECEIVED",
           "Interval": 0.0,
           "Delay": 0.0,
+          "ParticleSystem": "Dungeon_Goblin_Mace_Slam_Warning",
+          "Offset": {
+            "X": 0.0,
+            "Y": 0.1,
+            "Z": 0.0
+          },
+          "Anchor": "Volume",
+          "Scale": 2.244,
+          "Rotation": {
+            "X": 0.0,
+            "Y": 0.0,
+            "Z": 0.0
+          },
+          "Duration": 1.6,
+          "Entry": 1
+        },
+        {
+          "Type": "PlayVfx",
+          "Event": "SIGNAL_RECEIVED",
+          "Interval": 0.0,
+          "Delay": 0.0,
           "ParticleSystem": "Goblin_Decorative_Steam",
           "Offset": {
             "X": -7.135386072292992,
@@ -106279,7 +108489,7 @@
             "Y": 0.0,
             "Z": 0.0
           },
-          "Duration": 1.2,
+          "Duration": 1.6,
           "Entry": 1
         },
         {
@@ -106300,7 +108510,7 @@
           "Type": "PlayVfx",
           "Event": "SIGNAL_RECEIVED",
           "Interval": 0.0,
-          "Delay": 1.2,
+          "Delay": 1.6,
           "ParticleSystem": "Dungeon_Goblin_Smoke_Pipe_Large",
           "Offset": {
             "X": -7.135386072292992,
@@ -106321,7 +108531,7 @@
           "Type": "PlayVfx",
           "Event": "SIGNAL_RECEIVED",
           "Interval": 0.0,
-          "Delay": 1.2,
+          "Delay": 1.6,
           "ParticleSystem": "Effect_Poison",
           "Offset": {
             "X": 0.0,
@@ -106342,7 +108552,7 @@
           "Type": "PlaySound",
           "Event": "SIGNAL_RECEIVED",
           "Interval": 0.0,
-          "Delay": 1.2,
+          "Delay": 1.6,
           "SoundEvent": "SFX_Env_Geyzer_Burst",
           "Location": "VolumeCenter",
           "Offset": {
@@ -106356,7 +108566,7 @@
           "Type": "ModifyTags",
           "Event": "SIGNAL_RECEIVED",
           "Interval": 0.0,
-          "Delay": 1.2,
+          "Delay": 1.6,
           "Entry": 1,
           "Operation": "Set",
           "TagKey": "Dmg",
@@ -106370,7 +108580,7 @@
           "Type": "ModifyTags",
           "Event": "SIGNAL_RECEIVED",
           "Interval": 0.0,
-          "Delay": 2.8,
+          "Delay": 3.2,
           "Entry": 1,
           "Operation": "Set",
           "TagKey": "Dmg",
@@ -106384,7 +108594,7 @@
           "Type": "ModifyTags",
           "Event": "SIGNAL_RECEIVED",
           "Interval": 0.0,
-          "Delay": 2.8,
+          "Delay": 3.2,
           "Entry": 1,
           "Operation": "Set",
           "TagKey": "Busy",
@@ -106505,10 +108715,31 @@
           "Center": "Volume"
         },
         {
+          "Type": "PlayVfx",
+          "Event": "SIGNAL_RECEIVED",
+          "Interval": 0.0,
+          "Delay": 0.0,
+          "ParticleSystem": "Dungeon_Goblin_Mace_Slam_Warning",
+          "Offset": {
+            "X": 0.0,
+            "Y": 0.1,
+            "Z": 0.0
+          },
+          "Anchor": "Volume",
+          "Scale": 2.244,
+          "Rotation": {
+            "X": 0.0,
+            "Y": 0.0,
+            "Z": 0.0
+          },
+          "Duration": 1.6,
+          "Entry": 1
+        },
+        {
           "Type": "ModifyTags",
           "Event": "SIGNAL_RECEIVED",
           "Interval": 0.0,
-          "Delay": 1.2,
+          "Delay": 1.6,
           "Entry": 1,
           "Operation": "Set",
           "TagKey": "Dmg",
@@ -106522,7 +108753,7 @@
           "Type": "ModifyTags",
           "Event": "SIGNAL_RECEIVED",
           "Interval": 0.0,
-          "Delay": 2.8,
+          "Delay": 3.2,
           "Entry": 1,
           "Operation": "Set",
           "TagKey": "Dmg",
@@ -106536,7 +108767,7 @@
           "Type": "ModifyTags",
           "Event": "SIGNAL_RECEIVED",
           "Interval": 0.0,
-          "Delay": 2.8,
+          "Delay": 3.2,
           "Entry": 1,
           "Operation": "Set",
           "TagKey": "Busy",
@@ -106657,10 +108888,31 @@
           "Center": "Volume"
         },
         {
+          "Type": "PlayVfx",
+          "Event": "SIGNAL_RECEIVED",
+          "Interval": 0.0,
+          "Delay": 0.0,
+          "ParticleSystem": "Dungeon_Goblin_Mace_Slam_Warning",
+          "Offset": {
+            "X": 0.0,
+            "Y": 0.1,
+            "Z": 0.0
+          },
+          "Anchor": "Volume",
+          "Scale": 2.244,
+          "Rotation": {
+            "X": 0.0,
+            "Y": 0.0,
+            "Z": 0.0
+          },
+          "Duration": 1.6,
+          "Entry": 1
+        },
+        {
           "Type": "ModifyTags",
           "Event": "SIGNAL_RECEIVED",
           "Interval": 0.0,
-          "Delay": 1.2,
+          "Delay": 1.6,
           "Entry": 1,
           "Operation": "Set",
           "TagKey": "Dmg",
@@ -106674,7 +108926,7 @@
           "Type": "ModifyTags",
           "Event": "SIGNAL_RECEIVED",
           "Interval": 0.0,
-          "Delay": 2.8,
+          "Delay": 3.2,
           "Entry": 1,
           "Operation": "Set",
           "TagKey": "Dmg",
@@ -106688,7 +108940,7 @@
           "Type": "ModifyTags",
           "Event": "SIGNAL_RECEIVED",
           "Interval": 0.0,
-          "Delay": 2.8,
+          "Delay": 3.2,
           "Entry": 1,
           "Operation": "Set",
           "TagKey": "Busy",
@@ -106813,6 +109065,27 @@
           "Event": "SIGNAL_RECEIVED",
           "Interval": 0.0,
           "Delay": 0.0,
+          "ParticleSystem": "Dungeon_Goblin_Mace_Slam_Warning",
+          "Offset": {
+            "X": 0.0,
+            "Y": 0.1,
+            "Z": 0.0
+          },
+          "Anchor": "Volume",
+          "Scale": 2.244,
+          "Rotation": {
+            "X": 0.0,
+            "Y": 0.0,
+            "Z": 0.0
+          },
+          "Duration": 1.6,
+          "Entry": 1
+        },
+        {
+          "Type": "PlayVfx",
+          "Event": "SIGNAL_RECEIVED",
+          "Interval": 0.0,
+          "Delay": 0.0,
           "ParticleSystem": "Goblin_Decorative_Steam",
           "Offset": {
             "X": -7.135386072292992,
@@ -106826,7 +109099,7 @@
             "Y": 0.0,
             "Z": 0.0
           },
-          "Duration": 1.2,
+          "Duration": 1.6,
           "Entry": 1
         },
         {
@@ -106847,7 +109120,7 @@
           "Type": "PlayVfx",
           "Event": "SIGNAL_RECEIVED",
           "Interval": 0.0,
-          "Delay": 1.2,
+          "Delay": 1.6,
           "ParticleSystem": "Dungeon_Goblin_Smoke_Pipe_Large",
           "Offset": {
             "X": -7.135386072292992,
@@ -106868,7 +109141,7 @@
           "Type": "PlayVfx",
           "Event": "SIGNAL_RECEIVED",
           "Interval": 0.0,
-          "Delay": 1.2,
+          "Delay": 1.6,
           "ParticleSystem": "Effect_Poison",
           "Offset": {
             "X": 0.0,
@@ -106889,7 +109162,7 @@
           "Type": "PlaySound",
           "Event": "SIGNAL_RECEIVED",
           "Interval": 0.0,
-          "Delay": 1.2,
+          "Delay": 1.6,
           "SoundEvent": "SFX_Env_Geyzer_Burst",
           "Location": "VolumeCenter",
           "Offset": {
@@ -106903,7 +109176,7 @@
           "Type": "ModifyTags",
           "Event": "SIGNAL_RECEIVED",
           "Interval": 0.0,
-          "Delay": 1.2,
+          "Delay": 1.6,
           "Entry": 1,
           "Operation": "Set",
           "TagKey": "Dmg",
@@ -106917,7 +109190,7 @@
           "Type": "ModifyTags",
           "Event": "SIGNAL_RECEIVED",
           "Interval": 0.0,
-          "Delay": 2.8,
+          "Delay": 3.2,
           "Entry": 1,
           "Operation": "Set",
           "TagKey": "Dmg",
@@ -106931,7 +109204,7 @@
           "Type": "ModifyTags",
           "Event": "SIGNAL_RECEIVED",
           "Interval": 0.0,
-          "Delay": 2.8,
+          "Delay": 3.2,
           "Entry": 1,
           "Operation": "Set",
           "TagKey": "Busy",
@@ -107052,10 +109325,31 @@
           "Center": "Volume"
         },
         {
+          "Type": "PlayVfx",
+          "Event": "SIGNAL_RECEIVED",
+          "Interval": 0.0,
+          "Delay": 0.0,
+          "ParticleSystem": "Dungeon_Goblin_Mace_Slam_Warning",
+          "Offset": {
+            "X": 0.0,
+            "Y": 0.1,
+            "Z": 0.0
+          },
+          "Anchor": "Volume",
+          "Scale": 2.244,
+          "Rotation": {
+            "X": 0.0,
+            "Y": 0.0,
+            "Z": 0.0
+          },
+          "Duration": 1.6,
+          "Entry": 1
+        },
+        {
           "Type": "ModifyTags",
           "Event": "SIGNAL_RECEIVED",
           "Interval": 0.0,
-          "Delay": 1.2,
+          "Delay": 1.6,
           "Entry": 1,
           "Operation": "Set",
           "TagKey": "Dmg",
@@ -107069,7 +109363,7 @@
           "Type": "ModifyTags",
           "Event": "SIGNAL_RECEIVED",
           "Interval": 0.0,
-          "Delay": 2.8,
+          "Delay": 3.2,
           "Entry": 1,
           "Operation": "Set",
           "TagKey": "Dmg",
@@ -107083,7 +109377,7 @@
           "Type": "ModifyTags",
           "Event": "SIGNAL_RECEIVED",
           "Interval": 0.0,
-          "Delay": 2.8,
+          "Delay": 3.2,
           "Entry": 1,
           "Operation": "Set",
           "TagKey": "Busy",
@@ -107204,10 +109498,31 @@
           "Center": "Volume"
         },
         {
+          "Type": "PlayVfx",
+          "Event": "SIGNAL_RECEIVED",
+          "Interval": 0.0,
+          "Delay": 0.0,
+          "ParticleSystem": "Dungeon_Goblin_Mace_Slam_Warning",
+          "Offset": {
+            "X": 0.0,
+            "Y": 0.1,
+            "Z": 0.0
+          },
+          "Anchor": "Volume",
+          "Scale": 2.244,
+          "Rotation": {
+            "X": 0.0,
+            "Y": 0.0,
+            "Z": 0.0
+          },
+          "Duration": 1.6,
+          "Entry": 1
+        },
+        {
           "Type": "ModifyTags",
           "Event": "SIGNAL_RECEIVED",
           "Interval": 0.0,
-          "Delay": 1.2,
+          "Delay": 1.6,
           "Entry": 1,
           "Operation": "Set",
           "TagKey": "Dmg",
@@ -107221,7 +109536,7 @@
           "Type": "ModifyTags",
           "Event": "SIGNAL_RECEIVED",
           "Interval": 0.0,
-          "Delay": 2.8,
+          "Delay": 3.2,
           "Entry": 1,
           "Operation": "Set",
           "TagKey": "Dmg",
@@ -107235,7 +109550,7 @@
           "Type": "ModifyTags",
           "Event": "SIGNAL_RECEIVED",
           "Interval": 0.0,
-          "Delay": 2.8,
+          "Delay": 3.2,
           "Entry": 1,
           "Operation": "Set",
           "TagKey": "Busy",
@@ -107360,6 +109675,27 @@
           "Event": "SIGNAL_RECEIVED",
           "Interval": 0.0,
           "Delay": 0.0,
+          "ParticleSystem": "Dungeon_Goblin_Mace_Slam_Warning",
+          "Offset": {
+            "X": 0.0,
+            "Y": 0.1,
+            "Z": 0.0
+          },
+          "Anchor": "Volume",
+          "Scale": 2.244,
+          "Rotation": {
+            "X": 0.0,
+            "Y": 0.0,
+            "Z": 0.0
+          },
+          "Duration": 1.6,
+          "Entry": 1
+        },
+        {
+          "Type": "PlayVfx",
+          "Event": "SIGNAL_RECEIVED",
+          "Interval": 0.0,
+          "Delay": 0.0,
           "ParticleSystem": "Goblin_Decorative_Steam",
           "Offset": {
             "X": -6.052622898861802,
@@ -107373,7 +109709,7 @@
             "Y": 0.0,
             "Z": 0.0
           },
-          "Duration": 1.2,
+          "Duration": 1.6,
           "Entry": 1
         },
         {
@@ -107394,7 +109730,7 @@
           "Type": "PlayVfx",
           "Event": "SIGNAL_RECEIVED",
           "Interval": 0.0,
-          "Delay": 1.2,
+          "Delay": 1.6,
           "ParticleSystem": "Dungeon_Goblin_Smoke_Pipe_Large",
           "Offset": {
             "X": -6.052622898861802,
@@ -107415,7 +109751,7 @@
           "Type": "PlayVfx",
           "Event": "SIGNAL_RECEIVED",
           "Interval": 0.0,
-          "Delay": 1.2,
+          "Delay": 1.6,
           "ParticleSystem": "Effect_Poison",
           "Offset": {
             "X": 0.0,
@@ -107436,7 +109772,7 @@
           "Type": "PlaySound",
           "Event": "SIGNAL_RECEIVED",
           "Interval": 0.0,
-          "Delay": 1.2,
+          "Delay": 1.6,
           "SoundEvent": "SFX_Env_Geyzer_Burst",
           "Location": "VolumeCenter",
           "Offset": {
@@ -107450,7 +109786,7 @@
           "Type": "ModifyTags",
           "Event": "SIGNAL_RECEIVED",
           "Interval": 0.0,
-          "Delay": 1.2,
+          "Delay": 1.6,
           "Entry": 1,
           "Operation": "Set",
           "TagKey": "Dmg",
@@ -107464,7 +109800,7 @@
           "Type": "ModifyTags",
           "Event": "SIGNAL_RECEIVED",
           "Interval": 0.0,
-          "Delay": 2.8,
+          "Delay": 3.2,
           "Entry": 1,
           "Operation": "Set",
           "TagKey": "Dmg",
@@ -107478,7 +109814,7 @@
           "Type": "ModifyTags",
           "Event": "SIGNAL_RECEIVED",
           "Interval": 0.0,
-          "Delay": 2.8,
+          "Delay": 3.2,
           "Entry": 1,
           "Operation": "Set",
           "TagKey": "Busy",
@@ -107599,10 +109935,31 @@
           "Center": "Volume"
         },
         {
+          "Type": "PlayVfx",
+          "Event": "SIGNAL_RECEIVED",
+          "Interval": 0.0,
+          "Delay": 0.0,
+          "ParticleSystem": "Dungeon_Goblin_Mace_Slam_Warning",
+          "Offset": {
+            "X": 0.0,
+            "Y": 0.1,
+            "Z": 0.0
+          },
+          "Anchor": "Volume",
+          "Scale": 2.244,
+          "Rotation": {
+            "X": 0.0,
+            "Y": 0.0,
+            "Z": 0.0
+          },
+          "Duration": 1.6,
+          "Entry": 1
+        },
+        {
           "Type": "ModifyTags",
           "Event": "SIGNAL_RECEIVED",
           "Interval": 0.0,
-          "Delay": 1.2,
+          "Delay": 1.6,
           "Entry": 1,
           "Operation": "Set",
           "TagKey": "Dmg",
@@ -107616,7 +109973,7 @@
           "Type": "ModifyTags",
           "Event": "SIGNAL_RECEIVED",
           "Interval": 0.0,
-          "Delay": 2.8,
+          "Delay": 3.2,
           "Entry": 1,
           "Operation": "Set",
           "TagKey": "Dmg",
@@ -107630,7 +109987,7 @@
           "Type": "ModifyTags",
           "Event": "SIGNAL_RECEIVED",
           "Interval": 0.0,
-          "Delay": 2.8,
+          "Delay": 3.2,
           "Entry": 1,
           "Operation": "Set",
           "TagKey": "Busy",
@@ -107751,10 +110108,31 @@
           "Center": "Volume"
         },
         {
+          "Type": "PlayVfx",
+          "Event": "SIGNAL_RECEIVED",
+          "Interval": 0.0,
+          "Delay": 0.0,
+          "ParticleSystem": "Dungeon_Goblin_Mace_Slam_Warning",
+          "Offset": {
+            "X": 0.0,
+            "Y": 0.1,
+            "Z": 0.0
+          },
+          "Anchor": "Volume",
+          "Scale": 2.244,
+          "Rotation": {
+            "X": 0.0,
+            "Y": 0.0,
+            "Z": 0.0
+          },
+          "Duration": 1.6,
+          "Entry": 1
+        },
+        {
           "Type": "ModifyTags",
           "Event": "SIGNAL_RECEIVED",
           "Interval": 0.0,
-          "Delay": 1.2,
+          "Delay": 1.6,
           "Entry": 1,
           "Operation": "Set",
           "TagKey": "Dmg",
@@ -107768,7 +110146,7 @@
           "Type": "ModifyTags",
           "Event": "SIGNAL_RECEIVED",
           "Interval": 0.0,
-          "Delay": 2.8,
+          "Delay": 3.2,
           "Entry": 1,
           "Operation": "Set",
           "TagKey": "Dmg",
@@ -107782,7 +110160,7 @@
           "Type": "ModifyTags",
           "Event": "SIGNAL_RECEIVED",
           "Interval": 0.0,
-          "Delay": 2.8,
+          "Delay": 3.2,
           "Entry": 1,
           "Operation": "Set",
           "TagKey": "Busy",
@@ -107907,6 +110285,27 @@
           "Event": "SIGNAL_RECEIVED",
           "Interval": 0.0,
           "Delay": 0.0,
+          "ParticleSystem": "Dungeon_Goblin_Mace_Slam_Warning",
+          "Offset": {
+            "X": 0.0,
+            "Y": 0.1,
+            "Z": 0.0
+          },
+          "Anchor": "Volume",
+          "Scale": 2.244,
+          "Rotation": {
+            "X": 0.0,
+            "Y": 0.0,
+            "Z": 0.0
+          },
+          "Duration": 1.6,
+          "Entry": 1
+        },
+        {
+          "Type": "PlayVfx",
+          "Event": "SIGNAL_RECEIVED",
+          "Interval": 0.0,
+          "Delay": 0.0,
           "ParticleSystem": "Goblin_Decorative_Steam",
           "Offset": {
             "X": -6.284609690826528,
@@ -107920,7 +110319,7 @@
             "Y": 0.0,
             "Z": 0.0
           },
-          "Duration": 1.2,
+          "Duration": 1.6,
           "Entry": 1
         },
         {
@@ -107941,7 +110340,7 @@
           "Type": "PlayVfx",
           "Event": "SIGNAL_RECEIVED",
           "Interval": 0.0,
-          "Delay": 1.2,
+          "Delay": 1.6,
           "ParticleSystem": "Dungeon_Goblin_Smoke_Pipe_Large",
           "Offset": {
             "X": -6.284609690826528,
@@ -107962,7 +110361,7 @@
           "Type": "PlayVfx",
           "Event": "SIGNAL_RECEIVED",
           "Interval": 0.0,
-          "Delay": 1.2,
+          "Delay": 1.6,
           "ParticleSystem": "Effect_Poison",
           "Offset": {
             "X": 0.0,
@@ -107983,7 +110382,7 @@
           "Type": "PlaySound",
           "Event": "SIGNAL_RECEIVED",
           "Interval": 0.0,
-          "Delay": 1.2,
+          "Delay": 1.6,
           "SoundEvent": "SFX_Env_Geyzer_Burst",
           "Location": "VolumeCenter",
           "Offset": {
@@ -107997,7 +110396,7 @@
           "Type": "ModifyTags",
           "Event": "SIGNAL_RECEIVED",
           "Interval": 0.0,
-          "Delay": 1.2,
+          "Delay": 1.6,
           "Entry": 1,
           "Operation": "Set",
           "TagKey": "Dmg",
@@ -108011,7 +110410,7 @@
           "Type": "ModifyTags",
           "Event": "SIGNAL_RECEIVED",
           "Interval": 0.0,
-          "Delay": 2.8,
+          "Delay": 3.2,
           "Entry": 1,
           "Operation": "Set",
           "TagKey": "Dmg",
@@ -108025,7 +110424,7 @@
           "Type": "ModifyTags",
           "Event": "SIGNAL_RECEIVED",
           "Interval": 0.0,
-          "Delay": 2.8,
+          "Delay": 3.2,
           "Entry": 1,
           "Operation": "Set",
           "TagKey": "Busy",
@@ -108146,10 +110545,31 @@
           "Center": "Volume"
         },
         {
+          "Type": "PlayVfx",
+          "Event": "SIGNAL_RECEIVED",
+          "Interval": 0.0,
+          "Delay": 0.0,
+          "ParticleSystem": "Dungeon_Goblin_Mace_Slam_Warning",
+          "Offset": {
+            "X": 0.0,
+            "Y": 0.1,
+            "Z": 0.0
+          },
+          "Anchor": "Volume",
+          "Scale": 2.244,
+          "Rotation": {
+            "X": 0.0,
+            "Y": 0.0,
+            "Z": 0.0
+          },
+          "Duration": 1.6,
+          "Entry": 1
+        },
+        {
           "Type": "ModifyTags",
           "Event": "SIGNAL_RECEIVED",
           "Interval": 0.0,
-          "Delay": 1.2,
+          "Delay": 1.6,
           "Entry": 1,
           "Operation": "Set",
           "TagKey": "Dmg",
@@ -108163,7 +110583,7 @@
           "Type": "ModifyTags",
           "Event": "SIGNAL_RECEIVED",
           "Interval": 0.0,
-          "Delay": 2.8,
+          "Delay": 3.2,
           "Entry": 1,
           "Operation": "Set",
           "TagKey": "Dmg",
@@ -108177,7 +110597,7 @@
           "Type": "ModifyTags",
           "Event": "SIGNAL_RECEIVED",
           "Interval": 0.0,
-          "Delay": 2.8,
+          "Delay": 3.2,
           "Entry": 1,
           "Operation": "Set",
           "TagKey": "Busy",
@@ -108298,10 +110718,31 @@
           "Center": "Volume"
         },
         {
+          "Type": "PlayVfx",
+          "Event": "SIGNAL_RECEIVED",
+          "Interval": 0.0,
+          "Delay": 0.0,
+          "ParticleSystem": "Dungeon_Goblin_Mace_Slam_Warning",
+          "Offset": {
+            "X": 0.0,
+            "Y": 0.1,
+            "Z": 0.0
+          },
+          "Anchor": "Volume",
+          "Scale": 2.244,
+          "Rotation": {
+            "X": 0.0,
+            "Y": 0.0,
+            "Z": 0.0
+          },
+          "Duration": 1.6,
+          "Entry": 1
+        },
+        {
           "Type": "ModifyTags",
           "Event": "SIGNAL_RECEIVED",
           "Interval": 0.0,
-          "Delay": 1.2,
+          "Delay": 1.6,
           "Entry": 1,
           "Operation": "Set",
           "TagKey": "Dmg",
@@ -108315,7 +110756,7 @@
           "Type": "ModifyTags",
           "Event": "SIGNAL_RECEIVED",
           "Interval": 0.0,
-          "Delay": 2.8,
+          "Delay": 3.2,
           "Entry": 1,
           "Operation": "Set",
           "TagKey": "Dmg",
@@ -108329,7 +110770,7 @@
           "Type": "ModifyTags",
           "Event": "SIGNAL_RECEIVED",
           "Interval": 0.0,
-          "Delay": 2.8,
+          "Delay": 3.2,
           "Entry": 1,
           "Operation": "Set",
           "TagKey": "Busy",
@@ -108454,6 +110895,27 @@
           "Event": "SIGNAL_RECEIVED",
           "Interval": 0.0,
           "Delay": 0.0,
+          "ParticleSystem": "Dungeon_Goblin_Mace_Slam_Warning",
+          "Offset": {
+            "X": 0.0,
+            "Y": 0.1,
+            "Z": 0.0
+          },
+          "Anchor": "Volume",
+          "Scale": 2.244,
+          "Rotation": {
+            "X": 0.0,
+            "Y": 0.0,
+            "Z": 0.0
+          },
+          "Duration": 1.6,
+          "Entry": 1
+        },
+        {
+          "Type": "PlayVfx",
+          "Event": "SIGNAL_RECEIVED",
+          "Interval": 0.0,
+          "Delay": 0.0,
           "ParticleSystem": "Goblin_Decorative_Steam",
           "Offset": {
             "X": -4.885066634855473,
@@ -108467,7 +110929,7 @@
             "Y": 0.0,
             "Z": 0.0
           },
-          "Duration": 1.2,
+          "Duration": 1.6,
           "Entry": 1
         },
         {
@@ -108488,7 +110950,7 @@
           "Type": "PlayVfx",
           "Event": "SIGNAL_RECEIVED",
           "Interval": 0.0,
-          "Delay": 1.2,
+          "Delay": 1.6,
           "ParticleSystem": "Dungeon_Goblin_Smoke_Pipe_Large",
           "Offset": {
             "X": -4.885066634855473,
@@ -108509,7 +110971,7 @@
           "Type": "PlayVfx",
           "Event": "SIGNAL_RECEIVED",
           "Interval": 0.0,
-          "Delay": 1.2,
+          "Delay": 1.6,
           "ParticleSystem": "Effect_Poison",
           "Offset": {
             "X": 0.0,
@@ -108530,7 +110992,7 @@
           "Type": "PlaySound",
           "Event": "SIGNAL_RECEIVED",
           "Interval": 0.0,
-          "Delay": 1.2,
+          "Delay": 1.6,
           "SoundEvent": "SFX_Env_Geyzer_Burst",
           "Location": "VolumeCenter",
           "Offset": {
@@ -108544,7 +111006,7 @@
           "Type": "ModifyTags",
           "Event": "SIGNAL_RECEIVED",
           "Interval": 0.0,
-          "Delay": 1.2,
+          "Delay": 1.6,
           "Entry": 1,
           "Operation": "Set",
           "TagKey": "Dmg",
@@ -108558,7 +111020,7 @@
           "Type": "ModifyTags",
           "Event": "SIGNAL_RECEIVED",
           "Interval": 0.0,
-          "Delay": 2.8,
+          "Delay": 3.2,
           "Entry": 1,
           "Operation": "Set",
           "TagKey": "Dmg",
@@ -108572,7 +111034,7 @@
           "Type": "ModifyTags",
           "Event": "SIGNAL_RECEIVED",
           "Interval": 0.0,
-          "Delay": 2.8,
+          "Delay": 3.2,
           "Entry": 1,
           "Operation": "Set",
           "TagKey": "Busy",
@@ -108693,10 +111155,31 @@
           "Center": "Volume"
         },
         {
+          "Type": "PlayVfx",
+          "Event": "SIGNAL_RECEIVED",
+          "Interval": 0.0,
+          "Delay": 0.0,
+          "ParticleSystem": "Dungeon_Goblin_Mace_Slam_Warning",
+          "Offset": {
+            "X": 0.0,
+            "Y": 0.1,
+            "Z": 0.0
+          },
+          "Anchor": "Volume",
+          "Scale": 2.244,
+          "Rotation": {
+            "X": 0.0,
+            "Y": 0.0,
+            "Z": 0.0
+          },
+          "Duration": 1.6,
+          "Entry": 1
+        },
+        {
           "Type": "ModifyTags",
           "Event": "SIGNAL_RECEIVED",
           "Interval": 0.0,
-          "Delay": 1.2,
+          "Delay": 1.6,
           "Entry": 1,
           "Operation": "Set",
           "TagKey": "Dmg",
@@ -108710,7 +111193,7 @@
           "Type": "ModifyTags",
           "Event": "SIGNAL_RECEIVED",
           "Interval": 0.0,
-          "Delay": 2.8,
+          "Delay": 3.2,
           "Entry": 1,
           "Operation": "Set",
           "TagKey": "Dmg",
@@ -108724,7 +111207,7 @@
           "Type": "ModifyTags",
           "Event": "SIGNAL_RECEIVED",
           "Interval": 0.0,
-          "Delay": 2.8,
+          "Delay": 3.2,
           "Entry": 1,
           "Operation": "Set",
           "TagKey": "Busy",
@@ -108845,10 +111328,31 @@
           "Center": "Volume"
         },
         {
+          "Type": "PlayVfx",
+          "Event": "SIGNAL_RECEIVED",
+          "Interval": 0.0,
+          "Delay": 0.0,
+          "ParticleSystem": "Dungeon_Goblin_Mace_Slam_Warning",
+          "Offset": {
+            "X": 0.0,
+            "Y": 0.1,
+            "Z": 0.0
+          },
+          "Anchor": "Volume",
+          "Scale": 2.244,
+          "Rotation": {
+            "X": 0.0,
+            "Y": 0.0,
+            "Z": 0.0
+          },
+          "Duration": 1.6,
+          "Entry": 1
+        },
+        {
           "Type": "ModifyTags",
           "Event": "SIGNAL_RECEIVED",
           "Interval": 0.0,
-          "Delay": 1.2,
+          "Delay": 1.6,
           "Entry": 1,
           "Operation": "Set",
           "TagKey": "Dmg",
@@ -108862,7 +111366,7 @@
           "Type": "ModifyTags",
           "Event": "SIGNAL_RECEIVED",
           "Interval": 0.0,
-          "Delay": 2.8,
+          "Delay": 3.2,
           "Entry": 1,
           "Operation": "Set",
           "TagKey": "Dmg",
@@ -108876,7 +111380,7 @@
           "Type": "ModifyTags",
           "Event": "SIGNAL_RECEIVED",
           "Interval": 0.0,
-          "Delay": 2.8,
+          "Delay": 3.2,
           "Entry": 1,
           "Operation": "Set",
           "TagKey": "Busy",
@@ -109001,6 +111505,27 @@
           "Event": "SIGNAL_RECEIVED",
           "Interval": 0.0,
           "Delay": 0.0,
+          "ParticleSystem": "Dungeon_Goblin_Mace_Slam_Warning",
+          "Offset": {
+            "X": 0.0,
+            "Y": 0.1,
+            "Z": 0.0
+          },
+          "Anchor": "Volume",
+          "Scale": 2.244,
+          "Rotation": {
+            "X": 0.0,
+            "Y": 0.0,
+            "Z": 0.0
+          },
+          "Duration": 1.6,
+          "Entry": 1
+        },
+        {
+          "Type": "PlayVfx",
+          "Event": "SIGNAL_RECEIVED",
+          "Interval": 0.0,
+          "Delay": 0.0,
           "ParticleSystem": "Goblin_Decorative_Steam",
           "Offset": {
             "X": -3.9269026324769456,
@@ -109014,7 +111539,7 @@
             "Y": 0.0,
             "Z": 0.0
           },
-          "Duration": 1.2,
+          "Duration": 1.6,
           "Entry": 1
         },
         {
@@ -109035,7 +111560,7 @@
           "Type": "PlayVfx",
           "Event": "SIGNAL_RECEIVED",
           "Interval": 0.0,
-          "Delay": 1.2,
+          "Delay": 1.6,
           "ParticleSystem": "Dungeon_Goblin_Smoke_Pipe_Large",
           "Offset": {
             "X": -3.9269026324769456,
@@ -109056,7 +111581,7 @@
           "Type": "PlayVfx",
           "Event": "SIGNAL_RECEIVED",
           "Interval": 0.0,
-          "Delay": 1.2,
+          "Delay": 1.6,
           "ParticleSystem": "Effect_Poison",
           "Offset": {
             "X": 0.0,
@@ -109077,7 +111602,7 @@
           "Type": "PlaySound",
           "Event": "SIGNAL_RECEIVED",
           "Interval": 0.0,
-          "Delay": 1.2,
+          "Delay": 1.6,
           "SoundEvent": "SFX_Env_Geyzer_Burst",
           "Location": "VolumeCenter",
           "Offset": {
@@ -109091,7 +111616,7 @@
           "Type": "ModifyTags",
           "Event": "SIGNAL_RECEIVED",
           "Interval": 0.0,
-          "Delay": 1.2,
+          "Delay": 1.6,
           "Entry": 1,
           "Operation": "Set",
           "TagKey": "Dmg",
@@ -109105,7 +111630,7 @@
           "Type": "ModifyTags",
           "Event": "SIGNAL_RECEIVED",
           "Interval": 0.0,
-          "Delay": 2.8,
+          "Delay": 3.2,
           "Entry": 1,
           "Operation": "Set",
           "TagKey": "Dmg",
@@ -109119,7 +111644,7 @@
           "Type": "ModifyTags",
           "Event": "SIGNAL_RECEIVED",
           "Interval": 0.0,
-          "Delay": 2.8,
+          "Delay": 3.2,
           "Entry": 1,
           "Operation": "Set",
           "TagKey": "Busy",
@@ -109240,10 +111765,31 @@
           "Center": "Volume"
         },
         {
+          "Type": "PlayVfx",
+          "Event": "SIGNAL_RECEIVED",
+          "Interval": 0.0,
+          "Delay": 0.0,
+          "ParticleSystem": "Dungeon_Goblin_Mace_Slam_Warning",
+          "Offset": {
+            "X": 0.0,
+            "Y": 0.1,
+            "Z": 0.0
+          },
+          "Anchor": "Volume",
+          "Scale": 2.244,
+          "Rotation": {
+            "X": 0.0,
+            "Y": 0.0,
+            "Z": 0.0
+          },
+          "Duration": 1.6,
+          "Entry": 1
+        },
+        {
           "Type": "ModifyTags",
           "Event": "SIGNAL_RECEIVED",
           "Interval": 0.0,
-          "Delay": 1.2,
+          "Delay": 1.6,
           "Entry": 1,
           "Operation": "Set",
           "TagKey": "Dmg",
@@ -109257,7 +111803,7 @@
           "Type": "ModifyTags",
           "Event": "SIGNAL_RECEIVED",
           "Interval": 0.0,
-          "Delay": 2.8,
+          "Delay": 3.2,
           "Entry": 1,
           "Operation": "Set",
           "TagKey": "Dmg",
@@ -109271,7 +111817,7 @@
           "Type": "ModifyTags",
           "Event": "SIGNAL_RECEIVED",
           "Interval": 0.0,
-          "Delay": 2.8,
+          "Delay": 3.2,
           "Entry": 1,
           "Operation": "Set",
           "TagKey": "Busy",
@@ -109392,10 +111938,31 @@
           "Center": "Volume"
         },
         {
+          "Type": "PlayVfx",
+          "Event": "SIGNAL_RECEIVED",
+          "Interval": 0.0,
+          "Delay": 0.0,
+          "ParticleSystem": "Dungeon_Goblin_Mace_Slam_Warning",
+          "Offset": {
+            "X": 0.0,
+            "Y": 0.1,
+            "Z": 0.0
+          },
+          "Anchor": "Volume",
+          "Scale": 2.244,
+          "Rotation": {
+            "X": 0.0,
+            "Y": 0.0,
+            "Z": 0.0
+          },
+          "Duration": 1.6,
+          "Entry": 1
+        },
+        {
           "Type": "ModifyTags",
           "Event": "SIGNAL_RECEIVED",
           "Interval": 0.0,
-          "Delay": 1.2,
+          "Delay": 1.6,
           "Entry": 1,
           "Operation": "Set",
           "TagKey": "Dmg",
@@ -109409,7 +111976,7 @@
           "Type": "ModifyTags",
           "Event": "SIGNAL_RECEIVED",
           "Interval": 0.0,
-          "Delay": 2.8,
+          "Delay": 3.2,
           "Entry": 1,
           "Operation": "Set",
           "TagKey": "Dmg",
@@ -109423,7 +111990,7 @@
           "Type": "ModifyTags",
           "Event": "SIGNAL_RECEIVED",
           "Interval": 0.0,
-          "Delay": 2.8,
+          "Delay": 3.2,
           "Entry": 1,
           "Operation": "Set",
           "TagKey": "Busy",
@@ -109548,6 +112115,27 @@
           "Event": "SIGNAL_RECEIVED",
           "Interval": 0.0,
           "Delay": 0.0,
+          "ParticleSystem": "Dungeon_Goblin_Mace_Slam_Warning",
+          "Offset": {
+            "X": 0.0,
+            "Y": 0.1,
+            "Z": 0.0
+          },
+          "Anchor": "Volume",
+          "Scale": 2.244,
+          "Rotation": {
+            "X": 0.0,
+            "Y": 0.0,
+            "Z": 0.0
+          },
+          "Duration": 1.6,
+          "Entry": 1
+        },
+        {
+          "Type": "PlayVfx",
+          "Event": "SIGNAL_RECEIVED",
+          "Interval": 0.0,
+          "Delay": 0.0,
           "ParticleSystem": "Goblin_Decorative_Steam",
           "Offset": {
             "X": -3.5000000000000036,
@@ -109561,7 +112149,7 @@
             "Y": 0.0,
             "Z": 0.0
           },
-          "Duration": 1.2,
+          "Duration": 1.6,
           "Entry": 1
         },
         {
@@ -109582,7 +112170,7 @@
           "Type": "PlayVfx",
           "Event": "SIGNAL_RECEIVED",
           "Interval": 0.0,
-          "Delay": 1.2,
+          "Delay": 1.6,
           "ParticleSystem": "Dungeon_Goblin_Smoke_Pipe_Large",
           "Offset": {
             "X": -3.5000000000000036,
@@ -109603,7 +112191,7 @@
           "Type": "PlayVfx",
           "Event": "SIGNAL_RECEIVED",
           "Interval": 0.0,
-          "Delay": 1.2,
+          "Delay": 1.6,
           "ParticleSystem": "Effect_Poison",
           "Offset": {
             "X": 0.0,
@@ -109624,7 +112212,7 @@
           "Type": "PlaySound",
           "Event": "SIGNAL_RECEIVED",
           "Interval": 0.0,
-          "Delay": 1.2,
+          "Delay": 1.6,
           "SoundEvent": "SFX_Env_Geyzer_Burst",
           "Location": "VolumeCenter",
           "Offset": {
@@ -109638,7 +112226,7 @@
           "Type": "ModifyTags",
           "Event": "SIGNAL_RECEIVED",
           "Interval": 0.0,
-          "Delay": 1.2,
+          "Delay": 1.6,
           "Entry": 1,
           "Operation": "Set",
           "TagKey": "Dmg",
@@ -109652,7 +112240,7 @@
           "Type": "ModifyTags",
           "Event": "SIGNAL_RECEIVED",
           "Interval": 0.0,
-          "Delay": 2.8,
+          "Delay": 3.2,
           "Entry": 1,
           "Operation": "Set",
           "TagKey": "Dmg",
@@ -109666,7 +112254,7 @@
           "Type": "ModifyTags",
           "Event": "SIGNAL_RECEIVED",
           "Interval": 0.0,
-          "Delay": 2.8,
+          "Delay": 3.2,
           "Entry": 1,
           "Operation": "Set",
           "TagKey": "Busy",
@@ -109787,10 +112375,31 @@
           "Center": "Volume"
         },
         {
+          "Type": "PlayVfx",
+          "Event": "SIGNAL_RECEIVED",
+          "Interval": 0.0,
+          "Delay": 0.0,
+          "ParticleSystem": "Dungeon_Goblin_Mace_Slam_Warning",
+          "Offset": {
+            "X": 0.0,
+            "Y": 0.1,
+            "Z": 0.0
+          },
+          "Anchor": "Volume",
+          "Scale": 2.244,
+          "Rotation": {
+            "X": 0.0,
+            "Y": 0.0,
+            "Z": 0.0
+          },
+          "Duration": 1.6,
+          "Entry": 1
+        },
+        {
           "Type": "ModifyTags",
           "Event": "SIGNAL_RECEIVED",
           "Interval": 0.0,
-          "Delay": 1.2,
+          "Delay": 1.6,
           "Entry": 1,
           "Operation": "Set",
           "TagKey": "Dmg",
@@ -109804,7 +112413,7 @@
           "Type": "ModifyTags",
           "Event": "SIGNAL_RECEIVED",
           "Interval": 0.0,
-          "Delay": 2.8,
+          "Delay": 3.2,
           "Entry": 1,
           "Operation": "Set",
           "TagKey": "Dmg",
@@ -109818,7 +112427,7 @@
           "Type": "ModifyTags",
           "Event": "SIGNAL_RECEIVED",
           "Interval": 0.0,
-          "Delay": 2.8,
+          "Delay": 3.2,
           "Entry": 1,
           "Operation": "Set",
           "TagKey": "Busy",
@@ -109939,10 +112548,31 @@
           "Center": "Volume"
         },
         {
+          "Type": "PlayVfx",
+          "Event": "SIGNAL_RECEIVED",
+          "Interval": 0.0,
+          "Delay": 0.0,
+          "ParticleSystem": "Dungeon_Goblin_Mace_Slam_Warning",
+          "Offset": {
+            "X": 0.0,
+            "Y": 0.1,
+            "Z": 0.0
+          },
+          "Anchor": "Volume",
+          "Scale": 2.244,
+          "Rotation": {
+            "X": 0.0,
+            "Y": 0.0,
+            "Z": 0.0
+          },
+          "Duration": 1.6,
+          "Entry": 1
+        },
+        {
           "Type": "ModifyTags",
           "Event": "SIGNAL_RECEIVED",
           "Interval": 0.0,
-          "Delay": 1.2,
+          "Delay": 1.6,
           "Entry": 1,
           "Operation": "Set",
           "TagKey": "Dmg",
@@ -109956,7 +112586,7 @@
           "Type": "ModifyTags",
           "Event": "SIGNAL_RECEIVED",
           "Interval": 0.0,
-          "Delay": 2.8,
+          "Delay": 3.2,
           "Entry": 1,
           "Operation": "Set",
           "TagKey": "Dmg",
@@ -109970,7 +112600,7 @@
           "Type": "ModifyTags",
           "Event": "SIGNAL_RECEIVED",
           "Interval": 0.0,
-          "Delay": 2.8,
+          "Delay": 3.2,
           "Entry": 1,
           "Operation": "Set",
           "TagKey": "Busy",
@@ -110095,6 +112725,27 @@
           "Event": "SIGNAL_RECEIVED",
           "Interval": 0.0,
           "Delay": 0.0,
+          "ParticleSystem": "Dungeon_Goblin_Mace_Slam_Warning",
+          "Offset": {
+            "X": 0.0,
+            "Y": 0.1,
+            "Z": 0.0
+          },
+          "Anchor": "Volume",
+          "Scale": 2.244,
+          "Rotation": {
+            "X": 0.0,
+            "Y": 0.0,
+            "Z": 0.0
+          },
+          "Duration": 1.6,
+          "Entry": 1
+        },
+        {
+          "Type": "PlayVfx",
+          "Event": "SIGNAL_RECEIVED",
+          "Interval": 0.0,
+          "Delay": 0.0,
           "ParticleSystem": "Goblin_Decorative_Steam",
           "Offset": {
             "X": -1.7084834398160513,
@@ -110108,7 +112759,7 @@
             "Y": 0.0,
             "Z": 0.0
           },
-          "Duration": 1.2,
+          "Duration": 1.6,
           "Entry": 1
         },
         {
@@ -110129,7 +112780,7 @@
           "Type": "PlayVfx",
           "Event": "SIGNAL_RECEIVED",
           "Interval": 0.0,
-          "Delay": 1.2,
+          "Delay": 1.6,
           "ParticleSystem": "Dungeon_Goblin_Smoke_Pipe_Large",
           "Offset": {
             "X": -1.7084834398160513,
@@ -110150,7 +112801,7 @@
           "Type": "PlayVfx",
           "Event": "SIGNAL_RECEIVED",
           "Interval": 0.0,
-          "Delay": 1.2,
+          "Delay": 1.6,
           "ParticleSystem": "Effect_Poison",
           "Offset": {
             "X": 0.0,
@@ -110171,7 +112822,7 @@
           "Type": "PlaySound",
           "Event": "SIGNAL_RECEIVED",
           "Interval": 0.0,
-          "Delay": 1.2,
+          "Delay": 1.6,
           "SoundEvent": "SFX_Env_Geyzer_Burst",
           "Location": "VolumeCenter",
           "Offset": {
@@ -110185,7 +112836,7 @@
           "Type": "ModifyTags",
           "Event": "SIGNAL_RECEIVED",
           "Interval": 0.0,
-          "Delay": 1.2,
+          "Delay": 1.6,
           "Entry": 1,
           "Operation": "Set",
           "TagKey": "Dmg",
@@ -110199,7 +112850,7 @@
           "Type": "ModifyTags",
           "Event": "SIGNAL_RECEIVED",
           "Interval": 0.0,
-          "Delay": 2.8,
+          "Delay": 3.2,
           "Entry": 1,
           "Operation": "Set",
           "TagKey": "Dmg",
@@ -110213,7 +112864,7 @@
           "Type": "ModifyTags",
           "Event": "SIGNAL_RECEIVED",
           "Interval": 0.0,
-          "Delay": 2.8,
+          "Delay": 3.2,
           "Entry": 1,
           "Operation": "Set",
           "TagKey": "Busy",
@@ -110334,10 +112985,31 @@
           "Center": "Volume"
         },
         {
+          "Type": "PlayVfx",
+          "Event": "SIGNAL_RECEIVED",
+          "Interval": 0.0,
+          "Delay": 0.0,
+          "ParticleSystem": "Dungeon_Goblin_Mace_Slam_Warning",
+          "Offset": {
+            "X": 0.0,
+            "Y": 0.1,
+            "Z": 0.0
+          },
+          "Anchor": "Volume",
+          "Scale": 2.244,
+          "Rotation": {
+            "X": 0.0,
+            "Y": 0.0,
+            "Z": 0.0
+          },
+          "Duration": 1.6,
+          "Entry": 1
+        },
+        {
           "Type": "ModifyTags",
           "Event": "SIGNAL_RECEIVED",
           "Interval": 0.0,
-          "Delay": 1.2,
+          "Delay": 1.6,
           "Entry": 1,
           "Operation": "Set",
           "TagKey": "Dmg",
@@ -110351,7 +113023,7 @@
           "Type": "ModifyTags",
           "Event": "SIGNAL_RECEIVED",
           "Interval": 0.0,
-          "Delay": 2.8,
+          "Delay": 3.2,
           "Entry": 1,
           "Operation": "Set",
           "TagKey": "Dmg",
@@ -110365,7 +113037,7 @@
           "Type": "ModifyTags",
           "Event": "SIGNAL_RECEIVED",
           "Interval": 0.0,
-          "Delay": 2.8,
+          "Delay": 3.2,
           "Entry": 1,
           "Operation": "Set",
           "TagKey": "Busy",
@@ -110486,10 +113158,31 @@
           "Center": "Volume"
         },
         {
+          "Type": "PlayVfx",
+          "Event": "SIGNAL_RECEIVED",
+          "Interval": 0.0,
+          "Delay": 0.0,
+          "ParticleSystem": "Dungeon_Goblin_Mace_Slam_Warning",
+          "Offset": {
+            "X": 0.0,
+            "Y": 0.1,
+            "Z": 0.0
+          },
+          "Anchor": "Volume",
+          "Scale": 2.244,
+          "Rotation": {
+            "X": 0.0,
+            "Y": 0.0,
+            "Z": 0.0
+          },
+          "Duration": 1.6,
+          "Entry": 1
+        },
+        {
           "Type": "ModifyTags",
           "Event": "SIGNAL_RECEIVED",
           "Interval": 0.0,
-          "Delay": 1.2,
+          "Delay": 1.6,
           "Entry": 1,
           "Operation": "Set",
           "TagKey": "Dmg",
@@ -110503,7 +113196,7 @@
           "Type": "ModifyTags",
           "Event": "SIGNAL_RECEIVED",
           "Interval": 0.0,
-          "Delay": 2.8,
+          "Delay": 3.2,
           "Entry": 1,
           "Operation": "Set",
           "TagKey": "Dmg",
@@ -110517,7 +113210,7 @@
           "Type": "ModifyTags",
           "Event": "SIGNAL_RECEIVED",
           "Interval": 0.0,
-          "Delay": 2.8,
+          "Delay": 3.2,
           "Entry": 1,
           "Operation": "Set",
           "TagKey": "Busy",
@@ -110642,6 +113335,27 @@
           "Event": "SIGNAL_RECEIVED",
           "Interval": 0.0,
           "Delay": 0.0,
+          "ParticleSystem": "Dungeon_Goblin_Mace_Slam_Warning",
+          "Offset": {
+            "X": 0.0,
+            "Y": 0.1,
+            "Z": 0.0
+          },
+          "Anchor": "Volume",
+          "Scale": 2.244,
+          "Rotation": {
+            "X": 0.0,
+            "Y": 0.0,
+            "Z": 0.0
+          },
+          "Duration": 1.6,
+          "Entry": 1
+        },
+        {
+          "Type": "PlayVfx",
+          "Event": "SIGNAL_RECEIVED",
+          "Interval": 0.0,
+          "Delay": 0.0,
           "ParticleSystem": "Goblin_Decorative_Steam",
           "Offset": {
             "X": -0.66755626400633,
@@ -110655,7 +113369,7 @@
             "Y": 0.0,
             "Z": 0.0
           },
-          "Duration": 1.2,
+          "Duration": 1.6,
           "Entry": 1
         },
         {
@@ -110676,7 +113390,7 @@
           "Type": "PlayVfx",
           "Event": "SIGNAL_RECEIVED",
           "Interval": 0.0,
-          "Delay": 1.2,
+          "Delay": 1.6,
           "ParticleSystem": "Dungeon_Goblin_Smoke_Pipe_Large",
           "Offset": {
             "X": -0.66755626400633,
@@ -110697,7 +113411,7 @@
           "Type": "PlayVfx",
           "Event": "SIGNAL_RECEIVED",
           "Interval": 0.0,
-          "Delay": 1.2,
+          "Delay": 1.6,
           "ParticleSystem": "Effect_Poison",
           "Offset": {
             "X": 0.0,
@@ -110718,7 +113432,7 @@
           "Type": "PlaySound",
           "Event": "SIGNAL_RECEIVED",
           "Interval": 0.0,
-          "Delay": 1.2,
+          "Delay": 1.6,
           "SoundEvent": "SFX_Env_Geyzer_Burst",
           "Location": "VolumeCenter",
           "Offset": {
@@ -110732,7 +113446,7 @@
           "Type": "ModifyTags",
           "Event": "SIGNAL_RECEIVED",
           "Interval": 0.0,
-          "Delay": 1.2,
+          "Delay": 1.6,
           "Entry": 1,
           "Operation": "Set",
           "TagKey": "Dmg",
@@ -110746,7 +113460,7 @@
           "Type": "ModifyTags",
           "Event": "SIGNAL_RECEIVED",
           "Interval": 0.0,
-          "Delay": 2.8,
+          "Delay": 3.2,
           "Entry": 1,
           "Operation": "Set",
           "TagKey": "Dmg",
@@ -110760,7 +113474,7 @@
           "Type": "ModifyTags",
           "Event": "SIGNAL_RECEIVED",
           "Interval": 0.0,
-          "Delay": 2.8,
+          "Delay": 3.2,
           "Entry": 1,
           "Operation": "Set",
           "TagKey": "Busy",
@@ -110881,10 +113595,31 @@
           "Center": "Volume"
         },
         {
+          "Type": "PlayVfx",
+          "Event": "SIGNAL_RECEIVED",
+          "Interval": 0.0,
+          "Delay": 0.0,
+          "ParticleSystem": "Dungeon_Goblin_Mace_Slam_Warning",
+          "Offset": {
+            "X": 0.0,
+            "Y": 0.1,
+            "Z": 0.0
+          },
+          "Anchor": "Volume",
+          "Scale": 2.244,
+          "Rotation": {
+            "X": 0.0,
+            "Y": 0.0,
+            "Z": 0.0
+          },
+          "Duration": 1.6,
+          "Entry": 1
+        },
+        {
           "Type": "ModifyTags",
           "Event": "SIGNAL_RECEIVED",
           "Interval": 0.0,
-          "Delay": 1.2,
+          "Delay": 1.6,
           "Entry": 1,
           "Operation": "Set",
           "TagKey": "Dmg",
@@ -110898,7 +113633,7 @@
           "Type": "ModifyTags",
           "Event": "SIGNAL_RECEIVED",
           "Interval": 0.0,
-          "Delay": 2.8,
+          "Delay": 3.2,
           "Entry": 1,
           "Operation": "Set",
           "TagKey": "Dmg",
@@ -110912,7 +113647,7 @@
           "Type": "ModifyTags",
           "Event": "SIGNAL_RECEIVED",
           "Interval": 0.0,
-          "Delay": 2.8,
+          "Delay": 3.2,
           "Entry": 1,
           "Operation": "Set",
           "TagKey": "Busy",
@@ -111033,10 +113768,31 @@
           "Center": "Volume"
         },
         {
+          "Type": "PlayVfx",
+          "Event": "SIGNAL_RECEIVED",
+          "Interval": 0.0,
+          "Delay": 0.0,
+          "ParticleSystem": "Dungeon_Goblin_Mace_Slam_Warning",
+          "Offset": {
+            "X": 0.0,
+            "Y": 0.1,
+            "Z": 0.0
+          },
+          "Anchor": "Volume",
+          "Scale": 2.244,
+          "Rotation": {
+            "X": 0.0,
+            "Y": 0.0,
+            "Z": 0.0
+          },
+          "Duration": 1.6,
+          "Entry": 1
+        },
+        {
           "Type": "ModifyTags",
           "Event": "SIGNAL_RECEIVED",
           "Interval": 0.0,
-          "Delay": 1.2,
+          "Delay": 1.6,
           "Entry": 1,
           "Operation": "Set",
           "TagKey": "Dmg",
@@ -111050,7 +113806,7 @@
           "Type": "ModifyTags",
           "Event": "SIGNAL_RECEIVED",
           "Interval": 0.0,
-          "Delay": 2.8,
+          "Delay": 3.2,
           "Entry": 1,
           "Operation": "Set",
           "TagKey": "Dmg",
@@ -111064,7 +113820,7 @@
           "Type": "ModifyTags",
           "Event": "SIGNAL_RECEIVED",
           "Interval": 0.0,
-          "Delay": 2.8,
+          "Delay": 3.2,
           "Entry": 1,
           "Operation": "Set",
           "TagKey": "Busy",
@@ -111189,6 +113945,27 @@
           "Event": "SIGNAL_RECEIVED",
           "Interval": 0.0,
           "Delay": 0.0,
+          "ParticleSystem": "Dungeon_Goblin_Mace_Slam_Warning",
+          "Offset": {
+            "X": 0.0,
+            "Y": 0.1,
+            "Z": 0.0
+          },
+          "Anchor": "Volume",
+          "Scale": 2.244,
+          "Rotation": {
+            "X": 0.0,
+            "Y": 0.0,
+            "Z": 0.0
+          },
+          "Duration": 1.6,
+          "Entry": 1
+        },
+        {
+          "Type": "PlayVfx",
+          "Event": "SIGNAL_RECEIVED",
+          "Interval": 0.0,
+          "Delay": 0.0,
           "ParticleSystem": "Goblin_Decorative_Steam",
           "Offset": {
             "X": 1.6675562640063273,
@@ -111202,7 +113979,7 @@
             "Y": 0.0,
             "Z": 0.0
           },
-          "Duration": 1.2,
+          "Duration": 1.6,
           "Entry": 1
         },
         {
@@ -111223,7 +114000,7 @@
           "Type": "PlayVfx",
           "Event": "SIGNAL_RECEIVED",
           "Interval": 0.0,
-          "Delay": 1.2,
+          "Delay": 1.6,
           "ParticleSystem": "Dungeon_Goblin_Smoke_Pipe_Large",
           "Offset": {
             "X": 1.6675562640063273,
@@ -111244,7 +114021,7 @@
           "Type": "PlayVfx",
           "Event": "SIGNAL_RECEIVED",
           "Interval": 0.0,
-          "Delay": 1.2,
+          "Delay": 1.6,
           "ParticleSystem": "Effect_Poison",
           "Offset": {
             "X": 0.0,
@@ -111265,7 +114042,7 @@
           "Type": "PlaySound",
           "Event": "SIGNAL_RECEIVED",
           "Interval": 0.0,
-          "Delay": 1.2,
+          "Delay": 1.6,
           "SoundEvent": "SFX_Env_Geyzer_Burst",
           "Location": "VolumeCenter",
           "Offset": {
@@ -111279,7 +114056,7 @@
           "Type": "ModifyTags",
           "Event": "SIGNAL_RECEIVED",
           "Interval": 0.0,
-          "Delay": 1.2,
+          "Delay": 1.6,
           "Entry": 1,
           "Operation": "Set",
           "TagKey": "Dmg",
@@ -111293,7 +114070,7 @@
           "Type": "ModifyTags",
           "Event": "SIGNAL_RECEIVED",
           "Interval": 0.0,
-          "Delay": 2.8,
+          "Delay": 3.2,
           "Entry": 1,
           "Operation": "Set",
           "TagKey": "Dmg",
@@ -111307,7 +114084,7 @@
           "Type": "ModifyTags",
           "Event": "SIGNAL_RECEIVED",
           "Interval": 0.0,
-          "Delay": 2.8,
+          "Delay": 3.2,
           "Entry": 1,
           "Operation": "Set",
           "TagKey": "Busy",
@@ -111428,10 +114205,31 @@
           "Center": "Volume"
         },
         {
+          "Type": "PlayVfx",
+          "Event": "SIGNAL_RECEIVED",
+          "Interval": 0.0,
+          "Delay": 0.0,
+          "ParticleSystem": "Dungeon_Goblin_Mace_Slam_Warning",
+          "Offset": {
+            "X": 0.0,
+            "Y": 0.1,
+            "Z": 0.0
+          },
+          "Anchor": "Volume",
+          "Scale": 2.244,
+          "Rotation": {
+            "X": 0.0,
+            "Y": 0.0,
+            "Z": 0.0
+          },
+          "Duration": 1.6,
+          "Entry": 1
+        },
+        {
           "Type": "ModifyTags",
           "Event": "SIGNAL_RECEIVED",
           "Interval": 0.0,
-          "Delay": 1.2,
+          "Delay": 1.6,
           "Entry": 1,
           "Operation": "Set",
           "TagKey": "Dmg",
@@ -111445,7 +114243,7 @@
           "Type": "ModifyTags",
           "Event": "SIGNAL_RECEIVED",
           "Interval": 0.0,
-          "Delay": 2.8,
+          "Delay": 3.2,
           "Entry": 1,
           "Operation": "Set",
           "TagKey": "Dmg",
@@ -111459,7 +114257,7 @@
           "Type": "ModifyTags",
           "Event": "SIGNAL_RECEIVED",
           "Interval": 0.0,
-          "Delay": 2.8,
+          "Delay": 3.2,
           "Entry": 1,
           "Operation": "Set",
           "TagKey": "Busy",
@@ -111580,10 +114378,31 @@
           "Center": "Volume"
         },
         {
+          "Type": "PlayVfx",
+          "Event": "SIGNAL_RECEIVED",
+          "Interval": 0.0,
+          "Delay": 0.0,
+          "ParticleSystem": "Dungeon_Goblin_Mace_Slam_Warning",
+          "Offset": {
+            "X": 0.0,
+            "Y": 0.1,
+            "Z": 0.0
+          },
+          "Anchor": "Volume",
+          "Scale": 2.244,
+          "Rotation": {
+            "X": 0.0,
+            "Y": 0.0,
+            "Z": 0.0
+          },
+          "Duration": 1.6,
+          "Entry": 1
+        },
+        {
           "Type": "ModifyTags",
           "Event": "SIGNAL_RECEIVED",
           "Interval": 0.0,
-          "Delay": 1.2,
+          "Delay": 1.6,
           "Entry": 1,
           "Operation": "Set",
           "TagKey": "Dmg",
@@ -111597,7 +114416,7 @@
           "Type": "ModifyTags",
           "Event": "SIGNAL_RECEIVED",
           "Interval": 0.0,
-          "Delay": 2.8,
+          "Delay": 3.2,
           "Entry": 1,
           "Operation": "Set",
           "TagKey": "Dmg",
@@ -111611,7 +114430,7 @@
           "Type": "ModifyTags",
           "Event": "SIGNAL_RECEIVED",
           "Interval": 0.0,
-          "Delay": 2.8,
+          "Delay": 3.2,
           "Entry": 1,
           "Operation": "Set",
           "TagKey": "Busy",
@@ -111736,6 +114555,27 @@
           "Event": "SIGNAL_RECEIVED",
           "Interval": 0.0,
           "Delay": 0.0,
+          "ParticleSystem": "Dungeon_Goblin_Mace_Slam_Warning",
+          "Offset": {
+            "X": 0.0,
+            "Y": 0.1,
+            "Z": 0.0
+          },
+          "Anchor": "Volume",
+          "Scale": 2.244,
+          "Rotation": {
+            "X": 0.0,
+            "Y": 0.0,
+            "Z": 0.0
+          },
+          "Duration": 1.6,
+          "Entry": 1
+        },
+        {
+          "Type": "PlayVfx",
+          "Event": "SIGNAL_RECEIVED",
+          "Interval": 0.0,
+          "Delay": 0.0,
           "ParticleSystem": "Goblin_Decorative_Steam",
           "Offset": {
             "X": 2.7084834398160496,
@@ -111749,7 +114589,7 @@
             "Y": 0.0,
             "Z": 0.0
           },
-          "Duration": 1.2,
+          "Duration": 1.6,
           "Entry": 1
         },
         {
@@ -111770,7 +114610,7 @@
           "Type": "PlayVfx",
           "Event": "SIGNAL_RECEIVED",
           "Interval": 0.0,
-          "Delay": 1.2,
+          "Delay": 1.6,
           "ParticleSystem": "Dungeon_Goblin_Smoke_Pipe_Large",
           "Offset": {
             "X": 2.7084834398160496,
@@ -111791,7 +114631,7 @@
           "Type": "PlayVfx",
           "Event": "SIGNAL_RECEIVED",
           "Interval": 0.0,
-          "Delay": 1.2,
+          "Delay": 1.6,
           "ParticleSystem": "Effect_Poison",
           "Offset": {
             "X": 0.0,
@@ -111812,7 +114652,7 @@
           "Type": "PlaySound",
           "Event": "SIGNAL_RECEIVED",
           "Interval": 0.0,
-          "Delay": 1.2,
+          "Delay": 1.6,
           "SoundEvent": "SFX_Env_Geyzer_Burst",
           "Location": "VolumeCenter",
           "Offset": {
@@ -111826,7 +114666,7 @@
           "Type": "ModifyTags",
           "Event": "SIGNAL_RECEIVED",
           "Interval": 0.0,
-          "Delay": 1.2,
+          "Delay": 1.6,
           "Entry": 1,
           "Operation": "Set",
           "TagKey": "Dmg",
@@ -111840,7 +114680,7 @@
           "Type": "ModifyTags",
           "Event": "SIGNAL_RECEIVED",
           "Interval": 0.0,
-          "Delay": 2.8,
+          "Delay": 3.2,
           "Entry": 1,
           "Operation": "Set",
           "TagKey": "Dmg",
@@ -111854,7 +114694,7 @@
           "Type": "ModifyTags",
           "Event": "SIGNAL_RECEIVED",
           "Interval": 0.0,
-          "Delay": 2.8,
+          "Delay": 3.2,
           "Entry": 1,
           "Operation": "Set",
           "TagKey": "Busy",
@@ -111975,10 +114815,31 @@
           "Center": "Volume"
         },
         {
+          "Type": "PlayVfx",
+          "Event": "SIGNAL_RECEIVED",
+          "Interval": 0.0,
+          "Delay": 0.0,
+          "ParticleSystem": "Dungeon_Goblin_Mace_Slam_Warning",
+          "Offset": {
+            "X": 0.0,
+            "Y": 0.1,
+            "Z": 0.0
+          },
+          "Anchor": "Volume",
+          "Scale": 2.244,
+          "Rotation": {
+            "X": 0.0,
+            "Y": 0.0,
+            "Z": 0.0
+          },
+          "Duration": 1.6,
+          "Entry": 1
+        },
+        {
           "Type": "ModifyTags",
           "Event": "SIGNAL_RECEIVED",
           "Interval": 0.0,
-          "Delay": 1.2,
+          "Delay": 1.6,
           "Entry": 1,
           "Operation": "Set",
           "TagKey": "Dmg",
@@ -111992,7 +114853,7 @@
           "Type": "ModifyTags",
           "Event": "SIGNAL_RECEIVED",
           "Interval": 0.0,
-          "Delay": 2.8,
+          "Delay": 3.2,
           "Entry": 1,
           "Operation": "Set",
           "TagKey": "Dmg",
@@ -112006,7 +114867,7 @@
           "Type": "ModifyTags",
           "Event": "SIGNAL_RECEIVED",
           "Interval": 0.0,
-          "Delay": 2.8,
+          "Delay": 3.2,
           "Entry": 1,
           "Operation": "Set",
           "TagKey": "Busy",
@@ -112127,10 +114988,31 @@
           "Center": "Volume"
         },
         {
+          "Type": "PlayVfx",
+          "Event": "SIGNAL_RECEIVED",
+          "Interval": 0.0,
+          "Delay": 0.0,
+          "ParticleSystem": "Dungeon_Goblin_Mace_Slam_Warning",
+          "Offset": {
+            "X": 0.0,
+            "Y": 0.1,
+            "Z": 0.0
+          },
+          "Anchor": "Volume",
+          "Scale": 2.244,
+          "Rotation": {
+            "X": 0.0,
+            "Y": 0.0,
+            "Z": 0.0
+          },
+          "Duration": 1.6,
+          "Entry": 1
+        },
+        {
           "Type": "ModifyTags",
           "Event": "SIGNAL_RECEIVED",
           "Interval": 0.0,
-          "Delay": 1.2,
+          "Delay": 1.6,
           "Entry": 1,
           "Operation": "Set",
           "TagKey": "Dmg",
@@ -112144,7 +115026,7 @@
           "Type": "ModifyTags",
           "Event": "SIGNAL_RECEIVED",
           "Interval": 0.0,
-          "Delay": 2.8,
+          "Delay": 3.2,
           "Entry": 1,
           "Operation": "Set",
           "TagKey": "Dmg",
@@ -112158,7 +115040,7 @@
           "Type": "ModifyTags",
           "Event": "SIGNAL_RECEIVED",
           "Interval": 0.0,
-          "Delay": 2.8,
+          "Delay": 3.2,
           "Entry": 1,
           "Operation": "Set",
           "TagKey": "Busy",
@@ -112283,6 +115165,27 @@
           "Event": "SIGNAL_RECEIVED",
           "Interval": 0.0,
           "Delay": 0.0,
+          "ParticleSystem": "Dungeon_Goblin_Mace_Slam_Warning",
+          "Offset": {
+            "X": 0.0,
+            "Y": 0.1,
+            "Z": 0.0
+          },
+          "Anchor": "Volume",
+          "Scale": 2.244,
+          "Rotation": {
+            "X": 0.0,
+            "Y": 0.0,
+            "Z": 0.0
+          },
+          "Duration": 1.6,
+          "Entry": 1
+        },
+        {
+          "Type": "PlayVfx",
+          "Event": "SIGNAL_RECEIVED",
+          "Interval": 0.0,
+          "Delay": 0.0,
           "ParticleSystem": "Goblin_Decorative_Steam",
           "Offset": {
             "X": 4.499999999999995,
@@ -112296,7 +115199,7 @@
             "Y": 0.0,
             "Z": 0.0
           },
-          "Duration": 1.2,
+          "Duration": 1.6,
           "Entry": 1
         },
         {
@@ -112317,7 +115220,7 @@
           "Type": "PlayVfx",
           "Event": "SIGNAL_RECEIVED",
           "Interval": 0.0,
-          "Delay": 1.2,
+          "Delay": 1.6,
           "ParticleSystem": "Dungeon_Goblin_Smoke_Pipe_Large",
           "Offset": {
             "X": 4.499999999999995,
@@ -112338,7 +115241,7 @@
           "Type": "PlayVfx",
           "Event": "SIGNAL_RECEIVED",
           "Interval": 0.0,
-          "Delay": 1.2,
+          "Delay": 1.6,
           "ParticleSystem": "Effect_Poison",
           "Offset": {
             "X": 0.0,
@@ -112359,7 +115262,7 @@
           "Type": "PlaySound",
           "Event": "SIGNAL_RECEIVED",
           "Interval": 0.0,
-          "Delay": 1.2,
+          "Delay": 1.6,
           "SoundEvent": "SFX_Env_Geyzer_Burst",
           "Location": "VolumeCenter",
           "Offset": {
@@ -112373,7 +115276,7 @@
           "Type": "ModifyTags",
           "Event": "SIGNAL_RECEIVED",
           "Interval": 0.0,
-          "Delay": 1.2,
+          "Delay": 1.6,
           "Entry": 1,
           "Operation": "Set",
           "TagKey": "Dmg",
@@ -112387,7 +115290,7 @@
           "Type": "ModifyTags",
           "Event": "SIGNAL_RECEIVED",
           "Interval": 0.0,
-          "Delay": 2.8,
+          "Delay": 3.2,
           "Entry": 1,
           "Operation": "Set",
           "TagKey": "Dmg",
@@ -112401,7 +115304,7 @@
           "Type": "ModifyTags",
           "Event": "SIGNAL_RECEIVED",
           "Interval": 0.0,
-          "Delay": 2.8,
+          "Delay": 3.2,
           "Entry": 1,
           "Operation": "Set",
           "TagKey": "Busy",
@@ -112522,10 +115425,31 @@
           "Center": "Volume"
         },
         {
+          "Type": "PlayVfx",
+          "Event": "SIGNAL_RECEIVED",
+          "Interval": 0.0,
+          "Delay": 0.0,
+          "ParticleSystem": "Dungeon_Goblin_Mace_Slam_Warning",
+          "Offset": {
+            "X": 0.0,
+            "Y": 0.1,
+            "Z": 0.0
+          },
+          "Anchor": "Volume",
+          "Scale": 2.244,
+          "Rotation": {
+            "X": 0.0,
+            "Y": 0.0,
+            "Z": 0.0
+          },
+          "Duration": 1.6,
+          "Entry": 1
+        },
+        {
           "Type": "ModifyTags",
           "Event": "SIGNAL_RECEIVED",
           "Interval": 0.0,
-          "Delay": 1.2,
+          "Delay": 1.6,
           "Entry": 1,
           "Operation": "Set",
           "TagKey": "Dmg",
@@ -112539,7 +115463,7 @@
           "Type": "ModifyTags",
           "Event": "SIGNAL_RECEIVED",
           "Interval": 0.0,
-          "Delay": 2.8,
+          "Delay": 3.2,
           "Entry": 1,
           "Operation": "Set",
           "TagKey": "Dmg",
@@ -112553,7 +115477,7 @@
           "Type": "ModifyTags",
           "Event": "SIGNAL_RECEIVED",
           "Interval": 0.0,
-          "Delay": 2.8,
+          "Delay": 3.2,
           "Entry": 1,
           "Operation": "Set",
           "TagKey": "Busy",
@@ -112674,10 +115598,31 @@
           "Center": "Volume"
         },
         {
+          "Type": "PlayVfx",
+          "Event": "SIGNAL_RECEIVED",
+          "Interval": 0.0,
+          "Delay": 0.0,
+          "ParticleSystem": "Dungeon_Goblin_Mace_Slam_Warning",
+          "Offset": {
+            "X": 0.0,
+            "Y": 0.1,
+            "Z": 0.0
+          },
+          "Anchor": "Volume",
+          "Scale": 2.244,
+          "Rotation": {
+            "X": 0.0,
+            "Y": 0.0,
+            "Z": 0.0
+          },
+          "Duration": 1.6,
+          "Entry": 1
+        },
+        {
           "Type": "ModifyTags",
           "Event": "SIGNAL_RECEIVED",
           "Interval": 0.0,
-          "Delay": 1.2,
+          "Delay": 1.6,
           "Entry": 1,
           "Operation": "Set",
           "TagKey": "Dmg",
@@ -112691,7 +115636,7 @@
           "Type": "ModifyTags",
           "Event": "SIGNAL_RECEIVED",
           "Interval": 0.0,
-          "Delay": 2.8,
+          "Delay": 3.2,
           "Entry": 1,
           "Operation": "Set",
           "TagKey": "Dmg",
@@ -112705,7 +115650,7 @@
           "Type": "ModifyTags",
           "Event": "SIGNAL_RECEIVED",
           "Interval": 0.0,
-          "Delay": 2.8,
+          "Delay": 3.2,
           "Entry": 1,
           "Operation": "Set",
           "TagKey": "Busy",
@@ -112830,6 +115775,27 @@
           "Event": "SIGNAL_RECEIVED",
           "Interval": 0.0,
           "Delay": 0.0,
+          "ParticleSystem": "Dungeon_Goblin_Mace_Slam_Warning",
+          "Offset": {
+            "X": 0.0,
+            "Y": 0.1,
+            "Z": 0.0
+          },
+          "Anchor": "Volume",
+          "Scale": 2.244,
+          "Rotation": {
+            "X": 0.0,
+            "Y": 0.0,
+            "Z": 0.0
+          },
+          "Duration": 1.6,
+          "Entry": 1
+        },
+        {
+          "Type": "PlayVfx",
+          "Event": "SIGNAL_RECEIVED",
+          "Interval": 0.0,
+          "Delay": 0.0,
           "ParticleSystem": "Goblin_Decorative_Steam",
           "Offset": {
             "X": 4.926902632476946,
@@ -112843,7 +115809,7 @@
             "Y": 0.0,
             "Z": 0.0
           },
-          "Duration": 1.2,
+          "Duration": 1.6,
           "Entry": 1
         },
         {
@@ -112864,7 +115830,7 @@
           "Type": "PlayVfx",
           "Event": "SIGNAL_RECEIVED",
           "Interval": 0.0,
-          "Delay": 1.2,
+          "Delay": 1.6,
           "ParticleSystem": "Dungeon_Goblin_Smoke_Pipe_Large",
           "Offset": {
             "X": 4.926902632476946,
@@ -112885,7 +115851,7 @@
           "Type": "PlayVfx",
           "Event": "SIGNAL_RECEIVED",
           "Interval": 0.0,
-          "Delay": 1.2,
+          "Delay": 1.6,
           "ParticleSystem": "Effect_Poison",
           "Offset": {
             "X": 0.0,
@@ -112906,7 +115872,7 @@
           "Type": "PlaySound",
           "Event": "SIGNAL_RECEIVED",
           "Interval": 0.0,
-          "Delay": 1.2,
+          "Delay": 1.6,
           "SoundEvent": "SFX_Env_Geyzer_Burst",
           "Location": "VolumeCenter",
           "Offset": {
@@ -112920,7 +115886,7 @@
           "Type": "ModifyTags",
           "Event": "SIGNAL_RECEIVED",
           "Interval": 0.0,
-          "Delay": 1.2,
+          "Delay": 1.6,
           "Entry": 1,
           "Operation": "Set",
           "TagKey": "Dmg",
@@ -112934,7 +115900,7 @@
           "Type": "ModifyTags",
           "Event": "SIGNAL_RECEIVED",
           "Interval": 0.0,
-          "Delay": 2.8,
+          "Delay": 3.2,
           "Entry": 1,
           "Operation": "Set",
           "TagKey": "Dmg",
@@ -112948,7 +115914,7 @@
           "Type": "ModifyTags",
           "Event": "SIGNAL_RECEIVED",
           "Interval": 0.0,
-          "Delay": 2.8,
+          "Delay": 3.2,
           "Entry": 1,
           "Operation": "Set",
           "TagKey": "Busy",
@@ -113069,10 +116035,31 @@
           "Center": "Volume"
         },
         {
+          "Type": "PlayVfx",
+          "Event": "SIGNAL_RECEIVED",
+          "Interval": 0.0,
+          "Delay": 0.0,
+          "ParticleSystem": "Dungeon_Goblin_Mace_Slam_Warning",
+          "Offset": {
+            "X": 0.0,
+            "Y": 0.1,
+            "Z": 0.0
+          },
+          "Anchor": "Volume",
+          "Scale": 2.244,
+          "Rotation": {
+            "X": 0.0,
+            "Y": 0.0,
+            "Z": 0.0
+          },
+          "Duration": 1.6,
+          "Entry": 1
+        },
+        {
           "Type": "ModifyTags",
           "Event": "SIGNAL_RECEIVED",
           "Interval": 0.0,
-          "Delay": 1.2,
+          "Delay": 1.6,
           "Entry": 1,
           "Operation": "Set",
           "TagKey": "Dmg",
@@ -113086,7 +116073,7 @@
           "Type": "ModifyTags",
           "Event": "SIGNAL_RECEIVED",
           "Interval": 0.0,
-          "Delay": 2.8,
+          "Delay": 3.2,
           "Entry": 1,
           "Operation": "Set",
           "TagKey": "Dmg",
@@ -113100,7 +116087,7 @@
           "Type": "ModifyTags",
           "Event": "SIGNAL_RECEIVED",
           "Interval": 0.0,
-          "Delay": 2.8,
+          "Delay": 3.2,
           "Entry": 1,
           "Operation": "Set",
           "TagKey": "Busy",
@@ -113221,10 +116208,31 @@
           "Center": "Volume"
         },
         {
+          "Type": "PlayVfx",
+          "Event": "SIGNAL_RECEIVED",
+          "Interval": 0.0,
+          "Delay": 0.0,
+          "ParticleSystem": "Dungeon_Goblin_Mace_Slam_Warning",
+          "Offset": {
+            "X": 0.0,
+            "Y": 0.1,
+            "Z": 0.0
+          },
+          "Anchor": "Volume",
+          "Scale": 2.244,
+          "Rotation": {
+            "X": 0.0,
+            "Y": 0.0,
+            "Z": 0.0
+          },
+          "Duration": 1.6,
+          "Entry": 1
+        },
+        {
           "Type": "ModifyTags",
           "Event": "SIGNAL_RECEIVED",
           "Interval": 0.0,
-          "Delay": 1.2,
+          "Delay": 1.6,
           "Entry": 1,
           "Operation": "Set",
           "TagKey": "Dmg",
@@ -113238,7 +116246,7 @@
           "Type": "ModifyTags",
           "Event": "SIGNAL_RECEIVED",
           "Interval": 0.0,
-          "Delay": 2.8,
+          "Delay": 3.2,
           "Entry": 1,
           "Operation": "Set",
           "TagKey": "Dmg",
@@ -113252,7 +116260,7 @@
           "Type": "ModifyTags",
           "Event": "SIGNAL_RECEIVED",
           "Interval": 0.0,
-          "Delay": 2.8,
+          "Delay": 3.2,
           "Entry": 1,
           "Operation": "Set",
           "TagKey": "Busy",
@@ -113377,6 +116385,27 @@
           "Event": "SIGNAL_RECEIVED",
           "Interval": 0.0,
           "Delay": 0.0,
+          "ParticleSystem": "Dungeon_Goblin_Mace_Slam_Warning",
+          "Offset": {
+            "X": 0.0,
+            "Y": 0.1,
+            "Z": 0.0
+          },
+          "Anchor": "Volume",
+          "Scale": 2.244,
+          "Rotation": {
+            "X": 0.0,
+            "Y": 0.0,
+            "Z": 0.0
+          },
+          "Duration": 1.6,
+          "Entry": 1
+        },
+        {
+          "Type": "PlayVfx",
+          "Event": "SIGNAL_RECEIVED",
+          "Interval": 0.0,
+          "Delay": 0.0,
           "ParticleSystem": "Goblin_Decorative_Steam",
           "Offset": {
             "X": 5.88506663485547,
@@ -113390,7 +116419,7 @@
             "Y": 0.0,
             "Z": 0.0
           },
-          "Duration": 1.2,
+          "Duration": 1.6,
           "Entry": 1
         },
         {
@@ -113411,7 +116440,7 @@
           "Type": "PlayVfx",
           "Event": "SIGNAL_RECEIVED",
           "Interval": 0.0,
-          "Delay": 1.2,
+          "Delay": 1.6,
           "ParticleSystem": "Dungeon_Goblin_Smoke_Pipe_Large",
           "Offset": {
             "X": 5.88506663485547,
@@ -113432,7 +116461,7 @@
           "Type": "PlayVfx",
           "Event": "SIGNAL_RECEIVED",
           "Interval": 0.0,
-          "Delay": 1.2,
+          "Delay": 1.6,
           "ParticleSystem": "Effect_Poison",
           "Offset": {
             "X": 0.0,
@@ -113453,7 +116482,7 @@
           "Type": "PlaySound",
           "Event": "SIGNAL_RECEIVED",
           "Interval": 0.0,
-          "Delay": 1.2,
+          "Delay": 1.6,
           "SoundEvent": "SFX_Env_Geyzer_Burst",
           "Location": "VolumeCenter",
           "Offset": {
@@ -113467,7 +116496,7 @@
           "Type": "ModifyTags",
           "Event": "SIGNAL_RECEIVED",
           "Interval": 0.0,
-          "Delay": 1.2,
+          "Delay": 1.6,
           "Entry": 1,
           "Operation": "Set",
           "TagKey": "Dmg",
@@ -113481,7 +116510,7 @@
           "Type": "ModifyTags",
           "Event": "SIGNAL_RECEIVED",
           "Interval": 0.0,
-          "Delay": 2.8,
+          "Delay": 3.2,
           "Entry": 1,
           "Operation": "Set",
           "TagKey": "Dmg",
@@ -113495,7 +116524,7 @@
           "Type": "ModifyTags",
           "Event": "SIGNAL_RECEIVED",
           "Interval": 0.0,
-          "Delay": 2.8,
+          "Delay": 3.2,
           "Entry": 1,
           "Operation": "Set",
           "TagKey": "Busy",
@@ -113616,10 +116645,31 @@
           "Center": "Volume"
         },
         {
+          "Type": "PlayVfx",
+          "Event": "SIGNAL_RECEIVED",
+          "Interval": 0.0,
+          "Delay": 0.0,
+          "ParticleSystem": "Dungeon_Goblin_Mace_Slam_Warning",
+          "Offset": {
+            "X": 0.0,
+            "Y": 0.1,
+            "Z": 0.0
+          },
+          "Anchor": "Volume",
+          "Scale": 2.244,
+          "Rotation": {
+            "X": 0.0,
+            "Y": 0.0,
+            "Z": 0.0
+          },
+          "Duration": 1.6,
+          "Entry": 1
+        },
+        {
           "Type": "ModifyTags",
           "Event": "SIGNAL_RECEIVED",
           "Interval": 0.0,
-          "Delay": 1.2,
+          "Delay": 1.6,
           "Entry": 1,
           "Operation": "Set",
           "TagKey": "Dmg",
@@ -113633,7 +116683,7 @@
           "Type": "ModifyTags",
           "Event": "SIGNAL_RECEIVED",
           "Interval": 0.0,
-          "Delay": 2.8,
+          "Delay": 3.2,
           "Entry": 1,
           "Operation": "Set",
           "TagKey": "Dmg",
@@ -113647,7 +116697,7 @@
           "Type": "ModifyTags",
           "Event": "SIGNAL_RECEIVED",
           "Interval": 0.0,
-          "Delay": 2.8,
+          "Delay": 3.2,
           "Entry": 1,
           "Operation": "Set",
           "TagKey": "Busy",
@@ -113768,10 +116818,31 @@
           "Center": "Volume"
         },
         {
+          "Type": "PlayVfx",
+          "Event": "SIGNAL_RECEIVED",
+          "Interval": 0.0,
+          "Delay": 0.0,
+          "ParticleSystem": "Dungeon_Goblin_Mace_Slam_Warning",
+          "Offset": {
+            "X": 0.0,
+            "Y": 0.1,
+            "Z": 0.0
+          },
+          "Anchor": "Volume",
+          "Scale": 2.244,
+          "Rotation": {
+            "X": 0.0,
+            "Y": 0.0,
+            "Z": 0.0
+          },
+          "Duration": 1.6,
+          "Entry": 1
+        },
+        {
           "Type": "ModifyTags",
           "Event": "SIGNAL_RECEIVED",
           "Interval": 0.0,
-          "Delay": 1.2,
+          "Delay": 1.6,
           "Entry": 1,
           "Operation": "Set",
           "TagKey": "Dmg",
@@ -113785,7 +116856,7 @@
           "Type": "ModifyTags",
           "Event": "SIGNAL_RECEIVED",
           "Interval": 0.0,
-          "Delay": 2.8,
+          "Delay": 3.2,
           "Entry": 1,
           "Operation": "Set",
           "TagKey": "Dmg",
@@ -113799,7 +116870,7 @@
           "Type": "ModifyTags",
           "Event": "SIGNAL_RECEIVED",
           "Interval": 0.0,
-          "Delay": 2.8,
+          "Delay": 3.2,
           "Entry": 1,
           "Operation": "Set",
           "TagKey": "Busy",
@@ -113924,6 +116995,27 @@
           "Event": "SIGNAL_RECEIVED",
           "Interval": 0.0,
           "Delay": 0.0,
+          "ParticleSystem": "Dungeon_Goblin_Mace_Slam_Warning",
+          "Offset": {
+            "X": 0.0,
+            "Y": 0.1,
+            "Z": 0.0
+          },
+          "Anchor": "Volume",
+          "Scale": 2.244,
+          "Rotation": {
+            "X": 0.0,
+            "Y": 0.0,
+            "Z": 0.0
+          },
+          "Duration": 1.6,
+          "Entry": 1
+        },
+        {
+          "Type": "PlayVfx",
+          "Event": "SIGNAL_RECEIVED",
+          "Interval": 0.0,
+          "Delay": 0.0,
           "ParticleSystem": "Goblin_Decorative_Steam",
           "Offset": {
             "X": 7.284609690826528,
@@ -113937,7 +117029,7 @@
             "Y": 0.0,
             "Z": 0.0
           },
-          "Duration": 1.2,
+          "Duration": 1.6,
           "Entry": 1
         },
         {
@@ -113958,7 +117050,7 @@
           "Type": "PlayVfx",
           "Event": "SIGNAL_RECEIVED",
           "Interval": 0.0,
-          "Delay": 1.2,
+          "Delay": 1.6,
           "ParticleSystem": "Dungeon_Goblin_Smoke_Pipe_Large",
           "Offset": {
             "X": 7.284609690826528,
@@ -113979,7 +117071,7 @@
           "Type": "PlayVfx",
           "Event": "SIGNAL_RECEIVED",
           "Interval": 0.0,
-          "Delay": 1.2,
+          "Delay": 1.6,
           "ParticleSystem": "Effect_Poison",
           "Offset": {
             "X": 0.0,
@@ -114000,7 +117092,7 @@
           "Type": "PlaySound",
           "Event": "SIGNAL_RECEIVED",
           "Interval": 0.0,
-          "Delay": 1.2,
+          "Delay": 1.6,
           "SoundEvent": "SFX_Env_Geyzer_Burst",
           "Location": "VolumeCenter",
           "Offset": {
@@ -114014,7 +117106,7 @@
           "Type": "ModifyTags",
           "Event": "SIGNAL_RECEIVED",
           "Interval": 0.0,
-          "Delay": 1.2,
+          "Delay": 1.6,
           "Entry": 1,
           "Operation": "Set",
           "TagKey": "Dmg",
@@ -114028,7 +117120,7 @@
           "Type": "ModifyTags",
           "Event": "SIGNAL_RECEIVED",
           "Interval": 0.0,
-          "Delay": 2.8,
+          "Delay": 3.2,
           "Entry": 1,
           "Operation": "Set",
           "TagKey": "Dmg",
@@ -114042,7 +117134,7 @@
           "Type": "ModifyTags",
           "Event": "SIGNAL_RECEIVED",
           "Interval": 0.0,
-          "Delay": 2.8,
+          "Delay": 3.2,
           "Entry": 1,
           "Operation": "Set",
           "TagKey": "Busy",
@@ -114163,10 +117255,31 @@
           "Center": "Volume"
         },
         {
+          "Type": "PlayVfx",
+          "Event": "SIGNAL_RECEIVED",
+          "Interval": 0.0,
+          "Delay": 0.0,
+          "ParticleSystem": "Dungeon_Goblin_Mace_Slam_Warning",
+          "Offset": {
+            "X": 0.0,
+            "Y": 0.1,
+            "Z": 0.0
+          },
+          "Anchor": "Volume",
+          "Scale": 2.244,
+          "Rotation": {
+            "X": 0.0,
+            "Y": 0.0,
+            "Z": 0.0
+          },
+          "Duration": 1.6,
+          "Entry": 1
+        },
+        {
           "Type": "ModifyTags",
           "Event": "SIGNAL_RECEIVED",
           "Interval": 0.0,
-          "Delay": 1.2,
+          "Delay": 1.6,
           "Entry": 1,
           "Operation": "Set",
           "TagKey": "Dmg",
@@ -114180,7 +117293,7 @@
           "Type": "ModifyTags",
           "Event": "SIGNAL_RECEIVED",
           "Interval": 0.0,
-          "Delay": 2.8,
+          "Delay": 3.2,
           "Entry": 1,
           "Operation": "Set",
           "TagKey": "Dmg",
@@ -114194,7 +117307,7 @@
           "Type": "ModifyTags",
           "Event": "SIGNAL_RECEIVED",
           "Interval": 0.0,
-          "Delay": 2.8,
+          "Delay": 3.2,
           "Entry": 1,
           "Operation": "Set",
           "TagKey": "Busy",
@@ -114315,10 +117428,31 @@
           "Center": "Volume"
         },
         {
+          "Type": "PlayVfx",
+          "Event": "SIGNAL_RECEIVED",
+          "Interval": 0.0,
+          "Delay": 0.0,
+          "ParticleSystem": "Dungeon_Goblin_Mace_Slam_Warning",
+          "Offset": {
+            "X": 0.0,
+            "Y": 0.1,
+            "Z": 0.0
+          },
+          "Anchor": "Volume",
+          "Scale": 2.244,
+          "Rotation": {
+            "X": 0.0,
+            "Y": 0.0,
+            "Z": 0.0
+          },
+          "Duration": 1.6,
+          "Entry": 1
+        },
+        {
           "Type": "ModifyTags",
           "Event": "SIGNAL_RECEIVED",
           "Interval": 0.0,
-          "Delay": 1.2,
+          "Delay": 1.6,
           "Entry": 1,
           "Operation": "Set",
           "TagKey": "Dmg",
@@ -114332,7 +117466,7 @@
           "Type": "ModifyTags",
           "Event": "SIGNAL_RECEIVED",
           "Interval": 0.0,
-          "Delay": 2.8,
+          "Delay": 3.2,
           "Entry": 1,
           "Operation": "Set",
           "TagKey": "Dmg",
@@ -114346,7 +117480,7 @@
           "Type": "ModifyTags",
           "Event": "SIGNAL_RECEIVED",
           "Interval": 0.0,
-          "Delay": 2.8,
+          "Delay": 3.2,
           "Entry": 1,
           "Operation": "Set",
           "TagKey": "Busy",
@@ -114471,6 +117605,27 @@
           "Event": "SIGNAL_RECEIVED",
           "Interval": 0.0,
           "Delay": 0.0,
+          "ParticleSystem": "Dungeon_Goblin_Mace_Slam_Warning",
+          "Offset": {
+            "X": 0.0,
+            "Y": 0.1,
+            "Z": 0.0
+          },
+          "Anchor": "Volume",
+          "Scale": 2.244,
+          "Rotation": {
+            "X": 0.0,
+            "Y": 0.0,
+            "Z": 0.0
+          },
+          "Duration": 1.6,
+          "Entry": 1
+        },
+        {
+          "Type": "PlayVfx",
+          "Event": "SIGNAL_RECEIVED",
+          "Interval": 0.0,
+          "Delay": 0.0,
           "ParticleSystem": "Goblin_Decorative_Steam",
           "Offset": {
             "X": 7.052622898861799,
@@ -114484,7 +117639,7 @@
             "Y": 0.0,
             "Z": 0.0
           },
-          "Duration": 1.2,
+          "Duration": 1.6,
           "Entry": 1
         },
         {
@@ -114505,7 +117660,7 @@
           "Type": "PlayVfx",
           "Event": "SIGNAL_RECEIVED",
           "Interval": 0.0,
-          "Delay": 1.2,
+          "Delay": 1.6,
           "ParticleSystem": "Dungeon_Goblin_Smoke_Pipe_Large",
           "Offset": {
             "X": 7.052622898861799,
@@ -114526,7 +117681,7 @@
           "Type": "PlayVfx",
           "Event": "SIGNAL_RECEIVED",
           "Interval": 0.0,
-          "Delay": 1.2,
+          "Delay": 1.6,
           "ParticleSystem": "Effect_Poison",
           "Offset": {
             "X": 0.0,
@@ -114547,7 +117702,7 @@
           "Type": "PlaySound",
           "Event": "SIGNAL_RECEIVED",
           "Interval": 0.0,
-          "Delay": 1.2,
+          "Delay": 1.6,
           "SoundEvent": "SFX_Env_Geyzer_Burst",
           "Location": "VolumeCenter",
           "Offset": {
@@ -114561,7 +117716,7 @@
           "Type": "ModifyTags",
           "Event": "SIGNAL_RECEIVED",
           "Interval": 0.0,
-          "Delay": 1.2,
+          "Delay": 1.6,
           "Entry": 1,
           "Operation": "Set",
           "TagKey": "Dmg",
@@ -114575,7 +117730,7 @@
           "Type": "ModifyTags",
           "Event": "SIGNAL_RECEIVED",
           "Interval": 0.0,
-          "Delay": 2.8,
+          "Delay": 3.2,
           "Entry": 1,
           "Operation": "Set",
           "TagKey": "Dmg",
@@ -114589,7 +117744,7 @@
           "Type": "ModifyTags",
           "Event": "SIGNAL_RECEIVED",
           "Interval": 0.0,
-          "Delay": 2.8,
+          "Delay": 3.2,
           "Entry": 1,
           "Operation": "Set",
           "TagKey": "Busy",
@@ -114710,10 +117865,31 @@
           "Center": "Volume"
         },
         {
+          "Type": "PlayVfx",
+          "Event": "SIGNAL_RECEIVED",
+          "Interval": 0.0,
+          "Delay": 0.0,
+          "ParticleSystem": "Dungeon_Goblin_Mace_Slam_Warning",
+          "Offset": {
+            "X": 0.0,
+            "Y": 0.1,
+            "Z": 0.0
+          },
+          "Anchor": "Volume",
+          "Scale": 2.244,
+          "Rotation": {
+            "X": 0.0,
+            "Y": 0.0,
+            "Z": 0.0
+          },
+          "Duration": 1.6,
+          "Entry": 1
+        },
+        {
           "Type": "ModifyTags",
           "Event": "SIGNAL_RECEIVED",
           "Interval": 0.0,
-          "Delay": 1.2,
+          "Delay": 1.6,
           "Entry": 1,
           "Operation": "Set",
           "TagKey": "Dmg",
@@ -114727,7 +117903,7 @@
           "Type": "ModifyTags",
           "Event": "SIGNAL_RECEIVED",
           "Interval": 0.0,
-          "Delay": 2.8,
+          "Delay": 3.2,
           "Entry": 1,
           "Operation": "Set",
           "TagKey": "Dmg",
@@ -114741,7 +117917,7 @@
           "Type": "ModifyTags",
           "Event": "SIGNAL_RECEIVED",
           "Interval": 0.0,
-          "Delay": 2.8,
+          "Delay": 3.2,
           "Entry": 1,
           "Operation": "Set",
           "TagKey": "Busy",
@@ -114862,10 +118038,31 @@
           "Center": "Volume"
         },
         {
+          "Type": "PlayVfx",
+          "Event": "SIGNAL_RECEIVED",
+          "Interval": 0.0,
+          "Delay": 0.0,
+          "ParticleSystem": "Dungeon_Goblin_Mace_Slam_Warning",
+          "Offset": {
+            "X": 0.0,
+            "Y": 0.1,
+            "Z": 0.0
+          },
+          "Anchor": "Volume",
+          "Scale": 2.244,
+          "Rotation": {
+            "X": 0.0,
+            "Y": 0.0,
+            "Z": 0.0
+          },
+          "Duration": 1.6,
+          "Entry": 1
+        },
+        {
           "Type": "ModifyTags",
           "Event": "SIGNAL_RECEIVED",
           "Interval": 0.0,
-          "Delay": 1.2,
+          "Delay": 1.6,
           "Entry": 1,
           "Operation": "Set",
           "TagKey": "Dmg",
@@ -114879,7 +118076,7 @@
           "Type": "ModifyTags",
           "Event": "SIGNAL_RECEIVED",
           "Interval": 0.0,
-          "Delay": 2.8,
+          "Delay": 3.2,
           "Entry": 1,
           "Operation": "Set",
           "TagKey": "Dmg",
@@ -114893,7 +118090,7 @@
           "Type": "ModifyTags",
           "Event": "SIGNAL_RECEIVED",
           "Interval": 0.0,
-          "Delay": 2.8,
+          "Delay": 3.2,
           "Entry": 1,
           "Operation": "Set",
           "TagKey": "Busy",
@@ -115018,6 +118215,27 @@
           "Event": "SIGNAL_RECEIVED",
           "Interval": 0.0,
           "Delay": 0.0,
+          "ParticleSystem": "Dungeon_Goblin_Mace_Slam_Warning",
+          "Offset": {
+            "X": 0.0,
+            "Y": 0.1,
+            "Z": 0.0
+          },
+          "Anchor": "Volume",
+          "Scale": 2.244,
+          "Rotation": {
+            "X": 0.0,
+            "Y": 0.0,
+            "Z": 0.0
+          },
+          "Duration": 1.6,
+          "Entry": 1
+        },
+        {
+          "Type": "PlayVfx",
+          "Event": "SIGNAL_RECEIVED",
+          "Interval": 0.0,
+          "Delay": 0.0,
           "ParticleSystem": "Goblin_Decorative_Steam",
           "Offset": {
             "X": 8.135386072292992,
@@ -115031,7 +118249,7 @@
             "Y": 0.0,
             "Z": 0.0
           },
-          "Duration": 1.2,
+          "Duration": 1.6,
           "Entry": 1
         },
         {
@@ -115052,7 +118270,7 @@
           "Type": "PlayVfx",
           "Event": "SIGNAL_RECEIVED",
           "Interval": 0.0,
-          "Delay": 1.2,
+          "Delay": 1.6,
           "ParticleSystem": "Dungeon_Goblin_Smoke_Pipe_Large",
           "Offset": {
             "X": 8.135386072292992,
@@ -115073,7 +118291,7 @@
           "Type": "PlayVfx",
           "Event": "SIGNAL_RECEIVED",
           "Interval": 0.0,
-          "Delay": 1.2,
+          "Delay": 1.6,
           "ParticleSystem": "Effect_Poison",
           "Offset": {
             "X": 0.0,
@@ -115094,7 +118312,7 @@
           "Type": "PlaySound",
           "Event": "SIGNAL_RECEIVED",
           "Interval": 0.0,
-          "Delay": 1.2,
+          "Delay": 1.6,
           "SoundEvent": "SFX_Env_Geyzer_Burst",
           "Location": "VolumeCenter",
           "Offset": {
@@ -115108,7 +118326,7 @@
           "Type": "ModifyTags",
           "Event": "SIGNAL_RECEIVED",
           "Interval": 0.0,
-          "Delay": 1.2,
+          "Delay": 1.6,
           "Entry": 1,
           "Operation": "Set",
           "TagKey": "Dmg",
@@ -115122,7 +118340,7 @@
           "Type": "ModifyTags",
           "Event": "SIGNAL_RECEIVED",
           "Interval": 0.0,
-          "Delay": 2.8,
+          "Delay": 3.2,
           "Entry": 1,
           "Operation": "Set",
           "TagKey": "Dmg",
@@ -115136,7 +118354,7 @@
           "Type": "ModifyTags",
           "Event": "SIGNAL_RECEIVED",
           "Interval": 0.0,
-          "Delay": 2.8,
+          "Delay": 3.2,
           "Entry": 1,
           "Operation": "Set",
           "TagKey": "Busy",
@@ -115257,10 +118475,31 @@
           "Center": "Volume"
         },
         {
+          "Type": "PlayVfx",
+          "Event": "SIGNAL_RECEIVED",
+          "Interval": 0.0,
+          "Delay": 0.0,
+          "ParticleSystem": "Dungeon_Goblin_Mace_Slam_Warning",
+          "Offset": {
+            "X": 0.0,
+            "Y": 0.1,
+            "Z": 0.0
+          },
+          "Anchor": "Volume",
+          "Scale": 2.244,
+          "Rotation": {
+            "X": 0.0,
+            "Y": 0.0,
+            "Z": 0.0
+          },
+          "Duration": 1.6,
+          "Entry": 1
+        },
+        {
           "Type": "ModifyTags",
           "Event": "SIGNAL_RECEIVED",
           "Interval": 0.0,
-          "Delay": 1.2,
+          "Delay": 1.6,
           "Entry": 1,
           "Operation": "Set",
           "TagKey": "Dmg",
@@ -115274,7 +118513,7 @@
           "Type": "ModifyTags",
           "Event": "SIGNAL_RECEIVED",
           "Interval": 0.0,
-          "Delay": 2.8,
+          "Delay": 3.2,
           "Entry": 1,
           "Operation": "Set",
           "TagKey": "Dmg",
@@ -115288,7 +118527,7 @@
           "Type": "ModifyTags",
           "Event": "SIGNAL_RECEIVED",
           "Interval": 0.0,
-          "Delay": 2.8,
+          "Delay": 3.2,
           "Entry": 1,
           "Operation": "Set",
           "TagKey": "Busy",
@@ -115428,6 +118667,19 @@
           "MatchValue": "",
           "Radius": 80.0,
           "Center": "Volume"
+        },
+        {
+          "Type": "ModifyTags",
+          "Event": "BLOCK_USED",
+          "Interval": 0.0,
+          "Delay": 0.5,
+          "Operation": "Set",
+          "TagKey": "Valve",
+          "TagValue": "On",
+          "MatchKey": "Leaks_Pipes",
+          "MatchValue": "",
+          "Radius": 80.0,
+          "Center": "Volume"
         }
       ],
       "ConditionTiming": "BeforeVolumeDelay",
@@ -115441,6 +118693,97 @@
         "Pulled": "No"
       },
       "Name": "Leaks_Valve"
+    },
+    "f3c1f607-79c0-5a69-ac8f-bc31d23f2a50": {
+      "Position": {
+        "X": -19.0,
+        "Y": 128.5,
+        "Z": -455.5
+      },
+      "Shape": {
+        "Type": "Box",
+        "Min": {
+          "X": -0.95,
+          "Y": -6.45,
+          "Z": -1.45
+        },
+        "Max": {
+          "X": 0.95,
+          "Y": 6.45,
+          "Z": 1.45
+        }
+      },
+      "Conditions": [
+        {
+          "Type": "TagCondition",
+          "Event": "TAG_ADDED",
+          "Source": "Self",
+          "TagKey": "Valve",
+          "Comparison": "Exactly",
+          "CompareAgainst": "Value",
+          "TagValue": "On",
+          "Inverted": false,
+          "MatchKey": "",
+          "MatchValue": "",
+          "Radius": 50.0,
+          "Center": "Volume"
+        }
+      ],
+      "Effects": [
+        {
+          "Type": "ReplaceBlockType",
+          "Event": "TAG_ADDED",
+          "Interval": 0.0,
+          "Delay": 0.2,
+          "FromBlockTypes": [
+            "Metal_Goblin_Iron_Pipe_Large_Glowy"
+          ],
+          "FromBlockState": "",
+          "ToBlockType": "Metal_Goblin_Iron_Pipe_Large_Glowy",
+          "ToBlockState": "Off",
+          "Offset": {
+            "X": 0.0,
+            "Y": 0.0,
+            "Z": 0.0
+          },
+          "Origin": "VolumeOrigin",
+          "Rotation": "None",
+          "Pitch": "None",
+          "Roll": "None"
+        },
+        {
+          "Type": "ReplaceBlockType",
+          "Event": "TAG_ADDED",
+          "Interval": 0.0,
+          "Delay": 0.4,
+          "FromBlockTypes": [
+            "VFX_Dungeon_Goblin_Leaking_Pipe"
+          ],
+          "FromBlockState": "",
+          "ToBlockType": "Empty",
+          "ToBlockState": "",
+          "Offset": {
+            "X": 0.0,
+            "Y": 0.0,
+            "Z": 0.0
+          },
+          "Origin": "VolumeOrigin",
+          "Rotation": "None",
+          "Pitch": "None",
+          "Roll": "None"
+        }
+      ],
+      "TargetTypes": [
+        "Player"
+      ],
+      "Enabled": true,
+      "GroupId": "4ce933b9-7202-53a8-8dcf-200266ee6b5c",
+      "KeepLoaded": false,
+      "Tags": {
+        "Leaks_Pipes": "Open",
+        "Valve": "Off"
+      },
+      "Name": "Leaks_Pipes"
     },
     "067d2932-1725-5d80-8105-31d7fa5e9900": {
       "Position": {
@@ -185304,6 +188647,19 @@
       "Enabled": true,
       "Color": 10879231,
       "Name": "Checkpoints"
+    },
+    "f8701ac2-67f5-57e4-adc7-4e00110c0701": {
+      "Origin": {
+        "X": 0.0,
+        "Y": 100.0,
+        "Z": -440.0
+      },
+      "TargetTypes": [
+        "Player"
+      ],
+      "Enabled": true,
+      "Color": 13148746,
+      "Name": "Tower_Court_Guardians"
     },
     "649a46d3-c78f-5639-b925-73f6a9090a9a": {
       "Origin": {

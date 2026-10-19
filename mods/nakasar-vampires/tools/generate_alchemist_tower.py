@@ -859,6 +859,11 @@ public final class TowerLayout {{
 {points(alch["heals"])}
     }};
 
+    /** Cour : les gardiens d'airain à abattre, et le volume des portes de la tour (tools/alchemist_traps.py,
+     * Traps.court) qui tombent quand ils le sont tous (Guardians=On). */
+    public static final int COURT_GUARDIANS = {len(alchemist_tower.GUARDIANS)};
+    public static final String COURT_DOOR = "{alchemist_traps.court_ids()['door']}";
+
     private TowerLayout() {{
     }}
 }}

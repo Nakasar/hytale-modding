@@ -462,13 +462,64 @@ def _arches(p, rng):
         p.set(x, 0, z, rng.choice(CRYSTALS))
 
 
+# Petits groupes d'ennemis des îles (Kevin : « des petits groupes d'ennemis divers ») : rôles de
+# tools/generate_tower_mobs.py, posés en arc de cercle à `r` du centre, loin des allées ; un groupe par entrée de liste.
+SPAWNER = "Nakasar_Spawner_"
+ISLAND_MOBS = {
+    "HaltFountain": (7.5, [["Homunculus", "Homunculus", "Living_Flask_Poison"]]),
+    "HaltKiosk": (7.5, [["Alchemist_Apprentice", "Homunculus", "Homunculus"]]),
+    "Gardens": (14.0, [["Snapdragon", "Carnivorous_Vine", "Snapdragon"], ["Elemental_Root", "Homunculus", "Homunculus"]]),
+    "HaltSprings": (7.5, [["Living_Flask_Fire", "Elemental_Frost", "Living_Flask_Fire"]]),
+    "Ruins": (12.0, [["Homunculus", "Lead_Golem", "Homunculus"], ["Alchemist_Apprentice", "Living_Flask_Poison"]]),
+    "HaltArches": (7.5, [["Alchemist_Apprentice", "Living_Flask_Fire", "Alchemist_Apprentice"]]),
+}
+TALL_MOBS = {"Lead_Golem": 4}
+
+
+def _mobs(p, island, gates):
+    """Blocs d'apparition des groupes de l'île : chaque groupe en arc, dans le secteur le plus loin des allées (et des
+    autres groupes) ; chaque mob sur la case libre la plus proche (sol plein, air au-dessus, hors des allées)."""
+    r, groups = ISLAND_MOBS[island["name"]]
+    taken = [math.degrees(math.atan2(gz, gx)) for gx, gz in gates]
+    spread = math.degrees(2.8 / r)  # environ trois blocs entre deux mobs du groupe
+
+    def gap(a):
+        return min(abs((a - t + 180) % 360 - 180) for t in taken)
+
+    out = []
+    for group in groups:
+        a0 = max(range(0, 360, 5), key=gap)
+        taken.append(a0)
+        for j, role in enumerate(group):
+            a = math.radians(a0 + (j - (len(group) - 1) / 2) * spread)
+            x0, z0 = r * math.cos(a), r * math.sin(a)
+            height = TALL_MOBS.get(role, 3)
+            best = None
+            for dx in range(-3, 4):
+                for dz in range(-3, 4):
+                    x, z = round(x0) + dx, round(z0) + dz
+                    if (_in_lane(x, z, gates, BRIDGE_HALF + 1) or p.get(x, -1, z) in (None, AIR)
+                            or not all(p.free(x, y, z) for y in range(height))
+                            or any(abs(x - ox) + abs(z - oz) < 2 for ox, _, oz in out)):
+                        continue
+                    d = (x - x0) ** 2 + (z - z0) ** 2
+                    if best is None or d < best[0]:
+                        best = (d, x, z)
+            if best is None:
+                raise RuntimeError(f"îles : pas de place pour {role} sur {island['name']}")
+            p.set(best[1], 0, best[2], SPAWNER + role)
+            out.append((best[1], 0, best[2]))
+    return out
+
+
 def halt_prefab(island, seed):
-    """Petite île de halte : place, garde-corps, et le motif de la halte au centre."""
+    """Petite île de halte : place, garde-corps, le motif de la halte au centre, un petit groupe d'ennemis."""
     p = pf.Prefab(seed)
     rng = random.Random(seed)
-    _plaza(p, island, rng)
+    gates = _plaza(p, island, rng)
     {"fountain": lambda: _fountain(p, 0, 0, 3, 5, rng), "kiosk": lambda: _kiosk(p, rng),
      "springs": lambda: _springs(p, rng), "arches": lambda: _arches(p, rng)}[island["feature"]]()
+    _mobs(p, island, gates)
     return p
 
 
@@ -524,6 +575,7 @@ def gardens_prefab(seed):
                 p.set(px, 5, pz, "Plant_Leaves_Wisteria_Wild")
                 if abs(w) < 3 and rng.random() < 0.6:
                     p.set(px, 4, pz, VINES)
+    _mobs(p, GARDENS, gates)
     return p
 
 
@@ -581,6 +633,7 @@ def ruins_prefab(seed):
     spot = (sx, 0, sz)
     p.set(sx + 5, -1, sz, ORNATE)
     p.set(sx + 5, 0, sz, STATUE, pf.WEST)
+    _mobs(p, RUINS, gates)
     return p, spot, ((sx + 5, 0, sz), pf.WEST)
 
 

@@ -45,6 +45,7 @@ from pathlib import Path
 from PIL import Image, ImageDraw
 
 import alchemist_tower as at
+import generate_assets as gx
 
 PACK = Path(__file__).resolve().parent.parent / "src" / "main" / "resources"
 COMMON = PACK / "Common"
@@ -74,8 +75,8 @@ SOUNDS = {
     "SFX_Dungeon_Checkpoint_Activate",
 }
 EFFECTS = {"Poison_T1", "Poison_T2", "Burn", "Slow", "Hazard_Electric_Stun", "Health_Pack"}
-BLOCKS = {"Empty", "Fluid_Fire", at.SEAL, at.HEDGE, at.RUBBLE, "Rock_Marble_Brick", "Rock_Marble_Brick_Smooth",
-          "Rock_Marble_Cobble"}
+BLOCKS = {"Empty", "Fluid_Fire", at.SEAL, at.HEDGE, at.RUBBLE, at.DOOR, "Rock_Marble_Brick", "Rock_Marble_Brick_Smooth",
+          "Rock_Marble_Cobble", at.CONDUIT_LIT, at.EMANATION_LIT, at.EMANATION_FED, at.PIPE_GLOW, at.LEAK}
 NPCS = {"Nakasar_Elemental_Fire", "Nakasar_Elemental_Frost", "Nakasar_Elemental_Root", "Nakasar_Elemental_Thunder"}
 
 # Quadrants de la Salle des Transmutations : (signe de x, signe de z), élémentaire du foyer, particules d'annonce et de
@@ -92,6 +93,10 @@ QUADRANTS = {
 }
 QUADRANT_ORDER = ("Fire", "Ice", "Acid", "Lightning")
 ZERO = {"X": 0.0, "Y": 0.0, "Z": 0.0}
+# Zone rouge des jets de gaz : cercle d'annonce du coup de masse des gobelins, échelle 0,68 par bloc de rayon (comme
+# les sorts du Codex), affiché pendant toute l'annonce.
+GAS_WARNING_SCALE = 0.68
+GAS_WARN = 1.6
 
 
 # --- volumes : briques reprises des volumes de The_Deepworks --------------------------------------------------------
@@ -163,10 +168,10 @@ def place(event, block, pos, delay=0.0, entry=None):
                   Origin="WorldAbsolute", ReplaceMode="Always", Rotation="None", Pitch="None", Roll="None")
 
 
-def replace(event, sources, target, delay=0.0, entry=None):
+def replace(event, sources, target, delay=0.0, entry=None, from_state="", to_state=""):
     """Remplace, dans la forme du volume, les blocs `sources` par `target` (forme par défaut : celle du volume)."""
-    return effect("ReplaceBlockType", event, delay, entry, FromBlockTypes=list(sources), FromBlockState="",
-                  ToBlockType=target, ToBlockState="", Offset=dict(ZERO), Origin="VolumeOrigin", Rotation="None",
+    return effect("ReplaceBlockType", event, delay, entry, FromBlockTypes=list(sources), FromBlockState=from_state,
+                  ToBlockType=target, ToBlockState=to_state, Offset=dict(ZERO), Origin="VolumeOrigin", Rotation="None",
                   Pitch="None", Roll="None")
 
 
@@ -290,28 +295,69 @@ class Traps:
                  [tags("BLOCK_USED", flag, "Yes", 0.1)] + used_effects,
                  [tag_is("BLOCK_USED", flag, "No")], volume_tags={flag: "No"}, ConditionTiming="BeforeVolumeDelay")
 
-    def gate(self, name, group, cells, keys, opened, block=at.SEAL):
-        """Passage fermé par `block` : s'ouvre quand toutes les étiquettes `keys` valent On."""
+    def gate(self, name, group, cells, keys, opened, block=at.SEAL, delay=0.0, sfx="SFX_Crystal_Break"):
+        """Passage fermé par `block` : s'ouvre (`delay` secondes plus tard) quand toutes les étiquettes `keys` valent On."""
         center, shape = self.bounds(cells)
         conditions = [tag_is("TAG_ADDED", k, "On") for k in keys] + [tag_is("TAG_ADDED", name, "Closed")]
         effects = [tags("TAG_ADDED", name, "Open"),
-                   sound("TAG_ADDED", "SFX_Crystal_Break", 0.6),
-                   replace("TAG_ADDED", [block], "Empty", 0.8)] + opened
+                   sound("TAG_ADDED", sfx, delay + 0.6),
+                   replace("TAG_ADDED", [block], "Empty", delay + 0.8)] + opened
         self.add(name, group, center, shape, effects, conditions,
                  volume_tags={name: "Closed", **{k: "Off" for k in keys}})
 
     # --- les pièges ----------------------------------------------------------------------------------------------
 
+    def court(self):
+        """Portes de la tour : tower.CourtGuardSystem pose Guardians=On quand les gardiens d'airain sont tous abattus."""
+        g = self.group("Tower_Court_Guardians", 13148746)
+        self.gate("Court_Door", g, self.t["court_door"], ["Guardians"],
+                  [title("TAG_ADDED", "court", 0.4), vfx("TAG_ADDED", "Block_Break_Dust", 0.8, scale=3.0),
+                   sound("TAG_ADDED", "SFX_Emit_Goblin_Pipes_Activate")],
+                  block=at.DOOR, delay=0.4, sfx="SFX_Lever_Metal_On")
+
+    def light(self, cells, block, delay, step, event="BLOCK_USED"):
+        """Allume une suite de blocs l'un après l'autre (PlaceBlock), à partir de `delay`, un bloc toutes les `step` s."""
+        return [place(event, block, self.world(*c), delay + i * step) for i, c in enumerate(cells)]
+
     def hall(self):
+        """Les trois athanors : chacun allumé fait courir la lumière dans son conduit jusqu'à l'alambic, remplit son
+        tube et fait vibrer le sceau du Couloir des fuites ; les trois ensemble allument le conduit maître et la colonne
+        relais jusqu'au plafond, puis le sceau se dissout."""
         g = self.group("Tower_Hall_Athanors", 16737843)
+        parts = self.t["hall"]
+        seal = self.t["hall_seal"]
+        seal_center, _ = self.bounds(seal)
         keys = []
         for i, pos in enumerate(self.t["athanors"], 1):
             keys.append(f"Athanor_{i}")
-            self.usable(f"Hall_Athanor_{i}", g, pos, [
-                sound("BLOCK_USED", "SFX_Flame_Ignite"),
-                vfx("BLOCK_USED", "Magic_Sparks_Heavy_GS", offset=(0, 0.5, 0)),
-                tags("BLOCK_USED", f"Athanor_{i}", "On", 0.2, match="Hall_Seal", radius=80)])
-        self.gate("Hall_Seal", g, self.t["hall_seal"], keys, [title("TAG_ADDED", "hall")])
+            x, y, z = pos
+            conduit = sorted(parts["conduits"][i - 1], key=lambda c: -math.hypot(c[0], c[2]))  # de l'athanor à l'alambic
+            tube = sorted(parts["tubes"][i - 1], key=lambda c: c[1])
+            fx = [sound("BLOCK_USED", "SFX_Flame_Ignite"),
+                  vfx("BLOCK_USED", "Magic_Sparks_Heavy_GS", offset=(0, 0.5, 0)),
+                  place("BLOCK_USED", at.EMANATION_LIT, self.world(x, y + 2, z), 0.3)]
+            fx += self.light(conduit, at.CONDUIT_LIT, 0.4, 0.12)
+            fx += self.light(tube, at.CONDUIT_LIT, 0.4 + 0.12 * len(conduit), 0.1)
+            done = 0.4 + 0.12 * len(conduit) + 0.1 * len(tube)
+            fx += [sound("BLOCK_USED", "SFX_Emit_Goblin_Pipes_Activate", 0.4),
+                   tags("BLOCK_USED", f"Athanor_{i}", "On", done, match="Hall_Seal", radius=80)]
+            self.usable(f"Hall_Athanor_{i}", g, pos, fx)
+        # Le sceau vibre à chaque athanor allumé.
+        self.add("Hall_Seal_Pulse", g, seal_center, box(1, 1, 1), [
+            vfx("TAG_ADDED", "Magic_Sparks_Heavy_GS", scale=2.0),
+            vfx("TAG_ADDED", "Goblin_Decorative_Lightning", 0.2, scale=1.5),
+            sound("TAG_ADDED", "SFX_Emit_Dungeon_Goblin_Void_Thunder")],
+            volume_tags={"Hall_Seal": "Pulse", **{k: "Off" for k in keys}})
+        main = sorted(parts["main"], key=lambda c: math.hypot(c[0], c[2]))  # de l'alambic à la colonne
+        relay = sorted(parts["relay"], key=lambda c: c[1])
+        opened = self.light(main, at.CONDUIT_LIT, 0.2, 0.08, "TAG_ADDED")
+        opened += self.light(relay, at.CONDUIT_LIT, 0.2 + 0.08 * len(main), 0.08, "TAG_ADDED")
+        rise = 0.2 + 0.08 * (len(main) + len(relay))
+        top = self.world(0, at.ALEMBIC_TOP + 4, 0)
+        opened += [place("TAG_ADDED", at.EMANATION_FED, top, 0.2),
+                   sound("TAG_ADDED", "SFX_Emit_Goblin_Pipes_Activate", 0.2),
+                   title("TAG_ADDED", "hall", rise)]
+        self.gate("Hall_Seal", g, seal, keys, opened, delay=rise)
 
     def leaks(self):
         g = self.group("Tower_Leaks_Steam", 7864183)
@@ -324,23 +370,34 @@ class Traps:
                 cx = r * math.cos(math.radians(k))
                 cz = r * math.sin(math.radians(k))
                 base = (cx + self.origin[0], y + self.origin[1], cz + self.origin[2])
-                warn, hit = [], []
+                # Zone rouge au sol pendant l'annonce, comme les jets de flammes de The_Deepworks.
+                warn = [vfx("", "Dungeon_Goblin_Mace_Slam_Warning", offset=(0, 0.1, 0), scale=GAS_WARNING_SCALE * 3.3,
+                            duration=GAS_WARN)]
+                hit = []
                 if j == 1:  # une seule bouche joue les particules et le son
                     off = (mouth[0] + 0.5 - cx, 1.0, mouth[1] + 0.5 - cz)
-                    warn = [vfx("", "Goblin_Decorative_Steam", offset=off, duration=1.2),
-                            sound("", "SFX_Emit_Goblin_Steam_A")]
+                    warn += [vfx("", "Goblin_Decorative_Steam", offset=off, duration=GAS_WARN),
+                             sound("", "SFX_Emit_Goblin_Steam_A")]
                     hit = [vfx("", "Dungeon_Goblin_Smoke_Pipe_Large", offset=off, duration=1.6),
                            vfx("", "Effect_Poison", offset=(0, 1, 0), duration=1.6),
                            sound("", "SFX_Env_Geyzer_Burst")]
                 self.pulse(f"Leaks_Jet_{k:03d}_{j}", g, base, cylinder(3.3, 4), "Steam", "Leaks_Pair", pair,
-                           warn=1.2, active=1.6, warn_fx=warn, hit_fx=hit,
+                           warn=GAS_WARN, active=1.6, warn_fx=warn, hit_fx=hit,
                            hits=[status("Poison_T1", 6.0), damage(8, 0.8)])
         lever = self.t["lever"]
         self.usable("Leaks_Valve", g, lever, [
             sound("BLOCK_USED", "SFX_Lever_Metal_On"),
             sound("BLOCK_USED", "SFX_Emit_Goblin_Pipes_Activate", 0.4),
             toggle("DisableVolume", "BLOCK_USED", "Leaks_Controller", delay=0.5, radius=80),
-            tags("BLOCK_USED", "Valve", "On", 0.5, match="Leaks_Shortcut", radius=80)], flag="Pulled")
+            tags("BLOCK_USED", "Valve", "On", 0.5, match="Leaks_Shortcut", radius=80),
+            tags("BLOCK_USED", "Valve", "On", 0.5, match="Leaks_Pipes", radius=80)], flag="Pulled")
+        # La conduite de gaz s'éteint et les fuites de la tuyauterie se tarissent quand la vanne est fermée.
+        pipes = self.t["valve_pipes"] + self.t["valve_leaks"]
+        center, shape = self.bounds(pipes)
+        self.add("Leaks_Pipes", g, center, shape, [
+            replace("TAG_ADDED", [at.PIPE_GLOW], at.PIPE_GLOW, 0.2, to_state="Off"),
+            replace("TAG_ADDED", [at.LEAK], "Empty", 0.4)],
+            [tag_is("TAG_ADDED", "Valve", "On")], volume_tags={"Leaks_Pipes": "Open", "Valve": "Off"})
         self.gate("Leaks_Shortcut", g, self.t["shortcut_seal"], ["Valve"], [title("TAG_ADDED", "valve")])
 
     def greenhouse(self):
@@ -667,6 +724,7 @@ class Traps:
             [tag_is("TAG_ADDED", "Reset", "On")], volume_tags={"Reset": "Off"})
 
     def build(self):
+        self.court()
         self.hall()
         self.leaks()
         self.greenhouse()
@@ -729,6 +787,11 @@ def codex_ids():
     return {"seal": vid("Codex_Seal"), "arena": vid("Codex_Arena"), "fire": vid("Codex_Fire"),
             "rain": vid("Codex_Rain"), "frost": [vid(f"Codex_Frost_{k}") for k in range(len(at.LECTERN_ANGLES))],
             "collapse": [vid(f"Codex_Collapse_{i}") for i in range(len(at.COLLAPSE_ARCS))]}
+
+
+def court_ids():
+    """Id du volume des portes de la tour que tower.CourtGuardSystem étiquette (TowerLayout.java)."""
+    return {"door": vid("Court_Door")}
 
 
 def chimera_ids():
@@ -888,6 +951,124 @@ def lever_item():
     })
 
 
+VALVE_IRON = (58, 60, 66)
+VALVE_BRASS = (176, 132, 58)
+VALVE_RED = (156, 30, 28)
+VALVE_LAMPS = {"default": (255, 70, 40), "On": (90, 255, 120)}
+
+
+def valve_parts(lamp):
+    """Vanne de gaz : conduite verticale de fer (deux blocs de haut) avec ses brides, corps de laiton, volant rouge à
+    rayons face au joueur (+Z), manomètre et voyant (rouge : gaz ouvert ; vert une fois la vanne fermée)."""
+    iron, dark = gx.painter(VALVE_IRON, "iron"), gx.painter(gx.IRON_DARK, "iron")
+    brass, red = gx.painter(VALVE_BRASS, "iron"), gx.painter(VALVE_RED, "iron")
+    parts = [
+        ("Base", (0, 1, -3), (14, 2, 14), 0, dark, "flat"),
+        ("Pipe", (0, 32, -6), (8, 64, 8), 0, iron, "flat"),
+        ("Body", (0, 30, -2), (12, 12, 10), 0, brass, "flat"),
+        ("Stem", (0, 30, 6), (3, 3, 6), 0, brass, "flat"),
+        ("Hub", (0, 30, 9.5), (4.5, 4.5, 2.5), 0, brass, "flat"),
+        ("Spoke_H", (0, 30, 9.5), (17, 2, 1.5), 0, red, "flat"),
+        ("Spoke_V", (0, 30, 9.5), (2, 17, 1.5), 0, red, "flat"),
+        ("Gauge", (0, 46, -1), (7, 7, 3), 0, brass, "flat"),
+        ("Lamp", (0, 46, 0.8), (4, 4, 1), 0, gx.painter(lamp, glow=True), "fullbright"),
+    ]
+    for k, y in enumerate((3, 20, 41, 62)):
+        parts.append((f"Flange_{k}", (0, y, -6), (11, 3, 11), 0, dark, "flat"))
+    for k in range(16):
+        a = math.radians(k * 22.5)
+        parts.append((f"Rim_{k}", (round(9 * math.cos(a), 2), round(30 + 9 * math.sin(a), 2), 9.5), (3.2, 3.2, 2.5), 0,
+                      red, "flat"))
+    return parts
+
+
+def valve_render(textures, uv, size, state="default"):
+    return gx.render(valve_parts(VALVE_LAMPS[state]), textures[state], uv, size, yaw=-35, pitch=18, scale=size / 84,
+                     center=(0, 32, 0))
+
+
+def valve_assets():
+    """Modèle, textures (voyant rouge, puis vert), placement des textures et icône de la vanne ; le modèle est le même
+    pour les deux états."""
+    model = None
+    textures = {}
+    for state, lamp in VALVE_LAMPS.items():
+        parts = valve_parts(lamp)
+        atlas, uv = gx.build_atlas(parts, seed=4403, tex_w=64)
+        model = gx.build_model("Valve", parts, uv)
+        textures[state] = atlas
+    return model, textures, uv, valve_render(textures, uv, 256).resize((64, 64), Image.LANCZOS)
+
+
+def valve_item(model, textures, icon):
+    """Vanne de la conduite de gaz du Couloir des fuites : on la ferme (Use) ; elle passe à l'état On, voyant vert."""
+    return block_item(at.VALVE, icon, {
+        "Material": "Solid",
+        "DrawType": "Model",
+        "Opacity": "Transparent",
+        "CustomModel": model,
+        "CustomModelTexture": [{"Texture": textures["default"], "Weight": 1}],
+        "HitboxType": "Nakasar_Tower_Valve",
+        "VariantRotation": "NESW",
+        "Flags": {},
+        "Gathering": {"Soft": {}},
+        "Light": {"Color": "#f42"},
+        "BlockParticleSetId": "Metal",
+        "BlockSoundSetId": "Metal",
+        "PhysicalMaterialId": "Metal",
+        "ParticleColor": "#b0843a",
+        "InteractionHint": "server.interactionHints.activate",
+        "InteractionSoundEventId": "SFX_Lever_Metal_On",
+        "Interactions": {"Use": {"Interactions": [{"Type": "ChangeState", "Changes": {"default": "On", "On": "default"}}]}},
+        "State": {"Definitions": {"On": {
+            "CustomModelTexture": [{"Texture": textures["On"], "Weight": 1}],
+            "Light": {"Color": "#4f6"},
+            "InteractionSoundEventId": "SFX_Lever_Metal_Off"}}},
+    })
+
+
+def door_texture(seed=4404):
+    """Portes de la tour : planches de chêne sombre, bandes et rivets de laiton, sceau de la transmutation au centre."""
+    rng = random.Random(seed)
+    n = 32
+    img = Image.new("RGBA", (n, n), (62, 40, 28, 255))
+    px = img.load()
+    for x in range(n):
+        plank = x // 8
+        base = (62 + 6 * (plank % 2), 40 + 3 * (plank % 2), 28)
+        for y in range(n):
+            g = 1 + 0.08 * math.sin(y * 0.7 + plank * 3 + rng.random() * 0.4)
+            c = tuple(int(v * g) for v in base)
+            if x % 8 == 0:
+                c = tuple(int(v * 0.6) for v in c)
+            px[x, y] = c + (255,)
+    draw = ImageDraw.Draw(img)
+    brass, rivet = (176, 132, 58, 255), (236, 196, 110, 255)
+    for y0 in (3, 26):
+        draw.rectangle((0, y0, n - 1, y0 + 2), fill=brass)
+        for x in range(2, n, 6):
+            draw.point((x, y0 + 1), fill=rivet)
+    draw.ellipse((10, 10, 21, 21), outline=brass)
+    draw.polygon([(15.5, 11), (20, 19), (11, 19)], outline=rivet)
+    return img
+
+
+def door_item(texture, icon):
+    """Portes de la tour : bloc plein, posé au portail du hall et retiré par le volume de la cour (Traps.court)."""
+    return block_item(at.DOOR, icon, {
+        "Material": "Solid",
+        "DrawType": "Cube",
+        "Opacity": "Solid",
+        "Textures": [{"Sides": texture, "UpDown": texture, "Weight": 1}],
+        "HitboxType": "Full",
+        "Flags": {},
+        "Gathering": {"Soft": {}},
+        "BlockParticleSetId": "Wood",
+        "BlockSoundSetId": "Wood",
+        "ParticleColor": "#3e281c",
+    })
+
+
 def write_json(path, doc):
     path.parent.mkdir(parents=True, exist_ok=True)
     path.write_text(json.dumps(doc, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
@@ -904,7 +1085,24 @@ def main():
     write_json(ITEMS / f"{at.SEAL}.json", seal_item(texture.relative_to(COMMON).as_posix(),
                                                     icon.relative_to(COMMON).as_posix()))
     write_json(ITEMS / f"{at.HEDGE}.json", hedge_item())
+    model, textures, uv, valve_icon = valve_assets()
+    paths = {"model": COMMON / "Blocks" / "Nakasar" / "Alchemist" / "Valve.blockymodel",
+             "default": TEXTURES / "Valve.png", "On": TEXTURES / "Valve_On.png", "icon": ICONS / "Valve.png"}
+    write_json(paths["model"], model)
+    for state, atlas in textures.items():
+        atlas.save(paths[state])
+    valve_icon.save(paths["icon"])
+    rel = {k: v.relative_to(COMMON).as_posix() for k, v in paths.items()}
     write_json(ITEMS / f"{at.LEVER}.json", lever_item())
+    write_json(ITEMS / f"{at.VALVE}.json", valve_item(rel["model"], {k: rel[k] for k in textures}, rel["icon"]))
+    write_json(SERVER / "Item" / "Block" / "Hitboxes" / "Nakasar" / "Nakasar_Tower_Valve.json",
+               {"Boxes": [gx.hitbox_box(-7, 0, -10, 7, 52, 12)]})
+    door, door_icon = TEXTURES / "Tower_Door.png", ICONS / "Tower_Door.png"
+    door_img = door_texture()
+    door_img.save(door)
+    door_img.resize((64, 64), Image.NEAREST).save(door_icon)
+    write_json(ITEMS / f"{at.DOOR}.json", door_item(door.relative_to(COMMON).as_posix(),
+                                                    door_icon.relative_to(COMMON).as_posix()))
     rubble, rubble_icon = TEXTURES / "Codex_Rubble.png", ICONS / "Codex_Rubble.png"
     rubble_img = rubble_texture()
     rubble_img.save(rubble)
@@ -915,6 +1113,9 @@ def main():
         preview.mkdir(parents=True, exist_ok=True)
         img.resize((256, 256), Image.NEAREST).save(preview / "Alchemical_Seal.png")
         rubble_img.resize((256, 256), Image.NEAREST).save(preview / "Codex_Rubble.png")
+        door_img.resize((256, 256), Image.NEAREST).save(preview / "Tower_Door.png")
+        for state in textures:
+            valve_render(textures, uv, 512, state).save(preview / f"Valve_{state}.png")
     print("blocs des énigmes générés")
 
 

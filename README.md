@@ -351,17 +351,27 @@ Mobs (voir [docs/npc-0.7.2.md](docs/npc-0.7.2.md)) :
   de Deepworks : mode Aventure, aucune perte d'objets à la mort, marqueurs d'apparition actifs. À vérifier en jeu : que
   les mobs apparaissent (marqueurs dans une instance), les animations empruntées (morsure, golem, lancer de l'apprenti,
   sort des esprits), la taille des fioles vivantes et de la gargouille, la tenue des apprentis.
+  Petits groupes d'ennemis variés sur chaque île du parcours (`alchemist_archipelago.ISLAND_MOBS`). Cour de la tour :
+  quatre gardiens d'airain (golem de pierre-feu du jeu teint en laiton, 520 PV, frappes lourdes et coup au sol annoncé)
+  gardent les portes de la tour ; `tower/CourtGuardSystem` les fait tomber (volume `Court_Door`) quand les quatre sont
+  morts. À vérifier en jeu : que les quatre morts sont bien comptées (le système voit le cadavre pendant l'animation de
+  mort) et que les portes tombent.
 - **Tour de l'Alchimiste, pièges et énigmes** (`tools/alchemist_traps.py`, blocs posés par
   `alchemist_tower.Tower.traps`) : volumes déclencheurs comme ceux de Deepworks, vérifiés hors ligne par ValidateAssets.
-  Hall : rallumer les trois athanors (braseros éteints) dissout le sceau du Couloir des fuites. Couloir : jets de vapeur
-  toxique par groupes qui alternent, niches de refuge dans le mur, levier au fond (derrière la porte ouest) qui coupe
-  les jets et ouvre un raccourci vers la rampe du hall. Serre : nappes de spores qui ralentissent. Bibliothèque : le
+  Hall (dégagé autour du grand alambic) : rallumer les trois athanors (braseros éteints devant leurs fours) ; chacun
+  fait courir la lumière dans son conduit d'or jusqu'à l'alambic, remplit son tube et fait vibrer le sceau ; les trois
+  allument le conduit maître et la colonne relais, puis le sceau du Couloir des fuites se dissout. Couloir : jets de
+  vapeur toxique par groupes qui alternent, annoncés par des zones rouges au sol comme les jets de flammes de
+  Deepworks, niches de refuge dans le mur, vanne de gaz au fond (derrière la porte ouest), montée sur sa tuyauterie de
+  gobelins : la fermer coupe les jets, éteint la conduite luisante, tarit les fuites et ouvre un raccourci vers la rampe
+  du hall. Serre : nappes de spores qui ralentissent. Bibliothèque : le
   brasero met le feu à la haie de ronces qui barre la rampe ; des livres tombent sur des cercles annoncés. Salle des
   Transmutations : les quadrants se transmutent à tour de rôle (feu, glace, acide, foudre ; les croix d'or restent
   sûres), allumer le foyer d'un quadrant l'apaise mais libère un élémentaire, les quatre foyers dissolvent le sceau de
   l'escalier du laboratoire. Escalier des vents (s'éveille à la porte nord du laboratoire) : flammes qui balaient les
   marches, rafales qui plaquent contre le mur (jamais vers le vide), foudre sur des cercles annoncés. À vérifier en
-  jeu : que l'usage des braseros et du levier déclenche bien les volumes, les particules empruntées (taille, sens),
+  jeu : que l'usage des braseros et de la vanne déclenche bien les volumes (et que les blocs posés par PlaceBlock
+  allument conduits et tubes), la conduite luisante qui passe à l'état éteint, la taille des zones rouges du gaz, les particules empruntées (taille, sens),
   les dégâts, le feu des ronces (Fluid_Fire) et le sceau qui se dissout.
 - **Tour de l'Alchimiste, le Codex vivant** (`tools/generate_codex_models.py`, rôles dans `generate_tower_mobs.py`,
   zones dans `alchemist_traps.Traps.codex`, combat dans `tower/CodexSystem.java`) : boss de la bibliothèque, grimoire

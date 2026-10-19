@@ -1,0 +1,73 @@
+{
+  "TranslationProperties": {
+    "Name": "nakasar_alchemist.items.Nakasar_Tower_Valve.name"
+  },
+  "Icon": "Icons/Items/Nakasar/Alchemist/Valve.png",
+  "Categories": [
+    "Blocks.Deco"
+  ],
+  "Quality": "Technical",
+  "PlayerAnimationsId": "Block",
+  "BlockType": {
+    "Material": "Solid",
+    "DrawType": "Model",
+    "Opacity": "Transparent",
+    "CustomModel": "Blocks/Nakasar/Alchemist/Valve.blockymodel",
+    "CustomModelTexture": [
+      {
+        "Texture": "BlockTextures/Nakasar/Alchemist/Valve.png",
+        "Weight": 1
+      }
+    ],
+    "HitboxType": "Nakasar_Tower_Valve",
+    "VariantRotation": "NESW",
+    "Flags": {},
+    "Gathering": {
+      "Soft": {}
+    },
+    "Light": {
+      "Color": "#f42"
+    },
+    "BlockParticleSetId": "Metal",
+    "BlockSoundSetId": "Metal",
+    "PhysicalMaterialId": "Metal",
+    "ParticleColor": "#b0843a",
+    "InteractionHint": "server.interactionHints.activate",
+    "InteractionSoundEventId": "SFX_Lever_Metal_On",
+    "Interactions": {
+      "Use": {
+        "Interactions": [
+          {
+            "Type": "ChangeState",
+            "Changes": {
+              "default": "On",
+              "On": "default"
+            }
+          }
+        ]
+      }
+    },
+    "State": {
+      "Definitions": {
+        "On": {
+          "CustomModelTexture": [
+            {
+              "Texture": "BlockTextures/Nakasar/Alchemist/Valve_On.png",
+              "Weight": 1
+            }
+          ],
+          "Light": {
+            "Color": "#4f6"
+          },
+          "InteractionSoundEventId": "SFX_Lever_Metal_Off"
+        }
+      }
+    }
+  },
+  "Tags": {
+    "Type": [
+      "Deco"
+    ]
+  },
+  "ItemSoundSetId": "ISS_Blocks_Stone"
+}

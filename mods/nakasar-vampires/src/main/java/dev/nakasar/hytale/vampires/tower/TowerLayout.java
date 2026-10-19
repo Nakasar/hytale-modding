@@ -129,6 +129,11 @@ public final class TowerLayout {
             new Vector3d(21.5, 244, -454.5)
     };
 
+    /** Cour : les gardiens d'airain à abattre, et le volume des portes de la tour (tools/alchemist_traps.py,
+     * Traps.court) qui tombent quand ils le sont tous (Guardians=On). */
+    public static final int COURT_GUARDIANS = 4;
+    public static final String COURT_DOOR = "fc473f7e-7642-5fb7-9bcb-908678463f56";
+
     private TowerLayout() {
     }
 }
