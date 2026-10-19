@@ -1,0 +1,42 @@
+{
+  "TimeSeconds": 5,
+  "KnowledgeRequired": false,
+  "Input": [
+    {
+      "ItemId": "Ingredient_Bar_Silver",
+      "Quantity": 6
+    },
+    {
+      "ItemId": "Nakasar_Purifying_Torch",
+      "Quantity": 2
+    },
+    {
+      "ItemId": "Ingredient_Life_Essence",
+      "Quantity": 8
+    },
+    {
+      "ItemId": "Rock_Gem_Topaz",
+      "Quantity": 2
+    }
+  ],
+  "PrimaryOutput": {
+    "ItemId": "Nakasar_Purification_Censer",
+    "Quantity": 1
+  },
+  "Output": [
+    {
+      "ItemId": "Nakasar_Purification_Censer",
+      "Quantity": 1
+    }
+  ],
+  "BenchRequirement": [
+    {
+      "Type": "Crafting",
+      "Id": "Nakasar_Sacrificial_Altar",
+      "Categories": [
+        "Nakasar_Altar_Rituals"
+      ],
+      "RequiredTierLevel": 3
+    }
+  ]
+}

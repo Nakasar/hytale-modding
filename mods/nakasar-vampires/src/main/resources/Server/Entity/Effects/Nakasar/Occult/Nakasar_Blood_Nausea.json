@@ -1,0 +1,12 @@
+{
+  "Name": "nakasar_vampire.effects.Nakasar_Blood_Nausea",
+  "Duration": 12,
+  "OverlapBehavior": "Overwrite",
+  "Debuff": true,
+  "StatusEffectIcon": "UI/StatusEffects/Nakasar/Occult/Blood_Nausea.png",
+  "ApplicationEffects": {
+    "EntityTopTint": "#c8e6a0",
+    "EntityBottomTint": "#6f8f3a",
+    "HorizontalSpeedMultiplier": 0.8
+  }
+}

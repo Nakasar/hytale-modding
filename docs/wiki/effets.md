@@ -75,3 +75,23 @@ Les élites deviennent **insensibles au recul** pendant leurs attaques annoncée
 - **Source :** rune [Invisibilité](objets/runes.md#invisibilite)
 - **Durée :** 30 s au plus, jusqu'à ce que vous bougiez ou frappiez
 - Caché aux joueurs et aux créatures, intouchable. Teinte grise visible de vous seul.
+
+## Vampire (joueur) {#vampire}
+
+Les effets d'un joueur devenu [vampire](objets/vampirisme.md).
+
+| | Effet | Source | Durée |
+|---|---|---|---|
+| ![icône](/jeu/UI/StatusEffects/Nakasar/Occult/Blood_Sated.png) | Rassasié de sang, Soif légère, Soif, Soif dévorante, Affamé de sang | [réserve de sang](objets/vampirisme.md#soif) | tant que dure le palier |
+| ![icône](/jeu/UI/StatusEffects/Nakasar/Occult/Sun_Protection_1.png) | Voile solaire I, II, III | potions de l'autel | 8 min (III : 3 min) |
+| ![icône](/jeu/UI/StatusEffects/Nakasar/Occult/Vampire_Awakening.png) | Éveil du vampire | Calice du sang éternel | 8 s, teinte rouge |
+| ![icône](/jeu/UI/StatusEffects/Nakasar/Occult/Purified.png) | Purifié | Encensoir de purification | 8 s, teinte blanche |
+| ![icône](/jeu/UI/StatusEffects/Nakasar/Occult/Blood_Nausea.png) | Nausée | fiole de sang bue par un vivant | 12 s |
+
+## Brûlé par le soleil {#brule-par-le-soleil}
+
+![icône](/jeu/UI/StatusEffects/Nakasar/Occult/Sunburn.png)
+
+- **Source :** le [soleil](objets/vampirisme.md#soleil), sur un joueur vampire
+- **Durée :** tant que le soleil le touche
+- L'écran s'éblouit (fort en plein soleil, léger sinon). Jusqu'à 2 dégâts par seconde et +50 % de dégâts subis.

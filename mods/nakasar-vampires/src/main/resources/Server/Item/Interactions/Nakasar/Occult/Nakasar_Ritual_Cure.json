@@ -1,0 +1,13 @@
+{
+  "Type": "Nakasar_VampireRitual",
+  "Mode": "Cure",
+  "AltarRadius": 5,
+  "EffectId": "Nakasar_Purified",
+  "EffectSeconds": 8,
+  "SoundEventId": "SFX_Nakasar_Ritual",
+  "NoteItemId": "Nakasar_Note_Purification",
+  "Next": {
+    "Type": "ModifyInventory",
+    "AdjustHeldItemQuantity": -1
+  }
+}

@@ -153,7 +153,7 @@ Le ton visé : des phrases courtes, sans tout expliquer, pour que le joueur reco
 - [ ] Rendre le Comte et la Comtesse pacifiques avec riposte de groupe
 - [ ] Ajouter le tableau de contrats et la première note dans le camp de brèche
 - [ ] Ajouter les trophées d'élite et les brancher sur les paliers de l'établi
-- [ ] Créer le statut vampire : rituel, faim de sang, soleil, faiblesses
-- [ ] Créer les fioles de sang, la potion solaire en 3 niveaux et le rituel inverse
+- [x] Créer le statut vampire : rituel, faim de sang, soleil, faiblesses
+- [x] Créer les fioles de sang, la potion solaire en 3 niveaux et le rituel inverse
 - [ ] Écrire les premières notes de lore
 - [ ] Concevoir le premier mini-fragment de contrat

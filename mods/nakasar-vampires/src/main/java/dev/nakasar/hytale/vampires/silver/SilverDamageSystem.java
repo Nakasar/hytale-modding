@@ -77,13 +77,23 @@ public final class SilverDamageSystem extends DamageEventSystem {
         if (attacker == null || target == null || attacker.equals(target)) {
             return;
         }
-        if (silverHit(damage, source, attacker, buffer) && Allegiances.inGroup(target, VAMPIRE_GROUP, buffer)) {
+        if (isSilverHit(damage, buffer) && Allegiances.inGroup(target, VAMPIRE_GROUP, buffer)) {
             damage.setAmount(damage.getAmount() * MULTIPLIER);
         }
     }
 
-    private static boolean silverHit(Damage damage, Damage.EntitySource source, Ref<EntityStore> attacker,
-                                     CommandBuffer<EntityStore> buffer) {
+    /**
+     * Vrai si le coup vient d'une arme en argent (ou d'un projectile tiré avec) : aussi lu pour les joueurs vampires
+     * ({@code vampirism.VampireDamageSystem}).
+     */
+    public static boolean isSilverHit(Damage damage, CommandBuffer<EntityStore> buffer) {
+        if (damage.isCancelled() || !(damage.getSource() instanceof Damage.EntitySource source)) {
+            return false;
+        }
+        Ref<EntityStore> attacker = source.getRef();
+        if (attacker == null) {
+            return false;
+        }
         if (source instanceof Damage.ProjectileSource projectile) {
             return SilverWeapons.isSilverProjectile(projectile.getProjectile());
         }

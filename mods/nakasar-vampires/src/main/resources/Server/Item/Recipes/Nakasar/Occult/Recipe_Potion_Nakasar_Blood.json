@@ -1,0 +1,34 @@
+{
+  "TimeSeconds": 2,
+  "KnowledgeRequired": false,
+  "Input": [
+    {
+      "ItemId": "Potion_Empty",
+      "Quantity": 1
+    },
+    {
+      "ItemId": "Ingredient_Nakasar_Blood",
+      "Quantity": 3
+    }
+  ],
+  "PrimaryOutput": {
+    "ItemId": "Potion_Nakasar_Blood",
+    "Quantity": 1
+  },
+  "Output": [
+    {
+      "ItemId": "Potion_Nakasar_Blood",
+      "Quantity": 1
+    }
+  ],
+  "BenchRequirement": [
+    {
+      "Type": "Crafting",
+      "Id": "Nakasar_Sacrificial_Altar",
+      "Categories": [
+        "Nakasar_Altar_Blood"
+      ],
+      "RequiredTierLevel": 2
+    }
+  ]
+}

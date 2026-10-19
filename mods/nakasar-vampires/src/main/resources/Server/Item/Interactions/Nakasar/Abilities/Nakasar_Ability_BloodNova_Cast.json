@@ -1,0 +1,66 @@
+{
+  "Type": "StatsCondition",
+  "UseAbilityCost": true,
+  "Failed": "Ability_Cast_Fail",
+  "Next": {
+    "Type": "Parallel",
+    "Interactions": [
+      {
+        "Interactions": [
+          {
+            "Type": "Simple",
+            "RunTime": 0.3,
+            "Effects": {
+              "ItemAnimationId": "SwingRight",
+              "WorldSoundEventId": "SFX_Nakasar_Ritual"
+            }
+          },
+          {
+            "Type": "Selector",
+            "RunTime": 0.1,
+            "Selector": {
+              "Id": "AOECircle",
+              "Range": 5,
+              "SizeAttribute": "AoeScale"
+            },
+            "HitEntity": {
+              "Interactions": [
+                "Nakasar_Ability_BloodNova_Hit",
+                {
+                  "Type": "Nakasar_BloodFeed",
+                  "BloodGain": 0.05,
+                  "VampireBonusDamage": 5,
+                  "VampireBonusHeal": 3,
+                  "DropChance": 0.15
+                },
+                {
+                  "Type": "Nakasar_DrainBeam",
+                  "SystemId": "Nakasar_Blood_Drain",
+                  "Steps": 8,
+                  "StepDelay": 0.04,
+                  "HeightOffset": 1.0
+                }
+              ]
+            }
+          }
+        ]
+      },
+      {
+        "Interactions": [
+          {
+            "Type": "TriggerCooldown",
+            "UseAbilityCooldown": true
+          }
+        ]
+      },
+      {
+        "Interactions": [
+          {
+            "Type": "ChangeStat",
+            "UseAbilityCost": true
+          }
+        ]
+      }
+    ]
+  }
+}

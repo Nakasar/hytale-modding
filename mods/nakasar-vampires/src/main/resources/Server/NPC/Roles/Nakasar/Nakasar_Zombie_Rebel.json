@@ -4,7 +4,7 @@
   "Appearance": "Nakasar_Zombie_Rebel",
   "NameTranslationKey": "nakasar_mobs.npc.Zombie_Rebel.name",
   "MaxHealth": 85,
-  "DropList": "Drop_Zombie",
+  "DropList": "Nakasar_Drop_Undead_Zombie",
   "StartState": "Idle",
   "DefaultPlayerAttitude": "Hostile",
   "DefaultNPCAttitude": "Ignore",

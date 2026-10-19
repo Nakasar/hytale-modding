@@ -32,13 +32,14 @@ Chaque coffre du Comté est rempli à l'apparition de la structure. Son contenu 
 
 | Objet | Quantité | Chance par tirage |
 |---|---|---|
-| Lingot d'or (`Ingredient_Bar_Gold`) | 2 à 5 | 22 % |
-| **Lingot d'argent** (`Ingredient_Bar_Silver`) | 2 à 6 | 22 % |
-| Rubis (`Rock_Gem_Ruby`) | 1 à 3 | 22 % |
-| Émeraude (`Rock_Gem_Emerald`) | 1 à 2 | 11 % |
-| Saphir (`Rock_Gem_Sapphire`) | 1 à 2 | 11 % |
-| Diamant (`Rock_Gem_Diamond`) | 1 | 6 % |
-| Pierre du Vide (`Rock_Gem_Voidstone`) | 1 | 6 % |
+| Lingot d'or (`Ingredient_Bar_Gold`) | 2 à 5 | 19 % |
+| **Lingot d'argent** (`Ingredient_Bar_Silver`) | 2 à 6 | 19 % |
+| Rubis (`Rock_Gem_Ruby`) | 1 à 3 | 19 % |
+| **Relique du manoir** (`Ingredient_Nakasar_Manor_Relic`) | 1 à 2 | 14 % |
+| Émeraude (`Rock_Gem_Emerald`) | 1 à 2 | 10 % |
+| Saphir (`Rock_Gem_Sapphire`) | 1 à 2 | 10 % |
+| Diamant (`Rock_Gem_Diamond`) | 1 | 5 % |
+| Pierre du Vide (`Rock_Gem_Voidstone`) | 1 | 5 % |
 
 **Tirage 2** (1 fois)
 
@@ -102,8 +103,8 @@ Chaque coffre du Comté est rempli à l'apparition de la structure. Son contenu 
 
 | Objet | Quantité | Chance par tirage |
 |---|---|---|
-| Fiole vide (`Potion_Empty`) | 1 à 4 | 14 % |
-| Essence de vie (`Ingredient_Life_Essence`) | 2 à 6 | 14 % |
+| Fiole vide (`Potion_Empty`) | 1 à 4 | 13 % |
+| Essence de vie (`Ingredient_Life_Essence`) | 2 à 6 | 13 % |
 | Potion de soin (`Potion_Health`) | 1 à 2 | 10 % |
 | Potion de régénération (`Potion_Regen_Health`) | 1 | 7 % |
 | Potion de poison (`Potion_Poison`) | 1 à 2 | 7 % |
@@ -114,6 +115,7 @@ Chaque coffre du Comté est rempli à l'apparition de la structure. Son contenu 
 | Fruit empoisonné (`Plant_Fruit_Poison`) | 1 à 3 | 7 % |
 | Fragment d'os (`Ingredient_Bone_Fragment`) | 2 à 5 | 7 % |
 | **Éclat de rune** (`Ingredient_Rune_Shard`) | 1 à 2 | 7 % |
+| **Relique du manoir** (`Ingredient_Nakasar_Manor_Relic`) | 1 | 3 % |
 
 **Tirage 2** (0 à 1 fois)
 
@@ -149,7 +151,7 @@ Chaque coffre du Comté est rempli à l'apparition de la structure. Son contenu 
 | *rien* | | 17 % |
 | Fiole vide (`Potion_Empty`) | 1 à 4 | 11 % |
 | Essence de vie (`Ingredient_Life_Essence`) | 2 à 6 | 11 % |
-| Potion de soin (`Potion_Health`) | 1 à 2 | 9 % |
+| Potion de soin (`Potion_Health`) | 1 à 2 | 8 % |
 | Potion de régénération (`Potion_Regen_Health`) | 1 | 6 % |
 | Potion de poison (`Potion_Poison`) | 1 à 2 | 6 % |
 | Antidote (`Potion_Antidote`) | 1 à 2 | 6 % |
@@ -159,6 +161,7 @@ Chaque coffre du Comté est rempli à l'apparition de la structure. Son contenu 
 | Fruit empoisonné (`Plant_Fruit_Poison`) | 1 à 3 | 6 % |
 | Fragment d'os (`Ingredient_Bone_Fragment`) | 2 à 5 | 6 % |
 | **Éclat de rune** (`Ingredient_Rune_Shard`) | 1 à 2 | 6 % |
+| **Relique du manoir** (`Ingredient_Nakasar_Manor_Relic`) | 1 | 3 % |
 
 ## Atelier du manoir {#atelier-du-manoir}
 

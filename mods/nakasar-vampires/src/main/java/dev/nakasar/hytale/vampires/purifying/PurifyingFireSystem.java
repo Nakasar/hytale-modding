@@ -114,6 +114,16 @@ public final class PurifyingFireSystem extends DelayedEntitySystem<EntityStore> 
         burn(ref, buffer);
     }
 
+    /**
+     * Vrai si un feu purificateur (bloc ou aura de lumière) brûle à moins de {@value #RADIUS} blocs de
+     * {@code position} : la lumière qui blesse les joueurs vampires ({@code vampirism.VampireSystem}). À appeler
+     * depuis le fil du monde, comme ce système.
+     */
+    public boolean nearFire(ChunkStore chunks, Store<EntityStore> entities, Vector3d position) {
+        resolveFireIds();
+        return scan(chunks, entities, position, RADIUS).nearest != null;
+    }
+
     /** Ids des deux blocs, résolus une fois les assets chargés ; faux tant qu'aucun n'existe. */
     private boolean resolveFireIds() {
         if (torchId < 0 || lanternId < 0) {

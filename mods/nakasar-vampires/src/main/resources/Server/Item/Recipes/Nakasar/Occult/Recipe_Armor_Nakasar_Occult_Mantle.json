@@ -1,0 +1,38 @@
+{
+  "TimeSeconds": 4,
+  "KnowledgeRequired": false,
+  "Input": [
+    {
+      "ItemId": "Armor_Leather_Soft_Chest",
+      "Quantity": 1
+    },
+    {
+      "ItemId": "Ingredient_Bolt_Shadoweave",
+      "Quantity": 2
+    },
+    {
+      "ItemId": "Ingredient_Nakasar_Manor_Relic",
+      "Quantity": 1
+    }
+  ],
+  "PrimaryOutput": {
+    "ItemId": "Armor_Nakasar_Occult_Mantle",
+    "Quantity": 1
+  },
+  "Output": [
+    {
+      "ItemId": "Armor_Nakasar_Occult_Mantle",
+      "Quantity": 1
+    }
+  ],
+  "BenchRequirement": [
+    {
+      "Type": "Crafting",
+      "Id": "Nakasar_Sacrificial_Altar",
+      "Categories": [
+        "Nakasar_Altar_Rituals"
+      ],
+      "RequiredTierLevel": 3
+    }
+  ]
+}

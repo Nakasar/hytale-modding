@@ -1,0 +1,12 @@
+{
+  "Volume": 0,
+  "MaxDistance": 24,
+  "Layers": [
+    {
+      "Files": [
+        "Sounds/Nakasar/Ritual.ogg"
+      ],
+      "Volume": 0
+    }
+  ]
+}

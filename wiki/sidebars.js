@@ -61,6 +61,7 @@ const sidebars = {
     "objets/README",
     "objets/runes",
     "objets/autel-sacrificiel",
+    "objets/vampirisme",
     "objets/etabli-des-chasseurs",
     "objets/armes-en-argent",
     "objets/lance-a-deux-mains",

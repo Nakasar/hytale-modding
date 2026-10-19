@@ -1,0 +1,21 @@
+{
+  "Type": "Simple",
+  "RunTime": 0.6,
+  "Effects": {
+    "WorldSoundEventId": "SFX_Nakasar_Drink"
+  },
+  "Next": {
+    "Type": "ApplyEffect",
+    "EffectId": "Nakasar_Sun_Protection_3",
+    "Entity": "User",
+    "Duration": 180,
+    "Next": {
+      "Type": "ModifyInventory",
+      "AdjustHeldItemQuantity": -1,
+      "ItemToAdd": {
+        "Id": "Potion_Empty",
+        "Quantity": 1
+      }
+    }
+  }
+}

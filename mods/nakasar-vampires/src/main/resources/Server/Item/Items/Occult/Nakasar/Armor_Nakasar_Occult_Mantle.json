@@ -1,0 +1,8 @@
+{
+  "Parent": "Armor_Leather_Soft_Chest",
+  "TranslationProperties": {
+    "Name": "nakasar_vampire.items.Armor_Nakasar_Occult_Mantle.name",
+    "Description": "nakasar_vampire.items.Armor_Nakasar_Occult_Mantle.description"
+  },
+  "Quality": "Rare"
+}

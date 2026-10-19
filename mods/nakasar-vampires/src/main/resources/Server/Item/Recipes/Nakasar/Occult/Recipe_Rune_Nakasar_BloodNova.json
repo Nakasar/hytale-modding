@@ -1,0 +1,38 @@
+{
+  "TimeSeconds": 3,
+  "KnowledgeRequired": false,
+  "Input": [
+    {
+      "ItemId": "Ingredient_Rune_Shard",
+      "Quantity": 4
+    },
+    {
+      "ItemId": "Potion_Nakasar_Blood",
+      "Quantity": 2
+    },
+    {
+      "ItemId": "Ingredient_Nakasar_Manor_Relic",
+      "Quantity": 1
+    }
+  ],
+  "PrimaryOutput": {
+    "ItemId": "Rune_Nakasar_BloodNova",
+    "Quantity": 1
+  },
+  "Output": [
+    {
+      "ItemId": "Rune_Nakasar_BloodNova",
+      "Quantity": 1
+    }
+  ],
+  "BenchRequirement": [
+    {
+      "Type": "Crafting",
+      "Id": "Nakasar_Sacrificial_Altar",
+      "Categories": [
+        "Nakasar_Altar_Runes"
+      ],
+      "RequiredTierLevel": 4
+    }
+  ]
+}

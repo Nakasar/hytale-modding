@@ -1,0 +1,21 @@
+{
+  "Type": "Simple",
+  "RunTime": 0.6,
+  "Effects": {
+    "WorldSoundEventId": "SFX_Nakasar_Drink"
+  },
+  "Next": {
+    "Type": "Nakasar_DrinkBlood",
+    "Blood": 0.35,
+    "NauseaEffectId": "Nakasar_Blood_Nausea",
+    "NauseaSeconds": 12,
+    "Next": {
+      "Type": "ModifyInventory",
+      "AdjustHeldItemQuantity": -1,
+      "ItemToAdd": {
+        "Id": "Potion_Empty",
+        "Quantity": 1
+      }
+    }
+  }
+}
