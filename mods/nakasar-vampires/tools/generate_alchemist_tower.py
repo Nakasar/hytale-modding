@@ -24,7 +24,9 @@ du donjon vanilla Deepworks).
   TowerLayout.java (Java, généré) reprend les positions des points de contrôle, ruines comprises ;
 - les points de contrôle de Deepworks : statue Dungeon_Checkpoint_Statue et volume qui l'allume, fait du lieu le point
   d'apparition du groupe et soigne (checkpoint_volumes). Un joueur qui tombe quand même dans le vide est ramené au point
-  d'apparition du monde, donc au dernier point de contrôle (TowerFallSystem).
+  d'apparition du monde, donc au dernier point de contrôle (TowerFallSystem) ;
+- les pièges et énigmes (tools/alchemist_traps.py) : leurs volumes rejoignent ceux des barrières et des points de
+  contrôle.
 
 Repère : x vers l'est, z vers le sud, y vers le haut ; le point d'apparition est en (0, GROUND_Y, 0).
 """
@@ -39,6 +41,7 @@ from PIL import Image, ImageDraw
 
 import alchemist_archipelago as arch
 import alchemist_tower
+import alchemist_traps
 import generate_prefabs as pf
 import generate_worldgen as wg
 
@@ -624,7 +627,7 @@ def pushback_volumes(columns):
     return volumes
 
 
-def trigger_volumes(volumes):
+def trigger_volumes(volumes, groups):
     """resources/TriggerVolumeData.json de l'instance (même format que celui de The_Deepworks)."""
     origin = {"X": 0.0, "Y": float(GROUND_Y), "Z": 0.0}
     return {
@@ -632,7 +635,8 @@ def trigger_volumes(volumes):
         "Groups": {PUSH_GROUP: {"Origin": origin, "TargetTypes": ["Player"], "Enabled": True, "Color": 16711680,
                                 "Name": "Player_Pushback"},
                    CHECKPOINT_GROUP: {"Origin": origin, "TargetTypes": ["Player"], "Enabled": True,
-                                      "Color": 10879231, "Name": "Checkpoints"}},
+                                      "Color": 10879231, "Name": "Checkpoints"},
+                   **groups},
     }
 
 
@@ -854,9 +858,12 @@ def main():
         count = prefab.write(out / stage["name"] / f"{stage['name']}.prefab.json")
         print(f"{stage['name']}: {count} blocs")
     volumes = pushback_volumes(columns)
-    volumes.update(checkpoint_volumes(tower, ruins_statue, ruins_spot))
-    write_json(SERVER / "Instances" / TOWER / "resources" / "TriggerVolumeData.json", trigger_volumes(volumes))
     print(f"Barrières de repoussée : {len(columns)} colonnes, {len(volumes)} volumes")
+    volumes.update(checkpoint_volumes(tower, ruins_statue, ruins_spot))
+    traps, trap_groups = alchemist_traps.trap_volumes(tower, TOWER_CENTER)
+    volumes.update(traps)
+    print(f"Pièges et énigmes : {len(traps)} volumes")
+    write_json(SERVER / "Instances" / TOWER / "resources" / "TriggerVolumeData.json", trigger_volumes(volumes, trap_groups))
     JAVA_LAYOUT.write_text(tower_layout(tower, ruins_spot), encoding="utf-8")
     (COMMON / ICON).parent.mkdir(parents=True, exist_ok=True)
     key_icon().save(COMMON / ICON)

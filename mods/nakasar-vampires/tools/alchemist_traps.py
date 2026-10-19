@@ -1,0 +1,607 @@
+#!/usr/bin/env python3
+"""Pièges et énigmes de la Tour de l'Alchimiste (étape 4 du donjon), sur le modèle de Deepworks.
+
+    python3 mods/nakasar-vampires/tools/alchemist_traps.py [--preview DOSSIER]
+
+écrit les trois blocs des énigmes (sceau alchimique, haie de ronces, levier de vanne). Les volumes déclencheurs, eux,
+sont écrits par generate_alchemist_tower.py (`trap_volumes`) dans resources/TriggerVolumeData.json de l'instance, avec
+les barrières de repoussée et les points de contrôle ; tools/alchemist_tower.py pose les blocs dans la tour et garde
+leurs positions (`Tower.trap`).
+
+Tout passe par les volumes du jeu, comme dans The_Deepworks (lu dans Assets.zip 0.7.2) :
+- les énigmes : un brasero éteint (`Furniture_Temple_Dark_Brazier`, état Off) ou un levier qu'on utilise déclenche
+  l'événement BLOCK_USED de son volume (comme les braseros de la salle des araignées et le levier du générateur) ; le
+  volume marque d'une étiquette le volume du passage, qui dissout son sceau (ReplaceBlockType dans sa forme) quand toutes
+  ses étiquettes sont là (comme la porte des déchets, alimentée par deux tuyaux) ;
+- les pièges : un volume « contrôleur » qui couvre la salle envoie des signaux à intervalle régulier tant qu'un joueur
+  s'y trouve ; chaque zone de piège reçoit le sien, s'annonce (particules, son), puis frappe un court instant (comme les
+  quadrants de Deepworks : étiquettes Busy et Dmg). Les livres de la bibliothèque et la foudre de l'Escalier des vents ne
+  frappent qu'une fois sur trois ou quatre (RandomChanceCondition, comme les tas de nourriture du Feastmaster).
+
+Les pièges :
+- Hall des Alambics : rallumer les trois athanors dissout le sceau du Couloir des fuites ;
+- Couloir des fuites : 21 bouches de vapeur toxique, par groupes de trois qui jettent en alternance (A puis B) ; des
+  niches dans le mur extérieur abritent entre deux groupes. Au fond, derrière la porte ouest, le levier coupe la vanne
+  (les jets cessent) et ouvre le barrage en raccourci vers la rampe du hall ;
+- Serre suspendue : nappes de spores qui ralentissent qui s'y attarde ;
+- Bibliothèque : brûler la haie de ronces au brasero ouvre la rampe ; des livres tombent sur des zones annoncées ;
+- Salle des Transmutations : les quadrants se transmutent à tour de rôle (feu, glace, acide, foudre), les croix d'or du
+  sol restent sûres ; allumer le foyer d'un quadrant l'apaise mais en fait sortir un élémentaire ; les quatre foyers
+  allumés dissolvent le sceau de l'escalier du laboratoire ;
+- Escalier des vents (s'éveille quand on franchit la porte nord du laboratoire) : flammes alchimiques qui balaient les
+  marches, rafales qui plaquent contre le mur de la tour (jamais vers le vide), foudre sur des cercles annoncés.
+
+Aucun piège ne repousse vers le vide. Les volumes ne visent que les joueurs.
+"""
+import json
+import math
+import random
+import sys
+import uuid
+from pathlib import Path
+
+from PIL import Image, ImageDraw
+
+import alchemist_tower as at
+
+PACK = Path(__file__).resolve().parent.parent / "src" / "main" / "resources"
+COMMON = PACK / "Common"
+SERVER = PACK / "Server"
+LANG = "nakasar_alchemist"
+ITEMS = SERVER / "Item" / "Items" / "Alchemist" / "Nakasar"
+TEXTURES = COMMON / "BlockTextures" / "Nakasar" / "Alchemist"
+ICONS = COMMON / "Icons" / "Items" / "Nakasar" / "Alchemist"
+BRAZIER = "Furniture_Temple_Dark_Brazier"
+
+# Ids du jeu employés par les volumes, tous vus dans Assets.zip 0.7.2 (la plupart dans les volumes de The_Deepworks) :
+# un id inconnu ferait rejeter le volume en jeu, `check_ids` refuse tout ce qui n'est pas ici.
+PARTICLES = {
+    "Goblin_Decorative_Steam", "Dungeon_Goblin_Smoke_Pipe_Large", "Effect_Poison", "Magic_Sparks_Heavy_GS",
+    "Fire_Green", "Dungeon_Goblin_Mace_Slam_Warning", "Block_Break_Dust", "Smoke_Floor", "Dungeon_Goblin_Spores_Green",
+    "Fire_Trap_Preview", "Fire_AoE", "Weapon_Frost_Mist", "Ice_Blast", "Dungeon_Goblin_Toxic_Water", "Impact_Poison",
+    "Goblin_Decorative_Sparks", "Lightning", "Dungeon_Goblin_Electric_Fence_Hit", "Fire_Charge_Charging1",
+    "Leaves_Oak_Wind", "Wind", "Goblin_Decorative_Lightning", "Ability_Ice_Explosion",
+}
+SOUNDS = {
+    "SFX_Emit_Goblin_Steam_A", "SFX_Env_Geyzer_Burst", "SFX_Lever_Metal_On", "SFX_Emit_Goblin_Pipes_Activate",
+    "SFX_Crystal_Break", "SFX_Flame_Ignite", "SFX_Effect_Burn_World", "SFX_Drop_Weapons_Books",
+    "SFX_Emit_Goblin_Steam_B", "SFX_Emit_Goblin_Pipes_Flame_Ignite", "SFX_Staff_Flame_Flamethrower",
+    "SFX_Emit_Goblin_Flame_Quadrant_Blast", "SFX_Ice_Break", "SFX_Emit_Goblin_Liquid_Bubbling_Steam_Bursts",
+    "SFX_Emit_Goblin_Electric_Fence_Zap", "SFX_Emit_Wind_Gusts", "SFX_Emit_Dungeon_Goblin_Void_Thunder",
+    "SFX_Dungeon_Checkpoint_Activate",
+}
+EFFECTS = {"Poison_T1", "Poison_T2", "Burn", "Slow", "Hazard_Electric_Stun"}
+BLOCKS = {"Empty", "Fluid_Fire", at.SEAL, at.HEDGE}
+NPCS = {"Nakasar_Elemental_Fire", "Nakasar_Elemental_Frost", "Nakasar_Elemental_Root", "Nakasar_Elemental_Thunder"}
+
+# Quadrants de la Salle des Transmutations : (signe de x, signe de z), élémentaire du foyer, particules d'annonce et de
+# frappe, son, effets pendant la frappe.
+QUADRANTS = {
+    "Fire": ((1, -1), "Nakasar_Elemental_Fire", "Fire_Trap_Preview", "Fire_AoE", "SFX_Emit_Goblin_Flame_Quadrant_Blast",
+             [("Burn", 4.0, 0.0)], 6.0),
+    "Ice": ((-1, -1), "Nakasar_Elemental_Frost", "Weapon_Frost_Mist", "Ice_Blast", "SFX_Ice_Break",
+            [("Slow", 3.0, 0.0)], 4.0),
+    "Acid": ((1, 1), "Nakasar_Elemental_Root", "Dungeon_Goblin_Spores_Green", "Dungeon_Goblin_Toxic_Water",
+             "SFX_Emit_Goblin_Liquid_Bubbling_Steam_Bursts", [("Poison_T2", 5.0, 0.0)], 5.0),
+    "Lightning": ((-1, 1), "Nakasar_Elemental_Thunder", "Goblin_Decorative_Sparks", "Lightning",
+                  "SFX_Emit_Goblin_Electric_Fence_Zap", [("Hazard_Electric_Stun", 0.8, 1.2)], 6.0),
+}
+QUADRANT_ORDER = ("Fire", "Ice", "Acid", "Lightning")
+ZERO = {"X": 0.0, "Y": 0.0, "Z": 0.0}
+
+
+# --- volumes : briques reprises des volumes de The_Deepworks --------------------------------------------------------
+
+def vid(name):
+    return str(uuid.uuid5(uuid.NAMESPACE_URL, f"nakasar/alchemist-tower/trap/{name}"))
+
+
+def vec(x, y, z):
+    return {"X": float(x), "Y": float(y), "Z": float(z)}
+
+
+def box(hx, hy, hz):
+    return {"Type": "Box", "Min": vec(-hx, -hy, -hz), "Max": vec(hx, hy, hz)}
+
+
+def cylinder(radius, height):
+    """Cylindre posé sur la position du volume (sa base), haut de `height`."""
+    return {"Type": "Cylinder", "Center": dict(ZERO), "Radius": float(radius), "Height": float(height)}
+
+
+def effect(kind, event, delay=0.0, entry=None, interval=0.0, **fields):
+    e = {"Type": kind, "Event": event, "Interval": float(interval), "Delay": round(float(delay), 2)}
+    if entry is not None:
+        e["Entry"] = entry
+    e.update(fields)
+    return e
+
+
+def vfx(event, system, delay=0.0, entry=None, offset=(0, 0, 0), scale=1.0, duration=0.0, anchor="Volume"):
+    return effect("PlayVfx", event, delay, entry, ParticleSystem=system, Offset=vec(*offset), Anchor=anchor,
+                  Scale=float(scale), Rotation=dict(ZERO), Duration=float(duration))
+
+
+def sound(event, name, delay=0.0, entry=None, location="VolumeCenter"):
+    return effect("PlaySound", event, delay, entry, SoundEvent=name, Location=location, Offset=dict(ZERO))
+
+
+def tags(event, key, value, delay=0.0, entry=None, match="", match_value="", radius=1.0, operation="Set"):
+    return effect("ModifyTags", event, delay, entry, Operation=operation, TagKey=key, TagValue=value, MatchKey=match,
+                  MatchValue=match_value, Radius=float(radius), Center="Volume")
+
+
+def signal(event, key, match, match_value="", delay=0.0, radius=60.0, interval=0.0):
+    return effect("SendSignal", event, delay, interval=interval, MatchKey=match, MatchValue=match_value,
+                  Radius=float(radius), Center="Volume", SignalKeys=[key])
+
+
+def toggle(kind, event, match, match_value="", delay=0.0, entry=None, radius=60.0):
+    """EnableVolume ou DisableVolume des volumes qui portent l'étiquette `match` (de valeur match_value si donnée)."""
+    return effect(kind, event, delay, entry, MatchKey=match, MatchValue=match_value, Radius=float(radius),
+                  Center="Volume")
+
+
+def damage(percent, interval):
+    return effect("DamageEntity", "TICK", interval=interval, Mode="PercentMax", Amount=float(percent))
+
+
+def status(name, duration, event="TICK", delay=0.0, interval=0.0):
+    return effect("EntityEffect", event, delay, interval=interval, Effect=name, Mode="Apply", Duration=float(duration))
+
+
+def velocity(vx, vy, vz):
+    return effect("SetVelocity", "TICK", Velocity=vec(vx, vy, vz), Additive=False, RelativeMode="Absolute")
+
+
+def place(event, block, pos, delay=0.0, entry=None):
+    return effect("PlaceBlock", event, delay, entry, BlockType=block, BlockState="", Position=vec(*pos),
+                  Origin="WorldAbsolute", ReplaceMode="Always", Rotation="None", Pitch="None", Roll="None")
+
+
+def replace(event, sources, target, delay=0.0, entry=None):
+    """Remplace, dans la forme du volume, les blocs `sources` par `target` (forme par défaut : celle du volume)."""
+    return effect("ReplaceBlockType", event, delay, entry, FromBlockTypes=list(sources), FromBlockState="",
+                  ToBlockType=target, ToBlockState="", Offset=dict(ZERO), Origin="VolumeOrigin", Rotation="None",
+                  Pitch="None", Roll="None")
+
+
+def title(event, name, delay=0.0, entry=None):
+    return effect("ShowEventTitle", event, delay, entry, PrimaryTitle=f"{LANG}.trap.{name}.title",
+                  SecondaryTitle=f"{LANG}.trap.{name}.subtitle", Style="Major", Duration=3.0, FadeInDuration=0.5,
+                  FadeOutDuration=1.0, Recipient="AllPlayers")
+
+
+def spawn(event, npc, offset, delay=0.0, entry=None):
+    return effect("SpawnNpc", event, delay, entry, NpcType=npc, GroupType="", Origin="VolumeOrigin",
+                  Offset=vec(*offset), Count=1, Yaw=0.0)
+
+
+def tag_is(event, key, value, inverted=False, entry=None, source="Self"):
+    c = {"Type": "TagCondition", "Event": event}
+    if entry is not None:
+        c["Entry"] = entry
+    c.update({"Source": source, "TagKey": key, "Comparison": "Exactly", "CompareAgainst": "Value", "TagValue": value,
+              "Inverted": inverted, "MatchKey": "", "MatchValue": "", "Radius": 50.0, "Center": "Volume"})
+    return c
+
+
+def chance(event, p, entry=None):
+    c = {"Type": "RandomChanceCondition", "Event": event}
+    if entry is not None:
+        c["Entry"] = entry
+    c["Chance"] = float(p)
+    return c
+
+
+def cooldown(event, seconds):
+    return {"Type": "CooldownCondition", "Event": event, "Cooldown": float(seconds), "Scope": "WHOLE_VOLUME"}
+
+
+def volume(name, group, position, shape, effects, conditions=(), volume_tags=None, enabled=True, **extra):
+    v = {"Position": vec(*position), "Shape": shape}
+    if conditions:
+        v["Conditions"] = list(conditions)
+    v["Effects"] = list(effects)
+    v.update(extra)
+    v.update({"TargetTypes": ["Player"], "Enabled": enabled, "GroupId": group, "KeepLoaded": False})
+    if volume_tags:
+        v["Tags"] = dict(volume_tags)
+    v["Name"] = name
+    return v
+
+
+class Traps:
+    """Volumes des pièges, en coordonnées du monde (`origin` : position du repère de la tour)."""
+
+    def __init__(self, tower, origin):
+        self.t = tower.trap
+        self.origin = origin
+        self.volumes = {}
+        self.groups = {}
+
+    def world(self, x, y, z):
+        ox, oy, oz = self.origin
+        return x + ox, y + oy, z + oz
+
+    def group(self, name, color):
+        gid = vid(f"group/{name}")
+        self.groups[gid] = {"Origin": vec(*self.world(0, 0, 0)), "TargetTypes": ["Player"], "Enabled": True,
+                            "Color": color, "Name": name}
+        return gid
+
+    def add(self, name, *args, **kwargs):
+        if vid(name) in self.volumes:
+            raise RuntimeError(f"pièges : volume en double {name}")
+        self.volumes[vid(name)] = volume(name, *args, **kwargs)
+
+    def block_center(self, x, y, z):
+        wx, wy, wz = self.world(x, y, z)
+        return wx + 0.5, wy + 0.5, wz + 0.5
+
+    def bounds(self, cells):
+        """Boîte qui couvre exactement les blocs `cells` (pour un ReplaceBlockType dans la forme du volume)."""
+        xs, ys, zs = zip(*cells)
+        lo, hi = self.world(min(xs), min(ys), min(zs)), self.world(max(xs) + 1, max(ys) + 1, max(zs) + 1)
+        center = tuple((a + b) / 2 for a, b in zip(lo, hi))
+        return center, box(*((b - a) / 2 - 0.05 for a, b in zip(lo, hi)))
+
+    def foot(self, x, y, z):
+        """Base d'un cylindre posé sur le sol de la case (x, z), y = première couche d'air."""
+        wx, wy, wz = self.world(x, y, z)
+        return wx + 0.5, wy, wz + 0.5
+
+    def controller(self, name, group, position, shape, sends, interval, enabled=True, radius=80.0):
+        """Tant qu'un joueur s'y trouve, envoie toutes les `interval` secondes les signaux `sends` :
+        [(signal, étiquette des cibles, valeur, délai)]."""
+        self.add(name, group, position, shape,
+                 [signal("TICK", key, match, value, delay, radius, interval) for key, match, value, delay in sends],
+                 volume_tags={name: "On"}, enabled=enabled, ConditionTiming="BeforeVolumeDelay",
+                 CancelDelayedOnExit=False, Cooldown=0.1)
+
+    def pulse(self, name, group, position, shape, key, match, match_value, warn, active, warn_fx, hit_fx, hits,
+              odds=None):
+        """Zone de piège : au signal `key`, s'annonce (warn_fx), frappe `active` secondes après `warn` (hit_fx, puis
+        `hits` sur les joueurs présents à chaque tick), sans se relancer avant d'avoir fini (étiquette Busy)."""
+        conditions = [tag_is("SIGNAL_RECEIVED", key, "", entry=1, source="Event"),
+                      tag_is("SIGNAL_RECEIVED", "Busy", "On", inverted=True, entry=1),
+                      tag_is("TICK", "Dmg", "True")]
+        if odds is not None:
+            conditions.append(chance("SIGNAL_RECEIVED", odds, entry=1))
+        effects = [tags("SIGNAL_RECEIVED", "Busy", "On", entry=1)]
+        effects += [dict(e, Event="SIGNAL_RECEIVED", Entry=1) for e in warn_fx]
+        effects += [dict(e, Event="SIGNAL_RECEIVED", Entry=1, Delay=round(e["Delay"] + warn, 2)) for e in hit_fx]
+        effects += [tags("SIGNAL_RECEIVED", "Dmg", "True", warn, entry=1),
+                    tags("SIGNAL_RECEIVED", "Dmg", "False", warn + active, entry=1),
+                    tags("SIGNAL_RECEIVED", "Busy", "Off", warn + active, entry=1)]
+        effects += hits
+        self.add(name, group, position, shape, effects, conditions,
+                 volume_tags={match: match_value, "Busy": "Off", "Dmg": "False"}, ConditionTiming="BeforeVolumeDelay",
+                 Cooldown=0.1)
+
+    def usable(self, name, group, pos, used_effects, flag="Lit"):
+        """Volume d'un bloc qu'on utilise (brasero, levier) : ses effets ne jouent qu'une fois."""
+        center = self.block_center(*pos)
+        self.add(name, group, center, box(0.5, 0.5, 0.5),
+                 [tags("BLOCK_USED", flag, "Yes", 0.1)] + used_effects,
+                 [tag_is("BLOCK_USED", flag, "No")], volume_tags={flag: "No"}, ConditionTiming="BeforeVolumeDelay")
+
+    def gate(self, name, group, cells, keys, opened, block=at.SEAL):
+        """Passage fermé par `block` : s'ouvre quand toutes les étiquettes `keys` valent On."""
+        center, shape = self.bounds(cells)
+        conditions = [tag_is("TAG_ADDED", k, "On") for k in keys] + [tag_is("TAG_ADDED", name, "Closed")]
+        effects = [tags("TAG_ADDED", name, "Open"),
+                   sound("TAG_ADDED", "SFX_Crystal_Break", 0.6),
+                   replace("TAG_ADDED", [block], "Empty", 0.8)] + opened
+        self.add(name, group, center, shape, effects, conditions,
+                 volume_tags={name: "Closed", **{k: "Off" for k in keys}})
+
+    # --- les pièges ----------------------------------------------------------------------------------------------
+
+    def hall(self):
+        g = self.group("Tower_Hall_Athanors", 16737843)
+        keys = []
+        for i, pos in enumerate(self.t["athanors"], 1):
+            keys.append(f"Athanor_{i}")
+            self.usable(f"Hall_Athanor_{i}", g, pos, [
+                sound("BLOCK_USED", "SFX_Flame_Ignite"),
+                vfx("BLOCK_USED", "Magic_Sparks_Heavy_GS", offset=(0, 0.5, 0)),
+                tags("BLOCK_USED", f"Athanor_{i}", "On", 0.2, match="Hall_Seal", radius=80)])
+        self.gate("Hall_Seal", g, self.t["hall_seal"], keys, [title("TAG_ADDED", "hall")])
+
+    def leaks(self):
+        g = self.group("Tower_Leaks_Steam", 7864183)
+        y = at.F_LEAKS
+        self.controller("Leaks_Controller", g, self.world(0, y, 0), cylinder(at.R_IN, at.F_LIBRARY - at.F_LEAKS - 1),
+                        [("Steam", "Leaks_Pair", "A", 0.0), ("Steam", "Leaks_Pair", "B", 3.0)], interval=6.0)
+        for k, pair in self.t["jets"]:
+            mouth = at.at(16.5, k)
+            for j, r in enumerate((20.5, 24.0, 27.5)):
+                cx = r * math.cos(math.radians(k))
+                cz = r * math.sin(math.radians(k))
+                base = (cx + self.origin[0], y + self.origin[1], cz + self.origin[2])
+                warn, hit = [], []
+                if j == 1:  # une seule bouche joue les particules et le son
+                    off = (mouth[0] + 0.5 - cx, 1.0, mouth[1] + 0.5 - cz)
+                    warn = [vfx("", "Goblin_Decorative_Steam", offset=off, duration=1.2),
+                            sound("", "SFX_Emit_Goblin_Steam_A")]
+                    hit = [vfx("", "Dungeon_Goblin_Smoke_Pipe_Large", offset=off, duration=1.6),
+                           vfx("", "Effect_Poison", offset=(0, 1, 0), duration=1.6),
+                           sound("", "SFX_Env_Geyzer_Burst")]
+                self.pulse(f"Leaks_Jet_{k:03d}_{j}", g, base, cylinder(3.3, 4), "Steam", "Leaks_Pair", pair,
+                           warn=1.2, active=1.6, warn_fx=warn, hit_fx=hit,
+                           hits=[status("Poison_T1", 6.0), damage(8, 0.8)])
+        lever = self.t["lever"]
+        self.usable("Leaks_Valve", g, lever, [
+            sound("BLOCK_USED", "SFX_Lever_Metal_On"),
+            sound("BLOCK_USED", "SFX_Emit_Goblin_Pipes_Activate", 0.4),
+            toggle("DisableVolume", "BLOCK_USED", "Leaks_Controller", delay=0.5, radius=80),
+            tags("BLOCK_USED", "Valve", "On", 0.5, match="Leaks_Shortcut", radius=80)], flag="Pulled")
+        self.gate("Leaks_Shortcut", g, self.t["shortcut_seal"], ["Valve"], [title("TAG_ADDED", "valve")])
+
+    def greenhouse(self):
+        g = self.group("Tower_Greenhouse_Spores", 6280509)
+        for i, pos in enumerate(self.t["spores"]):
+            self.add(f"Greenhouse_Spores_{i + 1}", g, self.foot(*pos), cylinder(2.5, 3), [
+                vfx("ENTER", "Dungeon_Goblin_Spores_Green", offset=(0, 0.5, 0), duration=2.5),
+                sound("ENTER", "SFX_Emit_Goblin_Steam_B"),
+                status("Slow", 3.0, event="ENTER", delay=0.8)],
+                [cooldown("ENTER", 5.0)], CancelDelayedOnExit=True)
+
+    def library(self):
+        g = self.group("Tower_Library", 11817792)
+        hedge = self.t["hedge"]
+        self.usable("Library_Brazier", g, self.t["hedge_brazier"], [
+            sound("BLOCK_USED", "SFX_Flame_Ignite"),
+            tags("BLOCK_USED", "Fire", "On", 0.5, match="Library_Brambles", radius=60)])
+        center, shape = self.bounds(hedge)
+        # Comme les toiles de la salle des araignées : la haie flambe (Fluid_Fire), puis il n'en reste rien.
+        self.add("Library_Brambles", g, center, shape, [
+            tags("TAG_ADDED", "Library_Brambles", "Burnt"),
+            sound("TAG_ADDED", "SFX_Effect_Burn_World", 0.3),
+            replace("TAG_ADDED", [at.HEDGE], "Fluid_Fire", 0.5),
+            replace("TAG_ADDED", ["Fluid_Fire"], "Empty", 3.5),
+            replace("TAG_ADDED", [at.HEDGE], "Empty", 3.6),
+            title("TAG_ADDED", "brambles", 3.6)],
+            [tag_is("TAG_ADDED", "Fire", "On"), tag_is("TAG_ADDED", "Library_Brambles", "Intact")],
+            volume_tags={"Library_Brambles": "Intact", "Fire": "Off"})
+        y = at.F_LIBRARY
+        self.controller("Library_Books_Controller", g, self.world(0, y, 0), cylinder(at.R_IN, 13),
+                        [("Books", "Library_Books", "", 0.0)], interval=3.0)
+        for i, pos in enumerate(self.t["books"]):
+            self.pulse(f"Library_Books_{i + 1}", g, self.foot(*pos), cylinder(1.6, 3), "Books", "Library_Books",
+                       "Zone", warn=1.4, active=0.4,
+                       warn_fx=[vfx("", "Dungeon_Goblin_Mace_Slam_Warning", offset=(0, 0.1, 0), duration=1.4)],
+                       hit_fx=[vfx("", "Block_Break_Dust", offset=(0, 1.5, 0)), vfx("", "Smoke_Floor"),
+                               sound("", "SFX_Drop_Weapons_Books")],
+                       hits=[damage(12, 1.0), status("Slow", 2.0)], odds=0.3)
+
+    def transmutation(self):
+        g = self.group("Tower_Transmutation", 13421619)
+        y = at.F_TRANS
+        side = at.SQUARE
+        height = at.F_LAB - at.F_TRANS - 1
+        self.controller("Transmutation_Controller", g, self.world(0.5, y + height / 2, 0.5),
+                        box(side + 0.5, height / 2, side + 0.5),
+                        [("Transmute", "Quadrant", el, 4.0 * i) for i, el in enumerate(QUADRANT_ORDER)], interval=16.0)
+        keys = []
+        for el in QUADRANT_ORDER:
+            (sx, sz), npc, warn_p, hit_p, snd, statuses, pct = QUADRANTS[el]
+            # Le quadrant, de la croix d'or (x ou z = 0, toujours sûre) au mur, sur 3 blocs de haut.
+            x0, x1 = (1, side) if sx > 0 else (-side, -1)
+            z0, z1 = (1, side) if sz > 0 else (-side, -1)
+            cells = [(x0, y, z0), (x1, y + 2, z1)]
+            center, shape = self.bounds(cells)
+            spots = [(sx * a - (center[0] - self.origin[0]) + 0.5, 0.2, sz * b - (center[2] - self.origin[2]) + 0.5)
+                     for a in (5, 13) for b in (5, 13)]
+            spots = [(dx, -1.4, dz) for dx, _, dz in spots]  # le centre de la boîte est 1,5 bloc au-dessus du sol
+            self.pulse(f"Quadrant_{el}", g, center, shape, "Transmute", "Quadrant", el, warn=1.6, active=2.4,
+                       warn_fx=[vfx("", warn_p, offset=o, duration=1.6) for o in spots],
+                       hit_fx=[vfx("", hit_p, offset=o, duration=2.4) for o in spots] + [sound("", snd)],
+                       hits=[status(n, d, interval=i) for n, d, i in statuses] + [damage(pct, 0.5)])
+            # Le foyer du quadrant : l'allumer apaise le quadrant, mais un élémentaire sort des dalles.
+            keys.append(f"Foyer_{el}")
+            self.usable(f"Transmutation_Foyer_{el}", g, self.t["foyers"][el], [
+                sound("BLOCK_USED", "SFX_Flame_Ignite"),
+                vfx("BLOCK_USED", "Magic_Sparks_Heavy_GS", offset=(0, 0.5, 0)),
+                toggle("DisableVolume", "BLOCK_USED", "Quadrant", el, delay=0.5),
+                spawn("BLOCK_USED", npc, (sx * -3, 0, sz * -3), delay=1.5),
+                vfx("BLOCK_USED", hit_p, delay=1.2, offset=(sx * -3, 0, sz * -3)),
+                tags("BLOCK_USED", f"Foyer_{el}", "On", 0.5, match="Transmutation_Seal", radius=60)])
+        self.gate("Transmutation_Seal", g, self.t["trans_seal"], keys,
+                  [title("TAG_ADDED", "transmutation"),
+                   toggle("DisableVolume", "TAG_ADDED", "Transmutation_Controller", delay=0.5)])
+
+    def wind_stair(self):
+        g = self.group("Tower_Wind_Stair", 10079487)
+        y = at.F_LAB
+        self.controller("Wind_Controller", g, self.world(0, y, 0), cylinder(at.BALCONY_R - 1, at.F_DECK - at.F_LAB + 2),
+                        [("Flame", "Wind_Flame", "A", 0.0), ("Gust", "Wind_Gust", "A", 1.0),
+                         ("Strike", "Wind_Strike", "", 2.0), ("Flame", "Wind_Flame", "B", 3.0),
+                         ("Gust", "Wind_Gust", "B", 4.0), ("Strike", "Wind_Strike", "", 5.0)],
+                        interval=6.0, enabled=False, radius=100.0)
+        # Le contrôleur s'éveille quand on franchit la porte nord du laboratoire.
+        door = [(x, y, z) for x in range(-2, 3) for z in range(-35, -27)] + [(0, y + 4, -31)]
+        center, shape = self.bounds(door)
+        self.add("Wind_Activation", g, center, shape,
+                 [toggle("EnableVolume", "ENTER", "Wind_Controller", radius=100)])
+        for a, pair, cells, nozzle in self.t["flames"]:
+            noz = self.block_center(*nozzle)
+            for j, cell in enumerate(cells):
+                base = self.foot(*cell)
+                off = tuple(n - b for n, b in zip(noz, base))
+                warn = [vfx("", "Fire_Trap_Preview", offset=(0, 0.1, 0), duration=1.5)]
+                hit = [vfx("", "Fire_AoE", offset=(0, 0.2, 0), duration=1.6)]
+                if j == 0:
+                    warn.append(vfx("", "Fire_Charge_Charging1", offset=off, duration=1.5))
+                    hit.append(sound("", "SFX_Emit_Goblin_Pipes_Flame_Ignite"))
+                self.pulse(f"Wind_Flame_{a}_{j}", g, base, cylinder(2.0, 3), "Flame", "Wind_Flame", pair, warn=1.5,
+                           active=1.6, warn_fx=warn, hit_fx=hit, hits=[status("Burn", 3.0), damage(12, 1.0)])
+        for a, pair, cells in self.t["gusts"]:
+            for j, cell in enumerate(cells):
+                base = self.foot(*cell)
+                # vers l'axe de la tour, donc contre son mur : jamais vers le vide
+                d = math.hypot(base[0] - self.origin[0], base[2] - self.origin[2])
+                push = (-(base[0] - self.origin[0]) / d * 7.0, 0.0, -(base[2] - self.origin[2]) / d * 7.0)
+                warn = [vfx("", "Leaves_Oak_Wind", offset=(0, 1, 0), duration=1.0)]
+                hit = [vfx("", "Wind", offset=(0, 1, 0), duration=1.8)]
+                if j == 2:
+                    hit.append(sound("", "SFX_Emit_Wind_Gusts"))
+                self.pulse(f"Wind_Gust_{a}_{j}", g, base, cylinder(2.6, 3), "Gust", "Wind_Gust", pair, warn=1.0,
+                           active=1.8, warn_fx=warn, hit_fx=hit, hits=[velocity(*push)])
+        for i, cell in enumerate(self.t["strikes"]):
+            self.pulse(f"Wind_Strike_{i + 1}", g, self.foot(*cell), cylinder(1.8, 3), "Strike", "Wind_Strike", "Zone",
+                       warn=1.5, active=0.5,
+                       warn_fx=[vfx("", "Dungeon_Goblin_Mace_Slam_Warning", offset=(0, 0.1, 0), duration=1.5)],
+                       hit_fx=[vfx("", "Lightning"), vfx("", "Goblin_Decorative_Lightning", offset=(0, 1, 0)),
+                               sound("", "SFX_Emit_Dungeon_Goblin_Void_Thunder")],
+                       hits=[status("Hazard_Electric_Stun", 1.0, interval=1.0), damage(15, 1.0)], odds=0.3)
+
+    def build(self):
+        self.hall()
+        self.leaks()
+        self.greenhouse()
+        self.library()
+        self.transmutation()
+        self.wind_stair()
+        check_ids(self.volumes)
+        return self.volumes, self.groups
+
+
+def check_ids(volumes):
+    """Refuse un id du jeu qui ne serait pas dans les listes vérifiées (PARTICLES, SOUNDS, EFFECTS, BLOCKS, NPCS)."""
+    known = {"ParticleSystem": PARTICLES, "SoundEvent": SOUNDS, "Effect": EFFECTS, "ToBlockType": BLOCKS,
+             "BlockType": BLOCKS, "NpcType": NPCS}
+    for v in volumes.values():
+        for e in v["Effects"]:
+            for field, ids in known.items():
+                if field in e and e[field] not in ids:
+                    raise RuntimeError(f"pièges : {field} inconnu {e[field]!r} dans {v['Name']}")
+            for b in e.get("FromBlockTypes", ()):
+                if b not in BLOCKS:
+                    raise RuntimeError(f"pièges : bloc inconnu {b!r} dans {v['Name']}")
+
+
+def trap_volumes(tower, origin):
+    """{id: volume} et {id: groupe} des pièges de la tour, pour TriggerVolumeData.json."""
+    return Traps(tower, origin).build()
+
+
+# --- blocs ------------------------------------------------------------------------------------------------------
+
+def seal_texture(seed=4401):
+    """Verre alchimique vert et or, translucide : cercle, triangle et carré de la transmutation, liseré d'or."""
+    rng = random.Random(seed)
+    n = 32
+    img = Image.new("RGBA", (n, n))
+    px = img.load()
+    for y in range(n):
+        for x in range(n):
+            d = math.hypot(x - 15.5, y - 15.5) / 16
+            g = 150 + int(70 * (1 - d)) + rng.randint(-10, 10)
+            px[x, y] = (40 + rng.randint(0, 20), min(255, g), 110 + rng.randint(-10, 10), 150)
+    gold = (236, 196, 84, 235)
+    draw = ImageDraw.Draw(img)
+    draw.rectangle((0, 0, n - 1, n - 1), outline=gold)
+    draw.ellipse((5, 5, 26, 26), outline=gold)
+    draw.polygon([(15.5, 7), (24, 22), (7, 22)], outline=gold)
+    draw.rectangle((12, 14, 19, 20), outline=(255, 238, 160, 240))
+    draw.point([(15, 15), (16, 16), (15, 16), (16, 15)], fill=(255, 255, 220, 255))
+    return img
+
+
+def block_item(block_id, icon, block_type):
+    return {
+        "TranslationProperties": {"Name": f"{LANG}.items.{block_id}.name"},
+        "Icon": icon,
+        "Categories": ["Blocks.Deco"],
+        "Quality": "Technical",
+        "PlayerAnimationsId": "Block",
+        "BlockType": block_type,
+        "Tags": {"Type": ["Deco"]},
+        "ItemSoundSetId": "ISS_Blocks_Stone",
+    }
+
+
+def seal_item(texture, icon):
+    return block_item(at.SEAL, icon, {
+        "Material": "Solid",
+        "DrawType": "Cube",
+        "Opacity": "Semitransparent",
+        "Textures": [{"Sides": texture, "UpDown": texture, "Weight": 1}],
+        "HitboxType": "Full",
+        "Flags": {},
+        "Gathering": {"Breaking": {"GatherType": "Rocks"}},
+        "Light": {"Color": "#4c8"},
+        "BlockParticleSetId": "Crystal",
+        "BlockSoundSetId": "Crystal",
+        "ParticleColor": "#58d68d",
+    })
+
+
+def hedge_item():
+    """Haie de ronces : le feuillage de ronce du jeu en bloc plein, sans support, qui pique (comme le buisson de ronces)."""
+    return block_item(at.HEDGE, "Icons/ItemsGenerated/Plant_Bramble_Leaves.png", {
+        "Material": "Solid",
+        "DrawType": "Model",
+        "Opacity": "Cutout",
+        "CustomModel": "Blocks/Foliage/Leaves/UpShapeSoft.blockymodel",
+        "CustomModelTexture": [{"Texture": "Blocks/Foliage/Leaves/UpShapeSoft_Textures/Gramble.png", "Weight": 1}],
+        "RandomRotation": "YawStep1",
+        "HitboxType": "Full",
+        "Flags": {},
+        "Gathering": {"Soft": {}},
+        "Interactions": {"CollisionEnter": "Environmental_Block_Damage"},
+        "BlockParticleSetId": "Leaves",
+        "BlockSoundSetId": "Bramble",
+        "PhysicalMaterialId": "Foliage",
+        "ParticleColor": "#b46b26",
+    })
+
+
+def lever_item():
+    """Levier de vanne : le levier du jeu, qu'on peut utiliser (comme un brasero, il change d'état)."""
+    return block_item(at.LEVER, "Icons/ItemsGenerated/Deco_Lever.png", {
+        "DrawType": "Model",
+        "Opacity": "Transparent",
+        "CustomModel": "Blocks/Tinkering/Lever.blockymodel",
+        "CustomModelTexture": [{"Texture": "Blocks/Tinkering/Lever_Texture.png", "Weight": 1}],
+        "HitboxType": "Plant_Large",
+        "VariantRotation": "NESW",
+        "Flags": {},
+        "Gathering": {"Soft": {}},
+        "BlockParticleSetId": "Metal",
+        "BlockSoundSetId": "Metal",
+        "PhysicalMaterialId": "Metal",
+        "InteractionHint": "server.interactionHints.activate",
+        "InteractionSoundEventId": "SFX_Lever_Metal_On",
+        "Interactions": {"Use": {"Interactions": [{"Type": "ChangeState", "Changes": {"default": "On", "On": "default"}}]}},
+        "State": {"Definitions": {"On": {"InteractionSoundEventId": "SFX_Lever_Metal_Off"}}},
+    })
+
+
+def write_json(path, doc):
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text(json.dumps(doc, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
+
+
+def main():
+    preview = Path(sys.argv[sys.argv.index("--preview") + 1]) if "--preview" in sys.argv else None
+    texture, icon = TEXTURES / "Alchemical_Seal.png", ICONS / "Alchemical_Seal.png"
+    texture.parent.mkdir(parents=True, exist_ok=True)
+    icon.parent.mkdir(parents=True, exist_ok=True)
+    img = seal_texture()
+    img.save(texture)
+    img.resize((64, 64), Image.NEAREST).save(icon)
+    write_json(ITEMS / f"{at.SEAL}.json", seal_item(texture.relative_to(COMMON).as_posix(),
+                                                    icon.relative_to(COMMON).as_posix()))
+    write_json(ITEMS / f"{at.HEDGE}.json", hedge_item())
+    write_json(ITEMS / f"{at.LEVER}.json", lever_item())
+    if preview:
+        preview.mkdir(parents=True, exist_ok=True)
+        img.resize((256, 256), Image.NEAREST).save(preview / "Alchemical_Seal.png")
+    print("blocs des énigmes générés")
+
+
+if __name__ == "__main__":
+    main()

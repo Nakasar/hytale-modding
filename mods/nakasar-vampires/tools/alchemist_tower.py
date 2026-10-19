@@ -10,7 +10,7 @@ Parcours, de bas en haut (niveaux = première couche d'air du sol de chaque sall
 
 - parvis au sud, porte du Hall des Alambics (niveau 0) ; rampe le long du mur de 200 à 300° ;
 - Couloir des fuites (22) : anneau autour d'un cœur plein, barré à 240°, on en fait les trois quarts jusqu'à la porte
-  ouest ; tuyaux, niches et grilles de vapeur (les jets viendront avec les pièges) ;
+  ouest ; tuyaux, niches et grilles de vapeur (jets et niches de refuge : `traps`) ;
 - Serre suspendue (22) : balcon extérieur d'ouest en est par le nord, verrière à l'ouest, belvédère au nord ; une rampe
   extérieure monte de 0 à 50° jusqu'à la porte de la bibliothèque ;
 - Bibliothèque (36) : rotonde à deux galeries, étagères, salle secrète en encorbellement à 320° ; rampe de 70 à 205° ;
@@ -62,6 +62,21 @@ GLOW = "Furniture_Royal_Magic_Potion_Glow"
 BRAZIER = "Furniture_Temple_Dark_Brazier"
 CHANDELIER = "Furniture_Feran_Chandelier"
 BARRIER = "Barrier"  # bloc vanilla plein et invisible (Server/Item/Items/Hypixel/Barrier.json)
+# Pièges et énigmes (étape 4, tools/alchemist_traps.py écrit leurs volumes) : sceau alchimique et haie de ronces ferment
+# un passage jusqu'à ce que l'énigme soit résolue ; on allume un brasero éteint (athanor, foyer) ou on tire le levier.
+SEAL = "Nakasar_Alchemical_Seal"
+HEDGE = "Nakasar_Thorn_Hedge"
+LEVER = "Nakasar_Valve_Lever"
+FOYER = "*Furniture_Temple_Dark_Brazier_State_Definitions_Off"
+GATE_BLOCKS = (SEAL, HEDGE)
+HALL_SEAL_ARC = (304, 308)    # sceau du couloir des fuites, juste après l'arrivée de la rampe du hall (300°)
+JET_ARC = (310, 530)          # bouches de vapeur actives : de l'arrivée à la porte ouest (180°)
+SHORTCUT_ARC = (236.5, 243.5)  # barrage du couloir : le levier y ouvre un raccourci
+HEDGE_ARC = (72, 84)          # haie de ronces au pied de la rampe de la bibliothèque (elle part de 70°)
+FOYERS = {"Fire": (6, -11), "Ice": (-6, -11), "Acid": (14, 14), "Lightning": (-14, 14)}
+FLAME_ANGLES = (295, 340, 385, 430, 475, 520, 565)  # angles de l'Escalier des vents (262 à 602°)
+GUST_SECTORS = (318, 408, 498, 585)
+STRIKE_ANGLES = tuple(range(282, 595, 22))
 
 DIRS4 = ((1, 0), (-1, 0), (0, 1), (0, -1))
 DIRS8 = DIRS4 + ((1, 1), (1, -1), (-1, 1), (-1, -1))
@@ -307,7 +322,7 @@ class Tower:
         for x, z, d, a in ring(0, 2):
             p.set(x, 15, z, GOLD)
         p.set(0, 16, 0, "Rock_Gold_Brick_Ornate")
-        # Athanors (l'énigme des trois feux viendra avec les pièges), chaudrons, établis d'alchimie.
+        # Fours des athanors (l'énigme des trois feux : `traps`), chaudrons, établis d'alchimie.
         for k in (30, 150, 330):
             x, z = at(14, k)
             self.place(x, 0, z, "Bench_Furnace", facing_center(x, z))
@@ -783,6 +798,108 @@ class Tower:
                 raise RuntimeError(f"tour : pas de place pour une gargouille en {(x, y, z)}")
             self.p.set(x, y + 2, z, SPAWNER_PREFIX + "Tower_Gargoyle")
             self.spawners.append(("Tower_Gargoyle", (x, y + 2, z)))
+
+    # --- pièges et énigmes (étape 4) --------------------------------------------------------------
+
+    def seal(self, cells, y0, y1, force=False):
+        """Sceau alchimique sur les colonnes (x, z), de y0 à y1 exclu (sur l'air seulement, sauf force) ; renvoie ses
+        blocs. Le volume du sceau le dissout quand l'énigme est résolue."""
+        out = []
+        for x, z in cells:
+            for y in range(y0, y1):
+                if force or self.p.free(x, y, z):
+                    self.p.set(x, y, z, SEAL)
+                    out.append((x, y, z))
+        return out
+
+    def usable(self, x, y, z, name, rot=0, plinth="Rock_Gold_Brick_Ornate"):
+        """Bloc à utiliser (brasero éteint, levier), sur un socle doré ; décor et mobs lui laissent la place autour."""
+        if plinth:
+            self.p.set(x, y - 1, z, plinth)
+        if not self.p.fits(x, y, z, name, rot):
+            raise RuntimeError(f"tour : pas de place pour {name} en {(x, y, z)}")
+        self.p.set(x, y, z, name, rot)
+        self.keep_clear.update((x + dx, y + k, z + dz) for dx in range(-1, 2) for dz in range(-1, 2) for k in range(3)
+                               if self.p.free(x + dx, y + k, z + dz))
+        return x, y, z
+
+    def traps(self):
+        """Blocs des pièges et des énigmes ; `self.trap` garde leurs positions pour tools/alchemist_traps.py."""
+        t = self.trap = {}
+        p = self.p
+        # Hall des Alambics : trois athanors éteints devant les fours. Tant qu'ils ne brûlent pas tous les trois, le
+        # sceau ferme le Couloir des fuites juste après l'arrivée de la rampe.
+        t["athanors"] = [self.usable(*at3(11, F_HALL, k), FOYER) for k in (30, 150, 330)]
+        t["hall_seal"] = self.seal([(x, z) for x, z, d, a in ring(18, R_IN) if in_arc(a, *HALL_SEAL_ARC)],
+                                   F_LEAKS, F_LIBRARY - 1)
+        # Couloir des fuites : les bouches de vapeur jettent par groupes de trois (A et B en alternance) ; entre deux
+        # groupes, une niche de refuge creusée dans le mur extérieur (la colonne montante qui la masquait part).
+        vents = sorted((k for k in range(0, 360, 10)
+                        if in_arc(k, *JET_ARC) and p.get(*at3(17.5, F_LEAKS, k)) == GLOW),
+                       key=lambda k: (k - JET_ARC[0]) % 360)
+        t["jets"] = [(k, "A" if (i // 3) % 2 == 0 else "B") for i, k in enumerate(vents)]
+        t["niches"] = []
+        for i in range(3, len(vents), 3):
+            b = (vents[i] - 5) % 360
+            px, pz = at(28, b)
+            for y in range(F_LEAKS, F_LEAKS + 9):
+                if p.get(px, y, pz) == "Rock_Gold_Brick_Pillar_Middle":
+                    p.set(px, y, pz, AIR)
+            for x, z, d, a in ring(R_IN - 0.5, 32.3):
+                if abs((a - b + 180) % 360 - 180) * d * math.pi / 180 >= 1.6:
+                    continue
+                for y in range(F_LEAKS, F_LEAKS + 3):
+                    p.set(x, y, z, AIR)
+                    self.keep_clear.add((x, y, z))
+                if not self.solid(x, F_LEAKS - 1, z):
+                    p.set(x, F_LEAKS - 1, z, TRIM)
+            p.set(*at3(31, F_LEAKS + 2, b), "Furniture_Royal_Magic_Potion_Glow_Ceiling")
+            t["niches"].append(b)
+        # Au fond, derrière la porte ouest, le levier coupe la vanne : les jets cessent et le barrage de 240° s'ouvre
+        # en raccourci vers l'arrivée de la rampe du hall.
+        lx, lz = at(25, 220)
+        t["lever"] = self.usable(lx, F_LEAKS, lz, LEVER, facing_center(lx, lz), plinth=None)
+        t["shortcut_seal"] = self.seal([(x, z) for x, z, d, a in ring(20.5, 27.5) if in_arc(a, *SHORTCUT_ARC)],
+                                       F_LEAKS, F_LEAKS + 4, force=True)
+        # Serre suspendue : nappes de spores qui ralentissent.
+        t["spores"] = [(x, F_LEAKS, z) for x, z in (self.spawn_cell(*at3(40, F_LEAKS, a), reach=3)
+                                                    for a in (205, 225, 245, 265, 285))]
+        # Bibliothèque : une haie de ronces barre le pied de la rampe, jusqu'à ce que la rampe soit trop haute pour qu'on
+        # y saute depuis le sol ; le brasero éteint devant elle y met le feu. Des livres tombent des rayonnages.
+        hedge = []
+        for x, z, d, a in ring(18, R_IN):
+            if not in_arc(a, *HEDGE_ARC):
+                continue
+            s = self.library_ramp.get((x, z))
+            y0 = (s + 1) // 2 if s is not None else F_LIBRARY
+            for y in range(y0, y0 + 4):
+                if p.free(x, y, z):
+                    p.set(x, y, z, HEDGE)
+                    hedge.append((x, y, z))
+        t["hedge"] = hedge
+        t["hedge_brazier"] = self.usable(*at3(20, F_LIBRARY, 62), FOYER)
+        t["books"] = [(x, F_LIBRARY, z) for x, z in
+                      (self.spawn_cell(*at3(13 if i % 2 else 18, F_LIBRARY, a), reach=3)
+                       for i, a in enumerate((15, 50, 100, 145, 190, 225, 245, 265, 290, 315)))]
+        # Salle des Transmutations : un foyer éteint par quadrant ; le sceau ferme le pied de l'escalier du laboratoire
+        # (les marches de x = -15 et -14, trop hautes pour qu'on y saute depuis le sol de la salle).
+        t["foyers"] = {el: self.usable(x, F_TRANS, z, FOYER) for el, (x, z) in FOYERS.items()}
+        t["trans_seal"] = []
+        for (x, z), s in sorted(self.trans_stair.items()):
+            if x in (-15, -14):
+                t["trans_seal"] += self.seal([(x, z)], (s + 1) // 2, F_LAB - 1)
+        # Escalier des vents : bouches de flammes dans le mur de la tour, secteurs de rafales (vers le mur, jamais vers le
+        # vide), points d'impact de la foudre.
+        t["flames"] = []
+        for i, a in enumerate(FLAME_ANGLES):
+            cells = [self.ramp_cell(a, r) for r in (35.5, 39.0)]
+            nx, nz = at(33, a)
+            ny = cells[0][1] + 1
+            p.set(nx, ny, nz, "Rock_Gold_Brick_Ornate")
+            t["flames"].append((a, "A" if i % 2 == 0 else "B", cells, (nx, ny, nz)))
+        t["gusts"] = [(a, "A" if i % 2 == 0 else "B", [self.ramp_cell(a + k, 37.2) for k in (-10, -5, 0, 5, 10)])
+                      for i, a in enumerate(GUST_SECTORS)]
+        t["strikes"] = [self.ramp_cell(a, 35.5 if i % 2 else 38.8) for i, a in enumerate(STRIKE_ANGLES)]
 
     # --- décor -----------------------------------------------------------------------------------
 
@@ -1297,6 +1414,7 @@ class Tower:
         self.checkpoint(22, F_LAB, -16, statue_at=(18, -20))
         self.checkpoint(*at3(37, F_LAB, 272), statue_at=at(39, 262))
         self.checkpoint(*at3(33, F_DECK, 255), statue_at=at(37, 265))
+        self.traps()
         self.decorate()
         self.mobs()
         self.secure()
@@ -1479,6 +1597,14 @@ def build_checked(seed):
     missing, _ = walkable_path(prefab, START, goals)
     if missing:
         raise RuntimeError(f"tour : inaccessible depuis le parvis : {missing}")
+    # Chaque énigme ferme bien son passage : sceaux et ronces fermés, on ne va pas plus loin que la salle.
+    cps = tower.checkpoints
+    for name, start, goal in (("sceau du hall", START, GOALS["leaks_exit"]),
+                              ("ronces de la bibliothèque", (cps[0][0], 2 * cps[0][1], cps[0][2]), GOALS["transmutation"]),
+                              ("sceau des transmutations", (0, 2 * F_TRANS, 4), cps[1])):
+        missing, _ = walkable_path(prefab, start, {"goal": goal}, gates_open=False)
+        if not missing:
+            raise RuntimeError(f"tour : le {name} ne ferme pas le passage")
     return tower
 
 
@@ -1497,10 +1623,11 @@ def passable(name):
     return name in (None, AIR) or name.startswith(PASSABLE_PREFIXES)
 
 
-def walkable_path(prefab, start, goals, ground_y=0, bounds=(-70, 70, -70, 82)):
+def walkable_path(prefab, start, goals, ground_y=0, bounds=(-70, 70, -70, 82), gates_open=True):
     """Parcours en largeur sur les surfaces du prefab (demi-blocs) : un joueur de 2 blocs de haut monte d'un demi-bloc
     en marchant, d'un bloc en sautant, et peut descendre de 4 blocs. Hors du prefab, sous ground_y c'est l'île (plein),
-    au-dessus de l'air. Renvoie les buts non atteints."""
+    au-dessus de l'air. Sceaux et ronces (GATE_BLOCKS) sont ouverts si gates_open, comme une fois les énigmes
+    résolues. Renvoie les buts non atteints."""
     blocks = prefab.blocks
     claims = prefab.claims
 
@@ -1511,6 +1638,8 @@ def walkable_path(prefab, start, goals, ground_y=0, bounds=(-70, 70, -70, 82)):
         if b is None:
             return "solid" if y < ground_y else "air"
         name = b[0]
+        if name in GATE_BLOCKS:
+            return "air" if gates_open else "solid"
         if passable(name):
             return "air"
         if name.endswith("_Half"):

@@ -663,6 +663,82 @@ public class ValidateAssets {
      * erreur (le message évite « does not exist », réservé aux références notées).
      */
     @SuppressWarnings({"unchecked", "rawtypes"})
+    /**
+     * Volumes déclencheurs des instances (resources/TriggerVolumeData.json : pièges, points de contrôle...). Le serveur
+     * les lit avec des listes « tolérantes » qui ignorent en silence un effet ou une condition invalide : on décode donc
+     * chaque effet et chaque condition à part, avec les types que TriggerVolumesPlugin enregistre (rejoués depuis son
+     * bytecode), pour signaler un type inconnu ou un champ invalide (énumération, nombre...).
+     */
+    private static int checkTriggerVolumes(Path root) throws Exception {
+        Map<String, Codec<?>> codecs = Map.of(
+                "registerEffectType", com.hypixel.hytale.builtin.triggervolumes.effect.TriggerEffect.CODEC,
+                "registerConditionType", com.hypixel.hytale.builtin.triggervolumes.effect.TriggerCondition.CODEC,
+                "registerRuleType", com.hypixel.hytale.builtin.triggervolumes.effect.TriggerRule.CODEC);
+        com.hypixel.hytale.builtin.triggervolumes.shape.TriggerVolumeShape.registerBuiltinShapes();
+        int types = replayCodecRegistrations(
+                "com.hypixel.hytale.builtin.triggervolumes.TriggerVolumesPlugin#registerEffectTypes");
+        System.out.println("INFO  " + types + " types d'effets et de conditions de volumes enregistrés");
+        List<Path> files;
+        try (Stream<Path> walk = Files.walk(root.resolve("Instances"))) {
+            files = walk.filter(f -> f.getFileName().toString().equals("TriggerVolumeData.json")).sorted().toList();
+        }
+        int errors = 0;
+        for (Path file : files) {
+            List<String> problems = new ArrayList<>();
+            String json = Files.readString(file);
+            ExtraInfo whole = new ExtraInfo();
+            try {
+                com.hypixel.hytale.builtin.triggervolumes.manager.TriggerVolumeManager.CODEC
+                        .decodeJson(RawJsonReader.fromJsonString(json), whole);
+            } catch (Throwable t) {
+                if (!isAfterDecode(t)) {
+                    problems.add(describe(t));
+                }
+            }
+            whole.getUnknownKeys().forEach(k -> problems.add("clé inconnue : " + k));
+            int count = 0;
+            BsonDocument volumes = BsonDocument.parse(json).getDocument("Volumes");
+            for (var entry : volumes.entrySet()) {
+                BsonDocument volume = entry.getValue().asDocument();
+                String name = volume.getString("Name").getValue();
+                count++;
+                for (var field : List.of(Map.entry("Effects", "registerEffectType"),
+                        Map.entry("Conditions", "registerConditionType"), Map.entry("Rules", "registerRuleType"))) {
+                    if (!volume.containsKey(field.getKey())) {
+                        continue;
+                    }
+                    for (BsonValue item : volume.getArray(field.getKey())) {
+                        ExtraInfo info = new ExtraInfo();
+                        String type = item.asDocument().getString("Type").getValue();
+                        try {
+                            Object value = codecs.get(field.getValue())
+                                    .decodeJson(RawJsonReader.fromJsonString(item.asDocument().toJson()), info);
+                            if (value == null) {
+                                problems.add(name + " : " + type + " non décodé (type inconnu ?)");
+                            }
+                        } catch (Throwable t) {
+                            problems.add(name + " : " + type + " : " + describe(t));
+                            continue;
+                        }
+                        info.getUnknownKeys().forEach(k -> problems.add(name + " : " + type + " : clé inconnue " + k));
+                        List<String> found = new ArrayList<>();
+                        collectResults(info.getValidationResults(), found, new ArrayList<>());
+                        found.stream().distinct().forEach(r -> problems.add(name + " : " + type + " : " + r));
+                    }
+                }
+            }
+            String rel = root.relativize(file).toString().replace('\\', '/');
+            if (problems.isEmpty()) {
+                System.out.println("OK    " + rel + " : " + count + " volumes");
+            } else {
+                errors++;
+                System.out.println("ERROR " + rel);
+                problems.stream().distinct().limit(40).forEach(p -> System.out.println("      " + p));
+            }
+        }
+        return errors;
+    }
+
     private static void checkInstanceNamesOffline(Path root) throws Exception {
         Class<?> teleport = Class.forName("com.hypixel.hytale.builtin.instances.interactions.TeleportInstanceInteraction");
         BuilderCodec<?> codec = (BuilderCodec<?>) teleport.getField("CODEC").get(null);
@@ -921,6 +997,7 @@ public class ValidateAssets {
         }
         System.out.println(checked + " fichiers vérifiés, " + errors + " en erreur");
         errors += checkWorldEvents(root) + registrationErrors;
+        errors += checkTriggerVolumes(root);
         String blocks = System.getProperty("blocks");
         if (blocks != null) {
             errors += checkBlockIds(root, Path.of(blocks));
