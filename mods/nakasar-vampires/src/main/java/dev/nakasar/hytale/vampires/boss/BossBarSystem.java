@@ -50,6 +50,8 @@ public final class BossBarSystem extends TickingSystem<EntityStore> {
             "Nakasar_Giant_Pumpkin",
             "Nakasar_Zombie_Abomination",
             "Nakasar_Guard_Captain",
+            "Nakasar_Enchanted_Armor",
+            "Nakasar_Spectre",
             "Nakasar_Vampire_Count",
             "Nakasar_Vampire_Countess");
 

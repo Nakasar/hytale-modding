@@ -1,0 +1,35 @@
+{
+  "$Comment": "Spectre (élite) : modèle vanilla Wraith, bien plus grand, lueur glacée et brume de givre autour du bassin. Ses fantômes invoqués utilisent Nakasar_Spectral_Ghost.",
+  "Parent": "Wraith",
+  "MinScale": 1.5,
+  "MaxScale": 1.5,
+  "Light": {
+    "Color": "#bfeaff",
+    "Radius": 7
+  },
+  "Particles": [
+    {
+      "SystemId": "Fire_Blue",
+      "PositionOffset": {
+        "Y": -0.2
+      },
+      "RotationOffset": {
+        "Pitch": 180
+      },
+      "TargetNodeName": "Pelvis"
+    },
+    {
+      "SystemId": "Fire_Blue",
+      "TargetNodeName": "Hood-Top",
+      "Scale": 0.6,
+      "PositionOffset": {
+        "Z": 0.3
+      }
+    },
+    {
+      "SystemId": "Weapon_Frost_Mist",
+      "TargetNodeName": "Pelvis",
+      "Scale": 1.5
+    }
+  ]
+}

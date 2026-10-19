@@ -1,0 +1,59 @@
+{
+  "$Comment": "Le Spectre appelle ses fantômes : il se fige dans une brume de givre, puis trois fantômes (Nakasar_Spectral_Ghost) apparaissent entre 2,5 et 5 blocs de lui (Nakasar_SummonMinions). Tant qu'il en reste un, il est invulnérable (MinionShieldSystem).",
+  "Type": "Serial",
+  "Interactions": [
+    {
+      "Type": "ClearEntityEffect",
+      "Entity": "User",
+      "EntityEffectId": "Hit_Interrupt_Eligible"
+    },
+    {
+      "Type": "Simple",
+      "RunTime": 0.8,
+      "Effects": {
+        "WorldSoundEventId": "SFX_Spirit_Root_Alerted",
+        "Particles": [
+          {
+            "SystemId": "Weapon_Frost_Mist",
+            "TargetNodeName": "Chest",
+            "Scale": 2.0
+          }
+        ]
+      }
+    },
+    {
+      "Type": "Simple",
+      "RunTime": 0.2,
+      "Effects": {
+        "WorldSoundEventId": "SFX_Spirit_Root_Spawn",
+        "Particles": [
+          {
+            "SystemId": "Praetorian_Summon_Ground",
+            "TargetEntityPart": "Entity",
+            "TargetNodeName": "Origin",
+            "Scale": 1.6,
+            "PositionOffset": {
+              "X": 0,
+              "Y": 0.1,
+              "Z": 0
+            },
+            "DetachedFromModel": true
+          }
+        ]
+      },
+      "Next": {
+        "Type": "Nakasar_SummonMinions",
+        "MinionRole": "Nakasar_Spectral_Ghost",
+        "Count": 3,
+        "MaxAlive": 3,
+        "MinDistance": 2.5,
+        "MaxDistance": 5,
+        "MinSpacing": 2
+      }
+    },
+    {
+      "Type": "Simple",
+      "RunTime": 0.4
+    }
+  ]
+}

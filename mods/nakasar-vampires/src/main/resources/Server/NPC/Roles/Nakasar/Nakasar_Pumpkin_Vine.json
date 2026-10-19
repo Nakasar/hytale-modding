@@ -1,5 +1,5 @@
 {
-  "$Comment": "Vrille combattante de la citrouille géante, sortie de terre autour d'elle (Nakasar_SummonVines). Immobile, elle a sa propre vie : elle projette des épines sur une cible à distance et, quand on l'approche, la frappe d'un coup de fouet ou fait un balayage circulaire annoncé par une zone rouge. Prend double dégâts de feu. Disparaît avec sa citrouille, ou au bout de 25 s sans combat.",
+  "$Comment": "Vrille combattante de la citrouille géante, sortie de terre autour d'elle (Nakasar_SummonMinions). Immobile, elle a sa propre vie : elle projette des épines sur une cible à distance et, quand on l'approche, la frappe d'un coup de fouet ou fait un balayage circulaire annoncé par une zone rouge. Prend double dégâts de feu. Disparaît avec sa citrouille, ou au bout de 25 s sans combat.",
   "Type": "Generic",
   "Appearance": "Nakasar_Pumpkin_Vine",
   "NameTranslationKey": "nakasar_mobs.npc.Pumpkin_Vine.name",

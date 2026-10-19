@@ -1,0 +1,12 @@
+{
+  "$Comment": "Spectre (élite) d'un château hanté sur deux ou d'un cimetière hanté sur trois ; revient 30 minutes après sa mort.",
+  "NPCs": [
+    {
+      "Name": "Nakasar_Spectre",
+      "Weight": 1,
+      "RealtimeRespawnTime": 1800
+    }
+  ],
+  "RealtimeRespawn": true,
+  "ExclusionRadius": 0
+}

@@ -468,6 +468,8 @@ SPAWN_CAPTAIN = "Nakasar_Spawner_Guard_Captain"
 SPAWN_SPIDER = "Nakasar_Spawner_Spider"
 SPAWN_GIANT_PUMPKIN = "Nakasar_Spawner_Giant_Pumpkin"
 SPAWN_HUNTER = "Nakasar_Spawner_Vampire_Hunter"
+SPAWN_ARMOR = "Nakasar_Spawner_Enchanted_Armor"
+SPAWN_SPECTRE = "Nakasar_Spawner_Spectre"
 # Sol de cellule : le Capitaine y téléporte sa cible (le plugin cherche la plus proche).
 PRISON_CELL = "Nakasar_Prison_Cell"
 
@@ -1024,7 +1026,8 @@ def chapel(p, cx, z0, r, theme):
     p.scatter(x0 + 1, 0, z0 + 3, x1 - 1, tz0 - 1, 4, BONES if theme == "undead" else CANDLES)
 
 
-def cemetery(seed, theme):
+def cemetery(seed, theme, spectre=False):
+    """spectre : le Spectre (élite) hante le croisement des allées (variante Cemeteries/Spectre)."""
     p = Prefab(seed)
     r = p.rng
     w, d = r.choice([(31, 33), (33, 31), (29, 33)])
@@ -1136,13 +1139,16 @@ def cemetery(seed, theme):
         p.scatter(x0 + 1, 0, z0 + 1, x1 - 1, z1 - 1, 8, DEAD_PLANTS)
     # chapelle et caveaux usés par le temps ; le muret et sa grille restent entiers (brèches à part)
     p.ruin(90, keep_below=1, names={"Rock_Stone_Brick", "Rock_Stone_Brick_Mossy", "Rock_Stone_Cobble", "Rock_Stone_Cobble_Mossy"})
+    if spectre:
+        spawners(p, SPAWN_SPECTRE, [(0, cross_z)])
     return p
 
 
 # --- crypts -----------------------------------------------------------------------------------
 
-def crypt(seed, material):
-    """Mausolée en surface et salle voûtée enterrée au nord, reliés par un escalier."""
+def crypt(seed, material, guarded=False):
+    """Mausolée en surface et salle voûtée enterrée au nord, reliés par un escalier. guarded : l'armure enchantée
+    (élite, 3,7 blocs de haut sous une voûte de 4) garde le fond de la salle (variante Crypts/Guarded)."""
     p = Prefab(seed)
     r = p.rng
     wall, flr, brick, ornate, half = MATERIALS[material]
@@ -1191,7 +1197,9 @@ def crypt(seed, material):
     p.chest(0, cy0 + 1, cz0 + 1, "Furniture_Temple_Dark_Chest_Large", SOUTH, LOOT_CRYPT)
     p.set(-2, cy0 + 1, cz0 + 1, p.pick(CANDLES))
     p.set(1, cy0 + 1, cz0 + 1, p.pick(CANDLES))
-    if r.random() < 0.5:
+    if guarded:
+        spawners(p, SPAWN_ARMOR, [(0, cz0 + 5)], ys=(cy0 + 1,))
+    elif r.random() < 0.5:
         p.set(0, cy0 + 1, cz0 + 5, "Furniture_Temple_Dark_Statue", SOUTH)
     p.scatter(cx0 + 1, cy0 + 1, cz0 + 1, cx1 - 1, cz1 - 1, 9, BONES)
     p.scatter(cx0 + 1, cy0 + 1, cz0 + 1, cx1 - 1, cz1 - 1, 5, CANDLES)
@@ -1310,7 +1318,8 @@ def keep(p, x0, z0, x1, z1, height, wall, flr, roof, ornate, levels=2):
     return level_h
 
 
-def haunted_castle(seed, material):
+def haunted_castle(seed, material, spectre=False):
+    """spectre : le Spectre (élite) hante la cour (variante HauntedCastles/Spectre)."""
     p = Prefab(seed)
     r = p.rng
     wall, flr, roof, ornate, _ = MATERIALS[material]
@@ -1377,6 +1386,8 @@ def haunted_castle(seed, material):
     p.scatter(-s + 2, 0, -1, s - 2, s - 2, 8, BONES)
     p.scatter(-s + 2, 0, -1, s - 2, s - 2, 6, GLOW_MUSHROOMS)
     p.ruin(78, keep_below=1, names={n for n, _ in wall})
+    if spectre:
+        spawners(p, SPAWN_SPECTRE, [(0, 4)])
     return p
 
 
@@ -2245,12 +2256,13 @@ def spider_lair(p, x0, z0, x1, z1, nests=5):
             p.set(cx, 0, cz, "Deco_Spider_Cocoon")
 
 
-def spawners(p, name, spots):
+def spawners(p, name, spots, ys=(0, 5, 1, -1)):
     """Un bloc d'apparition par case (un PNJ chacun), sur une case libre posée sur du plein : la case
-    demandée, sinon la plus proche dans un rayon de 3. Échoue si une case n'a aucune place."""
+    demandée, sinon la plus proche dans un rayon de 3, aux hauteurs ys (dans l'ordre). Échoue si une case
+    n'a aucune place."""
     for x, z in spots:
         ring = sorted(((dx, dz) for dx in range(-3, 4) for dz in range(-3, 4)), key=lambda d: d[0] ** 2 + d[1] ** 2)
-        spot = next(((x + dx, y, z + dz) for dx, dz in ring for y in (0, 5, 1, -1)
+        spot = next(((x + dx, y, z + dz) for dx, dz in ring for y in ys
                      if p.free(x + dx, y, z + dz) and p.free(x + dx, y + 1, z + dz) and not p.free(x + dx, y - 1, z + dz)), None)
         if spot is None:
             raise ValueError(f"{name} : aucune case libre près de ({x}, {z})")
@@ -2945,10 +2957,15 @@ def main():
     for t, theme in enumerate(("haunted", "spiders", "undead")):
         for i in range(2):
             jobs.append((f"Cemeteries/{theme.capitalize()}/Cemetery_{theme.capitalize()}_{i + 1}", cemetery(3000 + t * 100 + i, theme)))
+    # Variantes avec élite (dossiers à part : le monde tire le dossier, les contrats visent la variante gardée).
+    for i in range(2):
+        jobs.append((f"Cemeteries/Spectre/Cemetery_Spectre_{i + 1}", cemetery(3000 + i, "haunted", spectre=True)))
     for i, material in enumerate(("stone", "slate", "shale")):
-        jobs.append((f"Crypts/Crypt_{material.capitalize()}", crypt(4000 + i, material)))
-    jobs.append(("HauntedCastles/Haunted_Castle_Stone", haunted_castle(5000, "stone")))
-    jobs.append(("HauntedCastles/Haunted_Castle_Slate", haunted_castle(5001, "slate")))
+        jobs.append((f"Crypts/Plain/Crypt_{material.capitalize()}", crypt(4000 + i, material)))
+        jobs.append((f"Crypts/Guarded/Crypt_{material.capitalize()}_Guarded", crypt(4000 + i, material, guarded=True)))
+    for i, material in enumerate(("stone", "slate")):
+        jobs.append((f"HauntedCastles/Plain/Haunted_Castle_{material.capitalize()}", haunted_castle(5000 + i, material)))
+        jobs.append((f"HauntedCastles/Spectre/Haunted_Castle_{material.capitalize()}_Spectre", haunted_castle(5000 + i, material, spectre=True)))
     jobs.append(("VampireManor/Vampire_Manor", vampire_manor(6000)))
     jobs.append(("SpawnCrypt/Spawn_Crypt", spawn_crypt(6100)))
     for i, variant in enumerate(("zombies", "ruins", "spiders")):

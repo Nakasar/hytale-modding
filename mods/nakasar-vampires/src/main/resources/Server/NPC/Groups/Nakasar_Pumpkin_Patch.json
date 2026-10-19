@@ -1,5 +1,5 @@
 {
-  "$Comment": "La citrouille géante, ses vrilles combattantes et les vrilles de son piège : prennent double dégâts de feu (dev.nakasar.hytale.vampires.pumpkin.FireWeaknessSystem).",
+  "$Comment": "La citrouille géante, ses vrilles combattantes et les vrilles de son piège : prennent double dégâts de feu (dev.nakasar.hytale.vampires.elite.FireAffinitySystem).",
   "IncludeRoles": [
     "Nakasar_Giant_Pumpkin",
     "Nakasar_Pumpkin_Vine",

@@ -3,7 +3,7 @@
 <Infobox title="Cimetière" kind="Structure" image={require("../images/lieux/apercu_cimetiere.png").default} caption="Un cimetière hanté (aperçu du générateur)">
 <Info label="Taille">enclos d'environ **31 × 33** (structure jusqu'à 36 × 22 × 36)</Info>
 <Info label="Par monde">1 ou 2</Info>
-<Info label="Variantes">Hanté, Araignées, Morts-vivants (deux plans chacune)</Info>
+<Info label="Variantes">Hanté, Spectre (rare), Araignées, Morts-vivants (deux plans chacune)</Info>
 <Info label="Gardiens">aucun marqueur : les monstres de la **zone hantée** (fantômes, spectres, goules, squelettes...) y rôdent</Info>
 <Info label="Coffres">aucun</Info>
 </Infobox>
@@ -24,5 +24,6 @@ Les anciens cimetières du domaine, clos de grilles, avec leur chapelle et leurs
 | Variante | Ambiance |
 |---|---|
 | **Hanté** | bougies, pétales de sang, champignons luisants, arbres à lanterne |
+| **Spectre** (rare, environ un cimetière sur sept) | comme le cimetière hanté, avec le **[Spectre](../pnj/spectre.md)** (élite) devant la grande croix |
 | **Araignées** | cocons sur les piliers, nappes de toiles au sol, os |
 | **Morts-vivants** | ossements partout, nombreuses tombes ouvertes, champignons luisants verts |

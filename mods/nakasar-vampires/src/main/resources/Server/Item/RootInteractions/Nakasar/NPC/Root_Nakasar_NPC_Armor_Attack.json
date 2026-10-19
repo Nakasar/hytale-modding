@@ -1,0 +1,19 @@
+{
+  "$Comment": "Coups de massue ordinaires de l'armure enchantée : gauche puis droite.",
+  "Tags": {
+    "Attack": [
+      "Melee"
+    ]
+  },
+  "Interactions": [
+    {
+      "Type": "Chaining",
+      "ChainId": "Nakasar_Enchanted_Armor",
+      "ChainingAllowance": 15,
+      "Next": [
+        "Nakasar_NPC_Armor_Swing_Left",
+        "Nakasar_NPC_Armor_Swing_Right"
+      ]
+    }
+  ]
+}

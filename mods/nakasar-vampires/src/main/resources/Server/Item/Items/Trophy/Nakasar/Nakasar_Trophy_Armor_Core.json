@@ -1,0 +1,22 @@
+{
+  "TranslationProperties": {
+    "Name": "nakasar_hunters.items.Nakasar_Trophy_Armor_Core.name",
+    "Description": "nakasar_hunters.items.Nakasar_Trophy_Armor_Core.description"
+  },
+  "Icon": "Icons/Items/Nakasar/Trophies/Trophy_Armor_Core.png",
+  "Model": "Items/Nakasar/Trophies/Trophy_Armor_Core.blockymodel",
+  "Texture": "Items/Nakasar/Trophies/Trophy_Armor_Core.png",
+  "Quality": "Rare",
+  "ItemLevel": 25,
+  "Categories": [
+    "Items.Ingredients"
+  ],
+  "Tags": {
+    "Type": [
+      "Nakasar_Trophy"
+    ]
+  },
+  "PlayerAnimationsId": "Item",
+  "ItemSoundSetId": "ISS_Items_Gems",
+  "MaxStack": 10
+}

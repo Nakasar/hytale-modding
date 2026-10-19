@@ -1,0 +1,47 @@
+{
+  "$Comment": "Coup de massue ordinaire de l'armure enchantée (gauche).",
+  "Type": "Simple",
+  "RunTime": 0.45,
+  "Effects": {
+    "ItemPlayerAnimationsId": "Mace",
+    "ItemAnimationId": "SwingLeft",
+    "WorldSoundEventId": "SFX_Light_Melee_T2_Swing"
+  },
+  "Next": {
+    "Type": "Selector",
+    "RunTime": 0.15,
+    "Selector": {
+      "Id": "Horizontal",
+      "Direction": "ToLeft",
+      "TestLineOfSight": true,
+      "ExtendTop": 0.8,
+      "ExtendBottom": 0.8,
+      "StartDistance": 0.3,
+      "EndDistance": 3.8,
+      "Length": 100,
+      "RollOffset": 15,
+      "YawStartOffset": 50
+    },
+    "HitEntity": {
+      "Interactions": [
+        {
+          "Parent": "DamageEntityParent",
+          "DamageCalculator": {
+            "BaseDamage": {
+              "Physical": 28
+            },
+            "RandomPercentageModifier": 0.1
+          },
+          "DamageEffects": {
+            "WorldSoundEventId": "SFX_T1_Impact_Blunt",
+            "WorldParticles": [
+              {
+                "SystemId": "Impact_Sword_Basic_Stronk"
+              }
+            ]
+          }
+        }
+      ]
+    }
+  }
+}

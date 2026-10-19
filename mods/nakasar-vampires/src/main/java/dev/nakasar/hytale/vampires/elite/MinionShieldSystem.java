@@ -1,4 +1,4 @@
-package dev.nakasar.hytale.vampires.pumpkin;
+package dev.nakasar.hytale.vampires.elite;
 
 import com.hypixel.hytale.component.ArchetypeChunk;
 import com.hypixel.hytale.component.CommandBuffer;
@@ -27,23 +27,36 @@ import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
- * Bouclier de la citrouille géante ({@value #ROLE}) : tant qu'une de ses vrilles combattantes est vivante, aucun coup
- * ne la blesse ; le joueur qui frappe est prévenu (au plus une fois toutes les {@value #WARN_SECONDS} s). Il faut
- * détruire la vague pour l'atteindre, jusqu'à la vague suivante (son IA, 10 à 12 s plus tard).
+ * Bouclier des élites qui se cachent derrière leurs serviteurs ({@link #SHIELDS}) : tant qu'un de leurs serviteurs
+ * ({@link SummonMinionsInteraction}) est vivant, aucun coup ne les blesse ; le joueur qui frappe est prévenu (au plus
+ * une fois toutes les {@value #WARN_SECONDS} s). Il faut détruire la vague pour les atteindre, jusqu'à la suivante.
+ * <ul>
+ *   <li>citrouille géante : ses vrilles combattantes (son IA fait sortir la vague suivante 10 à 12 s après) ;</li>
+ *   <li>Spectre : ses fantômes invoqués.</li>
+ * </ul>
  *
  * <p>Seuls les coups d'une entité (arme, projectile, effet qu'elle a posé) sont bloqués : le vide, l'environnement et
- * les commandes la blessent toujours.
+ * les commandes les blessent toujours.
  *
- * <p>Première vague : si une entité à moins de {@value #LEASH} blocs (sa laisse) la frappe alors qu'aucune vague n'est
- * encore sortie depuis son dernier retour au calme (son IA n'a pas encore pu lancer la sienne), elle sort tout de
- * suite. Ce coup-là porte encore. Une fois le combat lancé, seule son IA invoque les vagues suivantes : le répit de 10
- * à 12 s après chaque vague détruite est garanti.
+ * <p>Première vague (citrouille seulement, qui ne bouge pas et peut être frappée avant d'avoir vu qui que ce soit) :
+ * si une entité à moins de {@value #LEASH} blocs (sa laisse) la frappe alors qu'aucune vague n'est encore sortie
+ * depuis son dernier retour au calme, la vague sort tout de suite. Ce coup-là porte encore. Une fois le combat lancé,
+ * seule son IA invoque les vagues suivantes : le répit après chaque vague détruite est garanti.
  *
  * <p>Filtre de dégâts, après celui des camps (un coup déjà annulé reste annulé).
  */
-public final class PumpkinShieldSystem extends DamageEventSystem {
+public final class MinionShieldSystem extends DamageEventSystem {
 
-    public static final String ROLE = "Nakasar_Giant_Pumpkin";
+    /** Message d'avertissement et vague du premier coup (null : seule l'IA invoque), par rôle protégé. */
+    private record Shield(String warnKey, SummonMinionsInteraction firstWave) {
+    }
+
+    /** Élites protégées par leurs serviteurs. La vague du premier coup reprend Nakasar_NPC_Pumpkin_Summon. */
+    static final Map<String, Shield> SHIELDS = Map.of(
+            "Nakasar_Giant_Pumpkin", new Shield("nakasar_mobs.npc.Giant_Pumpkin.shielded",
+                    SummonMinionsInteraction.preset("Nakasar_Pumpkin_Vine", 5, 5, 3f, 7f, 2.5f)),
+            "Nakasar_Spectre", new Shield("nakasar_mobs.npc.Spectre.shielded", null));
+
     private static final double LEASH = 20;
     private static final long WARN_SECONDS = 4;
 
@@ -75,27 +88,31 @@ public final class PumpkinShieldSystem extends DamageEventSystem {
             return;
         }
         NPCEntity npc = chunk.getComponent(index, NPCEntity.getComponentType());
-        if (npc == null || !ROLE.equals(npc.getRoleName())) {
+        Shield shield = npc == null ? null : SHIELDS.get(npc.getRoleName());
+        if (shield == null) {
             return;
         }
         if (!(damage.getSource() instanceof Damage.EntitySource source)) {
             return;
         }
-        Ref<EntityStore> pumpkin = chunk.getReferenceTo(index);
-        if (SummonVinesInteraction.hasLivingVines(pumpkin, store)) {
+        Ref<EntityStore> elite = chunk.getReferenceTo(index);
+        if (SummonMinionsInteraction.hasLivingMinions(elite, store)) {
             damage.setCancelled(true);
-            warn(source, buffer);
+            warn(source, buffer, shield.warnKey());
             return;
         }
-        StateSupport state = StateSupport.get(pumpkin, store);
+        if (shield.firstWave() == null) {
+            return;
+        }
+        StateSupport state = StateSupport.get(elite, store);
         String name = state == null ? null : state.getStateName();
         if (name == null || !name.startsWith("Combat")) {
             // Au calme : le prochain combat repart de zéro.
-            SummonVinesInteraction.forgetCalls(pumpkin);
+            SummonMinionsInteraction.forgetCalls(elite);
         }
         TransformComponent transform = chunk.getComponent(index, TransformComponent.getComponentType());
         if (transform != null && inLeash(source, buffer, transform.getPosition())) {
-            SummonVinesInteraction.summonFirstWave(store.getExternalData().getWorld(), pumpkin, transform.getPosition());
+            SummonMinionsInteraction.summonFirstWave(shield.firstWave(), store.getExternalData().getWorld(), elite, transform.getPosition());
         }
     }
 
@@ -108,7 +125,7 @@ public final class PumpkinShieldSystem extends DamageEventSystem {
         return transform != null && transform.getPosition().distanceSquared(at) <= LEASH * LEASH;
     }
 
-    private static void warn(Damage.EntitySource source, CommandBuffer<EntityStore> buffer) {
+    private static void warn(Damage.EntitySource source, CommandBuffer<EntityStore> buffer, String key) {
         if (source.getRef() == null || !source.getRef().isValid()) {
             return;
         }
@@ -120,7 +137,7 @@ public final class PumpkinShieldSystem extends DamageEventSystem {
         Long last = WARNED.get(player.getUuid());
         if (last == null || now - last > WARN_SECONDS * 1_000_000_000L) {
             WARNED.put(player.getUuid(), now);
-            player.sendMessage(Message.translation("nakasar_mobs.npc.Giant_Pumpkin.shielded"));
+            player.sendMessage(Message.translation(key));
         }
     }
 

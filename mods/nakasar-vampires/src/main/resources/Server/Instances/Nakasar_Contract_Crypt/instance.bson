@@ -1,0 +1,32 @@
+{
+  "DisplayName": "Contrat : le Gardien de la crypte",
+  "WorldGen": {
+    "Type": "HytaleGenerator",
+    "WorldStructure": "Nakasar_Contract_Crypt"
+  },
+  "ForcedWeather": "Nakasar_Weather_Halloween",
+  "GameTime": "0001-01-01T22:00:00Z",
+  "DaytimeDurationSeconds": 300,
+  "NighttimeDurationSeconds": 1200,
+  "IsPvpEnabled": false,
+  "IsSpawningNPC": true,
+  "SpawnProvider": {
+    "Id": "Global",
+    "SpawnPoint": {
+      "X": 0.5,
+      "Y": 81.0,
+      "Z": 0.5,
+      "Pitch": 0,
+      "Yaw": 0,
+      "Roll": 0
+    }
+  },
+  "Plugin": {
+    "PortalWorldConfig": {
+      "Config": {
+        "PortalType": "Nakasar_Contract_Crypt",
+        "TimeLimitSeconds": 900
+      }
+    }
+  }
+}

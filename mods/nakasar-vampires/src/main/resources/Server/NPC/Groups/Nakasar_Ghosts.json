@@ -1,3 +1,4 @@
 {
-  "IncludeRoles": ["Nakasar_Ghost"]
+  "$Comment": "Fantômes du mod : fantômes du Comté, Spectre et fantômes qu'il invoque. Ils ne se blessent pas entre eux (DisableDamageGroups).",
+  "IncludeRoles": ["Nakasar_Ghost", "Nakasar_Spectre", "Nakasar_Spectral_Ghost"]
 }

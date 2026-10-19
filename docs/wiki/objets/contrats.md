@@ -1,8 +1,8 @@
 # Contrats de primes
 
 <Infobox title="Contrats de primes" kind="Clé de portail" icon="/jeu/Icons/Items/Nakasar/Contracts/Contract_Farm.png">
-<Info label="Contrats">3 : la Bête de la ferme, le Champ maudit, la Garnison du Capitaine</Info>
-<Info label="Établi">[Établi des chasseurs](etabli-des-chasseurs.md), onglet Contrats (niveaux 1 et 2)</Info>
+<Info label="Contrats">5 : la Bête de la ferme, le Champ maudit, la Garnison du Capitaine, le Gardien de la crypte, le Spectre du château</Info>
+<Info label="Établi">[Établi des chasseurs](etabli-des-chasseurs.md), onglet Contrats (niveaux 1 à 3)</Info>
 <Info label="Utilisation">Dans un Portal Device, pour tout le groupe</Info>
 <Info label="Durée">15 minutes</Info>
 <Info label="Prime">1 [sac de prime](trophees.md#sacs-de-prime) et 1 trophée pour le groupe</Info>
@@ -22,6 +22,8 @@ Un contrat est une clé de portail fabriquée sur l'[établi des chasseurs](etab
 | ![icône](/jeu/Icons/Items/Nakasar/Contracts/Contract_Farm.png) | **La Bête de la ferme** | 1 | une [ferme zombie](../fragment/fermes.md) et ses fermiers | [Abomination zombie](../pnj/abomination-zombie.md) | cœur d'Abomination (niveau 2 de l'établi) + [sac de prime](trophees.md#sacs-de-prime) de la ferme |
 | ![icône](/jeu/Icons/Items/Nakasar/Contracts/Contract_Pumpkin.png) | **Le Champ maudit** | 2 | un [champ de citrouilles géant](../fragment/champs-de-citrouilles.md) | [Citrouille géante](../pnj/citrouille-geante.md) | graine de la Citrouille géante + sac de prime du champ |
 | ![icône](/jeu/Icons/Items/Nakasar/Contracts/Contract_Garrison.png) | **La Garnison du Capitaine** | 2 | le [poste de garde de la garnison](../fragment/postes-de-garde.md), ses gardes et ses cellules | [Capitaine de la garde](../pnj/capitaine-de-la-garde.md) | insigne du Capitaine + sac de prime de la garnison |
+| ![icône](/jeu/Icons/Items/Nakasar/Contracts/Contract_Crypt.png) | **Le Gardien de la crypte** | 2 | une [crypte](../fragment/cryptes.md) gardée | [Armure enchantée](../pnj/armure-enchantee.md) | cœur de l'armure enchantée + sac de prime de la crypte |
+| ![icône](/jeu/Icons/Items/Nakasar/Contracts/Contract_Castle.png) | **Le Spectre du château** | 3 | un [château hanté](../fragment/chateaux-hantes.md) et son Spectre | [Spectre](../pnj/spectre.md) | suaire du Spectre + sac de prime du château |
 
 La graine et l'insigne font ensemble passer l'établi au niveau 3. La cible laisse aussi le reste de son butin habituel.
 
@@ -32,3 +34,5 @@ La graine et l'insigne font ensemble passer l'établi au niveau 3. La cible lais
 | La Bête de la ferme | 2 crocs de vampire, 1 lingot d'argent, 2 chutes de lin, 1 éclat de rune | 3 s |
 | Le Champ maudit | 2 crocs de vampire, 1 lingot d'argent, 2 chutes de lin, 1 éclat de rune | 3 s |
 | La Garnison du Capitaine | 4 crocs de vampire, 2 lingots d'argent, 2 chutes de lin, 2 éclats de rune | 3 s |
+| Le Gardien de la crypte | 3 crocs de vampire, 2 lingots d'argent, 2 chutes de lin, 2 éclats de rune | 3 s |
+| Le Spectre du château | 4 crocs de vampire, 3 lingots d'argent, 3 chutes de lin, 3 éclats de rune | 3 s |

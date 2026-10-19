@@ -7655,6 +7655,60 @@
               }
             },
             {
+              "Weight": 0.5,
+              "Assignments": {
+                "Type": "Constant",
+                "Prop": {
+                  "Type": "Locator",
+                  "Pattern": {
+                    "Type": "Floor",
+                    "Floor": {
+                      "Type": "Not",
+                      "Pattern": {
+                        "Type": "BlockType",
+                        "Material": {
+                          "Solid": "Empty"
+                        }
+                      }
+                    },
+                    "Origin": {
+                      "Type": "BlockType",
+                      "Material": {
+                        "Solid": "Empty"
+                      }
+                    }
+                  },
+                  "Scanner": {
+                    "Type": "Linear",
+                    "Axis": "Y",
+                    "Range": {
+                      "MinInclusive": -12,
+                      "MaxExclusive": 13
+                    },
+                    "AscendingOrder": false,
+                    "Scanner": {
+                      "Type": "Origin"
+                    }
+                  },
+                  "PlacementCap": 1,
+                  "Prop": {
+                    "Type": "RandomRotator",
+                    "HorizontalRotations": true,
+                    "Seed": "CemeteriesSpectre",
+                    "Prop": {
+                      "Type": "Prefab",
+                      "WeightedPrefabPaths": [
+                        {
+                          "Path": "Nakasar/Halloween/Cemeteries/Spectre",
+                          "Weight": 1.0
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            },
+            {
               "Weight": 1.0,
               "Assignments": {
                 "Type": "Constant",
@@ -7824,12 +7878,66 @@
                   "Prop": {
                     "Type": "RandomRotator",
                     "HorizontalRotations": true,
-                    "Seed": "Crypts",
+                    "Seed": "CryptsPlain",
                     "Prop": {
                       "Type": "Prefab",
                       "WeightedPrefabPaths": [
                         {
-                          "Path": "Nakasar/Halloween/Crypts",
+                          "Path": "Nakasar/Halloween/Crypts/Plain",
+                          "Weight": 1.0
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            },
+            {
+              "Weight": 1.0,
+              "Assignments": {
+                "Type": "Constant",
+                "Prop": {
+                  "Type": "Locator",
+                  "Pattern": {
+                    "Type": "Floor",
+                    "Floor": {
+                      "Type": "Not",
+                      "Pattern": {
+                        "Type": "BlockType",
+                        "Material": {
+                          "Solid": "Empty"
+                        }
+                      }
+                    },
+                    "Origin": {
+                      "Type": "BlockType",
+                      "Material": {
+                        "Solid": "Empty"
+                      }
+                    }
+                  },
+                  "Scanner": {
+                    "Type": "Linear",
+                    "Axis": "Y",
+                    "Range": {
+                      "MinInclusive": -12,
+                      "MaxExclusive": 13
+                    },
+                    "AscendingOrder": false,
+                    "Scanner": {
+                      "Type": "Origin"
+                    }
+                  },
+                  "PlacementCap": 1,
+                  "Prop": {
+                    "Type": "RandomRotator",
+                    "HorizontalRotations": true,
+                    "Seed": "CryptsGuarded",
+                    "Prop": {
+                      "Type": "Prefab",
+                      "WeightedPrefabPaths": [
+                        {
+                          "Path": "Nakasar/Halloween/Crypts/Guarded",
                           "Weight": 1.0
                         }
                       ]
@@ -8030,12 +8138,66 @@
                   "Prop": {
                     "Type": "RandomRotator",
                     "HorizontalRotations": true,
-                    "Seed": "HauntedCastles",
+                    "Seed": "HauntedCastlesPlain",
                     "Prop": {
                       "Type": "Prefab",
                       "WeightedPrefabPaths": [
                         {
-                          "Path": "Nakasar/Halloween/HauntedCastles",
+                          "Path": "Nakasar/Halloween/HauntedCastles/Plain",
+                          "Weight": 1.0
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            },
+            {
+              "Weight": 1.0,
+              "Assignments": {
+                "Type": "Constant",
+                "Prop": {
+                  "Type": "Locator",
+                  "Pattern": {
+                    "Type": "Floor",
+                    "Floor": {
+                      "Type": "Not",
+                      "Pattern": {
+                        "Type": "BlockType",
+                        "Material": {
+                          "Solid": "Empty"
+                        }
+                      }
+                    },
+                    "Origin": {
+                      "Type": "BlockType",
+                      "Material": {
+                        "Solid": "Empty"
+                      }
+                    }
+                  },
+                  "Scanner": {
+                    "Type": "Linear",
+                    "Axis": "Y",
+                    "Range": {
+                      "MinInclusive": -12,
+                      "MaxExclusive": 13
+                    },
+                    "AscendingOrder": false,
+                    "Scanner": {
+                      "Type": "Origin"
+                    }
+                  },
+                  "PlacementCap": 1,
+                  "Prop": {
+                    "Type": "RandomRotator",
+                    "HorizontalRotations": true,
+                    "Seed": "HauntedCastlesSpectre",
+                    "Prop": {
+                      "Type": "Prefab",
+                      "WeightedPrefabPaths": [
+                        {
+                          "Path": "Nakasar/Halloween/HauntedCastles/Spectre",
                           "Weight": 1.0
                         }
                       ]

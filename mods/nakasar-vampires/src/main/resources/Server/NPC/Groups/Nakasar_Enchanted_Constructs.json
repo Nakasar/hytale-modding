@@ -1,0 +1,7 @@
+{
+  "$Comment": "L'armure enchantée et ses rouages : ils ne se blessent pas entre eux (DisableDamageGroups).",
+  "IncludeRoles": [
+    "Nakasar_Enchanted_Armor",
+    "Nakasar_Enchanted_Gear"
+  ]
+}

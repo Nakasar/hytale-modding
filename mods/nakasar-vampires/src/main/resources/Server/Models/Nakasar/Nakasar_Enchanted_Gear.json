@@ -1,0 +1,183 @@
+{
+  "$Comment": "Rouage enchanté, serviteur de l'armure enchantée, généré par tools/generate_gear_model.py : deux roues dentées de bronze et de fer qui tournent en flottant autour d'un cœur runique bleu. Tant qu'il vit, il soigne l'armure (SummonMinionsInteraction, HealSummonerPerSecond) : particules de soin.",
+  "EyeHeight": 1.2,
+  "HitBox": {
+    "Max": {
+      "X": 0.45,
+      "Y": 1.75,
+      "Z": 0.3
+    },
+    "Min": {
+      "X": -0.45,
+      "Y": 0.7,
+      "Z": -0.3
+    }
+  },
+  "MinScale": 1,
+  "MaxScale": 1,
+  "Light": {
+    "Color": "#5aaaff",
+    "Radius": 4
+  },
+  "Particles": [
+    {
+      "SystemId": "Elite_Heal",
+      "TargetNodeName": "Core",
+      "Scale": 0.6
+    }
+  ],
+  "Model": "NPC/Nakasar/Enchanted_Gear/Model.blockymodel",
+  "Texture": "NPC/Nakasar/Enchanted_Gear/Texture.png",
+  "AnimationSets": {
+    "Idle": {
+      "Animations": [
+        {
+          "Animation": "NPC/Nakasar/Enchanted_Gear/Animations/Idle.blockyanim"
+        }
+      ]
+    },
+    "Spawn": {
+      "Animations": [
+        {
+          "Animation": "NPC/Nakasar/Enchanted_Gear/Animations/Spawn.blockyanim",
+          "Looping": false
+        }
+      ]
+    },
+    "Hurt": {
+      "Animations": [
+        {
+          "Animation": "NPC/Nakasar/Enchanted_Gear/Animations/Hurt.blockyanim",
+          "Looping": false
+        }
+      ]
+    },
+    "Death": {
+      "Animations": [
+        {
+          "Animation": "NPC/Nakasar/Enchanted_Gear/Animations/Death.blockyanim",
+          "Looping": false
+        }
+      ]
+    },
+    "Walk": {
+      "Animations": [
+        {
+          "Animation": "NPC/Nakasar/Enchanted_Gear/Animations/Idle.blockyanim"
+        }
+      ]
+    },
+    "WalkBackward": {
+      "Animations": [
+        {
+          "Animation": "NPC/Nakasar/Enchanted_Gear/Animations/Idle.blockyanim"
+        }
+      ]
+    },
+    "Run": {
+      "Animations": [
+        {
+          "Animation": "NPC/Nakasar/Enchanted_Gear/Animations/Idle.blockyanim"
+        }
+      ]
+    },
+    "Sprint": {
+      "Animations": [
+        {
+          "Animation": "NPC/Nakasar/Enchanted_Gear/Animations/Idle.blockyanim"
+        }
+      ]
+    },
+    "Jump": {
+      "Animations": [
+        {
+          "Animation": "NPC/Nakasar/Enchanted_Gear/Animations/Idle.blockyanim"
+        }
+      ]
+    },
+    "JumpWalk": {
+      "Animations": [
+        {
+          "Animation": "NPC/Nakasar/Enchanted_Gear/Animations/Idle.blockyanim"
+        }
+      ]
+    },
+    "JumpRun": {
+      "Animations": [
+        {
+          "Animation": "NPC/Nakasar/Enchanted_Gear/Animations/Idle.blockyanim"
+        }
+      ]
+    },
+    "Fall": {
+      "Animations": [
+        {
+          "Animation": "NPC/Nakasar/Enchanted_Gear/Animations/Idle.blockyanim"
+        }
+      ]
+    },
+    "Sleep": {
+      "Animations": [
+        {
+          "Animation": "NPC/Nakasar/Enchanted_Gear/Animations/Idle.blockyanim"
+        }
+      ]
+    },
+    "Laydown": {
+      "Animations": [
+        {
+          "Animation": "NPC/Nakasar/Enchanted_Gear/Animations/Idle.blockyanim"
+        }
+      ]
+    },
+    "Crouch": {
+      "Animations": [
+        {
+          "Animation": "NPC/Nakasar/Enchanted_Gear/Animations/Idle.blockyanim"
+        }
+      ]
+    },
+    "CrouchWalk": {
+      "Animations": [
+        {
+          "Animation": "NPC/Nakasar/Enchanted_Gear/Animations/Idle.blockyanim"
+        }
+      ]
+    },
+    "CrouchWalkBackward": {
+      "Animations": [
+        {
+          "Animation": "NPC/Nakasar/Enchanted_Gear/Animations/Idle.blockyanim"
+        }
+      ]
+    },
+    "SwimIdle": {
+      "Animations": [
+        {
+          "Animation": "NPC/Nakasar/Enchanted_Gear/Animations/Idle.blockyanim"
+        }
+      ]
+    },
+    "FluidIdle": {
+      "Animations": [
+        {
+          "Animation": "NPC/Nakasar/Enchanted_Gear/Animations/Idle.blockyanim"
+        }
+      ]
+    },
+    "Alerted": {
+      "Animations": [
+        {
+          "Animation": "NPC/Nakasar/Enchanted_Gear/Animations/Idle.blockyanim"
+        }
+      ]
+    },
+    "Wake": {
+      "Animations": [
+        {
+          "Animation": "NPC/Nakasar/Enchanted_Gear/Animations/Idle.blockyanim"
+        }
+      ]
+    }
+  }
+}

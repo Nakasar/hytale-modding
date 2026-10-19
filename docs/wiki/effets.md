@@ -1,9 +1,9 @@
 # Effets de statut
 
 <Infobox title="Effets de statut" kind="Effet" icon="/jeu/UI/StatusEffects/Nakasar/Spectral_Chains.png">
-<Info label="Effets">10, plus ceux du [joueur vampire](#vampire)</Info>
+<Info label="Effets">11, plus ceux du [joueur vampire](#vampire)</Info>
 <Info label="Immobilisation">[Chaînes spectrales](#chaines-spectrales), [Enraciné](#enracine)</Info>
-<Info label="Ralentissement">[Froid spectral](#froid-spectral), [Emprisonné](#emprisonne)</Info>
+<Info label="Ralentissement">[Froid spectral](#froid-spectral), [Vague de froid](#vague-de-froid), [Emprisonné](#emprisonne)</Info>
 <Info label="Sources">[Runes](objets/runes.md), boss et élites du Comté</Info>
 <Info label="Durées">3 à 30 s</Info>
 </Infobox>
@@ -46,9 +46,17 @@ Les effets que le mod applique aux joueurs et aux créatures.
 
 ![icône](/jeu/UI/StatusEffects/Nakasar/Ghost_Chill.png)
 
-- **Source :** [Fantôme](pnj/fantome.md)
+- **Source :** [Fantôme](pnj/fantome.md), toucher du [Spectre](pnj/spectre.md)
 - **Durée :** 3 s
 - Vitesse de déplacement **×0,5**, teinte bleu pâle.
+
+## Vague de froid {#vague-de-froid}
+
+![icône](/jeu/UI/StatusEffects/Nakasar/Spectre_Frost.png)
+
+- **Source :** vague de froid du [Spectre](pnj/spectre.md) (cercle rouge de 6 blocs)
+- **Durée :** 6 s
+- Vitesse de déplacement **×0,4**, teinte givrée.
 
 ## Emprisonné {#emprisonne}
 

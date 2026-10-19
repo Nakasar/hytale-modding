@@ -1,0 +1,28 @@
+{
+  "$Comment": "Armure enchantée : deux éclats de rune (exception voulue : les mobs du mod n'en lâchent pas d'habitude), de la ferraille et son trophée.",
+  "Container": {
+    "Type": "Multiple",
+    "Containers": [
+      {
+        "Type": "Single",
+        "Item": {
+          "ItemId": "Ingredient_Rune_Shard",
+          "QuantityMin": 2,
+          "QuantityMax": 2
+        }
+      },
+      {
+        "Type": "Single",
+        "Item": {
+          "ItemId": "Ingredient_Bar_Iron",
+          "QuantityMin": 2,
+          "QuantityMax": 4
+        }
+      },
+      {
+        "Type": "Droplist",
+        "DroplistId": "Nakasar_Drop_Trophy_Armor_Core"
+      }
+    ]
+  }
+}

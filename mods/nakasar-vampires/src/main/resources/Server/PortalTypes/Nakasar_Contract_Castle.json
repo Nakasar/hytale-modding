@@ -1,0 +1,40 @@
+{
+  "InstanceId": "Nakasar_Contract_Castle",
+  "Description": {
+    "DisplayName": "nakasar_hunters.contract.castle.name",
+    "FlavorText": "nakasar_hunters.contract.castle.flavor",
+    "ThemeColor": "#96c8e6",
+    "DescriptionTags": [
+      {
+        "TranslationKey": "nakasar_hunters.contract.tag.undead",
+        "Color": "#9b59b6"
+      },
+      {
+        "TranslationKey": "nakasar_hunters.contract.tag.elite",
+        "Color": "#c0392b"
+      },
+      {
+        "TranslationKey": "nakasar_hunters.contract.tag.frost",
+        "Color": "#8fd4ff"
+      }
+    ],
+    "Objectives": [
+      "nakasar_hunters.contract.castle.objective"
+    ]
+  },
+  "Spawn": {
+    "SpawnReturnPortal": false,
+    "SpawnProviderOverride": {
+      "Id": "Global",
+      "SpawnPoint": {
+        "X": 0.5,
+        "Y": 81.0,
+        "Z": 0.5,
+        "Yaw": 0.0
+      }
+    }
+  },
+  "TimeLimitSeconds": 900,
+  "CloseWhenEmpty": true,
+  "VoidInvasionEnabled": false
+}

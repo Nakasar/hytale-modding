@@ -1,0 +1,51 @@
+{
+  "$Comment": "Toucher glacial du Spectre : plus fort que celui d'un fantôme, il ralentit aussi (Nakasar_Ghost_Chill).",
+  "Type": "Simple",
+  "RunTime": 0.4,
+  "Effects": {
+    "ItemAnimationId": "SwingDown",
+    "WorldSoundEventId": "SFX_Light_Melee_T2_Swing"
+  },
+  "Next": {
+    "Type": "Selector",
+    "RunTime": 0.1,
+    "Selector": {
+      "Id": "Horizontal",
+      "Direction": "ToLeft",
+      "TestLineOfSight": false,
+      "ExtendTop": 1.0,
+      "ExtendBottom": 1.0,
+      "StartDistance": 0.1,
+      "EndDistance": 3.2,
+      "Length": 90,
+      "RollOffset": 0,
+      "YawStartOffset": -45
+    },
+    "HitEntity": {
+      "Interactions": [
+        {
+          "Parent": "DamageEntityParent_Hit_Interrupt",
+          "DamageCalculator": {
+            "BaseDamage": {
+              "Physical": 16
+            },
+            "RandomPercentageModifier": 0.1
+          },
+          "DamageEffects": {
+            "WorldParticles": [
+              {
+                "SystemId": "Impact_Ice"
+              }
+            ]
+          }
+        },
+        {
+          "Type": "ApplyEffect",
+          "EffectId": "Nakasar_Ghost_Chill",
+          "Entity": "Target",
+          "Duration": 3
+        }
+      ]
+    }
+  }
+}

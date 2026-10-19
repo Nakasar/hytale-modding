@@ -46,7 +46,9 @@ public final class ContractBounties extends DeathSystems.OnDeathSystem {
     static final Map<String, String> TARGETS = Map.of(
             "Farm", "Nakasar_Zombie_Abomination",
             "Pumpkin", "Nakasar_Giant_Pumpkin",
-            "Garrison", "Nakasar_Guard_Captain");
+            "Garrison", "Nakasar_Guard_Captain",
+            "Crypt", "Nakasar_Enchanted_Armor",
+            "Castle", "Nakasar_Spectre");
 
     /** Île des contrats ({@code generate_contracts.py}) : sol, rayon, et lieu de la cible où tombe le sac par défaut. */
     static final double GROUND_Y = 81;

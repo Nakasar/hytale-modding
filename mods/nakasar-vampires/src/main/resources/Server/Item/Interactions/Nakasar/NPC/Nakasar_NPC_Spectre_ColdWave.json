@@ -1,0 +1,108 @@
+{
+  "$Comment": "Vague de froid du Spectre, annoncée : il s'immobilise 1,6 s, la glace se forme autour de lui et une zone rouge de 6 blocs se charge au sol ; puis le froid éclate (10 dégâts) et ralentit fortement tous ceux restés dans la zone pendant 6 s (Nakasar_Spectre_Frost). On l'évite en sortant de la zone.",
+  "Type": "Serial",
+  "Interactions": [
+    {
+      "Type": "ClearEntityEffect",
+      "Entity": "User",
+      "EntityEffectId": "Hit_Interrupt_Eligible"
+    },
+    {
+      "Type": "ApplyEffect",
+      "EffectId": "Nakasar_Elite_Rooted"
+    },
+    {
+      "Type": "Simple",
+      "RunTime": 1.6,
+      "Effects": {
+        "WorldSoundEventId": "SFX_Spirit_Root_Alerted",
+        "Particles": [
+          {
+            "SystemId": "Feastmaster_Slam_Warning",
+            "TargetEntityPart": "Entity",
+            "TargetNodeName": "Origin",
+            "Scale": 4.08,
+            "PositionOffset": {
+              "X": 0,
+              "Y": 0.1,
+              "Z": 0
+            },
+            "DetachedFromModel": true
+          },
+          {
+            "SystemId": "Ice_Staff_Charging",
+            "TargetNodeName": "Chest",
+            "Scale": 1.5
+          }
+        ]
+      }
+    },
+    {
+      "Type": "Selector",
+      "RunTime": 0.15,
+      "Effects": {
+        "WorldSoundEventId": "SFX_Goblin_Feastmaster_Slam",
+        "Particles": [
+          {
+            "SystemId": "Ice_Blast",
+            "TargetEntityPart": "Entity",
+            "TargetNodeName": "Origin",
+            "Scale": 1.6,
+            "PositionOffset": {
+              "X": 0,
+              "Y": 0.1,
+              "Z": 0
+            },
+            "DetachedFromModel": true
+          },
+          {
+            "SystemId": "Rings_Rings_Ice",
+            "TargetEntityPart": "Entity",
+            "TargetNodeName": "Origin",
+            "Scale": 2.0,
+            "PositionOffset": {
+              "X": 0,
+              "Y": 0.1,
+              "Z": 0
+            },
+            "DetachedFromModel": true
+          }
+        ]
+      },
+      "Selector": {
+        "Id": "AOECircle",
+        "Range": 6.0
+      },
+      "HitEntity": {
+        "Interactions": [
+          {
+            "Parent": "DamageEntityParent",
+            "DamageCalculator": {
+              "BaseDamage": {
+                "Physical": 10
+              },
+              "RandomPercentageModifier": 0.1
+            },
+            "DamageEffects": {
+              "WorldParticles": [
+                {
+                  "SystemId": "Impact_Ice"
+                }
+              ]
+            }
+          },
+          {
+            "Type": "ApplyEffect",
+            "EffectId": "Nakasar_Spectre_Frost",
+            "Entity": "Target",
+            "Duration": 6
+          }
+        ]
+      }
+    },
+    {
+      "Type": "Simple",
+      "RunTime": 0.6
+    }
+  ]
+}

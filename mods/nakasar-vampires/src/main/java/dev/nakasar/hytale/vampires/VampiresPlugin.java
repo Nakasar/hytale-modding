@@ -17,14 +17,15 @@ import dev.nakasar.hytale.vampires.domination.DominateInteraction;
 import dev.nakasar.hytale.vampires.domination.DominatePlayerInteraction;
 import dev.nakasar.hytale.vampires.domination.DominationExpirySystem;
 import dev.nakasar.hytale.vampires.domination.Dominations;
+import dev.nakasar.hytale.vampires.elite.FireAffinitySystem;
+import dev.nakasar.hytale.vampires.elite.MinionShieldSystem;
+import dev.nakasar.hytale.vampires.elite.SummonMinionsInteraction;
 import dev.nakasar.hytale.vampires.invisibility.Invisibility;
 import dev.nakasar.hytale.vampires.invisibility.InvisibilityInteraction;
 import dev.nakasar.hytale.vampires.invisibility.InvisibilitySystem;
 import dev.nakasar.hytale.vampires.lords.LordsWrath;
 import dev.nakasar.hytale.vampires.lords.LordsWrathSystem;
 import dev.nakasar.hytale.vampires.prison.ImprisonPlayerInteraction;
-import dev.nakasar.hytale.vampires.pumpkin.FireWeaknessSystem;
-import dev.nakasar.hytale.vampires.pumpkin.PumpkinShieldSystem;
 import dev.nakasar.hytale.vampires.purifying.LightAura;
 import dev.nakasar.hytale.vampires.purifying.LightAuraInteraction;
 import dev.nakasar.hytale.vampires.purifying.LightAuraSystem;
@@ -34,7 +35,6 @@ import dev.nakasar.hytale.vampires.purifying.PurifyingSteeringSystem;
 import dev.nakasar.hytale.vampires.pumpkin.RootTrapInteraction;
 import dev.nakasar.hytale.vampires.pumpkin.RootTrapUnloadSystem;
 import dev.nakasar.hytale.vampires.pumpkin.RootTrapped;
-import dev.nakasar.hytale.vampires.pumpkin.SummonVinesInteraction;
 import dev.nakasar.hytale.vampires.rune.DrainBeamInteraction;
 import dev.nakasar.hytale.vampires.rune.RootNpcInteraction;
 import dev.nakasar.hytale.vampires.rune.TeleportCasterToImpactInteraction;
@@ -69,12 +69,14 @@ import dev.nakasar.hytale.vampires.vampirism.VampireSystem;
  *   <li>{@code Nakasar_ImprisonPlayer} : téléporte le joueur visé dans la cellule la plus proche du Capitaine ;</li>
  *   <li>{@code Nakasar_RootTrap} : piège de vrilles de la citrouille géante (une vrille-PNJ retient la cible
  *       jusqu'à sa destruction) ;</li>
- *   <li>{@code Nakasar_SummonVines} : la citrouille géante fait sortir de terre ses vrilles combattantes ;</li>
- *   <li>{@link FireWeaknessSystem} : la citrouille géante et ses vrilles prennent double dégâts de feu ;</li>
- *   <li>{@link PumpkinShieldSystem} : la citrouille géante est invulnérable tant qu'il lui reste des vrilles, et fait
- *       sortir sa première vague dès le premier coup ;</li>
+ *   <li>{@code Nakasar_SummonMinions} : une élite fait apparaître ses serviteurs (vrilles de la citrouille géante,
+ *       rouages de l'armure enchantée qui la soignent, fantômes du Spectre) ;</li>
+ *   <li>{@link FireAffinitySystem} : la citrouille géante et ses vrilles prennent double dégâts de feu, l'armure
+ *       enchantée et ses rouages n'en prennent aucun ;</li>
+ *   <li>{@link MinionShieldSystem} : la citrouille géante et le Spectre sont invulnérables tant qu'il leur reste des
+ *       serviteurs ; la citrouille fait sortir sa première vague dès le premier coup ;</li>
  *   <li>{@link BossBarSystem} : barre de vie de boss des élites (citrouille géante, Abomination, Capitaine de la
- *       garde, Comte et Comtesse) pour les joueurs proches pendant le combat ;</li>
+ *       garde, armure enchantée, Spectre, Comte et Comtesse) pour les joueurs proches pendant le combat ;</li>
  *   <li>les camps ({@link AllegianceAttitudeSystem}, {@link AllegianceDamageFilter},
  *       {@link DominationExpirySystem}) : les mobs du fragment sont alliés, ennemis des chasseurs de vampires, et la
  *       Domination retourne leur allégeance ;</li>
@@ -132,8 +134,8 @@ public final class VampiresPlugin extends JavaPlugin {
                 ImprisonPlayerInteraction.class, ImprisonPlayerInteraction.CODEC);
         interactions.register(RootTrapInteraction.TYPE_ID,
                 RootTrapInteraction.class, RootTrapInteraction.CODEC);
-        interactions.register(SummonVinesInteraction.TYPE_ID,
-                SummonVinesInteraction.class, SummonVinesInteraction.CODEC);
+        interactions.register(SummonMinionsInteraction.TYPE_ID,
+                SummonMinionsInteraction.class, SummonMinionsInteraction.CODEC);
         interactions.register(TakeArrowInteraction.TYPE_ID,
                 TakeArrowInteraction.class, TakeArrowInteraction.CODEC);
         interactions.register(ReturnArrowInteraction.TYPE_ID,
@@ -162,8 +164,8 @@ public final class VampiresPlugin extends JavaPlugin {
         systems.registerSystem(new AllegianceDamageFilter());
         systems.registerSystem(new LordsWrathSystem());
         systems.registerSystem(new DominationExpirySystem());
-        systems.registerSystem(new FireWeaknessSystem());
-        systems.registerSystem(new PumpkinShieldSystem());
+        systems.registerSystem(new FireAffinitySystem());
+        systems.registerSystem(new MinionShieldSystem());
         systems.registerSystem(new BossBarSystem());
         systems.registerSystem(new RootTrapUnloadSystem());
         systems.registerSystem(new SilverProjectileSystems.Launch());
@@ -192,7 +194,7 @@ public final class VampiresPlugin extends JavaPlugin {
                 TeleportCasterToImpactInteraction.TYPE_ID, DominateInteraction.TYPE_ID, RootNpcInteraction.TYPE_ID,
                 DrainBeamInteraction.TYPE_ID, DominatePlayerInteraction.TYPE_ID, ImprisonPlayerInteraction.TYPE_ID,
                 RootTrapInteraction.TYPE_ID, TakeArrowInteraction.TYPE_ID, ReturnArrowInteraction.TYPE_ID,
-                SummonVinesInteraction.TYPE_ID, LightAuraInteraction.TYPE_ID, InvisibilityInteraction.TYPE_ID,
+                SummonMinionsInteraction.TYPE_ID, LightAuraInteraction.TYPE_ID, InvisibilityInteraction.TYPE_ID,
                 VampireRitualInteraction.TYPE_ID, BloodFeedInteraction.TYPE_ID, DrinkBloodInteraction.TYPE_ID,
                 OpenBountyBagInteraction.TYPE_ID, ClaimBreachContractInteraction.TYPE_ID);
     }
@@ -201,8 +203,8 @@ public final class VampiresPlugin extends JavaPlugin {
     protected void shutdown() {
         RootNpcInteraction.clearAll();
         RootTrapInteraction.clearAll();
-        SummonVinesInteraction.clearAll();
-        PumpkinShieldSystem.clearAll();
+        SummonMinionsInteraction.clearAll();
+        MinionShieldSystem.clearAll();
         BossBarSystem.clearAll();
         Dominations.clearAll();
         LordsWrath.clearAll();

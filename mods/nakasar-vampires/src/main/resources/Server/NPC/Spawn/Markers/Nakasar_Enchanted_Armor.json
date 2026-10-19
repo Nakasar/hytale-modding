@@ -1,0 +1,12 @@
+{
+  "$Comment": "Armure enchantée (élite) au fond de la salle enterrée d'une crypte sur deux ; revient 30 minutes après sa mort.",
+  "NPCs": [
+    {
+      "Name": "Nakasar_Enchanted_Armor",
+      "Weight": 1,
+      "RealtimeRespawnTime": 1800
+    }
+  ],
+  "RealtimeRespawn": true,
+  "ExclusionRadius": 0
+}

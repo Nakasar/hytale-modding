@@ -1,0 +1,55 @@
+{
+  "$Comment": "L'armure enchantée appelle ses rouages : elle lève sa massue, des runes bleues s'allument au sol et jusqu'à trois rouages enchantés (Nakasar_Enchanted_Gear) apparaissent entre 2,5 et 5 blocs d'elle. Chaque rouage vivant lui rend 5 PV par seconde (Nakasar_SummonMinions, HealSummonerPerSecond) : il faut les détruire.",
+  "Type": "Serial",
+  "Interactions": [
+    {
+      "Type": "ClearEntityEffect",
+      "Entity": "User",
+      "EntityEffectId": "Hit_Interrupt_Eligible"
+    },
+    {
+      "Type": "Simple",
+      "RunTime": 0.8,
+      "Effects": {
+        "ItemPlayerAnimationsId": "Mace",
+        "ItemAnimationId": "Guard",
+        "WorldSoundEventId": "SFX_Spirit_Root_Alerted"
+      }
+    },
+    {
+      "Type": "Simple",
+      "RunTime": 0.2,
+      "Effects": {
+        "WorldSoundEventId": "SFX_Spirit_Root_Spawn",
+        "Particles": [
+          {
+            "SystemId": "Praetorian_Summon_Ground",
+            "TargetEntityPart": "Entity",
+            "TargetNodeName": "Origin",
+            "Scale": 1.6,
+            "PositionOffset": {
+              "X": 0,
+              "Y": 0.1,
+              "Z": 0
+            },
+            "DetachedFromModel": true
+          }
+        ]
+      },
+      "Next": {
+        "Type": "Nakasar_SummonMinions",
+        "MinionRole": "Nakasar_Enchanted_Gear",
+        "Count": 3,
+        "MaxAlive": 3,
+        "MinDistance": 2.5,
+        "MaxDistance": 5,
+        "MinSpacing": 2,
+        "HealSummonerPerSecond": 5
+      }
+    },
+    {
+      "Type": "Simple",
+      "RunTime": 0.4
+    }
+  ]
+}

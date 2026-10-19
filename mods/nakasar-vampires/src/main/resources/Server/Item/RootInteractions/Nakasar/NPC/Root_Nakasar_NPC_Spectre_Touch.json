@@ -1,0 +1,10 @@
+{
+  "Tags": {
+    "Attack": [
+      "Melee"
+    ]
+  },
+  "Interactions": [
+    "Nakasar_NPC_Spectre_Touch"
+  ]
+}

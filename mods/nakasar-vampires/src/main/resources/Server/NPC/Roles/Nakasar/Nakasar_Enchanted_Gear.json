@@ -1,0 +1,153 @@
+{
+  "$Comment": "Rouage enchanté, appelé par l'armure enchantée (Nakasar_SummonMinions) : il flotte sans bouger ni attaquer et, tant qu'il vit, rend 5 PV par seconde à son armure. Fragile (30 PV), insensible au feu comme elle. Disparaît avec son armure, ou au bout de 30 s sans personne à proximité. Généré par tools/generate_elites.py.",
+  "Type": "Generic",
+  "Appearance": "Nakasar_Enchanted_Gear",
+  "NameTranslationKey": "nakasar_mobs.npc.Enchanted_Gear.name",
+  "MaxHealth": 30,
+  "StartState": "Idle",
+  "DefaultPlayerAttitude": "Hostile",
+  "DefaultNPCAttitude": "Ignore",
+  "DisableDamageGroups": [
+    "Nakasar_Enchanted_Constructs"
+  ],
+  "KnockbackScale": 0,
+  "DeathAnimationTime": 1.0,
+  "SpawnLockTime": 0.5,
+  "MotionControllerList": [
+    {
+      "Type": "Walk",
+      "MaxWalkSpeed": 1,
+      "Gravity": 10,
+      "MaxFallSpeed": 10,
+      "Acceleration": 12,
+      "JumpHeight": 0
+    }
+  ],
+  "Instructions": [
+    {
+      "Sensor": {
+        "Type": "State",
+        "State": "Idle"
+      },
+      "Instructions": [
+        {
+          "Sensor": {
+            "Type": "Damage",
+            "Combat": true,
+            "TargetSlot": "LockedTarget"
+          },
+          "Actions": [
+            {
+              "Type": "State",
+              "State": "Combat"
+            }
+          ]
+        },
+        {
+          "Sensor": {
+            "Type": "Player",
+            "Range": 16,
+            "LockOnTarget": true,
+            "Filters": [
+              {
+                "Type": "Attitude",
+                "Attitudes": [
+                  "Hostile"
+                ]
+              }
+            ]
+          },
+          "Actions": [
+            {
+              "Type": "State",
+              "State": "Combat"
+            }
+          ]
+        },
+        {
+          "$Comment": "Un mob hostile (chasseur de vampires, mob dominé…) : même réaction qu'envers un joueur.",
+          "Sensor": {
+            "Type": "Mob",
+            "Range": 16,
+            "LockOnTarget": true,
+            "Filters": [
+              {
+                "Type": "Attitude",
+                "Attitudes": [
+                  "Hostile"
+                ]
+              }
+            ]
+          },
+          "Actions": [
+            {
+              "Type": "State",
+              "State": "Combat"
+            }
+          ]
+        },
+        {
+          "$Comment": "Personne pendant 30 s (armure rendormie, cible partie) : il s'éteint.",
+          "Actions": [
+            {
+              "Type": "Timeout",
+              "Delay": [
+                30,
+                30
+              ],
+              "Action": {
+                "Type": "Despawn"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "Sensor": {
+        "Type": "State",
+        "State": "Combat"
+      },
+      "Instructions": [
+        {
+          "Sensor": {
+            "Type": "Not",
+            "Sensor": {
+              "Type": "Target",
+              "Range": 20,
+              "Filters": [
+                {
+                  "Type": "Attitude",
+                  "Attitudes": [
+                    "Hostile",
+                    "Neutral",
+                    "Ignore"
+                  ]
+                }
+              ]
+            }
+          },
+          "Actions": [
+            {
+              "Type": "ReleaseTarget"
+            },
+            {
+              "Type": "State",
+              "State": "Idle"
+            }
+          ]
+        },
+        {
+          "Sensor": {
+            "Type": "Target",
+            "Range": 20
+          },
+          "HeadMotion": {
+            "Type": "Watch",
+            "RelativeTurnSpeed": 1.0
+          }
+        }
+      ]
+    }
+  ]
+}

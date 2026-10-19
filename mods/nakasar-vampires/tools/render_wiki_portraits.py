@@ -3,9 +3,9 @@
 
     python3 mods/nakasar-vampires/tools/render_wiki_portraits.py
 
-Écrit docs/wiki/images/pnj/Nakasar_Giant_Pumpkin.png et Nakasar_Pumpkin_Vine.png : vue de 3/4 au
-repos et une pose d'attaque, côte à côte. Les modèles sont reconstruits par generate_pumpkin_models.py
-(mêmes graines, donc mêmes textures que les fichiers du pack) sans réécrire le pack.
+Écrit docs/wiki/images/pnj/Nakasar_Giant_Pumpkin.png, Nakasar_Pumpkin_Vine.png et Nakasar_Enchanted_Gear.png :
+vue de 3/4 au repos et une seconde pose, côte à côte. Les modèles sont reconstruits par
+generate_pumpkin_models.py et generate_gear_model.py (mêmes graines, donc mêmes textures que les fichiers du pack) sans réécrire le pack.
 
 Les autres PNJ héritent de modèles vanilla (Player, Zombie, Skeleton...) absents du dépôt : leurs
 portraits sont des captures en jeu.
@@ -14,6 +14,7 @@ from pathlib import Path
 
 from PIL import Image
 
+import generate_gear_model as ggm
 import generate_pumpkin_models as gpm
 
 OUT = Path(__file__).resolve().parents[3] / "docs" / "wiki" / "images" / "pnj"
@@ -54,6 +55,11 @@ def main():
         (None, 0, view),
         ("Strike", 0.38, dict(view, yaw=90, pitch=5)),
     ]).save(OUT / "Nakasar_Pumpkin_Vine.png")
+    view = {"size": 420, "scale": 3.0, "center": (0, ggm.HUB_Y, 0)}
+    portrait(ggm.gear_model(), ggm.gear_anims(), 57, 256, [
+        ("Idle", 0.5, view),
+        ("Idle", 1.0, dict(view, yaw=70, pitch=10)),
+    ]).save(OUT / "Nakasar_Enchanted_Gear.png")
     print(f"Portraits écrits dans {OUT}")
 
 

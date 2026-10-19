@@ -1,0 +1,21 @@
+{
+  "Type": "NoiseRange",
+  "DefaultBiome": "Nakasar_Contract_Castle_Island",
+  "DefaultTransitionDistance": 16,
+  "MaxBiomeEdgeDistance": 0,
+  "Density": {
+    "Type": "Constant",
+    "Value": 0.0
+  },
+  "Biomes": [],
+  "SpawnPositions": {
+    "Type": "List",
+    "Positions": [
+      {
+        "X": 0,
+        "Y": 81,
+        "Z": 0
+      }
+    ]
+  }
+}
