@@ -9,23 +9,29 @@ du donjon vanilla Deepworks).
 - la clé `PortalKey_Nakasar_Alchemist_Tower`, même recette à l'établi des chasseurs et à l'autel (palier 3) ;
 - le type de portail et l'instance : pas de limite de temps ni d'entrées, ciel violet et vert figé au crépuscule ;
 - les règles (GameplayConfig, comme Deepworks) : ni pose ni casse de blocs, aucune perte d'objets à la mort ;
-- les îles flottantes au-dessus du vide : l'île d'arrivée, au nord l'île de la tour et son jardin d'arbres
-  fantastiques, et des îlots à toutes hauteurs, chacun avec un arbre fantastique du jeu, des cristaux et des émanations
-  magiques (blocs invisibles `Nakasar_Tower_Emanation_*` qui portent des particules du jeu et une lumière) ;
-- le parvis d'arrivée (point d'apparition, portail de sortie anticipée) et le pont, fermés par des parapets de 2 blocs ;
-- la tour elle-même (tools/alchemist_tower.py) : étages, balcons, escaliers extérieurs, points de vue fermés, points de
-  contrôle ; TowerLayout.java (Java, généré) en reprend les positions. Un joueur qui tombe quand même dans le vide est
-  ramené à son dernier point de contrôle (TowerFallSystem, TowerCheckpointSystem).
+- l'archipel, à l'échelle de Deepworks (environ 500 × 600 blocs, tools/alchemist_archipelago.py) : l'île d'arrivée,
+  les Jardins des Alambics, les Ruines du premier laboratoire (premier point de contrôle), l'île de la tour à 480 blocs
+  au nord avec son jardin d'arbres fantastiques, les ponts coudés qui les relient, et des îlots à toutes hauteurs, chacun
+  avec un arbre fantastique du jeu, des cristaux et des émanations magiques (blocs invisibles
+  `Nakasar_Tower_Emanation_*` qui portent des particules du jeu et une lumière) ;
+- le parvis d'arrivée (point d'apparition, portail de sortie anticipée), fermé par un parapet de 2 blocs ;
+- la tour elle-même (tools/alchemist_tower.py), environ 220 blocs de haut, posée en tranches empilées (Tower0 à
+  Tower3, TOWER_SLICES) : étages, balcons, escaliers extérieurs, points de vue fermés, points de contrôle ;
+  TowerLayout.java (Java, généré) reprend les positions des points de contrôle, ruines comprises.
+  Un joueur qui tombe quand même dans le vide est ramené à son dernier point de contrôle (TowerFallSystem,
+  TowerCheckpointSystem).
 
 Repère : x vers l'est, z vers le sud, y vers le haut ; le point d'apparition est en (0, GROUND_Y, 0).
 """
 import json
+import shutil
 import math
 import sys
 from pathlib import Path
 
 from PIL import Image, ImageDraw
 
+import alchemist_archipelago as arch
 import alchemist_tower
 import generate_prefabs as pf
 import generate_worldgen as wg
@@ -55,33 +61,22 @@ KEY_BENCHES = [("Nakasar_Hunter_Workbench", "Nakasar_Hunter_Fragments", 3),
 # Première couche d'air au-dessus du sol des îles : aligné avec TowerFallSystem.GROUND_Y.
 GROUND_Y = 100
 SPAWN = (0, GROUND_Y, 0)
-# Île d'arrivée : rayon, rayon du plat. Île de la tour, au nord : centre, rayon, rayon du plat.
-ARRIVAL_RADIUS, ARRIVAL_FLAT = 22.0, 15.0
-TOWER_CENTER = (0, GROUND_Y, -100)
-TOWER_RADIUS, TOWER_FLAT = 48.0, 40.0
-# Parvis d'arrivée (rayon intérieur du parapet), pont (demi-largeur, de z à z) : le pont s'arrête au bord du parvis de
-# la tour (z = 40 dans le repère du prefab de la tour, alchemist_tower.court).
-PLAZA_RADIUS = 9
-BRIDGE_HALF = 2
-BRIDGE_START, BRIDGE_END = -10, TOWER_CENTER[2] + 41
+# Archipel à l'échelle de Deepworks (tools/alchemist_archipelago.py) : îles du parcours, ponts, îlots.
+ARRIVAL_RADIUS, ARRIVAL_FLAT = arch.ARRIVAL["radius"], arch.ARRIVAL["flat"]
+TOWER_CENTER = (arch.TOWER["center"][0], GROUND_Y, arch.TOWER["center"][1])
+TOWER_RADIUS, TOWER_FLAT = arch.TOWER["radius"], arch.TOWER["flat"]
+STAGES = [(name, island) for name, island, _ in arch.ROUTE_ISLANDS]
+PLAZA_RADIUS = arch.PLAZA_EDGE - 1  # parvis d'arrivée : rayon intérieur du parapet
+BRIDGE_HALF = arch.BRIDGE_HALF
 EXIT_Z = 6                         # portail de sortie anticipée, au sud du point d'apparition
 TOWER_SEED = 4242
-# Îlots flottants autour de la tour, chacun portant un arbre fantastique du jeu (dossiers de Server/Prefabs d'Assets.zip,
-# lus le 2026-10-19 ; demi-largeur et hauteur en commentaire) : (centre du dessus, rayon, arbre).
-ISLETS = [
-    ((-78, 112, -66), 11, "Trees/Wisteria/Stage_2"),         # ±11
-    ((74, 124, -58), 10, "Trees/Spiral/Stage_3"),            # ±10, 17 de haut
-    ((-68, 138, -152), 14, "Trees/Jungle_Crystal/Stage_3"),  # ±22, 50 de haut
-    ((72, 154, -144), 12, "Trees/Azure/Stage_3"),            # ±8, 27 de haut
-    ((0, 166, -186), 13, "Trees/Fig_Blue/Stage_3"),          # ±14, 45 de haut : derrière la tour, vu de l'Observatoire
-    ((-98, 96, -112), 9, "Trees/Crystal/Stage_3"),
-    ((100, 142, -100), 10, "Trees/Zone5/Aqua/Large"),        # ±22
-    ((44, 92, 36), 8, "Trees/Silver/Stage_3"),               # au sud-est de l'île d'arrivée
-]
-# Jardin de l'île de la tour : arbres plus sages, assez loin pour ne pas toucher balcons ni cheminées (rayon 25 au plus).
-GARDEN_RADIUS = 40
-GARDEN = [(150, "Trees/Willow/Stage_3"), (200, "Trees/Crystal/Stage_3"), (250, "Trees/Silver/Stage_3"),
-          (300, "Trees/Wisteria/Stage_2"), (345, "Trees/Crystal/Stage_3"), (30, "Trees/Willow/Stage_3")]
+# La tour se pose en tranches empilées (un prefab par tranche, coupé sous un plancher) : bas de chaque tranche.
+TOWER_SLICES = [-8, alchemist_tower.F_LIBRARY - 1, alchemist_tower.F_LAB - 1, alchemist_tower.F_DECK - 1, 240]
+ISLETS = arch.islets()
+# Jardin de l'île de la tour : arbres moyens entre le balcon (rayon 48) et le bord du plat, hors du parvis (au sud).
+GARDEN_RADIUS = 72
+GARDEN = [(a, t) for a, t in zip(range(130, 420, 32), [arch.MEDIUM_TREES[i % 3] if i % 2 else arch.SMALL_TREES[i % 3]
+                                                       for i in range(10)]) if not 60 <= a % 360 <= 120]
 # Émanations magiques : blocs invisibles et traversables qui portent des particules du jeu et une lumière. La teinte
 # « Color » d'une particule de bloc ne change pas les systèmes (vu avec la brèche) : on choisit des systèmes déjà colorés.
 EMANATIONS = {
@@ -357,16 +352,24 @@ def biome():
     }
     arrival = wg.runtime(0, "Prop", wg.list_positions(SPAWN), {"Type": "Constant", "Prop": wg.surface_locator(
         prefab_prop("Arrival"), wg.SOLID_FLOOR, 12)})
-    tower = wg.runtime(0, "Prop", wg.list_positions(TOWER_CENTER), {"Type": "Constant", "Prop": wg.surface_locator(
-        prefab_prop("Tower"), wg.SOLID_FLOOR, 12)})
+    # Prefabs posés à hauteur fixe (le dessus des îles est plat, à GROUND_Y - 1) : ponts, îles du parcours, tranches
+    # de la tour.
+    fixed = [wg.runtime(0, "Prop", wg.list_positions((0, GROUND_Y, 0)), {"Type": "Constant", "Prop": prefab_prop("Bridges")})]
+    for name, stage in STAGES:
+        cx, cz = stage["center"]
+        fixed.append(wg.runtime(0, "Prop", wg.list_positions((cx, GROUND_Y, cz)),
+                                {"Type": "Constant", "Prop": prefab_prop(name)}))
+    for i, y0 in enumerate(TOWER_SLICES[:-1]):
+        fixed.append(wg.runtime(0, "Prop", wg.list_positions((TOWER_CENTER[0], GROUND_Y + y0, TOWER_CENTER[2])),
+                                {"Type": "Constant", "Prop": prefab_prop(f"Tower{i}")}))
 
     def plant(name):
         return wg.surface_locator(block_prop(name), wg.on_floor(
-            {"Type": "Or", "Patterns": [wg.is_block(b) for b in ("Soil_Grass_Full", "Soil_Grass", "Soil_Grass_Deep")]}), 45)
+            {"Type": "Or", "Patterns": [wg.is_block(b) for b in ("Soil_Grass_Full", "Soil_Grass", "Soil_Grass_Deep")]}), 80)
 
-    # Points de semis à mi-hauteur des îles : chacun cherche le premier gazon de sa colonne, de y = 180 à y = 90.
+    # Points de semis à mi-hauteur des îles : chacun cherche le premier gazon de sa colonne, de y = 250 à y = 90.
     plant_points = wg.mesh(2.5, 0.5, "TowerPlants")
-    plant_points["PointsY"] = 135
+    plant_points["PointsY"] = 170
     plants = wg.runtime(1, "Chunk", plant_points, wg.weighted_assignments("TowerPlantPick", 0.45, [
         (plant("Plant_Grass_Lush_Short"), 5.0), (plant("Plant_Grass_Lush"), 3.0), (plant("Plant_Flower_Common_Violet"), 0.6),
         (plant("Plant_Flower_Common_Lime"), 0.5), (plant("Plant_Flower_Orchid_Purple"), 0.3),
@@ -382,6 +385,15 @@ def biome():
         z = TOWER_CENTER[2] + round(GARDEN_RADIUS * math.sin(math.radians(a)))
         trees.append(wg.runtime(2, "Prop", wg.list_positions((x, GROUND_Y, z)), {"Type": "Constant",
             "Prop": wg.surface_locator(wg.prefab(tree, f"TowerGarden{i}", vanilla=True), wg.SOLID_FLOOR, 8)}))
+    # Arbres des îles du parcours, hors des murs (entre le mur et le bord) pour ne pas gêner le passage.
+    for name, stage in STAGES:
+        cx, cz = stage["center"]
+        for k, a in enumerate((35, 145, 215, 325)):
+            r = stage["wall"] + 6
+            x, z = cx + round(r * math.cos(math.radians(a))), cz + round(r * math.sin(math.radians(a)))
+            trees.append(wg.runtime(2, "Prop", wg.list_positions((x, GROUND_Y, z)), {"Type": "Constant",
+                "Prop": wg.surface_locator(wg.prefab(arch.SMALL_TREES[k % 3], f"{name}Tree{k}", vanilla=True),
+                                           wg.SOLID_FLOOR, 8)}))
     islet_decor = []
     kinds = ["Motes", "Fireflies", "Mist", "Spiral"]
     for i, (center, radius, _) in enumerate(ISLETS):
@@ -398,9 +410,10 @@ def biome():
         "Terrain": {"Type": "DAOTerrain", "Density": {"Type": "Max", "Inputs": [
             island(SPAWN, ARRIVAL_RADIUS, ARRIVAL_FLAT, "Arrival"),
             island(TOWER_CENTER, TOWER_RADIUS, TOWER_FLAT, "Tower"),
-        ] + [island(center, radius, 0.6 * radius, f"Islet{i}") for i, (center, radius, _) in enumerate(ISLETS)]}},
+        ] + [island((s["center"][0], GROUND_Y, s["center"][1]), s["radius"], s["flat"], name) for name, s in STAGES]
+          + [island(center, radius, 0.6 * radius, f"Islet{i}") for i, (center, radius, _) in enumerate(ISLETS)]}},
         "MaterialProvider": materials,
-        "Props": [arrival, tower, plants] + trees + islet_decor,
+        "Props": [arrival] + fixed + [plants] + trees + islet_decor,
         "EnvironmentProvider": {"Type": "Constant", "Environment": ENVIRONMENT},
         "TintProvider": {"Type": "Constant", "Color": "#4f9a6a"},
     }
@@ -418,7 +431,7 @@ def world_structure():
     }
 
 
-# --- prefab : parvis et pont ------------------------------------------------------------------
+# --- prefab : parvis d'arrivée -----------------------------------------------------------------
 
 def parapet(p, x, z):
     """Garde-corps de 2 blocs (un bloc plein, un muret) : trop haut pour être sauté."""
@@ -429,7 +442,7 @@ def parapet(p, x, z):
 def arrival_prefab(seed):
     p = pf.Prefab(seed)
     r = p.rng
-    p.clear(-12, 0, BRIDGE_END, 12, 14, 12)
+    p.clear(-12, 0, -12, 12, 14, 12)
 
     # Parvis rond : dallage de marbre, anneau d'or, parapet tout autour sauf l'entrée du pont au nord.
     ring = set()
@@ -456,23 +469,6 @@ def arrival_prefab(seed):
     # Portail de sortie anticipée, au sud, tourné vers le point d'apparition ; 3 × 5 × 3 blocs libres autour.
     p.fill(-1, 0, EXIT_Z - 1, 1, 4, EXIT_Z + 1, pf.AIR)
     p.set(0, 0, EXIT_Z, EXIT, pf.NORTH)
-
-    # Pont au-dessus du vide : tablier de marbre, parapets, lanternes et piles qui pendent sous le tablier.
-    for z in range(BRIDGE_END, BRIDGE_START + 1):
-        for x in range(-BRIDGE_HALF, BRIDGE_HALF + 1):
-            p.set(x, -1, z, TRIM if x == 0 and z % 4 == 0 else p.pick(FLOOR))
-            p.set(x, -2, z, "Rock_Marble_Brick")
-            p.fill(x, 0, z, x, 4, z, pf.AIR)
-        for x in (-BRIDGE_HALF - 1, BRIDGE_HALF + 1):
-            p.set(x, -1, z, "Rock_Marble_Brick")
-            p.set(x, -2, z, "Rock_Marble_Brick")
-            parapet(p, x, z)
-            if z % 8 == 0:
-                p.set(x, 2, z, "Deco_Lantern")
-        if z % 10 == 0:
-            for x in range(-BRIDGE_HALF - 1, BRIDGE_HALF + 2):
-                depth = 3 if abs(x) <= 1 else 5
-                p.fill(x, -2 - depth, z, x, -3, z, "Rock_Marble_Brick_Pillar_Middle")
 
     # Point d'apparition : 3 × 3 × 3 blocs libres.
     p.fill(-1, 0, -1, 1, 2, 1, pf.AIR)
@@ -518,10 +514,13 @@ def emanation_icon(kind):
 
 # --- Java : positions de la tour ---------------------------------------------------------------
 
-def tower_layout(tower):
+def tower_layout(tower, ruins_spot):
     """TowerLayout.java : point d'arrivée et points de contrôle, en coordonnées du monde."""
     ox, oy, oz = TOWER_CENTER
-    rows = ",\n".join(f"            new Vector3d({x + ox + 0.5}, {y + oy}, {z + oz + 0.5})" for x, y, z in tower.checkpoints)
+    rx, rz = arch.RUINS["center"]
+    spots = [(ruins_spot[0] + rx, ruins_spot[1] + GROUND_Y, ruins_spot[2] + rz)]
+    spots += [(x + ox, y + oy, z + oz) for x, y, z in tower.checkpoints]
+    rows = ",\n".join(f"            new Vector3d({x + 0.5}, {y}, {z + 0.5})" for x, y, z in spots)
     return f"""package dev.nakasar.hytale.vampires.tower;
 
 import org.joml.Vector3d;
@@ -533,7 +532,7 @@ public final class TowerLayout {{
     public static final double GROUND_Y = {GROUND_Y};
     /** Point d'apparition, sur le parvis d'arrivée. */
     public static final Vector3d ARRIVAL = new Vector3d({SPAWN[0] + 0.5}, {SPAWN[1]}, {SPAWN[2] + 0.5});
-    /** Points de contrôle, dans l'ordre du parcours : bibliothèque, laboratoire, Escalier des vents, antichambre. */
+    /** Points de contrôle, dans l'ordre du parcours : ruines du premier laboratoire, bibliothèque, laboratoire, Escalier des vents, antichambre. */
     public static final Vector3d[] CHECKPOINTS = {{
 {rows}
     }};
@@ -587,9 +586,19 @@ def main():
     count = arrival_prefab(9600).write(out / "Arrival" / "Arrival.prefab.json")
     print(f"Arrival: {count} blocs")
     tower = alchemist_tower.build_checked(TOWER_SEED)
-    count = tower.p.write(out / "Tower" / "Tower.prefab.json")
-    print(f"Tower: {count} blocs, points de contrôle {tower.checkpoints}")
-    JAVA_LAYOUT.write_text(tower_layout(tower), encoding="utf-8")
+    shutil.rmtree(out / "Tower", ignore_errors=True)  # ancienne tour d'un seul tenant
+    for i, (y0, y1) in enumerate(zip(TOWER_SLICES, TOWER_SLICES[1:])):
+        count = tower.p.write(out / f"Tower{i}" / f"Tower{i}.prefab.json", y0, y1)
+        print(f"Tower{i} (y {y0}..{y1 - 1}): {count} blocs")
+    print(f"Points de contrôle de la tour : {tower.checkpoints}")
+    count = arch.bridges_prefab(9601).write(out / "Bridges" / "Bridges.prefab.json")
+    print(f"Bridges: {count} blocs")
+    count = arch.gardens_prefab(9602).write(out / "Gardens" / "Gardens.prefab.json")
+    print(f"Gardens: {count} blocs")
+    ruins, ruins_spot = arch.ruins_prefab(9603)
+    count = ruins.write(out / "Ruins" / "Ruins.prefab.json")
+    print(f"Ruins: {count} blocs, point de contrôle {ruins_spot}")
+    JAVA_LAYOUT.write_text(tower_layout(tower, ruins_spot), encoding="utf-8")
     (COMMON / ICON).parent.mkdir(parents=True, exist_ok=True)
     key_icon().save(COMMON / ICON)
     if preview:

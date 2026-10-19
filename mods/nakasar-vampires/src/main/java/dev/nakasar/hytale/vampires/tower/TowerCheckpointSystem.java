@@ -30,7 +30,7 @@ import org.joml.Vector3i;
  */
 public final class TowerCheckpointSystem extends EntityTickingSystem<EntityStore> {
 
-    /** Nom des points de réapparition posés par la tour, suivi du numéro du point de contrôle (1 = bibliothèque). */
+    /** Nom des points de réapparition posés par la tour, suivi du numéro du point de contrôle (1 = ruines du premier laboratoire). */
     static final String RESPAWN_PREFIX = "nakasar_tower_checkpoint_";
     private static final double REACH = 2.5;
 

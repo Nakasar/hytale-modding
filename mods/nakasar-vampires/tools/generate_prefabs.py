@@ -420,7 +420,10 @@ class Prefab:
             raise ValueError(f"meubles qui se chevauchent : {clashes[:6]}")
         return out
 
-    def write(self, path):
+    def write(self, path, y_min=None, y_max=None):
+        """Écrit le prefab ; avec y_min et y_max, seulement la tranche y_min <= y < y_max, dont le y_min devient le 0
+        (une construction trop haute se pose en plusieurs prefabs empilés). Un meuble ne doit pas chevaucher deux
+        tranches."""
         self.orient_lines()
         try:
             fillers = self.fillers()
@@ -429,15 +432,25 @@ class Prefab:
         cells = dict(self.blocks)
         for cell, (name, rot, _) in fillers.items():
             cells[cell] = (name, rot)
+        shift = 0
+        if y_min is not None:
+            shift = y_min
+            inside = lambda y: y_min <= y < y_max
+            for (x, y, z), (name, rot) in self.blocks.items():
+                rows = [inside(y + dy) for dx, dy, dz in footprint(name, rot)]
+                if any(rows) != all(rows):
+                    raise ValueError(f"{path.name} : {name} en {(x, y, z)} coupé par la tranche {y_min}-{y_max}")
+            cells = {c: v for c, v in cells.items() if inside(c[1])}
         blocks = []
         for (x, y, z), (name, rot) in sorted(cells.items(), key=lambda kv: (kv[0][1], kv[0][2], kv[0][0])):
+            y -= shift
             entry = {"x": x, "y": y, "z": z, "name": name}
             if rot:
                 entry["rotation"] = rot
-            if (x, y, z) in fillers:
-                entry["filler"] = fillers[(x, y, z)][2]
-            if (x, y, z) in self.components:
-                entry["components"] = self.components[(x, y, z)]
+            if (x, y + shift, z) in fillers:
+                entry["filler"] = fillers[(x, y + shift, z)][2]
+            if (x, y + shift, z) in self.components:
+                entry["components"] = self.components[(x, y + shift, z)]
             blocks.append(entry)
         doc = {"version": 8, "blockIdVersion": 8, "anchorX": 0, "anchorY": 0, "anchorZ": 0}
         path.parent.mkdir(parents=True, exist_ok=True)

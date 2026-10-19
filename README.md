@@ -323,13 +323,16 @@ Mobs (voir [docs/npc-0.7.2.md](docs/npc-0.7.2.md)) :
   Deepworks), blocs non modifiables. Vérifié en jeu : confirmation du portail de sortie `Nakasar_Tower_Exit`, retour
   au parvis après une chute. À vérifier : les anneaux de fumée du portail, descendus au ras du socle par la copie de
   particules `Nakasar_Tower_Exit_Portal` (spawners `MagicPortal_VoidSmokeMiddle` et `MagicPortal_VoidGlowSmoke`).
-- **Tour de l'Alchimiste, la tour** (`tools/alchemist_tower.py`, `tower/TowerCheckpointSystem.java`) : prefab de 63 ×
-  100 × 70 blocs posé au nord du pont, vérifié hors ligne (chaque salle et chaque point de contrôle atteignable à pied
-  depuis le parvis, aucun bord praticable au-dessus du vide sans parapet). À vérifier en jeu : que le prefab entier se
-  pose (taille inhabituelle pour un prop), les demi-dalles des rampes, l'orientation des statues de contrôle (face au
-  centre), les particules des émanations `Nakasar_Tower_Emanation_*` (cheminées, cristaux flottants, îlots), les arbres
-  du jeu sur les îlots et dans le jardin (dossiers `Trees/...` d'Assets.zip, pas de collision avec la tour), et qu'on
-  réapparaisse au dernier point de contrôle, après une mort comme après une chute.
+- **Tour de l'Alchimiste, l'archipel et la tour** (`tools/alchemist_archipelago.py`, `tools/alchemist_tower.py`,
+  `tower/TowerCheckpointSystem.java`) : à l'échelle de Deepworks, environ 500 × 600 blocs. Parcours : île d'arrivée,
+  pont, Jardins des Alambics, pont coudé, Ruines du premier laboratoire (premier point de contrôle), pont coudé, parvis
+  de la tour à 480 blocs au nord. La tour fait environ 67 blocs de diamètre et 220 de haut, posée en quatre tranches
+  empilées (`Tower0` à `Tower3`). Vérifié hors ligne : chaque salle et chaque point de contrôle atteignable à pied depuis
+  le parvis, aucun bord praticable au-dessus du vide sans parapet. À vérifier en jeu : que les grands prefabs (ponts,
+  tranches de la tour) se posent entiers et que les tranches s'emboîtent sans décalage, que les ponts arrivent bien dans
+  les portes des murs des îles, les demi-dalles des rampes, l'orientation des statues de contrôle, les particules des
+  émanations `Nakasar_Tower_Emanation_*`, les arbres du jeu sur les îles et les îlots, et qu'on réapparaisse au dernier
+  point de contrôle, après une mort comme après une chute.
 
 ## Organisation du dépôt
 

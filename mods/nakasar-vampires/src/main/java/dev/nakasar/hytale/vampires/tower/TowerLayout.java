@@ -9,12 +9,13 @@ public final class TowerLayout {
     public static final double GROUND_Y = 100;
     /** Point d'apparition, sur le parvis d'arrivée. */
     public static final Vector3d ARRIVAL = new Vector3d(0.5, 100, 0.5);
-    /** Points de contrôle, dans l'ordre du parcours : bibliothèque, laboratoire, Escalier des vents, antichambre. */
+    /** Points de contrôle, dans l'ordre du parcours : ruines du premier laboratoire, bibliothèque, laboratoire, Escalier des vents, antichambre. */
     public static final Vector3d[] CHECKPOINTS = {
-            new Vector3d(8.5, 118, -91.5),
-            new Vector3d(11.5, 142, -107.5),
-            new Vector3d(1.5, 142, -117.5),
-            new Vector3d(-3.5, 172, -115.5)
+            new Vector3d(-69.5, 100, -312.5),
+            new Vector3d(16.5, 136, -463.5),
+            new Vector3d(22.5, 184, -495.5),
+            new Vector3d(1.5, 184, -516.5),
+            new Vector3d(-8.5, 244, -511.5)
     };
 
     private TowerLayout() {
