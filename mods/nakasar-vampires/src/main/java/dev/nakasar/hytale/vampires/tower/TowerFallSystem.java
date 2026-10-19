@@ -17,22 +17,22 @@ import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
 import org.joml.Vector3d;
 
 /**
- * Filet de sécurité de la Tour de l'Alchimiste : un joueur tombé dans le vide est ramené sur le parvis d'arrivée.
+ * Filet de sécurité de la Tour de l'Alchimiste : un joueur tombé dans le vide est ramené à son dernier point de contrôle
+ * ({@link TowerCheckpointSystem}), ou sur le parvis d'arrivée s'il n'en a atteint aucun.
  *
  * <p>Les points de vue de la tour sont fermés par des murs trop hauts pour être sautés (tools/generate_alchemist_tower.py),
  * comme dans le donjon vanilla Deepworks, qui ajoute en plus des volumes « Fall_Teleport » sous son décor. Nos
- * instances sont générées, sans volumes déclencheurs : ce système joue ce rôle. Les points de contrôle de la tour
- * remplaceront le parvis comme point de retour.
+ * instances sont générées, sans volumes déclencheurs : ce système joue ce rôle.
  */
 public final class TowerFallSystem extends EntityTickingSystem<EntityStore> {
 
     /** Type de portail de la tour (PortalTypes/Nakasar_Alchemist_Tower.json). */
     public static final String PORTAL_ID = "Nakasar_Alchemist_Tower";
-    /** Première couche d'air au-dessus du sol des îles (GROUND_Y du générateur). */
-    static final double GROUND_Y = 100;
-    /** Profondeur sous le sol à partir de laquelle un joueur est tombé de l'île (l'île fait moins de 40 blocs d'épaisseur). */
-    static final double FALL_DEPTH = 48;
-    static final Vector3d ARRIVAL = new Vector3d(0.5, GROUND_Y, 0.5);
+    /**
+     * Profondeur sous le sol de l'île de la tour à partir de laquelle un joueur est tombé (les îles font moins de 40 blocs
+     * d'épaisseur ; le plus bas des îlots a son dessus 8 blocs plus bas que l'île).
+     */
+    static final double FALL_DEPTH = 60;
 
     private static final Query<EntityStore> QUERY = Query.and(Player.getComponentType(), TransformComponent.getComponentType());
 
@@ -50,17 +50,20 @@ public final class TowerFallSystem extends EntityTickingSystem<EntityStore> {
     public void tick(float dt, int index, ArchetypeChunk<EntityStore> chunk, Store<EntityStore> store,
                      CommandBuffer<EntityStore> buffer) {
         Vector3d position = chunk.getComponent(index, TransformComponent.getComponentType()).getPosition();
-        if (position.y() >= GROUND_Y - FALL_DEPTH || !isTower(store)) {
+        if (position.y() >= TowerLayout.GROUND_Y - FALL_DEPTH || !isTower(store)) {
             return;
         }
         Ref<EntityStore> ref = chunk.getReferenceTo(index);
         if (buffer.getComponent(ref, Teleport.getComponentType()) != null) {
-            return; // déjà en route vers le parvis
+            return; // déjà en route
         }
-        buffer.putComponent(ref, Teleport.getComponentType(), Teleport.createForPlayer(new Vector3d(ARRIVAL), new Rotation3f()));
-        PlayerRef player = chunk.getComponent(index, PlayerRef.getComponentType());
-        if (player != null) {
-            player.sendMessage(Message.translation("nakasar_alchemist.tower.fallRescue"));
+        Player player = chunk.getComponent(index, Player.getComponentType());
+        Vector3d target = TowerCheckpointSystem.respawn(
+                player.getPlayerConfigData().getPerWorldData(store.getExternalData().getWorld().getName()));
+        buffer.putComponent(ref, Teleport.getComponentType(), Teleport.createForPlayer(target, new Rotation3f()));
+        PlayerRef playerRef = chunk.getComponent(index, PlayerRef.getComponentType());
+        if (playerRef != null) {
+            playerRef.sendMessage(Message.translation("nakasar_alchemist.tower.fallRescue"));
         }
     }
 

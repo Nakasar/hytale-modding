@@ -464,6 +464,1846 @@
               ]
             }
           ]
+        },
+        {
+          "Type": "Min",
+          "Inputs": [
+            {
+              "Type": "Sum",
+              "Inputs": [
+                {
+                  "Type": "Multiplier",
+                  "Inputs": [
+                    {
+                      "Type": "YValue"
+                    },
+                    {
+                      "Type": "Constant",
+                      "Value": -0.125
+                    }
+                  ]
+                },
+                {
+                  "Type": "YOverride",
+                  "Value": 81.0,
+                  "Inputs": [
+                    {
+                      "Type": "Cache",
+                      "Capacity": 64,
+                      "Inputs": [
+                        {
+                          "Type": "Sum",
+                          "Inputs": [
+                            {
+                              "Type": "Constant",
+                              "Value": 13.9375
+                            },
+                            {
+                              "Type": "PositionsCellNoise",
+                              "Positions": {
+                                "Type": "List",
+                                "Positions": [
+                                  {
+                                    "X": -78,
+                                    "Y": 112,
+                                    "Z": -66
+                                  }
+                                ]
+                              },
+                              "ReturnType": {
+                                "Type": "Curve",
+                                "Curve": {
+                                  "Type": "Manual",
+                                  "Points": [
+                                    {
+                                      "In": 0,
+                                      "Out": 0
+                                    },
+                                    {
+                                      "In": 6.6,
+                                      "Out": 0
+                                    },
+                                    {
+                                      "In": 11,
+                                      "Out": -0.75
+                                    }
+                                  ]
+                                }
+                              },
+                              "DistanceFunction": {
+                                "Type": "Euclidean"
+                              },
+                              "MaxDistance": 13.0
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "Type": "Sum",
+              "Inputs": [
+                {
+                  "Type": "Multiplier",
+                  "Inputs": [
+                    {
+                      "Type": "YValue"
+                    },
+                    {
+                      "Type": "Constant",
+                      "Value": 0.125
+                    }
+                  ]
+                },
+                {
+                  "Type": "YOverride",
+                  "Value": 81.0,
+                  "Inputs": [
+                    {
+                      "Type": "Cache",
+                      "Capacity": 64,
+                      "Inputs": [
+                        {
+                          "Type": "Sum",
+                          "Inputs": [
+                            {
+                              "Type": "PositionsCellNoise",
+                              "Positions": {
+                                "Type": "List",
+                                "Positions": [
+                                  {
+                                    "X": -78,
+                                    "Y": 112,
+                                    "Z": -66
+                                  }
+                                ]
+                              },
+                              "ReturnType": {
+                                "Type": "Curve",
+                                "Curve": {
+                                  "Type": "Manual",
+                                  "Points": [
+                                    {
+                                      "In": 0,
+                                      "Out": -12.08125
+                                    },
+                                    {
+                                      "In": 5.5,
+                                      "Out": -12.5375
+                                    },
+                                    {
+                                      "In": 8.8,
+                                      "Out": -13.00625
+                                    },
+                                    {
+                                      "In": 10.45,
+                                      "Out": -13.0
+                                    },
+                                    {
+                                      "In": 11.0,
+                                      "Out": -13.5
+                                    },
+                                    {
+                                      "In": 12.0,
+                                      "Out": -39.0
+                                    }
+                                  ]
+                                }
+                              },
+                              "DistanceFunction": {
+                                "Type": "Euclidean"
+                              },
+                              "MaxDistance": 13.0
+                            },
+                            {
+                              "Type": "Multiplier",
+                              "Inputs": [
+                                {
+                                  "Type": "SimplexNoise2D",
+                                  "Scale": 9.0,
+                                  "Octaves": 2,
+                                  "Lacunarity": 2.0,
+                                  "Persistence": 0.5,
+                                  "Seed": "Islet0Underside"
+                                },
+                                {
+                                  "Type": "Constant",
+                                  "Value": 0.6
+                                }
+                              ]
+                            },
+                            {
+                              "Type": "Multiplier",
+                              "Inputs": [
+                                {
+                                  "Type": "SimplexNoise2D",
+                                  "Scale": 14.0,
+                                  "Octaves": 2,
+                                  "Lacunarity": 2.0,
+                                  "Persistence": 0.5,
+                                  "Seed": "Islet0Rim"
+                                },
+                                {
+                                  "Type": "PositionsCellNoise",
+                                  "Positions": {
+                                    "Type": "List",
+                                    "Positions": [
+                                      {
+                                        "X": -78,
+                                        "Y": 112,
+                                        "Z": -66
+                                      }
+                                    ]
+                                  },
+                                  "ReturnType": {
+                                    "Type": "Curve",
+                                    "Curve": {
+                                      "Type": "Manual",
+                                      "Points": [
+                                        {
+                                          "In": 0,
+                                          "Out": 0
+                                        },
+                                        {
+                                          "In": 1.0,
+                                          "Out": 0
+                                        },
+                                        {
+                                          "In": 9.0,
+                                          "Out": 1.2
+                                        }
+                                      ]
+                                    }
+                                  },
+                                  "DistanceFunction": {
+                                    "Type": "Euclidean"
+                                  },
+                                  "MaxDistance": 13.0
+                                }
+                              ]
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "Type": "Min",
+          "Inputs": [
+            {
+              "Type": "Sum",
+              "Inputs": [
+                {
+                  "Type": "Multiplier",
+                  "Inputs": [
+                    {
+                      "Type": "YValue"
+                    },
+                    {
+                      "Type": "Constant",
+                      "Value": -0.125
+                    }
+                  ]
+                },
+                {
+                  "Type": "YOverride",
+                  "Value": 81.0,
+                  "Inputs": [
+                    {
+                      "Type": "Cache",
+                      "Capacity": 64,
+                      "Inputs": [
+                        {
+                          "Type": "Sum",
+                          "Inputs": [
+                            {
+                              "Type": "Constant",
+                              "Value": 15.4375
+                            },
+                            {
+                              "Type": "PositionsCellNoise",
+                              "Positions": {
+                                "Type": "List",
+                                "Positions": [
+                                  {
+                                    "X": 74,
+                                    "Y": 124,
+                                    "Z": -58
+                                  }
+                                ]
+                              },
+                              "ReturnType": {
+                                "Type": "Curve",
+                                "Curve": {
+                                  "Type": "Manual",
+                                  "Points": [
+                                    {
+                                      "In": 0,
+                                      "Out": 0
+                                    },
+                                    {
+                                      "In": 6.0,
+                                      "Out": 0
+                                    },
+                                    {
+                                      "In": 10,
+                                      "Out": -0.75
+                                    }
+                                  ]
+                                }
+                              },
+                              "DistanceFunction": {
+                                "Type": "Euclidean"
+                              },
+                              "MaxDistance": 12.0
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "Type": "Sum",
+              "Inputs": [
+                {
+                  "Type": "Multiplier",
+                  "Inputs": [
+                    {
+                      "Type": "YValue"
+                    },
+                    {
+                      "Type": "Constant",
+                      "Value": 0.125
+                    }
+                  ]
+                },
+                {
+                  "Type": "YOverride",
+                  "Value": 81.0,
+                  "Inputs": [
+                    {
+                      "Type": "Cache",
+                      "Capacity": 64,
+                      "Inputs": [
+                        {
+                          "Type": "Sum",
+                          "Inputs": [
+                            {
+                              "Type": "PositionsCellNoise",
+                              "Positions": {
+                                "Type": "List",
+                                "Positions": [
+                                  {
+                                    "X": 74,
+                                    "Y": 124,
+                                    "Z": -58
+                                  }
+                                ]
+                              },
+                              "ReturnType": {
+                                "Type": "Curve",
+                                "Curve": {
+                                  "Type": "Manual",
+                                  "Points": [
+                                    {
+                                      "In": 0,
+                                      "Out": -13.6875
+                                    },
+                                    {
+                                      "In": 5.0,
+                                      "Out": -14.125
+                                    },
+                                    {
+                                      "In": 8.0,
+                                      "Out": -14.5625
+                                    },
+                                    {
+                                      "In": 9.5,
+                                      "Out": -14.5
+                                    },
+                                    {
+                                      "In": 10.0,
+                                      "Out": -15.0
+                                    },
+                                    {
+                                      "In": 11.0,
+                                      "Out": -40.5
+                                    }
+                                  ]
+                                }
+                              },
+                              "DistanceFunction": {
+                                "Type": "Euclidean"
+                              },
+                              "MaxDistance": 12.0
+                            },
+                            {
+                              "Type": "Multiplier",
+                              "Inputs": [
+                                {
+                                  "Type": "SimplexNoise2D",
+                                  "Scale": 9.0,
+                                  "Octaves": 2,
+                                  "Lacunarity": 2.0,
+                                  "Persistence": 0.5,
+                                  "Seed": "Islet1Underside"
+                                },
+                                {
+                                  "Type": "Constant",
+                                  "Value": 0.6
+                                }
+                              ]
+                            },
+                            {
+                              "Type": "Multiplier",
+                              "Inputs": [
+                                {
+                                  "Type": "SimplexNoise2D",
+                                  "Scale": 14.0,
+                                  "Octaves": 2,
+                                  "Lacunarity": 2.0,
+                                  "Persistence": 0.5,
+                                  "Seed": "Islet1Rim"
+                                },
+                                {
+                                  "Type": "PositionsCellNoise",
+                                  "Positions": {
+                                    "Type": "List",
+                                    "Positions": [
+                                      {
+                                        "X": 74,
+                                        "Y": 124,
+                                        "Z": -58
+                                      }
+                                    ]
+                                  },
+                                  "ReturnType": {
+                                    "Type": "Curve",
+                                    "Curve": {
+                                      "Type": "Manual",
+                                      "Points": [
+                                        {
+                                          "In": 0,
+                                          "Out": 0
+                                        },
+                                        {
+                                          "In": 1.0,
+                                          "Out": 0
+                                        },
+                                        {
+                                          "In": 8.0,
+                                          "Out": 1.2
+                                        }
+                                      ]
+                                    }
+                                  },
+                                  "DistanceFunction": {
+                                    "Type": "Euclidean"
+                                  },
+                                  "MaxDistance": 12.0
+                                }
+                              ]
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "Type": "Min",
+          "Inputs": [
+            {
+              "Type": "Sum",
+              "Inputs": [
+                {
+                  "Type": "Multiplier",
+                  "Inputs": [
+                    {
+                      "Type": "YValue"
+                    },
+                    {
+                      "Type": "Constant",
+                      "Value": -0.125
+                    }
+                  ]
+                },
+                {
+                  "Type": "YOverride",
+                  "Value": 81.0,
+                  "Inputs": [
+                    {
+                      "Type": "Cache",
+                      "Capacity": 64,
+                      "Inputs": [
+                        {
+                          "Type": "Sum",
+                          "Inputs": [
+                            {
+                              "Type": "Constant",
+                              "Value": 17.1875
+                            },
+                            {
+                              "Type": "PositionsCellNoise",
+                              "Positions": {
+                                "Type": "List",
+                                "Positions": [
+                                  {
+                                    "X": -68,
+                                    "Y": 138,
+                                    "Z": -152
+                                  }
+                                ]
+                              },
+                              "ReturnType": {
+                                "Type": "Curve",
+                                "Curve": {
+                                  "Type": "Manual",
+                                  "Points": [
+                                    {
+                                      "In": 0,
+                                      "Out": 0
+                                    },
+                                    {
+                                      "In": 8.4,
+                                      "Out": 0
+                                    },
+                                    {
+                                      "In": 14,
+                                      "Out": -0.75
+                                    }
+                                  ]
+                                }
+                              },
+                              "DistanceFunction": {
+                                "Type": "Euclidean"
+                              },
+                              "MaxDistance": 16.0
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "Type": "Sum",
+              "Inputs": [
+                {
+                  "Type": "Multiplier",
+                  "Inputs": [
+                    {
+                      "Type": "YValue"
+                    },
+                    {
+                      "Type": "Constant",
+                      "Value": 0.125
+                    }
+                  ]
+                },
+                {
+                  "Type": "YOverride",
+                  "Value": 81.0,
+                  "Inputs": [
+                    {
+                      "Type": "Cache",
+                      "Capacity": 64,
+                      "Inputs": [
+                        {
+                          "Type": "Sum",
+                          "Inputs": [
+                            {
+                              "Type": "PositionsCellNoise",
+                              "Positions": {
+                                "Type": "List",
+                                "Positions": [
+                                  {
+                                    "X": -68,
+                                    "Y": 138,
+                                    "Z": -152
+                                  }
+                                ]
+                              },
+                              "ReturnType": {
+                                "Type": "Curve",
+                                "Curve": {
+                                  "Type": "Manual",
+                                  "Points": [
+                                    {
+                                      "In": 0,
+                                      "Out": -15.0125
+                                    },
+                                    {
+                                      "In": 7.0,
+                                      "Out": -15.525
+                                    },
+                                    {
+                                      "In": 11.200000000000001,
+                                      "Out": -16.0875
+                                    },
+                                    {
+                                      "In": 13.299999999999999,
+                                      "Out": -16.25
+                                    },
+                                    {
+                                      "In": 14.0,
+                                      "Out": -16.75
+                                    },
+                                    {
+                                      "In": 15.0,
+                                      "Out": -42.25
+                                    }
+                                  ]
+                                }
+                              },
+                              "DistanceFunction": {
+                                "Type": "Euclidean"
+                              },
+                              "MaxDistance": 16.0
+                            },
+                            {
+                              "Type": "Multiplier",
+                              "Inputs": [
+                                {
+                                  "Type": "SimplexNoise2D",
+                                  "Scale": 9.0,
+                                  "Octaves": 2,
+                                  "Lacunarity": 2.0,
+                                  "Persistence": 0.5,
+                                  "Seed": "Islet2Underside"
+                                },
+                                {
+                                  "Type": "Constant",
+                                  "Value": 0.6
+                                }
+                              ]
+                            },
+                            {
+                              "Type": "Multiplier",
+                              "Inputs": [
+                                {
+                                  "Type": "SimplexNoise2D",
+                                  "Scale": 14.0,
+                                  "Octaves": 2,
+                                  "Lacunarity": 2.0,
+                                  "Persistence": 0.5,
+                                  "Seed": "Islet2Rim"
+                                },
+                                {
+                                  "Type": "PositionsCellNoise",
+                                  "Positions": {
+                                    "Type": "List",
+                                    "Positions": [
+                                      {
+                                        "X": -68,
+                                        "Y": 138,
+                                        "Z": -152
+                                      }
+                                    ]
+                                  },
+                                  "ReturnType": {
+                                    "Type": "Curve",
+                                    "Curve": {
+                                      "Type": "Manual",
+                                      "Points": [
+                                        {
+                                          "In": 0,
+                                          "Out": 0
+                                        },
+                                        {
+                                          "In": 4.0,
+                                          "Out": 0
+                                        },
+                                        {
+                                          "In": 12.0,
+                                          "Out": 1.2
+                                        }
+                                      ]
+                                    }
+                                  },
+                                  "DistanceFunction": {
+                                    "Type": "Euclidean"
+                                  },
+                                  "MaxDistance": 16.0
+                                }
+                              ]
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "Type": "Min",
+          "Inputs": [
+            {
+              "Type": "Sum",
+              "Inputs": [
+                {
+                  "Type": "Multiplier",
+                  "Inputs": [
+                    {
+                      "Type": "YValue"
+                    },
+                    {
+                      "Type": "Constant",
+                      "Value": -0.125
+                    }
+                  ]
+                },
+                {
+                  "Type": "YOverride",
+                  "Value": 81.0,
+                  "Inputs": [
+                    {
+                      "Type": "Cache",
+                      "Capacity": 64,
+                      "Inputs": [
+                        {
+                          "Type": "Sum",
+                          "Inputs": [
+                            {
+                              "Type": "Constant",
+                              "Value": 19.1875
+                            },
+                            {
+                              "Type": "PositionsCellNoise",
+                              "Positions": {
+                                "Type": "List",
+                                "Positions": [
+                                  {
+                                    "X": 72,
+                                    "Y": 154,
+                                    "Z": -144
+                                  }
+                                ]
+                              },
+                              "ReturnType": {
+                                "Type": "Curve",
+                                "Curve": {
+                                  "Type": "Manual",
+                                  "Points": [
+                                    {
+                                      "In": 0,
+                                      "Out": 0
+                                    },
+                                    {
+                                      "In": 7.199999999999999,
+                                      "Out": 0
+                                    },
+                                    {
+                                      "In": 12,
+                                      "Out": -0.75
+                                    }
+                                  ]
+                                }
+                              },
+                              "DistanceFunction": {
+                                "Type": "Euclidean"
+                              },
+                              "MaxDistance": 14.0
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "Type": "Sum",
+              "Inputs": [
+                {
+                  "Type": "Multiplier",
+                  "Inputs": [
+                    {
+                      "Type": "YValue"
+                    },
+                    {
+                      "Type": "Constant",
+                      "Value": 0.125
+                    }
+                  ]
+                },
+                {
+                  "Type": "YOverride",
+                  "Value": 81.0,
+                  "Inputs": [
+                    {
+                      "Type": "Cache",
+                      "Capacity": 64,
+                      "Inputs": [
+                        {
+                          "Type": "Sum",
+                          "Inputs": [
+                            {
+                              "Type": "PositionsCellNoise",
+                              "Positions": {
+                                "Type": "List",
+                                "Positions": [
+                                  {
+                                    "X": 72,
+                                    "Y": 154,
+                                    "Z": -144
+                                  }
+                                ]
+                              },
+                              "ReturnType": {
+                                "Type": "Curve",
+                                "Curve": {
+                                  "Type": "Manual",
+                                  "Points": [
+                                    {
+                                      "In": 0,
+                                      "Out": -17.225
+                                    },
+                                    {
+                                      "In": 6.0,
+                                      "Out": -17.7
+                                    },
+                                    {
+                                      "In": 9.600000000000001,
+                                      "Out": -18.2
+                                    },
+                                    {
+                                      "In": 11.399999999999999,
+                                      "Out": -18.25
+                                    },
+                                    {
+                                      "In": 12.0,
+                                      "Out": -18.75
+                                    },
+                                    {
+                                      "In": 13.0,
+                                      "Out": -44.25
+                                    }
+                                  ]
+                                }
+                              },
+                              "DistanceFunction": {
+                                "Type": "Euclidean"
+                              },
+                              "MaxDistance": 14.0
+                            },
+                            {
+                              "Type": "Multiplier",
+                              "Inputs": [
+                                {
+                                  "Type": "SimplexNoise2D",
+                                  "Scale": 9.0,
+                                  "Octaves": 2,
+                                  "Lacunarity": 2.0,
+                                  "Persistence": 0.5,
+                                  "Seed": "Islet3Underside"
+                                },
+                                {
+                                  "Type": "Constant",
+                                  "Value": 0.6
+                                }
+                              ]
+                            },
+                            {
+                              "Type": "Multiplier",
+                              "Inputs": [
+                                {
+                                  "Type": "SimplexNoise2D",
+                                  "Scale": 14.0,
+                                  "Octaves": 2,
+                                  "Lacunarity": 2.0,
+                                  "Persistence": 0.5,
+                                  "Seed": "Islet3Rim"
+                                },
+                                {
+                                  "Type": "PositionsCellNoise",
+                                  "Positions": {
+                                    "Type": "List",
+                                    "Positions": [
+                                      {
+                                        "X": 72,
+                                        "Y": 154,
+                                        "Z": -144
+                                      }
+                                    ]
+                                  },
+                                  "ReturnType": {
+                                    "Type": "Curve",
+                                    "Curve": {
+                                      "Type": "Manual",
+                                      "Points": [
+                                        {
+                                          "In": 0,
+                                          "Out": 0
+                                        },
+                                        {
+                                          "In": 2.0,
+                                          "Out": 0
+                                        },
+                                        {
+                                          "In": 10.0,
+                                          "Out": 1.2
+                                        }
+                                      ]
+                                    }
+                                  },
+                                  "DistanceFunction": {
+                                    "Type": "Euclidean"
+                                  },
+                                  "MaxDistance": 14.0
+                                }
+                              ]
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "Type": "Min",
+          "Inputs": [
+            {
+              "Type": "Sum",
+              "Inputs": [
+                {
+                  "Type": "Multiplier",
+                  "Inputs": [
+                    {
+                      "Type": "YValue"
+                    },
+                    {
+                      "Type": "Constant",
+                      "Value": -0.125
+                    }
+                  ]
+                },
+                {
+                  "Type": "YOverride",
+                  "Value": 81.0,
+                  "Inputs": [
+                    {
+                      "Type": "Cache",
+                      "Capacity": 64,
+                      "Inputs": [
+                        {
+                          "Type": "Sum",
+                          "Inputs": [
+                            {
+                              "Type": "Constant",
+                              "Value": 20.6875
+                            },
+                            {
+                              "Type": "PositionsCellNoise",
+                              "Positions": {
+                                "Type": "List",
+                                "Positions": [
+                                  {
+                                    "X": 0,
+                                    "Y": 166,
+                                    "Z": -186
+                                  }
+                                ]
+                              },
+                              "ReturnType": {
+                                "Type": "Curve",
+                                "Curve": {
+                                  "Type": "Manual",
+                                  "Points": [
+                                    {
+                                      "In": 0,
+                                      "Out": 0
+                                    },
+                                    {
+                                      "In": 7.8,
+                                      "Out": 0
+                                    },
+                                    {
+                                      "In": 13,
+                                      "Out": -0.75
+                                    }
+                                  ]
+                                }
+                              },
+                              "DistanceFunction": {
+                                "Type": "Euclidean"
+                              },
+                              "MaxDistance": 15.0
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "Type": "Sum",
+              "Inputs": [
+                {
+                  "Type": "Multiplier",
+                  "Inputs": [
+                    {
+                      "Type": "YValue"
+                    },
+                    {
+                      "Type": "Constant",
+                      "Value": 0.125
+                    }
+                  ]
+                },
+                {
+                  "Type": "YOverride",
+                  "Value": 81.0,
+                  "Inputs": [
+                    {
+                      "Type": "Cache",
+                      "Capacity": 64,
+                      "Inputs": [
+                        {
+                          "Type": "Sum",
+                          "Inputs": [
+                            {
+                              "Type": "PositionsCellNoise",
+                              "Positions": {
+                                "Type": "List",
+                                "Positions": [
+                                  {
+                                    "X": 0,
+                                    "Y": 166,
+                                    "Z": -186
+                                  }
+                                ]
+                              },
+                              "ReturnType": {
+                                "Type": "Curve",
+                                "Curve": {
+                                  "Type": "Manual",
+                                  "Points": [
+                                    {
+                                      "In": 0,
+                                      "Out": -18.61875
+                                    },
+                                    {
+                                      "In": 6.5,
+                                      "Out": -19.1125
+                                    },
+                                    {
+                                      "In": 10.4,
+                                      "Out": -19.64375
+                                    },
+                                    {
+                                      "In": 12.35,
+                                      "Out": -19.75
+                                    },
+                                    {
+                                      "In": 13.0,
+                                      "Out": -20.25
+                                    },
+                                    {
+                                      "In": 14.0,
+                                      "Out": -45.75
+                                    }
+                                  ]
+                                }
+                              },
+                              "DistanceFunction": {
+                                "Type": "Euclidean"
+                              },
+                              "MaxDistance": 15.0
+                            },
+                            {
+                              "Type": "Multiplier",
+                              "Inputs": [
+                                {
+                                  "Type": "SimplexNoise2D",
+                                  "Scale": 9.0,
+                                  "Octaves": 2,
+                                  "Lacunarity": 2.0,
+                                  "Persistence": 0.5,
+                                  "Seed": "Islet4Underside"
+                                },
+                                {
+                                  "Type": "Constant",
+                                  "Value": 0.6
+                                }
+                              ]
+                            },
+                            {
+                              "Type": "Multiplier",
+                              "Inputs": [
+                                {
+                                  "Type": "SimplexNoise2D",
+                                  "Scale": 14.0,
+                                  "Octaves": 2,
+                                  "Lacunarity": 2.0,
+                                  "Persistence": 0.5,
+                                  "Seed": "Islet4Rim"
+                                },
+                                {
+                                  "Type": "PositionsCellNoise",
+                                  "Positions": {
+                                    "Type": "List",
+                                    "Positions": [
+                                      {
+                                        "X": 0,
+                                        "Y": 166,
+                                        "Z": -186
+                                      }
+                                    ]
+                                  },
+                                  "ReturnType": {
+                                    "Type": "Curve",
+                                    "Curve": {
+                                      "Type": "Manual",
+                                      "Points": [
+                                        {
+                                          "In": 0,
+                                          "Out": 0
+                                        },
+                                        {
+                                          "In": 3.0,
+                                          "Out": 0
+                                        },
+                                        {
+                                          "In": 11.0,
+                                          "Out": 1.2
+                                        }
+                                      ]
+                                    }
+                                  },
+                                  "DistanceFunction": {
+                                    "Type": "Euclidean"
+                                  },
+                                  "MaxDistance": 15.0
+                                }
+                              ]
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "Type": "Min",
+          "Inputs": [
+            {
+              "Type": "Sum",
+              "Inputs": [
+                {
+                  "Type": "Multiplier",
+                  "Inputs": [
+                    {
+                      "Type": "YValue"
+                    },
+                    {
+                      "Type": "Constant",
+                      "Value": -0.125
+                    }
+                  ]
+                },
+                {
+                  "Type": "YOverride",
+                  "Value": 81.0,
+                  "Inputs": [
+                    {
+                      "Type": "Cache",
+                      "Capacity": 64,
+                      "Inputs": [
+                        {
+                          "Type": "Sum",
+                          "Inputs": [
+                            {
+                              "Type": "Constant",
+                              "Value": 11.9375
+                            },
+                            {
+                              "Type": "PositionsCellNoise",
+                              "Positions": {
+                                "Type": "List",
+                                "Positions": [
+                                  {
+                                    "X": -98,
+                                    "Y": 96,
+                                    "Z": -112
+                                  }
+                                ]
+                              },
+                              "ReturnType": {
+                                "Type": "Curve",
+                                "Curve": {
+                                  "Type": "Manual",
+                                  "Points": [
+                                    {
+                                      "In": 0,
+                                      "Out": 0
+                                    },
+                                    {
+                                      "In": 5.3999999999999995,
+                                      "Out": 0
+                                    },
+                                    {
+                                      "In": 9,
+                                      "Out": -0.75
+                                    }
+                                  ]
+                                }
+                              },
+                              "DistanceFunction": {
+                                "Type": "Euclidean"
+                              },
+                              "MaxDistance": 11.0
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "Type": "Sum",
+              "Inputs": [
+                {
+                  "Type": "Multiplier",
+                  "Inputs": [
+                    {
+                      "Type": "YValue"
+                    },
+                    {
+                      "Type": "Constant",
+                      "Value": 0.125
+                    }
+                  ]
+                },
+                {
+                  "Type": "YOverride",
+                  "Value": 81.0,
+                  "Inputs": [
+                    {
+                      "Type": "Cache",
+                      "Capacity": 64,
+                      "Inputs": [
+                        {
+                          "Type": "Sum",
+                          "Inputs": [
+                            {
+                              "Type": "PositionsCellNoise",
+                              "Positions": {
+                                "Type": "List",
+                                "Positions": [
+                                  {
+                                    "X": -98,
+                                    "Y": 96,
+                                    "Z": -112
+                                  }
+                                ]
+                              },
+                              "ReturnType": {
+                                "Type": "Curve",
+                                "Curve": {
+                                  "Type": "Manual",
+                                  "Points": [
+                                    {
+                                      "In": 0,
+                                      "Out": -10.29375
+                                    },
+                                    {
+                                      "In": 4.5,
+                                      "Out": -10.7125
+                                    },
+                                    {
+                                      "In": 7.2,
+                                      "Out": -11.11875
+                                    },
+                                    {
+                                      "In": 8.549999999999999,
+                                      "Out": -11.0
+                                    },
+                                    {
+                                      "In": 9.0,
+                                      "Out": -11.5
+                                    },
+                                    {
+                                      "In": 10.0,
+                                      "Out": -37.0
+                                    }
+                                  ]
+                                }
+                              },
+                              "DistanceFunction": {
+                                "Type": "Euclidean"
+                              },
+                              "MaxDistance": 11.0
+                            },
+                            {
+                              "Type": "Multiplier",
+                              "Inputs": [
+                                {
+                                  "Type": "SimplexNoise2D",
+                                  "Scale": 9.0,
+                                  "Octaves": 2,
+                                  "Lacunarity": 2.0,
+                                  "Persistence": 0.5,
+                                  "Seed": "Islet5Underside"
+                                },
+                                {
+                                  "Type": "Constant",
+                                  "Value": 0.6
+                                }
+                              ]
+                            },
+                            {
+                              "Type": "Multiplier",
+                              "Inputs": [
+                                {
+                                  "Type": "SimplexNoise2D",
+                                  "Scale": 14.0,
+                                  "Octaves": 2,
+                                  "Lacunarity": 2.0,
+                                  "Persistence": 0.5,
+                                  "Seed": "Islet5Rim"
+                                },
+                                {
+                                  "Type": "PositionsCellNoise",
+                                  "Positions": {
+                                    "Type": "List",
+                                    "Positions": [
+                                      {
+                                        "X": -98,
+                                        "Y": 96,
+                                        "Z": -112
+                                      }
+                                    ]
+                                  },
+                                  "ReturnType": {
+                                    "Type": "Curve",
+                                    "Curve": {
+                                      "Type": "Manual",
+                                      "Points": [
+                                        {
+                                          "In": 0,
+                                          "Out": 0
+                                        },
+                                        {
+                                          "In": 1.0,
+                                          "Out": 0
+                                        },
+                                        {
+                                          "In": 7.0,
+                                          "Out": 1.2
+                                        }
+                                      ]
+                                    }
+                                  },
+                                  "DistanceFunction": {
+                                    "Type": "Euclidean"
+                                  },
+                                  "MaxDistance": 11.0
+                                }
+                              ]
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "Type": "Min",
+          "Inputs": [
+            {
+              "Type": "Sum",
+              "Inputs": [
+                {
+                  "Type": "Multiplier",
+                  "Inputs": [
+                    {
+                      "Type": "YValue"
+                    },
+                    {
+                      "Type": "Constant",
+                      "Value": -0.125
+                    }
+                  ]
+                },
+                {
+                  "Type": "YOverride",
+                  "Value": 81.0,
+                  "Inputs": [
+                    {
+                      "Type": "Cache",
+                      "Capacity": 64,
+                      "Inputs": [
+                        {
+                          "Type": "Sum",
+                          "Inputs": [
+                            {
+                              "Type": "Constant",
+                              "Value": 17.6875
+                            },
+                            {
+                              "Type": "PositionsCellNoise",
+                              "Positions": {
+                                "Type": "List",
+                                "Positions": [
+                                  {
+                                    "X": 100,
+                                    "Y": 142,
+                                    "Z": -100
+                                  }
+                                ]
+                              },
+                              "ReturnType": {
+                                "Type": "Curve",
+                                "Curve": {
+                                  "Type": "Manual",
+                                  "Points": [
+                                    {
+                                      "In": 0,
+                                      "Out": 0
+                                    },
+                                    {
+                                      "In": 6.0,
+                                      "Out": 0
+                                    },
+                                    {
+                                      "In": 10,
+                                      "Out": -0.75
+                                    }
+                                  ]
+                                }
+                              },
+                              "DistanceFunction": {
+                                "Type": "Euclidean"
+                              },
+                              "MaxDistance": 12.0
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "Type": "Sum",
+              "Inputs": [
+                {
+                  "Type": "Multiplier",
+                  "Inputs": [
+                    {
+                      "Type": "YValue"
+                    },
+                    {
+                      "Type": "Constant",
+                      "Value": 0.125
+                    }
+                  ]
+                },
+                {
+                  "Type": "YOverride",
+                  "Value": 81.0,
+                  "Inputs": [
+                    {
+                      "Type": "Cache",
+                      "Capacity": 64,
+                      "Inputs": [
+                        {
+                          "Type": "Sum",
+                          "Inputs": [
+                            {
+                              "Type": "PositionsCellNoise",
+                              "Positions": {
+                                "Type": "List",
+                                "Positions": [
+                                  {
+                                    "X": 100,
+                                    "Y": 142,
+                                    "Z": -100
+                                  }
+                                ]
+                              },
+                              "ReturnType": {
+                                "Type": "Curve",
+                                "Curve": {
+                                  "Type": "Manual",
+                                  "Points": [
+                                    {
+                                      "In": 0,
+                                      "Out": -15.9375
+                                    },
+                                    {
+                                      "In": 5.0,
+                                      "Out": -16.375
+                                    },
+                                    {
+                                      "In": 8.0,
+                                      "Out": -16.8125
+                                    },
+                                    {
+                                      "In": 9.5,
+                                      "Out": -16.75
+                                    },
+                                    {
+                                      "In": 10.0,
+                                      "Out": -17.25
+                                    },
+                                    {
+                                      "In": 11.0,
+                                      "Out": -42.75
+                                    }
+                                  ]
+                                }
+                              },
+                              "DistanceFunction": {
+                                "Type": "Euclidean"
+                              },
+                              "MaxDistance": 12.0
+                            },
+                            {
+                              "Type": "Multiplier",
+                              "Inputs": [
+                                {
+                                  "Type": "SimplexNoise2D",
+                                  "Scale": 9.0,
+                                  "Octaves": 2,
+                                  "Lacunarity": 2.0,
+                                  "Persistence": 0.5,
+                                  "Seed": "Islet6Underside"
+                                },
+                                {
+                                  "Type": "Constant",
+                                  "Value": 0.6
+                                }
+                              ]
+                            },
+                            {
+                              "Type": "Multiplier",
+                              "Inputs": [
+                                {
+                                  "Type": "SimplexNoise2D",
+                                  "Scale": 14.0,
+                                  "Octaves": 2,
+                                  "Lacunarity": 2.0,
+                                  "Persistence": 0.5,
+                                  "Seed": "Islet6Rim"
+                                },
+                                {
+                                  "Type": "PositionsCellNoise",
+                                  "Positions": {
+                                    "Type": "List",
+                                    "Positions": [
+                                      {
+                                        "X": 100,
+                                        "Y": 142,
+                                        "Z": -100
+                                      }
+                                    ]
+                                  },
+                                  "ReturnType": {
+                                    "Type": "Curve",
+                                    "Curve": {
+                                      "Type": "Manual",
+                                      "Points": [
+                                        {
+                                          "In": 0,
+                                          "Out": 0
+                                        },
+                                        {
+                                          "In": 1.0,
+                                          "Out": 0
+                                        },
+                                        {
+                                          "In": 8.0,
+                                          "Out": 1.2
+                                        }
+                                      ]
+                                    }
+                                  },
+                                  "DistanceFunction": {
+                                    "Type": "Euclidean"
+                                  },
+                                  "MaxDistance": 12.0
+                                }
+                              ]
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "Type": "Min",
+          "Inputs": [
+            {
+              "Type": "Sum",
+              "Inputs": [
+                {
+                  "Type": "Multiplier",
+                  "Inputs": [
+                    {
+                      "Type": "YValue"
+                    },
+                    {
+                      "Type": "Constant",
+                      "Value": -0.125
+                    }
+                  ]
+                },
+                {
+                  "Type": "YOverride",
+                  "Value": 81.0,
+                  "Inputs": [
+                    {
+                      "Type": "Cache",
+                      "Capacity": 64,
+                      "Inputs": [
+                        {
+                          "Type": "Sum",
+                          "Inputs": [
+                            {
+                              "Type": "Constant",
+                              "Value": 11.4375
+                            },
+                            {
+                              "Type": "PositionsCellNoise",
+                              "Positions": {
+                                "Type": "List",
+                                "Positions": [
+                                  {
+                                    "X": 44,
+                                    "Y": 92,
+                                    "Z": 36
+                                  }
+                                ]
+                              },
+                              "ReturnType": {
+                                "Type": "Curve",
+                                "Curve": {
+                                  "Type": "Manual",
+                                  "Points": [
+                                    {
+                                      "In": 0,
+                                      "Out": 0
+                                    },
+                                    {
+                                      "In": 4.8,
+                                      "Out": 0
+                                    },
+                                    {
+                                      "In": 8,
+                                      "Out": -0.75
+                                    }
+                                  ]
+                                }
+                              },
+                              "DistanceFunction": {
+                                "Type": "Euclidean"
+                              },
+                              "MaxDistance": 10.0
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "Type": "Sum",
+              "Inputs": [
+                {
+                  "Type": "Multiplier",
+                  "Inputs": [
+                    {
+                      "Type": "YValue"
+                    },
+                    {
+                      "Type": "Constant",
+                      "Value": 0.125
+                    }
+                  ]
+                },
+                {
+                  "Type": "YOverride",
+                  "Value": 81.0,
+                  "Inputs": [
+                    {
+                      "Type": "Cache",
+                      "Capacity": 64,
+                      "Inputs": [
+                        {
+                          "Type": "Sum",
+                          "Inputs": [
+                            {
+                              "Type": "PositionsCellNoise",
+                              "Positions": {
+                                "Type": "List",
+                                "Positions": [
+                                  {
+                                    "X": 44,
+                                    "Y": 92,
+                                    "Z": 36
+                                  }
+                                ]
+                              },
+                              "ReturnType": {
+                                "Type": "Curve",
+                                "Curve": {
+                                  "Type": "Manual",
+                                  "Points": [
+                                    {
+                                      "In": 0,
+                                      "Out": -9.9
+                                    },
+                                    {
+                                      "In": 4.0,
+                                      "Out": -10.3
+                                    },
+                                    {
+                                      "In": 6.4,
+                                      "Out": -10.675
+                                    },
+                                    {
+                                      "In": 7.6,
+                                      "Out": -10.5
+                                    },
+                                    {
+                                      "In": 8.0,
+                                      "Out": -11.0
+                                    },
+                                    {
+                                      "In": 9.0,
+                                      "Out": -36.5
+                                    }
+                                  ]
+                                }
+                              },
+                              "DistanceFunction": {
+                                "Type": "Euclidean"
+                              },
+                              "MaxDistance": 10.0
+                            },
+                            {
+                              "Type": "Multiplier",
+                              "Inputs": [
+                                {
+                                  "Type": "SimplexNoise2D",
+                                  "Scale": 9.0,
+                                  "Octaves": 2,
+                                  "Lacunarity": 2.0,
+                                  "Persistence": 0.5,
+                                  "Seed": "Islet7Underside"
+                                },
+                                {
+                                  "Type": "Constant",
+                                  "Value": 0.6
+                                }
+                              ]
+                            },
+                            {
+                              "Type": "Multiplier",
+                              "Inputs": [
+                                {
+                                  "Type": "SimplexNoise2D",
+                                  "Scale": 14.0,
+                                  "Octaves": 2,
+                                  "Lacunarity": 2.0,
+                                  "Persistence": 0.5,
+                                  "Seed": "Islet7Rim"
+                                },
+                                {
+                                  "Type": "PositionsCellNoise",
+                                  "Positions": {
+                                    "Type": "List",
+                                    "Positions": [
+                                      {
+                                        "X": 44,
+                                        "Y": 92,
+                                        "Z": 36
+                                      }
+                                    ]
+                                  },
+                                  "ReturnType": {
+                                    "Type": "Curve",
+                                    "Curve": {
+                                      "Type": "Manual",
+                                      "Points": [
+                                        {
+                                          "In": 0,
+                                          "Out": 0
+                                        },
+                                        {
+                                          "In": 1.0,
+                                          "Out": 0
+                                        },
+                                        {
+                                          "In": 6.0,
+                                          "Out": 1.2
+                                        }
+                                      ]
+                                    }
+                                  },
+                                  "DistanceFunction": {
+                                    "Type": "Euclidean"
+                                  },
+                                  "MaxDistance": 10.0
+                                }
+                              ]
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
         }
       ]
     }
@@ -705,6 +2545,73 @@
       }
     },
     {
+      "Runtime": 0,
+      "ContextPrecision": "Prop",
+      "PropDistribution": {
+        "Type": "Assigned",
+        "OverrideAllProps": true,
+        "PropDistribution": {
+          "Type": "Positions",
+          "Positions": {
+            "Type": "List",
+            "Positions": [
+              {
+                "X": 0,
+                "Y": 100,
+                "Z": -100
+              }
+            ]
+          }
+        },
+        "Assignments": {
+          "Type": "Constant",
+          "Prop": {
+            "Type": "Locator",
+            "Pattern": {
+              "Type": "Floor",
+              "Floor": {
+                "Type": "Not",
+                "Pattern": {
+                  "Type": "BlockType",
+                  "Material": {
+                    "Solid": "Empty"
+                  }
+                }
+              },
+              "Origin": {
+                "Type": "BlockType",
+                "Material": {
+                  "Solid": "Empty"
+                }
+              }
+            },
+            "Scanner": {
+              "Type": "Linear",
+              "Axis": "Y",
+              "Range": {
+                "MinInclusive": -12,
+                "MaxExclusive": 13
+              },
+              "AscendingOrder": false,
+              "Scanner": {
+                "Type": "Origin"
+              }
+            },
+            "PlacementCap": 1,
+            "Prop": {
+              "Type": "Prefab",
+              "WeightedPrefabPaths": [
+                {
+                  "Path": "Nakasar/AlchemistTower/Tower",
+                  "Weight": 1.0
+                }
+              ]
+            }
+          }
+        }
+      }
+    },
+    {
       "Runtime": 1,
       "ContextPrecision": "Chunk",
       "PropDistribution": {
@@ -714,7 +2621,7 @@
           "Type": "Positions",
           "Positions": {
             "Type": "Mesh2D",
-            "PointsY": 81,
+            "PointsY": 135,
             "PointGenerator": {
               "Type": "Mesh",
               "ScaleX": 2.5,
@@ -772,8 +2679,8 @@
                     "Type": "Linear",
                     "Axis": "Y",
                     "Range": {
-                      "MinInclusive": -12,
-                      "MaxExclusive": 13
+                      "MinInclusive": -45,
+                      "MaxExclusive": 46
                     },
                     "AscendingOrder": false,
                     "Scanner": {
@@ -841,8 +2748,8 @@
                     "Type": "Linear",
                     "Axis": "Y",
                     "Range": {
-                      "MinInclusive": -12,
-                      "MaxExclusive": 13
+                      "MinInclusive": -45,
+                      "MaxExclusive": 46
                     },
                     "AscendingOrder": false,
                     "Scanner": {
@@ -910,8 +2817,8 @@
                     "Type": "Linear",
                     "Axis": "Y",
                     "Range": {
-                      "MinInclusive": -12,
-                      "MaxExclusive": 13
+                      "MinInclusive": -45,
+                      "MaxExclusive": 46
                     },
                     "AscendingOrder": false,
                     "Scanner": {
@@ -979,8 +2886,8 @@
                     "Type": "Linear",
                     "Axis": "Y",
                     "Range": {
-                      "MinInclusive": -12,
-                      "MaxExclusive": 13
+                      "MinInclusive": -45,
+                      "MaxExclusive": 46
                     },
                     "AscendingOrder": false,
                     "Scanner": {
@@ -1048,8 +2955,8 @@
                     "Type": "Linear",
                     "Axis": "Y",
                     "Range": {
-                      "MinInclusive": -12,
-                      "MaxExclusive": 13
+                      "MinInclusive": -45,
+                      "MaxExclusive": 46
                     },
                     "AscendingOrder": false,
                     "Scanner": {
@@ -1117,8 +3024,8 @@
                     "Type": "Linear",
                     "Axis": "Y",
                     "Range": {
-                      "MinInclusive": -12,
-                      "MaxExclusive": 13
+                      "MinInclusive": -45,
+                      "MaxExclusive": 46
                     },
                     "AscendingOrder": false,
                     "Scanner": {
@@ -1186,8 +3093,8 @@
                     "Type": "Linear",
                     "Axis": "Y",
                     "Range": {
-                      "MinInclusive": -12,
-                      "MaxExclusive": 13
+                      "MinInclusive": -45,
+                      "MaxExclusive": 46
                     },
                     "AscendingOrder": false,
                     "Scanner": {
@@ -1214,6 +3121,2926 @@
               }
             }
           ]
+        }
+      }
+    },
+    {
+      "Runtime": 2,
+      "ContextPrecision": "Prop",
+      "PropDistribution": {
+        "Type": "Assigned",
+        "OverrideAllProps": true,
+        "PropDistribution": {
+          "Type": "Positions",
+          "Positions": {
+            "Type": "List",
+            "Positions": [
+              {
+                "X": -78,
+                "Y": 112,
+                "Z": -66
+              }
+            ]
+          }
+        },
+        "Assignments": {
+          "Type": "Constant",
+          "Prop": {
+            "Type": "Locator",
+            "Pattern": {
+              "Type": "Floor",
+              "Floor": {
+                "Type": "Not",
+                "Pattern": {
+                  "Type": "BlockType",
+                  "Material": {
+                    "Solid": "Empty"
+                  }
+                }
+              },
+              "Origin": {
+                "Type": "BlockType",
+                "Material": {
+                  "Solid": "Empty"
+                }
+              }
+            },
+            "Scanner": {
+              "Type": "Linear",
+              "Axis": "Y",
+              "Range": {
+                "MinInclusive": -6,
+                "MaxExclusive": 7
+              },
+              "AscendingOrder": false,
+              "Scanner": {
+                "Type": "Origin"
+              }
+            },
+            "PlacementCap": 1,
+            "Prop": {
+              "Type": "RandomRotator",
+              "HorizontalRotations": true,
+              "Seed": "TowerIslet0",
+              "Prop": {
+                "Type": "Prefab",
+                "WeightedPrefabPaths": [
+                  {
+                    "Path": "Trees/Wisteria/Stage_2",
+                    "Weight": 1.0
+                  }
+                ]
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "Runtime": 2,
+      "ContextPrecision": "Prop",
+      "PropDistribution": {
+        "Type": "Assigned",
+        "OverrideAllProps": true,
+        "PropDistribution": {
+          "Type": "Positions",
+          "Positions": {
+            "Type": "List",
+            "Positions": [
+              {
+                "X": 74,
+                "Y": 124,
+                "Z": -58
+              }
+            ]
+          }
+        },
+        "Assignments": {
+          "Type": "Constant",
+          "Prop": {
+            "Type": "Locator",
+            "Pattern": {
+              "Type": "Floor",
+              "Floor": {
+                "Type": "Not",
+                "Pattern": {
+                  "Type": "BlockType",
+                  "Material": {
+                    "Solid": "Empty"
+                  }
+                }
+              },
+              "Origin": {
+                "Type": "BlockType",
+                "Material": {
+                  "Solid": "Empty"
+                }
+              }
+            },
+            "Scanner": {
+              "Type": "Linear",
+              "Axis": "Y",
+              "Range": {
+                "MinInclusive": -6,
+                "MaxExclusive": 7
+              },
+              "AscendingOrder": false,
+              "Scanner": {
+                "Type": "Origin"
+              }
+            },
+            "PlacementCap": 1,
+            "Prop": {
+              "Type": "RandomRotator",
+              "HorizontalRotations": true,
+              "Seed": "TowerIslet1",
+              "Prop": {
+                "Type": "Prefab",
+                "WeightedPrefabPaths": [
+                  {
+                    "Path": "Trees/Spiral/Stage_3",
+                    "Weight": 1.0
+                  }
+                ]
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "Runtime": 2,
+      "ContextPrecision": "Prop",
+      "PropDistribution": {
+        "Type": "Assigned",
+        "OverrideAllProps": true,
+        "PropDistribution": {
+          "Type": "Positions",
+          "Positions": {
+            "Type": "List",
+            "Positions": [
+              {
+                "X": -68,
+                "Y": 138,
+                "Z": -152
+              }
+            ]
+          }
+        },
+        "Assignments": {
+          "Type": "Constant",
+          "Prop": {
+            "Type": "Locator",
+            "Pattern": {
+              "Type": "Floor",
+              "Floor": {
+                "Type": "Not",
+                "Pattern": {
+                  "Type": "BlockType",
+                  "Material": {
+                    "Solid": "Empty"
+                  }
+                }
+              },
+              "Origin": {
+                "Type": "BlockType",
+                "Material": {
+                  "Solid": "Empty"
+                }
+              }
+            },
+            "Scanner": {
+              "Type": "Linear",
+              "Axis": "Y",
+              "Range": {
+                "MinInclusive": -6,
+                "MaxExclusive": 7
+              },
+              "AscendingOrder": false,
+              "Scanner": {
+                "Type": "Origin"
+              }
+            },
+            "PlacementCap": 1,
+            "Prop": {
+              "Type": "RandomRotator",
+              "HorizontalRotations": true,
+              "Seed": "TowerIslet2",
+              "Prop": {
+                "Type": "Prefab",
+                "WeightedPrefabPaths": [
+                  {
+                    "Path": "Trees/Jungle_Crystal/Stage_3",
+                    "Weight": 1.0
+                  }
+                ]
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "Runtime": 2,
+      "ContextPrecision": "Prop",
+      "PropDistribution": {
+        "Type": "Assigned",
+        "OverrideAllProps": true,
+        "PropDistribution": {
+          "Type": "Positions",
+          "Positions": {
+            "Type": "List",
+            "Positions": [
+              {
+                "X": 72,
+                "Y": 154,
+                "Z": -144
+              }
+            ]
+          }
+        },
+        "Assignments": {
+          "Type": "Constant",
+          "Prop": {
+            "Type": "Locator",
+            "Pattern": {
+              "Type": "Floor",
+              "Floor": {
+                "Type": "Not",
+                "Pattern": {
+                  "Type": "BlockType",
+                  "Material": {
+                    "Solid": "Empty"
+                  }
+                }
+              },
+              "Origin": {
+                "Type": "BlockType",
+                "Material": {
+                  "Solid": "Empty"
+                }
+              }
+            },
+            "Scanner": {
+              "Type": "Linear",
+              "Axis": "Y",
+              "Range": {
+                "MinInclusive": -6,
+                "MaxExclusive": 7
+              },
+              "AscendingOrder": false,
+              "Scanner": {
+                "Type": "Origin"
+              }
+            },
+            "PlacementCap": 1,
+            "Prop": {
+              "Type": "RandomRotator",
+              "HorizontalRotations": true,
+              "Seed": "TowerIslet3",
+              "Prop": {
+                "Type": "Prefab",
+                "WeightedPrefabPaths": [
+                  {
+                    "Path": "Trees/Azure/Stage_3",
+                    "Weight": 1.0
+                  }
+                ]
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "Runtime": 2,
+      "ContextPrecision": "Prop",
+      "PropDistribution": {
+        "Type": "Assigned",
+        "OverrideAllProps": true,
+        "PropDistribution": {
+          "Type": "Positions",
+          "Positions": {
+            "Type": "List",
+            "Positions": [
+              {
+                "X": 0,
+                "Y": 166,
+                "Z": -186
+              }
+            ]
+          }
+        },
+        "Assignments": {
+          "Type": "Constant",
+          "Prop": {
+            "Type": "Locator",
+            "Pattern": {
+              "Type": "Floor",
+              "Floor": {
+                "Type": "Not",
+                "Pattern": {
+                  "Type": "BlockType",
+                  "Material": {
+                    "Solid": "Empty"
+                  }
+                }
+              },
+              "Origin": {
+                "Type": "BlockType",
+                "Material": {
+                  "Solid": "Empty"
+                }
+              }
+            },
+            "Scanner": {
+              "Type": "Linear",
+              "Axis": "Y",
+              "Range": {
+                "MinInclusive": -6,
+                "MaxExclusive": 7
+              },
+              "AscendingOrder": false,
+              "Scanner": {
+                "Type": "Origin"
+              }
+            },
+            "PlacementCap": 1,
+            "Prop": {
+              "Type": "RandomRotator",
+              "HorizontalRotations": true,
+              "Seed": "TowerIslet4",
+              "Prop": {
+                "Type": "Prefab",
+                "WeightedPrefabPaths": [
+                  {
+                    "Path": "Trees/Fig_Blue/Stage_3",
+                    "Weight": 1.0
+                  }
+                ]
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "Runtime": 2,
+      "ContextPrecision": "Prop",
+      "PropDistribution": {
+        "Type": "Assigned",
+        "OverrideAllProps": true,
+        "PropDistribution": {
+          "Type": "Positions",
+          "Positions": {
+            "Type": "List",
+            "Positions": [
+              {
+                "X": -98,
+                "Y": 96,
+                "Z": -112
+              }
+            ]
+          }
+        },
+        "Assignments": {
+          "Type": "Constant",
+          "Prop": {
+            "Type": "Locator",
+            "Pattern": {
+              "Type": "Floor",
+              "Floor": {
+                "Type": "Not",
+                "Pattern": {
+                  "Type": "BlockType",
+                  "Material": {
+                    "Solid": "Empty"
+                  }
+                }
+              },
+              "Origin": {
+                "Type": "BlockType",
+                "Material": {
+                  "Solid": "Empty"
+                }
+              }
+            },
+            "Scanner": {
+              "Type": "Linear",
+              "Axis": "Y",
+              "Range": {
+                "MinInclusive": -6,
+                "MaxExclusive": 7
+              },
+              "AscendingOrder": false,
+              "Scanner": {
+                "Type": "Origin"
+              }
+            },
+            "PlacementCap": 1,
+            "Prop": {
+              "Type": "RandomRotator",
+              "HorizontalRotations": true,
+              "Seed": "TowerIslet5",
+              "Prop": {
+                "Type": "Prefab",
+                "WeightedPrefabPaths": [
+                  {
+                    "Path": "Trees/Crystal/Stage_3",
+                    "Weight": 1.0
+                  }
+                ]
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "Runtime": 2,
+      "ContextPrecision": "Prop",
+      "PropDistribution": {
+        "Type": "Assigned",
+        "OverrideAllProps": true,
+        "PropDistribution": {
+          "Type": "Positions",
+          "Positions": {
+            "Type": "List",
+            "Positions": [
+              {
+                "X": 100,
+                "Y": 142,
+                "Z": -100
+              }
+            ]
+          }
+        },
+        "Assignments": {
+          "Type": "Constant",
+          "Prop": {
+            "Type": "Locator",
+            "Pattern": {
+              "Type": "Floor",
+              "Floor": {
+                "Type": "Not",
+                "Pattern": {
+                  "Type": "BlockType",
+                  "Material": {
+                    "Solid": "Empty"
+                  }
+                }
+              },
+              "Origin": {
+                "Type": "BlockType",
+                "Material": {
+                  "Solid": "Empty"
+                }
+              }
+            },
+            "Scanner": {
+              "Type": "Linear",
+              "Axis": "Y",
+              "Range": {
+                "MinInclusive": -6,
+                "MaxExclusive": 7
+              },
+              "AscendingOrder": false,
+              "Scanner": {
+                "Type": "Origin"
+              }
+            },
+            "PlacementCap": 1,
+            "Prop": {
+              "Type": "RandomRotator",
+              "HorizontalRotations": true,
+              "Seed": "TowerIslet6",
+              "Prop": {
+                "Type": "Prefab",
+                "WeightedPrefabPaths": [
+                  {
+                    "Path": "Trees/Zone5/Aqua/Large",
+                    "Weight": 1.0
+                  }
+                ]
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "Runtime": 2,
+      "ContextPrecision": "Prop",
+      "PropDistribution": {
+        "Type": "Assigned",
+        "OverrideAllProps": true,
+        "PropDistribution": {
+          "Type": "Positions",
+          "Positions": {
+            "Type": "List",
+            "Positions": [
+              {
+                "X": 44,
+                "Y": 92,
+                "Z": 36
+              }
+            ]
+          }
+        },
+        "Assignments": {
+          "Type": "Constant",
+          "Prop": {
+            "Type": "Locator",
+            "Pattern": {
+              "Type": "Floor",
+              "Floor": {
+                "Type": "Not",
+                "Pattern": {
+                  "Type": "BlockType",
+                  "Material": {
+                    "Solid": "Empty"
+                  }
+                }
+              },
+              "Origin": {
+                "Type": "BlockType",
+                "Material": {
+                  "Solid": "Empty"
+                }
+              }
+            },
+            "Scanner": {
+              "Type": "Linear",
+              "Axis": "Y",
+              "Range": {
+                "MinInclusive": -6,
+                "MaxExclusive": 7
+              },
+              "AscendingOrder": false,
+              "Scanner": {
+                "Type": "Origin"
+              }
+            },
+            "PlacementCap": 1,
+            "Prop": {
+              "Type": "RandomRotator",
+              "HorizontalRotations": true,
+              "Seed": "TowerIslet7",
+              "Prop": {
+                "Type": "Prefab",
+                "WeightedPrefabPaths": [
+                  {
+                    "Path": "Trees/Silver/Stage_3",
+                    "Weight": 1.0
+                  }
+                ]
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "Runtime": 2,
+      "ContextPrecision": "Prop",
+      "PropDistribution": {
+        "Type": "Assigned",
+        "OverrideAllProps": true,
+        "PropDistribution": {
+          "Type": "Positions",
+          "Positions": {
+            "Type": "List",
+            "Positions": [
+              {
+                "X": -35,
+                "Y": 100,
+                "Z": -80
+              }
+            ]
+          }
+        },
+        "Assignments": {
+          "Type": "Constant",
+          "Prop": {
+            "Type": "Locator",
+            "Pattern": {
+              "Type": "Floor",
+              "Floor": {
+                "Type": "Not",
+                "Pattern": {
+                  "Type": "BlockType",
+                  "Material": {
+                    "Solid": "Empty"
+                  }
+                }
+              },
+              "Origin": {
+                "Type": "BlockType",
+                "Material": {
+                  "Solid": "Empty"
+                }
+              }
+            },
+            "Scanner": {
+              "Type": "Linear",
+              "Axis": "Y",
+              "Range": {
+                "MinInclusive": -8,
+                "MaxExclusive": 9
+              },
+              "AscendingOrder": false,
+              "Scanner": {
+                "Type": "Origin"
+              }
+            },
+            "PlacementCap": 1,
+            "Prop": {
+              "Type": "RandomRotator",
+              "HorizontalRotations": true,
+              "Seed": "TowerGarden0",
+              "Prop": {
+                "Type": "Prefab",
+                "WeightedPrefabPaths": [
+                  {
+                    "Path": "Trees/Willow/Stage_3",
+                    "Weight": 1.0
+                  }
+                ]
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "Runtime": 2,
+      "ContextPrecision": "Prop",
+      "PropDistribution": {
+        "Type": "Assigned",
+        "OverrideAllProps": true,
+        "PropDistribution": {
+          "Type": "Positions",
+          "Positions": {
+            "Type": "List",
+            "Positions": [
+              {
+                "X": -38,
+                "Y": 100,
+                "Z": -114
+              }
+            ]
+          }
+        },
+        "Assignments": {
+          "Type": "Constant",
+          "Prop": {
+            "Type": "Locator",
+            "Pattern": {
+              "Type": "Floor",
+              "Floor": {
+                "Type": "Not",
+                "Pattern": {
+                  "Type": "BlockType",
+                  "Material": {
+                    "Solid": "Empty"
+                  }
+                }
+              },
+              "Origin": {
+                "Type": "BlockType",
+                "Material": {
+                  "Solid": "Empty"
+                }
+              }
+            },
+            "Scanner": {
+              "Type": "Linear",
+              "Axis": "Y",
+              "Range": {
+                "MinInclusive": -8,
+                "MaxExclusive": 9
+              },
+              "AscendingOrder": false,
+              "Scanner": {
+                "Type": "Origin"
+              }
+            },
+            "PlacementCap": 1,
+            "Prop": {
+              "Type": "RandomRotator",
+              "HorizontalRotations": true,
+              "Seed": "TowerGarden1",
+              "Prop": {
+                "Type": "Prefab",
+                "WeightedPrefabPaths": [
+                  {
+                    "Path": "Trees/Crystal/Stage_3",
+                    "Weight": 1.0
+                  }
+                ]
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "Runtime": 2,
+      "ContextPrecision": "Prop",
+      "PropDistribution": {
+        "Type": "Assigned",
+        "OverrideAllProps": true,
+        "PropDistribution": {
+          "Type": "Positions",
+          "Positions": {
+            "Type": "List",
+            "Positions": [
+              {
+                "X": -14,
+                "Y": 100,
+                "Z": -138
+              }
+            ]
+          }
+        },
+        "Assignments": {
+          "Type": "Constant",
+          "Prop": {
+            "Type": "Locator",
+            "Pattern": {
+              "Type": "Floor",
+              "Floor": {
+                "Type": "Not",
+                "Pattern": {
+                  "Type": "BlockType",
+                  "Material": {
+                    "Solid": "Empty"
+                  }
+                }
+              },
+              "Origin": {
+                "Type": "BlockType",
+                "Material": {
+                  "Solid": "Empty"
+                }
+              }
+            },
+            "Scanner": {
+              "Type": "Linear",
+              "Axis": "Y",
+              "Range": {
+                "MinInclusive": -8,
+                "MaxExclusive": 9
+              },
+              "AscendingOrder": false,
+              "Scanner": {
+                "Type": "Origin"
+              }
+            },
+            "PlacementCap": 1,
+            "Prop": {
+              "Type": "RandomRotator",
+              "HorizontalRotations": true,
+              "Seed": "TowerGarden2",
+              "Prop": {
+                "Type": "Prefab",
+                "WeightedPrefabPaths": [
+                  {
+                    "Path": "Trees/Silver/Stage_3",
+                    "Weight": 1.0
+                  }
+                ]
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "Runtime": 2,
+      "ContextPrecision": "Prop",
+      "PropDistribution": {
+        "Type": "Assigned",
+        "OverrideAllProps": true,
+        "PropDistribution": {
+          "Type": "Positions",
+          "Positions": {
+            "Type": "List",
+            "Positions": [
+              {
+                "X": 20,
+                "Y": 100,
+                "Z": -135
+              }
+            ]
+          }
+        },
+        "Assignments": {
+          "Type": "Constant",
+          "Prop": {
+            "Type": "Locator",
+            "Pattern": {
+              "Type": "Floor",
+              "Floor": {
+                "Type": "Not",
+                "Pattern": {
+                  "Type": "BlockType",
+                  "Material": {
+                    "Solid": "Empty"
+                  }
+                }
+              },
+              "Origin": {
+                "Type": "BlockType",
+                "Material": {
+                  "Solid": "Empty"
+                }
+              }
+            },
+            "Scanner": {
+              "Type": "Linear",
+              "Axis": "Y",
+              "Range": {
+                "MinInclusive": -8,
+                "MaxExclusive": 9
+              },
+              "AscendingOrder": false,
+              "Scanner": {
+                "Type": "Origin"
+              }
+            },
+            "PlacementCap": 1,
+            "Prop": {
+              "Type": "RandomRotator",
+              "HorizontalRotations": true,
+              "Seed": "TowerGarden3",
+              "Prop": {
+                "Type": "Prefab",
+                "WeightedPrefabPaths": [
+                  {
+                    "Path": "Trees/Wisteria/Stage_2",
+                    "Weight": 1.0
+                  }
+                ]
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "Runtime": 2,
+      "ContextPrecision": "Prop",
+      "PropDistribution": {
+        "Type": "Assigned",
+        "OverrideAllProps": true,
+        "PropDistribution": {
+          "Type": "Positions",
+          "Positions": {
+            "Type": "List",
+            "Positions": [
+              {
+                "X": 39,
+                "Y": 100,
+                "Z": -110
+              }
+            ]
+          }
+        },
+        "Assignments": {
+          "Type": "Constant",
+          "Prop": {
+            "Type": "Locator",
+            "Pattern": {
+              "Type": "Floor",
+              "Floor": {
+                "Type": "Not",
+                "Pattern": {
+                  "Type": "BlockType",
+                  "Material": {
+                    "Solid": "Empty"
+                  }
+                }
+              },
+              "Origin": {
+                "Type": "BlockType",
+                "Material": {
+                  "Solid": "Empty"
+                }
+              }
+            },
+            "Scanner": {
+              "Type": "Linear",
+              "Axis": "Y",
+              "Range": {
+                "MinInclusive": -8,
+                "MaxExclusive": 9
+              },
+              "AscendingOrder": false,
+              "Scanner": {
+                "Type": "Origin"
+              }
+            },
+            "PlacementCap": 1,
+            "Prop": {
+              "Type": "RandomRotator",
+              "HorizontalRotations": true,
+              "Seed": "TowerGarden4",
+              "Prop": {
+                "Type": "Prefab",
+                "WeightedPrefabPaths": [
+                  {
+                    "Path": "Trees/Crystal/Stage_3",
+                    "Weight": 1.0
+                  }
+                ]
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "Runtime": 2,
+      "ContextPrecision": "Prop",
+      "PropDistribution": {
+        "Type": "Assigned",
+        "OverrideAllProps": true,
+        "PropDistribution": {
+          "Type": "Positions",
+          "Positions": {
+            "Type": "List",
+            "Positions": [
+              {
+                "X": 35,
+                "Y": 100,
+                "Z": -80
+              }
+            ]
+          }
+        },
+        "Assignments": {
+          "Type": "Constant",
+          "Prop": {
+            "Type": "Locator",
+            "Pattern": {
+              "Type": "Floor",
+              "Floor": {
+                "Type": "Not",
+                "Pattern": {
+                  "Type": "BlockType",
+                  "Material": {
+                    "Solid": "Empty"
+                  }
+                }
+              },
+              "Origin": {
+                "Type": "BlockType",
+                "Material": {
+                  "Solid": "Empty"
+                }
+              }
+            },
+            "Scanner": {
+              "Type": "Linear",
+              "Axis": "Y",
+              "Range": {
+                "MinInclusive": -8,
+                "MaxExclusive": 9
+              },
+              "AscendingOrder": false,
+              "Scanner": {
+                "Type": "Origin"
+              }
+            },
+            "PlacementCap": 1,
+            "Prop": {
+              "Type": "RandomRotator",
+              "HorizontalRotations": true,
+              "Seed": "TowerGarden5",
+              "Prop": {
+                "Type": "Prefab",
+                "WeightedPrefabPaths": [
+                  {
+                    "Path": "Trees/Willow/Stage_3",
+                    "Weight": 1.0
+                  }
+                ]
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "Runtime": 3,
+      "ContextPrecision": "Prop",
+      "PropDistribution": {
+        "Type": "Assigned",
+        "OverrideAllProps": true,
+        "PropDistribution": {
+          "Type": "Positions",
+          "Positions": {
+            "Type": "List",
+            "Positions": [
+              {
+                "X": -76,
+                "Y": 112,
+                "Z": -60
+              }
+            ]
+          }
+        },
+        "Assignments": {
+          "Type": "Constant",
+          "Prop": {
+            "Type": "Locator",
+            "Pattern": {
+              "Type": "Floor",
+              "Floor": {
+                "Type": "Not",
+                "Pattern": {
+                  "Type": "BlockType",
+                  "Material": {
+                    "Solid": "Empty"
+                  }
+                }
+              },
+              "Origin": {
+                "Type": "BlockType",
+                "Material": {
+                  "Solid": "Empty"
+                }
+              }
+            },
+            "Scanner": {
+              "Type": "Linear",
+              "Axis": "Y",
+              "Range": {
+                "MinInclusive": -6,
+                "MaxExclusive": 7
+              },
+              "AscendingOrder": false,
+              "Scanner": {
+                "Type": "Origin"
+              }
+            },
+            "PlacementCap": 1,
+            "Prop": {
+              "Type": "Manual",
+              "Blocks": [
+                {
+                  "Position": {
+                    "X": 0,
+                    "Y": 0,
+                    "Z": 0
+                  },
+                  "Material": {
+                    "Solid": "Nakasar_Tower_Emanation_Motes"
+                  }
+                }
+              ]
+            }
+          }
+        }
+      }
+    },
+    {
+      "Runtime": 3,
+      "ContextPrecision": "Prop",
+      "PropDistribution": {
+        "Type": "Assigned",
+        "OverrideAllProps": true,
+        "PropDistribution": {
+          "Type": "Positions",
+          "Positions": {
+            "Type": "List",
+            "Positions": [
+              {
+                "X": -84,
+                "Y": 112,
+                "Z": -67
+              }
+            ]
+          }
+        },
+        "Assignments": {
+          "Type": "Constant",
+          "Prop": {
+            "Type": "Locator",
+            "Pattern": {
+              "Type": "Floor",
+              "Floor": {
+                "Type": "Not",
+                "Pattern": {
+                  "Type": "BlockType",
+                  "Material": {
+                    "Solid": "Empty"
+                  }
+                }
+              },
+              "Origin": {
+                "Type": "BlockType",
+                "Material": {
+                  "Solid": "Empty"
+                }
+              }
+            },
+            "Scanner": {
+              "Type": "Linear",
+              "Axis": "Y",
+              "Range": {
+                "MinInclusive": -6,
+                "MaxExclusive": 7
+              },
+              "AscendingOrder": false,
+              "Scanner": {
+                "Type": "Origin"
+              }
+            },
+            "PlacementCap": 1,
+            "Prop": {
+              "Type": "Manual",
+              "Blocks": [
+                {
+                  "Position": {
+                    "X": 0,
+                    "Y": 0,
+                    "Z": 0
+                  },
+                  "Material": {
+                    "Solid": "Nakasar_Tower_Emanation_Fireflies"
+                  }
+                }
+              ]
+            }
+          }
+        }
+      }
+    },
+    {
+      "Runtime": 3,
+      "ContextPrecision": "Prop",
+      "PropDistribution": {
+        "Type": "Assigned",
+        "OverrideAllProps": true,
+        "PropDistribution": {
+          "Type": "Positions",
+          "Positions": {
+            "Type": "List",
+            "Positions": [
+              {
+                "X": -74,
+                "Y": 112,
+                "Z": -71
+              }
+            ]
+          }
+        },
+        "Assignments": {
+          "Type": "Constant",
+          "Prop": {
+            "Type": "Locator",
+            "Pattern": {
+              "Type": "Floor",
+              "Floor": {
+                "Type": "Not",
+                "Pattern": {
+                  "Type": "BlockType",
+                  "Material": {
+                    "Solid": "Empty"
+                  }
+                }
+              },
+              "Origin": {
+                "Type": "BlockType",
+                "Material": {
+                  "Solid": "Empty"
+                }
+              }
+            },
+            "Scanner": {
+              "Type": "Linear",
+              "Axis": "Y",
+              "Range": {
+                "MinInclusive": -6,
+                "MaxExclusive": 7
+              },
+              "AscendingOrder": false,
+              "Scanner": {
+                "Type": "Origin"
+              }
+            },
+            "PlacementCap": 1,
+            "Prop": {
+              "Type": "Manual",
+              "Blocks": [
+                {
+                  "Position": {
+                    "X": 0,
+                    "Y": 0,
+                    "Z": 0
+                  },
+                  "Material": {
+                    "Solid": "Rock_Crystal_Purple_Large"
+                  }
+                },
+                {
+                  "Position": {
+                    "X": 1,
+                    "Y": 0,
+                    "Z": 0
+                  },
+                  "Material": {
+                    "Solid": "Rock_Crystal_Purple_Medium"
+                  }
+                },
+                {
+                  "Position": {
+                    "X": 0,
+                    "Y": 0,
+                    "Z": 1
+                  },
+                  "Material": {
+                    "Solid": "Rock_Crystal_Green_Medium"
+                  }
+                }
+              ]
+            }
+          }
+        }
+      }
+    },
+    {
+      "Runtime": 3,
+      "ContextPrecision": "Prop",
+      "PropDistribution": {
+        "Type": "Assigned",
+        "OverrideAllProps": true,
+        "PropDistribution": {
+          "Type": "Positions",
+          "Positions": {
+            "Type": "List",
+            "Positions": [
+              {
+                "X": 72,
+                "Y": 124,
+                "Z": -53
+              }
+            ]
+          }
+        },
+        "Assignments": {
+          "Type": "Constant",
+          "Prop": {
+            "Type": "Locator",
+            "Pattern": {
+              "Type": "Floor",
+              "Floor": {
+                "Type": "Not",
+                "Pattern": {
+                  "Type": "BlockType",
+                  "Material": {
+                    "Solid": "Empty"
+                  }
+                }
+              },
+              "Origin": {
+                "Type": "BlockType",
+                "Material": {
+                  "Solid": "Empty"
+                }
+              }
+            },
+            "Scanner": {
+              "Type": "Linear",
+              "Axis": "Y",
+              "Range": {
+                "MinInclusive": -6,
+                "MaxExclusive": 7
+              },
+              "AscendingOrder": false,
+              "Scanner": {
+                "Type": "Origin"
+              }
+            },
+            "PlacementCap": 1,
+            "Prop": {
+              "Type": "Manual",
+              "Blocks": [
+                {
+                  "Position": {
+                    "X": 0,
+                    "Y": 0,
+                    "Z": 0
+                  },
+                  "Material": {
+                    "Solid": "Nakasar_Tower_Emanation_Fireflies"
+                  }
+                }
+              ]
+            }
+          }
+        }
+      }
+    },
+    {
+      "Runtime": 3,
+      "ContextPrecision": "Prop",
+      "PropDistribution": {
+        "Type": "Assigned",
+        "OverrideAllProps": true,
+        "PropDistribution": {
+          "Type": "Positions",
+          "Positions": {
+            "Type": "List",
+            "Positions": [
+              {
+                "X": 70,
+                "Y": 124,
+                "Z": -62
+              }
+            ]
+          }
+        },
+        "Assignments": {
+          "Type": "Constant",
+          "Prop": {
+            "Type": "Locator",
+            "Pattern": {
+              "Type": "Floor",
+              "Floor": {
+                "Type": "Not",
+                "Pattern": {
+                  "Type": "BlockType",
+                  "Material": {
+                    "Solid": "Empty"
+                  }
+                }
+              },
+              "Origin": {
+                "Type": "BlockType",
+                "Material": {
+                  "Solid": "Empty"
+                }
+              }
+            },
+            "Scanner": {
+              "Type": "Linear",
+              "Axis": "Y",
+              "Range": {
+                "MinInclusive": -6,
+                "MaxExclusive": 7
+              },
+              "AscendingOrder": false,
+              "Scanner": {
+                "Type": "Origin"
+              }
+            },
+            "PlacementCap": 1,
+            "Prop": {
+              "Type": "Manual",
+              "Blocks": [
+                {
+                  "Position": {
+                    "X": 0,
+                    "Y": 0,
+                    "Z": 0
+                  },
+                  "Material": {
+                    "Solid": "Nakasar_Tower_Emanation_Mist"
+                  }
+                }
+              ]
+            }
+          }
+        }
+      }
+    },
+    {
+      "Runtime": 3,
+      "ContextPrecision": "Prop",
+      "PropDistribution": {
+        "Type": "Assigned",
+        "OverrideAllProps": true,
+        "PropDistribution": {
+          "Type": "Positions",
+          "Positions": {
+            "Type": "List",
+            "Positions": [
+              {
+                "X": 79,
+                "Y": 124,
+                "Z": -59
+              }
+            ]
+          }
+        },
+        "Assignments": {
+          "Type": "Constant",
+          "Prop": {
+            "Type": "Locator",
+            "Pattern": {
+              "Type": "Floor",
+              "Floor": {
+                "Type": "Not",
+                "Pattern": {
+                  "Type": "BlockType",
+                  "Material": {
+                    "Solid": "Empty"
+                  }
+                }
+              },
+              "Origin": {
+                "Type": "BlockType",
+                "Material": {
+                  "Solid": "Empty"
+                }
+              }
+            },
+            "Scanner": {
+              "Type": "Linear",
+              "Axis": "Y",
+              "Range": {
+                "MinInclusive": -6,
+                "MaxExclusive": 7
+              },
+              "AscendingOrder": false,
+              "Scanner": {
+                "Type": "Origin"
+              }
+            },
+            "PlacementCap": 1,
+            "Prop": {
+              "Type": "Manual",
+              "Blocks": [
+                {
+                  "Position": {
+                    "X": 0,
+                    "Y": 0,
+                    "Z": 0
+                  },
+                  "Material": {
+                    "Solid": "Rock_Crystal_Purple_Medium"
+                  }
+                },
+                {
+                  "Position": {
+                    "X": 1,
+                    "Y": 0,
+                    "Z": 0
+                  },
+                  "Material": {
+                    "Solid": "Rock_Crystal_Green_Medium"
+                  }
+                },
+                {
+                  "Position": {
+                    "X": 0,
+                    "Y": 0,
+                    "Z": 1
+                  },
+                  "Material": {
+                    "Solid": "Rock_Crystal_Green_Large"
+                  }
+                }
+              ]
+            }
+          }
+        }
+      }
+    },
+    {
+      "Runtime": 3,
+      "ContextPrecision": "Prop",
+      "PropDistribution": {
+        "Type": "Assigned",
+        "OverrideAllProps": true,
+        "PropDistribution": {
+          "Type": "Positions",
+          "Positions": {
+            "Type": "List",
+            "Positions": [
+              {
+                "X": -74,
+                "Y": 138,
+                "Z": -147
+              }
+            ]
+          }
+        },
+        "Assignments": {
+          "Type": "Constant",
+          "Prop": {
+            "Type": "Locator",
+            "Pattern": {
+              "Type": "Floor",
+              "Floor": {
+                "Type": "Not",
+                "Pattern": {
+                  "Type": "BlockType",
+                  "Material": {
+                    "Solid": "Empty"
+                  }
+                }
+              },
+              "Origin": {
+                "Type": "BlockType",
+                "Material": {
+                  "Solid": "Empty"
+                }
+              }
+            },
+            "Scanner": {
+              "Type": "Linear",
+              "Axis": "Y",
+              "Range": {
+                "MinInclusive": -6,
+                "MaxExclusive": 7
+              },
+              "AscendingOrder": false,
+              "Scanner": {
+                "Type": "Origin"
+              }
+            },
+            "PlacementCap": 1,
+            "Prop": {
+              "Type": "Manual",
+              "Blocks": [
+                {
+                  "Position": {
+                    "X": 0,
+                    "Y": 0,
+                    "Z": 0
+                  },
+                  "Material": {
+                    "Solid": "Nakasar_Tower_Emanation_Mist"
+                  }
+                }
+              ]
+            }
+          }
+        }
+      }
+    },
+    {
+      "Runtime": 3,
+      "ContextPrecision": "Prop",
+      "PropDistribution": {
+        "Type": "Assigned",
+        "OverrideAllProps": true,
+        "PropDistribution": {
+          "Type": "Positions",
+          "Positions": {
+            "Type": "List",
+            "Positions": [
+              {
+                "X": -69,
+                "Y": 138,
+                "Z": -160
+              }
+            ]
+          }
+        },
+        "Assignments": {
+          "Type": "Constant",
+          "Prop": {
+            "Type": "Locator",
+            "Pattern": {
+              "Type": "Floor",
+              "Floor": {
+                "Type": "Not",
+                "Pattern": {
+                  "Type": "BlockType",
+                  "Material": {
+                    "Solid": "Empty"
+                  }
+                }
+              },
+              "Origin": {
+                "Type": "BlockType",
+                "Material": {
+                  "Solid": "Empty"
+                }
+              }
+            },
+            "Scanner": {
+              "Type": "Linear",
+              "Axis": "Y",
+              "Range": {
+                "MinInclusive": -6,
+                "MaxExclusive": 7
+              },
+              "AscendingOrder": false,
+              "Scanner": {
+                "Type": "Origin"
+              }
+            },
+            "PlacementCap": 1,
+            "Prop": {
+              "Type": "Manual",
+              "Blocks": [
+                {
+                  "Position": {
+                    "X": 0,
+                    "Y": 0,
+                    "Z": 0
+                  },
+                  "Material": {
+                    "Solid": "Nakasar_Tower_Emanation_Spiral"
+                  }
+                }
+              ]
+            }
+          }
+        }
+      }
+    },
+    {
+      "Runtime": 3,
+      "ContextPrecision": "Prop",
+      "PropDistribution": {
+        "Type": "Assigned",
+        "OverrideAllProps": true,
+        "PropDistribution": {
+          "Type": "Positions",
+          "Positions": {
+            "Type": "List",
+            "Positions": [
+              {
+                "X": -61,
+                "Y": 138,
+                "Z": -149
+              }
+            ]
+          }
+        },
+        "Assignments": {
+          "Type": "Constant",
+          "Prop": {
+            "Type": "Locator",
+            "Pattern": {
+              "Type": "Floor",
+              "Floor": {
+                "Type": "Not",
+                "Pattern": {
+                  "Type": "BlockType",
+                  "Material": {
+                    "Solid": "Empty"
+                  }
+                }
+              },
+              "Origin": {
+                "Type": "BlockType",
+                "Material": {
+                  "Solid": "Empty"
+                }
+              }
+            },
+            "Scanner": {
+              "Type": "Linear",
+              "Axis": "Y",
+              "Range": {
+                "MinInclusive": -6,
+                "MaxExclusive": 7
+              },
+              "AscendingOrder": false,
+              "Scanner": {
+                "Type": "Origin"
+              }
+            },
+            "PlacementCap": 1,
+            "Prop": {
+              "Type": "Manual",
+              "Blocks": [
+                {
+                  "Position": {
+                    "X": 0,
+                    "Y": 0,
+                    "Z": 0
+                  },
+                  "Material": {
+                    "Solid": "Rock_Crystal_Green_Medium"
+                  }
+                },
+                {
+                  "Position": {
+                    "X": 1,
+                    "Y": 0,
+                    "Z": 0
+                  },
+                  "Material": {
+                    "Solid": "Rock_Crystal_Green_Large"
+                  }
+                },
+                {
+                  "Position": {
+                    "X": 0,
+                    "Y": 0,
+                    "Z": 1
+                  },
+                  "Material": {
+                    "Solid": "Rock_Crystal_Pink_Medium"
+                  }
+                }
+              ]
+            }
+          }
+        }
+      }
+    },
+    {
+      "Runtime": 3,
+      "ContextPrecision": "Prop",
+      "PropDistribution": {
+        "Type": "Assigned",
+        "OverrideAllProps": true,
+        "PropDistribution": {
+          "Type": "Positions",
+          "Positions": {
+            "Type": "List",
+            "Positions": [
+              {
+                "X": 65,
+                "Y": 154,
+                "Z": -144
+              }
+            ]
+          }
+        },
+        "Assignments": {
+          "Type": "Constant",
+          "Prop": {
+            "Type": "Locator",
+            "Pattern": {
+              "Type": "Floor",
+              "Floor": {
+                "Type": "Not",
+                "Pattern": {
+                  "Type": "BlockType",
+                  "Material": {
+                    "Solid": "Empty"
+                  }
+                }
+              },
+              "Origin": {
+                "Type": "BlockType",
+                "Material": {
+                  "Solid": "Empty"
+                }
+              }
+            },
+            "Scanner": {
+              "Type": "Linear",
+              "Axis": "Y",
+              "Range": {
+                "MinInclusive": -6,
+                "MaxExclusive": 7
+              },
+              "AscendingOrder": false,
+              "Scanner": {
+                "Type": "Origin"
+              }
+            },
+            "PlacementCap": 1,
+            "Prop": {
+              "Type": "Manual",
+              "Blocks": [
+                {
+                  "Position": {
+                    "X": 0,
+                    "Y": 0,
+                    "Z": 0
+                  },
+                  "Material": {
+                    "Solid": "Nakasar_Tower_Emanation_Spiral"
+                  }
+                }
+              ]
+            }
+          }
+        }
+      }
+    },
+    {
+      "Runtime": 3,
+      "ContextPrecision": "Prop",
+      "PropDistribution": {
+        "Type": "Assigned",
+        "OverrideAllProps": true,
+        "PropDistribution": {
+          "Type": "Positions",
+          "Positions": {
+            "Type": "List",
+            "Positions": [
+              {
+                "X": 75,
+                "Y": 154,
+                "Z": -150
+              }
+            ]
+          }
+        },
+        "Assignments": {
+          "Type": "Constant",
+          "Prop": {
+            "Type": "Locator",
+            "Pattern": {
+              "Type": "Floor",
+              "Floor": {
+                "Type": "Not",
+                "Pattern": {
+                  "Type": "BlockType",
+                  "Material": {
+                    "Solid": "Empty"
+                  }
+                }
+              },
+              "Origin": {
+                "Type": "BlockType",
+                "Material": {
+                  "Solid": "Empty"
+                }
+              }
+            },
+            "Scanner": {
+              "Type": "Linear",
+              "Axis": "Y",
+              "Range": {
+                "MinInclusive": -6,
+                "MaxExclusive": 7
+              },
+              "AscendingOrder": false,
+              "Scanner": {
+                "Type": "Origin"
+              }
+            },
+            "PlacementCap": 1,
+            "Prop": {
+              "Type": "Manual",
+              "Blocks": [
+                {
+                  "Position": {
+                    "X": 0,
+                    "Y": 0,
+                    "Z": 0
+                  },
+                  "Material": {
+                    "Solid": "Nakasar_Tower_Emanation_Motes"
+                  }
+                }
+              ]
+            }
+          }
+        }
+      }
+    },
+    {
+      "Runtime": 3,
+      "ContextPrecision": "Prop",
+      "PropDistribution": {
+        "Type": "Assigned",
+        "OverrideAllProps": true,
+        "PropDistribution": {
+          "Type": "Positions",
+          "Positions": {
+            "Type": "List",
+            "Positions": [
+              {
+                "X": 75,
+                "Y": 154,
+                "Z": -138
+              }
+            ]
+          }
+        },
+        "Assignments": {
+          "Type": "Constant",
+          "Prop": {
+            "Type": "Locator",
+            "Pattern": {
+              "Type": "Floor",
+              "Floor": {
+                "Type": "Not",
+                "Pattern": {
+                  "Type": "BlockType",
+                  "Material": {
+                    "Solid": "Empty"
+                  }
+                }
+              },
+              "Origin": {
+                "Type": "BlockType",
+                "Material": {
+                  "Solid": "Empty"
+                }
+              }
+            },
+            "Scanner": {
+              "Type": "Linear",
+              "Axis": "Y",
+              "Range": {
+                "MinInclusive": -6,
+                "MaxExclusive": 7
+              },
+              "AscendingOrder": false,
+              "Scanner": {
+                "Type": "Origin"
+              }
+            },
+            "PlacementCap": 1,
+            "Prop": {
+              "Type": "Manual",
+              "Blocks": [
+                {
+                  "Position": {
+                    "X": 0,
+                    "Y": 0,
+                    "Z": 0
+                  },
+                  "Material": {
+                    "Solid": "Rock_Crystal_Green_Large"
+                  }
+                },
+                {
+                  "Position": {
+                    "X": 1,
+                    "Y": 0,
+                    "Z": 0
+                  },
+                  "Material": {
+                    "Solid": "Rock_Crystal_Pink_Medium"
+                  }
+                },
+                {
+                  "Position": {
+                    "X": 0,
+                    "Y": 0,
+                    "Z": 1
+                  },
+                  "Material": {
+                    "Solid": "Rock_Crystal_Purple_Large"
+                  }
+                }
+              ]
+            }
+          }
+        }
+      }
+    },
+    {
+      "Runtime": 3,
+      "ContextPrecision": "Prop",
+      "PropDistribution": {
+        "Type": "Assigned",
+        "OverrideAllProps": true,
+        "PropDistribution": {
+          "Type": "Positions",
+          "Positions": {
+            "Type": "List",
+            "Positions": [
+              {
+                "X": -6,
+                "Y": 166,
+                "Z": -190
+              }
+            ]
+          }
+        },
+        "Assignments": {
+          "Type": "Constant",
+          "Prop": {
+            "Type": "Locator",
+            "Pattern": {
+              "Type": "Floor",
+              "Floor": {
+                "Type": "Not",
+                "Pattern": {
+                  "Type": "BlockType",
+                  "Material": {
+                    "Solid": "Empty"
+                  }
+                }
+              },
+              "Origin": {
+                "Type": "BlockType",
+                "Material": {
+                  "Solid": "Empty"
+                }
+              }
+            },
+            "Scanner": {
+              "Type": "Linear",
+              "Axis": "Y",
+              "Range": {
+                "MinInclusive": -6,
+                "MaxExclusive": 7
+              },
+              "AscendingOrder": false,
+              "Scanner": {
+                "Type": "Origin"
+              }
+            },
+            "PlacementCap": 1,
+            "Prop": {
+              "Type": "Manual",
+              "Blocks": [
+                {
+                  "Position": {
+                    "X": 0,
+                    "Y": 0,
+                    "Z": 0
+                  },
+                  "Material": {
+                    "Solid": "Nakasar_Tower_Emanation_Motes"
+                  }
+                }
+              ]
+            }
+          }
+        }
+      }
+    },
+    {
+      "Runtime": 3,
+      "ContextPrecision": "Prop",
+      "PropDistribution": {
+        "Type": "Assigned",
+        "OverrideAllProps": true,
+        "PropDistribution": {
+          "Type": "Positions",
+          "Positions": {
+            "Type": "List",
+            "Positions": [
+              {
+                "X": 7,
+                "Y": 166,
+                "Z": -189
+              }
+            ]
+          }
+        },
+        "Assignments": {
+          "Type": "Constant",
+          "Prop": {
+            "Type": "Locator",
+            "Pattern": {
+              "Type": "Floor",
+              "Floor": {
+                "Type": "Not",
+                "Pattern": {
+                  "Type": "BlockType",
+                  "Material": {
+                    "Solid": "Empty"
+                  }
+                }
+              },
+              "Origin": {
+                "Type": "BlockType",
+                "Material": {
+                  "Solid": "Empty"
+                }
+              }
+            },
+            "Scanner": {
+              "Type": "Linear",
+              "Axis": "Y",
+              "Range": {
+                "MinInclusive": -6,
+                "MaxExclusive": 7
+              },
+              "AscendingOrder": false,
+              "Scanner": {
+                "Type": "Origin"
+              }
+            },
+            "PlacementCap": 1,
+            "Prop": {
+              "Type": "Manual",
+              "Blocks": [
+                {
+                  "Position": {
+                    "X": 0,
+                    "Y": 0,
+                    "Z": 0
+                  },
+                  "Material": {
+                    "Solid": "Nakasar_Tower_Emanation_Fireflies"
+                  }
+                }
+              ]
+            }
+          }
+        }
+      }
+    },
+    {
+      "Runtime": 3,
+      "ContextPrecision": "Prop",
+      "PropDistribution": {
+        "Type": "Assigned",
+        "OverrideAllProps": true,
+        "PropDistribution": {
+          "Type": "Positions",
+          "Positions": {
+            "Type": "List",
+            "Positions": [
+              {
+                "X": -1,
+                "Y": 166,
+                "Z": -179
+              }
+            ]
+          }
+        },
+        "Assignments": {
+          "Type": "Constant",
+          "Prop": {
+            "Type": "Locator",
+            "Pattern": {
+              "Type": "Floor",
+              "Floor": {
+                "Type": "Not",
+                "Pattern": {
+                  "Type": "BlockType",
+                  "Material": {
+                    "Solid": "Empty"
+                  }
+                }
+              },
+              "Origin": {
+                "Type": "BlockType",
+                "Material": {
+                  "Solid": "Empty"
+                }
+              }
+            },
+            "Scanner": {
+              "Type": "Linear",
+              "Axis": "Y",
+              "Range": {
+                "MinInclusive": -6,
+                "MaxExclusive": 7
+              },
+              "AscendingOrder": false,
+              "Scanner": {
+                "Type": "Origin"
+              }
+            },
+            "PlacementCap": 1,
+            "Prop": {
+              "Type": "Manual",
+              "Blocks": [
+                {
+                  "Position": {
+                    "X": 0,
+                    "Y": 0,
+                    "Z": 0
+                  },
+                  "Material": {
+                    "Solid": "Rock_Crystal_Pink_Medium"
+                  }
+                },
+                {
+                  "Position": {
+                    "X": 1,
+                    "Y": 0,
+                    "Z": 0
+                  },
+                  "Material": {
+                    "Solid": "Rock_Crystal_Purple_Large"
+                  }
+                },
+                {
+                  "Position": {
+                    "X": 0,
+                    "Y": 0,
+                    "Z": 1
+                  },
+                  "Material": {
+                    "Solid": "Rock_Crystal_Purple_Medium"
+                  }
+                }
+              ]
+            }
+          }
+        }
+      }
+    },
+    {
+      "Runtime": 3,
+      "ContextPrecision": "Prop",
+      "PropDistribution": {
+        "Type": "Assigned",
+        "OverrideAllProps": true,
+        "PropDistribution": {
+          "Type": "Positions",
+          "Positions": {
+            "Type": "List",
+            "Positions": [
+              {
+                "X": -99,
+                "Y": 96,
+                "Z": -117
+              }
+            ]
+          }
+        },
+        "Assignments": {
+          "Type": "Constant",
+          "Prop": {
+            "Type": "Locator",
+            "Pattern": {
+              "Type": "Floor",
+              "Floor": {
+                "Type": "Not",
+                "Pattern": {
+                  "Type": "BlockType",
+                  "Material": {
+                    "Solid": "Empty"
+                  }
+                }
+              },
+              "Origin": {
+                "Type": "BlockType",
+                "Material": {
+                  "Solid": "Empty"
+                }
+              }
+            },
+            "Scanner": {
+              "Type": "Linear",
+              "Axis": "Y",
+              "Range": {
+                "MinInclusive": -6,
+                "MaxExclusive": 7
+              },
+              "AscendingOrder": false,
+              "Scanner": {
+                "Type": "Origin"
+              }
+            },
+            "PlacementCap": 1,
+            "Prop": {
+              "Type": "Manual",
+              "Blocks": [
+                {
+                  "Position": {
+                    "X": 0,
+                    "Y": 0,
+                    "Z": 0
+                  },
+                  "Material": {
+                    "Solid": "Nakasar_Tower_Emanation_Fireflies"
+                  }
+                }
+              ]
+            }
+          }
+        }
+      }
+    },
+    {
+      "Runtime": 3,
+      "ContextPrecision": "Prop",
+      "PropDistribution": {
+        "Type": "Assigned",
+        "OverrideAllProps": true,
+        "PropDistribution": {
+          "Type": "Positions",
+          "Positions": {
+            "Type": "List",
+            "Positions": [
+              {
+                "X": -93,
+                "Y": 96,
+                "Z": -111
+              }
+            ]
+          }
+        },
+        "Assignments": {
+          "Type": "Constant",
+          "Prop": {
+            "Type": "Locator",
+            "Pattern": {
+              "Type": "Floor",
+              "Floor": {
+                "Type": "Not",
+                "Pattern": {
+                  "Type": "BlockType",
+                  "Material": {
+                    "Solid": "Empty"
+                  }
+                }
+              },
+              "Origin": {
+                "Type": "BlockType",
+                "Material": {
+                  "Solid": "Empty"
+                }
+              }
+            },
+            "Scanner": {
+              "Type": "Linear",
+              "Axis": "Y",
+              "Range": {
+                "MinInclusive": -6,
+                "MaxExclusive": 7
+              },
+              "AscendingOrder": false,
+              "Scanner": {
+                "Type": "Origin"
+              }
+            },
+            "PlacementCap": 1,
+            "Prop": {
+              "Type": "Manual",
+              "Blocks": [
+                {
+                  "Position": {
+                    "X": 0,
+                    "Y": 0,
+                    "Z": 0
+                  },
+                  "Material": {
+                    "Solid": "Nakasar_Tower_Emanation_Mist"
+                  }
+                }
+              ]
+            }
+          }
+        }
+      }
+    },
+    {
+      "Runtime": 3,
+      "ContextPrecision": "Prop",
+      "PropDistribution": {
+        "Type": "Assigned",
+        "OverrideAllProps": true,
+        "PropDistribution": {
+          "Type": "Positions",
+          "Positions": {
+            "Type": "List",
+            "Positions": [
+              {
+                "X": -102,
+                "Y": 96,
+                "Z": -108
+              }
+            ]
+          }
+        },
+        "Assignments": {
+          "Type": "Constant",
+          "Prop": {
+            "Type": "Locator",
+            "Pattern": {
+              "Type": "Floor",
+              "Floor": {
+                "Type": "Not",
+                "Pattern": {
+                  "Type": "BlockType",
+                  "Material": {
+                    "Solid": "Empty"
+                  }
+                }
+              },
+              "Origin": {
+                "Type": "BlockType",
+                "Material": {
+                  "Solid": "Empty"
+                }
+              }
+            },
+            "Scanner": {
+              "Type": "Linear",
+              "Axis": "Y",
+              "Range": {
+                "MinInclusive": -6,
+                "MaxExclusive": 7
+              },
+              "AscendingOrder": false,
+              "Scanner": {
+                "Type": "Origin"
+              }
+            },
+            "PlacementCap": 1,
+            "Prop": {
+              "Type": "Manual",
+              "Blocks": [
+                {
+                  "Position": {
+                    "X": 0,
+                    "Y": 0,
+                    "Z": 0
+                  },
+                  "Material": {
+                    "Solid": "Rock_Crystal_Purple_Large"
+                  }
+                },
+                {
+                  "Position": {
+                    "X": 1,
+                    "Y": 0,
+                    "Z": 0
+                  },
+                  "Material": {
+                    "Solid": "Rock_Crystal_Purple_Medium"
+                  }
+                },
+                {
+                  "Position": {
+                    "X": 0,
+                    "Y": 0,
+                    "Z": 1
+                  },
+                  "Material": {
+                    "Solid": "Rock_Crystal_Green_Medium"
+                  }
+                }
+              ]
+            }
+          }
+        }
+      }
+    },
+    {
+      "Runtime": 3,
+      "ContextPrecision": "Prop",
+      "PropDistribution": {
+        "Type": "Assigned",
+        "OverrideAllProps": true,
+        "PropDistribution": {
+          "Type": "Positions",
+          "Positions": {
+            "Type": "List",
+            "Positions": [
+              {
+                "X": 102,
+                "Y": 142,
+                "Z": -105
+              }
+            ]
+          }
+        },
+        "Assignments": {
+          "Type": "Constant",
+          "Prop": {
+            "Type": "Locator",
+            "Pattern": {
+              "Type": "Floor",
+              "Floor": {
+                "Type": "Not",
+                "Pattern": {
+                  "Type": "BlockType",
+                  "Material": {
+                    "Solid": "Empty"
+                  }
+                }
+              },
+              "Origin": {
+                "Type": "BlockType",
+                "Material": {
+                  "Solid": "Empty"
+                }
+              }
+            },
+            "Scanner": {
+              "Type": "Linear",
+              "Axis": "Y",
+              "Range": {
+                "MinInclusive": -6,
+                "MaxExclusive": 7
+              },
+              "AscendingOrder": false,
+              "Scanner": {
+                "Type": "Origin"
+              }
+            },
+            "PlacementCap": 1,
+            "Prop": {
+              "Type": "Manual",
+              "Blocks": [
+                {
+                  "Position": {
+                    "X": 0,
+                    "Y": 0,
+                    "Z": 0
+                  },
+                  "Material": {
+                    "Solid": "Nakasar_Tower_Emanation_Mist"
+                  }
+                }
+              ]
+            }
+          }
+        }
+      }
+    },
+    {
+      "Runtime": 3,
+      "ContextPrecision": "Prop",
+      "PropDistribution": {
+        "Type": "Assigned",
+        "OverrideAllProps": true,
+        "PropDistribution": {
+          "Type": "Positions",
+          "Positions": {
+            "Type": "List",
+            "Positions": [
+              {
+                "X": 103,
+                "Y": 142,
+                "Z": -96
+              }
+            ]
+          }
+        },
+        "Assignments": {
+          "Type": "Constant",
+          "Prop": {
+            "Type": "Locator",
+            "Pattern": {
+              "Type": "Floor",
+              "Floor": {
+                "Type": "Not",
+                "Pattern": {
+                  "Type": "BlockType",
+                  "Material": {
+                    "Solid": "Empty"
+                  }
+                }
+              },
+              "Origin": {
+                "Type": "BlockType",
+                "Material": {
+                  "Solid": "Empty"
+                }
+              }
+            },
+            "Scanner": {
+              "Type": "Linear",
+              "Axis": "Y",
+              "Range": {
+                "MinInclusive": -6,
+                "MaxExclusive": 7
+              },
+              "AscendingOrder": false,
+              "Scanner": {
+                "Type": "Origin"
+              }
+            },
+            "PlacementCap": 1,
+            "Prop": {
+              "Type": "Manual",
+              "Blocks": [
+                {
+                  "Position": {
+                    "X": 0,
+                    "Y": 0,
+                    "Z": 0
+                  },
+                  "Material": {
+                    "Solid": "Nakasar_Tower_Emanation_Spiral"
+                  }
+                }
+              ]
+            }
+          }
+        }
+      }
+    },
+    {
+      "Runtime": 3,
+      "ContextPrecision": "Prop",
+      "PropDistribution": {
+        "Type": "Assigned",
+        "OverrideAllProps": true,
+        "PropDistribution": {
+          "Type": "Positions",
+          "Positions": {
+            "Type": "List",
+            "Positions": [
+              {
+                "X": 95,
+                "Y": 142,
+                "Z": -99
+              }
+            ]
+          }
+        },
+        "Assignments": {
+          "Type": "Constant",
+          "Prop": {
+            "Type": "Locator",
+            "Pattern": {
+              "Type": "Floor",
+              "Floor": {
+                "Type": "Not",
+                "Pattern": {
+                  "Type": "BlockType",
+                  "Material": {
+                    "Solid": "Empty"
+                  }
+                }
+              },
+              "Origin": {
+                "Type": "BlockType",
+                "Material": {
+                  "Solid": "Empty"
+                }
+              }
+            },
+            "Scanner": {
+              "Type": "Linear",
+              "Axis": "Y",
+              "Range": {
+                "MinInclusive": -6,
+                "MaxExclusive": 7
+              },
+              "AscendingOrder": false,
+              "Scanner": {
+                "Type": "Origin"
+              }
+            },
+            "PlacementCap": 1,
+            "Prop": {
+              "Type": "Manual",
+              "Blocks": [
+                {
+                  "Position": {
+                    "X": 0,
+                    "Y": 0,
+                    "Z": 0
+                  },
+                  "Material": {
+                    "Solid": "Rock_Crystal_Purple_Medium"
+                  }
+                },
+                {
+                  "Position": {
+                    "X": 1,
+                    "Y": 0,
+                    "Z": 0
+                  },
+                  "Material": {
+                    "Solid": "Rock_Crystal_Green_Medium"
+                  }
+                },
+                {
+                  "Position": {
+                    "X": 0,
+                    "Y": 0,
+                    "Z": 1
+                  },
+                  "Material": {
+                    "Solid": "Rock_Crystal_Green_Large"
+                  }
+                }
+              ]
+            }
+          }
+        }
+      }
+    },
+    {
+      "Runtime": 3,
+      "ContextPrecision": "Prop",
+      "PropDistribution": {
+        "Type": "Assigned",
+        "OverrideAllProps": true,
+        "PropDistribution": {
+          "Type": "Positions",
+          "Positions": {
+            "Type": "List",
+            "Positions": [
+              {
+                "X": 48,
+                "Y": 92,
+                "Z": 34
+              }
+            ]
+          }
+        },
+        "Assignments": {
+          "Type": "Constant",
+          "Prop": {
+            "Type": "Locator",
+            "Pattern": {
+              "Type": "Floor",
+              "Floor": {
+                "Type": "Not",
+                "Pattern": {
+                  "Type": "BlockType",
+                  "Material": {
+                    "Solid": "Empty"
+                  }
+                }
+              },
+              "Origin": {
+                "Type": "BlockType",
+                "Material": {
+                  "Solid": "Empty"
+                }
+              }
+            },
+            "Scanner": {
+              "Type": "Linear",
+              "Axis": "Y",
+              "Range": {
+                "MinInclusive": -6,
+                "MaxExclusive": 7
+              },
+              "AscendingOrder": false,
+              "Scanner": {
+                "Type": "Origin"
+              }
+            },
+            "PlacementCap": 1,
+            "Prop": {
+              "Type": "Manual",
+              "Blocks": [
+                {
+                  "Position": {
+                    "X": 0,
+                    "Y": 0,
+                    "Z": 0
+                  },
+                  "Material": {
+                    "Solid": "Nakasar_Tower_Emanation_Spiral"
+                  }
+                }
+              ]
+            }
+          }
+        }
+      }
+    },
+    {
+      "Runtime": 3,
+      "ContextPrecision": "Prop",
+      "PropDistribution": {
+        "Type": "Assigned",
+        "OverrideAllProps": true,
+        "PropDistribution": {
+          "Type": "Positions",
+          "Positions": {
+            "Type": "List",
+            "Positions": [
+              {
+                "X": 44,
+                "Y": 92,
+                "Z": 40
+              }
+            ]
+          }
+        },
+        "Assignments": {
+          "Type": "Constant",
+          "Prop": {
+            "Type": "Locator",
+            "Pattern": {
+              "Type": "Floor",
+              "Floor": {
+                "Type": "Not",
+                "Pattern": {
+                  "Type": "BlockType",
+                  "Material": {
+                    "Solid": "Empty"
+                  }
+                }
+              },
+              "Origin": {
+                "Type": "BlockType",
+                "Material": {
+                  "Solid": "Empty"
+                }
+              }
+            },
+            "Scanner": {
+              "Type": "Linear",
+              "Axis": "Y",
+              "Range": {
+                "MinInclusive": -6,
+                "MaxExclusive": 7
+              },
+              "AscendingOrder": false,
+              "Scanner": {
+                "Type": "Origin"
+              }
+            },
+            "PlacementCap": 1,
+            "Prop": {
+              "Type": "Manual",
+              "Blocks": [
+                {
+                  "Position": {
+                    "X": 0,
+                    "Y": 0,
+                    "Z": 0
+                  },
+                  "Material": {
+                    "Solid": "Nakasar_Tower_Emanation_Motes"
+                  }
+                }
+              ]
+            }
+          }
+        }
+      }
+    },
+    {
+      "Runtime": 3,
+      "ContextPrecision": "Prop",
+      "PropDistribution": {
+        "Type": "Assigned",
+        "OverrideAllProps": true,
+        "PropDistribution": {
+          "Type": "Positions",
+          "Positions": {
+            "Type": "List",
+            "Positions": [
+              {
+                "X": 40,
+                "Y": 92,
+                "Z": 34
+              }
+            ]
+          }
+        },
+        "Assignments": {
+          "Type": "Constant",
+          "Prop": {
+            "Type": "Locator",
+            "Pattern": {
+              "Type": "Floor",
+              "Floor": {
+                "Type": "Not",
+                "Pattern": {
+                  "Type": "BlockType",
+                  "Material": {
+                    "Solid": "Empty"
+                  }
+                }
+              },
+              "Origin": {
+                "Type": "BlockType",
+                "Material": {
+                  "Solid": "Empty"
+                }
+              }
+            },
+            "Scanner": {
+              "Type": "Linear",
+              "Axis": "Y",
+              "Range": {
+                "MinInclusive": -6,
+                "MaxExclusive": 7
+              },
+              "AscendingOrder": false,
+              "Scanner": {
+                "Type": "Origin"
+              }
+            },
+            "PlacementCap": 1,
+            "Prop": {
+              "Type": "Manual",
+              "Blocks": [
+                {
+                  "Position": {
+                    "X": 0,
+                    "Y": 0,
+                    "Z": 0
+                  },
+                  "Material": {
+                    "Solid": "Rock_Crystal_Green_Medium"
+                  }
+                },
+                {
+                  "Position": {
+                    "X": 1,
+                    "Y": 0,
+                    "Z": 0
+                  },
+                  "Material": {
+                    "Solid": "Rock_Crystal_Green_Large"
+                  }
+                },
+                {
+                  "Position": {
+                    "X": 0,
+                    "Y": 0,
+                    "Z": 1
+                  },
+                  "Material": {
+                    "Solid": "Rock_Crystal_Pink_Medium"
+                  }
+                }
+              ]
+            }
+          }
         }
       }
     }

@@ -4,16 +4,18 @@
     python3 mods/nakasar-vampires/tools/generate_alchemist_tower.py [--preview DOSSIER]
 
 Document de conception : https://claude.ai/code/artifact/38f49cae-a653-428c-86dc-4e1cdf0da191 (le donjon s'inspire
-du donjon vanilla Deepworks). Étape 1, le socle :
+du donjon vanilla Deepworks).
 
 - la clé `PortalKey_Nakasar_Alchemist_Tower`, même recette à l'établi des chasseurs et à l'autel (palier 3) ;
-- le type de portail et l'instance : pas de limite de temps, ciel violet et vert figé au crépuscule ;
+- le type de portail et l'instance : pas de limite de temps ni d'entrées, ciel violet et vert figé au crépuscule ;
 - les règles (GameplayConfig, comme Deepworks) : ni pose ni casse de blocs, aucune perte d'objets à la mort ;
-- deux îles flottantes au-dessus du vide : l'île d'arrivée et, au nord, l'île de la tour, reliées par un pont ;
-- le parvis d'arrivée (point d'apparition, portail de sortie anticipée), le pont et le pied de la tour, fermés par des
-  parapets de 2 blocs : on ne peut pas sauter dans le vide. Un joueur qui y tombe quand même est ramené sur le parvis
-  (TowerFallSystem, Java). La tour elle-même vient à l'étape 2 ; d'ici là, un second portail de sortie (avec
-  confirmation) attend au pied de sa porte scellée.
+- les îles flottantes au-dessus du vide : l'île d'arrivée, au nord l'île de la tour et son jardin d'arbres
+  fantastiques, et des îlots à toutes hauteurs, chacun avec un arbre fantastique du jeu, des cristaux et des émanations
+  magiques (blocs invisibles `Nakasar_Tower_Emanation_*` qui portent des particules du jeu et une lumière) ;
+- le parvis d'arrivée (point d'apparition, portail de sortie anticipée) et le pont, fermés par des parapets de 2 blocs ;
+- la tour elle-même (tools/alchemist_tower.py) : étages, balcons, escaliers extérieurs, points de vue fermés, points de
+  contrôle ; TowerLayout.java (Java, généré) en reprend les positions. Un joueur qui tombe quand même dans le vide est
+  ramené à son dernier point de contrôle (TowerFallSystem, TowerCheckpointSystem).
 
 Repère : x vers l'est, z vers le sud, y vers le haut ; le point d'apparition est en (0, GROUND_Y, 0).
 """
@@ -24,6 +26,7 @@ from pathlib import Path
 
 from PIL import Image, ImageDraw
 
+import alchemist_tower
 import generate_prefabs as pf
 import generate_worldgen as wg
 
@@ -35,6 +38,8 @@ TOWER = "Nakasar_Alchemist_Tower"
 KEY = "PortalKey_Nakasar_Alchemist_Tower"
 EXIT = "Nakasar_Tower_Exit"
 EXIT_PARTICLES = "Nakasar_Tower_Exit_Portal"
+EMANATION_PREFIX = "Nakasar_Tower_Emanation_"
+JAVA_LAYOUT = PACK.parent / "java/dev/nakasar/hytale/vampires/tower/TowerLayout.java"
 PREFABS = "Nakasar/AlchemistTower"
 ICON = "Icons/Items/Nakasar/Tower/PortalKey_Alchemist_Tower.png"
 WEATHER = "Nakasar_Weather_Alchemist_Tower"
@@ -54,13 +59,41 @@ SPAWN = (0, GROUND_Y, 0)
 ARRIVAL_RADIUS, ARRIVAL_FLAT = 22.0, 15.0
 TOWER_CENTER = (0, GROUND_Y, -100)
 TOWER_RADIUS, TOWER_FLAT = 48.0, 40.0
-# Parvis d'arrivée (rayon intérieur du parapet), pont (demi-largeur, de z à z), pied de la tour.
+# Parvis d'arrivée (rayon intérieur du parapet), pont (demi-largeur, de z à z) : le pont s'arrête au bord du parvis de
+# la tour (z = 40 dans le repère du prefab de la tour, alchemist_tower.court).
 PLAZA_RADIUS = 9
 BRIDGE_HALF = 2
-BRIDGE_START, BRIDGE_END = -10, -60
-FOOT = (-8, -72, 8, -60)          # x0, z0, x1, z1 du parvis au pied de la tour
+BRIDGE_START, BRIDGE_END = -10, TOWER_CENTER[2] + 41
 EXIT_Z = 6                         # portail de sortie anticipée, au sud du point d'apparition
-RETURN_Z = -66                     # second portail de sortie, au pied de la tour (provisoire)
+TOWER_SEED = 4242
+# Îlots flottants autour de la tour, chacun portant un arbre fantastique du jeu (dossiers de Server/Prefabs d'Assets.zip,
+# lus le 2026-10-19 ; demi-largeur et hauteur en commentaire) : (centre du dessus, rayon, arbre).
+ISLETS = [
+    ((-78, 112, -66), 11, "Trees/Wisteria/Stage_2"),         # ±11
+    ((74, 124, -58), 10, "Trees/Spiral/Stage_3"),            # ±10, 17 de haut
+    ((-68, 138, -152), 14, "Trees/Jungle_Crystal/Stage_3"),  # ±22, 50 de haut
+    ((72, 154, -144), 12, "Trees/Azure/Stage_3"),            # ±8, 27 de haut
+    ((0, 166, -186), 13, "Trees/Fig_Blue/Stage_3"),          # ±14, 45 de haut : derrière la tour, vu de l'Observatoire
+    ((-98, 96, -112), 9, "Trees/Crystal/Stage_3"),
+    ((100, 142, -100), 10, "Trees/Zone5/Aqua/Large"),        # ±22
+    ((44, 92, 36), 8, "Trees/Silver/Stage_3"),               # au sud-est de l'île d'arrivée
+]
+# Jardin de l'île de la tour : arbres plus sages, assez loin pour ne pas toucher balcons ni cheminées (rayon 25 au plus).
+GARDEN_RADIUS = 40
+GARDEN = [(150, "Trees/Willow/Stage_3"), (200, "Trees/Crystal/Stage_3"), (250, "Trees/Silver/Stage_3"),
+          (300, "Trees/Wisteria/Stage_2"), (345, "Trees/Crystal/Stage_3"), (30, "Trees/Willow/Stage_3")]
+# Émanations magiques : blocs invisibles et traversables qui portent des particules du jeu et une lumière. La teinte
+# « Color » d'une particule de bloc ne change pas les systèmes (vu avec la brèche) : on choisit des systèmes déjà colorés.
+EMANATIONS = {
+    "Smoke": ("Eye_Void_Smoke_Green", 1.2, 0.5, "#4f8"),
+    "Motes": ("Dungeon_Goblin_Temple_Motes", 1.0, 0.5, "#a6f"),
+    "Spiral": ("ForgottenTemple_Spark_Spiral", 1.0, 0.5, "#6ef"),
+    "Arc": ("Goblin_Decorative_Lightning", 1.5, 1.0, "#9cf"),
+    "Mist": ("Eye_Void_Smoke_Teal", 1.5, 0.5, "#4dc"),
+    "Fireflies": ("Fireflies_GS", 1.0, 0.5, "#cf8"),
+}
+EMANATION_COLORS = {"Smoke": (90, 240, 140), "Motes": (180, 110, 255), "Spiral": (110, 230, 255),
+                    "Arc": (160, 200, 255), "Mist": (70, 220, 200), "Fireflies": (210, 255, 120)}
 
 # Pierres de la tour : marbre clair, liserés d'or, cristaux violets et verts (les couleurs de l'Alchimiste).
 FLOOR = [("Rock_Marble_Brick", 5), ("Rock_Marble_Brick_Smooth", 2), ("Rock_Marble_Cobble", 1)]
@@ -261,21 +294,22 @@ def environment():
 # --- îles -------------------------------------------------------------------------------------
 
 def island(center, radius, flat, seed):
-    """Île flottante centrée sur `center` : dessus plat jusqu'à `flat`, puis bord qui s'abaisse de 6 blocs ;
-    dessous en cône rocheux dentelé. Densité positive dans l'île, négative ailleurs."""
+    """Île flottante centrée sur `center` (y = première couche d'air du dessus) : dessus plat jusqu'à `flat`, puis bord
+    qui s'abaisse de 6 blocs ; dessous en cône rocheux dentelé. Densité positive dans l'île, négative ailleurs."""
     here = wg.list_positions(center)
+    top_y = center[1]
     top = wg.add(
         wg.mul({"Type": "YValue"}, wg.const(-0.125)),
         wg.column(wg.add(
-            wg.const((GROUND_Y - 0.5) / 8.0),
+            wg.const((top_y - 0.5) / 8.0),
             wg.distance_to(here, radius + 2.0, wg.curve((0, 0), (flat, 0), (radius, -0.75))),
         )),
     )
     depth = [(0, 0.85 * radius + 6), (0.5, 0.7 * radius + 4), (0.8, 0.45 * radius + 3), (0.95, 8), (1.0, 4)]
-    bottom_curve = [(f * radius, d / 8.0 - GROUND_Y / 8.0) for f, d in depth]
-    bottom_curve.append((radius + 1.0, -(GROUND_Y + 200) / 8.0))
+    bottom_curve = [(f * radius, d / 8.0 - top_y / 8.0) for f, d in depth]
+    bottom_curve.append((radius + 1.0, -(top_y + 200) / 8.0))
     rim = wg.mul(wg.simplex2d(14.0, 2, f"{seed}Rim"),
-                 wg.distance_to(here, radius + 2.0, wg.curve((0, 0), (radius - 10.0, 0), (radius - 2.0, 1.2))))
+                 wg.distance_to(here, radius + 2.0, wg.curve((0, 0), (max(radius - 10.0, 1.0), 0), (radius - 2.0, 1.2))))
     bottom = wg.add(
         wg.mul({"Type": "YValue"}, wg.const(0.125)),
         wg.column(wg.add(wg.distance_to(here, radius + 2.0, wg.curve(*bottom_curve)),
@@ -286,6 +320,18 @@ def island(center, radius, flat, seed):
 
 def prefab_prop(name):
     return {"Type": "Prefab", "WeightedPrefabPaths": [{"Path": f"{PREFABS}/{name}", "Weight": 1.0}]}
+
+
+def block_prop(name, x=0, y=0, z=0):
+    return {"Type": "Manual", "Blocks": [{"Position": {"X": x, "Y": y, "Z": z}, "Material": {"Solid": name}}]}
+
+
+def crystal_cluster(i):
+    """Trois cristaux serrés, en pointe vers le haut."""
+    names = [c for c, _ in CRYSTALS]
+    return {"Type": "Manual", "Blocks": [
+        {"Position": {"X": dx, "Y": 0, "Z": dz}, "Material": {"Solid": names[(i + k) % len(names)]}}
+        for k, (dx, dz) in enumerate(((0, 0), (1, 0), (0, 1)))]}
 
 
 def biome():
@@ -309,25 +355,50 @@ def biome():
     }
     arrival = wg.runtime(0, "Prop", wg.list_positions(SPAWN), {"Type": "Constant", "Prop": wg.surface_locator(
         prefab_prop("Arrival"), wg.SOLID_FLOOR, 12)})
+    tower = wg.runtime(0, "Prop", wg.list_positions(TOWER_CENTER), {"Type": "Constant", "Prop": wg.surface_locator(
+        prefab_prop("Tower"), wg.SOLID_FLOOR, 12)})
 
     def plant(name):
-        return wg.surface_locator({"Type": "Manual", "Blocks": [
-            {"Position": {"X": 0, "Y": 0, "Z": 0}, "Material": {"Solid": name}}]}, wg.on_floor(
-            {"Type": "Or", "Patterns": [wg.is_block(b) for b in ("Soil_Grass_Full", "Soil_Grass", "Soil_Grass_Deep")]}), 12)
+        return wg.surface_locator(block_prop(name), wg.on_floor(
+            {"Type": "Or", "Patterns": [wg.is_block(b) for b in ("Soil_Grass_Full", "Soil_Grass", "Soil_Grass_Deep")]}), 45)
 
-    plants = wg.runtime(1, "Chunk", wg.mesh(2.5, 0.5, "TowerPlants"), wg.weighted_assignments("TowerPlantPick", 0.45, [
+    # Points de semis à mi-hauteur des îles : chacun cherche le premier gazon de sa colonne, de y = 180 à y = 90.
+    plant_points = wg.mesh(2.5, 0.5, "TowerPlants")
+    plant_points["PointsY"] = 135
+    plants = wg.runtime(1, "Chunk", plant_points, wg.weighted_assignments("TowerPlantPick", 0.45, [
         (plant("Plant_Grass_Lush_Short"), 5.0), (plant("Plant_Grass_Lush"), 3.0), (plant("Plant_Flower_Common_Violet"), 0.6),
         (plant("Plant_Flower_Common_Lime"), 0.5), (plant("Plant_Flower_Orchid_Purple"), 0.3),
         (plant("Plant_Flower_Tall_Cyan"), 0.3), (plant("Plant_Moss_Short_Green"), 1.0),
     ]))
+    # Arbres fantastiques : un par îlot, et le jardin autour de la tour. Puis les cristaux et émanations des îlots.
+    trees = []
+    for i, (center, radius, tree) in enumerate(ISLETS):
+        trees.append(wg.runtime(2, "Prop", wg.list_positions(center), {"Type": "Constant", "Prop": wg.surface_locator(
+            wg.prefab(tree, f"TowerIslet{i}", vanilla=True), wg.SOLID_FLOOR, 6)}))
+    for i, (a, tree) in enumerate(GARDEN):
+        x = TOWER_CENTER[0] + round(GARDEN_RADIUS * math.cos(math.radians(a)))
+        z = TOWER_CENTER[2] + round(GARDEN_RADIUS * math.sin(math.radians(a)))
+        trees.append(wg.runtime(2, "Prop", wg.list_positions((x, GROUND_Y, z)), {"Type": "Constant",
+            "Prop": wg.surface_locator(wg.prefab(tree, f"TowerGarden{i}", vanilla=True), wg.SOLID_FLOOR, 8)}))
+    islet_decor = []
+    kinds = ["Motes", "Fireflies", "Mist", "Spiral"]
+    for i, (center, radius, _) in enumerate(ISLETS):
+        cx, cy, cz = center
+        for k in range(3):
+            a = 70 + 120 * k + 37 * i
+            d = 0.55 * radius
+            pos = (cx + round(d * math.cos(math.radians(a))), cy, cz + round(d * math.sin(math.radians(a))))
+            prop = block_prop(f"{EMANATION_PREFIX}{kinds[(i + k) % len(kinds)]}") if k < 2 else crystal_cluster(i)
+            islet_decor.append(wg.runtime(3, "Prop", wg.list_positions(pos), {"Type": "Constant",
+                                                                             "Prop": wg.surface_locator(prop, wg.SOLID_FLOOR, 6)}))
     return {
         "Name": TOWER,
         "Terrain": {"Type": "DAOTerrain", "Density": {"Type": "Max", "Inputs": [
             island(SPAWN, ARRIVAL_RADIUS, ARRIVAL_FLAT, "Arrival"),
             island(TOWER_CENTER, TOWER_RADIUS, TOWER_FLAT, "Tower"),
-        ]}},
+        ] + [island(center, radius, 0.6 * radius, f"Islet{i}") for i, (center, radius, _) in enumerate(ISLETS)]}},
         "MaterialProvider": materials,
-        "Props": [arrival, plants],
+        "Props": [arrival, tower, plants] + trees + islet_decor,
         "EnvironmentProvider": {"Type": "Constant", "Environment": ENVIRONMENT},
         "TintProvider": {"Type": "Constant", "Color": "#4f9a6a"},
     }
@@ -345,7 +416,7 @@ def world_structure():
     }
 
 
-# --- prefab : parvis, pont, pied de la tour ---------------------------------------------------
+# --- prefab : parvis et pont ------------------------------------------------------------------
 
 def parapet(p, x, z):
     """Garde-corps de 2 blocs (un bloc plein, un muret) : trop haut pour être sauté."""
@@ -356,7 +427,7 @@ def parapet(p, x, z):
 def arrival_prefab(seed):
     p = pf.Prefab(seed)
     r = p.rng
-    p.clear(-12, 0, FOOT[1] - 4, 12, 14, 12)
+    p.clear(-12, 0, BRIDGE_END, 12, 14, 12)
 
     # Parvis rond : dallage de marbre, anneau d'or, parapet tout autour sauf l'entrée du pont au nord.
     ring = set()
@@ -401,30 +472,74 @@ def arrival_prefab(seed):
                 depth = 3 if abs(x) <= 1 else 5
                 p.fill(x, -2 - depth, z, x, -3, z, "Rock_Marble_Brick_Pillar_Middle")
 
-    # Pied de la tour : parvis carré fermé, porte scellée au nord, portail de sortie provisoire.
-    x0, z0, x1, z1 = FOOT
-    for x in range(x0, x1 + 1):
-        for z in range(z0, z1 + 1):
-            p.set(x, -1, z, p.pick(FLOOR))
-            p.fill(x, 0, z, x, 6, z, pf.AIR)
-            edge = x in (x0, x1) or z in (z0, z1)
-            if edge and not (z == z1 and abs(x) <= BRIDGE_HALF):
-                parapet(p, x, z)
-    for x in range(x0, x1 + 1):                        # façade de la tour, porte en ogive murée de grilles
-        p.fill(x, 0, z0, x, 8, z0, "Rock_Marble_Brick")
-    for x in range(-2, 3):
-        p.fill(x, 0, z0, x, 4 if abs(x) < 2 else 3, z0, "Deco_Iron_Bars")
-    p.fill(-2, 5, z0, 2, 5, z0, "Rock_Gold_Brick_Ornate")
-    p.set(0, 6, z0, "Rock_Crystal_Purple_Block")
-    for x in (x0 + 1, x1 - 1):
-        p.set(x, 0, z0 + 1, p.pick(CRYSTALS))
-        p.set(x, 2, z1, "Deco_Lantern")
-    p.fill(-1, 0, RETURN_Z - 1, 1, 2, RETURN_Z + 1, pf.AIR)
-    p.set(0, 0, RETURN_Z, EXIT, pf.SOUTH)
-
     # Point d'apparition : 3 × 3 × 3 blocs libres.
     p.fill(-1, 0, -1, 1, 2, 1, pf.AIR)
     return p
+
+
+# --- émanations magiques ----------------------------------------------------------------------
+
+def emanation_item(kind):
+    system, scale, offset, light = EMANATIONS[kind]
+    return {
+        "$Comment": "Émanation magique de la Tour de l'Alchimiste : bloc invisible et traversable qui porte des particules du jeu et une lumière (cheminées, cristaux flottants, îlots). Généré par tools/generate_alchemist_tower.py.",
+        "TranslationProperties": {"Name": f"{LANG}.items.{EMANATION_PREFIX}{kind}.name"},
+        "Icon": f"Icons/Items/Nakasar/Tower/Emanation_{kind}.png",
+        "Quality": "Developer",
+        "Categories": ["Blocks.Deco"],
+        "BlockType": {
+            # Comme la déchirure de la brèche : le client ne dessine pas les particules d'un bloc DrawType « Empty ».
+            "Material": "Empty",
+            "DrawType": "Model",
+            "CustomModel": "Blocks/_Debug/Model.blockymodel",
+            "CustomModelTexture": [{"Texture": "Blocks/_Debug/TextureEmpty.png", "Weight": 1}],
+            "Opacity": "Transparent",
+            "Support": {},
+            "Gathering": {"Breaking": {"GatherType": "Unbreakable"}},
+            "Light": {"Color": light},
+            "Particles": [{"SystemId": system, "Scale": scale, "PositionOffset": {"X": 0, "Y": offset, "Z": 0}}],
+        },
+    }
+
+
+def emanation_icon(kind):
+    """Halo de la couleur de l'émanation, cœur clair."""
+    r, g, b = EMANATION_COLORS[kind]
+    img = Image.new("RGBA", (64, 64), (0, 0, 0, 0))
+    d = ImageDraw.Draw(img)
+    for k in range(14, 0, -1):
+        alpha = int(255 * (1 - k / 15) ** 1.5)
+        d.ellipse((32 - 2 * k, 32 - 2 * k, 32 + 2 * k, 32 + 2 * k), fill=(r, g, b, alpha))
+    d.ellipse((26, 26, 38, 38), fill=(255, 255, 255, 230))
+    return img
+
+
+# --- Java : positions de la tour ---------------------------------------------------------------
+
+def tower_layout(tower):
+    """TowerLayout.java : point d'arrivée et points de contrôle, en coordonnées du monde."""
+    ox, oy, oz = TOWER_CENTER
+    rows = ",\n".join(f"            new Vector3d({x + ox + 0.5}, {y + oy}, {z + oz + 0.5})" for x, y, z in tower.checkpoints)
+    return f"""package dev.nakasar.hytale.vampires.tower;
+
+import org.joml.Vector3d;
+
+/** Positions de la Tour de l'Alchimiste. Généré par tools/generate_alchemist_tower.py : ne pas modifier à la main. */
+public final class TowerLayout {{
+
+    /** Première couche d'air au-dessus du sol des îles. */
+    public static final double GROUND_Y = {GROUND_Y};
+    /** Point d'apparition, sur le parvis d'arrivée. */
+    public static final Vector3d ARRIVAL = new Vector3d({SPAWN[0] + 0.5}, {SPAWN[1]}, {SPAWN[2] + 0.5});
+    /** Points de contrôle, dans l'ordre du parcours : bibliothèque, laboratoire, Escalier des vents, antichambre. */
+    public static final Vector3d[] CHECKPOINTS = {{
+{rows}
+    }};
+
+    private TowerLayout() {{
+    }}
+}}
+"""
 
 
 # --- icône ------------------------------------------------------------------------------------
@@ -461,9 +576,18 @@ def main():
     write_json(SERVER / "Environments" / f"{ENVIRONMENT}.json", environment())
     write_json(SERVER / "HytaleGenerator/Biomes" / f"{TOWER}.json", biome())
     write_json(SERVER / "HytaleGenerator/WorldStructures" / f"{TOWER}.json", world_structure())
+    for kind in EMANATIONS:
+        write_json(SERVER / "Item/Items/Deco/Nakasar/Tower" / f"{EMANATION_PREFIX}{kind}.json", emanation_item(kind))
+        icon = COMMON / f"Icons/Items/Nakasar/Tower/Emanation_{kind}.png"
+        icon.parent.mkdir(parents=True, exist_ok=True)
+        emanation_icon(kind).save(icon)
     out = SERVER / "Prefabs" / PREFABS
     count = arrival_prefab(9600).write(out / "Arrival" / "Arrival.prefab.json")
     print(f"Arrival: {count} blocs")
+    tower = alchemist_tower.build_checked(TOWER_SEED)
+    count = tower.p.write(out / "Tower" / "Tower.prefab.json")
+    print(f"Tower: {count} blocs, points de contrôle {tower.checkpoints}")
+    JAVA_LAYOUT.write_text(tower_layout(tower), encoding="utf-8")
     (COMMON / ICON).parent.mkdir(parents=True, exist_ok=True)
     key_icon().save(COMMON / ICON)
     if preview:

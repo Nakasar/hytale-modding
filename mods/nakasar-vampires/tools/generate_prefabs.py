@@ -95,6 +95,7 @@ FURNITURE = {
     "Furniture_Human_Ruins_Statue_Broken": "Taller", "Furniture_Village_Statue": "Taller",
     "Furniture_Temple_Dark_Statue_Gaia": "Taller", "Deco_Scarecrow": "Taller",
     "Furniture_Ancient_Statue": "Statue_Large",
+    "Furniture_Temple_Light_Statue": "Taller",  # statue des points de contrôle de la Tour de l'Alchimiste
     "Furniture_Village_Painting_2x2": "Painting_2x2", "Furniture_Village_Painting_3x2": "Painting_3x2",
     "Furniture_Royal_Magic_Carpet": "Carpet_Large",
     "Furniture_Ancient_Door_Medium": "Door_Medium", "Furniture_Temple_Dark_Door_Medium": "Door_Medium",

@@ -323,6 +323,13 @@ Mobs (voir [docs/npc-0.7.2.md](docs/npc-0.7.2.md)) :
   Deepworks), blocs non modifiables. Vérifié en jeu : confirmation du portail de sortie `Nakasar_Tower_Exit`, retour
   au parvis après une chute. À vérifier : les anneaux de fumée du portail, descendus au ras du socle par la copie de
   particules `Nakasar_Tower_Exit_Portal` (spawners `MagicPortal_VoidSmokeMiddle` et `MagicPortal_VoidGlowSmoke`).
+- **Tour de l'Alchimiste, la tour** (`tools/alchemist_tower.py`, `tower/TowerCheckpointSystem.java`) : prefab de 63 ×
+  100 × 70 blocs posé au nord du pont, vérifié hors ligne (chaque salle et chaque point de contrôle atteignable à pied
+  depuis le parvis, aucun bord praticable au-dessus du vide sans parapet). À vérifier en jeu : que le prefab entier se
+  pose (taille inhabituelle pour un prop), les demi-dalles des rampes, l'orientation des statues de contrôle (face au
+  centre), les particules des émanations `Nakasar_Tower_Emanation_*` (cheminées, cristaux flottants, îlots), les arbres
+  du jeu sur les îlots et dans le jardin (dossiers `Trees/...` d'Assets.zip, pas de collision avec la tour), et qu'on
+  réapparaisse au dernier point de contrôle, après une mort comme après une chute.
 
 ## Organisation du dépôt
 

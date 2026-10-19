@@ -46,6 +46,7 @@ import dev.nakasar.hytale.vampires.silver.SilverDamageSystem;
 import dev.nakasar.hytale.vampires.silver.SilverProjectileSystems;
 import dev.nakasar.hytale.vampires.silver.SilverWeapons;
 import dev.nakasar.hytale.vampires.silver.TakeArrowInteraction;
+import dev.nakasar.hytale.vampires.tower.TowerCheckpointSystem;
 import dev.nakasar.hytale.vampires.tower.TowerFallSystem;
 import dev.nakasar.hytale.vampires.vampirism.BloodFeedInteraction;
 import dev.nakasar.hytale.vampires.vampirism.DrinkBloodInteraction;
@@ -106,7 +107,10 @@ import dev.nakasar.hytale.vampires.vampirism.VampireSystem;
  *       s'ouvre près d'un joueur du monde principal, annoncé dans le chat et sur la carte ;</li>
  *   <li>{@link ContractBounties} : la mort de la cible d'un contrat de chasseurs, dans son mini-fragment, lui fait lâcher
  *       le sac de prime du groupe, que {@code Nakasar_OpenBountyBag} ouvre ;</li>
- *   <li>{@link TowerFallSystem} : dans la Tour de l'Alchimiste, un joueur tombé dans le vide est ramené sur le parvis.</li>
+ *   <li>{@link TowerCheckpointSystem} : dans la Tour de l'Alchimiste, les statues de lumière deviennent le point de
+ *       réapparition du joueur (et le soignent).</li>
+ *   <li>{@link TowerFallSystem} : dans la Tour de l'Alchimiste, un joueur tombé dans le vide est ramené à son dernier point
+ *       de contrôle, ou sur le parvis.</li>
  * </ul>
  */
 public final class VampiresPlugin extends JavaPlugin {
@@ -198,6 +202,7 @@ public final class VampiresPlugin extends JavaPlugin {
         systems.registerSystem(new HunterBreachStarter());
         systems.registerSystem(new BreachHunterCleanupSystem());
         systems.registerSystem(new ContractBounties());
+        systems.registerSystem(new TowerCheckpointSystem());
         systems.registerSystem(new TowerFallSystem());
 
         getLogger().atInfo().log("Nakasar Vampires : 17 types d'interaction (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s), systèmes des camps, de l'argent, du feu purificateur, de la voie occulte, de la brèche, des contrats des chasseurs et de la Tour de l'Alchimiste enregistrés",
