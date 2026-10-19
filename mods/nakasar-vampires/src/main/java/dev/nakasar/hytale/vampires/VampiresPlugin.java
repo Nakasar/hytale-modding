@@ -26,6 +26,7 @@ import dev.nakasar.hytale.vampires.invisibility.Invisibility;
 import dev.nakasar.hytale.vampires.invisibility.InvisibilityInteraction;
 import dev.nakasar.hytale.vampires.invisibility.InvisibilitySystem;
 import dev.nakasar.hytale.vampires.lords.LordsWrath;
+import dev.nakasar.hytale.vampires.lords.CountRegenerationSystem;
 import dev.nakasar.hytale.vampires.lords.LordsWrathSystem;
 import dev.nakasar.hytale.vampires.prison.ImprisonPlayerInteraction;
 import dev.nakasar.hytale.vampires.purifying.LightAura;
@@ -96,7 +97,8 @@ import dev.nakasar.hytale.vampires.vampirism.VampireSystem;
  *       contrat) par brèche, pour tout le serveur (les notes de lore elles-mêmes sont des blocs vanilla : page
  *       {@code OpenCustomUI} « BlockLore ») ;</li>
  *   <li>{@link LordsWrathSystem} (et le fournisseur d'attitude -5 d'{@link AllegianceAttitudeSystem}) : le Comte et la Comtesse laissent passer les joueurs,
- *       mais un coup porté contre eux les retourne contre tous les joueurs présents ({@link LordsWrath}) ;</li>
+ *       mais un coup porté contre eux les retourne contre tous les joueurs présents ({@link LordsWrath}) ;
+ *       {@link CountRegenerationSystem} : le Comte régénère ses PV sans arrêt, il est presque invincible ;</li>
  *   <li>{@link SilverDamageSystem} et {@link SilverProjectileSystems} : les armes en argent (et leurs projectiles)
  *       infligent le double de dégâts aux vampires ;</li>
  *   <li>{@link PurifyingFireSystem} et {@link PurifyingSteeringSystem} : les morts-vivants évitent les torches et
@@ -193,6 +195,7 @@ public final class VampiresPlugin extends JavaPlugin {
         systems.registerSystem(new AllegianceAttitudeSystem());
         systems.registerSystem(new AllegianceDamageFilter());
         systems.registerSystem(new LordsWrathSystem());
+        systems.registerSystem(new CountRegenerationSystem());
         systems.registerSystem(new DominationExpirySystem());
         systems.registerSystem(new FireAffinitySystem());
         systems.registerSystem(new MinionShieldSystem());

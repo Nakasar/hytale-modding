@@ -1,9 +1,9 @@
 {
-  "$Comment": "Comte Vampire, boss du château du fragment Halloween. Manie les sorts des runes du mod : Baiser du Vampire (mêlée, se soigne), Chaînes spectrales (immobilise), Téléportation (surgit près de sa cible) et Domination (le joueur visé ne peut plus le blesser pendant 6 s). Sous 50 % de vie, il appelle ses rejetons toutes les 30 s. Chaque sort a son temps de recharge (minuteurs lancés à l'entrée en combat). Dans le Comté, il laisse passer les joueurs (attitude neutre) ; un joueur qui le frappe le met en colère contre tous les joueurs présents (groupe Nakasar_Vampire_Lords, colère gérée en Java par dev.nakasar.hytale.vampires.lords : 45 s sans coup échangé et il se calme).",
+  "$Comment": "Comte Vampire, boss du château du fragment Halloween. Manie les sorts des runes du mod : Baiser du Vampire (mêlée, se soigne), Chaînes spectrales (immobilise), Téléportation (surgit près de sa cible) et Domination (le joueur visé ne peut plus le blesser pendant 6 s). Presque invincible : 8000 PV et 150 PV/s de régénération permanente (Java, dev.nakasar.hytale.vampires.lords.CountRegenerationSystem). Sous 50 % de vie, il appelle ses rejetons toutes les 30 s. Chaque sort a son temps de recharge (minuteurs lancés à l'entrée en combat). Dans le Comté, il laisse passer les joueurs (attitude neutre) ; un joueur qui le frappe le met en colère contre tous les joueurs présents (groupe Nakasar_Vampire_Lords, colère gérée en Java par dev.nakasar.hytale.vampires.lords : 45 s sans coup échangé et il se calme).",
   "Type": "Generic",
   "Appearance": "Nakasar_Vampire_Count",
   "NameTranslationKey": "nakasar_mobs.npc.Vampire_Count.name",
-  "MaxHealth": 900,
+  "MaxHealth": 8000,
   "DropList": "Nakasar_Drop_Vampire_Count",
   "StartState": "Idle",
   "DefaultPlayerAttitude": "Neutral",

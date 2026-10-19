@@ -207,6 +207,20 @@ class Prefab:
         """Case vide : ni bloc, ni partie d'un meuble de plusieurs blocs."""
         return self.get(x, y, z) in (None, AIR) and (x, y, z) not in self.claims
 
+    def door_swings(self):
+        """Cases que balaie une porte en s'ouvrant (dedans comme dehors) : 3 × 3 autour de chaque case
+        de la porte. Le serveur (DoorInteraction.breakSoftBlocksInHitbox) y casse les blocs de matériau
+        Empty et les fait tomber en objet : marqueurs, cellules de prison et notes de lore n'y vont pas."""
+        out = set()
+        for (x, y, z), (name, rot) in self.blocks.items():
+            if "Door" not in name or "Trapdoor" in name:
+                continue
+            for dx, dy, dz in footprint(name, rot):
+                for ox in (-1, 0, 1):
+                    for oz in (-1, 0, 1):
+                        out.add((x + dx + ox, y + dy, z + dz + oz))
+        return out
+
     def fill(self, x0, y0, z0, x1, y1, z1, name, rot=0):
         for x in range(min(x0, x1), max(x0, x1) + 1):
             for y in range(min(y0, y1), max(y0, y1) + 1):
@@ -2304,14 +2318,15 @@ def spider_lair(p, x0, z0, x1, z1, nests=5):
             p.set(cx, 0, cz, "Deco_Spider_Cocoon")
 
 
-def spawners(p, name, spots, ys=(0, 5, 1, -1)):
+def spawners(p, name, spots, ys=(0, 5, 1, -1), avoid=()):
     """Un bloc d'apparition par case (un PNJ chacun), sur une case libre posée sur du plein : la case
-    demandée, sinon la plus proche dans un rayon de 3, aux hauteurs ys (dans l'ordre). Échoue si une case
-    n'a aucune place."""
+    demandée, sinon la plus proche dans un rayon de 3, aux hauteurs ys (dans l'ordre), hors des cases
+    `avoid` (x, y, z). Échoue si une case n'a aucune place."""
     for x, z in spots:
         ring = sorted(((dx, dz) for dx in range(-3, 4) for dz in range(-3, 4)), key=lambda d: d[0] ** 2 + d[1] ** 2)
         spot = next(((x + dx, y, z + dz) for dx, dz in ring for y in ys
-                     if p.free(x + dx, y, z + dz) and p.free(x + dx, y + 1, z + dz) and not p.free(x + dx, y - 1, z + dz)), None)
+                     if p.free(x + dx, y, z + dz) and p.free(x + dx, y + 1, z + dz) and not p.free(x + dx, y - 1, z + dz)
+                     and (x + dx, y, z + dz) not in avoid), None)
         if spot is None:
             raise ValueError(f"{name} : aucune case libre près de ({x}, {z})")
         p.set(*spot, name)
@@ -2480,6 +2495,9 @@ def farm(seed, variant):
     return p
 
 
+PRISON_DECO = ["Deco_Bone_Pile", "Deco_Bucket", "Ingredient_Hay"]
+
+
 def prison_cells(p, x0, z0, count=3, door="Furniture_Temple_Dark_Door"):
     """Rangée de cellules le long de z : intérieur 2 × 2 (x0 + 1..x0 + 2), barreaux et porte côté ouest
     (x0), mur du fond en x0 + 3. Le bloc PRISON_CELL au sol de chaque cellule sert au Capitaine."""
@@ -2500,8 +2518,8 @@ def prison_cells(p, x0, z0, count=3, door="Furniture_Temple_Dark_Door"):
         p.set(x0, 2, cz, "Deco_Iron_Bars")
         p.set(x0, 3, cz, "Rock_Stone_Brick")
         p.set(x0, 3, cz + 1, "Rock_Stone_Brick")
-        p.set(x0 + 2, 0, cz + 1, p.rng.choice(["Deco_Bone_Pile", "Deco_Bucket", "Ingredient_Hay"]))
-        p.set(x0 + 1, 0, cz, PRISON_CELL)
+        p.set(x0 + 2, 0, cz + 1, p.rng.choice(PRISON_DECO))
+        p.set(x0 + 2, 0, cz, PRISON_CELL)  # fond de cellule : la porte balaie x0 + 1
         p.set(x0 + 2, 2, cz, "Deco_Iron_Chains_Vertical")
         zs.append(cz)
     return zs
@@ -2950,17 +2968,42 @@ NOTE_FLOOR = re.compile(r"^(Rock|Wood|Soil)_")
 NOT_FLOOR = re.compile(r"Half|Stairs|Fence|Wall|Bars|Railing|Pillar|Roof|Ornate|Tilled|Pathway")
 
 
-def note_spot(p, x, y, z, radius=2, avoid=()):
-    """Case libre au sol (bloc plein dessous) la plus proche de (x, y, z), ou None."""
+def note_spot(p, x, y, z, radius=2, avoid=(), replace=()):
+    """Case libre au sol (bloc plein dessous) la plus proche de (x, y, z), hors du balayage des portes,
+    ou None. Les blocs nommés dans `replace` comptent comme libres (la note prend leur place)."""
     cells = sorted(((dx, dz) for dx in range(-radius, radius + 1) for dz in range(-radius, radius + 1) if (dx, dz) != (0, 0)),
                    key=lambda d: (abs(d[0]) + abs(d[1]), d))
+    swings = p.door_swings()
     for dx, dz in cells:
         cx, cz = x + dx, z + dz
         below = p.get(cx, y - 1, cz) or ""
-        if (cx, cz) in avoid or not p.free(cx, y, cz) or not NOTE_FLOOR.match(below) or NOT_FLOOR.search(below):
+        free = p.free(cx, y, cz) or (p.get(cx, y, cz) in replace and (cx, y, cz) not in p.claims)
+        if (cx, cz) in avoid or (cx, y, cz) in swings or not free or not NOTE_FLOOR.match(below) or NOT_FLOOR.search(below):
             continue
         return cx, y, cz
     return None
+
+
+def is_soft_marker(name):
+    """Blocs invisibles du mod (matériau Empty) qu'une porte casserait en les donnant au joueur."""
+    return name == PRISON_CELL or name.startswith("Nakasar_Spawner_") or name.startswith("Nakasar_Lore_")
+
+
+def move_out_of_door_swings(p, name):
+    """Écarte du balayage des portes les blocs d'apparition posés trop près (même hauteur, case la plus
+    proche hors balayage) : ouvrir la porte les casserait et le joueur ramasserait l'objet."""
+    swings = p.door_swings()
+    for pos, (block, _) in sorted(p.blocks.items()):
+        if pos in swings and is_soft_marker(block):
+            p.set(*pos, None)
+            spawners(p, block, [(pos[0], pos[2])], ys=(pos[1],), avoid=swings)
+
+
+def check_door_swings(p, name):
+    swings = p.door_swings()
+    bad = sorted((pos, b) for pos, (b, _) in p.blocks.items() if pos in swings and is_soft_marker(b))
+    if bad:
+        raise ValueError(f"{name} : blocs invisibles dans le balayage d'une porte {bad}")
 
 
 def add_lore(p, name):
@@ -2980,7 +3023,7 @@ def add_lore(p, name):
     cells = sorted(pos for pos, (b, _) in p.blocks.items() if b == PRISON_CELL)
     if cells:
         x, y, z = r.choice(cells)
-        spot = note_spot(p, x, y, z, radius=1)
+        spot = note_spot(p, x, y, z, radius=1, replace=PRISON_DECO)
         if spot:
             p.set(*spot, lore.note_id("Prisoner"), r.randint(0, 3))
     if name.startswith("SpawnCrypt/"):
@@ -3043,7 +3086,9 @@ def main():
             old.unlink()
     total = 0
     for name, prefab in jobs:
+        move_out_of_door_swings(prefab, name)
         add_lore(prefab, name)
+        check_door_swings(prefab, name)
         count = prefab.write(OUT / f"{name}.prefab.json")
         total += count
         print(f"{name}: {count} blocs")
