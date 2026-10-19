@@ -70,11 +70,81 @@
           "Id": "Nakasar_Altar_Runes",
           "Name": "nakasar_runes.benchCategories.nakasar_altar_runes",
           "Icon": "Icons/CraftingCategories/Nakasar/Runes.png"
+        },
+        {
+          "Id": "Nakasar_Altar_Blood",
+          "Name": "nakasar_vampire.benchCategories.nakasar_altar_blood",
+          "Icon": "Icons/CraftingCategories/Nakasar/Blood.png"
+        },
+        {
+          "Id": "Nakasar_Altar_Rituals",
+          "Name": "nakasar_vampire.benchCategories.nakasar_altar_rituals",
+          "Icon": "Icons/CraftingCategories/Nakasar/Rituals.png"
         }
       ],
       "TierLevels": [
         {
+          "UpgradeRequirement": {
+            "Material": [
+              {
+                "ItemId": "Ingredient_Bone_Fragment",
+                "Quantity": 12
+              },
+              {
+                "ItemId": "Ingredient_Nakasar_Blood",
+                "Quantity": 8
+              },
+              {
+                "ItemId": "Ingredient_Rune_Shard",
+                "Quantity": 2
+              }
+            ],
+            "TimeSeconds": 3
+          },
           "CraftingTimeReductionModifier": 0.0
+        },
+        {
+          "UpgradeRequirement": {
+            "Material": [
+              {
+                "ItemId": "Ingredient_Nakasar_Undead_Ash",
+                "Quantity": 16
+              },
+              {
+                "ItemId": "Ingredient_Nakasar_Manor_Relic",
+                "Quantity": 2
+              },
+              {
+                "ItemId": "Rock_Gem_Ruby",
+                "Quantity": 2
+              }
+            ],
+            "TimeSeconds": 4
+          },
+          "CraftingTimeReductionModifier": 0.1
+        },
+        {
+          "UpgradeRequirement": {
+            "Material": [
+              {
+                "ItemId": "Ingredient_Nakasar_Manor_Relic",
+                "Quantity": 6
+              },
+              {
+                "ItemId": "Potion_Nakasar_Blood",
+                "Quantity": 4
+              },
+              {
+                "ItemId": "Ingredient_Bar_Gold",
+                "Quantity": 4
+              }
+            ],
+            "TimeSeconds": 5
+          },
+          "CraftingTimeReductionModifier": 0.2
+        },
+        {
+          "CraftingTimeReductionModifier": 0.3
         }
       ]
     },

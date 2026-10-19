@@ -1,0 +1,8 @@
+{
+  "Parent": "Armor_Leather_Soft_Head",
+  "TranslationProperties": {
+    "Name": "nakasar_vampire.items.Armor_Nakasar_Occult_Hood.name",
+    "Description": "nakasar_vampire.items.Armor_Nakasar_Occult_Hood.description"
+  },
+  "Quality": "Rare"
+}

@@ -1,0 +1,30 @@
+{
+  "Parent": "DamageEntityParent_Hit_Interrupt",
+  "DamageCalculator": {
+    "BaseDamage": {
+      "Physical": 10
+    },
+    "RandomPercentageModifier": 0.1
+  },
+  "DamageAttribute": "Damage",
+  "DamageEffects": {
+    "WorldSoundEventId": "SFX_Sword_T2_Impact",
+    "WorldParticles": [
+      {
+        "SystemId": "Impact_Sword_Basic_Stronk"
+      }
+    ]
+  },
+  "EntityStatsOnHit": [
+    {
+      "EntityStatId": "Health",
+      "Amount": 6,
+      "MultipliersPerEntitiesHit": [
+        1.0,
+        0.6,
+        0.4
+      ],
+      "MultiplierPerExtraEntityHit": 0.2
+    }
+  ]
+}

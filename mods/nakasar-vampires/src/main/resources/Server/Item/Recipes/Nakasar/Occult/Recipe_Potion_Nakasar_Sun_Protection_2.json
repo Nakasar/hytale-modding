@@ -1,0 +1,42 @@
+{
+  "TimeSeconds": 2,
+  "KnowledgeRequired": false,
+  "Input": [
+    {
+      "ItemId": "Potion_Empty",
+      "Quantity": 1
+    },
+    {
+      "ItemId": "Ingredient_Nakasar_Undead_Ash",
+      "Quantity": 4
+    },
+    {
+      "ItemId": "Ingredient_Life_Essence",
+      "Quantity": 3
+    },
+    {
+      "ItemId": "Ingredient_Crystal_Red",
+      "Quantity": 1
+    }
+  ],
+  "PrimaryOutput": {
+    "ItemId": "Potion_Nakasar_Sun_Protection_2",
+    "Quantity": 1
+  },
+  "Output": [
+    {
+      "ItemId": "Potion_Nakasar_Sun_Protection_2",
+      "Quantity": 1
+    }
+  ],
+  "BenchRequirement": [
+    {
+      "Type": "Crafting",
+      "Id": "Nakasar_Sacrificial_Altar",
+      "Categories": [
+        "Nakasar_Altar_Blood"
+      ],
+      "RequiredTierLevel": 3
+    }
+  ]
+}

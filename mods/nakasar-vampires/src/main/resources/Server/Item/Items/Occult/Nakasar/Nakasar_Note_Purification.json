@@ -1,0 +1,17 @@
+{
+  "TranslationProperties": {
+    "Name": "nakasar_vampire.items.Nakasar_Note_Purification.name",
+    "Description": "nakasar_vampire.items.Nakasar_Note_Purification.description"
+  },
+  "Icon": "Icons/Items/Nakasar/Occult/Note.png",
+  "Model": "Items/Nakasar/Occult/Note.blockymodel",
+  "Texture": "Items/Nakasar/Occult/Note.png",
+  "Quality": "Rare",
+  "Categories": [
+    "Items.Ingredients"
+  ],
+  "PlayerAnimationsId": "Item",
+  "ItemSoundSetId": "ISS_Items_Gems",
+  "Scale": 1.0,
+  "MaxStack": 1
+}

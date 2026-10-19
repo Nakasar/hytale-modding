@@ -39,6 +39,12 @@ import dev.nakasar.hytale.vampires.silver.SilverDamageSystem;
 import dev.nakasar.hytale.vampires.silver.SilverProjectileSystems;
 import dev.nakasar.hytale.vampires.silver.SilverWeapons;
 import dev.nakasar.hytale.vampires.silver.TakeArrowInteraction;
+import dev.nakasar.hytale.vampires.vampirism.BloodFeedInteraction;
+import dev.nakasar.hytale.vampires.vampirism.DrinkBloodInteraction;
+import dev.nakasar.hytale.vampires.vampirism.Vampire;
+import dev.nakasar.hytale.vampires.vampirism.VampireDamageSystem;
+import dev.nakasar.hytale.vampires.vampirism.VampireRitualInteraction;
+import dev.nakasar.hytale.vampires.vampirism.VampireSystem;
 
 /**
  * Point d'entrée du mod "Vampires".
@@ -71,6 +77,10 @@ import dev.nakasar.hytale.vampires.silver.TakeArrowInteraction;
  *       morts-vivants fuient comme une torche (rune Aura de lumière) ;</li>
  *   <li>{@code Nakasar_Invisibility} ({@link InvisibilitySystem}) : le lanceur disparaît pour les joueurs et les PNJ
  *       tant qu'il reste immobile (rune Invisibilité) ;</li>
+ *   <li>la voie occulte ({@link VampireSystem}, {@link VampireDamageSystem}, {@code Nakasar_VampireRitual},
+ *       {@code Nakasar_BloodFeed}, {@code Nakasar_DrinkBlood}) : le rituel de l'autel fait du joueur un vampire
+ *       (composant {@link Vampire} sauvegardé avec lui) : faim de sang, soleil, argent, lumière purificatrice,
+ *       vision nocturne ;</li>
  *   <li>la brèche des chasseurs ({@link HunterBreachStarter}, {@link NightCondition},
  *       {@link BreachHunterCleanupSystem}) : la nuit, toutes les demi-heures, un campement de chasseurs de vampires
  *       s'ouvre près d'un joueur du monde principal, annoncé dans le chat et sur la carte ;</li>
@@ -118,6 +128,12 @@ public final class VampiresPlugin extends JavaPlugin {
                 LightAuraInteraction.class, LightAuraInteraction.CODEC);
         interactions.register(InvisibilityInteraction.TYPE_ID,
                 InvisibilityInteraction.class, InvisibilityInteraction.CODEC);
+        interactions.register(VampireRitualInteraction.TYPE_ID,
+                VampireRitualInteraction.class, VampireRitualInteraction.CODEC);
+        interactions.register(BloodFeedInteraction.TYPE_ID,
+                BloodFeedInteraction.class, BloodFeedInteraction.CODEC);
+        interactions.register(DrinkBloodInteraction.TYPE_ID,
+                DrinkBloodInteraction.class, DrinkBloodInteraction.CODEC);
         interactions.register(OpenBountyBagInteraction.TYPE_ID,
                 OpenBountyBagInteraction.class, OpenBountyBagInteraction.CODEC);
 
@@ -125,6 +141,7 @@ public final class VampiresPlugin extends JavaPlugin {
         RootTrapped.setComponentType(systems.registerComponent(RootTrapped.class, RootTrapped::new));
         LightAura.setComponentType(systems.registerComponent(LightAura.class, LightAura::new));
         Invisibility.setComponentType(systems.registerComponent(Invisibility.class, Invisibility::new));
+        Vampire.setComponentType(systems.registerComponent(Vampire.class, Vampire.ID, Vampire.CODEC));
         systems.registerSystem(new AllegianceAttitudeSystem());
         systems.registerSystem(new AllegianceDamageFilter());
         systems.registerSystem(new DominationExpirySystem());
@@ -134,7 +151,8 @@ public final class VampiresPlugin extends JavaPlugin {
         systems.registerSystem(new SilverProjectileSystems.Legacy());
         systems.registerSystem(new SilverDamageSystem());
         PurifyingFires purifyingFires = new PurifyingFires();
-        systems.registerSystem(new PurifyingFireSystem(purifyingFires));
+        PurifyingFireSystem purifyingFireSystem = new PurifyingFireSystem(purifyingFires);
+        systems.registerSystem(purifyingFireSystem);
         systems.registerSystem(new PurifyingSteeringSystem(purifyingFires));
         systems.registerSystem(new LightAuraSystem(purifyingFires));
         systems.registerSystem(new LightAuraSystem.Unload());
@@ -142,6 +160,8 @@ public final class VampiresPlugin extends JavaPlugin {
         systems.registerSystem(new InvisibilitySystem.BreakOnAttack());
         systems.registerSystem(new InvisibilitySystem.ForgetInvisible());
         systems.registerSystem(new InvisibilitySystem.Unload());
+        systems.registerSystem(new VampireSystem(purifyingFireSystem));
+        systems.registerSystem(new VampireDamageSystem());
 
         // Brèche des chasseurs : évènement de monde (Server/WorldEvent) avec notre condition « nuit ».
         WorldEventsPlugin.registerCondition(this, NightCondition.TYPE, NightCondition.CODEC, NightCondition.Config.CODEC);
@@ -149,11 +169,12 @@ public final class VampiresPlugin extends JavaPlugin {
         systems.registerSystem(new BreachHunterCleanupSystem());
         systems.registerSystem(new ContractBounties());
 
-        getLogger().atInfo().log("Nakasar Vampires : 13 types d'interaction (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s), systèmes des camps, de l'argent, du feu purificateur, de la brèche et des contrats des chasseurs enregistrés",
+        getLogger().atInfo().log("Nakasar Vampires : 16 types d'interaction (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s), systèmes des camps, de l'argent, du feu purificateur, de la voie occulte, de la brèche et des contrats des chasseurs enregistrés",
                 TeleportCasterToImpactInteraction.TYPE_ID, DominateInteraction.TYPE_ID, RootNpcInteraction.TYPE_ID,
                 DrainBeamInteraction.TYPE_ID, DominatePlayerInteraction.TYPE_ID, ImprisonPlayerInteraction.TYPE_ID,
                 RootTrapInteraction.TYPE_ID, TakeArrowInteraction.TYPE_ID, ReturnArrowInteraction.TYPE_ID,
                 SummonVinesInteraction.TYPE_ID, LightAuraInteraction.TYPE_ID, InvisibilityInteraction.TYPE_ID,
+                VampireRitualInteraction.TYPE_ID, BloodFeedInteraction.TYPE_ID, DrinkBloodInteraction.TYPE_ID,
                 OpenBountyBagInteraction.TYPE_ID);
     }
 

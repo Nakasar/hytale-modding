@@ -2,9 +2,13 @@
 
 | | Objet | Type | Obtention |
 |---|---|---|---|
-| | [Baiser du Vampire, Domination, Téléportation, Chaînes spectrales](runes.md) | Runes de capacité | Autel sacrificiel (2 éclats de rune), Comte et Comtesse |
+| | [Baiser du Vampire, Domination, Téléportation, Chaînes spectrales, Nova de sang](runes.md) | Runes de capacité | Autel sacrificiel (2 éclats de rune ; Nova au niveau 4), Comte et Comtesse |
 | | [Aura de lumière, Invisibilité](runes.md#runes-de-chasseur) | Runes de capacité | Établi des chasseurs (niveaux 2 et 3) |
 | ![icône](/jeu/Icons/Items/Nakasar/Sacrificial_Altar.png) | [Autel sacrificiel](autel-sacrificiel.md) | Établi | Établi : 10 roches, 2 lingots de fer, 1 éclat de rune |
+| ![icône](/jeu/Icons/Items/Nakasar/Occult/Ritual_Chalice.png) | [Calice du sang éternel, Encensoir de purification](vampirisme.md#le-rituel) | Rituels | Autel sacrificiel (niveau 3) |
+| ![icône](/jeu/Icons/Items/Nakasar/Occult/Blood_Vial.png) | [Fiole de sang, Voiles solaires I à III](vampirisme.md) | Potions de vampire | Autel sacrificiel (niveaux 2 à 4) |
+| | [Capuche et voile occultes](vampirisme.md#soleil) | Armures contre le soleil | Autel sacrificiel (niveaux 2 et 3) |
+| ![icône](/jeu/Icons/Items/Nakasar/Occult/Manor_Relic.png) | [Sang frais, cendres de mort-vivant, relique du manoir](vampirisme.md#ingredients) | Ingrédients | Baiser du Vampire, morts-vivants, fantômes et manoir |
 | ![icône](/jeu/Icons/Items/Nakasar/Hunter_Workbench.png) | [Établi des chasseurs de vampires](etabli-des-chasseurs.md) | Établi à 3 niveaux | Établi : 10 bois, 2 lingots d'argent, 4 cuirs légers |
 | | [Lance de fer à deux mains](lance-a-deux-mains.md) | Arme | Établi d'armes |
 | ![icône](/jeu/Icons/Items/Nakasar/Silver/Weapon_Nakasar_Longsword_Silver.png) | [Armes en argent](armes-en-argent.md) (12 armes) | Armes, ×2 contre les vampires | Établi d'armes, lingots d'argent |

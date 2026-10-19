@@ -295,6 +295,15 @@ Mobs (voir [docs/npc-0.7.2.md](docs/npc-0.7.2.md)) :
   le haut de la citrouille se soulever par l'avant), yeux et bouche lumineux (plaque `*_Glow` transparente hors des
   découpes), animations d'attaque jouées par `ItemAnimationId` (`Server/Item/Animations/Nakasar/`). Si un sens est
   inversé, changer le signe dans la pose de l'animation concernée et relancer le script.
+- **Joueur vampire** (`vampirism/`, `tools/generate_occult.py`) : améliorer l'autel au niveau 3, fabriquer le
+  calice et le boire près de l'autel. Lu dans Assets.zip 0.7.2 : en survie, la vie ne remonte que par les effets des
+  repas (`Server/Entity/Effects/Food`, préfixes `Food_`, `FruitVeggie_Buff_`, `HealthRegen_Buff_`, `Meat_Buff_`,
+  retirés au vampire ; les soins instantanés `Food_Health_Restore_*` peuvent passer avant), les paliers de soif
+  reprennent leurs débits, et les potions boivent comme `Potion_Template`. À vérifier : la brûlure au soleil cesse
+  sous un toit et pendant l'orage (ids de météo reconnus par mots-clés dans `SunExposure`), l'éblouissement
+  (`ScreenEffects/Nakasar/Sun_Glare.png`), la lumière de nuit visible par soi, le battement de cœur quand affamé,
+  l'état gardé après reconnexion, la capuche et le voile portés. Le malus de vitesse d'attaque réduit les dégâts
+  des coups trop rapprochés (le serveur ne peut pas ralentir l'animation).
 
 - **Voie des chasseurs** (`tools/generate_trophies.py`, `generate_contracts.py`, `generate_infused_weapons.py`) :
   modèles des trophées et sacs de prime écrits comme l'autel (format `prop`, 32 unités = 1 bloc), à vérifier en main et au

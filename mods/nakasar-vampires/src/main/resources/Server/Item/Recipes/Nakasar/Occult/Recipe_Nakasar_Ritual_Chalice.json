@@ -1,0 +1,42 @@
+{
+  "TimeSeconds": 5,
+  "KnowledgeRequired": false,
+  "Input": [
+    {
+      "ItemId": "Ingredient_Nakasar_Manor_Relic",
+      "Quantity": 2
+    },
+    {
+      "ItemId": "Potion_Nakasar_Blood",
+      "Quantity": 3
+    },
+    {
+      "ItemId": "Rock_Gem_Ruby",
+      "Quantity": 2
+    },
+    {
+      "ItemId": "Ingredient_Rune_Shard",
+      "Quantity": 2
+    }
+  ],
+  "PrimaryOutput": {
+    "ItemId": "Nakasar_Ritual_Chalice",
+    "Quantity": 1
+  },
+  "Output": [
+    {
+      "ItemId": "Nakasar_Ritual_Chalice",
+      "Quantity": 1
+    }
+  ],
+  "BenchRequirement": [
+    {
+      "Type": "Crafting",
+      "Id": "Nakasar_Sacrificial_Altar",
+      "Categories": [
+        "Nakasar_Altar_Rituals"
+      ],
+      "RequiredTierLevel": 3
+    }
+  ]
+}

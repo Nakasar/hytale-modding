@@ -1,0 +1,18 @@
+{
+  "Name": "nakasar_vampire.effects.Nakasar_Purified",
+  "Duration": 8,
+  "OverlapBehavior": "Overwrite",
+  "Debuff": false,
+  "StatusEffectIcon": "UI/StatusEffects/Nakasar/Occult/Purified.png",
+  "ApplicationEffects": {
+    "EntityTopTint": "#fff6d8",
+    "EntityBottomTint": "#cfe4ff",
+    "Particles": [
+      {
+        "SystemId": "Nakasar_Light_Aura",
+        "TargetEntityPart": "Entity",
+        "ClearParticlesOnRemove": true
+      }
+    ]
+  }
+}

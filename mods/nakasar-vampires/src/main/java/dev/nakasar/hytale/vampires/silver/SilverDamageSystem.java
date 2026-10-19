@@ -97,6 +97,22 @@ public final class SilverDamageSystem extends DamageEventSystem {
         }
     }
 
+    /**
+     * Multiplicateur de l'argent contre un vampire pour ce coup : {@value #MULTIPLIER}, {@value #INFUSED_MULTIPLIER}
+     * pour l'argent infusé, 1 sans argent. Lu pour les joueurs vampires ({@code vampirism.VampireDamageSystem}).
+     */
+    public static float vampireMultiplier(Damage damage, CommandBuffer<EntityStore> buffer) {
+        if (damage.isCancelled() || !(damage.getSource() instanceof Damage.EntitySource source)
+                || source.getRef() == null) {
+            return 1f;
+        }
+        return switch (silverHit(damage, source, source.getRef(), buffer)) {
+            case NONE -> 1f;
+            case SILVER -> MULTIPLIER;
+            case INFUSED -> INFUSED_MULTIPLIER;
+        };
+    }
+
     /** Ce qui a porté le coup : rien d'argent, de l'argent, ou de l'argent infusé. */
     private enum Hit { NONE, SILVER, INFUSED }
 

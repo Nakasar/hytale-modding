@@ -1,0 +1,30 @@
+{
+  "Type": "Charging",
+  "FailOnDamage": false,
+  "Effects": {
+    "ItemAnimationId": "Consume",
+    "WorldSoundEventId": "SFX_Nakasar_Drink",
+    "ClearAnimationOnFinish": true,
+    "ClearSoundEventOnFinish": true
+  },
+  "HorizontalSpeedMultiplier": 0.75,
+  "Next": {
+    "1.5": {
+      "Type": "ApplyEffect",
+      "EffectId": "Nakasar_Sun_Protection_1",
+      "Entity": "User",
+      "Duration": 480,
+      "Next": {
+        "Type": "ModifyInventory",
+        "AdjustHeldItemQuantity": -1,
+        "ItemToAdd": {
+          "Id": "Potion_Empty",
+          "Quantity": 1
+        }
+      }
+    }
+  },
+  "Failed": {
+    "Type": "Simple"
+  }
+}

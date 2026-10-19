@@ -25,8 +25,9 @@ Guide du joueur pour le mod **Nakasar : Vampires** (Hytale, serveur 0.7.2) : un 
 
 ## Objets
 
-- [Runes de capacité](objets/runes.md) : Baiser du Vampire, Domination, Téléportation, Chaînes spectrales, Aura de lumière, Invisibilité
+- [Runes de capacité](objets/runes.md) : Baiser du Vampire, Domination, Téléportation, Chaînes spectrales, Nova de sang, Aura de lumière, Invisibilité
 - [Autel sacrificiel](objets/autel-sacrificiel.md)
+- [Devenir vampire](objets/vampirisme.md) : rituel, soif de sang, soleil, potions et protections
 - [Établi des chasseurs de vampires](objets/etabli-des-chasseurs.md)
 - [Armes et flèches en argent](objets/armes-en-argent.md) (×2 contre les vampires)
 - [Lance de fer à deux mains](objets/lance-a-deux-mains.md)

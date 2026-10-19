@@ -1,0 +1,10 @@
+{
+  "Name": "nakasar_vampire.effects.Nakasar_Sunburn_Light",
+  "Duration": 1,
+  "OverlapBehavior": "Overwrite",
+  "Debuff": true,
+  "StatusEffectIcon": "UI/StatusEffects/Nakasar/Occult/Sunburn.png",
+  "ApplicationEffects": {
+    "ScreenEffect": "ScreenEffects/Nakasar/Sun_Glare_Light.png"
+  }
+}
