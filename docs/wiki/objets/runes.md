@@ -18,7 +18,7 @@ Sept runes de sorts, que l'on lance avec les **touches de capacité** en tenant 
 | **[Autel sacrificiel](autel-sacrificiel.md)**, onglet Runes | **2 éclats de rune** → 1 rune, **1 s**. Les quatre recettes sont connues d'office. |
 | **[Comte](../pnj/comte-vampire.md) ou [Comtesse](../pnj/comtesse-vampire.md) Vampire** | une rune au hasard parmi les quatre à chaque victoire (25 % chacune) |
 
-**Éclats de rune :** Comte et Comtesse (4 à 6), Capitaine de la garde (2 à 4), Citrouille géante et Abomination zombie (1 à 3), rejetons (25 %), fantômes (20 %), et les coffres des cryptes, des châteaux hantés et du manoir (alchimie, bibliothèque).
+**Éclats de rune :** les créatures du mod n'en lâchent plus. On en trouve dans les coffres des [cryptes](../fragment/cryptes.md) et des [châteaux hantés](../fragment/chateaux-hantes.md), et dans les [sacs de prime](trophees.md) des contrats.
 
 ## Récapitulatif
 

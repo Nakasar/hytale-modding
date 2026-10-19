@@ -3,7 +3,7 @@
 <Infobox title="Vrille de citrouille" kind="Invocation" image={require("../images/pnj/Nakasar_Pumpkin_Vine.png").default} caption="Rendu 3D du modèle : au repos et en plein coup de fouet">
 <Info label="Points de vie">**45**</Info>
 <Info label="Attitude">Hostile, immobile</Info>
-<Info label="Invoquée par">[Citrouille géante](citrouille-geante.md), 4 au maximum</Info>
+<Info label="Invoquée par">[Citrouille géante](citrouille-geante.md), vagues de 5</Info>
 <Info label="Disparition">à la mort de la citrouille ou après 25 s sans combat</Info>
 <Info label="Faiblesses">Feu ×2</Info>
 <Info label="Butin">Aucun</Info>

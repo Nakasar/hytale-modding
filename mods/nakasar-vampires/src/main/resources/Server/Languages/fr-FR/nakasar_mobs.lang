@@ -26,3 +26,4 @@ npc.Vampire_Hunter_Gunner.name = Chasseur de vampires
 npc.Vampire_Hunter_Blade.name = Chasseur de vampires
 items.Nakasar_Spawner_Giant_Pumpkin.name = Marqueur : citrouille géante (élite)
 items.Nakasar_Spawner_Vampire_Hunter.name = Marqueur : chasseur de vampires
+npc.Giant_Pumpkin.shielded = Les vrilles protègent la citrouille : détruisez-les d'abord.

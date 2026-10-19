@@ -1,12 +1,13 @@
 # Comte Vampire
 
 <Infobox title="Comte Vampire" kind="Boss" image={require("../images/pnj/Nakasar_Vampire_Count.jpg").default} caption="Le Comte Vampire en jeu">
-<Info label="Points de vie">**600**</Info>
+<Info label="Points de vie">**900**</Info>
+<Info label="Barre de vie">barre de boss en combat</Info>
 <Info label="Attitude">Neutre, hostile à tous les joueurs une fois frappé</Info>
 <Info label="Lieu">[Manoir du Comte](../fragment/manoir-du-comte.md), 1 par monde</Info>
 <Info label="Réapparition">30 min</Info>
 <Info label="Faiblesses">Argent ×2, feu purificateur</Info>
-<Info label="Butin">4 à 6 éclats de rune, 1 [rune](../objets/runes.md)</Info>
+<Info label="Butin">1 [rune](../objets/runes.md)</Info>
 <Info label="Id">`Nakasar_Vampire_Count`</Info>
 </Infobox>
 
@@ -16,7 +17,7 @@ Il se bat à distance comme au corps à corps : il paralyse ses proies avec des 
 
 ## Un hôte qui vous laisse passer
 
-Dans le Comté, le Comte **ne vous attaque pas** : il vous regarde passer. Tant que personne ne le frappe, vous pouvez traverser le manoir, piller ses coffres et combattre ses gardes sous ses yeux.
+Dans le Comté, le Comte **ne vous attaque pas** : il vous regarde passer. Tant que personne ne le frappe, vous pouvez traverser le manoir et combattre ses gardes sous ses yeux.
 
 **Mais ne levez pas la main sur lui.** Au premier coup porté par un joueur (arme, flèche ou sort), il entre en colère contre **tous les joueurs présents**, pas seulement l'attaquant : il change de cible tant qu'un autre joueur est à portée. Sa colère retombe **45 secondes** après le dernier coup échangé ; il rentre alors à son trône, récupère ses PV et redevient pacifique.
 
@@ -26,7 +27,7 @@ On ne pourra le vaincre pour de bon que plus tard, dans un donjon qui lui sera c
 
 | | |
 |---|---|
-| Points de vie | **600** |
+| Points de vie | **900**, affichés dans une **barre de vie de boss** pendant le combat |
 | Vitesse | 4,5 |
 | Recul subi | ×0,2 |
 | Détection | aucune tant qu'on ne le frappe pas ; en colère : 14 blocs (ligne de vue), 20 blocs pour changer de cible |
@@ -50,7 +51,6 @@ Chaque attaque à distance est précédée d'un temps de visée (0,3 à 0,6 s) p
 
 | Objet | Quantité | Chance |
 |---|---|---|
-| Éclat de rune | 4 à 6 | 100 % |
 | Une [rune](../objets/runes.md) parmi Baiser du Vampire, Domination, Téléportation, Chaînes spectrales | 1 | 100 % (25 % chacune) |
 
 ## Où le trouver

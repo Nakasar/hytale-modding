@@ -1,0 +1,5 @@
+{
+  "$Comment": "Îles des contrats de chasseurs (tools/generate_contracts.py) : même ambiance que les lieux hantés du Comté, mais sans rejetons de vampire (on n'obtient de crocs qu'en chassant dans le Comté). Les apparitions qui la citent : Nakasar_Halloween_Undead, _Haunted et _Ghosts.",
+  "Parent": "Nakasar_Env_Halloween_Haunted",
+  "WeatherForecastSeed": "Nakasar_Env_Contract"
+}

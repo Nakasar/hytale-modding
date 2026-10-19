@@ -3,7 +3,7 @@
   "Type": "Generic",
   "Appearance": "Nakasar_Vampire_Countess",
   "NameTranslationKey": "nakasar_mobs.npc.Vampire_Countess.name",
-  "MaxHealth": 500,
+  "MaxHealth": 750,
   "DropList": "Nakasar_Drop_Vampire_Count",
   "StartState": "Idle",
   "DefaultPlayerAttitude": "Neutral",

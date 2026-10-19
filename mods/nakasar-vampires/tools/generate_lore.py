@@ -12,8 +12,8 @@ note se lit aussi dans l'infobulle de l'inventaire. Trois sortes de blocs :
   par generate_prefabs.py et tirées dans les coffres par generate_loot.py (NOTES_BY_PLACE) ;
 - les épitaphes (`Nakasar_Epitaph_<Nom>`) : pierres tombales gravées, posées dans les cimetières ;
 - le tableau de contrats de la brèche (`Nakasar_Contract_Board`), posé par generate_breach.py : sa note appelle à
-  l'aide et, à l'usage, remet au joueur le premier contrat (`FIRST_CONTRACT`) s'il n'en a pas déjà un
-  (interaction Java `Nakasar_GiveItemOnce`).
+  l'aide et, à l'usage, remet le premier contrat (`FIRST_CONTRACT`) : une seule prime par brèche, pour tout
+  le serveur (interaction Java `Nakasar_ClaimBreachContract`).
 
 Écrit les modèles, textures, icônes, hitboxes, objets, interactions et les fichiers de langue nakasar_lore.lang
 (fr-FR et en-US). Les textes vivent ici, dans LORE, EPITAPHS et BOARD. Le générateur est déterministe.
@@ -157,11 +157,12 @@ EPITAPHS = {
 }
 
 BOARD_TEXT = ("Tableau des chasseurs",
-    "Nous cherchons des bras. Passez la faille.\n\nDe l'autre côté s'étend le Comté : des morts qui marchent, une garde d'os, et au manoir, ceux qu'on ne nomme pas.\nL'argent mord leur chair. Le feu blanc les tient à distance.\n\nUn premier contrat est épinglé pour toi : une ferme du Comté, et la bête qui garde sa grange. Pose-le dans une passerelle ancienne, abats-la, et la prime est à toi.\n\nL'Ordre des chasseurs",
+    "Nous cherchons des bras. Passez la faille.\n\nDe l'autre côté s'étend le Comté : des morts qui marchent, une garde d'os, et au manoir, ceux qu'on ne nomme pas.\nL'argent mord leur chair. Le feu blanc les tient à distance.\n\nUn contrat est épinglé ici, un seul par passage de la faille : le premier qui le prend part pour une ferme du Comté, et la bête qui garde sa grange. Pose-le dans une passerelle ancienne, abats-la, et la prime est à toi.\n\nL'Ordre des chasseurs",
     "Hunters' board",
-    "We need hands. Cross the rift.\n\nBeyond it lies the County: walking dead, a guard of bones, and in the manor, those we do not name.\nSilver bites their flesh. White fire keeps them at bay.\n\nA first contract is pinned here for you: a County farm, and the beast guarding its barn. Place it in an ancient gateway, slay the beast, and the bounty is yours.\n\nThe Order of Hunters")
+    "We need hands. Cross the rift.\n\nBeyond it lies the County: walking dead, a guard of bones, and in the manor, those we do not name.\nSilver bites their flesh. White fire keeps them at bay.\n\nOne contract is pinned here, only one each time the rift opens: whoever takes it first heads for a County farm, and the beast guarding its barn. Place it in an ancient gateway, slay the beast, and the bounty is yours.\n\nThe Order of Hunters")
 
 # Où trouver quoi : notes posées dans les prefabs et tirées dans les coffres (generate_prefabs.py, generate_loot.py).
+# Les notes du manoir ne sont plus que posées (LORE_BY_SPOT).
 NOTES_BY_PLACE = {
     "hunter": ["Hunter_Log", "Hunter_Silver", "Hunter_Missing", "Hunter_Pumpkins", "Hunter_Orders"],
     "village": ["Village_Letter", "Village_Curfew", "Farm_Ledger", "Village_Last"],
@@ -181,11 +182,16 @@ LORE_BY_LOOT = {
     "Nakasar_Loot_Farm_Burnt": ("farm", ["Farm_Diary", "Village_Last"], 0.6, 4),
     "Nakasar_Loot_Guard_Barracks": ("guard", ["Guard_Orders"], 1.0, 5),
     "Nakasar_Loot_Guard_Captain": ("guard", ["Guard_Oath"], 1.0, 2),
-    "Nakasar_Loot_Manor_Library": ("manor", ["Count_Journal"], 1.0, 2),
-    "Nakasar_Loot_Manor_Bedroom": ("manor", ["Countess_Letter"], 1.0, 4),
-    "Nakasar_Loot_Manor_Kitchen": ("manor", ["Servant_Rules"], 1.0, 4),
-    "Nakasar_Loot_Manor_Alchemy": ("manor", ["Ritual_Page"], 1.0, 4),
-    "Nakasar_Loot_Manor_Treasure": ("manor", ["Blood_Pact"], 1.0, 3),
+}
+
+# Lieux de lore sans coffre (Prefab.lore_spot) : le manoir du Comte n'a plus de coffres (le Comte est passif, on ne
+# pille pas sa demeure), mais ses notes restent posées là où ils étaient : (notes posées, chance d'en poser une).
+LORE_BY_SPOT = {
+    "Manor_Library": (["Count_Journal"], 1.0),
+    "Manor_Bedroom": (["Countess_Letter"], 1.0),
+    "Manor_Kitchen": (["Servant_Rules"], 1.0),
+    "Manor_Alchemy": (["Ritual_Page"], 1.0),
+    "Manor_Treasure": (["Blood_Pact"], 1.0),
 }
 
 
@@ -396,8 +402,8 @@ def main():
         "Page": {"Id": "BlockLore", "TextAlignment": "Left"},
     })
     gx.write_json(INTERACTIONS / f"{TAKE_CONTRACT}.json", {
-        "$Comment": "Tableau de la brèche : remet le premier contrat au joueur qui n'en a pas, puis affiche la note. Généré par tools/generate_lore.py.",
-        "Type": "Nakasar_GiveItemOnce",
+        "$Comment": "Tableau de la brèche : remet le premier contrat, une seule fois par brèche pour tout le serveur, puis affiche la note. Généré par tools/generate_lore.py.",
+        "Type": "Nakasar_ClaimBreachContract",
         "ItemId": FIRST_CONTRACT,
         "Next": {"Type": "OpenCustomUI", "Page": {"Id": "BlockLore", "TextAlignment": "Left"}},
     })

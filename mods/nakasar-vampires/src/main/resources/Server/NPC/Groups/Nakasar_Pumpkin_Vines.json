@@ -1,0 +1,6 @@
+{
+  "$Comment": "Vrilles combattantes de la citrouille géante : elle compte celles qui restent (capteur Count) pour savoir quand refaire sortir les suivantes.",
+  "IncludeRoles": [
+    "Nakasar_Pumpkin_Vine"
+  ]
+}

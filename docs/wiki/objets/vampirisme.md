@@ -76,4 +76,4 @@ Une rune de l'autel (niveau 4) : une onde de sang blesse les créatures à 5 blo
 |---|---|---|
 | ![icône](/jeu/Icons/Items/Nakasar/Occult/Blood_Drop.png) | **Sang frais** | Baiser du Vampire sur un vivant (30 % de chance), Nova de sang (15 %) |
 | ![icône](/jeu/Icons/Items/Nakasar/Occult/Undead_Ash.png) | **Cendres de mort-vivant** | Zombies et gardes squelettes du Comté (1 sur 3, 1 ou 2) |
-| ![icône](/jeu/Icons/Items/Nakasar/Occult/Manor_Relic.png) | **Relique du manoir** | [Fantômes](../pnj/fantome.md), coffres du trésor et de l'alchimie du [manoir](../fragment/manoir-du-comte.md) |
+| ![icône](/jeu/Icons/Items/Nakasar/Occult/Manor_Relic.png) | **Relique du manoir** | [Fantômes](../pnj/fantome.md) (1 chance sur 6) |

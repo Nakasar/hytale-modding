@@ -19,14 +19,6 @@
         }
       },
       {
-        "Type": "Single",
-        "Item": {
-          "ItemId": "Nakasar_Trophy_Vampire_Fang",
-          "QuantityMin": 1,
-          "QuantityMax": 2
-        }
-      },
-      {
         "Type": "Choice",
         "Containers": [
           {
