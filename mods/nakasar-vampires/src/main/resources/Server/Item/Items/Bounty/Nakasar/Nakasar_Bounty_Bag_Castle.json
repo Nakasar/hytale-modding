@@ -1,0 +1,25 @@
+{
+  "TranslationProperties": {
+    "Name": "nakasar_hunters.items.Nakasar_Bounty_Bag_Castle.name",
+    "Description": "nakasar_hunters.items.Nakasar_Bounty_Bag_Castle.description"
+  },
+  "Icon": "Icons/Items/Nakasar/Trophies/Bounty_Bag_Castle.png",
+  "Model": "Items/Nakasar/Trophies/Bounty_Bag_Castle.blockymodel",
+  "Texture": "Items/Nakasar/Trophies/Bounty_Bag_Castle.png",
+  "Quality": "Epic",
+  "ItemLevel": 20,
+  "Categories": [
+    "Items.Ingredients"
+  ],
+  "Tags": {
+    "Type": [
+      "Nakasar_Bounty"
+    ]
+  },
+  "PlayerAnimationsId": "Item",
+  "ItemSoundSetId": "ISS_Items_Gems",
+  "MaxStack": 16,
+  "Interactions": {
+    "Secondary": "Root_Nakasar_Bounty_Bag_Castle"
+  }
+}

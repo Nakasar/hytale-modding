@@ -1,0 +1,343 @@
+{
+  "$Comment": "Armure enchantée (élite) d'une crypte sur deux, au fond de la salle enterrée, avec barre de vie de boss (BossBarSystem). Grosse armure vide animée, armée d'une massue : ce n'est pas une morte-vivante (le feu purificateur ne la gêne pas) et le feu ne lui fait rien (groupe Nakasar_Fire_Immune). Coups de massue, coup sismique annoncé par une zone rouge de 4,5 blocs, et toutes les 18 à 22 s elle complète ses trois rouages enchantés qui la soignent de 5 PV par seconde chacun tant qu'ils vivent. Immobile comme une statue tant que rien ne passe ; retourne à sa place et regagne sa vie si on fuit à plus de 24 blocs. Générée par tools/generate_elites.py.",
+  "Type": "Generic",
+  "Appearance": "Nakasar_Enchanted_Armor",
+  "NameTranslationKey": "nakasar_mobs.npc.Enchanted_Armor.name",
+  "MaxHealth": 900,
+  "DropList": "Nakasar_Drop_Enchanted_Armor",
+  "StartState": "Idle",
+  "DefaultPlayerAttitude": "Hostile",
+  "DefaultNPCAttitude": "Ignore",
+  "DisableDamageGroups": [
+    "Nakasar_Enchanted_Constructs"
+  ],
+  "KnockbackScale": 0.1,
+  "DeathAnimationTime": 2.0,
+  "HotbarItems": [
+    "Weapon_Mace_Onyxium"
+  ],
+  "MotionControllerList": [
+    {
+      "Type": "Walk",
+      "MaxWalkSpeed": 3.4,
+      "Gravity": 10,
+      "MaxFallSpeed": 10,
+      "Acceleration": 10,
+      "JumpHeight": 1.0
+    }
+  ],
+  "StateTransitions": [
+    {
+      "$Comment": "Entrée en combat : chaque attaque spéciale a sa propre recharge ; les rouages viennent vite.",
+      "States": [
+        {
+          "From": [
+            "Idle",
+            "ReturnHome"
+          ],
+          "To": [
+            "Combat"
+          ]
+        }
+      ],
+      "Actions": [
+        {
+          "Type": "TimerStart",
+          "Name": "Summon",
+          "StartValueRange": [
+            2,
+            3
+          ],
+          "RestartValueRange": [
+            18,
+            22
+          ]
+        },
+        {
+          "Type": "TimerStart",
+          "Name": "Slam",
+          "StartValueRange": [
+            6,
+            8
+          ],
+          "RestartValueRange": [
+            11,
+            14
+          ]
+        }
+      ]
+    }
+  ],
+  "Instructions": [
+    {
+      "Sensor": {
+        "Type": "State",
+        "State": "Idle"
+      },
+      "Instructions": [
+        {
+          "Sensor": {
+            "Type": "Damage",
+            "Combat": true,
+            "TargetSlot": "LockedTarget"
+          },
+          "Actions": [
+            {
+              "Type": "State",
+              "State": "Combat"
+            }
+          ]
+        },
+        {
+          "Sensor": {
+            "Type": "Player",
+            "Range": 14,
+            "LockOnTarget": true,
+            "Filters": [
+              {
+                "Type": "Attitude",
+                "Attitudes": [
+                  "Hostile"
+                ]
+              },
+              {
+                "Type": "LineOfSight"
+              }
+            ]
+          },
+          "Actions": [
+            {
+              "Type": "State",
+              "State": "Combat"
+            }
+          ]
+        },
+        {
+          "$Comment": "Un mob hostile (chasseur de vampires, mob dominé…) : même réaction qu'envers un joueur.",
+          "Sensor": {
+            "Type": "Mob",
+            "Range": 14,
+            "LockOnTarget": true,
+            "Filters": [
+              {
+                "Type": "Attitude",
+                "Attitudes": [
+                  "Hostile"
+                ]
+              },
+              {
+                "Type": "LineOfSight"
+              }
+            ]
+          },
+          "Actions": [
+            {
+              "Type": "State",
+              "State": "Combat"
+            }
+          ]
+        },
+        {
+          "Actions": []
+        }
+      ]
+    },
+    {
+      "Sensor": {
+        "Type": "State",
+        "State": "Combat"
+      },
+      "Instructions": [
+        {
+          "$Comment": "Cible perdue ou partie trop loin : elle retourne à sa place.",
+          "Sensor": {
+            "Type": "Not",
+            "Sensor": {
+              "Type": "Target",
+              "Range": 24,
+              "Filters": [
+                {
+                  "Type": "Attitude",
+                  "Attitudes": [
+                    "Hostile",
+                    "Neutral",
+                    "Ignore"
+                  ]
+                }
+              ]
+            }
+          },
+          "Actions": [
+            {
+              "Type": "ReleaseTarget"
+            },
+            {
+              "Type": "State",
+              "State": "ReturnHome"
+            }
+          ]
+        },
+        {
+          "$Comment": "Rouages enchantés : elle complète la vague (trois au plus) dès l'entrée en combat, puis toutes les 18 à 22 s.",
+          "Sensor": {
+            "Type": "Timer",
+            "Name": "Summon",
+            "State": "STOPPED"
+          },
+          "ActionsBlocking": true,
+          "Actions": [
+            {
+              "Type": "TimerRestart",
+              "Name": "Summon"
+            },
+            {
+              "Type": "Attack",
+              "Attack": "Root_Nakasar_NPC_Armor_Summon",
+              "SkipAiming": true,
+              "LineOfSight": false,
+              "AvoidFriendlyFire": false
+            }
+          ]
+        },
+        {
+          "$Comment": "Coup sismique annoncé quand la cible est à moins de 4,5 blocs.",
+          "Sensor": {
+            "Type": "And",
+            "Sensors": [
+              {
+                "Type": "Target",
+                "Range": 4.5,
+                "Filters": [
+                  {
+                    "Type": "LineOfSight"
+                  }
+                ]
+              },
+              {
+                "Type": "Timer",
+                "Name": "Slam",
+                "State": "STOPPED"
+              }
+            ]
+          },
+          "ActionsBlocking": true,
+          "Actions": [
+            {
+              "Type": "TimerRestart",
+              "Name": "Slam"
+            },
+            {
+              "Type": "Attack",
+              "Attack": "Root_Nakasar_NPC_Armor_Slam",
+              "SkipAiming": true,
+              "LineOfSight": false,
+              "AvoidFriendlyFire": false
+            }
+          ],
+          "HeadMotion": {
+            "Type": "Watch",
+            "RelativeTurnSpeed": 1.0
+          }
+        },
+        {
+          "Sensor": {
+            "Type": "Target",
+            "Range": 3.6,
+            "Filters": [
+              {
+                "Type": "LineOfSight"
+              }
+            ]
+          },
+          "HeadMotion": {
+            "Type": "Aim",
+            "RelativeTurnSpeed": 1.2
+          },
+          "ActionsBlocking": true,
+          "Actions": [
+            {
+              "Type": "Attack",
+              "Attack": "Root_Nakasar_NPC_Armor_Attack",
+              "AttackPauseRange": [
+                1.2,
+                1.8
+              ]
+            },
+            {
+              "Type": "Timeout",
+              "Delay": [
+                0.2,
+                0.2
+              ]
+            }
+          ]
+        },
+        {
+          "Sensor": {
+            "Type": "Target",
+            "Range": 24
+          },
+          "BodyMotion": {
+            "Type": "Seek",
+            "RelativeSpeed": 0.9,
+            "SlowDownDistance": 3,
+            "StopDistance": 2.6,
+            "UsePathfinder": true
+          },
+          "HeadMotion": {
+            "Type": "Watch",
+            "RelativeTurnSpeed": 1.2
+          }
+        }
+      ]
+    },
+    {
+      "Sensor": {
+        "Type": "State",
+        "State": "ReturnHome"
+      },
+      "Instructions": [
+        {
+          "Sensor": {
+            "Type": "Damage",
+            "Combat": true,
+            "TargetSlot": "LockedTarget"
+          },
+          "Actions": [
+            {
+              "Type": "State",
+              "State": "Combat"
+            }
+          ]
+        },
+        {
+          "Sensor": {
+            "Type": "Leash",
+            "Range": 2
+          },
+          "BodyMotion": {
+            "Type": "Seek",
+            "RelativeSpeed": 0.7,
+            "SlowDownDistance": 3,
+            "StopDistance": 1,
+            "UsePathfinder": true
+          }
+        },
+        {
+          "$Comment": "De retour à sa place : elle récupère toute sa vie.",
+          "Actions": [
+            {
+              "Type": "SetStat",
+              "Stat": "Health",
+              "Value": 1000000
+            },
+            {
+              "Type": "State",
+              "State": "Idle"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

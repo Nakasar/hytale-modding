@@ -1,0 +1,257 @@
+{
+  "$Comment": "Fantôme invoqué par le Spectre (Nakasar_SummonMinions) : comme un fantôme du Comté mais plus fragile (25 PV), sans butin. Tant qu'il en reste un, le Spectre est invulnérable. Disparaît avec son maître, ou au bout de 30 s sans combat. Généré par tools/generate_elites.py.",
+  "Type": "Generic",
+  "Appearance": "Nakasar_Spectral_Ghost",
+  "NameTranslationKey": "nakasar_mobs.npc.Spectral_Ghost.name",
+  "MaxHealth": 25,
+  "StartState": "Idle",
+  "DefaultPlayerAttitude": "Hostile",
+  "DefaultNPCAttitude": "Ignore",
+  "DisableDamageGroups": [
+    "Nakasar_Ghosts"
+  ],
+  "KnockbackScale": 1.5,
+  "SpawnLockTime": 0.5,
+  "MotionControllerList": [
+    {
+      "Type": "Fly",
+      "MaxHorizontalSpeed": 5,
+      "MaxClimbSpeed": 3,
+      "MaxSinkSpeed": 3,
+      "Acceleration": 3,
+      "Deceleration": 3,
+      "Gravity": 1,
+      "MinHeightOverGround": 0.5,
+      "MaxHeightOverGround": 3
+    }
+  ],
+  "StateTransitions": [
+    {
+      "States": [
+        {
+          "From": [
+            "Idle"
+          ],
+          "To": [
+            "Combat"
+          ]
+        }
+      ],
+      "Actions": [
+        {
+          "Type": "TimerStart",
+          "Name": "Blink",
+          "StartValueRange": [
+            3,
+            5
+          ],
+          "RestartValueRange": [
+            6,
+            9
+          ]
+        }
+      ]
+    }
+  ],
+  "Instructions": [
+    {
+      "Sensor": {
+        "Type": "State",
+        "State": "Idle"
+      },
+      "Instructions": [
+        {
+          "Sensor": {
+            "Type": "Damage",
+            "Combat": true,
+            "TargetSlot": "LockedTarget"
+          },
+          "Actions": [
+            {
+              "Type": "State",
+              "State": "Combat"
+            }
+          ]
+        },
+        {
+          "Sensor": {
+            "Type": "Player",
+            "Range": 18,
+            "LockOnTarget": true,
+            "Filters": [
+              {
+                "Type": "Attitude",
+                "Attitudes": [
+                  "Hostile"
+                ]
+              }
+            ]
+          },
+          "Actions": [
+            {
+              "Type": "State",
+              "State": "Combat"
+            }
+          ]
+        },
+        {
+          "$Comment": "Un mob hostile (chasseur de vampires, mob dominé…) : même réaction qu'envers un joueur.",
+          "Sensor": {
+            "Type": "Mob",
+            "Range": 18,
+            "LockOnTarget": true,
+            "Filters": [
+              {
+                "Type": "Attitude",
+                "Attitudes": [
+                  "Hostile"
+                ]
+              }
+            ]
+          },
+          "Actions": [
+            {
+              "Type": "State",
+              "State": "Combat"
+            }
+          ]
+        },
+        {
+          "$Comment": "Sans combat pendant 30 s (Spectre calmé, cible partie) : il se dissipe.",
+          "Actions": [
+            {
+              "Type": "Timeout",
+              "Delay": [
+                30,
+                30
+              ],
+              "Action": {
+                "Type": "Despawn"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "Sensor": {
+        "Type": "State",
+        "State": "Combat"
+      },
+      "Instructions": [
+        {
+          "Sensor": {
+            "Type": "Not",
+            "Sensor": {
+              "Type": "Target",
+              "Range": 28,
+              "Filters": [
+                {
+                  "Type": "Attitude",
+                  "Attitudes": [
+                    "Hostile",
+                    "Neutral",
+                    "Ignore"
+                  ]
+                }
+              ]
+            }
+          },
+          "Actions": [
+            {
+              "Type": "ReleaseTarget"
+            },
+            {
+              "Type": "State",
+              "State": "Idle"
+            }
+          ]
+        },
+        {
+          "$Comment": "Apparition soudaine près de la cible quand elle s'éloigne.",
+          "Sensor": {
+            "Type": "And",
+            "Sensors": [
+              {
+                "Type": "Target",
+                "Range": 20
+              },
+              {
+                "Type": "Not",
+                "Sensor": {
+                  "Type": "Target",
+                  "Range": 7
+                }
+              },
+              {
+                "Type": "Timer",
+                "Name": "Blink",
+                "State": "STOPPED"
+              }
+            ]
+          },
+          "BodyMotion": {
+            "Type": "Teleport",
+            "OffsetRange": [
+              2,
+              3
+            ],
+            "MaxYOffset": 1,
+            "Orientation": "TowardsTarget"
+          },
+          "Actions": [
+            {
+              "Type": "TimerRestart",
+              "Name": "Blink"
+            }
+          ]
+        },
+        {
+          "Sensor": {
+            "Type": "Target",
+            "Range": 2.6
+          },
+          "HeadMotion": {
+            "Type": "Aim",
+            "RelativeTurnSpeed": 1.5
+          },
+          "ActionsBlocking": true,
+          "Actions": [
+            {
+              "Type": "Attack",
+              "Attack": "Root_Nakasar_NPC_Ghost_Touch",
+              "AttackPauseRange": [
+                1.4,
+                2.0
+              ]
+            },
+            {
+              "Type": "Timeout",
+              "Delay": [
+                0.2,
+                0.2
+              ]
+            }
+          ]
+        },
+        {
+          "Sensor": {
+            "Type": "Target",
+            "Range": 28
+          },
+          "BodyMotion": {
+            "Type": "Seek",
+            "RelativeSpeed": 0.8,
+            "SlowDownDistance": 3,
+            "StopDistance": 1.6,
+            "UsePathfinder": false
+          },
+          "HeadMotion": {
+            "Type": "Watch",
+            "RelativeTurnSpeed": 1.2
+          }
+        }
+      ]
+    }
+  ]
+}

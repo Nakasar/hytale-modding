@@ -2,14 +2,14 @@
 
 <Infobox title="Bestiaire" kind="Index" image={require("../images/pnj/Nakasar_Vampire_Count.jpg").default} caption="Le Comte Vampire, maître du Comté">
 <Info label="Boss">2 ([Comte](comte-vampire.md) ou [Comtesse](comtesse-vampire.md), 50 %)</Info>
-<Info label="Élites">3</Info>
-<Info label="Créatures du Comté">8</Info>
+<Info label="Élites">5</Info>
+<Info label="Créatures du Comté">10</Info>
 <Info label="Chasseurs">3, neutres</Info>
 <Info label="Camp">toutes les créatures du Comté sont alliées</Info>
 <Info label="Réapparition">5 min (rejetons) à 30 min (boss et élites)</Info>
 </Infobox>
 
-Toutes les créatures ajoutées par le mod. Les créatures du Comté forment **un seul camp** : elles ne se blessent jamais entre elles (même avec une attaque de zone) et s'allient contre vous et contre les chasseurs de vampires.
+Toutes les créatures ajoutées par le mod. Les créatures du Comté forment **un seul camp** (l'armure enchantée et ses rouages compris) : elles ne se blessent jamais entre elles (même avec une attaque de zone) et s'allient contre vous et contre les chasseurs de vampires.
 
 ## Boss et élites
 
@@ -20,6 +20,8 @@ Toutes les créatures ajoutées par le mod. Les créatures du Comté forment **u
 | | [Capitaine de la garde](capitaine-de-la-garde.md) | Élite | 950 | Poste de garde (garnison) | Insigne du Capitaine, hache rouillée (33 %) |
 | | [Abomination zombie](abomination-zombie.md) | Élite | 700 | Ferme zombie | Cœur d'Abomination, cendres |
 | ![vignette](../images/pnj/Nakasar_Giant_Pumpkin.png) | [Citrouille géante](citrouille-geante.md) | Élite immobile | 750 | Champ de citrouilles géant | citrouilles, graines, essence, Graine de la Citrouille géante |
+| | [Armure enchantée](armure-enchantee.md) | Élite | 900 | Sous-sol d'une crypte sur deux | 2 éclats de rune, lingots de fer, Cœur de l'armure enchantée |
+| | [Spectre](spectre.md) | Élite | 550 | Château hanté (un sur deux), cimetière (rare) | 1 éclat de rune, 1 relique du manoir, Suaire du Spectre |
 
 ## Créatures du Comté
 
@@ -33,6 +35,8 @@ Toutes les créatures ajoutées par le mod. Les créatures du Comté forment **u
 | | [Garde squelette](garde-squelette.md) | 120 | Poste de garde (garnison) |
 | ![vignette](../images/pnj/Nakasar_Pumpkin_Vine.png) | [Vrille de citrouille](vrille-de-citrouille.md) | 45 | Invoquée par la Citrouille géante |
 | | [Vrilles (piège)](vrilles.md) | 12 | Piège de la Citrouille géante |
+| ![vignette](../images/pnj/Nakasar_Enchanted_Gear.png) | [Rouage enchanté](rouage-enchante.md) | 30 | Invoqué par l'Armure enchantée (la soigne) |
+| | [Fantôme spectral](fantome-spectral.md) | 25 | Invoqué par le Spectre (le protège) |
 
 ## Chasseurs de vampires (neutres)
 
@@ -57,5 +61,5 @@ Le Comté fait aussi apparaître des monstres du jeu de base, qui rejoignent le 
 - **Zones hantées** : à moins de 45 blocs d'une structure, les monstres apparaissent plus souvent (densité ×1,0 contre ×0,6 dans la lande).
 - **Réapparition** : les créatures placées par marqueur reviennent en temps réel (5 min pour les rejetons, 10 min pour les communs, 20 min pour les chasseurs, 30 min pour les boss et élites).
 - **Argent** : ×2 contre le Comte, la Comtesse et les rejetons uniquement. Voir [Armes en argent](../objets/armes-en-argent.md).
-- **Feu purificateur** : repousse et brûle tous les morts-vivants (vampires, zombies, squelettes, fantômes, goules, spectres). Voir [Feu purificateur](../objets/feu-purificateur.md).
+- **Feu purificateur** : repousse et brûle tous les morts-vivants (vampires, zombies, squelettes, fantômes, goules, spectres). L'armure enchantée n'en est pas un, et aucun feu ne la blesse. Voir [Feu purificateur](../objets/feu-purificateur.md).
 - **Domination** : la rune Domination retourne une créature contre ses anciens alliés pendant 6 s. Voir [Runes](../objets/runes.md#domination).

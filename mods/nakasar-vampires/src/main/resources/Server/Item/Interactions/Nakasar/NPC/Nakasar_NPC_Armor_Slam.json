@@ -1,0 +1,97 @@
+{
+  "$Comment": "Coup sismique annoncé de l'armure enchantée : elle s'immobilise 1,4 s, rougeoie et lève sa massue pendant qu'une zone rouge de 4.5 blocs se charge au sol, puis frappe le sol (40 dégâts, projection). On l'évite en sortant de la zone.",
+  "Type": "Serial",
+  "Interactions": [
+    {
+      "Type": "ClearEntityEffect",
+      "Entity": "User",
+      "EntityEffectId": "Hit_Interrupt_Eligible"
+    },
+    {
+      "Type": "ApplyEffect",
+      "EffectId": "Nakasar_Elite_Rooted"
+    },
+    {
+      "Type": "ApplyEffect",
+      "EffectId": "Dungeon_Goblin_Mace_Slam_Charge"
+    },
+    {
+      "Type": "Simple",
+      "RunTime": 1.4,
+      "Effects": {
+        "ItemPlayerAnimationsId": "Mace",
+        "ItemAnimationId": "SwingDownCharging",
+        "WorldSoundEventId": "SFX_Spear_Throw_Charge",
+        "Particles": [
+          {
+            "SystemId": "Feastmaster_Slam_Warning",
+            "TargetEntityPart": "Entity",
+            "TargetNodeName": "Origin",
+            "Scale": 3.06,
+            "PositionOffset": {
+              "X": 0,
+              "Y": 0.1,
+              "Z": 0
+            },
+            "DetachedFromModel": true
+          }
+        ]
+      }
+    },
+    {
+      "Type": "Selector",
+      "RunTime": 0.15,
+      "Effects": {
+        "ItemPlayerAnimationsId": "Mace",
+        "ItemAnimationId": "SwingDownCharged",
+        "WorldSoundEventId": "SFX_Goblin_Feastmaster_Slam",
+        "Particles": [
+          {
+            "SystemId": "Stick_Slam_Ground_Large",
+            "TargetEntityPart": "Entity",
+            "TargetNodeName": "Origin",
+            "Scale": 1.0,
+            "PositionOffset": {
+              "X": 0,
+              "Y": 0.1,
+              "Z": 0
+            },
+            "DetachedFromModel": true
+          }
+        ]
+      },
+      "Selector": {
+        "Id": "AOECircle",
+        "Range": 4.5
+      },
+      "HitEntity": {
+        "Interactions": [
+          {
+            "Parent": "DamageEntityParent",
+            "DamageCalculator": {
+              "BaseDamage": {
+                "Physical": 40
+              },
+              "RandomPercentageModifier": 0.1
+            },
+            "DamageEffects": {
+              "WorldSoundEventId": "SFX_Mace_T2_Signature_Impact",
+              "Knockback": {
+                "Type": "Force",
+                "Force": 9,
+                "VelocityType": "Set",
+                "Direction": {
+                  "Y": 1
+                }
+              }
+            }
+          }
+        ]
+      }
+    },
+    {
+      "Type": "Simple",
+      "RunTime": 0.7
+    }
+  ]
+}

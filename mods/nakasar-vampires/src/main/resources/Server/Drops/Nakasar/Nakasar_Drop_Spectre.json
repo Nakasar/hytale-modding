@@ -1,0 +1,28 @@
+{
+  "$Comment": "Spectre : un éclat de rune, une relique du manoir et son trophée.",
+  "Container": {
+    "Type": "Multiple",
+    "Containers": [
+      {
+        "Type": "Single",
+        "Item": {
+          "ItemId": "Ingredient_Rune_Shard",
+          "QuantityMin": 1,
+          "QuantityMax": 1
+        }
+      },
+      {
+        "Type": "Single",
+        "Item": {
+          "ItemId": "Ingredient_Nakasar_Manor_Relic",
+          "QuantityMin": 1,
+          "QuantityMax": 1
+        }
+      },
+      {
+        "Type": "Droplist",
+        "DroplistId": "Nakasar_Drop_Trophy_Spectral_Shroud"
+      }
+    ]
+  }
+}

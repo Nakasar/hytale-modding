@@ -1,0 +1,6 @@
+{
+  "$Comment": "Fantômes invoqués par le Spectre : il compte ceux qui restent (capteur Count) pour savoir quand en rappeler.",
+  "IncludeRoles": [
+    "Nakasar_Spectral_Ghost"
+  ]
+}

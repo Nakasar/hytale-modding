@@ -1,0 +1,13 @@
+{
+  "$Comment": "Vague de froid du Spectre : fortement ralenti (60 %) pendant 6 s, givré.",
+  "Name": "nakasar_mobs.effects.Nakasar_Spectre_Frost",
+  "Duration": 6,
+  "OverlapBehavior": "Overwrite",
+  "Debuff": true,
+  "StatusEffectIcon": "UI/StatusEffects/Nakasar/Spectre_Frost.png",
+  "ApplicationEffects": {
+    "EntityTopTint": "#f2fbff",
+    "EntityBottomTint": "#7cc8ff",
+    "HorizontalSpeedMultiplier": 0.4
+  }
+}

@@ -1,0 +1,49 @@
+{
+  "Container": {
+    "Type": "Multiple",
+    "Containers": [
+      {
+        "Type": "Single",
+        "Item": {
+          "ItemId": "Ingredient_Bar_Silver",
+          "QuantityMin": 4,
+          "QuantityMax": 6
+        }
+      },
+      {
+        "Type": "Single",
+        "Item": {
+          "ItemId": "Ingredient_Rune_Shard",
+          "QuantityMin": 3,
+          "QuantityMax": 5
+        }
+      },
+      {
+        "Type": "Single",
+        "Item": {
+          "ItemId": "Ingredient_Nakasar_Manor_Relic",
+          "QuantityMin": 1,
+          "QuantityMax": 1
+        }
+      },
+      {
+        "Type": "Choice",
+        "Containers": [
+          {
+            "Type": "Single",
+            "Item": {
+              "ItemId": "Rock_Gem_Sapphire",
+              "QuantityMin": 2,
+              "QuantityMax": 2
+            },
+            "Weight": 1
+          },
+          {
+            "Type": "Empty",
+            "Weight": 3
+          }
+        ]
+      }
+    ]
+  }
+}

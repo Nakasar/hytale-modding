@@ -5,7 +5,7 @@
 <Info label="Lieu">[Comté Vampire](fragment/README.md)</Info>
 <Info label="Accès">[Brèches des chasseurs](breches.md) ou [clé de portail](objets/cle-du-comte.md)</Info>
 <Info label="Structures">**10**, plus le [décor](fragment/decor.md)</Info>
-<Info label="Bestiaire">**2** boss, **3** élites, **8** créatures, **3** chasseurs</Info>
+<Info label="Bestiaire">**2** boss, **5** élites, **10** créatures, **3** chasseurs</Info>
 <Info label="Runes">**7** [runes de capacité](objets/runes.md)</Info>
 </Infobox>
 
@@ -24,8 +24,8 @@ Guide du joueur pour le mod **Nakasar : Vampires** (Hytale, serveur 0.7.2) : un 
 [Toutes les créatures](pnj/README.md), avec photo, statistiques, attaques, butin et lieux.
 
 - **Boss :** [Comte Vampire](pnj/comte-vampire.md) · [Comtesse Vampire](pnj/comtesse-vampire.md)
-- **Élites :** [Capitaine de la garde](pnj/capitaine-de-la-garde.md) · [Abomination zombie](pnj/abomination-zombie.md) · [Citrouille géante](pnj/citrouille-geante.md)
-- **Créatures du Comté :** [Rejeton de vampire](pnj/rejeton-de-vampire.md) · [Fantôme](pnj/fantome.md) · [Villageois zombifié](pnj/villageois-zombifie.md) · [Fermier zombifié](pnj/fermier-zombifie.md) · [Paysan rebelle zombifié](pnj/paysan-rebelle-zombifie.md) · [Garde squelette](pnj/garde-squelette.md) · [Vrille de citrouille](pnj/vrille-de-citrouille.md) · [Vrilles](pnj/vrilles.md)
+- **Élites :** [Capitaine de la garde](pnj/capitaine-de-la-garde.md) · [Abomination zombie](pnj/abomination-zombie.md) · [Citrouille géante](pnj/citrouille-geante.md) · [Armure enchantée](pnj/armure-enchantee.md) · [Spectre](pnj/spectre.md)
+- **Créatures du Comté :** [Rejeton de vampire](pnj/rejeton-de-vampire.md) · [Fantôme](pnj/fantome.md) · [Villageois zombifié](pnj/villageois-zombifie.md) · [Fermier zombifié](pnj/fermier-zombifie.md) · [Paysan rebelle zombifié](pnj/paysan-rebelle-zombifie.md) · [Garde squelette](pnj/garde-squelette.md) · [Vrille de citrouille](pnj/vrille-de-citrouille.md) · [Vrilles](pnj/vrilles.md) · [Rouage enchanté](pnj/rouage-enchante.md) · [Fantôme spectral](pnj/fantome-spectral.md)
 - **Chasseurs de vampires :** [épée](pnj/chasseur-epee.md) · [arbalète](pnj/chasseuse-arbalete.md) · [tromblon](pnj/chasseur-tromblon.md)
 
 ## Brèches des chasseurs

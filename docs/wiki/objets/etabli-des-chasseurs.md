@@ -25,8 +25,8 @@ On progresse avec les chasseurs en leur rapportant des [trophées](trophees.md) 
 | Niveau | Nom | Amélioration | Débloque |
 |---|---|---|---|
 | 1 | Recrue | — | onglets **Feux purificateurs** et **Contrats** : contrat de la ferme |
-| 2 | Traqueur | **1 cœur d'Abomination**, **4 crocs de vampire**, **4 lingots d'argent** (3 s) | onglets **Runes de chasseur** et **Fragments** : Aura de lumière, clé du Comté, contrats du champ et de la garnison ; fabrication 15 % plus rapide |
-| 3 | Chasseur | **1 graine de la Citrouille géante**, **1 insigne du Capitaine**, **8 crocs de vampire**, **8 lingots d'argent**, **4 éclats de rune** (5 s) | onglet **Armes infusées** : [argent infusé](armes-en-argent.md#argent-infuse) ; Invisibilité ; fabrication 30 % plus rapide |
+| 2 | Traqueur | **1 cœur d'Abomination**, **4 crocs de vampire**, **4 lingots d'argent** (3 s) | onglets **Runes de chasseur** et **Fragments** : Aura de lumière, clé du Comté, contrats du champ, de la garnison et de la crypte ; fabrication 15 % plus rapide |
+| 3 | Chasseur | **1 graine de la Citrouille géante**, **1 insigne du Capitaine**, **8 crocs de vampire**, **8 lingots d'argent**, **4 éclats de rune** (5 s) | onglet **Armes infusées** : [argent infusé](armes-en-argent.md#argent-infuse) ; Invisibilité ; contrat du château ; fabrication 30 % plus rapide |
 
 L'amélioration se fait depuis la fenêtre de l'établi, comme pour les établis du jeu. Un quatrième niveau (Maître chasseur) viendra avec les donjons.
 
@@ -42,4 +42,6 @@ L'amélioration se fait depuis la fenêtre de l'établi, comme pour les établis
 | Contrats | 1 | [Contrat : la Bête de la ferme](contrats.md) | 2 crocs de vampire, 1 lingot d'argent, 2 chutes de lin, 1 éclat de rune | 3 s |
 | Contrats | 2 | [Contrat : le Champ maudit](contrats.md) | 2 crocs de vampire, 1 lingot d'argent, 2 chutes de lin, 1 éclat de rune | 3 s |
 | Contrats | 2 | [Contrat : la Garnison du Capitaine](contrats.md) | 4 crocs de vampire, 2 lingots d'argent, 2 chutes de lin, 2 éclats de rune | 3 s |
+| Contrats | 2 | [Contrat : le Gardien de la crypte](contrats.md) | 3 crocs de vampire, 2 lingots d'argent, 2 chutes de lin, 2 éclats de rune | 3 s |
+| Contrats | 3 | [Contrat : le Spectre du château](contrats.md) | 4 crocs de vampire, 3 lingots d'argent, 3 chutes de lin, 3 éclats de rune | 3 s |
 | Armes infusées | 3 | [12 armes en argent infusé](armes-en-argent.md#argent-infuse) | l'arme en argent, 2 lingots d'argent, 2 crocs de vampire, 1 topaze | 4 s |

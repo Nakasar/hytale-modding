@@ -34,7 +34,13 @@ const sidebars = {
       type: "category",
       label: "Élites",
       collapsed: false,
-      items: ["pnj/capitaine-de-la-garde", "pnj/abomination-zombie", "pnj/citrouille-geante"],
+      items: [
+        "pnj/capitaine-de-la-garde",
+        "pnj/abomination-zombie",
+        "pnj/citrouille-geante",
+        "pnj/armure-enchantee",
+        "pnj/spectre",
+      ],
     },
     {
       type: "category",
@@ -48,6 +54,8 @@ const sidebars = {
         "pnj/paysan-rebelle-zombifie",
         "pnj/garde-squelette",
         "pnj/vrille-de-citrouille",
+        "pnj/rouage-enchante",
+        "pnj/fantome-spectral",
         "pnj/vrilles",
       ],
     },

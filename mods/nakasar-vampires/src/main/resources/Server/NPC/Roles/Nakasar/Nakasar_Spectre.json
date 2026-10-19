@@ -1,0 +1,371 @@
+{
+  "$Comment": "Spectre (élite) d'un château hanté sur deux et d'un cimetière sur sept environ (Cemeteries/Spectre, poids 0,5), avec barre de vie de boss (BossBarSystem). Grand fantôme qui flotte bas. Dès le combat, il invoque trois fantômes et reste invulnérable tant qu'il en reste (MinionShieldSystem) ; une fois la vague détruite, il est vulnérable 14 à 16 s, puis en appelle une autre. Toucher glacial, et une vague de froid annoncée par une zone rouge de 6 blocs qui ralentit fortement ceux qui y restent. Disparaît et réapparaît près de sa cible quand elle s'éloigne. Si on le fuit, il se calme et regagne sa vie. Mort-vivant (feu purificateur). Généré par tools/generate_elites.py.",
+  "Type": "Generic",
+  "Appearance": "Nakasar_Spectre",
+  "NameTranslationKey": "nakasar_mobs.npc.Spectre.name",
+  "MaxHealth": 550,
+  "DropList": "Nakasar_Drop_Spectre",
+  "StartState": "Idle",
+  "DefaultPlayerAttitude": "Hostile",
+  "DefaultNPCAttitude": "Ignore",
+  "DisableDamageGroups": [
+    "Nakasar_Ghosts"
+  ],
+  "KnockbackScale": 0.2,
+  "DeathAnimationTime": 1.5,
+  "MotionControllerList": [
+    {
+      "Type": "Fly",
+      "MaxHorizontalSpeed": 4.5,
+      "MaxClimbSpeed": 3,
+      "MaxSinkSpeed": 3,
+      "Acceleration": 3,
+      "Deceleration": 3,
+      "Gravity": 1,
+      "MinHeightOverGround": 0.3,
+      "MaxHeightOverGround": 1.5
+    }
+  ],
+  "StateTransitions": [
+    {
+      "$Comment": "Entrée en combat : chaque attaque spéciale a sa propre recharge ; les fantômes viennent tout de suite.",
+      "States": [
+        {
+          "From": [
+            "Idle"
+          ],
+          "To": [
+            "Combat"
+          ]
+        }
+      ],
+      "Actions": [
+        {
+          "Type": "TimerStart",
+          "Name": "Summon",
+          "StartValueRange": [
+            0.3,
+            0.6
+          ],
+          "RestartValueRange": [
+            14,
+            16
+          ]
+        },
+        {
+          "Type": "TimerStart",
+          "Name": "ColdWave",
+          "StartValueRange": [
+            5,
+            7
+          ],
+          "RestartValueRange": [
+            13,
+            16
+          ]
+        },
+        {
+          "Type": "TimerStart",
+          "Name": "Blink",
+          "StartValueRange": [
+            4,
+            6
+          ],
+          "RestartValueRange": [
+            8,
+            11
+          ]
+        }
+      ]
+    }
+  ],
+  "Instructions": [
+    {
+      "Sensor": {
+        "Type": "State",
+        "State": "Idle"
+      },
+      "Instructions": [
+        {
+          "Sensor": {
+            "Type": "Damage",
+            "Combat": true,
+            "TargetSlot": "LockedTarget"
+          },
+          "Actions": [
+            {
+              "Type": "State",
+              "State": "Combat"
+            }
+          ]
+        },
+        {
+          "Sensor": {
+            "Type": "Player",
+            "Range": 16,
+            "LockOnTarget": true,
+            "Filters": [
+              {
+                "Type": "Attitude",
+                "Attitudes": [
+                  "Hostile"
+                ]
+              }
+            ]
+          },
+          "Actions": [
+            {
+              "Type": "State",
+              "State": "Combat"
+            }
+          ]
+        },
+        {
+          "$Comment": "Un mob hostile (chasseur de vampires, mob dominé…) : même réaction qu'envers un joueur.",
+          "Sensor": {
+            "Type": "Mob",
+            "Range": 16,
+            "LockOnTarget": true,
+            "Filters": [
+              {
+                "Type": "Attitude",
+                "Attitudes": [
+                  "Hostile"
+                ]
+              }
+            ]
+          },
+          "Actions": [
+            {
+              "Type": "State",
+              "State": "Combat"
+            }
+          ]
+        },
+        {
+          "BodyMotion": {
+            "Type": "WanderInCircle",
+            "Radius": 6,
+            "RelativeSpeed": 0.25,
+            "MaxHeadingChange": 50
+          }
+        }
+      ]
+    },
+    {
+      "Sensor": {
+        "Type": "State",
+        "State": "Combat"
+      },
+      "Instructions": [
+        {
+          "$Comment": "Cible perdue ou partie à plus de 28 blocs : il se calme et regagne toute sa vie.",
+          "Sensor": {
+            "Type": "Not",
+            "Sensor": {
+              "Type": "Target",
+              "Range": 28,
+              "Filters": [
+                {
+                  "Type": "Attitude",
+                  "Attitudes": [
+                    "Hostile",
+                    "Neutral",
+                    "Ignore"
+                  ]
+                }
+              ]
+            }
+          },
+          "Actions": [
+            {
+              "Type": "ReleaseTarget"
+            },
+            {
+              "Type": "SetStat",
+              "Stat": "Health",
+              "Value": 1000000
+            },
+            {
+              "Type": "State",
+              "State": "Idle"
+            }
+          ]
+        },
+        {
+          "$Comment": "Tant qu'il reste des fantômes, la prochaine vague attend : le délai repart à chaque instant, il ne s'écoule qu'une fois la vague détruite. Il continue ensuite ses autres attaques (Continue).",
+          "Continue": true,
+          "Sensor": {
+            "Type": "Count",
+            "Count": [
+              1,
+              64
+            ],
+            "Range": [
+              0,
+              40
+            ],
+            "IncludeGroups": [
+              "Nakasar_Spectral_Ghosts"
+            ]
+          },
+          "Actions": [
+            {
+              "Type": "TimerStart",
+              "Name": "Summon",
+              "StartValueRange": [
+                14,
+                16
+              ],
+              "RestartValueRange": [
+                14,
+                16
+              ]
+            }
+          ]
+        },
+        {
+          "$Comment": "Invocation des fantômes : dès l'entrée en combat, puis 14 à 16 s après la mort de la vague précédente.",
+          "Sensor": {
+            "Type": "Timer",
+            "Name": "Summon",
+            "State": "STOPPED"
+          },
+          "ActionsBlocking": true,
+          "Actions": [
+            {
+              "Type": "TimerRestart",
+              "Name": "Summon"
+            },
+            {
+              "Type": "Attack",
+              "Attack": "Root_Nakasar_NPC_Spectre_Summon",
+              "SkipAiming": true,
+              "LineOfSight": false,
+              "AvoidFriendlyFire": false
+            }
+          ]
+        },
+        {
+          "$Comment": "Vague de froid annoncée quand la cible est à moins de 6 blocs.",
+          "Sensor": {
+            "Type": "And",
+            "Sensors": [
+              {
+                "Type": "Target",
+                "Range": 6
+              },
+              {
+                "Type": "Timer",
+                "Name": "ColdWave",
+                "State": "STOPPED"
+              }
+            ]
+          },
+          "ActionsBlocking": true,
+          "Actions": [
+            {
+              "Type": "TimerRestart",
+              "Name": "ColdWave"
+            },
+            {
+              "Type": "Attack",
+              "Attack": "Root_Nakasar_NPC_Spectre_ColdWave",
+              "SkipAiming": true,
+              "LineOfSight": false,
+              "AvoidFriendlyFire": false
+            }
+          ],
+          "HeadMotion": {
+            "Type": "Watch",
+            "RelativeTurnSpeed": 1.0
+          }
+        },
+        {
+          "$Comment": "Apparition soudaine près de la cible quand elle s'éloigne.",
+          "Sensor": {
+            "Type": "And",
+            "Sensors": [
+              {
+                "Type": "Target",
+                "Range": 22
+              },
+              {
+                "Type": "Not",
+                "Sensor": {
+                  "Type": "Target",
+                  "Range": 7
+                }
+              },
+              {
+                "Type": "Timer",
+                "Name": "Blink",
+                "State": "STOPPED"
+              }
+            ]
+          },
+          "BodyMotion": {
+            "Type": "Teleport",
+            "OffsetRange": [
+              2,
+              3
+            ],
+            "MaxYOffset": 1,
+            "Orientation": "TowardsTarget"
+          },
+          "Actions": [
+            {
+              "Type": "TimerRestart",
+              "Name": "Blink"
+            }
+          ]
+        },
+        {
+          "Sensor": {
+            "Type": "Target",
+            "Range": 3.0
+          },
+          "HeadMotion": {
+            "Type": "Aim",
+            "RelativeTurnSpeed": 1.5
+          },
+          "ActionsBlocking": true,
+          "Actions": [
+            {
+              "Type": "Attack",
+              "Attack": "Root_Nakasar_NPC_Spectre_Touch",
+              "AttackPauseRange": [
+                1.2,
+                1.8
+              ]
+            },
+            {
+              "Type": "Timeout",
+              "Delay": [
+                0.2,
+                0.2
+              ]
+            }
+          ]
+        },
+        {
+          "Sensor": {
+            "Type": "Target",
+            "Range": 28
+          },
+          "BodyMotion": {
+            "Type": "Seek",
+            "RelativeSpeed": 0.75,
+            "SlowDownDistance": 3,
+            "StopDistance": 2.0,
+            "UsePathfinder": false
+          },
+          "HeadMotion": {
+            "Type": "Watch",
+            "RelativeTurnSpeed": 1.2
+          }
+        }
+      ]
+    }
+  ]
+}

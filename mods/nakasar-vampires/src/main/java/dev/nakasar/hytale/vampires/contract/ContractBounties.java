@@ -46,10 +46,14 @@ public final class ContractBounties extends DeathSystems.OnDeathSystem {
     static final Map<String, String> TARGETS = Map.of(
             "Farm", "Nakasar_Zombie_Abomination",
             "Pumpkin", "Nakasar_Giant_Pumpkin",
-            "Garrison", "Nakasar_Guard_Captain");
+            "Garrison", "Nakasar_Guard_Captain",
+            "Crypt", "Nakasar_Enchanted_Armor",
+            "Castle", "Nakasar_Spectre");
 
     /** Île des contrats ({@code generate_contracts.py}) : sol, rayon, et lieu de la cible où tombe le sac par défaut. */
     static final double GROUND_Y = 81;
+    /** Profondeur sous le sol au-delà de laquelle une cible est tombée de l'île. */
+    static final double UNDERGROUND_DEPTH = 24;
     static final double ISLAND_RADIUS = 112;
     static final Vector3d TARGET_SITE = new Vector3d(0, GROUND_Y + 1, -54);
 
@@ -88,9 +92,13 @@ public final class ContractBounties extends DeathSystems.OnDeathSystem {
         world.sendMessage(Message.translation("nakasar_hunters.contract." + contract.toLowerCase(Locale.ROOT) + ".fulfilled"));
     }
 
-    /** Là où la cible est morte, sauf si elle est tombée de l'île (vide en dessous) : le sac tombe alors chez elle. */
+    /**
+     * Là où la cible est morte, sauf si elle est tombée de l'île (vide en dessous) : le sac tombe alors chez elle.
+     * L'armure enchantée se bat dans la salle enterrée de la crypte (une dizaine de blocs sous le sol) : le seuil est
+     * sous elle, et l'île a plus de 40 blocs d'épaisseur autour du lieu de la cible.
+     */
     static Vector3d bagPosition(Vector3d death) {
-        boolean offIsland = death.y() < GROUND_Y - 8 || Math.hypot(death.x(), death.z()) > ISLAND_RADIUS - 4;
+        boolean offIsland = death.y() < GROUND_Y - UNDERGROUND_DEPTH || Math.hypot(death.x(), death.z()) > ISLAND_RADIUS - 4;
         return offIsland ? new Vector3d(TARGET_SITE) : new Vector3d(death).add(0, 1, 0);
     }
 

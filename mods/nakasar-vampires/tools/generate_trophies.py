@@ -8,7 +8,9 @@ Trophées (lâchés par les créatures du Comté, voir Server/Drops/Nakasar/Trop
   en propre : une liste qui ne fait que renvoyer à d'autres est refusée) ;
 - cœur d'Abomination, graine de la Citrouille géante, insigne du Capitaine de la garde : toujours, un
   par élite tuée. Les améliorations de l'établi des chasseurs en demandent de précis, de l'élite la
-  plus facile à la plus dure : le cœur pour le niveau 2, la graine et l'insigne pour le niveau 3.
+  plus facile à la plus dure : le cœur pour le niveau 2, la graine et l'insigne pour le niveau 3 ;
+- cœur runique de l'armure enchantée, linceul du Spectre : toujours, un par élite tuée (aucune recette
+  ne les demande encore).
 
 Sacs de prime (un par contrat, voir generate_contracts.py) : la cible d'un contrat en lâche un à sa
 mort (ContractBounties, Java), un seul pour tout le groupe. Utilisé (clic droit), le sac disparaît et
@@ -40,6 +42,8 @@ FANG = "Nakasar_Trophy_Vampire_Fang"
 HEART = "Nakasar_Trophy_Abomination_Heart"
 INSIGNIA = "Nakasar_Trophy_Captain_Insignia"
 SEED = "Nakasar_Trophy_Pumpkin_Seed"
+CORE = "Nakasar_Trophy_Armor_Core"
+SHROUD = "Nakasar_Trophy_Spectral_Shroud"
 SILVER_BAR = "Ingredient_Bar_Silver"
 SHARD = "Ingredient_Rune_Shard"
 
@@ -52,11 +56,16 @@ ROT = (110, 128, 60)
 IRON = (84, 86, 94)
 GOLD = (214, 172, 70)
 BONE = (226, 214, 186)
+BRONZE = (176, 120, 58)
 SEED_SHELL = (196, 120, 46)
 SEED_DARK = (130, 72, 30)
 SPROUT = (120, 220, 90)
 SILVER = (196, 204, 214)
 SILVER_DARK = (138, 146, 160)
+RUNE = (90, 170, 255)
+STEEL = (70, 74, 88)
+SHROUD_WHITE = (214, 236, 248)
+SHROUD_BLUE = (132, 186, 226)
 LEATHER = (124, 84, 52)
 LEATHER_DARK = (88, 58, 38)
 
@@ -131,6 +140,24 @@ MODELS_DEF = {
         ("Leaf_A", (2, 13.5, 0), (3, 1, 2), 25, glow(SPROUT), "fullbright"),
         ("Leaf_B", (-1, 14.5, 0), (2, 1, 2), -20, glow(SPROUT), "fullbright"),
     ], (0, 7, 0), 11.0),
+    CORE: ("Rare", 25, 10, [
+        ("Cage", (0, 7, 0), (9, 9, 9), 0, smooth(STEEL), "flat"),
+        ("Band_H", (0, 7, 0), (10, 2, 10), 0, flat(BRONZE), "flat"),
+        ("Band_V", (0, 7, 0), (2, 10, 10), 0, flat(BRONZE), "flat"),
+        ("Rune", (0, 7, 0), (5, 5, 11), 0, glow(RUNE), "fullbright"),
+        ("Rune_Side", (0, 7, 0), (11, 5, 5), 0, glow(RUNE), "fullbright"),
+        ("Rivet", (0, 13, 0), (3, 2, 3), 0, flat(BRONZE), "flat"),
+        ("Foot", (0, 1.5, 0), (5, 2, 5), 0, smooth(STEEL), "flat"),
+    ], (0, 7, 0), 11.0),
+    SHROUD: ("Rare", 25, 10, [
+        ("Hood", (0, 11, 0), (8, 6, 7), 0, smooth(SHROUD_WHITE), "flat"),
+        ("Drape", (0, 6, 0), (10, 6, 5), 0, smooth(SHROUD_WHITE), "flat"),
+        ("Hem", (0, 2, 0), (12, 3, 4), 0, smooth(SHROUD_BLUE), "flat"),
+        ("Tatter_L", (-4.5, 0, 0), (2, 2, 3), 0, flat(SHROUD_BLUE), "flat"),
+        ("Tatter_R", (4, -0.5, 0.5), (2, 3, 2), 0, flat(SHROUD_BLUE), "flat"),
+        ("Eye_L", (-1.5, 11, 3.6), (1, 1, 1), 0, glow(RUNE), "fullbright"),
+        ("Eye_R", (1.5, 11, 3.6), (1, 1, 1), 0, glow(RUNE), "fullbright"),
+    ], (0, 7, 0), 11.0),
 }
 
 
@@ -169,6 +196,10 @@ BAGS = [
      [(SILVER_BAR, 3, 4), (SHARD, 2, 4), ("Ingredient_Life_Essence_Pumpkin", 2, 3)], [("Rock_Gem_Ruby", 1, 1)]),
     ("Garrison", (60, 70, 150), "Epic",
      [(SILVER_BAR, 4, 6), (SHARD, 3, 5), ("Rock_Gem_Topaz", 1, 1)], [("Rock_Gem_Sapphire", 1, 1)]),
+    ("Crypt", (70, 120, 200), "Epic",
+     [(SILVER_BAR, 4, 5), (SHARD, 3, 5), ("Ingredient_Bar_Iron", 3, 5)], [("Rock_Gem_Sapphire", 1, 1)]),
+    ("Castle", (150, 200, 230), "Epic",
+     [(SILVER_BAR, 4, 6), (SHARD, 3, 5), ("Ingredient_Nakasar_Manor_Relic", 1, 1)], [("Rock_Gem_Sapphire", 2, 1)]),
 ]
 
 
@@ -200,6 +231,8 @@ def drops():
         HEART: {"Container": single(HEART)},
         INSIGNIA: {"Container": single(INSIGNIA)},
         SEED: {"Container": single(SEED)},
+        CORE: {"Container": single(CORE)},
+        SHROUD: {"Container": single(SHROUD)},
     }
 
 

@@ -1,0 +1,3122 @@
+{
+  "Name": "Nakasar_Contract_Crypt_Island",
+  "Terrain": {
+    "Type": "DAOTerrain",
+    "Density": {
+      "Type": "Min",
+      "Inputs": [
+        {
+          "Type": "Sum",
+          "Inputs": [
+            {
+              "Type": "Multiplier",
+              "Inputs": [
+                {
+                  "Type": "YValue"
+                },
+                {
+                  "Type": "Constant",
+                  "Value": -0.125
+                }
+              ]
+            },
+            {
+              "Type": "YOverride",
+              "Value": 81.0,
+              "Inputs": [
+                {
+                  "Type": "Cache",
+                  "Capacity": 64,
+                  "Inputs": [
+                    {
+                      "Type": "Sum",
+                      "Inputs": [
+                        {
+                          "Type": "Constant",
+                          "Value": 10.0625
+                        },
+                        {
+                          "Type": "Multiplier",
+                          "Inputs": [
+                            {
+                              "Type": "Sum",
+                              "Inputs": [
+                                {
+                                  "Type": "Multiplier",
+                                  "Inputs": [
+                                    {
+                                      "Type": "SimplexNoise2D",
+                                      "Scale": 60.0,
+                                      "Octaves": 2,
+                                      "Lacunarity": 2.0,
+                                      "Persistence": 0.5,
+                                      "Seed": "Hills"
+                                    },
+                                    {
+                                      "Type": "Constant",
+                                      "Value": 0.9
+                                    }
+                                  ]
+                                },
+                                {
+                                  "Type": "Multiplier",
+                                  "Inputs": [
+                                    {
+                                      "Type": "SimplexNoise2D",
+                                      "Scale": 18.0,
+                                      "Octaves": 2,
+                                      "Lacunarity": 2.0,
+                                      "Persistence": 0.5,
+                                      "Seed": "Bumps"
+                                    },
+                                    {
+                                      "Type": "Constant",
+                                      "Value": 0.3
+                                    }
+                                  ]
+                                }
+                              ]
+                            },
+                            {
+                              "Type": "Min",
+                              "Inputs": [
+                                {
+                                  "Type": "PositionsCellNoise",
+                                  "Positions": {
+                                    "Type": "List",
+                                    "Positions": [
+                                      {
+                                        "X": 0,
+                                        "Y": 81,
+                                        "Z": -54
+                                      }
+                                    ]
+                                  },
+                                  "ReturnType": {
+                                    "Type": "Curve",
+                                    "Curve": {
+                                      "Type": "Manual",
+                                      "Points": [
+                                        {
+                                          "In": 0,
+                                          "Out": 0
+                                        },
+                                        {
+                                          "In": 34,
+                                          "Out": 0
+                                        },
+                                        {
+                                          "In": 50,
+                                          "Out": 1
+                                        }
+                                      ]
+                                    }
+                                  },
+                                  "DistanceFunction": {
+                                    "Type": "Euclidean"
+                                  },
+                                  "MaxDistance": 52.0
+                                },
+                                {
+                                  "Type": "PositionsCellNoise",
+                                  "Positions": {
+                                    "Type": "List",
+                                    "Positions": [
+                                      {
+                                        "X": 0,
+                                        "Y": 81,
+                                        "Z": 0
+                                      }
+                                    ]
+                                  },
+                                  "ReturnType": {
+                                    "Type": "Curve",
+                                    "Curve": {
+                                      "Type": "Manual",
+                                      "Points": [
+                                        {
+                                          "In": 0,
+                                          "Out": 0
+                                        },
+                                        {
+                                          "In": 16,
+                                          "Out": 0
+                                        },
+                                        {
+                                          "In": 28,
+                                          "Out": 1
+                                        }
+                                      ]
+                                    }
+                                  },
+                                  "DistanceFunction": {
+                                    "Type": "Euclidean"
+                                  },
+                                  "MaxDistance": 30.0
+                                }
+                              ]
+                            }
+                          ]
+                        },
+                        {
+                          "Type": "Axis",
+                          "Axis": {
+                            "X": 0.0,
+                            "Y": 1.0,
+                            "Z": 0.0
+                          },
+                          "IsAnchored": false,
+                          "Curve": {
+                            "Type": "Manual",
+                            "Points": [
+                              {
+                                "In": 0,
+                                "Out": 0
+                              },
+                              {
+                                "In": 92.0,
+                                "Out": 0
+                              },
+                              {
+                                "In": 112.0,
+                                "Out": -1.0
+                              }
+                            ]
+                          }
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "Type": "Sum",
+          "Inputs": [
+            {
+              "Type": "Multiplier",
+              "Inputs": [
+                {
+                  "Type": "YValue"
+                },
+                {
+                  "Type": "Constant",
+                  "Value": 0.125
+                }
+              ]
+            },
+            {
+              "Type": "YOverride",
+              "Value": 81.0,
+              "Inputs": [
+                {
+                  "Type": "Cache",
+                  "Capacity": 64,
+                  "Inputs": [
+                    {
+                      "Type": "Sum",
+                      "Inputs": [
+                        {
+                          "Type": "Axis",
+                          "Axis": {
+                            "X": 0.0,
+                            "Y": 1.0,
+                            "Z": 0.0
+                          },
+                          "IsAnchored": false,
+                          "Curve": {
+                            "Type": "Manual",
+                            "Points": [
+                              {
+                                "In": 0.0,
+                                "Out": -3.125
+                              },
+                              {
+                                "In": 56.0,
+                                "Out": -4.375
+                              },
+                              {
+                                "In": 89.60000000000001,
+                                "Out": -5.875
+                              },
+                              {
+                                "In": 106.39999999999999,
+                                "Out": -7.375
+                              },
+                              {
+                                "In": 112.0,
+                                "Out": -8.375
+                              },
+                              {
+                                "In": 113.0,
+                                "Out": -35.125
+                              }
+                            ]
+                          }
+                        },
+                        {
+                          "Type": "Multiplier",
+                          "Inputs": [
+                            {
+                              "Type": "SimplexNoise2D",
+                              "Scale": 16.0,
+                              "Octaves": 2,
+                              "Lacunarity": 2.0,
+                              "Persistence": 0.5,
+                              "Seed": "Underside"
+                            },
+                            {
+                              "Type": "Constant",
+                              "Value": 0.7
+                            }
+                          ]
+                        },
+                        {
+                          "Type": "Multiplier",
+                          "Inputs": [
+                            {
+                              "Type": "SimplexNoise2D",
+                              "Scale": 30.0,
+                              "Octaves": 2,
+                              "Lacunarity": 2.0,
+                              "Persistence": 0.5,
+                              "Seed": "Rim"
+                            },
+                            {
+                              "Type": "Axis",
+                              "Axis": {
+                                "X": 0.0,
+                                "Y": 1.0,
+                                "Z": 0.0
+                              },
+                              "IsAnchored": false,
+                              "Curve": {
+                                "Type": "Manual",
+                                "Points": [
+                                  {
+                                    "In": 0,
+                                    "Out": 0
+                                  },
+                                  {
+                                    "In": 88.0,
+                                    "Out": 0
+                                  },
+                                  {
+                                    "In": 108.0,
+                                    "Out": 1.6
+                                  }
+                                ]
+                              }
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  },
+  "MaterialProvider": {
+    "Type": "Solidity",
+    "Solid": {
+      "Type": "Queue",
+      "Queue": [
+        {
+          "Type": "SpaceAndDepth",
+          "LayerContext": "DepthIntoFloor",
+          "MaxExpectedDepth": 5,
+          "Layers": [
+            {
+              "Type": "ConstantThickness",
+              "Thickness": 1,
+              "Material": {
+                "Type": "FieldFunction",
+                "FieldFunction": {
+                  "Type": "SimplexNoise2D",
+                  "Scale": 17.0,
+                  "Octaves": 2,
+                  "Lacunarity": 2.0,
+                  "Persistence": 0.5,
+                  "Seed": "Patches"
+                },
+                "Delimiters": [
+                  {
+                    "From": -10.0,
+                    "To": -0.5,
+                    "Material": {
+                      "Type": "Constant",
+                      "Material": {
+                        "Solid": "Soil_Ash"
+                      }
+                    }
+                  },
+                  {
+                    "From": -0.5,
+                    "To": 0.5,
+                    "Material": {
+                      "Type": "Weighted",
+                      "Seed": "Surface",
+                      "SkipChance": 0.0,
+                      "WeightedMaterials": [
+                        {
+                          "Weight": 10,
+                          "Material": {
+                            "Type": "Constant",
+                            "Material": {
+                              "Solid": "Soil_Grass_Burnt"
+                            }
+                          }
+                        },
+                        {
+                          "Weight": 1,
+                          "Material": {
+                            "Type": "Constant",
+                            "Material": {
+                              "Solid": "Soil_Dirt_Burnt"
+                            }
+                          }
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "From": 0.5,
+                    "To": 10.0,
+                    "Material": {
+                      "Type": "Weighted",
+                      "Seed": "Gravel",
+                      "SkipChance": 0.0,
+                      "WeightedMaterials": [
+                        {
+                          "Weight": 3,
+                          "Material": {
+                            "Type": "Constant",
+                            "Material": {
+                              "Solid": "Soil_Gravel_Mossy"
+                            }
+                          }
+                        },
+                        {
+                          "Weight": 1,
+                          "Material": {
+                            "Type": "Constant",
+                            "Material": {
+                              "Solid": "Soil_Gravel"
+                            }
+                          }
+                        }
+                      ]
+                    }
+                  }
+                ]
+              }
+            },
+            {
+              "Type": "ConstantThickness",
+              "Thickness": 4,
+              "Material": {
+                "Type": "Weighted",
+                "Seed": "Subsoil",
+                "SkipChance": 0.0,
+                "WeightedMaterials": [
+                  {
+                    "Weight": 3,
+                    "Material": {
+                      "Type": "Constant",
+                      "Material": {
+                        "Solid": "Soil_Dirt_Burnt"
+                      }
+                    }
+                  },
+                  {
+                    "Weight": 2,
+                    "Material": {
+                      "Type": "Constant",
+                      "Material": {
+                        "Solid": "Soil_Dirt"
+                      }
+                    }
+                  },
+                  {
+                    "Weight": 1,
+                    "Material": {
+                      "Type": "Constant",
+                      "Material": {
+                        "Solid": "Soil_Gravel"
+                      }
+                    }
+                  }
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "Type": "Weighted",
+          "Seed": "Bedrock",
+          "SkipChance": 0.0,
+          "WeightedMaterials": [
+            {
+              "Weight": 6,
+              "Material": {
+                "Type": "Constant",
+                "Material": {
+                  "Solid": "Rock_Stone"
+                }
+              }
+            },
+            {
+              "Weight": 1,
+              "Material": {
+                "Type": "Constant",
+                "Material": {
+                  "Solid": "Rock_Stone_Mossy"
+                }
+              }
+            },
+            {
+              "Weight": 2,
+              "Material": {
+                "Type": "Constant",
+                "Material": {
+                  "Solid": "Rock_Slate"
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    "Empty": {
+      "Type": "Constant",
+      "Material": {
+        "Solid": "Empty"
+      }
+    }
+  },
+  "Props": [
+    {
+      "Runtime": 0,
+      "ContextPrecision": "Prop",
+      "PropDistribution": {
+        "Type": "Assigned",
+        "OverrideAllProps": true,
+        "PropDistribution": {
+          "Type": "Positions",
+          "Positions": {
+            "Type": "List",
+            "Positions": [
+              {
+                "X": 0,
+                "Y": 81,
+                "Z": -54
+              }
+            ]
+          }
+        },
+        "Assignments": {
+          "Type": "Constant",
+          "Prop": {
+            "Type": "Locator",
+            "Pattern": {
+              "Type": "Floor",
+              "Floor": {
+                "Type": "Not",
+                "Pattern": {
+                  "Type": "BlockType",
+                  "Material": {
+                    "Solid": "Empty"
+                  }
+                }
+              },
+              "Origin": {
+                "Type": "BlockType",
+                "Material": {
+                  "Solid": "Empty"
+                }
+              }
+            },
+            "Scanner": {
+              "Type": "Linear",
+              "Axis": "Y",
+              "Range": {
+                "MinInclusive": -12,
+                "MaxExclusive": 13
+              },
+              "AscendingOrder": false,
+              "Scanner": {
+                "Type": "Origin"
+              }
+            },
+            "PlacementCap": 1,
+            "Prop": {
+              "Type": "Prefab",
+              "WeightedPrefabPaths": [
+                {
+                  "Path": "Nakasar/Halloween/Crypts/Guarded",
+                  "Weight": 1.0
+                }
+              ]
+            }
+          }
+        }
+      }
+    },
+    {
+      "Runtime": 0,
+      "ContextPrecision": "Prop",
+      "PropDistribution": {
+        "Type": "Assigned",
+        "OverrideAllProps": true,
+        "PropDistribution": {
+          "Type": "Positions",
+          "Positions": {
+            "Type": "List",
+            "Positions": [
+              {
+                "X": 0,
+                "Y": 81,
+                "Z": 0
+              }
+            ]
+          }
+        },
+        "Assignments": {
+          "Type": "Constant",
+          "Prop": {
+            "Type": "Locator",
+            "Pattern": {
+              "Type": "Floor",
+              "Floor": {
+                "Type": "Not",
+                "Pattern": {
+                  "Type": "BlockType",
+                  "Material": {
+                    "Solid": "Empty"
+                  }
+                }
+              },
+              "Origin": {
+                "Type": "BlockType",
+                "Material": {
+                  "Solid": "Empty"
+                }
+              }
+            },
+            "Scanner": {
+              "Type": "Linear",
+              "Axis": "Y",
+              "Range": {
+                "MinInclusive": -12,
+                "MaxExclusive": 13
+              },
+              "AscendingOrder": false,
+              "Scanner": {
+                "Type": "Origin"
+              }
+            },
+            "PlacementCap": 1,
+            "Prop": {
+              "Type": "Prefab",
+              "WeightedPrefabPaths": [
+                {
+                  "Path": "Nakasar/Halloween/SpawnCrypt",
+                  "Weight": 1.0
+                }
+              ]
+            }
+          }
+        }
+      }
+    },
+    {
+      "Runtime": 1,
+      "ContextPrecision": "Chunk",
+      "PropDistribution": {
+        "Type": "Assigned",
+        "OverrideAllProps": true,
+        "PropDistribution": {
+          "Type": "Positions",
+          "Positions": {
+            "Type": "FieldFunction",
+            "FieldFunction": {
+              "Type": "Axis",
+              "Axis": {
+                "X": 0.0,
+                "Y": 1.0,
+                "Z": 0.0
+              },
+              "IsAnchored": false,
+              "Curve": {
+                "Type": "Manual",
+                "Points": [
+                  {
+                    "In": 0,
+                    "Out": 0
+                  },
+                  {
+                    "In": 112.0,
+                    "Out": 112.0
+                  }
+                ]
+              }
+            },
+            "Delimiters": [
+              {
+                "Min": 0.0,
+                "Max": 92.0
+              }
+            ],
+            "Positions": {
+              "Type": "FieldFunction",
+              "FieldFunction": {
+                "Type": "PositionsCellNoise",
+                "Positions": {
+                  "Type": "List",
+                  "Positions": [
+                    {
+                      "X": 0,
+                      "Y": 81,
+                      "Z": 0
+                    }
+                  ]
+                },
+                "ReturnType": {
+                  "Type": "Curve",
+                  "Curve": {
+                    "Type": "Manual",
+                    "Points": [
+                      {
+                        "In": 0,
+                        "Out": 0
+                      },
+                      {
+                        "In": 19,
+                        "Out": 19
+                      }
+                    ]
+                  }
+                },
+                "DistanceFunction": {
+                  "Type": "Euclidean"
+                },
+                "MaxDistance": 19.0
+              },
+              "Delimiters": [
+                {
+                  "Min": 18.0,
+                  "Max": 1000000000.0
+                }
+              ],
+              "Positions": {
+                "Type": "FieldFunction",
+                "FieldFunction": {
+                  "Type": "PositionsCellNoise",
+                  "Positions": {
+                    "Type": "List",
+                    "Positions": [
+                      {
+                        "X": 0,
+                        "Y": 81,
+                        "Z": -54
+                      }
+                    ]
+                  },
+                  "ReturnType": {
+                    "Type": "Curve",
+                    "Curve": {
+                      "Type": "Manual",
+                      "Points": [
+                        {
+                          "In": 0,
+                          "Out": 0
+                        },
+                        {
+                          "In": 39,
+                          "Out": 39
+                        }
+                      ]
+                    }
+                  },
+                  "DistanceFunction": {
+                    "Type": "Euclidean"
+                  },
+                  "MaxDistance": 39.0
+                },
+                "Delimiters": [
+                  {
+                    "Min": 38.0,
+                    "Max": 1000000000.0
+                  }
+                ],
+                "Positions": {
+                  "Type": "Mesh2D",
+                  "PointsY": 81,
+                  "PointGenerator": {
+                    "Type": "Mesh",
+                    "ScaleX": 9.0,
+                    "ScaleY": 9.0,
+                    "ScaleZ": 9.0,
+                    "Jitter": 0.45,
+                    "Seed": "Trees"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "Assignments": {
+          "Type": "Weighted",
+          "Seed": "TreePick",
+          "SkipChance": 0.3,
+          "WeightedAssignments": [
+            {
+              "Weight": 1.2,
+              "Assignments": {
+                "Type": "Constant",
+                "Prop": {
+                  "Type": "Locator",
+                  "Pattern": {
+                    "Type": "Floor",
+                    "Floor": {
+                      "Type": "Or",
+                      "Patterns": [
+                        {
+                          "Type": "BlockType",
+                          "Material": {
+                            "Solid": "Soil_Grass_Burnt"
+                          }
+                        },
+                        {
+                          "Type": "BlockType",
+                          "Material": {
+                            "Solid": "Soil_Dirt_Burnt"
+                          }
+                        },
+                        {
+                          "Type": "BlockType",
+                          "Material": {
+                            "Solid": "Soil_Ash"
+                          }
+                        },
+                        {
+                          "Type": "BlockType",
+                          "Material": {
+                            "Solid": "Soil_Gravel_Mossy"
+                          }
+                        }
+                      ]
+                    },
+                    "Origin": {
+                      "Type": "BlockType",
+                      "Material": {
+                        "Solid": "Empty"
+                      }
+                    }
+                  },
+                  "Scanner": {
+                    "Type": "Linear",
+                    "Axis": "Y",
+                    "Range": {
+                      "MinInclusive": -20,
+                      "MaxExclusive": 21
+                    },
+                    "AscendingOrder": false,
+                    "Scanner": {
+                      "Type": "Origin"
+                    }
+                  },
+                  "PlacementCap": 1,
+                  "Prop": {
+                    "Type": "RandomRotator",
+                    "HorizontalRotations": true,
+                    "Seed": "ContractTree0",
+                    "Prop": {
+                      "Type": "Prefab",
+                      "WeightedPrefabPaths": [
+                        {
+                          "Path": "Trees/Fir_Dead/Stage_2",
+                          "Weight": 1.0
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            },
+            {
+              "Weight": 1.6,
+              "Assignments": {
+                "Type": "Constant",
+                "Prop": {
+                  "Type": "Locator",
+                  "Pattern": {
+                    "Type": "Floor",
+                    "Floor": {
+                      "Type": "Or",
+                      "Patterns": [
+                        {
+                          "Type": "BlockType",
+                          "Material": {
+                            "Solid": "Soil_Grass_Burnt"
+                          }
+                        },
+                        {
+                          "Type": "BlockType",
+                          "Material": {
+                            "Solid": "Soil_Dirt_Burnt"
+                          }
+                        },
+                        {
+                          "Type": "BlockType",
+                          "Material": {
+                            "Solid": "Soil_Ash"
+                          }
+                        },
+                        {
+                          "Type": "BlockType",
+                          "Material": {
+                            "Solid": "Soil_Gravel_Mossy"
+                          }
+                        }
+                      ]
+                    },
+                    "Origin": {
+                      "Type": "BlockType",
+                      "Material": {
+                        "Solid": "Empty"
+                      }
+                    }
+                  },
+                  "Scanner": {
+                    "Type": "Linear",
+                    "Axis": "Y",
+                    "Range": {
+                      "MinInclusive": -20,
+                      "MaxExclusive": 21
+                    },
+                    "AscendingOrder": false,
+                    "Scanner": {
+                      "Type": "Origin"
+                    }
+                  },
+                  "PlacementCap": 1,
+                  "Prop": {
+                    "Type": "RandomRotator",
+                    "HorizontalRotations": true,
+                    "Seed": "ContractTree1",
+                    "Prop": {
+                      "Type": "Prefab",
+                      "WeightedPrefabPaths": [
+                        {
+                          "Path": "Trees/Fir_Dead/Stage_3",
+                          "Weight": 1.0
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            },
+            {
+              "Weight": 0.8,
+              "Assignments": {
+                "Type": "Constant",
+                "Prop": {
+                  "Type": "Locator",
+                  "Pattern": {
+                    "Type": "Floor",
+                    "Floor": {
+                      "Type": "Or",
+                      "Patterns": [
+                        {
+                          "Type": "BlockType",
+                          "Material": {
+                            "Solid": "Soil_Grass_Burnt"
+                          }
+                        },
+                        {
+                          "Type": "BlockType",
+                          "Material": {
+                            "Solid": "Soil_Dirt_Burnt"
+                          }
+                        },
+                        {
+                          "Type": "BlockType",
+                          "Material": {
+                            "Solid": "Soil_Ash"
+                          }
+                        },
+                        {
+                          "Type": "BlockType",
+                          "Material": {
+                            "Solid": "Soil_Gravel_Mossy"
+                          }
+                        }
+                      ]
+                    },
+                    "Origin": {
+                      "Type": "BlockType",
+                      "Material": {
+                        "Solid": "Empty"
+                      }
+                    }
+                  },
+                  "Scanner": {
+                    "Type": "Linear",
+                    "Axis": "Y",
+                    "Range": {
+                      "MinInclusive": -20,
+                      "MaxExclusive": 21
+                    },
+                    "AscendingOrder": false,
+                    "Scanner": {
+                      "Type": "Origin"
+                    }
+                  },
+                  "PlacementCap": 1,
+                  "Prop": {
+                    "Type": "RandomRotator",
+                    "HorizontalRotations": true,
+                    "Seed": "ContractTree2",
+                    "Prop": {
+                      "Type": "Prefab",
+                      "WeightedPrefabPaths": [
+                        {
+                          "Path": "Trees/Fir_Dead_Large/Stage_2",
+                          "Weight": 1.0
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            },
+            {
+              "Weight": 0.6,
+              "Assignments": {
+                "Type": "Constant",
+                "Prop": {
+                  "Type": "Locator",
+                  "Pattern": {
+                    "Type": "Floor",
+                    "Floor": {
+                      "Type": "Or",
+                      "Patterns": [
+                        {
+                          "Type": "BlockType",
+                          "Material": {
+                            "Solid": "Soil_Grass_Burnt"
+                          }
+                        },
+                        {
+                          "Type": "BlockType",
+                          "Material": {
+                            "Solid": "Soil_Dirt_Burnt"
+                          }
+                        },
+                        {
+                          "Type": "BlockType",
+                          "Material": {
+                            "Solid": "Soil_Ash"
+                          }
+                        },
+                        {
+                          "Type": "BlockType",
+                          "Material": {
+                            "Solid": "Soil_Gravel_Mossy"
+                          }
+                        }
+                      ]
+                    },
+                    "Origin": {
+                      "Type": "BlockType",
+                      "Material": {
+                        "Solid": "Empty"
+                      }
+                    }
+                  },
+                  "Scanner": {
+                    "Type": "Linear",
+                    "Axis": "Y",
+                    "Range": {
+                      "MinInclusive": -20,
+                      "MaxExclusive": 21
+                    },
+                    "AscendingOrder": false,
+                    "Scanner": {
+                      "Type": "Origin"
+                    }
+                  },
+                  "PlacementCap": 1,
+                  "Prop": {
+                    "Type": "RandomRotator",
+                    "HorizontalRotations": true,
+                    "Seed": "ContractTree3",
+                    "Prop": {
+                      "Type": "Prefab",
+                      "WeightedPrefabPaths": [
+                        {
+                          "Path": "Trees/Fir_Dead_Large/Stage_3",
+                          "Weight": 1.0
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            },
+            {
+              "Weight": 0.9,
+              "Assignments": {
+                "Type": "Constant",
+                "Prop": {
+                  "Type": "Locator",
+                  "Pattern": {
+                    "Type": "Floor",
+                    "Floor": {
+                      "Type": "Or",
+                      "Patterns": [
+                        {
+                          "Type": "BlockType",
+                          "Material": {
+                            "Solid": "Soil_Grass_Burnt"
+                          }
+                        },
+                        {
+                          "Type": "BlockType",
+                          "Material": {
+                            "Solid": "Soil_Dirt_Burnt"
+                          }
+                        },
+                        {
+                          "Type": "BlockType",
+                          "Material": {
+                            "Solid": "Soil_Ash"
+                          }
+                        },
+                        {
+                          "Type": "BlockType",
+                          "Material": {
+                            "Solid": "Soil_Gravel_Mossy"
+                          }
+                        }
+                      ]
+                    },
+                    "Origin": {
+                      "Type": "BlockType",
+                      "Material": {
+                        "Solid": "Empty"
+                      }
+                    }
+                  },
+                  "Scanner": {
+                    "Type": "Linear",
+                    "Axis": "Y",
+                    "Range": {
+                      "MinInclusive": -20,
+                      "MaxExclusive": 21
+                    },
+                    "AscendingOrder": false,
+                    "Scanner": {
+                      "Type": "Origin"
+                    }
+                  },
+                  "PlacementCap": 1,
+                  "Prop": {
+                    "Type": "RandomRotator",
+                    "HorizontalRotations": true,
+                    "Seed": "ContractTree4",
+                    "Prop": {
+                      "Type": "Prefab",
+                      "WeightedPrefabPaths": [
+                        {
+                          "Path": "Trees/Ash_Dead/Stage_2",
+                          "Weight": 1.0
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            },
+            {
+              "Weight": 0.9,
+              "Assignments": {
+                "Type": "Constant",
+                "Prop": {
+                  "Type": "Locator",
+                  "Pattern": {
+                    "Type": "Floor",
+                    "Floor": {
+                      "Type": "Or",
+                      "Patterns": [
+                        {
+                          "Type": "BlockType",
+                          "Material": {
+                            "Solid": "Soil_Grass_Burnt"
+                          }
+                        },
+                        {
+                          "Type": "BlockType",
+                          "Material": {
+                            "Solid": "Soil_Dirt_Burnt"
+                          }
+                        },
+                        {
+                          "Type": "BlockType",
+                          "Material": {
+                            "Solid": "Soil_Ash"
+                          }
+                        },
+                        {
+                          "Type": "BlockType",
+                          "Material": {
+                            "Solid": "Soil_Gravel_Mossy"
+                          }
+                        }
+                      ]
+                    },
+                    "Origin": {
+                      "Type": "BlockType",
+                      "Material": {
+                        "Solid": "Empty"
+                      }
+                    }
+                  },
+                  "Scanner": {
+                    "Type": "Linear",
+                    "Axis": "Y",
+                    "Range": {
+                      "MinInclusive": -20,
+                      "MaxExclusive": 21
+                    },
+                    "AscendingOrder": false,
+                    "Scanner": {
+                      "Type": "Origin"
+                    }
+                  },
+                  "PlacementCap": 1,
+                  "Prop": {
+                    "Type": "RandomRotator",
+                    "HorizontalRotations": true,
+                    "Seed": "ContractTree5",
+                    "Prop": {
+                      "Type": "Prefab",
+                      "WeightedPrefabPaths": [
+                        {
+                          "Path": "Trees/Ash_Dead/Stage_3",
+                          "Weight": 1.0
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            },
+            {
+              "Weight": 0.5,
+              "Assignments": {
+                "Type": "Constant",
+                "Prop": {
+                  "Type": "Locator",
+                  "Pattern": {
+                    "Type": "Floor",
+                    "Floor": {
+                      "Type": "Or",
+                      "Patterns": [
+                        {
+                          "Type": "BlockType",
+                          "Material": {
+                            "Solid": "Soil_Grass_Burnt"
+                          }
+                        },
+                        {
+                          "Type": "BlockType",
+                          "Material": {
+                            "Solid": "Soil_Dirt_Burnt"
+                          }
+                        },
+                        {
+                          "Type": "BlockType",
+                          "Material": {
+                            "Solid": "Soil_Ash"
+                          }
+                        },
+                        {
+                          "Type": "BlockType",
+                          "Material": {
+                            "Solid": "Soil_Gravel_Mossy"
+                          }
+                        }
+                      ]
+                    },
+                    "Origin": {
+                      "Type": "BlockType",
+                      "Material": {
+                        "Solid": "Empty"
+                      }
+                    }
+                  },
+                  "Scanner": {
+                    "Type": "Linear",
+                    "Axis": "Y",
+                    "Range": {
+                      "MinInclusive": -20,
+                      "MaxExclusive": 21
+                    },
+                    "AscendingOrder": false,
+                    "Scanner": {
+                      "Type": "Origin"
+                    }
+                  },
+                  "PlacementCap": 1,
+                  "Prop": {
+                    "Type": "RandomRotator",
+                    "HorizontalRotations": true,
+                    "Seed": "ContractTree6",
+                    "Prop": {
+                      "Type": "Prefab",
+                      "WeightedPrefabPaths": [
+                        {
+                          "Path": "Trees/Oak_Moss/Stage_4",
+                          "Weight": 1.0
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            },
+            {
+              "Weight": 0.3,
+              "Assignments": {
+                "Type": "Constant",
+                "Prop": {
+                  "Type": "Locator",
+                  "Pattern": {
+                    "Type": "Floor",
+                    "Floor": {
+                      "Type": "Or",
+                      "Patterns": [
+                        {
+                          "Type": "BlockType",
+                          "Material": {
+                            "Solid": "Soil_Grass_Burnt"
+                          }
+                        },
+                        {
+                          "Type": "BlockType",
+                          "Material": {
+                            "Solid": "Soil_Dirt_Burnt"
+                          }
+                        },
+                        {
+                          "Type": "BlockType",
+                          "Material": {
+                            "Solid": "Soil_Ash"
+                          }
+                        },
+                        {
+                          "Type": "BlockType",
+                          "Material": {
+                            "Solid": "Soil_Gravel_Mossy"
+                          }
+                        }
+                      ]
+                    },
+                    "Origin": {
+                      "Type": "BlockType",
+                      "Material": {
+                        "Solid": "Empty"
+                      }
+                    }
+                  },
+                  "Scanner": {
+                    "Type": "Linear",
+                    "Axis": "Y",
+                    "Range": {
+                      "MinInclusive": -20,
+                      "MaxExclusive": 21
+                    },
+                    "AscendingOrder": false,
+                    "Scanner": {
+                      "Type": "Origin"
+                    }
+                  },
+                  "PlacementCap": 1,
+                  "Prop": {
+                    "Type": "RandomRotator",
+                    "HorizontalRotations": true,
+                    "Seed": "ContractTree7",
+                    "Prop": {
+                      "Type": "Prefab",
+                      "WeightedPrefabPaths": [
+                        {
+                          "Path": "Trees/Ash_Moss/Stage_3",
+                          "Weight": 1.0
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            },
+            {
+              "Weight": 0.3,
+              "Assignments": {
+                "Type": "Constant",
+                "Prop": {
+                  "Type": "Locator",
+                  "Pattern": {
+                    "Type": "Floor",
+                    "Floor": {
+                      "Type": "Or",
+                      "Patterns": [
+                        {
+                          "Type": "BlockType",
+                          "Material": {
+                            "Solid": "Soil_Grass_Burnt"
+                          }
+                        },
+                        {
+                          "Type": "BlockType",
+                          "Material": {
+                            "Solid": "Soil_Dirt_Burnt"
+                          }
+                        },
+                        {
+                          "Type": "BlockType",
+                          "Material": {
+                            "Solid": "Soil_Ash"
+                          }
+                        },
+                        {
+                          "Type": "BlockType",
+                          "Material": {
+                            "Solid": "Soil_Gravel_Mossy"
+                          }
+                        }
+                      ]
+                    },
+                    "Origin": {
+                      "Type": "BlockType",
+                      "Material": {
+                        "Solid": "Empty"
+                      }
+                    }
+                  },
+                  "Scanner": {
+                    "Type": "Linear",
+                    "Axis": "Y",
+                    "Range": {
+                      "MinInclusive": -20,
+                      "MaxExclusive": 21
+                    },
+                    "AscendingOrder": false,
+                    "Scanner": {
+                      "Type": "Origin"
+                    }
+                  },
+                  "PlacementCap": 1,
+                  "Prop": {
+                    "Type": "RandomRotator",
+                    "HorizontalRotations": true,
+                    "Seed": "ContractTree8",
+                    "Prop": {
+                      "Type": "Prefab",
+                      "WeightedPrefabPaths": [
+                        {
+                          "Path": "Trees/Ash_swamp_dead/Stage_3",
+                          "Weight": 1.0
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            },
+            {
+              "Weight": 0.15,
+              "Assignments": {
+                "Type": "Constant",
+                "Prop": {
+                  "Type": "Locator",
+                  "Pattern": {
+                    "Type": "Floor",
+                    "Floor": {
+                      "Type": "Or",
+                      "Patterns": [
+                        {
+                          "Type": "BlockType",
+                          "Material": {
+                            "Solid": "Soil_Grass_Burnt"
+                          }
+                        },
+                        {
+                          "Type": "BlockType",
+                          "Material": {
+                            "Solid": "Soil_Dirt_Burnt"
+                          }
+                        },
+                        {
+                          "Type": "BlockType",
+                          "Material": {
+                            "Solid": "Soil_Ash"
+                          }
+                        },
+                        {
+                          "Type": "BlockType",
+                          "Material": {
+                            "Solid": "Soil_Gravel_Mossy"
+                          }
+                        }
+                      ]
+                    },
+                    "Origin": {
+                      "Type": "BlockType",
+                      "Material": {
+                        "Solid": "Empty"
+                      }
+                    }
+                  },
+                  "Scanner": {
+                    "Type": "Linear",
+                    "Axis": "Y",
+                    "Range": {
+                      "MinInclusive": -20,
+                      "MaxExclusive": 21
+                    },
+                    "AscendingOrder": false,
+                    "Scanner": {
+                      "Type": "Origin"
+                    }
+                  },
+                  "PlacementCap": 1,
+                  "Prop": {
+                    "Type": "RandomRotator",
+                    "HorizontalRotations": true,
+                    "Seed": "ContractTree9",
+                    "Prop": {
+                      "Type": "Prefab",
+                      "WeightedPrefabPaths": [
+                        {
+                          "Path": "Trees/Poisoned/Stage_3",
+                          "Weight": 1.0
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            },
+            {
+              "Weight": 0.3,
+              "Assignments": {
+                "Type": "Constant",
+                "Prop": {
+                  "Type": "Locator",
+                  "Pattern": {
+                    "Type": "Floor",
+                    "Floor": {
+                      "Type": "Or",
+                      "Patterns": [
+                        {
+                          "Type": "BlockType",
+                          "Material": {
+                            "Solid": "Soil_Grass_Burnt"
+                          }
+                        },
+                        {
+                          "Type": "BlockType",
+                          "Material": {
+                            "Solid": "Soil_Dirt_Burnt"
+                          }
+                        },
+                        {
+                          "Type": "BlockType",
+                          "Material": {
+                            "Solid": "Soil_Ash"
+                          }
+                        },
+                        {
+                          "Type": "BlockType",
+                          "Material": {
+                            "Solid": "Soil_Gravel_Mossy"
+                          }
+                        }
+                      ]
+                    },
+                    "Origin": {
+                      "Type": "BlockType",
+                      "Material": {
+                        "Solid": "Empty"
+                      }
+                    }
+                  },
+                  "Scanner": {
+                    "Type": "Linear",
+                    "Axis": "Y",
+                    "Range": {
+                      "MinInclusive": -20,
+                      "MaxExclusive": 21
+                    },
+                    "AscendingOrder": false,
+                    "Scanner": {
+                      "Type": "Origin"
+                    }
+                  },
+                  "PlacementCap": 1,
+                  "Prop": {
+                    "Type": "RandomRotator",
+                    "HorizontalRotations": true,
+                    "Seed": "ContractTree10",
+                    "Prop": {
+                      "Type": "Prefab",
+                      "WeightedPrefabPaths": [
+                        {
+                          "Path": "Trees/Beech_Dry/Stage_3",
+                          "Weight": 1.0
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            },
+            {
+              "Weight": 0.3,
+              "Assignments": {
+                "Type": "Constant",
+                "Prop": {
+                  "Type": "Locator",
+                  "Pattern": {
+                    "Type": "Floor",
+                    "Floor": {
+                      "Type": "Or",
+                      "Patterns": [
+                        {
+                          "Type": "BlockType",
+                          "Material": {
+                            "Solid": "Soil_Grass_Burnt"
+                          }
+                        },
+                        {
+                          "Type": "BlockType",
+                          "Material": {
+                            "Solid": "Soil_Dirt_Burnt"
+                          }
+                        },
+                        {
+                          "Type": "BlockType",
+                          "Material": {
+                            "Solid": "Soil_Ash"
+                          }
+                        },
+                        {
+                          "Type": "BlockType",
+                          "Material": {
+                            "Solid": "Soil_Gravel_Mossy"
+                          }
+                        }
+                      ]
+                    },
+                    "Origin": {
+                      "Type": "BlockType",
+                      "Material": {
+                        "Solid": "Empty"
+                      }
+                    }
+                  },
+                  "Scanner": {
+                    "Type": "Linear",
+                    "Axis": "Y",
+                    "Range": {
+                      "MinInclusive": -20,
+                      "MaxExclusive": 21
+                    },
+                    "AscendingOrder": false,
+                    "Scanner": {
+                      "Type": "Origin"
+                    }
+                  },
+                  "PlacementCap": 1,
+                  "Prop": {
+                    "Type": "RandomRotator",
+                    "HorizontalRotations": true,
+                    "Seed": "ContractTree11",
+                    "Prop": {
+                      "Type": "Prefab",
+                      "WeightedPrefabPaths": [
+                        {
+                          "Path": "Trees/Dry_Dead",
+                          "Weight": 1.0
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            },
+            {
+              "Weight": 0.25,
+              "Assignments": {
+                "Type": "Constant",
+                "Prop": {
+                  "Type": "Locator",
+                  "Pattern": {
+                    "Type": "Floor",
+                    "Floor": {
+                      "Type": "Or",
+                      "Patterns": [
+                        {
+                          "Type": "BlockType",
+                          "Material": {
+                            "Solid": "Soil_Grass_Burnt"
+                          }
+                        },
+                        {
+                          "Type": "BlockType",
+                          "Material": {
+                            "Solid": "Soil_Dirt_Burnt"
+                          }
+                        },
+                        {
+                          "Type": "BlockType",
+                          "Material": {
+                            "Solid": "Soil_Ash"
+                          }
+                        },
+                        {
+                          "Type": "BlockType",
+                          "Material": {
+                            "Solid": "Soil_Gravel_Mossy"
+                          }
+                        }
+                      ]
+                    },
+                    "Origin": {
+                      "Type": "BlockType",
+                      "Material": {
+                        "Solid": "Empty"
+                      }
+                    }
+                  },
+                  "Scanner": {
+                    "Type": "Linear",
+                    "Axis": "Y",
+                    "Range": {
+                      "MinInclusive": -20,
+                      "MaxExclusive": 21
+                    },
+                    "AscendingOrder": false,
+                    "Scanner": {
+                      "Type": "Origin"
+                    }
+                  },
+                  "PlacementCap": 1,
+                  "Prop": {
+                    "Type": "RandomRotator",
+                    "HorizontalRotations": true,
+                    "Seed": "ContractTree12",
+                    "Prop": {
+                      "Type": "Prefab",
+                      "WeightedPrefabPaths": [
+                        {
+                          "Path": "Trees/Oak/Stumps",
+                          "Weight": 1.0
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            },
+            {
+              "Weight": 0.25,
+              "Assignments": {
+                "Type": "Constant",
+                "Prop": {
+                  "Type": "Locator",
+                  "Pattern": {
+                    "Type": "Floor",
+                    "Floor": {
+                      "Type": "Or",
+                      "Patterns": [
+                        {
+                          "Type": "BlockType",
+                          "Material": {
+                            "Solid": "Soil_Grass_Burnt"
+                          }
+                        },
+                        {
+                          "Type": "BlockType",
+                          "Material": {
+                            "Solid": "Soil_Dirt_Burnt"
+                          }
+                        },
+                        {
+                          "Type": "BlockType",
+                          "Material": {
+                            "Solid": "Soil_Ash"
+                          }
+                        },
+                        {
+                          "Type": "BlockType",
+                          "Material": {
+                            "Solid": "Soil_Gravel_Mossy"
+                          }
+                        }
+                      ]
+                    },
+                    "Origin": {
+                      "Type": "BlockType",
+                      "Material": {
+                        "Solid": "Empty"
+                      }
+                    }
+                  },
+                  "Scanner": {
+                    "Type": "Linear",
+                    "Axis": "Y",
+                    "Range": {
+                      "MinInclusive": -20,
+                      "MaxExclusive": 21
+                    },
+                    "AscendingOrder": false,
+                    "Scanner": {
+                      "Type": "Origin"
+                    }
+                  },
+                  "PlacementCap": 1,
+                  "Prop": {
+                    "Type": "RandomRotator",
+                    "HorizontalRotations": true,
+                    "Seed": "ContractTree13",
+                    "Prop": {
+                      "Type": "Prefab",
+                      "WeightedPrefabPaths": [
+                        {
+                          "Path": "Trees/Ash/Stumps",
+                          "Weight": 1.0
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            },
+            {
+              "Weight": 0.15,
+              "Assignments": {
+                "Type": "Constant",
+                "Prop": {
+                  "Type": "Locator",
+                  "Pattern": {
+                    "Type": "Floor",
+                    "Floor": {
+                      "Type": "Or",
+                      "Patterns": [
+                        {
+                          "Type": "BlockType",
+                          "Material": {
+                            "Solid": "Soil_Grass_Burnt"
+                          }
+                        },
+                        {
+                          "Type": "BlockType",
+                          "Material": {
+                            "Solid": "Soil_Dirt_Burnt"
+                          }
+                        },
+                        {
+                          "Type": "BlockType",
+                          "Material": {
+                            "Solid": "Soil_Ash"
+                          }
+                        },
+                        {
+                          "Type": "BlockType",
+                          "Material": {
+                            "Solid": "Soil_Gravel_Mossy"
+                          }
+                        }
+                      ]
+                    },
+                    "Origin": {
+                      "Type": "BlockType",
+                      "Material": {
+                        "Solid": "Empty"
+                      }
+                    }
+                  },
+                  "Scanner": {
+                    "Type": "Linear",
+                    "Axis": "Y",
+                    "Range": {
+                      "MinInclusive": -20,
+                      "MaxExclusive": 21
+                    },
+                    "AscendingOrder": false,
+                    "Scanner": {
+                      "Type": "Origin"
+                    }
+                  },
+                  "PlacementCap": 1,
+                  "Prop": {
+                    "Type": "RandomRotator",
+                    "HorizontalRotations": true,
+                    "Seed": "ContractTree14",
+                    "Prop": {
+                      "Type": "Prefab",
+                      "WeightedPrefabPaths": [
+                        {
+                          "Path": "Trees/Logs/Oak/Moss",
+                          "Weight": 1.0
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            },
+            {
+              "Weight": 0.1,
+              "Assignments": {
+                "Type": "Constant",
+                "Prop": {
+                  "Type": "Locator",
+                  "Pattern": {
+                    "Type": "Floor",
+                    "Floor": {
+                      "Type": "Or",
+                      "Patterns": [
+                        {
+                          "Type": "BlockType",
+                          "Material": {
+                            "Solid": "Soil_Grass_Burnt"
+                          }
+                        },
+                        {
+                          "Type": "BlockType",
+                          "Material": {
+                            "Solid": "Soil_Dirt_Burnt"
+                          }
+                        },
+                        {
+                          "Type": "BlockType",
+                          "Material": {
+                            "Solid": "Soil_Ash"
+                          }
+                        },
+                        {
+                          "Type": "BlockType",
+                          "Material": {
+                            "Solid": "Soil_Gravel_Mossy"
+                          }
+                        }
+                      ]
+                    },
+                    "Origin": {
+                      "Type": "BlockType",
+                      "Material": {
+                        "Solid": "Empty"
+                      }
+                    }
+                  },
+                  "Scanner": {
+                    "Type": "Linear",
+                    "Axis": "Y",
+                    "Range": {
+                      "MinInclusive": -20,
+                      "MaxExclusive": 21
+                    },
+                    "AscendingOrder": false,
+                    "Scanner": {
+                      "Type": "Origin"
+                    }
+                  },
+                  "PlacementCap": 1,
+                  "Prop": {
+                    "Type": "RandomRotator",
+                    "HorizontalRotations": true,
+                    "Seed": "ContractTree15",
+                    "Prop": {
+                      "Type": "Prefab",
+                      "WeightedPrefabPaths": [
+                        {
+                          "Path": "Trees/Logs/Ash/Mushroom_Cap_Brown",
+                          "Weight": 1.0
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            },
+            {
+              "Weight": 1.0,
+              "Assignments": {
+                "Type": "Constant",
+                "Prop": {
+                  "Type": "Locator",
+                  "Pattern": {
+                    "Type": "Floor",
+                    "Floor": {
+                      "Type": "Or",
+                      "Patterns": [
+                        {
+                          "Type": "BlockType",
+                          "Material": {
+                            "Solid": "Soil_Grass_Burnt"
+                          }
+                        },
+                        {
+                          "Type": "BlockType",
+                          "Material": {
+                            "Solid": "Soil_Dirt_Burnt"
+                          }
+                        },
+                        {
+                          "Type": "BlockType",
+                          "Material": {
+                            "Solid": "Soil_Ash"
+                          }
+                        },
+                        {
+                          "Type": "BlockType",
+                          "Material": {
+                            "Solid": "Soil_Gravel_Mossy"
+                          }
+                        }
+                      ]
+                    },
+                    "Origin": {
+                      "Type": "BlockType",
+                      "Material": {
+                        "Solid": "Empty"
+                      }
+                    }
+                  },
+                  "Scanner": {
+                    "Type": "Linear",
+                    "Axis": "Y",
+                    "Range": {
+                      "MinInclusive": -20,
+                      "MaxExclusive": 21
+                    },
+                    "AscendingOrder": false,
+                    "Scanner": {
+                      "Type": "Origin"
+                    }
+                  },
+                  "PlacementCap": 1,
+                  "Prop": {
+                    "Type": "RandomRotator",
+                    "HorizontalRotations": true,
+                    "Seed": "ContractTree16",
+                    "Prop": {
+                      "Type": "Prefab",
+                      "WeightedPrefabPaths": [
+                        {
+                          "Path": "Trees/Ash_Dead/Stage_3",
+                          "Weight": 1.0
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            },
+            {
+              "Weight": 0.6,
+              "Assignments": {
+                "Type": "Constant",
+                "Prop": {
+                  "Type": "Locator",
+                  "Pattern": {
+                    "Type": "Floor",
+                    "Floor": {
+                      "Type": "Or",
+                      "Patterns": [
+                        {
+                          "Type": "BlockType",
+                          "Material": {
+                            "Solid": "Soil_Grass_Burnt"
+                          }
+                        },
+                        {
+                          "Type": "BlockType",
+                          "Material": {
+                            "Solid": "Soil_Dirt_Burnt"
+                          }
+                        },
+                        {
+                          "Type": "BlockType",
+                          "Material": {
+                            "Solid": "Soil_Ash"
+                          }
+                        },
+                        {
+                          "Type": "BlockType",
+                          "Material": {
+                            "Solid": "Soil_Gravel_Mossy"
+                          }
+                        }
+                      ]
+                    },
+                    "Origin": {
+                      "Type": "BlockType",
+                      "Material": {
+                        "Solid": "Empty"
+                      }
+                    }
+                  },
+                  "Scanner": {
+                    "Type": "Linear",
+                    "Axis": "Y",
+                    "Range": {
+                      "MinInclusive": -20,
+                      "MaxExclusive": 21
+                    },
+                    "AscendingOrder": false,
+                    "Scanner": {
+                      "Type": "Origin"
+                    }
+                  },
+                  "PlacementCap": 1,
+                  "Prop": {
+                    "Type": "RandomRotator",
+                    "HorizontalRotations": true,
+                    "Seed": "ContractTree17",
+                    "Prop": {
+                      "Type": "Prefab",
+                      "WeightedPrefabPaths": [
+                        {
+                          "Path": "Trees/Fir_Dead/Stage_1",
+                          "Weight": 1.0
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            },
+            {
+              "Weight": 0.5,
+              "Assignments": {
+                "Type": "Constant",
+                "Prop": {
+                  "Type": "Locator",
+                  "Pattern": {
+                    "Type": "Floor",
+                    "Floor": {
+                      "Type": "Or",
+                      "Patterns": [
+                        {
+                          "Type": "BlockType",
+                          "Material": {
+                            "Solid": "Soil_Grass_Burnt"
+                          }
+                        },
+                        {
+                          "Type": "BlockType",
+                          "Material": {
+                            "Solid": "Soil_Dirt_Burnt"
+                          }
+                        },
+                        {
+                          "Type": "BlockType",
+                          "Material": {
+                            "Solid": "Soil_Ash"
+                          }
+                        },
+                        {
+                          "Type": "BlockType",
+                          "Material": {
+                            "Solid": "Soil_Gravel_Mossy"
+                          }
+                        }
+                      ]
+                    },
+                    "Origin": {
+                      "Type": "BlockType",
+                      "Material": {
+                        "Solid": "Empty"
+                      }
+                    }
+                  },
+                  "Scanner": {
+                    "Type": "Linear",
+                    "Axis": "Y",
+                    "Range": {
+                      "MinInclusive": -20,
+                      "MaxExclusive": 21
+                    },
+                    "AscendingOrder": false,
+                    "Scanner": {
+                      "Type": "Origin"
+                    }
+                  },
+                  "PlacementCap": 1,
+                  "Prop": {
+                    "Type": "RandomRotator",
+                    "HorizontalRotations": true,
+                    "Seed": "ContractTree18",
+                    "Prop": {
+                      "Type": "Prefab",
+                      "WeightedPrefabPaths": [
+                        {
+                          "Path": "Trees/Ash_twisted",
+                          "Weight": 1.0
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            },
+            {
+              "Weight": 0.4,
+              "Assignments": {
+                "Type": "Constant",
+                "Prop": {
+                  "Type": "Locator",
+                  "Pattern": {
+                    "Type": "Floor",
+                    "Floor": {
+                      "Type": "Or",
+                      "Patterns": [
+                        {
+                          "Type": "BlockType",
+                          "Material": {
+                            "Solid": "Soil_Grass_Burnt"
+                          }
+                        },
+                        {
+                          "Type": "BlockType",
+                          "Material": {
+                            "Solid": "Soil_Dirt_Burnt"
+                          }
+                        },
+                        {
+                          "Type": "BlockType",
+                          "Material": {
+                            "Solid": "Soil_Ash"
+                          }
+                        },
+                        {
+                          "Type": "BlockType",
+                          "Material": {
+                            "Solid": "Soil_Gravel_Mossy"
+                          }
+                        }
+                      ]
+                    },
+                    "Origin": {
+                      "Type": "BlockType",
+                      "Material": {
+                        "Solid": "Empty"
+                      }
+                    }
+                  },
+                  "Scanner": {
+                    "Type": "Linear",
+                    "Axis": "Y",
+                    "Range": {
+                      "MinInclusive": -20,
+                      "MaxExclusive": 21
+                    },
+                    "AscendingOrder": false,
+                    "Scanner": {
+                      "Type": "Origin"
+                    }
+                  },
+                  "PlacementCap": 1,
+                  "Prop": {
+                    "Type": "RandomRotator",
+                    "HorizontalRotations": true,
+                    "Seed": "ContractTree19",
+                    "Prop": {
+                      "Type": "Prefab",
+                      "WeightedPrefabPaths": [
+                        {
+                          "Path": "Trees/Ash_twisted_Large",
+                          "Weight": 1.0
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            },
+            {
+              "Weight": 0.4,
+              "Assignments": {
+                "Type": "Constant",
+                "Prop": {
+                  "Type": "Locator",
+                  "Pattern": {
+                    "Type": "Floor",
+                    "Floor": {
+                      "Type": "Or",
+                      "Patterns": [
+                        {
+                          "Type": "BlockType",
+                          "Material": {
+                            "Solid": "Soil_Grass_Burnt"
+                          }
+                        },
+                        {
+                          "Type": "BlockType",
+                          "Material": {
+                            "Solid": "Soil_Dirt_Burnt"
+                          }
+                        },
+                        {
+                          "Type": "BlockType",
+                          "Material": {
+                            "Solid": "Soil_Ash"
+                          }
+                        },
+                        {
+                          "Type": "BlockType",
+                          "Material": {
+                            "Solid": "Soil_Gravel_Mossy"
+                          }
+                        }
+                      ]
+                    },
+                    "Origin": {
+                      "Type": "BlockType",
+                      "Material": {
+                        "Solid": "Empty"
+                      }
+                    }
+                  },
+                  "Scanner": {
+                    "Type": "Linear",
+                    "Axis": "Y",
+                    "Range": {
+                      "MinInclusive": -20,
+                      "MaxExclusive": 21
+                    },
+                    "AscendingOrder": false,
+                    "Scanner": {
+                      "Type": "Origin"
+                    }
+                  },
+                  "PlacementCap": 1,
+                  "Prop": {
+                    "Type": "RandomRotator",
+                    "HorizontalRotations": true,
+                    "Seed": "ContractTree20",
+                    "Prop": {
+                      "Type": "Prefab",
+                      "WeightedPrefabPaths": [
+                        {
+                          "Path": "Trees/Burnt_dead/Stage_2",
+                          "Weight": 1.0
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            },
+            {
+              "Weight": 0.3,
+              "Assignments": {
+                "Type": "Constant",
+                "Prop": {
+                  "Type": "Locator",
+                  "Pattern": {
+                    "Type": "Floor",
+                    "Floor": {
+                      "Type": "Or",
+                      "Patterns": [
+                        {
+                          "Type": "BlockType",
+                          "Material": {
+                            "Solid": "Soil_Grass_Burnt"
+                          }
+                        },
+                        {
+                          "Type": "BlockType",
+                          "Material": {
+                            "Solid": "Soil_Dirt_Burnt"
+                          }
+                        },
+                        {
+                          "Type": "BlockType",
+                          "Material": {
+                            "Solid": "Soil_Ash"
+                          }
+                        },
+                        {
+                          "Type": "BlockType",
+                          "Material": {
+                            "Solid": "Soil_Gravel_Mossy"
+                          }
+                        }
+                      ]
+                    },
+                    "Origin": {
+                      "Type": "BlockType",
+                      "Material": {
+                        "Solid": "Empty"
+                      }
+                    }
+                  },
+                  "Scanner": {
+                    "Type": "Linear",
+                    "Axis": "Y",
+                    "Range": {
+                      "MinInclusive": -20,
+                      "MaxExclusive": 21
+                    },
+                    "AscendingOrder": false,
+                    "Scanner": {
+                      "Type": "Origin"
+                    }
+                  },
+                  "PlacementCap": 1,
+                  "Prop": {
+                    "Type": "RandomRotator",
+                    "HorizontalRotations": true,
+                    "Seed": "ContractTree21",
+                    "Prop": {
+                      "Type": "Prefab",
+                      "WeightedPrefabPaths": [
+                        {
+                          "Path": "Trees/Burnt/Stage_2",
+                          "Weight": 1.0
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            },
+            {
+              "Weight": 0.2,
+              "Assignments": {
+                "Type": "Constant",
+                "Prop": {
+                  "Type": "Locator",
+                  "Pattern": {
+                    "Type": "Floor",
+                    "Floor": {
+                      "Type": "Or",
+                      "Patterns": [
+                        {
+                          "Type": "BlockType",
+                          "Material": {
+                            "Solid": "Soil_Grass_Burnt"
+                          }
+                        },
+                        {
+                          "Type": "BlockType",
+                          "Material": {
+                            "Solid": "Soil_Dirt_Burnt"
+                          }
+                        },
+                        {
+                          "Type": "BlockType",
+                          "Material": {
+                            "Solid": "Soil_Ash"
+                          }
+                        },
+                        {
+                          "Type": "BlockType",
+                          "Material": {
+                            "Solid": "Soil_Gravel_Mossy"
+                          }
+                        }
+                      ]
+                    },
+                    "Origin": {
+                      "Type": "BlockType",
+                      "Material": {
+                        "Solid": "Empty"
+                      }
+                    }
+                  },
+                  "Scanner": {
+                    "Type": "Linear",
+                    "Axis": "Y",
+                    "Range": {
+                      "MinInclusive": -20,
+                      "MaxExclusive": 21
+                    },
+                    "AscendingOrder": false,
+                    "Scanner": {
+                      "Type": "Origin"
+                    }
+                  },
+                  "PlacementCap": 1,
+                  "Prop": {
+                    "Type": "RandomRotator",
+                    "HorizontalRotations": true,
+                    "Seed": "ContractTree22",
+                    "Prop": {
+                      "Type": "Prefab",
+                      "WeightedPrefabPaths": [
+                        {
+                          "Path": "Trees/Petrified_Dead/Stage_1",
+                          "Weight": 1.0
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            },
+            {
+              "Weight": 0.2,
+              "Assignments": {
+                "Type": "Constant",
+                "Prop": {
+                  "Type": "Locator",
+                  "Pattern": {
+                    "Type": "Floor",
+                    "Floor": {
+                      "Type": "Or",
+                      "Patterns": [
+                        {
+                          "Type": "BlockType",
+                          "Material": {
+                            "Solid": "Soil_Grass_Burnt"
+                          }
+                        },
+                        {
+                          "Type": "BlockType",
+                          "Material": {
+                            "Solid": "Soil_Dirt_Burnt"
+                          }
+                        },
+                        {
+                          "Type": "BlockType",
+                          "Material": {
+                            "Solid": "Soil_Ash"
+                          }
+                        },
+                        {
+                          "Type": "BlockType",
+                          "Material": {
+                            "Solid": "Soil_Gravel_Mossy"
+                          }
+                        }
+                      ]
+                    },
+                    "Origin": {
+                      "Type": "BlockType",
+                      "Material": {
+                        "Solid": "Empty"
+                      }
+                    }
+                  },
+                  "Scanner": {
+                    "Type": "Linear",
+                    "Axis": "Y",
+                    "Range": {
+                      "MinInclusive": -20,
+                      "MaxExclusive": 21
+                    },
+                    "AscendingOrder": false,
+                    "Scanner": {
+                      "Type": "Origin"
+                    }
+                  },
+                  "PlacementCap": 1,
+                  "Prop": {
+                    "Type": "RandomRotator",
+                    "HorizontalRotations": true,
+                    "Seed": "ContractTree23",
+                    "Prop": {
+                      "Type": "Prefab",
+                      "WeightedPrefabPaths": [
+                        {
+                          "Path": "Trees/Petrified_Dead/Stage_2",
+                          "Weight": 1.0
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            },
+            {
+              "Weight": 0.05,
+              "Assignments": {
+                "Type": "Constant",
+                "Prop": {
+                  "Type": "Locator",
+                  "Pattern": {
+                    "Type": "Floor",
+                    "Floor": {
+                      "Type": "Or",
+                      "Patterns": [
+                        {
+                          "Type": "BlockType",
+                          "Material": {
+                            "Solid": "Soil_Grass_Burnt"
+                          }
+                        },
+                        {
+                          "Type": "BlockType",
+                          "Material": {
+                            "Solid": "Soil_Dirt_Burnt"
+                          }
+                        },
+                        {
+                          "Type": "BlockType",
+                          "Material": {
+                            "Solid": "Soil_Ash"
+                          }
+                        },
+                        {
+                          "Type": "BlockType",
+                          "Material": {
+                            "Solid": "Soil_Gravel_Mossy"
+                          }
+                        }
+                      ]
+                    },
+                    "Origin": {
+                      "Type": "BlockType",
+                      "Material": {
+                        "Solid": "Empty"
+                      }
+                    }
+                  },
+                  "Scanner": {
+                    "Type": "Linear",
+                    "Axis": "Y",
+                    "Range": {
+                      "MinInclusive": -20,
+                      "MaxExclusive": 21
+                    },
+                    "AscendingOrder": false,
+                    "Scanner": {
+                      "Type": "Origin"
+                    }
+                  },
+                  "PlacementCap": 1,
+                  "Prop": {
+                    "Type": "RandomRotator",
+                    "HorizontalRotations": true,
+                    "Seed": "ContractTree24",
+                    "Prop": {
+                      "Type": "Prefab",
+                      "WeightedPrefabPaths": [
+                        {
+                          "Path": "Trees/Ash_twisted_Giant",
+                          "Weight": 1.0
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            },
+            {
+              "Weight": 0.04,
+              "Assignments": {
+                "Type": "Constant",
+                "Prop": {
+                  "Type": "Locator",
+                  "Pattern": {
+                    "Type": "Floor",
+                    "Floor": {
+                      "Type": "Or",
+                      "Patterns": [
+                        {
+                          "Type": "BlockType",
+                          "Material": {
+                            "Solid": "Soil_Grass_Burnt"
+                          }
+                        },
+                        {
+                          "Type": "BlockType",
+                          "Material": {
+                            "Solid": "Soil_Dirt_Burnt"
+                          }
+                        },
+                        {
+                          "Type": "BlockType",
+                          "Material": {
+                            "Solid": "Soil_Ash"
+                          }
+                        },
+                        {
+                          "Type": "BlockType",
+                          "Material": {
+                            "Solid": "Soil_Gravel_Mossy"
+                          }
+                        }
+                      ]
+                    },
+                    "Origin": {
+                      "Type": "BlockType",
+                      "Material": {
+                        "Solid": "Empty"
+                      }
+                    }
+                  },
+                  "Scanner": {
+                    "Type": "Linear",
+                    "Axis": "Y",
+                    "Range": {
+                      "MinInclusive": -20,
+                      "MaxExclusive": 21
+                    },
+                    "AscendingOrder": false,
+                    "Scanner": {
+                      "Type": "Origin"
+                    }
+                  },
+                  "PlacementCap": 1,
+                  "Prop": {
+                    "Type": "RandomRotator",
+                    "HorizontalRotations": true,
+                    "Seed": "ContractTree25",
+                    "Prop": {
+                      "Type": "Prefab",
+                      "WeightedPrefabPaths": [
+                        {
+                          "Path": "Trees/Burnt_Roots/Spider",
+                          "Weight": 1.0
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "Runtime": 2,
+      "ContextPrecision": "Chunk",
+      "PropDistribution": {
+        "Type": "Assigned",
+        "OverrideAllProps": true,
+        "PropDistribution": {
+          "Type": "Positions",
+          "Positions": {
+            "Type": "Mesh2D",
+            "PointsY": 81,
+            "PointGenerator": {
+              "Type": "Mesh",
+              "ScaleX": 3.0,
+              "ScaleY": 3.0,
+              "ScaleZ": 3.0,
+              "Jitter": 0.5,
+              "Seed": "Plants"
+            }
+          }
+        },
+        "Assignments": {
+          "Type": "Weighted",
+          "Seed": "PlantPick",
+          "SkipChance": 0.5,
+          "WeightedAssignments": [
+            {
+              "Weight": 5.0,
+              "Assignments": {
+                "Type": "Constant",
+                "Prop": {
+                  "Type": "Locator",
+                  "Pattern": {
+                    "Type": "Floor",
+                    "Floor": {
+                      "Type": "Or",
+                      "Patterns": [
+                        {
+                          "Type": "BlockType",
+                          "Material": {
+                            "Solid": "Soil_Grass_Burnt"
+                          }
+                        },
+                        {
+                          "Type": "BlockType",
+                          "Material": {
+                            "Solid": "Soil_Dirt_Burnt"
+                          }
+                        },
+                        {
+                          "Type": "BlockType",
+                          "Material": {
+                            "Solid": "Soil_Ash"
+                          }
+                        },
+                        {
+                          "Type": "BlockType",
+                          "Material": {
+                            "Solid": "Soil_Gravel_Mossy"
+                          }
+                        }
+                      ]
+                    },
+                    "Origin": {
+                      "Type": "BlockType",
+                      "Material": {
+                        "Solid": "Empty"
+                      }
+                    }
+                  },
+                  "Scanner": {
+                    "Type": "Linear",
+                    "Axis": "Y",
+                    "Range": {
+                      "MinInclusive": -20,
+                      "MaxExclusive": 21
+                    },
+                    "AscendingOrder": false,
+                    "Scanner": {
+                      "Type": "Origin"
+                    }
+                  },
+                  "PlacementCap": 1,
+                  "Prop": {
+                    "Type": "Manual",
+                    "Blocks": [
+                      {
+                        "Position": {
+                          "X": 0,
+                          "Y": 0,
+                          "Z": 0
+                        },
+                        "Material": {
+                          "Solid": "Plant_Grass_Gnarled"
+                        }
+                      }
+                    ]
+                  }
+                }
+              }
+            },
+            {
+              "Weight": 4.0,
+              "Assignments": {
+                "Type": "Constant",
+                "Prop": {
+                  "Type": "Locator",
+                  "Pattern": {
+                    "Type": "Floor",
+                    "Floor": {
+                      "Type": "Or",
+                      "Patterns": [
+                        {
+                          "Type": "BlockType",
+                          "Material": {
+                            "Solid": "Soil_Grass_Burnt"
+                          }
+                        },
+                        {
+                          "Type": "BlockType",
+                          "Material": {
+                            "Solid": "Soil_Dirt_Burnt"
+                          }
+                        },
+                        {
+                          "Type": "BlockType",
+                          "Material": {
+                            "Solid": "Soil_Ash"
+                          }
+                        },
+                        {
+                          "Type": "BlockType",
+                          "Material": {
+                            "Solid": "Soil_Gravel_Mossy"
+                          }
+                        }
+                      ]
+                    },
+                    "Origin": {
+                      "Type": "BlockType",
+                      "Material": {
+                        "Solid": "Empty"
+                      }
+                    }
+                  },
+                  "Scanner": {
+                    "Type": "Linear",
+                    "Axis": "Y",
+                    "Range": {
+                      "MinInclusive": -20,
+                      "MaxExclusive": 21
+                    },
+                    "AscendingOrder": false,
+                    "Scanner": {
+                      "Type": "Origin"
+                    }
+                  },
+                  "PlacementCap": 1,
+                  "Prop": {
+                    "Type": "Manual",
+                    "Blocks": [
+                      {
+                        "Position": {
+                          "X": 0,
+                          "Y": 0,
+                          "Z": 0
+                        },
+                        "Material": {
+                          "Solid": "Plant_Grass_Gnarled_Short"
+                        }
+                      }
+                    ]
+                  }
+                }
+              }
+            },
+            {
+              "Weight": 1.5,
+              "Assignments": {
+                "Type": "Constant",
+                "Prop": {
+                  "Type": "Locator",
+                  "Pattern": {
+                    "Type": "Floor",
+                    "Floor": {
+                      "Type": "Or",
+                      "Patterns": [
+                        {
+                          "Type": "BlockType",
+                          "Material": {
+                            "Solid": "Soil_Grass_Burnt"
+                          }
+                        },
+                        {
+                          "Type": "BlockType",
+                          "Material": {
+                            "Solid": "Soil_Dirt_Burnt"
+                          }
+                        },
+                        {
+                          "Type": "BlockType",
+                          "Material": {
+                            "Solid": "Soil_Ash"
+                          }
+                        },
+                        {
+                          "Type": "BlockType",
+                          "Material": {
+                            "Solid": "Soil_Gravel_Mossy"
+                          }
+                        }
+                      ]
+                    },
+                    "Origin": {
+                      "Type": "BlockType",
+                      "Material": {
+                        "Solid": "Empty"
+                      }
+                    }
+                  },
+                  "Scanner": {
+                    "Type": "Linear",
+                    "Axis": "Y",
+                    "Range": {
+                      "MinInclusive": -20,
+                      "MaxExclusive": 21
+                    },
+                    "AscendingOrder": false,
+                    "Scanner": {
+                      "Type": "Origin"
+                    }
+                  },
+                  "PlacementCap": 1,
+                  "Prop": {
+                    "Type": "Manual",
+                    "Blocks": [
+                      {
+                        "Position": {
+                          "X": 0,
+                          "Y": 0,
+                          "Z": 0
+                        },
+                        "Material": {
+                          "Solid": "Plant_Bush_Dead"
+                        }
+                      }
+                    ]
+                  }
+                }
+              }
+            },
+            {
+              "Weight": 0.6,
+              "Assignments": {
+                "Type": "Constant",
+                "Prop": {
+                  "Type": "Locator",
+                  "Pattern": {
+                    "Type": "Floor",
+                    "Floor": {
+                      "Type": "Or",
+                      "Patterns": [
+                        {
+                          "Type": "BlockType",
+                          "Material": {
+                            "Solid": "Soil_Grass_Burnt"
+                          }
+                        },
+                        {
+                          "Type": "BlockType",
+                          "Material": {
+                            "Solid": "Soil_Dirt_Burnt"
+                          }
+                        },
+                        {
+                          "Type": "BlockType",
+                          "Material": {
+                            "Solid": "Soil_Ash"
+                          }
+                        },
+                        {
+                          "Type": "BlockType",
+                          "Material": {
+                            "Solid": "Soil_Gravel_Mossy"
+                          }
+                        }
+                      ]
+                    },
+                    "Origin": {
+                      "Type": "BlockType",
+                      "Material": {
+                        "Solid": "Empty"
+                      }
+                    }
+                  },
+                  "Scanner": {
+                    "Type": "Linear",
+                    "Axis": "Y",
+                    "Range": {
+                      "MinInclusive": -20,
+                      "MaxExclusive": 21
+                    },
+                    "AscendingOrder": false,
+                    "Scanner": {
+                      "Type": "Origin"
+                    }
+                  },
+                  "PlacementCap": 1,
+                  "Prop": {
+                    "Type": "Manual",
+                    "Blocks": [
+                      {
+                        "Position": {
+                          "X": 0,
+                          "Y": 0,
+                          "Z": 0
+                        },
+                        "Material": {
+                          "Solid": "Plant_Leaves_Dead"
+                        }
+                      }
+                    ]
+                  }
+                }
+              }
+            },
+            {
+              "Weight": 0.5,
+              "Assignments": {
+                "Type": "Constant",
+                "Prop": {
+                  "Type": "Locator",
+                  "Pattern": {
+                    "Type": "Floor",
+                    "Floor": {
+                      "Type": "Or",
+                      "Patterns": [
+                        {
+                          "Type": "BlockType",
+                          "Material": {
+                            "Solid": "Soil_Grass_Burnt"
+                          }
+                        },
+                        {
+                          "Type": "BlockType",
+                          "Material": {
+                            "Solid": "Soil_Dirt_Burnt"
+                          }
+                        },
+                        {
+                          "Type": "BlockType",
+                          "Material": {
+                            "Solid": "Soil_Ash"
+                          }
+                        },
+                        {
+                          "Type": "BlockType",
+                          "Material": {
+                            "Solid": "Soil_Gravel_Mossy"
+                          }
+                        }
+                      ]
+                    },
+                    "Origin": {
+                      "Type": "BlockType",
+                      "Material": {
+                        "Solid": "Empty"
+                      }
+                    }
+                  },
+                  "Scanner": {
+                    "Type": "Linear",
+                    "Axis": "Y",
+                    "Range": {
+                      "MinInclusive": -20,
+                      "MaxExclusive": 21
+                    },
+                    "AscendingOrder": false,
+                    "Scanner": {
+                      "Type": "Origin"
+                    }
+                  },
+                  "PlacementCap": 1,
+                  "Prop": {
+                    "Type": "Manual",
+                    "Blocks": [
+                      {
+                        "Position": {
+                          "X": 0,
+                          "Y": 0,
+                          "Z": 0
+                        },
+                        "Material": {
+                          "Solid": "Plant_Fern_Forest"
+                        }
+                      }
+                    ]
+                  }
+                }
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "EnvironmentProvider": {
+    "Type": "Constant",
+    "Environment": "Nakasar_Env_Contract"
+  },
+  "TintProvider": {
+    "Type": "Constant",
+    "Color": "#7a6534"
+  }
+}

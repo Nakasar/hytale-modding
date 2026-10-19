@@ -1,4 +1,4 @@
-package dev.nakasar.hytale.vampires.pumpkin;
+package dev.nakasar.hytale.vampires.elite;
 
 import com.hypixel.hytale.builtin.tagset.config.NPCGroup;
 import com.hypixel.hytale.component.ArchetypeChunk;
@@ -19,18 +19,28 @@ import com.hypixel.hytale.server.npc.entities.NPCEntity;
 import com.hypixel.hytale.server.npc.role.support.WorldSupport;
 import dev.nakasar.hytale.vampires.allegiance.AllegianceDamageFilter;
 
+import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 /**
- * La citrouille géante et ses vrilles (groupe {@value #GROUP}) prennent {@value #MULTIPLIER} fois les dégâts de feu
- * (cause {@code Fire} ou une cause qui en hérite : brûlure, lave, bâton de feu…). Aucun champ de rôle ne règle une
- * faiblesse par type de dégâts ; on multiplie donc le montant pendant le filtrage des dégâts, après les filtres de
- * camp (un coup annulé reste annulé).
+ * Faiblesse ou immunité au feu, par groupe de PNJ, sur les dégâts de cause {@code Fire} ou d'une cause qui en hérite
+ * (brûlure, lave, bâton de feu…). Aucun champ de rôle ne règle une résistance par type de dégâts ; on règle donc le
+ * montant pendant le filtrage des dégâts, après les filtres de camp (un coup annulé reste annulé) :
+ * <ul>
+ *   <li>{@value #WEAK} (citrouille géante et ses vrilles) : dégâts de feu doublés ;</li>
+ *   <li>{@value #IMMUNE} (armure enchantée et ses rouages) : aucun dégât de feu.</li>
+ * </ul>
  */
-public final class FireWeaknessSystem extends DamageEventSystem {
+public final class FireAffinitySystem extends DamageEventSystem {
 
-    public static final String GROUP = "Nakasar_Pumpkin_Patch";
-    private static final float MULTIPLIER = 2f;
+    public static final String WEAK = "Nakasar_Pumpkin_Patch";
+    public static final String IMMUNE = "Nakasar_Fire_Immune";
+    /**
+     * Multiplicateur des dégâts de feu par groupe, dans l'ordre : le premier groupe qui contient la cible l'emporte
+     * (l'immunité d'abord). 0 annule le coup.
+     */
+    private static final List<Map.Entry<String, Float>> MULTIPLIERS = List.of(Map.entry(IMMUNE, 0f), Map.entry(WEAK, 2f));
 
     private static final Set<Dependency<EntityStore>> DEPENDENCIES =
             Set.of(new SystemDependency<>(Order.AFTER, AllegianceDamageFilter.class));
@@ -61,10 +71,18 @@ public final class FireWeaknessSystem extends DamageEventSystem {
         if (fire == null || cause == null || !cause.isOrInherits(fire)) {
             return;
         }
-        int group = NPCGroup.getAssetMap().getIndexOrDefault(GROUP, Integer.MIN_VALUE);
         Ref<EntityStore> target = chunk.getReferenceTo(index);
-        if (group != Integer.MIN_VALUE && WorldSupport.isGroupMember(Integer.MIN_VALUE, target, group, buffer)) {
-            damage.setAmount(damage.getAmount() * MULTIPLIER);
+        for (Map.Entry<String, Float> entry : MULTIPLIERS) {
+            int group = NPCGroup.getAssetMap().getIndexOrDefault(entry.getKey(), Integer.MIN_VALUE);
+            if (group == Integer.MIN_VALUE || !WorldSupport.isGroupMember(Integer.MIN_VALUE, target, group, buffer)) {
+                continue;
+            }
+            if (entry.getValue() == 0f) {
+                damage.setCancelled(true);
+            } else {
+                damage.setAmount(damage.getAmount() * entry.getValue());
+            }
+            return;
         }
     }
 }

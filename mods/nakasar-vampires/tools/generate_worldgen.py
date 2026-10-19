@@ -58,10 +58,13 @@ STRUCTURE_TYPES = [
     ("Farm", [("Farms/Zombies", 1.0), ("Farms/Ruins", 1.0), ("Farms/Burnt", 1.0)], True, [1.0, 0.5]),
     ("GuardPost", [("GuardPosts/Ruins", 1.0), ("GuardPosts/Spiders", 1.0), ("GuardPosts/Rebels", 1.0),
                    ("GuardPosts/Garrison", 1.2)], True, [1.0, 0.5]),
-    ("Cemetery", [("Cemeteries/Haunted", 1.0), ("Cemeteries/Spiders", 1.0), ("Cemeteries/Undead", 1.0)], True, [1.0, 0.5]),
-    ("Crypt", [("Crypts", 1.0)], True, [1.0, 0.5]),
+    # Élites optionnelles : un cimetière hanté sur trois a son Spectre, une crypte sur deux son armure
+    # enchantée, un château hanté sur deux son Spectre.
+    ("Cemetery", [("Cemeteries/Haunted", 1.0), ("Cemeteries/Spectre", 0.5), ("Cemeteries/Spiders", 1.0),
+                  ("Cemeteries/Undead", 1.0)], True, [1.0, 0.5]),
+    ("Crypt", [("Crypts/Plain", 1.0), ("Crypts/Guarded", 1.0)], True, [1.0, 0.5]),
     ("PumpkinField", [("PumpkinFields/Plain", 1.0), ("PumpkinFields/Giant", 1.0)], True, [1.0, 0.5]),
-    ("HauntedCastle", [("HauntedCastles", 1.0)], True, [1.0, 0.5]),
+    ("HauntedCastle", [("HauntedCastles/Plain", 1.0), ("HauntedCastles/Spectre", 1.0)], True, [1.0, 0.5]),
     ("HunterCamp", [("HunterCamps/Tents", 1.0), ("HunterCamps/Lodge", 1.0)], True, [0.5]),
 ]
 # Emplacements (x, z, grand ?) : 14, un par exemplaire. Les grands peuvent recevoir le village

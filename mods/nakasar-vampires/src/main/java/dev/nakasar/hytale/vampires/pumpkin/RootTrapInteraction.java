@@ -9,7 +9,6 @@ import com.hypixel.hytale.component.RemoveReason;
 import com.hypixel.hytale.component.Store;
 import com.hypixel.hytale.math.vector.Rotation3f;
 import com.hypixel.hytale.protocol.InteractionType;
-import com.hypixel.hytale.server.core.asset.type.attitude.Attitude;
 import com.hypixel.hytale.server.core.asset.type.entityeffect.config.EntityEffect;
 import com.hypixel.hytale.server.core.asset.type.entityeffect.config.OverlapBehavior;
 import com.hypixel.hytale.server.core.entity.Frozen;
@@ -102,7 +101,7 @@ public class RootTrapInteraction extends SimpleInstantInteraction {
         if (buffer == null || !victim.isValid() || victim.equals(caster) || TRAPS.containsKey(victim)
                 || buffer.getComponent(victim, DeathComponent.getComponentType()) != null
                 || isTendril(victim, buffer)
-                || (caster != null && caster.isValid() && isAlly(caster, victim, buffer))) {
+                || (caster != null && caster.isValid() && Allegiances.isCasterAlly(caster, victim, buffer))) {
             return;
         }
         TransformComponent transform = buffer.getComponent(victim, TransformComponent.getComponentType());
@@ -214,18 +213,6 @@ public class RootTrapInteraction extends SimpleInstantInteraction {
 
     private static boolean alive(Ref<EntityStore> ref, Store<EntityStore> store) {
         return ref.isValid() && store.getComponent(ref, DeathComponent.getComponentType()) == null;
-    }
-
-    /**
-     * Allié du lanceur : sous Domination, son maître et les autres PNJ du même maître (et non plus ses anciens
-     * alliés du fragment) ; sinon, les autres mobs du fragment.
-     */
-    private static boolean isAlly(Ref<EntityStore> caster, Ref<EntityStore> victim, CommandBuffer<EntityStore> buffer) {
-        Attitude domination = Allegiances.dominationAttitude(caster, victim, buffer);
-        if (domination != null) {
-            return domination == Attitude.FRIENDLY;
-        }
-        return Allegiances.bothInFaction(caster, victim, buffer);
     }
 
     private boolean isTendril(Ref<EntityStore> ref, CommandBuffer<EntityStore> buffer) {

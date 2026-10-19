@@ -4,7 +4,8 @@
     "Nakasar_Vampires",
     "Nakasar_Domain_Undead",
     "Nakasar_Ghosts",
-    "Nakasar_Pumpkin_Patch"
+    "Nakasar_Pumpkin_Patch",
+    "Nakasar_Enchanted_Constructs"
   ],
   "IncludeRoles": [
     "Skeleton",

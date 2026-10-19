@@ -31,3 +31,6 @@ animations Hound_Bleached_Default
 animations Rifle
 animations Skeleton_Battleaxe
 animations Sword
+
+# Vus dans Assets.zip 0.7.2 (Server/Item/Animations/Mace.json, 2026-10-19).
+animations Mace

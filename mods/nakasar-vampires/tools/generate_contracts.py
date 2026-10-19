@@ -15,6 +15,8 @@ un seul pour tout le groupe (ContractBounties, Java ; sacs dans generate_trophie
 | Farm     | 1      | Farms/Zombies                 | Nakasar_Zombie_Abomination  |
 | Pumpkin  | 2      | PumpkinFields/Giant           | Nakasar_Giant_Pumpkin       |
 | Garrison | 2      | GuardPosts/Garrison           | Nakasar_Guard_Captain       |
+| Crypt    | 2      | Crypts/Guarded                | Nakasar_Enchanted_Armor     |
+| Castle   | 3      | HauntedCastles/Spectre        | Nakasar_Spectre             |
 
 Les cibles et les primes sont aussi écrites dans ContractBounties.java : les garder alignées.
 """
@@ -55,10 +57,18 @@ CONTRACTS = [
     ("Garrison", 2, "GuardPosts/Garrison", (60, 70, 150),
      [(FANG, 4), ("Ingredient_Bar_Silver", 2), ("Ingredient_Fabric_Scrap_Linen", 2), ("Ingredient_Rune_Shard", 2)],
      ["undead", "elite", "prison"]),
+    ("Crypt", 2, "Crypts/Guarded", (70, 120, 200),
+     [(FANG, 3), ("Ingredient_Bar_Silver", 2), ("Ingredient_Fabric_Scrap_Linen", 2), ("Ingredient_Rune_Shard", 2)],
+     ["construct", "elite", "fireproof"]),
+    ("Castle", 3, "HauntedCastles/Spectre", (150, 200, 230),
+     [(FANG, 4), ("Ingredient_Bar_Silver", 3), ("Ingredient_Fabric_Scrap_Linen", 3), ("Ingredient_Rune_Shard", 3)],
+     ["undead", "elite", "frost"]),
 ]
 DISPLAY_NAMES = {"Farm": "Contrat : la Bête de la ferme", "Pumpkin": "Contrat : le Champ maudit",
-                 "Garrison": "Contrat : la Garnison du Capitaine"}
-TAG_COLORS = {"undead": "#9b59b6", "elite": "#c0392b", "plant": "#ff7518", "prison": "#7f8c8d"}
+                 "Garrison": "Contrat : la Garnison du Capitaine", "Crypt": "Contrat : le Gardien de la crypte",
+                 "Castle": "Contrat : le Spectre du château"}
+TAG_COLORS = {"undead": "#9b59b6", "elite": "#c0392b", "plant": "#ff7518", "prison": "#7f8c8d",
+              "construct": "#5a8fd8", "fireproof": "#e67e22", "frost": "#8fd4ff"}
 
 
 def ids(short):
@@ -248,6 +258,18 @@ def contract_icon(short, seal):
     elif short == "Pumpkin":  # citrouille
         d.ellipse((24, 32, 40, 46), fill=(214, 110, 30, 255), outline=INK + (255,))
         d.line((32, 28, 32, 33), fill=(60, 120, 40, 255), width=2)
+    elif short == "Crypt":    # roue dentée
+        d.ellipse((25, 31, 39, 45), fill=(176, 120, 58, 255), outline=INK + (255,))
+        for x, y in ((32, 29), (32, 47), (23, 38), (41, 38)):
+            d.rectangle((x - 1, y - 1, x + 1, y + 1), fill=(176, 120, 58, 255), outline=INK + (255,))
+        d.ellipse((30, 36, 34, 40), fill=(90, 170, 255, 255))
+    elif short == "Castle":   # fantôme
+        d.pieslice((25, 29, 39, 43), 180, 360, fill=(220, 236, 248, 255), outline=INK + (255,))
+        d.rectangle((25, 36, 39, 45), fill=(220, 236, 248, 255))
+        for x in (25, 30, 35):
+            d.polygon(((x, 45), (x + 2, 47), (x + 4, 45)), fill=(220, 236, 248, 255))
+        d.rectangle((28, 34, 29, 36), fill=INK + (255,))
+        d.rectangle((34, 34, 35, 36), fill=INK + (255,))
     else:                     # heaume
         d.rectangle((26, 31, 38, 45), fill=(120, 124, 132, 255), outline=INK + (255,))
         d.line((26, 37, 38, 37), fill=INK + (255,), width=2)
