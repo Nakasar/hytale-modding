@@ -1,5 +1,5 @@
 {
-  "$Comment": "Poing de golem de la Chimère, annoncé : elle se cabre 1,15 s, le poing levé, et une zone rouge de 4.5 blocs se charge au sol autour d'elle ; puis le poing s'abat (28 dégâts, ralentit 2 s, sans recul).",
+  "$Comment": "Le dragon se cabre, annoncé : il se dresse 1,15 s, ailes à demi ouvertes, et une zone rouge de 5.5 blocs se charge au sol autour de lui ; puis il retombe de tout son poids (28 dégâts, ralentit 2 s, sans recul).",
   "Type": "Serial",
   "Interactions": [
     {
@@ -23,7 +23,7 @@
             "SystemId": "Nakasar_Warning_16",
             "TargetEntityPart": "Entity",
             "TargetNodeName": "Origin",
-            "Scale": 3.06,
+            "Scale": 3.74,
             "PositionOffset": {
               "X": 0,
               "Y": 0.1,
@@ -56,7 +56,7 @@
       },
       "Selector": {
         "Id": "AOECircle",
-        "Range": 4.5
+        "Range": 5.5
       },
       "HitEntity": {
         "Interactions": [

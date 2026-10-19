@@ -1,5 +1,5 @@
 {
-  "$Comment": "Fauchage de la queue de serpent, annoncé : elle se ramasse 0,75 s, la queue dressée, et une zone rouge de 4 blocs se charge autour d'elle ; puis elle tourne sur elle-même et la queue fauche tout autour (14 dégâts, empoisonne 4 s, sans recul).",
+  "$Comment": "Fauchage de la queue, annoncé : le dragon se ramasse 0,75 s, la queue ramenée sur le côté, et une zone rouge de 5 blocs se charge autour de lui ; puis il tourne sur lui-même et la queue fauche tout autour (14 dégâts, empoisonne 4 s, sans recul).",
   "Type": "Serial",
   "Interactions": [
     {
@@ -23,7 +23,7 @@
             "SystemId": "Nakasar_Warning_16",
             "TargetEntityPart": "Entity",
             "TargetNodeName": "Origin",
-            "Scale": 2.72,
+            "Scale": 3.4,
             "PositionOffset": {
               "X": 0,
               "Y": 0.1,
@@ -42,7 +42,7 @@
       },
       "Selector": {
         "Id": "AOECircle",
-        "Range": 4.0
+        "Range": 5.0
       },
       "HitEntity": {
         "Interactions": [

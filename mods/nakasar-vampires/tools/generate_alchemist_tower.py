@@ -80,6 +80,9 @@ PLAZA_RADIUS = arch.PLAZA_EDGE - 1  # parvis d'arrivée : rayon intérieur du pa
 BRIDGE_HALF = arch.BRIDGE_HALF
 EXIT_Z = 6                         # portail de sortie anticipée, au sud du point d'apparition
 TOWER_SEED = 4242
+# Esprit qui sort de chaque quadrant de la Salle des Transmutations quand il s'éveille (rôles de generate_tower_mobs.py).
+SPIRITS = {"Fire": "Nakasar_Elemental_Fire", "Ice": "Nakasar_Elemental_Frost", "Air": "Nakasar_Elemental_Thunder",
+           "Earth": "Nakasar_Elemental_Root"}
 # La tour se pose en tranches empilées (un prefab par tranche, coupé sous un plancher) : bas de chaque tranche.
 TOWER_SLICES = [-8, alchemist_tower.F_LIBRARY - 1, alchemist_tower.F_LAB - 1, alchemist_tower.F_DECK - 1, 240]
 ISLETS = arch.islets()
@@ -197,6 +200,8 @@ def gameplay_config():
         },
         "Plugin": {"Portal": {}, "WorldEvents": {}},
         "Death": {"ItemsLossMode": "None", "ItemsAmountLossPercentage": 0, "ItemsDurabilityLossPercentage": 0},
+        # Pas de tombe sur la carte ni la boussole à chaque mort : c'est un donjon, on réapparaît au point de contrôle.
+        "WorldMap": {"DisplayDeathMarker": False},
     }
 
 
@@ -748,7 +753,8 @@ def checkpoint_volumes(tower, ruins_statue, ruins_spot):
 
 def tower_layout(tower, ruins_spot):
     """TowerLayout.java : point d'arrivée, points de contrôle, arènes du Codex vivant (pupitres, volumes que
-    tower.CodexSystem étiquette), de la Chimère (cuve, étagères, sorties, volumes de tower.ChimeraSystem) et de
+    tower.CodexSystem étiquette), du golem de cristal (quadrants de tower.TransmutationSystem), de la Chimère (cuve,
+    bassins, volumes de tower.ChimeraSystem) et de
     l'Alchimiste (athanor, piliers, fioles, rebord, volumes de tower.AlchemistSystem), en coordonnées du monde."""
     ox, oy, oz = TOWER_CENTER
     rx, rz = arch.RUINS["center"]
@@ -762,9 +768,11 @@ def tower_layout(tower, ruins_spot):
     ids = alchemist_traps.codex_ids()
     chimera = tower.trap["chimera"]
     vx, vy, vz = chimera["vat"]
-    shelves = ",\n".join(f"            new Vector3d({x + ox + 0.5}, {y + oy}, {z + oz + 0.5})" for x, y, z in chimera["shelves"])
-    exits = ",\n".join(f"            new Vector3d({x + ox + 0.5}, {y + oy}, {z + oz + 0.5})" for x, y, z in chimera["exits"])
     chimera_ids = alchemist_traps.chimera_ids()
+    trans = tower.trap["trans"]
+    tx, ty, tz = trans["center"]
+    trans_ids = alchemist_traps.trans_ids()
+    quadrants = list(alchemist_tower.TRANS_QUADRANTS)
     alch = tower.trap["alchemist"]
     ax, ay, az = alch["center"]
 
@@ -786,7 +794,7 @@ public final class TowerLayout {{
     public static final double GROUND_Y = {GROUND_Y};
     /** Point d'apparition, sur le parvis d'arrivée. */
     public static final Vector3d ARRIVAL = new Vector3d({SPAWN[0] + 0.5}, {SPAWN[1]}, {SPAWN[2] + 0.5});
-    /** Points de contrôle, dans l'ordre du parcours : ruines du premier laboratoire, bibliothèque, laboratoire, Escalier des vents, antichambre. */
+    /** Points de contrôle, dans l'ordre du parcours : ruines du premier laboratoire, bibliothèque, Escalier des vents, antichambre. */
     public static final Vector3d[] CHECKPOINTS = {{
 {rows}
     }};
@@ -809,18 +817,35 @@ public final class TowerLayout {{
     /** Pans d'étagères qui s'effondrent (Collapse=On). */
     public static final String[] CODEX_COLLAPSE = {{{strings(ids['collapse'])}}};
 
-    /** Chimère du laboratoire : centre de la cuve, au niveau du sol de la salle (la Chimère s'y régénère). */
+    /** Salle des Transmutations : centre (golem de cristal), au sol ; rayon de l'arène. */
+    public static final Vector3d TRANS_CENTER = new Vector3d({tx + ox + 0.5}, {ty + oy}, {tz + oz + 0.5});
+    public static final double TRANS_ARENA_RADIUS = {alchemist_tower.R_IN};
+    /** Hauteur des quadrants au-dessus du sol : plus haut (l'hélice), on est hors de l'arène. */
+    public static final double TRANS_ARENA_HEIGHT = {alchemist_tower.TRANS_ZONE_HEIGHT};
+    /** Quadrants élémentaires dans l'ordre du tour (le répit passe à un voisin) : nom, volume (tools/alchemist_traps.py,
+     * Traps.transmutation : State, Fx), rôle de l'esprit qui en sort, signes (x, z) du quadrant. */
+    public static final String[] TRANS_QUADRANTS = {{{strings(quadrants)}}};
+    public static final String[] TRANS_ZONES = {{{strings(trans_ids[el] for el in quadrants)}}};
+    public static final String[] TRANS_SPIRITS = {{{strings(SPIRITS[el] for el in quadrants)}}};
+    public static final int[][] TRANS_SIGNS = {{{", ".join(f"{{{sx}, {sz}}}" for sx, sz in alchemist_tower.TRANS_QUADRANTS.values())}}};
+    /** Où les esprits de chaque quadrant apparaissent (une ligne par quadrant, dans l'ordre de TRANS_QUADRANTS). */
+    public static final Vector3d[][] TRANS_SPIRIT_SPOTS = {{
+{",\n".join("            {" + ", ".join(f"new Vector3d({x + ox + 0.5}, {y + oy + 1}, {z + oz + 0.5})" for x, y, z in trans["spirits"][el]) + "}" for el in quadrants)}
+    }};
+    /** Sceau du pied de l'hélice (Golem=On à la mort du golem). */
+    public static final String TRANS_SEAL = "{trans_ids['seal']}";
+
+    /** Chimère du laboratoire : centre de la cuve, au niveau du sol de la salle. */
     public static final Vector3d CHIMERA_VAT = new Vector3d({vx + ox + 0.5}, {vy + oy}, {vz + oz + 0.5});
     /** Rayon de l'arène de la Chimère (intérieur de la tour) et rayon intérieur de la margelle de la cuve. */
     public static final double CHIMERA_ARENA_RADIUS = {alchemist_tower.R_IN};
     public static final double CHIMERA_VAT_RADIUS = 7.5;
-    /** Étagères de réactifs (PNJ posés par ChimeraSystem), au sol. */
-    public static final Vector3d[] CHIMERA_SHELVES = {{
-{shelves}
+    /** Bassins d'acide secondaires (centre, au sol) et, devant chacun, la case où un zombie remplit son seau. */
+    public static final Vector3d[] CHIMERA_BASINS = {{
+{points(chimera["basins"])}
     }};
-    /** Cases libres autour de la cuve où la Chimère ressort après sa régénération. */
-    public static final Vector3d[] CHIMERA_EXITS = {{
-{exits}
+    public static final Vector3d[] CHIMERA_FILLS = {{
+{points(chimera["fills"])}
     }};
     /** Volumes (tools/alchemist_traps.py, Traps.chimera) : sceau de la porte nord (Chimera=On), acide de la cuve (Cast=On). */
     public static final String CHIMERA_SEAL = "{chimera_ids['seal']}";

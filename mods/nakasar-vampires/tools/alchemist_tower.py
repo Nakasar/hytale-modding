@@ -42,7 +42,10 @@ DECK_R = 45.5      # terrasse de l'observatoire : d < DECK_R, parapet jusqu'à D
 BALCONY_R = 47.5   # serre : R_OUT <= d < BALCONY_R, parapet jusqu'à BALCONY_R + 1
 BALCONY_ARC = (176, 360)
 GREENHOUSE_ARC = (195, 285)
-SQUARE = 18        # Salle des Transmutations : |x|, |z| <= SQUARE
+# Salle des Transmutations, ronde : escalier en hélice le long du mur nord, de l'arrivée de la rampe de la bibliothèque
+# (205°) au laboratoire (340°), entre TRANS_STAIR_R et le mur.
+TRANS_STAIR_ARC = (212, 340)
+TRANS_STAIR_R = 24.5
 COURT_HALF = 16    # parvis : x de -16 à 16
 COURT_END = 79     # le parvis va jusqu'à z = 79 ; le pont arrive en z = 80
 BRIDGE_HALF = 3    # demi-largeur du pont (generate_alchemist_tower.BRIDGE_HALF)
@@ -113,7 +116,11 @@ NOZZLE_ANGLES = tuple(range(315, 526, 15))
 GAS_CONE = ((1.3, 1.0), (3.3, 1.5), (5.7, 2.1))
 SHORTCUT_ARC = (236.5, 243.5)  # barrage du couloir : le levier y ouvre un raccourci
 HEDGE_ARC = (72, 84)          # haie de ronces au pied de la rampe de la bibliothèque (elle part de 70°)
-FOYERS = {"Fire": (6, -11), "Ice": (-6, -11), "Acid": (14, 14), "Lightning": (-14, 14)}
+# Quadrants élémentaires de l'arène du golem de cristal (signes de x et z), séparés par la croix d'or du sol, dans
+# l'ordre du tour (TransmutationSystem passe le répit d'un quadrant à un voisin).
+TRANS_QUADRANTS = {"Earth": (1, 1), "Air": (-1, 1), "Ice": (-1, -1), "Fire": (1, -1)}
+TRANS_COLOURS = {"Fire": "Red", "Earth": "Green", "Air": "Yellow", "Ice": "Cyan"}
+TRANS_ZONE_HEIGHT = 6    # hauteur des volumes des quadrants : le haut de l'hélice reste hors de leurs effets
 FLAME_ANGLES = (295, 340, 385, 430, 475, 520, 565)  # angles de l'Escalier des vents (262 à 602°)
 GUST_SECTORS = (318, 408, 498, 585)
 STRIKE_ANGLES = tuple(range(282, 595, 22))
@@ -127,10 +134,10 @@ COLLAPSE_ARCS = ((220, 248), (252, 282), (286, 312), (328, 358), (2, 24))
 COLLAPSE_R = (21.5, 28.4)
 # Chimère du laboratoire (étape 6) : étagères de réactifs (PNJ posés par tower.ChimeraSystem, les homoncules y prennent
 # de quoi la régénérer), cases où elle ressort de la cuve, sceau de la porte nord jusqu'à sa mort.
-CHIMERA_SHELF_R = 21
-CHIMERA_SHELF_ANGLES = (20, 110, 175, 235)
-CHIMERA_EXIT_R = 12.5
-CHIMERA_EXIT_ANGLES = (30, 120, 150, 210, 240, 330)
+CHIMERA_BASIN_R = 21      # bassins d'acide secondaires : les zombies y remplissent leurs seaux
+CHIMERA_BASIN_ANGLES = (0, 45, 135, 225)   # entre les alcôves (LAB_ALCOVES), loin de l'hélice et de la porte nord
+CHIMERA_BASIN_SIZE = 1.6  # rayon du bassin (acide pour d < CHIMERA_BASIN_SIZE), margelle d'or d'un bloc autour
+ACID = "Poison_Source"    # eau acide verte de Deepworks
 CHIMERA_DOOR_Z = -30
 # Alcôves du laboratoire (angle, genre), le long du mur, symétriques autour de la cuve ; ni devant la porte nord (270°)
 # ni sur l'arrivée de l'escalier des transmutations (environ 320 à 345°).
@@ -204,6 +211,14 @@ def wall_facing(x, z, inner=28.4):
 
 def at(r, a):
     return round(r * math.cos(math.radians(a))), round(r * math.sin(math.radians(a)))
+
+
+def quadrant(x, z):
+    """Quadrant élémentaire de la Salle des Transmutations sous la case (x, z), None sur la croix d'or."""
+    if x == 0 or z == 0:
+        return None
+    sign = (1 if x > 0 else -1, 1 if z > 0 else -1)
+    return next(el for el, q in TRANS_QUADRANTS.items() if q == sign)
 
 
 def lit_block(colour):
@@ -374,13 +389,10 @@ class Tower:
                     p.set(x, y, z, self.wall())
             for f in (F_LEAKS, F_LIBRARY, F_TRANS, F_LAB, F_LAB + 24, F_DECK):
                 p.set(x, f - 1, z, self.floor() if d < R_IN else TRIM)
-        # Cœur plein du couloir des fuites, barrage à 240°, remplissage autour de la salle carrée.
+        # Cœur plein du couloir des fuites, barrage à 240°.
         for x, z, d, a in ring(0, R_IN):
             for y in range(F_LEAKS, F_LIBRARY - 1):
                 if d < 18 or (d < R_IN and in_arc(a, 237, 243)):
-                    p.set(x, y, z, self.wall())
-            if max(abs(x), abs(z)) > SQUARE:
-                for y in range(F_TRANS, F_LAB - 1):
                     p.set(x, y, z, self.wall())
         # Fenêtres de verre (points de vue fermés) : hall, bibliothèque, laboratoire, fût.
         for y0, y1, step, a_off in ((5, 13, 30, 15), (42, 56, 20, 10), (89, 98, 30, 0), (112, 132, 30, 15)):
@@ -731,64 +743,112 @@ class Tower:
             self.vault_low[(x, z)] = low
 
     def transmutation(self):
+        """Salle des Transmutations, ronde (Kevin, 19 octobre 2026) : l'arène du golem de cristal. Quatre quadrants
+        élémentaires séparés par la croix d'or du sol (TRANS_QUADRANTS), un escalier en hélice le long du mur nord
+        vers le laboratoire, un plafond à caissons (`trans_ceiling`)."""
         p = self.p
         y = F_TRANS
-        quadrants = {(1, -1): "Rock_Crystal_Red_Block", (-1, -1): "Rock_Crystal_Cyan_Block",
-                     (1, 1): "Rock_Crystal_Green_Block", (-1, 1): "Rock_Crystal_Yellow_Block"}
-        for x in range(-SQUARE, SQUARE + 1):
-            for z in range(-SQUARE, SQUARE + 1):
-                if x == 0 or z == 0:
-                    p.set(x, y - 1, z, TRIM)
-                    continue
-                q = quadrants[(1 if x > 0 else -1, 1 if z > 0 else -1)]
-                p.set(x, y - 1, z, q if (x + z) % 3 == 0 else self.floor())
-        # Couloir depuis la rampe de la bibliothèque, à l'ouest. Pas de plancher au-dessus des marches de la rampe encore
-        # sous ce niveau : il refermait la trémie et l'on butait en haut de l'escalier (Kevin, 19 octobre 2026).
-        for x in range(-27, -SQUARE):
-            for z in range(-13, -5):
-                if self.library_ramp.get((x, z), 2 * y) < 2 * y:
-                    for k in range(5):
-                        p.set(x, y + k, z, AIR)
-                        self.keep_clear.add((x, y + k, z))
-                    continue
-                self.door([(x, z)], y, 5)
-        # Escalier le long du mur nord, vers le laboratoire.
+        for x, z, d, a in ring(0, R_IN):
+            if p.get(x, y - 1, z) in (None, AIR):
+                continue  # trémie de la rampe de la bibliothèque (dégagée par son escalier)
+            el = quadrant(x, z)
+            if el is None:
+                p.set(x, y - 1, z, TRIM)
+            elif d > 6 and (x + z) % 4 == 0 and (x - z) % 4 == 0:
+                p.set(x, y - 1, z, lit_block(TRANS_COLOURS[el]))
+            else:
+                p.set(x, y - 1, z, self.floor())
+        # Arrivée de la rampe de la bibliothèque : rien au-dessus des marches encore sous ce niveau (on butait en haut de
+        # l'escalier quand un plancher refermait la trémie, Kevin, 19 octobre 2026).
+        for (x, z), s in self.library_ramp.items():
+            if s < 2 * y:
+                for k in range(5):
+                    p.set(x, y + k, z, AIR)
+                    self.keep_clear.add((x, y + k, z))
+        # Escalier en hélice le long du mur, de la rampe de la bibliothèque au laboratoire. Plein jusqu'au sol tant qu'il
+        # est bas (pas de recoin d'un bloc de haut dessous) ; plus haut, on passe dessous.
+        a0, a1 = TRANS_STAIR_ARC
         stair = {}
-        for x in range(-SQUARE, SQUARE + 1):
-            for z in (-17, -16, -15, -14):
-                stair[(x, z)] = 2 * y + (x + SQUARE)
+        for x, z, d, a in ring(TRANS_STAIR_R, R_IN):
+            rel = (a - a0) % 360
+            if rel > a1 - a0:
+                continue
+            t = min(1.0, max(0.0, (rel - 5) / (a1 - a0 - 10)))
+            stair[(x, z)] = round(2 * (y + (F_LAB - y) * t))
         for (x, z), s in stair.items():
-            self.step(x, z, s, support=0)
-            # mur plein sous les marches
-            for k in range(y, (s + 1) // 2 - 1):
-                p.set(x, k, z, self.wall())
+            self.step(x, z, s)
+            if s < 2 * y + 10:
+                for k in range(y, s // 2 - 1):
+                    p.set(x, k, z, self.wall())
         for (x, z), s in stair.items():
             self.carve(x, z, s)
-        for x in range(SQUARE + 1, SQUARE + 7):
-            for z in (-17, -16, -15, -14):
-                self.register(x, z, 2 * F_LAB)
-                self.keep_clear.update((x, F_LAB + k, z) for k in range(3))
+        # Muret côté salle, juste après le sceau du pied (`traps`) : même monté sur un décor d'un bloc, on n'y saute pas.
+        for (x, z), s in stair.items():
+            if polar(x, z)[0] < TRANS_STAIR_R + 1 and 2 * y + 3 < s < 2 * F_LAB:
+                k = (s + 1) // 2
+                if p.free(x, k, z):
+                    p.set(x, k, z, PARAPET_TOP)
+                    self.parapets.add((x, k, z))
         self.trans_stair = stair
-        for x, z in ((-SQUARE, SQUARE), (SQUARE, SQUARE), (-SQUARE, -12), (SQUARE, -12), (0, SQUARE), (-SQUARE, 0),
-                     (SQUARE, 0)):
-            self.place(x, y, z, BRAZIER)
-        for x, z in ((0, 0), (9, 9), (-9, 9), (9, -9), (-9, -9)):
-            self.place(x, F_LAB - 4, z, CHANDELIER)
+        self.trans_ceiling()
+        for a in (10, 50, 90, 130, 170):
+            self.place(*at3(27, y, a), BRAZIER)
+
+    def trans_ceiling(self):
+        """Plafond à caissons de la Salle des Transmutations, sous le plancher du laboratoire (Kevin, 19 octobre 2026 :
+        une couche de décor entre les deux) : rayons et anneaux d'or en saillie, caissons de quartzite semés de cristaux
+        de la couleur du quadrant ; le fond de la cuve du laboratoire fait la rosace du centre (`lab`). L'hélice garde
+        sa trémie."""
+        p = self.p
+        rng = self.rng
+        top = F_LAB - 2
+        near = {(x + dx, z + dz) for (x, z) in self.trans_stair for dx in (-1, 0, 1) for dz in (-1, 0, 1)}
+        for x, z, d, a in ring(0, R_IN):
+            if (x, z) in near:
+                continue
+            rib = d > 9 and min(abs(((a - n) + 180) % 360 - 180) for n in range(0, 360, 30)) * d * math.pi / 180 < 0.6
+            band = any(abs(d - r) < 0.5 for r in (10, 17, 24))
+            if rib or band:
+                p.set(x, top, z, GOLD)
+                p.set(x, top - 1, z, TRIM if band else GOLD)
+                continue
+            el = quadrant(x, z)
+            star = el is not None and d > 10 and rng.random() < 0.08
+            p.set(x, top, z, lit_block(TRANS_COLOURS[el]) if star else "Rock_Quartzite_Brick_Smooth")
+        for r, a in ((13.5, 15), (13.5, 75), (13.5, 105), (13.5, 165), (20.5, 45), (20.5, 135), (13.5, 255),
+                     (13.5, 285), (20.5, 315), (20.5, 225)):
+            self.hang(*at3(r, top - 1, a), CHANDELIER)
 
     def lab(self):
         p = self.p
         y = F_LAB
-        # Cuve centrale : liquide vert dans une margelle de verre cerclée d'or.
+        # Cuve centrale : deux blocs d'eau acide verte (comme à Deepworks) dans une margelle de verre cerclée d'or. Son fond
+        # fait la rosace du plafond de la Salle des Transmutations, où pend un lustre.
         for x, z, d, a in ring(0, 9):
             if d < 7.5:
-                p.set(x, y - 1, z, "Rock_Crystal_Green_Block")
-                p.set(x, y - 2, z, self.wall())
+                p.fluid(x, y - 1, z, ACID)
+                p.fluid(x, y - 2, z, ACID)
+                p.set(x, y - 3, z, "Rock_Gold_Brick_Ornate" if d < 2.5 else GOLD if d < 4 or d >= 6.5 else
+                      "Rock_Crystal_Green_Block")
             else:
                 p.set(x, y, z, GOLD)
                 p.set(x, y + 1, z, GLASS)
+                p.set(x, y - 2, z, GOLD)
+                p.set(x, y - 3, z, TRIM)
+        self.hang(0, y - 4, 0, CHANDELIER)
+        # Bassins secondaires : les zombies de la Chimère y remplissent leurs seaux d'acide.
+        for k in CHIMERA_BASIN_ANGLES:
+            bx, bz = at(CHIMERA_BASIN_R, k)
+            for x, z, d, a in ring(0, CHIMERA_BASIN_SIZE + 1, reach=3):
+                if d < CHIMERA_BASIN_SIZE:
+                    p.fluid(bx + x, y - 1, bz + z, ACID)
+                    p.set(bx + x, y - 2, bz + z, GOLD)
+                else:
+                    p.set(bx + x, y, bz + z, GOLD)
+                    self.keep_clear.update((bx + x, y + j, bz + z) for j in range(1, 3))
         # Rayonnages du mur entre les alcôves (decor_lab) : la salle reste dégagée pour le combat de la Chimère.
         for x, z, d, a in ring(28.4, R_IN):
-            if in_arc(a, 255, 285) or (x > 0 and -22 <= z <= -10):
+            if in_arc(a, 255, 285) or in_arc(a, 300, 345):
                 continue
             if any(abs(((a - k) + 180) % 360 - 180) < 7 for k in LAB_ALCOVES):
                 continue
@@ -1025,6 +1085,9 @@ class Tower:
         # Le Codex vivant flotte au centre de la rotonde, entre ses trois pupitres (case réservée par `codex`).
         self.p.set(0, F_LIBRARY, 0, SPAWNER_PREFIX + "Living_Codex")
         self.spawners.append(("Living_Codex", (0, F_LIBRARY, 0)))
+        # Le golem de cristal au centre de la Salle des Transmutations : ses esprits viennent avec les quadrants.
+        self.p.set(0, F_TRANS, 0, SPAWNER_PREFIX + "Crystal_Golem")
+        self.spawners.append(("Crystal_Golem", (0, F_TRANS, 0)))
         # La Chimère rôde au sud de la cuve, face à l'arrivée de l'escalier des transmutations.
         sx, sy, sz = self.trap["chimera"]["spawn"]
         self.p.set(sx, sy, sz, SPAWNER_PREFIX + "Lab_Chimera")
@@ -1137,13 +1200,25 @@ class Tower:
         t["books"] = [(x, F_LIBRARY, z) for x, z in
                       (self.spawn_cell(*at3(13 if i % 2 else 18, F_LIBRARY, a), reach=3)
                        for i, a in enumerate((15, 50, 100, 145, 190, 225, 245, 265, 290, 315)))]
-        # Salle des Transmutations : un foyer éteint par quadrant ; le sceau ferme le pied de l'escalier du laboratoire
-        # (les marches de x = -15 et -14, trop hautes pour qu'on y saute depuis le sol de la salle).
-        t["foyers"] = {el: self.usable(x, F_TRANS, z, FOYER) for el, (x, z) in FOYERS.items()}
+        # Salle des Transmutations : le golem de cristal et ses quatre quadrants (TransmutationSystem). Le sceau ferme le
+        # pied de l'hélice (les marches d'un demi-bloc à un bloc et demi : plus haut, on n'y saute pas depuis le sol)
+        # jusqu'à la mort du golem.
+        y = F_TRANS
         t["trans_seal"] = []
         for (x, z), s in sorted(self.trans_stair.items()):
-            if x in (-15, -14):
-                t["trans_seal"] += self.seal([(x, z)], (s + 1) // 2, F_LAB - 1)
+            if 2 * y < s <= 2 * y + 3:
+                t["trans_seal"] += self.seal([(x, z)], (s + 1) // 2, y + 6)
+        zones, spirits = {}, {}
+        for el, (sx, sz) in TRANS_QUADRANTS.items():
+            xs = sorted((sx * 1, sx * math.floor(R_IN)))
+            zs = sorted((sz * 1, sz * math.floor(R_IN)))
+            zones[el] = ((xs[0], y, zs[0]), (xs[1], y + TRANS_ZONE_HEIGHT - 1, zs[1]))
+            angle = math.degrees(math.atan2(sz, sx)) % 360
+            spirits[el] = [(x, y, z) for x, z in (self.spawn_cell(*at3(r, y, angle + da), reach=3)
+                                                   for r, da in ((12, -12), (17, 10), (21, -20), (21, 20)))]
+        golem = (0, y, 0)
+        self.keep_clear.update((x, y + k, z) for x in range(-2, 3) for z in range(-2, 3) for k in range(5))
+        t["trans"] = {"center": golem, "zones": zones, "spirits": spirits}
         # Escalier des vents : bouches de flammes dans le mur de la tour, secteurs de rafales (vers le mur, jamais vers le
         # vide), points d'impact de la foudre.
         t["flames"] = []
@@ -1199,29 +1274,26 @@ class Tower:
     # --- Chimère du laboratoire (étape 6) ---------------------------------------------------------
 
     def chimera(self):
-        """Arène de la Chimère, tout le laboratoire autour de la cuve centrale ; `self.trap["chimera"]` garde ses
-        positions pour tools/alchemist_traps.py et TowerLayout.java : les étagères de réactifs (PNJ posés en jeu), les
-        cases libres où elle ressort de la cuve, et le sceau de la porte nord (vers l'Escalier des vents) qui tient
-        jusqu'à sa mort."""
+        """Arène de la Chimère (un dragon qui ne vole pas), tout le laboratoire autour de la cuve centrale ;
+        `self.trap["chimera"]` garde ses positions pour tools/alchemist_traps.py et TowerLayout.java : les bassins
+        secondaires et, devant chacun, la case où un zombie apparaît pour remplir son seau d'acide (ChimeraSystem), et
+        le sceau de la porte nord (vers l'Escalier des vents) qui tient jusqu'à sa mort."""
         y = F_LAB
-        shelves = []
-        for a in CHIMERA_SHELF_ANGLES:
-            x, z = self.spawn_cell(*at3(CHIMERA_SHELF_R, y, a), height=3, reach=3)
-            shelves.append((x, y, z))
-            # L'étagère tient sur une case ; le décor laisse la place et le passage autour.
+        basins, fills = [], []
+        for a in CHIMERA_BASIN_ANGLES:
+            bx, bz = at(CHIMERA_BASIN_R, a)
+            basins.append((bx, y, bz))
+            # Le zombie apparaît du côté de la cuve, contre la margelle ; le décor laisse la place et le passage.
+            x, z = self.spawn_cell(*at3(CHIMERA_BASIN_R - CHIMERA_BASIN_SIZE - 2, y, a), height=3, reach=2)
+            fills.append((x, y, z))
             self.keep_clear.update((x + dx, y + k, z + dz) for dx in range(-1, 2) for dz in range(-1, 2) for k in range(3))
-        exits = []
-        for a in CHIMERA_EXIT_ANGLES:
-            x, z = self.spawn_cell(*at3(CHIMERA_EXIT_R, y, a), height=3, reach=3)
-            exits.append((x, y, z))
-            self.keep_clear.update((x + dx, y + k, z + dz) for dx in range(-2, 3) for dz in range(-2, 3) for k in range(3))
-        # Elle rôde au sud de la cuve, face à l'arrivée de l'escalier des transmutations : place libre pour sa carrure.
-        sx, sz = self.spawn_cell(*at3(18, y, 70), height=4, reach=3)
-        self.keep_clear.update((sx + dx, y + k, sz + dz) for dx in range(-2, 3) for dz in range(-3, 4) for k in range(4))
+        # Elle rôde au sud de la cuve, face à l'arrivée de l'hélice : place libre pour sa carrure.
+        sx, sz = self.spawn_cell(*at3(15, y, 60), height=4, reach=3)
+        self.keep_clear.update((sx + dx, y + k, sz + dz) for dx in range(-3, 4) for dz in range(-3, 4) for k in range(4))
         seal = self.seal([(x, CHIMERA_DOOR_Z) for x in range(-2, 3)], y, y + 5)
         if len(seal) != 25:
             raise RuntimeError(f"tour : le sceau de la Chimère ne ferme pas la porte nord ({len(seal)} blocs)")
-        self.trap["chimera"] = {"vat": (0, y, 0), "spawn": (sx, y, sz), "shelves": shelves, "exits": exits, "seal": seal}
+        self.trap["chimera"] = {"vat": (0, y, 0), "spawn": (sx, y, sz), "basins": basins, "fills": fills, "seal": seal}
 
     # --- l'Alchimiste (étape 7) --------------------------------------------------------------------
 
@@ -1300,13 +1372,13 @@ class Tower:
 
     def arenas(self):
         """Barrières des trois arènes de boss, hors de l'arène, là où l'on y entre : couche extérieure de la porte de la
-        bibliothèque, travers de l'escalier des transmutations juste sous le plancher du laboratoire, côté antichambre
+        bibliothèque, couvercle sur la trémie de l'hélice des transmutations, au niveau du plancher du laboratoire, côté antichambre
         de la porte de la terrasse. Cases libres que le décor laisse vides ; `self.trap["arenas"]` les donne par boss."""
         library = [(x, y, z) for x, z, d, a in ring(R_IN - 0.5, R_OUT + 0.5) if abs(a - 50) < 5 and d >= R_OUT - 1
                    for y in range(F_LIBRARY, F_LIBRARY + 5)]
-        x = 14
-        s = self.trans_stair[(x, -16)]
-        lab = [(x, y, z) for z in (-17, -16, -15, -14) for y in range(s // 2 + s % 2, F_LAB + 3)]
+        # Laboratoire : un couvercle à plat sur la trémie de l'hélice, au niveau du plancher (Kevin, 19 octobre 2026 : la
+        # barrière debout en travers des marches ne fermait pas vraiment le passage).
+        lab = [(x, F_LAB - 1, z) for (x, z) in self.trans_stair if self.p.free(x, F_LAB - 1, z)]
         deck = [(x, y, z) for x, z, d, a in ring(21.5, 24.6) if abs(a - 245) < 5 and d >= 23
                 for y in range(F_DECK, F_DECK + 5)]
         arenas = {"Codex": library, "Chimera": lab, "Alchemist": deck}
@@ -1593,95 +1665,68 @@ class Tower:
             self.place(cx + dx, y, cz + dz, name)
 
     def decor_transmutation(self):
+        """Salle ronde du golem : le centre reste dégagé pour le combat, chaque quadrant a son décor élémentaire contre le
+        mur (sous l'hélice au nord) ; quatre colonnes d'or sur la croix portent le plafond."""
         y = F_TRANS
         p = self.p
         rng = self.rng
         # Cercle de transmutation : deux anneaux d'or au sol, sceau au centre.
-        for x in range(-SQUARE, SQUARE + 1):
-            for z in range(-13, SQUARE + 1):
-                d = math.hypot(x, z)
-                if 4.5 <= d < 5.4 or 9.5 <= d < 10.4:
-                    p.set(x, y - 1, z, GOLD)
+        for x, z, d, a in ring(0, 11):
+            if 4.5 <= d < 5.4 or 9.5 <= d < 10.4:
+                p.set(x, y - 1, z, GOLD)
         p.set(0, y - 1, 0, "Rock_Gold_Brick_Ornate")
-        for k in range(45, 360, 90):
-            x, z = at(7.5, k)
-            self.place(x, y, z, "Furniture_Royal_Magic_Potion_Glow")
-        # Feu (nord-est) : sol de magma refroidi, braseros autour d'un grand brasier, cristaux rouges.
-        fx, fz = 11, -7
-        for x in range(fx - 3, fx + 4):
-            for z in range(fz - 3, fz + 4):
-                if math.hypot(x - fx, z - fz) <= 3.2:
-                    p.set(x, y - 1, z, "Rock_Magma_Cooled")
-        self.place(fx, y, fz, "Furniture_Dungeon_Earth_Brazier")
-        for k in range(0, 360, 90):
-            x, z = at(2.5, k)
-            self.place(fx + x, y, fz + z, BRAZIER)
-        for dx, dz in ((4, 3), (-4, -3), (5, -2)):
-            self.place(fx + dx, y, fz + dz, rng.choice(["Rock_Crystal_Red_Large", "Rock_Crystal_Red_Medium"]))
-        # Glace (nord-ouest) : aiguilles de cristal blanc et cyan, glace au sol.
-        ix, iz = -10, -7
-        for x in range(ix - 3, ix + 4):
-            for z in range(iz - 3, iz + 4):
-                d = math.hypot(x - ix, z - iz)
-                if d <= 3.2:
-                    p.set(x, y - 1, z, "Rock_Ice")
-                if d <= 1.5:
-                    for k in range(0, 4 - int(2 * d)):
-                        if (x, y + k, z) not in self.keep_clear and p.free(x, y + k, z):
-                            p.set(x, y + k, z, "Rock_Crystal_Cyan_Block" if (x + z) % 2 else "Rock_Crystal_White_Block")
-        for dx, dz in ((3, 2), (-3, 2), (2, -3)):
-            self.place(ix + dx, y, iz + dz, rng.choice(["Rock_Crystal_White_Large", "Rock_Crystal_Cyan_Large"]))
-        # Acide (sud-est) : bassin de cristal vert, grand chaudron, champignons lumineux.
-        ax, az = 10, 10
-        for x in range(ax - 3, ax + 4):
-            for z in range(az - 3, az + 4):
-                d = math.hypot(x - ax, z - az)
-                if d <= 2.2:
-                    p.set(x, y - 1, z, "Rock_Crystal_Green_Block")
-                elif d <= 3.2 and p.free(x, y, z) and (x, y, z) not in self.keep_clear:
-                    p.set(x, y, z, "Rock_Gold_Brick_Half")
-        self.place(ax, y, az, "Alchemy_Cauldron_Big")
-        for dx, dz in ((4, -2), (-4, 2), (2, 4), (-2, -4)):
-            self.place(ax + dx, y, az + dz, rng.choice(["Plant_Crop_Mushroom_Glowing_Green", "Rock_Crystal_Green_Large",
-                                                        "Rock_Crystal_Green_Medium"]))
-        # Foudre (sud-ouest) : paratonnerre d'or coiffé de cristal, arc électrique, cristaux jaunes et bleus.
-        lx, lz = -10, 10
-        for k in range(0, 7):
-            p.set(lx, y + k, lz, "Rock_Gold_Brick_Pillar_Base" if k == 0 else "Rock_Gold_Brick_Pillar_Middle")
-        p.set(lx, y + 7, lz, "Rock_Crystal_Yellow_Block")
-        p.set(lx, y + 8, lz, "Nakasar_Tower_Emanation_Arc")
-        for dx, dz in ((2, 0), (-2, 0), (0, 2), (0, -2), (3, 3), (-3, -3)):
-            self.place(lx + dx, y, lz + dz, rng.choice(["Rock_Crystal_Yellow_Large", "Rock_Crystal_Blue_Large",
-                                                        "Rock_Crystal_Yellow_Medium"]))
-        # Chaque quadrant semé de son élément ; le couloir d'arrivée (ouest) et le pied de l'escalier restent libres.
-        themes = {(1, -1): ["Rock_Crystal_Red_Medium", "Rock_Crystal_Red_Small", BRAZIER, "Rock_Magma_Cooled_Half"],
-                  (-1, -1): ["Rock_Crystal_White_Medium", "Rock_Crystal_Cyan_Medium", "Rock_Crystal_Cyan_Small", "Rock_Ice"],
-                  (1, 1): ["Rock_Crystal_Green_Medium", "Rock_Crystal_Green_Small", "Alchemy_Cauldron",
-                           "Plant_Crop_Mushroom_Glowing_Green"],
-                  (-1, 1): ["Rock_Crystal_Yellow_Medium", "Rock_Crystal_Blue_Medium", "Rock_Crystal_Yellow_Small",
-                            "Rock_Crystal_Blue_Small"]}
-        for x in range(-SQUARE + 1, SQUARE):
-            for z in range(-12, SQUARE):
-                if abs(x) < 3 or abs(z) < 3 or (x < -11 and z < -3) or rng.random() >= 0.09:
-                    continue
-                self.place(x, y, z, rng.choice(themes[(1 if x > 0 else -1, 1 if z > 0 else -1)]))
-        # Colonnes d'angle coiffées du cristal de leur quadrant.
-        for (sx, sz), crystal in (((1, 1), "Rock_Crystal_Green_Block"), ((-1, 1), "Rock_Crystal_Yellow_Block"),
-                                  ((1, -1), "Rock_Crystal_Red_Block")):
-            cx, cz = sx * (SQUARE - 1), sz * (SQUARE - 1) if sz > 0 else -12
-            for k in range(0, 10):
-                if p.free(cx, y + k, cz) and (cx, y + k, cz) not in self.keep_clear:
-                    p.set(cx, y + k, cz, "Rock_Gold_Brick_Pillar_Base" if k == 0 else
-                          crystal if k == 9 else "Rock_Gold_Brick_Pillar_Middle")
-        # Lustres au plafond (sol du laboratoire).
-        top = F_LAB - 2
-        for x, z in ((0, 0), (9, 9), (-9, 9), (9, -9), (-9, -9)):
-            self.hang(x, top, z, CHANDELIER)
+        # Colonnes d'or sur la croix, coiffées de cristal violet sous le plafond.
+        for a in (0, 90, 180, 270):
+            cx, cz = at(20, a)
+            for k in range(0, F_LAB - 3 - y):
+                if (cx, y + k, cz) in self.keep_clear or not p.free(cx, y + k, cz):
+                    break
+                p.set(cx, y + k, cz, "Rock_Gold_Brick_Pillar_Base" if k == 0 else
+                      "Rock_Crystal_Purple_Block" if k == F_LAB - 4 - y else "Rock_Gold_Brick_Pillar_Middle")
+        # Sol élémentaire en couronne (au-delà du cercle) et objets du quadrant.
+        floors = {"Fire": "Rock_Magma_Cooled", "Ice": "Rock_Ice_Permafrost", "Earth": "Rock_Basalt_Cobble",
+                  "Air": "Rock_Chalk_Brick"}
+        props = {"Fire": [BRAZIER, "Rock_Crystal_Red_Large", "Rock_Crystal_Red_Medium", "Rock_Magma_Cooled_Half"],
+                 "Ice": ["Rock_Crystal_White_Large", "Rock_Crystal_Cyan_Large", "Rock_Crystal_Cyan_Medium",
+                         "Rock_Crystal_White_Medium"],
+                 "Earth": ["Furniture_Dungeon_Earth_Brazier", "Rock_Crystal_Green_Large", "Rock_Crystal_Green_Medium",
+                           "Rock_Basalt_Cobble_Half"],
+                 "Air": ["Furniture_Temple_Wind_Pot", "Furniture_Temple_Wind_Candle", "Rock_Crystal_Yellow_Large",
+                         "Rock_Crystal_Yellow_Medium"]}
+        for x, z, d, a in ring(14, R_IN):
+            el = quadrant(x, z)
+            if el is None or p.get(x, y - 1, z) in (None, AIR) or (x, z) in self.trans_stair:
+                continue
+            if p.get(x, y - 1, z) in {n for n, _ in FLOOR} and rng.random() < (0.25 if d < 19 else 0.6):
+                p.set(x, y - 1, z, floors[el])
+            if d >= 19 and rng.random() < 0.12:
+                self.place(x, y, z, rng.choice(props[el]))
+        # Une pièce maîtresse par quadrant, contre le mur ou devant l'hélice.
+        pieces = {"Earth": (24, 45), "Air": (24, 135), "Ice": (16, 225), "Fire": (16, 315)}
+        for el, (r, a) in pieces.items():
+            cx, cz = at(r, a)
+            if el == "Air":
+                self.place(cx, y, cz, "Furniture_Temple_Wind_Statue", facing_center(cx, cz))
+                for da in (-9, 9):
+                    self.place(*at3(r, y, a + da), "Furniture_Temple_Wind_Candle")
+                continue
+            if el == "Earth":
+                self.place(cx, y, cz, "Furniture_Dungeon_Earth_Brazier")
+            else:
+                crystal = {"Ice": ("Rock_Crystal_Cyan_Block", "Rock_Crystal_White_Block"),
+                           "Fire": ("Rock_Crystal_Red_Block", "Rock_Magma_Cooled")}[el]
+                for x, z, d, _ in ring(0, 2.3, reach=3):  # aiguille de 5 blocs : on ne l'escalade pas
+                    for k in range(5 if d < 0.5 else 2 if d < 1.5 else 1):
+                        c = (cx + x, y + k, cz + z)
+                        if c not in self.keep_clear and p.free(*c):
+                            p.set(*c, crystal[(x + z + k) % 2])
+            for da in (-7, 7):
+                self.place(*at3(r, y, a + da), props[el][1])
 
     def decor_lab(self):
         """Laboratoire, arène de la Chimère : sol dégagé autour de la cuve, deux anneaux d'or et des conduits de cristal
         vert qui relient la cuve aux grands alambics des alcôves ; le décor est contre le mur, dans des alcôves
-        symétriques (alambics et postes d'alchimiste), et chaque étagère de réactifs (PNJ du combat) a son cercle d'or."""
+        symétriques (alambics et postes d'alchimiste), et devant chaque bassin d'acide, une flaque de cristal vert marque où le zombie remplit son seau."""
         y = F_LAB
         p = self.p
         rng = self.rng
@@ -1703,9 +1748,9 @@ class Tower:
         for k, kind in LAB_ALCOVES.items():
             if kind == "alembic":
                 self.inlay(self.segment(*at(9.5, k), *at(23.5, k)), y, "Rock_Crystal_Green_Block", over={n for n, _ in FLOOR} | {TRIM})
-        for x, _, z in self.trap["chimera"]["shelves"]:
-            self.inlay([(x + dx, z + dz) for dx in range(-1, 2) for dz in range(-1, 2) if (dx, dz) != (0, 0)], y, GOLD,
-                       over={n for n, _ in FLOOR} | {TRIM, "Rock_Crystal_Green_Block"})
+        for x, _, z in self.trap["chimera"]["fills"]:
+            self.inlay([(x + dx, z + dz) for dx in range(-1, 2) for dz in range(-1, 2)], y, "Rock_Crystal_Green_Block",
+                       over={n for n, _ in FLOOR} | {TRIM})
         # Alcôves : un grand alambic (verre et cristal de la couleur de son conduit) ou un poste d'alchimiste (établi
         # tourné vers la cuve, chaudron et tonneau de part et d'autre, fioles au mur).
         potions = ["Potion_Empty_Large", "Potion_Empty", "Deco_Potion", "Potion_Poison_Large", "Potion_Mana",
@@ -1729,8 +1774,8 @@ class Tower:
         for x, z, d, a in ring(28.4, R_IN):
             if p.get(x, y + 5, z) == SHELF and rng.random() < 0.5:
                 self.place(x, y + 6, z, rng.choice(potions[:6] + ["Furniture_Royal_Magic_Potion_Glow", "Deco_Bone_Skulls"]))
-        # Entrée de l'arène : deux braseros allumés de part et d'autre de l'arrivée de l'escalier des transmutations.
-        for x, z in ((21, -19), (21, -12)):
+        # Entrée de l'arène : deux braseros allumés de part et d'autre de l'arrivée de l'hélice des transmutations.
+        for x, z in (at(27.5, 347), at(22, 324)):
             if not self.place(x, y, z, "*Furniture_Temple_Light_Brazier_State_Definitions_On"):
                 raise RuntimeError(f"tour : pas de place pour le brasero de l'entrée du laboratoire en {(x, y, z)}")
         # Lustres et lanternes au plafond.
@@ -1876,11 +1921,10 @@ class Tower:
         self.wind_stair()
         self.observatory()
         self.guard(self.wind_ramp)
-        # Points de contrôle : bibliothèque, laboratoire, Escalier des vents, antichambre.
-        # Comme Deepworks, chaque statue est hors de l'arène de son boss : palier de la rampe de la serre devant la porte de
-        # la bibliothèque, croix d'or de la Salle des Transmutations sous l'escalier du laboratoire.
+        # Points de contrôle : bibliothèque, Escalier des vents, antichambre (pas dans la Salle des Transmutations, Kevin,
+        # 19 octobre 2026). Comme Deepworks, chaque statue est hors de l'arène de son boss : palier de la rampe de la
+        # serre devant la porte de la bibliothèque.
         self.checkpoint(*at3(36.5, F_LIBRARY, 47), statue_at=at(40, 48))
-        self.checkpoint(0, F_TRANS, -9, statue_at=(0, -12))
         self.checkpoint(*at3(37, F_LAB, 272), statue_at=at(39, 262))
         self.checkpoint(*at3(33, F_DECK, 255), statue_at=at(37, 265))
         self.traps()
@@ -2043,12 +2087,7 @@ MOB_LAYOUT = [
     ("Elemental_Frost", (16, F_LIBRARY, 20), 3),
     # Laboratoire : l'arène de la Chimère, sans autre mob.
 ]
-# Salle des Transmutations : un élémentaire par quadrant (feu, glace, racine, foudre) et le golem de cristal au centre.
-MOB_FIXED = [
-    ("Elemental_Fire", (10, F_TRANS, 10), 3), ("Elemental_Frost", (-10, F_TRANS, 10), 3),
-    ("Elemental_Root", (-10, F_TRANS, -10), 3), ("Elemental_Thunder", (10, F_TRANS, -10), 3),
-    ("Crystal_Golem", (0, F_TRANS, 4), 5),
-]
+MOB_FIXED = []
 GARGOYLE_ANGLES = (320, 40, 130, 220)
 
 
@@ -2090,8 +2129,7 @@ def build_checked(seed):
     if missing:
         raise RuntimeError(f"tour : les éboulis du Codex ferment le passage : {missing}")
     # Le sceau de la Chimère seul ferme la porte nord du laboratoire (vers l'Escalier des vents).
-    missing, _ = walkable_path(prefab, (cps[1][0], 2 * cps[1][1], cps[1][2]), {"goal": cps[2]},
-                               solid_cells=tower.trap["chimera"]["seal"])
+    missing, _ = walkable_path(prefab, (10, 2 * F_LAB, 10), {"goal": cps[1]}, solid_cells=tower.trap["chimera"]["seal"])
     if not missing:
         raise RuntimeError("tour : le sceau de la Chimère ne ferme pas la porte nord du laboratoire")
     # Le sceau de l'Alchimiste seul ferme la porte du bureau depuis la terrasse.
@@ -2102,8 +2140,8 @@ def build_checked(seed):
         raise RuntimeError("tour : le sceau de l'Alchimiste ne ferme pas la porte du bureau")
     # Chaque barrière d'arène ferme l'entrée : depuis sa statue, on n'entre plus dans l'arène.
     arenas = tower.trap["arenas"]
-    for name, start, goal in (("Codex", cps[0], (0, F_LIBRARY, 3)), ("Chimera", cps[1], GOALS["lab"]),
-                              ("Alchemist", cps[3], GOALS["deck"])):
+    for name, start, goal in (("Codex", cps[0], (0, F_LIBRARY, 3)), ("Chimera", (0, F_TRANS, 8), GOALS["lab"]),
+                              ("Alchemist", cps[2], GOALS["deck"])):
         missing, _ = walkable_path(prefab, (start[0], 2 * start[1], start[2]), {"goal": goal}, solid_cells=arenas[name])
         if not missing:
             raise RuntimeError(f"tour : la barrière de l'arène {name} ne ferme pas son entrée")

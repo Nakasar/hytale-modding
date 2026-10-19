@@ -17,5 +17,8 @@
     "ItemsLossMode": "None",
     "ItemsAmountLossPercentage": 0,
     "ItemsDurabilityLossPercentage": 0
+  },
+  "WorldMap": {
+    "DisplayDeathMarker": false
   }
 }

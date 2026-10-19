@@ -4039,3 +4039,5 @@ Metal_Goblin_Iron_Pipe_Large_Glowy
 Metal_Goblin_Iron_Pipe_Long
 VFX_Dungeon_Goblin_Leaking_Pipe
 VFX_Dungeon_Goblin_Smoke_Pipe_Small
+# Fluide des prefabs (Server/Item/Block/Fluids/Poison_Source.json, eau acide verte des prefabs gobelins), vu dans Assets.zip 0.7.2 le 19 octobre 2026 :
+Poison_Source

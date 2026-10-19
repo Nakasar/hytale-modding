@@ -9,11 +9,10 @@ public final class TowerLayout {
     public static final double GROUND_Y = 100;
     /** Point d'apparition, sur le parvis d'arrivée. */
     public static final Vector3d ARRIVAL = new Vector3d(0.5, 100, 0.5);
-    /** Points de contrôle, dans l'ordre du parcours : ruines du premier laboratoire, bibliothèque, laboratoire, Escalier des vents, antichambre. */
+    /** Points de contrôle, dans l'ordre du parcours : ruines du premier laboratoire, bibliothèque, Escalier des vents, antichambre. */
     public static final Vector3d[] CHECKPOINTS = {
             new Vector3d(-0.5, 105, -212.5),
             new Vector3d(25.5, 136, -412.5),
-            new Vector3d(0.5, 166, -448.5),
             new Vector3d(1.5, 184, -476.5),
             new Vector3d(-8.5, 244, -471.5)
     };
@@ -38,26 +37,44 @@ public final class TowerLayout {
     /** Pans d'étagères qui s'effondrent (Collapse=On). */
     public static final String[] CODEX_COLLAPSE = {"00f64808-4e2c-5a2a-9ad9-582cfaf84967", "7d02473a-a339-5dd9-b38c-332bc146f65c", "11b6c4b0-f282-5f81-9450-bbc71005b7cc", "8f701448-8141-5268-b334-60a5f0d7124f", "d9cfadb3-7f39-5fa4-8be5-4a00213450b8"};
 
-    /** Chimère du laboratoire : centre de la cuve, au niveau du sol de la salle (la Chimère s'y régénère). */
+    /** Salle des Transmutations : centre (golem de cristal), au sol ; rayon de l'arène. */
+    public static final Vector3d TRANS_CENTER = new Vector3d(0.5, 166, -439.5);
+    public static final double TRANS_ARENA_RADIUS = 29.5;
+    /** Hauteur des quadrants au-dessus du sol : plus haut (l'hélice), on est hors de l'arène. */
+    public static final double TRANS_ARENA_HEIGHT = 6;
+    /** Quadrants élémentaires dans l'ordre du tour (le répit passe à un voisin) : nom, volume (tools/alchemist_traps.py,
+     * Traps.transmutation : State, Fx), rôle de l'esprit qui en sort, signes (x, z) du quadrant. */
+    public static final String[] TRANS_QUADRANTS = {"Earth", "Air", "Ice", "Fire"};
+    public static final String[] TRANS_ZONES = {"8d9af366-23f4-55e5-9e6c-f1772896e935", "32c5d148-cdbf-5f1b-93c9-a3394f87040f", "43e4e080-e174-5199-b49b-34705aa1a119", "9960f64e-5188-59be-907a-a94e76cfb047"};
+    public static final String[] TRANS_SPIRITS = {"Nakasar_Elemental_Root", "Nakasar_Elemental_Thunder", "Nakasar_Elemental_Frost", "Nakasar_Elemental_Fire"};
+    public static final int[][] TRANS_SIGNS = {{1, 1}, {-1, 1}, {-1, -1}, {1, -1}};
+    /** Où les esprits de chaque quadrant apparaissent (une ligne par quadrant, dans l'ordre de TRANS_QUADRANTS). */
+    public static final Vector3d[][] TRANS_SPIRIT_SPOTS = {
+            {new Vector3d(10.5, 167, -432.5), new Vector3d(10.5, 167, -425.5), new Vector3d(19.5, 167, -430.5), new Vector3d(9.5, 167, -420.5)},
+            {new Vector3d(-6.5, 167, -429.5), new Vector3d(-13.5, 167, -429.5), new Vector3d(-8.5, 167, -420.5), new Vector3d(-18.5, 167, -430.5)},
+            {new Vector3d(-9.5, 167, -446.5), new Vector3d(-9.5, 167, -453.5), new Vector3d(-18.5, 167, -448.5), new Vector3d(-8.5, 167, -458.5)},
+            {new Vector3d(7.5, 167, -449.5), new Vector3d(14.5, 167, -449.5), new Vector3d(9.5, 167, -458.5), new Vector3d(19.5, 167, -448.5)}
+    };
+    /** Sceau du pied de l'hélice (Golem=On à la mort du golem). */
+    public static final String TRANS_SEAL = "fefcd8de-8af2-5fed-9e1c-c2ac424fa1b2";
+
+    /** Chimère du laboratoire : centre de la cuve, au niveau du sol de la salle. */
     public static final Vector3d CHIMERA_VAT = new Vector3d(0.5, 184, -439.5);
     /** Rayon de l'arène de la Chimère (intérieur de la tour) et rayon intérieur de la margelle de la cuve. */
     public static final double CHIMERA_ARENA_RADIUS = 29.5;
     public static final double CHIMERA_VAT_RADIUS = 7.5;
-    /** Étagères de réactifs (PNJ posés par ChimeraSystem), au sol. */
-    public static final Vector3d[] CHIMERA_SHELVES = {
-            new Vector3d(20.5, 184, -432.5),
-            new Vector3d(-6.5, 184, -419.5),
-            new Vector3d(-20.5, 184, -437.5),
-            new Vector3d(-11.5, 184, -456.5)
+    /** Bassins d'acide secondaires (centre, au sol) et, devant chacun, la case où un zombie remplit son seau. */
+    public static final Vector3d[] CHIMERA_BASINS = {
+            new Vector3d(21.5, 184, -439.5),
+            new Vector3d(15.5, 184, -424.5),
+            new Vector3d(-14.5, 184, -424.5),
+            new Vector3d(-14.5, 184, -454.5)
     };
-    /** Cases libres autour de la cuve où la Chimère ressort après sa régénération. */
-    public static final Vector3d[] CHIMERA_EXITS = {
-            new Vector3d(11.5, 184, -433.5),
-            new Vector3d(-5.5, 184, -428.5),
-            new Vector3d(-10.5, 184, -433.5),
-            new Vector3d(-10.5, 184, -445.5),
-            new Vector3d(-5.5, 184, -450.5),
-            new Vector3d(11.5, 184, -445.5)
+    public static final Vector3d[] CHIMERA_FILLS = {
+            new Vector3d(17.5, 184, -439.5),
+            new Vector3d(12.5, 184, -427.5),
+            new Vector3d(-11.5, 184, -427.5),
+            new Vector3d(-11.5, 184, -451.5)
     };
     /** Volumes (tools/alchemist_traps.py, Traps.chimera) : sceau de la porte nord (Chimera=On), acide de la cuve (Cast=On). */
     public static final String CHIMERA_SEAL = "ebf90f00-a380-54f6-8309-d361a492b8ee";

@@ -1,52 +1,114 @@
 {
-  "$Comment": "Chimère du laboratoire (mini-boss de la Tour de l'Alchimiste), générée par tools/generate_chimera_models.py : quadrupède rapiécé aux coutures visibles, patte avant droite de golem de plomb, queue de serpent, tubes de liquide vert lumineux dans le dos.",
-  "EyeHeight": 1.7,
+  "$Comment": "Chimère du laboratoire (mini-boss de la Tour de l'Alchimiste) : le dragon de feu vanilla, sans le vol, un peu plus petit ; ses attaques sont dans Server/Item/Animations/Nakasar/Nakasar_Lab_Chimera.json. Généré par tools/generate_dragon_models.py.",
+  "Model": "NPC/Elemental/Dragon_Fire/Models/Model.blockymodel",
+  "Texture": "NPC/Elemental/Dragon_Fire/Models/Texture.png",
+  "EyeHeight": 2.2,
   "HitBox": {
     "Max": {
-      "X": 0.8,
-      "Y": 2.2,
-      "Z": 1.6
+      "X": 2,
+      "Y": 2.8,
+      "Z": 2
     },
     "Min": {
-      "X": -0.8,
+      "X": -2,
       "Y": 0,
-      "Z": -1.4
+      "Z": -2
     }
   },
-  "MinScale": 1,
-  "MaxScale": 1,
-  "Light": {
-    "Color": "#7dff6a",
-    "Radius": 5
+  "MinScale": 1.1,
+  "MaxScale": 1.1,
+  "Camera": {
+    "Pitch": {
+      "AngleRange": {
+        "Max": 45,
+        "Min": -30
+      },
+      "TargetNodes": [
+        "Head"
+      ]
+    },
+    "Yaw": {
+      "AngleRange": {
+        "Max": 30,
+        "Min": -30
+      },
+      "TargetNodes": [
+        "Head"
+      ]
+    }
   },
-  "Model": "NPC/Nakasar/Lab_Chimera/Model.blockymodel",
-  "Texture": "NPC/Nakasar/Lab_Chimera/Texture.png",
   "AnimationSets": {
     "Idle": {
       "Animations": [
         {
-          "Animation": "NPC/Nakasar/Lab_Chimera/Animations/Idle.blockyanim"
+          "Animation": "NPC/Elemental/Dragon_Fire/Animations/Idle.blockyanim"
         }
       ]
     },
     "Walk": {
       "Animations": [
         {
-          "Animation": "NPC/Nakasar/Lab_Chimera/Animations/Walk.blockyanim"
+          "Animation": "NPC/Elemental/Dragon_Fire/Animations/Walk.blockyanim"
+        }
+      ]
+    },
+    "WalkBackward": {
+      "Animations": [
+        {
+          "Animation": "NPC/Elemental/Dragon_Fire/Animations/Walk_Backward.blockyanim"
         }
       ]
     },
     "Run": {
       "Animations": [
         {
-          "Animation": "NPC/Nakasar/Lab_Chimera/Animations/Run.blockyanim"
+          "Animation": "NPC/Elemental/Dragon_Fire/Animations/Run.blockyanim"
+        }
+      ]
+    },
+    "Jump": {
+      "Animations": [
+        {
+          "Animation": "NPC/Elemental/Dragon_Fire/Animations/Jump.blockyanim",
+          "BlendingDuration": 0.1,
+          "Looping": false,
+          "Speed": 0.75
+        }
+      ]
+    },
+    "JumpWalk": {
+      "Animations": [
+        {
+          "Animation": "NPC/Elemental/Dragon_Fire/Animations/Jump.blockyanim",
+          "BlendingDuration": 0.1,
+          "Looping": false,
+          "Speed": 0.75
+        }
+      ]
+    },
+    "JumpRun": {
+      "Animations": [
+        {
+          "Animation": "NPC/Elemental/Dragon_Fire/Animations/Jump.blockyanim",
+          "BlendingDuration": 0.1,
+          "Looping": false,
+          "Speed": 0.75
+        }
+      ]
+    },
+    "Fall": {
+      "Animations": [
+        {
+          "Animation": "NPC/Elemental/Dragon_Fire/Animations/Fall.blockyanim",
+          "BlendingDuration": 0.4
         }
       ]
     },
     "Hurt": {
       "Animations": [
         {
-          "Animation": "NPC/Nakasar/Lab_Chimera/Animations/Hurt.blockyanim",
+          "Animation": "NPC/Elemental/Dragon_Fire/Animations/Hurt.blockyanim",
+          "BlendingDuration": 0.1,
           "Looping": false
         }
       ]
@@ -54,115 +116,44 @@
     "Death": {
       "Animations": [
         {
-          "Animation": "NPC/Nakasar/Lab_Chimera/Animations/Death.blockyanim",
+          "Animation": "NPC/Elemental/Dragon_Fire/Animations/Death.blockyanim",
           "Looping": false
-        }
-      ]
-    },
-    "WalkBackward": {
-      "Animations": [
-        {
-          "Animation": "NPC/Nakasar/Lab_Chimera/Animations/Idle.blockyanim"
-        }
-      ]
-    },
-    "Sprint": {
-      "Animations": [
-        {
-          "Animation": "NPC/Nakasar/Lab_Chimera/Animations/Idle.blockyanim"
-        }
-      ]
-    },
-    "Jump": {
-      "Animations": [
-        {
-          "Animation": "NPC/Nakasar/Lab_Chimera/Animations/Idle.blockyanim"
-        }
-      ]
-    },
-    "JumpWalk": {
-      "Animations": [
-        {
-          "Animation": "NPC/Nakasar/Lab_Chimera/Animations/Idle.blockyanim"
-        }
-      ]
-    },
-    "JumpRun": {
-      "Animations": [
-        {
-          "Animation": "NPC/Nakasar/Lab_Chimera/Animations/Idle.blockyanim"
-        }
-      ]
-    },
-    "Fall": {
-      "Animations": [
-        {
-          "Animation": "NPC/Nakasar/Lab_Chimera/Animations/Idle.blockyanim"
-        }
-      ]
-    },
-    "Sleep": {
-      "Animations": [
-        {
-          "Animation": "NPC/Nakasar/Lab_Chimera/Animations/Idle.blockyanim"
-        }
-      ]
-    },
-    "Laydown": {
-      "Animations": [
-        {
-          "Animation": "NPC/Nakasar/Lab_Chimera/Animations/Idle.blockyanim"
-        }
-      ]
-    },
-    "Crouch": {
-      "Animations": [
-        {
-          "Animation": "NPC/Nakasar/Lab_Chimera/Animations/Idle.blockyanim"
-        }
-      ]
-    },
-    "CrouchWalk": {
-      "Animations": [
-        {
-          "Animation": "NPC/Nakasar/Lab_Chimera/Animations/Idle.blockyanim"
-        }
-      ]
-    },
-    "CrouchWalkBackward": {
-      "Animations": [
-        {
-          "Animation": "NPC/Nakasar/Lab_Chimera/Animations/Idle.blockyanim"
-        }
-      ]
-    },
-    "SwimIdle": {
-      "Animations": [
-        {
-          "Animation": "NPC/Nakasar/Lab_Chimera/Animations/Idle.blockyanim"
-        }
-      ]
-    },
-    "FluidIdle": {
-      "Animations": [
-        {
-          "Animation": "NPC/Nakasar/Lab_Chimera/Animations/Idle.blockyanim"
         }
       ]
     },
     "Alerted": {
       "Animations": [
         {
-          "Animation": "NPC/Nakasar/Lab_Chimera/Animations/Idle.blockyanim"
+          "Animation": "NPC/Elemental/Dragon_Fire/Animations/Idle.blockyanim"
         }
       ]
     },
     "Wake": {
       "Animations": [
         {
-          "Animation": "NPC/Nakasar/Lab_Chimera/Animations/Idle.blockyanim"
+          "Animation": "NPC/Elemental/Dragon_Fire/Animations/Idle.blockyanim"
         }
       ]
     }
-  }
+  },
+  "Particles": [
+    {
+      "PositionOffset": {
+        "X": 0.18,
+        "Y": 0.1,
+        "Z": 0.48
+      },
+      "SystemId": "Smoke_Black",
+      "TargetNodeName": "Top Jaw"
+    },
+    {
+      "PositionOffset": {
+        "X": -0.18,
+        "Y": 0.1,
+        "Z": 0.48
+      },
+      "SystemId": "Smoke_Black",
+      "TargetNodeName": "Top Jaw"
+    }
+  ]
 }

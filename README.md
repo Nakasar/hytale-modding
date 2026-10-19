@@ -373,9 +373,13 @@ Mobs (voir [docs/npc-0.7.2.md](docs/npc-0.7.2.md)) :
   nuage (`Nakasar_Spore_Cloud_30`) exactement du rayon de la zone rouge, qui reste 3 s, ralentit et empoisonne.
   Bibliothèque : le brasero met le feu à la haie de ronces qui barre la rampe ; les livres ne tombent que pendant le
   combat du Codex (`ArenaGate` active le volume quand la barrière se lève, le coupe à la fin). Salle des
-  Transmutations : les quadrants se transmutent à tour de rôle (feu, glace, acide, foudre ; les croix d'or restent
-  sûres), allumer le foyer d'un quadrant l'apaise mais libère un élémentaire, les quatre foyers dissolvent le sceau de
-  l'escalier du laboratoire. Escalier des vents (s'éveille à la porte nord du laboratoire) : flammes qui balaient les
+  Transmutations (ronde, arène du golem de cristal, `tower/TransmutationSystem.java`) : trois quadrants sur quatre sont
+  actifs (Feu : flammes intenses ; Glace : blizzard ; Air : vents forts vers le mur ; Terre : pics de pierre), le
+  quatrième est calme avec un effet léger (petits dégâts, ralentissement, vents légers, petits pics). Toutes les 16 s le
+  calme change de quadrant : 5 s avant, le quadrant calme s'annonce (cercles rouges, son) et le nouveau devient calme,
+  puis l'ancien s'active et fait apparaître ses esprits. La mort du golem éteint les quadrants et dissout le sceau de
+  l'escalier en spirale vers le laboratoire. Les esprits qui passent sous le sol ou sortent de la salle sont ramenés
+  (`tower/FlyerGuardSystem.java` pour tous les volants de la tour). Escalier des vents (s'éveille à la porte nord du laboratoire) : flammes qui balaient les
   marches, rafales qui plaquent contre le mur (jamais vers le vide), foudre sur des cercles annoncés. À vérifier en
   jeu : que l'usage des braseros et de la vanne déclenche bien les volumes (et que les blocs posés par PlaceBlock
   allument conduits et tubes), la conduite luisante qui passe à l'état éteint, la taille des zones rouges du gaz, les particules empruntées (taille, sens),
@@ -388,8 +392,8 @@ Mobs (voir [docs/npc-0.7.2.md](docs/npc-0.7.2.md)) :
   remplissage.
 - **Tour de l'Alchimiste, arènes des boss** (`tower/ArenaGate.java`, volumes `<boss>_Gate` dans
   `alchemist_traps.Traps.arena_gate`) : comme le Festin de Deepworks, la statue de sauvegarde est hors de l'arène (palier
-  de la rampe de la serre devant la bibliothèque, croix d'or de la Salle des Transmutations, antichambre de la
-  terrasse). Un joueur vivant entre dans l'arène : la porte s'illumine en rouge et, 4 s plus tard, la barrière
+  de la rampe de la serre devant la bibliothèque, Escalier des vents à la porte nord du laboratoire, antichambre de la
+  terrasse ; la Salle des Transmutations n'en a plus). Un joueur vivant entre dans l'arène : la porte s'illumine en rouge et, 4 s plus tard, la barrière
   `Nakasar_Arena_Barrier` (champ de force cramoisi, visible) la ferme. Qui meurt revient à la statue et ne peut plus
   rejoindre le combat. Plus aucun joueur vivant dans l'arène : le boss se remet à zéro, puis la barrière s'abaisse et le
   groupe peut retenter ; le boss vaincu, elle s'abaisse pour de bon. À vérifier en jeu : la fermeture (et qu'elle ne
@@ -398,8 +402,9 @@ Mobs (voir [docs/npc-0.7.2.md](docs/npc-0.7.2.md)) :
   (`wall_facing`), les statues des points de contrôle regardent l'endroit où le joueur s'arrête (`facing_to`), deux
   braseros encadrent chaque porte d'arène. Bibliothèque : doubles rayonnages alignés sur les axes, dos à dos face aux
   allées, marqueterie d'or reliant le centre aux trois pupitres, tables de lecture. Laboratoire : sol dégagé pour le
-  combat, anneaux de pierre, conduits de cristal vert vers quatre alcôves d'alambics et trois alcôves d'établis, cercles
-  d'or sous les étagères de réactifs. Terrasse : cercle de transmutation (triangle et carré inscrits), rosaces de
+  combat, anneaux de pierre, conduits de cristal vert vers quatre alcôves d'alambics et trois alcôves d'établis, cuve
+  d'acide vert (`Poison_Source`, comme les gobelins de Deepworks) et quatre bassins secondaires, plafond à caissons de
+  la Salle des Transmutations en dessous. Terrasse : cercle de transmutation (triangle et carré inscrits), rosaces de
   cristal de la couleur de chaque pilier, socles d'or des fioles de soin, dalles fissurées sur les zones qui
   s'effondrent ; statues de l'antichambre symétriques, rien devant la porte. Vues : `/mnt/project-files/donjons/vues/
   9-arene-*.png`. À vérifier en jeu : l'orientation des rayonnages et des statues, la lisibilité des dalles fissurées.
@@ -420,18 +425,18 @@ Mobs (voir [docs/npc-0.7.2.md](docs/npc-0.7.2.md)) :
   marques du cône, l'apparition des livres sur les pupitres, l'étourdissement, les zones de sorts et d'éboulement, la
   remise à zéro et le sceau ; les titres de phase, l'encre (éclaboussure, flaque), le modèle du tourbillon et sa
   poursuite, l'équilibre des dégâts.
-- **Tour de l'Alchimiste, la Chimère du laboratoire** (`tools/generate_chimera_models.py`, rôles dans
+- **Tour de l'Alchimiste, la Chimère du laboratoire** (`tools/generate_dragon_models.py`, rôles dans
   `generate_tower_mobs.py`, arène dans `alchemist_tower.Tower.chimera`, acide dans `alchemist_traps.Traps.chimera`,
-  combat dans `tower/ChimeraSystem.java`) : second mini-boss, quadrupède rapiécé (patte de golem de plomb, queue de
-  serpent, tubes de liquide vert dans le dos), barre de boss. Morsure, poing de golem annoncé (zone de 4,5 blocs),
-  fauchage de la queue annoncé (4 blocs, poison). Toutes les minutes, et une fois sous la moitié de sa vie, elle plonge
-  dans la cuve centrale : invulnérable, elle se régénère 6 s plus 4 s par étagère de réactifs encore debout, et chaque
-  étagère envoie un homoncule porteur toutes les 4 s qui la soigne s'il atteint la cuve. Casser les étagères raccourcit
-  donc ses régénérations, tuer les porteurs les affaiblit. La cuve crache de l'acide sur des cercles annoncés pendant
-  tout le combat. Remise à zéro si le groupe meurt ou quitte le laboratoire 8 s. Sa mort dissout le sceau de la porte
-  nord (vers l'Escalier des vents) ; trophée Cœur de chimère (sans usage pour l'instant). Le laboratoire n'a plus
-  d'autres mobs. À vérifier en jeu : le modèle et ses animations (marche, morsure, poing, queue), la plongée et la
-  sortie de la cuve, la marche des porteurs vers la cuve, les étagères (immobiles, cassables), l'acide, le sceau.
+  combat dans `tower/ChimeraSystem.java`) : second mini-boss, un dragon qui ne vole pas (modèle et texture du dragon de
+  feu vanilla, ailes repliées, animations Morsure/Coup/Queue générées), barre de boss. Morsure, coup au sol annoncé
+  (5,5 blocs), fauchage de la queue annoncé (5 blocs, poison). Des zombies porteurs d'acide apparaissent près des quatre
+  bassins secondaires (un toutes les 7 s, 5 s sous la moitié de sa vie, au plus 4), remplissent leur seau 2,5 s puis
+  marchent vers la cuve centrale : s'ils y versent leur acide, la Chimère regagne 5 % de sa vie ; tués avant, pas de
+  soin. La cuve crache de l'acide sur des cercles annoncés pendant tout le combat. Remise à zéro si le groupe meurt ou
+  quitte le laboratoire 8 s. Sa mort dissout le sceau de la porte nord (vers l'Escalier des vents) ; trophée Cœur de
+  chimère (sans usage pour l'instant). La barrière d'entrée est un couvercle horizontal sur le haut de l'escalier en
+  spirale. À vérifier en jeu : les animations du dragon, le seau des zombies, leur marche vers la cuve, l'acide vert
+  dans les bassins, la barrière d'entrée.
 - **Tour de l'Alchimiste, l'Alchimiste** (`tools/generate_alchemist_models.py`, rôles dans `generate_tower_mobs.py`,
   arène dans `alchemist_tower.Tower.alchemist`, volumes dans `alchemist_traps.Traps.alchemist`, combat dans
   `tower/AlchemistSystem.java` et `tower/AlchemistFlaskInteraction.java`) : boss final, sur la terrasse de

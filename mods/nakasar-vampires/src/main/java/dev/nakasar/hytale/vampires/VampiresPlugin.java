@@ -49,10 +49,12 @@ import dev.nakasar.hytale.vampires.silver.TakeArrowInteraction;
 import dev.nakasar.hytale.vampires.tower.AlchemistFlaskInteraction;
 import dev.nakasar.hytale.vampires.tower.AlchemistSystem;
 import dev.nakasar.hytale.vampires.tower.ChimeraSystem;
-import dev.nakasar.hytale.vampires.tower.CourtGuardSystem;
 import dev.nakasar.hytale.vampires.tower.CodexChapterInteraction;
 import dev.nakasar.hytale.vampires.tower.CodexSystem;
+import dev.nakasar.hytale.vampires.tower.CourtGuardSystem;
+import dev.nakasar.hytale.vampires.tower.FlyerGuardSystem;
 import dev.nakasar.hytale.vampires.tower.TowerFallSystem;
+import dev.nakasar.hytale.vampires.tower.TransmutationSystem;
 import dev.nakasar.hytale.vampires.vampirism.BloodFeedInteraction;
 import dev.nakasar.hytale.vampires.vampirism.DrinkBloodInteraction;
 import dev.nakasar.hytale.vampires.vampirism.Vampire;
@@ -117,8 +119,10 @@ import dev.nakasar.hytale.vampires.vampirism.VampireSystem;
  *   <li>{@link CourtGuardSystem} : les portes de la tour tombent quand les gardiens d'airain de la cour sont abattus.</li>
  *   <li>{@code Nakasar_CodexChapter} ({@link CodexSystem}) : combat du Codex vivant (chapitres à interrompre,
  *       effondrement des rayonnages, remise à zéro, sceau ouvert à sa mort).</li>
- *   <li>{@link ChimeraSystem} : combat de la Chimère du laboratoire (régénération dans la cuve nourrie par les
- *       homoncules porteurs et les étagères de réactifs, acide de la cuve, remise à zéro, sceau ouvert à sa mort).</li>
+ *   <li>{@link TransmutationSystem} : combat du golem de cristal (quadrants élémentaires qui tournent, esprits, remise
+ *       à zéro, sceau de l'hélice ouvert à sa mort) ; {@link FlyerGuardSystem} remonte les esprits passés dans le sol.</li>
+ *   <li>{@link ChimeraSystem} : combat de la Chimère du laboratoire, un dragon (zombies qui portent l'acide des bassins
+ *       à la cuve pour la soigner, acide de la cuve, remise à zéro, sceau ouvert à sa mort).</li>
  *   <li>{@code Nakasar_AlchemistFlask} ({@link AlchemistSystem}) : combat de l'Alchimiste (vie selon le groupe et le
  *       mode difficile, trois phases, athanor et homoncules, rebord qui s'effondre, piliers élémentaires, fioles de
  *       soin, remise à zéro, sceau du bureau ouvert à sa mort).</li>
@@ -220,6 +224,8 @@ public final class VampiresPlugin extends JavaPlugin {
         systems.registerSystem(new TowerFallSystem());
         systems.registerSystem(new CourtGuardSystem());
         systems.registerSystem(new CodexSystem());
+        systems.registerSystem(new TransmutationSystem());
+        systems.registerSystem(new FlyerGuardSystem());
         systems.registerSystem(new ChimeraSystem());
         systems.registerSystem(new AlchemistSystem());
 
@@ -246,6 +252,7 @@ public final class VampiresPlugin extends JavaPlugin {
         ContractBounties.clearAll();
         ClaimBreachContractInteraction.clearAll();
         CodexSystem.clearAll();
+        TransmutationSystem.clearAll();
         ChimeraSystem.clearAll();
         AlchemistSystem.clearAll();
     }

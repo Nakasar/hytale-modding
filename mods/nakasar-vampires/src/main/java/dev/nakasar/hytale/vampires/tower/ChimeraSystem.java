@@ -12,10 +12,8 @@ import com.hypixel.hytale.math.vector.Rotation3f;
 import com.hypixel.hytale.protocol.SoundCategory;
 import com.hypixel.hytale.server.core.asset.type.soundevent.config.SoundEvent;
 import com.hypixel.hytale.server.core.entity.Frozen;
-import com.hypixel.hytale.server.core.modules.entity.component.Invulnerable;
 import com.hypixel.hytale.server.core.modules.entity.component.TransformComponent;
 import com.hypixel.hytale.server.core.modules.entity.damage.DeathComponent;
-import com.hypixel.hytale.server.core.modules.entity.teleport.Teleport;
 import com.hypixel.hytale.server.core.modules.entitystats.EntityStatMap;
 import com.hypixel.hytale.server.core.modules.entitystats.EntityStatValue;
 import com.hypixel.hytale.server.core.modules.entitystats.asset.DefaultEntityStatTypes;
@@ -41,61 +39,63 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ThreadLocalRandom;
 
 /**
- * Combat de la Chimère du laboratoire, second mini-boss de la Tour de l'Alchimiste.
+ * Combat de la Chimère du laboratoire, second mini-boss de la Tour de l'Alchimiste : un dragon qui ne vole pas.
  *
- * <p>Ses coups (morsure, poing de golem, fauchage de la queue) sont dans son rôle ; ce système mène le reste :
+ * <p>Ses coups (morsure, coup de griffes, fauchage de la queue) sont dans son rôle ; ce système mène le reste :
  * <ul>
- *   <li><b>Étagères de réactifs</b> : {@value #SHELF_ROLE}, PNJ fragiles et immobiles (gelés), posés à leur place
- *   ({@link TowerLayout#CHIMERA_SHELVES}) quand la Chimère est là et remis à la remise à zéro.</li>
- *   <li><b>Régénération</b> : toutes les {@value #DIVE_INTERVAL} s de combat, et une fois quand elle passe sous la moitié
- *   de sa vie, elle plonge dans la cuve centrale : gelée et invulnérable ({@link Invulnerable}, barre de boss en mode
- *   invulnérable), elle regagne {@value #REGEN_PER_SECOND} de sa vie par seconde pendant {@value #REGEN_BASE} s plus
- *   {@value #REGEN_PER_SHELF} s par étagère encore debout. Chaque étagère debout envoie un homoncule porteur
- *   ({@value #FEEDER_ROLE}) toutes les {@value #FEEDER_INTERVAL} s ; arrivé à la cuve, il y verse ses réactifs
- *   (+{@value #FEEDER_HEAL} de sa vie). Casser une étagère raccourcit donc la régénération en cours et les suivantes ;
- *   tuer les porteurs la prive de leurs réactifs. Elle ressort ensuite sur la case libre la plus proche d'un joueur.</li>
+ *   <li><b>Porteurs d'acide</b> : toutes les {@value #CARRIER_INTERVAL} s de combat ({@value #CARRIER_INTERVAL_HURT} s
+ *   sous la moitié de sa vie), un zombie ({@value #CARRIER_ROLE}, seau à la main) sort à côté d'un des bassins
+ *   secondaires ({@link TowerLayout#CHIMERA_FILLS}), y remplit son seau pendant {@value #FILL_SECONDS} s (il ne bouge
+ *   pas), puis marche jusqu'à la margelle de la cuve centrale et y verse l'acide : la Chimère regagne
+ *   {@value #CARRIER_HEAL} de sa vie. Un porteur tué avant de verser ne soigne rien. Au plus {@value #CARRIER_MAX}
+ *   porteurs à la fois.</li>
  *   <li><b>Acide</b> : pendant le combat, la cuve crache de l'acide ({@code Chimera_Acid Cast = On}, zones annoncées
- *   au sol) toutes les {@value #ACID_INTERVAL} s, {@value #ACID_INTERVAL_REGEN} s pendant la régénération.</li>
+ *   au sol) toutes les {@value #ACID_INTERVAL} s.</li>
  *   <li><b>Remise à zéro</b> : plus aucun joueur dans le laboratoire pendant {@value #RESET_SECONDS} s alors qu'elle
- *   est engagée : elle sort de la cuve, regagne toute sa vie, les porteurs disparaissent et les étagères reviennent.</li>
- *   <li><b>Mort</b> : le sceau de la porte nord se dissout ({@code Chimera_Seal Chimera = On}) ; porteurs et étagères
+ *   est engagée : elle regagne toute sa vie, les porteurs disparaissent.</li>
+ *   <li><b>Mort</b> : le sceau de la porte nord se dissout ({@code Chimera_Seal Chimera = On}) ; les porteurs
  *   disparaissent.</li>
  * </ul>
  */
 public final class ChimeraSystem extends TickingSystem<EntityStore> {
 
     public static final String ROLE = "Nakasar_Lab_Chimera";
-    static final String SHELF_ROLE = "Nakasar_Chimera_Reagent_Shelf";
-    static final String FEEDER_ROLE = "Nakasar_Chimera_Feeder";
-    static final float DIVE_INTERVAL = 60f;
-    static final float REGEN_BASE = 6f;
-    static final float REGEN_PER_SHELF = 4f;
-    static final float REGEN_PER_SECOND = 0.015f;
-    static final float FEEDER_HEAL = 0.04f;
-    static final float FEEDER_INTERVAL = 4f;
+    static final String CARRIER_ROLE = "Nakasar_Chimera_Feeder";
+    static final float CARRIER_INTERVAL = 7f;
+    static final float CARRIER_INTERVAL_HURT = 5f;
+    static final int CARRIER_MAX = 4;
+    static final float FILL_SECONDS = 2.5f;
+    static final float CARRIER_HEAL = 0.05f;
     static final float ACID_INTERVAL = 10f;
-    static final float ACID_INTERVAL_REGEN = 5f;
     static final float RESET_SECONDS = 8f;
     private static final float INTERVAL = 0.25f;
-    /** Un porteur verse ses réactifs quand il touche la margelle de la cuve. */
-    private static final double FEED_REACH = 3.2;
+    /** Un porteur verse son seau quand il touche la margelle de la cuve. */
+    private static final double POUR_REACH = 3.2;
     private static final double ARENA_MARGIN = 2;
     private static final double ARENA_HEIGHT = 20;
 
     private static final String SOUND_SPLASH = "SFX_Emit_Goblin_Liquid_Bubbling_Steam_Bursts";
     private static final String PARTICLE_SPLASH = "Dungeon_Goblin_Toxic_Water";
-    private static final String PARTICLE_FEED = "Impact_Poison";
+    private static final String PARTICLE_POUR = "Impact_Poison";
+
+    /** Un zombie porteur : il remplit son seau au bassin `basin` jusqu'à `filledAt`, puis marche vers la cuve. */
+    private static final class Carrier {
+        final Ref<EntityStore> ref;
+        final int basin;
+        final long filledAt;
+        boolean walking;
+
+        Carrier(Ref<EntityStore> ref, int basin, long filledAt) {
+            this.ref = ref;
+            this.basin = basin;
+            this.filledAt = filledAt;
+        }
+    }
 
     /** État du combat par Chimère (le monde de l'instance n'en a qu'une). */
     private static final class Fight {
-        /** Étagère de chaque place de {@link TowerLayout#CHIMERA_SHELVES} (null : détruite) ; null tant que pas posées. */
-        Ref<EntityStore>[] shelves;
-        final List<Ref<EntityStore>> feeders = new ArrayList<>();
-        long nextDive;
-        boolean halfDone;
-        boolean regenerating;
-        long regenStart;
-        long[] nextFeeder;
+        final List<Carrier> carriers = new ArrayList<>();
+        long nextCarrier;
         long nextAcid;
         float absent;
         boolean sealed;
@@ -133,12 +133,12 @@ public final class ChimeraSystem extends TickingSystem<EntityStore> {
                 }
             }
         });
-        // Chimère disparue du monde (chunk déchargé) : on retire ses porteurs et ses étagères.
+        // Chimère disparue du monde (chunk déchargé) : on retire ses porteurs.
         FIGHTS.entrySet().removeIf(entry -> {
             if (entry.getKey().isValid()) {
                 return false;
             }
-            clearHelpers(entry.getValue(), store);
+            removeCarriers(entry.getValue(), store);
             return true;
         });
         long now = System.nanoTime();
@@ -151,7 +151,7 @@ public final class ChimeraSystem extends TickingSystem<EntityStore> {
         TriggerVolumeManager volumes = store.getResource(TriggerVolumesPlugin.get().getManagerResourceType());
         ArenaGate gate = ArenaGate.of(world, TowerLayout.CHIMERA_GATE, RESET_SECONDS, volumes);
         if (!alive(chimera, store)) {
-            clearHelpers(fight, store);
+            removeCarriers(fight, store);
             gate.finish(volumes);
             if (!fight.sealed && volumes != null) {
                 fight.sealed = true;
@@ -159,13 +159,10 @@ public final class ChimeraSystem extends TickingSystem<EntityStore> {
             }
             return;
         }
-        if (fight.shelves == null) {
-            placeShelves(store, fight);
-        }
 
         EntityStatMap stats = store.getComponent(chimera, EntityStatMap.getComponentType());
         EntityStatValue health = stats == null ? null : stats.get(DefaultEntityStatTypes.getHealth());
-        boolean engaged = fight.regenerating || isEngaged(chimera, store, health);
+        boolean engaged = isEngaged(chimera, store, health);
 
         boolean present = playerInArena(world, store);
         gate.update(volumes, present, dt);
@@ -173,7 +170,7 @@ public final class ChimeraSystem extends TickingSystem<EntityStore> {
         if (engaged && !present) {
             fight.absent += dt;
             if (fight.absent >= RESET_SECONDS) {
-                reset(world, store, chimera, fight, stats);
+                reset(store, chimera, fight, stats);
             }
             return;
         }
@@ -182,18 +179,19 @@ public final class ChimeraSystem extends TickingSystem<EntityStore> {
             return;
         }
 
-        if (fight.regenerating) {
-            regenerate(world, store, chimera, fight, stats, health, now, dt);
-        } else {
-            if (fight.nextDive == 0) {
-                fight.nextDive = now + seconds(DIVE_INTERVAL);
-            }
-            boolean half = health != null && health.get() < health.getMax() * 0.5f;
-            if (now >= fight.nextDive || (half && !fight.halfDone)) {
-                fight.halfDone |= half;
-                dive(store, chimera, fight, now);
+        // Porteurs d'acide : un nouveau à intervalles, près d'un bassin au hasard.
+        boolean hurt = health != null && health.get() < health.getMax() * 0.5f;
+        if (fight.nextCarrier == 0) {
+            fight.nextCarrier = now + seconds(3f);
+        }
+        fight.carriers.removeIf(carrier -> !alive(carrier.ref, store));
+        if (now >= fight.nextCarrier) {
+            fight.nextCarrier = now + seconds(hurt ? CARRIER_INTERVAL_HURT : CARRIER_INTERVAL);
+            if (fight.carriers.size() < CARRIER_MAX) {
+                spawnCarrier(store, fight, now);
             }
         }
+        carry(store, fight, stats, health, now);
 
         // Acide de la cuve.
         if (volumes != null) {
@@ -202,138 +200,71 @@ public final class ChimeraSystem extends TickingSystem<EntityStore> {
             }
             if (now >= fight.nextAcid) {
                 volumes.setTag(TowerLayout.CHIMERA_ACID, "Cast", "On", null, TriggerVolumeManager.ENVIRONMENT_ACTOR_UUID);
-                fight.nextAcid = now + seconds(fight.regenerating ? ACID_INTERVAL_REGEN : ACID_INTERVAL);
+                fight.nextAcid = now + seconds(ACID_INTERVAL);
             }
         }
     }
 
-    /** Plongeon dans la cuve : gelée, invulnérable, au centre. */
-    private static void dive(Store<EntityStore> store, Ref<EntityStore> chimera, Fight fight, long now) {
-        fight.regenerating = true;
-        fight.regenStart = now;
-        fight.nextFeeder = new long[TowerLayout.CHIMERA_SHELVES.length];
-        for (int i = 0; i < fight.nextFeeder.length; i++) {
-            fight.nextFeeder[i] = now + seconds(1f + 0.5f * i);
-        }
-        store.ensureAndGetComponent(chimera, Frozen.getComponentType());
-        store.ensureAndGetComponent(chimera, Invulnerable.getComponentType());
-        Vector3d vat = new Vector3d(TowerLayout.CHIMERA_VAT);
-        store.putComponent(chimera, Teleport.getComponentType(), new Teleport(vat, new Rotation3f()));
-        splash(store, vat);
-    }
-
-    private static void regenerate(World world, Store<EntityStore> store, Ref<EntityStore> chimera, Fight fight,
-                                   EntityStatMap stats, EntityStatValue health, long now, float dt) {
-        if (stats != null && health != null) {
-            heal(stats, health, health.getMax() * REGEN_PER_SECOND * dt);
-        }
-        // Porteurs : chaque étagère debout en envoie un à intervalles ; ceux qui touchent la cuve la nourrissent.
+    /** Remplissage puis marche des porteurs ; ceux qui touchent la margelle versent leur seau et la soignent. */
+    private static void carry(Store<EntityStore> store, Fight fight, EntityStatMap stats, EntityStatValue health, long now) {
         Vector3d vat = TowerLayout.CHIMERA_VAT;
-        for (int i = 0; i < fight.shelves.length; i++) {
-            if (fight.shelves[i] != null && !alive(fight.shelves[i], store)) {
-                fight.shelves[i] = null;
-            }
-            if (fight.shelves[i] != null && now >= fight.nextFeeder[i]) {
-                fight.nextFeeder[i] = now + seconds(FEEDER_INTERVAL);
-                spawnFeeder(store, fight, i);
-            }
-        }
-        double reach = TowerLayout.CHIMERA_VAT_RADIUS + FEED_REACH;
-        fight.feeders.removeIf(feeder -> {
-            if (!alive(feeder, store)) {
-                return true;
-            }
-            TransformComponent transform = store.getComponent(feeder, TransformComponent.getComponentType());
-            NPCEntity npc = store.getComponent(feeder, NPCEntity.getComponentType());
+        double reach = TowerLayout.CHIMERA_VAT_RADIUS + POUR_REACH;
+        fight.carriers.removeIf(carrier -> {
+            TransformComponent transform = store.getComponent(carrier.ref, TransformComponent.getComponentType());
             if (transform == null) {
                 return false;
             }
             Vector3d position = transform.getPosition();
+            if (!carrier.walking) {
+                if (now < carrier.filledAt) {
+                    return false;
+                }
+                // Seau plein : il se met en marche vers la cuve.
+                carrier.walking = true;
+                store.tryRemoveComponent(carrier.ref, Frozen.getComponentType());
+                sound(SOUND_SPLASH, TowerLayout.CHIMERA_BASINS[carrier.basin], store);
+            }
             if (horizontal(position, vat) <= reach) {
                 if (stats != null && health != null) {
-                    heal(stats, health, health.getMax() * FEEDER_HEAL);
+                    heal(stats, health, health.getMax() * CARRIER_HEAL);
                 }
-                ParticleUtil.spawnParticleEffect(PARTICLE_FEED, new Vector3d(position).add(0, 0.8, 0), 0f, 0f, 0f, 1.5f, 1f, store);
-                sound(SOUND_SPLASH, position, store);
-                store.removeEntity(feeder, RemoveReason.REMOVE);
+                ParticleUtil.spawnParticleEffect(PARTICLE_POUR, new Vector3d(position).add(0, 0.8, 0), 0f, 0f, 0f, 1.5f, 1f, store);
+                splash(store, rim(position));
+                store.removeEntity(carrier.ref, RemoveReason.REMOVE);
                 return true;
             }
+            NPCEntity npc = store.getComponent(carrier.ref, NPCEntity.getComponentType());
             if (npc != null) {
-                // Le rôle du porteur va vers son point d'attache : la margelle, du côté de son étagère.
+                // Le rôle du porteur va vers son point d'attache : la margelle, du côté de son bassin.
                 npc.setLeashPoint(rim(position));
             }
             return false;
         });
-        long end = fight.regenStart + seconds(REGEN_BASE + REGEN_PER_SHELF * livingShelves(fight));
-        if (now >= end) {
-            emerge(world, store, chimera, fight);
-            fight.nextDive = now + seconds(DIVE_INTERVAL);
-        }
     }
 
-    /** Fin de la régénération : les porteurs restants repartent en fumée, elle ressort près d'un joueur. */
-    private static void emerge(World world, Store<EntityStore> store, Ref<EntityStore> chimera, Fight fight) {
-        fight.regenerating = false;
-        removeFeeders(fight, store);
-        store.tryRemoveComponent(chimera, Frozen.getComponentType());
-        store.tryRemoveComponent(chimera, Invulnerable.getComponentType());
-        Vector3d exit = nearestExit(world, store);
-        store.putComponent(chimera, Teleport.getComponentType(), new Teleport(exit, new Rotation3f()));
-        splash(store, TowerLayout.CHIMERA_VAT);
-        splash(store, exit);
-    }
-
-    private static void reset(World world, Store<EntityStore> store, Ref<EntityStore> chimera, Fight fight, EntityStatMap stats) {
-        if (fight.regenerating) {
-            emerge(world, store, chimera, fight);
-        }
-        removeFeeders(fight, store);
+    private static void reset(Store<EntityStore> store, Ref<EntityStore> chimera, Fight fight, EntityStatMap stats) {
+        removeCarriers(fight, store);
         if (stats != null) {
             stats.maximizeStatValue(DefaultEntityStatTypes.getHealth());
         }
         Fight fresh = new Fight();
         fresh.sealed = fight.sealed;
-        fresh.shelves = fight.shelves;
-        placeShelves(store, fresh);
         FIGHTS.put(chimera, fresh);
     }
 
-    /** Pose les étagères manquantes (toutes au premier passage). */
-    @SuppressWarnings("unchecked")
-    private static void placeShelves(Store<EntityStore> store, Fight fight) {
-        if (fight.shelves == null) {
-            fight.shelves = new Ref[TowerLayout.CHIMERA_SHELVES.length];
-        }
-        for (int i = 0; i < fight.shelves.length; i++) {
-            if (fight.shelves[i] != null && alive(fight.shelves[i], store)) {
-                continue;
-            }
-            Vector3d at = new Vector3d(TowerLayout.CHIMERA_SHELVES[i]);
-            Ref<EntityStore> shelf = spawn(store, SHELF_ROLE, at, facing(at, TowerLayout.CHIMERA_VAT));
-            if (shelf != null) {
-                // Immobile : l'IA gelée ne la fait ni bouger ni tourner.
-                store.ensureAndGetComponent(shelf, Frozen.getComponentType());
-            }
-            fight.shelves[i] = shelf;
-        }
-    }
-
-    private static void spawnFeeder(Store<EntityStore> store, Fight fight, int shelf) {
-        Vector3d at = new Vector3d(TowerLayout.CHIMERA_SHELVES[shelf]);
-        Vector3d toward = new Vector3d(TowerLayout.CHIMERA_VAT).sub(at);
-        toward.y = 0;
-        if (toward.lengthSquared() > 1e-6) {
-            at.add(toward.normalize().mul(1.2));
-        }
-        Ref<EntityStore> feeder = spawn(store, FEEDER_ROLE, at, facing(at, TowerLayout.CHIMERA_VAT));
-        if (feeder == null) {
+    /** Un zombie sort à côté d'un bassin au hasard et y remplit son seau, immobile. */
+    private static void spawnCarrier(Store<EntityStore> store, Fight fight, long now) {
+        int basin = ThreadLocalRandom.current().nextInt(TowerLayout.CHIMERA_FILLS.length);
+        Vector3d at = new Vector3d(TowerLayout.CHIMERA_FILLS[basin]);
+        Vector3d pool = TowerLayout.CHIMERA_BASINS[basin];
+        Ref<EntityStore> carrier = spawn(store, CARRIER_ROLE, at, facing(at, pool));
+        if (carrier == null) {
             return;
         }
-        NPCEntity npc = store.getComponent(feeder, NPCEntity.getComponentType());
-        if (npc != null) {
-            npc.setLeashPoint(rim(at));
-        }
-        fight.feeders.add(feeder);
+        store.ensureAndGetComponent(carrier, Frozen.getComponentType());
+        ParticleUtil.spawnParticleEffect(PARTICLE_SPLASH, new Vector3d(pool).add(0, 0.2, 0), 0f, 0f, 0f, 1.2f, 1f, store);
+        sound(SOUND_SPLASH, pool, store);
+        fight.carriers.add(new Carrier(carrier, basin, now + seconds(FILL_SECONDS)));
     }
 
     private static Ref<EntityStore> spawn(Store<EntityStore> store, String role, Vector3d at, Rotation3f rotation) {
@@ -347,21 +278,11 @@ public final class ChimeraSystem extends TickingSystem<EntityStore> {
         return spawned.first();
     }
 
-    private static int livingShelves(Fight fight) {
-        int count = 0;
-        for (Ref<EntityStore> shelf : fight.shelves) {
-            if (shelf != null) {
-                count++;
-            }
-        }
-        return count;
-    }
-
     private static void heal(EntityStatMap stats, EntityStatValue health, float amount) {
         stats.setStatValue(DefaultEntityStatTypes.getHealth(), Math.min(health.getMax(), health.get() + amount));
     }
 
-    /** Point de la margelle de la cuve du côté de `from`. */
+    /** Point devant la margelle de la cuve, du côté de `from`. */
     private static Vector3d rim(Vector3d from) {
         Vector3d vat = TowerLayout.CHIMERA_VAT;
         Vector3d out = new Vector3d(from).sub(vat);
@@ -371,30 +292,6 @@ public final class ChimeraSystem extends TickingSystem<EntityStore> {
         }
         out.normalize().mul(TowerLayout.CHIMERA_VAT_RADIUS + 2.5).add(vat);
         return out;
-    }
-
-    private static Vector3d nearestExit(World world, Store<EntityStore> store) {
-        Vector3d[] exits = TowerLayout.CHIMERA_EXITS;
-        Vector3d best = exits[ThreadLocalRandom.current().nextInt(exits.length)];
-        double bestDistance = Double.MAX_VALUE;
-        for (PlayerRef player : world.getPlayerRefs()) {
-            Ref<EntityStore> ref = player.getReference();
-            if (!alive(ref, store)) {
-                continue;
-            }
-            TransformComponent transform = store.getComponent(ref, TransformComponent.getComponentType());
-            if (transform == null || !inArena(transform.getPosition())) {
-                continue;
-            }
-            for (Vector3d exit : exits) {
-                double d = horizontal(exit, transform.getPosition());
-                if (d < bestDistance) {
-                    bestDistance = d;
-                    best = exit;
-                }
-            }
-        }
-        return new Vector3d(best);
     }
 
     private static Rotation3f facing(Vector3d from, Vector3d to) {
@@ -407,26 +304,13 @@ public final class ChimeraSystem extends TickingSystem<EntityStore> {
         sound(SOUND_SPLASH, at, store);
     }
 
-    private static void removeFeeders(Fight fight, Store<EntityStore> store) {
-        for (Ref<EntityStore> feeder : fight.feeders) {
-            if (feeder.isValid()) {
-                store.removeEntity(feeder, RemoveReason.REMOVE);
+    private static void removeCarriers(Fight fight, Store<EntityStore> store) {
+        for (Carrier carrier : fight.carriers) {
+            if (carrier.ref.isValid()) {
+                store.removeEntity(carrier.ref, RemoveReason.REMOVE);
             }
         }
-        fight.feeders.clear();
-    }
-
-    private static void clearHelpers(Fight fight, Store<EntityStore> store) {
-        removeFeeders(fight, store);
-        if (fight.shelves != null) {
-            for (int i = 0; i < fight.shelves.length; i++) {
-                Ref<EntityStore> shelf = fight.shelves[i];
-                if (shelf != null && shelf.isValid()) {
-                    store.removeEntity(shelf, RemoveReason.REMOVE);
-                }
-                fight.shelves[i] = null;
-            }
-        }
+        fight.carriers.clear();
     }
 
     private static boolean playerInArena(World world, Store<EntityStore> store) {
@@ -485,7 +369,7 @@ public final class ChimeraSystem extends TickingSystem<EntityStore> {
         return (long) (s * 1_000_000_000L);
     }
 
-    /** Oublie les combats en cours (arrêt du plugin). Porteurs et étagères partent avec le monde. */
+    /** Oublie les combats en cours (arrêt du plugin). Les porteurs partent avec le monde. */
     public static void clearAll() {
         FIGHTS.clear();
     }

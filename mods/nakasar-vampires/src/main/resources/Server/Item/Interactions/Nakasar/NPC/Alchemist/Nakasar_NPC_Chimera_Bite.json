@@ -1,5 +1,5 @@
 {
-  "$Comment": "Morsure de la Chimère (20 dégâts) : elle se jette gueule ouverte.",
+  "$Comment": "Morsure du dragon (20 dégâts) : il se jette gueule ouverte.",
   "Type": "Simple",
   "RunTime": 0.45,
   "Effects": {
@@ -17,7 +17,7 @@
       "ExtendTop": 0.8,
       "ExtendBottom": 0.8,
       "StartDistance": 0.2,
-      "EndDistance": 3.8,
+      "EndDistance": 4.8,
       "Length": 80,
       "RollOffset": 0,
       "YawStartOffset": 40

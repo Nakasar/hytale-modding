@@ -25,9 +25,10 @@ Les pièges :
   (les jets cessent) et ouvre le barrage en raccourci vers la rampe du hall ;
 - Serre suspendue : nappes de spores qui ralentissent qui s'y attarde ;
 - Bibliothèque : brûler la haie de ronces au brasero ouvre la rampe ; des livres tombent sur des zones annoncées ;
-- Salle des Transmutations : les quadrants se transmutent à tour de rôle (feu, glace, acide, foudre), les croix d'or du
-  sol restent sûres ; allumer le foyer d'un quadrant l'apaise mais en fait sortir un élémentaire ; les quatre foyers
-  allumés dissolvent le sceau de l'escalier du laboratoire ;
+- Salle des Transmutations (combat du golem de cristal, tower.TransmutationSystem) : trois quadrants sur quatre sont
+  actifs (flammes, blizzard, vents forts, pics de pierre), le quatrième n'a qu'un effet léger ; le répit passe à un
+  quadrant voisin après une annonce, et chaque quadrant qui s'éveille fait sortir un esprit de son élément. La mort du
+  golem dissout le sceau de l'hélice du laboratoire ;
 - Laboratoire (combat de la Chimère, tower.ChimeraSystem) : la cuve crache de l'acide sur des cercles annoncés ; le
   sceau de la porte nord se dissout à la mort de la Chimère ;
 - Escalier des vents (s'éveille quand on franchit la porte nord du laboratoire) : flammes alchimiques qui balaient les
@@ -79,21 +80,23 @@ SOUNDS = {
 EFFECTS = {"Poison_T1", "Poison_T2", "Burn", "Slow", "Hazard_Electric_Stun", "Health_Pack"}
 BLOCKS = {"Empty", "Fluid_Fire", at.SEAL, at.HEDGE, at.RUBBLE, at.DOOR, "Rock_Marble_Brick", "Rock_Marble_Brick_Smooth",
           "Rock_Marble_Cobble", at.ARENA_BARRIER, at.SPORE_SHROOM, at.CONDUIT_LIT, *map(at.lit_block, at.HALL_COLOURS), at.EMANATION_LIT, at.EMANATION_FED, at.PIPE_GLOW, at.LEAK}
-NPCS = {"Nakasar_Elemental_Fire", "Nakasar_Elemental_Frost", "Nakasar_Elemental_Root", "Nakasar_Elemental_Thunder"}
+NPCS = set()
 
-# Quadrants de la Salle des Transmutations : (signe de x, signe de z), élémentaire du foyer, particules d'annonce et de
-# frappe, son, effets pendant la frappe.
-QUADRANTS = {
-    "Fire": ((1, -1), "Nakasar_Elemental_Fire", "Fire_Trap_Preview", "Fire_AoE", "SFX_Emit_Goblin_Flame_Quadrant_Blast",
-             [("Burn", 4.0, 0.0)], 6.0),
-    "Ice": ((-1, -1), "Nakasar_Elemental_Frost", "Weapon_Frost_Mist", "Ice_Blast", "SFX_Ice_Break",
-            [("Slow", 3.0, 0.0)], 4.0),
-    "Acid": ((1, 1), "Nakasar_Elemental_Root", "Dungeon_Goblin_Spores_Green", "Dungeon_Goblin_Toxic_Water",
-             "SFX_Emit_Goblin_Liquid_Bubbling_Steam_Bursts", [("Poison_T2", 5.0, 0.0)], 5.0),
-    "Lightning": ((-1, 1), "Nakasar_Elemental_Thunder", "Goblin_Decorative_Sparks", "Lightning",
-                  "SFX_Emit_Goblin_Electric_Fence_Zap", [("Hazard_Electric_Stun", 0.8, 1.2)], 6.0),
+# Quadrants de la Salle des Transmutations (arène du golem de cristal, tower.TransmutationSystem) :
+# particules d'annonce, actives et calmes, son actif, effets actifs puis calmes [(statut, durée, intervalle)] et dégâts
+# (% de vie max, intervalle), poussée du vent (vitesse forte, légère ; vers le mur, jamais vers le vide).
+TRANS = {
+    "Fire": ("Fire_Trap_Preview", "Fire_AoE", "Fire_Charge_Charging1", "SFX_Emit_Goblin_Flame_Quadrant_Blast",
+             [("Burn", 3.0, 1.0)], (7, 1.0), [], (1.5, 1.5), None),
+    "Ice": ("Weapon_Frost_Mist", "Ice_Blast", "Weapon_Frost_Mist", "SFX_Ice_Break",
+            [("Slow", 2.0, 1.0)], (5, 1.0), [("Slow", 2.0, 1.0)], None, None),
+    "Air": ("Leaves_Oak_Wind", "Wind", "Leaves_Oak_Wind", "SFX_Emit_Wind_Gusts",
+            [], (3, 1.0), [], None, (9.0, 3.5)),
+    "Earth": ("Block_Break_Dust", "Block_Break_Dust", "Smoke_Floor", "SFX_Crystal_Break",
+              [("Slow", 1.5, 1.0)], (8, 1.0), [], (2, 1.5), None),
 }
-QUADRANT_ORDER = ("Fire", "Ice", "Acid", "Lightning")
+TRANS_WARN = 5.0     # annonce avant qu'un quadrant calme ne redevienne actif (TransmutationSystem.WARN_SECONDS)
+TRANS_PULSE = 3.0    # TransmutationSystem rejoue Fx toutes les TRANS_PULSE secondes : particules qui durent autant
 ZERO = {"X": 0.0, "Y": 0.0, "Z": 0.0}
 # Jets de gaz du couloir : annonce (zone rouge qui se remplit, comme toutes les annonces de la tour : tower_warnings.py),
 # durée du gaz, cadence (le mur intérieur souffle, puis le mur extérieur une demi-période plus tard).
@@ -514,41 +517,51 @@ class Traps:
                        hits=[damage(12, 1.0), status("Slow", 2.0)], odds=0.3)
 
     def transmutation(self):
+        """Arène du golem de cristal. tower.TransmutationSystem pose les étiquettes des volumes Trans_<élément>
+        (`trans_ids`) : State = Active (effet fort), Calm (effet léger) ou Off ; Fx = Active, Calm ou Warn (remis à None
+        juste avant, pour rejouer l'événement), toutes les TRANS_PULSE secondes : particules, son, et l'annonce (zones
+        rouges qui se remplissent en TRANS_WARN secondes) avant qu'un quadrant calme ne redevienne actif. Trans_Seal, Golem=On à la mort du
+        golem : le sceau du pied de l'hélice se dissout."""
         g = self.group("Tower_Transmutation", 13421619)
-        y = at.F_TRANS
-        side = at.SQUARE
-        height = at.F_LAB - at.F_TRANS - 1
-        self.controller("Transmutation_Controller", g, self.world(0.5, y + height / 2, 0.5),
-                        box(side + 0.5, height / 2, side + 0.5),
-                        [("Transmute", "Quadrant", el, 4.0 * i) for i, el in enumerate(QUADRANT_ORDER)], interval=16.0)
-        keys = []
-        for el in QUADRANT_ORDER:
-            (sx, sz), npc, warn_p, hit_p, snd, statuses, pct = QUADRANTS[el]
-            # Le quadrant, de la croix d'or (x ou z = 0, toujours sûre) au mur, sur 3 blocs de haut.
-            x0, x1 = (1, side) if sx > 0 else (-side, -1)
-            z0, z1 = (1, side) if sz > 0 else (-side, -1)
-            cells = [(x0, y, z0), (x1, y + 2, z1)]
-            center, shape = self.bounds(cells)
-            spots = [(sx * a - (center[0] - self.origin[0]) + 0.5, 0.2, sz * b - (center[2] - self.origin[2]) + 0.5)
-                     for a in (5, 13) for b in (5, 13)]
-            spots = [(dx, -1.4, dz) for dx, _, dz in spots]  # le centre de la boîte est 1,5 bloc au-dessus du sol
-            self.pulse(f"Quadrant_{el}", g, center, shape, "Transmute", "Quadrant", el, warn=2.5, active=2.4,
-                       warn_fx=[vfx("", warn_p, offset=o, duration=2.5) for o in spots]
-                       + [mark(4.6, 2.5, offset=(dx, -1.4, dz)) for dx, _, dz in spots],
-                       hit_fx=[vfx("", hit_p, offset=o, duration=2.4) for o in spots] + [sound("", snd)],
-                       hits=[status(n, d, interval=i) for n, d, i in statuses] + [damage(pct, 0.5)])
-            # Le foyer du quadrant : l'allumer apaise le quadrant, mais un élémentaire sort des dalles.
-            keys.append(f"Foyer_{el}")
-            self.usable(f"Transmutation_Foyer_{el}", g, self.t["foyers"][el], [
-                sound("BLOCK_USED", "SFX_Flame_Ignite"),
-                vfx("BLOCK_USED", "Magic_Sparks_Heavy_GS", offset=(0, 0.5, 0)),
-                toggle("DisableVolume", "BLOCK_USED", "Quadrant", el, delay=0.5),
-                spawn("BLOCK_USED", npc, (sx * -3, 0, sz * -3), delay=1.5),
-                vfx("BLOCK_USED", hit_p, delay=1.2, offset=(sx * -3, 0, sz * -3)),
-                tags("BLOCK_USED", f"Foyer_{el}", "On", 0.5, match="Transmutation_Seal", radius=60)])
-        self.gate("Transmutation_Seal", g, self.t["trans_seal"], keys,
-                  [title("TAG_ADDED", "transmutation"),
-                   toggle("DisableVolume", "TAG_ADDED", "Transmutation_Controller", delay=0.5)])
+        c = self.t["trans"]
+        for el, (lo, hi) in c["zones"].items():
+            warn_p, active_p, calm_p, snd, active_fx, (pct, every), calm_fx, calm_dmg, push = TRANS[el]
+            center, shape = self.bounds([lo, hi])
+            sx, sz = at.TRANS_QUADRANTS[el]
+            # Points des particules : sur le quart de disque, au sol (le centre de la boîte est à mi-hauteur).
+            dy = lo[1] - (center[1] - self.origin[1])
+            spots = []
+            for r, n in ((6.5, 1), (12, 2), (18, 3), (24, 3)):
+                for k in range(n):
+                    a = math.radians(90 * (k + 0.5) / n)
+                    x, z = sx * r * math.cos(a), sz * r * math.sin(a)
+                    spots.append((x - (center[0] - self.origin[0]) + 0.5, dy, z - (center[2] - self.origin[2]) + 0.5))
+            effects = [
+                *[vfx("TAG_ADDED", active_p, entry=1, offset=(x, y + 0.2, z), duration=TRANS_PULSE) for x, y, z in spots],
+                sound("TAG_ADDED", snd, entry=1),
+                *[vfx("TAG_ADDED", calm_p, entry=2, offset=(x, y + 0.2, z), duration=TRANS_PULSE, scale=0.6)
+                  for x, y, z in spots[::2]],
+                *[dict(mark(3.2, TRANS_WARN, "TAG_ADDED", offset=(x, y + 0.1, z)), Entry=3) for x, y, z in spots],
+                *[vfx("TAG_ADDED", warn_p, entry=3, offset=(x, y + 0.2, z), duration=TRANS_WARN) for x, y, z in spots],
+                sound("TAG_ADDED", "SFX_Gobliterator_Arena_Door_Warning", entry=3),
+                *[dict(status(n, d, interval=i), Entry=0) for n, d, i in active_fx],
+                dict(damage(pct, every), Entry=0),
+                *[dict(status(n, d, interval=i), Entry=1) for n, d, i in calm_fx],
+            ]
+            conditions = [tag_is("TAG_ADDED", "Fx", "Active", entry=1), tag_is("TAG_ADDED", "Fx", "Calm", entry=2),
+                          tag_is("TAG_ADDED", "Fx", "Warn", entry=3),
+                          tag_is("TICK", "State", "Active", entry=0), tag_is("TICK", "State", "Calm", entry=1)]
+            if calm_dmg:
+                effects.append(dict(damage(*calm_dmg), Entry=1))
+            if push:
+                # Rafales vers le mur du quadrant (jamais vers le vide), par bouffées.
+                strong, light = push
+                vx, vz = sx * math.sqrt(0.5), sz * math.sqrt(0.5)
+                effects += [dict(velocity(vx * strong, 1.0, vz * strong), Entry=0, Interval=1.5),
+                            dict(velocity(vx * light, 0.4, vz * light), Entry=1, Interval=2.0)]
+            self.add(f"Trans_{el}", g, center, shape, effects, conditions,
+                     volume_tags={"State": "Off", "Fx": "None"}, ConditionTiming="BeforeVolumeDelay")
+        self.gate("Trans_Seal", g, self.t["trans_seal"], ["Golem"], [title("TAG_ADDED", "transmutation")])
 
     def wind_stair(self):
         g = self.group("Tower_Wind_Stair", 10079487)
@@ -875,6 +888,11 @@ def court_ids():
 def arena_ids():
     """Ids des volumes des barrières d'arène que tower.ArenaGate étiquette (TowerLayout.java)."""
     return {name: vid(f"{name}_Gate") for name in ARENAS}
+
+
+def trans_ids():
+    """Ids des volumes que tower.TransmutationSystem étiquette (TowerLayout.java)."""
+    return {"seal": vid("Trans_Seal"), **{el: vid(f"Trans_{el}") for el in at.TRANS_QUADRANTS}}
 
 
 def chimera_ids():

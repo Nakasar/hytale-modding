@@ -1,5 +1,5 @@
 {
-  "$Comment": "Chimère du laboratoire, second mini-boss de la Tour de l'Alchimiste, avec barre de vie de boss : morsure, poing de golem annoncé toutes les 9 à 12 s, fauchage de la queue annoncé toutes les 10 à 13 s. ChimeraSystem (Java) la fait plonger dans la cuve pour se régénérer (toutes les minutes et sous la moitié de sa vie), mène les étagères de réactifs et les homoncules porteurs, l'acide de la cuve et la remise à zéro. Généré par tools/generate_tower_mobs.py.",
+  "$Comment": "Chimère du laboratoire, second mini-boss de la Tour de l'Alchimiste, avec barre de vie de boss : un dragon qui ne vole pas. Morsure, cabré qui retombe annoncé toutes les 9 à 12 s, fauchage de la queue annoncé toutes les 10 à 13 s. ChimeraSystem (Java) mène les zombies porteurs d'acide qui la soignent, l'acide de la cuve et la remise à zéro. Généré par tools/generate_tower_mobs.py.",
   "Type": "Generic",
   "Appearance": "Nakasar_Lab_Chimera",
   "NameTranslationKey": "nakasar_alchemist.npc.Lab_Chimera.name",
@@ -176,13 +176,13 @@
           ]
         },
         {
-          "$Comment": "Poing de golem annoncé quand la cible est à portée.",
+          "$Comment": "Se cabre et retombe, annoncé, quand la cible est à portée.",
           "Sensor": {
             "Type": "And",
             "Sensors": [
               {
                 "Type": "Target",
-                "Range": 3.5
+                "Range": 4.5
               },
               {
                 "Type": "Timer",
@@ -217,7 +217,7 @@
             "Sensors": [
               {
                 "Type": "Target",
-                "Range": 3.5
+                "Range": 4.5
               },
               {
                 "Type": "Timer",
@@ -248,7 +248,7 @@
         {
           "Sensor": {
             "Type": "Target",
-            "Range": 3.4,
+            "Range": 4.4,
             "Filters": [
               {
                 "Type": "LineOfSight"
@@ -286,8 +286,8 @@
           "BodyMotion": {
             "Type": "Seek",
             "RelativeSpeed": 1.0,
-            "SlowDownDistance": 3.6,
-            "StopDistance": 2.6,
+            "SlowDownDistance": 4.4,
+            "StopDistance": 3.4,
             "UsePathfinder": true
           },
           "HeadMotion": {

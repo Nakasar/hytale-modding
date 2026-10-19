@@ -31,10 +31,10 @@ Nakasar_Alchemist_Creations). Toutes sont des rôles Generic du mod, sur des mod
   étourdit le Codex (Nakasar_Codex_Stunned, dégâts subis +50 %), sinon le sort part (volumes de l'instance) ;
   CodexSystem mène aussi ses trois phases (jets d'encre, tourbillons de pages Nakasar_Codex_Page_Vortex, deux
   chapitres à la fois en dernière phase) ;
-- Chimère du laboratoire (mini-boss, modèle tools/generate_chimera_models.py, barre de boss) : morsure, poing de golem
-  annoncé, fauchage de la queue annoncé ; sa régénération dans la cuve, les étagères de réactifs
-  (Nakasar_Chimera_Reagent_Shelf) et les homoncules porteurs (Nakasar_Chimera_Feeder), posés en jeu sans marqueur,
-  sont menés par tower/ChimeraSystem.java.
+- Chimère du laboratoire (mini-boss, barre de boss) : un dragon qui ne vole pas (modèle du dragon de feu vanilla,
+  attaques de tools/generate_dragon_models.py) : morsure, cabré qui retombe annoncé, fauchage de la queue annoncé ; les
+  zombies porteurs d'acide (Nakasar_Chimera_Feeder) qui la soignent, posés en jeu sans marqueur, sont menés par
+  tower/ChimeraSystem.java.
 
 Réactifs (les trois principes) : Sel philosophal (golems, fioles, gargouilles), Soufre ardent (élémentaires de feu et
 de foudre), Mercure vif (homoncules, apprentis) ; les élémentaires lâchent aussi les essences vanilla de leur élément.
@@ -108,8 +108,7 @@ PILLARS = [f"Nakasar_Alchemist_Pillar_{element}" for element in ELEMENTS]
 ALCHEMIST_EXHAUSTED = "Nakasar_Alchemist_Exhausted"
 ASPECTS = {element: f"Nakasar_Alchemist_Aspect_{element}" for element in ELEMENTS}
 MASK_DROP = "Nakasar_Drop_Trophy_Alchemist_Mask"
-# Étagères de réactifs et homoncules porteurs de la Chimère : posés par ChimeraSystem (Java), jamais par un marqueur.
-SHELF = "Nakasar_Chimera_Reagent_Shelf"
+# Zombies porteurs d'acide de la Chimère : posés par ChimeraSystem (Java), jamais par un marqueur.
 FEEDER = "Nakasar_Chimera_Feeder"
 HEART_DROP = "Nakasar_Drop_Trophy_Chimera_Heart"
 # Livres de chapitre du Codex : apparus par CodexSystem (Java) sur un pupitre, jamais par un marqueur.
@@ -131,8 +130,8 @@ SURGE_RADIUS = 6.0
 PAGES_RANGE = 7.0
 PAGES_ARC = 70
 CHAPTER_CAST = 6.0
-CHIMERA_SLAM_RADIUS = 4.5
-CHIMERA_TAIL_RADIUS = 4.0
+CHIMERA_SLAM_RADIUS = 5.5
+CHIMERA_TAIL_RADIUS = 5.0
 RESPAWN = 7200  # une instance vit bien moins longtemps : les mobs tués ne reviennent pas
 
 timer = ge.timer
@@ -432,7 +431,7 @@ def codex_chapter():
 
 def chimera_slam():
     return {
-        "$Comment": f"Poing de golem de la Chimère, annoncé : elle se cabre 1,15 s, le poing levé, et une zone rouge de {CHIMERA_SLAM_RADIUS:g} blocs se charge au sol autour d'elle ; puis le poing s'abat (28 dégâts, ralentit 2 s, sans recul).",
+        "$Comment": f"Le dragon se cabre, annoncé : il se dresse 1,15 s, ailes à demi ouvertes, et une zone rouge de {CHIMERA_SLAM_RADIUS:g} blocs se charge au sol autour de lui ; puis il retombe de tout son poids (28 dégâts, ralentit 2 s, sans recul).",
         "Type": "Serial",
         "Interactions": [
             {"Type": "ClearEntityEffect", "Entity": "User", "EntityEffectId": "Hit_Interrupt_Eligible"},
@@ -453,7 +452,7 @@ def chimera_slam():
 
 def chimera_tail():
     return {
-        "$Comment": f"Fauchage de la queue de serpent, annoncé : elle se ramasse 0,75 s, la queue dressée, et une zone rouge de {CHIMERA_TAIL_RADIUS:g} blocs se charge autour d'elle ; puis elle tourne sur elle-même et la queue fauche tout autour (14 dégâts, empoisonne 4 s, sans recul).",
+        "$Comment": f"Fauchage de la queue, annoncé : le dragon se ramasse 0,75 s, la queue ramenée sur le côté, et une zone rouge de {CHIMERA_TAIL_RADIUS:g} blocs se charge autour de lui ; puis il tourne sur lui-même et la queue fauche tout autour (14 dégâts, empoisonne 4 s, sans recul).",
         "Type": "Serial",
         "Interactions": [
             {"Type": "ClearEntityEffect", "Entity": "User", "EntityEffectId": "Hit_Interrupt_Eligible"},
@@ -530,8 +529,8 @@ def interactions():
         "Nakasar_NPC_Gargoyle_Dive": gargoyle_dive(),
         "Nakasar_NPC_Codex_Pages": codex_pages(),
         "Nakasar_NPC_Codex_Chapter": codex_chapter(),
-        "Nakasar_NPC_Chimera_Bite": swing("Morsure de la Chimère (20 dégâts) : elle se jette gueule ouverte.", CHIMERA, "Bite",
-                                          0.45, 20, end=3.8, length=80, yaw=40, sound="SFX_Unarmed_Swing"),
+        "Nakasar_NPC_Chimera_Bite": swing("Morsure du dragon (20 dégâts) : il se jette gueule ouverte.", CHIMERA, "Bite",
+                                          0.45, 20, end=4.8, length=80, yaw=40, sound="SFX_Unarmed_Swing"),
         "Nakasar_NPC_Chimera_Slam": chimera_slam(),
         "Nakasar_NPC_Chimera_Tail": chimera_tail(),
         "Nakasar_NPC_Alchemist_Staff_Left": swing("Coup de bâton de l'Alchimiste (gauche, 18 dégâts, sans recul).",
@@ -788,43 +787,37 @@ def vortex_role():
 
 
 def chimera_role():
-    return role(CHIMERA, "Chimère du laboratoire, second mini-boss de la Tour de l'Alchimiste, avec barre de vie de boss : morsure, poing de golem annoncé toutes les 9 à 12 s, fauchage de la queue annoncé toutes les 10 à 13 s. ChimeraSystem (Java) la fait plonger dans la cuve pour se régénérer (toutes les minutes et sous la moitié de sa vie), mène les étagères de réactifs et les homoncules porteurs, l'acide de la cuve et la remise à zéro.",
+    return role(CHIMERA, "Chimère du laboratoire, second mini-boss de la Tour de l'Alchimiste, avec barre de vie de boss : un dragon qui ne vole pas. Morsure, cabré qui retombe annoncé toutes les 9 à 12 s, fauchage de la queue annoncé toutes les 10 à 13 s. ChimeraSystem (Java) mène les zombies porteurs d'acide qui la soignent, l'acide de la cuve et la remise à zéro.",
                 CHIMERA, 1800, [
                     ge.timed_attack("Slam", "Root_Nakasar_NPC_Chimera_Slam", rng=CHIMERA_SLAM_RADIUS - 1,
-                                    comment="Poing de golem annoncé quand la cible est à portée."),
+                                    comment="Se cabre et retombe, annoncé, quand la cible est à portée."),
                     ge.timed_attack("Tail", "Root_Nakasar_NPC_Chimera_Tail", rng=CHIMERA_TAIL_RADIUS - 0.5,
                                     comment="Fauchage de la queue annoncé quand la cible est tout près."),
-                    melee("Root_Nakasar_NPC_Chimera_Bite", 3.4, (0.6, 1.0), turn=1.2),
-                    chase(36, speed=1.0, stop=2.6)],
+                    melee("Root_Nakasar_NPC_Chimera_Bite", 4.4, (0.6, 1.0), turn=1.2),
+                    chase(36, speed=1.0, stop=3.4)],
                 walk(4.5, jump=0.5), drop="Nakasar_Drop_Lab_Chimera", sight=16, leash=40,
                 timers=[timer("Slam", (4, 6), (9, 12)), timer("Tail", (6, 8), (10, 13))], heal=True,
                 KnockbackScale=0.1, DeathAnimationTime=1.8, DeathParticles="Explosion_Medium")
 
 
-def shelf_role():
-    return role(SHELF, "Étagère de réactifs du laboratoire : posée par ChimeraSystem (gelée, immobile). Tant qu'elle tient, un homoncule porteur en part pendant chaque régénération de la Chimère, qui dure aussi plus longtemps ; la casser raccourcit la régénération.",
-                SHELF, 60, [], walk(0.1), sight=0.5, los=False, home=False,
-                DefaultPlayerAttitude="Neutral", KnockbackScale=0, DeathAnimationTime=0.8,
-                DeathParticles="Block_Break_Dust")
-
-
 def feeder_role():
     return {
-        "$Comment": "Homoncule porteur : part d'une étagère de réactifs pendant la régénération de la Chimère et court vers la cuve (son point d'attache, fixé par ChimeraSystem) ; il ne se bat pas. Arrivé à la margelle, il verse ses réactifs (ChimeraSystem le retire et soigne la Chimère). Généré par tools/generate_tower_mobs.py.",
+        "$Comment": "Zombie porteur d'acide : ChimeraSystem le fait sortir près d'un bassin secondaire du laboratoire, où il remplit son seau (gelé quelques secondes), puis il marche vers la cuve centrale (son point d'attache, fixé par ChimeraSystem) ; il ne se bat pas. Arrivé à la margelle, il verse son seau (ChimeraSystem le retire et soigne la Chimère) ; tué avant, il ne soigne rien. Généré par tools/generate_tower_mobs.py.",
         "Type": "Generic",
-        "Appearance": HOMUNCULUS,
+        "Appearance": "Zombie",
         "NameTranslationKey": name_key(FEEDER),
-        "MaxHealth": 20,
+        "MaxHealth": 30,
         "StartState": "Idle",
         "DefaultPlayerAttitude": "Neutral",
         "DefaultNPCAttitude": "Ignore",
         "DisableDamageGroups": [CREATIONS],
-        "MotionControllerList": walk(5.0),
-        "KnockbackScale": 1.2,
+        "MotionControllerList": walk(3.2),
+        "HotbarItems": ["Container_Bucket"],
+        "KnockbackScale": 1.0,
         "DeathAnimationTime": 0.8,
         "Instructions": [
             {"Sensor": {"Type": "State", "State": "Idle"}, "Instructions": [
-                {"$Comment": "Court vers la cuve.",
+                {"$Comment": "Marche vers la cuve.",
                  "Sensor": {"Type": "Leash", "Range": 0.8},
                  "BodyMotion": {"Type": "Seek", "RelativeSpeed": 1.0, "SlowDownDistance": 1.5, "StopDistance": 0.5,
                                 "UsePathfinder": True}},
@@ -926,7 +919,6 @@ def roles():
         **{chapter: chapter_role(chapter) for chapter in CHAPTERS},
         VORTEX: vortex_role(),
         CHIMERA: chimera_role(),
-        SHELF: shelf_role(),
         FEEDER: feeder_role(),
         ALCHEMIST: alchemist_role(),
         ATHANOR_HOMUNCULUS: athanor_homunculus_role(),
@@ -1260,7 +1252,7 @@ def drops():
 def groups():
     return {
         CREATIONS: {"$Comment": "Créatures de l'Alchimiste : elles ne se blessent pas entre elles (DisableDamageGroups).",
-                    "IncludeRoles": ALL + CHAPTERS + [VORTEX, SHELF, FEEDER, ATHANOR_HOMUNCULUS] + PILLARS},
+                    "IncludeRoles": ALL + CHAPTERS + [VORTEX, FEEDER, ATHANOR_HOMUNCULUS] + PILLARS},
         FIRE_ELEMENTALS: {"$Comment": "Créatures de feu de la tour : aucun dégât de feu (dans Nakasar_Fire_Immune).",
                           "IncludeRoles": [FIRE, FLASK_FIRE]},
     }

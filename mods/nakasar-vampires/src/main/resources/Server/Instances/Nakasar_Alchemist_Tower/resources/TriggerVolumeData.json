@@ -102156,315 +102156,6 @@
     },
     "23855a1d-ab93-5e6e-a6df-410611387e7e": {
       "Position": {
-        "X": 0.5,
-        "Y": 166.0,
-        "Z": -451.5
-      },
-      "Shape": {
-        "Type": "Cylinder",
-        "Center": {
-          "X": 0.0,
-          "Y": 0.0,
-          "Z": 0.0
-        },
-        "Radius": 6.0,
-        "Height": 5.0
-      },
-      "Conditions": [
-        {
-          "Type": "TagCondition",
-          "Event": "ENTER",
-          "Source": "Self",
-          "TagKey": "Checkpoint",
-          "Comparison": "Exactly",
-          "CompareAgainst": "Value",
-          "TagValue": "Inactive",
-          "Inverted": false,
-          "MatchKey": "",
-          "MatchValue": "",
-          "Radius": 50.0,
-          "Center": "Volume"
-        },
-        {
-          "Type": "TagCondition",
-          "Event": "ENTER",
-          "Source": "Self",
-          "TagKey": "Checkpoint",
-          "Comparison": "Exactly",
-          "CompareAgainst": "Value",
-          "TagValue": "Disabled",
-          "Inverted": true,
-          "MatchKey": "",
-          "MatchValue": "",
-          "Radius": 50.0,
-          "Center": "Volume"
-        },
-        {
-          "Type": "TagCondition",
-          "Event": "SIGNAL_RECEIVED",
-          "Source": "Event",
-          "TagKey": "Checkpoint",
-          "Comparison": "Exactly",
-          "CompareAgainst": "Value",
-          "TagValue": "Disable",
-          "Inverted": false,
-          "MatchKey": "",
-          "MatchValue": "",
-          "Radius": 50.0,
-          "Center": "Volume"
-        },
-        {
-          "Type": "TagCondition",
-          "Event": "SIGNAL_RECEIVED",
-          "Entry": 1,
-          "Source": "Event",
-          "TagKey": "Checkpoint",
-          "Comparison": "Exactly",
-          "CompareAgainst": "Value",
-          "TagValue": "Reset",
-          "Inverted": false,
-          "MatchKey": "",
-          "MatchValue": "",
-          "Radius": 50.0,
-          "Center": "Volume"
-        },
-        {
-          "Type": "TagCondition",
-          "Event": "TICK",
-          "Entry": 1,
-          "Source": "Self",
-          "TagKey": "Checkpoint_Healing",
-          "Comparison": "Exactly",
-          "CompareAgainst": "Value",
-          "TagValue": "Yes",
-          "Inverted": false,
-          "MatchKey": "",
-          "MatchValue": "",
-          "Radius": 50.0,
-          "Center": "Volume"
-        }
-      ],
-      "Effects": [
-        {
-          "Type": "PlaceBlock",
-          "Event": "ENTER",
-          "Interval": 0.0,
-          "Delay": 0.0,
-          "BlockType": "Dungeon_Checkpoint_Statue",
-          "BlockState": "Activating",
-          "Position": {
-            "X": 0.0,
-            "Y": 0.0,
-            "Z": 0.0
-          },
-          "Origin": "VolumeOrigin",
-          "ReplaceMode": "Always",
-          "Rotation": "None",
-          "Pitch": "None",
-          "Roll": "None"
-        },
-        {
-          "Type": "PlaySound",
-          "Event": "ENTER",
-          "Interval": 0.0,
-          "Delay": 0.0,
-          "SoundEvent": "SFX_Dungeon_Checkpoint_Activate",
-          "Location": "VolumeCenter",
-          "Offset": {
-            "X": 0.0,
-            "Y": 0.0,
-            "Z": 0.0
-          }
-        },
-        {
-          "Type": "SetWorldSpawn",
-          "Event": "ENTER",
-          "Interval": 0.0,
-          "Delay": 0.0,
-          "Origin": "VolumeOrigin",
-          "Position": {
-            "X": 0.0,
-            "Y": 0.0,
-            "Z": 3.0
-          },
-          "Yaw": 0.0,
-          "ClearPlayerRespawnPoints": true
-        },
-        {
-          "Type": "ShowEventTitle",
-          "Event": "ENTER",
-          "Interval": 0.0,
-          "Delay": 0.0,
-          "PrimaryTitle": "server.general.checkpoint.title",
-          "SecondaryTitle": "nakasar_alchemist.checkpoint.3",
-          "Style": "Major",
-          "Duration": 3.5,
-          "FadeInDuration": 1.0,
-          "FadeOutDuration": 1.0,
-          "Recipient": "AllPlayers"
-        },
-        {
-          "Type": "SendSignal",
-          "Event": "ENTER",
-          "Interval": 0.0,
-          "Delay": 0.0,
-          "MatchKey": "Checkpoint",
-          "MatchValue": "Active",
-          "Radius": 0.0,
-          "Center": "Volume",
-          "SignalKeys": [
-            "Checkpoint"
-          ],
-          "SignalValues": [
-            "Disable"
-          ]
-        },
-        {
-          "Type": "ModifyTags",
-          "Event": "ENTER",
-          "Interval": 0.0,
-          "Delay": 0.0,
-          "Operation": "Set",
-          "TagKey": "Checkpoint",
-          "TagValue": "Active",
-          "MatchKey": "Checkpoint",
-          "MatchValue": "",
-          "Radius": 5.0,
-          "Center": "Volume"
-        },
-        {
-          "Type": "ModifyTags",
-          "Event": "ENTER",
-          "Interval": 0.0,
-          "Delay": 0.0,
-          "Operation": "Set",
-          "TagKey": "Checkpoint_Healing",
-          "TagValue": "Yes",
-          "MatchKey": "Checkpoint",
-          "MatchValue": "",
-          "Radius": 5.0,
-          "Center": "Volume"
-        },
-        {
-          "Type": "PlaceBlock",
-          "Event": "ENTER",
-          "Interval": 0.0,
-          "Delay": 8.5,
-          "BlockType": "Dungeon_Checkpoint_Statue",
-          "BlockState": "Active",
-          "Position": {
-            "X": 0.0,
-            "Y": 0.0,
-            "Z": 0.0
-          },
-          "Origin": "VolumeOrigin",
-          "ReplaceMode": "Always",
-          "Rotation": "None",
-          "Pitch": "None",
-          "Roll": "None"
-        },
-        {
-          "Type": "ModifyTags",
-          "Event": "ENTER",
-          "Interval": 0.0,
-          "Delay": 8.5,
-          "Operation": "Set",
-          "TagKey": "Checkpoint_Healing",
-          "TagValue": "No",
-          "MatchKey": "Checkpoint",
-          "MatchValue": "",
-          "Radius": 5.0,
-          "Center": "Volume"
-        },
-        {
-          "Type": "PlaceBlock",
-          "Event": "SIGNAL_RECEIVED",
-          "Interval": 0.0,
-          "Delay": 0.0,
-          "BlockType": "Dungeon_Checkpoint_Statue",
-          "BlockState": "Disabled",
-          "Position": {
-            "X": 0.0,
-            "Y": 0.0,
-            "Z": 0.0
-          },
-          "Origin": "VolumeOrigin",
-          "ReplaceMode": "Always",
-          "Rotation": "None",
-          "Pitch": "None",
-          "Roll": "None"
-        },
-        {
-          "Type": "ModifyTags",
-          "Event": "SIGNAL_RECEIVED",
-          "Interval": 0.0,
-          "Delay": 0.0,
-          "Operation": "Set",
-          "TagKey": "Checkpoint",
-          "TagValue": "Disabled",
-          "MatchKey": "Checkpoint",
-          "MatchValue": "Active",
-          "Radius": 5.0,
-          "Center": "Volume"
-        },
-        {
-          "Type": "PlaceBlock",
-          "Event": "SIGNAL_RECEIVED",
-          "Interval": 0.0,
-          "Delay": 0.0,
-          "Entry": 1,
-          "BlockType": "Dungeon_Checkpoint_Statue",
-          "BlockState": "Inactive",
-          "Position": {
-            "X": 0.0,
-            "Y": 0.0,
-            "Z": 0.0
-          },
-          "Origin": "VolumeOrigin",
-          "ReplaceMode": "Always",
-          "Rotation": "None",
-          "Pitch": "None",
-          "Roll": "None"
-        },
-        {
-          "Type": "ModifyTags",
-          "Event": "SIGNAL_RECEIVED",
-          "Interval": 0.0,
-          "Delay": 0.0,
-          "Entry": 1,
-          "Operation": "Set",
-          "TagKey": "Checkpoint",
-          "TagValue": "Inactive",
-          "MatchKey": "Checkpoint",
-          "MatchValue": "",
-          "Radius": 5.0,
-          "Center": "Volume"
-        },
-        {
-          "Type": "EntityEffect",
-          "Event": "TICK",
-          "Interval": 0.25,
-          "Delay": 0.0,
-          "Entry": 1,
-          "Effect": "Dungeon_Checkpoint_Heal",
-          "Mode": "Apply",
-          "Duration": 0.5
-        }
-      ],
-      "TargetTypes": [
-        "Player"
-      ],
-      "Enabled": true,
-      "GroupId": "a4d90cbe-1ae5-542e-8cab-8b71fb02cef4",
-      "KeepLoaded": false,
-      "Tags": {
-        "Checkpoint": "Inactive",
-        "Checkpoint_Healing": "No"
-      },
-      "Name": "Checkpoint_03"
-    },
-    "58b44203-41c6-5e26-9977-96112a27c94e": {
-      "Position": {
         "X": -4.5,
         "Y": 184.0,
         "Z": -478.5
@@ -102605,7 +102296,7 @@
           "Interval": 0.0,
           "Delay": 0.0,
           "PrimaryTitle": "server.general.checkpoint.title",
-          "SecondaryTitle": "nakasar_alchemist.checkpoint.4",
+          "SecondaryTitle": "nakasar_alchemist.checkpoint.3",
           "Style": "Major",
           "Duration": 3.5,
           "FadeInDuration": 1.0,
@@ -102770,9 +102461,9 @@
         "Checkpoint": "Inactive",
         "Checkpoint_Healing": "No"
       },
-      "Name": "Checkpoint_04"
+      "Name": "Checkpoint_03"
     },
-    "70f717c9-6eff-572a-b736-50b1162fca41": {
+    "58b44203-41c6-5e26-9977-96112a27c94e": {
       "Position": {
         "X": -2.5,
         "Y": 244.0,
@@ -102914,7 +102605,7 @@
           "Interval": 0.0,
           "Delay": 0.0,
           "PrimaryTitle": "server.general.checkpoint.title",
-          "SecondaryTitle": "nakasar_alchemist.checkpoint.5",
+          "SecondaryTitle": "nakasar_alchemist.checkpoint.4",
           "Style": "Major",
           "Duration": 3.5,
           "FadeInDuration": 1.0,
@@ -103079,7 +102770,7 @@
         "Checkpoint": "Inactive",
         "Checkpoint_Healing": "No"
       },
-      "Name": "Checkpoint_05"
+      "Name": "Checkpoint_04"
     },
     "fc473f7e-7642-5fb7-9bcb-908678463f56": {
       "Position": {
@@ -172951,122 +172642,35 @@
       },
       "Name": "Alchemist_Arena"
     },
-    "d8404df0-9876-50dd-bb13-0d840e300c54": {
+    "8d9af366-23f4-55e5-9e6c-f1772896e935": {
       "Position": {
-        "X": 0.5,
-        "Y": 174.5,
-        "Z": -439.5
+        "X": 15.5,
+        "Y": 169.0,
+        "Z": -424.5
       },
       "Shape": {
         "Type": "Box",
         "Min": {
-          "X": -18.5,
-          "Y": -8.5,
-          "Z": -18.5
+          "X": -14.45,
+          "Y": -2.95,
+          "Z": -14.45
         },
         "Max": {
-          "X": 18.5,
-          "Y": 8.5,
-          "Z": 18.5
-        }
-      },
-      "Effects": [
-        {
-          "Type": "SendSignal",
-          "Event": "TICK",
-          "Interval": 16.0,
-          "Delay": 0.0,
-          "MatchKey": "Quadrant",
-          "MatchValue": "Fire",
-          "Radius": 80.0,
-          "Center": "Volume",
-          "SignalKeys": [
-            "Transmute"
-          ]
-        },
-        {
-          "Type": "SendSignal",
-          "Event": "TICK",
-          "Interval": 16.0,
-          "Delay": 4.0,
-          "MatchKey": "Quadrant",
-          "MatchValue": "Ice",
-          "Radius": 80.0,
-          "Center": "Volume",
-          "SignalKeys": [
-            "Transmute"
-          ]
-        },
-        {
-          "Type": "SendSignal",
-          "Event": "TICK",
-          "Interval": 16.0,
-          "Delay": 8.0,
-          "MatchKey": "Quadrant",
-          "MatchValue": "Acid",
-          "Radius": 80.0,
-          "Center": "Volume",
-          "SignalKeys": [
-            "Transmute"
-          ]
-        },
-        {
-          "Type": "SendSignal",
-          "Event": "TICK",
-          "Interval": 16.0,
-          "Delay": 12.0,
-          "MatchKey": "Quadrant",
-          "MatchValue": "Lightning",
-          "Radius": 80.0,
-          "Center": "Volume",
-          "SignalKeys": [
-            "Transmute"
-          ]
-        }
-      ],
-      "ConditionTiming": "BeforeVolumeDelay",
-      "CancelDelayedOnExit": false,
-      "Cooldown": 0.1,
-      "TargetTypes": [
-        "Player"
-      ],
-      "Enabled": true,
-      "GroupId": "6e37a0c2-6475-523e-8337-f19fa2959f14",
-      "KeepLoaded": false,
-      "Tags": {
-        "Transmutation_Controller": "On"
-      },
-      "Name": "Transmutation_Controller"
-    },
-    "d1f3d105-37b5-57f6-8996-a92e31cc1b82": {
-      "Position": {
-        "X": 10.0,
-        "Y": 167.5,
-        "Z": -449.0
-      },
-      "Shape": {
-        "Type": "Box",
-        "Min": {
-          "X": -8.95,
-          "Y": -1.45,
-          "Z": -8.95
-        },
-        "Max": {
-          "X": 8.95,
-          "Y": 1.45,
-          "Z": 8.95
+          "X": 14.45,
+          "Y": 2.95,
+          "Z": 14.45
         }
       },
       "Conditions": [
         {
           "Type": "TagCondition",
-          "Event": "SIGNAL_RECEIVED",
+          "Event": "TAG_ADDED",
           "Entry": 1,
-          "Source": "Event",
-          "TagKey": "Transmute",
+          "Source": "Self",
+          "TagKey": "Fx",
           "Comparison": "Exactly",
           "CompareAgainst": "Value",
-          "TagValue": "",
+          "TagValue": "Active",
           "Inverted": false,
           "MatchKey": "",
           "MatchValue": "",
@@ -173075,418 +172679,58 @@
         },
         {
           "Type": "TagCondition",
-          "Event": "SIGNAL_RECEIVED",
-          "Entry": 1,
+          "Event": "TAG_ADDED",
+          "Entry": 2,
           "Source": "Self",
-          "TagKey": "Busy",
+          "TagKey": "Fx",
           "Comparison": "Exactly",
           "CompareAgainst": "Value",
-          "TagValue": "On",
-          "Inverted": true,
-          "MatchKey": "",
-          "MatchValue": "",
-          "Radius": 50.0,
-          "Center": "Volume"
-        },
-        {
-          "Type": "TagCondition",
-          "Event": "TICK",
-          "Source": "Self",
-          "TagKey": "Dmg",
-          "Comparison": "Exactly",
-          "CompareAgainst": "Value",
-          "TagValue": "True",
+          "TagValue": "Calm",
           "Inverted": false,
           "MatchKey": "",
           "MatchValue": "",
           "Radius": 50.0,
           "Center": "Volume"
-        }
-      ],
-      "Effects": [
-        {
-          "Type": "ModifyTags",
-          "Event": "SIGNAL_RECEIVED",
-          "Interval": 0.0,
-          "Delay": 0.0,
-          "Entry": 1,
-          "Operation": "Set",
-          "TagKey": "Busy",
-          "TagValue": "On",
-          "MatchKey": "",
-          "MatchValue": "",
-          "Radius": 1.0,
-          "Center": "Volume"
         },
-        {
-          "Type": "PlayVfx",
-          "Event": "SIGNAL_RECEIVED",
-          "Interval": 0.0,
-          "Delay": 0.0,
-          "ParticleSystem": "Fire_Trap_Preview",
-          "Offset": {
-            "X": -4.5,
-            "Y": -1.4,
-            "Z": 4.5
-          },
-          "Anchor": "Volume",
-          "Scale": 1.0,
-          "Rotation": {
-            "X": 0.0,
-            "Y": 0.0,
-            "Z": 0.0
-          },
-          "Duration": 2.5,
-          "Entry": 1
-        },
-        {
-          "Type": "PlayVfx",
-          "Event": "SIGNAL_RECEIVED",
-          "Interval": 0.0,
-          "Delay": 0.0,
-          "ParticleSystem": "Fire_Trap_Preview",
-          "Offset": {
-            "X": -4.5,
-            "Y": -1.4,
-            "Z": -3.5
-          },
-          "Anchor": "Volume",
-          "Scale": 1.0,
-          "Rotation": {
-            "X": 0.0,
-            "Y": 0.0,
-            "Z": 0.0
-          },
-          "Duration": 2.5,
-          "Entry": 1
-        },
-        {
-          "Type": "PlayVfx",
-          "Event": "SIGNAL_RECEIVED",
-          "Interval": 0.0,
-          "Delay": 0.0,
-          "ParticleSystem": "Fire_Trap_Preview",
-          "Offset": {
-            "X": 3.5,
-            "Y": -1.4,
-            "Z": 4.5
-          },
-          "Anchor": "Volume",
-          "Scale": 1.0,
-          "Rotation": {
-            "X": 0.0,
-            "Y": 0.0,
-            "Z": 0.0
-          },
-          "Duration": 2.5,
-          "Entry": 1
-        },
-        {
-          "Type": "PlayVfx",
-          "Event": "SIGNAL_RECEIVED",
-          "Interval": 0.0,
-          "Delay": 0.0,
-          "ParticleSystem": "Fire_Trap_Preview",
-          "Offset": {
-            "X": 3.5,
-            "Y": -1.4,
-            "Z": -3.5
-          },
-          "Anchor": "Volume",
-          "Scale": 1.0,
-          "Rotation": {
-            "X": 0.0,
-            "Y": 0.0,
-            "Z": 0.0
-          },
-          "Duration": 2.5,
-          "Entry": 1
-        },
-        {
-          "Type": "PlayVfx",
-          "Event": "SIGNAL_RECEIVED",
-          "Interval": 0.0,
-          "Delay": 0.0,
-          "ParticleSystem": "Nakasar_Warning_25",
-          "Offset": {
-            "X": -4.5,
-            "Y": -1.4,
-            "Z": 4.5
-          },
-          "Anchor": "Volume",
-          "Scale": 3.13,
-          "Rotation": {
-            "X": 0.0,
-            "Y": 0.0,
-            "Z": 0.0
-          },
-          "Duration": 0.0,
-          "Entry": 1
-        },
-        {
-          "Type": "PlayVfx",
-          "Event": "SIGNAL_RECEIVED",
-          "Interval": 0.0,
-          "Delay": 0.0,
-          "ParticleSystem": "Nakasar_Warning_25",
-          "Offset": {
-            "X": -4.5,
-            "Y": -1.4,
-            "Z": -3.5
-          },
-          "Anchor": "Volume",
-          "Scale": 3.13,
-          "Rotation": {
-            "X": 0.0,
-            "Y": 0.0,
-            "Z": 0.0
-          },
-          "Duration": 0.0,
-          "Entry": 1
-        },
-        {
-          "Type": "PlayVfx",
-          "Event": "SIGNAL_RECEIVED",
-          "Interval": 0.0,
-          "Delay": 0.0,
-          "ParticleSystem": "Nakasar_Warning_25",
-          "Offset": {
-            "X": 3.5,
-            "Y": -1.4,
-            "Z": 4.5
-          },
-          "Anchor": "Volume",
-          "Scale": 3.13,
-          "Rotation": {
-            "X": 0.0,
-            "Y": 0.0,
-            "Z": 0.0
-          },
-          "Duration": 0.0,
-          "Entry": 1
-        },
-        {
-          "Type": "PlayVfx",
-          "Event": "SIGNAL_RECEIVED",
-          "Interval": 0.0,
-          "Delay": 0.0,
-          "ParticleSystem": "Nakasar_Warning_25",
-          "Offset": {
-            "X": 3.5,
-            "Y": -1.4,
-            "Z": -3.5
-          },
-          "Anchor": "Volume",
-          "Scale": 3.13,
-          "Rotation": {
-            "X": 0.0,
-            "Y": 0.0,
-            "Z": 0.0
-          },
-          "Duration": 0.0,
-          "Entry": 1
-        },
-        {
-          "Type": "PlayVfx",
-          "Event": "SIGNAL_RECEIVED",
-          "Interval": 0.0,
-          "Delay": 2.5,
-          "ParticleSystem": "Fire_AoE",
-          "Offset": {
-            "X": -4.5,
-            "Y": -1.4,
-            "Z": 4.5
-          },
-          "Anchor": "Volume",
-          "Scale": 1.0,
-          "Rotation": {
-            "X": 0.0,
-            "Y": 0.0,
-            "Z": 0.0
-          },
-          "Duration": 2.4,
-          "Entry": 1
-        },
-        {
-          "Type": "PlayVfx",
-          "Event": "SIGNAL_RECEIVED",
-          "Interval": 0.0,
-          "Delay": 2.5,
-          "ParticleSystem": "Fire_AoE",
-          "Offset": {
-            "X": -4.5,
-            "Y": -1.4,
-            "Z": -3.5
-          },
-          "Anchor": "Volume",
-          "Scale": 1.0,
-          "Rotation": {
-            "X": 0.0,
-            "Y": 0.0,
-            "Z": 0.0
-          },
-          "Duration": 2.4,
-          "Entry": 1
-        },
-        {
-          "Type": "PlayVfx",
-          "Event": "SIGNAL_RECEIVED",
-          "Interval": 0.0,
-          "Delay": 2.5,
-          "ParticleSystem": "Fire_AoE",
-          "Offset": {
-            "X": 3.5,
-            "Y": -1.4,
-            "Z": 4.5
-          },
-          "Anchor": "Volume",
-          "Scale": 1.0,
-          "Rotation": {
-            "X": 0.0,
-            "Y": 0.0,
-            "Z": 0.0
-          },
-          "Duration": 2.4,
-          "Entry": 1
-        },
-        {
-          "Type": "PlayVfx",
-          "Event": "SIGNAL_RECEIVED",
-          "Interval": 0.0,
-          "Delay": 2.5,
-          "ParticleSystem": "Fire_AoE",
-          "Offset": {
-            "X": 3.5,
-            "Y": -1.4,
-            "Z": -3.5
-          },
-          "Anchor": "Volume",
-          "Scale": 1.0,
-          "Rotation": {
-            "X": 0.0,
-            "Y": 0.0,
-            "Z": 0.0
-          },
-          "Duration": 2.4,
-          "Entry": 1
-        },
-        {
-          "Type": "PlaySound",
-          "Event": "SIGNAL_RECEIVED",
-          "Interval": 0.0,
-          "Delay": 2.5,
-          "SoundEvent": "SFX_Emit_Goblin_Flame_Quadrant_Blast",
-          "Location": "VolumeCenter",
-          "Offset": {
-            "X": 0.0,
-            "Y": 0.0,
-            "Z": 0.0
-          },
-          "Entry": 1
-        },
-        {
-          "Type": "ModifyTags",
-          "Event": "SIGNAL_RECEIVED",
-          "Interval": 0.0,
-          "Delay": 2.5,
-          "Entry": 1,
-          "Operation": "Set",
-          "TagKey": "Dmg",
-          "TagValue": "True",
-          "MatchKey": "",
-          "MatchValue": "",
-          "Radius": 1.0,
-          "Center": "Volume"
-        },
-        {
-          "Type": "ModifyTags",
-          "Event": "SIGNAL_RECEIVED",
-          "Interval": 0.0,
-          "Delay": 4.9,
-          "Entry": 1,
-          "Operation": "Set",
-          "TagKey": "Dmg",
-          "TagValue": "False",
-          "MatchKey": "",
-          "MatchValue": "",
-          "Radius": 1.0,
-          "Center": "Volume"
-        },
-        {
-          "Type": "ModifyTags",
-          "Event": "SIGNAL_RECEIVED",
-          "Interval": 0.0,
-          "Delay": 4.9,
-          "Entry": 1,
-          "Operation": "Set",
-          "TagKey": "Busy",
-          "TagValue": "Off",
-          "MatchKey": "",
-          "MatchValue": "",
-          "Radius": 1.0,
-          "Center": "Volume"
-        },
-        {
-          "Type": "EntityEffect",
-          "Event": "TICK",
-          "Interval": 0.0,
-          "Delay": 0.0,
-          "Effect": "Burn",
-          "Mode": "Apply",
-          "Duration": 4.0
-        },
-        {
-          "Type": "DamageEntity",
-          "Event": "TICK",
-          "Interval": 0.5,
-          "Delay": 0.0,
-          "Mode": "PercentMax",
-          "Amount": 6.0
-        }
-      ],
-      "ConditionTiming": "BeforeVolumeDelay",
-      "Cooldown": 0.1,
-      "TargetTypes": [
-        "Player"
-      ],
-      "Enabled": true,
-      "GroupId": "6e37a0c2-6475-523e-8337-f19fa2959f14",
-      "KeepLoaded": false,
-      "Tags": {
-        "Quadrant": "Fire",
-        "Busy": "Off",
-        "Dmg": "False"
-      },
-      "Name": "Quadrant_Fire"
-    },
-    "7f84f24b-e2ea-58b1-9481-357e41981a99": {
-      "Position": {
-        "X": 6.5,
-        "Y": 166.5,
-        "Z": -450.5
-      },
-      "Shape": {
-        "Type": "Box",
-        "Min": {
-          "X": -0.5,
-          "Y": -0.5,
-          "Z": -0.5
-        },
-        "Max": {
-          "X": 0.5,
-          "Y": 0.5,
-          "Z": 0.5
-        }
-      },
-      "Conditions": [
         {
           "Type": "TagCondition",
-          "Event": "BLOCK_USED",
+          "Event": "TAG_ADDED",
+          "Entry": 3,
           "Source": "Self",
-          "TagKey": "Lit",
+          "TagKey": "Fx",
           "Comparison": "Exactly",
           "CompareAgainst": "Value",
-          "TagValue": "No",
+          "TagValue": "Warn",
+          "Inverted": false,
+          "MatchKey": "",
+          "MatchValue": "",
+          "Radius": 50.0,
+          "Center": "Volume"
+        },
+        {
+          "Type": "TagCondition",
+          "Event": "TICK",
+          "Entry": 0,
+          "Source": "Self",
+          "TagKey": "State",
+          "Comparison": "Exactly",
+          "CompareAgainst": "Value",
+          "TagValue": "Active",
+          "Inverted": false,
+          "MatchKey": "",
+          "MatchValue": "",
+          "Radius": 50.0,
+          "Center": "Volume"
+        },
+        {
+          "Type": "TagCondition",
+          "Event": "TICK",
+          "Entry": 1,
+          "Source": "Self",
+          "TagKey": "State",
+          "Comparison": "Exactly",
+          "CompareAgainst": "Value",
+          "TagValue": "Calm",
           "Inverted": false,
           "MatchKey": "",
           "MatchValue": "",
@@ -173496,24 +172740,201 @@
       ],
       "Effects": [
         {
-          "Type": "ModifyTags",
-          "Event": "BLOCK_USED",
+          "Type": "PlayVfx",
+          "Event": "TAG_ADDED",
           "Interval": 0.0,
-          "Delay": 0.1,
-          "Operation": "Set",
-          "TagKey": "Lit",
-          "TagValue": "Yes",
-          "MatchKey": "",
-          "MatchValue": "",
-          "Radius": 1.0,
-          "Center": "Volume"
+          "Delay": 0.0,
+          "Entry": 1,
+          "ParticleSystem": "Block_Break_Dust",
+          "Offset": {
+            "X": -10.40380592228744,
+            "Y": -2.8,
+            "Z": -10.403805922287441
+          },
+          "Anchor": "Volume",
+          "Scale": 1.0,
+          "Rotation": {
+            "X": 0.0,
+            "Y": 0.0,
+            "Z": 0.0
+          },
+          "Duration": 3.0
+        },
+        {
+          "Type": "PlayVfx",
+          "Event": "TAG_ADDED",
+          "Interval": 0.0,
+          "Delay": 0.0,
+          "Entry": 1,
+          "ParticleSystem": "Block_Break_Dust",
+          "Offset": {
+            "X": -3.91344560986456,
+            "Y": -2.8,
+            "Z": -10.407798811618923
+          },
+          "Anchor": "Volume",
+          "Scale": 1.0,
+          "Rotation": {
+            "X": 0.0,
+            "Y": 0.0,
+            "Z": 0.0
+          },
+          "Duration": 3.0
+        },
+        {
+          "Type": "PlayVfx",
+          "Event": "TAG_ADDED",
+          "Interval": 0.0,
+          "Delay": 0.0,
+          "Entry": 1,
+          "ParticleSystem": "Block_Break_Dust",
+          "Offset": {
+            "X": -10.407798811618921,
+            "Y": -2.8,
+            "Z": -3.91344560986456
+          },
+          "Anchor": "Volume",
+          "Scale": 1.0,
+          "Rotation": {
+            "X": 0.0,
+            "Y": 0.0,
+            "Z": 0.0
+          },
+          "Duration": 3.0
+        },
+        {
+          "Type": "PlayVfx",
+          "Event": "TAG_ADDED",
+          "Interval": 0.0,
+          "Delay": 0.0,
+          "Entry": 1,
+          "ParticleSystem": "Block_Break_Dust",
+          "Offset": {
+            "X": 2.3866648732032303,
+            "Y": -2.8,
+            "Z": -10.341257188154627
+          },
+          "Anchor": "Volume",
+          "Scale": 1.0,
+          "Rotation": {
+            "X": 0.0,
+            "Y": 0.0,
+            "Z": 0.0
+          },
+          "Duration": 3.0
+        },
+        {
+          "Type": "PlayVfx",
+          "Event": "TAG_ADDED",
+          "Interval": 0.0,
+          "Delay": 0.0,
+          "Entry": 1,
+          "ParticleSystem": "Block_Break_Dust",
+          "Offset": {
+            "X": -2.272077938642143,
+            "Y": -2.8,
+            "Z": -2.272077938642145
+          },
+          "Anchor": "Volume",
+          "Scale": 1.0,
+          "Rotation": {
+            "X": 0.0,
+            "Y": 0.0,
+            "Z": 0.0
+          },
+          "Duration": 3.0
+        },
+        {
+          "Type": "PlayVfx",
+          "Event": "TAG_ADDED",
+          "Interval": 0.0,
+          "Delay": 0.0,
+          "Entry": 1,
+          "ParticleSystem": "Block_Break_Dust",
+          "Offset": {
+            "X": -10.341257188154627,
+            "Y": -2.8,
+            "Z": 2.3866648732032303
+          },
+          "Anchor": "Volume",
+          "Scale": 1.0,
+          "Rotation": {
+            "X": 0.0,
+            "Y": 0.0,
+            "Z": 0.0
+          },
+          "Duration": 3.0
+        },
+        {
+          "Type": "PlayVfx",
+          "Event": "TAG_ADDED",
+          "Interval": 0.0,
+          "Delay": 0.0,
+          "Entry": 1,
+          "ParticleSystem": "Block_Break_Dust",
+          "Offset": {
+            "X": 8.18221983093764,
+            "Y": -2.8,
+            "Z": -8.788342917539502
+          },
+          "Anchor": "Volume",
+          "Scale": 1.0,
+          "Rotation": {
+            "X": 0.0,
+            "Y": 0.0,
+            "Z": 0.0
+          },
+          "Duration": 3.0
+        },
+        {
+          "Type": "PlayVfx",
+          "Event": "TAG_ADDED",
+          "Interval": 0.0,
+          "Delay": 0.0,
+          "Entry": 1,
+          "ParticleSystem": "Block_Break_Dust",
+          "Offset": {
+            "X": 1.9705627484771426,
+            "Y": -2.8,
+            "Z": 1.970562748477139
+          },
+          "Anchor": "Volume",
+          "Scale": 1.0,
+          "Rotation": {
+            "X": 0.0,
+            "Y": 0.0,
+            "Z": 0.0
+          },
+          "Duration": 3.0
+        },
+        {
+          "Type": "PlayVfx",
+          "Event": "TAG_ADDED",
+          "Interval": 0.0,
+          "Delay": 0.0,
+          "Entry": 1,
+          "ParticleSystem": "Block_Break_Dust",
+          "Offset": {
+            "X": -8.788342917539502,
+            "Y": -2.8,
+            "Z": 8.18221983093764
+          },
+          "Anchor": "Volume",
+          "Scale": 1.0,
+          "Rotation": {
+            "X": 0.0,
+            "Y": 0.0,
+            "Z": 0.0
+          },
+          "Duration": 3.0
         },
         {
           "Type": "PlaySound",
-          "Event": "BLOCK_USED",
+          "Event": "TAG_ADDED",
           "Interval": 0.0,
           "Delay": 0.0,
-          "SoundEvent": "SFX_Flame_Ignite",
+          "Entry": 1,
+          "SoundEvent": "SFX_Crystal_Break",
           "Location": "VolumeCenter",
           "Offset": {
             "X": 0.0,
@@ -173523,60 +172944,309 @@
         },
         {
           "Type": "PlayVfx",
-          "Event": "BLOCK_USED",
+          "Event": "TAG_ADDED",
           "Interval": 0.0,
           "Delay": 0.0,
-          "ParticleSystem": "Magic_Sparks_Heavy_GS",
+          "Entry": 2,
+          "ParticleSystem": "Smoke_Floor",
           "Offset": {
-            "X": 0.0,
-            "Y": 0.5,
-            "Z": 0.0
+            "X": -10.40380592228744,
+            "Y": -2.8,
+            "Z": -10.403805922287441
           },
           "Anchor": "Volume",
-          "Scale": 1.0,
+          "Scale": 0.6,
           "Rotation": {
             "X": 0.0,
             "Y": 0.0,
             "Z": 0.0
           },
-          "Duration": 0.0
-        },
-        {
-          "Type": "DisableVolume",
-          "Event": "BLOCK_USED",
-          "Interval": 0.0,
-          "Delay": 0.5,
-          "MatchKey": "Quadrant",
-          "MatchValue": "Fire",
-          "Radius": 60.0,
-          "Center": "Volume"
-        },
-        {
-          "Type": "SpawnNpc",
-          "Event": "BLOCK_USED",
-          "Interval": 0.0,
-          "Delay": 1.5,
-          "NpcType": "Nakasar_Elemental_Fire",
-          "GroupType": "",
-          "Origin": "VolumeOrigin",
-          "Offset": {
-            "X": -3.0,
-            "Y": 0.0,
-            "Z": 3.0
-          },
-          "Count": 1,
-          "Yaw": 0.0
+          "Duration": 3.0
         },
         {
           "Type": "PlayVfx",
-          "Event": "BLOCK_USED",
+          "Event": "TAG_ADDED",
           "Interval": 0.0,
-          "Delay": 1.2,
-          "ParticleSystem": "Fire_AoE",
+          "Delay": 0.0,
+          "Entry": 2,
+          "ParticleSystem": "Smoke_Floor",
           "Offset": {
-            "X": -3.0,
+            "X": -10.407798811618921,
+            "Y": -2.8,
+            "Z": -3.91344560986456
+          },
+          "Anchor": "Volume",
+          "Scale": 0.6,
+          "Rotation": {
+            "X": 0.0,
             "Y": 0.0,
-            "Z": 3.0
+            "Z": 0.0
+          },
+          "Duration": 3.0
+        },
+        {
+          "Type": "PlayVfx",
+          "Event": "TAG_ADDED",
+          "Interval": 0.0,
+          "Delay": 0.0,
+          "Entry": 2,
+          "ParticleSystem": "Smoke_Floor",
+          "Offset": {
+            "X": -2.272077938642143,
+            "Y": -2.8,
+            "Z": -2.272077938642145
+          },
+          "Anchor": "Volume",
+          "Scale": 0.6,
+          "Rotation": {
+            "X": 0.0,
+            "Y": 0.0,
+            "Z": 0.0
+          },
+          "Duration": 3.0
+        },
+        {
+          "Type": "PlayVfx",
+          "Event": "TAG_ADDED",
+          "Interval": 0.0,
+          "Delay": 0.0,
+          "Entry": 2,
+          "ParticleSystem": "Smoke_Floor",
+          "Offset": {
+            "X": 8.18221983093764,
+            "Y": -2.8,
+            "Z": -8.788342917539502
+          },
+          "Anchor": "Volume",
+          "Scale": 0.6,
+          "Rotation": {
+            "X": 0.0,
+            "Y": 0.0,
+            "Z": 0.0
+          },
+          "Duration": 3.0
+        },
+        {
+          "Type": "PlayVfx",
+          "Event": "TAG_ADDED",
+          "Interval": 0.0,
+          "Delay": 0.0,
+          "Entry": 2,
+          "ParticleSystem": "Smoke_Floor",
+          "Offset": {
+            "X": -8.788342917539502,
+            "Y": -2.8,
+            "Z": 8.18221983093764
+          },
+          "Anchor": "Volume",
+          "Scale": 0.6,
+          "Rotation": {
+            "X": 0.0,
+            "Y": 0.0,
+            "Z": 0.0
+          },
+          "Duration": 3.0
+        },
+        {
+          "Type": "PlayVfx",
+          "Event": "TAG_ADDED",
+          "Interval": 0.0,
+          "Delay": 0.0,
+          "ParticleSystem": "Nakasar_Warning_50",
+          "Offset": {
+            "X": -10.40380592228744,
+            "Y": -2.9,
+            "Z": -10.403805922287441
+          },
+          "Anchor": "Volume",
+          "Scale": 2.18,
+          "Rotation": {
+            "X": 0.0,
+            "Y": 0.0,
+            "Z": 0.0
+          },
+          "Duration": 0.0,
+          "Entry": 3
+        },
+        {
+          "Type": "PlayVfx",
+          "Event": "TAG_ADDED",
+          "Interval": 0.0,
+          "Delay": 0.0,
+          "ParticleSystem": "Nakasar_Warning_50",
+          "Offset": {
+            "X": -3.91344560986456,
+            "Y": -2.9,
+            "Z": -10.407798811618923
+          },
+          "Anchor": "Volume",
+          "Scale": 2.18,
+          "Rotation": {
+            "X": 0.0,
+            "Y": 0.0,
+            "Z": 0.0
+          },
+          "Duration": 0.0,
+          "Entry": 3
+        },
+        {
+          "Type": "PlayVfx",
+          "Event": "TAG_ADDED",
+          "Interval": 0.0,
+          "Delay": 0.0,
+          "ParticleSystem": "Nakasar_Warning_50",
+          "Offset": {
+            "X": -10.407798811618921,
+            "Y": -2.9,
+            "Z": -3.91344560986456
+          },
+          "Anchor": "Volume",
+          "Scale": 2.18,
+          "Rotation": {
+            "X": 0.0,
+            "Y": 0.0,
+            "Z": 0.0
+          },
+          "Duration": 0.0,
+          "Entry": 3
+        },
+        {
+          "Type": "PlayVfx",
+          "Event": "TAG_ADDED",
+          "Interval": 0.0,
+          "Delay": 0.0,
+          "ParticleSystem": "Nakasar_Warning_50",
+          "Offset": {
+            "X": 2.3866648732032303,
+            "Y": -2.9,
+            "Z": -10.341257188154627
+          },
+          "Anchor": "Volume",
+          "Scale": 2.18,
+          "Rotation": {
+            "X": 0.0,
+            "Y": 0.0,
+            "Z": 0.0
+          },
+          "Duration": 0.0,
+          "Entry": 3
+        },
+        {
+          "Type": "PlayVfx",
+          "Event": "TAG_ADDED",
+          "Interval": 0.0,
+          "Delay": 0.0,
+          "ParticleSystem": "Nakasar_Warning_50",
+          "Offset": {
+            "X": -2.272077938642143,
+            "Y": -2.9,
+            "Z": -2.272077938642145
+          },
+          "Anchor": "Volume",
+          "Scale": 2.18,
+          "Rotation": {
+            "X": 0.0,
+            "Y": 0.0,
+            "Z": 0.0
+          },
+          "Duration": 0.0,
+          "Entry": 3
+        },
+        {
+          "Type": "PlayVfx",
+          "Event": "TAG_ADDED",
+          "Interval": 0.0,
+          "Delay": 0.0,
+          "ParticleSystem": "Nakasar_Warning_50",
+          "Offset": {
+            "X": -10.341257188154627,
+            "Y": -2.9,
+            "Z": 2.3866648732032303
+          },
+          "Anchor": "Volume",
+          "Scale": 2.18,
+          "Rotation": {
+            "X": 0.0,
+            "Y": 0.0,
+            "Z": 0.0
+          },
+          "Duration": 0.0,
+          "Entry": 3
+        },
+        {
+          "Type": "PlayVfx",
+          "Event": "TAG_ADDED",
+          "Interval": 0.0,
+          "Delay": 0.0,
+          "ParticleSystem": "Nakasar_Warning_50",
+          "Offset": {
+            "X": 8.18221983093764,
+            "Y": -2.9,
+            "Z": -8.788342917539502
+          },
+          "Anchor": "Volume",
+          "Scale": 2.18,
+          "Rotation": {
+            "X": 0.0,
+            "Y": 0.0,
+            "Z": 0.0
+          },
+          "Duration": 0.0,
+          "Entry": 3
+        },
+        {
+          "Type": "PlayVfx",
+          "Event": "TAG_ADDED",
+          "Interval": 0.0,
+          "Delay": 0.0,
+          "ParticleSystem": "Nakasar_Warning_50",
+          "Offset": {
+            "X": 1.9705627484771426,
+            "Y": -2.9,
+            "Z": 1.970562748477139
+          },
+          "Anchor": "Volume",
+          "Scale": 2.18,
+          "Rotation": {
+            "X": 0.0,
+            "Y": 0.0,
+            "Z": 0.0
+          },
+          "Duration": 0.0,
+          "Entry": 3
+        },
+        {
+          "Type": "PlayVfx",
+          "Event": "TAG_ADDED",
+          "Interval": 0.0,
+          "Delay": 0.0,
+          "ParticleSystem": "Nakasar_Warning_50",
+          "Offset": {
+            "X": -8.788342917539502,
+            "Y": -2.9,
+            "Z": 8.18221983093764
+          },
+          "Anchor": "Volume",
+          "Scale": 2.18,
+          "Rotation": {
+            "X": 0.0,
+            "Y": 0.0,
+            "Z": 0.0
+          },
+          "Duration": 0.0,
+          "Entry": 3
+        },
+        {
+          "Type": "PlayVfx",
+          "Event": "TAG_ADDED",
+          "Interval": 0.0,
+          "Delay": 0.0,
+          "Entry": 3,
+          "ParticleSystem": "Block_Break_Dust",
+          "Offset": {
+            "X": -10.40380592228744,
+            "Y": -2.8,
+            "Z": -10.403805922287441
           },
           "Anchor": "Volume",
           "Scale": 1.0,
@@ -173585,20 +173255,217 @@
             "Y": 0.0,
             "Z": 0.0
           },
-          "Duration": 0.0
+          "Duration": 5.0
         },
         {
-          "Type": "ModifyTags",
-          "Event": "BLOCK_USED",
+          "Type": "PlayVfx",
+          "Event": "TAG_ADDED",
           "Interval": 0.0,
-          "Delay": 0.5,
-          "Operation": "Set",
-          "TagKey": "Foyer_Fire",
-          "TagValue": "On",
-          "MatchKey": "Transmutation_Seal",
-          "MatchValue": "",
-          "Radius": 60.0,
-          "Center": "Volume"
+          "Delay": 0.0,
+          "Entry": 3,
+          "ParticleSystem": "Block_Break_Dust",
+          "Offset": {
+            "X": -3.91344560986456,
+            "Y": -2.8,
+            "Z": -10.407798811618923
+          },
+          "Anchor": "Volume",
+          "Scale": 1.0,
+          "Rotation": {
+            "X": 0.0,
+            "Y": 0.0,
+            "Z": 0.0
+          },
+          "Duration": 5.0
+        },
+        {
+          "Type": "PlayVfx",
+          "Event": "TAG_ADDED",
+          "Interval": 0.0,
+          "Delay": 0.0,
+          "Entry": 3,
+          "ParticleSystem": "Block_Break_Dust",
+          "Offset": {
+            "X": -10.407798811618921,
+            "Y": -2.8,
+            "Z": -3.91344560986456
+          },
+          "Anchor": "Volume",
+          "Scale": 1.0,
+          "Rotation": {
+            "X": 0.0,
+            "Y": 0.0,
+            "Z": 0.0
+          },
+          "Duration": 5.0
+        },
+        {
+          "Type": "PlayVfx",
+          "Event": "TAG_ADDED",
+          "Interval": 0.0,
+          "Delay": 0.0,
+          "Entry": 3,
+          "ParticleSystem": "Block_Break_Dust",
+          "Offset": {
+            "X": 2.3866648732032303,
+            "Y": -2.8,
+            "Z": -10.341257188154627
+          },
+          "Anchor": "Volume",
+          "Scale": 1.0,
+          "Rotation": {
+            "X": 0.0,
+            "Y": 0.0,
+            "Z": 0.0
+          },
+          "Duration": 5.0
+        },
+        {
+          "Type": "PlayVfx",
+          "Event": "TAG_ADDED",
+          "Interval": 0.0,
+          "Delay": 0.0,
+          "Entry": 3,
+          "ParticleSystem": "Block_Break_Dust",
+          "Offset": {
+            "X": -2.272077938642143,
+            "Y": -2.8,
+            "Z": -2.272077938642145
+          },
+          "Anchor": "Volume",
+          "Scale": 1.0,
+          "Rotation": {
+            "X": 0.0,
+            "Y": 0.0,
+            "Z": 0.0
+          },
+          "Duration": 5.0
+        },
+        {
+          "Type": "PlayVfx",
+          "Event": "TAG_ADDED",
+          "Interval": 0.0,
+          "Delay": 0.0,
+          "Entry": 3,
+          "ParticleSystem": "Block_Break_Dust",
+          "Offset": {
+            "X": -10.341257188154627,
+            "Y": -2.8,
+            "Z": 2.3866648732032303
+          },
+          "Anchor": "Volume",
+          "Scale": 1.0,
+          "Rotation": {
+            "X": 0.0,
+            "Y": 0.0,
+            "Z": 0.0
+          },
+          "Duration": 5.0
+        },
+        {
+          "Type": "PlayVfx",
+          "Event": "TAG_ADDED",
+          "Interval": 0.0,
+          "Delay": 0.0,
+          "Entry": 3,
+          "ParticleSystem": "Block_Break_Dust",
+          "Offset": {
+            "X": 8.18221983093764,
+            "Y": -2.8,
+            "Z": -8.788342917539502
+          },
+          "Anchor": "Volume",
+          "Scale": 1.0,
+          "Rotation": {
+            "X": 0.0,
+            "Y": 0.0,
+            "Z": 0.0
+          },
+          "Duration": 5.0
+        },
+        {
+          "Type": "PlayVfx",
+          "Event": "TAG_ADDED",
+          "Interval": 0.0,
+          "Delay": 0.0,
+          "Entry": 3,
+          "ParticleSystem": "Block_Break_Dust",
+          "Offset": {
+            "X": 1.9705627484771426,
+            "Y": -2.8,
+            "Z": 1.970562748477139
+          },
+          "Anchor": "Volume",
+          "Scale": 1.0,
+          "Rotation": {
+            "X": 0.0,
+            "Y": 0.0,
+            "Z": 0.0
+          },
+          "Duration": 5.0
+        },
+        {
+          "Type": "PlayVfx",
+          "Event": "TAG_ADDED",
+          "Interval": 0.0,
+          "Delay": 0.0,
+          "Entry": 3,
+          "ParticleSystem": "Block_Break_Dust",
+          "Offset": {
+            "X": -8.788342917539502,
+            "Y": -2.8,
+            "Z": 8.18221983093764
+          },
+          "Anchor": "Volume",
+          "Scale": 1.0,
+          "Rotation": {
+            "X": 0.0,
+            "Y": 0.0,
+            "Z": 0.0
+          },
+          "Duration": 5.0
+        },
+        {
+          "Type": "PlaySound",
+          "Event": "TAG_ADDED",
+          "Interval": 0.0,
+          "Delay": 0.0,
+          "Entry": 3,
+          "SoundEvent": "SFX_Gobliterator_Arena_Door_Warning",
+          "Location": "VolumeCenter",
+          "Offset": {
+            "X": 0.0,
+            "Y": 0.0,
+            "Z": 0.0
+          }
+        },
+        {
+          "Type": "EntityEffect",
+          "Event": "TICK",
+          "Interval": 1.0,
+          "Delay": 0.0,
+          "Effect": "Slow",
+          "Mode": "Apply",
+          "Duration": 1.5,
+          "Entry": 0
+        },
+        {
+          "Type": "DamageEntity",
+          "Event": "TICK",
+          "Interval": 1.0,
+          "Delay": 0.0,
+          "Mode": "PercentMax",
+          "Amount": 8.0,
+          "Entry": 0
+        },
+        {
+          "Type": "DamageEntity",
+          "Event": "TICK",
+          "Interval": 1.5,
+          "Delay": 0.0,
+          "Mode": "PercentMax",
+          "Amount": 2.0,
+          "Entry": 1
         }
       ],
       "ConditionTiming": "BeforeVolumeDelay",
@@ -173609,39 +173476,40 @@
       "GroupId": "6e37a0c2-6475-523e-8337-f19fa2959f14",
       "KeepLoaded": false,
       "Tags": {
-        "Lit": "No"
+        "State": "Off",
+        "Fx": "None"
       },
-      "Name": "Transmutation_Foyer_Fire"
+      "Name": "Trans_Earth"
     },
-    "d281ee0f-66f2-5d07-8b80-c1b76236a7d7": {
+    "32c5d148-cdbf-5f1b-93c9-a3394f87040f": {
       "Position": {
-        "X": -9.0,
-        "Y": 167.5,
-        "Z": -449.0
+        "X": -14.5,
+        "Y": 169.0,
+        "Z": -424.5
       },
       "Shape": {
         "Type": "Box",
         "Min": {
-          "X": -8.95,
-          "Y": -1.45,
-          "Z": -8.95
+          "X": -14.45,
+          "Y": -2.95,
+          "Z": -14.45
         },
         "Max": {
-          "X": 8.95,
-          "Y": 1.45,
-          "Z": 8.95
+          "X": 14.45,
+          "Y": 2.95,
+          "Z": 14.45
         }
       },
       "Conditions": [
         {
           "Type": "TagCondition",
-          "Event": "SIGNAL_RECEIVED",
+          "Event": "TAG_ADDED",
           "Entry": 1,
-          "Source": "Event",
-          "TagKey": "Transmute",
+          "Source": "Self",
+          "TagKey": "Fx",
           "Comparison": "Exactly",
           "CompareAgainst": "Value",
-          "TagValue": "",
+          "TagValue": "Active",
           "Inverted": false,
           "MatchKey": "",
           "MatchValue": "",
@@ -173650,14 +173518,29 @@
         },
         {
           "Type": "TagCondition",
-          "Event": "SIGNAL_RECEIVED",
-          "Entry": 1,
+          "Event": "TAG_ADDED",
+          "Entry": 2,
           "Source": "Self",
-          "TagKey": "Busy",
+          "TagKey": "Fx",
           "Comparison": "Exactly",
           "CompareAgainst": "Value",
-          "TagValue": "On",
-          "Inverted": true,
+          "TagValue": "Calm",
+          "Inverted": false,
+          "MatchKey": "",
+          "MatchValue": "",
+          "Radius": 50.0,
+          "Center": "Volume"
+        },
+        {
+          "Type": "TagCondition",
+          "Event": "TAG_ADDED",
+          "Entry": 3,
+          "Source": "Self",
+          "TagKey": "Fx",
+          "Comparison": "Exactly",
+          "CompareAgainst": "Value",
+          "TagValue": "Warn",
+          "Inverted": false,
           "MatchKey": "",
           "MatchValue": "",
           "Radius": 50.0,
@@ -173666,11 +173549,27 @@
         {
           "Type": "TagCondition",
           "Event": "TICK",
+          "Entry": 0,
           "Source": "Self",
-          "TagKey": "Dmg",
+          "TagKey": "State",
           "Comparison": "Exactly",
           "CompareAgainst": "Value",
-          "TagValue": "True",
+          "TagValue": "Active",
+          "Inverted": false,
+          "MatchKey": "",
+          "MatchValue": "",
+          "Radius": 50.0,
+          "Center": "Volume"
+        },
+        {
+          "Type": "TagCondition",
+          "Event": "TICK",
+          "Entry": 1,
+          "Source": "Self",
+          "TagKey": "State",
+          "Comparison": "Exactly",
+          "CompareAgainst": "Value",
+          "TagValue": "Calm",
           "Inverted": false,
           "MatchKey": "",
           "MatchValue": "",
@@ -173680,29 +173579,16 @@
       ],
       "Effects": [
         {
-          "Type": "ModifyTags",
-          "Event": "SIGNAL_RECEIVED",
+          "Type": "PlayVfx",
+          "Event": "TAG_ADDED",
           "Interval": 0.0,
           "Delay": 0.0,
           "Entry": 1,
-          "Operation": "Set",
-          "TagKey": "Busy",
-          "TagValue": "On",
-          "MatchKey": "",
-          "MatchValue": "",
-          "Radius": 1.0,
-          "Center": "Volume"
-        },
-        {
-          "Type": "PlayVfx",
-          "Event": "SIGNAL_RECEIVED",
-          "Interval": 0.0,
-          "Delay": 0.0,
-          "ParticleSystem": "Weapon_Frost_Mist",
+          "ParticleSystem": "Wind",
           "Offset": {
-            "X": 4.5,
-            "Y": -1.4,
-            "Z": 4.5
+            "X": 10.40380592228744,
+            "Y": -2.8,
+            "Z": -10.403805922287441
           },
           "Anchor": "Volume",
           "Scale": 1.0,
@@ -173711,19 +173597,19 @@
             "Y": 0.0,
             "Z": 0.0
           },
-          "Duration": 2.5,
-          "Entry": 1
+          "Duration": 3.0
         },
         {
           "Type": "PlayVfx",
-          "Event": "SIGNAL_RECEIVED",
+          "Event": "TAG_ADDED",
           "Interval": 0.0,
           "Delay": 0.0,
-          "ParticleSystem": "Weapon_Frost_Mist",
+          "Entry": 1,
+          "ParticleSystem": "Wind",
           "Offset": {
-            "X": 4.5,
-            "Y": -1.4,
-            "Z": -3.5
+            "X": 3.91344560986456,
+            "Y": -2.8,
+            "Z": -10.407798811618923
           },
           "Anchor": "Volume",
           "Scale": 1.0,
@@ -173732,19 +173618,19 @@
             "Y": 0.0,
             "Z": 0.0
           },
-          "Duration": 2.5,
-          "Entry": 1
+          "Duration": 3.0
         },
         {
           "Type": "PlayVfx",
-          "Event": "SIGNAL_RECEIVED",
+          "Event": "TAG_ADDED",
           "Interval": 0.0,
           "Delay": 0.0,
-          "ParticleSystem": "Weapon_Frost_Mist",
+          "Entry": 1,
+          "ParticleSystem": "Wind",
           "Offset": {
-            "X": -3.5,
-            "Y": -1.4,
-            "Z": 4.5
+            "X": 10.407798811618921,
+            "Y": -2.8,
+            "Z": -3.91344560986456
           },
           "Anchor": "Volume",
           "Scale": 1.0,
@@ -173753,19 +173639,19 @@
             "Y": 0.0,
             "Z": 0.0
           },
-          "Duration": 2.5,
-          "Entry": 1
+          "Duration": 3.0
         },
         {
           "Type": "PlayVfx",
-          "Event": "SIGNAL_RECEIVED",
+          "Event": "TAG_ADDED",
           "Interval": 0.0,
           "Delay": 0.0,
-          "ParticleSystem": "Weapon_Frost_Mist",
+          "Entry": 1,
+          "ParticleSystem": "Wind",
           "Offset": {
-            "X": -3.5,
-            "Y": -1.4,
-            "Z": -3.5
+            "X": -2.3866648732032303,
+            "Y": -2.8,
+            "Z": -10.341257188154627
           },
           "Anchor": "Volume",
           "Scale": 1.0,
@@ -173774,103 +173660,19 @@
             "Y": 0.0,
             "Z": 0.0
           },
-          "Duration": 2.5,
-          "Entry": 1
+          "Duration": 3.0
         },
         {
           "Type": "PlayVfx",
-          "Event": "SIGNAL_RECEIVED",
+          "Event": "TAG_ADDED",
           "Interval": 0.0,
           "Delay": 0.0,
-          "ParticleSystem": "Nakasar_Warning_25",
+          "Entry": 1,
+          "ParticleSystem": "Wind",
           "Offset": {
-            "X": 4.5,
-            "Y": -1.4,
-            "Z": 4.5
-          },
-          "Anchor": "Volume",
-          "Scale": 3.13,
-          "Rotation": {
-            "X": 0.0,
-            "Y": 0.0,
-            "Z": 0.0
-          },
-          "Duration": 0.0,
-          "Entry": 1
-        },
-        {
-          "Type": "PlayVfx",
-          "Event": "SIGNAL_RECEIVED",
-          "Interval": 0.0,
-          "Delay": 0.0,
-          "ParticleSystem": "Nakasar_Warning_25",
-          "Offset": {
-            "X": 4.5,
-            "Y": -1.4,
-            "Z": -3.5
-          },
-          "Anchor": "Volume",
-          "Scale": 3.13,
-          "Rotation": {
-            "X": 0.0,
-            "Y": 0.0,
-            "Z": 0.0
-          },
-          "Duration": 0.0,
-          "Entry": 1
-        },
-        {
-          "Type": "PlayVfx",
-          "Event": "SIGNAL_RECEIVED",
-          "Interval": 0.0,
-          "Delay": 0.0,
-          "ParticleSystem": "Nakasar_Warning_25",
-          "Offset": {
-            "X": -3.5,
-            "Y": -1.4,
-            "Z": 4.5
-          },
-          "Anchor": "Volume",
-          "Scale": 3.13,
-          "Rotation": {
-            "X": 0.0,
-            "Y": 0.0,
-            "Z": 0.0
-          },
-          "Duration": 0.0,
-          "Entry": 1
-        },
-        {
-          "Type": "PlayVfx",
-          "Event": "SIGNAL_RECEIVED",
-          "Interval": 0.0,
-          "Delay": 0.0,
-          "ParticleSystem": "Nakasar_Warning_25",
-          "Offset": {
-            "X": -3.5,
-            "Y": -1.4,
-            "Z": -3.5
-          },
-          "Anchor": "Volume",
-          "Scale": 3.13,
-          "Rotation": {
-            "X": 0.0,
-            "Y": 0.0,
-            "Z": 0.0
-          },
-          "Duration": 0.0,
-          "Entry": 1
-        },
-        {
-          "Type": "PlayVfx",
-          "Event": "SIGNAL_RECEIVED",
-          "Interval": 0.0,
-          "Delay": 2.5,
-          "ParticleSystem": "Ice_Blast",
-          "Offset": {
-            "X": 4.5,
-            "Y": -1.4,
-            "Z": 4.5
+            "X": 2.272077938642143,
+            "Y": -2.8,
+            "Z": -2.272077938642145
           },
           "Anchor": "Volume",
           "Scale": 1.0,
@@ -173879,19 +173681,19 @@
             "Y": 0.0,
             "Z": 0.0
           },
-          "Duration": 2.4,
-          "Entry": 1
+          "Duration": 3.0
         },
         {
           "Type": "PlayVfx",
-          "Event": "SIGNAL_RECEIVED",
+          "Event": "TAG_ADDED",
           "Interval": 0.0,
-          "Delay": 2.5,
-          "ParticleSystem": "Ice_Blast",
+          "Delay": 0.0,
+          "Entry": 1,
+          "ParticleSystem": "Wind",
           "Offset": {
-            "X": 4.5,
-            "Y": -1.4,
-            "Z": -3.5
+            "X": 10.341257188154627,
+            "Y": -2.8,
+            "Z": 2.3866648732032303
           },
           "Anchor": "Volume",
           "Scale": 1.0,
@@ -173900,19 +173702,19 @@
             "Y": 0.0,
             "Z": 0.0
           },
-          "Duration": 2.4,
-          "Entry": 1
+          "Duration": 3.0
         },
         {
           "Type": "PlayVfx",
-          "Event": "SIGNAL_RECEIVED",
+          "Event": "TAG_ADDED",
           "Interval": 0.0,
-          "Delay": 2.5,
-          "ParticleSystem": "Ice_Blast",
+          "Delay": 0.0,
+          "Entry": 1,
+          "ParticleSystem": "Wind",
           "Offset": {
-            "X": -3.5,
-            "Y": -1.4,
-            "Z": 4.5
+            "X": -8.18221983093764,
+            "Y": -2.8,
+            "Z": -8.788342917539502
           },
           "Anchor": "Volume",
           "Scale": 1.0,
@@ -173921,19 +173723,19 @@
             "Y": 0.0,
             "Z": 0.0
           },
-          "Duration": 2.4,
-          "Entry": 1
+          "Duration": 3.0
         },
         {
           "Type": "PlayVfx",
-          "Event": "SIGNAL_RECEIVED",
+          "Event": "TAG_ADDED",
           "Interval": 0.0,
-          "Delay": 2.5,
-          "ParticleSystem": "Ice_Blast",
+          "Delay": 0.0,
+          "Entry": 1,
+          "ParticleSystem": "Wind",
           "Offset": {
-            "X": -3.5,
-            "Y": -1.4,
-            "Z": -3.5
+            "X": -1.9705627484771426,
+            "Y": -2.8,
+            "Z": 1.970562748477139
           },
           "Anchor": "Volume",
           "Scale": 1.0,
@@ -173942,1235 +173744,1419 @@
             "Y": 0.0,
             "Z": 0.0
           },
-          "Duration": 2.4,
-          "Entry": 1
+          "Duration": 3.0
+        },
+        {
+          "Type": "PlayVfx",
+          "Event": "TAG_ADDED",
+          "Interval": 0.0,
+          "Delay": 0.0,
+          "Entry": 1,
+          "ParticleSystem": "Wind",
+          "Offset": {
+            "X": 8.788342917539502,
+            "Y": -2.8,
+            "Z": 8.18221983093764
+          },
+          "Anchor": "Volume",
+          "Scale": 1.0,
+          "Rotation": {
+            "X": 0.0,
+            "Y": 0.0,
+            "Z": 0.0
+          },
+          "Duration": 3.0
         },
         {
           "Type": "PlaySound",
-          "Event": "SIGNAL_RECEIVED",
+          "Event": "TAG_ADDED",
           "Interval": 0.0,
-          "Delay": 2.5,
+          "Delay": 0.0,
+          "Entry": 1,
+          "SoundEvent": "SFX_Emit_Wind_Gusts",
+          "Location": "VolumeCenter",
+          "Offset": {
+            "X": 0.0,
+            "Y": 0.0,
+            "Z": 0.0
+          }
+        },
+        {
+          "Type": "PlayVfx",
+          "Event": "TAG_ADDED",
+          "Interval": 0.0,
+          "Delay": 0.0,
+          "Entry": 2,
+          "ParticleSystem": "Leaves_Oak_Wind",
+          "Offset": {
+            "X": 10.40380592228744,
+            "Y": -2.8,
+            "Z": -10.403805922287441
+          },
+          "Anchor": "Volume",
+          "Scale": 0.6,
+          "Rotation": {
+            "X": 0.0,
+            "Y": 0.0,
+            "Z": 0.0
+          },
+          "Duration": 3.0
+        },
+        {
+          "Type": "PlayVfx",
+          "Event": "TAG_ADDED",
+          "Interval": 0.0,
+          "Delay": 0.0,
+          "Entry": 2,
+          "ParticleSystem": "Leaves_Oak_Wind",
+          "Offset": {
+            "X": 10.407798811618921,
+            "Y": -2.8,
+            "Z": -3.91344560986456
+          },
+          "Anchor": "Volume",
+          "Scale": 0.6,
+          "Rotation": {
+            "X": 0.0,
+            "Y": 0.0,
+            "Z": 0.0
+          },
+          "Duration": 3.0
+        },
+        {
+          "Type": "PlayVfx",
+          "Event": "TAG_ADDED",
+          "Interval": 0.0,
+          "Delay": 0.0,
+          "Entry": 2,
+          "ParticleSystem": "Leaves_Oak_Wind",
+          "Offset": {
+            "X": 2.272077938642143,
+            "Y": -2.8,
+            "Z": -2.272077938642145
+          },
+          "Anchor": "Volume",
+          "Scale": 0.6,
+          "Rotation": {
+            "X": 0.0,
+            "Y": 0.0,
+            "Z": 0.0
+          },
+          "Duration": 3.0
+        },
+        {
+          "Type": "PlayVfx",
+          "Event": "TAG_ADDED",
+          "Interval": 0.0,
+          "Delay": 0.0,
+          "Entry": 2,
+          "ParticleSystem": "Leaves_Oak_Wind",
+          "Offset": {
+            "X": -8.18221983093764,
+            "Y": -2.8,
+            "Z": -8.788342917539502
+          },
+          "Anchor": "Volume",
+          "Scale": 0.6,
+          "Rotation": {
+            "X": 0.0,
+            "Y": 0.0,
+            "Z": 0.0
+          },
+          "Duration": 3.0
+        },
+        {
+          "Type": "PlayVfx",
+          "Event": "TAG_ADDED",
+          "Interval": 0.0,
+          "Delay": 0.0,
+          "Entry": 2,
+          "ParticleSystem": "Leaves_Oak_Wind",
+          "Offset": {
+            "X": 8.788342917539502,
+            "Y": -2.8,
+            "Z": 8.18221983093764
+          },
+          "Anchor": "Volume",
+          "Scale": 0.6,
+          "Rotation": {
+            "X": 0.0,
+            "Y": 0.0,
+            "Z": 0.0
+          },
+          "Duration": 3.0
+        },
+        {
+          "Type": "PlayVfx",
+          "Event": "TAG_ADDED",
+          "Interval": 0.0,
+          "Delay": 0.0,
+          "ParticleSystem": "Nakasar_Warning_50",
+          "Offset": {
+            "X": 10.40380592228744,
+            "Y": -2.9,
+            "Z": -10.403805922287441
+          },
+          "Anchor": "Volume",
+          "Scale": 2.18,
+          "Rotation": {
+            "X": 0.0,
+            "Y": 0.0,
+            "Z": 0.0
+          },
+          "Duration": 0.0,
+          "Entry": 3
+        },
+        {
+          "Type": "PlayVfx",
+          "Event": "TAG_ADDED",
+          "Interval": 0.0,
+          "Delay": 0.0,
+          "ParticleSystem": "Nakasar_Warning_50",
+          "Offset": {
+            "X": 3.91344560986456,
+            "Y": -2.9,
+            "Z": -10.407798811618923
+          },
+          "Anchor": "Volume",
+          "Scale": 2.18,
+          "Rotation": {
+            "X": 0.0,
+            "Y": 0.0,
+            "Z": 0.0
+          },
+          "Duration": 0.0,
+          "Entry": 3
+        },
+        {
+          "Type": "PlayVfx",
+          "Event": "TAG_ADDED",
+          "Interval": 0.0,
+          "Delay": 0.0,
+          "ParticleSystem": "Nakasar_Warning_50",
+          "Offset": {
+            "X": 10.407798811618921,
+            "Y": -2.9,
+            "Z": -3.91344560986456
+          },
+          "Anchor": "Volume",
+          "Scale": 2.18,
+          "Rotation": {
+            "X": 0.0,
+            "Y": 0.0,
+            "Z": 0.0
+          },
+          "Duration": 0.0,
+          "Entry": 3
+        },
+        {
+          "Type": "PlayVfx",
+          "Event": "TAG_ADDED",
+          "Interval": 0.0,
+          "Delay": 0.0,
+          "ParticleSystem": "Nakasar_Warning_50",
+          "Offset": {
+            "X": -2.3866648732032303,
+            "Y": -2.9,
+            "Z": -10.341257188154627
+          },
+          "Anchor": "Volume",
+          "Scale": 2.18,
+          "Rotation": {
+            "X": 0.0,
+            "Y": 0.0,
+            "Z": 0.0
+          },
+          "Duration": 0.0,
+          "Entry": 3
+        },
+        {
+          "Type": "PlayVfx",
+          "Event": "TAG_ADDED",
+          "Interval": 0.0,
+          "Delay": 0.0,
+          "ParticleSystem": "Nakasar_Warning_50",
+          "Offset": {
+            "X": 2.272077938642143,
+            "Y": -2.9,
+            "Z": -2.272077938642145
+          },
+          "Anchor": "Volume",
+          "Scale": 2.18,
+          "Rotation": {
+            "X": 0.0,
+            "Y": 0.0,
+            "Z": 0.0
+          },
+          "Duration": 0.0,
+          "Entry": 3
+        },
+        {
+          "Type": "PlayVfx",
+          "Event": "TAG_ADDED",
+          "Interval": 0.0,
+          "Delay": 0.0,
+          "ParticleSystem": "Nakasar_Warning_50",
+          "Offset": {
+            "X": 10.341257188154627,
+            "Y": -2.9,
+            "Z": 2.3866648732032303
+          },
+          "Anchor": "Volume",
+          "Scale": 2.18,
+          "Rotation": {
+            "X": 0.0,
+            "Y": 0.0,
+            "Z": 0.0
+          },
+          "Duration": 0.0,
+          "Entry": 3
+        },
+        {
+          "Type": "PlayVfx",
+          "Event": "TAG_ADDED",
+          "Interval": 0.0,
+          "Delay": 0.0,
+          "ParticleSystem": "Nakasar_Warning_50",
+          "Offset": {
+            "X": -8.18221983093764,
+            "Y": -2.9,
+            "Z": -8.788342917539502
+          },
+          "Anchor": "Volume",
+          "Scale": 2.18,
+          "Rotation": {
+            "X": 0.0,
+            "Y": 0.0,
+            "Z": 0.0
+          },
+          "Duration": 0.0,
+          "Entry": 3
+        },
+        {
+          "Type": "PlayVfx",
+          "Event": "TAG_ADDED",
+          "Interval": 0.0,
+          "Delay": 0.0,
+          "ParticleSystem": "Nakasar_Warning_50",
+          "Offset": {
+            "X": -1.9705627484771426,
+            "Y": -2.9,
+            "Z": 1.970562748477139
+          },
+          "Anchor": "Volume",
+          "Scale": 2.18,
+          "Rotation": {
+            "X": 0.0,
+            "Y": 0.0,
+            "Z": 0.0
+          },
+          "Duration": 0.0,
+          "Entry": 3
+        },
+        {
+          "Type": "PlayVfx",
+          "Event": "TAG_ADDED",
+          "Interval": 0.0,
+          "Delay": 0.0,
+          "ParticleSystem": "Nakasar_Warning_50",
+          "Offset": {
+            "X": 8.788342917539502,
+            "Y": -2.9,
+            "Z": 8.18221983093764
+          },
+          "Anchor": "Volume",
+          "Scale": 2.18,
+          "Rotation": {
+            "X": 0.0,
+            "Y": 0.0,
+            "Z": 0.0
+          },
+          "Duration": 0.0,
+          "Entry": 3
+        },
+        {
+          "Type": "PlayVfx",
+          "Event": "TAG_ADDED",
+          "Interval": 0.0,
+          "Delay": 0.0,
+          "Entry": 3,
+          "ParticleSystem": "Leaves_Oak_Wind",
+          "Offset": {
+            "X": 10.40380592228744,
+            "Y": -2.8,
+            "Z": -10.403805922287441
+          },
+          "Anchor": "Volume",
+          "Scale": 1.0,
+          "Rotation": {
+            "X": 0.0,
+            "Y": 0.0,
+            "Z": 0.0
+          },
+          "Duration": 5.0
+        },
+        {
+          "Type": "PlayVfx",
+          "Event": "TAG_ADDED",
+          "Interval": 0.0,
+          "Delay": 0.0,
+          "Entry": 3,
+          "ParticleSystem": "Leaves_Oak_Wind",
+          "Offset": {
+            "X": 3.91344560986456,
+            "Y": -2.8,
+            "Z": -10.407798811618923
+          },
+          "Anchor": "Volume",
+          "Scale": 1.0,
+          "Rotation": {
+            "X": 0.0,
+            "Y": 0.0,
+            "Z": 0.0
+          },
+          "Duration": 5.0
+        },
+        {
+          "Type": "PlayVfx",
+          "Event": "TAG_ADDED",
+          "Interval": 0.0,
+          "Delay": 0.0,
+          "Entry": 3,
+          "ParticleSystem": "Leaves_Oak_Wind",
+          "Offset": {
+            "X": 10.407798811618921,
+            "Y": -2.8,
+            "Z": -3.91344560986456
+          },
+          "Anchor": "Volume",
+          "Scale": 1.0,
+          "Rotation": {
+            "X": 0.0,
+            "Y": 0.0,
+            "Z": 0.0
+          },
+          "Duration": 5.0
+        },
+        {
+          "Type": "PlayVfx",
+          "Event": "TAG_ADDED",
+          "Interval": 0.0,
+          "Delay": 0.0,
+          "Entry": 3,
+          "ParticleSystem": "Leaves_Oak_Wind",
+          "Offset": {
+            "X": -2.3866648732032303,
+            "Y": -2.8,
+            "Z": -10.341257188154627
+          },
+          "Anchor": "Volume",
+          "Scale": 1.0,
+          "Rotation": {
+            "X": 0.0,
+            "Y": 0.0,
+            "Z": 0.0
+          },
+          "Duration": 5.0
+        },
+        {
+          "Type": "PlayVfx",
+          "Event": "TAG_ADDED",
+          "Interval": 0.0,
+          "Delay": 0.0,
+          "Entry": 3,
+          "ParticleSystem": "Leaves_Oak_Wind",
+          "Offset": {
+            "X": 2.272077938642143,
+            "Y": -2.8,
+            "Z": -2.272077938642145
+          },
+          "Anchor": "Volume",
+          "Scale": 1.0,
+          "Rotation": {
+            "X": 0.0,
+            "Y": 0.0,
+            "Z": 0.0
+          },
+          "Duration": 5.0
+        },
+        {
+          "Type": "PlayVfx",
+          "Event": "TAG_ADDED",
+          "Interval": 0.0,
+          "Delay": 0.0,
+          "Entry": 3,
+          "ParticleSystem": "Leaves_Oak_Wind",
+          "Offset": {
+            "X": 10.341257188154627,
+            "Y": -2.8,
+            "Z": 2.3866648732032303
+          },
+          "Anchor": "Volume",
+          "Scale": 1.0,
+          "Rotation": {
+            "X": 0.0,
+            "Y": 0.0,
+            "Z": 0.0
+          },
+          "Duration": 5.0
+        },
+        {
+          "Type": "PlayVfx",
+          "Event": "TAG_ADDED",
+          "Interval": 0.0,
+          "Delay": 0.0,
+          "Entry": 3,
+          "ParticleSystem": "Leaves_Oak_Wind",
+          "Offset": {
+            "X": -8.18221983093764,
+            "Y": -2.8,
+            "Z": -8.788342917539502
+          },
+          "Anchor": "Volume",
+          "Scale": 1.0,
+          "Rotation": {
+            "X": 0.0,
+            "Y": 0.0,
+            "Z": 0.0
+          },
+          "Duration": 5.0
+        },
+        {
+          "Type": "PlayVfx",
+          "Event": "TAG_ADDED",
+          "Interval": 0.0,
+          "Delay": 0.0,
+          "Entry": 3,
+          "ParticleSystem": "Leaves_Oak_Wind",
+          "Offset": {
+            "X": -1.9705627484771426,
+            "Y": -2.8,
+            "Z": 1.970562748477139
+          },
+          "Anchor": "Volume",
+          "Scale": 1.0,
+          "Rotation": {
+            "X": 0.0,
+            "Y": 0.0,
+            "Z": 0.0
+          },
+          "Duration": 5.0
+        },
+        {
+          "Type": "PlayVfx",
+          "Event": "TAG_ADDED",
+          "Interval": 0.0,
+          "Delay": 0.0,
+          "Entry": 3,
+          "ParticleSystem": "Leaves_Oak_Wind",
+          "Offset": {
+            "X": 8.788342917539502,
+            "Y": -2.8,
+            "Z": 8.18221983093764
+          },
+          "Anchor": "Volume",
+          "Scale": 1.0,
+          "Rotation": {
+            "X": 0.0,
+            "Y": 0.0,
+            "Z": 0.0
+          },
+          "Duration": 5.0
+        },
+        {
+          "Type": "PlaySound",
+          "Event": "TAG_ADDED",
+          "Interval": 0.0,
+          "Delay": 0.0,
+          "Entry": 3,
+          "SoundEvent": "SFX_Gobliterator_Arena_Door_Warning",
+          "Location": "VolumeCenter",
+          "Offset": {
+            "X": 0.0,
+            "Y": 0.0,
+            "Z": 0.0
+          }
+        },
+        {
+          "Type": "DamageEntity",
+          "Event": "TICK",
+          "Interval": 1.0,
+          "Delay": 0.0,
+          "Mode": "PercentMax",
+          "Amount": 3.0,
+          "Entry": 0
+        },
+        {
+          "Type": "SetVelocity",
+          "Event": "TICK",
+          "Interval": 1.5,
+          "Delay": 0.0,
+          "Velocity": {
+            "X": -6.3639610306789285,
+            "Y": 1.0,
+            "Z": 6.3639610306789285
+          },
+          "Additive": false,
+          "RelativeMode": "Absolute",
+          "Entry": 0
+        },
+        {
+          "Type": "SetVelocity",
+          "Event": "TICK",
+          "Interval": 2.0,
+          "Delay": 0.0,
+          "Velocity": {
+            "X": -2.4748737341529163,
+            "Y": 0.4,
+            "Z": 2.4748737341529163
+          },
+          "Additive": false,
+          "RelativeMode": "Absolute",
+          "Entry": 1
+        }
+      ],
+      "ConditionTiming": "BeforeVolumeDelay",
+      "TargetTypes": [
+        "Player"
+      ],
+      "Enabled": true,
+      "GroupId": "6e37a0c2-6475-523e-8337-f19fa2959f14",
+      "KeepLoaded": false,
+      "Tags": {
+        "State": "Off",
+        "Fx": "None"
+      },
+      "Name": "Trans_Air"
+    },
+    "43e4e080-e174-5199-b49b-34705aa1a119": {
+      "Position": {
+        "X": -14.5,
+        "Y": 169.0,
+        "Z": -454.5
+      },
+      "Shape": {
+        "Type": "Box",
+        "Min": {
+          "X": -14.45,
+          "Y": -2.95,
+          "Z": -14.45
+        },
+        "Max": {
+          "X": 14.45,
+          "Y": 2.95,
+          "Z": 14.45
+        }
+      },
+      "Conditions": [
+        {
+          "Type": "TagCondition",
+          "Event": "TAG_ADDED",
+          "Entry": 1,
+          "Source": "Self",
+          "TagKey": "Fx",
+          "Comparison": "Exactly",
+          "CompareAgainst": "Value",
+          "TagValue": "Active",
+          "Inverted": false,
+          "MatchKey": "",
+          "MatchValue": "",
+          "Radius": 50.0,
+          "Center": "Volume"
+        },
+        {
+          "Type": "TagCondition",
+          "Event": "TAG_ADDED",
+          "Entry": 2,
+          "Source": "Self",
+          "TagKey": "Fx",
+          "Comparison": "Exactly",
+          "CompareAgainst": "Value",
+          "TagValue": "Calm",
+          "Inverted": false,
+          "MatchKey": "",
+          "MatchValue": "",
+          "Radius": 50.0,
+          "Center": "Volume"
+        },
+        {
+          "Type": "TagCondition",
+          "Event": "TAG_ADDED",
+          "Entry": 3,
+          "Source": "Self",
+          "TagKey": "Fx",
+          "Comparison": "Exactly",
+          "CompareAgainst": "Value",
+          "TagValue": "Warn",
+          "Inverted": false,
+          "MatchKey": "",
+          "MatchValue": "",
+          "Radius": 50.0,
+          "Center": "Volume"
+        },
+        {
+          "Type": "TagCondition",
+          "Event": "TICK",
+          "Entry": 0,
+          "Source": "Self",
+          "TagKey": "State",
+          "Comparison": "Exactly",
+          "CompareAgainst": "Value",
+          "TagValue": "Active",
+          "Inverted": false,
+          "MatchKey": "",
+          "MatchValue": "",
+          "Radius": 50.0,
+          "Center": "Volume"
+        },
+        {
+          "Type": "TagCondition",
+          "Event": "TICK",
+          "Entry": 1,
+          "Source": "Self",
+          "TagKey": "State",
+          "Comparison": "Exactly",
+          "CompareAgainst": "Value",
+          "TagValue": "Calm",
+          "Inverted": false,
+          "MatchKey": "",
+          "MatchValue": "",
+          "Radius": 50.0,
+          "Center": "Volume"
+        }
+      ],
+      "Effects": [
+        {
+          "Type": "PlayVfx",
+          "Event": "TAG_ADDED",
+          "Interval": 0.0,
+          "Delay": 0.0,
+          "Entry": 1,
+          "ParticleSystem": "Ice_Blast",
+          "Offset": {
+            "X": 10.40380592228744,
+            "Y": -2.8,
+            "Z": 10.403805922287441
+          },
+          "Anchor": "Volume",
+          "Scale": 1.0,
+          "Rotation": {
+            "X": 0.0,
+            "Y": 0.0,
+            "Z": 0.0
+          },
+          "Duration": 3.0
+        },
+        {
+          "Type": "PlayVfx",
+          "Event": "TAG_ADDED",
+          "Interval": 0.0,
+          "Delay": 0.0,
+          "Entry": 1,
+          "ParticleSystem": "Ice_Blast",
+          "Offset": {
+            "X": 3.91344560986456,
+            "Y": -2.8,
+            "Z": 10.407798811618923
+          },
+          "Anchor": "Volume",
+          "Scale": 1.0,
+          "Rotation": {
+            "X": 0.0,
+            "Y": 0.0,
+            "Z": 0.0
+          },
+          "Duration": 3.0
+        },
+        {
+          "Type": "PlayVfx",
+          "Event": "TAG_ADDED",
+          "Interval": 0.0,
+          "Delay": 0.0,
+          "Entry": 1,
+          "ParticleSystem": "Ice_Blast",
+          "Offset": {
+            "X": 10.407798811618921,
+            "Y": -2.8,
+            "Z": 3.91344560986456
+          },
+          "Anchor": "Volume",
+          "Scale": 1.0,
+          "Rotation": {
+            "X": 0.0,
+            "Y": 0.0,
+            "Z": 0.0
+          },
+          "Duration": 3.0
+        },
+        {
+          "Type": "PlayVfx",
+          "Event": "TAG_ADDED",
+          "Interval": 0.0,
+          "Delay": 0.0,
+          "Entry": 1,
+          "ParticleSystem": "Ice_Blast",
+          "Offset": {
+            "X": -2.3866648732032303,
+            "Y": -2.8,
+            "Z": 10.341257188154627
+          },
+          "Anchor": "Volume",
+          "Scale": 1.0,
+          "Rotation": {
+            "X": 0.0,
+            "Y": 0.0,
+            "Z": 0.0
+          },
+          "Duration": 3.0
+        },
+        {
+          "Type": "PlayVfx",
+          "Event": "TAG_ADDED",
+          "Interval": 0.0,
+          "Delay": 0.0,
+          "Entry": 1,
+          "ParticleSystem": "Ice_Blast",
+          "Offset": {
+            "X": 2.272077938642143,
+            "Y": -2.8,
+            "Z": 2.272077938642145
+          },
+          "Anchor": "Volume",
+          "Scale": 1.0,
+          "Rotation": {
+            "X": 0.0,
+            "Y": 0.0,
+            "Z": 0.0
+          },
+          "Duration": 3.0
+        },
+        {
+          "Type": "PlayVfx",
+          "Event": "TAG_ADDED",
+          "Interval": 0.0,
+          "Delay": 0.0,
+          "Entry": 1,
+          "ParticleSystem": "Ice_Blast",
+          "Offset": {
+            "X": 10.341257188154627,
+            "Y": -2.8,
+            "Z": -2.3866648732032303
+          },
+          "Anchor": "Volume",
+          "Scale": 1.0,
+          "Rotation": {
+            "X": 0.0,
+            "Y": 0.0,
+            "Z": 0.0
+          },
+          "Duration": 3.0
+        },
+        {
+          "Type": "PlayVfx",
+          "Event": "TAG_ADDED",
+          "Interval": 0.0,
+          "Delay": 0.0,
+          "Entry": 1,
+          "ParticleSystem": "Ice_Blast",
+          "Offset": {
+            "X": -8.18221983093764,
+            "Y": -2.8,
+            "Z": 8.788342917539502
+          },
+          "Anchor": "Volume",
+          "Scale": 1.0,
+          "Rotation": {
+            "X": 0.0,
+            "Y": 0.0,
+            "Z": 0.0
+          },
+          "Duration": 3.0
+        },
+        {
+          "Type": "PlayVfx",
+          "Event": "TAG_ADDED",
+          "Interval": 0.0,
+          "Delay": 0.0,
+          "Entry": 1,
+          "ParticleSystem": "Ice_Blast",
+          "Offset": {
+            "X": -1.9705627484771426,
+            "Y": -2.8,
+            "Z": -1.970562748477139
+          },
+          "Anchor": "Volume",
+          "Scale": 1.0,
+          "Rotation": {
+            "X": 0.0,
+            "Y": 0.0,
+            "Z": 0.0
+          },
+          "Duration": 3.0
+        },
+        {
+          "Type": "PlayVfx",
+          "Event": "TAG_ADDED",
+          "Interval": 0.0,
+          "Delay": 0.0,
+          "Entry": 1,
+          "ParticleSystem": "Ice_Blast",
+          "Offset": {
+            "X": 8.788342917539502,
+            "Y": -2.8,
+            "Z": -8.18221983093764
+          },
+          "Anchor": "Volume",
+          "Scale": 1.0,
+          "Rotation": {
+            "X": 0.0,
+            "Y": 0.0,
+            "Z": 0.0
+          },
+          "Duration": 3.0
+        },
+        {
+          "Type": "PlaySound",
+          "Event": "TAG_ADDED",
+          "Interval": 0.0,
+          "Delay": 0.0,
+          "Entry": 1,
           "SoundEvent": "SFX_Ice_Break",
           "Location": "VolumeCenter",
           "Offset": {
             "X": 0.0,
             "Y": 0.0,
             "Z": 0.0
-          },
-          "Entry": 1
+          }
         },
         {
-          "Type": "ModifyTags",
-          "Event": "SIGNAL_RECEIVED",
-          "Interval": 0.0,
-          "Delay": 2.5,
-          "Entry": 1,
-          "Operation": "Set",
-          "TagKey": "Dmg",
-          "TagValue": "True",
-          "MatchKey": "",
-          "MatchValue": "",
-          "Radius": 1.0,
-          "Center": "Volume"
-        },
-        {
-          "Type": "ModifyTags",
-          "Event": "SIGNAL_RECEIVED",
-          "Interval": 0.0,
-          "Delay": 4.9,
-          "Entry": 1,
-          "Operation": "Set",
-          "TagKey": "Dmg",
-          "TagValue": "False",
-          "MatchKey": "",
-          "MatchValue": "",
-          "Radius": 1.0,
-          "Center": "Volume"
-        },
-        {
-          "Type": "ModifyTags",
-          "Event": "SIGNAL_RECEIVED",
-          "Interval": 0.0,
-          "Delay": 4.9,
-          "Entry": 1,
-          "Operation": "Set",
-          "TagKey": "Busy",
-          "TagValue": "Off",
-          "MatchKey": "",
-          "MatchValue": "",
-          "Radius": 1.0,
-          "Center": "Volume"
-        },
-        {
-          "Type": "EntityEffect",
-          "Event": "TICK",
+          "Type": "PlayVfx",
+          "Event": "TAG_ADDED",
           "Interval": 0.0,
           "Delay": 0.0,
-          "Effect": "Slow",
-          "Mode": "Apply",
+          "Entry": 2,
+          "ParticleSystem": "Weapon_Frost_Mist",
+          "Offset": {
+            "X": 10.40380592228744,
+            "Y": -2.8,
+            "Z": 10.403805922287441
+          },
+          "Anchor": "Volume",
+          "Scale": 0.6,
+          "Rotation": {
+            "X": 0.0,
+            "Y": 0.0,
+            "Z": 0.0
+          },
           "Duration": 3.0
         },
         {
-          "Type": "DamageEntity",
-          "Event": "TICK",
-          "Interval": 0.5,
-          "Delay": 0.0,
-          "Mode": "PercentMax",
-          "Amount": 4.0
-        }
-      ],
-      "ConditionTiming": "BeforeVolumeDelay",
-      "Cooldown": 0.1,
-      "TargetTypes": [
-        "Player"
-      ],
-      "Enabled": true,
-      "GroupId": "6e37a0c2-6475-523e-8337-f19fa2959f14",
-      "KeepLoaded": false,
-      "Tags": {
-        "Quadrant": "Ice",
-        "Busy": "Off",
-        "Dmg": "False"
-      },
-      "Name": "Quadrant_Ice"
-    },
-    "35e8c681-cbd2-55e4-86ce-414142f7e4af": {
-      "Position": {
-        "X": -5.5,
-        "Y": 166.5,
-        "Z": -450.5
-      },
-      "Shape": {
-        "Type": "Box",
-        "Min": {
-          "X": -0.5,
-          "Y": -0.5,
-          "Z": -0.5
-        },
-        "Max": {
-          "X": 0.5,
-          "Y": 0.5,
-          "Z": 0.5
-        }
-      },
-      "Conditions": [
-        {
-          "Type": "TagCondition",
-          "Event": "BLOCK_USED",
-          "Source": "Self",
-          "TagKey": "Lit",
-          "Comparison": "Exactly",
-          "CompareAgainst": "Value",
-          "TagValue": "No",
-          "Inverted": false,
-          "MatchKey": "",
-          "MatchValue": "",
-          "Radius": 50.0,
-          "Center": "Volume"
-        }
-      ],
-      "Effects": [
-        {
-          "Type": "ModifyTags",
-          "Event": "BLOCK_USED",
-          "Interval": 0.0,
-          "Delay": 0.1,
-          "Operation": "Set",
-          "TagKey": "Lit",
-          "TagValue": "Yes",
-          "MatchKey": "",
-          "MatchValue": "",
-          "Radius": 1.0,
-          "Center": "Volume"
-        },
-        {
-          "Type": "PlaySound",
-          "Event": "BLOCK_USED",
-          "Interval": 0.0,
-          "Delay": 0.0,
-          "SoundEvent": "SFX_Flame_Ignite",
-          "Location": "VolumeCenter",
-          "Offset": {
-            "X": 0.0,
-            "Y": 0.0,
-            "Z": 0.0
-          }
-        },
-        {
           "Type": "PlayVfx",
-          "Event": "BLOCK_USED",
+          "Event": "TAG_ADDED",
           "Interval": 0.0,
           "Delay": 0.0,
-          "ParticleSystem": "Magic_Sparks_Heavy_GS",
+          "Entry": 2,
+          "ParticleSystem": "Weapon_Frost_Mist",
           "Offset": {
-            "X": 0.0,
-            "Y": 0.5,
-            "Z": 0.0
+            "X": 10.407798811618921,
+            "Y": -2.8,
+            "Z": 3.91344560986456
           },
           "Anchor": "Volume",
-          "Scale": 1.0,
+          "Scale": 0.6,
           "Rotation": {
             "X": 0.0,
             "Y": 0.0,
             "Z": 0.0
           },
-          "Duration": 0.0
-        },
-        {
-          "Type": "DisableVolume",
-          "Event": "BLOCK_USED",
-          "Interval": 0.0,
-          "Delay": 0.5,
-          "MatchKey": "Quadrant",
-          "MatchValue": "Ice",
-          "Radius": 60.0,
-          "Center": "Volume"
-        },
-        {
-          "Type": "SpawnNpc",
-          "Event": "BLOCK_USED",
-          "Interval": 0.0,
-          "Delay": 1.5,
-          "NpcType": "Nakasar_Elemental_Frost",
-          "GroupType": "",
-          "Origin": "VolumeOrigin",
-          "Offset": {
-            "X": 3.0,
-            "Y": 0.0,
-            "Z": 3.0
-          },
-          "Count": 1,
-          "Yaw": 0.0
+          "Duration": 3.0
         },
         {
           "Type": "PlayVfx",
-          "Event": "BLOCK_USED",
+          "Event": "TAG_ADDED",
           "Interval": 0.0,
-          "Delay": 1.2,
-          "ParticleSystem": "Ice_Blast",
+          "Delay": 0.0,
+          "Entry": 2,
+          "ParticleSystem": "Weapon_Frost_Mist",
           "Offset": {
-            "X": 3.0,
-            "Y": 0.0,
-            "Z": 3.0
+            "X": 2.272077938642143,
+            "Y": -2.8,
+            "Z": 2.272077938642145
           },
           "Anchor": "Volume",
-          "Scale": 1.0,
+          "Scale": 0.6,
           "Rotation": {
             "X": 0.0,
             "Y": 0.0,
             "Z": 0.0
           },
-          "Duration": 0.0
-        },
-        {
-          "Type": "ModifyTags",
-          "Event": "BLOCK_USED",
-          "Interval": 0.0,
-          "Delay": 0.5,
-          "Operation": "Set",
-          "TagKey": "Foyer_Ice",
-          "TagValue": "On",
-          "MatchKey": "Transmutation_Seal",
-          "MatchValue": "",
-          "Radius": 60.0,
-          "Center": "Volume"
-        }
-      ],
-      "ConditionTiming": "BeforeVolumeDelay",
-      "TargetTypes": [
-        "Player"
-      ],
-      "Enabled": true,
-      "GroupId": "6e37a0c2-6475-523e-8337-f19fa2959f14",
-      "KeepLoaded": false,
-      "Tags": {
-        "Lit": "No"
-      },
-      "Name": "Transmutation_Foyer_Ice"
-    },
-    "ced49fbc-6840-502c-a506-917671d9a338": {
-      "Position": {
-        "X": 10.0,
-        "Y": 167.5,
-        "Z": -430.0
-      },
-      "Shape": {
-        "Type": "Box",
-        "Min": {
-          "X": -8.95,
-          "Y": -1.45,
-          "Z": -8.95
-        },
-        "Max": {
-          "X": 8.95,
-          "Y": 1.45,
-          "Z": 8.95
-        }
-      },
-      "Conditions": [
-        {
-          "Type": "TagCondition",
-          "Event": "SIGNAL_RECEIVED",
-          "Entry": 1,
-          "Source": "Event",
-          "TagKey": "Transmute",
-          "Comparison": "Exactly",
-          "CompareAgainst": "Value",
-          "TagValue": "",
-          "Inverted": false,
-          "MatchKey": "",
-          "MatchValue": "",
-          "Radius": 50.0,
-          "Center": "Volume"
-        },
-        {
-          "Type": "TagCondition",
-          "Event": "SIGNAL_RECEIVED",
-          "Entry": 1,
-          "Source": "Self",
-          "TagKey": "Busy",
-          "Comparison": "Exactly",
-          "CompareAgainst": "Value",
-          "TagValue": "On",
-          "Inverted": true,
-          "MatchKey": "",
-          "MatchValue": "",
-          "Radius": 50.0,
-          "Center": "Volume"
-        },
-        {
-          "Type": "TagCondition",
-          "Event": "TICK",
-          "Source": "Self",
-          "TagKey": "Dmg",
-          "Comparison": "Exactly",
-          "CompareAgainst": "Value",
-          "TagValue": "True",
-          "Inverted": false,
-          "MatchKey": "",
-          "MatchValue": "",
-          "Radius": 50.0,
-          "Center": "Volume"
-        }
-      ],
-      "Effects": [
-        {
-          "Type": "ModifyTags",
-          "Event": "SIGNAL_RECEIVED",
-          "Interval": 0.0,
-          "Delay": 0.0,
-          "Entry": 1,
-          "Operation": "Set",
-          "TagKey": "Busy",
-          "TagValue": "On",
-          "MatchKey": "",
-          "MatchValue": "",
-          "Radius": 1.0,
-          "Center": "Volume"
+          "Duration": 3.0
         },
         {
           "Type": "PlayVfx",
-          "Event": "SIGNAL_RECEIVED",
+          "Event": "TAG_ADDED",
           "Interval": 0.0,
           "Delay": 0.0,
-          "ParticleSystem": "Dungeon_Goblin_Spores_Green",
+          "Entry": 2,
+          "ParticleSystem": "Weapon_Frost_Mist",
           "Offset": {
-            "X": -4.5,
-            "Y": -1.4,
-            "Z": -4.5
+            "X": -8.18221983093764,
+            "Y": -2.8,
+            "Z": 8.788342917539502
           },
           "Anchor": "Volume",
-          "Scale": 1.0,
+          "Scale": 0.6,
           "Rotation": {
             "X": 0.0,
             "Y": 0.0,
             "Z": 0.0
           },
-          "Duration": 2.5,
-          "Entry": 1
+          "Duration": 3.0
         },
         {
           "Type": "PlayVfx",
-          "Event": "SIGNAL_RECEIVED",
+          "Event": "TAG_ADDED",
           "Interval": 0.0,
           "Delay": 0.0,
-          "ParticleSystem": "Dungeon_Goblin_Spores_Green",
+          "Entry": 2,
+          "ParticleSystem": "Weapon_Frost_Mist",
           "Offset": {
-            "X": -4.5,
-            "Y": -1.4,
-            "Z": 3.5
+            "X": 8.788342917539502,
+            "Y": -2.8,
+            "Z": -8.18221983093764
           },
           "Anchor": "Volume",
-          "Scale": 1.0,
+          "Scale": 0.6,
           "Rotation": {
             "X": 0.0,
             "Y": 0.0,
             "Z": 0.0
           },
-          "Duration": 2.5,
-          "Entry": 1
+          "Duration": 3.0
         },
         {
           "Type": "PlayVfx",
-          "Event": "SIGNAL_RECEIVED",
+          "Event": "TAG_ADDED",
           "Interval": 0.0,
           "Delay": 0.0,
-          "ParticleSystem": "Dungeon_Goblin_Spores_Green",
+          "ParticleSystem": "Nakasar_Warning_50",
           "Offset": {
-            "X": 3.5,
-            "Y": -1.4,
-            "Z": -4.5
+            "X": 10.40380592228744,
+            "Y": -2.9,
+            "Z": 10.403805922287441
           },
           "Anchor": "Volume",
-          "Scale": 1.0,
-          "Rotation": {
-            "X": 0.0,
-            "Y": 0.0,
-            "Z": 0.0
-          },
-          "Duration": 2.5,
-          "Entry": 1
-        },
-        {
-          "Type": "PlayVfx",
-          "Event": "SIGNAL_RECEIVED",
-          "Interval": 0.0,
-          "Delay": 0.0,
-          "ParticleSystem": "Dungeon_Goblin_Spores_Green",
-          "Offset": {
-            "X": 3.5,
-            "Y": -1.4,
-            "Z": 3.5
-          },
-          "Anchor": "Volume",
-          "Scale": 1.0,
-          "Rotation": {
-            "X": 0.0,
-            "Y": 0.0,
-            "Z": 0.0
-          },
-          "Duration": 2.5,
-          "Entry": 1
-        },
-        {
-          "Type": "PlayVfx",
-          "Event": "SIGNAL_RECEIVED",
-          "Interval": 0.0,
-          "Delay": 0.0,
-          "ParticleSystem": "Nakasar_Warning_25",
-          "Offset": {
-            "X": -4.5,
-            "Y": -1.4,
-            "Z": -4.5
-          },
-          "Anchor": "Volume",
-          "Scale": 3.13,
+          "Scale": 2.18,
           "Rotation": {
             "X": 0.0,
             "Y": 0.0,
             "Z": 0.0
           },
           "Duration": 0.0,
-          "Entry": 1
+          "Entry": 3
         },
         {
           "Type": "PlayVfx",
-          "Event": "SIGNAL_RECEIVED",
+          "Event": "TAG_ADDED",
           "Interval": 0.0,
           "Delay": 0.0,
-          "ParticleSystem": "Nakasar_Warning_25",
+          "ParticleSystem": "Nakasar_Warning_50",
           "Offset": {
-            "X": -4.5,
-            "Y": -1.4,
-            "Z": 3.5
+            "X": 3.91344560986456,
+            "Y": -2.9,
+            "Z": 10.407798811618923
           },
           "Anchor": "Volume",
-          "Scale": 3.13,
+          "Scale": 2.18,
           "Rotation": {
             "X": 0.0,
             "Y": 0.0,
             "Z": 0.0
           },
           "Duration": 0.0,
-          "Entry": 1
+          "Entry": 3
         },
         {
           "Type": "PlayVfx",
-          "Event": "SIGNAL_RECEIVED",
+          "Event": "TAG_ADDED",
           "Interval": 0.0,
           "Delay": 0.0,
-          "ParticleSystem": "Nakasar_Warning_25",
+          "ParticleSystem": "Nakasar_Warning_50",
           "Offset": {
-            "X": 3.5,
-            "Y": -1.4,
-            "Z": -4.5
+            "X": 10.407798811618921,
+            "Y": -2.9,
+            "Z": 3.91344560986456
           },
           "Anchor": "Volume",
-          "Scale": 3.13,
+          "Scale": 2.18,
           "Rotation": {
             "X": 0.0,
             "Y": 0.0,
             "Z": 0.0
           },
           "Duration": 0.0,
-          "Entry": 1
+          "Entry": 3
         },
         {
           "Type": "PlayVfx",
-          "Event": "SIGNAL_RECEIVED",
+          "Event": "TAG_ADDED",
           "Interval": 0.0,
           "Delay": 0.0,
-          "ParticleSystem": "Nakasar_Warning_25",
+          "ParticleSystem": "Nakasar_Warning_50",
           "Offset": {
-            "X": 3.5,
-            "Y": -1.4,
-            "Z": 3.5
+            "X": -2.3866648732032303,
+            "Y": -2.9,
+            "Z": 10.341257188154627
           },
           "Anchor": "Volume",
-          "Scale": 3.13,
+          "Scale": 2.18,
           "Rotation": {
             "X": 0.0,
             "Y": 0.0,
             "Z": 0.0
           },
           "Duration": 0.0,
-          "Entry": 1
+          "Entry": 3
         },
         {
           "Type": "PlayVfx",
-          "Event": "SIGNAL_RECEIVED",
-          "Interval": 0.0,
-          "Delay": 2.5,
-          "ParticleSystem": "Dungeon_Goblin_Toxic_Water",
-          "Offset": {
-            "X": -4.5,
-            "Y": -1.4,
-            "Z": -4.5
-          },
-          "Anchor": "Volume",
-          "Scale": 1.0,
-          "Rotation": {
-            "X": 0.0,
-            "Y": 0.0,
-            "Z": 0.0
-          },
-          "Duration": 2.4,
-          "Entry": 1
-        },
-        {
-          "Type": "PlayVfx",
-          "Event": "SIGNAL_RECEIVED",
-          "Interval": 0.0,
-          "Delay": 2.5,
-          "ParticleSystem": "Dungeon_Goblin_Toxic_Water",
-          "Offset": {
-            "X": -4.5,
-            "Y": -1.4,
-            "Z": 3.5
-          },
-          "Anchor": "Volume",
-          "Scale": 1.0,
-          "Rotation": {
-            "X": 0.0,
-            "Y": 0.0,
-            "Z": 0.0
-          },
-          "Duration": 2.4,
-          "Entry": 1
-        },
-        {
-          "Type": "PlayVfx",
-          "Event": "SIGNAL_RECEIVED",
-          "Interval": 0.0,
-          "Delay": 2.5,
-          "ParticleSystem": "Dungeon_Goblin_Toxic_Water",
-          "Offset": {
-            "X": 3.5,
-            "Y": -1.4,
-            "Z": -4.5
-          },
-          "Anchor": "Volume",
-          "Scale": 1.0,
-          "Rotation": {
-            "X": 0.0,
-            "Y": 0.0,
-            "Z": 0.0
-          },
-          "Duration": 2.4,
-          "Entry": 1
-        },
-        {
-          "Type": "PlayVfx",
-          "Event": "SIGNAL_RECEIVED",
-          "Interval": 0.0,
-          "Delay": 2.5,
-          "ParticleSystem": "Dungeon_Goblin_Toxic_Water",
-          "Offset": {
-            "X": 3.5,
-            "Y": -1.4,
-            "Z": 3.5
-          },
-          "Anchor": "Volume",
-          "Scale": 1.0,
-          "Rotation": {
-            "X": 0.0,
-            "Y": 0.0,
-            "Z": 0.0
-          },
-          "Duration": 2.4,
-          "Entry": 1
-        },
-        {
-          "Type": "PlaySound",
-          "Event": "SIGNAL_RECEIVED",
-          "Interval": 0.0,
-          "Delay": 2.5,
-          "SoundEvent": "SFX_Emit_Goblin_Liquid_Bubbling_Steam_Bursts",
-          "Location": "VolumeCenter",
-          "Offset": {
-            "X": 0.0,
-            "Y": 0.0,
-            "Z": 0.0
-          },
-          "Entry": 1
-        },
-        {
-          "Type": "ModifyTags",
-          "Event": "SIGNAL_RECEIVED",
-          "Interval": 0.0,
-          "Delay": 2.5,
-          "Entry": 1,
-          "Operation": "Set",
-          "TagKey": "Dmg",
-          "TagValue": "True",
-          "MatchKey": "",
-          "MatchValue": "",
-          "Radius": 1.0,
-          "Center": "Volume"
-        },
-        {
-          "Type": "ModifyTags",
-          "Event": "SIGNAL_RECEIVED",
-          "Interval": 0.0,
-          "Delay": 4.9,
-          "Entry": 1,
-          "Operation": "Set",
-          "TagKey": "Dmg",
-          "TagValue": "False",
-          "MatchKey": "",
-          "MatchValue": "",
-          "Radius": 1.0,
-          "Center": "Volume"
-        },
-        {
-          "Type": "ModifyTags",
-          "Event": "SIGNAL_RECEIVED",
-          "Interval": 0.0,
-          "Delay": 4.9,
-          "Entry": 1,
-          "Operation": "Set",
-          "TagKey": "Busy",
-          "TagValue": "Off",
-          "MatchKey": "",
-          "MatchValue": "",
-          "Radius": 1.0,
-          "Center": "Volume"
-        },
-        {
-          "Type": "EntityEffect",
-          "Event": "TICK",
+          "Event": "TAG_ADDED",
           "Interval": 0.0,
           "Delay": 0.0,
-          "Effect": "Poison_T2",
-          "Mode": "Apply",
+          "ParticleSystem": "Nakasar_Warning_50",
+          "Offset": {
+            "X": 2.272077938642143,
+            "Y": -2.9,
+            "Z": 2.272077938642145
+          },
+          "Anchor": "Volume",
+          "Scale": 2.18,
+          "Rotation": {
+            "X": 0.0,
+            "Y": 0.0,
+            "Z": 0.0
+          },
+          "Duration": 0.0,
+          "Entry": 3
+        },
+        {
+          "Type": "PlayVfx",
+          "Event": "TAG_ADDED",
+          "Interval": 0.0,
+          "Delay": 0.0,
+          "ParticleSystem": "Nakasar_Warning_50",
+          "Offset": {
+            "X": 10.341257188154627,
+            "Y": -2.9,
+            "Z": -2.3866648732032303
+          },
+          "Anchor": "Volume",
+          "Scale": 2.18,
+          "Rotation": {
+            "X": 0.0,
+            "Y": 0.0,
+            "Z": 0.0
+          },
+          "Duration": 0.0,
+          "Entry": 3
+        },
+        {
+          "Type": "PlayVfx",
+          "Event": "TAG_ADDED",
+          "Interval": 0.0,
+          "Delay": 0.0,
+          "ParticleSystem": "Nakasar_Warning_50",
+          "Offset": {
+            "X": -8.18221983093764,
+            "Y": -2.9,
+            "Z": 8.788342917539502
+          },
+          "Anchor": "Volume",
+          "Scale": 2.18,
+          "Rotation": {
+            "X": 0.0,
+            "Y": 0.0,
+            "Z": 0.0
+          },
+          "Duration": 0.0,
+          "Entry": 3
+        },
+        {
+          "Type": "PlayVfx",
+          "Event": "TAG_ADDED",
+          "Interval": 0.0,
+          "Delay": 0.0,
+          "ParticleSystem": "Nakasar_Warning_50",
+          "Offset": {
+            "X": -1.9705627484771426,
+            "Y": -2.9,
+            "Z": -1.970562748477139
+          },
+          "Anchor": "Volume",
+          "Scale": 2.18,
+          "Rotation": {
+            "X": 0.0,
+            "Y": 0.0,
+            "Z": 0.0
+          },
+          "Duration": 0.0,
+          "Entry": 3
+        },
+        {
+          "Type": "PlayVfx",
+          "Event": "TAG_ADDED",
+          "Interval": 0.0,
+          "Delay": 0.0,
+          "ParticleSystem": "Nakasar_Warning_50",
+          "Offset": {
+            "X": 8.788342917539502,
+            "Y": -2.9,
+            "Z": -8.18221983093764
+          },
+          "Anchor": "Volume",
+          "Scale": 2.18,
+          "Rotation": {
+            "X": 0.0,
+            "Y": 0.0,
+            "Z": 0.0
+          },
+          "Duration": 0.0,
+          "Entry": 3
+        },
+        {
+          "Type": "PlayVfx",
+          "Event": "TAG_ADDED",
+          "Interval": 0.0,
+          "Delay": 0.0,
+          "Entry": 3,
+          "ParticleSystem": "Weapon_Frost_Mist",
+          "Offset": {
+            "X": 10.40380592228744,
+            "Y": -2.8,
+            "Z": 10.403805922287441
+          },
+          "Anchor": "Volume",
+          "Scale": 1.0,
+          "Rotation": {
+            "X": 0.0,
+            "Y": 0.0,
+            "Z": 0.0
+          },
           "Duration": 5.0
         },
         {
-          "Type": "DamageEntity",
-          "Event": "TICK",
-          "Interval": 0.5,
-          "Delay": 0.0,
-          "Mode": "PercentMax",
-          "Amount": 5.0
-        }
-      ],
-      "ConditionTiming": "BeforeVolumeDelay",
-      "Cooldown": 0.1,
-      "TargetTypes": [
-        "Player"
-      ],
-      "Enabled": true,
-      "GroupId": "6e37a0c2-6475-523e-8337-f19fa2959f14",
-      "KeepLoaded": false,
-      "Tags": {
-        "Quadrant": "Acid",
-        "Busy": "Off",
-        "Dmg": "False"
-      },
-      "Name": "Quadrant_Acid"
-    },
-    "6a03948c-f29f-5b46-b0aa-8094b3da7a7d": {
-      "Position": {
-        "X": 14.5,
-        "Y": 166.5,
-        "Z": -425.5
-      },
-      "Shape": {
-        "Type": "Box",
-        "Min": {
-          "X": -0.5,
-          "Y": -0.5,
-          "Z": -0.5
-        },
-        "Max": {
-          "X": 0.5,
-          "Y": 0.5,
-          "Z": 0.5
-        }
-      },
-      "Conditions": [
-        {
-          "Type": "TagCondition",
-          "Event": "BLOCK_USED",
-          "Source": "Self",
-          "TagKey": "Lit",
-          "Comparison": "Exactly",
-          "CompareAgainst": "Value",
-          "TagValue": "No",
-          "Inverted": false,
-          "MatchKey": "",
-          "MatchValue": "",
-          "Radius": 50.0,
-          "Center": "Volume"
-        }
-      ],
-      "Effects": [
-        {
-          "Type": "ModifyTags",
-          "Event": "BLOCK_USED",
+          "Type": "PlayVfx",
+          "Event": "TAG_ADDED",
           "Interval": 0.0,
-          "Delay": 0.1,
-          "Operation": "Set",
-          "TagKey": "Lit",
-          "TagValue": "Yes",
-          "MatchKey": "",
-          "MatchValue": "",
-          "Radius": 1.0,
-          "Center": "Volume"
+          "Delay": 0.0,
+          "Entry": 3,
+          "ParticleSystem": "Weapon_Frost_Mist",
+          "Offset": {
+            "X": 3.91344560986456,
+            "Y": -2.8,
+            "Z": 10.407798811618923
+          },
+          "Anchor": "Volume",
+          "Scale": 1.0,
+          "Rotation": {
+            "X": 0.0,
+            "Y": 0.0,
+            "Z": 0.0
+          },
+          "Duration": 5.0
+        },
+        {
+          "Type": "PlayVfx",
+          "Event": "TAG_ADDED",
+          "Interval": 0.0,
+          "Delay": 0.0,
+          "Entry": 3,
+          "ParticleSystem": "Weapon_Frost_Mist",
+          "Offset": {
+            "X": 10.407798811618921,
+            "Y": -2.8,
+            "Z": 3.91344560986456
+          },
+          "Anchor": "Volume",
+          "Scale": 1.0,
+          "Rotation": {
+            "X": 0.0,
+            "Y": 0.0,
+            "Z": 0.0
+          },
+          "Duration": 5.0
+        },
+        {
+          "Type": "PlayVfx",
+          "Event": "TAG_ADDED",
+          "Interval": 0.0,
+          "Delay": 0.0,
+          "Entry": 3,
+          "ParticleSystem": "Weapon_Frost_Mist",
+          "Offset": {
+            "X": -2.3866648732032303,
+            "Y": -2.8,
+            "Z": 10.341257188154627
+          },
+          "Anchor": "Volume",
+          "Scale": 1.0,
+          "Rotation": {
+            "X": 0.0,
+            "Y": 0.0,
+            "Z": 0.0
+          },
+          "Duration": 5.0
+        },
+        {
+          "Type": "PlayVfx",
+          "Event": "TAG_ADDED",
+          "Interval": 0.0,
+          "Delay": 0.0,
+          "Entry": 3,
+          "ParticleSystem": "Weapon_Frost_Mist",
+          "Offset": {
+            "X": 2.272077938642143,
+            "Y": -2.8,
+            "Z": 2.272077938642145
+          },
+          "Anchor": "Volume",
+          "Scale": 1.0,
+          "Rotation": {
+            "X": 0.0,
+            "Y": 0.0,
+            "Z": 0.0
+          },
+          "Duration": 5.0
+        },
+        {
+          "Type": "PlayVfx",
+          "Event": "TAG_ADDED",
+          "Interval": 0.0,
+          "Delay": 0.0,
+          "Entry": 3,
+          "ParticleSystem": "Weapon_Frost_Mist",
+          "Offset": {
+            "X": 10.341257188154627,
+            "Y": -2.8,
+            "Z": -2.3866648732032303
+          },
+          "Anchor": "Volume",
+          "Scale": 1.0,
+          "Rotation": {
+            "X": 0.0,
+            "Y": 0.0,
+            "Z": 0.0
+          },
+          "Duration": 5.0
+        },
+        {
+          "Type": "PlayVfx",
+          "Event": "TAG_ADDED",
+          "Interval": 0.0,
+          "Delay": 0.0,
+          "Entry": 3,
+          "ParticleSystem": "Weapon_Frost_Mist",
+          "Offset": {
+            "X": -8.18221983093764,
+            "Y": -2.8,
+            "Z": 8.788342917539502
+          },
+          "Anchor": "Volume",
+          "Scale": 1.0,
+          "Rotation": {
+            "X": 0.0,
+            "Y": 0.0,
+            "Z": 0.0
+          },
+          "Duration": 5.0
+        },
+        {
+          "Type": "PlayVfx",
+          "Event": "TAG_ADDED",
+          "Interval": 0.0,
+          "Delay": 0.0,
+          "Entry": 3,
+          "ParticleSystem": "Weapon_Frost_Mist",
+          "Offset": {
+            "X": -1.9705627484771426,
+            "Y": -2.8,
+            "Z": -1.970562748477139
+          },
+          "Anchor": "Volume",
+          "Scale": 1.0,
+          "Rotation": {
+            "X": 0.0,
+            "Y": 0.0,
+            "Z": 0.0
+          },
+          "Duration": 5.0
+        },
+        {
+          "Type": "PlayVfx",
+          "Event": "TAG_ADDED",
+          "Interval": 0.0,
+          "Delay": 0.0,
+          "Entry": 3,
+          "ParticleSystem": "Weapon_Frost_Mist",
+          "Offset": {
+            "X": 8.788342917539502,
+            "Y": -2.8,
+            "Z": -8.18221983093764
+          },
+          "Anchor": "Volume",
+          "Scale": 1.0,
+          "Rotation": {
+            "X": 0.0,
+            "Y": 0.0,
+            "Z": 0.0
+          },
+          "Duration": 5.0
         },
         {
           "Type": "PlaySound",
-          "Event": "BLOCK_USED",
+          "Event": "TAG_ADDED",
           "Interval": 0.0,
           "Delay": 0.0,
-          "SoundEvent": "SFX_Flame_Ignite",
+          "Entry": 3,
+          "SoundEvent": "SFX_Gobliterator_Arena_Door_Warning",
           "Location": "VolumeCenter",
           "Offset": {
             "X": 0.0,
             "Y": 0.0,
             "Z": 0.0
           }
-        },
-        {
-          "Type": "PlayVfx",
-          "Event": "BLOCK_USED",
-          "Interval": 0.0,
-          "Delay": 0.0,
-          "ParticleSystem": "Magic_Sparks_Heavy_GS",
-          "Offset": {
-            "X": 0.0,
-            "Y": 0.5,
-            "Z": 0.0
-          },
-          "Anchor": "Volume",
-          "Scale": 1.0,
-          "Rotation": {
-            "X": 0.0,
-            "Y": 0.0,
-            "Z": 0.0
-          },
-          "Duration": 0.0
-        },
-        {
-          "Type": "DisableVolume",
-          "Event": "BLOCK_USED",
-          "Interval": 0.0,
-          "Delay": 0.5,
-          "MatchKey": "Quadrant",
-          "MatchValue": "Acid",
-          "Radius": 60.0,
-          "Center": "Volume"
-        },
-        {
-          "Type": "SpawnNpc",
-          "Event": "BLOCK_USED",
-          "Interval": 0.0,
-          "Delay": 1.5,
-          "NpcType": "Nakasar_Elemental_Root",
-          "GroupType": "",
-          "Origin": "VolumeOrigin",
-          "Offset": {
-            "X": -3.0,
-            "Y": 0.0,
-            "Z": -3.0
-          },
-          "Count": 1,
-          "Yaw": 0.0
-        },
-        {
-          "Type": "PlayVfx",
-          "Event": "BLOCK_USED",
-          "Interval": 0.0,
-          "Delay": 1.2,
-          "ParticleSystem": "Dungeon_Goblin_Toxic_Water",
-          "Offset": {
-            "X": -3.0,
-            "Y": 0.0,
-            "Z": -3.0
-          },
-          "Anchor": "Volume",
-          "Scale": 1.0,
-          "Rotation": {
-            "X": 0.0,
-            "Y": 0.0,
-            "Z": 0.0
-          },
-          "Duration": 0.0
-        },
-        {
-          "Type": "ModifyTags",
-          "Event": "BLOCK_USED",
-          "Interval": 0.0,
-          "Delay": 0.5,
-          "Operation": "Set",
-          "TagKey": "Foyer_Acid",
-          "TagValue": "On",
-          "MatchKey": "Transmutation_Seal",
-          "MatchValue": "",
-          "Radius": 60.0,
-          "Center": "Volume"
-        }
-      ],
-      "ConditionTiming": "BeforeVolumeDelay",
-      "TargetTypes": [
-        "Player"
-      ],
-      "Enabled": true,
-      "GroupId": "6e37a0c2-6475-523e-8337-f19fa2959f14",
-      "KeepLoaded": false,
-      "Tags": {
-        "Lit": "No"
-      },
-      "Name": "Transmutation_Foyer_Acid"
-    },
-    "c5b940d9-fa6d-59fa-aced-db9ea5154395": {
-      "Position": {
-        "X": -9.0,
-        "Y": 167.5,
-        "Z": -430.0
-      },
-      "Shape": {
-        "Type": "Box",
-        "Min": {
-          "X": -8.95,
-          "Y": -1.45,
-          "Z": -8.95
-        },
-        "Max": {
-          "X": 8.95,
-          "Y": 1.45,
-          "Z": 8.95
-        }
-      },
-      "Conditions": [
-        {
-          "Type": "TagCondition",
-          "Event": "SIGNAL_RECEIVED",
-          "Entry": 1,
-          "Source": "Event",
-          "TagKey": "Transmute",
-          "Comparison": "Exactly",
-          "CompareAgainst": "Value",
-          "TagValue": "",
-          "Inverted": false,
-          "MatchKey": "",
-          "MatchValue": "",
-          "Radius": 50.0,
-          "Center": "Volume"
-        },
-        {
-          "Type": "TagCondition",
-          "Event": "SIGNAL_RECEIVED",
-          "Entry": 1,
-          "Source": "Self",
-          "TagKey": "Busy",
-          "Comparison": "Exactly",
-          "CompareAgainst": "Value",
-          "TagValue": "On",
-          "Inverted": true,
-          "MatchKey": "",
-          "MatchValue": "",
-          "Radius": 50.0,
-          "Center": "Volume"
-        },
-        {
-          "Type": "TagCondition",
-          "Event": "TICK",
-          "Source": "Self",
-          "TagKey": "Dmg",
-          "Comparison": "Exactly",
-          "CompareAgainst": "Value",
-          "TagValue": "True",
-          "Inverted": false,
-          "MatchKey": "",
-          "MatchValue": "",
-          "Radius": 50.0,
-          "Center": "Volume"
-        }
-      ],
-      "Effects": [
-        {
-          "Type": "ModifyTags",
-          "Event": "SIGNAL_RECEIVED",
-          "Interval": 0.0,
-          "Delay": 0.0,
-          "Entry": 1,
-          "Operation": "Set",
-          "TagKey": "Busy",
-          "TagValue": "On",
-          "MatchKey": "",
-          "MatchValue": "",
-          "Radius": 1.0,
-          "Center": "Volume"
-        },
-        {
-          "Type": "PlayVfx",
-          "Event": "SIGNAL_RECEIVED",
-          "Interval": 0.0,
-          "Delay": 0.0,
-          "ParticleSystem": "Goblin_Decorative_Sparks",
-          "Offset": {
-            "X": 4.5,
-            "Y": -1.4,
-            "Z": -4.5
-          },
-          "Anchor": "Volume",
-          "Scale": 1.0,
-          "Rotation": {
-            "X": 0.0,
-            "Y": 0.0,
-            "Z": 0.0
-          },
-          "Duration": 2.5,
-          "Entry": 1
-        },
-        {
-          "Type": "PlayVfx",
-          "Event": "SIGNAL_RECEIVED",
-          "Interval": 0.0,
-          "Delay": 0.0,
-          "ParticleSystem": "Goblin_Decorative_Sparks",
-          "Offset": {
-            "X": 4.5,
-            "Y": -1.4,
-            "Z": 3.5
-          },
-          "Anchor": "Volume",
-          "Scale": 1.0,
-          "Rotation": {
-            "X": 0.0,
-            "Y": 0.0,
-            "Z": 0.0
-          },
-          "Duration": 2.5,
-          "Entry": 1
-        },
-        {
-          "Type": "PlayVfx",
-          "Event": "SIGNAL_RECEIVED",
-          "Interval": 0.0,
-          "Delay": 0.0,
-          "ParticleSystem": "Goblin_Decorative_Sparks",
-          "Offset": {
-            "X": -3.5,
-            "Y": -1.4,
-            "Z": -4.5
-          },
-          "Anchor": "Volume",
-          "Scale": 1.0,
-          "Rotation": {
-            "X": 0.0,
-            "Y": 0.0,
-            "Z": 0.0
-          },
-          "Duration": 2.5,
-          "Entry": 1
-        },
-        {
-          "Type": "PlayVfx",
-          "Event": "SIGNAL_RECEIVED",
-          "Interval": 0.0,
-          "Delay": 0.0,
-          "ParticleSystem": "Goblin_Decorative_Sparks",
-          "Offset": {
-            "X": -3.5,
-            "Y": -1.4,
-            "Z": 3.5
-          },
-          "Anchor": "Volume",
-          "Scale": 1.0,
-          "Rotation": {
-            "X": 0.0,
-            "Y": 0.0,
-            "Z": 0.0
-          },
-          "Duration": 2.5,
-          "Entry": 1
-        },
-        {
-          "Type": "PlayVfx",
-          "Event": "SIGNAL_RECEIVED",
-          "Interval": 0.0,
-          "Delay": 0.0,
-          "ParticleSystem": "Nakasar_Warning_25",
-          "Offset": {
-            "X": 4.5,
-            "Y": -1.4,
-            "Z": -4.5
-          },
-          "Anchor": "Volume",
-          "Scale": 3.13,
-          "Rotation": {
-            "X": 0.0,
-            "Y": 0.0,
-            "Z": 0.0
-          },
-          "Duration": 0.0,
-          "Entry": 1
-        },
-        {
-          "Type": "PlayVfx",
-          "Event": "SIGNAL_RECEIVED",
-          "Interval": 0.0,
-          "Delay": 0.0,
-          "ParticleSystem": "Nakasar_Warning_25",
-          "Offset": {
-            "X": 4.5,
-            "Y": -1.4,
-            "Z": 3.5
-          },
-          "Anchor": "Volume",
-          "Scale": 3.13,
-          "Rotation": {
-            "X": 0.0,
-            "Y": 0.0,
-            "Z": 0.0
-          },
-          "Duration": 0.0,
-          "Entry": 1
-        },
-        {
-          "Type": "PlayVfx",
-          "Event": "SIGNAL_RECEIVED",
-          "Interval": 0.0,
-          "Delay": 0.0,
-          "ParticleSystem": "Nakasar_Warning_25",
-          "Offset": {
-            "X": -3.5,
-            "Y": -1.4,
-            "Z": -4.5
-          },
-          "Anchor": "Volume",
-          "Scale": 3.13,
-          "Rotation": {
-            "X": 0.0,
-            "Y": 0.0,
-            "Z": 0.0
-          },
-          "Duration": 0.0,
-          "Entry": 1
-        },
-        {
-          "Type": "PlayVfx",
-          "Event": "SIGNAL_RECEIVED",
-          "Interval": 0.0,
-          "Delay": 0.0,
-          "ParticleSystem": "Nakasar_Warning_25",
-          "Offset": {
-            "X": -3.5,
-            "Y": -1.4,
-            "Z": 3.5
-          },
-          "Anchor": "Volume",
-          "Scale": 3.13,
-          "Rotation": {
-            "X": 0.0,
-            "Y": 0.0,
-            "Z": 0.0
-          },
-          "Duration": 0.0,
-          "Entry": 1
-        },
-        {
-          "Type": "PlayVfx",
-          "Event": "SIGNAL_RECEIVED",
-          "Interval": 0.0,
-          "Delay": 2.5,
-          "ParticleSystem": "Lightning",
-          "Offset": {
-            "X": 4.5,
-            "Y": -1.4,
-            "Z": -4.5
-          },
-          "Anchor": "Volume",
-          "Scale": 1.0,
-          "Rotation": {
-            "X": 0.0,
-            "Y": 0.0,
-            "Z": 0.0
-          },
-          "Duration": 2.4,
-          "Entry": 1
-        },
-        {
-          "Type": "PlayVfx",
-          "Event": "SIGNAL_RECEIVED",
-          "Interval": 0.0,
-          "Delay": 2.5,
-          "ParticleSystem": "Lightning",
-          "Offset": {
-            "X": 4.5,
-            "Y": -1.4,
-            "Z": 3.5
-          },
-          "Anchor": "Volume",
-          "Scale": 1.0,
-          "Rotation": {
-            "X": 0.0,
-            "Y": 0.0,
-            "Z": 0.0
-          },
-          "Duration": 2.4,
-          "Entry": 1
-        },
-        {
-          "Type": "PlayVfx",
-          "Event": "SIGNAL_RECEIVED",
-          "Interval": 0.0,
-          "Delay": 2.5,
-          "ParticleSystem": "Lightning",
-          "Offset": {
-            "X": -3.5,
-            "Y": -1.4,
-            "Z": -4.5
-          },
-          "Anchor": "Volume",
-          "Scale": 1.0,
-          "Rotation": {
-            "X": 0.0,
-            "Y": 0.0,
-            "Z": 0.0
-          },
-          "Duration": 2.4,
-          "Entry": 1
-        },
-        {
-          "Type": "PlayVfx",
-          "Event": "SIGNAL_RECEIVED",
-          "Interval": 0.0,
-          "Delay": 2.5,
-          "ParticleSystem": "Lightning",
-          "Offset": {
-            "X": -3.5,
-            "Y": -1.4,
-            "Z": 3.5
-          },
-          "Anchor": "Volume",
-          "Scale": 1.0,
-          "Rotation": {
-            "X": 0.0,
-            "Y": 0.0,
-            "Z": 0.0
-          },
-          "Duration": 2.4,
-          "Entry": 1
-        },
-        {
-          "Type": "PlaySound",
-          "Event": "SIGNAL_RECEIVED",
-          "Interval": 0.0,
-          "Delay": 2.5,
-          "SoundEvent": "SFX_Emit_Goblin_Electric_Fence_Zap",
-          "Location": "VolumeCenter",
-          "Offset": {
-            "X": 0.0,
-            "Y": 0.0,
-            "Z": 0.0
-          },
-          "Entry": 1
-        },
-        {
-          "Type": "ModifyTags",
-          "Event": "SIGNAL_RECEIVED",
-          "Interval": 0.0,
-          "Delay": 2.5,
-          "Entry": 1,
-          "Operation": "Set",
-          "TagKey": "Dmg",
-          "TagValue": "True",
-          "MatchKey": "",
-          "MatchValue": "",
-          "Radius": 1.0,
-          "Center": "Volume"
-        },
-        {
-          "Type": "ModifyTags",
-          "Event": "SIGNAL_RECEIVED",
-          "Interval": 0.0,
-          "Delay": 4.9,
-          "Entry": 1,
-          "Operation": "Set",
-          "TagKey": "Dmg",
-          "TagValue": "False",
-          "MatchKey": "",
-          "MatchValue": "",
-          "Radius": 1.0,
-          "Center": "Volume"
-        },
-        {
-          "Type": "ModifyTags",
-          "Event": "SIGNAL_RECEIVED",
-          "Interval": 0.0,
-          "Delay": 4.9,
-          "Entry": 1,
-          "Operation": "Set",
-          "TagKey": "Busy",
-          "TagValue": "Off",
-          "MatchKey": "",
-          "MatchValue": "",
-          "Radius": 1.0,
-          "Center": "Volume"
         },
         {
           "Type": "EntityEffect",
           "Event": "TICK",
-          "Interval": 1.2,
+          "Interval": 1.0,
           "Delay": 0.0,
-          "Effect": "Hazard_Electric_Stun",
+          "Effect": "Slow",
           "Mode": "Apply",
-          "Duration": 0.8
+          "Duration": 2.0,
+          "Entry": 0
         },
         {
           "Type": "DamageEntity",
           "Event": "TICK",
-          "Interval": 0.5,
+          "Interval": 1.0,
           "Delay": 0.0,
           "Mode": "PercentMax",
-          "Amount": 6.0
+          "Amount": 5.0,
+          "Entry": 0
+        },
+        {
+          "Type": "EntityEffect",
+          "Event": "TICK",
+          "Interval": 1.0,
+          "Delay": 0.0,
+          "Effect": "Slow",
+          "Mode": "Apply",
+          "Duration": 2.0,
+          "Entry": 1
         }
       ],
       "ConditionTiming": "BeforeVolumeDelay",
-      "Cooldown": 0.1,
       "TargetTypes": [
         "Player"
       ],
@@ -175178,40 +175164,100 @@
       "GroupId": "6e37a0c2-6475-523e-8337-f19fa2959f14",
       "KeepLoaded": false,
       "Tags": {
-        "Quadrant": "Lightning",
-        "Busy": "Off",
-        "Dmg": "False"
+        "State": "Off",
+        "Fx": "None"
       },
-      "Name": "Quadrant_Lightning"
+      "Name": "Trans_Ice"
     },
-    "d9e683cf-95dc-5df6-91bb-471864b33006": {
+    "9960f64e-5188-59be-907a-a94e76cfb047": {
       "Position": {
-        "X": -13.5,
-        "Y": 166.5,
-        "Z": -425.5
+        "X": 15.5,
+        "Y": 169.0,
+        "Z": -454.5
       },
       "Shape": {
         "Type": "Box",
         "Min": {
-          "X": -0.5,
-          "Y": -0.5,
-          "Z": -0.5
+          "X": -14.45,
+          "Y": -2.95,
+          "Z": -14.45
         },
         "Max": {
-          "X": 0.5,
-          "Y": 0.5,
-          "Z": 0.5
+          "X": 14.45,
+          "Y": 2.95,
+          "Z": 14.45
         }
       },
       "Conditions": [
         {
           "Type": "TagCondition",
-          "Event": "BLOCK_USED",
+          "Event": "TAG_ADDED",
+          "Entry": 1,
           "Source": "Self",
-          "TagKey": "Lit",
+          "TagKey": "Fx",
           "Comparison": "Exactly",
           "CompareAgainst": "Value",
-          "TagValue": "No",
+          "TagValue": "Active",
+          "Inverted": false,
+          "MatchKey": "",
+          "MatchValue": "",
+          "Radius": 50.0,
+          "Center": "Volume"
+        },
+        {
+          "Type": "TagCondition",
+          "Event": "TAG_ADDED",
+          "Entry": 2,
+          "Source": "Self",
+          "TagKey": "Fx",
+          "Comparison": "Exactly",
+          "CompareAgainst": "Value",
+          "TagValue": "Calm",
+          "Inverted": false,
+          "MatchKey": "",
+          "MatchValue": "",
+          "Radius": 50.0,
+          "Center": "Volume"
+        },
+        {
+          "Type": "TagCondition",
+          "Event": "TAG_ADDED",
+          "Entry": 3,
+          "Source": "Self",
+          "TagKey": "Fx",
+          "Comparison": "Exactly",
+          "CompareAgainst": "Value",
+          "TagValue": "Warn",
+          "Inverted": false,
+          "MatchKey": "",
+          "MatchValue": "",
+          "Radius": 50.0,
+          "Center": "Volume"
+        },
+        {
+          "Type": "TagCondition",
+          "Event": "TICK",
+          "Entry": 0,
+          "Source": "Self",
+          "TagKey": "State",
+          "Comparison": "Exactly",
+          "CompareAgainst": "Value",
+          "TagValue": "Active",
+          "Inverted": false,
+          "MatchKey": "",
+          "MatchValue": "",
+          "Radius": 50.0,
+          "Center": "Volume"
+        },
+        {
+          "Type": "TagCondition",
+          "Event": "TICK",
+          "Entry": 1,
+          "Source": "Self",
+          "TagKey": "State",
+          "Comparison": "Exactly",
+          "CompareAgainst": "Value",
+          "TagValue": "Calm",
           "Inverted": false,
           "MatchKey": "",
           "MatchValue": "",
@@ -175221,24 +175267,201 @@
       ],
       "Effects": [
         {
-          "Type": "ModifyTags",
-          "Event": "BLOCK_USED",
+          "Type": "PlayVfx",
+          "Event": "TAG_ADDED",
           "Interval": 0.0,
-          "Delay": 0.1,
-          "Operation": "Set",
-          "TagKey": "Lit",
-          "TagValue": "Yes",
-          "MatchKey": "",
-          "MatchValue": "",
-          "Radius": 1.0,
-          "Center": "Volume"
+          "Delay": 0.0,
+          "Entry": 1,
+          "ParticleSystem": "Fire_AoE",
+          "Offset": {
+            "X": -10.40380592228744,
+            "Y": -2.8,
+            "Z": 10.403805922287441
+          },
+          "Anchor": "Volume",
+          "Scale": 1.0,
+          "Rotation": {
+            "X": 0.0,
+            "Y": 0.0,
+            "Z": 0.0
+          },
+          "Duration": 3.0
+        },
+        {
+          "Type": "PlayVfx",
+          "Event": "TAG_ADDED",
+          "Interval": 0.0,
+          "Delay": 0.0,
+          "Entry": 1,
+          "ParticleSystem": "Fire_AoE",
+          "Offset": {
+            "X": -3.91344560986456,
+            "Y": -2.8,
+            "Z": 10.407798811618923
+          },
+          "Anchor": "Volume",
+          "Scale": 1.0,
+          "Rotation": {
+            "X": 0.0,
+            "Y": 0.0,
+            "Z": 0.0
+          },
+          "Duration": 3.0
+        },
+        {
+          "Type": "PlayVfx",
+          "Event": "TAG_ADDED",
+          "Interval": 0.0,
+          "Delay": 0.0,
+          "Entry": 1,
+          "ParticleSystem": "Fire_AoE",
+          "Offset": {
+            "X": -10.407798811618921,
+            "Y": -2.8,
+            "Z": 3.91344560986456
+          },
+          "Anchor": "Volume",
+          "Scale": 1.0,
+          "Rotation": {
+            "X": 0.0,
+            "Y": 0.0,
+            "Z": 0.0
+          },
+          "Duration": 3.0
+        },
+        {
+          "Type": "PlayVfx",
+          "Event": "TAG_ADDED",
+          "Interval": 0.0,
+          "Delay": 0.0,
+          "Entry": 1,
+          "ParticleSystem": "Fire_AoE",
+          "Offset": {
+            "X": 2.3866648732032303,
+            "Y": -2.8,
+            "Z": 10.341257188154627
+          },
+          "Anchor": "Volume",
+          "Scale": 1.0,
+          "Rotation": {
+            "X": 0.0,
+            "Y": 0.0,
+            "Z": 0.0
+          },
+          "Duration": 3.0
+        },
+        {
+          "Type": "PlayVfx",
+          "Event": "TAG_ADDED",
+          "Interval": 0.0,
+          "Delay": 0.0,
+          "Entry": 1,
+          "ParticleSystem": "Fire_AoE",
+          "Offset": {
+            "X": -2.272077938642143,
+            "Y": -2.8,
+            "Z": 2.272077938642145
+          },
+          "Anchor": "Volume",
+          "Scale": 1.0,
+          "Rotation": {
+            "X": 0.0,
+            "Y": 0.0,
+            "Z": 0.0
+          },
+          "Duration": 3.0
+        },
+        {
+          "Type": "PlayVfx",
+          "Event": "TAG_ADDED",
+          "Interval": 0.0,
+          "Delay": 0.0,
+          "Entry": 1,
+          "ParticleSystem": "Fire_AoE",
+          "Offset": {
+            "X": -10.341257188154627,
+            "Y": -2.8,
+            "Z": -2.3866648732032303
+          },
+          "Anchor": "Volume",
+          "Scale": 1.0,
+          "Rotation": {
+            "X": 0.0,
+            "Y": 0.0,
+            "Z": 0.0
+          },
+          "Duration": 3.0
+        },
+        {
+          "Type": "PlayVfx",
+          "Event": "TAG_ADDED",
+          "Interval": 0.0,
+          "Delay": 0.0,
+          "Entry": 1,
+          "ParticleSystem": "Fire_AoE",
+          "Offset": {
+            "X": 8.18221983093764,
+            "Y": -2.8,
+            "Z": 8.788342917539502
+          },
+          "Anchor": "Volume",
+          "Scale": 1.0,
+          "Rotation": {
+            "X": 0.0,
+            "Y": 0.0,
+            "Z": 0.0
+          },
+          "Duration": 3.0
+        },
+        {
+          "Type": "PlayVfx",
+          "Event": "TAG_ADDED",
+          "Interval": 0.0,
+          "Delay": 0.0,
+          "Entry": 1,
+          "ParticleSystem": "Fire_AoE",
+          "Offset": {
+            "X": 1.9705627484771426,
+            "Y": -2.8,
+            "Z": -1.970562748477139
+          },
+          "Anchor": "Volume",
+          "Scale": 1.0,
+          "Rotation": {
+            "X": 0.0,
+            "Y": 0.0,
+            "Z": 0.0
+          },
+          "Duration": 3.0
+        },
+        {
+          "Type": "PlayVfx",
+          "Event": "TAG_ADDED",
+          "Interval": 0.0,
+          "Delay": 0.0,
+          "Entry": 1,
+          "ParticleSystem": "Fire_AoE",
+          "Offset": {
+            "X": -8.788342917539502,
+            "Y": -2.8,
+            "Z": -8.18221983093764
+          },
+          "Anchor": "Volume",
+          "Scale": 1.0,
+          "Rotation": {
+            "X": 0.0,
+            "Y": 0.0,
+            "Z": 0.0
+          },
+          "Duration": 3.0
         },
         {
           "Type": "PlaySound",
-          "Event": "BLOCK_USED",
+          "Event": "TAG_ADDED",
           "Interval": 0.0,
           "Delay": 0.0,
-          "SoundEvent": "SFX_Flame_Ignite",
+          "Entry": 1,
+          "SoundEvent": "SFX_Emit_Goblin_Flame_Quadrant_Blast",
           "Location": "VolumeCenter",
           "Offset": {
             "X": 0.0,
@@ -175248,60 +175471,309 @@
         },
         {
           "Type": "PlayVfx",
-          "Event": "BLOCK_USED",
+          "Event": "TAG_ADDED",
           "Interval": 0.0,
           "Delay": 0.0,
-          "ParticleSystem": "Magic_Sparks_Heavy_GS",
+          "Entry": 2,
+          "ParticleSystem": "Fire_Charge_Charging1",
           "Offset": {
-            "X": 0.0,
-            "Y": 0.5,
-            "Z": 0.0
+            "X": -10.40380592228744,
+            "Y": -2.8,
+            "Z": 10.403805922287441
           },
           "Anchor": "Volume",
-          "Scale": 1.0,
+          "Scale": 0.6,
           "Rotation": {
             "X": 0.0,
             "Y": 0.0,
             "Z": 0.0
           },
-          "Duration": 0.0
-        },
-        {
-          "Type": "DisableVolume",
-          "Event": "BLOCK_USED",
-          "Interval": 0.0,
-          "Delay": 0.5,
-          "MatchKey": "Quadrant",
-          "MatchValue": "Lightning",
-          "Radius": 60.0,
-          "Center": "Volume"
-        },
-        {
-          "Type": "SpawnNpc",
-          "Event": "BLOCK_USED",
-          "Interval": 0.0,
-          "Delay": 1.5,
-          "NpcType": "Nakasar_Elemental_Thunder",
-          "GroupType": "",
-          "Origin": "VolumeOrigin",
-          "Offset": {
-            "X": 3.0,
-            "Y": 0.0,
-            "Z": -3.0
-          },
-          "Count": 1,
-          "Yaw": 0.0
+          "Duration": 3.0
         },
         {
           "Type": "PlayVfx",
-          "Event": "BLOCK_USED",
+          "Event": "TAG_ADDED",
           "Interval": 0.0,
-          "Delay": 1.2,
-          "ParticleSystem": "Lightning",
+          "Delay": 0.0,
+          "Entry": 2,
+          "ParticleSystem": "Fire_Charge_Charging1",
           "Offset": {
-            "X": 3.0,
+            "X": -10.407798811618921,
+            "Y": -2.8,
+            "Z": 3.91344560986456
+          },
+          "Anchor": "Volume",
+          "Scale": 0.6,
+          "Rotation": {
+            "X": 0.0,
             "Y": 0.0,
-            "Z": -3.0
+            "Z": 0.0
+          },
+          "Duration": 3.0
+        },
+        {
+          "Type": "PlayVfx",
+          "Event": "TAG_ADDED",
+          "Interval": 0.0,
+          "Delay": 0.0,
+          "Entry": 2,
+          "ParticleSystem": "Fire_Charge_Charging1",
+          "Offset": {
+            "X": -2.272077938642143,
+            "Y": -2.8,
+            "Z": 2.272077938642145
+          },
+          "Anchor": "Volume",
+          "Scale": 0.6,
+          "Rotation": {
+            "X": 0.0,
+            "Y": 0.0,
+            "Z": 0.0
+          },
+          "Duration": 3.0
+        },
+        {
+          "Type": "PlayVfx",
+          "Event": "TAG_ADDED",
+          "Interval": 0.0,
+          "Delay": 0.0,
+          "Entry": 2,
+          "ParticleSystem": "Fire_Charge_Charging1",
+          "Offset": {
+            "X": 8.18221983093764,
+            "Y": -2.8,
+            "Z": 8.788342917539502
+          },
+          "Anchor": "Volume",
+          "Scale": 0.6,
+          "Rotation": {
+            "X": 0.0,
+            "Y": 0.0,
+            "Z": 0.0
+          },
+          "Duration": 3.0
+        },
+        {
+          "Type": "PlayVfx",
+          "Event": "TAG_ADDED",
+          "Interval": 0.0,
+          "Delay": 0.0,
+          "Entry": 2,
+          "ParticleSystem": "Fire_Charge_Charging1",
+          "Offset": {
+            "X": -8.788342917539502,
+            "Y": -2.8,
+            "Z": -8.18221983093764
+          },
+          "Anchor": "Volume",
+          "Scale": 0.6,
+          "Rotation": {
+            "X": 0.0,
+            "Y": 0.0,
+            "Z": 0.0
+          },
+          "Duration": 3.0
+        },
+        {
+          "Type": "PlayVfx",
+          "Event": "TAG_ADDED",
+          "Interval": 0.0,
+          "Delay": 0.0,
+          "ParticleSystem": "Nakasar_Warning_50",
+          "Offset": {
+            "X": -10.40380592228744,
+            "Y": -2.9,
+            "Z": 10.403805922287441
+          },
+          "Anchor": "Volume",
+          "Scale": 2.18,
+          "Rotation": {
+            "X": 0.0,
+            "Y": 0.0,
+            "Z": 0.0
+          },
+          "Duration": 0.0,
+          "Entry": 3
+        },
+        {
+          "Type": "PlayVfx",
+          "Event": "TAG_ADDED",
+          "Interval": 0.0,
+          "Delay": 0.0,
+          "ParticleSystem": "Nakasar_Warning_50",
+          "Offset": {
+            "X": -3.91344560986456,
+            "Y": -2.9,
+            "Z": 10.407798811618923
+          },
+          "Anchor": "Volume",
+          "Scale": 2.18,
+          "Rotation": {
+            "X": 0.0,
+            "Y": 0.0,
+            "Z": 0.0
+          },
+          "Duration": 0.0,
+          "Entry": 3
+        },
+        {
+          "Type": "PlayVfx",
+          "Event": "TAG_ADDED",
+          "Interval": 0.0,
+          "Delay": 0.0,
+          "ParticleSystem": "Nakasar_Warning_50",
+          "Offset": {
+            "X": -10.407798811618921,
+            "Y": -2.9,
+            "Z": 3.91344560986456
+          },
+          "Anchor": "Volume",
+          "Scale": 2.18,
+          "Rotation": {
+            "X": 0.0,
+            "Y": 0.0,
+            "Z": 0.0
+          },
+          "Duration": 0.0,
+          "Entry": 3
+        },
+        {
+          "Type": "PlayVfx",
+          "Event": "TAG_ADDED",
+          "Interval": 0.0,
+          "Delay": 0.0,
+          "ParticleSystem": "Nakasar_Warning_50",
+          "Offset": {
+            "X": 2.3866648732032303,
+            "Y": -2.9,
+            "Z": 10.341257188154627
+          },
+          "Anchor": "Volume",
+          "Scale": 2.18,
+          "Rotation": {
+            "X": 0.0,
+            "Y": 0.0,
+            "Z": 0.0
+          },
+          "Duration": 0.0,
+          "Entry": 3
+        },
+        {
+          "Type": "PlayVfx",
+          "Event": "TAG_ADDED",
+          "Interval": 0.0,
+          "Delay": 0.0,
+          "ParticleSystem": "Nakasar_Warning_50",
+          "Offset": {
+            "X": -2.272077938642143,
+            "Y": -2.9,
+            "Z": 2.272077938642145
+          },
+          "Anchor": "Volume",
+          "Scale": 2.18,
+          "Rotation": {
+            "X": 0.0,
+            "Y": 0.0,
+            "Z": 0.0
+          },
+          "Duration": 0.0,
+          "Entry": 3
+        },
+        {
+          "Type": "PlayVfx",
+          "Event": "TAG_ADDED",
+          "Interval": 0.0,
+          "Delay": 0.0,
+          "ParticleSystem": "Nakasar_Warning_50",
+          "Offset": {
+            "X": -10.341257188154627,
+            "Y": -2.9,
+            "Z": -2.3866648732032303
+          },
+          "Anchor": "Volume",
+          "Scale": 2.18,
+          "Rotation": {
+            "X": 0.0,
+            "Y": 0.0,
+            "Z": 0.0
+          },
+          "Duration": 0.0,
+          "Entry": 3
+        },
+        {
+          "Type": "PlayVfx",
+          "Event": "TAG_ADDED",
+          "Interval": 0.0,
+          "Delay": 0.0,
+          "ParticleSystem": "Nakasar_Warning_50",
+          "Offset": {
+            "X": 8.18221983093764,
+            "Y": -2.9,
+            "Z": 8.788342917539502
+          },
+          "Anchor": "Volume",
+          "Scale": 2.18,
+          "Rotation": {
+            "X": 0.0,
+            "Y": 0.0,
+            "Z": 0.0
+          },
+          "Duration": 0.0,
+          "Entry": 3
+        },
+        {
+          "Type": "PlayVfx",
+          "Event": "TAG_ADDED",
+          "Interval": 0.0,
+          "Delay": 0.0,
+          "ParticleSystem": "Nakasar_Warning_50",
+          "Offset": {
+            "X": 1.9705627484771426,
+            "Y": -2.9,
+            "Z": -1.970562748477139
+          },
+          "Anchor": "Volume",
+          "Scale": 2.18,
+          "Rotation": {
+            "X": 0.0,
+            "Y": 0.0,
+            "Z": 0.0
+          },
+          "Duration": 0.0,
+          "Entry": 3
+        },
+        {
+          "Type": "PlayVfx",
+          "Event": "TAG_ADDED",
+          "Interval": 0.0,
+          "Delay": 0.0,
+          "ParticleSystem": "Nakasar_Warning_50",
+          "Offset": {
+            "X": -8.788342917539502,
+            "Y": -2.9,
+            "Z": -8.18221983093764
+          },
+          "Anchor": "Volume",
+          "Scale": 2.18,
+          "Rotation": {
+            "X": 0.0,
+            "Y": 0.0,
+            "Z": 0.0
+          },
+          "Duration": 0.0,
+          "Entry": 3
+        },
+        {
+          "Type": "PlayVfx",
+          "Event": "TAG_ADDED",
+          "Interval": 0.0,
+          "Delay": 0.0,
+          "Entry": 3,
+          "ParticleSystem": "Fire_Trap_Preview",
+          "Offset": {
+            "X": -10.40380592228744,
+            "Y": -2.8,
+            "Z": 10.403805922287441
           },
           "Anchor": "Volume",
           "Scale": 1.0,
@@ -175310,20 +175782,217 @@
             "Y": 0.0,
             "Z": 0.0
           },
-          "Duration": 0.0
+          "Duration": 5.0
         },
         {
-          "Type": "ModifyTags",
-          "Event": "BLOCK_USED",
+          "Type": "PlayVfx",
+          "Event": "TAG_ADDED",
           "Interval": 0.0,
-          "Delay": 0.5,
-          "Operation": "Set",
-          "TagKey": "Foyer_Lightning",
-          "TagValue": "On",
-          "MatchKey": "Transmutation_Seal",
-          "MatchValue": "",
-          "Radius": 60.0,
-          "Center": "Volume"
+          "Delay": 0.0,
+          "Entry": 3,
+          "ParticleSystem": "Fire_Trap_Preview",
+          "Offset": {
+            "X": -3.91344560986456,
+            "Y": -2.8,
+            "Z": 10.407798811618923
+          },
+          "Anchor": "Volume",
+          "Scale": 1.0,
+          "Rotation": {
+            "X": 0.0,
+            "Y": 0.0,
+            "Z": 0.0
+          },
+          "Duration": 5.0
+        },
+        {
+          "Type": "PlayVfx",
+          "Event": "TAG_ADDED",
+          "Interval": 0.0,
+          "Delay": 0.0,
+          "Entry": 3,
+          "ParticleSystem": "Fire_Trap_Preview",
+          "Offset": {
+            "X": -10.407798811618921,
+            "Y": -2.8,
+            "Z": 3.91344560986456
+          },
+          "Anchor": "Volume",
+          "Scale": 1.0,
+          "Rotation": {
+            "X": 0.0,
+            "Y": 0.0,
+            "Z": 0.0
+          },
+          "Duration": 5.0
+        },
+        {
+          "Type": "PlayVfx",
+          "Event": "TAG_ADDED",
+          "Interval": 0.0,
+          "Delay": 0.0,
+          "Entry": 3,
+          "ParticleSystem": "Fire_Trap_Preview",
+          "Offset": {
+            "X": 2.3866648732032303,
+            "Y": -2.8,
+            "Z": 10.341257188154627
+          },
+          "Anchor": "Volume",
+          "Scale": 1.0,
+          "Rotation": {
+            "X": 0.0,
+            "Y": 0.0,
+            "Z": 0.0
+          },
+          "Duration": 5.0
+        },
+        {
+          "Type": "PlayVfx",
+          "Event": "TAG_ADDED",
+          "Interval": 0.0,
+          "Delay": 0.0,
+          "Entry": 3,
+          "ParticleSystem": "Fire_Trap_Preview",
+          "Offset": {
+            "X": -2.272077938642143,
+            "Y": -2.8,
+            "Z": 2.272077938642145
+          },
+          "Anchor": "Volume",
+          "Scale": 1.0,
+          "Rotation": {
+            "X": 0.0,
+            "Y": 0.0,
+            "Z": 0.0
+          },
+          "Duration": 5.0
+        },
+        {
+          "Type": "PlayVfx",
+          "Event": "TAG_ADDED",
+          "Interval": 0.0,
+          "Delay": 0.0,
+          "Entry": 3,
+          "ParticleSystem": "Fire_Trap_Preview",
+          "Offset": {
+            "X": -10.341257188154627,
+            "Y": -2.8,
+            "Z": -2.3866648732032303
+          },
+          "Anchor": "Volume",
+          "Scale": 1.0,
+          "Rotation": {
+            "X": 0.0,
+            "Y": 0.0,
+            "Z": 0.0
+          },
+          "Duration": 5.0
+        },
+        {
+          "Type": "PlayVfx",
+          "Event": "TAG_ADDED",
+          "Interval": 0.0,
+          "Delay": 0.0,
+          "Entry": 3,
+          "ParticleSystem": "Fire_Trap_Preview",
+          "Offset": {
+            "X": 8.18221983093764,
+            "Y": -2.8,
+            "Z": 8.788342917539502
+          },
+          "Anchor": "Volume",
+          "Scale": 1.0,
+          "Rotation": {
+            "X": 0.0,
+            "Y": 0.0,
+            "Z": 0.0
+          },
+          "Duration": 5.0
+        },
+        {
+          "Type": "PlayVfx",
+          "Event": "TAG_ADDED",
+          "Interval": 0.0,
+          "Delay": 0.0,
+          "Entry": 3,
+          "ParticleSystem": "Fire_Trap_Preview",
+          "Offset": {
+            "X": 1.9705627484771426,
+            "Y": -2.8,
+            "Z": -1.970562748477139
+          },
+          "Anchor": "Volume",
+          "Scale": 1.0,
+          "Rotation": {
+            "X": 0.0,
+            "Y": 0.0,
+            "Z": 0.0
+          },
+          "Duration": 5.0
+        },
+        {
+          "Type": "PlayVfx",
+          "Event": "TAG_ADDED",
+          "Interval": 0.0,
+          "Delay": 0.0,
+          "Entry": 3,
+          "ParticleSystem": "Fire_Trap_Preview",
+          "Offset": {
+            "X": -8.788342917539502,
+            "Y": -2.8,
+            "Z": -8.18221983093764
+          },
+          "Anchor": "Volume",
+          "Scale": 1.0,
+          "Rotation": {
+            "X": 0.0,
+            "Y": 0.0,
+            "Z": 0.0
+          },
+          "Duration": 5.0
+        },
+        {
+          "Type": "PlaySound",
+          "Event": "TAG_ADDED",
+          "Interval": 0.0,
+          "Delay": 0.0,
+          "Entry": 3,
+          "SoundEvent": "SFX_Gobliterator_Arena_Door_Warning",
+          "Location": "VolumeCenter",
+          "Offset": {
+            "X": 0.0,
+            "Y": 0.0,
+            "Z": 0.0
+          }
+        },
+        {
+          "Type": "EntityEffect",
+          "Event": "TICK",
+          "Interval": 1.0,
+          "Delay": 0.0,
+          "Effect": "Burn",
+          "Mode": "Apply",
+          "Duration": 3.0,
+          "Entry": 0
+        },
+        {
+          "Type": "DamageEntity",
+          "Event": "TICK",
+          "Interval": 1.0,
+          "Delay": 0.0,
+          "Mode": "PercentMax",
+          "Amount": 7.0,
+          "Entry": 0
+        },
+        {
+          "Type": "DamageEntity",
+          "Event": "TICK",
+          "Interval": 1.5,
+          "Delay": 0.0,
+          "Mode": "PercentMax",
+          "Amount": 1.5,
+          "Entry": 1
         }
       ],
       "ConditionTiming": "BeforeVolumeDelay",
@@ -175334,27 +176003,28 @@
       "GroupId": "6e37a0c2-6475-523e-8337-f19fa2959f14",
       "KeepLoaded": false,
       "Tags": {
-        "Lit": "No"
+        "State": "Off",
+        "Fx": "None"
       },
-      "Name": "Transmutation_Foyer_Lightning"
+      "Name": "Trans_Fire"
     },
-    "433a4874-fc05-50cd-a0a5-2d8abdde4a5d": {
+    "fefcd8de-8af2-5fed-9e1c-c2ac424fa1b2": {
       "Position": {
-        "X": -14.0,
-        "Y": 175.5,
-        "Z": -455.0
+        "X": -19.0,
+        "Y": 169.5,
+        "Z": -458.0
       },
       "Shape": {
         "Type": "Box",
         "Min": {
-          "X": -0.95,
-          "Y": -7.45,
-          "Z": -1.95
+          "X": -2.95,
+          "Y": -2.45,
+          "Z": -2.95
         },
         "Max": {
-          "X": 0.95,
-          "Y": 7.45,
-          "Z": 1.95
+          "X": 2.95,
+          "Y": 2.45,
+          "Z": 2.95
         }
       },
       "Conditions": [
@@ -175362,7 +176032,7 @@
           "Type": "TagCondition",
           "Event": "TAG_ADDED",
           "Source": "Self",
-          "TagKey": "Foyer_Fire",
+          "TagKey": "Golem",
           "Comparison": "Exactly",
           "CompareAgainst": "Value",
           "TagValue": "On",
@@ -175376,49 +176046,7 @@
           "Type": "TagCondition",
           "Event": "TAG_ADDED",
           "Source": "Self",
-          "TagKey": "Foyer_Ice",
-          "Comparison": "Exactly",
-          "CompareAgainst": "Value",
-          "TagValue": "On",
-          "Inverted": false,
-          "MatchKey": "",
-          "MatchValue": "",
-          "Radius": 50.0,
-          "Center": "Volume"
-        },
-        {
-          "Type": "TagCondition",
-          "Event": "TAG_ADDED",
-          "Source": "Self",
-          "TagKey": "Foyer_Acid",
-          "Comparison": "Exactly",
-          "CompareAgainst": "Value",
-          "TagValue": "On",
-          "Inverted": false,
-          "MatchKey": "",
-          "MatchValue": "",
-          "Radius": 50.0,
-          "Center": "Volume"
-        },
-        {
-          "Type": "TagCondition",
-          "Event": "TAG_ADDED",
-          "Source": "Self",
-          "TagKey": "Foyer_Lightning",
-          "Comparison": "Exactly",
-          "CompareAgainst": "Value",
-          "TagValue": "On",
-          "Inverted": false,
-          "MatchKey": "",
-          "MatchValue": "",
-          "Radius": 50.0,
-          "Center": "Volume"
-        },
-        {
-          "Type": "TagCondition",
-          "Event": "TAG_ADDED",
-          "Source": "Self",
-          "TagKey": "Transmutation_Seal",
+          "TagKey": "Trans_Seal",
           "Comparison": "Exactly",
           "CompareAgainst": "Value",
           "TagValue": "Closed",
@@ -175436,7 +176064,7 @@
           "Interval": 0.0,
           "Delay": 0.0,
           "Operation": "Set",
-          "TagKey": "Transmutation_Seal",
+          "TagKey": "Trans_Seal",
           "TagValue": "Open",
           "MatchKey": "",
           "MatchValue": "",
@@ -175489,16 +176117,6 @@
           "FadeInDuration": 0.5,
           "FadeOutDuration": 1.0,
           "Recipient": "AllPlayers"
-        },
-        {
-          "Type": "DisableVolume",
-          "Event": "TAG_ADDED",
-          "Interval": 0.0,
-          "Delay": 0.5,
-          "MatchKey": "Transmutation_Controller",
-          "MatchValue": "",
-          "Radius": 60.0,
-          "Center": "Volume"
         }
       ],
       "TargetTypes": [
@@ -175508,13 +176126,10 @@
       "GroupId": "6e37a0c2-6475-523e-8337-f19fa2959f14",
       "KeepLoaded": false,
       "Tags": {
-        "Transmutation_Seal": "Closed",
-        "Foyer_Fire": "Off",
-        "Foyer_Ice": "Off",
-        "Foyer_Acid": "Off",
-        "Foyer_Lightning": "Off"
+        "Trans_Seal": "Closed",
+        "Golem": "Off"
       },
-      "Name": "Transmutation_Seal"
+      "Name": "Trans_Seal"
     },
     "dc068146-4db4-5554-ae74-d8c84c5f3d6f": {
       "Position": {
@@ -187343,21 +187958,21 @@
     },
     "5e7476ec-d34c-59ad-87c0-ee78dbf21849": {
       "Position": {
-        "X": 14.5,
-        "Y": 184.5,
-        "Z": -455.0
+        "X": 21.5,
+        "Y": 183.5,
+        "Z": -457.0
       },
       "Shape": {
         "Type": "Box",
         "Min": {
-          "X": -0.45,
-          "Y": -2.45,
-          "Z": -1.95
+          "X": -4.45,
+          "Y": -0.45,
+          "Z": -4.95
         },
         "Max": {
-          "X": 0.45,
-          "Y": 2.45,
-          "Z": 1.95
+          "X": 4.45,
+          "Y": 0.45,
+          "Z": 4.95
         }
       },
       "Conditions": [
@@ -187514,21 +188129,21 @@
     },
     "1a55092d-3941-5ef7-9210-d8128507ccef": {
       "Position": {
-        "X": 14.5,
-        "Y": 184.5,
-        "Z": -455.0
+        "X": 20.0,
+        "Y": 183.5,
+        "Z": -458.5
       },
       "Shape": {
         "Type": "Box",
         "Min": {
-          "X": -0.45,
-          "Y": -2.45,
-          "Z": -1.95
+          "X": -2.95,
+          "Y": -0.45,
+          "Z": -0.45
         },
         "Max": {
-          "X": 0.45,
-          "Y": 2.45,
-          "Z": 1.95
+          "X": 2.95,
+          "Y": 0.45,
+          "Z": 0.45
         }
       },
       "Conditions": [
@@ -187618,6 +188233,969 @@
         "Chimera_Barrier": "Piece"
       },
       "Name": "Chimera_Barrier_0"
+    },
+    "885cb890-21f2-58aa-91ce-78f774d3b4af": {
+      "Position": {
+        "X": 20.5,
+        "Y": 183.5,
+        "Z": -457.5
+      },
+      "Shape": {
+        "Type": "Box",
+        "Min": {
+          "X": -3.45,
+          "Y": -0.45,
+          "Z": -0.45
+        },
+        "Max": {
+          "X": 3.45,
+          "Y": 0.45,
+          "Z": 0.45
+        }
+      },
+      "Conditions": [
+        {
+          "Type": "TagCondition",
+          "Event": "SIGNAL_RECEIVED",
+          "Source": "Event",
+          "TagKey": "Close",
+          "Comparison": "Exactly",
+          "CompareAgainst": "Value",
+          "TagValue": "",
+          "Inverted": false,
+          "MatchKey": "",
+          "MatchValue": "",
+          "Radius": 50.0,
+          "Center": "Volume"
+        },
+        {
+          "Type": "TagCondition",
+          "Event": "SIGNAL_RECEIVED",
+          "Entry": 1,
+          "Source": "Event",
+          "TagKey": "Open",
+          "Comparison": "Exactly",
+          "CompareAgainst": "Value",
+          "TagValue": "",
+          "Inverted": false,
+          "MatchKey": "",
+          "MatchValue": "",
+          "Radius": 50.0,
+          "Center": "Volume"
+        }
+      ],
+      "Effects": [
+        {
+          "Type": "ReplaceBlockType",
+          "Event": "SIGNAL_RECEIVED",
+          "Interval": 0.0,
+          "Delay": 0.0,
+          "FromBlockTypes": [
+            "Empty"
+          ],
+          "FromBlockState": "",
+          "ToBlockType": "Nakasar_Arena_Barrier",
+          "ToBlockState": "",
+          "Offset": {
+            "X": 0.0,
+            "Y": 0.0,
+            "Z": 0.0
+          },
+          "Origin": "VolumeOrigin",
+          "Rotation": "None",
+          "Pitch": "None",
+          "Roll": "None"
+        },
+        {
+          "Type": "ReplaceBlockType",
+          "Event": "SIGNAL_RECEIVED",
+          "Interval": 0.0,
+          "Delay": 0.0,
+          "Entry": 1,
+          "FromBlockTypes": [
+            "Nakasar_Arena_Barrier"
+          ],
+          "FromBlockState": "",
+          "ToBlockType": "Empty",
+          "ToBlockState": "",
+          "Offset": {
+            "X": 0.0,
+            "Y": 0.0,
+            "Z": 0.0
+          },
+          "Origin": "VolumeOrigin",
+          "Rotation": "None",
+          "Pitch": "None",
+          "Roll": "None"
+        }
+      ],
+      "ConditionTiming": "BeforeVolumeDelay",
+      "TargetTypes": [
+        "Player"
+      ],
+      "Enabled": true,
+      "GroupId": "50ef3a1b-5ba7-5f69-8979-798466cf1954",
+      "KeepLoaded": false,
+      "Tags": {
+        "Chimera_Barrier": "Piece"
+      },
+      "Name": "Chimera_Barrier_1"
+    },
+    "869dd11c-e815-5895-a26f-4829cb452b94": {
+      "Position": {
+        "X": 19.5,
+        "Y": 183.5,
+        "Z": -460.5
+      },
+      "Shape": {
+        "Type": "Box",
+        "Min": {
+          "X": -1.45,
+          "Y": -0.45,
+          "Z": -0.45
+        },
+        "Max": {
+          "X": 1.45,
+          "Y": 0.45,
+          "Z": 0.45
+        }
+      },
+      "Conditions": [
+        {
+          "Type": "TagCondition",
+          "Event": "SIGNAL_RECEIVED",
+          "Source": "Event",
+          "TagKey": "Close",
+          "Comparison": "Exactly",
+          "CompareAgainst": "Value",
+          "TagValue": "",
+          "Inverted": false,
+          "MatchKey": "",
+          "MatchValue": "",
+          "Radius": 50.0,
+          "Center": "Volume"
+        },
+        {
+          "Type": "TagCondition",
+          "Event": "SIGNAL_RECEIVED",
+          "Entry": 1,
+          "Source": "Event",
+          "TagKey": "Open",
+          "Comparison": "Exactly",
+          "CompareAgainst": "Value",
+          "TagValue": "",
+          "Inverted": false,
+          "MatchKey": "",
+          "MatchValue": "",
+          "Radius": 50.0,
+          "Center": "Volume"
+        }
+      ],
+      "Effects": [
+        {
+          "Type": "ReplaceBlockType",
+          "Event": "SIGNAL_RECEIVED",
+          "Interval": 0.0,
+          "Delay": 0.0,
+          "FromBlockTypes": [
+            "Empty"
+          ],
+          "FromBlockState": "",
+          "ToBlockType": "Nakasar_Arena_Barrier",
+          "ToBlockState": "",
+          "Offset": {
+            "X": 0.0,
+            "Y": 0.0,
+            "Z": 0.0
+          },
+          "Origin": "VolumeOrigin",
+          "Rotation": "None",
+          "Pitch": "None",
+          "Roll": "None"
+        },
+        {
+          "Type": "ReplaceBlockType",
+          "Event": "SIGNAL_RECEIVED",
+          "Interval": 0.0,
+          "Delay": 0.0,
+          "Entry": 1,
+          "FromBlockTypes": [
+            "Nakasar_Arena_Barrier"
+          ],
+          "FromBlockState": "",
+          "ToBlockType": "Empty",
+          "ToBlockState": "",
+          "Offset": {
+            "X": 0.0,
+            "Y": 0.0,
+            "Z": 0.0
+          },
+          "Origin": "VolumeOrigin",
+          "Rotation": "None",
+          "Pitch": "None",
+          "Roll": "None"
+        }
+      ],
+      "ConditionTiming": "BeforeVolumeDelay",
+      "TargetTypes": [
+        "Player"
+      ],
+      "Enabled": true,
+      "GroupId": "50ef3a1b-5ba7-5f69-8979-798466cf1954",
+      "KeepLoaded": false,
+      "Tags": {
+        "Chimera_Barrier": "Piece"
+      },
+      "Name": "Chimera_Barrier_2"
+    },
+    "0e2b1f4e-79f0-5b47-be87-e11105806dd0": {
+      "Position": {
+        "X": 20.0,
+        "Y": 183.5,
+        "Z": -459.5
+      },
+      "Shape": {
+        "Type": "Box",
+        "Min": {
+          "X": -1.95,
+          "Y": -0.45,
+          "Z": -0.45
+        },
+        "Max": {
+          "X": 1.95,
+          "Y": 0.45,
+          "Z": 0.45
+        }
+      },
+      "Conditions": [
+        {
+          "Type": "TagCondition",
+          "Event": "SIGNAL_RECEIVED",
+          "Source": "Event",
+          "TagKey": "Close",
+          "Comparison": "Exactly",
+          "CompareAgainst": "Value",
+          "TagValue": "",
+          "Inverted": false,
+          "MatchKey": "",
+          "MatchValue": "",
+          "Radius": 50.0,
+          "Center": "Volume"
+        },
+        {
+          "Type": "TagCondition",
+          "Event": "SIGNAL_RECEIVED",
+          "Entry": 1,
+          "Source": "Event",
+          "TagKey": "Open",
+          "Comparison": "Exactly",
+          "CompareAgainst": "Value",
+          "TagValue": "",
+          "Inverted": false,
+          "MatchKey": "",
+          "MatchValue": "",
+          "Radius": 50.0,
+          "Center": "Volume"
+        }
+      ],
+      "Effects": [
+        {
+          "Type": "ReplaceBlockType",
+          "Event": "SIGNAL_RECEIVED",
+          "Interval": 0.0,
+          "Delay": 0.0,
+          "FromBlockTypes": [
+            "Empty"
+          ],
+          "FromBlockState": "",
+          "ToBlockType": "Nakasar_Arena_Barrier",
+          "ToBlockState": "",
+          "Offset": {
+            "X": 0.0,
+            "Y": 0.0,
+            "Z": 0.0
+          },
+          "Origin": "VolumeOrigin",
+          "Rotation": "None",
+          "Pitch": "None",
+          "Roll": "None"
+        },
+        {
+          "Type": "ReplaceBlockType",
+          "Event": "SIGNAL_RECEIVED",
+          "Interval": 0.0,
+          "Delay": 0.0,
+          "Entry": 1,
+          "FromBlockTypes": [
+            "Nakasar_Arena_Barrier"
+          ],
+          "FromBlockState": "",
+          "ToBlockType": "Empty",
+          "ToBlockState": "",
+          "Offset": {
+            "X": 0.0,
+            "Y": 0.0,
+            "Z": 0.0
+          },
+          "Origin": "VolumeOrigin",
+          "Rotation": "None",
+          "Pitch": "None",
+          "Roll": "None"
+        }
+      ],
+      "ConditionTiming": "BeforeVolumeDelay",
+      "TargetTypes": [
+        "Player"
+      ],
+      "Enabled": true,
+      "GroupId": "50ef3a1b-5ba7-5f69-8979-798466cf1954",
+      "KeepLoaded": false,
+      "Tags": {
+        "Chimera_Barrier": "Piece"
+      },
+      "Name": "Chimera_Barrier_3"
+    },
+    "04928d6f-071e-5cf7-8dcf-ee684aed33c0": {
+      "Position": {
+        "X": 21.5,
+        "Y": 183.5,
+        "Z": -456.5
+      },
+      "Shape": {
+        "Type": "Box",
+        "Min": {
+          "X": -3.45,
+          "Y": -0.45,
+          "Z": -0.45
+        },
+        "Max": {
+          "X": 3.45,
+          "Y": 0.45,
+          "Z": 0.45
+        }
+      },
+      "Conditions": [
+        {
+          "Type": "TagCondition",
+          "Event": "SIGNAL_RECEIVED",
+          "Source": "Event",
+          "TagKey": "Close",
+          "Comparison": "Exactly",
+          "CompareAgainst": "Value",
+          "TagValue": "",
+          "Inverted": false,
+          "MatchKey": "",
+          "MatchValue": "",
+          "Radius": 50.0,
+          "Center": "Volume"
+        },
+        {
+          "Type": "TagCondition",
+          "Event": "SIGNAL_RECEIVED",
+          "Entry": 1,
+          "Source": "Event",
+          "TagKey": "Open",
+          "Comparison": "Exactly",
+          "CompareAgainst": "Value",
+          "TagValue": "",
+          "Inverted": false,
+          "MatchKey": "",
+          "MatchValue": "",
+          "Radius": 50.0,
+          "Center": "Volume"
+        }
+      ],
+      "Effects": [
+        {
+          "Type": "ReplaceBlockType",
+          "Event": "SIGNAL_RECEIVED",
+          "Interval": 0.0,
+          "Delay": 0.0,
+          "FromBlockTypes": [
+            "Empty"
+          ],
+          "FromBlockState": "",
+          "ToBlockType": "Nakasar_Arena_Barrier",
+          "ToBlockState": "",
+          "Offset": {
+            "X": 0.0,
+            "Y": 0.0,
+            "Z": 0.0
+          },
+          "Origin": "VolumeOrigin",
+          "Rotation": "None",
+          "Pitch": "None",
+          "Roll": "None"
+        },
+        {
+          "Type": "ReplaceBlockType",
+          "Event": "SIGNAL_RECEIVED",
+          "Interval": 0.0,
+          "Delay": 0.0,
+          "Entry": 1,
+          "FromBlockTypes": [
+            "Nakasar_Arena_Barrier"
+          ],
+          "FromBlockState": "",
+          "ToBlockType": "Empty",
+          "ToBlockState": "",
+          "Offset": {
+            "X": 0.0,
+            "Y": 0.0,
+            "Z": 0.0
+          },
+          "Origin": "VolumeOrigin",
+          "Rotation": "None",
+          "Pitch": "None",
+          "Roll": "None"
+        }
+      ],
+      "ConditionTiming": "BeforeVolumeDelay",
+      "TargetTypes": [
+        "Player"
+      ],
+      "Enabled": true,
+      "GroupId": "50ef3a1b-5ba7-5f69-8979-798466cf1954",
+      "KeepLoaded": false,
+      "Tags": {
+        "Chimera_Barrier": "Piece"
+      },
+      "Name": "Chimera_Barrier_4"
+    },
+    "a906ed76-588d-5e03-9ba7-1521379d3ba3": {
+      "Position": {
+        "X": 19.5,
+        "Y": 183.5,
+        "Z": -461.5
+      },
+      "Shape": {
+        "Type": "Box",
+        "Min": {
+          "X": -0.45,
+          "Y": -0.45,
+          "Z": -0.45
+        },
+        "Max": {
+          "X": 0.45,
+          "Y": 0.45,
+          "Z": 0.45
+        }
+      },
+      "Conditions": [
+        {
+          "Type": "TagCondition",
+          "Event": "SIGNAL_RECEIVED",
+          "Source": "Event",
+          "TagKey": "Close",
+          "Comparison": "Exactly",
+          "CompareAgainst": "Value",
+          "TagValue": "",
+          "Inverted": false,
+          "MatchKey": "",
+          "MatchValue": "",
+          "Radius": 50.0,
+          "Center": "Volume"
+        },
+        {
+          "Type": "TagCondition",
+          "Event": "SIGNAL_RECEIVED",
+          "Entry": 1,
+          "Source": "Event",
+          "TagKey": "Open",
+          "Comparison": "Exactly",
+          "CompareAgainst": "Value",
+          "TagValue": "",
+          "Inverted": false,
+          "MatchKey": "",
+          "MatchValue": "",
+          "Radius": 50.0,
+          "Center": "Volume"
+        }
+      ],
+      "Effects": [
+        {
+          "Type": "ReplaceBlockType",
+          "Event": "SIGNAL_RECEIVED",
+          "Interval": 0.0,
+          "Delay": 0.0,
+          "FromBlockTypes": [
+            "Empty"
+          ],
+          "FromBlockState": "",
+          "ToBlockType": "Nakasar_Arena_Barrier",
+          "ToBlockState": "",
+          "Offset": {
+            "X": 0.0,
+            "Y": 0.0,
+            "Z": 0.0
+          },
+          "Origin": "VolumeOrigin",
+          "Rotation": "None",
+          "Pitch": "None",
+          "Roll": "None"
+        },
+        {
+          "Type": "ReplaceBlockType",
+          "Event": "SIGNAL_RECEIVED",
+          "Interval": 0.0,
+          "Delay": 0.0,
+          "Entry": 1,
+          "FromBlockTypes": [
+            "Nakasar_Arena_Barrier"
+          ],
+          "FromBlockState": "",
+          "ToBlockType": "Empty",
+          "ToBlockState": "",
+          "Offset": {
+            "X": 0.0,
+            "Y": 0.0,
+            "Z": 0.0
+          },
+          "Origin": "VolumeOrigin",
+          "Rotation": "None",
+          "Pitch": "None",
+          "Roll": "None"
+        }
+      ],
+      "ConditionTiming": "BeforeVolumeDelay",
+      "TargetTypes": [
+        "Player"
+      ],
+      "Enabled": true,
+      "GroupId": "50ef3a1b-5ba7-5f69-8979-798466cf1954",
+      "KeepLoaded": false,
+      "Tags": {
+        "Chimera_Barrier": "Piece"
+      },
+      "Name": "Chimera_Barrier_5"
+    },
+    "0e827e00-f9bc-5fd7-9bb4-6f8c7804cbdc": {
+      "Position": {
+        "X": 22.0,
+        "Y": 183.5,
+        "Z": -455.5
+      },
+      "Shape": {
+        "Type": "Box",
+        "Min": {
+          "X": -2.95,
+          "Y": -0.45,
+          "Z": -0.45
+        },
+        "Max": {
+          "X": 2.95,
+          "Y": 0.45,
+          "Z": 0.45
+        }
+      },
+      "Conditions": [
+        {
+          "Type": "TagCondition",
+          "Event": "SIGNAL_RECEIVED",
+          "Source": "Event",
+          "TagKey": "Close",
+          "Comparison": "Exactly",
+          "CompareAgainst": "Value",
+          "TagValue": "",
+          "Inverted": false,
+          "MatchKey": "",
+          "MatchValue": "",
+          "Radius": 50.0,
+          "Center": "Volume"
+        },
+        {
+          "Type": "TagCondition",
+          "Event": "SIGNAL_RECEIVED",
+          "Entry": 1,
+          "Source": "Event",
+          "TagKey": "Open",
+          "Comparison": "Exactly",
+          "CompareAgainst": "Value",
+          "TagValue": "",
+          "Inverted": false,
+          "MatchKey": "",
+          "MatchValue": "",
+          "Radius": 50.0,
+          "Center": "Volume"
+        }
+      ],
+      "Effects": [
+        {
+          "Type": "ReplaceBlockType",
+          "Event": "SIGNAL_RECEIVED",
+          "Interval": 0.0,
+          "Delay": 0.0,
+          "FromBlockTypes": [
+            "Empty"
+          ],
+          "FromBlockState": "",
+          "ToBlockType": "Nakasar_Arena_Barrier",
+          "ToBlockState": "",
+          "Offset": {
+            "X": 0.0,
+            "Y": 0.0,
+            "Z": 0.0
+          },
+          "Origin": "VolumeOrigin",
+          "Rotation": "None",
+          "Pitch": "None",
+          "Roll": "None"
+        },
+        {
+          "Type": "ReplaceBlockType",
+          "Event": "SIGNAL_RECEIVED",
+          "Interval": 0.0,
+          "Delay": 0.0,
+          "Entry": 1,
+          "FromBlockTypes": [
+            "Nakasar_Arena_Barrier"
+          ],
+          "FromBlockState": "",
+          "ToBlockType": "Empty",
+          "ToBlockState": "",
+          "Offset": {
+            "X": 0.0,
+            "Y": 0.0,
+            "Z": 0.0
+          },
+          "Origin": "VolumeOrigin",
+          "Rotation": "None",
+          "Pitch": "None",
+          "Roll": "None"
+        }
+      ],
+      "ConditionTiming": "BeforeVolumeDelay",
+      "TargetTypes": [
+        "Player"
+      ],
+      "Enabled": true,
+      "GroupId": "50ef3a1b-5ba7-5f69-8979-798466cf1954",
+      "KeepLoaded": false,
+      "Tags": {
+        "Chimera_Barrier": "Piece"
+      },
+      "Name": "Chimera_Barrier_6"
+    },
+    "9f9c505c-2cc1-5d61-b8b1-f09ddcd38ac4": {
+      "Position": {
+        "X": 23.0,
+        "Y": 183.5,
+        "Z": -454.5
+      },
+      "Shape": {
+        "Type": "Box",
+        "Min": {
+          "X": -2.95,
+          "Y": -0.45,
+          "Z": -0.45
+        },
+        "Max": {
+          "X": 2.95,
+          "Y": 0.45,
+          "Z": 0.45
+        }
+      },
+      "Conditions": [
+        {
+          "Type": "TagCondition",
+          "Event": "SIGNAL_RECEIVED",
+          "Source": "Event",
+          "TagKey": "Close",
+          "Comparison": "Exactly",
+          "CompareAgainst": "Value",
+          "TagValue": "",
+          "Inverted": false,
+          "MatchKey": "",
+          "MatchValue": "",
+          "Radius": 50.0,
+          "Center": "Volume"
+        },
+        {
+          "Type": "TagCondition",
+          "Event": "SIGNAL_RECEIVED",
+          "Entry": 1,
+          "Source": "Event",
+          "TagKey": "Open",
+          "Comparison": "Exactly",
+          "CompareAgainst": "Value",
+          "TagValue": "",
+          "Inverted": false,
+          "MatchKey": "",
+          "MatchValue": "",
+          "Radius": 50.0,
+          "Center": "Volume"
+        }
+      ],
+      "Effects": [
+        {
+          "Type": "ReplaceBlockType",
+          "Event": "SIGNAL_RECEIVED",
+          "Interval": 0.0,
+          "Delay": 0.0,
+          "FromBlockTypes": [
+            "Empty"
+          ],
+          "FromBlockState": "",
+          "ToBlockType": "Nakasar_Arena_Barrier",
+          "ToBlockState": "",
+          "Offset": {
+            "X": 0.0,
+            "Y": 0.0,
+            "Z": 0.0
+          },
+          "Origin": "VolumeOrigin",
+          "Rotation": "None",
+          "Pitch": "None",
+          "Roll": "None"
+        },
+        {
+          "Type": "ReplaceBlockType",
+          "Event": "SIGNAL_RECEIVED",
+          "Interval": 0.0,
+          "Delay": 0.0,
+          "Entry": 1,
+          "FromBlockTypes": [
+            "Nakasar_Arena_Barrier"
+          ],
+          "FromBlockState": "",
+          "ToBlockType": "Empty",
+          "ToBlockState": "",
+          "Offset": {
+            "X": 0.0,
+            "Y": 0.0,
+            "Z": 0.0
+          },
+          "Origin": "VolumeOrigin",
+          "Rotation": "None",
+          "Pitch": "None",
+          "Roll": "None"
+        }
+      ],
+      "ConditionTiming": "BeforeVolumeDelay",
+      "TargetTypes": [
+        "Player"
+      ],
+      "Enabled": true,
+      "GroupId": "50ef3a1b-5ba7-5f69-8979-798466cf1954",
+      "KeepLoaded": false,
+      "Tags": {
+        "Chimera_Barrier": "Piece"
+      },
+      "Name": "Chimera_Barrier_7"
+    },
+    "5192449e-efc0-5df6-a1ec-866b3ed6f911": {
+      "Position": {
+        "X": 22.5,
+        "Y": 183.5,
+        "Z": -452.5
+      },
+      "Shape": {
+        "Type": "Box",
+        "Min": {
+          "X": -0.45,
+          "Y": -0.45,
+          "Z": -0.45
+        },
+        "Max": {
+          "X": 0.45,
+          "Y": 0.45,
+          "Z": 0.45
+        }
+      },
+      "Conditions": [
+        {
+          "Type": "TagCondition",
+          "Event": "SIGNAL_RECEIVED",
+          "Source": "Event",
+          "TagKey": "Close",
+          "Comparison": "Exactly",
+          "CompareAgainst": "Value",
+          "TagValue": "",
+          "Inverted": false,
+          "MatchKey": "",
+          "MatchValue": "",
+          "Radius": 50.0,
+          "Center": "Volume"
+        },
+        {
+          "Type": "TagCondition",
+          "Event": "SIGNAL_RECEIVED",
+          "Entry": 1,
+          "Source": "Event",
+          "TagKey": "Open",
+          "Comparison": "Exactly",
+          "CompareAgainst": "Value",
+          "TagValue": "",
+          "Inverted": false,
+          "MatchKey": "",
+          "MatchValue": "",
+          "Radius": 50.0,
+          "Center": "Volume"
+        }
+      ],
+      "Effects": [
+        {
+          "Type": "ReplaceBlockType",
+          "Event": "SIGNAL_RECEIVED",
+          "Interval": 0.0,
+          "Delay": 0.0,
+          "FromBlockTypes": [
+            "Empty"
+          ],
+          "FromBlockState": "",
+          "ToBlockType": "Nakasar_Arena_Barrier",
+          "ToBlockState": "",
+          "Offset": {
+            "X": 0.0,
+            "Y": 0.0,
+            "Z": 0.0
+          },
+          "Origin": "VolumeOrigin",
+          "Rotation": "None",
+          "Pitch": "None",
+          "Roll": "None"
+        },
+        {
+          "Type": "ReplaceBlockType",
+          "Event": "SIGNAL_RECEIVED",
+          "Interval": 0.0,
+          "Delay": 0.0,
+          "Entry": 1,
+          "FromBlockTypes": [
+            "Nakasar_Arena_Barrier"
+          ],
+          "FromBlockState": "",
+          "ToBlockType": "Empty",
+          "ToBlockState": "",
+          "Offset": {
+            "X": 0.0,
+            "Y": 0.0,
+            "Z": 0.0
+          },
+          "Origin": "VolumeOrigin",
+          "Rotation": "None",
+          "Pitch": "None",
+          "Roll": "None"
+        }
+      ],
+      "ConditionTiming": "BeforeVolumeDelay",
+      "TargetTypes": [
+        "Player"
+      ],
+      "Enabled": true,
+      "GroupId": "50ef3a1b-5ba7-5f69-8979-798466cf1954",
+      "KeepLoaded": false,
+      "Tags": {
+        "Chimera_Barrier": "Piece"
+      },
+      "Name": "Chimera_Barrier_8"
+    },
+    "e0a616b3-9712-53f5-9980-11cd0b1fb393": {
+      "Position": {
+        "X": 23.5,
+        "Y": 183.5,
+        "Z": -453.5
+      },
+      "Shape": {
+        "Type": "Box",
+        "Min": {
+          "X": -1.45,
+          "Y": -0.45,
+          "Z": -0.45
+        },
+        "Max": {
+          "X": 1.45,
+          "Y": 0.45,
+          "Z": 0.45
+        }
+      },
+      "Conditions": [
+        {
+          "Type": "TagCondition",
+          "Event": "SIGNAL_RECEIVED",
+          "Source": "Event",
+          "TagKey": "Close",
+          "Comparison": "Exactly",
+          "CompareAgainst": "Value",
+          "TagValue": "",
+          "Inverted": false,
+          "MatchKey": "",
+          "MatchValue": "",
+          "Radius": 50.0,
+          "Center": "Volume"
+        },
+        {
+          "Type": "TagCondition",
+          "Event": "SIGNAL_RECEIVED",
+          "Entry": 1,
+          "Source": "Event",
+          "TagKey": "Open",
+          "Comparison": "Exactly",
+          "CompareAgainst": "Value",
+          "TagValue": "",
+          "Inverted": false,
+          "MatchKey": "",
+          "MatchValue": "",
+          "Radius": 50.0,
+          "Center": "Volume"
+        }
+      ],
+      "Effects": [
+        {
+          "Type": "ReplaceBlockType",
+          "Event": "SIGNAL_RECEIVED",
+          "Interval": 0.0,
+          "Delay": 0.0,
+          "FromBlockTypes": [
+            "Empty"
+          ],
+          "FromBlockState": "",
+          "ToBlockType": "Nakasar_Arena_Barrier",
+          "ToBlockState": "",
+          "Offset": {
+            "X": 0.0,
+            "Y": 0.0,
+            "Z": 0.0
+          },
+          "Origin": "VolumeOrigin",
+          "Rotation": "None",
+          "Pitch": "None",
+          "Roll": "None"
+        },
+        {
+          "Type": "ReplaceBlockType",
+          "Event": "SIGNAL_RECEIVED",
+          "Interval": 0.0,
+          "Delay": 0.0,
+          "Entry": 1,
+          "FromBlockTypes": [
+            "Nakasar_Arena_Barrier"
+          ],
+          "FromBlockState": "",
+          "ToBlockType": "Empty",
+          "ToBlockState": "",
+          "Offset": {
+            "X": 0.0,
+            "Y": 0.0,
+            "Z": 0.0
+          },
+          "Origin": "VolumeOrigin",
+          "Rotation": "None",
+          "Pitch": "None",
+          "Roll": "None"
+        }
+      ],
+      "ConditionTiming": "BeforeVolumeDelay",
+      "TargetTypes": [
+        "Player"
+      ],
+      "Enabled": true,
+      "GroupId": "50ef3a1b-5ba7-5f69-8979-798466cf1954",
+      "KeepLoaded": false,
+      "Tags": {
+        "Chimera_Barrier": "Piece"
+      },
+      "Name": "Chimera_Barrier_9"
     },
     "d8542a1b-5d14-5e36-aaaa-d2ae0e1fcadc": {
       "Position": {
