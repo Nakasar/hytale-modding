@@ -33,8 +33,8 @@ import java.util.Set;
  *       sorts de runes ({@code Ability2}, {@code Ability3}) et les dégâts sans interaction (effets, poison) ne
  *       comptent pas, même arme en argent en main.</li>
  * </ul>
- * L'argent béni (tag {@code Material: Blessed_Silver}) frappe à {@value #BLESSED_MULTIPLIER} les vampires et à
- * {@value #BLESSED_UNDEAD_MULTIPLIER} les autres morts-vivants du groupe {@value #UNDEAD_GROUP}.
+ * L'argent infusé (tag {@code Material: Infused_Silver}) frappe à {@value #INFUSED_MULTIPLIER} les vampires et à
+ * {@value #INFUSED_UNDEAD_MULTIPLIER} les autres morts-vivants du groupe {@value #UNDEAD_GROUP}.
  * Joueurs et PNJ (chasseurs de vampires) sont traités de la même façon. On multiplie avant les réductions d'armure et
  * de garde, comme si l'arme frappait deux fois plus fort, et après les filtres qui annulent ou rétablissent un coup.
  */
@@ -42,10 +42,10 @@ public final class SilverDamageSystem extends DamageEventSystem {
 
     public static final String VAMPIRE_GROUP = "Nakasar_Vampires";
     public static final float MULTIPLIER = 2f;
-    /** Argent béni (établi des chasseurs, niveau 3) : plus fort contre les vampires, et contre les autres morts-vivants. */
+    /** Argent infusé (établi des chasseurs, niveau 3) : plus fort contre les vampires, et contre les autres morts-vivants. */
     public static final String UNDEAD_GROUP = "Nakasar_Undead";
-    public static final float BLESSED_MULTIPLIER = 2.5f;
-    public static final float BLESSED_UNDEAD_MULTIPLIER = 1.5f;
+    public static final float INFUSED_MULTIPLIER = 2.5f;
+    public static final float INFUSED_UNDEAD_MULTIPLIER = 1.5f;
 
     /** Interactions qui ne sont pas des attaques de l'arme tenue. */
     private static final Set<InteractionType> NOT_WEAPON_ATTACKS = Set.of(
@@ -86,21 +86,21 @@ public final class SilverDamageSystem extends DamageEventSystem {
         if (!silverHit(damage, source, attacker, buffer)) {
             return;
         }
-        boolean blessed = blessedHit(source, attacker, buffer);
+        boolean infused = infusedHit(source, attacker, buffer);
         if (Allegiances.inGroup(target, VAMPIRE_GROUP, buffer)) {
-            damage.setAmount(damage.getAmount() * (blessed ? BLESSED_MULTIPLIER : MULTIPLIER));
-        } else if (blessed && Allegiances.inGroup(target, UNDEAD_GROUP, buffer)) {
-            damage.setAmount(damage.getAmount() * BLESSED_UNDEAD_MULTIPLIER);
+            damage.setAmount(damage.getAmount() * (infused ? INFUSED_MULTIPLIER : MULTIPLIER));
+        } else if (infused && Allegiances.inGroup(target, UNDEAD_GROUP, buffer)) {
+            damage.setAmount(damage.getAmount() * INFUSED_UNDEAD_MULTIPLIER);
         }
     }
 
-    /** À n'appeler qu'après {@link #silverHit} : le coup vient d'une arme (ou d'un projectile) en argent béni. */
-    private static boolean blessedHit(Damage.EntitySource source, Ref<EntityStore> attacker,
+    /** À n'appeler qu'après {@link #silverHit} : le coup vient d'une arme (ou d'un projectile) en argent infusé. */
+    private static boolean infusedHit(Damage.EntitySource source, Ref<EntityStore> attacker,
                                       CommandBuffer<EntityStore> buffer) {
         if (source instanceof Damage.ProjectileSource projectile) {
-            return SilverWeapons.isBlessedProjectile(projectile.getProjectile());
+            return SilverWeapons.isInfusedProjectile(projectile.getProjectile());
         }
-        return SilverWeapons.isBlessed(InventoryComponent.getItemInHand(buffer, attacker));
+        return SilverWeapons.isInfused(InventoryComponent.getItemInHand(buffer, attacker));
     }
 
     private static boolean silverHit(Damage damage, Damage.EntitySource source, Ref<EntityStore> attacker,

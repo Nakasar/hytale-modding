@@ -10,6 +10,7 @@ import dev.nakasar.hytale.vampires.breach.BreachHunterCleanupSystem;
 import dev.nakasar.hytale.vampires.breach.HunterBreachStarter;
 import dev.nakasar.hytale.vampires.breach.NightCondition;
 import dev.nakasar.hytale.vampires.contract.ContractBounties;
+import dev.nakasar.hytale.vampires.contract.OpenBountyBagInteraction;
 import dev.nakasar.hytale.vampires.domination.DominateInteraction;
 import dev.nakasar.hytale.vampires.domination.DominatePlayerInteraction;
 import dev.nakasar.hytale.vampires.domination.DominationExpirySystem;
@@ -73,8 +74,8 @@ import dev.nakasar.hytale.vampires.silver.TakeArrowInteraction;
  *   <li>la brèche des chasseurs ({@link HunterBreachStarter}, {@link NightCondition},
  *       {@link BreachHunterCleanupSystem}) : la nuit, toutes les demi-heures, un campement de chasseurs de vampires
  *       s'ouvre près d'un joueur du monde principal, annoncé dans le chat et sur la carte ;</li>
- *   <li>{@link ContractBounties} : la mort de la cible d'un contrat de chasseurs, dans son mini-fragment, paie la
- *       prime à chaque joueur présent.</li>
+ *   <li>{@link ContractBounties} : la mort de la cible d'un contrat de chasseurs, dans son mini-fragment, lui fait lâcher
+ *       le sac de prime du groupe, que {@code Nakasar_OpenBountyBag} ouvre.</li>
  * </ul>
  */
 public final class VampiresPlugin extends JavaPlugin {
@@ -117,6 +118,8 @@ public final class VampiresPlugin extends JavaPlugin {
                 LightAuraInteraction.class, LightAuraInteraction.CODEC);
         interactions.register(InvisibilityInteraction.TYPE_ID,
                 InvisibilityInteraction.class, InvisibilityInteraction.CODEC);
+        interactions.register(OpenBountyBagInteraction.TYPE_ID,
+                OpenBountyBagInteraction.class, OpenBountyBagInteraction.CODEC);
 
         var systems = getEntityStoreRegistry();
         RootTrapped.setComponentType(systems.registerComponent(RootTrapped.class, RootTrapped::new));
@@ -146,11 +149,12 @@ public final class VampiresPlugin extends JavaPlugin {
         systems.registerSystem(new BreachHunterCleanupSystem());
         systems.registerSystem(new ContractBounties());
 
-        getLogger().atInfo().log("Nakasar Vampires : 12 types d'interaction (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s), systèmes des camps, de l'argent, du feu purificateur, de la brèche et des contrats des chasseurs enregistrés",
+        getLogger().atInfo().log("Nakasar Vampires : 13 types d'interaction (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s), systèmes des camps, de l'argent, du feu purificateur, de la brèche et des contrats des chasseurs enregistrés",
                 TeleportCasterToImpactInteraction.TYPE_ID, DominateInteraction.TYPE_ID, RootNpcInteraction.TYPE_ID,
                 DrainBeamInteraction.TYPE_ID, DominatePlayerInteraction.TYPE_ID, ImprisonPlayerInteraction.TYPE_ID,
                 RootTrapInteraction.TYPE_ID, TakeArrowInteraction.TYPE_ID, ReturnArrowInteraction.TYPE_ID,
-                SummonVinesInteraction.TYPE_ID, LightAuraInteraction.TYPE_ID, InvisibilityInteraction.TYPE_ID);
+                SummonVinesInteraction.TYPE_ID, LightAuraInteraction.TYPE_ID, InvisibilityInteraction.TYPE_ID,
+                OpenBountyBagInteraction.TYPE_ID);
     }
 
     @Override

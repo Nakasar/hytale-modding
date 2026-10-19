@@ -5,7 +5,7 @@
     "Description": "nakasar_hunters.items.Nakasar_Contract_Garrison.description"
   },
   "Icon": "Icons/Items/Nakasar/Contracts/Contract_Garrison.png",
-  "Quality": "Epic",
+  "Quality": "Rare",
   "Recipe": {
     "TimeSeconds": 3,
     "KnowledgeRequired": false,
@@ -34,7 +34,7 @@
         "Categories": [
           "Nakasar_Hunter_Contracts"
         ],
-        "RequiredTierLevel": 3
+        "RequiredTierLevel": 2
       }
     ]
   },

@@ -58,7 +58,7 @@ public final class SilverProjectileSystems {
             boolean silverArrow = ArrowQuiver.fire(shooter);
             ItemStack weapon = InventoryComponent.getItemInHand(buffer, shooter);
             if (silverArrow || SilverWeapons.isSilver(weapon)) {
-                SilverWeapons.markProjectile(projectile, SilverWeapons.isBlessed(weapon));
+                SilverWeapons.markProjectile(projectile, SilverWeapons.isInfused(weapon));
             }
         }
     }
@@ -81,7 +81,7 @@ public final class SilverProjectileSystems {
             Ref<EntityStore> shooter = creator == null ? null : store.getExternalData().getRefFromUUID(creator);
             ItemStack weapon = shooter != null && shooter.isValid() ? InventoryComponent.getItemInHand(buffer, shooter) : null;
             if (SilverWeapons.isSilver(weapon)) {
-                SilverWeapons.markProjectile(ref, SilverWeapons.isBlessed(weapon));
+                SilverWeapons.markProjectile(ref, SilverWeapons.isInfused(weapon));
             }
         }
 

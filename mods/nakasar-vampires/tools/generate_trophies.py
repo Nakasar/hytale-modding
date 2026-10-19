@@ -1,27 +1,23 @@
 #!/usr/bin/env python3
-"""Génère les trophées de la voie des chasseurs et les sceaux qui font monter l'établi.
+"""Génère les trophées de la voie des chasseurs et les sacs de prime des contrats.
 
     python3 mods/nakasar-vampires/tools/generate_trophies.py [--preview DOSSIER]
 
 Trophées (lâchés par les créatures du Comté, voir Server/Drops/Nakasar/Trophies/) :
 - croc de vampire : un rejeton sur deux ;
-- cœur d'Abomination, insigne du Capitaine de la garde, graine de la Citrouille géante : toujours, un
-  par élite tuée.
+- cœur d'Abomination, graine de la Citrouille géante, insigne du Capitaine de la garde : toujours, un
+  par élite tuée. Les améliorations de l'établi des chasseurs en demandent de précis, de l'élite la
+  plus facile à la plus dure : le cœur pour le niveau 2, la graine et l'insigne pour le niveau 3.
 
-Sceaux (fabriqués à l'établi des chasseurs, onglet Trophées) : ce sont eux que demandent les
-améliorations de l'établi, parce qu'une amélioration ne prend qu'une liste fixe d'ingrédients alors
-que le document de progression demande « un trophée d'élite, n'importe lequel ». Chaque monde du Comté
-n'a pas toutes les élites (fermes, postes de garde et champs tirés au sort), d'où une recette de sceau
-par trophée ou paire de trophées :
-- Sceau du traqueur (niveau 1) : 3 crocs + un trophée d'élite, au choix ;
-- Sceau du chasseur (niveau 2) : 4 crocs + deux trophées d'élite différents, au choix.
+Sacs de prime (un par contrat, voir generate_contracts.py) : la cible d'un contrat en lâche un à sa
+mort (ContractBounties, Java), un seul pour tout le groupe. Utilisé (clic droit), le sac disparaît et
+donne le contenu de sa liste de butin Nakasar_Bounty_<contrat> (interaction Java Nakasar_OpenBountyBag).
 
 Écrit les objets, leurs modèles (.blockymodel, même écriture que l'autel : 32 unités = 1 bloc), leurs
-textures et icônes, les listes de butin des trophées, les recettes des sceaux et l'icône de l'onglet.
+textures et icônes, les listes de butin des trophées et des sacs, et les interactions des sacs.
 """
 import json
 import sys
-from itertools import combinations
 from pathlib import Path
 
 from PIL import Image, ImageDraw
@@ -31,22 +27,20 @@ import generate_altar as ga
 ROOT = ga.ROOT
 SERVER = ROOT / "Server"
 ITEMS = SERVER / "Item/Items/Trophy/Nakasar"
-RECIPES = SERVER / "Item/Recipes/Nakasar"
+BAG_ITEMS = SERVER / "Item/Items/Bounty/Nakasar"
+INTERACTIONS = SERVER / "Item/Interactions/Nakasar/Bounty"
+ROOT_INTERACTIONS = SERVER / "Item/RootInteractions/Nakasar"
 DROPS = SERVER / "Drops/Nakasar/Trophies"
 MODELS = "Items/Nakasar/Trophies"
 ICONS = "Icons/Items/Nakasar/Trophies"
-CATEGORIES = ROOT / "Common/Icons/CraftingCategories/Nakasar"
 LANG = "nakasar_hunters"
-BENCH = "Nakasar_Hunter_Workbench"
-TAB = "Nakasar_Hunter_Trophies"
 
 FANG = "Nakasar_Trophy_Vampire_Fang"
 HEART = "Nakasar_Trophy_Abomination_Heart"
 INSIGNIA = "Nakasar_Trophy_Captain_Insignia"
 SEED = "Nakasar_Trophy_Pumpkin_Seed"
-ELITES = [HEART, INSIGNIA, SEED]
-SEAL_TRACKER = "Nakasar_Hunter_Seal_Tracker"
-SEAL_HUNTER = "Nakasar_Hunter_Seal_Hunter"
+SILVER_BAR = "Ingredient_Bar_Silver"
+SHARD = "Ingredient_Rune_Shard"
 
 IVORY = (232, 222, 196)
 GUM = (122, 30, 40)
@@ -62,9 +56,8 @@ SEED_DARK = (130, 72, 30)
 SPROUT = (120, 220, 90)
 SILVER = (196, 204, 214)
 SILVER_DARK = (138, 146, 160)
-RIBBON_RED = (150, 30, 40)
-RIBBON_BLUE = (40, 70, 150)
-STAKE = (138, 100, 70)
+LEATHER = (124, 84, 52)
+LEATHER_DARK = (88, 58, 38)
 
 
 def flat(color, top=None):
@@ -90,16 +83,15 @@ def fang_parts(side, x0, flip):
     ]
 
 
-def medal_parts(metal, metal_dark, ribbon, emblem):
+def bag_parts(tie):
+    """Sac de cuir fermé par un lien de couleur (celle du sceau du contrat), une pièce d'argent au flanc."""
     return [
-        ("Ribbon_L", (-2, 15, -0.5), (3, 8, 1), 0, flat(ribbon), "flat"),
-        ("Ribbon_R", (2, 15, -0.5), (3, 8, 1), 0, flat(ribbon), "flat"),
-        ("Disc_H", (0, 6, 0), (12, 6, 2), 0, smooth(metal), "flat"),
-        ("Disc_V", (0, 6, 0), (6, 12, 2), 0, smooth(metal), "flat"),
-        ("Disc_C", (0, 6, 0), (10, 10, 2), 0, smooth(metal), "flat"),
-        ("Rim", (0, 6, 0.6), (8, 8, 1), 0, flat(metal_dark), "flat"),
-        ("Emblem_Stake", (0, 6, 1.2), (2, 7, 1), 0, flat(emblem), "flat"),
-        ("Emblem_Bar", (0, 7.5, 1.2), (5, 1, 1), 0, flat(emblem), "flat"),
+        ("Body", (0, 5, 0), (10, 9, 9), 0, smooth(LEATHER), "flat"),
+        ("Body_Wide", (0, 4, 0), (11, 6, 8), 0, smooth(LEATHER), "flat"),
+        ("Neck", (0, 10.5, 0), (5, 2, 5), 0, smooth(LEATHER_DARK), "flat"),
+        ("Tie", (0, 11.8, 0), (6, 1, 6), 0, flat(tie), "flat"),
+        ("Top", (0, 13, 0), (4, 2, 4), 0, smooth(LEATHER), "flat"),
+        ("Coin", (2, 5, 4.6), (3, 3, 1), 0, flat(SILVER), "flat"),
     ]
 
 
@@ -138,8 +130,6 @@ MODELS_DEF = {
         ("Leaf_A", (2, 13.5, 0), (3, 1, 2), 25, glow(SPROUT), "fullbright"),
         ("Leaf_B", (-1, 14.5, 0), (2, 1, 2), -20, glow(SPROUT), "fullbright"),
     ], (0, 7, 0), 11.0),
-    SEAL_TRACKER: ("Epic", 30, 5, medal_parts(SILVER, SILVER_DARK, RIBBON_RED, STAKE), (0, 9, 0), 9.0),
-    SEAL_HUNTER: ("Epic", 40, 5, medal_parts(GOLD, ga.shade(GOLD, 0.7), RIBBON_BLUE, SILVER), (0, 9, 0), 9.0),
 }
 
 
@@ -169,19 +159,36 @@ def item(item_id, quality, level, stack):
     }
 
 
-def recipe(output, inputs, tier, time=2):
-    return {
-        "TimeSeconds": time,
-        "KnowledgeRequired": False,
-        "Input": [{"ItemId": i, "Quantity": q} for i, q in inputs],
-        "PrimaryOutput": {"ItemId": output, "Quantity": 1},
-        "Output": [{"ItemId": output, "Quantity": 1}],
-        "BenchRequirement": [{"Type": "Crafting", "Id": BENCH, "Categories": [TAB], "RequiredTierLevel": tier}],
-    }
+# contrat, couleur du lien, qualité, contenu (objet, min, max) puis tirages au choix (objet, quantité, poids sur 4)
+BAGS = [
+    ("Farm", (150, 40, 40), "Rare",
+     [(SILVER_BAR, 2, 3), (SHARD, 2, 3), (FANG, 1, 2)], [("Rock_Gem_Topaz", 1, 1)]),
+    ("Pumpkin", (214, 110, 30), "Rare",
+     [(SILVER_BAR, 3, 4), (SHARD, 2, 4), (FANG, 1, 2), ("Ingredient_Life_Essence_Pumpkin", 2, 3)], [("Rock_Gem_Ruby", 1, 1)]),
+    ("Garrison", (60, 70, 150), "Epic",
+     [(SILVER_BAR, 4, 6), (SHARD, 3, 5), (FANG, 2, 3), ("Rock_Gem_Topaz", 1, 1)], [("Rock_Gem_Sapphire", 1, 2)]),
+]
 
 
-def short(item_id):
-    return item_id.rsplit("_", 1)[-1]
+def bag_id(contract):
+    return f"Nakasar_Bounty_Bag_{contract}"
+
+
+def bag_item(contract, quality):
+    item_id = bag_id(contract)
+    doc = item(item_id, quality, 20, 16)
+    doc["Tags"] = {"Type": ["Nakasar_Bounty"]}
+    doc["Interactions"] = {"Secondary": f"Root_{item_id}"}
+    return doc
+
+
+def bag_drop(contents, extra):
+    single = lambda i, lo, hi: {"Type": "Single", "Item": {"ItemId": i, "QuantityMin": lo, "QuantityMax": hi}}
+    containers = [single(*c) for c in contents]
+    for i, lo, weight in extra:
+        containers.append({"Type": "Choice", "Containers": [
+            dict(single(i, lo, lo), Weight=weight), {"Type": "Empty", "Weight": 4 - weight}]})
+    return {"Container": {"Type": "Multiple", "Containers": containers}}
 
 
 def drops():
@@ -195,25 +202,9 @@ def drops():
     }
 
 
-def recipes():
-    out = {}
-    for elite in ELITES:
-        out[f"Recipe_{SEAL_TRACKER}_{short(elite)}"] = recipe(SEAL_TRACKER, [(FANG, 3), (elite, 1)], 1)
-    for a, b in combinations(ELITES, 2):
-        out[f"Recipe_{SEAL_HUNTER}_{short(a)}_{short(b)}"] = recipe(
-            SEAL_HUNTER, [(FANG, 4), (a, 1), (b, 1), ("Ingredient_Bar_Silver", 2)], 2, time=4)
-    return out
-
-
 def write_json(path, doc):
     path.parent.mkdir(parents=True, exist_ok=True)
     path.write_text(json.dumps(doc, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
-
-
-def category_icon(fang_icon):
-    """Onglet Trophées : le croc, sur fond transparent, en 64 x 64."""
-    CATEGORIES.mkdir(parents=True, exist_ok=True)
-    fang_icon.save(CATEGORIES / "Trophies.png")
 
 
 def main():
@@ -232,15 +223,27 @@ def main():
         (ROOT / "Common" / MODELS / f"{name}.blockymodel").write_text(json.dumps(model_json(uv, name), indent=2) + "\n")
         icon = ga.render(atlas, uv, 256, yaw=-30, pitch=20, scale=scale, center=center).resize((64, 64), Image.LANCZOS)
         icon.save(ROOT / "Common" / ICONS / f"{name}.png")
-        if item_id == FANG:
-            category_icon(icon)
         write_json(ITEMS / f"{item_id}.json", item(item_id, quality, level, stack))
         if preview:
             sheet.append(ga.render(atlas, uv, 256, yaw=-30, pitch=20, scale=scale, center=center))
     for item_id, doc in drops().items():
         write_json(DROPS / f"Nakasar_Drop_Trophy_{item_id.removeprefix('Nakasar_Trophy_')}.json", doc)
-    for name, doc in recipes().items():
-        write_json(RECIPES / f"{name}.json", doc)
+    for contract, tie, quality, contents, extra in BAGS:
+        item_id = bag_id(contract)
+        name = item_id.removeprefix("Nakasar_")
+        ga.PARTS = bag_parts(tie)
+        ga.TEX_W, ga.TEX_H = 64, 64
+        atlas, uv = ga.build_atlas()
+        atlas.save(ROOT / "Common" / MODELS / f"{name}.png")
+        (ROOT / "Common" / MODELS / f"{name}.blockymodel").write_text(json.dumps(model_json(uv, name), indent=2) + "\n")
+        render = ga.render(atlas, uv, 256, yaw=-30, pitch=20, scale=11.0, center=(0, 7, 0))
+        render.resize((64, 64), Image.LANCZOS).save(ROOT / "Common" / ICONS / f"{name}.png")
+        write_json(BAG_ITEMS / f"{item_id}.json", bag_item(contract, quality))
+        write_json(DROPS / f"Nakasar_Bounty_{contract}.json", bag_drop(contents, extra))
+        write_json(INTERACTIONS / f"{item_id}_Open.json", {"Type": "Nakasar_OpenBountyBag", "Droplist": f"Nakasar_Bounty_{contract}"})
+        write_json(ROOT_INTERACTIONS / f"Root_{item_id}.json", {"Interactions": [f"{item_id}_Open"], "RequireNewClick": True})
+        if preview:
+            sheet.append(render)
     if preview:
         preview.mkdir(parents=True, exist_ok=True)
         out = Image.new("RGBA", (256 * len(sheet), 256), (40, 40, 48, 255))

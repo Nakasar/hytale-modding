@@ -7,14 +7,14 @@ Un contrat est une clé de portail (comme la clé du Comté) fabriquée à l'ét
 Contrats. Posée dans un Portal_Device, elle ouvre un mini-fragment où tout le groupe peut entrer : une
 petite île flottante de nuit, la crypte d'arrivée (avec son portail de retour) au centre et, au nord,
 le lieu de la cible, repris tel quel des structures du Comté avec ses blocs d'apparition (l'élite et
-sa garde). Tuer la cible remplit le contrat : chaque joueur présent reçoit la prime (ContractBounties,
-Java), trophée de la cible compris.
+sa garde). Tuer la cible remplit le contrat : elle lâche, avec son trophée, le sac de prime du contrat,
+un seul pour tout le groupe (ContractBounties, Java ; sacs dans generate_trophies.py).
 
 | Contrat  | Niveau | Lieu (prefabs du Comté)       | Cible                       |
 | -------- | ------ | ----------------------------- | --------------------------- |
-| Farm     | 2      | Farms/Zombies                 | Nakasar_Zombie_Abomination  |
+| Farm     | 1      | Farms/Zombies                 | Nakasar_Zombie_Abomination  |
 | Pumpkin  | 2      | PumpkinFields/Giant           | Nakasar_Giant_Pumpkin       |
-| Garrison | 3      | GuardPosts/Garrison           | Nakasar_Guard_Captain       |
+| Garrison | 2      | GuardPosts/Garrison           | Nakasar_Guard_Captain       |
 
 Les cibles et les primes sont aussi écrites dans ContractBounties.java : les garder alignées.
 """
@@ -46,13 +46,13 @@ TIME_LIMIT = 900
 
 # id court, niveau de l'établi, dossier de prefabs, couleur du sceau, ingrédients, tags du portail
 CONTRACTS = [
-    ("Farm", 2, "Farms/Zombies", (150, 40, 40),
+    ("Farm", 1, "Farms/Zombies", (150, 40, 40),
      [(FANG, 2), ("Ingredient_Bar_Silver", 1), ("Ingredient_Fabric_Scrap_Linen", 2), ("Ingredient_Rune_Shard", 1)],
      ["undead", "elite"]),
     ("Pumpkin", 2, "PumpkinFields/Giant", (214, 110, 30),
      [(FANG, 2), ("Ingredient_Bar_Silver", 1), ("Ingredient_Fabric_Scrap_Linen", 2), ("Ingredient_Rune_Shard", 1)],
      ["plant", "elite"]),
-    ("Garrison", 3, "GuardPosts/Garrison", (60, 70, 150),
+    ("Garrison", 2, "GuardPosts/Garrison", (60, 70, 150),
      [(FANG, 4), ("Ingredient_Bar_Silver", 2), ("Ingredient_Fabric_Scrap_Linen", 2), ("Ingredient_Rune_Shard", 2)],
      ["undead", "elite", "prison"]),
 ]
