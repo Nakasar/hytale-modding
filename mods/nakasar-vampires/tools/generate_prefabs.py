@@ -2362,7 +2362,7 @@ def farm(seed, variant):
             p.set(x, -1, z, p.pick(PATH))
     door_house = house(p, -20, -17, 9, 8, SOUTH, 2, "home", LOOT_FARM_BURNT if burnt else LOOT_FARM, wood)
     # grande porte de grange, 5 de large : l'Abomination (gros zombie, élite) doit pouvoir sortir ; rien de posé
-    # devant elle, dedans comme dehors
+    # devant elle dedans (clear de house) ni dehors (vidé à la fin, z -9 à -7)
     barn_door = [(x, z) for x in range(10, 15) for z in (-12, -11)]
     door_barn = house(p, 6, -19, 13, 10, SOUTH, 1, "barn", LOOT_FARM_BURNT if burnt else LOOT_FARM, wood, clear=barn_door)
     p.clear(10, 0, -10, 14, 2, -10)
@@ -2409,6 +2409,8 @@ def farm(seed, variant):
                 p.set(*pos, AIR)
         p.scatter(-X + 2, 0, -Z + 2, X - 2, Z - 2, 30, [("Deco_Trash_Pile_Small", 2), ("Soil_Ash", 2), ("Wood_Burnt_Branch_Short", 1)], rot=0)
         p.scatter(-20, 0, -17, 18, -9, 4, [("Deco_Fire", 1)], rot=0)   # braises encore rouges dans les décombres
+    # passage de la grange, après tout le décor (ruines, éboulis, braises) : deux rangs dedans, la porte, trois dehors
+    p.clear(10, 0, -12, 14, 2, -7)
     return p
 
 

@@ -22,6 +22,7 @@ import org.joml.Vector3d;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -61,7 +62,8 @@ public final class BossBarSystem extends TickingSystem<EntityStore> {
     /** Système partagé par les mondes, chacun sur son thread : un compte à rebours par monde. */
     private final Map<World, Float> wait = Collections.synchronizedMap(new WeakHashMap<>());
 
-    private record Shown(World world, int networkId) {
+    /** {@code player} : la session qui a reçu la barre ; une reconnexion crée un autre PlayerRef. */
+    private record Shown(World world, int networkId, PlayerRef player) {
     }
 
     private record Elite(int networkId, Vector3d position, String nameKey) {
@@ -77,11 +79,22 @@ public final class BossBarSystem extends TickingSystem<EntityStore> {
         }
         wait.put(world, INTERVAL);
 
+        List<PlayerRef> players = new ArrayList<>(world.getPlayerRefs());
+        Set<UUID> present = new HashSet<>();
+        for (PlayerRef player : players) {
+            present.add(player.getUuid());
+        }
+        // Joueurs partis de ce monde (déconnexion, changement de monde) : on oublie leur barre.
+        SHOWN.entrySet().removeIf(entry -> entry.getValue().world() == world && !present.contains(entry.getKey()));
+        if (players.isEmpty()) {
+            return;
+        }
+
         List<Elite> engaged = new ArrayList<>();
         BiConsumer<ArchetypeChunk<EntityStore>, CommandBuffer<EntityStore>> collector = (chunk, buffer) -> collect(chunk, store, engaged);
         store.forEachChunk(NPCEntity.getComponentType(), collector);
 
-        for (PlayerRef player : world.getPlayerRefs()) {
+        for (PlayerRef player : players) {
             Ref<EntityStore> ref = player.getReference();
             TransformComponent transform = ref == null || !ref.isValid() ? null
                     : store.getComponent(ref, TransformComponent.getComponentType());
@@ -114,8 +127,9 @@ public final class BossBarSystem extends TickingSystem<EntityStore> {
                     || !isEngaged(ref, store, chunk.getComponent(i, EntityStatMap.getComponentType()))) {
                 continue;
             }
+            String nameKey = npc.getRole() == null ? null : npc.getRole().getNameTranslationKey();
             engaged.add(new Elite(networkId.getId(), new Vector3d(transform.getPosition()),
-                    "nakasar_mobs.npc." + role.substring("Nakasar_".length()) + ".name"));
+                    nameKey != null ? nameKey : role));
         }
     }
 
@@ -136,6 +150,11 @@ public final class BossBarSystem extends TickingSystem<EntityStore> {
     private static void show(PlayerRef player, World world, Elite elite) {
         UUID uuid = player.getUuid();
         Shown before = SHOWN.get(uuid);
+        if (before != null && before.player() != player) {
+            // Nouvelle session du même joueur : son client n'a aucune barre.
+            SHOWN.remove(uuid);
+            before = null;
+        }
         if (before != null && elite != null && before.world() == world && before.networkId() == elite.networkId()) {
             return;
         }
@@ -146,7 +165,7 @@ public final class BossBarSystem extends TickingSystem<EntityStore> {
         if (elite != null) {
             player.getPacketHandler().writeNoCache(new UpdateBossBar(elite.networkId(),
                     Message.translation(elite.nameKey()).getFormattedMessage(), false, false));
-            SHOWN.put(uuid, new Shown(world, elite.networkId()));
+            SHOWN.put(uuid, new Shown(world, elite.networkId(), player));
         }
     }
 

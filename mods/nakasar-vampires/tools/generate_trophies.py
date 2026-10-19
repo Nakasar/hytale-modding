@@ -194,10 +194,9 @@ def bag_drop(contents, extra):
 
 
 def drops():
+    """Listes des trophées d'élite. Pas de liste pour le croc : son tirage vit dans Nakasar_Drop_Vampire_Spawn."""
     single = lambda i: {"Type": "Single", "Item": {"ItemId": i, "QuantityMin": 1, "QuantityMax": 1}}
     return {
-        FANG: {"Container": {"Type": "Choice", "Containers": [
-            dict(single(FANG), Weight=1), {"Type": "Empty", "Weight": 1}]}},
         HEART: {"Container": single(HEART)},
         INSIGNIA: {"Container": single(INSIGNIA)},
         SEED: {"Container": single(SEED)},

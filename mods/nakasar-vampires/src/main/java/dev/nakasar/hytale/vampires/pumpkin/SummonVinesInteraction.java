@@ -45,7 +45,7 @@ import java.util.concurrent.TimeUnit;
  * moins.
  *
  * <p>Tant qu'une citrouille a des vrilles vivantes ({@link #hasLivingVines}), {@link PumpkinShieldSystem} la rend
- * invulnérable ; il peut aussi faire sortir la première vague dès le premier coup reçu ({@link #summonWave}).
+ * invulnérable ; il peut aussi faire sortir la première vague dès le premier coup reçu ({@link #summonFirstWave}).
  *
  * <p>Clés JSON : {@code VineRole} (string, défaut {@code Nakasar_Pumpkin_Vine}), {@code Count} (int, défaut 5),
  * {@code MaxAlive} (int, défaut 5), {@code MinDistance} et {@code MaxDistance} (float, défaut 3 et 7 blocs),
@@ -83,9 +83,9 @@ public class SummonVinesInteraction extends SimpleInstantInteraction {
 
     /** Vrilles vivantes par citrouille. Lu et modifié sur le thread du monde. */
     private static final Map<Ref<EntityStore>, List<Ref<EntityStore>>> VINES = new ConcurrentHashMap<>();
-    /** Dernier appel d'invocation par citrouille (System.nanoTime), réussi ou non. */
+    /** Dernier appel d'invocation par citrouille depuis son dernier retour au calme (System.nanoTime), réussi ou non. */
     private static final Map<Ref<EntityStore>, Long> LAST_CALL = new ConcurrentHashMap<>();
-    /** Vague par défaut (mêmes valeurs que Nakasar_NPC_Pumpkin_Summon), pour {@link #summonWave}. */
+    /** Vague par défaut (mêmes valeurs que Nakasar_NPC_Pumpkin_Summon), pour {@link #summonFirstWave}. */
     private static final SummonVinesInteraction DEFAULT_WAVE = new SummonVinesInteraction();
 
     protected String vineRole = "Nakasar_Pumpkin_Vine";
@@ -118,19 +118,21 @@ public class SummonVinesInteraction extends SimpleInstantInteraction {
     }
 
     /**
-     * Fait sortir une vague par défaut autour de la citrouille, hors de son IA (premier coup reçu avant qu'elle n'ait
-     * pu lancer son invocation). Ne fait rien si elle a été appelée il y a moins de {@code withinSeconds} secondes.
+     * Fait sortir une vague par défaut autour de la citrouille, hors de son IA, si aucune invocation n'a eu lieu depuis
+     * son dernier retour au calme ({@link #forgetCalls}) : premier coup reçu avant qu'elle n'ait pu lancer la sienne.
      * Appelé pendant le traitement du store : la vague sort juste après.
      */
-    public static void summonWave(World world, Ref<EntityStore> summoner, Vector3d center, double withinSeconds) {
-        Long last = LAST_CALL.get(summoner);
-        long now = System.nanoTime();
-        if (last != null && now - last < (long) (withinSeconds * 1e9)) {
+    public static void summonFirstWave(World world, Ref<EntityStore> summoner, Vector3d center) {
+        if (LAST_CALL.putIfAbsent(summoner, System.nanoTime()) != null) {
             return;
         }
-        LAST_CALL.put(summoner, now);
         Vector3d at = new Vector3d(center);
         world.execute(() -> DEFAULT_WAVE.summon(world, summoner, at));
+    }
+
+    /** Oublie les invocations de la citrouille (revenue au calme) : le prochain premier coup relancera une vague. */
+    public static void forgetCalls(Ref<EntityStore> summoner) {
+        LAST_CALL.remove(summoner);
     }
 
     /** Vrai si la citrouille a au moins une vrille vivante (sur le thread du monde). */
@@ -155,6 +157,10 @@ public class SummonVinesInteraction extends SimpleInstantInteraction {
     private void summon(World world, Ref<EntityStore> summoner, Vector3d center) {
         Store<EntityStore> store = world.getEntityStore().getStore();
         if (!alive(summoner, store)) {
+            if (!VINES.containsKey(summoner)) {
+                // Morte avant la vague : aucun suivi ne nettoiera son entrée.
+                LAST_CALL.remove(summoner);
+            }
             return;
         }
         boolean watched = VINES.containsKey(summoner);

@@ -17,7 +17,9 @@ import com.hypixel.hytale.server.core.modules.entity.damage.DamageModule;
 import com.hypixel.hytale.server.core.universe.PlayerRef;
 import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
 import com.hypixel.hytale.server.npc.entities.NPCEntity;
+import com.hypixel.hytale.server.npc.role.support.StateSupport;
 import dev.nakasar.hytale.vampires.allegiance.AllegianceDamageFilter;
+import org.joml.Vector3d;
 
 import java.util.Map;
 import java.util.Set;
@@ -29,16 +31,20 @@ import java.util.concurrent.ConcurrentHashMap;
  * ne la blesse ; le joueur qui frappe est prévenu (au plus une fois toutes les {@value #WARN_SECONDS} s). Il faut
  * détruire la vague pour l'atteindre, jusqu'à la vague suivante (son IA, 10 à 12 s plus tard).
  *
- * <p>Si elle prend un coup alors qu'elle n'a pas de vrilles et n'a lancé aucune invocation depuis
- * {@value #FIRST_WAVE_SECONDS} s (début du combat : son IA n'a pas encore pu lancer la sienne), la première vague
- * sort tout de suite. Ce coup-là porte encore.
+ * <p>Seuls les coups d'une entité (arme, projectile, effet qu'elle a posé) sont bloqués : le vide, l'environnement et
+ * les commandes la blessent toujours.
+ *
+ * <p>Première vague : si une entité à moins de {@value #LEASH} blocs (sa laisse) la frappe alors qu'aucune vague n'est
+ * encore sortie depuis son dernier retour au calme (son IA n'a pas encore pu lancer la sienne), elle sort tout de
+ * suite. Ce coup-là porte encore. Une fois le combat lancé, seule son IA invoque les vagues suivantes : le répit de 10
+ * à 12 s après chaque vague détruite est garanti.
  *
  * <p>Filtre de dégâts, après celui des camps (un coup déjà annulé reste annulé).
  */
 public final class PumpkinShieldSystem extends DamageEventSystem {
 
     public static final String ROLE = "Nakasar_Giant_Pumpkin";
-    private static final double FIRST_WAVE_SECONDS = 20;
+    private static final double LEASH = 20;
     private static final long WARN_SECONDS = 4;
 
     private static final Set<Dependency<EntityStore>> DEPENDENCIES =
@@ -72,21 +78,38 @@ public final class PumpkinShieldSystem extends DamageEventSystem {
         if (npc == null || !ROLE.equals(npc.getRoleName())) {
             return;
         }
+        if (!(damage.getSource() instanceof Damage.EntitySource source)) {
+            return;
+        }
         Ref<EntityStore> pumpkin = chunk.getReferenceTo(index);
         if (SummonVinesInteraction.hasLivingVines(pumpkin, store)) {
             damage.setCancelled(true);
-            warn(damage, buffer);
+            warn(source, buffer);
             return;
         }
+        StateSupport state = StateSupport.get(pumpkin, store);
+        String name = state == null ? null : state.getStateName();
+        if (name == null || !name.startsWith("Combat")) {
+            // Au calme : le prochain combat repart de zéro.
+            SummonVinesInteraction.forgetCalls(pumpkin);
+        }
         TransformComponent transform = chunk.getComponent(index, TransformComponent.getComponentType());
-        if (transform != null) {
-            SummonVinesInteraction.summonWave(store.getExternalData().getWorld(), pumpkin, transform.getPosition(),
-                    FIRST_WAVE_SECONDS);
+        if (transform != null && inLeash(source, buffer, transform.getPosition())) {
+            SummonVinesInteraction.summonFirstWave(store.getExternalData().getWorld(), pumpkin, transform.getPosition());
         }
     }
 
-    private static void warn(Damage damage, CommandBuffer<EntityStore> buffer) {
-        if (!(damage.getSource() instanceof Damage.EntitySource source) || source.getRef() == null || !source.getRef().isValid()) {
+    private static boolean inLeash(Damage.EntitySource source, CommandBuffer<EntityStore> buffer, Vector3d at) {
+        Ref<EntityStore> attacker = source.getRef();
+        if (attacker == null || !attacker.isValid()) {
+            return false;
+        }
+        TransformComponent transform = buffer.getComponent(attacker, TransformComponent.getComponentType());
+        return transform != null && transform.getPosition().distanceSquared(at) <= LEASH * LEASH;
+    }
+
+    private static void warn(Damage.EntitySource source, CommandBuffer<EntityStore> buffer) {
+        if (source.getRef() == null || !source.getRef().isValid()) {
             return;
         }
         PlayerRef player = buffer.getComponent(source.getRef(), PlayerRef.getComponentType());

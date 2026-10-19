@@ -90,7 +90,12 @@ public class ClaimBreachContractInteraction extends SimpleInstantInteraction {
         Vector3d position = transform.getPosition();
         WorldEvent breach = nearestBreach(buffer.getResource(WorldEventManager.getResourceType()), position);
         World world = buffer.getExternalData().getWorld();
-        long board = boardKey(context.getTargetBlock(), position);
+        BlockPosition target = context.getTargetBlock();
+        if (breach == null && target == null) {
+            // Tableau hors brèche sans bloc visé : rien pour l'identifier, donc pas de prime à suivre.
+            return;
+        }
+        long board = target != null ? boardKey(target) : 0L;
         if (breach != null ? breach.context.has(CLAIM, IntervalContext.class) : looseClaimed(world, board)) {
             playerRef.sendMessage(Message.translation(MESSAGES + "taken"));
             return;
@@ -136,10 +141,10 @@ public class ClaimBreachContractInteraction extends SimpleInstantInteraction {
         return best[0];
     }
 
-    private static long boardKey(BlockPosition block, Vector3d fallback) {
-        int x = block != null ? block.x : (int) Math.floor(fallback.x());
-        int y = block != null ? block.y : (int) Math.floor(fallback.y());
-        int z = block != null ? block.z : (int) Math.floor(fallback.z());
+    private static long boardKey(BlockPosition block) {
+        int x = block.x;
+        int y = block.y;
+        int z = block.z;
         return ((long) x & 0x3FFFFFFL) << 38 | ((long) z & 0x3FFFFFFL) << 12 | ((long) y & 0xFFFL);
     }
 
