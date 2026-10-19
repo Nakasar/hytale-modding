@@ -1,0 +1,12 @@
+{
+  "$Comment": "Nuage (Gas) de 1 blocs de rayon de la Tour de l'Alchimiste. Généré par tools/alchemist_traps.py.",
+  "Spawners": [
+    {
+      "SpawnerId": "Nakasar_Gas_Cloud_10_Smoke"
+    },
+    {
+      "SpawnerId": "Nakasar_Gas_Cloud_10_Motes"
+    }
+  ],
+  "CullDistance": 64
+}

@@ -95,9 +95,13 @@ EMANATIONS = {
     "Arc": ("Goblin_Decorative_Lightning", 1.5, 1.0, "#9cf"),
     "Mist": ("Eye_Void_Smoke_Teal", 1.5, 0.5, "#4dc"),
     "Fireflies": ("Fireflies_GS", 1.0, 0.5, "#cf8"),
+    # Fuite de la tuyauterie de gaz : les particules du bloc vanilla VFX_Dungeon_Goblin_Leaking_Pipe, dont la boîte
+    # « Rubble » se ramasse avec Utiliser comme un caillou (Kevin a obtenu un « Tuyau qui fuit » en coupant la vanne).
+    "Leak": ("Dungeon_Goblin_Leaking_Pipe", 1.0, 0.5, "#6f4"),
 }
 EMANATION_COLORS = {"Smoke": (90, 240, 140), "Motes": (180, 110, 255), "Spiral": (110, 230, 255),
-                    "Arc": (160, 200, 255), "Mist": (70, 220, 200), "Fireflies": (210, 255, 120)}
+                    "Arc": (160, 200, 255), "Mist": (70, 220, 200), "Fireflies": (210, 255, 120),
+                    "Leak": (120, 230, 80)}
 
 # Pierres de la tour : marbre clair, liserés d'or, cristaux violets et verts (les couleurs de l'Alchimiste).
 FLOOR = arch.FLOOR
@@ -967,7 +971,7 @@ def main():
     volumes.update(checkpoint_volumes(tower, ruins_statue, ruins_spot))
     traps, trap_groups = alchemist_traps.trap_volumes(tower, TOWER_CENTER)
     volumes.update(traps)
-    print(f"Pièges et énigmes : {len(traps)} volumes")
+    print(f"Pièges et énigmes : {len(traps)} volumes, nuages {alchemist_traps.write_clouds()}")
     tower_warnings.system(2.5)  # zones des éléments de l'Alchimiste (AlchemistSystem.WARNING)
     print(f"Zones d'annonce : {tower_warnings.write()} dixièmes de seconde")
     write_json(SERVER / "Instances" / TOWER / "resources" / "TriggerVolumeData.json", trigger_volumes(volumes, trap_groups))

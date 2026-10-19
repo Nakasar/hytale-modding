@@ -59,14 +59,14 @@ BRAZIER = "Furniture_Temple_Dark_Brazier"
 
 # Ids du jeu employés par les volumes, tous vus dans Assets.zip 0.7.2 (la plupart dans les volumes de The_Deepworks) :
 # un id inconnu ferait rejeter le volume en jeu, `check_ids` refuse tout ce qui n'est pas ici.
-SPORE_CLOUD = "Nakasar_Spore_Cloud"  # nuage des champignons de la serre (écrit par ce script, spore_cloud_files)
 PARTICLES = {
     "Goblin_Decorative_Steam", "Dungeon_Goblin_Smoke_Pipe_Large", "Effect_Poison", "Magic_Sparks_Heavy_GS",
     "Fire_Green", "Dungeon_Goblin_Mace_Slam_Warning", "Block_Break_Dust", "Smoke_Floor", "Dungeon_Goblin_Spores_Green",
     "Fire_Trap_Preview", "Fire_AoE", "Weapon_Frost_Mist", "Ice_Blast", "Dungeon_Goblin_Toxic_Water", "Impact_Poison",
     "Goblin_Decorative_Sparks", "Lightning", "Dungeon_Goblin_Electric_Fence_Hit", "Fire_Charge_Charging1",
     "Leaves_Oak_Wind", "Wind", "Goblin_Decorative_Lightning", "Ability_Ice_Explosion", "Effect_Health_Pack",
-    "Totem_Heal_AttachOnStatue", "Dungeon_Goblin_Energy_Barrier_Red_Large", SPORE_CLOUD, "Dungeon_Goblin_Energy_Barrier_Reveal",
+    "Totem_Heal_AttachOnStatue", "Dungeon_Goblin_Energy_Barrier_Red_Large", "Dungeon_Goblin_Energy_Barrier_Reveal",
+    "Dungeon_Goblin_Smoke_Pipe_Large",
 }
 SOUNDS = {
     "SFX_Emit_Goblin_Steam_A", "SFX_Env_Geyzer_Burst", "SFX_Lever_Metal_On", "SFX_Emit_Goblin_Pipes_Activate",
@@ -78,7 +78,7 @@ SOUNDS = {
 }
 EFFECTS = {"Poison_T1", "Poison_T2", "Burn", "Slow", "Hazard_Electric_Stun", "Health_Pack"}
 BLOCKS = {"Empty", "Fluid_Fire", at.SEAL, at.HEDGE, at.RUBBLE, at.DOOR, "Rock_Marble_Brick", "Rock_Marble_Brick_Smooth",
-          "Rock_Marble_Cobble", at.ARENA_BARRIER, at.SPORE_SHROOM, at.CONDUIT_LIT, at.EMANATION_LIT, at.EMANATION_FED, at.PIPE_GLOW, at.LEAK}
+          "Rock_Marble_Cobble", at.ARENA_BARRIER, at.SPORE_SHROOM, at.CONDUIT_LIT, *map(at.lit_block, at.HALL_COLOURS), at.EMANATION_LIT, at.EMANATION_FED, at.PIPE_GLOW, at.LEAK}
 NPCS = {"Nakasar_Elemental_Fire", "Nakasar_Elemental_Frost", "Nakasar_Elemental_Root", "Nakasar_Elemental_Thunder"}
 
 # Quadrants de la Salle des Transmutations : (signe de x, signe de z), élémentaire du foyer, particules d'annonce et de
@@ -95,8 +95,11 @@ QUADRANTS = {
 }
 QUADRANT_ORDER = ("Fire", "Ice", "Acid", "Lightning")
 ZERO = {"X": 0.0, "Y": 0.0, "Z": 0.0}
-# Annonce des jets de gaz (zone rouge qui se remplit, comme toutes les annonces de la tour : tower_warnings.py).
-GAS_WARN = 2.0
+# Jets de gaz du couloir : annonce (zone rouge qui se remplit, comme toutes les annonces de la tour : tower_warnings.py),
+# durée du gaz, cadence (le mur intérieur souffle, puis le mur extérieur une demi-période plus tard).
+GAS_WARN = 1.8
+GAS_ACTIVE = 1.4
+GAS_PERIOD = 6.0
 # Champignons de la serre : annonce (il enfle), nuage, cadence de chaque moitié, rayon du nuage.
 SPORE_WARN = 2.0
 SPORE_CLOUD_S = 3.0
@@ -319,7 +322,7 @@ class Traps:
         self.add(name, group, center, shape, effects, conditions,
                  volume_tags={name: "Closed", **{k: "Off" for k in keys}})
 
-    def arena_gate(self, name, group, cells):
+    def arena_gate(self, name, group, cells, fight=()):
         """Barrière d'arène, comme les portes du Festin de Deepworks. Le Java (tower.ArenaGate) pose Gate=Close quand
         un joueur vivant est entré dans l'arène : l'annonce rouge clignote dans la porte, puis la barrière se lève
         ARENA_CLOSE_DELAY secondes plus tard. Gate=Open quand le groupe a péri (ou est sorti) ou que le boss est vaincu :
@@ -333,7 +336,10 @@ class Traps:
             vfx("TAG_ADDED", "Dungeon_Goblin_Energy_Barrier_Reveal", ARENA_CLOSE_DELAY),
             sound("TAG_ADDED", "SFX_Crystal_Break", ARENA_CLOSE_DELAY),
             dict(signal("TAG_ADDED", "Open", piece), Entry=1),
-            sound("TAG_ADDED", "SFX_Crystal_Break", entry=1)],
+            sound("TAG_ADDED", "SFX_Crystal_Break", entry=1),
+            # Pièges de l'arène (`fight`) : actifs seulement pendant le combat, barrière levée.
+            *[toggle("EnableVolume", "TAG_ADDED", v, delay=ARENA_CLOSE_DELAY, radius=80) for v in fight],
+            *[toggle("DisableVolume", "TAG_ADDED", v, entry=1, radius=80) for v in fight]],
             [tag_is("TAG_ADDED", "Gate", "Close"), tag_is("TAG_ADDED", "Gate", "Open", entry=1)],
             volume_tags={"Gate": "Open"}, ConditionTiming="BeforeVolumeDelay")
         for j, pile in enumerate(piles(cells)):
@@ -347,8 +353,9 @@ class Traps:
 
     def arenas(self):
         g = self.group("Tower_Arenas", 12597547)
+        fight = {"Codex": ("Library_Books_Controller",)}
         for name in ARENAS:
-            self.arena_gate(name, g, self.t["arenas"][name])
+            self.arena_gate(name, g, self.t["arenas"][name], fight.get(name, ()))
 
     # --- les pièges ----------------------------------------------------------------------------------------------
 
@@ -365,35 +372,40 @@ class Traps:
         return [place(event, block, self.world(*c), delay + i * step) for i, c in enumerate(cells)]
 
     def hall(self):
-        """Les trois athanors : chacun allumé fait courir la lumière dans son conduit jusqu'à l'alambic, remplit son
-        tube et fait vibrer le sceau du Couloir des fuites ; les trois ensemble allument le conduit maître et la colonne
-        relais jusqu'au plafond, puis le sceau se dissout."""
+        """Les trois athanors : chacun allumé fait courir sa couleur dans son tuyau suspendu jusqu'à l'alambic, remplit son
+        tube, allume sa gemme sur la colonne relais puis sur le sceau du Couloir des fuites, qui vibre. Les trois ensemble
+        allument le tuyau maître et la colonne relais jusqu'au sceau, puis le sceau se dissout."""
         g = self.group("Tower_Hall_Athanors", 16737843)
         parts = self.t["hall"]
         seal = self.t["hall_seal"]
-        seal_center, _ = self.bounds(seal)
+        sockets = self.t["hall_seal_sockets"]
+        seal_center, _ = self.bounds(seal + sockets)
         keys = []
-        for i, pos in enumerate(self.t["athanors"], 1):
+        for i, (pos, colour) in enumerate(zip(self.t["athanors"], at.HALL_COLOURS), 1):
             keys.append(f"Athanor_{i}")
             x, y, z = pos
-            conduit = sorted(parts["conduits"][i - 1], key=lambda c: -math.hypot(c[0], c[2]))  # de l'athanor à l'alambic
+            lit = at.lit_block(colour)
+            pipe = parts["conduits"][i - 1]  # de la cheminée à l'alambic
             tube = sorted(parts["tubes"][i - 1], key=lambda c: c[1])
             fx = [sound("BLOCK_USED", "SFX_Flame_Ignite"),
                   vfx("BLOCK_USED", "Magic_Sparks_Heavy_GS", offset=(0, 0.5, 0)),
                   place("BLOCK_USED", at.EMANATION_LIT, self.world(x, y + 2, z), 0.3)]
-            fx += self.light(conduit, at.CONDUIT_LIT, 0.4, 0.12)
-            fx += self.light(tube, at.CONDUIT_LIT, 0.4 + 0.12 * len(conduit), 0.1)
-            done = 0.4 + 0.12 * len(conduit) + 0.1 * len(tube)
-            fx += [sound("BLOCK_USED", "SFX_Emit_Goblin_Pipes_Activate", 0.4),
-                   tags("BLOCK_USED", f"Athanor_{i}", "On", done, match="Hall_Seal", radius=80)]
+            fx += self.light(pipe, lit, 0.5, 0.12)
+            t = 0.5 + 0.12 * len(pipe)
+            fx += self.light(tube, lit, t, 0.1)
+            t += 0.1 * len(tube)
+            fx += [place("BLOCK_USED", lit, self.world(*parts["relay_sockets"][i - 1]), t),
+                   place("BLOCK_USED", lit, self.world(*sockets[i - 1]), t + 0.3),
+                   sound("BLOCK_USED", "SFX_Emit_Goblin_Pipes_Activate", 0.4),
+                   tags("BLOCK_USED", f"Athanor_{i}", "On", t + 0.3, match="Hall_Seal", radius=80)]
             self.usable(f"Hall_Athanor_{i}", g, pos, fx)
-        # Le sceau vibre à chaque athanor allumé.
+        # Le sceau vibre à chaque gemme allumée.
         self.add("Hall_Seal_Pulse", g, seal_center, box(1, 1, 1), [
             vfx("TAG_ADDED", "Magic_Sparks_Heavy_GS", scale=2.0),
             vfx("TAG_ADDED", "Goblin_Decorative_Lightning", 0.2, scale=1.5),
             sound("TAG_ADDED", "SFX_Emit_Dungeon_Goblin_Void_Thunder")],
             volume_tags={"Hall_Seal": "Pulse", **{k: "Off" for k in keys}})
-        main = sorted(parts["main"], key=lambda c: math.hypot(c[0], c[2]))  # de l'alambic à la colonne
+        main = parts["main"]  # de l'alambic à la colonne
         relay = sorted(parts["relay"], key=lambda c: c[1])
         opened = self.light(main, at.CONDUIT_LIT, 0.2, 0.08, "TAG_ADDED")
         opened += self.light(relay, at.CONDUIT_LIT, 0.2 + 0.08 * len(main), 0.08, "TAG_ADDED")
@@ -401,33 +413,37 @@ class Traps:
         top = self.world(0, at.ALEMBIC_TOP + 4, 0)
         opened += [place("TAG_ADDED", at.EMANATION_FED, top, 0.2),
                    sound("TAG_ADDED", "SFX_Emit_Goblin_Pipes_Activate", 0.2),
+                   replace("TAG_ADDED", [at.lit_block(c) for c in at.HALL_COLOURS], "Empty", rise + 0.8),
                    title("TAG_ADDED", "hall", rise)]
-        self.gate("Hall_Seal", g, seal, keys, opened, delay=rise)
+        self.gate("Hall_Seal", g, seal + sockets, keys, opened, delay=rise)
 
     def leaks(self):
+        """Buses de gaz : tant qu'un joueur est dans le couloir, celles du mur intérieur (A) puis celles du mur extérieur
+        (B) soufflent toutes les GAS_PERIOD / 2 secondes. Chaque buse siffle et fume, son cône (trois cercles qui
+        grandissent depuis la buse) se remplit de rouge GAS_WARN secondes, puis le gaz le remplit GAS_ACTIVE secondes.
+        Pendant qu'un mur souffle, l'autre côté du couloir et les espaces entre deux cônes sont sûrs."""
         g = self.group("Tower_Leaks_Steam", 7864183)
         y = at.F_LEAKS
         self.controller("Leaks_Controller", g, self.world(0, y, 0), cylinder(at.R_IN, at.F_LIBRARY - at.F_LEAKS - 1),
-                        [("Steam", "Leaks_Pair", "A", 0.0), ("Steam", "Leaks_Pair", "B", 3.0)], interval=6.0)
-        for k, pair in self.t["jets"]:
-            mouth = at.at(16.5, k)
-            for j, r in enumerate((20.5, 24.0, 27.5)):
-                cx = r * math.cos(math.radians(k))
-                cz = r * math.sin(math.radians(k))
+                        [("Steam", "Leaks_Pair", "A", 0.0), ("Steam", "Leaks_Pair", "B", GAS_PERIOD / 2)],
+                        interval=GAS_PERIOD)
+        for n in self.t["nozzles"]:
+            (x, _, z), (ux, uz) = n["cell"], n["dir"]
+            for j, (dist, rad) in enumerate(at.GAS_CONE):
+                cx, cz = x + 0.5 + ux * dist, z + 0.5 + uz * dist
                 base = (cx + self.origin[0], y + self.origin[1], cz + self.origin[2])
-                # Zone rouge au sol pendant l'annonce, comme les jets de flammes de The_Deepworks.
-                warn = [mark(3.3, GAS_WARN)]
-                hit = []
-                if j == 1:  # une seule bouche joue les particules et le son
-                    off = (mouth[0] + 0.5 - cx, 1.0, mouth[1] + 0.5 - cz)
-                    warn += [vfx("", "Goblin_Decorative_Steam", offset=off, duration=GAS_WARN),
+                warn = [mark(rad, GAS_WARN)]
+                hit = [vfx("", gas_cloud(rad), offset=(0, 0.1, 0), duration=GAS_ACTIVE)]
+                if j == 0:  # la buse elle-même : sifflement et fumée pendant l'annonce, jet et poison au coup
+                    mouth = (-ux * (dist - 0.5), 1.5, -uz * (dist - 0.5))
+                    warn += [vfx("", "Goblin_Decorative_Steam", offset=mouth, duration=GAS_WARN),
                              sound("", "SFX_Emit_Goblin_Steam_A")]
-                    hit = [vfx("", "Dungeon_Goblin_Smoke_Pipe_Large", offset=off, duration=1.6),
-                           vfx("", "Effect_Poison", offset=(0, 1, 0), duration=1.6),
-                           sound("", "SFX_Env_Geyzer_Burst")]
-                self.pulse(f"Leaks_Jet_{k:03d}_{j}", g, base, cylinder(3.3, 4), "Steam", "Leaks_Pair", pair,
-                           warn=GAS_WARN, active=1.6, warn_fx=warn, hit_fx=hit,
-                           hits=[status("Poison_T1", 6.0), damage(8, 0.8)])
+                    hit += [vfx("", "Dungeon_Goblin_Smoke_Pipe_Large", offset=mouth, duration=GAS_ACTIVE),
+                            vfx("", "Effect_Poison", offset=(0, 1, 0), duration=GAS_ACTIVE),
+                            sound("", "SFX_Env_Geyzer_Burst")]
+                self.pulse(f"Leaks_Gas_{n['angle']:03d}_{j}", g, base, cylinder(rad, 3), "Steam", "Leaks_Pair",
+                           n["group"], warn=GAS_WARN, active=GAS_ACTIVE, warn_fx=warn, hit_fx=hit,
+                           hits=[status("Poison_T1", 6.0), damage(5, 0.8)])
         lever = self.t["lever"]
         self.usable("Leaks_Valve", g, lever, [
             sound("BLOCK_USED", "SFX_Lever_Metal_On"),
@@ -435,8 +451,8 @@ class Traps:
             toggle("DisableVolume", "BLOCK_USED", "Leaks_Controller", delay=0.5, radius=80),
             tags("BLOCK_USED", "Valve", "On", 0.5, match="Leaks_Shortcut", radius=80),
             tags("BLOCK_USED", "Valve", "On", 0.5, match="Leaks_Pipes", radius=80)], flag="Pulled")
-        # La conduite de gaz s'éteint et les fuites de la tuyauterie se tarissent quand la vanne est fermée.
-        pipes = self.t["valve_pipes"] + self.t["valve_leaks"]
+        # Les tuyaux luisants (vanne et buses) s'éteignent et les fuites se tarissent quand la vanne est fermée.
+        pipes = self.t["valve_pipes"] + self.t["valve_leaks"] + [c for n in self.t["nozzles"] for c in n["pipe"]]
         center, shape = self.bounds(pipes)
         self.add("Leaks_Pipes", g, center, shape, [
             replace("TAG_ADDED", [at.PIPE_GLOW], at.PIPE_GLOW, 0.2, to_state="Off"),
@@ -462,8 +478,7 @@ class Traps:
                        "Greenhouse_Spores", "AB"[i % 2], warn=SPORE_WARN, active=SPORE_CLOUD_S,
                        warn_fx=[place("", at.SPORE_SHROOM, here, state="Swelling"), mark(SPORE_R, SPORE_WARN),
                                 sound("", "SFX_Emit_Goblin_Liquid_Bubbling_Steam_Bursts")],
-                       hit_fx=[vfx("", SPORE_CLOUD, offset=(0, 0.2, 0), duration=SPORE_CLOUD_S),
-                               vfx("", "Dungeon_Goblin_Spores_Green", offset=(0, 1.0, 0), duration=SPORE_CLOUD_S),
+                       hit_fx=[vfx("", gas_cloud(SPORE_R, "Spore"), offset=(0, 0.1, 0), duration=SPORE_CLOUD_S),
                                sound("", "SFX_Env_Geyzer_Burst"), sound("", "SFX_Emit_Goblin_Steam_B", 0.2),
                                place("", at.SPORE_SHROOM, here, SHROOM_PUFF_END - SPORE_WARN)],
                        hits=[status("Slow", 2.0, interval=1.0), status("Poison_T1", 3.0, interval=1.0)])
@@ -486,8 +501,10 @@ class Traps:
             [tag_is("TAG_ADDED", "Fire", "On"), tag_is("TAG_ADDED", "Library_Brambles", "Intact")],
             volume_tags={"Library_Brambles": "Intact", "Fire": "Off"})
         y = at.F_LIBRARY
+        # Livres qui tombent des rayonnages : seulement pendant le combat du Codex (la barrière de l'arène active ce
+        # volume quand elle se lève et le coupe quand elle s'abaisse, `arena_gate`).
         self.controller("Library_Books_Controller", g, self.world(0, y, 0), cylinder(at.R_IN, 13),
-                        [("Books", "Library_Books", "", 0.0)], interval=3.0)
+                        [("Books", "Library_Books", "", 0.0)], interval=3.0, enabled=False)
         for i, pos in enumerate(self.t["books"]):
             self.pulse(f"Library_Books_{i + 1}", g, self.foot(*pos), cylinder(1.6, 3), "Books", "Library_Books",
                        "Zone", warn=2.0, active=0.4,
@@ -803,8 +820,9 @@ def check_ids(volumes):
     for v in volumes.values():
         for e in v["Effects"]:
             for field, ids in known.items():
-                if field == "ParticleSystem" and e.get(field, "").startswith(tw.PREFIX):
-                    continue  # zones d'annonce de la tour, écrites par tower_warnings.write()
+                if field == "ParticleSystem" and e.get(field, "").startswith((tw.PREFIX, "Nakasar_Gas_Cloud_",
+                                                                               "Nakasar_Spore_Cloud_")):
+                    continue  # zones d'annonce et nuages de la tour, écrits par tower_warnings.write() et write_clouds()
                 if field in e and e[field] not in ids:
                     raise RuntimeError(f"pièges : {field} inconnu {e[field]!r} dans {v['Name']}")
             for b in e.get("FromBlockTypes", ()):
@@ -1131,6 +1149,117 @@ def valve_item(model, textures, icon):
     })
 
 
+# --- peinture façon Hytale ----------------------------------------------------------------------------------------
+
+def pixel_painter(base, patch=5, jitter=0.05, seam=0.14, rim=0.18, top=1.1, bottom=0.7, fibres=False, spots=None):
+    """Peintre « pixel » dans l'esprit des textures du jeu (Mushroom_Block_*, 32 px par bloc) : pas de flou ni de
+    dégradé lisse. La face est pavée de plaques irrégulières (Voronoï, une tous les `patch` px) de tons un peu
+    différents, aux joints plus sombres, avec un grain d'un pixel ; bord de face assombri (`rim`), dessus plus clair et
+    dessous plus sombre. `fibres` : traits verticaux d'un pixel (pieds, bois). `spots` : (couleur, densité) de petites
+    taches claires cerclées, peintes dans la texture (chapeau)."""
+
+    def paint(rng, w, h, face):
+        img = Image.new("RGBA", (w, h))
+        px = img.load()
+        n = max(2, (w * h) // (patch * patch))
+        seeds = [(rng.uniform(0, w), rng.uniform(0, h), 1 + rng.uniform(-2.5, 2.5) * jitter) for _ in range(n)]
+        cols = [1 + rng.uniform(-1, 1) * jitter * 0.6 for _ in range(w)] if fibres else None
+        f_face = top if face == "top" else bottom if face == "bottom" else 1.0
+        dots = set()
+        if spots and face != "bottom":
+            for _ in range(max(1, int(w * h * spots[1] / 100))):
+                cx, cy, r = rng.randrange(w), rng.randrange(h), rng.choice((1, 1, 2))
+                dots.add((cx, cy, r))
+        for y in range(h):
+            for x in range(w):
+                d = sorted((((x + 0.5 - sx) ** 2 + (y + 0.5 - sy) ** 2), t) for sx, sy, t in seeds)
+                f = d[0][1] * f_face * (1 + rng.uniform(-1, 1) * jitter * 0.5)
+                if len(d) > 1 and math.sqrt(d[1][0]) - math.sqrt(d[0][0]) < 0.9:
+                    f *= 1 - seam
+                if cols:
+                    f *= cols[x]
+                if min(x, y, w - 1 - x, h - 1 - y) == 0 and min(w, h) > 3 and face != "top":
+                    f *= 1 - rim
+                c = gx.shade(base, f)
+                for cx, cy, r in dots:
+                    dd = math.hypot(x - cx, y - cy)
+                    if dd <= r - 0.5:
+                        c = gx.shade(spots[0], 1 + rng.uniform(-0.04, 0.04))
+                    elif dd <= r + 0.6:
+                        c = gx.mix(c, spots[0], 0.35)
+                px[x, y] = c + (255,)
+        return img
+
+    return paint
+
+
+# --- buses de gaz (couloir des fuites) ---------------------------------------------------------------------------
+
+NOZZLE_BRASS = (168, 122, 54)
+NOZZLE_IRON = (64, 62, 70)
+NOZZLE_GLOW = (170, 255, 90)
+
+
+def nozzle_parts(diagonal=False):
+    """Buse de gaz, à hauteur de poitrine contre le mur (-Z) : patte de fixation boulonnée au mur, coude de fer qui
+    reçoit la descente de tuyau luisant (en haut), pavillon de laiton évasé vers l'avant (+Z), gueule verte lumineuse.
+    Le modèle diagonal est le même tourné de 45° (avant vers +X +Z)."""
+    iron, dark = pixel_painter(NOZZLE_IRON, patch=4), pixel_painter(gx.IRON_DARK, patch=4)
+    brass = pixel_painter(NOZZLE_BRASS, patch=4, seam=0.1)
+    glow = gx.painter(NOZZLE_GLOW, glow=True)
+    parts = [
+        ("Plate", (0, 15, -14.5), (16, 16, 3), 0, dark, "flat"),
+        ("Arm", (0, 15, -9), (6, 6, 8), 0, iron, "flat"),
+        ("Elbow", (0, 17, -2), (11, 13, 11), 0, iron, "flat"),
+        ("Riser", (0, 27, -2), (8, 10, 8), 0, iron, "flat"),
+        ("Collar", (0, 15, 4.5), (9, 9, 3), 0, dark, "flat"),
+        ("Horn_1", (0, 15, 7.5), (11, 11, 3), 0, brass, "flat"),
+        ("Horn_2", (0, 15, 10.5), (14, 14, 3), 0, brass, "flat"),
+        ("Horn_3", (0, 15, 13), (17, 17, 2), 0, brass, "flat"),
+        ("Horn_Rim", (0, 15, 14.75), (18.5, 18.5, 1.5), 0, brass, "flat"),
+        ("Throat", (0, 15, 15.1), (14, 14, 1), 0, dark, "flat"),
+        ("Mouth", (0, 15, 15.8), (8, 8, 0.4), 0, glow, "fullbright"),
+    ]
+    for k, (bx, by) in enumerate(((-5.5, 20.5), (5.5, 20.5), (-5.5, 9.5), (5.5, 9.5))):
+        parts.append((f"Bolt_{k}", (bx, by, -12.6), (2.5, 2.5, 1), 0, brass, "flat"))
+    if diagonal:
+        parts = [(n, tuple(round(v, 3) for v in gx.rot_y(c, 45)), size, rot + 45, paint, shading)
+                 for n, c, size, rot, paint, shading in parts]
+    return parts
+
+
+def nozzle_assets():
+    """Modèles (droit, diagonal), texture commune, icône de la buse."""
+    out = {}
+    for diag in (False, True):
+        parts = nozzle_parts(diag)
+        atlas, uv = gx.build_atlas(parts, seed=4407, tex_w=64)
+        out[diag] = (gx.build_model("Gas_Nozzle", parts, uv), atlas, uv)
+    model, atlas, uv = out[False]
+    icon = gx.render(nozzle_parts(), atlas, uv, 256, yaw=-35, pitch=18, scale=256 / 40, center=(0, 15, 0))
+    return out, icon.resize((64, 64), Image.LANCZOS)
+
+
+def nozzle_item(block_id, model, texture, icon):
+    """Buse de gaz : décor plein (on ne la traverse pas), lumière verte."""
+    return block_item(block_id, icon, {
+        "Material": "Solid",
+        "DrawType": "Model",
+        "Opacity": "Transparent",
+        "CustomModel": model,
+        "CustomModelTexture": [{"Texture": texture, "Weight": 1}],
+        "HitboxType": "Full",
+        "VariantRotation": "NESW",
+        "Flags": {},
+        "Gathering": {"Breaking": {"GatherType": "Unbreakable"}},
+        "Light": {"Color": "#6c3"},
+        "BlockParticleSetId": "Metal",
+        "BlockSoundSetId": "Metal",
+        "PhysicalMaterialId": "Metal",
+        "ParticleColor": "#a87a36",
+    })
+
+
 # --- champignon des spores (serre) ----------------------------------------------------------------------------
 
 SHROOM_FPS = 60                # images par seconde des .blockyanim (Boomshroom_Large_Exploding : 195 = mèche de 3,25 s)
@@ -1148,8 +1277,10 @@ def shroom_parts(state):
     """Grand champignon violet de la serre, deux blocs de haut : pied crème sur sa volve, anneau, lamelles sombres,
     chapeau en trois étages semé de points lumineux (plus vifs et rougeâtres quand il enfle)."""
     cap, glow = SHROOM_COLORS[state]
-    cream, dark = gx.painter((222, 210, 188), "stone"), gx.painter((58, 30, 70), "stone")
-    hat = gx.painter(cap, "stone")
+    # Textures « pixel » comme les champignons du jeu (Kevin : les textures lisses ne font pas Hytale).
+    cream = pixel_painter((214, 200, 172), patch=4, jitter=0.04, seam=0.06, fibres=True)
+    dark = pixel_painter((58, 30, 70), patch=3, seam=0.2, fibres=True)
+    hat = pixel_painter(cap, patch=5, jitter=0.06, seam=0.16, spots=(gx.mix(cap, (255, 236, 250), 0.45), 1.2))
     light = gx.painter(glow, glow=True)
     parts = [
         ("Volva", (0, 2, 0), (13, 4, 13), 0, cream, "flat"),
@@ -1248,56 +1379,122 @@ def shroom_item(model, anims, textures, icon):
     })
 
 
-def spore_cloud_files():
-    """Nuage de spores des champignons : fumée épaisse vert acide qui vire au violet (d'après Explosion_Shroom_SporeCloud
-    du jeu, mais émise en continu tant que dure l'effet, sur environ SPORE_R blocs autour du pied)."""
-    reach = SPORE_R - 0.4
-    smoke = {
-        "RenderMode": "BlendLinear",
-        "EmitOffset": {"X": {"Min": 0, "Max": reach}, "Y": {"Min": 0.2, "Max": 2.2}, "Z": {"Min": 0, "Max": reach}},
-        "ParticleRotationInfluence": "Billboard",
-        "LinearFiltering": True,
-        "LightInfluence": 0.3,
-        "ParticleRotateWithSpawner": False,
-        "TrailSpawnerPositionMultiplier": 1,
-        "TrailSpawnerRotationMultiplier": 1,
-        "MaxConcurrentParticles": 48,
-        "ParticleLifeSpan": {"Min": 1.8, "Max": 2.8},
-        "SpawnRate": {"Min": 16, "Max": 20},
-        "InitialVelocity": {"Speed": {"Min": 0.05, "Max": 0.35}, "Yaw": {"Min": -180, "Max": 180},
-                            "Pitch": {"Min": 60, "Max": 120}},
-        "Particle": {
-            "Texture": "Particles/Textures/Smoke/Smoke_Smooth2.png",
-            "FrameSize": {"Width": 64, "Height": 64},
-            "ScaleRatioConstraint": "None",
-            "UVOption": "RandomFlipU",
-            "Animation": {
-                "0": {"Opacity": 0, "Color": "#c8ff5a", "Scale": {"X": {"Min": 1, "Max": 1}, "Y": {"Min": 1, "Max": 1}}},
-                "15": {"Opacity": 0.8},
-                "50": {"Opacity": 0.85, "Color": "#86d44a"},
-                "80": {"Opacity": 0.5, "Color": "#7a3a9a"},
-                "100": {"Opacity": 0, "Color": "#5a2a7a",
-                        "Scale": {"X": {"Min": 1.8, "Max": 1.4}, "Y": {"Min": 1.8, "Max": 1.4}}},
+GAS_COLORS = {"Gas": ("#e4ff6a", "#a8d43a", "#6f8a2a", "#4a5a22"), "Spore": ("#c8ff5a", "#86d44a", "#7a3a9a", "#5a2a7a")}
+_clouds = set()
+
+
+def gas_cloud(radius, kind="Gas"):
+    """Id du nuage (gaz du couloir ou spores de la serre) qui remplit un cercle de `radius` blocs, sans en déborder :
+    la zone rouge d'annonce et la zone d'effet ont ce même rayon (Kevin : « la zone rouge doit correspondre à la zone
+    d'effet des spores »). Écrit par `cloud_files`."""
+    t = int(round(radius * 10))
+    _clouds.add((kind, t))
+    return f"Nakasar_{kind}_Cloud_{t}"
+
+
+def cloud_files():
+    """Nuages demandés par `gas_cloud` : fumée épaisse émise en continu tant que dure l'effet (d'après
+    Explosion_Shroom_SporeCloud du jeu). Les particules naissent à moins de 0,7 rayon du centre et leur taille suit le
+    rayon, pour que le bord du nuage tombe sur le bord du cercle rouge."""
+    out = {}
+    for kind, t in sorted(_clouds):
+        r = t / 10
+        c0, c1, c2, c3 = GAS_COLORS[kind]
+        size = max(0.8, min(1.8, 0.6 * r))
+        name = f"Nakasar_{kind}_Cloud_{t}"
+        smoke = {
+            "RenderMode": "BlendLinear",
+            "EmitOffset": {"X": {"Min": 0, "Max": round(0.7 * r, 2)}, "Y": {"Min": 0.2, "Max": 1.6},
+                           "Z": {"Min": 0, "Max": round(0.7 * r, 2)}},
+            "ParticleRotationInfluence": "Billboard",
+            "LinearFiltering": True,
+            "LightInfluence": 0.3,
+            "ParticleRotateWithSpawner": False,
+            "TrailSpawnerPositionMultiplier": 1,
+            "TrailSpawnerRotationMultiplier": 1,
+            "MaxConcurrentParticles": max(8, int(48 * (r / 3) ** 2)),
+            "ParticleLifeSpan": {"Min": 1.2, "Max": 2.0},
+            "SpawnRate": {"Min": max(4, int(18 * (r / 3) ** 2)), "Max": max(5, int(22 * (r / 3) ** 2))},
+            "InitialVelocity": {"Speed": {"Min": 0.02, "Max": 0.12}, "Yaw": {"Min": -180, "Max": 180},
+                                "Pitch": {"Min": 60, "Max": 120}},
+            "Particle": {
+                "Texture": "Particles/Textures/Smoke/Smoke_Smooth2.png",
+                "FrameSize": {"Width": 64, "Height": 64},
+                "ScaleRatioConstraint": "None",
+                "UVOption": "RandomFlipU",
+                "Animation": {
+                    "0": {"Opacity": 0, "Color": c0, "Scale": {"X": {"Min": 1, "Max": 1}, "Y": {"Min": 1, "Max": 1}}},
+                    "15": {"Opacity": 0.8},
+                    "50": {"Opacity": 0.85, "Color": c1},
+                    "80": {"Opacity": 0.5, "Color": c2},
+                    "100": {"Opacity": 0, "Color": c3,
+                            "Scale": {"X": {"Min": 1.3, "Max": 1.2}, "Y": {"Min": 1.3, "Max": 1.2}}},
+                },
+                "InitialAnimationFrame": {
+                    "Rotation": {"X": {"Min": 0, "Max": 0}, "Y": {"Min": 0, "Max": 0}, "Z": {"Min": -90, "Max": 90}},
+                    "Scale": {"X": {"Min": size, "Max": round(size * 1.5, 2)},
+                              "Y": {"Min": size, "Max": round(size * 1.5, 2)}},
+                    "Opacity": 0.5,
+                    "Color": "#ffffff",
+                    "FrameIndex": {"Min": 0, "Max": 3},
+                },
             },
-            "InitialAnimationFrame": {
-                "Rotation": {"X": {"Min": 0, "Max": 0}, "Y": {"Min": 0, "Max": 0}, "Z": {"Min": -90, "Max": 90}},
-                "Scale": {"X": {"Min": 1.6, "Max": 3.4}, "Y": {"Min": 1.6, "Max": 3.4}},
-                "Opacity": 0.5,
-                "Color": "#ffffff",
-                "FrameIndex": {"Min": 0, "Max": 3},
+            "UVMotion": {"Texture": "Particles/Textures/UVMotion/FlowMapSmoke.png", "SpeedY": 0.24, "Scale": 1.04,
+                         "StrengthCurveType": "IncreaseQuartOut", "Strength": 7, "SpeedX": 0.08},
+            "SpawnBurst": False,
+        }
+        # Spores qui flottent dans le nuage (Dungeon_Goblin_Spores_Green2 du jeu, ramenées dans le cercle).
+        motes = {
+            "RenderMode": "Erosion",
+            "ParticleRotationInfluence": "Velocity",
+            "MaxConcurrentParticles": max(4, int(10 * (r / 3) ** 2)),
+            "ParticleLifeSpan": {"Min": 1.2, "Max": 2.2},
+            "SpawnRate": {"Min": 3, "Max": 6},
+            "Particle": {
+                "Texture": "Particles/Textures/Basic/Spark.png",
+                "ScaleRatioConstraint": "None",
+                "SoftParticles": "Disable",
+                "Animation": {
+                    "0": {"Opacity": 0, "Scale": {"X": {"Min": 0, "Max": 0}, "Y": {"Min": 0, "Max": 0}}, "Color": c0},
+                    "30": {"Opacity": 1, "Scale": {"X": {"Min": 1, "Max": 1}, "Y": {"Min": 1, "Max": 1}}},
+                    "100": {"Opacity": 0, "Scale": {"X": {"Min": 0, "Max": 0}, "Y": {"Min": 0, "Max": 0}}, "Color": c1},
+                },
+                "InitialAnimationFrame": {"Scale": {"X": {"Min": 0.33, "Max": 0.47}, "Y": {"Min": 0.33, "Max": 0.47}},
+                                          "Opacity": 1,
+                                          "Rotation": {"X": {"Min": 0, "Max": 360}, "Y": {"Min": 0, "Max": 360},
+                                                       "Z": {"Min": 0, "Max": 360}}},
+                "UVOption": "RandomFlipUV",
             },
-        },
-        "UVMotion": {"Texture": "Particles/Textures/UVMotion/FlowMapSmoke.png", "SpeedY": 0.24, "Scale": 1.04,
-                     "StrengthCurveType": "IncreaseQuartOut", "Strength": 7, "SpeedX": 0.08},
-        "TotalParticles": {"Min": 60, "Max": 60},
-        "SpawnBurst": False,
-    }
-    system = {
-        "$Comment": "Nuage de spores des champignons de la serre de la Tour de l'Alchimiste. Généré par tools/alchemist_traps.py.",
-        "Spawners": [{"SpawnerId": f"{SPORE_CLOUD}_Smoke"}, {"SpawnerId": "Dungeon_Goblin_Spores_Green2"}],
-        "CullDistance": 64,
-    }
-    return {f"{SPORE_CLOUD}.particlesystem": system, f"{SPORE_CLOUD}_Smoke.particlespawner": smoke}
+            "Shape": "Sphere",
+            "EmitOffset": {"X": {"Min": 0, "Max": round(0.85 * r, 2)}, "Y": {"Min": 0, "Max": 1.5},
+                           "Z": {"Min": 0, "Max": round(0.85 * r, 2)}},
+            "Attractors": [{"DampingMultiplier": {"X": 0.94, "Y": 0.94, "Z": 0.94}, "LinearAcceleration": {"Y": -0.25}}],
+            "InitialVelocity": {"Speed": {"Min": 0.05, "Max": 0.3}, "Yaw": {"Min": -180, "Max": 180},
+                                "Pitch": {"Min": 0, "Max": -30}},
+            "TrailSpawnerPositionMultiplier": 1,
+            "TrailSpawnerRotationMultiplier": 1,
+            "ParticleRotateWithSpawner": True,
+        }
+        out[f"{name}.particlesystem"] = {
+            "$Comment": f"Nuage ({kind}) de {r:g} blocs de rayon de la Tour de l'Alchimiste. Généré par tools/alchemist_traps.py.",
+            "Spawners": [{"SpawnerId": f"{name}_Smoke"}, {"SpawnerId": f"{name}_Motes"}],
+            "CullDistance": 64,
+        }
+        out[f"{name}_Smoke.particlespawner"] = smoke
+        out[f"{name}_Motes.particlespawner"] = motes
+    return out
+
+
+def write_clouds():
+    """Écrit les nuages demandés par les volumes (à appeler après `trap_volumes`) et retire les anciens."""
+    folder = SERVER / "Particles" / "Nakasar" / "Tower"
+    files = cloud_files()
+    for old in folder.glob("Nakasar_*_Cloud*"):
+        if old.name not in files:
+            old.unlink()
+    for name, doc in files.items():
+        write_json(folder / name, doc)
+    return sorted(_clouds)
 
 
 def door_texture(seed=4404):
@@ -1370,6 +1567,16 @@ def main():
     write_json(ITEMS / f"{at.VALVE}.json", valve_item(rel["model"], {k: rel[k] for k in textures}, rel["icon"]))
     write_json(SERVER / "Item" / "Block" / "Hitboxes" / "Nakasar" / "Nakasar_Tower_Valve.json",
                {"Boxes": [gx.hitbox_box(-7, 0, -10, 7, 52, 12)]})
+    nozzles, nozzle_icon = nozzle_assets()
+    nozzle_icon.save(ICONS / "Gas_Nozzle.png")
+    for diag, block_id in ((False, at.NOZZLE), (True, at.NOZZLE_DIAG)):
+        model_path = COMMON / "Blocks" / "Nakasar" / "Alchemist" / f"{block_id.removeprefix('Nakasar_Tower_')}.blockymodel"
+        tex_path = TEXTURES / f"{block_id.removeprefix('Nakasar_Tower_')}.png"
+        write_json(model_path, nozzles[diag][0])
+        nozzles[diag][1].save(tex_path)
+        write_json(ITEMS / f"{block_id}.json", nozzle_item(block_id, model_path.relative_to(COMMON).as_posix(),
+                                                            tex_path.relative_to(COMMON).as_posix(),
+                                                            (ICONS / "Gas_Nozzle.png").relative_to(COMMON).as_posix()))
     door, door_icon = TEXTURES / "Tower_Door.png", ICONS / "Tower_Door.png"
     door_img = door_texture()
     door_img.save(door)
@@ -1394,8 +1601,6 @@ def main():
         {k: srel[k] for k in shroom_textures}, srel["icon"]))
     write_json(SERVER / "Item" / "Block" / "Hitboxes" / "Nakasar" / "Nakasar_Spore_Shroom.json",
                {"Boxes": [gx.hitbox_box(-5, 0, -5, 5, 30, 5), gx.hitbox_box(-14, 30, -14, 14, 46, 14)]})
-    for name, doc in spore_cloud_files().items():
-        write_json(SERVER / "Particles" / "Nakasar" / "Tower" / name, doc)
     barrier, barrier_icon = TEXTURES / "Arena_Barrier.png", ICONS / "Arena_Barrier.png"
     barrier_img = barrier_texture()
     barrier_img.save(barrier)
@@ -1419,6 +1624,9 @@ def main():
                       center=(0, 26, 0)).save(preview / f"Spore_Shroom_{state}.png")
         for state in textures:
             valve_render(textures, uv, 512, state).save(preview / f"Valve_{state}.png")
+        for diag in (False, True):
+            gx.render(nozzle_parts(diag), nozzles[diag][1], nozzles[diag][2], 512, yaw=-35, pitch=18, scale=512 / 40,
+                      center=(0, 15, 0)).save(preview / f"Gas_Nozzle_{'diag' if diag else 'straight'}.png")
     print("blocs des énigmes générés")
 
 

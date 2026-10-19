@@ -10,7 +10,7 @@ Parcours, de bas en haut (niveaux = première couche d'air du sol de chaque sall
 
 - parvis au sud, porte du Hall des Alambics (niveau 0) ; rampe le long du mur de 200 à 300° ;
 - Couloir des fuites (22) : anneau autour d'un cœur plein, barré à 240°, on en fait les trois quarts jusqu'à la porte
-  ouest ; tuyaux, niches et grilles de vapeur (jets et niches de refuge : `traps`) ;
+  ouest ; buses de gaz sur les deux murs, alimentées par des tuyaux luisants (`gas_nozzles`, jets en cône : `traps`) ;
 - Serre suspendue (22) : balcon extérieur d'ouest en est par le nord, verrière à l'ouest, belvédère au nord ; une rampe
   extérieure monte de 0 à 50° jusqu'à la porte de la bibliothèque ;
 - Bibliothèque (36) : rotonde à deux galeries, étagères, salle secrète en encorbellement à 320° ; rampe de 70 à 205° ;
@@ -76,28 +76,41 @@ GATE_BLOCKS = (SEAL, HEDGE, DOOR)
 # Traps.arena_gate) quelques secondes après l'entrée du groupe, retirée quand il a péri ou que le boss est vaincu.
 ARENA_BARRIER = "Nakasar_Arena_Barrier"
 SPORE_SHROOM = "Nakasar_Spore_Shroom"   # champignon animé de la serre : il enfle puis lâche son nuage de spores
-# Hall des Alambics : trois athanors autour du grand alambic, reliés à lui par des conduits d'or incrustés dans le
-# sol ; chaque athanor allumé fait briller son conduit et remplit son tube de l'alambic, et les trois ensemble allument
-# le conduit et la colonne relais qui montent jusqu'au sceau du Couloir des fuites.
+# Hall des Alambics : trois athanors autour du grand alambic. Chacun a sa couleur (gemmes sur son estrade) ; allumé, il
+# fait courir sa couleur dans un tuyau de verre suspendu jusqu'à l'alambic, remplit son tube, allume sa gemme sur la
+# colonne relais et sur le sceau du Couloir des fuites. Les trois ensemble allument le tuyau maître et la colonne, qui
+# traverse le plafond sous le sceau (dalle de verre), puis le sceau se dissout. (Kevin : « pas assez clair que les
+# athanors alimentent le mur de sceau ».)
 HALL_ATHANOR_ANGLES = (30, 150, 270)
 HALL_ATHANOR_R = 13            # brasero de l'athanor
 HALL_FURNACE_R = 17    # four de l'athanor, derrière le brasero
 ALEMBIC_R = 5             # grand alambic : verre pour 2,5 <= d < ALEMBIC_R
 ALEMBIC_TOP = 13
-CONDUIT = "Rock_Gold_Brick"            # conduit éteint (incrusté dans le sol)
-CONDUIT_LIT = "Rock_Crystal_Purple_Block"
+CONDUIT_LIT = "Rock_Crystal_Purple_Block"   # tuyau maître et colonne relais allumés (les trois couleurs mêlées)
+HALL_COLOURS = ("Red", "Blue", "Green")     # couleur de chaque athanor (HALL_ATHANOR_ANGLES)
+SOCKET = "Rock_Gold_Brick_Ornate"           # gemme éteinte (colonne relais et sceau)
+PIPE_Y = 11      # tuyaux suspendus des athanors à l'alambic
+MAIN_Y = 14      # tuyau maître du chapiteau de l'alambic à la colonne relais
 EMANATION_LIT = "Nakasar_Tower_Emanation_Spiral"   # posée au-dessus d'un athanor allumé
 EMANATION_FED = "Nakasar_Tower_Emanation_Arc"      # au sommet de l'alambic quand les trois athanors brûlent
 RELAY = (306, 20.5)       # colonne relais (angle, rayon), sous le sceau du Couloir des fuites (HALL_SEAL_ARC)
 PIPE = "Metal_Goblin_Iron_Pipe_Large"
 PIPE_GLOW = "Metal_Goblin_Iron_Pipe_Large_Glowy"   # luit tant que la vanne est ouverte (état Off une fois coupée)
 PIPE_THIN = "Metal_Goblin_Iron_Pipe_Long"
-LEAK = "VFX_Dungeon_Goblin_Leaking_Pipe"
+LEAK = "Nakasar_Tower_Emanation_Leak"   # fuite de gaz (pas le bloc vanilla : il se ramasse)
 # Cour : gardiens d'airain sur leurs socles (x, z).
 GUARDIANS = ((-8, 44), (8, 44), (-8, 60), (8, 60))
 RUBBLE = "Nakasar_Codex_Rubble"  # éboulis de livres et d'étagères, posé en jeu par les volumes du combat du Codex
 HALL_SEAL_ARC = (304, 308)    # sceau du couloir des fuites, juste après l'arrivée de la rampe du hall (300°)
-JET_ARC = (310, 530)          # bouches de vapeur actives : de l'arrivée à la porte ouest (180°)
+JET_ARC = (310, 530)          # zone des jets de gaz : de l'arrivée à la porte ouest (180°)
+# Buses de gaz du Couloir des fuites (Kevin : « rajoute des tuyaux visibles et des embouts desquels le gaz sort, avec des
+# zones rouges qui préviennent de la sortie du gaz en cône »). Une buse tous les 15°, tour à tour sur le mur intérieur
+# (groupe A, elle souffle vers l'extérieur) et sur le mur extérieur (groupe B, vers l'intérieur) ; chaque buse vise l'une
+# des huit directions (modèle droit ou diagonal) et son cône est fait de trois cercles (distance à la buse, rayon).
+NOZZLE = "Nakasar_Tower_Gas_Nozzle"
+NOZZLE_DIAG = "Nakasar_Tower_Gas_Nozzle_Diagonal"
+NOZZLE_ANGLES = tuple(range(315, 526, 15))
+GAS_CONE = ((1.3, 1.0), (3.3, 1.5), (5.7, 2.1))
 SHORTCUT_ARC = (236.5, 243.5)  # barrage du couloir : le levier y ouvre un raccourci
 HEDGE_ARC = (72, 84)          # haie de ronces au pied de la rampe de la bibliothèque (elle part de 70°)
 FOYERS = {"Fire": (6, -11), "Ice": (-6, -11), "Acid": (14, 14), "Lightning": (-14, 14)}
@@ -191,6 +204,22 @@ def wall_facing(x, z, inner=28.4):
 
 def at(r, a):
     return round(r * math.cos(math.radians(a))), round(r * math.sin(math.radians(a)))
+
+
+def lit_block(colour):
+    """Cristal allumé d'une couleur d'athanor (HALL_COLOURS)."""
+    return f"Rock_Crystal_{colour}_Block"
+
+
+def radial(a, r0, r1):
+    """Colonnes (x, z) d'un trait droit à l'angle `a`, du rayon r0 au rayon r1, dans l'ordre, sans doublon."""
+    out = []
+    n = int(abs(r1 - r0) * 2) + 1
+    for i in range(n):
+        c = at(r0 + (r1 - r0) * i / (n - 1), a)
+        if c not in out:
+            out.append(c)
+    return out
 
 
 class Tower:
@@ -398,9 +427,9 @@ class Tower:
                     p.set(gx + dx, -1, gz + dz, "Rock_Gold_Brick_Ornate" if (dx, dz) == (0, 0) else TRIM)
 
     def hall(self):
-        """Hall des Alambics : le grand alambic au centre, trois athanors autour, reliés à lui par des conduits d'or
-        incrustés dans le sol, et la colonne relais sous le sceau du Couloir des fuites. Le sol est dégagé autour des
-        athanors pour qu'on les voie en entrant."""
+        """Hall des Alambics : le grand alambic au centre, trois athanors autour, reliés à lui par des tuyaux de verre
+        suspendus, et la colonne relais sous le sceau du Couloir des fuites, reliée à l'alambic par le tuyau maître. Le
+        sol est dégagé autour des athanors pour qu'on les voie en entrant."""
         cells = self.helix(200, 300, 23, R_IN, F_HALL, F_LEAKS)
         self.hall_ramp = cells
         p = self.p
@@ -431,9 +460,9 @@ class Tower:
             p.set(x, ALEMBIC_TOP + 2, z, GLASS)
         p.set(0, ALEMBIC_TOP + 3, 0, "Rock_Gold_Brick_Ornate")
         p.set(0, ALEMBIC_TOP + 4, 0, "Nakasar_Tower_Emanation_Spiral")
-        # Athanors : four de marbre cerclé d'or derrière un brasero (l'énigme : `traps`), sur une estrade dorée ; une
-        # cheminée d'or monte au plafond, des émanations flottent autour pour qu'on les remarque.
-        for k in HALL_ATHANOR_ANGLES:
+        # Athanors : four de marbre cerclé d'or derrière un brasero (l'énigme : `traps`), sur une estrade dorée semée de
+        # gemmes de sa couleur ; une cheminée d'or monte au plafond, des émanations flottent autour.
+        for k, colour in zip(HALL_ATHANOR_ANGLES, HALL_COLOURS):
             fx, fz = at(HALL_FURNACE_R, k)
             for dx in range(-1, 2):
                 for dz in range(-1, 2):
@@ -445,65 +474,119 @@ class Tower:
             p.set(mx, 1, mz, "Furniture_Royal_Magic_Potion_Glow")  # gueule du four
             for y in range(5, F_LEAKS - 1):
                 p.set(fx, y, fz, "Metal_Gold_Pipe_Large")  # cheminée jusqu'au plafond
+            bx, bz = at(HALL_ATHANOR_R, k)
             for x, z, d, a in ring(0, 3.6):
-                bx, bz = at(HALL_ATHANOR_R, k)
-                if not self.solid(bx + x, -1, bz + z) or self.p.get(bx + x, -1, bz + z) != CONDUIT:
-                    p.set(bx + x, -1, bz + z, TRIM if d >= 2.6 else "Rock_Marble_Brick_Smooth")
+                p.set(bx + x, -1, bz + z, TRIM if d >= 2.6 else "Rock_Marble_Brick_Smooth")
+            for off in (45, 135, 225, 315):
+                gx, gz = at(2.9, off)
+                p.set(bx + gx, 0, bz + gz, f"Rock_Crystal_{colour}_Medium")
             for j, off in enumerate((-40, 40)):
                 ex, ez = at(HALL_ATHANOR_R + 1.5, k + off * 0.35)
                 p.set(ex, 2 + j, ez, "Nakasar_Tower_Emanation_Motes")
-            # Conduit d'or de l'estrade au pied de l'alambic.
-            conduit = sorted({at(r / 2, k) for r in range(2 * (ALEMBIC_R + 2), 2 * (HALL_ATHANOR_R - 3) + 1)})
-            for x, z in conduit:
-                p.set(x, -1, z, CONDUIT)
-            h["conduits"].append([(x, -1, z) for x, z in conduit])
-        # Conduit maître et colonne relais : de l'alambic au pied du sceau, la colonne de verre monte au plafond.
+            # Tuyau de verre suspendu, de la cheminée au tube de l'alambic, cerclé d'or tous les quatre blocs.
+            pipe = []
+            for i, (x, z) in enumerate(radial(k, HALL_FURNACE_R - 1, 2.2)):
+                if (x, z) in tubes:
+                    break
+                if i % 4 == 3 and math.hypot(x, z) > ALEMBIC_R:
+                    p.set(x, PIPE_Y, z, GOLD)
+                else:
+                    p.set(x, PIPE_Y, z, GLASS)
+                    pipe.append((x, PIPE_Y, z))
+            h["conduits"].append(pipe)
+        # Colonne relais sous le sceau du Couloir des fuites : verre cerclé d'or, trois gemmes éteintes (une par athanor)
+        # sur la face qui regarde l'alambic ; son âme traverse le plafond, dallé de verre sous le sceau.
         ra, rr = RELAY
-        main = sorted({at(r / 2, ra) for r in range(2 * (ALEMBIC_R + 2), int(2 * (rr - 1)) + 1)})
-        for x, z in main:
-            p.set(x, -1, z, CONDUIT)
-        h["main"] = [(x, -1, z) for x, z in main]
         rx, rz = at(rr, ra)
         for dx in range(-1, 2):
             for dz in range(-1, 2):
                 p.set(rx + dx, -1, rz + dz, "Rock_Gold_Brick_Ornate")
                 for y in range(0, F_LEAKS - 1):
                     if (dx, dz) == (0, 0):
-                        p.set(rx, y, rz, AIR if y else "Rock_Gold_Brick_Ornate")
+                        p.set(rx, y, rz, AIR if y >= MAIN_Y else "Rock_Gold_Brick_Ornate")
                     else:
                         p.set(rx + dx, y, rz + dz, GOLD if (abs(dx) + abs(dz) == 2 or y % 5 == 0) else GLASS)
-        h["relay"] = [(rx, y, rz) for y in range(1, F_LEAKS - 1)]
-        floor = h["main"] + [c for cs in h["conduits"] for c in cs]
-        self.keep_clear.update((x, y, z) for x, _, z in floor for y in range(0, 3))
+        for x, z, d, a in ring(18, R_IN):
+            if in_arc(a, *HALL_SEAL_ARC):
+                p.set(x, F_LEAKS - 1, z, GLASS)
+        p.set(rx, F_LEAKS - 1, rz, GLASS)
+        h["relay"] = [(rx, y, rz) for y in range(MAIN_Y, F_LEAKS)]
+        sx, sz = at(rr - 1, ra)
+        h["relay_sockets"] = [(sx, y, sz) for y in (4, 7, 10)]
+        for c in h["relay_sockets"]:
+            p.set(*c, SOCKET)
+        # Tuyau maître : du chapiteau de l'alambic à la colonne relais.
+        h["main"] = []
+        for i, (x, z) in enumerate(radial(ra, 3.6, rr - 1.6)):
+            if i % 4 == 3:
+                p.set(x, MAIN_Y, z, GOLD)
+            else:
+                p.set(x, MAIN_Y, z, GLASS)
+                h["main"].append((x, MAIN_Y, z))
         self.light_ring(27.5, 0, 15, skip=((195, 305), (82, 98)))
         for x, z in ((12, 12), (-12, 12), (12, -12), (-12, -12), (0, 18), (0, -18), (18, 0), (-18, 0)):
             self.place(x, 18, z, CHANDELIER)
 
     def leaks(self):
-        """Couloir des fuites : anneau de 9 à 14,5, tuyaux au plafond, niches et grilles de vapeur dans le cœur."""
+        """Couloir des fuites : anneau de 18 à 29,5 autour d'un cœur plein. La conduite de gaz court au plafond le long
+        des deux murs ; dans la zone des jets, des descentes de tuyaux luisants alimentent les buses (`gas_nozzles`)."""
         p = self.p
         y = F_LEAKS
         for x, z, d, a in ring(27.5, R_IN):
             for dy in (9, 10):
-                p.set(x, y + dy, z, GOLD)  # conduite qui court au plafond le long du mur
+                p.set(x, y + dy, z, GOLD)  # conduite qui court au plafond le long du mur extérieur
+        for x, z, d, a in ring(18, 19.6):
+            if in_arc(a, JET_ARC[0] - 4, JET_ARC[1] + 4):
+                for dy in (9, 10):
+                    p.set(x, y + dy, z, GOLD)  # et le long du cœur, au-dessus des buses intérieures
         for k in range(0, 360, 10):
-            if in_arc(k, 232, 248) or in_arc(k, 262, 305):
+            if in_arc(k + 5, JET_ARC[0] - 6, JET_ARC[1] + 6):
                 continue
-            x, z = at(17.5, k)
-            if self.solid(x, y, z):
-                for dy in range(0, 4):
-                    p.set(x, y + dy, z, AIR)
-                xi, zi = at(16.5, k)
-                p.set(xi, y + 1, zi, "Deco_Iron_Bars")  # bouche de vapeur
-                p.set(xi, y + 2, zi, "Deco_Iron_Bars")
-                p.set(x, y, z, GLOW)
             xo, zo = at(28, k + 5)
             for dy in range(0, 9):
                 if self.p.free(xo, y + dy, zo):
                     p.set(xo, y + dy, zo, "Rock_Gold_Brick_Pillar_Middle")  # colonne montante
+        self.gas_nozzles()
         # Porte ouest vers la serre.
         door = [(x, z) for x in range(-35, -27) for z in range(-2, 3)]
         self.door(door, F_LEAKS, 5)
+
+    def gas_nozzles(self):
+        """Buses de gaz : montées à hauteur de poitrine sur le mur, sous une descente de tuyau luisant qui remonte à la
+        conduite du plafond. `self.nozzles` garde, pour chaque buse, sa case, sa direction et son groupe (A ou B)."""
+        p = self.p
+        y = F_LEAKS + 1
+        self.nozzles = []
+        for i, a in enumerate(NOZZLE_ANGLES):
+            inner = i % 2 == 0
+            q = (round(a / 45) * 45 + (0 if inner else 180)) % 360
+            u = (math.cos(math.radians(q)), math.sin(math.radians(q)))
+            step = (round(u[0]), round(u[1]))
+            radii = [r / 4 for r in range(64, 88)] if inner else [r / 4 for r in range(124, 100, -1)]
+            x, z = next(c for c in (at(r, a) for r in radii) if p.free(c[0], y, c[1]) and p.free(c[0], y - 1, c[1]))
+            bx, bz = x - step[0], z - step[1]
+            for dy in (-1, 0, 1):  # la buse s'appuie sur le mur (bossage d'or si le mur courbe s'écarte)
+                if p.free(bx, y + dy, bz):
+                    p.set(bx, y + dy, bz, GOLD)
+            if q % 90 == 0:
+                name, rot = NOZZLE, next(r for r, f in DIRS_ROT.items() if f == step)
+            else:  # modèle diagonal : son avant (+X, +Z) tourne comme l'avant (+Z) d'un meuble
+                name = NOZZLE_DIAG
+                rot = next(r for r, (fx, fz) in DIRS_ROT.items() if (fz + fx, fz - fx) == step)
+            p.set(x, y, z, name, rot)
+            pipe = [(x, k, z) for k in range(y + 1, F_LEAKS + 9)]
+            for c in pipe:
+                p.set(*c, PIPE_GLOW)
+            cone = set()
+            for dist, rad in GAS_CONE:
+                cx, cz = x + 0.5 + u[0] * dist, z + 0.5 + u[1] * dist
+                cone.update((gx, gz) for gx in range(math.floor(cx - rad), math.ceil(cx + rad))
+                            for gz in range(math.floor(cz - rad), math.ceil(cz + rad))
+                            if math.hypot(gx + 0.5 - cx, gz + 0.5 - cz) < rad + 0.5)
+            self.keep_clear.update((gx, k, gz) for gx, gz in cone for k in range(F_LEAKS, F_LEAKS + 3)
+                                   if p.free(gx, k, gz))
+            self.nozzles.append({"angle": a, "group": "A" if inner else "B", "cell": (x, y, z), "dir": u,
+                                 "pipe": pipe})
 
     def greenhouse(self):
         p = self.p
@@ -993,29 +1076,18 @@ class Tower:
         t["court_door"] = self.court_door
         t["hall_seal"] = self.seal([(x, z) for x, z, d, a in ring(18, R_IN) if in_arc(a, *HALL_SEAL_ARC)],
                                    F_LEAKS, F_LIBRARY - 1)
-        # Couloir des fuites : les bouches de vapeur jettent par groupes de trois (A et B en alternance) ; entre deux
-        # groupes, une niche de refuge creusée dans le mur extérieur (la colonne montante qui la masquait part).
-        vents = sorted((k for k in range(0, 360, 10)
-                        if in_arc(k, *JET_ARC) and p.get(*at3(17.5, F_LEAKS, k)) == GLOW),
-                       key=lambda k: (k - JET_ARC[0]) % 360)
-        t["jets"] = [(k, "A" if (i // 3) % 2 == 0 else "B") for i, k in enumerate(vents)]
-        t["niches"] = []
-        for i in range(3, len(vents), 3):
-            b = (vents[i] - 5) % 360
-            px, pz = at(28, b)
-            for y in range(F_LEAKS, F_LEAKS + 9):
-                if p.get(px, y, pz) == "Rock_Gold_Brick_Pillar_Middle":
-                    p.set(px, y, pz, AIR)
-            for x, z, d, a in ring(R_IN - 0.5, 32.3):
-                if abs((a - b + 180) % 360 - 180) * d * math.pi / 180 >= 1.6:
-                    continue
-                for y in range(F_LEAKS, F_LEAKS + 3):
-                    p.set(x, y, z, AIR)
-                    self.keep_clear.add((x, y, z))
-                if not self.solid(x, F_LEAKS - 1, z):
-                    p.set(x, F_LEAKS - 1, z, TRIM)
-            p.set(*at3(31, F_LEAKS + 2, b), "Furniture_Royal_Magic_Potion_Glow_Ceiling")
-            t["niches"].append(b)
+        # Trois gemmes éteintes sur la face du sceau qui regarde l'arrivée de la rampe, une par athanor.
+        seal_cells = t["hall_seal"]
+        sockets = []
+        for r in (21.5, 23.5, 25.5):
+            row = [c for c in seal_cells if c[1] == F_LEAKS + 2 and abs(math.hypot(c[0], c[2]) - r) < 0.75]
+            c = min(row, key=lambda c: polar(c[0], c[2])[1])
+            p.set(*c, SOCKET)
+            seal_cells.remove(c)
+            sockets.append(c)
+        t["hall_seal_sockets"] = sockets
+        # Couloir des fuites : les buses de gaz (`gas_nozzles`).
+        t["nozzles"] = self.nozzles
         # Au fond, derrière la porte ouest, le levier coupe la vanne : les jets cessent et le barrage de 240° s'ouvre
         # en raccourci vers l'arrivée de la rampe du hall.
         lx, lz = at(25, 220)
@@ -1391,12 +1463,15 @@ class Tower:
             self.chain(x, top, z, 3, end="Furniture_Royal_Magic_Potion_Glow_Ceiling")
 
     def decor_leaks(self):
+        """Couloir des fuites : la zone des jets reste dégagée (on doit y lire les buses et les cônes) ; tonneaux,
+        caisses et flaques de réactifs après la porte ouest, autour de la vanne."""
         y = F_LEAKS
         rng = self.rng
         top = F_LIBRARY - 2
+        jets = (JET_ARC[0] - 8, JET_ARC[1] + 8)
         # Tonneaux, caisses et sacs de réactifs contre le mur extérieur, par grappes.
         for k in range(5, 360, 22):
-            if in_arc(k, 225, 255) or in_arc(k, 165, 195):
+            if in_arc(k, 225, 255) or in_arc(k, 165, 195) or in_arc(k, *jets):
                 continue
             for j, name in enumerate(rng.sample(["Furniture_Ancient_Barrel", "Furniture_Tavern_Barrel",
                                                  "Furniture_Ancient_Crate", "Furniture_Ancient_Sack",
@@ -1405,17 +1480,15 @@ class Tower:
                 self.place(x, y, z, name)
                 if name == "Furniture_Ancient_Crate" and rng.random() < 0.7:
                     self.place(x, y + 1, z, rng.choice(["Furniture_Ancient_Barrel", "Deco_Bucket", "Furniture_Ancient_Crate"]))
-        # Vapeur qui s'échappe des niches et flaques de réactif.
+        # Flaques de réactif.
         for k in range(0, 360, 30):
-            if in_arc(k, 232, 248) or in_arc(k, 262, 305):
+            if in_arc(k + 15, *jets) or in_arc(k + 15, 232, 248):
                 continue
-            x, z = at(17.5, k)
-            if self.p.get(x, y, z) == GLOW:
-                self.p.set(x, y + 2, z, "Nakasar_Tower_Emanation_Mist")
             px, pz = at(20, k + 15)
             self.place(px, y, pz, rng.choice(["Rock_Crystal_Green_Small", "Plant_Crop_Mushroom_Glowing_Green",
                                               "Rock_Crystal_Yellow_Small"]))
-        self.scatter(y, 24, 28.4, 0.08, ["Deco_Bucket", "Furniture_Ancient_Sack",                                          "Rock_Crystal_Green_Small", "Deco_Bone_Pile", "Deco_Trash_Pile_Small"], ((228, 252),))
+        self.scatter(y, 24, 28.4, 0.08, ["Deco_Bucket", "Furniture_Ancient_Sack", "Rock_Crystal_Green_Small",
+                                         "Deco_Bone_Pile", "Deco_Trash_Pile_Small"], ((228, 252), jets))
         # Chaînes et lanternes qui pendent du plafond.
         for k in range(0, 360, 15):
             if in_arc(k, 232, 248):
