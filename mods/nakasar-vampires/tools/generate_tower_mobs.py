@@ -29,6 +29,8 @@ Nakasar_Alchemist_Creations). Toutes sont des rôles Generic du mod, sur des mod
   (interaction Java Nakasar_CodexChapter, combat suivi par tower/CodexSystem.java) : un livre de chapitre (rôles
   Nakasar_Codex_Chapter_<sort>, sans marqueur) apparaît sur un pupitre ; le détruire avant la fin de l'incantation
   étourdit le Codex (Nakasar_Codex_Stunned, dégâts subis +50 %), sinon le sort part (volumes de l'instance) ;
+  CodexSystem mène aussi ses trois phases (jets d'encre, tourbillons de pages Nakasar_Codex_Page_Vortex, deux
+  chapitres à la fois en dernière phase) ;
 - Chimère du laboratoire (mini-boss, modèle tools/generate_chimera_models.py, barre de boss) : morsure, poing de golem
   annoncé, fauchage de la queue annoncé ; sa régénération dans la cuve, les étagères de réactifs
   (Nakasar_Chimera_Reagent_Shelf) et les homoncules porteurs (Nakasar_Chimera_Feeder), posés en jeu sans marqueur,
@@ -113,6 +115,8 @@ HEART_DROP = "Nakasar_Drop_Trophy_Chimera_Heart"
 # Livres de chapitre du Codex : apparus par CodexSystem (Java) sur un pupitre, jamais par un marqueur.
 CHAPTERS = [f"Nakasar_Codex_Chapter_{spell}" for spell in ("Fire", "Frost", "Rain")]
 CODEX_STUNNED = "Nakasar_Codex_Stunned"
+# Tourbillons de pages coupantes : invoqués par CodexSystem (Java) dès la deuxième phase, qui inflige aussi leurs dégâts.
+VORTEX = "Nakasar_Codex_Page_Vortex"
 CLASP_DROP = "Nakasar_Drop_Trophy_Codex_Clasp"
 
 SALT = "Ingredient_Nakasar_Philosophers_Salt"
@@ -751,7 +755,7 @@ def gargoyle_role():
 
 
 def codex_role():
-    return role(CODEX, "Codex vivant, gardien de la bibliothèque (boss de l'étape 5), avec barre de vie de boss : flotte au centre de la rotonde entre les trois pupitres, nuée de pages dans un cône annoncé toutes les 4,5 à 6 s, chapitre toutes les 28 à 32 s (CodexSystem : livre à détruire sur un pupitre, sinon feu, givre ou pluie de livres ; sous la moitié de sa vie les rayonnages s'effondrent). Ne quitte pas le centre de l'arène ; remise à zéro par CodexSystem si le groupe meurt ou sort.",
+    return role(CODEX, "Codex vivant, gardien de la bibliothèque (boss de l'étape 5), avec barre de vie de boss : flotte au centre de la rotonde entre les trois pupitres, nuée de pages dans un cône annoncé toutes les 4,5 à 6 s, chapitre toutes les 28 à 32 s (CodexSystem : livre à détruire sur un pupitre, sinon feu, givre ou pluie de livres). CodexSystem mène ses trois phases (70 % et 40 % de vie : onde annoncée qui tourne la page) : jets d'encre annoncés, tourbillons de pages dès la deuxième, deux chapitres à la fois et rayonnages qui s'effondrent dans la troisième. Ne quitte pas le centre de l'arène ; remise à zéro par CodexSystem si le groupe meurt ou sort.",
                 CODEX, 1500, [
                     ge.timed_attack("Chapter", "Root_Nakasar_NPC_Codex_Chapter",
                                     comment="Ouvre un chapitre à chaque fin de recharge."),
@@ -774,6 +778,13 @@ def chapter_role(role_id):
                 role_id, 40, [], fly(0.1, 0.2, 0.5), sight=0.5, los=False, home=False,
                 DefaultPlayerAttitude="Neutral", KnockbackScale=0, DeathAnimationTime=0.3,
                 DeathParticles="Explosion_Medium")
+
+
+def vortex_role():
+    return role(VORTEX, "Tourbillon de pages coupantes invoqué par le Codex vivant (CodexSystem, deuxième et troisième phases) : flotte vers le joueur le plus proche, un peu moins vite qu'un joueur qui court. Il n'attaque pas lui-même : CodexSystem entaille les joueurs à moins de 1,8 bloc et le dissipe au bout de 22 s. Fragile, on peut aussi le détruire.",
+                VORTEX, 50, [chase(40, speed=0.75, stop=0.3, pathfinder=False)],
+                fly(5, 0.2, 0.6), sight=40, los=False, leash=40, home=False,
+                KnockbackScale=0.4, DeathAnimationTime=0.6, DeathParticles="Block_Break_Dust")
 
 
 def chimera_role():
@@ -913,6 +924,7 @@ def roles():
         GARGOYLE: gargoyle_role(),
         CODEX: codex_role(),
         **{chapter: chapter_role(chapter) for chapter in CHAPTERS},
+        VORTEX: vortex_role(),
         CHIMERA: chimera_role(),
         SHELF: shelf_role(),
         FEEDER: feeder_role(),
@@ -1248,7 +1260,7 @@ def drops():
 def groups():
     return {
         CREATIONS: {"$Comment": "Créatures de l'Alchimiste : elles ne se blessent pas entre elles (DisableDamageGroups).",
-                    "IncludeRoles": ALL + CHAPTERS + [SHELF, FEEDER, ATHANOR_HOMUNCULUS] + PILLARS},
+                    "IncludeRoles": ALL + CHAPTERS + [VORTEX, SHELF, FEEDER, ATHANOR_HOMUNCULUS] + PILLARS},
         FIRE_ELEMENTALS: {"$Comment": "Créatures de feu de la tour : aucun dégât de feu (dans Nakasar_Fire_Immune).",
                           "IncludeRoles": [FIRE, FLASK_FIRE]},
     }

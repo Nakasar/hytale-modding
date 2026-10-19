@@ -973,6 +973,9 @@ def main():
     volumes.update(traps)
     print(f"Pièges et énigmes : {len(traps)} volumes, nuages {alchemist_traps.write_clouds()}")
     tower_warnings.system(2.5)  # zones des éléments de l'Alchimiste (AlchemistSystem.WARNING)
+    # CodexSystem : tourbillons (1,5 s), jets d'encre (1,6 à 2,1 s le long de la ligne), onde de changement de phase.
+    for seconds in (1.5, 1.6, 1.7, 1.8, 1.9, 2.0, 2.1, 2.2):
+        tower_warnings.system(seconds)
     print(f"Zones d'annonce : {tower_warnings.write()} dixièmes de seconde")
     write_json(SERVER / "Instances" / TOWER / "resources" / "TriggerVolumeData.json", trigger_volumes(volumes, trap_groups))
     JAVA_LAYOUT.write_text(tower_layout(tower, ruins_spot), encoding="utf-8")

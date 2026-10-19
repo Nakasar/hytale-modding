@@ -602,7 +602,7 @@ class Traps:
         - Codex_Fire / Codex_Frost_<pupitre> / Codex_Rain, Cast=On quand un chapitre n'a pas été interrompu : cercle de
           feu autour du centre, onde de givre autour du pupitre, pluie de livres sur des cercles au hasard, toujours
           annoncés (zones rouges) ;
-        - Codex_Collapse_<pan>, Collapse=On sous 50 % de vie : un pan d'étagères s'annonce puis s'effondre en éboulis
+        - Codex_Collapse_<pan>, Collapse=On en dernière phase (sous 40 % de vie) : un pan d'étagères s'annonce puis s'effondre en éboulis
           (Nakasar_Codex_Rubble) qui réduisent l'arène ;
         - Codex_Arena, Reset=On quand le groupe a fui ou péri : les éboulis disparaissent et les pans se relèvent."""
         g = self.group("Tower_Codex", 9055202)
@@ -1485,10 +1485,108 @@ def cloud_files():
     return out
 
 
+# Encre du Codex vivant (jets d'encre, CodexSystem) : flaque à plat d'un rayon de 1,47 bloc à l'échelle 1 (comme les
+# cercles d'annonce, tools/tower_warnings.py), éclaboussure de gouttes au point d'impact.
+INK_POOL = "Nakasar_Ink_Pool"
+INK_SPLASH = "Nakasar_Ink_Splash"
+INK = ("#3a1858", "#1c0a2c", "#a05aff")
+
+
+def ink_files():
+    """Particules d'encre jouées par CodexSystem (Java) : une seule bouffée chacune, le Java rejoue la flaque chaque
+    seconde tant qu'elle reste au sol (ParticleUtil n'a pas de durée)."""
+    deep, black, glow = INK
+    flat = {"X": {"Min": 90, "Max": 90}}
+    pool = {
+        "RenderMode": "BlendLinear",
+        "ParticleRotationInfluence": "Velocity",
+        "ParticleLifeSpan": {"Min": 1.3, "Max": 1.3},
+        "ParticleRotateWithSpawner": True,
+        "TrailSpawnerPositionMultiplier": 1,
+        "TrailSpawnerRotationMultiplier": 1,
+        "Particle": {
+            "Texture": "Particles/Textures/Basic/Ball5.png",
+            "ScaleRatioConstraint": "OneToOne",
+            "UVOption": "None",
+            "SoftParticles": "Disable",
+            "Animation": {"0": {"Opacity": 0.6, "Color": deep}, "20": {"Opacity": 0.9, "Color": black},
+                          "80": {"Opacity": 0.9}, "100": {"Opacity": 0.6, "Color": deep}},
+            "InitialAnimationFrame": {"Opacity": 0.8, "Rotation": flat, "Scale": {"X": {"Min": 6.25, "Max": 6.25}}},
+        },
+        "Shape": "Sphere",
+        "TotalParticles": {"Min": 1, "Max": 1},
+        "SpawnRate": {"Min": 1, "Max": 1},
+        "LinearFiltering": True,
+        "MaxConcurrentParticles": 1,
+        "InitialVelocity": {"Speed": {"Min": 0.01, "Max": 0.01}},
+        "SpawnBurst": True,
+    }
+    bubbles = {
+        "RenderMode": "BlendAdd",
+        "ParticleRotationInfluence": "Billboard",
+        "ParticleLifeSpan": {"Min": 0.6, "Max": 1.1},
+        "Particle": {
+            "Texture": "Particles/Textures/Basic/Spark.png",
+            "ScaleRatioConstraint": "OneToOne",
+            "SoftParticles": "Disable",
+            "Animation": {"0": {"Opacity": 0, "Color": glow}, "30": {"Opacity": 0.9}, "100": {"Opacity": 0, "Color": deep}},
+            "InitialAnimationFrame": {"Opacity": 0.9, "Scale": {"X": {"Min": 0.3, "Max": 0.5}}},
+            "UVOption": "RandomFlipUV",
+        },
+        "Shape": "Sphere",
+        "EmitOffset": {"X": {"Min": 0, "Max": 1.1}, "Y": {"Min": 0, "Max": 0.1}, "Z": {"Min": 0, "Max": 1.1}},
+        "TotalParticles": {"Min": 4, "Max": 6},
+        "SpawnRate": {"Min": 6, "Max": 8},
+        "MaxConcurrentParticles": 6,
+        "InitialVelocity": {"Speed": {"Min": 0.2, "Max": 0.5}, "Pitch": {"Min": 80, "Max": 100}},
+        "TrailSpawnerPositionMultiplier": 1,
+        "TrailSpawnerRotationMultiplier": 1,
+        "SpawnBurst": False,
+    }
+    drops = {
+        "RenderMode": "BlendLinear",
+        "ParticleRotationInfluence": "Billboard",
+        "ParticleLifeSpan": {"Min": 0.5, "Max": 0.9},
+        "Particle": {
+            "Texture": "Particles/Textures/Basic/Ball5.png",
+            "ScaleRatioConstraint": "OneToOne",
+            "SoftParticles": "Disable",
+            "Animation": {"0": {"Opacity": 1, "Color": deep}, "70": {"Opacity": 1, "Color": black},
+                          "100": {"Opacity": 0, "Color": black}},
+            "InitialAnimationFrame": {"Opacity": 1, "Scale": {"X": {"Min": 0.35, "Max": 0.7}}},
+            "UVOption": "None",
+        },
+        "Shape": "Sphere",
+        "EmitOffset": {"X": {"Min": 0, "Max": 0.5}, "Y": {"Min": 0, "Max": 0.3}, "Z": {"Min": 0, "Max": 0.5}},
+        "TotalParticles": {"Min": 16, "Max": 20},
+        "SpawnRate": {"Min": 20, "Max": 20},
+        "MaxConcurrentParticles": 20,
+        "InitialVelocity": {"Speed": {"Min": 3.0, "Max": 6.0}, "Yaw": {"Min": -180, "Max": 180},
+                            "Pitch": {"Min": 40, "Max": 85}},
+        "Attractors": [{"LinearAcceleration": {"Y": -14}}],
+        "TrailSpawnerPositionMultiplier": 1,
+        "TrailSpawnerRotationMultiplier": 1,
+        "SpawnBurst": True,
+    }
+    comment = "du Codex vivant (tower/CodexSystem.java). Généré par tools/alchemist_traps.py."
+    return {
+        f"{INK_POOL}.particlesystem": {"$Comment": "Flaque d'encre " + comment, "CullDistance": 64,
+                                       "Spawners": [{"SpawnerId": f"{INK_POOL}_Disc", "PositionOffset": {"Y": 0.04}},
+                                                    {"SpawnerId": f"{INK_POOL}_Bubbles", "PositionOffset": {"Y": 0.1}}]},
+        f"{INK_POOL}_Disc.particlespawner": pool,
+        f"{INK_POOL}_Bubbles.particlespawner": bubbles,
+        f"{INK_SPLASH}.particlesystem": {"$Comment": "Éclaboussure d'encre " + comment, "CullDistance": 64,
+                                         "Spawners": [{"SpawnerId": f"{INK_SPLASH}_Drops", "PositionOffset": {"Y": 0.3}}]},
+        f"{INK_SPLASH}_Drops.particlespawner": drops,
+    }
+
+
 def write_clouds():
-    """Écrit les nuages demandés par les volumes (à appeler après `trap_volumes`) et retire les anciens."""
+    """Écrit les nuages demandés par les volumes (à appeler après `trap_volumes`) et retire les anciens, ainsi que
+    l'encre du Codex."""
     folder = SERVER / "Particles" / "Nakasar" / "Tower"
     files = cloud_files()
+    files.update(ink_files())
     for old in folder.glob("Nakasar_*_Cloud*"):
         if old.name not in files:
             old.unlink()

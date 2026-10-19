@@ -342,6 +342,64 @@ def chapter_anims():
     ]
 
 
+# --- tourbillon de pages ------------------------------------------------------------------------
+
+# Anneaux du tourbillon : hauteur, rayon, nombre de pages, inclinaison des pages, sens et vitesse (tours par cycle).
+VORTEX_RINGS = ((14, 12, 5, 30, 1), (36, 18, 7, 22, -1), (60, 24, 9, 14, 2))
+
+
+def vortex_model():
+    """Tourbillon de pages coupantes : trois anneaux de feuillets à l'écriture violette qui tournent en sens opposés
+    autour d'un fil d'encre lumineux, un glyphe qui tourne au sommet."""
+    ink = p_glow((226, 170, 255), RUNE_DARK)
+    rings = []
+    for i, (y, r, n, tilt, _) in enumerate(VORTEX_RINGS, 1):
+        leaves = []
+        for k in range(n):
+            a = 2 * math.pi * k / n + i
+            leaves.append(Box(f"Ring{i}_Leaf{k}", (r * math.cos(a), 0, r * math.sin(a)), (10, 13, 0.5),
+                              p_leaf(), double=True, rot=(tilt, -math.degrees(a) + 90, 18 * (-1) ** k)))
+        rings.append(Joint(f"Ring{i}", (0, y, 0), leaves))
+    core = Joint("Core", (0, 0, 0), [
+        Box("Core_Thread", (0, 38, 0), (3, 64, 3), ink, shading="fullbright"),
+        Box("Core_Glyph", (0, 82, 0), (12, 12, 0.8), p_glow((255, 255, 255), RUNE), shading="fullbright", rot=(0, 0, 45)),
+    ])
+    return Joint("Body", (0, 0, 0), rings + [core])
+
+
+VORTEX_JOINTS = ["Body", "Ring1", "Ring2", "Ring3", "Core"]
+
+
+def vortex_anims():
+    def spin(t, period, wobble=1.0):
+        u = t / period
+        out = {f"Ring{i}": ((0, 360 * turns * u, 0), (0, 2 * wobble * math.sin(2 * math.pi * (u + i / 3)), 0))
+               for i, (_, _, _, _, turns) in enumerate(VORTEX_RINGS, 1)}
+        out["Core"] = ((0, -360 * u, 0), (0, 0, 0))
+        return out
+
+    def idle(t):
+        return spin(t, 1.2)
+
+    def hurt(t):
+        k = keys(t, [(0, 0), (0.06, 1), (0.25, 0)])
+        out = spin(t, 1.2)
+        out["Body"] = ((0, 0, 14 * k), (0, 0, 0))
+        return out
+
+    def death(t):
+        k = keys(t, [(0, 0), (0.6, 1)])
+        out = {f"Ring{i}": ((70 * k * (-1) ** i, 200 * k, 0), (0, (12 * i - 30) * k, 0)) for i in range(1, 4)}
+        out["Core"] = ((0, 0, 0), (0, -40 * k, 0))
+        return out
+
+    return [
+        Anim("Idle", 1.2, idle, step=2, loop=True),
+        Anim("Hurt", 0.25, hurt, step=3),
+        Anim("Death", 0.6, death, step=3, hold=True),
+    ]
+
+
 # --- écriture -----------------------------------------------------------------------------------
 
 FLIGHT = ("Fly", "FlyBackward", "FlyFast", "FlyIdle")
@@ -393,6 +451,18 @@ def main():
             ("idle", "Idle", 1.0, {"size": 240, "scale": 4.0, "center": (0, 20, 0), "pitch": 30}),
         ])
         add_flight(key)
+    gpm.build("Codex_Page_Vortex", vortex_model(), VORTEX_JOINTS, vortex_anims(), 57, 128, {
+        "$Comment": "Tourbillon de pages coupantes invoqué par le Codex vivant (CodexSystem), généré par tools/generate_codex_models.py : trois anneaux de feuillets qui tournent en sens opposés autour d'un fil d'encre violet lumineux.",
+        "EyeHeight": 0.8,
+        "HitBox": {"Max": {"X": 0.6, "Y": 1.5, "Z": 0.6}, "Min": {"X": -0.6, "Y": 0, "Z": -0.6}},
+        "MinScale": 1,
+        "MaxScale": 1,
+        "Light": {"Color": "#b26aff", "Radius": 4},
+    }, [], preview, [
+        ("repos", None, 0, {"size": 240, "scale": 2.6, "center": (0, 44, 0), "pitch": 15}),
+        ("idle", "Idle", 0.4, {"size": 240, "scale": 2.6, "center": (0, 44, 0), "pitch": 15}),
+    ])
+    add_flight("Codex_Page_Vortex")
 
 
 if __name__ == "__main__":

@@ -358,16 +358,21 @@ Mobs (voir [docs/npc-0.7.2.md](docs/npc-0.7.2.md)) :
   mort) et que les portes tombent.
 - **Tour de l'Alchimiste, pièges et énigmes** (`tools/alchemist_traps.py`, blocs posés par
   `alchemist_tower.Tower.traps`) : volumes déclencheurs comme ceux de Deepworks, vérifiés hors ligne par ValidateAssets.
-  Hall (dégagé autour du grand alambic) : rallumer les trois athanors (braseros éteints devant leurs fours) ; chacun
-  fait courir la lumière dans son conduit d'or jusqu'à l'alambic, remplit son tube et fait vibrer le sceau ; les trois
-  allument le conduit maître et la colonne relais, puis le sceau du Couloir des fuites se dissout. Couloir : jets de
-  vapeur toxique par groupes qui alternent, annoncés par des zones rouges au sol comme les jets de flammes de
-  Deepworks, niches de refuge dans le mur, vanne de gaz au fond (derrière la porte ouest), montée sur sa tuyauterie de
-  gobelins : la fermer coupe les jets, éteint la conduite luisante, tarit les fuites et ouvre un raccourci vers la rampe
-  du hall. Serre : cinq grands champignons violets animés (`Nakasar_Spore_Shroom`) crachent leurs spores à tour de rôle
-  tant qu'on est dans la serre : le champignon enfle en tremblant pendant que sa zone rouge se remplit (2 s), puis
-  lâche un vrai nuage vert et violet (`Nakasar_Spore_Cloud`) qui reste 3 s, ralentit et empoisonne. Bibliothèque : le
-  brasero met le feu à la haie de ronces qui barre la rampe ; des livres tombent sur des cercles annoncés. Salle des
+  Hall (dégagé autour du grand alambic) : rallumer les trois athanors (braseros éteints devant leurs fours) ; chaque
+  athanor a sa couleur (rouge, bleu, vert : gemmes sur son estrade) et allume de cette couleur son tuyau de verre
+  jusqu'à l'alambic, son tube, sa prise sur la colonne relais et sa prise sur le sceau du couloir ; les trois allument
+  le conduit maître et la colonne relais, qui perce le plafond de verre sous le sceau, puis le sceau se dissout.
+  Couloir : buses de gaz en laiton (`Nakasar_Tower_Gas_Nozzle`, droites et diagonales, tuyau luisant au-dessus) dans
+  les deux murs ; elles crachent en cône à tour de rôle (mur intérieur puis mur extérieur, toutes les 3 s), chaque
+  cône annoncé par trois cercles rouges et rempli d'un nuage taillé à leur rayon : on avance dans le couloir de
+  sécurité de l'autre mur. Vanne au fond (derrière la porte ouest) : la fermer coupe les buses, éteint les tuyaux et
+  ouvre un raccourci vers la rampe du hall. Les fuites du décor sont des émanations (`Nakasar_Tower_Emanation_Leak`)
+  qu'on ne ramasse plus (le bloc vanilla avait une hitbox « Rubble » ramassable). Serre : cinq grands champignons
+  violets animés (`Nakasar_Spore_Shroom`, texture pixel art à la Hytale) crachent leurs spores à tour de rôle tant
+  qu'on est dans la serre : le champignon enfle en tremblant pendant que sa zone rouge se remplit (2 s), puis lâche un
+  nuage (`Nakasar_Spore_Cloud_30`) exactement du rayon de la zone rouge, qui reste 3 s, ralentit et empoisonne.
+  Bibliothèque : le brasero met le feu à la haie de ronces qui barre la rampe ; les livres ne tombent que pendant le
+  combat du Codex (`ArenaGate` active le volume quand la barrière se lève, le coupe à la fin). Salle des
   Transmutations : les quadrants se transmutent à tour de rôle (feu, glace, acide, foudre ; les croix d'or restent
   sûres), allumer le foyer d'un quadrant l'apaise mais libère un élémentaire, les quatre foyers dissolvent le sceau de
   l'escalier du laboratoire. Escalier des vents (s'éveille à la porte nord du laboratoire) : flammes qui balaient les
@@ -403,12 +408,18 @@ Mobs (voir [docs/npc-0.7.2.md](docs/npc-0.7.2.md)) :
   flottant (œil, fermoir d'or, chaînes brisées, runes) au centre de la rotonde entre trois pupitres, barre de boss.
   Nuée de pages dans un cône annoncé au sol ; toutes les 28 à 32 s il ouvre un chapitre : un livre apparaît sur un
   pupitre (feu, givre ou pluie de livres) et le détruire en 6 s étourdit le Codex 6 s (+50 % de dégâts subis), sinon
-  le sort part sur des zones annoncées. Sous la moitié de sa vie, un pan de rayonnages s'effondre toutes les 14 s
-  (zones annoncées puis bloc d'éboulis `Nakasar_Codex_Rubble`). Groupe mort ou sorti de l'arène 8 s : éboulis
-  retirés et vie pleine. Sa mort dissout le sceau de la rampe vers la Salle des Transmutations ; trophée Fermoir du
+  le sort part sur des zones annoncées. Trois phases (titre à l'écran ; à 70 % et 40 % de vie une onde annoncée de 8
+  blocs part de lui) : jets d'encre (ligne de six cercles rouges vers un joueur, l'encre court du Codex vers la cible,
+  éclabousse, ralentit et laisse des flaques 4 s ; toutes les 10, 8 puis 6,5 s, deux jets en dernière phase),
+  tourbillons de pages coupantes dès la phase 2 (`Nakasar_Codex_Page_Vortex`, 50 PV, annoncés au sol, poursuivent les
+  joueurs, entaillent à 1,8 bloc, durent 22 s, au plus 4), en phase 3 deux chapitres à la fois (il faut détruire les
+  deux livres pour l'étourdir, chaque livre restant lance son sort) et un pan de rayonnages qui s'effondre toutes les
+  14 s (zones annoncées puis bloc d'éboulis `Nakasar_Codex_Rubble`). Groupe mort ou sorti de l'arène 8 s : éboulis,
+  livres, tourbillons et flaques retirés, vie pleine, retour en phase 1. Sa mort dissout le sceau de la rampe vers la Salle des Transmutations ; trophée Fermoir du
   Codex (sans usage pour l'instant). À vérifier en jeu : le modèle et ses animations (Pages, Chapter, vol), le sens des
   marques du cône, l'apparition des livres sur les pupitres, l'étourdissement, les zones de sorts et d'éboulement, la
-  remise à zéro et le sceau.
+  remise à zéro et le sceau ; les titres de phase, l'encre (éclaboussure, flaque), le modèle du tourbillon et sa
+  poursuite, l'équilibre des dégâts.
 - **Tour de l'Alchimiste, la Chimère du laboratoire** (`tools/generate_chimera_models.py`, rôles dans
   `generate_tower_mobs.py`, arène dans `alchemist_tower.Tower.chimera`, acide dans `alchemist_traps.Traps.chimera`,
   combat dans `tower/ChimeraSystem.java`) : second mini-boss, quadrupède rapiécé (patte de golem de plomb, queue de

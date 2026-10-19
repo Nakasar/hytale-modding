@@ -1,0 +1,18 @@
+{
+  "$Comment": "Flaque d'encre du Codex vivant (tower/CodexSystem.java). Généré par tools/alchemist_traps.py.",
+  "CullDistance": 64,
+  "Spawners": [
+    {
+      "SpawnerId": "Nakasar_Ink_Pool_Disc",
+      "PositionOffset": {
+        "Y": 0.04
+      }
+    },
+    {
+      "SpawnerId": "Nakasar_Ink_Pool_Bubbles",
+      "PositionOffset": {
+        "Y": 0.1
+      }
+    }
+  ]
+}

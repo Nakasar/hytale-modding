@@ -1,5 +1,5 @@
 {
-  "$Comment": "Codex vivant, gardien de la bibliothèque (boss de l'étape 5), avec barre de vie de boss : flotte au centre de la rotonde entre les trois pupitres, nuée de pages dans un cône annoncé toutes les 4,5 à 6 s, chapitre toutes les 28 à 32 s (CodexSystem : livre à détruire sur un pupitre, sinon feu, givre ou pluie de livres ; sous la moitié de sa vie les rayonnages s'effondrent). Ne quitte pas le centre de l'arène ; remise à zéro par CodexSystem si le groupe meurt ou sort. Généré par tools/generate_tower_mobs.py.",
+  "$Comment": "Codex vivant, gardien de la bibliothèque (boss de l'étape 5), avec barre de vie de boss : flotte au centre de la rotonde entre les trois pupitres, nuée de pages dans un cône annoncé toutes les 4,5 à 6 s, chapitre toutes les 28 à 32 s (CodexSystem : livre à détruire sur un pupitre, sinon feu, givre ou pluie de livres). CodexSystem mène ses trois phases (70 % et 40 % de vie : onde annoncée qui tourne la page) : jets d'encre annoncés, tourbillons de pages dès la deuxième, deux chapitres à la fois et rayonnages qui s'effondrent dans la troisième. Ne quitte pas le centre de l'arène ; remise à zéro par CodexSystem si le groupe meurt ou sort. Généré par tools/generate_tower_mobs.py.",
   "Type": "Generic",
   "Appearance": "Nakasar_Living_Codex",
   "NameTranslationKey": "nakasar_alchemist.npc.Living_Codex.name",
