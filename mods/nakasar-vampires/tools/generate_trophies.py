@@ -4,7 +4,8 @@
     python3 mods/nakasar-vampires/tools/generate_trophies.py [--preview DOSSIER]
 
 Trophées (lâchés par les créatures du Comté, voir Server/Drops/Nakasar/Trophies/) :
-- croc de vampire : un rejeton sur deux ;
+- croc de vampire : un rejeton sur deux (tirage écrit dans Nakasar_Drop_Vampire_Spawn, qui doit garder un objet
+  en propre : une liste qui ne fait que renvoyer à d'autres est refusée) ;
 - cœur d'Abomination, graine de la Citrouille géante, insigne du Capitaine de la garde : toujours, un
   par élite tuée. Les améliorations de l'établi des chasseurs en demandent de précis, de l'élite la
   plus facile à la plus dure : le cœur pour le niveau 2, la graine et l'insigne pour le niveau 3.
@@ -159,14 +160,15 @@ def item(item_id, quality, level, stack):
     }
 
 
-# contrat, couleur du lien, qualité, contenu (objet, min, max) puis tirages au choix (objet, quantité, poids sur 4)
+# contrat, couleur du lien, qualité, contenu (objet, min, max) puis tirages au choix (objet, quantité, poids sur 4).
+# Jamais de croc de vampire : on ne les obtient qu'en chassant les rejetons dans le Comté, pas par les contrats.
 BAGS = [
     ("Farm", (150, 40, 40), "Rare",
-     [(SILVER_BAR, 2, 3), (SHARD, 2, 3), (FANG, 1, 2)], [("Rock_Gem_Topaz", 1, 1)]),
+     [(SILVER_BAR, 2, 3), (SHARD, 2, 3)], [("Rock_Gem_Topaz", 1, 1)]),
     ("Pumpkin", (214, 110, 30), "Rare",
-     [(SILVER_BAR, 3, 4), (SHARD, 2, 4), (FANG, 1, 2), ("Ingredient_Life_Essence_Pumpkin", 2, 3)], [("Rock_Gem_Ruby", 1, 1)]),
+     [(SILVER_BAR, 3, 4), (SHARD, 2, 4), ("Ingredient_Life_Essence_Pumpkin", 2, 3)], [("Rock_Gem_Ruby", 1, 1)]),
     ("Garrison", (60, 70, 150), "Epic",
-     [(SILVER_BAR, 4, 6), (SHARD, 3, 5), (FANG, 2, 3), ("Rock_Gem_Topaz", 1, 1)], [("Rock_Gem_Sapphire", 1, 1)]),
+     [(SILVER_BAR, 4, 6), (SHARD, 3, 5), ("Rock_Gem_Topaz", 1, 1)], [("Rock_Gem_Sapphire", 1, 1)]),
 ]
 
 

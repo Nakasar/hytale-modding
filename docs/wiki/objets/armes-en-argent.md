@@ -54,7 +54,7 @@ Toutes : rareté **Rare**, niveau 25, recette connue d'office, à l'**établi d'
 
 ## Où trouver de l'argent
 
-Lingots d'argent dans les coffres du Comté : [trésor du manoir](../fragment/butin-des-coffres.md#tresor-du-manoir) (2 à 6), chambres et atelier du manoir, [quartiers du capitaine](../fragment/butin-des-coffres.md#quartiers-du-capitaine), [ruines du château](../fragment/butin-des-coffres.md#ruines-du-chateau), [cryptes](../fragment/butin-des-coffres.md#crypte), [maison du notable](../fragment/butin-des-coffres.md#maison-du-notable) et [camp de chasseurs](../fragment/butin-des-coffres.md#camp-de-chasseurs).
+Lingots d'argent dans les coffres du Comté : [quartiers du capitaine](../fragment/butin-des-coffres.md#quartiers-du-capitaine), [ruines du château](../fragment/butin-des-coffres.md#ruines-du-chateau), [cryptes](../fragment/butin-des-coffres.md#crypte), [maison du notable](../fragment/butin-des-coffres.md#maison-du-notable) et [camp de chasseurs](../fragment/butin-des-coffres.md#camp-de-chasseurs).
 
 ## Argent infusé {#argent-infuse}
 

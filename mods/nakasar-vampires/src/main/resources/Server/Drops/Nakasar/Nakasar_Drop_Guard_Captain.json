@@ -3,14 +3,6 @@
     "Type": "Multiple",
     "Containers": [
       {
-        "Type": "Single",
-        "Item": {
-          "ItemId": "Ingredient_Rune_Shard",
-          "QuantityMin": 2,
-          "QuantityMax": 4
-        }
-      },
-      {
         "Type": "Choice",
         "Containers": [
           {

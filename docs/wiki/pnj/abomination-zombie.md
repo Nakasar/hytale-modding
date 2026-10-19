@@ -1,12 +1,13 @@
 # Abomination zombie
 
 <Infobox pending title="Abomination zombie" kind="Élite">
-<Info label="Points de vie">**450**</Info>
+<Info label="Points de vie">**700**</Info>
+<Info label="Barre de vie">barre de boss en combat</Info>
 <Info label="Attitude">Hostile</Info>
 <Info label="Lieu">[Ferme zombie](../fragment/fermes.md), 1 marqueur</Info>
 <Info label="Réapparition">30 min</Info>
 <Info label="Faiblesses">Feu purificateur</Info>
-<Info label="Butin">1 à 3 éclats de rune, [Cœur d'Abomination](../objets/trophees.md)</Info>
+<Info label="Butin">2 à 4 cendres de mort-vivant, [Cœur d'Abomination](../objets/trophees.md)</Info>
 <Info label="Id">`Nakasar_Zombie_Abomination`</Info>
 </Infobox>
 
@@ -16,7 +17,7 @@ Un amas de chair gonflé (gros zombie aberrant vanilla, ×1,35) qui hante la fer
 
 | | |
 |---|---|
-| Points de vie | **450** |
+| Points de vie | **700**, affichés dans une **barre de vie de boss** pendant le combat |
 | Vitesse | 3,8 |
 | Recul subi | ×0,3 |
 | Détection | 16 blocs (ligne de vue) |
@@ -36,7 +37,7 @@ Un amas de chair gonflé (gros zombie aberrant vanilla, ×1,35) qui hante la fer
 
 | Objet | Quantité | Chance |
 |---|---|---|
-| Éclat de rune | 1 à 3 | 100 % |
+| Cendres de mort-vivant | 2 à 4 | 100 % |
 | [Cœur d'Abomination](../objets/trophees.md) | 1 | 100 % |
 | Butin habituel des zombies (`Drop_Zombie`) | | |
 

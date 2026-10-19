@@ -207,7 +207,7 @@ def biome(short, folder):
         "Terrain": {"Type": "DAOTerrain", "Density": {"Type": "Min", "Inputs": [top, bottom]}},
         "MaterialProvider": materials,
         "Props": [target, crypt, trees, plants],
-        "EnvironmentProvider": {"Type": "Constant", "Environment": "Nakasar_Env_Halloween_Haunted"},
+        "EnvironmentProvider": {"Type": "Constant", "Environment": "Nakasar_Env_Contract"},  # sans rejetons de vampire
         "TintProvider": {"Type": "Constant", "Color": "#7a6534"},
     }
 

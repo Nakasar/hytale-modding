@@ -10,7 +10,8 @@ ces listes ; le serveur le remplit à la pose du prefab. Même forme que les cof
 tirage vide (le coffre reste plus pauvre).
 
 Butin du domaine du Comte : objets du quotidien dans les fermes et le village, équipement de fer
-rouillé au poste de garde, ingrédients d'alchimie, livres et trésor au manoir. Les identifiants
+rouillé au poste de garde, livres chez le notable. Le manoir du Comte n'a pas de coffres : le Comte et la
+Comtesse sont passifs, on ne pille pas leur demeure. Les identifiants
 sont ceux du jeu 0.7.2 (Server/Item/Items d'Assets.zip, lus le 2026-10-18).
 """
 
@@ -47,30 +48,14 @@ IRON_ARMOR = [("Armor_Iron_Head", 2, 1, 1), ("Armor_Iron_Chest", 1, 1, 1), ("Arm
               ("Armor_Iron_Legs", 2, 1, 1), ("Armor_Leather_Medium_Chest", 2, 1, 1), ("Armor_Leather_Medium_Head", 2, 1, 1)]
 VALUABLES = [("Ingredient_Bar_Silver", 3, 1, 3), ("Ingredient_Bar_Gold", 2, 1, 2), ("Rock_Gem_Ruby", 2, 1, 2),
              ("Rock_Gem_Topaz", 2, 1, 2), ("Rock_Gem_Sapphire", 1, 1, 1), ("Rock_Gem_Emerald", 1, 1, 1)]
-ALCHEMY = [("Potion_Empty", 4, 1, 4), ("Potion_Health", 3, 1, 2), ("Potion_Regen_Health", 2, 1, 1),
-           ("Potion_Poison", 2, 1, 2), ("Potion_Antidote", 2, 1, 2), ("Potion_Mana", 2, 1, 2),
-           ("Ingredient_Life_Essence", 4, 2, 6), ("Ingredient_Crystal_Red", 2, 1, 3), ("Ingredient_Crystal_Purple", 2, 1, 2),
-           ("Plant_Fruit_Poison", 2, 1, 3), ("Ingredient_Bone_Fragment", 2, 2, 5), ("Ingredient_Rune_Shard", 2, 1, 2),
-           ("Ingredient_Nakasar_Manor_Relic", 1, 1, 1)]
 BOOKS = [("Recipe_Page", 5, 1, 2), ("Recipe_Food_Pie_Meat", 1, 1, 1), ("Recipe_Food_Pie_Pumpkin", 1, 1, 1),
          ("Recipe_Plant_Seeds_Health1", 1, 1, 1), ("Recipe_Plant_Seeds_Mana1", 1, 1, 1), ("Recipe_Plant_Seeds_Stamina1", 1, 1, 1),
          ("Weapon_Spellbook_Grimoire_Purple", 1, 1, 1), ("Weapon_Spellbook_Grimoire_Brown", 1, 1, 1), ("Tool_Map", 2, 1, 1)]
 FINE_FOOD = [("Food_Pie_Meat", 3, 1, 2), ("Food_Pie_Apple", 3, 1, 2), ("Food_Cheese", 3, 1, 3), ("Food_Bread", 3, 2, 4),
              ("Food_Kebab_Meat", 2, 1, 3), ("Food_Salad_Mushroom", 1, 1, 2), ("Ingredient_Spices", 2, 1, 3)]
-CLOTHES = [("Ingredient_Bolt_Silk", 3, 1, 3), ("Ingredient_Bolt_Wool", 3, 1, 3), ("Ingredient_Bolt_Shadoweave", 1, 1, 1),
-           ("Ingredient_Fabric_Scrap_Silk", 3, 2, 5), ("Armor_Leather_Soft_Chest", 1, 1, 1), ("Armor_Leather_Soft_Head", 1, 1, 1)]
-WORKSHOP = [("Ingredient_Bar_Iron", 4, 2, 5), ("Ingredient_Bar_Copper", 3, 2, 5), ("Ingredient_Bar_Silver", 2, 1, 3),
-            ("Ingredient_Leather_Medium", 3, 1, 4), ("Ingredient_Leather_Dark", 1, 1, 2), ("Tool_Repair_Kit_Iron", 2, 1, 1),
-            ("Tool_Hammer_Iron", 1, 1, 1), ("Ingredient_Charcoal", 3, 2, 6)]
 CRYPT = [("Ingredient_Bone_Fragment", 6, 2, 6), ("Ingredient_Fabric_Scrap_Linen", 3, 1, 3), ("Rock_Gem_Topaz", 1, 1, 1),
          ("Ingredient_Bar_Silver", 1, 1, 2), ("Ingredient_Rune_Shard", 2, 1, 1), ("Weapon_Sword_Bone", 1, 1, 1),
          ("Weapon_Daggers_Bone", 1, 1, 1), ("Potion_Health_Lesser", 2, 1, 1)]
-TREASURE = [("Ingredient_Bar_Gold", 4, 2, 5), ("Ingredient_Bar_Silver", 4, 2, 6), ("Rock_Gem_Ruby", 4, 1, 3),
-            ("Rock_Gem_Diamond", 1, 1, 1), ("Rock_Gem_Emerald", 2, 1, 2), ("Rock_Gem_Sapphire", 2, 1, 2),
-            ("Rock_Gem_Voidstone", 1, 1, 1), ("Ingredient_Nakasar_Manor_Relic", 3, 1, 2)]
-TREASURE_GEAR = [("Weapon_Shortbow_Vampire", 2, 1, 1), ("Weapon_Sword_Silversteel", 2, 1, 1), ("Weapon_Longsword_Spectral", 1, 1, 1),
-                 ("Weapon_Daggers_Doomed", 1, 1, 1), ("Armor_Steel_Ancient_Chest", 1, 1, 1), ("Armor_Leather_Raven_Chest", 2, 1, 1),
-                 ("Armor_Leather_Raven_Head", 2, 1, 1)]
 HUNTER_SUPPLIES = [("Weapon_Arrow_Iron", 5, 6, 16), ("Potion_Health_Lesser", 3, 1, 2), ("Potion_Health", 1, 1, 1),
                    ("Potion_Antidote", 2, 1, 2), ("Potion_Stamina_Lesser", 2, 1, 2), ("Ingredient_Bar_Silver", 3, 1, 3),
                    ("Ingredient_Leather_Medium", 2, 1, 3), ("Tool_Repair_Kit_Iron", 1, 1, 1)]
@@ -92,18 +77,10 @@ DROPLISTS = {
                                    (0, 1, [("Weapon_Sword_Steel", 1, 1, 1), ("Weapon_Longsword_Iron", 2, 1, 1), (None, 3, 0, 0)])],
     "Nakasar_Loot_Crypt": [(1, 3, CRYPT)],
     "Nakasar_Loot_Castle_Ruins": [(1, 2, RUSTY_WEAPONS), (1, 2, VALUABLES), (0, 2, CRYPT)],
-    "Nakasar_Loot_Manor_Treasure": [(2, 4, TREASURE), (1, 1, TREASURE_GEAR), (1, 2, ALCHEMY[1:4])],
-    "Nakasar_Loot_Manor_Alchemy": [(2, 4, ALCHEMY), (0, 1, BOOKS[3:6] + [(None, 2, 0, 0)])],
-    "Nakasar_Loot_Manor_Library": [(1, 3, BOOKS), (0, 1, ALCHEMY + [(None, 6, 0, 0)])],
-    "Nakasar_Loot_Manor_Kitchen": [(2, 4, FINE_FOOD), (1, 2, CROPS), (0, 1, [("Ingredient_Salt", 2, 1, 4), ("Ingredient_Flour", 2, 2, 5),
-                                                                         ("Ingredient_Dough", 1, 1, 3)])],
-    "Nakasar_Loot_Manor_Bedroom": [(1, 3, CLOTHES), (1, 1, VALUABLES), (0, 1, [("Potion_Regen_Health", 1, 1, 1), ("Weapon_Daggers_Iron", 1, 1, 1),
-                                                                              (None, 3, 0, 0)])],
     "Nakasar_Loot_Hunter_Camp": [(1, 3, HUNTER_SUPPLIES), (1, 2, [("Food_Wildmeat_Cooked", 3, 1, 3), ("Food_Bread", 3, 1, 3),
                                                                 ("Food_Cheese", 1, 1, 2)]),
                                  (0, 1, HUNTER_GEAR + [(None, 8, 0, 0)])],
     "Nakasar_Loot_Hunter_Armory": [(2, 3, HUNTER_SUPPLIES), (1, 1, HUNTER_GEAR + [(None, 3, 0, 0)])],
-    "Nakasar_Loot_Manor_Workshop": [(2, 3, WORKSHOP), (0, 1, IRON_ARMOR + RUSTY_WEAPONS[:3] + [(None, 6, 0, 0)])],
 }
 
 # Notes de lore (generate_lore.LORE_BY_LOOT) : un tirage de plus, souvent vide, parmi les notes du lieu. Une note trouvée

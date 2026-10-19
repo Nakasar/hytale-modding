@@ -5,7 +5,7 @@
 <Info label="Attitude">Hostile, vole et se téléporte</Info>
 <Info label="Lieu">Zones hantées du Comté, à toute heure</Info>
 <Info label="Faiblesses">Feu purificateur (pas l'argent)</Info>
-<Info label="Butin">1 éclat de rune (20 %)</Info>
+<Info label="Butin">[Relique du manoir](../objets/vampirisme.md) (1 chance sur 6)</Info>
 <Info label="Id">`Nakasar_Ghost`</Info>
 </Infobox>
 
@@ -33,7 +33,7 @@ Un spectre pâle (silhouette du Wraith vanilla) qui flotte entre 0,5 et 5 blocs 
 
 | Objet | Quantité | Chance |
 |---|---|---|
-| Éclat de rune | 1 | 20 % |
+| [Relique du manoir](../objets/vampirisme.md) | 1 | 17 % (1 chance sur 6) |
 
 ## Où le trouver
 

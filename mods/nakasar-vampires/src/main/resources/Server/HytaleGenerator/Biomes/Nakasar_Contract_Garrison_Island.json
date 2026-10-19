@@ -3113,7 +3113,7 @@
   ],
   "EnvironmentProvider": {
     "Type": "Constant",
-    "Environment": "Nakasar_Env_Halloween_Haunted"
+    "Environment": "Nakasar_Env_Contract"
   },
   "TintProvider": {
     "Type": "Constant",

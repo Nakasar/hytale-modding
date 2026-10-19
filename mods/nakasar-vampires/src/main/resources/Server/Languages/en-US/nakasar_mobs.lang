@@ -26,3 +26,4 @@ npc.Vampire_Hunter_Gunner.name = Vampire Hunter
 npc.Vampire_Hunter_Blade.name = Vampire Hunter
 items.Nakasar_Spawner_Giant_Pumpkin.name = Marker: Giant Pumpkin (elite)
 items.Nakasar_Spawner_Vampire_Hunter.name = Marker: Vampire Hunter
+npc.Giant_Pumpkin.shielded = The vines shield the pumpkin: destroy them first.

@@ -6,7 +6,7 @@
 <Info label="Lieu">Manoir du Comte, zones hantées la nuit, invoqué par le [Comte](comte-vampire.md) ou la [Comtesse](comtesse-vampire.md)</Info>
 <Info label="Réapparition">5 min (manoir)</Info>
 <Info label="Faiblesses">Argent ×2, feu purificateur</Info>
-<Info label="Butin">1 éclat de rune (25 %), [Croc de vampire](../objets/trophees.md) (50 %)</Info>
+<Info label="Butin">[Croc de vampire](../objets/trophees.md) (50 %)</Info>
 <Info label="Id">`Nakasar_Vampire_Spawn`</Info>
 </Infobox>
 
@@ -33,7 +33,6 @@ Les serviteurs affamés du Comte : peau lilas, oreilles pointues, crocs, tunique
 
 | Objet | Quantité | Chance |
 |---|---|---|
-| Éclat de rune | 1 | 25 % |
 | [Croc de vampire](../objets/trophees.md) | 1 | 50 % |
 
 ## Où le trouver

@@ -140,6 +140,7 @@ class Prefab:
         self.blocks = {}
         self.components = {}  # (x, y, z) -> composants du bloc (coffre et sa liste de butin...)
         self.claims = {}      # case secondaire d'un meuble -> case du meuble
+        self.lore_spots = {}  # (x, y, z) -> lieu de lore sans coffre (generate_lore.LORE_BY_SPOT)
         self.rng = random.Random(seed)
 
     # --- primitives -------------------------------------------------------------------------
@@ -178,6 +179,10 @@ class Prefab:
         self.set(x, y, z, name, rot)
         capacity = 36 if name.endswith("_Large") else 18
         self.components[(x, y, z)] = {"Components": {"ItemContainerBlock": {"Droplist": droplist, "Capacity": capacity}}}
+
+    def lore_spot(self, x, y, z, spot):
+        """Case où poser une note de lore du lieu `spot` (generate_lore.LORE_BY_SPOT), là où il n'y a pas de coffre."""
+        self.lore_spots[(x, y, z)] = spot
 
     def get(self, x, y, z):
         b = self.blocks.get((x, y, z))
@@ -450,12 +455,6 @@ LOOT_ARMORY = "Nakasar_Loot_Guard_Armory"
 LOOT_CAPTAIN = "Nakasar_Loot_Guard_Captain"
 LOOT_CRYPT = "Nakasar_Loot_Crypt"
 LOOT_CASTLE = "Nakasar_Loot_Castle_Ruins"
-LOOT_MANOR_TREASURE = "Nakasar_Loot_Manor_Treasure"
-LOOT_MANOR_ALCHEMY = "Nakasar_Loot_Manor_Alchemy"
-LOOT_MANOR_LIBRARY = "Nakasar_Loot_Manor_Library"
-LOOT_MANOR_KITCHEN = "Nakasar_Loot_Manor_Kitchen"
-LOOT_MANOR_BEDROOM = "Nakasar_Loot_Manor_Bedroom"
-LOOT_MANOR_WORKSHOP = "Nakasar_Loot_Manor_Workshop"
 LOOT_HUNTER_CAMP = "Nakasar_Loot_Hunter_Camp"
 LOOT_HUNTER_ARMORY = "Nakasar_Loot_Hunter_Armory"
 
@@ -1761,7 +1760,7 @@ def vampire_manor(seed):
     p.set(-8, 0, -18, "Furniture_Ancient_Crate")
     p.set(-9, 0, -18, "Furniture_Ancient_Sack")
     p.set(-8, 1, -19, "Furniture_Ancient_Sack")
-    p.chest(-8, 0, -11, "Furniture_Village_Chest_Small", WEST, LOOT_MANOR_KITCHEN)
+    p.lore_spot(-8, 0, -11, "Manor_Kitchen")
     p.set(-10, upper - 1, -12, "Deco_Lantern_Ceiling")
 
     # --- salle à manger (ouest et aile ouest) -------------------------------------------------------
@@ -1817,7 +1816,7 @@ def vampire_manor(seed):
     p.set(10, 1, -4, p.pick(CANDLES))
     p.set(10, 1, -5, "Deco_Scroll", EAST)
     p.set(8, 0, 0, "Deco_Book_Pile_Large", SOUTH)
-    p.chest(8, 0, 1, "Furniture_Ancient_Chest_Small", EAST, LOOT_MANOR_LIBRARY)
+    p.lore_spot(8, 0, 1, "Manor_Library")
     p.set(10, upper - 1, -1, "Furniture_Tavern_Chandelier")
 
     # --- crypte sous le hall ----------------------------------------------------------------------
@@ -1840,7 +1839,7 @@ def vampire_manor(seed):
         p.set(x, cy0 + 1, cz0 + 1, r.choice(["Furniture_Temple_Dark_Coffin", "Furniture_Ancient_Coffin"]), SOUTH)
         p.set(x + 1, cy0 + 1, cz1 - 1, r.choice(["Furniture_Temple_Dark_Coffin", "Furniture_Ancient_Coffin"]), NORTH)
     mid = (cz0 + cz1) // 2
-    p.chest(0, cy0 + 1, mid, "Furniture_Ancient_Chest_Large", SOUTH, LOOT_MANOR_TREASURE)
+    p.lore_spot(0, cy0 + 1, mid, "Manor_Treasure")
     for x in (-2, 1):
         p.set(x, cy0 + 1, mid, "Deco_Treasure_Pile_Small")
     # ses rejetons gardent la crypte (marqueurs invisibles du mod)
@@ -1874,7 +1873,7 @@ def vampire_manor(seed):
     p.set(-8, y + 1, -15, "Deco_Potion")
     p.set(-10, y, -16, "Furniture_Village_Stool")
     p.set(-10, y, -13, "Furniture_Royal_Magic_Carpet")
-    p.chest(-8, y, -11, "Furniture_Royal_Magic_Chest_Small", WEST, LOOT_MANOR_BEDROOM)
+    p.lore_spot(-8, y, -11, "Manor_Bedroom")
     p.set(-10, top, -14, "Furniture_Royal_Magic_Potion_Glow_Ceiling")
     # laboratoire d'alchimie (ouest et aile ouest)
     p.set(-12, y, -8, "Bench_Alchemy", EAST)
@@ -1887,14 +1886,14 @@ def vampire_manor(seed):
     for z in (-1, 0):
         p.set(-12, y, z, "Furniture_Temple_Dark_Shelf", EAST)
         p.set(-12, y + 1, z, "Deco_Potion", EAST)
-    p.chest(-8, y, -9, "Furniture_Temple_Dark_Chest_Small", WEST, LOOT_MANOR_ALCHEMY)
+    p.lore_spot(-8, y, -9, "Manor_Alchemy")
     p.set(-10, top, -6, "Furniture_Royal_Magic_Potion_Glow_Ceiling")
     p.set(-10, top, -1, "Furniture_Royal_Magic_Potion_Glow_Ceiling")
     # chambre du comte (nord-est) : lit à baldaquin, cercueil au pied, armoire, coffre
     p.set(9, y, -19, "Furniture_Royal_Magic_Bed", SOUTH)
     p.set(9, y, -13, "Furniture_Temple_Dark_Coffin", SOUTH)
     p.set(12, y, -14, "Furniture_Royal_Magic_Wardrobe", WEST)
-    p.chest(12, y, -11, "Furniture_Royal_Magic_Chest_Large", WEST, LOOT_MANOR_BEDROOM)
+    p.lore_spot(12, y, -11, "Manor_Bedroom")
     p.set(8, y, -19, p.pick(CANDLES))
     p.set(10, top, -14, "Furniture_Feran_Chandelier")
     # atelier (est et aile est) : établi, forge d'armes, métier à tisser, caisses
@@ -1906,7 +1905,7 @@ def vampire_manor(seed):
     p.set(8, y, 1, "Furniture_Ancient_Crate")
     p.set(8, y + 1, 1, "Furniture_Ancient_Crate")
     p.set(12, y, 1, "Furniture_Ancient_Barrel")
-    p.chest(8, y, -9, "Furniture_Village_Chest_Small", EAST, LOOT_MANOR_WORKSHOP)
+    p.lore_spot(8, y, -9, "Manor_Workshop")
     p.set(10, top, -4, "Deco_Lantern_Ceiling")
     # combles : quelques toiles d'araignée sous le toit
     for _ in range(12):
@@ -2017,11 +2016,17 @@ def wall_cells(x0, z0, x1, z1):
     return out
 
 
+def kept_cells(keep, y, height=3):
+    """Cases (x, y, z) des colonnes `keep` = cases (x, z), sur `height` blocs depuis `y` : rien n'y est posé."""
+    return {(x, y + dy, z) for x, z in keep for dy in range(height)}
+
+
 def place_along_walls(p, room, y, name, keep=(), tries=None, loot=None):
-    """Pose `name` contre un mur de la pièce `room` = (x0, z0, x1, z1), à un endroit libre."""
+    """Pose `name` contre un mur de la pièce `room` = (x0, z0, x1, z1), à un endroit libre, hors des colonnes
+    `keep` (cases (x, z) : passages devant les portes)."""
     cells = wall_cells(*room)
     p.rng.shuffle(cells)
-    taken = p.reserved() | set(keep)
+    taken = p.reserved() | kept_cells(keep, y)
     for x, z, rot in cells[:tries]:
         if p.fits(x, y, z, name, rot, taken):
             if loot:
@@ -2037,13 +2042,13 @@ def dining_table(p, room, y, table, chair, keep=()):
     x0, z0, x1, z1 = room
     spots = [(x, z) for x in range(x0 + 1, x1 - 1) for z in range(z0 + 1, z1 - 1)]
     p.rng.shuffle(spots)
-    taken = p.reserved() | set(keep)
+    taken = p.reserved() | kept_cells(keep, y)
     for tx, tz in spots:
         if not p.fits(tx, y, tz, table, 0, taken):
             continue
         p.set(tx, y, tz, table)
         for cx, cz, rot in ((tx - 1, tz, EAST), (tx + 2, tz + 1, WEST), (tx, tz + 2, NORTH), (tx + 1, tz - 1, SOUTH)):
-            if p.rng.random() < 0.8 and x0 <= cx <= x1 and z0 <= cz <= z1 and p.fits(cx, y, cz, chair, rot, taken | set(keep)):
+            if p.rng.random() < 0.8 and x0 <= cx <= x1 and z0 <= cz <= z1 and p.fits(cx, y, cz, chair, rot, taken):
                 p.set(cx, y, cz, chair, rot)
         p.set(tx, y + 1, tz, p.pick(CANDLES))
         p.set(tx + 1, y + 1, tz + 1, p.rng.choice(["Deco_Plate", "Deco_Mug", "Deco_Tankard"]), SOUTH)
@@ -2051,12 +2056,13 @@ def dining_table(p, room, y, table, chair, keep=()):
     return None
 
 
-def house(p, x0, z0, w, d, door, floors=1, kind="home", loot=LOOT_VILLAGE, wood="Wood_Deadwood"):
+def house(p, x0, z0, w, d, door, floors=1, kind="home", loot=LOOT_VILLAGE, wood="Wood_Deadwood", clear=()):
     """Maison de `w` × `d` (murs compris) dont la porte donne vers `door` (NORTH, SOUTH, EAST, WEST).
 
     Rez-de-chaussée en moellons, étage à colombages, poutres d'angle, toit de bois dans le sens de
     la longueur, cheminée sur un pignon. `kind` : "home" (pièce à vivre, lit, coffre), "barn"
-    (grange : foin, caisses, auge), "smithy" (forge). Renvoie la case devant la porte.
+    (grange : foin, caisses, auge), "smithy" (forge). `clear` : cases (x, z) de plus où ne poser aucun meuble
+    (passage d'une grande porte). Renvoie la case devant la porte.
     """
     x1, z1 = x0 + w - 1, z0 + d - 1
     r = p.rng
@@ -2112,7 +2118,7 @@ def house(p, x0, z0, w, d, door, floors=1, kind="home", loot=LOOT_VILLAGE, wood=
     p.set(chx, peak + 2, chz, "Rock_Stone_Cobble_Half")
     # mobilier
     room = (x0 + 1, z0 + 1, x1 - 1, z1 - 1)
-    keep = {inside, (inside[0] - dx, inside[1] - dz)}
+    keep = {inside, (inside[0] - dx, inside[1] - dz)} | set(clear)
     if floors > 1:                                     # échelle et trémie vers l'étage
         lx, lz = (x1 - 1, z0 + 1) if door != EAST else (x0 + 1, z0 + 1)
         lrot = WEST if lx == x1 - 1 else EAST
@@ -2355,9 +2361,13 @@ def farm(seed, variant):
         for x in (-1, 0, 1):
             p.set(x, -1, z, p.pick(PATH))
     door_house = house(p, -20, -17, 9, 8, SOUTH, 2, "home", LOOT_FARM_BURNT if burnt else LOOT_FARM, wood)
-    door_barn = house(p, 6, -19, 13, 10, SOUTH, 1, "barn", LOOT_FARM_BURNT if burnt else LOOT_FARM, wood)
-    p.clear(11, 0, -10, 13, 2, -10)                   # grande porte de grange
-    p.set(12, 3, -10, f"{wood}_Beam")
+    # grande porte de grange, 5 de large : l'Abomination (gros zombie, élite) doit pouvoir sortir ; rien de posé
+    # devant elle, dedans comme dehors
+    barn_door = [(x, z) for x in range(10, 15) for z in (-12, -11)]
+    door_barn = house(p, 6, -19, 13, 10, SOUTH, 1, "barn", LOOT_FARM_BURNT if burnt else LOOT_FARM, wood, clear=barn_door)
+    p.clear(10, 0, -10, 14, 2, -10)
+    for x in range(10, 15):
+        p.set(x, 3, -10, f"{wood}_Beam")
     well(p, -6, -3)
     # deux champs clos et un potager
     state = {"zombies": "fine", "ruins": "wild", "burnt": "burnt"}[variant]
@@ -2867,6 +2877,7 @@ def check_purified(p, h):
 
 # liste de butin du coffre -> (notes possibles, chance d'en poser une), tiré de generate_lore.LORE_BY_LOOT
 LORE_BY_LOOT = {loot: (notes, chance) for loot, (_place, notes, chance, _empty) in lore.LORE_BY_LOOT.items()}
+LORE_BY_LOOT.update({spot: (notes, chance) for spot, (notes, chance) in lore.LORE_BY_SPOT.items()})
 NOTE_FLOOR = re.compile(r"^(Rock|Wood|Soil)_")
 NOT_FLOOR = re.compile(r"Half|Stairs|Fence|Wall|Bars|Railing|Pillar|Roof|Ornate|Tilled|Pathway")
 
@@ -2887,9 +2898,10 @@ def note_spot(p, x, y, z, radius=2, avoid=()):
 def add_lore(p, name):
     r = random.Random(f"lore/{name}")
     placed = set()
-    for (x, y, z), comp in sorted(p.components.items()):
-        droplist = comp.get("Components", {}).get("ItemContainerBlock", {}).get("Droplist")
-        notes, chance = LORE_BY_LOOT.get(droplist, ((), 0))
+    anchors = [(pos, comp.get("Components", {}).get("ItemContainerBlock", {}).get("Droplist")) for pos, comp in p.components.items()]
+    anchors += list(p.lore_spots.items())
+    for (x, y, z), anchor in sorted(anchors, key=lambda a: a[0]):
+        notes, chance = LORE_BY_LOOT.get(anchor, ((), 0))
         if notes and r.random() < chance:
             free = [n for n in notes if n not in placed] or list(notes)
             spot = note_spot(p, x, y, z)

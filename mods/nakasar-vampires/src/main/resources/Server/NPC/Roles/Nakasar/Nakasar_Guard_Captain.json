@@ -3,7 +3,7 @@
   "Type": "Generic",
   "Appearance": "Nakasar_Guard_Captain",
   "NameTranslationKey": "nakasar_mobs.npc.Guard_Captain.name",
-  "MaxHealth": 650,
+  "MaxHealth": 950,
   "DropList": "Nakasar_Drop_Guard_Captain",
   "StartState": "Idle",
   "DefaultPlayerAttitude": "Hostile",

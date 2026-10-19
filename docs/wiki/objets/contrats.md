@@ -13,7 +13,7 @@ Un contrat est une clé de portail fabriquée sur l'[établi des chasseurs](etab
 - **Pour tout le groupe :** tous les joueurs peuvent entrer par le portail ouvert.
 - **Durée :** 15 minutes, puis le fragment se ferme (il se ferme aussi quand il est vide).
 - **Arrivée :** une crypte au centre de l'île, avec le portail de retour. Le lieu de la cible est au nord, à la sortie de la crypte.
-- **Prime :** quand la cible meurt, elle lâche un [sac de prime](trophees.md#sacs-de-prime) et son trophée : **un seul de chaque pour tout le groupe**, à partager. Un message prévient les joueurs du fragment. Une seule prime par fragment.
+- **Prime :** quand la cible meurt, elle lâche un [sac de prime](trophees.md#sacs-de-prime) et son trophée : **un seul de chaque pour tout le groupe**, à partager. Un message prévient les joueurs du fragment. Une seule prime par fragment. Aucun rejeton de vampire n'y vit : les crocs se chassent dans le Comté.
 
 ## Les contrats
 

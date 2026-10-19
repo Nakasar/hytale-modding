@@ -18,12 +18,6 @@ OUT = ROOT / "docs" / "wiki" / "fragment" / "butin-des-coffres.md"
 
 # Ordre de la page : (titre, liste, où).
 TABLES = [
-    ("Trésor du manoir", "Nakasar_Loot_Manor_Treasure", "[Manoir du Comte](manoir-du-comte.md), crypte"),
-    ("Chambre du manoir", "Nakasar_Loot_Manor_Bedroom", "[Manoir du Comte](manoir-du-comte.md), chambres du comte et de la comtesse"),
-    ("Alchimie du manoir", "Nakasar_Loot_Manor_Alchemy", "[Manoir du Comte](manoir-du-comte.md), laboratoire"),
-    ("Bibliothèque du manoir", "Nakasar_Loot_Manor_Library", "[Manoir du Comte](manoir-du-comte.md), bibliothèque"),
-    ("Atelier du manoir", "Nakasar_Loot_Manor_Workshop", "[Manoir du Comte](manoir-du-comte.md), atelier"),
-    ("Cuisine du manoir", "Nakasar_Loot_Manor_Kitchen", "[Manoir du Comte](manoir-du-comte.md), cuisine"),
     ("Quartiers du capitaine", "Nakasar_Loot_Guard_Captain", "[Poste de garde](postes-de-garde.md)"),
     ("Armurerie", "Nakasar_Loot_Guard_Armory", "[Poste de garde](postes-de-garde.md)"),
     ("Caserne", "Nakasar_Loot_Guard_Barracks", "[Poste de garde](postes-de-garde.md)"),
@@ -130,7 +124,6 @@ def table(drop):
 
 def main():
     structures = {link for _, _, where in TABLES for link in re.findall(r"\]\(([^)#]+)\)", where)}
-    manor = sum(where.startswith("[Manoir du Comte]") for _, _, where in TABLES)
     out = [
         "# Butin des coffres",
         "",
@@ -138,7 +131,7 @@ def main():
         'caption="Relique du manoir">',
         f'<Info label="Listes de butin">**{len(TABLES)}**</Info>',
         f'<Info label="Structures">**{len(structures)}**</Info>',
-        f'<Info label="Manoir">**{manor}** listes, dont le [Trésor du manoir](#{anchor("Trésor du manoir")})</Info>',
+        '<Info label="Manoir">aucun coffre : le [Comte](../pnj/comte-vampire.md) ne se laisse pas piller</Info>',
         '<Info label="Remplissage">à l\'apparition de la structure, par tirages</Info>',
         '<Info label="Source">`Server/Drops/Nakasar/Halloween`</Info>',
         "</Infobox>",

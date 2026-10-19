@@ -6,9 +6,11 @@ import com.hypixel.hytale.server.core.plugin.JavaPlugin;
 import com.hypixel.hytale.server.core.plugin.JavaPluginInit;
 import dev.nakasar.hytale.vampires.allegiance.AllegianceAttitudeSystem;
 import dev.nakasar.hytale.vampires.allegiance.AllegianceDamageFilter;
+import dev.nakasar.hytale.vampires.boss.BossBarSystem;
 import dev.nakasar.hytale.vampires.breach.BreachHunterCleanupSystem;
 import dev.nakasar.hytale.vampires.breach.HunterBreachStarter;
 import dev.nakasar.hytale.vampires.breach.NightCondition;
+import dev.nakasar.hytale.vampires.contract.ClaimBreachContractInteraction;
 import dev.nakasar.hytale.vampires.contract.ContractBounties;
 import dev.nakasar.hytale.vampires.contract.OpenBountyBagInteraction;
 import dev.nakasar.hytale.vampires.domination.DominateInteraction;
@@ -18,11 +20,11 @@ import dev.nakasar.hytale.vampires.domination.Dominations;
 import dev.nakasar.hytale.vampires.invisibility.Invisibility;
 import dev.nakasar.hytale.vampires.invisibility.InvisibilityInteraction;
 import dev.nakasar.hytale.vampires.invisibility.InvisibilitySystem;
-import dev.nakasar.hytale.vampires.lore.GiveItemOnceInteraction;
 import dev.nakasar.hytale.vampires.lords.LordsWrath;
 import dev.nakasar.hytale.vampires.lords.LordsWrathSystem;
 import dev.nakasar.hytale.vampires.prison.ImprisonPlayerInteraction;
 import dev.nakasar.hytale.vampires.pumpkin.FireWeaknessSystem;
+import dev.nakasar.hytale.vampires.pumpkin.PumpkinShieldSystem;
 import dev.nakasar.hytale.vampires.purifying.LightAura;
 import dev.nakasar.hytale.vampires.purifying.LightAuraInteraction;
 import dev.nakasar.hytale.vampires.purifying.LightAuraSystem;
@@ -69,11 +71,16 @@ import dev.nakasar.hytale.vampires.vampirism.VampireSystem;
  *       jusqu'à sa destruction) ;</li>
  *   <li>{@code Nakasar_SummonVines} : la citrouille géante fait sortir de terre ses vrilles combattantes ;</li>
  *   <li>{@link FireWeaknessSystem} : la citrouille géante et ses vrilles prennent double dégâts de feu ;</li>
+ *   <li>{@link PumpkinShieldSystem} : la citrouille géante est invulnérable tant qu'il lui reste des vrilles, et fait
+ *       sortir sa première vague dès le premier coup ;</li>
+ *   <li>{@link BossBarSystem} : barre de vie de boss des élites (citrouille géante, Abomination, Capitaine de la
+ *       garde, Comte et Comtesse) pour les joueurs proches pendant le combat ;</li>
  *   <li>les camps ({@link AllegianceAttitudeSystem}, {@link AllegianceDamageFilter},
  *       {@link DominationExpirySystem}) : les mobs du fragment sont alliés, ennemis des chasseurs de vampires, et la
  *       Domination retourne leur allégeance ;</li>
- *   <li>{@code Nakasar_GiveItemOnce} : le tableau de contrats de la brèche remet le premier contrat au joueur qui
- *       n'en a pas (les notes de lore elles-mêmes sont des blocs vanilla : page {@code OpenCustomUI} « BlockLore ») ;</li>
+ *   <li>{@code Nakasar_ClaimBreachContract} : le tableau de contrats de la brèche porte une seule prime (le premier
+ *       contrat) par brèche, pour tout le serveur (les notes de lore elles-mêmes sont des blocs vanilla : page
+ *       {@code OpenCustomUI} « BlockLore ») ;</li>
  *   <li>{@link LordsWrathSystem} (et le fournisseur d'attitude -5 d'{@link AllegianceAttitudeSystem}) : le Comte et la Comtesse laissent passer les joueurs,
  *       mais un coup porté contre eux les retourne contre tous les joueurs présents ({@link LordsWrath}) ;</li>
  *   <li>{@link SilverDamageSystem} et {@link SilverProjectileSystems} : les armes en argent (et leurs projectiles)
@@ -135,8 +142,8 @@ public final class VampiresPlugin extends JavaPlugin {
                 LightAuraInteraction.class, LightAuraInteraction.CODEC);
         interactions.register(InvisibilityInteraction.TYPE_ID,
                 InvisibilityInteraction.class, InvisibilityInteraction.CODEC);
-        interactions.register(GiveItemOnceInteraction.TYPE_ID,
-                GiveItemOnceInteraction.class, GiveItemOnceInteraction.CODEC);
+        interactions.register(ClaimBreachContractInteraction.TYPE_ID,
+                ClaimBreachContractInteraction.class, ClaimBreachContractInteraction.CODEC);
         interactions.register(VampireRitualInteraction.TYPE_ID,
                 VampireRitualInteraction.class, VampireRitualInteraction.CODEC);
         interactions.register(BloodFeedInteraction.TYPE_ID,
@@ -156,6 +163,8 @@ public final class VampiresPlugin extends JavaPlugin {
         systems.registerSystem(new LordsWrathSystem());
         systems.registerSystem(new DominationExpirySystem());
         systems.registerSystem(new FireWeaknessSystem());
+        systems.registerSystem(new PumpkinShieldSystem());
+        systems.registerSystem(new BossBarSystem());
         systems.registerSystem(new RootTrapUnloadSystem());
         systems.registerSystem(new SilverProjectileSystems.Launch());
         systems.registerSystem(new SilverProjectileSystems.Legacy());
@@ -185,7 +194,7 @@ public final class VampiresPlugin extends JavaPlugin {
                 RootTrapInteraction.TYPE_ID, TakeArrowInteraction.TYPE_ID, ReturnArrowInteraction.TYPE_ID,
                 SummonVinesInteraction.TYPE_ID, LightAuraInteraction.TYPE_ID, InvisibilityInteraction.TYPE_ID,
                 VampireRitualInteraction.TYPE_ID, BloodFeedInteraction.TYPE_ID, DrinkBloodInteraction.TYPE_ID,
-                OpenBountyBagInteraction.TYPE_ID, GiveItemOnceInteraction.TYPE_ID);
+                OpenBountyBagInteraction.TYPE_ID, ClaimBreachContractInteraction.TYPE_ID);
     }
 
     @Override
@@ -193,10 +202,13 @@ public final class VampiresPlugin extends JavaPlugin {
         RootNpcInteraction.clearAll();
         RootTrapInteraction.clearAll();
         SummonVinesInteraction.clearAll();
+        PumpkinShieldSystem.clearAll();
+        BossBarSystem.clearAll();
         Dominations.clearAll();
         LordsWrath.clearAll();
         SilverWeapons.clearAll();
         ArrowQuiver.clearAll();
         ContractBounties.clearAll();
+        ClaimBreachContractInteraction.clearAll();
     }
 }

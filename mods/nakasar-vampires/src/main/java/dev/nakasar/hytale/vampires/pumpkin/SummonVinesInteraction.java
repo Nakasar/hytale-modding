@@ -44,8 +44,11 @@ import java.util.concurrent.TimeUnit;
  * vrille (déjà sortie ou du même appel) : deux vrilles ne se chevauchent pas. S'il ne reste pas de place, il en sort
  * moins.
  *
+ * <p>Tant qu'une citrouille a des vrilles vivantes ({@link #hasLivingVines}), {@link PumpkinShieldSystem} la rend
+ * invulnérable ; il peut aussi faire sortir la première vague dès le premier coup reçu ({@link #summonWave}).
+ *
  * <p>Clés JSON : {@code VineRole} (string, défaut {@code Nakasar_Pumpkin_Vine}), {@code Count} (int, défaut 5),
- * {@code MaxAlive} (int, défaut 6), {@code MinDistance} et {@code MaxDistance} (float, défaut 3 et 7 blocs),
+ * {@code MaxAlive} (int, défaut 5), {@code MinDistance} et {@code MaxDistance} (float, défaut 3 et 7 blocs),
  * {@code MinSpacing} (float, défaut 2,5 blocs).
  */
 public class SummonVinesInteraction extends SimpleInstantInteraction {
@@ -80,10 +83,14 @@ public class SummonVinesInteraction extends SimpleInstantInteraction {
 
     /** Vrilles vivantes par citrouille. Lu et modifié sur le thread du monde. */
     private static final Map<Ref<EntityStore>, List<Ref<EntityStore>>> VINES = new ConcurrentHashMap<>();
+    /** Dernier appel d'invocation par citrouille (System.nanoTime), réussi ou non. */
+    private static final Map<Ref<EntityStore>, Long> LAST_CALL = new ConcurrentHashMap<>();
+    /** Vague par défaut (mêmes valeurs que Nakasar_NPC_Pumpkin_Summon), pour {@link #summonWave}. */
+    private static final SummonVinesInteraction DEFAULT_WAVE = new SummonVinesInteraction();
 
     protected String vineRole = "Nakasar_Pumpkin_Vine";
     protected int count = 5;
-    protected int maxAlive = 6;
+    protected int maxAlive = 5;
     protected float minDistance = 3f;
     protected float maxDistance = 7f;
     protected float minSpacing = 2.5f;
@@ -105,8 +112,39 @@ public class SummonVinesInteraction extends SimpleInstantInteraction {
         }
         Vector3d center = new Vector3d(transform.getPosition());
         World world = buffer.getExternalData().getWorld();
+        LAST_CALL.put(summoner, System.nanoTime());
         // Le store est en plein traitement : on fait sortir les vrilles juste après.
         world.execute(() -> summon(world, summoner, center));
+    }
+
+    /**
+     * Fait sortir une vague par défaut autour de la citrouille, hors de son IA (premier coup reçu avant qu'elle n'ait
+     * pu lancer son invocation). Ne fait rien si elle a été appelée il y a moins de {@code withinSeconds} secondes.
+     * Appelé pendant le traitement du store : la vague sort juste après.
+     */
+    public static void summonWave(World world, Ref<EntityStore> summoner, Vector3d center, double withinSeconds) {
+        Long last = LAST_CALL.get(summoner);
+        long now = System.nanoTime();
+        if (last != null && now - last < (long) (withinSeconds * 1e9)) {
+            return;
+        }
+        LAST_CALL.put(summoner, now);
+        Vector3d at = new Vector3d(center);
+        world.execute(() -> DEFAULT_WAVE.summon(world, summoner, at));
+    }
+
+    /** Vrai si la citrouille a au moins une vrille vivante (sur le thread du monde). */
+    public static boolean hasLivingVines(Ref<EntityStore> summoner, Store<EntityStore> store) {
+        List<Ref<EntityStore>> vines = VINES.get(summoner);
+        if (vines == null) {
+            return false;
+        }
+        for (Ref<EntityStore> vine : vines) {
+            if (alive(vine, store)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     @Override
@@ -250,6 +288,7 @@ public class SummonVinesInteraction extends SimpleInstantInteraction {
             return;
         }
         VINES.remove(summoner);
+        LAST_CALL.remove(summoner);
         for (Ref<EntityStore> vine : vines) {
             if (vine.isValid()) {
                 store.removeEntity(vine, RemoveReason.REMOVE);
@@ -264,5 +303,6 @@ public class SummonVinesInteraction extends SimpleInstantInteraction {
     /** Oublie les vrilles suivies (arrêt du plugin). Elles partent avec le monde. */
     public static void clearAll() {
         VINES.clear();
+        LAST_CALL.clear();
     }
 }

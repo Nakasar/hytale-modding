@@ -1,7 +1,8 @@
 {
   "$Comment": "Fantômes près des structures du fragment (cimetières, maisons et châteaux hantés), à toute heure.",
   "Environments": [
-    "Nakasar_Env_Halloween_Haunted"
+    "Nakasar_Env_Halloween_Haunted",
+    "Nakasar_Env_Contract"
   ],
   "NPCs": [
     { "Id": "Nakasar_Ghost", "Weight": 18 }

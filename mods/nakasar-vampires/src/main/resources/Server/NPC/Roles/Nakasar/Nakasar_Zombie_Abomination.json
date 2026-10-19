@@ -3,7 +3,7 @@
   "Type": "Generic",
   "Appearance": "Nakasar_Zombie_Abomination",
   "NameTranslationKey": "nakasar_mobs.npc.Zombie_Abomination.name",
-  "MaxHealth": 450,
+  "MaxHealth": 700,
   "DropList": "Nakasar_Drop_Zombie_Abomination",
   "StartState": "Idle",
   "DefaultPlayerAttitude": "Hostile",

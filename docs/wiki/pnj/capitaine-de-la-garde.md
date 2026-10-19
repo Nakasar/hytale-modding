@@ -1,12 +1,13 @@
 # Capitaine de la garde
 
 <Infobox pending title="Capitaine de la garde" kind="Élite">
-<Info label="Points de vie">**650**</Info>
+<Info label="Points de vie">**950**</Info>
+<Info label="Barre de vie">barre de boss en combat</Info>
 <Info label="Attitude">Hostile</Info>
 <Info label="Lieu">[Poste de garde de la garnison](../fragment/postes-de-garde.md), 1 marqueur</Info>
 <Info label="Réapparition">30 min</Info>
 <Info label="Faiblesses">Feu purificateur</Info>
-<Info label="Butin">2 à 4 éclats de rune, [Insigne du Capitaine](../objets/trophees.md), hache rouillée (33 %)</Info>
+<Info label="Butin">[Insigne du Capitaine](../objets/trophees.md), hache rouillée (33 %)</Info>
 <Info label="Id">`Nakasar_Guard_Captain`</Info>
 </Infobox>
 
@@ -16,7 +17,7 @@ Le chef de la garnison du Comte : grand squelette d'élite (×1,3) en armure de 
 
 | | |
 |---|---|
-| Points de vie | **650** (le plus robuste du mod) |
+| Points de vie | **950** (le plus robuste du mod), affichés dans une **barre de vie de boss** pendant le combat |
 | Vitesse | 4,6 |
 | Recul subi | ×0,3 |
 | Arme | Hache de bataille en acier rouillée |
@@ -39,7 +40,6 @@ Les attaques annoncées sont précédées d'une préparation lisible (main tendu
 
 | Objet | Quantité | Chance |
 |---|---|---|
-| Éclat de rune | 2 à 4 | 100 % |
 | [Insigne du Capitaine](../objets/trophees.md) | 1 | 100 % |
 | Hache de bataille en acier rouillée | 1 | 33 % |
 | Butin habituel du chevalier squelette (`Drop_Skeleton_Knight`) | | |
