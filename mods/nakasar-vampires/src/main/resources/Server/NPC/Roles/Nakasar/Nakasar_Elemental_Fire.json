@@ -13,15 +13,18 @@
   ],
   "MotionControllerList": [
     {
-      "Type": "Fly",
-      "MaxHorizontalSpeed": 5,
-      "MaxClimbSpeed": 3,
-      "MaxSinkSpeed": 3,
-      "Acceleration": 3,
-      "Deceleration": 3,
-      "Gravity": 1,
-      "MinHeightOverGround": 1,
-      "MaxHeightOverGround": 4
+      "Type": "Walk",
+      "MaxWalkSpeed": 5,
+      "Gravity": 10,
+      "RunThreshold": 0.3,
+      "MaxFallSpeed": 6,
+      "MaxRotationSpeed": 360,
+      "Acceleration": 10,
+      "MinHover": 0.5,
+      "MinHoverDrop": 0,
+      "FloatsDown": true,
+      "MaxHover": 2,
+      "HoverFreq": 0.5
     }
   ],
   "DeathParticles": "Effect_Death_Flames",

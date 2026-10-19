@@ -499,6 +499,15 @@ def spectre_summon():
     }
 
 
+def hover(speed, min_h, max_h):
+    """Marche en lévitation, comme les spectres du Vide et les esprits vanilla (Template_Void_Spectre, Template_Spirit) :
+    les mouvements qui gardent une distance (MaintainDistance) exigent un contrôleur Walk, refusé sinon au chargement
+    du rôle (« Missing required motion controller: MotionControllerWalk »)."""
+    return [{"Type": "Walk", "MaxWalkSpeed": speed, "Gravity": 10, "RunThreshold": 0.3, "MaxFallSpeed": 6,
+             "MaxRotationSpeed": 360, "Acceleration": 10, "MinHover": min_h, "MinHoverDrop": 0, "FloatsDown": True,
+             "MaxHover": max_h, "HoverFreq": 0.5}]
+
+
 def fly(speed, min_h, max_h):
     return [{"Type": "Fly", "MaxHorizontalSpeed": speed, "MaxClimbSpeed": 3, "MaxSinkSpeed": 3, "Acceleration": 3,
              "Deceleration": 3, "Gravity": 1, "MinHeightOverGround": min_h, "MaxHeightOverGround": max_h}]
@@ -527,7 +536,7 @@ def spectre_role():
         "DisableDamageGroups": ["Nakasar_Ghosts"],
         "KnockbackScale": 0.2,
         "DeathAnimationTime": 1.5,
-        "MotionControllerList": fly(7, 0.3, 1.5),
+        "MotionControllerList": hover(7, 0.6, 1.2),
         "StateTransitions": [{
             "$Comment": "Entrée en combat : chaque attaque spéciale a sa propre recharge ; les fantômes viennent tout de suite.",
             "States": [{"From": ["Idle"], "To": ["Combat"]}],

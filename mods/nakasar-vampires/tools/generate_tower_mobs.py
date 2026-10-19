@@ -610,6 +610,10 @@ def fly(speed, min_h, max_h):
     return ge.fly(speed, min_h, max_h)
 
 
+def hover(speed, min_h, max_h):
+    return ge.hover(speed, min_h, max_h)
+
+
 def elemental_role(role_id, element):
     common = dict(KnockbackScale=0.8, DeathAnimationTime=1.0)
     if element == "Thunder":
@@ -628,7 +632,7 @@ def elemental_role(role_id, element):
     return role(role_id, comment, role_id, hp, [
         cast("Cast", attack, 16, "Tir quand la cible est en vue à moins de 16 blocs."),
         keep_distance(18, 5, 9), chase(24, stop=8, pathfinder=False)],
-        fly(5, 1, 4), drop=f"Nakasar_Drop_Elemental_{element}", sight=16, los=False,
+        hover(5, 0.5, 2), drop=f"Nakasar_Drop_Elemental_{element}", sight=16, los=False,
         timers=[timer("Cast", (0.8, 1.6), (2.8, 3.8))], heal=True, DeathParticles=particles, **common)
 
 
