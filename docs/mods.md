@@ -51,7 +51,7 @@ redonne lui-même à la casse (`Gathering.Breaking`).
 Recettes dans `Server/Item/Recipes/Nakasar/` (fichiers séparés, voir README pour la raison) :
 `Recipe_Nakasar_Sacrificial_Altar` à l'atelier de base `Workbench` / onglet `Workbench_Crafting` (10 `Rock`
 ressource, 2 `Ingredient_Bar_Iron`, 1 `Ingredient_Rune_Shard`, 5 s) et `Recipe_Nakasar_Rune_<X>` sur l'autel,
-onglet `Nakasar_Altar_Runes` (2 `Ingredient_Rune_Shard`, 1 s).
+onglet `Nakasar_Altar_Runes` (2 `Ingredient_Rune_Shard`, 1 s ; `RequiredTierLevel` : Baiser du Vampire au niveau 1, Téléportation et Chaînes spectrales au niveau 2, Domination au niveau 3).
 
 Modèle `Common/Blocks/Nakasar/Sacrificial_Altar.blockymodel`, texture
 `Common/BlockTextures/Nakasar/Sacrificial_Altar.png` (256×128), hitbox et icône d'inventaire sont **générés** par

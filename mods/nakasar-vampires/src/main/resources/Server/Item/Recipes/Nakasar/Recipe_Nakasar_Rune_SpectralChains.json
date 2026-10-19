@@ -9,6 +9,6 @@
     { "ItemId": "Rune_Nakasar_SpectralChains", "Quantity": 1 }
   ],
   "BenchRequirement": [
-    { "Type": "Crafting", "Id": "Nakasar_Sacrificial_Altar", "Categories": ["Nakasar_Altar_Runes"] }
+    { "Type": "Crafting", "Id": "Nakasar_Sacrificial_Altar", "Categories": ["Nakasar_Altar_Runes"], "RequiredTierLevel": 2 }
   ]
 }

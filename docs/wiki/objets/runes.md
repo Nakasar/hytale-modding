@@ -15,7 +15,7 @@ Sept runes de sorts, que l'on lance avec les **touches de capacité** en tenant 
 
 | Source | Détail |
 |---|---|
-| **[Autel sacrificiel](autel-sacrificiel.md)**, onglet Runes | **2 éclats de rune** → 1 rune, **1 s**. Les quatre recettes sont connues d'office. |
+| **[Autel sacrificiel](autel-sacrificiel.md)**, onglet Runes | **2 éclats de rune** → 1 rune, **1 s**, connue d'office. Baiser du Vampire dès le niveau 1, Téléportation et Chaînes spectrales au [niveau 2](autel-sacrificiel.md#niveaux), Domination au niveau 3. |
 | **[Comte](../pnj/comte-vampire.md) ou [Comtesse](../pnj/comtesse-vampire.md) Vampire** | une rune au hasard parmi les quatre à chaque victoire (25 % chacune) |
 
 **Éclats de rune :** les créatures du mod n'en lâchent plus. On en trouve dans les coffres des [cryptes](../fragment/cryptes.md) et des [châteaux hantés](../fragment/chateaux-hantes.md), et dans les [sacs de prime](trophees.md) des contrats.
