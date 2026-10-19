@@ -17,6 +17,8 @@ sont ceux du jeu 0.7.2 (Server/Item/Items d'Assets.zip, lus le 2026-10-18).
 import json
 from pathlib import Path
 
+import generate_lore as lore
+
 OUT = Path(__file__).resolve().parent.parent / "src" / "main" / "resources" / "Server" / "Drops" / "Nakasar" / "Halloween"
 
 # (objet, poids, quantité min, quantité max) ; objet None = tirage vide.
@@ -103,6 +105,12 @@ DROPLISTS = {
     "Nakasar_Loot_Hunter_Armory": [(2, 3, HUNTER_SUPPLIES), (1, 1, HUNTER_GEAR + [(None, 3, 0, 0)])],
     "Nakasar_Loot_Manor_Workshop": [(2, 3, WORKSHOP), (0, 1, IRON_ARMOR + RUSTY_WEAPONS[:3] + [(None, 6, 0, 0)])],
 }
+
+# Notes de lore (generate_lore.LORE_BY_LOOT) : un tirage de plus, souvent vide, parmi les notes du lieu. Une note trouvée
+# se lit dans l'infobulle de l'objet, ou en la posant puis en l'utilisant.
+for _name, (_place, _placed, _chance, _empty) in lore.LORE_BY_LOOT.items():
+    DROPLISTS[_name] = DROPLISTS[_name] + [
+        (0, 1, [(lore.note_id(n), 1, 1, 1) for n in lore.NOTES_BY_PLACE[_place]] + [(None, _empty, 0, 0)])]
 
 
 def entry(item, weight, qmin, qmax):

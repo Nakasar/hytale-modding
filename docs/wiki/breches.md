@@ -27,6 +27,8 @@ La nuit, dans le **monde principal**, le voile se déchire parfois près des jou
 
 Une clairière de 8 blocs de rayon, avec au nord une **arche de pierre moussue brisée** dont l'ouverture abrite la **faille rouge** (3 × 4 blocs, lumière et éclairs rouges). Deux [torches de feu purificateur](objets/feu-purificateur.md) encadrent l'arche, trois lanternes purificatrices éclairent le camp : les morts-vivants n'y entrent pas.
 
+À gauche de l'arche se dresse le **tableau des chasseurs** : utilisez-le pour lire l'appel de l'Ordre et recevoir **votre premier contrat** ([la Bête de la ferme](objets/contrats.md)), si vous n'en portez pas déjà un. Chaque joueur reçoit le sien. Voir [Notes et épitaphes](fragment/notes-et-epitaphes.md).
+
 | Plan | Contenu | Chasseurs |
 |---|---|---|
 | **Tentes** | deux tentes de cuir, établi d'armes, table et bougie, feu de camp et tabourets, caisses et tonneaux | **5** |

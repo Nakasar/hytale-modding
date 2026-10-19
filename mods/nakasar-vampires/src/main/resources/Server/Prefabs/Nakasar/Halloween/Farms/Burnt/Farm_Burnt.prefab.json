@@ -3190,7 +3190,7 @@
     {"x":4,"y":0,"z":-11,"name":"Empty"},
     {"x":5,"y":0,"z":-11,"name":"Deco_Fire"},
     {"x":6,"y":0,"z":-11,"name":"Rock_Stone_Cobble"},
-    {"x":7,"y":0,"z":-11,"name":"Empty"},
+    {"x":7,"y":0,"z":-11,"name":"Nakasar_Lore_Farm_Diary","rotation":3},
     {"x":8,"y":0,"z":-11,"name":"Furniture_Crude_Chest_Small","rotation":2,"components":{"Components":{"ItemContainerBlock":{"Droplist":"Nakasar_Loot_Farm_Burnt","Capacity":18}}}},
     {"x":9,"y":0,"z":-11,"name":"Ingredient_Hay","rotation":2},
     {"x":10,"y":0,"z":-11,"name":"Furniture_Ancient_Crate","rotation":2},

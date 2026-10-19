@@ -1461,7 +1461,7 @@
     {"x":-14,"y":0,"z":-11,"name":"*Plant_Crop_Pumpkin_Block_State_Definitions_StageFinal"},
     {"x":-13,"y":0,"z":-11,"name":"Wood_Deadwood_Planks"},
     {"x":-12,"y":0,"z":-11,"name":"Ingredient_Hay"},
-    {"x":-11,"y":0,"z":-11,"name":"Empty"},
+    {"x":-11,"y":0,"z":-11,"name":"Nakasar_Lore_Farm_Ledger"},
     {"x":-10,"y":0,"z":-11,"name":"Furniture_Crude_Chest_Small","components":{"Components":{"ItemContainerBlock":{"Droplist":"Nakasar_Loot_Farm","Capacity":18}}}},
     {"x":-9,"y":0,"z":-11,"name":"Wood_Deadwood_Planks"},
     {"x":-8,"y":0,"z":-11,"name":"*Plant_Crop_Pumpkin_Block_State_Definitions_StageFinal"},

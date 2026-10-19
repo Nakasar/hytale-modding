@@ -24,6 +24,7 @@ from pathlib import Path
 
 from PIL import Image, ImageDraw
 
+import generate_lore as lore
 import generate_prefabs as gp
 from generate_prefabs import AIR, EAST, NORTH, SOUTH, WEST, Prefab, tent
 
@@ -87,7 +88,7 @@ def post(p, x, z, top=LANTERN):
 
 def breach_camp(seed, variant):
     """Campement de chasseurs dressé devant la brèche : feu de camp, tentes de cuir, atelier, lanternes de feu
-    blanc (qui tiennent les morts-vivants à distance), quatre ou cinq chasseurs."""
+    blanc (qui tiennent les morts-vivants à distance), tableau de contrats, quatre ou cinq chasseurs."""
     p = Prefab(seed)
     r = p.rng
     for x, z in disc(RADIUS):
@@ -95,6 +96,9 @@ def breach_camp(seed, variant):
         p.set(x, -1, z, p.pick(GROUND))
         p.fill(x, -5, z, x, -2, z, "Soil_Dirt")  # fondations : le terrain peut varier de 4 blocs sous le camp
     rift_arch(p, -6)
+    # tableau de contrats à côté de l'arche : la note des chasseurs et le premier contrat (generate_lore.py)
+    assert p.free(-4, 0, -4) and p.free(-4, 1, -4)
+    p.set(-4, 0, -4, lore.BOARD, SOUTH)
     p.set(0, -1, 1, "Rock_Stone_Cobble")
     p.set(0, 0, 1, "Bench_Campfire")
     stools = [(2, 1), (-2, 1), (0, 3)]

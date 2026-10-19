@@ -61,6 +61,17 @@ Chaque coffre du Comté est rempli à l'apparition de la structure. Son contenu 
 | Potion de régénération (`Potion_Regen_Health`) | 1 | 29 % |
 | Potion de poison (`Potion_Poison`) | 1 à 2 | 29 % |
 
+**Tirage 4** (0 à 1 fois)
+
+| Objet | Quantité | Chance par tirage |
+|---|---|---|
+| *rien* | | 38 % |
+| Note : [Journal du Comte](notes-et-epitaphes.md) (`Nakasar_Lore_Count_Journal`) | 1 | 12 % |
+| Note : [Lettre de la Comtesse](notes-et-epitaphes.md) (`Nakasar_Lore_Countess_Letter`) | 1 | 12 % |
+| Note : [Règles de la maison](notes-et-epitaphes.md) (`Nakasar_Lore_Servant_Rules`) | 1 | 12 % |
+| Note : [Page de rituel](notes-et-epitaphes.md) (`Nakasar_Lore_Ritual_Page`) | 1 | 12 % |
+| Note : [Le pacte](notes-et-epitaphes.md) (`Nakasar_Lore_Blood_Pact`) | 1 | 12 % |
+
 ## Chambre du manoir {#chambre-du-manoir}
 
 [Manoir du Comte](manoir-du-comte.md), chambres du comte et de la comtesse · liste `Nakasar_Loot_Manor_Bedroom`
@@ -95,6 +106,17 @@ Chaque coffre du Comté est rempli à l'apparition de la structure. Son contenu 
 | Potion de régénération (`Potion_Regen_Health`) | 1 | 20 % |
 | Dagues en fer (`Weapon_Daggers_Iron`) | 1 | 20 % |
 
+**Tirage 4** (0 à 1 fois)
+
+| Objet | Quantité | Chance par tirage |
+|---|---|---|
+| *rien* | | 44 % |
+| Note : [Journal du Comte](notes-et-epitaphes.md) (`Nakasar_Lore_Count_Journal`) | 1 | 11 % |
+| Note : [Lettre de la Comtesse](notes-et-epitaphes.md) (`Nakasar_Lore_Countess_Letter`) | 1 | 11 % |
+| Note : [Règles de la maison](notes-et-epitaphes.md) (`Nakasar_Lore_Servant_Rules`) | 1 | 11 % |
+| Note : [Page de rituel](notes-et-epitaphes.md) (`Nakasar_Lore_Ritual_Page`) | 1 | 11 % |
+| Note : [Le pacte](notes-et-epitaphes.md) (`Nakasar_Lore_Blood_Pact`) | 1 | 11 % |
+
 ## Alchimie du manoir {#alchimie-du-manoir}
 
 [Manoir du Comte](manoir-du-comte.md), laboratoire · liste `Nakasar_Loot_Manor_Alchemy`
@@ -125,6 +147,17 @@ Chaque coffre du Comté est rempli à l'apparition de la structure. Son contenu 
 | Recette : graines de soin (`Recipe_Plant_Seeds_Health1`) | 1 | 20 % |
 | Recette : graines de mana (`Recipe_Plant_Seeds_Mana1`) | 1 | 20 % |
 | Recette : graines d'endurance (`Recipe_Plant_Seeds_Stamina1`) | 1 | 20 % |
+
+**Tirage 3** (0 à 1 fois)
+
+| Objet | Quantité | Chance par tirage |
+|---|---|---|
+| *rien* | | 44 % |
+| Note : [Journal du Comte](notes-et-epitaphes.md) (`Nakasar_Lore_Count_Journal`) | 1 | 11 % |
+| Note : [Lettre de la Comtesse](notes-et-epitaphes.md) (`Nakasar_Lore_Countess_Letter`) | 1 | 11 % |
+| Note : [Règles de la maison](notes-et-epitaphes.md) (`Nakasar_Lore_Servant_Rules`) | 1 | 11 % |
+| Note : [Page de rituel](notes-et-epitaphes.md) (`Nakasar_Lore_Ritual_Page`) | 1 | 11 % |
+| Note : [Le pacte](notes-et-epitaphes.md) (`Nakasar_Lore_Blood_Pact`) | 1 | 11 % |
 
 ## Bibliothèque du manoir {#bibliotheque-du-manoir}
 
@@ -162,6 +195,17 @@ Chaque coffre du Comté est rempli à l'apparition de la structure. Son contenu 
 | Fragment d'os (`Ingredient_Bone_Fragment`) | 2 à 5 | 6 % |
 | **Éclat de rune** (`Ingredient_Rune_Shard`) | 1 à 2 | 6 % |
 | **Relique du manoir** (`Ingredient_Nakasar_Manor_Relic`) | 1 | 3 % |
+
+**Tirage 3** (0 à 1 fois)
+
+| Objet | Quantité | Chance par tirage |
+|---|---|---|
+| *rien* | | 29 % |
+| Note : [Journal du Comte](notes-et-epitaphes.md) (`Nakasar_Lore_Count_Journal`) | 1 | 14 % |
+| Note : [Lettre de la Comtesse](notes-et-epitaphes.md) (`Nakasar_Lore_Countess_Letter`) | 1 | 14 % |
+| Note : [Règles de la maison](notes-et-epitaphes.md) (`Nakasar_Lore_Servant_Rules`) | 1 | 14 % |
+| Note : [Page de rituel](notes-et-epitaphes.md) (`Nakasar_Lore_Ritual_Page`) | 1 | 14 % |
+| Note : [Le pacte](notes-et-epitaphes.md) (`Nakasar_Lore_Blood_Pact`) | 1 | 14 % |
 
 ## Atelier du manoir {#atelier-du-manoir}
 
@@ -229,6 +273,17 @@ Chaque coffre du Comté est rempli à l'apparition de la structure. Son contenu 
 | Farine (`Ingredient_Flour`) | 2 à 5 | 40 % |
 | Pâte (`Ingredient_Dough`) | 1 à 3 | 20 % |
 
+**Tirage 4** (0 à 1 fois)
+
+| Objet | Quantité | Chance par tirage |
+|---|---|---|
+| *rien* | | 44 % |
+| Note : [Journal du Comte](notes-et-epitaphes.md) (`Nakasar_Lore_Count_Journal`) | 1 | 11 % |
+| Note : [Lettre de la Comtesse](notes-et-epitaphes.md) (`Nakasar_Lore_Countess_Letter`) | 1 | 11 % |
+| Note : [Règles de la maison](notes-et-epitaphes.md) (`Nakasar_Lore_Servant_Rules`) | 1 | 11 % |
+| Note : [Page de rituel](notes-et-epitaphes.md) (`Nakasar_Lore_Ritual_Page`) | 1 | 11 % |
+| Note : [Le pacte](notes-et-epitaphes.md) (`Nakasar_Lore_Blood_Pact`) | 1 | 11 % |
+
 ## Quartiers du capitaine {#quartiers-du-capitaine}
 
 [Poste de garde](postes-de-garde.md) · liste `Nakasar_Loot_Guard_Captain`
@@ -274,6 +329,15 @@ Chaque coffre du Comté est rempli à l'apparition de la structure. Son contenu 
 | *rien* | | 50 % |
 | Épée longue en fer (`Weapon_Longsword_Iron`) | 1 | 33 % |
 | Épée en acier (`Weapon_Sword_Steel`) | 1 | 17 % |
+
+**Tirage 5** (0 à 1 fois)
+
+| Objet | Quantité | Chance par tirage |
+|---|---|---|
+| *rien* | | 40 % |
+| Note : [Consignes de garde](notes-et-epitaphes.md) (`Nakasar_Lore_Guard_Orders`) | 1 | 20 % |
+| Note : [Serment de la garde](notes-et-epitaphes.md) (`Nakasar_Lore_Guard_Oath`) | 1 | 20 % |
+| Note : [Griffonné sur un bout de toile](notes-et-epitaphes.md) (`Nakasar_Lore_Prisoner`) | 1 | 20 % |
 
 ## Armurerie {#armurerie}
 
@@ -356,6 +420,15 @@ Chaque coffre du Comté est rempli à l'apparition de la structure. Son contenu 
 | Lance en fer (`Weapon_Spear_Iron`) | 1 | 5 % |
 | Hache de bataille rouillée (`Weapon_Battleaxe_Steel_Rusty`) | 1 | 5 % |
 | Arbalète en fer (`Weapon_Crossbow_Iron`) | 1 | 5 % |
+
+**Tirage 4** (0 à 1 fois)
+
+| Objet | Quantité | Chance par tirage |
+|---|---|---|
+| *rien* | | 62 % |
+| Note : [Consignes de garde](notes-et-epitaphes.md) (`Nakasar_Lore_Guard_Orders`) | 1 | 12 % |
+| Note : [Serment de la garde](notes-et-epitaphes.md) (`Nakasar_Lore_Guard_Oath`) | 1 | 12 % |
+| Note : [Griffonné sur un bout de toile](notes-et-epitaphes.md) (`Nakasar_Lore_Prisoner`) | 1 | 12 % |
 
 ## Ruines du château {#ruines-du-chateau}
 
@@ -461,6 +534,16 @@ Chaque coffre du Comté est rempli à l'apparition de la structure. Son contenu 
 | Recette : tourte à la viande (`Recipe_Food_Pie_Meat`) | 1 | 10 % |
 | Recette : tarte à la citrouille (`Recipe_Food_Pie_Pumpkin`) | 1 | 10 % |
 
+**Tirage 5** (0 à 1 fois)
+
+| Objet | Quantité | Chance par tirage |
+|---|---|---|
+| *rien* | | 43 % |
+| Note : [Lettre jamais envoyée](notes-et-epitaphes.md) (`Nakasar_Lore_Village_Letter`) | 1 | 14 % |
+| Note : [Avis du bailli](notes-et-epitaphes.md) (`Nakasar_Lore_Village_Curfew`) | 1 | 14 % |
+| Note : [Registre de la ferme](notes-et-epitaphes.md) (`Nakasar_Lore_Farm_Ledger`) | 1 | 14 % |
+| Note : [Mot gratté sur une porte](notes-et-epitaphes.md) (`Nakasar_Lore_Village_Last`) | 1 | 14 % |
+
 ## Maison du village {#maison-du-village}
 
 [Village](villages.md), 9 coffres · liste `Nakasar_Loot_Village_House`
@@ -512,6 +595,16 @@ Chaque coffre du Comté est rempli à l'apparition de la structure. Son contenu 
 | Potion de soin mineure (`Potion_Health_Lesser`) | 1 | 22 % |
 | Kit de réparation grossier (`Tool_Repair_Kit_Crude`) | 1 | 11 % |
 
+**Tirage 5** (0 à 1 fois)
+
+| Objet | Quantité | Chance par tirage |
+|---|---|---|
+| *rien* | | 60 % |
+| Note : [Lettre jamais envoyée](notes-et-epitaphes.md) (`Nakasar_Lore_Village_Letter`) | 1 | 10 % |
+| Note : [Avis du bailli](notes-et-epitaphes.md) (`Nakasar_Lore_Village_Curfew`) | 1 | 10 % |
+| Note : [Registre de la ferme](notes-et-epitaphes.md) (`Nakasar_Lore_Farm_Ledger`) | 1 | 10 % |
+| Note : [Mot gratté sur une porte](notes-et-epitaphes.md) (`Nakasar_Lore_Village_Last`) | 1 | 10 % |
+
 ## Ferme {#ferme}
 
 [Fermes](fermes.md) (zombies, en ruine) et [champs de citrouilles](champs-de-citrouilles.md) · liste `Nakasar_Loot_Farm`
@@ -560,6 +653,15 @@ Chaque coffre du Comté est rempli à l'apparition de la structure. Son contenu 
 | Gibier cuit (`Food_Wildmeat_Cooked`) | 1 à 2 | 13 % |
 | Tourte à la viande (`Food_Pie_Meat`) | 1 | 7 % |
 
+**Tirage 5** (0 à 1 fois)
+
+| Objet | Quantité | Chance par tirage |
+|---|---|---|
+| *rien* | | 67 % |
+| Note : [Registre de la ferme](notes-et-epitaphes.md) (`Nakasar_Lore_Farm_Ledger`) | 1 | 11 % |
+| Note : [Carnet d'une fermière](notes-et-epitaphes.md) (`Nakasar_Lore_Farm_Diary`) | 1 | 11 % |
+| Note : [Lettre jamais envoyée](notes-et-epitaphes.md) (`Nakasar_Lore_Village_Letter`) | 1 | 11 % |
+
 ## Ferme incendiée {#ferme-incendiee}
 
 [Ferme](fermes.md) incendiée · liste `Nakasar_Loot_Farm_Burnt`
@@ -580,6 +682,15 @@ Chaque coffre du Comté est rempli à l'apparition de la structure. Son contenu 
 |---|---|---|
 | *rien* | | 75 % |
 | Houe grossière (`Tool_Hoe_Crude`) | 1 | 25 % |
+
+**Tirage 3** (0 à 1 fois)
+
+| Objet | Quantité | Chance par tirage |
+|---|---|---|
+| *rien* | | 57 % |
+| Note : [Registre de la ferme](notes-et-epitaphes.md) (`Nakasar_Lore_Farm_Ledger`) | 1 | 14 % |
+| Note : [Carnet d'une fermière](notes-et-epitaphes.md) (`Nakasar_Lore_Farm_Diary`) | 1 | 14 % |
+| Note : [Lettre jamais envoyée](notes-et-epitaphes.md) (`Nakasar_Lore_Village_Letter`) | 1 | 14 % |
 
 ## Camp de chasseurs {#camp-de-chasseurs}
 
@@ -619,6 +730,17 @@ Chaque coffre du Comté est rempli à l'apparition de la structure. Son contenu 
 | **Épée en acier d'argent** (`Weapon_Sword_Silversteel`) | 1 | 5 % |
 | Plastron de corbeau (`Armor_Leather_Raven_Chest`) | 1 | 5 % |
 
+**Tirage 4** (0 à 1 fois)
+
+| Objet | Quantité | Chance par tirage |
+|---|---|---|
+| *rien* | | 44 % |
+| Note : [Journal de traque, page arrachée](notes-et-epitaphes.md) (`Nakasar_Lore_Hunter_Log`) | 1 | 11 % |
+| Note : [Note sur l'argent](notes-et-epitaphes.md) (`Nakasar_Lore_Hunter_Silver`) | 1 | 11 % |
+| Note : [Liste des disparus](notes-et-epitaphes.md) (`Nakasar_Lore_Hunter_Missing`) | 1 | 11 % |
+| Note : [Avertissement griffonné](notes-et-epitaphes.md) (`Nakasar_Lore_Hunter_Pumpkins`) | 1 | 11 % |
+| Note : [Ordres du camp](notes-et-epitaphes.md) (`Nakasar_Lore_Hunter_Orders`) | 1 | 11 % |
+
 ## Armurerie des chasseurs {#armurerie-des-chasseurs}
 
 [Camp de chasseurs](camps-de-chasseurs.md), atelier · liste `Nakasar_Loot_Hunter_Armory`
@@ -648,3 +770,14 @@ Chaque coffre du Comté est rempli à l'apparition de la structure. Son contenu 
 | Casque en cuir (`Armor_Leather_Medium_Head`) | 1 | 12 % |
 | **Épée en acier d'argent** (`Weapon_Sword_Silversteel`) | 1 | 6 % |
 | Plastron de corbeau (`Armor_Leather_Raven_Chest`) | 1 | 6 % |
+
+**Tirage 3** (0 à 1 fois)
+
+| Objet | Quantité | Chance par tirage |
+|---|---|---|
+| *rien* | | 38 % |
+| Note : [Journal de traque, page arrachée](notes-et-epitaphes.md) (`Nakasar_Lore_Hunter_Log`) | 1 | 12 % |
+| Note : [Note sur l'argent](notes-et-epitaphes.md) (`Nakasar_Lore_Hunter_Silver`) | 1 | 12 % |
+| Note : [Liste des disparus](notes-et-epitaphes.md) (`Nakasar_Lore_Hunter_Missing`) | 1 | 12 % |
+| Note : [Avertissement griffonné](notes-et-epitaphes.md) (`Nakasar_Lore_Hunter_Pumpkins`) | 1 | 12 % |
+| Note : [Ordres du camp](notes-et-epitaphes.md) (`Nakasar_Lore_Hunter_Orders`) | 1 | 12 % |

@@ -1,12 +1,12 @@
 {
-  "$Comment": "Comtesse Vampire, l'autre maîtresse possible du manoir du fragment Halloween (une chance sur deux face au Comte). Moins robuste mais plus vive que lui : Baiser du Vampire (mêlée, se soigne), Domination (le joueur visé ne peut plus la blesser pendant 6 s) et Téléportation plus fréquente ; pas de Chaînes spectrales. Sous 50 % de vie, elle appelle ses rejetons toutes les 30 s.",
+  "$Comment": "Comtesse Vampire, l'autre maîtresse possible du manoir du fragment Halloween (une chance sur deux face au Comte). Moins robuste mais plus vive que lui : Baiser du Vampire (mêlée, se soigne), Domination (le joueur visé ne peut plus la blesser pendant 6 s) et Téléportation plus fréquente ; pas de Chaînes spectrales. Sous 50 % de vie, elle appelle ses rejetons toutes les 30 s. Dans le Comté, elle laisse passer les joueurs (attitude neutre) ; un joueur qui la frappe la met en colère contre tous les joueurs présents (groupe Nakasar_Vampire_Lords, colère gérée en Java par dev.nakasar.hytale.vampires.lords : 45 s sans coup échangé et elle se calme).",
   "Type": "Generic",
   "Appearance": "Nakasar_Vampire_Countess",
   "NameTranslationKey": "nakasar_mobs.npc.Vampire_Countess.name",
   "MaxHealth": 500,
   "DropList": "Nakasar_Drop_Vampire_Count",
   "StartState": "Idle",
-  "DefaultPlayerAttitude": "Hostile",
+  "DefaultPlayerAttitude": "Neutral",
   "DefaultNPCAttitude": "Ignore",
   "DisableDamageGroups": [
     "Nakasar_Vampires"
@@ -177,7 +177,7 @@
       },
       "Instructions": [
         {
-          "$Comment": "Cible perdue ou partie trop loin : elle rentre à son trône.",
+          "$Comment": "Cible perdue, partie trop loin ou plus hostile (colère retombée au bout de 45 s, voir LordsWrath) : elle rentre à son trône.",
           "Sensor": {
             "Type": "Not",
             "Sensor": {
@@ -187,9 +187,7 @@
                 {
                   "Type": "Attitude",
                   "Attitudes": [
-                    "Hostile",
-                    "Neutral",
-                    "Ignore"
+                    "Hostile"
                   ]
                 }
               ]
@@ -435,6 +433,31 @@
             "Type": "Damage",
             "Combat": true,
             "TargetSlot": "LockedTarget"
+          },
+          "Actions": [
+            {
+              "Type": "State",
+              "State": "Combat"
+            }
+          ]
+        },
+        {
+          "$Comment": "En colère, elle ne rentre pas tant qu'un autre joueur du groupe est à portée : il change de cible.",
+          "Sensor": {
+            "Type": "Player",
+            "Range": 20,
+            "LockOnTarget": true,
+            "Filters": [
+              {
+                "Type": "Attitude",
+                "Attitudes": [
+                  "Hostile"
+                ]
+              },
+              {
+                "Type": "LineOfSight"
+              }
+            ]
           },
           "Actions": [
             {

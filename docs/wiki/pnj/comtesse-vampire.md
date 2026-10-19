@@ -6,6 +6,14 @@
 
 L'épouse du Comte, et parfois la seule maîtresse des lieux : à chaque apparition dans le [Manoir du Comte](../fragment/manoir-du-comte.md), le jeu tire le [Comte](comte-vampire.md) ou la Comtesse (une chance sur deux). Longue robe noire, gants rouges, couronne et cape royale. Moins robuste que le Comte mais plus rapide, elle se téléporte sans cesse et ne connaît pas les chaînes spectrales.
 
+## Une hôtesse qui vous laisse passer
+
+Dans le Comté, la Comtesse **ne vous attaque pas** : elle vous regarde passer. Tant que personne ne le frappe, vous pouvez traverser le manoir, piller ses coffres et combattre ses gardes sous ses yeux.
+
+**Mais ne levez pas la main sur elle.** Au premier coup porté par un joueur (arme, flèche ou sort), elle entre en colère contre **tous les joueurs présents**, pas seulement l'attaquant : elle change de cible tant qu'un autre joueur est à portée. Sa colère retombe **45 secondes** après le dernier coup échangé ; elle rentre alors à son trône, récupère ses PV et redevient pacifique.
+
+On ne pourra la vaincre pour de bon que plus tard, dans un donjon consacré au Comte et à la Comtesse.
+
 ## Fiche
 
 | | |
@@ -14,9 +22,9 @@ L'épouse du Comte, et parfois la seule maîtresse des lieux : à chaque apparit
 | Vitesse | 5,5 |
 | Recul subi | ×0,2 |
 | Taille | ×1,15 |
-| Détection | 14 blocs (ligne de vue), ou dès qu'elle est frappée |
+| Détection | aucune tant qu'on ne la frappe pas ; en colère : 14 blocs (ligne de vue), 20 blocs pour changer de cible |
 | Abandon | plus de cible à 40 blocs : rentre et **récupère tous ses PV** |
-| Attitude | hostile aux joueurs ; alliée du Comté ; ennemie des chasseurs de vampires |
+| Attitude | **neutre envers les joueurs** tant qu'aucun ne la frappe, puis hostile à tous pendant sa colère ; alliée du Comté ; ennemie des chasseurs de vampires |
 | Groupes | Vampires (argent ×2), Morts-vivants (feu purificateur) |
 
 ## Attaques et capacités

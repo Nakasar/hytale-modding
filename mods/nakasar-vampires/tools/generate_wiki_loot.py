@@ -83,6 +83,11 @@ NAMES = {
     "Weapon_Sword_Steel_Rusty": "Épée en acier rouillée",
 }
 
+# Notes de lore (generate_lore.py) : leur titre français, lien vers la page des notes.
+import generate_lore as _lore  # noqa: E402
+for _name, (_style, _title, *_rest) in _lore.LORE.items():
+    NAMES[_lore.note_id(_name)] = f"Note : [{_title}](notes-et-epitaphes.md)"
+
 
 def anchor(title):
     # Ancre explicite sans accents ({#...} de Docusaurus), stable quel que soit le moteur.

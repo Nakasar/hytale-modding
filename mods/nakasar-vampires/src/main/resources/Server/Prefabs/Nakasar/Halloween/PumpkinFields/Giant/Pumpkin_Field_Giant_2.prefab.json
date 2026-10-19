@@ -1458,7 +1458,7 @@
     {"x":-13,"y":0,"z":-12,"name":"Empty"},
     {"x":-12,"y":0,"z":-12,"name":"Wood_Deadwood_Planks"},
     {"x":-11,"y":0,"z":-12,"name":"Ingredient_Hay"},
-    {"x":-10,"y":0,"z":-12,"name":"Empty"},
+    {"x":-10,"y":0,"z":-12,"name":"Nakasar_Lore_Farm_Diary","rotation":3},
     {"x":-9,"y":0,"z":-12,"name":"Furniture_Crude_Chest_Small","components":{"Components":{"ItemContainerBlock":{"Droplist":"Nakasar_Loot_Farm","Capacity":18}}}},
     {"x":-8,"y":0,"z":-12,"name":"Wood_Deadwood_Planks"},
     {"x":-7,"y":0,"z":-12,"name":"*Plant_Crop_Pumpkin_Block_State_Definitions_StageFinal"},

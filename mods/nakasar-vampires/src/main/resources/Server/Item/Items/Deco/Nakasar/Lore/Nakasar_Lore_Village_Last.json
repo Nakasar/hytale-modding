@@ -1,0 +1,57 @@
+{
+  "TranslationProperties": {
+    "Name": "nakasar_lore.items.Nakasar_Lore_Village_Last.name",
+    "Description": "nakasar_lore.items.Nakasar_Lore_Village_Last.description"
+  },
+  "Icon": "Icons/Items/Nakasar/Lore/Note_Scrap.png",
+  "Categories": [
+    "Blocks.Deco"
+  ],
+  "PlayerAnimationsId": "Block",
+  "Quality": "Uncommon",
+  "BlockType": {
+    "Material": "Empty",
+    "DrawType": "Model",
+    "Opacity": "Transparent",
+    "CustomModel": "Blocks/Nakasar/Lore/Note_Scrap.blockymodel",
+    "CustomModelTexture": [
+      {
+        "Texture": "BlockTextures/Nakasar/Lore/Note_Scrap.png",
+        "Weight": 1
+      }
+    ],
+    "HitboxType": "Nakasar_Lore_Note",
+    "VariantRotation": "NESW",
+    "PlacementSettings": {
+      "RotationMode": "FacingPlayer"
+    },
+    "Support": {
+      "Down": [
+        {
+          "FaceType": "Full"
+        }
+      ]
+    },
+    "Gathering": {
+      "Breaking": {
+        "GatherType": "Benches"
+      }
+    },
+    "BlockParticleSetId": "Wood",
+    "BlockSoundSetId": "Wood",
+    "ParticleColor": "#968c7c",
+    "Interactions": {
+      "Use": {
+        "Interactions": [
+          "Nakasar_Read_Lore"
+        ]
+      }
+    }
+  },
+  "Tags": {
+    "Type": [
+      "Deco"
+    ]
+  },
+  "ItemSoundSetId": "ISS_Blocks_Wood"
+}

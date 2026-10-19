@@ -1,0 +1,57 @@
+{
+  "TranslationProperties": {
+    "Name": "nakasar_lore.items.Nakasar_Contract_Board.name",
+    "Description": "nakasar_lore.items.Nakasar_Contract_Board.description"
+  },
+  "Icon": "Icons/Items/Nakasar/Lore/Contract_Board.png",
+  "Categories": [
+    "Blocks.Deco"
+  ],
+  "PlayerAnimationsId": "Block",
+  "Quality": "Common",
+  "BlockType": {
+    "Material": "Solid",
+    "DrawType": "Model",
+    "Opacity": "Transparent",
+    "CustomModel": "Blocks/Nakasar/Lore/Contract_Board.blockymodel",
+    "CustomModelTexture": [
+      {
+        "Texture": "BlockTextures/Nakasar/Lore/Contract_Board.png",
+        "Weight": 1
+      }
+    ],
+    "HitboxType": "Nakasar_Contract_Board",
+    "VariantRotation": "NESW",
+    "PlacementSettings": {
+      "RotationMode": "FacingPlayer"
+    },
+    "Support": {
+      "Down": [
+        {
+          "FaceType": "Full"
+        }
+      ]
+    },
+    "Gathering": {
+      "Breaking": {
+        "GatherType": "Unbreakable"
+      }
+    },
+    "BlockParticleSetId": "Wood",
+    "BlockSoundSetId": "Wood",
+    "ParticleColor": "#684a32",
+    "Interactions": {
+      "Use": {
+        "Interactions": [
+          "Nakasar_Take_First_Contract"
+        ]
+      }
+    }
+  },
+  "Tags": {
+    "Type": [
+      "Deco"
+    ]
+  },
+  "ItemSoundSetId": "ISS_Blocks_Wood"
+}

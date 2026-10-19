@@ -1,0 +1,4 @@
+{
+  "$Comment": "Le Comte et la Comtesse : neutres envers les joueurs dans le Comté, en colère contre tous les joueurs quand l'un d'eux les frappe (dev.nakasar.hytale.vampires.lords.LordsWrath).",
+  "IncludeRoles": ["Nakasar_Vampire_Count", "Nakasar_Vampire_Countess"]
+}

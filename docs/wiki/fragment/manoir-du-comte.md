@@ -22,7 +22,7 @@ La demeure du [Comte Vampire](../pnj/comte-vampire.md), toujours **220 blocs au 
 Corps de logis de **27 × 17** en basalte, deux étages, deux ailes à pignon et œil-de-bœuf rouge, **tour-porche** à rosace et flèche (4 gargouilles), tour d'angle nord-ouest, toits d'ardoise et fenêtres en ogive garnies de **vitraux pourpres et violets** (180 au total).
 
 **Rez-de-chaussée**
-- **Grand hall** à six piliers : tapis rouge de la porte jusqu'au **trône** sur son estrade (statues, braseros, deux lustres). Le Comte ou la Comtesse vous attend 5 blocs devant le trône.
+- **Grand hall** à six piliers : tapis rouge de la porte jusqu'au **trône** sur son estrade (statues, braseros, deux lustres). Le Comte ou la Comtesse vous attend 5 blocs devant le trône. Il ou elle vous laisse passer tant que personne ne le frappe ([Comte Vampire](../pnj/comte-vampire.md)).
 - **Cuisine** (nord-ouest) : fourneau, four, étagère, tonneaux. Coffre : cuisine.
 - **Salle à manger** (ouest) : longue table, 18 chaises royales, lustres.
 - **Cabinet du comte** (nord-est) : cheminée, bureau, carte, bibliothèques.

@@ -14305,7 +14305,7 @@
     {"x":-18,"y":5,"z":-15,"name":"Furniture_Ancient_Bed","rotation":1,"filler":993},
     {"x":-17,"y":5,"z":-15,"name":"Furniture_Ancient_Bed","rotation":1,"filler":994},
     {"x":-16,"y":5,"z":-15,"name":"Empty"},
-    {"x":-15,"y":5,"z":-15,"name":"Empty"},
+    {"x":-15,"y":5,"z":-15,"name":"Nakasar_Lore_Village_Letter","rotation":3},
     {"x":-14,"y":5,"z":-15,"name":"Empty"},
     {"x":-13,"y":5,"z":-15,"name":"Empty"},
     {"x":-12,"y":5,"z":-15,"name":"Wood_Deadwood_Planks"},

@@ -1,0 +1,57 @@
+{
+  "TranslationProperties": {
+    "Name": "nakasar_lore.items.Nakasar_Epitaph_Gauvain.name",
+    "Description": "nakasar_lore.items.Nakasar_Epitaph_Gauvain.description"
+  },
+  "Icon": "Icons/Items/Nakasar/Lore/Epitaph.png",
+  "Categories": [
+    "Blocks.Deco"
+  ],
+  "PlayerAnimationsId": "Block",
+  "Quality": "Common",
+  "BlockType": {
+    "Material": "Solid",
+    "DrawType": "Model",
+    "Opacity": "Transparent",
+    "CustomModel": "Blocks/Nakasar/Lore/Epitaph.blockymodel",
+    "CustomModelTexture": [
+      {
+        "Texture": "BlockTextures/Nakasar/Lore/Epitaph.png",
+        "Weight": 1
+      }
+    ],
+    "HitboxType": "Nakasar_Epitaph",
+    "VariantRotation": "NESW",
+    "PlacementSettings": {
+      "RotationMode": "FacingPlayer"
+    },
+    "Support": {
+      "Down": [
+        {
+          "FaceType": "Full"
+        }
+      ]
+    },
+    "Gathering": {
+      "Breaking": {
+        "GatherType": "Unbreakable"
+      }
+    },
+    "BlockParticleSetId": "Stone",
+    "BlockSoundSetId": "Stone",
+    "ParticleColor": "#706e70",
+    "Interactions": {
+      "Use": {
+        "Interactions": [
+          "Nakasar_Read_Lore"
+        ]
+      }
+    }
+  },
+  "Tags": {
+    "Type": [
+      "Deco"
+    ]
+  },
+  "ItemSoundSetId": "ISS_Blocks_Stone"
+}
