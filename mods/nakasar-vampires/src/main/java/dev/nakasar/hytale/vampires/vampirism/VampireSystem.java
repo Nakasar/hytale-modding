@@ -17,7 +17,6 @@ import com.hypixel.hytale.server.core.inventory.InventoryComponent;
 import com.hypixel.hytale.server.core.inventory.ItemStack;
 import com.hypixel.hytale.server.core.inventory.container.ItemContainer;
 import com.hypixel.hytale.server.core.modules.entity.component.DynamicLight;
-import com.hypixel.hytale.server.core.modules.entity.component.HealthRegenState;
 import com.hypixel.hytale.server.core.modules.entity.component.TransformComponent;
 import com.hypixel.hytale.server.core.modules.entity.damage.Damage;
 import com.hypixel.hytale.server.core.modules.entity.damage.DamageCause;
@@ -42,8 +41,8 @@ import java.util.Map;
  * <ul>
  *   <li><b>Faim de sang.</b> Le sang baisse de rassasié à affamé en {@value Vampire#DAYS_TO_STARVE} jours du monde
  *       (durées de jour et de nuit du monde, même si le temps y est figé). En survie, un joueur ne régénère que par
- *       les effets des repas ; un vampire régénère selon son palier ({@link BloodStage}), affiché par un effet de
- *       statut, et la régénération naturelle reste coupée ({@link HealthRegenState}). Les effets de nourriture (ids
+ *       les effets des repas (Health.json du jeu : la régénération naturelle ne vise que les PNJ) ; un vampire
+ *       régénère selon son palier ({@link BloodStage}), affiché par un effet de statut. Les effets de nourriture (ids
  *       qui commencent par {@link #FOOD_EFFECT_PREFIXES}, ceux de Server/Entity/Effects/Food du jeu 0.7.2) sont
  *       retirés dès qu'ils apparaissent : la nourriture n'a plus d'effet.</li>
  *   <li><b>Affamé.</b> Les battements de cœur du vivant le plus proche (moins de {@value #HEARTBEAT_RADIUS} blocs)
@@ -85,7 +84,7 @@ public final class VampireSystem extends DelayedEntitySystem<EntityStore> {
             "Armor_Nakasar_Occult_Hood", 0.7f,
             "Armor_Nakasar_Occult_Mantle", 0.75f);
     /** Lumière de vision nocturne : faible et rougeâtre. */
-    private static final ColorLight NIGHT_LIGHT = new ColorLight((byte) 6, (byte) 5, (byte) 2, (byte) 2);
+    static final ColorLight NIGHT_LIGHT = new ColorLight((byte) 6, (byte) 5, (byte) 2, (byte) 2);
 
     private static final float INTERVAL = 0.25f;
     private static final Query<EntityStore> QUERY = Query.and(Vampire.getComponentType(),
@@ -138,23 +137,17 @@ public final class VampireSystem extends DelayedEntitySystem<EntityStore> {
             vampire.addBlood(-dt / (Vampire.DAYS_TO_STARVE * daySeconds));
         }
         BloodStage stage = vampire.getStage();
-        if (stage != vampire.shownStage) {
-            if (vampire.shownStage != null) {
-                Vampires.removeEffect(ref, vampire.shownStage.effectId, buffer);
+        if (stage != vampire.shownStage || !Vampires.hasEffect(ref, stage.effectId, buffer)) {
+            for (BloodStage other : BloodStage.values()) { // y compris un palier gardé d'avant la reconnexion
+                if (other != stage) {
+                    Vampires.removeEffect(ref, other.effectId, buffer);
+                }
             }
             if (Vampires.applyEffect(ref, stage.effectId, -1f, buffer)) {
                 vampire.shownStage = stage;
             }
         }
 
-        HealthRegenState regen = buffer.getComponent(ref, HealthRegenState.getComponentType());
-        if (regen == null) {
-            regen = new HealthRegenState();
-            regen.setRegenEnabled(false);
-            buffer.putComponent(ref, HealthRegenState.getComponentType(), regen);
-        } else if (regen.isRegenEnabled()) {
-            regen.setRegenEnabled(false);
-        }
         EntityStatValue health = stats.get(DefaultEntityStatTypes.getHealth());
         if (stage.regenPerSecond > 0f && health != null && health.get() > 0f && health.get() < health.getMax()) {
             stats.addStatValue(DefaultEntityStatTypes.getHealth(), stage.regenPerSecond * dt);
@@ -228,7 +221,7 @@ public final class VampireSystem extends DelayedEntitySystem<EntityStore> {
 
     private void purifyingLight(float dt, Ref<EntityStore> ref, Vampire vampire, Vector3d position,
                                 Store<EntityStore> store, CommandBuffer<EntityStore> buffer) {
-        if (!purifyingFires.nearFire(buffer.getExternalData().getWorld().getChunkStore(), store, position)) {
+        if (!purifyingFires.nearFire(buffer.getExternalData().getWorld().getChunkStore(), store, position, ref)) {
             vampire.pendingLightDamage = 0f;
             return;
         }
@@ -258,19 +251,20 @@ public final class VampireSystem extends DelayedEntitySystem<EntityStore> {
         boolean night = !SunExposure.isDay(store);
         if (night && light == null) {
             buffer.putComponent(ref, DynamicLight.getComponentType(), new DynamicLight(new ColorLight(NIGHT_LIGHT)));
-            vampire.nightLightByUs = true;
-        } else if (!night && vampire.nightLightByUs) {
-            removeNightLight(ref, vampire, buffer);
+        } else if (!night && light != null) {
+            removeNightLight(ref, buffer);
         }
     }
 
-    /** Retire la lumière de vision nocturne si c'est la nôtre (matin, guérison). */
-    static void removeNightLight(Ref<EntityStore> ref, Vampire vampire, CommandBuffer<EntityStore> buffer) {
+    /**
+     * Retire la lumière de vision nocturne (matin, guérison). Elle est reconnue à sa couleur : la lumière d'entité est
+     * sauvegardée avec le joueur, un drapeau en mémoire serait perdu à la reconnexion.
+     */
+    static void removeNightLight(Ref<EntityStore> ref, CommandBuffer<EntityStore> buffer) {
         DynamicLight light = buffer.getComponent(ref, DynamicLight.getComponentType());
-        if (vampire.nightLightByUs && light != null && NIGHT_LIGHT.equals(light.getColorLight())) {
+        if (light != null && NIGHT_LIGHT.equals(light.getColorLight())) {
             buffer.tryRemoveComponent(ref, DynamicLight.getComponentType());
         }
-        vampire.nightLightByUs = false;
     }
 
     /** Affamé : le cœur du vivant le plus proche bat, plus vite à mesure qu'il approche. */

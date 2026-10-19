@@ -116,12 +116,12 @@ public final class PurifyingFireSystem extends DelayedEntitySystem<EntityStore> 
 
     /**
      * Vrai si un feu purificateur (bloc ou aura de lumière) brûle à moins de {@value #RADIUS} blocs de
-     * {@code position} : la lumière qui blesse les joueurs vampires ({@code vampirism.VampireSystem}). À appeler
-     * depuis le fil du monde, comme ce système.
+     * {@code position} : la lumière qui blesse les joueurs vampires ({@code vampirism.VampireSystem}). L'aura que
+     * porte {@code self} ne compte pas. À appeler depuis le fil du monde, comme ce système.
      */
-    public boolean nearFire(ChunkStore chunks, Store<EntityStore> entities, Vector3d position) {
+    public boolean nearFire(ChunkStore chunks, Store<EntityStore> entities, Vector3d position, Ref<EntityStore> self) {
         resolveFireIds();
-        return scan(chunks, entities, position, RADIUS).nearest != null;
+        return scan(chunks, entities, position, RADIUS, self).nearest != null;
     }
 
     /** Ids des deux blocs, résolus une fois les assets chargés ; faux tant qu'aucun n'existe. */
@@ -176,6 +176,11 @@ public final class PurifyingFireSystem extends DelayedEntitySystem<EntityStore> 
      * porteurs d'une aura de lumière ({@link LightAuraSystem}) du même monde.
      */
     private Fires scan(ChunkStore chunks, Store<EntityStore> entities, Vector3d from, int radius) {
+        return scan(chunks, entities, from, radius, null);
+    }
+
+    private Fires scan(ChunkStore chunks, Store<EntityStore> entities, Vector3d from, int radius,
+                       Ref<EntityStore> exclude) {
         Fires fires = new Fires();
         Store<ChunkStore> store = chunks.getStore();
         int cx = (int) Math.floor(from.x);
@@ -223,7 +228,7 @@ public final class PurifyingFireSystem extends DelayedEntitySystem<EntityStore> 
                 }
             }
         }
-        fires.add(entities, this.fires, cx, cz, minY, maxY, radiusSq);
+        fires.add(entities, this.fires, exclude, cx, cz, minY, maxY, radiusSq);
         return fires;
     }
 
@@ -234,9 +239,9 @@ public final class PurifyingFireSystem extends DelayedEntitySystem<EntityStore> 
         final DoubleArrayList positions = new DoubleArrayList();
 
         /** Ajoute les auras de lumière du monde dans le rayon, comme des feux centrés sur leurs porteurs. */
-        void add(Store<EntityStore> entities, PurifyingFires registry, int cx, int cz, int minY, int maxY,
-                 long radiusSq) {
-            registry.forEachAura(entities, aura -> {
+        void add(Store<EntityStore> entities, PurifyingFires registry, Ref<EntityStore> exclude, int cx, int cz,
+                 int minY, int maxY, long radiusSq) {
+            registry.forEachAura(entities, exclude, aura -> {
                 if (aura[1] < minY - 1 || aura[1] > maxY + 1) {
                     return;
                 }

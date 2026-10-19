@@ -40,8 +40,6 @@ public final class Vampire implements Component<EntityStore> {
     transient float sun;
     /** Secondes avant le prochain battement de cœur entendu (affamé). */
     transient float heartbeatIn;
-    /** Vrai si la lumière de vision nocturne est la nôtre (à retirer au matin ou à la guérison). */
-    transient boolean nightLightByUs;
     /** Instant (ms) du dernier coup porté, pour le malus de vitesse d'attaque ({@link VampireDamageSystem}). */
     transient long lastHitMillis;
     /** Part des dégâts du dernier coup, reprise pour les autres cibles du même coup. */
@@ -91,7 +89,6 @@ public final class Vampire implements Component<EntityStore> {
         copy.shownStage = shownStage;
         copy.sun = sun;
         copy.heartbeatIn = heartbeatIn;
-        copy.nightLightByUs = nightLightByUs;
         copy.lastHitMillis = lastHitMillis;
         copy.lastHitFactor = lastHitFactor;
         copy.pendingSunDamage = pendingSunDamage;

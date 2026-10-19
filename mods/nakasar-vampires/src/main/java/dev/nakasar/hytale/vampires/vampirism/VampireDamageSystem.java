@@ -10,6 +10,7 @@ import com.hypixel.hytale.component.dependency.Order;
 import com.hypixel.hytale.component.dependency.SystemDependency;
 import com.hypixel.hytale.component.query.Query;
 import com.hypixel.hytale.server.core.modules.entity.damage.Damage;
+import com.hypixel.hytale.server.core.modules.entity.damage.DamageCause;
 import com.hypixel.hytale.server.core.modules.entity.damage.DamageEventSystem;
 import com.hypixel.hytale.server.core.modules.entity.damage.DamageModule;
 import com.hypixel.hytale.server.core.modules.entity.damage.DamageSystems;
@@ -80,11 +81,13 @@ public final class VampireDamageSystem extends DamageEventSystem {
             if (SilverDamageSystem.isSilverHit(damage, buffer)) {
                 multiplier *= SilverDamageSystem.MULTIPLIER;
             }
-            multiplier *= 1f + (SUN_VULNERABILITY - 1f) * victim.sun;
+            if (!isOwnBurn(damage)) {
+                multiplier *= 1f + (SUN_VULNERABILITY - 1f) * victim.sun;
+            }
             damage.setAmount(damage.getAmount() * multiplier);
         }
 
-        if (damage.getSource() instanceof Damage.EntitySource source && !(source instanceof Damage.ProjectileSource)
+        if (damage.getAmount() > 0f && damage.getSource() instanceof Damage.EntitySource source && !(source instanceof Damage.ProjectileSource)
                 && damage.getMetaObject(Damage.INTERACTION_TYPE) != null) {
             Ref<EntityStore> attackerRef = source.getRef();
             Vampire attacker = attackerRef == null || attackerRef.equals(target) ? null : Vampires.of(attackerRef, buffer);
@@ -92,6 +95,13 @@ public final class VampireDamageSystem extends DamageEventSystem {
                 damage.setAmount(damage.getAmount() * attackFactor(attacker));
             }
         }
+    }
+
+    /** Brûlure du soleil ou de la lumière purificatrice : déjà dosée par {@link VampireSystem}, pas amplifiée. */
+    private static boolean isOwnBurn(Damage damage) {
+        int cause = damage.getDamageCauseIndex();
+        return cause == DamageCause.getAssetMap().getIndexOrDefault(VampireSystem.SUN_CAUSE, -2)
+                || cause == DamageCause.getAssetMap().getIndexOrDefault(VampireSystem.PURIFYING_CAUSE, -2);
     }
 
     /** Part des dégâts d'un coup du vampire, selon le temps écoulé depuis son coup précédent. */

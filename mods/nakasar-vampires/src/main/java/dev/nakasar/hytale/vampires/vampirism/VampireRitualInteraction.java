@@ -19,7 +19,6 @@ import com.hypixel.hytale.server.core.entity.InteractionContext;
 import com.hypixel.hytale.server.core.inventory.InventoryComponent;
 import com.hypixel.hytale.server.core.inventory.ItemStack;
 import com.hypixel.hytale.server.core.inventory.container.SimpleItemContainer;
-import com.hypixel.hytale.server.core.modules.entity.component.HealthRegenState;
 import com.hypixel.hytale.server.core.modules.entity.component.TransformComponent;
 import com.hypixel.hytale.server.core.modules.interaction.interaction.CooldownHandler;
 import com.hypixel.hytale.server.core.modules.interaction.interaction.config.SimpleInstantInteraction;
@@ -29,6 +28,8 @@ import com.hypixel.hytale.server.core.universe.world.chunk.section.BlockSection;
 import com.hypixel.hytale.server.core.universe.world.storage.ChunkStore;
 import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
 import com.hypixel.hytale.server.core.util.EventTitleUtil;
+import dev.nakasar.hytale.vampires.purifying.LightAura;
+import it.unimi.dsi.fastutil.ints.IntList;
 import org.joml.Vector3d;
 
 /**
@@ -109,7 +110,7 @@ public class VampireRitualInteraction extends SimpleInstantInteraction {
             fresh.setBlood(BLOOD_AFTER_RITUAL);
             buffer.putComponent(ref, Vampire.getComponentType(), fresh);
         } else {
-            cure(ref, vampire, buffer);
+            cure(ref, buffer);
         }
         if (effectId != null && !effectId.isBlank()) {
             Vampires.applyEffect(ref, effectId, effectSeconds, buffer);
@@ -128,17 +129,17 @@ public class VampireRitualInteraction extends SimpleInstantInteraction {
         }
     }
 
-    /** Défait tout ce que l'état vampire avait posé : effets, lumière, régénération du jeu. */
-    private static void cure(Ref<EntityStore> ref, Vampire vampire, CommandBuffer<EntityStore> buffer) {
+    /** Défait tout ce que l'état vampire avait posé : effets et lumière de vision nocturne. */
+    private static void cure(Ref<EntityStore> ref, CommandBuffer<EntityStore> buffer) {
         for (BloodStage stage : BloodStage.values()) {
             Vampires.removeEffect(ref, stage.effectId, buffer);
         }
         Vampires.removeEffect(ref, VampireSystem.SUNBURN, buffer);
         Vampires.removeEffect(ref, VampireSystem.SUNBURN_LIGHT, buffer);
-        VampireSystem.removeNightLight(ref, vampire, buffer);
-        HealthRegenState regen = buffer.getComponent(ref, HealthRegenState.getComponentType());
-        if (regen != null) {
-            regen.setRegenEnabled(true);
+        VampireSystem.removeNightLight(ref, buffer);
+        LightAura aura = buffer.getComponent(ref, LightAura.getComponentType());
+        if (aura != null) {
+            aura.forgetPreviousLight(VampireSystem.NIGHT_LIGHT); // sinon l'aura rendrait la lumière du vampire
         }
         buffer.tryRemoveComponent(ref, Vampire.getComponentType());
     }
@@ -158,16 +159,33 @@ public class VampireRitualInteraction extends SimpleInstantInteraction {
         int cx = (int) Math.floor(position.x);
         int cy = (int) Math.floor(position.y);
         int cz = (int) Math.floor(position.z);
-        for (int x = cx - radius; x <= cx + radius; x++) {
-            for (int z = cz - radius; z <= cz + radius; z++) {
-                for (int y = Math.max(0, cy - radius); y <= cy + radius; y++) {
-                    Ref<ChunkStore> sectionRef = chunks.getChunkSectionReferenceAtBlock(x, y, z);
+        int minY = Math.max(0, cy - radius);
+        int maxY = cy + radius;
+        // Une recherche par section (16³), comme PurifyingFireSystem.scan, puis les autels de la section.
+        for (int sx = (cx - radius) >> ChunkUtil.BITS; sx <= (cx + radius) >> ChunkUtil.BITS; sx++) {
+            for (int sy = minY >> ChunkUtil.BITS; sy <= maxY >> ChunkUtil.BITS; sy++) {
+                for (int sz = (cz - radius) >> ChunkUtil.BITS; sz <= (cz + radius) >> ChunkUtil.BITS; sz++) {
+                    int baseX = sx << ChunkUtil.BITS;
+                    int baseY = sy << ChunkUtil.BITS;
+                    int baseZ = sz << ChunkUtil.BITS;
+                    Ref<ChunkStore> sectionRef = chunks.getChunkSectionReferenceAtBlock(baseX, baseY, baseZ);
                     if (sectionRef == null || !sectionRef.isValid()) {
-                        y |= (1 << ChunkUtil.BITS) - 1; // section absente : passer à la suivante
                         continue;
                     }
                     BlockSection section = store.getComponent(sectionRef, BlockSection.getComponentType());
-                    if (section != null && section.get(x, y, z) == altar) {
+                    if (section == null || !section.contains(altar)) {
+                        continue;
+                    }
+                    boolean[] found = {false};
+                    section.find(IntList.of(altar), blockIndex -> {
+                        int x = baseX + ChunkUtil.xFromIndex(blockIndex);
+                        int y = baseY + ChunkUtil.yFromIndex(blockIndex);
+                        int z = baseZ + ChunkUtil.zFromIndex(blockIndex);
+                        if (Math.abs(x - cx) <= radius && Math.abs(z - cz) <= radius && y >= minY && y <= maxY) {
+                            found[0] = true;
+                        }
+                    });
+                    if (found[0]) {
                         return true;
                     }
                 }
