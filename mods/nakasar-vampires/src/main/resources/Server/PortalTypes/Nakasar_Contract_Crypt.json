@@ -12,10 +12,6 @@
       {
         "TranslationKey": "nakasar_hunters.contract.tag.elite",
         "Color": "#c0392b"
-      },
-      {
-        "TranslationKey": "nakasar_hunters.contract.tag.fireproof",
-        "Color": "#e67e22"
       }
     ],
     "Objectives": [

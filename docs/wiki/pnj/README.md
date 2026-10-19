@@ -21,7 +21,7 @@ Toutes les créatures ajoutées par le mod. Les créatures du Comté forment **u
 | | [Abomination zombie](abomination-zombie.md) | Élite | 700 | Ferme zombie | Cœur d'Abomination, cendres |
 | ![vignette](../images/pnj/Nakasar_Giant_Pumpkin.png) | [Citrouille géante](citrouille-geante.md) | Élite immobile | 750 | Champ de citrouilles géant | citrouilles, graines, essence, Graine de la Citrouille géante |
 | | [Armure enchantée](armure-enchantee.md) | Élite | 900 | Sous-sol d'une crypte sur deux | 2 éclats de rune, lingots de fer, Cœur de l'armure enchantée |
-| | [Spectre](spectre.md) | Élite | 550 | Château hanté (un sur deux), cimetière (rare) | 1 éclat de rune, 1 relique du manoir, Suaire du Spectre |
+| | [Spectre](spectre.md) | Élite | 900 | Château hanté (un sur deux), cimetière (rare) | 1 éclat de rune, 1 relique du manoir, Suaire du Spectre |
 
 ## Créatures du Comté
 

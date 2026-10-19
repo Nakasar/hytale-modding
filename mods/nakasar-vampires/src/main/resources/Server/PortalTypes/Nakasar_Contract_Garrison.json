@@ -12,10 +12,6 @@
       {
         "TranslationKey": "nakasar_hunters.contract.tag.elite",
         "Color": "#c0392b"
-      },
-      {
-        "TranslationKey": "nakasar_hunters.contract.tag.prison",
-        "Color": "#7f8c8d"
       }
     ],
     "Objectives": [

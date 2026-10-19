@@ -20,6 +20,7 @@ import dev.nakasar.hytale.vampires.domination.Dominations;
 import dev.nakasar.hytale.vampires.elite.ApplyEffectToFoesInteraction;
 import dev.nakasar.hytale.vampires.elite.FireAffinitySystem;
 import dev.nakasar.hytale.vampires.elite.MinionShieldSystem;
+import dev.nakasar.hytale.vampires.elite.ShieldUnloadSystem;
 import dev.nakasar.hytale.vampires.elite.SummonMinionsInteraction;
 import dev.nakasar.hytale.vampires.invisibility.Invisibility;
 import dev.nakasar.hytale.vampires.invisibility.InvisibilityInteraction;
@@ -74,8 +75,8 @@ import dev.nakasar.hytale.vampires.vampirism.VampireSystem;
  *       rouages de l'armure enchantée qui la soignent, fantômes du Spectre) ;</li>
  *   <li>{@link FireAffinitySystem} : la citrouille géante et ses vrilles prennent double dégâts de feu, l'armure
  *       enchantée et ses rouages n'en prennent aucun ;</li>
- *   <li>{@link MinionShieldSystem} : la citrouille géante et le Spectre sont invulnérables tant qu'il leur reste des
- *       serviteurs ; la citrouille fait sortir sa première vague dès le premier coup ;</li>
+ *   <li>{@link MinionShieldSystem} : la citrouille géante et le Spectre sont invulnérables (barre de boss en mode invulnérable) tant qu'il leur reste des
+ *       serviteurs ; leur première vague sort dès le premier coup ;</li>
  *   <li>{@link BossBarSystem} : barre de vie de boss des élites (citrouille géante, Abomination, Capitaine de la
  *       garde, armure enchantée, Spectre, Comte et Comtesse) pour les joueurs proches pendant le combat ;</li>
  *   <li>les camps ({@link AllegianceAttitudeSystem}, {@link AllegianceDamageFilter},
@@ -171,6 +172,7 @@ public final class VampiresPlugin extends JavaPlugin {
         systems.registerSystem(new MinionShieldSystem());
         systems.registerSystem(new BossBarSystem());
         systems.registerSystem(new RootTrapUnloadSystem());
+        systems.registerSystem(new ShieldUnloadSystem());
         systems.registerSystem(new SilverProjectileSystems.Launch());
         systems.registerSystem(new SilverProjectileSystems.Legacy());
         systems.registerSystem(new SilverDamageSystem());
@@ -207,7 +209,6 @@ public final class VampiresPlugin extends JavaPlugin {
         RootNpcInteraction.clearAll();
         RootTrapInteraction.clearAll();
         SummonMinionsInteraction.clearAll();
-        MinionShieldSystem.clearAll();
         BossBarSystem.clearAll();
         Dominations.clearAll();
         LordsWrath.clearAll();

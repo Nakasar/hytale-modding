@@ -364,11 +364,11 @@ def blink(rng):
 
 def spectre_role():
     return {
-        "$Comment": "Spectre (élite) d'un château hanté sur deux et d'un cimetière sur sept environ (Cemeteries/Spectre, poids 0,5), avec barre de vie de boss (BossBarSystem). Grand fantôme qui flotte bas. Dès le combat, il invoque trois fantômes et reste invulnérable tant qu'il en reste (MinionShieldSystem) ; une fois la vague détruite, il est vulnérable 14 à 16 s, puis en appelle une autre. Toucher glacial, et une vague de froid annoncée par une zone rouge de 6 blocs qui ralentit fortement ceux qui y restent. Disparaît et réapparaît près de sa cible quand elle s'éloigne. Si on le fuit, il se calme et regagne sa vie. Mort-vivant (feu purificateur). Généré par tools/generate_elites.py.",
+        "$Comment": "Spectre (élite) d'un château hanté sur deux et d'un cimetière sur sept environ (Cemeteries/Spectre, poids 0,5), avec barre de vie de boss (BossBarSystem). Grand fantôme qui flotte bas. Dès le combat (ou dès le premier coup reçu), il invoque trois fantômes et reste invulnérable tant qu'il en reste (MinionShieldSystem, barre de boss en mode invulnérable) ; une fois la vague détruite, il est vulnérable 14 à 16 s, puis en appelle une autre. Toucher glacial, et une vague de froid annoncée par une zone rouge de 6 blocs qui ralentit fortement ceux qui y restent. Disparaît et réapparaît près de sa cible quand elle s'éloigne. Si on le fuit, il se calme et regagne sa vie. Mort-vivant (feu purificateur). Généré par tools/generate_elites.py.",
         "Type": "Generic",
         "Appearance": SPECTRE,
         "NameTranslationKey": "nakasar_mobs.npc.Spectre.name",
-        "MaxHealth": 550,
+        "MaxHealth": 900,
         "DropList": "Nakasar_Drop_Spectre",
         "StartState": "Idle",
         "DefaultPlayerAttitude": "Hostile",
@@ -380,7 +380,7 @@ def spectre_role():
         "StateTransitions": [{
             "$Comment": "Entrée en combat : chaque attaque spéciale a sa propre recharge ; les fantômes viennent tout de suite.",
             "States": [{"From": ["Idle"], "To": ["Combat"]}],
-            "Actions": [timer("Summon", (0.3, 0.6), (14, 16)), timer("ColdWave", (5, 7), (13, 16)),
+            "Actions": [timer("Summon", (0.1, 0.2), (14, 16)), timer("ColdWave", (5, 7), (13, 16)),
                         timer("Blink", (4, 6), (8, 11))],
         }],
         "Instructions": [

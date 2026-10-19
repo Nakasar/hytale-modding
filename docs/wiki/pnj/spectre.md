@@ -1,7 +1,7 @@
 # Spectre
 
 <Infobox pending title="Spectre" kind="Élite">
-<Info label="Points de vie">**550**</Info>
+<Info label="Points de vie">**900**</Info>
 <Info label="Barre de vie">barre de boss en combat</Info>
 <Info label="Attitude">Hostile</Info>
 <Info label="Lieu">[château hanté](../fragment/chateaux-hantes.md) (un sur deux) ou [cimetière](../fragment/cimetieres.md) (rare), 1 marqueur</Info>
@@ -17,7 +17,7 @@ Un grand fantôme couronné de flammes bleues, enveloppé de brume glacée. Il h
 
 | | |
 |---|---|
-| Points de vie | **550**, affichés dans une **barre de vie de boss** pendant le combat |
+| Points de vie | **900**, affichés dans une **barre de vie de boss** pendant le combat |
 | Taille | ×1,5 (plus grand qu'un joueur) |
 | Déplacement | vole bas (0,3 à 1,5 bloc du sol), vitesse 4,5 |
 | Recul subi | ×0,2 |
@@ -29,7 +29,7 @@ Un grand fantôme couronné de flammes bleues, enveloppé de brume glacée. Il h
 
 | Attaque | Portée | Effet | Fréquence |
 |---|---|---|---|
-| **Fantômes spectraux** | autour de lui | fait apparaître **3** [fantômes spectraux](fantome-spectral.md) ; il est **invulnérable tant que l'un d'eux vit** | dès le début du combat, puis 14 à 16 s après la mort de la vague précédente |
+| **Fantômes spectraux** | autour de lui | fait apparaître **3** [fantômes spectraux](fantome-spectral.md) ; il est **invulnérable tant que l'un d'eux vit** | dès le début du combat ou au premier coup reçu, puis 14 à 16 s après la mort de la vague précédente |
 | **Vague de froid** (annoncée) | cercle de **6 blocs** autour de lui | **10** dégâts + [Vague de froid](../effets.md#vague-de-froid) : vitesse **×0,4** pendant **6 s** | toutes les 13 à 16 s, quand la cible est à moins de 6 blocs |
 | **Toucher glacé** | 3 blocs | **16** dégâts + [Froid spectral](../effets.md#froid-spectral) | pause de 1,2 à 1,8 s |
 | **Volatilisation** | jusqu'à 22 blocs | disparaît et réapparaît à 2 ou 3 blocs de vous quand vous vous éloignez | toutes les 8 à 11 s |
@@ -53,6 +53,6 @@ La vague de froid est annoncée par un **cercle rouge qui se charge au sol** pen
 
 ## Conseils
 
-- Tant qu'un fantôme spectral vit, vos coups ne lui font rien (un message vous le rappelle) : tuez la vague, puis frappez-le pendant les 14 à 16 s de répit.
+- Tant qu'un fantôme spectral vit, vos coups ne lui font rien (sa barre de vie passe en mode invulnérable) : tuez la vague, puis frappez-le pendant les 14 à 16 s de répit.
 - Le [feu purificateur](../objets/feu-purificateur.md) le tient à distance, comme les autres morts-vivants.
 - Le ralentissement de la vague de froid est sévère : restez en bordure du combat quand le cercle apparaît.
