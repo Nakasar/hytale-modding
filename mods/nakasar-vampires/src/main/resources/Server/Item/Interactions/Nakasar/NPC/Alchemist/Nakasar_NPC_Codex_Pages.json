@@ -62,7 +62,7 @@
       "Type": "Selector",
       "RunTime": 0.2,
       "Effects": {
-        "WorldSoundEventId": "SFX_Drop_Weapons_Books"
+        "WorldSoundEventId": "SFX_Light_Melee_T2_Swing"
       },
       "Selector": {
         "Id": "Horizontal",

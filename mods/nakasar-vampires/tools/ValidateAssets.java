@@ -344,7 +344,24 @@ public class ValidateAssets {
         return new AssetExtraInfo(file, new AssetExtraInfo.Data((Class) assetClass, key, null));
     }
 
-    private static final Pattern STEREO_WORLD_SOUND = Pattern.compile("\"WorldSoundEventId\"\\s*:\\s*\"([^\"]*_Local)\"");
+    private static final Pattern STEREO_WORLD_SOUND = Pattern.compile("\"WorldSoundEventId\"\\s*:\\s*\"([^\"]*)\"");
+    private static Set<String> stereoSounds;
+
+    /** Évènements sonores vanilla stéréo (liste -Dstereo, lue dans Assets.zip) ; les "_Local" le sont tous. */
+    private static boolean isStereo(String id) throws Exception {
+        if (stereoSounds == null) {
+            stereoSounds = new HashSet<>();
+            String list = System.getProperty("stereo");
+            if (list != null) {
+                for (String line : Files.readAllLines(Path.of(list))) {
+                    if (!line.isBlank() && !line.startsWith("#")) {
+                        stereoSounds.add(line.trim());
+                    }
+                }
+            }
+        }
+        return id.endsWith("_Local") || stereoSounds.contains(id);
+    }
 
     private static void decodeAsset(Class<?> assetClass, Path file, List<String> problems, List<String> notes) throws Exception {
         Codec<?> codec = (Codec<?>) assetClass.getField("CODEC").get(null);
@@ -352,6 +369,15 @@ public class ValidateAssets {
         String json = Files.readString(file);
         if (json.contains("\"GradientSet\"")) {
             json = checkGradients(json, problems, notes);
+        }
+        // Les sons vanilla ne sont pas chargés hors jeu, donc le validateur MONO de WorldSoundEventId ne tourne pas ; on regarde le texte,
+        // avant le décodage (qui s'arrête tôt sur un type d'interaction Java ou un parent vanilla).
+        // Un son stéréo (les variantes "_Local", et ceux de la liste -Dstereo) fait rejeter en jeu l'interaction entière.
+        Matcher stereo = STEREO_WORLD_SOUND.matcher(json);
+        while (stereo.find()) {
+            if (isStereo(stereo.group(1))) {
+                problems.add("WorldSoundEventId " + stereo.group(1) + " : son stéréo, refusé par le validateur MONO du serveur ; choisir un son mono");
+            }
         }
         try {
             decode(codec, RawJsonReader.fromJsonString(json), extraInfo, "", problems, notes);
@@ -365,12 +391,6 @@ public class ValidateAssets {
                 return;
             }
             throw t;
-        }
-        // Les sons vanilla ne sont pas chargés hors jeu, donc le validateur MONO de WorldSoundEventId ne tourne pas.
-        // Les variantes "_Local" sont stéréo : en jeu, l'interaction entière est rejetée.
-        Matcher stereo = STEREO_WORLD_SOUND.matcher(json);
-        while (stereo.find()) {
-            problems.add("WorldSoundEventId " + stereo.group(1) + " : son « _Local » (stéréo), refusé par le validateur MONO du serveur ; utiliser la variante sans _Local");
         }
         if (json.contains("\"Parent\"")) {
             // Les champs obligatoires viennent du parent vanilla.

@@ -384,7 +384,7 @@ def codex_pages():
             {"Type": "Simple", "RunTime": 1.1, "Effects": {
                 "ItemPlayerAnimationsId": CODEX, "ItemAnimationId": "Pages",
                 "WorldSoundEventId": "SFX_Skeleton_Mage_Spellbook_Charge", "Particles": marks}},
-            {"Type": "Selector", "RunTime": 0.2, "Effects": {"WorldSoundEventId": "SFX_Drop_Weapons_Books"},
+            {"Type": "Selector", "RunTime": 0.2, "Effects": {"WorldSoundEventId": "SFX_Light_Melee_T2_Swing"},
              "Selector": {"Id": "Horizontal", "Direction": "ToLeft", "TestLineOfSight": False, "ExtendTop": 1.5,
                           "ExtendBottom": 2.5, "StartDistance": 0.2, "EndDistance": PAGES_RANGE, "Length": PAGES_ARC,
                           "RollOffset": 0, "YawStartOffset": PAGES_ARC // 2},

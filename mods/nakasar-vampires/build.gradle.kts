@@ -65,9 +65,10 @@ val validateAssets = tasks.register<Exec>("validateAssets") {
     val blocks = file("tools/vanilla-block-ids-0.7.2.txt")
     val gradients = file("tools/vanilla-gradient-sets-0.7.2.txt")
     val refs = file("tools/vanilla-refs-0.7.2.txt")
+    val stereo = file("tools/vanilla-stereo-sounds-0.7.2.txt")
     inputs.dir(serverAssets)
     inputs.file("tools/ValidateAssets.java")
-    inputs.files(blocks, gradients, refs)
+    inputs.files(blocks, gradients, refs, stereo)
     inputs.files(hytaleServer)
     // Les classes du plugin : types d'assets écrits en Java (condition d'évènement Nakasar_NightCondition).
     val pluginClasses = sourceSets.main.get().output.classesDirs
@@ -79,8 +80,9 @@ val validateAssets = tasks.register<Exec>("validateAssets") {
         executable = launcher.get().executablePath.asFile.absolutePath
         // -Dblocks : ids de blocs vanilla, pour repérer dans les prefabs les blocs inconnus (damier rose en jeu).
         // -Drefs : listes de butin et rôles vanilla cités par le mod (un id inconnu fait échouer le mod en jeu).
+        // -Dstereo : sons vanilla stéréo, refusés en WorldSoundEventId (l'interaction entière est rejetée en jeu).
         args("-Dstdout.encoding=UTF-8", "--sun-misc-unsafe-memory-access=allow", "-Dblocks=" + blocks.absolutePath, "-Dgradients=" + gradients.absolutePath,
-            "-Drefs=" + refs.absolutePath,
+            "-Drefs=" + refs.absolutePath, "-Dstereo=" + stereo.absolutePath,
             "-cp", (hytaleServer + pluginClasses).asPath, file("tools/ValidateAssets.java").absolutePath, file(serverAssets).absolutePath)
     }
     doLast {
