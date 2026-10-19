@@ -1,0 +1,24 @@
+{
+  "$Comment": "Flammes bleues de l'armure enchantée : 5 dégâts de feu par seconde pendant 5 s, teinte bleue.",
+  "Name": "nakasar_mobs.effects.Nakasar_Blue_Flame",
+  "Duration": 5,
+  "OverlapBehavior": "Overwrite",
+  "Debuff": true,
+  "DamageCalculatorCooldown": 1,
+  "DamageCalculator": {
+    "BaseDamage": {
+      "Fire": 5
+    }
+  },
+  "ApplicationEffects": {
+    "EntityTopTint": "#9fd0ff",
+    "EntityBottomTint": "#1d3cff",
+    "EntityAnimationId": "Hurt",
+    "Particles": [
+      {
+        "SystemId": "Fire_Blue",
+        "Scale": 0.8
+      }
+    ]
+  }
+}

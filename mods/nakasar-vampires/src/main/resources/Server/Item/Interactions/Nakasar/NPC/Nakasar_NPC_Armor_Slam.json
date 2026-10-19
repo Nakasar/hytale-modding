@@ -1,5 +1,5 @@
 {
-  "$Comment": "Coup sismique annoncé de l'armure enchantée : elle s'immobilise 1,4 s, rougeoie et lève sa massue pendant qu'une zone rouge de 4.5 blocs se charge au sol, puis frappe le sol (40 dégâts, projection). On l'évite en sortant de la zone.",
+  "$Comment": "Coup sismique annoncé de l'armure enchantée : elle s'immobilise 1,4 s, rougeoie et lève sa massue pendant qu'une zone rouge de 4.5 blocs se charge au sol, puis frappe le sol (40 dégâts, projection, flammes bleues 3 s). On l'évite en sortant de la zone.",
   "Type": "Serial",
   "Interactions": [
     {
@@ -57,6 +57,18 @@
               "Z": 0
             },
             "DetachedFromModel": true
+          },
+          {
+            "SystemId": "Fire_Blue",
+            "TargetEntityPart": "Entity",
+            "TargetNodeName": "Origin",
+            "Scale": 2.5,
+            "PositionOffset": {
+              "X": 0,
+              "Y": 0.1,
+              "Z": 0
+            },
+            "DetachedFromModel": true
           }
         ]
       },
@@ -85,6 +97,11 @@
                 }
               }
             }
+          },
+          {
+            "Type": "Nakasar_ApplyEffectToFoes",
+            "EffectId": "Nakasar_Blue_Flame",
+            "Duration": 3
           }
         ]
       }

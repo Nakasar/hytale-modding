@@ -1,0 +1,96 @@
+{
+  "$Comment": "Frappe écrasante de l'armure enchantée (coup lourd) : elle s'immobilise et lève sa massue 0,9 s, la main en flammes bleues, puis l'abat devant elle sur 4,6 blocs et 120° (55 dégâts, projection, flammes bleues 3 s). On l'évite en reculant ou en passant derrière elle.",
+  "Type": "Serial",
+  "Interactions": [
+    {
+      "Type": "ClearEntityEffect",
+      "Entity": "User",
+      "EntityEffectId": "Hit_Interrupt_Eligible"
+    },
+    {
+      "Type": "ApplyEffect",
+      "EffectId": "Nakasar_Elite_Rooted"
+    },
+    {
+      "Type": "Simple",
+      "RunTime": 0.9,
+      "Effects": {
+        "ItemPlayerAnimationsId": "Mace",
+        "ItemAnimationId": "SwingDownCharging",
+        "WorldSoundEventId": "SFX_Spear_Throw_Charge",
+        "Particles": [
+          {
+            "SystemId": "Fire_Blue",
+            "TargetNodeName": "R-Hand",
+            "Scale": 2.0,
+            "PositionOffset": {
+              "Y": 0.3
+            },
+            "RotationOffset": {
+              "Pitch": 180
+            }
+          }
+        ]
+      }
+    },
+    {
+      "Type": "Selector",
+      "RunTime": 0.15,
+      "Effects": {
+        "ItemPlayerAnimationsId": "Mace",
+        "ItemAnimationId": "SwingDownCharged",
+        "WorldSoundEventId": "SFX_Goblin_Feastmaster_Slam"
+      },
+      "Selector": {
+        "Id": "Horizontal",
+        "Direction": "ToLeft",
+        "TestLineOfSight": true,
+        "ExtendTop": 1.0,
+        "ExtendBottom": 1.0,
+        "StartDistance": 0.3,
+        "EndDistance": 4.6,
+        "Length": 120,
+        "RollOffset": 0,
+        "YawStartOffset": 60
+      },
+      "HitEntity": {
+        "Interactions": [
+          {
+            "Parent": "DamageEntityParent_Hit_Interrupt",
+            "DamageCalculator": {
+              "BaseDamage": {
+                "Physical": 55
+              },
+              "RandomPercentageModifier": 0.1
+            },
+            "DamageEffects": {
+              "WorldSoundEventId": "SFX_Mace_T2_Signature_Impact",
+              "WorldParticles": [
+                {
+                  "SystemId": "Impact_Sword_Basic_Stronk"
+                }
+              ],
+              "Knockback": {
+                "Type": "Force",
+                "Force": 8,
+                "VelocityType": "Set",
+                "Direction": {
+                  "Y": 1
+                }
+              }
+            }
+          },
+          {
+            "Type": "Nakasar_ApplyEffectToFoes",
+            "EffectId": "Nakasar_Blue_Flame",
+            "Duration": 3
+          }
+        ]
+      }
+    },
+    {
+      "Type": "Simple",
+      "RunTime": 0.6
+    }
+  ]
+}

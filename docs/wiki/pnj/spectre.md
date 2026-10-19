@@ -19,7 +19,7 @@ Un grand fantôme couronné de flammes bleues, enveloppé de brume glacée. Il h
 |---|---|
 | Points de vie | **900**, affichés dans une **barre de vie de boss** pendant le combat |
 | Taille | ×1,5 (plus grand qu'un joueur) |
-| Déplacement | vole bas (0,3 à 1,5 bloc du sol), vitesse 4,5 |
+| Déplacement | vole bas (0,3 à 1,5 bloc du sol), vitesse 7 ; tourne autour de sa cible à 2 ou 3 blocs |
 | Recul subi | ×0,2 |
 | Détection | 16 blocs, à travers les murs |
 | Abandon | plus de cible à 28 blocs : se calme et **récupère tous ses PV** |
@@ -31,7 +31,9 @@ Un grand fantôme couronné de flammes bleues, enveloppé de brume glacée. Il h
 |---|---|---|---|
 | **Fantômes spectraux** | autour de lui | fait apparaître **3** [fantômes spectraux](fantome-spectral.md) ; il est **invulnérable tant que l'un d'eux vit** | dès le début du combat ou au premier coup reçu, puis 14 à 16 s après la mort de la vague précédente |
 | **Vague de froid** (annoncée) | cercle de **6 blocs** autour de lui | **10** dégâts + [Vague de froid](../effets.md#vague-de-froid) : vitesse **×0,4** pendant **6 s** | toutes les 13 à 16 s, quand la cible est à moins de 6 blocs |
-| **Toucher glacé** | 3 blocs | **16** dégâts + [Froid spectral](../effets.md#froid-spectral) | pause de 1,2 à 1,8 s |
+| **Plongeon** | jusqu'à 14 blocs | fond sur vous (réapparaît à 1,5 à 2,5 blocs) et frappe : **22** dégâts, projection + [Froid spectral](../effets.md#froid-spectral) | toutes les 5 à 7 s |
+| **Rafale** | 3 blocs | trois coups rapides de **10**, le dernier glace (froid spectral) | toutes les 6 à 8 s, au contact |
+| **Toucher glacé** | 3 blocs | **16** dégâts + [Froid spectral](../effets.md#froid-spectral) | pause de 0,5 à 0,9 s |
 | **Volatilisation** | jusqu'à 22 blocs | disparaît et réapparaît à 2 ou 3 blocs de vous quand vous vous éloignez | toutes les 8 à 11 s |
 
 La vague de froid est annoncée par un **cercle rouge qui se charge au sol** pendant 1,6 s : sortez-en avant qu'il soit plein.

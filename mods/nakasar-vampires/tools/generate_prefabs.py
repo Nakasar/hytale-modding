@@ -2078,22 +2078,24 @@ def dining_table(p, room, y, table, chair, keep=()):
     return None
 
 
-def house(p, x0, z0, w, d, door, floors=1, kind="home", loot=LOOT_VILLAGE, wood="Wood_Deadwood", clear=()):
+def house(p, x0, z0, w, d, door, floors=1, kind="home", loot=LOOT_VILLAGE, wood="Wood_Deadwood", clear=(), wall=4):
     """Maison de `w` × `d` (murs compris) dont la porte donne vers `door` (NORTH, SOUTH, EAST, WEST).
 
     Rez-de-chaussée en moellons, étage à colombages, poutres d'angle, toit de bois dans le sens de
     la longueur, cheminée sur un pignon. `kind` : "home" (pièce à vivre, lit, coffre), "barn"
     (grange : foin, caisses, auge), "smithy" (forge). `clear` : cases (x, z) de plus où ne poser aucun meuble
-    (passage d'une grande porte). Renvoie la case devant la porte.
+    (passage d'une grande porte). `wall` : hauteur des murs du rez-de-chaussée (4 ; plus pour une grange haute,
+    de plain-pied seulement). Renvoie la case devant la porte.
     """
     x1, z1 = x0 + w - 1, z0 + d - 1
     r = p.rng
     planks = [(f"{wood}_Planks", 6), (f"{wood}_Decorative", 1)]
     beam = f"{wood}_Beam"
-    top = 4 * floors - 1
+    assert floors == 1 or wall == 4, "mur haut : maison de plain-pied seulement"
+    top = 4 * floors - 1 if floors > 1 else wall - 1
     p.clear(x0 - 1, 0, z0 - 1, x1 + 1, top + w // 2 + d // 2 + 4, z1 + 1)
     p.floor(x0, z0, x1, z1, -1, f"{wood}_Planks", FOUNDATION, depth=2)
-    p.hollow(x0, 0, z0, x1, 3, z1, COBBLE_WALL)
+    p.hollow(x0, 0, z0, x1, min(top, 3) if floors > 1 else top, z1, COBBLE_WALL)
     if floors > 1:
         p.hollow(x0, 4, z0, x1, top, z1, planks)
         p.fill(x0 + 1, 4, z0 + 1, x1 - 1, 4, z1 - 1, f"{wood}_Planks")
@@ -2360,6 +2362,10 @@ def village(seed, variant):
     return p
 
 
+BARN_WALL = 6
+BARN_DOOR_HEIGHT = 5
+
+
 def farm(seed, variant):
     """Ferme délaissée : maison du fermier, grange, champs de blé clos, potager, puits.
 
@@ -2384,13 +2390,15 @@ def farm(seed, variant):
         for x in (-1, 0, 1):
             p.set(x, -1, z, p.pick(PATH))
     door_house = house(p, -20, -17, 9, 8, SOUTH, 2, "home", LOOT_FARM_BURNT if burnt else LOOT_FARM, wood)
-    # grande porte de grange, 5 de large : l'Abomination (gros zombie, élite) doit pouvoir sortir ; rien de posé
-    # devant elle dedans (clear de house) ni dehors (vidé à la fin, z -9 à -7)
+    # grande grange haute (murs de 6) et porte de 5 × 5 : l'Abomination (Zombie_Aberrant_Big à ×1,35, plus de
+    # 3 blocs de haut) doit pouvoir sortir ; rien de posé devant elle dedans (clear de house) ni dehors (vidé à la
+    # fin, z -9 à -7)
     barn_door = [(x, z) for x in range(10, 15) for z in (-12, -11)]
-    door_barn = house(p, 6, -19, 13, 10, SOUTH, 1, "barn", LOOT_FARM_BURNT if burnt else LOOT_FARM, wood, clear=barn_door)
-    p.clear(10, 0, -10, 14, 2, -10)
+    door_barn = house(p, 6, -19, 13, 10, SOUTH, 1, "barn", LOOT_FARM_BURNT if burnt else LOOT_FARM, wood, clear=barn_door,
+                      wall=BARN_WALL)
+    p.clear(10, 0, -10, 14, BARN_DOOR_HEIGHT - 1, -10)
     for x in range(10, 15):
-        p.set(x, 3, -10, f"{wood}_Beam")
+        p.set(x, BARN_DOOR_HEIGHT, -10, f"{wood}_Beam")
     well(p, -6, -3)
     # deux champs clos et un potager
     state = {"zombies": "fine", "ruins": "wild", "burnt": "burnt"}[variant]
@@ -2433,7 +2441,7 @@ def farm(seed, variant):
         p.scatter(-X + 2, 0, -Z + 2, X - 2, Z - 2, 30, [("Deco_Trash_Pile_Small", 2), ("Soil_Ash", 2), ("Wood_Burnt_Branch_Short", 1)], rot=0)
         p.scatter(-20, 0, -17, 18, -9, 4, [("Deco_Fire", 1)], rot=0)   # braises encore rouges dans les décombres
     # passage de la grange, après tout le décor (ruines, éboulis, braises) : deux rangs dedans, la porte, trois dehors
-    p.clear(10, 0, -12, 14, 2, -7)
+    p.clear(10, 0, -12, 14, BARN_DOOR_HEIGHT - 1, -7)
     return p
 
 
