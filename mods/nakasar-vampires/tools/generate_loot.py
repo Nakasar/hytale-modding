@@ -50,7 +50,8 @@ VALUABLES = [("Ingredient_Bar_Silver", 3, 1, 3), ("Ingredient_Bar_Gold", 2, 1, 2
 ALCHEMY = [("Potion_Empty", 4, 1, 4), ("Potion_Health", 3, 1, 2), ("Potion_Regen_Health", 2, 1, 1),
            ("Potion_Poison", 2, 1, 2), ("Potion_Antidote", 2, 1, 2), ("Potion_Mana", 2, 1, 2),
            ("Ingredient_Life_Essence", 4, 2, 6), ("Ingredient_Crystal_Red", 2, 1, 3), ("Ingredient_Crystal_Purple", 2, 1, 2),
-           ("Plant_Fruit_Poison", 2, 1, 3), ("Ingredient_Bone_Fragment", 2, 2, 5), ("Ingredient_Rune_Shard", 2, 1, 2)]
+           ("Plant_Fruit_Poison", 2, 1, 3), ("Ingredient_Bone_Fragment", 2, 2, 5), ("Ingredient_Rune_Shard", 2, 1, 2),
+           ("Ingredient_Nakasar_Manor_Relic", 1, 1, 1)]
 BOOKS = [("Recipe_Page", 5, 1, 2), ("Recipe_Food_Pie_Meat", 1, 1, 1), ("Recipe_Food_Pie_Pumpkin", 1, 1, 1),
          ("Recipe_Plant_Seeds_Health1", 1, 1, 1), ("Recipe_Plant_Seeds_Mana1", 1, 1, 1), ("Recipe_Plant_Seeds_Stamina1", 1, 1, 1),
          ("Weapon_Spellbook_Grimoire_Purple", 1, 1, 1), ("Weapon_Spellbook_Grimoire_Brown", 1, 1, 1), ("Tool_Map", 2, 1, 1)]
@@ -66,7 +67,7 @@ CRYPT = [("Ingredient_Bone_Fragment", 6, 2, 6), ("Ingredient_Fabric_Scrap_Linen"
          ("Weapon_Daggers_Bone", 1, 1, 1), ("Potion_Health_Lesser", 2, 1, 1)]
 TREASURE = [("Ingredient_Bar_Gold", 4, 2, 5), ("Ingredient_Bar_Silver", 4, 2, 6), ("Rock_Gem_Ruby", 4, 1, 3),
             ("Rock_Gem_Diamond", 1, 1, 1), ("Rock_Gem_Emerald", 2, 1, 2), ("Rock_Gem_Sapphire", 2, 1, 2),
-            ("Rock_Gem_Voidstone", 1, 1, 1)]
+            ("Rock_Gem_Voidstone", 1, 1, 1), ("Ingredient_Nakasar_Manor_Relic", 3, 1, 2)]
 TREASURE_GEAR = [("Weapon_Shortbow_Vampire", 2, 1, 1), ("Weapon_Sword_Silversteel", 2, 1, 1), ("Weapon_Longsword_Spectral", 1, 1, 1),
                  ("Weapon_Daggers_Doomed", 1, 1, 1), ("Armor_Steel_Ancient_Chest", 1, 1, 1), ("Armor_Leather_Raven_Chest", 2, 1, 1),
                  ("Armor_Leather_Raven_Head", 2, 1, 1)]

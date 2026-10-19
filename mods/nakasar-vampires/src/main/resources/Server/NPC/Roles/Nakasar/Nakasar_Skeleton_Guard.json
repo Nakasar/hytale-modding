@@ -4,7 +4,7 @@
   "Appearance": "Nakasar_Skeleton_Guard",
   "NameTranslationKey": "nakasar_mobs.npc.Skeleton_Guard.name",
   "MaxHealth": 120,
-  "DropList": "Drop_Skeleton_Knight",
+  "DropList": "Nakasar_Drop_Undead_Skeleton",
   "StartState": "Idle",
   "DefaultPlayerAttitude": "Hostile",
   "DefaultNPCAttitude": "Ignore",

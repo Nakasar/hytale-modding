@@ -1,0 +1,7 @@
+{
+  "Name": "nakasar_vampire.effects.Nakasar_Blood_Sated",
+  "Infinite": true,
+  "OverlapBehavior": "Overwrite",
+  "Debuff": false,
+  "StatusEffectIcon": "UI/StatusEffects/Nakasar/Occult/Blood_Sated.png"
+}

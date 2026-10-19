@@ -4,7 +4,7 @@
   "Appearance": "Nakasar_Zombie_Villager",
   "NameTranslationKey": "nakasar_mobs.npc.Zombie_Villager.name",
   "MaxHealth": 80,
-  "DropList": "Drop_Zombie",
+  "DropList": "Nakasar_Drop_Undead_Zombie",
   "StartState": "Idle",
   "DefaultPlayerAttitude": "Hostile",
   "DefaultNPCAttitude": "Ignore",

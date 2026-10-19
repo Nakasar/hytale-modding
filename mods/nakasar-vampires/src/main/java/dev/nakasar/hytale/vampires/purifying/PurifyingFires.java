@@ -49,14 +49,14 @@ public final class PurifyingFires {
         auras.remove(ref);
     }
 
-    /** Auras actives du monde de {@code store} (positions x, y, z de leurs porteurs). */
-    void forEachAura(Store<EntityStore> store, Consumer<double[]> out) {
+    /** Auras actives du monde de {@code store} (positions x, y, z de leurs porteurs), sauf celle d'{@code exclude}. */
+    void forEachAura(Store<EntityStore> store, Ref<EntityStore> exclude, Consumer<double[]> out) {
         if (auras.isEmpty()) {
             return;
         }
         auras.entrySet().removeIf(e -> !e.getKey().isValid());
         auras.forEach((ref, position) -> {
-            if (ref.getStore() == store) {
+            if (ref.getStore() == store && !ref.equals(exclude)) {
                 out.accept(position);
             }
         });

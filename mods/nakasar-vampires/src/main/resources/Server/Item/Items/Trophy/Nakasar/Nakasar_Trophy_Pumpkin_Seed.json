@@ -1,0 +1,22 @@
+{
+  "TranslationProperties": {
+    "Name": "nakasar_hunters.items.Nakasar_Trophy_Pumpkin_Seed.name",
+    "Description": "nakasar_hunters.items.Nakasar_Trophy_Pumpkin_Seed.description"
+  },
+  "Icon": "Icons/Items/Nakasar/Trophies/Trophy_Pumpkin_Seed.png",
+  "Model": "Items/Nakasar/Trophies/Trophy_Pumpkin_Seed.blockymodel",
+  "Texture": "Items/Nakasar/Trophies/Trophy_Pumpkin_Seed.png",
+  "Quality": "Rare",
+  "ItemLevel": 25,
+  "Categories": [
+    "Items.Ingredients"
+  ],
+  "Tags": {
+    "Type": [
+      "Nakasar_Trophy"
+    ]
+  },
+  "PlayerAnimationsId": "Item",
+  "ItemSoundSetId": "ISS_Items_Gems",
+  "MaxStack": 10
+}

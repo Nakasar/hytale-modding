@@ -32,6 +32,13 @@
             "HitEntity": { "Interactions": [
                 "Nakasar_Ability_VampireKiss_Hit",
                 {
+                  "Type": "Nakasar_BloodFeed",
+                  "BloodGain": 0.08,
+                  "VampireBonusDamage": 8,
+                  "VampireBonusHeal": 6,
+                  "DropChance": 0.3
+                },
+                {
                   "Type": "Nakasar_DrainBeam",
                   "SystemId": "Nakasar_Blood_Drain",
                   "Steps": 8,

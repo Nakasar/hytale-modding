@@ -1,0 +1,17 @@
+{
+  "TranslationProperties": {
+    "Name": "nakasar_vampire.items.Ingredient_Nakasar_Undead_Ash.name",
+    "Description": "nakasar_vampire.items.Ingredient_Nakasar_Undead_Ash.description"
+  },
+  "Icon": "Icons/Items/Nakasar/Occult/Undead_Ash.png",
+  "Model": "Items/Nakasar/Occult/Undead_Ash.blockymodel",
+  "Texture": "Items/Nakasar/Occult/Undead_Ash.png",
+  "Quality": "Common",
+  "Categories": [
+    "Items.Ingredients"
+  ],
+  "PlayerAnimationsId": "Item",
+  "ItemSoundSetId": "ISS_Items_Gems",
+  "Scale": 1.0,
+  "MaxStack": 50
+}

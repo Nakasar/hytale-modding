@@ -13,6 +13,10 @@
       {
         "Type": "Droplist",
         "DroplistId": "Drop_Zombie"
+      },
+      {
+        "Type": "Droplist",
+        "DroplistId": "Nakasar_Drop_Trophy_Abomination_Heart"
       }
     ]
   }

@@ -1,0 +1,25 @@
+{
+  "TranslationProperties": {
+    "Name": "nakasar_hunters.items.Nakasar_Bounty_Bag_Farm.name",
+    "Description": "nakasar_hunters.items.Nakasar_Bounty_Bag_Farm.description"
+  },
+  "Icon": "Icons/Items/Nakasar/Trophies/Bounty_Bag_Farm.png",
+  "Model": "Items/Nakasar/Trophies/Bounty_Bag_Farm.blockymodel",
+  "Texture": "Items/Nakasar/Trophies/Bounty_Bag_Farm.png",
+  "Quality": "Rare",
+  "ItemLevel": 20,
+  "Categories": [
+    "Items.Ingredients"
+  ],
+  "Tags": {
+    "Type": [
+      "Nakasar_Bounty"
+    ]
+  },
+  "PlayerAnimationsId": "Item",
+  "ItemSoundSetId": "ISS_Items_Gems",
+  "MaxStack": 16,
+  "Interactions": {
+    "Secondary": "Root_Nakasar_Bounty_Bag_Farm"
+  }
+}

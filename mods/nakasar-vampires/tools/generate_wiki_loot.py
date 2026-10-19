@@ -37,6 +37,7 @@ TABLES = [
 ]
 
 NAMES = {
+    "Ingredient_Nakasar_Manor_Relic": "**Relique du manoir**",
     "Armor_Iron_Chest": "Plastron en fer", "Armor_Iron_Hands": "Gants en fer", "Armor_Iron_Head": "Casque en fer",
     "Armor_Iron_Legs": "Jambières en fer", "Armor_Leather_Medium_Chest": "Plastron en cuir",
     "Armor_Leather_Medium_Head": "Casque en cuir", "Armor_Leather_Raven_Chest": "Plastron de corbeau",

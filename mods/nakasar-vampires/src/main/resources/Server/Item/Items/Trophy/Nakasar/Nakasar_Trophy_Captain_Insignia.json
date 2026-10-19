@@ -1,0 +1,22 @@
+{
+  "TranslationProperties": {
+    "Name": "nakasar_hunters.items.Nakasar_Trophy_Captain_Insignia.name",
+    "Description": "nakasar_hunters.items.Nakasar_Trophy_Captain_Insignia.description"
+  },
+  "Icon": "Icons/Items/Nakasar/Trophies/Trophy_Captain_Insignia.png",
+  "Model": "Items/Nakasar/Trophies/Trophy_Captain_Insignia.blockymodel",
+  "Texture": "Items/Nakasar/Trophies/Trophy_Captain_Insignia.png",
+  "Quality": "Rare",
+  "ItemLevel": 25,
+  "Categories": [
+    "Items.Ingredients"
+  ],
+  "Tags": {
+    "Type": [
+      "Nakasar_Trophy"
+    ]
+  },
+  "PlayerAnimationsId": "Item",
+  "ItemSoundSetId": "ISS_Items_Gems",
+  "MaxStack": 10
+}

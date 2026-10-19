@@ -29,6 +29,13 @@ public final class LightAura implements Component<EntityStore> {
         componentType = type;
     }
 
+    /** Oublie la lumière d'avant l'aura si c'est {@code light} : l'aura l'éteindra au lieu de la rendre. */
+    public void forgetPreviousLight(ColorLight light) {
+        if (light != null && light.equals(previousLight)) {
+            previousLight = null;
+        }
+    }
+
     @Override
     public LightAura clone() {
         LightAura copy = new LightAura();

@@ -1,0 +1,7 @@
+{
+  "Name": "nakasar_vampire.effects.Nakasar_Sun_Protection_3",
+  "Duration": 180,
+  "OverlapBehavior": "Overwrite",
+  "Debuff": false,
+  "StatusEffectIcon": "UI/StatusEffects/Nakasar/Occult/Sun_Protection_3.png"
+}

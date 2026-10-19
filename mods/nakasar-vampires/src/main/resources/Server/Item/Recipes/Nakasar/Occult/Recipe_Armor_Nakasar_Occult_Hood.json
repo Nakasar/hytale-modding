@@ -1,0 +1,38 @@
+{
+  "TimeSeconds": 4,
+  "KnowledgeRequired": false,
+  "Input": [
+    {
+      "ItemId": "Armor_Leather_Soft_Head",
+      "Quantity": 1
+    },
+    {
+      "ItemId": "Ingredient_Bolt_Shadoweave",
+      "Quantity": 1
+    },
+    {
+      "ItemId": "Ingredient_Nakasar_Undead_Ash",
+      "Quantity": 4
+    }
+  ],
+  "PrimaryOutput": {
+    "ItemId": "Armor_Nakasar_Occult_Hood",
+    "Quantity": 1
+  },
+  "Output": [
+    {
+      "ItemId": "Armor_Nakasar_Occult_Hood",
+      "Quantity": 1
+    }
+  ],
+  "BenchRequirement": [
+    {
+      "Type": "Crafting",
+      "Id": "Nakasar_Sacrificial_Altar",
+      "Categories": [
+        "Nakasar_Altar_Rituals"
+      ],
+      "RequiredTierLevel": 2
+    }
+  ]
+}

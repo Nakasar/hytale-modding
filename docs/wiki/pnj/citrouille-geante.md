@@ -40,10 +40,13 @@ Une citrouille sculptée de plus de deux blocs de large, éclairée de l'intéri
 | Graines de citrouille | 2 à 4 | 100 % |
 | Essence de vie de citrouille | 1 à 2 | 100 % |
 | Éclat de rune | 1 à 3 | 100 % |
+| [Graine de la Citrouille géante](../objets/trophees.md) | 1 | 100 % |
 
 ## Où la trouver
 
 Au centre de la clairière d'un [champ de citrouilles géant](../fragment/champs-de-citrouilles.md) (rayon 7). Un champ de citrouilles sur deux est de ce type. Réapparition : **30 minutes**.
+
+Aussi la cible du [contrat « le Champ maudit »](../objets/contrats.md).
 
 ## Conseils
 

@@ -1,0 +1,18 @@
+{
+  "Name": "nakasar_vampire.effects.Nakasar_Vampire_Awakening",
+  "Duration": 8,
+  "OverlapBehavior": "Overwrite",
+  "Debuff": false,
+  "StatusEffectIcon": "UI/StatusEffects/Nakasar/Occult/Vampire_Awakening.png",
+  "ApplicationEffects": {
+    "EntityTopTint": "#ff4d5e",
+    "EntityBottomTint": "#4a0010",
+    "Particles": [
+      {
+        "SystemId": "Nakasar_Blood_Drain",
+        "TargetEntityPart": "Entity",
+        "ClearParticlesOnRemove": true
+      }
+    ]
+  }
+}

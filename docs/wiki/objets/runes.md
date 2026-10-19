@@ -1,6 +1,6 @@
 # Runes de capacité
 
-Six runes de sorts, que l'on lance avec les **touches de capacité** en tenant une arme. Elles coûtent du **mana** et ont un temps de recharge. Elles reprennent pour l'instant l'icône et l'apparence de la rune de boule de feu du jeu.
+Sept runes de sorts, que l'on lance avec les **touches de capacité** en tenant une arme. Elles coûtent du **mana** et ont un temps de recharge. Elles reprennent pour l'instant l'icône et l'apparence de la rune de boule de feu du jeu.
 
 ## Obtenir une rune
 
@@ -19,6 +19,7 @@ Six runes de sorts, que l'on lance avec les **touches de capacité** en tenant u
 | [Domination](#domination) | Épique | 45 | 12 s | une créature change de camp 6 s |
 | [Téléportation](#teleportation) | Rare | 35 | 8 s | projectile qui vous téléporte (20 blocs max) |
 | [Chaînes spectrales](#chaines-spectrales) | Épique | 40 | 10 s | immobilise la cible 3 s |
+| [Nova de sang](#nova-de-sang) | Épique | 45 | 12 s | onde de 5 blocs, 10 dégâts, soin par cible |
 
 ## Baiser du Vampire
 
@@ -30,6 +31,7 @@ Six runes de sorts, que l'on lance avec les **touches de capacité** en tenant u
 - **Soin :** +12 PV pour la première cible, puis 6, 3, et 1,2 par cible supplémentaire.
 - Un filet de sang file de la cible vers vous (visuel).
 - Le bonus d'argent ne s'applique pas aux sorts.
+- **Lancée par un [vampire](vampirisme.md)** sur un être vivant : +8 dégâts, +6 PV, et +8 % de sang. Tout joueur a 30 % de chance de recueillir un **sang frais**.
 
 ## Domination
 
@@ -64,9 +66,18 @@ Six runes de sorts, que l'on lance avec les **touches de capacité** en tenant u
 - La cible touchée est **immobilisée 3 s** : [Chaînes spectrales](../effets.md#chaines-spectrales) (un joueur ne peut plus bouger, attaquer, lancer de sort ni esquiver ; une créature est figée).
 - Sans cible touchée, le sort ne fait rien.
 
+## Nova de sang {#nova-de-sang}
+
+> Une onde de sang autour de vous qui blesse les créatures à 5 blocs et boit leur vie.
+
+- **Obtention :** [autel sacrificiel](autel-sacrificiel.md) niveau 4, onglet Runes : 4 éclats de rune, 2 fioles de sang, 1 relique du manoir.
+- **Coût :** 45 mana · **Recharge :** 12 s
+- **10 dégâts physiques** (±10 %) à chaque créature à 5 blocs ; +6 PV pour la première cible, puis moins pour les suivantes.
+- **Lancée par un [vampire](vampirisme.md)** : +5 dégâts et +3 PV par cible vivante, +5 % de sang. 15 % de chance de recueillir un **sang frais**.
+
 ## Runes de chasseur {#runes-de-chasseur}
 
-Deux runes des chasseurs de vampires, gravées sur l'[établi des chasseurs](etabli-des-chasseurs.md) amélioré au niveau 2 (onglet Runes de chasseur). Elles reprennent elles aussi l'apparence de la rune de boule de feu.
+Deux runes des chasseurs de vampires, gravées sur l'[établi des chasseurs](etabli-des-chasseurs.md) (onglet Runes de chasseur) : l'Aura de lumière au niveau 2, l'Invisibilité au niveau 3. Elles reprennent elles aussi l'apparence de la rune de boule de feu.
 
 | Rune | Rareté | Mana | Recharge | Effet |
 |---|---|---|---|---|

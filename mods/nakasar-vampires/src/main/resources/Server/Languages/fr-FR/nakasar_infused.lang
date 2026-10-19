@@ -1,0 +1,25 @@
+# Armes en argent infusé — textes français (générés par tools/generate_infused_weapons.py)
+items.Weapon_Nakasar_Axe_Infused.name = Hache en argent infusé
+items.Weapon_Nakasar_Axe_Infused.description = Infusée par les chasseurs : ×2,5 dégâts contre les vampires, ×1,5 contre les autres morts-vivants. Compte comme une arme en argent.
+items.Weapon_Nakasar_Battleaxe_Infused.name = Hache de combat en argent infusé
+items.Weapon_Nakasar_Battleaxe_Infused.description = Infusée par les chasseurs : ×2,5 dégâts contre les vampires, ×1,5 contre les autres morts-vivants. Compte comme une arme en argent.
+items.Weapon_Nakasar_Blunderbuss_Infused.name = Tromblon en argent infusé
+items.Weapon_Nakasar_Blunderbuss_Infused.description = Infusée par les chasseurs : ×2,5 dégâts contre les vampires, ×1,5 contre les autres morts-vivants. Compte comme une arme en argent.
+items.Weapon_Nakasar_Club_Infused.name = Gourdin en argent infusé
+items.Weapon_Nakasar_Club_Infused.description = Infusée par les chasseurs : ×2,5 dégâts contre les vampires, ×1,5 contre les autres morts-vivants. Compte comme une arme en argent.
+items.Weapon_Nakasar_Crossbow_Infused.name = Arbalète de poing en argent infusé
+items.Weapon_Nakasar_Crossbow_Infused.description = Infusée par les chasseurs : ×2,5 dégâts contre les vampires, ×1,5 contre les autres morts-vivants. Compte comme une arme en argent.
+items.Weapon_Nakasar_Daggers_Infused.name = Dagues en argent infusé
+items.Weapon_Nakasar_Daggers_Infused.description = Infusée par les chasseurs : ×2,5 dégâts contre les vampires, ×1,5 contre les autres morts-vivants. Compte comme une arme en argent.
+items.Weapon_Nakasar_Javelin_Infused.name = Lance de jet en argent infusé
+items.Weapon_Nakasar_Javelin_Infused.description = Infusée par les chasseurs : ×2,5 dégâts contre les vampires, ×1,5 contre les autres morts-vivants. Compte comme une arme en argent.
+items.Weapon_Nakasar_Longsword_Infused.name = Épée longue en argent infusé
+items.Weapon_Nakasar_Longsword_Infused.description = Infusée par les chasseurs : ×2,5 dégâts contre les vampires, ×1,5 contre les autres morts-vivants. Compte comme une arme en argent.
+items.Weapon_Nakasar_Mace_Infused.name = Massue en argent infusé
+items.Weapon_Nakasar_Mace_Infused.description = Infusée par les chasseurs : ×2,5 dégâts contre les vampires, ×1,5 contre les autres morts-vivants. Compte comme une arme en argent.
+items.Weapon_Nakasar_Shortbow_Infused.name = Arc en argent infusé
+items.Weapon_Nakasar_Shortbow_Infused.description = Infusée par les chasseurs : ×2,5 dégâts contre les vampires, ×1,5 contre les autres morts-vivants. Compte comme une arme en argent.
+items.Weapon_Nakasar_Spear_Infused.name = Lance d'argent infusé à deux mains
+items.Weapon_Nakasar_Spear_Infused.description = Infusée par les chasseurs : ×2,5 dégâts contre les vampires, ×1,5 contre les autres morts-vivants. Compte comme une arme en argent.
+items.Weapon_Nakasar_Sword_Infused.name = Épée en argent infusé
+items.Weapon_Nakasar_Sword_Infused.description = Infusée par les chasseurs : ×2,5 dégâts contre les vampires, ×1,5 contre les autres morts-vivants. Compte comme une arme en argent.

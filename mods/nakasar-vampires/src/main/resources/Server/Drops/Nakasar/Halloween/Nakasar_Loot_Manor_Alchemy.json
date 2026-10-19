@@ -114,6 +114,15 @@
               "QuantityMin": 1,
               "QuantityMax": 2
             }
+          },
+          {
+            "Type": "Single",
+            "Weight": 1,
+            "Item": {
+              "ItemId": "Ingredient_Nakasar_Manor_Relic",
+              "QuantityMin": 1,
+              "QuantityMax": 1
+            }
           }
         ]
       },

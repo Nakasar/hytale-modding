@@ -31,6 +31,10 @@
       {
         "Type": "Droplist",
         "DroplistId": "Drop_Skeleton_Knight"
+      },
+      {
+        "Type": "Droplist",
+        "DroplistId": "Nakasar_Drop_Trophy_Captain_Insignia"
       }
     ]
   }

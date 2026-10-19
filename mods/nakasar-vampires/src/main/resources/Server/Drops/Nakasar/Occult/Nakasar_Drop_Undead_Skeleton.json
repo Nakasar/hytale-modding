@@ -1,0 +1,29 @@
+{
+  "Container": {
+    "Type": "Multiple",
+    "Containers": [
+      {
+        "Type": "Droplist",
+        "DroplistId": "Drop_Skeleton_Knight"
+      },
+      {
+        "Type": "Choice",
+        "Containers": [
+          {
+            "Type": "Single",
+            "Weight": 1,
+            "Item": {
+              "ItemId": "Ingredient_Nakasar_Undead_Ash",
+              "QuantityMin": 1,
+              "QuantityMax": 2
+            }
+          },
+          {
+            "Type": "Empty",
+            "Weight": 2
+          }
+        ]
+      }
+    ]
+  }
+}

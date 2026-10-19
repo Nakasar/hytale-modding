@@ -1,0 +1,34 @@
+{
+  "TranslationProperties": {
+    "Name": "nakasar_vampire.items.Potion_Nakasar_Sun_Protection_2.name",
+    "Description": "nakasar_vampire.items.Potion_Nakasar_Sun_Protection_2.description"
+  },
+  "Icon": "Icons/Items/Nakasar/Occult/Sun_Potion_2.png",
+  "Model": "Items/Nakasar/Occult/Sun_Potion_2.blockymodel",
+  "Texture": "Items/Nakasar/Occult/Sun_Potion_2.png",
+  "Quality": "Rare",
+  "Categories": [
+    "Items.Potions"
+  ],
+  "PlayerAnimationsId": {
+    "Parent": "Item",
+    "Animations": {
+      "Consume": {
+        "FirstPerson": "Characters/Animations/Items/Main_Handed/Item/Attacks/Drink/Drink_FPS.blockyanim",
+        "ThirdPerson": "Characters/Animations/Items/Main_Handed/Item/Attacks/Drink/Drink.blockyanim",
+        "Speed": 1,
+        "Looping": true
+      }
+    }
+  },
+  "ItemSoundSetId": "ISS_Items_Gems",
+  "Scale": 1.0,
+  "MaxStack": 10,
+  "Interactions": {
+    "Secondary": "Root_Nakasar_Drink_Sun_Protection_2"
+  },
+  "Consumable": true,
+  "Utility": {
+    "Compatible": false
+  }
+}
