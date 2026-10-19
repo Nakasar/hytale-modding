@@ -37,7 +37,7 @@ Une citrouille sculptée de plus de deux blocs de large, éclairée de l'intéri
 | **Piège de vrilles** (annoncé) | cercle de **6,5 blocs** | chaque ennemi touché est saisi par des [vrilles](vrilles.md) : **immobilisé** tant qu'elles ne sont pas détruites (10 s au plus) | toutes les 14 à 18 s (premier après 8 à 10 s), si vous êtes à 6 blocs ou moins |
 | **Crachat de poison** | 16 blocs (ligne de vue) | **8** dégâts de poison à l'impact + [Poison de citrouille](../effets.md#poison-de-citrouille) **4 dégâts/s pendant 6 s** | toutes les 7 à 9 s |
 
-**Invulnérable tant que ses vrilles vivent :** tant qu'il reste une vrille de la vague, la citrouille ne subit **aucun dégât** (un message vous le rappelle). Détruisez d'abord toutes les vrilles, puis frappez-la pendant les 10 à 12 s de répit avant la vague suivante.
+**Invulnérable tant que ses vrilles vivent :** tant qu'il reste une vrille de la vague, la citrouille ne subit **aucun dégât** (sa barre de vie passe en mode invulnérable). Détruisez d'abord toutes les vrilles, puis frappez-la pendant les 10 à 12 s de répit avant la vague suivante.
 
 **Le piège se voit venir :** une zone rouge de 6,5 blocs apparaît au sol pendant **2,2 s**. Sortez-en. Si vous êtes pris, frappez les vrilles à vos pieds (12 PV) pour vous libérer.
 

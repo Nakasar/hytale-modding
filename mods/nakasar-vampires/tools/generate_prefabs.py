@@ -1197,9 +1197,7 @@ def crypt(seed, material, guarded=False):
     p.chest(0, cy0 + 1, cz0 + 1, "Furniture_Temple_Dark_Chest_Large", SOUTH, LOOT_CRYPT)
     p.set(-2, cy0 + 1, cz0 + 1, p.pick(CANDLES))
     p.set(1, cy0 + 1, cz0 + 1, p.pick(CANDLES))
-    if guarded:
-        spawners(p, SPAWN_ARMOR, [(0, cz0 + 5)], ys=(cy0 + 1,))
-    elif r.random() < 0.5:
+    if not guarded and r.random() < 0.5:
         p.set(0, cy0 + 1, cz0 + 5, "Furniture_Temple_Dark_Statue", SOUTH)
     p.scatter(cx0 + 1, cy0 + 1, cz0 + 1, cx1 - 1, cz1 - 1, 9, BONES)
     p.scatter(cx0 + 1, cy0 + 1, cz0 + 1, cx1 - 1, cz1 - 1, 5, CANDLES)
@@ -1208,6 +1206,11 @@ def crypt(seed, material, guarded=False):
         x, z = r.randint(cx0, cx1), r.randint(cz0, cz1)
         if p.get(x, cy0 + 4, z) == AIR:
             p.set(x, cy0 + 4, z, p.pick(WEBS))
+    if guarded:
+        # Le marqueur ne fait apparaître l'armure (1,7 x 3,7 blocs) que si sa boîte ne touche aucun bloc : ni os,
+        # ni bougie, ni toile autour d'elle, sur toute la hauteur de la salle.
+        p.clear(-1, cy0 + 1, cz0 + 4, 1, cy0 + 4, cz0 + 6)
+        p.set(0, cy0 + 1, cz0 + 5, SPAWN_ARMOR)
     # tombes, braseros et citrouilles devant l'entrée
     for x in (-4, 4):
         p.set(x, 0, z1 + 3, "Furniture_Village_Tombstone", SOUTH)

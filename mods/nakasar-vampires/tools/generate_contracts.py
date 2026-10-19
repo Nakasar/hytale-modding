@@ -56,19 +56,19 @@ CONTRACTS = [
      ["plant", "elite"]),
     ("Garrison", 2, "GuardPosts/Garrison", (60, 70, 150),
      [(FANG, 4), ("Ingredient_Bar_Silver", 2), ("Ingredient_Fabric_Scrap_Linen", 2), ("Ingredient_Rune_Shard", 2)],
-     ["undead", "elite", "prison"]),
+     ["undead", "elite"]),
     ("Crypt", 2, "Crypts/Guarded", (70, 120, 200),
      [(FANG, 3), ("Ingredient_Bar_Silver", 2), ("Ingredient_Fabric_Scrap_Linen", 2), ("Ingredient_Rune_Shard", 2)],
-     ["construct", "elite", "fireproof"]),
+     ["construct", "elite"]),
     ("Castle", 3, "HauntedCastles/Spectre", (150, 200, 230),
      [(FANG, 4), ("Ingredient_Bar_Silver", 3), ("Ingredient_Fabric_Scrap_Linen", 3), ("Ingredient_Rune_Shard", 3)],
-     ["undead", "elite", "frost"]),
+     ["undead", "elite"]),
 ]
 DISPLAY_NAMES = {"Farm": "Contrat : la Bête de la ferme", "Pumpkin": "Contrat : le Champ maudit",
                  "Garrison": "Contrat : la Garnison du Capitaine", "Crypt": "Contrat : le Gardien de la crypte",
                  "Castle": "Contrat : le Spectre du château"}
-TAG_COLORS = {"undead": "#9b59b6", "elite": "#c0392b", "plant": "#ff7518", "prison": "#7f8c8d",
-              "construct": "#5a8fd8", "fireproof": "#e67e22", "frost": "#8fd4ff"}
+# Tags d'identité de la cible seulement : rien sur sa façon de se battre (les joueurs la découvrent).
+TAG_COLORS = {"undead": "#9b59b6", "elite": "#c0392b", "plant": "#ff7518", "construct": "#5a8fd8"}
 
 
 def ids(short):

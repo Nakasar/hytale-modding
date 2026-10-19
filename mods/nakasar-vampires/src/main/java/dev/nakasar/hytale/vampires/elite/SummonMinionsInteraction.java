@@ -11,6 +11,7 @@ import com.hypixel.hytale.math.util.MathUtil;
 import com.hypixel.hytale.math.vector.Rotation3f;
 import com.hypixel.hytale.protocol.InteractionType;
 import com.hypixel.hytale.server.core.entity.InteractionContext;
+import com.hypixel.hytale.server.core.modules.entity.component.Invulnerable;
 import com.hypixel.hytale.server.core.modules.entity.component.TransformComponent;
 import com.hypixel.hytale.server.core.modules.entity.damage.DeathComponent;
 import com.hypixel.hytale.server.core.modules.entitystats.EntityStatMap;
@@ -49,7 +50,8 @@ import java.util.concurrent.TimeUnit;
  *
  * <p>{@code HealSummonerPerSecond} : chaque serviteur vivant rend ce nombre de PV par seconde à son élite (rouages de
  * l'armure enchantée) ; le montant est celui de l'appel qui l'a fait venir. Tant qu'une élite protégée par {@link MinionShieldSystem} a des serviteurs vivants
- * ({@link #hasLivingMinions}), elle est invulnérable ; il peut aussi faire venir la première vague dès le premier
+ * ({@link #hasLivingMinions}), elle est invulnérable (composant {@link Invulnerable}, retiré quand la vague est
+ * détruite) ; il peut aussi faire venir la première vague dès le premier
  * coup reçu ({@link #summonFirstWave}).
  *
  * <p>Clés JSON : {@code MinionRole} (string, obligatoire), {@code Count} (int, défaut 5), {@code MaxAlive} (int,
@@ -86,7 +88,7 @@ public class SummonMinionsInteraction extends SimpleInstantInteraction {
             .add()
             .build();
 
-    private static final long POLL_MS = 1000;
+    private static final long POLL_MS = 250;
     private static final int ATTEMPTS_PER_MINION = 6;
     /** Au-delà de cette distance horizontale à son élite, un serviteur est retiré. */
     private static final double LEASH = 36.0;
@@ -225,6 +227,10 @@ public class SummonMinionsInteraction extends SimpleInstantInteraction {
         } else if (wanted > 0) {
             VampiresPlugin.get().getLogger().atWarning().log("%s : aucun serviteur '%s' n'a pu apparaître", TYPE_ID, minionRole);
         }
+        if (!minions.isEmpty() && MinionShieldSystem.isShielded(summoner, store)) {
+            // Barre de boss en mode invulnérable, comme les boss du donjon Deepworks ; retiré par watch().
+            store.ensureComponent(summoner, Invulnerable.getComponentType());
+        }
         if (!watched) {
             world.scheduleAfter(() -> watch(world, summoner), POLL_MS, TimeUnit.MILLISECONDS);
         }
@@ -346,6 +352,9 @@ public class SummonMinionsInteraction extends SimpleInstantInteraction {
                 healing += HEAL.getOrDefault(minion, 0f);
             }
             heal(store, summoner, healing * POLL_MS / 1000f);
+            if (minions.isEmpty()) {
+                store.tryRemoveComponent(summoner, Invulnerable.getComponentType());
+            }
             world.scheduleAfter(() -> watch(world, summoner), POLL_MS, TimeUnit.MILLISECONDS);
             return;
         }
