@@ -1,0 +1,5 @@
+{
+  "$Comment": "Piédestal du Bureau de l'Alchimiste : chaque joueur y prend sa propre pierre, une fois par instance. Généré par tools/generate_alchemist_loot.py.",
+  "Type": "Nakasar_TakePhilosopherStone",
+  "ItemId": "Nakasar_Philosopher_Stone"
+}

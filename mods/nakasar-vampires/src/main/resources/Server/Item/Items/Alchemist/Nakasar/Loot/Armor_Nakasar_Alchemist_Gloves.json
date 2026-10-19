@@ -1,0 +1,54 @@
+{
+  "Parent": "Armor_Leather_Light_Hands",
+  "TranslationProperties": {
+    "Name": "nakasar_alchemist.items.Armor_Nakasar_Alchemist_Gloves.name",
+    "Description": "nakasar_alchemist.items.Armor_Nakasar_Alchemist_Gloves.description"
+  },
+  "Quality": "Legendary",
+  "ItemLevel": 30,
+  "Armor": {
+    "ArmorSlot": "Hands",
+    "BaseDamageResistance": 0,
+    "StatModifiers": {
+      "Health": [
+        {
+          "Amount": 10,
+          "CalculationType": "Additive"
+        }
+      ]
+    },
+    "DamageResistance": {
+      "Physical": [
+        {
+          "Amount": 0.04,
+          "CalculationType": "Percent"
+        }
+      ],
+      "Projectile": [
+        {
+          "Amount": 0.04,
+          "CalculationType": "Percent"
+        }
+      ],
+      "Elemental": [
+        {
+          "Amount": 0.1,
+          "CalculationType": "Percent"
+        }
+      ],
+      "Fire": [
+        {
+          "Amount": 0.1,
+          "CalculationType": "Percent"
+        }
+      ],
+      "Poison": [
+        {
+          "Amount": 0.1,
+          "CalculationType": "Percent"
+        }
+      ]
+    }
+  },
+  "MaxDurability": 400
+}

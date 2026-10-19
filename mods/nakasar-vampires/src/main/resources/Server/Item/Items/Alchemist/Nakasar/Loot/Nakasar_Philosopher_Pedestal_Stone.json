@@ -1,0 +1,61 @@
+{
+  "TranslationProperties": {
+    "Name": "nakasar_alchemist.items.Nakasar_Philosopher_Pedestal_Stone.name",
+    "Description": "nakasar_alchemist.items.Nakasar_Philosopher_Pedestal_Stone.description"
+  },
+  "Icon": "Icons/Items/Nakasar/Alchemist/Loot/Philosopher_Pedestal_Stone.png",
+  "Categories": [
+    "Blocks.Deco"
+  ],
+  "PlayerAnimationsId": "Block",
+  "Quality": "Legendary",
+  "BlockType": {
+    "Material": "Solid",
+    "DrawType": "Model",
+    "Opacity": "Transparent",
+    "CustomModel": "Blocks/Nakasar/Alchemist/Philosopher_Pedestal_Stone.blockymodel",
+    "CustomModelTexture": [
+      {
+        "Texture": "Blocks/Nakasar/Alchemist/Philosopher_Pedestal_Stone.png",
+        "Weight": 1
+      }
+    ],
+    "HitboxType": "Nakasar_Philosopher_Pedestal_Stone",
+    "Flags": {},
+    "Gathering": {
+      "Breaking": {
+        "GatherType": "Unbreakable"
+      }
+    },
+    "BlockParticleSetId": "Crystal",
+    "BlockSoundSetId": "Crystal",
+    "ParticleColor": "#d61c2e",
+    "Light": {
+      "Color": "#e44"
+    },
+    "Particles": [
+      {
+        "SystemId": "Dungeon_Goblin_Temple_Motes",
+        "Scale": 0.5,
+        "PositionOffset": {
+          "X": 0,
+          "Y": 0.4,
+          "Z": 0
+        }
+      }
+    ],
+    "Interactions": {
+      "Use": {
+        "Interactions": [
+          "Nakasar_Take_Philosopher_Stone"
+        ]
+      }
+    }
+  },
+  "Tags": {
+    "Type": [
+      "Deco"
+    ]
+  },
+  "ItemSoundSetId": "ISS_Items_Gems"
+}

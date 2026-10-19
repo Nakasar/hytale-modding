@@ -1,0 +1,11 @@
+{
+  "Name": "nakasar_alchemist.effects.Nakasar_Grand_Elixir_Heal",
+  "Duration": 0.1,
+  "OverlapBehavior": "Overwrite",
+  "StatusEffectIcon": "Icons/Items/Nakasar/Alchemist/Loot/Grand_Elixir.png",
+  "StatModifiers": {
+    "Health": 40
+  },
+  "ValueType": "Percent",
+  "DamageCalculatorCooldown": 0
+}

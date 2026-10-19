@@ -47,12 +47,15 @@ import dev.nakasar.hytale.vampires.silver.SilverProjectileSystems;
 import dev.nakasar.hytale.vampires.silver.SilverWeapons;
 import dev.nakasar.hytale.vampires.silver.TakeArrowInteraction;
 import dev.nakasar.hytale.vampires.tower.AlchemistFlaskInteraction;
+import dev.nakasar.hytale.vampires.tower.AlchemistGlovesSystem;
 import dev.nakasar.hytale.vampires.tower.AlchemistSystem;
 import dev.nakasar.hytale.vampires.tower.ChimeraSystem;
 import dev.nakasar.hytale.vampires.tower.CodexChapterInteraction;
 import dev.nakasar.hytale.vampires.tower.CodexSystem;
 import dev.nakasar.hytale.vampires.tower.CourtGuardSystem;
+import dev.nakasar.hytale.vampires.tower.ElementalLanternSystem;
 import dev.nakasar.hytale.vampires.tower.FlyerGuardSystem;
+import dev.nakasar.hytale.vampires.tower.TakePhilosopherStoneInteraction;
 import dev.nakasar.hytale.vampires.tower.TowerFallSystem;
 import dev.nakasar.hytale.vampires.tower.TransmutationSystem;
 import dev.nakasar.hytale.vampires.vampirism.BloodFeedInteraction;
@@ -125,7 +128,10 @@ import dev.nakasar.hytale.vampires.vampirism.VampireSystem;
  *       à la cuve pour la soigner, acide de la cuve, remise à zéro, sceau ouvert à sa mort).</li>
  *   <li>{@code Nakasar_AlchemistFlask} ({@link AlchemistSystem}) : combat de l'Alchimiste (vie selon le groupe et le
  *       mode difficile, trois phases, athanor et homoncules, rebord qui s'effondre, piliers élémentaires, fioles de
- *       soin, remise à zéro, sceau du bureau ouvert à sa mort).</li>
+ *       soin, remise à zéro, sceau du bureau ouvert à sa mort, un sac de butin par joueur).</li>
+ *   <li>{@code Nakasar_TakePhilosopherStone} : au piédestal du bureau, chaque joueur prend sa pierre philosophale ;
+ *       {@link ElementalLanternSystem} et {@link AlchemistGlovesSystem} font vivre deux objets uniques du sac
+ *       (lumière qui change d'élément, fioles lancées plus loin).</li>
  * </ul>
  */
 public final class VampiresPlugin extends JavaPlugin {
@@ -184,6 +190,8 @@ public final class VampiresPlugin extends JavaPlugin {
                 CodexChapterInteraction.class, CodexChapterInteraction.CODEC);
         interactions.register(AlchemistFlaskInteraction.TYPE_ID,
                 AlchemistFlaskInteraction.class, AlchemistFlaskInteraction.CODEC);
+        interactions.register(TakePhilosopherStoneInteraction.TYPE_ID,
+                TakePhilosopherStoneInteraction.class, TakePhilosopherStoneInteraction.CODEC);
 
         var systems = getEntityStoreRegistry();
         RootTrapped.setComponentType(systems.registerComponent(RootTrapped.class, RootTrapped::new));
@@ -228,15 +236,17 @@ public final class VampiresPlugin extends JavaPlugin {
         systems.registerSystem(new FlyerGuardSystem());
         systems.registerSystem(new ChimeraSystem());
         systems.registerSystem(new AlchemistSystem());
+        systems.registerSystem(new ElementalLanternSystem());
+        systems.registerSystem(new AlchemistGlovesSystem());
 
-        getLogger().atInfo().log("Nakasar Vampires : 20 types d'interaction (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s), systèmes des camps, de l'argent, du feu purificateur, de la voie occulte, de la brèche, des contrats des chasseurs et de la Tour de l'Alchimiste enregistrés",
+        getLogger().atInfo().log("Nakasar Vampires : 21 types d'interaction (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s), systèmes des camps, de l'argent, du feu purificateur, de la voie occulte, de la brèche, des contrats des chasseurs et de la Tour de l'Alchimiste enregistrés",
                 TeleportCasterToImpactInteraction.TYPE_ID, DominateInteraction.TYPE_ID, RootNpcInteraction.TYPE_ID,
                 DrainBeamInteraction.TYPE_ID, DominatePlayerInteraction.TYPE_ID, ImprisonPlayerInteraction.TYPE_ID,
                 RootTrapInteraction.TYPE_ID, TakeArrowInteraction.TYPE_ID, ReturnArrowInteraction.TYPE_ID,
                 SummonMinionsInteraction.TYPE_ID, ApplyEffectToFoesInteraction.TYPE_ID, LightAuraInteraction.TYPE_ID, InvisibilityInteraction.TYPE_ID,
                 VampireRitualInteraction.TYPE_ID, BloodFeedInteraction.TYPE_ID, DrinkBloodInteraction.TYPE_ID,
                 OpenBountyBagInteraction.TYPE_ID, ClaimBreachContractInteraction.TYPE_ID, CodexChapterInteraction.TYPE_ID,
-                AlchemistFlaskInteraction.TYPE_ID);
+                AlchemistFlaskInteraction.TYPE_ID, TakePhilosopherStoneInteraction.TYPE_ID);
     }
 
     @Override
@@ -248,6 +258,7 @@ public final class VampiresPlugin extends JavaPlugin {
         Dominations.clearAll();
         LordsWrath.clearAll();
         SilverWeapons.clearAll();
+        TakePhilosopherStoneInteraction.clearAll();
         ArrowQuiver.clearAll();
         ContractBounties.clearAll();
         ClaimBreachContractInteraction.clearAll();

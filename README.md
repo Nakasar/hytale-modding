@@ -451,10 +451,27 @@ Mobs (voir [docs/npc-0.7.2.md](docs/npc-0.7.2.md)) :
   20 s (teinte de l'élément) et le fait tomber sur chaque joueur toutes les 5 s (flammes au sol, ralentissement,
   étourdissement, racines) ; les quatre détruits, il s'effondre 8 s (+50 % de dégâts subis). Fioles de soin sur six
   socles toutes les 40 s. Remise à zéro si le groupe meurt ou quitte l'arène 10 s (rebord reconstruit, levier
-  déverrouillé). Sa mort dissout le sceau du bureau ; trophée Masque de l'Alchimiste (pour l'établi des chasseurs
-  niveau 4, plus tard). À vérifier en jeu : les pièces du masque et du tablier sur le squelette, la teinte des
+  déverrouillé). Sa mort dissout le sceau du bureau, donne à chaque joueur de l'instance une sacoche
+  (`Nakasar_Alchemist_Bag`, `_Hard` en mode difficile) et lâche le Masque de l'Alchimiste (passage de l'établi des
+  chasseurs au niveau 4). À vérifier en jeu : les pièces du masque et du tablier sur le squelette, la teinte des
   éléments, le levier, l'effondrement et la reconstruction du rebord, le retour après une chute, la sortie de
   l'athanor, les piliers, les fioles de soin, la vie selon le groupe.
+- **Tour de l'Alchimiste, butin** (`tools/generate_alchemist_loot.py`, `tower/TakePhilosopherStoneInteraction.java`,
+  `tower/ElementalLanternSystem.java`, `tower/AlchemistGlovesSystem.java`) : dans le bureau, la pierre philosophale
+  repose sur un piédestal (`Nakasar_Philosopher_Pedestal_Stone`) ; chaque joueur prend la sienne une fois par
+  instance et elle reste visible pour les autres. La pierre sert à passer l'autel sacrificiel au niveau 4 et au calice
+  du rituel. Sacoches : principes et essences (plus en difficile), objet unique 15 % (40 % en difficile), lunettes
+  cosmétiques 10 % en difficile seulement. Objets uniques : flasque sans fond (jamais vide, 90 s entre deux gorgées),
+  gants de l'Alchimiste (fioles et bombes lancées ×1,4 plus vite), lanterne élémentaire (lumière qui change d'élément,
+  en main ou en main secondaire). Potions de l'établi d'alchimie : grand élixir, garde élémentaire, breuvage de
+  vif-argent. Deux coffres secrets (`Nakasar_Loot_Tower_Secret`) au fond de niches dans le mur extérieur : couloir des
+  fuites et escalier du vent (`alchemist_tower.Tower.secrets`). À vérifier en jeu : le piédestal et la pierre, les
+  sacoches à la mort du boss, la recharge de la flasque, la lumière de la lanterne, la portée des fioles avec les
+  gants, les lunettes sur la tête, les potions, les niches secrètes.
+- **Tour de l'Alchimiste, histoire** (`tools/generate_lore.py`, placement par `alchemist_tower.Tower.lore`) : le journal
+  de l'Alchimiste en 7 pages réparties de la cour à l'antichambre, les ordres des chasseurs, la note de l'apprenti, et
+  dans le bureau la supplique d'un chasseur et la lettre du Comte restée sans réponse. À vérifier en jeu : la lecture
+  des notes posées au sol.
 
 ## Organisation du dépôt
 

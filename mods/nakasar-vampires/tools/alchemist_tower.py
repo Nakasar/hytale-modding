@@ -134,6 +134,28 @@ COLLAPSE_ARCS = ((220, 248), (252, 282), (286, 312), (328, 358), (2, 24))
 COLLAPSE_R = (21.5, 28.4)
 # Chimère du laboratoire (étape 6) : étagères de réactifs (PNJ posés par tower.ChimeraSystem, les homoncules y prennent
 # de quoi la régénérer), cases où elle ressort de la cuve, sceau de la porte nord jusqu'à sa mort.
+# Butin et lore (étapes 8 et 9 du donjon, tools/generate_alchemist_loot.py et generate_lore.py).
+PEDESTAL_STONE = "Nakasar_Philosopher_Pedestal_Stone"   # pierre philosophale posée sur le piédestal du Bureau
+SECRET_CHEST = "Furniture_Royal_Magic_Chest_Small"
+SECRET_LOOT = "Nakasar_Loot_Tower_Secret"
+# Coffres secrets, au fond d'une niche creusée dans le mur extérieur, sous des lianes : (angle, étage) d'un point de
+# vue du balcon de la serre et d'un palier de l'Escalier des vents.
+SECRETS = ((352, F_LEAKS), (548, None))
+# Notes de lore (generate_lore.LORE, sans le préfixe Nakasar_Lore_) : (nom, (rayon, étage, angle) ou (x, étage, z)
+# pour le Bureau). Chaque note va sur la case libre au sol la plus proche, hors des cases réservées.
+TOWER_NOTES = (
+    ("Tower_Hunter_Orders", ("xz", 5, F_HALL, 70)),
+    ("Alchemist_Journal_1", ("polar", 22, F_HALL, 210)),
+    ("Tower_Apprentice", ("polar", 27, F_LEAKS, 200)),
+    ("Alchemist_Journal_2", ("polar", 41, F_LEAKS, 240)),
+    ("Alchemist_Journal_3", ("polar", 22, F_LIBRARY, 100)),
+    ("Alchemist_Journal_4", ("polar", 26, F_TRANS, 120)),
+    ("Alchemist_Journal_5", ("polar", 26, F_LAB, 110)),
+    ("Alchemist_Journal_6", ("polar", 34, F_DECK, 238)),
+    ("Alchemist_Journal_7", ("xz", 2, F_DECK, 30)),
+    ("Tower_Count_Letter", ("xz", 4, F_DECK, 31)),
+    ("Tower_Hunter_Plea", ("xz", -3, F_DECK, 30)),
+)
 CHIMERA_BASIN_R = 21      # bassins d'acide secondaires : les zombies y remplissent leurs seaux
 CHIMERA_BASIN_ANGLES = (0, 45, 135, 225)   # entre les alcôves (LAB_ALCOVES), loin de l'hélice et de la porte nord
 CHIMERA_BASIN_SIZE = 1.6  # rayon du bassin (acide pour d < CHIMERA_BASIN_SIZE), margelle d'or d'un bloc autour
@@ -929,7 +951,7 @@ class Tower:
             p.set(x, y + 5, z, "Rock_Gold_Brick_Ornate")
 
     def study(self):
-        """Bureau de l'Alchimiste, au sud de la terrasse (ouvert à la mort du boss, plus tard)."""
+        """Bureau de l'Alchimiste, au sud de la terrasse, ouvert à la mort du boss : pierre philosophale, portail de fin."""
         p = self.p
         y = F_DECK
         x0, x1, z0, z1 = -10, 10, 26, 42
@@ -950,9 +972,10 @@ class Tower:
         self.door(door, y, 5)
         for x in range(-2, 3):
             self.register(x, z0, 2 * y)
-        # Piédestal de la pierre philosophale (la pierre viendra avec le butin), bureau, portail de fin.
+        # Piédestal de la pierre philosophale (chaque joueur y prend la sienne), bureau, portail de fin.
         p.set(0, y, 32, "Rock_Gold_Brick_Pillar_Base")
         p.set(0, y + 1, 32, "Rock_Gold_Brick_Ornate")
+        p.set(0, y + 2, 32, PEDESTAL_STONE, pf.SOUTH)
         self.place(6, y, 30, "Furniture_Human_Ruins_Desk", pf.NORTH)
         self.place(-6, y, 30, GLOW)
         for x in (-5, 5):
@@ -1898,6 +1921,93 @@ class Tower:
         self.place(-6, y, 37, "Deco_Bone_Skulls")
         self.hang(0, y + 9, 35, "Furniture_Temple_Wind_Chandelier")
 
+    def secrets(self):
+        """Coffres secrets : une niche de deux blocs de haut creusée dans le mur extérieur de la tour (jamais jusqu'à la salle
+        de derrière), le coffre au fond, des lianes qui pendent devant. `self.secret_chests` donne les coffres."""
+        p = self.p
+        self.secret_chests = []
+        for a, floor in SECRETS:
+            # Étage : celui donné, ou le palier (marche pleine, pas une demi-marche) de l'Escalier des vents le plus
+            # proche de cet angle.
+            if floor is None:
+                landing = None
+                for da in sorted(range(-30, 31), key=abs):
+                    step = self.wind_ramp.get(at(R_OUT + 0.6, a + da))
+                    if step is not None and step % 2 == 0:
+                        landing = (a + da, step // 2)
+                        break
+                if landing is None:
+                    raise RuntimeError(f"tour : pas de palier de l'Escalier des vents vers {a}°")
+                a, floor = landing
+            mouth = at(R_OUT + 0.6, a)
+            # La niche s'enfonce droit vers l'intérieur, selon l'axe le plus proche de la direction du centre.
+            ca, sa = math.cos(math.radians(a)), math.sin(math.radians(a))
+            step = (-round(math.copysign(1, ca)), 0) if abs(ca) >= abs(sa) else (0, -round(math.copysign(1, sa)))
+            deep = []
+            x, z = mouth
+            while len(deep) < 2:
+                x, z = x + step[0], z + step[1]
+                if math.hypot(x, z) < R_OUT:
+                    deep.append((x, z))
+            if not p.free(mouth[0], floor, mouth[1]) or self.free_below(mouth[0], floor, mouth[1]):
+                raise RuntimeError(f"tour : pas de sol libre devant la niche secrète à {a}°")
+            self.keep_clear.update((mouth[0], floor + k, mouth[1]) for k in range(3))
+            for x, z in deep:
+                if math.hypot(x, z) < R_IN + 1.5:
+                    raise RuntimeError(f"tour : la niche secrète à {a}° perce le mur")
+                for k in range(2):
+                    p.set(x, floor + k, z, AIR)
+                    self.keep_clear.add((x, floor + k, z))
+                p.set(x, floor - 1, z, GOLD)
+                p.set(x, floor + 2, z, TRIM)
+            cx, cz = deep[-1]
+            p.chest(cx, floor, cz, SECRET_CHEST, facing_to(cx, cz, *mouth), SECRET_LOOT)
+            for x, z in deep[:-1]:
+                p.set(x, floor + 1, z, "Plant_Vine_Hanging")
+            self.secret_chests.append((cx, floor, cz))
+
+    def free_below(self, x, y, z):
+        return self.p.free(x, y - 1, z)
+
+    def lore(self):
+        """Notes de lore (TOWER_NOTES) : sur la case libre au sol la plus proche de leur point, posée sur un bloc plein,
+        hors des cases gardées libres et des cases des pièges, sceaux et barrières (`self.trap`)."""
+        p = self.p
+        reserved = set(self.keep_clear)
+
+        def cells(value):
+            if isinstance(value, dict):
+                for v in value.values():
+                    yield from cells(v)
+            elif isinstance(value, (list, tuple, set)):
+                if len(value) == 3 and all(isinstance(v, int) for v in value):
+                    yield tuple(value)
+                else:
+                    for v in value:
+                        yield from cells(v)
+
+        reserved.update(cells(self.trap))
+        self.notes = {}
+        for name, (kind, u, y, v) in TOWER_NOTES:
+            x0, z0 = (u, v) if kind == "xz" else at(u, v)
+            spot = None
+            for radius in range(0, 7):
+                ring_cells = sorted(((x0 + dx, z0 + dz) for dx in range(-radius, radius + 1) for dz in range(-radius, radius + 1)
+                                     if max(abs(dx), abs(dz)) == radius), key=lambda c: (abs(c[0] - x0) + abs(c[1] - z0), c))
+                for x, z in ring_cells:
+                    below = p.get(x, y - 1, z) or ""
+                    if ((x, y, z) in reserved or not p.free(x, y, z) or not pf.NOTE_FLOOR.match(below)
+                            or pf.NOT_FLOOR.search(below)):
+                        continue
+                    spot = (x, y, z)
+                    break
+                if spot:
+                    break
+            if spot is None:
+                raise RuntimeError(f"tour : pas de place pour la note {name}")
+            p.set(*spot, f"Nakasar_Lore_{name}", self.rng.randint(0, 3))
+            self.notes[name] = spot
+
     def decorate(self):
         self.decor_hall()
         self.decor_leaks()
@@ -1932,7 +2042,9 @@ class Tower:
         self.chimera()
         self.alchemist()
         self.arenas()
+        self.secrets()
         self.decorate()
+        self.lore()
         self.mobs()
         self.secure()
         self.barriers()
@@ -2156,7 +2268,8 @@ def at3(r, y, a):
 # --- vérification du parcours --------------------------------------------------------------------
 
 PASSABLE_PREFIXES = ("Nakasar_Spawner_", "VFX_", "Plant_Grass", "Plant_Flower", "Plant_Crop_Mushroom_Glowing", "Nakasar_Tower_Emanation", "Deco_Potion",
-                     "Deco_Scroll", "Plant_Moss_Rug", "Plant_Vine", "Furniture_Royal_Magic_Carpet")
+                     "Deco_Scroll", "Plant_Moss_Rug", "Plant_Vine", "Furniture_Royal_Magic_Carpet",
+                     "Nakasar_Lore_")
 
 
 def passable(name):

@@ -1,0 +1,38 @@
+{
+  "Name": "nakasar_alchemist.effects.Nakasar_Elemental_Ward",
+  "Duration": 240,
+  "OverlapBehavior": "Overwrite",
+  "StatusEffectIcon": "Icons/Items/Nakasar/Alchemist/Loot/Elemental_Ward.png",
+  "DamageResistance": {
+    "Elemental": [
+      {
+        "Amount": 0.3,
+        "CalculationType": "Percent"
+      }
+    ],
+    "Fire": [
+      {
+        "Amount": 0.3,
+        "CalculationType": "Percent"
+      }
+    ],
+    "Ice": [
+      {
+        "Amount": 0.3,
+        "CalculationType": "Percent"
+      }
+    ],
+    "Lightning": [
+      {
+        "Amount": 0.3,
+        "CalculationType": "Percent"
+      }
+    ],
+    "Poison": [
+      {
+        "Amount": 0.3,
+        "CalculationType": "Percent"
+      }
+    ]
+  }
+}

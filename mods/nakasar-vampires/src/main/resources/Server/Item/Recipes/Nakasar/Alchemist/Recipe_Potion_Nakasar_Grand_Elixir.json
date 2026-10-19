@@ -1,0 +1,38 @@
+{
+  "TimeSeconds": 3,
+  "KnowledgeRequired": false,
+  "Input": [
+    {
+      "ItemId": "Potion_Health_Greater",
+      "Quantity": 1
+    },
+    {
+      "ItemId": "Ingredient_Nakasar_Philosophers_Salt",
+      "Quantity": 2
+    },
+    {
+      "ItemId": "Ingredient_Nakasar_Quicksilver",
+      "Quantity": 1
+    }
+  ],
+  "PrimaryOutput": {
+    "ItemId": "Potion_Nakasar_Grand_Elixir",
+    "Quantity": 1
+  },
+  "Output": [
+    {
+      "ItemId": "Potion_Nakasar_Grand_Elixir",
+      "Quantity": 1
+    }
+  ],
+  "BenchRequirement": [
+    {
+      "Type": "Crafting",
+      "Id": "Alchemybench",
+      "Categories": [
+        "Alchemy_Potions"
+      ],
+      "RequiredTierLevel": 2
+    }
+  ]
+}

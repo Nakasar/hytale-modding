@@ -142,7 +142,43 @@
           "CraftingTimeReductionModifier": 0.15
         },
         {
+          "UpgradeRequirement": {
+            "Material": [
+              {
+                "ItemId": "Nakasar_Trophy_Alchemist_Mask",
+                "Quantity": 1
+              },
+              {
+                "ItemId": "Nakasar_Trophy_Chimera_Heart",
+                "Quantity": 1
+              },
+              {
+                "ItemId": "Nakasar_Trophy_Codex_Clasp",
+                "Quantity": 1
+              },
+              {
+                "ItemId": "Nakasar_Trophy_Armor_Core",
+                "Quantity": 1
+              },
+              {
+                "ItemId": "Nakasar_Trophy_Spectral_Shroud",
+                "Quantity": 1
+              },
+              {
+                "ItemId": "Ingredient_Bar_Silver",
+                "Quantity": 12
+              },
+              {
+                "ItemId": "Ingredient_Rune_Shard",
+                "Quantity": 6
+              }
+            ],
+            "TimeSeconds": 6
+          },
           "CraftingTimeReductionModifier": 0.3
+        },
+        {
+          "CraftingTimeReductionModifier": 0.4
         }
       ]
     },

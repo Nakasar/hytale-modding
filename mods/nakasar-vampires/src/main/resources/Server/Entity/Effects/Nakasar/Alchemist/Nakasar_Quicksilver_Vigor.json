@@ -1,0 +1,15 @@
+{
+  "Name": "nakasar_alchemist.effects.Nakasar_Quicksilver_Vigor",
+  "Duration": 300,
+  "OverlapBehavior": "Overwrite",
+  "StatusEffectIcon": "Icons/Items/Nakasar/Alchemist/Loot/Quicksilver_Draught.png",
+  "RawStatModifiers": {
+    "Stamina": [
+      {
+        "Amount": 1.3,
+        "CalculationType": "Multiplicative",
+        "Target": "Max"
+      }
+    ]
+  }
+}

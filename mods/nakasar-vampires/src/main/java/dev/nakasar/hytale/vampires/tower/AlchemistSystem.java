@@ -16,6 +16,9 @@ import com.hypixel.hytale.server.core.asset.type.entityeffect.config.OverlapBeha
 import com.hypixel.hytale.server.core.asset.type.soundevent.config.SoundEvent;
 import com.hypixel.hytale.server.core.entity.Frozen;
 import com.hypixel.hytale.server.core.entity.effect.EffectControllerComponent;
+import com.hypixel.hytale.server.core.inventory.InventoryComponent;
+import com.hypixel.hytale.server.core.inventory.ItemStack;
+import com.hypixel.hytale.server.core.inventory.container.SimpleItemContainer;
 import com.hypixel.hytale.server.core.modules.entity.component.Invulnerable;
 import com.hypixel.hytale.server.core.modules.entity.component.TransformComponent;
 import com.hypixel.hytale.server.core.modules.entity.damage.Damage;
@@ -73,7 +76,8 @@ import java.util.concurrent.ThreadLocalRandom;
  *   {@value #HEAL_INTERVAL} s sur un des socles de la terrasse.</li>
  *   <li><b>Remise à zéro</b> : plus aucun joueur dans l'arène pendant {@value #RESET_SECONDS} s : il sort de l'athanor,
  *   retrouve sa vie de départ, homoncules et piliers disparaissent, le rebord se reconstruit, le levier se déverrouille.</li>
- *   <li><b>Mort</b> : le sceau du bureau se dissout, le rebord se reconstruit.</li>
+ *   <li><b>Mort</b> : le sceau du bureau se dissout, le rebord se reconstruit, et chaque joueur de l'instance reçoit
+ *   un sac de l'Alchimiste ({@value #BAG}, ou {@value #BAG_HARD} en mode difficile).</li>
  * </ul>
  */
 public final class AlchemistSystem extends TickingSystem<EntityStore> {
@@ -196,6 +200,10 @@ public final class AlchemistSystem extends TickingSystem<EntityStore> {
         boolean sealed;
     }
 
+    /** Sacs de butin donnés à la mort du boss (tools/generate_alchemist_loot.py). */
+    static final String BAG = "Nakasar_Alchemist_Bag";
+    static final String BAG_HARD = "Nakasar_Alchemist_Bag_Hard";
+
     private static final Map<Ref<EntityStore>, Fight> FIGHTS = new ConcurrentHashMap<>();
 
     /** Système partagé par les mondes, chacun sur son thread : un compte à rebours par monde. */
@@ -255,6 +263,7 @@ public final class AlchemistSystem extends TickingSystem<EntityStore> {
                 tag(volumes, TowerLayout.ALCHEMIST_ARENA, "Reset", "On");
                 VampiresPlugin.get().getLogger().atInfo().log("Alchimiste vaincu (mode difficile : %s, %d joueur(s))",
                         fight.hard, fight.players);
+                giveBags(world, store, fight.hard);
             }
             return;
         }
@@ -722,6 +731,19 @@ public final class AlchemistSystem extends TickingSystem<EntityStore> {
         // Jamais sauvegardé : le combat repose tout au rechargement de l'instance.
         store.ensureAndGetComponent(spawned.first(), EntityStore.REGISTRY.getNonSerializedComponentType());
         return spawned.first();
+    }
+
+    /** Un sac de l'Alchimiste à chaque joueur de l'instance (le sac du mode difficile si le levier était tiré). */
+    private static void giveBags(World world, Store<EntityStore> store, boolean hard) {
+        String bag = hard ? BAG_HARD : BAG;
+        for (PlayerRef player : world.getPlayerRefs()) {
+            Ref<EntityStore> ref = player.getReference();
+            if (ref == null || !ref.isValid()) {
+                continue;
+            }
+            var inventory = InventoryComponent.getCombined(store, ref, InventoryComponent.HOTBAR_STORAGE_BACKPACK);
+            SimpleItemContainer.addOrDropItemStack(store, ref, inventory, new ItemStack(bag, 1));
+        }
     }
 
     private static List<Ref<EntityStore>> playersInArena(World world, Store<EntityStore> store) {

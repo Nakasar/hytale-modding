@@ -1,0 +1,20 @@
+{
+  "Name": "nakasar_alchemist.effects.Nakasar_Bottomless_Flask_Regen",
+  "Duration": 5.05,
+  "OverlapBehavior": "Overwrite",
+  "StatusEffectIcon": "Icons/Items/Nakasar/Alchemist/Loot/Bottomless_Flask.png",
+  "StatModifiers": {
+    "Health": 30
+  },
+  "ValueType": "Percent",
+  "DamageCalculatorCooldown": 5,
+  "ApplicationEffects": {
+    "Particles": [
+      {
+        "SystemId": "Potion_Health_Heal",
+        "TargetEntityPart": "Entity",
+        "TargetNodeName": "Pelvis"
+      }
+    ]
+  }
+}
