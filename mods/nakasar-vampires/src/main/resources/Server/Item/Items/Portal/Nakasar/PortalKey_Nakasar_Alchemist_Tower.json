@@ -1,0 +1,61 @@
+{
+  "Parent": "PortalKey_Taiga",
+  "TranslationProperties": {
+    "Name": "nakasar_alchemist.items.PortalKey_Nakasar_Alchemist_Tower.name",
+    "Description": "nakasar_alchemist.items.PortalKey_Nakasar_Alchemist_Tower.description"
+  },
+  "Icon": "Icons/Items/Nakasar/Tower/PortalKey_Alchemist_Tower.png",
+  "Quality": "Epic",
+  "Recipe": {
+    "TimeSeconds": 4,
+    "KnowledgeRequired": false,
+    "Input": [
+      {
+        "ItemId": "Ingredient_Rune_Shard",
+        "Quantity": 4
+      },
+      {
+        "ItemId": "Ingredient_Void_Essence",
+        "Quantity": 2
+      },
+      {
+        "ItemId": "Ingredient_Fire_Essence",
+        "Quantity": 1
+      },
+      {
+        "ItemId": "Ingredient_Ice_Essence",
+        "Quantity": 1
+      },
+      {
+        "ItemId": "Ingredient_Lightning_Essence",
+        "Quantity": 1
+      },
+      {
+        "ItemId": "Ingredient_Life_Essence",
+        "Quantity": 1
+      }
+    ],
+    "BenchRequirement": [
+      {
+        "Type": "Crafting",
+        "Id": "Nakasar_Hunter_Workbench",
+        "Categories": [
+          "Nakasar_Hunter_Fragments"
+        ],
+        "RequiredTierLevel": 3
+      },
+      {
+        "Type": "Crafting",
+        "Id": "Nakasar_Sacrificial_Altar",
+        "Categories": [
+          "Nakasar_Altar_Rituals"
+        ],
+        "RequiredTierLevel": 3
+      }
+    ]
+  },
+  "PortalKey": {
+    "PortalType": "Nakasar_Alchemist_Tower",
+    "TimeLimitSeconds": -1
+  }
+}

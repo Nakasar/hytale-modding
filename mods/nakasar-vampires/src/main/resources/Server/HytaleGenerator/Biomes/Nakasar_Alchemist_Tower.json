@@ -1,0 +1,1229 @@
+{
+  "Name": "Nakasar_Alchemist_Tower",
+  "Terrain": {
+    "Type": "DAOTerrain",
+    "Density": {
+      "Type": "Max",
+      "Inputs": [
+        {
+          "Type": "Min",
+          "Inputs": [
+            {
+              "Type": "Sum",
+              "Inputs": [
+                {
+                  "Type": "Multiplier",
+                  "Inputs": [
+                    {
+                      "Type": "YValue"
+                    },
+                    {
+                      "Type": "Constant",
+                      "Value": -0.125
+                    }
+                  ]
+                },
+                {
+                  "Type": "YOverride",
+                  "Value": 81.0,
+                  "Inputs": [
+                    {
+                      "Type": "Cache",
+                      "Capacity": 64,
+                      "Inputs": [
+                        {
+                          "Type": "Sum",
+                          "Inputs": [
+                            {
+                              "Type": "Constant",
+                              "Value": 12.4375
+                            },
+                            {
+                              "Type": "PositionsCellNoise",
+                              "Positions": {
+                                "Type": "List",
+                                "Positions": [
+                                  {
+                                    "X": 0,
+                                    "Y": 100,
+                                    "Z": 0
+                                  }
+                                ]
+                              },
+                              "ReturnType": {
+                                "Type": "Curve",
+                                "Curve": {
+                                  "Type": "Manual",
+                                  "Points": [
+                                    {
+                                      "In": 0,
+                                      "Out": 0
+                                    },
+                                    {
+                                      "In": 15.0,
+                                      "Out": 0
+                                    },
+                                    {
+                                      "In": 22.0,
+                                      "Out": -0.75
+                                    }
+                                  ]
+                                }
+                              },
+                              "DistanceFunction": {
+                                "Type": "Euclidean"
+                              },
+                              "MaxDistance": 24.0
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "Type": "Sum",
+              "Inputs": [
+                {
+                  "Type": "Multiplier",
+                  "Inputs": [
+                    {
+                      "Type": "YValue"
+                    },
+                    {
+                      "Type": "Constant",
+                      "Value": 0.125
+                    }
+                  ]
+                },
+                {
+                  "Type": "YOverride",
+                  "Value": 81.0,
+                  "Inputs": [
+                    {
+                      "Type": "Cache",
+                      "Capacity": 64,
+                      "Inputs": [
+                        {
+                          "Type": "Sum",
+                          "Inputs": [
+                            {
+                              "Type": "PositionsCellNoise",
+                              "Positions": {
+                                "Type": "List",
+                                "Positions": [
+                                  {
+                                    "X": 0,
+                                    "Y": 100,
+                                    "Z": 0
+                                  }
+                                ]
+                              },
+                              "ReturnType": {
+                                "Type": "Curve",
+                                "Curve": {
+                                  "Type": "Manual",
+                                  "Points": [
+                                    {
+                                      "In": 0.0,
+                                      "Out": -9.4125
+                                    },
+                                    {
+                                      "In": 11.0,
+                                      "Out": -10.075
+                                    },
+                                    {
+                                      "In": 17.6,
+                                      "Out": -10.8875
+                                    },
+                                    {
+                                      "In": 20.9,
+                                      "Out": -11.5
+                                    },
+                                    {
+                                      "In": 22.0,
+                                      "Out": -12.0
+                                    },
+                                    {
+                                      "In": 23.0,
+                                      "Out": -37.5
+                                    }
+                                  ]
+                                }
+                              },
+                              "DistanceFunction": {
+                                "Type": "Euclidean"
+                              },
+                              "MaxDistance": 24.0
+                            },
+                            {
+                              "Type": "Multiplier",
+                              "Inputs": [
+                                {
+                                  "Type": "SimplexNoise2D",
+                                  "Scale": 9.0,
+                                  "Octaves": 2,
+                                  "Lacunarity": 2.0,
+                                  "Persistence": 0.5,
+                                  "Seed": "ArrivalUnderside"
+                                },
+                                {
+                                  "Type": "Constant",
+                                  "Value": 0.6
+                                }
+                              ]
+                            },
+                            {
+                              "Type": "Multiplier",
+                              "Inputs": [
+                                {
+                                  "Type": "SimplexNoise2D",
+                                  "Scale": 14.0,
+                                  "Octaves": 2,
+                                  "Lacunarity": 2.0,
+                                  "Persistence": 0.5,
+                                  "Seed": "ArrivalRim"
+                                },
+                                {
+                                  "Type": "PositionsCellNoise",
+                                  "Positions": {
+                                    "Type": "List",
+                                    "Positions": [
+                                      {
+                                        "X": 0,
+                                        "Y": 100,
+                                        "Z": 0
+                                      }
+                                    ]
+                                  },
+                                  "ReturnType": {
+                                    "Type": "Curve",
+                                    "Curve": {
+                                      "Type": "Manual",
+                                      "Points": [
+                                        {
+                                          "In": 0,
+                                          "Out": 0
+                                        },
+                                        {
+                                          "In": 12.0,
+                                          "Out": 0
+                                        },
+                                        {
+                                          "In": 20.0,
+                                          "Out": 1.2
+                                        }
+                                      ]
+                                    }
+                                  },
+                                  "DistanceFunction": {
+                                    "Type": "Euclidean"
+                                  },
+                                  "MaxDistance": 24.0
+                                }
+                              ]
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "Type": "Min",
+          "Inputs": [
+            {
+              "Type": "Sum",
+              "Inputs": [
+                {
+                  "Type": "Multiplier",
+                  "Inputs": [
+                    {
+                      "Type": "YValue"
+                    },
+                    {
+                      "Type": "Constant",
+                      "Value": -0.125
+                    }
+                  ]
+                },
+                {
+                  "Type": "YOverride",
+                  "Value": 81.0,
+                  "Inputs": [
+                    {
+                      "Type": "Cache",
+                      "Capacity": 64,
+                      "Inputs": [
+                        {
+                          "Type": "Sum",
+                          "Inputs": [
+                            {
+                              "Type": "Constant",
+                              "Value": 12.4375
+                            },
+                            {
+                              "Type": "PositionsCellNoise",
+                              "Positions": {
+                                "Type": "List",
+                                "Positions": [
+                                  {
+                                    "X": 0,
+                                    "Y": 100,
+                                    "Z": -100
+                                  }
+                                ]
+                              },
+                              "ReturnType": {
+                                "Type": "Curve",
+                                "Curve": {
+                                  "Type": "Manual",
+                                  "Points": [
+                                    {
+                                      "In": 0,
+                                      "Out": 0
+                                    },
+                                    {
+                                      "In": 40.0,
+                                      "Out": 0
+                                    },
+                                    {
+                                      "In": 48.0,
+                                      "Out": -0.75
+                                    }
+                                  ]
+                                }
+                              },
+                              "DistanceFunction": {
+                                "Type": "Euclidean"
+                              },
+                              "MaxDistance": 50.0
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "Type": "Sum",
+              "Inputs": [
+                {
+                  "Type": "Multiplier",
+                  "Inputs": [
+                    {
+                      "Type": "YValue"
+                    },
+                    {
+                      "Type": "Constant",
+                      "Value": 0.125
+                    }
+                  ]
+                },
+                {
+                  "Type": "YOverride",
+                  "Value": 81.0,
+                  "Inputs": [
+                    {
+                      "Type": "Cache",
+                      "Capacity": 64,
+                      "Inputs": [
+                        {
+                          "Type": "Sum",
+                          "Inputs": [
+                            {
+                              "Type": "PositionsCellNoise",
+                              "Positions": {
+                                "Type": "List",
+                                "Positions": [
+                                  {
+                                    "X": 0,
+                                    "Y": 100,
+                                    "Z": -100
+                                  }
+                                ]
+                              },
+                              "ReturnType": {
+                                "Type": "Curve",
+                                "Curve": {
+                                  "Type": "Manual",
+                                  "Points": [
+                                    {
+                                      "In": 0.0,
+                                      "Out": -6.65
+                                    },
+                                    {
+                                      "In": 24.0,
+                                      "Out": -7.800000000000001
+                                    },
+                                    {
+                                      "In": 38.400000000000006,
+                                      "Out": -9.425
+                                    },
+                                    {
+                                      "In": 45.599999999999994,
+                                      "Out": -11.5
+                                    },
+                                    {
+                                      "In": 48.0,
+                                      "Out": -12.0
+                                    },
+                                    {
+                                      "In": 49.0,
+                                      "Out": -37.5
+                                    }
+                                  ]
+                                }
+                              },
+                              "DistanceFunction": {
+                                "Type": "Euclidean"
+                              },
+                              "MaxDistance": 50.0
+                            },
+                            {
+                              "Type": "Multiplier",
+                              "Inputs": [
+                                {
+                                  "Type": "SimplexNoise2D",
+                                  "Scale": 9.0,
+                                  "Octaves": 2,
+                                  "Lacunarity": 2.0,
+                                  "Persistence": 0.5,
+                                  "Seed": "TowerUnderside"
+                                },
+                                {
+                                  "Type": "Constant",
+                                  "Value": 0.6
+                                }
+                              ]
+                            },
+                            {
+                              "Type": "Multiplier",
+                              "Inputs": [
+                                {
+                                  "Type": "SimplexNoise2D",
+                                  "Scale": 14.0,
+                                  "Octaves": 2,
+                                  "Lacunarity": 2.0,
+                                  "Persistence": 0.5,
+                                  "Seed": "TowerRim"
+                                },
+                                {
+                                  "Type": "PositionsCellNoise",
+                                  "Positions": {
+                                    "Type": "List",
+                                    "Positions": [
+                                      {
+                                        "X": 0,
+                                        "Y": 100,
+                                        "Z": -100
+                                      }
+                                    ]
+                                  },
+                                  "ReturnType": {
+                                    "Type": "Curve",
+                                    "Curve": {
+                                      "Type": "Manual",
+                                      "Points": [
+                                        {
+                                          "In": 0,
+                                          "Out": 0
+                                        },
+                                        {
+                                          "In": 38.0,
+                                          "Out": 0
+                                        },
+                                        {
+                                          "In": 46.0,
+                                          "Out": 1.2
+                                        }
+                                      ]
+                                    }
+                                  },
+                                  "DistanceFunction": {
+                                    "Type": "Euclidean"
+                                  },
+                                  "MaxDistance": 50.0
+                                }
+                              ]
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  },
+  "MaterialProvider": {
+    "Type": "Solidity",
+    "Solid": {
+      "Type": "Queue",
+      "Queue": [
+        {
+          "Type": "SpaceAndDepth",
+          "LayerContext": "DepthIntoFloor",
+          "MaxExpectedDepth": 5,
+          "Layers": [
+            {
+              "Type": "ConstantThickness",
+              "Thickness": 1,
+              "Material": {
+                "Type": "FieldFunction",
+                "FieldFunction": {
+                  "Type": "SimplexNoise2D",
+                  "Scale": 13.0,
+                  "Octaves": 2,
+                  "Lacunarity": 2.0,
+                  "Persistence": 0.5,
+                  "Seed": "TowerPatches"
+                },
+                "Delimiters": [
+                  {
+                    "From": -10.0,
+                    "To": -0.45,
+                    "Material": {
+                      "Type": "Constant",
+                      "Material": {
+                        "Solid": "Soil_Grass_Deep"
+                      }
+                    }
+                  },
+                  {
+                    "From": -0.45,
+                    "To": 0.55,
+                    "Material": {
+                      "Type": "Weighted",
+                      "Seed": "TowerSurface",
+                      "SkipChance": 0.0,
+                      "WeightedMaterials": [
+                        {
+                          "Weight": 6,
+                          "Material": {
+                            "Type": "Constant",
+                            "Material": {
+                              "Solid": "Soil_Grass_Full"
+                            }
+                          }
+                        },
+                        {
+                          "Weight": 2,
+                          "Material": {
+                            "Type": "Constant",
+                            "Material": {
+                              "Solid": "Soil_Grass"
+                            }
+                          }
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "From": 0.55,
+                    "To": 10.0,
+                    "Material": {
+                      "Type": "Constant",
+                      "Material": {
+                        "Solid": "Plant_Moss_Block_Green_Dark"
+                      }
+                    }
+                  }
+                ]
+              }
+            },
+            {
+              "Type": "ConstantThickness",
+              "Thickness": 4,
+              "Material": {
+                "Type": "Weighted",
+                "Seed": "TowerSubsoil",
+                "SkipChance": 0.0,
+                "WeightedMaterials": [
+                  {
+                    "Weight": 3,
+                    "Material": {
+                      "Type": "Constant",
+                      "Material": {
+                        "Solid": "Soil_Dirt"
+                      }
+                    }
+                  },
+                  {
+                    "Weight": 1,
+                    "Material": {
+                      "Type": "Constant",
+                      "Material": {
+                        "Solid": "Rock_Stone_Mossy"
+                      }
+                    }
+                  }
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "Type": "Weighted",
+          "Seed": "TowerBedrock",
+          "SkipChance": 0.0,
+          "WeightedMaterials": [
+            {
+              "Weight": 5,
+              "Material": {
+                "Type": "Constant",
+                "Material": {
+                  "Solid": "Rock_Stone"
+                }
+              }
+            },
+            {
+              "Weight": 2,
+              "Material": {
+                "Type": "Constant",
+                "Material": {
+                  "Solid": "Rock_Marble"
+                }
+              }
+            },
+            {
+              "Weight": 1,
+              "Material": {
+                "Type": "Constant",
+                "Material": {
+                  "Solid": "Rock_Slate"
+                }
+              }
+            },
+            {
+              "Weight": 0.05,
+              "Material": {
+                "Type": "Constant",
+                "Material": {
+                  "Solid": "Rock_Crystal_Purple_Block"
+                }
+              }
+            },
+            {
+              "Weight": 0.05,
+              "Material": {
+                "Type": "Constant",
+                "Material": {
+                  "Solid": "Rock_Crystal_Green_Block"
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    "Empty": {
+      "Type": "Constant",
+      "Material": {
+        "Solid": "Empty"
+      }
+    }
+  },
+  "Props": [
+    {
+      "Runtime": 0,
+      "ContextPrecision": "Prop",
+      "PropDistribution": {
+        "Type": "Assigned",
+        "OverrideAllProps": true,
+        "PropDistribution": {
+          "Type": "Positions",
+          "Positions": {
+            "Type": "List",
+            "Positions": [
+              {
+                "X": 0,
+                "Y": 100,
+                "Z": 0
+              }
+            ]
+          }
+        },
+        "Assignments": {
+          "Type": "Constant",
+          "Prop": {
+            "Type": "Locator",
+            "Pattern": {
+              "Type": "Floor",
+              "Floor": {
+                "Type": "Not",
+                "Pattern": {
+                  "Type": "BlockType",
+                  "Material": {
+                    "Solid": "Empty"
+                  }
+                }
+              },
+              "Origin": {
+                "Type": "BlockType",
+                "Material": {
+                  "Solid": "Empty"
+                }
+              }
+            },
+            "Scanner": {
+              "Type": "Linear",
+              "Axis": "Y",
+              "Range": {
+                "MinInclusive": -12,
+                "MaxExclusive": 13
+              },
+              "AscendingOrder": false,
+              "Scanner": {
+                "Type": "Origin"
+              }
+            },
+            "PlacementCap": 1,
+            "Prop": {
+              "Type": "Prefab",
+              "WeightedPrefabPaths": [
+                {
+                  "Path": "Nakasar/AlchemistTower/Arrival",
+                  "Weight": 1.0
+                }
+              ]
+            }
+          }
+        }
+      }
+    },
+    {
+      "Runtime": 1,
+      "ContextPrecision": "Chunk",
+      "PropDistribution": {
+        "Type": "Assigned",
+        "OverrideAllProps": true,
+        "PropDistribution": {
+          "Type": "Positions",
+          "Positions": {
+            "Type": "Mesh2D",
+            "PointsY": 81,
+            "PointGenerator": {
+              "Type": "Mesh",
+              "ScaleX": 2.5,
+              "ScaleY": 2.5,
+              "ScaleZ": 2.5,
+              "Jitter": 0.5,
+              "Seed": "TowerPlants"
+            }
+          }
+        },
+        "Assignments": {
+          "Type": "Weighted",
+          "Seed": "TowerPlantPick",
+          "SkipChance": 0.45,
+          "WeightedAssignments": [
+            {
+              "Weight": 5.0,
+              "Assignments": {
+                "Type": "Constant",
+                "Prop": {
+                  "Type": "Locator",
+                  "Pattern": {
+                    "Type": "Floor",
+                    "Floor": {
+                      "Type": "Or",
+                      "Patterns": [
+                        {
+                          "Type": "BlockType",
+                          "Material": {
+                            "Solid": "Soil_Grass_Full"
+                          }
+                        },
+                        {
+                          "Type": "BlockType",
+                          "Material": {
+                            "Solid": "Soil_Grass"
+                          }
+                        },
+                        {
+                          "Type": "BlockType",
+                          "Material": {
+                            "Solid": "Soil_Grass_Deep"
+                          }
+                        }
+                      ]
+                    },
+                    "Origin": {
+                      "Type": "BlockType",
+                      "Material": {
+                        "Solid": "Empty"
+                      }
+                    }
+                  },
+                  "Scanner": {
+                    "Type": "Linear",
+                    "Axis": "Y",
+                    "Range": {
+                      "MinInclusive": -12,
+                      "MaxExclusive": 13
+                    },
+                    "AscendingOrder": false,
+                    "Scanner": {
+                      "Type": "Origin"
+                    }
+                  },
+                  "PlacementCap": 1,
+                  "Prop": {
+                    "Type": "Manual",
+                    "Blocks": [
+                      {
+                        "Position": {
+                          "X": 0,
+                          "Y": 0,
+                          "Z": 0
+                        },
+                        "Material": {
+                          "Solid": "Plant_Grass_Lush_Short"
+                        }
+                      }
+                    ]
+                  }
+                }
+              }
+            },
+            {
+              "Weight": 3.0,
+              "Assignments": {
+                "Type": "Constant",
+                "Prop": {
+                  "Type": "Locator",
+                  "Pattern": {
+                    "Type": "Floor",
+                    "Floor": {
+                      "Type": "Or",
+                      "Patterns": [
+                        {
+                          "Type": "BlockType",
+                          "Material": {
+                            "Solid": "Soil_Grass_Full"
+                          }
+                        },
+                        {
+                          "Type": "BlockType",
+                          "Material": {
+                            "Solid": "Soil_Grass"
+                          }
+                        },
+                        {
+                          "Type": "BlockType",
+                          "Material": {
+                            "Solid": "Soil_Grass_Deep"
+                          }
+                        }
+                      ]
+                    },
+                    "Origin": {
+                      "Type": "BlockType",
+                      "Material": {
+                        "Solid": "Empty"
+                      }
+                    }
+                  },
+                  "Scanner": {
+                    "Type": "Linear",
+                    "Axis": "Y",
+                    "Range": {
+                      "MinInclusive": -12,
+                      "MaxExclusive": 13
+                    },
+                    "AscendingOrder": false,
+                    "Scanner": {
+                      "Type": "Origin"
+                    }
+                  },
+                  "PlacementCap": 1,
+                  "Prop": {
+                    "Type": "Manual",
+                    "Blocks": [
+                      {
+                        "Position": {
+                          "X": 0,
+                          "Y": 0,
+                          "Z": 0
+                        },
+                        "Material": {
+                          "Solid": "Plant_Grass_Lush"
+                        }
+                      }
+                    ]
+                  }
+                }
+              }
+            },
+            {
+              "Weight": 0.6,
+              "Assignments": {
+                "Type": "Constant",
+                "Prop": {
+                  "Type": "Locator",
+                  "Pattern": {
+                    "Type": "Floor",
+                    "Floor": {
+                      "Type": "Or",
+                      "Patterns": [
+                        {
+                          "Type": "BlockType",
+                          "Material": {
+                            "Solid": "Soil_Grass_Full"
+                          }
+                        },
+                        {
+                          "Type": "BlockType",
+                          "Material": {
+                            "Solid": "Soil_Grass"
+                          }
+                        },
+                        {
+                          "Type": "BlockType",
+                          "Material": {
+                            "Solid": "Soil_Grass_Deep"
+                          }
+                        }
+                      ]
+                    },
+                    "Origin": {
+                      "Type": "BlockType",
+                      "Material": {
+                        "Solid": "Empty"
+                      }
+                    }
+                  },
+                  "Scanner": {
+                    "Type": "Linear",
+                    "Axis": "Y",
+                    "Range": {
+                      "MinInclusive": -12,
+                      "MaxExclusive": 13
+                    },
+                    "AscendingOrder": false,
+                    "Scanner": {
+                      "Type": "Origin"
+                    }
+                  },
+                  "PlacementCap": 1,
+                  "Prop": {
+                    "Type": "Manual",
+                    "Blocks": [
+                      {
+                        "Position": {
+                          "X": 0,
+                          "Y": 0,
+                          "Z": 0
+                        },
+                        "Material": {
+                          "Solid": "Plant_Flower_Common_Violet"
+                        }
+                      }
+                    ]
+                  }
+                }
+              }
+            },
+            {
+              "Weight": 0.5,
+              "Assignments": {
+                "Type": "Constant",
+                "Prop": {
+                  "Type": "Locator",
+                  "Pattern": {
+                    "Type": "Floor",
+                    "Floor": {
+                      "Type": "Or",
+                      "Patterns": [
+                        {
+                          "Type": "BlockType",
+                          "Material": {
+                            "Solid": "Soil_Grass_Full"
+                          }
+                        },
+                        {
+                          "Type": "BlockType",
+                          "Material": {
+                            "Solid": "Soil_Grass"
+                          }
+                        },
+                        {
+                          "Type": "BlockType",
+                          "Material": {
+                            "Solid": "Soil_Grass_Deep"
+                          }
+                        }
+                      ]
+                    },
+                    "Origin": {
+                      "Type": "BlockType",
+                      "Material": {
+                        "Solid": "Empty"
+                      }
+                    }
+                  },
+                  "Scanner": {
+                    "Type": "Linear",
+                    "Axis": "Y",
+                    "Range": {
+                      "MinInclusive": -12,
+                      "MaxExclusive": 13
+                    },
+                    "AscendingOrder": false,
+                    "Scanner": {
+                      "Type": "Origin"
+                    }
+                  },
+                  "PlacementCap": 1,
+                  "Prop": {
+                    "Type": "Manual",
+                    "Blocks": [
+                      {
+                        "Position": {
+                          "X": 0,
+                          "Y": 0,
+                          "Z": 0
+                        },
+                        "Material": {
+                          "Solid": "Plant_Flower_Common_Lime"
+                        }
+                      }
+                    ]
+                  }
+                }
+              }
+            },
+            {
+              "Weight": 0.3,
+              "Assignments": {
+                "Type": "Constant",
+                "Prop": {
+                  "Type": "Locator",
+                  "Pattern": {
+                    "Type": "Floor",
+                    "Floor": {
+                      "Type": "Or",
+                      "Patterns": [
+                        {
+                          "Type": "BlockType",
+                          "Material": {
+                            "Solid": "Soil_Grass_Full"
+                          }
+                        },
+                        {
+                          "Type": "BlockType",
+                          "Material": {
+                            "Solid": "Soil_Grass"
+                          }
+                        },
+                        {
+                          "Type": "BlockType",
+                          "Material": {
+                            "Solid": "Soil_Grass_Deep"
+                          }
+                        }
+                      ]
+                    },
+                    "Origin": {
+                      "Type": "BlockType",
+                      "Material": {
+                        "Solid": "Empty"
+                      }
+                    }
+                  },
+                  "Scanner": {
+                    "Type": "Linear",
+                    "Axis": "Y",
+                    "Range": {
+                      "MinInclusive": -12,
+                      "MaxExclusive": 13
+                    },
+                    "AscendingOrder": false,
+                    "Scanner": {
+                      "Type": "Origin"
+                    }
+                  },
+                  "PlacementCap": 1,
+                  "Prop": {
+                    "Type": "Manual",
+                    "Blocks": [
+                      {
+                        "Position": {
+                          "X": 0,
+                          "Y": 0,
+                          "Z": 0
+                        },
+                        "Material": {
+                          "Solid": "Plant_Flower_Orchid_Purple"
+                        }
+                      }
+                    ]
+                  }
+                }
+              }
+            },
+            {
+              "Weight": 0.3,
+              "Assignments": {
+                "Type": "Constant",
+                "Prop": {
+                  "Type": "Locator",
+                  "Pattern": {
+                    "Type": "Floor",
+                    "Floor": {
+                      "Type": "Or",
+                      "Patterns": [
+                        {
+                          "Type": "BlockType",
+                          "Material": {
+                            "Solid": "Soil_Grass_Full"
+                          }
+                        },
+                        {
+                          "Type": "BlockType",
+                          "Material": {
+                            "Solid": "Soil_Grass"
+                          }
+                        },
+                        {
+                          "Type": "BlockType",
+                          "Material": {
+                            "Solid": "Soil_Grass_Deep"
+                          }
+                        }
+                      ]
+                    },
+                    "Origin": {
+                      "Type": "BlockType",
+                      "Material": {
+                        "Solid": "Empty"
+                      }
+                    }
+                  },
+                  "Scanner": {
+                    "Type": "Linear",
+                    "Axis": "Y",
+                    "Range": {
+                      "MinInclusive": -12,
+                      "MaxExclusive": 13
+                    },
+                    "AscendingOrder": false,
+                    "Scanner": {
+                      "Type": "Origin"
+                    }
+                  },
+                  "PlacementCap": 1,
+                  "Prop": {
+                    "Type": "Manual",
+                    "Blocks": [
+                      {
+                        "Position": {
+                          "X": 0,
+                          "Y": 0,
+                          "Z": 0
+                        },
+                        "Material": {
+                          "Solid": "Plant_Flower_Tall_Cyan"
+                        }
+                      }
+                    ]
+                  }
+                }
+              }
+            },
+            {
+              "Weight": 1.0,
+              "Assignments": {
+                "Type": "Constant",
+                "Prop": {
+                  "Type": "Locator",
+                  "Pattern": {
+                    "Type": "Floor",
+                    "Floor": {
+                      "Type": "Or",
+                      "Patterns": [
+                        {
+                          "Type": "BlockType",
+                          "Material": {
+                            "Solid": "Soil_Grass_Full"
+                          }
+                        },
+                        {
+                          "Type": "BlockType",
+                          "Material": {
+                            "Solid": "Soil_Grass"
+                          }
+                        },
+                        {
+                          "Type": "BlockType",
+                          "Material": {
+                            "Solid": "Soil_Grass_Deep"
+                          }
+                        }
+                      ]
+                    },
+                    "Origin": {
+                      "Type": "BlockType",
+                      "Material": {
+                        "Solid": "Empty"
+                      }
+                    }
+                  },
+                  "Scanner": {
+                    "Type": "Linear",
+                    "Axis": "Y",
+                    "Range": {
+                      "MinInclusive": -12,
+                      "MaxExclusive": 13
+                    },
+                    "AscendingOrder": false,
+                    "Scanner": {
+                      "Type": "Origin"
+                    }
+                  },
+                  "PlacementCap": 1,
+                  "Prop": {
+                    "Type": "Manual",
+                    "Blocks": [
+                      {
+                        "Position": {
+                          "X": 0,
+                          "Y": 0,
+                          "Z": 0
+                        },
+                        "Material": {
+                          "Solid": "Plant_Moss_Short_Green"
+                        }
+                      }
+                    ]
+                  }
+                }
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "EnvironmentProvider": {
+    "Type": "Constant",
+    "Environment": "Nakasar_Env_Alchemist_Tower"
+  },
+  "TintProvider": {
+    "Type": "Constant",
+    "Color": "#4f9a6a"
+  }
+}

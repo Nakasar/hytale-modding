@@ -1,0 +1,43 @@
+{
+  "InstanceId": "Nakasar_Alchemist_Tower",
+  "GameplayConfig": "Nakasar_Alchemist_Tower",
+  "Description": {
+    "DisplayName": "nakasar_alchemist.portal.name",
+    "FlavorText": "nakasar_alchemist.portal.flavor",
+    "ThemeColor": "#8e44ad",
+    "DescriptionTags": [
+      {
+        "TranslationKey": "nakasar_alchemist.portal.tag.dungeon",
+        "Color": "#c0392b"
+      },
+      {
+        "TranslationKey": "nakasar_alchemist.portal.tag.elemental",
+        "Color": "#27ae60"
+      },
+      {
+        "TranslationKey": "nakasar_alchemist.portal.tag.group",
+        "Color": "#2980b9"
+      }
+    ],
+    "Objectives": [
+      "nakasar_alchemist.portal.objective.climb",
+      "nakasar_alchemist.portal.objective.alchemist"
+    ]
+  },
+  "Spawn": {
+    "SpawnReturnPortal": false,
+    "SpawnProviderOverride": {
+      "Id": "Global",
+      "SpawnPoint": {
+        "X": 0.5,
+        "Y": 100.0,
+        "Z": 0.5,
+        "Yaw": 0.0
+      }
+    }
+  },
+  "TimeLimitSeconds": -1,
+  "CloseWhenEmpty": true,
+  "VoidInvasionEnabled": false,
+  "AllowPlayersToLeaveViaMap": true
+}

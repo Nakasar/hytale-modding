@@ -1,0 +1,17 @@
+# Tour de l'Alchimiste (donjon) — textes français
+items.PortalKey_Nakasar_Alchemist_Tower.name = Clé de la Tour de l'Alchimiste
+items.PortalKey_Nakasar_Alchemist_Tower.description = Quatre éléments liés par le vide et les runes. Ouvre un passage vers l'île où l'Alchimiste a dressé sa tour.
+items.Nakasar_Tower_Exit.name = Portail de sortie
+items.Nakasar_Tower_Exit.description = Quitte la Tour de l'Alchimiste.
+portal.name = Tour de l'Alchimiste
+portal.flavor = Chasseurs et Comte sont venus frapper à sa porte, pour demander son aide ou le voler. Désormais, c'est lui qui frappe les innocents.
+portal.tag.dungeon = Donjon
+portal.tag.elemental = Élémentaire
+portal.tag.group = En groupe
+portal.objective.climb = Gravir la tour
+portal.objective.alchemist = Vaincre l'Alchimiste
+exit.title = Quitter la tour ?
+exit.message = Vous retournerez dans votre monde. La clé utilisée est perdue.
+exit.leave = Quitter
+exit.stay = Rester
+tower.fallRescue = Les vents de la tour vous ramènent sur l'île.

@@ -1,0 +1,17 @@
+# Alchemist's Tower (dungeon) — English texts
+items.PortalKey_Nakasar_Alchemist_Tower.name = Alchemist's Tower Key
+items.PortalKey_Nakasar_Alchemist_Tower.description = Four elements bound by void and runes. Opens a passage to the island where the Alchemist raised his tower.
+items.Nakasar_Tower_Exit.name = Exit Portal
+items.Nakasar_Tower_Exit.description = Leave the Alchemist's Tower.
+portal.name = Alchemist's Tower
+portal.flavor = Hunters and the Count came knocking at his door, to ask for help or to rob him. Now he is the one striking the innocent.
+portal.tag.dungeon = Dungeon
+portal.tag.elemental = Elemental
+portal.tag.group = Group
+portal.objective.climb = Climb the tower
+portal.objective.alchemist = Defeat the Alchemist
+exit.title = Leave the tower?
+exit.message = You will return to your world. The key you used is lost.
+exit.leave = Leave
+exit.stay = Stay
+tower.fallRescue = The tower's winds carry you back to the island.

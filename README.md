@@ -317,6 +317,14 @@ Mobs (voir [docs/npc-0.7.2.md](docs/npc-0.7.2.md)) :
   de `ContractBounties` dans le journal (ressource `PortalWorld` du fragment). Argent infusé : teinte dorée et dégâts
   ×2,5 contre les vampires, ×1,5 contre les zombies et squelettes.
 
+- **Tour de l'Alchimiste, socle** (`tools/generate_alchemist_tower.py`, `tower/TowerFallSystem.java`) : la clé se
+  fabrique à l'établi des chasseurs niveau 3 et à l'autel niveau 3 (éclats de rune, essences du vide et élémentaires).
+  L'instance doit ouvrir de nuit (19 h figée, ciel violet et horizon émeraude), sans limite de temps, blocs non
+  modifiables. Arrivée sur une place ronde à parapets, pont vers le pied de la tour (façade encore murée par des
+  barreaux, portail de retour provisoire devant). À vérifier : le portail de sortie anticipée `Nakasar_Tower_Exit`
+  (copie de `Dungeon_Portal_Early_Exit`, posé par prefab sans blocs de remplissage) affiche bien la confirmation et
+  renvoie chez soi ; tomber de l'île (48 blocs sous la place) ramène au point d'arrivée avec un message.
+
 ## Organisation du dépôt
 
 ```text
