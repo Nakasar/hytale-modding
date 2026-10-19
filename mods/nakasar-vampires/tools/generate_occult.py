@@ -425,8 +425,19 @@ def item(item_id, model, quality="Uncommon", stack=25, interactions=None, scale=
     write(ITEMS / f"{item_id}.json", data)
 
 
+# Animation de boisson des potions du jeu (Potion_Template, Assets.zip 0.7.2).
+DRINK_ANIMATIONS = {"Parent": "Item", "Animations": {"Consume": {
+    "FirstPerson": "Characters/Animations/Items/Main_Handed/Item/Attacks/Drink/Drink_FPS.blockyanim",
+    "ThirdPerson": "Characters/Animations/Items/Main_Handed/Item/Attacks/Drink/Drink.blockyanim",
+    "Speed": 1, "Looping": True}}}
+
+
 def consumable(item_id, model, root, quality="Uncommon", stack=10):
-    item(item_id, model, quality, stack, interactions={"Secondary": root})
+    item(item_id, model, quality, stack, interactions={"Secondary": root}, categories=["Items.Potions"])
+    path = ITEMS / f"{item_id}.json"
+    data = json.loads(path.read_text())
+    data.update({"PlayerAnimationsId": DRINK_ANIMATIONS, "Consumable": True, "Utility": {"Compatible": False}})
+    write(path, data)
 
 
 def root(root_id, interaction_id):
@@ -434,17 +445,21 @@ def root(root_id, interaction_id):
 
 
 def drink_chain(interaction_id, action, give_back="Potion_Empty"):
-    """Gorgée (son, 0,6 s) puis l'action ; la fiole bue est remplacée par une fiole vide."""
+    """Comme Consume_Charge_Potion_Fast du jeu : animation de boisson tenue 1,5 s (relâcher annule), puis l'action ;
+    la fiole bue est remplacée par une fiole vide."""
     consume = {"Type": "ModifyInventory", "AdjustHeldItemQuantity": -1}
     if give_back:
         consume["ItemToAdd"] = {"Id": give_back, "Quantity": 1}
     action = dict(action)
     action["Next"] = consume
     write(INTERACTIONS / f"{interaction_id}.json", {
-        "Type": "Simple",
-        "RunTime": 0.6,
-        "Effects": {"WorldSoundEventId": "SFX_Nakasar_Drink"},
-        "Next": action,
+        "Type": "Charging",
+        "FailOnDamage": False,
+        "Effects": {"ItemAnimationId": "Consume", "WorldSoundEventId": "SFX_Nakasar_Drink",
+                    "ClearAnimationOnFinish": True, "ClearSoundEventOnFinish": True},
+        "HorizontalSpeedMultiplier": 0.75,
+        "Next": {"1.5": action},
+        "Failed": {"Type": "Simple"},
     })
 
 

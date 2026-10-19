@@ -1,18 +1,19 @@
 package dev.nakasar.hytale.vampires.vampirism;
 
 /**
- * Paliers de la faim de sang, comme les rangs de nourriture : la régénération naturelle de vie suit le palier, et
- * l'affamé ne régénère plus du tout. Chaque palier a son effet de statut (icône dans la barre des effets).
+ * Paliers de la faim de sang, comme les rangs de nourriture : la régénération de vie suit le palier, aux débits des
+ * effets de régénération des repas du jeu (Food_Health_Regen_Large, Medium, Small, Tiny : 3 PV / 2 s, 2 PV / 2 s,
+ * 1 PV / 2 s, 1 PV / 3 s), et l'affamé ne régénère plus du tout. Chaque palier a son effet de statut (icône dans la barre des effets).
  */
 public enum BloodStage {
-    /** Rassasié : régénère comme une nourriture de rang 4. */
-    SATED(0.75f, 1.0f, "Nakasar_Blood_Sated"),
+    /** Rassasié : régénère comme un grand repas (Food_Health_Regen_Large). */
+    SATED(0.75f, 1.5f, "Nakasar_Blood_Sated"),
     /** Faim rang 3. */
-    HUNGER_3(0.5f, 0.6f, "Nakasar_Blood_Hunger_3"),
+    HUNGER_3(0.5f, 1.0f, "Nakasar_Blood_Hunger_3"),
     /** Faim rang 2. */
-    HUNGER_2(0.25f, 0.35f, "Nakasar_Blood_Hunger_2"),
+    HUNGER_2(0.25f, 0.5f, "Nakasar_Blood_Hunger_2"),
     /** Faim rang 1. */
-    HUNGER_1(0.0001f, 0.15f, "Nakasar_Blood_Hunger_1"),
+    HUNGER_1(0.0001f, 0.33f, "Nakasar_Blood_Hunger_1"),
     /** Affamé : plus de régénération, malus de vitesse d'attaque, battements de cœur des vivants proches. */
     STARVING(0f, 0f, "Nakasar_Blood_Starving");
 

@@ -41,10 +41,11 @@ import java.util.Map;
  *
  * <ul>
  *   <li><b>Faim de sang.</b> Le sang baisse de rassasié à affamé en {@value Vampire#DAYS_TO_STARVE} jours du monde
- *       (durées de jour et de nuit du monde, même si le temps y est figé). La régénération naturelle du jeu est
- *       coupée ({@link HealthRegenState}) et remplacée par celle du palier ({@link BloodStage}), affiché par un effet
- *       de statut. Les effets de nourriture (ids qui commencent par {@value #FOOD_EFFECT_PREFIX}) sont retirés dès
- *       qu'ils apparaissent : la nourriture n'a plus d'effet.</li>
+ *       (durées de jour et de nuit du monde, même si le temps y est figé). En survie, un joueur ne régénère que par
+ *       les effets des repas ; un vampire régénère selon son palier ({@link BloodStage}), affiché par un effet de
+ *       statut, et la régénération naturelle reste coupée ({@link HealthRegenState}). Les effets de nourriture (ids
+ *       qui commencent par {@link #FOOD_EFFECT_PREFIXES}, ceux de Server/Entity/Effects/Food du jeu 0.7.2) sont
+ *       retirés dès qu'ils apparaissent : la nourriture n'a plus d'effet.</li>
  *   <li><b>Affamé.</b> Les battements de cœur du vivant le plus proche (moins de {@value #HEARTBEAT_RADIUS} blocs)
  *       se font entendre, de plus en plus vite quand il approche. Le malus d'attaque est dans
  *       {@link VampireDamageSystem}.</li>
@@ -61,7 +62,8 @@ import java.util.Map;
  */
 public final class VampireSystem extends DelayedEntitySystem<EntityStore> {
 
-    static final String FOOD_EFFECT_PREFIX = "Food_";
+    /** Préfixes des effets de repas du jeu (dossier Server/Entity/Effects/Food d'Assets.zip 0.7.2). */
+    static final String[] FOOD_EFFECT_PREFIXES = {"Food_", "FruitVeggie_Buff_", "HealthRegen_Buff_", "Meat_Buff_"};
     static final String SUN_PROTECTION_PREFIX = "Nakasar_Sun_Protection_";
     static final String SUNBURN = "Nakasar_Sunburn";
     static final String SUNBURN_LIGHT = "Nakasar_Sunburn_Light";
@@ -168,10 +170,19 @@ public final class VampireSystem extends DelayedEntitySystem<EntityStore> {
         }
         for (ActiveEntityEffect active : effects.getAllActiveEntityEffects()) {
             EntityEffect effect = EntityEffect.getAssetMap().getAsset(active.getEntityEffectIndex());
-            if (effect != null && effect.getId() != null && effect.getId().startsWith(FOOD_EFFECT_PREFIX)) {
+            if (effect != null && effect.getId() != null && isFoodEffect(effect.getId())) {
                 effects.removeEffect(ref, active.getEntityEffectIndex(), buffer);
             }
         }
+    }
+
+    private static boolean isFoodEffect(String id) {
+        for (String prefix : FOOD_EFFECT_PREFIXES) {
+            if (id.startsWith(prefix)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     private static void sun(float dt, Ref<EntityStore> ref, Vampire vampire, Vector3d position,

@@ -1,21 +1,30 @@
 {
-  "Type": "Simple",
-  "RunTime": 0.6,
+  "Type": "Charging",
+  "FailOnDamage": false,
   "Effects": {
-    "WorldSoundEventId": "SFX_Nakasar_Drink"
+    "ItemAnimationId": "Consume",
+    "WorldSoundEventId": "SFX_Nakasar_Drink",
+    "ClearAnimationOnFinish": true,
+    "ClearSoundEventOnFinish": true
   },
+  "HorizontalSpeedMultiplier": 0.75,
   "Next": {
-    "Type": "Nakasar_DrinkBlood",
-    "Blood": 0.35,
-    "NauseaEffectId": "Nakasar_Blood_Nausea",
-    "NauseaSeconds": 12,
-    "Next": {
-      "Type": "ModifyInventory",
-      "AdjustHeldItemQuantity": -1,
-      "ItemToAdd": {
-        "Id": "Potion_Empty",
-        "Quantity": 1
+    "1.5": {
+      "Type": "Nakasar_DrinkBlood",
+      "Blood": 0.35,
+      "NauseaEffectId": "Nakasar_Blood_Nausea",
+      "NauseaSeconds": 12,
+      "Next": {
+        "Type": "ModifyInventory",
+        "AdjustHeldItemQuantity": -1,
+        "ItemToAdd": {
+          "Id": "Potion_Empty",
+          "Quantity": 1
+        }
       }
     }
+  },
+  "Failed": {
+    "Type": "Simple"
   }
 }

@@ -36,7 +36,7 @@ final class SunExposure {
     static final float CLOUDY = 0.5f;
 
     private static final String[] STORM_WORDS = {"storm", "thunder", "lightning"};
-    private static final String[] CLOUDY_WORDS = {"rain", "snow", "cloud", "overcast", "fog", "mist", "blizzard",
+    private static final String[] CLOUDY_WORDS = {"rain", "snow", "cloud", "overcast", "haze", "fog", "mist", "blizzard",
             "drizzle", "shower", "ash"};
 
     private SunExposure() {

@@ -8,13 +8,27 @@
   "Texture": "Items/Nakasar/Occult/Ritual_Chalice.png",
   "Quality": "Epic",
   "Categories": [
-    "Items.Ingredients"
+    "Items.Potions"
   ],
-  "PlayerAnimationsId": "Item",
+  "PlayerAnimationsId": {
+    "Parent": "Item",
+    "Animations": {
+      "Consume": {
+        "FirstPerson": "Characters/Animations/Items/Main_Handed/Item/Attacks/Drink/Drink_FPS.blockyanim",
+        "ThirdPerson": "Characters/Animations/Items/Main_Handed/Item/Attacks/Drink/Drink.blockyanim",
+        "Speed": 1,
+        "Looping": true
+      }
+    }
+  },
   "ItemSoundSetId": "ISS_Items_Gems",
   "Scale": 1.0,
   "MaxStack": 1,
   "Interactions": {
     "Secondary": "Root_Nakasar_Ritual_Become"
+  },
+  "Consumable": true,
+  "Utility": {
+    "Compatible": false
   }
 }

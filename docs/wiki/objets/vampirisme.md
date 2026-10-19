@@ -17,10 +17,10 @@ Un vampire ne se nourrit plus de nourriture : manger ne lui rend rien et ne rég
 
 | Palier | Réserve | Régénération |
 |---|---|---|
-| ![icône](/jeu/UI/StatusEffects/Nakasar/Occult/Blood_Sated.png) Rassasié de sang | 75 % et plus | 1 PV/s |
-| ![icône](/jeu/UI/StatusEffects/Nakasar/Occult/Blood_Hunger_3.png) Soif légère | 50 à 75 % | 0,6 PV/s |
-| ![icône](/jeu/UI/StatusEffects/Nakasar/Occult/Blood_Hunger_2.png) Soif | 25 à 50 % | 0,35 PV/s |
-| ![icône](/jeu/UI/StatusEffects/Nakasar/Occult/Blood_Hunger_1.png) Soif dévorante | moins de 25 % | 0,15 PV/s |
+| ![icône](/jeu/UI/StatusEffects/Nakasar/Occult/Blood_Sated.png) Rassasié de sang | 75 % et plus | 1,5 PV/s (comme un grand repas) |
+| ![icône](/jeu/UI/StatusEffects/Nakasar/Occult/Blood_Hunger_3.png) Soif légère | 50 à 75 % | 1 PV/s |
+| ![icône](/jeu/UI/StatusEffects/Nakasar/Occult/Blood_Hunger_2.png) Soif | 25 à 50 % | 0,5 PV/s |
+| ![icône](/jeu/UI/StatusEffects/Nakasar/Occult/Blood_Hunger_1.png) Soif dévorante | moins de 25 % | 0,33 PV/s |
 | ![icône](/jeu/UI/StatusEffects/Nakasar/Occult/Blood_Starving.png) Affamé de sang | vide | aucune ; vos coups sont plus lents (dégâts réduits si vous frappez trop vite) et vous entendez battre le cœur du vivant le plus proche (14 blocs) |
 
 Pour boire :

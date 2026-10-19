@@ -285,14 +285,14 @@ Mobs (voir [docs/npc-0.7.2.md](docs/npc-0.7.2.md)) :
   découpes), animations d'attaque jouées par `ItemAnimationId` (`Server/Item/Animations/Nakasar/`). Si un sens est
   inversé, changer le signe dans la pose de l'animation concernée et relancer le script.
 - **Joueur vampire** (`vampirism/`, `tools/generate_occult.py`) : améliorer l'autel au niveau 3, fabriquer le
-  calice et le boire près de l'autel. À vérifier : la nourriture du jeu ne régénère plus (ses effets commencent
-  par `Food_` et sont retirés ; sinon chercher le vrai préfixe dans Assets.zip), la régénération naturelle est
-  coupée, le palier de soif s'affiche et baisse (`/time` pour avancer), la brûlure au soleil cesse sous un toit et
-  pendant l'orage (ids de météo reconnus par mots-clés `storm`/`thunder`/`rain`... dans `SunExposure`),
-  l'éblouissement (`ScreenEffects/Nakasar/Sun_Glare.png`), la lumière de nuit visible par soi, le battement de
-  cœur quand affamé, l'état gardé après reconnexion, les potions bues au clic droit (modèle de fiole et prise en
-  main), la capuche et le voile portés. Le malus de vitesse d'attaque réduit les dégâts des coups trop rapprochés
-  (le serveur ne peut pas ralentir l'animation).
+  calice et le boire près de l'autel. Lu dans Assets.zip 0.7.2 : en survie, la vie ne remonte que par les effets des
+  repas (`Server/Entity/Effects/Food`, préfixes `Food_`, `FruitVeggie_Buff_`, `HealthRegen_Buff_`, `Meat_Buff_`,
+  retirés au vampire ; les soins instantanés `Food_Health_Restore_*` peuvent passer avant), les paliers de soif
+  reprennent leurs débits, et les potions boivent comme `Potion_Template`. À vérifier : la brûlure au soleil cesse
+  sous un toit et pendant l'orage (ids de météo reconnus par mots-clés dans `SunExposure`), l'éblouissement
+  (`ScreenEffects/Nakasar/Sun_Glare.png`), la lumière de nuit visible par soi, le battement de cœur quand affamé,
+  l'état gardé après reconnexion, la capuche et le voile portés. Le malus de vitesse d'attaque réduit les dégâts
+  des coups trop rapprochés (le serveur ne peut pas ralentir l'animation).
 
 ## Organisation du dépôt
 
