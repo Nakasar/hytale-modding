@@ -324,15 +324,20 @@ Mobs (voir [docs/npc-0.7.2.md](docs/npc-0.7.2.md)) :
   au parvis après une chute. À vérifier : les anneaux de fumée du portail, descendus au ras du socle par la copie de
   particules `Nakasar_Tower_Exit_Portal` (spawners `MagicPortal_VoidSmokeMiddle` et `MagicPortal_VoidGlowSmoke`).
 - **Tour de l'Alchimiste, l'archipel et la tour** (`tools/alchemist_archipelago.py`, `tools/alchemist_tower.py`,
-  `tower/TowerCheckpointSystem.java`) : à l'échelle de Deepworks, environ 500 × 600 blocs. Parcours : île d'arrivée,
-  pont, Jardins des Alambics, pont coudé, Ruines du premier laboratoire (premier point de contrôle), pont coudé, parvis
-  de la tour à 480 blocs au nord. La tour fait environ 67 blocs de diamètre et 220 de haut, posée en quatre tranches
-  empilées (`Tower0` à `Tower3`). Vérifié hors ligne : chaque salle et chaque point de contrôle atteignable à pied depuis
-  le parvis, aucun bord praticable au-dessus du vide sans parapet. À vérifier en jeu : que les grands prefabs (ponts,
-  tranches de la tour) se posent entiers et que les tranches s'emboîtent sans décalage, que les ponts arrivent bien dans
-  les portes des murs des îles, les demi-dalles des rampes, l'orientation des statues de contrôle, les particules des
-  émanations `Nakasar_Tower_Emanation_*`, les arbres du jeu sur les îles et les îlots, et qu'on réapparaisse au dernier
-  point de contrôle, après une mort comme après une chute.
+  `tower/TowerCheckpointSystem.java`) : à l'échelle de Deepworks. Parcours : île d'arrivée, puis une chaîne de petites
+  îles reliées par des ponts courts de style elfique (arches, lanternes, fleurs, lianes) : halte de la fontaine, halte
+  du kiosque, Jardins des Alambics, halte des sources, Ruines du premier laboratoire (premier point de contrôle), halte
+  des arches. La grande île de la tour (340 blocs de large) est couverte d'une forêt traversée par un chemin jusqu'au
+  parvis. Le ciel est peuplé d'îlots, de géodes, de rochers et de cristaux flottants du jeu. La tour fait environ 67
+  blocs de diamètre et 220 de haut, posée en quatre tranches empilées (`Tower0` à `Tower3`), et ses salles sont
+  meublées selon leur thème. Toutes les places, tous les ponts et les coursives de la tour sont fermés par un
+  garde-corps surmonté de blocs `Barrier` (invisibles) jusqu'à 4 blocs au-dessus du sol. Vérifié hors ligne : parcours
+  continu de l'arrivée au parvis sans accès au vide, chaque salle et chaque point de contrôle de la tour atteignables.
+  À vérifier en jeu : que les grands prefabs se posent entiers et que les tranches s'emboîtent, que les murs invisibles
+  arrêtent bien (y compris en grimpant), l'eau des fontaines (sources `Water_Source` dans les bassins et sur les
+  vasques), les arbres et sous-bois du jeu dans la forêt, les géodes flottantes (prefabs `Geode_Floating` du jeu), les
+  demi-dalles des rampes, l'orientation des statues de contrôle, les émanations `Nakasar_Tower_Emanation_*`, et qu'on
+  réapparaisse au dernier point de contrôle, après une mort comme après une chute.
 
 ## Organisation du dépôt
 

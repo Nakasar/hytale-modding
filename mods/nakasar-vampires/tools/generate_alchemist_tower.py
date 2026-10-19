@@ -9,12 +9,14 @@ du donjon vanilla Deepworks).
 - la clé `PortalKey_Nakasar_Alchemist_Tower`, même recette à l'établi des chasseurs et à l'autel (palier 3) ;
 - le type de portail et l'instance : pas de limite de temps ni d'entrées, ciel violet et vert figé au crépuscule ;
 - les règles (GameplayConfig, comme Deepworks) : ni pose ni casse de blocs, aucune perte d'objets à la mort ;
-- l'archipel, à l'échelle de Deepworks (environ 500 × 600 blocs, tools/alchemist_archipelago.py) : l'île d'arrivée,
-  les Jardins des Alambics, les Ruines du premier laboratoire (premier point de contrôle), l'île de la tour à 480 blocs
-  au nord avec son jardin d'arbres fantastiques, les ponts coudés qui les relient, et des îlots à toutes hauteurs, chacun
-  avec un arbre fantastique du jeu, des cristaux et des émanations magiques (blocs invisibles
-  `Nakasar_Tower_Emanation_*` qui portent des particules du jeu et une lumière) ;
-- le parvis d'arrivée (point d'apparition, portail de sortie anticipée), fermé par un parapet de 2 blocs ;
+- l'archipel, à l'échelle de Deepworks (tools/alchemist_archipelago.py) : l'île d'arrivée, une chaîne de petites îles
+  (haltes à fontaine, kiosque, sources, arches ; Jardins des Alambics ; Ruines du premier laboratoire, premier point de
+  contrôle) reliées par des ponts elfiques, la grande île de la tour couverte d'une forêt d'arbres du jeu et traversée
+  par un chemin, des îlots à toutes hauteurs (arbre fantastique, cristaux, émanations magiques : blocs invisibles
+  `Nakasar_Tower_Emanation_*` qui portent des particules du jeu et une lumière), et des géodes, rochers et cristaux
+  flottants du jeu dans le ciel ;
+- le parvis d'arrivée (point d'apparition, portail de sortie anticipée), fermé comme tout le parcours par un
+  garde-corps surmonté de blocs Barrier invisibles ;
 - la tour elle-même (tools/alchemist_tower.py), environ 220 blocs de haut, posée en tranches empilées (Tower0 à
   Tower3, TOWER_SLICES) : étages, balcons, escaliers extérieurs, points de vue fermés, points de contrôle ;
   TowerLayout.java (Java, généré) reprend les positions des points de contrôle, ruines comprises.
@@ -65,7 +67,7 @@ SPAWN = (0, GROUND_Y, 0)
 ARRIVAL_RADIUS, ARRIVAL_FLAT = arch.ARRIVAL["radius"], arch.ARRIVAL["flat"]
 TOWER_CENTER = (arch.TOWER["center"][0], GROUND_Y, arch.TOWER["center"][1])
 TOWER_RADIUS, TOWER_FLAT = arch.TOWER["radius"], arch.TOWER["flat"]
-STAGES = [(name, island) for name, island, _ in arch.ROUTE_ISLANDS]
+STAGES = arch.HALTS                # îles du parcours entre l'arrivée et la tour (haltes, Jardins, Ruines)
 PLAZA_RADIUS = arch.PLAZA_EDGE - 1  # parvis d'arrivée : rayon intérieur du parapet
 BRIDGE_HALF = arch.BRIDGE_HALF
 EXIT_Z = 6                         # portail de sortie anticipée, au sud du point d'apparition
@@ -73,10 +75,9 @@ TOWER_SEED = 4242
 # La tour se pose en tranches empilées (un prefab par tranche, coupé sous un plancher) : bas de chaque tranche.
 TOWER_SLICES = [-8, alchemist_tower.F_LIBRARY - 1, alchemist_tower.F_LAB - 1, alchemist_tower.F_DECK - 1, 240]
 ISLETS = arch.islets()
-# Jardin de l'île de la tour : arbres moyens entre le balcon (rayon 48) et le bord du plat, hors du parvis (au sud).
-GARDEN_RADIUS = 72
-GARDEN = [(a, t) for a, t in zip(range(130, 420, 32), [arch.MEDIUM_TREES[i % 3] if i % 2 else arch.SMALL_TREES[i % 3]
-                                                       for i in range(10)]) if not 60 <= a % 360 <= 120]
+SKY = arch.sky_decor(ISLETS)
+FOREST = arch.forest_sites()
+UNDERGROWTH = arch.undergrowth_sites()
 # Émanations magiques : blocs invisibles et traversables qui portent des particules du jeu et une lumière. La teinte
 # « Color » d'une particule de bloc ne change pas les systèmes (vu avec la brèche) : on choisit des systèmes déjà colorés.
 EMANATIONS = {
@@ -91,9 +92,7 @@ EMANATION_COLORS = {"Smoke": (90, 240, 140), "Motes": (180, 110, 255), "Spiral":
                     "Arc": (160, 200, 255), "Mist": (70, 220, 200), "Fireflies": (210, 255, 120)}
 
 # Pierres de la tour : marbre clair, liserés d'or, cristaux violets et verts (les couleurs de l'Alchimiste).
-FLOOR = [("Rock_Marble_Brick", 5), ("Rock_Marble_Brick_Smooth", 2), ("Rock_Marble_Cobble", 1)]
-PARAPET = "Rock_Marble_Brick"
-PARAPET_TOP = "Rock_Marble_Brick_Wall"
+FLOOR = arch.FLOOR
 TRIM = "Rock_Gold_Brick_Decorative"
 CRYSTALS = [(c, 1) for c in ("Rock_Crystal_Purple_Large", "Rock_Crystal_Purple_Medium", "Rock_Crystal_Green_Medium",
                               "Rock_Crystal_Green_Large", "Rock_Crystal_Pink_Medium")]
@@ -352,13 +351,14 @@ def biome():
     }
     arrival = wg.runtime(0, "Prop", wg.list_positions(SPAWN), {"Type": "Constant", "Prop": wg.surface_locator(
         prefab_prop("Arrival"), wg.SOLID_FLOOR, 12)})
-    # Prefabs posés à hauteur fixe (le dessus des îles est plat, à GROUND_Y - 1) : ponts, îles du parcours, tranches
-    # de la tour.
+    # Prefabs posés à hauteur fixe (le dessus des îles est plat, à GROUND_Y - 1) : ponts, îles du parcours, abords de
+    # la tour (muret du bord, chemin de la forêt), tranches de la tour.
     fixed = [wg.runtime(0, "Prop", wg.list_positions((0, GROUND_Y, 0)), {"Type": "Constant", "Prop": prefab_prop("Bridges")})]
-    for name, stage in STAGES:
+    for stage in STAGES:
         cx, cz = stage["center"]
         fixed.append(wg.runtime(0, "Prop", wg.list_positions((cx, GROUND_Y, cz)),
-                                {"Type": "Constant", "Prop": prefab_prop(name)}))
+                                {"Type": "Constant", "Prop": prefab_prop(stage["name"])}))
+    fixed.append(wg.runtime(0, "Prop", wg.list_positions(TOWER_CENTER), {"Type": "Constant", "Prop": prefab_prop("Grounds")}))
     for i, y0 in enumerate(TOWER_SLICES[:-1]):
         fixed.append(wg.runtime(0, "Prop", wg.list_positions((TOWER_CENTER[0], GROUND_Y + y0, TOWER_CENTER[2])),
                                 {"Type": "Constant", "Prop": prefab_prop(f"Tower{i}")}))
@@ -375,25 +375,40 @@ def biome():
         (plant("Plant_Flower_Common_Lime"), 0.5), (plant("Plant_Flower_Orchid_Purple"), 0.3),
         (plant("Plant_Flower_Tall_Cyan"), 0.3), (plant("Plant_Moss_Short_Green"), 1.0),
     ]))
-    # Arbres fantastiques : un par îlot, et le jardin autour de la tour. Puis les cristaux et émanations des îlots.
+    # Arbres fantastiques : un par îlot ; la forêt de l'île de la tour (arbres fantastiques et grands chênes, hêtres) et
+    # son sous-bois ; deux arbres sur chaque grande île du parcours, entre le garde-corps et le bord.
     trees = []
     for i, (center, radius, tree) in enumerate(ISLETS):
         trees.append(wg.runtime(2, "Prop", wg.list_positions(center), {"Type": "Constant", "Prop": wg.surface_locator(
             wg.prefab(tree, f"TowerIslet{i}", vanilla=True), wg.SOLID_FLOOR, 6)}))
-    for i, (a, tree) in enumerate(GARDEN):
-        x = TOWER_CENTER[0] + round(GARDEN_RADIUS * math.cos(math.radians(a)))
-        z = TOWER_CENTER[2] + round(GARDEN_RADIUS * math.sin(math.radians(a)))
-        trees.append(wg.runtime(2, "Prop", wg.list_positions((x, GROUND_Y, z)), {"Type": "Constant",
-            "Prop": wg.surface_locator(wg.prefab(tree, f"TowerGarden{i}", vanilla=True), wg.SOLID_FLOOR, 8)}))
-    # Arbres des îles du parcours, hors des murs (entre le mur et le bord) pour ne pas gêner le passage.
-    for name, stage in STAGES:
+    ox, _, oz = TOWER_CENTER
+    for size, folders in arch.FOREST_TREES.items():
+        sites = [(x, z) for x, z, s in FOREST if s == size]
+        for k, folder in enumerate(folders):
+            group = sites[k::len(folders)]
+            if group:
+                trees.append(wg.runtime(2, "Prop", wg.list_positions(*[(ox + x, GROUND_Y, oz + z) for x, z in group]),
+                                        {"Type": "Constant", "Prop": wg.surface_locator(
+                                            wg.prefab(folder, f"TowerForest{size}{k}", vanilla=True), wg.SOLID_FLOOR, 8)}))
+    for k, folder in enumerate(arch.UNDERGROWTH):
+        group = [(ox + x, GROUND_Y, oz + z) for x, z, f in UNDERGROWTH if f == folder]
+        trees.append(wg.runtime(2, "Prop", wg.list_positions(*group), {"Type": "Constant", "Prop": wg.surface_locator(
+            wg.prefab(folder, f"TowerUnder{k}", vanilla=True), wg.SOLID_FLOOR, 8)}))
+    for stage in STAGES:
+        if stage["plaza"] < 20:
+            continue
         cx, cz = stage["center"]
         for k, a in enumerate((35, 145, 215, 325)):
-            r = stage["wall"] + 6
+            r = stage["plaza"] + 5
             x, z = cx + round(r * math.cos(math.radians(a))), cz + round(r * math.sin(math.radians(a)))
             trees.append(wg.runtime(2, "Prop", wg.list_positions((x, GROUND_Y, z)), {"Type": "Constant",
-                "Prop": wg.surface_locator(wg.prefab(arch.SMALL_TREES[k % 3], f"{name}Tree{k}", vanilla=True),
+                "Prop": wg.surface_locator(wg.prefab(arch.SMALL_TREES[k % 3], f"{stage['name']}Tree{k}", vanilla=True),
                                            wg.SOLID_FLOOR, 8)}))
+    # Ciel : géodes, rochers et cristaux flottants du jeu, posés tels quels dans le vide.
+    sky = []
+    for k, ((x, y, z), folder) in enumerate(SKY):
+        sky.append(wg.runtime(3, "Prop", wg.list_positions((x, y, z)), {"Type": "Constant",
+                                                                        "Prop": wg.prefab(folder, f"TowerSky{k}", vanilla=True)}))
     islet_decor = []
     kinds = ["Motes", "Fireflies", "Mist", "Spiral"]
     for i, (center, radius, _) in enumerate(ISLETS):
@@ -410,10 +425,10 @@ def biome():
         "Terrain": {"Type": "DAOTerrain", "Density": {"Type": "Max", "Inputs": [
             island(SPAWN, ARRIVAL_RADIUS, ARRIVAL_FLAT, "Arrival"),
             island(TOWER_CENTER, TOWER_RADIUS, TOWER_FLAT, "Tower"),
-        ] + [island((s["center"][0], GROUND_Y, s["center"][1]), s["radius"], s["flat"], name) for name, s in STAGES]
+        ] + [island((s["center"][0], GROUND_Y, s["center"][1]), s["radius"], s["flat"], s["name"]) for s in STAGES]
           + [island(center, radius, 0.6 * radius, f"Islet{i}") for i, (center, radius, _) in enumerate(ISLETS)]}},
         "MaterialProvider": materials,
-        "Props": [arrival] + fixed + [plants] + trees + islet_decor,
+        "Props": [arrival] + fixed + [plants] + trees + islet_decor + sky,
         "EnvironmentProvider": {"Type": "Constant", "Environment": ENVIRONMENT},
         "TintProvider": {"Type": "Constant", "Color": "#4f9a6a"},
     }
@@ -433,12 +448,6 @@ def world_structure():
 
 # --- prefab : parvis d'arrivée -----------------------------------------------------------------
 
-def parapet(p, x, z):
-    """Garde-corps de 2 blocs (un bloc plein, un muret) : trop haut pour être sauté."""
-    p.set(x, 0, z, PARAPET)
-    p.set(x, 1, z, PARAPET_TOP)
-
-
 def arrival_prefab(seed):
     p = pf.Prefab(seed)
     r = p.rng
@@ -456,14 +465,12 @@ def arrival_prefab(seed):
                 p.set(x, -1, z, p.pick(FLOOR))
                 if not (z < 0 and abs(x) <= BRIDGE_HALF):
                     ring.add((x, z))
+    # Garde-corps (Barrier au-dessus, comme sur tout le parcours), poteaux à lanterne aux quatre diagonales et de part
+    # et d'autre du pont ; cristaux de part et d'autre du portail de sortie.
+    posts = {(round((PLAZA_RADIUS + 1) * math.cos(math.radians(a))), round((PLAZA_RADIUS + 1) * math.sin(math.radians(a))))
+             for a in (45, 135, 225, 315)}
     for x, z in ring:
-        parapet(p, x, z)
-    # Lanternes sur le parapet aux quatre diagonales, cristaux de part et d'autre du portail de sortie.
-    for a in (45, 135, 225, 315):
-        x = round((PLAZA_RADIUS + 1) * math.cos(math.radians(a)))
-        z = round((PLAZA_RADIUS + 1) * math.sin(math.radians(a)))
-        if (x, z) in ring:
-            p.set(x, 2, z, "Deco_Lantern")
+        arch.guard(p, x, z, post=(x, z) in posts or (z < 0 and abs(x) == BRIDGE_HALF + 1))
     for x in (-3, 3):
         p.set(x, 0, EXIT_Z, p.pick(CRYSTALS))
     # Portail de sortie anticipée, au sud, tourné vers le point d'apparition ; 3 × 5 × 3 blocs libres autour.
@@ -593,11 +600,18 @@ def main():
     print(f"Points de contrôle de la tour : {tower.checkpoints}")
     count = arch.bridges_prefab(9601).write(out / "Bridges" / "Bridges.prefab.json")
     print(f"Bridges: {count} blocs")
-    count = arch.gardens_prefab(9602).write(out / "Gardens" / "Gardens.prefab.json")
-    print(f"Gardens: {count} blocs")
-    ruins, ruins_spot = arch.ruins_prefab(9603)
-    count = ruins.write(out / "Ruins" / "Ruins.prefab.json")
-    print(f"Ruins: {count} blocs, point de contrôle {ruins_spot}")
+    count = arch.grounds_prefab(9604).write(out / "Grounds" / "Grounds.prefab.json")
+    print(f"Grounds: {count} blocs, {len(FOREST)} arbres, {len(SKY)} décors flottants, {len(ISLETS)} îlots")
+    ruins_spot = None
+    for k, stage in enumerate(STAGES):
+        if stage["feature"] == "gardens":
+            prefab = arch.gardens_prefab(9602)
+        elif stage["feature"] == "ruins":
+            prefab, ruins_spot = arch.ruins_prefab(9603)
+        else:
+            prefab = arch.halt_prefab(stage, 9610 + k)
+        count = prefab.write(out / stage["name"] / f"{stage['name']}.prefab.json")
+        print(f"{stage['name']}: {count} blocs")
     JAVA_LAYOUT.write_text(tower_layout(tower, ruins_spot), encoding="utf-8")
     (COMMON / ICON).parent.mkdir(parents=True, exist_ok=True)
     key_icon().save(COMMON / ICON)

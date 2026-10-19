@@ -22,7 +22,9 @@ Parcours, de bas en haut (niveaux = première couche d'air du sol de chaque sall
 
 Toutes les rampes montent en demi-dalles (pas de bloc orienté à deviner) et tous les bords extérieurs ont un parapet de
 2 blocs au moins. `walkable_path` vérifie, hors ligne, qu'on va du parvis au bureau en passant par chaque point de
-contrôle.
+contrôle. Au bord du vide extérieur, des murs invisibles (bloc vanilla Barrier) montent au-dessus des parapets jusqu'à
+4 blocs au-dessus de la plus haute surface voisine (Kevin, 19 octobre 2026 : on ne saute pas des coursives) ; chaque
+salle est meublée selon son thème (`decorate`), sans gêner le parcours.
 """
 import math
 from collections import deque
@@ -57,6 +59,7 @@ LANTERN = "Furniture_Temple_Light_Lantern"
 GLOW = "Furniture_Royal_Magic_Potion_Glow"
 BRAZIER = "Furniture_Temple_Dark_Brazier"
 CHANDELIER = "Furniture_Feran_Chandelier"
+BARRIER = "Barrier"  # bloc vanilla plein et invisible (Server/Item/Items/Hypixel/Barrier.json)
 
 DIRS4 = ((1, 0), (-1, 0), (0, 1), (0, -1))
 DIRS8 = DIRS4 + ((1, 1), (1, -1), (-1, 1), (-1, -1))
@@ -678,6 +681,505 @@ class Tower:
             raise RuntimeError(f"tour : pas de place pour la statue du point de contrôle {(sx, y, sz)}")
         self.p.set(sx, y, sz, STATUE, rot)
         self.checkpoints.append((x, y, z))
+        # Le décor laisse libre l'arrêt du joueur.
+        self.keep_clear.update((x + dx, y + k, z + dz) for dx in range(-1, 2) for dz in range(-1, 2) for k in range(3)
+                               if self.p.free(x + dx, y + k, z + dz))
+
+    # --- décor -----------------------------------------------------------------------------------
+
+    def hang(self, x, y, z, name, rot=0):
+        """Pend un lustre ou une lanterne au plafond : cases libres, plafond plein juste au-dessus de (x, y, z)."""
+        cells = pf.footprint(name, rot)
+        if any((x + dx, y + dy, z + dz) in self.keep_clear or not self.p.free(x + dx, y + dy, z + dz)
+               or (x + dx, y + dy, z + dz) in self.p.claims for dx, dy, dz in cells):
+            return False
+        if not self.solid(x, y + 1, z):
+            return False
+        self.p.set(x, y, z, name, rot)
+        return True
+
+    def chain(self, x, y, z, length, name="Deco_Iron_Chains_Vertical", end=None):
+        """Chaîne (ou liane) qui pend du plafond plein en y + 1, terminée par `end` (lanterne...)."""
+        if not self.solid(x, y + 1, z):
+            return
+        for k in range(length):
+            cell = (x, y - k, z)
+            if cell in self.keep_clear or not self.p.free(*cell):
+                return
+            self.p.set(*cell, end if (end and k == length - 1) else name)
+
+    def table(self, x, y, z, name, tops, chairs=None):
+        """Table de 2 × 2 (coin nord-ouest en x, z) garnie de `tops` (un objet par case du dessus), chaises autour."""
+        if not self.place(x, y, z, name):
+            return False
+        for (dx, dz), top in zip(((0, 0), (1, 0), (0, 1), (1, 1)), tops):
+            if top:
+                self.place(x + dx, y + 1, z + dz, top)
+        if chairs:
+            for cx, cz, rot in ((x - 1, z, pf.EAST), (x + 2, z + 1, pf.WEST), (x + 1, z - 1, pf.SOUTH),
+                                (x, z + 2, pf.NORTH)):
+                self.place(cx, y, cz, chairs, rot)
+        return True
+
+    def flask(self, cx, y, cz, liquid="Rock_Crystal_Green_Block", height=4):
+        """Alambic : socle d'or, panse de verre au cœur de cristal coloré, col d'or et émanation au sommet."""
+        cells = [(cx + dx, y + k, cz + dz) for dx in range(-1, 2) for dz in range(-1, 2) for k in range(height + 4)]
+        if any(c in self.keep_clear or not self.p.free(*c) for c in cells):
+            return False
+        p = self.p
+        for dx in range(-1, 2):
+            for dz in range(-1, 2):
+                p.set(cx + dx, y, cz + dz, GOLD if (dx, dz) != (0, 0) else "Rock_Gold_Brick_Ornate")
+                for k in range(1, height):
+                    p.set(cx + dx, y + k, cz + dz, liquid if (dx, dz) == (0, 0) else GLASS)
+                p.set(cx + dx, y + height, cz + dz, TRIM if (dx * dz) else GOLD)
+        p.set(cx, y + height + 1, cz, GLASS)
+        p.set(cx, y + height + 2, cz, "Rock_Gold_Brick_Pillar_Middle")
+        p.set(cx, y + height + 3, cz, "Nakasar_Tower_Emanation_Motes")
+        return True
+
+    def armillary(self, cx, y, cz, r, core="Rock_Crystal_Purple_Block"):
+        """Sphère armillaire : pied d'or, cœur de cristal, trois cercles d'or (équateur et deux méridiens)."""
+        p = self.p
+        cy = y + r + 2
+        for k in range(0, r + 1):
+            p.set(cx, y + k, cz, "Rock_Gold_Brick_Pillar_Base" if k == 0 else "Rock_Gold_Brick_Pillar_Middle")
+        for dx in range(-1, 2):
+            for dy in range(-1, 2):
+                for dz in range(-1, 2):
+                    if abs(dx) + abs(dy) + abs(dz) <= 1:
+                        p.set(cx + dx, cy + dy, cz + dz, core)
+        for i in range(0, 360, 4):
+            c, s = math.cos(math.radians(i)), math.sin(math.radians(i))
+            for px, py, pz in ((round(r * c), 0, round(r * s)), (round(r * c), round(r * s), 0),
+                               (0, round(r * s), round(r * c))):
+                if p.free(cx + px, cy + py, cz + pz):
+                    p.set(cx + px, cy + py, cz + pz, GOLD if (i // 4) % 6 else "Rock_Gold_Brick_Ornate")
+        p.set(cx, cy + r + 1, cz, "Nakasar_Tower_Emanation_Spiral")
+
+    def wall_ring(self, y0, y1, arcs_out, every=20, fill=12, names=(SHELF,)):
+        """Meubles adossés au mur intérieur (r 28,4 à 29,5) de y0 à y1, par tronçons de `fill` degrés sur `every`."""
+        for x, z, d, a in ring(28.4, R_IN):
+            if any(in_arc(a, a0, a1) for a0, a1 in arcs_out) or int(a) % every >= fill:
+                continue
+            name = names[(int(a) // every) % len(names)]
+            for y in range(y0, y1):
+                self.place(x, y, z, name, facing_center(x, z))
+
+    def scatter(self, y, r0, r1, density, names, arcs_out=()):
+        """Petit bric-à-brac d'un bloc semé sur le sol (r0 <= d < r1), hors des arcs `arcs_out` et des passages."""
+        rng = self.rng
+        for x, z, d, a in ring(r0, r1):
+            if any(in_arc(a, a0, a1) for a0, a1 in arcs_out) or rng.random() >= density:
+                continue
+            self.place(x, y, z, rng.choice(names))
+
+    def stations(self, y, r, angles, potions):
+        """Postes d'alchimiste : établi tourné vers le centre, chaudron, tonneau et fioles de part et d'autre."""
+        for k in angles:
+            x, z = at(r, k)
+            self.place(x, y, z, "Bench_Alchemy", facing_center(x, z))
+            for dk, name in ((-6, "Alchemy_Cauldron"), (6, "Furniture_Ancient_Barrel"), (9, "Furniture_Temple_Wind_Pot")):
+                cx, cz = at(r, k + dk)
+                self.place(cx, y, cz, name)
+            for dk in (-3, 3):
+                cx, cz = at(r + 1.5, k + dk)
+                self.place(cx, y, cz, self.rng.choice(potions))
+
+    def decor_hall(self):
+        y = F_HALL
+        rng = self.rng
+        # Tables d'alchimiste couvertes de fioles, tabourets autour.
+        potions = ["Deco_Potion", "Potion_Mana_Large", "Potion_Health_Large", "Potion_Poison_Large",
+                   "Potion_Stamina_Large", "Potion_Empty_Large", "Potion_Regen_Mana_Large", "Potion_Signature_Greater"]
+        for k in (45, 135, 225, 315):
+            x, z = at(10, k)
+            self.table(x, y, z, "Furniture_Royal_Magic_Table", rng.sample(potions, 4), "Furniture_Temple_Light_Stool")
+        # Alambics de verre entre les établis.
+        for k, liquid in ((60, "Rock_Crystal_Green_Block"), (120, "Rock_Crystal_Purple_Block"),
+                          (250, "Rock_Crystal_Cyan_Block"), (290, "Rock_Crystal_Red_Block"), (180, "Rock_Crystal_Yellow_Block"),
+                          (0, "Rock_Crystal_Pink_Block")):
+            x, z = at(17, k)
+            self.flask(x, y, z, liquid)
+        # Étagères de réactifs le long du mur, fioles et chaudrons dessus ; tonneaux et caisses près des athanors.
+        self.wall_ring(y, y + 4, ((195, 305), (78, 102)), every=18, fill=12,
+                       names=("Furniture_Village_Shelf_Full", SHELF, "Furniture_Village_Shelf_Full"))
+        for x, z, d, a in ring(28.4, R_IN):
+            if self.p.get(x, y + 3, z) in ("Furniture_Village_Shelf_Full", SHELF) and rng.random() < 0.6:
+                self.place(x, y + 4, z, rng.choice(potions + ["Deco_Book_Pile_Small", "Furniture_Royal_Magic_Potion_Glow"]))
+        for k in (30, 150, 330):
+            for j, name in enumerate(("Furniture_Ancient_Barrel", "Furniture_Ancient_Crate", "Furniture_Tavern_Barrel")):
+                x, z = at(14, k + 9 + 5 * j)
+                self.place(x, y, z, name)
+        self.stations(y, 24, (330, 350, 10, 50, 130, 165, 185), potions)
+        self.scatter(y, 19, 27.5, 0.06, potions + ["Deco_Book_Pile_Small", "Deco_Bucket", "Furniture_Ancient_Sack",
+                                                   "Rock_Crystal_Purple_Small", "Furniture_Royal_Magic_Potion_Glow"],
+                     ((195, 305), (75, 105)))
+        # Tapis du portail à l'alambic central.
+        for z in range(6, 26, 2):
+            for x in (-2, 0):
+                self.place(x, y, z, "Furniture_Royal_Magic_Carpet")
+        # Lustres et fioles lumineuses au plafond (le plafond est le sol du couloir des fuites).
+        top = F_LEAKS - 2
+        for r, step, off in ((12, 45, 22), (21, 30, 0)):
+            for k in range(off, 360 + off, step):
+                x, z = at(r, k)
+                self.hang(x, top, z, CHANDELIER)
+        for k in range(10, 370, 20):
+            x, z = at(17, k)
+            self.chain(x, top, z, 3, end="Furniture_Royal_Magic_Potion_Glow_Ceiling")
+
+    def decor_leaks(self):
+        y = F_LEAKS
+        rng = self.rng
+        top = F_LIBRARY - 2
+        # Tonneaux, caisses et sacs de réactifs contre le mur extérieur, par grappes.
+        for k in range(5, 360, 22):
+            if in_arc(k, 225, 255) or in_arc(k, 165, 195):
+                continue
+            for j, name in enumerate(rng.sample(["Furniture_Ancient_Barrel", "Furniture_Tavern_Barrel",
+                                                 "Furniture_Ancient_Crate", "Furniture_Ancient_Sack",
+                                                 "Furniture_Ancient_Pot"], 3)):
+                x, z = at(26.5 + (j % 2), k + 2.5 * j)
+                self.place(x, y, z, name)
+                if name == "Furniture_Ancient_Crate" and rng.random() < 0.7:
+                    self.place(x, y + 1, z, rng.choice(["Furniture_Ancient_Barrel", "Deco_Bucket", "Furniture_Ancient_Crate"]))
+        # Vapeur qui s'échappe des niches et flaques de réactif.
+        for k in range(0, 360, 30):
+            if in_arc(k, 232, 248) or in_arc(k, 262, 305):
+                continue
+            x, z = at(17.5, k)
+            if self.p.get(x, y, z) == GLOW:
+                self.p.set(x, y + 2, z, "Nakasar_Tower_Emanation_Mist")
+            px, pz = at(20, k + 15)
+            self.place(px, y, pz, rng.choice(["Rock_Crystal_Green_Small", "Plant_Crop_Mushroom_Glowing_Green",
+                                              "Rock_Crystal_Yellow_Small"]))
+        self.scatter(y, 24, 28.4, 0.08, ["Deco_Bucket", "Furniture_Ancient_Sack",                                          "Rock_Crystal_Green_Small", "Deco_Bone_Pile", "Deco_Trash_Pile_Small"], ((228, 252),))
+        # Chaînes et lanternes qui pendent du plafond.
+        for k in range(0, 360, 15):
+            if in_arc(k, 232, 248):
+                continue
+            x, z = at(23, k)
+            if k % 30:
+                self.chain(x, top, z, 2 + (k // 15) % 3)
+            else:
+                self.chain(x, top, z, 2, end="Deco_Lantern_Ceiling")
+
+    def decor_greenhouse(self):
+        y = F_LEAKS
+        rng = self.rng
+        # Pots et jarres contre le mur de la tour.
+        for x, z, d, a in ring(R_OUT, R_OUT + 1):
+            if in_arc(a, *BALCONY_ARC) and int(a) % 9 == 0:
+                self.place(x, y, z, "Furniture_Temple_Wind_Pot" if int(a) % 18 == 0 else "Furniture_Royal_Magic_Pot")
+        # Sous la verrière : massifs de champignons et de fleurs lumineuses, lianes qui pendent du toit de verre.
+        plants = ["Plant_Crop_Mushroom_Glowing_Purple", "Plant_Crop_Mushroom_Glowing_Green", "Plant_Crop_Mushroom_Glowing_Blue",
+                  "Plant_Flower_Tall_Cyan", "Plant_Flower_Orchid_Purple", "Plant_Crop_Mushroom_Glowing_Violet"]
+        for k in range(GREENHOUSE_ARC[0] + 8, GREENHOUSE_ARC[1] - 4, 16):
+            cx, cz = at(39.5, k)
+            bed = [(cx + dx, cz + dz) for dx in range(-1, 2) for dz in range(-1, 2)]
+            if any((bx, y + kk, bz) in self.keep_clear or not self.p.free(bx, y, bz) for bx, bz in bed for kk in range(2)):
+                continue
+            for bx, bz in bed:
+                self.p.set(bx, y, bz, "Soil_Grass_Full" if (bx, bz) != (cx, cz) else "Plant_Crop_Mushroom_Block_Purple_Trunk")
+                if (bx, bz) != (cx, cz):
+                    self.p.set(bx, y + 1, bz, rng.choice(plants))
+                if (bx, bz) in self.walk:
+                    self.walk[(bx, bz)].discard(2 * y)
+            for kk in range(1, 4):
+                self.p.set(cx, y + kk, cz, "Plant_Crop_Mushroom_Block_Purple_Trunk")
+            for dx in range(-1, 2):
+                for dz in range(-1, 2):
+                    self.p.set(cx + dx, y + 4, cz + dz, "Plant_Crop_Mushroom_Block_Purple")
+        for x, z, d, a in ring(R_OUT, BALCONY_R):
+            if in_arc(a, *GREENHOUSE_ARC) and rng.random() < 0.18:
+                self.chain(x, y + 10, z, rng.randint(1, 4), name="Plant_Vine_Hanging")
+            elif in_arc(a, *BALCONY_ARC) and d < 44 and rng.random() < 0.06:
+                self.place(x, y, z, rng.choice(["Plant_Moss_Rug_Green", "Plant_Moss_Rug_Blue", "Plant_Moss_Rug_Pink"]))
+        # Bancs au belvédère nord, tournés vers le large.
+        for k in (262, 278):
+            x, z = at(42, k)
+            self.place(x, y, z, "Furniture_Temple_Light_Bench", pf.NORTH)
+
+    def decor_library(self):
+        y = F_LIBRARY
+        rng = self.rng
+        reading = ["Deco_Book_Pile_Small", "Deco_Scroll", "Furniture_Temple_Wind_Candle", "Deco_Book_Pile_Small",
+                   "Furniture_Ancient_Candle", "Deco_Scroll", "Potion_Mana_Large"]
+        # Tables de lecture entre les rayonnages en épis.
+        for k in (245, 265, 285, 318, 350, 15):
+            x, z = at(19, k)
+            self.table(x, y, z, "Furniture_Temple_Light_Table", rng.sample(reading, 4), "Furniture_Ancient_Chair")
+        # Planétaire au centre, cercle de tapis autour.
+        self.armillary(0, y, 0, 4)
+        for x in range(-8, 8, 2):
+            for z in range(-8, 8, 2):
+                if 4.5 <= math.hypot(x + 0.5, z + 0.5) < 8.5:
+                    self.place(x, y, z, "Furniture_Royal_Magic_Carpet")
+        # Échelles contre les étagères, piles de livres au pied des murs.
+        for k in (232, 300, 345):
+            x, z = at(27.4, k)
+            for yy in range(y, y + 6):
+                self.place(x, yy, z, "Furniture_Temple_Light_Ladder", facing_center(x, z))
+        for x, z, d, a in ring(26.5, 28.4):
+            if not in_arc(a, 60, 215) and rng.random() < 0.12:
+                self.place(x, y, z, rng.choice(["Deco_Book_Pile_Small", "Deco_Book_Pile_Large", "Deco_Scroll"]))
+        # Lustres sous la coupole, fioles lumineuses sous les galeries.
+        top = F_TRANS - 2
+        self.hang(0, top, 0, "Furniture_Temple_Wind_Chandelier")
+        for r, step, off in ((10, 60, 30), (18, 45, 0)):
+            for k in range(off, 360 + off, step):
+                x, z = at(r, k)
+                self.chain(x, top, z, 6, end="Furniture_Royal_Magic_Potion_Glow_Ceiling")
+        for g in (14, 22):
+            for k in range(0, 360, 20):
+                if not in_arc(k, 60, 215):
+                    x, z = at(26, k)
+                    self.chain(x, y + g - 1, z, 1, name="Furniture_Royal_Magic_Potion_Glow_Ceiling")
+        # Salle secrète : crânes, grimoires, rouleaux, bougies.
+        cx, cz = at(39, 320)
+        for (dx, dz), name in zip(((-4, -4), (4, -4), (-4, 4), (4, 4), (-2, -4), (2, 4), (0, -4)),
+                                  ("Deco_Bone_Skulls", "Deco_Book_Pile_Large", "Furniture_Ancient_Candle",
+                                   "Deco_Scroll", "Deco_Book_Pile_Small", "Furniture_Ancient_Candle", "Deco_Treasure_Pile_Small")):
+            self.place(cx + dx, y, cz + dz, name)
+
+    def decor_transmutation(self):
+        y = F_TRANS
+        p = self.p
+        rng = self.rng
+        # Cercle de transmutation : deux anneaux d'or au sol, sceau au centre.
+        for x in range(-SQUARE, SQUARE + 1):
+            for z in range(-13, SQUARE + 1):
+                d = math.hypot(x, z)
+                if 4.5 <= d < 5.4 or 9.5 <= d < 10.4:
+                    p.set(x, y - 1, z, GOLD)
+        p.set(0, y - 1, 0, "Rock_Gold_Brick_Ornate")
+        for k in range(45, 360, 90):
+            x, z = at(7.5, k)
+            self.place(x, y, z, "Furniture_Royal_Magic_Potion_Glow")
+        # Feu (nord-est) : sol de magma refroidi, braseros autour d'un grand brasier, cristaux rouges.
+        fx, fz = 11, -7
+        for x in range(fx - 3, fx + 4):
+            for z in range(fz - 3, fz + 4):
+                if math.hypot(x - fx, z - fz) <= 3.2:
+                    p.set(x, y - 1, z, "Rock_Magma_Cooled")
+        self.place(fx, y, fz, "Furniture_Dungeon_Earth_Brazier")
+        for k in range(0, 360, 90):
+            x, z = at(2.5, k)
+            self.place(fx + x, y, fz + z, BRAZIER)
+        for dx, dz in ((4, 3), (-4, -3), (5, -2)):
+            self.place(fx + dx, y, fz + dz, rng.choice(["Rock_Crystal_Red_Large", "Rock_Crystal_Red_Medium"]))
+        # Glace (nord-ouest) : aiguilles de cristal blanc et cyan, glace au sol.
+        ix, iz = -10, -7
+        for x in range(ix - 3, ix + 4):
+            for z in range(iz - 3, iz + 4):
+                d = math.hypot(x - ix, z - iz)
+                if d <= 3.2:
+                    p.set(x, y - 1, z, "Rock_Ice")
+                if d <= 1.5:
+                    for k in range(0, 4 - int(2 * d)):
+                        if (x, y + k, z) not in self.keep_clear and p.free(x, y + k, z):
+                            p.set(x, y + k, z, "Rock_Crystal_Cyan_Block" if (x + z) % 2 else "Rock_Crystal_White_Block")
+        for dx, dz in ((3, 2), (-3, 2), (2, -3)):
+            self.place(ix + dx, y, iz + dz, rng.choice(["Rock_Crystal_White_Large", "Rock_Crystal_Cyan_Large"]))
+        # Acide (sud-est) : bassin de cristal vert, grand chaudron, champignons lumineux.
+        ax, az = 10, 10
+        for x in range(ax - 3, ax + 4):
+            for z in range(az - 3, az + 4):
+                d = math.hypot(x - ax, z - az)
+                if d <= 2.2:
+                    p.set(x, y - 1, z, "Rock_Crystal_Green_Block")
+                elif d <= 3.2 and p.free(x, y, z) and (x, y, z) not in self.keep_clear:
+                    p.set(x, y, z, "Rock_Gold_Brick_Half")
+        self.place(ax, y, az, "Alchemy_Cauldron_Big")
+        for dx, dz in ((4, -2), (-4, 2), (2, 4), (-2, -4)):
+            self.place(ax + dx, y, az + dz, rng.choice(["Plant_Crop_Mushroom_Glowing_Green", "Rock_Crystal_Green_Large",
+                                                        "Rock_Crystal_Green_Medium"]))
+        # Foudre (sud-ouest) : paratonnerre d'or coiffé de cristal, arc électrique, cristaux jaunes et bleus.
+        lx, lz = -10, 10
+        for k in range(0, 7):
+            p.set(lx, y + k, lz, "Rock_Gold_Brick_Pillar_Base" if k == 0 else "Rock_Gold_Brick_Pillar_Middle")
+        p.set(lx, y + 7, lz, "Rock_Crystal_Yellow_Block")
+        p.set(lx, y + 8, lz, "Nakasar_Tower_Emanation_Arc")
+        for dx, dz in ((2, 0), (-2, 0), (0, 2), (0, -2), (3, 3), (-3, -3)):
+            self.place(lx + dx, y, lz + dz, rng.choice(["Rock_Crystal_Yellow_Large", "Rock_Crystal_Blue_Large",
+                                                        "Rock_Crystal_Yellow_Medium"]))
+        # Chaque quadrant semé de son élément ; le couloir d'arrivée (ouest) et le pied de l'escalier restent libres.
+        themes = {(1, -1): ["Rock_Crystal_Red_Medium", "Rock_Crystal_Red_Small", BRAZIER, "Rock_Magma_Cooled_Half"],
+                  (-1, -1): ["Rock_Crystal_White_Medium", "Rock_Crystal_Cyan_Medium", "Rock_Crystal_Cyan_Small", "Rock_Ice"],
+                  (1, 1): ["Rock_Crystal_Green_Medium", "Rock_Crystal_Green_Small", "Alchemy_Cauldron",
+                           "Plant_Crop_Mushroom_Glowing_Green"],
+                  (-1, 1): ["Rock_Crystal_Yellow_Medium", "Rock_Crystal_Blue_Medium", "Rock_Crystal_Yellow_Small",
+                            "Rock_Crystal_Blue_Small"]}
+        for x in range(-SQUARE + 1, SQUARE):
+            for z in range(-12, SQUARE):
+                if abs(x) < 3 or abs(z) < 3 or (x < -11 and z < -3) or rng.random() >= 0.09:
+                    continue
+                self.place(x, y, z, rng.choice(themes[(1 if x > 0 else -1, 1 if z > 0 else -1)]))
+        # Colonnes d'angle coiffées du cristal de leur quadrant.
+        for (sx, sz), crystal in (((1, 1), "Rock_Crystal_Green_Block"), ((-1, 1), "Rock_Crystal_Yellow_Block"),
+                                  ((1, -1), "Rock_Crystal_Red_Block")):
+            cx, cz = sx * (SQUARE - 1), sz * (SQUARE - 1) if sz > 0 else -12
+            for k in range(0, 10):
+                if p.free(cx, y + k, cz) and (cx, y + k, cz) not in self.keep_clear:
+                    p.set(cx, y + k, cz, "Rock_Gold_Brick_Pillar_Base" if k == 0 else
+                          crystal if k == 9 else "Rock_Gold_Brick_Pillar_Middle")
+        # Lustres au plafond (sol du laboratoire).
+        top = F_LAB - 2
+        for x, z in ((0, 0), (9, 9), (-9, 9), (9, -9), (-9, -9)):
+            self.hang(x, top, z, CHANDELIER)
+
+    def decor_lab(self):
+        y = F_LAB
+        p = self.p
+        rng = self.rng
+        top = F_LAB + 22
+        # Condenseur : colonnes d'or de la cuve au plafond, bulbe de verre au cœur de cristal suspendu au centre.
+        for k in (45, 135, 225, 315):
+            x, z = at(8, k)
+            for yy in range(y + 2, top + 1):
+                if p.free(x, yy, z):
+                    p.set(x, yy, z, "Rock_Gold_Brick_Pillar_Middle" if yy % 6 else TRIM)
+        for x, z, d, a in ring(0, 3.6):
+            for yy in range(top - 7, top + 1):
+                edge = d >= 2.5 or yy in (top - 7, top)
+                p.set(x, yy, z, (GOLD if yy in (top - 7, top - 3, top) else GLASS) if edge else "Rock_Crystal_Green_Block")
+        p.set(0, top - 8, 0, "Nakasar_Tower_Emanation_Motes")
+        # Tables de manipulation et établis arcaniques.
+        potions = ["Potion_Empty_Large", "Potion_Empty", "Deco_Potion", "Potion_Poison_Large", "Potion_Mana",
+                   "Potion_Regen_Health_Large", "Potion_Morph_Frog", "Deco_Scroll"]
+        for k in (0, 90, 180):
+            x, z = at(12, k)
+            self.table(x, y, z, "Furniture_Royal_Magic_Table", rng.sample(potions, 4), "Furniture_Temple_Light_Stool")
+        for k in (45, 160):
+            x, z = at(24, k)
+            self.place(x, y, z, "Bench_Arcane", facing_center(x, z))
+        self.stations(y, 22.5, (60, 80, 215, 245), potions)
+        self.scatter(y, 18, 27, 0.05, potions + ["Deco_Bone_Skulls", "Deco_Book_Pile_Small", "Rock_Crystal_Green_Small",
+                                                 "Furniture_Royal_Magic_Potion_Glow"], ((255, 350),))
+        # Fioles sur les étagères, jarres et tonneaux le long du mur.
+        for x, z, d, a in ring(28.4, R_IN):
+            if p.get(x, y + 5, z) == SHELF and rng.random() < 0.5:
+                self.place(x, y + 6, z, rng.choice(potions[:6] + ["Furniture_Royal_Magic_Potion_Glow", "Deco_Bone_Skulls"]))
+        for k in range(140, 192, 8):
+            x, z = at(26.5, k)
+            self.place(x, y, z, rng.choice(["Furniture_Temple_Wind_Pot", "Furniture_Ancient_Barrel", "Furniture_Ancient_Crate"]))
+        # Lustres et lanternes au plafond.
+        for k in range(0, 360, 45):
+            x, z = at(17, k + 22)
+            self.hang(x, top, z, CHANDELIER)
+        for k in range(0, 360, 20):
+            x, z = at(23, k)
+            self.chain(x, top, z, 4, end="Furniture_Royal_Magic_Potion_Glow_Ceiling")
+
+    def decor_observatory(self):
+        y = F_DECK
+        rng = self.rng
+        # Grande sphère armillaire au centre de la terrasse, bancs en cercle tournés vers elle.
+        self.armillary(0, y, 0, 7, core="Rock_Crystal_Blue_Block")
+        for k in range(0, 360, 40):
+            if in_arc(k, 195, 280) or in_arc(k, 70, 110):
+                continue
+            x, z = at(15, k)
+            self.place(x, y, z, "Furniture_Temple_Light_Bench", facing_center(x, z))
+        # Lunettes et cartes du ciel posées sur des lutrins d'or.
+        for k in (20, 160, 300):
+            self.telescope(k, 38)
+        for k in (0, 40, 130, 185, 230, 320):
+            x, z = at(27, k)
+            if (x, y, z) in self.keep_clear or (x, y + 1, z) in self.keep_clear:
+                continue
+            if self.place(x, y, z, "Rock_Gold_Brick_Pillar_Base"):
+                self.place(x, y + 1, z, "Deco_Map", facing_center(x, z))
+        # Massifs de fleurs lumineuses entre les arcs, braseros le long du parapet, cristaux sur socles d'or.
+        flowers = ["Plant_Flower_Tall_Cyan", "Plant_Flower_Orchid_Purple", "Plant_Crop_Mushroom_Glowing_Blue",
+                   "Plant_Crop_Mushroom_Glowing_Purple", "Plant_Grass_Lush"]
+        for k in (0, 45, 135, 170, 300, 330):
+            cx, cz = at(31, k)
+            bed = [(cx + dx, cz + dz) for dx in range(-2, 3) for dz in range(-1, 2)]
+            if any((bx, y + kk, bz) in self.keep_clear or not self.p.free(bx, y, bz) for bx, bz in bed for kk in range(2)):
+                continue
+            for bx, bz in bed:
+                edge = abs(bx - cx) == 2 or abs(bz - cz) == 1
+                self.p.set(bx, y, bz, TRIM if edge else "Soil_Grass_Full")
+                if not edge:
+                    self.p.set(bx, y + 1, bz, rng.choice(flowers))
+                self.walk.get((bx, bz), set()).discard(2 * y)
+        for k in range(0, 360, 12):
+            if in_arc(k, 195, 280) or in_arc(k, 70, 110):
+                continue
+            x, z = at(43, k)
+            self.place(x, y, z, "*Furniture_Temple_Light_Brazier_State_Definitions_On")
+        for k, crystal in ((25, "Rock_Crystal_Purple_Large"), (115, "Rock_Crystal_Blue_Large"),
+                           (155, "Rock_Crystal_Pink_Large"), (290, "Rock_Crystal_Green_Large")):
+            x, z = at(36, k)
+            if self.place(x, y, z, "Rock_Gold_Brick_Ornate"):
+                self.place(x, y + 1, z, crystal)
+        # Lanternes sur l'anneau d'or, pots de fleurs le long du parapet.
+        for k in range(0, 360, 20):
+            if in_arc(k, 195, 280) or in_arc(k, 60, 120):
+                continue
+            x, z = at(22, k)
+            self.place(x, y, z, LANTERN)
+        for x, z, d, a in ring(DECK_R - 1.5, DECK_R):
+            if int(a) % 16 == 0 and not in_arc(a, 195, 280):
+                self.place(x, y, z, "Furniture_Royal_Magic_Pot")
+
+    def decor_antechamber(self):
+        y = F_DECK
+        top = F_DECK + 9
+        for k in range(204, 274, 10):
+            x, z = at(25.5, k)
+            self.place(x, y, z, "*Furniture_Temple_Light_Brazier_State_Definitions_On")
+        for k in (212, 262):
+            x, z = at(28, k)
+            self.place(x, y, z, "Furniture_Temple_Wind_Statue", facing_center(-x, -z))
+        for k in (215, 235, 255):
+            x, z = at(40, k)
+            self.hang(x, top, z, "Furniture_Temple_Wind_Chandelier")
+        for k in range(205, 272, 8):
+            x, z = at(43, k)
+            self.place(x, y, z, "Furniture_Temple_Wind_Pot")
+
+    def decor_study(self):
+        y = F_DECK
+        rng = self.rng
+        # Le piédestal de la pierre (étape du butin) reste dégagé.
+        self.keep_clear.update((x, y + k, z) for x in range(-1, 2) for z in range(31, 34) for k in range(4))
+        # Bibliothèque du fond, de part et d'autre du portail de fin.
+        for x in range(-8, 9):
+            if abs(x) <= 2:
+                continue
+            for k in range(0, 4):
+                self.place(x, y + k, 41, SHELF, pf.NORTH)
+            if rng.random() < 0.6:
+                self.place(x, y + 4, 41, rng.choice(["Deco_Bone_Skulls", "Potion_Signature_Greater", "Deco_Book_Pile_Small",
+                                                     "Furniture_Royal_Magic_Potion_Glow", "Deco_Treasure_Pile_Small"]))
+        # Bureau garni, tapis, curiosités.
+        for x, top in ((6, "Deco_Scroll"), (7, "Furniture_Temple_Wind_Candle")):
+            self.place(x, y + 1, 30, top)
+        self.place(6, y, 29, "Furniture_Royal_Magic_Chair", pf.SOUTH)
+        for x in (-6, -4, 2, 4):
+            for z in (34, 36):
+                self.place(x, y, z, "Furniture_Royal_Magic_Carpet")
+        self.place(-7, y, 40, "Furniture_Temple_Emerald_Statue", pf.EAST)
+        self.place(7, y, 40, "Furniture_Temple_Emerald_Statue", pf.WEST)
+        self.place(-7, y, 27, "Deco_Treasure_Pile_Large")
+        self.place(7, y, 37, "Alchemy_Cauldron")
+        self.place(-7, y, 33, "Furniture_Temple_Wind_Pot")
+        self.place(-6, y, 37, "Deco_Bone_Skulls")
+        self.hang(0, y + 9, 35, "Furniture_Temple_Wind_Chandelier")
+
+    def decorate(self):
+        self.decor_hall()
+        self.decor_leaks()
+        self.decor_greenhouse()
+        self.decor_library()
+        self.decor_transmutation()
+        self.decor_lab()
+        self.decor_observatory()
+        self.decor_antechamber()
+        self.decor_study()
 
     def build(self):
         self.shell()
@@ -696,7 +1198,9 @@ class Tower:
         self.checkpoint(22, F_LAB, -16, statue_at=(18, -20))
         self.checkpoint(*at3(37, F_LAB, 272), statue_at=at(39, 262))
         self.checkpoint(*at3(33, F_DECK, 255), statue_at=at(37, 265))
+        self.decorate()
         self.secure()
+        self.barriers()
         return self.p
 
     def secure(self, rounds=12):
@@ -761,6 +1265,71 @@ class Tower:
         raise RuntimeError(f"tour : fuites non refermées {self.secure_log}")
 
 
+    # --- murs invisibles ---------------------------------------------------------------------------
+
+    def ground_solid(self, x, y, z):
+        """Plein, en comptant l'île sous le prefab (y < 0 hors des blocs posés)."""
+        return self.solid(x, y, z) or (y < 0 and self.p.get(x, y, z) is None)
+
+    def barrier_needs(self):
+        """Piles au bord du vide extérieur trop basses pour un joueur à côté : {(x, haut actuel, z): haut voulu}.
+
+        Pour chaque surface atteignable, une colonne voisine pleine à hauteur des pieds (parapet, verrière, lanterne...)
+        doit l'être jusqu'à 4 blocs au-dessus de la surface si, à 2 cases au plus, une colonne hors de la tour (d >=
+        R_OUT) n'a rien de plein de 6 blocs sous les pieds à 3 au-dessus : le vide. Les trémies intérieures n'en ont pas
+        besoin."""
+        _, seen = walkable_path(self.p, START, {})
+        levels = {}
+        for x, s, z in seen:
+            levels.setdefault((x, z), set()).add(s)
+        void = {}
+
+        def is_void(x, z, fy):
+            key = (x, z, fy)
+            if key not in void:
+                void[key] = polar(x, z)[0] >= R_OUT and not any(self.ground_solid(x, yy, z)
+                                                               for yy in range(fy - 6, fy + 4))
+            return void[key]
+
+        need = {}
+        for x, s, z in seen:
+            fy = (s + 1) // 2           # premier bloc d'air au-dessus de la surface
+            want = fy + 3               # dernier bloc plein voulu : 4 blocs au-dessus de la surface
+            for dx, dz in DIRS8:
+                nx, nz = x + dx, z + dz
+                # voisin au même niveau, marche plus haute de la même rampe, ou trou : pas un mur
+                if any(-2 <= o - s <= 16 for o in levels.get((nx, nz), ())) or not self.ground_solid(nx, fy, nz):
+                    continue
+                if not any(is_void(nx + ex, nz + ez, fy) for ex in range(-2, 3) for ez in range(-2, 3)):
+                    continue
+                top = fy
+                while self.ground_solid(nx, top + 1, nz) or (nx, top + 1, nz) in self.p.claims:
+                    top += 1
+                if top < want:
+                    need[(nx, top, nz)] = max(want, need.get((nx, top, nz), want))
+        return need
+
+    def barriers(self):
+        """Murs invisibles (bloc vanilla Barrier : plein, sans rendu) au-dessus des parapets qui bordent le vide, pour
+        qu'on ne puisse sauter par-dessus ni des coursives, ni des rampes extérieures, ni de la terrasse."""
+        for _ in range(3):
+            need = self.barrier_needs()
+            if not need:
+                return
+            for (x, top, z), want in need.items():
+                for y in range(top + 1, want + 1):
+                    if (x, y, z) in self.keep_clear or not self.p.free(x, y, z):
+                        break
+                    self.p.set(x, y, z, BARRIER)
+        need = self.barrier_needs()
+        if need:
+            raise RuntimeError(f"tour : murs invisibles trop bas au bord du vide {sorted(need.items())[:8]}")
+        _, seen = walkable_path(self.p, START, {})
+        perched = [(x, s, z) for x, s, z in seen if self.p.get(x, (s - 1) // 2, z) == BARRIER]
+        if perched:
+            raise RuntimeError(f"tour : on peut marcher sur des murs invisibles {perched[:8]}")
+
+
 # Salles à atteindre depuis le parvis (x, niveau, z), en plus des points de contrôle.
 GOALS = {"hall": (0, F_HALL, 16), "leaks_exit": (-31, F_LEAKS, 0), "balcony_north": (0, F_LEAKS, -40),
          "library": (0, F_LIBRARY, 12), "transmutation": (0, F_TRANS, 0), "lab": (10, F_LAB, 10),
@@ -787,7 +1356,8 @@ def at3(r, y, a):
 
 # --- vérification du parcours --------------------------------------------------------------------
 
-PASSABLE_PREFIXES = ("Plant_Grass", "Plant_Flower", "Plant_Crop_Mushroom", "Nakasar_Tower_Emanation", "Deco_Potion")
+PASSABLE_PREFIXES = ("Plant_Grass", "Plant_Flower", "Plant_Crop_Mushroom_Glowing", "Nakasar_Tower_Emanation", "Deco_Potion",
+                     "Deco_Scroll", "Plant_Moss_Rug", "Plant_Vine", "Furniture_Royal_Magic_Carpet")
 
 
 def passable(name):
@@ -803,7 +1373,7 @@ def walkable_path(prefab, start, goals, ground_y=0, bounds=(-70, 70, -70, 82)):
 
     def cell(x, y, z):
         if (x, y, z) in claims:
-            return "solid"
+            return "air" if passable(blocks[claims[(x, y, z)]][0]) else "solid"
         b = blocks.get((x, y, z))
         if b is None:
             return "solid" if y < ground_y else "air"
