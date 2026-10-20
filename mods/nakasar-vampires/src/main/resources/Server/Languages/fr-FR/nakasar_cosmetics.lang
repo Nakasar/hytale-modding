@@ -1,0 +1,11 @@
+# Tenues cosmétiques et décor du Comté — textes français
+benchCategories.nakasar_altar_decor = Décor et tenues
+benchCategories.nakasar_hunter_cosmetics = Tenues
+items.Armor_Nakasar_Hunter_Hat.name = Chapeau de chasseur
+items.Armor_Nakasar_Hunter_Hat.description = Un chapeau de cuir à larges bords, cerclé d'argent. Il ne protège de rien, sauf de la pluie.
+items.Armor_Nakasar_Hunter_Coat.name = Manteau de chasseur
+items.Armor_Nakasar_Hunter_Coat.description = Le long manteau de cuir des chasseurs de vampires, à pèlerine et boutons d'argent. Aucune protection.
+items.Armor_Nakasar_Alchemist_Mask.name = Masque à bec de l'Alchimiste
+items.Armor_Nakasar_Alchemist_Mask.description = Une copie du masque de l'Alchimiste, cousue à partir de ses notes. Aucune protection.
+items.Armor_Nakasar_Alchemist_Garb.name = Tablier de l'Alchimiste
+items.Armor_Nakasar_Alchemist_Garb.description = Tablier de cuir taché de réactifs, ceinture et fioles lumineuses. Aucune protection.

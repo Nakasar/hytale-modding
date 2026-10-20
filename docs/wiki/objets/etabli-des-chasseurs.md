@@ -24,9 +24,9 @@ On progresse avec les chasseurs en leur rapportant des [trophées](trophees.md) 
 
 | Niveau | Nom | Amélioration | Débloque |
 |---|---|---|---|
-| 1 | Recrue | — | onglets **Feux purificateurs** et **Contrats** : contrat de la ferme |
+| 1 | Recrue | — | onglets **Feux purificateurs**, **Contrats** et **Tenues** : contrat de la ferme, chapeau et manteau de chasseur |
 | 2 | Traqueur | **1 cœur d'Abomination**, **4 crocs de vampire**, **4 lingots d'argent** (3 s) | onglets **Runes de chasseur** et **Fragments** : Aura de lumière, clé du Comté, contrats du champ, de la garnison et de la crypte ; fabrication 15 % plus rapide |
-| 3 | Chasseur | **1 graine de la Citrouille géante**, **1 insigne du Capitaine**, **8 crocs de vampire**, **8 lingots d'argent**, **4 éclats de rune** (5 s) | onglet **Armes infusées** : [argent infusé](armes-en-argent.md#argent-infuse) ; Invisibilité ; contrat du château ; fabrication 30 % plus rapide |
+| 3 | Chasseur | **1 graine de la Citrouille géante**, **1 insigne du Capitaine**, **8 crocs de vampire**, **8 lingots d'argent**, **4 éclats de rune** (5 s) | onglet **Armes infusées** : [argent infusé](armes-en-argent.md#argent-infuse) ; Invisibilité ; contrat du château ; masque et tablier de l'Alchimiste ; fabrication 30 % plus rapide |
 
 L'amélioration se fait depuis la fenêtre de l'établi, comme pour les établis du jeu. Un quatrième niveau (Maître chasseur) viendra avec les donjons.
 
@@ -44,4 +44,8 @@ L'amélioration se fait depuis la fenêtre de l'établi, comme pour les établis
 | Contrats | 2 | [Contrat : la Garnison du Capitaine](contrats.md) | 4 crocs de vampire, 2 lingots d'argent, 2 chutes de lin, 2 éclats de rune | 3 s |
 | Contrats | 2 | [Contrat : le Gardien de la crypte](contrats.md) | 3 crocs de vampire, 2 lingots d'argent, 2 chutes de lin, 2 éclats de rune | 3 s |
 | Contrats | 3 | [Contrat : le Spectre du château](contrats.md) | 4 crocs de vampire, 3 lingots d'argent, 3 chutes de lin, 3 éclats de rune | 3 s |
+| Tenues | 1 | [Chapeau de chasseur](tenues.md) | 4 cuirs légers, 2 chutes de lin, 1 lingot d'argent | 3 s |
+| Tenues | 1 | [Manteau de chasseur](tenues.md) | 8 cuirs légers, 4 chutes de lin, 2 lingots d'argent | 3 s |
+| Tenues | 3 | [Masque à bec de l'Alchimiste](tenues.md) | 4 cuirs légers, 1 lingot de fer, 1 sel philosophal, 1 mercure vif | 5 s |
+| Tenues | 3 | [Tablier de l'Alchimiste](tenues.md) | 6 cuirs légers, 2 chutes de lin, 1 soufre ardent, 1 mercure vif | 5 s |
 | Armes infusées | 3 | [12 armes en argent infusé](armes-en-argent.md#argent-infuse) | l'arme en argent, 2 lingots d'argent, 2 crocs de vampire, 1 topaze | 4 s |

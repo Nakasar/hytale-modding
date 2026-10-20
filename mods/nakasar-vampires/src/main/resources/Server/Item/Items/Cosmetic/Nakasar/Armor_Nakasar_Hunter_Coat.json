@@ -1,0 +1,61 @@
+{
+  "TranslationProperties": {
+    "Name": "nakasar_cosmetics.items.Armor_Nakasar_Hunter_Coat.name",
+    "Description": "nakasar_cosmetics.items.Armor_Nakasar_Hunter_Coat.description"
+  },
+  "Quality": "Rare",
+  "ItemLevel": 10,
+  "PlayerAnimationsId": "Block",
+  "ItemSoundSetId": "ISS_Armor_Leather",
+  "Categories": [
+    "Items.Armors"
+  ],
+  "Icon": "Icons/Items/Nakasar/Cosmetics/Hunter_Coat.png",
+  "IconProperties": {
+    "Rotation": [
+      0,
+      0,
+      0
+    ],
+    "Scale": 1.0,
+    "Translation": [
+      0,
+      0
+    ]
+  },
+  "Model": "Items/Nakasar/Cosmetics/Hunter_Coat/Model.blockymodel",
+  "Texture": "Items/Nakasar/Cosmetics/Hunter_Coat/Texture.png",
+  "Interactions": {
+    "Primary": {
+      "Interactions": [
+        {
+          "Type": "EquipItem"
+        }
+      ]
+    },
+    "Secondary": {
+      "Interactions": [
+        {
+          "Type": "EquipItem"
+        }
+      ]
+    }
+  },
+  "Armor": {
+    "ArmorSlot": "Chest",
+    "BaseDamageResistance": 0,
+    "CosmeticsToHide": [
+      "Overtop",
+      "Cape"
+    ]
+  },
+  "MaxDurability": 1000,
+  "Tags": {
+    "Type": [
+      "Armor"
+    ],
+    "Family": [
+      "Nakasar_Cosmetic"
+    ]
+  }
+}

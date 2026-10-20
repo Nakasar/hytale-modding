@@ -1,0 +1,38 @@
+{
+  "TimeSeconds": 3,
+  "KnowledgeRequired": false,
+  "Input": [
+    {
+      "ItemId": "Ingredient_Leather_Light",
+      "Quantity": 4
+    },
+    {
+      "ItemId": "Ingredient_Fabric_Scrap_Linen",
+      "Quantity": 2
+    },
+    {
+      "ItemId": "Ingredient_Bar_Silver",
+      "Quantity": 1
+    }
+  ],
+  "PrimaryOutput": {
+    "ItemId": "Armor_Nakasar_Hunter_Hat",
+    "Quantity": 1
+  },
+  "Output": [
+    {
+      "ItemId": "Armor_Nakasar_Hunter_Hat",
+      "Quantity": 1
+    }
+  ],
+  "BenchRequirement": [
+    {
+      "Type": "Crafting",
+      "Id": "Nakasar_Hunter_Workbench",
+      "Categories": [
+        "Nakasar_Hunter_Cosmetics"
+      ],
+      "RequiredTierLevel": 1
+    }
+  ]
+}

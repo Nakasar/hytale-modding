@@ -90,6 +90,11 @@
           "Id": "Nakasar_Hunter_Contracts",
           "Name": "nakasar_hunters.benchCategories.nakasar_hunter_contracts",
           "Icon": "Icons/CraftingCategories/Nakasar/Contracts.png"
+        },
+        {
+          "Id": "Nakasar_Hunter_Cosmetics",
+          "Name": "nakasar_cosmetics.benchCategories.nakasar_hunter_cosmetics",
+          "Icon": "Icons/CraftingCategories/Nakasar/Cosmetics.png"
         }
       ],
       "TierLevels": [

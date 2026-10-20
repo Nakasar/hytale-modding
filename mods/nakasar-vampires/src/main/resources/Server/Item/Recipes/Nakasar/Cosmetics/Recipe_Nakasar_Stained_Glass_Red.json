@@ -1,0 +1,34 @@
+{
+  "TimeSeconds": 3,
+  "KnowledgeRequired": false,
+  "Input": [
+    {
+      "ItemId": "Ingredient_Crystal_Red",
+      "Quantity": 1
+    },
+    {
+      "ItemId": "Ingredient_Bar_Iron",
+      "Quantity": 1
+    }
+  ],
+  "PrimaryOutput": {
+    "ItemId": "Nakasar_Stained_Glass_Red",
+    "Quantity": 4
+  },
+  "Output": [
+    {
+      "ItemId": "Nakasar_Stained_Glass_Red",
+      "Quantity": 4
+    }
+  ],
+  "BenchRequirement": [
+    {
+      "Type": "Crafting",
+      "Id": "Nakasar_Sacrificial_Altar",
+      "Categories": [
+        "Nakasar_Altar_Decor"
+      ],
+      "RequiredTierLevel": 1
+    }
+  ]
+}

@@ -71,9 +71,10 @@ import java.util.concurrent.ThreadLocalRandom;
  *   <li><b>Effondrement</b> : en dernière phase, un rayonnage (volume {@code Codex_Collapse_i}, dans un ordre
  *   aléatoire) s'écroule toutes les {@value #COLLAPSE_INTERVAL} s ; ses zones sont annoncées avant de se remplir de
  *   gravats.</li>
+ *   <li><b>Groupe</b> : à l'engagement, sa vie est adaptée au nombre de joueurs dans l'arène ({@link GroupHealth}).</li>
  *   <li><b>Remise à zéro</b> : plus aucun joueur dans l'arène pendant {@value #RESET_SECONDS} s alors que le Codex est
  *   engagé (groupe mort ou parti) : gravats retirés ({@code Codex_Arena Reset = On}), livres, tourbillons et flaques
- *   retirés, vie pleine, retour à la première phase.</li>
+ *   retirés, vie de base pleine, retour à la première phase.</li>
  *   <li><b>Mort</b> : le sceau de la rampe vers l'étage de la transmutation s'ouvre ({@code Codex_Seal Codex = On}).</li>
  * </ul>
  */
@@ -85,6 +86,7 @@ public final class CodexSystem extends TickingSystem<EntityStore> {
     static final float STUN_SECONDS = 6f;
     static final float COLLAPSE_INTERVAL = 14f;
     static final float RESET_SECONDS = 8f;
+    static final String HP_MODIFIER = "nakasar_codex_group";
     private static final float INTERVAL = 0.25f;
     /** Marge autour du mur de l'arène (rayon intérieur de la rotonde) où un joueur compte encore comme présent. */
     private static final double ARENA_MARGIN = 4;
@@ -352,6 +354,7 @@ public final class CodexSystem extends TickingSystem<EntityStore> {
         if (!fight.started) {
             fight.started = true;
             fight.nextInk = now + seconds(INK_FIRST);
+            GroupHealth.apply(stats, HP_MODIFIER, GroupHealth.multiplier(playersInArena(world, store, ARENA_MARGIN)));
         }
         TransformComponent transform = store.getComponent(codex, TransformComponent.getComponentType());
         Vector3d from = transform == null ? TowerLayout.CODEX_CENTER : transform.getPosition();
@@ -622,9 +625,7 @@ public final class CodexSystem extends TickingSystem<EntityStore> {
         if (fight.frozenByUs) {
             store.tryRemoveComponent(codex, Frozen.getComponentType());
         }
-        if (stats != null) {
-            stats.maximizeStatValue(DefaultEntityStatTypes.getHealth());
-        }
+        GroupHealth.clear(stats, HP_MODIFIER);
         if (volumes != null) {
             volumes.setTag(TowerLayout.CODEX_ARENA, "Reset", "On", null, TriggerVolumeManager.ENVIRONMENT_ACTOR_UUID);
         }
@@ -650,6 +651,16 @@ public final class CodexSystem extends TickingSystem<EntityStore> {
         fight.summons.clear();
         fight.strikes.clear();
         fight.pools.clear();
+    }
+
+    private static int playersInArena(World world, Store<EntityStore> store, double margin) {
+        int count = 0;
+        for (PlayerRef player : world.getPlayerRefs()) {
+            if (inArena(player.getReference(), store, margin)) {
+                count++;
+            }
+        }
+        return count;
     }
 
     private static boolean playerInArena(World world, Store<EntityStore> store, double margin) {

@@ -1,0 +1,11 @@
+# Cosmetic outfits and County decor — English texts
+benchCategories.nakasar_altar_decor = Decor and Outfits
+benchCategories.nakasar_hunter_cosmetics = Outfits
+items.Armor_Nakasar_Hunter_Hat.name = Hunter's Hat
+items.Armor_Nakasar_Hunter_Hat.description = A wide-brimmed leather hat with a silver band. It protects from nothing but the rain.
+items.Armor_Nakasar_Hunter_Coat.name = Hunter's Coat
+items.Armor_Nakasar_Hunter_Coat.description = The vampire hunters' long leather coat, with a capelet and silver buttons. No protection.
+items.Armor_Nakasar_Alchemist_Mask.name = Alchemist's Beaked Mask
+items.Armor_Nakasar_Alchemist_Mask.description = A copy of the Alchemist's mask, sewn from his notes. No protection.
+items.Armor_Nakasar_Alchemist_Garb.name = Alchemist's Apron
+items.Armor_Nakasar_Alchemist_Garb.description = A reagent-stained leather apron, belt and glowing vials. No protection.

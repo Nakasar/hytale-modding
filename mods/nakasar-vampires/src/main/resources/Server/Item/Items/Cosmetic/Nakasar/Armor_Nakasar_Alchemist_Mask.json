@@ -1,0 +1,61 @@
+{
+  "TranslationProperties": {
+    "Name": "nakasar_cosmetics.items.Armor_Nakasar_Alchemist_Mask.name",
+    "Description": "nakasar_cosmetics.items.Armor_Nakasar_Alchemist_Mask.description"
+  },
+  "Quality": "Epic",
+  "ItemLevel": 10,
+  "PlayerAnimationsId": "Block",
+  "ItemSoundSetId": "ISS_Armor_Leather",
+  "Categories": [
+    "Items.Armors"
+  ],
+  "Icon": "Icons/Items/Nakasar/Cosmetics/Alchemist_Mask.png",
+  "IconProperties": {
+    "Rotation": [
+      0,
+      0,
+      0
+    ],
+    "Scale": 1.0,
+    "Translation": [
+      0,
+      0
+    ]
+  },
+  "Model": "Items/Nakasar/Cosmetics/Alchemist_Mask/Model.blockymodel",
+  "Texture": "Items/Nakasar/Cosmetics/Alchemist_Mask/Texture.png",
+  "Interactions": {
+    "Primary": {
+      "Interactions": [
+        {
+          "Type": "EquipItem"
+        }
+      ]
+    },
+    "Secondary": {
+      "Interactions": [
+        {
+          "Type": "EquipItem"
+        }
+      ]
+    }
+  },
+  "Armor": {
+    "ArmorSlot": "Head",
+    "BaseDamageResistance": 0,
+    "CosmeticsToHide": [
+      "FaceAccessory",
+      "FacialHair"
+    ]
+  },
+  "MaxDurability": 1000,
+  "Tags": {
+    "Type": [
+      "Armor"
+    ],
+    "Family": [
+      "Nakasar_Cosmetic"
+    ]
+  }
+}

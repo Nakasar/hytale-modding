@@ -1,0 +1,62 @@
+{
+  "TranslationProperties": {
+    "Name": "nakasar_cosmetics.items.Armor_Nakasar_Hunter_Hat.name",
+    "Description": "nakasar_cosmetics.items.Armor_Nakasar_Hunter_Hat.description"
+  },
+  "Quality": "Rare",
+  "ItemLevel": 10,
+  "PlayerAnimationsId": "Block",
+  "ItemSoundSetId": "ISS_Armor_Leather",
+  "Categories": [
+    "Items.Armors"
+  ],
+  "Icon": "Icons/Items/Nakasar/Cosmetics/Hunter_Hat.png",
+  "IconProperties": {
+    "Rotation": [
+      0,
+      0,
+      0
+    ],
+    "Scale": 1.0,
+    "Translation": [
+      0,
+      0
+    ]
+  },
+  "Model": "Items/Nakasar/Cosmetics/Hunter_Hat/Model.blockymodel",
+  "Texture": "Items/Nakasar/Cosmetics/Hunter_Hat/Texture.png",
+  "Interactions": {
+    "Primary": {
+      "Interactions": [
+        {
+          "Type": "EquipItem"
+        }
+      ]
+    },
+    "Secondary": {
+      "Interactions": [
+        {
+          "Type": "EquipItem"
+        }
+      ]
+    }
+  },
+  "Armor": {
+    "ArmorSlot": "Head",
+    "BaseDamageResistance": 0,
+    "CosmeticsToHide": [
+      "HeadAccessory",
+      "Haircut",
+      "EarAccessory"
+    ]
+  },
+  "MaxDurability": 1000,
+  "Tags": {
+    "Type": [
+      "Armor"
+    ],
+    "Family": [
+      "Nakasar_Cosmetic"
+    ]
+  }
+}

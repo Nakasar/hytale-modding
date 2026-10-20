@@ -51,6 +51,8 @@ import java.util.concurrent.ThreadLocalRandom;
  *   porteurs à la fois.</li>
  *   <li><b>Acide</b> : pendant le combat, la cuve crache de l'acide ({@code Chimera_Acid Cast = On}, zones annoncées
  *   au sol) toutes les {@value #ACID_INTERVAL} s.</li>
+ *   <li><b>Groupe</b> : à l'engagement, sa vie est adaptée au nombre de joueurs dans le laboratoire
+ *   ({@link GroupHealth}).</li>
  *   <li><b>Remise à zéro</b> : plus aucun joueur dans le laboratoire pendant {@value #RESET_SECONDS} s alors qu'elle
  *   est engagée : elle regagne toute sa vie, les porteurs disparaissent.</li>
  *   <li><b>Mort</b> : le sceau de la porte nord se dissout ({@code Chimera_Seal Chimera = On}) ; les porteurs
@@ -61,6 +63,7 @@ public final class ChimeraSystem extends TickingSystem<EntityStore> {
 
     public static final String ROLE = "Nakasar_Lab_Chimera";
     static final String CARRIER_ROLE = "Nakasar_Chimera_Feeder";
+    static final String HP_MODIFIER = "nakasar_chimera_group";
     static final float CARRIER_INTERVAL = 7f;
     static final float CARRIER_INTERVAL_HURT = 5f;
     static final int CARRIER_MAX = 4;
@@ -99,6 +102,7 @@ public final class ChimeraSystem extends TickingSystem<EntityStore> {
         long nextAcid;
         float absent;
         boolean sealed;
+        boolean scaled;
     }
 
     private static final Map<Ref<EntityStore>, Fight> FIGHTS = new ConcurrentHashMap<>();
@@ -179,6 +183,12 @@ public final class ChimeraSystem extends TickingSystem<EntityStore> {
             return;
         }
 
+        if (!fight.scaled) {
+            fight.scaled = true;
+            GroupHealth.apply(stats, HP_MODIFIER, GroupHealth.multiplier(playersInArena(world, store)));
+            health = stats == null ? null : stats.get(DefaultEntityStatTypes.getHealth());
+        }
+
         // Porteurs d'acide : un nouveau à intervalles, près d'un bassin au hasard.
         boolean hurt = health != null && health.get() < health.getMax() * 0.5f;
         if (fight.nextCarrier == 0) {
@@ -244,9 +254,7 @@ public final class ChimeraSystem extends TickingSystem<EntityStore> {
 
     private static void reset(Store<EntityStore> store, Ref<EntityStore> chimera, Fight fight, EntityStatMap stats) {
         removeCarriers(fight, store);
-        if (stats != null) {
-            stats.maximizeStatValue(DefaultEntityStatTypes.getHealth());
-        }
+        GroupHealth.clear(stats, HP_MODIFIER);
         Fight fresh = new Fight();
         fresh.sealed = fight.sealed;
         FIGHTS.put(chimera, fresh);
@@ -311,6 +319,21 @@ public final class ChimeraSystem extends TickingSystem<EntityStore> {
             }
         }
         fight.carriers.clear();
+    }
+
+    private static int playersInArena(World world, Store<EntityStore> store) {
+        int count = 0;
+        for (PlayerRef player : world.getPlayerRefs()) {
+            Ref<EntityStore> ref = player.getReference();
+            if (!alive(ref, store)) {
+                continue;
+            }
+            TransformComponent transform = store.getComponent(ref, TransformComponent.getComponentType());
+            if (transform != null && inArena(transform.getPosition())) {
+                count++;
+            }
+        }
+        return count;
     }
 
     private static boolean playerInArena(World world, Store<EntityStore> store) {
