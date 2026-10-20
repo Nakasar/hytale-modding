@@ -1,0 +1,37 @@
+{
+  "$Comment": "Boss de fractale étourdi (barre de défiance brisée, charge dans un mur, fenêtre de punition) : son IA est gelée (dev.nakasar.hytale.fractals.combat.BossStun) et il subit 50 % de dégâts en plus. Copie de Nakasar_Elite_Stunned du mod Vampires.",
+  "ApplicationEffects": {
+    "Particles": [
+      {
+        "SystemId": "Stunned",
+        "TargetEntityPart": "Self",
+        "PositionOffset": {
+          "Y": 3.6
+        }
+      }
+    ]
+  },
+  "DamageResistance": {
+    "Physical": [
+      {
+        "CalculationType": "Percent",
+        "Amount": -0.5
+      }
+    ],
+    "Projectile": [
+      {
+        "CalculationType": "Percent",
+        "Amount": -0.5
+      }
+    ],
+    "Elemental": [
+      {
+        "CalculationType": "Percent",
+        "Amount": -0.5
+      }
+    ]
+  },
+  "OverlapBehavior": "Overwrite",
+  "Infinite": false,
+  "Duration": 4
+}

@@ -1,0 +1,4 @@
+# Ids vanilla référencés par le mod Fractales, que ValidateAssets accepte sans les trouver dans le pack.
+# Une ligne par id : « <type> <id> ». Types : droplist (listes de butin), npc (rôles de PNJ), animations (ItemPlayerAnimationsId).
+# Un id absent du jeu fait échouer en jeu l'asset qui le cite, et parfois tout le mod. N'ajouter ici qu'un id
+# vu dans les fichiers du jeu ou chargé sans erreur en jeu ; préciser la source (même règle que le mod Vampires).

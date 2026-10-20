@@ -1,0 +1,12 @@
+{
+  "Group": "${group}",
+  "Name": "Fractals",
+  "Version": "${version}",
+  "Description": "Fractales des Brumes : les fractales de Guild Wars 2 dans Hytale, pour des groupes de 1 à 5 joueurs. Un fragment des Brumes ouvre l'Observatoire des fractales depuis l'Ancienne passerelle.",
+  "Authors": [
+    { "Name": "${author}" }
+  ],
+  "Main": "dev.nakasar.hytale.fractals.FractalsPlugin",
+  "IncludesAssetPack": true,
+  "ServerVersion": "${serverRange}"
+}

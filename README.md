@@ -7,7 +7,7 @@ Deux mods, chacun avec son dossier de documentation :
 | Mod | Code | Documentation |
 |-----|------|---------------|
 | **Vampires** : le domaine du Comte vampire (plugin Java + pack d'assets, artefact `Nakasar-Vampires-<version>.jar`) | `mods/nakasar-vampires` | [docs/vampires](docs/vampires/) |
-| **Fractales des Brumes** : les fractales de Guild Wars 2 transposées dans Hytale, pour 1 à 5 joueurs (en conception, pas encore de code) | à venir : `mods/nakasar-fractals` | [docs/fractales](docs/fractales/) |
+| **Fractales des Brumes** : les fractales de Guild Wars 2 transposées dans Hytale, pour 1 à 5 joueurs (en cours : socle posé, pas encore de contenu jouable) | `mods/nakasar-fractals` | [docs/fractales](docs/fractales/) |
 
 Les notes communes aux deux mods (API serveur, PNJ) restent à la racine de `docs/`.
 
@@ -30,6 +30,25 @@ L'histoire et la progression visées (voie des chasseurs, voie occulte, joueur v
 
 Le game design document (Observatoire, fragment d'instance, niveaux 1 à 100, agonie et Autel des infusions, 6 fractales de la saison 1 avec leurs boss, transposition des mécaniques GW2, étapes d'implémentation) est dans [docs/fractales/gdd.md](docs/fractales/gdd.md). Le développement commence par la fractale de la Falaise.
 
+Étape 1 (socle) : le mod `mods/nakasar-fractals` (manifest `Nakasar:Fractals`, jar `Nakasar-Fractals-<version>.jar`,
+plugin `dev.nakasar.hytale.fractals.FractalsPlugin`). Il ne dépend pas du mod Vampires : ses briques de combat y sont
+copiées, sans bibliothèque commune, sous des ids `Nakasar_Fractal_` (un correctif d'un côté se reporte à la main de
+l'autre) :
+
+| Brique (copie de) | Dans le mod Fractales |
+| --- | --- |
+| attaques annoncées `Nakasar_Telegraph` | `Nakasar_Fractal_Telegraph` (`combat/`), sans braseros ni Domination ; ses alliés sont le groupe `Nakasar_Fractal_Foes` |
+| charge `Nakasar_Charge` | `Nakasar_Fractal_Charge`, sans poteaux de grange |
+| étourdissement `EliteStun`, `Nakasar_StunSelf` | `BossStun`, `Nakasar_Fractal_StunSelf`, effet `Nakasar_Fractal_Stunned` |
+| serviteurs et bouclier `Nakasar_SummonMinions`, `MinionShieldSystem` | `Nakasar_Fractal_SummonMinions`, `MinionShieldSystem.register(rôle, vague)` (`minions/`) |
+| cellules du Capitaine `Nakasar_ImprisonPlayer` | `Nakasar_Fractal_Cage`, bloc invisible `Nakasar_Fractal_Cage_Cell` (cages de l'Archidevin) |
+| barre de boss, vie selon le groupe | `BossBarSystem.register(rôle)`, `GroupHealth` (`boss/`) |
+| remise en place du décor `Restores`, `WorldBlocks` | `arena/` |
+| zones rouges `tools/tower_warnings.py` | `tools/generate_warnings.py` (`Nakasar_Fractal_Warning_*`, `Nakasar_Fractal_Cone_*`) |
+
+Les validateurs hors jeu (`tools/ValidateAssets.java`, `tools/ValidateRoles.java` et les listes vanilla) sont copiés
+de même et tournent sur le pack du mod à chaque `build`.
+
 ### Notes communes
 
 Les points d'API serveur vérifiés dans le jar `Server-0.7.2` sont notés dans [docs/api-0.7.2.md](docs/api-0.7.2.md).
@@ -49,12 +68,13 @@ Création de PNJ (rôles, IA, modèles, apparitions) : [docs/npc-0.7.2.md](docs/
 ```
 
 - `mods/nakasar-vampires/build/libs/Nakasar-Vampires-0.1.0.jar`
+- `mods/nakasar-fractals/build/libs/Nakasar-Fractals-0.1.0.jar`
 
 `build` lance aussi `validateJson`, qui vérifie la syntaxe de tous les JSON d'assets (le parseur du
 serveur est strict : une virgule en trop fait échouer le chargement du mod).
 
-`build` lance aussi `validateRoles` (`mods/nakasar-vampires/tools/ValidateRoles.java`, rôles de PNJ) et
-`validateAssets` (`mods/nakasar-vampires/tools/ValidateAssets.java`) :
+`build` lance aussi, pour chaque mod, `validateRoles` (`mods/<mod>/tools/ValidateRoles.java`, rôles de PNJ) et
+`validateAssets` (`mods/<mod>/tools/ValidateAssets.java`) :
 il décode chaque asset du pack (biome, structure de monde, instance, portail, objets, environnements, météo,
 spawns, modèles, effets, butins, interactions, y compris celles écrites en ligne dans `Next` ou `Parallel`)
 avec les codecs du jar serveur et signale les clés inconnues et les valeurs invalides (par exemple un

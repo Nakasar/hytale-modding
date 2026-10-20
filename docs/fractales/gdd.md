@@ -326,9 +326,9 @@ Chaque brique est paramétrée par des interactions JSON (comme `Nakasar_Telegra
 Neuf étapes, chacune livrable en une PR testable en jeu ; les étapes 1 à 4 donnent une première fractale jouable de bout en bout (la Falaise), les suivantes ajoutent du contenu.
 
 1. **Socle du mod**
-   - [ ] Sous-projet `mods/nakasar-fractals` (manifeste `Nakasar:Fractals`, plugin `dev.nakasar.hytale.fractals.FractalsPlugin`, langues `nakasar_fractals.lang` fr/en), ajouté à `packMods` et à la CI
-   - [ ] Validateurs hors ligne (`ValidateAssets`, `ValidateRoles`) branchés sur ce mod
-   - [ ] Copier dans le mod Fractales les briques du mod Vampires : télégraphes, barre de boss, PV de groupe, invocations, boucliers, emprisonnement, remises en place d'arène (identifiants `Nakasar_Fractal_`)
+   - [x] Sous-projet `mods/nakasar-fractals` (manifeste `Nakasar:Fractals`, plugin `dev.nakasar.hytale.fractals.FractalsPlugin`, langues `nakasar_fractals.lang` fr/en), ajouté à `packMods` et à la CI
+   - [x] Validateurs hors ligne (`ValidateAssets`, `ValidateRoles`) branchés sur ce mod
+   - [x] Copier dans le mod Fractales les briques du mod Vampires : télégraphes, barre de boss, PV de groupe, invocations, boucliers, emprisonnement, remises en place d'arène (identifiants `Nakasar_Fractal_`)
 2. **Entrée et Observatoire**
    - [ ] Fragment des Brumes : `PortalKey`, recette à l'établi, `PortalTypes`, instance hub (générateur Python comme pour la Tour)
    - [ ] Observatoire : île, Astrolabe, cercle, 6 arches, Archiviste, golem d'essai, volumes de vue et de chute
