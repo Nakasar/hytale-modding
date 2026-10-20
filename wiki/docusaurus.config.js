@@ -54,6 +54,7 @@ const config = {
           { type: "docSidebar", sidebarId: "bestiaire", label: "Bestiaire", position: "left" },
           { to: "/breches", label: "Brèches", position: "left" },
           { type: "docSidebar", sidebarId: "objets", label: "Objets", position: "left" },
+          { type: "docSidebar", sidebarId: "donjons", label: "Donjons", position: "left" },
           { href: "https://github.com/Nakasar/hytale-modding", label: "GitHub", position: "right" },
         ],
       },

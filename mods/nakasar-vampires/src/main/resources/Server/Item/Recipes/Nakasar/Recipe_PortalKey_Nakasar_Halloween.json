@@ -37,6 +37,14 @@
         "Nakasar_Hunter_Fragments"
       ],
       "RequiredTierLevel": 2
+    },
+    {
+      "Type": "Crafting",
+      "Id": "Nakasar_Sacrificial_Altar",
+      "Categories": [
+        "Nakasar_Altar_Rituals"
+      ],
+      "RequiredTierLevel": 2
     }
   ]
 }

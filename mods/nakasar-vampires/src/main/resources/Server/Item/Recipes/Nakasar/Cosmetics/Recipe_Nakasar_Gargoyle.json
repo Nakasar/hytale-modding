@@ -1,0 +1,34 @@
+{
+  "TimeSeconds": 3,
+  "KnowledgeRequired": false,
+  "Input": [
+    {
+      "ItemId": "Rock_Stone_Cobble",
+      "Quantity": 6
+    },
+    {
+      "ItemId": "Ingredient_Crystal_Red",
+      "Quantity": 1
+    }
+  ],
+  "PrimaryOutput": {
+    "ItemId": "Nakasar_Gargoyle",
+    "Quantity": 1
+  },
+  "Output": [
+    {
+      "ItemId": "Nakasar_Gargoyle",
+      "Quantity": 1
+    }
+  ],
+  "BenchRequirement": [
+    {
+      "Type": "Crafting",
+      "Id": "Nakasar_Sacrificial_Altar",
+      "Categories": [
+        "Nakasar_Altar_Decor"
+      ],
+      "RequiredTierLevel": 1
+    }
+  ]
+}

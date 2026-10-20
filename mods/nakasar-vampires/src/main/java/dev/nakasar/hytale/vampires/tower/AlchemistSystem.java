@@ -87,7 +87,7 @@ public final class AlchemistSystem extends TickingSystem<EntityStore> {
     static final String EXHAUSTED = "Nakasar_Alchemist_Exhausted";
     static final String ASPECT_PREFIX = "Nakasar_Alchemist_Aspect_";
     static final String HP_MODIFIER = "nakasar_alchemist_group";
-    static final float HP_PER_PLAYER = 0.55f;
+    static final float HP_PER_PLAYER = GroupHealth.PER_PLAYER;
     static final float HARD_HP = 1.5f;
     static final float HARD_DAMAGE = 1.25f;
     static final float PHASE_2 = 0.67f;

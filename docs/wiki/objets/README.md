@@ -5,6 +5,7 @@
 <Info label="Armes">[12 armes en argent](armes-en-argent.md), 12 en argent infusé, [lance à deux mains](lance-a-deux-mains.md)</Info>
 <Info label="Runes">[7 runes de capacité](runes.md)</Info>
 <Info label="Clés de portail">[Fragment du Comté](cle-du-comte.md), [3 contrats](contrats.md)</Info>
+<Info label="Tenues">[Chasseur et Alchimiste](tenues.md)</Info>
 <Info label="Voie occulte">[Devenir vampire](vampirisme.md)</Info>
 <Info label="Effets">[Effets de statut](../effets.md)</Info>
 </Infobox>
@@ -26,7 +27,8 @@
 | ![icône](/jeu/Icons/Items/Nakasar/Infused/Weapon_Nakasar_Longsword_Infused.png) | [Armes en argent infusé](armes-en-argent.md#argent-infuse) (12 armes) | Armes, ×2,5 contre les vampires, ×1,5 contre les morts-vivants | Établi des chasseurs (niveau 3) |
 | ![icône](/jeu/Icons/Items/Nakasar/Silver/Weapon_Nakasar_Arrow_Silver.png) | [Flèches en argent](armes-en-argent.md#fleches-en-argent) | Munitions | Établi d'armes : 8 flèches grossières + 1 lingot d'argent |
 | ![icône](/jeu/Icons/Items/Nakasar/Halloween/Purifying_Torch.png) | [Torche et lanterne de feu purificateur](feu-purificateur.md) | Blocs | Établi des chasseurs, camps de chasseurs |
-| | [Fragment du Comté Vampire](cle-du-comte.md) | Clé de portail | Établi des chasseurs (niveau 2) |
-| ![icône](/jeu/Icons/Items/Nakasar/Halloween/Gargoyle.png) | [Blocs décoratifs](blocs-decoratifs.md) | Blocs | Manoir du Comte |
+| | [Fragment du Comté Vampire](cle-du-comte.md) | Clé de portail | Établi des chasseurs ou autel sacrificiel (niveau 2) |
+| ![icône](/jeu/Icons/Items/Nakasar/Halloween/Gargoyle.png) | [Blocs décoratifs](blocs-decoratifs.md) | Blocs | Manoir du Comte, autel sacrificiel (niveau 1) |
+| ![icône](/jeu/Icons/Items/Nakasar/Cosmetics/Hunter_Hat.png) | [Tenues cosmétiques](tenues.md) (4) | Tenues sans protection | Établi des chasseurs (niveaux 1 et 3), autel sacrificiel (niveau 3) |
 
 Les effets de statut (chaînes, domination, poison...) sont décrits dans [Effets](../effets.md).

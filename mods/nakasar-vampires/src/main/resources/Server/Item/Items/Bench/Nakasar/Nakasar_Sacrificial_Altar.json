@@ -80,6 +80,11 @@
           "Id": "Nakasar_Altar_Rituals",
           "Name": "nakasar_vampire.benchCategories.nakasar_altar_rituals",
           "Icon": "Icons/CraftingCategories/Nakasar/Rituals.png"
+        },
+        {
+          "Id": "Nakasar_Altar_Decor",
+          "Name": "nakasar_cosmetics.benchCategories.nakasar_altar_decor",
+          "Icon": "Icons/CraftingCategories/Nakasar/Decor.png"
         }
       ],
       "TierLevels": [

@@ -1,0 +1,30 @@
+{
+  "TimeSeconds": 3,
+  "KnowledgeRequired": false,
+  "Input": [
+    {
+      "ItemId": "Ingredient_Bar_Iron",
+      "Quantity": 4
+    }
+  ],
+  "PrimaryOutput": {
+    "ItemId": "Nakasar_Iron_Gate",
+    "Quantity": 1
+  },
+  "Output": [
+    {
+      "ItemId": "Nakasar_Iron_Gate",
+      "Quantity": 1
+    }
+  ],
+  "BenchRequirement": [
+    {
+      "Type": "Crafting",
+      "Id": "Nakasar_Sacrificial_Altar",
+      "Categories": [
+        "Nakasar_Altar_Decor"
+      ],
+      "RequiredTierLevel": 1
+    }
+  ]
+}
