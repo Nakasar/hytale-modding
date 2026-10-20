@@ -1,0 +1,50 @@
+{
+  "TranslationProperties": {
+    "Name": "nakasar_fractals.items.Nakasar_Fractal_Trial_Panel.name",
+    "Description": "nakasar_fractals.items.Nakasar_Fractal_Trial_Panel.description"
+  },
+  "Icon": "Icons/Items/Nakasar/Fractals/Trial_Panel.png",
+  "Categories": [
+    "Blocks.Deco"
+  ],
+  "Quality": "Technical",
+  "PlayerAnimationsId": "Block",
+  "BlockType": {
+    "Material": "Solid",
+    "DrawType": "Cube",
+    "Opacity": "Solid",
+    "Textures": [
+      {
+        "Sides": "BlockTextures/Nakasar/Fractals/Trial_Panel.png",
+        "UpDown": "BlockTextures/Nakasar/Fractals/Trial_Panel.png",
+        "Weight": 1
+      }
+    ],
+    "HitboxType": "Full",
+    "Flags": {},
+    "Gathering": {
+      "Breaking": {
+        "GatherType": "Unbreakable"
+      }
+    },
+    "BlockParticleSetId": "Stone",
+    "BlockSoundSetId": "Stone",
+    "ParticleColor": "#8caaff",
+    "Light": {
+      "Color": "#8af"
+    },
+    "Interactions": {
+      "Use": {
+        "Interactions": [
+          "Nakasar_Fractal_Use_Trial_Panel"
+        ]
+      }
+    }
+  },
+  "Tags": {
+    "Type": [
+      "Deco"
+    ]
+  },
+  "ItemSoundSetId": "ISS_Blocks_Stone"
+}

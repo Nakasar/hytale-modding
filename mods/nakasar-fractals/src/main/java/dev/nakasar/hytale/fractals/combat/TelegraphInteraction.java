@@ -211,6 +211,29 @@ public class TelegraphInteraction extends SimpleInstantInteraction {
         // Serveur uniquement : les zones sont des particules envoyées aux joueurs proches.
     }
 
+    /**
+     * Annonce lancée depuis le code (pupitre du golem d'essai) : zone {@code shape} ({@code Circle}, {@code Cone} de
+     * 90°, {@code Line} de 1,6 bloc de large) de taille {@code size} (rayon, ou longueur de la ligne) centrée sur
+     * {@code center} et tournée vers {@code facing}, qui se remplit en {@code seconds} secondes après {@code delay}
+     * secondes. Le coup ne fait pas de dégâts : il projette de {@code knockback}, ou envoie dans la cage la plus
+     * proche du lanceur si {@code imprison}.
+     */
+    public static void demo(World world, Ref<EntityStore> caster, Ref<EntityStore> target, Vector3d center, double facing,
+                            String shape, float size, float seconds, float delay, float knockback, boolean imprison) {
+        TelegraphInteraction config = new TelegraphInteraction();
+        config.shape = shape;
+        config.radius = size;
+        config.length = size;
+        config.width = 1.6f;
+        config.seconds = seconds;
+        config.delay = delay;
+        config.knockback = knockback;
+        config.knockUp = knockback > 0f ? 5f : 0f;
+        config.imprison = imprison;
+        config.playersOnly = true;
+        TelegraphSystem.start(world, new Strike(config, caster, target, center, facing));
+    }
+
     /** Cible verrouillée de l'élite (sa cible de combat), sinon l'entité fournie par la chaîne. */
     static Ref<EntityStore> target(Ref<EntityStore> caster, InteractionContext context, CommandBuffer<EntityStore> buffer) {
         MarkedEntitySupport marked = buffer.getComponent(caster, MarkedEntitySupport.getComponentType());

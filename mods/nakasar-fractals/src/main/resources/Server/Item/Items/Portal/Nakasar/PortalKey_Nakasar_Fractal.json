@@ -1,0 +1,13 @@
+{
+  "Parent": "PortalKey_Taiga",
+  "TranslationProperties": {
+    "Name": "nakasar_fractals.items.PortalKey_Nakasar_Fractal.name",
+    "Description": "nakasar_fractals.items.PortalKey_Nakasar_Fractal.description"
+  },
+  "Icon": "Icons/Items/Nakasar/Fractals/PortalKey_Fractal.png",
+  "Quality": "Epic",
+  "PortalKey": {
+    "PortalType": "Nakasar_Fractal_Observatory",
+    "TimeLimitSeconds": -1
+  }
+}

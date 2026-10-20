@@ -13,6 +13,17 @@ import dev.nakasar.hytale.fractals.combat.TelegraphSystem;
 import dev.nakasar.hytale.fractals.minions.MinionShieldSystem;
 import dev.nakasar.hytale.fractals.minions.ShieldUnloadSystem;
 import dev.nakasar.hytale.fractals.minions.SummonMinionsInteraction;
+import dev.nakasar.hytale.fractals.command.FractalCommand;
+import dev.nakasar.hytale.fractals.observatory.DialInteraction;
+import dev.nakasar.hytale.fractals.observatory.HarmonyCircleSystem;
+import dev.nakasar.hytale.fractals.observatory.LeaveInteraction;
+import dev.nakasar.hytale.fractals.observatory.Observatory;
+import dev.nakasar.hytale.fractals.observatory.OpenArchInteraction;
+import dev.nakasar.hytale.fractals.observatory.TrialDemoInteraction;
+import dev.nakasar.hytale.fractals.observatory.TrialGolemSystem;
+import dev.nakasar.hytale.fractals.observatory.TrialHitSystem;
+import dev.nakasar.hytale.fractals.party.FallRescueSystem;
+import dev.nakasar.hytale.fractals.party.FractalRuns;
 import dev.nakasar.hytale.fractals.prison.CagePlayerInteraction;
 
 /**
@@ -33,6 +44,12 @@ import dev.nakasar.hytale.fractals.prison.CagePlayerInteraction;
  *       la taille du groupe ;</li>
  *   <li>{@link Restores} : remise en place des blocs du décor, gardée sur disque.</li>
  * </ul>
+ *
+ * <p>Étape 2, l'entrée : le Fragment des Brumes ouvre l'Observatoire ({@code observatory}), où le cercle
+ * d'harmonisation ({@link HarmonyCircleSystem}) forme le groupe, le cadran de l'Astrolabe ({@code Nakasar_Fractal_Dial})
+ * règle le niveau et les arches ({@code Nakasar_Fractal_OpenArch}) ouvrent une instance par groupe ({@link FractalRuns}) ;
+ * la pierre de retour ({@code Nakasar_Fractal_Leave}) y ramène. Golem d'essai ({@link TrialGolemSystem}) et son pupitre
+ * ({@code Nakasar_Fractal_TrialDemo}), filet anti-chute ({@link FallRescueSystem}), commande {@code /fractale}.
  */
 public final class FractalsPlugin extends JavaPlugin {
 
@@ -56,6 +73,10 @@ public final class FractalsPlugin extends JavaPlugin {
         interactions.register(StunSelfInteraction.TYPE_ID, StunSelfInteraction.class, StunSelfInteraction.CODEC);
         interactions.register(SummonMinionsInteraction.TYPE_ID, SummonMinionsInteraction.class, SummonMinionsInteraction.CODEC);
         interactions.register(CagePlayerInteraction.TYPE_ID, CagePlayerInteraction.class, CagePlayerInteraction.CODEC);
+        interactions.register(DialInteraction.TYPE_ID, DialInteraction.class, DialInteraction.CODEC);
+        interactions.register(OpenArchInteraction.TYPE_ID, OpenArchInteraction.class, OpenArchInteraction.CODEC);
+        interactions.register(LeaveInteraction.TYPE_ID, LeaveInteraction.class, LeaveInteraction.CODEC);
+        interactions.register(TrialDemoInteraction.TYPE_ID, TrialDemoInteraction.class, TrialDemoInteraction.CODEC);
 
         var systems = getEntityStoreRegistry();
         systems.registerSystem(new TelegraphSystem());
@@ -63,10 +84,17 @@ public final class FractalsPlugin extends JavaPlugin {
         systems.registerSystem(new MinionShieldSystem());
         systems.registerSystem(new ShieldUnloadSystem());
         systems.registerSystem(new BossBarSystem());
+        systems.registerSystem(new HarmonyCircleSystem());
+        systems.registerSystem(new TrialGolemSystem());
+        systems.registerSystem(new TrialHitSystem());
+        systems.registerSystem(new FallRescueSystem());
 
-        getLogger().atInfo().log("Nakasar Fractales : 5 types d'interaction (%s, %s, %s, %s, %s) et systèmes de combat enregistrés",
+        getCommandRegistry().registerCommand(new FractalCommand());
+
+        getLogger().atInfo().log("Nakasar Fractales : 9 types d'interaction (%s, %s, %s, %s, %s, %s, %s, %s, %s), systèmes et /fractale enregistrés",
                 TelegraphInteraction.TYPE_ID, ChargeInteraction.TYPE_ID, StunSelfInteraction.TYPE_ID,
-                SummonMinionsInteraction.TYPE_ID, CagePlayerInteraction.TYPE_ID);
+                SummonMinionsInteraction.TYPE_ID, CagePlayerInteraction.TYPE_ID, DialInteraction.TYPE_ID,
+                OpenArchInteraction.TYPE_ID, LeaveInteraction.TYPE_ID, TrialDemoInteraction.TYPE_ID);
     }
 
     @Override
@@ -75,5 +103,7 @@ public final class FractalsPlugin extends JavaPlugin {
         BossStun.clearAll();
         SummonMinionsInteraction.clearAll();
         BossBarSystem.clearAll();
+        Observatory.clearAll();
+        FractalRuns.clearAll();
     }
 }

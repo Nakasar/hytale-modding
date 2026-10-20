@@ -7,7 +7,7 @@ Deux mods, chacun avec son dossier de documentation :
 | Mod | Code | Documentation |
 |-----|------|---------------|
 | **Vampires** : le domaine du Comte vampire (plugin Java + pack d'assets, artefact `Nakasar-Vampires-<version>.jar`) | `mods/nakasar-vampires` | [docs/vampires](docs/vampires/) |
-| **Fractales des Brumes** : les fractales de Guild Wars 2 transposées dans Hytale, pour 1 à 5 joueurs (en cours : socle posé, pas encore de contenu jouable) | `mods/nakasar-fractals` | [docs/fractales](docs/fractales/) |
+| **Fractales des Brumes** : les fractales de Guild Wars 2 transposées dans Hytale, pour 1 à 5 joueurs (en cours : socle et Observatoire posés, pas encore de fractale jouable) | `mods/nakasar-fractals` | [docs/fractales](docs/fractales/) |
 
 Les notes communes aux deux mods (API serveur, PNJ) restent à la racine de `docs/`.
 
@@ -48,6 +48,27 @@ l'autre) :
 
 Les validateurs hors jeu (`tools/ValidateAssets.java`, `tools/ValidateRoles.java` et les listes vanilla) sont copiés
 de même et tournent sur le pack du mod à chaque `build`.
+
+Étape 2 (entrée) : le **Fragment des Brumes** (`PortalKey_Nakasar_Fractal`, établi : 4 éclats de rune + 1 cœur du
+Vide) se pose dans l'Ancienne passerelle et ouvre l'**Observatoire**, une île dans les Brumes générée par
+`tools/generate_observatory.py` (prefab, blocs et textures, instances, portail, langues et
+`observatory/ObservatoryLayout.java` ; `--preview DIR` dessine le plan).
+
+- Le premier joueur arrivé **mène**. Les joueurs debout sur le **cercle d'harmonisation** autour de l'Astrolabe forment
+  le groupe (5 au plus).
+- Le meneur règle le **niveau** (1 à 100, rangs Initié, Adepte, Expert, Maître) au cadran de l'Astrolabe : utiliser
+  pour monter, accroupi pour descendre.
+- Le meneur utilise la pierre d'une des **6 arches** : tout le cercle part dans une instance de la fractale, propre au
+  groupe. Seule la Falaise est ouverte, en ébauche (une île et une pierre de retour) ; les autres arches annoncent
+  qu'elles arrivent.
+- La **pierre de retour** (ou `/fractale quitter`) ramène à l'Observatoire, gardé ouvert tant que la fractale vit.
+- Le **golem d'essai** (ouest) annonce les dégâts reçus et reprend ses PV ; son **pupitre** lui fait rejouer les zones
+  rouges (cercle, cône, ligne, puis la cage d'essai).
+- `/fractale niveau <n>`, `groupe`, `lancer <fractale>`, `quitter` : secours des blocs, ouvert aux joueurs.
+- Un joueur tombé dans le vide revient au point d'apparition du monde.
+
+À vérifier en jeu : textures des blocs, orientation des arches, golem (modèle `Golem_Firesteel` sans flammes), titres
+du cadran, retour depuis l'ébauche de Falaise.
 
 ### Notes communes
 

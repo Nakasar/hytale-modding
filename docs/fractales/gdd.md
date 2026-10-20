@@ -330,9 +330,9 @@ Neuf étapes, chacune livrable en une PR testable en jeu ; les étapes 1 à 4 do
    - [x] Validateurs hors ligne (`ValidateAssets`, `ValidateRoles`) branchés sur ce mod
    - [x] Copier dans le mod Fractales les briques du mod Vampires : télégraphes, barre de boss, PV de groupe, invocations, boucliers, emprisonnement, remises en place d'arène (identifiants `Nakasar_Fractal_`)
 2. **Entrée et Observatoire**
-   - [ ] Fragment des Brumes : `PortalKey`, recette à l'établi, `PortalTypes`, instance hub (générateur Python comme pour la Tour)
-   - [ ] Observatoire : île, Astrolabe, cercle, 6 arches, Archiviste, golem d'essai, volumes de vue et de chute
-   - [ ] Gestionnaire de partie (`FractalRun`) : cercle d'harmonisation (5 max), cadran de niveau, une instance par groupe, retour au hub, commande `/fractale`
+   - [x] Fragment des Brumes : `PortalKey`, recette à l'établi, `PortalTypes`, instance hub (`tools/generate_observatory.py`)
+   - [x] Observatoire : île, Astrolabe, cercle, 6 arches, golem d'essai et son pupitre, filet de chute (`FallRescueSystem`). L'Archiviste attend la monnaie (étape 3) : un Registre lisible tient sa place
+   - [x] Gestionnaire de partie (`party/FractalRuns`, `observatory/Observatory`) : cercle d'harmonisation (5 max), cadran de niveau, une instance par groupe, retour au hub (gardé ouvert pendant la partie), commande `/fractale`. Ébauche de Falaise (île + pierre de retour) pour tester l'aller-retour
 3. **Systèmes de progression**
    - [ ] Niveaux 1-100 et déblocage par joueur (sauvegardés dans le dossier de données du plugin)
    - [ ] Agonie (effet + système), Autel des infusions (12 emplacements sur le joueur, fenêtre de conteneur), infusions +1 à +15 et leur fusion

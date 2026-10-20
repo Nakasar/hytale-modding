@@ -1,0 +1,34 @@
+{
+  "TimeSeconds": 4,
+  "KnowledgeRequired": false,
+  "Input": [
+    {
+      "ItemId": "Ingredient_Rune_Shard",
+      "Quantity": 4
+    },
+    {
+      "ItemId": "Ingredient_Voidheart",
+      "Quantity": 1
+    }
+  ],
+  "PrimaryOutput": {
+    "ItemId": "PortalKey_Nakasar_Fractal",
+    "Quantity": 1
+  },
+  "Output": [
+    {
+      "ItemId": "PortalKey_Nakasar_Fractal",
+      "Quantity": 1
+    }
+  ],
+  "BenchRequirement": [
+    {
+      "Type": "Crafting",
+      "Id": "Workbench",
+      "Categories": [
+        "Workbench_Crafting"
+      ],
+      "RequiredTierLevel": 1
+    }
+  ]
+}

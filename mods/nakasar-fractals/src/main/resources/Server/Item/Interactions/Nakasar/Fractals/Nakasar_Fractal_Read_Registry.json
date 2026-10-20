@@ -1,0 +1,8 @@
+{
+  "$Comment": "Registre des fractales : page de lore du jeu (nom et description du bloc).",
+  "Type": "OpenCustomUI",
+  "Page": {
+    "Id": "BlockLore",
+    "TextAlignment": "Left"
+  }
+}
