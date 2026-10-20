@@ -259,7 +259,6 @@ public final class ChimeraSystem extends TickingSystem<EntityStore> {
             fight.nextAcid = now + seconds(ACID_INTERVAL);
             for (Ref<EntityStore> player : playerRefsInArena(world, store)) {
                 Vector3d at = new Vector3d(TowerFx.position(store, player));
-                at.y = TowerLayout.CHIMERA_VAT.y();
                 TowerFx.circle(store, at, ACID_RADIUS, ACID_WARN);
                 fight.jets.add(new Jet(at, now + seconds(ACID_WARN)));
             }
@@ -294,7 +293,6 @@ public final class ChimeraSystem extends TickingSystem<EntityStore> {
             boolean full = carrier.walking || now >= carrier.filledAt;
             if (full && carrier.last != null) {
                 Vector3d at = new Vector3d(carrier.last);
-                at.y = TowerLayout.CHIMERA_VAT.y();
                 fight.puddles.add(new Puddle(at, now));
                 TowerFx.particle(store, PARTICLE_POUR, new Vector3d(at).add(0, 0.5, 0), 1.5f);
                 TowerFx.sound(store, SOUND_SPLASH, at);
@@ -481,32 +479,11 @@ public final class ChimeraSystem extends TickingSystem<EntityStore> {
     }
 
     private static int playersInArena(World world, Store<EntityStore> store) {
-        int count = 0;
-        for (PlayerRef player : world.getPlayerRefs()) {
-            Ref<EntityStore> ref = player.getReference();
-            if (!alive(ref, store)) {
-                continue;
-            }
-            TransformComponent transform = store.getComponent(ref, TransformComponent.getComponentType());
-            if (transform != null && inArena(transform.getPosition())) {
-                count++;
-            }
-        }
-        return count;
+        return playerRefsInArena(world, store).size();
     }
 
     private static boolean playerInArena(World world, Store<EntityStore> store) {
-        for (PlayerRef player : world.getPlayerRefs()) {
-            Ref<EntityStore> ref = player.getReference();
-            if (!alive(ref, store)) {
-                continue;
-            }
-            TransformComponent transform = store.getComponent(ref, TransformComponent.getComponentType());
-            if (transform != null && inArena(transform.getPosition())) {
-                return true;
-            }
-        }
-        return false;
+        return !playerRefsInArena(world, store).isEmpty();
     }
 
     private static boolean inArena(Vector3d position) {

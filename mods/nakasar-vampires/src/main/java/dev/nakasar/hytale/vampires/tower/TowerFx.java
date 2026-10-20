@@ -55,9 +55,9 @@ final class TowerFx {
     private static final String CONE = "Nakasar_Cone_";
     private static final String CONE_EDGE = "Nakasar_Cone_Edge_";
     /** Écart entre deux pastilles, leur rayon, et l'écart des points du contour (blocs). */
-    private static final double DOT_STEP = 2.0;
-    private static final double DOT_RADIUS = 1.35;
-    private static final double EDGE_STEP = 1.5;
+    private static final double DOT_STEP = 3.0;
+    private static final double DOT_RADIUS = 2.0;
+    private static final double EDGE_STEP = 2.5;
     private static final double EDGE_RADIUS = 0.3;
 
     private TowerFx() {
@@ -195,9 +195,10 @@ final class TowerFx {
             }
             double length = Math.abs(to - from);
             double reached = length * Math.min(1.0, Math.max(0.0, (now - begin) / (double) (end - begin)));
-            // Anneaux au milieu de chaque bande de DOT_STEP, du bord de départ au bord d'arrivée.
-            while (drawn < length && drawn + DOT_STEP / 2 <= reached + 1e-6) {
-                double r = from + Math.signum(to - from) * (drawn + DOT_STEP / 2);
+            // Anneaux au milieu de chaque bande de DOT_STEP, du bord de départ au bord d'arrivée ; la dernière bande,
+            // plus courte quand la longueur n'est pas un multiple de DOT_STEP, est posée au milieu de ce qui reste.
+            while (drawn < length - 1e-6 && drawn + Math.min(DOT_STEP, length - drawn) / 2 <= reached + 1e-6) {
+                double r = from + Math.signum(to - from) * (drawn + Math.min(DOT_STEP, length - drawn) / 2);
                 drawRing(store, Math.min(Math.max(r, Math.min(from, to)), Math.max(from, to)), CONE, DOT_STEP, DOT_RADIUS, left);
                 drawn += DOT_STEP;
             }

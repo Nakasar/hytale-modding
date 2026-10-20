@@ -326,7 +326,7 @@ class Traps:
         self.add(name, group, center, shape, effects, conditions,
                  volume_tags={name: "Closed", **{k: "Off" for k in keys}})
 
-    def arena_gate(self, name, group, cells, fight=()):
+    def arena_gate(self, name, group, cells):
         """Barrière d'arène, comme les portes du Festin de Deepworks. Le Java (tower.ArenaGate) pose Gate=Close quand
         un joueur vivant est entré dans l'arène : l'annonce rouge clignote dans la porte, puis la barrière se lève
         ARENA_CLOSE_DELAY secondes plus tard. Gate=Open quand le groupe a péri (ou est sorti) ou que le boss est vaincu :
@@ -340,10 +340,7 @@ class Traps:
             vfx("TAG_ADDED", "Dungeon_Goblin_Energy_Barrier_Reveal", ARENA_CLOSE_DELAY),
             sound("TAG_ADDED", "SFX_Crystal_Break", ARENA_CLOSE_DELAY),
             dict(signal("TAG_ADDED", "Open", piece), Entry=1),
-            sound("TAG_ADDED", "SFX_Crystal_Break", entry=1),
-            # Pièges de l'arène (`fight`) : actifs seulement pendant le combat, barrière levée.
-            *[toggle("EnableVolume", "TAG_ADDED", v, delay=ARENA_CLOSE_DELAY, radius=80) for v in fight],
-            *[toggle("DisableVolume", "TAG_ADDED", v, entry=1, radius=80) for v in fight]],
+            sound("TAG_ADDED", "SFX_Crystal_Break", entry=1)],
             [tag_is("TAG_ADDED", "Gate", "Close"), tag_is("TAG_ADDED", "Gate", "Open", entry=1)],
             volume_tags={"Gate": "Open"}, ConditionTiming="BeforeVolumeDelay")
         for j, pile in enumerate(piles(cells)):
@@ -785,12 +782,13 @@ def check_ids(volumes):
     """Refuse un id du jeu qui ne serait pas dans les listes vérifiées (PARTICLES, SOUNDS, EFFECTS, BLOCKS, NPCS)."""
     known = {"ParticleSystem": PARTICLES, "SoundEvent": SOUNDS, "Effect": EFFECTS, "ToBlockType": BLOCKS,
              "BlockType": BLOCKS, "NpcType": NPCS}
+    tower_fx = fx.ids()
     for v in volumes.values():
         for e in v["Effects"]:
             for field, ids in known.items():
                 if field == "ParticleSystem" and (e.get(field, "").startswith((tw.PREFIX, "Nakasar_Gas_Cloud_",
                                                                                 "Nakasar_Spore_Cloud_"))
-                                                  or e.get(field) in fx.ids()):
+                                                  or e.get(field) in tower_fx):
                     continue  # zones d'annonce, nuages et effets de la tour (tower_warnings, write_clouds, tower_fx)
                 if field in e and e[field] not in ids:
                     raise RuntimeError(f"pièges : {field} inconnu {e[field]!r} dans {v['Name']}")

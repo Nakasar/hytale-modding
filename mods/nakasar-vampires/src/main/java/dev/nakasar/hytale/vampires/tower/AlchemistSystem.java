@@ -111,6 +111,8 @@ public final class AlchemistSystem extends TickingSystem<EntityStore> {
     static final float EXHAUSTED_SECONDS = 8f;
     static final float PILLAR_REBIRTH = 0.5f;
     static final float CYCLE_SPEEDUP = 1.2f;
+    /** Au-delà, la cadence n'accélère plus (×1,2^4 ≈ ×2 : fléau toutes les 1,7 s en difficile, jamais à chaque tick). */
+    static final int CYCLE_MAX = 4;
     /** Anneau de l'athanor au Grand Œuvre : cadence, annonce, part de la vie maximale, rayons des deux anneaux. */
     static final float RING_INTERVAL = 15f;
     static final float RING_WARN = 3f;
@@ -507,9 +509,9 @@ public final class AlchemistSystem extends TickingSystem<EntityStore> {
         }
     }
 
-    /** Cadence d'un intervalle de la Convergence au cycle en cours (chaque cycle 20 % plus fréquent). */
+    /** Cadence d'un intervalle de la Convergence au cycle en cours (chaque cycle 20 % plus fréquent, jusqu'à CYCLE_MAX). */
     private static float paced(Fight fight, float seconds) {
-        return (float) (seconds / Math.pow(CYCLE_SPEEDUP, fight.cycle));
+        return (float) (seconds / Math.pow(CYCLE_SPEEDUP, Math.min(fight.cycle, CYCLE_MAX)));
     }
 
     private static void convergence(World world, Store<EntityStore> store, Ref<EntityStore> boss, Fight fight,
