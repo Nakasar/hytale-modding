@@ -24,7 +24,7 @@
         "WorldSoundEventId": "SFX_Spear_Throw_Charge",
         "Particles": [
           {
-            "SystemId": "Feastmaster_Slam_Warning",
+            "SystemId": "Nakasar_Warning_14",
             "TargetEntityPart": "Entity",
             "TargetNodeName": "Origin",
             "Scale": 3.06,

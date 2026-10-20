@@ -9,7 +9,7 @@
 <Info label="Id">`Nakasar_Enchanted_Gear`</Info>
 </Infobox>
 
-Deux roues dentées de bronze et de fer qui tournent en sens contraires autour d'un cœur runique bleu, en flottant à hauteur de poitrine. Elles sortent du sol en tournoyant autour de l'[Armure enchantée](armure-enchantee.md).
+Deux roues dentées de bronze et de fer qui tournent en sens contraires autour d'un cœur runique bleu, en flottant à hauteur de poitrine. Elles sortent en tournoyant des **alcôves** de la crypte (à défaut, du sol autour de l'[Armure enchantée](armure-enchantee.md)), et un **lien bleu** va de chaque rouage à l'armure tant qu'il la soigne.
 
 ## Fiche
 

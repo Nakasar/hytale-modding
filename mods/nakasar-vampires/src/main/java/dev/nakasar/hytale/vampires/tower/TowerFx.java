@@ -23,6 +23,7 @@ import com.hypixel.hytale.server.core.universe.world.SoundUtil;
 import com.hypixel.hytale.server.core.universe.world.World;
 import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
 import dev.nakasar.hytale.vampires.VampiresPlugin;
+import dev.nakasar.hytale.vampires.telegraph.Telegraphs;
 import org.joml.Vector3d;
 
 import java.util.ArrayList;
@@ -34,11 +35,8 @@ import java.util.List;
  * <ul>
  *   <li>{@link #circle} : petit cercle rouge qui se remplit jusqu'au coup ({@code Nakasar_Warning_<dixièmes>},
  *   tools/tower_warnings.py).</li>
- *   <li>{@link Sweep} : cône (secteur) ou anneau rouge qui se charge d'un bord à l'autre, comme les cônes de Deepworks.
- *   Il est dessiné en pastilles rouges à plat ({@code Nakasar_Cone_<dixièmes>}), anneau après anneau au rythme de la
- *   charge ; chaque pastille reste jusqu'à l'instant du coup. Le contour ({@code Nakasar_Cone_Edge_<dixièmes>}) est posé
- *   dès le début, pour qu'on voie tout de suite la zone entière. Les pastilles sont placées en coordonnées du monde :
- *   aucune rotation de particule n'entre en jeu.</li>
+ *   <li>{@link Telegraphs.Sweep} : cône (secteur) ou anneau rouge qui se charge d'un bord à l'autre (commun avec les
+ *   élites du Comté).</li>
  *   <li>Coups en part de la vie maximale, effets, projection, sons.</li>
  * </ul>
  *
@@ -47,26 +45,14 @@ import java.util.List;
  */
 final class TowerFx {
 
-    static final float WARNING_SCALE = 0.68f;
-    /** Durées des pastilles de cône (tools/tower_warnings.py, CONE_TENTHS). */
-    private static final int CONE_MIN = 2;
-    private static final int CONE_MAX = 60;
-    private static final int WARNING_MIN = 5;
-    private static final String CONE = "Nakasar_Cone_";
-    private static final String CONE_EDGE = "Nakasar_Cone_Edge_";
-    /** Écart entre deux pastilles, leur rayon, et l'écart des points du contour (blocs). */
-    private static final double DOT_STEP = 3.0;
-    private static final double DOT_RADIUS = 2.0;
-    private static final double EDGE_STEP = 2.5;
-    private static final double EDGE_RADIUS = 0.3;
+    static final float WARNING_SCALE = Telegraphs.WARNING_SCALE;
 
     private TowerFx() {
     }
 
     /** Cercle rouge de `radius` blocs au sol en `at`, plein au bout de `seconds` (arrondi au dixième). */
     static void circle(Store<EntityStore> store, Vector3d at, double radius, float seconds) {
-        int tenths = Math.max(WARNING_MIN, Math.round(seconds * 10));
-        particle(store, "Nakasar_Warning_" + tenths, new Vector3d(at).add(0, 0.1, 0), (float) (WARNING_SCALE * radius));
+        Telegraphs.circle(store, at, radius, seconds);
     }
 
     static void particle(Store<EntityStore> store, String id, Vector3d at, float scale) {
@@ -151,99 +137,5 @@ final class TowerFx {
 
     static long seconds(float s) {
         return (long) (s * 1_000_000_000L);
-    }
-
-    /**
-     * Cône ou anneau qui se charge en `seconds` secondes, du rayon `from` au rayon `to` (vers l'extérieur si from &lt;
-     * to, vers le centre sinon), sur le secteur qui part de l'angle `start` et tourne de `span` radians (2π : anneau
-     * complet). {@link #step} le dessine au fil de la charge ; {@link #contains} dit qui est dedans au moment du coup.
-     */
-    static final class Sweep {
-        final Vector3d center;
-        final double start;
-        final double span;
-        final double from;
-        final double to;
-        final long begin;
-        final long end;
-        private double drawn;
-        private boolean edges;
-
-        Sweep(Vector3d center, double start, double span, double from, double to, long now, float seconds) {
-            this.center = new Vector3d(center);
-            this.start = start;
-            this.span = span;
-            this.from = from;
-            this.to = to;
-            this.begin = now;
-            this.end = now + seconds(seconds);
-            this.drawn = 0;
-        }
-
-        /** Secteur en degrés (comme TowerLayout : atan2(dz, dx), de a0 à a1 dans le sens positif). */
-        static Sweep arc(Vector3d center, double a0, double a1, double from, double to, long now, float seconds) {
-            double span = ((a1 - a0) % 360 + 360) % 360;
-            return new Sweep(center, Math.toRadians(a0), Math.toRadians(span == 0 ? 360 : span), from, to, now, seconds);
-        }
-
-        /** Pose le contour au premier appel, puis les anneaux que la charge a atteints. Vrai une fois le coup venu. */
-        boolean step(Store<EntityStore> store, long now) {
-            float left = (end - now) / 1e9f;
-            if (!edges) {
-                edges = true;
-                drawEdges(store, left);
-            }
-            double length = Math.abs(to - from);
-            double reached = length * Math.min(1.0, Math.max(0.0, (now - begin) / (double) (end - begin)));
-            // Anneaux au milieu de chaque bande de DOT_STEP, du bord de départ au bord d'arrivée ; la dernière bande,
-            // plus courte quand la longueur n'est pas un multiple de DOT_STEP, est posée au milieu de ce qui reste.
-            while (drawn < length - 1e-6 && drawn + Math.min(DOT_STEP, length - drawn) / 2 <= reached + 1e-6) {
-                double r = from + Math.signum(to - from) * (drawn + Math.min(DOT_STEP, length - drawn) / 2);
-                drawRing(store, Math.min(Math.max(r, Math.min(from, to)), Math.max(from, to)), CONE, DOT_STEP, DOT_RADIUS, left);
-                drawn += DOT_STEP;
-            }
-            return now >= end;
-        }
-
-        boolean contains(Vector3d p) {
-            double d = horizontal(p, center);
-            if (d < Math.min(from, to) - 0.5 || d > Math.max(from, to) + 0.5) {
-                return false;
-            }
-            if (span >= Math.PI * 2 - 1e-6) {
-                return true;
-            }
-            double a = ((angle(center, p) - start) % (Math.PI * 2) + Math.PI * 2) % (Math.PI * 2);
-            return a <= span;
-        }
-
-        private void drawEdges(Store<EntityStore> store, float left) {
-            double inner = Math.min(from, to);
-            double outer = Math.max(from, to);
-            drawRing(store, outer, CONE_EDGE, EDGE_STEP, EDGE_RADIUS, left);
-            if (inner > 0.5) {
-                drawRing(store, inner, CONE_EDGE, EDGE_STEP, EDGE_RADIUS, left);
-            }
-            if (span < Math.PI * 2 - 1e-6) {
-                for (double side : new double[]{start, start + span}) {
-                    for (double r = inner; r <= outer + 1e-6; r += EDGE_STEP) {
-                        dot(store, side, r, CONE_EDGE, EDGE_RADIUS, left);
-                    }
-                }
-            }
-        }
-
-        private void drawRing(Store<EntityStore> store, double r, String prefix, double step, double radius, float left) {
-            int n = Math.max(1, (int) Math.ceil(Math.abs(span) * r / step));
-            for (int k = 0; k < n; k++) {
-                dot(store, start + span * (k + 0.5) / n, r, prefix, radius, left);
-            }
-        }
-
-        private void dot(Store<EntityStore> store, double angle, double r, String prefix, double radius, float left) {
-            int tenths = Math.min(CONE_MAX, Math.max(CONE_MIN, Math.round(left * 10)));
-            Vector3d at = new Vector3d(center.x() + Math.cos(angle) * r, center.y() + 0.08, center.z() + Math.sin(angle) * r);
-            particle(store, prefix + tenths, at, (float) (WARNING_SCALE * radius));
-        }
     }
 }

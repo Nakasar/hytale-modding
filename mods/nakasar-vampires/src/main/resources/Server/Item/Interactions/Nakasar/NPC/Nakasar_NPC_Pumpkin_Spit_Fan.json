@@ -1,0 +1,43 @@
+{
+  "$Comment": "Seconde moitié de la citrouille géante (sous 50 % de vie) : le crachat de poison part en éventail de trois (au centre, puis 20° à gauche et à droite), même préparation lente de 1 s. On l'évite en se décalant de biais, pas sur le côté.",
+  "Type": "Simple",
+  "RunTime": 1.0,
+  "Effects": {
+    "ItemPlayerAnimationsId": "Nakasar_Giant_Pumpkin",
+    "ItemAnimationId": "Spit",
+    "Particles": [
+      {
+        "SystemId": "Dungeon_Goblin_Spores_Orange",
+        "TargetEntityPart": "Entity",
+        "TargetNodeName": "Origin",
+        "Scale": 0.9,
+        "PositionOffset": {
+          "X": 0,
+          "Y": 0.8,
+          "Z": 0
+        }
+      }
+    ]
+  },
+  "Next": {
+    "Type": "Projectile",
+    "RunTime": 0.1,
+    "Effects": {
+      "WorldSoundEventId": "SFX_Scarak_Spitball_Fire"
+    },
+    "Config": "Projectile_Config_Nakasar_Pumpkin_Spit",
+    "Tags": {
+      "AimingReference": []
+    },
+    "Next": {
+      "Type": "Projectile",
+      "RunTime": 0.1,
+      "Config": "Projectile_Config_Nakasar_Pumpkin_Spit_Left",
+      "Next": {
+        "Type": "Projectile",
+        "RunTime": 0.3,
+        "Config": "Projectile_Config_Nakasar_Pumpkin_Spit_Right"
+      }
+    }
+  }
+}

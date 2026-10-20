@@ -1,0 +1,71 @@
+{
+  "$Comment": "Seconde moitié de la citrouille géante (sous 50 % de vie) : même invocation, mais une vague de 6 vrilles. Le sol bouillonne 1 s avant chaque sortie ; un lien vert relie chaque vrille à la citrouille, invulnérable tant qu'il en reste.",
+  "Type": "Serial",
+  "Interactions": [
+    {
+      "Type": "ClearEntityEffect",
+      "Entity": "User",
+      "EntityEffectId": "Hit_Interrupt_Eligible"
+    },
+    {
+      "Type": "Simple",
+      "RunTime": 0.8,
+      "Effects": {
+        "ItemPlayerAnimationsId": "Nakasar_Giant_Pumpkin",
+        "ItemAnimationId": "Summon",
+        "WorldSoundEventId": "SFX_Spirit_Root_Alerted",
+        "Particles": [
+          {
+            "SystemId": "Dungeon_Goblin_Spores_Orange",
+            "TargetEntityPart": "Entity",
+            "TargetNodeName": "Origin",
+            "Scale": 1.2,
+            "PositionOffset": {
+              "X": 0,
+              "Y": 0.1,
+              "Z": 0
+            },
+            "DetachedFromModel": true
+          }
+        ]
+      }
+    },
+    {
+      "Type": "Simple",
+      "RunTime": 0.2,
+      "Effects": {
+        "WorldSoundEventId": "SFX_Spirit_Root_Spawn",
+        "Particles": [
+          {
+            "SystemId": "Praetorian_Summon_Ground",
+            "TargetEntityPart": "Entity",
+            "TargetNodeName": "Origin",
+            "Scale": 2.0,
+            "PositionOffset": {
+              "X": 0,
+              "Y": 0.1,
+              "Z": 0
+            },
+            "DetachedFromModel": true
+          }
+        ]
+      },
+      "Next": {
+        "Type": "Nakasar_SummonMinions",
+        "MinionRole": "Nakasar_Pumpkin_Vine",
+        "Count": 6,
+        "MaxAlive": 6,
+        "MinDistance": 3,
+        "MaxDistance": 11,
+        "MinSpacing": 2.5,
+        "Delay": 1,
+        "DelayParticle": "Nakasar_Ground_Bubbles",
+        "TetherParticle": "Nakasar_Tether_Vine"
+      }
+    },
+    {
+      "Type": "Simple",
+      "RunTime": 0.5
+    }
+  ]
+}

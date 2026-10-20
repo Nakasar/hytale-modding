@@ -1,0 +1,46 @@
+{
+  "$Comment": "Charge annoncée du zombie difforme : il baisse la tête et gratte le sol 1,5 s pendant qu'une ligne rouge de 12 blocs se remplit vers sa cible (Nakasar_Charge), puis fonce tout droit au bout de la ligne (40 dégâts, projection). S'il percute un mur ou un poteau de la grange, il reste étourdi 4 s et prend 50 % de dégâts en plus ; un poteau se fend au premier choc et cède au second. On l'évite en sortant de la ligne, on le punit en se plaçant devant un mur.",
+  "Type": "Serial",
+  "Interactions": [
+    {
+      "Type": "ClearEntityEffect",
+      "Entity": "User",
+      "EntityEffectId": "Hit_Interrupt_Eligible"
+    },
+    {
+      "Type": "ApplyEffect",
+      "EffectId": "Nakasar_Elite_Rooted"
+    },
+    {
+      "Type": "Nakasar_Charge",
+      "Length": 12,
+      "Width": 2.4,
+      "Seconds": 1.5,
+      "Speed": 16,
+      "Damage": 40,
+      "Knockback": 9,
+      "StunSeconds": 4,
+      "StunEffect": "Nakasar_Elite_Stunned"
+    },
+    {
+      "Type": "Simple",
+      "RunTime": 1.5,
+      "Effects": {
+        "ItemPlayerAnimationsId": "Hound_Bleached_Default",
+        "ItemAnimationId": "Bite",
+        "WorldSoundEventId": "SFX_Zombie_Pursuit"
+      }
+    },
+    {
+      "Type": "Simple",
+      "RunTime": 1.0,
+      "Effects": {
+        "WorldSoundEventId": "SFX_Goblin_Feastmaster_Slam"
+      }
+    },
+    {
+      "Type": "Simple",
+      "RunTime": 0.4
+    }
+  ]
+}

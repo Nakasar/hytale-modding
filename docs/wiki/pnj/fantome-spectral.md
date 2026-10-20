@@ -9,7 +9,7 @@
 <Info label="Id">`Nakasar_Spectral_Ghost`</Info>
 </Infobox>
 
-Un petit fantôme pâle appelé par le [Spectre](spectre.md). Tant qu'il en reste un, le Spectre est **invulnérable**.
+Un petit fantôme pâle appelé par le [Spectre](spectre.md). Un **lien pâle** va de chaque fantôme au Spectre : tant qu'il en reste un, le Spectre est **invulnérable** et entouré d'un halo doré.
 
 ## Fiche
 

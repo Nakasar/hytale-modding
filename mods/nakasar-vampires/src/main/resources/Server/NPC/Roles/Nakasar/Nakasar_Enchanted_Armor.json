@@ -1,5 +1,5 @@
 {
-  "$Comment": "Armure enchantée (élite) d'une crypte sur deux, au fond de la salle enterrée, avec barre de vie de boss (BossBarSystem). Grosse armure vide animée par des flammes bleues, armée d'une massue : ce n'est pas une morte-vivante (le feu purificateur ne la gêne pas) et le feu ne lui fait rien (groupe Nakasar_Fire_Immune). Coups de massue ; coups lourds : frappe écrasante (0,9 s d'élan, 55 dégâts) et furie (deux revers puis un coup abattu) ; coup sismique annoncé par une zone rouge de 4,5 blocs ; brasier bleu annoncé par une zone rouge de 6,5 blocs (feu, flammes bleues 5 s). Toutes les 18 à 22 s elle complète ses trois rouages enchantés qui la soignent de 5 PV par seconde chacun tant qu'ils vivent. Immobile comme une statue tant que rien ne passe ; retourne à sa place et regagne sa vie si on fuit à plus de 24 blocs. Générée par tools/generate_elites.py.",
+  "$Comment": "Armure enchantée (élite) d'une crypte sur deux, au fond de la salle enterrée, avec barre de vie de boss (BossBarSystem). Grosse armure vide animée par des flammes bleues, armée d'une massue : ce n'est pas une morte-vivante (le feu purificateur ne la gêne pas) et le feu ne lui fait rien (groupe Nakasar_Fire_Immune). Coups de massue sans annonce ; frappe écrasante annoncée par un cône rouge de 120° (1,4 s, 55 dégâts) ; furie (deux revers, puis un coup abattu annoncé par un cône de 90°) ; coup sismique annoncé par un cercle rouge de 4,5 blocs ; brasier bleu annoncé par un cercle rouge de 6,5 blocs (2 s, feu, flammes bleues 5 s) dont les piliers et les sarcophages protègent ; sous 50 % de vie, deux brasiers d'affilée, le second vers le joueur le plus éloigné. Toutes les 18 à 22 s elle complète ses trois rouages enchantés, qui sortent des alcôves et la soignent de 5 PV par seconde chacun tant qu'ils vivent (lien bleu). Immobile comme une statue tant que rien ne passe ; retourne à sa place et regagne sa vie si on fuit à plus de 24 blocs. Générée par tools/generate_elites.py.",
   "Type": "Generic",
   "Appearance": "Nakasar_Enchanted_Armor",
   "NameTranslationKey": "nakasar_mobs.npc.Enchanted_Armor.name",
@@ -229,6 +229,57 @@
             {
               "Type": "Attack",
               "Attack": "Root_Nakasar_NPC_Armor_Summon",
+              "SkipAiming": true,
+              "LineOfSight": false,
+              "AvoidFriendlyFire": false
+            }
+          ]
+        },
+        {
+          "$Comment": "Seconde moitié (sous 50 % de vie) : le brasier bleu devient double, le second décalé vers le joueur le plus éloigné.",
+          "Sensor": {
+            "Type": "And",
+            "Sensors": [
+              {
+                "Type": "Target",
+                "Range": 10
+              },
+              {
+                "Type": "Self",
+                "Filters": [
+                  {
+                    "Type": "Stat",
+                    "Stat": "Health",
+                    "StatTarget": "Value",
+                    "RelativeTo": "Health",
+                    "RelativeToTarget": "Max",
+                    "ValueRange": [
+                      0,
+                      0.5
+                    ]
+                  }
+                ]
+              },
+              {
+                "Type": "Timer",
+                "Name": "Inferno",
+                "State": "STOPPED"
+              }
+            ]
+          },
+          "HeadMotion": {
+            "Type": "Watch",
+            "RelativeTurnSpeed": 1.0
+          },
+          "ActionsBlocking": true,
+          "Actions": [
+            {
+              "Type": "TimerRestart",
+              "Name": "Inferno"
+            },
+            {
+              "Type": "Attack",
+              "Attack": "Root_Nakasar_NPC_Armor_Inferno_Double",
               "SkipAiming": true,
               "LineOfSight": false,
               "AvoidFriendlyFire": false

@@ -1,0 +1,46 @@
+{
+  "TranslationProperties": {
+    "Name": "nakasar_halloween.items.Nakasar_Alarm_Bell.name"
+  },
+  "Icon": "Icons/Items/Nakasar/Halloween/Alarm_Bell.png",
+  "Categories": [
+    "Blocks.Deco"
+  ],
+  "PlayerAnimationsId": "Block",
+  "BlockType": {
+    "Material": "Solid",
+    "DrawType": "Model",
+    "Opacity": "Transparent",
+    "CustomModel": "Blocks/Nakasar/Halloween/Alarm_Bell.blockymodel",
+    "CustomModelTexture": [
+      {
+        "Texture": "BlockTextures/Nakasar/Halloween/Alarm_Bell.png",
+        "Weight": 1
+      }
+    ],
+    "HitboxType": "Nakasar_Alarm_Bell",
+    "VariantRotation": "NESW",
+    "Flags": {},
+    "Gathering": {
+      "Breaking": {
+        "GatherType": "Rocks"
+      }
+    },
+    "BlockParticleSetId": "Metal",
+    "BlockSoundSetId": "Metal",
+    "ParticleColor": "#b0803a",
+    "Support": {
+      "Down": [
+        {
+          "FaceType": "Full"
+        }
+      ]
+    }
+  },
+  "Tags": {
+    "Type": [
+      "Deco"
+    ]
+  },
+  "ItemSoundSetId": "ISS_Items_Metal"
+}

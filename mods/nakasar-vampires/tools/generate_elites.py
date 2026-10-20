@@ -34,6 +34,9 @@ from pathlib import Path
 
 from PIL import Image, ImageDraw, ImageFilter
 
+import elite_fx
+import tower_warnings as tw
+
 PACK = Path(__file__).resolve().parent.parent / "src" / "main" / "resources"
 SERVER = PACK / "Server"
 COMMON = PACK / "Common"
@@ -61,9 +64,8 @@ MACE = "Weapon_Mace_Onyxium"
 
 ARMOR_SLAM_RADIUS = 4.5
 INFERNO_RADIUS = 6.5
+GEAR_ALCOVE = "Nakasar_Gear_Alcove"
 COLD_WAVE_RADIUS = 6.0
-# Feastmaster_Slam_Warning détaché : échelle ≈ 0,68 × rayon (vanilla 3,4 pour un AOECircle de 5).
-WARNING_SCALE = 0.68
 
 
 # --- briques communes ------------------------------------------------------------------------
@@ -114,10 +116,27 @@ def timed_attack(timer_name, attack, rng=None, los=False, aim=None, comment=None
 
 
 def warning(radius, seconds):
-    """Zone rouge qui se charge au sol (détachée du modèle : elle ne suit pas l'élite)."""
-    return {"SystemId": "Feastmaster_Slam_Warning", "TargetEntityPart": "Entity", "TargetNodeName": "Origin",
-            "Scale": round(WARNING_SCALE * radius, 2), "PositionOffset": {"X": 0, "Y": 0.1, "Z": 0},
-            "DetachedFromModel": True}
+    """Cercle rouge de la Tour autour de l'élite, plein au bout de `seconds` (détaché du modèle : il ne la suit pas).
+    Pour les cercles centrés sur l'élite, le coup reste celui du sélecteur AOECircle de même rayon."""
+    return {"SystemId": tw.system(seconds), "TargetEntityPart": "Entity", "TargetNodeName": "Origin",
+            "Scale": tw.scale(radius), "PositionOffset": {"X": 0, "Y": 0.1, "Z": 0}, "DetachedFromModel": True}
+
+
+def telegraph(shape, seconds, comment=None, **keys):
+    """Attaque annoncée calculée en Java (Nakasar_Telegraph) : zone rouge de la taille exacte du coup, puis le coup
+    sur ce qui s'y trouve encore. Instantanée : la chaîne continue aussitôt (pose de même durée)."""
+    doc = {"Type": "Nakasar_Telegraph", "Shape": shape, "Seconds": seconds, **keys}
+    return {"$Comment": comment, **doc} if comment else doc
+
+
+def half_health():
+    """Capteur : l'élite est sous la moitié de sa vie (seconde phase)."""
+    return {"Type": "Self", "Filters": [{"Type": "Stat", "Stat": "Health", "StatTarget": "Value", "RelativeTo": "Health",
+                                         "RelativeToTarget": "Max", "ValueRange": [0, 0.5]}]}
+
+
+def windup(seconds, effects):
+    return {"Type": "Simple", "RunTime": seconds, "Effects": effects}
 
 
 def ground_particles(system, scale):
@@ -213,18 +232,17 @@ def heavy_hit(amount, end, length, knockback, burn_seconds=None, sound="SFX_Mace
 
 def armor_crush():
     return {
-        "$Comment": "Frappe écrasante de l'armure enchantée (coup lourd) : elle s'immobilise et lève sa massue 0,9 s, la main en flammes bleues, puis l'abat devant elle sur 4,6 blocs et 120° (55 dégâts, projection, flammes bleues 3 s). On l'évite en reculant ou en passant derrière elle.",
+        "$Comment": "Frappe écrasante de l'armure enchantée (coup lourd annoncé) : elle s'immobilise et lève sa massue 1,4 s, la main en flammes bleues, pendant qu'un cône rouge de 120° et 4,6 blocs se charge devant elle ; puis elle l'abat (55 dégâts, projection, flammes bleues 3 s). On l'évite en reculant ou en passant derrière elle.",
         "Type": "Serial",
         "Interactions": [
             {"Type": "ClearEntityEffect", "Entity": "User", "EntityEffectId": "Hit_Interrupt_Eligible"},
             {"Type": "ApplyEffect", "EffectId": "Nakasar_Elite_Rooted"},
-            {"Type": "Simple", "RunTime": 0.9, "Effects": {
-                "ItemPlayerAnimationsId": "Mace", "ItemAnimationId": "SwingDownCharging",
-                "WorldSoundEventId": "SFX_Spear_Throw_Charge", "Particles": [hand_flame()]}},
-            {"Type": "Selector", "RunTime": 0.15, "Effects": {
-                "ItemPlayerAnimationsId": "Mace", "ItemAnimationId": "SwingDownCharged",
-                "WorldSoundEventId": "SFX_Goblin_Feastmaster_Slam"},
-             **heavy_hit(55, 4.6, 120, 8, burn_seconds=3)},
+            telegraph("Cone", 1.4, Angle=120, Radius=4.6, Damage=55, Knockback=8, KnockUp=5, EffectId=BLUE_FLAME,
+                      EffectDuration=3, HitParticle="Impact_Sword_Basic_Stronk", ImpactSound="SFX_Mace_T2_Signature_Impact"),
+            windup(1.4, {"ItemPlayerAnimationsId": "Mace", "ItemAnimationId": "SwingDownCharging",
+                         "WorldSoundEventId": "SFX_Spear_Throw_Charge", "Particles": [hand_flame()]}),
+            windup(0.15, {"ItemPlayerAnimationsId": "Mace", "ItemAnimationId": "SwingDownCharged",
+                          "WorldSoundEventId": "SFX_Goblin_Feastmaster_Slam"}),
             {"Type": "Simple", "RunTime": 0.6},
         ],
     }
@@ -245,44 +263,67 @@ def armor_fury():
                                                   interrupt=True)}},
         ]
     return {
-        "$Comment": "Furie de l'armure enchantée (coups lourds enchaînés) : deux grands revers de massue (32 dégâts chacun, 4 blocs, 120°), puis elle lève la massue en flammes 0,5 s et l'abat (45 dégâts, projection, flammes bleues 3 s). Dure environ 2 s : reculez dès le premier revers.",
+        "$Comment": "Furie de l'armure enchantée : deux grands revers de massue toujours dans le même ordre, sans annonce au sol (32 dégâts chacun, 4 blocs, 120°), puis elle lève la massue en flammes pendant qu'un cône rouge de 90° et 4,2 blocs se charge 1 s devant elle, et l'abat (45 dégâts, projection, flammes bleues 3 s). Reculez dès le premier revers.",
         "Type": "Serial",
         "Interactions": [
             {"Type": "ClearEntityEffect", "Entity": "User", "EntityEffectId": "Hit_Interrupt_Eligible"},
             {"Type": "ApplyEffect", "EffectId": "Nakasar_Elite_Rooted"},
             *swings,
-            {"Type": "Simple", "RunTime": 0.5, "Effects": {
-                "ItemPlayerAnimationsId": "Mace", "ItemAnimationId": "SwingDownCharging",
-                "WorldSoundEventId": "SFX_Spear_Throw_Charge", "Particles": [hand_flame()]}},
-            {"Type": "Selector", "RunTime": 0.15, "Effects": {
-                "ItemPlayerAnimationsId": "Mace", "ItemAnimationId": "SwingDownCharged",
-                "WorldSoundEventId": "SFX_Goblin_Feastmaster_Slam"},
-             **heavy_hit(45, 4.2, 90, 7, burn_seconds=3)},
+            telegraph("Cone", 1.0, Angle=90, Radius=4.2, Damage=45, Knockback=7, KnockUp=5, EffectId=BLUE_FLAME,
+                      EffectDuration=3, HitParticle="Impact_Sword_Basic_Stronk", ImpactSound="SFX_Mace_T2_Signature_Impact"),
+            windup(1.0, {"ItemPlayerAnimationsId": "Mace", "ItemAnimationId": "SwingDownCharging",
+                         "WorldSoundEventId": "SFX_Spear_Throw_Charge", "Particles": [hand_flame()]}),
+            windup(0.15, {"ItemPlayerAnimationsId": "Mace", "ItemAnimationId": "SwingDownCharged",
+                          "WorldSoundEventId": "SFX_Goblin_Feastmaster_Slam"}),
             {"Type": "Simple", "RunTime": 0.7},
         ],
     }
 
 
+def inferno_strike(**keys):
+    return telegraph("Circle", 2.0, Radius=INFERNO_RADIUS, Damage=20, DamageCause="Fire", Knockback=6, KnockUp=6,
+                     EffectId=BLUE_FLAME, EffectDuration=5, Cover=True, HitParticle="Impact_Sword_Basic_Stronk",
+                     ImpactParticle="Fire_Blue", ImpactParticleScale=5.0, ImpactSound="SFX_Goblin_Feastmaster_Slam", **keys)
+
+
+INFERNO_POSE = {"ItemPlayerAnimationsId": "Mace", "ItemAnimationId": "Guard", "WorldSoundEventId": "SFX_Spirit_Root_Alerted",
+                "Particles": [hand_flame("R-Hand", 2.5), hand_flame("L-Hand", 2.5),
+                              {"SystemId": "Fire_Blue", "TargetNodeName": "Belly", "Scale": 3.0}]}
+INFERNO_BLAST = {"ItemPlayerAnimationsId": "Mace", "ItemAnimationId": "SwingDownCharged",
+                 "Particles": [ground_particles("Stick_Slam_Ground_Large", 1.4)]}
+
+
 def armor_inferno():
     return {
-        "$Comment": f"Brasier bleu de l'armure enchantée, annoncé : elle se fige 1,5 s, les flammes bleues de son corps grandissent et une zone rouge de {INFERNO_RADIUS:g} blocs se charge au sol ; puis le brasier jaillit autour d'elle (20 dégâts de feu, projection, flammes bleues {BLUE_FLAME} : 5 dégâts de feu par seconde pendant 5 s). On l'évite en sortant de la zone.",
+        "$Comment": f"Brasier bleu de l'armure enchantée, annoncé : elle se fige 2 s, les flammes bleues de son corps grandissent et un cercle rouge de {INFERNO_RADIUS:g} blocs se charge au sol ; puis le brasier jaillit autour d'elle (20 dégâts de feu, projection, flammes bleues {BLUE_FLAME} : 5 dégâts de feu par seconde pendant 5 s). Un pilier ou un sarcophage entre elle et un joueur le protège (Nakasar_Telegraph, Cover). On l'évite en sortant du cercle ou en se cachant.",
         "Type": "Serial",
         "Interactions": [
             {"Type": "ClearEntityEffect", "Entity": "User", "EntityEffectId": "Hit_Interrupt_Eligible"},
             {"Type": "ApplyEffect", "EffectId": "Nakasar_Elite_Rooted"},
             {"Type": "ApplyEffect", "EffectId": "Dungeon_Goblin_Mace_Slam_Charge"},
-            {"Type": "Simple", "RunTime": 1.5, "Effects": {
-                "ItemPlayerAnimationsId": "Mace", "ItemAnimationId": "Guard",
-                "WorldSoundEventId": "SFX_Spirit_Root_Alerted",
-                "Particles": [warning(INFERNO_RADIUS, 1.5), hand_flame("R-Hand", 2.5), hand_flame("L-Hand", 2.5),
-                              {"SystemId": "Fire_Blue", "TargetNodeName": "Belly", "Scale": 3.0}]}},
-            {"Type": "Selector", "RunTime": 0.15, "Effects": {
-                "ItemPlayerAnimationsId": "Mace", "ItemAnimationId": "SwingDownCharged",
-                "WorldSoundEventId": "SFX_Goblin_Feastmaster_Slam",
-                "Particles": [ground_particles("Fire_Blue", 5.0), ground_particles("Stick_Slam_Ground_Large", 1.4)]},
-             "Selector": {"Id": "AOECircle", "Range": INFERNO_RADIUS},
-             "HitEntity": {"Interactions": damage(20, kind="Fire", knockback=6, particles="Impact_Sword_Basic_Stronk",
-                                                  extra=[burn(5)])}},
+            inferno_strike(),
+            windup(2.0, INFERNO_POSE),
+            windup(0.15, INFERNO_BLAST),
+            {"Type": "Simple", "RunTime": 0.8},
+        ],
+    }
+
+
+def armor_inferno_double():
+    return {
+        "$Comment": f"Seconde moitié de l'armure enchantée (sous 50 % de vie) : deux brasiers bleus d'affilée. Le premier comme d'habitude, cercle rouge de {INFERNO_RADIUS:g} blocs autour d'elle pendant 2 s ; le second se dessine 1,6 s après, décalé de 7 blocs vers le joueur le plus éloigné, et éclate 2 s plus tard. Les piliers et les sarcophages protègent des deux.",
+        "Type": "Serial",
+        "Interactions": [
+            {"Type": "ClearEntityEffect", "Entity": "User", "EntityEffectId": "Hit_Interrupt_Eligible"},
+            {"Type": "ApplyEffect", "EffectId": "Nakasar_Elite_Rooted"},
+            {"Type": "ApplyEffect", "EffectId": "Dungeon_Goblin_Mace_Slam_Charge"},
+            inferno_strike(),
+            inferno_strike(Anchor="Farthest", OffsetMax=7, Delay=1.6),
+            windup(2.0, INFERNO_POSE),
+            windup(0.15, INFERNO_BLAST),
+            {"Type": "ApplyEffect", "EffectId": "Nakasar_Elite_Rooted"},
+            windup(1.45, INFERNO_POSE),
+            windup(0.15, INFERNO_BLAST),
             {"Type": "Simple", "RunTime": 0.8},
         ],
     }
@@ -290,7 +331,7 @@ def armor_inferno():
 
 def armor_summon():
     return {
-        "$Comment": "L'armure enchantée appelle ses rouages : elle lève sa massue, des runes bleues s'allument au sol et jusqu'à trois rouages enchantés (Nakasar_Enchanted_Gear) apparaissent entre 2,5 et 5 blocs d'elle. Chaque rouage vivant lui rend 5 PV par seconde (Nakasar_SummonMinions, HealSummonerPerSecond) : il faut les détruire.",
+        "$Comment": "L'armure enchantée appelle ses rouages : elle lève sa massue, des runes bleues s'allument au sol et jusqu'à trois rouages enchantés (Nakasar_Enchanted_Gear) sortent des alcôves de la crypte (blocs Nakasar_Gear_Alcove ; à défaut, entre 2,5 et 5 blocs d'elle). Un lien bleu va de chaque rouage à l'armure : chaque rouage vivant lui rend 5 PV par seconde (Nakasar_SummonMinions, HealSummonerPerSecond), il faut les détruire.",
         "Type": "Serial",
         "Interactions": [
             {"Type": "ClearEntityEffect", "Entity": "User", "EntityEffectId": "Hit_Interrupt_Eligible"},
@@ -301,7 +342,8 @@ def armor_summon():
                 "WorldSoundEventId": "SFX_Spirit_Root_Spawn",
                 "Particles": [ground_particles("Praetorian_Summon_Ground", 1.6)]},
              "Next": {"Type": "Nakasar_SummonMinions", "MinionRole": GEAR, "Count": 3, "MaxAlive": 3,
-                      "MinDistance": 2.5, "MaxDistance": 5, "MinSpacing": 2, "HealSummonerPerSecond": 5}},
+                      "MinDistance": 2.5, "MaxDistance": 5, "MinSpacing": 2, "HealSummonerPerSecond": 5,
+                      "SpawnBlock": GEAR_ALCOVE, "TetherParticle": "Nakasar_Tether_Gear"}},
             {"Type": "Simple", "RunTime": 0.4},
         ],
     }
@@ -309,7 +351,7 @@ def armor_summon():
 
 def armor_role():
     return {
-        "$Comment": "Armure enchantée (élite) d'une crypte sur deux, au fond de la salle enterrée, avec barre de vie de boss (BossBarSystem). Grosse armure vide animée par des flammes bleues, armée d'une massue : ce n'est pas une morte-vivante (le feu purificateur ne la gêne pas) et le feu ne lui fait rien (groupe Nakasar_Fire_Immune). Coups de massue ; coups lourds : frappe écrasante (0,9 s d'élan, 55 dégâts) et furie (deux revers puis un coup abattu) ; coup sismique annoncé par une zone rouge de 4,5 blocs ; brasier bleu annoncé par une zone rouge de 6,5 blocs (feu, flammes bleues 5 s). Toutes les 18 à 22 s elle complète ses trois rouages enchantés qui la soignent de 5 PV par seconde chacun tant qu'ils vivent. Immobile comme une statue tant que rien ne passe ; retourne à sa place et regagne sa vie si on fuit à plus de 24 blocs. Générée par tools/generate_elites.py.",
+        "$Comment": "Armure enchantée (élite) d'une crypte sur deux, au fond de la salle enterrée, avec barre de vie de boss (BossBarSystem). Grosse armure vide animée par des flammes bleues, armée d'une massue : ce n'est pas une morte-vivante (le feu purificateur ne la gêne pas) et le feu ne lui fait rien (groupe Nakasar_Fire_Immune). Coups de massue sans annonce ; frappe écrasante annoncée par un cône rouge de 120° (1,4 s, 55 dégâts) ; furie (deux revers, puis un coup abattu annoncé par un cône de 90°) ; coup sismique annoncé par un cercle rouge de 4,5 blocs ; brasier bleu annoncé par un cercle rouge de 6,5 blocs (2 s, feu, flammes bleues 5 s) dont les piliers et les sarcophages protègent ; sous 50 % de vie, deux brasiers d'affilée, le second vers le joueur le plus éloigné. Toutes les 18 à 22 s elle complète ses trois rouages enchantés, qui sortent des alcôves et la soignent de 5 PV par seconde chacun tant qu'ils vivent (lien bleu). Immobile comme une statue tant que rien ne passe ; retourne à sa place et regagne sa vie si on fuit à plus de 24 blocs. Générée par tools/generate_elites.py.",
         "Type": "Generic",
         "Appearance": ARMOR,
         "NameTranslationKey": "nakasar_mobs.npc.Enchanted_Armor.name",
@@ -339,6 +381,14 @@ def armor_role():
                  **lost_target(24, [{"Type": "State", "State": "ReturnHome"}])},
                 timed_attack("Summon", "Root_Nakasar_NPC_Armor_Summon",
                              comment="Rouages enchantés : elle complète la vague (trois au plus) dès l'entrée en combat, puis toutes les 18 à 22 s."),
+                {"$Comment": "Seconde moitié (sous 50 % de vie) : le brasier bleu devient double, le second décalé vers le joueur le plus éloigné.",
+                 "Sensor": {"Type": "And", "Sensors": [{"Type": "Target", "Range": 10}, half_health(),
+                                                       {"Type": "Timer", "Name": "Inferno", "State": "STOPPED"}]},
+                 "HeadMotion": {"Type": "Watch", "RelativeTurnSpeed": 1.0},
+                 "ActionsBlocking": True,
+                 "Actions": [{"Type": "TimerRestart", "Name": "Inferno"},
+                             {"Type": "Attack", "Attack": "Root_Nakasar_NPC_Armor_Inferno_Double", "SkipAiming": True,
+                              "LineOfSight": False, "AvoidFriendlyFire": False}]},
                 timed_attack("Inferno", "Root_Nakasar_NPC_Armor_Inferno", rng=8, los=True,
                              comment="Brasier bleu annoncé quand la cible est à moins de 8 blocs."),
                 timed_attack("Slam", "Root_Nakasar_NPC_Armor_Slam", rng=4.5, los=True,
@@ -418,43 +468,60 @@ def spectre_touch():
     }
 
 
+SAFE = 5.0   # arena.Braziers.SAFE_RADIUS
+CHILL = {"EffectId": "Nakasar_Ghost_Chill", "EffectDuration": 3}
+
+
 def spectre_swoop():
     return {
-        "$Comment": "Plongeon du Spectre : il surgit à 1,5-2,5 blocs de sa cible (téléportation du rôle) et la frappe aussitôt de ses griffes glacées (22 dégâts, recul, frisson Nakasar_Ghost_Chill 3 s).",
+        "$Comment": f"Piqué du Spectre, annoncé : il se dissout en brume pendant qu'un petit cercle rouge de 1,5 bloc se remplit 1,2 s sous sa cible (à l'endroit où elle était), puis il surgit au centre du cercle et frappe de ses griffes glacées (22 dégâts, recul, frisson Nakasar_Ghost_Chill 3 s). Il suffit de sortir du cercle. Impossible à moins de {SAFE:g} blocs d'un brasero allumé (SafeFromBraziers) : la chaîne échoue.",
         "Type": "Serial",
         "Interactions": [
-            {"Type": "Simple", "RunTime": 0.35, "Effects": {
-                "ItemAnimationId": "SwingDown", "WorldSoundEventId": "SFX_Spirit_Root_Alerted",
-                "Particles": [{"SystemId": "Weapon_Frost_Mist", "TargetNodeName": "Chest", "Scale": 1.5}]}},
-            {"Type": "Selector", "RunTime": 0.1, "Effects": {"WorldSoundEventId": "SFX_Light_Melee_T2_Swing"},
-             "Selector": {"Id": "Horizontal", "Direction": "ToLeft", "TestLineOfSight": False, "ExtendTop": 1.2,
-                          "ExtendBottom": 1.2, "StartDistance": 0.1, "EndDistance": 3.4, "Length": 120,
-                          "RollOffset": 0, "YawStartOffset": 60},
-             "HitEntity": {"Interactions": damage(22, interrupt=True, particles="Impact_Ice", knockback=4, extra=[
-                 {"Type": "ApplyEffect", "EffectId": "Nakasar_Ghost_Chill", "Entity": "Target", "Duration": 3}])}},
+            {"Type": "ClearEntityEffect", "Entity": "User", "EntityEffectId": "Hit_Interrupt_Eligible"},
+            telegraph("Circle", 1.2, Anchor="Target", Radius=1.5, TeleportCaster=True, SafeFromBraziers=SAFE, Damage=22,
+                      Knockback=4, KnockUp=4, HitParticle="Impact_Ice", ImpactSound="SFX_Light_Melee_T2_Swing", **CHILL),
+            windup(1.2, {"WorldSoundEventId": "SFX_Spirit_Root_Alerted",
+                         "Particles": [{"SystemId": "Weapon_Frost_Mist", "TargetNodeName": "Chest", "Scale": 2.5},
+                                       {"SystemId": "Nakasar_Mist_Column", "TargetEntityPart": "Entity",
+                                        "TargetNodeName": "Origin", "Scale": 1.0}]}),
+            windup(0.3, {"ItemAnimationId": "SwingDown"}),
             {"Type": "Simple", "RunTime": 0.3},
+        ],
+    }
+
+
+def spectre_blink():
+    return {
+        "$Comment": f"Clignement du Spectre quand sa cible s'éloigne : une colonne de brume marque 0,6 s avant le point où il va surgir (à 2-3,5 blocs d'elle), puis il y apparaît. Impossible à moins de {SAFE:g} blocs d'un brasero allumé.",
+        "Type": "Serial",
+        "Interactions": [
+            telegraph("Column", 0.6, Anchor="Target", OffsetMin=2, OffsetMax=3.5, TeleportCaster=True,
+                      SafeFromBraziers=SAFE, MarkParticle="Nakasar_Mist_Column", MarkInterval=0.2, MarkHeight=0),
+            windup(0.6, {"Particles": [{"SystemId": "Weapon_Frost_Mist", "TargetNodeName": "Chest", "Scale": 2.0}]}),
+            {"Type": "Simple", "RunTime": 0.2},
         ],
     }
 
 
 def spectre_flurry():
     hits = []
-    for direction, yaw in (("ToLeft", 50), ("ToRight", -50), ("ToLeft", 50)):
-        hits += [
-            {"Type": "Simple", "RunTime": 0.25, "Effects": {"ItemAnimationId": "SwingDown",
-                                                            "WorldSoundEventId": "SFX_Light_Melee_T2_Swing"}},
-            {"Type": "Selector", "RunTime": 0.1,
-             "Selector": {"Id": "Horizontal", "Direction": direction, "TestLineOfSight": False, "ExtendTop": 1.0,
-                          "ExtendBottom": 1.0, "StartDistance": 0.1, "EndDistance": 3.2, "Length": 100,
-                          "RollOffset": 0, "YawStartOffset": yaw},
-             "HitEntity": {"Interactions": damage(10, interrupt=True, particles="Impact_Ice")}},
-        ]
+    for k in range(3):
+        hits.append({"Type": "Simple", "RunTime": 0.3, "Effects": {"ItemAnimationId": "SwingDown",
+                                                                     "WorldSoundEventId": "SFX_Light_Melee_T2_Swing"}})
     return {
-        "$Comment": "Rafale de griffes du Spectre : trois coups rapides (10 dégâts chacun) ; le dernier glace aussi (Nakasar_Ghost_Chill).",
+        "$Comment": "Rafale de griffes du Spectre, annoncée : un cône rouge de 90° et 3 blocs se charge 0,8 s devant lui, puis trois coups rapides tombent dedans (10 dégâts chacun, à 0,8, 1,1 et 1,4 s) ; le dernier glace aussi (Nakasar_Ghost_Chill). Restez hors du cône jusqu'au troisième coup.",
         "Type": "Serial",
-        "Interactions": hits[:-1] + [{**hits[-1], "HitEntity": {"Interactions": damage(10, interrupt=True, particles="Impact_Ice", extra=[
-            {"Type": "ApplyEffect", "EffectId": "Nakasar_Ghost_Chill", "Entity": "Target", "Duration": 3}])}},
-                                     {"Type": "Simple", "RunTime": 0.2}],
+        "Interactions": [
+            {"Type": "ClearEntityEffect", "Entity": "User", "EntityEffectId": "Hit_Interrupt_Eligible"},
+            {"Type": "ApplyEffect", "EffectId": "Nakasar_Elite_Rooted"},
+            telegraph("Cone", 0.8, Angle=90, Radius=3, Damage=10, HitParticle="Impact_Ice"),
+            telegraph("Cone", 0.6, Angle=90, Radius=3, Delay=0.5, Damage=10, HitParticle="Impact_Ice"),
+            telegraph("Cone", 0.6, Angle=90, Radius=3, Delay=0.8, Damage=10, HitParticle="Impact_Ice", **CHILL),
+            windup(0.8, {"WorldSoundEventId": "SFX_Spirit_Root_Alerted",
+                         "Particles": [{"SystemId": "Weapon_Frost_Mist", "TargetNodeName": "Chest", "Scale": 1.5}]}),
+            *hits,
+            {"Type": "Simple", "RunTime": 0.2},
+        ],
     }
 
 
@@ -480,9 +547,26 @@ def spectre_cold_wave():
     }
 
 
+def spectre_gust():
+    return {
+        "$Comment": f"Seconde moitié du Spectre (sous 50 % de vie) : bourrasque glacée annoncée sur le brasero allumé le plus proche. Un cercle rouge de 3 blocs se charge 1,5 s autour du brasero, puis le vent l'éteint ; ceux qui sont restés dedans prennent 10 dégâts et le gel {FROST} 4 s. Sans brasero allumé, la chaîne échoue.",
+        "Type": "Serial",
+        "Interactions": [
+            {"Type": "ClearEntityEffect", "Entity": "User", "EntityEffectId": "Hit_Interrupt_Eligible"},
+            {"Type": "ApplyEffect", "EffectId": "Nakasar_Elite_Rooted"},
+            telegraph("Circle", 1.5, Anchor="Brazier", Radius=3, Snuff=True, Damage=10, EffectId=FROST, EffectDuration=4,
+                      HitParticle="Impact_Ice", ImpactParticle="Ice_Blast", ImpactParticleScale=1.2,
+                      ImpactSound="SFX_Goblin_Feastmaster_Slam"),
+            windup(1.5, {"ItemAnimationId": "SwingDown", "WorldSoundEventId": "SFX_Spirit_Root_Alerted",
+                         "Particles": [{"SystemId": "Ice_Staff_Charging", "TargetNodeName": "Chest", "Scale": 1.5}]}),
+            {"Type": "Simple", "RunTime": 0.4},
+        ],
+    }
+
+
 def spectre_summon():
     return {
-        "$Comment": "Le Spectre appelle ses fantômes : il se fige dans une brume de givre, puis trois fantômes (Nakasar_Spectral_Ghost) apparaissent entre 2,5 et 5 blocs de lui (Nakasar_SummonMinions). Tant qu'il en reste un, il est invulnérable (MinionShieldSystem).",
+        "$Comment": "Le Spectre appelle ses fantômes : il se fige dans une brume de givre, puis trois fantômes (Nakasar_Spectral_Ghost) apparaissent entre 2,5 et 5 blocs de lui (Nakasar_SummonMinions). Un lien pâle va de chaque fantôme au Spectre : tant qu'il en reste un, il est invulnérable (MinionShieldSystem, halo doré).",
         "Type": "Serial",
         "Interactions": [
             {"Type": "ClearEntityEffect", "Entity": "User", "EntityEffectId": "Hit_Interrupt_Eligible"},
@@ -493,7 +577,7 @@ def spectre_summon():
                 "WorldSoundEventId": "SFX_Spirit_Root_Spawn",
                 "Particles": [ground_particles("Praetorian_Summon_Ground", 1.6)]},
              "Next": {"Type": "Nakasar_SummonMinions", "MinionRole": SHADE, "Count": 3, "MaxAlive": 3,
-                      "MinDistance": 2.5, "MaxDistance": 5, "MinSpacing": 2}},
+                      "MinDistance": 2.5, "MaxDistance": 5, "MinSpacing": 2, "TetherParticle": "Nakasar_Tether_Ghost"}},
             {"Type": "Simple", "RunTime": 0.4},
         ],
     }
@@ -524,7 +608,7 @@ def blink(rng):
 
 def spectre_role():
     return {
-        "$Comment": "Spectre (élite) d'un château hanté sur deux et d'un cimetière sur sept environ (Cemeteries/Spectre, poids 0,5), avec barre de vie de boss (BossBarSystem). Grand fantôme qui flotte bas. Dès le combat (ou dès le premier coup reçu), il invoque trois fantômes et reste invulnérable tant qu'il en reste (MinionShieldSystem, barre de boss en mode invulnérable) ; une fois la vague détruite, il est vulnérable 14 à 16 s, puis en appelle une autre. Vif et mobile : il tourne autour de sa cible, plonge sur elle (téléportation suivie d'un coup de griffes) toutes les 5 à 7 s, enchaîne rafales de griffes et toucher glacial, et une vague de froid annoncée par une zone rouge de 6 blocs ralentit fortement ceux qui y restent. Disparaît et réapparaît près de sa cible quand elle s'éloigne. Si on le fuit, il se calme et regagne sa vie. Mort-vivant (feu purificateur). Généré par tools/generate_elites.py.",
+        "$Comment": "Spectre (élite) d'un château hanté sur deux et d'un cimetière sur sept environ (Cemeteries/Spectre, poids 0,5), avec barre de vie de boss (BossBarSystem). Grand fantôme qui flotte bas. Dès le combat (ou dès le premier coup reçu), il invoque trois fantômes et reste invulnérable tant qu'il en reste (MinionShieldSystem, barre de boss en mode invulnérable) ; une fois la vague détruite, il est vulnérable 14 à 16 s, puis en appelle une autre. Vif et mobile : il tourne autour de sa cible ; toutes les 5 à 7 s, piqué annoncé (petit cercle rouge sous la cible pendant 1,2 s, puis il y surgit et frappe) ; rafale de griffes annoncée par un cône rouge, toucher glacial ; vague de froid annoncée par un cercle rouge de 6 blocs qui ralentit fortement ceux qui y restent. Quand sa cible s'éloigne, une colonne de brume marque 0,6 s avant le point où il surgit. Près d'un brasero allumé (5 blocs), ni piqué ni clignement ; sous 50 % de vie, une bourrasque glacée annoncée éteint un brasero. Si on le fuit, il se calme et regagne sa vie. Mort-vivant (feu purificateur). Généré par tools/generate_elites.py.",
         "Type": "Generic",
         "Appearance": SPECTRE,
         "NameTranslationKey": "nakasar_mobs.npc.Spectre.name",
@@ -542,7 +626,7 @@ def spectre_role():
             "States": [{"From": ["Idle"], "To": ["Combat"]}],
             "Actions": [timer("Summon", (0.1, 0.2), (14, 16)), timer("ColdWave", (5, 7), (13, 16)),
                         timer("Blink", (4, 6), (8, 11)), timer("Swoop", (2, 3), (5, 7)),
-                        timer("Flurry", (4, 5), (6, 8))],
+                        timer("Flurry", (4, 5), (6, 8)), timer("Gust", (3, 5), (14, 18))],
         }],
         "Instructions": [
             {"Sensor": {"Type": "State", "State": "Idle"}, "Instructions": to_combat_on_sight(16, los=False) + [
@@ -559,17 +643,25 @@ def spectre_role():
                              comment="Invocation des fantômes : dès l'entrée en combat, puis 14 à 16 s après la mort de la vague précédente."),
                 timed_attack("ColdWave", "Root_Nakasar_NPC_Spectre_ColdWave", rng=6,
                              comment="Vague de froid annoncée quand la cible est à moins de 6 blocs."),
-                {"$Comment": "Plongeon : il surgit près de sa cible (à moins de 14 blocs) et la frappe aussitôt.",
-                 "Sensor": {"Type": "And", "Sensors": [{"Type": "Target", "Range": 14},
-                                                       {"Type": "Timer", "Name": "Swoop", "State": "STOPPED"}]},
-                 "BodyMotion": {"Type": "Teleport", "OffsetRange": [1.5, 2.5], "MaxYOffset": 1,
-                                "Orientation": "TowardsTarget"},
+                {"$Comment": "Seconde moitié (sous 50 % de vie) : bourrasque glacée annoncée qui éteint le brasero allumé le plus proche.",
+                 "Sensor": {"Type": "And", "Sensors": [{"Type": "Target", "Range": 24}, half_health(),
+                                                       {"Type": "Timer", "Name": "Gust", "State": "STOPPED"}]},
                  "HeadMotion": {"Type": "Watch", "RelativeTurnSpeed": 1.5},
                  "ActionsBlocking": True,
-                 "Actions": [{"Type": "TimerRestart", "Name": "Swoop"},
-                             {"Type": "Attack", "Attack": "Root_Nakasar_NPC_Spectre_Swoop", "SkipAiming": True,
+                 "Actions": [{"Type": "TimerRestart", "Name": "Gust"},
+                             {"Type": "Attack", "Attack": "Root_Nakasar_NPC_Spectre_Gust", "SkipAiming": True,
                               "LineOfSight": False, "AvoidFriendlyFire": False}]},
-                blink(22),
+                timed_attack("Swoop", "Root_Nakasar_NPC_Spectre_Swoop", rng=14,
+                             comment="Piqué annoncé : petit cercle rouge sous sa cible (à moins de 14 blocs), puis il y surgit et frappe. Pas près d'un brasero allumé."),
+                {"$Comment": "Clignement quand la cible s'éloigne (7 à 22 blocs) : une colonne de brume marque le point d'arrivée 0,6 s avant. Pas près d'un brasero allumé.",
+                 "Sensor": {"Type": "And", "Sensors": [{"Type": "Target", "Range": 22},
+                                                       {"Type": "Not", "Sensor": {"Type": "Target", "Range": 7}},
+                                                       {"Type": "Timer", "Name": "Blink", "State": "STOPPED"}]},
+                 "HeadMotion": {"Type": "Watch", "RelativeTurnSpeed": 1.5},
+                 "ActionsBlocking": True,
+                 "Actions": [{"Type": "TimerRestart", "Name": "Blink"},
+                             {"Type": "Attack", "Attack": "Root_Nakasar_NPC_Spectre_Blink", "SkipAiming": True,
+                              "LineOfSight": False, "AvoidFriendlyFire": False}]},
                 timed_attack("Flurry", "Root_Nakasar_NPC_Spectre_Flurry", rng=3.0,
                              comment="Rafale de griffes au contact."),
                 {"Sensor": {"Type": "Target", "Range": 3.0},
@@ -741,6 +833,9 @@ def main():
         "Nakasar_NPC_Armor_Crush": armor_crush(),
         "Nakasar_NPC_Armor_Fury": armor_fury(),
         "Nakasar_NPC_Armor_Inferno": armor_inferno(),
+        "Nakasar_NPC_Armor_Inferno_Double": armor_inferno_double(),
+        "Nakasar_NPC_Spectre_Blink": spectre_blink(),
+        "Nakasar_NPC_Spectre_Gust": spectre_gust(),
         "Nakasar_NPC_Armor_Summon": armor_summon(),
         "Nakasar_NPC_Spectre_Touch": spectre_touch(),
         "Nakasar_NPC_Spectre_Swoop": spectre_swoop(),
@@ -754,8 +849,9 @@ def main():
         "Tags": {"Attack": ["Melee"]},
         "Interactions": [{"Type": "Chaining", "ChainId": "Nakasar_Enchanted_Armor", "ChainingAllowance": 15,
                           "Next": ["Nakasar_NPC_Armor_Swing_Left", "Nakasar_NPC_Armor_Swing_Right"]}]})
-    for name in ("Armor_Slam", "Armor_Crush", "Armor_Fury", "Armor_Inferno", "Armor_Summon", "Spectre_Touch",
-                 "Spectre_Swoop", "Spectre_Flurry", "Spectre_ColdWave", "Spectre_Summon"):
+    for name in ("Armor_Slam", "Armor_Crush", "Armor_Fury", "Armor_Inferno", "Armor_Inferno_Double", "Armor_Summon",
+                 "Spectre_Touch", "Spectre_Swoop", "Spectre_Flurry", "Spectre_ColdWave", "Spectre_Summon",
+                 "Spectre_Blink", "Spectre_Gust"):
         write_json(ROOTS / f"Root_Nakasar_NPC_{name}.json", melee_tag(f"Nakasar_NPC_{name}"))
     write_json(EFFECTS / f"{FROST}.json", frost_effect())
     write_json(EFFECTS / f"{BLUE_FLAME}.json", blue_flame_effect())
@@ -767,6 +863,16 @@ def main():
     write_json(MARKERS / f"{SPECTRE}.json", marker(SPECTRE, "Spectre (élite) d'un château hanté sur deux ou d'un cimetière hanté sur trois ; revient 30 minutes après sa mort."))
     write_json(SPAWNERS / f"Nakasar_Spawner_{ARMOR.removeprefix('Nakasar_')}.json", spawner(ARMOR, "dans la salle enterrée d'une crypte"))
     write_json(SPAWNERS / f"Nakasar_Spawner_{SPECTRE.removeprefix('Nakasar_')}.json", spawner(SPECTRE, "dans un château ou un cimetière hanté"))
+    write_json(SPAWNERS / f"{GEAR_ALCOVE}.json", {
+        "$Comment": "Bloc invisible et traversable posé dans une alcôve de la crypte : les rouages de l'armure enchantée en sortent (Nakasar_SummonMinions, SpawnBlock).",
+        "TranslationProperties": {"Name": f"nakasar_mobs.items.{GEAR_ALCOVE}.name"},
+        "Quality": "Developer",
+        "MaxStack": 64,
+        "BlockType": {"Material": "Empty", "DrawType": "Empty", "Opacity": "Transparent"},
+    })
+    # Zones d'annonce (cercles et cônes de la Tour, communs avec le Java des élites) et effets de lecture.
+    tw.write()
+    elite_fx.write()
     icon = frost_icon()
     (COMMON / "UI/StatusEffects/Nakasar").mkdir(parents=True, exist_ok=True)
     icon.save(COMMON / "UI/StatusEffects/Nakasar/Spectre_Frost.png")

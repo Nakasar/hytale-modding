@@ -1,5 +1,5 @@
 {
-  "$Comment": "Spectre (élite) d'un château hanté sur deux et d'un cimetière sur sept environ (Cemeteries/Spectre, poids 0,5), avec barre de vie de boss (BossBarSystem). Grand fantôme qui flotte bas. Dès le combat (ou dès le premier coup reçu), il invoque trois fantômes et reste invulnérable tant qu'il en reste (MinionShieldSystem, barre de boss en mode invulnérable) ; une fois la vague détruite, il est vulnérable 14 à 16 s, puis en appelle une autre. Vif et mobile : il tourne autour de sa cible, plonge sur elle (téléportation suivie d'un coup de griffes) toutes les 5 à 7 s, enchaîne rafales de griffes et toucher glacial, et une vague de froid annoncée par une zone rouge de 6 blocs ralentit fortement ceux qui y restent. Disparaît et réapparaît près de sa cible quand elle s'éloigne. Si on le fuit, il se calme et regagne sa vie. Mort-vivant (feu purificateur). Généré par tools/generate_elites.py.",
+  "$Comment": "Spectre (élite) d'un château hanté sur deux et d'un cimetière sur sept environ (Cemeteries/Spectre, poids 0,5), avec barre de vie de boss (BossBarSystem). Grand fantôme qui flotte bas. Dès le combat (ou dès le premier coup reçu), il invoque trois fantômes et reste invulnérable tant qu'il en reste (MinionShieldSystem, barre de boss en mode invulnérable) ; une fois la vague détruite, il est vulnérable 14 à 16 s, puis en appelle une autre. Vif et mobile : il tourne autour de sa cible ; toutes les 5 à 7 s, piqué annoncé (petit cercle rouge sous la cible pendant 1,2 s, puis il y surgit et frappe) ; rafale de griffes annoncée par un cône rouge, toucher glacial ; vague de froid annoncée par un cercle rouge de 6 blocs qui ralentit fortement ceux qui y restent. Quand sa cible s'éloigne, une colonne de brume marque 0,6 s avant le point où il surgit. Près d'un brasero allumé (5 blocs), ni piqué ni clignement ; sous 50 % de vie, une bourrasque glacée annoncée éteint un brasero. Si on le fuit, il se calme et regagne sa vie. Mort-vivant (feu purificateur). Généré par tools/generate_elites.py.",
   "Type": "Generic",
   "Appearance": "Nakasar_Spectre",
   "NameTranslationKey": "nakasar_mobs.npc.Spectre.name",
@@ -101,6 +101,18 @@
           "RestartValueRange": [
             6,
             8
+          ]
+        },
+        {
+          "Type": "TimerStart",
+          "Name": "Gust",
+          "StartValueRange": [
+            3,
+            5
+          ],
+          "RestartValueRange": [
+            14,
+            18
           ]
         }
       ]
@@ -309,7 +321,58 @@
           }
         },
         {
-          "$Comment": "Plongeon : il surgit près de sa cible (à moins de 14 blocs) et la frappe aussitôt.",
+          "$Comment": "Seconde moitié (sous 50 % de vie) : bourrasque glacée annoncée qui éteint le brasero allumé le plus proche.",
+          "Sensor": {
+            "Type": "And",
+            "Sensors": [
+              {
+                "Type": "Target",
+                "Range": 24
+              },
+              {
+                "Type": "Self",
+                "Filters": [
+                  {
+                    "Type": "Stat",
+                    "Stat": "Health",
+                    "StatTarget": "Value",
+                    "RelativeTo": "Health",
+                    "RelativeToTarget": "Max",
+                    "ValueRange": [
+                      0,
+                      0.5
+                    ]
+                  }
+                ]
+              },
+              {
+                "Type": "Timer",
+                "Name": "Gust",
+                "State": "STOPPED"
+              }
+            ]
+          },
+          "HeadMotion": {
+            "Type": "Watch",
+            "RelativeTurnSpeed": 1.5
+          },
+          "ActionsBlocking": true,
+          "Actions": [
+            {
+              "Type": "TimerRestart",
+              "Name": "Gust"
+            },
+            {
+              "Type": "Attack",
+              "Attack": "Root_Nakasar_NPC_Spectre_Gust",
+              "SkipAiming": true,
+              "LineOfSight": false,
+              "AvoidFriendlyFire": false
+            }
+          ]
+        },
+        {
+          "$Comment": "Piqué annoncé : petit cercle rouge sous sa cible (à moins de 14 blocs), puis il y surgit et frappe. Pas près d'un brasero allumé.",
           "Sensor": {
             "Type": "And",
             "Sensors": [
@@ -324,19 +387,6 @@
               }
             ]
           },
-          "BodyMotion": {
-            "Type": "Teleport",
-            "OffsetRange": [
-              1.5,
-              2.5
-            ],
-            "MaxYOffset": 1,
-            "Orientation": "TowardsTarget"
-          },
-          "HeadMotion": {
-            "Type": "Watch",
-            "RelativeTurnSpeed": 1.5
-          },
           "ActionsBlocking": true,
           "Actions": [
             {
@@ -350,10 +400,14 @@
               "LineOfSight": false,
               "AvoidFriendlyFire": false
             }
-          ]
+          ],
+          "HeadMotion": {
+            "Type": "Watch",
+            "RelativeTurnSpeed": 1.0
+          }
         },
         {
-          "$Comment": "Apparition soudaine près de la cible quand elle s'éloigne.",
+          "$Comment": "Clignement quand la cible s'éloigne (7 à 22 blocs) : une colonne de brume marque le point d'arrivée 0,6 s avant. Pas près d'un brasero allumé.",
           "Sensor": {
             "Type": "And",
             "Sensors": [
@@ -375,19 +429,22 @@
               }
             ]
           },
-          "BodyMotion": {
-            "Type": "Teleport",
-            "OffsetRange": [
-              2,
-              3
-            ],
-            "MaxYOffset": 1,
-            "Orientation": "TowardsTarget"
+          "HeadMotion": {
+            "Type": "Watch",
+            "RelativeTurnSpeed": 1.5
           },
+          "ActionsBlocking": true,
           "Actions": [
             {
               "Type": "TimerRestart",
               "Name": "Blink"
+            },
+            {
+              "Type": "Attack",
+              "Attack": "Root_Nakasar_NPC_Spectre_Blink",
+              "SkipAiming": true,
+              "LineOfSight": false,
+              "AvoidFriendlyFire": false
             }
           ]
         },

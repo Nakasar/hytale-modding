@@ -1,0 +1,184 @@
+{
+  "$Comment": "Seconde moitié de l'armure enchantée (sous 50 % de vie) : deux brasiers bleus d'affilée. Le premier comme d'habitude, cercle rouge de 6.5 blocs autour d'elle pendant 2 s ; le second se dessine 1,6 s après, décalé de 7 blocs vers le joueur le plus éloigné, et éclate 2 s plus tard. Les piliers et les sarcophages protègent des deux.",
+  "Type": "Serial",
+  "Interactions": [
+    {
+      "Type": "ClearEntityEffect",
+      "Entity": "User",
+      "EntityEffectId": "Hit_Interrupt_Eligible"
+    },
+    {
+      "Type": "ApplyEffect",
+      "EffectId": "Nakasar_Elite_Rooted"
+    },
+    {
+      "Type": "ApplyEffect",
+      "EffectId": "Dungeon_Goblin_Mace_Slam_Charge"
+    },
+    {
+      "Type": "Nakasar_Telegraph",
+      "Shape": "Circle",
+      "Seconds": 2.0,
+      "Radius": 6.5,
+      "Damage": 20,
+      "DamageCause": "Fire",
+      "Knockback": 6,
+      "KnockUp": 6,
+      "EffectId": "Nakasar_Blue_Flame",
+      "EffectDuration": 5,
+      "Cover": true,
+      "HitParticle": "Impact_Sword_Basic_Stronk",
+      "ImpactParticle": "Fire_Blue",
+      "ImpactParticleScale": 5.0,
+      "ImpactSound": "SFX_Goblin_Feastmaster_Slam"
+    },
+    {
+      "Type": "Nakasar_Telegraph",
+      "Shape": "Circle",
+      "Seconds": 2.0,
+      "Radius": 6.5,
+      "Damage": 20,
+      "DamageCause": "Fire",
+      "Knockback": 6,
+      "KnockUp": 6,
+      "EffectId": "Nakasar_Blue_Flame",
+      "EffectDuration": 5,
+      "Cover": true,
+      "HitParticle": "Impact_Sword_Basic_Stronk",
+      "ImpactParticle": "Fire_Blue",
+      "ImpactParticleScale": 5.0,
+      "ImpactSound": "SFX_Goblin_Feastmaster_Slam",
+      "Anchor": "Farthest",
+      "OffsetMax": 7,
+      "Delay": 1.6
+    },
+    {
+      "Type": "Simple",
+      "RunTime": 2.0,
+      "Effects": {
+        "ItemPlayerAnimationsId": "Mace",
+        "ItemAnimationId": "Guard",
+        "WorldSoundEventId": "SFX_Spirit_Root_Alerted",
+        "Particles": [
+          {
+            "SystemId": "Fire_Blue",
+            "TargetNodeName": "R-Hand",
+            "Scale": 2.5,
+            "PositionOffset": {
+              "Y": 0.3
+            },
+            "RotationOffset": {
+              "Pitch": 180
+            }
+          },
+          {
+            "SystemId": "Fire_Blue",
+            "TargetNodeName": "L-Hand",
+            "Scale": 2.5,
+            "PositionOffset": {
+              "Y": 0.3
+            },
+            "RotationOffset": {
+              "Pitch": 180
+            }
+          },
+          {
+            "SystemId": "Fire_Blue",
+            "TargetNodeName": "Belly",
+            "Scale": 3.0
+          }
+        ]
+      }
+    },
+    {
+      "Type": "Simple",
+      "RunTime": 0.15,
+      "Effects": {
+        "ItemPlayerAnimationsId": "Mace",
+        "ItemAnimationId": "SwingDownCharged",
+        "Particles": [
+          {
+            "SystemId": "Stick_Slam_Ground_Large",
+            "TargetEntityPart": "Entity",
+            "TargetNodeName": "Origin",
+            "Scale": 1.4,
+            "PositionOffset": {
+              "X": 0,
+              "Y": 0.1,
+              "Z": 0
+            },
+            "DetachedFromModel": true
+          }
+        ]
+      }
+    },
+    {
+      "Type": "ApplyEffect",
+      "EffectId": "Nakasar_Elite_Rooted"
+    },
+    {
+      "Type": "Simple",
+      "RunTime": 1.45,
+      "Effects": {
+        "ItemPlayerAnimationsId": "Mace",
+        "ItemAnimationId": "Guard",
+        "WorldSoundEventId": "SFX_Spirit_Root_Alerted",
+        "Particles": [
+          {
+            "SystemId": "Fire_Blue",
+            "TargetNodeName": "R-Hand",
+            "Scale": 2.5,
+            "PositionOffset": {
+              "Y": 0.3
+            },
+            "RotationOffset": {
+              "Pitch": 180
+            }
+          },
+          {
+            "SystemId": "Fire_Blue",
+            "TargetNodeName": "L-Hand",
+            "Scale": 2.5,
+            "PositionOffset": {
+              "Y": 0.3
+            },
+            "RotationOffset": {
+              "Pitch": 180
+            }
+          },
+          {
+            "SystemId": "Fire_Blue",
+            "TargetNodeName": "Belly",
+            "Scale": 3.0
+          }
+        ]
+      }
+    },
+    {
+      "Type": "Simple",
+      "RunTime": 0.15,
+      "Effects": {
+        "ItemPlayerAnimationsId": "Mace",
+        "ItemAnimationId": "SwingDownCharged",
+        "Particles": [
+          {
+            "SystemId": "Stick_Slam_Ground_Large",
+            "TargetEntityPart": "Entity",
+            "TargetNodeName": "Origin",
+            "Scale": 1.4,
+            "PositionOffset": {
+              "X": 0,
+              "Y": 0.1,
+              "Z": 0
+            },
+            "DetachedFromModel": true
+          }
+        ]
+      }
+    },
+    {
+      "Type": "Simple",
+      "RunTime": 0.8
+    }
+  ]
+}

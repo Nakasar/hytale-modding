@@ -4,6 +4,7 @@ import com.hypixel.hytale.codec.Codec;
 import com.hypixel.hytale.codec.KeyedCodec;
 import com.hypixel.hytale.codec.builder.BuilderCodec;
 import com.hypixel.hytale.component.CommandBuffer;
+import com.hypixel.hytale.component.ComponentAccessor;
 import com.hypixel.hytale.component.Ref;
 import com.hypixel.hytale.component.Store;
 import com.hypixel.hytale.math.util.ChunkUtil;
@@ -89,29 +90,39 @@ public class ImprisonPlayerInteraction extends SimpleInstantInteraction {
             return;
         }
 
-        TransformComponent casterTransform = buffer.getComponent(caster, TransformComponent.getComponentType());
-        Vector3d cell = casterTransform == null ? null
-                : findNearestCell(buffer.getExternalData().getWorld().getChunkStore(), casterTransform.getPosition());
+        imprison(buffer, buffer.getExternalData().getWorld().getChunkStore(), caster, target, cellBlock, radius, effectId, duration);
+    }
+
+    /**
+     * Envoie `target` dans la cellule ({@code cellBlock}) la plus proche du lanceur dans un rayon de `radius` blocs et
+     * lui pose l'effet `effectId` pendant `duration` secondes. Vrai si une cellule a été trouvée. Sert aussi à
+     * l'Emprisonnement annoncé du Capitaine ({@code telegraph.TelegraphInteraction}, clé {@code Imprison}).
+     */
+    public static boolean imprison(ComponentAccessor<EntityStore> accessor, ChunkStore chunks, Ref<EntityStore> caster,
+                                   Ref<EntityStore> target, String cellBlock, int radius, String effectId, float duration) {
+        TransformComponent casterTransform = accessor.getComponent(caster, TransformComponent.getComponentType());
+        Vector3d cell = casterTransform == null ? null : findNearestCell(chunks, casterTransform.getPosition(), cellBlock, radius);
         if (cell != null) {
-            TransformComponent targetTransform = buffer.getComponent(target, TransformComponent.getComponentType());
+            TransformComponent targetTransform = accessor.getComponent(target, TransformComponent.getComponentType());
             Rotation3f rotation = targetTransform != null ? targetTransform.getRotation() : new Rotation3f();
             Teleport teleport = Teleport.createForPlayer(cell, rotation);
-            HeadRotation head = buffer.getComponent(target, HeadRotation.getComponentType());
+            HeadRotation head = accessor.getComponent(target, HeadRotation.getComponentType());
             if (head != null) {
                 teleport.setHeadRotation(head.getRotation());
             }
-            buffer.putComponent(target, Teleport.getComponentType(), teleport);
+            accessor.putComponent(target, Teleport.getComponentType(), teleport);
         }
 
         if (effectId != null && !effectId.isBlank() && duration > 0) {
             EntityEffect effect = EntityEffect.getAssetMap().getAsset(effectId);
-            EffectControllerComponent effects = buffer.getComponent(target, EffectControllerComponent.getComponentType());
+            EffectControllerComponent effects = accessor.getComponent(target, EffectControllerComponent.getComponentType());
             if (effect != null && effects != null) {
-                effects.addEffect(target, effect, duration, OverlapBehavior.OVERWRITE, buffer, caster);
+                effects.addEffect(target, effect, duration, OverlapBehavior.OVERWRITE, accessor, caster);
             } else if (effect == null) {
                 VampiresPlugin.get().getLogger().atWarning().log("%s : effet '%s' introuvable", TYPE_ID, effectId);
             }
         }
+        return cell != null;
     }
 
     @Override
@@ -120,7 +131,7 @@ public class ImprisonPlayerInteraction extends SimpleInstantInteraction {
     }
 
     /** Centre (pieds) du bloc de cellule chargé le plus proche de {@code from}, ou null s'il n'y en a pas. */
-    private Vector3d findNearestCell(ChunkStore chunks, Vector3d from) {
+    private static Vector3d findNearestCell(ChunkStore chunks, Vector3d from, String cellBlock, int radius) {
         int blockId = BlockType.getAssetMap().getIndexOrDefault(cellBlock, -1);
         if (blockId < 0) {
             VampiresPlugin.get().getLogger().atWarning().log("%s : bloc '%s' introuvable", TYPE_ID, cellBlock);

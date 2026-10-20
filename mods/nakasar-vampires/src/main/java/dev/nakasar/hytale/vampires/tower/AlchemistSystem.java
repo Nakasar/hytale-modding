@@ -41,6 +41,7 @@ import com.hypixel.hytale.server.npc.NPCPlugin;
 import com.hypixel.hytale.server.npc.entities.NPCEntity;
 import com.hypixel.hytale.server.npc.role.support.StateSupport;
 import dev.nakasar.hytale.vampires.VampiresPlugin;
+import dev.nakasar.hytale.vampires.telegraph.Telegraphs;
 import it.unimi.dsi.fastutil.Pair;
 import org.joml.Vector3d;
 
@@ -65,7 +66,7 @@ import java.util.concurrent.ThreadLocalRandom;
  *   l'élément ({@code Nakasar_Flask_*}) ; les cercles au sol restent rouges (effet négatif) et crépitent de l'élément
  *   ({@code Nakasar_Crackle_*}, tools/tower_fx.py ; Kevin, 20 octobre 2026).</li>
  *   <li><b>Grand Œuvre</b> (67 à 34 %) : chaque pan du rebord qui va tomber se couvre d'un cône rouge chargé de
- *   l'athanor vers le bord ({@link TowerFx.Sweep}), puis s'effondre (volumes {@link TowerLayout#ALCHEMIST_COLLAPSE}) ;
+ *   l'athanor vers le bord ({@link Telegraphs.Sweep}), puis s'effondre (volumes {@link TowerLayout#ALCHEMIST_COLLAPSE}) ;
  *   il s'enferme dans l'athanor, gelé et invulnérable, et en fait sortir des homoncules ({@value #HOMUNCULUS_ROLE}).
  *   Tant qu'il y est, l'athanor déclenche toutes les {@value #RING_INTERVAL} s une transmutation en anneau, annoncée
  *   par un anneau rouge qui se remplit en {@value #RING_WARN} s (près de l'athanor, puis plus loin, en alternance).
@@ -217,8 +218,8 @@ public final class AlchemistSystem extends TickingSystem<EntityStore> {
         /** Convergences recommencées (piliers renés) : chacune 20 % plus rapide. */
         int cycle;
         /** Cônes des pans du rebord, anneau de l'athanor en cours et le prochain (alterne près / loin). */
-        final List<TowerFx.Sweep> cones = new ArrayList<>();
-        TowerFx.Sweep ring;
+        final List<Telegraphs.Sweep> cones = new ArrayList<>();
+        Telegraphs.Sweep ring;
         long nextRing;
         boolean ringFar;
         final List<Strike> strikes = new ArrayList<>();
@@ -339,7 +340,7 @@ public final class AlchemistSystem extends TickingSystem<EntityStore> {
             // Chaque pan qui va tomber : cône rouge chargé de l'athanor vers le bord, jusqu'à la chute.
             double[] radii = TowerLayout.ALCHEMIST_COLLAPSE_RADII;
             for (double[] arc : TowerLayout.ALCHEMIST_COLLAPSE_ARCS) {
-                fight.cones.add(TowerFx.Sweep.arc(TowerLayout.ALCHEMIST_CENTER, arc[0], arc[1], radii[0], radii[1], now,
+                fight.cones.add(Telegraphs.Sweep.arc(TowerLayout.ALCHEMIST_CENTER, arc[0], arc[1], radii[0], radii[1], now,
                         TowerLayout.ALCHEMIST_COLLAPSE_WARN));
             }
             fight.nextRing = now + seconds(RING_INTERVAL);
@@ -438,7 +439,7 @@ public final class AlchemistSystem extends TickingSystem<EntityStore> {
             if (!fight.ring.step(store, now)) {
                 return;
             }
-            TowerFx.Sweep ring = fight.ring;
+            Telegraphs.Sweep ring = fight.ring;
             fight.ring = null;
             float damage = RING_DAMAGE * (fight.hard ? HARD_DAMAGE : 1f);
             for (Ref<EntityStore> player : playersInArena(world, store)) {
@@ -467,8 +468,8 @@ public final class AlchemistSystem extends TickingSystem<EntityStore> {
         fight.nextRing = now + seconds(RING_INTERVAL);
         double inner = TowerLayout.ALCHEMIST_ATHANOR_RADIUS + 1;
         fight.ring = fight.ringFar
-                ? new TowerFx.Sweep(TowerLayout.ALCHEMIST_CENTER, 0, Math.PI * 2, RING_SPLIT, RING_OUTER, now, RING_WARN)
-                : new TowerFx.Sweep(TowerLayout.ALCHEMIST_CENTER, 0, Math.PI * 2, inner, RING_SPLIT, now, RING_WARN);
+                ? new Telegraphs.Sweep(TowerLayout.ALCHEMIST_CENTER, 0, Math.PI * 2, RING_SPLIT, RING_OUTER, now, RING_WARN)
+                : new Telegraphs.Sweep(TowerLayout.ALCHEMIST_CENTER, 0, Math.PI * 2, inner, RING_SPLIT, now, RING_WARN);
         fight.ringFar = !fight.ringFar;
         puff(store, TowerLayout.ALCHEMIST_CENTER);
     }

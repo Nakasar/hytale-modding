@@ -28,10 +28,14 @@ Un amas de chair gonflé (gros zombie aberrant vanilla, ×1,35) qui hante la fer
 
 | Attaque | Portée | Effet | Fréquence |
 |---|---|---|---|
-| **Onde de choc** (annoncée) | anneau qui s'étend jusqu'à **7 blocs** | **30** dégâts physiques (±10 %) et projection en l'air | toutes les 11 à 14 s (première après 5 à 7 s), si vous êtes à 6 blocs ou moins |
+| **Onde de choc** (annoncée) | cercle rouge de **7 blocs**, **1,5 s** | **30** dégâts physiques (±10 %) et projection en l'air | toutes les 11 à 14 s (première après 5 à 7 s), si vous êtes à 6 blocs ou moins |
+| **Charge** (annoncée) | ligne rouge de **12 blocs** vers sa cible, **1,5 s** | il fonce tout droit au bout de la ligne : **40** dégâts et projection à ceux qu'il bouscule ; s'il **percute un mur ou un poteau**, il reste [étourdi](../effets.md#elite-etourdie) **4 s** et subit **+50 %** de dégâts | toutes les 14 à 18 s (première après 8 à 10 s), si vous êtes entre 5 et 14 blocs, en vue |
 | **Coup** | 3 blocs | **34** dégâts physiques (±10 %) | pause de 1,4 à 2 s |
 
-**Comment lire l'onde de choc :** il s'enracine (plus de recul), rougeoie, et un cercle d'alerte apparaît au sol pendant **1,2 s**. Puis un anneau part de lui et s'élargit jusqu'à 7 blocs en 1,1 s. **Sautez au moment où l'anneau passe sous vous**, ou restez hors de portée.
+**Comment lire ses attaques :** les zones rouges sont celles de la [Tour de l'Alchimiste](../donjons/tour-de-l-alchimiste.md), à la taille exacte du coup ; elles se remplissent pendant toute la préparation.
+
+- **Onde de choc :** il s'enracine, rougeoie, et le cercle rouge de 7 blocs se remplit autour de lui pendant **1,5 s**. Puis un anneau part de lui jusqu'au bord du cercle. **Sautez au moment où l'anneau passe sous vous**, ou sortez du cercle.
+- **Charge :** il baisse la tête et gratte le sol pendant que la ligne rouge se remplit vers vous (**1,5 s**), puis fonce. Sortez de la ligne. Mieux : **placez-vous devant un mur ou un poteau de la grange**, il s'y assomme. Un poteau se **fend** au premier choc et **cède** au second. Devant un vide, il s'arrête au bord sans s'étourdir.
 
 ## Butin
 
@@ -49,4 +53,4 @@ Aussi la cible du [contrat « la Bête de la ferme »](../objets/contrats.md).
 
 ## Conseils
 
-Le [feu purificateur](../objets/feu-purificateur.md) le tient à distance. Ses coups épargnent les autres monstres du Comté : il ne blessera pas les fermiers autour de vous.
+Le [feu purificateur](../objets/feu-purificateur.md) le tient à distance. Attirez sa charge contre un mur ou un poteau, puis frappez-le pendant ses 4 s d'étourdissement : il prend 50 % de dégâts en plus. Ses coups épargnent les autres monstres du Comté : il ne blessera pas les fermiers autour de vous.

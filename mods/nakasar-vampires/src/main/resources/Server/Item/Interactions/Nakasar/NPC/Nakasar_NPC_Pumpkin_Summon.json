@@ -1,5 +1,5 @@
 {
-  "$Comment": "Invocation des vrilles : la citrouille s'agite, le sol se fend autour d'elle et des vrilles combattantes (Nakasar_Pumpkin_Vine) sortent de terre entre 3 et 7 blocs d'elle et à au moins 2,5 blocs l'une de l'autre, une vague de 5 au plus vivantes à la fois (Nakasar_SummonMinions). Tant qu'il en reste, la citrouille est invulnérable (MinionShieldSystem).",
+  "$Comment": "Invocation des vrilles : la citrouille s'agite et le sol bouillonne pendant 1 s là où chaque vrille va sortir (Nakasar_Ground_Bubbles), n'importe où dans le champ entre 3 et 11 blocs d'elle et à au moins 2,5 blocs l'une de l'autre ; puis les vrilles combattantes (Nakasar_Pumpkin_Vine) sortent de terre, une vague de 5 au plus vivantes à la fois (Nakasar_SummonMinions). Un lien vert va de chaque vrille à la citrouille : tant qu'il en reste, elle est invulnérable et brille d'un halo doré (MinionShieldSystem).",
   "Type": "Serial",
   "Interactions": [
     {
@@ -56,8 +56,11 @@
         "Count": 5,
         "MaxAlive": 5,
         "MinDistance": 3,
-        "MaxDistance": 7,
-        "MinSpacing": 2.5
+        "MaxDistance": 11,
+        "MinSpacing": 2.5,
+        "Delay": 1,
+        "DelayParticle": "Nakasar_Ground_Bubbles",
+        "TetherParticle": "Nakasar_Tether_Vine"
       }
     },
     {

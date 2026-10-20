@@ -1,5 +1,5 @@
 {
-  "$Comment": "Piège de vrilles, annoncé comme les boss du donjon gobelin : la citrouille rougeoie et une zone rouge de 6.5 blocs se charge autour d'elle pendant 2,2 s. Tout ennemi encore dedans à la fin est retenu par une vrille à ses pieds (Nakasar_RootTrap) : il reste immobilisé jusqu'à ce que la vrille (12 PV) soit détruite, 10 s au plus : la recharge du piège (14 à 18 s) laisse toujours un moment pour s'éloigner.",
+  "$Comment": "Piège de vrilles, annoncé comme les attaques de la Tour : la citrouille rougeoie et le cercle rouge de la Tour (6,5 blocs) se remplit autour d'elle pendant 2,2 s. Tout ennemi encore dedans à la fin est retenu par une vrille à ses pieds (Nakasar_RootTrap) : il reste immobilisé jusqu'à ce que la vrille (12 PV) soit détruite, 10 s au plus : la recharge du piège (14 à 18 s) laisse toujours un moment pour s'éloigner.",
   "Type": "Serial",
   "Interactions": [
     {
@@ -24,7 +24,7 @@
         "WorldSoundEventId": "SFX_Spirit_Root_Alerted",
         "Particles": [
           {
-            "SystemId": "Feastmaster_Slam_Warning",
+            "SystemId": "Nakasar_Warning_22",
             "TargetEntityPart": "Entity",
             "TargetNodeName": "Origin",
             "Scale": 4.42,

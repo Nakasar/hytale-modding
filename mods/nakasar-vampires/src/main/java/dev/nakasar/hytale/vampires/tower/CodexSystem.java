@@ -36,6 +36,7 @@ import com.hypixel.hytale.server.npc.NPCPlugin;
 import com.hypixel.hytale.server.npc.entities.NPCEntity;
 import com.hypixel.hytale.server.npc.role.support.StateSupport;
 import dev.nakasar.hytale.vampires.VampiresPlugin;
+import dev.nakasar.hytale.vampires.telegraph.Telegraphs;
 import it.unimi.dsi.fastutil.Pair;
 import org.joml.Vector3d;
 
@@ -72,7 +73,7 @@ import java.util.concurrent.ThreadLocalRandom;
  *   disparaît et le volume de son sort reçoit {@code Cast = On} : il annonce sa zone au sol puis frappe.</li>
  *   <li><b>Effondrement</b> : en dernière phase, un rayonnage (volume {@code Codex_Collapse_i}, dans un ordre
  *   aléatoire) s'écroule toutes les {@value #COLLAPSE_INTERVAL} s ; un cône rouge se charge du mur vers le centre sur
- *   son pan ({@link TowerFx.Sweep}), puis le pan se remplit de gravats.</li>
+ *   son pan ({@link Telegraphs.Sweep}), puis le pan se remplit de gravats.</li>
  *   <li><b>Groupe</b> : à l'engagement, sa vie est adaptée au nombre de joueurs dans l'arène ({@link GroupHealth}).</li>
  *   <li><b>Remise à zéro</b> : plus aucun joueur dans l'arène pendant {@value #RESET_SECONDS} s alors que le Codex est
  *   engagé (groupe mort ou parti) : gravats retirés ({@code Codex_Arena Reset = On}), livres, tourbillons et flaques
@@ -201,7 +202,7 @@ public final class CodexSystem extends TickingSystem<EntityStore> {
     private static final class Fight {
         final List<Chapter> chapters = new ArrayList<>();
         final List<InkLine> inkLines = new ArrayList<>();
-        final List<TowerFx.Sweep> cones = new ArrayList<>();
+        final List<Telegraphs.Sweep> cones = new ArrayList<>();
         long nextLecternGlow;
         final List<Strike> strikes = new ArrayList<>();
         final List<Pool> pools = new ArrayList<>();
@@ -417,7 +418,7 @@ public final class CodexSystem extends TickingSystem<EntityStore> {
                 double[] arc = TowerLayout.CODEX_COLLAPSE_ARCS[sector];
                 double[] radii = TowerLayout.CODEX_COLLAPSE_RADII;
                 // Du mur (le rayonnage) vers le centre : la zone qui va se couvrir de gravats.
-                fight.cones.add(TowerFx.Sweep.arc(TowerLayout.CODEX_CENTER, arc[0], arc[1], radii[1], radii[0], now,
+                fight.cones.add(Telegraphs.Sweep.arc(TowerLayout.CODEX_CENTER, arc[0], arc[1], radii[1], radii[0], now,
                         TowerLayout.CODEX_COLLAPSE_WARN));
                 fight.nextCollapse = now + seconds(COLLAPSE_INTERVAL);
             }

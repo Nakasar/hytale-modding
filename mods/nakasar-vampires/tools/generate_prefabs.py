@@ -529,6 +529,15 @@ SPAWN_ARMOR = "Nakasar_Spawner_Enchanted_Armor"
 SPAWN_SPECTRE = "Nakasar_Spawner_Spectre"
 # Sol de cellule : le Capitaine y téléporte sa cible (le plugin cherche la plus proche).
 PRISON_CELL = "Nakasar_Prison_Cell"
+# Décor des combats d'élites (plugin, arena.ArenaBlocks) : porte de cellule (10 coups, le reste de la cellule est
+# indestructible) et levier qui l'ouvre, cloche d'alarme du Capitaine, lanternes-citrouilles qu'on renverse sur les
+# vrilles, alcôves d'où sortent les rouages de l'armure, braseros éteints que l'on allume contre le Spectre.
+CELL_DOOR = "Nakasar_Cell_Door"
+LEVER = "Deco_Lever"
+ALARM_BELL = "Nakasar_Alarm_Bell"
+PUMPKIN_LANTERN = "Nakasar_Pumpkin_Lantern"
+GEAR_ALCOVE = "Nakasar_Gear_Alcove"
+SPECTRE_BRAZIER = "*Furniture_Human_Ruins_Brazier_State_Definitions_Off"
 
 STONE_WALL = [("Rock_Stone_Brick", 6), ("Rock_Stone_Brick_Mossy", 3), ("Rock_Stone_Cobble", 1), ("Rock_Stone_Cobble_Mossy", 1)]
 STONE_FLOOR = [("Rock_Stone_Brick_Smooth", 4), ("Rock_Stone_Cobble", 2), ("Rock_Stone_Cobble_Mossy", 1)]
@@ -927,7 +936,11 @@ def giant_clearing(p, radius=GIANT_CLEARING):
                 p.set(x, -1, z, p.pick(ROTTEN_SOIL))
                 p.set(x, -2, z, "Soil_Dirt")
     spawners(p, SPAWN_GIANT_PUMPKIN, [(0, 0)])
-    near_center = lambda x, z: x * x + z * z <= 4
+    # quatre lanternes-citrouilles en diagonale : un coup les renverse et enflamme le sol (3 blocs) sous les vrilles
+    lanterns = [(sx * 4, sz * 4) for sx in (-1, 1) for sz in (-1, 1)]
+    for lx, lz in lanterns:
+        p.set(lx, 0, lz, PUMPKIN_LANTERN)
+    near_center = lambda x, z: x * x + z * z <= 4 or any(abs(x - lx) <= 1 and abs(z - lz) <= 1 for lx, lz in lanterns)
     for _ in range(30):
         a = r.random() * 2 * math.pi
         d = radius - 1.5 + r.random() * 2.5
@@ -1083,6 +1096,24 @@ def chapel(p, cx, z0, r, theme):
     p.scatter(x0 + 1, 0, z0 + 3, x1 - 1, tz0 - 1, 4, BONES if theme == "undead" else CANDLES)
 
 
+def spectre_braziers(p, cx, cz, spots):
+    """Quatre braseros éteints autour du Spectre (Kevin, 20 octobre 2026) : les joueurs les allument d'un clic ou
+    d'un coup ; il ne fond ni ne surgit à moins de 5 blocs d'un brasero allumé. Chaque brasero va à la case libre
+    la plus proche de son emplacement (rien dessus sur 3 de haut, du sol dessous)."""
+    placed = 0
+    for dx, dz in spots:
+        for ring in range(3):
+            cells = [(dx + i, dz + j) for i in range(-ring, ring + 1) for j in range(-ring, ring + 1)
+                     if max(abs(i), abs(j)) == ring]
+            spot = next(((x, z) for x, z in cells if all(p.free(cx + x, y, cz + z) for y in range(3))
+                         and p.get(cx + x, -1, cz + z) not in (None, AIR)), None)
+            if spot:
+                p.set(cx + spot[0], 0, cz + spot[1], SPECTRE_BRAZIER)
+                placed += 1
+                break
+    assert placed == len(spots), f"braseros du Spectre : {placed} posés sur {len(spots)}"
+
+
 def cemetery(seed, theme, spectre=False):
     """spectre : le Spectre (élite) hante le croisement des allées (variante Cemeteries/Spectre)."""
     p = Prefab(seed)
@@ -1198,6 +1229,7 @@ def cemetery(seed, theme, spectre=False):
     p.ruin(90, keep_below=1, names={"Rock_Stone_Brick", "Rock_Stone_Brick_Mossy", "Rock_Stone_Cobble", "Rock_Stone_Cobble_Mossy"})
     if spectre:
         spawners(p, SPAWN_SPECTRE, [(0, cross_z)])
+        spectre_braziers(p, 0, cross_z, [(-7, -5), (7, -5), (-7, 5), (7, 5)])
     return p
 
 
@@ -1205,24 +1237,50 @@ def cemetery(seed, theme, spectre=False):
 
 def crypt(seed, material, guarded=False):
     """Mausolée en surface et salle voûtée enterrée au nord, reliés par un escalier. guarded : l'armure enchantée
-    (élite, 3,7 blocs de haut sous une voûte de 4) garde le fond de la salle (variante Crypts/Guarded)."""
+    (élite, 3,7 blocs de haut) garde une salle agrandie (variante Crypts/Guarded, Kevin le 20 octobre 2026) :
+    21 × 19 blocs, voûte de 6, quatre gros piliers et quatre sarcophages de 2 blocs de haut derrière lesquels on
+    s'abrite de son brasier bleu (Nakasar_Telegraph, Cover : ligne à 1,2 bloc du sol), et quatre alcôves
+    (GEAR_ALCOVE) d'où sortent ses rouages."""
     p = Prefab(seed)
     r = p.rng
     wall, flr, brick, ornate, half = MATERIALS[material]
-    depth = 7
-    # salle enterrée : sol à y = -depth - 1, voûte à y = -depth + 4 (sous la couche de terre)
+    depth = 9 if guarded else 7
+    # salle enterrée : sol à y = -depth - 1, voûte sous la couche de terre ; l'escalier avance de 2 blocs par
+    # bloc de descente depuis z = 2 et débouche en z = 2 - 2 × depth
     cy0 = -depth - 1
-    cx0, cx1, cz0, cz1 = -6, 6, -23, -12
+    vault = 6 if guarded else 4
+    cz1 = 2 - 2 * depth
+    cx0, cx1, cz0 = (-10, 10, cz1 - 18) if guarded else (-6, 6, cz1 - 11)
     for x in range(cx0 - 1, cx1 + 2):
-        for y in range(cy0, cy0 + 6):
+        for y in range(cy0, cy0 + vault + 2):
             for z in range(cz0 - 1, cz1 + 2):
                 p.set(x, y, z, p.pick(wall))
     p.floor(cx0, cz0, cx1, cz1, cy0, flr)
-    p.clear(cx0, cy0 + 1, cz0, cx1, cy0 + 4, cz1)
-    for px in (cx0 + 3, cx1 - 3):
-        for pz in (cz0 + 3, cz1 - 3):
-            p.fill(px, cy0 + 1, pz, px, cy0 + 4, pz, ornate)
-            p.set(px + (1 if px < 0 else -1), cy0 + 1, pz, "Furniture_Temple_Dark_Brazier")
+    p.clear(cx0, cy0 + 1, cz0, cx1, cy0 + vault, cz1)
+    if guarded:
+        zmid = (cz0 + cz1) // 2
+        for px in (-6, 5):
+            for pz in (cz0 + 5, cz1 - 5):
+                p.fill(px, cy0 + 1, pz, px + 1, cy0 + vault, pz + 1, ornate)
+                p.set(px + (2 if px > 0 else -1), cy0 + 1, pz, "Furniture_Temple_Dark_Brazier")
+        # sarcophages : deux blocs de long, deux de haut (le premier rang de pierre ne couvre pas un joueur)
+        for sx, sz in ((-3, zmid - 3), (2, zmid - 3), (-3, zmid + 4), (2, zmid + 4)):
+            p.fill(sx, cy0 + 1, sz, sx + 1, cy0 + 1, sz, ornate)
+            p.fill(sx, cy0 + 2, sz, sx + 1, cy0 + 2, sz, brick)
+            p.set(sx + r.randint(0, 1), cy0 + 3, sz, p.pick(CANDLES))
+        # alcôves des rouages : niche encadrée de deux colonnes contre le mur, bloc d'apparition au fond
+        alcoves = [(cx0, zmid, 0, 1), (cx1, zmid, 0, 1), (-5, cz0, 1, 0), (5, cz0, 1, 0)]
+        for ax, az, ux, uz in alcoves:
+            for k in (-1, 1):
+                p.fill(ax + ux * k, cy0 + 1, az + uz * k, ax + ux * k, cy0 + 3, az + uz * k, ornate)
+            p.set(ax, cy0 + 4, az, brick)
+            p.set(ax, cy0 + 1, az, GEAR_ALCOVE)
+            p.set(ax, cy0 + 3, az, "Deco_Lantern_Ceiling")
+    else:
+        for px in (cx0 + 3, cx1 - 3):
+            for pz in (cz0 + 3, cz1 - 3):
+                p.fill(px, cy0 + 1, pz, px, cy0 + 4, pz, ornate)
+                p.set(px + (1 if px < 0 else -1), cy0 + 1, pz, "Furniture_Temple_Dark_Brazier")
     # mausolée 9 x 11
     x0, x1, z0, z1 = -4, 4, -5, 5
     p.floor(x0 - 1, z0 - 1, x1 + 1, z1 + 1, -1, flr, FOUNDATION, depth=2)
@@ -1249,6 +1307,8 @@ def crypt(seed, material, guarded=False):
     stairs_down(p, (-1, 2), (0, -1), depth, brick, half, wall, width=3)
     # cercueils le long des murs, coffre au fond, os et toiles
     for z in range(cz0 + 1, cz1, 3):
+        if guarded and abs(z - (cz0 + cz1) // 2) <= 1:
+            continue   # alcôve des rouages
         p.set(cx0 + 1, cy0 + 1, z, r.choice(["Furniture_Ancient_Coffin", "Furniture_Temple_Dark_Coffin", "Furniture_Human_Ruins_Coffin"]), EAST)
         p.set(cx1 - 1, cy0 + 1, z, r.choice(["Furniture_Ancient_Coffin", "Furniture_Temple_Dark_Coffin", "Furniture_Village_Coffin"]), WEST)
     p.chest(0, cy0 + 1, cz0 + 1, "Furniture_Temple_Dark_Chest_Large", SOUTH, LOOT_CRYPT)
@@ -1261,13 +1321,14 @@ def crypt(seed, material, guarded=False):
     p.scatter(cx0 + 1, cy0 + 1, cz0 + 1, cx1 - 1, cz1 - 1, 4, [("Rock_Crystal_Purple_Small", 1)])
     for _ in range(14):
         x, z = r.randint(cx0, cx1), r.randint(cz0, cz1)
-        if p.get(x, cy0 + 4, z) == AIR:
-            p.set(x, cy0 + 4, z, p.pick(WEBS))
+        if p.get(x, cy0 + vault, z) == AIR:
+            p.set(x, cy0 + vault, z, p.pick(WEBS))
     if guarded:
         # Le marqueur ne fait apparaître l'armure (1,7 x 3,7 blocs) que si sa boîte ne touche aucun bloc : ni os,
         # ni bougie, ni toile autour d'elle, sur toute la hauteur de la salle.
-        p.clear(-1, cy0 + 1, cz0 + 4, 1, cy0 + 4, cz0 + 6)
-        p.set(0, cy0 + 1, cz0 + 5, SPAWN_ARMOR)
+        ay = (cz0 + cz1) // 2
+        p.clear(-1, cy0 + 1, ay - 1, 1, cy0 + vault, ay + 1)
+        p.set(0, cy0 + 1, ay, SPAWN_ARMOR)
     # tombes, braseros et citrouilles devant l'entrée
     for x in (-4, 4):
         p.set(x, 0, z1 + 3, "Furniture_Village_Tombstone", SOUTH)
@@ -1448,6 +1509,7 @@ def haunted_castle(seed, material, spectre=False):
     p.ruin(78, keep_below=1, names={n for n, _ in wall})
     if spectre:
         spawners(p, SPAWN_SPECTRE, [(0, 4)])
+        spectre_braziers(p, 0, 4, [(-7, -3), (7, -3), (-6, 7), (6, 7)])
     return p
 
 
@@ -2490,6 +2552,12 @@ def farm(seed, variant):
                 p.set(*pos, AIR)
         p.scatter(-X + 2, 0, -Z + 2, X - 2, Z - 2, 30, [("Deco_Trash_Pile_Small", 2), ("Soil_Ash", 2), ("Wood_Burnt_Branch_Short", 1)], rot=0)
         p.scatter(-20, 0, -17, 18, -9, 4, [("Deco_Fire", 1)], rot=0)   # braises encore rouges dans les décombres
+    # poteaux porteurs de la grange, hors du passage de la porte (x 10 à 14) : l'Abomination qui charge s'y assomme
+    # (un poteau se fend au premier choc, cède au second) ; posés après les ruines pour rester entiers
+    post = "Wood_Burnt_Trunk" if burnt else f"{wood}_Beam"
+    for bx, bz in ((8, -17), (17, -17), (8, -13), (17, -13)):
+        p.clear(bx, 0, bz, bx, BARN_WALL - 1, bz)
+        p.fill(bx, 0, bz, bx, BARN_WALL - 1, bz, post, UPRIGHT)
     # passage de la grange, après tout le décor (ruines, éboulis, braises) : deux rangs dedans, la porte, trois dehors
     p.clear(10, 0, -12, 14, BARN_DOOR_HEIGHT - 1, -7)
     return p
@@ -2498,9 +2566,11 @@ def farm(seed, variant):
 PRISON_DECO = ["Deco_Bone_Pile", "Deco_Bucket", "Ingredient_Hay"]
 
 
-def prison_cells(p, x0, z0, count=3, door="Furniture_Temple_Dark_Door"):
+def prison_cells(p, x0, z0, count=3):
     """Rangée de cellules le long de z : intérieur 2 × 2 (x0 + 1..x0 + 2), barreaux et porte côté ouest
-    (x0), mur du fond en x0 + 3. Le bloc PRISON_CELL au sol de chaque cellule sert au Capitaine."""
+    (x0), mur du fond en x0 + 3. Le bloc PRISON_CELL au sol de chaque cellule sert au Capitaine. La porte
+    (CELL_DOOR, deux blocs) cède au bout de 10 coups ; le levier dehors, contre le mur entre deux cellules,
+    l'ouvre quelques secondes."""
     zs = []
     for i in range(count):
         cz = z0 + 3 * i
@@ -2512,16 +2582,22 @@ def prison_cells(p, x0, z0, count=3, door="Furniture_Temple_Dark_Door"):
                 p.fill(x, 0, z, x, 3, z, p.pick(STONE_WALL))
         p.fill(x0 + 1, 3, cz, x0 + 2, 3, cz + 1, "Rock_Stone_Brick")
         p.clear(x0 + 1, 0, cz, x0 + 2, 2, cz + 1)
-        p.set(x0, 0, cz, door, 1)
-        p.set(x0, 1, cz, AIR)
+        p.set(x0, 0, cz, CELL_DOOR, 1)
+        p.set(x0, 1, cz, CELL_DOOR, 1)
         p.fill(x0, 0, cz + 1, x0, 2, cz + 1, "Deco_Iron_Bars")
         p.set(x0, 2, cz, "Deco_Iron_Bars")
         p.set(x0, 3, cz, "Rock_Stone_Brick")
         p.set(x0, 3, cz + 1, "Rock_Stone_Brick")
         p.set(x0 + 2, 0, cz + 1, p.rng.choice(PRISON_DECO))
-        p.set(x0 + 2, 0, cz, PRISON_CELL)  # fond de cellule : la porte balaie x0 + 1
+        p.set(x0 + 2, 0, cz, PRISON_CELL)  # fond de cellule
         p.set(x0 + 2, 2, cz, "Deco_Iron_Chains_Vertical")
         zs.append(cz)
+    # leviers posés après toutes les cellules : dehors, au pied du mur, à moins de 3 blocs de leur porte et à plus
+    # de 3 de la voisine (le plugin ouvre la porte la plus proche dans ce rayon)
+    for cz in zs:
+        spot = next(((x0 - 1, lz) for lz in (cz - 1, cz + 2) if all(p.free(x0 - 1, y, lz) for y in range(2))), None)
+        assert spot, f"pas de place pour le levier de la cellule ({x0}, {cz})"
+        p.set(spot[0], 0, spot[1], LEVER, WEST)
     return zs
 
 
@@ -2628,6 +2704,9 @@ def guard_post(seed, variant):
     p.set(14, 0, 14, "Ingredient_Hay")
     # variantes
     if variant == "garrison":
+        # cloche d'alarme dans la cour, en vue de l'entrée : abattue avant (5 coups), le Capitaine n'a pas de renforts
+        p.clear(-7, 0, 10, -7, 2, 10)
+        p.set(-7, 0, 10, ALARM_BELL, SOUTH)
         spawners(p, SPAWN_CAPTAIN, [(0, 0)])
         spawners(p, SPAWN_GUARD, [(0, 13), (-6, -7), (10, -6), (9, 2), (-S + 1, -S + 4), (-13, 1)])
     elif variant == "rebels":

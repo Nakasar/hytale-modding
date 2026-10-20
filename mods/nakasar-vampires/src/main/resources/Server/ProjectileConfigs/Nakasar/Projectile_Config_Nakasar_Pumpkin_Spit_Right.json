@@ -1,0 +1,9 @@
+{
+  "$Comment": "Crachat de côté de l'éventail de la citrouille géante (20° à droite ; Yaw en radians).",
+  "Parent": "Projectile_Config_Nakasar_Pumpkin_Spit",
+  "SpawnRotationOffset": {
+    "Yaw": -0.35,
+    "Pitch": 0,
+    "Roll": 0
+  }
+}

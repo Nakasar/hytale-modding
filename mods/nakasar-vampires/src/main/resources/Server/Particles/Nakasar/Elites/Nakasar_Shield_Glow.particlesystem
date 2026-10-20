@@ -1,0 +1,18 @@
+{
+  "$Comment": "Halo doré d'une élite protégée par ses serviteurs. Généré par tools/elite_fx.py.",
+  "Spawners": [
+    {
+      "SpawnerId": "Nakasar_Shield_Glow_Halo",
+      "PositionOffset": {
+        "Y": 1.2
+      }
+    },
+    {
+      "SpawnerId": "Nakasar_Shield_Glow_Sparks",
+      "PositionOffset": {
+        "Y": 0.5
+      }
+    }
+  ],
+  "CullDistance": 64
+}

@@ -1,7 +1,7 @@
 # Effets de statut
 
 <Infobox title="Effets de statut" kind="Effet" icon="/jeu/UI/StatusEffects/Nakasar/Spectral_Chains.png">
-<Info label="Effets">12, plus ceux du [joueur vampire](#vampire)</Info>
+<Info label="Effets">14, plus ceux du [joueur vampire](#vampire)</Info>
 <Info label="Immobilisation">[Chaînes spectrales](#chaines-spectrales), [Enraciné](#enracine)</Info>
 <Info label="Ralentissement">[Froid spectral](#froid-spectral), [Vague de froid](#vague-de-froid), [Emprisonné](#emprisonne)</Info>
 <Info label="Dégâts sur la durée">[Flammes bleues](#flammes-bleues), [Poison de citrouille](#poison-de-citrouille)</Info>
@@ -86,6 +86,18 @@ Les effets que le mod applique aux joueurs et aux créatures.
 - **Source :** crachat de la [Citrouille géante](pnj/citrouille-geante.md)
 - **Durée :** 6 s
 - **4 dégâts de poison par seconde**, teinte orange (icône du poison du jeu).
+
+## Élite étourdie {#elite-etourdie}
+
+- **Source :** charge de l'[Abomination zombie](pnj/abomination-zombie.md) qui percute un mur ou un poteau
+- **Durée :** 4 s
+- L'élite reste plantée sur place, des étoiles tournent au-dessus de sa tête, et elle subit **+50 %** de dégâts (physiques, projectiles et élémentaires). C'est le moment de frapper.
+
+## Vertige {#vertige}
+
+- **Source :** tourbillon du [Capitaine de la garde](pnj/capitaine-de-la-garde.md)
+- **Durée :** 2 s
+- Le Capitaine sort de son tourbillon sonné : il ne bouge plus et n'attaque plus pendant 2 s.
 
 ## Effets invisibles
 

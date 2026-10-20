@@ -1,5 +1,5 @@
 {
-  "$Comment": "L'armure enchantée appelle ses rouages : elle lève sa massue, des runes bleues s'allument au sol et jusqu'à trois rouages enchantés (Nakasar_Enchanted_Gear) apparaissent entre 2,5 et 5 blocs d'elle. Chaque rouage vivant lui rend 5 PV par seconde (Nakasar_SummonMinions, HealSummonerPerSecond) : il faut les détruire.",
+  "$Comment": "L'armure enchantée appelle ses rouages : elle lève sa massue, des runes bleues s'allument au sol et jusqu'à trois rouages enchantés (Nakasar_Enchanted_Gear) sortent des alcôves de la crypte (blocs Nakasar_Gear_Alcove ; à défaut, entre 2,5 et 5 blocs d'elle). Un lien bleu va de chaque rouage à l'armure : chaque rouage vivant lui rend 5 PV par seconde (Nakasar_SummonMinions, HealSummonerPerSecond), il faut les détruire.",
   "Type": "Serial",
   "Interactions": [
     {
@@ -44,7 +44,9 @@
         "MinDistance": 2.5,
         "MaxDistance": 5,
         "MinSpacing": 2,
-        "HealSummonerPerSecond": 5
+        "HealSummonerPerSecond": 5,
+        "SpawnBlock": "Nakasar_Gear_Alcove",
+        "TetherParticle": "Nakasar_Tether_Gear"
       }
     },
     {

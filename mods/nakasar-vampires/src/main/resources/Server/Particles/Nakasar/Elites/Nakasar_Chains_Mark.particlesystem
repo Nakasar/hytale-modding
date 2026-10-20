@@ -1,0 +1,12 @@
+{
+  "$Comment": "Chaînes rouges au-dessus d'un joueur que le Capitaine va emprisonner. Généré par tools/elite_fx.py.",
+  "Spawners": [
+    {
+      "SpawnerId": "Nakasar_Chains_Mark_Links",
+      "PositionOffset": {
+        "Y": 0.0
+      }
+    }
+  ],
+  "CullDistance": 64
+}

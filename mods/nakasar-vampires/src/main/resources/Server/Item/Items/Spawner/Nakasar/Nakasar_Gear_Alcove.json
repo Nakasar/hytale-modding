@@ -1,0 +1,13 @@
+{
+  "$Comment": "Bloc invisible et traversable posé dans une alcôve de la crypte : les rouages de l'armure enchantée en sortent (Nakasar_SummonMinions, SpawnBlock).",
+  "TranslationProperties": {
+    "Name": "nakasar_mobs.items.Nakasar_Gear_Alcove.name"
+  },
+  "Quality": "Developer",
+  "MaxStack": 64,
+  "BlockType": {
+    "Material": "Empty",
+    "DrawType": "Empty",
+    "Opacity": "Transparent"
+  }
+}

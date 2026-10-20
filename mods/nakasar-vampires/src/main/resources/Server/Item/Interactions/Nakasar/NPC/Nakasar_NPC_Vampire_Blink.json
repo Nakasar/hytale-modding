@@ -1,0 +1,35 @@
+{
+  "$Comment": "Téléportation du Comte et de la Comtesse quand la cible garde ses distances : une colonne de brume de sang (Nakasar_Blood_Column) marque 0,6 s avant le point où il va surgir, à 1,5-2,5 blocs de la cible, puis il y apparaît.",
+  "Type": "Serial",
+  "Interactions": [
+    {
+      "Type": "Nakasar_Telegraph",
+      "Shape": "Column",
+      "Seconds": 0.6,
+      "Anchor": "Target",
+      "OffsetMin": 1.5,
+      "OffsetMax": 2.5,
+      "TeleportCaster": true,
+      "MarkParticle": "Nakasar_Blood_Column",
+      "MarkInterval": 0.2,
+      "MarkHeight": 0
+    },
+    {
+      "Type": "Simple",
+      "RunTime": 0.6,
+      "Effects": {
+        "Particles": [
+          {
+            "SystemId": "Nakasar_Blood_Drain",
+            "TargetNodeName": "Chest",
+            "Scale": 1.0
+          }
+        ]
+      }
+    },
+    {
+      "Type": "Simple",
+      "RunTime": 0.2
+    }
+  ]
+}

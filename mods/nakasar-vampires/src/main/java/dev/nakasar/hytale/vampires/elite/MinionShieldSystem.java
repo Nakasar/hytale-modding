@@ -54,8 +54,10 @@ public final class MinionShieldSystem extends DamageEventSystem {
      * d'invocation : Nakasar_NPC_Pumpkin_Summon, Nakasar_NPC_Spectre_Summon).
      */
     static final Map<String, SummonMinionsInteraction> SHIELDS = Map.of(
-            "Nakasar_Giant_Pumpkin", SummonMinionsInteraction.preset("Nakasar_Pumpkin_Vine", 5, 5, 3f, 7f, 2.5f),
-            "Nakasar_Spectre", SummonMinionsInteraction.preset("Nakasar_Spectral_Ghost", 3, 3, 2.5f, 5f, 2f));
+            "Nakasar_Giant_Pumpkin", SummonMinionsInteraction.preset("Nakasar_Pumpkin_Vine", 5, 5, 3f, 11f, 2.5f)
+                    .withTether("Nakasar_Tether_Vine").withDelay(1f, "Nakasar_Ground_Bubbles"),
+            "Nakasar_Spectre", SummonMinionsInteraction.preset("Nakasar_Spectral_Ghost", 3, 3, 2.5f, 5f, 2f)
+                    .withTether("Nakasar_Tether_Ghost"));
 
     private static final double LEASH = 20;
 

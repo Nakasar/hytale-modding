@@ -24,6 +24,6 @@ Les anciens cimetières du domaine, clos de grilles, avec leur chapelle et leurs
 | Variante | Ambiance |
 |---|---|
 | **Hanté** | bougies, pétales de sang, champignons luisants, arbres à lanterne |
-| **Spectre** (rare, environ un cimetière sur sept) | comme le cimetière hanté, avec le **[Spectre](../pnj/spectre.md)** (élite) devant la grande croix |
+| **Spectre** (rare, environ un cimetière sur sept) | comme le cimetière hanté, avec le **[Spectre](../pnj/spectre.md)** (élite) devant la grande croix, entre **quatre braseros éteints** à allumer contre lui |
 | **Araignées** | cocons sur les piliers, nappes de toiles au sol, os |
 | **Morts-vivants** | ossements partout, nombreuses tombes ouvertes, champignons luisants verts |

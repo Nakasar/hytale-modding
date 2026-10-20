@@ -16,7 +16,7 @@ Une forteresse abandonnée, aux trois quarts écroulée, où rôdent les monstre
 - **Enceinte** à courtines de 8 blocs avec chemin de ronde crénelé, **4 tours d'angle** de 14 blocs (flèche ou créneaux et brasero), échelles, meurtrières.
 - **Châtelet** au sud, herse relevée.
 - **Donjon** de 13 × 11 sur deux niveaux : grande salle avec longue table, 12 chaises, lustre, bannières et bibliothèques ; à l'étage, une **chambre abandonnée** (lit, armoire, tableau, bougies) où se trouve le coffre.
-- **Cour :** puits couvert, six tombes, arbres morts à toiles, os, champignons luisants. Dans un château sur deux, le **[Spectre](../pnj/spectre.md)** y rôde.
+- **Cour :** puits couvert, six tombes, arbres morts à toiles, os, champignons luisants. Dans un château sur deux, le **[Spectre](../pnj/spectre.md)** y rôde, entre **quatre braseros éteints** à allumer d'un clic ou d'un coup : il ne peut ni piquer ni surgir à moins de 5 blocs d'un brasero allumé.
 
 ## Coffre
 

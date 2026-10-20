@@ -1,0 +1,18 @@
+{
+  "$Comment": "Le sol bouillonne : une vrille va sortir ici. Généré par tools/elite_fx.py.",
+  "Spawners": [
+    {
+      "SpawnerId": "Nakasar_Ground_Bubbles_Disc",
+      "PositionOffset": {
+        "Y": 0.04
+      }
+    },
+    {
+      "SpawnerId": "Nakasar_Ground_Bubbles_Blobs",
+      "PositionOffset": {
+        "Y": 0.1
+      }
+    }
+  ],
+  "CullDistance": 48
+}

@@ -1,0 +1,17 @@
+{
+  "$Comment": "Vertige du Capitaine de la garde après son tourbillon : il reste sur place, sonné, 2 s (IA gelée par dev.nakasar.hytale.vampires.elite.EliteStun). Fenêtre de punition.",
+  "ApplicationEffects": {
+    "Particles": [
+      {
+        "SystemId": "Stunned",
+        "TargetEntityPart": "Self",
+        "PositionOffset": {
+          "Y": 2.4
+        }
+      }
+    ]
+  },
+  "OverlapBehavior": "Overwrite",
+  "Infinite": false,
+  "Duration": 2
+}

@@ -1,5 +1,5 @@
 {
-  "$Comment": "Zombie difforme (élite) des fermes envahies : masse lente, coups écrasants, et une onde de choc annoncée (il s'immobilise, rougeoie, un cercle marque le sol) qu'on évite en sautant ou en s'éloignant. Retourne à sa ferme et regagne sa vie si on fuit à plus de 32 blocs.",
+  "$Comment": "Zombie difforme (élite) des fermes envahies : masse lente, coups écrasants, et une onde de choc annoncée (cercle rouge de 7 blocs, 1,5 s) qu'on évite en sautant ou en s'éloignant, et une charge annoncée (ligne rouge de 12 blocs, 1,5 s) qui l'étourdit 4 s s'il percute un mur ou un poteau. Retourne à sa ferme et regagne sa vie si on fuit à plus de 32 blocs.",
   "Type": "Generic",
   "Appearance": "Nakasar_Zombie_Abomination",
   "NameTranslationKey": "nakasar_mobs.npc.Zombie_Abomination.name",
@@ -76,6 +76,18 @@
           "RestartValueRange": [
             11,
             14
+          ]
+        },
+        {
+          "Type": "TimerStart",
+          "Name": "Charge",
+          "StartValueRange": [
+            8,
+            10
+          ],
+          "RestartValueRange": [
+            14,
+            18
           ]
         }
       ]
@@ -229,6 +241,53 @@
             {
               "Type": "Attack",
               "Attack": "Root_Nakasar_NPC_Abomination_Slam",
+              "SkipAiming": true,
+              "LineOfSight": false,
+              "AvoidFriendlyFire": false
+            }
+          ]
+        },
+        {
+          "$Comment": "Charge annoncée quand la cible est entre 5 et 14 blocs, en vue.",
+          "Sensor": {
+            "Type": "And",
+            "Sensors": [
+              {
+                "Type": "Target",
+                "Range": 14,
+                "Filters": [
+                  {
+                    "Type": "LineOfSight"
+                  }
+                ]
+              },
+              {
+                "Type": "Not",
+                "Sensor": {
+                  "Type": "Target",
+                  "Range": 5
+                }
+              },
+              {
+                "Type": "Timer",
+                "Name": "Charge",
+                "State": "STOPPED"
+              }
+            ]
+          },
+          "HeadMotion": {
+            "Type": "Aim",
+            "RelativeTurnSpeed": 1.2
+          },
+          "ActionsBlocking": true,
+          "Actions": [
+            {
+              "Type": "TimerRestart",
+              "Name": "Charge"
+            },
+            {
+              "Type": "Attack",
+              "Attack": "Root_Nakasar_NPC_Abomination_Charge",
               "SkipAiming": true,
               "LineOfSight": false,
               "AvoidFriendlyFire": false

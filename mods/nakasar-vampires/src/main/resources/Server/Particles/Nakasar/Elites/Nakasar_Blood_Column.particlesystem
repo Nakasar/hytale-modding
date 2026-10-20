@@ -1,0 +1,12 @@
+{
+  "$Comment": "Colonne de brume de sang : le Comte ou la Comtesse va surgir ici. Généré par tools/elite_fx.py.",
+  "Spawners": [
+    {
+      "SpawnerId": "Nakasar_Blood_Column_Mist",
+      "PositionOffset": {
+        "Y": 0.0
+      }
+    }
+  ],
+  "CullDistance": 64
+}

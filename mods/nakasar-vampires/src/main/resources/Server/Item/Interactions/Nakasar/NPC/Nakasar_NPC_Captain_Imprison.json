@@ -1,5 +1,5 @@
 {
-  "$Comment": "Emprisonnement du Capitaine, annoncé (longue recharge) : 1,5 s de préparation (il tend la main, lueur rouge, flèches au sol vers sa cible), puis un trait de 18 blocs dans l'axe de son regard. Le premier joueur touché est envoyé dans la cellule (bloc Nakasar_Prison_Cell) la plus proche du Capitaine. On l'évite en sortant de sa ligne de visée.",
+  "$Comment": "Emprisonnement du Capitaine (longue recharge), imparable : il tend la main 1,5 s et des chaînes rouges apparaissent au-dessus de sa cible (Nakasar_Chains_Mark), qui est ensuite envoyée dans la cellule (bloc Nakasar_Prison_Cell) la plus proche du Capitaine, à moins de 24 blocs, où qu'elle soit. Un levier à l'extérieur de la cellule ouvre la porte ; la porte cède aussi au bout de 10 coups. Sans cellule, le joueur est seulement ralenti.",
   "Type": "Serial",
   "Interactions": [
     {
@@ -16,24 +16,25 @@
       "EffectId": "Dungeon_Goblin_Mace_Slam_Charge"
     },
     {
+      "Type": "Nakasar_Telegraph",
+      "Shape": "Mark",
+      "Anchor": "Target",
+      "Seconds": 1.5,
+      "Imprison": true,
+      "CellRadius": 24,
+      "EffectId": "Nakasar_Imprisoned",
+      "EffectDuration": 5,
+      "MarkParticle": "Nakasar_Chains_Mark",
+      "MarkInterval": 0.3,
+      "MarkHeight": 2.6,
+      "ImpactSound": "SFX_Goblin_Mace_Club_Slam_Impact"
+    },
+    {
       "Type": "Simple",
       "RunTime": 1.5,
       "Effects": {
         "ItemPlayerAnimationsId": "Skeleton_Battleaxe",
         "ItemAnimationId": "CastLeftCharging",
-        "Particles": [
-          {
-            "SystemId": "Indicator_Chevron3",
-            "TargetEntityPart": "Entity",
-            "TargetNodeName": "Origin",
-            "Scale": 0.5,
-            "PositionOffset": {
-              "X": 0,
-              "Y": 0.1,
-              "Z": 2.0
-            }
-          }
-        ],
         "WorldSoundEventId": "SFX_Goblin_Mace_VO_Club_Slam_Charge"
       }
     },
@@ -44,34 +45,6 @@
         "ItemPlayerAnimationsId": "Skeleton_Battleaxe",
         "ItemAnimationId": "CastLeft"
       }
-    },
-    {
-      "Type": "Selector",
-      "RunTime": 0.1,
-      "Selector": {
-        "Id": "Stab",
-        "StartDistance": 0,
-        "EndDistance": 18,
-        "ExtendTop": 0.6,
-        "ExtendBottom": 0.6,
-        "ExtendLeft": 0.6,
-        "ExtendRight": 0.6,
-        "TestLineOfSight": true
-      },
-      "HitEntityRules": [
-        {
-          "Matchers": [
-            {
-              "Type": "Player"
-            }
-          ],
-          "Next": {
-            "Interactions": [
-              "Nakasar_NPC_Captain_Imprison_Hit"
-            ]
-          }
-        }
-      ]
     },
     {
       "Type": "Simple",

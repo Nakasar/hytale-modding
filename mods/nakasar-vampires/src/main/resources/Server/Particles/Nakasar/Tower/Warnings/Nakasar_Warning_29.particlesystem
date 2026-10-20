@@ -1,0 +1,19 @@
+{
+  "$Comment": "Zone d'annonce de 2.9 s : contour rouge et disque qui se remplit jusqu'au coup. G\u00e9n\u00e9r\u00e9 par tools/tower_warnings.py.",
+  "Spawners": [
+    {
+      "SpawnerId": "Nakasar_Warning_29_Edge",
+      "PositionOffset": {
+        "Y": 0.03
+      }
+    },
+    {
+      "SpawnerId": "Nakasar_Warning_29_Fill",
+      "PositionOffset": {
+        "Y": 0.02
+      }
+    }
+  ],
+  "CullDistance": 96,
+  "IsImportant": true
+}

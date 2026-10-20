@@ -1,0 +1,18 @@
+{
+  "$Comment": "Sol en feu d'une lanterne-citrouille renversée (3 blocs de rayon). Généré par tools/elite_fx.py.",
+  "Spawners": [
+    {
+      "SpawnerId": "Nakasar_Ground_Fire_Flames",
+      "PositionOffset": {
+        "Y": 0.1
+      }
+    },
+    {
+      "SpawnerId": "Nakasar_Ground_Fire_Glow",
+      "PositionOffset": {
+        "Y": 0.04
+      }
+    }
+  ],
+  "CullDistance": 64
+}

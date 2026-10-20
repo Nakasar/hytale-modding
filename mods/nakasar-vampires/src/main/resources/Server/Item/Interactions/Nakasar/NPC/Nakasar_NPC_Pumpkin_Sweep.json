@@ -1,5 +1,5 @@
 {
-  "$Comment": "Balayage circulaire d'une vrille combattante de la citrouille géante : la vrille rougeoie et une zone rouge de 3,5 blocs marque le sol pendant 1,2 s, puis elle fouette tout autour d'elle (20 dégâts, projection). On l'évite en sortant de la zone.",
+  "$Comment": "Balayage circulaire d'une vrille combattante de la citrouille géante : la vrille rougeoie et le cercle rouge de la Tour (3,5 blocs) se remplit au sol pendant 1,2 s, puis elle fouette tout autour d'elle (20 dégâts, projection). On l'évite en sortant de la zone.",
   "Type": "Serial",
   "Interactions": [
     {
@@ -24,7 +24,7 @@
         "WorldSoundEventId": "SFX_Bramble_MoveIn",
         "Particles": [
           {
-            "SystemId": "Feastmaster_Slam_Warning",
+            "SystemId": "Nakasar_Warning_12",
             "TargetEntityPart": "Entity",
             "TargetNodeName": "Origin",
             "Scale": 2.38,

@@ -1,5 +1,5 @@
 {
-  "$Comment": "Tourbillon du Capitaine, annoncé : 1,3 s de préparation (lueur rouge, cercle d'alerte autour de lui), puis il tourne sur lui-même et frappe tout à 4 blocs à la ronde. On l'évite en reculant.",
+  "$Comment": "Tourbillon du Capitaine, annoncé : il se ramasse 1,5 s pendant qu'un cercle rouge de 4 blocs se remplit autour de lui, puis tourne sur lui-même et frappe tout dans le cercle (32 dégâts, projection). Il en sort étourdi 2 s (Nakasar_Elite_Dazed) : c'est le moment de le frapper.",
   "Type": "Serial",
   "Interactions": [
     {
@@ -17,21 +17,22 @@
     },
     {
       "Type": "Simple",
-      "RunTime": 1.3,
+      "RunTime": 1.5,
       "Effects": {
         "ItemPlayerAnimationsId": "Skeleton_Battleaxe",
         "ItemAnimationId": "WhirlwindCharging",
         "Particles": [
           {
-            "SystemId": "Feastmaster_Slam_Warning",
+            "SystemId": "Nakasar_Warning_15",
             "TargetEntityPart": "Entity",
             "TargetNodeName": "Origin",
-            "Scale": 0.3,
+            "Scale": 2.72,
             "PositionOffset": {
               "X": 0,
               "Y": 0.1,
-              "Z": 0.0
-            }
+              "Z": 0
+            },
+            "DetachedFromModel": true
           }
         ],
         "WorldSoundEventId": "SFX_Goblin_Mace_VO_Club_Slam_Charge"
@@ -90,7 +91,16 @@
     },
     {
       "Type": "Simple",
-      "RunTime": 0.6
+      "RunTime": 0.2
+    },
+    {
+      "Type": "Nakasar_StunSelf",
+      "Seconds": 2,
+      "EffectId": "Nakasar_Elite_Dazed"
+    },
+    {
+      "Type": "Simple",
+      "RunTime": 0.3
     }
   ]
 }

@@ -1,0 +1,49 @@
+{
+  "$Comment": "Seconde moitié du Spectre (sous 50 % de vie) : bourrasque glacée annoncée sur le brasero allumé le plus proche. Un cercle rouge de 3 blocs se charge 1,5 s autour du brasero, puis le vent l'éteint ; ceux qui sont restés dedans prennent 10 dégâts et le gel Nakasar_Spectre_Frost 4 s. Sans brasero allumé, la chaîne échoue.",
+  "Type": "Serial",
+  "Interactions": [
+    {
+      "Type": "ClearEntityEffect",
+      "Entity": "User",
+      "EntityEffectId": "Hit_Interrupt_Eligible"
+    },
+    {
+      "Type": "ApplyEffect",
+      "EffectId": "Nakasar_Elite_Rooted"
+    },
+    {
+      "Type": "Nakasar_Telegraph",
+      "Shape": "Circle",
+      "Seconds": 1.5,
+      "Anchor": "Brazier",
+      "Radius": 3,
+      "Snuff": true,
+      "Damage": 10,
+      "EffectId": "Nakasar_Spectre_Frost",
+      "EffectDuration": 4,
+      "HitParticle": "Impact_Ice",
+      "ImpactParticle": "Ice_Blast",
+      "ImpactParticleScale": 1.2,
+      "ImpactSound": "SFX_Goblin_Feastmaster_Slam"
+    },
+    {
+      "Type": "Simple",
+      "RunTime": 1.5,
+      "Effects": {
+        "ItemAnimationId": "SwingDown",
+        "WorldSoundEventId": "SFX_Spirit_Root_Alerted",
+        "Particles": [
+          {
+            "SystemId": "Ice_Staff_Charging",
+            "TargetNodeName": "Chest",
+            "Scale": 1.5
+          }
+        ]
+      }
+    },
+    {
+      "Type": "Simple",
+      "RunTime": 0.4
+    }
+  ]
+}

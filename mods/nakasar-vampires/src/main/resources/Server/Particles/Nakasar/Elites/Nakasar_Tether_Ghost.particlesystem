@@ -1,0 +1,12 @@
+{
+  "$Comment": "Point d'un lien entre un serviteur (Ghost) et son élite. Généré par tools/elite_fx.py.",
+  "Spawners": [
+    {
+      "SpawnerId": "Nakasar_Tether_Ghost_Dot",
+      "PositionOffset": {
+        "Y": 0.0
+      }
+    }
+  ],
+  "CullDistance": 48
+}

@@ -18,6 +18,7 @@ import com.hypixel.hytale.server.core.modules.entitystats.EntityStatMap;
 import com.hypixel.hytale.server.core.modules.entitystats.asset.DefaultEntityStatTypes;
 import com.hypixel.hytale.server.core.modules.interaction.interaction.CooldownHandler;
 import com.hypixel.hytale.server.core.modules.interaction.interaction.config.SimpleInstantInteraction;
+import com.hypixel.hytale.server.core.universe.world.ParticleUtil;
 import com.hypixel.hytale.server.core.universe.world.World;
 import com.hypixel.hytale.server.core.universe.world.npc.INonPlayerCharacter;
 import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
@@ -25,9 +26,12 @@ import com.hypixel.hytale.server.npc.NPCPlugin;
 import com.hypixel.hytale.server.spawning.SpawnTestResult;
 import dev.nakasar.hytale.vampires.VampiresPlugin;
 import it.unimi.dsi.fastutil.Pair;
+import dev.nakasar.hytale.vampires.arena.WorldBlocks;
 import org.joml.Vector3d;
+import org.joml.Vector3i;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -54,9 +58,15 @@ import java.util.concurrent.TimeUnit;
  * détruite) ; il peut aussi faire venir la première vague dès le premier
  * coup reçu ({@link #summonFirstWave}).
  *
+ * <p>Lisibilité (Kevin, 20 octobre 2026) : {@code TetherParticle} trace un lien visible entre chaque serviteur et son
+ * élite (qui protège ou soigne qui) ; avec {@code Delay}, le sol bouillonne ({@code DelayParticle}) à chaque point
+ * d'apparition pendant ce nombre de secondes avant que le serviteur n'en sorte.
+ *
  * <p>Clés JSON : {@code MinionRole} (string, obligatoire), {@code Count} (int, défaut 5), {@code MaxAlive} (int,
  * défaut 5), {@code MinDistance} et {@code MaxDistance} (float, défaut 3 et 7 blocs), {@code MinSpacing} (float,
- * défaut 2,5 blocs), {@code HealSummonerPerSecond} (float, défaut 0).
+ * défaut 2,5 blocs), {@code HealSummonerPerSecond} (float, défaut 0), {@code Delay} (float, défaut 0),
+ * {@code DelayParticle} et {@code TetherParticle} (string, optionnels), {@code SpawnBlock} (string, optionnel : ils
+ * sortent des blocs invisibles de ce type à moins de 16 blocs, les alcôves de la crypte).
  */
 public class SummonMinionsInteraction extends SimpleInstantInteraction {
 
@@ -86,6 +96,18 @@ public class SummonMinionsInteraction extends SimpleInstantInteraction {
             .append(new KeyedCodec<>("HealSummonerPerSecond", Codec.FLOAT), (i, v) -> i.healPerSecond = v, i -> i.healPerSecond)
             .documentation("PV rendus au lanceur chaque seconde par serviteur vivant.")
             .add()
+            .append(new KeyedCodec<>("Delay", Codec.FLOAT), (i, v) -> i.delay = v, i -> i.delay)
+            .documentation("Secondes entre l'annonce au sol (DelayParticle) et l'apparition des serviteurs.")
+            .add()
+            .append(new KeyedCodec<>("DelayParticle", Codec.STRING), (i, v) -> i.delayParticle = v, i -> i.delayParticle)
+            .documentation("Particules jouees a chaque point d'apparition pendant le delai (sol qui bouillonne).")
+            .add()
+            .append(new KeyedCodec<>("SpawnBlock", Codec.STRING), (i, v) -> i.spawnBlock = v, i -> i.spawnBlock)
+            .documentation("Bloc invisible des niches d'ou sortent les serviteurs (alcoves), cherche a 16 blocs ; anneau sinon.")
+            .add()
+            .append(new KeyedCodec<>("TetherParticle", Codec.STRING), (i, v) -> i.tetherParticle = v, i -> i.tetherParticle)
+            .documentation("Particules du lien visible entre chaque serviteur et son elite.")
+            .add()
             .build();
 
     private static final long POLL_MS = 250;
@@ -97,6 +119,13 @@ public class SummonMinionsInteraction extends SimpleInstantInteraction {
     private static final Map<Ref<EntityStore>, List<Ref<EntityStore>>> MINIONS = new ConcurrentHashMap<>();
     /** PV rendus chaque seconde à son élite, par serviteur soigneur (réglage de l'appel qui l'a fait venir). */
     private static final Map<Ref<EntityStore>, Float> HEAL = new ConcurrentHashMap<>();
+    /** Particules du lien de chaque serviteur vers son élite (réglage de l'appel qui l'a fait venir). */
+    private static final Map<Ref<EntityStore>, String> TETHER = new ConcurrentHashMap<>();
+    private static final String SHIELD_GLOW = "Nakasar_Shield_Glow";
+    /** Rayon de recherche des niches ({@code SpawnBlock}). */
+    private static final int NICHE_RADIUS = 16;
+    /** Écart des particules d'un lien (blocs). */
+    private static final double TETHER_STEP = 1.6;
     /** Dernier appel d'invocation par élite depuis son dernier retour au calme (System.nanoTime), réussi ou non. */
     private static final Map<Ref<EntityStore>, Long> LAST_CALL = new ConcurrentHashMap<>();
 
@@ -107,6 +136,10 @@ public class SummonMinionsInteraction extends SimpleInstantInteraction {
     protected float maxDistance = 7f;
     protected float minSpacing = 2.5f;
     protected float healPerSecond = 0f;
+    protected float delay = 0f;
+    protected String delayParticle;
+    protected String tetherParticle;
+    protected String spawnBlock;
 
     public SummonMinionsInteraction() {
     }
@@ -160,6 +193,25 @@ public class SummonMinionsInteraction extends SimpleInstantInteraction {
         world.execute(() -> wave.summon(world, summoner, at));
     }
 
+    /** Fait venir la vague tout de suite autour de `center` (renforts de la cloche d'alarme), hors de l'IA. */
+    public static void summonNow(SummonMinionsInteraction wave, World world, Ref<EntityStore> summoner, Vector3d center) {
+        Vector3d at = new Vector3d(center);
+        world.execute(() -> wave.summon(world, summoner, at));
+    }
+
+    /** Vague réglée en Java avec un lien visible vers l'élite. */
+    public SummonMinionsInteraction withTether(String particle) {
+        this.tetherParticle = particle;
+        return this;
+    }
+
+    /** Vague réglée en Java dont les serviteurs sortent après `seconds` secondes, l'endroit annoncé par `particle`. */
+    public SummonMinionsInteraction withDelay(float seconds, String particle) {
+        this.delay = seconds;
+        this.delayParticle = particle;
+        return this;
+    }
+
     /** Oublie les invocations de l'élite (revenue au calme) : le prochain premier coup relancera une vague. */
     public static void forgetCalls(Ref<EntityStore> summoner) {
         LAST_CALL.remove(summoner);
@@ -206,19 +258,38 @@ public class SummonMinionsInteraction extends SimpleInstantInteraction {
             }
         }
         double start = ThreadLocalRandom.current().nextDouble(Math.PI * 2);
+        if (delay > 0f && delayParticle != null && !delayParticle.isBlank()) {
+            announce(world, store, summoner, center, wanted, start, taken, watched);
+            return;
+        }
         int spawned = 0;
+        List<Vector3i> niches = spawnBlock == null || spawnBlock.isBlank() ? List.of()
+                : WorldBlocks.find(world.getChunkStore(), center, NICHE_RADIUS, List.of(spawnBlock));
+        if (!niches.isEmpty()) {
+            // Ils sortent des niches du décor (alcôves de la crypte), au hasard parmi celles qui sont libres.
+            List<Vector3i> shuffled = new ArrayList<>(niches);
+            Collections.shuffle(shuffled);
+            for (Vector3i niche : shuffled) {
+                double[] spot = {niche.x + 0.5, niche.z + 0.5};
+                if (spawned >= wanted || !free(spot[0], spot[1], taken)) {
+                    continue;
+                }
+                Ref<EntityStore> minion = spawnAt(world, store, new Vector3d(spot[0], niche.y, spot[1]), spot);
+                if (minion != null) {
+                    taken.add(spot);
+                    adopt(store, minions, minion);
+                    spawned++;
+                }
+            }
+            wanted = spawned;
+        }
         // Partagé par les serviteurs de l'appel : une sonde qui échoue partout n'est pas retentée.
         boolean[] probeUsable = {true};
-        for (int i = 0; i < wanted; i++) {
+        for (int i = spawned; i < wanted; i++) {
             // Angles répartis sur le tour (avec un peu de hasard) : les serviteurs encerclent l'élite.
             Ref<EntityStore> minion = spawnOne(world, store, center, start + i * Math.PI * 2 / wanted, taken, probeUsable);
             if (minion != null) {
-                // Jamais sauvegardé : il ne survit pas à son élite ni au déchargement du chunk.
-                store.ensureAndGetComponent(minion, EntityStore.REGISTRY.getNonSerializedComponentType());
-                minions.add(minion);
-                if (healPerSecond > 0f) {
-                    HEAL.put(minion, healPerSecond);
-                }
+                adopt(store, minions, minion);
                 spawned++;
             }
         }
@@ -234,6 +305,84 @@ public class SummonMinionsInteraction extends SimpleInstantInteraction {
         if (!watched) {
             world.scheduleAfter(() -> watch(world, summoner), POLL_MS, TimeUnit.MILLISECONDS);
         }
+    }
+
+    private void adopt(Store<EntityStore> store, List<Ref<EntityStore>> minions, Ref<EntityStore> minion) {
+        // Jamais sauvegardé : il ne survit pas à son élite ni au déchargement du chunk.
+        store.ensureAndGetComponent(minion, EntityStore.REGISTRY.getNonSerializedComponentType());
+        minions.add(minion);
+        if (healPerSecond > 0f) {
+            HEAL.put(minion, healPerSecond);
+        }
+        if (tetherParticle != null && !tetherParticle.isBlank()) {
+            TETHER.put(minion, tetherParticle);
+        }
+    }
+
+    /**
+     * Apparition annoncée : choisit les points, y fait bouillonner le sol ({@code DelayParticle}) pendant
+     * {@code Delay} secondes, puis fait sortir un serviteur de chacun.
+     */
+    private void announce(World world, Store<EntityStore> store, Ref<EntityStore> summoner, Vector3d center, int wanted,
+                          double start, List<double[]> taken, boolean watched) {
+        List<double[]> spots = new ArrayList<>();
+        for (int i = 0; i < wanted; i++) {
+            for (int attempt = 0; attempt < ATTEMPTS_PER_MINION; attempt++) {
+                double[] spot = candidate(center, start + i * Math.PI * 2 / wanted, attempt, maxDistance, taken);
+                if (spot != null) {
+                    taken.add(spot);
+                    spots.add(spot);
+                    break;
+                }
+            }
+        }
+        long pulses = Math.max(1, Math.round(delay / 0.5f));
+        for (long k = 0; k < pulses; k++) {
+            world.scheduleAfter(() -> {
+                Store<EntityStore> s = world.getEntityStore().getStore();
+                for (double[] spot : spots) {
+                    ParticleUtil.spawnParticleEffect(delayParticle, new Vector3d(spot[0], center.y + 0.05, spot[1]), s);
+                }
+            }, k * 500L, TimeUnit.MILLISECONDS);
+        }
+        world.scheduleAfter(() -> {
+            Store<EntityStore> s = world.getEntityStore().getStore();
+            List<Ref<EntityStore>> minions = MINIONS.get(summoner);
+            if (minions == null || !alive(summoner, s)) {
+                return;
+            }
+            int spawned = 0;
+            for (double[] spot : spots) {
+                Ref<EntityStore> minion = spawnAt(world, s, center, spot);
+                if (minion != null && minions.size() < maxAlive) {
+                    adopt(s, minions, minion);
+                    spawned++;
+                } else if (minion != null) {
+                    s.removeEntity(minion, RemoveReason.REMOVE);
+                }
+            }
+            VampiresPlugin.get().getLogger().atInfo().log("%s : %d '%s' sorti(s) du sol, %d vivant(s)", TYPE_ID, spawned, minionRole, minions.size());
+            if (!minions.isEmpty() && MinionShieldSystem.isShielded(summoner, s)) {
+                s.ensureComponent(summoner, Invulnerable.getComponentType());
+            }
+        }, Math.round(delay * 1000), TimeUnit.MILLISECONDS);
+        if (!watched) {
+            world.scheduleAfter(() -> watch(world, summoner), POLL_MS, TimeUnit.MILLISECONDS);
+        }
+    }
+
+    /** Fait apparaître un serviteur au point donné (posé au sol par la sonde, sinon à la hauteur de l'élite). */
+    private Ref<EntityStore> spawnAt(World world, Store<EntityStore> store, Vector3d center, double[] spot) {
+        NPCPlugin npcs = NPCPlugin.get();
+        Ref<EntityStore>[] result = newRefHolder();
+        SpawnTestResult test = npcs.spawnNPCWithColumnProbe(store, minionRole, null, world,
+                MathUtil.floor(spot[0]), MathUtil.floor(spot[1]), center.y, facing(center, spot), (npc, ref, s) -> result[0] = ref);
+        if (test == SpawnTestResult.TEST_OK && result[0] != null) {
+            return result[0];
+        }
+        Pair<Ref<EntityStore>, INonPlayerCharacter> spawned = npcs.spawnNPC(store, minionRole, null,
+                new Vector3d(spot[0], center.y, spot[1]), facing(center, spot));
+        return spawned == null ? null : spawned.first();
     }
 
     /**
@@ -334,6 +483,7 @@ public class SummonMinionsInteraction extends SimpleInstantInteraction {
                 return false;
             }
             HEAL.remove(minion);
+            TETHER.remove(minion);
             return true;
         });
         if (alive(summoner, store)) {
@@ -346,14 +496,24 @@ public class SummonMinionsInteraction extends SimpleInstantInteraction {
                         at.getPosition().z - home.getPosition().z) > LEASH) {
                     it.remove();
                     HEAL.remove(minion);
+                    TETHER.remove(minion);
                     store.removeEntity(minion, RemoveReason.REMOVE);
                     continue;
                 }
                 healing += HEAL.getOrDefault(minion, 0f);
+                String tether = TETHER.get(minion);
+                if (tether != null && home != null && at != null) {
+                    tether(store, tether, at.getPosition(), home.getPosition());
+                }
             }
             heal(store, summoner, healing * POLL_MS / 1000f);
-            if (minions.isEmpty() && MinionShieldSystem.isShielded(summoner, store)) {
-                store.tryRemoveComponent(summoner, Invulnerable.getComponentType());
+            if (MinionShieldSystem.isShielded(summoner, store)) {
+                if (minions.isEmpty()) {
+                    store.tryRemoveComponent(summoner, Invulnerable.getComponentType());
+                } else if (home != null) {
+                    // Halo doré : l'élite est protégée tant que ses serviteurs vivent (liens visibles vers eux).
+                    ParticleUtil.spawnParticleEffect(SHIELD_GLOW, home.getPosition(), store);
+                }
             }
             world.scheduleAfter(() -> watch(world, summoner), POLL_MS, TimeUnit.MILLISECONDS);
             return;
@@ -362,9 +522,20 @@ public class SummonMinionsInteraction extends SimpleInstantInteraction {
         LAST_CALL.remove(summoner);
         for (Ref<EntityStore> minion : minions) {
             HEAL.remove(minion);
+            TETHER.remove(minion);
             if (minion.isValid()) {
                 store.removeEntity(minion, RemoveReason.REMOVE);
             }
+        }
+    }
+
+    /** Lien visible : particules posées de loin en loin entre le serviteur et son élite, à hauteur de torse. */
+    private static void tether(Store<EntityStore> store, String particle, Vector3d from, Vector3d to) {
+        double length = from.distance(to);
+        int n = Math.max(1, (int) Math.ceil(length / TETHER_STEP));
+        for (int k = 1; k < n; k++) {
+            Vector3d p = new Vector3d(from).lerp(to, (double) k / n).add(0, 1.0, 0);
+            ParticleUtil.spawnParticleEffect(particle, p, store);
         }
     }
 
@@ -387,6 +558,7 @@ public class SummonMinionsInteraction extends SimpleInstantInteraction {
     public static void clearAll() {
         MINIONS.clear();
         HEAL.clear();
+        TETHER.clear();
         LAST_CALL.clear();
     }
 }
