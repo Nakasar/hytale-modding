@@ -2,8 +2,16 @@
 
 Mods pour **Hytale** (serveur `0.7.x`, « Update 7 »), développés par Nakasar.
 
-Un seul mod, **Vampires** (`mods/nakasar-vampires`, plugin Java + pack d'assets, artefact
-`Nakasar-Vampires-<version>.jar`) : le domaine du Comte vampire.
+Deux mods, chacun avec son dossier de documentation :
+
+| Mod | Code | Documentation |
+|-----|------|---------------|
+| **Vampires** : le domaine du Comte vampire (plugin Java + pack d'assets, artefact `Nakasar-Vampires-<version>.jar`) | `mods/nakasar-vampires` | [docs/vampires](docs/vampires/) |
+| **Fractales des Brumes** : les fractales de Guild Wars 2 transposées dans Hytale, pour 1 à 5 joueurs (en conception, pas encore de code) | à venir : `mods/nakasar-fractals` | [docs/fractales](docs/fractales/) |
+
+Les notes communes aux deux mods (API serveur, PNJ) restent à la racine de `docs/`.
+
+### Vampires
 
 | Partie | Contenu |
 |--------|---------|
@@ -15,8 +23,15 @@ Un seul mod, **Vampires** (`mods/nakasar-vampires`, plugin Java + pack d'assets,
 | Armes en argent | Version en argent de chaque arme standard, de la lance du mod et des flèches : double dégâts contre les vampires (Comte, Comtesse, rejetons) |
 
 Le guide du joueur (fragment, structures, bestiaire, brèches, objets) est un wiki publié sur GitHub Pages : https://nakasar.github.io/hytale-modding/ (sources Markdown dans [docs/wiki](docs/wiki/README.md), site Docusaurus dans [wiki](wiki/), aperçu local : `cd wiki && npm ci && npm start`).
-Le détail du mod (fichiers, chaînes d'interactions, camps, réglages) est dans [docs/mods.md](docs/mods.md).
-L'histoire et la progression visées (voie des chasseurs, voie occulte, joueur vampire, zones à venir) : [docs/histoire-progression.md](docs/histoire-progression.md).
+Le détail du mod (fichiers, chaînes d'interactions, camps, réglages) est dans [docs/vampires/mods.md](docs/vampires/mods.md).
+L'histoire et la progression visées (voie des chasseurs, voie occulte, joueur vampire, zones à venir) : [docs/vampires/histoire-progression.md](docs/vampires/histoire-progression.md).
+
+### Fractales des Brumes
+
+Le game design document (Observatoire, fragment d'instance, niveaux 1 à 100, agonie et Autel des infusions, 6 fractales de la saison 1 avec leurs boss, transposition des mécaniques GW2, étapes d'implémentation) est dans [docs/fractales/gdd.md](docs/fractales/gdd.md). Le développement commence par la fractale de la Falaise.
+
+### Notes communes
+
 Les points d'API serveur vérifiés dans le jar `Server-0.7.2` sont notés dans [docs/api-0.7.2.md](docs/api-0.7.2.md).
 Création de PNJ (rôles, IA, modèles, apparitions) : [docs/npc-0.7.2.md](docs/npc-0.7.2.md), et la référence complète des 179 briques d'IA générée depuis le jar : [docs/npc-reference-0.7.2.md](docs/npc-reference-0.7.2.md).
 
