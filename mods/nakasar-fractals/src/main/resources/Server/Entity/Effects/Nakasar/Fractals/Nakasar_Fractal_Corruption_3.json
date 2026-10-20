@@ -1,0 +1,33 @@
+{
+  "$Comment": "Corruption du marteau, palier 3 (30 charges et plus) : marqueur visible et 24 % de dégâts subis en plus. Posé et retiré par HammerSystem selon les charges.",
+  "Name": "nakasar_fractals_cliffside.effects.Nakasar_Fractal_Corruption_3",
+  "Debuff": true,
+  "StatusEffectIcon": "UI/StatusEffects/Nakasar/Fractals/Corruption_3.png",
+  "ApplicationEffects": {
+    "EntityTopTint": "#e03030",
+    "EntityBottomTint": "#4a0808"
+  },
+  "DamageResistance": {
+    "Physical": [
+      {
+        "CalculationType": "Percent",
+        "Amount": -0.24
+      }
+    ],
+    "Projectile": [
+      {
+        "CalculationType": "Percent",
+        "Amount": -0.24
+      }
+    ],
+    "Elemental": [
+      {
+        "CalculationType": "Percent",
+        "Amount": -0.24
+      }
+    ]
+  },
+  "OverlapBehavior": "Overwrite",
+  "Infinite": false,
+  "Duration": 2
+}

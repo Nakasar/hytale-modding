@@ -1,0 +1,35 @@
+{
+  "$Comment": "Le Chercheur : PNJ de décor au camp, invulnérable ; le Java annonce ce qu'il dit à l'arrivée du groupe. Généré par tools/generate_cliffside.py.",
+  "Type": "Generic",
+  "Appearance": "Nakasar_Fractal_Seeker",
+  "NameTranslationKey": "nakasar_fractals_cliffside.npc.Seeker.name",
+  "MaxHealth": 1000,
+  "StartState": "Idle",
+  "DefaultPlayerAttitude": "Neutral",
+  "DefaultNPCAttitude": "Ignore",
+  "MotionControllerList": [
+    {
+      "Type": "Walk",
+      "MaxWalkSpeed": 0.1,
+      "Gravity": 10,
+      "MaxFallSpeed": 10,
+      "Acceleration": 10,
+      "JumpHeight": 1.0
+    }
+  ],
+  "KnockbackScale": 0,
+  "SpawnLockTime": 0.2,
+  "Instructions": [
+    {
+      "Sensor": {
+        "Type": "State",
+        "State": "Idle"
+      },
+      "Instructions": [
+        {
+          "Actions": []
+        }
+      ]
+    }
+  ]
+}

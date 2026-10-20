@@ -1,0 +1,7 @@
+{
+  "$Comment": "Dégâts des plaques à pointes et des pièges de la Falaise (une part des PV max).",
+  "BypassResistances": true,
+  "DurabilityLoss": false,
+  "StaminaLoss": false,
+  "DamageTextColor": "#e0e0e0"
+}

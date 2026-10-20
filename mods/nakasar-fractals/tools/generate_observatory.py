@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
 """Génère l'entrée des Fractales des Brumes (étape 2 du GDD, docs/fractales/gdd.md) : le Fragment des Brumes, son
-portail, l'instance de l'Observatoire des fractales et son île, et l'ébauche de la Falaise qui sert à tester le
-lancement d'une fractale.
+portail, l'instance de l'Observatoire des fractales et son île (la Falaise vient de tools/generate_cliffside.py).
 
     python3 mods/nakasar-fractals/tools/generate_observatory.py [--preview DOSSIER]
 
@@ -12,8 +11,6 @@ lancement d'une fractale.
 - l'île de l'Observatoire, un prefab posé à hauteur fixe dans le vide : parvis d'arrivée et portail de retour au sud,
   l'Astrolabe au centre (cadran de niveau), le cercle d'harmonisation autour, six arches de fractale en couronne au
   nord, le golem d'essai et son pupitre à l'ouest, le registre des fractales à l'est ;
-- l'ébauche de la Falaise (`Nakasar_Fractal_Cliffside`) : une plate-forme et sa pierre de retour, remplacée à
-  l'étape 4 par la vraie fractale ;
 - les blocs du décor (textures et icônes dessinées ici), leurs interactions, le golem d'essai, les langues ;
 - `observatory/ObservatoryLayout.java` : les positions dont le Java a besoin (cercle, arches, golem, cage).
 
@@ -69,11 +66,10 @@ ARCHIVIST_SPOT = (18, GROUND_Y, 11)
 COUNTER = (16, 0, 11)
 ALTAR_SPOT = (13, 0, 13)
 FORGE_SPOT = (15, 0, 15)
-STUB_CHEST = (2, 0, -4)
 CAGE_CELL = "Nakasar_Fractal_Cage_Cell"
 
 # Les 6 fractales de la saison 1 (GDD) : id, nom, couleur, pierre et cristal de l'arche, cap (degrés, 0 = nord, sens
-# horaire). L'ébauche de la Falaise est la seule instance pour l'instant.
+# horaire). La Falaise est la seule instance pour l'instant (tools/generate_cliffside.py).
 FRACTALS = [
     ("Cliffside", "Falaise", "Cliffside", (176, 120, 210), "Rock_Stone_Brick", "Rock_Crystal_Purple_Block", -100),
     ("Uncategorized", "Inclassable", "Uncategorized", (232, 150, 200), "Rock_Marble_Brick", "Rock_Crystal_Pink_Block", -60),
@@ -282,17 +278,6 @@ def observatory_prefab():
         if p.blocks.get((x, 0, z), (AIR,))[0] == AIR:
             p.set(x, 0, z, MIST_CRYSTALS[k % len(MIST_CRYSTALS)])
     return p, arches
-
-
-def cliffside_stub_prefab():
-    """Ébauche de la Falaise : une plate-forme, la pierre de retour au nord. Remplacée à l'étape 4."""
-    p = Prefab()
-    island(p, 9, 10)
-    p.set(0, 0, -6, EXIT_STONE)
-    p.set(*STUB_CHEST, REWARD_CHEST)
-    p.fill(-1, 0, -8, 1, 3, -8, "Rock_Stone_Brick")
-    p.set(0, 4, -8, "Rock_Crystal_Purple_Block")
-    return p
 
 
 # --- blocs, textures, icônes ------------------------------------------------------------------------
@@ -732,7 +717,6 @@ def lang():
         "command.launch.desc": "Lance une fractale pour le cercle (meneur, dans l'Observatoire).",
         "command.launch.arg": "Fractale (Cliffside, Uncategorized, Volcanic, SolidOcean, Swampland, Snowblind)",
         "command.leave.desc": "Quitte la fractale et revient à l'Observatoire.",
-        "fractal.stub": "Ébauche de la Falaise : la vraie fractale arrive à l'étape 4. Pierre de retour au nord.",
     }
     en = {
         "items.Nakasar_Fractal_Cage_Cell.name": "Fractal Cage (imprisonment target)",
@@ -812,7 +796,6 @@ def lang():
         "command.launch.desc": "Launches a fractal for the circle (leader, in the Observatory).",
         "command.launch.arg": "Fractal (Cliffside, Uncategorized, Volcanic, SolidOcean, Swampland, Snowblind)",
         "command.leave.desc": "Leaves the fractal and returns to the Observatory.",
-        "fractal.stub": "Cliffside draft: the real fractal comes in step 4. Return stone to the north.",
     }
     for fid, name_fr, name_en, *_ in FRACTALS:
         fr[f"fractal.{fid}.name"] = name_fr
@@ -941,14 +924,6 @@ def main():
     obs, arches = observatory_prefab()
     n = obs.write(SERVER / "Prefabs" / PREFABS / "Observatory" / "Observatory.prefab.json")
 
-    stub = "Nakasar_Fractal_Cliffside"
-    stub_spawn = (0, GROUND_Y, 4)
-    write_json(SERVER / "Instances" / stub / "instance.bson",
-               instance(stub, "Falaise (ébauche)", stub, portal=False, spawn=stub_spawn, removal=60))
-    write_json(SERVER / "HytaleGenerator/Biomes" / f"{stub}.json", biome(stub, "Cliffside_Stub"))
-    write_json(SERVER / "HytaleGenerator/WorldStructures" / f"{stub}.json", world_structure(stub, stub_spawn))
-    m = cliffside_stub_prefab().write(SERVER / "Prefabs" / PREFABS / "Cliffside_Stub" / "Cliffside_Stub.prefab.json")
-
     write_json(SERVER / "Models" / "Nakasar" / "Fractals" / f"{GOLEM}.json", golem_model())
     write_json(SERVER / "NPC/Roles/Nakasar/Fractals" / f"{GOLEM}.json", golem_role())
 
@@ -957,7 +932,7 @@ def main():
     write_lang(SERVER / "Languages/en-US" / f"{LANG}.lang", en)
     JAVA_LAYOUT.parent.mkdir(parents=True, exist_ok=True)
     JAVA_LAYOUT.write_text(java_layout(arches), encoding="utf-8")
-    print(f"Observatoire : {n} blocs, ébauche de la Falaise : {m} blocs, {len(blocks)} blocs du mod")
+    print(f"Observatoire : {n} blocs, {len(blocks)} blocs du mod")
 
     if preview:
         preview.mkdir(parents=True, exist_ok=True)

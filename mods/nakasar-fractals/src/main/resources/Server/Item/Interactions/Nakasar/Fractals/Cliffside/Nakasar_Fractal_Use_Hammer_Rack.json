@@ -1,0 +1,5 @@
+{
+  "$Comment": "Râtelier du camp : prendre le marteau du culte (un seul à la fois).",
+  "Type": "Nakasar_Fractal_CliffsideUse",
+  "Action": "Hammer_Rack"
+}

@@ -61,7 +61,6 @@ command.group.desc = Affiche le groupe d'harmonisation.
 command.launch.desc = Lance une fractale pour le cercle (meneur, dans l'Observatoire).
 command.launch.arg = Fractale (Cliffside, Uncategorized, Volcanic, SolidOcean, Swampland, Snowblind)
 command.leave.desc = Quitte la fractale et revient à l'Observatoire.
-fractal.stub = Ébauche de la Falaise : la vraie fractale arrive à l'étape 4. Pierre de retour au nord.
 fractal.Cliffside.name = Falaise
 items.Nakasar_Fractal_Arch_Cliffside.name = Arche : Falaise
 items.Nakasar_Fractal_Arch_Cliffside.description = Un sentier taillé dans la falaise, le long d'un colosse enchaîné. Cinq sceaux à briser au marteau des cultistes, jusqu'à l'Archidevin.\n\nLe meneur l'utilise pour y envoyer le cercle.

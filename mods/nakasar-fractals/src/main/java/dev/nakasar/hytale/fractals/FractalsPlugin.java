@@ -5,8 +5,13 @@ import com.hypixel.hytale.server.core.plugin.JavaPlugin;
 import com.hypixel.hytale.server.core.plugin.JavaPluginInit;
 import dev.nakasar.hytale.fractals.arena.Restores;
 import dev.nakasar.hytale.fractals.boss.BossBarSystem;
+import dev.nakasar.hytale.fractals.cliffside.Cliffside;
+import dev.nakasar.hytale.fractals.cliffside.CliffsideDamageFilter;
+import dev.nakasar.hytale.fractals.cliffside.CliffsideSystem;
+import dev.nakasar.hytale.fractals.cliffside.CliffsideUseInteraction;
 import dev.nakasar.hytale.fractals.combat.BossStun;
 import dev.nakasar.hytale.fractals.combat.ChargeInteraction;
+import dev.nakasar.hytale.fractals.combat.HealFoesInteraction;
 import dev.nakasar.hytale.fractals.combat.StunSelfInteraction;
 import dev.nakasar.hytale.fractals.combat.TelegraphInteraction;
 import dev.nakasar.hytale.fractals.combat.TelegraphSystem;
@@ -14,6 +19,12 @@ import dev.nakasar.hytale.fractals.minions.MinionShieldSystem;
 import dev.nakasar.hytale.fractals.minions.ShieldUnloadSystem;
 import dev.nakasar.hytale.fractals.minions.SummonMinionsInteraction;
 import dev.nakasar.hytale.fractals.command.FractalCommand;
+import dev.nakasar.hytale.fractals.defiance.Defiance;
+import dev.nakasar.hytale.fractals.defiance.DefianceDamageSystem;
+import dev.nakasar.hytale.fractals.defiance.OpenDefianceInteraction;
+import dev.nakasar.hytale.fractals.hammer.Hammer;
+import dev.nakasar.hytale.fractals.hammer.HammerDamageSystem;
+import dev.nakasar.hytale.fractals.hammer.HammerSystem;
 import dev.nakasar.hytale.fractals.observatory.DialInteraction;
 import dev.nakasar.hytale.fractals.observatory.HarmonyCircleSystem;
 import dev.nakasar.hytale.fractals.observatory.LeaveInteraction;
@@ -61,6 +72,12 @@ import dev.nakasar.hytale.fractals.progress.OpenInfusionsInteraction;
  * ({@link FractalProgress}), Autel des infusions ({@code Nakasar_Fractal_OpenInfusions}), agonie ({@link AgonySystem}),
  * coffre de fin par joueur ({@code Nakasar_Fractal_ClaimReward}) et coffres de rang ({@code Nakasar_Fractal_OpenBag}),
  * boutique de l'Archiviste ({@code Nakasar_Fractal_OpenShop}, et le PNJ posé par {@link ObservatoryNpcSystem}).
+ *
+ * <p>Étape 4, la Falaise ({@code cliffside}) : marteau du culte et sa Corruption ({@link HammerSystem},
+ * {@link HammerDamageSystem}), barre de défiance ({@code Nakasar_Fractal_OpenDefiance}, {@link DefianceDamageSystem}),
+ * soin des incantateurs ({@code Nakasar_Fractal_HealFoes}), et le déroulé de la fractale ({@link CliffsideSystem} :
+ * sceaux, vagues, pièges du saut, cages et Archidevin ; {@link CliffsideDamageFilter} ; blocs utilisables
+ * {@code Nakasar_Fractal_CliffsideUse}).
  */
 public final class FractalsPlugin extends JavaPlugin {
 
@@ -92,6 +109,9 @@ public final class FractalsPlugin extends JavaPlugin {
         interactions.register(OpenBagInteraction.TYPE_ID, OpenBagInteraction.class, OpenBagInteraction.CODEC);
         interactions.register(ClaimRewardInteraction.TYPE_ID, ClaimRewardInteraction.class, ClaimRewardInteraction.CODEC);
         interactions.register(OpenShopInteraction.TYPE_ID, OpenShopInteraction.class, OpenShopInteraction.CODEC);
+        interactions.register(OpenDefianceInteraction.TYPE_ID, OpenDefianceInteraction.class, OpenDefianceInteraction.CODEC);
+        interactions.register(HealFoesInteraction.TYPE_ID, HealFoesInteraction.class, HealFoesInteraction.CODEC);
+        interactions.register(CliffsideUseInteraction.TYPE_ID, CliffsideUseInteraction.class, CliffsideUseInteraction.CODEC);
 
         var systems = getEntityStoreRegistry();
         FractalProgress.setComponentType(systems.registerComponent(FractalProgress.class, FractalProgress.ID, FractalProgress.CODEC));
@@ -105,15 +125,22 @@ public final class FractalsPlugin extends JavaPlugin {
         systems.registerSystem(new TrialHitSystem());
         systems.registerSystem(new FallRescueSystem());
         systems.registerSystem(new AgonySystem());
+        systems.registerSystem(new HammerSystem());
+        systems.registerSystem(new HammerDamageSystem());
+        systems.registerSystem(new DefianceDamageSystem());
+        systems.registerSystem(new CliffsideSystem());
+        systems.registerSystem(new CliffsideDamageFilter());
+        Cliffside.registerBossBars();
 
         getCommandRegistry().registerCommand(new FractalCommand());
 
-        getLogger().atInfo().log("Nakasar Fractales : 13 types d'interaction (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s), progression, systèmes et /fractale enregistrés",
+        getLogger().atInfo().log("Nakasar Fractales : 16 types d'interaction (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s), progression, Falaise, systèmes et /fractale enregistrés",
                 TelegraphInteraction.TYPE_ID, ChargeInteraction.TYPE_ID, StunSelfInteraction.TYPE_ID,
                 SummonMinionsInteraction.TYPE_ID, CagePlayerInteraction.TYPE_ID, DialInteraction.TYPE_ID,
                 OpenArchInteraction.TYPE_ID, LeaveInteraction.TYPE_ID, TrialDemoInteraction.TYPE_ID,
                 OpenInfusionsInteraction.TYPE_ID, OpenBagInteraction.TYPE_ID, ClaimRewardInteraction.TYPE_ID,
-                OpenShopInteraction.TYPE_ID);
+                OpenShopInteraction.TYPE_ID, OpenDefianceInteraction.TYPE_ID, HealFoesInteraction.TYPE_ID,
+                CliffsideUseInteraction.TYPE_ID);
     }
 
     @Override
@@ -125,5 +152,8 @@ public final class FractalsPlugin extends JavaPlugin {
         Observatory.clearAll();
         FractalRuns.clearAll();
         AgonySystem.clearAll();
+        Defiance.clearAll();
+        Hammer.clearAll();
+        Cliffside.clearAll();
     }
 }

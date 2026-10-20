@@ -1,0 +1,28 @@
+{
+  "$Comment": "Archidevin entre 50 et 25 % de vie : protection (un tiers des dégâts en moins).",
+  "Name": "nakasar_fractals_cliffside.effects.Nakasar_Fractal_Archdiviner_Protection",
+  "StatusEffectIcon": "UI/StatusEffects/Nakasar/Fractals/Protection.png",
+  "DamageResistance": {
+    "Physical": [
+      {
+        "CalculationType": "Percent",
+        "Amount": 0.33
+      }
+    ],
+    "Projectile": [
+      {
+        "CalculationType": "Percent",
+        "Amount": 0.33
+      }
+    ],
+    "Elemental": [
+      {
+        "CalculationType": "Percent",
+        "Amount": 0.33
+      }
+    ]
+  },
+  "OverlapBehavior": "Overwrite",
+  "Infinite": false,
+  "Duration": 6
+}

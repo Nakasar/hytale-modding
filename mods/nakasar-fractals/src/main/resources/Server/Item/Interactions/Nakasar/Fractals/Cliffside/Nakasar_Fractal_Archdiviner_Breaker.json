@@ -1,0 +1,68 @@
+{
+  "$Comment": "Archidevin (sous 50 % de vie) : brise-échine, il bondit sur sa cible, cercle rouge de 3,5 blocs (1,6 s) ; 40 dégâts et étourdissement 1,5 s (pas d'état à terre). Défiance ouverte pendant la préparation.",
+  "Type": "Serial",
+  "Interactions": [
+    {
+      "Type": "ClearEntityEffect",
+      "Entity": "User",
+      "EntityEffectId": "Hit_Interrupt_Eligible"
+    },
+    {
+      "Type": "ApplyEffect",
+      "EffectId": "Nakasar_Fractal_Rooted"
+    },
+    {
+      "Type": "Nakasar_Fractal_OpenDefiance",
+      "Seconds": 1.8
+    },
+    {
+      "Type": "Nakasar_Fractal_Telegraph",
+      "Shape": "Circle",
+      "Seconds": 1.6,
+      "Anchor": "Target",
+      "Radius": 3.5,
+      "Damage": 40,
+      "TeleportCaster": true,
+      "EffectId": "Hazard_Electric_Stun",
+      "EffectDuration": 1.5,
+      "PlayersOnly": true,
+      "ImpactParticle": "Stick_Slam_Ground_Large",
+      "ImpactSound": "SFX_Goblin_Feastmaster_Slam"
+    },
+    {
+      "Type": "Simple",
+      "RunTime": 1.6,
+      "Effects": {
+        "ItemPlayerAnimationsId": "Mace",
+        "ItemAnimationId": "SwingDownCharging",
+        "WorldSoundEventId": "SFX_Spear_Throw_Charge",
+        "Particles": [
+          {
+            "SystemId": "Fire_Blue",
+            "TargetNodeName": "R-Hand",
+            "Scale": 1.5,
+            "PositionOffset": {
+              "Y": 0.3
+            },
+            "RotationOffset": {
+              "Pitch": 180
+            }
+          }
+        ]
+      }
+    },
+    {
+      "Type": "Simple",
+      "RunTime": 0.15,
+      "Effects": {
+        "ItemPlayerAnimationsId": "Mace",
+        "ItemAnimationId": "SwingDownCharged",
+        "WorldSoundEventId": "SFX_Goblin_Feastmaster_Slam"
+      }
+    },
+    {
+      "Type": "Simple",
+      "RunTime": 0.5
+    }
+  ]
+}

@@ -1,0 +1,44 @@
+{
+  "$Comment": "Incantateur du culte : robe de mage, cape violette, mains nues pour les incantations.",
+  "Parent": "Player",
+  "Model": "Characters/Player.blockymodel",
+  "Texture": "Characters/Player_Textures/Player_Greyscale.png",
+  "GradientSet": "Skin",
+  "GradientId": "11",
+  "Light": {
+    "Color": "#a6f",
+    "Radius": 2
+  },
+  "DefaultAttachments": [
+    {
+      "Model": "Characters/Body_Attachments/Faces/Player_Face_Detached.blockymodel",
+      "Texture": "Characters/Body_Attachments/Faces/Faces_Detached_Textures/Face_Sunken.png",
+      "GradientSet": "Skin",
+      "GradientId": "11"
+    },
+    {
+      "Model": "Characters/Body_Attachments/Eyes/Eyes.blockymodel",
+      "Texture": "Characters/Body_Attachments/Eyes/Eyes_Textures/Greyscale.png",
+      "GradientSet": "Eyes_Gradient",
+      "GradientId": "Red"
+    },
+    {
+      "Model": "Cosmetics/Head/Hoodie_LongEnd.blockymodel",
+      "Texture": "Cosmetics/Head/Blazen_Wizard_Hoodie_Green_Texture.png"
+    },
+    {
+      "Model": "Cosmetics/Overtops/Robe_Wizard.blockymodel",
+      "Texture": "Cosmetics/Overtops/Blazen_Wizard_Coat_Green.png"
+    },
+    {
+      "Model": "Cosmetics/Capes/Cape_Scavenger_NoNeck.blockymodel",
+      "Texture": "Cosmetics/Capes/Cape_Scavenger_Texture.png",
+      "GradientSet": "Fantasy_Cotton_Dark",
+      "GradientId": "Purple"
+    },
+    {
+      "Model": "Cosmetics/Shoes/AngledBoots.blockymodel",
+      "Texture": "Cosmetics/Shoes/AngledBoots_Textures/Blazen_Wizard_Boots_Green.png"
+    }
+  ]
+}

@@ -1,0 +1,5 @@
+{
+  "$Comment": "Levier de la Falaise : coupe un groupe de gargouilles ou les bombes d'une rampe ; on reste figé 4 s à le tirer.",
+  "Type": "Nakasar_Fractal_CliffsideUse",
+  "Action": "Cliffside_Lever"
+}

@@ -338,6 +338,8 @@ def lang():
                           "The level drops to {level}, the highest unlocked by {name}."),
         "reward.claimed": ("Vous prenez votre coffre de fractale (niveau {level}).",
                            "You take your fractal chest (level {level})."),
+        "reward.notYet": ("Le coffre reste scellé tant que la fractale n'est pas terminée.",
+                          "The chest stays sealed until the fractal is complete."),
         "reward.already": ("Vous avez déjà pris votre coffre.", "You already took your chest."),
         "reward.notMember": ("Ce coffre est pour le groupe parti de l'Observatoire.",
                              "This chest is for the group that left the Observatory."),

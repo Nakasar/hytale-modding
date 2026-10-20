@@ -78,6 +78,20 @@ public final class BossStun {
         }
     }
 
+    /** Gèle le PNJ sans fin (transition de boss) jusqu'à {@link #release}. */
+    public static void hold(World world, Store<EntityStore> store, Ref<EntityStore> ref) {
+        stun(world, store, ref, 3600f, null);
+    }
+
+    /** Dégèle le PNJ tout de suite (fin d'une transition). */
+    public static void release(Store<EntityStore> store, Ref<EntityStore> ref) {
+        if (ref == null || !ref.isValid()) {
+            return;
+        }
+        UNTIL.put(ref, 0L);
+        store.tryRemoveComponent(ref, Frozen.getComponentType());
+    }
+
     public static boolean isStunned(Ref<EntityStore> ref) {
         return UNTIL.containsKey(ref);
     }

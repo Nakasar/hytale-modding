@@ -1,5 +1,5 @@
 {
-  "DisplayName": "Falaise (ébauche)",
+  "DisplayName": "Falaise",
   "WorldGen": {
     "Type": "HytaleGenerator",
     "WorldStructure": "Nakasar_Fractal_Cliffside"
@@ -15,7 +15,7 @@
     "SpawnPoint": {
       "X": 0.5,
       "Y": 100.0,
-      "Z": 4.5,
+      "Z": 20.5,
       "Pitch": 0,
       "Yaw": 0,
       "Roll": 0

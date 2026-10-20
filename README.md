@@ -7,7 +7,7 @@ Deux mods, chacun avec son dossier de documentation :
 | Mod | Code | Documentation |
 |-----|------|---------------|
 | **Vampires** : le domaine du Comte vampire (plugin Java + pack d'assets, artefact `Nakasar-Vampires-<version>.jar`) | `mods/nakasar-vampires` | [docs/vampires](docs/vampires/) |
-| **Fractales des Brumes** : les fractales de Guild Wars 2 transposées dans Hytale, pour 1 à 5 joueurs (en cours : socle, Observatoire et progression posés, pas encore de fractale jouable) | `mods/nakasar-fractals` | [docs/fractales](docs/fractales/) |
+| **Fractales des Brumes** : les fractales de Guild Wars 2 transposées dans Hytale, pour 1 à 5 joueurs (en cours : socle, Observatoire, progression et première fractale, la Falaise) | `mods/nakasar-fractals` | [docs/fractales](docs/fractales/) |
 
 Les notes communes aux deux mods (API serveur, PNJ) restent à la racine de `docs/`.
 
@@ -83,13 +83,43 @@ boutique et PNJ de l'Archiviste, modèles et icônes) et le paquet Java `progres
   des infusions posées est sa résistance. Infusions +1 à +15 ; au **Creuset des Brumes** (établi, recette à l'établi),
   2 × infusion n + 4n éclats donnent l'infusion n+1, et 25 éclats + 1 éclat de rune refont un Fragment des Brumes.
 - **Coffre de fin** : chaque membre du groupe y prend une fois le coffre de son rang (éclats de Brume, matériaux,
-  chance d'infusion), qu'il ouvre en main. Dans l'ébauche de Falaise, il est près de la pierre de retour.
+  chance d'infusion), qu'il ouvre en main. Il apparaît une fois le boss de la fractale vaincu.
 - **L'Archiviste** (est de l'Observatoire, invulnérable) et son comptoir : troc d'éclats contre infusions +1, +2, +4 et
   Fragment des Brumes.
 - `/fractale infos` : niveau débloqué et résistance.
 
 À vérifier en jeu : fenêtre de l'autel (glisser une infusion, sauvegarde à la reconnexion), PNJ Archiviste (rôle
 `OpenBarterShop` accepté ? sinon le comptoir), dégâts et message d'agonie, coffre de rang.
+
+Étape 4, **la Falaise** (`tools/generate_cliffside.py` écrit le décor, les blocs, les PNJ, les effets et
+`cliffside/CliffsideLayout.java` ; `--preview DIR` dessine la face et le dessus) : un colosse de pierre enchaîné à
+une falaise, qu'on escalade par des échafaudages.
+- **Camp** au pied : le Chercheur et une vague de cultistes ; le **râtelier** ne donne le marteau du culte qu'une fois
+  le camp nettoyé, et à un seul joueur à la fois.
+- **Marteau du culte** (`hammer/`) : le prendre coûte 10 % des PV, puis +1 Corruption par seconde (−4 par seconde
+  posé). Paliers 10/20/30 : dégâts subis +8 % par palier, dès 20 on ne fait plus que 70 % de ses dégâts ; 30 étourdit
+  2 s, 40 fait tomber le marteau. Frapper un cultiste avec, ou en voir un mourir à moins de 8 blocs, le **charge** ; un
+  coup chargé fissure un sceau.
+- **5 sceaux** (PNJ fixes, nos instances refusant les coups sur les blocs) : genoux (2 coups chacun), poitrine (3),
+  poignets (3, bulle alternée : frapper l'un protège l'autre ; les incantateurs proches réparent un coup toutes les
+  20 s). Les vagues se renouvellent tant que le sceau tient ; chaque palier brisé ouvre une barrière de brume et
+  déplace le point de retour.
+- **Puzzles de saut** (`cliffside/Traps`, `SafeLandings`) : tunnel aux dalles piégées (18 % des PV), escalade sous le
+  souffle des gargouilles (trois leviers en haut les coupent), foyers de la passerelle du torse (deux sur trois
+  s'embrasent toutes les 7 s), rampes aux bombes (leviers R1 et R2). Tomber dans une zone de saut ramène à la
+  dernière **plate-forme sûre**. Tirer un levier fige 4 s.
+- **L'Archidevin** (`cliffside/Archdiviner`, barre de boss et **barre de défiance** ◆/◇ : ouverte pendant ses attaques
+  annoncées, elle se brise en 8 coups + 4 par joueur de plus, 3 au marteau, et l'étourdit 5 s) : transitions à 75, 50,
+  25 % et 1 PV, invulnérable tant que le sceau du cou n'a pas reçu un coup chargé (incantateurs et marteau fournis) ;
+  entre 50 et 25 %, protection, **cages** (cercle rouge, alliés qui forcent la porte en 5 utilisations, sortie seule
+  au bout de 15 s) et dévoreurs ; sous 25 %, hâte et frappes marquées. Niveau 25 : ruée ; 51 : mur anti-projectiles ;
+  71 : forme démoniaque. Vaincu, le coffre de fin et la pierre de retour apparaissent.
+- PV des ennemis × (1 + 25 % par joueur de plus) × (1 + niveau / 100) ; leurs dégâts × (1 + niveau / 150) ; annonces
+  plus courtes avec le niveau (jusqu'à −25 %).
+
+À vérifier en jeu : modèle des sceaux, force du souffle des gargouilles, escaliers en colimaçon praticables, modèle
+provisoire du dévoreur (`Zombie_Aberrant_Small`), blocs utilisables (râtelier, leviers, portes) dans une instance
+sans modification de blocs, rotation des barreaux de cage.
 
 ### Notes communes
 

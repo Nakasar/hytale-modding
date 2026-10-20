@@ -2,3 +2,6 @@
 # Une ligne par id : « <type> <id> ». Types : droplist (listes de butin), npc (rôles de PNJ), animations (ItemPlayerAnimationsId).
 # Un id absent du jeu fait échouer en jeu l'asset qui le cite, et parfois tout le mod. N'ajouter ici qu'un id
 # vu dans les fichiers du jeu ou chargé sans erreur en jeu ; préciser la source (même règle que le mod Vampires).
+# Jeux d'animations des armes vanilla (déjà acceptés par le mod Vampires, vus dans Assets.zip 0.7.2).
+animations Mace
+animations Staff

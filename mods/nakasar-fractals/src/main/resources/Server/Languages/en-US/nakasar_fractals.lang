@@ -61,7 +61,6 @@ command.group.desc = Shows the attunement group.
 command.launch.desc = Launches a fractal for the circle (leader, in the Observatory).
 command.launch.arg = Fractal (Cliffside, Uncategorized, Volcanic, SolidOcean, Swampland, Snowblind)
 command.leave.desc = Leaves the fractal and returns to the Observatory.
-fractal.stub = Cliffside draft: the real fractal comes in step 4. Return stone to the north.
 fractal.Cliffside.name = Cliffside
 items.Nakasar_Fractal_Arch_Cliffside.name = Arch: Cliffside
 items.Nakasar_Fractal_Arch_Cliffside.description = A path carved into the cliff, along a chained colossus. Five seals to break with the cultists' hammer, up to the Archdiviner.\n\nThe leader uses it to send the circle there.

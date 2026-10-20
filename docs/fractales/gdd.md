@@ -332,16 +332,16 @@ Neuf étapes, chacune livrable en une PR testable en jeu ; les étapes 1 à 4 do
 2. **Entrée et Observatoire**
    - [x] Fragment des Brumes : `PortalKey`, recette à l'établi, `PortalTypes`, instance hub (`tools/generate_observatory.py`)
    - [x] Observatoire : île, Astrolabe, cercle, 6 arches, golem d'essai et son pupitre, filet de chute (`FallRescueSystem`). L'Archiviste attend la monnaie (étape 3) : un Registre lisible tient sa place
-   - [x] Gestionnaire de partie (`party/FractalRuns`, `observatory/Observatory`) : cercle d'harmonisation (5 max), cadran de niveau, une instance par groupe, retour au hub (gardé ouvert pendant la partie), commande `/fractale`. Ébauche de Falaise (île + pierre de retour) pour tester l'aller-retour
+   - [x] Gestionnaire de partie (`party/FractalRuns`, `observatory/Observatory`) : cercle d'harmonisation (5 max), cadran de niveau, une instance par groupe, retour au hub (gardé ouvert pendant la partie), commande `/fractale`. Ébauche de Falaise (île + pierre de retour) pour tester l'aller-retour, remplacée à l'étape 4
 3. **Systèmes de progression**
    - [x] Niveaux 1-100 et déblocage par joueur (sauvegardés avec le joueur, composant `Nakasar_Fractal_Progress`) ; cadran plafonné au niveau du meneur
    - [x] Agonie (effet + `AgonySystem`), Autel des infusions (12 emplacements sur le joueur, fenêtre de conteneur), infusions +1 à +15 et leur fusion au Creuset des Brumes (`tools/generate_progression.py`)
    - [x] Coffre par joueur (coffre de rang à ouvrir en main), éclats de Brume, l'Archiviste (PNJ et comptoir, boutique de troc). Les fractales du jour restent à l'étape 9
 4. **Briques de la Falaise + Falaise**
-   - [ ] Puzzles de saut : chute vers la dernière plateforme sûre, souffle des gargouilles, explosifs qui projettent, leviers qui coupent un piège
-   - [ ] Marteau du culte : objet porté, piles de Corruption, charge Brise-sceau, sceaux et bulle alternée
-   - [ ] Barre de défiance ouverte seulement pendant certaines attaques ; cercle de cage (réutilise l'emprisonnement)
-   - [ ] Fractale Falaise : colosse, échafaudages, 5 sceaux, cultistes, Archidevin légendaire
+   - [x] Puzzles de saut : chute vers la dernière plateforme sûre, souffle des gargouilles, explosifs qui projettent, leviers qui coupent un piège
+   - [x] Marteau du culte : objet porté, piles de Corruption, charge Brise-sceau, sceaux et bulle alternée
+   - [x] Barre de défiance ouverte seulement pendant certaines attaques ; cercle de cage (réutilise l'emprisonnement)
+   - [x] Fractale Falaise : colosse, échafaudages, 5 sceaux, cultistes, Archidevin légendaire
 5. **Instabilités** : cadre de tirage quotidien + les 8 instabilités
 6. **Inclassable et Volcanique** : harpies et recul hors des plateformes, consoles simultanées, gaz et ventilateur, charges +/-, rochers roulants, objet lancé (pierre imprégnée), captifs à protéger, bouclier à compteur de coups, Pieds brûlants
 7. **Océan solide et Marais** : marque crâne + rayon absorbé par un objet tenu, cristal lancé, course chronométrée aux feux-follets avec murs temporaires, furtivité de l'Homme-mousse, cercle vert de vulnérabilité qui tourne

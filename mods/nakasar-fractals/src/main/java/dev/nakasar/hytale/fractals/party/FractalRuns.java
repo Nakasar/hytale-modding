@@ -47,6 +47,8 @@ public final class FractalRuns {
     private static final Map<World, Run> RUNS = Collections.synchronizedMap(new WeakHashMap<>());
     /** Observatoires gardés ouverts, par monde (lus et modifiés sur le thread de cet Observatoire). */
     private static final Map<World, Hold> HOLDS = Collections.synchronizedMap(new WeakHashMap<>());
+    /** Fractales terminées (boss vaincu), par monde. */
+    private static final Set<World> COMPLETED = Collections.synchronizedSet(Collections.newSetFromMap(new WeakHashMap<>()));
 
     /** Conditions de fermeture mises de côté et fractales ouvertes depuis cet Observatoire. */
     private static final class Hold {
@@ -55,6 +57,35 @@ public final class FractalRuns {
     }
 
     private FractalRuns() {
+    }
+
+    /** Niveau de la partie jouée dans ce monde (1 sans partie). */
+    public static int level(World world) {
+        Run run = RUNS.get(world);
+        return run == null ? 1 : run.level();
+    }
+
+    /**
+     * Durée des annonces lancées par le Java selon le niveau : × 1 au niveau 1, × 0,75 au niveau 100 (les zones se
+     * remplissent plus vite). Les chaînes JSON gardent leur durée (leurs animations y sont calées).
+     */
+    public static float windupFactor(World world) {
+        return 1f - 0.25f * (Math.min(100, Math.max(1, level(world))) - 1) / 99f;
+    }
+
+    /** Taille du groupe parti de l'Observatoire (au moins 1 ; les joueurs présents sans partie). */
+    public static int partySize(World world) {
+        Run run = RUNS.get(world);
+        return Math.max(1, run == null ? world.getPlayerRefs().size() : run.members().size());
+    }
+
+    /** Marque la fractale de ce monde comme terminée : les coffres de fin s'ouvrent. */
+    public static void complete(World world) {
+        COMPLETED.add(world);
+    }
+
+    public static boolean isComplete(World world) {
+        return COMPLETED.contains(world);
     }
 
     /** Partie jouée dans ce monde, ou null (pas une fractale, ou partie oubliée au redémarrage). */
@@ -135,5 +166,6 @@ public final class FractalRuns {
     public static void clearAll() {
         RUNS.clear();
         HOLDS.clear();
+        COMPLETED.clear();
     }
 }

@@ -38,6 +38,10 @@ public class ClaimRewardInteraction extends PlayerInteraction {
             playerRef.sendMessage(Message.translation(MESSAGES + "reward.lost"));
             return;
         }
+        if (!FractalRuns.isComplete(world)) {
+            playerRef.sendMessage(Message.translation(MESSAGES + "reward.notYet"));
+            return;
+        }
         if (!run.members().contains(playerRef.getUuid())) {
             playerRef.sendMessage(Message.translation(MESSAGES + "reward.notMember"));
             return;

@@ -60,7 +60,8 @@ import java.util.concurrent.ThreadLocalRandom;
  * </ul>
  *
  * <p>Centre ({@code Anchor}) : {@code Self} (l'élite), {@code Target} (sa cible, figé au début de l'annonce),
- * {@code Farthest} (vers le joueur le plus éloigné, à {@code OffsetMax} blocs de l'élite). {@code OffsetMin} /
+ * {@code Farthest} (vers le joueur le plus éloigné, à {@code OffsetMax} blocs de l'élite), {@code EachPlayer} (une zone
+ * sous chaque joueur à moins de {@value #SEARCH_RADIUS} blocs, figée au début de l'annonce). {@code OffsetMin} /
  * {@code OffsetMax} décalent un centre {@code Target} au hasard autour de la cible (point d'arrivée d'un saut).
  *
  * <p>Le coup : {@code Damage} ({@code DamageCause}, défaut {@code Physical}), {@code Knockback} et {@code KnockUp}
@@ -166,6 +167,17 @@ public class TelegraphInteraction extends SimpleInstantInteraction {
         Ref<EntityStore> target = target(caster, context, buffer);
         Vector3d targetAt = Telegraphs.position(buffer, target);
 
+        if ("EachPlayer".equals(anchor)) {
+            // Une zone sous chaque joueur à portée, figée au début de l'annonce.
+            for (PlayerRef player : world.getPlayerRefs()) {
+                Ref<EntityStore> ref = player.getReference();
+                Vector3d at = Telegraphs.position(buffer, ref);
+                if (at != null && Telegraphs.horizontal(at, self) <= SEARCH_RADIUS && Math.abs(at.y() - self.y()) <= 8) {
+                    TelegraphSystem.start(world, new Strike(this, caster, ref, new Vector3d(at), 0.0));
+                }
+            }
+            return;
+        }
         Vector3d center;
         switch (anchor) {
             case "Target" -> {
@@ -241,6 +253,72 @@ public class TelegraphInteraction extends SimpleInstantInteraction {
         config.imprison = imprison;
         config.playersOnly = true;
         TelegraphSystem.start(world, new Strike(config, caster, target, center, facing));
+    }
+
+    /**
+     * Annonce lancée depuis le code (Archidevin, bombes des rampes) : forme {@code shape} remplie en {@code seconds}
+     * secondes, réglée par les méthodes ci-dessous, puis {@link #launch}.
+     */
+    public static TelegraphInteraction spec(String shape, float seconds) {
+        TelegraphInteraction config = new TelegraphInteraction();
+        config.shape = shape;
+        config.seconds = seconds;
+        return config;
+    }
+
+    public TelegraphInteraction radius(float value) {
+        radius = value;
+        return this;
+    }
+
+    public TelegraphInteraction damage(float value, String cause) {
+        damage = value;
+        damageCause = cause;
+        return this;
+    }
+
+    public TelegraphInteraction knockback(float horizontal, float up) {
+        knockback = horizontal;
+        knockUp = up;
+        return this;
+    }
+
+    public TelegraphInteraction effect(String id, float duration) {
+        effectId = id;
+        effectDuration = duration;
+        return this;
+    }
+
+    public TelegraphInteraction playersOnly() {
+        playersOnly = true;
+        return this;
+    }
+
+    public TelegraphInteraction teleportCaster() {
+        teleportCaster = true;
+        return this;
+    }
+
+    public TelegraphInteraction impact(String particle, String sound) {
+        impactParticle = particle;
+        impactSound = sound;
+        return this;
+    }
+
+    public TelegraphInteraction hit(String particle) {
+        hitParticle = particle;
+        return this;
+    }
+
+    public TelegraphInteraction mark(String particle, float scale) {
+        markParticle = particle;
+        markScale = scale;
+        return this;
+    }
+
+    /** Lance l'annonce : zone centrée sur {@code center} (Mark : sur {@code target}), tournée vers {@code facing}. */
+    public void launch(World world, Ref<EntityStore> caster, Ref<EntityStore> target, Vector3d center, double facing) {
+        TelegraphSystem.start(world, new Strike(this, caster, target, new Vector3d(center), facing));
     }
 
     /** Cible verrouillée de l'élite (sa cible de combat), sinon l'entité fournie par la chaîne. */

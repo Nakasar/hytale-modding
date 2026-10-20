@@ -25,11 +25,13 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 import java.util.UUID;
 import java.util.WeakHashMap;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.BiConsumer;
+import java.util.function.Function;
 
 /**
  * Barre de vie des boss de fractales, comme celle du donjon gobelin (Deepworks). Copie du mod Vampires.
@@ -46,6 +48,8 @@ public final class BossBarSystem extends TickingSystem<EntityStore> {
 
     /** Rôles qui ont une barre de boss ({@link #register}, rempli par le plugin fractale par fractale). */
     private static final Set<String> ELITES = ConcurrentHashMap.newKeySet();
+    /** Texte ajouté au nom de la barre, par rôle (barre de défiance) ; null : rien. Lu à chaque passage. */
+    private static final Map<String, Function<Ref<EntityStore>, String>> LABELS = new ConcurrentHashMap<>();
 
     private static final double RANGE = 40;
     private static final float INTERVAL = 0.25f;
@@ -57,15 +61,20 @@ public final class BossBarSystem extends TickingSystem<EntityStore> {
     private final Map<World, Float> wait = Collections.synchronizedMap(new WeakHashMap<>());
 
     /** {@code player} : la session qui a reçu la barre ; une reconnexion crée un autre PlayerRef. */
-    private record Shown(World world, int networkId, PlayerRef player) {
+    private record Shown(World world, int networkId, PlayerRef player, String label) {
     }
 
-    private record Elite(int networkId, Vector3d position, String nameKey) {
+    private record Elite(int networkId, Vector3d position, String nameKey, String label) {
     }
 
     /** Donne une barre de boss au rôle `role`. */
     public static void register(String role) {
         ELITES.add(role);
+    }
+
+    /** Ajoute au nom de la barre du rôle `role` le texte rendu par `label` (null : rien) ; la barre est renvoyée quand il change. */
+    public static void label(String role, Function<Ref<EntityStore>, String> label) {
+        LABELS.put(role, label);
     }
 
     @Override
@@ -127,8 +136,9 @@ public final class BossBarSystem extends TickingSystem<EntityStore> {
                 continue;
             }
             String nameKey = npc.getRole() == null ? null : npc.getRole().getNameTranslationKey();
+            Function<Ref<EntityStore>, String> labeler = LABELS.get(role);
             engaged.add(new Elite(networkId.getId(), new Vector3d(transform.getPosition()),
-                    nameKey != null ? nameKey : role));
+                    nameKey != null ? nameKey : role, labeler == null ? null : labeler.apply(ref)));
         }
     }
 
@@ -154,7 +164,8 @@ public final class BossBarSystem extends TickingSystem<EntityStore> {
             SHOWN.remove(uuid);
             before = null;
         }
-        if (before != null && elite != null && before.world() == world && before.networkId() == elite.networkId()) {
+        if (before != null && elite != null && before.world() == world && before.networkId() == elite.networkId()
+                && Objects.equals(before.label(), elite.label())) {
             return;
         }
         if (before != null) {
@@ -162,9 +173,12 @@ public final class BossBarSystem extends TickingSystem<EntityStore> {
             SHOWN.remove(uuid);
         }
         if (elite != null) {
-            player.getPacketHandler().writeNoCache(new UpdateBossBar(elite.networkId(),
-                    Message.translation(elite.nameKey()).getFormattedMessage(), false, false));
-            SHOWN.put(uuid, new Shown(world, elite.networkId(), player));
+            Message name = Message.translation(elite.nameKey());
+            if (elite.label() != null) {
+                name = Message.join(name, Message.raw("  " + elite.label()));
+            }
+            player.getPacketHandler().writeNoCache(new UpdateBossBar(elite.networkId(), name.getFormattedMessage(), false, false));
+            SHOWN.put(uuid, new Shown(world, elite.networkId(), player, elite.label()));
         }
     }
 
