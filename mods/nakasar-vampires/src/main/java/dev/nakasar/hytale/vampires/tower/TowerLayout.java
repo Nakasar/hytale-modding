@@ -34,8 +34,12 @@ public final class TowerLayout {
     public static final String CODEX_FIRE = "0aef35a7-5051-56e2-91e8-22a282c43e6c";
     public static final String CODEX_RAIN = "173c39a7-c79c-5281-911c-3a4fa7945a02";
     public static final String[] CODEX_FROST = {"74757796-2d48-5a90-bd46-438d4df92b2a", "c80345e6-188c-556a-9abd-fd25903252d6", "3f9bcf18-3622-53f0-a84c-6d3ddbbfae01"};
-    /** Pans d'étagères qui s'effondrent (Collapse=On). */
+    /** Pans d'étagères qui s'effondrent (Collapse=On) : volumes, secteurs en degrés (atan2(dz, dx)) entre deux rayons. */
     public static final String[] CODEX_COLLAPSE = {"00f64808-4e2c-5a2a-9ad9-582cfaf84967", "7d02473a-a339-5dd9-b38c-332bc146f65c", "11b6c4b0-f282-5f81-9450-bbc71005b7cc", "8f701448-8141-5268-b334-60a5f0d7124f", "d9cfadb3-7f39-5fa4-8be5-4a00213450b8"};
+    public static final double[][] CODEX_COLLAPSE_ARCS = {{220, 248}, {252, 282}, {286, 312}, {328, 358}, {2, 24}};
+    public static final double[] CODEX_COLLAPSE_RADII = {21.5, 28.4};
+    /** Durée du cône rouge avant la chute d'un pan (tools/alchemist_traps.py, CODEX_COLLAPSE_WARN). */
+    public static final float CODEX_COLLAPSE_WARN = 3.0f;
 
     /** Salle des Transmutations : centre (golem de cristal), au sol ; rayon de l'arène. */
     public static final Vector3d TRANS_CENTER = new Vector3d(0.5, 166, -439.5);
@@ -76,9 +80,8 @@ public final class TowerLayout {
             new Vector3d(-11.5, 184, -427.5),
             new Vector3d(-11.5, 184, -451.5)
     };
-    /** Volumes (tools/alchemist_traps.py, Traps.chimera) : sceau de la porte nord (Chimera=On), acide de la cuve (Cast=On). */
+    /** Volume (tools/alchemist_traps.py, Traps.chimera) : sceau de la porte nord (Chimera=On). */
     public static final String CHIMERA_SEAL = "ebf90f00-a380-54f6-8309-d361a492b8ee";
-    public static final String CHIMERA_ACID = "72e78f01-8a21-5fd0-9ad7-435fd0d949e4";
 
     /** Alchimiste : centre de l'athanor, au sol de sa chambre (il s'y enferme au Grand Œuvre). */
     public static final Vector3d ALCHEMIST_CENTER = new Vector3d(0.5, 244, -439.5);
@@ -92,6 +95,10 @@ public final class TowerLayout {
     /** Pans du rebord qui s'effondrent au Grand Œuvre : secteurs en degrés, entre deux rayons. */
     public static final double[][] ALCHEMIST_COLLAPSE_ARCS = {{282, 322}, {346, 362}, {18, 52}};
     public static final double[] ALCHEMIST_COLLAPSE_RADII = {34.5, 41.4};
+    /** Durée du cône rouge avant la chute d'un pan (tools/alchemist_traps.py, DECK_COLLAPSE_WARN). */
+    public static final float ALCHEMIST_COLLAPSE_WARN = 4.0f;
+    /** Rayon des murs de l'athanor. */
+    public static final double ALCHEMIST_ATHANOR_RADIUS = 3.6;
     /** Cases libres autour de l'athanor où il ressort. */
     public static final Vector3d[] ALCHEMIST_EXITS = {
             new Vector3d(7.5, 244, -439.5),

@@ -46,6 +46,7 @@ from pathlib import Path
 from PIL import Image, ImageDraw
 
 import alchemist_tower as at
+import tower_fx as fx
 import tower_warnings as tw
 import generate_assets as gx
 
@@ -82,21 +83,21 @@ BLOCKS = {"Empty", "Fluid_Fire", at.SEAL, at.HEDGE, at.RUBBLE, at.DOOR, "Rock_Ma
           "Rock_Marble_Cobble", at.ARENA_BARRIER, at.SPORE_SHROOM, at.CONDUIT_LIT, *map(at.lit_block, at.HALL_COLOURS), at.EMANATION_LIT, at.EMANATION_FED, at.PIPE_GLOW, at.LEAK}
 NPCS = set()
 
-# Quadrants de la Salle des Transmutations (arène du golem de cristal, tower.TransmutationSystem) :
-# particules d'annonce, actives et calmes, son actif, effets actifs puis calmes [(statut, durée, intervalle)] et dégâts
-# (% de vie max, intervalle), poussée du vent (vitesse forte, légère ; vers le mur, jamais vers le vide).
+# Quadrants de la Salle des Transmutations (arène du golem de cristal, tower.TransmutationSystem), Kevin 20 octobre
+# 2026 : une zone active se lit à son sol (tools/tower_fx.py, au ras du sol, sans brouillard), une zone calme a le sol
+# nu, sans effet ni dégât. Par élément : son, effets [(statut, durée, intervalle)] et dégâts (% de vie max, intervalle).
+# L'Air n'a plus de poussée vers le mur : il engourdit (ralenti léger).
 TRANS = {
-    "Fire": ("Fire_Trap_Preview", "Fire_AoE", "Fire_Charge_Charging1", "SFX_Emit_Goblin_Flame_Quadrant_Blast",
-             [("Burn", 3.0, 1.0)], (7, 1.0), [], (1.5, 1.5), None),
-    "Ice": ("Weapon_Frost_Mist", "Ice_Blast", "Weapon_Frost_Mist", "SFX_Ice_Break",
-            [("Slow", 2.0, 1.0)], (5, 1.0), [("Slow", 2.0, 1.0)], None, None),
-    "Air": ("Leaves_Oak_Wind", "Wind", "Leaves_Oak_Wind", "SFX_Emit_Wind_Gusts",
-            [], (3, 1.0), [], None, (9.0, 3.5)),
-    "Earth": ("Block_Break_Dust", "Block_Break_Dust", "Smoke_Floor", "SFX_Crystal_Break",
-              [("Slow", 1.5, 1.0)], (8, 1.0), [], (2, 1.5), None),
+    "Fire": ("SFX_Emit_Goblin_Flame_Quadrant_Blast", [("Burn", 3.0, 1.0)], (7, 1.0)),
+    "Ice": ("SFX_Ice_Break", [("Slow", 2.0, 1.0)], (5, 1.0)),
+    "Air": ("SFX_Emit_Goblin_Electric_Fence_Zap", [("Slow", 1.0, 1.0)], (4, 1.0)),
+    "Earth": ("SFX_Crystal_Break", [("Slow", 1.5, 1.0)], (8, 1.0)),
 }
-TRANS_WARN = 5.0     # annonce avant qu'un quadrant calme ne redevienne actif (TransmutationSystem.WARN_SECONDS)
 TRANS_PULSE = 3.0    # TransmutationSystem rejoue Fx toutes les TRANS_PULSE secondes : particules qui durent autant
+# Pans qui s'effondrent (rayonnages du Codex, rebord de la terrasse) : durée du cône rouge (tower.TowerFx) avant la chute,
+# = CodexSystem.COLLAPSE_WARN et AlchemistSystem.COLLAPSE_WARN.
+CODEX_COLLAPSE_WARN = 3.0
+DECK_COLLAPSE_WARN = 4.0
 ZERO = {"X": 0.0, "Y": 0.0, "Z": 0.0}
 # Jets de gaz du couloir : annonce (zone rouge qui se remplit, comme toutes les annonces de la tour : tower_warnings.py),
 # durée du gaz, cadence (le mur intérieur souffle, puis le mur extérieur une demi-période plus tard).
@@ -356,9 +357,8 @@ class Traps:
 
     def arenas(self):
         g = self.group("Tower_Arenas", 12597547)
-        fight = {"Codex": ("Library_Books_Controller",)}
         for name in ARENAS:
-            self.arena_gate(name, g, self.t["arenas"][name], fight.get(name, ()))
+            self.arena_gate(name, g, self.t["arenas"][name])
 
     # --- les pièges ----------------------------------------------------------------------------------------------
 
@@ -503,29 +503,19 @@ class Traps:
             title("TAG_ADDED", "brambles", 3.6)],
             [tag_is("TAG_ADDED", "Fire", "On"), tag_is("TAG_ADDED", "Library_Brambles", "Intact")],
             volume_tags={"Library_Brambles": "Intact", "Fire": "Off"})
-        y = at.F_LIBRARY
-        # Livres qui tombent des rayonnages : seulement pendant le combat du Codex (la barrière de l'arène active ce
-        # volume quand elle se lève et le coupe quand elle s'abaisse, `arena_gate`).
-        self.controller("Library_Books_Controller", g, self.world(0, y, 0), cylinder(at.R_IN, 13),
-                        [("Books", "Library_Books", "", 0.0)], interval=3.0, enabled=False)
-        for i, pos in enumerate(self.t["books"]):
-            self.pulse(f"Library_Books_{i + 1}", g, self.foot(*pos), cylinder(1.6, 3), "Books", "Library_Books",
-                       "Zone", warn=2.0, active=0.4,
-                       warn_fx=[mark(1.6, 2.0)],
-                       hit_fx=[vfx("", "Block_Break_Dust", offset=(0, 1.5, 0)), vfx("", "Smoke_Floor"),
-                               sound("", "SFX_Drop_Weapons_Books")],
-                       hits=[damage(12, 1.0), status("Slow", 2.0)], odds=0.3)
+        # Plus de chute de livres permanente pendant le combat du Codex (Kevin, 20 octobre 2026) : la pluie de livres
+        # n'est plus qu'un sort de punition (Codex_Rain).
 
     def transmutation(self):
         """Arène du golem de cristal. tower.TransmutationSystem pose les étiquettes des volumes Trans_<élément>
-        (`trans_ids`) : State = Active (effet fort), Calm (effet léger) ou Off ; Fx = Active, Calm ou Warn (remis à None
-        juste avant, pour rejouer l'événement), toutes les TRANS_PULSE secondes : particules, son, et l'annonce (zones
-        rouges qui se remplissent en TRANS_WARN secondes) avant qu'un quadrant calme ne redevienne actif. Trans_Seal, Golem=On à la mort du
-        golem : le sceau du pied de l'hélice se dissout."""
+        (`trans_ids`) : State = Active (dégâts et effets au sol) ou Off (zone calme, sol nu) ; Fx = Active (remis à None
+        juste avant, pour rejouer l'événement) toutes les TRANS_PULSE secondes : effet au sol de l'élément et son. Les
+        chutes annoncées et le cône de la rotation sont dessinés par le Java (tower.TowerFx). Trans_Seal, Golem=On à la
+        mort du golem : le sceau du pied de l'hélice se dissout."""
         g = self.group("Tower_Transmutation", 13421619)
         c = self.t["trans"]
         for el, (lo, hi) in c["zones"].items():
-            warn_p, active_p, calm_p, snd, active_fx, (pct, every), calm_fx, calm_dmg, push = TRANS[el]
+            snd, active_fx, (pct, every) = TRANS[el]
             center, shape = self.bounds([lo, hi])
             sx, sz = at.TRANS_QUADRANTS[el]
             # Points des particules : sur le quart de disque, au sol (le centre de la boîte est à mi-hauteur).
@@ -537,28 +527,13 @@ class Traps:
                     x, z = sx * r * math.cos(a), sz * r * math.sin(a)
                     spots.append((x - (center[0] - self.origin[0]) + 0.5, dy, z - (center[2] - self.origin[2]) + 0.5))
             effects = [
-                *[vfx("TAG_ADDED", active_p, entry=1, offset=(x, y + 0.2, z), duration=TRANS_PULSE) for x, y, z in spots],
+                *[vfx("TAG_ADDED", f"Nakasar_Trans_Ground_{el}", entry=1, offset=(x, y, z), duration=TRANS_PULSE)
+                  for x, y, z in spots],
                 sound("TAG_ADDED", snd, entry=1),
-                *[vfx("TAG_ADDED", calm_p, entry=2, offset=(x, y + 0.2, z), duration=TRANS_PULSE, scale=0.6)
-                  for x, y, z in spots[::2]],
-                *[dict(mark(3.2, TRANS_WARN, "TAG_ADDED", offset=(x, y + 0.1, z)), Entry=3) for x, y, z in spots],
-                *[vfx("TAG_ADDED", warn_p, entry=3, offset=(x, y + 0.2, z), duration=TRANS_WARN) for x, y, z in spots],
-                sound("TAG_ADDED", "SFX_Gobliterator_Arena_Door_Warning", entry=3),
                 *[dict(status(n, d, interval=i), Entry=0) for n, d, i in active_fx],
                 dict(damage(pct, every), Entry=0),
-                *[dict(status(n, d, interval=i), Entry=1) for n, d, i in calm_fx],
             ]
-            conditions = [tag_is("TAG_ADDED", "Fx", "Active", entry=1), tag_is("TAG_ADDED", "Fx", "Calm", entry=2),
-                          tag_is("TAG_ADDED", "Fx", "Warn", entry=3),
-                          tag_is("TICK", "State", "Active", entry=0), tag_is("TICK", "State", "Calm", entry=1)]
-            if calm_dmg:
-                effects.append(dict(damage(*calm_dmg), Entry=1))
-            if push:
-                # Rafales vers le mur du quadrant (jamais vers le vide), par bouffées.
-                strong, light = push
-                vx, vz = sx * math.sqrt(0.5), sz * math.sqrt(0.5)
-                effects += [dict(velocity(vx * strong, 1.0, vz * strong), Entry=0, Interval=1.5),
-                            dict(velocity(vx * light, 0.4, vz * light), Entry=1, Interval=2.0)]
+            conditions = [tag_is("TAG_ADDED", "Fx", "Active", entry=1), tag_is("TICK", "State", "Active", entry=0)]
             self.add(f"Trans_{el}", g, center, shape, effects, conditions,
                      volume_tags={"State": "Off", "Fx": "None"}, ConditionTiming="BeforeVolumeDelay")
         self.gate("Trans_Seal", g, self.t["trans_seal"], ["Golem"], [title("TAG_ADDED", "transmutation")])
@@ -668,26 +643,27 @@ class Traps:
                            hit_fx=[vfx("", "Block_Break_Dust", offset=(0, 1.5, 0)), vfx("", "Smoke_Floor"),
                                    sound("", "SFX_Drop_Weapons_Books")],
                            hits=[damage(14, 1.0), status("Slow", 2.0)], odds=0.5)
-        # Pans d'étagères : le pan s'annonce (zones rouges le long du mur), puis ses éboulis tombent par blocs.
+        # Pans d'étagères : le Java couvre le pan d'un cône rouge qui se charge du mur vers le centre (tower.TowerFx),
+        # puis ses éboulis tombent par blocs, CODEX_COLLAPSE_WARN secondes plus tard.
         for i, cells in enumerate(c["rubble"]):
             center, shape = self.bounds(cells)
             a0, a1 = at.COLLAPSE_ARCS[i]
             span = (a1 - a0) % 360
-            marks = []
+            dust = []
             for k in range(4):
                 a = math.radians(a0 + span * (k + 0.5) / 4)
                 mx, mz = 24.5 * math.cos(a), 24.5 * math.sin(a)
                 wx, wy, wz = self.world(mx, y, mz)
-                offset = (wx + 0.5 - center[0], wy + 0.1 - center[1], wz + 0.5 - center[2])
-                marks += [mark(2.9, 2.5, "TAG_ADDED", offset=offset),
-                          vfx("TAG_ADDED", "Block_Break_Dust", offset=(offset[0], offset[1] + 4, offset[2]))]
+                offset = (wx + 0.5 - center[0], wy + 4.1 - center[1], wz + 0.5 - center[2])
+                dust.append(vfx("TAG_ADDED", "Block_Break_Dust", offset=offset))
             self.add(f"Codex_Collapse_{i}", g, center, shape, [
-                sound("TAG_ADDED", "SFX_Drop_Weapons_Books"), *marks,
+                sound("TAG_ADDED", "SFX_Drop_Weapons_Books"), *dust,
                 signal("TAG_ADDED", "Collapse", "Codex_Pile", str(i), radius=60.0)],
                 [tag_is("TAG_ADDED", "Collapse", "On")], volume_tags={"Codex_Sector": str(i), "Collapse": "Off"})
             for j, pile in enumerate(piles(cells)):
                 pc, ps = self.bounds(pile)
-                self.pulse(f"Codex_Pile_{i}_{j}", g, pc, ps, "Collapse", "Codex_Pile", str(i), warn=2.5, active=0.6,
+                self.pulse(f"Codex_Pile_{i}_{j}", g, pc, ps, "Collapse", "Codex_Pile", str(i), warn=CODEX_COLLAPSE_WARN,
+                           active=0.6,
                            warn_fx=[], hit_fx=[replace("", ["Empty"], at.RUBBLE), vfx("", "Block_Break_Dust")],
                            hits=[damage(20, 1.0), status("Slow", 3.0)])
         # Remise à zéro de l'arène : éboulis retirés, pans prêts à retomber.
@@ -702,33 +678,11 @@ class Traps:
     def chimera(self):
         """Combat de la Chimère du laboratoire (étape 6). Le Java (tower.ChimeraSystem) pose une étiquette sur ces
         volumes, ids dans TowerLayout.java (`chimera_ids`) :
-        - Chimera_Seal, Chimera=On à la mort de la Chimère : le sceau de la porte nord se dissout ;
-        - Chimera_Acid, Cast=On à intervalles pendant le combat (plus souvent quand elle se régénère dans la cuve) :
-          la cuve crache de l'acide sur environ un tiers des cercles du laboratoire, chacun annoncé au sol."""
+        - Chimera_Seal, Chimera=On à la mort de la Chimère : le sceau de la porte nord se dissout."""
         g = self.group("Tower_Chimera", 4569930)
         c = self.t["chimera"]
-        cx, y, cz = c["vat"]
         self.gate("Chimera_Seal", g, c["seal"], ["Chimera"], [title("TAG_ADDED", "chimera")])
-        self.add("Chimera_Acid", g, self.foot(cx, y, cz), cylinder(at.R_IN, 8), [
-            sound("TAG_ADDED", "SFX_Emit_Goblin_Liquid_Bubbling_Steam_Bursts"),
-            vfx("TAG_ADDED", "Dungeon_Goblin_Toxic_Water", offset=(0, 0.5, 0), scale=2.0),
-            signal("TAG_ADDED", "Acid", "Chimera_Acid", "Zone", radius=60.0),
-            tags("TAG_ADDED", "Cast", "Off", 3.0)],
-            [tag_is("TAG_ADDED", "Cast", "On")], volume_tags={"Cast": "Off"})
-        n = 0
-        for r, count in ((12, 8), (16.5, 11), (21, 14), (25.5, 17)):
-            for k in range(count):
-                a = 360 * k / count + 23 * r
-                x, z = cx + r * math.cos(math.radians(a)), cz + r * math.sin(math.radians(a))
-                wx, wy, wz = self.world(x, y, z)
-                n += 1
-                self.pulse(f"Chimera_Acid_{n}", g, (wx + 0.5, wy, wz + 0.5), cylinder(1.8, 3), "Acid", "Chimera_Acid",
-                           "Zone", warn=2.2, active=0.6,
-                           warn_fx=[mark(1.9, 2.2),
-                                    vfx("", "Dungeon_Goblin_Spores_Green", offset=(0, 0.2, 0))],
-                           hit_fx=[vfx("", "Impact_Poison", offset=(0, 0.5, 0)), vfx("", "Effect_Poison"),
-                                   sound("", "SFX_Emit_Goblin_Liquid_Bubbling_Steam_Bursts")],
-                           hits=[damage(10, 1.0), status("Poison_T1", 4.0)], odds=0.35)
+        # L'acide de la cuve est mené par le Java : un jet sous chaque joueur, annoncé par un petit cercle rouge.
 
     def alchemist(self):
         """Combat de l'Alchimiste sur la terrasse de l'Observatoire (étape 7). Le Java (tower.AlchemistSystem) pose
@@ -756,30 +710,31 @@ class Traps:
             title("BLOCK_USED", "alchemist_hard", 0.6)],
             [tag_is("BLOCK_USED", "Hard", "On", inverted=True), tag_is("BLOCK_USED", "Locked", "On", inverted=True)],
             volume_tags={"Hard": "Off", "Locked": "Off"}, ConditionTiming="BeforeVolumeDelay")
-        # Pans du rebord : annoncés par des zones rouges, puis les blocs tombent ; la remise à zéro les repose.
+        # Pans du rebord : le Java couvre chaque pan d'un cône rouge qui se charge de l'athanor vers le bord
+        # (tower.TowerFx), puis les blocs tombent DECK_COLLAPSE_WARN secondes plus tard ; la remise à zéro les repose.
         sources = sorted({n for n, _ in at.FLOOR} | {n for n, _ in at.WALL})
+        warn = DECK_COLLAPSE_WARN
         for i, cells in enumerate(c["collapse"]):
             center, shape = self.bounds(cells)
             a0, a1 = at.DECK_COLLAPSE_ARCS[i]
             span = (a1 - a0) % 360
-            marks = []
+            dust = []
             for r in (36, 40):
                 for k in range(max(2, span // 9)):
                     a = math.radians(a0 + span * (k + 0.5) / max(2, span // 9))
                     wx, wy, wz = self.world(cx + r * math.cos(a), y, cz + r * math.sin(a))
                     offset = (wx + 0.5 - center[0], wy + 0.1 - center[1], wz + 0.5 - center[2])
-                    marks += [mark(2.9, 2.5, "TAG_ADDED", offset=offset),
-                              vfx("TAG_ADDED", "Block_Break_Dust", 2.5, offset=offset)]
+                    dust.append(vfx("TAG_ADDED", "Block_Break_Dust", warn, offset=offset))
             self.add(f"Alchemist_Collapse_{i}", g, center, shape, [
-                sound("TAG_ADDED", "SFX_Crystal_Break"), sound("TAG_ADDED", "SFX_Crystal_Break", 2.4), *marks,
+                sound("TAG_ADDED", "SFX_Crystal_Break"), sound("TAG_ADDED", "SFX_Crystal_Break", warn - 0.1), *dust,
                 signal("TAG_ADDED", "Collapse", "Alchemist_Pile", str(i), radius=70.0),
-                tags("TAG_ADDED", "Collapse", "Off", 3.0)],
+                tags("TAG_ADDED", "Collapse", "Off", warn + 0.5)],
                 [tag_is("TAG_ADDED", "Collapse", "On")], volume_tags={"Collapse": "Off"})
             for layer, restore in ((y - 1, at.CRACKED), (y - 2, "Rock_Marble_Brick")):
                 for j, pile in enumerate(piles([cell for cell in cells if cell[1] == layer])):
                     pc, ps = self.bounds(pile)
                     self.add(f"Alchemist_Pile_{i}_{y - layer}_{j}", g, pc, ps, [
-                        replace("SIGNAL_RECEIVED", sources, "Empty", 2.5),
+                        replace("SIGNAL_RECEIVED", sources, "Empty", warn),
                         replace("SIGNAL_RECEIVED", ["Empty"], restore, entry=1)],
                         [tag_is("SIGNAL_RECEIVED", "Collapse", "", source="Event"),
                          tag_is("SIGNAL_RECEIVED", "Restore", "", entry=1, source="Event")],
@@ -833,9 +788,10 @@ def check_ids(volumes):
     for v in volumes.values():
         for e in v["Effects"]:
             for field, ids in known.items():
-                if field == "ParticleSystem" and e.get(field, "").startswith((tw.PREFIX, "Nakasar_Gas_Cloud_",
-                                                                               "Nakasar_Spore_Cloud_")):
-                    continue  # zones d'annonce et nuages de la tour, écrits par tower_warnings.write() et write_clouds()
+                if field == "ParticleSystem" and (e.get(field, "").startswith((tw.PREFIX, "Nakasar_Gas_Cloud_",
+                                                                                "Nakasar_Spore_Cloud_"))
+                                                  or e.get(field) in fx.ids()):
+                    continue  # zones d'annonce, nuages et effets de la tour (tower_warnings, write_clouds, tower_fx)
                 if field in e and e[field] not in ids:
                     raise RuntimeError(f"pièges : {field} inconnu {e[field]!r} dans {v['Name']}")
             for b in e.get("FromBlockTypes", ()):
@@ -897,7 +853,7 @@ def trans_ids():
 
 def chimera_ids():
     """Ids des volumes que tower.ChimeraSystem étiquette (TowerLayout.java)."""
-    return {"seal": vid("Chimera_Seal"), "acid": vid("Chimera_Acid")}
+    return {"seal": vid("Chimera_Seal")}
 
 
 def alchemist_ids():

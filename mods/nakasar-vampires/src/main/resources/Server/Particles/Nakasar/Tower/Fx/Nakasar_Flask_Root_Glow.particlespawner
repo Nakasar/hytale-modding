@@ -1,66 +1,76 @@
 {
   "RenderMode": "BlendAdd",
-  "ParticleRotationInfluence": "Velocity",
+  "ParticleRotationInfluence": "Billboard",
   "ParticleLifeSpan": {
-    "Min": 5.0,
-    "Max": 5.0
+    "Min": 1.2,
+    "Max": 1.2
   },
-  "ParticleRotateWithSpawner": true,
+  "ParticleRotateWithSpawner": false,
   "TrailSpawnerPositionMultiplier": 1,
   "TrailSpawnerRotationMultiplier": 1,
+  "LinearFiltering": true,
   "Particle": {
     "Texture": "Particles/Textures/Basic/Ball5.png",
     "ScaleRatioConstraint": "OneToOne",
     "UVOption": "None",
+    "SoftParticles": "Disable",
     "Animation": {
       "0": {
-        "Opacity": 0.35,
-        "Color": "#ff2a1a",
+        "Opacity": 0,
+        "Color": "#b8f070",
         "Scale": {
           "X": {
-            "Min": 0.05,
-            "Max": 0.05
+            "Min": 0.4,
+            "Max": 0.4
           }
         }
       },
-      "97": {
-        "Opacity": 0.7,
+      "20": {
+        "Opacity": 1,
         "Scale": {
           "X": {
             "Min": 1,
             "Max": 1
           }
         }
+      },
+      "80": {
+        "Opacity": 1,
+        "Color": "#3f8f2a"
       },
       "100": {
         "Opacity": 0,
-        "Color": "#ff2a1a",
+        "Color": "#3f8f2a",
         "Scale": {
           "X": {
-            "Min": 1,
-            "Max": 1
+            "Min": 0.6,
+            "Max": 0.6
           }
         }
       }
     },
-    "SoftParticles": "Disable",
     "InitialAnimationFrame": {
-      "Opacity": 0.35,
-      "Rotation": {
-        "X": {
-          "Min": 90,
-          "Max": 90
-        }
-      },
+      "Opacity": 1,
       "Scale": {
         "X": {
-          "Min": 6.25,
-          "Max": 6.25
+          "Min": 0.9,
+          "Max": 0.9
         }
       }
     }
   },
   "Shape": "Sphere",
+  "SpawnBurst": true,
+  "InitialVelocity": {
+    "Speed": {
+      "Min": 0.01,
+      "Max": 0.01
+    },
+    "Yaw": {
+      "Min": -180,
+      "Max": 180
+    }
+  },
   "TotalParticles": {
     "Min": 1,
     "Max": 1
@@ -69,13 +79,5 @@
     "Min": 1,
     "Max": 1
   },
-  "LinearFiltering": true,
-  "MaxConcurrentParticles": 1,
-  "InitialVelocity": {
-    "Speed": {
-      "Min": 0.01,
-      "Max": 0.01
-    }
-  },
-  "SpawnBurst": true
+  "MaxConcurrentParticles": 1
 }

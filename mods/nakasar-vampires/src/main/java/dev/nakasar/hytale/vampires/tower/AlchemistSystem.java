@@ -61,17 +61,24 @@ import java.util.concurrent.ThreadLocalRandom;
  *   <li><b>Engagement</b> : sa vie est multipliée par 1 + {@value #HP_PER_PLAYER} par joueur de plus dans l'arène, et
  *   par {@value #HARD_HP} si le levier de l'antichambre a été tiré (mode difficile, lu sur le volume
  *   {@link TowerLayout#ALCHEMIST_LEVER}, qu'on verrouille alors jusqu'à la remise à zéro).</li>
- *   <li><b>Transmutation</b> (100 à 67 %) : fioles des quatre éléments, zones annoncées au sol.</li>
- *   <li><b>Grand Œuvre</b> (67 à 34 %) : le rebord de la terrasse s'effondre (volumes
- *   {@link TowerLayout#ALCHEMIST_COLLAPSE}) ; il s'enferme dans l'athanor, gelé et invulnérable, et en fait sortir des
- *   homoncules ({@value #HOMUNCULUS_ROLE}). Le dernier tué, il ressort près d'un joueur, vulnérable
- *   {@value #VULNERABLE} s ({@value #VULNERABLE_HARD} s en mode difficile), puis s'y renferme. Qui tombe dans le vide
- *   d'un pan effondré revient sur le bord intérieur ({@link TowerLayout#ALCHEMIST_SAFE}), blessé.</li>
+ *   <li><b>Transmutation</b> (100 à 67 %) : fioles, un seul élément par salve. Il lève une fiole de la couleur de
+ *   l'élément ({@code Nakasar_Flask_*}) ; les cercles au sol restent rouges (effet négatif) et crépitent de l'élément
+ *   ({@code Nakasar_Crackle_*}, tools/tower_fx.py ; Kevin, 20 octobre 2026).</li>
+ *   <li><b>Grand Œuvre</b> (67 à 34 %) : chaque pan du rebord qui va tomber se couvre d'un cône rouge chargé de
+ *   l'athanor vers le bord ({@link TowerFx.Sweep}), puis s'effondre (volumes {@link TowerLayout#ALCHEMIST_COLLAPSE}) ;
+ *   il s'enferme dans l'athanor, gelé et invulnérable, et en fait sortir des homoncules ({@value #HOMUNCULUS_ROLE}).
+ *   Tant qu'il y est, l'athanor déclenche toutes les {@value #RING_INTERVAL} s une transmutation en anneau, annoncée
+ *   par un anneau rouge qui se remplit en {@value #RING_WARN} s (près de l'athanor, puis plus loin, en alternance).
+ *   Le dernier homoncule tué, il ressort près d'un joueur, vulnérable {@value #VULNERABLE} s
+ *   ({@value #VULNERABLE_HARD} s en mode difficile), puis s'y renferme. Qui tombe dans le vide d'un pan effondré revient
+ *   sur le bord intérieur ({@link TowerLayout#ALCHEMIST_SAFE}), blessé.</li>
  *   <li><b>Convergence</b> (34 à 0 %) : quatre piliers élémentaires se dressent ; il prend l'élément d'un pilier encore
  *   debout toutes les {@value #ELEMENT_PERIOD} s (teinte et particules : effets {@value #ASPECT_PREFIX}*) et fait
  *   tomber cet élément sur chaque joueur toutes les {@value #HAZARD_INTERVAL} s : flammes qui restent au sol, givre
  *   qui ralentit, foudre qui étourdit, racines qui immobilisent. Les quatre piliers détruits, il s'effondre
- *   {@value #EXHAUSTED_SECONDS} s ({@value #EXHAUSTED}, dégâts subis +50 %).</li>
+ *   {@value #EXHAUSTED_SECONDS} s ({@value #EXHAUSTED}, dégâts subis +50 %). Ensuite les piliers renaissent à
+ *   {@value #PILLAR_REBIRTH} de leur vie et le fléau reprend ; chaque nouvelle Convergence va plus vite (élément et
+ *   fléau {@value #CYCLE_SPEEDUP} fois plus fréquents par cycle), jusqu'à sa mort.</li>
  *   <li><b>Fioles de soin</b> : à partir de {@value #HEAL_FIRST} s de combat, une fiole s'allume toutes les
  *   {@value #HEAL_INTERVAL} s sur un des socles de la terrasse.</li>
  *   <li><b>Remise à zéro</b> : plus aucun joueur dans l'arène pendant {@value #RESET_SECONDS} s : il sort de l'athanor,
@@ -102,6 +109,14 @@ public final class AlchemistSystem extends TickingSystem<EntityStore> {
     static final float HAZARD_INTERVAL = 5f;
     static final float HAZARD_INTERVAL_HARD = 3.5f;
     static final float EXHAUSTED_SECONDS = 8f;
+    static final float PILLAR_REBIRTH = 0.5f;
+    static final float CYCLE_SPEEDUP = 1.2f;
+    /** Anneau de l'athanor au Grand Œuvre : cadence, annonce, part de la vie maximale, rayons des deux anneaux. */
+    static final float RING_INTERVAL = 15f;
+    static final float RING_WARN = 3f;
+    private static final float RING_DAMAGE = 0.15f;
+    private static final double RING_SPLIT = 17;
+    private static final double RING_OUTER = 30;
     static final float HEAL_FIRST = 30f;
     static final float HEAL_INTERVAL = 40f;
     /** Une fiole de soin s'éteint seule au bout de 25 s (volume) : on ne rallume pas le même socle avant. */
@@ -117,25 +132,28 @@ public final class AlchemistSystem extends TickingSystem<EntityStore> {
 
     /** Zone rouge qui se remplit en {@link #WARN} s (tools/tower_warnings.py). */
     private static final String WARNING = "Nakasar_Warning_25";
+    /** tools/tower_fx.py : fiole levée et crépitements de l'élément dans le cercle rouge. */
+    private static final String FLASK = "Nakasar_Flask_";
+    private static final String CRACKLE = "Nakasar_Crackle_";
     private static final String PARTICLE_ATHANOR = "Fire_Charge_Charging1";
     private static final String SOUND_ATHANOR = "SFX_Emit_Goblin_Pipes_Activate";
+    private static final String SOUND_RING = "SFX_Emit_Goblin_Flame_Quadrant_Blast";
 
     /** Éléments des fioles et de la Convergence, dans l'ordre des piliers ({@link TowerLayout#ALCHEMIST_PILLARS}). */
     enum Element {
-        FIRE("Fire", 3.0, 0.12f, "Fire", "Fire_Trap_Preview", new String[]{"Fire_AoE"}, "SFX_Emit_Goblin_Flame_Quadrant_Blast",
+        FIRE("Fire", 3.0, 0.12f, "Fire", new String[]{"Fire_AoE"}, "SFX_Emit_Goblin_Flame_Quadrant_Blast",
                 new String[]{"Burn"}, new float[]{4f}, 4f),
-        FROST("Frost", 3.5, 0.10f, "Physical", "Weapon_Frost_Mist", new String[]{"Ice_Blast", "Ability_Ice_Explosion"},
+        FROST("Frost", 3.5, 0.10f, "Physical", new String[]{"Ice_Blast", "Ability_Ice_Explosion"},
                 "SFX_Ice_Break", new String[]{"Slow"}, new float[]{4f}, 0f),
-        THUNDER("Thunder", 2.5, 0.16f, "Physical", "Goblin_Decorative_Sparks", new String[]{"Lightning"},
+        THUNDER("Thunder", 2.5, 0.16f, "Physical", new String[]{"Lightning"},
                 "SFX_Emit_Goblin_Electric_Fence_Zap", new String[]{"Hazard_Electric_Stun"}, new float[]{1f}, 0f),
-        ROOT("Root", 3.0, 0.08f, "Physical", "Dungeon_Goblin_Spores_Green", new String[]{"Impact_Poison", "Effect_Poison"},
+        ROOT("Root", 3.0, 0.08f, "Physical", new String[]{"Impact_Poison", "Effect_Poison"},
                 "SFX_Bramble_MoveIn", new String[]{"Root", "Poison_T1"}, new float[]{2.5f, 4f}, 0f);
 
         final String id;
         final double radius;
         final float damage;
         final String cause;
-        final String warnParticle;
         final String[] hitParticles;
         final String sound;
         final String[] effects;
@@ -143,13 +161,12 @@ public final class AlchemistSystem extends TickingSystem<EntityStore> {
         /** Secondes pendant lesquelles la zone reste dangereuse après l'éclat (flammes au sol). */
         final float linger;
 
-        Element(String id, double radius, float damage, String cause, String warnParticle, String[] hitParticles,
+        Element(String id, double radius, float damage, String cause, String[] hitParticles,
                 String sound, String[] effects, float[] effectSeconds, float linger) {
             this.id = id;
             this.radius = radius;
             this.damage = damage;
             this.cause = cause;
-            this.warnParticle = warnParticle;
             this.hitParticles = hitParticles;
             this.sound = sound;
             this.effects = effects;
@@ -195,6 +212,13 @@ public final class AlchemistSystem extends TickingSystem<EntityStore> {
         long nextHazard;
         boolean exhausted;
         long exhaustedUntil;
+        /** Convergences recommencées (piliers renés) : chacune 20 % plus rapide. */
+        int cycle;
+        /** Cônes des pans du rebord, anneau de l'athanor en cours et le prochain (alterne près / loin). */
+        final List<TowerFx.Sweep> cones = new ArrayList<>();
+        TowerFx.Sweep ring;
+        long nextRing;
+        boolean ringFar;
         final List<Strike> strikes = new ArrayList<>();
         float absent;
         boolean sealed;
@@ -296,6 +320,8 @@ public final class AlchemistSystem extends TickingSystem<EntityStore> {
         }
 
         rescueFallen(world, store, boss, fight);
+        fight.cones.removeIf(cone -> cone.step(store, now));
+        ring(world, store, fight, now);
         strikes(store, fight, now);
         heals(volumes, fight, now);
 
@@ -308,6 +334,13 @@ public final class AlchemistSystem extends TickingSystem<EntityStore> {
                     tag(volumes, id, "Collapse", "On");
                 }
             }
+            // Chaque pan qui va tomber : cône rouge chargé de l'athanor vers le bord, jusqu'à la chute.
+            double[] radii = TowerLayout.ALCHEMIST_COLLAPSE_RADII;
+            for (double[] arc : TowerLayout.ALCHEMIST_COLLAPSE_ARCS) {
+                fight.cones.add(TowerFx.Sweep.arc(TowerLayout.ALCHEMIST_CENTER, arc[0], arc[1], radii[0], radii[1], now,
+                        TowerLayout.ALCHEMIST_COLLAPSE_WARN));
+            }
+            fight.nextRing = now + seconds(RING_INTERVAL);
             fight.collapsed = true;
             enclose(store, boss, fight);
         } else if (fight.phase == 2) {
@@ -393,6 +426,51 @@ public final class AlchemistSystem extends TickingSystem<EntityStore> {
         puff(store, exit);
     }
 
+    /**
+     * Transmutation en anneau de l'athanor, tant qu'il y est enfermé : un anneau rouge se remplit de l'intérieur vers
+     * l'extérieur en {@link #RING_WARN} s, puis frappe qui s'y tient. Près de l'athanor, puis plus loin, en alternance :
+     * on esquive en changeant d'anneau.
+     */
+    private static void ring(World world, Store<EntityStore> store, Fight fight, long now) {
+        if (fight.ring != null) {
+            if (!fight.ring.step(store, now)) {
+                return;
+            }
+            TowerFx.Sweep ring = fight.ring;
+            fight.ring = null;
+            float damage = RING_DAMAGE * (fight.hard ? HARD_DAMAGE : 1f);
+            for (Ref<EntityStore> player : playersInArena(world, store)) {
+                Vector3d position = TowerFx.position(store, player);
+                if (position != null && Math.abs(position.y() - ring.center.y()) < 3 && ring.contains(position)) {
+                    damage(store, player, DamageCause.getAssetMap().getAsset("Physical"), damage);
+                }
+            }
+            for (int k = 0; k < 8; k++) {
+                double a = Math.PI * 2 * k / 8;
+                double r = (ring.from + ring.to) / 2;
+                Vector3d at = new Vector3d(ring.center).add(Math.cos(a) * r, 0.3, Math.sin(a) * r);
+                ParticleUtil.spawnParticleEffect(PARTICLE_ATHANOR, at, 0f, 0f, 0f, 1.5f, 1f, store);
+            }
+            sound(SOUND_RING, ring.center, store);
+            return;
+        }
+        if (fight.phase == 2 && !fight.enclosed) {
+            // Vulnérable hors de l'athanor : le prochain anneau attend qu'il s'y renferme, et laisse souffler.
+            fight.nextRing = now + seconds(RING_INTERVAL / 2);
+            return;
+        }
+        if (fight.phase != 2 || now < fight.nextRing) {
+            return;
+        }
+        fight.nextRing = now + seconds(RING_INTERVAL);
+        double inner = TowerLayout.ALCHEMIST_ATHANOR_RADIUS + 1;
+        fight.ring = fight.ringFar
+                ? new TowerFx.Sweep(TowerLayout.ALCHEMIST_CENTER, 0, Math.PI * 2, RING_SPLIT, RING_OUTER, now, RING_WARN)
+                : new TowerFx.Sweep(TowerLayout.ALCHEMIST_CENTER, 0, Math.PI * 2, inner, RING_SPLIT, now, RING_WARN);
+        fight.ringFar = !fight.ringFar;
+        puff(store, TowerLayout.ALCHEMIST_CENTER);
+    }
+
     // --- Convergence ----------------------------------------------------------------------------------------------
 
     @SuppressWarnings("unchecked")
@@ -402,8 +480,15 @@ public final class AlchemistSystem extends TickingSystem<EntityStore> {
         if (volumes != null) {
             tag(volumes, TowerLayout.ALCHEMIST_PHASE_3, "Cast", "On");
         }
+        fight.pillars = new Ref[Element.values().length];
+        raisePillars(store, fight, 1f);
+        fight.nextHazard = now + seconds(3f);
+        switchElement(store, boss, fight, now);
+    }
+
+    /** Dresse les quatre piliers (vie : part `health` de leur maximum). */
+    private static void raisePillars(Store<EntityStore> store, Fight fight, float health) {
         Element[] elements = Element.values();
-        fight.pillars = new Ref[elements.length];
         for (int i = 0; i < elements.length; i++) {
             Vector3d at = new Vector3d(TowerLayout.ALCHEMIST_PILLARS[i]);
             Ref<EntityStore> pillar = spawn(store, "Nakasar_Alchemist_Pillar_" + elements[i].id, at,
@@ -412,19 +497,33 @@ public final class AlchemistSystem extends TickingSystem<EntityStore> {
                 // Immobile : l'IA gelée ne le fait ni bouger ni tourner.
                 store.ensureAndGetComponent(pillar, Frozen.getComponentType());
                 ParticleUtil.spawnParticleEffect(elements[i].hitParticles[0], new Vector3d(at).add(0, 1, 0), 0f, 0f, 0f, 1.5f, 1f, store);
+                EntityStatMap stats = store.getComponent(pillar, EntityStatMap.getComponentType());
+                EntityStatValue value = stats == null ? null : stats.get(DefaultEntityStatTypes.getHealth());
+                if (value != null && health < 1f) {
+                    stats.setStatValue(DefaultEntityStatTypes.getHealth(), Math.max(1f, value.getMax() * health));
+                }
             }
             fight.pillars[i] = pillar;
         }
-        fight.nextHazard = now + seconds(3f);
-        switchElement(store, boss, fight, now);
+    }
+
+    /** Cadence d'un intervalle de la Convergence au cycle en cours (chaque cycle 20 % plus fréquent). */
+    private static float paced(Fight fight, float seconds) {
+        return (float) (seconds / Math.pow(CYCLE_SPEEDUP, fight.cycle));
     }
 
     private static void convergence(World world, Store<EntityStore> store, Ref<EntityStore> boss, Fight fight,
                                     List<Ref<EntityStore>> players, long now) {
         if (fight.exhausted) {
-            if (fight.exhaustedUntil != 0 && now >= fight.exhaustedUntil) {
-                fight.exhaustedUntil = 0;
+            if (now >= fight.exhaustedUntil) {
+                // Pas de temps mort : les piliers renaissent à moitié, le fléau reprend, plus vite.
+                fight.exhausted = false;
+                fight.cycle++;
                 store.tryRemoveComponent(boss, Frozen.getComponentType());
+                raisePillars(store, fight, PILLAR_REBIRTH);
+                fight.nextHazard = now + seconds(2f);
+                switchElement(store, boss, fight, now);
+                TowerFx.sound(store, "SFX_Emit_Dungeon_Goblin_Void_Thunder", TowerLayout.ALCHEMIST_CENTER);
             }
             return;
         }
@@ -447,7 +546,7 @@ public final class AlchemistSystem extends TickingSystem<EntityStore> {
             switchElement(store, boss, fight, now);
         }
         if (now >= fight.nextHazard && fight.element != null) {
-            fight.nextHazard = now + seconds(fight.hard ? HAZARD_INTERVAL_HARD : HAZARD_INTERVAL);
+            fight.nextHazard = now + seconds(paced(fight, fight.hard ? HAZARD_INTERVAL_HARD : HAZARD_INTERVAL));
             for (Ref<EntityStore> player : players) {
                 Vector3d at = groundUnder(store, player);
                 if (at != null) {
@@ -479,7 +578,7 @@ public final class AlchemistSystem extends TickingSystem<EntityStore> {
             removeEffect(boss, ASPECT_PREFIX + fight.element.id, store);
         }
         fight.element = next;
-        fight.nextElement = now + seconds(fight.hard ? ELEMENT_PERIOD_HARD : ELEMENT_PERIOD);
+        fight.nextElement = now + seconds(paced(fight, fight.hard ? ELEMENT_PERIOD_HARD : ELEMENT_PERIOD));
         if (next != null) {
             applyEffect(boss, ASPECT_PREFIX + next.id, -1f, store);
             TransformComponent transform = store.getComponent(boss, TransformComponent.getComponentType());
@@ -523,12 +622,15 @@ public final class AlchemistSystem extends TickingSystem<EntityStore> {
         long now = System.nanoTime();
         Element[] elements = Element.values();
         ThreadLocalRandom random = ThreadLocalRandom.current();
+        // Un seul élément par salve : il lève une fiole de sa couleur, les cercles crépitent de cet élément.
+        Element element = fight.element != null ? fight.element : elements[random.nextInt(elements.length)];
+        ParticleUtil.spawnParticleEffect(FLASK + element.id, new Vector3d(self.getPosition()).add(0, 2.4, 0), 0f, 0f, 0f,
+                1f, 1f, store);
         for (Ref<EntityStore> player : playersInArena(world, store)) {
             Vector3d at = groundUnder(store, player);
             if (at == null || horizontal(at, self.getPosition()) > FLASK_RANGE) {
                 continue;
             }
-            Element element = fight.element != null ? fight.element : elements[random.nextInt(elements.length)];
             fight.strikes.add(strike(store, at, element, now));
             if (fight.hard) {
                 // Mode difficile : une seconde fiole à côté, pour qu'un pas de côté ne suffise pas toujours.
@@ -542,7 +644,7 @@ public final class AlchemistSystem extends TickingSystem<EntityStore> {
     private static Strike strike(Store<EntityStore> store, Vector3d at, Element element, long now) {
         Vector3d ground = new Vector3d(at).add(0, 0.1, 0);
         ParticleUtil.spawnParticleEffect(WARNING, ground, 0f, 0f, 0f, (float) (0.68 * element.radius), 1f, store);
-        ParticleUtil.spawnParticleEffect(element.warnParticle, ground, 0f, 0f, 0f, 1f, 1f, store);
+        ParticleUtil.spawnParticleEffect(CRACKLE + element.id, ground, 0f, 0f, 0f, (float) (0.68 * element.radius), 1f, store);
         return new Strike(new Vector3d(at), element, now + seconds(WARN));
     }
 
@@ -685,6 +787,7 @@ public final class AlchemistSystem extends TickingSystem<EntityStore> {
         clearHelpers(fight, store);
         store.tryRemoveComponent(boss, Frozen.getComponentType());
         store.tryRemoveComponent(boss, Invulnerable.getComponentType());
+        fight.strikes.clear();
         if (fight.element != null) {
             removeEffect(boss, ASPECT_PREFIX + fight.element.id, store);
         }

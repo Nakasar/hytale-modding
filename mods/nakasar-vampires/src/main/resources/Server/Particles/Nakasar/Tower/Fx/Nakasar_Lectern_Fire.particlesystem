@@ -1,0 +1,18 @@
+{
+  "$Comment": "Pupitre d'un chapitre du Codex : sort Fire à venir. Généré par tools/tower_fx.py.",
+  "Spawners": [
+    {
+      "SpawnerId": "Nakasar_Lectern_Fire_Glow",
+      "PositionOffset": {
+        "Y": 0.3
+      }
+    },
+    {
+      "SpawnerId": "Nakasar_Lectern_Fire_Sparks",
+      "PositionOffset": {
+        "Y": 0.2
+      }
+    }
+  ],
+  "CullDistance": 64
+}

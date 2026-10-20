@@ -106,7 +106,6 @@ Un balcon extérieur fait le tour de la tour d'ouest en est par le nord, avec un
 
 Une rotonde à deux galeries couverte de rayonnages, avec trois pupitres autour du centre. Des apprentis, des homoncules et un élémentaire de glace y montent la garde, et le **[Codex vivant](#codex-vivant)** flotte au centre : c'est une **arène**.
 
-- Pendant le combat seulement, **des livres tombent des rayonnages** : une zone sur trois environ, annoncée 2 s, toutes les 3 s (**12 %** de vie et ralentissement).
 - **Haie de ronces :** une haie barre le pied de la rampe qui monte vers l'étage suivant. **Allumez le brasero** voisin : la haie flambe et disparaît (*Les ronces ont brûlé*).
 - **Sceau de la rampe :** en haut de la rampe, un sceau alchimique ne se dissout qu'à la **mort du Codex**.
 
@@ -167,8 +166,8 @@ Un grimoire géant qui flotte entre trois pupitres.
 
 **Toutes les phases**
 - **Nuée de pages :** toutes les 4,5 à 6 s, un cône de pages tranchantes annoncé au sol.
-- **Jets d'encre :** une ligne de 6 cercles rouges part du Codex vers un joueur ; l'encre éclabousse chaque cercle l'un après l'autre (**10 %** de vie et ralentissement), puis une **flaque** reste 4 s (3 % de vie par seconde et ralentissement à qui s'y tient). Toutes les 10 s, puis 8 s, puis 6,5 s ; deux lignes à la fois en dernière phase.
-- **Chapitre :** toutes les 28 à 32 s, le Codex se fige, s'ouvre en grand, et un **livre de chapitre** (40 PV) apparaît sur un des trois pupitres avec le sort qu'il prépare. Vous avez **6 s pour le détruire**.
+- **Jets d'encre :** un **trait sombre** se dessine au sol du Codex vers un joueur ; 1 s plus tard, une ligne de 6 cercles rouges le suit et l'encre éclabousse chaque cercle l'un après l'autre (**10 %** de vie et ralentissement), puis une **flaque** reste 4 s (3 % de vie par seconde et ralentissement à qui s'y tient). Toutes les 10 s, puis 8 s, puis 6,5 s ; deux lignes à la fois en dernière phase.
+- **Chapitre :** toutes les 28 à 32 s, le Codex se fige, s'ouvre en grand, et un **livre de chapitre** (40 PV) apparaît sur un des trois pupitres. Le pupitre **s'illumine dans la couleur du sort** qu'il prépare : **rouge** pour les Flammes, **bleu** pour le Givre, **blanc** pour les Tomes. Vous avez **6 s pour détruire le livre**.
   - Livre détruit à temps : le Codex est **gelé et étourdi 6 s** et subit **50 % de dégâts en plus**. C'est le moment de frapper.
   - Sinon le sort part, toujours annoncé au sol 2,5 s :
 
@@ -187,14 +186,14 @@ Jamais deux fois le même sort de suite.
 **Dernière phase (sous 40 %)** : *Le dernier chapitre s'ouvre*.
 - **Deux livres à la fois**, sur deux pupitres, avec deux sorts différents : il faut **détruire les deux** pour l'étourdir. Partagez-vous les pupitres.
 - Tourbillons par vagues de 3, toutes les 18 s.
-- **Effondrement :** toutes les 14 s, un pan de rayonnages s'annonce le long du mur (2,5 s), puis s'écroule en éboulis : **20 %** de vie et ralentissement 3 s, et l'arène rétrécit.
+- **Effondrement :** toutes les 14 s, un pan de rayonnages s'annonce par un **cône rouge qui se charge du mur vers le centre** (3 s), puis s'écroule en éboulis sur toute la zone du cône : **20 %** de vie et ralentissement 3 s, et l'arène rétrécit.
 
 **À sa mort** : *Le Codex se referme à jamais*, et le sceau en haut de la rampe se dissout.
 
 **Conseils**
 - Placez un joueur près de chaque pupitre : le livre a peu de vie, et l'étourdissement est la meilleure fenêtre de dégâts.
 - Ne restez pas au centre quand le livre des Flammes n'a pas été détruit.
-- En dernière phase, restez loin des murs dont les zones rouges s'allument.
+- En dernière phase, sortez du cône rouge avant qu'il atteigne le centre.
 
 ## Élite : golem de cristal instable {#golem-de-cristal}
 
@@ -206,19 +205,31 @@ Jamais deux fois le même sort de suite.
 | Remise à zéro | 8 s sans joueur dans la salle |
 | Butin | 2 à 3 essences de foudre, 1 à 2 essences de feu, de glace et de vie, 2 de chacun des trois principes |
 
-Dès que le golem est engagé, les **quatre quadrants** de la salle s'éveillent : **trois sont actifs**, **un seul est calme**.
+Dès que le golem est engagé, les **quatre quadrants** de la salle s'éveillent : **trois sont actifs**, **un seul est calme**. Un quadrant calme est sans danger au sol ; un quadrant actif est parcouru d'effets bas et clairsemés de son élément.
 
-| Quadrant | Actif | Calme | Esprit qui en sort |
-|---|---|---|---|
-| **Feu** | flammes : **7 %** de vie par seconde et brûlure | légères brûlures (1,5 % toutes les 1,5 s) | élémentaire de feu |
-| **Glace** | blizzard : **5 %** par seconde et ralentissement | ralentissement | élémentaire de glace |
-| **Vent** | vents forts : **3 %** par seconde, rafales qui vous plaquent contre le mur | petites rafales | élémentaire de foudre |
-| **Terre** | pics de pierre : **8 %** par seconde et ralentissement | 2 % toutes les 1,5 s | élémentaire de racine |
+| Quadrant | Actif | Esprit qui en sort |
+|---|---|---|
+| **Feu** | flammes : **7 %** de vie par seconde et brûlure | élémentaire de feu |
+| **Glace** | blizzard : **5 %** par seconde et ralentissement | élémentaire de glace |
+| **Vent** | courants électriques : **4 %** par seconde et engourdissement (léger ralentissement) | élémentaire de foudre |
+| **Terre** | pics de pierre : **8 %** par seconde et ralentissement | élémentaire de racine |
 
-- **Toutes les 16 s, le répit passe à un quadrant voisin.** 5 s avant, le voisin se calme et l'ancien quadrant calme s'annonce (zones rouges, son d'alarme) : changez de quadrant à ce moment-là.
-- Chaque quadrant qui redevient actif fait sortir un **esprit** de son élément (au plus 5 à la fois).
-- **Conseil :** attirez le golem dans le quadrant calme et suivez le répit d'un quadrant à l'autre. Tuez les esprits qui vous suivent.
-- À la mort du golem, les quadrants s'éteignent, les esprits disparaissent et le sceau de l'hélice se dissout.
+**Chutes annoncées.** Partout dans la salle, des éléments tombent sur des petits cercles rouges : le coup part **1,5 s** après le cercle.
+- Dans le quadrant calme, un cercle sous **un joueur au hasard toutes les 2 s** : ne restez pas immobile.
+- Dans chaque quadrant actif, **un point au hasard chaque seconde**, jamais sur un cercle déjà annoncé.
+
+| Chute | Rayon | Effet |
+|---|---|---|
+| **Terre** | 1,5 bloc | **14 %** de vie, projeté en l'air |
+| **Vent** | 1,5 bloc | **15 %** de vie, étourdi 1 s |
+| **Glace** | 2 blocs | **10 %** de vie, ralenti 3 s |
+| **Feu** | 2 blocs | **12 %** de vie, brûlure 3 s |
+
+**Rotation.** Toutes les **16 s**, le répit passe à un quadrant voisin. 5 s avant, le voisin se calme, et un **cône rouge de 90°** se charge du centre vers le mur sur le quadrant calme qu'il faut quitter : quand le cône est plein, ce quadrant redevient actif. Suivez le répit.
+
+- Chaque quadrant qui redevient actif fait sortir un **esprit** de son élément, sans limite : tuez-les vite. Un esprit de chaque élément attend déjà dans son quadrant avant le combat.
+- **Conseil :** attirez le golem dans le quadrant calme, bougez entre les cercles, et changez de quadrant dès que le cône s'allume.
+- À la mort du golem, les quadrants s'éteignent, les esprits disparaissent et le sceau de l'hélice se dissout. À la remise à zéro, les esprits sont retirés et un nouvel esprit attend dans chaque quadrant.
 
 ## Boss : Chimère du laboratoire {#chimere}
 
@@ -233,12 +244,15 @@ Dès que le golem est engagé, les **quatre quadrants** de la salle s'éveillent
 Un dragon qui ne vole pas, cousu de plusieurs bêtes.
 
 - **Zombies porteurs d'acide :** toutes les **7 s** de combat (**5 s** sous la moitié de sa vie), un zombie au seau (30 PV) sort près d'un des quatre bassins, y **remplit son seau 2,5 s sans bouger**, puis marche jusqu'à la cuve centrale et y verse l'acide : la Chimère **regagne 5 % de sa vie**. Au plus 4 porteurs à la fois. **Un porteur tué avant de verser ne soigne rien.**
-- **Acide de la cuve :** toutes les 10 s, la cuve crache de l'acide sur environ un tiers des cercles du laboratoire, annoncés 2,2 s : **10 %** de vie et poison 4 s.
+- **Seau plein :** un seau rempli **luit en vert** tant que son porteur marche vers la cuve. Quand il verse, la cuve bouillonne et la Chimère **luit pendant son soin**.
+- **Seau renversé :** un porteur tué avec un seau plein le renverse : une **flaque d'acide** de 2,5 blocs reste **8 s**. La Chimère qui s'y tient **regagne 1 % de sa vie par seconde** ; un joueur dedans perd **5 %** par seconde et est empoisonné. Tuez les porteurs loin d'elle, ou éloignez-la de la flaque.
+- **Jets d'acide :** toutes les 10 s, un **petit cercle rouge** s'allume sous **chaque joueur** ; 2,2 s plus tard, l'acide jaillit : **10 %** de vie et poison 4 s. Faites un pas de côté.
 - **À sa mort**, les porteurs disparaissent et le sceau de la porte nord se dissout.
 
 **Conseils**
 - Désignez un joueur pour les porteurs : tués pendant qu'ils remplissent leur seau, ils ne bougent pas.
 - Ne vous battez pas collé à la cuve : c'est là qu'arrivent les porteurs.
+- Ne laissez pas la Chimère dans une flaque d'acide.
 
 ## Boss final : l'Alchimiste {#alchimiste}
 
@@ -250,7 +264,7 @@ Un dragon qui ne vole pas, cousu de plusieurs bêtes.
 | Remise à zéro | 10 s sans joueur dans l'arène |
 | Butin | [Masque de l'Alchimiste](#trophees), 1 à 2 de chacun des trois principes, et une [sacoche](#sacoches) pour chaque joueur |
 
-Il frappe de son bâton et, toutes les 6 à 8 s, lance une **fiole** vers chaque joueur à moins de 30 blocs. Chaque fiole tombe sur une zone annoncée **2,5 s** au sol, puis éclate :
+Il frappe de son bâton et, toutes les 6 à 8 s, lance une volée de **fioles**, une vers chaque joueur à moins de 30 blocs. **Toute la volée est du même élément** : avant de lancer, il **lève une fiole de la couleur de l'élément** au-dessus de lui. Chaque fiole tombe sur un cercle **rouge** annoncé **2,5 s** au sol, puis éclate en crépitements de son élément :
 
 | Fiole | Rayon | Effet |
 |---|---|---|
@@ -263,29 +277,30 @@ Il frappe de son bâton et, toutes les 6 à 8 s, lance une **fiole** vers chaque
 
 ### Phase 1 : Transmutation {#alchimiste-transmutation}
 
-Fioles des quatre éléments au hasard, et coups de bâton. Pas d'autre mécanique : profitez-en pour frapper fort.
+Une volée d'un élément au hasard à chaque fois, et coups de bâton. Pas d'autre mécanique : profitez-en pour frapper fort.
 
 ### Phase 2 : le Grand Œuvre {#alchimiste-grand-oeuvre}
 
 *L'Alchimiste s'enferme dans son athanor.*
 
-- **Le rebord s'effondre :** trois pans du bord de la terrasse s'annoncent (2,5 s) puis tombent dans le vide. Qui tombe par un trou revient sur le bord intérieur, blessé (**10 %** de vie).
+- **Le rebord s'effondre :** trois **cônes rouges** se chargent de l'athanor vers le bord de la terrasse (4 s), puis les pans du rebord tombent dans le vide. Qui tombe par un trou revient sur le bord intérieur, blessé (**10 %** de vie).
 - Il s'enferme dans l'**athanor** central, **gelé et invulnérable**, et en fait sortir des **homoncules du Grand Œuvre** (45 PV) : **4**, plus **2 par joueur de plus** (et **2 de plus** en mode difficile).
-- **Le dernier homoncule tué**, il ressort près d'un joueur, **vulnérable 30 s** (22 s en mode difficile), puis s'enferme de nouveau avec une nouvelle vague. Tout recommence jusqu'à ce qu'il passe sous 34 %.
+- **Transmutation de l'athanor :** tant qu'il est enfermé, toutes les **15 s**, un **anneau rouge** se remplit autour de l'athanor (3 s) puis se transmute : **15 %** de vie à qui s'y trouve. L'anneau alterne entre la **moitié intérieure** et la **moitié extérieure** de la terrasse : passez dans l'autre moitié.
+- **Le dernier homoncule tué**, il ressort près d'un joueur, **vulnérable 30 s** (22 s en mode difficile), puis s'enferme de nouveau avec une nouvelle vague. Tout recommence jusqu'à ce qu'il passe sous 34 %. Il reste **invulnérable** tant qu'il est dans l'athanor.
 
 ### Phase 3 : la Convergence {#alchimiste-convergence}
 
 *Les quatre éléments s'éveillent.*
 
 - Quatre **piliers élémentaires** se dressent (feu, givre, foudre, racines ; 260 PV chacun, immobiles).
-- Il prend l'élément d'un pilier encore debout : sa teinte change, et ses fioles prennent cet élément. Il change d'élément **toutes les 20 s** (15 s en mode difficile), ou aussitôt que le pilier de son élément tombe.
+- Il prend l'élément d'un pilier encore debout : sa teinte change, il lève une fiole de cette couleur, et ses fioles prennent cet élément. Il change d'élément **toutes les 20 s** (15 s en mode difficile), ou aussitôt que le pilier de son élément tombe.
 - **Toutes les 5 s** (3,5 s en mode difficile), son élément tombe **sur chaque joueur** : une zone annoncée sous vos pieds. Avec le feu, une zone de plus s'allume au hasard autour de l'athanor.
-- **Les quatre piliers détruits**, il s'effondre **8 s** : gelé, il subit **50 % de dégâts en plus**. Ensuite il n'a plus d'élément et reprend le combat au bâton et aux fioles.
+- **Les quatre piliers détruits**, il s'effondre **8 s** : gelé, il subit **50 % de dégâts en plus**. Ensuite **les quatre piliers se relèvent à moitié de vie**, l'élément revient sur chaque joueur, et **tout va 20 % plus vite** à chaque nouveau cycle (fioles, chutes d'élément, changements d'élément).
 
 **Conseils**
 - Gardez des distances entre joueurs : chacun reçoit sa propre fiole, et deux zones qui se recouvrent font mal.
-- Au Grand Œuvre, tuez vite les homoncules et gardez vos gros coups pour ses 30 s de vulnérabilité. Méfiez-vous des trous du rebord.
-- À la Convergence, détruisez les piliers en commençant par l'élément qui gêne le plus votre groupe, puis jetez tout sur lui pendant ses 8 s d'épuisement.
+- Au Grand Œuvre, tuez vite les homoncules et gardez vos gros coups pour ses 30 s de vulnérabilité. Méfiez-vous des trous du rebord et changez de moitié quand l'anneau rouge se remplit.
+- À la Convergence, détruisez les piliers en commençant par l'élément qui gêne le plus votre groupe, puis jetez tout sur lui pendant ses 8 s d'épuisement : chaque cycle est plus rapide que le précédent.
 - Ramassez les fioles de soin à tour de rôle.
 
 ## Mode difficile {#mode-difficile}
@@ -298,7 +313,7 @@ Dans l'**antichambre de l'Observatoire**, avant le combat, un **levier** active 
 | | Normal | Difficile |
 |---|---|---|
 | Points de vie | 3200 × groupe | **×1,5** en plus |
-| Dégâts de ses zones (fioles, éléments) | normaux | **×1,25** |
+| Dégâts de ses zones (fioles, éléments, anneau de l'athanor) | normaux | **×1,25** |
 | Fioles | une par joueur | **une seconde** à 3,5 blocs de la première : un pas de côté ne suffit pas toujours |
 | Homoncules du Grand Œuvre | 4 + 2 par joueur de plus | **+2** |
 | Vulnérable hors de l'athanor | 30 s | **22 s** |
