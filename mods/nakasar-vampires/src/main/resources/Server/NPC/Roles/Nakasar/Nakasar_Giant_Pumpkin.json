@@ -1,5 +1,5 @@
 {
-  "$Comment": "Citrouille géante animée (élite) d'une variante du champ de citrouilles, avec barre de vie de boss (BossBarSystem). Elle ne se déplace pas et se bat surtout par ses vrilles : dès l'entrée en combat (ou dès le premier coup reçu, MinionShieldSystem), elle fait sortir de terre une vague de 5 vrilles combattantes (Nakasar_Pumpkin_Vine, épines et balayages annoncés), espacées d'au moins 2,5 blocs. Tant qu'il reste une vrille, la citrouille est invulnérable (MinionShieldSystem) ; une fois la vague détruite, elle reste vulnérable 10 à 12 s, puis fait sortir la vague suivante. Elle-même crache lentement du poison orange et, toutes les 14 à 18 s, lance son piège de vrilles annoncé par une zone rouge (les ennemis restés dedans sont retenus par une vrille de 12 PV jusqu'à ce qu'ils la détruisent, 10 s au plus). Elle et ses vrilles prennent double dégâts de feu. Si on s'éloigne à plus de 20 blocs, elle se rendort, regagne sa vie et ses vrilles rentrent sous terre.",
+  "$Comment": "Citrouille géante animée (élite) d'une variante du champ de citrouilles, avec barre de vie de boss (BossBarSystem). Elle ne se déplace pas et se bat surtout par ses vrilles : dès l'entrée en combat (ou dès le premier coup reçu, MinionShieldSystem), elle fait sortir de terre une vague de 5 vrilles combattantes (Nakasar_Pumpkin_Vine, épines et balayages annoncés) n'importe où autour d'elle jusqu'à 11 blocs, le sol bouillonnant 1 s avant chaque sortie ; un lien vert relie chaque vrille à la citrouille. Tant qu'il reste une vrille, la citrouille est invulnérable (MinionShieldSystem) ; une fois la vague détruite, elle reste vulnérable 10 à 12 s, puis fait sortir la vague suivante. Elle-même crache lentement du poison orange et, toutes les 14 à 18 s, lance son piège de vrilles annoncé par une zone rouge (les ennemis restés dedans sont retenus par une vrille de 12 PV jusqu'à ce qu'ils la détruisent, 10 s au plus). Elle et ses vrilles prennent double dégâts de feu (les quatre lanternes-citrouilles du champ, renversées d'un coup, enflamment le sol). Sous 50 % de vie, les vagues comptent 6 vrilles et le crachat part en éventail de trois. Si on s'éloigne à plus de 20 blocs, elle se rendort, regagne sa vie et ses vrilles rentrent sous terre.",
   "Type": "Generic",
   "Appearance": "Nakasar_Giant_Pumpkin",
   "NameTranslationKey": "nakasar_mobs.npc.Giant_Pumpkin.name",
@@ -224,6 +224,49 @@
           ]
         },
         {
+          "$Comment": "Seconde moitié (sous 50 % de vie) : vagues de 6 vrilles.",
+          "Sensor": {
+            "Type": "And",
+            "Sensors": [
+              {
+                "Type": "Self",
+                "Filters": [
+                  {
+                    "Type": "Stat",
+                    "Stat": "Health",
+                    "StatTarget": "Value",
+                    "RelativeTo": "Health",
+                    "RelativeToTarget": "Max",
+                    "ValueRange": [
+                      0,
+                      0.5
+                    ]
+                  }
+                ]
+              },
+              {
+                "Type": "Timer",
+                "Name": "Summon",
+                "State": "STOPPED"
+              }
+            ]
+          },
+          "ActionsBlocking": true,
+          "Actions": [
+            {
+              "Type": "Attack",
+              "Attack": "Root_Nakasar_NPC_Pumpkin_Summon_Big",
+              "SkipAiming": true,
+              "LineOfSight": false,
+              "AvoidFriendlyFire": false
+            },
+            {
+              "Type": "TimerRestart",
+              "Name": "Summon"
+            }
+          ]
+        },
+        {
           "$Comment": "Vague de vrilles combattantes : dès l'entrée en combat, puis 10 à 12 s après la destruction de la vague précédente (ou 10 à 12 s après un appel où rien n'a pu sortir). L'attaque passe avant la recharge : si une autre attaque est en cours, l'invocation attend au lieu d'être perdue.",
           "Sensor": {
             "Type": "Timer",
@@ -277,6 +320,63 @@
               "SkipAiming": true,
               "LineOfSight": false,
               "AvoidFriendlyFire": false
+            }
+          ]
+        },
+        {
+          "$Comment": "Seconde moitié (sous 50 % de vie) : crachat en éventail de trois.",
+          "Sensor": {
+            "Type": "And",
+            "Sensors": [
+              {
+                "Type": "Self",
+                "Filters": [
+                  {
+                    "Type": "Stat",
+                    "Stat": "Health",
+                    "StatTarget": "Value",
+                    "RelativeTo": "Health",
+                    "RelativeToTarget": "Max",
+                    "ValueRange": [
+                      0,
+                      0.5
+                    ]
+                  }
+                ]
+              },
+              {
+                "Type": "Target",
+                "Range": 16,
+                "Filters": [
+                  {
+                    "Type": "LineOfSight"
+                  }
+                ]
+              },
+              {
+                "Type": "Timer",
+                "Name": "Spit",
+                "State": "STOPPED"
+              }
+            ]
+          },
+          "HeadMotion": {
+            "Type": "Aim",
+            "RelativeTurnSpeed": 2
+          },
+          "ActionsBlocking": true,
+          "Actions": [
+            {
+              "Type": "TimerRestart",
+              "Name": "Spit"
+            },
+            {
+              "Type": "Attack",
+              "Attack": "Root_Nakasar_NPC_Pumpkin_Spit_Fan",
+              "AimingTimeRange": [
+                0.3,
+                0.5
+              ]
             }
           ]
         },

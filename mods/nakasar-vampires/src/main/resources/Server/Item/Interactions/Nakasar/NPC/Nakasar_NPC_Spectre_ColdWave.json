@@ -18,7 +18,7 @@
         "WorldSoundEventId": "SFX_Spirit_Root_Alerted",
         "Particles": [
           {
-            "SystemId": "Feastmaster_Slam_Warning",
+            "SystemId": "Nakasar_Warning_16",
             "TargetEntityPart": "Entity",
             "TargetNodeName": "Origin",
             "Scale": 4.08,

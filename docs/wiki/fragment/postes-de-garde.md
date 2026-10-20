@@ -16,7 +16,7 @@ Le fort d'où la garde du Comte surveillait le domaine, avec sa prison.
 
 Enceinte crénelée avec châtelet au sud, **tour de guet** (nord-ouest, 14 de haut), **caserne** au nord (lits, râtelier, table), **quartiers du capitaine** (nord-est : lit, bureau, carte, bannière), **armurerie** à l'ouest (forge d'armes, établi d'armures, un cachot), **prison** à l'est (couloir et trois cellules à barreaux), cour avec trois mannequins d'entraînement, braseros et puits.
 
-Les **4 cellules** (3 à l'est, 1 à l'ouest) servent au [Capitaine de la garde](../pnj/capitaine-de-la-garde.md) : son **emprisonnement** y téléporte sa victime.
+Les **4 cellules** (3 à l'est, 1 à l'ouest) servent au [Capitaine de la garde](../pnj/capitaine-de-la-garde.md) : son **emprisonnement** y téléporte sa victime. Chaque cellule a une **porte à barreaux** qui tombe au bout de 10 coups (le reste de la cellule est indestructible) et, dehors au pied du mur, un **levier** qui l'ouvre 6 s. La garnison a aussi une **cloche d'alarme** dans la cour : abattue (5 coups) avant que le Capitaine ne passe sous la moitié de sa vie, elle l'empêche d'appeler des renforts.
 
 ## Variantes
 

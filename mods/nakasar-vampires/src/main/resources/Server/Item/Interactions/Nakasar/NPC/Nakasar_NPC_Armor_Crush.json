@@ -1,5 +1,5 @@
 {
-  "$Comment": "Frappe écrasante de l'armure enchantée (coup lourd) : elle s'immobilise et lève sa massue 0,9 s, la main en flammes bleues, puis l'abat devant elle sur 4,6 blocs et 120° (55 dégâts, projection, flammes bleues 3 s). On l'évite en reculant ou en passant derrière elle.",
+  "$Comment": "Frappe écrasante de l'armure enchantée (coup lourd annoncé) : elle s'immobilise et lève sa massue 1,4 s, la main en flammes bleues, pendant qu'un cône rouge de 120° et 4,6 blocs se charge devant elle ; puis elle l'abat (55 dégâts, projection, flammes bleues 3 s). On l'évite en reculant ou en passant derrière elle.",
   "Type": "Serial",
   "Interactions": [
     {
@@ -12,8 +12,22 @@
       "EffectId": "Nakasar_Elite_Rooted"
     },
     {
+      "Type": "Nakasar_Telegraph",
+      "Shape": "Cone",
+      "Seconds": 1.4,
+      "Angle": 120,
+      "Radius": 4.6,
+      "Damage": 55,
+      "Knockback": 8,
+      "KnockUp": 5,
+      "EffectId": "Nakasar_Blue_Flame",
+      "EffectDuration": 3,
+      "HitParticle": "Impact_Sword_Basic_Stronk",
+      "ImpactSound": "SFX_Mace_T2_Signature_Impact"
+    },
+    {
       "Type": "Simple",
-      "RunTime": 0.9,
+      "RunTime": 1.4,
       "Effects": {
         "ItemPlayerAnimationsId": "Mace",
         "ItemAnimationId": "SwingDownCharging",
@@ -34,58 +48,12 @@
       }
     },
     {
-      "Type": "Selector",
+      "Type": "Simple",
       "RunTime": 0.15,
       "Effects": {
         "ItemPlayerAnimationsId": "Mace",
         "ItemAnimationId": "SwingDownCharged",
         "WorldSoundEventId": "SFX_Goblin_Feastmaster_Slam"
-      },
-      "Selector": {
-        "Id": "Horizontal",
-        "Direction": "ToLeft",
-        "TestLineOfSight": true,
-        "ExtendTop": 1.0,
-        "ExtendBottom": 1.0,
-        "StartDistance": 0.3,
-        "EndDistance": 4.6,
-        "Length": 120,
-        "RollOffset": 0,
-        "YawStartOffset": 60
-      },
-      "HitEntity": {
-        "Interactions": [
-          {
-            "Parent": "DamageEntityParent_Hit_Interrupt",
-            "DamageCalculator": {
-              "BaseDamage": {
-                "Physical": 55
-              },
-              "RandomPercentageModifier": 0.1
-            },
-            "DamageEffects": {
-              "WorldSoundEventId": "SFX_Mace_T2_Signature_Impact",
-              "WorldParticles": [
-                {
-                  "SystemId": "Impact_Sword_Basic_Stronk"
-                }
-              ],
-              "Knockback": {
-                "Type": "Force",
-                "Force": 8,
-                "VelocityType": "Set",
-                "Direction": {
-                  "Y": 1
-                }
-              }
-            }
-          },
-          {
-            "Type": "Nakasar_ApplyEffectToFoes",
-            "EffectId": "Nakasar_Blue_Flame",
-            "Duration": 3
-          }
-        ]
       }
     },
     {

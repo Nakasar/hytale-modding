@@ -13,7 +13,7 @@
 
 Le maître du Comté. Grand (×1,22), pâle, yeux rouges, couronne noire, long manteau à liseré d'or et cape royale rouge. Il règne sur le [Manoir du Comte](../fragment/manoir-du-comte.md) et partage son trône avec la [Comtesse Vampire](comtesse-vampire.md) : à chaque apparition, c'est l'un ou l'autre (une chance sur deux).
 
-Il se bat à distance comme au corps à corps : il paralyse ses proies avec des chaînes spectrales, leur ôte toute volonté de le frapper, apparaît à côté d'elles en une gerbe de sang et se soigne en mordant. Sous la moitié de ses PV, il appelle ses rejetons.
+Il se bat à distance comme au corps à corps : il paralyse ses proies avec des chaînes spectrales, leur ôte toute volonté de le frapper, apparaît à côté d'elles dans une colonne de brume de sang et se soigne en mordant. Sous la moitié de ses PV, il appelle ses rejetons.
 
 ## Un hôte qui vous laisse passer
 
@@ -41,12 +41,12 @@ Avec ses 8000 PV et sa régénération incessante, il est **presque invincible**
 | Capacité | Portée | Effet | Fréquence |
 |---|---|---|---|
 | **Baiser du Vampire** (mêlée) | 3,2 blocs, balayage de 90° | **22** dégâts physiques (±10 %) par cible, et le Comte **récupère 30 PV par cible touchée** | pause de 1,2 à 1,8 s entre deux coups |
-| **Chaînes spectrales** | trait de 18 blocs, joueurs seulement | [Chaînes spectrales](../effets.md#chaines-spectrales) **3 s** : immobilisé, plus d'attaque, plus de capacité, plus d'esquive | toutes les 9 à 12 s (première après 4 à 6 s) |
-| **Domination** | trait de 12 blocs, joueurs seulement | [Domination du Comte](../effets.md#domination-du-comte) **6 s** : vos coups et vos projectiles ne le blessent plus (vous pouvez toujours bouger et frapper les autres) | toutes les 16 à 20 s (première après 7 à 9 s) |
-| **Téléportation** | cible entre 7 et 30 blocs | réapparaît à 1,5 à 2,5 blocs de vous, tourné vers vous | toutes les 10 à 14 s |
+| **Chaînes spectrales** (annoncées) | ligne rouge de **18 blocs** vers la cible, **1 s**, joueurs seulement | [Chaînes spectrales](../effets.md#chaines-spectrales) **3 s** : immobilisé, plus d'attaque, plus de capacité, plus d'esquive | toutes les 9 à 12 s (première après 4 à 6 s) |
+| **Domination** (annoncée) | ligne rouge de **12 blocs** vers la cible, **0,8 s**, joueurs seulement | [Domination du Comte](../effets.md#domination-du-comte) **6 s** : vos coups et vos projectiles ne le blessent plus (vous pouvez toujours bouger et frapper les autres) | toutes les 16 à 20 s (première après 7 à 9 s) |
+| **Téléportation** (annoncée) | cible entre 7 et 30 blocs | une **colonne de brume de sang** marque **0,6 s** l'endroit où il va surgir, à 1,5 à 2,5 blocs de vous | toutes les 10 à 14 s |
 | **Appel des rejetons** | sous **50 % de PV** | fait surgir **2 ou 3** [rejetons de vampire](rejeton-de-vampire.md) autour de lui, s'il en reste 2 ou moins dans les 40 blocs | toutes les 30 s |
 
-Chaque attaque à distance est précédée d'un temps de visée (0,3 à 0,6 s) puis d'une courte préparation : c'est le moment de rompre la ligne de vue.
+**Comment lire ses sorts :** une **ligne rouge** (celle de la [Tour de l'Alchimiste](../donjons/tour-de-l-alchimiste.md)) part de lui vers sa cible et se remplit pendant qu'il tend la main ; les joueurs encore sur la ligne quand elle est pleine sont touchés. Un pas de côté suffit. Sa téléportation s'annonce par une colonne de brume de sang au point d'arrivée.
 
 ## Butin
 

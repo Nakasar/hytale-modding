@@ -23,6 +23,7 @@ import com.hypixel.hytale.server.npc.NPCPlugin;
 import com.hypixel.hytale.server.npc.entities.NPCEntity;
 import com.hypixel.hytale.server.npc.role.support.StateSupport;
 import dev.nakasar.hytale.vampires.VampiresPlugin;
+import dev.nakasar.hytale.vampires.telegraph.Telegraphs;
 import it.unimi.dsi.fastutil.Pair;
 import org.joml.Vector3d;
 
@@ -49,7 +50,7 @@ import java.util.concurrent.ThreadLocalRandom;
  *   hasard toutes les {@value #ACTIVE_FALL_SECONDS} s, jamais sur un cercle déjà annoncé ;</li>
  *   <li><b>rotation</b> toutes les {@value #CYCLE_SECONDS} s, dans un sens tiré à l'engagement : {@value #WARN_SECONDS} s
  *   avant, le quadrant suivant se calme tout de suite, et un cône rouge se charge du centre vers le mur sur l'ancien
- *   quadrant calme ({@link TowerFx.Sweep}) ; plein, il redevient actif ;</li>
+ *   quadrant calme ({@link Telegraphs.Sweep}) ; plein, il redevient actif ;</li>
  *   <li><b>esprits</b> : chaque quadrant qui devient actif pendant le combat fait sortir un esprit de son élément
  *   ({@link TowerLayout#TRANS_SPIRITS}), au plus {@value #SPIRIT_MAX} en vie à la fois ; aucun à l'engagement, puisque ceux de la remise à zéro sont déjà
  *   là ;</li>
@@ -135,7 +136,7 @@ public final class TransmutationSystem extends TickingSystem<EntityStore> {
         long nextPulse;
         long nextCalmFall;
         long nextActiveFall;
-        TowerFx.Sweep cone;
+        Telegraphs.Sweep cone;
         final List<Strike> strikes = new ArrayList<>();
         float absent;
         boolean sealed;
@@ -281,13 +282,13 @@ public final class TransmutationSystem extends TickingSystem<EntityStore> {
     }
 
     /** Quart de disque du quadrant `zone`, du centre au mur, chargé en WARN_SECONDS. */
-    private static TowerFx.Sweep quadrantCone(int zone, long now) {
+    private static Telegraphs.Sweep quadrantCone(int zone, long now) {
         int[] signs = TowerLayout.TRANS_SIGNS[zone];
         double from = Math.atan2(0, signs[0]);
         double to = Math.atan2(signs[1], 0);
         double span = Math.IEEEremainder(to - from, Math.PI * 2);
         double start = span >= 0 ? from : to;
-        return new TowerFx.Sweep(TowerLayout.TRANS_CENTER, start, Math.abs(span), 0, TowerLayout.TRANS_ARENA_RADIUS, now,
+        return new Telegraphs.Sweep(TowerLayout.TRANS_CENTER, start, Math.abs(span), 0, TowerLayout.TRANS_ARENA_RADIUS, now,
                 WARN_SECONDS);
     }
 

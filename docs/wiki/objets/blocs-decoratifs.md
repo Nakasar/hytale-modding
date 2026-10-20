@@ -17,4 +17,14 @@ Les blocs qui habillent le [Manoir du Comte](../fragment/manoir-du-comte.md) et 
 | ![icône](/jeu/Icons/Items/Nakasar/Halloween/Iron_Railing.png) | **Grille à lances en fer forgé** | grille à pointes de lance, se raccorde comme un mur | manoir (207) | **4** pour 2 lingots de fer |
 | ![icône](/jeu/Icons/Items/Nakasar/Halloween/Iron_Gate.png) | **Vantail de portail en fer forgé** | vantail de 1 × 2 blocs | manoir (4) | 4 lingots de fer |
 
+### Décor des combats d'élites
+
+Trois blocs du pack servent aux combats d'élites ; on ne peut pas les fabriquer, ni les casser pour les ramasser.
+
+| | Bloc | Rôle | Où |
+|---|---|---|---|
+| ![icône](/jeu/Icons/Items/Nakasar/Halloween/Cell_Door.png) | **Porte de cellule** | porte à barreaux de deux blocs ; tombe au bout de 10 coups (revient au bout de 45 s), s'ouvre 6 s au levier voisin | cellules des [postes de garde](../fragment/postes-de-garde.md) |
+| ![icône](/jeu/Icons/Items/Nakasar/Halloween/Alarm_Bell.png) | **Cloche d'alarme** | sonne à chaque coup, tombe au bout de 5 coups (revient au bout de 3 min) ; debout, elle permet au [Capitaine](../pnj/capitaine-de-la-garde.md) d'appeler des renforts | cour de la garnison |
+| ![icône](/jeu/Icons/Items/Nakasar/Halloween/Pumpkin_Lantern.png) | **Lanterne-citrouille** | un coup la renverse : sol en feu sur 3 blocs pendant 6 s (revient au bout de 90 s) | clairière de la [Citrouille géante](../pnj/citrouille-geante.md) |
+
 Chaque recette prend 3 s. Voir aussi les [tenues cosmétiques](tenues.md) et le [feu purificateur](feu-purificateur.md) (torche et lanterne).

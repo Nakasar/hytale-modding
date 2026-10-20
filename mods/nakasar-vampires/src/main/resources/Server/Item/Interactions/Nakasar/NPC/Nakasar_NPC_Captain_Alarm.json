@@ -1,0 +1,58 @@
+{
+  "$Comment": "Alarme du Capitaine, une fois par combat sous 50 % de vie : il lève la main et crie 2 s, puis la cloche d'alarme (Nakasar_Alarm_Bell) la plus proche sonne et trois gardes squelettes par joueur proche accourent, liés à lui par un fil rouge (Nakasar_AlarmBell). Si les joueurs ont abattu la cloche avant (5 coups), personne ne vient.",
+  "Type": "Serial",
+  "Interactions": [
+    {
+      "Type": "ClearEntityEffect",
+      "Entity": "User",
+      "EntityEffectId": "Hit_Interrupt_Eligible"
+    },
+    {
+      "Type": "ApplyEffect",
+      "EffectId": "Nakasar_Elite_Rooted"
+    },
+    {
+      "Type": "ApplyEffect",
+      "EffectId": "Dungeon_Goblin_Mace_Slam_Charge"
+    },
+    {
+      "Type": "Simple",
+      "RunTime": 2.0,
+      "Effects": {
+        "ItemPlayerAnimationsId": "Skeleton_Battleaxe",
+        "ItemAnimationId": "CastLeftCharging",
+        "WorldSoundEventId": "SFX_Goblin_Mace_VO_Club_Slam_Charge",
+        "Particles": [
+          {
+            "SystemId": "Praetorian_Summon_Ground",
+            "TargetEntityPart": "Entity",
+            "TargetNodeName": "Origin",
+            "Scale": 1.0,
+            "PositionOffset": {
+              "X": 0,
+              "Y": 0.1,
+              "Z": 0
+            }
+          }
+        ]
+      }
+    },
+    {
+      "Type": "Simple",
+      "RunTime": 0.3,
+      "Effects": {
+        "ItemPlayerAnimationsId": "Skeleton_Battleaxe",
+        "ItemAnimationId": "CastLeft"
+      }
+    },
+    {
+      "Type": "Nakasar_AlarmBell",
+      "GuardRole": "Nakasar_Skeleton_Guard",
+      "PerPlayer": 3,
+      "MaxGuards": 12,
+      "BellRadius": 40,
+      "PlayerRadius": 24,
+      "TetherParticle": "Nakasar_Tether_Guard"
+    }
+  ]
+}

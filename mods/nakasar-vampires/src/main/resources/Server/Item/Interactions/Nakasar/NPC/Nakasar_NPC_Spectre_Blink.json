@@ -1,0 +1,36 @@
+{
+  "$Comment": "Clignement du Spectre quand sa cible s'éloigne : une colonne de brume marque 0,6 s avant le point où il va surgir (à 2-3,5 blocs d'elle), puis il y apparaît. Impossible à moins de 5 blocs d'un brasero allumé.",
+  "Type": "Serial",
+  "Interactions": [
+    {
+      "Type": "Nakasar_Telegraph",
+      "Shape": "Column",
+      "Seconds": 0.6,
+      "Anchor": "Target",
+      "OffsetMin": 2,
+      "OffsetMax": 3.5,
+      "TeleportCaster": true,
+      "SafeFromBraziers": 5.0,
+      "MarkParticle": "Nakasar_Mist_Column",
+      "MarkInterval": 0.2,
+      "MarkHeight": 0
+    },
+    {
+      "Type": "Simple",
+      "RunTime": 0.6,
+      "Effects": {
+        "Particles": [
+          {
+            "SystemId": "Weapon_Frost_Mist",
+            "TargetNodeName": "Chest",
+            "Scale": 2.0
+          }
+        ]
+      }
+    },
+    {
+      "Type": "Simple",
+      "RunTime": 0.2
+    }
+  ]
+}

@@ -204,6 +204,74 @@ def purifying_lantern():
     return parts
 
 
+# --- décor des combats d'élites (Kevin, 20 octobre 2026) ------------------------------------------
+
+BRONZE = (176, 128, 58)
+BRONZE_DARK = (120, 84, 36)
+PUMPKIN = (226, 120, 30)
+PUMPKIN_DARK = (170, 80, 18)
+CANDLE = (255, 196, 80)
+STEM = (70, 100, 40)
+
+
+def cell_door():
+    """Porte de cellule du poste de garde (un bloc, posée par deux) : cadre, barreaux épais, serrure. Elle encaisse
+    10 coups (dev.nakasar.hytale.vampires.arena.ArenaBlocks) ; le levier à côté l'ouvre."""
+    i, dk, li = painter(IRON, "iron"), painter(IRON_DARK, "iron"), painter(IRON_LIGHT, "iron")
+    parts = [
+        ("Stile_L", (-14.5, 16, 0), (3, 32, 3), 0, i, "flat"),
+        ("Stile_R", (14.5, 16, 0), (3, 32, 3), 0, i, "flat"),
+        ("Rail_Bottom", (0, 2, 0), (26, 3, 3), 0, i, "flat"),
+        ("Rail_Middle", (0, 16, 0), (26, 2.5, 3), 0, dk, "flat"),
+        ("Rail_Top", (0, 30, 0), (26, 3, 3), 0, i, "flat"),
+        ("Lock", (10.5, 16, 2), (6, 7, 1.5), 0, dk, "flat"),
+        ("Keyhole", (10.5, 16, 2.9), (1.5, 2.5, 0.5), 0, li, "flat"),
+    ]
+    for k, x in enumerate((-8, -2.7, 2.7, 8)):
+        parts.append((f"Bar_{k}", (x, 16, 0), (2.2, 26, 2.2), 0, i, "flat"))
+    return parts
+
+
+def alarm_bell():
+    """Cloche d'alarme du poste de garde, pendue à un portique de bois. Abattue (5 coups), le Capitaine n'a plus de
+    renforts (dev.nakasar.hytale.vampires.arena.AlarmBellInteraction)."""
+    w, wd = painter(WOOD, "wood"), painter(WOOD_DARK, "wood")
+    b, bd = painter(BRONZE, "iron"), painter(BRONZE_DARK, "iron")
+    return [
+        ("Post_L", (-13, 15, 0), (3, 30, 3), 0, w, "flat"),
+        ("Post_R", (13, 15, 0), (3, 30, 3), 0, w, "flat"),
+        ("Beam", (0, 29.5, 0), (30, 3, 4), 0, wd, "flat"),
+        ("Foot_L", (-13, 1, 0), (5, 2, 9), 0, wd, "flat"),
+        ("Foot_R", (13, 1, 0), (5, 2, 9), 0, wd, "flat"),
+        ("Yoke", (0, 26.5, 0), (4, 3, 4), 0, bd, "flat"),
+        ("Crown", (0, 24, 0), (7, 2.5, 7), 0, b, "flat"),
+        ("Shoulder", (0, 21, 0), (9, 4, 9), 0, b, "flat"),
+        ("Waist", (0, 17, 0), (11, 4, 11), 0, b, "flat"),
+        ("Lip", (0, 14, 0), (14, 2.5, 14), 0, bd, "flat"),
+        ("Clapper", (0, 11.5, 0), (2.5, 3, 2.5), 0, painter(IRON_DARK, "iron"), "flat"),
+    ]
+
+
+def pumpkin_lantern():
+    """Lanterne-citrouille sur pied du champ de la citrouille géante : un coup la renverse et le sol prend feu
+    (dev.nakasar.hytale.vampires.arena.ArenaBlocks)."""
+    w = painter(WOOD, "wood")
+    p, pd = painter(PUMPKIN, "wood"), painter(PUMPKIN_DARK, "wood")
+    glow = painter(CANDLE, glow=True)
+    return [
+        ("Post", (0, 9, 0), (3, 18, 3), 0, w, "flat"),
+        ("Foot", (0, 1, 0), (8, 2, 8), 0, painter(WOOD_DARK, "wood"), "flat"),
+        ("Cradle", (0, 18.5, 0), (8, 1.5, 8), 0, painter(IRON_DARK, "iron"), "flat"),
+        ("Pumpkin", (0, 24, 0), (13, 10, 13), 0, p, "flat"),
+        ("Rib_X", (0, 24, 0), (14, 9, 7), 0, pd, "flat"),
+        ("Rib_Z", (0, 24, 0), (7, 9, 14), 0, pd, "flat"),
+        ("Stem", (0, 30, 0), (2, 3, 2), 0, painter(STEM, "wood"), "flat"),
+        ("Eye_L", (-3, 26, 7.1), (2.5, 2, 0.5), 0, glow, "fullbright"),
+        ("Eye_R", (3, 26, 7.1), (2.5, 2, 0.5), 0, glow, "fullbright"),
+        ("Mouth", (0, 22.5, 7.1), (7, 1.5, 0.5), 0, glow, "fullbright"),
+    ]
+
+
 FACES = ("top", "bottom", "front", "back", "left", "right")
 
 
@@ -468,10 +536,15 @@ MODEL_BLOCKS = [
     ("Nakasar_Iron_Gate", "Iron_Gate", gate, "Nakasar_Iron_Gate", "NESW", "Metal", "Metal", "#343238", False, (0, 34, 0)),
     ("Nakasar_Purifying_Torch", "Purifying_Torch", purifying_torch, "Nakasar_Purifying_Torch", "None", "Metal", "Metal", "#c4deff", True, (0, 14, 0)),
     ("Nakasar_Purifying_Lantern", "Purifying_Lantern", purifying_lantern, "Nakasar_Purifying_Lantern", "None", "Metal", "Metal", "#c4deff", True, (0, 11, 0)),
+    ("Nakasar_Cell_Door", "Cell_Door", cell_door, "Nakasar_Cell_Door", "NESW", "Metal", "Metal", "#343238", False, (0, 16, 0)),
+    ("Nakasar_Alarm_Bell", "Alarm_Bell", alarm_bell, "Nakasar_Alarm_Bell", "NESW", "Metal", "Metal", "#b0803a", True, (0, 16, 0)),
+    ("Nakasar_Pumpkin_Lantern", "Pumpkin_Lantern", pumpkin_lantern, "Nakasar_Pumpkin_Lantern", "NESW", "Wood", "Wood", "#e2781e", True, (0, 16, 0)),
 ]
 # Lumière blanche (« #RGB » : niveaux 0 à F par canal) et flamme en particules des blocs de feu purificateur ;
 # ces blocs repoussent les morts-vivants (dev.nakasar.hytale.vampires.purifying).
 PURIFYING_LIGHT = {"Color": "#eef"}
+# Lanterne-citrouille : lumière orangée de bougie.
+PUMPKIN_LIGHT = {"Light": {"Color": "#f92"}}
 PURIFYING = {
     "Nakasar_Purifying_Torch": {"Light": PURIFYING_LIGHT,
                                 "Particles": [{"SystemId": "Nakasar_Purifying_Flame", "PositionOffset": {"X": 0, "Y": 0.8, "Z": 0}}]},
@@ -499,7 +572,7 @@ def main():
         big.resize((64, 64), Image.LANCZOS).save(icon)
         write_json(ITEMS / f"{block_id}.json",
                    model_item(block_id, rel(icon), rel(model), rel(texture), hitbox, rotation, sound, particles, color, support,
-                              PURIFYING.get(block_id)))
+                              PURIFYING.get(block_id) or (PUMPKIN_LIGHT if block_id == "Nakasar_Pumpkin_Lantern" else None)))
         if preview:
             render(parts, atlas, uv, 512, yaw=-35, pitch=22, scale=scale * 2, center=center).save(preview / f"{name}_front.png")
             render(parts, atlas, uv, 512, yaw=145, pitch=22, scale=scale * 2, center=center).save(preview / f"{name}_back.png")
@@ -507,6 +580,9 @@ def main():
     write_json(HITBOXES / "Nakasar_Iron_Gate.json", {"Boxes": [hitbox_box(-16, 0, -2, 16, 64, 2)]})
     write_json(HITBOXES / "Nakasar_Purifying_Torch.json", {"Boxes": [hitbox_box(-3, 0, -3, 3, 28, 3)]})
     write_json(HITBOXES / "Nakasar_Purifying_Lantern.json", {"Boxes": [hitbox_box(-6, 0, -6, 6, 23, 6)]})
+    write_json(HITBOXES / "Nakasar_Cell_Door.json", {"Boxes": [hitbox_box(-16, 0, -2, 16, 32, 2)]})
+    write_json(HITBOXES / "Nakasar_Alarm_Bell.json", {"Boxes": [hitbox_box(-15, 0, -5, 15, 32, 5)]})
+    write_json(HITBOXES / "Nakasar_Pumpkin_Lantern.json", {"Boxes": [hitbox_box(-7, 0, -7, 7, 31, 7)]})
     for i, (colour, palette) in enumerate(GLASS.items()):
         block_id = f"Nakasar_Stained_Glass_{colour}"
         img = stained_glass(palette, seed=200 + i)

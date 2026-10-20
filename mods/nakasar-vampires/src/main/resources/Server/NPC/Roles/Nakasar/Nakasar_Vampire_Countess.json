@@ -322,7 +322,7 @@
           ]
         },
         {
-          "$Comment": "Téléportation : si la cible garde ses distances, elle surgit à côté d'elle dans une gerbe de sang.",
+          "$Comment": "Téléportation annoncée : si la cible garde ses distances, une colonne de brume de sang marque 0,6 s l'endroit où elle va surgir.",
           "Sensor": {
             "Type": "And",
             "Sensors": [
@@ -344,30 +344,24 @@
               }
             ]
           },
-          "BodyMotion": {
-            "Type": "Teleport",
-            "OffsetRange": [
-              1.5,
-              2.5
-            ],
-            "MaxYOffset": 3,
-            "Orientation": "TowardsTarget"
-          },
           "Actions": [
-            {
-              "Type": "SpawnParticles",
-              "ParticleSystem": "Nakasar_Blood_Drain",
-              "Offset": [
-                0,
-                1,
-                0
-              ]
-            },
             {
               "Type": "TimerRestart",
               "Name": "Blink"
+            },
+            {
+              "Type": "Attack",
+              "Attack": "Root_Nakasar_NPC_Vampire_Blink",
+              "SkipAiming": true,
+              "LineOfSight": false,
+              "AvoidFriendlyFire": false
             }
-          ]
+          ],
+          "ActionsBlocking": true,
+          "HeadMotion": {
+            "Type": "Watch",
+            "RelativeTurnSpeed": 1.0
+          }
         },
         {
           "$Comment": "Baiser du Vampire au contact.",

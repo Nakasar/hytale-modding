@@ -1,5 +1,5 @@
 {
-  "$Comment": "Onde de choc du zombie difforme, annoncée : il s'immobilise 1,2 s, rougeoie et un cercle d'alerte s'étend au sol, puis frappe le sol ; un anneau de choc part de lui jusqu'à 7 blocs. On l'évite en sautant au passage de l'anneau ou en restant hors de portée.",
+  "$Comment": "Onde de choc du zombie difforme, annoncée : il s'immobilise 1,5 s, rougeoie et un cercle rouge de 7 blocs (celui de la Tour) se remplit au sol, puis il frappe le sol ; un anneau de choc part de lui jusqu'à 7 blocs. On l'évite en sautant au passage de l'anneau ou en restant hors du cercle.",
   "Type": "Serial",
   "Interactions": [
     {
@@ -17,21 +17,22 @@
     },
     {
       "Type": "Simple",
-      "RunTime": 1.2,
+      "RunTime": 1.5,
       "Effects": {
         "ItemPlayerAnimationsId": "Hound_Bleached_Default",
         "ItemAnimationId": "Bite",
         "Particles": [
           {
-            "SystemId": "Gobliterator_Slam_Warning",
+            "SystemId": "Nakasar_Warning_15",
             "TargetEntityPart": "Entity",
             "TargetNodeName": "Origin",
-            "Scale": 0.3,
+            "Scale": 4.76,
             "PositionOffset": {
               "X": 0,
               "Y": 0.1,
-              "Z": 0.0
-            }
+              "Z": 0
+            },
+            "DetachedFromModel": true
           }
         ],
         "WorldSoundEventId": "SFX_Zombie_Pursuit"

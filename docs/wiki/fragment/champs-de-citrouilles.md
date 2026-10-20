@@ -20,7 +20,7 @@ Sillons de terre labourée et plus d'une centaine de citrouilles, **allée centr
 | Variante | Plans | Particularité |
 |---|---|---|
 | **Simple** | 3 | aucun gardien |
-| **Géant** | 2 | une **clairière de 7 blocs de rayon** au centre (terre pourrie, ronces, tapis de vrilles, os, couronne de citrouilles sculptées tournées vers l'extérieur) où trône la **[Citrouille géante](../pnj/citrouille-geante.md)** (élite, 30 min) |
+| **Géant** | 2 | une **clairière de 7 blocs de rayon** au centre (terre pourrie, ronces, tapis de vrilles, os, couronne de citrouilles sculptées tournées vers l'extérieur) où trône la **[Citrouille géante](../pnj/citrouille-geante.md)** (élite, 30 min), entre **quatre lanternes-citrouilles** qu'un coup renverse (sol en feu sur 3 blocs) |
 
 ![La clairière d'un champ géant et sa Citrouille géante, en jeu](../images/lieux/champ_citrouille_geante.jpg)
 

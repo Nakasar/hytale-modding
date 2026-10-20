@@ -6,10 +6,11 @@ modèle de Gobliterator_Slam_Warning (contour Warning_Circle_Base et disque Ball
 Feastmaster_Slam_Warning et Dungeon_Goblin_Mace_Slam_Warning à échelle égale : échelle 0,68 par bloc de rayon
 (`scale(r)`), à plat sur le sol.
 
-Les générateurs (alchemist_traps.py, generate_tower_mobs.py) demandent les durées avec `system(s)` puis écrivent les
-fichiers avec `write()`.
+Les générateurs (alchemist_traps.py, generate_tower_mobs.py, generate_elites.py) demandent les durées avec `system(s)`
+puis écrivent les fichiers avec `write()`. Toutes les durées de WARNING_TENTHS sont écrites : le Java
+(telegraph.Telegraphs.circle, élites du Comté) en choisit une à la volée.
 
-Cônes et anneaux (Kevin, 20 octobre 2026 : « cône rouge qui se charge », comme ceux de Deepworks) : tower.TowerFx les
+Cônes et anneaux (Kevin, 20 octobre 2026 : « cône rouge qui se charge », comme ceux de Deepworks) : telegraph.Telegraphs les
 dessine en pastilles rouges posées à plat, anneau après anneau, du bord de départ au bord d'arrivée ; chaque pastille
 reste jusqu'à l'instant du coup. `Nakasar_Cone_<dixièmes>` est une pastille qui dure autant, `Nakasar_Cone_Edge_<dixièmes>`
 un point du contour, posé dès le début. Toutes les durées de CONE_TENTHS existent : le Java en choisit une à chaque
@@ -24,7 +25,8 @@ SCALE = 0.68           # échelle de particule par bloc de rayon
 BASE = 6.25            # taille de la particule à l'échelle 1 (comme Dungeon_Goblin_Mace_Slam_Warning)
 RED = "#ff2a1a"
 CONE_PREFIX = "Nakasar_Cone_"
-CONE_TENTHS = range(2, 61)   # TowerFx.CONE_MIN / CONE_MAX en dixièmes de seconde
+CONE_TENTHS = range(2, 61)   # Telegraphs.CONE_MIN / CONE_MAX en dixièmes de seconde
+WARNING_TENTHS = range(5, 61)   # Telegraphs.WARNING_MIN / WARNING_MAX : toutes écrites, les élites en demandent en Java
 
 _wanted = set()
 
@@ -116,7 +118,7 @@ def _cone_files(t):
     out = {}
     for name, spawner, dy in ((f"{CONE_PREFIX}{t}", fill, 0.02), (f"{CONE_PREFIX}Edge_{t}", edge, 0.03)):
         out[f"{name}.particlesystem"] = {
-            "$Comment": f"Cône ou anneau d'annonce de la Tour ({life:g} s jusqu'au coup), dessiné par tower.TowerFx. "
+            "$Comment": f"Cône ou anneau d'annonce de la Tour ({life:g} s jusqu'au coup), dessiné par telegraph.Telegraphs. "
                         "Généré par tools/tower_warnings.py.",
             "Spawners": [{"SpawnerId": f"{name}_Dot", "PositionOffset": {"Y": dy}}],
             "CullDistance": 96,
@@ -129,7 +131,7 @@ def _cone_files(t):
 def write():
     PARTICLES.mkdir(parents=True, exist_ok=True)
     files = {}
-    for t in sorted(_wanted):
+    for t in sorted(set(WARNING_TENTHS) | _wanted):
         files.update(_files(t))
     for t in CONE_TENTHS:
         files.update(_cone_files(t))

@@ -1,73 +1,53 @@
 {
-  "$Comment": "Plongeon du Spectre : il surgit à 1,5-2,5 blocs de sa cible (téléportation du rôle) et la frappe aussitôt de ses griffes glacées (22 dégâts, recul, frisson Nakasar_Ghost_Chill 3 s).",
+  "$Comment": "Piqué du Spectre, annoncé : il se dissout en brume pendant qu'un petit cercle rouge de 1,5 bloc se remplit 1,2 s sous sa cible (à l'endroit où elle était), puis il surgit au centre du cercle et frappe de ses griffes glacées (22 dégâts, recul, frisson Nakasar_Ghost_Chill 3 s). Il suffit de sortir du cercle. Impossible à moins de 5 blocs d'un brasero allumé (SafeFromBraziers) : la chaîne échoue.",
   "Type": "Serial",
   "Interactions": [
     {
+      "Type": "ClearEntityEffect",
+      "Entity": "User",
+      "EntityEffectId": "Hit_Interrupt_Eligible"
+    },
+    {
+      "Type": "Nakasar_Telegraph",
+      "Shape": "Circle",
+      "Seconds": 1.2,
+      "Anchor": "Target",
+      "Radius": 1.5,
+      "TeleportCaster": true,
+      "SafeFromBraziers": 5.0,
+      "Damage": 22,
+      "Knockback": 4,
+      "KnockUp": 4,
+      "HitParticle": "Impact_Ice",
+      "ImpactSound": "SFX_Light_Melee_T2_Swing",
+      "EffectId": "Nakasar_Ghost_Chill",
+      "EffectDuration": 3
+    },
+    {
       "Type": "Simple",
-      "RunTime": 0.35,
+      "RunTime": 1.2,
       "Effects": {
-        "ItemAnimationId": "SwingDown",
         "WorldSoundEventId": "SFX_Spirit_Root_Alerted",
         "Particles": [
           {
             "SystemId": "Weapon_Frost_Mist",
             "TargetNodeName": "Chest",
-            "Scale": 1.5
+            "Scale": 2.5
+          },
+          {
+            "SystemId": "Nakasar_Mist_Column",
+            "TargetEntityPart": "Entity",
+            "TargetNodeName": "Origin",
+            "Scale": 1.0
           }
         ]
       }
     },
     {
-      "Type": "Selector",
-      "RunTime": 0.1,
+      "Type": "Simple",
+      "RunTime": 0.3,
       "Effects": {
-        "WorldSoundEventId": "SFX_Light_Melee_T2_Swing"
-      },
-      "Selector": {
-        "Id": "Horizontal",
-        "Direction": "ToLeft",
-        "TestLineOfSight": false,
-        "ExtendTop": 1.2,
-        "ExtendBottom": 1.2,
-        "StartDistance": 0.1,
-        "EndDistance": 3.4,
-        "Length": 120,
-        "RollOffset": 0,
-        "YawStartOffset": 60
-      },
-      "HitEntity": {
-        "Interactions": [
-          {
-            "Parent": "DamageEntityParent_Hit_Interrupt",
-            "DamageCalculator": {
-              "BaseDamage": {
-                "Physical": 22
-              },
-              "RandomPercentageModifier": 0.1
-            },
-            "DamageEffects": {
-              "WorldParticles": [
-                {
-                  "SystemId": "Impact_Ice"
-                }
-              ],
-              "Knockback": {
-                "Type": "Force",
-                "Force": 4,
-                "VelocityType": "Set",
-                "Direction": {
-                  "Y": 1
-                }
-              }
-            }
-          },
-          {
-            "Type": "ApplyEffect",
-            "EffectId": "Nakasar_Ghost_Chill",
-            "Entity": "Target",
-            "Duration": 3
-          }
-        ]
+        "ItemAnimationId": "SwingDown"
       }
     },
     {

@@ -4,6 +4,15 @@ import com.hypixel.hytale.builtin.adventure.worldevents.WorldEventsPlugin;
 import com.hypixel.hytale.server.core.modules.interaction.interaction.config.Interaction;
 import com.hypixel.hytale.server.core.plugin.JavaPlugin;
 import com.hypixel.hytale.server.core.plugin.JavaPluginInit;
+import dev.nakasar.hytale.vampires.arena.AlarmBellInteraction;
+import dev.nakasar.hytale.vampires.arena.ArenaBlocks;
+import dev.nakasar.hytale.vampires.arena.BarnPosts;
+import dev.nakasar.hytale.vampires.arena.Restores;
+import dev.nakasar.hytale.vampires.elite.EliteStun;
+import dev.nakasar.hytale.vampires.elite.StunSelfInteraction;
+import dev.nakasar.hytale.vampires.telegraph.ChargeInteraction;
+import dev.nakasar.hytale.vampires.telegraph.TelegraphInteraction;
+import dev.nakasar.hytale.vampires.telegraph.TelegraphSystem;
 import dev.nakasar.hytale.vampires.allegiance.AllegianceAttitudeSystem;
 import dev.nakasar.hytale.vampires.allegiance.AllegianceDamageFilter;
 import dev.nakasar.hytale.vampires.boss.BossBarSystem;
@@ -151,6 +160,8 @@ public final class VampiresPlugin extends JavaPlugin {
 
     @Override
     protected void setup() {
+        // Blocs du décor des élites en attente de remise en place (porte, cloche, lanterne, poteau).
+        Restores.load(getDataDirectory());
         var interactions = getCodecRegistry(Interaction.CODEC);
         interactions.register(TeleportCasterToImpactInteraction.TYPE_ID,
                 TeleportCasterToImpactInteraction.class, TeleportCasterToImpactInteraction.CODEC);
@@ -194,6 +205,14 @@ public final class VampiresPlugin extends JavaPlugin {
                 AlchemistFlaskInteraction.class, AlchemistFlaskInteraction.CODEC);
         interactions.register(TakePhilosopherStoneInteraction.TYPE_ID,
                 TakePhilosopherStoneInteraction.class, TakePhilosopherStoneInteraction.CODEC);
+        interactions.register(TelegraphInteraction.TYPE_ID,
+                TelegraphInteraction.class, TelegraphInteraction.CODEC);
+        interactions.register(ChargeInteraction.TYPE_ID,
+                ChargeInteraction.class, ChargeInteraction.CODEC);
+        interactions.register(StunSelfInteraction.TYPE_ID,
+                StunSelfInteraction.class, StunSelfInteraction.CODEC);
+        interactions.register(AlarmBellInteraction.TYPE_ID,
+                AlarmBellInteraction.class, AlarmBellInteraction.CODEC);
 
         var systems = getEntityStoreRegistry();
         RootTrapped.setComponentType(systems.registerComponent(RootTrapped.class, RootTrapped::new));
@@ -241,15 +260,21 @@ public final class VampiresPlugin extends JavaPlugin {
         systems.registerSystem(new AlchemistSystem());
         systems.registerSystem(new ElementalLanternSystem());
         systems.registerSystem(new AlchemistGlovesSystem());
+        systems.registerSystem(new TelegraphSystem());
+        systems.registerSystem(new EliteStun.Unload());
+        systems.registerSystem(new ArenaBlocks.Hit());
+        systems.registerSystem(new ArenaBlocks.Break());
+        systems.registerSystem(new ArenaBlocks.Use());
 
-        getLogger().atInfo().log("Nakasar Vampires : 21 types d'interaction (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s), systèmes des camps, de l'argent, du feu purificateur, de la voie occulte, de la brèche, des contrats des chasseurs et de la Tour de l'Alchimiste enregistrés",
+        getLogger().atInfo().log("Nakasar Vampires : 25 types d'interaction (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s), systèmes des camps, de l'argent, du feu purificateur, de la voie occulte, de la brèche, des contrats des chasseurs, de la Tour de l'Alchimiste et des annonces des élites enregistrés",
                 TeleportCasterToImpactInteraction.TYPE_ID, DominateInteraction.TYPE_ID, RootNpcInteraction.TYPE_ID,
                 DrainBeamInteraction.TYPE_ID, DominatePlayerInteraction.TYPE_ID, ImprisonPlayerInteraction.TYPE_ID,
                 RootTrapInteraction.TYPE_ID, TakeArrowInteraction.TYPE_ID, ReturnArrowInteraction.TYPE_ID,
                 SummonMinionsInteraction.TYPE_ID, ApplyEffectToFoesInteraction.TYPE_ID, LightAuraInteraction.TYPE_ID, InvisibilityInteraction.TYPE_ID,
                 VampireRitualInteraction.TYPE_ID, BloodFeedInteraction.TYPE_ID, DrinkBloodInteraction.TYPE_ID,
                 OpenBountyBagInteraction.TYPE_ID, ClaimBreachContractInteraction.TYPE_ID, CodexChapterInteraction.TYPE_ID,
-                AlchemistFlaskInteraction.TYPE_ID, TakePhilosopherStoneInteraction.TYPE_ID);
+                AlchemistFlaskInteraction.TYPE_ID, TakePhilosopherStoneInteraction.TYPE_ID, TelegraphInteraction.TYPE_ID,
+                ChargeInteraction.TYPE_ID, StunSelfInteraction.TYPE_ID, AlarmBellInteraction.TYPE_ID);
     }
 
     @Override
@@ -269,5 +294,9 @@ public final class VampiresPlugin extends JavaPlugin {
         TransmutationSystem.clearAll();
         ChimeraSystem.clearAll();
         AlchemistSystem.clearAll();
+        TelegraphSystem.clearAll();
+        EliteStun.clearAll();
+        ArenaBlocks.clearAll();
+        BarnPosts.clearAll();
     }
 }

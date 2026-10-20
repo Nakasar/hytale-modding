@@ -1,5 +1,5 @@
 {
-  "$Comment": "Le Spectre appelle ses fantômes : il se fige dans une brume de givre, puis trois fantômes (Nakasar_Spectral_Ghost) apparaissent entre 2,5 et 5 blocs de lui (Nakasar_SummonMinions). Tant qu'il en reste un, il est invulnérable (MinionShieldSystem).",
+  "$Comment": "Le Spectre appelle ses fantômes : il se fige dans une brume de givre, puis trois fantômes (Nakasar_Spectral_Ghost) apparaissent entre 2,5 et 5 blocs de lui (Nakasar_SummonMinions). Un lien pâle va de chaque fantôme au Spectre : tant qu'il en reste un, il est invulnérable (MinionShieldSystem, halo doré).",
   "Type": "Serial",
   "Interactions": [
     {
@@ -48,7 +48,8 @@
         "MaxAlive": 3,
         "MinDistance": 2.5,
         "MaxDistance": 5,
-        "MinSpacing": 2
+        "MinSpacing": 2,
+        "TetherParticle": "Nakasar_Tether_Ghost"
       }
     },
     {

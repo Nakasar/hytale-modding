@@ -1,5 +1,5 @@
 {
-  "$Comment": "Capitaine de la garde (élite) du poste de garde : coups de hache ordinaires, et trois attaques annoncées comme les élites de Deepworks (il s'immobilise, rougeoie et marque le sol avant de frapper) : Fendant devant lui, Tourbillon autour de lui, et Emprisonnement (longue recharge) qui envoie le joueur visé dans une cellule du poste. Retourne à son poste et regagne sa vie si on fuit à plus de 32 blocs.",
+  "$Comment": "Capitaine de la garde (élite) du poste de garde : coups de hache ordinaires, et trois attaques annoncées par les zones rouges de la Tour : Fendant (cône de 50°, 5 blocs, 1,3 s), Tourbillon (cercle de 4 blocs, 1,5 s, suivi de 2 s de vertige), et Emprisonnement imparable (chaînes au-dessus de la cible 1,5 s, longue recharge) qui l'envoie dans une cellule du poste. Sous 50 % de vie, il crie l'alarme une fois : trois gardes par joueur si la cloche est encore debout. Retourne à son poste et regagne sa vie si on fuit à plus de 32 blocs.",
   "Type": "Generic",
   "Appearance": "Nakasar_Guard_Captain",
   "NameTranslationKey": "nakasar_mobs.npc.Guard_Captain.name",
@@ -76,6 +76,18 @@
           "RestartValueRange": [
             45,
             60
+          ]
+        },
+        {
+          "Type": "TimerStart",
+          "Name": "Alarm",
+          "StartValueRange": [
+            1,
+            1
+          ],
+          "RestartValueRange": [
+            100000,
+            100000
           ]
         }
       ]
@@ -196,7 +208,50 @@
           ]
         },
         {
-          "$Comment": "Emprisonnement : un joueur en ligne de mire à moins de 16 blocs et à plus de 4 blocs.",
+          "$Comment": "Seconde moitié (sous 50 % de vie) : il crie l'alarme, une seule fois par combat.",
+          "Sensor": {
+            "Type": "And",
+            "Sensors": [
+              {
+                "Type": "Self",
+                "Filters": [
+                  {
+                    "Type": "Stat",
+                    "Stat": "Health",
+                    "StatTarget": "Value",
+                    "RelativeTo": "Health",
+                    "RelativeToTarget": "Max",
+                    "ValueRange": [
+                      0,
+                      0.5
+                    ]
+                  }
+                ]
+              },
+              {
+                "Type": "Timer",
+                "Name": "Alarm",
+                "State": "STOPPED"
+              }
+            ]
+          },
+          "ActionsBlocking": true,
+          "Actions": [
+            {
+              "Type": "TimerRestart",
+              "Name": "Alarm"
+            },
+            {
+              "Type": "Attack",
+              "Attack": "Root_Nakasar_NPC_Captain_Alarm",
+              "SkipAiming": true,
+              "LineOfSight": false,
+              "AvoidFriendlyFire": false
+            }
+          ]
+        },
+        {
+          "$Comment": "Emprisonnement : une cible en vue à moins de 16 blocs et à plus de 4 blocs (imparable une fois lancé).",
           "Sensor": {
             "Type": "And",
             "Sensors": [

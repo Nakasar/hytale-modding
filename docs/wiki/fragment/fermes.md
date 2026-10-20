@@ -13,7 +13,7 @@ Une exploitation du domaine : maison, grange, champs et potager.
 
 ## Plan
 
-**Maison du fermier** sur deux niveaux et **grande grange**, cour en terre battue avec **puits**, **deux champs de blé clos** avec épouvantail et poteaux à lanterne, **potager de citrouilles** clos, meules de foin, tas de bûches, chemin vers le sud.
+**Maison du fermier** sur deux niveaux et **grande grange**, cour en terre battue avec **puits**, **deux champs de blé clos** avec épouvantail et poteaux à lanterne, **potager de citrouilles** clos, meules de foin, tas de bûches, chemin vers le sud. Quatre **poteaux porteurs** dans la grange, hors du passage de la porte : l'[Abomination](../pnj/abomination-zombie.md) qui charge s'y assomme (un poteau se fend, puis cède au second choc).
 
 ## Variantes (une chance sur trois chacune)
 

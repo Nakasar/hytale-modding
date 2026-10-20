@@ -40,9 +40,11 @@ Avec ses 8000 PV et sa régénération incessante, elle est **presque invincible
 | Capacité | Portée | Effet | Fréquence |
 |---|---|---|---|
 | **Baiser du Vampire** (mêlée) | 3,2 blocs, 90° | **22** dégâts physiques (±10 %) par cible, **+30 PV** pour elle par cible touchée | pause de 1,2 à 1,8 s |
-| **Domination** | trait de 12 blocs, joueurs | [Domination du Comte](../effets.md#domination-du-comte) **6 s** : vous ne pouvez plus la blesser | toutes les 14 à 18 s (première après 5 à 7 s) |
-| **Téléportation** | cible entre 7 et 30 blocs | réapparaît à 1,5 à 2,5 blocs de vous | toutes les **6 à 9 s** (première après 3 à 5 s) |
+| **Domination** (annoncée) | ligne rouge de **12 blocs** vers la cible, **0,8 s**, joueurs | [Domination du Comte](../effets.md#domination-du-comte) **6 s** : vous ne pouvez plus la blesser | toutes les 14 à 18 s (première après 5 à 7 s) |
+| **Téléportation** (annoncée) | cible entre 7 et 30 blocs | une **colonne de brume de sang** marque **0,6 s** l'endroit où elle va surgir, à 1,5 à 2,5 blocs de vous | toutes les **6 à 9 s** (première après 3 à 5 s) |
 | **Appel des rejetons** | sous **50 % de PV** | **2 ou 3** [rejetons](rejeton-de-vampire.md), s'il en reste 2 ou moins dans les 40 blocs | toutes les 30 s |
+
+Sa domination s'annonce comme celle du [Comte](comte-vampire.md) : une ligne rouge qui se remplit vers sa cible ; écartez-vous de la ligne. Chaque téléportation est précédée d'une colonne de brume de sang au point d'arrivée.
 
 ## Butin
 

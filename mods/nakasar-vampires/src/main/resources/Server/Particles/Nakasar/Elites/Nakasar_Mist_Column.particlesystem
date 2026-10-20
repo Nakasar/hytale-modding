@@ -1,0 +1,12 @@
+{
+  "$Comment": "Colonne de brume : le Spectre va surgir ici. Généré par tools/elite_fx.py.",
+  "Spawners": [
+    {
+      "SpawnerId": "Nakasar_Mist_Column_Mist",
+      "PositionOffset": {
+        "Y": 0.0
+      }
+    }
+  ],
+  "CullDistance": 64
+}

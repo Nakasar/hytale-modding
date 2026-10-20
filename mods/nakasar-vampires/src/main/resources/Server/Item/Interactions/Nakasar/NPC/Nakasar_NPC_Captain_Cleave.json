@@ -1,5 +1,5 @@
 {
-  "$Comment": "Fendant du Capitaine, annoncé : 1,1 s de préparation (hache levée, lueur rouge, zone d'impact marquée au sol devant lui), puis un coup vertical qui frappe tout sur 5 blocs devant lui. On l'évite en sortant de la zone ou en passant sur son côté.",
+  "$Comment": "Fendant du Capitaine, annoncé : il lève sa hache 1,3 s pendant qu'un cône rouge de 50° et 5 blocs se remplit devant lui (Nakasar_Telegraph), puis l'abat sur tout ce qui s'y trouve encore (45 dégâts, projection). On l'évite en sortant du cône ou en passant sur son côté.",
   "Type": "Serial",
   "Interactions": [
     {
@@ -16,24 +16,25 @@
       "EffectId": "Dungeon_Goblin_Mace_Slam_Charge"
     },
     {
+      "Type": "Nakasar_Telegraph",
+      "Shape": "Cone",
+      "Seconds": 1.3,
+      "Angle": 50,
+      "Radius": 5,
+      "Damage": 45,
+      "Knockback": 3,
+      "KnockUp": 4,
+      "HitParticle": "Impact_Sword_Basic_Stronk",
+      "ImpactParticle": "Dungeon_Goblin_Mace_Slam",
+      "ImpactParticleScale": 0.18,
+      "ImpactSound": "SFX_Mace_T2_Signature_Impact"
+    },
+    {
       "Type": "Simple",
-      "RunTime": 1.1,
+      "RunTime": 1.3,
       "Effects": {
         "ItemPlayerAnimationsId": "Skeleton_Battleaxe",
         "ItemAnimationId": "DownstrikeCharging",
-        "Particles": [
-          {
-            "SystemId": "Gobliterator_Slam_Warning",
-            "TargetEntityPart": "Entity",
-            "TargetNodeName": "Origin",
-            "Scale": 0.22,
-            "PositionOffset": {
-              "X": 0,
-              "Y": 0.1,
-              "Z": 2.4
-            }
-          }
-        ],
         "WorldSoundEventId": "SFX_Goblin_Mace_VO_Club_Slam_Charge"
       }
     },
@@ -57,61 +58,6 @@
             },
             "TargetNodeName": "Handle",
             "TrailId": "Large_Charged_Red"
-          }
-        ]
-      }
-    },
-    {
-      "Type": "Selector",
-      "RunTime": 0.1,
-      "Effects": {
-        "Particles": [
-          {
-            "SystemId": "Dungeon_Goblin_Mace_Slam",
-            "TargetEntityPart": "Entity",
-            "TargetNodeName": "Origin",
-            "Scale": 0.18,
-            "PositionOffset": {
-              "X": 0,
-              "Y": 0.1,
-              "Z": 2.4
-            }
-          }
-        ]
-      },
-      "Selector": {
-        "Id": "Horizontal",
-        "Direction": "ToLeft",
-        "TestLineOfSight": true,
-        "IgnorePitch": true,
-        "ExtendTop": 0.5,
-        "ExtendBottom": 1.0,
-        "StartDistance": 0.3,
-        "EndDistance": 5,
-        "Length": 50,
-        "RollOffset": 90,
-        "YawStartOffset": 25
-      },
-      "HitEntity": {
-        "Interactions": [
-          {
-            "Parent": "DamageEntityParent",
-            "DamageCalculator": {
-              "BaseDamage": {
-                "Physical": 45
-              },
-              "RandomPercentageModifier": 0.1
-            },
-            "DamageEffects": {
-              "WorldSoundEventId": "SFX_Mace_T2_Signature_Impact",
-              "CameraEffect": "Impact",
-              "Knockback": {
-                "Type": "Directional",
-                "Force": -3,
-                "VelocityY": 4,
-                "VelocityType": "Add"
-              }
-            }
           }
         ]
       }

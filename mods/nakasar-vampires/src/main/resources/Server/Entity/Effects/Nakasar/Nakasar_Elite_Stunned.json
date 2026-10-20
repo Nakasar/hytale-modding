@@ -1,0 +1,37 @@
+{
+  "$Comment": "Élite étourdie après une charge dans un mur ou un poteau (Abomination) : son IA est gelée (dev.nakasar.hytale.vampires.elite.EliteStun) et elle subit 50 % de dégâts en plus. Fenêtre de punition.",
+  "ApplicationEffects": {
+    "Particles": [
+      {
+        "SystemId": "Stunned",
+        "TargetEntityPart": "Self",
+        "PositionOffset": {
+          "Y": 3.6
+        }
+      }
+    ]
+  },
+  "DamageResistance": {
+    "Physical": [
+      {
+        "CalculationType": "Percent",
+        "Amount": -0.5
+      }
+    ],
+    "Projectile": [
+      {
+        "CalculationType": "Percent",
+        "Amount": -0.5
+      }
+    ],
+    "Elemental": [
+      {
+        "CalculationType": "Percent",
+        "Amount": -0.5
+      }
+    ]
+  },
+  "OverlapBehavior": "Overwrite",
+  "Infinite": false,
+  "Duration": 4
+}

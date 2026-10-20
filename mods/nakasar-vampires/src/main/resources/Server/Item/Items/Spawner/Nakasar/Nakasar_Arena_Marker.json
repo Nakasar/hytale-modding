@@ -1,0 +1,13 @@
+{
+  "$Comment": "Bloc invisible et traversable posé dans les lieux des élites du Comté (grange, poste de garde, clairière de la citrouille, château et cimetière du Spectre) : seuls les blocs du décor à moins de 40 blocs d'un tel bloc réagissent aux coups et aux clics (arena.ArenaBlocks) ; ailleurs, braseros, poutres et troncs restent ceux du jeu.",
+  "TranslationProperties": {
+    "Name": "nakasar_mobs.items.Nakasar_Arena_Marker.name"
+  },
+  "Quality": "Developer",
+  "MaxStack": 64,
+  "BlockType": {
+    "Material": "Empty",
+    "DrawType": "Empty",
+    "Opacity": "Transparent"
+  }
+}

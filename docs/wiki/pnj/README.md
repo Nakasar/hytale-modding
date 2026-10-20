@@ -13,6 +13,8 @@ Toutes les créatures ajoutées par le mod. Les créatures du Comté forment **u
 
 ## Boss et élites
 
+**Lire les élites :** leurs attaques dangereuses s'annoncent par les zones rouges de la [Tour de l'Alchimiste](../donjons/tour-de-l-alchimiste.md) (cercle, cône ou ligne) à la taille exacte du coup, qui se remplissent pendant toute la préparation (au moins 1,2 s pour les plus fortes) ; le coup touche ce qui est encore dedans quand la zone est pleine. Les liens lumineux montrent quels serviteurs protègent ou soignent leur élite, et chaque lieu d'élite cache un élément de décor à retourner contre elle.
+
 | | Créature | Rang | PV | Où | Butin notable |
 |---|---|---|---|---|---|
 | ![vignette](../images/pnj/Nakasar_Vampire_Count.jpg) | [Comte Vampire](comte-vampire.md) | Boss | 8000 | Manoir du Comte | 1 rune |

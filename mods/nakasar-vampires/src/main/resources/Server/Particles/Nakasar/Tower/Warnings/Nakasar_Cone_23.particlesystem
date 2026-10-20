@@ -1,5 +1,5 @@
 {
-  "$Comment": "C\u00f4ne ou anneau d'annonce de la Tour (2.3 s jusqu'au coup), dessin\u00e9 par tower.TowerFx. G\u00e9n\u00e9r\u00e9 par tools/tower_warnings.py.",
+  "$Comment": "C\u00f4ne ou anneau d'annonce de la Tour (2.3 s jusqu'au coup), dessin\u00e9 par telegraph.Telegraphs. G\u00e9n\u00e9r\u00e9 par tools/tower_warnings.py.",
   "Spawners": [
     {
       "SpawnerId": "Nakasar_Cone_23_Dot",
