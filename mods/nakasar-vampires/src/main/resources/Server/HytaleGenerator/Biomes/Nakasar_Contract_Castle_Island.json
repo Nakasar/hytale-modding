@@ -1,5 +1,727 @@
 {
   "Name": "Nakasar_Contract_Castle_Island",
+  "FloatingFunctionNodes": [
+    {
+      "Type": "PositionsCellNoise",
+      "Positions": {
+        "Type": "Cache",
+        "SectionSize": 32,
+        "CacheSize": 100,
+        "Positions": {
+          "Type": "Union",
+          "Positions": [
+            {
+              "Type": "FieldFunction",
+              "FieldFunction": {
+                "Type": "XOverride",
+                "Value": 7919.5,
+                "Inputs": [
+                  {
+                    "Type": "ZOverride",
+                    "Value": -4441.5,
+                    "Inputs": [
+                      {
+                        "Type": "SimplexNoise2D",
+                        "Scale": 60.0,
+                        "Octaves": 1,
+                        "Lacunarity": 2.0,
+                        "Persistence": 0.5,
+                        "Seed": "Layout"
+                      }
+                    ]
+                  }
+                ]
+              },
+              "Delimiters": [
+                {
+                  "Min": -1000000000.0,
+                  "Max": -0.236
+                }
+              ],
+              "Positions": {
+                "Type": "List",
+                "Positions": [
+                  {
+                    "X": 0,
+                    "Y": 81,
+                    "Z": 0
+                  },
+                  {
+                    "X": 89,
+                    "Y": 81,
+                    "Z": 45
+                  },
+                  {
+                    "X": 94,
+                    "Y": 81,
+                    "Z": 137
+                  },
+                  {
+                    "X": 9,
+                    "Y": 81,
+                    "Z": 189
+                  },
+                  {
+                    "X": 174,
+                    "Y": 81,
+                    "Z": 94
+                  },
+                  {
+                    "X": -32,
+                    "Y": 81,
+                    "Z": -115
+                  }
+                ]
+              }
+            },
+            {
+              "Type": "FieldFunction",
+              "FieldFunction": {
+                "Type": "XOverride",
+                "Value": 7919.5,
+                "Inputs": [
+                  {
+                    "Type": "ZOverride",
+                    "Value": -4441.5,
+                    "Inputs": [
+                      {
+                        "Type": "SimplexNoise2D",
+                        "Scale": 60.0,
+                        "Octaves": 1,
+                        "Lacunarity": 2.0,
+                        "Persistence": 0.5,
+                        "Seed": "Layout"
+                      }
+                    ]
+                  }
+                ]
+              },
+              "Delimiters": [
+                {
+                  "Min": -0.236,
+                  "Max": 0.0
+                }
+              ],
+              "Positions": {
+                "Type": "List",
+                "Positions": [
+                  {
+                    "X": 0,
+                    "Y": 81,
+                    "Z": 0
+                  },
+                  {
+                    "X": 67,
+                    "Y": 81,
+                    "Z": -52
+                  },
+                  {
+                    "X": 153,
+                    "Y": 81,
+                    "Z": -42
+                  },
+                  {
+                    "X": 182,
+                    "Y": 81,
+                    "Z": 40
+                  },
+                  {
+                    "X": -60,
+                    "Y": 81,
+                    "Z": -91
+                  },
+                  {
+                    "X": -81,
+                    "Y": 81,
+                    "Z": 73
+                  }
+                ]
+              }
+            },
+            {
+              "Type": "FieldFunction",
+              "FieldFunction": {
+                "Type": "XOverride",
+                "Value": 7919.5,
+                "Inputs": [
+                  {
+                    "Type": "ZOverride",
+                    "Value": -4441.5,
+                    "Inputs": [
+                      {
+                        "Type": "SimplexNoise2D",
+                        "Scale": 60.0,
+                        "Octaves": 1,
+                        "Lacunarity": 2.0,
+                        "Persistence": 0.5,
+                        "Seed": "Layout"
+                      }
+                    ]
+                  }
+                ]
+              },
+              "Delimiters": [
+                {
+                  "Min": 0.0,
+                  "Max": 0.236
+                }
+              ],
+              "Positions": {
+                "Type": "List",
+                "Positions": [
+                  {
+                    "X": 0,
+                    "Y": 81,
+                    "Z": 0
+                  },
+                  {
+                    "X": -69,
+                    "Y": 81,
+                    "Z": 76
+                  },
+                  {
+                    "X": -37,
+                    "Y": 81,
+                    "Z": 154
+                  },
+                  {
+                    "X": 74,
+                    "Y": 81,
+                    "Z": 174
+                  },
+                  {
+                    "X": 9,
+                    "Y": 81,
+                    "Z": -112
+                  }
+                ]
+              }
+            },
+            {
+              "Type": "FieldFunction",
+              "FieldFunction": {
+                "Type": "XOverride",
+                "Value": 7919.5,
+                "Inputs": [
+                  {
+                    "Type": "ZOverride",
+                    "Value": -4441.5,
+                    "Inputs": [
+                      {
+                        "Type": "SimplexNoise2D",
+                        "Scale": 60.0,
+                        "Octaves": 1,
+                        "Lacunarity": 2.0,
+                        "Persistence": 0.5,
+                        "Seed": "Layout"
+                      }
+                    ]
+                  }
+                ]
+              },
+              "Delimiters": [
+                {
+                  "Min": 0.236,
+                  "Max": 1000000000.0
+                }
+              ],
+              "Positions": {
+                "Type": "List",
+                "Positions": [
+                  {
+                    "X": 0,
+                    "Y": 81,
+                    "Z": 0
+                  },
+                  {
+                    "X": -52,
+                    "Y": 81,
+                    "Z": -76
+                  },
+                  {
+                    "X": -147,
+                    "Y": 81,
+                    "Z": -66
+                  },
+                  {
+                    "X": -190,
+                    "Y": 81,
+                    "Z": 6
+                  },
+                  {
+                    "X": 28,
+                    "Y": 81,
+                    "Z": -166
+                  },
+                  {
+                    "X": 102,
+                    "Y": 81,
+                    "Z": 34
+                  }
+                ]
+              }
+            }
+          ]
+        },
+        "ExportAs": "Nakasar_Contract_Castle_Lobes_Positions"
+      },
+      "ReturnType": {
+        "Type": "Curve",
+        "Curve": {
+          "Type": "Manual",
+          "Points": [
+            {
+              "In": 0,
+              "Out": 0
+            },
+            {
+              "In": 1,
+              "Out": 1
+            }
+          ]
+        }
+      },
+      "DistanceFunction": {
+        "Type": "Euclidean"
+      },
+      "MaxDistance": 1.0
+    },
+    {
+      "Type": "PositionsCellNoise",
+      "Positions": {
+        "Type": "Cache",
+        "SectionSize": 32,
+        "CacheSize": 100,
+        "Positions": {
+          "Type": "Union",
+          "Positions": [
+            {
+              "Type": "FieldFunction",
+              "FieldFunction": {
+                "Type": "XOverride",
+                "Value": 7919.5,
+                "Inputs": [
+                  {
+                    "Type": "ZOverride",
+                    "Value": -4441.5,
+                    "Inputs": [
+                      {
+                        "Type": "SimplexNoise2D",
+                        "Scale": 60.0,
+                        "Octaves": 1,
+                        "Lacunarity": 2.0,
+                        "Persistence": 0.5,
+                        "Seed": "Layout"
+                      }
+                    ]
+                  }
+                ]
+              },
+              "Delimiters": [
+                {
+                  "Min": -1000000000.0,
+                  "Max": -0.236
+                }
+              ],
+              "Positions": {
+                "Type": "List",
+                "Positions": [
+                  {
+                    "X": 9,
+                    "Y": 81,
+                    "Z": 189
+                  }
+                ]
+              }
+            },
+            {
+              "Type": "FieldFunction",
+              "FieldFunction": {
+                "Type": "XOverride",
+                "Value": 7919.5,
+                "Inputs": [
+                  {
+                    "Type": "ZOverride",
+                    "Value": -4441.5,
+                    "Inputs": [
+                      {
+                        "Type": "SimplexNoise2D",
+                        "Scale": 60.0,
+                        "Octaves": 1,
+                        "Lacunarity": 2.0,
+                        "Persistence": 0.5,
+                        "Seed": "Layout"
+                      }
+                    ]
+                  }
+                ]
+              },
+              "Delimiters": [
+                {
+                  "Min": -0.236,
+                  "Max": 0.0
+                }
+              ],
+              "Positions": {
+                "Type": "List",
+                "Positions": [
+                  {
+                    "X": 182,
+                    "Y": 81,
+                    "Z": 40
+                  }
+                ]
+              }
+            },
+            {
+              "Type": "FieldFunction",
+              "FieldFunction": {
+                "Type": "XOverride",
+                "Value": 7919.5,
+                "Inputs": [
+                  {
+                    "Type": "ZOverride",
+                    "Value": -4441.5,
+                    "Inputs": [
+                      {
+                        "Type": "SimplexNoise2D",
+                        "Scale": 60.0,
+                        "Octaves": 1,
+                        "Lacunarity": 2.0,
+                        "Persistence": 0.5,
+                        "Seed": "Layout"
+                      }
+                    ]
+                  }
+                ]
+              },
+              "Delimiters": [
+                {
+                  "Min": 0.0,
+                  "Max": 0.236
+                }
+              ],
+              "Positions": {
+                "Type": "List",
+                "Positions": [
+                  {
+                    "X": 74,
+                    "Y": 81,
+                    "Z": 174
+                  }
+                ]
+              }
+            },
+            {
+              "Type": "FieldFunction",
+              "FieldFunction": {
+                "Type": "XOverride",
+                "Value": 7919.5,
+                "Inputs": [
+                  {
+                    "Type": "ZOverride",
+                    "Value": -4441.5,
+                    "Inputs": [
+                      {
+                        "Type": "SimplexNoise2D",
+                        "Scale": 60.0,
+                        "Octaves": 1,
+                        "Lacunarity": 2.0,
+                        "Persistence": 0.5,
+                        "Seed": "Layout"
+                      }
+                    ]
+                  }
+                ]
+              },
+              "Delimiters": [
+                {
+                  "Min": 0.236,
+                  "Max": 1000000000.0
+                }
+              ],
+              "Positions": {
+                "Type": "List",
+                "Positions": [
+                  {
+                    "X": -190,
+                    "Y": 81,
+                    "Z": 6
+                  }
+                ]
+              }
+            }
+          ]
+        },
+        "ExportAs": "Nakasar_Contract_Castle_Target_Positions"
+      },
+      "ReturnType": {
+        "Type": "Curve",
+        "Curve": {
+          "Type": "Manual",
+          "Points": [
+            {
+              "In": 0,
+              "Out": 0
+            },
+            {
+              "In": 1,
+              "Out": 1
+            }
+          ]
+        }
+      },
+      "DistanceFunction": {
+        "Type": "Euclidean"
+      },
+      "MaxDistance": 1.0
+    },
+    {
+      "Type": "PositionsCellNoise",
+      "Positions": {
+        "Type": "Cache",
+        "SectionSize": 32,
+        "CacheSize": 100,
+        "Positions": {
+          "Type": "Union",
+          "Positions": [
+            {
+              "Type": "FieldFunction",
+              "FieldFunction": {
+                "Type": "XOverride",
+                "Value": 7919.5,
+                "Inputs": [
+                  {
+                    "Type": "ZOverride",
+                    "Value": -4441.5,
+                    "Inputs": [
+                      {
+                        "Type": "SimplexNoise2D",
+                        "Scale": 60.0,
+                        "Octaves": 1,
+                        "Lacunarity": 2.0,
+                        "Persistence": 0.5,
+                        "Seed": "Layout"
+                      }
+                    ]
+                  }
+                ]
+              },
+              "Delimiters": [
+                {
+                  "Min": -1000000000.0,
+                  "Max": -0.236
+                }
+              ],
+              "Positions": {
+                "Type": "List",
+                "Positions": [
+                  {
+                    "X": 89,
+                    "Y": 81,
+                    "Z": 45
+                  },
+                  {
+                    "X": 94,
+                    "Y": 81,
+                    "Z": 137
+                  },
+                  {
+                    "X": 174,
+                    "Y": 81,
+                    "Z": 94
+                  },
+                  {
+                    "X": -32,
+                    "Y": 81,
+                    "Z": -115
+                  }
+                ]
+              }
+            },
+            {
+              "Type": "FieldFunction",
+              "FieldFunction": {
+                "Type": "XOverride",
+                "Value": 7919.5,
+                "Inputs": [
+                  {
+                    "Type": "ZOverride",
+                    "Value": -4441.5,
+                    "Inputs": [
+                      {
+                        "Type": "SimplexNoise2D",
+                        "Scale": 60.0,
+                        "Octaves": 1,
+                        "Lacunarity": 2.0,
+                        "Persistence": 0.5,
+                        "Seed": "Layout"
+                      }
+                    ]
+                  }
+                ]
+              },
+              "Delimiters": [
+                {
+                  "Min": -0.236,
+                  "Max": 0.0
+                }
+              ],
+              "Positions": {
+                "Type": "List",
+                "Positions": [
+                  {
+                    "X": 67,
+                    "Y": 81,
+                    "Z": -52
+                  },
+                  {
+                    "X": 153,
+                    "Y": 81,
+                    "Z": -42
+                  },
+                  {
+                    "X": -60,
+                    "Y": 81,
+                    "Z": -91
+                  },
+                  {
+                    "X": -81,
+                    "Y": 81,
+                    "Z": 73
+                  }
+                ]
+              }
+            },
+            {
+              "Type": "FieldFunction",
+              "FieldFunction": {
+                "Type": "XOverride",
+                "Value": 7919.5,
+                "Inputs": [
+                  {
+                    "Type": "ZOverride",
+                    "Value": -4441.5,
+                    "Inputs": [
+                      {
+                        "Type": "SimplexNoise2D",
+                        "Scale": 60.0,
+                        "Octaves": 1,
+                        "Lacunarity": 2.0,
+                        "Persistence": 0.5,
+                        "Seed": "Layout"
+                      }
+                    ]
+                  }
+                ]
+              },
+              "Delimiters": [
+                {
+                  "Min": 0.0,
+                  "Max": 0.236
+                }
+              ],
+              "Positions": {
+                "Type": "List",
+                "Positions": [
+                  {
+                    "X": -69,
+                    "Y": 81,
+                    "Z": 76
+                  },
+                  {
+                    "X": -37,
+                    "Y": 81,
+                    "Z": 154
+                  },
+                  {
+                    "X": 9,
+                    "Y": 81,
+                    "Z": -112
+                  }
+                ]
+              }
+            },
+            {
+              "Type": "FieldFunction",
+              "FieldFunction": {
+                "Type": "XOverride",
+                "Value": 7919.5,
+                "Inputs": [
+                  {
+                    "Type": "ZOverride",
+                    "Value": -4441.5,
+                    "Inputs": [
+                      {
+                        "Type": "SimplexNoise2D",
+                        "Scale": 60.0,
+                        "Octaves": 1,
+                        "Lacunarity": 2.0,
+                        "Persistence": 0.5,
+                        "Seed": "Layout"
+                      }
+                    ]
+                  }
+                ]
+              },
+              "Delimiters": [
+                {
+                  "Min": 0.236,
+                  "Max": 1000000000.0
+                }
+              ],
+              "Positions": {
+                "Type": "List",
+                "Positions": [
+                  {
+                    "X": -52,
+                    "Y": 81,
+                    "Z": -76
+                  },
+                  {
+                    "X": -147,
+                    "Y": 81,
+                    "Z": -66
+                  },
+                  {
+                    "X": 28,
+                    "Y": 81,
+                    "Z": -166
+                  },
+                  {
+                    "X": 102,
+                    "Y": 81,
+                    "Z": 34
+                  }
+                ]
+              }
+            }
+          ]
+        },
+        "ExportAs": "Nakasar_Contract_Castle_Landmarks_Positions"
+      },
+      "ReturnType": {
+        "Type": "Curve",
+        "Curve": {
+          "Type": "Manual",
+          "Points": [
+            {
+              "In": 0,
+              "Out": 0
+            },
+            {
+              "In": 1,
+              "Out": 1
+            }
+          ]
+        }
+      },
+      "DistanceFunction": {
+        "Type": "Euclidean"
+      },
+      "MaxDistance": 1.0
+    }
+  ],
   "Terrain": {
     "Type": "DAOTerrain",
     "Density": {
@@ -83,170 +805,8 @@
                                 {
                                   "Type": "PositionsCellNoise",
                                   "Positions": {
-                                    "Type": "Cache",
-                                    "SectionSize": 32,
-                                    "CacheSize": 100,
-                                    "Positions": {
-                                      "Type": "Union",
-                                      "Positions": [
-                                        {
-                                          "Type": "FieldFunction",
-                                          "FieldFunction": {
-                                            "Type": "XOverride",
-                                            "Value": 7919.5,
-                                            "Inputs": [
-                                              {
-                                                "Type": "ZOverride",
-                                                "Value": -4441.5,
-                                                "Inputs": [
-                                                  {
-                                                    "Type": "SimplexNoise2D",
-                                                    "Scale": 60.0,
-                                                    "Octaves": 1,
-                                                    "Lacunarity": 2.0,
-                                                    "Persistence": 0.5,
-                                                    "Seed": "Layout"
-                                                  }
-                                                ]
-                                              }
-                                            ]
-                                          },
-                                          "Delimiters": [
-                                            {
-                                              "Min": -1000000000.0,
-                                              "Max": -0.236
-                                            }
-                                          ],
-                                          "Positions": {
-                                            "Type": "List",
-                                            "Positions": [
-                                              {
-                                                "X": -100,
-                                                "Y": 81,
-                                                "Z": 144
-                                              }
-                                            ]
-                                          }
-                                        },
-                                        {
-                                          "Type": "FieldFunction",
-                                          "FieldFunction": {
-                                            "Type": "XOverride",
-                                            "Value": 7919.5,
-                                            "Inputs": [
-                                              {
-                                                "Type": "ZOverride",
-                                                "Value": -4441.5,
-                                                "Inputs": [
-                                                  {
-                                                    "Type": "SimplexNoise2D",
-                                                    "Scale": 60.0,
-                                                    "Octaves": 1,
-                                                    "Lacunarity": 2.0,
-                                                    "Persistence": 0.5,
-                                                    "Seed": "Layout"
-                                                  }
-                                                ]
-                                              }
-                                            ]
-                                          },
-                                          "Delimiters": [
-                                            {
-                                              "Min": -0.236,
-                                              "Max": 0.0
-                                            }
-                                          ],
-                                          "Positions": {
-                                            "Type": "List",
-                                            "Positions": [
-                                              {
-                                                "X": -158,
-                                                "Y": 81,
-                                                "Z": -92
-                                              }
-                                            ]
-                                          }
-                                        },
-                                        {
-                                          "Type": "FieldFunction",
-                                          "FieldFunction": {
-                                            "Type": "XOverride",
-                                            "Value": 7919.5,
-                                            "Inputs": [
-                                              {
-                                                "Type": "ZOverride",
-                                                "Value": -4441.5,
-                                                "Inputs": [
-                                                  {
-                                                    "Type": "SimplexNoise2D",
-                                                    "Scale": 60.0,
-                                                    "Octaves": 1,
-                                                    "Lacunarity": 2.0,
-                                                    "Persistence": 0.5,
-                                                    "Seed": "Layout"
-                                                  }
-                                                ]
-                                              }
-                                            ]
-                                          },
-                                          "Delimiters": [
-                                            {
-                                              "Min": 0.0,
-                                              "Max": 0.236
-                                            }
-                                          ],
-                                          "Positions": {
-                                            "Type": "List",
-                                            "Positions": [
-                                              {
-                                                "X": 150,
-                                                "Y": 81,
-                                                "Z": -117
-                                              }
-                                            ]
-                                          }
-                                        },
-                                        {
-                                          "Type": "FieldFunction",
-                                          "FieldFunction": {
-                                            "Type": "XOverride",
-                                            "Value": 7919.5,
-                                            "Inputs": [
-                                              {
-                                                "Type": "ZOverride",
-                                                "Value": -4441.5,
-                                                "Inputs": [
-                                                  {
-                                                    "Type": "SimplexNoise2D",
-                                                    "Scale": 60.0,
-                                                    "Octaves": 1,
-                                                    "Lacunarity": 2.0,
-                                                    "Persistence": 0.5,
-                                                    "Seed": "Layout"
-                                                  }
-                                                ]
-                                              }
-                                            ]
-                                          },
-                                          "Delimiters": [
-                                            {
-                                              "Min": 0.236,
-                                              "Max": 1000000000.0
-                                            }
-                                          ],
-                                          "Positions": {
-                                            "Type": "List",
-                                            "Positions": [
-                                              {
-                                                "X": -94,
-                                                "Y": 81,
-                                                "Z": 156
-                                              }
-                                            ]
-                                          }
-                                        }
-                                      ]
-                                    }
+                                    "Type": "Imported",
+                                    "Name": "Nakasar_Contract_Castle_Target_Positions"
                                   },
                                   "ReturnType": {
                                     "Type": "Curve",
@@ -317,255 +877,8 @@
                         {
                           "Type": "PositionsCellNoise",
                           "Positions": {
-                            "Type": "Cache",
-                            "SectionSize": 32,
-                            "CacheSize": 100,
-                            "Positions": {
-                              "Type": "Union",
-                              "Positions": [
-                                {
-                                  "Type": "FieldFunction",
-                                  "FieldFunction": {
-                                    "Type": "XOverride",
-                                    "Value": 7919.5,
-                                    "Inputs": [
-                                      {
-                                        "Type": "ZOverride",
-                                        "Value": -4441.5,
-                                        "Inputs": [
-                                          {
-                                            "Type": "SimplexNoise2D",
-                                            "Scale": 60.0,
-                                            "Octaves": 1,
-                                            "Lacunarity": 2.0,
-                                            "Persistence": 0.5,
-                                            "Seed": "Layout"
-                                          }
-                                        ]
-                                      }
-                                    ]
-                                  },
-                                  "Delimiters": [
-                                    {
-                                      "Min": -1000000000.0,
-                                      "Max": -0.236
-                                    }
-                                  ],
-                                  "Positions": {
-                                    "Type": "List",
-                                    "Positions": [
-                                      {
-                                        "X": 0,
-                                        "Y": 81,
-                                        "Z": 0
-                                      },
-                                      {
-                                        "X": 46,
-                                        "Y": 81,
-                                        "Z": 80
-                                      },
-                                      {
-                                        "X": -8,
-                                        "Y": 81,
-                                        "Z": 159
-                                      },
-                                      {
-                                        "X": -100,
-                                        "Y": 81,
-                                        "Z": 144
-                                      },
-                                      {
-                                        "X": 139,
-                                        "Y": 81,
-                                        "Z": 159
-                                      }
-                                    ]
-                                  }
-                                },
-                                {
-                                  "Type": "FieldFunction",
-                                  "FieldFunction": {
-                                    "Type": "XOverride",
-                                    "Value": 7919.5,
-                                    "Inputs": [
-                                      {
-                                        "Type": "ZOverride",
-                                        "Value": -4441.5,
-                                        "Inputs": [
-                                          {
-                                            "Type": "SimplexNoise2D",
-                                            "Scale": 60.0,
-                                            "Octaves": 1,
-                                            "Lacunarity": 2.0,
-                                            "Persistence": 0.5,
-                                            "Seed": "Layout"
-                                          }
-                                        ]
-                                      }
-                                    ]
-                                  },
-                                  "Delimiters": [
-                                    {
-                                      "Min": -0.236,
-                                      "Max": 0.0
-                                    }
-                                  ],
-                                  "Positions": {
-                                    "Type": "List",
-                                    "Positions": [
-                                      {
-                                        "X": 0,
-                                        "Y": 81,
-                                        "Z": 0
-                                      },
-                                      {
-                                        "X": -80,
-                                        "Y": 81,
-                                        "Z": 45
-                                      },
-                                      {
-                                        "X": -157,
-                                        "Y": 81,
-                                        "Z": -5
-                                      },
-                                      {
-                                        "X": -158,
-                                        "Y": 81,
-                                        "Z": -92
-                                      },
-                                      {
-                                        "X": 69,
-                                        "Y": 81,
-                                        "Z": 65
-                                      }
-                                    ]
-                                  }
-                                },
-                                {
-                                  "Type": "FieldFunction",
-                                  "FieldFunction": {
-                                    "Type": "XOverride",
-                                    "Value": 7919.5,
-                                    "Inputs": [
-                                      {
-                                        "Type": "ZOverride",
-                                        "Value": -4441.5,
-                                        "Inputs": [
-                                          {
-                                            "Type": "SimplexNoise2D",
-                                            "Scale": 60.0,
-                                            "Octaves": 1,
-                                            "Lacunarity": 2.0,
-                                            "Persistence": 0.5,
-                                            "Seed": "Layout"
-                                          }
-                                        ]
-                                      }
-                                    ]
-                                  },
-                                  "Delimiters": [
-                                    {
-                                      "Min": 0.0,
-                                      "Max": 0.236
-                                    }
-                                  ],
-                                  "Positions": {
-                                    "Type": "List",
-                                    "Positions": [
-                                      {
-                                        "X": 0,
-                                        "Y": 81,
-                                        "Z": 0
-                                      },
-                                      {
-                                        "X": 76,
-                                        "Y": 81,
-                                        "Z": 36
-                                      },
-                                      {
-                                        "X": 164,
-                                        "Y": 81,
-                                        "Z": -35
-                                      },
-                                      {
-                                        "X": 150,
-                                        "Y": 81,
-                                        "Z": -117
-                                      },
-                                      {
-                                        "X": -66,
-                                        "Y": 81,
-                                        "Z": -72
-                                      },
-                                      {
-                                        "X": 121,
-                                        "Y": 81,
-                                        "Z": 139
-                                      }
-                                    ]
-                                  }
-                                },
-                                {
-                                  "Type": "FieldFunction",
-                                  "FieldFunction": {
-                                    "Type": "XOverride",
-                                    "Value": 7919.5,
-                                    "Inputs": [
-                                      {
-                                        "Type": "ZOverride",
-                                        "Value": -4441.5,
-                                        "Inputs": [
-                                          {
-                                            "Type": "SimplexNoise2D",
-                                            "Scale": 60.0,
-                                            "Octaves": 1,
-                                            "Lacunarity": 2.0,
-                                            "Persistence": 0.5,
-                                            "Seed": "Layout"
-                                          }
-                                        ]
-                                      }
-                                    ]
-                                  },
-                                  "Delimiters": [
-                                    {
-                                      "Min": 0.236,
-                                      "Max": 1000000000.0
-                                    }
-                                  ],
-                                  "Positions": {
-                                    "Type": "List",
-                                    "Positions": [
-                                      {
-                                        "X": 0,
-                                        "Y": 81,
-                                        "Z": 0
-                                      },
-                                      {
-                                        "X": -95,
-                                        "Y": 81,
-                                        "Z": 7
-                                      },
-                                      {
-                                        "X": -137,
-                                        "Y": 81,
-                                        "Z": 79
-                                      },
-                                      {
-                                        "X": -94,
-                                        "Y": 81,
-                                        "Z": 156
-                                      },
-                                      {
-                                        "X": 18,
-                                        "Y": 81,
-                                        "Z": -120
-                                      }
-                                    ]
-                                  }
-                                }
-                              ]
-                            }
+                            "Type": "Imported",
+                            "Name": "Nakasar_Contract_Castle_Lobes_Positions"
                           },
                           "ReturnType": {
                             "Type": "Curve",
@@ -633,255 +946,8 @@
                         {
                           "Type": "PositionsCellNoise",
                           "Positions": {
-                            "Type": "Cache",
-                            "SectionSize": 32,
-                            "CacheSize": 100,
-                            "Positions": {
-                              "Type": "Union",
-                              "Positions": [
-                                {
-                                  "Type": "FieldFunction",
-                                  "FieldFunction": {
-                                    "Type": "XOverride",
-                                    "Value": 7919.5,
-                                    "Inputs": [
-                                      {
-                                        "Type": "ZOverride",
-                                        "Value": -4441.5,
-                                        "Inputs": [
-                                          {
-                                            "Type": "SimplexNoise2D",
-                                            "Scale": 60.0,
-                                            "Octaves": 1,
-                                            "Lacunarity": 2.0,
-                                            "Persistence": 0.5,
-                                            "Seed": "Layout"
-                                          }
-                                        ]
-                                      }
-                                    ]
-                                  },
-                                  "Delimiters": [
-                                    {
-                                      "Min": -1000000000.0,
-                                      "Max": -0.236
-                                    }
-                                  ],
-                                  "Positions": {
-                                    "Type": "List",
-                                    "Positions": [
-                                      {
-                                        "X": 0,
-                                        "Y": 81,
-                                        "Z": 0
-                                      },
-                                      {
-                                        "X": 46,
-                                        "Y": 81,
-                                        "Z": 80
-                                      },
-                                      {
-                                        "X": -8,
-                                        "Y": 81,
-                                        "Z": 159
-                                      },
-                                      {
-                                        "X": -100,
-                                        "Y": 81,
-                                        "Z": 144
-                                      },
-                                      {
-                                        "X": 139,
-                                        "Y": 81,
-                                        "Z": 159
-                                      }
-                                    ]
-                                  }
-                                },
-                                {
-                                  "Type": "FieldFunction",
-                                  "FieldFunction": {
-                                    "Type": "XOverride",
-                                    "Value": 7919.5,
-                                    "Inputs": [
-                                      {
-                                        "Type": "ZOverride",
-                                        "Value": -4441.5,
-                                        "Inputs": [
-                                          {
-                                            "Type": "SimplexNoise2D",
-                                            "Scale": 60.0,
-                                            "Octaves": 1,
-                                            "Lacunarity": 2.0,
-                                            "Persistence": 0.5,
-                                            "Seed": "Layout"
-                                          }
-                                        ]
-                                      }
-                                    ]
-                                  },
-                                  "Delimiters": [
-                                    {
-                                      "Min": -0.236,
-                                      "Max": 0.0
-                                    }
-                                  ],
-                                  "Positions": {
-                                    "Type": "List",
-                                    "Positions": [
-                                      {
-                                        "X": 0,
-                                        "Y": 81,
-                                        "Z": 0
-                                      },
-                                      {
-                                        "X": -80,
-                                        "Y": 81,
-                                        "Z": 45
-                                      },
-                                      {
-                                        "X": -157,
-                                        "Y": 81,
-                                        "Z": -5
-                                      },
-                                      {
-                                        "X": -158,
-                                        "Y": 81,
-                                        "Z": -92
-                                      },
-                                      {
-                                        "X": 69,
-                                        "Y": 81,
-                                        "Z": 65
-                                      }
-                                    ]
-                                  }
-                                },
-                                {
-                                  "Type": "FieldFunction",
-                                  "FieldFunction": {
-                                    "Type": "XOverride",
-                                    "Value": 7919.5,
-                                    "Inputs": [
-                                      {
-                                        "Type": "ZOverride",
-                                        "Value": -4441.5,
-                                        "Inputs": [
-                                          {
-                                            "Type": "SimplexNoise2D",
-                                            "Scale": 60.0,
-                                            "Octaves": 1,
-                                            "Lacunarity": 2.0,
-                                            "Persistence": 0.5,
-                                            "Seed": "Layout"
-                                          }
-                                        ]
-                                      }
-                                    ]
-                                  },
-                                  "Delimiters": [
-                                    {
-                                      "Min": 0.0,
-                                      "Max": 0.236
-                                    }
-                                  ],
-                                  "Positions": {
-                                    "Type": "List",
-                                    "Positions": [
-                                      {
-                                        "X": 0,
-                                        "Y": 81,
-                                        "Z": 0
-                                      },
-                                      {
-                                        "X": 76,
-                                        "Y": 81,
-                                        "Z": 36
-                                      },
-                                      {
-                                        "X": 164,
-                                        "Y": 81,
-                                        "Z": -35
-                                      },
-                                      {
-                                        "X": 150,
-                                        "Y": 81,
-                                        "Z": -117
-                                      },
-                                      {
-                                        "X": -66,
-                                        "Y": 81,
-                                        "Z": -72
-                                      },
-                                      {
-                                        "X": 121,
-                                        "Y": 81,
-                                        "Z": 139
-                                      }
-                                    ]
-                                  }
-                                },
-                                {
-                                  "Type": "FieldFunction",
-                                  "FieldFunction": {
-                                    "Type": "XOverride",
-                                    "Value": 7919.5,
-                                    "Inputs": [
-                                      {
-                                        "Type": "ZOverride",
-                                        "Value": -4441.5,
-                                        "Inputs": [
-                                          {
-                                            "Type": "SimplexNoise2D",
-                                            "Scale": 60.0,
-                                            "Octaves": 1,
-                                            "Lacunarity": 2.0,
-                                            "Persistence": 0.5,
-                                            "Seed": "Layout"
-                                          }
-                                        ]
-                                      }
-                                    ]
-                                  },
-                                  "Delimiters": [
-                                    {
-                                      "Min": 0.236,
-                                      "Max": 1000000000.0
-                                    }
-                                  ],
-                                  "Positions": {
-                                    "Type": "List",
-                                    "Positions": [
-                                      {
-                                        "X": 0,
-                                        "Y": 81,
-                                        "Z": 0
-                                      },
-                                      {
-                                        "X": -95,
-                                        "Y": 81,
-                                        "Z": 7
-                                      },
-                                      {
-                                        "X": -137,
-                                        "Y": 81,
-                                        "Z": 79
-                                      },
-                                      {
-                                        "X": -94,
-                                        "Y": 81,
-                                        "Z": 156
-                                      },
-                                      {
-                                        "X": 18,
-                                        "Y": 81,
-                                        "Z": -120
-                                      }
-                                    ]
-                                  }
-                                }
-                              ]
-                            }
+                            "Type": "Imported",
+                            "Name": "Nakasar_Contract_Castle_Lobes_Positions"
                           },
                           "ReturnType": {
                             "Type": "Curve",
@@ -890,23 +956,23 @@
                               "Points": [
                                 {
                                   "In": 0.0,
-                                  "Out": -3.875
+                                  "Out": -1.25
                                 },
                                 {
                                   "In": 44.0,
-                                  "Out": -4.875
+                                  "Out": -2.25
                                 },
                                 {
                                   "In": 70.4,
-                                  "Out": -6.375
+                                  "Out": -3.5
                                 },
                                 {
                                   "In": 83.6,
-                                  "Out": -7.625
+                                  "Out": -4.875
                                 },
                                 {
                                   "In": 88.0,
-                                  "Out": -8.375
+                                  "Out": -8.125
                                 },
                                 {
                                   "In": 89.0,
@@ -951,255 +1017,8 @@
                             {
                               "Type": "PositionsCellNoise",
                               "Positions": {
-                                "Type": "Cache",
-                                "SectionSize": 32,
-                                "CacheSize": 100,
-                                "Positions": {
-                                  "Type": "Union",
-                                  "Positions": [
-                                    {
-                                      "Type": "FieldFunction",
-                                      "FieldFunction": {
-                                        "Type": "XOverride",
-                                        "Value": 7919.5,
-                                        "Inputs": [
-                                          {
-                                            "Type": "ZOverride",
-                                            "Value": -4441.5,
-                                            "Inputs": [
-                                              {
-                                                "Type": "SimplexNoise2D",
-                                                "Scale": 60.0,
-                                                "Octaves": 1,
-                                                "Lacunarity": 2.0,
-                                                "Persistence": 0.5,
-                                                "Seed": "Layout"
-                                              }
-                                            ]
-                                          }
-                                        ]
-                                      },
-                                      "Delimiters": [
-                                        {
-                                          "Min": -1000000000.0,
-                                          "Max": -0.236
-                                        }
-                                      ],
-                                      "Positions": {
-                                        "Type": "List",
-                                        "Positions": [
-                                          {
-                                            "X": 0,
-                                            "Y": 81,
-                                            "Z": 0
-                                          },
-                                          {
-                                            "X": 46,
-                                            "Y": 81,
-                                            "Z": 80
-                                          },
-                                          {
-                                            "X": -8,
-                                            "Y": 81,
-                                            "Z": 159
-                                          },
-                                          {
-                                            "X": -100,
-                                            "Y": 81,
-                                            "Z": 144
-                                          },
-                                          {
-                                            "X": 139,
-                                            "Y": 81,
-                                            "Z": 159
-                                          }
-                                        ]
-                                      }
-                                    },
-                                    {
-                                      "Type": "FieldFunction",
-                                      "FieldFunction": {
-                                        "Type": "XOverride",
-                                        "Value": 7919.5,
-                                        "Inputs": [
-                                          {
-                                            "Type": "ZOverride",
-                                            "Value": -4441.5,
-                                            "Inputs": [
-                                              {
-                                                "Type": "SimplexNoise2D",
-                                                "Scale": 60.0,
-                                                "Octaves": 1,
-                                                "Lacunarity": 2.0,
-                                                "Persistence": 0.5,
-                                                "Seed": "Layout"
-                                              }
-                                            ]
-                                          }
-                                        ]
-                                      },
-                                      "Delimiters": [
-                                        {
-                                          "Min": -0.236,
-                                          "Max": 0.0
-                                        }
-                                      ],
-                                      "Positions": {
-                                        "Type": "List",
-                                        "Positions": [
-                                          {
-                                            "X": 0,
-                                            "Y": 81,
-                                            "Z": 0
-                                          },
-                                          {
-                                            "X": -80,
-                                            "Y": 81,
-                                            "Z": 45
-                                          },
-                                          {
-                                            "X": -157,
-                                            "Y": 81,
-                                            "Z": -5
-                                          },
-                                          {
-                                            "X": -158,
-                                            "Y": 81,
-                                            "Z": -92
-                                          },
-                                          {
-                                            "X": 69,
-                                            "Y": 81,
-                                            "Z": 65
-                                          }
-                                        ]
-                                      }
-                                    },
-                                    {
-                                      "Type": "FieldFunction",
-                                      "FieldFunction": {
-                                        "Type": "XOverride",
-                                        "Value": 7919.5,
-                                        "Inputs": [
-                                          {
-                                            "Type": "ZOverride",
-                                            "Value": -4441.5,
-                                            "Inputs": [
-                                              {
-                                                "Type": "SimplexNoise2D",
-                                                "Scale": 60.0,
-                                                "Octaves": 1,
-                                                "Lacunarity": 2.0,
-                                                "Persistence": 0.5,
-                                                "Seed": "Layout"
-                                              }
-                                            ]
-                                          }
-                                        ]
-                                      },
-                                      "Delimiters": [
-                                        {
-                                          "Min": 0.0,
-                                          "Max": 0.236
-                                        }
-                                      ],
-                                      "Positions": {
-                                        "Type": "List",
-                                        "Positions": [
-                                          {
-                                            "X": 0,
-                                            "Y": 81,
-                                            "Z": 0
-                                          },
-                                          {
-                                            "X": 76,
-                                            "Y": 81,
-                                            "Z": 36
-                                          },
-                                          {
-                                            "X": 164,
-                                            "Y": 81,
-                                            "Z": -35
-                                          },
-                                          {
-                                            "X": 150,
-                                            "Y": 81,
-                                            "Z": -117
-                                          },
-                                          {
-                                            "X": -66,
-                                            "Y": 81,
-                                            "Z": -72
-                                          },
-                                          {
-                                            "X": 121,
-                                            "Y": 81,
-                                            "Z": 139
-                                          }
-                                        ]
-                                      }
-                                    },
-                                    {
-                                      "Type": "FieldFunction",
-                                      "FieldFunction": {
-                                        "Type": "XOverride",
-                                        "Value": 7919.5,
-                                        "Inputs": [
-                                          {
-                                            "Type": "ZOverride",
-                                            "Value": -4441.5,
-                                            "Inputs": [
-                                              {
-                                                "Type": "SimplexNoise2D",
-                                                "Scale": 60.0,
-                                                "Octaves": 1,
-                                                "Lacunarity": 2.0,
-                                                "Persistence": 0.5,
-                                                "Seed": "Layout"
-                                              }
-                                            ]
-                                          }
-                                        ]
-                                      },
-                                      "Delimiters": [
-                                        {
-                                          "Min": 0.236,
-                                          "Max": 1000000000.0
-                                        }
-                                      ],
-                                      "Positions": {
-                                        "Type": "List",
-                                        "Positions": [
-                                          {
-                                            "X": 0,
-                                            "Y": 81,
-                                            "Z": 0
-                                          },
-                                          {
-                                            "X": -95,
-                                            "Y": 81,
-                                            "Z": 7
-                                          },
-                                          {
-                                            "X": -137,
-                                            "Y": 81,
-                                            "Z": 79
-                                          },
-                                          {
-                                            "X": -94,
-                                            "Y": 81,
-                                            "Z": 156
-                                          },
-                                          {
-                                            "X": 18,
-                                            "Y": 81,
-                                            "Z": -120
-                                          }
-                                        ]
-                                      }
-                                    }
-                                  ]
-                                }
+                                "Type": "Imported",
+                                "Name": "Nakasar_Contract_Castle_Lobes_Positions"
                               },
                               "ReturnType": {
                                 "Type": "Curve",
@@ -1431,170 +1250,8 @@
         "PropDistribution": {
           "Type": "Positions",
           "Positions": {
-            "Type": "Cache",
-            "SectionSize": 32,
-            "CacheSize": 100,
-            "Positions": {
-              "Type": "Union",
-              "Positions": [
-                {
-                  "Type": "FieldFunction",
-                  "FieldFunction": {
-                    "Type": "XOverride",
-                    "Value": 7919.5,
-                    "Inputs": [
-                      {
-                        "Type": "ZOverride",
-                        "Value": -4441.5,
-                        "Inputs": [
-                          {
-                            "Type": "SimplexNoise2D",
-                            "Scale": 60.0,
-                            "Octaves": 1,
-                            "Lacunarity": 2.0,
-                            "Persistence": 0.5,
-                            "Seed": "Layout"
-                          }
-                        ]
-                      }
-                    ]
-                  },
-                  "Delimiters": [
-                    {
-                      "Min": -1000000000.0,
-                      "Max": -0.236
-                    }
-                  ],
-                  "Positions": {
-                    "Type": "List",
-                    "Positions": [
-                      {
-                        "X": -100,
-                        "Y": 81,
-                        "Z": 144
-                      }
-                    ]
-                  }
-                },
-                {
-                  "Type": "FieldFunction",
-                  "FieldFunction": {
-                    "Type": "XOverride",
-                    "Value": 7919.5,
-                    "Inputs": [
-                      {
-                        "Type": "ZOverride",
-                        "Value": -4441.5,
-                        "Inputs": [
-                          {
-                            "Type": "SimplexNoise2D",
-                            "Scale": 60.0,
-                            "Octaves": 1,
-                            "Lacunarity": 2.0,
-                            "Persistence": 0.5,
-                            "Seed": "Layout"
-                          }
-                        ]
-                      }
-                    ]
-                  },
-                  "Delimiters": [
-                    {
-                      "Min": -0.236,
-                      "Max": 0.0
-                    }
-                  ],
-                  "Positions": {
-                    "Type": "List",
-                    "Positions": [
-                      {
-                        "X": -158,
-                        "Y": 81,
-                        "Z": -92
-                      }
-                    ]
-                  }
-                },
-                {
-                  "Type": "FieldFunction",
-                  "FieldFunction": {
-                    "Type": "XOverride",
-                    "Value": 7919.5,
-                    "Inputs": [
-                      {
-                        "Type": "ZOverride",
-                        "Value": -4441.5,
-                        "Inputs": [
-                          {
-                            "Type": "SimplexNoise2D",
-                            "Scale": 60.0,
-                            "Octaves": 1,
-                            "Lacunarity": 2.0,
-                            "Persistence": 0.5,
-                            "Seed": "Layout"
-                          }
-                        ]
-                      }
-                    ]
-                  },
-                  "Delimiters": [
-                    {
-                      "Min": 0.0,
-                      "Max": 0.236
-                    }
-                  ],
-                  "Positions": {
-                    "Type": "List",
-                    "Positions": [
-                      {
-                        "X": 150,
-                        "Y": 81,
-                        "Z": -117
-                      }
-                    ]
-                  }
-                },
-                {
-                  "Type": "FieldFunction",
-                  "FieldFunction": {
-                    "Type": "XOverride",
-                    "Value": 7919.5,
-                    "Inputs": [
-                      {
-                        "Type": "ZOverride",
-                        "Value": -4441.5,
-                        "Inputs": [
-                          {
-                            "Type": "SimplexNoise2D",
-                            "Scale": 60.0,
-                            "Octaves": 1,
-                            "Lacunarity": 2.0,
-                            "Persistence": 0.5,
-                            "Seed": "Layout"
-                          }
-                        ]
-                      }
-                    ]
-                  },
-                  "Delimiters": [
-                    {
-                      "Min": 0.236,
-                      "Max": 1000000000.0
-                    }
-                  ],
-                  "Positions": {
-                    "Type": "List",
-                    "Positions": [
-                      {
-                        "X": -94,
-                        "Y": 81,
-                        "Z": 156
-                      }
-                    ]
-                  }
-                }
-              ]
-            }
+            "Type": "Imported",
+            "Name": "Nakasar_Contract_Castle_Target_Positions"
           }
         },
         "Assignments": {
@@ -1721,215 +1378,8 @@
         "PropDistribution": {
           "Type": "Positions",
           "Positions": {
-            "Type": "Cache",
-            "SectionSize": 32,
-            "CacheSize": 100,
-            "Positions": {
-              "Type": "Union",
-              "Positions": [
-                {
-                  "Type": "FieldFunction",
-                  "FieldFunction": {
-                    "Type": "XOverride",
-                    "Value": 7919.5,
-                    "Inputs": [
-                      {
-                        "Type": "ZOverride",
-                        "Value": -4441.5,
-                        "Inputs": [
-                          {
-                            "Type": "SimplexNoise2D",
-                            "Scale": 60.0,
-                            "Octaves": 1,
-                            "Lacunarity": 2.0,
-                            "Persistence": 0.5,
-                            "Seed": "Layout"
-                          }
-                        ]
-                      }
-                    ]
-                  },
-                  "Delimiters": [
-                    {
-                      "Min": -1000000000.0,
-                      "Max": -0.236
-                    }
-                  ],
-                  "Positions": {
-                    "Type": "List",
-                    "Positions": [
-                      {
-                        "X": 46,
-                        "Y": 81,
-                        "Z": 80
-                      },
-                      {
-                        "X": -8,
-                        "Y": 81,
-                        "Z": 159
-                      },
-                      {
-                        "X": 139,
-                        "Y": 81,
-                        "Z": 159
-                      }
-                    ]
-                  }
-                },
-                {
-                  "Type": "FieldFunction",
-                  "FieldFunction": {
-                    "Type": "XOverride",
-                    "Value": 7919.5,
-                    "Inputs": [
-                      {
-                        "Type": "ZOverride",
-                        "Value": -4441.5,
-                        "Inputs": [
-                          {
-                            "Type": "SimplexNoise2D",
-                            "Scale": 60.0,
-                            "Octaves": 1,
-                            "Lacunarity": 2.0,
-                            "Persistence": 0.5,
-                            "Seed": "Layout"
-                          }
-                        ]
-                      }
-                    ]
-                  },
-                  "Delimiters": [
-                    {
-                      "Min": -0.236,
-                      "Max": 0.0
-                    }
-                  ],
-                  "Positions": {
-                    "Type": "List",
-                    "Positions": [
-                      {
-                        "X": -80,
-                        "Y": 81,
-                        "Z": 45
-                      },
-                      {
-                        "X": -157,
-                        "Y": 81,
-                        "Z": -5
-                      },
-                      {
-                        "X": 69,
-                        "Y": 81,
-                        "Z": 65
-                      }
-                    ]
-                  }
-                },
-                {
-                  "Type": "FieldFunction",
-                  "FieldFunction": {
-                    "Type": "XOverride",
-                    "Value": 7919.5,
-                    "Inputs": [
-                      {
-                        "Type": "ZOverride",
-                        "Value": -4441.5,
-                        "Inputs": [
-                          {
-                            "Type": "SimplexNoise2D",
-                            "Scale": 60.0,
-                            "Octaves": 1,
-                            "Lacunarity": 2.0,
-                            "Persistence": 0.5,
-                            "Seed": "Layout"
-                          }
-                        ]
-                      }
-                    ]
-                  },
-                  "Delimiters": [
-                    {
-                      "Min": 0.0,
-                      "Max": 0.236
-                    }
-                  ],
-                  "Positions": {
-                    "Type": "List",
-                    "Positions": [
-                      {
-                        "X": 76,
-                        "Y": 81,
-                        "Z": 36
-                      },
-                      {
-                        "X": 164,
-                        "Y": 81,
-                        "Z": -35
-                      },
-                      {
-                        "X": -66,
-                        "Y": 81,
-                        "Z": -72
-                      },
-                      {
-                        "X": 121,
-                        "Y": 81,
-                        "Z": 139
-                      }
-                    ]
-                  }
-                },
-                {
-                  "Type": "FieldFunction",
-                  "FieldFunction": {
-                    "Type": "XOverride",
-                    "Value": 7919.5,
-                    "Inputs": [
-                      {
-                        "Type": "ZOverride",
-                        "Value": -4441.5,
-                        "Inputs": [
-                          {
-                            "Type": "SimplexNoise2D",
-                            "Scale": 60.0,
-                            "Octaves": 1,
-                            "Lacunarity": 2.0,
-                            "Persistence": 0.5,
-                            "Seed": "Layout"
-                          }
-                        ]
-                      }
-                    ]
-                  },
-                  "Delimiters": [
-                    {
-                      "Min": 0.236,
-                      "Max": 1000000000.0
-                    }
-                  ],
-                  "Positions": {
-                    "Type": "List",
-                    "Positions": [
-                      {
-                        "X": -95,
-                        "Y": 81,
-                        "Z": 7
-                      },
-                      {
-                        "X": -137,
-                        "Y": 81,
-                        "Z": 79
-                      },
-                      {
-                        "X": 18,
-                        "Y": 81,
-                        "Z": -120
-                      }
-                    ]
-                  }
-                }
-              ]
-            }
+            "Type": "Imported",
+            "Name": "Nakasar_Contract_Castle_Landmarks_Positions"
           }
         },
         "Assignments": {
@@ -1985,8 +1435,8 @@
                     "Type": "Linear",
                     "Axis": "Y",
                     "Range": {
-                      "MinInclusive": -20,
-                      "MaxExclusive": 21
+                      "MinInclusive": -26,
+                      "MaxExclusive": 27
                     },
                     "AscendingOrder": false,
                     "Scanner": {
@@ -2059,8 +1509,8 @@
                     "Type": "Linear",
                     "Axis": "Y",
                     "Range": {
-                      "MinInclusive": -20,
-                      "MaxExclusive": 21
+                      "MinInclusive": -26,
+                      "MaxExclusive": 27
                     },
                     "AscendingOrder": false,
                     "Scanner": {
@@ -2133,8 +1583,8 @@
                     "Type": "Linear",
                     "Axis": "Y",
                     "Range": {
-                      "MinInclusive": -20,
-                      "MaxExclusive": 21
+                      "MinInclusive": -26,
+                      "MaxExclusive": 27
                     },
                     "AscendingOrder": false,
                     "Scanner": {
@@ -2207,8 +1657,8 @@
                     "Type": "Linear",
                     "Axis": "Y",
                     "Range": {
-                      "MinInclusive": -20,
-                      "MaxExclusive": 21
+                      "MinInclusive": -26,
+                      "MaxExclusive": 27
                     },
                     "AscendingOrder": false,
                     "Scanner": {
@@ -2250,255 +1700,8 @@
             "FieldFunction": {
               "Type": "PositionsCellNoise",
               "Positions": {
-                "Type": "Cache",
-                "SectionSize": 32,
-                "CacheSize": 100,
-                "Positions": {
-                  "Type": "Union",
-                  "Positions": [
-                    {
-                      "Type": "FieldFunction",
-                      "FieldFunction": {
-                        "Type": "XOverride",
-                        "Value": 7919.5,
-                        "Inputs": [
-                          {
-                            "Type": "ZOverride",
-                            "Value": -4441.5,
-                            "Inputs": [
-                              {
-                                "Type": "SimplexNoise2D",
-                                "Scale": 60.0,
-                                "Octaves": 1,
-                                "Lacunarity": 2.0,
-                                "Persistence": 0.5,
-                                "Seed": "Layout"
-                              }
-                            ]
-                          }
-                        ]
-                      },
-                      "Delimiters": [
-                        {
-                          "Min": -1000000000.0,
-                          "Max": -0.236
-                        }
-                      ],
-                      "Positions": {
-                        "Type": "List",
-                        "Positions": [
-                          {
-                            "X": 0,
-                            "Y": 81,
-                            "Z": 0
-                          },
-                          {
-                            "X": 46,
-                            "Y": 81,
-                            "Z": 80
-                          },
-                          {
-                            "X": -8,
-                            "Y": 81,
-                            "Z": 159
-                          },
-                          {
-                            "X": -100,
-                            "Y": 81,
-                            "Z": 144
-                          },
-                          {
-                            "X": 139,
-                            "Y": 81,
-                            "Z": 159
-                          }
-                        ]
-                      }
-                    },
-                    {
-                      "Type": "FieldFunction",
-                      "FieldFunction": {
-                        "Type": "XOverride",
-                        "Value": 7919.5,
-                        "Inputs": [
-                          {
-                            "Type": "ZOverride",
-                            "Value": -4441.5,
-                            "Inputs": [
-                              {
-                                "Type": "SimplexNoise2D",
-                                "Scale": 60.0,
-                                "Octaves": 1,
-                                "Lacunarity": 2.0,
-                                "Persistence": 0.5,
-                                "Seed": "Layout"
-                              }
-                            ]
-                          }
-                        ]
-                      },
-                      "Delimiters": [
-                        {
-                          "Min": -0.236,
-                          "Max": 0.0
-                        }
-                      ],
-                      "Positions": {
-                        "Type": "List",
-                        "Positions": [
-                          {
-                            "X": 0,
-                            "Y": 81,
-                            "Z": 0
-                          },
-                          {
-                            "X": -80,
-                            "Y": 81,
-                            "Z": 45
-                          },
-                          {
-                            "X": -157,
-                            "Y": 81,
-                            "Z": -5
-                          },
-                          {
-                            "X": -158,
-                            "Y": 81,
-                            "Z": -92
-                          },
-                          {
-                            "X": 69,
-                            "Y": 81,
-                            "Z": 65
-                          }
-                        ]
-                      }
-                    },
-                    {
-                      "Type": "FieldFunction",
-                      "FieldFunction": {
-                        "Type": "XOverride",
-                        "Value": 7919.5,
-                        "Inputs": [
-                          {
-                            "Type": "ZOverride",
-                            "Value": -4441.5,
-                            "Inputs": [
-                              {
-                                "Type": "SimplexNoise2D",
-                                "Scale": 60.0,
-                                "Octaves": 1,
-                                "Lacunarity": 2.0,
-                                "Persistence": 0.5,
-                                "Seed": "Layout"
-                              }
-                            ]
-                          }
-                        ]
-                      },
-                      "Delimiters": [
-                        {
-                          "Min": 0.0,
-                          "Max": 0.236
-                        }
-                      ],
-                      "Positions": {
-                        "Type": "List",
-                        "Positions": [
-                          {
-                            "X": 0,
-                            "Y": 81,
-                            "Z": 0
-                          },
-                          {
-                            "X": 76,
-                            "Y": 81,
-                            "Z": 36
-                          },
-                          {
-                            "X": 164,
-                            "Y": 81,
-                            "Z": -35
-                          },
-                          {
-                            "X": 150,
-                            "Y": 81,
-                            "Z": -117
-                          },
-                          {
-                            "X": -66,
-                            "Y": 81,
-                            "Z": -72
-                          },
-                          {
-                            "X": 121,
-                            "Y": 81,
-                            "Z": 139
-                          }
-                        ]
-                      }
-                    },
-                    {
-                      "Type": "FieldFunction",
-                      "FieldFunction": {
-                        "Type": "XOverride",
-                        "Value": 7919.5,
-                        "Inputs": [
-                          {
-                            "Type": "ZOverride",
-                            "Value": -4441.5,
-                            "Inputs": [
-                              {
-                                "Type": "SimplexNoise2D",
-                                "Scale": 60.0,
-                                "Octaves": 1,
-                                "Lacunarity": 2.0,
-                                "Persistence": 0.5,
-                                "Seed": "Layout"
-                              }
-                            ]
-                          }
-                        ]
-                      },
-                      "Delimiters": [
-                        {
-                          "Min": 0.236,
-                          "Max": 1000000000.0
-                        }
-                      ],
-                      "Positions": {
-                        "Type": "List",
-                        "Positions": [
-                          {
-                            "X": 0,
-                            "Y": 81,
-                            "Z": 0
-                          },
-                          {
-                            "X": -95,
-                            "Y": 81,
-                            "Z": 7
-                          },
-                          {
-                            "X": -137,
-                            "Y": 81,
-                            "Z": 79
-                          },
-                          {
-                            "X": -94,
-                            "Y": 81,
-                            "Z": 156
-                          },
-                          {
-                            "X": 18,
-                            "Y": 81,
-                            "Z": -120
-                          }
-                        ]
-                      }
-                    }
-                  ]
-                }
+                "Type": "Imported",
+                "Name": "Nakasar_Contract_Castle_Lobes_Positions"
               },
               "ReturnType": {
                 "Type": "Curve",
@@ -2532,215 +1735,8 @@
               "FieldFunction": {
                 "Type": "PositionsCellNoise",
                 "Positions": {
-                  "Type": "Cache",
-                  "SectionSize": 32,
-                  "CacheSize": 100,
-                  "Positions": {
-                    "Type": "Union",
-                    "Positions": [
-                      {
-                        "Type": "FieldFunction",
-                        "FieldFunction": {
-                          "Type": "XOverride",
-                          "Value": 7919.5,
-                          "Inputs": [
-                            {
-                              "Type": "ZOverride",
-                              "Value": -4441.5,
-                              "Inputs": [
-                                {
-                                  "Type": "SimplexNoise2D",
-                                  "Scale": 60.0,
-                                  "Octaves": 1,
-                                  "Lacunarity": 2.0,
-                                  "Persistence": 0.5,
-                                  "Seed": "Layout"
-                                }
-                              ]
-                            }
-                          ]
-                        },
-                        "Delimiters": [
-                          {
-                            "Min": -1000000000.0,
-                            "Max": -0.236
-                          }
-                        ],
-                        "Positions": {
-                          "Type": "List",
-                          "Positions": [
-                            {
-                              "X": 46,
-                              "Y": 81,
-                              "Z": 80
-                            },
-                            {
-                              "X": -8,
-                              "Y": 81,
-                              "Z": 159
-                            },
-                            {
-                              "X": 139,
-                              "Y": 81,
-                              "Z": 159
-                            }
-                          ]
-                        }
-                      },
-                      {
-                        "Type": "FieldFunction",
-                        "FieldFunction": {
-                          "Type": "XOverride",
-                          "Value": 7919.5,
-                          "Inputs": [
-                            {
-                              "Type": "ZOverride",
-                              "Value": -4441.5,
-                              "Inputs": [
-                                {
-                                  "Type": "SimplexNoise2D",
-                                  "Scale": 60.0,
-                                  "Octaves": 1,
-                                  "Lacunarity": 2.0,
-                                  "Persistence": 0.5,
-                                  "Seed": "Layout"
-                                }
-                              ]
-                            }
-                          ]
-                        },
-                        "Delimiters": [
-                          {
-                            "Min": -0.236,
-                            "Max": 0.0
-                          }
-                        ],
-                        "Positions": {
-                          "Type": "List",
-                          "Positions": [
-                            {
-                              "X": -80,
-                              "Y": 81,
-                              "Z": 45
-                            },
-                            {
-                              "X": -157,
-                              "Y": 81,
-                              "Z": -5
-                            },
-                            {
-                              "X": 69,
-                              "Y": 81,
-                              "Z": 65
-                            }
-                          ]
-                        }
-                      },
-                      {
-                        "Type": "FieldFunction",
-                        "FieldFunction": {
-                          "Type": "XOverride",
-                          "Value": 7919.5,
-                          "Inputs": [
-                            {
-                              "Type": "ZOverride",
-                              "Value": -4441.5,
-                              "Inputs": [
-                                {
-                                  "Type": "SimplexNoise2D",
-                                  "Scale": 60.0,
-                                  "Octaves": 1,
-                                  "Lacunarity": 2.0,
-                                  "Persistence": 0.5,
-                                  "Seed": "Layout"
-                                }
-                              ]
-                            }
-                          ]
-                        },
-                        "Delimiters": [
-                          {
-                            "Min": 0.0,
-                            "Max": 0.236
-                          }
-                        ],
-                        "Positions": {
-                          "Type": "List",
-                          "Positions": [
-                            {
-                              "X": 76,
-                              "Y": 81,
-                              "Z": 36
-                            },
-                            {
-                              "X": 164,
-                              "Y": 81,
-                              "Z": -35
-                            },
-                            {
-                              "X": -66,
-                              "Y": 81,
-                              "Z": -72
-                            },
-                            {
-                              "X": 121,
-                              "Y": 81,
-                              "Z": 139
-                            }
-                          ]
-                        }
-                      },
-                      {
-                        "Type": "FieldFunction",
-                        "FieldFunction": {
-                          "Type": "XOverride",
-                          "Value": 7919.5,
-                          "Inputs": [
-                            {
-                              "Type": "ZOverride",
-                              "Value": -4441.5,
-                              "Inputs": [
-                                {
-                                  "Type": "SimplexNoise2D",
-                                  "Scale": 60.0,
-                                  "Octaves": 1,
-                                  "Lacunarity": 2.0,
-                                  "Persistence": 0.5,
-                                  "Seed": "Layout"
-                                }
-                              ]
-                            }
-                          ]
-                        },
-                        "Delimiters": [
-                          {
-                            "Min": 0.236,
-                            "Max": 1000000000.0
-                          }
-                        ],
-                        "Positions": {
-                          "Type": "List",
-                          "Positions": [
-                            {
-                              "X": -95,
-                              "Y": 81,
-                              "Z": 7
-                            },
-                            {
-                              "X": -137,
-                              "Y": 81,
-                              "Z": 79
-                            },
-                            {
-                              "X": 18,
-                              "Y": 81,
-                              "Z": -120
-                            }
-                          ]
-                        }
-                      }
-                    ]
-                  }
+                  "Type": "Imported",
+                  "Name": "Nakasar_Contract_Castle_Landmarks_Positions"
                 },
                 "ReturnType": {
                   "Type": "Curve",
@@ -2815,170 +1811,8 @@
                   "FieldFunction": {
                     "Type": "PositionsCellNoise",
                     "Positions": {
-                      "Type": "Cache",
-                      "SectionSize": 32,
-                      "CacheSize": 100,
-                      "Positions": {
-                        "Type": "Union",
-                        "Positions": [
-                          {
-                            "Type": "FieldFunction",
-                            "FieldFunction": {
-                              "Type": "XOverride",
-                              "Value": 7919.5,
-                              "Inputs": [
-                                {
-                                  "Type": "ZOverride",
-                                  "Value": -4441.5,
-                                  "Inputs": [
-                                    {
-                                      "Type": "SimplexNoise2D",
-                                      "Scale": 60.0,
-                                      "Octaves": 1,
-                                      "Lacunarity": 2.0,
-                                      "Persistence": 0.5,
-                                      "Seed": "Layout"
-                                    }
-                                  ]
-                                }
-                              ]
-                            },
-                            "Delimiters": [
-                              {
-                                "Min": -1000000000.0,
-                                "Max": -0.236
-                              }
-                            ],
-                            "Positions": {
-                              "Type": "List",
-                              "Positions": [
-                                {
-                                  "X": -100,
-                                  "Y": 81,
-                                  "Z": 144
-                                }
-                              ]
-                            }
-                          },
-                          {
-                            "Type": "FieldFunction",
-                            "FieldFunction": {
-                              "Type": "XOverride",
-                              "Value": 7919.5,
-                              "Inputs": [
-                                {
-                                  "Type": "ZOverride",
-                                  "Value": -4441.5,
-                                  "Inputs": [
-                                    {
-                                      "Type": "SimplexNoise2D",
-                                      "Scale": 60.0,
-                                      "Octaves": 1,
-                                      "Lacunarity": 2.0,
-                                      "Persistence": 0.5,
-                                      "Seed": "Layout"
-                                    }
-                                  ]
-                                }
-                              ]
-                            },
-                            "Delimiters": [
-                              {
-                                "Min": -0.236,
-                                "Max": 0.0
-                              }
-                            ],
-                            "Positions": {
-                              "Type": "List",
-                              "Positions": [
-                                {
-                                  "X": -158,
-                                  "Y": 81,
-                                  "Z": -92
-                                }
-                              ]
-                            }
-                          },
-                          {
-                            "Type": "FieldFunction",
-                            "FieldFunction": {
-                              "Type": "XOverride",
-                              "Value": 7919.5,
-                              "Inputs": [
-                                {
-                                  "Type": "ZOverride",
-                                  "Value": -4441.5,
-                                  "Inputs": [
-                                    {
-                                      "Type": "SimplexNoise2D",
-                                      "Scale": 60.0,
-                                      "Octaves": 1,
-                                      "Lacunarity": 2.0,
-                                      "Persistence": 0.5,
-                                      "Seed": "Layout"
-                                    }
-                                  ]
-                                }
-                              ]
-                            },
-                            "Delimiters": [
-                              {
-                                "Min": 0.0,
-                                "Max": 0.236
-                              }
-                            ],
-                            "Positions": {
-                              "Type": "List",
-                              "Positions": [
-                                {
-                                  "X": 150,
-                                  "Y": 81,
-                                  "Z": -117
-                                }
-                              ]
-                            }
-                          },
-                          {
-                            "Type": "FieldFunction",
-                            "FieldFunction": {
-                              "Type": "XOverride",
-                              "Value": 7919.5,
-                              "Inputs": [
-                                {
-                                  "Type": "ZOverride",
-                                  "Value": -4441.5,
-                                  "Inputs": [
-                                    {
-                                      "Type": "SimplexNoise2D",
-                                      "Scale": 60.0,
-                                      "Octaves": 1,
-                                      "Lacunarity": 2.0,
-                                      "Persistence": 0.5,
-                                      "Seed": "Layout"
-                                    }
-                                  ]
-                                }
-                              ]
-                            },
-                            "Delimiters": [
-                              {
-                                "Min": 0.236,
-                                "Max": 1000000000.0
-                              }
-                            ],
-                            "Positions": {
-                              "Type": "List",
-                              "Positions": [
-                                {
-                                  "X": -94,
-                                  "Y": 81,
-                                  "Z": 156
-                                }
-                              ]
-                            }
-                          }
-                        ]
-                      }
+                      "Type": "Imported",
+                      "Name": "Nakasar_Contract_Castle_Target_Positions"
                     },
                     "ReturnType": {
                       "Type": "Curve",
@@ -3094,8 +1928,8 @@
                     "Type": "Linear",
                     "Axis": "Y",
                     "Range": {
-                      "MinInclusive": -20,
-                      "MaxExclusive": 21
+                      "MinInclusive": -26,
+                      "MaxExclusive": 27
                     },
                     "AscendingOrder": false,
                     "Scanner": {
@@ -3168,8 +2002,8 @@
                     "Type": "Linear",
                     "Axis": "Y",
                     "Range": {
-                      "MinInclusive": -20,
-                      "MaxExclusive": 21
+                      "MinInclusive": -26,
+                      "MaxExclusive": 27
                     },
                     "AscendingOrder": false,
                     "Scanner": {
@@ -3242,8 +2076,8 @@
                     "Type": "Linear",
                     "Axis": "Y",
                     "Range": {
-                      "MinInclusive": -20,
-                      "MaxExclusive": 21
+                      "MinInclusive": -26,
+                      "MaxExclusive": 27
                     },
                     "AscendingOrder": false,
                     "Scanner": {
@@ -3316,8 +2150,8 @@
                     "Type": "Linear",
                     "Axis": "Y",
                     "Range": {
-                      "MinInclusive": -20,
-                      "MaxExclusive": 21
+                      "MinInclusive": -26,
+                      "MaxExclusive": 27
                     },
                     "AscendingOrder": false,
                     "Scanner": {
@@ -3390,8 +2224,8 @@
                     "Type": "Linear",
                     "Axis": "Y",
                     "Range": {
-                      "MinInclusive": -20,
-                      "MaxExclusive": 21
+                      "MinInclusive": -26,
+                      "MaxExclusive": 27
                     },
                     "AscendingOrder": false,
                     "Scanner": {
@@ -3464,8 +2298,8 @@
                     "Type": "Linear",
                     "Axis": "Y",
                     "Range": {
-                      "MinInclusive": -20,
-                      "MaxExclusive": 21
+                      "MinInclusive": -26,
+                      "MaxExclusive": 27
                     },
                     "AscendingOrder": false,
                     "Scanner": {
@@ -3538,8 +2372,8 @@
                     "Type": "Linear",
                     "Axis": "Y",
                     "Range": {
-                      "MinInclusive": -20,
-                      "MaxExclusive": 21
+                      "MinInclusive": -26,
+                      "MaxExclusive": 27
                     },
                     "AscendingOrder": false,
                     "Scanner": {
@@ -3612,8 +2446,8 @@
                     "Type": "Linear",
                     "Axis": "Y",
                     "Range": {
-                      "MinInclusive": -20,
-                      "MaxExclusive": 21
+                      "MinInclusive": -26,
+                      "MaxExclusive": 27
                     },
                     "AscendingOrder": false,
                     "Scanner": {
@@ -3686,8 +2520,8 @@
                     "Type": "Linear",
                     "Axis": "Y",
                     "Range": {
-                      "MinInclusive": -20,
-                      "MaxExclusive": 21
+                      "MinInclusive": -26,
+                      "MaxExclusive": 27
                     },
                     "AscendingOrder": false,
                     "Scanner": {
@@ -3760,8 +2594,8 @@
                     "Type": "Linear",
                     "Axis": "Y",
                     "Range": {
-                      "MinInclusive": -20,
-                      "MaxExclusive": 21
+                      "MinInclusive": -26,
+                      "MaxExclusive": 27
                     },
                     "AscendingOrder": false,
                     "Scanner": {
@@ -3834,8 +2668,8 @@
                     "Type": "Linear",
                     "Axis": "Y",
                     "Range": {
-                      "MinInclusive": -20,
-                      "MaxExclusive": 21
+                      "MinInclusive": -26,
+                      "MaxExclusive": 27
                     },
                     "AscendingOrder": false,
                     "Scanner": {
@@ -3908,8 +2742,8 @@
                     "Type": "Linear",
                     "Axis": "Y",
                     "Range": {
-                      "MinInclusive": -20,
-                      "MaxExclusive": 21
+                      "MinInclusive": -26,
+                      "MaxExclusive": 27
                     },
                     "AscendingOrder": false,
                     "Scanner": {
@@ -3982,8 +2816,8 @@
                     "Type": "Linear",
                     "Axis": "Y",
                     "Range": {
-                      "MinInclusive": -20,
-                      "MaxExclusive": 21
+                      "MinInclusive": -26,
+                      "MaxExclusive": 27
                     },
                     "AscendingOrder": false,
                     "Scanner": {
@@ -4056,8 +2890,8 @@
                     "Type": "Linear",
                     "Axis": "Y",
                     "Range": {
-                      "MinInclusive": -20,
-                      "MaxExclusive": 21
+                      "MinInclusive": -26,
+                      "MaxExclusive": 27
                     },
                     "AscendingOrder": false,
                     "Scanner": {
@@ -4130,8 +2964,8 @@
                     "Type": "Linear",
                     "Axis": "Y",
                     "Range": {
-                      "MinInclusive": -20,
-                      "MaxExclusive": 21
+                      "MinInclusive": -26,
+                      "MaxExclusive": 27
                     },
                     "AscendingOrder": false,
                     "Scanner": {
@@ -4204,8 +3038,8 @@
                     "Type": "Linear",
                     "Axis": "Y",
                     "Range": {
-                      "MinInclusive": -20,
-                      "MaxExclusive": 21
+                      "MinInclusive": -26,
+                      "MaxExclusive": 27
                     },
                     "AscendingOrder": false,
                     "Scanner": {
@@ -4247,255 +3081,8 @@
             "FieldFunction": {
               "Type": "PositionsCellNoise",
               "Positions": {
-                "Type": "Cache",
-                "SectionSize": 32,
-                "CacheSize": 100,
-                "Positions": {
-                  "Type": "Union",
-                  "Positions": [
-                    {
-                      "Type": "FieldFunction",
-                      "FieldFunction": {
-                        "Type": "XOverride",
-                        "Value": 7919.5,
-                        "Inputs": [
-                          {
-                            "Type": "ZOverride",
-                            "Value": -4441.5,
-                            "Inputs": [
-                              {
-                                "Type": "SimplexNoise2D",
-                                "Scale": 60.0,
-                                "Octaves": 1,
-                                "Lacunarity": 2.0,
-                                "Persistence": 0.5,
-                                "Seed": "Layout"
-                              }
-                            ]
-                          }
-                        ]
-                      },
-                      "Delimiters": [
-                        {
-                          "Min": -1000000000.0,
-                          "Max": -0.236
-                        }
-                      ],
-                      "Positions": {
-                        "Type": "List",
-                        "Positions": [
-                          {
-                            "X": 0,
-                            "Y": 81,
-                            "Z": 0
-                          },
-                          {
-                            "X": 46,
-                            "Y": 81,
-                            "Z": 80
-                          },
-                          {
-                            "X": -8,
-                            "Y": 81,
-                            "Z": 159
-                          },
-                          {
-                            "X": -100,
-                            "Y": 81,
-                            "Z": 144
-                          },
-                          {
-                            "X": 139,
-                            "Y": 81,
-                            "Z": 159
-                          }
-                        ]
-                      }
-                    },
-                    {
-                      "Type": "FieldFunction",
-                      "FieldFunction": {
-                        "Type": "XOverride",
-                        "Value": 7919.5,
-                        "Inputs": [
-                          {
-                            "Type": "ZOverride",
-                            "Value": -4441.5,
-                            "Inputs": [
-                              {
-                                "Type": "SimplexNoise2D",
-                                "Scale": 60.0,
-                                "Octaves": 1,
-                                "Lacunarity": 2.0,
-                                "Persistence": 0.5,
-                                "Seed": "Layout"
-                              }
-                            ]
-                          }
-                        ]
-                      },
-                      "Delimiters": [
-                        {
-                          "Min": -0.236,
-                          "Max": 0.0
-                        }
-                      ],
-                      "Positions": {
-                        "Type": "List",
-                        "Positions": [
-                          {
-                            "X": 0,
-                            "Y": 81,
-                            "Z": 0
-                          },
-                          {
-                            "X": -80,
-                            "Y": 81,
-                            "Z": 45
-                          },
-                          {
-                            "X": -157,
-                            "Y": 81,
-                            "Z": -5
-                          },
-                          {
-                            "X": -158,
-                            "Y": 81,
-                            "Z": -92
-                          },
-                          {
-                            "X": 69,
-                            "Y": 81,
-                            "Z": 65
-                          }
-                        ]
-                      }
-                    },
-                    {
-                      "Type": "FieldFunction",
-                      "FieldFunction": {
-                        "Type": "XOverride",
-                        "Value": 7919.5,
-                        "Inputs": [
-                          {
-                            "Type": "ZOverride",
-                            "Value": -4441.5,
-                            "Inputs": [
-                              {
-                                "Type": "SimplexNoise2D",
-                                "Scale": 60.0,
-                                "Octaves": 1,
-                                "Lacunarity": 2.0,
-                                "Persistence": 0.5,
-                                "Seed": "Layout"
-                              }
-                            ]
-                          }
-                        ]
-                      },
-                      "Delimiters": [
-                        {
-                          "Min": 0.0,
-                          "Max": 0.236
-                        }
-                      ],
-                      "Positions": {
-                        "Type": "List",
-                        "Positions": [
-                          {
-                            "X": 0,
-                            "Y": 81,
-                            "Z": 0
-                          },
-                          {
-                            "X": 76,
-                            "Y": 81,
-                            "Z": 36
-                          },
-                          {
-                            "X": 164,
-                            "Y": 81,
-                            "Z": -35
-                          },
-                          {
-                            "X": 150,
-                            "Y": 81,
-                            "Z": -117
-                          },
-                          {
-                            "X": -66,
-                            "Y": 81,
-                            "Z": -72
-                          },
-                          {
-                            "X": 121,
-                            "Y": 81,
-                            "Z": 139
-                          }
-                        ]
-                      }
-                    },
-                    {
-                      "Type": "FieldFunction",
-                      "FieldFunction": {
-                        "Type": "XOverride",
-                        "Value": 7919.5,
-                        "Inputs": [
-                          {
-                            "Type": "ZOverride",
-                            "Value": -4441.5,
-                            "Inputs": [
-                              {
-                                "Type": "SimplexNoise2D",
-                                "Scale": 60.0,
-                                "Octaves": 1,
-                                "Lacunarity": 2.0,
-                                "Persistence": 0.5,
-                                "Seed": "Layout"
-                              }
-                            ]
-                          }
-                        ]
-                      },
-                      "Delimiters": [
-                        {
-                          "Min": 0.236,
-                          "Max": 1000000000.0
-                        }
-                      ],
-                      "Positions": {
-                        "Type": "List",
-                        "Positions": [
-                          {
-                            "X": 0,
-                            "Y": 81,
-                            "Z": 0
-                          },
-                          {
-                            "X": -95,
-                            "Y": 81,
-                            "Z": 7
-                          },
-                          {
-                            "X": -137,
-                            "Y": 81,
-                            "Z": 79
-                          },
-                          {
-                            "X": -94,
-                            "Y": 81,
-                            "Z": 156
-                          },
-                          {
-                            "X": 18,
-                            "Y": 81,
-                            "Z": -120
-                          }
-                        ]
-                      }
-                    }
-                  ]
-                }
+                "Type": "Imported",
+                "Name": "Nakasar_Contract_Castle_Lobes_Positions"
               },
               "ReturnType": {
                 "Type": "Curve",
@@ -4529,215 +3116,8 @@
               "FieldFunction": {
                 "Type": "PositionsCellNoise",
                 "Positions": {
-                  "Type": "Cache",
-                  "SectionSize": 32,
-                  "CacheSize": 100,
-                  "Positions": {
-                    "Type": "Union",
-                    "Positions": [
-                      {
-                        "Type": "FieldFunction",
-                        "FieldFunction": {
-                          "Type": "XOverride",
-                          "Value": 7919.5,
-                          "Inputs": [
-                            {
-                              "Type": "ZOverride",
-                              "Value": -4441.5,
-                              "Inputs": [
-                                {
-                                  "Type": "SimplexNoise2D",
-                                  "Scale": 60.0,
-                                  "Octaves": 1,
-                                  "Lacunarity": 2.0,
-                                  "Persistence": 0.5,
-                                  "Seed": "Layout"
-                                }
-                              ]
-                            }
-                          ]
-                        },
-                        "Delimiters": [
-                          {
-                            "Min": -1000000000.0,
-                            "Max": -0.236
-                          }
-                        ],
-                        "Positions": {
-                          "Type": "List",
-                          "Positions": [
-                            {
-                              "X": 46,
-                              "Y": 81,
-                              "Z": 80
-                            },
-                            {
-                              "X": -8,
-                              "Y": 81,
-                              "Z": 159
-                            },
-                            {
-                              "X": 139,
-                              "Y": 81,
-                              "Z": 159
-                            }
-                          ]
-                        }
-                      },
-                      {
-                        "Type": "FieldFunction",
-                        "FieldFunction": {
-                          "Type": "XOverride",
-                          "Value": 7919.5,
-                          "Inputs": [
-                            {
-                              "Type": "ZOverride",
-                              "Value": -4441.5,
-                              "Inputs": [
-                                {
-                                  "Type": "SimplexNoise2D",
-                                  "Scale": 60.0,
-                                  "Octaves": 1,
-                                  "Lacunarity": 2.0,
-                                  "Persistence": 0.5,
-                                  "Seed": "Layout"
-                                }
-                              ]
-                            }
-                          ]
-                        },
-                        "Delimiters": [
-                          {
-                            "Min": -0.236,
-                            "Max": 0.0
-                          }
-                        ],
-                        "Positions": {
-                          "Type": "List",
-                          "Positions": [
-                            {
-                              "X": -80,
-                              "Y": 81,
-                              "Z": 45
-                            },
-                            {
-                              "X": -157,
-                              "Y": 81,
-                              "Z": -5
-                            },
-                            {
-                              "X": 69,
-                              "Y": 81,
-                              "Z": 65
-                            }
-                          ]
-                        }
-                      },
-                      {
-                        "Type": "FieldFunction",
-                        "FieldFunction": {
-                          "Type": "XOverride",
-                          "Value": 7919.5,
-                          "Inputs": [
-                            {
-                              "Type": "ZOverride",
-                              "Value": -4441.5,
-                              "Inputs": [
-                                {
-                                  "Type": "SimplexNoise2D",
-                                  "Scale": 60.0,
-                                  "Octaves": 1,
-                                  "Lacunarity": 2.0,
-                                  "Persistence": 0.5,
-                                  "Seed": "Layout"
-                                }
-                              ]
-                            }
-                          ]
-                        },
-                        "Delimiters": [
-                          {
-                            "Min": 0.0,
-                            "Max": 0.236
-                          }
-                        ],
-                        "Positions": {
-                          "Type": "List",
-                          "Positions": [
-                            {
-                              "X": 76,
-                              "Y": 81,
-                              "Z": 36
-                            },
-                            {
-                              "X": 164,
-                              "Y": 81,
-                              "Z": -35
-                            },
-                            {
-                              "X": -66,
-                              "Y": 81,
-                              "Z": -72
-                            },
-                            {
-                              "X": 121,
-                              "Y": 81,
-                              "Z": 139
-                            }
-                          ]
-                        }
-                      },
-                      {
-                        "Type": "FieldFunction",
-                        "FieldFunction": {
-                          "Type": "XOverride",
-                          "Value": 7919.5,
-                          "Inputs": [
-                            {
-                              "Type": "ZOverride",
-                              "Value": -4441.5,
-                              "Inputs": [
-                                {
-                                  "Type": "SimplexNoise2D",
-                                  "Scale": 60.0,
-                                  "Octaves": 1,
-                                  "Lacunarity": 2.0,
-                                  "Persistence": 0.5,
-                                  "Seed": "Layout"
-                                }
-                              ]
-                            }
-                          ]
-                        },
-                        "Delimiters": [
-                          {
-                            "Min": 0.236,
-                            "Max": 1000000000.0
-                          }
-                        ],
-                        "Positions": {
-                          "Type": "List",
-                          "Positions": [
-                            {
-                              "X": -95,
-                              "Y": 81,
-                              "Z": 7
-                            },
-                            {
-                              "X": -137,
-                              "Y": 81,
-                              "Z": 79
-                            },
-                            {
-                              "X": 18,
-                              "Y": 81,
-                              "Z": -120
-                            }
-                          ]
-                        }
-                      }
-                    ]
-                  }
+                  "Type": "Imported",
+                  "Name": "Nakasar_Contract_Castle_Landmarks_Positions"
                 },
                 "ReturnType": {
                   "Type": "Curve",
@@ -4812,170 +3192,8 @@
                   "FieldFunction": {
                     "Type": "PositionsCellNoise",
                     "Positions": {
-                      "Type": "Cache",
-                      "SectionSize": 32,
-                      "CacheSize": 100,
-                      "Positions": {
-                        "Type": "Union",
-                        "Positions": [
-                          {
-                            "Type": "FieldFunction",
-                            "FieldFunction": {
-                              "Type": "XOverride",
-                              "Value": 7919.5,
-                              "Inputs": [
-                                {
-                                  "Type": "ZOverride",
-                                  "Value": -4441.5,
-                                  "Inputs": [
-                                    {
-                                      "Type": "SimplexNoise2D",
-                                      "Scale": 60.0,
-                                      "Octaves": 1,
-                                      "Lacunarity": 2.0,
-                                      "Persistence": 0.5,
-                                      "Seed": "Layout"
-                                    }
-                                  ]
-                                }
-                              ]
-                            },
-                            "Delimiters": [
-                              {
-                                "Min": -1000000000.0,
-                                "Max": -0.236
-                              }
-                            ],
-                            "Positions": {
-                              "Type": "List",
-                              "Positions": [
-                                {
-                                  "X": -100,
-                                  "Y": 81,
-                                  "Z": 144
-                                }
-                              ]
-                            }
-                          },
-                          {
-                            "Type": "FieldFunction",
-                            "FieldFunction": {
-                              "Type": "XOverride",
-                              "Value": 7919.5,
-                              "Inputs": [
-                                {
-                                  "Type": "ZOverride",
-                                  "Value": -4441.5,
-                                  "Inputs": [
-                                    {
-                                      "Type": "SimplexNoise2D",
-                                      "Scale": 60.0,
-                                      "Octaves": 1,
-                                      "Lacunarity": 2.0,
-                                      "Persistence": 0.5,
-                                      "Seed": "Layout"
-                                    }
-                                  ]
-                                }
-                              ]
-                            },
-                            "Delimiters": [
-                              {
-                                "Min": -0.236,
-                                "Max": 0.0
-                              }
-                            ],
-                            "Positions": {
-                              "Type": "List",
-                              "Positions": [
-                                {
-                                  "X": -158,
-                                  "Y": 81,
-                                  "Z": -92
-                                }
-                              ]
-                            }
-                          },
-                          {
-                            "Type": "FieldFunction",
-                            "FieldFunction": {
-                              "Type": "XOverride",
-                              "Value": 7919.5,
-                              "Inputs": [
-                                {
-                                  "Type": "ZOverride",
-                                  "Value": -4441.5,
-                                  "Inputs": [
-                                    {
-                                      "Type": "SimplexNoise2D",
-                                      "Scale": 60.0,
-                                      "Octaves": 1,
-                                      "Lacunarity": 2.0,
-                                      "Persistence": 0.5,
-                                      "Seed": "Layout"
-                                    }
-                                  ]
-                                }
-                              ]
-                            },
-                            "Delimiters": [
-                              {
-                                "Min": 0.0,
-                                "Max": 0.236
-                              }
-                            ],
-                            "Positions": {
-                              "Type": "List",
-                              "Positions": [
-                                {
-                                  "X": 150,
-                                  "Y": 81,
-                                  "Z": -117
-                                }
-                              ]
-                            }
-                          },
-                          {
-                            "Type": "FieldFunction",
-                            "FieldFunction": {
-                              "Type": "XOverride",
-                              "Value": 7919.5,
-                              "Inputs": [
-                                {
-                                  "Type": "ZOverride",
-                                  "Value": -4441.5,
-                                  "Inputs": [
-                                    {
-                                      "Type": "SimplexNoise2D",
-                                      "Scale": 60.0,
-                                      "Octaves": 1,
-                                      "Lacunarity": 2.0,
-                                      "Persistence": 0.5,
-                                      "Seed": "Layout"
-                                    }
-                                  ]
-                                }
-                              ]
-                            },
-                            "Delimiters": [
-                              {
-                                "Min": 0.236,
-                                "Max": 1000000000.0
-                              }
-                            ],
-                            "Positions": {
-                              "Type": "List",
-                              "Positions": [
-                                {
-                                  "X": -94,
-                                  "Y": 81,
-                                  "Z": 156
-                                }
-                              ]
-                            }
-                          }
-                        ]
-                      }
+                      "Type": "Imported",
+                      "Name": "Nakasar_Contract_Castle_Target_Positions"
                     },
                     "ReturnType": {
                       "Type": "Curve",
@@ -5091,8 +3309,8 @@
                     "Type": "Linear",
                     "Axis": "Y",
                     "Range": {
-                      "MinInclusive": -20,
-                      "MaxExclusive": 21
+                      "MinInclusive": -26,
+                      "MaxExclusive": 27
                     },
                     "AscendingOrder": false,
                     "Scanner": {
@@ -5165,8 +3383,8 @@
                     "Type": "Linear",
                     "Axis": "Y",
                     "Range": {
-                      "MinInclusive": -20,
-                      "MaxExclusive": 21
+                      "MinInclusive": -26,
+                      "MaxExclusive": 27
                     },
                     "AscendingOrder": false,
                     "Scanner": {
@@ -5239,8 +3457,8 @@
                     "Type": "Linear",
                     "Axis": "Y",
                     "Range": {
-                      "MinInclusive": -20,
-                      "MaxExclusive": 21
+                      "MinInclusive": -26,
+                      "MaxExclusive": 27
                     },
                     "AscendingOrder": false,
                     "Scanner": {
@@ -5313,8 +3531,8 @@
                     "Type": "Linear",
                     "Axis": "Y",
                     "Range": {
-                      "MinInclusive": -20,
-                      "MaxExclusive": 21
+                      "MinInclusive": -26,
+                      "MaxExclusive": 27
                     },
                     "AscendingOrder": false,
                     "Scanner": {
@@ -5387,8 +3605,8 @@
                     "Type": "Linear",
                     "Axis": "Y",
                     "Range": {
-                      "MinInclusive": -20,
-                      "MaxExclusive": 21
+                      "MinInclusive": -26,
+                      "MaxExclusive": 27
                     },
                     "AscendingOrder": false,
                     "Scanner": {
@@ -5461,8 +3679,8 @@
                     "Type": "Linear",
                     "Axis": "Y",
                     "Range": {
-                      "MinInclusive": -20,
-                      "MaxExclusive": 21
+                      "MinInclusive": -26,
+                      "MaxExclusive": 27
                     },
                     "AscendingOrder": false,
                     "Scanner": {
@@ -5535,8 +3753,8 @@
                     "Type": "Linear",
                     "Axis": "Y",
                     "Range": {
-                      "MinInclusive": -20,
-                      "MaxExclusive": 21
+                      "MinInclusive": -26,
+                      "MaxExclusive": 27
                     },
                     "AscendingOrder": false,
                     "Scanner": {
@@ -5609,8 +3827,8 @@
                     "Type": "Linear",
                     "Axis": "Y",
                     "Range": {
-                      "MinInclusive": -20,
-                      "MaxExclusive": 21
+                      "MinInclusive": -26,
+                      "MaxExclusive": 27
                     },
                     "AscendingOrder": false,
                     "Scanner": {
@@ -5683,8 +3901,8 @@
                     "Type": "Linear",
                     "Axis": "Y",
                     "Range": {
-                      "MinInclusive": -20,
-                      "MaxExclusive": 21
+                      "MinInclusive": -26,
+                      "MaxExclusive": 27
                     },
                     "AscendingOrder": false,
                     "Scanner": {
@@ -5757,8 +3975,8 @@
                     "Type": "Linear",
                     "Axis": "Y",
                     "Range": {
-                      "MinInclusive": -20,
-                      "MaxExclusive": 21
+                      "MinInclusive": -26,
+                      "MaxExclusive": 27
                     },
                     "AscendingOrder": false,
                     "Scanner": {
@@ -5800,255 +4018,8 @@
             "FieldFunction": {
               "Type": "PositionsCellNoise",
               "Positions": {
-                "Type": "Cache",
-                "SectionSize": 32,
-                "CacheSize": 100,
-                "Positions": {
-                  "Type": "Union",
-                  "Positions": [
-                    {
-                      "Type": "FieldFunction",
-                      "FieldFunction": {
-                        "Type": "XOverride",
-                        "Value": 7919.5,
-                        "Inputs": [
-                          {
-                            "Type": "ZOverride",
-                            "Value": -4441.5,
-                            "Inputs": [
-                              {
-                                "Type": "SimplexNoise2D",
-                                "Scale": 60.0,
-                                "Octaves": 1,
-                                "Lacunarity": 2.0,
-                                "Persistence": 0.5,
-                                "Seed": "Layout"
-                              }
-                            ]
-                          }
-                        ]
-                      },
-                      "Delimiters": [
-                        {
-                          "Min": -1000000000.0,
-                          "Max": -0.236
-                        }
-                      ],
-                      "Positions": {
-                        "Type": "List",
-                        "Positions": [
-                          {
-                            "X": 0,
-                            "Y": 81,
-                            "Z": 0
-                          },
-                          {
-                            "X": 46,
-                            "Y": 81,
-                            "Z": 80
-                          },
-                          {
-                            "X": -8,
-                            "Y": 81,
-                            "Z": 159
-                          },
-                          {
-                            "X": -100,
-                            "Y": 81,
-                            "Z": 144
-                          },
-                          {
-                            "X": 139,
-                            "Y": 81,
-                            "Z": 159
-                          }
-                        ]
-                      }
-                    },
-                    {
-                      "Type": "FieldFunction",
-                      "FieldFunction": {
-                        "Type": "XOverride",
-                        "Value": 7919.5,
-                        "Inputs": [
-                          {
-                            "Type": "ZOverride",
-                            "Value": -4441.5,
-                            "Inputs": [
-                              {
-                                "Type": "SimplexNoise2D",
-                                "Scale": 60.0,
-                                "Octaves": 1,
-                                "Lacunarity": 2.0,
-                                "Persistence": 0.5,
-                                "Seed": "Layout"
-                              }
-                            ]
-                          }
-                        ]
-                      },
-                      "Delimiters": [
-                        {
-                          "Min": -0.236,
-                          "Max": 0.0
-                        }
-                      ],
-                      "Positions": {
-                        "Type": "List",
-                        "Positions": [
-                          {
-                            "X": 0,
-                            "Y": 81,
-                            "Z": 0
-                          },
-                          {
-                            "X": -80,
-                            "Y": 81,
-                            "Z": 45
-                          },
-                          {
-                            "X": -157,
-                            "Y": 81,
-                            "Z": -5
-                          },
-                          {
-                            "X": -158,
-                            "Y": 81,
-                            "Z": -92
-                          },
-                          {
-                            "X": 69,
-                            "Y": 81,
-                            "Z": 65
-                          }
-                        ]
-                      }
-                    },
-                    {
-                      "Type": "FieldFunction",
-                      "FieldFunction": {
-                        "Type": "XOverride",
-                        "Value": 7919.5,
-                        "Inputs": [
-                          {
-                            "Type": "ZOverride",
-                            "Value": -4441.5,
-                            "Inputs": [
-                              {
-                                "Type": "SimplexNoise2D",
-                                "Scale": 60.0,
-                                "Octaves": 1,
-                                "Lacunarity": 2.0,
-                                "Persistence": 0.5,
-                                "Seed": "Layout"
-                              }
-                            ]
-                          }
-                        ]
-                      },
-                      "Delimiters": [
-                        {
-                          "Min": 0.0,
-                          "Max": 0.236
-                        }
-                      ],
-                      "Positions": {
-                        "Type": "List",
-                        "Positions": [
-                          {
-                            "X": 0,
-                            "Y": 81,
-                            "Z": 0
-                          },
-                          {
-                            "X": 76,
-                            "Y": 81,
-                            "Z": 36
-                          },
-                          {
-                            "X": 164,
-                            "Y": 81,
-                            "Z": -35
-                          },
-                          {
-                            "X": 150,
-                            "Y": 81,
-                            "Z": -117
-                          },
-                          {
-                            "X": -66,
-                            "Y": 81,
-                            "Z": -72
-                          },
-                          {
-                            "X": 121,
-                            "Y": 81,
-                            "Z": 139
-                          }
-                        ]
-                      }
-                    },
-                    {
-                      "Type": "FieldFunction",
-                      "FieldFunction": {
-                        "Type": "XOverride",
-                        "Value": 7919.5,
-                        "Inputs": [
-                          {
-                            "Type": "ZOverride",
-                            "Value": -4441.5,
-                            "Inputs": [
-                              {
-                                "Type": "SimplexNoise2D",
-                                "Scale": 60.0,
-                                "Octaves": 1,
-                                "Lacunarity": 2.0,
-                                "Persistence": 0.5,
-                                "Seed": "Layout"
-                              }
-                            ]
-                          }
-                        ]
-                      },
-                      "Delimiters": [
-                        {
-                          "Min": 0.236,
-                          "Max": 1000000000.0
-                        }
-                      ],
-                      "Positions": {
-                        "Type": "List",
-                        "Positions": [
-                          {
-                            "X": 0,
-                            "Y": 81,
-                            "Z": 0
-                          },
-                          {
-                            "X": -95,
-                            "Y": 81,
-                            "Z": 7
-                          },
-                          {
-                            "X": -137,
-                            "Y": 81,
-                            "Z": 79
-                          },
-                          {
-                            "X": -94,
-                            "Y": 81,
-                            "Z": 156
-                          },
-                          {
-                            "X": 18,
-                            "Y": 81,
-                            "Z": -120
-                          }
-                        ]
-                      }
-                    }
-                  ]
-                }
+                "Type": "Imported",
+                "Name": "Nakasar_Contract_Castle_Lobes_Positions"
               },
               "ReturnType": {
                 "Type": "Curve",
@@ -6082,215 +4053,8 @@
               "FieldFunction": {
                 "Type": "PositionsCellNoise",
                 "Positions": {
-                  "Type": "Cache",
-                  "SectionSize": 32,
-                  "CacheSize": 100,
-                  "Positions": {
-                    "Type": "Union",
-                    "Positions": [
-                      {
-                        "Type": "FieldFunction",
-                        "FieldFunction": {
-                          "Type": "XOverride",
-                          "Value": 7919.5,
-                          "Inputs": [
-                            {
-                              "Type": "ZOverride",
-                              "Value": -4441.5,
-                              "Inputs": [
-                                {
-                                  "Type": "SimplexNoise2D",
-                                  "Scale": 60.0,
-                                  "Octaves": 1,
-                                  "Lacunarity": 2.0,
-                                  "Persistence": 0.5,
-                                  "Seed": "Layout"
-                                }
-                              ]
-                            }
-                          ]
-                        },
-                        "Delimiters": [
-                          {
-                            "Min": -1000000000.0,
-                            "Max": -0.236
-                          }
-                        ],
-                        "Positions": {
-                          "Type": "List",
-                          "Positions": [
-                            {
-                              "X": 46,
-                              "Y": 81,
-                              "Z": 80
-                            },
-                            {
-                              "X": -8,
-                              "Y": 81,
-                              "Z": 159
-                            },
-                            {
-                              "X": 139,
-                              "Y": 81,
-                              "Z": 159
-                            }
-                          ]
-                        }
-                      },
-                      {
-                        "Type": "FieldFunction",
-                        "FieldFunction": {
-                          "Type": "XOverride",
-                          "Value": 7919.5,
-                          "Inputs": [
-                            {
-                              "Type": "ZOverride",
-                              "Value": -4441.5,
-                              "Inputs": [
-                                {
-                                  "Type": "SimplexNoise2D",
-                                  "Scale": 60.0,
-                                  "Octaves": 1,
-                                  "Lacunarity": 2.0,
-                                  "Persistence": 0.5,
-                                  "Seed": "Layout"
-                                }
-                              ]
-                            }
-                          ]
-                        },
-                        "Delimiters": [
-                          {
-                            "Min": -0.236,
-                            "Max": 0.0
-                          }
-                        ],
-                        "Positions": {
-                          "Type": "List",
-                          "Positions": [
-                            {
-                              "X": -80,
-                              "Y": 81,
-                              "Z": 45
-                            },
-                            {
-                              "X": -157,
-                              "Y": 81,
-                              "Z": -5
-                            },
-                            {
-                              "X": 69,
-                              "Y": 81,
-                              "Z": 65
-                            }
-                          ]
-                        }
-                      },
-                      {
-                        "Type": "FieldFunction",
-                        "FieldFunction": {
-                          "Type": "XOverride",
-                          "Value": 7919.5,
-                          "Inputs": [
-                            {
-                              "Type": "ZOverride",
-                              "Value": -4441.5,
-                              "Inputs": [
-                                {
-                                  "Type": "SimplexNoise2D",
-                                  "Scale": 60.0,
-                                  "Octaves": 1,
-                                  "Lacunarity": 2.0,
-                                  "Persistence": 0.5,
-                                  "Seed": "Layout"
-                                }
-                              ]
-                            }
-                          ]
-                        },
-                        "Delimiters": [
-                          {
-                            "Min": 0.0,
-                            "Max": 0.236
-                          }
-                        ],
-                        "Positions": {
-                          "Type": "List",
-                          "Positions": [
-                            {
-                              "X": 76,
-                              "Y": 81,
-                              "Z": 36
-                            },
-                            {
-                              "X": 164,
-                              "Y": 81,
-                              "Z": -35
-                            },
-                            {
-                              "X": -66,
-                              "Y": 81,
-                              "Z": -72
-                            },
-                            {
-                              "X": 121,
-                              "Y": 81,
-                              "Z": 139
-                            }
-                          ]
-                        }
-                      },
-                      {
-                        "Type": "FieldFunction",
-                        "FieldFunction": {
-                          "Type": "XOverride",
-                          "Value": 7919.5,
-                          "Inputs": [
-                            {
-                              "Type": "ZOverride",
-                              "Value": -4441.5,
-                              "Inputs": [
-                                {
-                                  "Type": "SimplexNoise2D",
-                                  "Scale": 60.0,
-                                  "Octaves": 1,
-                                  "Lacunarity": 2.0,
-                                  "Persistence": 0.5,
-                                  "Seed": "Layout"
-                                }
-                              ]
-                            }
-                          ]
-                        },
-                        "Delimiters": [
-                          {
-                            "Min": 0.236,
-                            "Max": 1000000000.0
-                          }
-                        ],
-                        "Positions": {
-                          "Type": "List",
-                          "Positions": [
-                            {
-                              "X": -95,
-                              "Y": 81,
-                              "Z": 7
-                            },
-                            {
-                              "X": -137,
-                              "Y": 81,
-                              "Z": 79
-                            },
-                            {
-                              "X": 18,
-                              "Y": 81,
-                              "Z": -120
-                            }
-                          ]
-                        }
-                      }
-                    ]
-                  }
+                  "Type": "Imported",
+                  "Name": "Nakasar_Contract_Castle_Landmarks_Positions"
                 },
                 "ReturnType": {
                   "Type": "Curve",
@@ -6365,170 +4129,8 @@
                   "FieldFunction": {
                     "Type": "PositionsCellNoise",
                     "Positions": {
-                      "Type": "Cache",
-                      "SectionSize": 32,
-                      "CacheSize": 100,
-                      "Positions": {
-                        "Type": "Union",
-                        "Positions": [
-                          {
-                            "Type": "FieldFunction",
-                            "FieldFunction": {
-                              "Type": "XOverride",
-                              "Value": 7919.5,
-                              "Inputs": [
-                                {
-                                  "Type": "ZOverride",
-                                  "Value": -4441.5,
-                                  "Inputs": [
-                                    {
-                                      "Type": "SimplexNoise2D",
-                                      "Scale": 60.0,
-                                      "Octaves": 1,
-                                      "Lacunarity": 2.0,
-                                      "Persistence": 0.5,
-                                      "Seed": "Layout"
-                                    }
-                                  ]
-                                }
-                              ]
-                            },
-                            "Delimiters": [
-                              {
-                                "Min": -1000000000.0,
-                                "Max": -0.236
-                              }
-                            ],
-                            "Positions": {
-                              "Type": "List",
-                              "Positions": [
-                                {
-                                  "X": -100,
-                                  "Y": 81,
-                                  "Z": 144
-                                }
-                              ]
-                            }
-                          },
-                          {
-                            "Type": "FieldFunction",
-                            "FieldFunction": {
-                              "Type": "XOverride",
-                              "Value": 7919.5,
-                              "Inputs": [
-                                {
-                                  "Type": "ZOverride",
-                                  "Value": -4441.5,
-                                  "Inputs": [
-                                    {
-                                      "Type": "SimplexNoise2D",
-                                      "Scale": 60.0,
-                                      "Octaves": 1,
-                                      "Lacunarity": 2.0,
-                                      "Persistence": 0.5,
-                                      "Seed": "Layout"
-                                    }
-                                  ]
-                                }
-                              ]
-                            },
-                            "Delimiters": [
-                              {
-                                "Min": -0.236,
-                                "Max": 0.0
-                              }
-                            ],
-                            "Positions": {
-                              "Type": "List",
-                              "Positions": [
-                                {
-                                  "X": -158,
-                                  "Y": 81,
-                                  "Z": -92
-                                }
-                              ]
-                            }
-                          },
-                          {
-                            "Type": "FieldFunction",
-                            "FieldFunction": {
-                              "Type": "XOverride",
-                              "Value": 7919.5,
-                              "Inputs": [
-                                {
-                                  "Type": "ZOverride",
-                                  "Value": -4441.5,
-                                  "Inputs": [
-                                    {
-                                      "Type": "SimplexNoise2D",
-                                      "Scale": 60.0,
-                                      "Octaves": 1,
-                                      "Lacunarity": 2.0,
-                                      "Persistence": 0.5,
-                                      "Seed": "Layout"
-                                    }
-                                  ]
-                                }
-                              ]
-                            },
-                            "Delimiters": [
-                              {
-                                "Min": 0.0,
-                                "Max": 0.236
-                              }
-                            ],
-                            "Positions": {
-                              "Type": "List",
-                              "Positions": [
-                                {
-                                  "X": 150,
-                                  "Y": 81,
-                                  "Z": -117
-                                }
-                              ]
-                            }
-                          },
-                          {
-                            "Type": "FieldFunction",
-                            "FieldFunction": {
-                              "Type": "XOverride",
-                              "Value": 7919.5,
-                              "Inputs": [
-                                {
-                                  "Type": "ZOverride",
-                                  "Value": -4441.5,
-                                  "Inputs": [
-                                    {
-                                      "Type": "SimplexNoise2D",
-                                      "Scale": 60.0,
-                                      "Octaves": 1,
-                                      "Lacunarity": 2.0,
-                                      "Persistence": 0.5,
-                                      "Seed": "Layout"
-                                    }
-                                  ]
-                                }
-                              ]
-                            },
-                            "Delimiters": [
-                              {
-                                "Min": 0.236,
-                                "Max": 1000000000.0
-                              }
-                            ],
-                            "Positions": {
-                              "Type": "List",
-                              "Positions": [
-                                {
-                                  "X": -94,
-                                  "Y": 81,
-                                  "Z": 156
-                                }
-                              ]
-                            }
-                          }
-                        ]
-                      }
+                      "Type": "Imported",
+                      "Name": "Nakasar_Contract_Castle_Target_Positions"
                     },
                     "ReturnType": {
                       "Type": "Curve",
@@ -6627,8 +4229,8 @@
                     "Type": "Linear",
                     "Axis": "Y",
                     "Range": {
-                      "MinInclusive": -20,
-                      "MaxExclusive": 21
+                      "MinInclusive": -26,
+                      "MaxExclusive": 27
                     },
                     "AscendingOrder": false,
                     "Scanner": {
@@ -6701,8 +4303,8 @@
                     "Type": "Linear",
                     "Axis": "Y",
                     "Range": {
-                      "MinInclusive": -20,
-                      "MaxExclusive": 21
+                      "MinInclusive": -26,
+                      "MaxExclusive": 27
                     },
                     "AscendingOrder": false,
                     "Scanner": {
@@ -6775,8 +4377,8 @@
                     "Type": "Linear",
                     "Axis": "Y",
                     "Range": {
-                      "MinInclusive": -20,
-                      "MaxExclusive": 21
+                      "MinInclusive": -26,
+                      "MaxExclusive": 27
                     },
                     "AscendingOrder": false,
                     "Scanner": {
@@ -6849,8 +4451,8 @@
                     "Type": "Linear",
                     "Axis": "Y",
                     "Range": {
-                      "MinInclusive": -20,
-                      "MaxExclusive": 21
+                      "MinInclusive": -26,
+                      "MaxExclusive": 27
                     },
                     "AscendingOrder": false,
                     "Scanner": {
@@ -6953,8 +4555,8 @@
                     "Type": "Linear",
                     "Axis": "Y",
                     "Range": {
-                      "MinInclusive": -20,
-                      "MaxExclusive": 21
+                      "MinInclusive": -26,
+                      "MaxExclusive": 27
                     },
                     "AscendingOrder": false,
                     "Scanner": {
@@ -7028,8 +4630,8 @@
                     "Type": "Linear",
                     "Axis": "Y",
                     "Range": {
-                      "MinInclusive": -20,
-                      "MaxExclusive": 21
+                      "MinInclusive": -26,
+                      "MaxExclusive": 27
                     },
                     "AscendingOrder": false,
                     "Scanner": {
@@ -7103,8 +4705,8 @@
                     "Type": "Linear",
                     "Axis": "Y",
                     "Range": {
-                      "MinInclusive": -20,
-                      "MaxExclusive": 21
+                      "MinInclusive": -26,
+                      "MaxExclusive": 27
                     },
                     "AscendingOrder": false,
                     "Scanner": {
@@ -7178,8 +4780,8 @@
                     "Type": "Linear",
                     "Axis": "Y",
                     "Range": {
-                      "MinInclusive": -20,
-                      "MaxExclusive": 21
+                      "MinInclusive": -26,
+                      "MaxExclusive": 27
                     },
                     "AscendingOrder": false,
                     "Scanner": {
@@ -7253,8 +4855,8 @@
                     "Type": "Linear",
                     "Axis": "Y",
                     "Range": {
-                      "MinInclusive": -20,
-                      "MaxExclusive": 21
+                      "MinInclusive": -26,
+                      "MaxExclusive": 27
                     },
                     "AscendingOrder": false,
                     "Scanner": {

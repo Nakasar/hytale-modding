@@ -12,7 +12,7 @@ Un contrat est une clé de portail fabriquée sur l'[établi des chasseurs](etab
 
 - **Pour tout le groupe :** tous les joueurs peuvent entrer par le portail ouvert.
 - **Durée :** 15 minutes, puis le fragment se ferme (il se ferme aussi quand il est vide).
-- **Arrivée :** une crypte avec le portail de retour. L'île est faite de plusieurs bosquets et clairières reliés entre eux, et sa forme change d'une ouverture à l'autre : le lieu de la cible est quelque part à 120-190 blocs de la crypte, rarement droit devant la porte. À vous de le trouver ; chaque contrat a son paysage (champs et vergers morts pour la ferme, bois épais autour du champ maudit, collines rocheuses pour la garnison, tombes pour la crypte, hauteurs pour le château).
+- **Arrivée :** une crypte avec le portail de retour. L'île est faite de plusieurs bosquets et clairières reliés entre eux, et sa forme change d'une ouverture à l'autre : le lieu de la cible est quelque part à 115-190 blocs de la crypte, rarement droit devant la porte. À vous de le trouver ; chaque contrat a son paysage (champs et vergers morts pour la ferme, bois épais autour du champ maudit, collines rocheuses pour la garnison, tombes pour la crypte, hauteurs pour le château).
 - **Prime :** quand la cible meurt, elle lâche un [sac de prime](trophees.md#sacs-de-prime) et son trophée : **un seul de chaque pour tout le groupe**, à partager. Un message prévient les joueurs du fragment. Une seule prime par fragment. Aucun rejeton de vampire n'y vit : les crocs se chassent dans le Comté.
 
 ## Les contrats

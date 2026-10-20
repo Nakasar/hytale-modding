@@ -6,7 +6,7 @@
 Un contrat est une clé de portail (comme la clé du Comté) fabriquée à l'établi des chasseurs, onglet
 Contrats. Posée dans un Portal_Device, elle ouvre un mini-fragment où tout le groupe peut entrer : une
 île flottante de nuit faite de plusieurs lobes, la crypte d'arrivée (avec son portail de retour) sur
-l'un d'eux et, un à trois lobes plus loin, rarement devant la porte, le lieu de la cible, repris tel
+l'un d'eux et, deux ou trois lobes plus loin, jamais droit devant la porte, le lieu de la cible, repris tel
 quel des structures du Comté avec ses blocs d'apparition (l'élite et sa garde). Chaque contrat a ses
 VARIANTS formes d'île, une par monde (bruit lu en un point fixe, comme les répartitions du Comté), et
 son propre paysage (THEMES : relief, forêts, décor). Tuer la cible remplit le contrat : elle lâche, avec son trophée, le sac de prime du contrat,
@@ -22,6 +22,7 @@ un seul pour tout le groupe (ContractBounties, Java ; sacs dans generate_trophie
 
 Les cibles et les primes sont aussi écrites dans ContractBounties.java : les garder alignées.
 """
+import functools
 import json
 import sys
 from pathlib import Path
@@ -158,6 +159,9 @@ TARGET_MIN_ANGLE = 40.0
 TARGET_FLAT, TARGET_HILLS = 36.0, 52.0
 SPAWN_FLAT, SPAWN_HILLS = 16.0, 28.0
 TARGET_CLEARANCE, SPAWN_CLEARANCE, LANDMARK_CLEARANCE = 39.0, 18.0, 7.0
+# Portée de la recherche du sol pour les arbres, plantes et décors : les collines (jusqu'à ±12 blocs,
+# plus les bosses) restent dedans, comme dans le Comté.
+REACH = 26
 
 
 def neck_max(r):
@@ -181,20 +185,17 @@ THEMES = {
 }
 
 
-def variant_bands():
-    """VARIANTS + 1 seuils à peu près équiprobables pour le bruit de wg.layout_value()."""
-    from statistics import NormalDist
-    inner = [NormalDist(0.0, wg.LAYOUT_NOISE_SPREAD).inv_cdf(k / VARIANTS) for k in range(1, VARIANTS)]
-    return [-1.0e9] + [round(v, 3) for v in inner] + [1.0e9]
+# Seuils à peu près équiprobables pour le bruit de wg.layout_value().
+VARIANT_BANDS = wg.layout_bands(VARIANTS)
 
 
-VARIANT_BANDS = variant_bands()
-
-
+@functools.cache
 def island_layouts(short):
     """VARIANTS formes d'île, tirées une fois pour toutes : (lobes [(x, z)], indice du lobe cible).
     Le lobe 0 est la crypte (0, 0) ; un chemin de lobes mène à la cible, des culs-de-sac partent
-    d'ailleurs. Deux lobes non voisins restent à plus de 0,9 R (sinon ils se fondent en un seul)."""
+    d'ailleurs. Deux lobes non voisins restent à plus de 0,9 R (sinon ils se fondent en un seul) ; un
+    cul-de-sac reste à plus de 2 R + 10 de la cible (sinon il ouvrirait un second accès). Les variantes
+    alternent les longueurs de chemin permises par le thème."""
     import math
     import random
     theme = THEMES[short]
@@ -205,7 +206,8 @@ def island_layouts(short):
         lobes = [(0.0, 0.0)]
         heading = rng.uniform(0.0, 360.0)
         ok = True
-        for _ in range(rng.randint(*theme["path"])):
+        low, high = theme["path"]
+        for _ in range(low + len(out) % (high - low + 1)):
             for _ in range(40):
                 h = heading + rng.uniform(-65.0, 65.0)
                 d = rng.uniform(0.95 * r, neck_max(r))
@@ -229,13 +231,14 @@ def island_layouts(short):
                 h = rng.uniform(0.0, 360.0)
                 d = rng.uniform(0.95 * r, neck_max(r))
                 x, z = parent[0] + d * math.sin(math.radians(h)), parent[1] - d * math.cos(math.radians(h))
-                if all(math.dist((x, z), p) > 0.9 * r for p in lobes if p != parent):
+                if (all(math.dist((x, z), p) > 0.9 * r for p in lobes if p != parent)
+                        and math.dist((x, z), lobes[target]) > 2.0 * r + 10.0):
                     lobes.append((x, z))
                     break
-        layout = ([(round(x), round(z)) for x, z in lobes], target)
+        layout = (tuple((round(x), round(z)) for x, z in lobes), target)
         if layout not in out:
             out.append(layout)
-    return out
+    return tuple(out)
 
 
 def per_variant(short, points_of):
@@ -250,6 +253,23 @@ def per_variant(short, points_of):
     return wg.cached_positions({"Type": "Union", "Positions": variants})
 
 
+def export_name(short, kind):
+    return f"Nakasar_Contract_{short}_{kind}_Positions"
+
+
+def exports(short):
+    """Nœuds flottants : les positions de la variante (lobes, cible, repères) filtrées une fois et
+    exportées ; le terrain et les props les relisent par import au lieu de refaire chaque filtre."""
+    nodes = []
+    for kind, points_of in (("Lobes", lambda lobes, target: lobes),
+                            ("Target", lambda lobes, target: [lobes[target]]),
+                            ("Landmarks", landmarks)):
+        positions = per_variant(short, points_of)
+        positions["ExportAs"] = export_name(short, kind)
+        nodes.append(wg.distance_to(positions, 1.0, wg.curve((0, 0), (1, 1))))
+    return nodes
+
+
 def landmarks(lobes, target):
     """Repères à explorer : le centre de chaque lobe hors crypte et cible."""
     return [p for n, p in enumerate(lobes) if n not in (0, target)]
@@ -260,9 +280,9 @@ def biome(short, folder):
     theme = THEMES[short]
     r = theme["radius"]
     edge_start = r - EDGE
-    lobes = per_variant(short, lambda lobes, target: lobes)
-    target_pos = per_variant(short, lambda lobes, target: [lobes[target]])
-    marks = per_variant(short, landmarks)
+    lobes = wg.imported(export_name(short, "Lobes"))
+    target_pos = wg.imported(export_name(short, "Target"))
+    marks = wg.imported(export_name(short, "Landmarks"))
 
     def to_lobes(points):
         """Courbe de la distance au centre du lobe le plus proche."""
@@ -282,8 +302,11 @@ def biome(short, folder):
             to_lobes([(0, 0), (edge_start, 0), (r, -1.0), (r + 2.0, -1.0)]),
         )),
     )
-    # Dessous : un cône sous chaque lobe, au-delà du rayon le fond passe très haut (vide).
-    bottom_depth = [(0, 50), (0.5, 42), (0.8, 30), (0.95, 20), (1.0, 14)]
+    # Dessous : un cône sous chaque lobe, au-delà du rayon le fond passe très haut (vide). Plus
+    # profond quand les collines sont hautes : même au pire (creux de colline, pente du bord, bosse du
+    # dessous et bord dentelé à leur maximum ensemble), le dessous reste sous le sol jusqu'à R - 4.
+    deep = 10.0 * theme["hills"]
+    bottom_depth = [(0, 56 + deep), (0.5, 48 + deep), (0.8, 38 + deep), (0.95, 30 + 0.8 * deep), (1.0, 16)]
     bottom_curve = [(f * r, d / 8.0 - GROUND_Y / 8.0) for f, d in bottom_depth]
     bottom_curve.append((r + 1.0, -(GROUND_Y + 200) / 8.0))
     rim = wg.mul(wg.simplex2d(30.0, 2, "Rim"), to_lobes([(0, 0), (r - 24.0, 0), (r - 4.0, 1.6), (r + 2.0, 1.6)]))
@@ -311,7 +334,7 @@ def biome(short, folder):
     big = lambda path, seed: wg.surface_locator(wg.prefab(path, seed, rotate=False), wg.SOLID_FLOOR, 12)
     target = wg.runtime(0, "Prop", target_pos, {"Type": "Constant", "Prop": big(folder, "Target")})
     crypt = wg.runtime(0, "Prop", wg.list_positions(SPAWN), {"Type": "Constant", "Prop": big("SpawnCrypt", "SpawnCrypt")})
-    small = lambda path, seed: wg.surface_locator(wg.prefab(path, seed), wg.GRASS_FLOOR, 20)
+    small = lambda path, seed: wg.surface_locator(wg.prefab(path, seed), wg.GRASS_FLOOR, REACH)
     decor_entries = [(small(f"Decor/{name}", f"Contract{name}"), w) for name, w in theme["decor"].items()]
     mark_props = wg.runtime(0, "Prop", marks, wg.weighted_assignments("LandmarkPick", 0.0, decor_entries))
 
@@ -324,7 +347,7 @@ def biome(short, folder):
             positions = wg.within(field, clearance, 1.0e9, positions)
         return wg.within(to_lobes([(0, 0), (r + 2.0, r + 2.0)]), 0.0, edge_start, positions)
 
-    tree = lambda path, n: wg.surface_locator(wg.prefab(path, f"ContractTree{n}", vanilla=True), wg.GRASS_FLOOR, 20)
+    tree = lambda path, n: wg.surface_locator(wg.prefab(path, f"ContractTree{n}", vanilla=True), wg.GRASS_FLOOR, REACH)
     forest = wg.simplex2d(80.0, 2, "Forest")
     woods = wg.runtime(1, "Chunk", keep_out(wg.within(forest, theme["forest"], 1.0e9, wg.mesh(6.5, 0.45, "Woods"))),
                        wg.weighted_assignments("WoodsPick", 0.15, [
@@ -337,7 +360,7 @@ def biome(short, folder):
 
     def plant(name):
         return wg.surface_locator({"Type": "Manual", "Blocks": [
-            {"Position": {"X": 0, "Y": 0, "Z": 0}, "Material": {"Solid": name}}]}, wg.GRASS_FLOOR, 20)
+            {"Position": {"X": 0, "Y": 0, "Z": 0}, "Material": {"Solid": name}}]}, wg.GRASS_FLOOR, REACH)
 
     plants = wg.runtime(2, "Chunk", wg.mesh(3.0, 0.5, "Plants"), wg.weighted_assignments("PlantPick", 0.5, [
         (plant("Plant_Grass_Gnarled"), 5.0), (plant("Plant_Grass_Gnarled_Short"), 4.0),
@@ -345,6 +368,8 @@ def biome(short, folder):
     ]))
     return {
         "Name": i["biome"],
+        # Les positions exportées sont déclarées avant tout import (nœuds flottants, lus en premier).
+        "FloatingFunctionNodes": exports(short),
         "Terrain": {"Type": "DAOTerrain", "Density": {"Type": "Min", "Inputs": [top, bottom]}},
         "MaterialProvider": materials,
         "Props": [target, crypt, mark_props, woods, trees, decor, plants],
