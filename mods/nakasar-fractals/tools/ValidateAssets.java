@@ -99,6 +99,8 @@ public class ValidateAssets {
         CODECS.put("Item/Animations/", "com.hypixel.hytale.server.core.asset.type.itemanimation.config.ItemPlayerAnimations");
         CODECS.put("Item/RootInteractions/", "com.hypixel.hytale.server.core.modules.interaction.interaction.config.RootInteraction");
         CODECS.put("Item/Interactions/", "com.hypixel.hytale.server.core.modules.interaction.interaction.config.Interaction");
+        CODECS.put("Entity/Damage/", "com.hypixel.hytale.server.core.modules.entity.damage.DamageCause");
+        CODECS.put("BarterShops/", "com.hypixel.hytale.builtin.adventure.shop.barter.BarterShopAsset");
         CODECS.put("WorldEvent/Event/", WE + "event.WorldEventAsset");
         CODECS.put("WorldEvent/Stage/", WE + "event.StageAsset");
     }

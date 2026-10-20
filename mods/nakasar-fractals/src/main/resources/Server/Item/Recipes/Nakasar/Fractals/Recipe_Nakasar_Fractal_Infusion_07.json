@@ -1,0 +1,34 @@
+{
+  "TimeSeconds": 3,
+  "KnowledgeRequired": false,
+  "Input": [
+    {
+      "ItemId": "Nakasar_Fractal_Infusion_06",
+      "Quantity": 2
+    },
+    {
+      "ItemId": "Nakasar_Fractal_Mist_Shard",
+      "Quantity": 24
+    }
+  ],
+  "PrimaryOutput": {
+    "ItemId": "Nakasar_Fractal_Infusion_07",
+    "Quantity": 1
+  },
+  "Output": [
+    {
+      "ItemId": "Nakasar_Fractal_Infusion_07",
+      "Quantity": 1
+    }
+  ],
+  "BenchRequirement": [
+    {
+      "Type": "Crafting",
+      "Id": "Nakasar_Fractal_Mist_Forge",
+      "Categories": [
+        "Nakasar_Fractal_Infusions"
+      ],
+      "RequiredTierLevel": 1
+    }
+  ]
+}

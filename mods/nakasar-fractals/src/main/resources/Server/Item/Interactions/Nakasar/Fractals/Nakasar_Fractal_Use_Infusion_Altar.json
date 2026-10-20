@@ -1,0 +1,4 @@
+{
+  "$Comment": "Autel des infusions : ouvre les 12 emplacements d'infusion du joueur (portés par lui).",
+  "Type": "Nakasar_Fractal_OpenInfusions"
+}

@@ -1,0 +1,38 @@
+{
+  "TimeSeconds": 5,
+  "KnowledgeRequired": false,
+  "Input": [
+    {
+      "ItemId": "Nakasar_Fractal_Mist_Shard",
+      "Quantity": 30
+    },
+    {
+      "ItemId": "Rock_Gem_Sapphire",
+      "Quantity": 2
+    },
+    {
+      "ItemId": "Ingredient_Bar_Silver",
+      "Quantity": 4
+    }
+  ],
+  "PrimaryOutput": {
+    "ItemId": "Nakasar_Fractal_Infusion_Altar",
+    "Quantity": 1
+  },
+  "Output": [
+    {
+      "ItemId": "Nakasar_Fractal_Infusion_Altar",
+      "Quantity": 1
+    }
+  ],
+  "BenchRequirement": [
+    {
+      "Type": "Crafting",
+      "Id": "Workbench",
+      "Categories": [
+        "Workbench_Crafting"
+      ],
+      "RequiredTierLevel": 1
+    }
+  ]
+}

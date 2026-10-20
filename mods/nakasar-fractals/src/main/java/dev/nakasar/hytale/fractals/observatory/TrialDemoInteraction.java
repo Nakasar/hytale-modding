@@ -15,6 +15,7 @@ import dev.nakasar.hytale.fractals.combat.TelegraphInteraction;
 import dev.nakasar.hytale.fractals.combat.TelegraphSystem;
 import dev.nakasar.hytale.fractals.combat.Telegraphs;
 import dev.nakasar.hytale.fractals.party.FractalCatalog;
+import dev.nakasar.hytale.fractals.progress.Agony;
 import org.joml.Vector3d;
 
 import java.util.Collections;
@@ -23,7 +24,8 @@ import java.util.WeakHashMap;
 
 /**
  * {@code "Type": "Nakasar_Fractal_TrialDemo"} : pupitre du golem d'essai. Le golem rejoue sur le joueur les attaques
- * annoncées des fractales ({@link TelegraphInteraction#demo}), sans dégâts : un cercle sous ses pieds, un cône puis
+ * annoncées des fractales ({@link TelegraphInteraction#demo}), sans dégâts : un cercle d'agonie sous ses pieds (agonie
+ * du niveau réglé à l'Astrolabe, moins sa résistance : rien sous le niveau 26), un cône puis
  * une ligne vers lui (ils projettent), enfin un petit cercle qui l'envoie dans la cage d'essai, comme la cage de
  * l'Archidevin. La cage s'ouvre {@value #CAGE_SECONDS} secondes plus tard (le joueur revient près du pupitre).
  */
@@ -40,6 +42,8 @@ public class TrialDemoInteraction extends PlayerInteraction {
     private static final float[] STARTS = {0f, 2.5f, 5f, 7.5f};
     private static final float CHARGE = 1.6f;
     private static final float CAGE_SECONDS = 5f;
+    /** Agonie posée par le premier cercle (s) : sous le niveau de l'Astrolabe, pour voir sa résistance. */
+    private static final float AGONY_SECONDS = 3f;
     /** Durée de la démonstration complète, cage comprise (s). */
     private static final float LENGTH = 7.5f + CHARGE + CAGE_SECONDS;
     /** Fin de la démonstration en cours, par monde (nanosecondes). */
@@ -61,7 +65,7 @@ public class TrialDemoInteraction extends PlayerInteraction {
 
     private static void start(World world, Ref<EntityStore> player, PlayerRef playerRef, long now) {
         Store<EntityStore> store = world.getEntityStore().getStore();
-        Ref<EntityStore> golem = TrialGolemSystem.find(store);
+        Ref<EntityStore> golem = ObservatoryNpcSystem.find(store);
         Vector3d golemAt = Telegraphs.position(store, golem);
         Vector3d playerAt = Telegraphs.position(store, player);
         if (golemAt == null || playerAt == null) {
@@ -72,7 +76,8 @@ public class TrialDemoInteraction extends PlayerInteraction {
         playerRef.sendMessage(Message.translation("nakasar_fractals.trial.demo"));
         double facing = Telegraphs.angle(golemAt, playerAt);
         double reach = Telegraphs.horizontal(golemAt, playerAt) + 3;
-        TelegraphInteraction.demo(world, golem, player, new Vector3d(playerAt), facing, "Circle", 3f, CHARGE, STARTS[0], 6f, false);
+        TelegraphInteraction.demo(world, golem, player, new Vector3d(playerAt), facing, "Circle", 3f, CHARGE, STARTS[0], 6f, false,
+                Agony.EFFECT, AGONY_SECONDS);
         TelegraphInteraction.demo(world, golem, player, new Vector3d(golemAt), facing, "Cone", (float) reach, CHARGE, STARTS[1], 6f, false);
         TelegraphInteraction.demo(world, golem, player, new Vector3d(golemAt), facing, "Line", (float) reach, CHARGE, STARTS[2], 6f, false);
         TelegraphSystem.start(world, new CagedPlayer(player, golem, now + Telegraphs.seconds(STARTS[3])));

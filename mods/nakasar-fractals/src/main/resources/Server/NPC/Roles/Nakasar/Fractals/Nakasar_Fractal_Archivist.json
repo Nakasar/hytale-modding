@@ -1,0 +1,62 @@
+{
+  "$Comment": "L'Archiviste : posé par ObservatoryNpcSystem derrière son comptoir, immobile et invulnérable. L'utiliser ouvre sa boutique de troc (éclats de Brume contre infusions et fragments). Le comptoir devant lui ouvre la même boutique. Généré par tools/generate_progression.py.",
+  "Type": "Generic",
+  "Appearance": "Nakasar_Fractal_Archivist",
+  "NameTranslationKey": "nakasar_fractals_progress.npc.Archivist.name",
+  "MaxHealth": 1000,
+  "StartState": "Idle",
+  "DefaultPlayerAttitude": "Neutral",
+  "DefaultNPCAttitude": "Ignore",
+  "MotionControllerList": [
+    {
+      "Type": "Walk",
+      "MaxWalkSpeed": 0.1,
+      "Gravity": 10,
+      "MaxFallSpeed": 10,
+      "Acceleration": 10,
+      "JumpHeight": 1.0
+    }
+  ],
+  "KnockbackScale": 0,
+  "Instructions": [
+    {
+      "Sensor": {
+        "Type": "State",
+        "State": "Idle"
+      },
+      "Instructions": [
+        {
+          "Actions": []
+        }
+      ]
+    }
+  ],
+  "InteractionInstruction": {
+    "Instructions": [
+      {
+        "Continue": true,
+        "Sensor": {
+          "Type": "Any"
+        },
+        "Actions": [
+          {
+            "Type": "SetInteractable",
+            "Interactable": true,
+            "Hint": "interactionHints.trade"
+          }
+        ]
+      },
+      {
+        "Sensor": {
+          "Type": "HasInteracted"
+        },
+        "Actions": [
+          {
+            "Type": "OpenBarterShop",
+            "Shop": "Nakasar_Fractal_Archivist"
+          }
+        ]
+      }
+    ]
+  }
+}

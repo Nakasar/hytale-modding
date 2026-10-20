@@ -18,9 +18,11 @@ lancement d'une fractale.
 - `observatory/ObservatoryLayout.java` : les positions dont le Java a besoin (cercle, arches, golem, cage).
 
 Repère : x vers l'est, z vers le sud, y vers le haut ; le centre de l'Astrolabe est en (0, GROUND_Y, 0), GROUND_Y étant
-la première couche d'air au-dessus du dallage. L'Archiviste (marchand) viendra avec les récompenses (éclats de Brume).
+la première couche d'air au-dessus du dallage. À l'est, le coin de l'Archiviste : comptoir, Autel des infusions,
+Creuset des Brumes (leurs objets viennent de tools/generate_progression.py).
 """
 import json
+import shutil
 import math
 import sys
 from pathlib import Path
@@ -41,6 +43,9 @@ ENVIRONMENT = "Nakasar_Fractal_Env_Mists"
 PREFABS = "Nakasar/Fractals"
 TEXTURES = "BlockTextures/Nakasar/Fractals"
 ICONS = "Icons/Items/Nakasar/Fractals"
+# Icônes des onglets d'établi : le moteur les veut sous Icons/CraftingCategories (Infusions.png vient de
+# generate_progression.py, Fragments.png est l'icône du fragment).
+CATEGORY_ICONS = "Icons/CraftingCategories/Nakasar/Fractals"
 INTERACTIONS = SERVER / "Item/Interactions/Nakasar/Fractals"
 ITEMS = SERVER / "Item/Items/Deco/Nakasar/Fractals"
 GOLEM = "Nakasar_Fractal_Trial_Golem"
@@ -59,6 +64,12 @@ GOLEM_SPOT = (-19, GROUND_Y, 9)
 TRIAL_PANEL = (-15, 0, 7)
 TRIAL_CAGE = (-24, 0, 14)     # cage d'essai (bloc Nakasar_Fractal_Cage_Cell)
 REGISTRY = (16, 0, 8)
+# Coin de l'Archiviste (est, étape 3) : comptoir devant lui, autel des infusions et creuset des Brumes à côté.
+ARCHIVIST_SPOT = (18, GROUND_Y, 11)
+COUNTER = (16, 0, 11)
+ALTAR_SPOT = (13, 0, 13)
+FORGE_SPOT = (15, 0, 15)
+STUB_CHEST = (2, 0, -4)
 CAGE_CELL = "Nakasar_Fractal_Cage_Cell"
 
 # Les 6 fractales de la saison 1 (GDD) : id, nom, couleur, pierre et cristal de l'arche, cap (degrés, 0 = nord, sens
@@ -106,6 +117,11 @@ HARMONY = "Nakasar_Fractal_Harmony_Tile"
 TRIAL = "Nakasar_Fractal_Trial_Panel"
 REGISTRY_BLOCK = "Nakasar_Fractal_Registry"
 EXIT_STONE = "Nakasar_Fractal_Exit_Stone"
+ALTAR = "Nakasar_Fractal_Infusion_Altar"
+FORGE = "Nakasar_Fractal_Mist_Forge"
+REWARD_CHEST = "Nakasar_Fractal_Reward_Chest"
+COUNTER_BLOCK = "Nakasar_Fractal_Archivist_Counter"
+PROGRESS_LANG = "nakasar_fractals_progress"   # langue des objets de tools/generate_progression.py
 
 
 def arch_stone(fid):
@@ -251,6 +267,15 @@ def observatory_prefab():
     p.set(cx, 2, cz, AIR)
     # Registre des fractales (est) : là où se tiendra l'Archiviste.
     p.set(*REGISTRY, REGISTRY_BLOCK)
+    # Coin de l'Archiviste : dallage, comptoir, autel des infusions et creuset des Brumes.
+    ax, _, az = ARCHIVIST_SPOT
+    for x in range(ax - 6, ax + 2):
+        for z in range(az - 2, az + 6):
+            if math.hypot(x, z) <= ISLAND_RADIUS - 3:
+                p.set(x, -1, z, "Rock_Quartzite_Brick_Decorative")
+    p.set(*COUNTER, COUNTER_BLOCK)
+    p.set(*ALTAR_SPOT, ALTAR)
+    p.set(*FORGE_SPOT, FORGE)
     # Cristaux de Brume semés sur le pourtour (décor).
     for k, h in enumerate(range(15, 360, 30)):
         x, z = heading_to_xz(h, ISLAND_RADIUS - 2)
@@ -264,6 +289,7 @@ def cliffside_stub_prefab():
     p = Prefab()
     island(p, 9, 10)
     p.set(0, 0, -6, EXIT_STONE)
+    p.set(*STUB_CHEST, REWARD_CHEST)
     p.fill(-1, 0, -8, 1, 3, -8, "Rock_Stone_Brick")
     p.set(0, 4, -8, "Rock_Crystal_Purple_Block")
     return p
@@ -305,6 +331,23 @@ def texture(path, base, accent, glyph):
         for y in (10, 14, 18):
             d.line((9, y, 14, y), fill=dark)
             d.line((18, y, 23, y), fill=dark)
+    elif glyph == "altar":
+        for k in range(3):
+            for j in range(4):
+                d.rectangle((6 + j * 5, 7 + k * 6, 9 + j * 5, 10 + k * 6), outline=acc)
+        d.ellipse((13, 13, 18, 18), fill=acc)
+    elif glyph == "forge":
+        d.polygon(((8, 12), (24, 12), (21, 25), (11, 25)), outline=acc, fill=dark)
+        d.ellipse((12, 6, 20, 13), fill=acc)
+    elif glyph == "chest":
+        d.rectangle((6, 10, 25, 25), outline=acc, width=2)
+        d.line((6, 15, 25, 15), fill=acc, width=2)
+        d.rectangle((14, 13, 17, 18), fill=acc)
+    elif glyph == "counter":
+        d.rectangle((5, 8, 26, 12), fill=acc)
+        d.line((8, 12, 8, 26), fill=acc, width=2)
+        d.line((23, 12, 23, 26), fill=acc, width=2)
+        d.ellipse((13, 16, 18, 21), outline=acc)
     elif glyph == "exit":
         d.ellipse((7, 7, 24, 24), outline=acc, width=3)
         d.polygon(((13, 11), (21, 16), (13, 21)), fill=acc)
@@ -345,6 +388,40 @@ def block_item(name, tex, light=None, interaction=None, solid=True, quality="Tec
         "Tags": {"Type": ["Deco"]},
         "ItemSoundSetId": "ISS_Blocks_Stone",
     }
+
+
+def bench_item(name, tex):
+    """Creuset des Brumes : établi en cube (fusion des infusions, fragment refait), cassable pour l'emporter."""
+    doc = block_item(name, tex, light="#a8f", quality="Rare", particle="#8a6ad8")
+    doc["Categories"] = ["Furniture.Benches"]
+    doc["Tags"] = {"Type": ["Bench"]}
+    doc["MaxStack"] = 1
+    block = doc["BlockType"]
+    block["Gathering"] = {"Breaking": {"GatherType": "Benches", "ItemId": name}}
+    block["BlockEntity"] = {"Components": {"BenchBlock": {}}}
+    block["State"] = {"Definitions": {"CraftCompleted": {"Looping": True}, "CraftCompletedInstant": {}}}
+    block["Bench"] = {
+        "Type": "Crafting",
+        "Id": name,
+        "LocalOpenSoundEventId": "SFX_Weapon_Bench_Open",
+        "LocalCloseSoundEventId": "SFX_Weapon_Bench_Close",
+        "CompletedSoundEventId": "SFX_Weapon_Bench_Craft",
+        "Categories": [
+            {"Id": "Nakasar_Fractal_Infusions", "Name": f"{PROGRESS_LANG}.benchCategories.nakasar_fractal_infusions",
+             "Icon": f"{CATEGORY_ICONS}/Infusions.png"},
+            {"Id": "Nakasar_Fractal_Fragments", "Name": f"{PROGRESS_LANG}.benchCategories.nakasar_fractal_fragments",
+             "Icon": f"{CATEGORY_ICONS}/Fragments.png"},
+        ],
+    }
+    return doc
+
+
+def portable(doc, name):
+    """Bloc fabricable (autel) : se casse et se rend, pour le poser chez soi."""
+    doc["BlockType"]["Gathering"] = {"Breaking": {"GatherType": "Benches", "ItemId": name}}
+    doc["Quality"] = "Rare"
+    doc["MaxStack"] = 1
+    return doc
 
 
 def hexcolor(rgb):
@@ -522,6 +599,15 @@ def interactions():
         "Nakasar_Fractal_Use_Exit": {
             "$Comment": "Pierre de retour d'une fractale : ramène le joueur à l'Observatoire.",
             "Type": "Nakasar_Fractal_Leave"},
+        "Nakasar_Fractal_Use_Infusion_Altar": {
+            "$Comment": "Autel des infusions : ouvre les 12 emplacements d'infusion du joueur (portés par lui).",
+            "Type": "Nakasar_Fractal_OpenInfusions"},
+        "Nakasar_Fractal_Use_Reward_Chest": {
+            "$Comment": "Coffre de fin de fractale : un coffre par joueur du groupe, et le niveau suivant débloqué.",
+            "Type": "Nakasar_Fractal_ClaimReward"},
+        "Nakasar_Fractal_Use_Archivist_Counter": {
+            "$Comment": "Comptoir de l'Archiviste : sa boutique de troc (comme lui parler).",
+            "Type": "Nakasar_Fractal_OpenShop", "Shop": "Nakasar_Fractal_Archivist"},
         "Nakasar_Fractal_Read_Registry": {
             "$Comment": "Registre des fractales : page de lore du jeu (nom et description du bloc).",
             "Type": "OpenCustomUI", "Page": {"Id": "BlockLore", "TextAlignment": "Left"}},
@@ -587,6 +673,18 @@ def lang():
         f"items.{TRIAL}.description": "Utiliser : le golem rejoue sur vous les attaques des fractales.",
         f"items.{EXIT_STONE}.name": "Pierre de retour",
         f"items.{EXIT_STONE}.description": "Utiliser : retour à l'Observatoire.",
+        f"items.{ALTAR}.name": "Autel des infusions",
+        f"items.{ALTAR}.description": "Utiliser : vos 12 emplacements d'infusion. Chaque infusion posée ajoute sa "
+                                      "résistance à l'agonie, où que vous soyez ; la retirer l'enlève.",
+        f"items.{FORGE}.name": "Creuset des Brumes",
+        f"items.{FORGE}.description": "Fusionne deux infusions identiques en la suivante, et refait un Fragment des "
+                                      "Brumes avec des éclats.",
+        f"items.{REWARD_CHEST}.name": "Coffre de fin de fractale",
+        f"items.{REWARD_CHEST}.description": "Utiliser : votre récompense (une par joueur du groupe). Terminer une "
+                                             "fractale à votre plus haut niveau débloque le suivant.",
+        f"items.{COUNTER_BLOCK}.name": "Comptoir de l'Archiviste",
+        f"items.{COUNTER_BLOCK}.description": "Utiliser : échanger des éclats de Brume contre des infusions et des "
+                                              "fragments.",
         f"items.{REGISTRY_BLOCK}.name": "Registre des fractales",
         f"items.{REGISTRY_BLOCK}.description": (
             "Bienvenue dans l'Observatoire, voyageur des Brumes.\n\n"
@@ -595,8 +693,13 @@ def lang():
             "2. Le meneur règle le niveau au cadran de l'Astrolabe (accroupi pour descendre).\n"
             "3. Le meneur utilise la pierre d'une arche : tout le cercle part pour cette fractale.\n\n"
             "Saison 1 : Falaise, Inclassable, Volcanique, Océan solide, Marais, Tempête de neige.\n"
-            "Le golem d'essai, à l'ouest, sert à tester ses coups et à voir les attaques des fractales.\n\n"
-            "Commande de secours : /fractale (niveau, groupe, lancer, quitter)."),
+            "Le golem d'essai, à l'ouest, sert à tester ses coups, sa résistance à l'agonie et à voir les attaques "
+            "des fractales.\n"
+            "À l'est, l'Archiviste échange les éclats de Brume ; l'Autel des infusions porte votre résistance à "
+            "l'agonie et le Creuset des Brumes fusionne les infusions.\n"
+            "Chaque fractale terminée à votre plus haut niveau débloque le suivant ; le meneur ne peut choisir qu'un "
+            "niveau qu'il a débloqué.\n\n"
+            "Commande de secours : /fractale (niveau, groupe, lancer, quitter, infos)."),
         "npc.Trial_Golem.name": "Golem d'essai",
         "observatory.leader": "Vous menez le groupe de l'Observatoire.",
         "observatory.newLeader": "{name} mène désormais le groupe.",
@@ -619,7 +722,7 @@ def lang():
         "observatory.fallRescue": "Les Brumes vous ramènent sur l'île.",
         "rank.Initiate": "Initié", "rank.Adept": "Adepte", "rank.Expert": "Expert", "rank.Master": "Maître",
         "trial.hit": "Golem d'essai : {damage} dégâts.",
-        "trial.demo": "Le golem d'essai rejoue les attaques des fractales : cercle, cône, ligne, puis la cage.",
+        "trial.demo": "Le golem d'essai rejoue les attaques des fractales : cercle d'agonie, cône, ligne, puis la cage.",
         "trial.busy": "Le golem d'essai est déjà en démonstration.",
         "trial.noGolem": "Le golem d'essai n'est pas là.",
         "command.desc": "Fractales des Brumes : niveau, groupe, lancement et retour.",
@@ -651,6 +754,17 @@ def lang():
         f"items.{TRIAL}.description": "Use: the golem replays the fractal attacks on you.",
         f"items.{EXIT_STONE}.name": "Return Stone",
         f"items.{EXIT_STONE}.description": "Use: back to the Observatory.",
+        f"items.{ALTAR}.name": "Infusion Altar",
+        f"items.{ALTAR}.description": "Use: your 12 infusion slots. Each infusion placed adds its agony resistance, "
+                                      "wherever you are; removing it takes it away.",
+        f"items.{FORGE}.name": "Mist Crucible",
+        f"items.{FORGE}.description": "Fuses two identical infusions into the next one, and remakes a Mist Fragment "
+                                      "from shards.",
+        f"items.{REWARD_CHEST}.name": "Fractal Reward Chest",
+        f"items.{REWARD_CHEST}.description": "Use: your reward (one per group member). Completing a fractal at your "
+                                             "highest level unlocks the next one.",
+        f"items.{COUNTER_BLOCK}.name": "Archivist's Counter",
+        f"items.{COUNTER_BLOCK}.description": "Use: trade Mist Shards for infusions and fragments.",
         f"items.{REGISTRY_BLOCK}.name": "Fractal Registry",
         f"items.{REGISTRY_BLOCK}.description": (
             "Welcome to the Observatory, traveller of the Mists.\n\n"
@@ -659,8 +773,13 @@ def lang():
             "2. The leader sets the level at the Astrolabe dial (crouch to lower it).\n"
             "3. The leader uses an arch stone: the whole circle leaves for that fractal.\n\n"
             "Season 1: Cliffside, Uncategorized, Volcanic, Solid Ocean, Swampland, Snowblind.\n"
-            "The training golem, to the west, lets you test your hits and see the fractal attacks.\n\n"
-            "Fallback command: /fractale (niveau, groupe, lancer, quitter)."),
+            "The training golem, to the west, lets you test your hits, your agony resistance and see the fractal "
+            "attacks.\n"
+            "To the east, the Archivist trades Mist Shards; the Infusion Altar holds your agony resistance and the "
+            "Mist Crucible fuses infusions.\n"
+            "Each fractal completed at your highest level unlocks the next; the leader can only pick a level they "
+            "have unlocked.\n\n"
+            "Fallback command: /fractale (niveau, groupe, lancer, quitter, infos)."),
         "npc.Trial_Golem.name": "Training Golem",
         "observatory.leader": "You lead the Observatory group.",
         "observatory.newLeader": "{name} now leads the group.",
@@ -683,7 +802,7 @@ def lang():
         "observatory.fallRescue": "The Mists carry you back to the island.",
         "rank.Initiate": "Initiate", "rank.Adept": "Adept", "rank.Expert": "Expert", "rank.Master": "Master",
         "trial.hit": "Training golem: {damage} damage.",
-        "trial.demo": "The training golem replays the fractal attacks: circle, cone, line, then the cage.",
+        "trial.demo": "The training golem replays the fractal attacks: agony circle, cone, line, then the cage.",
         "trial.busy": "The training golem is already demonstrating.",
         "trial.noGolem": "The training golem is not here.",
         "command.desc": "Fractals of the Mists: level, group, launch and return.",
@@ -741,6 +860,8 @@ public final class ObservatoryLayout {{
     public static final int[] TRIAL_CAGE = {{{TRIAL_CAGE[0]}, {GROUND_Y + TRIAL_CAGE[1]}, {TRIAL_CAGE[2]}}};
     /** Où revient le joueur à l'ouverture de la cage d'essai (pieds), près du pupitre. */
     public static final double[] TRIAL_RELEASE = {{{TRIAL_PANEL[0] + 1.5}, {float(GROUND_Y + TRIAL_PANEL[1])}, {TRIAL_PANEL[2] + 2.5}}};
+    /** L'Archiviste (pieds), derrière son comptoir, tourné vers l'ouest. */
+    public static final double[] ARCHIVIST = {{{ARCHIVIST_SPOT[0] + 0.5}, {float(ARCHIVIST_SPOT[1])}, {ARCHIVIST_SPOT[2] + 0.5}}};
     /** Pierre de chaque arche (bloc au sol). */
     public static final List<Arch> ARCHES = List.of(
 {rows});
@@ -776,6 +897,13 @@ def main():
         (EXIT_STONE, "Exit_Stone", stone, (190, 160, 255), "exit", "#b9f", "Nakasar_Fractal_Use_Exit"),
         (REGISTRY_BLOCK, "Registry", (90, 60, 40), (210, 190, 150), "book", None, "Nakasar_Fractal_Read_Registry"),
     ]
+    blocks += [
+        (ALTAR, "Infusion_Altar", (60, 50, 100), (200, 140, 255), "altar", "#c8f", "Nakasar_Fractal_Use_Infusion_Altar"),
+        (FORGE, "Mist_Forge", (50, 46, 70), (160, 120, 255), "forge", "#a8f", None),
+        (REWARD_CHEST, "Reward_Chest", (70, 60, 110), (255, 210, 110), "chest", "#fd8", "Nakasar_Fractal_Use_Reward_Chest"),
+        (COUNTER_BLOCK, "Archivist_Counter", (90, 60, 40), (150, 200, 255), "counter", None,
+         "Nakasar_Fractal_Use_Archivist_Counter"),
+    ]
     for fid, _, _, color, *_ in FRACTALS:
         blocks.append((arch_stone(fid), f"Arch_{fid}", stone, color, "arch", short_light(color),
                        f"Nakasar_Fractal_Use_Arch_{fid}"))
@@ -784,9 +912,17 @@ def main():
         img = texture(COMMON / TEXTURES / f"{tex}.png", base, accent, glyph)
         icon(COMMON / ICONS / f"{tex}.png", img)
         previews.append(img)
-        write_json(ITEMS / f"{name}.json", block_item(name, tex, light, use, particle=hexcolor(accent)))
+        if name == FORGE:
+            doc = bench_item(name, tex)
+        else:
+            doc = block_item(name, tex, light, use, particle=hexcolor(accent))
+            if name == ALTAR:
+                doc = portable(doc, name)
+        write_json(ITEMS / f"{name}.json", doc)
     key_tex = texture(COMMON / TEXTURES / "PortalKey_Fractal.png", (40, 50, 110), (150, 200, 255), "ring")
     icon(COMMON / ICONS / "PortalKey_Fractal.png", key_tex)
+    (COMMON / CATEGORY_ICONS).mkdir(parents=True, exist_ok=True)
+    shutil.copyfile(COMMON / ICONS / "PortalKey_Fractal.png", COMMON / CATEGORY_ICONS / "Fragments.png")
     (COMMON / TEXTURES / "PortalKey_Fractal.png").unlink()
 
     write_json(SERVER / "Item/Items/Portal/Nakasar" / f"{KEY}.json", key_item())

@@ -7,7 +7,7 @@ Deux mods, chacun avec son dossier de documentation :
 | Mod | Code | Documentation |
 |-----|------|---------------|
 | **Vampires** : le domaine du Comte vampire (plugin Java + pack d'assets, artefact `Nakasar-Vampires-<version>.jar`) | `mods/nakasar-vampires` | [docs/vampires](docs/vampires/) |
-| **Fractales des Brumes** : les fractales de Guild Wars 2 transposées dans Hytale, pour 1 à 5 joueurs (en cours : socle et Observatoire posés, pas encore de fractale jouable) | `mods/nakasar-fractals` | [docs/fractales](docs/fractales/) |
+| **Fractales des Brumes** : les fractales de Guild Wars 2 transposées dans Hytale, pour 1 à 5 joueurs (en cours : socle, Observatoire et progression posés, pas encore de fractale jouable) | `mods/nakasar-fractals` | [docs/fractales](docs/fractales/) |
 
 Les notes communes aux deux mods (API serveur, PNJ) restent à la racine de `docs/`.
 
@@ -64,11 +64,32 @@ Vide) se pose dans l'Ancienne passerelle et ouvre l'**Observatoire**, une île d
 - La **pierre de retour** (ou `/fractale quitter`) ramène à l'Observatoire, gardé ouvert tant que la fractale vit.
 - Le **golem d'essai** (ouest) annonce les dégâts reçus et reprend ses PV ; son **pupitre** lui fait rejouer les zones
   rouges (cercle, cône, ligne, puis la cage d'essai).
-- `/fractale niveau <n>`, `groupe`, `lancer <fractale>`, `quitter` : secours des blocs, ouvert aux joueurs.
+- `/fractale niveau <n>`, `groupe`, `lancer <fractale>`, `quitter`, `infos` : secours des blocs, ouvert aux joueurs.
 - Un joueur tombé dans le vide revient au point d'apparition du monde.
 
 À vérifier en jeu : textures des blocs, orientation des arches, golem (modèle `Golem_Firesteel` sans flammes), titres
 du cadran, retour depuis l'ébauche de Falaise.
+
+Étape 3 (progression) : `tools/generate_progression.py` (éclats, infusions, coffres de rang, recettes, agonie,
+boutique et PNJ de l'Archiviste, modèles et icônes) et le paquet Java `progress/`.
+
+- **Niveaux débloqués par joueur**, sauvegardés avec lui (composant `Nakasar_Fractal_Progress`) : on commence au
+  niveau 1, finir une fractale à son plus haut niveau débloque le suivant. Le cadran s'arrête au plus haut niveau du
+  meneur ; si un nouveau meneur en a débloqué moins, le niveau redescend.
+- **Agonie** (`Nakasar_Fractal_Agony`, à partir du niveau 26) : 4 %, 6 % puis 8 % des PV max par seconde selon le rang,
+  réduits par la **résistance** jusqu'à zéro à la résistance conseillée (10 à 40 en Adepte, 50 à 100 en Expert, 110 à
+  150 en Maître). Le premier cercle du pupitre d'essai pose de l'agonie au niveau du cadran, pour tester.
+- **Autel des infusions** (portable, recette à l'établi) : ouvre les 12 emplacements d'infusion du joueur ; la somme
+  des infusions posées est sa résistance. Infusions +1 à +15 ; au **Creuset des Brumes** (établi, recette à l'établi),
+  2 × infusion n + 4n éclats donnent l'infusion n+1, et 25 éclats + 1 éclat de rune refont un Fragment des Brumes.
+- **Coffre de fin** : chaque membre du groupe y prend une fois le coffre de son rang (éclats de Brume, matériaux,
+  chance d'infusion), qu'il ouvre en main. Dans l'ébauche de Falaise, il est près de la pierre de retour.
+- **L'Archiviste** (est de l'Observatoire, invulnérable) et son comptoir : troc d'éclats contre infusions +1, +2, +4 et
+  Fragment des Brumes.
+- `/fractale infos` : niveau débloqué et résistance.
+
+À vérifier en jeu : fenêtre de l'autel (glisser une infusion, sauvegarde à la reconnexion), PNJ Archiviste (rôle
+`OpenBarterShop` accepté ? sinon le comptoir), dégâts et message d'agonie, coffre de rang.
 
 ### Notes communes
 

@@ -18,9 +18,11 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.UUID;
 import java.util.WeakHashMap;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * Les parties en cours : une instance de fractale par groupe, ouverte depuis l'Observatoire.
@@ -32,13 +34,14 @@ import java.util.concurrent.CompletableFuture;
  * appelé par {@code HarmonyCircleSystem}). Les Observatoires sont effacés au redémarrage du serveur (mondes de
  * portail) : rien ne reste ouvert pour toujours.
  *
- * <p>La partie (fractale, niveau, membres) est gardée en mémoire par monde : l'étape 3 y lira le niveau (agonie,
- * instabilités). Elle n'est pas sauvegardée : une instance rechargée après un redémarrage repart au niveau 1.
+ * <p>La partie (fractale, niveau, membres, coffres pris) est gardée en mémoire par monde : l'agonie y lit le niveau,
+ * le coffre de fin ses membres. Elle n'est pas sauvegardée : une instance rechargée après un redémarrage n'a plus de
+ * partie (niveau 1, pas de coffre).
  */
 public final class FractalRuns {
 
-    /** Une partie : la fractale, son niveau et les joueurs partis ensemble. */
-    public record Run(String fractal, int level, List<UUID> members) {
+    /** Une partie : la fractale, son niveau, les joueurs partis ensemble et ceux qui ont pris leur coffre. */
+    public record Run(String fractal, int level, List<UUID> members, Set<UUID> claimed) {
     }
 
     private static final Map<World, Run> RUNS = Collections.synchronizedMap(new WeakHashMap<>());
@@ -74,7 +77,7 @@ public final class FractalRuns {
             if (error != null) {
                 FractalsPlugin.get().getLogger().atWarning().withCause(error).log("Fractale %s : instance impossible à ouvrir", fractal);
             } else if (world != null) {
-                RUNS.put(world, new Run(fractal, level, members));
+                RUNS.put(world, new Run(fractal, level, members, ConcurrentHashMap.newKeySet()));
             }
         });
         for (PlayerRef player : players) {

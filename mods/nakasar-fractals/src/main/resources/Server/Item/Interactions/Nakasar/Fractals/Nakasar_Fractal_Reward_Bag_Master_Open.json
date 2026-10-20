@@ -1,0 +1,5 @@
+{
+  "$Comment": "Ouvre le coffre de fractale Master : il est retiré et sa liste de butin donnée.",
+  "Type": "Nakasar_Fractal_OpenBag",
+  "Droplist": "Nakasar_Fractal_Reward_Master"
+}

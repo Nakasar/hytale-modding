@@ -13,7 +13,7 @@ import com.hypixel.hytale.server.core.universe.PlayerRef;
 import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
 import com.hypixel.hytale.server.npc.entities.NPCEntity;
 
-/** Annonce au joueur les dégâts qu'il inflige au golem d'essai ({@link TrialGolemSystem}), après réductions. */
+/** Annonce au joueur les dégâts qu'il inflige au golem d'essai ({@link ObservatoryNpcSystem}), après réductions. */
 public final class TrialHitSystem extends DamageEventSystem {
 
     @Override
@@ -33,7 +33,7 @@ public final class TrialHitSystem extends DamageEventSystem {
             return;
         }
         NPCEntity npc = chunk.getComponent(index, NPCEntity.getComponentType());
-        if (npc == null || !TrialGolemSystem.ROLE.equals(npc.getRoleName())) {
+        if (npc == null || !ObservatoryNpcSystem.ROLE.equals(npc.getRoleName())) {
             return;
         }
         PlayerRef attacker = buffer.getComponent(source.getRef(), PlayerRef.getComponentType());

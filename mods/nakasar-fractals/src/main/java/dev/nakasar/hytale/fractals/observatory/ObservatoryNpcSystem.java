@@ -6,6 +6,7 @@ import com.hypixel.hytale.component.Ref;
 import com.hypixel.hytale.component.Store;
 import com.hypixel.hytale.component.system.tick.TickingSystem;
 import com.hypixel.hytale.math.vector.Rotation3f;
+import com.hypixel.hytale.server.core.modules.entity.component.Invulnerable;
 import com.hypixel.hytale.server.core.modules.entitystats.EntityStatMap;
 import com.hypixel.hytale.server.core.modules.entitystats.EntityStatValue;
 import com.hypixel.hytale.server.core.modules.entitystats.asset.DefaultEntityStatTypes;
@@ -25,13 +26,19 @@ import java.util.Map;
 import java.util.WeakHashMap;
 
 /**
- * Golem d'essai de l'Observatoire ({@value #ROLE}) : posé à {@link ObservatoryLayout#GOLEM} quand un joueur est là et
- * qu'il manque, jamais sauvegardé (l'instance le repose à chaque chargement). Il ne riposte pas ; ses PV remontent
- * au maximum toutes les deux secondes. Les dégâts reçus sont annoncés au joueur par {@link TrialHitSystem}.
+ * PNJ de l'Observatoire, posés quand un joueur est là et qu'ils manquent, jamais sauvegardés (l'instance les repose à
+ * chaque chargement) :
+ * <ul>
+ *   <li>le golem d'essai ({@value #ROLE}) à {@link ObservatoryLayout#GOLEM} : il ne riposte pas, ses PV remontent au
+ *       maximum toutes les deux secondes ; les dégâts reçus sont annoncés au joueur par {@link TrialHitSystem} ;</li>
+ *   <li>l'Archiviste ({@value #ARCHIVIST}) à {@link ObservatoryLayout#ARCHIVIST}, derrière son comptoir :
+ *       invulnérable, il ouvre sa boutique de troc quand on lui parle.</li>
+ * </ul>
  */
-public final class TrialGolemSystem extends TickingSystem<EntityStore> {
+public final class ObservatoryNpcSystem extends TickingSystem<EntityStore> {
 
     public static final String ROLE = "Nakasar_Fractal_Trial_Golem";
+    public static final String ARCHIVIST = "Nakasar_Fractal_Archivist";
     private static final float INTERVAL = 2f;
     /** Temps écoulé depuis le dernier passage, par monde. */
     private static final Map<World, float[]> ELAPSED = Collections.synchronizedMap(new WeakHashMap<>());
@@ -56,9 +63,15 @@ public final class TrialGolemSystem extends TickingSystem<EntityStore> {
             return;
         }
         Store<EntityStore> store = world.getEntityStore().getStore();
+        if (find(store, ARCHIVIST) == null) {
+            Ref<EntityStore> archivist = spawn(store, ARCHIVIST, ObservatoryLayout.ARCHIVIST);
+            if (archivist != null) {
+                store.ensureAndGetComponent(archivist, Invulnerable.getComponentType());
+            }
+        }
         Ref<EntityStore> golem = find(store);
         if (golem == null) {
-            spawn(store);
+            spawn(store, ROLE, ObservatoryLayout.GOLEM);
             return;
         }
         EntityStatMap stats = store.getComponent(golem, EntityStatMap.getComponentType());
@@ -70,11 +83,16 @@ public final class TrialGolemSystem extends TickingSystem<EntityStore> {
 
     /** Golem d'essai du monde, ou null. */
     public static Ref<EntityStore> find(Store<EntityStore> store) {
+        return find(store, ROLE);
+    }
+
+    /** PNJ de rôle `role` du monde, ou null. */
+    static Ref<EntityStore> find(Store<EntityStore> store, String role) {
         Ref<EntityStore>[] found = new Ref[1];
         store.forEachChunk(NPCEntity.getComponentType(), (ArchetypeChunk<EntityStore> chunk, CommandBuffer<EntityStore> buffer) -> {
             for (int i = 0; i < chunk.size() && found[0] == null; i++) {
                 NPCEntity npc = chunk.getComponent(i, NPCEntity.getComponentType());
-                if (npc != null && ROLE.equals(npc.getRoleName())) {
+                if (npc != null && role.equals(npc.getRoleName())) {
                     found[0] = chunk.getReferenceTo(i);
                 }
             }
@@ -82,16 +100,16 @@ public final class TrialGolemSystem extends TickingSystem<EntityStore> {
         return found[0];
     }
 
-    private static void spawn(Store<EntityStore> store) {
-        double[] at = ObservatoryLayout.GOLEM;
+    private static Ref<EntityStore> spawn(Store<EntityStore> store, String role, double[] at) {
         Vector3d position = new Vector3d(at[0], at[1], at[2]);
-        // Face au pupitre et à l'Astrolabe (vers l'est).
+        // Face à l'Astrolabe : le golem vers l'est (son pupitre), l'Archiviste vers l'ouest (son comptoir).
         Rotation3f rotation = new Rotation3f(0f, Telegraphs.yawToward(position, new Vector3d(0.5, at[1], at[2])), 0f);
-        Pair<Ref<EntityStore>, INonPlayerCharacter> spawned = NPCPlugin.get().spawnNPC(store, ROLE, null, position, rotation);
+        Pair<Ref<EntityStore>, INonPlayerCharacter> spawned = NPCPlugin.get().spawnNPC(store, role, null, position, rotation);
         if (spawned == null || spawned.first() == null) {
-            FractalsPlugin.get().getLogger().atWarning().log("Observatoire : impossible de faire apparaître '%s'", ROLE);
-            return;
+            FractalsPlugin.get().getLogger().atWarning().log("Observatoire : impossible de faire apparaître '%s'", role);
+            return null;
         }
         store.ensureAndGetComponent(spawned.first(), EntityStore.REGISTRY.getNonSerializedComponentType());
+        return spawned.first();
     }
 }

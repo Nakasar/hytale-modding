@@ -101,6 +101,7 @@ public final class HarmonyCircleSystem extends TickingSystem<EntityStore> {
         if (next == null) {
             return;
         }
+        Observatory.clampToLeader(world, state);
         String name = Observatory.nameOf(world, next);
         for (PlayerRef player : world.getPlayerRefs()) {
             player.sendMessage(next.equals(player.getUuid())

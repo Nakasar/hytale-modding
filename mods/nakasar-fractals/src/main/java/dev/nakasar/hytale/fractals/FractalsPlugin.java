@@ -19,12 +19,18 @@ import dev.nakasar.hytale.fractals.observatory.HarmonyCircleSystem;
 import dev.nakasar.hytale.fractals.observatory.LeaveInteraction;
 import dev.nakasar.hytale.fractals.observatory.Observatory;
 import dev.nakasar.hytale.fractals.observatory.OpenArchInteraction;
+import dev.nakasar.hytale.fractals.observatory.OpenShopInteraction;
 import dev.nakasar.hytale.fractals.observatory.TrialDemoInteraction;
-import dev.nakasar.hytale.fractals.observatory.TrialGolemSystem;
+import dev.nakasar.hytale.fractals.observatory.ObservatoryNpcSystem;
 import dev.nakasar.hytale.fractals.observatory.TrialHitSystem;
+import dev.nakasar.hytale.fractals.party.ClaimRewardInteraction;
 import dev.nakasar.hytale.fractals.party.FallRescueSystem;
 import dev.nakasar.hytale.fractals.party.FractalRuns;
 import dev.nakasar.hytale.fractals.prison.CagePlayerInteraction;
+import dev.nakasar.hytale.fractals.progress.AgonySystem;
+import dev.nakasar.hytale.fractals.progress.FractalProgress;
+import dev.nakasar.hytale.fractals.progress.OpenBagInteraction;
+import dev.nakasar.hytale.fractals.progress.OpenInfusionsInteraction;
 
 /**
  * Point d'entrée du mod « Fractales des Brumes » : les fractales de Guild Wars 2 portées dans Hytale, pour des groupes
@@ -48,8 +54,13 @@ import dev.nakasar.hytale.fractals.prison.CagePlayerInteraction;
  * <p>Étape 2, l'entrée : le Fragment des Brumes ouvre l'Observatoire ({@code observatory}), où le cercle
  * d'harmonisation ({@link HarmonyCircleSystem}) forme le groupe, le cadran de l'Astrolabe ({@code Nakasar_Fractal_Dial})
  * règle le niveau et les arches ({@code Nakasar_Fractal_OpenArch}) ouvrent une instance par groupe ({@link FractalRuns}) ;
- * la pierre de retour ({@code Nakasar_Fractal_Leave}) y ramène. Golem d'essai ({@link TrialGolemSystem}) et son pupitre
+ * la pierre de retour ({@code Nakasar_Fractal_Leave}) y ramène. Golem d'essai ({@link ObservatoryNpcSystem}) et son pupitre
  * ({@code Nakasar_Fractal_TrialDemo}), filet anti-chute ({@link FallRescueSystem}), commande {@code /fractale}.
+ *
+ * <p>Étape 3, la progression ({@code progress}) : niveau débloqué et emplacements d'infusion sauvegardés avec le joueur
+ * ({@link FractalProgress}), Autel des infusions ({@code Nakasar_Fractal_OpenInfusions}), agonie ({@link AgonySystem}),
+ * coffre de fin par joueur ({@code Nakasar_Fractal_ClaimReward}) et coffres de rang ({@code Nakasar_Fractal_OpenBag}),
+ * boutique de l'Archiviste ({@code Nakasar_Fractal_OpenShop}, et le PNJ posé par {@link ObservatoryNpcSystem}).
  */
 public final class FractalsPlugin extends JavaPlugin {
 
@@ -77,24 +88,32 @@ public final class FractalsPlugin extends JavaPlugin {
         interactions.register(OpenArchInteraction.TYPE_ID, OpenArchInteraction.class, OpenArchInteraction.CODEC);
         interactions.register(LeaveInteraction.TYPE_ID, LeaveInteraction.class, LeaveInteraction.CODEC);
         interactions.register(TrialDemoInteraction.TYPE_ID, TrialDemoInteraction.class, TrialDemoInteraction.CODEC);
+        interactions.register(OpenInfusionsInteraction.TYPE_ID, OpenInfusionsInteraction.class, OpenInfusionsInteraction.CODEC);
+        interactions.register(OpenBagInteraction.TYPE_ID, OpenBagInteraction.class, OpenBagInteraction.CODEC);
+        interactions.register(ClaimRewardInteraction.TYPE_ID, ClaimRewardInteraction.class, ClaimRewardInteraction.CODEC);
+        interactions.register(OpenShopInteraction.TYPE_ID, OpenShopInteraction.class, OpenShopInteraction.CODEC);
 
         var systems = getEntityStoreRegistry();
+        FractalProgress.setComponentType(systems.registerComponent(FractalProgress.class, FractalProgress.ID, FractalProgress.CODEC));
         systems.registerSystem(new TelegraphSystem());
         systems.registerSystem(new BossStun.Unload());
         systems.registerSystem(new MinionShieldSystem());
         systems.registerSystem(new ShieldUnloadSystem());
         systems.registerSystem(new BossBarSystem());
         systems.registerSystem(new HarmonyCircleSystem());
-        systems.registerSystem(new TrialGolemSystem());
+        systems.registerSystem(new ObservatoryNpcSystem());
         systems.registerSystem(new TrialHitSystem());
         systems.registerSystem(new FallRescueSystem());
+        systems.registerSystem(new AgonySystem());
 
         getCommandRegistry().registerCommand(new FractalCommand());
 
-        getLogger().atInfo().log("Nakasar Fractales : 9 types d'interaction (%s, %s, %s, %s, %s, %s, %s, %s, %s), systèmes et /fractale enregistrés",
+        getLogger().atInfo().log("Nakasar Fractales : 13 types d'interaction (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s), progression, systèmes et /fractale enregistrés",
                 TelegraphInteraction.TYPE_ID, ChargeInteraction.TYPE_ID, StunSelfInteraction.TYPE_ID,
                 SummonMinionsInteraction.TYPE_ID, CagePlayerInteraction.TYPE_ID, DialInteraction.TYPE_ID,
-                OpenArchInteraction.TYPE_ID, LeaveInteraction.TYPE_ID, TrialDemoInteraction.TYPE_ID);
+                OpenArchInteraction.TYPE_ID, LeaveInteraction.TYPE_ID, TrialDemoInteraction.TYPE_ID,
+                OpenInfusionsInteraction.TYPE_ID, OpenBagInteraction.TYPE_ID, ClaimRewardInteraction.TYPE_ID,
+                OpenShopInteraction.TYPE_ID);
     }
 
     @Override
@@ -105,5 +124,6 @@ public final class FractalsPlugin extends JavaPlugin {
         BossBarSystem.clearAll();
         Observatory.clearAll();
         FractalRuns.clearAll();
+        AgonySystem.clearAll();
     }
 }

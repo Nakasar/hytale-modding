@@ -220,7 +220,16 @@ public class TelegraphInteraction extends SimpleInstantInteraction {
      */
     public static void demo(World world, Ref<EntityStore> caster, Ref<EntityStore> target, Vector3d center, double facing,
                             String shape, float size, float seconds, float delay, float knockback, boolean imprison) {
+        demo(world, caster, target, center, facing, shape, size, seconds, delay, knockback, imprison, null, 0f);
+    }
+
+    /** Comme {@link #demo(World, Ref, Ref, Vector3d, double, String, float, float, float, float, boolean)}, l'effet {@code effectId} en plus sur qui est touché. */
+    public static void demo(World world, Ref<EntityStore> caster, Ref<EntityStore> target, Vector3d center, double facing,
+                            String shape, float size, float seconds, float delay, float knockback, boolean imprison,
+                            String effectId, float effectDuration) {
         TelegraphInteraction config = new TelegraphInteraction();
+        config.effectId = effectId;
+        config.effectDuration = effectDuration;
         config.shape = shape;
         config.radius = size;
         config.length = size;

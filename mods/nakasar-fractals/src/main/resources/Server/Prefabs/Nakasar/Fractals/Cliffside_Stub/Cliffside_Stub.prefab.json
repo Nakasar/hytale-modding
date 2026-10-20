@@ -1741,6 +1741,7 @@
     {"x":7,"y":0,"z":-5,"name":"Rock_Quartzite_Brick"},
     {"x":8,"y":0,"z":-5,"name":"Rock_Quartzite_Brick_Pillar_Base"},
     {"x":-8,"y":0,"z":-4,"name":"Rock_Quartzite_Brick"},
+    {"x":2,"y":0,"z":-4,"name":"Nakasar_Fractal_Reward_Chest"},
     {"x":8,"y":0,"z":-4,"name":"Rock_Quartzite_Brick"},
     {"x":-9,"y":0,"z":-3,"name":"Rock_Quartzite_Brick"},
     {"x":-8,"y":0,"z":-3,"name":"Rock_Quartzite_Brick"},

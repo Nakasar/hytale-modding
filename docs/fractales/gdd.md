@@ -334,9 +334,9 @@ Neuf étapes, chacune livrable en une PR testable en jeu ; les étapes 1 à 4 do
    - [x] Observatoire : île, Astrolabe, cercle, 6 arches, golem d'essai et son pupitre, filet de chute (`FallRescueSystem`). L'Archiviste attend la monnaie (étape 3) : un Registre lisible tient sa place
    - [x] Gestionnaire de partie (`party/FractalRuns`, `observatory/Observatory`) : cercle d'harmonisation (5 max), cadran de niveau, une instance par groupe, retour au hub (gardé ouvert pendant la partie), commande `/fractale`. Ébauche de Falaise (île + pierre de retour) pour tester l'aller-retour
 3. **Systèmes de progression**
-   - [ ] Niveaux 1-100 et déblocage par joueur (sauvegardés dans le dossier de données du plugin)
-   - [ ] Agonie (effet + système), Autel des infusions (12 emplacements sur le joueur, fenêtre de conteneur), infusions +1 à +15 et leur fusion
-   - [ ] Coffre par joueur, éclats de Brume, marchand
+   - [x] Niveaux 1-100 et déblocage par joueur (sauvegardés avec le joueur, composant `Nakasar_Fractal_Progress`) ; cadran plafonné au niveau du meneur
+   - [x] Agonie (effet + `AgonySystem`), Autel des infusions (12 emplacements sur le joueur, fenêtre de conteneur), infusions +1 à +15 et leur fusion au Creuset des Brumes (`tools/generate_progression.py`)
+   - [x] Coffre par joueur (coffre de rang à ouvrir en main), éclats de Brume, l'Archiviste (PNJ et comptoir, boutique de troc). Les fractales du jour restent à l'étape 9
 4. **Briques de la Falaise + Falaise**
    - [ ] Puzzles de saut : chute vers la dernière plateforme sûre, souffle des gargouilles, explosifs qui projettent, leviers qui coupent un piège
    - [ ] Marteau du culte : objet porté, piles de Corruption, charge Brise-sceau, sceaux et bulle alternée

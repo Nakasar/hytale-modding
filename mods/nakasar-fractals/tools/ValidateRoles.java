@@ -71,6 +71,8 @@ public class ValidateRoles {
     // Les InteractionVars des rôles déclarent des interactions en ligne : leur magasin doit exister pour les décoder.
     reg("com.hypixel.hytale.server.core.modules.interaction.interaction.config.Interaction");
     reg("com.hypixel.hytale.server.core.modules.interaction.interaction.config.RootInteraction");
+    // Boutiques de troc (action OpenBarterShop) : un magasin vide, la boutique citée est vérifiée comme référence.
+    reg("com.hypixel.hytale.builtin.adventure.shop.barter.BarterShopAsset");
     mod("com.hypixel.hytale.server.core.modules.entity.EntityModule");
     NPCPlugin p = (NPCPlugin) u.allocateInstance(NPCPlugin.class);
     BuilderManager bm = new BuilderManager();
@@ -80,6 +82,9 @@ public class ValidateRoles {
     u.putObject(p, u.objectFieldOffset(lg), com.hypixel.hytale.logger.HytaleLogger.get("NPC"));
     Field pi = NPCPlugin.class.getDeclaredField("instance"); pi.setAccessible(true); pi.set(null, p);
     try { p.setupNPCLoading(); } catch (NullPointerException expected) { /* lit la config du plugin après l'enregistrement des briques */ }
+    // Briques ajoutées par le plugin intégré NPCShop (marchands) : l'Archiviste ouvre sa boutique de troc.
+    p.registerCoreComponentType("OpenShop", com.hypixel.hytale.builtin.adventure.npcshop.npc.builders.BuilderActionOpenShop::new);
+    p.registerCoreComponentType("OpenBarterShop", com.hypixel.hytale.builtin.adventure.npcshop.npc.builders.BuilderActionOpenBarterShop::new);
     if (a[0].equals("--descriptors")) {
       writeDescriptors(bm, Path.of(a[1]));
       return;

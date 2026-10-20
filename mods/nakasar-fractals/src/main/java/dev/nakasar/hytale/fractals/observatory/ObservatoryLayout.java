@@ -22,6 +22,8 @@ public final class ObservatoryLayout {
     public static final int[] TRIAL_CAGE = {-24, 100, 14};
     /** Où revient le joueur à l'ouverture de la cage d'essai (pieds), près du pupitre. */
     public static final double[] TRIAL_RELEASE = {-13.5, 100.0, 9.5};
+    /** L'Archiviste (pieds), derrière son comptoir, tourné vers l'ouest. */
+    public static final double[] ARCHIVIST = {18.5, 100.0, 11.5};
     /** Pierre de chaque arche (bloc au sol). */
     public static final List<Arch> ARCHES = List.of(
             new Arch("Cliffside", -21, 4),
