@@ -79,8 +79,10 @@ const sidebars = {
     "objets/feu-purificateur",
     "objets/cle-du-comte",
     "objets/blocs-decoratifs",
+    "objets/tenues",
     "effets",
   ],
+  donjons: ["donjons/README", "donjons/tour-de-l-alchimiste"],
 };
 
 export default sidebars;

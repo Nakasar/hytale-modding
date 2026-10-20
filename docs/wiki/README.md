@@ -6,6 +6,7 @@
 <Info label="Accès">[Brèches des chasseurs](breches.md) ou [clé de portail](objets/cle-du-comte.md)</Info>
 <Info label="Structures">**10**, plus le [décor](fragment/decor.md)</Info>
 <Info label="Bestiaire">**2** boss, **5** élites, **10** créatures, **3** chasseurs</Info>
+<Info label="Donjons">**1** : [Tour de l'Alchimiste](donjons/tour-de-l-alchimiste.md)</Info>
 <Info label="Runes">**7** [runes de capacité](objets/runes.md)</Info>
 </Infobox>
 
@@ -31,6 +32,12 @@ Guide du joueur pour le mod **Nakasar : Vampires** (Hytale, serveur 0.7.2) : un 
 ## Brèches des chasseurs
 
 [Brèches des chasseurs](breches.md) : la nuit, une faille s'ouvre près de vous, gardée par des chasseurs de vampires, et mène au Comté.
+
+## Donjons
+
+[Les donjons](donjons/README.md) : des fragments de groupe sans limite de temps, avec pièges, énigmes, boss et butin final.
+
+- [Tour de l'Alchimiste](donjons/tour-de-l-alchimiste.md) : un archipel puis une tour de 220 blocs ; Codex vivant, Chimère du laboratoire et l'Alchimiste, sacoches, pierre philosophale et potions des trois principes.
 
 ## Objets
 
