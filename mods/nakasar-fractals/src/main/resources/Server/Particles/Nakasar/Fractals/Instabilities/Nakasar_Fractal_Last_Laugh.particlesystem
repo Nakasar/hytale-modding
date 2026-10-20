@@ -1,0 +1,12 @@
+{
+  "$Comment": "Dernier rire : étincelles orange qui grésillent sur l'ennemi qui va exploser. Généré par tools/generate_instabilities.py.",
+  "Spawners": [
+    {
+      "SpawnerId": "Nakasar_Fractal_Last_Laugh_Fuse",
+      "PositionOffset": {
+        "Y": 0.2
+      }
+    }
+  ],
+  "CullDistance": 64
+}

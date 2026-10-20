@@ -1,0 +1,12 @@
+{
+  "$Comment": "Harcelé par les harpies (à moins de 14 blocs de l'une d'elles) : un peu plus lent.",
+  "Name": "nakasar_fractals_uncategorized.effects.Nakasar_Fractal_Harried",
+  "Debuff": true,
+  "StatusEffectIcon": "UI/StatusEffects/Nakasar/Fractals/Harried.png",
+  "ApplicationEffects": {
+    "HorizontalSpeedMultiplier": 0.8
+  },
+  "OverlapBehavior": "Overwrite",
+  "Infinite": false,
+  "Duration": 1.5
+}

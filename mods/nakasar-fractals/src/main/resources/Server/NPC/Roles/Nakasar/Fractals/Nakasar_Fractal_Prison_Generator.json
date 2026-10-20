@@ -1,0 +1,38 @@
+{
+  "$Comment": "Générateur de la prison : tant qu'il tient, les cellules restent closes. Barre de boss. Généré par tools/generate_uncategorized.py.",
+  "Type": "Generic",
+  "Appearance": "Nakasar_Fractal_Prison_Generator",
+  "NameTranslationKey": "nakasar_fractals_uncategorized.npc.Prison_Generator.name",
+  "MaxHealth": 600,
+  "StartState": "Idle",
+  "DefaultPlayerAttitude": "Hostile",
+  "DefaultNPCAttitude": "Ignore",
+  "MotionControllerList": [
+    {
+      "Type": "Walk",
+      "MaxWalkSpeed": 0.1,
+      "Gravity": 10,
+      "MaxFallSpeed": 10,
+      "Acceleration": 10,
+      "JumpHeight": 1.0
+    }
+  ],
+  "KnockbackScale": 0,
+  "SpawnLockTime": 0.2,
+  "Instructions": [
+    {
+      "Sensor": {
+        "Type": "State",
+        "State": "Idle"
+      },
+      "Instructions": [
+        {
+          "Actions": []
+        }
+      ]
+    }
+  ],
+  "DisableDamageGroups": [
+    "Nakasar_Fractal_Foes"
+  ]
+}

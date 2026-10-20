@@ -1,0 +1,12 @@
+{
+  "$Comment": "Orbe de l'Asura fou : boule violette qui suit sa cible. Généré par tools/generate_uncategorized.py.",
+  "Spawners": [
+    {
+      "SpawnerId": "Nakasar_Fractal_Asura_Orb_Core",
+      "PositionOffset": {
+        "Y": 0.0
+      }
+    }
+  ],
+  "CullDistance": 72
+}

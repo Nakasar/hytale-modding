@@ -18,9 +18,7 @@ import com.hypixel.hytale.server.core.universe.PlayerRef;
 import com.hypixel.hytale.server.core.universe.world.World;
 import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
 import com.hypixel.hytale.server.npc.entities.NPCEntity;
-import dev.nakasar.hytale.fractals.combat.Foes;
 import dev.nakasar.hytale.fractals.hammer.Hammer;
-import dev.nakasar.hytale.fractals.party.FractalRuns;
 
 import java.util.Set;
 
@@ -32,8 +30,8 @@ import java.util.Set;
  *   <li>l'Archidevin : seuils de vie, transitions et mur anti-projectiles ({@link Archdiviner#filter}) ;</li>
  *   <li>un joueur à {@value #WEAK_STACKS} charges de Corruption ou plus ne fait que {@value #WEAK_FACTOR} de ses
  *   dégâts ;</li>
- *   <li>les ennemis des fractales frappent plus fort avec le niveau (× (1 + niveau / 150)), ×1,3 de plus pour
- *   l'Archidevin en forme démoniaque.</li>
+ *   <li>l'Archidevin en forme démoniaque frappe × 1,3 (le niveau, lui, est compté par
+ *   {@link dev.nakasar.hytale.fractals.stage.StageDamageFilter}).</li>
  * </ul>
  */
 public final class CliffsideDamageFilter extends DamageEventSystem {
@@ -98,13 +96,11 @@ public final class CliffsideDamageFilter extends DamageEventSystem {
         if (player != null && Hammer.stacks(player.getUuid()) >= WEAK_STACKS) {
             damage.setAmount(damage.getAmount() * WEAK_FACTOR);
         }
-        if (buffer.getComponent(victim, PlayerRef.getComponentType()) != null && Foes.inGroup(attacker, buffer)) {
-            float factor = 1f + FractalRuns.level(world) / 150f;
+        if (buffer.getComponent(victim, PlayerRef.getComponentType()) != null) {
             NPCEntity source = buffer.getComponent(attacker, NPCEntity.getComponentType());
             if (source != null && Archdiviner.ROLE.equals(source.getRoleName()) && Cliffside.state(world).boss.demon) {
-                factor *= DEMON_FACTOR;
+                damage.setAmount(damage.getAmount() * DEMON_FACTOR);
             }
-            damage.setAmount(damage.getAmount() * factor);
         }
     }
 }

@@ -9,6 +9,7 @@ import com.hypixel.hytale.server.core.universe.PlayerRef;
 import com.hypixel.hytale.server.core.universe.world.World;
 import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
 import dev.nakasar.hytale.fractals.arena.WorldBlocks;
+import dev.nakasar.hytale.fractals.combat.Delayed;
 import dev.nakasar.hytale.fractals.combat.Hurt;
 import dev.nakasar.hytale.fractals.combat.TelegraphSystem;
 import dev.nakasar.hytale.fractals.combat.Telegraphs;
@@ -188,7 +189,7 @@ final class Traps {
             double[] f = CliffsideLayout.FIRES[i];
             Vector3d center = new Vector3d(f[0], f[1], f[2]);
             Telegraphs.circle(store, center, CliffsideLayout.FIRE_RADIUS, warning);
-            later(world, warning, s -> {
+            Delayed.later(world, warning, s -> {
                 Telegraphs.particle(s, "Fire_AoE", center, 1.4f);
                 Telegraphs.sound(s, "SFX_Emit_Goblin_Flame_Quadrant_Blast", center);
                 for (PlayerRef player : world.getPlayerRefs()) {
@@ -202,21 +203,6 @@ final class Traps {
                 }
             });
         }
-    }
-
-    /** Lance `action` dans `seconds` secondes sur le thread du monde. */
-    static void later(World world, float seconds, java.util.function.Consumer<Store<EntityStore>> action) {
-        long[] due = {-1};
-        TelegraphSystem.start(world, (w, s, now) -> {
-            if (due[0] < 0) {
-                due[0] = now + Telegraphs.seconds(seconds);
-            }
-            if (now < due[0]) {
-                return false;
-            }
-            action.accept(s);
-            return true;
-        });
     }
 
     // --- bombes -----------------------------------------------------------------------------------------

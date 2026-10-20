@@ -18,6 +18,7 @@ import com.hypixel.hytale.server.core.util.EventTitleUtil;
 import dev.nakasar.hytale.fractals.arena.WorldBlocks;
 import dev.nakasar.hytale.fractals.boss.GroupHealth;
 import dev.nakasar.hytale.fractals.combat.BossStun;
+import dev.nakasar.hytale.fractals.combat.Delayed;
 import dev.nakasar.hytale.fractals.combat.Hurt;
 import dev.nakasar.hytale.fractals.combat.TelegraphInteraction;
 import dev.nakasar.hytale.fractals.combat.Telegraphs;
@@ -404,7 +405,7 @@ final class Archdiviner {
             double radius = 2 + level / 50.0;
             float seconds = 2.2f * wf;
             Telegraphs.circle(store, center, radius, seconds);
-            Traps.later(world, seconds, s -> {
+            Delayed.later(world, seconds, s -> {
                 Vector3d now = Telegraphs.position(s, r);
                 if (now != null && !victory && Telegraphs.horizontal(now, center) <= radius && Math.abs(now.y() - center.y()) <= 2.5) {
                     if (st.cages.imprison(world, s, r, target)) {

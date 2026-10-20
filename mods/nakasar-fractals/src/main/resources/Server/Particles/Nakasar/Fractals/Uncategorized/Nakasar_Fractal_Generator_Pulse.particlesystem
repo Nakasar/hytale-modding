@@ -1,0 +1,12 @@
+{
+  "$Comment": "Générateur de la prison : pulsation bleue. Généré par tools/generate_uncategorized.py.",
+  "Spawners": [
+    {
+      "SpawnerId": "Nakasar_Fractal_Generator_Pulse_Pulse",
+      "PositionOffset": {
+        "Y": 0.4
+      }
+    }
+  ],
+  "CullDistance": 72
+}

@@ -1,0 +1,8 @@
+{
+  "$Comment": "Golem de cristal de l'Asura : le golem de cristal vanilla.",
+  "Parent": "Golem_Crystal_Thunder",
+  "Light": {
+    "Color": "#f6c",
+    "Radius": 3
+  }
+}

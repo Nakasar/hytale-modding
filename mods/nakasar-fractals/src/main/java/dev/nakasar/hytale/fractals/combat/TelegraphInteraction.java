@@ -32,6 +32,8 @@ import com.hypixel.hytale.server.npc.entities.NPCEntity;
 import com.hypixel.hytale.server.npc.role.support.MarkedEntitySupport;
 import dev.nakasar.hytale.fractals.FractalsPlugin;
 import dev.nakasar.hytale.fractals.arena.WorldBlocks;
+import dev.nakasar.hytale.fractals.party.FractalRuns;
+import dev.nakasar.hytale.fractals.progress.Agony;
 import dev.nakasar.hytale.fractals.prison.CagePlayerInteraction;
 import org.joml.Vector3d;
 
@@ -73,6 +75,13 @@ import java.util.concurrent.ThreadLocalRandom;
  * touchés.
  *
  * <p>{@code Delay} : la zone n'apparaît qu'au bout de ce nombre de secondes.
+ *
+ * <p>Ajouts de l'étape 6 : {@code KnockbackMinLevel} (la projection ne joue qu'à partir de ce niveau de fractale :
+ * harpies de l'Inclassable), {@code AgonySeconds} (agonie posée sur les joueurs touchés, {@code progress.Agony}),
+ * {@code Bounces} et {@code BounceRange} (le coup rebondit sur le joueur le plus proche du dernier touché, pas encore
+ * touché, avec la même zone : éclair de Vieux Tom), {@code KnockbackNeedsGround} (pas de projection sans sol derrière
+ * la victime : dos au vide, la harpie ne fait pas tomber, comme dans GW2), et le centre {@code Scatter} ({@code Count}
+ * zones au hasard autour du lanceur, entre {@code OffsetMin} et {@code OffsetMax} blocs : rafale de Vieux Tom).
  */
 public class TelegraphInteraction extends SimpleInstantInteraction {
 
@@ -110,6 +119,12 @@ public class TelegraphInteraction extends SimpleInstantInteraction {
             .append(new KeyedCodec<>("MarkParticleScale", Codec.FLOAT), (i, v) -> i.markScale = v, i -> i.markScale).add()
             .append(new KeyedCodec<>("MarkInterval", Codec.FLOAT), (i, v) -> i.markInterval = v, i -> i.markInterval).add()
             .append(new KeyedCodec<>("MarkHeight", Codec.FLOAT), (i, v) -> i.markHeight = v, i -> i.markHeight).add()
+            .append(new KeyedCodec<>("KnockbackMinLevel", Codec.INTEGER), (i, v) -> i.knockbackMinLevel = v, i -> i.knockbackMinLevel).add()
+            .append(new KeyedCodec<>("AgonySeconds", Codec.FLOAT), (i, v) -> i.agonySeconds = v, i -> i.agonySeconds).add()
+            .append(new KeyedCodec<>("Bounces", Codec.INTEGER), (i, v) -> i.bounces = v, i -> i.bounces).add()
+            .append(new KeyedCodec<>("BounceRange", Codec.FLOAT), (i, v) -> i.bounceRange = v, i -> i.bounceRange).add()
+            .append(new KeyedCodec<>("KnockbackNeedsGround", Codec.BOOLEAN), (i, v) -> i.needsGround = v, i -> i.needsGround).add()
+            .append(new KeyedCodec<>("Count", Codec.INTEGER), (i, v) -> i.count = v, i -> i.count).add()
             .build();
 
     /** Rayon de recherche du joueur le plus éloigné ({@code Farthest}). */
@@ -144,6 +159,12 @@ public class TelegraphInteraction extends SimpleInstantInteraction {
     protected float markScale = 1f;
     protected float markInterval = 0.4f;
     protected float markHeight = 2.6f;
+    protected int knockbackMinLevel = 0;
+    protected float agonySeconds = 0f;
+    protected int bounces = 0;
+    protected float bounceRange = 10f;
+    protected boolean needsGround = false;
+    protected int count = 6;
 
     public TelegraphInteraction() {
     }
@@ -175,6 +196,18 @@ public class TelegraphInteraction extends SimpleInstantInteraction {
                 if (at != null && Telegraphs.horizontal(at, self) <= SEARCH_RADIUS && Math.abs(at.y() - self.y()) <= 8) {
                     TelegraphSystem.start(world, new Strike(this, caster, ref, new Vector3d(at), 0.0));
                 }
+            }
+            return;
+        }
+        if ("Scatter".equals(anchor)) {
+            // `count` zones au hasard autour du lanceur.
+            ThreadLocalRandom random = ThreadLocalRandom.current();
+            for (int k = 0; k < count; k++) {
+                double a = random.nextDouble(Math.PI * 2);
+                double d = random.nextDouble(offsetMin, Math.max(offsetMin + 0.01, offsetMax));
+                Vector3d at = new Vector3d(self).add(Math.cos(a) * d, 0, Math.sin(a) * d);
+                at.y = ground(chunks, at, self.y());
+                TelegraphSystem.start(world, new Strike(this, caster, target, at, a));
             }
             return;
         }
@@ -316,6 +349,64 @@ public class TelegraphInteraction extends SimpleInstantInteraction {
         return this;
     }
 
+    /** Ligne de `length` × `width` blocs (forme {@code Line}). */
+    public TelegraphInteraction line(float length, float width) {
+        this.length = length;
+        this.width = width;
+        return this;
+    }
+
+    /** Agonie posée pendant `seconds` s sur les joueurs touchés. */
+    public TelegraphInteraction agony(float seconds) {
+        agonySeconds = seconds;
+        return this;
+    }
+
+    /** La projection ne joue qu'à partir du niveau `level`. */
+    public TelegraphInteraction knockbackFrom(int level) {
+        knockbackMinLevel = level;
+        return this;
+    }
+
+    public TelegraphInteraction bounces(int count, float range) {
+        bounces = count;
+        bounceRange = range;
+        return this;
+    }
+
+    /** Copie de la configuration (rebonds). */
+    private TelegraphInteraction copy() {
+        TelegraphInteraction c = new TelegraphInteraction();
+        c.shape = shape;
+        c.anchor = anchor;
+        c.radius = radius;
+        c.angle = angle;
+        c.length = length;
+        c.width = width;
+        c.seconds = seconds;
+        c.damage = damage;
+        c.damageCause = damageCause;
+        c.knockback = knockback;
+        c.knockUp = knockUp;
+        c.effectId = effectId;
+        c.effectDuration = effectDuration;
+        c.playersOnly = playersOnly;
+        c.cover = cover;
+        c.hitParticle = hitParticle;
+        c.impactParticle = impactParticle;
+        c.impactScale = impactScale;
+        c.impactSound = impactSound;
+        c.markParticle = markParticle;
+        c.markScale = markScale;
+        c.markInterval = markInterval;
+        c.markHeight = markHeight;
+        c.knockbackMinLevel = knockbackMinLevel;
+        c.agonySeconds = agonySeconds;
+        c.bounceRange = bounceRange;
+        c.needsGround = needsGround;
+        return c;
+    }
+
     /** Lance l'annonce : zone centrée sur {@code center} (Mark : sur {@code target}), tournée vers {@code facing}. */
     public void launch(World world, Ref<EntityStore> caster, Ref<EntityStore> target, Vector3d center, double facing) {
         TelegraphSystem.start(world, new Strike(this, caster, target, new Vector3d(center), facing));
@@ -345,6 +436,19 @@ public class TelegraphInteraction extends SimpleInstantInteraction {
         return reference;
     }
 
+    /** Vrai s'il y a un sol (bloc plein à 6 blocs au plus sous les pieds) 1,5 bloc derrière `at` dans la direction `a`. */
+    static boolean groundBehind(ChunkStore chunks, Vector3d at, double a) {
+        int x = (int) Math.floor(at.x() + Math.cos(a) * 1.5);
+        int z = (int) Math.floor(at.z() + Math.sin(a) * 1.5);
+        int y = (int) Math.floor(at.y() - 0.1);
+        for (int k = 0; k <= 6; k++) {
+            if (WorldBlocks.solid(chunks, x, y - k, z)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     private static Vector3d farthestPlayer(World world, CommandBuffer<EntityStore> buffer, Vector3d from) {
         Vector3d best = null;
         double bestDistance = -1;
@@ -369,6 +473,7 @@ public class TelegraphInteraction extends SimpleInstantInteraction {
         private final Ref<EntityStore> target;
         private final Vector3d center;
         private final double facing;
+        private final Set<Ref<EntityStore>> struck;
         private Telegraphs.Shape zone;
         private long start = -1;
         private long end;
@@ -376,11 +481,17 @@ public class TelegraphInteraction extends SimpleInstantInteraction {
 
         Strike(TelegraphInteraction config, Ref<EntityStore> caster, Ref<EntityStore> target, Vector3d center,
                double facing) {
+            this(config, caster, target, center, facing, new LinkedHashSet<>());
+        }
+
+        Strike(TelegraphInteraction config, Ref<EntityStore> caster, Ref<EntityStore> target, Vector3d center,
+               double facing, Set<Ref<EntityStore>> struck) {
             this.config = config;
             this.caster = caster;
             this.target = target;
             this.center = center;
             this.facing = facing;
+            this.struck = struck;
         }
 
         @Override
@@ -442,6 +553,7 @@ public class TelegraphInteraction extends SimpleInstantInteraction {
             }
             Telegraphs.sound(store, config.impactSound, impactAt);
 
+            Ref<EntityStore> last = null;
             for (Ref<EntityStore> victim : victims(world, store)) {
                 Vector3d at = Telegraphs.position(store, victim);
                 if (at == null) {
@@ -451,7 +563,41 @@ public class TelegraphInteraction extends SimpleInstantInteraction {
                     continue;   // à l'abri derrière un pilier
                 }
                 apply(world, store, chunks, victim, at);
+                struck.add(victim);
+                last = victim;
             }
+            bounce(world, store, last == null ? target : last);
+        }
+
+        /** Rebond : même zone sur le joueur le plus proche de `from` qui n'a pas encore été touché. */
+        private void bounce(World world, Store<EntityStore> store, Ref<EntityStore> from) {
+            if (config.bounces <= 0) {
+                return;
+            }
+            Vector3d origin = Telegraphs.position(store, from);
+            if (origin == null) {
+                origin = center;
+            }
+            Ref<EntityStore> next = null;
+            double best = config.bounceRange;
+            for (PlayerRef player : world.getPlayerRefs()) {
+                Ref<EntityStore> ref = player.getReference();
+                Vector3d at = Telegraphs.position(store, ref);
+                if (at != null && !struck.contains(ref) && at.distance(origin) <= best) {
+                    best = at.distance(origin);
+                    next = ref;
+                }
+            }
+            if (next == null) {
+                return;
+            }
+            TelegraphInteraction again = config.copy();
+            again.bounces = config.bounces - 1;
+            again.seconds = Math.max(0.5f, config.seconds * 0.8f);
+            Vector3d at = Telegraphs.position(store, next);
+            Telegraphs.particle(store, config.hitParticle == null ? "Nakasar_Fractal_Lightning_Arc" : config.hitParticle,
+                    new Vector3d(origin).add(0, 1, 0), 1f);
+            TelegraphSystem.start(world, new Strike(again, caster, next, new Vector3d(at), Telegraphs.angle(origin, at), struck));
         }
 
         private Set<Ref<EntityStore>> victims(World world, Store<EntityStore> store) {
@@ -506,9 +652,13 @@ public class TelegraphInteraction extends SimpleInstantInteraction {
             if (Telegraphs.position(store, victim) == null) {
                 return;   // achevé par le coup
             }
-            if (config.knockback > 0f || config.knockUp > 0f) {
-                Vector3d from = zone != null ? zone.origin() : center;
-                double a = Telegraphs.horizontal(at, from) > 0.1 ? Telegraphs.angle(from, at) : facing;
+            boolean knock = config.knockbackMinLevel <= 0 || FractalRuns.level(world) >= config.knockbackMinLevel;
+            Vector3d from = zone != null ? zone.origin() : center;
+            double a = Telegraphs.horizontal(at, from) > 0.1 ? Telegraphs.angle(from, at) : facing;
+            if (knock && config.needsGround && !groundBehind(chunks, at, a)) {
+                knock = false;   // dos au vide : le recul ne prend pas
+            }
+            if (knock && (config.knockback > 0f || config.knockUp > 0f)) {
                 Velocity velocity = store.getComponent(victim, Velocity.getComponentType());
                 if (velocity != null) {
                     velocity.addInstruction(new Vector3d(Math.cos(a) * config.knockback, config.knockUp, Math.sin(a) * config.knockback),
@@ -523,6 +673,9 @@ public class TelegraphInteraction extends SimpleInstantInteraction {
                 } else if (effects != null) {
                     effects.addEffect(victim, effect, config.effectDuration, OverlapBehavior.OVERWRITE, store, caster);
                 }
+            }
+            if (config.agonySeconds > 0f && player) {
+                Hurt.effect(store, victim, Agony.EFFECT, config.agonySeconds);
             }
             if (config.imprison && player) {
                 CagePlayerInteraction.imprison(store, chunks, caster, victim, CagePlayerInteraction.CAGE_BLOCK, config.cellRadius,

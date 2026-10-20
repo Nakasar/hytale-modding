@@ -1,0 +1,12 @@
+{
+  "$Comment": "Salve de l'Asura : étincelles violettes au point d'impact. Généré par tools/generate_uncategorized.py.",
+  "Spawners": [
+    {
+      "SpawnerId": "Nakasar_Fractal_Asura_Bolt_Burst",
+      "PositionOffset": {
+        "Y": 0.2
+      }
+    }
+  ],
+  "CullDistance": 72
+}

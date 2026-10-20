@@ -1,0 +1,7 @@
+{
+  "$Comment": "Dégâts des instabilités (Dernier rire, Malaise social, Bombe de flux) et des charges : une part des PV max, que l'armure ne réduit pas.",
+  "BypassResistances": true,
+  "DurabilityLoss": false,
+  "StaminaLoss": false,
+  "DamageTextColor": "#d090ff"
+}

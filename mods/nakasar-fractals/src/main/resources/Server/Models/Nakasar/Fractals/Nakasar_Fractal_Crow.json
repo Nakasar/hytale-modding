@@ -1,0 +1,6 @@
+{
+  "$Comment": "Corbeau de la Nuée (provisoire) : la chauve-souris vanilla, en petit. Modèle de corbeau à vérifier dans Assets.zip (le rôle vanilla Crow existe).",
+  "Parent": "Bat",
+  "MinScale": 0.9,
+  "MaxScale": 1.0
+}

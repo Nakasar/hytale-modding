@@ -7,6 +7,7 @@ import com.hypixel.hytale.server.core.universe.PlayerRef;
 import com.hypixel.hytale.server.core.universe.world.World;
 import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
 import com.hypixel.hytale.server.core.util.EventTitleUtil;
+import dev.nakasar.hytale.fractals.instability.Instabilities;
 import dev.nakasar.hytale.fractals.party.FractalCatalog;
 import dev.nakasar.hytale.fractals.party.FractalRuns;
 import dev.nakasar.hytale.fractals.progress.FractalProgress;
@@ -139,7 +140,15 @@ public final class Observatory {
         }
         Message launch = Message.translation(MESSAGES + "launch").param("fractal", FractalCatalog.name(fractal))
                 .param("level", state.level);
-        group.forEach(member -> member.sendMessage(launch));
+        var drawn = Instabilities.draw(fractal, state.level, group.size());
+        Message instabilities = Message.translation("nakasar_fractals_instabilities.today").insert("\n")
+                .insert(Instabilities.describe(drawn));
+        group.forEach(member -> {
+            member.sendMessage(launch);
+            if (!drawn.isEmpty()) {
+                member.sendMessage(instabilities);
+            }
+        });
         int level = state.level;
         world.execute(() -> FractalRuns.launch(world, world.getEntityStore().getStore(), fractal, level, group));
     }
@@ -156,6 +165,11 @@ public final class Observatory {
     }
 
     /** Joueurs du cercle encore dans le monde, dans l'ordre où ils y sont montés. */
+    /** Joueurs dans le cercle d'harmonisation (au moins 1, pour le tirage des instabilités de {@code /fractale}). */
+    public static int circleSize(World world) {
+        return Math.max(1, circlePlayers(world, state(world)).size());
+    }
+
     static List<PlayerRef> circlePlayers(World world, State state) {
         List<PlayerRef> out = new ArrayList<>();
         for (UUID id : state.circle) {

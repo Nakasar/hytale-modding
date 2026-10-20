@@ -1,0 +1,18 @@
+{
+  "$Comment": "Flaque de la Traînée toxique : nappe rouge sombre et bulles vertes au sol. Généré par tools/generate_instabilities.py.",
+  "Spawners": [
+    {
+      "SpawnerId": "Nakasar_Fractal_Toxic_Puddle_Pool",
+      "PositionOffset": {
+        "Y": 0.05
+      }
+    },
+    {
+      "SpawnerId": "Nakasar_Fractal_Toxic_Puddle_Bubbles",
+      "PositionOffset": {
+        "Y": 0.1
+      }
+    }
+  ],
+  "CullDistance": 64
+}

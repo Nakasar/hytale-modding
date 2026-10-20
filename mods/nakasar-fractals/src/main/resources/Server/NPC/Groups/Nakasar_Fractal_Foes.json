@@ -2,9 +2,20 @@
   "$Comment": "Tous les PNJ des fractales (boss, adds, serviteurs) : un seul camp face aux joueurs. Les attaques de zone du mod (Nakasar_Fractal_Telegraph) épargnent les membres du groupe (dev.nakasar.hytale.fractals.combat.Foes). Chaque fractale y ajoute ses rôles.",
   "IncludeRoles": [
     "Nakasar_Fractal_Archdiviner",
+    "Nakasar_Fractal_Crow",
+    "Nakasar_Fractal_Crystal_Golem",
     "Nakasar_Fractal_Cultist_Chanter",
     "Nakasar_Fractal_Cultist_Fanatic",
     "Nakasar_Fractal_Devourer",
-    "Nakasar_Fractal_Seal"
+    "Nakasar_Fractal_Ettin",
+    "Nakasar_Fractal_Fire_Shaman",
+    "Nakasar_Fractal_Harpy",
+    "Nakasar_Fractal_Mad_Asura",
+    "Nakasar_Fractal_Old_Tom",
+    "Nakasar_Fractal_Prison_Generator",
+    "Nakasar_Fractal_Rabid_Rabbit",
+    "Nakasar_Fractal_Saboteur",
+    "Nakasar_Fractal_Seal",
+    "Nakasar_Fractal_Turret"
   ]
 }

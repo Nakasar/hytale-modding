@@ -1,0 +1,53 @@
+{
+  "$Comment": "Chaman du feu au contact : coup de bâton (6 dégâts).",
+  "Type": "Serial",
+  "Interactions": [
+    {
+      "$Comment": "Coup de bâton.",
+      "Type": "Simple",
+      "RunTime": 0.4,
+      "Effects": {
+        "WorldSoundEventId": "SFX_Light_Melee_T2_Swing",
+        "ItemPlayerAnimationsId": "Staff",
+        "ItemAnimationId": "SwingLeft"
+      },
+      "Next": {
+        "Type": "Selector",
+        "RunTime": 0.15,
+        "Selector": {
+          "Id": "Horizontal",
+          "Direction": "ToLeft",
+          "TestLineOfSight": true,
+          "ExtendTop": 0.8,
+          "ExtendBottom": 0.8,
+          "StartDistance": 0.2,
+          "EndDistance": 2.8,
+          "Length": 100,
+          "RollOffset": 0,
+          "YawStartOffset": 50
+        },
+        "HitEntity": {
+          "Interactions": [
+            {
+              "Parent": "DamageEntityParent",
+              "DamageCalculator": {
+                "BaseDamage": {
+                  "Physical": 6
+                },
+                "RandomPercentageModifier": 0.1
+              },
+              "DamageEffects": {
+                "WorldSoundEventId": "SFX_T1_Impact_Blunt",
+                "WorldParticles": [
+                  {
+                    "SystemId": "Impact_Sword_Basic_Stronk"
+                  }
+                ]
+              }
+            }
+          ]
+        }
+      }
+    }
+  ]
+}

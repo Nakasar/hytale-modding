@@ -5,3 +5,6 @@
 # Jeux d'animations des armes vanilla (déjà acceptés par le mod Vampires, vus dans Assets.zip 0.7.2).
 animations Mace
 animations Staff
+# Jeux d'animations des golems vanilla (validés par le mod Vampires dans Assets.zip 0.7.2, Tour de l'Alchimiste).
+animations Golem_Firesteel_Default
+animations Golem_Crystal_Thunder_Default

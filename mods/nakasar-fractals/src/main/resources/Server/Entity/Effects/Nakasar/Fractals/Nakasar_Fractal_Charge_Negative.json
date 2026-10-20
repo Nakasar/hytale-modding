@@ -1,0 +1,11 @@
+{
+  "$Comment": "Charge - (Asura fou) : à moins de 3 blocs d'une charge +, les deux s'électrocutent.",
+  "Name": "nakasar_fractals_uncategorized.effects.Nakasar_Fractal_Charge_Negative",
+  "StatusEffectIcon": "UI/StatusEffects/Nakasar/Fractals/Charge_Negative.png",
+  "ApplicationEffects": {
+    "EntityTopTint": "#40a0ff"
+  },
+  "OverlapBehavior": "Overwrite",
+  "Infinite": false,
+  "Duration": 1.5
+}

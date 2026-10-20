@@ -11,6 +11,8 @@ import com.hypixel.hytale.server.core.universe.PlayerRef;
 import com.hypixel.hytale.server.core.universe.world.World;
 import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
 import dev.nakasar.hytale.fractals.FractalsPlugin;
+import dev.nakasar.hytale.fractals.instability.Instabilities;
+import dev.nakasar.hytale.fractals.instability.Instability;
 import dev.nakasar.hytale.fractals.observatory.ObservatoryLayout;
 import org.joml.Vector3d;
 
@@ -40,8 +42,11 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 public final class FractalRuns {
 
-    /** Une partie : la fractale, son niveau, les joueurs partis ensemble et ceux qui ont pris leur coffre. */
-    public record Run(String fractal, int level, List<UUID> members, Set<UUID> claimed) {
+    /**
+     * Une partie : la fractale, son niveau, les joueurs partis ensemble, ceux qui ont pris leur coffre, et les
+     * instabilités du jour tirées au départ ({@link Instabilities#draw}).
+     */
+    public record Run(String fractal, int level, List<UUID> members, Set<UUID> claimed, List<Instability> instabilities) {
     }
 
     private static final Map<World, Run> RUNS = Collections.synchronizedMap(new WeakHashMap<>());
@@ -102,13 +107,14 @@ public final class FractalRuns {
         // Retour sur le parvis, face à l'Astrolabe (vers le nord).
         Transform back = new Transform(new Vector3d(arrival[0], arrival[1], arrival[2]), new Rotation3f());
         List<UUID> members = players.stream().map(PlayerRef::getUuid).toList();
+        List<Instability> instabilities = Instabilities.draw(fractal, level, members.size());
         CompletableFuture<World> instance = InstancesPlugin.get().spawnInstance(FractalCatalog.instance(fractal), hub, back);
         hold(hub, instance);
         instance.whenComplete((world, error) -> {
             if (error != null) {
                 FractalsPlugin.get().getLogger().atWarning().withCause(error).log("Fractale %s : instance impossible à ouvrir", fractal);
             } else if (world != null) {
-                RUNS.put(world, new Run(fractal, level, members, ConcurrentHashMap.newKeySet()));
+                RUNS.put(world, new Run(fractal, level, members, ConcurrentHashMap.newKeySet(), instabilities));
             }
         });
         for (PlayerRef player : players) {

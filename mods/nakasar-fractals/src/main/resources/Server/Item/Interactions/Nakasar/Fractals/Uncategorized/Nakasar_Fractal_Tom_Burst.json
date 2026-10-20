@@ -1,0 +1,38 @@
+{
+  "$Comment": "Vieux Tom : rafale, huit cercles rouges de 1,8 bloc semés autour de lui (3 à 12 blocs, 1,6 s), 22 dégâts chacun.",
+  "Type": "Serial",
+  "Interactions": [
+    {
+      "Type": "ClearEntityEffect",
+      "Entity": "User",
+      "EntityEffectId": "Hit_Interrupt_Eligible"
+    },
+    {
+      "Type": "ApplyEffect",
+      "EffectId": "Nakasar_Fractal_Rooted"
+    },
+    {
+      "Type": "Nakasar_Fractal_Telegraph",
+      "Shape": "Circle",
+      "Seconds": 1.6,
+      "Anchor": "Scatter",
+      "Count": 8,
+      "OffsetMin": 3,
+      "OffsetMax": 12,
+      "Radius": 1.8,
+      "Damage": 22,
+      "PlayersOnly": true,
+      "ImpactParticle": "Nakasar_Fractal_Bomb_Blast",
+      "ImpactSound": "SFX_Goblin_Lobber_Bomb_Death"
+    },
+    {
+      "Type": "Simple",
+      "RunTime": 1.6,
+      "Effects": {
+        "WorldSoundEventId": "SFX_Spear_Throw_Charge",
+        "ItemPlayerAnimationsId": "Golem_Firesteel_Default",
+        "ItemAnimationId": "GroundSlam"
+      }
+    }
+  ]
+}

@@ -1,0 +1,12 @@
+{
+  "$Comment": "Le gaz va monter : bulles vertes aux bouches d'aération. Généré par tools/generate_uncategorized.py.",
+  "Spawners": [
+    {
+      "SpawnerId": "Nakasar_Fractal_Gas_Warning_Bubbles",
+      "PositionOffset": {
+        "Y": 0.1
+      }
+    }
+  ],
+  "CullDistance": 72
+}

@@ -1,0 +1,6 @@
+{
+  "$Comment": "Harpie (provisoire) : la chauve-souris vanilla, deux fois plus grande. Modèle de harpie à vérifier dans Assets.zip.",
+  "Parent": "Bat",
+  "MinScale": 2.0,
+  "MaxScale": 2.0
+}

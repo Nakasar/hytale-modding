@@ -1,0 +1,47 @@
+{
+  "TranslationProperties": {
+    "Name": "nakasar_fractals_uncategorized.items.Nakasar_Fractal_Battery.name",
+    "Description": "nakasar_fractals_uncategorized.items.Nakasar_Fractal_Battery.description"
+  },
+  "Icon": "Icons/Items/Nakasar/Fractals/Battery.png",
+  "Categories": [
+    "Blocks.Deco"
+  ],
+  "Quality": "Technical",
+  "PlayerAnimationsId": "Block",
+  "BlockType": {
+    "Material": "Solid",
+    "DrawType": "Cube",
+    "Opacity": "Solid",
+    "Textures": [
+      {
+        "Sides": "BlockTextures/Nakasar/Fractals/Battery.png",
+        "UpDown": "BlockTextures/Nakasar/Fractals/Battery.png",
+        "Weight": 1
+      }
+    ],
+    "HitboxType": "Full",
+    "Flags": {},
+    "Gathering": {
+      "Breaking": {
+        "GatherType": "Unbreakable"
+      }
+    },
+    "BlockParticleSetId": "Stone",
+    "BlockSoundSetId": "Stone",
+    "ParticleColor": "#78b4ff",
+    "Interactions": {
+      "Use": {
+        "Interactions": [
+          "Nakasar_Fractal_Use_Uncategorized_Battery"
+        ]
+      }
+    }
+  },
+  "Tags": {
+    "Type": [
+      "Deco"
+    ]
+  },
+  "ItemSoundSetId": "ISS_Blocks_Stone"
+}

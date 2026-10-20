@@ -12,6 +12,18 @@ import dev.nakasar.hytale.fractals.cliffside.CliffsideUseInteraction;
 import dev.nakasar.hytale.fractals.combat.BossStun;
 import dev.nakasar.hytale.fractals.combat.ChargeInteraction;
 import dev.nakasar.hytale.fractals.combat.HealFoesInteraction;
+import dev.nakasar.hytale.fractals.combat.HitShield;
+import dev.nakasar.hytale.fractals.combat.PullInteraction;
+import dev.nakasar.hytale.fractals.instability.Instabilities;
+import dev.nakasar.hytale.fractals.instability.InstabilitySystem;
+import dev.nakasar.hytale.fractals.stage.FoeDeathSystem;
+import dev.nakasar.hytale.fractals.stage.StageDamageFilter;
+import dev.nakasar.hytale.fractals.stage.StageSystem;
+import dev.nakasar.hytale.fractals.stage.StageUseInteraction;
+import dev.nakasar.hytale.fractals.stage.Stages;
+import dev.nakasar.hytale.fractals.stage.ThrowItemInteraction;
+import dev.nakasar.hytale.fractals.uncategorized.Uncategorized;
+import dev.nakasar.hytale.fractals.volcanic.Volcanic;
 import dev.nakasar.hytale.fractals.combat.StunSelfInteraction;
 import dev.nakasar.hytale.fractals.combat.TelegraphInteraction;
 import dev.nakasar.hytale.fractals.combat.TelegraphSystem;
@@ -78,6 +90,14 @@ import dev.nakasar.hytale.fractals.progress.OpenInfusionsInteraction;
  * soin des incantateurs ({@code Nakasar_Fractal_HealFoes}), et le déroulé de la fractale ({@link CliffsideSystem} :
  * sceaux, vagues, pièges du saut, cages et Archidevin ; {@link CliffsideDamageFilter} ; blocs utilisables
  * {@code Nakasar_Fractal_CliffsideUse}).
+ *
+ * <p>Étape 5, les instabilités ({@code instability}) : tirage quotidien par fractale et par rang, effets aux coups et
+ * aux morts ({@link Instabilities}, branchés sur {@link StageDamageFilter} et {@link FoeDeathSystem}) et dans le temps
+ * ({@link InstabilitySystem}), commande {@code /fractale instabilites}.
+ *
+ * <p>Étape 6 : les déroulés communs ({@code stage} : {@link StageSystem}, blocs {@code Nakasar_Fractal_Use}, objet
+ * lancé {@code Nakasar_Fractal_ThrowItem}), l'attraction {@code Nakasar_Fractal_Pull}, et les fractales Inclassable
+ * ({@link Uncategorized}) et Volcanique ({@link Volcanic}).
  */
 public final class FractalsPlugin extends JavaPlugin {
 
@@ -112,6 +132,9 @@ public final class FractalsPlugin extends JavaPlugin {
         interactions.register(OpenDefianceInteraction.TYPE_ID, OpenDefianceInteraction.class, OpenDefianceInteraction.CODEC);
         interactions.register(HealFoesInteraction.TYPE_ID, HealFoesInteraction.class, HealFoesInteraction.CODEC);
         interactions.register(CliffsideUseInteraction.TYPE_ID, CliffsideUseInteraction.class, CliffsideUseInteraction.CODEC);
+        interactions.register(PullInteraction.TYPE_ID, PullInteraction.class, PullInteraction.CODEC);
+        interactions.register(StageUseInteraction.TYPE_ID, StageUseInteraction.class, StageUseInteraction.CODEC);
+        interactions.register(ThrowItemInteraction.TYPE_ID, ThrowItemInteraction.class, ThrowItemInteraction.CODEC);
 
         var systems = getEntityStoreRegistry();
         FractalProgress.setComponentType(systems.registerComponent(FractalProgress.class, FractalProgress.ID, FractalProgress.CODEC));
@@ -130,17 +153,26 @@ public final class FractalsPlugin extends JavaPlugin {
         systems.registerSystem(new DefianceDamageSystem());
         systems.registerSystem(new CliffsideSystem());
         systems.registerSystem(new CliffsideDamageFilter());
+        systems.registerSystem(new StageSystem());
+        systems.registerSystem(new StageDamageFilter());
+        systems.registerSystem(new FoeDeathSystem());
+        systems.registerSystem(new InstabilitySystem());
         Cliffside.registerBossBars();
+        Instabilities.exempt(Cliffside.SEAL_ROLE, Cliffside.SEEKER);
+        Uncategorized.register();
+        Stages.register(new Uncategorized());
+        Stages.register(new Volcanic());
 
         getCommandRegistry().registerCommand(new FractalCommand());
 
-        getLogger().atInfo().log("Nakasar Fractales : 16 types d'interaction (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s), progression, Falaise, systèmes et /fractale enregistrés",
+        getLogger().atInfo().log("Nakasar Fractales : 19 types d'interaction (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s), progression, Falaise, instabilités, Inclassable, Volcanique, systèmes et /fractale enregistrés",
                 TelegraphInteraction.TYPE_ID, ChargeInteraction.TYPE_ID, StunSelfInteraction.TYPE_ID,
                 SummonMinionsInteraction.TYPE_ID, CagePlayerInteraction.TYPE_ID, DialInteraction.TYPE_ID,
                 OpenArchInteraction.TYPE_ID, LeaveInteraction.TYPE_ID, TrialDemoInteraction.TYPE_ID,
                 OpenInfusionsInteraction.TYPE_ID, OpenBagInteraction.TYPE_ID, ClaimRewardInteraction.TYPE_ID,
                 OpenShopInteraction.TYPE_ID, OpenDefianceInteraction.TYPE_ID, HealFoesInteraction.TYPE_ID,
-                CliffsideUseInteraction.TYPE_ID);
+                CliffsideUseInteraction.TYPE_ID, PullInteraction.TYPE_ID, StageUseInteraction.TYPE_ID,
+                ThrowItemInteraction.TYPE_ID);
     }
 
     @Override
@@ -155,5 +187,8 @@ public final class FractalsPlugin extends JavaPlugin {
         Defiance.clearAll();
         Hammer.clearAll();
         Cliffside.clearAll();
+        Stages.clearAll();
+        InstabilitySystem.clearAll();
+        HitShield.clearAll();
     }
 }

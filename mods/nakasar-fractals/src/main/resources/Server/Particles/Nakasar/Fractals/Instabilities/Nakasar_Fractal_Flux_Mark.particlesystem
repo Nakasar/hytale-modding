@@ -1,0 +1,12 @@
+{
+  "$Comment": "Bombe de flux : marque violette au-dessus du joueur. Généré par tools/generate_instabilities.py.",
+  "Spawners": [
+    {
+      "SpawnerId": "Nakasar_Fractal_Flux_Mark_Mark",
+      "PositionOffset": {
+        "Y": 0.0
+      }
+    }
+  ],
+  "CullDistance": 64
+}

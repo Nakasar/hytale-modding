@@ -1,0 +1,10 @@
+{
+  "$Comment": "Vieux Tom (boss de l'Inclassable) : le golem de forge vanilla, × 1,5.",
+  "Parent": "Golem_Firesteel",
+  "MinScale": 1.5,
+  "MaxScale": 1.5,
+  "Light": {
+    "Color": "#f96",
+    "Radius": 4
+  }
+}

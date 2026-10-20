@@ -1,0 +1,58 @@
+{
+  "$Comment": "Vieux Tom : marque sa cible (1,4 s, 10 dégâts), puis l'attire contre lui et frappe le sol (cercle de 3 blocs, 1,2 s, 24 dégâts) : s'éloigner vite après l'attraction.",
+  "Type": "Serial",
+  "Interactions": [
+    {
+      "Type": "ClearEntityEffect",
+      "Entity": "User",
+      "EntityEffectId": "Hit_Interrupt_Eligible"
+    },
+    {
+      "Type": "ApplyEffect",
+      "EffectId": "Nakasar_Fractal_Rooted"
+    },
+    {
+      "Type": "Nakasar_Fractal_Telegraph",
+      "Shape": "Mark",
+      "Seconds": 1.4,
+      "Damage": 10,
+      "MarkParticle": "Nakasar_Fractal_Lightning_Arc",
+      "MarkParticleScale": 1.2,
+      "HitParticle": "Nakasar_Fractal_Lightning_Arc"
+    },
+    {
+      "Type": "Simple",
+      "RunTime": 1.4,
+      "Effects": {
+        "WorldSoundEventId": "SFX_Spirit_Root_Alerted"
+      }
+    },
+    {
+      "Type": "Nakasar_Fractal_Pull",
+      "Range": 22,
+      "StopDistance": 2.5,
+      "Up": 4,
+      "Particle": "Nakasar_Fractal_Lightning_Arc"
+    },
+    {
+      "Type": "Nakasar_Fractal_Telegraph",
+      "Shape": "Circle",
+      "Seconds": 1.2,
+      "Radius": 3,
+      "Damage": 24,
+      "Knockback": 6,
+      "KnockUp": 4,
+      "ImpactParticle": "Stick_Slam_Ground_Large",
+      "ImpactSound": "SFX_Goblin_Feastmaster_Slam"
+    },
+    {
+      "Type": "Simple",
+      "RunTime": 1.2,
+      "Effects": {
+        "WorldSoundEventId": "SFX_Spear_Throw_Charge",
+        "ItemPlayerAnimationsId": "Golem_Firesteel_Default",
+        "ItemAnimationId": "GroundSlam"
+      }
+    }
+  ]
+}

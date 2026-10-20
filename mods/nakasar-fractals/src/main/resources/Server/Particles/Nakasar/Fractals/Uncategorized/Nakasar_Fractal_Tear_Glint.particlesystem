@@ -1,0 +1,12 @@
+{
+  "$Comment": "Larme de Brume tombée : scintillement bleu. Généré par tools/generate_uncategorized.py.",
+  "Spawners": [
+    {
+      "SpawnerId": "Nakasar_Fractal_Tear_Glint_Glint",
+      "PositionOffset": {
+        "Y": 0.2
+      }
+    }
+  ],
+  "CullDistance": 72
+}

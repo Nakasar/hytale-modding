@@ -1,0 +1,12 @@
+{
+  "$Comment": "Instabilité Vengeance : un ennemi des fractales dont un allié vient de mourir à moins de 10 blocs ; ses coups font 25 % de dégâts en plus (Java, Instabilities.filter). Teinte rouge.",
+  "Name": "nakasar_fractals_instabilities.effects.Nakasar_Fractal_Vengeance",
+  "StatusEffectIcon": "UI/StatusEffects/Nakasar/Fractals/Vengeance.png",
+  "ApplicationEffects": {
+    "EntityTopTint": "#ff5a3a",
+    "EntityBottomTint": "#5a0a00"
+  },
+  "OverlapBehavior": "Overwrite",
+  "Infinite": false,
+  "Duration": 12
+}

@@ -1,0 +1,7 @@
+{
+  "$Comment": "Gaz de la salle de Vieux Tom (une part des PV max par seconde, l'armure ne le réduit pas).",
+  "BypassResistances": true,
+  "DurabilityLoss": false,
+  "StaminaLoss": false,
+  "DamageTextColor": "#9aff6a"
+}

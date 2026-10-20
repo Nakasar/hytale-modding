@@ -13,7 +13,9 @@ import com.hypixel.hytale.server.core.universe.world.World;
 import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
 import dev.nakasar.hytale.fractals.observatory.LeaveInteraction;
 import dev.nakasar.hytale.fractals.observatory.Observatory;
+import dev.nakasar.hytale.fractals.instability.Instabilities;
 import dev.nakasar.hytale.fractals.party.FractalCatalog;
+import dev.nakasar.hytale.fractals.party.FractalRuns;
 import dev.nakasar.hytale.fractals.progress.FractalProgress;
 
 /**
@@ -23,7 +25,9 @@ import dev.nakasar.hytale.fractals.progress.FractalProgress;
  *   <li>{@code groupe} : le cercle d'harmonisation, le niveau et le meneur ;</li>
  *   <li>{@code lancer <fractale>} : envoie le cercle dans la fractale (meneur, dans l'Observatoire) ;</li>
  *   <li>{@code quitter} : quitte la fractale pour l'Observatoire ;</li>
- *   <li>{@code infos} : niveau débloqué et résistance à l'agonie du joueur.</li>
+ *   <li>{@code infos} : niveau débloqué et résistance à l'agonie du joueur ;</li>
+ *   <li>{@code instabilites} : les instabilités du jour (de la partie en cours, ou de chaque fractale au niveau du
+ *   cadran dans l'Observatoire).</li>
  * </ul>
  */
 public final class FractalCommand extends AbstractCommandCollection {
@@ -38,6 +42,7 @@ public final class FractalCommand extends AbstractCommandCollection {
         addSubCommand(new LaunchCommand());
         addSubCommand(new LeaveCommand());
         addSubCommand(new InfoCommand());
+        addSubCommand(new InstabilitiesCommand());
     }
 
     private static final class LevelCommand extends AbstractPlayerCommand {
@@ -98,6 +103,36 @@ public final class FractalCommand extends AbstractCommandCollection {
         protected void execute(CommandContext context, Store<EntityStore> store, Ref<EntityStore> ref, PlayerRef player, World world) {
             player.sendMessage(Message.translation("nakasar_fractals_progress.info")
                     .param("level", FractalProgress.unlocked(store, ref)).param("resistance", FractalProgress.resistance(store, ref)));
+        }
+    }
+
+    private static final class InstabilitiesCommand extends AbstractPlayerCommand {
+        InstabilitiesCommand() {
+            super("instabilites", "nakasar_fractals_instabilities.command.desc");
+        }
+
+        @Override
+        protected void execute(CommandContext context, Store<EntityStore> store, Ref<EntityStore> ref, PlayerRef player, World world) {
+            FractalRuns.Run run = FractalRuns.of(world);
+            if (run != null) {
+                player.sendMessage(Message.translation("nakasar_fractals_instabilities.current")
+                        .param("fractal", FractalCatalog.name(run.fractal())).param("level", run.level()));
+                player.sendMessage(Instabilities.describe(run.instabilities()));
+                return;
+            }
+            if (!FractalCatalog.isObservatory(world)) {
+                player.sendMessage(Message.translation("nakasar_fractals_instabilities.nowhere"));
+                return;
+            }
+            int level = Observatory.state(world).level();
+            int size = Observatory.circleSize(world);
+            player.sendMessage(Message.translation("nakasar_fractals_instabilities.forecast").param("level", level).param("size", size));
+            for (String fractal : FractalCatalog.IDS) {
+                if (FractalCatalog.isOpen(fractal)) {
+                    player.sendMessage(Message.empty().insert(FractalCatalog.name(fractal).bold(true)).insert(Message.raw(" :\n"))
+                            .insert(Instabilities.describe(Instabilities.draw(fractal, level, size))));
+                }
+            }
         }
     }
 }

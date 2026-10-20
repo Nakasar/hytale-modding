@@ -9,27 +9,24 @@ import com.hypixel.hytale.protocol.packets.interface_.EventTitleStyle;
 import com.hypixel.hytale.server.core.Message;
 import com.hypixel.hytale.server.core.entity.Frozen;
 import com.hypixel.hytale.server.core.modules.entity.component.Invulnerable;
-import com.hypixel.hytale.server.core.modules.entity.damage.DeathComponent;
 import com.hypixel.hytale.server.core.modules.entitystats.EntityStatMap;
 import com.hypixel.hytale.server.core.modules.entitystats.asset.DefaultEntityStatTypes;
 import com.hypixel.hytale.server.core.universe.PlayerRef;
 import com.hypixel.hytale.server.core.universe.world.World;
-import com.hypixel.hytale.server.core.universe.world.npc.INonPlayerCharacter;
 import com.hypixel.hytale.server.core.universe.world.spawn.GlobalSpawnProvider;
 import com.hypixel.hytale.server.core.universe.world.storage.ChunkStore;
 import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
 import com.hypixel.hytale.server.core.util.EventTitleUtil;
-import com.hypixel.hytale.server.npc.NPCPlugin;
-import dev.nakasar.hytale.fractals.FractalsPlugin;
+import dev.nakasar.hytale.fractals.arena.Box;
+import dev.nakasar.hytale.fractals.arena.SafeLandings;
 import dev.nakasar.hytale.fractals.arena.WorldBlocks;
 import dev.nakasar.hytale.fractals.boss.BossBarSystem;
-import dev.nakasar.hytale.fractals.boss.GroupHealth;
+import dev.nakasar.hytale.fractals.combat.Spawns;
 import dev.nakasar.hytale.fractals.combat.Telegraphs;
 import dev.nakasar.hytale.fractals.defiance.Defiance;
 import dev.nakasar.hytale.fractals.hammer.Hammer;
 import dev.nakasar.hytale.fractals.party.FractalCatalog;
 import dev.nakasar.hytale.fractals.party.FractalRuns;
-import it.unimi.dsi.fastutil.Pair;
 import org.joml.Vector3d;
 
 import java.util.ArrayList;
@@ -39,7 +36,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import java.util.WeakHashMap;
-import java.util.concurrent.ThreadLocalRandom;
 
 /**
  * La Falaise (étape 4 du GDD) : le déroulé d'une partie, monde par monde, mené par {@link CliffsideSystem} quatre fois
@@ -87,7 +83,6 @@ public final class Cliffside {
     static final int KNEE_W = 0, KNEE_E = 1, CHEST_SEAL = 2, WRIST_W = 3, WRIST_E = 4, NECK = 5;
     private static final int[] BREAKS = {KNEE_BREAKS, KNEE_BREAKS, CHEST_BREAKS, WRIST_BREAKS, WRIST_BREAKS, 1};
     private static final double SEAL_RESPAWN_RANGE = 80;
-    private static final String SCALE_MODIFIER = "Nakasar_Fractal_Scale";
 
     public enum Stage { CAMP, KNEES, CLIMB, CHEST, ARMS, RAMPS, ARENA, DONE }
 
@@ -117,7 +112,7 @@ public final class Cliffside {
         final float[] refill = new float[5];
         final int[] spawned = new int[5];
         final Traps traps = new Traps();
-        final SafeLandings landings = new SafeLandings();
+        final SafeLandings landings = new SafeLandings(CliffsideLayout.JUMP_ZONES, MESSAGES + "landing.back");
         final Cages cages = new Cages();
         final Archdiviner boss = new Archdiviner();
         final Map<UUID, Long> throttle = new HashMap<>();
@@ -452,30 +447,14 @@ public final class Cliffside {
         }
     }
 
-    /**
-     * Un ennemi des fractales en `at` (léger décalage au hasard), non sauvegardé, vie selon le groupe et le niveau :
-     * × (1 + 25 % par joueur de plus) × (1 + niveau / 100).
-     */
+    /** Un ennemi des fractales en `at`, non sauvegardé, vie selon le groupe et le niveau ({@link Spawns#spawnFoe}). */
     static Ref<EntityStore> spawnFoe(World world, Store<EntityStore> store, String role, double[] at) {
-        ThreadLocalRandom random = ThreadLocalRandom.current();
-        Vector3d where = new Vector3d(at[0] + random.nextDouble(-0.8, 0.8), at[1], at[2] + random.nextDouble(-0.8, 0.8));
-        Ref<EntityStore> ref = spawn(store, role, where, (float) random.nextDouble(-Math.PI, Math.PI));
-        if (ref != null) {
-            float scale = (1f + 0.25f * (FractalRuns.partySize(world) - 1)) * (1f + FractalRuns.level(world) / 100f);
-            GroupHealth.apply(store.getComponent(ref, EntityStatMap.getComponentType()), SCALE_MODIFIER, scale);
-        }
-        return ref;
+        return Spawns.spawnFoe(world, store, role, at);
     }
 
     /** Pose le PNJ `role` (non sauvegardé), tourné de `yaw` ; null si le jeu refuse. */
     static Ref<EntityStore> spawn(Store<EntityStore> store, String role, Vector3d at, float yaw) {
-        Pair<Ref<EntityStore>, INonPlayerCharacter> spawned = NPCPlugin.get().spawnNPC(store, role, null, at, new Rotation3f(0f, yaw, 0f));
-        if (spawned == null || spawned.first() == null) {
-            FractalsPlugin.get().getLogger().atWarning().log("Falaise : impossible de faire apparaître '%s'", role);
-            return null;
-        }
-        store.ensureAndGetComponent(spawned.first(), EntityStore.REGISTRY.getNonSerializedComponentType());
-        return spawned.first();
+        return Spawns.spawn(store, role, at, yaw);
     }
 
     private static void keepSeeker(Store<EntityStore> store, State st) {
@@ -546,34 +525,19 @@ public final class Cliffside {
     }
 
     static List<PlayerRef> alivePlayers(World world, Store<EntityStore> store) {
-        List<PlayerRef> out = new ArrayList<>();
-        for (PlayerRef player : world.getPlayerRefs()) {
-            Ref<EntityStore> ref = player.getReference();
-            if (ref != null && ref.isValid() && store.getComponent(ref, DeathComponent.getComponentType()) == null) {
-                out.add(player);
-            }
-        }
-        return out;
+        return Spawns.alivePlayers(world, store);
     }
 
     static boolean alive(Store<EntityStore> store, Ref<EntityStore> ref) {
-        return Telegraphs.position(store, ref) != null;
+        return Spawns.alive(store, ref);
     }
 
     static String role(Store<EntityStore> store, Ref<EntityStore> ref) {
-        var npc = ref == null || !ref.isValid() ? null
-                : store.getComponent(ref, com.hypixel.hytale.server.npc.entities.NPCEntity.getComponentType());
-        return npc == null ? null : npc.getRoleName();
+        return Spawns.role(store, ref);
     }
 
-    static boolean anyIn(Store<EntityStore> store, List<PlayerRef> players, CliffsideLayout.Box box) {
-        for (PlayerRef player : players) {
-            Vector3d at = Telegraphs.position(store, player.getReference());
-            if (at != null && box.contains(at.x(), at.y(), at.z())) {
-                return true;
-            }
-        }
-        return false;
+    static boolean anyIn(Store<EntityStore> store, List<PlayerRef> players, Box box) {
+        return Spawns.anyIn(store, players, box);
     }
 
     static boolean inArena(Vector3d at) {
@@ -593,13 +557,6 @@ public final class Cliffside {
     }
 
     static double nearest(Store<EntityStore> store, List<PlayerRef> players, Vector3d where) {
-        double best = Double.MAX_VALUE;
-        for (PlayerRef player : players) {
-            Vector3d at = Telegraphs.position(store, player.getReference());
-            if (at != null) {
-                best = Math.min(best, at.distance(where));
-            }
-        }
-        return best;
+        return Spawns.nearest(store, players, where);
     }
 }
