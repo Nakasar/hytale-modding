@@ -42,7 +42,7 @@ Comme un établi du jeu, l'autel s'améliore. Chaque niveau ouvre de nouvelles r
 | 2 | Rituels | Capuche occulte | 1 capuche en cuir souple, 1 rouleau de tisse-ombre, 4 cendres | 4 s |
 | 3 | Runes | [Domination](runes.md#domination) | 2 éclats de rune | 1 s |
 | 3 | Sang et potions | Voile solaire II | 1 fiole vide, 4 cendres, 3 essences de vie, 1 cristal rouge | 2 s |
-| 3 | Rituels | Calice du sang éternel | 2 reliques, 3 fioles de sang, 2 rubis, 2 éclats de rune | 5 s |
+| 3 | Rituels | Calice du sang éternel | 1 pierre philosophale (Tour de l'Alchimiste), 2 reliques, 3 fioles de sang, 2 rubis, 2 éclats de rune | 5 s |
 | 3 | Rituels | Encensoir de purification | 6 lingots d'argent, 2 torches purificatrices, 8 essences de vie, 2 topazes | 5 s |
 | 3 | Rituels | Voile occulte | 1 tunique en cuir souple, 2 rouleaux de tisse-ombre, 1 relique | 4 s |
 | 4 | Sang et potions | Voile solaire III | 1 fiole vide, 1 relique, 6 cendres, 2 cristaux violets | 2 s |

@@ -1,7 +1,7 @@
 # Comtesse Vampire
 
 <Infobox title="Comtesse Vampire" kind="Boss" image={require("../images/pnj/Nakasar_Vampire_Countess.jpg").default} caption="La Comtesse Vampire, en jeu">
-<Info label="Points de vie">**750**</Info>
+<Info label="Points de vie">**8000**, régénère 150 PV/s</Info>
 <Info label="Barre de vie">barre de boss en combat</Info>
 <Info label="Attitude">Neutre, hostile à tous les joueurs une fois frappée</Info>
 <Info label="Lieu">[Manoir du Comte](../fragment/manoir-du-comte.md), à la place du Comte (50 %)</Info>
@@ -11,21 +11,22 @@
 <Info label="Id">`Nakasar_Vampire_Countess`</Info>
 </Infobox>
 
-L'épouse du Comte, et parfois la seule maîtresse des lieux : à chaque apparition dans le [Manoir du Comte](../fragment/manoir-du-comte.md), le jeu tire le [Comte](comte-vampire.md) ou la Comtesse (une chance sur deux). Longue robe noire, gants rouges, couronne et cape royale. Moins robuste que le Comte mais plus rapide, elle se téléporte sans cesse et ne connaît pas les chaînes spectrales.
+L'épouse du Comte, et parfois la seule maîtresse des lieux : à chaque apparition dans le [Manoir du Comte](../fragment/manoir-du-comte.md), le jeu tire le [Comte](comte-vampire.md) ou la Comtesse (une chance sur deux). Longue robe noire, gants rouges, couronne et cape royale. Aussi robuste que le Comte mais plus rapide, elle se téléporte sans cesse et ne connaît pas les chaînes spectrales.
 
 ## Une hôtesse qui vous laisse passer
 
-Dans le Comté, la Comtesse **ne vous attaque pas** : elle vous regarde passer. Tant que personne ne le frappe, vous pouvez traverser le manoir et combattre ses gardes sous ses yeux.
+Dans le Comté, la Comtesse **ne vous attaque pas** : elle vous regarde passer. Tant que personne ne la frappe, vous pouvez traverser le manoir et combattre ses gardes sous ses yeux.
 
 **Mais ne levez pas la main sur elle.** Au premier coup porté par un joueur (arme, flèche ou sort), elle entre en colère contre **tous les joueurs présents**, pas seulement l'attaquant : elle change de cible tant qu'un autre joueur est à portée. Sa colère retombe **45 secondes** après le dernier coup échangé ; elle rentre alors à son trône, récupère ses PV et redevient pacifique.
 
-On ne pourra la vaincre pour de bon que plus tard, dans un donjon consacré au Comte et à la Comtesse.
+Avec ses 8000 PV et sa régénération incessante, elle est **presque invincible** : seul un groupe armé d'argent qui frappe sans relâche peut espérer la faire plier. On ne pourra la vaincre pour de bon que plus tard, dans un donjon consacré au Comte et à la Comtesse.
 
 ## Fiche
 
 | | |
 |---|---|
-| Points de vie | **750**, affichés dans une **barre de vie de boss** pendant le combat |
+| Points de vie | **8000**, affichés dans une **barre de vie de boss** pendant le combat |
+| Régénération | **150 PV par seconde**, en permanence, même en plein combat |
 | Vitesse | 5,5 |
 | Recul subi | ×0,2 |
 | Taille | ×1,15 |

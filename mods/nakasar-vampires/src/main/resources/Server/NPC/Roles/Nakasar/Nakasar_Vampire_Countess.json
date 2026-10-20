@@ -1,9 +1,9 @@
 {
-  "$Comment": "Comtesse Vampire, l'autre maîtresse possible du manoir du fragment Halloween (une chance sur deux face au Comte). Moins robuste mais plus vive que lui : Baiser du Vampire (mêlée, se soigne), Domination (le joueur visé ne peut plus la blesser pendant 6 s) et Téléportation plus fréquente ; pas de Chaînes spectrales. Sous 50 % de vie, elle appelle ses rejetons toutes les 30 s. Dans le Comté, elle laisse passer les joueurs (attitude neutre) ; un joueur qui la frappe la met en colère contre tous les joueurs présents (groupe Nakasar_Vampire_Lords, colère gérée en Java par dev.nakasar.hytale.vampires.lords : 45 s sans coup échangé et elle se calme).",
+  "$Comment": "Comtesse Vampire, l'autre maîtresse possible du manoir du fragment Halloween (une chance sur deux face au Comte). Aussi robuste que lui mais plus vive : Baiser du Vampire (mêlée, se soigne), Domination (le joueur visé ne peut plus la blesser pendant 6 s) et Téléportation plus fréquente ; pas de Chaînes spectrales. Presque invincible : 8000 PV et 150 PV/s de régénération permanente (Java, dev.nakasar.hytale.vampires.lords.CountRegenerationSystem). Sous 50 % de vie, elle appelle ses rejetons toutes les 30 s. Dans le Comté, elle laisse passer les joueurs (attitude neutre) ; un joueur qui la frappe la met en colère contre tous les joueurs présents (groupe Nakasar_Vampire_Lords, colère gérée en Java par dev.nakasar.hytale.vampires.lords : 45 s sans coup échangé et elle se calme).",
   "Type": "Generic",
   "Appearance": "Nakasar_Vampire_Countess",
   "NameTranslationKey": "nakasar_mobs.npc.Vampire_Countess.name",
-  "MaxHealth": 750,
+  "MaxHealth": 8000,
   "DropList": "Nakasar_Drop_Vampire_Count",
   "StartState": "Idle",
   "DefaultPlayerAttitude": "Neutral",
@@ -442,7 +442,7 @@
           ]
         },
         {
-          "$Comment": "En colère, elle ne rentre pas tant qu'un autre joueur du groupe est à portée : il change de cible.",
+          "$Comment": "En colère, elle ne rentre pas tant qu'un autre joueur du groupe est à portée : elle change de cible.",
           "Sensor": {
             "Type": "Player",
             "Range": 20,
