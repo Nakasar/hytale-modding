@@ -1,0 +1,6 @@
+{
+  "$Comment": "Larve de braise (Chamane imprégné) : l'esprit de braise vanilla, petit.",
+  "Parent": "Spirit_Ember",
+  "MinScale": 0.7,
+  "MaxScale": 0.7
+}

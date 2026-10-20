@@ -342,8 +342,11 @@ Neuf étapes, chacune livrable en une PR testable en jeu ; les étapes 1 à 4 do
    - [x] Marteau du culte : objet porté, piles de Corruption, charge Brise-sceau, sceaux et bulle alternée
    - [x] Barre de défiance ouverte seulement pendant certaines attaques ; cercle de cage (réutilise l'emprisonnement)
    - [x] Fractale Falaise : colosse, échafaudages, 5 sceaux, cultistes, Archidevin légendaire
-5. **Instabilités** : cadre de tirage quotidien + les 8 instabilités
-6. **Inclassable et Volcanique** : harpies et recul hors des plateformes, consoles simultanées, gaz et ventilateur, charges +/-, rochers roulants, objet lancé (pierre imprégnée), captifs à protéger, bouclier à compteur de coups, Pieds brûlants
+5. **Instabilités**
+   - [x] Cadre de tirage quotidien (`instability/Instabilities`) + les 8 instabilités, commande `/fractale instabilites`
+6. **Inclassable et Volcanique**
+   - [x] Briques : harpies et recul hors des plateformes, consoles simultanées, gaz et ventilateur, charges +/-, rochers roulants, objet lancé (pierre imprégnée), captifs à protéger, bouclier à compteur de coups, Pieds brûlants
+   - [x] Fractales Inclassable (Vieux Tom, Asura délirant) et Volcanique (Champion chaman, Chaman imprégné)
 7. **Océan solide et Marais** : marque crâne + rayon absorbé par un objet tenu, cristal lancé, course chronométrée aux feux-follets avec murs temporaires, furtivité de l'Homme-mousse, cercle vert de vulnérabilité qui tourne
 8. **Tempête de neige** : Chaleur et Hypothermie, feux à nourrir de fagots, élémentaires qui éteignent, blizzard, éclat de glace, chaman au balcon et Effigie
 9. **Finitions** : fractales du jour, cosmétiques, pages du wiki joueur

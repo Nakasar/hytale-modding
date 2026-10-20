@@ -1,0 +1,12 @@
+{
+  "$Comment": "Flamme qui se propage : feu sur le joueur. Généré par tools/generate_volcanic.py.",
+  "Spawners": [
+    {
+      "SpawnerId": "Nakasar_Fractal_Spreading_Flame_Flames",
+      "PositionOffset": {
+        "Y": 0.2
+      }
+    }
+  ],
+  "CullDistance": 72
+}

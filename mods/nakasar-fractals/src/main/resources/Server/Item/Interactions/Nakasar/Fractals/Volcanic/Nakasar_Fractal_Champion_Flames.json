@@ -1,0 +1,27 @@
+{
+  "$Comment": "Champion chaman : flammes sous chaque joueur, cercles rouges de 2,2 blocs (1,6 s), 16 dégâts et brûlure.",
+  "Type": "Serial",
+  "Interactions": [
+    {
+      "Type": "Nakasar_Fractal_Telegraph",
+      "Shape": "Circle",
+      "Seconds": 1.6,
+      "Anchor": "EachPlayer",
+      "Radius": 2.2,
+      "Damage": 16,
+      "EffectId": "Burn",
+      "EffectDuration": 3,
+      "PlayersOnly": true,
+      "ImpactParticle": "Nakasar_Fractal_Fire_Trail"
+    },
+    {
+      "Type": "Simple",
+      "RunTime": 1.6,
+      "Effects": {
+        "ItemPlayerAnimationsId": "Staff",
+        "ItemAnimationId": "SwingRight",
+        "WorldSoundEventId": "SFX_Spirit_Root_Alerted"
+      }
+    }
+  ]
+}

@@ -1,0 +1,19 @@
+{
+  "TranslationProperties": {
+    "Name": "nakasar_fractals_volcanic.items.Nakasar_Fractal_Imbued_Stone.name",
+    "Description": "nakasar_fractals_volcanic.items.Nakasar_Fractal_Imbued_Stone.description"
+  },
+  "Icon": "Icons/Items/Nakasar/Fractals/Imbued_Stone.png",
+  "Model": "Items/Nakasar/Fractals/Imbued_Stone.blockymodel",
+  "Texture": "Items/Nakasar/Fractals/Imbued_Stone.png",
+  "Quality": "Epic",
+  "Categories": [
+    "Items.Misc"
+  ],
+  "PlayerAnimationsId": "Item",
+  "ItemSoundSetId": "ISS_Items_Gems",
+  "MaxStack": 4,
+  "Interactions": {
+    "Secondary": "Root_Nakasar_Fractal_Throw_Imbued_Stone"
+  }
+}

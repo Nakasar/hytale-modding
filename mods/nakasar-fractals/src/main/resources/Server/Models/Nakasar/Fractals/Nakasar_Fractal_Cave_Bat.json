@@ -1,0 +1,6 @@
+{
+  "$Comment": "Chauve-souris de la mine : la chauve-souris vanilla, un peu plus grande.",
+  "Parent": "Bat",
+  "MinScale": 1.3,
+  "MaxScale": 1.3
+}

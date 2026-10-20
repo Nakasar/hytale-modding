@@ -1,0 +1,13 @@
+{
+  "$Comment": "Flèche enflammée du Chamane imprégné : brûle et passe aux joueurs à moins de 2,5 blocs (Java).",
+  "Name": "nakasar_fractals_volcanic.effects.Nakasar_Fractal_Spreading_Flame",
+  "Debuff": true,
+  "StatusEffectIcon": "UI/StatusEffects/Nakasar/Fractals/Spreading_Flame.png",
+  "ApplicationEffects": {
+    "EntityTopTint": "#ff8a2a",
+    "EntityBottomTint": "#5a1000"
+  },
+  "OverlapBehavior": "Overwrite",
+  "Infinite": false,
+  "Duration": 6
+}

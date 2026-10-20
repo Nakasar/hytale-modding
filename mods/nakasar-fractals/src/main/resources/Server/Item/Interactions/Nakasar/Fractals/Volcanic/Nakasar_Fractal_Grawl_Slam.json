@@ -1,0 +1,34 @@
+{
+  "$Comment": "Guerrier grawl : coup abattu, cercle rouge de 2,5 blocs (1,2 s), 18 dégâts.",
+  "Type": "Serial",
+  "Interactions": [
+    {
+      "Type": "ClearEntityEffect",
+      "Entity": "User",
+      "EntityEffectId": "Hit_Interrupt_Eligible"
+    },
+    {
+      "Type": "ApplyEffect",
+      "EffectId": "Nakasar_Fractal_Rooted"
+    },
+    {
+      "Type": "Nakasar_Fractal_Telegraph",
+      "Shape": "Circle",
+      "Seconds": 1.2,
+      "Radius": 2.5,
+      "Damage": 18,
+      "Knockback": 5,
+      "KnockUp": 3,
+      "ImpactParticle": "Stick_Slam_Ground_Large"
+    },
+    {
+      "Type": "Simple",
+      "RunTime": 1.2,
+      "Effects": {
+        "WorldSoundEventId": "SFX_Spear_Throw_Charge",
+        "ItemPlayerAnimationsId": "Mace",
+        "ItemAnimationId": "SwingDownCharging"
+      }
+    }
+  ]
+}

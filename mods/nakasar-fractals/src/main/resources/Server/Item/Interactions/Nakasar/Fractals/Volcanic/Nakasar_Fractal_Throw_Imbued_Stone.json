@@ -1,0 +1,11 @@
+{
+  "$Comment": "Pierre imprégnée : clic droit, la lancer sur le Champion chaman visé (24 blocs, cône de 30°) ; elle lui retire une charge de protection (Java, volcanic.Champion).",
+  "Type": "Nakasar_Fractal_ThrowItem",
+  "Item": "Nakasar_Fractal_Imbued_Stone",
+  "Roles": "Nakasar_Fractal_Champion_Shaman",
+  "Range": 24,
+  "Cone": 30,
+  "Particle": "Nakasar_Fractal_Imbued_Trail",
+  "Action": "ImbuedStone",
+  "NoTargetMessage": "nakasar_fractals_volcanic.stone.noTarget"
+}

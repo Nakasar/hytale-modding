@@ -1,0 +1,12 @@
+{
+  "$Comment": "Traînée de feu laissée par un rocher. Généré par tools/generate_volcanic.py.",
+  "Spawners": [
+    {
+      "SpawnerId": "Nakasar_Fractal_Fire_Trail_Flames",
+      "PositionOffset": {
+        "Y": 0.1
+      }
+    }
+  ],
+  "CullDistance": 72
+}

@@ -161,6 +161,7 @@ public final class FractalsPlugin extends JavaPlugin {
         Instabilities.exempt(Cliffside.SEAL_ROLE, Cliffside.SEEKER);
         Uncategorized.register();
         Stages.register(new Uncategorized());
+        Volcanic.register();
         Stages.register(new Volcanic());
 
         getCommandRegistry().registerCommand(new FractalCommand());

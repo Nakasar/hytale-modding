@@ -1,0 +1,7 @@
+{
+  "$Comment": "Feu du Volcanique (rochers, traînées, puits de lave, pieds brûlants, flamme qui se propage) : une part des PV max, l'armure ne le réduit pas.",
+  "BypassResistances": true,
+  "DurabilityLoss": false,
+  "StaminaLoss": false,
+  "DamageTextColor": "#ff8a3a"
+}

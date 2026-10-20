@@ -7,7 +7,7 @@ Deux mods, chacun avec son dossier de documentation :
 | Mod | Code | Documentation |
 |-----|------|---------------|
 | **Vampires** : le domaine du Comte vampire (plugin Java + pack d'assets, artefact `Nakasar-Vampires-<version>.jar`) | `mods/nakasar-vampires` | [docs/vampires](docs/vampires/) |
-| **Fractales des Brumes** : les fractales de Guild Wars 2 transposées dans Hytale, pour 1 à 5 joueurs (en cours : socle, Observatoire, progression et première fractale, la Falaise) | `mods/nakasar-fractals` | [docs/fractales](docs/fractales/) |
+| **Fractales des Brumes** : les fractales de Guild Wars 2 transposées dans Hytale, pour 1 à 5 joueurs (en cours : socle, Observatoire, progression, instabilités, fractales Falaise, Inclassable et Volcanique) | `mods/nakasar-fractals` | [docs/fractales](docs/fractales/) |
 
 Les notes communes aux deux mods (API serveur, PNJ) restent à la racine de `docs/`.
 
@@ -120,6 +120,38 @@ une falaise, qu'on escalade par des échafaudages.
 À vérifier en jeu : modèle des sceaux, force du souffle des gargouilles, escaliers en colimaçon praticables, modèle
 provisoire du dévoreur (`Zombie_Aberrant_Small`), blocs utilisables (râtelier, leviers, portes) dans une instance
 sans modification de blocs, rotation des barreaux de cage.
+
+Étape 5, **les instabilités** (`instability/`) : 0 en Initié, 1 en Adepte, 2 en Expert, 3 en Maître, tirées une fois
+par jour et par fractale pour tout le serveur (les rangs hauts gardent celles des rangs bas). Un joueur seul en tire
+une autre à la place de celles qui demandent un groupe. Les 8 : Dernier rire (les ennemis explosent à leur mort),
+Traînée toxique, Malaise social, Restez groupés, Bombe de flux, Vengeance, Pente glissante (recul accru), Oiseaux
+(nuées de corbeaux). `/fractale instabilites` donne celles de la partie en cours ou du jour.
+
+Étape 6, **Inclassable et Volcanique** (`tools/generate_uncategorized.py`, `tools/generate_volcanic.py`, paquets
+`uncategorized/` et `volcanic/`), avec les briques réutilisables : portes et points de retour (`arena/Gates`),
+consoles simultanées (`Consoles`, fenêtre 12/8/4 s selon le groupe), objets portés ou lancés (`Carried`,
+`Nakasar_Fractal_ThrowItem`), bouclier à compteur de coups (`HitShield`), charges +/- (`Polarity`).
+- **Inclassable** : plateformes des harpies (recul hors des plateformes, retour à la dernière plateforme sûre),
+  cour de la prison (générateur, puis prisonniers libérés un par un : lapin enragé, saboteur, chaman du feu, ettin),
+  escalier sous le feu de 4 tourelles (couloirs annoncés), 3 consoles à activer ensemble ; **Vieux Tom** et son gaz
+  (le ventilateur le chasse, il faut dès le niveau 12 deux batteries chargées de larmes des Brumes) ; plateformes de
+  lumière ; l'**Asura délirant** : 4 golems de cristal réveillés un à un puis ensemble, charges + et − à alterner,
+  éclairs sous les joueurs et orbes à tête chercheuse.
+- **Volcanique** : camp grawl autour d'un totem (la barre du totem compte les morts restantes), couloir aux
+  **rochers roulants** (niches pour s'abriter, traînée de feu), **Champion chaman** (8 piles qui réduisent ses dégâts
+  subis, retirées une à une par les **pierres imprégnées** lancées, tombées des chutes de pierres ; des vétérans
+  marchent vers 4 captifs à protéger, 5 éclats de Brume en plus si tous survivent), mine sur rails au-dessus de la
+  lave, puis le **Chaman imprégné** : Pieds brûlants (bouger ou rester au sol), puits de lave, flamme qui se propage ;
+  à 75/50/25 % il plane vers un villageois sous un bouclier à compteur de coups (le briser l'étourdit, l'atteindre le
+  soigne de 25 %).
+
+Modèles provisoires : harpies (chauve-souris ×2), lapin (boîte), saboteur, chaman du feu, grawls, captifs et Chaman
+imprégné (humanoïdes ; celui de GW2 est une harpie géante), ettin (`Zombie_Aberrant_Big`), corbeaux et chauves-souris
+(`Bat`), larves (`Spirit_Ember`).
+
+À vérifier en jeu : recul des harpies, portes des cellules, couloirs des tourelles le long de l'escalier, gaz et
+ventilateur de Tom, transparence des plateformes de lumière, lancer de la pierre imprégnée (clic droit vers le
+Champion), vétérans qui rejoignent les captifs, rochers et niches, Pieds brûlants au saut, vol plané du Chaman.
 
 ### Notes communes
 
