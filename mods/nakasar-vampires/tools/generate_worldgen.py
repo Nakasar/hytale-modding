@@ -85,10 +85,10 @@ LAYOUTS = 8
 LAYOUT_NOISE_SPREAD = 0.35   # écart type supposé du bruit en un point, d'une graine à l'autre
 
 
-def layout_bands():
-    """LAYOUTS + 1 seuils : quantiles d'une loi normale d'écart type LAYOUT_NOISE_SPREAD."""
+def layout_bands(count=LAYOUTS):
+    """count + 1 seuils : quantiles d'une loi normale d'écart type LAYOUT_NOISE_SPREAD."""
     from statistics import NormalDist
-    inner = [NormalDist(0.0, LAYOUT_NOISE_SPREAD).inv_cdf(k / LAYOUTS) for k in range(1, LAYOUTS)]
+    inner = [NormalDist(0.0, LAYOUT_NOISE_SPREAD).inv_cdf(k / count) for k in range(1, count)]
     return [-1.0e9] + [round(v, 3) for v in inner] + [1.0e9]
 
 
