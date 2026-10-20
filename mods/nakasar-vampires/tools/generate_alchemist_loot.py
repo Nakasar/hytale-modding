@@ -5,8 +5,8 @@
 
 - La pierre philosophale (`Nakasar_Philosopher_Stone`) et son bloc posé sur le piédestal du Bureau
   (`Nakasar_Philosopher_Pedestal_Stone`) : chaque joueur y prend sa propre pierre une fois par instance (interaction Java
-  `Nakasar_TakePhilosopherStone`), la pierre reste en place pour les autres. Elle sert au calice du rituel et au
-  palier 4 de l'autel (generate_occult.py, Nakasar_Sacrificial_Altar.json).
+  `Nakasar_TakePhilosopherStone`), la pierre reste en place pour les autres. Elle sert au calice du rituel
+  (generate_occult.py) ; d'autres recettes, côté chasseurs compris, viendront plus tard.
 - Les sacs de l'Alchimiste (`Nakasar_Alchemist_Bag`, `Nakasar_Alchemist_Bag_Hard`) : AlchemistSystem en donne un à
   chaque joueur de l'instance à la mort du boss (le second en mode difficile), ouvert d'un clic droit comme les sacs de
   prime (`Nakasar_OpenBountyBag`). Contenu : les trois principes, des essences, deux éclats de rune, une chance d'objet

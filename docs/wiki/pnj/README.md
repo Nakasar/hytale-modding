@@ -16,7 +16,7 @@ Toutes les créatures ajoutées par le mod. Les créatures du Comté forment **u
 | | Créature | Rang | PV | Où | Butin notable |
 |---|---|---|---|---|---|
 | ![vignette](../images/pnj/Nakasar_Vampire_Count.jpg) | [Comte Vampire](comte-vampire.md) | Boss | 8000 | Manoir du Comte | 1 rune |
-| ![vignette](../images/pnj/Nakasar_Vampire_Countess.jpg) | [Comtesse Vampire](comtesse-vampire.md) | Boss | 750 | Manoir du Comte (à la place du Comte, 50 %) | 1 rune |
+| ![vignette](../images/pnj/Nakasar_Vampire_Countess.jpg) | [Comtesse Vampire](comtesse-vampire.md) | Boss | 8000 | Manoir du Comte (à la place du Comte, 50 %) | 1 rune |
 | | [Capitaine de la garde](capitaine-de-la-garde.md) | Élite | 950 | Poste de garde (garnison) | Insigne du Capitaine, hache rouillée (33 %) |
 | | [Abomination zombie](abomination-zombie.md) | Élite | 700 | Ferme zombie | Cœur d'Abomination, cendres |
 | ![vignette](../images/pnj/Nakasar_Giant_Pumpkin.png) | [Citrouille géante](citrouille-geante.md) | Élite immobile | 750 | Champ de citrouilles géant | citrouilles, graines, essence, Graine de la Citrouille géante |
