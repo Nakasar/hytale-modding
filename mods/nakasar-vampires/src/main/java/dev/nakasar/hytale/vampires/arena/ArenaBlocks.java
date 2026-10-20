@@ -30,7 +30,6 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.WeakHashMap;
 
 /**
@@ -49,6 +48,10 @@ import java.util.WeakHashMap;
  *   sur les vrilles par {@code FireAffinitySystem}). Elles reviennent au bout de {@value #LANTERN_RESTORE} s.</li>
  *   <li><b>Braseros du Spectre</b> ({@link Braziers}) : un clic ou un coup les allume ; on ne peut pas les casser.</li>
  * </ul>
+ *
+ * <p>Cloche, lanternes et braseros ne réagissent ainsi que dans un lieu d'élite ({@value #ARENA_MARKER} à moins de
+ * {@value #ARENA_RADIUS} blocs) ; un levier, seulement à côté d'une porte de cellule. Ailleurs, le jeu garde la main.
+ * Les blocs retirés reviennent par {@link Restores}, gardé sur disque.
  */
 public final class ArenaBlocks {
 
@@ -57,6 +60,11 @@ public final class ArenaBlocks {
     public static final String LEVER = "Deco_Lever";
     public static final String BELL = "Nakasar_Alarm_Bell";
     public static final String LANTERN = "Nakasar_Pumpkin_Lantern";
+    /** Repère invisible des lieux d'élite : braseros, lanternes, cloche et poteaux ne réagissent qu'à moins de {@value #ARENA_RADIUS} blocs. */
+    public static final String ARENA_MARKER = "Nakasar_Arena_Marker";
+    static final int ARENA_RADIUS = 40;
+    /** Distance maximale entre un levier et la porte qu'il ouvre (la porte voisine est plus loin). */
+    private static final double LEVER_REACH = 2.0;
     static final int DOOR_HITS = 10;
     static final float LEVER_OPEN = 6f;
     static final float DOOR_RESTORE = 45f;
@@ -84,45 +92,53 @@ public final class ArenaBlocks {
         HITS.clear();
     }
 
-    /** Coup d'un joueur sur un bloc : vrai si le décor l'a pris en charge (le bloc ne s'abîme pas). */
-    static boolean onHit(World world, Store<EntityStore> store, Vector3i at, String name) {
-        ChunkStore chunks = world.getChunkStore();
+    /**
+     * Vrai si le décor prend en charge ce bloc (le coup, le clic ou la casse du jeu est alors annulé) : porte de cellule,
+     * bloc de cellule, levier à côté d'une porte de cellule, et dans un lieu d'élite ({@value #ARENA_MARKER}) cloche,
+     * lanterne-citrouille et braseros. Ailleurs, le jeu garde la main.
+     */
+    static boolean handled(ChunkStore chunks, Vector3i at, String name) {
         if (CELL_DOOR.equals(name)) {
-            hitDoor(world, store, chunks, at);
             return true;
         }
         if (LEVER.equals(name)) {
-            return pullLever(world, store, chunks, at);
+            return doorNear(chunks, at) != null;
         }
-        if (BELL.equals(name)) {
-            hitBell(world, store, chunks, at);
-            return true;
-        }
-        if (LANTERN.equals(name)) {
-            tipLantern(world, store, chunks, at);
-            return true;
-        }
-        if (Braziers.isUnlit(name)) {
-            Braziers.light(chunks, at);
-            return true;
-        }
-        if (Braziers.LIT.contains(name)) {
-            return true;
+        if (BELL.equals(name) || LANTERN.equals(name) || Braziers.isUnlit(name) || Braziers.LIT.contains(name)) {
+            return inArena(chunks, at);
         }
         return inCell(chunks, at);
     }
 
-    /** Clic d'un joueur sur un bloc : vrai si le décor l'a pris en charge (l'interaction vanilla est annulée). */
-    static boolean onUse(World world, Store<EntityStore> store, Vector3i at, String name) {
+    /** Vrai si un repère de lieu d'élite est à moins de {@value #ARENA_RADIUS} blocs. */
+    public static boolean inArena(ChunkStore chunks, Vector3i at) {
+        return !WorldBlocks.find(chunks, WorldBlocks.center(at), ARENA_RADIUS, List.of(ARENA_MARKER)).isEmpty();
+    }
+
+    /** Coup d'un joueur sur un bloc pris en charge ({@link #handled}). */
+    static void onHit(World world, Store<EntityStore> store, Vector3i at, String name) {
+        ChunkStore chunks = world.getChunkStore();
+        if (CELL_DOOR.equals(name)) {
+            hitDoor(world, store, chunks, at);
+        } else if (LEVER.equals(name)) {
+            pullLever(world, store, chunks, at);
+        } else if (BELL.equals(name)) {
+            hitBell(world, store, chunks, at);
+        } else if (LANTERN.equals(name)) {
+            tipLantern(world, store, chunks, at);
+        } else if (Braziers.isUnlit(name)) {
+            Braziers.light(chunks, at);
+        }
+    }
+
+    /** Clic d'un joueur sur un bloc pris en charge : levier, brasero éteint ; une porte de cellule ne s'ouvre pas à la main. */
+    static void onUse(World world, Store<EntityStore> store, Vector3i at, String name) {
         ChunkStore chunks = world.getChunkStore();
         if (LEVER.equals(name)) {
-            return pullLever(world, store, chunks, at);
-        }
-        if (Braziers.isUnlit(name)) {
+            pullLever(world, store, chunks, at);
+        } else if (Braziers.isUnlit(name)) {
             Braziers.light(chunks, at);
-            return true;
         }
-        return CELL_DOOR.equals(name);
     }
 
     /** Vrai si le bloc fait partie d'une cellule (à 2 blocs d'un marqueur de cellule, du sol au plafond). */
@@ -171,44 +187,29 @@ public final class ArenaBlocks {
         open(world, chunks, door, DOOR_RESTORE);
     }
 
-    /** Levier d'une cellule : ouvre la porte la plus proche ; faux (levier ordinaire, laissé au jeu) sans porte. */
-    private static boolean pullLever(World world, Store<EntityStore> store, ChunkStore chunks, Vector3i lever) {
+    /** Porte de cellule (encore fermée) à moins de {@value #LEVER_REACH} blocs du levier, ou null. */
+    private static Vector3i doorNear(ChunkStore chunks, Vector3i lever) {
         Vector3d from = WorldBlocks.center(lever);
         Vector3i nearest = WorldBlocks.nearest(WorldBlocks.find(chunks, from, 3, List.of(CELL_DOOR)), from);
-        if (nearest == null) {
-            return false;
-        }
-        Telegraphs.sound(store, DOOR_SOUND, from);
-        open(world, chunks, doorColumn(chunks, nearest), LEVER_OPEN);
-        return true;
+        return nearest != null && WorldBlocks.center(nearest).distance(from) <= LEVER_REACH ? nearest : null;
     }
 
-    /** Retire la porte et la remet au bout de `seconds` secondes (si la place est restée vide). */
+    /** Levier d'une cellule : ouvre sa porte quelques secondes (rien si elle est déjà ouverte ou abattue). */
+    private static void pullLever(World world, Store<EntityStore> store, ChunkStore chunks, Vector3i lever) {
+        Vector3i door = doorNear(chunks, lever);
+        Telegraphs.sound(store, DOOR_SOUND, WorldBlocks.center(lever));
+        if (door != null) {
+            open(world, chunks, doorColumn(chunks, door), LEVER_OPEN);
+        }
+    }
+
+    /** Retire la porte et la remet au bout de `seconds` secondes ({@link Restores}, gardé sur disque). */
     private static void open(World world, ChunkStore chunks, List<Vector3i> door, float seconds) {
         int rotation = door.isEmpty() ? 0 : WorldBlocks.rotation(chunks, door.get(0).x, door.get(0).y, door.get(0).z);
+        Restores.add(world, door, CELL_DOOR, rotation, seconds);
         for (Vector3i block : door) {
             WorldBlocks.clear(chunks, block.x, block.y, block.z);
         }
-        restoreLater(world, door, CELL_DOOR, rotation, seconds);
-    }
-
-    private static void restoreLater(World world, List<Vector3i> blocks, String name, int rotation, float seconds) {
-        long[] at = {-1};
-        TelegraphSystem.start(world, (w, s, now) -> {
-            if (at[0] < 0) {
-                at[0] = now + Telegraphs.seconds(seconds);
-            }
-            if (now < at[0]) {
-                return false;
-            }
-            ChunkStore chunks = w.getChunkStore();
-            for (Vector3i block : blocks) {
-                if (WorldBlocks.id(chunks, block.x, block.y, block.z) == BlockType.EMPTY_ID) {
-                    WorldBlocks.set(chunks, block.x, block.y, block.z, name, rotation);
-                }
-            }
-            return true;
-        });
     }
 
     // --- cloche d'alarme -----------------------------------------------------------------------
@@ -225,9 +226,9 @@ public final class ArenaBlocks {
         }
         hits.remove(key);
         int rotation = WorldBlocks.rotation(chunks, at.x, at.y, at.z);
+        Restores.add(world, List.of(at), BELL, rotation, BELL_RESTORE);
         WorldBlocks.clear(chunks, at.x, at.y, at.z);
         Telegraphs.particle(store, "Stick_Slam_Ground_Large", center, 0.8f);
-        restoreLater(world, List.of(at), BELL, rotation, BELL_RESTORE);
     }
 
     /** Cloche intacte la plus proche de `from` dans un rayon de `radius` blocs, ou null. */
@@ -239,11 +240,11 @@ public final class ArenaBlocks {
 
     private static void tipLantern(World world, Store<EntityStore> store, ChunkStore chunks, Vector3i at) {
         int rotation = WorldBlocks.rotation(chunks, at.x, at.y, at.z);
+        Restores.add(world, List.of(at), LANTERN, rotation, LANTERN_RESTORE);
         WorldBlocks.clear(chunks, at.x, at.y, at.z);
         Vector3d center = new Vector3d(at.x + 0.5, at.y, at.z + 0.5);
         Telegraphs.sound(store, FIRE_SOUND, center);
         TelegraphSystem.start(world, new Fire(center));
-        restoreLater(world, List.of(at), LANTERN, rotation, LANTERN_RESTORE);
     }
 
     /** Sol en feu autour d'une lanterne renversée : brûle tout ce qui s'y tient. */
@@ -331,7 +332,8 @@ public final class ArenaBlocks {
                            CommandBuffer<EntityStore> buffer, DamageBlockEvent event) {
             BlockType type = event.getBlockType();
             Vector3i at = event.getTargetBlock();
-            if (type == null || at == null || event.isCancelled() || !isPlayer(chunk, index) || !relevant(type.getId(), store, at)) {
+            if (type == null || at == null || event.isCancelled() || !isPlayer(chunk, index)
+                    || !handled(world(store).getChunkStore(), at, type.getId())) {
                 return;
             }
             event.setCancelled(true);
@@ -340,11 +342,6 @@ public final class ArenaBlocks {
             World world = world(store);
             // Les blocs changent après le traitement en cours du store.
             world.execute(() -> onHit(world, world.getEntityStore().getStore(), block, name));
-        }
-
-        private static boolean relevant(String name, Store<EntityStore> store, Vector3i at) {
-            return Set.of(CELL_DOOR, LEVER, BELL, LANTERN).contains(name) || Braziers.isUnlit(name)
-                    || Braziers.LIT.contains(name) || inCell(world(store).getChunkStore(), at);
         }
     }
 
@@ -368,9 +365,7 @@ public final class ArenaBlocks {
             if (type == null || at == null || event.isCancelled() || !isPlayer(chunk, index)) {
                 return;
             }
-            String name = type.getId();
-            if (Set.of(CELL_DOOR, LEVER, BELL).contains(name) || Braziers.LIT.contains(name) || Braziers.isUnlit(name)
-                    || inCell(world(store).getChunkStore(), at)) {
+            if (handled(world(store).getChunkStore(), at, type.getId())) {
                 event.setCancelled(true);
             }
         }
@@ -397,7 +392,8 @@ public final class ArenaBlocks {
                 return;
             }
             String name = type.getId();
-            if (!LEVER.equals(name) && !CELL_DOOR.equals(name) && !Braziers.isUnlit(name)) {
+            if (!LEVER.equals(name) && !CELL_DOOR.equals(name) && !Braziers.isUnlit(name)
+                    || !handled(world(store).getChunkStore(), at, name)) {
                 return;
             }
             event.setCancelled(true);

@@ -6,9 +6,12 @@ import com.hypixel.hytale.server.core.universe.world.storage.ChunkStore;
 import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
 import dev.nakasar.hytale.vampires.telegraph.Telegraphs;
 import org.joml.Vector3d;
+import org.joml.Vector3i;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.WeakHashMap;
 
@@ -32,15 +35,22 @@ public final class BarnPosts {
     private BarnPosts() {
     }
 
+    /** Temps avant qu'un poteau tombé ne soit remis en place (secondes). */
+    private static final float RESTORE = 120f;
+
     public static boolean isPost(String name) {
         return name != null && (name.endsWith("_Beam") || name.endsWith("_Trunk"));
     }
 
-    /** Choc de charge sur le bloc (x, y, z) : fend le poteau, ou le fait céder s'il était déjà fendu. Faux si ce n'est pas un poteau. */
+    /**
+     * Choc de charge sur le bloc (x, y, z) : fend le poteau, ou le fait céder s'il était déjà fendu. Faux si ce n'est pas
+     * un poteau : seuls comptent les poutres et troncs debout d'un lieu d'élite ({@link ArenaBlocks#inArena}) ; un arbre
+     * ou une charpente ailleurs reste un simple mur.
+     */
     public static boolean hit(World world, Store<EntityStore> store, int x, int y, int z) {
         ChunkStore chunks = world.getChunkStore();
         String name = WorldBlocks.name(chunks, x, y, z);
-        if (!isPost(name)) {
+        if (!isPost(name) || WorldBlocks.rotation(chunks, x, y, z) != 0 || !ArenaBlocks.inArena(chunks, new Vector3i(x, y, z))) {
             return false;
         }
         int bottom = y;
@@ -63,8 +73,13 @@ public final class BarnPosts {
         if (top - bottom + 1 > MAX_HEIGHT) {
             return true;
         }
+        List<Vector3i> column = new ArrayList<>();
         for (int yy = bottom; yy <= top; yy++) {
-            WorldBlocks.clear(chunks, x, yy, z);
+            column.add(new Vector3i(x, yy, z));
+        }
+        Restores.add(world, column, name, 0, RESTORE);
+        for (Vector3i block : column) {
+            WorldBlocks.clear(chunks, block.x, block.y, block.z);
         }
         Telegraphs.particle(store, BREAK_PARTICLE, new Vector3d(x + 0.5, bottom + 0.1, z + 0.5), 1.2f);
         Telegraphs.sound(store, BREAK_SOUND, at);

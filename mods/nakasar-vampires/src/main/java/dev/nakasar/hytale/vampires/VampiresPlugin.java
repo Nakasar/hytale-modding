@@ -7,6 +7,7 @@ import com.hypixel.hytale.server.core.plugin.JavaPluginInit;
 import dev.nakasar.hytale.vampires.arena.AlarmBellInteraction;
 import dev.nakasar.hytale.vampires.arena.ArenaBlocks;
 import dev.nakasar.hytale.vampires.arena.BarnPosts;
+import dev.nakasar.hytale.vampires.arena.Restores;
 import dev.nakasar.hytale.vampires.elite.EliteStun;
 import dev.nakasar.hytale.vampires.elite.StunSelfInteraction;
 import dev.nakasar.hytale.vampires.telegraph.ChargeInteraction;
@@ -159,6 +160,8 @@ public final class VampiresPlugin extends JavaPlugin {
 
     @Override
     protected void setup() {
+        // Blocs du décor des élites en attente de remise en place (porte, cloche, lanterne, poteau).
+        Restores.load(getDataDirectory());
         var interactions = getCodecRegistry(Interaction.CODEC);
         interactions.register(TeleportCasterToImpactInteraction.TYPE_ID,
                 TeleportCasterToImpactInteraction.class, TeleportCasterToImpactInteraction.CODEC);

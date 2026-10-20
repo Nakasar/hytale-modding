@@ -124,8 +124,13 @@ public class SummonMinionsInteraction extends SimpleInstantInteraction {
     private static final String SHIELD_GLOW = "Nakasar_Shield_Glow";
     /** Rayon de recherche des niches ({@code SpawnBlock}). */
     private static final int NICHE_RADIUS = 16;
-    /** Écart des particules d'un lien (blocs). */
-    private static final double TETHER_STEP = 1.6;
+    /** Écart des particules d'un lien (blocs) et nombre maximal de points par lien. */
+    private static final double TETHER_STEP = 2.0;
+    private static final int TETHER_POINTS = 6;
+    /** Liens et halo redessinés toutes les {@value #DRAW_MS} ms (les points durent un peu plus). */
+    private static final long DRAW_MS = 500;
+    /** Dernier dessin des liens par élite (System.currentTimeMillis). */
+    private static final Map<Ref<EntityStore>, Long> LAST_DRAW = new ConcurrentHashMap<>();
     /** Dernier appel d'invocation par élite depuis son dernier retour au calme (System.nanoTime), réussi ou non. */
     private static final Map<Ref<EntityStore>, Long> LAST_CALL = new ConcurrentHashMap<>();
 
@@ -281,7 +286,7 @@ public class SummonMinionsInteraction extends SimpleInstantInteraction {
                     spawned++;
                 }
             }
-            wanted = spawned;
+            // Alcôves occupées ou sortie impossible : le reste de la vague vient autour de l'élite.
         }
         // Partagé par les serviteurs de l'appel : une sonde qui échoue partout n'est pas retentée.
         boolean[] probeUsable = {true};
@@ -488,6 +493,11 @@ public class SummonMinionsInteraction extends SimpleInstantInteraction {
         });
         if (alive(summoner, store)) {
             TransformComponent home = store.getComponent(summoner, TransformComponent.getComponentType());
+            long now = System.currentTimeMillis();
+            boolean draw = now - LAST_DRAW.getOrDefault(summoner, 0L) >= DRAW_MS;
+            if (draw) {
+                LAST_DRAW.put(summoner, now);
+            }
             float healing = 0f;
             for (var it = minions.iterator(); it.hasNext(); ) {
                 Ref<EntityStore> minion = it.next();
@@ -502,7 +512,7 @@ public class SummonMinionsInteraction extends SimpleInstantInteraction {
                 }
                 healing += HEAL.getOrDefault(minion, 0f);
                 String tether = TETHER.get(minion);
-                if (tether != null && home != null && at != null) {
+                if (draw && tether != null && home != null && at != null) {
                     tether(store, tether, at.getPosition(), home.getPosition());
                 }
             }
@@ -510,7 +520,7 @@ public class SummonMinionsInteraction extends SimpleInstantInteraction {
             if (MinionShieldSystem.isShielded(summoner, store)) {
                 if (minions.isEmpty()) {
                     store.tryRemoveComponent(summoner, Invulnerable.getComponentType());
-                } else if (home != null) {
+                } else if (draw && home != null) {
                     // Halo doré : l'élite est protégée tant que ses serviteurs vivent (liens visibles vers eux).
                     ParticleUtil.spawnParticleEffect(SHIELD_GLOW, home.getPosition(), store);
                 }
@@ -520,6 +530,7 @@ public class SummonMinionsInteraction extends SimpleInstantInteraction {
         }
         MINIONS.remove(summoner);
         LAST_CALL.remove(summoner);
+        LAST_DRAW.remove(summoner);
         for (Ref<EntityStore> minion : minions) {
             HEAL.remove(minion);
             TETHER.remove(minion);
@@ -532,7 +543,7 @@ public class SummonMinionsInteraction extends SimpleInstantInteraction {
     /** Lien visible : particules posées de loin en loin entre le serviteur et son élite, à hauteur de torse. */
     private static void tether(Store<EntityStore> store, String particle, Vector3d from, Vector3d to) {
         double length = from.distance(to);
-        int n = Math.max(1, (int) Math.ceil(length / TETHER_STEP));
+        int n = Math.min(TETHER_POINTS, Math.max(1, (int) Math.ceil(length / TETHER_STEP)));
         for (int k = 1; k < n; k++) {
             Vector3d p = new Vector3d(from).lerp(to, (double) k / n).add(0, 1.0, 0);
             ParticleUtil.spawnParticleEffect(particle, p, store);
@@ -559,6 +570,7 @@ public class SummonMinionsInteraction extends SimpleInstantInteraction {
         MINIONS.clear();
         HEAL.clear();
         TETHER.clear();
+        LAST_DRAW.clear();
         LAST_CALL.clear();
     }
 }

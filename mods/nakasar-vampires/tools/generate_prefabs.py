@@ -537,6 +537,8 @@ LEVER = "Deco_Lever"
 ALARM_BELL = "Nakasar_Alarm_Bell"
 PUMPKIN_LANTERN = "Nakasar_Pumpkin_Lantern"
 GEAR_ALCOVE = "Nakasar_Gear_Alcove"
+# Repère invisible des lieux d'élite : le décor (braseros, poteaux, lanternes, cloche) ne réagit qu'à moins de 40 blocs.
+ARENA_MARKER = "Nakasar_Arena_Marker"
 SPECTRE_BRAZIER = "*Furniture_Human_Ruins_Brazier_State_Definitions_Off"
 
 STONE_WALL = [("Rock_Stone_Brick", 6), ("Rock_Stone_Brick_Mossy", 3), ("Rock_Stone_Cobble", 1), ("Rock_Stone_Cobble_Mossy", 1)]
@@ -940,6 +942,7 @@ def giant_clearing(p, radius=GIANT_CLEARING):
     lanterns = [(sx * 4, sz * 4) for sx in (-1, 1) for sz in (-1, 1)]
     for lx, lz in lanterns:
         p.set(lx, 0, lz, PUMPKIN_LANTERN)
+    p.set(0, 0, -6, ARENA_MARKER)
     near_center = lambda x, z: x * x + z * z <= 4 or any(abs(x - lx) <= 1 and abs(z - lz) <= 1 for lx, lz in lanterns)
     for _ in range(30):
         a = r.random() * 2 * math.pi
@@ -1112,6 +1115,9 @@ def spectre_braziers(p, cx, cz, spots):
                 placed += 1
                 break
     assert placed == len(spots), f"braseros du Spectre : {placed} posés sur {len(spots)}"
+    marker = next(((cx + dx, cz + dz) for dx, dz in ((4, 0), (-4, 0), (0, 4), (0, -4), (3, 3), (-3, -3)) if p.free(cx + dx, 0, cz + dz)), None)
+    assert marker, "pas de place pour le repère d'arène du Spectre"
+    p.set(marker[0], 0, marker[1], ARENA_MARKER)
 
 
 def cemetery(seed, theme, spectre=False):
@@ -2558,6 +2564,8 @@ def farm(seed, variant):
     for bx, bz in ((8, -17), (17, -17), (8, -13), (17, -13)):
         p.clear(bx, 0, bz, bx, BARN_WALL - 1, bz)
         p.fill(bx, 0, bz, bx, BARN_WALL - 1, bz, post, UPRIGHT)
+    p.clear(16, 0, -15, 16, 0, -15)
+    p.set(16, 0, -15, ARENA_MARKER)
     # passage de la grange, après tout le décor (ruines, éboulis, braises) : deux rangs dedans, la porte, trois dehors
     p.clear(10, 0, -12, 14, BARN_DOOR_HEIGHT - 1, -7)
     return p
@@ -2592,12 +2600,11 @@ def prison_cells(p, x0, z0, count=3):
         p.set(x0 + 2, 0, cz, PRISON_CELL)  # fond de cellule
         p.set(x0 + 2, 2, cz, "Deco_Iron_Chains_Vertical")
         zs.append(cz)
-    # leviers posés après toutes les cellules : dehors, au pied du mur, à moins de 3 blocs de leur porte et à plus
-    # de 3 de la voisine (le plugin ouvre la porte la plus proche dans ce rayon)
+    # leviers posés après toutes les cellules : dehors, au pied du mur, en diagonale de leur porte (1,4 bloc) ; le
+    # plugin n'ouvre que la porte la plus proche à 2 blocs au plus, la voisine est à 2,2 blocs
     for cz in zs:
-        spot = next(((x0 - 1, lz) for lz in (cz - 1, cz + 2) if all(p.free(x0 - 1, y, lz) for y in range(2))), None)
-        assert spot, f"pas de place pour le levier de la cellule ({x0}, {cz})"
-        p.set(spot[0], 0, spot[1], LEVER, WEST)
+        assert all(p.free(x0 - 1, y, cz - 1) for y in range(2)), f"pas de place pour le levier de la cellule ({x0}, {cz})"
+        p.set(x0 - 1, 0, cz - 1, LEVER, WEST)
     return zs
 
 
@@ -2707,6 +2714,8 @@ def guard_post(seed, variant):
         # cloche d'alarme dans la cour, en vue de l'entrée : abattue avant (5 coups), le Capitaine n'a pas de renforts
         p.clear(-7, 0, 10, -7, 2, 10)
         p.set(-7, 0, 10, ALARM_BELL, SOUTH)
+        p.clear(-8, 0, 10, -8, 0, 10)
+        p.set(-8, 0, 10, ARENA_MARKER)
         spawners(p, SPAWN_CAPTAIN, [(0, 0)])
         spawners(p, SPAWN_GUARD, [(0, 13), (-6, -7), (10, -6), (9, 2), (-S + 1, -S + 4), (-13, 1)])
     elif variant == "rebels":

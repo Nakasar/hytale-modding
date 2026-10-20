@@ -3,23 +3,17 @@ package dev.nakasar.hytale.vampires.tower;
 import com.hypixel.hytale.component.Ref;
 import com.hypixel.hytale.component.Store;
 import com.hypixel.hytale.protocol.ChangeVelocityType;
-import com.hypixel.hytale.protocol.SoundCategory;
 import com.hypixel.hytale.server.core.asset.type.entityeffect.config.EntityEffect;
 import com.hypixel.hytale.server.core.asset.type.entityeffect.config.OverlapBehavior;
-import com.hypixel.hytale.server.core.asset.type.soundevent.config.SoundEvent;
 import com.hypixel.hytale.server.core.entity.effect.EffectControllerComponent;
-import com.hypixel.hytale.server.core.modules.entity.component.TransformComponent;
 import com.hypixel.hytale.server.core.modules.entity.damage.Damage;
 import com.hypixel.hytale.server.core.modules.entity.damage.DamageCause;
 import com.hypixel.hytale.server.core.modules.entity.damage.DamageSystems;
-import com.hypixel.hytale.server.core.modules.entity.damage.DeathComponent;
 import com.hypixel.hytale.server.core.modules.entitystats.EntityStatMap;
 import com.hypixel.hytale.server.core.modules.entitystats.EntityStatValue;
 import com.hypixel.hytale.server.core.modules.entitystats.asset.DefaultEntityStatTypes;
 import com.hypixel.hytale.server.core.modules.physics.component.Velocity;
 import com.hypixel.hytale.server.core.universe.PlayerRef;
-import com.hypixel.hytale.server.core.universe.world.ParticleUtil;
-import com.hypixel.hytale.server.core.universe.world.SoundUtil;
 import com.hypixel.hytale.server.core.universe.world.World;
 import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
 import dev.nakasar.hytale.vampires.VampiresPlugin;
@@ -56,14 +50,11 @@ final class TowerFx {
     }
 
     static void particle(Store<EntityStore> store, String id, Vector3d at, float scale) {
-        ParticleUtil.spawnParticleEffect(id, at, 0f, 0f, 0f, scale, 1f, store);
+        Telegraphs.particle(store, id, at, scale);
     }
 
     static void sound(Store<EntityStore> store, String id, Vector3d at) {
-        int index = SoundEvent.getAssetMap().getIndexOrDefault(id, -1);
-        if (index >= 0) {
-            SoundUtil.playSoundEvent3d(index, SoundCategory.SFX, at.x(), at.y(), at.z(), store);
-        }
+        Telegraphs.sound(store, id, at);
     }
 
     /** Part `fraction` de la vie maximale de `ref`, cause `causeId`, signée `source`. */
@@ -117,25 +108,19 @@ final class TowerFx {
 
     /** Position d'une entité vivante (null si elle est morte ou disparue). */
     static Vector3d position(Store<EntityStore> store, Ref<EntityStore> ref) {
-        if (ref == null || !ref.isValid() || store.getComponent(ref, DeathComponent.getComponentType()) != null) {
-            return null;
-        }
-        TransformComponent transform = store.getComponent(ref, TransformComponent.getComponentType());
-        return transform == null ? null : transform.getPosition();
+        return Telegraphs.position(store, ref);
     }
 
     static double horizontal(Vector3d a, Vector3d b) {
-        double dx = a.x() - b.x();
-        double dz = a.z() - b.z();
-        return Math.sqrt(dx * dx + dz * dz);
+        return Telegraphs.horizontal(a, b);
     }
 
     /** Angle horizontal de `p` vu de `center`, en radians (atan2(dz, dx), comme les secteurs de TowerLayout). */
     static double angle(Vector3d center, Vector3d p) {
-        return Math.atan2(p.z() - center.z(), p.x() - center.x());
+        return Telegraphs.angle(center, p);
     }
 
     static long seconds(float s) {
-        return (long) (s * 1_000_000_000L);
+        return Telegraphs.seconds(s);
     }
 }

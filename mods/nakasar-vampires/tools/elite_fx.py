@@ -4,7 +4,7 @@ Les zones rouges des attaques sont celles de la Tour (tools/tower_warnings.py, d
 ces particules disent le reste :
 
 - `Nakasar_Tether_<élite>` : un point lumineux d'un lien entre un serviteur et l'élite qu'il protège ou soigne
-  (SummonMinionsInteraction, clé TetherParticle, rejoué toutes les 250 ms de loin en loin) : vert pour les vrilles de
+  (SummonMinionsInteraction, clé TetherParticle, rejoué toutes les 500 ms, 6 points au plus par lien) : vert pour les vrilles de
   la citrouille, bleu pour les rouages de l'armure, blanc pâle pour les fantômes du Spectre, rouge sombre pour les
   gardes appelés par la cloche.
 - `Nakasar_Shield_Glow` : halo doré de l'élite protégée par ses serviteurs (MinionShieldSystem).
@@ -45,7 +45,7 @@ def system(name, comment, spawners, cull=64):
 def tethers():
     out = {}
     for name, (light, deep) in TETHERS.items():
-        dot = spawner(BALL, (0.35, 0.35), {
+        dot = spawner(BALL, (0.65, 0.65), {
             "0": {"Opacity": 0.2, "Color": light}, "40": {"Opacity": 0.9, "Color": deep}, "100": {"Opacity": 0, "Color": deep},
         }, {"Opacity": 0.6, "Scale": {"X": _range(0.35)}}, count=(1, 1), rate=(1, 1), burst=True, max_particles=1)
         out.update(system(f"Nakasar_Tether_{name}", f"Point d'un lien entre un serviteur ({name}) et son élite.",

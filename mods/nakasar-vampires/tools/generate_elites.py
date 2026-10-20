@@ -65,6 +65,7 @@ MACE = "Weapon_Mace_Onyxium"
 ARMOR_SLAM_RADIUS = 4.5
 INFERNO_RADIUS = 6.5
 GEAR_ALCOVE = "Nakasar_Gear_Alcove"
+ARENA_MARKER = "Nakasar_Arena_Marker"
 COLD_WAVE_RADIUS = 6.0
 
 
@@ -866,6 +867,13 @@ def main():
     write_json(SPAWNERS / f"{GEAR_ALCOVE}.json", {
         "$Comment": "Bloc invisible et traversable posé dans une alcôve de la crypte : les rouages de l'armure enchantée en sortent (Nakasar_SummonMinions, SpawnBlock).",
         "TranslationProperties": {"Name": f"nakasar_mobs.items.{GEAR_ALCOVE}.name"},
+        "Quality": "Developer",
+        "MaxStack": 64,
+        "BlockType": {"Material": "Empty", "DrawType": "Empty", "Opacity": "Transparent"},
+    })
+    write_json(SPAWNERS / f"{ARENA_MARKER}.json", {
+        "$Comment": "Bloc invisible et traversable posé dans les lieux des élites du Comté (grange, poste de garde, clairière de la citrouille, château et cimetière du Spectre) : seuls les blocs du décor à moins de 40 blocs d'un tel bloc réagissent aux coups et aux clics (arena.ArenaBlocks) ; ailleurs, braseros, poutres et troncs restent ceux du jeu.",
+        "TranslationProperties": {"Name": f"nakasar_mobs.items.{ARENA_MARKER}.name"},
         "Quality": "Developer",
         "MaxStack": 64,
         "BlockType": {"Material": "Empty", "DrawType": "Empty", "Opacity": "Transparent"},

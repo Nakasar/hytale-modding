@@ -64,6 +64,8 @@ public class ChargeInteraction extends SimpleInstantInteraction {
     /** Demi-largeur du corps et distance du front au centre (blocs). */
     private static final double HALF_WIDTH = 0.7;
     private static final double FRONT = 1.0;
+    /** Plus grand pas de la course entre deux tests de mur et de joueurs (blocs). */
+    private static final double MAX_STEP = 0.5;
     private static final String TRAIL_PARTICLE = "Stick_Slam_Ground_Large";
 
     protected float length = 12f;
@@ -141,28 +143,49 @@ public class ChargeInteraction extends SimpleInstantInteraction {
             double move = Math.min(config.speed * (now - last) / 1e9, config.length - travelled);
             last = now;
             ChunkStore chunks = world.getChunkStore();
-            Vector3d next = new Vector3d(at.x() + dx * move, strip.origin().y(), at.z() + dz * move);
-            int[] wall = wallAhead(chunks, next);
-            if (wall != null) {
-                stop(world, store, at, wall);
-                return true;
+            // Par petits pas : un tick long ne doit faire traverser ni mur, ni poteau, ni joueur.
+            int steps = Math.max(1, (int) Math.ceil(move / MAX_STEP));
+            Vector3d current = at;
+            for (int i = 0; i < steps; i++) {
+                double step = move / steps;
+                Vector3d next = new Vector3d(current.x() + dx * step, strip.origin().y(), current.z() + dz * step);
+                int[] wall = wallAhead(chunks, next);
+                if (wall != null) {
+                    moveTo(store, current);
+                    stop(world, store, current, wall);
+                    return true;
+                }
+                if (!WorldBlocks.solid(chunks, (int) Math.floor(next.x()), (int) Math.floor(next.y() - 0.5), (int) Math.floor(next.z()))
+                        && !WorldBlocks.solid(chunks, (int) Math.floor(next.x()), (int) Math.floor(next.y() - 1.5), (int) Math.floor(next.z()))) {
+                    moveTo(store, current);
+                    end(store);   // bord d'un vide : elle s'arrête net
+                    return true;
+                }
+                travelled += step;
+                trample(world, store, next);
+                current = next;
             }
-            if (!WorldBlocks.solid(chunks, (int) Math.floor(next.x()), (int) Math.floor(next.y() - 0.5), (int) Math.floor(next.z()))
-                    && !WorldBlocks.solid(chunks, (int) Math.floor(next.x()), (int) Math.floor(next.y() - 1.5), (int) Math.floor(next.z()))) {
-                end(store);   // bord d'un vide : elle s'arrête net
-                return true;
-            }
-            store.putComponent(caster, Teleport.getComponentType(), new Teleport(next, new Rotation3f(0f, yaw, 0f)));
-            travelled += move;
-            trample(world, store, next);
+            moveTo(store, current);
             if (((int) (travelled * 2)) % 3 == 0) {
-                Telegraphs.particle(store, TRAIL_PARTICLE, new Vector3d(next).add(0, 0.1, 0), 0.5f);
+                Telegraphs.particle(store, TRAIL_PARTICLE, new Vector3d(current).add(0, 0.1, 0), 0.5f);
             }
             if (travelled >= config.length - 1e-3) {
                 end(store);
                 return true;
             }
             return false;
+        }
+
+        @Override
+        public void abort(World world, Store<EntityStore> store) {
+            // Tâche interrompue (exception) : l'élite ne doit jamais rester figée.
+            if (charging) {
+                end(store);
+            }
+        }
+
+        private void moveTo(Store<EntityStore> store, Vector3d at) {
+            store.putComponent(caster, Teleport.getComponentType(), new Teleport(at, new Rotation3f(0f, yaw, 0f)));
         }
 
         /** Premier bloc plein devant le corps (front, côtés, de la cheville au haut du corps), ou null. */

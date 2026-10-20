@@ -32,6 +32,7 @@ import com.hypixel.hytale.server.npc.entities.NPCEntity;
 import com.hypixel.hytale.server.npc.role.support.MarkedEntitySupport;
 import dev.nakasar.hytale.vampires.VampiresPlugin;
 import dev.nakasar.hytale.vampires.allegiance.Allegiances;
+import dev.nakasar.hytale.vampires.arena.ArenaBlocks;
 import dev.nakasar.hytale.vampires.arena.Braziers;
 import dev.nakasar.hytale.vampires.arena.WorldBlocks;
 import dev.nakasar.hytale.vampires.domination.Dominations;
@@ -446,7 +447,7 @@ public class TelegraphInteraction extends SimpleInstantInteraction {
                 Dominations.dominate(victim, caster, config.dominate);
             }
             if (config.imprison && player) {
-                ImprisonPlayerInteraction.imprison(store, chunks, caster, victim, "Nakasar_Prison_Cell", config.cellRadius,
+                ImprisonPlayerInteraction.imprison(store, chunks, caster, victim, ArenaBlocks.CELL_MARKER, config.cellRadius,
                         config.effectId, config.effectDuration);
             }
             if (config.hitParticle != null && !config.hitParticle.isBlank()) {

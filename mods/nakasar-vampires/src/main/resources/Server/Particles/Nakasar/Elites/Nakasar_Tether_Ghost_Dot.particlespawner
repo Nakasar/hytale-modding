@@ -2,8 +2,8 @@
   "RenderMode": "BlendAdd",
   "ParticleRotationInfluence": "Billboard",
   "ParticleLifeSpan": {
-    "Min": 0.35,
-    "Max": 0.35
+    "Min": 0.65,
+    "Max": 0.65
   },
   "ParticleRotateWithSpawner": false,
   "TrailSpawnerPositionMultiplier": 1,
