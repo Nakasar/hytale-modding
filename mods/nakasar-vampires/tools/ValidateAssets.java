@@ -45,6 +45,10 @@ import java.util.stream.Stream;
 public class ValidateAssets {
     private static final Map<String, String> CODECS = new LinkedHashMap<>();
     private static final String WE = "com.hypixel.hytale.builtin.adventure.worldevents.";
+    /** Particules (systèmes et émetteurs) : reconnues à l'extension du fichier, pas au dossier. */
+    private static final String PARTICLE = "com.hypixel.hytale.server.core.asset.type.particle.config.";
+    private static final String PARTICLE_SYSTEM = ".particlesystem";
+    private static final String PARTICLE_SPAWNER = ".particlespawner";
 
     private static final List<String> STORES = List.of(
             "com.hypixel.hytale.server.core.asset.AssetRegistryLoader"
@@ -970,7 +974,8 @@ public class ValidateAssets {
         List<Path> files;
         try (Stream<Path> walk = Files.walk(root)) {
             files = walk.filter(Files::isRegularFile)
-                    .filter(p -> p.toString().endsWith(".json") || p.toString().endsWith(".bson"))
+                    .filter(p -> p.toString().endsWith(".json") || p.toString().endsWith(".bson")
+                            || p.toString().endsWith(PARTICLE_SYSTEM) || p.toString().endsWith(PARTICLE_SPAWNER))
                     .filter(p -> !p.toString().endsWith(".prefab.json"))
                     .sorted()
                     .toList();
@@ -979,7 +984,9 @@ public class ValidateAssets {
         int checked = 0;
         for (Path file : files) {
             String rel = root.relativize(file).toString().replace('\\', '/');
-            String className = CODECS.entrySet().stream()
+            String className = rel.endsWith(PARTICLE_SYSTEM) ? PARTICLE + "ParticleSystem"
+                    : rel.endsWith(PARTICLE_SPAWNER) ? PARTICLE + "ParticleSpawner"
+                    : CODECS.entrySet().stream()
                     .filter(e -> rel.startsWith(e.getKey()))
                     .map(Map.Entry::getValue)
                     .findFirst()

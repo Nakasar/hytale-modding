@@ -1,0 +1,18 @@
+{
+  "$Comment": "Seau plein d'un porteur de la Chimère (lueur verte). Généré par tools/tower_fx.py.",
+  "Spawners": [
+    {
+      "SpawnerId": "Nakasar_Bucket_Glow_Glow",
+      "PositionOffset": {
+        "Y": 0.0
+      }
+    },
+    {
+      "SpawnerId": "Nakasar_Bucket_Glow_Drips",
+      "PositionOffset": {
+        "Y": 0.0
+      }
+    }
+  ],
+  "CullDistance": 64
+}

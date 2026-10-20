@@ -1,0 +1,18 @@
+{
+  "$Comment": "Flammes au sol d'un quadrant de feu actif (golem de cristal). Généré par tools/tower_fx.py.",
+  "Spawners": [
+    {
+      "SpawnerId": "Nakasar_Trans_Ground_Fire_Flames",
+      "PositionOffset": {
+        "Y": 0.1
+      }
+    },
+    {
+      "SpawnerId": "Nakasar_Trans_Ground_Fire_Embers",
+      "PositionOffset": {
+        "Y": 0.2
+      }
+    }
+  ],
+  "CullDistance": 64
+}

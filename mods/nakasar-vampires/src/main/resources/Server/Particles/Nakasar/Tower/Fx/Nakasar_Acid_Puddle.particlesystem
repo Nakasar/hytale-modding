@@ -1,0 +1,24 @@
+{
+  "$Comment": "Flaque d'acide d'un seau renversé (Chimère du laboratoire). Généré par tools/tower_fx.py.",
+  "Spawners": [
+    {
+      "SpawnerId": "Nakasar_Acid_Puddle_Disc",
+      "PositionOffset": {
+        "Y": 0.04
+      }
+    },
+    {
+      "SpawnerId": "Nakasar_Acid_Puddle_Edge",
+      "PositionOffset": {
+        "Y": 0.05
+      }
+    },
+    {
+      "SpawnerId": "Nakasar_Acid_Puddle_Bubbles",
+      "PositionOffset": {
+        "Y": 0.1
+      }
+    }
+  ],
+  "CullDistance": 64
+}

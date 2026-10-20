@@ -1,0 +1,18 @@
+{
+  "$Comment": "Rochers et fractures d'un quadrant de terre actif (golem de cristal). Généré par tools/tower_fx.py.",
+  "Spawners": [
+    {
+      "SpawnerId": "Nakasar_Trans_Ground_Earth_Rocks",
+      "PositionOffset": {
+        "Y": 0.1
+      }
+    },
+    {
+      "SpawnerId": "Nakasar_Trans_Ground_Earth_Dust",
+      "PositionOffset": {
+        "Y": 0.1
+      }
+    }
+  ],
+  "CullDistance": 64
+}

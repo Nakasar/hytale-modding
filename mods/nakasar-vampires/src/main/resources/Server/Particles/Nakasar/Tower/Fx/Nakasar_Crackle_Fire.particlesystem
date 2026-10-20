@@ -1,0 +1,12 @@
+{
+  "$Comment": "Crépitements (Fire) d'une fiole de l'Alchimiste dans son cercle rouge. Généré par tools/tower_fx.py.",
+  "Spawners": [
+    {
+      "SpawnerId": "Nakasar_Crackle_Fire_Crackle",
+      "PositionOffset": {
+        "Y": 0.1
+      }
+    }
+  ],
+  "CullDistance": 64
+}

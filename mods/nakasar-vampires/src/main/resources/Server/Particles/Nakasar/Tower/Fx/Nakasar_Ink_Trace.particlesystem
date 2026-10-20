@@ -1,0 +1,12 @@
+{
+  "$Comment": "Trait sombre qui annonce une ligne d'encre du Codex. Généré par tools/tower_fx.py.",
+  "Spawners": [
+    {
+      "SpawnerId": "Nakasar_Ink_Trace_Dot",
+      "PositionOffset": {
+        "Y": 0.03
+      }
+    }
+  ],
+  "CullDistance": 64
+}

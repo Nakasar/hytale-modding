@@ -1,0 +1,13 @@
+{
+  "$Comment": "C\u00f4ne ou anneau d'annonce de la Tour (3.1 s jusqu'au coup), dessin\u00e9 par tower.TowerFx. G\u00e9n\u00e9r\u00e9 par tools/tower_warnings.py.",
+  "Spawners": [
+    {
+      "SpawnerId": "Nakasar_Cone_Edge_31_Dot",
+      "PositionOffset": {
+        "Y": 0.03
+      }
+    }
+  ],
+  "CullDistance": 96,
+  "IsImportant": true
+}

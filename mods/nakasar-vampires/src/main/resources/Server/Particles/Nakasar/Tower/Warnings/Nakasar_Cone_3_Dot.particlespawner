@@ -2,14 +2,14 @@
   "RenderMode": "BlendAdd",
   "ParticleRotationInfluence": "Velocity",
   "ParticleLifeSpan": {
-    "Min": 5.0,
-    "Max": 5.0
+    "Min": 0.3,
+    "Max": 0.3
   },
   "ParticleRotateWithSpawner": true,
   "TrailSpawnerPositionMultiplier": 1,
   "TrailSpawnerRotationMultiplier": 1,
   "Particle": {
-    "Texture": "Particles/Textures/Indicators/Warning_Circle_Base.png",
+    "Texture": "Particles/Textures/Basic/Ball5.png",
     "ScaleRatioConstraint": "OneToOne",
     "UVOption": "None",
     "Animation": {
@@ -17,11 +17,11 @@
         "Opacity": 0,
         "Color": "#ff2a1a"
       },
-      "8": {
-        "Opacity": 1
+      "10": {
+        "Opacity": 0.4
       },
-      "92": {
-        "Opacity": 1
+      "95": {
+        "Opacity": 0.6
       },
       "100": {
         "Opacity": 0,
@@ -30,7 +30,7 @@
     },
     "SoftParticles": "Disable",
     "InitialAnimationFrame": {
-      "Opacity": 1,
+      "Opacity": 0.4,
       "Rotation": {
         "X": {
           "Min": 90,

@@ -1,0 +1,18 @@
+{
+  "$Comment": "Fiole (Fire) que l'Alchimiste lève avant de lancer. Généré par tools/tower_fx.py.",
+  "Spawners": [
+    {
+      "SpawnerId": "Nakasar_Flask_Fire_Glow",
+      "PositionOffset": {
+        "Y": 0.0
+      }
+    },
+    {
+      "SpawnerId": "Nakasar_Flask_Fire_Sparks",
+      "PositionOffset": {
+        "Y": 0.0
+      }
+    }
+  ],
+  "CullDistance": 64
+}

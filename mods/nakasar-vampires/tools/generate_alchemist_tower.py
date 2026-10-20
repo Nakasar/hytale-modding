@@ -42,6 +42,7 @@ from PIL import Image, ImageDraw
 import alchemist_archipelago as arch
 import alchemist_tower
 import alchemist_traps
+import tower_fx
 import tower_warnings
 import generate_prefabs as pf
 import generate_worldgen as wg
@@ -780,6 +781,7 @@ def tower_layout(tower, ruins_spot):
         return ",\n".join(f"            new Vector3d({x + ox + 0.5}, {y + oy + dy}, {z + oz + 0.5})" for x, y, z in cells)
     alch_ids = alchemist_traps.alchemist_ids()
     arcs = ", ".join(f"{{{a0}, {a1}}}" for a0, a1 in alchemist_tower.DECK_COLLAPSE_ARCS)
+    codex_arcs = ", ".join(f"{{{a0}, {a1}}}" for a0, a1 in alchemist_tower.COLLAPSE_ARCS)
 
     def strings(values):
         return ", ".join(f'"{v}"' for v in values)
@@ -814,8 +816,12 @@ public final class TowerLayout {{
     public static final String CODEX_FIRE = "{ids['fire']}";
     public static final String CODEX_RAIN = "{ids['rain']}";
     public static final String[] CODEX_FROST = {{{strings(ids['frost'])}}};
-    /** Pans d'étagères qui s'effondrent (Collapse=On). */
+    /** Pans d'étagères qui s'effondrent (Collapse=On) : volumes, secteurs en degrés (atan2(dz, dx)) entre deux rayons. */
     public static final String[] CODEX_COLLAPSE = {{{strings(ids['collapse'])}}};
+    public static final double[][] CODEX_COLLAPSE_ARCS = {{{codex_arcs}}};
+    public static final double[] CODEX_COLLAPSE_RADII = {{{alchemist_tower.COLLAPSE_R[0]}, {alchemist_tower.COLLAPSE_R[1]}}};
+    /** Durée du cône rouge avant la chute d'un pan (tools/alchemist_traps.py, CODEX_COLLAPSE_WARN). */
+    public static final float CODEX_COLLAPSE_WARN = {alchemist_traps.CODEX_COLLAPSE_WARN}f;
 
     /** Salle des Transmutations : centre (golem de cristal), au sol ; rayon de l'arène. */
     public static final Vector3d TRANS_CENTER = new Vector3d({tx + ox + 0.5}, {ty + oy}, {tz + oz + 0.5});
@@ -847,9 +853,8 @@ public final class TowerLayout {{
     public static final Vector3d[] CHIMERA_FILLS = {{
 {points(chimera["fills"])}
     }};
-    /** Volumes (tools/alchemist_traps.py, Traps.chimera) : sceau de la porte nord (Chimera=On), acide de la cuve (Cast=On). */
+    /** Volume (tools/alchemist_traps.py, Traps.chimera) : sceau de la porte nord (Chimera=On). */
     public static final String CHIMERA_SEAL = "{chimera_ids['seal']}";
-    public static final String CHIMERA_ACID = "{chimera_ids['acid']}";
 
     /** Alchimiste : centre de l'athanor, au sol de sa chambre (il s'y enferme au Grand Œuvre). */
     public static final Vector3d ALCHEMIST_CENTER = new Vector3d({ax + ox + 0.5}, {ay + oy}, {az + oz + 0.5});
@@ -863,6 +868,10 @@ public final class TowerLayout {{
     /** Pans du rebord qui s'effondrent au Grand Œuvre : secteurs en degrés, entre deux rayons. */
     public static final double[][] ALCHEMIST_COLLAPSE_ARCS = {{{arcs}}};
     public static final double[] ALCHEMIST_COLLAPSE_RADII = {{{alchemist_tower.DECK_COLLAPSE_R[0]}, {alchemist_tower.DECK_COLLAPSE_R[1]}}};
+    /** Durée du cône rouge avant la chute d'un pan (tools/alchemist_traps.py, DECK_COLLAPSE_WARN). */
+    public static final float ALCHEMIST_COLLAPSE_WARN = {alchemist_traps.DECK_COLLAPSE_WARN}f;
+    /** Rayon des murs de l'athanor. */
+    public static final double ALCHEMIST_ATHANOR_RADIUS = {alchemist_tower.ATHANOR_R};
     /** Cases libres autour de l'athanor où il ressort. */
     public static final Vector3d[] ALCHEMIST_EXITS = {{
 {points(alch["exits"])}
@@ -1001,7 +1010,11 @@ def main():
     # CodexSystem : tourbillons (1,5 s), jets d'encre (1,6 à 2,1 s le long de la ligne), onde de changement de phase.
     for seconds in (1.5, 1.6, 1.7, 1.8, 1.9, 2.0, 2.1, 2.2):
         tower_warnings.system(seconds)
-    print(f"Zones d'annonce : {tower_warnings.write()} dixièmes de seconde")
+    # TransmutationSystem : chutes annoncées (1,5 s) ; ChimeraSystem : jets d'acide (2,2 s) ; AlchemistSystem :
+    # anneau de l'athanor (cônes, tous écrits par tower_warnings.write).
+    print(f"Zones d'annonce : {tower_warnings.write()} dixièmes de seconde, cônes {tower_warnings.CONE_TENTHS.start} "
+          f"à {tower_warnings.CONE_TENTHS.stop - 1}")
+    print(f"Effets des combats : {len(tower_fx.write())} systèmes")
     write_json(SERVER / "Instances" / TOWER / "resources" / "TriggerVolumeData.json", trigger_volumes(volumes, trap_groups))
     JAVA_LAYOUT.write_text(tower_layout(tower, ruins_spot), encoding="utf-8")
     (COMMON / ICON).parent.mkdir(parents=True, exist_ok=True)

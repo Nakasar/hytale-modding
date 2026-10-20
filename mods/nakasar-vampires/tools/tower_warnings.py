@@ -7,7 +7,13 @@ Feastmaster_Slam_Warning et Dungeon_Goblin_Mace_Slam_Warning à échelle égale 
 (`scale(r)`), à plat sur le sol.
 
 Les générateurs (alchemist_traps.py, generate_tower_mobs.py) demandent les durées avec `system(s)` puis écrivent les
-fichiers avec `write()`."""
+fichiers avec `write()`.
+
+Cônes et anneaux (Kevin, 20 octobre 2026 : « cône rouge qui se charge », comme ceux de Deepworks) : tower.TowerFx les
+dessine en pastilles rouges posées à plat, anneau après anneau, du bord de départ au bord d'arrivée ; chaque pastille
+reste jusqu'à l'instant du coup. `Nakasar_Cone_<dixièmes>` est une pastille qui dure autant, `Nakasar_Cone_Edge_<dixièmes>`
+un point du contour, posé dès le début. Toutes les durées de CONE_TENTHS existent : le Java en choisit une à chaque
+anneau."""
 
 import json
 from pathlib import Path
@@ -17,6 +23,8 @@ PREFIX = "Nakasar_Warning_"
 SCALE = 0.68           # échelle de particule par bloc de rayon
 BASE = 6.25            # taille de la particule à l'échelle 1 (comme Dungeon_Goblin_Mace_Slam_Warning)
 RED = "#ff2a1a"
+CONE_PREFIX = "Nakasar_Cone_"
+CONE_TENTHS = range(2, 61)   # TowerFx.CONE_MIN / CONE_MAX en dixièmes de seconde
 
 _wanted = set()
 
@@ -89,9 +97,42 @@ def _files(t):
             f"{name}_Fill.particlespawner": fill}
 
 
+def _cone_files(t):
+    """Pastille de cône (disque rouge à plat qui s'affirme jusqu'au coup) et point de contour, de t dixièmes."""
+    life = t / 10
+    flat = {"X": {"Min": 90, "Max": 90}}
+    fill = _spawner(life, "Particles/Textures/Basic/Ball5.png", {
+        "0": {"Opacity": 0, "Color": RED},
+        "10": {"Opacity": 0.4},
+        "95": {"Opacity": 0.6},
+        "100": {"Opacity": 0, "Color": RED},
+    }, {"Opacity": 0.4, "Rotation": flat, "Scale": {"X": {"Min": BASE, "Max": BASE}}})
+    edge = _spawner(life, "Particles/Textures/Basic/Ball5.png", {
+        "0": {"Opacity": 0, "Color": RED},
+        "8": {"Opacity": 0.9},
+        "95": {"Opacity": 0.9},
+        "100": {"Opacity": 0, "Color": RED},
+    }, {"Opacity": 0.9, "Rotation": flat, "Scale": {"X": {"Min": BASE, "Max": BASE}}})
+    out = {}
+    for name, spawner, dy in ((f"{CONE_PREFIX}{t}", fill, 0.02), (f"{CONE_PREFIX}Edge_{t}", edge, 0.03)):
+        out[f"{name}.particlesystem"] = {
+            "$Comment": f"Cône ou anneau d'annonce de la Tour ({life:g} s jusqu'au coup), dessiné par tower.TowerFx. "
+                        "Généré par tools/tower_warnings.py.",
+            "Spawners": [{"SpawnerId": f"{name}_Dot", "PositionOffset": {"Y": dy}}],
+            "CullDistance": 96,
+            "IsImportant": True,
+        }
+        out[f"{name}_Dot.particlespawner"] = spawner
+    return out
+
+
 def write():
     PARTICLES.mkdir(parents=True, exist_ok=True)
+    files = {}
     for t in sorted(_wanted):
-        for fname, doc in _files(t).items():
-            (PARTICLES / fname).write_text(json.dumps(doc, indent=2) + "\n", encoding="utf-8")
+        files.update(_files(t))
+    for t in CONE_TENTHS:
+        files.update(_cone_files(t))
+    for fname, doc in files.items():
+        (PARTICLES / fname).write_text(json.dumps(doc, indent=2) + "\n", encoding="utf-8")
     return sorted(_wanted)

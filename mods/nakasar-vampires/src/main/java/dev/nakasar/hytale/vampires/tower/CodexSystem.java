@@ -64,13 +64,15 @@ import java.util.concurrent.ThreadLocalRandom;
  *   {@value #VORTEX_SECONDS} s, on peut aussi les détruire.</li>
  *   <li><b>Chapitre</b> ({@link CodexChapterInteraction}) : un livre de chapitre (PNJ fragile, jamais sauvegardé)
  *   apparaît sur un des trois pupitres avec le sort qu'il prépare (feu, givre, pluie de livres ; jamais deux fois le
- *   même de suite ; en dernière phase deux livres à la fois, sur deux pupitres, avec deux sorts différents). Tous les livres
+ *   même de suite ; en dernière phase deux livres à la fois, sur deux pupitres, avec deux sorts différents). Le sort est
+ *   tiré à l'apparition du livre et son pupitre s'allume dans sa couleur tant que le livre vit (rouge feu, bleu givre,
+ *   blanc pluie de livres : tools/tower_fx.py), pour qu'on sache quoi éviter avant même l'échec. Tous les livres
  *   détruits avant la fin de l'incantation : le Codex est gelé et étourdi
  *   ({@value #STUN_EFFECT}, il subit plus de dégâts) pendant {@value #STUN_SECONDS} s. Sinon chaque livre encore debout
  *   disparaît et le volume de son sort reçoit {@code Cast = On} : il annonce sa zone au sol puis frappe.</li>
  *   <li><b>Effondrement</b> : en dernière phase, un rayonnage (volume {@code Codex_Collapse_i}, dans un ordre
- *   aléatoire) s'écroule toutes les {@value #COLLAPSE_INTERVAL} s ; ses zones sont annoncées avant de se remplir de
- *   gravats.</li>
+ *   aléatoire) s'écroule toutes les {@value #COLLAPSE_INTERVAL} s ; un cône rouge se charge du mur vers le centre sur
+ *   son pan ({@link TowerFx.Sweep}), puis le pan se remplit de gravats.</li>
  *   <li><b>Groupe</b> : à l'engagement, sa vie est adaptée au nombre de joueurs dans l'arène ({@link GroupHealth}).</li>
  *   <li><b>Remise à zéro</b> : plus aucun joueur dans l'arène pendant {@value #RESET_SECONDS} s alors que le Codex est
  *   engagé (groupe mort ou parti) : gravats retirés ({@code Codex_Arena Reset = On}), livres, tourbillons et flaques
@@ -116,6 +118,12 @@ public final class CodexSystem extends TickingSystem<EntityStore> {
     /** Décalage entre deux cercles de la ligne : l'encre « court » du Codex vers la cible. */
     private static final float INK_TRAVEL = 0.1f;
     private static final float INK_DAMAGE = 0.10f;
+    /** Trait sombre au sol sur tout le trajet de l'encre, une seconde avant qu'elle coure (tools/tower_fx.py). */
+    private static final float INK_TRACE = 1f;
+    private static final double INK_TRACE_STEP = 1.2;
+    private static final float INK_TRACE_SCALE = 0.45f;
+    private static final String PARTICLE_TRACE = "Nakasar_Ink_Trace";
+    private static final String PARTICLE_LECTERN = "Nakasar_Lectern_";
     static final float POOL_SECONDS = 4f;
     private static final float POOL_DAMAGE = 0.03f;
     /** Tourbillons de pages : vague par phase (2 puis 3), au plus 4 en vie. */
@@ -185,9 +193,16 @@ public final class CodexSystem extends TickingSystem<EntityStore> {
         }
     }
 
+    /** Ligne d'encre annoncée par son trait : elle part à {@code start}. */
+    private record InkLine(List<Vector3d> circles, long start) {
+    }
+
     /** État du combat par Codex (le monde de l'instance n'en a qu'un). */
     private static final class Fight {
         final List<Chapter> chapters = new ArrayList<>();
+        final List<InkLine> inkLines = new ArrayList<>();
+        final List<TowerFx.Sweep> cones = new ArrayList<>();
+        long nextLecternGlow;
         final List<Strike> strikes = new ArrayList<>();
         final List<Pool> pools = new ArrayList<>();
         final List<Vortex> vortices = new ArrayList<>();
@@ -313,6 +328,16 @@ public final class CodexSystem extends TickingSystem<EntityStore> {
             store.tryRemoveComponent(codex, Frozen.getComponentType());
         }
 
+        // Pupitres des livres encore debout : allumés dans la couleur de leur sort.
+        if (!fight.chapters.isEmpty() && now >= fight.nextLecternGlow) {
+            fight.nextLecternGlow = now + seconds(1f);
+            for (Chapter chapter : fight.chapters) {
+                if (alive(chapter.book(), store)) {
+                    Vector3d top = new Vector3d(TowerLayout.CODEX_LECTERNS[chapter.lectern()]).add(0, 0.2, 0);
+                    ParticleUtil.spawnParticleEffect(PARTICLE_LECTERN + chapter.spell().suffix, top, 0f, 0f, 0f, 1f, 1f, store);
+                }
+            }
+        }
         // Chapitres en cours : tous interrompus (livres détruits) ou sorts des livres restants lancés.
         if (!fight.chapters.isEmpty()) {
             List<Chapter> standing = fight.chapters.stream().filter(c -> alive(c.book(), store)).toList();
@@ -345,6 +370,8 @@ public final class CodexSystem extends TickingSystem<EntityStore> {
         fight.absent = 0f;
 
         // Coups déjà annoncés, flaques et tourbillons : ils vont au bout même si le Codex est étourdi.
+        inkLines(store, fight, now);
+        fight.cones.removeIf(cone -> cone.step(store, now));
         strikes(store, fight, now);
         pools(store, fight, now);
         vortices(store, fight, now);
@@ -387,6 +414,11 @@ public final class CodexSystem extends TickingSystem<EntityStore> {
             if (!fight.collapseOrder.isEmpty() && now >= fight.nextCollapse) {
                 int sector = fight.collapseOrder.removeFirst();
                 volumes.setTag(TowerLayout.CODEX_COLLAPSE[sector], "Collapse", "On", null, TriggerVolumeManager.ENVIRONMENT_ACTOR_UUID);
+                double[] arc = TowerLayout.CODEX_COLLAPSE_ARCS[sector];
+                double[] radii = TowerLayout.CODEX_COLLAPSE_RADII;
+                // Du mur (le rayonnage) vers le centre : la zone qui va se couvrir de gravats.
+                fight.cones.add(TowerFx.Sweep.arc(TowerLayout.CODEX_CENTER, arc[0], arc[1], radii[1], radii[0], now,
+                        TowerLayout.CODEX_COLLAPSE_WARN));
                 fight.nextCollapse = now + seconds(COLLAPSE_INTERVAL);
             }
         }
@@ -435,6 +467,7 @@ public final class CodexSystem extends TickingSystem<EntityStore> {
         Vector3d center = TowerLayout.CODEX_CENTER;
         double limit = TowerLayout.CODEX_ARENA_RADIUS - 1;
         for (double angle : angles) {
+            List<Vector3d> circles = new ArrayList<>();
             for (int k = 0; k < INK_CIRCLES; k++) {
                 double d = 2.0 + INK_STEP * k;
                 Vector3d at = new Vector3d(from.x() + Math.cos(angle) * d, y, from.z() + Math.sin(angle) * d);
@@ -443,14 +476,38 @@ public final class CodexSystem extends TickingSystem<EntityStore> {
                 if (dx * dx + dz * dz > limit * limit) {
                     break;
                 }
+                circles.add(at);
+            }
+            if (circles.isEmpty()) {
+                continue;
+            }
+            // Trait sombre sur tout le trajet, du Codex au dernier cercle, une seconde avant que l'encre coure.
+            double length = 2.0 + INK_STEP * (circles.size() - 1) + INK_RADIUS;
+            for (double d = 1.0; d <= length; d += INK_TRACE_STEP) {
+                Vector3d at = new Vector3d(from.x() + Math.cos(angle) * d, y + 0.05, from.z() + Math.sin(angle) * d);
+                ParticleUtil.spawnParticleEffect(PARTICLE_TRACE, at, 0f, 0f, 0f, INK_TRACE_SCALE, 1f, store);
+            }
+            fight.inkLines.add(new InkLine(circles, now + seconds(INK_TRACE)));
+        }
+        sound(SOUND_CHARGE, from, store);
+    }
+
+    /** Lignes d'encre dont le trait a fait son temps : les cercles rouges se remplissent, l'encre court. */
+    private static void inkLines(Store<EntityStore> store, Fight fight, long now) {
+        fight.inkLines.removeIf(line -> {
+            if (now < line.start()) {
+                return false;
+            }
+            for (int k = 0; k < line.circles().size(); k++) {
+                Vector3d at = line.circles().get(k);
                 float warn = INK_WARN + INK_TRAVEL * k;
                 ParticleUtil.spawnParticleEffect(WARNING_INK + Math.round(warn * 10), new Vector3d(at).add(0, 0.1, 0),
                         0f, 0f, 0f, (float) (WARNING_SCALE * INK_RADIUS), 1f, store);
                 fight.strikes.add(new Strike(at, INK_RADIUS, now + seconds(warn), INK_DAMAGE, PARTICLE_SPLASH, 1f,
                         3f, true));
             }
-        }
-        sound(SOUND_CHARGE, from, store);
+            return true;
+        });
     }
 
     private static void strikes(Store<EntityStore> store, Fight fight, long now) {
@@ -647,6 +704,8 @@ public final class CodexSystem extends TickingSystem<EntityStore> {
             }
         }
         fight.chapters.clear();
+        fight.inkLines.clear();
+        fight.cones.clear();
         fight.vortices.clear();
         fight.summons.clear();
         fight.strikes.clear();

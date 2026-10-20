@@ -1,0 +1,12 @@
+{
+  "$Comment": "Blizzard rasant, sans brouillard, d'un quadrant de glace actif (golem de cristal). Généré par tools/tower_fx.py.",
+  "Spawners": [
+    {
+      "SpawnerId": "Nakasar_Trans_Ground_Ice_Snow",
+      "PositionOffset": {
+        "Y": 0.1
+      }
+    }
+  ],
+  "CullDistance": 64
+}

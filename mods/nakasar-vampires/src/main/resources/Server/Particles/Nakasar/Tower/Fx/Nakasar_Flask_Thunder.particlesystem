@@ -1,0 +1,18 @@
+{
+  "$Comment": "Fiole (Thunder) que l'Alchimiste lève avant de lancer. Généré par tools/tower_fx.py.",
+  "Spawners": [
+    {
+      "SpawnerId": "Nakasar_Flask_Thunder_Glow",
+      "PositionOffset": {
+        "Y": 0.0
+      }
+    },
+    {
+      "SpawnerId": "Nakasar_Flask_Thunder_Sparks",
+      "PositionOffset": {
+        "Y": 0.0
+      }
+    }
+  ],
+  "CullDistance": 64
+}

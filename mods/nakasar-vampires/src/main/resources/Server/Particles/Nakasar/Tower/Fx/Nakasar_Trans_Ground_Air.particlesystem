@@ -1,0 +1,12 @@
+{
+  "$Comment": "Sol électrifié d'un quadrant d'air actif (golem de cristal). Généré par tools/tower_fx.py.",
+  "Spawners": [
+    {
+      "SpawnerId": "Nakasar_Trans_Ground_Air_Sparks",
+      "PositionOffset": {
+        "Y": 0.1
+      }
+    }
+  ],
+  "CullDistance": 64
+}
