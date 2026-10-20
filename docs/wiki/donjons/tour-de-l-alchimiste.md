@@ -227,7 +227,7 @@ Dès que le golem est engagé, les **quatre quadrants** de la salle s'éveillent
 
 **Rotation.** Toutes les **16 s**, le répit passe à un quadrant voisin. 5 s avant, le voisin se calme, et un **cône rouge de 90°** se charge du centre vers le mur sur le quadrant calme qu'il faut quitter : quand le cône est plein, ce quadrant redevient actif. Suivez le répit.
 
-- Chaque quadrant qui redevient actif fait sortir un **esprit** de son élément, sans limite : tuez-les vite. Un esprit de chaque élément attend déjà dans son quadrant avant le combat.
+- Chaque quadrant qui redevient actif fait sortir un **esprit** de son élément, jusqu'à **20 esprits** en vie à la fois : tuez-les vite. Un esprit de chaque élément attend déjà dans son quadrant avant le combat.
 - **Conseil :** attirez le golem dans le quadrant calme, bougez entre les cercles, et changez de quadrant dès que le cône s'allume.
 - À la mort du golem, les quadrants s'éteignent, les esprits disparaissent et le sceau de l'hélice se dissout. À la remise à zéro, les esprits sont retirés et un nouvel esprit attend dans chaque quadrant.
 

@@ -51,7 +51,7 @@ import java.util.concurrent.ThreadLocalRandom;
  *   avant, le quadrant suivant se calme tout de suite, et un cône rouge se charge du centre vers le mur sur l'ancien
  *   quadrant calme ({@link TowerFx.Sweep}) ; plein, il redevient actif ;</li>
  *   <li><b>esprits</b> : chaque quadrant qui devient actif pendant le combat fait sortir un esprit de son élément
- *   ({@link TowerLayout#TRANS_SPIRITS}), sans limite ; aucun à l'engagement, puisque ceux de la remise à zéro sont déjà
+ *   ({@link TowerLayout#TRANS_SPIRITS}), au plus {@value #SPIRIT_MAX} en vie à la fois ; aucun à l'engagement, puisque ceux de la remise à zéro sont déjà
  *   là ;</li>
  *   <li>{@code Fx} est rejoué toutes les {@value #PULSE_SECONDS} s sur les quadrants actifs pour leurs particules ;</li>
  *   <li><b>remise à zéro</b> (plus aucun joueur dans la salle pendant {@value #RESET_SECONDS} s) : le golem regagne
@@ -71,6 +71,8 @@ public final class TransmutationSystem extends TickingSystem<EntityStore> {
     static final float PULSE_SECONDS = 3f;
     static final float RESET_SECONDS = 8f;
     static final float FALL_WARN = 1.5f;
+    /** Au plus autant d'esprits en vie à la fois (Kevin, 20 octobre) : un groupe qui les ignore n'en accumule pas sans fin. */
+    static final int SPIRIT_MAX = 20;
     static final float CALM_FALL_SECONDS = 2f;
     static final float ACTIVE_FALL_SECONDS = 1f;
     private static final float INTERVAL = 0.25f;
@@ -263,7 +265,9 @@ public final class TransmutationSystem extends TickingSystem<EntityStore> {
             fight.switchAt = now + seconds(CYCLE_SECONDS);
             setTag(volumes, TowerLayout.TRANS_ZONES[woken], "State", ACTIVE);
             pulse(volumes, woken);
-            spawnSpirit(store, fight, woken);
+            if (fight.spirits.size() < SPIRIT_MAX) {
+                spawnSpirit(store, fight, woken);
+            }
         }
         if (now >= fight.nextPulse) {
             fight.nextPulse = now + seconds(PULSE_SECONDS);
