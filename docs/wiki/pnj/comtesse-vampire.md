@@ -11,7 +11,7 @@
 <Info label="Id">`Nakasar_Vampire_Countess`</Info>
 </Infobox>
 
-L'épouse du Comte, et parfois la seule maîtresse des lieux : à chaque apparition dans le [Manoir du Comte](../fragment/manoir-du-comte.md), le jeu tire le [Comte](comte-vampire.md) ou la Comtesse (une chance sur deux). Longue robe noire, gants rouges, couronne et cape royale. Elle se bat exactement comme le Comte : chaînes spectrales, domination, téléportation, morsure qui soigne, et ses rejetons sous la moitié de ses PV.
+L'épouse du Comte, et parfois la seule maîtresse des lieux : à chaque apparition dans le [Manoir du Comte](../fragment/manoir-du-comte.md), le jeu tire le [Comte](comte-vampire.md) ou la Comtesse (une chance sur deux). Longue robe noire, gants rouges, couronne et cape royale. Aussi robuste que le Comte mais plus rapide, elle se téléporte sans cesse et ne connaît pas les chaînes spectrales.
 
 ## Une hôtesse qui vous laisse passer
 
@@ -27,7 +27,7 @@ Avec ses 8000 PV et sa régénération incessante, elle est **presque invincible
 |---|---|
 | Points de vie | **8000**, affichés dans une **barre de vie de boss** pendant le combat |
 | Régénération | **150 PV par seconde**, en permanence, même en plein combat |
-| Vitesse | 4,5 |
+| Vitesse | 5,5 |
 | Recul subi | ×0,2 |
 | Taille | ×1,15 |
 | Détection | aucune tant qu'on ne la frappe pas ; en colère : 14 blocs (ligne de vue), 20 blocs pour changer de cible |
@@ -40,9 +40,8 @@ Avec ses 8000 PV et sa régénération incessante, elle est **presque invincible
 | Capacité | Portée | Effet | Fréquence |
 |---|---|---|---|
 | **Baiser du Vampire** (mêlée) | 3,2 blocs, 90° | **22** dégâts physiques (±10 %) par cible, **+30 PV** pour elle par cible touchée | pause de 1,2 à 1,8 s |
-| **Chaînes spectrales** | trait de 18 blocs, joueurs | [Chaînes spectrales](../effets.md#chaines-spectrales) **3 s** : immobilisé, plus d'attaque, plus de capacité, plus d'esquive | toutes les 9 à 12 s (première après 4 à 6 s) |
-| **Domination** | trait de 12 blocs, joueurs | [Domination du Comte](../effets.md#domination-du-comte) **6 s** : vous ne pouvez plus la blesser | toutes les 16 à 20 s (première après 7 à 9 s) |
-| **Téléportation** | cible entre 7 et 30 blocs | réapparaît à 1,5 à 2,5 blocs de vous | toutes les 10 à 14 s (première après 5 à 7 s) |
+| **Domination** | trait de 12 blocs, joueurs | [Domination du Comte](../effets.md#domination-du-comte) **6 s** : vous ne pouvez plus la blesser | toutes les 14 à 18 s (première après 5 à 7 s) |
+| **Téléportation** | cible entre 7 et 30 blocs | réapparaît à 1,5 à 2,5 blocs de vous | toutes les **6 à 9 s** (première après 3 à 5 s) |
 | **Appel des rejetons** | sous **50 % de PV** | **2 ou 3** [rejetons](rejeton-de-vampire.md), s'il en reste 2 ou moins dans les 40 blocs | toutes les 30 s |
 
 ## Butin
@@ -56,4 +55,4 @@ Le même que le Comte : **une rune** au hasard parmi les quatre (25 % chacune). 
 ## Conseils
 
 - Argent ×2, comme le Comte. Le feu purificateur la repousse et la brûle.
-- Rompez la ligne de vue pendant sa visée (0,3 à 0,6 s) pour éviter chaînes et domination.
+- Elle revient au contact très souvent : gardez un coup prêt plutôt que de fuir à distance.
