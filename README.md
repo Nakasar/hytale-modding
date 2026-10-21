@@ -186,6 +186,23 @@ Modèles provisoires : Abîme de Jade et tentacules (boîtes), colosses (`Golem_
 du cristal (clic droit vers l'Abîme), renvoi des colosses ; murs et pièges du marais, fusils, furtivité et
 réapparition du Moussu, cercle vert (particules) et vigueur, assauts et fleurs, feux-follets des coins.
 
+**Décor de toutes les fractales** (`tools/fractal_nature.py` : thèmes prairie, Brumes, volcan, marais et jade ;
+`rim` pour un pourtour naturel autour d'un lieu, `natural_ground`, `dress`, `islet` et `scatter_islets` pour des îlots
+loin du parcours, jamais un raccourci) : les matières de `fractal_common.pick` sont tirées par plaques lisses et non
+plus en damier, les dessous d'îles sont irréguliers. Chaque fractale a son ciel figé (`Nakasar_Fractal_Weather_*`).
+- **Observatoire** : jardins de glycines et d'arbres bleus hors du garde-corps, cristaux, îles flottantes autour.
+- **Inclassable** (11 h) : jardins autour du départ, de la cour, de la salle de Vieux Tom et de l'arène (jamais entre
+  deux sauts), roche et lianes sous les plates-formes des harpies, îlots fleuris.
+- **Volcanique** (ciel de fumée, 15 h) : terres brûlées et arbres morts, falaises du canyon et de la mine, volcan au
+  sud-ouest avec coulées de lave figée et cratère.
+- **Océan solide** (midi) : l'océan de jade (houle, récifs de corail, aiguilles de cristal) passe sous le filet
+  anti-chute (y 34 dans le monde), on n'y reste pas ; pourtour de sable et de corail autour de l'arène.
+- **Marais** (brume, 15 h) : saules à lianes, roseaux, champignons (pas sur les pièges, les lignes de mur ni les
+  failles), falaises moussues et boisées tout autour ; la cachette du Moussu est enfouie dans la falaise.
+
+À vérifier en jeu : plantes qui tiennent sur sable et cendre, coraux hors de l'eau, lianes sous les saules sans gêner
+le passage, couleurs des ciels, lisibilité des pièges du marais.
+
 ### Notes communes
 
 Les points d'API serveur vérifiés dans le jar `Server-0.7.2` sont notés dans [docs/api-0.7.2.md](docs/api-0.7.2.md).

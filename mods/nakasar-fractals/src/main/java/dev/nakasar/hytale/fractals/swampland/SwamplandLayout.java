@@ -30,7 +30,7 @@ public final class SwamplandLayout {
     public static final int[][] GATE_AHEAD = {{-2, 100, -86}, {-2, 101, -86}, {-2, 102, -86}, {-2, 103, -86}, {-2, 104, -86}, {-1, 100, -86}, {-1, 101, -86}, {-1, 102, -86}, {-1, 103, -86}, {-1, 104, -86}, {0, 100, -86}, {0, 101, -86}, {0, 102, -86}, {0, 103, -86}, {0, 104, -86}, {1, 100, -86}, {1, 101, -86}, {1, 102, -86}, {1, 103, -86}, {1, 104, -86}, {2, 100, -86}, {2, 101, -86}, {2, 102, -86}, {2, 103, -86}, {2, 104, -86}};
     public static final double[] MOSSMAN = {0.5, 100.0, -75.5};
     /** Cachette fermée où le Moussu attend pendant sa furtivité. */
-    public static final double[] POCKET = {24.5, 86.0, -67.5};
+    public static final double[] POCKET = {16.5, 86.0, -67.5};
     public static final double[] ROOM_CHECKPOINT = {0.5, 100.0, -55.5};
 
     /** Clairière de Carnasse. */

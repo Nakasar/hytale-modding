@@ -4,8 +4,8 @@
     "Type": "HytaleGenerator",
     "WorldStructure": "Nakasar_Fractal_Uncategorized"
   },
-  "ForcedWeather": "Nakasar_Fractal_Weather_Mists",
-  "GameTime": "0001-01-01T18:00:00Z",
+  "ForcedWeather": "Nakasar_Fractal_Weather_Uncategorized",
+  "GameTime": "0001-01-01T11:00:00Z",
   "IsGameTimePaused": true,
   "GameplayConfig": "Nakasar_Fractal_Observatory",
   "IsPvpEnabled": false,

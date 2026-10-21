@@ -12,7 +12,7 @@ public final class SolidOceanLayout {
 
     public static final double[] SPAWN = {0.5, 100.0, 42.5};
     /** Les fragments de jade et l'arène : une chute y ramène au dernier fragment. */
-    public static final List<Box> JUMP_ZONES = List.of(new Box(-21, 47, 68, 119, -141, 48));
+    public static final List<Box> JUMP_ZONES = List.of(new Box(-21, 47, 28, 119, -141, 48));
     /** Irukandjis des grands fragments. */
     public static final double[][] PATH_IRUKANDJI = {{8.5, 104.0, 8.5}, {10.5, 104.0, 8.5}, {4.5, 104.0, -19.5}, {6.5, 104.0, -19.5}, {3.5, 105.0, -49.5}, {5.5, 105.0, -49.5}, {10.5, 107.0, -79.5}, {12.5, 107.0, -79.5}};
     /** Dernier fragment avant l'arène (point de retour). */

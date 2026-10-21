@@ -28,7 +28,7 @@
               {
                 "X": 0,
                 "Y": 100,
-                "Z": -115
+                "Z": -162
               }
             ]
           }
@@ -61,7 +61,7 @@
               {
                 "X": 0,
                 "Y": 100,
-                "Z": -51
+                "Z": -98
               }
             ]
           }
@@ -94,7 +94,7 @@
               {
                 "X": 0,
                 "Y": 100,
-                "Z": 13
+                "Z": -34
               }
             ]
           }
@@ -127,7 +127,7 @@
               {
                 "X": 0,
                 "Y": 100,
-                "Z": 77
+                "Z": 30
               }
             ]
           }
@@ -139,6 +139,39 @@
             "WeightedPrefabPaths": [
               {
                 "Path": "Nakasar/Fractals/SolidOcean/Section_03",
+                "Weight": 1.0
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "Runtime": 0,
+      "ContextPrecision": "Prop",
+      "PropDistribution": {
+        "Type": "Assigned",
+        "OverrideAllProps": true,
+        "PropDistribution": {
+          "Type": "Positions",
+          "Positions": {
+            "Type": "List",
+            "Positions": [
+              {
+                "X": 0,
+                "Y": 100,
+                "Z": 94
+              }
+            ]
+          }
+        },
+        "Assignments": {
+          "Type": "Constant",
+          "Prop": {
+            "Type": "Prefab",
+            "WeightedPrefabPaths": [
+              {
+                "Path": "Nakasar/Fractals/SolidOcean/Section_04",
                 "Weight": 1.0
               }
             ]

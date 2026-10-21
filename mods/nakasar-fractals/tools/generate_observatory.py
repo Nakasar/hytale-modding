@@ -26,6 +26,8 @@ from pathlib import Path
 
 from PIL import Image, ImageDraw
 
+import fractal_nature as fn
+
 MOD = Path(__file__).resolve().parent.parent
 PACK = MOD / "src" / "main" / "resources"
 SERVER = PACK / "Server"
@@ -165,8 +167,10 @@ class Prefab:
 
 
 def pick(options, x, z):
-    """Choix déterministe dans `options` selon la case (pas de hasard : le prefab ne change pas d'un tirage à l'autre)."""
-    return options[(x * 73856093 ^ z * 19349663) % len(options)]
+    """Choix déterministe dans `options` selon la case, par plaques lisses (pas de damier ni de hasard : le prefab ne
+    change pas d'un tirage à l'autre)."""
+    n = fn.vnoise2(x, z, 4.5, len(options) * 7 + 3) * 0.75 + fn.vnoise2(x, z, 1.7, 5) * 0.25
+    return options[min(len(options) - 1, int((n + 1) / 2 * len(options)))]
 
 
 def island(p, radius, depth):
@@ -177,10 +181,14 @@ def island(p, radius, depth):
             if d > radius + 0.5:
                 continue
             p.set(x, -1, z, pick(FLOOR, x, z))
-            # Dessous : se resserre vers le bas, comme les îles des Brumes de GW2.
-            bottom = -2 - int(depth * (1 - (d / (radius + 0.5)) ** 1.6))
+            # Dessous : se resserre vers le bas, irrégulier, comme les îles des Brumes de GW2.
+            shape = 0.7 + 0.6 * (fn.fbm2(x, z, 5, 2, 3) + 1) / 2
+            bottom = -2 - int(depth * (1 - (d / (radius + 0.5)) ** 1.6) * shape)
             for y in range(bottom, -1):
-                p.set(x, y, z, pick(UNDERSIDE, x + y, z))
+                p.set(x, y, z, fn.DEEP[int((y + 3 * fn.vnoise2(x, z, 11, 4)) // 3) % len(fn.DEEP)])
+            if d > radius - 4 and fn.hash01(x, bottom, z, 5) < 0.25:
+                for k in range(1 + int(fn.hash01(z, x, 6, 6) * 5)):
+                    p.set(x, bottom - 1 - k, z, fn.HANGING[k % 2])
     # Garde-corps : muret de 1,5 bloc, poteaux à lanterne tous les 30 degrés.
     posts = {heading_to_xz(h, radius) for h in range(0, 360, 30)}
     for x in range(-radius - 1, radius + 2):
@@ -277,7 +285,21 @@ def observatory_prefab():
         x, z = heading_to_xz(h, ISLAND_RADIUS - 2)
         if p.blocks.get((x, 0, z), (AIR,))[0] == AIR:
             p.set(x, 0, z, MIST_CRYSTALS[k % len(MIST_CRYSTALS)])
+    gardens(p)
     return p, arches
+
+
+def gardens(p):
+    """Jardins des Brumes hors du garde-corps (glycines, arbres bleus, fleurs froides, cristaux) et îles flottantes
+    tout autour, comme le décor de l'Observatoire de GW2."""
+    theme = fn.THEMES["mists"]
+    plaza = {(x, z): -1 for (x, y, z) in p.blocks if y == -1}
+    tops = fn.rim(plaza, 4, 14, seed=91)
+    cells = fn.natural_ground(p, tops, theme, seed=91, depth=(4, 1.3, 20), trees=0.05, spacing=6, flowers=0.2)
+    for x, y, z in cells:
+        if fn.hash01(x, y, z, 92) < 0.015 and fn.free(p, x, y + 1, z):
+            p.set(x, y + 1, z, MIST_CRYSTALS[int(fn.hash01(z, x, y, 93) * len(MIST_CRYSTALS))])
+    fn.scatter_islets(p, (-120, 120, -120, 120), 22, (-40, 25), (3, 11), theme, seed=95, margin=16)
 
 
 # --- blocs, textures, icônes ------------------------------------------------------------------------
@@ -557,7 +579,7 @@ def biome(name, prefab):
             },
         }],
         "EnvironmentProvider": {"Type": "Constant", "Environment": ENVIRONMENT},
-        "TintProvider": {"Type": "Constant", "Color": "#5a6ab0"},
+        "TintProvider": {"Type": "Constant", "Color": "#5aa86a"},
     }
 
 

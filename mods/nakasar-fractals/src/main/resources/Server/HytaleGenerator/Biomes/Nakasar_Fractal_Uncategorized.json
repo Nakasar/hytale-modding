@@ -28,7 +28,7 @@
               {
                 "X": 0,
                 "Y": 100,
-                "Z": -199
+                "Z": -232
               }
             ]
           }
@@ -61,7 +61,7 @@
               {
                 "X": 0,
                 "Y": 100,
-                "Z": -135
+                "Z": -168
               }
             ]
           }
@@ -94,7 +94,7 @@
               {
                 "X": 0,
                 "Y": 100,
-                "Z": -71
+                "Z": -104
               }
             ]
           }
@@ -127,7 +127,7 @@
               {
                 "X": 0,
                 "Y": 100,
-                "Z": -7
+                "Z": -40
               }
             ]
           }
@@ -160,7 +160,7 @@
               {
                 "X": 0,
                 "Y": 100,
-                "Z": 57
+                "Z": 24
               }
             ]
           }
@@ -178,6 +178,39 @@
           }
         }
       }
+    },
+    {
+      "Runtime": 0,
+      "ContextPrecision": "Prop",
+      "PropDistribution": {
+        "Type": "Assigned",
+        "OverrideAllProps": true,
+        "PropDistribution": {
+          "Type": "Positions",
+          "Positions": {
+            "Type": "List",
+            "Positions": [
+              {
+                "X": 0,
+                "Y": 100,
+                "Z": 88
+              }
+            ]
+          }
+        },
+        "Assignments": {
+          "Type": "Constant",
+          "Prop": {
+            "Type": "Prefab",
+            "WeightedPrefabPaths": [
+              {
+                "Path": "Nakasar/Fractals/Uncategorized/Section_05",
+                "Weight": 1.0
+              }
+            ]
+          }
+        }
+      }
     }
   ],
   "EnvironmentProvider": {
@@ -186,6 +219,6 @@
   },
   "TintProvider": {
     "Type": "Constant",
-    "Color": "#d8b8e8"
+    "Color": "#6ab04a"
   }
 }

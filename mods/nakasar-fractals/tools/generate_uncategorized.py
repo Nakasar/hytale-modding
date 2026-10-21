@@ -28,6 +28,7 @@ from pathlib import Path
 
 import fractal_common as fc
 import fractal_models as fm
+import fractal_nature as fn
 import fractal_roles as fr
 import generate_cliffside as gc
 import generate_observatory as go
@@ -35,6 +36,7 @@ import generate_observatory as go
 LANG = "nakasar_fractals_uncategorized"
 GENERATOR = "generate_uncategorized.py"
 INSTANCE = "Nakasar_Fractal_Uncategorized"
+WEATHER = "Nakasar_Fractal_Weather_Uncategorized"
 PREFAB_DIR = "Uncategorized"
 JAVA_LAYOUT = go.MOD / "src/main/java/dev/nakasar/hytale/fractals/uncategorized/UncategorizedLayout.java"
 ITEMS = go.ITEMS / "Uncategorized"
@@ -277,7 +279,64 @@ def course_prefab():
             continue   # entrée sud
         p.set(x, ARENA, z, "Rock_Marble_Brick_Pillar_Middle")
         p.set(x, ARENA + 1, z, "Furniture_Temple_Light_Lantern")
+    dress(p)
     return p
+
+
+# Décor : ruines de marbre au milieu de jardins suspendus des Brumes (glycines, bouleaux, prairies fleuries).
+THEME = fn._theme(trees=["wisteria", "birch", "oak", "wisteria", "maple"],
+                  deep=["Rock_Marble", "Rock_Stone", "Rock_Marble", "Rock_Marble_Cobble"])
+
+
+def dress(p):
+    """Pourtours herbus autour des lieux du parcours, dessous rocheux et lianes sous les plates-formes, lianes sous
+    l'escalier, îlots de décor tout autour. Jamais de sol en plus entre deux sauts (les pourtours s'arrêtent avant
+    les plates-formes des harpies et de lueur)."""
+    def floor(cells):
+        return {(x, z): y for (x, y, z) in cells}
+
+    def top_cells(y, x0, x1, z0, z1, inside=lambda x, z: True):
+        return [(x, y, z) for x in range(x0, x1 + 1) for z in range(z0, z1 + 1)
+                if inside(x, z) and (x, y, z) in p.blocks]
+
+    # Départ : prairie autour du disque, pas vers le nord (premières plates-formes).
+    sx, sz, r = START
+    start = floor(top_cells(-1, sx - r, sx + r, sz - r, sz + r))
+    tops = fn.rim(start, 4, 11, seed=3, block=lambda x, z: z < sz - 4)
+    fn.natural_ground(p, tops, THEME, seed=3, keep=[(sx - 2, sx + 2, sz, sz + 8)], trees=0.05)
+    # Plates-formes des harpies : un bloc de roche dessous, des lianes qui pendent.
+    for k, (x, z) in enumerate(PATH1):
+        stand = k + 1
+        plat = {(x + dx, z + dz): stand - 1 for dx in (-1, 0, 1) for dz in (-1, 0, 1)}
+        fn.island(p, plat, lambda xx, zz: 4 + 2 * fn.hash01(xx, zz, k, 5), seed=k, hang=0.35, theme=THEME)
+    # Cour de la prison : jardins à l'est, à l'ouest et au nord (hors de l'escalier), pas au sud (arrivée des sauts).
+    x0, x1, z0, z1 = PLAZA
+    yard = floor(top_cells(YARD - 1, x0 - 7, x1 + 7, z0, z1))
+    tops = fn.rim(yard, 3, 10, seed=7, block=lambda x, z: z > z1 - 1 or (abs(x) <= 6 and z < z0))
+    fn.natural_ground(p, tops, THEME, seed=7, trees=0.04)
+    # Escalier : lianes sous ses bords.
+    sx0, sx1, zb, zt = STAIRS
+    for z in range(zt, zb + 1):
+        y = math.floor(stair_level(z)) - 5
+        for x in (sx0, sx1):
+            if fn.hash01(x, y, z, 9) < 0.3:
+                for k in range(1 + int(fn.hash01(z, x, y, 10) * 4)):
+                    if fn.free(p, x, y - k, z):
+                        p.set(x, y - k, z, fn.HANGING[k % 2])
+    # Palier des consoles et salle de Vieux Tom : une île sous le tout, jardin hors des murs (pas vers les sauts).
+    rx0, rx1, rz0, rz1 = ROOM
+    lab = floor(top_cells(TOP - 1, rx0 - 1, rx1 + 1, rz0 - 1, LANDING_TOP[3]))
+    inland = fn.edge_distance(lab)
+    fn.island(p, lab, lambda x, z: 4 + min(14, inland[(x, z)] * 0.9), seed=11, hang=0.15, theme=THEME)
+    tops = fn.rim(lab, 3, 9, seed=11, block=lambda x, z: z < rz0 - 2 or z > LANDING_TOP[3] - 2)
+    fn.natural_ground(p, tops, THEME, seed=11, trees=0.05)
+    # Arène de l'Asura : jardin autour, sauf au sud (arrivée des plates-formes de lueur).
+    cx, cz = ARENA_CENTER
+    arena = floor(top_cells(ARENA - 1, cx - ARENA_RADIUS, cx + ARENA_RADIUS, cz - ARENA_RADIUS, cz + ARENA_RADIUS))
+    tops = fn.rim(arena, 3, 9, seed=13, block=lambda x, z: z > cz + 8)
+    fn.natural_ground(p, tops, THEME, seed=13, trees=0.05)
+    # Îlots des Brumes tout autour, loin du parcours.
+    fn.scatter_islets(p, (-95, 95, -270, 90), 26, (-30, ARENA + 12), (3, 10), THEME, seed=17)
 
 
 # --- blocs, objets, effets, particules ------------------------------------------------------------------
@@ -781,6 +840,9 @@ public final class UncategorizedLayout {{
 
 
 def color_of(name):
+    c = fn.nature_color(name)
+    if c and not name.startswith("Nakasar_"):
+        return c
     if name in (LANDING, GLIMMER):
         return (255, 230, 140) if name == GLIMMER else (120, 200, 255)
     if name in (MIST, PINK):
@@ -819,7 +881,8 @@ def main():
 
     p = course_prefab()
     sections = fc.split_sections(p, min(z for _, _, z in p.blocks))
-    counts = fc.write_instance(INSTANCE, "Inclassable", PREFAB_DIR, sections, SPAWN, "#d8b8e8")
+    counts = fc.write_instance(INSTANCE, "Inclassable", PREFAB_DIR, sections, SPAWN, "#6ab04a",
+                                WEATHER, fc.weather("#4a78d8", "#f0d0ec", "#e0c8e8", (60, 380), 0.2, "#fff2e8"), "11:00")
     lang().write(LANG)
     JAVA_LAYOUT.parent.mkdir(parents=True, exist_ok=True)
     JAVA_LAYOUT.write_text(java_layout(), encoding="utf-8")

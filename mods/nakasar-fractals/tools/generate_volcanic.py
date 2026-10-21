@@ -28,6 +28,7 @@ from pathlib import Path
 
 import fractal_common as fc
 import fractal_models as fm
+import fractal_nature as fn
 import fractal_roles as fr
 import generate_cliffside as gc
 import generate_observatory as go
@@ -35,6 +36,7 @@ import generate_observatory as go
 LANG = "nakasar_fractals_volcanic"
 GENERATOR = "generate_volcanic.py"
 INSTANCE = "Nakasar_Fractal_Volcanic"
+WEATHER = "Nakasar_Fractal_Weather_Volcanic"
 PREFAB_DIR = "Volcanic"
 JAVA_LAYOUT = go.MOD / "src/main/java/dev/nakasar/hytale/fractals/volcanic/VolcanicLayout.java"
 INTERACTIONS = go.INTERACTIONS / "Volcanic"
@@ -257,7 +259,89 @@ def course_prefab():
     for a in VILLAGER_ANGLES:
         x, z = ring_point(AR_CENTER, VILLAGER_RADIUS, a)
         p.set(x + (1 if x > ax else -1), AR_STAND, z, "Deco_Trork_Cage")
+    dress(p)
     return p
+
+
+THEME = fn.THEMES["volcanic"]
+VOLCANO = (-78, -28, 34, 64)            # centre x, z, rayon, hauteur : le volcan d'où viennent les rochers
+
+
+def ridge(p, x0, x1, z0, z1, low, high, seed):
+    """Crête rocheuse irrégulière (falaise du canyon) sur la boîte, dessus entre `low` et `high`."""
+    tops = {}
+    for x in range(min(x0, x1), max(x0, x1) + 1):
+        for z in range(min(z0, z1), max(z0, z1) + 1):
+            tops[(x, z)] = low + round((high - low) * (fn.fbm2(x, z, 7, 3, seed) + 1) / 2)
+    inland = fn.edge_distance(tops)
+    cells = fn.island(p, tops, lambda x, z: tops[(x, z)] - LAVA_Y + 4 + min(10, inland[(x, z)] * 2), seed, hang=0.0,
+                      theme=THEME)
+    fn.dress(p, cells, THEME, seed, trees=0.03, spacing=7, bushes=0.05, boulders=0.004)
+
+
+def volcano(p):
+    """Cône du volcan : pentes de cendre et de roche, coulées de lave figée qui luisent, cratère de lave."""
+    cx, cz, r, h = VOLCANO
+    tops = {}
+    for x in range(cx - r - 4, cx + r + 5):
+        for z in range(cz - r - 4, cz + r + 5):
+            d = math.hypot(x - cx, z - cz)
+            reach = r * (0.9 + 0.2 * (fn.fbm2(x, z, 12, 2, 61) + 1) / 2)
+            if d > reach:
+                continue
+            t = 1 - d / reach
+            y = LAVA_Y + round(h * t ** 1.25 + 3 * fn.fbm2(x, z, 6, 2, 62))
+            if d < 7:
+                y = LAVA_Y + h - 8 + round(d * 0.6)     # cratère
+            tops[(x, z)] = y
+    lava = lambda x, z: (math.hypot(x - cx, z - cz) < 6 or
+                         abs(math.sin(math.atan2(z - cz, x - cx) * 3 + fn.fbm2(x, z, 9, 2, 63))) < 0.06)
+    inland = fn.edge_distance(tops)
+    cells = fn.island(p, tops, lambda x, z: tops[(x, z)] - LAVA_Y + 4 + min(30, inland[(x, z)] * 1.3), 61, hang=0.0,
+                      theme=THEME,
+                      grass=lambda x, z: "Rock_Volcanic_Cracked_Lava" if lava(x, z) else fn.soil(x, z, 61, THEME["soil"]))
+    fn.dress(p, [c for c in cells if math.hypot(c[0] - cx, c[2] - cz) > r * 0.45], THEME, 64, trees=0.02, spacing=8,
+             bushes=0.04, boulders=0.008, density=0.25)
+
+
+def dress(p):
+    """Terres brûlées autour du camp et des arènes, falaises du canyon aux rochers et de la mine, volcan au loin,
+    îlots de roche volcanique. Jamais de sol en plus au-dessus de la lave de la mine ni entre deux sauts."""
+    def footprint(y, x0, x1, z0, z1):
+        return {(x, z): y for x in range(x0, x1 + 1) for z in range(z0, z1 + 1) if (x, y, z) in p.blocks}
+
+    # Camp : terres brûlées et arbres morts autour des murets, pas au nord (couloir).
+    x0, x1, z0, z1 = CAMP
+    camp = footprint(-1, x0, x1, z0, z1)
+    tops = fn.rim(camp, 4, 13, seed=21, block=lambda x, z: z < z0 + 2 and abs(x) < 10)
+    fn.natural_ground(p, tops, THEME, seed=21, trees=0.03, spacing=7, density=0.3)
+    # Canyon aux rochers : falaises de part et d'autre (les niches restent creusées dans le mur).
+    cx0, cx1, cz0, cz1 = CORRIDOR
+    ridge(p, cx1 + 2, cx1 + 12, LANDING_N[2] - 2, z0 - 1, 7, 14, 23)
+    ridge(p, cx0 - 2, cx0 - 12, PASSAGE[3] + 3, z0 - 1, 7, 14, 24)
+    ridge(p, LANDING_N[0] - 3, LANDING_N[1] + 12, LANDING_N[2] - 10, LANDING_N[2] - 2, 9, 18, 25)
+    # Arène du Champion : terres brûlées autour du cercle (les brèches des vétérans restent ouvertes).
+    chx, chz = CH_CENTER
+    ring = {}
+    for x in range(chx - CH_RADIUS - 2, chx + CH_RADIUS + 3):
+        for z in range(chz - CH_RADIUS - 2, chz + CH_RADIUS + 3):
+            if math.hypot(x - chx, z - chz) <= CH_RADIUS + 1.5:
+                ring[(x, z)] = -1
+    gates = [(gx, gz) for gx, gz in VETERAN_GATES]
+    tops = fn.rim(ring, 4, 12, seed=27, block=lambda x, z: (abs(z - chz) <= 6 and (x > chx or x < chx - 10)) or
+                  any(abs(x - gx) <= 2 and (z - gz) * (gz - chz) >= 0 for gx, gz in gates) or abs(z - chz) <= 6 and x < chx)
+    fn.natural_ground(p, tops, THEME, seed=27, trees=0.025, spacing=7, density=0.3)
+    # Mine : hautes parois rocheuses au-dessus des murs de la coulée de lave.
+    mz0, mz1 = MINE_Z
+    ridge(p, MINE[0] - 2, MINE[1], mz0 - 13, mz0 - 6, 12, 20, 29)
+    ridge(p, MINE[0] - 2, MINE[1], mz1 + 6, mz1 + 13, 12, 20, 30)
+    # Arène du Chamane imprégné : terres brûlées, pas vers l'est (arrivée de la mine).
+    ax, az = AR_CENTER
+    arena = footprint(AR_STAND - 1, ax - AR_RADIUS, ax + AR_RADIUS, az - AR_RADIUS, az + AR_RADIUS)
+    tops = fn.rim(arena, 4, 12, seed=31, block=lambda x, z: x > ax + AR_RADIUS - 6 and abs(z - az) < 12)
+    fn.natural_ground(p, tops, THEME, seed=31, trees=0.03, spacing=7, density=0.3)
+    volcano(p)
+    fn.scatter_islets(p, (-200, 70, -200, 90), 22, (LAVA_Y - 20, 20), (3, 9), THEME, seed=33)
 
 
 # --- objets, effets, particules -----------------------------------------------------------------------
@@ -693,6 +777,9 @@ public final class VolcanicLayout {{
 
 
 def color_of(name):
+    c = fn.nature_color(name)
+    if c and not name.startswith("Nakasar_"):
+        return c
     if name == LANDING:
         return (120, 200, 255)
     if name in (LAVA, "Rock_Magma_Cooled"):
@@ -730,7 +817,8 @@ def main():
 
     p = course_prefab()
     sections = fc.split_sections(p, min(z for _, _, z in p.blocks))
-    counts = fc.write_instance(INSTANCE, "Volcanique", PREFAB_DIR, sections, SPAWN, "#5a4440")
+    counts = fc.write_instance(INSTANCE, "Volcanique", PREFAB_DIR, sections, SPAWN, "#7a6a3a",
+                                WEATHER, fc.weather("#5a2e28", "#d07040", "#9a5a40", (24, 260), 0.35, "#ffc890"), "15:00")
     lang().write(LANG)
     JAVA_LAYOUT.parent.mkdir(parents=True, exist_ok=True)
     JAVA_LAYOUT.write_text(java_layout(), encoding="utf-8")

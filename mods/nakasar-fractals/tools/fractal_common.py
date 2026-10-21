@@ -10,6 +10,7 @@ from PIL import Image, ImageDraw
 import fractal_models as fm
 import fractal_roles as fr
 import generate_cliffside as gc
+import fractal_nature as fn
 import generate_observatory as go
 
 SERVER = go.SERVER
@@ -66,7 +67,25 @@ def biome(instance, prefab_dir, sections, tint):
     return doc
 
 
-def write_instance(instance, display, prefab_dir, sections, spawn, tint):
+def weather(top, bottom, fog, fog_range, density, sunlight, sun="#fff8e0"):
+    """Temps figé d'une fractale : ciel (haut, horizon), brume (couleur, distances, densité), lumière du soleil."""
+    hours = lambda c: [{"Hour": 0, "Color": c}, {"Hour": 12, "Color": c}]
+    return {
+        "FogDistance": list(fog_range),
+        "FogColors": hours(fog),
+        "FogDensities": [{"Hour": 0, "Value": density}, {"Hour": 12, "Value": density}],
+        "SkyTopColors": hours(top + "ff"),
+        "SkyBottomColors": hours(bottom + "ff"),
+        "SkySunsetColors": hours("#00000000"),
+        "SunlightColors": hours(sunlight),
+        "SunColors": hours(sun),
+        "MoonColors": hours("#e0e8ffff"),
+        "MoonGlowColors": hours("#7aa0ff60"),
+        "WaterTints": hours("#3a7ac0"),
+    }
+
+
+def write_instance(instance, display, prefab_dir, sections, spawn, tint, weather_id=None, weather_doc=None, time="18:00"):
     counts = {}
     old = SERVER / "Prefabs" / go.PREFABS / prefab_dir
     if old.exists():
@@ -78,7 +97,10 @@ def write_instance(instance, display, prefab_dir, sections, spawn, tint):
         counts[name] = part.write(SERVER / "Prefabs" / go.PREFABS / prefab_dir / name / f"{name}.prefab.json")
     world_spawn = (spawn[0], GROUND_Y + spawn[1], spawn[2])
     write_json(SERVER / "Instances" / instance / "instance.bson",
-               go.instance(instance, display, instance, portal=False, spawn=world_spawn, removal=60))
+               go.instance(instance, display, instance, portal=False, spawn=world_spawn, removal=60,
+                           weather=weather_id or go.WEATHER, time=time))
+    if weather_id:
+        write_json(SERVER / "Weathers" / f"{weather_id}.json", weather_doc)
     write_json(SERVER / "HytaleGenerator/Biomes" / f"{instance}.json", biome(instance, prefab_dir, sections, tint))
     write_json(SERVER / "HytaleGenerator/WorldStructures" / f"{instance}.json", go.world_structure(instance, world_spawn))
     return counts
@@ -87,7 +109,9 @@ def write_instance(instance, display, prefab_dir, sections, spawn, tint):
 # --- géométrie ------------------------------------------------------------------------------------
 
 def pick(options, x, y, z):
-    return options[(x * 73856093 ^ y * 83492791 ^ z * 19349663) % len(options)]
+    """Matière de la case : plaques lisses (bruit) plutôt qu'un damier, pour un rendu naturel."""
+    n = fn.vnoise3(x, y, z, 4.5, len(options) * 7 + 3) * 0.75 + fn.vnoise3(x, y, z, 1.7, 5) * 0.25
+    return options[min(len(options) - 1, int((n + 1) / 2 * len(options)))]
 
 
 def disc(p, cx, cz, r, stand, top, under=None, depth=0):
@@ -99,7 +123,9 @@ def disc(p, cx, cz, r, stand, top, under=None, depth=0):
                 continue
             p.set(x, stand - 1, z, top(x, z) if callable(top) else top)
             if under and depth:
-                bottom = stand - 2 - int(depth * (1 - (d / (r + 0.5)) ** 1.6))
+                # dessous rocheux irrégulier, plus profond au centre
+                shape = 0.75 + 0.5 * (fn.fbm2(x, z, 4, 2, cx * 31 + cz) + 1) / 2
+                bottom = stand - 2 - int(depth * (1 - (d / (r + 0.5)) ** 1.6) * shape)
                 for y in range(bottom, stand - 1):
                     p.set(x, y, z, pick(under, x, y, z))
 

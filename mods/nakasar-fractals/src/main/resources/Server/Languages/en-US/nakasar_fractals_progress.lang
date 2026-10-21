@@ -52,6 +52,7 @@ unlocked = Level {level} unlocked!
 level.locked = Level {level} locked: {name} has unlocked up to level {max}.
 level.clamped = The level drops to {level}, the highest unlocked by {name}.
 reward.claimed = You take your fractal chest (level {level}).
+reward.notYet = The chest stays sealed until the fractal is complete.
 reward.already = You already took your chest.
 reward.notMember = This chest is for the group that left the Observatory.
 reward.lost = The run was interrupted (server restart): no chest.

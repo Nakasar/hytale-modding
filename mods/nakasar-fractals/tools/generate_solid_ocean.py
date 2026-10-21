@@ -28,6 +28,7 @@ from pathlib import Path
 
 import fractal_common as fc
 import fractal_models as fm
+import fractal_nature as fn
 import fractal_roles as fr
 import generate_cliffside as gc
 import generate_observatory as go
@@ -35,6 +36,7 @@ import generate_observatory as go
 LANG = "nakasar_fractals_solid_ocean"
 GENERATOR = "generate_solid_ocean.py"
 INSTANCE = "Nakasar_Fractal_SolidOcean"
+WEATHER = "Nakasar_Fractal_Weather_SolidOcean"
 PREFAB_DIR = "SolidOcean"
 JAVA_LAYOUT = go.MOD / "src/main/java/dev/nakasar/hytale/fractals/solidocean/SolidOceanLayout.java"
 INTERACTIONS = go.INTERACTIONS / "SolidOcean"
@@ -60,7 +62,7 @@ pick = fc.pick
 # --- lieux (y = debout à) ---------------------------------------------------------------------------
 START = (0, 40, 5, 0)                   # x, z, rayon, debout
 SPAWN = (0, 0, 42)
-SEA_Y = -26                             # l'océan figé, loin sous les plateformes
+SEA_Y = -66                             # l'océan figé, sous le filet anti-chute (y monde 40) : on n'y reste pas
 GAP = 2.6                               # vide entre deux bords de plateformes (sauts d'environ 3 blocs)
 STANDS = [0, 1, 1, 2, 1, 2, 3, 2, 3, 3, 4, 3, 4, 5, 4, 5, 5]
 RADII = [3, 2, 3, 4, 2, 3, 2, 4, 3, 2, 3, 4, 2, 3, 3, 4, 3]
@@ -141,11 +143,60 @@ def course_prefab():
             top = AR_STAND - 1 - int(d * 0.6)
             for y in range(SEA_Y, top + 1):
                 p.set(x, y, z, pick(JADE if y > top - 2 else UNDER, x, y, z))
-    # L'océan figé, loin dessous : quelques bancs de jade qui affleurent.
-    for k in range(0, len(PATH), 3):
-        x, z, r, _ = PATH[k]
-        fc.disc(p, x + 6, z + 3, 4, SEA_Y + 1, lambda xx, zz: pick(SEA, xx, SEA_Y, zz))
+    dress(p)
     return p
+
+
+THEME = fn.THEMES["jade"]
+
+
+def dress(p):
+    """L'océan figé loin dessous (houle de jade, récifs de corail, aiguilles de cristal qui en sortent), un pourtour
+    de sable et de corail autour de l'arène (pas au sud, arrivée des sauts), des îlots de jade tout autour."""
+    xs = [q[0] for q in PATH] + [AR_CENTER[0]]
+    zs = [q[1] for q in PATH] + [AR_CENTER[1] - AR_RADIUS - MAW_BACK]
+    x0, x1, z0, z1 = min(xs) - 70, max(xs) + 70, min(zs) - 60, max(zs) + 50
+    # Îlots d'abord (avant l'océan, qui remplirait tout l'espace libre autour).
+    fn.scatter_islets(p, (x0 + 10, x1 - 10, z0 + 10, z1 - 10), 24, (SEA_Y + 8, AR_STAND + 10), (3, 9), THEME, seed=41)
+    sea = {}
+    mx, mz, rx, rz = (x0 + x1) / 2, (z0 + z1) / 2, (x1 - x0) / 2, (z1 - z0) / 2
+    for x in range(x0, x1 + 1):
+        for z in range(z0, z1 + 1):
+            # contour arrondi et irrégulier : l'océan se perd dans la brume plutôt qu'en rectangle
+            if math.hypot((x - mx) / rx, (z - mz) / rz) > 0.88 + 0.12 * fn.fbm2(x, z, 17, 2, 44):
+                continue
+            sea[(x, z)] = SEA_Y + round(1.4 * fn.fbm2(x, z, 9, 2, 43))
+    for (x, z), top in sea.items():
+        if not fn.free(p, x, top, z):
+            continue
+        p.set(x, top, z, pick(SEA, x, top, z))
+        p.set(x, top - 1, z, "Soil_Clay_Ocean")
+    # Récifs : coraux sur la houle, par massifs.
+    for (x, z), top in sea.items():
+        reef = fn.fbm2(x, z, 13, 2, 45)
+        h = fn.hash01(x, z, 0, 46)
+        if reef > 0.3 and h < 0.35 and fn.free(p, x, top + 1, z):
+            pool = THEME["flowers"][int((fn.fbm2(x, z, 21, 1, 47) + 1) / 2 * len(THEME["flowers"])) % len(THEME["flowers"])]
+            p.set(x, top + 1, z, pool[int(fn.hash01(z, x, 1, 48) * len(pool))])
+        elif h < 0.04 and fn.free(p, x, top + 1, z):
+            p.set(x, top + 1, z, THEME["short"][int(fn.hash01(z, x, 2, 49) * len(THEME["short"]))])
+    # Aiguilles de cristal qui sortent de l'océan, loin des fragments (jamais une marche de plus).
+    path = [(q[0], q[1], q[2]) for q in PATH] + [(AR_CENTER[0], AR_CENTER[1], AR_RADIUS)]
+    for k in range(70):
+        x = x0 + int(fn.hash01(k, 1, 0, 51) * (x1 - x0))
+        z = z0 + int(fn.hash01(k, 2, 0, 51) * (z1 - z0))
+        if any(math.hypot(x - a, z - b) < r + 10 for a, b, r in path):
+            continue
+        h = 6 + int(fn.hash01(k, 3, 0, 51) * 16)
+        if (x, z) not in sea:
+            continue
+        fn.crystal_spire(p, x, sea[(x, z)] + 1, z, h, "green" if k % 3 else "cyan", seed=k)
+    # Pourtour de l'arène.
+    ax, az = AR_CENTER
+    arena = {(x, z): AR_STAND - 1 for x in range(ax - AR_RADIUS, ax + AR_RADIUS + 1)
+             for z in range(az - AR_RADIUS, az + AR_RADIUS + 1) if (x, AR_STAND - 1, z) in p.blocks}
+    tops = fn.rim(arena, 3, 8, seed=53, block=lambda x, z: z > az + 8)
+    fn.natural_ground(p, tops, THEME, seed=53, trees=0.04, spacing=6, bushes=0.08, density=0.25, flowers=0.2)
 
 
 # --- objets, blocs, effets, particules ------------------------------------------------------------------
@@ -455,6 +506,9 @@ public final class SolidOceanLayout {{
 
 
 def color_of(name):
+    c = fn.nature_color(name)
+    if c and not name.startswith("Nakasar_"):
+        return c
     if name == JADE_LANDING:
         return (90, 220, 160)
     if name.startswith("Rock_Crystal") or name.startswith("Plant_Coral"):
@@ -489,7 +543,8 @@ def main():
 
     p = course_prefab()
     sections = fc.split_sections(p, min(z for _, _, z in p.blocks))
-    counts = fc.write_instance(INSTANCE, "Océan solide", PREFAB_DIR, sections, SPAWN, "#70b8a8")
+    counts = fc.write_instance(INSTANCE, "Océan solide", PREFAB_DIR, sections, SPAWN, "#70b8a8",
+                                WEATHER, fc.weather("#2a7ad0", "#a8e8e0", "#a0d8d0", (50, 380), 0.2, "#fff8e8"), "12:00")
     lang().write(LANG)
     JAVA_LAYOUT.parent.mkdir(parents=True, exist_ok=True)
     JAVA_LAYOUT.write_text(java_layout(), encoding="utf-8")

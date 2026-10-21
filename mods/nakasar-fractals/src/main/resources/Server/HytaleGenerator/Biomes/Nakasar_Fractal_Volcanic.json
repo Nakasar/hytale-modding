@@ -28,7 +28,7 @@
               {
                 "X": 0,
                 "Y": 100,
-                "Z": -78
+                "Z": -174
               }
             ]
           }
@@ -61,7 +61,7 @@
               {
                 "X": 0,
                 "Y": 100,
-                "Z": -14
+                "Z": -110
               }
             ]
           }
@@ -94,7 +94,7 @@
               {
                 "X": 0,
                 "Y": 100,
-                "Z": 50
+                "Z": -46
               }
             ]
           }
@@ -112,6 +112,72 @@
           }
         }
       }
+    },
+    {
+      "Runtime": 0,
+      "ContextPrecision": "Prop",
+      "PropDistribution": {
+        "Type": "Assigned",
+        "OverrideAllProps": true,
+        "PropDistribution": {
+          "Type": "Positions",
+          "Positions": {
+            "Type": "List",
+            "Positions": [
+              {
+                "X": 0,
+                "Y": 100,
+                "Z": 18
+              }
+            ]
+          }
+        },
+        "Assignments": {
+          "Type": "Constant",
+          "Prop": {
+            "Type": "Prefab",
+            "WeightedPrefabPaths": [
+              {
+                "Path": "Nakasar/Fractals/Volcanic/Section_03",
+                "Weight": 1.0
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "Runtime": 0,
+      "ContextPrecision": "Prop",
+      "PropDistribution": {
+        "Type": "Assigned",
+        "OverrideAllProps": true,
+        "PropDistribution": {
+          "Type": "Positions",
+          "Positions": {
+            "Type": "List",
+            "Positions": [
+              {
+                "X": 0,
+                "Y": 100,
+                "Z": 82
+              }
+            ]
+          }
+        },
+        "Assignments": {
+          "Type": "Constant",
+          "Prop": {
+            "Type": "Prefab",
+            "WeightedPrefabPaths": [
+              {
+                "Path": "Nakasar/Fractals/Volcanic/Section_04",
+                "Weight": 1.0
+              }
+            ]
+          }
+        }
+      }
     }
   ],
   "EnvironmentProvider": {
@@ -120,6 +186,6 @@
   },
   "TintProvider": {
     "Type": "Constant",
-    "Color": "#5a4440"
+    "Color": "#7a6a3a"
   }
 }

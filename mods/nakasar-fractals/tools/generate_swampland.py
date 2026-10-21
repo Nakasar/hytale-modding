@@ -32,6 +32,7 @@ from pathlib import Path
 
 import fractal_common as fc
 import fractal_models as fm
+import fractal_nature as fn
 import fractal_roles as fr
 import generate_cliffside as gc
 import generate_observatory as go
@@ -39,6 +40,7 @@ import generate_observatory as go
 LANG = "nakasar_fractals_swampland"
 GENERATOR = "generate_swampland.py"
 INSTANCE = "Nakasar_Fractal_Swampland"
+WEATHER = "Nakasar_Fractal_Weather_Swampland"
 PREFAB_DIR = "Swampland"
 JAVA_LAYOUT = go.MOD / "src/main/java/dev/nakasar/hytale/fractals/swampland/SwamplandLayout.java"
 INTERACTIONS = go.INTERACTIONS / "Swampland"
@@ -87,7 +89,7 @@ AMBUSH_Z = -60                          # passer cette ligne déclenche l'embusc
 GATE_BEHIND = [(x, y, -51) for x in range(-2, 3) for y in range(0, 5)]
 GATE_AHEAD = [(x, y, -86) for x in range(-2, 3) for y in range(0, 5)]
 MOSSMAN_AT = (0, 0, -76)
-POCKET = (24, -14, -68)                 # cachette fermée sous le marais : la furtivité du Moussu
+POCKET = (16, -14, -68)                 # cachette fermée dans la falaise : la furtivité du Moussu
 CL_CENTER = (0, -116)
 CL_RADIUS = 20
 CL_CLEFTS = [(0, -129), (13, -116), (0, -103), (-13, -116)]   # N, E, S, O : sens horaire
@@ -137,13 +139,12 @@ TREES = trees()
 
 
 def tree(p, x, z, h):
-    for y in range(0, h):
-        p.set(x, y, z, TRUNK)
-    for dx in range(-3, 4):
-        for dz in range(-3, 4):
-            for dy in range(-1, 3):
-                if dx * dx + dz * dz + dy * dy * 2 <= 10 and (dx, dz) != (0, 0) or dy >= 1 and abs(dx) + abs(dz) <= 1:
-                    p.set(x + dx, h + dy, z + dz, LEAVES)
+    """Saule du marais (feuillage sallow ou windwillow) dont les lianes pendent, pied au sol (y = 0)."""
+    fn.broadleaf(p, x, 0, z, h, "sallow" if (x + z) % 3 else "windwillow", seed=x * 7 + z, droop=0.16,
+                 hanging=THEME["hang"])
+
+
+THEME = fn.THEMES["swamp"]
 
 
 def course_prefab():
@@ -224,7 +225,43 @@ def course_prefab():
             p.set(x, -1, z, pick(GROUND, x, -1, z))
             for y in range(0, 5):
                 p.set(x, y, z, go.AIR)
+    dress(p)
     return p
+
+
+def cliffs(p, cells, low, high, seed):
+    """Falaises moussues autour du marais : dessus irrégulier entre `low` et `high`, arbres et lianes."""
+    tops = {(x, z): low + round((high - low) * (fn.fbm2(x, z, 8, 3, seed) + 1) / 2) for (x, z) in cells}
+    inland = fn.edge_distance(tops)
+    # la cachette du Moussu reste enfouie dans la roche
+    deep = lambda x, z: 22 if abs(x - POCKET[0]) <= 5 and abs(z - POCKET[2]) <= 5 else 6
+    ground = fn.island(p, tops, lambda x, z: tops[(x, z)] + deep(x, z) + min(12, inland[(x, z)] * 1.5), seed,
+                       hang=0.3, theme=THEME)
+    fn.dress(p, ground, THEME, seed, trees=0.05, spacing=6, bushes=0.06, boulders=0.006, density=0.6, flowers=0.1)
+
+
+def dress(p):
+    """Herbes, roseaux et champignons sur le sol du marais (jamais sur un piège, une ligne de mur, une faille ni un
+    feu-follet), falaises moussues et boisées autour du marais, du passage et de la clairière, îlots de marais au
+    loin."""
+    keep = set()
+    for x, z, _ in TRAPS:
+        keep |= {(x + dx, z + dz) for dx in (-1, 0, 1) for dz in (-1, 0, 1)}
+    for x0, x1, wz in WALLS:
+        keep |= {(x, wz) for x in range(x0, x1 + 1)}
+    for x, z in [q for g in WISP_SPOTS for q in g] + CLEFTS + RACKS + CL_CLEFTS + [CL_WISP] + CL_CORNERS:
+        keep |= {(x + dx, z + dz) for dx in (-1, 0, 1) for dz in (-1, 0, 1)}
+    keep |= {(x, z) for x in range(-3, 4) for z in range(SPAWN[2] - 3, SPAWN[2] + 4)}
+    ground = [(x, -1, z) for (x, y, z), (name, _) in list(p.blocks.items())
+              if y == -1 and (x, z) not in keep and name in GROUND]
+    fn.flora(p, ground, seed=71, density=0.45, flowers=0.12, theme=THEME)
+    # Falaises tout autour du sol du parcours (marais, passage, salle, clairière), loin de la cachette du Moussu.
+    footprint = {(x, z): -1 for (x, y, z) in p.blocks if y == -1}
+    ring = set(fn.rim(footprint, 5, 12, seed=73))
+    ring |= {(x, z) for x in range(POCKET[0] - 5, POCKET[0] + 6) for z in range(POCKET[2] - 5, POCKET[2] + 6)
+             if (x, z) not in footprint}
+    cliffs(p, ring, 6, 14, 75)
+    fn.scatter_islets(p, (-110, 110, -200, 100), 20, (-30, 12), (3, 9), THEME, seed=77)
 
 
 # --- objets, blocs, effets, particules ------------------------------------------------------------------
@@ -660,6 +697,9 @@ GROUND_Y = fc.GROUND_Y
 
 
 def color_of(name):
+    c = fn.nature_color(name)
+    if c and not name.startswith("Nakasar_"):
+        return c
     if name in (CLEFT, CLEFT_LIT, WISP_BLOCK):
         return (160, 255, 220)
     if name in (TRIPWIRE, BEAR_TRAP, SPIKE_PLATE, SPIDER_EGGS):
@@ -700,7 +740,8 @@ def main():
 
     p = course_prefab()
     sections = fc.split_sections(p, min(z for _, _, z in p.blocks))
-    counts = fc.write_instance(INSTANCE, "Marais", PREFAB_DIR, sections, SPAWN, "#5a7a48")
+    counts = fc.write_instance(INSTANCE, "Marais", PREFAB_DIR, sections, SPAWN, "#5f8f45",
+                                WEATHER, fc.weather("#5a7a6a", "#c0d0a8", "#90a888", (16, 170), 0.45, "#e8f0c8"), "15:00")
     lang().write(LANG)
     JAVA_LAYOUT.parent.mkdir(parents=True, exist_ok=True)
     JAVA_LAYOUT.write_text(java_layout(), encoding="utf-8")
