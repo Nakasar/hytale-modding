@@ -81,21 +81,8 @@ final class Champion {
         LABELS.clear();
     }
 
-    static boolean inArena(Vector3d at) {
-        double[] c = VolcanicLayout.CHAMPION;
-        return at.y() >= c[1] - 3 && at.y() <= c[1] + 8
-                && Math.hypot(at.x() - c[0], at.z() - c[2]) <= VolcanicLayout.CHAMPION_RADIUS + 0.5;
-    }
-
     static List<PlayerRef> inArena(Store<EntityStore> store, List<PlayerRef> players) {
-        List<PlayerRef> out = new ArrayList<>();
-        for (PlayerRef player : players) {
-            Vector3d at = Telegraphs.position(store, player.getReference());
-            if (at != null && inArena(at)) {
-                out.add(player);
-            }
-        }
-        return out;
+        return Volcanic.inCylinder(store, players, VolcanicLayout.CHAMPION, VolcanicLayout.CHAMPION_RADIUS, 8);
     }
 
     /** Un pas de jeu ; vrai à la victoire (une seule fois). */
@@ -116,7 +103,7 @@ final class Champion {
         }
         List<PlayerRef> inArena = inArena(store, players);
         if (inArena.isEmpty()) {
-            idle(world, store, st, dt);
+            idle(world, store, dt);
             return false;
         }
         idle = 0f;
@@ -278,7 +265,7 @@ final class Champion {
 
     // --- remise à zéro et victoire ------------------------------------------------------------------------
 
-    void idle(World world, Store<EntityStore> store, Volcanic.State st, float dt) {
+    void idle(World world, Store<EntityStore> store, float dt) {
         if (!engaged || down) {
             return;
         }
@@ -308,6 +295,7 @@ final class Champion {
 
     private boolean finish(World world, Store<EntityStore> store) {
         down = false;
+        engaged = false;
         Spawns.removeAll(store, new ArrayList<>(veterans.keySet()));
         veterans.clear();
         if (boss != null) {

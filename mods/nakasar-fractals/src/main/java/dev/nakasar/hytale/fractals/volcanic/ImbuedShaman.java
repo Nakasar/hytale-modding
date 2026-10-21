@@ -100,13 +100,11 @@ final class ImbuedShaman {
     }
 
     static boolean inArena(Vector3d at) {
-        double[] c = VolcanicLayout.ARENA_CENTER;
-        return at.y() >= c[1] - 3 && at.y() <= c[1] + 10
-                && Math.hypot(at.x() - c[0], at.z() - c[2]) <= VolcanicLayout.ARENA_RADIUS + 0.5;
+        return Volcanic.inCylinder(at, VolcanicLayout.ARENA_CENTER, VolcanicLayout.ARENA_RADIUS, 10);
     }
 
     /** Un pas de jeu ; vrai à la victoire (une seule fois). */
-    boolean step(World world, Store<EntityStore> store, List<PlayerRef> players, float dt) {
+    boolean step(World world, Store<EntityStore> store, Volcanic.State st, List<PlayerRef> players, float dt) {
         if (victory) {
             return false;
         }
@@ -120,13 +118,7 @@ final class ImbuedShaman {
                 return false;
             }
         }
-        List<PlayerRef> inArena = new ArrayList<>();
-        for (PlayerRef player : players) {
-            Vector3d at = Telegraphs.position(store, player.getReference());
-            if (at != null && inArena(at)) {
-                inArena.add(player);
-            }
-        }
+        List<PlayerRef> inArena = Volcanic.inCylinder(store, players, VolcanicLayout.ARENA_CENTER, VolcanicLayout.ARENA_RADIUS, 10);
         if (inArena.isEmpty()) {
             idle(world, store, dt);
             return false;
@@ -147,11 +139,12 @@ final class ImbuedShaman {
         tick += dt;
         boolean second = tick >= 0.5f;
         if (second) {
+            float elapsed = tick;
             tick = 0f;
-            feet(world, store, inArena, 0.5f);
-            spread(store, inArena, 0.5f);
+            feet(st, store, inArena, dt, elapsed);
+            spread(store, inArena, elapsed);
         } else {
-            feet(world, store, inArena, 0f);
+            feet(st, store, inArena, dt, 0f);
         }
         pits(world, store, inArena, dt, second);
         return false;
@@ -160,7 +153,7 @@ final class ImbuedShaman {
     // --- arène ---------------------------------------------------------------------------------------
 
     /** Pieds brûlants : immobile au sol plus d'une seconde, ou en l'air. `tickSeconds` &gt; 0 : on applique les dégâts. */
-    private void feet(World world, Store<EntityStore> store, List<PlayerRef> players, float tickSeconds) {
+    private void feet(Volcanic.State st, Store<EntityStore> store, List<PlayerRef> players, float dt, float tickSeconds) {
         for (PlayerRef player : players) {
             Ref<EntityStore> ref = player.getReference();
             MovementStatesComponent movement = store.getComponent(ref, MovementStatesComponent.getComponentType());
@@ -169,19 +162,15 @@ final class ImbuedShaman {
             }
             var states = movement.getMovementStates();
             boolean airborne = states.jumping || !states.onGround;
-            float t = states.horizontalIdle && states.onGround ? still.getOrDefault(player.getUuid(), 0f) + 0.25f : 0f;
+            float t = states.horizontalIdle && states.onGround ? still.getOrDefault(player.getUuid(), 0f) + dt : 0f;
             still.put(player.getUuid(), t);
             if (tickSeconds <= 0f || (t < STILL_SECONDS && !airborne)) {
                 continue;
             }
             Hurt.percent(store, ref, FEET_PART * tickSeconds, Volcanic.FIRE_CAUSE);
             Hurt.effect(store, ref, FEET, 1f);
-            Volcanic.tell(stateOf(world), player, "feet.burning");
+            Volcanic.tell(st, player, "feet.burning");
         }
-    }
-
-    private static Volcanic.State stateOf(World world) {
-        return ((Volcanic) dev.nakasar.hytale.fractals.stage.Stages.of(world)).state(world);
     }
 
     /** Flamme qui se propage : le porteur brûle et l'allume chez ses voisins. */

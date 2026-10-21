@@ -76,7 +76,7 @@ final class Boulders {
                 continue;
             }
             double from = b.z;
-            b.z += SPEED * dt;
+            b.z = Math.min(b.z + SPEED * dt, VolcanicLayout.BOULDER_END_Z);
             Vector3d at = new Vector3d(x, y, b.z);
             Telegraphs.particle(store, "Nakasar_Fractal_Boulder", at, 2f);
             Telegraphs.circle(store, new Vector3d(x, y, b.z + 3), 3.5, 0.5f);
@@ -84,7 +84,7 @@ final class Boulders {
                 Ref<EntityStore> ref = player.getReference();
                 Vector3d p = Telegraphs.position(store, ref);
                 if (p == null || b.hit.contains(player.getUuid()) || p.x() < x0 || p.x() > x1
-                        || p.z() < from - 1.5 || p.z() > b.z + 1.5 || p.y() < y - 1 || p.y() > y + 3) {
+                        || p.z() < from - 1.5 || p.z() > Math.min(b.z + 1.5, VolcanicLayout.BOULDER_END_Z) || p.y() < y - 1 || p.y() > y + 3) {
                     continue;
                 }
                 b.hit.add(player.getUuid());

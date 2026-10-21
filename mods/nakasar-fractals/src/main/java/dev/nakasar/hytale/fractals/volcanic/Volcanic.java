@@ -62,7 +62,6 @@ public final class Volcanic implements FractalStage {
     static final String LARVA = "Nakasar_Fractal_Ember_Larva";
     static final String STONE = "Nakasar_Fractal_Imbued_Stone";
     static final String FIRE_CAUSE = "Nakasar_Fractal_Fire";
-    static final String TRAP_CAUSE = "Nakasar_Fractal_Spikes";
 
     static final int CAMP_KILLS = 12;
     static final int CAMP_KILLS_PER_PLAYER = 3;
@@ -88,6 +87,7 @@ public final class Volcanic implements FractalStage {
         final Champion champion = new Champion();
         final SafeLandings landings = new SafeLandings(VolcanicLayout.JUMP_ZONES, MESSAGES + "landing.back");
         final List<Ref<EntityStore>> bats = new ArrayList<>();
+        boolean batsSpawned;
         final ImbuedShaman shaman = new ImbuedShaman();
         final Map<UUID, Long> throttle = new HashMap<>();
         long stoneMessage;
@@ -128,7 +128,7 @@ public final class Volcanic implements FractalStage {
         State st = state(world);
         List<PlayerRef> players = Spawns.alivePlayers(world, store);
         if (players.isEmpty()) {
-            st.champion.idle(world, store, st, dt);
+            st.champion.idle(world, store, dt);
             st.shaman.idle(world, store, dt);
             return;
         }
@@ -155,7 +155,7 @@ public final class Volcanic implements FractalStage {
             }
             case MINE -> mine(world, store, st, players);
             case ARENA -> {
-                if (st.shaman.step(world, store, players, dt)) {
+                if (st.shaman.step(world, store, st, players, dt)) {
                     st.step = Step.DONE;
                     Spawns.removeAll(store, st.bats);
                     Gates.victory(world, VolcanicLayout.REWARD, VolcanicLayout.END_EXIT, MESSAGES + "title.victory",
@@ -254,7 +254,7 @@ public final class Volcanic implements FractalStage {
                     Ref<EntityStore> ref = p.getReference();
                     Vector3d there = Telegraphs.position(s, ref);
                     if (there != null && Telegraphs.horizontal(there, center) <= ROCK_RADIUS && Math.abs(there.y() - center.y()) <= 2.5) {
-                        Hurt.percent(s, ref, ROCK_PART, TRAP_CAUSE);
+                        Hurt.percent(s, ref, ROCK_PART, FIRE_CAUSE);
                         Hurt.effect(s, ref, "Hazard_Electric_Stun", 2f);
                     }
                 }
@@ -271,10 +271,28 @@ public final class Volcanic implements FractalStage {
         }
     }
 
+    /** Les joueurs dans une arène ronde : à {@code radius} + 0,5 du centre, de 3 blocs sous lui à {@code above} au-dessus. */
+    static List<PlayerRef> inCylinder(Store<EntityStore> store, List<PlayerRef> players, double[] center, double radius, double above) {
+        List<PlayerRef> out = new ArrayList<>();
+        for (PlayerRef player : players) {
+            Vector3d at = Telegraphs.position(store, player.getReference());
+            if (at != null && inCylinder(at, center, radius, above)) {
+                out.add(player);
+            }
+        }
+        return out;
+    }
+
+    static boolean inCylinder(Vector3d at, double[] center, double radius, double above) {
+        return at.y() >= center[1] - 3 && at.y() <= center[1] + above
+                && Math.hypot(at.x() - center[0], at.z() - center[2]) <= radius + 0.5;
+    }
+
     // --- mine ---------------------------------------------------------------------------------------
 
     private void mine(World world, Store<EntityStore> store, State st, List<PlayerRef> players) {
-        if (st.bats.isEmpty() && Spawns.anyIn(store, players, VolcanicLayout.MINE)) {
+        if (!st.batsSpawned && Spawns.anyIn(store, players, VolcanicLayout.MINE)) {
+            st.batsSpawned = true;
             Spawns.tellAll(world, Message.translation(MESSAGES + "mine.enter"));
             for (double[] at : VolcanicLayout.BATS) {
                 Ref<EntityStore> bat = Spawns.spawnFoe(world, store, BAT, at);
