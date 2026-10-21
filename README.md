@@ -96,10 +96,13 @@ boutique et PNJ de l'Archiviste, modèles et icônes) et le paquet Java `progres
 une falaise, qu'on escalade par des échafaudages.
 - **Camp** au pied : le Chercheur et une vague de cultistes ; le **râtelier** ne donne le marteau du culte qu'une fois
   le camp nettoyé, et à un seul joueur à la fois.
-- **Marteau du culte** (`hammer/`) : le prendre coûte 10 % des PV, puis +1 Corruption par seconde (−4 par seconde
-  posé). Paliers 10/20/30 : dégâts subis +8 % par palier, dès 20 on ne fait plus que 70 % de ses dégâts ; 30 étourdit
-  2 s, 40 fait tomber le marteau. Frapper un cultiste avec, ou en voir un mourir à moins de 8 blocs, le **charge** ; un
-  coup chargé fissure un sceau.
+- **Marteau du culte** (`hammer/`) : le prendre coûte 10 % des PV. La **Corruption** avance par crans de 10 s : en
+  main, le cran 1 s'ouvre et son effet se vide sous les yeux du joueur ; vidé, le cran monte si le marteau est encore
+  en main, sinon il redescend. Par cran, dégâts subis +8 % ; dès le cran 2, on ne fait plus que 70 % de ses dégâts ;
+  le cran 3 étourdit 2 s, et vouloir monter au-delà fait échapper le marteau (étourdi 3 s). Toucher un cultiste avec,
+  puis le voir mourir dans les 15 s (même tombé loin), ou voir un ennemi mourir à moins de 10 blocs, le **charge** ;
+  un coup chargé fissure un sceau. Les cultistes ne subissent plus de recul et sont ramenés à leur poste s'ils
+  tombent de leur plate-forme.
 - **5 sceaux** (PNJ fixes, nos instances refusant les coups sur les blocs) : genoux (2 coups chacun), poitrine (3),
   poignets (3, bulle alternée : frapper l'un protège l'autre ; les incantateurs proches réparent un coup toutes les
   20 s). Les vagues se renouvellent tant que le sceau tient ; chaque palier brisé ouvre une barrière de brume et
@@ -120,6 +123,12 @@ une falaise, qu'on escalade par des échafaudages.
 À vérifier en jeu : modèle des sceaux, force du souffle des gargouilles, escaliers en colimaçon praticables, modèle
 provisoire du dévoreur (`Zombie_Aberrant_Small`), blocs utilisables (râtelier, leviers, portes) dans une instance
 sans modification de blocs, rotation des barreaux de cage.
+Décor (`tools/fractal_nature.py`, partagé par les fractales : bruit lisse, feuillus et résineux vanilla, buissons,
+rochers moussus, herbes et massifs de fleurs, îles flottantes) : falaise en amphithéâtre à strates et mousse,
+corniches fleuries et lianes, crête boisée, plateau du camp au contour irrégulier avec chemins de terre battue et
+feu de camp, colosse de basalte moussu, matinée claire (`Nakasar_Fractal_Weather_Cliffside`, 10 h 30). À vérifier
+en jeu : lianes et fleurs bien posées (pas de plantes en l'air), teinte de l'herbe et des feuilles, lumière du jour,
+mousse sur le colosse sans gêner les passages.
 
 Étape 5, **les instabilités** (`instability/`) : 0 en Initié, 1 en Adepte, 2 en Expert, 3 en Maître, tirées une fois
 par jour et par fractale pour tout le serveur (les rangs hauts gardent celles des rangs bas). Un joueur seul en tire

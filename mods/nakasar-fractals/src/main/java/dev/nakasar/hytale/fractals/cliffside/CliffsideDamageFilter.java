@@ -28,7 +28,7 @@ import java.util.Set;
  *   <li>sceaux : tout coup est annulé ; un coup de joueur est remis à {@link Cliffside#onSealHit} (le marteau chargé
  *   les fissure) ;</li>
  *   <li>l'Archidevin : seuils de vie, transitions et mur anti-projectiles ({@link Archdiviner#filter}) ;</li>
- *   <li>un joueur à {@value #WEAK_STACKS} charges de Corruption ou plus ne fait que {@value #WEAK_FACTOR} de ses
+ *   <li>un joueur au cran {@value #WEAK_TIER} de Corruption ou plus ne fait que {@value #WEAK_FACTOR} de ses
  *   dégâts ;</li>
  *   <li>l'Archidevin en forme démoniaque frappe × 1,3 (le niveau, lui, est compté par
  *   {@link dev.nakasar.hytale.fractals.stage.StageDamageFilter}).</li>
@@ -36,7 +36,7 @@ import java.util.Set;
  */
 public final class CliffsideDamageFilter extends DamageEventSystem {
 
-    static final float WEAK_STACKS = 20f;
+    static final int WEAK_TIER = 2;
     static final float WEAK_FACTOR = 0.7f;
     static final float DEMON_FACTOR = 1.3f;
 
@@ -93,7 +93,7 @@ public final class CliffsideDamageFilter extends DamageEventSystem {
             return;
         }
         PlayerRef player = buffer.getComponent(attacker, PlayerRef.getComponentType());
-        if (player != null && Hammer.stacks(player.getUuid()) >= WEAK_STACKS) {
+        if (player != null && Hammer.tier(player.getUuid()) >= WEAK_TIER) {
             damage.setAmount(damage.getAmount() * WEAK_FACTOR);
         }
         if (buffer.getComponent(victim, PlayerRef.getComponentType()) != null) {

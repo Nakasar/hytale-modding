@@ -20,7 +20,7 @@
       "JumpHeight": 1.0
     }
   ],
-  "KnockbackScale": 1.0,
+  "KnockbackScale": 0.0,
   "DeathAnimationTime": 1.0,
   "StateTransitions": [
     {

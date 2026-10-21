@@ -40,6 +40,7 @@ from pathlib import Path
 from PIL import Image, ImageDraw
 
 import fractal_models as fm
+import fractal_nature as fn
 import fractal_roles as fr
 import generate_observatory as go
 
@@ -49,6 +50,7 @@ COMMON = go.COMMON
 LANG = "nakasar_fractals_cliffside"
 JAVA_LAYOUT = MOD / "src/main/java/dev/nakasar/hytale/fractals/cliffside/CliffsideLayout.java"
 INSTANCE = "Nakasar_Fractal_Cliffside"
+WEATHER = "Nakasar_Fractal_Weather_Cliffside"
 PREFAB_DIR = "Cliffside"
 GENERATOR = "generate_cliffside.py"
 ITEMS = go.ITEMS / "Cliffside"
@@ -156,21 +158,10 @@ ROLE_SEAL = "Nakasar_Fractal_Seal"
 ROLE_BOSS = "Nakasar_Fractal_Archdiviner"
 FOE_ROLES = [ROLE_FANATIC, ROLE_CHANTER, ROLE_DEVOURER, ROLE_SEAL, ROLE_BOSS]
 
-STONES = ["Rock_Stone", "Rock_Stone", "Rock_Slate", "Rock_Shale", "Rock_Stone_Cobble"]
-COLOSSUS = ["Rock_Basalt", "Rock_Basalt", "Rock_Slate", "Rock_Basalt_Cobble"]
 PLANKS = "Wood_Darkwood_Planks"
 PLANKS_HALF = "Wood_Darkwood_Planks_Half"
 BEAM = "Wood_Darkwood_Beam"
 AIR = go.AIR
-
-
-def pick(options, x, y, z):
-    return options[(x * 73856093 ^ y * 83492791 ^ z * 19349663) % len(options)]
-
-
-def noise(x, y, scale=7.0):
-    """Bruit lisse déterministe (somme de sinus), dans [-1, 1]."""
-    return (math.sin(x / scale + 1.3) * math.cos(y / (scale * 0.8) - 0.7) + math.sin((x + y) / (scale * 1.7))) / 2
 
 
 # --- géométrie -------------------------------------------------------------------------------------
@@ -232,29 +223,115 @@ def spiral(p, cx, cz, y0, y1, landing=PLANKS):
     return steps
 
 
+CLIFF_HALF = 92                   # demi-largeur de la falaise
+CLIFF_BACK = -76                  # dos de la falaise (jamais vu, pas écrit)
+CLIFF_STRATA = ["Rock_Stone", "Rock_Slate", "Rock_Stone", "Rock_Shale", "Rock_Stone", "Rock_Slate"]
+BASALT_STRATA = ["Rock_Basalt", "Rock_Basalt", "Rock_Slate", "Rock_Basalt", "Rock_Shale"]
+# Pas de corniche là où elle gênerait le parcours : saut des gargouilles, colosse, bras.
+NO_LEDGE = [(-72, -38, KNEES - 6, CHEST + 12), (-24, 24, -60, ARENA + 40), (-54, -16, SHOULDERS - 12, SHOULDERS + 2),
+            (16, 54, SHOULDERS - 12, SHOULDERS + 2), (-44, 44, -60, 6)]
+
+
+def rock(x, y, z):
+    """Roche de la falaise : strates lisses et un peu penchées, plaques moussues."""
+    if fn.vnoise3(x, y, z, 7, 17) > 0.42:
+        return "Rock_Stone_Mossy"
+    band = math.floor((y + x * 0.07 + 3 * fn.fbm2(x, z, 26, 2, 5)) / 4)
+    return CLIFF_STRATA[band % len(CLIFF_STRATA)]
+
+
+def basalt(x, y, z):
+    """Pierre du colosse : basalte en couches lisses."""
+    band = math.floor((y + 2.5 * fn.fbm2(x + z, z, 18, 2, 9)) / 3)
+    return BASALT_STRATA[band % len(BASALT_STRATA)]
+
+
+def cliff_wrap(x):
+    """Recul vers le sud des deux bouts de la falaise (amphithéâtre autour du colosse)."""
+    return ((abs(x) - 68) / 24) ** 2 * 34 if abs(x) > 68 else 0.0
+
+
+def cliff_face(x, y):
+    """z de la face de la falaise (case de roche la plus au sud) en (x, y)."""
+    protected = -72 <= x <= -38 and KNEES - 6 <= y <= CHEST + 12
+    recess = 0 if protected else round(2.5 + 2.5 * fn.fbm2(x, y, 9, 3, 41))
+    return CLIFF_Z - max(0, min(5, recess)) + round(cliff_wrap(x))
+
+
+def cliff_crest(x):
+    return ARENA + 12 + round(5 * fn.fbm2(x, 0, 20, 2, 3)) - round(cliff_wrap(x) * 0.35)
+
+
+def cliff_bottom(x):
+    return -40 + round(8 * fn.fbm2(x, 7, 15, 2, 4))
+
+
 def cliff_prefab():
-    """Falaise des Brumes derrière le colosse : face rocheuse de 2 blocs, strates, herbe au sommet, gargouilles."""
+    """Falaise des Brumes derrière le colosse : masse rocheuse en amphithéâtre (seule la coque visible est écrite),
+    strates, mousse, corniches herbues avec fleurs et lianes, crête boisée, gargouilles."""
     p = go.Prefab()
-    top = ARENA + 12
-    for x in range(-76, 77):
-        crest = top + round(4 * noise(x, 0, 11))
-        for y in range(-34, crest + 1):
-            recess = 1 if noise(x, y) > 0.55 else 0
-            zf = CLIFF_Z - recess
-            strata = STONES[(y // 5 + (1 if noise(x, y, 4) > 0.3 else 0)) % len(STONES)]
-            p.set(x, y, zf, strata)
-            p.set(x, y, zf - 1, pick(STONES, x, y, zf))
+    faces = {}
+    for x in range(-CLIFF_HALF, CLIFF_HALF + 1):
+        for y in range(cliff_bottom(x), cliff_crest(x) + 1):
+            faces[(x, y)] = cliff_face(x, y)
+    for (x, y), f in faces.items():
+        crest = cliff_crest(x)
+        around = [faces.get((x + dx, y + dy)) for dx, dy in ((1, 0), (-1, 0), (0, 1), (0, -1))]
+        zs = range(CLIFF_BACK, f + 1) if None in around else range(min(min(around) + 1, f), f + 1)
+        for z in zs:
             if y == crest:
-                p.set(x, y + 1, zf, "Soil_Grass")
-                p.set(x, y + 1, zf - 1, "Soil_Grass")
-        # Bords nord et côtés : la roche continue un peu (pas de face en papier vue de biais).
-        for zz in range(CLIFF_Z - 6, CLIFF_Z - 1):
-            p.set(x, crest, zz, "Soil_Grass")
-            p.set(x, crest - 1, zz, pick(STONES, x, crest, zz))
-    for x in (-76, 76):
-        for y in range(-34, top + 1):
-            for zz in range(CLIFF_Z - 6, CLIFF_Z):
-                p.set(x, y, zz, pick(STONES, x, y, zz))
+                block = fn.soil(x, z, 3)
+            elif y >= crest - 2:
+                block = fn.DIRT[int(fn.hash01(x, y, z, 2) * len(fn.DIRT))]
+            else:
+                block = rock(x, y, z)
+            p.set(x, y, z, block)
+    # Crête : herbe, fleurs et résineux.
+    crest_cells = []
+    for x in range(-CLIFF_HALF, CLIFF_HALF + 1):
+        crest = cliff_crest(x)
+        for z in range(CLIFF_BACK, faces[(x, crest)] + 1):
+            crest_cells.append((x, crest, z))
+    for x in range(-CLIFF_HALF + 3, CLIFF_HALF - 2, 5):
+        if fn.hash01(x, 0, 0, 51) < 0.7:
+            crest = cliff_crest(x)
+            z = faces[(x, crest)] - 2 - int(fn.hash01(x, 1, 0, 52) * 8)
+            if fn.hash01(x, 2, 0, 53) < 0.65:
+                fn.conifer(p, x, crest + 1, z, 8 + int(fn.hash01(x, 3, 0, 54) * 6), "fir" if x % 2 else "cedar", seed=x)
+            else:
+                fn.broadleaf(p, x, crest + 1, z, 5 + int(fn.hash01(x, 3, 0, 55) * 3), "oak", seed=x)
+    fn.flora(p, crest_cells, seed=61, density=0.6, flowers=0.12)
+    # Corniches : bandes herbues qui sortent de 1 à 3 blocs, fleuries, lianes dessous.
+    ledge_cells = []
+    for gy in range(-28, ARENA + 4, 7):
+        for gx in range(-CLIFF_HALF + 4, CLIFF_HALF - 3, 9):
+            cx = gx + int(fn.hash01(gx, gy, 0, 71) * 5) - 2
+            cy = gy + int(fn.hash01(gx, gy, 1, 72) * 4) - 2
+            if fn.hash01(gx, gy, 2, 73) > 0.62 or cy >= cliff_crest(cx) - 6:
+                continue
+            w = 3 + int(fn.hash01(gx, gy, 3, 74) * 6)
+            depth = 1 + int(fn.hash01(gx, gy, 4, 75) * 3)
+            if any(x0 - 3 <= cx + i <= x1 + 3 and y0 <= cy <= y1 for x0, x1, y0, y1 in NO_LEDGE for i in (-w, 0, w)):
+                continue
+            for i in range(-w, w + 1):
+                x = cx + i
+                d = round(depth * (1 - (abs(i) / (w + 1)) ** 2))
+                if d < 1 or (x, cy) not in faces:
+                    continue
+                f = faces[(x, cy)]
+                for dz in range(1, d + 1):
+                    p.set(x, cy, f + dz, fn.soil(x, f + dz, 3))
+                    ledge_cells.append((x, cy, f + dz))
+                    if dz < d:
+                        p.set(x, cy - 1, f + dz, rock(x, cy - 1, f + dz))
+                    elif fn.hash01(x, cy, dz, 76) < 0.4:
+                        vine = fn.HANGING[int(fn.hash01(x, dz, cy, 77) * len(fn.HANGING))]
+                        for k in range(1 + int(fn.hash01(cy, x, dz, 78) * 5)):
+                            if fn.free(p, x, cy - 1 - k, f + dz):
+                                p.set(x, cy - 1 - k, f + dz, vine)
+                if fn.hash01(x, cy, 0, 79) < 0.12:
+                    fn.shrub(p, x, cy + 1, f + 1, seed=x, leaves="Plant_Leaves_Oak")
+    fn.flora(p, ledge_cells, seed=81, density=0.7, flowers=0.22)
     # Gargouilles : une statue par pierre de tronçon, adossée à la roche (bloc plein derrière).
     for g in gargoyles():
         x, y, z = g["at"]
@@ -291,17 +368,27 @@ def colossus_cells():
     return cells, eyes
 
 
-def colossus_prefab():
+def colossus_prefab(avoid=()):
+    """Le colosse de basalte, mousse sur ses faces du dessus et lianes sous les bras et le menton. `avoid` : cases
+    prises par le parcours (pas de mousse ni de liane dessus)."""
     p = go.Prefab()
     cells, eyes = colossus_cells()
     for (x, y, z) in cells:
         if all((x + dx, y + dy, z + dz) in cells for dx, dy, dz in
                ((1, 0, 0), (-1, 0, 0), (0, 1, 0), (0, -1, 0), (0, 0, 1), (0, 0, -1))):
             continue
-        block = pick(COLOSSUS, x, y, z)
-        if (x, y, z) in eyes:
-            block = "Rock_Crystal_Purple_Block"
-        p.set(x, y, z, block)
+        p.set(x, y, z, "Rock_Crystal_Purple_Block" if (x, y, z) in eyes else basalt(x, y, z))
+    for (x, y, z) in cells:
+        above, below = (x, y + 1, z), (x, y - 1, z)
+        if above not in cells and above not in avoid and fn.fbm2(x + 3 * z, y, 7, 2, 23) > 0.15 and fn.hash01(x, y, z, 24) < 0.7:
+            p.set(*above, "Plant_Moss_Rug_Green" if fn.hash01(z, x, y, 25) < 0.7 else "Plant_Moss_Short_Green")
+        if below not in cells and y > 2 and fn.hash01(x, y, z, 26) < 0.14:
+            vine = fn.HANGING[int(fn.hash01(z, y, x, 27) * len(fn.HANGING))]
+            for k in range(1 + int(fn.hash01(y, z, x, 28) * 4)):
+                at = (x, y - 1 - k, z)
+                if at in cells or at in avoid or not fn.free(p, *at):
+                    break
+                p.set(*at, vine)
     # Fers aux poignets (anneaux de basalte taillé) et chaînes qui pendent vers la falaise.
     S = SHOULDERS
     for sx in (-1, 1):
@@ -388,17 +475,12 @@ def ramp_cells(ramp):
 
 def course_prefab():
     p = go.Prefab()
-    # Plateau du camp au pied du colosse (sol en y = -1), dessous en cône.
-    x0, x1, z0, z1 = PLATEAU
-    for x in range(x0, x1 + 1):
-        for z in range(z0, z1 + 1):
-            p.set(x, -1, z, "Soil_Grass" if noise(x, z, 5) > -0.4 else "Soil_Gravel")
-            edge = min(x - x0, x1 - x, z - z0, z1 - z)
-            depth = 3 + min(22, int(edge * 1.3))
-            # Dessous en cône, creux : seules les cases visibles (bord, fond) sont écrites.
-            for y in range(-1 - depth, -1):
-                if edge < 2 or y <= -depth + 1 or y == -2:
-                    p.set(x, y, z, pick(STONES, x, y, z))
+    # Plateau du camp au pied du colosse : île au contour irrégulier (sol en y = -1, bosses sur le pourtour), dessous
+    # rocheux plus profond au centre, chemins de terre battue et sol usé du camp.
+    tops = plateau_tops()
+    edge = edge_distance(tops)
+    fn.island(p, tops, lambda x, z: 3 + min(24, edge[(x, z)] * 1.2) + 2 * fn.fbm2(x, z, 6, 2, 13), seed=7,
+              grass=plateau_ground, hang=0.14)
     # Camp : autel de basalte et râtelier, braseros, caisses, tentes de toile (blocs simples).
     ax, az = ALTAR_AT
     p.fill(ax - 1, 0, az - 1, ax + 1, 0, az + 1, "Rock_Basalt_Brick_Ornate")
@@ -413,6 +495,7 @@ def course_prefab():
                 p.set(tx - 3 + k, h, tz + dz, "Wood_Darkwood_Planks_Half")
         p.set(tx - 3, 0, tz - 2, BEAM)
         p.set(tx, 0, tz - 2, BEAM)
+    p.set(-7, 0, 3, "Bench_Campfire")
     p.set(*START_EXIT, EXIT_STONE)
     for sx in range(-2, 3):
         for sz in range(17, 25):
@@ -435,7 +518,7 @@ def course_prefab():
                 if inside:
                     p.set(x, y, z, AIR)
                 elif shell:
-                    p.set(x, y, z, pick(STONES, x, y, z))
+                    p.set(x, y, z, rock(x, y, z))
     for x in range(tx0, tx1 + 1):
         for z in range(tz0, tz1 + 1):
             p.set(x, KNEES - 1, z, "Rock_Stone_Brick")
@@ -508,7 +591,7 @@ def course_prefab():
             p.set(x, ARENA - 1, z, "Rock_Basalt_Brick_Smooth" if ring else "Rock_Basalt_Brick")
             bottom = ARENA - 2 - int(9 * (1 - (d / (ARENA_RADIUS + 0.5)) ** 1.5))
             for y in range(bottom, ARENA - 1):
-                p.set(x, y, z, pick(COLOSSUS, x, y, z))
+                p.set(x, y, z, basalt(x, y, z))
             a = math.atan2(z - cz, x - cx)
             gap = abs(math.atan2(math.sin(a - entry), math.cos(a - entry))) < 0.2
             if d > ARENA_RADIUS - 0.5 and not gap:
@@ -543,7 +626,121 @@ def course_prefab():
     for x in range(cx - 1, cx + 2):
         for z in range(cz - 1, cz + 2):
             p.set(x, ARENA - 1, z, SEAL_STONE)
+    plateau_vegetation(p, tops, edge)
     return p
+
+
+def plateau_tops():
+    """Dessus du plateau {(x, z): y} : le rectangle PLATEAU (sol en y = -1) et un pourtour irrégulier de 2 à 11 blocs
+    (pas au nord, la falaise y est), avec quelques bosses."""
+    x0, x1, z0, z1 = PLATEAU
+    tops = {}
+    for x in range(x0 - 11, x1 + 12):
+        for z in range(z0, z1 + 12):
+            dx = max(x0 - x, 0, x - x1)
+            dz = max(0, z - z1)
+            out = math.hypot(dx, dz)
+            reach = 2 + 9 * (fn.fbm2(x, z, 13, 3, 31) + 1) / 2
+            if out > reach:
+                continue
+            bump = 1 if out > 1.5 and fn.fbm2(x, z, 5, 2, 33) > 0.35 else 0
+            tops[(x, z)] = -1 + bump
+    return tops
+
+
+def edge_distance(tops):
+    """Distance (en cases, pas de 4 voisins) de chaque case du plateau au vide."""
+    from collections import deque
+    dist = {}
+    queue = deque()
+    for (x, z) in tops:
+        if any((x + dx, z + dz) not in tops for dx, dz in ((1, 0), (-1, 0), (0, 1), (0, -1))):
+            dist[(x, z)] = 0
+            queue.append((x, z))
+    while queue:
+        x, z = queue.popleft()
+        for dx, dz in ((1, 0), (-1, 0), (0, 1), (0, -1)):
+            n = (x + dx, z + dz)
+            if n in tops and n not in dist:
+                dist[n] = dist[(x, z)] + 1
+                queue.append(n)
+    return dist
+
+
+# Chemins de terre battue : du départ au camp, du camp à l'autel, du camp à l'escalier S1 (segments, largeur).
+PATHS = [((0, 17), (0, -4), 1.6), ((0, -4), (2, -14), 1.6), ((0, -22), (0, -27), 1.4), ((4, -18), (20, -32), 1.4)]
+CAMP_GROUND = (0, -14, 9.5)       # sol usé du camp (centre x, z, rayon)
+
+
+def _segment_distance(x, z, a, b):
+    (ax, az), (bx, bz) = a, b
+    vx, vz = bx - ax, bz - az
+    t = max(0.0, min(1.0, ((x - ax) * vx + (z - az) * vz) / float(vx * vx + vz * vz)))
+    return math.hypot(x - ax - vx * t, z - az - vz * t)
+
+
+def plateau_ground(x, z):
+    """Bloc du dessus du plateau : terre battue sur les chemins, sol usé du camp, herbe ailleurs."""
+    wobble = 0.5 * fn.fbm2(x, z, 4, 2, 37)
+    for a, b, w in PATHS:
+        d = _segment_distance(x, z, a, b)
+        if d <= w + wobble:
+            return "Soil_Pathway"
+        if d <= w + 1.2 + wobble and fn.hash01(x, z, 1, 38) < 0.5:
+            return "Soil_Gravel_Mossy"
+    cx, cz, r = CAMP_GROUND
+    d = math.hypot(x - cx, z - cz) - 2 * fn.fbm2(x, z, 7, 2, 39)
+    if d <= r:
+        n = fn.fbm2(x, z, 4, 2, 40)
+        return "Soil_Pathway" if n > 0.25 else "Soil_Dirt" if n > -0.2 else "Soil_Gravel"
+    if d <= r + 2 and fn.hash01(x, z, 2, 41) < 0.5:
+        return "Soil_Gravel_Mossy"
+    return fn.soil(x, z, 7)
+
+
+# Pas d'arbre ici (camp, chemin du départ, escalier S1, devant le colosse, contrefort).
+NO_TREE = [(-21, 21, -34, 8), (-5, 5, 6, 34), (16, 34, -46, -28), (-25, 25, -62, -30), (-47, -14, -62, -27)]
+
+
+def plateau_vegetation(p, tops, edge):
+    """Arbres (feuillus variés, quelques résineux), buissons, rochers moussus, puis herbes et fleurs partout où il
+    reste de l'herbe à l'air libre."""
+    trees = []
+    kinds = ["oak", "oak", "birch", "beech", "maple", "oak", "birch"]
+    for gx in range(-40, 41, 3):
+        for gz in range(-30, 36, 3):
+            x = gx + int(fn.hash01(gx, gz, 0, 91) * 3) - 1
+            z = gz + int(fn.hash01(gx, gz, 1, 92) * 3) - 1
+            if (x, z) not in tops or edge[(x, z)] < 2 or fn.hash01(gx, gz, 2, 93) > 0.55:
+                continue
+            if any(a <= x <= b and c <= z <= d for a, b, c, d in NO_TREE):
+                continue
+            if any(math.hypot(x - tx, z - tz) < 6 for tx, tz in trees):
+                continue
+            y = tops[(x, z)]
+            if not p.blocks.get((x, y, z), ("",))[0].startswith("Soil_Grass") or not fn.free(p, x, y + 1, z):
+                continue
+            trees.append((x, z))
+            h = fn.hash01(x, z, 3, 94)
+            if h < 0.18:
+                fn.conifer(p, x, y + 1, z, 9 + int(h * 20), "fir", seed=x * 7 + z)
+            else:
+                kind = kinds[int(fn.hash01(x, z, 4, 95) * len(kinds))]
+                fn.broadleaf(p, x, y + 1, z, 5 + int(fn.hash01(x, z, 5, 96) * 4), kind, seed=x * 7 + z)
+    for (x, z), y in sorted(tops.items()):
+        if any(a <= x <= b and c <= z <= d for a, b, c, d in NO_TREE[:2]):
+            continue
+        if not p.blocks.get((x, y, z), ("",))[0].startswith("Soil_Grass") or not fn.free(p, x, y + 1, z):
+            continue
+        h = fn.hash01(x, y, z, 97)
+        if h < 0.02:
+            fn.shrub(p, x, y + 1, z, seed=x + z, leaves="Plant_Leaves_Oak" if (x + z) % 3 else "Plant_Leaves_Beech")
+        elif h < 0.05:
+            p.set(x, y + 1, z, fn.BUSHES[int(fn.hash01(z, x, y, 98) * len(fn.BUSHES))])
+        elif h < 0.056 and edge[(x, z)] >= 1:
+            fn.boulder(p, x, y + 1, z, 1.0 + fn.hash01(x, z, 6, 99) * 1.2, seed=x * 3 + z)
+    cells = [(x, y, z) for (x, z), y in tops.items() if p.blocks.get((x, y, z), ("",))[0].startswith("Soil_Grass")]
+    fn.flora(p, cells, seed=101, density=0.55, flowers=0.16)
 
 
 # --- blocs, textures, objets ------------------------------------------------------------------------
@@ -612,10 +809,11 @@ def blocks():
 
 def hammer_item():
     return {
-        "$Comment": "Marteau du culte (Falaise) : la masse d'onyx vanilla, seule arme qui brise les sceaux. Porté (n'importe "
-                    "où dans l'inventaire), il donne des charges de Corruption ; un ennemi frappé avec, ou tué à moins de "
-                    "8 blocs, le charge (Brise-sceau). Retiré quand on quitte la fractale "
-                    "(dev.nakasar.hytale.fractals.hammer.HammerSystem). Généré par tools/generate_cliffside.py.",
+        "$Comment": "Marteau du culte (Falaise) : la masse d'onyx vanilla, seule arme qui brise les sceaux. Tenu en main, "
+                    "il fait monter la Corruption d'un cran toutes les 10 s (rangé, elle redescend) ; un ennemi frappé "
+                    "avec, ou tué après avoir été frappé par le porteur, ou tué à moins de 10 blocs, le charge "
+                    "(Brise-sceau). Retiré quand on quitte la fractale (dev.nakasar.hytale.fractals.hammer.HammerSystem). "
+                    "Généré par tools/generate_cliffside.py.",
         "Parent": "Weapon_Mace_Onyxium",
         "TranslationProperties": {"Name": f"{LANG}.items.{HAMMER}.name", "Description": f"{LANG}.items.{HAMMER}.description"},
         "Quality": "Legendary",
@@ -656,8 +854,8 @@ def effects():
     out = {}
     for tier, top, bottom in CORRUPTION_TIERS:
         out[f"{CORRUPTION}_{tier}"] = {
-            "$Comment": f"Corruption du marteau, palier {tier} ({tier * 10} charges et plus) : marqueur visible et "
-                        f"{tier * 8} % de dégâts subis en plus. Posé et retiré par HammerSystem selon les charges.",
+            "$Comment": f"Corruption du marteau, cran {tier} : {tier * 8} % de dégâts subis en plus. Posé par HammerSystem "
+                        f"pour un cran entier (10 s) : la jauge se vide, puis le cran monte (marteau en main) ou descend.",
             "Name": f"{LANG}.effects.{CORRUPTION}_{tier}",
             "Debuff": True,
             "StatusEffectIcon": f"{STATUS_ICONS}/Corruption_{tier}.png",
@@ -1034,7 +1232,7 @@ def fanatic_role():
          fr.chase(32, stop=1.6)],
         fr.walk(4.2), GENERATOR, sight=20, leash=40, home=False,
         timers=[fr.timer("Slam", (4, 6), (9, 12))],
-        HotbarItems=["Weapon_Sword_Steel_Rusty"], KnockbackScale=0.8, DeathAnimationTime=1.0)
+        HotbarItems=["Weapon_Sword_Steel_Rusty"], KnockbackScale=0.0, DeathAnimationTime=1.0)
 
 
 def chanter_role():
@@ -1049,7 +1247,7 @@ def chanter_role():
          fr.keep_distance(32, 6, 10)],
         fr.walk(3.6), GENERATOR, sight=20, leash=40, home=False,
         timers=[fr.timer("Heal", (3, 5), (7, 9)), fr.timer("Hex", (1, 3), (5, 7))],
-        HotbarItems=["Weapon_Staff_Crystal_Purple"], KnockbackScale=1.0, DeathAnimationTime=1.0)
+        HotbarItems=["Weapon_Staff_Crystal_Purple"], KnockbackScale=0.0, DeathAnimationTime=1.0)
 
 
 def devourer_role():
@@ -1062,7 +1260,7 @@ def devourer_role():
          fr.melee(root("Devourer_Bite"), 2.0, (0.8, 1.2)),
          fr.keep_distance(32, 5, 9)],
         fr.walk(3.8), GENERATOR, sight=24, leash=40, home=False,
-        timers=[fr.timer("Spit", (1, 2), (4, 5))], KnockbackScale=1.0, DeathAnimationTime=1.0)
+        timers=[fr.timer("Spit", (1, 2), (4, 5))], KnockbackScale=0.0, DeathAnimationTime=1.0)
 
 
 def static_role(role_id, comment, appearance, hp, attitude="Hostile"):
@@ -1136,8 +1334,26 @@ def biome(prefabs):
                 {"Path": f"{go.PREFABS}/{PREFAB_DIR}/{name}", "Weight": 1.0}]}},
         },
     } for name in prefabs]
-    doc["TintProvider"] = {"Type": "Constant", "Color": "#6a7a5a"}
+    doc["TintProvider"] = {"Type": "Constant", "Color": "#62a83e"}
     return doc
+
+
+def weather():
+    """Matinée claire sur la Falaise : ciel bleu, soleil chaud, brume lavande des Brumes au loin seulement."""
+    hours = lambda pairs: [{"Hour": h, "Color": c} for h, c in pairs]
+    return {
+        "FogDistance": [40, 360],
+        "FogColors": hours([(0, "#b8b4e0"), (12, "#c8c4ec")]),
+        "FogDensities": [{"Hour": 0, "Value": 0.25}, {"Hour": 12, "Value": 0.25}],
+        "SkyTopColors": hours([(0, "#3a6ad0ff"), (12, "#3a6ad0ff")]),
+        "SkyBottomColors": hours([(0, "#a8c8f0ff"), (12, "#a8c8f0ff")]),
+        "SkySunsetColors": hours([(0, "#00000000"), (12, "#00000000")]),
+        "SunlightColors": hours([(0, "#fff0d8"), (12, "#fff4e0")]),
+        "SunColors": hours([(0, "#fff8e0"), (12, "#fff8e0")]),
+        "MoonColors": hours([(0, "#e0e8ffff"), (12, "#e0e8ffff")]),
+        "MoonGlowColors": hours([(0, "#7aa0ff60"), (12, "#7aa0ff60")]),
+        "WaterTints": hours([(0, "#3a7ac0"), (12, "#3a7ac0")]),
+    }
 
 
 # --- langues -------------------------------------------------------------------------------------
@@ -1153,13 +1369,14 @@ def lang():
         put(f"items.{item_id}.description", df, de)
 
     item(HAMMER, "Marteau du culte",
-         "Seule arme capable de briser les sceaux du colosse. Le porter corrompt : la prise en main coûte 10 % des PV, "
-         "puis une charge de Corruption par seconde (dégâts subis en hausse, faiblesse, étourdissement, et à 40 il "
-         "tombe). Frapper un cultiste avec, ou en voir un mourir près de soi, le charge : un coup chargé fissure un sceau.",
+         "Seule arme capable de briser les sceaux du colosse. Le recevoir coûte 10 % des PV. Tenu en main, il corrompt : "
+         "toutes les 10 s, la Corruption monte d'un cran (dégâts subis en hausse, faiblesse, étourdissement, puis il "
+         "vous échappe) ; rangé, elle redescend d'un cran. Frapper un cultiste avec, ou voir mourir un cultiste qu'on a "
+         "frappé, le charge : un coup chargé fissure un sceau.",
          "Cult Hammer",
-         "The only weapon that can break the colossus' seals. Carrying it corrupts: picking it up costs 10% HP, then one "
-         "Corruption stack per second (more damage taken, weakness, stun, and at 40 you drop it). Hitting a cultist with "
-         "it, or seeing one die nearby, charges it: a charged blow cracks a seal.")
+         "The only weapon that can break the colossus' seals. Receiving it costs 10% HP. Held in hand, it corrupts: every "
+         "10 s, Corruption rises one tier (more damage taken, weakness, stun, then you drop it); put away, it falls one "
+         "tier. Hitting a cultist with it, or seeing a cultist you hit die, charges it: a charged blow cracks a seal.")
     item(SEAL_STONE, "Pierre de sceau", "Pierre gravée du culte, sous le sceau du cou.", "Seal stone",
          "Carved cult stone, under the neck seal.")
     item(MIST_BARRIER, "Barrière de brume", "Se dissipe quand les sceaux qui la tiennent sont brisés.", "Mist barrier",
@@ -1199,8 +1416,13 @@ def lang():
         "hammer.already": ("Le marteau est déjà entre les mains de {name}.", "{name} already holds the hammer."),
         "hammer.have": ("Vous avez déjà le marteau.", "You already have the hammer."),
         "hammer.charged": ("Marteau chargé : frappez un sceau !", "Hammer charged: strike a seal!"),
-        "hammer.stun": ("La Corruption vous submerge un instant.", "Corruption overwhelms you for a moment."),
+        "hammer.stun": ("Cran 3 : la Corruption vous submerge un instant. Rangez le marteau !",
+                        "Tier 3: Corruption overwhelms you for a moment. Put the hammer away!"),
         "hammer.dropped": ("Trop de Corruption : le marteau vous échappe.", "Too much Corruption: the hammer slips away."),
+        "hammer.up": ("La Corruption monte : cran {tier}. Rangez le marteau pour la faire redescendre.",
+                      "Corruption rises: tier {tier}. Put the hammer away to let it fall."),
+        "hammer.down": ("La Corruption redescend : cran {tier}.", "Corruption falls: tier {tier}."),
+        "hammer.cleansed": ("La Corruption se dissipe.", "The Corruption fades."),
         "hammer.removed": ("Le marteau du culte se dissipe hors de la Falaise.", "The cult hammer fades outside the Cliffside."),
         "seal.needHammer": ("Seul le marteau du culte, chargé, fissure ce sceau.",
                             "Only the charged cult hammer can crack this seal."),
@@ -1448,13 +1670,15 @@ def main():
     doc["IncludeRoles"] = sorted(set(doc.get("IncludeRoles", [])) | set(FOE_ROLES))
     write_json(group, doc)
 
-    prefabs = {"Cliff": cliff_prefab(), "Colossus": colossus_prefab(), "Course": course_prefab()}
+    course = course_prefab()
+    prefabs = {"Cliff": cliff_prefab(), "Colossus": colossus_prefab(set(course.blocks)), "Course": course}
     counts = {}
     for name, p in prefabs.items():
         counts[name] = p.write(SERVER / "Prefabs" / go.PREFABS / PREFAB_DIR / name / f"{name}.prefab.json")
     write_json(SERVER / "Instances" / INSTANCE / "instance.bson",
                go.instance(INSTANCE, "Falaise", INSTANCE, portal=False, spawn=(SPAWN[0], GROUND_Y + SPAWN[1], SPAWN[2]),
-                           removal=60))
+                           removal=60, weather=WEATHER, time="10:30"))
+    write_json(SERVER / "Weathers" / f"{WEATHER}.json", weather())
     write_json(SERVER / "HytaleGenerator/Biomes" / f"{INSTANCE}.json", biome(list(prefabs)))
     write_json(SERVER / "HytaleGenerator/WorldStructures" / f"{INSTANCE}.json",
                go.world_structure(INSTANCE, (SPAWN[0], GROUND_Y + SPAWN[1], SPAWN[2])))
@@ -1482,10 +1706,31 @@ def color_of(name):
         return (230, 120, 90)
     if name == GARGOYLE:
         return (255, 255, 255)
+    if name.startswith("Plant_Flower"):
+        return {"Yellow": (240, 220, 60), "White": (240, 240, 240), "Blue": (90, 130, 240), "Purple": (170, 90, 220),
+                "Violet": (150, 80, 220), "Pink": (240, 140, 190), "Red": (220, 50, 50), "Orange": (240, 150, 50)}.get(
+            next((c for c in ("Yellow", "White", "Blue", "Purple", "Violet", "Pink", "Red", "Orange") if c in name), ""),
+            (230, 230, 120))
+    if name.startswith("Plant_Leaves"):
+        return (40, 100, 40) if ("Fir" in name or "Cedar" in name) else (60, 130, 50)
+    if name.startswith(("Plant_Grass", "Plant_Bush", "Plant_Fern")):
+        return (100, 170, 70)
+    if name.startswith(("Plant_Vine", "Plant_Moss")) or name.endswith("_Mossy"):
+        return (70, 120, 60)
+    if name.endswith("_Trunk"):
+        return (110, 80, 50)
     if name.startswith("Wood_"):
         return (150, 100, 60)
     if name.startswith("Soil_Grass"):
         return (80, 140, 60)
+    if name.startswith(("Soil_Pathway", "Soil_Dirt", "Soil_Clay")):
+        return (150, 115, 75)
+    if name.startswith("Soil_Gravel"):
+        return (120, 120, 105)
+    if "Slate" in name:
+        return (95, 100, 110)
+    if "Shale" in name:
+        return (120, 110, 100)
     if "Basalt" in name:
         return (70, 70, 80)
     return (130, 130, 130)

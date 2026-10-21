@@ -511,12 +511,13 @@ def environment():
     }
 
 
-def instance(name, display, structure, portal=True, spawn=ARRIVAL, removal=300):
+def instance(name, display, structure, portal=True, spawn=ARRIVAL, removal=300, weather=WEATHER, time="18:00"):
+    """Instance figée à l'heure `time` sous le temps `weather` (par défaut le crépuscule des Brumes)."""
     doc = {
         "DisplayName": display,
         "WorldGen": {"Type": "HytaleGenerator", "WorldStructure": structure},
-        "ForcedWeather": WEATHER,
-        "GameTime": "0001-01-01T18:00:00Z",
+        "ForcedWeather": weather,
+        "GameTime": f"0001-01-01T{time}:00Z",
         "IsGameTimePaused": True,
         "GameplayConfig": OBSERVATORY,
         "IsPvpEnabled": False,

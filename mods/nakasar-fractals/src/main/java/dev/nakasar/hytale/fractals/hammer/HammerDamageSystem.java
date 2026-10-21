@@ -22,14 +22,26 @@ import dev.nakasar.hytale.fractals.combat.Foes;
 import dev.nakasar.hytale.fractals.combat.Telegraphs;
 import org.joml.Vector3d;
 
+import java.util.Collections;
+import java.util.Map;
+import java.util.WeakHashMap;
+
 /**
  * Charge Brise-sceau du marteau du culte ({@link Hammer}) : un ennemi des fractales ({@link Foes}) frappé avec le
- * marteau en main, ou tué à moins de {@value Hammer#CHARGE_RADIUS} blocs d'un porteur, charge le marteau. Les sceaux
- * ne comptent pas (leurs coups sont annulés avant). Lu après les réductions (groupe d'inspection).
+ * marteau en main charge le marteau ; à sa mort, un ennemi charge aussi le porteur qui l'a frappé dans les
+ * {@value Hammer#CREDIT_SECONDS} s (même s'il meurt d'une chute, loin de lui) et les porteurs à moins de
+ * {@value Hammer#CHARGE_RADIUS} blocs. Les sceaux ne comptent pas (leurs coups sont annulés avant).
+ *
+ * <p>Groupe d'inspection : il passe après {@code DamageSystems.ApplyDamage}, la vie lue est donc déjà diminuée du coup.
  */
 public final class HammerDamageSystem extends DamageEventSystem {
 
     private static final String SEAL_ROLE = "Nakasar_Fractal_Seal";
+    /** Dernier porteur du marteau à avoir frappé chaque ennemi, et quand (System.nanoTime). */
+    private static final Map<Ref<EntityStore>, Credit> CREDITS = Collections.synchronizedMap(new WeakHashMap<>());
+
+    private record Credit(PlayerRef player, long at) {
+    }
 
     @Override
     public SystemGroup<EntityStore> getGroup() {
@@ -54,15 +66,23 @@ public final class HammerDamageSystem extends DamageEventSystem {
         }
         if (damage.getSource() instanceof Damage.EntitySource source && source.getRef() != null && source.getRef().isValid()) {
             PlayerRef attacker = buffer.getComponent(source.getRef(), PlayerRef.getComponentType());
-            if (attacker != null && Hammer.holds(buffer, source.getRef())) {
-                charge(attacker);
+            Hammer.Carrier carrier = attacker == null ? null : Hammer.CARRIERS.get(attacker.getUuid());
+            if (carrier != null && carrier.carrying) {
+                CREDITS.put(victim, new Credit(attacker, System.nanoTime()));
+                if (Hammer.holds(buffer, source.getRef())) {
+                    charge(attacker);
+                }
             }
         }
         EntityStatMap stats = chunk.getComponent(index, EntityStatMap.getComponentType());
         EntityStatValue health = stats == null ? null : stats.get(DefaultEntityStatTypes.getHealth());
         TransformComponent transform = chunk.getComponent(index, TransformComponent.getComponentType());
-        if (health == null || transform == null || health.get() > damage.getAmount()) {
+        if (health == null || transform == null || health.get() > health.getMin()) {
             return;
+        }
+        Credit credit = CREDITS.remove(victim);
+        if (credit != null && System.nanoTime() - credit.at() <= Telegraphs.seconds(Hammer.CREDIT_SECONDS)) {
+            charge(credit.player());
         }
         Vector3d at = new Vector3d(transform.getPosition());
         World world = store.getExternalData().getWorld();

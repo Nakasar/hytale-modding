@@ -18,10 +18,11 @@ import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
- * Le marteau du culte de la Falaise ({@value #ID}) : seule arme qui brise les sceaux. Le porter (n'importe où dans
- * l'inventaire) donne des charges de Corruption ({@link HammerSystem}) ; il se charge (Brise-sceau) quand son porteur
- * frappe un ennemi avec, ou qu'un ennemi meurt à moins de {@value #CHARGE_RADIUS} blocs de lui
- * ({@link HammerDamageSystem}). Un coup chargé sur un sceau le fissure et consomme la charge.
+ * Le marteau du culte de la Falaise ({@value #ID}) : seule arme qui brise les sceaux. Le tenir en main fait monter la
+ * Corruption, cran par cran ({@link HammerSystem}) ; il se charge (Brise-sceau) quand son porteur frappe un ennemi
+ * avec, quand un ennemi qu'il a frappé (n'importe quelle arme) meurt dans les {@value #CREDIT_SECONDS} s, ou quand un
+ * ennemi meurt à moins de {@value #CHARGE_RADIUS} blocs de lui ({@link HammerDamageSystem}). Un coup chargé sur un
+ * sceau le fissure et consomme la charge.
  *
  * <p>L'état de chaque porteur est gardé en mémoire par joueur ; il ne survit ni à la sortie de la Falaise ni au
  * redémarrage (le marteau est alors retiré).
@@ -29,14 +30,15 @@ import java.util.concurrent.ConcurrentHashMap;
 public final class Hammer {
 
     public static final String ID = "Nakasar_Fractal_Cult_Hammer";
-    public static final double CHARGE_RADIUS = 8;
+    public static final double CHARGE_RADIUS = 10;
+    public static final float CREDIT_SECONDS = 15f;
 
-    /** Porteur : charges de Corruption, marteau chargé, et ce qu'on a déjà annoncé. */
+    /** Porteur : cran de Corruption (0 à 3) et temps restant du cran, marteau porté, marteau chargé. */
     static final class Carrier {
-        float stacks;
+        int tier;
+        float cycle;
         boolean carrying;
         boolean charged;
-        boolean stunnedAt30;
         float sinceFx;
     }
 
@@ -104,10 +106,10 @@ public final class Hammer {
         return true;
     }
 
-    /** Charges de Corruption du joueur (0 s'il n'a jamais porté le marteau). */
-    public static float stacks(UUID player) {
+    /** Cran de Corruption du joueur (0 à 3 ; 0 s'il n'a jamais tenu le marteau). */
+    public static int tier(UUID player) {
         Carrier carrier = CARRIERS.get(player);
-        return carrier == null ? 0f : carrier.stacks;
+        return carrier == null ? 0 : carrier.tier;
     }
 
     public static void clearAll() {

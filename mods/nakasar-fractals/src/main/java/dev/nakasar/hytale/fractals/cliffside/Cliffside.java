@@ -9,6 +9,7 @@ import com.hypixel.hytale.protocol.packets.interface_.EventTitleStyle;
 import com.hypixel.hytale.server.core.Message;
 import com.hypixel.hytale.server.core.entity.Frozen;
 import com.hypixel.hytale.server.core.modules.entity.component.Invulnerable;
+import com.hypixel.hytale.server.core.modules.entity.teleport.Teleport;
 import com.hypixel.hytale.server.core.modules.entitystats.EntityStatMap;
 import com.hypixel.hytale.server.core.modules.entitystats.asset.DefaultEntityStatTypes;
 import com.hypixel.hytale.server.core.universe.PlayerRef;
@@ -83,6 +84,7 @@ public final class Cliffside {
     static final int KNEE_W = 0, KNEE_E = 1, CHEST_SEAL = 2, WRIST_W = 3, WRIST_E = 4, NECK = 5;
     private static final int[] BREAKS = {KNEE_BREAKS, KNEE_BREAKS, CHEST_BREAKS, WRIST_BREAKS, WRIST_BREAKS, 1};
     private static final double SEAL_RESPAWN_RANGE = 80;
+    static final double FALL_LIMIT = 3;
 
     public enum Stage { CAMP, KNEES, CLIMB, CHEST, ARMS, RAMPS, ARENA, DONE }
 
@@ -116,6 +118,8 @@ public final class Cliffside {
         final Cages cages = new Cages();
         final Archdiviner boss = new Archdiviner();
         final Map<UUID, Long> throttle = new HashMap<>();
+        /** Point d'apparition de chaque cultiste et dévoreur : ils ne tombent jamais des plates-formes. */
+        final Map<Ref<EntityStore>, Vector3d> homes = new HashMap<>();
 
         State() {
             for (int i = 0; i < seals.length; i++) {
@@ -214,6 +218,7 @@ public final class Cliffside {
             default -> {
             }
         }
+        keepOnLedges(store, st);
         st.traps.step(world, store, st, players, dt);
         st.landings.step(world, store, players);
         st.cages.step(world, store, players, dt);
@@ -447,9 +452,29 @@ public final class Cliffside {
         }
     }
 
-    /** Un ennemi des fractales en `at`, non sauvegardé, vie selon le groupe et le niveau ({@link Spawns#spawnFoe}). */
+    /**
+     * Un ennemi des fractales en `at`, non sauvegardé, vie selon le groupe et le niveau ({@link Spawns#spawnFoe}) ;
+     * {@link #keepOnLedges} le ramène là s'il tombe.
+     */
     static Ref<EntityStore> spawnFoe(World world, Store<EntityStore> store, String role, double[] at) {
-        return Spawns.spawnFoe(world, store, role, at);
+        Ref<EntityStore> ref = Spawns.spawnFoe(world, store, role, at);
+        if (ref != null) {
+            state(world).homes.put(ref, new Vector3d(at[0], at[1], at[2]));
+        }
+        return ref;
+    }
+
+    /** Un cultiste tombé de plus de {@value #FALL_LIMIT} blocs sous son point d'apparition y est ramené. */
+    private static void keepOnLedges(Store<EntityStore> store, State st) {
+        st.homes.entrySet().removeIf(e -> !Spawns.alive(store, e.getKey()));
+        for (Map.Entry<Ref<EntityStore>, Vector3d> e : st.homes.entrySet()) {
+            Vector3d at = Telegraphs.position(store, e.getKey());
+            Vector3d home = e.getValue();
+            if (at != null && at.y() < home.y() - FALL_LIMIT) {
+                store.putComponent(e.getKey(), Teleport.getComponentType(),
+                        new Teleport(new Vector3d(home), new Rotation3f(0f, Telegraphs.yawToward(home, at), 0f)));
+            }
+        }
     }
 
     /** Pose le PNJ `role` (non sauvegardé), tourné de `yaw` ; null si le jeu refuse. */

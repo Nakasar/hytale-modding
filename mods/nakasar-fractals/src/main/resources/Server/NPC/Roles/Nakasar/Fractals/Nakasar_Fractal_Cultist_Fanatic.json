@@ -23,7 +23,7 @@
   "HotbarItems": [
     "Weapon_Sword_Steel_Rusty"
   ],
-  "KnockbackScale": 0.8,
+  "KnockbackScale": 0.0,
   "DeathAnimationTime": 1.0,
   "StateTransitions": [
     {

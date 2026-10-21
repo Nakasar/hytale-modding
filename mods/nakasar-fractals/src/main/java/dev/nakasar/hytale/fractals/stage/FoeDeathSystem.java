@@ -26,9 +26,9 @@ import java.util.Set;
 import java.util.WeakHashMap;
 
 /**
- * Morts des ennemis des fractales (groupe d'inspection, après les réductions) : un coup qui emporte toute la vie
- * restante d'un PNJ du camp ({@link Foes}) est annoncé une fois, sur le thread du monde, aux instabilités (Dernier
- * rire, Vengeance) et au déroulé de la fractale (barre d'événement des vagues).
+ * Morts des ennemis des fractales (groupe d'inspection, après {@code DamageSystems.ApplyDamage} : la vie lue est
+ * déjà diminuée du coup) : un coup qui laisse un PNJ du camp ({@link Foes}) sans vie est annoncé une fois, sur le
+ * thread du monde, aux instabilités (Dernier rire, Vengeance) et au déroulé de la fractale.
  */
 public final class FoeDeathSystem extends DamageEventSystem {
 
@@ -60,7 +60,7 @@ public final class FoeDeathSystem extends DamageEventSystem {
         TransformComponent transform = chunk.getComponent(index, TransformComponent.getComponentType());
         NPCEntity npc = chunk.getComponent(index, NPCEntity.getComponentType());
         Ref<EntityStore> victim = chunk.getReferenceTo(index);
-        if (health == null || transform == null || npc == null || health.get() > damage.getAmount()
+        if (health == null || transform == null || npc == null || health.get() > health.getMin()
                 || !Foes.inGroup(victim, buffer) || !REPORTED.add(victim)) {
             return;
         }

@@ -102,7 +102,7 @@ Un colosse géant est enchaîné à une falaise par un culte ; le groupe monte l
 
 **Le marteau du culte** (objet porté, au cœur de toute la fractale) :
 
-- Le ramasser coûte des PV. Son porteur reçoit 1 pile de **Corruption** par seconde : vulnérabilité toutes les 10 piles, faiblesse à 20, **étourdi à 30, à 40 il lâche le marteau et reste étourdi** (dans GW2 il passe à terre ; pas d'état à terre chez nous). Les piles retombent vite une fois le marteau posé : le groupe se le passe.
+- Le ramasser coûte des PV. La **Corruption** avance par crans de 10 s (choix de Kevin, plus lisible que les piles de GW2) : en main, un cran s'ouvre et se vide ; vidé, il monte si le marteau est encore en main, sinon il descend. Vulnérabilité à chaque cran, faiblesse dès le 2, **étourdi en arrivant au 3, au-delà il lâche le marteau et reste étourdi** (dans GW2 il passe à terre ; pas d'état à terre chez nous). Le groupe se le passe.
 - Le coup **Brise-sceau** ne se charge qu'en tuant (ou en ayant touché) un ennemi près du porteur ; poser le marteau perd la charge.
 - Un marqueur au-dessus du porteur passe du jaune à l'orange puis au rouge selon les piles. Si le marteau est perdu, un PNJ chercheur en redonne un.
 

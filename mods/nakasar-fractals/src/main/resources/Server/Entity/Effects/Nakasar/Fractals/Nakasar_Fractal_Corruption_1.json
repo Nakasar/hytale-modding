@@ -1,5 +1,5 @@
 {
-  "$Comment": "Corruption du marteau, palier 1 (10 charges et plus) : marqueur visible et 8 % de dégâts subis en plus. Posé et retiré par HammerSystem selon les charges.",
+  "$Comment": "Corruption du marteau, cran 1 : 8 % de dégâts subis en plus. Posé par HammerSystem pour un cran entier (10 s) : la jauge se vide, puis le cran monte (marteau en main) ou descend.",
   "Name": "nakasar_fractals_cliffside.effects.Nakasar_Fractal_Corruption_1",
   "Debuff": true,
   "StatusEffectIcon": "UI/StatusEffects/Nakasar/Fractals/Corruption_1.png",
