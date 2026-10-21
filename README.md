@@ -55,7 +55,7 @@ Vide) se pose dans l'Ancienne passerelle et ouvre l'**Observatoire**, une île d
 `observatory/ObservatoryLayout.java` ; `--preview DIR` dessine le plan).
 
 - Le premier joueur arrivé **mène**. Les joueurs debout sur le **cercle d'harmonisation** autour de l'Astrolabe forment
-  le groupe (5 au plus).
+  le groupe (5 au plus) ; le meneur part toujours, même hors du cercle (seul si le cercle est vide).
 - Le meneur règle le **niveau** (1 à 100, rangs Initié, Adepte, Expert, Maître) au cadran de l'Astrolabe : utiliser
   pour monter, accroupi pour descendre.
 - Le meneur utilise la pierre d'une des **6 arches** : tout le cercle part dans une instance de la fractale, propre au

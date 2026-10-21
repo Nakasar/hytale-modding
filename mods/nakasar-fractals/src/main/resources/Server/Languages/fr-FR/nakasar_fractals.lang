@@ -37,7 +37,6 @@ observatory.level.rank = Rang {rank}
 observatory.level.same = Le niveau est déjà {level}.
 observatory.notLeader = Seul le meneur, {name}, peut faire cela.
 observatory.notHere = Cela se fait dans l'Observatoire des fractales.
-observatory.emptyCircle = Personne n'est sur le cercle d'harmonisation.
 observatory.launch = {fractal}, niveau {level} : le groupe part.
 observatory.soon = {fractal} n'est pas encore ouverte.
 observatory.unknown = Fractale inconnue : {fractal}.

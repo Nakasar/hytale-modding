@@ -37,7 +37,6 @@ observatory.level.rank = {rank} rank
 observatory.level.same = The level is already {level}.
 observatory.notLeader = Only the leader, {name}, can do that.
 observatory.notHere = This is done in the Fractal Observatory.
-observatory.emptyCircle = Nobody stands on the attunement circle.
 observatory.launch = {fractal}, level {level}: the group sets off.
 observatory.soon = {fractal} is not open yet.
 observatory.unknown = Unknown fractal: {fractal}.

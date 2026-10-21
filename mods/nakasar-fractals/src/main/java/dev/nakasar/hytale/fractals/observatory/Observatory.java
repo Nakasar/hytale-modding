@@ -130,13 +130,13 @@ public final class Observatory {
             return;
         }
         State state = state(world);
+        // le meneur part toujours, même descendu du cercle pour utiliser l'arche (seul si le cercle est vide)
         List<PlayerRef> group = circlePlayers(world, state);
-        if (group.isEmpty()) {
-            player.sendMessage(Message.translation(MESSAGES + "emptyCircle"));
-            return;
-        }
-        if (!state.circle.contains(player.getUuid()) && group.size() < MAX_GROUP) {
-            group.add(player);
+        if (!state.circle.contains(player.getUuid())) {
+            if (group.size() >= MAX_GROUP) {
+                group.remove(group.size() - 1);
+            }
+            group.add(0, player);
         }
         Message launch = Message.translation(MESSAGES + "launch").param("fractal", FractalCatalog.name(fractal))
                 .param("level", state.level);
