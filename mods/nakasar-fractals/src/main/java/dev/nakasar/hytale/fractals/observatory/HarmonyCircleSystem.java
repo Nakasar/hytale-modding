@@ -3,11 +3,13 @@ package dev.nakasar.hytale.fractals.observatory;
 import com.hypixel.hytale.component.Ref;
 import com.hypixel.hytale.component.Store;
 import com.hypixel.hytale.component.system.tick.TickingSystem;
+import com.hypixel.hytale.protocol.packets.interface_.EventTitleStyle;
 import com.hypixel.hytale.server.core.Message;
 import com.hypixel.hytale.server.core.modules.entity.component.TransformComponent;
 import com.hypixel.hytale.server.core.universe.PlayerRef;
 import com.hypixel.hytale.server.core.universe.world.World;
 import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
+import com.hypixel.hytale.server.core.util.EventTitleUtil;
 import dev.nakasar.hytale.fractals.party.FractalCatalog;
 import dev.nakasar.hytale.fractals.party.FractalRuns;
 import org.joml.Vector3d;
@@ -15,6 +17,7 @@ import org.joml.Vector3d;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 import java.util.UUID;
 import java.util.WeakHashMap;
@@ -26,6 +29,9 @@ import java.util.WeakHashMap;
  * <p>Un joueur est sur le cercle quand ses pieds sont entre {@link ObservatoryLayout#CIRCLE_INNER} et
  * {@link ObservatoryLayout#CIRCLE_OUTER} blocs du centre de l'Astrolabe, à moins de 2 blocs du dallage. Il est prévenu
  * quand il rejoint ou quitte le groupe, ou quand le cercle est complet.
+ *
+ * <p>Il suit aussi la console de sélection : quand son noyau ou son diapason change, la nouvelle harmonisation (ou sa
+ * perte) est annoncée à tout l'Observatoire.
  */
 public final class HarmonyCircleSystem extends TickingSystem<EntityStore> {
 
@@ -89,6 +95,29 @@ public final class HarmonyCircleSystem extends TickingSystem<EntityStore> {
             state.circle.add(id);
             state.refused.remove(id);
             send(world, id, Message.translation(Observatory.MESSAGES + "joined").param("count", state.circle.size()));
+        }
+        announceHarmony(world, state);
+    }
+
+    private static void announceHarmony(World world, Observatory.State state) {
+        Observatory.Harmony harmony = Observatory.harmony(state);
+        if (Objects.equals(harmony, state.announced)) {
+            return;
+        }
+        boolean lost = harmony == null;
+        state.announced = harmony;
+        if (lost) {
+            Message message = Message.translation(Observatory.MESSAGES + "harmonized.lost");
+            world.getPlayerRefs().forEach(player -> player.sendMessage(message));
+            return;
+        }
+        state.level = harmony.level();
+        Message title = Message.translation(Observatory.MESSAGES + "harmonized.title")
+                .param("fractal", FractalCatalog.name(harmony.fractal()));
+        Message subtitle = Message.translation(Observatory.MESSAGES + "harmonized.subtitle")
+                .param("level", harmony.level()).param("rank", Observatory.rank(harmony.level()));
+        for (PlayerRef player : world.getPlayerRefs()) {
+            EventTitleUtil.showEventTitleToPlayer(player, title, subtitle, EventTitleStyle.Default, null, 2.5f, 0.3f, 0.6f);
         }
     }
 

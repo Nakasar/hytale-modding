@@ -61,12 +61,12 @@ La boucle tourne dans l'Observatoire : on n'en sort que pour refabriquer un frag
 
 L'Observatoire est une instance hub, île ronde d'environ 60 blocs suspendue dans les Brumes (monde `Void` comme les Deepworks), où tout se choisit physiquement dans le décor, sans interface à construire.
 
-![Plan de l'Observatoire : 6 arches autour de l'Astrolabe](images/observatoire.png)
+![Plan de l'Observatoire (première version, avec les 6 arches remplacées depuis par la console de sélection)](images/observatoire.png)
 
 - **Arrivée (sud)** : le groupe sort du portail ancien sur un parvis ; un portail de sortie juste à côté ramène au monde.
-- **L'Astrolabe (centre)** : grand instrument animé. Un **cadran de niveau** s'utilise pour monter ou descendre d'un niveau (clic d'utilisation, accroupi pour descendre) ; le niveau et le rang s'affichent en titre à l'écran, comme les points de contrôle des Deepworks. Seul le meneur (premier arrivé) le règle.
+- **L'Astrolabe (centre)** : grand instrument animé, portant la **console de sélection** (révisé le 21 octobre 2026 : une arche par fractale ne tient pas à des dizaines de fractales). Deux **distributeurs** à l'entrée du cercle donnent gratuitement le **noyau** d'une fractale et le **diapason** d'un niveau (1 à 100). Les joueurs posent un noyau et un diapason dans la console : le cercle est **harmonisé**, la fractale, le niveau et le rang s'affichent en titre à l'écran.
 - **Cercle d'harmonisation** : l'anneau au sol autour de l'Astrolabe. Les joueurs debout dessus forment le groupe (5 au plus, les suivants reçoivent un message de refus).
-- **Six arches de fractale** en couronne : chaque arche porte le décor de sa fractale (glace, lave, marais...). Le meneur utilise une arche : tout le cercle est téléporté dans une nouvelle instance de cette fractale au niveau réglé. Les arches du jour brillent.
+- **Résonateurs** au bord intérieur du cercle : le meneur (premier arrivé) en utilise un, tout le cercle est téléporté dans une nouvelle instance de la fractale harmonisée, si le niveau ne dépasse pas son plus haut niveau débloqué.
 - **L'Archiviste (est)** : PNJ marchand qui échange les éclats de Brume, plus un tableau des fractales du jour.
 - **Golem d'essai (ouest)** : mannequin qui applique de l'agonie et affiche les dégâts subis, pour tester sa résistance.
 
@@ -331,10 +331,10 @@ Neuf étapes, chacune livrable en une PR testable en jeu ; les étapes 1 à 4 do
    - [x] Copier dans le mod Fractales les briques du mod Vampires : télégraphes, barre de boss, PV de groupe, invocations, boucliers, emprisonnement, remises en place d'arène (identifiants `Nakasar_Fractal_`)
 2. **Entrée et Observatoire**
    - [x] Fragment des Brumes : `PortalKey`, recette à l'établi, `PortalTypes`, instance hub (`tools/generate_observatory.py`)
-   - [x] Observatoire : île, Astrolabe, cercle, 6 arches, golem d'essai et son pupitre, filet de chute (`FallRescueSystem`). L'Archiviste attend la monnaie (étape 3) : un Registre lisible tient sa place
+   - [x] Observatoire : île, Astrolabe, cercle, 6 arches (remplacées le 21 octobre 2026 par distributeurs, console de sélection et résonateurs), golem d'essai et son pupitre, filet de chute (`FallRescueSystem`). L'Archiviste attend la monnaie (étape 3) : un Registre lisible tient sa place
    - [x] Gestionnaire de partie (`party/FractalRuns`, `observatory/Observatory`) : cercle d'harmonisation (5 max), cadran de niveau, une instance par groupe, retour au hub (gardé ouvert pendant la partie), commande `/fractale`. Ébauche de Falaise (île + pierre de retour) pour tester l'aller-retour, remplacée à l'étape 4
 3. **Systèmes de progression**
-   - [x] Niveaux 1-100 et déblocage par joueur (sauvegardés avec le joueur, composant `Nakasar_Fractal_Progress`) ; cadran plafonné au niveau du meneur
+   - [x] Niveaux 1-100 et déblocage par joueur (sauvegardés avec le joueur, composant `Nakasar_Fractal_Progress`) ; lancement plafonné au niveau du meneur
    - [x] Agonie (effet + `AgonySystem`), Autel des infusions (12 emplacements sur le joueur, fenêtre de conteneur), infusions +1 à +15 et leur fusion au Creuset des Brumes (`tools/generate_progression.py`)
    - [x] Coffre par joueur (coffre de rang à ouvrir en main), éclats de Brume, l'Archiviste (PNJ et comptoir, boutique de troc). Les fractales du jour restent à l'étape 9
 4. **Briques de la Falaise + Falaise**
@@ -353,7 +353,7 @@ Neuf étapes, chacune livrable en une PR testable en jeu ; les étapes 1 à 4 do
 8. **Tempête de neige** : Chaleur et Hypothermie, feux à nourrir de fagots, élémentaires qui éteignent, blizzard, éclat de glace, chaman au balcon et Effigie
 9. **Finitions** : fractales du jour, cosmétiques, pages du wiki joueur
 
-Nouveaux modèles à créer : colosse enchaîné, Archidevin, harpies, Asura délirant, Chaman imprégné (ailé), Abîme de Jade et tentacules, Moussu, Carnasse, Source élémentaire, Chaman légendaire et sa forme d'ours, Astrolabe et arches. Les monstres de base reprennent des rôles vanilla (outlanders, trorks, golems, loups, élémentaires).
+Nouveaux modèles à créer : colosse enchaîné, Archidevin, harpies, Asura délirant, Chaman imprégné (ailé), Abîme de Jade et tentacules, Moussu, Carnasse, Source élémentaire, Chaman légendaire et sa forme d'ours, Astrolabe. Les monstres de base reprennent des rôles vanilla (outlanders, trorks, golems, loups, élémentaires).
 
 ## Questions ouvertes
 

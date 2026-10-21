@@ -3,6 +3,9 @@ package dev.nakasar.hytale.fractals.observatory;
 import com.hypixel.hytale.component.Ref;
 import com.hypixel.hytale.protocol.packets.interface_.EventTitleStyle;
 import com.hypixel.hytale.server.core.Message;
+import com.hypixel.hytale.server.core.inventory.ItemStack;
+import com.hypixel.hytale.server.core.inventory.container.SimpleItemContainer;
+import com.hypixel.hytale.server.core.inventory.container.filter.FilterActionType;
 import com.hypixel.hytale.server.core.universe.PlayerRef;
 import com.hypixel.hytale.server.core.universe.world.World;
 import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
@@ -22,11 +25,16 @@ import java.util.UUID;
 import java.util.WeakHashMap;
 
 /**
- * État d'un Observatoire (une instance par Fragment des Brumes utilisé) : le meneur, le niveau choisi à l'Astrolabe et
- * le groupe debout sur le cercle d'harmonisation ({@link HarmonyCircleSystem}).
+ * État d'un Observatoire (une instance par Fragment des Brumes utilisé) : le meneur, la console de sélection, le niveau
+ * et le groupe debout sur le cercle d'harmonisation ({@link HarmonyCircleSystem}).
  *
- * <p>Le meneur est le premier joueur arrivé dans l'Observatoire ; s'il part, le suivant arrivé le remplace. Lui seul
- * règle le niveau, jusqu'au plus haut qu'il a débloqué ({@link FractalProgress}), et ouvre une arche. Tout est lu et modifié sur le thread du monde de l'Observatoire.
+ * <p>La console de sélection a deux emplacements partagés par tout l'Observatoire : le noyau d'une fractale
+ * ({@code Nakasar_Fractal_Core_<Id>}) et le diapason d'un niveau ({@code Nakasar_Fractal_Level_<N>}), pris gratuitement
+ * aux distributeurs. Les deux posés, le cercle est harmonisé ; le meneur le lance depuis un résonateur du cercle
+ * ({@link #harmonize}), si le niveau ne dépasse pas le plus haut qu'il a débloqué ({@link FractalProgress}).
+ *
+ * <p>Le meneur est le premier joueur arrivé dans l'Observatoire ; s'il part, le suivant arrivé le remplace. Tout est
+ * lu et modifié sur le thread du monde de l'Observatoire.
  */
 public final class Observatory {
 
@@ -38,6 +46,13 @@ public final class Observatory {
     private static final String[] RANKS = {"Initiate", "Adept", "Expert", "Master"};
     static final String MESSAGES = "nakasar_fractals.observatory.";
     static final String PROGRESS = "nakasar_fractals_progress.";
+    /** Emplacements de la console de sélection. */
+    static final short CORE_SLOT = 0;
+    static final short LEVEL_SLOT = 1;
+
+    /** Fractale et niveau lus dans la console de sélection. */
+    public record Harmony(String fractal, int level) {
+    }
 
     /** État d'un Observatoire. */
     public static final class State {
@@ -49,6 +64,10 @@ public final class Observatory {
         final Set<UUID> refused = new LinkedHashSet<>();
         UUID leader;
         int level = MIN_LEVEL;
+        /** Console de sélection : noyau puis diapason, un objet par emplacement. */
+        final SimpleItemContainer console = consoleContainer();
+        /** Dernière harmonisation annoncée (null : aucune). */
+        Harmony announced;
 
         public int level() {
             return level;
@@ -115,6 +134,65 @@ public final class Observatory {
         }
     }
 
+    /** Fractale et niveau de la console de sélection, ou null s'il manque le noyau ou le diapason. */
+    public static Harmony harmony(State state) {
+        String fractal = coreOf(state.console.getItemStack(CORE_SLOT));
+        int level = levelOf(state.console.getItemStack(LEVEL_SLOT));
+        return fractal == null || level < MIN_LEVEL ? null : new Harmony(fractal, level);
+    }
+
+    /** Résonateur du cercle : le meneur lance la fractale de la console, au niveau de son diapason. */
+    public static void harmonize(World world, PlayerRef player) {
+        if (!checkLeader(world, player)) {
+            return;
+        }
+        State state = state(world);
+        Harmony harmony = harmony(state);
+        if (harmony == null) {
+            player.sendMessage(Message.translation(MESSAGES + "notHarmonized"));
+            return;
+        }
+        int max = unlockedOf(world, player.getUuid());
+        if (harmony.level() > max) {
+            player.sendMessage(Message.translation(PROGRESS + "level.locked").param("level", harmony.level())
+                    .param("name", player.getUsername()).param("max", max));
+            return;
+        }
+        state.level = harmony.level();
+        launch(world, player, harmony.fractal());
+    }
+
+    /** Fractale d'un noyau ({@code Nakasar_Fractal_Core_<Id>}), ou null. */
+    static String coreOf(ItemStack stack) {
+        if (ItemStack.isEmpty(stack) || !stack.getItemId().startsWith(ObservatoryLayout.CORE_PREFIX)) {
+            return null;
+        }
+        return FractalCatalog.resolve(stack.getItemId().substring(ObservatoryLayout.CORE_PREFIX.length()));
+    }
+
+    /** Niveau d'un diapason ({@code Nakasar_Fractal_Level_<N>}), ou 0. */
+    static int levelOf(ItemStack stack) {
+        if (ItemStack.isEmpty(stack) || !stack.getItemId().startsWith(ObservatoryLayout.LEVEL_PREFIX)) {
+            return 0;
+        }
+        try {
+            int level = Integer.parseInt(stack.getItemId().substring(ObservatoryLayout.LEVEL_PREFIX.length()));
+            return level >= MIN_LEVEL && level <= MAX_LEVEL ? level : 0;
+        } catch (NumberFormatException e) {
+            return 0;
+        }
+    }
+
+    /** Le premier emplacement n'accepte qu'un noyau, le second qu'un diapason, un seul à la fois. */
+    private static SimpleItemContainer consoleContainer() {
+        SimpleItemContainer container = new SimpleItemContainer((short) 2);
+        container.setSlotFilter(FilterActionType.ADD, CORE_SLOT, (action, c, s, stack) ->
+                stack == null || coreOf(stack) != null && stack.getQuantity() == 1);
+        container.setSlotFilter(FilterActionType.ADD, LEVEL_SLOT, (action, c, s, stack) ->
+                stack == null || levelOf(stack) > 0 && stack.getQuantity() == 1);
+        return container;
+    }
+
     /** Ouvre la fractale pour le cercle (meneur seulement ; il rejoint le groupe s'il reste une place). */
     public static void launch(World world, PlayerRef player, String fractalInput) {
         if (!checkLeader(world, player)) {
@@ -130,7 +208,7 @@ public final class Observatory {
             return;
         }
         State state = state(world);
-        // le meneur part toujours, même descendu du cercle pour utiliser l'arche (seul si le cercle est vide)
+        // le meneur part toujours, même hors du cercle (seul si le cercle est vide)
         List<PlayerRef> group = circlePlayers(world, state);
         if (!state.circle.contains(player.getUuid())) {
             if (group.size() >= MAX_GROUP) {
@@ -164,12 +242,12 @@ public final class Observatory {
                 .param("leader", nameOf(world, state.leader)).param("names", names.isEmpty() ? "-" : String.join(", ", names));
     }
 
-    /** Joueurs du cercle encore dans le monde, dans l'ordre où ils y sont montés. */
     /** Joueurs dans le cercle d'harmonisation (au moins 1, pour le tirage des instabilités de {@code /fractale}). */
     public static int circleSize(World world) {
         return Math.max(1, circlePlayers(world, state(world)).size());
     }
 
+    /** Joueurs du cercle encore dans le monde, dans l'ordre où ils y sont montés. */
     static List<PlayerRef> circlePlayers(World world, State state) {
         List<PlayerRef> out = new ArrayList<>();
         for (UUID id : state.circle) {

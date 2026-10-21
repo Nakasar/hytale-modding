@@ -1,0 +1,4 @@
+{
+  "$Comment": "Résonateur du cercle : le meneur envoie le cercle harmonisé dans la fractale de la console.",
+  "Type": "Nakasar_Fractal_Harmonize"
+}

@@ -56,29 +56,35 @@ Vide) se pose dans l'Ancienne passerelle et ouvre l'**Observatoire**, une île d
 
 - Le premier joueur arrivé **mène**. Les joueurs debout sur le **cercle d'harmonisation** autour de l'Astrolabe forment
   le groupe (5 au plus) ; le meneur part toujours, même hors du cercle (seul si le cercle est vide).
-- Le meneur règle le **niveau** (1 à 100, rangs Initié, Adepte, Expert, Maître) au cadran de l'Astrolabe : utiliser
-  pour monter, accroupi pour descendre.
-- Le meneur utilise la pierre d'une des **6 arches** : tout le cercle part dans une instance de la fractale, propre au
-  groupe. Seule la Falaise est ouverte, en ébauche (une île et une pierre de retour) ; les autres arches annoncent
-  qu'elles arrivent.
+- **Sélection** (refaite le 21 octobre 2026 : une arche par fractale ne tenait pas à des dizaines de fractales) : à
+  l'entrée du cercle, le **distributeur de noyaux** donne le noyau d'une fractale (`Nakasar_Fractal_Core_<Id>`) et le
+  **distributeur de diapasons** celui d'un niveau (`Nakasar_Fractal_Level_<1-100>`, rangs Initié, Adepte, Expert,
+  Maître), gratuits (boutiques de troc sans prix `Nakasar_Fractal_Cores` et `Nakasar_Fractal_Levels`).
+- Les joueurs posent un noyau et un diapason dans la **console de sélection** (sur le socle de l'Astrolabe, deux
+  emplacements partagés par tout l'Observatoire, objets gardés d'une partie à l'autre) : le cercle est **harmonisé**,
+  annoncé en titre à tous.
+- Le meneur utilise un des 4 **résonateurs** au bord intérieur du cercle : tout le cercle part dans une instance de
+  la fractale, propre au groupe, si le niveau ne dépasse pas son plus haut niveau débloqué. Une nouvelle fractale ne
+  demande qu'une ligne dans `FRACTALS` (son noyau) et son id dans `FractalCatalog`.
 - La **pierre de retour** (ou `/fractale quitter`) ramène à l'Observatoire, gardé ouvert tant que la fractale vit.
 - Le **golem d'essai** (ouest) annonce les dégâts reçus et reprend ses PV ; son **pupitre** lui fait rejouer les zones
   rouges (cercle, cône, ligne, puis la cage d'essai).
 - `/fractale niveau <n>`, `groupe`, `lancer <fractale>`, `quitter`, `infos` : secours des blocs, ouvert aux joueurs.
 - Un joueur tombé dans le vide revient au point d'apparition du monde.
 
-À vérifier en jeu : textures des blocs, orientation des arches, golem (modèle `Golem_Firesteel` sans flammes), titres
-du cadran, retour depuis l'ébauche de Falaise.
+À vérifier en jeu : textures des blocs, golem (modèle `Golem_Firesteel` sans flammes), liste des 100 diapasons dans
+la fenêtre de troc, fenêtre de la console (partagée entre joueurs), titre d'harmonisation, modèles des noyaux et
+diapasons en main.
 
 Étape 3 (progression) : `tools/generate_progression.py` (éclats, infusions, coffres de rang, recettes, agonie,
 boutique et PNJ de l'Archiviste, modèles et icônes) et le paquet Java `progress/`.
 
 - **Niveaux débloqués par joueur**, sauvegardés avec lui (composant `Nakasar_Fractal_Progress`) : on commence au
-  niveau 1, finir une fractale à son plus haut niveau débloque le suivant. Le cadran s'arrête au plus haut niveau du
-  meneur ; si un nouveau meneur en a débloqué moins, le niveau redescend.
+  niveau 1, finir une fractale à son plus haut niveau débloque le suivant. Le meneur ne lance qu'un niveau qu'il a
+  débloqué ; si un nouveau meneur en a débloqué moins, le niveau redescend.
 - **Agonie** (`Nakasar_Fractal_Agony`, à partir du niveau 26) : 4 %, 6 % puis 8 % des PV max par seconde selon le rang,
   réduits par la **résistance** jusqu'à zéro à la résistance conseillée (10 à 40 en Adepte, 50 à 100 en Expert, 110 à
-  150 en Maître). Le premier cercle du pupitre d'essai pose de l'agonie au niveau du cadran, pour tester.
+  150 en Maître). Le premier cercle du pupitre d'essai pose de l'agonie au niveau harmonisé, pour tester.
 - **Autel des infusions** (portable, recette à l'établi) : ouvre les 12 emplacements d'infusion du joueur ; la somme
   des infusions posées est sa résistance. Infusions +1 à +15 ; au **Creuset des Brumes** (établi, recette à l'établi),
   2 × infusion n + 4n éclats donnent l'infusion n+1, et 25 éclats + 1 éclat de rune refont un Fragment des Brumes.

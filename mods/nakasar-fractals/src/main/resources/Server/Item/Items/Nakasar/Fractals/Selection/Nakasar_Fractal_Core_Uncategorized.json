@@ -1,0 +1,16 @@
+{
+  "TranslationProperties": {
+    "Name": "nakasar_fractals.items.Nakasar_Fractal_Core_Uncategorized.name",
+    "Description": "nakasar_fractals.items.Nakasar_Fractal_Core_Uncategorized.description"
+  },
+  "Icon": "Icons/Items/Nakasar/Fractals/Core_Uncategorized.png",
+  "Model": "Items/Nakasar/Fractals/Core_Uncategorized.blockymodel",
+  "Texture": "Items/Nakasar/Fractals/Core_Uncategorized.png",
+  "Quality": "Rare",
+  "Categories": [
+    "Items.Ingredients"
+  ],
+  "PlayerAnimationsId": "Item",
+  "ItemSoundSetId": "ISS_Items_Gems",
+  "MaxStack": 1
+}

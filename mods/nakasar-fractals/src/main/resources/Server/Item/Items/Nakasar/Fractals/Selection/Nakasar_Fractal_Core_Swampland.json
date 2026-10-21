@@ -1,0 +1,16 @@
+{
+  "TranslationProperties": {
+    "Name": "nakasar_fractals.items.Nakasar_Fractal_Core_Swampland.name",
+    "Description": "nakasar_fractals.items.Nakasar_Fractal_Core_Swampland.description"
+  },
+  "Icon": "Icons/Items/Nakasar/Fractals/Core_Swampland.png",
+  "Model": "Items/Nakasar/Fractals/Core_Swampland.blockymodel",
+  "Texture": "Items/Nakasar/Fractals/Core_Swampland.png",
+  "Quality": "Rare",
+  "Categories": [
+    "Items.Ingredients"
+  ],
+  "PlayerAnimationsId": "Item",
+  "ItemSoundSetId": "ISS_Items_Gems",
+  "MaxStack": 1
+}

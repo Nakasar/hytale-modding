@@ -1,0 +1,16 @@
+{
+  "TranslationProperties": {
+    "Name": "nakasar_fractals.items.Nakasar_Fractal_Level_10.name",
+    "Description": "nakasar_fractals.items.Nakasar_Fractal_Level_10.description"
+  },
+  "Icon": "Icons/Items/Nakasar/Fractals/Level_10.png",
+  "Model": "Items/Nakasar/Fractals/Level_Fork_Initiate.blockymodel",
+  "Texture": "Items/Nakasar/Fractals/Level_Fork_Initiate.png",
+  "Quality": "Uncommon",
+  "Categories": [
+    "Items.Ingredients"
+  ],
+  "PlayerAnimationsId": "Item",
+  "ItemSoundSetId": "ISS_Items_Gems",
+  "MaxStack": 1
+}

@@ -1,7 +1,5 @@
 package dev.nakasar.hytale.fractals.observatory;
 
-import java.util.List;
-
 /**
  * Positions de l'île de l'Observatoire, écrites par tools/generate_observatory.py (ne pas modifier à la main : relancer
  * le générateur). Repère du monde : x vers l'est, z vers le sud ; le centre de l'Astrolabe est en (0, 100, 0).
@@ -24,19 +22,10 @@ public final class ObservatoryLayout {
     public static final double[] TRIAL_RELEASE = {-13.5, 100.0, 9.5};
     /** L'Archiviste (pieds), derrière son comptoir, tourné vers l'ouest. */
     public static final double[] ARCHIVIST = {18.5, 100.0, 11.5};
-    /** Pierre de chaque arche (bloc au sol). */
-    public static final List<Arch> ARCHES = List.of(
-            new Arch("Cliffside", -21, 4),
-            new Arch("Uncategorized", -18, -11),
-            new Arch("Volcanic", -7, -20),
-            new Arch("SolidOcean", 7, -20),
-            new Arch("Swampland", 18, -11),
-            new Arch("Snowblind", 21, 4));
+    /** Préfixes des objets de sélection : noyau d'une fractale ({@code <préfixe><Id>}) et diapason d'un niveau. */
+    public static final String CORE_PREFIX = "Nakasar_Fractal_Core_";
+    public static final String LEVEL_PREFIX = "Nakasar_Fractal_Level_";
 
     private ObservatoryLayout() {
-    }
-
-    /** Arche d'une fractale : id ({@code FractalCatalog}) et position de sa pierre. */
-    public record Arch(String fractal, int x, int z) {
     }
 }

@@ -9,10 +9,12 @@ portail, l'instance de l'Observatoire des fractales et son île (la Falaise vien
 - le type de portail et l'instance de l'Observatoire : monde vide (comme Deepworks), ciel des Brumes figé, ni pose
   ni casse de blocs, aucune perte d'objets à la mort ;
 - l'île de l'Observatoire, un prefab posé à hauteur fixe dans le vide : parvis d'arrivée et portail de retour au sud,
-  l'Astrolabe au centre (cadran de niveau), le cercle d'harmonisation autour, six arches de fractale en couronne au
-  nord, le golem d'essai et son pupitre à l'ouest, le registre des fractales à l'est ;
+  l'Astrolabe au centre (console de sélection), le cercle d'harmonisation autour (quatre résonateurs), les
+  distributeurs de noyaux et de diapasons à l'entrée du cercle, le golem d'essai et son pupitre à l'ouest, le registre des fractales à l'est ;
 - les blocs du décor (textures et icônes dessinées ici), leurs interactions, le golem d'essai, les langues ;
-- `observatory/ObservatoryLayout.java` : les positions dont le Java a besoin (cercle, arches, golem, cage).
+- les objets de sélection : un noyau par fractale, un diapason par niveau (1 à 100), et les deux boutiques de troc
+  gratuites des distributeurs ;
+- `observatory/ObservatoryLayout.java` : les positions dont le Java a besoin (cercle, golem, cage, préfixes des objets de sélection).
 
 Repère : x vers l'est, z vers le sud, y vers le haut ; le centre de l'Astrolabe est en (0, GROUND_Y, 0), GROUND_Y étant
 la première couche d'air au-dessus du dallage. À l'est, le coin de l'Archiviste : comptoir, Autel des infusions,
@@ -26,6 +28,7 @@ from pathlib import Path
 
 from PIL import Image, ImageDraw
 
+import fractal_models as fm
 import fractal_nature as fn
 
 MOD = Path(__file__).resolve().parent.parent
@@ -47,6 +50,8 @@ ICONS = "Icons/Items/Nakasar/Fractals"
 CATEGORY_ICONS = "Icons/CraftingCategories/Nakasar/Fractals"
 INTERACTIONS = SERVER / "Item/Interactions/Nakasar/Fractals"
 ITEMS = SERVER / "Item/Items/Deco/Nakasar/Fractals"
+SELECTION_ITEMS = SERVER / "Item/Items/Nakasar/Fractals/Selection"
+ITEM_MODELS = "Items/Nakasar/Fractals"
 GOLEM = "Nakasar_Fractal_Trial_Golem"
 
 # Recette du fragment (GDD, validée par Kevin le 20 octobre 2026) : après le premier donjon vanilla.
@@ -56,7 +61,6 @@ GROUND_Y = 100
 ISLAND_RADIUS = 30
 ASTROLABE_RADIUS = 3          # socle de l'Astrolabe
 CIRCLE_INNER, CIRCLE_OUTER = 5, 8   # cercle d'harmonisation (dalles lumineuses)
-ARCH_RADIUS = 21
 ARRIVAL = (0, GROUND_Y, 24)   # point d'apparition, sur le parvis au sud
 RETURN_PORTAL = (0, 0, 28)    # portail de retour (prefab), derrière le point d'apparition
 GOLEM_SPOT = (-19, GROUND_Y, 9)
@@ -70,15 +74,15 @@ ALTAR_SPOT = (13, 0, 13)
 FORGE_SPOT = (15, 0, 15)
 CAGE_CELL = "Nakasar_Fractal_Cage_Cell"
 
-# Les 6 fractales de la saison 1 (GDD) : id, nom, couleur, pierre et cristal de l'arche, cap (degrés, 0 = nord, sens
-# horaire). La Falaise est la seule instance pour l'instant (tools/generate_cliffside.py).
+# Les fractales (GDD) : id (FractalCatalog), nom français, nom anglais, couleur de leur noyau. Une nouvelle fractale ne
+# demande qu'une ligne ici (son noyau au distributeur) et son id dans FractalCatalog.
 FRACTALS = [
-    ("Cliffside", "Falaise", "Cliffside", (176, 120, 210), "Rock_Stone_Brick", "Rock_Crystal_Purple_Block", -100),
-    ("Uncategorized", "Inclassable", "Uncategorized", (232, 150, 200), "Rock_Marble_Brick", "Rock_Crystal_Pink_Block", -60),
-    ("Volcanic", "Volcanique", "Volcanic", (226, 96, 50), "Rock_Volcanic_Brick", "Rock_Crystal_Red_Block", -20),
-    ("SolidOcean", "Océan solide", "Solid Ocean", (70, 200, 180), "Rock_Aqua_Brick", "Rock_Crystal_Cyan_Block", 20),
-    ("Swampland", "Marais", "Swampland", (110, 170, 70), "Rock_Lime_Brick", "Rock_Crystal_Green_Block", 60),
-    ("Snowblind", "Tempête de neige", "Snowblind", (170, 210, 240), "Soil_Snow_Brick", "Rock_Crystal_Blue_Block", 100),
+    ("Cliffside", "Falaise", "Cliffside", (176, 120, 210)),
+    ("Uncategorized", "Inclassable", "Uncategorized", (232, 150, 200)),
+    ("Volcanic", "Volcanique", "Volcanic", (226, 96, 50)),
+    ("SolidOcean", "Océan solide", "Solid Ocean", (70, 200, 180)),
+    ("Swampland", "Marais", "Swampland", (110, 170, 70)),
+    ("Snowblind", "Tempête de neige", "Snowblind", (170, 210, 240)),
 ]
 FLAVOR = {
     "Cliffside": ("Un sentier taillé dans la falaise, le long d'un colosse enchaîné. Cinq sceaux à briser au marteau "
@@ -109,7 +113,10 @@ MIST_CRYSTALS = ["Rock_Crystal_Blue_Small", "Rock_Crystal_Purple_Small", "Rock_C
 AIR = "Empty"
 
 # Blocs du mod.
-DIAL = "Nakasar_Fractal_Astrolabe_Dial"
+CONSOLE = "Nakasar_Fractal_Selection_Console"
+RESONATOR = "Nakasar_Fractal_Resonator"
+CORE_DISTRIBUTOR = "Nakasar_Fractal_Core_Distributor"
+LEVEL_DISTRIBUTOR = "Nakasar_Fractal_Level_Distributor"
 ASTROLABE_RING = "Nakasar_Fractal_Astrolabe_Ring"
 HARMONY = "Nakasar_Fractal_Harmony_Tile"
 TRIAL = "Nakasar_Fractal_Trial_Panel"
@@ -122,8 +129,36 @@ COUNTER_BLOCK = "Nakasar_Fractal_Archivist_Counter"
 PROGRESS_LANG = "nakasar_fractals_progress"   # langue des objets de tools/generate_progression.py
 
 
-def arch_stone(fid):
-    return f"Nakasar_Fractal_Arch_{fid}"
+# Sélection de la fractale (Kevin, 21 octobre 2026 : une arche par fractale ne tient pas à des dizaines de fractales) :
+# deux distributeurs donnent le noyau d'une fractale et le diapason d'un niveau, la console de sélection les reçoit et
+# harmonise le cercle, le meneur lance depuis un résonateur du cercle.
+CORE_SHOP = "Nakasar_Fractal_Cores"
+LEVEL_SHOP = "Nakasar_Fractal_Levels"
+CORE_PREFIX = "Nakasar_Fractal_Core_"
+LEVEL_PREFIX = "Nakasar_Fractal_Level_"
+MAX_LEVEL = 100
+RANK_SIZE = 25
+# Rangs (Observatory.RANKS) : id, métal du diapason (base, reflet), lueur.
+LEVEL_RANKS = [("Initiate", (150, 96, 56), (236, 180, 120), (120, 190, 255)),
+               ("Adept", (150, 158, 176), (236, 242, 255), (110, 230, 200)),
+               ("Expert", (186, 140, 40), (255, 228, 130), (255, 170, 80)),
+               ("Master", (96, 60, 150), (210, 170, 255), (255, 110, 200))]
+CONSOLE_SPOT = (0, 1, ASTROLABE_RADIUS)    # sur le socle de l'Astrolabe, côté sud
+RESONATORS = [(0, 0, CIRCLE_INNER - 1), (CIRCLE_INNER - 1, 0, 0), (0, 0, 1 - CIRCLE_INNER), (1 - CIRCLE_INNER, 0, 0)]
+CORE_DISTRIBUTOR_SPOT = (-3, 0, CIRCLE_OUTER + 3)   # de part et d'autre du chemin d'arrivée
+LEVEL_DISTRIBUTOR_SPOT = (3, 0, CIRCLE_OUTER + 3)
+
+
+def core_item(fid):
+    return CORE_PREFIX + fid
+
+
+def level_item(n):
+    return f"{LEVEL_PREFIX}{n}"
+
+
+def level_rank(n):
+    return LEVEL_RANKS[min(len(LEVEL_RANKS) - 1, (n - 1) // RANK_SIZE)]
 
 
 def heading_to_xz(heading, radius):
@@ -227,24 +262,18 @@ def observatory_prefab():
         p.set(k, 5 + round(math.sqrt(max(0, 4 - k * k))), 0, ASTROLABE_RING)
         p.set(k, 5 - round(math.sqrt(max(0, 4 - k * k))), 0, ASTROLABE_RING)
     p.set(0, 5, 0, "Rock_Crystal_White_Block")
-    p.set(0, 1, ASTROLABE_RADIUS, DIAL)
-    # Arches de fractale : pieds de pierre de la fractale, linteau de cristal, pierre d'arche à utiliser au pied.
-    arches = []
-    for fid, _, _, _, stone, crystal, heading in FRACTALS:
-        cx, cz = heading_to_xz(heading, ARCH_RADIUS)
-        # Axe de l'arche perpendiculaire au rayon : l'ouverture regarde l'Astrolabe.
-        a = math.radians(heading)
-        ux, uz = math.cos(a), math.sin(a)       # le long de l'arche
-        for s in (-2, 2):
-            x, z = round(cx + ux * s), round(cz + uz * s)
-            p.fill(x, 0, z, x, 4, z, stone)
-            p.set(x, 5, z, crystal)
-        for s in (-1, 0, 1):
-            x, z = round(cx + ux * s), round(cz + uz * s)
-            p.set(x, 5, z, crystal)
-            p.set(x, 6, z, stone)
-        p.set(cx, 0, cz, arch_stone(fid))
-        arches.append((fid, cx, cz))
+    # Sélection : console sur le socle, quatre résonateurs au bord intérieur du cercle (le meneur lance depuis le
+    # cercle), les deux distributeurs à l'entrée du cercle, de part et d'autre du chemin d'arrivée.
+    p.set(*CONSOLE_SPOT, CONSOLE)
+    for spot in RESONATORS:
+        p.set(*spot, RESONATOR)
+    for (x, y, z), block, crown in ((CORE_DISTRIBUTOR_SPOT, CORE_DISTRIBUTOR, "Rock_Crystal_Purple_Block"),
+                                    (LEVEL_DISTRIBUTOR_SPOT, LEVEL_DISTRIBUTOR, "Rock_Crystal_Blue_Block")):
+        for dx in (-1, 0, 1):
+            for dz in (-1, 0, 1):
+                p.set(x + dx, -1, z + dz, TRIM if dx == 0 or dz == 0 else "Rock_Gold_Brick_Ornate")
+        p.set(x, y, z, block)
+        p.set(x, y + 1, z, crown)
     # Parvis d'arrivée au sud : chemin de dalles d'or vers le cercle, portail de retour derrière le point d'apparition.
     for z in range(CIRCLE_OUTER + 1, ISLAND_RADIUS):
         for x in (-1, 0, 1):
@@ -286,7 +315,7 @@ def observatory_prefab():
         if p.blocks.get((x, 0, z), (AIR,))[0] == AIR:
             p.set(x, 0, z, MIST_CRYSTALS[k % len(MIST_CRYSTALS)])
     gardens(p)
-    return p, arches
+    return p
 
 
 def gardens(p):
@@ -311,19 +340,7 @@ def texture(path, base, accent, glyph):
     d.rectangle((0, 0, 31, 31), outline=dark)
     d.rectangle((2, 2, 29, 29), outline=tuple(min(255, int(c * 1.1)) for c in base) + (255,))
     acc = accent + (255,)
-    if glyph == "arch":
-        d.arc((7, 6, 25, 30), 180, 360, fill=acc, width=3)
-        d.line((7, 17, 7, 28), fill=acc, width=3)
-        d.line((25, 17, 25, 28), fill=acc, width=3)
-        d.ellipse((13, 15, 19, 21), fill=acc)
-    elif glyph == "dial":
-        d.ellipse((5, 5, 26, 26), outline=acc, width=2)
-        for k in range(12):
-            a = math.radians(k * 30)
-            d.point((16 + math.cos(a) * 9, 16 + math.sin(a) * 9), fill=acc)
-        d.line((16, 16, 16, 8), fill=acc, width=2)
-        d.line((16, 16, 22, 19), fill=acc, width=2)
-    elif glyph == "ring":
+    if glyph == "ring":
         d.ellipse((6, 6, 25, 25), outline=acc, width=3)
     elif glyph == "tile":
         d.rectangle((6, 6, 25, 25), outline=acc, width=1)
@@ -355,6 +372,24 @@ def texture(path, base, accent, glyph):
         d.line((8, 12, 8, 26), fill=acc, width=2)
         d.line((23, 12, 23, 26), fill=acc, width=2)
         d.ellipse((13, 16, 18, 21), outline=acc)
+    elif glyph == "console":
+        d.rectangle((4, 9, 14, 22), outline=acc, width=2)
+        d.rectangle((17, 9, 27, 22), outline=acc, width=2)
+        d.polygon(((9, 12), (12, 16), (9, 20), (6, 16)), fill=acc)
+        d.line((22, 12, 22, 20), fill=acc, width=2)
+        d.line((5, 26, 26, 26), fill=acc)
+    elif glyph == "resonator":
+        for r in (12, 8, 4):
+            d.ellipse((16 - r, 16 - r, 15 + r, 15 + r), outline=acc, width=1 if r > 4 else 2)
+        for k in range(4):
+            a = math.radians(45 + k * 90)
+            d.line((16 + math.cos(a) * 9, 16 + math.sin(a) * 9, 16 + math.cos(a) * 14, 16 + math.sin(a) * 14),
+                   fill=acc, width=2)
+    elif glyph == "dispenser":
+        d.rectangle((8, 5, 23, 17), outline=acc, width=2)
+        d.polygon(((16, 7), (20, 11), (16, 15), (12, 11)), fill=acc)
+        d.rectangle((11, 21, 20, 26), outline=acc, width=2)
+        d.line((16, 18, 16, 21), fill=acc, width=2)
     elif glyph == "exit":
         d.ellipse((7, 7, 24, 24), outline=acc, width=3)
         d.polygon(((13, 11), (21, 16), (13, 21)), fill=acc)
@@ -433,10 +468,6 @@ def portable(doc, name):
 
 def hexcolor(rgb):
     return "#%02x%02x%02x" % rgb
-
-
-def short_light(rgb):
-    return "#%x%x%x" % tuple(c // 17 for c in rgb)
 
 
 # --- assets JSON ---------------------------------------------------------------------------------
@@ -597,9 +628,19 @@ def world_structure(biome_name, spawn):
 
 def interactions():
     out = {
-        "Nakasar_Fractal_Use_Dial": {
-            "$Comment": "Cadran de l'Astrolabe : monte le niveau du groupe d'un cran, accroupi le descend (meneur seulement).",
-            "Type": "Nakasar_Fractal_Dial"},
+        "Nakasar_Fractal_Use_Console": {
+            "$Comment": "Console de sélection : ses deux emplacements (noyau de fractale, diapason de niveau), partagés "
+                        "par tout l'Observatoire. Les deux posés, le cercle est harmonisé.",
+            "Type": "Nakasar_Fractal_OpenConsole"},
+        "Nakasar_Fractal_Use_Resonator": {
+            "$Comment": "Résonateur du cercle : le meneur envoie le cercle harmonisé dans la fractale de la console.",
+            "Type": "Nakasar_Fractal_Harmonize"},
+        "Nakasar_Fractal_Use_Core_Distributor": {
+            "$Comment": "Distributeur des noyaux : un noyau par fractale, gratuit (boutique de troc sans prix).",
+            "Type": "Nakasar_Fractal_OpenShop", "Shop": CORE_SHOP},
+        "Nakasar_Fractal_Use_Level_Distributor": {
+            "$Comment": "Distributeur des diapasons : un diapason par niveau (1 à 100), gratuit.",
+            "Type": "Nakasar_Fractal_OpenShop", "Shop": LEVEL_SHOP},
         "Nakasar_Fractal_Use_Trial_Panel": {
             "$Comment": "Pupitre du golem d'essai : le golem rejoue sur le joueur les attaques annoncées du mod "
                         "(cercle, cône, ligne, puis la cage), pour les voir et les tester.",
@@ -620,10 +661,6 @@ def interactions():
             "$Comment": "Registre des fractales : page de lore du jeu (nom et description du bloc).",
             "Type": "OpenCustomUI", "Page": {"Id": "BlockLore", "TextAlignment": "Left"}},
     }
-    for fid, *_ in FRACTALS:
-        out[f"Nakasar_Fractal_Use_Arch_{fid}"] = {
-            "$Comment": f"Arche de la fractale {fid} : le meneur y envoie tout le cercle d'harmonisation.",
-            "Type": "Nakasar_Fractal_OpenArch", "Fractal": fid}
     return out
 
 
@@ -658,6 +695,114 @@ def golem_role():
     }
 
 
+# --- objets de sélection : noyaux, diapasons, distributeurs ---------------------------------------
+
+GOLD, GOLD_LIGHT = (186, 140, 40), (255, 228, 130)
+
+
+def core_parts(color):
+    dark, light = fm.shade(color, 0.42), fm.mix(color, (255, 255, 255), 0.55)
+    return [
+        ("Core", (0, 6.5, 0), (5, 9, 5), 45, fm.crystal(dark, light), "fullbright"),
+        ("Core_Shard_A", (2.6, 4.5, 1), (2, 5, 2), 20, fm.crystal(dark, color), "fullbright"),
+        ("Core_Shard_B", (-2.4, 4, -1), (2, 4, 2), -35, fm.crystal(dark, color), "fullbright"),
+        ("Setting", (0, 1, 0), (7, 2, 7), 0, fm.smooth(GOLD, GOLD_LIGHT), "flat"),
+        ("Setting_Rim", (0, 2.5, 0), (8, 1, 8), 45, fm.smooth(GOLD, GOLD_LIGHT), "flat"),
+    ]
+
+
+def fork_parts(metal, light, glow):
+    paint = fm.smooth(metal, light)
+    return [
+        ("Handle", (0, 3, 0), (2, 6, 2), 0, paint, "flat"),
+        ("Pommel", (0, 0.5, 0), (3, 1, 3), 45, fm.flat(glow), "fullbright"),
+        ("Bow", (0, 6.5, 0), (7, 1.5, 2), 0, paint, "flat"),
+        ("Prong_W", (-2.75, 10.5, 0), (1.5, 7, 1.5), 0, paint, "flat"),
+        ("Prong_E", (2.75, 10.5, 0), (1.5, 7, 1.5), 0, paint, "flat"),
+        ("Note", (0, 11.5, 0), (2, 2, 2), 45, fm.flat(glow), "fullbright"),
+    ]
+
+
+# Chiffres 3×5 pour le numéro des icônes de diapason.
+DIGITS = {"0": "111101101101111", "1": "010110010010111", "2": "111001111100111", "3": "111001111001111",
+          "4": "101101111001001", "5": "111100111001111", "6": "111100111101111", "7": "111001010010010",
+          "8": "111101111101111", "9": "111101111001111"}
+
+
+def number_icon(base, n, glow):
+    """Icône du diapason avec son niveau en bas à droite (chiffres pixel, contour sombre)."""
+    img = base.copy()
+    d = ImageDraw.Draw(img)
+    text, cell = str(n), 3
+    w = len(text) * 4 * cell - cell
+    x0, y0 = 62 - w, 62 - 5 * cell
+    for pass_, fill in ((0, (16, 12, 30, 255)), (1, fm.mix(glow, (255, 255, 255), 0.5) + (255,))):
+        for k, ch in enumerate(text):
+            for i, bit in enumerate(DIGITS[ch]):
+                if bit == "1":
+                    x, y = x0 + (k * 4 + i % 3) * cell, y0 + (i // 3) * cell
+                    pad = 1 if pass_ == 0 else 0
+                    d.rectangle((x - pad, y - pad, x + cell - 1 + pad, y + cell - 1 + pad), fill=fill)
+    return img
+
+
+def selection_item(item_id, model, icon_name, quality):
+    return {
+        "TranslationProperties": {"Name": f"{LANG}.items.{item_id}.name", "Description": f"{LANG}.items.{item_id}.description"},
+        "Icon": f"{ICONS}/{icon_name}.png",
+        "Model": f"{ITEM_MODELS}/{model}.blockymodel",
+        "Texture": f"{ITEM_MODELS}/{model}.png",
+        "Quality": quality,
+        "Categories": ["Items.Ingredients"],
+        "PlayerAnimationsId": "Item",
+        "ItemSoundSetId": "ISS_Items_Gems",
+        "MaxStack": 1,
+    }
+
+
+def free_shop(name_key, items):
+    """Boutique de troc sans prix (Input vide) : un distributeur."""
+    return {
+        "DisplayNameKey": name_key,
+        "RefreshInterval": {"Days": 1},
+        "Trades": [{"Output": {"ItemId": i, "Quantity": 1}, "Input": [], "Stock": 999} for i in items],
+    }
+
+
+def selection_items():
+    """Noyaux et diapasons (modèles, icônes, objets) et les deux boutiques des distributeurs ; rend les icônes."""
+    models, icons = COMMON / ITEM_MODELS, COMMON / ICONS
+    for old in SELECTION_ITEMS.glob("*.json") if SELECTION_ITEMS.exists() else []:
+        old.unlink()
+    for old in icons.glob("Level_*.png"):
+        if old.stem[len("Level_"):].isdigit():   # pas l'icône du distributeur
+            old.unlink()
+    rendered = []
+    for k, (fid, _, _, color) in enumerate(FRACTALS):
+        model = f"Core_{fid}"
+        rendered.append(fm.write_item_model(model, core_parts(color), models, icons, 300 + k, (0, 5, 0), 13.0))
+        write_json(SELECTION_ITEMS / f"{core_item(fid)}.json", selection_item(core_item(fid), model, model, "Rare"))
+    rank_icons = {}
+    for rid, metal, light, glow in LEVEL_RANKS:
+        model = f"Level_Fork_{rid}"
+        rank_icons[rid] = fm.write_item_model(model, fork_parts(metal, light, glow), models, icons, 320, (0, 7, 0), 10.5)
+        (icons / f"{model}.png").unlink()   # chaque niveau a son icône numérotée
+    for n in range(1, MAX_LEVEL + 1):
+        rid, _, _, glow = level_rank(n)
+        img = number_icon(rank_icons[rid], n, glow)
+        img.save(icons / f"Level_{n}.png")
+        if n % RANK_SIZE == 1:
+            rendered.append(img)
+        quality = {"Initiate": "Uncommon", "Adept": "Rare", "Expert": "Epic", "Master": "Legendary"}[rid]
+        write_json(SELECTION_ITEMS / f"{level_item(n)}.json",
+                   selection_item(level_item(n), f"Level_Fork_{rid}", f"Level_{n}", quality))
+    write_json(SERVER / "BarterShops" / f"{CORE_SHOP}.json",
+               free_shop(f"{LANG}.shop.{CORE_SHOP}.name", [core_item(fid) for fid, *_ in FRACTALS]))
+    write_json(SERVER / "BarterShops" / f"{LEVEL_SHOP}.json",
+               free_shop(f"{LANG}.shop.{LEVEL_SHOP}.name", [level_item(n) for n in range(1, MAX_LEVEL + 1)]))
+    return rendered
+
+
 # --- langues ------------------------------------------------------------------------------------
 
 def lang():
@@ -670,9 +815,23 @@ def lang():
         "portal.flavor": "Une île suspendue dans les Brumes, d'où l'on part vers les fractales.",
         "portal.tag.hub": "Brumes",
         "portal.tag.group": "1 à 5 joueurs",
-        "portal.objective": "Former un groupe au cercle d'harmonisation et choisir une arche",
-        f"items.{DIAL}.name": "Cadran de l'Astrolabe",
-        f"items.{DIAL}.description": "Utiliser : niveau suivant. Accroupi : niveau précédent. Seul le meneur le règle.",
+        "portal.objective": "Harmoniser le cercle à la console de sélection et partir en fractale",
+        f"items.{CONSOLE}.name": "Console de sélection",
+        f"items.{CONSOLE}.description": "Utiliser : y poser le noyau d'une fractale et le diapason d'un niveau. Les "
+                                        "deux posés, le cercle d'harmonisation s'accorde sur cette fractale.",
+        f"items.{RESONATOR}.name": "Résonateur d'harmonisation",
+        f"items.{RESONATOR}.description": "Utiliser (meneur) : le cercle harmonisé part pour la fractale de la console.",
+        f"items.{CORE_DISTRIBUTOR}.name": "Distributeur de noyaux",
+        f"items.{CORE_DISTRIBUTOR}.description": "Utiliser : prendre le noyau d'une fractale, gratuit.",
+        f"items.{LEVEL_DISTRIBUTOR}.name": "Distributeur de diapasons",
+        f"items.{LEVEL_DISTRIBUTOR}.description": "Utiliser : prendre le diapason d'un niveau (1 à 100), gratuit.",
+        f"shop.{CORE_SHOP}.name": "Noyaux de fractale",
+        f"shop.{LEVEL_SHOP}.name": "Diapasons de niveau",
+        "observatory.harmonized.title": "Harmonisation : {fractal}",
+        "observatory.harmonized.subtitle": "Niveau {level}, rang {rank}",
+        "observatory.harmonized.lost": "La console n'est plus harmonisée : il lui faut un noyau et un diapason.",
+        "observatory.notHarmonized": "Posez d'abord un noyau de fractale et un diapason de niveau dans la console de "
+                                     "sélection.",
         f"items.{ASTROLABE_RING}.name": "Anneau de l'Astrolabe",
         f"items.{ASTROLABE_RING}.description": "Anneau armillaire de l'Astrolabe.",
         f"items.{HARMONY}.name": "Dalle d'harmonisation",
@@ -696,10 +855,11 @@ def lang():
         f"items.{REGISTRY_BLOCK}.name": "Registre des fractales",
         f"items.{REGISTRY_BLOCK}.description": (
             "Bienvenue dans l'Observatoire, voyageur des Brumes.\n\n"
-            "1. Montez sur le cercle d'harmonisation autour de l'Astrolabe : les joueurs qui s'y tiennent forment le "
-            "groupe, cinq au plus. Le premier arrivé dans l'Observatoire le mène.\n"
-            "2. Le meneur règle le niveau au cadran de l'Astrolabe (accroupi pour descendre).\n"
-            "3. Le meneur utilise la pierre d'une arche : tout le cercle part pour cette fractale.\n\n"
+            "1. Prenez le noyau d'une fractale et le diapason d'un niveau aux deux distributeurs, à l'entrée du cercle.\n"
+            "2. Posez-les dans la console de sélection, sur l'Astrolabe : le cercle s'harmonise sur cette fractale.\n"
+            "3. Montez sur le cercle d'harmonisation : les joueurs qui s'y tiennent forment le groupe, cinq au plus. "
+            "Le premier arrivé dans l'Observatoire le mène.\n"
+            "4. Le meneur utilise un résonateur du cercle : tout le cercle part.\n\n"
             "Saison 1 : Falaise, Inclassable, Volcanique, Océan solide, Marais, Tempête de neige.\n"
             "Le golem d'essai, à l'ouest, sert à tester ses coups, sa résistance à l'agonie et à voir les attaques "
             "des fractales.\n"
@@ -749,9 +909,22 @@ def lang():
         "portal.flavor": "An island hanging in the Mists, where fractal journeys begin.",
         "portal.tag.hub": "Mists",
         "portal.tag.group": "1 to 5 players",
-        "portal.objective": "Form a group on the attunement circle and pick an arch",
-        f"items.{DIAL}.name": "Astrolabe Dial",
-        f"items.{DIAL}.description": "Use: next level. Crouch: previous level. Only the leader sets it.",
+        "portal.objective": "Attune the circle at the selection console and set off for a fractal",
+        f"items.{CONSOLE}.name": "Selection Console",
+        f"items.{CONSOLE}.description": "Use: place a fractal core and a level tuning fork in it. With both, the "
+                                        "attunement circle tunes to that fractal.",
+        f"items.{RESONATOR}.name": "Attunement Resonator",
+        f"items.{RESONATOR}.description": "Use (leader): the attuned circle leaves for the console's fractal.",
+        f"items.{CORE_DISTRIBUTOR}.name": "Core Dispenser",
+        f"items.{CORE_DISTRIBUTOR}.description": "Use: take a fractal core, free.",
+        f"items.{LEVEL_DISTRIBUTOR}.name": "Tuning Fork Dispenser",
+        f"items.{LEVEL_DISTRIBUTOR}.description": "Use: take a level tuning fork (1 to 100), free.",
+        f"shop.{CORE_SHOP}.name": "Fractal Cores",
+        f"shop.{LEVEL_SHOP}.name": "Level Tuning Forks",
+        "observatory.harmonized.title": "Attuned: {fractal}",
+        "observatory.harmonized.subtitle": "Level {level}, {rank} rank",
+        "observatory.harmonized.lost": "The console is no longer attuned: it needs a core and a tuning fork.",
+        "observatory.notHarmonized": "First place a fractal core and a level tuning fork in the selection console.",
         f"items.{ASTROLABE_RING}.name": "Astrolabe Ring",
         f"items.{ASTROLABE_RING}.description": "Armillary ring of the Astrolabe.",
         f"items.{HARMONY}.name": "Attunement Tile",
@@ -774,10 +947,11 @@ def lang():
         f"items.{REGISTRY_BLOCK}.name": "Fractal Registry",
         f"items.{REGISTRY_BLOCK}.description": (
             "Welcome to the Observatory, traveller of the Mists.\n\n"
-            "1. Step onto the attunement circle around the Astrolabe: players standing on it form the group, five at "
-            "most. The first to arrive in the Observatory leads it.\n"
-            "2. The leader sets the level at the Astrolabe dial (crouch to lower it).\n"
-            "3. The leader uses an arch stone: the whole circle leaves for that fractal.\n\n"
+            "1. Take a fractal core and a level tuning fork from the two dispensers at the circle's entrance.\n"
+            "2. Place them in the selection console on the Astrolabe: the circle attunes to that fractal.\n"
+            "3. Step onto the attunement circle: players standing on it form the group, five at most. The first to "
+            "arrive in the Observatory leads it.\n"
+            "4. The leader uses a circle resonator: the whole circle leaves.\n\n"
             "Season 1: Cliffside, Uncategorized, Volcanic, Solid Ocean, Swampland, Snowblind.\n"
             "The training golem, to the west, lets you test your hits, your agony resistance and see the fractal "
             "attacks.\n"
@@ -821,10 +995,19 @@ def lang():
     for fid, name_fr, name_en, *_ in FRACTALS:
         fr[f"fractal.{fid}.name"] = name_fr
         en[f"fractal.{fid}.name"] = name_en
-        fr[f"items.{arch_stone(fid)}.name"] = f"Arche : {name_fr}"
-        en[f"items.{arch_stone(fid)}.name"] = f"Arch: {name_en}"
-        fr[f"items.{arch_stone(fid)}.description"] = FLAVOR[fid][0] + "\n\nLe meneur l'utilise pour y envoyer le cercle."
-        en[f"items.{arch_stone(fid)}.description"] = FLAVOR[fid][1] + "\n\nThe leader uses it to send the circle there."
+        fr[f"items.{core_item(fid)}.name"] = f"Noyau : {name_fr}"
+        en[f"items.{core_item(fid)}.name"] = f"Core: {name_en}"
+        fr[f"items.{core_item(fid)}.description"] = FLAVOR[fid][0] + "\n\nÀ poser dans la console de sélection."
+        en[f"items.{core_item(fid)}.description"] = FLAVOR[fid][1] + "\n\nPlace it in the selection console."
+    rank_fr = {"Initiate": "Initié", "Adept": "Adepte", "Expert": "Expert", "Master": "Maître"}
+    for n in range(1, MAX_LEVEL + 1):
+        rid = level_rank(n)[0]
+        fr[f"items.{level_item(n)}.name"] = f"Diapason : niveau {n}"
+        en[f"items.{level_item(n)}.name"] = f"Tuning Fork: level {n}"
+        fr[f"items.{level_item(n)}.description"] = (f"Rang {rank_fr[rid]}. À poser dans la console de sélection avec "
+                                                    "un noyau ; le meneur doit avoir débloqué ce niveau.")
+        en[f"items.{level_item(n)}.description"] = (f"{rid} rank. Place it in the selection console with a core; the "
+                                                    "leader must have unlocked this level.")
     return fr, en
 
 
@@ -838,11 +1021,8 @@ def write_lang(path, entries):
 
 # --- Java ---------------------------------------------------------------------------------------
 
-def java_layout(arches):
-    rows = ",\n".join(f'            new Arch("{fid}", {cx}, {cz})' for fid, cx, cz in arches)
+def java_layout():
     return f"""package dev.nakasar.hytale.fractals.observatory;
-
-import java.util.List;
 
 /**
  * Positions de l'île de l'Observatoire, écrites par tools/generate_observatory.py (ne pas modifier à la main : relancer
@@ -866,15 +1046,11 @@ public final class ObservatoryLayout {{
     public static final double[] TRIAL_RELEASE = {{{TRIAL_PANEL[0] + 1.5}, {float(GROUND_Y + TRIAL_PANEL[1])}, {TRIAL_PANEL[2] + 2.5}}};
     /** L'Archiviste (pieds), derrière son comptoir, tourné vers l'ouest. */
     public static final double[] ARCHIVIST = {{{ARCHIVIST_SPOT[0] + 0.5}, {float(ARCHIVIST_SPOT[1])}, {ARCHIVIST_SPOT[2] + 0.5}}};
-    /** Pierre de chaque arche (bloc au sol). */
-    public static final List<Arch> ARCHES = List.of(
-{rows});
+    /** Préfixes des objets de sélection : noyau d'une fractale ({{@code <préfixe><Id>}}) et diapason d'un niveau. */
+    public static final String CORE_PREFIX = "{CORE_PREFIX}";
+    public static final String LEVEL_PREFIX = "{LEVEL_PREFIX}";
 
     private ObservatoryLayout() {{
-    }}
-
-    /** Arche d'une fractale : id ({{@code FractalCatalog}}) et position de sa pierre. */
-    public record Arch(String fractal, int x, int z) {{
     }}
 }}
 """
@@ -894,7 +1070,12 @@ def main():
 
     stone = (74, 82, 120)
     blocks = [
-        (DIAL, "Astrolabe_Dial", stone, (255, 214, 110), "dial", "#fd8", "Nakasar_Fractal_Use_Dial"),
+        (CONSOLE, "Selection_Console", stone, (255, 214, 110), "console", "#fd8", "Nakasar_Fractal_Use_Console"),
+        (RESONATOR, "Resonator", (40, 60, 110), (120, 190, 255), "resonator", "#6bf", "Nakasar_Fractal_Use_Resonator"),
+        (CORE_DISTRIBUTOR, "Core_Distributor", stone, (200, 150, 255), "dispenser", "#b8f",
+         "Nakasar_Fractal_Use_Core_Distributor"),
+        (LEVEL_DISTRIBUTOR, "Level_Distributor", stone, (150, 200, 255), "dispenser", "#8cf",
+         "Nakasar_Fractal_Use_Level_Distributor"),
         (ASTROLABE_RING, "Astrolabe_Ring", (150, 120, 60), (255, 230, 150), "ring", "#fe9", None),
         (HARMONY, "Harmony_Tile", (40, 60, 110), (120, 190, 255), "tile", "#6bf", None),
         (TRIAL, "Trial_Panel", stone, (140, 170, 255), "panel", "#8af", "Nakasar_Fractal_Use_Trial_Panel"),
@@ -908,9 +1089,6 @@ def main():
         (COUNTER_BLOCK, "Archivist_Counter", (90, 60, 40), (150, 200, 255), "counter", None,
          "Nakasar_Fractal_Use_Archivist_Counter"),
     ]
-    for fid, _, _, color, *_ in FRACTALS:
-        blocks.append((arch_stone(fid), f"Arch_{fid}", stone, color, "arch", short_light(color),
-                       f"Nakasar_Fractal_Use_Arch_{fid}"))
     previews = []
     for name, tex, base, accent, glyph, light, use in blocks:
         img = texture(COMMON / TEXTURES / f"{tex}.png", base, accent, glyph)
@@ -929,6 +1107,7 @@ def main():
     shutil.copyfile(COMMON / ICONS / "PortalKey_Fractal.png", COMMON / CATEGORY_ICONS / "Fragments.png")
     (COMMON / TEXTURES / "PortalKey_Fractal.png").unlink()
 
+    items_preview = selection_items()
     write_json(SERVER / "Item/Items/Portal/Nakasar" / f"{KEY}.json", key_item())
     write_json(SERVER / "Item/Recipes/Nakasar" / f"Recipe_{KEY}.json", key_recipe())
     for name, doc in interactions().items():
@@ -942,7 +1121,7 @@ def main():
                instance(OBSERVATORY, "Observatoire des fractales", OBSERVATORY))
     write_json(SERVER / "HytaleGenerator/Biomes" / f"{OBSERVATORY}.json", biome(OBSERVATORY, "Observatory"))
     write_json(SERVER / "HytaleGenerator/WorldStructures" / f"{OBSERVATORY}.json", world_structure(OBSERVATORY, ARRIVAL))
-    obs, arches = observatory_prefab()
+    obs = observatory_prefab()
     n = obs.write(SERVER / "Prefabs" / PREFABS / "Observatory" / "Observatory.prefab.json")
 
     write_json(SERVER / "Models" / "Nakasar" / "Fractals" / f"{GOLEM}.json", golem_model())
@@ -952,7 +1131,7 @@ def main():
     write_lang(SERVER / "Languages/fr-FR" / f"{LANG}.lang", fr)
     write_lang(SERVER / "Languages/en-US" / f"{LANG}.lang", en)
     JAVA_LAYOUT.parent.mkdir(parents=True, exist_ok=True)
-    JAVA_LAYOUT.write_text(java_layout(arches), encoding="utf-8")
+    JAVA_LAYOUT.write_text(java_layout(), encoding="utf-8")
     print(f"Observatoire : {n} blocs, {len(blocks)} blocs du mod")
 
     if preview:
@@ -961,6 +1140,10 @@ def main():
         for k, img in enumerate(previews):
             sheet.alpha_composite(img, (34 * k + 1, 1))
         sheet.resize((sheet.width * 4, sheet.height * 4), Image.NEAREST).save(preview / "blocs.png")
+        sheet = Image.new("RGBA", (66 * len(items_preview), 66), (20, 20, 30, 255))
+        for k, img in enumerate(items_preview):
+            sheet.alpha_composite(img, (66 * k + 1, 1))
+        sheet.resize((sheet.width * 2, sheet.height * 2), Image.NEAREST).save(preview / "objets.png")
         plan(obs, preview / "observatoire.png")
 
 
@@ -981,7 +1164,7 @@ def plan(p, path):
             top[(x, z)] = (y, name)
     for (x, z), (_, name) in top.items():
         c = color(name)
-        if name.startswith("Nakasar_Fractal_Arch"):
+        if name in (CONSOLE, RESONATOR, CORE_DISTRIBUTOR, LEVEL_DISTRIBUTOR):
             c = (255, 255, 255)
         if name == HARMONY:
             c = (90, 160, 255)

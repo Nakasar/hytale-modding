@@ -1,0 +1,16 @@
+{
+  "TranslationProperties": {
+    "Name": "nakasar_fractals.items.Nakasar_Fractal_Level_38.name",
+    "Description": "nakasar_fractals.items.Nakasar_Fractal_Level_38.description"
+  },
+  "Icon": "Icons/Items/Nakasar/Fractals/Level_38.png",
+  "Model": "Items/Nakasar/Fractals/Level_Fork_Adept.blockymodel",
+  "Texture": "Items/Nakasar/Fractals/Level_Fork_Adept.png",
+  "Quality": "Rare",
+  "Categories": [
+    "Items.Ingredients"
+  ],
+  "PlayerAnimationsId": "Item",
+  "ItemSoundSetId": "ISS_Items_Gems",
+  "MaxStack": 1
+}

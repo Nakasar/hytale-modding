@@ -11,7 +11,7 @@ import java.util.Locale;
 /**
  * Les fractales de la saison 1 (docs/fractales/gdd.md) : leur id, l'instance qui les porte
  * ({@code Server/Instances/Nakasar_Fractal_<Id>}) et leur nom traduit. Une fractale est « ouverte » quand son instance
- * existe dans le pack : les arches des autres annoncent qu'elles arrivent.
+ * existe dans le pack : le noyau des autres annonce qu'elles arrivent.
  */
 public final class FractalCatalog {
 
@@ -19,7 +19,7 @@ public final class FractalCatalog {
     public static final String INSTANCE_PREFIX = "Nakasar_Fractal_";
     /** Instance (et type de portail) de l'Observatoire. */
     public static final String OBSERVATORY = "Nakasar_Fractal_Observatory";
-    /** Ordre des arches, d'ouest en est. */
+    /** Fractales connues, dans l'ordre du distributeur de noyaux. */
     public static final List<String> IDS = List.of("Cliffside", "Uncategorized", "Volcanic", "SolidOcean", "Swampland", "Snowblind");
 
     private FractalCatalog() {

@@ -27,7 +27,7 @@ import dev.nakasar.hytale.fractals.progress.FractalProgress;
  *   <li>{@code quitter} : quitte la fractale pour l'Observatoire ;</li>
  *   <li>{@code infos} : niveau débloqué et résistance à l'agonie du joueur ;</li>
  *   <li>{@code instabilites} : les instabilités du jour (de la partie en cours, ou de chaque fractale au niveau du
- *   cadran dans l'Observatoire).</li>
+ *   niveau harmonisé dans l'Observatoire).</li>
  * </ul>
  */
 public final class FractalCommand extends AbstractCommandCollection {

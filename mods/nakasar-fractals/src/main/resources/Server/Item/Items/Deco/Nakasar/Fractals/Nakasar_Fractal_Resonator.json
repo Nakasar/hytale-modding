@@ -1,0 +1,50 @@
+{
+  "TranslationProperties": {
+    "Name": "nakasar_fractals.items.Nakasar_Fractal_Resonator.name",
+    "Description": "nakasar_fractals.items.Nakasar_Fractal_Resonator.description"
+  },
+  "Icon": "Icons/Items/Nakasar/Fractals/Resonator.png",
+  "Categories": [
+    "Blocks.Deco"
+  ],
+  "Quality": "Technical",
+  "PlayerAnimationsId": "Block",
+  "BlockType": {
+    "Material": "Solid",
+    "DrawType": "Cube",
+    "Opacity": "Solid",
+    "Textures": [
+      {
+        "Sides": "BlockTextures/Nakasar/Fractals/Resonator.png",
+        "UpDown": "BlockTextures/Nakasar/Fractals/Resonator.png",
+        "Weight": 1
+      }
+    ],
+    "HitboxType": "Full",
+    "Flags": {},
+    "Gathering": {
+      "Breaking": {
+        "GatherType": "Unbreakable"
+      }
+    },
+    "BlockParticleSetId": "Stone",
+    "BlockSoundSetId": "Stone",
+    "ParticleColor": "#78beff",
+    "Light": {
+      "Color": "#6bf"
+    },
+    "Interactions": {
+      "Use": {
+        "Interactions": [
+          "Nakasar_Fractal_Use_Resonator"
+        ]
+      }
+    }
+  },
+  "Tags": {
+    "Type": [
+      "Deco"
+    ]
+  },
+  "ItemSoundSetId": "ISS_Blocks_Stone"
+}

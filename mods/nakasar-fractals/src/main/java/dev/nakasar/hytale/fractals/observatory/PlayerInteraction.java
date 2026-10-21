@@ -12,7 +12,7 @@ import com.hypixel.hytale.server.core.universe.world.World;
 import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
 
 /**
- * Base des blocs utilisables de l'Observatoire et des fractales (cadran, arches, pupitre, pierre de retour) : la
+ * Base des blocs utilisables de l'Observatoire et des fractales (console, résonateurs, pupitre, pierre de retour) : la
  * chaîne n'agit que côté serveur, pour un joueur.
  */
 public abstract class PlayerInteraction extends SimpleInstantInteraction {

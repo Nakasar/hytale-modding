@@ -1,0 +1,16 @@
+{
+  "TranslationProperties": {
+    "Name": "nakasar_fractals.items.Nakasar_Fractal_Core_Snowblind.name",
+    "Description": "nakasar_fractals.items.Nakasar_Fractal_Core_Snowblind.description"
+  },
+  "Icon": "Icons/Items/Nakasar/Fractals/Core_Snowblind.png",
+  "Model": "Items/Nakasar/Fractals/Core_Snowblind.blockymodel",
+  "Texture": "Items/Nakasar/Fractals/Core_Snowblind.png",
+  "Quality": "Rare",
+  "Categories": [
+    "Items.Ingredients"
+  ],
+  "PlayerAnimationsId": "Item",
+  "ItemSoundSetId": "ISS_Items_Gems",
+  "MaxStack": 1
+}

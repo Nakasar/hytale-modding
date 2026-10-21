@@ -39,11 +39,11 @@ import dev.nakasar.hytale.fractals.defiance.OpenDefianceInteraction;
 import dev.nakasar.hytale.fractals.hammer.Hammer;
 import dev.nakasar.hytale.fractals.hammer.HammerDamageSystem;
 import dev.nakasar.hytale.fractals.hammer.HammerSystem;
-import dev.nakasar.hytale.fractals.observatory.DialInteraction;
 import dev.nakasar.hytale.fractals.observatory.HarmonyCircleSystem;
 import dev.nakasar.hytale.fractals.observatory.LeaveInteraction;
 import dev.nakasar.hytale.fractals.observatory.Observatory;
-import dev.nakasar.hytale.fractals.observatory.OpenArchInteraction;
+import dev.nakasar.hytale.fractals.observatory.HarmonizeInteraction;
+import dev.nakasar.hytale.fractals.observatory.OpenConsoleInteraction;
 import dev.nakasar.hytale.fractals.observatory.OpenShopInteraction;
 import dev.nakasar.hytale.fractals.observatory.TrialDemoInteraction;
 import dev.nakasar.hytale.fractals.observatory.ObservatoryNpcSystem;
@@ -77,8 +77,9 @@ import dev.nakasar.hytale.fractals.progress.OpenInfusionsInteraction;
  * </ul>
  *
  * <p>Étape 2, l'entrée : le Fragment des Brumes ouvre l'Observatoire ({@code observatory}), où le cercle
- * d'harmonisation ({@link HarmonyCircleSystem}) forme le groupe, le cadran de l'Astrolabe ({@code Nakasar_Fractal_Dial})
- * règle le niveau et les arches ({@code Nakasar_Fractal_OpenArch}) ouvrent une instance par groupe ({@link FractalRuns}) ;
+ * d'harmonisation ({@link HarmonyCircleSystem}) forme le groupe, la console de sélection
+ * ({@code Nakasar_Fractal_OpenConsole}) reçoit le noyau et le diapason pris aux distributeurs (boutiques gratuites), et
+ * le meneur lance depuis un résonateur ({@code Nakasar_Fractal_Harmonize}) une instance par groupe ({@link FractalRuns}) ;
  * la pierre de retour ({@code Nakasar_Fractal_Leave}) y ramène. Golem d'essai ({@link ObservatoryNpcSystem}) et son pupitre
  * ({@code Nakasar_Fractal_TrialDemo}), filet anti-chute ({@link FallRescueSystem}), commande {@code /fractale}.
  *
@@ -123,8 +124,8 @@ public final class FractalsPlugin extends JavaPlugin {
         interactions.register(StunSelfInteraction.TYPE_ID, StunSelfInteraction.class, StunSelfInteraction.CODEC);
         interactions.register(SummonMinionsInteraction.TYPE_ID, SummonMinionsInteraction.class, SummonMinionsInteraction.CODEC);
         interactions.register(CagePlayerInteraction.TYPE_ID, CagePlayerInteraction.class, CagePlayerInteraction.CODEC);
-        interactions.register(DialInteraction.TYPE_ID, DialInteraction.class, DialInteraction.CODEC);
-        interactions.register(OpenArchInteraction.TYPE_ID, OpenArchInteraction.class, OpenArchInteraction.CODEC);
+        interactions.register(OpenConsoleInteraction.TYPE_ID, OpenConsoleInteraction.class, OpenConsoleInteraction.CODEC);
+        interactions.register(HarmonizeInteraction.TYPE_ID, HarmonizeInteraction.class, HarmonizeInteraction.CODEC);
         interactions.register(LeaveInteraction.TYPE_ID, LeaveInteraction.class, LeaveInteraction.CODEC);
         interactions.register(TrialDemoInteraction.TYPE_ID, TrialDemoInteraction.class, TrialDemoInteraction.CODEC);
         interactions.register(OpenInfusionsInteraction.TYPE_ID, OpenInfusionsInteraction.class, OpenInfusionsInteraction.CODEC);
@@ -174,8 +175,8 @@ public final class FractalsPlugin extends JavaPlugin {
 
         getLogger().atInfo().log("Nakasar Fractales : 19 types d'interaction (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s), progression, Falaise, instabilités, Inclassable, Volcanique, systèmes et /fractale enregistrés",
                 TelegraphInteraction.TYPE_ID, ChargeInteraction.TYPE_ID, StunSelfInteraction.TYPE_ID,
-                SummonMinionsInteraction.TYPE_ID, CagePlayerInteraction.TYPE_ID, DialInteraction.TYPE_ID,
-                OpenArchInteraction.TYPE_ID, LeaveInteraction.TYPE_ID, TrialDemoInteraction.TYPE_ID,
+                SummonMinionsInteraction.TYPE_ID, CagePlayerInteraction.TYPE_ID, OpenConsoleInteraction.TYPE_ID,
+                HarmonizeInteraction.TYPE_ID, LeaveInteraction.TYPE_ID, TrialDemoInteraction.TYPE_ID,
                 OpenInfusionsInteraction.TYPE_ID, OpenBagInteraction.TYPE_ID, ClaimRewardInteraction.TYPE_ID,
                 OpenShopInteraction.TYPE_ID, OpenDefianceInteraction.TYPE_ID, HealFoesInteraction.TYPE_ID,
                 CliffsideUseInteraction.TYPE_ID, PullInteraction.TYPE_ID, StageUseInteraction.TYPE_ID,
