@@ -50,6 +50,15 @@ public final class Hurt {
         }
     }
 
+    /** Retire l'effet `effectId` s'il est actif (copie de {@code Vampires.removeEffect}). */
+    public static void clear(ComponentAccessor<EntityStore> store, Ref<EntityStore> ref, String effectId) {
+        int index = EntityEffect.getAssetMap().getIndexOrDefault(effectId, -1);
+        EffectControllerComponent effects = store.getComponent(ref, EffectControllerComponent.getComponentType());
+        if (index >= 0 && effects != null && effects.hasEffect(index)) {
+            effects.removeEffect(ref, index, store);
+        }
+    }
+
     public static boolean has(ComponentAccessor<EntityStore> store, Ref<EntityStore> ref, String effectId) {
         int index = EntityEffect.getAssetMap().getIndexOrDefault(effectId, -1);
         EffectControllerComponent effects = store.getComponent(ref, EffectControllerComponent.getComponentType());

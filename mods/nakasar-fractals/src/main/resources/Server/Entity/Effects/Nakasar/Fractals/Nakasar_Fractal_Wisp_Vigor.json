@@ -1,0 +1,11 @@
+{
+  "$Comment": "Vigueur du feu-follet : dans le cercle vert de Carnasse, l'endurance revient vite (Java).",
+  "Name": "nakasar_fractals_swampland.effects.Nakasar_Fractal_Wisp_Vigor",
+  "StatusEffectIcon": "UI/StatusEffects/Nakasar/Fractals/Wisp_Vigor.png",
+  "ApplicationEffects": {
+    "EntityBottomTint": "#7dffb0"
+  },
+  "OverlapBehavior": "Overwrite",
+  "Infinite": false,
+  "Duration": 1.5
+}

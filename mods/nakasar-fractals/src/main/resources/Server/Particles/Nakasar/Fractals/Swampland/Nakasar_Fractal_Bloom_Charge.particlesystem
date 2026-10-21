@@ -1,0 +1,12 @@
+{
+  "$Comment": "Carnasse se charge au centre : spirale verte. Généré par tools/generate_swampland.py.",
+  "Spawners": [
+    {
+      "SpawnerId": "Nakasar_Fractal_Bloom_Charge_Spiral",
+      "PositionOffset": {
+        "Y": 1.0
+      }
+    }
+  ],
+  "CullDistance": 72
+}

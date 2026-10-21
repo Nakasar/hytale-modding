@@ -1,0 +1,19 @@
+{
+  "TranslationProperties": {
+    "Name": "nakasar_fractals_solid_ocean.items.Nakasar_Fractal_Reflecting_Crystal.name",
+    "Description": "nakasar_fractals_solid_ocean.items.Nakasar_Fractal_Reflecting_Crystal.description"
+  },
+  "Icon": "Icons/Items/Nakasar/Fractals/Reflecting_Crystal.png",
+  "Model": "Items/Nakasar/Fractals/Reflecting_Crystal.blockymodel",
+  "Texture": "Items/Nakasar/Fractals/Reflecting_Crystal.png",
+  "Quality": "Epic",
+  "Categories": [
+    "Items.Misc"
+  ],
+  "PlayerAnimationsId": "Item",
+  "ItemSoundSetId": "ISS_Items_Gems",
+  "MaxStack": 1,
+  "Interactions": {
+    "Secondary": "Root_Nakasar_Fractal_Throw_Reflecting_Crystal"
+  }
+}

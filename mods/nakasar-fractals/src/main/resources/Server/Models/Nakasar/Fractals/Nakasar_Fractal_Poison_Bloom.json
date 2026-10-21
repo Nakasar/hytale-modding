@@ -1,0 +1,24 @@
+{
+  "$Comment": "Fleur de poison (après les assauts de Carnasse) : PNJ fixe qui empoisonne autour d'elle et protège les ennemis proches (Java).",
+  "Model": "NPC/Nakasar/Fractals/Poison_Bloom/Model.blockymodel",
+  "Texture": "NPC/Nakasar/Fractals/Poison_Bloom/Texture.png",
+  "EyeHeight": 0.6,
+  "HitBox": {
+    "Max": {
+      "X": 0.4,
+      "Y": 0.8,
+      "Z": 0.4
+    },
+    "Min": {
+      "X": -0.4,
+      "Y": 0,
+      "Z": -0.4
+    }
+  },
+  "MinScale": 1.4,
+  "MaxScale": 1.4,
+  "Light": {
+    "Color": "#bf6",
+    "Radius": 2
+  }
+}

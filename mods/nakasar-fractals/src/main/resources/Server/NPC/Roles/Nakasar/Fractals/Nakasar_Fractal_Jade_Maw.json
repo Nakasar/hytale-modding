@@ -1,0 +1,38 @@
+{
+  "$Comment": "L'Abîme de Jade, barre de boss : immobile et invulnérable (écailles denses). Son rayon, ses phases et sa vie (cristaux et tentacules) sont menés par le Java (solidocean.JadeMaw). Généré par tools/generate_solid_ocean.py.",
+  "Type": "Generic",
+  "Appearance": "Nakasar_Fractal_Jade_Maw",
+  "NameTranslationKey": "nakasar_fractals_solid_ocean.npc.Jade_Maw.name",
+  "MaxHealth": 1000,
+  "StartState": "Idle",
+  "DefaultPlayerAttitude": "Hostile",
+  "DefaultNPCAttitude": "Ignore",
+  "MotionControllerList": [
+    {
+      "Type": "Walk",
+      "MaxWalkSpeed": 0.1,
+      "Gravity": 10,
+      "MaxFallSpeed": 10,
+      "Acceleration": 10,
+      "JumpHeight": 1.0
+    }
+  ],
+  "KnockbackScale": 0,
+  "SpawnLockTime": 0.2,
+  "Instructions": [
+    {
+      "Sensor": {
+        "Type": "State",
+        "State": "Idle"
+      },
+      "Instructions": [
+        {
+          "Actions": []
+        }
+      ]
+    }
+  ],
+  "DisableDamageGroups": [
+    "Nakasar_Fractal_Foes"
+  ]
+}

@@ -1,0 +1,12 @@
+{
+  "$Comment": "Feu-follet : lueur verte qui monte. Généré par tools/generate_swampland.py.",
+  "Spawners": [
+    {
+      "SpawnerId": "Nakasar_Fractal_Wisp_Glow_Glow",
+      "PositionOffset": {
+        "Y": 0.5
+      }
+    }
+  ],
+  "CullDistance": 72
+}

@@ -85,8 +85,8 @@ La saison 1 réunit les 6 fractales qui mélangent le mieux puzzles de saut, ren
 | Falaise (Cliffside) | 5 sceaux à briser au marteau en montant le long d'un colosse enchaîné | échafaudages, gargouilles à vent, rampes piégées | Archidevin légendaire | cultistes outlanders |
 | Inclassable (Uncategorized) | plateformes, détention, escalier mortel, Vieux Tom, plateformes 2, Asura délirant | deux ascensions de plateformes sous les harpies | Vieux Tom, Asura délirant et ses golems | harpies (à créer), golems vanilla |
 | Volcanique (Volcanic) | vagues de grawls, couloir à rochers, chaman champion, mine abandonnée | puzzle de saut au-dessus de la lave | Chaman imprégné légendaire | trorks pour les grawls, élémentaires de feu |
-| Océan solide (Solid Ocean) | traversée de plateformes de jade, combat en 3 phases | plateformes flottantes, chute = plateforme précédente | Gueule de jade | golems de cristal, créatures marines |
-| Marais (Swampland) | course aux 3 feux-follets, Homme-mousse, Faim-de-floraison | murs à sauter pendant la course | Homme-mousse, Faim-de-floraison | loups, plantes, esprits animaux |
+| Océan solide (Solid Ocean) | traversée de plateformes de jade, combat en 3 phases | plateformes flottantes, chute = plateforme précédente | Abîme de Jade | golems de cristal, créatures marines |
+| Marais (Swampland) | course aux 3 feux-follets, Moussu, Carnasse | murs à sauter pendant la course | Moussu, Carnasse | loups, plantes, esprits animaux |
 | Tempête de neige (Snowblind) | feu de camp à nourrir, Source élémentaire, forêt noire, chaman | aucun (fractale d'environnement) | Source élémentaire, Chaman grawl légendaire | outlanders du givre, loups, élémentaires de glace |
 
 **Adaptations obligatoires de GW2 à Hytale** (valables partout) :
@@ -167,35 +167,35 @@ Un rituel grawl au cœur d'un volcan : vagues d'ennemis sous les chutes de pierr
    - *Tempête de feu* : zone instantanée.
    - **Transition à chaque 25 %** : il s'entoure d'un bouclier à **40 coups**, invoque des larves élémentaires et vole lentement vers un villageois emprisonné. S'il l'atteint avant que le bouclier tombe, il **reprend 25 % de PV**.
 
-Côté Hytale : grawls remplacés par des trorks ; la pierre imprégnée est la même brique que le cristal de la Gueule de jade (objet lancé) ; le bouclier à 40 coups est un compteur de coups, comme la porte de cellule du Capitaine (10 coups).
+Côté Hytale : grawls remplacés par des trorks ; la pierre imprégnée est la même brique que le cristal de l'Abîme de Jade (objet lancé) ; le bouclier à 40 coups est un compteur de coups, comme la porte de cellule du Capitaine (10 coups).
 
 ### Océan solide (Solid Ocean)
 
-Une traversée de plateformes de jade flottantes mène à la Gueule de jade, un monstre invulnérable qu'on ne blesse qu'en lui renvoyant son propre rayon avec des cristaux. ([wiki](https://wiki.guildwars2.com/wiki/Solid_Ocean_Fractal))
+Une traversée de plateformes de jade flottantes mène à l'Abîme de Jade, un monstre invulnérable qu'on ne blesse qu'en lui renvoyant son propre rayon avec des cristaux. ([wiki](https://wiki.guildwars2.com/wiki/Solid_Ocean_Fractal))
 
 1. **Plateformes de jade** (saut) : on peut combattre ou éviter les créatures en chemin. Tomber ramène à la **plateforme précédente**, pas au début.
-2. **La Gueule de jade**, en 3 phases :
+2. **L'Abîme de Jade**, en 3 phases :
    - **Phase 1** : tuer 2 tentacules (avec les créatures autour). Un premier test d'agonie à l'arrivée.
    - **Phase 2** : des **colosses de jade** apparaissent ; les tuer remplit une barre. Ils renvoient les projectiles (sauf étourdis), renversent autour d'eux et lâchent des **cristaux réfléchissants**.
-   - **Fin** : tentacules et Gueule seulement ; les tentacules lâchent maintenant les cristaux.
+   - **Fin** : tentacules et l'Abîme seulement ; les tentacules lâchent maintenant les cristaux.
 
 **Le rayon et les cristaux** :
 
-- La Gueule marque un joueur d'un **crâne rouge** au-dessus de la tête, puis tire un rayon mortel sur lui. On l'esquive au moment où le crâne disparaît.
-- Un joueur qui **tient un cristal** absorbe le rayon sans mourir et devient chargé ; il **lance** alors le cristal sur la Gueule : -5 % de PV. Tuer un tentacule retire environ 3 %. Deux dégâts au même instant n'en comptent qu'un.
+- L'Abîme marque un joueur d'un **crâne rouge** au-dessus de la tête, puis tire un rayon mortel sur lui. On l'esquive au moment où le crâne disparaît.
+- Un joueur qui **tient un cristal** absorbe le rayon sans mourir et devient chargé ; il **lance** alors le cristal sur l'Abîme : -5 % de PV. Tuer un tentacule retire environ 3 %. Deux dégâts au même instant n'en comptent qu'un.
 - Tenir un cristal empêche d'attaquer ; un cristal au sol disparaît après 45 à 60 s.
 - **Dernier rayon** : près de la mort, elle marque tout le monde et tire sur tous ; il faut tenir un cristal. Si tout le groupe meurt, le combat recommence.
 - Les tentacules ne bougent pas, renversent en balayant et finissent leur attaque même à 0 PV.
 
-Côté Hytale : la Gueule est un énorme modèle immobile sans déplacement ; le cristal est un objet porté qui annule un dégât précis (le rayon) puis devient lançable.
+Côté Hytale : l'Abîme est un énorme modèle immobile sans déplacement ; le cristal est un objet porté qui annule un dégât précis (le rayon) puis devient lançable.
 
 ### Marais (Swampland)
 
-Une course chronométrée aux feux-follets à travers un marais piégé, une embuscade de l'Homme-mousse, puis Faim-de-floraison dans une clairière où l'on se déplace de cercle vert en cercle vert. ([wiki](https://wiki.guildwars2.com/wiki/Swampland_Fractal))
+Une course chronométrée aux feux-follets à travers un marais piégé, une embuscade du Moussu, puis Carnasse dans une clairière où l'on se déplace de cercle vert en cercle vert. ([wiki](https://wiki.guildwars2.com/wiki/Swampland_Fractal))
 
 1. **Les feux-follets** : ramener 3 feux-follets dans leurs failles avant la fin du minuteur, qui démarre au premier ramassé (1 min 04 au bas niveau, 30 s au plus haut). Des **murs** surgissent entre les arbres dès qu'un feu-follet est pris : il faut **sauter par-dessus** ou contourner. Pièges au sol : fils, pièges à loup, piques, œufs d'araignée. Des fusils au sol près des failles accélèrent les porteurs et ralentissent les ennemis. Raté : la zone se réinitialise et les feux-follets changent de place.
-2. **L'Homme-mousse** : embuscade dans le passage, qui se ferme. Il invoque des loups, frappe fort au corps à corps, **disparaît en furtivité** puis réapparaît avec une attaque chargée à longue portée qui met à terre. Bas en PV, il se transforme en bête (bonds, gros dégâts). Barre de défiance.
-3. **Faim-de-floraison** : 4 failles en cercle ; déposer le feu-follet près de l'entrée lance le combat.
+2. **Le Moussu** : embuscade dans le passage, qui se ferme. Il invoque des loups, frappe fort au corps à corps, **disparaît en furtivité** puis réapparaît avec une attaque chargée à longue portée qui met à terre. Bas en PV, il se transforme en bête (bonds, gros dégâts). Barre de défiance.
+3. **Carnasse** : 4 failles en cercle ; déposer le feu-follet près de l'entrée lance le combat.
    - Un **cercle vert** apparaît autour d'une faille, rétrécit puis passe à la suivante (sens horaire). **Le boss n'est vulnérable que dans le cercle vert**, qui donne aussi de l'endurance.
    - Attaques : *Charge* (se cabre puis fonce et frappe), *Bond* (grand cercle d'impact), *Martelèement* (canalisé, défiance ouverte, souvent juste après le bond), *Pluie de poison*, *Tir* de poison qui laisse une flaque.
    - **Assaut à 75 % et 50 %** : invulnérable au centre ; des esprits animaux attaquent, invulnérables tant qu'ils ne sont pas dans le cercle vert. Ensuite, des **fleurs de poison** poussent dans l'arène.
@@ -281,7 +281,7 @@ La moitié des mécaniques existe déjà dans le mod Vampires et a tourné en je
 | PV selon le groupe | fixe (5 joueurs) | modificateur de PV au début du combat | `GroupHealth` | éprouvé |
 | Agonie | dégâts en % des PV max, réduits par la résistance | effet d'entité + système Java qui lit la résistance du joueur | effets du vampirisme (DoT) | à construire |
 | Objets portés | marteau, feux-follets, cristaux | objet unique en main, effet de lenteur, interaction propre, tombé au sol à la mort | torches de la Tour (brasier à allumer) | à construire |
-| Objet lancé sur une cible | cristaux dans la Gueule de Jade | projectile avec interaction à l'impact sur une entité précise | flèches d'argent, projectiles de l'Alchimiste | à construire |
+| Objet lancé sur une cible | cristaux dans l'Abîme de Jade | projectile avec interaction à l'impact sur une entité précise | flèches d'argent, projectiles de l'Alchimiste | à construire |
 | Marques sur joueur | bombes, fixations | effet visible au-dessus du joueur + télégraphe qui le suit | annonce de l'emprisonnement (Capitaine) | partiel |
 | Chaînes et liens | chaînes de l'Archidevin, PV liés | entité « chaîne » à PV + `Frozen` sur le joueur ; liens de PV en Java | vrille de la citrouille (`RootTrap`) | éprouvé (vrille) |
 | Invocations | adds de boss | `SummonMinions` + bouclier tant qu'ils vivent | Citrouille, Spectre, Armure | éprouvé |
@@ -305,7 +305,7 @@ La moitié des mécaniques existe déjà dans le mod Vampires et a tourné en je
 | Cage | Archidevin | téléport vers une cellule, porte à casser | emprisonnement du Capitaine | éprouvé en jeu |
 | Objet lancé sur le boss | pierre imprégnée, cristal réfléchissant | objet tenu, interaction de lancer, projectile qui touche une entité précise | projectiles de l'Alchimiste | à construire |
 | Bouclier à piles ou à compteur de coups | chaman champion (8 piles), chaman imprégné (40 coups), Mai Trin | composant compteur + filtre de dégâts | porte de cellule (10 coups) | à adapter |
-| Zone de vulnérabilité mobile | cercle vert de Faim-de-floraison | zone positive verte qui tourne ; filtre de dégâts hors zone | boucliers d'élites | à adapter |
+| Zone de vulnérabilité mobile | cercle vert de Carnasse | zone positive verte qui tourne ; filtre de dégâts hors zone | boucliers d'élites | à adapter |
 | Charges +/- entre joueurs | Asura délirant | effets opposés + système de distance entre joueurs | aucun | à construire |
 | Rester en mouvement | Pieds brûlants (Volcanique) | système qui lit la vitesse du joueur | aucun | à construire |
 | PNJ à protéger | captifs du Volcanique, villageois du chaman | PNJ immobiles + ennemis qui marchent vers eux (laisse) | hommes nourriciers de la Chimère | à adapter |
@@ -347,11 +347,13 @@ Neuf étapes, chacune livrable en une PR testable en jeu ; les étapes 1 à 4 do
 6. **Inclassable et Volcanique**
    - [x] Briques : harpies et recul hors des plateformes, consoles simultanées, gaz et ventilateur, charges +/-, rochers roulants, objet lancé (pierre imprégnée), captifs à protéger, bouclier à compteur de coups, Pieds brûlants
    - [x] Fractales Inclassable (Vieux Tom, Asura délirant) et Volcanique (Champion chaman, Chaman imprégné)
-7. **Océan solide et Marais** : marque crâne + rayon absorbé par un objet tenu, cristal lancé, course chronométrée aux feux-follets avec murs temporaires, furtivité de l'Homme-mousse, cercle vert de vulnérabilité qui tourne
+7. **Océan solide et Marais**
+   - [x] Briques : marque crâne + rayon absorbé par un objet tenu, cristal lancé, colosses qui renvoient les projectiles, chute vers le dernier fragment sûr, course chronométrée aux feux-follets avec murs temporaires, pièges au sol, fusils revigorants, furtivité du Moussu, cercle vert de vulnérabilité qui tourne, fleurs de poison
+   - [x] Fractales Océan solide (Abîme de Jade) et Marais (le Moussu, Carnasse)
 8. **Tempête de neige** : Chaleur et Hypothermie, feux à nourrir de fagots, élémentaires qui éteignent, blizzard, éclat de glace, chaman au balcon et Effigie
 9. **Finitions** : fractales du jour, cosmétiques, pages du wiki joueur
 
-Nouveaux modèles à créer : colosse enchaîné, Archidevin, harpies, Asura délirant, Chaman imprégné (ailé), Gueule de jade et tentacules, Homme-mousse, Faim-de-floraison, Source élémentaire, Chaman légendaire et sa forme d'ours, Astrolabe et arches. Les monstres de base reprennent des rôles vanilla (outlanders, trorks, golems, loups, élémentaires).
+Nouveaux modèles à créer : colosse enchaîné, Archidevin, harpies, Asura délirant, Chaman imprégné (ailé), Abîme de Jade et tentacules, Moussu, Carnasse, Source élémentaire, Chaman légendaire et sa forme d'ours, Astrolabe et arches. Les monstres de base reprennent des rôles vanilla (outlanders, trorks, golems, loups, élémentaires).
 
 ## Questions ouvertes
 

@@ -1,0 +1,12 @@
+{
+  "$Comment": "Cercle vert de Carnasse : lueurs vertes posées au sol (zone favorable). Généré par tools/generate_swampland.py.",
+  "Spawners": [
+    {
+      "SpawnerId": "Nakasar_Fractal_Wisp_Ring_Ring",
+      "PositionOffset": {
+        "Y": 0.1
+      }
+    }
+  ],
+  "CullDistance": 72
+}

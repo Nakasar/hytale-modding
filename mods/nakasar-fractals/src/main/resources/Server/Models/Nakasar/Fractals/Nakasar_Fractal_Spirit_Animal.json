@@ -1,0 +1,24 @@
+{
+  "$Comment": "Esprit animal de Carnasse (provisoire) : loup spectral en boîtes, sans animation.",
+  "Model": "NPC/Nakasar/Fractals/Spirit_Animal/Model.blockymodel",
+  "Texture": "NPC/Nakasar/Fractals/Spirit_Animal/Texture.png",
+  "EyeHeight": 0.6,
+  "HitBox": {
+    "Max": {
+      "X": 0.5,
+      "Y": 0.9,
+      "Z": 0.5
+    },
+    "Min": {
+      "X": -0.5,
+      "Y": 0,
+      "Z": -0.5
+    }
+  },
+  "MinScale": 1.0,
+  "MaxScale": 1.0,
+  "Light": {
+    "Color": "#9fd",
+    "Radius": 2
+  }
+}

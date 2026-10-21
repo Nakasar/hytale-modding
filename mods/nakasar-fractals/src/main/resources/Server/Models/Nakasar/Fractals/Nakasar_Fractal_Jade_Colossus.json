@@ -1,0 +1,10 @@
+{
+  "$Comment": "Colosse de jade (phase 2) : le golem de cristal vanilla, plus grand.",
+  "Parent": "Golem_Crystal_Thunder",
+  "MinScale": 1.25,
+  "MaxScale": 1.25,
+  "Light": {
+    "Color": "#6f9",
+    "Radius": 3
+  }
+}

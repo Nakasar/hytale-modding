@@ -1,0 +1,12 @@
+{
+  "$Comment": "Cristal réfléchissant au sol : lueur de jade. Généré par tools/generate_solid_ocean.py.",
+  "Spawners": [
+    {
+      "SpawnerId": "Nakasar_Fractal_Crystal_Glow_Glow",
+      "PositionOffset": {
+        "Y": 0.2
+      }
+    }
+  ],
+  "CullDistance": 72
+}

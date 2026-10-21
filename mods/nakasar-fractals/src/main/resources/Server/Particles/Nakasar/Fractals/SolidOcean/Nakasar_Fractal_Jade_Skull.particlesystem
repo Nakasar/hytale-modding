@@ -1,0 +1,18 @@
+{
+  "$Comment": "Crâne rouge au-dessus du joueur visé par l'Abîme : nuée rouge et noire. Généré par tools/generate_solid_ocean.py.",
+  "Spawners": [
+    {
+      "SpawnerId": "Nakasar_Fractal_Jade_Skull_Skull",
+      "PositionOffset": {
+        "Y": 0.0
+      }
+    },
+    {
+      "SpawnerId": "Nakasar_Fractal_Jade_Skull_Eyes",
+      "PositionOffset": {
+        "Y": 0.2
+      }
+    }
+  ],
+  "CullDistance": 72
+}

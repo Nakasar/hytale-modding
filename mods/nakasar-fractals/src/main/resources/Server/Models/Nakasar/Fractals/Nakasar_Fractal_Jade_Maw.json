@@ -1,0 +1,24 @@
+{
+  "$Comment": "L'Abîme de Jade (boss de l'Océan solide) : tête de kraken en jade, œil unique. Immobile ; ses écailles denses le rendent invulnérable (Java).",
+  "Model": "NPC/Nakasar/Fractals/Jade_Maw/Model.blockymodel",
+  "Texture": "NPC/Nakasar/Fractals/Jade_Maw/Texture.png",
+  "EyeHeight": 3.0,
+  "HitBox": {
+    "Max": {
+      "X": 1.0,
+      "Y": 2.2,
+      "Z": 1.0
+    },
+    "Min": {
+      "X": -1.0,
+      "Y": 0,
+      "Z": -1.0
+    }
+  },
+  "MinScale": 3.0,
+  "MaxScale": 3.0,
+  "Light": {
+    "Color": "#9f6",
+    "Radius": 6
+  }
+}

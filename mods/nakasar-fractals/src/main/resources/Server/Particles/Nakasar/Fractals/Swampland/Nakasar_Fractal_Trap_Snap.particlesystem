@@ -1,0 +1,12 @@
+{
+  "$Comment": "Un piège se déclenche : éclats et poussière. Généré par tools/generate_swampland.py.",
+  "Spawners": [
+    {
+      "SpawnerId": "Nakasar_Fractal_Trap_Snap_Snap",
+      "PositionOffset": {
+        "Y": 0.2
+      }
+    }
+  ],
+  "CullDistance": 72
+}

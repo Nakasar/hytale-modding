@@ -1,0 +1,10 @@
+{
+  "$Comment": "Carnasse (boss du Marais) : l'esprit de racine vanilla, très grand ; GW2 en fait un tréant des esprits.",
+  "Parent": "Spirit_Root",
+  "MinScale": 2.4,
+  "MaxScale": 2.4,
+  "Light": {
+    "Color": "#9f6",
+    "Radius": 5
+  }
+}

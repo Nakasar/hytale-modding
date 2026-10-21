@@ -1,0 +1,5 @@
+{
+  "$Comment": "Faille du Marais : y déposer le feu-follet porté.",
+  "Type": "Nakasar_Fractal_Use",
+  "Action": "Swampland_Cleft"
+}

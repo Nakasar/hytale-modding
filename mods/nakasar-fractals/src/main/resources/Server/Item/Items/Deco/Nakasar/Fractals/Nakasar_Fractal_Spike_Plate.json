@@ -1,0 +1,40 @@
+{
+  "TranslationProperties": {
+    "Name": "nakasar_fractals_swampland.items.Nakasar_Fractal_Spike_Plate.name",
+    "Description": "nakasar_fractals_swampland.items.Nakasar_Fractal_Spike_Plate.description"
+  },
+  "Icon": "Icons/Items/Nakasar/Fractals/Spike_Plate.png",
+  "Categories": [
+    "Blocks.Deco"
+  ],
+  "Quality": "Technical",
+  "PlayerAnimationsId": "Block",
+  "BlockType": {
+    "Material": "Solid",
+    "DrawType": "Cube",
+    "Opacity": "Solid",
+    "Textures": [
+      {
+        "Sides": "BlockTextures/Nakasar/Fractals/Spike_Plate.png",
+        "UpDown": "BlockTextures/Nakasar/Fractals/Spike_Plate.png",
+        "Weight": 1
+      }
+    ],
+    "HitboxType": "Full",
+    "Flags": {},
+    "Gathering": {
+      "Breaking": {
+        "GatherType": "Unbreakable"
+      }
+    },
+    "BlockParticleSetId": "Stone",
+    "BlockSoundSetId": "Stone",
+    "ParticleColor": "#c85a50"
+  },
+  "Tags": {
+    "Type": [
+      "Deco"
+    ]
+  },
+  "ItemSoundSetId": "ISS_Blocks_Stone"
+}

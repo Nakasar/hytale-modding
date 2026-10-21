@@ -1,0 +1,7 @@
+{
+  "$Comment": "Purge corporelle de Carnasse (feux-follets non rapportés à temps) : une part des PV max, l'armure ne la réduit pas.",
+  "BypassResistances": true,
+  "DurabilityLoss": false,
+  "StaminaLoss": false,
+  "DamageTextColor": "#a8ff60"
+}

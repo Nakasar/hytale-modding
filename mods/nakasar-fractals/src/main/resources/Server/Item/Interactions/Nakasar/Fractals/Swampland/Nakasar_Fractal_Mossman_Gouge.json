@@ -1,0 +1,35 @@
+{
+  "$Comment": "Le Moussu : éventration, ligne de 5 × 2 blocs (1,2 s), 38 dégâts.",
+  "Type": "Serial",
+  "Interactions": [
+    {
+      "Type": "ClearEntityEffect",
+      "Entity": "User",
+      "EntityEffectId": "Hit_Interrupt_Eligible"
+    },
+    {
+      "Type": "ApplyEffect",
+      "EffectId": "Nakasar_Fractal_Rooted"
+    },
+    {
+      "Type": "Nakasar_Fractal_Telegraph",
+      "Shape": "Line",
+      "Seconds": 1.2,
+      "Length": 5,
+      "Width": 2,
+      "Damage": 38,
+      "PlayersOnly": true,
+      "HitParticle": "Impact_Sword_Basic_Stronk",
+      "ImpactSound": "SFX_Mace_T2_Signature_Impact"
+    },
+    {
+      "Type": "Simple",
+      "RunTime": 1.2,
+      "Effects": {
+        "WorldSoundEventId": "SFX_Spear_Throw_Charge",
+        "ItemPlayerAnimationsId": "Mace",
+        "ItemAnimationId": "SwingDownCharging"
+      }
+    }
+  ]
+}

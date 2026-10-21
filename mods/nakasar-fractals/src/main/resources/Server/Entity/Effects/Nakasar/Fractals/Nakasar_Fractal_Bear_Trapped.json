@@ -1,0 +1,14 @@
+{
+  "$Comment": "Pris dans un piège à loup : immobile.",
+  "Name": "nakasar_fractals_swampland.effects.Nakasar_Fractal_Bear_Trapped",
+  "Debuff": true,
+  "StatusEffectIcon": "UI/StatusEffects/Nakasar/Fractals/Rooted.png",
+  "ApplicationEffects": {
+    "MovementEffects": {
+      "DisableAll": true
+    }
+  },
+  "OverlapBehavior": "Overwrite",
+  "Infinite": false,
+  "Duration": 2.5
+}

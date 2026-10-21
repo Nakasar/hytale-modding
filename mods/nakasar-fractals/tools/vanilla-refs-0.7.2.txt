@@ -8,3 +8,5 @@ animations Staff
 # Jeux d'animations des golems vanilla (validés par le mod Vampires dans Assets.zip 0.7.2, Tour de l'Alchimiste).
 animations Golem_Firesteel_Default
 animations Golem_Crystal_Thunder_Default
+# Esprit de racine vanilla (validé par le mod Vampires dans Assets.zip 0.7.2, citrouille géante) : Carnasse (Marais).
+animations Spirit_Root_Default

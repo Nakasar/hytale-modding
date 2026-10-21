@@ -1,0 +1,12 @@
+{
+  "$Comment": "Un tentacule sort du jade : éclats et poussière verte. Généré par tools/generate_solid_ocean.py.",
+  "Spawners": [
+    {
+      "SpawnerId": "Nakasar_Fractal_Tentacle_Emerge_Burst",
+      "PositionOffset": {
+        "Y": 0.2
+      }
+    }
+  ],
+  "CullDistance": 72
+}

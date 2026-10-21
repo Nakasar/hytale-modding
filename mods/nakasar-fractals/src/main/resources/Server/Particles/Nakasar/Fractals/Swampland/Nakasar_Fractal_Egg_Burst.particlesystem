@@ -1,0 +1,12 @@
+{
+  "$Comment": "Œufs d'araignée qui éclatent : nuage de poison. Généré par tools/generate_swampland.py.",
+  "Spawners": [
+    {
+      "SpawnerId": "Nakasar_Fractal_Egg_Burst_Cloud",
+      "PositionOffset": {
+        "Y": 0.4
+      }
+    }
+  ],
+  "CullDistance": 72
+}

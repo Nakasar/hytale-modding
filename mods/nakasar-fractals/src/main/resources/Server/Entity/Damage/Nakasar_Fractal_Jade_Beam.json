@@ -1,0 +1,7 @@
+{
+  "$Comment": "Rayon de l'Abîme de Jade : mortel sans cristal (Java). L'armure ne le réduit pas.",
+  "BypassResistances": true,
+  "DurabilityLoss": false,
+  "StaminaLoss": false,
+  "DamageTextColor": "#7dffb0"
+}

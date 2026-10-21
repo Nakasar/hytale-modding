@@ -1,0 +1,27 @@
+{
+  "$Comment": "Le Moussu : dague dansante, sa cible est marquée (1,3 s) puis touchée où qu'elle soit (14 dégâts) ; elle rebondit sur deux joueurs proches. Agonie aux niveaux qui en ont.",
+  "Type": "Serial",
+  "Interactions": [
+    {
+      "Type": "Nakasar_Fractal_Telegraph",
+      "Shape": "Mark",
+      "Seconds": 1.3,
+      "Damage": 14,
+      "PlayersOnly": true,
+      "MarkParticle": "Nakasar_Fractal_Trap_Snap",
+      "HitParticle": "Impact_Sword_Basic_Stronk",
+      "Bounces": 2,
+      "BounceRange": 8,
+      "AgonySeconds": 3
+    },
+    {
+      "Type": "Simple",
+      "RunTime": 1.3,
+      "Effects": {
+        "WorldSoundEventId": "SFX_Unarmed_Swing",
+        "ItemPlayerAnimationsId": "Mace",
+        "ItemAnimationId": "SwingRight"
+      }
+    }
+  ]
+}

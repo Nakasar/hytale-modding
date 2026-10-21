@@ -1,0 +1,11 @@
+{
+  "$Comment": "Cristal réfléchissant : clic droit, le lancer sur l'Abîme de Jade (48 blocs, cône de 35°). Chargé par le rayon, il lui retire 5 % de sa vie ; sinon il revient (Java, solidocean.JadeMaw).",
+  "Type": "Nakasar_Fractal_ThrowItem",
+  "Item": "Nakasar_Fractal_Reflecting_Crystal",
+  "Roles": "Nakasar_Fractal_Jade_Maw",
+  "Range": 48,
+  "Cone": 35,
+  "Particle": "Nakasar_Fractal_Crystal_Trail",
+  "Action": "Crystal",
+  "NoTargetMessage": "nakasar_fractals_solid_ocean.crystal.noTarget"
+}

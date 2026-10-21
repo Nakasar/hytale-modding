@@ -7,7 +7,7 @@ Deux mods, chacun avec son dossier de documentation :
 | Mod | Code | Documentation |
 |-----|------|---------------|
 | **Vampires** : le domaine du Comte vampire (plugin Java + pack d'assets, artefact `Nakasar-Vampires-<version>.jar`) | `mods/nakasar-vampires` | [docs/vampires](docs/vampires/) |
-| **Fractales des Brumes** : les fractales de Guild Wars 2 transposées dans Hytale, pour 1 à 5 joueurs (en cours : socle, Observatoire, progression, instabilités, fractales Falaise, Inclassable et Volcanique) | `mods/nakasar-fractals` | [docs/fractales](docs/fractales/) |
+| **Fractales des Brumes** : les fractales de Guild Wars 2 transposées dans Hytale, pour 1 à 5 joueurs (en cours : socle, Observatoire, progression, instabilités, fractales Falaise, Inclassable, Volcanique, Océan solide et Marais) | `mods/nakasar-fractals` | [docs/fractales](docs/fractales/) |
 
 Les notes communes aux deux mods (API serveur, PNJ) restent à la racine de `docs/`.
 
@@ -152,6 +152,30 @@ imprégné (humanoïdes ; celui de GW2 est une harpie géante), ettin (`Zombie_A
 À vérifier en jeu : recul des harpies, portes des cellules, couloirs des tourelles le long de l'escalier, gaz et
 ventilateur de Tom, transparence des plateformes de lumière, lancer de la pierre imprégnée (clic droit vers le
 Champion), vétérans qui rejoignent les captifs, rochers et niches, Pieds brûlants au saut, vol plané du Chaman.
+
+Étape 7, **Océan solide et Marais** (`tools/generate_solid_ocean.py`, `tools/generate_swampland.py`, paquets
+`solidocean/` et `swampland/`). `SafeLandings` accepte désormais plusieurs blocs d'atterrissage (fragments de jade).
+- **Océan solide** : fragments de jade à sauter au-dessus de l'océan (une chute ramène au fragment d'avant),
+  irukandjis en chemin, puis l'**Abîme de Jade**, immobile et invulnérable : phase 1, deux tentacules à abattre et un
+  test d'agonie (niveau 26+) ; phase 2, des **colosses de jade** (3 + 1 par joueur) qui renvoient les projectiles sauf
+  étourdis et lâchent les **cristaux réfléchissants** ; fin, les tentacules lâchent les cristaux. Toutes les 11 s, un
+  crâne marque un joueur ; quand il disparaît, le rayon se fixe sur sa place (0,7 s pour s'écarter) : tenir un cristal
+  l'absorbe et charge le joueur, qui lance alors le cristal sur l'Abîme (-5 %, tentacule -3 %). Sous 8 %, dernier
+  rayon sur tout le monde, sans esquive.
+- **Marais** : trois feux-follets à rapporter dans leurs failles (minuteur 64 s, 38 s dès le niveau 26, 30 s dès le
+  51) ; des murs surgissent au premier pris ; fils tendus, pièges à loup, plaques à piques, œufs d'araignée ; deux
+  fusils revigorants (rapidité). Raté : tout s'éteint, les feux-follets changent de place. Embuscade du **Moussu**
+  (loups, furtivité puis attaque surgie en ligne rouge avec défiance ouverte, forme sauvage sous 50 %), puis
+  **Carnasse** : vulnérable, lui et ses esprits, seulement dans le **cercle vert** qui saute de faille en faille ;
+  assauts à 75/50 % (esprits à abattre, pluie de poison, puis fleurs de poison), à 25 % quatre feux-follets à
+  rapporter en 35 s, sinon purge corporelle (60 %, mortelle dès le niveau 76).
+
+Modèles provisoires : Abîme de Jade et tentacules (boîtes), colosses (`Golem_Crystal_Thunder`), irukandjis
+(`Spirit_Frost`), loups du Moussu et esprits animaux (boîtes), le Moussu (humanoïde), Carnasse (`Spirit_Root` ×2,4).
+
+À vérifier en jeu : sauts entre fragments de jade, crâne et cercle du rayon, absorption par le cristal tenu, lancer
+du cristal (clic droit vers l'Abîme), renvoi des colosses ; murs et pièges du marais, fusils, furtivité et
+réapparition du Moussu, cercle vert (particules) et vigueur, assauts et fleurs, feux-follets des coins.
 
 ### Notes communes
 

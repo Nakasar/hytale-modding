@@ -1,0 +1,20 @@
+{
+  "TranslationProperties": {
+    "Name": "nakasar_fractals_swampland.items.Nakasar_Fractal_Wisp.name",
+    "Description": "nakasar_fractals_swampland.items.Nakasar_Fractal_Wisp.description"
+  },
+  "Icon": "Icons/Items/Nakasar/Fractals/Wisp.png",
+  "Model": "Items/Nakasar/Fractals/Wisp.blockymodel",
+  "Texture": "Items/Nakasar/Fractals/Wisp.png",
+  "Quality": "Rare",
+  "Categories": [
+    "Items.Misc"
+  ],
+  "PlayerAnimationsId": "Item",
+  "ItemSoundSetId": "ISS_Items_Gems",
+  "MaxStack": 1,
+  "Light": {
+    "Color": "#9fd",
+    "Radius": 4
+  }
+}

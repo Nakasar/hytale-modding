@@ -16,6 +16,7 @@ import org.joml.Vector3d;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.UUID;
 
 /**
@@ -34,12 +35,19 @@ public final class SafeLandings {
 
     private final List<Box> zones;
     private final String messageKey;
+    private final Set<String> landings;
     private final Map<UUID, Landing> last = new HashMap<>();
 
     /** `zones` : zones de saut ; `messageKey` : message au joueur ramené. */
     public SafeLandings(List<Box> zones, String messageKey) {
+        this(zones, messageKey, Set.of(LANDING));
+    }
+
+    /** Comme ci-dessus, avec d'autres blocs sûrs que {@value #LANDING} (fragments de jade de l'Océan solide). */
+    public SafeLandings(List<Box> zones, String messageKey, Set<String> landings) {
         this.zones = zones;
         this.messageKey = messageKey;
+        this.landings = landings;
     }
 
     public void step(World world, Store<EntityStore> store, List<PlayerRef> players) {
@@ -53,7 +61,8 @@ public final class SafeLandings {
             int x = (int) Math.floor(at.x());
             int z = (int) Math.floor(at.z());
             int zone = zone(at);
-            if (zone >= 0 && LANDING.equals(WorldBlocks.name(chunks, x, (int) Math.floor(at.y() - 0.1), z))) {
+            String below = zone >= 0 ? WorldBlocks.name(chunks, x, (int) Math.floor(at.y() - 0.1), z) : null;
+            if (below != null && landings.contains(below)) {
                 last.put(player.getUuid(), new Landing(zone, new Vector3d(x + 0.5, Math.floor(at.y() + 0.05), z + 0.5)));
                 continue;
             }

@@ -23,6 +23,8 @@ import dev.nakasar.hytale.fractals.stage.StageUseInteraction;
 import dev.nakasar.hytale.fractals.stage.Stages;
 import dev.nakasar.hytale.fractals.stage.ThrowItemInteraction;
 import dev.nakasar.hytale.fractals.uncategorized.Uncategorized;
+import dev.nakasar.hytale.fractals.solidocean.SolidOcean;
+import dev.nakasar.hytale.fractals.swampland.Swampland;
 import dev.nakasar.hytale.fractals.volcanic.Volcanic;
 import dev.nakasar.hytale.fractals.combat.StunSelfInteraction;
 import dev.nakasar.hytale.fractals.combat.TelegraphInteraction;
@@ -163,6 +165,10 @@ public final class FractalsPlugin extends JavaPlugin {
         Stages.register(new Uncategorized());
         Volcanic.register();
         Stages.register(new Volcanic());
+        SolidOcean.register();
+        Stages.register(new SolidOcean());
+        Swampland.register();
+        Stages.register(new Swampland());
 
         getCommandRegistry().registerCommand(new FractalCommand());
 

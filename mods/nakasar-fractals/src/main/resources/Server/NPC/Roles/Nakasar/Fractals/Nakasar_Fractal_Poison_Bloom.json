@@ -1,0 +1,38 @@
+{
+  "$Comment": "Fleur de poison : ne bouge pas ; le Java empoisonne autour d'elle et protège les ennemis proches. Généré par tools/generate_swampland.py.",
+  "Type": "Generic",
+  "Appearance": "Nakasar_Fractal_Poison_Bloom",
+  "NameTranslationKey": "nakasar_fractals_swampland.npc.Poison_Bloom.name",
+  "MaxHealth": 120,
+  "StartState": "Idle",
+  "DefaultPlayerAttitude": "Hostile",
+  "DefaultNPCAttitude": "Ignore",
+  "MotionControllerList": [
+    {
+      "Type": "Walk",
+      "MaxWalkSpeed": 0.1,
+      "Gravity": 10,
+      "MaxFallSpeed": 10,
+      "Acceleration": 10,
+      "JumpHeight": 1.0
+    }
+  ],
+  "KnockbackScale": 0,
+  "SpawnLockTime": 0.2,
+  "Instructions": [
+    {
+      "Sensor": {
+        "Type": "State",
+        "State": "Idle"
+      },
+      "Instructions": [
+        {
+          "Actions": []
+        }
+      ]
+    }
+  ],
+  "DisableDamageGroups": [
+    "Nakasar_Fractal_Foes"
+  ]
+}
