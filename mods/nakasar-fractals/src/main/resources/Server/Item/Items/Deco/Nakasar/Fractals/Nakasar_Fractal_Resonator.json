@@ -11,15 +11,8 @@
   "PlayerAnimationsId": "Block",
   "BlockType": {
     "Material": "Solid",
-    "DrawType": "Cube",
-    "Opacity": "Solid",
-    "Textures": [
-      {
-        "Sides": "BlockTextures/Nakasar/Fractals/Resonator.png",
-        "UpDown": "BlockTextures/Nakasar/Fractals/Resonator.png",
-        "Weight": 1
-      }
-    ],
+    "DrawType": "Model",
+    "Opacity": "Transparent",
     "HitboxType": "Full",
     "Flags": {},
     "Gathering": {
@@ -39,12 +32,42 @@
           "Nakasar_Fractal_Use_Resonator"
         ]
       }
-    }
+    },
+    "CustomModel": "Blocks/Nakasar/Fractals/Resonator.blockymodel",
+    "CustomModelTexture": [
+      {
+        "Texture": "Blocks/Nakasar/Fractals/Resonator_Texture.png",
+        "Weight": 1
+      }
+    ],
+    "VariantRotation": "NESW",
+    "CustomModelAnimation": "Blocks/Nakasar/Fractals/Resonator.blockyanim",
+    "Particles": [
+      {
+        "SystemId": "Dust_Sparkles_Fine",
+        "Scale": 1,
+        "PositionOffset": {
+          "Y": 1.0
+        }
+      }
+    ]
   },
   "Tags": {
     "Type": [
       "Deco"
     ]
   },
-  "ItemSoundSetId": "ISS_Blocks_Stone"
+  "ItemSoundSetId": "ISS_Blocks_Stone",
+  "IconProperties": {
+    "Scale": 0.55,
+    "Translation": [
+      0,
+      -12
+    ],
+    "Rotation": [
+      22.5,
+      45,
+      22.5
+    ]
+  }
 }

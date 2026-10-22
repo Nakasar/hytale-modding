@@ -30,6 +30,7 @@ from PIL import Image, ImageDraw
 
 import fractal_models as fm
 import fractal_nature as fn
+import generate_block_models as block_models
 
 MOD = Path(__file__).resolve().parent.parent
 PACK = MOD / "src" / "main" / "resources"
@@ -1119,6 +1120,9 @@ def main():
             doc = block_item(name, tex, light, use, particle=hexcolor(accent))
             if name == ALTAR:
                 doc = portable(doc, name)
+        model = block_models.apply(doc, tex)
+        if model:
+            previews[-1] = model.resize((32, 32), Image.LANCZOS)
         write_json(ITEMS / f"{name}.json", doc)
     key_tex = texture(COMMON / TEXTURES / "PortalKey_Fractal.png", (40, 50, 110), (150, 200, 255), "ring")
     icon(COMMON / ICONS / "PortalKey_Fractal.png", key_tex)
