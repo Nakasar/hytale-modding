@@ -1,0 +1,45 @@
+# Observatoire
+
+<Infobox pending title="Observatoire des fractales" kind="Hub" icon="/jeu/Icons/Items/Nakasar/Fractals/Astrolabe_Ring.png" caption="Anneau de l'Astrolabe">
+<Info label="Accès">Fragment des Brumes dans l'Ancienne passerelle</Info>
+<Info label="Groupe">5 joueurs au plus, sur le cercle</Info>
+<Info label="Marchand">l'Archiviste (est)</Info>
+<Info label="Commande">`/fractale`</Info>
+</Infobox>
+
+L'**Observatoire** est une île ronde suspendue dans les Brumes. Tout s'y choisit dans le décor : pas de menu à ouvrir.
+
+## Fragment des Brumes {#fragment-des-brumes}
+
+Le **Fragment des Brumes** se fabrique à l'**établi** : **4 éclats de rune + 1 cœur du Vide** (celui des Deepworks). Posé dans l'**Ancienne passerelle**, il ouvre l'Observatoire et il est consommé. Au **Creuset des Brumes**, **25 éclats de Brume + 1 éclat de rune** en refont un sans repasser par les Deepworks ; l'Archiviste en vend aussi.
+
+## Choisir et lancer une fractale
+
+1. À l'entrée du cercle, deux **distributeurs** gratuits : celui des **noyaux** (une fractale chacun) et celui des **diapasons** (un niveau de 1 à 100).
+2. Posez un noyau et un diapason dans la **console de sélection**, sur le socle de l'Astrolabe. La console est partagée par tout l'Observatoire et garde ses objets d'une partie à l'autre. Le cercle est **harmonisé** : la fractale, le niveau et le rang s'affichent à l'écran.
+3. Montez sur le **cercle d'harmonisation** : les joueurs qui s'y tiennent forment le groupe (5 au plus). Le **meneur** est le premier arrivé dans l'Observatoire ; il part toujours avec le groupe.
+4. Le meneur utilise un des 4 **résonateurs** au bord intérieur du cercle : tout le cercle part dans une instance de la fractale, à lui seul. Le niveau ne peut pas dépasser le plus haut niveau débloqué par le meneur.
+
+## Le coin de l'Archiviste (est)
+
+- **L'Archiviste** et son **comptoir** : troc d'[éclats de Brume](progression.md#eclats-de-brume) contre infusions, Fragments des Brumes et [cosmétiques de saison](cosmetiques.md).
+- **Autel des infusions** : vos 12 emplacements d'[infusion](progression.md#agonie-et-infusions).
+- **Creuset des Brumes** : fusion des infusions et nouveau Fragment.
+- **Tableau des fractales du jour** : les trois [fractales du jour](progression.md#fractales-du-jour), cochées si vous avez déjà pris leur coffre aujourd'hui.
+- **Registre des fractales** : le mode d'emploi de l'Observatoire.
+
+## Golem d'essai (ouest)
+
+Un mannequin qui encaisse tout, annonce les dégâts reçus et reprend ses PV. Son **pupitre** lui fait rejouer sur vous les zones rouges des fractales (cercle, cône, ligne, puis une cage) ; le premier cercle pose de l'**agonie** au niveau harmonisé, pour tester votre résistance.
+
+## Commande `/fractale`
+
+| Commande | Effet |
+|---|---|
+| `/fractale niveau <n>` | règle le niveau (meneur, dans l'Observatoire) |
+| `/fractale groupe` | le cercle, le niveau et le meneur |
+| `/fractale lancer <fractale>` | envoie le cercle (meneur) |
+| `/fractale quitter` | quitte la fractale pour l'Observatoire |
+| `/fractale infos` | votre niveau débloqué et votre résistance à l'agonie |
+| `/fractale instabilites` | les [instabilités](instabilites.md) de la partie ou du jour |
+| `/fractale jour` | les [fractales du jour](progression.md#fractales-du-jour) |

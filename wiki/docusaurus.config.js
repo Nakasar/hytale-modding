@@ -1,11 +1,11 @@
-// Wiki joueur du mod Vampires. Les pages sont le Markdown de ../docs/wiki ; le site est publié sur
+// Wiki joueur des mods Nakasar (Vampires, Fractales des Brumes). Les pages sont le Markdown de ../docs/wiki ; le site est publié sur
 // GitHub Pages par .github/workflows/wiki.yml. Aperçu local : npm ci puis npm start.
 import { themes as prismThemes } from "prism-react-renderer";
 
 /** @type {import('@docusaurus/types').Config} */
 const config = {
-  title: "Wiki du mod Vampires",
-  tagline: "Guide du joueur du mod Nakasar Vampires pour Hytale",
+  title: "Wiki des mods Nakasar",
+  tagline: "Guide du joueur des mods Nakasar Vampires et Fractales des Brumes pour Hytale",
   favicon: "img/favicon.png",
   url: "https://hunters.nakasar.xyz",
   baseUrl: "/",
@@ -47,7 +47,7 @@ const config = {
     ({
       colorMode: { defaultMode: "dark", respectPrefersColorScheme: false },
       navbar: {
-        title: "Wiki du mod Vampires",
+        title: "Wiki des mods Nakasar",
         logo: { alt: "Citrouille géante", src: "img/favicon.png" },
         items: [
           { type: "docSidebar", sidebarId: "fragment", label: "Comté Vampire", position: "left" },
@@ -55,12 +55,13 @@ const config = {
           { to: "/breches", label: "Brèches", position: "left" },
           { type: "docSidebar", sidebarId: "objets", label: "Objets", position: "left" },
           { type: "docSidebar", sidebarId: "donjons", label: "Donjons", position: "left" },
+          { type: "docSidebar", sidebarId: "fractales", label: "Fractales", position: "left" },
           { href: "https://github.com/Nakasar/hytale-modding", label: "GitHub", position: "right" },
         ],
       },
       footer: {
         style: "dark",
-        copyright: "Mod Nakasar Vampires pour Hytale. Chiffres lus dans les fichiers du mod.",
+        copyright: "Mods Nakasar Vampires et Fractales des Brumes pour Hytale. Chiffres lus dans les fichiers des mods.",
       },
       prism: { theme: prismThemes.github, darkTheme: prismThemes.dracula },
     }),

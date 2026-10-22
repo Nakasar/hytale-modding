@@ -7,9 +7,11 @@ on:
   push:
     branches: ["main"]
     paths: ["wiki/**", "docs/wiki/**", "mods/nakasar-vampires/src/main/resources/Common/**",
+            "mods/nakasar-fractals/src/main/resources/Common/**",
             ".github/workflows/wiki.yml"]
   pull_request:
     paths: ["wiki/**", "docs/wiki/**", "mods/nakasar-vampires/src/main/resources/Common/**",
+            "mods/nakasar-fractals/src/main/resources/Common/**",
             ".github/workflows/wiki.yml"]
   workflow_dispatch:
 

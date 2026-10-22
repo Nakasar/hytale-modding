@@ -7,7 +7,7 @@ Deux mods, chacun avec son dossier de documentation :
 | Mod | Code | Documentation |
 |-----|------|---------------|
 | **Vampires** : le domaine du Comte vampire (plugin Java + pack d'assets, artefact `Nakasar-Vampires-<version>.jar`) | `mods/nakasar-vampires` | [docs/vampires](docs/vampires/) |
-| **Fractales des Brumes** : les fractales de Guild Wars 2 transposées dans Hytale, pour 1 à 5 joueurs (en cours : socle, Observatoire, progression, instabilités, fractales Falaise, Inclassable, Volcanique, Océan solide, Marais et Tempête de neige) | `mods/nakasar-fractals` | [docs/fractales](docs/fractales/) |
+| **Fractales des Brumes** : les fractales de Guild Wars 2 transposées dans Hytale, pour 1 à 5 joueurs (en cours : socle, Observatoire, progression, instabilités, fractales Falaise, Inclassable, Volcanique, Océan solide, Marais et Tempête de neige, fractales du jour, cosmétiques, wiki) | `mods/nakasar-fractals` | [docs/fractales](docs/fractales/) |
 
 Les notes communes aux deux mods (API serveur, PNJ) restent à la racine de `docs/`.
 
@@ -218,6 +218,22 @@ village : on ne contourne plus un passage par la forêt du pourtour. Modèles pr
 À vérifier en jeu : fumée et lumière du grand feu et des foyers, fonte du mur, élémentaires qui rejoignent le feu
 (point d'attache), râtelier et torche en main (lumière), blizzard et neige (particules), éclat de glace (immobile,
 brisé par les alliés), saut au balcon et retour, forme d'ours, obscurité de la forêt (17 h 30).
+
+Étape 9, **finitions** :
+- **Fractales du jour** (`party/DailyFractals`) : 3 fractales ouvertes tirées chaque jour (graine = date du serveur).
+  La première fois du jour qu'un joueur en termine une, le coffre de fin lui donne en plus le **coffre des fractales
+  du jour** (`Nakasar_Fractal_Daily_Bag` : 12 à 18 éclats, une infusion +1 ou +2, un matériau, 1 chance sur 10 d'un
+  cosmétique). Le jour et les fractales déjà récompensées sont sauvegardés dans `Nakasar_Fractal_Progress`
+  (`DailyDay`, `DailyDone`). **Tableau des fractales du jour** au nord du Registre (`Nakasar_Fractal_DailyBoard`) et
+  `/fractale jour`.
+- **Cosmétiques de saison** (`tools/generate_cosmetics.py`, sans protection) : Couronne des Brumes (tête, 150
+  éclats), Capuche de l'Archidevin (tête, 200), Mantelet des Brumes (torse, 250), vendus par l'Archiviste.
+- **Wiki joueur** : onglet **Fractales** (`docs/wiki/fractales/` : présentation, Observatoire, progression,
+  instabilités, les 6 fractales, cosmétiques) ; le site s'appelle désormais « Wiki des mods Nakasar » et copie aussi
+  les icônes du mod Fractales.
+
+À vérifier en jeu : tableau du jour, coffre du jour reçu une seule fois par fractale et par jour (même après
+reconnexion), cosmétiques portés (placement sur la tête et le torse, cape), trocs de l'Archiviste.
 
 **Décor de toutes les fractales** (`tools/fractal_nature.py` : thèmes prairie, Brumes, volcan, marais et jade ;
 `rim` pour un pourtour naturel autour d'un lieu, `natural_ground`, `dress`, `islet` et `scatter_islets` pour des îlots

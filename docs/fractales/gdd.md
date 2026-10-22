@@ -336,7 +336,7 @@ Neuf étapes, chacune livrable en une PR testable en jeu ; les étapes 1 à 4 do
 3. **Systèmes de progression**
    - [x] Niveaux 1-100 et déblocage par joueur (sauvegardés avec le joueur, composant `Nakasar_Fractal_Progress`) ; lancement plafonné au niveau du meneur
    - [x] Agonie (effet + `AgonySystem`), Autel des infusions (12 emplacements sur le joueur, fenêtre de conteneur), infusions +1 à +15 et leur fusion au Creuset des Brumes (`tools/generate_progression.py`)
-   - [x] Coffre par joueur (coffre de rang à ouvrir en main), éclats de Brume, l'Archiviste (PNJ et comptoir, boutique de troc). Les fractales du jour restent à l'étape 9
+   - [x] Coffre par joueur (coffre de rang à ouvrir en main), éclats de Brume, l'Archiviste (PNJ et comptoir, boutique de troc). Les fractales du jour sont venues à l'étape 9
 4. **Briques de la Falaise + Falaise**
    - [x] Puzzles de saut : chute vers la dernière plateforme sûre, souffle des gargouilles, explosifs qui projettent, leviers qui coupent un piège
    - [x] Marteau du culte : objet porté, piles de Corruption, charge Brise-sceau, sceaux et bulle alternée
@@ -353,7 +353,10 @@ Neuf étapes, chacune livrable en une PR testable en jeu ; les étapes 1 à 4 do
 8. **Tempête de neige**
    - [x] Briques : Chaleur et Hypothermie, feux à nourrir de fagots, élémentaires qui éteignent, blizzard, éclat de glace
    - [x] Fractale Tempête de neige (mur de glace, Source élémentaire, forêt sombre, Chaman légendaire au balcon avec l'Effigie et sa forme d'ours)
-9. **Finitions** : fractales du jour, cosmétiques, pages du wiki joueur
+9. **Finitions**
+   - [x] Fractales du jour : 3 tirées par jour (graine = date du serveur), coffre en plus la première fois du jour, tableau près de l'Archiviste et `/fractale jour`
+   - [x] Cosmétiques de saison (couronne, capuche de l'Archidevin, mantelet) à l'Archiviste et dans le coffre du jour
+   - [x] Pages du wiki joueur : onglet Fractales (`docs/wiki/fractales/`)
 
 Nouveaux modèles à créer : colosse enchaîné, Archidevin, harpies, Asura délirant, Chaman imprégné (ailé), Abîme de Jade et tentacules, Moussu, Carnasse, Source élémentaire, Chaman légendaire et sa forme d'ours, Astrolabe. Les monstres de base reprennent des rôles vanilla (outlanders, trorks, golems, loups, élémentaires).
 

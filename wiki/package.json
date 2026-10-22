@@ -1,7 +1,7 @@
 {
   "name": "hytale-modding-wiki",
   "private": true,
-  "description": "Wiki joueur du mod Vampires (Docusaurus), publié sur GitHub Pages.",
+  "description": "Wiki joueur des mods Nakasar (Docusaurus), publié sur GitHub Pages.",
   "scripts": {
     "icons": "node scripts/copy-icons.mjs",
     "prestart": "npm run icons",
