@@ -1,0 +1,257 @@
+{
+  "Name": "Nakasar_Fractal_Snowblind",
+  "Terrain": {
+    "Type": "DAOTerrain",
+    "Density": {
+      "Type": "Constant",
+      "Value": -1.0
+    }
+  },
+  "MaterialProvider": {
+    "Type": "Constant",
+    "Material": {
+      "Solid": "Empty"
+    }
+  },
+  "Props": [
+    {
+      "Runtime": 0,
+      "ContextPrecision": "Prop",
+      "PropDistribution": {
+        "Type": "Assigned",
+        "OverrideAllProps": true,
+        "PropDistribution": {
+          "Type": "Positions",
+          "Positions": {
+            "Type": "List",
+            "Positions": [
+              {
+                "X": 0,
+                "Y": 100,
+                "Z": -239
+              }
+            ]
+          }
+        },
+        "Assignments": {
+          "Type": "Constant",
+          "Prop": {
+            "Type": "Prefab",
+            "WeightedPrefabPaths": [
+              {
+                "Path": "Nakasar/Fractals/Snowblind/Section_00",
+                "Weight": 1.0
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "Runtime": 0,
+      "ContextPrecision": "Prop",
+      "PropDistribution": {
+        "Type": "Assigned",
+        "OverrideAllProps": true,
+        "PropDistribution": {
+          "Type": "Positions",
+          "Positions": {
+            "Type": "List",
+            "Positions": [
+              {
+                "X": 0,
+                "Y": 100,
+                "Z": -175
+              }
+            ]
+          }
+        },
+        "Assignments": {
+          "Type": "Constant",
+          "Prop": {
+            "Type": "Prefab",
+            "WeightedPrefabPaths": [
+              {
+                "Path": "Nakasar/Fractals/Snowblind/Section_01",
+                "Weight": 1.0
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "Runtime": 0,
+      "ContextPrecision": "Prop",
+      "PropDistribution": {
+        "Type": "Assigned",
+        "OverrideAllProps": true,
+        "PropDistribution": {
+          "Type": "Positions",
+          "Positions": {
+            "Type": "List",
+            "Positions": [
+              {
+                "X": 0,
+                "Y": 100,
+                "Z": -111
+              }
+            ]
+          }
+        },
+        "Assignments": {
+          "Type": "Constant",
+          "Prop": {
+            "Type": "Prefab",
+            "WeightedPrefabPaths": [
+              {
+                "Path": "Nakasar/Fractals/Snowblind/Section_02",
+                "Weight": 1.0
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "Runtime": 0,
+      "ContextPrecision": "Prop",
+      "PropDistribution": {
+        "Type": "Assigned",
+        "OverrideAllProps": true,
+        "PropDistribution": {
+          "Type": "Positions",
+          "Positions": {
+            "Type": "List",
+            "Positions": [
+              {
+                "X": 0,
+                "Y": 100,
+                "Z": -47
+              }
+            ]
+          }
+        },
+        "Assignments": {
+          "Type": "Constant",
+          "Prop": {
+            "Type": "Prefab",
+            "WeightedPrefabPaths": [
+              {
+                "Path": "Nakasar/Fractals/Snowblind/Section_03",
+                "Weight": 1.0
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "Runtime": 0,
+      "ContextPrecision": "Prop",
+      "PropDistribution": {
+        "Type": "Assigned",
+        "OverrideAllProps": true,
+        "PropDistribution": {
+          "Type": "Positions",
+          "Positions": {
+            "Type": "List",
+            "Positions": [
+              {
+                "X": 0,
+                "Y": 100,
+                "Z": 17
+              }
+            ]
+          }
+        },
+        "Assignments": {
+          "Type": "Constant",
+          "Prop": {
+            "Type": "Prefab",
+            "WeightedPrefabPaths": [
+              {
+                "Path": "Nakasar/Fractals/Snowblind/Section_04",
+                "Weight": 1.0
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "Runtime": 0,
+      "ContextPrecision": "Prop",
+      "PropDistribution": {
+        "Type": "Assigned",
+        "OverrideAllProps": true,
+        "PropDistribution": {
+          "Type": "Positions",
+          "Positions": {
+            "Type": "List",
+            "Positions": [
+              {
+                "X": 0,
+                "Y": 100,
+                "Z": 81
+              }
+            ]
+          }
+        },
+        "Assignments": {
+          "Type": "Constant",
+          "Prop": {
+            "Type": "Prefab",
+            "WeightedPrefabPaths": [
+              {
+                "Path": "Nakasar/Fractals/Snowblind/Section_05",
+                "Weight": 1.0
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "Runtime": 0,
+      "ContextPrecision": "Prop",
+      "PropDistribution": {
+        "Type": "Assigned",
+        "OverrideAllProps": true,
+        "PropDistribution": {
+          "Type": "Positions",
+          "Positions": {
+            "Type": "List",
+            "Positions": [
+              {
+                "X": 0,
+                "Y": 100,
+                "Z": 145
+              }
+            ]
+          }
+        },
+        "Assignments": {
+          "Type": "Constant",
+          "Prop": {
+            "Type": "Prefab",
+            "WeightedPrefabPaths": [
+              {
+                "Path": "Nakasar/Fractals/Snowblind/Section_06",
+                "Weight": 1.0
+              }
+            ]
+          }
+        }
+      }
+    }
+  ],
+  "EnvironmentProvider": {
+    "Type": "Constant",
+    "Environment": "Nakasar_Fractal_Env_Mists"
+  },
+  "TintProvider": {
+    "Type": "Constant",
+    "Color": "#7a9a8a"
+  }
+}

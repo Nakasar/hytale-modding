@@ -1,0 +1,333 @@
+{
+  "$Comment": "Le Chaman légendaire, barre de boss : coups d'épée (hypothermie, Java), pluie de glace, pics de glace, souffle glacé. Les cristaux corrompus, le balcon, l'Effigie et la forme d'ours sont menés par le Java (snowblind.Shaman). Généré par tools/generate_snowblind.py.",
+  "Type": "Generic",
+  "Appearance": "Nakasar_Fractal_Legendary_Shaman",
+  "NameTranslationKey": "nakasar_fractals_snowblind.npc.Legendary_Shaman.name",
+  "MaxHealth": 7000,
+  "StartState": "Idle",
+  "DefaultPlayerAttitude": "Hostile",
+  "DefaultNPCAttitude": "Ignore",
+  "DisableDamageGroups": [
+    "Nakasar_Fractal_Foes"
+  ],
+  "MotionControllerList": [
+    {
+      "Type": "Walk",
+      "MaxWalkSpeed": 3.6,
+      "Gravity": 10,
+      "MaxFallSpeed": 10,
+      "Acceleration": 10,
+      "JumpHeight": 1.0
+    }
+  ],
+  "HotbarItems": [
+    "Weapon_Sword_Steel_Rusty"
+  ],
+  "KnockbackScale": 0.1,
+  "DeathAnimationTime": 2.0,
+  "StateTransitions": [
+    {
+      "$Comment": "Entrée en combat : chaque attaque spéciale a sa propre recharge.",
+      "States": [
+        {
+          "From": [
+            "Idle"
+          ],
+          "To": [
+            "Combat"
+          ]
+        }
+      ],
+      "Actions": [
+        {
+          "Type": "TimerStart",
+          "Name": "Breath",
+          "StartValueRange": [
+            6,
+            8
+          ],
+          "RestartValueRange": [
+            14,
+            17
+          ]
+        },
+        {
+          "Type": "TimerStart",
+          "Name": "Spikes",
+          "StartValueRange": [
+            3,
+            5
+          ],
+          "RestartValueRange": [
+            9,
+            12
+          ]
+        },
+        {
+          "Type": "TimerStart",
+          "Name": "Rain",
+          "StartValueRange": [
+            9,
+            11
+          ],
+          "RestartValueRange": [
+            15,
+            19
+          ]
+        }
+      ]
+    }
+  ],
+  "Instructions": [
+    {
+      "Sensor": {
+        "Type": "State",
+        "State": "Idle"
+      },
+      "Instructions": [
+        {
+          "Sensor": {
+            "Type": "Damage",
+            "Combat": true,
+            "TargetSlot": "LockedTarget"
+          },
+          "Actions": [
+            {
+              "Type": "State",
+              "State": "Combat"
+            }
+          ]
+        },
+        {
+          "Sensor": {
+            "Type": "Player",
+            "Range": 40,
+            "LockOnTarget": true,
+            "Filters": [
+              {
+                "Type": "Attitude",
+                "Attitudes": [
+                  "Hostile"
+                ]
+              },
+              {
+                "Type": "LineOfSight"
+              }
+            ]
+          },
+          "Actions": [
+            {
+              "Type": "State",
+              "State": "Combat"
+            }
+          ]
+        },
+        {
+          "Actions": []
+        }
+      ]
+    },
+    {
+      "Sensor": {
+        "Type": "State",
+        "State": "Combat"
+      },
+      "Instructions": [
+        {
+          "$Comment": "Cible perdue ou partie à plus de 44 blocs.",
+          "Sensor": {
+            "Type": "Not",
+            "Sensor": {
+              "Type": "Target",
+              "Range": 44,
+              "Filters": [
+                {
+                  "Type": "Attitude",
+                  "Attitudes": [
+                    "Hostile",
+                    "Neutral",
+                    "Ignore"
+                  ]
+                }
+              ]
+            }
+          },
+          "Actions": [
+            {
+              "Type": "ReleaseTarget"
+            },
+            {
+              "Type": "State",
+              "State": "Idle"
+            }
+          ]
+        },
+        {
+          "$Comment": "Souffle glacé.",
+          "Sensor": {
+            "Type": "And",
+            "Sensors": [
+              {
+                "Type": "Target",
+                "Range": 10,
+                "Filters": [
+                  {
+                    "Type": "LineOfSight"
+                  }
+                ]
+              },
+              {
+                "Type": "Timer",
+                "Name": "Breath",
+                "State": "STOPPED"
+              }
+            ]
+          },
+          "ActionsBlocking": true,
+          "Actions": [
+            {
+              "Type": "TimerRestart",
+              "Name": "Breath"
+            },
+            {
+              "Type": "Attack",
+              "Attack": "Root_Nakasar_Fractal_NPC_Shaman_Breath",
+              "SkipAiming": true,
+              "LineOfSight": false,
+              "AvoidFriendlyFire": false
+            }
+          ],
+          "HeadMotion": {
+            "Type": "Watch",
+            "RelativeTurnSpeed": 1.0
+          }
+        },
+        {
+          "$Comment": "Pics de glace.",
+          "Sensor": {
+            "Type": "And",
+            "Sensors": [
+              {
+                "Type": "Target",
+                "Range": 4.5,
+                "Filters": [
+                  {
+                    "Type": "LineOfSight"
+                  }
+                ]
+              },
+              {
+                "Type": "Timer",
+                "Name": "Spikes",
+                "State": "STOPPED"
+              }
+            ]
+          },
+          "ActionsBlocking": true,
+          "Actions": [
+            {
+              "Type": "TimerRestart",
+              "Name": "Spikes"
+            },
+            {
+              "Type": "Attack",
+              "Attack": "Root_Nakasar_Fractal_NPC_Shaman_Spikes",
+              "SkipAiming": true,
+              "LineOfSight": false,
+              "AvoidFriendlyFire": false
+            }
+          ],
+          "HeadMotion": {
+            "Type": "Watch",
+            "RelativeTurnSpeed": 1.0
+          }
+        },
+        {
+          "$Comment": "Pluie de glace.",
+          "Sensor": {
+            "Type": "And",
+            "Sensors": [
+              {
+                "Type": "Target",
+                "Range": 30
+              },
+              {
+                "Type": "Timer",
+                "Name": "Rain",
+                "State": "STOPPED"
+              }
+            ]
+          },
+          "ActionsBlocking": true,
+          "Actions": [
+            {
+              "Type": "TimerRestart",
+              "Name": "Rain"
+            },
+            {
+              "Type": "Attack",
+              "Attack": "Root_Nakasar_Fractal_NPC_Shaman_Ice_Rain",
+              "SkipAiming": true,
+              "LineOfSight": false,
+              "AvoidFriendlyFire": false
+            }
+          ],
+          "HeadMotion": {
+            "Type": "Watch",
+            "RelativeTurnSpeed": 1.0
+          }
+        },
+        {
+          "Sensor": {
+            "Type": "Target",
+            "Range": 3.0,
+            "Filters": [
+              {
+                "Type": "LineOfSight"
+              }
+            ]
+          },
+          "HeadMotion": {
+            "Type": "Aim",
+            "RelativeTurnSpeed": 1.5
+          },
+          "ActionsBlocking": true,
+          "Actions": [
+            {
+              "Type": "Attack",
+              "Attack": "Root_Nakasar_Fractal_NPC_Shaman_Slash",
+              "AttackPauseRange": [
+                0.8,
+                1.2
+              ]
+            },
+            {
+              "Type": "Timeout",
+              "Delay": [
+                0.2,
+                0.2
+              ]
+            }
+          ]
+        },
+        {
+          "Sensor": {
+            "Type": "Target",
+            "Range": 40
+          },
+          "BodyMotion": {
+            "Type": "Seek",
+            "RelativeSpeed": 1.0,
+            "SlowDownDistance": 3.2,
+            "StopDistance": 2.2,
+            "UsePathfinder": true
+          },
+          "HeadMotion": {
+            "Type": "Watch",
+            "RelativeTurnSpeed": 1.5
+          }
+        }
+      ]
+    }
+  ]
+}

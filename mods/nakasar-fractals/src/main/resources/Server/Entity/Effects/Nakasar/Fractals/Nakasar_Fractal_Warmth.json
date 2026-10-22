@@ -1,0 +1,11 @@
+{
+  "$Comment": "Chaleur (près d'un feu allumé) : l'hypothermie redescend (Java).",
+  "Name": "nakasar_fractals_snowblind.effects.Nakasar_Fractal_Warmth",
+  "StatusEffectIcon": "UI/StatusEffects/Nakasar/Fractals/Warmth.png",
+  "ApplicationEffects": {
+    "EntityBottomTint": "#ffb060"
+  },
+  "OverlapBehavior": "Overwrite",
+  "Infinite": false,
+  "Duration": 1.5
+}

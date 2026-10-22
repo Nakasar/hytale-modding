@@ -1,0 +1,50 @@
+{
+  "TranslationProperties": {
+    "Name": "nakasar_fractals_snowblind.items.Nakasar_Fractal_Torch_Rack.name",
+    "Description": "nakasar_fractals_snowblind.items.Nakasar_Fractal_Torch_Rack.description"
+  },
+  "Icon": "Icons/Items/Nakasar/Fractals/Torch_Rack.png",
+  "Categories": [
+    "Blocks.Deco"
+  ],
+  "Quality": "Technical",
+  "PlayerAnimationsId": "Block",
+  "BlockType": {
+    "Material": "Solid",
+    "DrawType": "Cube",
+    "Opacity": "Solid",
+    "Textures": [
+      {
+        "Sides": "BlockTextures/Nakasar/Fractals/Torch_Rack.png",
+        "UpDown": "BlockTextures/Nakasar/Fractals/Torch_Rack.png",
+        "Weight": 1
+      }
+    ],
+    "HitboxType": "Full",
+    "Flags": {},
+    "Gathering": {
+      "Breaking": {
+        "GatherType": "Unbreakable"
+      }
+    },
+    "BlockParticleSetId": "Stone",
+    "BlockSoundSetId": "Stone",
+    "ParticleColor": "#ffaa46",
+    "Light": {
+      "Color": "#fa6"
+    },
+    "Interactions": {
+      "Use": {
+        "Interactions": [
+          "Nakasar_Fractal_Use_Snowblind_Torch"
+        ]
+      }
+    }
+  },
+  "Tags": {
+    "Type": [
+      "Deco"
+    ]
+  },
+  "ItemSoundSetId": "ISS_Blocks_Stone"
+}

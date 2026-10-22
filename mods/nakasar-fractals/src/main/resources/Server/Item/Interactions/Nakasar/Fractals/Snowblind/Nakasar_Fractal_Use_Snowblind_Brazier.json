@@ -1,0 +1,5 @@
+{
+  "$Comment": "Foyer : l'allumer avec une torche, le nourrir avec un fagot.",
+  "Type": "Nakasar_Fractal_Use",
+  "Action": "Snowblind_Brazier"
+}

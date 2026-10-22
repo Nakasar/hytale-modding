@@ -1,0 +1,51 @@
+{
+  "$Comment": "La Source élémentaire au contact : coup de poing (26 dégâts).",
+  "Type": "Serial",
+  "Interactions": [
+    {
+      "$Comment": "Coup de poing.",
+      "Type": "Simple",
+      "RunTime": 0.6,
+      "Effects": {
+        "WorldSoundEventId": "SFX_Goblin_Feastmaster_Slam"
+      },
+      "Next": {
+        "Type": "Selector",
+        "RunTime": 0.15,
+        "Selector": {
+          "Id": "Horizontal",
+          "Direction": "ToLeft",
+          "TestLineOfSight": true,
+          "ExtendTop": 0.8,
+          "ExtendBottom": 0.8,
+          "StartDistance": 0.2,
+          "EndDistance": 5.0,
+          "Length": 110,
+          "RollOffset": 0,
+          "YawStartOffset": 50
+        },
+        "HitEntity": {
+          "Interactions": [
+            {
+              "Parent": "DamageEntityParent",
+              "DamageCalculator": {
+                "BaseDamage": {
+                  "Physical": 26
+                },
+                "RandomPercentageModifier": 0.1
+              },
+              "DamageEffects": {
+                "WorldSoundEventId": "SFX_T1_Impact_Blunt",
+                "WorldParticles": [
+                  {
+                    "SystemId": "Impact_Sword_Basic_Stronk"
+                  }
+                ]
+              }
+            }
+          ]
+        }
+      }
+    }
+  ]
+}

@@ -1,0 +1,38 @@
+{
+  "$Comment": "Cristal de glace corrompu : ne bouge pas ; tant qu'il en reste un, le Chaman ne prend aucun dégât (Java). Généré par tools/generate_snowblind.py.",
+  "Type": "Generic",
+  "Appearance": "Nakasar_Fractal_Corrupted_Crystal",
+  "NameTranslationKey": "nakasar_fractals_snowblind.npc.Corrupted_Crystal.name",
+  "MaxHealth": 160,
+  "StartState": "Idle",
+  "DefaultPlayerAttitude": "Hostile",
+  "DefaultNPCAttitude": "Ignore",
+  "MotionControllerList": [
+    {
+      "Type": "Walk",
+      "MaxWalkSpeed": 0.1,
+      "Gravity": 10,
+      "MaxFallSpeed": 10,
+      "Acceleration": 10,
+      "JumpHeight": 1.0
+    }
+  ],
+  "KnockbackScale": 0,
+  "SpawnLockTime": 0.2,
+  "Instructions": [
+    {
+      "Sensor": {
+        "Type": "State",
+        "State": "Idle"
+      },
+      "Instructions": [
+        {
+          "Actions": []
+        }
+      ]
+    }
+  ],
+  "DisableDamageGroups": [
+    "Nakasar_Fractal_Foes"
+  ]
+}

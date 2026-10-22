@@ -1,0 +1,12 @@
+{
+  "$Comment": "Blizzard : rafales de neige épaisses autour d'un joueur. Généré par tools/generate_snowblind.py.",
+  "Spawners": [
+    {
+      "SpawnerId": "Nakasar_Fractal_Blizzard_Gust",
+      "PositionOffset": {
+        "Y": 1.0
+      }
+    }
+  ],
+  "CullDistance": 72
+}

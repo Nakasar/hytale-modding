@@ -1,0 +1,100 @@
+{
+  "$Comment": "Le Chaman légendaire au contact : deux coups d'épée (16 dégâts chacun) ; chaque coup ajoute deux piles d'hypothermie (Java).",
+  "Type": "Serial",
+  "Interactions": [
+    {
+      "$Comment": "Coup d'épée.",
+      "Type": "Simple",
+      "RunTime": 0.4,
+      "Effects": {
+        "WorldSoundEventId": "SFX_Light_Melee_T2_Swing",
+        "ItemPlayerAnimationsId": "Mace",
+        "ItemAnimationId": "SwingLeft"
+      },
+      "Next": {
+        "Type": "Selector",
+        "RunTime": 0.15,
+        "Selector": {
+          "Id": "Horizontal",
+          "Direction": "ToLeft",
+          "TestLineOfSight": true,
+          "ExtendTop": 0.8,
+          "ExtendBottom": 0.8,
+          "StartDistance": 0.2,
+          "EndDistance": 3.6,
+          "Length": 100,
+          "RollOffset": 0,
+          "YawStartOffset": 50
+        },
+        "HitEntity": {
+          "Interactions": [
+            {
+              "Parent": "DamageEntityParent",
+              "DamageCalculator": {
+                "BaseDamage": {
+                  "Physical": 16
+                },
+                "RandomPercentageModifier": 0.1
+              },
+              "DamageEffects": {
+                "WorldSoundEventId": "SFX_T1_Impact_Blunt",
+                "WorldParticles": [
+                  {
+                    "SystemId": "Impact_Sword_Basic_Stronk"
+                  }
+                ]
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "$Comment": "Revers.",
+      "Type": "Simple",
+      "RunTime": 0.4,
+      "Effects": {
+        "WorldSoundEventId": "SFX_Light_Melee_T2_Swing",
+        "ItemPlayerAnimationsId": "Mace",
+        "ItemAnimationId": "SwingRight"
+      },
+      "Next": {
+        "Type": "Selector",
+        "RunTime": 0.15,
+        "Selector": {
+          "Id": "Horizontal",
+          "Direction": "ToRight",
+          "TestLineOfSight": true,
+          "ExtendTop": 0.8,
+          "ExtendBottom": 0.8,
+          "StartDistance": 0.2,
+          "EndDistance": 3.6,
+          "Length": 100,
+          "RollOffset": 0,
+          "YawStartOffset": -50
+        },
+        "HitEntity": {
+          "Interactions": [
+            {
+              "Parent": "DamageEntityParent",
+              "DamageCalculator": {
+                "BaseDamage": {
+                  "Physical": 16
+                },
+                "RandomPercentageModifier": 0.1
+              },
+              "DamageEffects": {
+                "WorldSoundEventId": "SFX_T1_Impact_Blunt",
+                "WorldParticles": [
+                  {
+                    "SystemId": "Impact_Sword_Basic_Stronk"
+                  }
+                ]
+              }
+            }
+          ]
+        }
+      }
+    }
+  ]
+}

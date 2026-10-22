@@ -350,7 +350,9 @@ Neuf étapes, chacune livrable en une PR testable en jeu ; les étapes 1 à 4 do
 7. **Océan solide et Marais**
    - [x] Briques : marque crâne + rayon absorbé par un objet tenu, cristal lancé, colosses qui renvoient les projectiles, chute vers le dernier fragment sûr, course chronométrée aux feux-follets avec murs temporaires, pièges au sol, fusils revigorants, furtivité du Moussu, cercle vert de vulnérabilité qui tourne, fleurs de poison
    - [x] Fractales Océan solide (Abîme de Jade) et Marais (le Moussu, Carnasse)
-8. **Tempête de neige** : Chaleur et Hypothermie, feux à nourrir de fagots, élémentaires qui éteignent, blizzard, éclat de glace, chaman au balcon et Effigie
+8. **Tempête de neige**
+   - [x] Briques : Chaleur et Hypothermie, feux à nourrir de fagots, élémentaires qui éteignent, blizzard, éclat de glace
+   - [x] Fractale Tempête de neige (mur de glace, Source élémentaire, forêt sombre, Chaman légendaire au balcon avec l'Effigie et sa forme d'ours)
 9. **Finitions** : fractales du jour, cosmétiques, pages du wiki joueur
 
 Nouveaux modèles à créer : colosse enchaîné, Archidevin, harpies, Asura délirant, Chaman imprégné (ailé), Abîme de Jade et tentacules, Moussu, Carnasse, Source élémentaire, Chaman légendaire et sa forme d'ours, Astrolabe. Les monstres de base reprennent des rôles vanilla (outlanders, trorks, golems, loups, élémentaires).

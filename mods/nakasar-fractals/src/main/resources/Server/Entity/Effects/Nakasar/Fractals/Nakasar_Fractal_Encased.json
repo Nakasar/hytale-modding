@@ -1,0 +1,16 @@
+{
+  "$Comment": "Pris dans un éclat de glace (hypothermie au maximum) : immobile tant que les alliés ne l'ont pas brisé (Java).",
+  "Name": "nakasar_fractals_snowblind.effects.Nakasar_Fractal_Encased",
+  "Debuff": true,
+  "StatusEffectIcon": "UI/StatusEffects/Nakasar/Fractals/Encased.png",
+  "ApplicationEffects": {
+    "MovementEffects": {
+      "DisableAll": true
+    },
+    "EntityTopTint": "#bfe6ff",
+    "EntityBottomTint": "#7ab8ff"
+  },
+  "OverlapBehavior": "Overwrite",
+  "Infinite": false,
+  "Duration": 1.5
+}

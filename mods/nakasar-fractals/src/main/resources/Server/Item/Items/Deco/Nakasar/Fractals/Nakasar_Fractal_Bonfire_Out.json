@@ -1,0 +1,47 @@
+{
+  "TranslationProperties": {
+    "Name": "nakasar_fractals_snowblind.items.Nakasar_Fractal_Bonfire_Out.name",
+    "Description": "nakasar_fractals_snowblind.items.Nakasar_Fractal_Bonfire_Out.description"
+  },
+  "Icon": "Icons/Items/Nakasar/Fractals/Bonfire_Out.png",
+  "Categories": [
+    "Blocks.Deco"
+  ],
+  "Quality": "Technical",
+  "PlayerAnimationsId": "Block",
+  "BlockType": {
+    "Material": "Solid",
+    "DrawType": "Cube",
+    "Opacity": "Solid",
+    "Textures": [
+      {
+        "Sides": "BlockTextures/Nakasar/Fractals/Bonfire_Out.png",
+        "UpDown": "BlockTextures/Nakasar/Fractals/Bonfire_Out.png",
+        "Weight": 1
+      }
+    ],
+    "HitboxType": "Full",
+    "Flags": {},
+    "Gathering": {
+      "Breaking": {
+        "GatherType": "Unbreakable"
+      }
+    },
+    "BlockParticleSetId": "Stone",
+    "BlockSoundSetId": "Stone",
+    "ParticleColor": "#786e64",
+    "Interactions": {
+      "Use": {
+        "Interactions": [
+          "Nakasar_Fractal_Use_Snowblind_Bonfire"
+        ]
+      }
+    }
+  },
+  "Tags": {
+    "Type": [
+      "Deco"
+    ]
+  },
+  "ItemSoundSetId": "ISS_Blocks_Stone"
+}

@@ -1,0 +1,47 @@
+{
+  "TranslationProperties": {
+    "Name": "nakasar_fractals_snowblind.items.Nakasar_Fractal_Firewood_Pile.name",
+    "Description": "nakasar_fractals_snowblind.items.Nakasar_Fractal_Firewood_Pile.description"
+  },
+  "Icon": "Icons/Items/Nakasar/Fractals/Firewood_Pile.png",
+  "Categories": [
+    "Blocks.Deco"
+  ],
+  "Quality": "Technical",
+  "PlayerAnimationsId": "Block",
+  "BlockType": {
+    "Material": "Solid",
+    "DrawType": "Cube",
+    "Opacity": "Solid",
+    "Textures": [
+      {
+        "Sides": "BlockTextures/Nakasar/Fractals/Firewood_Pile.png",
+        "UpDown": "BlockTextures/Nakasar/Fractals/Firewood_Pile.png",
+        "Weight": 1
+      }
+    ],
+    "HitboxType": "Full",
+    "Flags": {},
+    "Gathering": {
+      "Breaking": {
+        "GatherType": "Unbreakable"
+      }
+    },
+    "BlockParticleSetId": "Stone",
+    "BlockSoundSetId": "Stone",
+    "ParticleColor": "#c8a06e",
+    "Interactions": {
+      "Use": {
+        "Interactions": [
+          "Nakasar_Fractal_Use_Snowblind_Firewood"
+        ]
+      }
+    }
+  },
+  "Tags": {
+    "Type": [
+      "Deco"
+    ]
+  },
+  "ItemSoundSetId": "ISS_Blocks_Stone"
+}

@@ -1,0 +1,7 @@
+{
+  "$Comment": "Froid de la Tempête de neige (Hypothermie) : une part des PV max par seconde selon les piles, que l'armure ne réduit pas.",
+  "BypassResistances": true,
+  "DurabilityLoss": false,
+  "StaminaLoss": false,
+  "DamageTextColor": "#a8d8ff"
+}

@@ -1,0 +1,205 @@
+{
+  "$Comment": "Élémentaire de glace : sort de la forêt et court éteindre le grand feu (point d'attache posé par le Java) ; il ne se bat que si on le frappe. Arrivé au feu, il l'éteint en partie et disparaît (Java). Généré par tools/generate_snowblind.py.",
+  "Type": "Generic",
+  "Appearance": "Nakasar_Fractal_Ice_Elemental",
+  "NameTranslationKey": "nakasar_fractals_snowblind.npc.Ice_Elemental.name",
+  "MaxHealth": 60,
+  "StartState": "ReturnHome",
+  "DefaultPlayerAttitude": "Hostile",
+  "DefaultNPCAttitude": "Ignore",
+  "DisableDamageGroups": [
+    "Nakasar_Fractal_Foes"
+  ],
+  "MotionControllerList": [
+    {
+      "Type": "Walk",
+      "MaxWalkSpeed": 3.6,
+      "Gravity": 10,
+      "MaxFallSpeed": 10,
+      "Acceleration": 10,
+      "JumpHeight": 1.0
+    }
+  ],
+  "KnockbackScale": 1.0,
+  "DeathAnimationTime": 0.8,
+  "Instructions": [
+    {
+      "Sensor": {
+        "Type": "State",
+        "State": "Idle"
+      },
+      "Instructions": [
+        {
+          "Sensor": {
+            "Type": "Damage",
+            "Combat": true,
+            "TargetSlot": "LockedTarget"
+          },
+          "Actions": [
+            {
+              "Type": "State",
+              "State": "Combat"
+            }
+          ]
+        },
+        {
+          "Sensor": {
+            "Type": "Player",
+            "Range": 2,
+            "LockOnTarget": true,
+            "Filters": [
+              {
+                "Type": "Attitude",
+                "Attitudes": [
+                  "Hostile"
+                ]
+              },
+              {
+                "Type": "LineOfSight"
+              }
+            ]
+          },
+          "Actions": [
+            {
+              "Type": "State",
+              "State": "Combat"
+            }
+          ]
+        },
+        {
+          "Actions": []
+        }
+      ]
+    },
+    {
+      "Sensor": {
+        "Type": "State",
+        "State": "Combat"
+      },
+      "Instructions": [
+        {
+          "$Comment": "Cible perdue ou partie à plus de 10 blocs.",
+          "Sensor": {
+            "Type": "Not",
+            "Sensor": {
+              "Type": "Target",
+              "Range": 10,
+              "Filters": [
+                {
+                  "Type": "Attitude",
+                  "Attitudes": [
+                    "Hostile",
+                    "Neutral",
+                    "Ignore"
+                  ]
+                }
+              ]
+            }
+          },
+          "Actions": [
+            {
+              "Type": "ReleaseTarget"
+            },
+            {
+              "Type": "State",
+              "State": "ReturnHome"
+            }
+          ]
+        },
+        {
+          "Sensor": {
+            "Type": "Target",
+            "Range": 2.2,
+            "Filters": [
+              {
+                "Type": "LineOfSight"
+              }
+            ]
+          },
+          "HeadMotion": {
+            "Type": "Aim",
+            "RelativeTurnSpeed": 1.5
+          },
+          "ActionsBlocking": true,
+          "Actions": [
+            {
+              "Type": "Attack",
+              "Attack": "Root_Nakasar_Fractal_NPC_Elemental_Touch",
+              "AttackPauseRange": [
+                0.8,
+                1.2
+              ]
+            },
+            {
+              "Type": "Timeout",
+              "Delay": [
+                0.2,
+                0.2
+              ]
+            }
+          ]
+        },
+        {
+          "Sensor": {
+            "Type": "Target",
+            "Range": 16
+          },
+          "BodyMotion": {
+            "Type": "Seek",
+            "RelativeSpeed": 1.0,
+            "SlowDownDistance": 2.4,
+            "StopDistance": 1.4,
+            "UsePathfinder": true
+          },
+          "HeadMotion": {
+            "Type": "Watch",
+            "RelativeTurnSpeed": 1.5
+          }
+        }
+      ]
+    },
+    {
+      "Sensor": {
+        "Type": "State",
+        "State": "ReturnHome"
+      },
+      "Instructions": [
+        {
+          "Sensor": {
+            "Type": "Damage",
+            "Combat": true,
+            "TargetSlot": "LockedTarget"
+          },
+          "Actions": [
+            {
+              "Type": "State",
+              "State": "Combat"
+            }
+          ]
+        },
+        {
+          "Sensor": {
+            "Type": "Leash",
+            "Range": 2
+          },
+          "BodyMotion": {
+            "Type": "Seek",
+            "RelativeSpeed": 0.7,
+            "SlowDownDistance": 3,
+            "StopDistance": 1,
+            "UsePathfinder": true
+          }
+        },
+        {
+          "$Comment": "De retour à son poste.",
+          "Actions": [
+            {
+              "Type": "State",
+              "State": "Idle"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

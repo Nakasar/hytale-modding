@@ -7,7 +7,7 @@ Deux mods, chacun avec son dossier de documentation :
 | Mod | Code | Documentation |
 |-----|------|---------------|
 | **Vampires** : le domaine du Comte vampire (plugin Java + pack d'assets, artefact `Nakasar-Vampires-<version>.jar`) | `mods/nakasar-vampires` | [docs/vampires](docs/vampires/) |
-| **Fractales des Brumes** : les fractales de Guild Wars 2 transposées dans Hytale, pour 1 à 5 joueurs (en cours : socle, Observatoire, progression, instabilités, fractales Falaise, Inclassable, Volcanique, Océan solide et Marais) | `mods/nakasar-fractals` | [docs/fractales](docs/fractales/) |
+| **Fractales des Brumes** : les fractales de Guild Wars 2 transposées dans Hytale, pour 1 à 5 joueurs (en cours : socle, Observatoire, progression, instabilités, fractales Falaise, Inclassable, Volcanique, Océan solide, Marais et Tempête de neige) | `mods/nakasar-fractals` | [docs/fractales](docs/fractales/) |
 
 Les notes communes aux deux mods (API serveur, PNJ) restent à la racine de `docs/`.
 
@@ -191,6 +191,33 @@ Modèles provisoires : Abîme de Jade et tentacules (boîtes), colosses (`Golem_
 À vérifier en jeu : sauts entre fragments de jade, crâne et cercle du rayon, absorption par le cristal tenu, lancer
 du cristal (clic droit vers l'Abîme), renvoi des colosses ; murs et pièges du marais, fusils, furtivité et
 réapparition du Moussu, cercle vert (particules) et vigueur, assauts et fleurs, feux-follets des coins.
+
+Étape 8, **Tempête de neige** (`tools/generate_snowblind.py`, paquet `snowblind/`, thème de décor `snow`). Partout,
+l'**Hypothermie** (`Frost`) : loin d'un feu allumé, une pile toutes les 5 s (2,5 s dans le blizzard, deux fois moins
+vite torche en main), jusqu'à 10 ; près d'un feu (Chaleur), une pile en moins toutes les 1,2 s. Chaque pile coûte
+0,3 % des PV max par seconde (cause `Nakasar_Fractal_Cold`), la course ralentit dès 5 piles. À 10 piles, le joueur est
+pris dans un **éclat de glace** que ses alliés doivent briser (ses propres coups ne comptent pas) ; il repart à 6 piles.
+- **Camp** : le grand feu s'allume et se nourrit de **fagots** (tas sous les arbres, 3 portés au plus, repoussent en
+  20 s) ; il brûle 1,5 %/s et fait fondre le **mur de glace** rangée par rangée (90 s à mi-bois, plus vite bien
+  nourri). Toutes les 14 s, des **élémentaires de glace** marchent vers le feu et lui retirent 35 % en l'atteignant ;
+  toutes les 25 s, loups ou cultistes attaquent le camp.
+- **Source élémentaire** : cinq **foyers** à allumer torche en inventaire (râtelier à l'entrée) puis à nourrir de
+  fagots (tas des huttes). Chaque foyer éteint donne une pile de **bouclier de givre** (−18 % de dégâts, ❄ sur la
+  barre) ; à 75/50/25 % elle frappe les foyers allumés (cercles rouges, −50 % de bois) ; tous éteints : **blizzard**.
+- **Forêt sombre** : sentier sinueux sous les sapins, empreintes au sol, fausses pistes, deux embuscades de cultistes.
+- **Chaman légendaire** : la porte du village se ferme ; trois **cristaux corrompus** le protègent à chaque phase au
+  sol ; ses coups d'épée ajoutent 2 piles (ses attaques annoncées ont la cause `Nakasar_Fractal_Frost`) ; pluie de
+  glace, anneau de pics, souffle glacé. À 75 et 50 %, il saute sur son **balcon**, invulnérable, et fait pleuvoir des
+  pics sous chaque joueur ; l'**Effigie de glace** (défiance ouverte) brisée ou détruite le fait redescendre. À 25 %,
+  **forme d'ours** (bonds qui renversent 3 s).
+
+Des remparts de glace barrent toute l'île de part et d'autre du mur, de la brume de la Source et de la porte du
+village : on ne contourne plus un passage par la forêt du pourtour. Modèles provisoires : élémentaires et Source
+(`Spirit_Frost`), cultistes (humanoïdes), Chaman (grawl ×1,45), loups, ours, Effigie, cristaux et éclat (boîtes).
+
+À vérifier en jeu : fumée et lumière du grand feu et des foyers, fonte du mur, élémentaires qui rejoignent le feu
+(point d'attache), râtelier et torche en main (lumière), blizzard et neige (particules), éclat de glace (immobile,
+brisé par les alliés), saut au balcon et retour, forme d'ours, obscurité de la forêt (17 h 30).
 
 **Décor de toutes les fractales** (`tools/fractal_nature.py` : thèmes prairie, Brumes, volcan, marais et jade ;
 `rim` pour un pourtour naturel autour d'un lieu, `natural_ground`, `dress`, `islet` et `scatter_islets` pour des îlots

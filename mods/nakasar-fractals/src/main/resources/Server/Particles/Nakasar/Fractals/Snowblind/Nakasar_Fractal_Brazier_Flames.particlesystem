@@ -1,0 +1,12 @@
+{
+  "$Comment": "Foyer allumé : petites flammes. Généré par tools/generate_snowblind.py.",
+  "Spawners": [
+    {
+      "SpawnerId": "Nakasar_Fractal_Brazier_Flames_Flames",
+      "PositionOffset": {
+        "Y": 0.5
+      }
+    }
+  ],
+  "CullDistance": 72
+}

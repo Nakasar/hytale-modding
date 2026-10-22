@@ -1,0 +1,24 @@
+{
+  "$Comment": "Effigie de glace (PNJ fixe) : tant qu'elle tient, le Chaman reste sur son balcon.",
+  "Model": "NPC/Nakasar/Fractals/Ice_Effigy/Model.blockymodel",
+  "Texture": "NPC/Nakasar/Fractals/Ice_Effigy/Texture.png",
+  "EyeHeight": 1.4,
+  "HitBox": {
+    "Max": {
+      "X": 0.6,
+      "Y": 1.6,
+      "Z": 0.6
+    },
+    "Min": {
+      "X": -0.6,
+      "Y": 0,
+      "Z": -0.6
+    }
+  },
+  "MinScale": 1.2,
+  "MaxScale": 1.2,
+  "Light": {
+    "Color": "#9cf",
+    "Radius": 4
+  }
+}

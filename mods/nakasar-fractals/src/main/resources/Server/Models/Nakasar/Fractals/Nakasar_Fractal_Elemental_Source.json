@@ -1,0 +1,10 @@
+{
+  "$Comment": "La Source élémentaire (provisoire) : l'esprit de givre vanilla, géant (× 3,2) ; GW2 en fait un géant de glace.",
+  "Parent": "Spirit_Frost",
+  "MinScale": 3.2,
+  "MaxScale": 3.2,
+  "Light": {
+    "Color": "#9cf",
+    "Radius": 6
+  }
+}

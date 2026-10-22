@@ -83,6 +83,7 @@ TREES = {
     "beech": ("Wood_Beech_Trunk", "Plant_Leaves_Beech"),
     "maple": ("Wood_Maple_Trunk", "Plant_Leaves_Maple"),
     "fir": ("Wood_Fir_Trunk", "Plant_Leaves_Fir"),
+    "fir_snow": ("Wood_Fir_Trunk", "Plant_Leaves_Fir_Snow"),
     "cedar": ("Wood_Cedar_Trunk", "Plant_Leaves_Cedar"),
     "wisteria": ("Wood_Wisteria_Wild_Trunk", "Plant_Leaves_Wisteria_Wild"),
     "azure": ("Wood_Azure_Trunk", "Plant_Leaves_Azure"),
@@ -305,6 +306,13 @@ THEMES = {
                     hang=["Plant_Vine_Hanging", "Plant_Vine_Green_Hanging"], trees=["sallow", "windwillow", "sallow"],
                     conifers=[], droop=0.18,
                     rocks=["Rock_Stone_Mossy", "Rock_Stone_Cobble_Mossy", "Rock_Stone", "Rock_Shale"]),
+    # Tempête de neige : neige, sapins enneigés, glace et stalactites sous les îles.
+    "snow": _theme(soil=["Soil_Snow"], dirt=["Soil_Snow", "Soil_Dirt", "Rock_Ice_Permafrost"],
+                   deep=["Rock_Stone", "Rock_Ice_Permafrost", "Rock_Slate", "Rock_Stone"],
+                   short=["Plant_Grass_Snowy_Short"], tall=["Plant_Grass_Snowy", "Plant_Grass_Snowy_Tall"],
+                   flowers=[], bushes=["Plant_Bush_Winter_Snow"], hang=["Rock_Ice_Icicles"],
+                   trees=["fir_snow"], conifers=["fir_snow", "fir_snow", "fir"], tree="conifer",
+                   rocks=["Rock_Stone", "Rock_Ice", "Rock_Slate", "Rock_Ice_Permafrost"]),
     "jade": _theme(soil=["Soil_Sand_White", "Soil_Sand_White", "Soil_Gravel_Sand_White"],
                    dirt=["Soil_Clay_Ocean", "Soil_Sand_White"],
                    deep=["Soil_Clay_Ocean", "Rock_Aqua", "Soil_Clay_Ocean", "Rock_Crystal_Green_Block"],
@@ -381,6 +389,8 @@ def tree(p, x, y, z, theme, seed=0, scale=1.0):
         dead_tree(p, x, y, z, round((5 + int(h * 5)) * scale), t["trees"][int(h * 97) % len(t["trees"])], seed, leaves=0.4)
     elif t["tree"] == "crystal":
         crystal_spire(p, x, y, z, round((4 + int(h * 6)) * scale), t["trees"][int(h * 97) % len(t["trees"])], seed)
+    elif t["tree"] == "conifer":
+        conifer(p, x, y, z, round((7 + int(h * 9)) * scale), t["conifers"][int(h * 97) % len(t["conifers"])], seed)
     elif t["conifers"] and h < 0.2:
         conifer(p, x, y, z, round((8 + int(h * 25)) * scale), t["conifers"][0], seed)
     else:
@@ -526,6 +536,10 @@ def nature_color(name):
                 "Fir": (40, 100, 40), "Cedar": (40, 100, 40), "Sallow": (110, 140, 60), "Windwillow": (120, 170, 90)}.get(
             next((k for k in ("Wisteria", "Azure", "Burnt", "Crystal", "Fir", "Cedar", "Sallow", "Windwillow") if k in name), ""),
             (60, 130, 50))
+    if "Snow" in name:
+        return (236, 242, 248)
+    if name.startswith(("Rock_Ice", "Rubble_Ice")):
+        return (170, 210, 240)
     if name.startswith("Rock_Crystal"):
         return next((c for k, c in _FLOWER_COLORS.items() if k in name), (200, 200, 255))
     if name.startswith("Plant_Crop_Mushroom"):

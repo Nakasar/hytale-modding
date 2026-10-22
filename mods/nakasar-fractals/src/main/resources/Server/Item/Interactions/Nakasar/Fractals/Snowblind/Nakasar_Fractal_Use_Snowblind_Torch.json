@@ -1,0 +1,5 @@
+{
+  "$Comment": "Râtelier : prendre une torche.",
+  "Type": "Nakasar_Fractal_Use",
+  "Action": "Snowblind_Torch"
+}
