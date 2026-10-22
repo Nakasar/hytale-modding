@@ -68,6 +68,47 @@ public final class WorldBlocks {
         return BlockOperations.setBlock(chunks, ref, x, y, z, id, type, rotation, 0, 0);
     }
 
+    /** Remplace le bloc en (x, y, z) par `blockId` en gardant sa rotation (un modèle 3D garde son orientation). */
+    public static boolean swap(ChunkStore chunks, int x, int y, int z, String blockId) {
+        return set(chunks, x, y, z, blockId, rotation(chunks, x, y, z));
+    }
+
+    /** Sens de la face avant (+Z du modèle) pour chaque rotation : même table que FRONTS dans tools/generate_observatory.py. */
+    private static final int[][] FRONTS = {{0, 1}, {1, 0}, {0, -1}, {-1, 0}};
+
+    /**
+     * Rotation qui tourne la face avant d'un bloc en modèle 3D vers le côté le plus dégagé (cases vides devant lui,
+     * sur 5 blocs, à hauteur des pieds et de la tête) : même règle que Prefab.orient pour le mode "open".
+     */
+    public static int facingOpen(ChunkStore chunks, int x, int y, int z) {
+        int best = 0;
+        int bestScore = -1;
+        for (int k = 0; k < FRONTS.length; k++) {
+            int dx = FRONTS[k][0];
+            int dz = FRONTS[k][1];
+            int score = 0;
+            for (int d = 1; d <= 5; d++) {
+                for (int w = Math.floorDiv(-d, 2); w <= d / 2; w++) {
+                    for (int h = 0; h <= 1; h++) {
+                        if (id(chunks, x + dx * d + dz * w, y + h, z + dz * d + dx * w) == BlockType.EMPTY_ID) {
+                            score++;
+                        }
+                    }
+                }
+            }
+            if (score > bestScore) {
+                best = k;
+                bestScore = score;
+            }
+        }
+        return best;
+    }
+
+    /** Pose `blockId` face au côté le plus dégagé ({@link #facingOpen}). */
+    public static boolean setFacingOpen(ChunkStore chunks, int x, int y, int z, String blockId) {
+        return set(chunks, x, y, z, blockId, facingOpen(chunks, x, y, z));
+    }
+
     public static boolean clear(ChunkStore chunks, int x, int y, int z) {
         return set(chunks, x, y, z, null, 0);
     }

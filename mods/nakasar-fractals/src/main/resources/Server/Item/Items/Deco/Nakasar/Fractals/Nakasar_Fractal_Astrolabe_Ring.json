@@ -16,7 +16,7 @@
     "Textures": [
       {
         "Sides": "BlockTextures/Nakasar/Fractals/Astrolabe_Ring.png",
-        "UpDown": "BlockTextures/Nakasar/Fractals/Astrolabe_Ring.png",
+        "UpDown": "BlockTextures/Nakasar/Fractals/Astrolabe_Ring_Top.png",
         "Weight": 1
       }
     ],

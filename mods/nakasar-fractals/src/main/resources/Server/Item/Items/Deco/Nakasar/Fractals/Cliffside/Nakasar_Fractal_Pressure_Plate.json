@@ -16,7 +16,7 @@
     "Textures": [
       {
         "Sides": "BlockTextures/Nakasar/Fractals/Pressure_Plate.png",
-        "UpDown": "BlockTextures/Nakasar/Fractals/Pressure_Plate.png",
+        "UpDown": "BlockTextures/Nakasar/Fractals/Pressure_Plate_Top.png",
         "Weight": 1
       }
     ],

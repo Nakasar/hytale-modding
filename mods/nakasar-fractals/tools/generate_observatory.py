@@ -172,6 +172,12 @@ def heading_to_xz(heading, radius):
 
 # --- prefab -------------------------------------------------------------------------------------
 
+# Sens de la face avant (+Z du modèle) pour la rotation k d'un bloc VariantRotation NESW posé en prefab
+# (quart de tour k). Non vérifié en jeu : si tous les blocs orientés regardent à 90° du bon côté, échanger
+# (1, 0) et (-1, 0).
+FRONTS = [(0, 1), (1, 0), (0, -1), (-1, 0)]
+
+
 class Prefab:
     """Grille creuse de blocs ; la dernière écriture d'une case l'emporte. Blocs d'une seule case seulement (pas de
     meubles sur plusieurs cases : il faudrait écrire leurs remplissages)."""
@@ -188,8 +194,37 @@ class Prefab:
                 for z in range(min(z0, z1), max(z0, z1) + 1):
                     self.set(x, y, z, name)
 
+    def solid_at(self, x, y, z):
+        name = self.blocks.get((x, y, z), (AIR,))[0]
+        return name != AIR
+
+    def orient(self):
+        """Tourne les blocs en modèle 3D qui ont une face avant (block_models.ORIENT), sauf rotation donnée :
+        "wall" dos au bloc plein voisin, "open" face au côté le plus dégagé, "line" le long des blocs identiques.
+        Rotation k = quart de tour k ; la face avant du modèle (+Z) va vers FRONTS[k]."""
+        for (x, y, z), (name, rot) in list(self.blocks.items()):
+            mode = block_models.ORIENT.get(name)
+            if not mode or rot:
+                continue
+            if mode == "line":
+                along_z = self.blocks.get((x, y, z + 1), ("",))[0] == name or \
+                    self.blocks.get((x, y, z - 1), ("",))[0] == name
+                self.blocks[(x, y, z)] = (name, 1 if along_z else 0)
+                continue
+            best, best_score = 0, -1
+            for k, (dx, dz) in enumerate(FRONTS):
+                if mode == "wall":
+                    score = 2 * self.solid_at(x - dx, y, z - dz) + (not self.solid_at(x + dx, y, z + dz))
+                else:
+                    score = sum(not self.solid_at(x + dx * d + dz * w, y + h, z + dz * d + dx * w)
+                                for d in range(1, 6) for w in range(-d // 2, d // 2 + 1) for h in (0, 1))
+                if score > best_score:
+                    best, best_score = k, score
+            self.blocks[(x, y, z)] = (name, best)
+
     def write(self, path):
         path.parent.mkdir(parents=True, exist_ok=True)
+        self.orient()
         blocks = []
         for (x, y, z), (name, rot) in sorted(self.blocks.items(), key=lambda kv: (kv[0][1], kv[0][2], kv[0][0])):
             entry = {"x": x, "y": y, "z": z, "name": name}

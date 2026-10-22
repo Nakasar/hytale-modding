@@ -16,7 +16,7 @@
     "Textures": [
       {
         "Sides": "BlockTextures/Nakasar/Fractals/Glimmer.png",
-        "UpDown": "BlockTextures/Nakasar/Fractals/Glimmer.png",
+        "UpDown": "BlockTextures/Nakasar/Fractals/Glimmer_Top.png",
         "Weight": 1
       }
     ],

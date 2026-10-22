@@ -111,7 +111,7 @@ final class Bloomhunger {
     void prepare(World world) {
         ChunkStore chunks = world.getChunkStore();
         for (int[] c : SwamplandLayout.CLEARING_CLEFTS) {
-            WorldBlocks.set(chunks, c[0], c[1], c[2], Swampland.CLEFT, 0);
+            WorldBlocks.swap(chunks, c[0], c[1], c[2], Swampland.CLEFT);
         }
         clearCorners(chunks);
         int[] w = SwamplandLayout.CLEARING_WISP;
@@ -394,7 +394,7 @@ final class Bloomhunger {
         lit = 0;
         ChunkStore chunks = world.getChunkStore();
         for (int[] c : SwamplandLayout.CLEARING_CLEFTS) {
-            WorldBlocks.set(chunks, c[0], c[1], c[2], Swampland.CLEFT, 0);
+            WorldBlocks.swap(chunks, c[0], c[1], c[2], Swampland.CLEFT);
         }
         for (int[] w : SwamplandLayout.CORNER_WISPS) {
             WorldBlocks.set(chunks, w[0], w[1], w[2], Swampland.WISP_BLOCK, 0);

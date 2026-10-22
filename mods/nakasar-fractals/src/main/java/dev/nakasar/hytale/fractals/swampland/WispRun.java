@@ -192,7 +192,7 @@ final class WispRun {
             }
         }
         for (int[] c : SwamplandLayout.CLEFTS) {
-            WorldBlocks.set(chunks, c[0], c[1], c[2], Swampland.CLEFT, 0);
+            WorldBlocks.swap(chunks, c[0], c[1], c[2], Swampland.CLEFT);
         }
         walls(world, store, false);
         setup(world);

@@ -16,7 +16,7 @@
     "Textures": [
       {
         "Sides": "BlockTextures/Nakasar/Fractals/Mist_Barrier.png",
-        "UpDown": "BlockTextures/Nakasar/Fractals/Mist_Barrier.png",
+        "UpDown": "BlockTextures/Nakasar/Fractals/Mist_Barrier_Top.png",
         "Weight": 1
       }
     ],

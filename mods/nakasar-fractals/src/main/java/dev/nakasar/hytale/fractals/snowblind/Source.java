@@ -150,7 +150,7 @@ final class Source {
 
     private static void set(World world, int i, boolean lit) {
         int[] b = SnowblindLayout.BRAZIERS[i];
-        WorldBlocks.set(world.getChunkStore(), b[0], b[1], b[2], lit ? Snowblind.BRAZIER : Snowblind.BRAZIER_OUT, 0);
+        WorldBlocks.swap(world.getChunkStore(), b[0], b[1], b[2], lit ? Snowblind.BRAZIER : Snowblind.BRAZIER_OUT);
     }
 
     private void burn(World world, Store<EntityStore> store, int i, float amount) {
@@ -315,7 +315,7 @@ final class Source {
         for (int i = 0; i < fuel.length; i++) {
             fuel[i] = 0f;
             int[] b = SnowblindLayout.BRAZIERS[i];
-            WorldBlocks.set(chunks, b[0], b[1], b[2], Snowblind.BRAZIER_OUT, 0);
+            WorldBlocks.swap(chunks, b[0], b[1], b[2], Snowblind.BRAZIER_OUT);
         }
     }
 }

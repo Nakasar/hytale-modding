@@ -11,15 +11,8 @@
   "PlayerAnimationsId": "Block",
   "BlockType": {
     "Material": "Solid",
-    "DrawType": "Cube",
-    "Opacity": "Solid",
-    "Textures": [
-      {
-        "Sides": "BlockTextures/Nakasar/Fractals/Cage_Door.png",
-        "UpDown": "BlockTextures/Nakasar/Fractals/Cage_Door.png",
-        "Weight": 1
-      }
-    ],
+    "DrawType": "Model",
+    "Opacity": "Transparent",
     "HitboxType": "Full",
     "Flags": {},
     "Gathering": {
@@ -36,12 +29,32 @@
           "Nakasar_Fractal_Use_Cage_Door"
         ]
       }
-    }
+    },
+    "CustomModel": "Blocks/Nakasar/Fractals/Cage_Door.blockymodel",
+    "CustomModelTexture": [
+      {
+        "Texture": "Blocks/Nakasar/Fractals/Cage_Door_Texture.png",
+        "Weight": 1
+      }
+    ],
+    "VariantRotation": "NESW"
   },
   "Tags": {
     "Type": [
       "Deco"
     ]
   },
-  "ItemSoundSetId": "ISS_Blocks_Stone"
+  "ItemSoundSetId": "ISS_Blocks_Stone",
+  "IconProperties": {
+    "Scale": 0.55,
+    "Translation": [
+      0,
+      -12
+    ],
+    "Rotation": [
+      22.5,
+      45,
+      22.5
+    ]
+  }
 }

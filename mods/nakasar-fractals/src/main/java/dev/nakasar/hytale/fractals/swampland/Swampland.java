@@ -201,7 +201,7 @@ public final class Swampland implements FractalStage {
                     tell(st, player, "wisp.none");
                     return;
                 }
-                WorldBlocks.set(chunks, x, y, z, CLEFT_LIT, 0);
+                WorldBlocks.swap(chunks, x, y, z, CLEFT_LIT);
                 Telegraphs.particle(store, "Nakasar_Fractal_Wisp_Glow", new Vector3d(x + 0.5, y + 1, z + 0.5), 1.5f);
                 if (z > SwamplandLayout.SWAMP.z0() - 2) {
                     st.wisps.lit(world);

@@ -42,6 +42,7 @@ from PIL import Image, ImageDraw
 import fractal_models as fm
 import fractal_nature as fn
 import fractal_roles as fr
+import generate_block_models as block_models
 import generate_observatory as go
 
 MOD = go.MOD
@@ -1632,6 +1633,7 @@ def main():
         go.icon(COMMON / go.ICONS / f"{tex}.png", img)
         doc = go.block_item(name, tex, light, use, solid=solid, particle=go.hexcolor(accent))
         doc["TranslationProperties"] = {"Name": f"{LANG}.items.{name}.name", "Description": f"{LANG}.items.{name}.description"}
+        block_models.apply(doc, tex)
         write_json(ITEMS / f"{name}.json", doc)
     write_json(SERVER / "Item/Items/Weapon/Nakasar/Fractals" / f"{HAMMER}.json", hammer_item())
 

@@ -11,6 +11,7 @@ import fractal_models as fm
 import fractal_roles as fr
 import generate_cliffside as gc
 import fractal_nature as fn
+import generate_block_models as block_models
 import generate_observatory as go
 
 SERVER = go.SERVER
@@ -211,6 +212,7 @@ def write_block(lang, name, tex, base, accent, glyph, light=None, use=None, soli
         doc["BlockType"]["Opacity"] = opacity
         doc["BlockType"]["BlockParticleSetId"] = "Crystal"
         doc["BlockType"]["BlockSoundSetId"] = "Crystal"
+    block_models.apply(doc, tex)
     write_json(go.ITEMS / f"{name}.json", doc)
 
 

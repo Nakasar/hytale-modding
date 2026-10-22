@@ -261,7 +261,7 @@ public final class Snowblind implements FractalStage {
                 player.sendMessage(Message.translation(MESSAGES + "wood.taken").param("count", carried + 1));
                 Delayed.later(world, PILE_REGROW, s -> {
                     if (WorldBlocks.name(world.getChunkStore(), x, y, z) == null) {
-                        WorldBlocks.set(world.getChunkStore(), x, y, z, PILE, 0);
+                        WorldBlocks.setFacingOpen(world.getChunkStore(), x, y, z, PILE);
                     }
                 });
             }

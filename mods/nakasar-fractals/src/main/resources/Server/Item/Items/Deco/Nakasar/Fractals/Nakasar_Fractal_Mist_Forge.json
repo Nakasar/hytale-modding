@@ -11,15 +11,8 @@
   "PlayerAnimationsId": "Block",
   "BlockType": {
     "Material": "Solid",
-    "DrawType": "Cube",
-    "Opacity": "Solid",
-    "Textures": [
-      {
-        "Sides": "BlockTextures/Nakasar/Fractals/Mist_Forge.png",
-        "UpDown": "BlockTextures/Nakasar/Fractals/Mist_Forge.png",
-        "Weight": 1
-      }
-    ],
+    "DrawType": "Model",
+    "Opacity": "Transparent",
     "HitboxType": "Full",
     "Flags": {},
     "Gathering": {
@@ -65,7 +58,25 @@
           "Icon": "Icons/CraftingCategories/Nakasar/Fractals/Fragments.png"
         }
       ]
-    }
+    },
+    "CustomModel": "Blocks/Nakasar/Fractals/Mist_Forge.blockymodel",
+    "CustomModelTexture": [
+      {
+        "Texture": "Blocks/Nakasar/Fractals/Mist_Forge_Texture.png",
+        "Weight": 1
+      }
+    ],
+    "VariantRotation": "NESW",
+    "CustomModelAnimation": "Blocks/Nakasar/Fractals/Mist_Forge.blockyanim",
+    "Particles": [
+      {
+        "SystemId": "Dungeon_Goblin_Void_Motes_Cluster",
+        "Scale": 1,
+        "PositionOffset": {
+          "Y": 0.8
+        }
+      }
+    ]
   },
   "Tags": {
     "Type": [
@@ -73,5 +84,17 @@
     ]
   },
   "ItemSoundSetId": "ISS_Blocks_Stone",
-  "MaxStack": 1
+  "MaxStack": 1,
+  "IconProperties": {
+    "Scale": 0.55,
+    "Translation": [
+      0,
+      -12
+    ],
+    "Rotation": [
+      22.5,
+      45,
+      22.5
+    ]
+  }
 }

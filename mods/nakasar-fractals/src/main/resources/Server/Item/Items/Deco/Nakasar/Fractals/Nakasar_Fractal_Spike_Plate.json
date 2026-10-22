@@ -11,15 +11,8 @@
   "PlayerAnimationsId": "Block",
   "BlockType": {
     "Material": "Solid",
-    "DrawType": "Cube",
-    "Opacity": "Solid",
-    "Textures": [
-      {
-        "Sides": "BlockTextures/Nakasar/Fractals/Spike_Plate.png",
-        "UpDown": "BlockTextures/Nakasar/Fractals/Spike_Plate.png",
-        "Weight": 1
-      }
-    ],
+    "DrawType": "Model",
+    "Opacity": "Transparent",
     "HitboxType": "Full",
     "Flags": {},
     "Gathering": {
@@ -29,12 +22,32 @@
     },
     "BlockParticleSetId": "Stone",
     "BlockSoundSetId": "Stone",
-    "ParticleColor": "#c85a50"
+    "ParticleColor": "#c85a50",
+    "CustomModel": "Blocks/Nakasar/Fractals/Spike_Plate.blockymodel",
+    "CustomModelTexture": [
+      {
+        "Texture": "Blocks/Nakasar/Fractals/Spike_Plate_Texture.png",
+        "Weight": 1
+      }
+    ],
+    "VariantRotation": "NESW"
   },
   "Tags": {
     "Type": [
       "Deco"
     ]
   },
-  "ItemSoundSetId": "ISS_Blocks_Stone"
+  "ItemSoundSetId": "ISS_Blocks_Stone",
+  "IconProperties": {
+    "Scale": 0.55,
+    "Translation": [
+      0,
+      -12
+    ],
+    "Rotation": [
+      22.5,
+      45,
+      22.5
+    ]
+  }
 }

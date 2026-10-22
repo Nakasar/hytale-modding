@@ -351,8 +351,8 @@ final class Archdiviner {
         ChunkStore chunks = world.getChunkStore();
         int[] chest = CliffsideLayout.REWARD;
         int[] exit = CliffsideLayout.END_EXIT;
-        WorldBlocks.set(chunks, chest[0], chest[1], chest[2], "Nakasar_Fractal_Reward_Chest", 0);
-        WorldBlocks.set(chunks, exit[0], exit[1], exit[2], "Nakasar_Fractal_Exit_Stone", 0);
+        WorldBlocks.setFacingOpen(chunks, chest[0], chest[1], chest[2], "Nakasar_Fractal_Reward_Chest");
+        WorldBlocks.setFacingOpen(chunks, exit[0], exit[1], exit[2], "Nakasar_Fractal_Exit_Stone");
         FractalRuns.complete(world);
         EventTitleUtil.showEventTitleToWorld(Message.translation(Cliffside.MESSAGES + "title.victory"),
                 Message.translation(Cliffside.MESSAGES + "boss.victory"), EventTitleStyle.Major, null, 4f, 0.4f, 1f, world);

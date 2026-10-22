@@ -16,7 +16,7 @@
     "Textures": [
       {
         "Sides": "BlockTextures/Nakasar/Fractals/Harmony_Tile.png",
-        "UpDown": "BlockTextures/Nakasar/Fractals/Harmony_Tile.png",
+        "UpDown": "BlockTextures/Nakasar/Fractals/Harmony_Tile_Top.png",
         "Weight": 1
       }
     ],

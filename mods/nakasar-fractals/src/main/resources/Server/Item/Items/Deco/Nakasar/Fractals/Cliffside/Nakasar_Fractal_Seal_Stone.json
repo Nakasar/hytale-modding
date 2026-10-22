@@ -16,7 +16,7 @@
     "Textures": [
       {
         "Sides": "BlockTextures/Nakasar/Fractals/Seal_Stone.png",
-        "UpDown": "BlockTextures/Nakasar/Fractals/Seal_Stone.png",
+        "UpDown": "BlockTextures/Nakasar/Fractals/Seal_Stone_Top.png",
         "Weight": 1
       }
     ],

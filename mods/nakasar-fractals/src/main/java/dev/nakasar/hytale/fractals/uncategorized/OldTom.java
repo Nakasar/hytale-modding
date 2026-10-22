@@ -168,7 +168,7 @@ final class OldTom {
             Uncategorized.tell(st, player, "battery.needTear");
             return;
         }
-        WorldBlocks.set(chunks, x, y, z, BATTERY_ON, 0);
+        WorldBlocks.swap(chunks, x, y, z, BATTERY_ON);
         charged++;
         Telegraphs.particle(store, "Nakasar_Fractal_Battery_Charge", new Vector3d(x + 0.5, y + 1, z + 0.5), 1f);
         Spawns.tellAll(world, Message.translation(Uncategorized.MESSAGES + "battery.charged").param("count", charged));
@@ -177,7 +177,7 @@ final class OldTom {
     private void emptyBatteries(World world) {
         ChunkStore chunks = world.getChunkStore();
         for (int[] b : UncategorizedLayout.BATTERIES) {
-            WorldBlocks.set(chunks, b[0], b[1], b[2], BATTERY, 0);
+            WorldBlocks.swap(chunks, b[0], b[1], b[2], BATTERY);
         }
         charged = 0;
     }

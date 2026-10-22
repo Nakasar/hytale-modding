@@ -20142,7 +20142,7 @@
     {"x":2,"y":0,"z":-25,"name":"Plant_Grass_Snowy_Short"},
     {"x":5,"y":0,"z":-25,"name":"Plant_Grass_Snowy_Tall"},
     {"x":13,"y":0,"z":-25,"name":"Plant_Grass_Snowy"},
-    {"x":17,"y":0,"z":-25,"name":"Nakasar_Fractal_Firewood_Pile"},
+    {"x":17,"y":0,"z":-25,"name":"Nakasar_Fractal_Firewood_Pile","rotation":3},
     {"x":19,"y":0,"z":-25,"name":"Wood_Fir_Trunk"},
     {"x":20,"y":0,"z":-25,"name":"Plant_Bush_Winter_Snow"},
     {"x":22,"y":0,"z":-25,"name":"Wood_Fir_Trunk"},

@@ -138,7 +138,7 @@ final class Campfire {
 
     private static void set(World world, String block) {
         int[] b = SnowblindLayout.BONFIRE;
-        WorldBlocks.set(world.getChunkStore(), b[0], b[1], b[2], block, 0);
+        WorldBlocks.swap(world.getChunkStore(), b[0], b[1], b[2], block);
     }
 
     // --- élémentaires -----------------------------------------------------------------------------------

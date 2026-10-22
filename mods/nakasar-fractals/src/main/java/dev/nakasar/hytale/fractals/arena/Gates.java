@@ -50,8 +50,8 @@ public final class Gates {
     /** Fin de la fractale : coffre de récompense et pierre de sortie, partie terminée, titre. */
     public static void victory(World world, int[] chest, int[] exit, String titleKey, String subtitleKey) {
         ChunkStore chunks = world.getChunkStore();
-        WorldBlocks.set(chunks, chest[0], chest[1], chest[2], REWARD_CHEST, 0);
-        WorldBlocks.set(chunks, exit[0], exit[1], exit[2], EXIT_STONE, 0);
+        WorldBlocks.setFacingOpen(chunks, chest[0], chest[1], chest[2], REWARD_CHEST);
+        WorldBlocks.setFacingOpen(chunks, exit[0], exit[1], exit[2], EXIT_STONE);
         FractalRuns.complete(world);
         EventTitleUtil.showEventTitleToWorld(Message.translation(titleKey), Message.translation(subtitleKey),
                 EventTitleStyle.Major, null, 4f, 0.4f, 1f, world);

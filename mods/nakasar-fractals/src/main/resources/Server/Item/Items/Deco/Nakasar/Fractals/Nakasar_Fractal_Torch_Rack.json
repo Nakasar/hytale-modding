@@ -11,15 +11,8 @@
   "PlayerAnimationsId": "Block",
   "BlockType": {
     "Material": "Solid",
-    "DrawType": "Cube",
-    "Opacity": "Solid",
-    "Textures": [
-      {
-        "Sides": "BlockTextures/Nakasar/Fractals/Torch_Rack.png",
-        "UpDown": "BlockTextures/Nakasar/Fractals/Torch_Rack.png",
-        "Weight": 1
-      }
-    ],
+    "DrawType": "Model",
+    "Opacity": "Transparent",
     "HitboxType": "Full",
     "Flags": {},
     "Gathering": {
@@ -39,12 +32,50 @@
           "Nakasar_Fractal_Use_Snowblind_Torch"
         ]
       }
-    }
+    },
+    "CustomModel": "Blocks/Nakasar/Fractals/Torch_Rack.blockymodel",
+    "CustomModelTexture": [
+      {
+        "Texture": "Blocks/Nakasar/Fractals/Torch_Rack_Texture.png",
+        "Weight": 1
+      }
+    ],
+    "VariantRotation": "NESW",
+    "CustomModelAnimation": "Blocks/Nakasar/Fractals/Torch_Rack.blockyanim",
+    "Particles": [
+      {
+        "SystemId": "Torch_Fire",
+        "Scale": 0.45,
+        "TargetNodeName": "Flame_1"
+      },
+      {
+        "SystemId": "Torch_Fire",
+        "Scale": 0.45,
+        "TargetNodeName": "Flame_2"
+      },
+      {
+        "SystemId": "Torch_Fire",
+        "Scale": 0.45,
+        "TargetNodeName": "Flame_3"
+      }
+    ]
   },
   "Tags": {
     "Type": [
       "Deco"
     ]
   },
-  "ItemSoundSetId": "ISS_Blocks_Stone"
+  "ItemSoundSetId": "ISS_Blocks_Stone",
+  "IconProperties": {
+    "Scale": 0.55,
+    "Translation": [
+      0,
+      -12
+    ],
+    "Rotation": [
+      22.5,
+      45,
+      22.5
+    ]
+  }
 }

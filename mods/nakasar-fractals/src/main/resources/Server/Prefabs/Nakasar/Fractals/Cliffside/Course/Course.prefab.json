@@ -41782,7 +41782,7 @@
     {"x":-9,"y":0,"z":23,"name":"Wood_Beech_Trunk"},
     {"x":-8,"y":0,"z":23,"name":"Wood_Beech_Trunk"},
     {"x":-3,"y":0,"z":23,"name":"Plant_Grass_Lush_Short"},
-    {"x":3,"y":0,"z":23,"name":"Nakasar_Fractal_Exit_Stone"},
+    {"x":3,"y":0,"z":23,"name":"Nakasar_Fractal_Exit_Stone","rotation":3},
     {"x":4,"y":0,"z":23,"name":"Plant_Grass_Sharp_Wild"},
     {"x":5,"y":0,"z":23,"name":"Plant_Grass_Sharp_Wild"},
     {"x":7,"y":0,"z":23,"name":"Plant_Grass_Lush"},

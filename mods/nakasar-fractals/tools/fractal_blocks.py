@@ -217,6 +217,115 @@ def glyph(color, kind="ring", faces=("front", "back")):
     return paint
 
 
+def log(bark, core=(196, 156, 104)):
+    """Rondin le long de l'axe Z : écorce sur les côtés, cernes sur les bouts (faces avant et arrière)."""
+    def paint(rng, w, h, face):
+        img, px = _canvas(w, h)
+        n = noise(rng, w, h, 2, 0.1)
+        cx, cy = (w - 1) / 2, (h - 1) / 2
+        for y in range(h):
+            for x in range(w):
+                if face in ("front", "back"):
+                    d = max(abs(x - cx), abs(y - cy))
+                    if d >= min(w, h) / 2 - 1:
+                        c = shade(bark, 0.8)
+                    else:
+                        c = shade(core, (1.0 if int(d) % 2 else 0.86) * n[y][x])
+                else:
+                    along = y if face in ("left", "right") else x
+                    f = n[y][x] * (0.72 if (along * 7 + x * 3 + y) % 5 == 0 else 1.0)
+                    c = shade(bark, f * (1.12 if (x if face in ("left", "right") else y) == 0 else 1.0))
+                px[x, y] = c + (255,)
+        return img
+    return paint
+
+
+def ground(side, top, rim_color=None):
+    """Bloc de sol : côtés de terre, dessus d'herbe/mousse/neige qui déborde d'un ou deux texels sur les côtés."""
+    def paint(rng, w, h, face):
+        img, px = _canvas(w, h)
+        n = noise(rng, w, h, 3, 0.12)
+        for y in range(h):
+            for x in range(w):
+                if face == "top":
+                    c = shade(top, n[y][x] * (1.08 if rng.random() < 0.08 else 1.0))
+                elif face == "bottom":
+                    c = shade(side, 0.7 * n[y][x])
+                else:
+                    edge = 2 + (x * 7 + 3) % 3
+                    c = shade(rim_color or top, n[y][x] * 0.92) if y < edge else shade(side, n[y][x] * (0.95 - 0.1 * y / h))
+                px[x, y] = c + (255,)
+        return img
+    return paint
+
+
+def mist(dark, light, alpha=255):
+    """Brume des Brumes : volutes douces entre deux violets."""
+    def paint(rng, w, h, face):
+        img, px = _canvas(w, h)
+        n = noise(rng, w, h, 4, 0.9)
+        for y in range(h):
+            for x in range(w):
+                t = max(0.0, min(1.0, (n[y][x] - 0.1) / 1.8 + 0.25 * ((x + 2 * y) % 9 < 2)))
+                px[x, y] = mix(dark, light, t) + (alpha,)
+        return img
+    return paint
+
+
+def jade(base, vein):
+    """Jade poli : bruit doux, veines claires en diagonale."""
+    def paint(rng, w, h, face):
+        img, px = _canvas(w, h)
+        n = noise(rng, w, h, 4, 0.14)
+        phase = rng.random() * 6
+        for y in range(h):
+            for x in range(w):
+                v = math.sin((x + y) * 0.5 + phase + 2 * n[y][x])
+                c = mix(shade(base, n[y][x]), vein, 0.55) if v > 0.93 else shade(base, n[y][x])
+                if face not in ("top", "bottom"):
+                    c = shade(c, _rim(x, y, w, h, face))
+                px[x, y] = c + (255,)
+        return img
+    return paint
+
+
+def glass(tint, alpha=150):
+    """Verre teinté semi-transparent, reflets en diagonale."""
+    def paint(rng, w, h, face):
+        img, px = _canvas(w, h)
+        for y in range(h):
+            for x in range(w):
+                c, a = tint, alpha
+                if (x - y) % 11 in (0, 1):
+                    c, a = shade(tint, 1.3), min(255, alpha + 60)
+                if x in (0, w - 1) or y in (0, h - 1):
+                    c, a = shade(tint, 1.2), min(255, alpha + 40)
+                px[x, y] = c + (a,)
+        return img
+    return paint
+
+
+def cloth(base, stripe=None):
+    def paint(rng, w, h, face):
+        img, px = _canvas(w, h)
+        n = noise(rng, w, h, 2, 0.08)
+        for y in range(h):
+            for x in range(w):
+                c = shade(base, n[y][x] * (0.9 if (x + y) % 2 else 1.0))
+                if stripe and y in (1, h - 2):
+                    c = stripe
+                px[x, y] = c + (255,)
+        return img
+    return paint
+
+
+def faces(top_paint, side_paint):
+    """Peintre composé : un pour le dessus et le dessous, un autre pour les côtés."""
+    def paint(rng, w, h, face):
+        return (top_paint if face in ("top", "bottom") else side_paint)(rng, w, h, face)
+    return paint
+
+
 def paper(base=(232, 220, 190), ink=(70, 55, 45)):
     def paint(rng, w, h, face):
         img, px = _canvas(w, h)
@@ -265,6 +374,12 @@ def quat(m):
         s = math.sqrt(1 + m[2][2] - m[0][0] - m[1][1]) * 2
         q = ((m[0][2] + m[2][0]) / s, (m[1][2] + m[2][1]) / s, s / 4, (m[1][0] - m[0][1]) / s)
     return {"x": round(q[0], 6), "y": round(q[1], 6), "z": round(q[2], 6), "w": round(q[3], 6)}
+
+
+def tilt(base, rot, local):
+    """Point `local` (repère d'une pièce tournée de `rot` autour de `base`) dans le repère du bloc."""
+    p = apply(euler(rot), local)
+    return (base[0] + p[0], base[1] + p[1], base[2] + p[2])
 
 
 def face_size(size, face):

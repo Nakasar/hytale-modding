@@ -12152,7 +12152,7 @@
     {"x":-14,"y":0,"z":-24,"name":"Plant_Grass_Wet"},
     {"x":-8,"y":0,"z":-24,"name":"Plant_Moss_Short_Green"},
     {"x":-5,"y":0,"z":-24,"name":"Plant_Grass_Wet_Short"},
-    {"x":0,"y":0,"z":-24,"name":"Nakasar_Fractal_Wisp_Cleft"},
+    {"x":0,"y":0,"z":-24,"name":"Nakasar_Fractal_Wisp_Cleft","rotation":1},
     {"x":2,"y":0,"z":-24,"name":"Plant_Moss_Short_Green"},
     {"x":3,"y":0,"z":-24,"name":"Plant_Grass_Wet"},
     {"x":4,"y":0,"z":-24,"name":"Plant_Moss_Short_Green"},
