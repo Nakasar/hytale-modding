@@ -1,0 +1,73 @@
+{
+  "TranslationProperties": {
+    "Name": "nakasar_fractals_swampland.items.Nakasar_Fractal_Wisp_Cleft_Lit.name",
+    "Description": "nakasar_fractals_swampland.items.Nakasar_Fractal_Wisp_Cleft_Lit.description"
+  },
+  "Icon": "Icons/Items/Nakasar/Fractals/Wisp_Cleft_Lit.png",
+  "Categories": [
+    "Blocks.Deco"
+  ],
+  "Quality": "Technical",
+  "PlayerAnimationsId": "Block",
+  "BlockType": {
+    "Material": "Solid",
+    "DrawType": "Model",
+    "Opacity": "Transparent",
+    "HitboxType": "Full",
+    "Flags": {},
+    "Gathering": {
+      "Breaking": {
+        "GatherType": "Unbreakable"
+      }
+    },
+    "BlockParticleSetId": "Stone",
+    "BlockSoundSetId": "Stone",
+    "ParticleColor": "#c8ffe6",
+    "Light": {
+      "Color": "#9fd"
+    },
+    "Interactions": {
+      "Use": {
+        "Interactions": [
+          "Nakasar_Fractal_Use_Swampland_Cleft"
+        ]
+      }
+    },
+    "CustomModel": "Blocks/Nakasar/Fractals/Wisp_Cleft_Lit.blockymodel",
+    "CustomModelTexture": [
+      {
+        "Texture": "Blocks/Nakasar/Fractals/Wisp_Cleft_Lit_Texture.png",
+        "Weight": 1
+      }
+    ],
+    "VariantRotation": "NESW",
+    "CustomModelAnimation": "Blocks/Nakasar/Fractals/Wisp_Cleft_Lit.blockyanim",
+    "Particles": [
+      {
+        "SystemId": "Torch_Fire_Green",
+        "Scale": 0.5,
+        "PositionOffset": {
+          "Y": 0.55
+        }
+      }
+    ]
+  },
+  "Tags": {
+    "Type": [
+      "Deco"
+    ]
+  },
+  "ItemSoundSetId": "ISS_Blocks_Stone",
+  "IconProperties": {
+    "Scale": 0.55,
+    "Translation": [
+      0,
+      -12
+    ],
+    "Rotation": [
+      22.5,
+      45,
+      22.5
+    ]
+  }
+}

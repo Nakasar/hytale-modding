@@ -1,0 +1,27 @@
+{
+  "$Comment": "Archidevin (au-dessus de 25 % de vie) : sol corrompu sous chaque joueur, cercles rouges de 2,5 blocs (1,5 s), 12 dégâts et poison.",
+  "Type": "Serial",
+  "Interactions": [
+    {
+      "Type": "Nakasar_Fractal_Telegraph",
+      "Shape": "Circle",
+      "Seconds": 1.5,
+      "Anchor": "EachPlayer",
+      "Radius": 2.5,
+      "Damage": 12,
+      "EffectId": "Poison_T2",
+      "EffectDuration": 4,
+      "PlayersOnly": true,
+      "ImpactParticle": "Effect_Poison"
+    },
+    {
+      "Type": "Simple",
+      "RunTime": 1.5,
+      "Effects": {
+        "ItemPlayerAnimationsId": "Mace",
+        "ItemAnimationId": "Guard",
+        "WorldSoundEventId": "SFX_Spirit_Root_Alerted"
+      }
+    }
+  ]
+}

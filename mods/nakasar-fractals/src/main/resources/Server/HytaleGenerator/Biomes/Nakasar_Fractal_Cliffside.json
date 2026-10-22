@@ -1,0 +1,125 @@
+{
+  "Name": "Nakasar_Fractal_Cliffside",
+  "Terrain": {
+    "Type": "DAOTerrain",
+    "Density": {
+      "Type": "Constant",
+      "Value": -1.0
+    }
+  },
+  "MaterialProvider": {
+    "Type": "Constant",
+    "Material": {
+      "Solid": "Empty"
+    }
+  },
+  "Props": [
+    {
+      "Runtime": 0,
+      "ContextPrecision": "Prop",
+      "PropDistribution": {
+        "Type": "Assigned",
+        "OverrideAllProps": true,
+        "PropDistribution": {
+          "Type": "Positions",
+          "Positions": {
+            "Type": "List",
+            "Positions": [
+              {
+                "X": 0,
+                "Y": 100,
+                "Z": 0
+              }
+            ]
+          }
+        },
+        "Assignments": {
+          "Type": "Constant",
+          "Prop": {
+            "Type": "Prefab",
+            "WeightedPrefabPaths": [
+              {
+                "Path": "Nakasar/Fractals/Cliffside/Cliff",
+                "Weight": 1.0
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "Runtime": 0,
+      "ContextPrecision": "Prop",
+      "PropDistribution": {
+        "Type": "Assigned",
+        "OverrideAllProps": true,
+        "PropDistribution": {
+          "Type": "Positions",
+          "Positions": {
+            "Type": "List",
+            "Positions": [
+              {
+                "X": 0,
+                "Y": 100,
+                "Z": 0
+              }
+            ]
+          }
+        },
+        "Assignments": {
+          "Type": "Constant",
+          "Prop": {
+            "Type": "Prefab",
+            "WeightedPrefabPaths": [
+              {
+                "Path": "Nakasar/Fractals/Cliffside/Colossus",
+                "Weight": 1.0
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "Runtime": 0,
+      "ContextPrecision": "Prop",
+      "PropDistribution": {
+        "Type": "Assigned",
+        "OverrideAllProps": true,
+        "PropDistribution": {
+          "Type": "Positions",
+          "Positions": {
+            "Type": "List",
+            "Positions": [
+              {
+                "X": 0,
+                "Y": 100,
+                "Z": 0
+              }
+            ]
+          }
+        },
+        "Assignments": {
+          "Type": "Constant",
+          "Prop": {
+            "Type": "Prefab",
+            "WeightedPrefabPaths": [
+              {
+                "Path": "Nakasar/Fractals/Cliffside/Course",
+                "Weight": 1.0
+              }
+            ]
+          }
+        }
+      }
+    }
+  ],
+  "EnvironmentProvider": {
+    "Type": "Constant",
+    "Environment": "Nakasar_Fractal_Env_Mists"
+  },
+  "TintProvider": {
+    "Type": "Constant",
+    "Color": "#62a83e"
+  }
+}

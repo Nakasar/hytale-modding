@@ -1,0 +1,99 @@
+{
+  "DisplayNameKey": "nakasar_fractals_progress.shop.Archivist.name",
+  "RefreshInterval": {
+    "Days": 1
+  },
+  "Trades": [
+    {
+      "Output": {
+        "ItemId": "Nakasar_Fractal_Infusion_01",
+        "Quantity": 1
+      },
+      "Input": [
+        {
+          "ItemId": "Nakasar_Fractal_Mist_Shard",
+          "Quantity": 10
+        }
+      ],
+      "Stock": 99
+    },
+    {
+      "Output": {
+        "ItemId": "Nakasar_Fractal_Infusion_02",
+        "Quantity": 1
+      },
+      "Input": [
+        {
+          "ItemId": "Nakasar_Fractal_Mist_Shard",
+          "Quantity": 25
+        }
+      ],
+      "Stock": 99
+    },
+    {
+      "Output": {
+        "ItemId": "Nakasar_Fractal_Infusion_04",
+        "Quantity": 1
+      },
+      "Input": [
+        {
+          "ItemId": "Nakasar_Fractal_Mist_Shard",
+          "Quantity": 120
+        }
+      ],
+      "Stock": 99
+    },
+    {
+      "Output": {
+        "ItemId": "PortalKey_Nakasar_Fractal",
+        "Quantity": 1
+      },
+      "Input": [
+        {
+          "ItemId": "Nakasar_Fractal_Mist_Shard",
+          "Quantity": 30
+        }
+      ],
+      "Stock": 99
+    },
+    {
+      "Output": {
+        "ItemId": "Armor_Nakasar_Fractal_Mist_Crown",
+        "Quantity": 1
+      },
+      "Input": [
+        {
+          "ItemId": "Nakasar_Fractal_Mist_Shard",
+          "Quantity": 150
+        }
+      ],
+      "Stock": 99
+    },
+    {
+      "Output": {
+        "ItemId": "Armor_Nakasar_Fractal_Archdiviner_Hood",
+        "Quantity": 1
+      },
+      "Input": [
+        {
+          "ItemId": "Nakasar_Fractal_Mist_Shard",
+          "Quantity": 200
+        }
+      ],
+      "Stock": 99
+    },
+    {
+      "Output": {
+        "ItemId": "Armor_Nakasar_Fractal_Mist_Mantle",
+        "Quantity": 1
+      },
+      "Input": [
+        {
+          "ItemId": "Nakasar_Fractal_Mist_Shard",
+          "Quantity": 250
+        }
+      ],
+      "Stock": 99
+    }
+  ]
+}

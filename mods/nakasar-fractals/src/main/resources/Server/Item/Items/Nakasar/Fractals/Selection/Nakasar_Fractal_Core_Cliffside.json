@@ -1,0 +1,16 @@
+{
+  "TranslationProperties": {
+    "Name": "nakasar_fractals.items.Nakasar_Fractal_Core_Cliffside.name",
+    "Description": "nakasar_fractals.items.Nakasar_Fractal_Core_Cliffside.description"
+  },
+  "Icon": "Icons/Items/Nakasar/Fractals/Core_Cliffside.png",
+  "Model": "Items/Nakasar/Fractals/Core_Cliffside.blockymodel",
+  "Texture": "Items/Nakasar/Fractals/Core_Cliffside.png",
+  "Quality": "Rare",
+  "Categories": [
+    "Items.Ingredients"
+  ],
+  "PlayerAnimationsId": "Item",
+  "ItemSoundSetId": "ISS_Items_Gems",
+  "MaxStack": 1
+}

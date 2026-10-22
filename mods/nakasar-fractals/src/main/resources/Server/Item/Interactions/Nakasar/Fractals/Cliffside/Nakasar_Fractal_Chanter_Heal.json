@@ -1,0 +1,21 @@
+{
+  "$Comment": "Incantateur : soigne les cultistes à moins de 10 blocs (25 PV chacun), anneau vert-violet.",
+  "Type": "Serial",
+  "Interactions": [
+    {
+      "Type": "Nakasar_Fractal_HealFoes",
+      "Radius": 10,
+      "Amount": 25,
+      "Particle": "Nakasar_Fractal_Heal_Foes"
+    },
+    {
+      "Type": "Simple",
+      "RunTime": 1.0,
+      "Effects": {
+        "ItemPlayerAnimationsId": "Staff",
+        "ItemAnimationId": "SwingLeft",
+        "WorldSoundEventId": "SFX_Spirit_Root_Spawn"
+      }
+    }
+  ]
+}

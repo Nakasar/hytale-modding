@@ -1,0 +1,12 @@
+{
+  "$Comment": "Ventilateur : souffle blanc qui aspire le gaz. Généré par tools/generate_uncategorized.py.",
+  "Spawners": [
+    {
+      "SpawnerId": "Nakasar_Fractal_Fan_Gust_Wind",
+      "PositionOffset": {
+        "Y": 0.3
+      }
+    }
+  ],
+  "CullDistance": 72
+}

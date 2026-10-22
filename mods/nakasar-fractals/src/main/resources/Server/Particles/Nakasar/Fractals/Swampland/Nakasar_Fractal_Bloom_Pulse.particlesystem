@@ -1,0 +1,12 @@
+{
+  "$Comment": "Fleur de poison : bouffée verte autour d'elle. Généré par tools/generate_swampland.py.",
+  "Spawners": [
+    {
+      "SpawnerId": "Nakasar_Fractal_Bloom_Pulse_Puff",
+      "PositionOffset": {
+        "Y": 0.4
+      }
+    }
+  ],
+  "CullDistance": 72
+}

@@ -1,0 +1,5 @@
+{
+  "$Comment": "Distributeur des noyaux : un noyau par fractale, gratuit (boutique de troc sans prix).",
+  "Type": "Nakasar_Fractal_OpenShop",
+  "Shop": "Nakasar_Fractal_Cores"
+}

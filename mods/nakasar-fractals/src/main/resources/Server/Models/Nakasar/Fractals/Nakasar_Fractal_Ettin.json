@@ -1,0 +1,6 @@
+{
+  "$Comment": "Ettin (prisonnier, provisoire) : la grande aberration vanilla × 1,15 en attendant un modèle à deux têtes.",
+  "Parent": "Zombie_Aberrant_Big",
+  "MinScale": 1.15,
+  "MaxScale": 1.15
+}

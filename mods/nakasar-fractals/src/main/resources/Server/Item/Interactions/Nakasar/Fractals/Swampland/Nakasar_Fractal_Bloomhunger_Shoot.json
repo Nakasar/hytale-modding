@@ -1,0 +1,27 @@
+{
+  "$Comment": "Carnasse : tir de poison sur sa cible, cercle rouge de 2,6 blocs (1,3 s), 18 dégâts et poison.",
+  "Type": "Serial",
+  "Interactions": [
+    {
+      "Type": "Nakasar_Fractal_Telegraph",
+      "Shape": "Circle",
+      "Seconds": 1.3,
+      "Anchor": "Target",
+      "Radius": 2.6,
+      "Damage": 18,
+      "EffectId": "Poison_T1",
+      "EffectDuration": 5,
+      "PlayersOnly": true,
+      "ImpactParticle": "Nakasar_Fractal_Egg_Burst"
+    },
+    {
+      "Type": "Simple",
+      "RunTime": 1.3,
+      "Effects": {
+        "ItemPlayerAnimationsId": "Spirit_Root_Default",
+        "ItemAnimationId": "SporeGas",
+        "WorldSoundEventId": "SFX_Spirit_Root_Alerted"
+      }
+    }
+  ]
+}

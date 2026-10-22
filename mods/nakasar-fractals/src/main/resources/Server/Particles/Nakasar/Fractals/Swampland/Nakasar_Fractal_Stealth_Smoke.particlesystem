@@ -1,0 +1,12 @@
+{
+  "$Comment": "Le Moussu disparaît ou surgit : fumée verte. Généré par tools/generate_swampland.py.",
+  "Spawners": [
+    {
+      "SpawnerId": "Nakasar_Fractal_Stealth_Smoke_Smoke",
+      "PositionOffset": {
+        "Y": 0.8
+      }
+    }
+  ],
+  "CullDistance": 72
+}

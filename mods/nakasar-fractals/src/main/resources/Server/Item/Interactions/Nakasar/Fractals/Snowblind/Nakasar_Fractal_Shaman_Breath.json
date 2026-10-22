@@ -1,0 +1,38 @@
+{
+  "$Comment": "Le Chaman : il s'agenouille et souffle un cône glacé de 70° sur 11 blocs (2,2 s), 30 dégâts et ralentissement.",
+  "Type": "Serial",
+  "Interactions": [
+    {
+      "Type": "ClearEntityEffect",
+      "Entity": "User",
+      "EntityEffectId": "Hit_Interrupt_Eligible"
+    },
+    {
+      "Type": "ApplyEffect",
+      "EffectId": "Nakasar_Fractal_Rooted"
+    },
+    {
+      "Type": "Nakasar_Fractal_Telegraph",
+      "Shape": "Cone",
+      "Seconds": 2.2,
+      "Angle": 70,
+      "Radius": 11,
+      "Damage": 30,
+      "DamageCause": "Nakasar_Fractal_Frost",
+      "EffectId": "Nakasar_Fractal_Crippled",
+      "EffectDuration": 3,
+      "PlayersOnly": true,
+      "HitParticle": "Impact_Ice",
+      "ImpactParticle": "Weapon_Frost_Mist"
+    },
+    {
+      "Type": "Simple",
+      "RunTime": 2.2,
+      "Effects": {
+        "WorldSoundEventId": "SFX_Spear_Throw_Charge",
+        "ItemPlayerAnimationsId": "Mace",
+        "ItemAnimationId": "SwingDownCharging"
+      }
+    }
+  ]
+}

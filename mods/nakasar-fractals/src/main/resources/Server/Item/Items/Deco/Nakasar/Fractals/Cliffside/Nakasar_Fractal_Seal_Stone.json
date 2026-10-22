@@ -1,0 +1,43 @@
+{
+  "TranslationProperties": {
+    "Name": "nakasar_fractals_cliffside.items.Nakasar_Fractal_Seal_Stone.name",
+    "Description": "nakasar_fractals_cliffside.items.Nakasar_Fractal_Seal_Stone.description"
+  },
+  "Icon": "Icons/Items/Nakasar/Fractals/Seal_Stone.png",
+  "Categories": [
+    "Blocks.Deco"
+  ],
+  "Quality": "Technical",
+  "PlayerAnimationsId": "Block",
+  "BlockType": {
+    "Material": "Solid",
+    "DrawType": "Cube",
+    "Opacity": "Solid",
+    "Textures": [
+      {
+        "Sides": "BlockTextures/Nakasar/Fractals/Seal_Stone.png",
+        "UpDown": "BlockTextures/Nakasar/Fractals/Seal_Stone_Top.png",
+        "Weight": 1
+      }
+    ],
+    "HitboxType": "Full",
+    "Flags": {},
+    "Gathering": {
+      "Breaking": {
+        "GatherType": "Unbreakable"
+      }
+    },
+    "BlockParticleSetId": "Stone",
+    "BlockSoundSetId": "Stone",
+    "ParticleColor": "#c478ff",
+    "Light": {
+      "Color": "#a6f"
+    }
+  },
+  "Tags": {
+    "Type": [
+      "Deco"
+    ]
+  },
+  "ItemSoundSetId": "ISS_Blocks_Stone"
+}

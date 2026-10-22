@@ -1,0 +1,22 @@
+{
+  "$Comment": "Irukandji : décharge autour de lui, cercle rouge de 3 blocs (1,2 s), 14 dégâts.",
+  "Type": "Serial",
+  "Interactions": [
+    {
+      "Type": "Nakasar_Fractal_Telegraph",
+      "Shape": "Circle",
+      "Seconds": 1.2,
+      "Radius": 3,
+      "Damage": 14,
+      "PlayersOnly": true,
+      "ImpactParticle": "Nakasar_Fractal_Colossus_Reflect"
+    },
+    {
+      "Type": "Simple",
+      "RunTime": 1.2,
+      "Effects": {
+        "WorldSoundEventId": "SFX_Spirit_Root_Alerted"
+      }
+    }
+  ]
+}

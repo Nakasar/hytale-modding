@@ -1,0 +1,72 @@
+{
+  "TranslationProperties": {
+    "Name": "nakasar_fractals.items.Nakasar_Fractal_Reward_Chest.name",
+    "Description": "nakasar_fractals.items.Nakasar_Fractal_Reward_Chest.description"
+  },
+  "Icon": "Icons/Items/Nakasar/Fractals/Reward_Chest.png",
+  "Categories": [
+    "Blocks.Deco"
+  ],
+  "Quality": "Technical",
+  "PlayerAnimationsId": "Block",
+  "BlockType": {
+    "Material": "Solid",
+    "DrawType": "Model",
+    "Opacity": "Transparent",
+    "HitboxType": "Full",
+    "Flags": {},
+    "Gathering": {
+      "Breaking": {
+        "GatherType": "Unbreakable"
+      }
+    },
+    "BlockParticleSetId": "Stone",
+    "BlockSoundSetId": "Stone",
+    "ParticleColor": "#ffd26e",
+    "Light": {
+      "Color": "#fd8"
+    },
+    "Interactions": {
+      "Use": {
+        "Interactions": [
+          "Nakasar_Fractal_Use_Reward_Chest"
+        ]
+      }
+    },
+    "CustomModel": "Blocks/Nakasar/Fractals/Reward_Chest.blockymodel",
+    "CustomModelTexture": [
+      {
+        "Texture": "Blocks/Nakasar/Fractals/Reward_Chest_Texture.png",
+        "Weight": 1
+      }
+    ],
+    "VariantRotation": "NESW",
+    "Particles": [
+      {
+        "SystemId": "Block_Treasure_Sparks",
+        "Scale": 1,
+        "PositionOffset": {
+          "Y": 0.6
+        }
+      }
+    ]
+  },
+  "Tags": {
+    "Type": [
+      "Deco"
+    ]
+  },
+  "ItemSoundSetId": "ISS_Blocks_Stone",
+  "IconProperties": {
+    "Scale": 0.55,
+    "Translation": [
+      0,
+      -12
+    ],
+    "Rotation": [
+      22.5,
+      45,
+      22.5
+    ]
+  }
+}

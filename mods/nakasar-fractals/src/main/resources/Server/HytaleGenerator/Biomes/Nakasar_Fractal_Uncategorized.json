@@ -1,0 +1,224 @@
+{
+  "Name": "Nakasar_Fractal_Uncategorized",
+  "Terrain": {
+    "Type": "DAOTerrain",
+    "Density": {
+      "Type": "Constant",
+      "Value": -1.0
+    }
+  },
+  "MaterialProvider": {
+    "Type": "Constant",
+    "Material": {
+      "Solid": "Empty"
+    }
+  },
+  "Props": [
+    {
+      "Runtime": 0,
+      "ContextPrecision": "Prop",
+      "PropDistribution": {
+        "Type": "Assigned",
+        "OverrideAllProps": true,
+        "PropDistribution": {
+          "Type": "Positions",
+          "Positions": {
+            "Type": "List",
+            "Positions": [
+              {
+                "X": 0,
+                "Y": 100,
+                "Z": -232
+              }
+            ]
+          }
+        },
+        "Assignments": {
+          "Type": "Constant",
+          "Prop": {
+            "Type": "Prefab",
+            "WeightedPrefabPaths": [
+              {
+                "Path": "Nakasar/Fractals/Uncategorized/Section_00",
+                "Weight": 1.0
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "Runtime": 0,
+      "ContextPrecision": "Prop",
+      "PropDistribution": {
+        "Type": "Assigned",
+        "OverrideAllProps": true,
+        "PropDistribution": {
+          "Type": "Positions",
+          "Positions": {
+            "Type": "List",
+            "Positions": [
+              {
+                "X": 0,
+                "Y": 100,
+                "Z": -168
+              }
+            ]
+          }
+        },
+        "Assignments": {
+          "Type": "Constant",
+          "Prop": {
+            "Type": "Prefab",
+            "WeightedPrefabPaths": [
+              {
+                "Path": "Nakasar/Fractals/Uncategorized/Section_01",
+                "Weight": 1.0
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "Runtime": 0,
+      "ContextPrecision": "Prop",
+      "PropDistribution": {
+        "Type": "Assigned",
+        "OverrideAllProps": true,
+        "PropDistribution": {
+          "Type": "Positions",
+          "Positions": {
+            "Type": "List",
+            "Positions": [
+              {
+                "X": 0,
+                "Y": 100,
+                "Z": -104
+              }
+            ]
+          }
+        },
+        "Assignments": {
+          "Type": "Constant",
+          "Prop": {
+            "Type": "Prefab",
+            "WeightedPrefabPaths": [
+              {
+                "Path": "Nakasar/Fractals/Uncategorized/Section_02",
+                "Weight": 1.0
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "Runtime": 0,
+      "ContextPrecision": "Prop",
+      "PropDistribution": {
+        "Type": "Assigned",
+        "OverrideAllProps": true,
+        "PropDistribution": {
+          "Type": "Positions",
+          "Positions": {
+            "Type": "List",
+            "Positions": [
+              {
+                "X": 0,
+                "Y": 100,
+                "Z": -40
+              }
+            ]
+          }
+        },
+        "Assignments": {
+          "Type": "Constant",
+          "Prop": {
+            "Type": "Prefab",
+            "WeightedPrefabPaths": [
+              {
+                "Path": "Nakasar/Fractals/Uncategorized/Section_03",
+                "Weight": 1.0
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "Runtime": 0,
+      "ContextPrecision": "Prop",
+      "PropDistribution": {
+        "Type": "Assigned",
+        "OverrideAllProps": true,
+        "PropDistribution": {
+          "Type": "Positions",
+          "Positions": {
+            "Type": "List",
+            "Positions": [
+              {
+                "X": 0,
+                "Y": 100,
+                "Z": 24
+              }
+            ]
+          }
+        },
+        "Assignments": {
+          "Type": "Constant",
+          "Prop": {
+            "Type": "Prefab",
+            "WeightedPrefabPaths": [
+              {
+                "Path": "Nakasar/Fractals/Uncategorized/Section_04",
+                "Weight": 1.0
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "Runtime": 0,
+      "ContextPrecision": "Prop",
+      "PropDistribution": {
+        "Type": "Assigned",
+        "OverrideAllProps": true,
+        "PropDistribution": {
+          "Type": "Positions",
+          "Positions": {
+            "Type": "List",
+            "Positions": [
+              {
+                "X": 0,
+                "Y": 100,
+                "Z": 88
+              }
+            ]
+          }
+        },
+        "Assignments": {
+          "Type": "Constant",
+          "Prop": {
+            "Type": "Prefab",
+            "WeightedPrefabPaths": [
+              {
+                "Path": "Nakasar/Fractals/Uncategorized/Section_05",
+                "Weight": 1.0
+              }
+            ]
+          }
+        }
+      }
+    }
+  ],
+  "EnvironmentProvider": {
+    "Type": "Constant",
+    "Environment": "Nakasar_Fractal_Env_Mists"
+  },
+  "TintProvider": {
+    "Type": "Constant",
+    "Color": "#6ab04a"
+  }
+}

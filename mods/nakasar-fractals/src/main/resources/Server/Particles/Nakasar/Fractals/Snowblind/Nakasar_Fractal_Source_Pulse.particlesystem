@@ -1,0 +1,12 @@
+{
+  "$Comment": "Bouclier de givre de la Source : anneau de givre. Généré par tools/generate_snowblind.py.",
+  "Spawners": [
+    {
+      "SpawnerId": "Nakasar_Fractal_Source_Pulse_Ring",
+      "PositionOffset": {
+        "Y": 1.0
+      }
+    }
+  ],
+  "CullDistance": 72
+}

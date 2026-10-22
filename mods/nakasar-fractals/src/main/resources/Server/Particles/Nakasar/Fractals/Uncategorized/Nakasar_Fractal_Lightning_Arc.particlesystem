@@ -1,0 +1,12 @@
+{
+  "$Comment": "Arc électrique (charges opposées, rebond de l'éclair de Vieux Tom, tourelles). Généré par tools/generate_uncategorized.py.",
+  "Spawners": [
+    {
+      "SpawnerId": "Nakasar_Fractal_Lightning_Arc_Arc",
+      "PositionOffset": {
+        "Y": 0.0
+      }
+    }
+  ],
+  "CullDistance": 72
+}

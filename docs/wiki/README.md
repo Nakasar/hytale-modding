@@ -55,3 +55,10 @@ Guide du joueur pour le mod **Nakasar : Vampires** (Hytale, serveur 0.7.2) : un 
 ---
 
 *Les chiffres de ce wiki sont lus dans les fichiers du mod. Les rendus 3D des citrouilles sont produits par `mods/nakasar-vampires/tools/render_wiki_portraits.py`, la page du butin par `tools/generate_wiki_loot.py`. Les PNJ habillés de modèles du jeu de base sont photographiés en jeu.*
+
+## Fractales des Brumes
+
+Le second mod, **Nakasar : Fractales** : les fractales de *Guild Wars 2* pour 1 à 5 joueurs, depuis un hub dans les Brumes. [Tout sur les fractales](fractales/README.md).
+
+- [Observatoire](fractales/observatoire.md) · [Progression et récompenses](fractales/progression.md) · [Instabilités](fractales/instabilites.md) · [Cosmétiques de saison](fractales/cosmetiques.md)
+- **Saison 1 :** [Falaise](fractales/falaise.md) · [Inclassable](fractales/inclassable.md) · [Volcanique](fractales/volcanique.md) · [Océan solide](fractales/ocean-solide.md) · [Marais](fractales/marais.md) · [Tempête de neige](fractales/tempete-de-neige.md)

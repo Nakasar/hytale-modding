@@ -1,0 +1,60 @@
+{
+  "TranslationProperties": {
+    "Name": "nakasar_fractals_cliffside.items.Nakasar_Fractal_Cage_Door.name",
+    "Description": "nakasar_fractals_cliffside.items.Nakasar_Fractal_Cage_Door.description"
+  },
+  "Icon": "Icons/Items/Nakasar/Fractals/Cage_Door.png",
+  "Categories": [
+    "Blocks.Deco"
+  ],
+  "Quality": "Technical",
+  "PlayerAnimationsId": "Block",
+  "BlockType": {
+    "Material": "Solid",
+    "DrawType": "Model",
+    "Opacity": "Transparent",
+    "HitboxType": "Full",
+    "Flags": {},
+    "Gathering": {
+      "Breaking": {
+        "GatherType": "Unbreakable"
+      }
+    },
+    "BlockParticleSetId": "Stone",
+    "BlockSoundSetId": "Stone",
+    "ParticleColor": "#968caa",
+    "Interactions": {
+      "Use": {
+        "Interactions": [
+          "Nakasar_Fractal_Use_Cage_Door"
+        ]
+      }
+    },
+    "CustomModel": "Blocks/Nakasar/Fractals/Cage_Door.blockymodel",
+    "CustomModelTexture": [
+      {
+        "Texture": "Blocks/Nakasar/Fractals/Cage_Door_Texture.png",
+        "Weight": 1
+      }
+    ],
+    "VariantRotation": "NESW"
+  },
+  "Tags": {
+    "Type": [
+      "Deco"
+    ]
+  },
+  "ItemSoundSetId": "ISS_Blocks_Stone",
+  "IconProperties": {
+    "Scale": 0.55,
+    "Translation": [
+      0,
+      -12
+    ],
+    "Rotation": [
+      22.5,
+      45,
+      22.5
+    ]
+  }
+}

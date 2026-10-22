@@ -1,0 +1,353 @@
+package dev.nakasar.hytale.fractals.volcanic;
+
+import com.hypixel.hytale.component.CommandBuffer;
+import com.hypixel.hytale.component.Ref;
+import com.hypixel.hytale.component.Store;
+import com.hypixel.hytale.server.core.Message;
+import com.hypixel.hytale.server.core.entity.Frozen;
+import com.hypixel.hytale.server.core.modules.entity.damage.Damage;
+import com.hypixel.hytale.server.core.modules.entitystats.EntityStatMap;
+import com.hypixel.hytale.server.core.modules.entitystats.EntityStatValue;
+import com.hypixel.hytale.server.core.modules.entitystats.asset.DefaultEntityStatTypes;
+import com.hypixel.hytale.server.core.universe.PlayerRef;
+import com.hypixel.hytale.server.core.universe.world.World;
+import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
+import dev.nakasar.hytale.fractals.arena.Carried;
+import dev.nakasar.hytale.fractals.arena.Gates;
+import dev.nakasar.hytale.fractals.arena.SafeLandings;
+import dev.nakasar.hytale.fractals.boss.BossBarSystem;
+import dev.nakasar.hytale.fractals.combat.Delayed;
+import dev.nakasar.hytale.fractals.combat.HitShield;
+import dev.nakasar.hytale.fractals.combat.Hurt;
+import dev.nakasar.hytale.fractals.combat.Spawns;
+import dev.nakasar.hytale.fractals.combat.Telegraphs;
+import dev.nakasar.hytale.fractals.instability.Instabilities;
+import dev.nakasar.hytale.fractals.party.FractalRuns;
+import dev.nakasar.hytale.fractals.stage.FractalStage;
+import org.joml.Vector3d;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
+import java.util.WeakHashMap;
+import java.util.concurrent.ThreadLocalRandom;
+
+/**
+ * Le Volcanique (étape 6 du GDD), fidèle au déroulé de GW2 :
+ * <ol>
+ *   <li>{@link Step#CAMP} : le camp des grawls, {@value #CAMP_KILLS} grawls à abattre (+{@value #CAMP_KILLS_PER_PLAYER}
+ *   par joueur de plus), la vie du totem du rituel montre ce qu'il en reste ; des rochers tombent près des joueurs ;</li>
+ *   <li>{@link Step#CORRIDOR} : le couloir aux rochers ({@link Boulders}) ;</li>
+ *   <li>{@link Step#CHAMPION} : le Champion chaman, ses vétérans et les captifs ({@link Champion}) ;</li>
+ *   <li>{@link Step#MINE} : la mine, rails au-dessus de la lave ({@link SafeLandings}), chauves-souris ;</li>
+ *   <li>{@link Step#ARENA} : le Chamane imprégné ({@link ImbuedShaman}) ; {@link Step#DONE} ensuite.</li>
+ * </ol>
+ * Tout ce que pose le Java est non sauvegardé : une instance rechargée repart du camp.
+ */
+public final class Volcanic implements FractalStage {
+
+    public static final String FRACTAL = "Volcanic";
+    static final String MESSAGES = "nakasar_fractals_volcanic.";
+    static final String WARRIOR = "Nakasar_Fractal_Grawl_Warrior";
+    static final String GRAWL_SHAMAN = "Nakasar_Fractal_Grawl_Shaman";
+    static final String TOTEM = "Nakasar_Fractal_Grawl_Totem";
+    static final String VETERAN = "Nakasar_Fractal_Grawl_Veteran";
+    static final String CHAMPION = "Nakasar_Fractal_Champion_Shaman";
+    static final String CAPTIVE = "Nakasar_Fractal_Captive";
+    static final String BAT = "Nakasar_Fractal_Cave_Bat";
+    static final String IMBUED = "Nakasar_Fractal_Imbued_Shaman";
+    static final String LARVA = "Nakasar_Fractal_Ember_Larva";
+    static final String STONE = "Nakasar_Fractal_Imbued_Stone";
+    static final String FIRE_CAUSE = "Nakasar_Fractal_Fire";
+
+    static final int CAMP_KILLS = 12;
+    static final int CAMP_KILLS_PER_PLAYER = 3;
+    static final float CAMP_REFILL = 3f;
+    static final float CAMP_ROCKS = 8f;
+    static final double ROCK_RADIUS = 2;
+    static final float ROCK_SECONDS = 1.6f;
+    static final float ROCK_PART = 0.20f;
+
+    enum Step { CAMP, CORRIDOR, CHAMPION, MINE, ARENA, DONE }
+
+    static final class State {
+        Step step = Step.CAMP;
+        boolean started;
+        final List<Ref<EntityStore>> camp = new ArrayList<>();
+        volatile int kills;
+        int required;
+        Ref<EntityStore> totem;
+        float refill;
+        float rocks;
+        int spawned;
+        final Boulders boulders = new Boulders();
+        final Champion champion = new Champion();
+        final SafeLandings landings = new SafeLandings(VolcanicLayout.JUMP_ZONES, MESSAGES + "landing.back");
+        final List<Ref<EntityStore>> bats = new ArrayList<>();
+        boolean batsSpawned;
+        final ImbuedShaman shaman = new ImbuedShaman();
+        final Map<UUID, Long> throttle = new HashMap<>();
+        long stoneMessage;
+    }
+
+    private final Map<World, State> states = Collections.synchronizedMap(new WeakHashMap<>());
+
+    /** Barres de boss du Volcanique, charges du Champion et rôles fixes que les instabilités laissent tranquilles. */
+    public static void register() {
+        BossBarSystem.register(TOTEM);
+        BossBarSystem.register(CHAMPION);
+        BossBarSystem.label(CHAMPION, Champion::label);
+        BossBarSystem.register(IMBUED);
+        BossBarSystem.label(IMBUED, HitShield::label);
+        Instabilities.exempt(TOTEM, CAPTIVE);
+    }
+
+    @Override
+    public String fractal() {
+        return FRACTAL;
+    }
+
+    State state(World world) {
+        return states.computeIfAbsent(world, w -> new State());
+    }
+
+    @Override
+    public void clearAll() {
+        states.clear();
+        Champion.clearLabels();
+    }
+
+    // --- pas de jeu ---------------------------------------------------------------------------------
+
+    @Override
+    public void step(World world, float dt) {
+        Store<EntityStore> store = world.getEntityStore().getStore();
+        State st = state(world);
+        List<PlayerRef> players = Spawns.alivePlayers(world, store);
+        if (players.isEmpty()) {
+            st.champion.idle(world, store, dt);
+            st.shaman.idle(world, store, dt);
+            return;
+        }
+        if (!st.started) {
+            st.started = true;
+            st.required = CAMP_KILLS + CAMP_KILLS_PER_PLAYER * (FractalRuns.partySize(world) - 1);
+            Spawns.tellAll(world, Message.translation(MESSAGES + "intro").param("count", st.required));
+        }
+        st.boulders.step(world, store, players, Spawns.anyIn(store, players, VolcanicLayout.CORRIDOR), dt);
+        st.landings.step(world, store, players);
+        switch (st.step) {
+            case CAMP -> camp(world, store, st, players, dt);
+            case CORRIDOR -> {
+                if (Champion.inArena(store, players).size() > 0) {
+                    st.step = Step.CHAMPION;
+                    Gates.checkpoint(world, VolcanicLayout.LANDING_CHECKPOINT, MESSAGES + "checkpoint");
+                }
+            }
+            case CHAMPION -> {
+                if (st.champion.step(world, store, st, players, dt)) {
+                    st.step = Step.MINE;
+                    Gates.open(world, store, VolcanicLayout.GATE_CHAMPION, MESSAGES + "champion.victory");
+                }
+            }
+            case MINE -> mine(world, store, st, players);
+            case ARENA -> {
+                if (st.shaman.step(world, store, st, players, dt)) {
+                    st.step = Step.DONE;
+                    Spawns.removeAll(store, st.bats);
+                    Gates.victory(world, VolcanicLayout.REWARD, VolcanicLayout.END_EXIT, MESSAGES + "title.victory",
+                            MESSAGES + "shaman.victory");
+                }
+            }
+            default -> {
+            }
+        }
+    }
+
+    // --- camp des grawls -------------------------------------------------------------------------------
+
+    private void camp(World world, Store<EntityStore> store, State st, List<PlayerRef> players, float dt) {
+        if (st.totem == null || !st.totem.isValid()) {
+            st.totem = Spawns.spawn(store, TOTEM, Spawns.point(VolcanicLayout.TOTEM), 0f);
+            if (st.totem != null) {
+                store.ensureAndGetComponent(st.totem, Frozen.getComponentType());
+            }
+        }
+        showProgress(store, st);
+        if (st.kills >= st.required) {
+            Vector3d at = Telegraphs.position(store, st.totem);
+            if (at != null) {
+                Telegraphs.particle(store, "Nakasar_Fractal_Seal_Break", at, 1.5f);
+            }
+            Spawns.remove(store, st.totem);
+            st.totem = null;
+            Spawns.removeAll(store, st.camp);
+            st.step = Step.CORRIDOR;
+            Gates.open(world, store, VolcanicLayout.GATE_CAMP, MESSAGES + "camp.done");
+            Gates.checkpoint(world, VolcanicLayout.CORRIDOR_CHECKPOINT, MESSAGES + "checkpoint");
+            Spawns.tellAll(world, Message.translation(MESSAGES + "corridor.enter"));
+            return;
+        }
+        st.camp.removeIf(ref -> !Spawns.alive(store, ref));
+        int cap = 4 + FractalRuns.partySize(world) - 1;
+        st.refill += dt;
+        if (st.refill >= CAMP_REFILL && st.camp.size() < cap && st.kills + st.camp.size() < st.required) {
+            st.refill = 0f;
+            double[][] points = VolcanicLayout.CAMP_SPAWNS;
+            String role = st.spawned % 4 == 3 ? GRAWL_SHAMAN : WARRIOR;
+            Ref<EntityStore> grawl = Spawns.spawnFoe(world, store, role, points[st.spawned++ % points.length]);
+            if (grawl != null) {
+                st.camp.add(grawl);
+            }
+        }
+        List<PlayerRef> inCamp = Spawns.in(store, players, VolcanicLayout.CAMP);
+        st.rocks += dt;
+        if (st.rocks >= CAMP_ROCKS && !inCamp.isEmpty()) {
+            st.rocks = 0f;
+            fallingRocks(world, store, st, inCamp, 1 + FractalRuns.partySize(world) / 2, false);
+        }
+    }
+
+    /** La vie du totem montre les grawls qu'il reste à abattre. */
+    private void showProgress(Store<EntityStore> store, State st) {
+        EntityStatMap stats = st.totem == null ? null : store.getComponent(st.totem, EntityStatMap.getComponentType());
+        EntityStatValue health = stats == null ? null : stats.get(DefaultEntityStatTypes.getHealth());
+        if (health == null || st.required <= 0) {
+            return;
+        }
+        float wanted = Math.max(1f, health.getMax() * (st.required - st.kills) / st.required);
+        if (Math.abs(health.get() - wanted) > 0.5f) {
+            stats.setStatValue(DefaultEntityStatTypes.getHealth(), wanted);
+            Vector3d at = Telegraphs.position(store, st.totem);
+            if (at != null) {
+                Telegraphs.particle(store, "Nakasar_Fractal_Totem_Pulse", at, 1.2f);
+            }
+        }
+    }
+
+    /**
+     * Rochers qui tombent du volcan : un cercle rouge près de chaque joueur choisi ({@value #ROCK_SECONDS} s), puis
+     * {@value #ROCK_PART} des PV max et un étourdissement de 2 s ; avec `stones`, un rocher sur trois laisse une pierre
+     * imprégnée.
+     */
+    static void fallingRocks(World world, Store<EntityStore> store, State st, List<PlayerRef> targets, int count, boolean stones) {
+        ThreadLocalRandom random = ThreadLocalRandom.current();
+        float seconds = ROCK_SECONDS * FractalRuns.windupFactor(world);
+        for (PlayerRef target : Spawns.pick(targets, count)) {
+            Vector3d at = Telegraphs.position(store, target.getReference());
+            if (at == null) {
+                continue;
+            }
+            double a = random.nextDouble(Math.PI * 2);
+            double r = random.nextDouble(0, 3);
+            Vector3d center = new Vector3d(at.x() + Math.cos(a) * r, at.y(), at.z() + Math.sin(a) * r);
+            Telegraphs.circle(store, center, ROCK_RADIUS, seconds);
+            Telegraphs.particle(store, "Nakasar_Fractal_Falling_Rock", center, 1f);
+            boolean drop = stones && random.nextInt(3) == 0;
+            Delayed.later(world, seconds, s -> {
+                Telegraphs.particle(s, "Nakasar_Fractal_Rock_Impact", center, 1.2f);
+                Telegraphs.sound(s, "SFX_Goblin_Feastmaster_Slam", center);
+                for (PlayerRef p : Spawns.alivePlayers(world, s)) {
+                    Ref<EntityStore> ref = p.getReference();
+                    Vector3d there = Telegraphs.position(s, ref);
+                    if (there != null && Telegraphs.horizontal(there, center) <= ROCK_RADIUS && Math.abs(there.y() - center.y()) <= 2.5) {
+                        Hurt.percent(s, ref, ROCK_PART, FIRE_CAUSE);
+                        Hurt.effect(s, ref, "Hazard_Electric_Stun", 2f);
+                    }
+                }
+                if (drop) {
+                    Carried.drop(s, STONE, center);
+                    Telegraphs.particle(s, "Nakasar_Fractal_Imbued_Glow", center, 1f);
+                    long now = System.nanoTime();
+                    if (now - st.stoneMessage > Telegraphs.seconds(10f)) {
+                        st.stoneMessage = now;
+                        Spawns.tellAll(world, Message.translation(MESSAGES + "stone.drop"));
+                    }
+                }
+            });
+        }
+    }
+
+    /** Les joueurs dans une arène ronde : à {@code radius} + 0,5 du centre, de 3 blocs sous lui à {@code above} au-dessus. */
+    static List<PlayerRef> inCylinder(Store<EntityStore> store, List<PlayerRef> players, double[] center, double radius, double above) {
+        List<PlayerRef> out = new ArrayList<>();
+        for (PlayerRef player : players) {
+            Vector3d at = Telegraphs.position(store, player.getReference());
+            if (at != null && inCylinder(at, center, radius, above)) {
+                out.add(player);
+            }
+        }
+        return out;
+    }
+
+    static boolean inCylinder(Vector3d at, double[] center, double radius, double above) {
+        return at.y() >= center[1] - 3 && at.y() <= center[1] + above
+                && Math.hypot(at.x() - center[0], at.z() - center[2]) <= radius + 0.5;
+    }
+
+    // --- mine ---------------------------------------------------------------------------------------
+
+    private void mine(World world, Store<EntityStore> store, State st, List<PlayerRef> players) {
+        if (!st.batsSpawned && Spawns.anyIn(store, players, VolcanicLayout.MINE)) {
+            st.batsSpawned = true;
+            Spawns.tellAll(world, Message.translation(MESSAGES + "mine.enter"));
+            for (double[] at : VolcanicLayout.BATS) {
+                Ref<EntityStore> bat = Spawns.spawnFoe(world, store, BAT, at);
+                if (bat != null) {
+                    st.bats.add(bat);
+                }
+            }
+        }
+        if (Spawns.anyIn(store, players, VolcanicLayout.END_PAD)) {
+            st.step = Step.ARENA;
+            Gates.checkpoint(world, VolcanicLayout.END_CHECKPOINT, MESSAGES + "checkpoint");
+        }
+    }
+
+    // --- coups, objets lancés, morts ---------------------------------------------------------------------
+
+    @Override
+    public void filter(World world, Store<EntityStore> store, CommandBuffer<EntityStore> buffer, Ref<EntityStore> victim,
+                       String victimRole, Ref<EntityStore> attacker, Damage damage) {
+        if (TOTEM.equals(victimRole) || CAPTIVE.equals(victimRole)) {
+            damage.setCancelled(true);
+            return;
+        }
+        if (CHAMPION.equals(victimRole)) {
+            state(world).champion.filter(victim, damage);
+        }
+    }
+
+    @Override
+    public void thrown(World world, Store<EntityStore> store, Ref<EntityStore> ref, PlayerRef player, String action,
+                       Ref<EntityStore> target) {
+        if ("ImbuedStone".equals(action)) {
+            state(world).champion.stone(world, store, target);
+        }
+    }
+
+    @Override
+    public void onFoeDeath(World world, Store<EntityStore> store, String role, Vector3d at) {
+        State st = state(world);
+        if (st.step == Step.CAMP && (WARRIOR.equals(role) || GRAWL_SHAMAN.equals(role))) {
+            st.kills++;
+        } else if (CHAMPION.equals(role)) {
+            st.champion.down = true;
+        } else if (IMBUED.equals(role)) {
+            st.shaman.down = true;
+        }
+    }
+
+    static void tell(State st, PlayerRef player, String key) {
+        long now = System.nanoTime();
+        Long last = st.throttle.get(player.getUuid());
+        if (last != null && now - last < Telegraphs.seconds(3f)) {
+            return;
+        }
+        st.throttle.put(player.getUuid(), now);
+        player.sendMessage(Message.translation(MESSAGES + key));
+    }
+}

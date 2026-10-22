@@ -1,0 +1,22 @@
+{
+  "$Comment": "Dévoreur à distance : crachat de venin, cercle rouge de 1,8 bloc sous la cible (1,2 s), 10 dégâts et poison.",
+  "Type": "Serial",
+  "Interactions": [
+    {
+      "Type": "Nakasar_Fractal_Telegraph",
+      "Shape": "Circle",
+      "Seconds": 1.2,
+      "Anchor": "Target",
+      "Radius": 1.8,
+      "Damage": 10,
+      "EffectId": "Poison_T2",
+      "EffectDuration": 3,
+      "PlayersOnly": true,
+      "ImpactParticle": "Effect_Poison"
+    },
+    {
+      "Type": "Simple",
+      "RunTime": 1.2
+    }
+  ]
+}

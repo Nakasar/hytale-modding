@@ -1,0 +1,9 @@
+{
+  "$Comment": "Golem d'essai de l'Observatoire : le golem d'acier vanilla (Golem_Firesteel), sans ses flammes, lueur bleue des Brumes.",
+  "Parent": "Golem_Firesteel",
+  "Particles": [],
+  "Light": {
+    "Color": "#6a8aff",
+    "Radius": 2
+  }
+}

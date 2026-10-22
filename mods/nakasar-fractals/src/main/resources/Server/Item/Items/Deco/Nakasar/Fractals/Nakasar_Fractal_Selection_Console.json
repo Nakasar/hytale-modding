@@ -1,0 +1,73 @@
+{
+  "TranslationProperties": {
+    "Name": "nakasar_fractals.items.Nakasar_Fractal_Selection_Console.name",
+    "Description": "nakasar_fractals.items.Nakasar_Fractal_Selection_Console.description"
+  },
+  "Icon": "Icons/Items/Nakasar/Fractals/Selection_Console.png",
+  "Categories": [
+    "Blocks.Deco"
+  ],
+  "Quality": "Technical",
+  "PlayerAnimationsId": "Block",
+  "BlockType": {
+    "Material": "Solid",
+    "DrawType": "Model",
+    "Opacity": "Transparent",
+    "HitboxType": "Full",
+    "Flags": {},
+    "Gathering": {
+      "Breaking": {
+        "GatherType": "Unbreakable"
+      }
+    },
+    "BlockParticleSetId": "Stone",
+    "BlockSoundSetId": "Stone",
+    "ParticleColor": "#ffd66e",
+    "Light": {
+      "Color": "#fd8"
+    },
+    "Interactions": {
+      "Use": {
+        "Interactions": [
+          "Nakasar_Fractal_Use_Console"
+        ]
+      }
+    },
+    "CustomModel": "Blocks/Nakasar/Fractals/Selection_Console.blockymodel",
+    "CustomModelTexture": [
+      {
+        "Texture": "Blocks/Nakasar/Fractals/Selection_Console_Texture.png",
+        "Weight": 1
+      }
+    ],
+    "VariantRotation": "NESW",
+    "CustomModelAnimation": "Blocks/Nakasar/Fractals/Selection_Console.blockyanim",
+    "Particles": [
+      {
+        "SystemId": "Dungeon_Goblin_Void_Motes_Cluster",
+        "Scale": 1,
+        "PositionOffset": {
+          "Y": 0.8
+        }
+      }
+    ]
+  },
+  "Tags": {
+    "Type": [
+      "Deco"
+    ]
+  },
+  "ItemSoundSetId": "ISS_Blocks_Stone",
+  "IconProperties": {
+    "Scale": 0.55,
+    "Translation": [
+      0,
+      -12
+    ],
+    "Rotation": [
+      22.5,
+      45,
+      22.5
+    ]
+  }
+}

@@ -1,0 +1,72 @@
+{
+  "TranslationProperties": {
+    "Name": "nakasar_fractals_cliffside.items.Nakasar_Fractal_Hammer_Rack.name",
+    "Description": "nakasar_fractals_cliffside.items.Nakasar_Fractal_Hammer_Rack.description"
+  },
+  "Icon": "Icons/Items/Nakasar/Fractals/Hammer_Rack.png",
+  "Categories": [
+    "Blocks.Deco"
+  ],
+  "Quality": "Technical",
+  "PlayerAnimationsId": "Block",
+  "BlockType": {
+    "Material": "Solid",
+    "DrawType": "Model",
+    "Opacity": "Transparent",
+    "HitboxType": "Full",
+    "Flags": {},
+    "Gathering": {
+      "Breaking": {
+        "GatherType": "Unbreakable"
+      }
+    },
+    "BlockParticleSetId": "Stone",
+    "BlockSoundSetId": "Stone",
+    "ParticleColor": "#c478ff",
+    "Light": {
+      "Color": "#a6f"
+    },
+    "Interactions": {
+      "Use": {
+        "Interactions": [
+          "Nakasar_Fractal_Use_Hammer_Rack"
+        ]
+      }
+    },
+    "CustomModel": "Blocks/Nakasar/Fractals/Hammer_Rack.blockymodel",
+    "CustomModelTexture": [
+      {
+        "Texture": "Blocks/Nakasar/Fractals/Hammer_Rack_Texture.png",
+        "Weight": 1
+      }
+    ],
+    "VariantRotation": "NESW",
+    "Particles": [
+      {
+        "SystemId": "Dungeon_Goblin_Void_Motes_Cluster",
+        "Scale": 1,
+        "PositionOffset": {
+          "Y": 0.8
+        }
+      }
+    ]
+  },
+  "Tags": {
+    "Type": [
+      "Deco"
+    ]
+  },
+  "ItemSoundSetId": "ISS_Blocks_Stone",
+  "IconProperties": {
+    "Scale": 0.55,
+    "Translation": [
+      0,
+      -12
+    ],
+    "Rotation": [
+      22.5,
+      45,
+      22.5
+    ]
+  }
+}

@@ -1,0 +1,60 @@
+{
+  "TranslationProperties": {
+    "Name": "nakasar_fractals_cliffside.items.Nakasar_Fractal_Lever.name",
+    "Description": "nakasar_fractals_cliffside.items.Nakasar_Fractal_Lever.description"
+  },
+  "Icon": "Icons/Items/Nakasar/Fractals/Lever.png",
+  "Categories": [
+    "Blocks.Deco"
+  ],
+  "Quality": "Technical",
+  "PlayerAnimationsId": "Block",
+  "BlockType": {
+    "Material": "Solid",
+    "DrawType": "Model",
+    "Opacity": "Transparent",
+    "HitboxType": "Full",
+    "Flags": {},
+    "Gathering": {
+      "Breaking": {
+        "GatherType": "Unbreakable"
+      }
+    },
+    "BlockParticleSetId": "Stone",
+    "BlockSoundSetId": "Stone",
+    "ParticleColor": "#e6c878",
+    "Interactions": {
+      "Use": {
+        "Interactions": [
+          "Nakasar_Fractal_Use_Cliffside_Lever"
+        ]
+      }
+    },
+    "CustomModel": "Blocks/Nakasar/Fractals/Lever.blockymodel",
+    "CustomModelTexture": [
+      {
+        "Texture": "Blocks/Nakasar/Fractals/Lever_Texture.png",
+        "Weight": 1
+      }
+    ],
+    "VariantRotation": "NESW"
+  },
+  "Tags": {
+    "Type": [
+      "Deco"
+    ]
+  },
+  "ItemSoundSetId": "ISS_Blocks_Stone",
+  "IconProperties": {
+    "Scale": 0.55,
+    "Translation": [
+      0,
+      -12
+    ],
+    "Rotation": [
+      22.5,
+      45,
+      22.5
+    ]
+  }
+}

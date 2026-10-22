@@ -1,0 +1,12 @@
+{
+  "$Comment": "Pylône chargé - : étincelles bleues. Généré par tools/generate_uncategorized.py.",
+  "Spawners": [
+    {
+      "SpawnerId": "Nakasar_Fractal_Charge_Minus_Spark",
+      "PositionOffset": {
+        "Y": 0.0
+      }
+    }
+  ],
+  "CullDistance": 72
+}

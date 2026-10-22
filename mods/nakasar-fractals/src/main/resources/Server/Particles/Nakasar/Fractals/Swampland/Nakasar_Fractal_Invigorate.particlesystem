@@ -1,0 +1,12 @@
+{
+  "$Comment": "Fusil revigorant : étincelles dorées. Généré par tools/generate_swampland.py.",
+  "Spawners": [
+    {
+      "SpawnerId": "Nakasar_Fractal_Invigorate_Sparks",
+      "PositionOffset": {
+        "Y": 1.0
+      }
+    }
+  ],
+  "CullDistance": 72
+}

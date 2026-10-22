@@ -1,0 +1,24 @@
+{
+  "$Comment": "Tourelle de l'escalier mortel (PNJ fixe, invulnérable).",
+  "Model": "NPC/Nakasar/Fractals/Turret/Model.blockymodel",
+  "Texture": "NPC/Nakasar/Fractals/Turret/Texture.png",
+  "EyeHeight": 0.6,
+  "HitBox": {
+    "Max": {
+      "X": 0.4,
+      "Y": 0.8,
+      "Z": 0.4
+    },
+    "Min": {
+      "X": -0.4,
+      "Y": 0,
+      "Z": -0.4
+    }
+  },
+  "MinScale": 1.0,
+  "MaxScale": 1.0,
+  "Light": {
+    "Color": "#6cf",
+    "Radius": 2
+  }
+}

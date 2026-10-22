@@ -1,0 +1,60 @@
+{
+  "TranslationProperties": {
+    "Name": "nakasar_fractals_cosmetics.items.Armor_Nakasar_Fractal_Mist_Mantle.name",
+    "Description": "nakasar_fractals_cosmetics.items.Armor_Nakasar_Fractal_Mist_Mantle.description"
+  },
+  "Quality": "Epic",
+  "ItemLevel": 10,
+  "PlayerAnimationsId": "Block",
+  "ItemSoundSetId": "ISS_Armor_Leather",
+  "Categories": [
+    "Items.Armors"
+  ],
+  "Icon": "Icons/Items/Nakasar/Fractals/Cosmetics/Mist_Mantle.png",
+  "IconProperties": {
+    "Rotation": [
+      0,
+      0,
+      0
+    ],
+    "Scale": 1.0,
+    "Translation": [
+      0,
+      0
+    ]
+  },
+  "Model": "Items/Nakasar/Fractals/Cosmetics/Mist_Mantle/Model.blockymodel",
+  "Texture": "Items/Nakasar/Fractals/Cosmetics/Mist_Mantle/Texture.png",
+  "Interactions": {
+    "Primary": {
+      "Interactions": [
+        {
+          "Type": "EquipItem"
+        }
+      ]
+    },
+    "Secondary": {
+      "Interactions": [
+        {
+          "Type": "EquipItem"
+        }
+      ]
+    }
+  },
+  "Armor": {
+    "ArmorSlot": "Chest",
+    "BaseDamageResistance": 0,
+    "CosmeticsToHide": [
+      "Cape"
+    ]
+  },
+  "MaxDurability": 1000,
+  "Tags": {
+    "Type": [
+      "Armor"
+    ],
+    "Family": [
+      "Nakasar_Cosmetic"
+    ]
+  }
+}

@@ -1,0 +1,12 @@
+{
+  "$Comment": "Le mur de glace fond : vapeur et gouttes. Généré par tools/generate_snowblind.py.",
+  "Spawners": [
+    {
+      "SpawnerId": "Nakasar_Fractal_Ice_Melt_Steam",
+      "PositionOffset": {
+        "Y": 0.4
+      }
+    }
+  ],
+  "CullDistance": 72
+}

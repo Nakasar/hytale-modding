@@ -1,0 +1,5 @@
+{
+  "$Comment": "Glace des attaques annoncées du Chaman (pluie, pics, souffle) : comme un coup physique (l'armure compte), mais distincte de ses coups d'épée, les seuls qui ajoutent de l'hypothermie (Java).",
+  "BypassResistances": false,
+  "DamageTextColor": "#bfe6ff"
+}

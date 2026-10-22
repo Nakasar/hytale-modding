@@ -1,0 +1,38 @@
+{
+  "$Comment": "Éclat de glace : enferme un joueur à l'hypothermie maximale ; ses alliés le brisent, ses propres coups ne comptent pas (Java). Généré par tools/generate_snowblind.py.",
+  "Type": "Generic",
+  "Appearance": "Nakasar_Fractal_Ice_Shard",
+  "NameTranslationKey": "nakasar_fractals_snowblind.npc.Ice_Shard.name",
+  "MaxHealth": 90,
+  "StartState": "Idle",
+  "DefaultPlayerAttitude": "Hostile",
+  "DefaultNPCAttitude": "Ignore",
+  "MotionControllerList": [
+    {
+      "Type": "Walk",
+      "MaxWalkSpeed": 0.1,
+      "Gravity": 10,
+      "MaxFallSpeed": 10,
+      "Acceleration": 10,
+      "JumpHeight": 1.0
+    }
+  ],
+  "KnockbackScale": 0,
+  "SpawnLockTime": 0.2,
+  "Instructions": [
+    {
+      "Sensor": {
+        "Type": "State",
+        "State": "Idle"
+      },
+      "Instructions": [
+        {
+          "Actions": []
+        }
+      ]
+    }
+  ],
+  "DisableDamageGroups": [
+    "Nakasar_Fractal_Foes"
+  ]
+}

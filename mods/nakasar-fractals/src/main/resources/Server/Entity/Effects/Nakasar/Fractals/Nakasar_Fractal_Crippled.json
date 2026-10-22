@@ -1,0 +1,13 @@
+{
+  "$Comment": "Estropié (fil tendu, fusil revigorant) : déplacement ralenti.",
+  "Name": "nakasar_fractals_swampland.effects.Nakasar_Fractal_Crippled",
+  "Debuff": true,
+  "StatusEffectIcon": "UI/StatusEffects/Nakasar/Fractals/Crippled.png",
+  "ApplicationEffects": {
+    "HorizontalSpeedMultiplier": 0.6,
+    "EntityBottomTint": "#6a5a40"
+  },
+  "OverlapBehavior": "Overwrite",
+  "Infinite": false,
+  "Duration": 3
+}

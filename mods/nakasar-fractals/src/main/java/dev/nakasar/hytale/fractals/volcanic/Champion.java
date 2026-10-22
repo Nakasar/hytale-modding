@@ -1,0 +1,325 @@
+package dev.nakasar.hytale.fractals.volcanic;
+
+import com.hypixel.hytale.component.Ref;
+import com.hypixel.hytale.component.Store;
+import com.hypixel.hytale.server.core.Message;
+import com.hypixel.hytale.server.core.entity.Frozen;
+import com.hypixel.hytale.server.core.modules.entity.component.Invulnerable;
+import com.hypixel.hytale.server.core.modules.entity.damage.Damage;
+import com.hypixel.hytale.server.core.universe.PlayerRef;
+import com.hypixel.hytale.server.core.universe.world.World;
+import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
+import com.hypixel.hytale.server.npc.entities.NPCEntity;
+import dev.nakasar.hytale.fractals.arena.Carried;
+import dev.nakasar.hytale.fractals.combat.Hurt;
+import dev.nakasar.hytale.fractals.combat.Spawns;
+import dev.nakasar.hytale.fractals.combat.Telegraphs;
+import dev.nakasar.hytale.fractals.party.FractalRuns;
+import org.joml.Vector3d;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.WeakHashMap;
+import java.util.concurrent.ThreadLocalRandom;
+
+/**
+ * Le Champion chaman des grawls. Son IA (JSON) frappe et lance les flammes sous chaque joueur ; le Java mène le reste :
+ * <ul>
+ *   <li>{@value #STACKS} charges de protection : chacune retire 11 % des dégâts qu'il subit ; seule une pierre
+ *   imprégnée lancée sur lui en retire une. À 50 % de vie, il en reprend une (une fois) ;</li>
+ *   <li>des rochers tombent toutes les {@value #ROCK_INTERVAL} s, un sur trois laisse une pierre imprégnée ;</li>
+ *   <li>toutes les {@value #VETERAN_INTERVAL} s, des vétérans sortent des grottes et marchent vers un captif (leur
+ *   point d'attache) ; un vétéran à {@value #PUSH_RANGE} blocs d'un captif pendant {@value #PUSH_TIME} s le jette dans
+ *   la lave. Tous perdus : la rencontre repart de zéro. Tous sauvés : {@value #BONUS} éclats de Brume par joueur ;</li>
+ *   <li>personne dans l'arène pendant {@value #RESET_SECONDS} s : tout repart de zéro.</li>
+ * </ul>
+ */
+final class Champion {
+
+    static final int STACKS = 8;
+    static final float STACK_REDUCTION = 0.11f;
+    static final float ROCK_INTERVAL = 6f;
+    static final float VETERAN_INTERVAL = 20f;
+    static final double PUSH_RANGE = 2;
+    static final float PUSH_TIME = 1.5f;
+    static final float RESET_SECONDS = 20f;
+    static final int BONUS = 5;
+    static final String SHARD = "Nakasar_Fractal_Mist_Shard";
+
+    /** Charges de chaque Champion, pour la barre de boss. */
+    private static final Map<Ref<EntityStore>, Integer> LABELS = Collections.synchronizedMap(new WeakHashMap<>());
+
+    private Ref<EntityStore> boss;
+    private int stacks = STACKS;
+    private boolean reshielded;
+    private boolean engaged;
+    volatile boolean down;
+    private float idle;
+    private float rockClock;
+    private float veteranClock;
+    private final Ref<EntityStore>[] captives;
+    private final boolean[] lost;
+    private final float[] near;
+    private final Map<Ref<EntityStore>, Integer> veterans = new HashMap<>();
+
+    @SuppressWarnings("unchecked")
+    Champion() {
+        captives = new Ref[VolcanicLayout.CAPTIVES.length];
+        lost = new boolean[captives.length];
+        near = new float[captives.length];
+    }
+
+    static String label(Ref<EntityStore> ref) {
+        Integer n = LABELS.get(ref);
+        return n == null || n <= 0 ? null : "◆ " + n;
+    }
+
+    static void clearLabels() {
+        LABELS.clear();
+    }
+
+    static List<PlayerRef> inArena(Store<EntityStore> store, List<PlayerRef> players) {
+        return Volcanic.inCylinder(store, players, VolcanicLayout.CHAMPION, VolcanicLayout.CHAMPION_RADIUS, 8);
+    }
+
+    /** Un pas de jeu ; vrai à la victoire (une seule fois). */
+    boolean step(World world, Store<EntityStore> store, Volcanic.State st, List<PlayerRef> players, float dt) {
+        if (down) {
+            return finish(world, store);
+        }
+        keepCaptives(store);
+        if (boss == null || !boss.isValid()) {
+            double[] c = VolcanicLayout.CHAMPION;
+            boss = Spawns.spawnBoss(world, store, Volcanic.CHAMPION, Spawns.point(c), 0f);
+            stacks = STACKS;
+            reshielded = false;
+            showStacks();
+            if (boss == null) {
+                return false;
+            }
+        }
+        List<PlayerRef> inArena = inArena(store, players);
+        if (inArena.isEmpty()) {
+            idle(world, store, dt);
+            return false;
+        }
+        idle = 0f;
+        if (!engaged) {
+            engaged = true;
+            veteranClock = VETERAN_INTERVAL - 6f;
+            Spawns.tellAll(world, Message.translation(Volcanic.MESSAGES + "champion.enter"));
+        }
+        if (!reshielded && Hurt.healthFraction(store, boss) < 0.5f) {
+            reshielded = true;
+            stacks++;
+            showStacks();
+            Vector3d at = Telegraphs.position(store, boss);
+            if (at != null) {
+                Telegraphs.particle(store, "Nakasar_Fractal_Shield_Glow", new Vector3d(at).add(0, 1, 0), 2f);
+            }
+            Spawns.tellAll(world, Message.translation(Volcanic.MESSAGES + "champion.shield"));
+        }
+        rockClock += dt;
+        if (rockClock >= ROCK_INTERVAL) {
+            rockClock = 0f;
+            Volcanic.fallingRocks(world, store, st, inArena, 2 + (FractalRuns.partySize(world) >= 3 ? 1 : 0), true);
+        }
+        veteranClock += dt;
+        if (veteranClock >= VETERAN_INTERVAL) {
+            veteranClock = 0f;
+            veterans(world, store);
+        }
+        march(world, store, dt);
+        return false;
+    }
+
+    private void showStacks() {
+        if (boss != null) {
+            LABELS.put(boss, stacks);
+        }
+    }
+
+    private void keepCaptives(Store<EntityStore> store) {
+        double[] c = VolcanicLayout.CHAMPION;
+        for (int i = 0; i < captives.length; i++) {
+            if (lost[i] || (captives[i] != null && captives[i].isValid())) {
+                continue;
+            }
+            Vector3d at = Spawns.point(VolcanicLayout.CAPTIVES[i]);
+            captives[i] = Spawns.spawn(store, Volcanic.CAPTIVE, at, Telegraphs.yawToward(at, Spawns.point(c)));
+            if (captives[i] != null) {
+                store.ensureAndGetComponent(captives[i], Frozen.getComponentType());
+                store.ensureAndGetComponent(captives[i], Invulnerable.getComponentType());
+            }
+        }
+    }
+
+    /** Un vétéran par grotte (deux dès trois joueurs), chacun vers un captif encore là. */
+    private void veterans(World world, Store<EntityStore> store) {
+        List<Integer> left = new ArrayList<>();
+        for (int i = 0; i < captives.length; i++) {
+            if (!lost[i]) {
+                left.add(i);
+            }
+        }
+        if (left.isEmpty()) {
+            return;
+        }
+        int count = FractalRuns.partySize(world) >= 3 ? 2 : 1;
+        ThreadLocalRandom random = ThreadLocalRandom.current();
+        for (int k = 0; k < count; k++) {
+            double[] gate = VolcanicLayout.VETERAN_GATES[random.nextInt(VolcanicLayout.VETERAN_GATES.length)];
+            Ref<EntityStore> vet = Spawns.spawnFoe(world, store, Volcanic.VETERAN, gate);
+            if (vet == null) {
+                continue;
+            }
+            int target = left.get(random.nextInt(left.size()));
+            aim(store, vet, target);
+        }
+        Spawns.tellAll(world, Message.translation(Volcanic.MESSAGES + "champion.veterans"));
+    }
+
+    /** Le captif `index` devient le point d'attache du vétéran : il y marche (état ReturnHome du rôle). */
+    private void aim(Store<EntityStore> store, Ref<EntityStore> vet, int index) {
+        veterans.put(vet, index);
+        NPCEntity npc = store.getComponent(vet, NPCEntity.getComponentType());
+        if (npc != null) {
+            npc.setLeashPoint(Spawns.point(VolcanicLayout.CAPTIVES[index]));
+        }
+    }
+
+    /** Vétérans arrivés près d'un captif : au bout de {@value #PUSH_TIME} s, le captif est jeté dans la lave. */
+    private void march(World world, Store<EntityStore> store, float dt) {
+        veterans.keySet().removeIf(vet -> !Spawns.alive(store, vet));
+        boolean[] threatened = new boolean[captives.length];
+        for (Map.Entry<Ref<EntityStore>, Integer> e : veterans.entrySet()) {
+            int i = e.getValue();
+            Vector3d at = Telegraphs.position(store, e.getKey());
+            if (!lost[i] && at != null && at.distance(Spawns.point(VolcanicLayout.CAPTIVES[i])) <= PUSH_RANGE) {
+                threatened[i] = true;
+            }
+        }
+        for (int i = 0; i < captives.length; i++) {
+            near[i] = threatened[i] ? near[i] + dt : 0f;
+            if (near[i] >= PUSH_TIME) {
+                lose(world, store, i);
+            }
+        }
+    }
+
+    private void lose(World world, Store<EntityStore> store, int index) {
+        lost[index] = true;
+        near[index] = 0f;
+        Vector3d at = Spawns.point(VolcanicLayout.CAPTIVES[index]);
+        Telegraphs.particle(store, "Nakasar_Fractal_Captive_Fall", at, 1.2f);
+        Spawns.remove(store, captives[index]);
+        captives[index] = null;
+        int count = 0;
+        List<Integer> left = new ArrayList<>();
+        for (int i = 0; i < lost.length; i++) {
+            if (lost[i]) {
+                count++;
+            } else {
+                left.add(i);
+            }
+        }
+        Spawns.tellAll(world, Message.translation(Volcanic.MESSAGES + "captive.lost").param("count", count));
+        if (left.isEmpty()) {
+            Spawns.tellAll(world, Message.translation(Volcanic.MESSAGES + "captive.allLost"));
+            reset(store);
+            return;
+        }
+        for (Map.Entry<Ref<EntityStore>, Integer> e : new ArrayList<>(veterans.entrySet())) {
+            if (e.getValue() == index) {
+                aim(store, e.getKey(), left.get(ThreadLocalRandom.current().nextInt(left.size())));
+            }
+        }
+    }
+
+    // --- charges -----------------------------------------------------------------------------------------
+
+    /** Coup sur le Champion (groupe de filtres) : chaque charge retire {@value #STACK_REDUCTION} des dégâts. */
+    void filter(Ref<EntityStore> victim, Damage damage) {
+        if (!victim.equals(boss) || stacks <= 0) {
+            return;
+        }
+        damage.setAmount(damage.getAmount() * Math.max(0.1f, 1f - STACK_REDUCTION * stacks));
+    }
+
+    /** Pierre imprégnée arrivée sur `target`. */
+    void stone(World world, Store<EntityStore> store, Ref<EntityStore> target) {
+        if (!target.equals(boss) || stacks <= 0) {
+            return;
+        }
+        stacks--;
+        showStacks();
+        Vector3d at = Telegraphs.position(store, boss);
+        if (at != null) {
+            Telegraphs.particle(store, "Nakasar_Fractal_Rock_Impact", new Vector3d(at).add(0, 1.5, 0), 1f);
+        }
+        Spawns.tellAll(world, Message.translation(Volcanic.MESSAGES + "champion.stack").param("count", stacks));
+    }
+
+    // --- remise à zéro et victoire ------------------------------------------------------------------------
+
+    void idle(World world, Store<EntityStore> store, float dt) {
+        if (!engaged || down) {
+            return;
+        }
+        idle += dt;
+        if (idle >= RESET_SECONDS) {
+            Spawns.tellAll(world, Message.translation(Volcanic.MESSAGES + "champion.reset"));
+            reset(store);
+        }
+    }
+
+    /** Tout repart de zéro : Champion à pleine vie et charges, captifs revenus, vétérans retirés. */
+    private void reset(Store<EntityStore> store) {
+        engaged = false;
+        idle = 0f;
+        Spawns.removeAll(store, new ArrayList<>(veterans.keySet()));
+        veterans.clear();
+        if (boss != null) {
+            LABELS.remove(boss);
+        }
+        Spawns.remove(store, boss);
+        boss = null;
+        for (int i = 0; i < captives.length; i++) {
+            lost[i] = false;
+            near[i] = 0f;
+        }
+    }
+
+    private boolean finish(World world, Store<EntityStore> store) {
+        down = false;
+        engaged = false;
+        Spawns.removeAll(store, new ArrayList<>(veterans.keySet()));
+        veterans.clear();
+        if (boss != null) {
+            LABELS.remove(boss);
+        }
+        boolean allSaved = true;
+        for (boolean l : lost) {
+            allSaved &= !l;
+        }
+        for (PlayerRef player : world.getPlayerRefs()) {
+            Ref<EntityStore> ref = player.getReference();
+            if (ref == null || !ref.isValid()) {
+                continue;
+            }
+            Carried.removeAll(store, ref, Volcanic.STONE);
+            if (allSaved) {
+                for (int k = 0; k < BONUS; k++) {
+                    Carried.give(store, ref, SHARD);
+                }
+            }
+        }
+        if (allSaved) {
+            Spawns.tellAll(world, Message.translation(Volcanic.MESSAGES + "champion.bonus"));
+        }
+        return true;
+    }
+}

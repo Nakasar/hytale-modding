@@ -1,0 +1,12 @@
+{
+  "$Comment": "Incantation de soin des cultistes : anneau vert-violet autour du lanceur. Généré par tools/generate_cliffside.py.",
+  "Spawners": [
+    {
+      "SpawnerId": "Nakasar_Fractal_Heal_Foes_Ring",
+      "PositionOffset": {
+        "Y": 0.3
+      }
+    }
+  ],
+  "CullDistance": 72
+}

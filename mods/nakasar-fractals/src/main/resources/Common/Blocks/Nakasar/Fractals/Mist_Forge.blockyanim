@@ -1,0 +1,112 @@
+{
+  "formatVersion": 1,
+  "duration": 80,
+  "holdLastKeyframe": false,
+  "nodeAnimations": {
+    "Liquid": {
+      "position": [
+        {
+          "time": 0,
+          "delta": {
+            "x": 0,
+            "y": 0,
+            "z": 0
+          },
+          "interpolationType": "linear"
+        },
+        {
+          "time": 40,
+          "delta": {
+            "x": 0,
+            "y": 0.4,
+            "z": 0
+          },
+          "interpolationType": "linear"
+        },
+        {
+          "time": 80,
+          "delta": {
+            "x": 0,
+            "y": 0,
+            "z": 0
+          },
+          "interpolationType": "linear"
+        }
+      ],
+      "orientation": [],
+      "shapeStretch": [],
+      "shapeVisible": [],
+      "shapeUvOffset": []
+    },
+    "Bubble_1": {
+      "position": [
+        {
+          "time": 0,
+          "delta": {
+            "x": 0,
+            "y": 0,
+            "z": 0
+          },
+          "interpolationType": "linear"
+        },
+        {
+          "time": 40,
+          "delta": {
+            "x": 0,
+            "y": 1.2,
+            "z": 0
+          },
+          "interpolationType": "linear"
+        },
+        {
+          "time": 80,
+          "delta": {
+            "x": 0,
+            "y": 0,
+            "z": 0
+          },
+          "interpolationType": "linear"
+        }
+      ],
+      "orientation": [],
+      "shapeStretch": [],
+      "shapeVisible": [],
+      "shapeUvOffset": []
+    },
+    "Bubble_2": {
+      "position": [
+        {
+          "time": 0,
+          "delta": {
+            "x": 0,
+            "y": 1.2,
+            "z": 0
+          },
+          "interpolationType": "linear"
+        },
+        {
+          "time": 40,
+          "delta": {
+            "x": 0,
+            "y": 0,
+            "z": 0
+          },
+          "interpolationType": "linear"
+        },
+        {
+          "time": 80,
+          "delta": {
+            "x": 0,
+            "y": 1.2,
+            "z": 0
+          },
+          "interpolationType": "linear"
+        }
+      ],
+      "orientation": [],
+      "shapeStretch": [],
+      "shapeVisible": [],
+      "shapeUvOffset": []
+    }
+  }
+}

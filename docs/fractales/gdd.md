@@ -61,12 +61,12 @@ La boucle tourne dans l'Observatoire : on n'en sort que pour refabriquer un frag
 
 L'Observatoire est une instance hub, île ronde d'environ 60 blocs suspendue dans les Brumes (monde `Void` comme les Deepworks), où tout se choisit physiquement dans le décor, sans interface à construire.
 
-![Plan de l'Observatoire : 6 arches autour de l'Astrolabe](images/observatoire.png)
+![Plan de l'Observatoire (première version, avec les 6 arches remplacées depuis par la console de sélection)](images/observatoire.png)
 
 - **Arrivée (sud)** : le groupe sort du portail ancien sur un parvis ; un portail de sortie juste à côté ramène au monde.
-- **L'Astrolabe (centre)** : grand instrument animé. Un **cadran de niveau** s'utilise pour monter ou descendre d'un niveau (clic d'utilisation, accroupi pour descendre) ; le niveau et le rang s'affichent en titre à l'écran, comme les points de contrôle des Deepworks. Seul le meneur (premier arrivé) le règle.
+- **L'Astrolabe (centre)** : grand instrument animé, portant la **console de sélection** (révisé le 21 octobre 2026 : une arche par fractale ne tient pas à des dizaines de fractales). Deux **distributeurs** à l'entrée du cercle donnent gratuitement le **noyau** d'une fractale et le **diapason** d'un niveau (1 à 100). Les joueurs posent un noyau et un diapason dans la console : le cercle est **harmonisé**, la fractale, le niveau et le rang s'affichent en titre à l'écran.
 - **Cercle d'harmonisation** : l'anneau au sol autour de l'Astrolabe. Les joueurs debout dessus forment le groupe (5 au plus, les suivants reçoivent un message de refus).
-- **Six arches de fractale** en couronne : chaque arche porte le décor de sa fractale (glace, lave, marais...). Le meneur utilise une arche : tout le cercle est téléporté dans une nouvelle instance de cette fractale au niveau réglé. Les arches du jour brillent.
+- **Résonateurs** au bord intérieur du cercle : le meneur (premier arrivé) en utilise un, tout le cercle est téléporté dans une nouvelle instance de la fractale harmonisée, si le niveau ne dépasse pas son plus haut niveau débloqué.
 - **L'Archiviste (est)** : PNJ marchand qui échange les éclats de Brume, plus un tableau des fractales du jour.
 - **Golem d'essai (ouest)** : mannequin qui applique de l'agonie et affiche les dégâts subis, pour tester sa résistance.
 
@@ -85,8 +85,8 @@ La saison 1 réunit les 6 fractales qui mélangent le mieux puzzles de saut, ren
 | Falaise (Cliffside) | 5 sceaux à briser au marteau en montant le long d'un colosse enchaîné | échafaudages, gargouilles à vent, rampes piégées | Archidevin légendaire | cultistes outlanders |
 | Inclassable (Uncategorized) | plateformes, détention, escalier mortel, Vieux Tom, plateformes 2, Asura délirant | deux ascensions de plateformes sous les harpies | Vieux Tom, Asura délirant et ses golems | harpies (à créer), golems vanilla |
 | Volcanique (Volcanic) | vagues de grawls, couloir à rochers, chaman champion, mine abandonnée | puzzle de saut au-dessus de la lave | Chaman imprégné légendaire | trorks pour les grawls, élémentaires de feu |
-| Océan solide (Solid Ocean) | traversée de plateformes de jade, combat en 3 phases | plateformes flottantes, chute = plateforme précédente | Gueule de jade | golems de cristal, créatures marines |
-| Marais (Swampland) | course aux 3 feux-follets, Homme-mousse, Faim-de-floraison | murs à sauter pendant la course | Homme-mousse, Faim-de-floraison | loups, plantes, esprits animaux |
+| Océan solide (Solid Ocean) | traversée de plateformes de jade, combat en 3 phases | plateformes flottantes, chute = plateforme précédente | Abîme de Jade | golems de cristal, créatures marines |
+| Marais (Swampland) | course aux 3 feux-follets, Moussu, Carnasse | murs à sauter pendant la course | Moussu, Carnasse | loups, plantes, esprits animaux |
 | Tempête de neige (Snowblind) | feu de camp à nourrir, Source élémentaire, forêt noire, chaman | aucun (fractale d'environnement) | Source élémentaire, Chaman grawl légendaire | outlanders du givre, loups, élémentaires de glace |
 
 **Adaptations obligatoires de GW2 à Hytale** (valables partout) :
@@ -102,7 +102,7 @@ Un colosse géant est enchaîné à une falaise par un culte ; le groupe monte l
 
 **Le marteau du culte** (objet porté, au cœur de toute la fractale) :
 
-- Le ramasser coûte des PV. Son porteur reçoit 1 pile de **Corruption** par seconde : vulnérabilité toutes les 10 piles, faiblesse à 20, **étourdi à 30, à 40 il lâche le marteau et reste étourdi** (dans GW2 il passe à terre ; pas d'état à terre chez nous). Les piles retombent vite une fois le marteau posé : le groupe se le passe.
+- Le ramasser coûte des PV. La **Corruption** avance par crans de 10 s (choix de Kevin, plus lisible que les piles de GW2) : en main, un cran s'ouvre et se vide ; vidé, il monte si le marteau est encore en main, sinon il descend. Vulnérabilité à chaque cran, faiblesse dès le 2, **étourdi en arrivant au 3, au-delà il lâche le marteau et reste étourdi** (dans GW2 il passe à terre ; pas d'état à terre chez nous). Le groupe se le passe.
 - Le coup **Brise-sceau** ne se charge qu'en tuant (ou en ayant touché) un ennemi près du porteur ; poser le marteau perd la charge.
 - Un marqueur au-dessus du porteur passe du jaune à l'orange puis au rouge selon les piles. Si le marteau est perdu, un PNJ chercheur en redonne un.
 
@@ -167,35 +167,35 @@ Un rituel grawl au cœur d'un volcan : vagues d'ennemis sous les chutes de pierr
    - *Tempête de feu* : zone instantanée.
    - **Transition à chaque 25 %** : il s'entoure d'un bouclier à **40 coups**, invoque des larves élémentaires et vole lentement vers un villageois emprisonné. S'il l'atteint avant que le bouclier tombe, il **reprend 25 % de PV**.
 
-Côté Hytale : grawls remplacés par des trorks ; la pierre imprégnée est la même brique que le cristal de la Gueule de jade (objet lancé) ; le bouclier à 40 coups est un compteur de coups, comme la porte de cellule du Capitaine (10 coups).
+Côté Hytale : grawls remplacés par des trorks ; la pierre imprégnée est la même brique que le cristal de l'Abîme de Jade (objet lancé) ; le bouclier à 40 coups est un compteur de coups, comme la porte de cellule du Capitaine (10 coups).
 
 ### Océan solide (Solid Ocean)
 
-Une traversée de plateformes de jade flottantes mène à la Gueule de jade, un monstre invulnérable qu'on ne blesse qu'en lui renvoyant son propre rayon avec des cristaux. ([wiki](https://wiki.guildwars2.com/wiki/Solid_Ocean_Fractal))
+Une traversée de plateformes de jade flottantes mène à l'Abîme de Jade, un monstre invulnérable qu'on ne blesse qu'en lui renvoyant son propre rayon avec des cristaux. ([wiki](https://wiki.guildwars2.com/wiki/Solid_Ocean_Fractal))
 
 1. **Plateformes de jade** (saut) : on peut combattre ou éviter les créatures en chemin. Tomber ramène à la **plateforme précédente**, pas au début.
-2. **La Gueule de jade**, en 3 phases :
+2. **L'Abîme de Jade**, en 3 phases :
    - **Phase 1** : tuer 2 tentacules (avec les créatures autour). Un premier test d'agonie à l'arrivée.
    - **Phase 2** : des **colosses de jade** apparaissent ; les tuer remplit une barre. Ils renvoient les projectiles (sauf étourdis), renversent autour d'eux et lâchent des **cristaux réfléchissants**.
-   - **Fin** : tentacules et Gueule seulement ; les tentacules lâchent maintenant les cristaux.
+   - **Fin** : tentacules et l'Abîme seulement ; les tentacules lâchent maintenant les cristaux.
 
 **Le rayon et les cristaux** :
 
-- La Gueule marque un joueur d'un **crâne rouge** au-dessus de la tête, puis tire un rayon mortel sur lui. On l'esquive au moment où le crâne disparaît.
-- Un joueur qui **tient un cristal** absorbe le rayon sans mourir et devient chargé ; il **lance** alors le cristal sur la Gueule : -5 % de PV. Tuer un tentacule retire environ 3 %. Deux dégâts au même instant n'en comptent qu'un.
+- L'Abîme marque un joueur d'un **crâne rouge** au-dessus de la tête, puis tire un rayon mortel sur lui. On l'esquive au moment où le crâne disparaît.
+- Un joueur qui **tient un cristal** absorbe le rayon sans mourir et devient chargé ; il **lance** alors le cristal sur l'Abîme : -5 % de PV. Tuer un tentacule retire environ 3 %. Deux dégâts au même instant n'en comptent qu'un.
 - Tenir un cristal empêche d'attaquer ; un cristal au sol disparaît après 45 à 60 s.
 - **Dernier rayon** : près de la mort, elle marque tout le monde et tire sur tous ; il faut tenir un cristal. Si tout le groupe meurt, le combat recommence.
 - Les tentacules ne bougent pas, renversent en balayant et finissent leur attaque même à 0 PV.
 
-Côté Hytale : la Gueule est un énorme modèle immobile sans déplacement ; le cristal est un objet porté qui annule un dégât précis (le rayon) puis devient lançable.
+Côté Hytale : l'Abîme est un énorme modèle immobile sans déplacement ; le cristal est un objet porté qui annule un dégât précis (le rayon) puis devient lançable.
 
 ### Marais (Swampland)
 
-Une course chronométrée aux feux-follets à travers un marais piégé, une embuscade de l'Homme-mousse, puis Faim-de-floraison dans une clairière où l'on se déplace de cercle vert en cercle vert. ([wiki](https://wiki.guildwars2.com/wiki/Swampland_Fractal))
+Une course chronométrée aux feux-follets à travers un marais piégé, une embuscade du Moussu, puis Carnasse dans une clairière où l'on se déplace de cercle vert en cercle vert. ([wiki](https://wiki.guildwars2.com/wiki/Swampland_Fractal))
 
 1. **Les feux-follets** : ramener 3 feux-follets dans leurs failles avant la fin du minuteur, qui démarre au premier ramassé (1 min 04 au bas niveau, 30 s au plus haut). Des **murs** surgissent entre les arbres dès qu'un feu-follet est pris : il faut **sauter par-dessus** ou contourner. Pièges au sol : fils, pièges à loup, piques, œufs d'araignée. Des fusils au sol près des failles accélèrent les porteurs et ralentissent les ennemis. Raté : la zone se réinitialise et les feux-follets changent de place.
-2. **L'Homme-mousse** : embuscade dans le passage, qui se ferme. Il invoque des loups, frappe fort au corps à corps, **disparaît en furtivité** puis réapparaît avec une attaque chargée à longue portée qui met à terre. Bas en PV, il se transforme en bête (bonds, gros dégâts). Barre de défiance.
-3. **Faim-de-floraison** : 4 failles en cercle ; déposer le feu-follet près de l'entrée lance le combat.
+2. **Le Moussu** : embuscade dans le passage, qui se ferme. Il invoque des loups, frappe fort au corps à corps, **disparaît en furtivité** puis réapparaît avec une attaque chargée à longue portée qui met à terre. Bas en PV, il se transforme en bête (bonds, gros dégâts). Barre de défiance.
+3. **Carnasse** : 4 failles en cercle ; déposer le feu-follet près de l'entrée lance le combat.
    - Un **cercle vert** apparaît autour d'une faille, rétrécit puis passe à la suivante (sens horaire). **Le boss n'est vulnérable que dans le cercle vert**, qui donne aussi de l'endurance.
    - Attaques : *Charge* (se cabre puis fonce et frappe), *Bond* (grand cercle d'impact), *Martelèement* (canalisé, défiance ouverte, souvent juste après le bond), *Pluie de poison*, *Tir* de poison qui laisse une flaque.
    - **Assaut à 75 % et 50 %** : invulnérable au centre ; des esprits animaux attaquent, invulnérables tant qu'ils ne sont pas dans le cercle vert. Ensuite, des **fleurs de poison** poussent dans l'arène.
@@ -281,7 +281,7 @@ La moitié des mécaniques existe déjà dans le mod Vampires et a tourné en je
 | PV selon le groupe | fixe (5 joueurs) | modificateur de PV au début du combat | `GroupHealth` | éprouvé |
 | Agonie | dégâts en % des PV max, réduits par la résistance | effet d'entité + système Java qui lit la résistance du joueur | effets du vampirisme (DoT) | à construire |
 | Objets portés | marteau, feux-follets, cristaux | objet unique en main, effet de lenteur, interaction propre, tombé au sol à la mort | torches de la Tour (brasier à allumer) | à construire |
-| Objet lancé sur une cible | cristaux dans la Gueule de Jade | projectile avec interaction à l'impact sur une entité précise | flèches d'argent, projectiles de l'Alchimiste | à construire |
+| Objet lancé sur une cible | cristaux dans l'Abîme de Jade | projectile avec interaction à l'impact sur une entité précise | flèches d'argent, projectiles de l'Alchimiste | à construire |
 | Marques sur joueur | bombes, fixations | effet visible au-dessus du joueur + télégraphe qui le suit | annonce de l'emprisonnement (Capitaine) | partiel |
 | Chaînes et liens | chaînes de l'Archidevin, PV liés | entité « chaîne » à PV + `Frozen` sur le joueur ; liens de PV en Java | vrille de la citrouille (`RootTrap`) | éprouvé (vrille) |
 | Invocations | adds de boss | `SummonMinions` + bouclier tant qu'ils vivent | Citrouille, Spectre, Armure | éprouvé |
@@ -305,7 +305,7 @@ La moitié des mécaniques existe déjà dans le mod Vampires et a tourné en je
 | Cage | Archidevin | téléport vers une cellule, porte à casser | emprisonnement du Capitaine | éprouvé en jeu |
 | Objet lancé sur le boss | pierre imprégnée, cristal réfléchissant | objet tenu, interaction de lancer, projectile qui touche une entité précise | projectiles de l'Alchimiste | à construire |
 | Bouclier à piles ou à compteur de coups | chaman champion (8 piles), chaman imprégné (40 coups), Mai Trin | composant compteur + filtre de dégâts | porte de cellule (10 coups) | à adapter |
-| Zone de vulnérabilité mobile | cercle vert de Faim-de-floraison | zone positive verte qui tourne ; filtre de dégâts hors zone | boucliers d'élites | à adapter |
+| Zone de vulnérabilité mobile | cercle vert de Carnasse | zone positive verte qui tourne ; filtre de dégâts hors zone | boucliers d'élites | à adapter |
 | Charges +/- entre joueurs | Asura délirant | effets opposés + système de distance entre joueurs | aucun | à construire |
 | Rester en mouvement | Pieds brûlants (Volcanique) | système qui lit la vitesse du joueur | aucun | à construire |
 | PNJ à protéger | captifs du Volcanique, villageois du chaman | PNJ immobiles + ennemis qui marchent vers eux (laisse) | hommes nourriciers de la Chimère | à adapter |
@@ -326,29 +326,39 @@ Chaque brique est paramétrée par des interactions JSON (comme `Nakasar_Telegra
 Neuf étapes, chacune livrable en une PR testable en jeu ; les étapes 1 à 4 donnent une première fractale jouable de bout en bout (la Falaise), les suivantes ajoutent du contenu.
 
 1. **Socle du mod**
-   - [ ] Sous-projet `mods/nakasar-fractals` (manifeste `Nakasar:Fractals`, plugin `dev.nakasar.hytale.fractals.FractalsPlugin`, langues `nakasar_fractals.lang` fr/en), ajouté à `packMods` et à la CI
-   - [ ] Validateurs hors ligne (`ValidateAssets`, `ValidateRoles`) branchés sur ce mod
-   - [ ] Copier dans le mod Fractales les briques du mod Vampires : télégraphes, barre de boss, PV de groupe, invocations, boucliers, emprisonnement, remises en place d'arène (identifiants `Nakasar_Fractal_`)
+   - [x] Sous-projet `mods/nakasar-fractals` (manifeste `Nakasar:Fractals`, plugin `dev.nakasar.hytale.fractals.FractalsPlugin`, langues `nakasar_fractals.lang` fr/en), ajouté à `packMods` et à la CI
+   - [x] Validateurs hors ligne (`ValidateAssets`, `ValidateRoles`) branchés sur ce mod
+   - [x] Copier dans le mod Fractales les briques du mod Vampires : télégraphes, barre de boss, PV de groupe, invocations, boucliers, emprisonnement, remises en place d'arène (identifiants `Nakasar_Fractal_`)
 2. **Entrée et Observatoire**
-   - [ ] Fragment des Brumes : `PortalKey`, recette à l'établi, `PortalTypes`, instance hub (générateur Python comme pour la Tour)
-   - [ ] Observatoire : île, Astrolabe, cercle, 6 arches, Archiviste, golem d'essai, volumes de vue et de chute
-   - [ ] Gestionnaire de partie (`FractalRun`) : cercle d'harmonisation (5 max), cadran de niveau, une instance par groupe, retour au hub, commande `/fractale`
+   - [x] Fragment des Brumes : `PortalKey`, recette à l'établi, `PortalTypes`, instance hub (`tools/generate_observatory.py`)
+   - [x] Observatoire : île, Astrolabe, cercle, 6 arches (remplacées le 21 octobre 2026 par distributeurs, console de sélection et résonateurs), golem d'essai et son pupitre, filet de chute (`FallRescueSystem`). L'Archiviste attend la monnaie (étape 3) : un Registre lisible tient sa place
+   - [x] Gestionnaire de partie (`party/FractalRuns`, `observatory/Observatory`) : cercle d'harmonisation (5 max), cadran de niveau, une instance par groupe, retour au hub (gardé ouvert pendant la partie), commande `/fractale`. Ébauche de Falaise (île + pierre de retour) pour tester l'aller-retour, remplacée à l'étape 4
 3. **Systèmes de progression**
-   - [ ] Niveaux 1-100 et déblocage par joueur (sauvegardés dans le dossier de données du plugin)
-   - [ ] Agonie (effet + système), Autel des infusions (12 emplacements sur le joueur, fenêtre de conteneur), infusions +1 à +15 et leur fusion
-   - [ ] Coffre par joueur, éclats de Brume, marchand
+   - [x] Niveaux 1-100 et déblocage par joueur (sauvegardés avec le joueur, composant `Nakasar_Fractal_Progress`) ; lancement plafonné au niveau du meneur
+   - [x] Agonie (effet + `AgonySystem`), Autel des infusions (12 emplacements sur le joueur, fenêtre de conteneur), infusions +1 à +15 et leur fusion au Creuset des Brumes (`tools/generate_progression.py`)
+   - [x] Coffre par joueur (coffre de rang à ouvrir en main), éclats de Brume, l'Archiviste (PNJ et comptoir, boutique de troc). Les fractales du jour sont venues à l'étape 9
 4. **Briques de la Falaise + Falaise**
-   - [ ] Puzzles de saut : chute vers la dernière plateforme sûre, souffle des gargouilles, explosifs qui projettent, leviers qui coupent un piège
-   - [ ] Marteau du culte : objet porté, piles de Corruption, charge Brise-sceau, sceaux et bulle alternée
-   - [ ] Barre de défiance ouverte seulement pendant certaines attaques ; cercle de cage (réutilise l'emprisonnement)
-   - [ ] Fractale Falaise : colosse, échafaudages, 5 sceaux, cultistes, Archidevin légendaire
-5. **Instabilités** : cadre de tirage quotidien + les 8 instabilités
-6. **Inclassable et Volcanique** : harpies et recul hors des plateformes, consoles simultanées, gaz et ventilateur, charges +/-, rochers roulants, objet lancé (pierre imprégnée), captifs à protéger, bouclier à compteur de coups, Pieds brûlants
-7. **Océan solide et Marais** : marque crâne + rayon absorbé par un objet tenu, cristal lancé, course chronométrée aux feux-follets avec murs temporaires, furtivité de l'Homme-mousse, cercle vert de vulnérabilité qui tourne
-8. **Tempête de neige** : Chaleur et Hypothermie, feux à nourrir de fagots, élémentaires qui éteignent, blizzard, éclat de glace, chaman au balcon et Effigie
-9. **Finitions** : fractales du jour, cosmétiques, pages du wiki joueur
+   - [x] Puzzles de saut : chute vers la dernière plateforme sûre, souffle des gargouilles, explosifs qui projettent, leviers qui coupent un piège
+   - [x] Marteau du culte : objet porté, piles de Corruption, charge Brise-sceau, sceaux et bulle alternée
+   - [x] Barre de défiance ouverte seulement pendant certaines attaques ; cercle de cage (réutilise l'emprisonnement)
+   - [x] Fractale Falaise : colosse, échafaudages, 5 sceaux, cultistes, Archidevin légendaire
+5. **Instabilités**
+   - [x] Cadre de tirage quotidien (`instability/Instabilities`) + les 8 instabilités, commande `/fractale instabilites`
+6. **Inclassable et Volcanique**
+   - [x] Briques : harpies et recul hors des plateformes, consoles simultanées, gaz et ventilateur, charges +/-, rochers roulants, objet lancé (pierre imprégnée), captifs à protéger, bouclier à compteur de coups, Pieds brûlants
+   - [x] Fractales Inclassable (Vieux Tom, Asura délirant) et Volcanique (Champion chaman, Chaman imprégné)
+7. **Océan solide et Marais**
+   - [x] Briques : marque crâne + rayon absorbé par un objet tenu, cristal lancé, colosses qui renvoient les projectiles, chute vers le dernier fragment sûr, course chronométrée aux feux-follets avec murs temporaires, pièges au sol, fusils revigorants, furtivité du Moussu, cercle vert de vulnérabilité qui tourne, fleurs de poison
+   - [x] Fractales Océan solide (Abîme de Jade) et Marais (le Moussu, Carnasse)
+8. **Tempête de neige**
+   - [x] Briques : Chaleur et Hypothermie, feux à nourrir de fagots, élémentaires qui éteignent, blizzard, éclat de glace
+   - [x] Fractale Tempête de neige (mur de glace, Source élémentaire, forêt sombre, Chaman légendaire au balcon avec l'Effigie et sa forme d'ours)
+9. **Finitions**
+   - [x] Fractales du jour : 3 tirées par jour (graine = date du serveur), coffre en plus la première fois du jour, tableau près de l'Archiviste et `/fractale jour`
+   - [x] Cosmétiques de saison (couronne, capuche de l'Archidevin, mantelet) à l'Archiviste et dans le coffre du jour
+   - [x] Pages du wiki joueur : onglet Fractales (`docs/wiki/fractales/`)
 
-Nouveaux modèles à créer : colosse enchaîné, Archidevin, harpies, Asura délirant, Chaman imprégné (ailé), Gueule de jade et tentacules, Homme-mousse, Faim-de-floraison, Source élémentaire, Chaman légendaire et sa forme d'ours, Astrolabe et arches. Les monstres de base reprennent des rôles vanilla (outlanders, trorks, golems, loups, élémentaires).
+Nouveaux modèles à créer : colosse enchaîné, Archidevin, harpies, Asura délirant, Chaman imprégné (ailé), Abîme de Jade et tentacules, Moussu, Carnasse, Source élémentaire, Chaman légendaire et sa forme d'ours, Astrolabe. Les monstres de base reprennent des rôles vanilla (outlanders, trorks, golems, loups, élémentaires).
 
 ## Questions ouvertes
 

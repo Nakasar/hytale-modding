@@ -1,0 +1,12 @@
+{
+  "$Comment": "Marteau chargé (Brise-sceau) : étincelles bleues autour du porteur. Généré par tools/generate_cliffside.py.",
+  "Spawners": [
+    {
+      "SpawnerId": "Nakasar_Fractal_Hammer_Charged_Sparks",
+      "PositionOffset": {
+        "Y": 0.2
+      }
+    }
+  ],
+  "CullDistance": 72
+}

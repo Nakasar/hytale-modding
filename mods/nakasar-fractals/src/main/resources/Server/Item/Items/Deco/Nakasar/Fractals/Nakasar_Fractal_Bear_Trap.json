@@ -1,0 +1,53 @@
+{
+  "TranslationProperties": {
+    "Name": "nakasar_fractals_swampland.items.Nakasar_Fractal_Bear_Trap.name",
+    "Description": "nakasar_fractals_swampland.items.Nakasar_Fractal_Bear_Trap.description"
+  },
+  "Icon": "Icons/Items/Nakasar/Fractals/Bear_Trap.png",
+  "Categories": [
+    "Blocks.Deco"
+  ],
+  "Quality": "Technical",
+  "PlayerAnimationsId": "Block",
+  "BlockType": {
+    "Material": "Solid",
+    "DrawType": "Model",
+    "Opacity": "Transparent",
+    "HitboxType": "Full",
+    "Flags": {},
+    "Gathering": {
+      "Breaking": {
+        "GatherType": "Unbreakable"
+      }
+    },
+    "BlockParticleSetId": "Stone",
+    "BlockSoundSetId": "Stone",
+    "ParticleColor": "#aaaab0",
+    "CustomModel": "Blocks/Nakasar/Fractals/Bear_Trap.blockymodel",
+    "CustomModelTexture": [
+      {
+        "Texture": "Blocks/Nakasar/Fractals/Bear_Trap_Texture.png",
+        "Weight": 1
+      }
+    ],
+    "VariantRotation": "NESW"
+  },
+  "Tags": {
+    "Type": [
+      "Deco"
+    ]
+  },
+  "ItemSoundSetId": "ISS_Blocks_Stone",
+  "IconProperties": {
+    "Scale": 0.55,
+    "Translation": [
+      0,
+      -12
+    ],
+    "Rotation": [
+      22.5,
+      45,
+      22.5
+    ]
+  }
+}

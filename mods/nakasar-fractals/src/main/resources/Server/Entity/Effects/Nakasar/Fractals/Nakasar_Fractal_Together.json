@@ -1,0 +1,8 @@
+{
+  "$Comment": "Instabilité Restez groupés : un allié est à moins de 6 blocs, dégâts infligés +15 % (Java).",
+  "Name": "nakasar_fractals_instabilities.effects.Nakasar_Fractal_Together",
+  "StatusEffectIcon": "UI/StatusEffects/Nakasar/Fractals/Together.png",
+  "OverlapBehavior": "Overwrite",
+  "Infinite": false,
+  "Duration": 1.5
+}

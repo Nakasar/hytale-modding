@@ -1,0 +1,28 @@
+{
+  "$Comment": "Chamane imprégné : flèche enflammée, sa cible est marquée (1,6 s) puis touchée où qu'elle soit (20 dégâts) ; la flamme se propage aux joueurs proches (Java) : écartez-vous du joueur touché.",
+  "Type": "Serial",
+  "Interactions": [
+    {
+      "Type": "Nakasar_Fractal_Telegraph",
+      "Shape": "Mark",
+      "Seconds": 1.6,
+      "Damage": 20,
+      "DamageCause": "Physical",
+      "EffectId": "Nakasar_Fractal_Spreading_Flame",
+      "EffectDuration": 6,
+      "PlayersOnly": true,
+      "MarkParticle": "Nakasar_Fractal_Spreading_Flame",
+      "MarkParticleScale": 1.0,
+      "HitParticle": "Nakasar_Fractal_Spreading_Flame"
+    },
+    {
+      "Type": "Simple",
+      "RunTime": 1.6,
+      "Effects": {
+        "ItemPlayerAnimationsId": "Staff",
+        "ItemAnimationId": "SwingRight",
+        "WorldSoundEventId": "SFX_Spirit_Root_Alerted"
+      }
+    }
+  ]
+}

@@ -1,0 +1,4 @@
+{
+  "$Comment": "Pupitre du golem d'essai : le golem rejoue sur le joueur les attaques annoncées du mod (cercle, cône, ligne, puis la cage), pour les voir et les tester.",
+  "Type": "Nakasar_Fractal_TrialDemo"
+}

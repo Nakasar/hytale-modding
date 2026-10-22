@@ -1,0 +1,228 @@
+{
+  "$Comment": "Chaman du feu (troisième prisonnier) : flammes annoncées sous chaque joueur. Généré par tools/generate_uncategorized.py.",
+  "Type": "Generic",
+  "Appearance": "Nakasar_Fractal_Fire_Shaman",
+  "NameTranslationKey": "nakasar_fractals_uncategorized.npc.Fire_Shaman.name",
+  "MaxHealth": 320,
+  "StartState": "Idle",
+  "DefaultPlayerAttitude": "Hostile",
+  "DefaultNPCAttitude": "Ignore",
+  "DisableDamageGroups": [
+    "Nakasar_Fractal_Foes"
+  ],
+  "MotionControllerList": [
+    {
+      "Type": "Walk",
+      "MaxWalkSpeed": 3.8,
+      "Gravity": 10,
+      "MaxFallSpeed": 10,
+      "Acceleration": 10,
+      "JumpHeight": 1.0
+    }
+  ],
+  "HotbarItems": [
+    "Weapon_Staff_Crystal_Purple"
+  ],
+  "KnockbackScale": 0.9,
+  "DeathAnimationTime": 1.0,
+  "StateTransitions": [
+    {
+      "$Comment": "Entrée en combat : chaque attaque spéciale a sa propre recharge.",
+      "States": [
+        {
+          "From": [
+            "Idle"
+          ],
+          "To": [
+            "Combat"
+          ]
+        }
+      ],
+      "Actions": [
+        {
+          "Type": "TimerStart",
+          "Name": "Flames",
+          "StartValueRange": [
+            2,
+            3
+          ],
+          "RestartValueRange": [
+            6,
+            8
+          ]
+        }
+      ]
+    }
+  ],
+  "Instructions": [
+    {
+      "Sensor": {
+        "Type": "State",
+        "State": "Idle"
+      },
+      "Instructions": [
+        {
+          "Sensor": {
+            "Type": "Damage",
+            "Combat": true,
+            "TargetSlot": "LockedTarget"
+          },
+          "Actions": [
+            {
+              "Type": "State",
+              "State": "Combat"
+            }
+          ]
+        },
+        {
+          "Sensor": {
+            "Type": "Player",
+            "Range": 30,
+            "LockOnTarget": true,
+            "Filters": [
+              {
+                "Type": "Attitude",
+                "Attitudes": [
+                  "Hostile"
+                ]
+              },
+              {
+                "Type": "LineOfSight"
+              }
+            ]
+          },
+          "Actions": [
+            {
+              "Type": "State",
+              "State": "Combat"
+            }
+          ]
+        },
+        {
+          "Actions": []
+        }
+      ]
+    },
+    {
+      "Sensor": {
+        "Type": "State",
+        "State": "Combat"
+      },
+      "Instructions": [
+        {
+          "$Comment": "Cible perdue ou partie à plus de 40 blocs.",
+          "Sensor": {
+            "Type": "Not",
+            "Sensor": {
+              "Type": "Target",
+              "Range": 40,
+              "Filters": [
+                {
+                  "Type": "Attitude",
+                  "Attitudes": [
+                    "Hostile",
+                    "Neutral",
+                    "Ignore"
+                  ]
+                }
+              ]
+            }
+          },
+          "Actions": [
+            {
+              "Type": "ReleaseTarget"
+            },
+            {
+              "Type": "State",
+              "State": "Idle"
+            }
+          ]
+        },
+        {
+          "$Comment": "Flammes sous chaque joueur.",
+          "Sensor": {
+            "Type": "Timer",
+            "Name": "Flames",
+            "State": "STOPPED"
+          },
+          "ActionsBlocking": true,
+          "Actions": [
+            {
+              "Type": "TimerRestart",
+              "Name": "Flames"
+            },
+            {
+              "Type": "Attack",
+              "Attack": "Root_Nakasar_Fractal_NPC_Fire_Shaman_Flames",
+              "SkipAiming": true,
+              "LineOfSight": false,
+              "AvoidFriendlyFire": false
+            }
+          ]
+        },
+        {
+          "Sensor": {
+            "Type": "Target",
+            "Range": 2.0,
+            "Filters": [
+              {
+                "Type": "LineOfSight"
+              }
+            ]
+          },
+          "HeadMotion": {
+            "Type": "Aim",
+            "RelativeTurnSpeed": 1.5
+          },
+          "ActionsBlocking": true,
+          "Actions": [
+            {
+              "Type": "Attack",
+              "Attack": "Root_Nakasar_Fractal_NPC_Fire_Shaman_Staff",
+              "AttackPauseRange": [
+                0.9,
+                1.3
+              ]
+            },
+            {
+              "Type": "Timeout",
+              "Delay": [
+                0.2,
+                0.2
+              ]
+            }
+          ]
+        },
+        {
+          "$Comment": "Garde ses distances : entre 6 et 10 blocs de sa cible, en se décalant sur le côté.",
+          "Sensor": {
+            "Type": "Target",
+            "Range": 40
+          },
+          "BodyMotion": {
+            "Type": "MaintainDistance",
+            "DesiredDistanceRange": [
+              6,
+              10
+            ],
+            "MoveThreshold": 0.5,
+            "RelativeForwardsSpeed": 0.8,
+            "RelativeBackwardsSpeed": 0.8,
+            "StrafingDurationRange": [
+              0.8,
+              1.6
+            ],
+            "StrafingFrequencyRange": [
+              1.5,
+              3.0
+            ]
+          },
+          "HeadMotion": {
+            "Type": "Watch",
+            "RelativeTurnSpeed": 1.5
+          }
+        }
+      ]
+    }
+  ]
+}

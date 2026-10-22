@@ -1,0 +1,62 @@
+{
+  "$Comment": "Carnasse : bond sur sa cible, grand cercle rouge de 5 blocs (1,7 s), 30 dégâts et projection ; aussitôt après, le martèlement : défiance ouverte, cercle de 7 blocs (2,4 s), 36 dégâts.",
+  "Type": "Serial",
+  "Interactions": [
+    {
+      "Type": "ClearEntityEffect",
+      "Entity": "User",
+      "EntityEffectId": "Hit_Interrupt_Eligible"
+    },
+    {
+      "Type": "ApplyEffect",
+      "EffectId": "Nakasar_Fractal_Rooted"
+    },
+    {
+      "Type": "Nakasar_Fractal_Telegraph",
+      "Shape": "Circle",
+      "Seconds": 1.7,
+      "Anchor": "Target",
+      "Radius": 5,
+      "Damage": 30,
+      "TeleportCaster": true,
+      "Knockback": 6,
+      "KnockUp": 3,
+      "PlayersOnly": true,
+      "ImpactParticle": "Stick_Slam_Ground_Large",
+      "ImpactSound": "SFX_Goblin_Feastmaster_Slam"
+    },
+    {
+      "Type": "Simple",
+      "RunTime": 1.7,
+      "Effects": {
+        "ItemPlayerAnimationsId": "Spirit_Root_Default",
+        "ItemAnimationId": "SporeGas",
+        "WorldSoundEventId": "SFX_Spirit_Root_Alerted"
+      }
+    },
+    {
+      "Type": "Nakasar_Fractal_OpenDefiance",
+      "Seconds": 2.6
+    },
+    {
+      "Type": "Nakasar_Fractal_Telegraph",
+      "Shape": "Circle",
+      "Seconds": 2.4,
+      "Radius": 7,
+      "Damage": 36,
+      "Knockback": 4,
+      "KnockUp": 2,
+      "ImpactParticle": "Stick_Slam_Ground_Large",
+      "ImpactSound": "SFX_Mace_T2_Signature_Impact"
+    },
+    {
+      "Type": "Simple",
+      "RunTime": 2.4,
+      "Effects": {
+        "ItemPlayerAnimationsId": "Spirit_Root_Default",
+        "ItemAnimationId": "SporeGas",
+        "WorldSoundEventId": "SFX_Spirit_Root_Alerted"
+      }
+    }
+  ]
+}

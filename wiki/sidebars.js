@@ -83,6 +83,26 @@ const sidebars = {
     "effets",
   ],
   donjons: ["donjons/README", "donjons/tour-de-l-alchimiste"],
+  fractales: [
+    "fractales/README",
+    "fractales/observatoire",
+    "fractales/progression",
+    "fractales/instabilites",
+    {
+      type: "category",
+      label: "Saison 1",
+      collapsed: false,
+      items: [
+        "fractales/falaise",
+        "fractales/inclassable",
+        "fractales/volcanique",
+        "fractales/ocean-solide",
+        "fractales/marais",
+        "fractales/tempete-de-neige",
+      ],
+    },
+    "fractales/cosmetiques",
+  ],
 };
 
 export default sidebars;

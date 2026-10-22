@@ -1,0 +1,12 @@
+{
+  "$Comment": "Rayon de l'Abîme : éclats vert vif le long du trait. Généré par tools/generate_solid_ocean.py.",
+  "Spawners": [
+    {
+      "SpawnerId": "Nakasar_Fractal_Jade_Beam_Beam",
+      "PositionOffset": {
+        "Y": 0.0
+      }
+    }
+  ],
+  "CullDistance": 72
+}

@@ -1,0 +1,12 @@
+{
+  "$Comment": "Un golem de cristal s'éveille : éclats roses. Généré par tools/generate_uncategorized.py.",
+  "Spawners": [
+    {
+      "SpawnerId": "Nakasar_Fractal_Golem_Wake_Shards",
+      "PositionOffset": {
+        "Y": 0.5
+      }
+    }
+  ],
+  "CullDistance": 72
+}

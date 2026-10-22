@@ -1,0 +1,10 @@
+{
+  "$Comment": "Irukandji (provisoire) : l'esprit de givre vanilla, en attendant une méduse vérifiée dans Assets.zip.",
+  "Parent": "Spirit_Frost",
+  "MinScale": 0.9,
+  "MaxScale": 0.9,
+  "Light": {
+    "Color": "#7ff",
+    "Radius": 2
+  }
+}

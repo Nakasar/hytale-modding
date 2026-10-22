@@ -1,0 +1,12 @@
+{
+  "$Comment": "Batterie rechargée : éclair bleu. Généré par tools/generate_uncategorized.py.",
+  "Spawners": [
+    {
+      "SpawnerId": "Nakasar_Fractal_Battery_Charge_Bolt",
+      "PositionOffset": {
+        "Y": 0.3
+      }
+    }
+  ],
+  "CullDistance": 72
+}

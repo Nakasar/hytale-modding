@@ -1,0 +1,73 @@
+{
+  "TranslationProperties": {
+    "Name": "nakasar_fractals.items.Nakasar_Fractal_Exit_Stone.name",
+    "Description": "nakasar_fractals.items.Nakasar_Fractal_Exit_Stone.description"
+  },
+  "Icon": "Icons/Items/Nakasar/Fractals/Exit_Stone.png",
+  "Categories": [
+    "Blocks.Deco"
+  ],
+  "Quality": "Technical",
+  "PlayerAnimationsId": "Block",
+  "BlockType": {
+    "Material": "Solid",
+    "DrawType": "Model",
+    "Opacity": "Transparent",
+    "HitboxType": "Full",
+    "Flags": {},
+    "Gathering": {
+      "Breaking": {
+        "GatherType": "Unbreakable"
+      }
+    },
+    "BlockParticleSetId": "Stone",
+    "BlockSoundSetId": "Stone",
+    "ParticleColor": "#bea0ff",
+    "Light": {
+      "Color": "#b9f"
+    },
+    "Interactions": {
+      "Use": {
+        "Interactions": [
+          "Nakasar_Fractal_Use_Exit"
+        ]
+      }
+    },
+    "CustomModel": "Blocks/Nakasar/Fractals/Exit_Stone.blockymodel",
+    "CustomModelTexture": [
+      {
+        "Texture": "Blocks/Nakasar/Fractals/Exit_Stone_Texture.png",
+        "Weight": 1
+      }
+    ],
+    "VariantRotation": "NESW",
+    "CustomModelAnimation": "Blocks/Nakasar/Fractals/Exit_Stone.blockyanim",
+    "Particles": [
+      {
+        "SystemId": "Dungeon_Goblin_Void_Motes_Cluster",
+        "Scale": 1,
+        "PositionOffset": {
+          "Y": 0.7
+        }
+      }
+    ]
+  },
+  "Tags": {
+    "Type": [
+      "Deco"
+    ]
+  },
+  "ItemSoundSetId": "ISS_Blocks_Stone",
+  "IconProperties": {
+    "Scale": 0.55,
+    "Translation": [
+      0,
+      -12
+    ],
+    "Rotation": [
+      22.5,
+      45,
+      22.5
+    ]
+  }
+}

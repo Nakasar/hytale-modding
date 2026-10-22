@@ -1,0 +1,54 @@
+{
+  "$Comment": "Le Chaman légendaire (provisoire) : grand grawl (× 1,45), couronne, cape bleue et robe ; GW2 en fait un grawl couvert de fourrure.",
+  "Parent": "Player",
+  "Model": "Characters/Player.blockymodel",
+  "Texture": "Characters/Player_Textures/Player_Greyscale.png",
+  "GradientSet": "Skin",
+  "GradientId": "25",
+  "MinScale": 1.45,
+  "MaxScale": 1.45,
+  "Light": {
+    "Color": "#8cf",
+    "Radius": 3
+  },
+  "DefaultAttachments": [
+    {
+      "Model": "Characters/Body_Attachments/Faces/Player_Face_Detached.blockymodel",
+      "Texture": "Characters/Body_Attachments/Faces/Faces_Detached_Textures/Face_Scar.png",
+      "GradientSet": "Skin",
+      "GradientId": "25"
+    },
+    {
+      "Model": "Characters/Body_Attachments/Eyes/Eyes.blockymodel",
+      "Texture": "Characters/Body_Attachments/Eyes/Eyes_Textures/Greyscale.png",
+      "GradientSet": "Eyes_Gradient",
+      "GradientId": "Red"
+    },
+    {
+      "Model": "Cosmetics/Head/KingsCrown.blockymodel",
+      "Texture": "Cosmetics/Head/KingsCrown_Red.png"
+    },
+    {
+      "Model": "Cosmetics/Overtops/Robe_Wizard.blockymodel",
+      "Texture": "Cosmetics/Overtops/Blazen_Wizard_Coat.png"
+    },
+    {
+      "Model": "Cosmetics/Capes/Cape_Scavenger_NoNeck.blockymodel",
+      "Texture": "Cosmetics/Capes/Cape_Scavenger_Texture.png",
+      "GradientSet": "Fantasy_Cotton_Dark",
+      "GradientId": "Blue"
+    },
+    {
+      "Model": "Cosmetics/Gloves/Leather_Straps.blockymodel",
+      "Texture": "Cosmetics/Gloves/Leather_Straps_Greyscale.png",
+      "GradientSet": "Faded_Leather",
+      "GradientId": "Black"
+    },
+    {
+      "Model": "Cosmetics/Shoes/Boots_Long.blockymodel",
+      "Texture": "Cosmetics/Shoes/Boots_Long_Textures/Leather_Greyscale.png",
+      "GradientSet": "Faded_Leather",
+      "GradientId": "Black"
+    }
+  ]
+}

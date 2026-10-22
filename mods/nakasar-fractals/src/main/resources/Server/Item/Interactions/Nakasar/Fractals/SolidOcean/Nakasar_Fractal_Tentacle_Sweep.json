@@ -1,0 +1,35 @@
+{
+  "$Comment": "Tentacule : balayage annoncé, cône de 160° et 7 blocs (1,4 s), 22 dégâts et forte projection (renversement de GW2).",
+  "Type": "Serial",
+  "Interactions": [
+    {
+      "Type": "ClearEntityEffect",
+      "Entity": "User",
+      "EntityEffectId": "Hit_Interrupt_Eligible"
+    },
+    {
+      "Type": "ApplyEffect",
+      "EffectId": "Nakasar_Fractal_Rooted"
+    },
+    {
+      "Type": "Nakasar_Fractal_Telegraph",
+      "Shape": "Cone",
+      "Seconds": 1.4,
+      "Angle": 160,
+      "Radius": 7,
+      "Damage": 22,
+      "Knockback": 10,
+      "KnockUp": 4,
+      "PlayersOnly": true,
+      "ImpactParticle": "Nakasar_Fractal_Tentacle_Emerge",
+      "ImpactSound": "SFX_Goblin_Feastmaster_Slam"
+    },
+    {
+      "Type": "Simple",
+      "RunTime": 1.4,
+      "Effects": {
+        "WorldSoundEventId": "SFX_Spear_Throw_Charge"
+      }
+    }
+  ]
+}

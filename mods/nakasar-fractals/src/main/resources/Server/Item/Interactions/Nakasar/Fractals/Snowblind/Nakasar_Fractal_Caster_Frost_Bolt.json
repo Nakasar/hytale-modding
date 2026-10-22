@@ -1,0 +1,25 @@
+{
+  "$Comment": "Incantateur du givre : trait de glace sous sa cible, cercle rouge de 2 blocs (1,3 s), 14 dégâts et ralentissement.",
+  "Type": "Serial",
+  "Interactions": [
+    {
+      "Type": "Nakasar_Fractal_Telegraph",
+      "Shape": "Circle",
+      "Seconds": 1.3,
+      "Anchor": "Target",
+      "Radius": 2,
+      "Damage": 14,
+      "EffectId": "Nakasar_Fractal_Crippled",
+      "EffectDuration": 2.5,
+      "PlayersOnly": true,
+      "ImpactParticle": "Ice_Blast"
+    },
+    {
+      "Type": "Simple",
+      "RunTime": 1.3,
+      "Effects": {
+        "WorldSoundEventId": "SFX_Spear_Throw_Charge"
+      }
+    }
+  ]
+}

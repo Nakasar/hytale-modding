@@ -1,0 +1,16 @@
+{
+  "TranslationProperties": {
+    "Name": "nakasar_fractals_uncategorized.items.Nakasar_Fractal_Mist_Tear.name",
+    "Description": "nakasar_fractals_uncategorized.items.Nakasar_Fractal_Mist_Tear.description"
+  },
+  "Icon": "Icons/Items/Nakasar/Fractals/Mist_Tear.png",
+  "Model": "Items/Nakasar/Fractals/Mist_Tear.blockymodel",
+  "Texture": "Items/Nakasar/Fractals/Mist_Tear.png",
+  "Quality": "Rare",
+  "Categories": [
+    "Items.Ingredients"
+  ],
+  "PlayerAnimationsId": "Item",
+  "ItemSoundSetId": "ISS_Items_Gems",
+  "MaxStack": 8
+}

@@ -1,0 +1,35 @@
+{
+  "$Comment": "Golem d'essai de l'Observatoire : posé par TrialGolemSystem, immobile, ne riposte jamais. Les dégâts reçus sont annoncés au joueur et ses PV remontent après chaque série de coups. Son pupitre lui fait rejouer les attaques annoncées du mod. Généré par tools/generate_observatory.py.",
+  "Type": "Generic",
+  "Appearance": "Nakasar_Fractal_Trial_Golem",
+  "NameTranslationKey": "nakasar_fractals.npc.Trial_Golem.name",
+  "MaxHealth": 100000,
+  "StartState": "Idle",
+  "DefaultPlayerAttitude": "Neutral",
+  "DefaultNPCAttitude": "Ignore",
+  "MotionControllerList": [
+    {
+      "Type": "Walk",
+      "MaxWalkSpeed": 0.1,
+      "Gravity": 10,
+      "MaxFallSpeed": 10,
+      "Acceleration": 10,
+      "JumpHeight": 1.0
+    }
+  ],
+  "KnockbackScale": 0,
+  "DeathAnimationTime": 1.0,
+  "Instructions": [
+    {
+      "Sensor": {
+        "Type": "State",
+        "State": "Idle"
+      },
+      "Instructions": [
+        {
+          "Actions": []
+        }
+      ]
+    }
+  ]
+}

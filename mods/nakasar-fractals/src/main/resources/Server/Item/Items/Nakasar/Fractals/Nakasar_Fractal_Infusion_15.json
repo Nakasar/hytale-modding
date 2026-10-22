@@ -1,0 +1,22 @@
+{
+  "TranslationProperties": {
+    "Name": "nakasar_fractals_progress.items.Nakasar_Fractal_Infusion_15.name",
+    "Description": "nakasar_fractals_progress.items.Nakasar_Fractal_Infusion_15.description"
+  },
+  "Icon": "Icons/Items/Nakasar/Fractals/Infusion_15.png",
+  "Model": "Items/Nakasar/Fractals/Infusion_15.blockymodel",
+  "Texture": "Items/Nakasar/Fractals/Infusion_15.png",
+  "Quality": "Legendary",
+  "Categories": [
+    "Items.Ingredients"
+  ],
+  "PlayerAnimationsId": "Item",
+  "ItemSoundSetId": "ISS_Items_Gems",
+  "Scale": 1.0,
+  "MaxStack": 1,
+  "Tags": {
+    "Type": [
+      "Nakasar_Fractal_Infusion"
+    ]
+  }
+}

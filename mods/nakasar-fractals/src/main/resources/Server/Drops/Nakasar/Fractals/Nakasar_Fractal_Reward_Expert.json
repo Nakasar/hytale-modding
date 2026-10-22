@@ -1,0 +1,75 @@
+{
+  "$Comment": "Sac de fin de fractale, rang Expert : éclats de Brume, un matériau, une chance d'infusion.",
+  "Container": {
+    "Type": "Multiple",
+    "Containers": [
+      {
+        "Type": "Single",
+        "Item": {
+          "ItemId": "Nakasar_Fractal_Mist_Shard",
+          "QuantityMin": 11,
+          "QuantityMax": 15
+        }
+      },
+      {
+        "Type": "Choice",
+        "Containers": [
+          {
+            "Type": "Single",
+            "Weight": 2,
+            "Item": {
+              "ItemId": "Ingredient_Bar_Gold",
+              "QuantityMin": 2,
+              "QuantityMax": 3
+            }
+          },
+          {
+            "Type": "Single",
+            "Weight": 1,
+            "Item": {
+              "ItemId": "Rock_Gem_Ruby",
+              "QuantityMin": 1,
+              "QuantityMax": 1
+            }
+          },
+          {
+            "Type": "Single",
+            "Weight": 1,
+            "Item": {
+              "ItemId": "Ingredient_Rune_Shard",
+              "QuantityMin": 2,
+              "QuantityMax": 2
+            }
+          }
+        ]
+      },
+      {
+        "Type": "Choice",
+        "Containers": [
+          {
+            "Type": "Single",
+            "Weight": 2,
+            "Item": {
+              "ItemId": "Nakasar_Fractal_Infusion_01",
+              "QuantityMin": 1,
+              "QuantityMax": 1
+            }
+          },
+          {
+            "Type": "Single",
+            "Weight": 1,
+            "Item": {
+              "ItemId": "Nakasar_Fractal_Infusion_02",
+              "QuantityMin": 1,
+              "QuantityMax": 1
+            }
+          },
+          {
+            "Type": "Empty",
+            "Weight": 3
+          }
+        ]
+      }
+    ]
+  }
+}

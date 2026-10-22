@@ -1,0 +1,13 @@
+{
+  "$Comment": "Agonie des fractales (GDD) : marqueur visible ; dev.nakasar.hytale.fractals.progress.AgonySystem retire chaque seconde un pourcentage des PV max selon le niveau de la fractale, réduit par la résistance à l'agonie (infusions). Rien sous le niveau 26.",
+  "Name": "nakasar_fractals_progress.effects.Nakasar_Fractal_Agony",
+  "Debuff": true,
+  "StatusEffectIcon": "UI/StatusEffects/Nakasar/Fractals/Agony.png",
+  "ApplicationEffects": {
+    "EntityBottomTint": "#1a0624",
+    "EntityTopTint": "#b04ae0"
+  },
+  "OverlapBehavior": "Overwrite",
+  "Infinite": false,
+  "Duration": 5
+}

@@ -1,0 +1,12 @@
+{
+  "$Comment": "Impulsion de la bombe de flux : anneau violet qui s'étend. Généré par tools/generate_instabilities.py.",
+  "Spawners": [
+    {
+      "SpawnerId": "Nakasar_Fractal_Flux_Pulse_Ring",
+      "PositionOffset": {
+        "Y": 0.3
+      }
+    }
+  ],
+  "CullDistance": 64
+}

@@ -1,0 +1,61 @@
+{
+  "$Comment": "Fanatique : coup abattu annoncé par un cercle rouge de 2,8 blocs (1,2 s, 22 dégâts, projection).",
+  "Type": "Serial",
+  "Interactions": [
+    {
+      "Type": "ClearEntityEffect",
+      "Entity": "User",
+      "EntityEffectId": "Hit_Interrupt_Eligible"
+    },
+    {
+      "Type": "ApplyEffect",
+      "EffectId": "Nakasar_Fractal_Rooted"
+    },
+    {
+      "Type": "Nakasar_Fractal_Telegraph",
+      "Shape": "Circle",
+      "Seconds": 1.2,
+      "Radius": 2.8,
+      "Damage": 22,
+      "Knockback": 6,
+      "KnockUp": 4,
+      "HitParticle": "Impact_Sword_Basic_Stronk",
+      "ImpactSound": "SFX_Mace_T2_Signature_Impact"
+    },
+    {
+      "Type": "Simple",
+      "RunTime": 1.2,
+      "Effects": {
+        "ItemPlayerAnimationsId": "Mace",
+        "ItemAnimationId": "SwingDownCharging",
+        "WorldSoundEventId": "SFX_Spear_Throw_Charge",
+        "Particles": [
+          {
+            "SystemId": "Fire_Blue",
+            "TargetNodeName": "R-Hand",
+            "Scale": 1.5,
+            "PositionOffset": {
+              "Y": 0.3
+            },
+            "RotationOffset": {
+              "Pitch": 180
+            }
+          }
+        ]
+      }
+    },
+    {
+      "Type": "Simple",
+      "RunTime": 0.15,
+      "Effects": {
+        "ItemPlayerAnimationsId": "Mace",
+        "ItemAnimationId": "SwingDownCharged",
+        "WorldSoundEventId": "SFX_Goblin_Feastmaster_Slam"
+      }
+    },
+    {
+      "Type": "Simple",
+      "RunTime": 0.5
+    }
+  ]
+}

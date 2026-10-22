@@ -1,0 +1,81 @@
+{
+  "TranslationProperties": {
+    "Name": "nakasar_fractals_snowblind.items.Nakasar_Fractal_Torch_Rack.name",
+    "Description": "nakasar_fractals_snowblind.items.Nakasar_Fractal_Torch_Rack.description"
+  },
+  "Icon": "Icons/Items/Nakasar/Fractals/Torch_Rack.png",
+  "Categories": [
+    "Blocks.Deco"
+  ],
+  "Quality": "Technical",
+  "PlayerAnimationsId": "Block",
+  "BlockType": {
+    "Material": "Solid",
+    "DrawType": "Model",
+    "Opacity": "Transparent",
+    "HitboxType": "Full",
+    "Flags": {},
+    "Gathering": {
+      "Breaking": {
+        "GatherType": "Unbreakable"
+      }
+    },
+    "BlockParticleSetId": "Stone",
+    "BlockSoundSetId": "Stone",
+    "ParticleColor": "#ffaa46",
+    "Light": {
+      "Color": "#fa6"
+    },
+    "Interactions": {
+      "Use": {
+        "Interactions": [
+          "Nakasar_Fractal_Use_Snowblind_Torch"
+        ]
+      }
+    },
+    "CustomModel": "Blocks/Nakasar/Fractals/Torch_Rack.blockymodel",
+    "CustomModelTexture": [
+      {
+        "Texture": "Blocks/Nakasar/Fractals/Torch_Rack_Texture.png",
+        "Weight": 1
+      }
+    ],
+    "VariantRotation": "NESW",
+    "CustomModelAnimation": "Blocks/Nakasar/Fractals/Torch_Rack.blockyanim",
+    "Particles": [
+      {
+        "SystemId": "Torch_Fire",
+        "Scale": 0.45,
+        "TargetNodeName": "Flame_1"
+      },
+      {
+        "SystemId": "Torch_Fire",
+        "Scale": 0.45,
+        "TargetNodeName": "Flame_2"
+      },
+      {
+        "SystemId": "Torch_Fire",
+        "Scale": 0.45,
+        "TargetNodeName": "Flame_3"
+      }
+    ]
+  },
+  "Tags": {
+    "Type": [
+      "Deco"
+    ]
+  },
+  "ItemSoundSetId": "ISS_Blocks_Stone",
+  "IconProperties": {
+    "Scale": 0.55,
+    "Translation": [
+      0,
+      -12
+    ],
+    "Rotation": [
+      22.5,
+      45,
+      22.5
+    ]
+  }
+}

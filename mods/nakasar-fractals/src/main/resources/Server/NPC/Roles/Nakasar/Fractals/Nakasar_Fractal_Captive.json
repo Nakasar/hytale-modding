@@ -1,0 +1,35 @@
+{
+  "$Comment": "Captif des grawls : immobile, invulnérable, neutre ; le Java le jette dans la lave si un vétéran le rejoint, ou le Chamane imprégné s'en nourrit. Généré par tools/generate_volcanic.py.",
+  "Type": "Generic",
+  "Appearance": "Nakasar_Fractal_Captive",
+  "NameTranslationKey": "nakasar_fractals_volcanic.npc.Captive.name",
+  "MaxHealth": 100,
+  "StartState": "Idle",
+  "DefaultPlayerAttitude": "Neutral",
+  "DefaultNPCAttitude": "Ignore",
+  "MotionControllerList": [
+    {
+      "Type": "Walk",
+      "MaxWalkSpeed": 0.1,
+      "Gravity": 10,
+      "MaxFallSpeed": 10,
+      "Acceleration": 10,
+      "JumpHeight": 1.0
+    }
+  ],
+  "KnockbackScale": 0,
+  "SpawnLockTime": 0.2,
+  "Instructions": [
+    {
+      "Sensor": {
+        "Type": "State",
+        "State": "Idle"
+      },
+      "Instructions": [
+        {
+          "Actions": []
+        }
+      ]
+    }
+  ]
+}

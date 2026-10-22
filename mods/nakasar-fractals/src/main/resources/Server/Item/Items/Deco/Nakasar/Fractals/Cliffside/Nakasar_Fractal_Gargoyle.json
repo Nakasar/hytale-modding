@@ -1,0 +1,53 @@
+{
+  "TranslationProperties": {
+    "Name": "nakasar_fractals_cliffside.items.Nakasar_Fractal_Gargoyle.name",
+    "Description": "nakasar_fractals_cliffside.items.Nakasar_Fractal_Gargoyle.description"
+  },
+  "Icon": "Icons/Items/Nakasar/Fractals/Gargoyle.png",
+  "Categories": [
+    "Blocks.Deco"
+  ],
+  "Quality": "Technical",
+  "PlayerAnimationsId": "Block",
+  "BlockType": {
+    "Material": "Solid",
+    "DrawType": "Model",
+    "Opacity": "Transparent",
+    "HitboxType": "Full",
+    "Flags": {},
+    "Gathering": {
+      "Breaking": {
+        "GatherType": "Unbreakable"
+      }
+    },
+    "BlockParticleSetId": "Stone",
+    "BlockSoundSetId": "Stone",
+    "ParticleColor": "#dce6ff",
+    "CustomModel": "Blocks/Nakasar/Fractals/Gargoyle.blockymodel",
+    "CustomModelTexture": [
+      {
+        "Texture": "Blocks/Nakasar/Fractals/Gargoyle_Texture.png",
+        "Weight": 1
+      }
+    ],
+    "VariantRotation": "NESW"
+  },
+  "Tags": {
+    "Type": [
+      "Deco"
+    ]
+  },
+  "ItemSoundSetId": "ISS_Blocks_Stone",
+  "IconProperties": {
+    "Scale": 0.55,
+    "Translation": [
+      0,
+      -12
+    ],
+    "Rotation": [
+      22.5,
+      45,
+      22.5
+    ]
+  }
+}

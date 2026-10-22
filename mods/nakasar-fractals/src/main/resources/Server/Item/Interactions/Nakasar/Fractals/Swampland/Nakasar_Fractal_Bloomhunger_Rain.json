@@ -1,0 +1,30 @@
+{
+  "$Comment": "Carnasse : pluie de poison, 7 cercles rouges de 2,2 blocs autour de lui (1,6 s), 14 dégâts et poison.",
+  "Type": "Serial",
+  "Interactions": [
+    {
+      "Type": "Nakasar_Fractal_Telegraph",
+      "Shape": "Circle",
+      "Seconds": 1.6,
+      "Anchor": "Scatter",
+      "Count": 7,
+      "OffsetMin": 3,
+      "OffsetMax": 13,
+      "Radius": 2.2,
+      "Damage": 14,
+      "EffectId": "Poison_T2",
+      "EffectDuration": 4,
+      "PlayersOnly": true,
+      "ImpactParticle": "Nakasar_Fractal_Egg_Burst"
+    },
+    {
+      "Type": "Simple",
+      "RunTime": 1.6,
+      "Effects": {
+        "ItemPlayerAnimationsId": "Spirit_Root_Default",
+        "ItemAnimationId": "SporeGas",
+        "WorldSoundEventId": "SFX_Spirit_Root_Alerted"
+      }
+    }
+  ]
+}

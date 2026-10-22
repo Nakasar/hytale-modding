@@ -1,0 +1,27 @@
+{
+  "$Comment": "Incantateur : maléfice sur sa cible, cercle rouge de 2 blocs à ses pieds (1,4 s) ; 14 dégâts et poison.",
+  "Type": "Serial",
+  "Interactions": [
+    {
+      "Type": "Nakasar_Fractal_Telegraph",
+      "Shape": "Circle",
+      "Seconds": 1.4,
+      "Anchor": "Target",
+      "Radius": 2.0,
+      "Damage": 14,
+      "EffectId": "Poison_T2",
+      "EffectDuration": 4,
+      "PlayersOnly": true,
+      "ImpactParticle": "Effect_Poison"
+    },
+    {
+      "Type": "Simple",
+      "RunTime": 1.4,
+      "Effects": {
+        "ItemPlayerAnimationsId": "Staff",
+        "ItemAnimationId": "SwingRight",
+        "WorldSoundEventId": "SFX_Spirit_Root_Alerted"
+      }
+    }
+  ]
+}

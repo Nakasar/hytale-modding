@@ -1,0 +1,12 @@
+{
+  "$Comment": "Joueur chargé par le rayon : lueur verte. Généré par tools/generate_solid_ocean.py.",
+  "Spawners": [
+    {
+      "SpawnerId": "Nakasar_Fractal_Crystal_Charge_Glow",
+      "PositionOffset": {
+        "Y": 0.4
+      }
+    }
+  ],
+  "CullDistance": 72
+}

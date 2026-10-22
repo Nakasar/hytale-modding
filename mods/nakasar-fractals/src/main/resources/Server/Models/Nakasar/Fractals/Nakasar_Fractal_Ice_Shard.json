@@ -1,0 +1,24 @@
+{
+  "$Comment": "Éclat de glace (PNJ fixe) : enferme un joueur gelé jusqu'à ce que ses alliés le brisent.",
+  "Model": "NPC/Nakasar/Fractals/Ice_Shard/Model.blockymodel",
+  "Texture": "NPC/Nakasar/Fractals/Ice_Shard/Texture.png",
+  "EyeHeight": 1.0,
+  "HitBox": {
+    "Max": {
+      "X": 0.6,
+      "Y": 1.4,
+      "Z": 0.6
+    },
+    "Min": {
+      "X": -0.6,
+      "Y": 0,
+      "Z": -0.6
+    }
+  },
+  "MinScale": 1.2,
+  "MaxScale": 1.2,
+  "Light": {
+    "Color": "#9cf",
+    "Radius": 2
+  }
+}

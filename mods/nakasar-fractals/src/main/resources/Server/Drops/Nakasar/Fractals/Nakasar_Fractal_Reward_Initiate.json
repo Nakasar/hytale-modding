@@ -1,0 +1,66 @@
+{
+  "$Comment": "Sac de fin de fractale, rang Initiate : éclats de Brume, un matériau, une chance d'infusion.",
+  "Container": {
+    "Type": "Multiple",
+    "Containers": [
+      {
+        "Type": "Single",
+        "Item": {
+          "ItemId": "Nakasar_Fractal_Mist_Shard",
+          "QuantityMin": 4,
+          "QuantityMax": 6
+        }
+      },
+      {
+        "Type": "Choice",
+        "Containers": [
+          {
+            "Type": "Single",
+            "Weight": 2,
+            "Item": {
+              "ItemId": "Ingredient_Bar_Iron",
+              "QuantityMin": 2,
+              "QuantityMax": 4
+            }
+          },
+          {
+            "Type": "Single",
+            "Weight": 1,
+            "Item": {
+              "ItemId": "Rock_Gem_Topaz",
+              "QuantityMin": 1,
+              "QuantityMax": 1
+            }
+          },
+          {
+            "Type": "Single",
+            "Weight": 1,
+            "Item": {
+              "ItemId": "Potion_Health_Lesser",
+              "QuantityMin": 2,
+              "QuantityMax": 2
+            }
+          }
+        ]
+      },
+      {
+        "Type": "Choice",
+        "Containers": [
+          {
+            "Type": "Single",
+            "Weight": 1,
+            "Item": {
+              "ItemId": "Nakasar_Fractal_Infusion_01",
+              "QuantityMin": 1,
+              "QuantityMax": 1
+            }
+          },
+          {
+            "Type": "Empty",
+            "Weight": 9
+          }
+        ]
+      }
+    ]
+  }
+}

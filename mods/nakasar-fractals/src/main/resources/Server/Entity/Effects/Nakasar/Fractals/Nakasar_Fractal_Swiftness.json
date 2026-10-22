@@ -1,0 +1,12 @@
+{
+  "$Comment": "Rapidité (fusil revigorant du Marais) : course plus rapide.",
+  "Name": "nakasar_fractals_swampland.effects.Nakasar_Fractal_Swiftness",
+  "StatusEffectIcon": "UI/StatusEffects/Nakasar/Fractals/Haste.png",
+  "ApplicationEffects": {
+    "HorizontalSpeedMultiplier": 1.33,
+    "EntityTopTint": "#ffe08a"
+  },
+  "OverlapBehavior": "Overwrite",
+  "Infinite": false,
+  "Duration": 8
+}

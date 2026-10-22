@@ -1,0 +1,12 @@
+{
+  "$Comment": "Neige qui tombe autour d'un joueur (Tempête de neige). Généré par tools/generate_snowblind.py.",
+  "Spawners": [
+    {
+      "SpawnerId": "Nakasar_Fractal_Snowfall_Flakes",
+      "PositionOffset": {
+        "Y": 5.0
+      }
+    }
+  ],
+  "CullDistance": 72
+}

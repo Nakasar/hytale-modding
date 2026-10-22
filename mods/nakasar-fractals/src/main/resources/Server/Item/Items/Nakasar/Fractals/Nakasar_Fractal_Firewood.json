@@ -1,0 +1,16 @@
+{
+  "TranslationProperties": {
+    "Name": "nakasar_fractals_snowblind.items.Nakasar_Fractal_Firewood.name",
+    "Description": "nakasar_fractals_snowblind.items.Nakasar_Fractal_Firewood.description"
+  },
+  "Icon": "Icons/Items/Nakasar/Fractals/Firewood.png",
+  "Model": "Items/Nakasar/Fractals/Firewood.blockymodel",
+  "Texture": "Items/Nakasar/Fractals/Firewood.png",
+  "Quality": "Common",
+  "Categories": [
+    "Items.Misc"
+  ],
+  "PlayerAnimationsId": "Item",
+  "ItemSoundSetId": "ISS_Items_Gems",
+  "MaxStack": 3
+}

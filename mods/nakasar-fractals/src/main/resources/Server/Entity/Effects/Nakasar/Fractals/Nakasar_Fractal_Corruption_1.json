@@ -1,0 +1,33 @@
+{
+  "$Comment": "Corruption du marteau, cran 1 : 8 % de dégâts subis en plus. Posé par HammerSystem pour un cran entier (10 s) : la jauge se vide, puis le cran monte (marteau en main) ou descend.",
+  "Name": "nakasar_fractals_cliffside.effects.Nakasar_Fractal_Corruption_1",
+  "Debuff": true,
+  "StatusEffectIcon": "UI/StatusEffects/Nakasar/Fractals/Corruption_1.png",
+  "ApplicationEffects": {
+    "EntityTopTint": "#d8c040",
+    "EntityBottomTint": "#5a4a10"
+  },
+  "DamageResistance": {
+    "Physical": [
+      {
+        "CalculationType": "Percent",
+        "Amount": -0.08
+      }
+    ],
+    "Projectile": [
+      {
+        "CalculationType": "Percent",
+        "Amount": -0.08
+      }
+    ],
+    "Elemental": [
+      {
+        "CalculationType": "Percent",
+        "Amount": -0.08
+      }
+    ]
+  },
+  "OverlapBehavior": "Overwrite",
+  "Infinite": false,
+  "Duration": 2
+}

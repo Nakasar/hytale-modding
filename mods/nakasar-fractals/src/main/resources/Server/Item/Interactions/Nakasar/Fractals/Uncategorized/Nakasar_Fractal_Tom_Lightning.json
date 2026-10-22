@@ -1,0 +1,27 @@
+{
+  "$Comment": "Vieux Tom : éclair sur sa cible, cercle rouge de 2 blocs (1,4 s), 18 dégâts et étourdissement 0,8 s ; il rebondit trois fois sur le joueur le plus proche (10 blocs) : écartez-vous les uns des autres.",
+  "Type": "Serial",
+  "Interactions": [
+    {
+      "Type": "Nakasar_Fractal_Telegraph",
+      "Shape": "Circle",
+      "Seconds": 1.4,
+      "Anchor": "Target",
+      "Radius": 2.0,
+      "Damage": 18,
+      "EffectId": "Hazard_Electric_Stun",
+      "EffectDuration": 0.8,
+      "Bounces": 3,
+      "BounceRange": 10,
+      "PlayersOnly": true,
+      "ImpactParticle": "Nakasar_Fractal_Lightning_Arc"
+    },
+    {
+      "Type": "Simple",
+      "RunTime": 1.4,
+      "Effects": {
+        "WorldSoundEventId": "SFX_Spirit_Root_Alerted"
+      }
+    }
+  ]
+}

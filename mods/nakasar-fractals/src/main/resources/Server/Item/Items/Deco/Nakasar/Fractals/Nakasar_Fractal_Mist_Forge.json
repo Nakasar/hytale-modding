@@ -1,0 +1,100 @@
+{
+  "TranslationProperties": {
+    "Name": "nakasar_fractals.items.Nakasar_Fractal_Mist_Forge.name",
+    "Description": "nakasar_fractals.items.Nakasar_Fractal_Mist_Forge.description"
+  },
+  "Icon": "Icons/Items/Nakasar/Fractals/Mist_Forge.png",
+  "Categories": [
+    "Furniture.Benches"
+  ],
+  "Quality": "Rare",
+  "PlayerAnimationsId": "Block",
+  "BlockType": {
+    "Material": "Solid",
+    "DrawType": "Model",
+    "Opacity": "Transparent",
+    "HitboxType": "Full",
+    "Flags": {},
+    "Gathering": {
+      "Breaking": {
+        "GatherType": "Benches",
+        "ItemId": "Nakasar_Fractal_Mist_Forge"
+      }
+    },
+    "BlockParticleSetId": "Stone",
+    "BlockSoundSetId": "Stone",
+    "ParticleColor": "#8a6ad8",
+    "Light": {
+      "Color": "#a8f"
+    },
+    "BlockEntity": {
+      "Components": {
+        "BenchBlock": {}
+      }
+    },
+    "State": {
+      "Definitions": {
+        "CraftCompleted": {
+          "Looping": true
+        },
+        "CraftCompletedInstant": {}
+      }
+    },
+    "Bench": {
+      "Type": "Crafting",
+      "Id": "Nakasar_Fractal_Mist_Forge",
+      "LocalOpenSoundEventId": "SFX_Weapon_Bench_Open",
+      "LocalCloseSoundEventId": "SFX_Weapon_Bench_Close",
+      "CompletedSoundEventId": "SFX_Weapon_Bench_Craft",
+      "Categories": [
+        {
+          "Id": "Nakasar_Fractal_Infusions",
+          "Name": "nakasar_fractals_progress.benchCategories.nakasar_fractal_infusions",
+          "Icon": "Icons/CraftingCategories/Nakasar/Fractals/Infusions.png"
+        },
+        {
+          "Id": "Nakasar_Fractal_Fragments",
+          "Name": "nakasar_fractals_progress.benchCategories.nakasar_fractal_fragments",
+          "Icon": "Icons/CraftingCategories/Nakasar/Fractals/Fragments.png"
+        }
+      ]
+    },
+    "CustomModel": "Blocks/Nakasar/Fractals/Mist_Forge.blockymodel",
+    "CustomModelTexture": [
+      {
+        "Texture": "Blocks/Nakasar/Fractals/Mist_Forge_Texture.png",
+        "Weight": 1
+      }
+    ],
+    "VariantRotation": "NESW",
+    "CustomModelAnimation": "Blocks/Nakasar/Fractals/Mist_Forge.blockyanim",
+    "Particles": [
+      {
+        "SystemId": "Dungeon_Goblin_Void_Motes_Cluster",
+        "Scale": 1,
+        "PositionOffset": {
+          "Y": 0.8
+        }
+      }
+    ]
+  },
+  "Tags": {
+    "Type": [
+      "Bench"
+    ]
+  },
+  "ItemSoundSetId": "ISS_Blocks_Stone",
+  "MaxStack": 1,
+  "IconProperties": {
+    "Scale": 0.55,
+    "Translation": [
+      0,
+      -12
+    ],
+    "Rotation": [
+      22.5,
+      45,
+      22.5
+    ]
+  }
+}

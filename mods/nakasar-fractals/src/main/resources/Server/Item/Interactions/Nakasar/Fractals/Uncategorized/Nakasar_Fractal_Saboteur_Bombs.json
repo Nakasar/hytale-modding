@@ -1,0 +1,54 @@
+{
+  "$Comment": "Saboteur : trois bombes autour de sa cible, cercles rouges de 2,2 blocs (1,6 s), 18 dégâts et projection.",
+  "Type": "Serial",
+  "Interactions": [
+    {
+      "Type": "Nakasar_Fractal_Telegraph",
+      "Shape": "Circle",
+      "Seconds": 1.6,
+      "Anchor": "Target",
+      "Radius": 2.2,
+      "Damage": 18,
+      "Knockback": 6,
+      "KnockUp": 4,
+      "PlayersOnly": true,
+      "ImpactParticle": "Nakasar_Fractal_Bomb_Blast",
+      "ImpactSound": "SFX_Goblin_Lobber_Bomb_Death"
+    },
+    {
+      "Type": "Nakasar_Fractal_Telegraph",
+      "Shape": "Circle",
+      "Seconds": 1.6,
+      "Anchor": "Target",
+      "OffsetMin": 2.5,
+      "OffsetMax": 4.5,
+      "Radius": 2.2,
+      "Damage": 18,
+      "Knockback": 6,
+      "KnockUp": 4,
+      "PlayersOnly": true,
+      "ImpactParticle": "Nakasar_Fractal_Bomb_Blast"
+    },
+    {
+      "Type": "Nakasar_Fractal_Telegraph",
+      "Shape": "Circle",
+      "Seconds": 1.6,
+      "Anchor": "Target",
+      "OffsetMin": 2.5,
+      "OffsetMax": 4.5,
+      "Radius": 2.2,
+      "Damage": 18,
+      "Knockback": 6,
+      "KnockUp": 4,
+      "PlayersOnly": true,
+      "ImpactParticle": "Nakasar_Fractal_Bomb_Blast"
+    },
+    {
+      "Type": "Simple",
+      "RunTime": 1.0,
+      "Effects": {
+        "WorldSoundEventId": "SFX_Unarmed_Swing"
+      }
+    }
+  ]
+}

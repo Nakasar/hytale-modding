@@ -1,0 +1,5 @@
+{
+  "$Comment": "Grand feu de camp : l'allumer ou le nourrir avec un fagot.",
+  "Type": "Nakasar_Fractal_Use",
+  "Action": "Snowblind_Bonfire"
+}

@@ -1,0 +1,10 @@
+{
+  "$Comment": "Marteau du culte (Falaise) : la masse d'onyx vanilla, seule arme qui brise les sceaux. Tenu en main, il fait monter la Corruption d'un cran toutes les 10 s (rangé, elle redescend) ; un ennemi frappé avec, ou tué après avoir été frappé par le porteur, ou tué à moins de 10 blocs, le charge (Brise-sceau). Retiré quand on quitte la fractale (dev.nakasar.hytale.fractals.hammer.HammerSystem). Généré par tools/generate_cliffside.py.",
+  "Parent": "Weapon_Mace_Onyxium",
+  "TranslationProperties": {
+    "Name": "nakasar_fractals_cliffside.items.Nakasar_Fractal_Cult_Hammer.name",
+    "Description": "nakasar_fractals_cliffside.items.Nakasar_Fractal_Cult_Hammer.description"
+  },
+  "Quality": "Legendary",
+  "MaxStack": 1
+}

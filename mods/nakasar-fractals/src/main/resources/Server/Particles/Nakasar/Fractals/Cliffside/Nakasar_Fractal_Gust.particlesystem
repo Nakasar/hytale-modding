@@ -1,0 +1,12 @@
+{
+  "$Comment": "Souffle de gargouille : traînée de vent blanc vers le sud. Généré par tools/generate_cliffside.py.",
+  "Spawners": [
+    {
+      "SpawnerId": "Nakasar_Fractal_Gust_Wind",
+      "PositionOffset": {
+        "Y": 0.3
+      }
+    }
+  ],
+  "CullDistance": 72
+}

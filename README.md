@@ -7,7 +7,7 @@ Deux mods, chacun avec son dossier de documentation :
 | Mod | Code | Documentation |
 |-----|------|---------------|
 | **Vampires** : le domaine du Comte vampire (plugin Java + pack d'assets, artefact `Nakasar-Vampires-<version>.jar`) | `mods/nakasar-vampires` | [docs/vampires](docs/vampires/) |
-| **Fractales des Brumes** : les fractales de Guild Wars 2 transposées dans Hytale, pour 1 à 5 joueurs (en conception, pas encore de code) | à venir : `mods/nakasar-fractals` | [docs/fractales](docs/fractales/) |
+| **Fractales des Brumes** : les fractales de Guild Wars 2 transposées dans Hytale, pour 1 à 5 joueurs (en cours : socle, Observatoire, progression, instabilités, fractales Falaise, Inclassable, Volcanique, Océan solide, Marais et Tempête de neige, fractales du jour, cosmétiques, wiki) | `mods/nakasar-fractals` | [docs/fractales](docs/fractales/) |
 
 Les notes communes aux deux mods (API serveur, PNJ) restent à la racine de `docs/`.
 
@@ -30,6 +30,228 @@ L'histoire et la progression visées (voie des chasseurs, voie occulte, joueur v
 
 Le game design document (Observatoire, fragment d'instance, niveaux 1 à 100, agonie et Autel des infusions, 6 fractales de la saison 1 avec leurs boss, transposition des mécaniques GW2, étapes d'implémentation) est dans [docs/fractales/gdd.md](docs/fractales/gdd.md). Le développement commence par la fractale de la Falaise.
 
+Étape 1 (socle) : le mod `mods/nakasar-fractals` (manifest `Nakasar:Fractals`, jar `Nakasar-Fractals-<version>.jar`,
+plugin `dev.nakasar.hytale.fractals.FractalsPlugin`). Il ne dépend pas du mod Vampires : ses briques de combat y sont
+copiées, sans bibliothèque commune, sous des ids `Nakasar_Fractal_` (un correctif d'un côté se reporte à la main de
+l'autre) :
+
+| Brique (copie de) | Dans le mod Fractales |
+| --- | --- |
+| attaques annoncées `Nakasar_Telegraph` | `Nakasar_Fractal_Telegraph` (`combat/`), sans braseros ni Domination ; ses alliés sont le groupe `Nakasar_Fractal_Foes` |
+| charge `Nakasar_Charge` | `Nakasar_Fractal_Charge`, sans poteaux de grange |
+| étourdissement `EliteStun`, `Nakasar_StunSelf` | `BossStun`, `Nakasar_Fractal_StunSelf`, effet `Nakasar_Fractal_Stunned` |
+| serviteurs et bouclier `Nakasar_SummonMinions`, `MinionShieldSystem` | `Nakasar_Fractal_SummonMinions`, `MinionShieldSystem.register(rôle, vague)` (`minions/`) |
+| cellules du Capitaine `Nakasar_ImprisonPlayer` | `Nakasar_Fractal_Cage`, bloc invisible `Nakasar_Fractal_Cage_Cell` (cages de l'Archidevin) |
+| barre de boss, vie selon le groupe | `BossBarSystem.register(rôle)`, `GroupHealth` (`boss/`) |
+| remise en place du décor `Restores`, `WorldBlocks` | `arena/` |
+| zones rouges `tools/tower_warnings.py` | `tools/generate_warnings.py` (`Nakasar_Fractal_Warning_*`, `Nakasar_Fractal_Cone_*`) |
+
+Les validateurs hors jeu (`tools/ValidateAssets.java`, `tools/ValidateRoles.java` et les listes vanilla) sont copiés
+de même et tournent sur le pack du mod à chaque `build`.
+
+Étape 2 (entrée) : le **Fragment des Brumes** (`PortalKey_Nakasar_Fractal`, établi : 4 éclats de rune + 1 cœur du
+Vide) se pose dans l'Ancienne passerelle et ouvre l'**Observatoire**, une île dans les Brumes générée par
+`tools/generate_observatory.py` (prefab, blocs et textures, instances, portail, langues et
+`observatory/ObservatoryLayout.java` ; `--preview DIR` dessine le plan).
+
+- Le premier joueur arrivé **mène**. Les joueurs debout sur le **cercle d'harmonisation** autour de l'Astrolabe forment
+  le groupe (5 au plus) ; le meneur part toujours, même hors du cercle (seul si le cercle est vide).
+- **Sélection** (refaite le 21 octobre 2026 : une arche par fractale ne tenait pas à des dizaines de fractales) : à
+  l'entrée du cercle, le **distributeur de noyaux** donne le noyau d'une fractale (`Nakasar_Fractal_Core_<Id>`) et le
+  **distributeur de diapasons** celui d'un niveau (`Nakasar_Fractal_Level_<1-100>`, rangs Initié, Adepte, Expert,
+  Maître), gratuits (boutiques de troc sans prix `Nakasar_Fractal_Cores` et `Nakasar_Fractal_Levels`).
+- Les joueurs posent un noyau et un diapason dans la **console de sélection** (sur le socle de l'Astrolabe, deux
+  emplacements partagés par tout l'Observatoire, objets gardés d'une partie à l'autre) : le cercle est **harmonisé**,
+  annoncé en titre à tous.
+- Le meneur utilise un des 4 **résonateurs** au bord intérieur du cercle : tout le cercle part dans une instance de
+  la fractale, propre au groupe, si le niveau ne dépasse pas son plus haut niveau débloqué. Une nouvelle fractale ne
+  demande qu'une ligne dans `FRACTALS` (son noyau) et son id dans `FractalCatalog`.
+- La **pierre de retour** (ou `/fractale quitter`) ramène à l'Observatoire, gardé ouvert tant que la fractale vit.
+- Le **golem d'essai** (ouest) annonce les dégâts reçus et reprend ses PV ; son **pupitre** lui fait rejouer les zones
+  rouges (cercle, cône, ligne, puis la cage d'essai).
+- `/fractale niveau <n>`, `groupe`, `lancer <fractale>`, `quitter`, `infos` : secours des blocs, ouvert aux joueurs.
+- Un joueur tombé dans le vide revient au point d'apparition du monde.
+
+À vérifier en jeu : textures des blocs, golem (modèle `Golem_Firesteel` sans flammes), liste des 100 diapasons dans
+la fenêtre de troc, fenêtre de la console (partagée entre joueurs), titre d'harmonisation, modèles des noyaux et
+diapasons en main.
+
+Étape 3 (progression) : `tools/generate_progression.py` (éclats, infusions, coffres de rang, recettes, agonie,
+boutique et PNJ de l'Archiviste, modèles et icônes) et le paquet Java `progress/`.
+
+- **Niveaux débloqués par joueur**, sauvegardés avec lui (composant `Nakasar_Fractal_Progress`) : on commence au
+  niveau 1, finir une fractale à son plus haut niveau débloque le suivant. Le meneur ne lance qu'un niveau qu'il a
+  débloqué ; si un nouveau meneur en a débloqué moins, le niveau redescend.
+- **Agonie** (`Nakasar_Fractal_Agony`, à partir du niveau 26) : 4 %, 6 % puis 8 % des PV max par seconde selon le rang,
+  réduits par la **résistance** jusqu'à zéro à la résistance conseillée (10 à 40 en Adepte, 50 à 100 en Expert, 110 à
+  150 en Maître). Le premier cercle du pupitre d'essai pose de l'agonie au niveau harmonisé, pour tester.
+- **Autel des infusions** (portable, recette à l'établi) : ouvre les 12 emplacements d'infusion du joueur ; la somme
+  des infusions posées est sa résistance. Infusions +1 à +15 ; au **Creuset des Brumes** (établi, recette à l'établi),
+  2 × infusion n + 4n éclats donnent l'infusion n+1, et 25 éclats + 1 éclat de rune refont un Fragment des Brumes.
+- **Coffre de fin** : chaque membre du groupe y prend une fois le coffre de son rang (éclats de Brume, matériaux,
+  chance d'infusion), qu'il ouvre en main. Il apparaît une fois le boss de la fractale vaincu.
+- **L'Archiviste** (est de l'Observatoire, invulnérable) et son comptoir : troc d'éclats contre infusions +1, +2, +4 et
+  Fragment des Brumes.
+- `/fractale infos` : niveau débloqué et résistance.
+
+À vérifier en jeu : fenêtre de l'autel (glisser une infusion, sauvegarde à la reconnexion), PNJ Archiviste (rôle
+`OpenBarterShop` accepté ? sinon le comptoir), dégâts et message d'agonie, coffre de rang.
+
+Étape 4, **la Falaise** (`tools/generate_cliffside.py` écrit le décor, les blocs, les PNJ, les effets et
+`cliffside/CliffsideLayout.java` ; `--preview DIR` dessine la face et le dessus) : un colosse de pierre enchaîné à
+une falaise, qu'on escalade par des échafaudages.
+- **Camp** au pied : le Chercheur et une vague de cultistes ; le **râtelier** ne donne le marteau du culte qu'une fois
+  le camp nettoyé, et à un seul joueur à la fois.
+- **Marteau du culte** (`hammer/`) : le prendre coûte 10 % des PV. La **Corruption** avance par crans de 10 s : en
+  main, le cran 1 s'ouvre et son effet se vide sous les yeux du joueur ; vidé, le cran monte si le marteau est encore
+  en main, sinon il redescend. Par cran, dégâts subis +8 % ; dès le cran 2, on ne fait plus que 70 % de ses dégâts ;
+  le cran 3 étourdit 2 s, et vouloir monter au-delà fait échapper le marteau (étourdi 3 s). Toucher un cultiste avec,
+  puis le voir mourir dans les 15 s (même tombé loin), ou voir un ennemi mourir à moins de 10 blocs, le **charge** ;
+  un coup chargé fissure un sceau. Les cultistes ne subissent plus de recul et sont ramenés à leur poste s'ils
+  tombent de leur plate-forme.
+- **5 sceaux** (PNJ fixes, nos instances refusant les coups sur les blocs) : genoux (2 coups chacun), poitrine (3),
+  poignets (3, bulle alternée : frapper l'un protège l'autre ; les incantateurs proches réparent un coup toutes les
+  20 s). Les vagues se renouvellent tant que le sceau tient ; chaque palier brisé ouvre une barrière de brume et
+  déplace le point de retour.
+- **Puzzles de saut** (`cliffside/Traps`, `SafeLandings`) : tunnel aux dalles piégées (18 % des PV), escalade sous le
+  souffle des gargouilles (trois leviers en haut les coupent), foyers de la passerelle du torse (deux sur trois
+  s'embrasent toutes les 7 s), rampes aux bombes (leviers R1 et R2). Tomber dans une zone de saut ramène à la
+  dernière **plate-forme sûre**. Tirer un levier fige 4 s.
+- **L'Archidevin** (`cliffside/Archdiviner`, barre de boss et **barre de défiance** ◆/◇ : ouverte pendant ses attaques
+  annoncées, elle se brise en 8 coups + 4 par joueur de plus, 3 au marteau, et l'étourdit 5 s) : transitions à 75, 50,
+  25 % et 1 PV, invulnérable tant que le sceau du cou n'a pas reçu un coup chargé (incantateurs et marteau fournis) ;
+  entre 50 et 25 %, protection, **cages** (cercle rouge, alliés qui forcent la porte en 5 utilisations, sortie seule
+  au bout de 15 s) et dévoreurs ; sous 25 %, hâte et frappes marquées. Niveau 25 : ruée ; 51 : mur anti-projectiles ;
+  71 : forme démoniaque. Vaincu, le coffre de fin et la pierre de retour apparaissent.
+- PV des ennemis × (1 + 25 % par joueur de plus) × (1 + niveau / 100) ; leurs dégâts × (1 + niveau / 150) ; annonces
+  plus courtes avec le niveau (jusqu'à −25 %).
+
+À vérifier en jeu : modèle des sceaux, force du souffle des gargouilles, escaliers en colimaçon praticables, modèle
+provisoire du dévoreur (`Zombie_Aberrant_Small`), blocs utilisables (râtelier, leviers, portes) dans une instance
+sans modification de blocs, rotation des barreaux de cage.
+Décor (`tools/fractal_nature.py`, partagé par les fractales : bruit lisse, feuillus et résineux vanilla, buissons,
+rochers moussus, herbes et massifs de fleurs, îles flottantes) : falaise en amphithéâtre à strates et mousse,
+corniches fleuries et lianes, crête boisée, plateau du camp au contour irrégulier avec chemins de terre battue et
+feu de camp, colosse de basalte moussu, matinée claire (`Nakasar_Fractal_Weather_Cliffside`, 10 h 30). À vérifier
+en jeu : lianes et fleurs bien posées (pas de plantes en l'air), teinte de l'herbe et des feuilles, lumière du jour,
+mousse sur le colosse sans gêner les passages.
+
+Étape 5, **les instabilités** (`instability/`) : 0 en Initié, 1 en Adepte, 2 en Expert, 3 en Maître, tirées une fois
+par jour et par fractale pour tout le serveur (les rangs hauts gardent celles des rangs bas). Un joueur seul en tire
+une autre à la place de celles qui demandent un groupe. Les 8 : Dernier rire (les ennemis explosent à leur mort),
+Traînée toxique, Malaise social, Restez groupés, Bombe de flux, Vengeance, Pente glissante (recul accru), Oiseaux
+(nuées de corbeaux). `/fractale instabilites` donne celles de la partie en cours ou du jour.
+
+Étape 6, **Inclassable et Volcanique** (`tools/generate_uncategorized.py`, `tools/generate_volcanic.py`, paquets
+`uncategorized/` et `volcanic/`), avec les briques réutilisables : portes et points de retour (`arena/Gates`),
+consoles simultanées (`Consoles`, fenêtre 12/8/4 s selon le groupe), objets portés ou lancés (`Carried`,
+`Nakasar_Fractal_ThrowItem`), bouclier à compteur de coups (`HitShield`), charges +/- (`Polarity`).
+- **Inclassable** : plateformes des harpies (recul hors des plateformes, retour à la dernière plateforme sûre),
+  cour de la prison (générateur, puis prisonniers libérés un par un : lapin enragé, saboteur, chaman du feu, ettin),
+  escalier sous le feu de 4 tourelles (couloirs annoncés), 3 consoles à activer ensemble ; **Vieux Tom** et son gaz
+  (le ventilateur le chasse, il faut dès le niveau 12 deux batteries chargées de larmes des Brumes) ; plateformes de
+  lumière ; l'**Asura délirant** : 4 golems de cristal réveillés un à un puis ensemble, charges + et − à alterner,
+  éclairs sous les joueurs et orbes à tête chercheuse.
+- **Volcanique** : camp grawl autour d'un totem (la barre du totem compte les morts restantes), couloir aux
+  **rochers roulants** (niches pour s'abriter, traînée de feu), **Champion chaman** (8 piles qui réduisent ses dégâts
+  subis, retirées une à une par les **pierres imprégnées** lancées, tombées des chutes de pierres ; des vétérans
+  marchent vers 4 captifs à protéger, 5 éclats de Brume en plus si tous survivent), mine sur rails au-dessus de la
+  lave, puis le **Chaman imprégné** : Pieds brûlants (bouger ou rester au sol), puits de lave, flamme qui se propage ;
+  à 75/50/25 % il plane vers un villageois sous un bouclier à compteur de coups (le briser l'étourdit, l'atteindre le
+  soigne de 25 %).
+
+Modèles provisoires : harpies (chauve-souris ×2), lapin (boîte), saboteur, chaman du feu, grawls, captifs et Chaman
+imprégné (humanoïdes ; celui de GW2 est une harpie géante), ettin (`Zombie_Aberrant_Big`), corbeaux et chauves-souris
+(`Bat`), larves (`Spirit_Ember`).
+
+À vérifier en jeu : recul des harpies, portes des cellules, couloirs des tourelles le long de l'escalier, gaz et
+ventilateur de Tom, transparence des plateformes de lumière, lancer de la pierre imprégnée (clic droit vers le
+Champion), vétérans qui rejoignent les captifs, rochers et niches, Pieds brûlants au saut, vol plané du Chaman.
+
+Étape 7, **Océan solide et Marais** (`tools/generate_solid_ocean.py`, `tools/generate_swampland.py`, paquets
+`solidocean/` et `swampland/`). `SafeLandings` accepte désormais plusieurs blocs d'atterrissage (fragments de jade).
+- **Océan solide** : fragments de jade à sauter au-dessus de l'océan (une chute ramène au fragment d'avant),
+  irukandjis en chemin, puis l'**Abîme de Jade**, immobile et invulnérable : phase 1, deux tentacules à abattre et un
+  test d'agonie (niveau 26+) ; phase 2, des **colosses de jade** (3 + 1 par joueur) qui renvoient les projectiles sauf
+  étourdis et lâchent les **cristaux réfléchissants** ; fin, les tentacules lâchent les cristaux. Toutes les 11 s, un
+  crâne marque un joueur ; quand il disparaît, le rayon se fixe sur sa place (0,7 s pour s'écarter) : tenir un cristal
+  l'absorbe et charge le joueur, qui lance alors le cristal sur l'Abîme (-5 %, tentacule -3 %). Sous 8 %, dernier
+  rayon sur tout le monde, sans esquive.
+- **Marais** : trois feux-follets à rapporter dans leurs failles (minuteur 64 s, 38 s dès le niveau 26, 30 s dès le
+  51) ; des murs surgissent au premier pris ; fils tendus, pièges à loup, plaques à piques, œufs d'araignée ; deux
+  fusils revigorants (rapidité). Raté : tout s'éteint, les feux-follets changent de place. Embuscade du **Moussu**
+  (loups, furtivité puis attaque surgie en ligne rouge avec défiance ouverte, forme sauvage sous 50 %), puis
+  **Carnasse** : vulnérable, lui et ses esprits, seulement dans le **cercle vert** qui saute de faille en faille ;
+  assauts à 75/50 % (esprits à abattre, pluie de poison, puis fleurs de poison), à 25 % quatre feux-follets à
+  rapporter en 35 s, sinon purge corporelle (60 %, mortelle dès le niveau 76).
+
+Modèles provisoires : Abîme de Jade et tentacules (boîtes), colosses (`Golem_Crystal_Thunder`), irukandjis
+(`Spirit_Frost`), loups du Moussu et esprits animaux (boîtes), le Moussu (humanoïde), Carnasse (`Spirit_Root` ×2,4).
+
+À vérifier en jeu : sauts entre fragments de jade, crâne et cercle du rayon, absorption par le cristal tenu, lancer
+du cristal (clic droit vers l'Abîme), renvoi des colosses ; murs et pièges du marais, fusils, furtivité et
+réapparition du Moussu, cercle vert (particules) et vigueur, assauts et fleurs, feux-follets des coins.
+
+Étape 8, **Tempête de neige** (`tools/generate_snowblind.py`, paquet `snowblind/`, thème de décor `snow`). Partout,
+l'**Hypothermie** (`Frost`) : loin d'un feu allumé, une pile toutes les 5 s (2,5 s dans le blizzard, deux fois moins
+vite torche en main), jusqu'à 10 ; près d'un feu (Chaleur), une pile en moins toutes les 1,2 s. Chaque pile coûte
+0,3 % des PV max par seconde (cause `Nakasar_Fractal_Cold`), la course ralentit dès 5 piles. À 10 piles, le joueur est
+pris dans un **éclat de glace** que ses alliés doivent briser (ses propres coups ne comptent pas) ; il repart à 6 piles.
+- **Camp** : le grand feu s'allume et se nourrit de **fagots** (tas sous les arbres, 3 portés au plus, repoussent en
+  20 s) ; il brûle 1,5 %/s et fait fondre le **mur de glace** rangée par rangée (90 s à mi-bois, plus vite bien
+  nourri). Toutes les 14 s, des **élémentaires de glace** marchent vers le feu et lui retirent 35 % en l'atteignant ;
+  toutes les 25 s, loups ou cultistes attaquent le camp.
+- **Source élémentaire** : cinq **foyers** à allumer torche en inventaire (râtelier à l'entrée) puis à nourrir de
+  fagots (tas des huttes). Chaque foyer éteint donne une pile de **bouclier de givre** (−18 % de dégâts, ❄ sur la
+  barre) ; à 75/50/25 % elle frappe les foyers allumés (cercles rouges, −50 % de bois) ; tous éteints : **blizzard**.
+- **Forêt sombre** : sentier sinueux sous les sapins, empreintes au sol, fausses pistes, deux embuscades de cultistes.
+- **Chaman légendaire** : la porte du village se ferme ; trois **cristaux corrompus** le protègent à chaque phase au
+  sol ; ses coups d'épée ajoutent 2 piles (ses attaques annoncées ont la cause `Nakasar_Fractal_Frost`) ; pluie de
+  glace, anneau de pics, souffle glacé. À 75 et 50 %, il saute sur son **balcon**, invulnérable, et fait pleuvoir des
+  pics sous chaque joueur ; l'**Effigie de glace** (défiance ouverte) brisée ou détruite le fait redescendre. À 25 %,
+  **forme d'ours** (bonds qui renversent 3 s).
+
+Des remparts de glace barrent toute l'île de part et d'autre du mur, de la brume de la Source et de la porte du
+village : on ne contourne plus un passage par la forêt du pourtour. Modèles provisoires : élémentaires et Source
+(`Spirit_Frost`), cultistes (humanoïdes), Chaman (grawl ×1,45), loups, ours, Effigie, cristaux et éclat (boîtes).
+
+À vérifier en jeu : fumée et lumière du grand feu et des foyers, fonte du mur, élémentaires qui rejoignent le feu
+(point d'attache), râtelier et torche en main (lumière), blizzard et neige (particules), éclat de glace (immobile,
+brisé par les alliés), saut au balcon et retour, forme d'ours, obscurité de la forêt (17 h 30).
+
+Étape 9, **finitions** :
+- **Fractales du jour** (`party/DailyFractals`) : 3 fractales ouvertes tirées chaque jour (graine = date du serveur).
+  La première fois du jour qu'un joueur en termine une, le coffre de fin lui donne en plus le **coffre des fractales
+  du jour** (`Nakasar_Fractal_Daily_Bag` : 12 à 18 éclats, une infusion +1 ou +2, un matériau, 1 chance sur 10 d'un
+  cosmétique). Le jour et les fractales déjà récompensées sont sauvegardés dans `Nakasar_Fractal_Progress`
+  (`DailyDay`, `DailyDone`). **Tableau des fractales du jour** au nord du Registre (`Nakasar_Fractal_DailyBoard`) et
+  `/fractale jour`.
+- **Cosmétiques de saison** (`tools/generate_cosmetics.py`, sans protection) : Couronne des Brumes (tête, 150
+  éclats), Capuche de l'Archidevin (tête, 200), Mantelet des Brumes (torse, 250), vendus par l'Archiviste.
+- **Wiki joueur** : onglet **Fractales** (`docs/wiki/fractales/` : présentation, Observatoire, progression,
+  instabilités, les 6 fractales, cosmétiques) ; le site s'appelle désormais « Wiki des mods Nakasar » et copie aussi
+  les icônes du mod Fractales.
+
+À vérifier en jeu : tableau du jour, coffre du jour reçu une seule fois par fractale et par jour (même après
+reconnexion), cosmétiques portés (placement sur la tête et le torse, cape), trocs de l'Archiviste.
+
+**Décor de toutes les fractales** (`tools/fractal_nature.py` : thèmes prairie, Brumes, volcan, marais et jade ;
+`rim` pour un pourtour naturel autour d'un lieu, `natural_ground`, `dress`, `islet` et `scatter_islets` pour des îlots
+loin du parcours, jamais un raccourci) : les matières de `fractal_common.pick` sont tirées par plaques lisses et non
+plus en damier, les dessous d'îles sont irréguliers. Chaque fractale a son ciel figé (`Nakasar_Fractal_Weather_*`).
+- **Observatoire** : jardins de glycines et d'arbres bleus hors du garde-corps, cristaux, îles flottantes autour.
+- **Inclassable** (11 h) : jardins autour du départ, de la cour, de la salle de Vieux Tom et de l'arène (jamais entre
+  deux sauts), roche et lianes sous les plates-formes des harpies, îlots fleuris.
+- **Volcanique** (ciel de fumée, 15 h) : terres brûlées et arbres morts, falaises du canyon et de la mine, volcan au
+  sud-ouest avec coulées de lave figée et cratère.
+- **Océan solide** (midi) : l'océan de jade (houle, récifs de corail, aiguilles de cristal) passe sous le filet
+  anti-chute (y 34 dans le monde), on n'y reste pas ; pourtour de sable et de corail autour de l'arène.
+- **Marais** (brume, 15 h) : saules à lianes, roseaux, champignons (pas sur les pièges, les lignes de mur ni les
+  failles), falaises moussues et boisées tout autour ; la cachette du Moussu est enfouie dans la falaise.
+
+À vérifier en jeu : plantes qui tiennent sur sable et cendre, coraux hors de l'eau, lianes sous les saules sans gêner
+le passage, couleurs des ciels, lisibilité des pièges du marais.
+
 ### Notes communes
 
 Les points d'API serveur vérifiés dans le jar `Server-0.7.2` sont notés dans [docs/api-0.7.2.md](docs/api-0.7.2.md).
@@ -49,12 +271,13 @@ Création de PNJ (rôles, IA, modèles, apparitions) : [docs/npc-0.7.2.md](docs/
 ```
 
 - `mods/nakasar-vampires/build/libs/Nakasar-Vampires-0.1.0.jar`
+- `mods/nakasar-fractals/build/libs/Nakasar-Fractals-0.1.0.jar`
 
 `build` lance aussi `validateJson`, qui vérifie la syntaxe de tous les JSON d'assets (le parseur du
 serveur est strict : une virgule en trop fait échouer le chargement du mod).
 
-`build` lance aussi `validateRoles` (`mods/nakasar-vampires/tools/ValidateRoles.java`, rôles de PNJ) et
-`validateAssets` (`mods/nakasar-vampires/tools/ValidateAssets.java`) :
+`build` lance aussi, pour chaque mod, `validateRoles` (`mods/<mod>/tools/ValidateRoles.java`, rôles de PNJ) et
+`validateAssets` (`mods/<mod>/tools/ValidateAssets.java`) :
 il décode chaque asset du pack (biome, structure de monde, instance, portail, objets, environnements, météo,
 spawns, modèles, effets, butins, interactions, y compris celles écrites en ligne dans `Next` ou `Parallel`)
 avec les codecs du jar serveur et signale les clés inconnues et les valeurs invalides (par exemple un

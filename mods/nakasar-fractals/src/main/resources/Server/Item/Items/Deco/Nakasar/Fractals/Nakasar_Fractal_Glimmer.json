@@ -1,0 +1,43 @@
+{
+  "TranslationProperties": {
+    "Name": "nakasar_fractals_uncategorized.items.Nakasar_Fractal_Glimmer.name",
+    "Description": "nakasar_fractals_uncategorized.items.Nakasar_Fractal_Glimmer.description"
+  },
+  "Icon": "Icons/Items/Nakasar/Fractals/Glimmer.png",
+  "Categories": [
+    "Blocks.Deco"
+  ],
+  "Quality": "Technical",
+  "PlayerAnimationsId": "Block",
+  "BlockType": {
+    "Material": "Solid",
+    "DrawType": "Cube",
+    "Opacity": "Semitransparent",
+    "Textures": [
+      {
+        "Sides": "BlockTextures/Nakasar/Fractals/Glimmer.png",
+        "UpDown": "BlockTextures/Nakasar/Fractals/Glimmer_Top.png",
+        "Weight": 1
+      }
+    ],
+    "HitboxType": "Full",
+    "Flags": {},
+    "Gathering": {
+      "Breaking": {
+        "GatherType": "Unbreakable"
+      }
+    },
+    "BlockParticleSetId": "Crystal",
+    "BlockSoundSetId": "Crystal",
+    "ParticleColor": "#fff8c8",
+    "Light": {
+      "Color": "#fe8"
+    }
+  },
+  "Tags": {
+    "Type": [
+      "Deco"
+    ]
+  },
+  "ItemSoundSetId": "ISS_Blocks_Stone"
+}

@@ -1,0 +1,20 @@
+{
+  "TranslationProperties": {
+    "Name": "nakasar_fractals_progress.items.Nakasar_Fractal_Daily_Bag.name",
+    "Description": "nakasar_fractals_progress.items.Nakasar_Fractal_Daily_Bag.description"
+  },
+  "Icon": "Icons/Items/Nakasar/Fractals/Daily_Bag.png",
+  "Model": "Items/Nakasar/Fractals/Daily_Bag.blockymodel",
+  "Texture": "Items/Nakasar/Fractals/Daily_Bag.png",
+  "Quality": "Epic",
+  "Categories": [
+    "Items.Ingredients"
+  ],
+  "PlayerAnimationsId": "Item",
+  "ItemSoundSetId": "ISS_Items_Gems",
+  "Scale": 1.0,
+  "MaxStack": 16,
+  "Interactions": {
+    "Secondary": "Root_Nakasar_Fractal_Daily_Bag"
+  }
+}

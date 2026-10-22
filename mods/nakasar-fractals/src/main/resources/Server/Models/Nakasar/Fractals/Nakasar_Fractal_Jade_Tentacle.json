@@ -1,0 +1,20 @@
+{
+  "$Comment": "Tentacule de l'Abîme de Jade : colonne de jade segmentée, immobile, balaie autour de lui.",
+  "Model": "NPC/Nakasar/Fractals/Jade_Tentacle/Model.blockymodel",
+  "Texture": "NPC/Nakasar/Fractals/Jade_Tentacle/Texture.png",
+  "EyeHeight": 2.4,
+  "HitBox": {
+    "Max": {
+      "X": 0.6,
+      "Y": 2.9,
+      "Z": 0.6
+    },
+    "Min": {
+      "X": -0.6,
+      "Y": 0,
+      "Z": -0.6
+    }
+  },
+  "MinScale": 1.4,
+  "MaxScale": 1.4
+}

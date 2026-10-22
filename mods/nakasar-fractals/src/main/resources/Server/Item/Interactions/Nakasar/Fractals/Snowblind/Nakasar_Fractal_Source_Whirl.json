@@ -1,0 +1,33 @@
+{
+  "$Comment": "La Source : tourbillon autour d'elle, cercle rouge de 7 blocs (2,4 s), 18 dégâts, repousse ceux qui restent dedans.",
+  "Type": "Serial",
+  "Interactions": [
+    {
+      "Type": "ClearEntityEffect",
+      "Entity": "User",
+      "EntityEffectId": "Hit_Interrupt_Eligible"
+    },
+    {
+      "Type": "ApplyEffect",
+      "EffectId": "Nakasar_Fractal_Rooted"
+    },
+    {
+      "Type": "Nakasar_Fractal_Telegraph",
+      "Shape": "Circle",
+      "Seconds": 2.4,
+      "Radius": 7,
+      "Damage": 18,
+      "Knockback": 10,
+      "KnockUp": 2,
+      "PlayersOnly": true,
+      "ImpactParticle": "Nakasar_Fractal_Source_Pulse"
+    },
+    {
+      "Type": "Simple",
+      "RunTime": 2.4,
+      "Effects": {
+        "WorldSoundEventId": "SFX_Spear_Throw_Charge"
+      }
+    }
+  ]
+}

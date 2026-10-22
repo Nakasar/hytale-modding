@@ -1,0 +1,75 @@
+{
+  "TranslationProperties": {
+    "Name": "nakasar_fractals.items.Nakasar_Fractal_Infusion_Altar.name",
+    "Description": "nakasar_fractals.items.Nakasar_Fractal_Infusion_Altar.description"
+  },
+  "Icon": "Icons/Items/Nakasar/Fractals/Infusion_Altar.png",
+  "Categories": [
+    "Blocks.Deco"
+  ],
+  "Quality": "Rare",
+  "PlayerAnimationsId": "Block",
+  "BlockType": {
+    "Material": "Solid",
+    "DrawType": "Model",
+    "Opacity": "Transparent",
+    "HitboxType": "Full",
+    "Flags": {},
+    "Gathering": {
+      "Breaking": {
+        "GatherType": "Benches",
+        "ItemId": "Nakasar_Fractal_Infusion_Altar"
+      }
+    },
+    "BlockParticleSetId": "Stone",
+    "BlockSoundSetId": "Stone",
+    "ParticleColor": "#c88cff",
+    "Light": {
+      "Color": "#c8f"
+    },
+    "Interactions": {
+      "Use": {
+        "Interactions": [
+          "Nakasar_Fractal_Use_Infusion_Altar"
+        ]
+      }
+    },
+    "CustomModel": "Blocks/Nakasar/Fractals/Infusion_Altar.blockymodel",
+    "CustomModelTexture": [
+      {
+        "Texture": "Blocks/Nakasar/Fractals/Infusion_Altar_Texture.png",
+        "Weight": 1
+      }
+    ],
+    "VariantRotation": "NESW",
+    "CustomModelAnimation": "Blocks/Nakasar/Fractals/Infusion_Altar.blockyanim",
+    "Particles": [
+      {
+        "SystemId": "Dust_Sparkles_Fine",
+        "Scale": 1,
+        "PositionOffset": {
+          "Y": 0.8
+        }
+      }
+    ]
+  },
+  "Tags": {
+    "Type": [
+      "Deco"
+    ]
+  },
+  "ItemSoundSetId": "ISS_Blocks_Stone",
+  "MaxStack": 1,
+  "IconProperties": {
+    "Scale": 0.55,
+    "Translation": [
+      0,
+      -12
+    ],
+    "Rotation": [
+      22.5,
+      45,
+      22.5
+    ]
+  }
+}

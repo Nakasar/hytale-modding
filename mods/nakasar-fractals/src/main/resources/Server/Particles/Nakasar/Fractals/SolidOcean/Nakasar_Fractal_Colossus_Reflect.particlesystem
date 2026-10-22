@@ -1,0 +1,12 @@
+{
+  "$Comment": "Un colosse renvoie un projectile : éclair blanc. Généré par tools/generate_solid_ocean.py.",
+  "Spawners": [
+    {
+      "SpawnerId": "Nakasar_Fractal_Colossus_Reflect_Flash",
+      "PositionOffset": {
+        "Y": 1.2
+      }
+    }
+  ],
+  "CullDistance": 72
+}

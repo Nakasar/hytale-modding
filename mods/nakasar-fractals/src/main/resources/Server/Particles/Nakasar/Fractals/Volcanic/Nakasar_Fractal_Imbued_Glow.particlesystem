@@ -1,0 +1,12 @@
+{
+  "$Comment": "Pierre imprégnée au sol : lueur orange. Généré par tools/generate_volcanic.py.",
+  "Spawners": [
+    {
+      "SpawnerId": "Nakasar_Fractal_Imbued_Glow_Glow",
+      "PositionOffset": {
+        "Y": 0.2
+      }
+    }
+  ],
+  "CullDistance": 72
+}

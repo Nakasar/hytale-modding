@@ -1,0 +1,38 @@
+{
+  "$Comment": "Totem du rituel grawl : les coups ne lui font rien ; sa vie montre les grawls qu'il reste à abattre (Java). Barre de boss. Généré par tools/generate_volcanic.py.",
+  "Type": "Generic",
+  "Appearance": "Nakasar_Fractal_Grawl_Totem",
+  "NameTranslationKey": "nakasar_fractals_volcanic.npc.Grawl_Totem.name",
+  "MaxHealth": 1000,
+  "StartState": "Idle",
+  "DefaultPlayerAttitude": "Hostile",
+  "DefaultNPCAttitude": "Ignore",
+  "MotionControllerList": [
+    {
+      "Type": "Walk",
+      "MaxWalkSpeed": 0.1,
+      "Gravity": 10,
+      "MaxFallSpeed": 10,
+      "Acceleration": 10,
+      "JumpHeight": 1.0
+    }
+  ],
+  "KnockbackScale": 0,
+  "SpawnLockTime": 0.2,
+  "Instructions": [
+    {
+      "Sensor": {
+        "Type": "State",
+        "State": "Idle"
+      },
+      "Instructions": [
+        {
+          "Actions": []
+        }
+      ]
+    }
+  ],
+  "DisableDamageGroups": [
+    "Nakasar_Fractal_Foes"
+  ]
+}

@@ -1,0 +1,12 @@
+{
+  "$Comment": "Corruption qui monte : volutes violettes sur le porteur du marteau. Généré par tools/generate_cliffside.py.",
+  "Spawners": [
+    {
+      "SpawnerId": "Nakasar_Fractal_Corruption_Pulse_Wisps",
+      "PositionOffset": {
+        "Y": 0.2
+      }
+    }
+  ],
+  "CullDistance": 72
+}

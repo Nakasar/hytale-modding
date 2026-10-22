@@ -1,0 +1,12 @@
+{
+  "$Comment": "Le Chamane imprégné plane : ailes de feu. Généré par tools/generate_volcanic.py.",
+  "Spawners": [
+    {
+      "SpawnerId": "Nakasar_Fractal_Shaman_Glide_Wings",
+      "PositionOffset": {
+        "Y": 1.0
+      }
+    }
+  ],
+  "CullDistance": 72
+}

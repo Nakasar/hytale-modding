@@ -1,0 +1,66 @@
+{
+  "$Comment": "Archidevin : coup de marteau annoncé par un cône rouge de 120° et 6 blocs (1,6 s, 45 dégâts, projection). Sa barre de défiance s'ouvre pendant la préparation : la briser l'étourdit 5 s.",
+  "Type": "Serial",
+  "Interactions": [
+    {
+      "Type": "ClearEntityEffect",
+      "Entity": "User",
+      "EntityEffectId": "Hit_Interrupt_Eligible"
+    },
+    {
+      "Type": "ApplyEffect",
+      "EffectId": "Nakasar_Fractal_Rooted"
+    },
+    {
+      "Type": "Nakasar_Fractal_OpenDefiance",
+      "Seconds": 1.8
+    },
+    {
+      "Type": "Nakasar_Fractal_Telegraph",
+      "Shape": "Cone",
+      "Seconds": 1.6,
+      "Angle": 120,
+      "Radius": 6,
+      "Damage": 45,
+      "Knockback": 8,
+      "KnockUp": 5,
+      "HitParticle": "Impact_Sword_Basic_Stronk",
+      "ImpactSound": "SFX_Mace_T2_Signature_Impact"
+    },
+    {
+      "Type": "Simple",
+      "RunTime": 1.6,
+      "Effects": {
+        "ItemPlayerAnimationsId": "Mace",
+        "ItemAnimationId": "SwingDownCharging",
+        "WorldSoundEventId": "SFX_Spear_Throw_Charge",
+        "Particles": [
+          {
+            "SystemId": "Fire_Blue",
+            "TargetNodeName": "R-Hand",
+            "Scale": 1.5,
+            "PositionOffset": {
+              "Y": 0.3
+            },
+            "RotationOffset": {
+              "Pitch": 180
+            }
+          }
+        ]
+      }
+    },
+    {
+      "Type": "Simple",
+      "RunTime": 0.15,
+      "Effects": {
+        "ItemPlayerAnimationsId": "Mace",
+        "ItemAnimationId": "SwingDownCharged",
+        "WorldSoundEventId": "SFX_Goblin_Feastmaster_Slam"
+      }
+    },
+    {
+      "Type": "Simple",
+      "RunTime": 0.5
+    }
+  ]
+}

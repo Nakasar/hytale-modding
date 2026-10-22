@@ -1,0 +1,13 @@
+{
+  "$Comment": "Hypothermie, piles 7 et 8 : 2.1 à 2.4 % des PV max par seconde, course ralentie à partir de 5 piles (Java).",
+  "Name": "nakasar_fractals_snowblind.effects.Nakasar_Fractal_Hypothermia_4",
+  "Debuff": true,
+  "StatusEffectIcon": "UI/StatusEffects/Nakasar/Fractals/Hypothermia_4.png",
+  "ApplicationEffects": {
+    "HorizontalSpeedMultiplier": 0.88,
+    "EntityTopTint": "#90c4ff"
+  },
+  "OverlapBehavior": "Overwrite",
+  "Infinite": false,
+  "Duration": 1.5
+}

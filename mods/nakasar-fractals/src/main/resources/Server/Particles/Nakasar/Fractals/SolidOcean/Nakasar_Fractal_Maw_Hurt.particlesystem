@@ -1,0 +1,12 @@
+{
+  "$Comment": "L'Abîme est touché : gerbe d'éclats de jade. Généré par tools/generate_solid_ocean.py.",
+  "Spawners": [
+    {
+      "SpawnerId": "Nakasar_Fractal_Maw_Hurt_Shards",
+      "PositionOffset": {
+        "Y": 1.5
+      }
+    }
+  ],
+  "CullDistance": 72
+}

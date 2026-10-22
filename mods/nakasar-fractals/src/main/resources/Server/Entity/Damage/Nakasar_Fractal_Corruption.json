@@ -1,0 +1,7 @@
+{
+  "$Comment": "Dégâts de la Corruption du marteau (prise en main : 10 % des PV max), que l'armure ne réduit pas.",
+  "BypassResistances": true,
+  "DurabilityLoss": false,
+  "StaminaLoss": false,
+  "DamageTextColor": "#c070ff"
+}

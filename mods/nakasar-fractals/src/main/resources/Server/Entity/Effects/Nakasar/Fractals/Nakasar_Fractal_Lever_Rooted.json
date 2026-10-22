@@ -1,0 +1,14 @@
+{
+  "$Comment": "Joueur qui tire un levier de la Falaise : immobile quelques secondes (le levier est dur).",
+  "Name": "nakasar_fractals_cliffside.effects.Nakasar_Fractal_Lever_Rooted",
+  "Debuff": true,
+  "StatusEffectIcon": "UI/StatusEffects/Nakasar/Fractals/Rooted.png",
+  "ApplicationEffects": {
+    "MovementEffects": {
+      "DisableAll": true
+    }
+  },
+  "OverlapBehavior": "Overwrite",
+  "Infinite": false,
+  "Duration": 4
+}

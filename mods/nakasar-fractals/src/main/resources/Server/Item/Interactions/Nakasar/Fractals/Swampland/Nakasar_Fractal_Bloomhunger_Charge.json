@@ -1,0 +1,36 @@
+{
+  "$Comment": "Carnasse : se cabre puis fonce sur sa cible, ligne rouge de 16 × 3 blocs (1,5 s), 32 dégâts et projection ; il s'arrête au bout.",
+  "Type": "Serial",
+  "Interactions": [
+    {
+      "Type": "ClearEntityEffect",
+      "Entity": "User",
+      "EntityEffectId": "Hit_Interrupt_Eligible"
+    },
+    {
+      "Type": "ApplyEffect",
+      "EffectId": "Nakasar_Fractal_Rooted"
+    },
+    {
+      "Type": "Nakasar_Fractal_Charge",
+      "Length": 16,
+      "Width": 3,
+      "Seconds": 1.5,
+      "Speed": 14,
+      "Damage": 32,
+      "Knockback": 8,
+      "StunSeconds": 2.0,
+      "StunEffect": "Nakasar_Fractal_Stunned",
+      "ImpactSound": "SFX_Goblin_Feastmaster_Slam"
+    },
+    {
+      "Type": "Simple",
+      "RunTime": 1.5,
+      "Effects": {
+        "ItemPlayerAnimationsId": "Spirit_Root_Default",
+        "ItemAnimationId": "SporeGas",
+        "WorldSoundEventId": "SFX_Spirit_Root_Alerted"
+      }
+    }
+  ]
+}

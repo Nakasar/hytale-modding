@@ -1,0 +1,5 @@
+{
+  "$Comment": "Porte de cage de l'Archidevin : la forcer (5 fois) libère le prisonnier.",
+  "Type": "Nakasar_Fractal_CliffsideUse",
+  "Action": "Cage_Door"
+}

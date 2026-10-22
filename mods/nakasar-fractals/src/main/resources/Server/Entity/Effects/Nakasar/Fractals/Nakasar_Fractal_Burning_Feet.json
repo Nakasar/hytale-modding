@@ -1,0 +1,12 @@
+{
+  "$Comment": "Pieds brûlants (Chamane imprégné) : immobile plus d'une seconde, ou en l'air, le sol brûle (Java, volcanic.ImbuedShaman).",
+  "Name": "nakasar_fractals_volcanic.effects.Nakasar_Fractal_Burning_Feet",
+  "Debuff": true,
+  "StatusEffectIcon": "UI/StatusEffects/Nakasar/Fractals/Burning_Feet.png",
+  "ApplicationEffects": {
+    "EntityBottomTint": "#ff6a1a"
+  },
+  "OverlapBehavior": "Overwrite",
+  "Infinite": false,
+  "Duration": 1.5
+}

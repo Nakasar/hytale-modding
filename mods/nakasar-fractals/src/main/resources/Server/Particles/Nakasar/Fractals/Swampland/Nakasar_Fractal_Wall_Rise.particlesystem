@@ -1,0 +1,12 @@
+{
+  "$Comment": "Un mur surgit entre les arbres : terre et racines. Généré par tools/generate_swampland.py.",
+  "Spawners": [
+    {
+      "SpawnerId": "Nakasar_Fractal_Wall_Rise_Dirt",
+      "PositionOffset": {
+        "Y": 0.2
+      }
+    }
+  ],
+  "CullDistance": 72
+}

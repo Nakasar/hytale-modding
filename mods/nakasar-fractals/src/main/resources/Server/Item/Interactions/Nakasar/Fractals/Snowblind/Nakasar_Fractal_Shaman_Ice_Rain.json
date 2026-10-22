@@ -1,0 +1,24 @@
+{
+  "$Comment": "Le Chaman : pluie de glace, un cercle rouge de 2,5 blocs sous chaque joueur (1,6 s), 16 dégâts.",
+  "Type": "Serial",
+  "Interactions": [
+    {
+      "Type": "Nakasar_Fractal_Telegraph",
+      "Shape": "Circle",
+      "Seconds": 1.6,
+      "Anchor": "EachPlayer",
+      "Radius": 2.5,
+      "Damage": 16,
+      "DamageCause": "Nakasar_Fractal_Frost",
+      "PlayersOnly": true,
+      "ImpactParticle": "Ice_Blast"
+    },
+    {
+      "Type": "Simple",
+      "RunTime": 1.6,
+      "Effects": {
+        "WorldSoundEventId": "SFX_Spear_Throw_Charge"
+      }
+    }
+  ]
+}

@@ -1,0 +1,10 @@
+{
+  "$Comment": "Élémentaire de glace (provisoire) : l'esprit de givre vanilla.",
+  "Parent": "Spirit_Frost",
+  "MinScale": 1.1,
+  "MaxScale": 1.1,
+  "Light": {
+    "Color": "#9cf",
+    "Radius": 2
+  }
+}

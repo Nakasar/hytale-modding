@@ -1,0 +1,12 @@
+{
+  "$Comment": "Plaque piégée : pointes de pierre qui jaillissent. Généré par tools/generate_cliffside.py.",
+  "Spawners": [
+    {
+      "SpawnerId": "Nakasar_Fractal_Spikes_Shards",
+      "PositionOffset": {
+        "Y": 0.0
+      }
+    }
+  ],
+  "CullDistance": 72
+}

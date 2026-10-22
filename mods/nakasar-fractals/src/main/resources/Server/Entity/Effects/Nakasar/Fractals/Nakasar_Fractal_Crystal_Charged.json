@@ -1,0 +1,11 @@
+{
+  "$Comment": "Cristal chargé par le rayon de l'Abîme : le prochain cristal lancé le blesse (Java, solidocean.JadeMaw). Perdu quand l'Abîme choisit sa prochaine cible.",
+  "Name": "nakasar_fractals_solid_ocean.effects.Nakasar_Fractal_Crystal_Charged",
+  "StatusEffectIcon": "UI/StatusEffects/Nakasar/Fractals/Crystal_Charged.png",
+  "ApplicationEffects": {
+    "EntityTopTint": "#8affc8"
+  },
+  "OverlapBehavior": "Overwrite",
+  "Infinite": false,
+  "Duration": 30
+}

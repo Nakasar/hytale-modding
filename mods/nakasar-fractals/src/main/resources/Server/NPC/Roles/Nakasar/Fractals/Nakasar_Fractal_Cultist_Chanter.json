@@ -1,0 +1,281 @@
+{
+  "$Comment": "Incantateur du culte : garde ses distances, maléfice annoncé sous sa cible toutes les 5 à 7 s, soigne les cultistes proches toutes les 7 à 9 s. Près d'un sceau, il le répare (CliffsideSeals). Généré par tools/generate_cliffside.py.",
+  "Type": "Generic",
+  "Appearance": "Nakasar_Fractal_Cultist_Chanter",
+  "NameTranslationKey": "nakasar_fractals_cliffside.npc.Cultist_Chanter.name",
+  "MaxHealth": 80,
+  "StartState": "Idle",
+  "DefaultPlayerAttitude": "Hostile",
+  "DefaultNPCAttitude": "Ignore",
+  "DisableDamageGroups": [
+    "Nakasar_Fractal_Foes"
+  ],
+  "MotionControllerList": [
+    {
+      "Type": "Walk",
+      "MaxWalkSpeed": 3.6,
+      "Gravity": 10,
+      "MaxFallSpeed": 10,
+      "Acceleration": 10,
+      "JumpHeight": 1.0
+    }
+  ],
+  "HotbarItems": [
+    "Weapon_Staff_Crystal_Purple"
+  ],
+  "KnockbackScale": 0.0,
+  "DeathAnimationTime": 1.0,
+  "StateTransitions": [
+    {
+      "$Comment": "Entrée en combat : chaque attaque spéciale a sa propre recharge.",
+      "States": [
+        {
+          "From": [
+            "Idle"
+          ],
+          "To": [
+            "Combat"
+          ]
+        }
+      ],
+      "Actions": [
+        {
+          "Type": "TimerStart",
+          "Name": "Heal",
+          "StartValueRange": [
+            3,
+            5
+          ],
+          "RestartValueRange": [
+            7,
+            9
+          ]
+        },
+        {
+          "Type": "TimerStart",
+          "Name": "Hex",
+          "StartValueRange": [
+            1,
+            3
+          ],
+          "RestartValueRange": [
+            5,
+            7
+          ]
+        }
+      ]
+    }
+  ],
+  "Instructions": [
+    {
+      "Sensor": {
+        "Type": "State",
+        "State": "Idle"
+      },
+      "Instructions": [
+        {
+          "Sensor": {
+            "Type": "Damage",
+            "Combat": true,
+            "TargetSlot": "LockedTarget"
+          },
+          "Actions": [
+            {
+              "Type": "State",
+              "State": "Combat"
+            }
+          ]
+        },
+        {
+          "Sensor": {
+            "Type": "Player",
+            "Range": 20,
+            "LockOnTarget": true,
+            "Filters": [
+              {
+                "Type": "Attitude",
+                "Attitudes": [
+                  "Hostile"
+                ]
+              },
+              {
+                "Type": "LineOfSight"
+              }
+            ]
+          },
+          "Actions": [
+            {
+              "Type": "State",
+              "State": "Combat"
+            }
+          ]
+        },
+        {
+          "Actions": []
+        }
+      ]
+    },
+    {
+      "Sensor": {
+        "Type": "State",
+        "State": "Combat"
+      },
+      "Instructions": [
+        {
+          "$Comment": "Cible perdue ou partie à plus de 40 blocs.",
+          "Sensor": {
+            "Type": "Not",
+            "Sensor": {
+              "Type": "Target",
+              "Range": 40,
+              "Filters": [
+                {
+                  "Type": "Attitude",
+                  "Attitudes": [
+                    "Hostile",
+                    "Neutral",
+                    "Ignore"
+                  ]
+                }
+              ]
+            }
+          },
+          "Actions": [
+            {
+              "Type": "ReleaseTarget"
+            },
+            {
+              "Type": "State",
+              "State": "Idle"
+            }
+          ]
+        },
+        {
+          "$Comment": "Soin des cultistes proches.",
+          "Sensor": {
+            "Type": "Timer",
+            "Name": "Heal",
+            "State": "STOPPED"
+          },
+          "ActionsBlocking": true,
+          "Actions": [
+            {
+              "Type": "TimerRestart",
+              "Name": "Heal"
+            },
+            {
+              "Type": "Attack",
+              "Attack": "Root_Nakasar_Fractal_NPC_Chanter_Heal",
+              "SkipAiming": true,
+              "LineOfSight": false,
+              "AvoidFriendlyFire": false
+            }
+          ]
+        },
+        {
+          "$Comment": "Maléfice annoncé sous sa cible.",
+          "Sensor": {
+            "Type": "And",
+            "Sensors": [
+              {
+                "Type": "Target",
+                "Range": 16,
+                "Filters": [
+                  {
+                    "Type": "LineOfSight"
+                  }
+                ]
+              },
+              {
+                "Type": "Timer",
+                "Name": "Hex",
+                "State": "STOPPED"
+              }
+            ]
+          },
+          "HeadMotion": {
+            "Type": "Aim",
+            "RelativeTurnSpeed": 2
+          },
+          "ActionsBlocking": true,
+          "Actions": [
+            {
+              "Type": "TimerRestart",
+              "Name": "Hex"
+            },
+            {
+              "Type": "Attack",
+              "Attack": "Root_Nakasar_Fractal_NPC_Chanter_Hex",
+              "AimingTimeRange": [
+                0.2,
+                0.4
+              ]
+            }
+          ]
+        },
+        {
+          "Sensor": {
+            "Type": "Target",
+            "Range": 2.0,
+            "Filters": [
+              {
+                "Type": "LineOfSight"
+              }
+            ]
+          },
+          "HeadMotion": {
+            "Type": "Aim",
+            "RelativeTurnSpeed": 1.5
+          },
+          "ActionsBlocking": true,
+          "Actions": [
+            {
+              "Type": "Attack",
+              "Attack": "Root_Nakasar_Fractal_NPC_Chanter_Attack",
+              "AttackPauseRange": [
+                0.9,
+                1.3
+              ]
+            },
+            {
+              "Type": "Timeout",
+              "Delay": [
+                0.2,
+                0.2
+              ]
+            }
+          ]
+        },
+        {
+          "$Comment": "Garde ses distances : entre 6 et 10 blocs de sa cible, en se décalant sur le côté.",
+          "Sensor": {
+            "Type": "Target",
+            "Range": 32
+          },
+          "BodyMotion": {
+            "Type": "MaintainDistance",
+            "DesiredDistanceRange": [
+              6,
+              10
+            ],
+            "MoveThreshold": 0.5,
+            "RelativeForwardsSpeed": 0.8,
+            "RelativeBackwardsSpeed": 0.8,
+            "StrafingDurationRange": [
+              0.8,
+              1.6
+            ],
+            "StrafingFrequencyRange": [
+              1.5,
+              3.0
+            ]
+          },
+          "HeadMotion": {
+            "Type": "Watch",
+            "RelativeTurnSpeed": 1.5
+          }
+        }
+      ]
+    }
+  ]
+}

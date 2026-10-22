@@ -1,0 +1,12 @@
+{
+  "$Comment": "Puits de lave silencieux : bulles de feu au sol (aucun cercle rouge). Généré par tools/generate_volcanic.py.",
+  "Spawners": [
+    {
+      "SpawnerId": "Nakasar_Fractal_Lava_Pit_Bubbles",
+      "PositionOffset": {
+        "Y": 0.1
+      }
+    }
+  ],
+  "CullDistance": 72
+}

@@ -1,0 +1,808 @@
+{
+  "DisplayNameKey": "nakasar_fractals.shop.Nakasar_Fractal_Levels.name",
+  "RefreshInterval": {
+    "Days": 1
+  },
+  "Trades": [
+    {
+      "Output": {
+        "ItemId": "Nakasar_Fractal_Level_1",
+        "Quantity": 1
+      },
+      "Input": [],
+      "Stock": 999
+    },
+    {
+      "Output": {
+        "ItemId": "Nakasar_Fractal_Level_2",
+        "Quantity": 1
+      },
+      "Input": [],
+      "Stock": 999
+    },
+    {
+      "Output": {
+        "ItemId": "Nakasar_Fractal_Level_3",
+        "Quantity": 1
+      },
+      "Input": [],
+      "Stock": 999
+    },
+    {
+      "Output": {
+        "ItemId": "Nakasar_Fractal_Level_4",
+        "Quantity": 1
+      },
+      "Input": [],
+      "Stock": 999
+    },
+    {
+      "Output": {
+        "ItemId": "Nakasar_Fractal_Level_5",
+        "Quantity": 1
+      },
+      "Input": [],
+      "Stock": 999
+    },
+    {
+      "Output": {
+        "ItemId": "Nakasar_Fractal_Level_6",
+        "Quantity": 1
+      },
+      "Input": [],
+      "Stock": 999
+    },
+    {
+      "Output": {
+        "ItemId": "Nakasar_Fractal_Level_7",
+        "Quantity": 1
+      },
+      "Input": [],
+      "Stock": 999
+    },
+    {
+      "Output": {
+        "ItemId": "Nakasar_Fractal_Level_8",
+        "Quantity": 1
+      },
+      "Input": [],
+      "Stock": 999
+    },
+    {
+      "Output": {
+        "ItemId": "Nakasar_Fractal_Level_9",
+        "Quantity": 1
+      },
+      "Input": [],
+      "Stock": 999
+    },
+    {
+      "Output": {
+        "ItemId": "Nakasar_Fractal_Level_10",
+        "Quantity": 1
+      },
+      "Input": [],
+      "Stock": 999
+    },
+    {
+      "Output": {
+        "ItemId": "Nakasar_Fractal_Level_11",
+        "Quantity": 1
+      },
+      "Input": [],
+      "Stock": 999
+    },
+    {
+      "Output": {
+        "ItemId": "Nakasar_Fractal_Level_12",
+        "Quantity": 1
+      },
+      "Input": [],
+      "Stock": 999
+    },
+    {
+      "Output": {
+        "ItemId": "Nakasar_Fractal_Level_13",
+        "Quantity": 1
+      },
+      "Input": [],
+      "Stock": 999
+    },
+    {
+      "Output": {
+        "ItemId": "Nakasar_Fractal_Level_14",
+        "Quantity": 1
+      },
+      "Input": [],
+      "Stock": 999
+    },
+    {
+      "Output": {
+        "ItemId": "Nakasar_Fractal_Level_15",
+        "Quantity": 1
+      },
+      "Input": [],
+      "Stock": 999
+    },
+    {
+      "Output": {
+        "ItemId": "Nakasar_Fractal_Level_16",
+        "Quantity": 1
+      },
+      "Input": [],
+      "Stock": 999
+    },
+    {
+      "Output": {
+        "ItemId": "Nakasar_Fractal_Level_17",
+        "Quantity": 1
+      },
+      "Input": [],
+      "Stock": 999
+    },
+    {
+      "Output": {
+        "ItemId": "Nakasar_Fractal_Level_18",
+        "Quantity": 1
+      },
+      "Input": [],
+      "Stock": 999
+    },
+    {
+      "Output": {
+        "ItemId": "Nakasar_Fractal_Level_19",
+        "Quantity": 1
+      },
+      "Input": [],
+      "Stock": 999
+    },
+    {
+      "Output": {
+        "ItemId": "Nakasar_Fractal_Level_20",
+        "Quantity": 1
+      },
+      "Input": [],
+      "Stock": 999
+    },
+    {
+      "Output": {
+        "ItemId": "Nakasar_Fractal_Level_21",
+        "Quantity": 1
+      },
+      "Input": [],
+      "Stock": 999
+    },
+    {
+      "Output": {
+        "ItemId": "Nakasar_Fractal_Level_22",
+        "Quantity": 1
+      },
+      "Input": [],
+      "Stock": 999
+    },
+    {
+      "Output": {
+        "ItemId": "Nakasar_Fractal_Level_23",
+        "Quantity": 1
+      },
+      "Input": [],
+      "Stock": 999
+    },
+    {
+      "Output": {
+        "ItemId": "Nakasar_Fractal_Level_24",
+        "Quantity": 1
+      },
+      "Input": [],
+      "Stock": 999
+    },
+    {
+      "Output": {
+        "ItemId": "Nakasar_Fractal_Level_25",
+        "Quantity": 1
+      },
+      "Input": [],
+      "Stock": 999
+    },
+    {
+      "Output": {
+        "ItemId": "Nakasar_Fractal_Level_26",
+        "Quantity": 1
+      },
+      "Input": [],
+      "Stock": 999
+    },
+    {
+      "Output": {
+        "ItemId": "Nakasar_Fractal_Level_27",
+        "Quantity": 1
+      },
+      "Input": [],
+      "Stock": 999
+    },
+    {
+      "Output": {
+        "ItemId": "Nakasar_Fractal_Level_28",
+        "Quantity": 1
+      },
+      "Input": [],
+      "Stock": 999
+    },
+    {
+      "Output": {
+        "ItemId": "Nakasar_Fractal_Level_29",
+        "Quantity": 1
+      },
+      "Input": [],
+      "Stock": 999
+    },
+    {
+      "Output": {
+        "ItemId": "Nakasar_Fractal_Level_30",
+        "Quantity": 1
+      },
+      "Input": [],
+      "Stock": 999
+    },
+    {
+      "Output": {
+        "ItemId": "Nakasar_Fractal_Level_31",
+        "Quantity": 1
+      },
+      "Input": [],
+      "Stock": 999
+    },
+    {
+      "Output": {
+        "ItemId": "Nakasar_Fractal_Level_32",
+        "Quantity": 1
+      },
+      "Input": [],
+      "Stock": 999
+    },
+    {
+      "Output": {
+        "ItemId": "Nakasar_Fractal_Level_33",
+        "Quantity": 1
+      },
+      "Input": [],
+      "Stock": 999
+    },
+    {
+      "Output": {
+        "ItemId": "Nakasar_Fractal_Level_34",
+        "Quantity": 1
+      },
+      "Input": [],
+      "Stock": 999
+    },
+    {
+      "Output": {
+        "ItemId": "Nakasar_Fractal_Level_35",
+        "Quantity": 1
+      },
+      "Input": [],
+      "Stock": 999
+    },
+    {
+      "Output": {
+        "ItemId": "Nakasar_Fractal_Level_36",
+        "Quantity": 1
+      },
+      "Input": [],
+      "Stock": 999
+    },
+    {
+      "Output": {
+        "ItemId": "Nakasar_Fractal_Level_37",
+        "Quantity": 1
+      },
+      "Input": [],
+      "Stock": 999
+    },
+    {
+      "Output": {
+        "ItemId": "Nakasar_Fractal_Level_38",
+        "Quantity": 1
+      },
+      "Input": [],
+      "Stock": 999
+    },
+    {
+      "Output": {
+        "ItemId": "Nakasar_Fractal_Level_39",
+        "Quantity": 1
+      },
+      "Input": [],
+      "Stock": 999
+    },
+    {
+      "Output": {
+        "ItemId": "Nakasar_Fractal_Level_40",
+        "Quantity": 1
+      },
+      "Input": [],
+      "Stock": 999
+    },
+    {
+      "Output": {
+        "ItemId": "Nakasar_Fractal_Level_41",
+        "Quantity": 1
+      },
+      "Input": [],
+      "Stock": 999
+    },
+    {
+      "Output": {
+        "ItemId": "Nakasar_Fractal_Level_42",
+        "Quantity": 1
+      },
+      "Input": [],
+      "Stock": 999
+    },
+    {
+      "Output": {
+        "ItemId": "Nakasar_Fractal_Level_43",
+        "Quantity": 1
+      },
+      "Input": [],
+      "Stock": 999
+    },
+    {
+      "Output": {
+        "ItemId": "Nakasar_Fractal_Level_44",
+        "Quantity": 1
+      },
+      "Input": [],
+      "Stock": 999
+    },
+    {
+      "Output": {
+        "ItemId": "Nakasar_Fractal_Level_45",
+        "Quantity": 1
+      },
+      "Input": [],
+      "Stock": 999
+    },
+    {
+      "Output": {
+        "ItemId": "Nakasar_Fractal_Level_46",
+        "Quantity": 1
+      },
+      "Input": [],
+      "Stock": 999
+    },
+    {
+      "Output": {
+        "ItemId": "Nakasar_Fractal_Level_47",
+        "Quantity": 1
+      },
+      "Input": [],
+      "Stock": 999
+    },
+    {
+      "Output": {
+        "ItemId": "Nakasar_Fractal_Level_48",
+        "Quantity": 1
+      },
+      "Input": [],
+      "Stock": 999
+    },
+    {
+      "Output": {
+        "ItemId": "Nakasar_Fractal_Level_49",
+        "Quantity": 1
+      },
+      "Input": [],
+      "Stock": 999
+    },
+    {
+      "Output": {
+        "ItemId": "Nakasar_Fractal_Level_50",
+        "Quantity": 1
+      },
+      "Input": [],
+      "Stock": 999
+    },
+    {
+      "Output": {
+        "ItemId": "Nakasar_Fractal_Level_51",
+        "Quantity": 1
+      },
+      "Input": [],
+      "Stock": 999
+    },
+    {
+      "Output": {
+        "ItemId": "Nakasar_Fractal_Level_52",
+        "Quantity": 1
+      },
+      "Input": [],
+      "Stock": 999
+    },
+    {
+      "Output": {
+        "ItemId": "Nakasar_Fractal_Level_53",
+        "Quantity": 1
+      },
+      "Input": [],
+      "Stock": 999
+    },
+    {
+      "Output": {
+        "ItemId": "Nakasar_Fractal_Level_54",
+        "Quantity": 1
+      },
+      "Input": [],
+      "Stock": 999
+    },
+    {
+      "Output": {
+        "ItemId": "Nakasar_Fractal_Level_55",
+        "Quantity": 1
+      },
+      "Input": [],
+      "Stock": 999
+    },
+    {
+      "Output": {
+        "ItemId": "Nakasar_Fractal_Level_56",
+        "Quantity": 1
+      },
+      "Input": [],
+      "Stock": 999
+    },
+    {
+      "Output": {
+        "ItemId": "Nakasar_Fractal_Level_57",
+        "Quantity": 1
+      },
+      "Input": [],
+      "Stock": 999
+    },
+    {
+      "Output": {
+        "ItemId": "Nakasar_Fractal_Level_58",
+        "Quantity": 1
+      },
+      "Input": [],
+      "Stock": 999
+    },
+    {
+      "Output": {
+        "ItemId": "Nakasar_Fractal_Level_59",
+        "Quantity": 1
+      },
+      "Input": [],
+      "Stock": 999
+    },
+    {
+      "Output": {
+        "ItemId": "Nakasar_Fractal_Level_60",
+        "Quantity": 1
+      },
+      "Input": [],
+      "Stock": 999
+    },
+    {
+      "Output": {
+        "ItemId": "Nakasar_Fractal_Level_61",
+        "Quantity": 1
+      },
+      "Input": [],
+      "Stock": 999
+    },
+    {
+      "Output": {
+        "ItemId": "Nakasar_Fractal_Level_62",
+        "Quantity": 1
+      },
+      "Input": [],
+      "Stock": 999
+    },
+    {
+      "Output": {
+        "ItemId": "Nakasar_Fractal_Level_63",
+        "Quantity": 1
+      },
+      "Input": [],
+      "Stock": 999
+    },
+    {
+      "Output": {
+        "ItemId": "Nakasar_Fractal_Level_64",
+        "Quantity": 1
+      },
+      "Input": [],
+      "Stock": 999
+    },
+    {
+      "Output": {
+        "ItemId": "Nakasar_Fractal_Level_65",
+        "Quantity": 1
+      },
+      "Input": [],
+      "Stock": 999
+    },
+    {
+      "Output": {
+        "ItemId": "Nakasar_Fractal_Level_66",
+        "Quantity": 1
+      },
+      "Input": [],
+      "Stock": 999
+    },
+    {
+      "Output": {
+        "ItemId": "Nakasar_Fractal_Level_67",
+        "Quantity": 1
+      },
+      "Input": [],
+      "Stock": 999
+    },
+    {
+      "Output": {
+        "ItemId": "Nakasar_Fractal_Level_68",
+        "Quantity": 1
+      },
+      "Input": [],
+      "Stock": 999
+    },
+    {
+      "Output": {
+        "ItemId": "Nakasar_Fractal_Level_69",
+        "Quantity": 1
+      },
+      "Input": [],
+      "Stock": 999
+    },
+    {
+      "Output": {
+        "ItemId": "Nakasar_Fractal_Level_70",
+        "Quantity": 1
+      },
+      "Input": [],
+      "Stock": 999
+    },
+    {
+      "Output": {
+        "ItemId": "Nakasar_Fractal_Level_71",
+        "Quantity": 1
+      },
+      "Input": [],
+      "Stock": 999
+    },
+    {
+      "Output": {
+        "ItemId": "Nakasar_Fractal_Level_72",
+        "Quantity": 1
+      },
+      "Input": [],
+      "Stock": 999
+    },
+    {
+      "Output": {
+        "ItemId": "Nakasar_Fractal_Level_73",
+        "Quantity": 1
+      },
+      "Input": [],
+      "Stock": 999
+    },
+    {
+      "Output": {
+        "ItemId": "Nakasar_Fractal_Level_74",
+        "Quantity": 1
+      },
+      "Input": [],
+      "Stock": 999
+    },
+    {
+      "Output": {
+        "ItemId": "Nakasar_Fractal_Level_75",
+        "Quantity": 1
+      },
+      "Input": [],
+      "Stock": 999
+    },
+    {
+      "Output": {
+        "ItemId": "Nakasar_Fractal_Level_76",
+        "Quantity": 1
+      },
+      "Input": [],
+      "Stock": 999
+    },
+    {
+      "Output": {
+        "ItemId": "Nakasar_Fractal_Level_77",
+        "Quantity": 1
+      },
+      "Input": [],
+      "Stock": 999
+    },
+    {
+      "Output": {
+        "ItemId": "Nakasar_Fractal_Level_78",
+        "Quantity": 1
+      },
+      "Input": [],
+      "Stock": 999
+    },
+    {
+      "Output": {
+        "ItemId": "Nakasar_Fractal_Level_79",
+        "Quantity": 1
+      },
+      "Input": [],
+      "Stock": 999
+    },
+    {
+      "Output": {
+        "ItemId": "Nakasar_Fractal_Level_80",
+        "Quantity": 1
+      },
+      "Input": [],
+      "Stock": 999
+    },
+    {
+      "Output": {
+        "ItemId": "Nakasar_Fractal_Level_81",
+        "Quantity": 1
+      },
+      "Input": [],
+      "Stock": 999
+    },
+    {
+      "Output": {
+        "ItemId": "Nakasar_Fractal_Level_82",
+        "Quantity": 1
+      },
+      "Input": [],
+      "Stock": 999
+    },
+    {
+      "Output": {
+        "ItemId": "Nakasar_Fractal_Level_83",
+        "Quantity": 1
+      },
+      "Input": [],
+      "Stock": 999
+    },
+    {
+      "Output": {
+        "ItemId": "Nakasar_Fractal_Level_84",
+        "Quantity": 1
+      },
+      "Input": [],
+      "Stock": 999
+    },
+    {
+      "Output": {
+        "ItemId": "Nakasar_Fractal_Level_85",
+        "Quantity": 1
+      },
+      "Input": [],
+      "Stock": 999
+    },
+    {
+      "Output": {
+        "ItemId": "Nakasar_Fractal_Level_86",
+        "Quantity": 1
+      },
+      "Input": [],
+      "Stock": 999
+    },
+    {
+      "Output": {
+        "ItemId": "Nakasar_Fractal_Level_87",
+        "Quantity": 1
+      },
+      "Input": [],
+      "Stock": 999
+    },
+    {
+      "Output": {
+        "ItemId": "Nakasar_Fractal_Level_88",
+        "Quantity": 1
+      },
+      "Input": [],
+      "Stock": 999
+    },
+    {
+      "Output": {
+        "ItemId": "Nakasar_Fractal_Level_89",
+        "Quantity": 1
+      },
+      "Input": [],
+      "Stock": 999
+    },
+    {
+      "Output": {
+        "ItemId": "Nakasar_Fractal_Level_90",
+        "Quantity": 1
+      },
+      "Input": [],
+      "Stock": 999
+    },
+    {
+      "Output": {
+        "ItemId": "Nakasar_Fractal_Level_91",
+        "Quantity": 1
+      },
+      "Input": [],
+      "Stock": 999
+    },
+    {
+      "Output": {
+        "ItemId": "Nakasar_Fractal_Level_92",
+        "Quantity": 1
+      },
+      "Input": [],
+      "Stock": 999
+    },
+    {
+      "Output": {
+        "ItemId": "Nakasar_Fractal_Level_93",
+        "Quantity": 1
+      },
+      "Input": [],
+      "Stock": 999
+    },
+    {
+      "Output": {
+        "ItemId": "Nakasar_Fractal_Level_94",
+        "Quantity": 1
+      },
+      "Input": [],
+      "Stock": 999
+    },
+    {
+      "Output": {
+        "ItemId": "Nakasar_Fractal_Level_95",
+        "Quantity": 1
+      },
+      "Input": [],
+      "Stock": 999
+    },
+    {
+      "Output": {
+        "ItemId": "Nakasar_Fractal_Level_96",
+        "Quantity": 1
+      },
+      "Input": [],
+      "Stock": 999
+    },
+    {
+      "Output": {
+        "ItemId": "Nakasar_Fractal_Level_97",
+        "Quantity": 1
+      },
+      "Input": [],
+      "Stock": 999
+    },
+    {
+      "Output": {
+        "ItemId": "Nakasar_Fractal_Level_98",
+        "Quantity": 1
+      },
+      "Input": [],
+      "Stock": 999
+    },
+    {
+      "Output": {
+        "ItemId": "Nakasar_Fractal_Level_99",
+        "Quantity": 1
+      },
+      "Input": [],
+      "Stock": 999
+    },
+    {
+      "Output": {
+        "ItemId": "Nakasar_Fractal_Level_100",
+        "Quantity": 1
+      },
+      "Input": [],
+      "Stock": 999
+    }
+  ]
+}

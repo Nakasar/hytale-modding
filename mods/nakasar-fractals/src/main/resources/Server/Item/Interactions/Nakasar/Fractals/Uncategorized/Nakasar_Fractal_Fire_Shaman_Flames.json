@@ -1,0 +1,27 @@
+{
+  "$Comment": "Chaman du feu : flammes sous chaque joueur, cercles rouges de 2 blocs (1,6 s), 12 dégâts et brûlure.",
+  "Type": "Serial",
+  "Interactions": [
+    {
+      "Type": "Nakasar_Fractal_Telegraph",
+      "Shape": "Circle",
+      "Seconds": 1.6,
+      "Anchor": "EachPlayer",
+      "Radius": 2.0,
+      "Damage": 12,
+      "EffectId": "Burn",
+      "EffectDuration": 3,
+      "PlayersOnly": true,
+      "ImpactParticle": "Fire_Blue"
+    },
+    {
+      "Type": "Simple",
+      "RunTime": 1.6,
+      "Effects": {
+        "ItemPlayerAnimationsId": "Staff",
+        "ItemAnimationId": "SwingRight",
+        "WorldSoundEventId": "SFX_Spirit_Root_Alerted"
+      }
+    }
+  ]
+}

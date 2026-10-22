@@ -1,0 +1,12 @@
+{
+  "$Comment": "Archidevin sous 25 % de vie : il accélère.",
+  "Name": "nakasar_fractals_cliffside.effects.Nakasar_Fractal_Archdiviner_Haste",
+  "StatusEffectIcon": "UI/StatusEffects/Nakasar/Fractals/Haste.png",
+  "ApplicationEffects": {
+    "HorizontalSpeedMultiplier": 1.35,
+    "EntityTopTint": "#ff9a4a"
+  },
+  "OverlapBehavior": "Overwrite",
+  "Infinite": false,
+  "Duration": 6
+}

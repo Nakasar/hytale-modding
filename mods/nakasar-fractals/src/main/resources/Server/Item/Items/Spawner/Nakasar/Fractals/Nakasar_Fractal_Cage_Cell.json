@@ -1,0 +1,13 @@
+{
+  "$Comment": "Bloc invisible et traversable posé au niveau des pieds dans une cage au bord d'une salle de boss : Nakasar_Fractal_Cage (et la clé Imprison de Nakasar_Fractal_Telegraph) téléporte le joueur sur le plus proche (cages de l'Archidevin).",
+  "TranslationProperties": {
+    "Name": "nakasar_fractals.items.Nakasar_Fractal_Cage_Cell.name"
+  },
+  "Quality": "Developer",
+  "MaxStack": 64,
+  "BlockType": {
+    "Material": "Empty",
+    "DrawType": "Empty",
+    "Opacity": "Transparent"
+  }
+}

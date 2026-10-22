@@ -1,0 +1,401 @@
+{
+  "$Comment": "L'Archidevin (boss de la Falaise), avec barre de vie de boss et barre de défiance : deux coups de marteau sans annonce ; cône de 120° annoncé (défiance ouverte) ; au-dessus de 25 % de vie, sol corrompu sous chaque joueur ; sous 50 %, brise-échine bondissant (défiance ouverte). Les transitions à 75/50/25 %, les cages, les dévoreurs, la ruée, les frappes marquées et la forme démoniaque sont menées par le Java (cliffside.Archdiviner). Généré par tools/generate_cliffside.py.",
+  "Type": "Generic",
+  "Appearance": "Nakasar_Fractal_Archdiviner",
+  "NameTranslationKey": "nakasar_fractals_cliffside.npc.Archdiviner.name",
+  "MaxHealth": 2400,
+  "StartState": "Idle",
+  "DefaultPlayerAttitude": "Hostile",
+  "DefaultNPCAttitude": "Ignore",
+  "DisableDamageGroups": [
+    "Nakasar_Fractal_Foes"
+  ],
+  "MotionControllerList": [
+    {
+      "Type": "Walk",
+      "MaxWalkSpeed": 3.8,
+      "Gravity": 10,
+      "MaxFallSpeed": 10,
+      "Acceleration": 10,
+      "JumpHeight": 1.0
+    }
+  ],
+  "HotbarItems": [
+    "Weapon_Mace_Onyxium"
+  ],
+  "KnockbackScale": 0.1,
+  "DeathAnimationTime": 2.0,
+  "StateTransitions": [
+    {
+      "$Comment": "Entrée en combat : chaque attaque spéciale a sa propre recharge.",
+      "States": [
+        {
+          "From": [
+            "Idle",
+            "ReturnHome"
+          ],
+          "To": [
+            "Combat"
+          ]
+        }
+      ],
+      "Actions": [
+        {
+          "Type": "TimerStart",
+          "Name": "Cone",
+          "StartValueRange": [
+            5,
+            7
+          ],
+          "RestartValueRange": [
+            11,
+            14
+          ]
+        },
+        {
+          "Type": "TimerStart",
+          "Name": "Breaker",
+          "StartValueRange": [
+            6,
+            8
+          ],
+          "RestartValueRange": [
+            14,
+            17
+          ]
+        },
+        {
+          "Type": "TimerStart",
+          "Name": "Ground",
+          "StartValueRange": [
+            3,
+            5
+          ],
+          "RestartValueRange": [
+            9,
+            11
+          ]
+        }
+      ]
+    }
+  ],
+  "Instructions": [
+    {
+      "Sensor": {
+        "Type": "State",
+        "State": "Idle"
+      },
+      "Instructions": [
+        {
+          "Sensor": {
+            "Type": "Damage",
+            "Combat": true,
+            "TargetSlot": "LockedTarget"
+          },
+          "Actions": [
+            {
+              "Type": "State",
+              "State": "Combat"
+            }
+          ]
+        },
+        {
+          "Sensor": {
+            "Type": "Player",
+            "Range": 22,
+            "LockOnTarget": true,
+            "Filters": [
+              {
+                "Type": "Attitude",
+                "Attitudes": [
+                  "Hostile"
+                ]
+              },
+              {
+                "Type": "LineOfSight"
+              }
+            ]
+          },
+          "Actions": [
+            {
+              "Type": "State",
+              "State": "Combat"
+            }
+          ]
+        },
+        {
+          "Actions": []
+        }
+      ]
+    },
+    {
+      "Sensor": {
+        "Type": "State",
+        "State": "Combat"
+      },
+      "Instructions": [
+        {
+          "$Comment": "Cible perdue ou partie à plus de 34 blocs.",
+          "Sensor": {
+            "Type": "Not",
+            "Sensor": {
+              "Type": "Target",
+              "Range": 34,
+              "Filters": [
+                {
+                  "Type": "Attitude",
+                  "Attitudes": [
+                    "Hostile",
+                    "Neutral",
+                    "Ignore"
+                  ]
+                }
+              ]
+            }
+          },
+          "Actions": [
+            {
+              "Type": "ReleaseTarget"
+            },
+            {
+              "Type": "State",
+              "State": "ReturnHome"
+            }
+          ]
+        },
+        {
+          "$Comment": "Cône annoncé, défiance ouverte.",
+          "Sensor": {
+            "Type": "And",
+            "Sensors": [
+              {
+                "Type": "Target",
+                "Range": 5.5,
+                "Filters": [
+                  {
+                    "Type": "LineOfSight"
+                  }
+                ]
+              },
+              {
+                "Type": "Timer",
+                "Name": "Cone",
+                "State": "STOPPED"
+              }
+            ]
+          },
+          "ActionsBlocking": true,
+          "Actions": [
+            {
+              "Type": "TimerRestart",
+              "Name": "Cone"
+            },
+            {
+              "Type": "Attack",
+              "Attack": "Root_Nakasar_Fractal_NPC_Archdiviner_Cone",
+              "SkipAiming": true,
+              "LineOfSight": false,
+              "AvoidFriendlyFire": false
+            }
+          ],
+          "HeadMotion": {
+            "Type": "Watch",
+            "RelativeTurnSpeed": 1.0
+          }
+        },
+        {
+          "$Comment": "Brise-échine sous 50 % de vie.",
+          "Sensor": {
+            "Type": "And",
+            "Sensors": [
+              {
+                "Type": "Target",
+                "Range": 18,
+                "Filters": [
+                  {
+                    "Type": "LineOfSight"
+                  }
+                ]
+              },
+              {
+                "Type": "Timer",
+                "Name": "Breaker",
+                "State": "STOPPED"
+              },
+              {
+                "Type": "Self",
+                "Filters": [
+                  {
+                    "Type": "Stat",
+                    "Stat": "Health",
+                    "StatTarget": "Value",
+                    "RelativeTo": "Health",
+                    "RelativeToTarget": "Max",
+                    "ValueRange": [
+                      0,
+                      0.5
+                    ]
+                  }
+                ]
+              }
+            ]
+          },
+          "ActionsBlocking": true,
+          "Actions": [
+            {
+              "Type": "TimerRestart",
+              "Name": "Breaker"
+            },
+            {
+              "Type": "Attack",
+              "Attack": "Root_Nakasar_Fractal_NPC_Archdiviner_Breaker",
+              "SkipAiming": true,
+              "LineOfSight": false,
+              "AvoidFriendlyFire": false
+            }
+          ],
+          "HeadMotion": {
+            "Type": "Watch",
+            "RelativeTurnSpeed": 1.0
+          }
+        },
+        {
+          "$Comment": "Sol corrompu sous chaque joueur, au-dessus de 25 % de vie.",
+          "Sensor": {
+            "Type": "And",
+            "Sensors": [
+              {
+                "Type": "Timer",
+                "Name": "Ground",
+                "State": "STOPPED"
+              },
+              {
+                "Type": "Self",
+                "Filters": [
+                  {
+                    "Type": "Stat",
+                    "Stat": "Health",
+                    "StatTarget": "Value",
+                    "RelativeTo": "Health",
+                    "RelativeToTarget": "Max",
+                    "ValueRange": [
+                      0.25,
+                      1.0
+                    ]
+                  }
+                ]
+              }
+            ]
+          },
+          "ActionsBlocking": true,
+          "Actions": [
+            {
+              "Type": "TimerRestart",
+              "Name": "Ground"
+            },
+            {
+              "Type": "Attack",
+              "Attack": "Root_Nakasar_Fractal_NPC_Archdiviner_Ground",
+              "SkipAiming": true,
+              "LineOfSight": false,
+              "AvoidFriendlyFire": false
+            }
+          ]
+        },
+        {
+          "Sensor": {
+            "Type": "Target",
+            "Range": 3.2,
+            "Filters": [
+              {
+                "Type": "LineOfSight"
+              }
+            ]
+          },
+          "HeadMotion": {
+            "Type": "Aim",
+            "RelativeTurnSpeed": 1.5
+          },
+          "ActionsBlocking": true,
+          "Actions": [
+            {
+              "Type": "Attack",
+              "Attack": "Root_Nakasar_Fractal_NPC_Archdiviner_Attack",
+              "AttackPauseRange": [
+                0.8,
+                1.2
+              ]
+            },
+            {
+              "Type": "Timeout",
+              "Delay": [
+                0.2,
+                0.2
+              ]
+            }
+          ]
+        },
+        {
+          "Sensor": {
+            "Type": "Target",
+            "Range": 34
+          },
+          "BodyMotion": {
+            "Type": "Seek",
+            "RelativeSpeed": 1.0,
+            "SlowDownDistance": 3.2,
+            "StopDistance": 2.2,
+            "UsePathfinder": true
+          },
+          "HeadMotion": {
+            "Type": "Watch",
+            "RelativeTurnSpeed": 1.5
+          }
+        }
+      ]
+    },
+    {
+      "Sensor": {
+        "Type": "State",
+        "State": "ReturnHome"
+      },
+      "Instructions": [
+        {
+          "Sensor": {
+            "Type": "Damage",
+            "Combat": true,
+            "TargetSlot": "LockedTarget"
+          },
+          "Actions": [
+            {
+              "Type": "State",
+              "State": "Combat"
+            }
+          ]
+        },
+        {
+          "Sensor": {
+            "Type": "Leash",
+            "Range": 2
+          },
+          "BodyMotion": {
+            "Type": "Seek",
+            "RelativeSpeed": 0.7,
+            "SlowDownDistance": 3,
+            "StopDistance": 1,
+            "UsePathfinder": true
+          }
+        },
+        {
+          "$Comment": "De retour à son poste.",
+          "Actions": [
+            {
+              "Type": "State",
+              "State": "Idle"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

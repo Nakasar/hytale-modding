@@ -1,0 +1,12 @@
+{
+  "$Comment": "Instabilité Bombe de flux : le joueur marqué pulse quatre fois (InstabilitySystem).",
+  "Name": "nakasar_fractals_instabilities.effects.Nakasar_Fractal_Flux_Bomb",
+  "Debuff": true,
+  "StatusEffectIcon": "UI/StatusEffects/Nakasar/Fractals/Flux_Bomb.png",
+  "ApplicationEffects": {
+    "EntityTopTint": "#b07aff"
+  },
+  "OverlapBehavior": "Overwrite",
+  "Infinite": false,
+  "Duration": 5
+}

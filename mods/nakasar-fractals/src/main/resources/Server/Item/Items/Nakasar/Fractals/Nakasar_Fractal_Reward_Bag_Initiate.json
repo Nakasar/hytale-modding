@@ -1,0 +1,20 @@
+{
+  "TranslationProperties": {
+    "Name": "nakasar_fractals_progress.items.Nakasar_Fractal_Reward_Bag_Initiate.name",
+    "Description": "nakasar_fractals_progress.items.Nakasar_Fractal_Reward_Bag_Initiate.description"
+  },
+  "Icon": "Icons/Items/Nakasar/Fractals/Reward_Bag_Initiate.png",
+  "Model": "Items/Nakasar/Fractals/Reward_Bag_Initiate.blockymodel",
+  "Texture": "Items/Nakasar/Fractals/Reward_Bag_Initiate.png",
+  "Quality": "Rare",
+  "Categories": [
+    "Items.Ingredients"
+  ],
+  "PlayerAnimationsId": "Item",
+  "ItemSoundSetId": "ISS_Items_Gems",
+  "Scale": 1.0,
+  "MaxStack": 16,
+  "Interactions": {
+    "Secondary": "Root_Nakasar_Fractal_Reward_Bag_Initiate"
+  }
+}

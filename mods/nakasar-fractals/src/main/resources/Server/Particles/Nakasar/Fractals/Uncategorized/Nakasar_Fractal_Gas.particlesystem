@@ -1,0 +1,12 @@
+{
+  "$Comment": "Gaz de la salle de Vieux Tom : nappe verte qui monte. Généré par tools/generate_uncategorized.py.",
+  "Spawners": [
+    {
+      "SpawnerId": "Nakasar_Fractal_Gas_Fog",
+      "PositionOffset": {
+        "Y": 0.2
+      }
+    }
+  ],
+  "CullDistance": 72
+}

@@ -1,0 +1,8 @@
+{
+  "$Comment": "Dévoreur (provisoire) : l'aberration vanilla petite, lueur violette du culte. À remplacer par un modèle de scarabée quand l'id vanilla sera vérifié dans Assets.zip.",
+  "Parent": "Zombie_Aberrant_Small",
+  "Light": {
+    "Color": "#a6f",
+    "Radius": 2
+  }
+}

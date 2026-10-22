@@ -1,0 +1,75 @@
+{
+  "TranslationProperties": {
+    "Name": "nakasar_fractals_snowblind.items.Nakasar_Fractal_Bonfire.name",
+    "Description": "nakasar_fractals_snowblind.items.Nakasar_Fractal_Bonfire.description"
+  },
+  "Icon": "Icons/Items/Nakasar/Fractals/Bonfire.png",
+  "Categories": [
+    "Blocks.Deco"
+  ],
+  "Quality": "Technical",
+  "PlayerAnimationsId": "Block",
+  "BlockType": {
+    "Material": "Solid",
+    "DrawType": "Model",
+    "Opacity": "Transparent",
+    "HitboxType": "Full",
+    "Flags": {},
+    "Gathering": {
+      "Breaking": {
+        "GatherType": "Unbreakable"
+      }
+    },
+    "BlockParticleSetId": "Stone",
+    "BlockSoundSetId": "Stone",
+    "ParticleColor": "#ff9632",
+    "Light": {
+      "Color": "#fa6"
+    },
+    "Interactions": {
+      "Use": {
+        "Interactions": [
+          "Nakasar_Fractal_Use_Snowblind_Bonfire"
+        ]
+      }
+    },
+    "CustomModel": "Blocks/Nakasar/Fractals/Bonfire.blockymodel",
+    "CustomModelTexture": [
+      {
+        "Texture": "Blocks/Nakasar/Fractals/Bonfire_Texture.png",
+        "Weight": 1
+      }
+    ],
+    "VariantRotation": "NESW",
+    "CustomModelAnimation": "Blocks/Nakasar/Fractals/Bonfire.blockyanim",
+    "Particles": [
+      {
+        "SystemId": "Campfire_New_Cartoon",
+        "Scale": 1.4,
+        "PositionOffset": {
+          "Y": 0.35
+        }
+      }
+    ],
+    "AmbientSoundEventId": "SFX_Campfire_Default_Loop",
+    "Looping": true
+  },
+  "Tags": {
+    "Type": [
+      "Deco"
+    ]
+  },
+  "ItemSoundSetId": "ISS_Blocks_Stone",
+  "IconProperties": {
+    "Scale": 0.55,
+    "Translation": [
+      0,
+      -12
+    ],
+    "Rotation": [
+      22.5,
+      45,
+      22.5
+    ]
+  }
+}

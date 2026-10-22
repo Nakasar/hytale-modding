@@ -1,0 +1,20 @@
+{
+  "TranslationProperties": {
+    "Name": "nakasar_fractals_snowblind.items.Nakasar_Fractal_Torch.name",
+    "Description": "nakasar_fractals_snowblind.items.Nakasar_Fractal_Torch.description"
+  },
+  "Icon": "Icons/Items/Nakasar/Fractals/Frost_Torch.png",
+  "Model": "Items/Nakasar/Fractals/Frost_Torch.blockymodel",
+  "Texture": "Items/Nakasar/Fractals/Frost_Torch.png",
+  "Quality": "Uncommon",
+  "Categories": [
+    "Items.Misc"
+  ],
+  "PlayerAnimationsId": "Item",
+  "ItemSoundSetId": "ISS_Items_Gems",
+  "MaxStack": 1,
+  "Light": {
+    "Color": "#fa6",
+    "Radius": 7
+  }
+}

@@ -1,0 +1,5 @@
+{
+  "$Comment": "Distributeur des diapasons : un diapason par niveau (1 à 100), gratuit.",
+  "Type": "Nakasar_Fractal_OpenShop",
+  "Shop": "Nakasar_Fractal_Levels"
+}

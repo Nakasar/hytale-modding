@@ -1,0 +1,12 @@
+{
+  "$Comment": "Forme démoniaque de l'Archidevin (niveau 71 et plus, sous 25 % de vie) : teinte rouge sombre, dégâts infligés × 1,3 (Java).",
+  "Name": "nakasar_fractals_cliffside.effects.Nakasar_Fractal_Archdiviner_Demon",
+  "StatusEffectIcon": "UI/StatusEffects/Nakasar/Fractals/Demon.png",
+  "ApplicationEffects": {
+    "EntityTopTint": "#7a0a1a",
+    "EntityBottomTint": "#1a0004"
+  },
+  "OverlapBehavior": "Overwrite",
+  "Infinite": false,
+  "Duration": 6
+}

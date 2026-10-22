@@ -1,0 +1,75 @@
+{
+  "TranslationProperties": {
+    "Name": "nakasar_fractals_snowblind.items.Nakasar_Fractal_Frost_Brazier.name",
+    "Description": "nakasar_fractals_snowblind.items.Nakasar_Fractal_Frost_Brazier.description"
+  },
+  "Icon": "Icons/Items/Nakasar/Fractals/Frost_Brazier.png",
+  "Categories": [
+    "Blocks.Deco"
+  ],
+  "Quality": "Technical",
+  "PlayerAnimationsId": "Block",
+  "BlockType": {
+    "Material": "Solid",
+    "DrawType": "Model",
+    "Opacity": "Transparent",
+    "HitboxType": "Full",
+    "Flags": {},
+    "Gathering": {
+      "Breaking": {
+        "GatherType": "Unbreakable"
+      }
+    },
+    "BlockParticleSetId": "Stone",
+    "BlockSoundSetId": "Stone",
+    "ParticleColor": "#ffa03c",
+    "Light": {
+      "Color": "#fa6"
+    },
+    "Interactions": {
+      "Use": {
+        "Interactions": [
+          "Nakasar_Fractal_Use_Snowblind_Brazier"
+        ]
+      }
+    },
+    "CustomModel": "Blocks/Nakasar/Fractals/Frost_Brazier.blockymodel",
+    "CustomModelTexture": [
+      {
+        "Texture": "Blocks/Nakasar/Fractals/Frost_Brazier_Texture.png",
+        "Weight": 1
+      }
+    ],
+    "VariantRotation": "NESW",
+    "CustomModelAnimation": "Blocks/Nakasar/Fractals/Frost_Brazier.blockyanim",
+    "Particles": [
+      {
+        "SystemId": "Campfire_New_Cartoon",
+        "Scale": 0.7,
+        "PositionOffset": {
+          "Y": 0.85
+        }
+      }
+    ],
+    "AmbientSoundEventId": "SFX_Campfire_Default_Loop",
+    "Looping": true
+  },
+  "Tags": {
+    "Type": [
+      "Deco"
+    ]
+  },
+  "ItemSoundSetId": "ISS_Blocks_Stone",
+  "IconProperties": {
+    "Scale": 0.55,
+    "Translation": [
+      0,
+      -12
+    ],
+    "Rotation": [
+      22.5,
+      45,
+      22.5
+    ]
+  }
+}

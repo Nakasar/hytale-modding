@@ -1,0 +1,12 @@
+{
+  "$Comment": "Le Chamane imprégné se nourrit d'un villageois : spirale rouge. Généré par tools/generate_volcanic.py.",
+  "Spawners": [
+    {
+      "SpawnerId": "Nakasar_Fractal_Shaman_Feed_Spiral",
+      "PositionOffset": {
+        "Y": 0.5
+      }
+    }
+  ],
+  "CullDistance": 72
+}
