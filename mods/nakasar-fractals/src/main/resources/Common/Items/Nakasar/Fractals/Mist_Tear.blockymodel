@@ -43,13 +43,13 @@
           "name": "Drop",
           "position": {
             "x": 0,
-            "y": 4,
+            "y": 4.5,
             "z": 0
           },
           "orientation": {
-            "x": 0,
+            "x": 0.0,
             "y": 0.382683,
-            "z": 0,
+            "z": 0.0,
             "w": 0.92388
           },
           "shape": {
@@ -67,15 +67,14 @@
             "settings": {
               "size": {
                 "x": 4,
-                "y": 6,
+                "y": 5,
                 "z": 4
-              },
-              "isStaticBox": true
+              }
             },
             "textureLayout": {
               "top": {
                 "offset": {
-                  "x": 8,
+                  "x": 26,
                   "y": 0
                 },
                 "mirror": {
@@ -86,7 +85,7 @@
               },
               "bottom": {
                 "offset": {
-                  "x": 12,
+                  "x": 30,
                   "y": 0
                 },
                 "mirror": {
@@ -97,7 +96,7 @@
               },
               "front": {
                 "offset": {
-                  "x": 0,
+                  "x": 18,
                   "y": 0
                 },
                 "mirror": {
@@ -108,7 +107,7 @@
               },
               "back": {
                 "offset": {
-                  "x": 0,
+                  "x": 18,
                   "y": 0
                 },
                 "mirror": {
@@ -119,7 +118,7 @@
               },
               "left": {
                 "offset": {
-                  "x": 4,
+                  "x": 22,
                   "y": 0
                 },
                 "mirror": {
@@ -130,7 +129,7 @@
               },
               "right": {
                 "offset": {
-                  "x": 4,
+                  "x": 22,
                   "y": 0
                 },
                 "mirror": {
@@ -144,20 +143,21 @@
             "visible": true,
             "doubleSided": false,
             "shadingMode": "fullbright"
-          }
+          },
+          "children": []
         },
         {
           "id": "3",
-          "name": "Tip",
+          "name": "Drop_Tip",
           "position": {
             "x": 0,
             "y": 8,
             "z": 0
           },
           "orientation": {
-            "x": 0,
+            "x": 0.0,
             "y": 0.382683,
-            "z": 0,
+            "z": 0.0,
             "w": 0.92388
           },
           "shape": {
@@ -175,15 +175,14 @@
             "settings": {
               "size": {
                 "x": 2,
-                "y": 3,
+                "y": 2.5,
                 "z": 2
-              },
-              "isStaticBox": true
+              }
             },
             "textureLayout": {
               "top": {
                 "offset": {
-                  "x": 20,
+                  "x": 44,
                   "y": 0
                 },
                 "mirror": {
@@ -194,7 +193,7 @@
               },
               "bottom": {
                 "offset": {
-                  "x": 22,
+                  "x": 46,
                   "y": 0
                 },
                 "mirror": {
@@ -205,7 +204,7 @@
               },
               "front": {
                 "offset": {
-                  "x": 16,
+                  "x": 40,
                   "y": 0
                 },
                 "mirror": {
@@ -216,7 +215,7 @@
               },
               "back": {
                 "offset": {
-                  "x": 16,
+                  "x": 40,
                   "y": 0
                 },
                 "mirror": {
@@ -227,7 +226,7 @@
               },
               "left": {
                 "offset": {
-                  "x": 18,
+                  "x": 42,
                   "y": 0
                 },
                 "mirror": {
@@ -238,7 +237,7 @@
               },
               "right": {
                 "offset": {
-                  "x": 18,
+                  "x": 42,
                   "y": 0
                 },
                 "mirror": {
@@ -252,7 +251,656 @@
             "visible": true,
             "doubleSided": false,
             "shadingMode": "fullbright"
-          }
+          },
+          "children": []
+        },
+        {
+          "id": "4",
+          "name": "Ring_Top",
+          "position": {
+            "x": 0,
+            "y": 9.6,
+            "z": 0
+          },
+          "orientation": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0,
+            "w": 1.0
+          },
+          "shape": {
+            "type": "box",
+            "offset": {
+              "x": 0,
+              "y": 0,
+              "z": 0
+            },
+            "stretch": {
+              "x": 1,
+              "y": 1,
+              "z": 1
+            },
+            "settings": {
+              "size": {
+                "x": 3,
+                "y": 0.8,
+                "z": 3
+              }
+            },
+            "textureLayout": {
+              "top": {
+                "offset": {
+                  "x": 34,
+                  "y": 0
+                },
+                "mirror": {
+                  "x": false,
+                  "y": false
+                },
+                "angle": 0
+              },
+              "bottom": {
+                "offset": {
+                  "x": 37,
+                  "y": 0
+                },
+                "mirror": {
+                  "x": false,
+                  "y": false
+                },
+                "angle": 0
+              },
+              "front": {
+                "offset": {
+                  "x": 58,
+                  "y": 0
+                },
+                "mirror": {
+                  "x": false,
+                  "y": false
+                },
+                "angle": 0
+              },
+              "back": {
+                "offset": {
+                  "x": 58,
+                  "y": 0
+                },
+                "mirror": {
+                  "x": false,
+                  "y": false
+                },
+                "angle": 0
+              },
+              "left": {
+                "offset": {
+                  "x": 61,
+                  "y": 0
+                },
+                "mirror": {
+                  "x": false,
+                  "y": false
+                },
+                "angle": 0
+              },
+              "right": {
+                "offset": {
+                  "x": 61,
+                  "y": 0
+                },
+                "mirror": {
+                  "x": false,
+                  "y": false
+                },
+                "angle": 0
+              }
+            },
+            "unwrapMode": "custom",
+            "visible": true,
+            "doubleSided": false,
+            "shadingMode": "standard"
+          },
+          "children": []
+        },
+        {
+          "id": "5",
+          "name": "Ring_Bottom",
+          "position": {
+            "x": 0,
+            "y": 1,
+            "z": 0
+          },
+          "orientation": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0,
+            "w": 1.0
+          },
+          "shape": {
+            "type": "box",
+            "offset": {
+              "x": 0,
+              "y": 0,
+              "z": 0
+            },
+            "stretch": {
+              "x": 1,
+              "y": 1,
+              "z": 1
+            },
+            "settings": {
+              "size": {
+                "x": 5,
+                "y": 1,
+                "z": 5
+              }
+            },
+            "textureLayout": {
+              "top": {
+                "offset": {
+                  "x": 8,
+                  "y": 0
+                },
+                "mirror": {
+                  "x": false,
+                  "y": false
+                },
+                "angle": 0
+              },
+              "bottom": {
+                "offset": {
+                  "x": 13,
+                  "y": 0
+                },
+                "mirror": {
+                  "x": false,
+                  "y": false
+                },
+                "angle": 0
+              },
+              "front": {
+                "offset": {
+                  "x": 48,
+                  "y": 0
+                },
+                "mirror": {
+                  "x": false,
+                  "y": false
+                },
+                "angle": 0
+              },
+              "back": {
+                "offset": {
+                  "x": 48,
+                  "y": 0
+                },
+                "mirror": {
+                  "x": false,
+                  "y": false
+                },
+                "angle": 0
+              },
+              "left": {
+                "offset": {
+                  "x": 53,
+                  "y": 0
+                },
+                "mirror": {
+                  "x": false,
+                  "y": false
+                },
+                "angle": 0
+              },
+              "right": {
+                "offset": {
+                  "x": 53,
+                  "y": 0
+                },
+                "mirror": {
+                  "x": false,
+                  "y": false
+                },
+                "angle": 0
+              }
+            },
+            "unwrapMode": "custom",
+            "visible": true,
+            "doubleSided": false,
+            "shadingMode": "standard"
+          },
+          "children": []
+        },
+        {
+          "id": "6",
+          "name": "Wire_1",
+          "position": {
+            "x": 2.6,
+            "y": 5,
+            "z": 0
+          },
+          "orientation": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.090633,
+            "w": 0.995884
+          },
+          "shape": {
+            "type": "box",
+            "offset": {
+              "x": 0,
+              "y": 0,
+              "z": 0
+            },
+            "stretch": {
+              "x": 1,
+              "y": 1,
+              "z": 1
+            },
+            "settings": {
+              "size": {
+                "x": 0.6,
+                "y": 8,
+                "z": 0.6
+              }
+            },
+            "textureLayout": {
+              "top": {
+                "offset": {
+                  "x": 0,
+                  "y": 8
+                },
+                "mirror": {
+                  "x": false,
+                  "y": false
+                },
+                "angle": 0
+              },
+              "bottom": {
+                "offset": {
+                  "x": 1,
+                  "y": 8
+                },
+                "mirror": {
+                  "x": false,
+                  "y": false
+                },
+                "angle": 0
+              },
+              "front": {
+                "offset": {
+                  "x": 0,
+                  "y": 0
+                },
+                "mirror": {
+                  "x": false,
+                  "y": false
+                },
+                "angle": 0
+              },
+              "back": {
+                "offset": {
+                  "x": 0,
+                  "y": 0
+                },
+                "mirror": {
+                  "x": false,
+                  "y": false
+                },
+                "angle": 0
+              },
+              "left": {
+                "offset": {
+                  "x": 1,
+                  "y": 0
+                },
+                "mirror": {
+                  "x": false,
+                  "y": false
+                },
+                "angle": 0
+              },
+              "right": {
+                "offset": {
+                  "x": 1,
+                  "y": 0
+                },
+                "mirror": {
+                  "x": false,
+                  "y": false
+                },
+                "angle": 0
+              }
+            },
+            "unwrapMode": "custom",
+            "visible": true,
+            "doubleSided": false,
+            "shadingMode": "standard"
+          },
+          "children": []
+        },
+        {
+          "id": "7",
+          "name": "Wire_2",
+          "position": {
+            "x": -2.6,
+            "y": 5,
+            "z": 0
+          },
+          "orientation": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": -0.090633,
+            "w": 0.995884
+          },
+          "shape": {
+            "type": "box",
+            "offset": {
+              "x": 0,
+              "y": 0,
+              "z": 0
+            },
+            "stretch": {
+              "x": 1,
+              "y": 1,
+              "z": 1
+            },
+            "settings": {
+              "size": {
+                "x": 0.6,
+                "y": 8,
+                "z": 0.6
+              }
+            },
+            "textureLayout": {
+              "top": {
+                "offset": {
+                  "x": 2,
+                  "y": 8
+                },
+                "mirror": {
+                  "x": false,
+                  "y": false
+                },
+                "angle": 0
+              },
+              "bottom": {
+                "offset": {
+                  "x": 3,
+                  "y": 8
+                },
+                "mirror": {
+                  "x": false,
+                  "y": false
+                },
+                "angle": 0
+              },
+              "front": {
+                "offset": {
+                  "x": 2,
+                  "y": 0
+                },
+                "mirror": {
+                  "x": false,
+                  "y": false
+                },
+                "angle": 0
+              },
+              "back": {
+                "offset": {
+                  "x": 2,
+                  "y": 0
+                },
+                "mirror": {
+                  "x": false,
+                  "y": false
+                },
+                "angle": 0
+              },
+              "left": {
+                "offset": {
+                  "x": 3,
+                  "y": 0
+                },
+                "mirror": {
+                  "x": false,
+                  "y": false
+                },
+                "angle": 0
+              },
+              "right": {
+                "offset": {
+                  "x": 3,
+                  "y": 0
+                },
+                "mirror": {
+                  "x": false,
+                  "y": false
+                },
+                "angle": 0
+              }
+            },
+            "unwrapMode": "custom",
+            "visible": true,
+            "doubleSided": false,
+            "shadingMode": "standard"
+          },
+          "children": []
+        },
+        {
+          "id": "8",
+          "name": "Wire_3",
+          "position": {
+            "x": 0,
+            "y": 5,
+            "z": 2.6
+          },
+          "orientation": {
+            "x": -0.090633,
+            "y": 0.0,
+            "z": 0.0,
+            "w": 0.995884
+          },
+          "shape": {
+            "type": "box",
+            "offset": {
+              "x": 0,
+              "y": 0,
+              "z": 0
+            },
+            "stretch": {
+              "x": 1,
+              "y": 1,
+              "z": 1
+            },
+            "settings": {
+              "size": {
+                "x": 0.6,
+                "y": 8,
+                "z": 0.6
+              }
+            },
+            "textureLayout": {
+              "top": {
+                "offset": {
+                  "x": 4,
+                  "y": 8
+                },
+                "mirror": {
+                  "x": false,
+                  "y": false
+                },
+                "angle": 0
+              },
+              "bottom": {
+                "offset": {
+                  "x": 5,
+                  "y": 8
+                },
+                "mirror": {
+                  "x": false,
+                  "y": false
+                },
+                "angle": 0
+              },
+              "front": {
+                "offset": {
+                  "x": 4,
+                  "y": 0
+                },
+                "mirror": {
+                  "x": false,
+                  "y": false
+                },
+                "angle": 0
+              },
+              "back": {
+                "offset": {
+                  "x": 4,
+                  "y": 0
+                },
+                "mirror": {
+                  "x": false,
+                  "y": false
+                },
+                "angle": 0
+              },
+              "left": {
+                "offset": {
+                  "x": 5,
+                  "y": 0
+                },
+                "mirror": {
+                  "x": false,
+                  "y": false
+                },
+                "angle": 0
+              },
+              "right": {
+                "offset": {
+                  "x": 5,
+                  "y": 0
+                },
+                "mirror": {
+                  "x": false,
+                  "y": false
+                },
+                "angle": 0
+              }
+            },
+            "unwrapMode": "custom",
+            "visible": true,
+            "doubleSided": false,
+            "shadingMode": "standard"
+          },
+          "children": []
+        },
+        {
+          "id": "9",
+          "name": "Wire_4",
+          "position": {
+            "x": 0,
+            "y": 5,
+            "z": -2.6
+          },
+          "orientation": {
+            "x": 0.090633,
+            "y": 0.0,
+            "z": 0.0,
+            "w": 0.995884
+          },
+          "shape": {
+            "type": "box",
+            "offset": {
+              "x": 0,
+              "y": 0,
+              "z": 0
+            },
+            "stretch": {
+              "x": 1,
+              "y": 1,
+              "z": 1
+            },
+            "settings": {
+              "size": {
+                "x": 0.6,
+                "y": 8,
+                "z": 0.6
+              }
+            },
+            "textureLayout": {
+              "top": {
+                "offset": {
+                  "x": 6,
+                  "y": 8
+                },
+                "mirror": {
+                  "x": false,
+                  "y": false
+                },
+                "angle": 0
+              },
+              "bottom": {
+                "offset": {
+                  "x": 7,
+                  "y": 8
+                },
+                "mirror": {
+                  "x": false,
+                  "y": false
+                },
+                "angle": 0
+              },
+              "front": {
+                "offset": {
+                  "x": 6,
+                  "y": 0
+                },
+                "mirror": {
+                  "x": false,
+                  "y": false
+                },
+                "angle": 0
+              },
+              "back": {
+                "offset": {
+                  "x": 6,
+                  "y": 0
+                },
+                "mirror": {
+                  "x": false,
+                  "y": false
+                },
+                "angle": 0
+              },
+              "left": {
+                "offset": {
+                  "x": 7,
+                  "y": 0
+                },
+                "mirror": {
+                  "x": false,
+                  "y": false
+                },
+                "angle": 0
+              },
+              "right": {
+                "offset": {
+                  "x": 7,
+                  "y": 0
+                },
+                "mirror": {
+                  "x": false,
+                  "y": false
+                },
+                "angle": 0
+              }
+            },
+            "unwrapMode": "custom",
+            "visible": true,
+            "doubleSided": false,
+            "shadingMode": "standard"
+          },
+          "children": []
         }
       ]
     }

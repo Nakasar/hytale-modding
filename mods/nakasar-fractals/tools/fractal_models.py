@@ -228,6 +228,9 @@ def render(parts, atlas, uv, size, yaw, pitch, scale, center):
 
 def write_item_model(name, parts, model_dir, icon_dir, seed, center, scale):
     """Écrit <name>.blockymodel et <name>.png (atlas) dans model_dir, l'icône 64×64 dans icon_dir ; rend l'icône."""
+    import generate_item_models as items  # modèles détaillés (passe 3D), prioritaires sur la silhouette de base
+    if name in items.ITEMS:
+        return items.write(name, model_dir, icon_dir)
     atlas, uv = build_atlas(parts, seed)
     model_dir.mkdir(parents=True, exist_ok=True)
     icon_dir.mkdir(parents=True, exist_ok=True)

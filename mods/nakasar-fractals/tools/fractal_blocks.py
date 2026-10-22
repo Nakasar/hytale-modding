@@ -527,26 +527,36 @@ def render(parts, atlas, uv, size=256, yaw=-35, pitch=26, scale=None, center=Non
             return 0.5
         return 0.72 + 0.16 * max(-1, min(1, 0.8 * n[0] + 0.6 * n[2]))
 
-    for pi, p in enumerate(parts):
-        for f, o, u, v, n, (tu, tv), (fw, fh) in quads(p, pi, uv):
-            nv = view((n[0] + center[0], n[1] + center[1], n[2] + center[2]))
-            if nv[2] <= 1e-6:
-                continue
-            l = 1.0 if p.get("glow") else lum(n)
-            su = max(2, int(math.hypot(*u) * scale * 1.5) + 2)
-            sv = max(2, int(math.hypot(*v) * scale * 1.5) + 2)
-            for j in range(sv):
-                fv = (j + 0.5) / sv
-                for i in range(su):
-                    fu = (i + 0.5) / su
-                    q = view(tuple(o[k] + u[k] * fu + v[k] * fv for k in range(3)))
-                    sx, sy = int(W / 2 + q[0] * scale), int(H / 2 - q[1] * scale)
-                    if 0 <= sx < W and 0 <= sy < H and q[2] > zbuf[sy][sx]:
-                        t = tex[min(tu + int(fu * fw), atlas.width - 1), min(tv + int(fv * fh), atlas.height - 1)]
-                        if t[3] < 128:
-                            continue
-                        zbuf[sy][sx] = q[2]
-                        px[sx, sy] = shade(t, l) + (255,)
+    # deux passes : l'opaque remplit le z-buffer, puis le verre translucide se mélange par-dessus
+    for clear in (False, True):
+        for pi, p in enumerate(parts):
+            for f, o, u, v, n, (tu, tv), (fw, fh) in quads(p, pi, uv):
+                nv = view((n[0] + center[0], n[1] + center[1], n[2] + center[2]))
+                if nv[2] <= 1e-6:
+                    continue
+                l = 1.0 if p.get("glow") else lum(n)
+                su = max(2, int(math.hypot(*u) * scale * 1.5) + 2)
+                sv = max(2, int(math.hypot(*v) * scale * 1.5) + 2)
+                done = set()
+                for j in range(sv):
+                    fv = (j + 0.5) / sv
+                    for i in range(su):
+                        fu = (i + 0.5) / su
+                        q = view(tuple(o[k] + u[k] * fu + v[k] * fv for k in range(3)))
+                        sx, sy = int(W / 2 + q[0] * scale), int(H / 2 - q[1] * scale)
+                        if 0 <= sx < W and 0 <= sy < H and q[2] > zbuf[sy][sx]:
+                            t = tex[min(tu + int(fu * fw), atlas.width - 1), min(tv + int(fv * fh), atlas.height - 1)]
+                            if t[3] < 16 or (t[3] < 250) != clear:
+                                continue
+                            if not clear:
+                                zbuf[sy][sx] = q[2]
+                                px[sx, sy] = shade(t, l) + (255,)
+                            elif (sx, sy) not in done:
+                                done.add((sx, sy))
+                                k, d = t[3] / 255, px[sx, sy]
+                                c = shade(t, l)
+                                px[sx, sy] = tuple(int(c[m] * k + d[m] * (1 - k)) for m in range(3)) + \
+                                    (max(d[3], t[3]),)
     return img
 
 
