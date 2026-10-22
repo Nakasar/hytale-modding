@@ -70,6 +70,7 @@ REGISTRY = (16, 0, 8)
 # Coin de l'Archiviste (est, étape 3) : comptoir devant lui, autel des infusions et creuset des Brumes à côté.
 ARCHIVIST_SPOT = (18, GROUND_Y, 11)
 COUNTER = (16, 0, 11)
+DAILY_BOARD = (16, 0, 5)                # tableau des fractales du jour (étape 9), au nord du Registre
 ALTAR_SPOT = (13, 0, 13)
 FORGE_SPOT = (15, 0, 15)
 CAGE_CELL = "Nakasar_Fractal_Cage_Cell"
@@ -121,6 +122,7 @@ ASTROLABE_RING = "Nakasar_Fractal_Astrolabe_Ring"
 HARMONY = "Nakasar_Fractal_Harmony_Tile"
 TRIAL = "Nakasar_Fractal_Trial_Panel"
 REGISTRY_BLOCK = "Nakasar_Fractal_Registry"
+DAILY_BLOCK = "Nakasar_Fractal_Daily_Board"
 EXIT_STONE = "Nakasar_Fractal_Exit_Stone"
 ALTAR = "Nakasar_Fractal_Infusion_Altar"
 FORGE = "Nakasar_Fractal_Mist_Forge"
@@ -300,6 +302,8 @@ def observatory_prefab():
     p.set(cx, 2, cz, AIR)
     # Registre des fractales (est) : là où se tiendra l'Archiviste.
     p.set(*REGISTRY, REGISTRY_BLOCK)
+    assert DAILY_BOARD not in p.blocks, "le tableau des fractales du jour tombe sur un bloc"
+    p.set(*DAILY_BOARD, DAILY_BLOCK)
     # Coin de l'Archiviste : dallage, comptoir, autel des infusions et creuset des Brumes.
     ax, _, az = ARCHIVIST_SPOT
     for x in range(ax - 6, ax + 2):
@@ -349,6 +353,10 @@ def texture(path, base, accent, glyph):
     elif glyph == "panel":
         d.rectangle((7, 7, 24, 24), outline=acc, width=2)
         d.ellipse((12, 12, 19, 19), outline=acc, width=2)
+    elif glyph == "daily":
+        for k, y in enumerate((8, 16, 24)):
+            d.polygon(((9, y), (12, y - 3), (15, y), (12, y + 3)), fill=acc if k == 0 else None, outline=acc)
+            d.line((18, y, 25, y), fill=acc, width=2)
     elif glyph == "book":
         d.rectangle((7, 6, 24, 25), fill=accent + (255,))
         d.line((16, 6, 16, 25), fill=dark, width=1)
@@ -657,6 +665,10 @@ def interactions():
         "Nakasar_Fractal_Use_Archivist_Counter": {
             "$Comment": "Comptoir de l'Archiviste : sa boutique de troc (comme lui parler).",
             "Type": "Nakasar_Fractal_OpenShop", "Shop": "Nakasar_Fractal_Archivist"},
+        "Nakasar_Fractal_Use_Daily_Board": {
+            "$Comment": "Tableau des fractales du jour : les trois fractales du jour, cochées si le joueur a déjà pris "
+                        "leur coffre aujourd'hui.",
+            "Type": "Nakasar_Fractal_DailyBoard"},
         "Nakasar_Fractal_Read_Registry": {
             "$Comment": "Registre des fractales : page de lore du jeu (nom et description du bloc).",
             "Type": "OpenCustomUI", "Page": {"Id": "BlockLore", "TextAlignment": "Left"}},
@@ -850,8 +862,11 @@ def lang():
         f"items.{REWARD_CHEST}.description": "Utiliser : votre récompense (une par joueur du groupe). Terminer une "
                                              "fractale à votre plus haut niveau débloque le suivant.",
         f"items.{COUNTER_BLOCK}.name": "Comptoir de l'Archiviste",
-        f"items.{COUNTER_BLOCK}.description": "Utiliser : échanger des éclats de Brume contre des infusions et des "
-                                              "fragments.",
+        f"items.{COUNTER_BLOCK}.description": "Utiliser : échanger des éclats de Brume contre des infusions, des "
+                                              "fragments et les cosmétiques de saison.",
+        f"items.{DAILY_BLOCK}.name": "Tableau des fractales du jour",
+        f"items.{DAILY_BLOCK}.description": "Utiliser : les trois fractales du jour. Terminer l'une d'elles donne, la "
+                                            "première fois du jour, un coffre des fractales du jour en plus.",
         f"items.{REGISTRY_BLOCK}.name": "Registre des fractales",
         f"items.{REGISTRY_BLOCK}.description": (
             "Bienvenue dans l'Observatoire, voyageur des Brumes.\n\n"
@@ -943,7 +958,10 @@ def lang():
         f"items.{REWARD_CHEST}.description": "Use: your reward (one per group member). Completing a fractal at your "
                                              "highest level unlocks the next one.",
         f"items.{COUNTER_BLOCK}.name": "Archivist's Counter",
-        f"items.{COUNTER_BLOCK}.description": "Use: trade Mist Shards for infusions and fragments.",
+        f"items.{COUNTER_BLOCK}.description": "Use: trade Mist Shards for infusions, fragments and seasonal cosmetics.",
+        f"items.{DAILY_BLOCK}.name": "Daily Fractals Board",
+        f"items.{DAILY_BLOCK}.description": "Use: today's three daily fractals. Completing one gives, the first time "
+                                            "each day, an extra Daily Fractal Chest.",
         f"items.{REGISTRY_BLOCK}.name": "Fractal Registry",
         f"items.{REGISTRY_BLOCK}.description": (
             "Welcome to the Observatory, traveller of the Mists.\n\n"
@@ -1081,6 +1099,7 @@ def main():
         (TRIAL, "Trial_Panel", stone, (140, 170, 255), "panel", "#8af", "Nakasar_Fractal_Use_Trial_Panel"),
         (EXIT_STONE, "Exit_Stone", stone, (190, 160, 255), "exit", "#b9f", "Nakasar_Fractal_Use_Exit"),
         (REGISTRY_BLOCK, "Registry", (90, 60, 40), (210, 190, 150), "book", None, "Nakasar_Fractal_Read_Registry"),
+        (DAILY_BLOCK, "Daily_Board", (90, 60, 40), (255, 220, 110), "daily", "#fd8", "Nakasar_Fractal_Use_Daily_Board"),
     ]
     blocks += [
         (ALTAR, "Infusion_Altar", (60, 50, 100), (200, 140, 255), "altar", "#c8f", "Nakasar_Fractal_Use_Infusion_Altar"),

@@ -46,6 +46,7 @@ import dev.nakasar.hytale.fractals.observatory.Observatory;
 import dev.nakasar.hytale.fractals.observatory.HarmonizeInteraction;
 import dev.nakasar.hytale.fractals.observatory.OpenConsoleInteraction;
 import dev.nakasar.hytale.fractals.observatory.OpenShopInteraction;
+import dev.nakasar.hytale.fractals.observatory.DailyBoardInteraction;
 import dev.nakasar.hytale.fractals.observatory.TrialDemoInteraction;
 import dev.nakasar.hytale.fractals.observatory.ObservatoryNpcSystem;
 import dev.nakasar.hytale.fractals.observatory.TrialHitSystem;
@@ -132,6 +133,7 @@ public final class FractalsPlugin extends JavaPlugin {
         interactions.register(OpenInfusionsInteraction.TYPE_ID, OpenInfusionsInteraction.class, OpenInfusionsInteraction.CODEC);
         interactions.register(OpenBagInteraction.TYPE_ID, OpenBagInteraction.class, OpenBagInteraction.CODEC);
         interactions.register(ClaimRewardInteraction.TYPE_ID, ClaimRewardInteraction.class, ClaimRewardInteraction.CODEC);
+        interactions.register(DailyBoardInteraction.TYPE_ID, DailyBoardInteraction.class, DailyBoardInteraction.CODEC);
         interactions.register(OpenShopInteraction.TYPE_ID, OpenShopInteraction.class, OpenShopInteraction.CODEC);
         interactions.register(OpenDefianceInteraction.TYPE_ID, OpenDefianceInteraction.class, OpenDefianceInteraction.CODEC);
         interactions.register(HealFoesInteraction.TYPE_ID, HealFoesInteraction.class, HealFoesInteraction.CODEC);
@@ -176,14 +178,14 @@ public final class FractalsPlugin extends JavaPlugin {
 
         getCommandRegistry().registerCommand(new FractalCommand());
 
-        getLogger().atInfo().log("Nakasar Fractales : 19 types d'interaction (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s), progression, Falaise, instabilités, Inclassable, Volcanique, systèmes et /fractale enregistrés",
+        getLogger().atInfo().log("Nakasar Fractales : 20 types d'interaction (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s), progression, fractales du jour, Falaise, instabilités, Inclassable, Volcanique, Océan solide, Marais, Tempête de neige, systèmes et /fractale enregistrés",
                 TelegraphInteraction.TYPE_ID, ChargeInteraction.TYPE_ID, StunSelfInteraction.TYPE_ID,
                 SummonMinionsInteraction.TYPE_ID, CagePlayerInteraction.TYPE_ID, OpenConsoleInteraction.TYPE_ID,
                 HarmonizeInteraction.TYPE_ID, LeaveInteraction.TYPE_ID, TrialDemoInteraction.TYPE_ID,
                 OpenInfusionsInteraction.TYPE_ID, OpenBagInteraction.TYPE_ID, ClaimRewardInteraction.TYPE_ID,
                 OpenShopInteraction.TYPE_ID, OpenDefianceInteraction.TYPE_ID, HealFoesInteraction.TYPE_ID,
                 CliffsideUseInteraction.TYPE_ID, PullInteraction.TYPE_ID, StageUseInteraction.TYPE_ID,
-                ThrowItemInteraction.TYPE_ID);
+                ThrowItemInteraction.TYPE_ID, DailyBoardInteraction.TYPE_ID);
     }
 
     @Override

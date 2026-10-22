@@ -55,6 +55,45 @@
         }
       ],
       "Stock": 99
+    },
+    {
+      "Output": {
+        "ItemId": "Armor_Nakasar_Fractal_Mist_Crown",
+        "Quantity": 1
+      },
+      "Input": [
+        {
+          "ItemId": "Nakasar_Fractal_Mist_Shard",
+          "Quantity": 150
+        }
+      ],
+      "Stock": 99
+    },
+    {
+      "Output": {
+        "ItemId": "Armor_Nakasar_Fractal_Archdiviner_Hood",
+        "Quantity": 1
+      },
+      "Input": [
+        {
+          "ItemId": "Nakasar_Fractal_Mist_Shard",
+          "Quantity": 200
+        }
+      ],
+      "Stock": 99
+    },
+    {
+      "Output": {
+        "ItemId": "Armor_Nakasar_Fractal_Mist_Mantle",
+        "Quantity": 1
+      },
+      "Input": [
+        {
+          "ItemId": "Nakasar_Fractal_Mist_Shard",
+          "Quantity": 250
+        }
+      ],
+      "Stock": 99
     }
   ]
 }

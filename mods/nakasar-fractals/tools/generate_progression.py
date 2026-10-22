@@ -7,9 +7,12 @@
   l'Autel des infusions (pile max 1). Deux infusions identiques et des éclats donnent la suivante, au Creuset des
   Brumes ; le Creuset refait aussi un Fragment des Brumes avec des éclats ;
 - 4 sacs de fin de fractale, un par rang (`Nakasar_Fractal_Reward_Bag_<Rang>`), et leurs listes de butin ;
+- le coffre des fractales du jour (`Nakasar_Fractal_Daily_Bag`, étape 9), donné en plus la première fois du jour
+  qu'un joueur termine une des 3 fractales du jour (Java `party.DailyFractals`) ;
 - l'effet `Nakasar_Fractal_Agony` (marqueur ; les dégâts sont calculés en Java selon le niveau et la résistance) et
   la cause de dégâts `Nakasar_Fractal_Agony` (ignore l'armure) ;
-- la boutique de troc de l'Archiviste (`BarterShops/Nakasar_Fractal_Archivist`), son modèle et son rôle ;
+- la boutique de troc de l'Archiviste (`BarterShops/Nakasar_Fractal_Archivist`, dont les cosmétiques de saison de
+  tools/generate_cosmetics.py), son modèle et son rôle ;
 - les recettes (fusions, fragment, autel et creuset à l'établi) ;
 - les langues `nakasar_fractals_progress.lang` (objets et messages Java de l'étape 3).
 
@@ -24,6 +27,7 @@ from pathlib import Path
 from PIL import Image, ImageDraw
 
 import fractal_models as fm
+import generate_cosmetics as gcos
 
 MOD = Path(__file__).resolve().parent.parent
 PACK = MOD / "src" / "main" / "resources"
@@ -81,8 +85,15 @@ FUSION_SHARDS = 4
 FRAGMENT_INPUTS = [(SHARD, 25), ("Ingredient_Rune_Shard", 1)]
 ALTAR_INPUTS = [(SHARD, 30), ("Rock_Gem_Sapphire", 2), ("Ingredient_Bar_Silver", 4)]
 FORGE_INPUTS = [(SHARD, 20), ("Ingredient_Bar_Iron", 6), ("Ingredient_Fire_Essence", 2)]
-# Troc de l'Archiviste : objet, quantité, prix en éclats.
-TRADES = [(infusion(1), 1, 10), (infusion(2), 1, 25), (infusion(4), 1, 120), (KEY, 1, 30)]
+# Troc de l'Archiviste : objet, quantité, prix en éclats ; puis les cosmétiques de saison.
+TRADES = [(infusion(1), 1, 10), (infusion(2), 1, 25), (infusion(4), 1, 120), (KEY, 1, 30)] + \
+    [(item_id, 1, price) for item_id, price in gcos.PRICES.items()]
+DAILY_BAG = "Nakasar_Fractal_Daily_Bag"
+DAILY_TIE = (255, 220, 110)
+# Coffre des fractales du jour : éclats, une infusion sûre, un matériau, une petite chance de cosmétique.
+DAILY_LOOT = ((12, 18), [(infusion(1), 3), (infusion(2), 1)],
+              [("Ingredient_Rune_Shard", 1, 2, 2), ("Rock_Gem_Sapphire", 1, 1, 1), ("Ingredient_Bar_Gold", 1, 2, 1)],
+              [(c, 1) for c in gcos.PRICES] + [(None, 27)])
 
 
 # --- couleurs et modèles --------------------------------------------------------------------------
@@ -183,6 +194,26 @@ def droplist(rank):
                       for i, w in infusions]}]
     return {"$Comment": f"Sac de fin de fractale, rang {rank} : éclats de Brume, un matériau, une chance d'infusion.",
             "Container": {"Type": "Multiple", "Containers": containers}}
+
+
+def daily_droplist():
+    shards, infusions, materials, cosmetics = DAILY_LOOT
+
+    def choice(entries):
+        return {"Type": "Choice", "Containers": [
+            {"Type": "Empty", "Weight": w} if i is None else
+            {"Type": "Single", "Weight": w, "Item": {"ItemId": i, "QuantityMin": 1, "QuantityMax": 1}}
+            for i, w in entries]}
+
+    return {"$Comment": "Coffre des fractales du jour : éclats de Brume, une infusion, un matériau, une petite chance "
+                        "d'un cosmétique de saison.",
+            "Container": {"Type": "Multiple", "Containers": [
+                {"Type": "Single", "Item": {"ItemId": SHARD, "QuantityMin": shards[0], "QuantityMax": shards[1]}},
+                choice(infusions),
+                {"Type": "Choice", "Containers": [
+                    {"Type": "Single", "Weight": w, "Item": {"ItemId": i, "QuantityMin": a, "QuantityMax": b}}
+                    for i, a, b, w in materials]},
+                choice(cosmetics)]}}
 
 
 def recipe(output, inputs, bench, category, seconds=3, quantity=1):
@@ -312,6 +343,12 @@ def lang():
              "Récompense de fin de fractale. Clic droit : l'ouvrir (éclats de Brume, matériaux, parfois une infusion).",
              f"Fractal Chest ({name_en})",
              "End-of-fractal reward. Right click: open it (Mist Shards, materials, sometimes an infusion).")
+    item(DAILY_BAG, "Coffre des fractales du jour",
+         "Donné la première fois du jour que vous terminez une des trois fractales du jour. Clic droit : l'ouvrir "
+         "(éclats de Brume, une infusion, un matériau, parfois un cosmétique de saison).",
+         "Daily Fractal Chest",
+         "Given the first time each day you complete one of the three daily fractals. Right click: open it (Mist "
+         "Shards, an infusion, a material, sometimes a seasonal cosmetic).")
     fr[f"effects.{AGONY}"], en[f"effects.{AGONY}"] = "Agonie", "Agony"
     fr["npc.Archivist.name"], en["npc.Archivist.name"] = "L'Archiviste", "The Archivist"
     fr["shop.Archivist.name"], en["shop.Archivist.name"] = "Archives des Brumes", "Mist Archives"
@@ -345,6 +382,12 @@ def lang():
                              "This chest is for the group that left the Observatory."),
         "reward.lost": ("La partie a été interrompue (redémarrage du serveur) : pas de coffre.",
                         "The run was interrupted (server restart): no chest."),
+        "daily.title": ("Fractales du jour (un coffre en plus la première fois du jour) :",
+                        "Daily fractals (an extra chest the first time each day):"),
+        "daily.claimed": ("{fractal} est une fractale du jour : coffre des fractales du jour reçu !",
+                          "{fractal} is a daily fractal: Daily Fractal Chest received!"),
+        "command.daily.desc": ("Affiche les fractales du jour et celles que vous avez déjà faites aujourd'hui.",
+                               "Shows today's daily fractals and the ones you already did today."),
         "command.info.desc": ("Affiche votre niveau débloqué et votre résistance à l'agonie.",
                               "Shows your unlocked level and agony resistance."),
     }
@@ -398,6 +441,17 @@ def main():
                    {"$Comment": f"Ouvre le coffre de fractale {rid} : il est retiré et sa liste de butin donnée.",
                     "Type": "Nakasar_Fractal_OpenBag", "Droplist": f"Nakasar_Fractal_Reward_{rid}"})
         write_json(SERVER / "Drops/Nakasar/Fractals" / f"Nakasar_Fractal_Reward_{rid}.json", droplist(rid))
+
+    rendered.append(fm.write_item_model("Daily_Bag", bag_parts(DAILY_TIE), models, icons, 201, (0, 7, 0), 11.0))
+    root = f"Root_{DAILY_BAG}"
+    write_json(items / f"{DAILY_BAG}.json", held_item(DAILY_BAG, "Daily_Bag", "Epic", 16,
+                                                      {"Interactions": {"Secondary": root}}))
+    write_json(SERVER / "Item/RootInteractions/Nakasar/Fractals" / f"{root}.json",
+               {"Interactions": [f"{DAILY_BAG}_Open"], "RequireNewClick": True})
+    write_json(SERVER / "Item/Interactions/Nakasar/Fractals" / f"{DAILY_BAG}_Open.json",
+               {"$Comment": "Ouvre le coffre des fractales du jour : il est retiré et sa liste de butin donnée.",
+                "Type": "Nakasar_Fractal_OpenBag", "Droplist": "Nakasar_Fractal_Reward_Daily"})
+    write_json(SERVER / "Drops/Nakasar/Fractals" / "Nakasar_Fractal_Reward_Daily.json", daily_droplist())
 
     write_json(recipes / f"Recipe_{KEY}_Mists.json", recipe(KEY, FRAGMENT_INPUTS, FORGE, CAT_FRAGMENTS, seconds=4))
     write_json(recipes / f"Recipe_{ALTAR}.json", recipe(ALTAR, ALTAR_INPUTS, "Workbench", "Workbench_Crafting", seconds=5))

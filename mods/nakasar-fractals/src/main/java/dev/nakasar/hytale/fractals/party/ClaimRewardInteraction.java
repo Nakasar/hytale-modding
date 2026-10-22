@@ -18,7 +18,8 @@ import dev.nakasar.hytale.fractals.progress.FractalProgress;
 /**
  * {@code "Type": "Nakasar_Fractal_ClaimReward"} : coffre de fin de fractale, un par joueur. Chaque membre du groupe
  * parti de l'Observatoire ({@link FractalRuns.Run#members}) y prend une fois le coffre du rang du niveau
- * ({@code Nakasar_Fractal_Reward_Bag_<Rang>}), et débloque le niveau suivant s'il jouait à son plus haut niveau.
+ * ({@code Nakasar_Fractal_Reward_Bag_<Rang>}), et débloque le niveau suivant s'il jouait à son plus haut niveau. Une
+ * fractale du jour ({@link DailyFractals}) donne en plus, la première fois du jour, le coffre des fractales du jour.
  */
 public class ClaimRewardInteraction extends PlayerInteraction {
 
@@ -59,9 +60,16 @@ public class ClaimRewardInteraction extends PlayerInteraction {
             if (!player.isValid()) {
                 return;
             }
-            int unlocked = FractalProgress.ensure(store, player).completeAt(run.level());
+            FractalProgress progress = FractalProgress.ensure(store, player);
+            int unlocked = progress.completeAt(run.level());
             if (unlocked > 0) {
                 playerRef.sendMessage(Message.translation(MESSAGES + "unlocked").param("level", unlocked));
+            }
+            if (DailyFractals.isDaily(run.fractal()) && progress.claimDaily(run.fractal(), DailyFractals.day())) {
+                SimpleItemContainer.addOrDropItemStack(store, player,
+                        InventoryComponent.getCombined(store, player, InventoryComponent.HOTBAR_STORAGE_BACKPACK),
+                        new ItemStack(DailyFractals.BAG, 1));
+                playerRef.sendMessage(Message.translation(MESSAGES + "daily.claimed").param("fractal", FractalCatalog.name(run.fractal())));
             }
         });
     }

@@ -14,11 +14,15 @@ import com.hypixel.hytale.server.core.inventory.container.filter.FilterActionTyp
 import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
 import dev.nakasar.hytale.fractals.observatory.Observatory;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Progression d'un joueur dans les fractales, sauvegardée avec lui (id {@value #ID}) : le plus haut niveau débloqué
  * et les {@value #SLOTS} emplacements de l'Autel des infusions (GDD, comme les emplacements de runes vanilla
  * {@code InventoryComponent.AbilitySlots} : portés par le joueur, ouverts par un bloc). Seules les infusions
- * ({@link #infusionLevel}) y entrent ; leur total est la résistance à l'agonie, partout où va le joueur.
+ * ({@link #infusionLevel}) y entrent ; leur total est la résistance à l'agonie, partout où va le joueur. Il garde aussi
+ * les fractales du jour déjà récompensées aujourd'hui ({@code party.DailyFractals}).
  */
 public final class FractalProgress implements Component<EntityStore> {
 
@@ -34,11 +38,19 @@ public final class FractalProgress implements Component<EntityStore> {
             .append(new KeyedCodec<>("Infusions", ItemContainer.CODEC), (p, v) -> p.setInfusions(v), p -> p.infusions)
             .documentation("Emplacements de l'Autel des infusions.")
             .add()
+            .append(new KeyedCodec<>("DailyDay", Codec.LONG), (p, v) -> p.dailyDay = v == null ? 0L : v, p -> p.dailyDay)
+            .documentation("Jour (epoch) des fractales du jour deja recompensees.")
+            .add()
+            .append(new KeyedCodec<>("DailyDone", Codec.STRING), (p, v) -> p.dailyDone = v == null ? "" : v, p -> p.dailyDone)
+            .documentation("Fractales du jour deja recompensees ce jour-la, separees par des virgules.")
+            .add()
             .build();
 
     private static ComponentType<EntityStore, FractalProgress> componentType;
 
     int unlockedLevel = Observatory.MIN_LEVEL;
+    private long dailyDay;
+    private String dailyDone = "";
     private SimpleItemContainer infusions = filtered(new SimpleItemContainer(SLOTS));
 
     public static ComponentType<EntityStore, FractalProgress> getComponentType() {
@@ -82,6 +94,23 @@ public final class FractalProgress implements Component<EntityStore> {
         }
         unlockedLevel++;
         return unlockedLevel;
+    }
+
+    /** Fractales du jour déjà récompensées aujourd'hui (jour `day`). */
+    public List<String> dailyDone(long day) {
+        return day != dailyDay || dailyDone.isEmpty() ? List.of() : List.of(dailyDone.split(","));
+    }
+
+    /** Vrai la première fois du jour `day` que le joueur termine `fractal` (la note alors). */
+    public boolean claimDaily(String fractal, long day) {
+        List<String> done = new ArrayList<>(dailyDone(day));
+        if (done.contains(fractal)) {
+            return false;
+        }
+        done.add(fractal);
+        dailyDay = day;
+        dailyDone = String.join(",", done);
+        return true;
     }
 
     public ItemContainer infusions() {
@@ -143,6 +172,8 @@ public final class FractalProgress implements Component<EntityStore> {
     public Component<EntityStore> clone() {
         FractalProgress copy = new FractalProgress();
         copy.unlockedLevel = unlockedLevel;
+        copy.dailyDay = dailyDay;
+        copy.dailyDone = dailyDone;
         copy.infusions = infusions.clone();
         return copy;
     }

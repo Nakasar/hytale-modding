@@ -11,6 +11,7 @@ import com.hypixel.hytale.server.core.command.system.basecommands.AbstractPlayer
 import com.hypixel.hytale.server.core.universe.PlayerRef;
 import com.hypixel.hytale.server.core.universe.world.World;
 import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
+import dev.nakasar.hytale.fractals.observatory.DailyBoardInteraction;
 import dev.nakasar.hytale.fractals.observatory.LeaveInteraction;
 import dev.nakasar.hytale.fractals.observatory.Observatory;
 import dev.nakasar.hytale.fractals.instability.Instabilities;
@@ -27,7 +28,8 @@ import dev.nakasar.hytale.fractals.progress.FractalProgress;
  *   <li>{@code quitter} : quitte la fractale pour l'Observatoire ;</li>
  *   <li>{@code infos} : niveau débloqué et résistance à l'agonie du joueur ;</li>
  *   <li>{@code instabilites} : les instabilités du jour (de la partie en cours, ou de chaque fractale au niveau du
- *   niveau harmonisé dans l'Observatoire).</li>
+ *   niveau harmonisé dans l'Observatoire) ;</li>
+ *   <li>{@code jour} : les fractales du jour, cochées si le joueur a déjà pris leur coffre aujourd'hui.</li>
  * </ul>
  */
 public final class FractalCommand extends AbstractCommandCollection {
@@ -43,6 +45,7 @@ public final class FractalCommand extends AbstractCommandCollection {
         addSubCommand(new LeaveCommand());
         addSubCommand(new InfoCommand());
         addSubCommand(new InstabilitiesCommand());
+        addSubCommand(new DailyCommand());
     }
 
     private static final class LevelCommand extends AbstractPlayerCommand {
@@ -103,6 +106,17 @@ public final class FractalCommand extends AbstractCommandCollection {
         protected void execute(CommandContext context, Store<EntityStore> store, Ref<EntityStore> ref, PlayerRef player, World world) {
             player.sendMessage(Message.translation("nakasar_fractals_progress.info")
                     .param("level", FractalProgress.unlocked(store, ref)).param("resistance", FractalProgress.resistance(store, ref)));
+        }
+    }
+
+    private static final class DailyCommand extends AbstractPlayerCommand {
+        DailyCommand() {
+            super("jour", "nakasar_fractals_progress.command.daily.desc");
+        }
+
+        @Override
+        protected void execute(CommandContext context, Store<EntityStore> store, Ref<EntityStore> ref, PlayerRef player, World world) {
+            DailyBoardInteraction.show(store, ref, player);
         }
     }
 
