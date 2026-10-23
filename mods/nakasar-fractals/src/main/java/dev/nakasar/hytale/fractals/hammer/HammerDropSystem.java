@@ -8,22 +8,34 @@ import com.hypixel.hytale.component.Store;
 import com.hypixel.hytale.component.query.Query;
 import com.hypixel.hytale.component.system.RefSystem;
 import com.hypixel.hytale.server.core.inventory.ItemStack;
-import com.hypixel.hytale.server.core.modules.entity.component.TransformComponent;
 import com.hypixel.hytale.server.core.modules.entity.item.ItemComponent;
+import com.hypixel.hytale.server.core.modules.entity.item.PreventPickup;
 import com.hypixel.hytale.server.core.universe.world.World;
 import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
 import dev.nakasar.hytale.fractals.cliffside.Cliffside;
-import org.joml.Vector3d;
+
+import java.util.Map;
+import java.util.Set;
+import java.util.WeakHashMap;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
- * Un marteau du culte au sol ne se ramasse qu'avec la touche d'interaction. Le client ne vise pas les entités
- * d'objet (essai en jeu du 2026-10-23 : une entité d'objet {@code Interactable} n'offrait aucune interaction), donc
- * toute entité d'objet {@value Hammer#ID} de la Falaise (jetée par un joueur) est remplacée par le bloc
- * {@value Hammer#DROPPED_BLOCK} posé au sol ({@link Hammer#place}), que l'on ramasse avec « Utiliser »
- * ({@code CliffsideUseInteraction}, action {@code Hammer_Dropped}). Sans sol libre à moins de 6 blocs, l'objet
- * reste une entité ordinaire, ramassée en passant dessus.
+ * Un marteau du culte au sol ne se ramasse pas en passant dessus : toute entité d'objet {@value Hammer#ID} de la
+ * Falaise (lâchée par la Corruption, par l'Archidevin ou jetée par un joueur) reçoit {@link PreventPickup}, que le
+ * ramassage automatique vanilla ignore ({@code PlayerItemEntityPickupSystem}), et est suivie ici pour
+ * {@link HammerPickupSystem} (s'accroupir tout près la ramasse).
+ *
+ * <p>Pas de touche d'interaction : le client n'affiche « Interagir » que pour ce qu'il vise, et il ne vise pas les
+ * entités d'objet (essai en jeu du 2026-10-23).
  */
 public final class HammerDropSystem extends RefSystem<EntityStore> {
+
+    private static final Map<World, Set<Ref<EntityStore>>> GROUND = new WeakHashMap<>();
+
+    /** Marteaux au sol suivis dans ce monde (vue vivante, à lire sur le fil du monde). */
+    static synchronized Set<Ref<EntityStore>> onGround(World world) {
+        return GROUND.computeIfAbsent(world, w -> ConcurrentHashMap.newKeySet());
+    }
 
     @Override
     public Query<EntityStore> getQuery() {
@@ -38,20 +50,15 @@ public final class HammerDropSystem extends RefSystem<EntityStore> {
         if (stack == null || !Hammer.ID.equals(stack.getItemId()) || world == null || !Cliffside.isCliffside(world)) {
             return;
         }
-        // Hors du système en cours : on pose un bloc et on retire l'entité.
-        world.execute(() -> {
-            if (!ref.isValid()) {
-                return;
-            }
-            Store<EntityStore> entities = world.getEntityStore().getStore();
-            TransformComponent transform = entities.getComponent(ref, TransformComponent.getComponentType());
-            if (transform != null && Hammer.place(world, new Vector3d(transform.getPosition()))) {
-                entities.removeEntity(ref, RemoveReason.REMOVE);
-            }
-        });
+        buffer.ensureComponent(ref, PreventPickup.getComponentType());
+        onGround(world).add(ref);
     }
 
     @Override
     public void onEntityRemove(Ref<EntityStore> ref, RemoveReason reason, Store<EntityStore> store, CommandBuffer<EntityStore> buffer) {
+        World world = store.getExternalData().getWorld();
+        if (world != null) {
+            onGround(world).remove(ref);
+        }
     }
 }

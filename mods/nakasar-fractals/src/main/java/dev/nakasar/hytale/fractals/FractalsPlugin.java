@@ -40,6 +40,7 @@ import dev.nakasar.hytale.fractals.defiance.OpenDefianceInteraction;
 import dev.nakasar.hytale.fractals.hammer.Hammer;
 import dev.nakasar.hytale.fractals.hammer.HammerDamageSystem;
 import dev.nakasar.hytale.fractals.hammer.HammerDropSystem;
+import dev.nakasar.hytale.fractals.hammer.HammerPickupSystem;
 import dev.nakasar.hytale.fractals.hammer.HammerSystem;
 import dev.nakasar.hytale.fractals.observatory.HarmonyCircleSystem;
 import dev.nakasar.hytale.fractals.observatory.LeaveInteraction;
@@ -158,6 +159,7 @@ public final class FractalsPlugin extends JavaPlugin {
         systems.registerSystem(new HammerSystem());
         systems.registerSystem(new HammerDamageSystem());
         systems.registerSystem(new HammerDropSystem());
+        systems.registerSystem(new HammerPickupSystem());
         systems.registerSystem(new DefianceDamageSystem());
         systems.registerSystem(new CliffsideSystem());
         systems.registerSystem(new CliffsideDamageFilter());

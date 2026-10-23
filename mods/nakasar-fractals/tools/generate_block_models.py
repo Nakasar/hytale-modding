@@ -395,21 +395,6 @@ def hammer_rack():
     return p, None
 
 
-def hammer_dropped():
-    """Marteau du culte lâché au sol, couché : masse d'onyx cerclée de fer, rune qui luit encore."""
-    onyx = fb.smooth_stone((40, 36, 48))
-    iron = fb.metal(IRON, False)
-    return [
-        part("Handle", (-3, 1.5, 0), (20, 2, 2), fb.planks((48, 34, 40), 2)),
-        part("Grip", (-9, 1.5, 0), (6, 2.6, 2.6), fb.cloth((110, 40, 60))),
-        part("Pommel", (-13.5, 1.75, 0), (3, 3.5, 3.5), iron),
-        part("Head", (10, 4, 0), (8, 8, 11), onyx),
-        part("Head_Band_A", (8, 4, 0), (1, 8.4, 11.4), iron),
-        part("Head_Band_B", (12, 4, 0), (1, 8.4, 11.4), iron),
-        part("Head_Rune", (10, 8.25, 0), (4, 0.5, 5), glow(CULT_GLOW), glow=True),
-    ], None
-
-
 def gargoyle():
     """Gargouille de pierre accroupie sur son socle, gueule ouverte, ailes repliées, yeux luisants."""
     s = fb.smooth_stone(CLIFF_STONE)
@@ -787,7 +772,6 @@ BLOCKS = {
     "Mist_Forge": (mist_forge, {"particles": motes(0.8), "orient": "open"}),
     "Trial_Panel": (trial_panel, {"orient": "open"}),
     "Hammer_Rack": (hammer_rack, {"particles": motes(0.8), "orient": "wall"}),
-    "Hammer_Dropped": (hammer_dropped, {"particles": motes(0.4)}),
     "Gargoyle": (gargoyle, {"orient": "wall"}),
     "Lever": (lever, {"orient": "open"}),
     "Cage_Door": (cage_door, {"orient": "line"}),
