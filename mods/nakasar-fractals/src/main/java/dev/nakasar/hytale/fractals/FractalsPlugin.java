@@ -39,7 +39,9 @@ import dev.nakasar.hytale.fractals.defiance.DefianceDamageSystem;
 import dev.nakasar.hytale.fractals.defiance.OpenDefianceInteraction;
 import dev.nakasar.hytale.fractals.hammer.Hammer;
 import dev.nakasar.hytale.fractals.hammer.HammerDamageSystem;
+import dev.nakasar.hytale.fractals.hammer.HammerDropSystem;
 import dev.nakasar.hytale.fractals.hammer.HammerSystem;
+import dev.nakasar.hytale.fractals.hammer.PickUpHammerInteraction;
 import dev.nakasar.hytale.fractals.observatory.HarmonyCircleSystem;
 import dev.nakasar.hytale.fractals.observatory.LeaveInteraction;
 import dev.nakasar.hytale.fractals.observatory.Observatory;
@@ -141,6 +143,7 @@ public final class FractalsPlugin extends JavaPlugin {
         interactions.register(PullInteraction.TYPE_ID, PullInteraction.class, PullInteraction.CODEC);
         interactions.register(StageUseInteraction.TYPE_ID, StageUseInteraction.class, StageUseInteraction.CODEC);
         interactions.register(ThrowItemInteraction.TYPE_ID, ThrowItemInteraction.class, ThrowItemInteraction.CODEC);
+        interactions.register(PickUpHammerInteraction.TYPE_ID, PickUpHammerInteraction.class, PickUpHammerInteraction.CODEC);
 
         var systems = getEntityStoreRegistry();
         FractalProgress.setComponentType(systems.registerComponent(FractalProgress.class, FractalProgress.ID, FractalProgress.CODEC));
@@ -156,6 +159,7 @@ public final class FractalsPlugin extends JavaPlugin {
         systems.registerSystem(new AgonySystem());
         systems.registerSystem(new HammerSystem());
         systems.registerSystem(new HammerDamageSystem());
+        systems.registerSystem(new HammerDropSystem());
         systems.registerSystem(new DefianceDamageSystem());
         systems.registerSystem(new CliffsideSystem());
         systems.registerSystem(new CliffsideDamageFilter());

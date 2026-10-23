@@ -1197,6 +1197,9 @@ def interactions():
                             ("Cage_Door", "Porte de cage de l'Archidevin : la forcer (5 fois) libère le prisonnier.")):
         out[f"Nakasar_Fractal_Use_{action}"] = {"$Comment": comment, "Type": "Nakasar_Fractal_CliffsideUse",
                                                  "Action": action}
+    out["Nakasar_Fractal_PickUp_Hammer"] = {
+        "$Comment": "Marteau du culte posé au sol : le ramasser avec la touche d'interaction (jamais en passant dessus, "
+                    "hammer/HammerDropSystem).", "Type": "Nakasar_Fractal_PickUpHammer"}
     return out
 
 
@@ -1209,6 +1212,7 @@ def roots():
         out[f"Root_Nakasar_Fractal_NPC_{name}"] = fr.melee_tag(f"Nakasar_Fractal_{name}")
     for name in ranged_roots:
         out[f"Root_Nakasar_Fractal_NPC_{name}"] = fr.ranged_tag(f"Nakasar_Fractal_{name}")
+    out["Root_Nakasar_Fractal_PickUp_Hammer"] = {"Interactions": ["Nakasar_Fractal_PickUp_Hammer"], "RequireNewClick": True}
     return out
 
 
@@ -1402,6 +1406,7 @@ def lang():
         put(f"npc.{role_id.removeprefix('Nakasar_Fractal_')}.name", nf, ne)
     for tier, *_ in CORRUPTION_TIERS:
         put(f"effects.{CORRUPTION}_{tier}", f"Corruption {tier}", f"Corruption {tier}")
+    put("hints.takeHammer", "Ramasser le marteau", "Pick up the hammer")
     put("effects.Nakasar_Fractal_Lever_Rooted", "Levier tiré", "Pulling a lever")
     put("effects.Nakasar_Fractal_Archdiviner_Haste", "Hâte", "Haste")
     put("effects.Nakasar_Fractal_Archdiviner_Protection", "Protection", "Protection")

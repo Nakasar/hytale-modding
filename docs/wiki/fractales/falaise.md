@@ -23,7 +23,7 @@ Chaque palier brisé ouvre une barrière de brume et déplace le point de retour
 ## Le marteau du culte
 
 - Le prendre coûte **10 % des PV**.
-- **Corruption** : en main, elle monte par crans de 10 s. Quand un cran se vide, il monte si le marteau est encore en main, sinon il redescend. Par cran, **+8 %** de dégâts subis ; dès le cran 2, vous ne faites plus que **70 %** de vos dégâts ; le cran 3 étourdit 2 s, et vouloir monter au-delà fait échapper le marteau (étourdi 3 s).
+- **Corruption** : en main, elle monte par crans de 10 s. Quand un cran se vide, il monte si le marteau est encore en main, sinon il redescend. Par cran, **+8 %** de dégâts subis ; dès le cran 2, vous ne faites plus que **70 %** de vos dégâts ; le cran 3 étourdit 2 s, et vouloir monter au-delà fait échapper le marteau (étourdi 3 s). Un marteau au sol se ramasse avec la touche d'interaction, jamais en passant dessus.
 - **Charge** : touchez un cultiste avec le marteau puis voyez-le mourir dans les 15 s, ou voyez un ennemi mourir à moins de 10 blocs. Un coup **chargé** fissure un sceau.
 - Au marteau, un coup retire **3 points** de défiance.
 
