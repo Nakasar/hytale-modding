@@ -10,7 +10,11 @@ import com.hypixel.hytale.server.core.inventory.InventoryComponent;
 import com.hypixel.hytale.server.core.inventory.ItemStack;
 import com.hypixel.hytale.server.core.inventory.container.CombinedItemContainer;
 import com.hypixel.hytale.server.core.modules.entity.item.ItemComponent;
+import com.hypixel.hytale.server.core.asset.type.blocktype.config.BlockType;
+import com.hypixel.hytale.server.core.universe.world.World;
+import com.hypixel.hytale.server.core.universe.world.storage.ChunkStore;
 import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
+import dev.nakasar.hytale.fractals.arena.WorldBlocks;
 import org.joml.Vector3d;
 
 import java.util.Map;
@@ -30,6 +34,8 @@ import java.util.concurrent.ConcurrentHashMap;
 public final class Hammer {
 
     public static final String ID = "Nakasar_Fractal_Cult_Hammer";
+    /** Marteau lâché au sol : bloc en modèle 3D, ramassé avec « Utiliser » ({@link HammerDropSystem}). */
+    public static final String DROPPED_BLOCK = "Nakasar_Fractal_Hammer_Dropped";
     public static final double CHARGE_RADIUS = 10;
     public static final float CREDIT_SECONDS = 15f;
 
@@ -78,17 +84,51 @@ public final class Hammer {
                 InventoryComponent.getCombined(store, ref, InventoryComponent.HOTBAR_STORAGE_BACKPACK), new ItemStack(ID, 1));
     }
 
-    /** Fait tomber un marteau au sol en `at` ; il se ramasse avec la touche d'interaction ({@link HammerDropSystem}). */
+    /**
+     * Fait tomber un marteau au sol en `at` : le bloc {@value #DROPPED_BLOCK}, ramassé avec « Utiliser »
+     * ({@link HammerDropSystem}) ; sans sol libre, une entité d'objet ordinaire.
+     */
     public static void drop(Store<EntityStore> store, Vector3d at) {
-        Holder<EntityStore> holder = ItemComponent.generateItemDrop(store, new ItemStack(ID, 1), new Vector3d(at).add(0, 0.5, 0),
-                new Rotation3f(), 0f, 2f, 0f);
-        if (holder != null) {
-            ItemComponent item = holder.getComponent(ItemComponent.getComponentType());
-            if (item != null) {
-                item.setPickupDelay(1f);
-            }
-            store.addEntity(holder, AddReason.SPAWN);
+        World world = store.getExternalData().getWorld();
+        if (world != null) {
+            world.execute(() -> {
+                if (!place(world, at)) {
+                    Holder<EntityStore> holder = ItemComponent.generateItemDrop(world.getEntityStore().getStore(),
+                            new ItemStack(ID, 1), new Vector3d(at).add(0, 0.5, 0), new Rotation3f(), 0f, 2f, 0f);
+                    if (holder != null) {
+                        world.getEntityStore().getStore().addEntity(holder, AddReason.SPAWN);
+                    }
+                }
+            });
         }
+    }
+
+    /**
+     * Pose {@value #DROPPED_BLOCK} sur le premier sol libre sous `at` (6 blocs au plus), sinon juste au-dessus
+     * (3 blocs au plus). Faux s'il n'y a nulle part où le poser.
+     */
+    public static boolean place(World world, Vector3d at) {
+        ChunkStore chunks = world.getChunkStore();
+        int x = (int) Math.floor(at.x);
+        int y = (int) Math.floor(at.y);
+        int z = (int) Math.floor(at.z);
+        for (int dy : new int[]{0, -1, -2, -3, -4, -5, -6, 1, 2, 3}) {
+            int cy = y + dy;
+            if (WorldBlocks.id(chunks, x, cy, z) == BlockType.EMPTY_ID && WorldBlocks.solid(chunks, x, cy - 1, z)) {
+                return WorldBlocks.set(chunks, x, cy, z, DROPPED_BLOCK, 0);
+            }
+        }
+        return false;
+    }
+
+    /** Ramasse le marteau posé en (x, y, z) ; faux si ce n'est pas (ou plus) un marteau au sol. */
+    public static boolean pickUp(World world, Store<EntityStore> store, Ref<EntityStore> ref, int x, int y, int z) {
+        ChunkStore chunks = world.getChunkStore();
+        if (!DROPPED_BLOCK.equals(WorldBlocks.name(chunks, x, y, z)) || !WorldBlocks.clear(chunks, x, y, z)) {
+            return false;
+        }
+        give(store, ref);
+        return true;
     }
 
     public static boolean isCharged(UUID player) {

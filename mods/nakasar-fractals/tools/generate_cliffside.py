@@ -142,6 +142,7 @@ MIST_BARRIER = "Nakasar_Fractal_Mist_Barrier"
 LANDING = "Nakasar_Fractal_Landing"
 PLATE = "Nakasar_Fractal_Pressure_Plate"
 RACK_BLOCK = "Nakasar_Fractal_Hammer_Rack"
+DROPPED_HAMMER = "Nakasar_Fractal_Hammer_Dropped"
 GARGOYLE = "Nakasar_Fractal_Gargoyle"
 LEVER = "Nakasar_Fractal_Lever"
 CAGE_DOOR = "Nakasar_Fractal_Cage_Door"
@@ -802,6 +803,8 @@ def blocks():
         (LANDING, "Landing", (88, 96, 120), (150, 200, 255), "landing", None, None, True),
         (PLATE, "Pressure_Plate", (96, 90, 84), (140, 130, 120), "plate", None, None, True),
         (RACK_BLOCK, "Hammer_Rack", (80, 56, 40), (196, 120, 255), "rack", "#a6f", "Nakasar_Fractal_Use_Hammer_Rack", True),
+        (DROPPED_HAMMER, "Hammer_Dropped", (40, 36, 48), (196, 120, 255), "rack", None,
+         "Nakasar_Fractal_Use_Hammer_Dropped", False),
         (GARGOYLE, "Gargoyle", (96, 96, 104), (220, 230, 255), "gargoyle", None, None, True),
         (LEVER, "Lever", stone, (230, 200, 120), "lever", None, "Nakasar_Fractal_Use_Cliffside_Lever", True),
         (CAGE_DOOR, "Cage_Door", (40, 36, 44), (150, 140, 170), "bars", None, "Nakasar_Fractal_Use_Cage_Door", True),
@@ -1194,12 +1197,11 @@ def interactions():
     for action, comment in (("Hammer_Rack", "Râtelier du camp : prendre le marteau du culte (un seul à la fois)."),
                             ("Cliffside_Lever", "Levier de la Falaise : coupe un groupe de gargouilles ou les bombes "
                                                 "d'une rampe ; on reste figé 4 s à le tirer."),
-                            ("Cage_Door", "Porte de cage de l'Archidevin : la forcer (5 fois) libère le prisonnier.")):
+                            ("Cage_Door", "Porte de cage de l'Archidevin : la forcer (5 fois) libère le prisonnier."),
+                            ("Hammer_Dropped", "Marteau du culte lâché au sol (bloc posé par hammer/HammerDropSystem) : "
+                                               "le ramasser.")):
         out[f"Nakasar_Fractal_Use_{action}"] = {"$Comment": comment, "Type": "Nakasar_Fractal_CliffsideUse",
                                                  "Action": action}
-    out["Nakasar_Fractal_PickUp_Hammer"] = {
-        "$Comment": "Marteau du culte posé au sol : le ramasser avec la touche d'interaction (jamais en passant dessus, "
-                    "hammer/HammerDropSystem).", "Type": "Nakasar_Fractal_PickUpHammer"}
     return out
 
 
@@ -1212,7 +1214,6 @@ def roots():
         out[f"Root_Nakasar_Fractal_NPC_{name}"] = fr.melee_tag(f"Nakasar_Fractal_{name}")
     for name in ranged_roots:
         out[f"Root_Nakasar_Fractal_NPC_{name}"] = fr.ranged_tag(f"Nakasar_Fractal_{name}")
-    out["Root_Nakasar_Fractal_PickUp_Hammer"] = {"Interactions": ["Nakasar_Fractal_PickUp_Hammer"], "RequireNewClick": True}
     return out
 
 
@@ -1391,6 +1392,8 @@ def lang():
     item(PLATE, "Dalle du tunnel", "Certaines cachent des pointes.", "Tunnel slab", "Some of them hide spikes.")
     item(RACK_BLOCK, "Râtelier du culte", "Utiliser : prendre le marteau du culte (un seul à la fois).", "Cult rack",
          "Use: take the cult hammer (only one at a time).")
+    item(DROPPED_HAMMER, "Marteau du culte", "Utiliser : ramasser le marteau.", "Cult hammer",
+         "Use: pick up the hammer.")
     item(GARGOYLE, "Gargouille", "Son souffle pousse dans le vide. Un levier en haut du saut la fait taire.",
          "Gargoyle", "Its breath pushes into the void. A lever at the top of the climb silences it.")
     item(LEVER, "Levier", "Utiliser : coupe un piège. Dur à tirer : on reste figé 4 s.", "Lever",
@@ -1406,7 +1409,6 @@ def lang():
         put(f"npc.{role_id.removeprefix('Nakasar_Fractal_')}.name", nf, ne)
     for tier, *_ in CORRUPTION_TIERS:
         put(f"effects.{CORRUPTION}_{tier}", f"Corruption {tier}", f"Corruption {tier}")
-    put("hints.takeHammer", "Ramasser le marteau", "Pick up the hammer")
     put("effects.Nakasar_Fractal_Lever_Rooted", "Levier tiré", "Pulling a lever")
     put("effects.Nakasar_Fractal_Archdiviner_Haste", "Hâte", "Haste")
     put("effects.Nakasar_Fractal_Archdiviner_Protection", "Protection", "Protection")

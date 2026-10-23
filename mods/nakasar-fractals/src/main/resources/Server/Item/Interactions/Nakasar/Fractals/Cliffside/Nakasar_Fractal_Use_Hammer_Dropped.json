@@ -1,0 +1,5 @@
+{
+  "$Comment": "Marteau du culte lâché au sol (bloc posé par hammer/HammerDropSystem) : le ramasser.",
+  "Type": "Nakasar_Fractal_CliffsideUse",
+  "Action": "Hammer_Dropped"
+}
