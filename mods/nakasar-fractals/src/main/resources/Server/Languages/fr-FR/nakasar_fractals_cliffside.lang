@@ -25,6 +25,7 @@ npc.Archdiviner.name = L'Archidevin
 effects.Nakasar_Fractal_Corruption_1 = Corruption 1
 effects.Nakasar_Fractal_Corruption_2 = Corruption 2
 effects.Nakasar_Fractal_Corruption_3 = Corruption 3
+hints.takeHammer = Ramasser le marteau
 effects.Nakasar_Fractal_Lever_Rooted = Levier tiré
 effects.Nakasar_Fractal_Archdiviner_Haste = Hâte
 effects.Nakasar_Fractal_Archdiviner_Protection = Protection
