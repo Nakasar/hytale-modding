@@ -23,6 +23,9 @@ import java.util.concurrent.ConcurrentHashMap;
  * barre de boss monte et redescend sans cesse (Abîme de Jade, retour du 2026-10-24).
  * La dépendance vise la sous-classe enregistrée par le NPCPlugin : la classe générique
  * {@code EntityStatsSystems.Regenerate} n'est jamais enregistrée, et la citer fait échouer le chargement du plugin.
+ *
+ * <p>{@link #noRegen} : la vie ne peut que descendre (boss qui attend les pierres imprégnées, retour du 2026-10-24) ;
+ * les soins voulus par le Java passent par {@link #heal}.
  */
 public final class PinnedHealth extends TickingSystem<EntityStore> {
 
@@ -32,6 +35,8 @@ public final class PinnedHealth extends TickingSystem<EntityStore> {
             new SystemDependency(Order.BEFORE, EntityStatsSystems.Changes.class));
 
     private static final Map<Ref<EntityStore>, Float> PINNED = new ConcurrentHashMap<>();
+    /** Vie la plus basse vue, par entité sans régénération. */
+    private static final Map<Ref<EntityStore>, Float> LOWEST = new ConcurrentHashMap<>();
 
     /** Fixe la vie de `ref` à `value` jusqu'à {@link #unpin}. */
     public static void pin(Ref<EntityStore> ref, float value) {
@@ -43,11 +48,31 @@ public final class PinnedHealth extends TickingSystem<EntityStore> {
     public static void unpin(Ref<EntityStore> ref) {
         if (ref != null) {
             PINNED.remove(ref);
+            LOWEST.remove(ref);
+        }
+    }
+
+    /** La vie de `ref` ne remonte plus d'elle-même : seulement par {@link #heal}, jusqu'à {@link #unpin}. */
+    public static void noRegen(Ref<EntityStore> ref) {
+        if (ref != null) {
+            LOWEST.putIfAbsent(ref, Float.MAX_VALUE);
+        }
+    }
+
+    /** Soin voulu de `ref` (sans régénération) : sa vie passe à `value`. */
+    public static void heal(Store<EntityStore> store, Ref<EntityStore> ref, float value) {
+        EntityStatMap stats = store.getComponent(ref, EntityStatMap.getComponentType());
+        if (stats != null) {
+            stats.setStatValue(DefaultEntityStatTypes.getHealth(), value);
+        }
+        if (LOWEST.containsKey(ref)) {
+            LOWEST.put(ref, value);
         }
     }
 
     public static void clearAll() {
         PINNED.clear();
+        LOWEST.clear();
     }
 
     @Override
@@ -57,10 +82,30 @@ public final class PinnedHealth extends TickingSystem<EntityStore> {
 
     @Override
     public void tick(float dt, int systemIndex, Store<EntityStore> store) {
-        if (PINNED.isEmpty()) {
+        if (PINNED.isEmpty() && LOWEST.isEmpty()) {
             return;
         }
         int healthIndex = DefaultEntityStatTypes.getHealth();
+        for (Map.Entry<Ref<EntityStore>, Float> entry : LOWEST.entrySet()) {
+            Ref<EntityStore> ref = entry.getKey();
+            if (!ref.isValid()) {
+                LOWEST.remove(ref);
+                continue;
+            }
+            if (ref.getStore() != store) {
+                continue;
+            }
+            EntityStatMap stats = store.getComponent(ref, EntityStatMap.getComponentType());
+            EntityStatValue health = stats == null ? null : stats.get(healthIndex);
+            if (health == null) {
+                continue;
+            }
+            if (health.get() > entry.getValue() + 0.01f) {
+                stats.setStatValue(healthIndex, entry.getValue());
+            } else {
+                entry.setValue(health.get());
+            }
+        }
         for (Map.Entry<Ref<EntityStore>, Float> entry : PINNED.entrySet()) {
             Ref<EntityStore> ref = entry.getKey();
             if (!ref.isValid()) {

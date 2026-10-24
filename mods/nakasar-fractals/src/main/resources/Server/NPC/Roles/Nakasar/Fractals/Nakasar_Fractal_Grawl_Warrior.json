@@ -1,5 +1,5 @@
 {
-  "$Comment": "Guerrier grawl (vagues du camp) : deux coups, et un coup abattu annoncé. Généré par tools/generate_volcanic.py.",
+  "$Comment": "Guerrier grawl (groupes de 7 du camp) : voit tout le camp et charge aussitôt ; deux coups, et un coup abattu annoncé. Généré par tools/generate_volcanic.py.",
   "Type": "Generic",
   "Appearance": "Nakasar_Fractal_Grawl_Warrior",
   "NameTranslationKey": "nakasar_fractals_volcanic.npc.Grawl_Warrior.name",
@@ -13,7 +13,7 @@
   "MotionControllerList": [
     {
       "Type": "Walk",
-      "MaxWalkSpeed": 4.4,
+      "MaxWalkSpeed": 5.2,
       "Gravity": 10,
       "MaxFallSpeed": 10,
       "Acceleration": 10,
@@ -77,7 +77,7 @@
         {
           "Sensor": {
             "Type": "Player",
-            "Range": 24,
+            "Range": 56,
             "LockOnTarget": true,
             "Filters": [
               {
@@ -85,9 +85,6 @@
                 "Attitudes": [
                   "Hostile"
                 ]
-              },
-              {
-                "Type": "LineOfSight"
               }
             ]
           },
@@ -110,12 +107,12 @@
       },
       "Instructions": [
         {
-          "$Comment": "Cible perdue ou partie à plus de 40 blocs.",
+          "$Comment": "Cible perdue ou partie à plus de 64 blocs.",
           "Sensor": {
             "Type": "Not",
             "Sensor": {
               "Type": "Target",
-              "Range": 40,
+              "Range": 64,
               "Filters": [
                 {
                   "Type": "Attitude",
@@ -214,7 +211,7 @@
         {
           "Sensor": {
             "Type": "Target",
-            "Range": 36
+            "Range": 60
           },
           "BodyMotion": {
             "Type": "Seek",

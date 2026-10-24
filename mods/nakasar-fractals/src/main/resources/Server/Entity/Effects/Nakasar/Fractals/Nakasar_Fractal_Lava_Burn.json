@@ -1,0 +1,13 @@
+{
+  "$Comment": "Dans la lave (lac du volcan, cratère en fusion de l'île du Chamane) : grosse brûlure tant qu'on y reste (Java, volcanic.Volcanic.lavaFloor et volcanic.ImbuedShaman).",
+  "Name": "nakasar_fractals_volcanic.effects.Nakasar_Fractal_Lava_Burn",
+  "Debuff": true,
+  "StatusEffectIcon": "UI/StatusEffects/Nakasar/Fractals/Lava_Burn.png",
+  "ApplicationEffects": {
+    "EntityBottomTint": "#ff6a1a",
+    "EntityTopTint": "#ffb040"
+  },
+  "OverlapBehavior": "Overwrite",
+  "Infinite": false,
+  "Duration": 1.0
+}

@@ -1,9 +1,9 @@
 {
-  "$Comment": "Vétéran grawl (Champion chaman) : part de sa grotte et marche vers un captif (point d'attache posé par le Java) ; il ne se bat que si on le frappe, ou une fois arrivé. À côté du captif 1,5 s, il le jette dans la lave. Généré par tools/generate_volcanic.py.",
+  "$Comment": "Vétéran grawl (Champion chaman) : part de sa grotte et marche vers un captif (point d'attache posé par le Java) ; il ne se bat que si on le frappe, ou une fois arrivé. À côté du captif 1,5 s, il le jette dans la lave. Marche lente : on a le temps de l'intercepter. Généré par tools/generate_volcanic.py.",
   "Type": "Generic",
   "Appearance": "Nakasar_Fractal_Grawl_Veteran",
   "NameTranslationKey": "nakasar_fractals_volcanic.npc.Grawl_Veteran.name",
-  "MaxHealth": 160,
+  "MaxHealth": 450,
   "StartState": "ReturnHome",
   "DefaultPlayerAttitude": "Hostile",
   "DefaultNPCAttitude": "Ignore",
@@ -13,7 +13,7 @@
   "MotionControllerList": [
     {
       "Type": "Walk",
-      "MaxWalkSpeed": 3.2,
+      "MaxWalkSpeed": 1.7,
       "Gravity": 10,
       "MaxFallSpeed": 10,
       "Acceleration": 10,

@@ -1,5 +1,5 @@
 {
-  "$Comment": "Feu du Volcanique (rochers, traînées, puits de lave, pieds brûlants, flamme qui se propage) : une part des PV max, l'armure ne le réduit pas.",
+  "$Comment": "Feu du Volcanique (rochers, traînées, lave, cratères en fusion, flamme qui se propage) : une part des PV max, l'armure ne le réduit pas.",
   "BypassResistances": true,
   "DurabilityLoss": false,
   "StaminaLoss": false,

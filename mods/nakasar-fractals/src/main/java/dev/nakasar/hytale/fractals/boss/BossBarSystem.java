@@ -43,11 +43,16 @@ import java.util.function.Function;
  * <p>Une élite est « engagée » quand elle est en combat (état {@code Combat}) ou blessée ; chaque joueur à moins de
  * {@value #RANGE} blocs d'une élite engagée voit la barre de la plus proche. Elle disparaît quand l'élite meurt, se
  * calme (retour au calme et vie regagnée), ou quand le joueur s'éloigne ou change de monde.
+ *
+ * <p>Un rôle déclaré par {@link #everywhere} (totem du rituel du Volcanique) est toujours engagé et sa barre se voit de
+ * partout dans le monde, faute d'élite engagée plus proche.
  */
 public final class BossBarSystem extends TickingSystem<EntityStore> {
 
     /** Rôles qui ont une barre de boss ({@link #register}, rempli par le plugin fractale par fractale). */
     private static final Set<String> ELITES = ConcurrentHashMap.newKeySet();
+    /** Rôles dont la barre se voit de tout le monde ({@link #everywhere}). */
+    private static final Set<String> EVERYWHERE = ConcurrentHashMap.newKeySet();
     /** Texte ajouté au nom de la barre, par rôle (barre de défiance) ; null : rien. Lu à chaque passage. */
     private static final Map<String, Function<Ref<EntityStore>, String>> LABELS = new ConcurrentHashMap<>();
 
@@ -64,12 +69,18 @@ public final class BossBarSystem extends TickingSystem<EntityStore> {
     private record Shown(World world, int networkId, PlayerRef player, String label) {
     }
 
-    private record Elite(int networkId, Vector3d position, String nameKey, String label) {
+    private record Elite(int networkId, Vector3d position, String nameKey, String label, boolean everywhere) {
     }
 
     /** Donne une barre de boss au rôle `role`. */
     public static void register(String role) {
         ELITES.add(role);
+    }
+
+    /** Donne au rôle `role` une barre toujours affichée, à tous les joueurs du monde. */
+    public static void everywhere(String role) {
+        ELITES.add(role);
+        EVERYWHERE.add(role);
     }
 
     /** Ajoute au nom de la barre du rôle `role` le texte rendu par `label` (null : rien) ; la barre est renvoyée quand il change. */
@@ -109,12 +120,21 @@ public final class BossBarSystem extends TickingSystem<EntityStore> {
             Elite nearest = null;
             if (transform != null) {
                 double best = RANGE * RANGE;
+                double nearestGlobal = Double.MAX_VALUE;
+                Elite global = null;
                 for (Elite elite : engaged) {
                     double distance = elite.position().distanceSquared(transform.getPosition());
                     if (distance <= best) {
                         best = distance;
                         nearest = elite;
                     }
+                    if (elite.everywhere() && distance < nearestGlobal) {
+                        nearestGlobal = distance;
+                        global = elite;
+                    }
+                }
+                if (nearest == null) {
+                    nearest = global;
                 }
             }
             show(player, world, nearest);
@@ -131,14 +151,15 @@ public final class BossBarSystem extends TickingSystem<EntityStore> {
             Ref<EntityStore> ref = chunk.getReferenceTo(i);
             NetworkId networkId = chunk.getComponent(i, NetworkId.getComponentType());
             TransformComponent transform = chunk.getComponent(i, TransformComponent.getComponentType());
+            boolean everywhere = EVERYWHERE.contains(role);
             if (networkId == null || transform == null || chunk.getComponent(i, DeathComponent.getComponentType()) != null
-                    || !isEngaged(ref, store, chunk.getComponent(i, EntityStatMap.getComponentType()))) {
+                    || (!everywhere && !isEngaged(ref, store, chunk.getComponent(i, EntityStatMap.getComponentType())))) {
                 continue;
             }
             String nameKey = npc.getRole() == null ? null : npc.getRole().getNameTranslationKey();
             Function<Ref<EntityStore>, String> labeler = LABELS.get(role);
             engaged.add(new Elite(networkId.getId(), new Vector3d(transform.getPosition()),
-                    nameKey != null ? nameKey : role, labeler == null ? null : labeler.apply(ref)));
+                    nameKey != null ? nameKey : role, labeler == null ? null : labeler.apply(ref), everywhere));
         }
     }
 

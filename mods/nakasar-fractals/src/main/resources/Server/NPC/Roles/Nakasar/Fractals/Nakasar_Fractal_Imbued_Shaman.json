@@ -1,5 +1,5 @@
 {
-  "$Comment": "Le Chamane imprégné (boss du Volcanique), barre de boss : coups, flèche enflammée (marque), piqué, souffle des ailes, tempête de feu. Les pieds brûlants, les puits de lave, les boucliers, les larves et le vol vers les villageois sont menés par le Java (volcanic.ImbuedShaman). Généré par tools/generate_volcanic.py.",
+  "$Comment": "Le Chamane imprégné (boss du Volcanique), barre de boss : coups, flèche enflammée (marque), piqué, souffle des ailes, tempête de feu. Les cratères de lave, les boucliers, les larves et le vol (lent) vers les villageois sont menés par le Java (volcanic.ImbuedShaman). Généré par tools/generate_volcanic.py.",
   "Type": "Generic",
   "Appearance": "Nakasar_Fractal_Imbued_Shaman",
   "NameTranslationKey": "nakasar_fractals_volcanic.npc.Imbued_Shaman.name",
@@ -13,7 +13,7 @@
   "MotionControllerList": [
     {
       "Type": "Walk",
-      "MaxWalkSpeed": 3.6,
+      "MaxWalkSpeed": 2.4,
       "Gravity": 10,
       "MaxFallSpeed": 10,
       "Acceleration": 10,
@@ -114,7 +114,7 @@
         {
           "Sensor": {
             "Type": "Player",
-            "Range": 22,
+            "Range": 26,
             "LockOnTarget": true,
             "Filters": [
               {
@@ -147,12 +147,12 @@
       },
       "Instructions": [
         {
-          "$Comment": "Cible perdue ou partie à plus de 30 blocs.",
+          "$Comment": "Cible perdue ou partie à plus de 40 blocs.",
           "Sensor": {
             "Type": "Not",
             "Sensor": {
               "Type": "Target",
-              "Range": 30,
+              "Range": 40,
               "Filters": [
                 {
                   "Type": "Attitude",

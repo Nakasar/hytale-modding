@@ -5,7 +5,6 @@ import com.hypixel.hytale.component.Store;
 import com.hypixel.hytale.math.vector.Rotation3f;
 import com.hypixel.hytale.server.core.Message;
 import com.hypixel.hytale.server.core.entity.Frozen;
-import com.hypixel.hytale.server.core.entity.movement.MovementStatesComponent;
 import com.hypixel.hytale.server.core.modules.entity.component.Invulnerable;
 import com.hypixel.hytale.server.core.modules.entity.teleport.Teleport;
 import com.hypixel.hytale.server.core.modules.entitystats.EntityStatMap;
@@ -13,7 +12,10 @@ import com.hypixel.hytale.server.core.modules.entitystats.EntityStatValue;
 import com.hypixel.hytale.server.core.modules.entitystats.asset.DefaultEntityStatTypes;
 import com.hypixel.hytale.server.core.universe.PlayerRef;
 import com.hypixel.hytale.server.core.universe.world.World;
+import com.hypixel.hytale.server.core.universe.world.storage.ChunkStore;
 import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
+import dev.nakasar.hytale.fractals.arena.WorldBlocks;
+import dev.nakasar.hytale.fractals.boss.PinnedHealth;
 import dev.nakasar.hytale.fractals.combat.BossStun;
 import dev.nakasar.hytale.fractals.combat.HitShield;
 import dev.nakasar.hytale.fractals.combat.Hurt;
@@ -23,59 +25,47 @@ import dev.nakasar.hytale.fractals.party.FractalRuns;
 import org.joml.Vector3d;
 
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
-import java.util.Map;
-import java.util.UUID;
-import java.util.concurrent.ThreadLocalRandom;
 
 /**
- * Le Chamane imprégné, boss du Volcanique. Son IA (JSON) frappe et lance la flèche enflammée, le piqué, le souffle des
- * ailes et la tempête de feu ; le Java mène l'arène :
+ * Le Chamane imprégné, boss du Volcanique, sur son île au milieu du lac de lave. Son IA (JSON) frappe et lance la
+ * flèche enflammée, le piqué, le souffle des ailes et la tempête de feu ; le Java mène l'arène :
  * <ul>
- *   <li>pieds brûlants : immobile plus de {@value #STILL_SECONDS} s, ou en l'air (saut), le sol brûle
- *   ({@value #FEET_PART} des PV max par seconde) ;</li>
- *   <li>puits de lave silencieux : toutes les {@value #PIT_INTERVAL} s, des bulles de feu au sol (pas de cercle rouge)
- *   qui brûlent au bout de {@value #PIT_ARM} s ({@value #PIT_PART} des PV max par seconde) ;</li>
+ *   <li>cratères : toutes les {@value #CRATER_INTERVAL} s, quelques petits cratères de l'île chauffent (leurs blocs
+ *   passent du brun volcanique à l'orange puis au jaune en {@value #HEAT_SECONDS} s), puis crachent de la lave active
+ *   {@value #LAVA_SECONDS} s : on y brûle très fort ({@link Volcanic#lavaFloor}) ; ils refroidissent ensuite ;</li>
  *   <li>flamme qui se propage : un joueur touché par la flèche brûle et allume ceux à moins de {@value #SPREAD_RANGE}
  *   blocs ;</li>
  *   <li>à 75, 50 et 25 % de vie : bouclier de {@value #SHIELD_HITS} coups (+10 par joueur de plus), larves de braise,
- *   et il plane vers un villageois ; s'il l'atteint, il s'en nourrit (+{@value #FEED_HEAL} de sa vie) ; bouclier brisé
- *   avant : étourdi {@value #STUN} s ;</li>
+ *   et il plane lentement vers un villageois : il met {@value #GLIDE_SECONDS} s (+{@value #GLIDE_PER_PLAYER} s par
+ *   joueur de plus) à l'atteindre, puis s'en nourrit (+{@value #FEED_HEAL} de sa vie) ; bouclier brisé avant : étourdi
+ *   {@value #STUN} s ;</li>
+ *   <li>sa vie ne remonte jamais d'elle-même ({@link PinnedHealth#noRegen}), seulement quand il se nourrit ;</li>
  *   <li>personne dans l'arène pendant {@value #RESET_SECONDS} s : tout repart de zéro.</li>
  * </ul>
  */
 final class ImbuedShaman {
 
-    static final String FEET = "Nakasar_Fractal_Burning_Feet";
     static final String SPREAD = "Nakasar_Fractal_Spreading_Flame";
-    static final float STILL_SECONDS = 1f;
-    static final float FEET_PART = 0.04f;
-    static final float PIT_INTERVAL = 10f;
-    static final float PIT_ARM = 2f;
-    static final float PIT_LIFE = 10f;
-    static final double PIT_RADIUS = 2;
-    static final float PIT_PART = 0.08f;
+    static final float CRATER_INTERVAL = 7f;
+    static final float HEAT_SECONDS = 3.5f;
+    static final float LAVA_SECONDS = 6f;
+    static final float COOL_SECONDS = 2f;
+    /** État « lave active » des cratères (index dans VolcanicLayout.CRATER_STAGES). */
+    private static final int LAVA = 4;
     static final double SPREAD_RANGE = 2.5;
     static final float SPREAD_PART = 0.03f;
     static final int SHIELD_HITS = 40;
-    static final double GLIDE_SPEED = 1.6;
+    static final float GLIDE_SECONDS = 24f;
+    static final float GLIDE_PER_PLAYER = 4f;
     static final double FEED_RANGE = 2;
     static final float FEED_HEAL = 0.25f;
     static final float STUN = 4f;
     static final int LARVAE = 3;
     static final float RESET_SECONDS = 20f;
     private static final float[] THRESHOLDS = {0.75f, 0.50f, 0.25f};
-
-    private static final class Pit {
-        final Vector3d at;
-        float age;
-
-        Pit(Vector3d at) {
-            this.at = at;
-        }
-    }
 
     private Ref<EntityStore> boss;
     volatile boolean down;
@@ -85,18 +75,23 @@ final class ImbuedShaman {
     private int threshold;
     private boolean shielded;
     private int gliding = -1;
+    private float glideClock;
+    private float glideSeconds;
+    private Vector3d glideFrom;
     private final Ref<EntityStore>[] villagers;
     private final boolean[] eaten;
-    private final Map<UUID, Float> still = new HashMap<>();
-    private final List<Pit> pits = new ArrayList<>();
     private final List<Ref<EntityStore>> larvae = new ArrayList<>();
-    private float pitClock;
+    /** Âge de chaque cratère depuis qu'il chauffe ; négatif : au repos. */
+    private final float[] craterAge = new float[VolcanicLayout.CRATERS.length];
+    private final int[] craterStage = new int[VolcanicLayout.CRATERS.length];
+    private float craterClock;
     private float tick;
 
     @SuppressWarnings("unchecked")
     ImbuedShaman() {
         villagers = new Ref[VolcanicLayout.VILLAGERS.length];
         eaten = new boolean[villagers.length];
+        Arrays.fill(craterAge, -1f);
     }
 
     static boolean inArena(Vector3d at) {
@@ -109,7 +104,7 @@ final class ImbuedShaman {
             return false;
         }
         if (down) {
-            return win(store);
+            return win(world, store);
         }
         keepVillagers(store);
         if (boss == null || !boss.isValid()) {
@@ -117,6 +112,7 @@ final class ImbuedShaman {
             if (boss == null) {
                 return false;
             }
+            PinnedHealth.noRegen(boss);
         }
         List<PlayerRef> inArena = Volcanic.inCylinder(store, players, VolcanicLayout.ARENA_CENTER, VolcanicLayout.ARENA_RADIUS, 10);
         if (inArena.isEmpty()) {
@@ -126,7 +122,8 @@ final class ImbuedShaman {
         idle = 0f;
         if (!engaged) {
             engaged = true;
-            pitClock = PIT_INTERVAL - 4f;
+            coolAll(world);
+            craterClock = CRATER_INTERVAL - 4f;
             Spawns.tellAll(world, Message.translation(Volcanic.MESSAGES + "shaman.enter"));
         }
         larvae.removeIf(ref -> !Spawns.alive(store, ref));
@@ -137,41 +134,15 @@ final class ImbuedShaman {
             glide(world, store, dt);
         }
         tick += dt;
-        boolean second = tick >= 0.5f;
-        if (second) {
-            float elapsed = tick;
+        if (tick >= 0.5f) {
+            spread(store, inArena, tick);
             tick = 0f;
-            feet(st, store, inArena, dt, elapsed);
-            spread(store, inArena, elapsed);
-        } else {
-            feet(st, store, inArena, dt, 0f);
         }
-        pits(world, store, inArena, dt, second);
+        craters(world, store, dt);
         return false;
     }
 
     // --- arène ---------------------------------------------------------------------------------------
-
-    /** Pieds brûlants : immobile au sol plus d'une seconde, ou en l'air. `tickSeconds` &gt; 0 : on applique les dégâts. */
-    private void feet(Volcanic.State st, Store<EntityStore> store, List<PlayerRef> players, float dt, float tickSeconds) {
-        for (PlayerRef player : players) {
-            Ref<EntityStore> ref = player.getReference();
-            MovementStatesComponent movement = store.getComponent(ref, MovementStatesComponent.getComponentType());
-            if (movement == null || movement.getMovementStates() == null) {
-                continue;
-            }
-            var states = movement.getMovementStates();
-            boolean airborne = states.jumping || !states.onGround;
-            float t = states.horizontalIdle && states.onGround ? still.getOrDefault(player.getUuid(), 0f) + dt : 0f;
-            still.put(player.getUuid(), t);
-            if (tickSeconds <= 0f || (t < STILL_SECONDS && !airborne)) {
-                continue;
-            }
-            Hurt.percent(store, ref, FEET_PART * tickSeconds, Volcanic.FIRE_CAUSE);
-            Hurt.effect(store, ref, FEET, 1f);
-            Volcanic.tell(st, player, "feet.burning");
-        }
-    }
 
     /** Flamme qui se propage : le porteur brûle et l'allume chez ses voisins. */
     private void spread(Store<EntityStore> store, List<PlayerRef> players, float seconds) {
@@ -202,41 +173,69 @@ final class ImbuedShaman {
         }
     }
 
-    /** Puits de lave silencieux : des bulles, puis la brûlure, aucun cercle rouge. */
-    private void pits(World world, Store<EntityStore> store, List<PlayerRef> players, float dt, boolean second) {
-        pitClock += dt;
-        if (pitClock >= PIT_INTERVAL) {
-            pitClock = 0f;
-            double[] c = VolcanicLayout.ARENA_CENTER;
-            ThreadLocalRandom random = ThreadLocalRandom.current();
-            int count = 3 + FractalRuns.partySize(world) / 2;
-            for (int k = 0; k < count; k++) {
-                double a = random.nextDouble(Math.PI * 2);
-                double r = random.nextDouble(2, VolcanicLayout.ARENA_RADIUS - 2);
-                pits.add(new Pit(new Vector3d(c[0] + Math.cos(a) * r, c[1], c[2] + Math.sin(a) * r)));
-            }
-        }
-        for (Iterator<Pit> it = pits.iterator(); it.hasNext(); ) {
-            Pit pit = it.next();
-            pit.age += dt;
-            if (pit.age >= PIT_LIFE) {
-                it.remove();
-                continue;
-            }
-            if (!second) {
-                continue;
-            }
-            boolean armed = pit.age >= PIT_ARM;
-            Telegraphs.particle(store, "Nakasar_Fractal_Lava_Pit", pit.at, armed ? 1.2f : 0.5f);
-            if (!armed) {
-                continue;
-            }
-            for (PlayerRef player : players) {
-                Vector3d at = Telegraphs.position(store, player.getReference());
-                if (at != null && Telegraphs.horizontal(at, pit.at) <= PIT_RADIUS && Math.abs(at.y() - pit.at.y()) <= 2) {
-                    Hurt.percent(store, player.getReference(), PIT_PART * 0.5f, Volcanic.FIRE_CAUSE);
+    /** Cratères : de nouveaux chauffent toutes les {@value #CRATER_INTERVAL} s ; chacun suit sa couleur puis sa lave. */
+    private void craters(World world, Store<EntityStore> store, float dt) {
+        float heat = HEAT_SECONDS * FractalRuns.windupFactor(world);
+        craterClock += dt;
+        if (craterClock >= CRATER_INTERVAL) {
+            craterClock = 0f;
+            List<Integer> idle = new ArrayList<>();
+            for (int i = 0; i < craterAge.length; i++) {
+                if (craterAge[i] < 0f) {
+                    idle.add(i);
                 }
             }
+            Collections.shuffle(idle);
+            int count = Math.min(idle.size(), 2 + FractalRuns.partySize(world) / 2);
+            for (int k = 0; k < count; k++) {
+                craterAge[idle.get(k)] = 0f;
+            }
+        }
+        for (int i = 0; i < craterAge.length; i++) {
+            if (craterAge[i] < 0f) {
+                continue;
+            }
+            craterAge[i] += dt;
+            float age = craterAge[i];
+            int stage;
+            if (age < heat) {
+                stage = 1 + Math.min(2, (int) (age / heat * 3));
+            } else if (age < heat + LAVA_SECONDS) {
+                stage = LAVA;
+            } else if (age < heat + LAVA_SECONDS + COOL_SECONDS) {
+                stage = 2;
+            } else {
+                stage = 0;
+                craterAge[i] = -1f;
+            }
+            if (stage != craterStage[i]) {
+                paint(world, i, stage);
+                Vector3d at = Spawns.point(VolcanicLayout.CRATERS[i]);
+                if (stage == LAVA) {
+                    Telegraphs.particle(store, "Nakasar_Fractal_Lava_Pit", at, 1.6f);
+                    Telegraphs.sound(store, "SFX_Goblin_Feastmaster_Slam", at);
+                } else if (stage > 0 && stage < LAVA) {
+                    Telegraphs.particle(store, "Nakasar_Fractal_Lava_Pit", at, 0.3f + 0.2f * stage);
+                }
+            }
+        }
+    }
+
+    /** Pose l'état `stage` (0 : froid … {@value #LAVA} : lave active) sur les cases du cratère `index`. */
+    private void paint(World world, int index, int stage) {
+        craterStage[index] = stage;
+        ChunkStore chunks = world.getChunkStore();
+        String block = VolcanicLayout.CRATER_STAGES[stage];
+        for (int[] cell : VolcanicLayout.CRATER_CELLS[index]) {
+            WorldBlocks.set(chunks, cell[0], cell[1], cell[2], block, 0);
+        }
+    }
+
+    /** Tous les cratères froids (début du combat, remise à zéro, victoire). */
+    private void coolAll(World world) {
+        for (int i = 0; i < craterAge.length; i++) {
+            craterAge[i] = -1f;
+            paint(world, i, 0);
         }
     }
 
@@ -274,6 +273,9 @@ final class ImbuedShaman {
                 }
             }
             gliding = nearestVillager(at);
+            glideClock = 0f;
+            glideSeconds = GLIDE_SECONDS + GLIDE_PER_PLAYER * (FractalRuns.partySize(world) - 1);
+            glideFrom = new Vector3d(at);
         }
         if (gliding >= 0) {
             BossStun.hold(world, store, boss);
@@ -297,21 +299,28 @@ final class ImbuedShaman {
         return best;
     }
 
-    /** Il plane vers le villageois visé ; arrivé, il s'en nourrit. */
+    /**
+     * Il plane lentement vers le villageois visé, en ligne droite depuis où il a levé son bouclier : il s'arrête à
+     * {@value #FEED_RANGE} blocs au bout du temps prévu et s'en nourrit. Le temps ne dépend pas de la distance : les
+     * joueurs ont toujours de quoi briser le bouclier.
+     */
     private void glide(World world, Store<EntityStore> store, float dt) {
         Vector3d at = Telegraphs.position(store, boss);
-        if (at == null) {
+        if (at == null || glideFrom == null) {
             return;
         }
-        Vector3d goal = Spawns.point(VolcanicLayout.VILLAGERS[gliding]);
-        Vector3d way = new Vector3d(goal).sub(at);
-        way.y = 0;
-        double distance = way.length();
-        if (distance <= FEED_RANGE) {
+        glideClock += dt;
+        if (glideClock >= glideSeconds) {
             feed(world, store, gliding);
             return;
         }
-        Vector3d next = new Vector3d(at).add(way.mul(Math.min(distance, GLIDE_SPEED * dt) / distance));
+        Vector3d goal = Spawns.point(VolcanicLayout.VILLAGERS[gliding]);
+        Vector3d way = new Vector3d(goal).sub(glideFrom);
+        way.y = 0;
+        double length = way.length();
+        double reach = Math.max(0, length - FEED_RANGE) * glideClock / glideSeconds;
+        Vector3d next = length < 1e-3 ? new Vector3d(glideFrom) : new Vector3d(glideFrom).add(way.mul(reach / length));
+        next.y = at.y();
         store.putComponent(boss, Teleport.getComponentType(),
                 new Teleport(next, new Rotation3f(0f, Telegraphs.yawToward(at, goal), 0f)));
         Telegraphs.particle(store, "Nakasar_Fractal_Shaman_Glide", next, 1f);
@@ -326,7 +335,7 @@ final class ImbuedShaman {
         EntityStatMap stats = store.getComponent(boss, EntityStatMap.getComponentType());
         EntityStatValue health = stats == null ? null : stats.get(DefaultEntityStatTypes.getHealth());
         if (health != null) {
-            stats.setStatValue(DefaultEntityStatTypes.getHealth(), Math.min(health.getMax(), health.get() + health.getMax() * FEED_HEAL));
+            PinnedHealth.heal(store, boss, Math.min(health.getMax(), health.get() + health.getMax() * FEED_HEAL));
         }
         HitShield.drop(boss);
         endPhase(store);
@@ -347,6 +356,7 @@ final class ImbuedShaman {
     private void endPhase(Store<EntityStore> store) {
         shielded = false;
         gliding = -1;
+        glideFrom = null;
         threshold++;
         BossStun.release(store, boss);
     }
@@ -366,10 +376,12 @@ final class ImbuedShaman {
         threshold = 0;
         shielded = false;
         gliding = -1;
-        pits.clear();
+        glideFrom = null;
+        coolAll(world);
         Spawns.removeAll(store, larvae);
         if (boss != null) {
             HitShield.drop(boss);
+            PinnedHealth.unpin(boss);
         }
         Spawns.remove(store, boss);
         boss = null;
@@ -379,9 +391,9 @@ final class ImbuedShaman {
         Spawns.tellAll(world, Message.translation(Volcanic.MESSAGES + "shaman.reset"));
     }
 
-    private boolean win(Store<EntityStore> store) {
+    private boolean win(World world, Store<EntityStore> store) {
         victory = true;
-        pits.clear();
+        coolAll(world);
         Spawns.removeAll(store, larvae);
         if (boss != null) {
             HitShield.drop(boss);

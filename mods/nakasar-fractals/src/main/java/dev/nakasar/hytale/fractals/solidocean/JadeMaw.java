@@ -12,6 +12,7 @@ import com.hypixel.hytale.server.core.modules.entitystats.asset.DefaultEntitySta
 import com.hypixel.hytale.server.core.universe.PlayerRef;
 import com.hypixel.hytale.server.core.universe.world.World;
 import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
+import dev.nakasar.hytale.fractals.arena.CrouchPickup;
 import dev.nakasar.hytale.fractals.boss.PinnedHealth;
 import dev.nakasar.hytale.fractals.combat.Hurt;
 import dev.nakasar.hytale.fractals.combat.Spawns;
@@ -544,9 +545,7 @@ final class JadeMaw {
             Hurt.clear(store, p.getReference(), TARGETED);
         }
         charged.clear();
-        for (Ref<EntityStore> crystal : List.copyOf(CrystalHold.onGround(world))) {
-            Spawns.remove(store, crystal);
-        }
+        CrouchPickup.removeGround(world, store, SolidOcean.CRYSTAL);
     }
 
     private boolean win(World world, Store<EntityStore> store, List<PlayerRef> players) {
