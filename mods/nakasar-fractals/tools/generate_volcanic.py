@@ -17,7 +17,7 @@ Le déroulé de GW2, dans l'ordre :
    tronçon ; au bout, une descente jusqu'au lac ;
 5. le Chamane imprégné, sur une île au milieu du lac (on la voit du bord de la falaise du Champion) : petits cratères
    qui rougissent puis crachent de la lave, flèche enflammée qui se propage, piqué, souffle des ailes, tempête de feu ;
-   à chaque quart de sa vie, un bouclier de 40 coups, des larves de braise, et il plane lentement vers un villageois
+   à chaque quart de sa vie, un bouclier de 50 coups, des larves de braise, et il plane lentement vers un villageois
    pour s'en nourrir.
 
 Le générateur écrit les prefabs (tronçons de 64 blocs), l'instance `Nakasar_Fractal_Volcanic`, la pierre imprégnée

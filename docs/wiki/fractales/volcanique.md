@@ -30,4 +30,4 @@ Un rituel grawl au cœur d'un volcan : groupes de grawls sous les chutes de pier
 - **Cratères** : de petits cratères de l'île rougissent peu à peu, du brun au jaune, puis crachent de la **lave active** qui brûle très fort. Écartez-vous dès qu'ils changent de couleur.
 - **Lac de lave** : on y brûle aussi ; ne quittez pas l'île.
 - **Flamme qui se propage** : un joueur touché allume ses voisins.
-- À **75, 50 et 25 %**, il plane lentement vers un villageois sous un **bouclier à compteur de coups** : le briser l'étourdit ; s'il atteint le villageois, il se soigne de 25 %.
+- À **75, 50 et 25 %**, il plane lentement vers un villageois sous un **bouclier de 50 coups** (quel que soit le nombre de joueurs) : le briser l'étourdit ; s'il atteint le villageois, il se soigne de 25 %.
