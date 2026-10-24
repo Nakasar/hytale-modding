@@ -20,6 +20,8 @@ Un rituel grawl au cœur d'un volcan : groupes de grawls sous les chutes de pier
 
 - Il porte **8 piles** qui réduisent les dégâts qu'il subit. Chaque **pierre imprégnée** lancée sur lui (clic droit vers lui) en retire une ; les pierres tombent des chutes de pierres.
 - Une pierre au sol se ramasse **accroupi**, une seule à la fois ; tant qu'on la tient, on ne peut pas changer d'objet en main.
+- Les vétérans et les pierres n'apparaissent que tant qu'il est protégé. Sa dernière pile retirée, les pierres disparaissent : frappez-le avec vos armes.
+- À **50 %** de vie, il refait une phase de protection complète (8 piles), et les vétérans repartent.
 - Il ne récupère pas de vie tout seul : chaque coup compte, même pendant qu'on attend les pierres.
 - Des **vétérans** sortent des grottes du sud et marchent lentement vers les **3 captifs** du bord nord : interceptez-les. Si tous survivent, **5 éclats de Brume** en plus.
 

@@ -303,7 +303,7 @@ public final class Volcanic implements FractalStage {
                         Hurt.effect(s, ref, "Hazard_Electric_Stun", 2f);
                     }
                 }
-                if (drop && st.step == Step.CHAMPION) {   // pas de pierre tombée après la victoire
+                if (drop && st.step == Step.CHAMPION && st.champion.shielded()) {   // seulement Champion protégé
                     dropStone(s, center);
                     long now = System.nanoTime();
                     if (now - st.stoneMessage > Telegraphs.seconds(10f)) {
