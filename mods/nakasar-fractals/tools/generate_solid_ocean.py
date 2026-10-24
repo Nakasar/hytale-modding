@@ -624,9 +624,9 @@ def interactions():
     T = fr.telegraph
     out = {}
     out["Nakasar_Fractal_Tentacle_Sweep"] = {
-        "$Comment": "Tentacule : balayage annoncé, cône de 160° et 7 blocs (1,4 s), 22 dégâts et forte projection "
-                    "(renversement de GW2).",
-        "Type": "Serial", "Interactions": [CI, RF, T("Cone", 1.4, Angle=160, Radius=7, Damage=22, Knockback=10, KnockUp=4,
+        "$Comment": "Tentacule : balayage annoncé tout autour de lui, cercle de 7 blocs (1,4 s), 22 dégâts et forte "
+                    "projection (renversement de GW2).",
+        "Type": "Serial", "Interactions": [CI, RF, T("Circle", 1.4, Radius=7, Damage=22, Knockback=10, KnockUp=4,
                                                      PlayersOnly=True, ImpactParticle="Nakasar_Fractal_Tentacle_Emerge",
                                                      ImpactSound="SFX_Goblin_Feastmaster_Slam"),
                                            fc.windup(1.4, "SFX_Spear_Throw_Charge", TENTACLE_ANIMS, "Sweep"),
@@ -695,7 +695,7 @@ def roles():
         DeathAnimationTime=1.0)
     out[TENTACLE] = tentacle
     out[COLOSSUS] = fr.role(
-        COLOSSUS, "Colosse de jade : en phase 2, un sort du jade toutes les 30 s (20 en tout), insensible aux attaques à "
+        COLOSSUS, "Colosse de jade : en phase 2, un sort du jade toutes les 30 s (10 en tout), insensible aux attaques à "
         "distance (Java), frappe le sol (cercle annoncé, renverse) et enchaîne le combo du golem vanilla au contact ; il lâche un cristal "
         "réfléchissant (Java).", COLOSSUS, n(COLOSSUS), 700,
         [fr.timed_attack("Slam", R("Colossus_Slam"), rng=5, los=True, comment="Frappe au sol annoncée."),

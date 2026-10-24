@@ -36,7 +36,8 @@ import java.util.concurrent.ConcurrentHashMap;
  * <ul>
  *   <li>phase 1 : un test d'agonie à l'arrivée, deux tentacules devant lui ; tant qu'ils vivent, ni rayon ni
  *   colosse ;</li>
- *   <li>phase 2 : huit tentacules percent le jade (ils ne repoussent pas, un cristal chacun), un colosse sort toutes les
+ *   <li>phase 2 : huit tentacules percent le jade (ils ne repoussent pas, un cristal chacun), un cristal posé près de chacun et
+ *   le rayon aussitôt, un colosse sort toutes les
  *   {@value #COLOSSUS_EVERY} s ({@value #COLOSSUS_POOL} en tout, {@value #MAX_COLOSSI} en vie au plus, insensibles aux
  *   attaques à distance, un cristal chacun), le rayon toutes les {@value #BEAM_P2} s ;</li>
  *   <li>phase 3, quand le dernier colosse est tombé : retour à huit tentacules, chacun repousse
@@ -54,15 +55,15 @@ final class JadeMaw {
     static final float SAME_HIT = 0.5f;
     static final float BEAM_P2 = 40f;
     static final float BEAM_P3 = 30f;
-    /** Premier rayon de la phase 2 : le temps d'abattre un colosse et de ramasser son cristal. */
-    static final float FIRST_BEAM = 35f;
+    /** Cristal posé près de chacun des huit tentacules au début de la phase 2, à ce nombre de blocs vers le centre. */
+    static final double FIRST_CRYSTAL_OFFSET = 2.0;
     static final float TARGET_SECONDS = 6f;
     static final float LAST_BEAM_AT = 0.08f;
     static final float LAST_TARGET_SECONDS = 7f;
     static final float RESET_SECONDS = 20f;
     static final float TENTACLE_RESPAWN = 30f;
     static final float COLOSSUS_EVERY = 30f;
-    static final int COLOSSUS_POOL = 20;
+    static final int COLOSSUS_POOL = 10;
     static final int MAX_COLOSSI = 3;
     /** Plancher de vie des deux premières phases : la fin et son dernier rayon arrivent toujours. */
     static final float PHASE_FLOOR = 0.4f;
@@ -247,14 +248,26 @@ final class JadeMaw {
         showLabel();
     }
 
-    /** Les deux premiers tentacules sont tombés : huit tentacules, les colosses et le rayon. */
+    /**
+     * Les deux premiers tentacules sont tombés : huit tentacules, chacun avec un cristal à côté de lui, les colosses, et
+     * le premier rayon aussitôt.
+     */
     private void awaken(World world, Store<EntityStore> store) {
         phase = 2;
         colossiDown = 0;
         colossiSpawned = 0;
         colossusClock = COLOSSUS_EVERY - 5f;
-        beamClock = BEAM_P2 - FIRST_BEAM;
+        beamClock = BEAM_P2;
         fillTentacles(world, store);
+        Vector3d center = Spawns.point(SolidOceanLayout.ARENA_CENTER);
+        for (double[] point : SolidOceanLayout.TENTACLES) {
+            Vector3d at = Spawns.point(point);
+            Vector3d toward = new Vector3d(center.x() - at.x(), 0, center.z() - at.z());
+            if (toward.lengthSquared() > 1e-6) {
+                at.add(toward.normalize().mul(FIRST_CRYSTAL_OFFSET));
+            }
+            SolidOcean.dropCrystal(store, at);
+        }
         Spawns.tellAll(world, Message.translation(SolidOcean.MESSAGES + "phase.colossi").param("count", COLOSSUS_POOL));
         showLabel();
     }

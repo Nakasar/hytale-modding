@@ -1,5 +1,5 @@
 {
-  "$Comment": "Tentacule : balayage annoncé, cône de 160° et 7 blocs (1,4 s), 22 dégâts et forte projection (renversement de GW2).",
+  "$Comment": "Tentacule : balayage annoncé tout autour de lui, cercle de 7 blocs (1,4 s), 22 dégâts et forte projection (renversement de GW2).",
   "Type": "Serial",
   "Interactions": [
     {
@@ -13,9 +13,8 @@
     },
     {
       "Type": "Nakasar_Fractal_Telegraph",
-      "Shape": "Cone",
+      "Shape": "Circle",
       "Seconds": 1.4,
-      "Angle": 160,
       "Radius": 7,
       "Damage": 22,
       "Knockback": 10,
