@@ -78,7 +78,7 @@ public final class Hammer {
                 InventoryComponent.getCombined(store, ref, InventoryComponent.HOTBAR_STORAGE_BACKPACK), new ItemStack(ID, 1));
     }
 
-    /** Fait tomber un marteau au sol en `at` ; il se ramasse avec la touche d'interaction ({@link HammerDropSystem}). */
+    /** Fait tomber un marteau au sol en `at` ; on le ramasse en s'accroupissant tout près ({@link HammerPickupSystem}). */
     public static void drop(Store<EntityStore> store, Vector3d at) {
         Holder<EntityStore> holder = ItemComponent.generateItemDrop(store, new ItemStack(ID, 1), new Vector3d(at).add(0, 0.5, 0),
                 new Rotation3f(), 0f, 2f, 0f);
