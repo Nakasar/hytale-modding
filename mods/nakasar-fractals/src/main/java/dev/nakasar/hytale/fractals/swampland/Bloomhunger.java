@@ -44,8 +44,9 @@ import java.util.concurrent.ThreadLocalRandom;
  *   (poison à moins de {@value #BLOOM_RADIUS} blocs, et les ennemis proches ne prennent que {@value #BLOOM_SHIELD}
  *   des dégâts) ;</li>
  *   <li>à 25 % : il se charge au centre ({@value #CHARGE_SECONDS} s) ; quatre feux-follets apparaissent aux coins.
- *   Les quatre failles allumées à temps : grand cercle vert de {@value #BIG_RADIUS} blocs au centre et Carnasse
- *   étourdi {@value #BIG_STUN} s ; sinon purge corporelle ({@value #PURGE_PART} des PV, tous dès le niveau 76).</li>
+ *   Les quatre failles allumées à temps : Carnasse étourdi {@value #BIG_STUN} s ; sinon purge corporelle
+ *   ({@value #PURGE_PART} des PV, tous dès le niveau 76). Dans les deux cas, ensuite, plus de cercle : il est
+ *   vulnérable dans toute la clairière (Kevin, 2026-10-24).</li>
  * </ul>
  * Sa vie ne descend pas sous le seuil suivant tant que l'étape qui y attend n'est pas passée. Personne de vivant dans
  * la clairière pendant {@value #RESET_SECONDS} s : tout recommence (le feu-follet de l'entrée revient).
@@ -57,8 +58,6 @@ final class Bloomhunger {
     static final double CIRCLE_MAX = 7;
     static final double CIRCLE_MIN = 3;
     static final float CIRCLE_SECONDS = 25f;
-    static final double BIG_RADIUS = 8;
-    static final float BIG_SECONDS = 12f;
     static final float BIG_STUN = 6f;
     static final float CHARGE_SECONDS = 35f;
     static final float PURGE_PART = 0.6f;
@@ -74,7 +73,9 @@ final class Bloomhunger {
     static final float RESET_SECONDS = 20f;
     static final float[] THRESHOLDS = {0.75f, 0.5f, 0.25f};
     static final String VIGOR = "Nakasar_Fractal_Wisp_Vigor";
-    static final String GREEN_ZONE = "Nakasar_Fractal_Green_Zone";
+    /** Émanations vertes qui montent du sol dans le cercle (plus de disque vert au sol, jugé laid). */
+    static final String EMANATION = "Nakasar_Fractal_Green_Emanation";
+    static final double EMANATIONS_PER_BLOCK = 0.3;
 
     private Ref<EntityStore> boss;
     private final List<Ref<EntityStore>> spirits = new ArrayList<>();
@@ -94,7 +95,8 @@ final class Bloomhunger {
     private int lit;
     private int cleft;
     private float circleClock;
-    private float bigLeft;
+    /** Après les quatre feux-follets : plus de cercle, vulnérable partout. */
+    private boolean everywhere;
     private float drawClock;
     private float pulseClock;
     private float idle;
@@ -130,7 +132,7 @@ final class Bloomhunger {
         charging = false;
         cleft = cleftIndex;
         circleClock = 0f;
-        bigLeft = 0f;
+        everywhere = false;
         idle = 0f;
         Spawns.tellAll(world, Message.translation(Swampland.MESSAGES + "bloom.enter"));
     }
@@ -138,33 +140,26 @@ final class Bloomhunger {
     // --- le cercle vert ------------------------------------------------------------------------------------
 
     private Vector3d circleCenter() {
-        if (bigLeft > 0f) {
-            return Spawns.point(SwamplandLayout.CLEARING);
-        }
         int[] c = SwamplandLayout.CLEARING_CLEFTS[cleft];
         return new Vector3d(c[0] + 0.5, c[1], c[2] + 0.5);
     }
 
     private double circleRadius() {
-        if (bigLeft > 0f) {
-            return BIG_RADIUS;
-        }
         return CIRCLE_MAX - (CIRCLE_MAX - CIRCLE_MIN) * Math.min(1f, circleClock / CIRCLE_SECONDS);
     }
 
     private boolean inCircle(Vector3d p) {
-        return p != null && Telegraphs.horizontal(p, circleCenter()) <= circleRadius() + 0.5;
+        return p != null && (everywhere || Telegraphs.horizontal(p, circleCenter()) <= circleRadius() + 0.5);
     }
 
     private void circle(Store<EntityStore> store, List<PlayerRef> inside, float dt) {
-        if (bigLeft > 0f) {
-            bigLeft -= dt;
-        } else {
-            circleClock += dt;
-            if (circleClock >= CIRCLE_SECONDS) {
-                circleClock = 0f;
-                cleft = (cleft + 1) % SwamplandLayout.CLEARING_CLEFTS.length;
-            }
+        if (everywhere) {
+            return;
+        }
+        circleClock += dt;
+        if (circleClock >= CIRCLE_SECONDS) {
+            circleClock = 0f;
+            cleft = (cleft + 1) % SwamplandLayout.CLEARING_CLEFTS.length;
         }
         Vector3d center = circleCenter();
         double radius = circleRadius();
@@ -172,8 +167,15 @@ final class Bloomhunger {
         boolean draw = drawClock >= 0.5f;
         if (draw) {
             drawClock = 0f;
-            // Disque et contour verts comme les zones rouges (bien lisibles), lueurs qui montent du bord.
-            Telegraphs.particle(store, GREEN_ZONE, new Vector3d(center).add(0, 0.1, 0), (float) (Telegraphs.WARNING_SCALE * radius));
+            // Contour de lueurs vertes et émanations qui montent du sol, semées dans tout le cercle.
+            ThreadLocalRandom random = ThreadLocalRandom.current();
+            int puffs = (int) Math.ceil(EMANATIONS_PER_BLOCK * radius * radius);
+            for (int i = 0; i < puffs; i++) {
+                double a = random.nextDouble(0, Math.PI * 2);
+                double d = radius * Math.sqrt(random.nextDouble());
+                Telegraphs.particle(store, EMANATION,
+                        new Vector3d(center.x() + Math.cos(a) * d, center.y() + 0.1, center.z() + Math.sin(a) * d), 1f);
+            }
             int n = (int) Math.ceil(Math.PI * 2 * radius / 1.0);
             for (int i = 0; i < n; i++) {
                 double a = Math.PI * 2 * i / n;
@@ -449,7 +451,6 @@ final class Bloomhunger {
         }
         if (lit >= SwamplandLayout.CLEARING_CLEFTS.length) {
             endCharge(world, store);
-            bigLeft = BIG_SECONDS;
             BossStun.stun(world, store, boss, BIG_STUN, BossStun.EFFECT);
             Spawns.tellAll(world, Message.translation(Swampland.MESSAGES + "bloom.wisps.done"));
             return;
@@ -468,6 +469,7 @@ final class Bloomhunger {
 
     private void endCharge(World world, Store<EntityStore> store) {
         charging = false;
+        everywhere = true;
         stage++;
         comeBack(store);
         clearCorners(world.getChunkStore());
@@ -505,7 +507,7 @@ final class Bloomhunger {
         blooms.clear();
         onslaught = false;
         charging = false;
-        bigLeft = 0f;
+        everywhere = false;
         idle = 0f;
         clearCorners(world.getChunkStore());
         takeWisps(world, store);

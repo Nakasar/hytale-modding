@@ -13,7 +13,7 @@ Une course chronométrée aux feux-follets à travers un marais piégé, une emb
 Rapportez **trois feux-follets** dans leurs failles avant la fin du minuteur : **64 s**, **38 s** dès le niveau 26, **30 s** dès le niveau 51.
 
 - Chaque feu-follet attend sur une **souche** : on repère de loin où le prendre.
-- Des **murs** surgissent au premier feu-follet pris.
+- Des **murs de racines** de deux blocs surgissent au premier feu-follet pris : on ne peut pas sauter par-dessus, il faut les contourner.
 - Pièges : **fils tendus** (estropié), **pièges à loup** (immobile), **plaques à piques**, **œufs d'araignée**.
 - Deux **fusils revigorants** donnent la **rapidité**.
 - Raté : tout s'éteint et les feux-follets changent de place.
@@ -28,7 +28,7 @@ Il surgit quand vous entrez dans la salle de l'embuscade, qui se referme derriè
 
 ## Carnasse
 
-Carnasse et ses esprits ne sont vulnérables que **dans le cercle vert** (disque vert au sol, comme les zones rouges), qui rétrécit de 7 à 3 blocs en 25 s puis saute à la faille suivante. Dans le cercle, l'endurance revient vite. Carnasse ne regagne jamais de vie.
+Carnasse et ses esprits ne sont vulnérables que **dans le cercle vert** (bordé de lueurs vertes, des émanations vertes montent du sol), qui rétrécit de 7 à 3 blocs en 25 s puis saute à la faille suivante. Dans le cercle, l'endurance revient vite. Carnasse ne regagne jamais de vie.
 
 - **Assauts à 75 et 50 %** : il se retire au centre, invulnérable (ses attaques en cours s'arrêtent net) ; abattez des **esprits animaux** spectraux, loups, renards et ours (4, +2 par joueur) dans le cercle, sous une pluie de poison. Ensuite poussent **3 fleurs de poison** (les ennemis proches d'une fleur ne prennent que 67 % des dégâts).
-- **À 25 %** : il se charge **35 s** ; quatre feux-follets apparaissent aux coins. Les quatre failles allumées à temps : grand cercle vert au centre et Carnasse étourdi 6 s. Sinon, **purge corporelle** (60 % des PV, mortelle dès le niveau 76).
+- **À 25 %** : il se charge **35 s** ; quatre feux-follets apparaissent aux coins. Les quatre failles allumées à temps : Carnasse étourdi 6 s. Sinon, **purge corporelle** (60 % des PV, mortelle dès le niveau 76). Dans les deux cas, ensuite, plus de cercle : il est **vulnérable dans toute la clairière**.

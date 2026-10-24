@@ -6,8 +6,8 @@
 Le déroulé de GW2 (wiki.guildwars2.com/wiki/Swampland_Fractal), dans l'ordre :
 
 1. les feux-follets : ramener trois feux-follets dans leurs failles avant la fin du minuteur, lancé au premier
-   ramassé (1 min 04 en Initié, 38 s en Adepte, 30 s au-delà). Dès qu'un feu-follet est pris, des murs surgissent
-   entre les arbres : il faut sauter par-dessus ou contourner. Pièges au sol : fils tendus (renversent et estropient),
+   ramassé (1 min 04 en Initié, 38 s en Adepte, 30 s au-delà). Dès qu'un feu-follet est pris, des murs de racines
+   de deux blocs surgissent entre les arbres : impossible de sauter par-dessus, il faut contourner. Pièges au sol : fils tendus (renversent et estropient),
    pièges à loup, plaques à piques (dangereuses quand elles rougissent), œufs d'araignée. Des fusils revigorants près
    des failles accélèrent les alliés et ralentissent les ennemis. Raté : tout se remet en place, les feux-follets
    changent de place ;
@@ -344,6 +344,10 @@ PARTICLE_SYSTEMS = {
     "Nakasar_Fractal_Wisp_Ring": ("Cercle vert de Carnasse : lueurs vertes posées au sol (zone favorable).",
                                   [("Ring", S("#d0ffe0", "#30e070", 6, (0.6, 1.2), (80, 90), 0.2, 0.9,
                                               life=(0.6, 0.9), size=(0.35, 0.55)), 0.1)]),
+    "Nakasar_Fractal_Green_Emanation": ("Cercle vert de Carnasse : émanations vertes qui montent du sol, semées dans "
+                                        "tout le cercle (Java).",
+                                        [("Rise", S("#e0ffe8", "#40e080", 4, (0.6, 1.4), (75, 90), 0.4, 1.4,
+                                                    life=(1.0, 1.6), size=(0.25, 0.45)), 0.1)]),
     "Nakasar_Fractal_Wall_Rise": ("Un mur surgit entre les arbres : terre et racines.",
                                   [("Dirt", S("#a08060", "#3a2a18", 10, (1.0, 2.5), (40, 90), 0.8, 0.4,
                                               life=(0.4, 0.7), blend="BlendLinear"), 0.2)]),
@@ -640,7 +644,8 @@ def lang():
         "intro": ("Marais : ramenez les trois feux-follets dans leurs failles, au nord. Le minuteur part au premier pris : "
                   "{seconds} s.", "Swampland: bring the three wisps back to their clefts, to the north. The timer starts "
                   "with the first one: {seconds} s."),
-        "wisp.taken": ("Feu-follet pris : des murs surgissent entre les arbres !", "Wisp taken: walls rise between the trees!"),
+        "wisp.taken": ("Feu-follet pris : des murs de racines surgissent entre les arbres, contournez-les !",
+                       "Wisp taken: root walls rise between the trees, go around them!"),
         "wisp.full": ("Vous portez déjà un feu-follet.", "You already carry a wisp."),
         "wisp.none": ("Il vous faut un feu-follet pour cette faille.", "You need a wisp for this cleft."),
         "cleft.lit": ("Un feu-follet rejoint sa faille ({count}/{total}).", "A wisp reaches its cleft ({count}/{total})."),
@@ -673,9 +678,10 @@ def lang():
                        "Bloomhunger returns to the fight; poison blooms grow in the clearing."),
         "bloom.wisps": ("Carnasse se charge ! Rapportez les quatre feux-follets des coins avant la fin de sa charge ({seconds} s) !",
                         "Bloomhunger is charging! Bring the four corner wisps back before his charge ends ({seconds} s)!"),
-        "bloom.wisps.done": ("Les quatre failles brillent : Carnasse est étourdi dans un grand cercle vert !",
-                             "The four clefts shine: Bloomhunger is stunned in a large green circle!"),
-        "bloom.purge": ("Purge corporelle !", "Corporeal purge!"),
+        "bloom.wisps.done": ("Les quatre failles brillent : Carnasse est étourdi, et vulnérable dans toute la clairière !",
+                             "The four clefts shine: Bloomhunger is stunned, and vulnerable all over the clearing!"),
+        "bloom.purge": ("Purge corporelle ! Carnasse est maintenant vulnérable dans toute la clairière.",
+                        "Corporeal purge! Bloomhunger is now vulnerable all over the clearing."),
         "bloom.reset": ("Carnasse se rendort ; les failles s'éteignent.", "Bloomhunger falls asleep; the clefts go dark."),
         "bloom.victory": ("Carnasse se dessèche : le marais est purifié.", "Bloomhunger withers: the swamp is cleansed."),
         "title.victory": ("Marais terminé", "Swampland complete"),

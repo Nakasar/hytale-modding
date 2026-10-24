@@ -126,11 +126,13 @@ final class WispRun {
         ChunkStore chunks = world.getChunkStore();
         for (int[] w : SwamplandLayout.WALLS) {
             for (int x = w[0]; x <= w[1]; x++) {
-                String here = WorldBlocks.name(chunks, x, w[2], w[3]);
-                if (up && !WorldBlocks.solid(chunks, x, w[2], w[3])) {
-                    WorldBlocks.set(chunks, x, w[2], w[3], Swampland.WALL, 0);
-                } else if (!up && Swampland.WALL.equals(here)) {
-                    WorldBlocks.clear(chunks, x, w[2], w[3]);
+                for (int y = w[2]; y < w[2] + Swampland.WALL_HEIGHT; y++) {
+                    String here = WorldBlocks.name(chunks, x, y, w[3]);
+                    if (up && !WorldBlocks.solid(chunks, x, y, w[3])) {
+                        WorldBlocks.set(chunks, x, y, w[3], Swampland.WALL, 0);
+                    } else if (!up && Swampland.WALL.equals(here)) {
+                        WorldBlocks.clear(chunks, x, y, w[3]);
+                    }
                 }
             }
             if (up) {
