@@ -87,7 +87,14 @@ final class Archdiviner {
     private float wallClock;
     private float hammerClock;
     private float buffClock;
+    /** Vie la plus basse atteinte : le boss ne se régénère jamais tout seul (-1 tant qu'elle n'est pas lue). */
+    private float lowest = -1f;
     private final List<Ref<EntityStore>> adds = new ArrayList<>();
+
+    /** Renforts en vie (incantateurs des transitions, dévoreurs). */
+    List<Ref<EntityStore>> adds() {
+        return adds;
+    }
 
     // --- pas de jeu ------------------------------------------------------------------------------
 
@@ -101,6 +108,7 @@ final class Archdiviner {
                 return;
             }
         }
+        keepHealth(store);
         adds.removeIf(a -> !Cliffside.alive(store, a));
         List<PlayerRef> inArena = new ArrayList<>();
         for (PlayerRef player : players) {
@@ -174,6 +182,23 @@ final class Archdiviner {
         wall = wallNow;
     }
 
+    /**
+     * Pas de régénération naturelle (hors combat, pendant qu'on frappe le sceau du cou…) : la vie ne remonte jamais
+     * au-dessus du plus bas atteint. Seul le retour à zéro ({@link #reset}) la rend pleine, avec un nouveau boss.
+     */
+    private void keepHealth(Store<EntityStore> store) {
+        EntityStatMap stats = store.getComponent(ref, EntityStatMap.getComponentType());
+        EntityStatValue health = stats == null ? null : stats.get(DefaultEntityStatTypes.getHealth());
+        if (health == null) {
+            return;
+        }
+        if (lowest < 0f || health.get() < lowest) {
+            lowest = health.get();
+        } else if (health.get() > lowest) {
+            stats.setStatValue(DefaultEntityStatTypes.getHealth(), lowest);
+        }
+    }
+
     /** Personne dans l'arène : au bout de {@value #RESET_SECONDS} s, le combat repart de zéro. */
     void idle(World world, Store<EntityStore> store, Cliffside.State st, float dt) {
         if (!engaged || victory) {
@@ -208,6 +233,7 @@ final class Archdiviner {
         double[] c = CliffsideLayout.ARENA_CENTER;
         Vector3d where = new Vector3d(at[0], at[1], at[2]);
         ref = Cliffside.spawn(store, ROLE, where, Telegraphs.yawToward(where, new Vector3d(c[0], c[1], c[2])));
+        lowest = -1f;
         if (ref != null) {
             float scale = GroupHealth.multiplier(FractalRuns.partySize(world)) * (1f + FractalRuns.level(world) / 100f);
             GroupHealth.apply(store.getComponent(ref, EntityStatMap.getComponentType()), SCALE_MODIFIER, scale);

@@ -420,9 +420,10 @@ def gargoyle():
     return p, None
 
 
-def lever():
-    """Levier massif : deux joues de pierre, axe de fer, long bras incliné à pommeau de laiton."""
-    arm_rot = (30, 0, 0)
+def lever(pulled=False):
+    """Levier massif : deux joues de pierre, axe de fer, long bras incliné à pommeau de laiton. Tiré : bras rabattu
+    de l'autre côté, pommeau de fer terni (le piège est coupé, on le voit de loin)."""
+    arm_rot = (-60, 0, 0) if pulled else (30, 0, 0)
     axle = (0, 9, 0)
     p = [
         part("Plinth", (0, 1.5, 0), (20, 3, 18), fb.stone(fb.shade(CLIFF_STONE, 0.9), (6, 3))),
@@ -430,7 +431,8 @@ def lever():
         part("Cheek_R", (5.5, 7, 0), (4, 8, 10), fb.smooth_stone(CLIFF_STONE)),
         part("Axle", axle, (14, 2, 2), fb.metal(IRON_DARK, False)),
         part("Arm", fb.tilt(axle, arm_rot, (0, 9, 0)), (2.5, 18, 2.5), fb.metal(IRON, False), rot=arm_rot),
-        part("Knob", fb.tilt(axle, arm_rot, (0, 19, 0)), (5, 5, 5), fb.metal(GOLD), rot=arm_rot),
+        part("Knob", fb.tilt(axle, arm_rot, (0, 19, 0)), (5, 5, 5), fb.metal(IRON_DARK if pulled else GOLD, not pulled),
+             rot=arm_rot),
     ]
     return p, None
 
@@ -773,7 +775,8 @@ BLOCKS = {
     "Trial_Panel": (trial_panel, {"orient": "open"}),
     "Hammer_Rack": (hammer_rack, {"particles": motes(0.8), "orient": "wall"}),
     "Gargoyle": (gargoyle, {"orient": "wall"}),
-    "Lever": (lever, {"orient": "open"}),
+    "Lever": (lever, {"orient": "open", "particles": motes(1.0, "Dust_Sparkles_Fine")}),
+    "Lever_Pulled": (lambda: lever(True), {"orient": "open"}),
     "Cage_Door": (cage_door, {"orient": "line"}),
     "Console": (console, {"orient": "open"}),
     "Fan": (fan, {"orient": "open"}),

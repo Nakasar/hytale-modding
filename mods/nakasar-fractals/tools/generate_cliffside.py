@@ -144,6 +144,7 @@ RACK_BLOCK = "Nakasar_Fractal_Hammer_Rack"
 HAMMER_CHARGED = "Nakasar_Fractal_Hammer_Charged"
 GARGOYLE = "Nakasar_Fractal_Gargoyle"
 LEVER = "Nakasar_Fractal_Lever"
+LEVER_PULLED = "Nakasar_Fractal_Lever_Pulled"   # levier tiré (posé par le Java, Traps.pull)
 CAGE_DOOR = "Nakasar_Fractal_Cage_Door"
 CAGE_CELL = go.CAGE_CELL
 EXIT_STONE = go.EXIT_STONE
@@ -156,8 +157,9 @@ ROLE_CHANTER = "Nakasar_Fractal_Cultist_Chanter"
 ROLE_SEEKER = "Nakasar_Fractal_Seeker"
 ROLE_DEVOURER = "Nakasar_Fractal_Devourer"
 ROLE_SEAL = "Nakasar_Fractal_Seal"
+SEAL_CRACKED = [f"{ROLE_SEAL}_Cracked_1", f"{ROLE_SEAL}_Cracked_2"]   # sceau fissuré, très fissuré (Cliffside.SEAL_ROLES)
 ROLE_BOSS = "Nakasar_Fractal_Archdiviner"
-FOE_ROLES = [ROLE_FANATIC, ROLE_CHANTER, ROLE_DEVOURER, ROLE_SEAL, ROLE_BOSS]
+FOE_ROLES = [ROLE_FANATIC, ROLE_CHANTER, ROLE_DEVOURER, ROLE_SEAL, *SEAL_CRACKED, ROLE_BOSS]
 
 PLANKS = "Wood_Darkwood_Planks"
 PLANKS_HALF = "Wood_Darkwood_Planks_Half"
@@ -1031,6 +1033,7 @@ def blocks():
         (RACK_BLOCK, "Hammer_Rack", (80, 56, 40), (196, 120, 255), "rack", "#a6f", "Nakasar_Fractal_Use_Hammer_Rack", True),
         (GARGOYLE, "Gargoyle", (96, 96, 104), (220, 230, 255), "gargoyle", None, None, True),
         (LEVER, "Lever", stone, (230, 200, 120), "lever", None, "Nakasar_Fractal_Use_Cliffside_Lever", True),
+        (LEVER_PULLED, "Lever_Pulled", stone, (120, 110, 100), "lever", None, "Nakasar_Fractal_Use_Cliffside_Lever", True),
         (CAGE_DOOR, "Cage_Door", (40, 36, 44), (150, 140, 170), "bars", None, "Nakasar_Fractal_Use_Cage_Door", True),
     ]
 
@@ -1038,7 +1041,7 @@ def blocks():
 def hammer_item():
     return {
         "$Comment": "Marteau du culte (Falaise) : la masse d'onyx vanilla, seule arme qui brise les sceaux. Tenu en main, "
-                    "il fait monter la Corruption d'un cran toutes les 10 s (rangé, elle redescend) ; un ennemi frappé "
+                    "il fait monter la Corruption d'un cran toutes les 10 s tant qu'on le porte, même rangé (lâché au sol, elle redescend) ; un ennemi frappé "
                     "avec, ou tué après avoir été frappé par le porteur, ou tué à moins de 10 blocs, le charge "
                     "(Brise-sceau). Retiré quand on quitte la fractale (dev.nakasar.hytale.fractals.hammer.HammerSystem). "
                     "Généré par tools/generate_cliffside.py.",
@@ -1212,6 +1215,24 @@ PARTICLE_SYSTEMS = {
                                                     blend="BlendLinear"), 0.2)]),
     "Nakasar_Fractal_Heal_Foes": ("Incantation de soin des cultistes : anneau vert-violet autour du lanceur.",
                                   [("Ring", spawner("#c0ffb0", "#7a40c0", 16, (1.5, 2.5), (-5, 5), 0.5, 0.3), 0.3)]),
+    "Nakasar_Fractal_Gust_Jet": ("Jet d'une gargouille : bouffée de vent blanc, posée tous les 1,5 bloc le long du souffle.",
+                                 [("Jet", spawner("#ffffff", "#b8ccff", 8, (0.6, 1.8), (-15, 15), 0.9, 1.4,
+                                                  life=(0.35, 0.6), size=(0.35, 0.7)), 0.0)]),
+    "Nakasar_Fractal_Shield_Spark": ("Bulle d'un sceau protégé : une étincelle du dôme (le Java en pose des dizaines).",
+                                     [("Spark", spawner("#f0d8ff", "#8a50ff", 1, (0.0, 0.05), (-5, 5), 0.05, 0.05,
+                                                        life=(0.9, 1.1), size=(0.3, 0.42)), 0.0)]),
+    "Nakasar_Fractal_Seal_Shatter": ("Un sceau vole en éclats : morceaux de pierre et de cristal qui retombent.",
+                                     [("Stone", spawner("#8a8098", "#3a3448", 26, (3.0, 6.5), (15, 85), 1.2, 2.0,
+                                                        life=(0.9, 1.5), size=(0.35, 0.75), blend="BlendLinear",
+                                                        gravity=-16), 0.3),
+                                      ("Crystal", spawner("#ffffff", "#a040ff", 18, (2.5, 5.5), (10, 90), 1.0, 2.0,
+                                                          life=(0.6, 1.1), size=(0.25, 0.5), gravity=-10), 0.6)]),
+    "Nakasar_Fractal_Mend_Beam": ("Fil d'incantation d'un incantateur vers le sceau qu'il répare (posé point par point).",
+                                  [("Beam", spawner("#ffb8ff", "#6a20b0", 2, (0.05, 0.2), (-90, 90), 0.1, 0.1,
+                                                    life=(0.5, 0.9), size=(0.25, 0.4)), 0.0)]),
+    "Nakasar_Fractal_Chanter_Mark": ("Rune au-dessus d'un incantateur : anneau rose-violet, chaque seconde.",
+                                     [("Ring", spawner("#ff9cff", "#7a30ff", 10, (0.7, 0.9), (-3, 3), 0.05, 0.05,
+                                                       life=(0.7, 1.0), size=(0.22, 0.32)), 0.0)]),
     "Nakasar_Fractal_Bomb_Blast": ("Bombe des rampes qui éclate.",
                                    [("Blast", spawner("#fff0b0", "#ff5a1a", 20, (2.5, 5.0), (-10, 90), 0.8, 0.6,
                                                       life=(0.3, 0.6), size=(0.3, 0.6)), 0.2)]),
@@ -1259,7 +1280,7 @@ def chanter_model():
             ("Cosmetics/Capes/Cape_Scavenger_NoNeck.blockymodel", "Cosmetics/Capes/Cape_Scavenger_Texture.png",
              CLOTH, "Purple"),
             ("Cosmetics/Shoes/AngledBoots.blockymodel", "Cosmetics/Shoes/AngledBoots_Textures/Blazen_Wizard_Boots_Green.png"),
-        ], light={"Color": "#a6f", "Radius": 2})
+        ], light={"Color": "#d8f", "Radius": 4})
 
 
 def seeker_model():
@@ -1318,10 +1339,36 @@ def seal_parts():
     return parts
 
 
-def write_seal_model():
+def crack_atlas(atlas, cracks, seed):
+    """Lézardes sur toute la texture du sceau : traits brisés sombres, cœur violet lumineux ; plus nombreuses et plus
+    longues au second cran."""
+    rng = __import__("random").Random(seed)
+    d = ImageDraw.Draw(atlas)
+    w, h = atlas.size
+    for _ in range(18 if cracks == 1 else 40):
+        x, y = rng.uniform(0, w), rng.uniform(0, h)
+        a = rng.uniform(0, math.tau)
+        pts = [(x, y)]
+        for _ in range(rng.randint(3, 6 if cracks == 1 else 10)):
+            a += rng.uniform(-0.9, 0.9)
+            step = rng.uniform(3, 8)
+            x, y = x + math.cos(a) * step, y + math.sin(a) * step
+            pts.append((x, y))
+        d.line(pts, fill=(18, 10, 26, 255), width=3 if cracks == 2 else 2)
+        d.line(pts, fill=(226, 160, 255, 255), width=1)
+    return atlas
+
+
+def write_seal_model(cracks=0):
     parts = seal_parts()
+    if cracks >= 2:
+        # Très fissuré : la couronne de cristal est tombée, une plaque aussi.
+        parts = [pt for pt in parts if pt[0] not in ("Crown", "Plate_1")]
     atlas, uv = fm.build_atlas(parts, 7, tex_w=256)
-    out = COMMON / NPC_MODELS / "Seal"
+    if cracks:
+        atlas = crack_atlas(atlas, cracks, 70 + cracks)
+    name = "Seal" if not cracks else f"Seal_Cracked_{cracks}"
+    out = COMMON / NPC_MODELS / name
     out.mkdir(parents=True, exist_ok=True)
     atlas.save(out / "Texture.png")
     model = fm.build_model("Body", parts, uv)
@@ -1330,12 +1377,12 @@ def write_seal_model():
     return {
         "$Comment": "Sceau du culte (PNJ fixe) : pierre gravée et cristal violet, générés par tools/generate_cliffside.py. "
                     "Seul un coup de marteau chargé le fissure (dev.nakasar.hytale.fractals.cliffside.Seals).",
-        "Model": f"{NPC_MODELS}/Seal/Model.blockymodel",
-        "Texture": f"{NPC_MODELS}/Seal/Texture.png",
+        "Model": f"{NPC_MODELS}/{name}/Model.blockymodel",
+        "Texture": f"{NPC_MODELS}/{name}/Texture.png",
         "EyeHeight": 1.5,
         "HitBox": {"Max": {"X": 0.6, "Y": 2.7, "Z": 0.6}, "Min": {"X": -0.6, "Y": 0, "Z": -0.6}},
         "MinScale": 1, "MaxScale": 1,
-        "Light": {"Color": "#a6f", "Radius": 4},
+        "Light": {"Color": "#a6f", "Radius": 4 - cracks},
     }
 
 
@@ -1522,10 +1569,11 @@ def static_role(role_id, comment, appearance, hp, attitude="Hostile"):
     }
 
 
-def seal_role():
-    doc = static_role(ROLE_SEAL, "Sceau du culte : immobile et gelé, posé par le Java à sa place. Les coups ordinaires "
-                      "ne lui font rien ; un coup de marteau chargé le fissure (sa vie montre ce qui reste).",
-                      ROLE_SEAL, 300)
+def seal_role(role_id=ROLE_SEAL):
+    doc = static_role(role_id, "Sceau du culte : immobile et gelé, posé par le Java à sa place. Les coups ordinaires "
+                      "ne lui font rien ; un coup de marteau chargé le fissure (sa vie montre ce qui reste). Fissuré, le "
+                      "Java le remplace par sa variante _Cracked_1 puis _Cracked_2 (même rôle, modèle lézardé).",
+                      role_id, 300)
     doc["DisableDamageGroups"] = [fr.FOES]
     return doc
 
@@ -1609,14 +1657,15 @@ def lang():
         put(f"items.{item_id}.description", df, de)
 
     item(HAMMER, "Marteau du culte",
-         "Seule arme capable de briser les sceaux du colosse. Le recevoir coûte 10 % des PV. Tenu en main, il corrompt : "
-         "toutes les 10 s, la Corruption monte d'un cran (dégâts subis en hausse, faiblesse, étourdissement, puis il "
-         "vous échappe) ; rangé, elle redescend d'un cran. Frapper un cultiste avec, ou voir mourir un cultiste qu'on a "
-         "frappé, le charge : un coup chargé fissure un sceau.",
+         "Seule arme capable de briser les sceaux du colosse. Le recevoir coûte 10 % des PV. Tant qu'on le porte, même rangé, il "
+         "corrompt : toutes les 10 s, la Corruption monte d'un cran (dégâts subis en hausse, faiblesse, étourdissement, "
+         "puis il vous échappe) ; lâché au sol, elle redescend d'un cran (s'accroupir tout près pour le reprendre). "
+         "Frapper ou tuer un cultiste avec le charge : un coup chargé fissure un sceau.",
          "Cult Hammer",
-         "The only weapon that can break the colossus' seals. Receiving it costs 10% HP. Held in hand, it corrupts: every "
-         "10 s, Corruption rises one tier (more damage taken, weakness, stun, then you drop it); put away, it falls one "
-         "tier. Hitting a cultist with it, or seeing a cultist you hit die, charges it: a charged blow cracks a seal.")
+         "The only weapon that can break the colossus' seals. Receiving it costs 10% HP. While carried, even put away, it "
+         "corrupts: every 10 s, Corruption rises one tier (more damage taken, weakness, stun, then you drop it); dropped "
+         "on the ground, it falls one tier (crouch next to it to take it back). Hitting or killing a cultist with it "
+         "charges it: a charged blow cracks a seal.")
     item(SEAL_STONE, "Pierre de sceau", "Pierre gravée du culte, sous le sceau du cou.", "Seal stone",
          "Carved cult stone, under the neck seal.")
     item(MIST_BARRIER, "Barrière de brume", "Se dissipe quand les sceaux qui la tiennent sont brisés.", "Mist barrier",
@@ -1630,6 +1679,8 @@ def lang():
          "Gargoyle", "Its breath pushes into the void. A lever at the top of the climb silences it.")
     item(LEVER, "Levier", "Utiliser : coupe un piège. Dur à tirer : on reste figé 4 s.", "Lever",
          "Use: shuts down a trap. Hard to pull: you are rooted for 4 s.")
+    item(LEVER_PULLED, "Levier tiré", "Ce levier a déjà coupé son piège.", "Pulled lever",
+         "This lever has already shut down its trap.")
     item(CAGE_DOOR, "Porte de cage", "Utiliser (5 fois) : forcer la porte et libérer le prisonnier.", "Cage door",
          "Use (5 times): force the door and free the prisoner.")
     for role_id, nf, ne in ((ROLE_FANATIC, "Fanatique du culte", "Cult Fanatic"),
@@ -1637,6 +1688,8 @@ def lang():
                             (ROLE_SEEKER, "Le Chercheur", "The Seeker"),
                             (ROLE_DEVOURER, "Dévoreur", "Devourer"),
                             (ROLE_SEAL, "Sceau du culte", "Cult Seal"),
+                            (SEAL_CRACKED[0], "Sceau fissuré", "Cracked Seal"),
+                            (SEAL_CRACKED[1], "Sceau lézardé", "Shattering Seal"),
                             (ROLE_BOSS, "L'Archidevin", "The Archdiviner")):
         put(f"npc.{role_id.removeprefix('Nakasar_Fractal_')}.name", nf, ne)
     for tier, *_ in CORRUPTION_TIERS:
@@ -1659,11 +1712,11 @@ def lang():
         "hammer.crouchToTake": ("Accroupissez-vous pour ramasser le marteau du culte.",
                                 "Crouch to pick up the cult hammer."),
         "hammer.charged": ("Marteau chargé : frappez un sceau !", "Hammer charged: strike a seal!"),
-        "hammer.stun": ("Cran 3 : la Corruption vous submerge un instant. Rangez le marteau !",
-                        "Tier 3: Corruption overwhelms you for a moment. Put the hammer away!"),
+        "hammer.stun": ("Cran 3 : la Corruption vous submerge un instant. Lâchez le marteau au sol !",
+                        "Tier 3: Corruption overwhelms you for a moment. Drop the hammer on the ground!"),
         "hammer.dropped": ("Trop de Corruption : le marteau vous échappe.", "Too much Corruption: the hammer slips away."),
-        "hammer.up": ("La Corruption monte : cran {tier}. Rangez le marteau pour la faire redescendre.",
-                      "Corruption rises: tier {tier}. Put the hammer away to let it fall."),
+        "hammer.up": ("La Corruption monte : cran {tier}. Lâchez le marteau au sol pour la faire redescendre.",
+                      "Corruption rises: tier {tier}. Drop the hammer on the ground to let it fall."),
         "hammer.down": ("La Corruption redescend : cran {tier}.", "Corruption falls: tier {tier}."),
         "hammer.cleansed": ("La Corruption se dissipe.", "The Corruption fades."),
         "hammer.removed": ("Le marteau du culte se dissipe hors de la Falaise.", "The cult hammer fades outside the Cliffside."),
@@ -1674,6 +1727,10 @@ def lang():
         "seal.shielded": ("Une bulle protège ce sceau : frappez l'autre.", "A bubble shields this seal: strike the other one."),
         "seal.cracked": ("Sceau fissuré ({left} coup(s) encore).", "Seal cracked ({left} more blow(s))."),
         "seal.mended": ("Un incantateur répare le sceau !", "A chanter mends the seal!"),
+        "seal.channel": ("Un incantateur se place devant le sceau pour le réparer : abattez-le !",
+                         "A chanter takes position before the seal to mend it: bring him down!"),
+        "hammer.recalled": ("L'Archidevin rappelle son marteau à lui : il vous attend au sommet.",
+                            "The Archdiviner calls his hammer back: he awaits you at the top."),
         "seal.broken": ("Sceau brisé ({count}/5)", "Seal broken ({count}/5)"),
         "gate.open": ("La barrière de brume se dissipe.", "The mist barrier fades."),
         "checkpoint": ("Point de retour déplacé.", "Respawn point moved."),
@@ -1904,10 +1961,14 @@ def main():
     write_json(MODELS / f"{ROLE_BOSS}.json", boss_model())
     write_json(MODELS / f"{ROLE_DEVOURER}.json", devourer_model())
     write_json(MODELS / f"{ROLE_SEAL}.json", write_seal_model())
+    for cracks, role_id in enumerate(SEAL_CRACKED, 1):
+        write_json(MODELS / f"{role_id}.json", write_seal_model(cracks))
     write_json(ROLES / f"{ROLE_FANATIC}.json", fanatic_role())
     write_json(ROLES / f"{ROLE_CHANTER}.json", chanter_role())
     write_json(ROLES / f"{ROLE_DEVOURER}.json", devourer_role())
     write_json(ROLES / f"{ROLE_SEAL}.json", seal_role())
+    for role_id in SEAL_CRACKED:
+        write_json(ROLES / f"{role_id}.json", seal_role(role_id))
     write_json(ROLES / f"{ROLE_SEEKER}.json", seeker_role())
     write_json(ROLES / f"{ROLE_BOSS}.json", boss_role())
     group = SERVER / "NPC/Groups" / f"{fr.FOES}.json"

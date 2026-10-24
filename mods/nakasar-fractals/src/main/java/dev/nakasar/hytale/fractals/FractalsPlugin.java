@@ -168,7 +168,8 @@ public final class FractalsPlugin extends JavaPlugin {
         systems.registerSystem(new FoeDeathSystem());
         systems.registerSystem(new InstabilitySystem());
         Cliffside.registerBossBars();
-        Instabilities.exempt(Cliffside.SEAL_ROLE, Cliffside.SEEKER);
+        Instabilities.exempt(Cliffside.SEAL_ROLES);
+        Instabilities.exempt(Cliffside.SEEKER);
         Uncategorized.register();
         Stages.register(new Uncategorized());
         Volcanic.register();

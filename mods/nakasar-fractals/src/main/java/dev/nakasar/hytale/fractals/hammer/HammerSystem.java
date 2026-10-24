@@ -21,9 +21,11 @@ import java.util.WeakHashMap;
  * Corruption du marteau du culte, quatre fois par seconde dans la Falaise, par crans de {@value #CYCLE} s :
  * <ul>
  *   <li>recevoir le marteau coûte {@value #PICKUP_PART} des PV max ;</li>
- *   <li>le prendre en main sans Corruption ouvre le cran 1 : l'effet {@code Nakasar_Fractal_Corruption_<cran>} est
+ *   <li>le porter sans Corruption ouvre le cran 1 : l'effet {@code Nakasar_Fractal_Corruption_<cran>} est
  *   posé pour {@value #CYCLE} s et se vide sous les yeux du joueur ;</li>
- *   <li>vidé, le cran monte de un si le marteau est encore en main, sinon il descend de un (à 0, plus rien) ;</li>
+ *   <li>vidé, le cran monte de un si le marteau est encore dans l'inventaire (en main ou rangé : le ranger ne suffit
+ *   pas), sinon il descend de un (à 0, plus rien) : pour faire baisser la Corruption, il faut lâcher le marteau au
+ *   sol ;</li>
  *   <li>chaque cran : dégâts subis +8 % ; dès le cran 2, le porteur ne fait plus que 70 % de ses dégâts (filtre de
  *   {@code cliffside.CliffsideDamageFilter}) ; arriver au cran 3 étourdit {@value #STUN_3} s ; vouloir monter
  *   au-delà fait échapper le marteau (au sol, à ses pieds) et étourdit {@value #STUN_DROP} s.</li>
@@ -116,13 +118,13 @@ public final class HammerSystem extends TickingSystem<EntityStore> {
             }
             boolean holding = carrying && Hammer.holds(store, ref);
             if (carrier.tier == 0) {
-                if (holding) {
+                if (carrying) {
                     setTier(store, ref, carrier, 1);
                 }
             } else {
                 carrier.cycle -= dt;
                 if (carrier.cycle <= 0f) {
-                    cycleEnd(store, ref, player, carrier, holding);
+                    cycleEnd(store, ref, player, carrier, carrying);
                 }
             }
             Vector3d at = Telegraphs.position(store, ref);
@@ -135,10 +137,10 @@ public final class HammerSystem extends TickingSystem<EntityStore> {
         }
     }
 
-    /** Un cran vient de se vider : on monte si le marteau est en main, on descend sinon. */
+    /** Un cran vient de se vider : on monte si le marteau est encore porté (même rangé), on descend sinon. */
     private static void cycleEnd(Store<EntityStore> store, Ref<EntityStore> ref, PlayerRef player, Hammer.Carrier carrier,
-                                 boolean holding) {
-        if (!holding) {
+                                 boolean carrying) {
+        if (!carrying) {
             setTier(store, ref, carrier, carrier.tier - 1);
             player.sendMessage(Message.translation(MESSAGES + (carrier.tier == 0 ? "cleansed" : "down"))
                     .param("tier", carrier.tier));

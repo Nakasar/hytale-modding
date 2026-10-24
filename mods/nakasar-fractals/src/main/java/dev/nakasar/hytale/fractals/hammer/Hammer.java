@@ -4,13 +4,17 @@ import com.hypixel.hytale.component.AddReason;
 import com.hypixel.hytale.component.ComponentAccessor;
 import com.hypixel.hytale.component.Holder;
 import com.hypixel.hytale.component.Ref;
+import com.hypixel.hytale.component.RemoveReason;
 import com.hypixel.hytale.component.Store;
 import com.hypixel.hytale.math.vector.Rotation3f;
 import com.hypixel.hytale.server.core.inventory.InventoryComponent;
 import com.hypixel.hytale.server.core.inventory.ItemStack;
 import com.hypixel.hytale.server.core.inventory.container.CombinedItemContainer;
 import com.hypixel.hytale.server.core.modules.entity.item.ItemComponent;
+import com.hypixel.hytale.server.core.universe.PlayerRef;
+import com.hypixel.hytale.server.core.universe.world.World;
 import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
+import dev.nakasar.hytale.fractals.combat.Telegraphs;
 import org.joml.Vector3d;
 
 import java.util.ArrayList;
@@ -103,6 +107,28 @@ public final class Hammer {
                 item.setPickupDelay(1f);
             }
             store.addEntity(holder, AddReason.SPAWN);
+        }
+    }
+
+    /**
+     * L'Archidevin rappelle le marteau (dernier sceau des poignets brisé) : retiré de tous les inventaires et du sol,
+     * avec une volute violette là où il était. Il le rendra pendant ses transitions.
+     */
+    public static void recallAll(World world, Store<EntityStore> store) {
+        for (PlayerRef player : world.getPlayerRefs()) {
+            Ref<EntityStore> ref = player.getReference();
+            if (ref != null && ref.isValid() && carries(store, ref)) {
+                Vector3d at = Telegraphs.position(store, ref);
+                if (at != null) {
+                    Telegraphs.particle(store, "Nakasar_Fractal_Seal_Break", new Vector3d(at).add(0, 1, 0), 0.8f);
+                }
+                remove(store, ref);
+            }
+        }
+        for (Ref<EntityStore> item : List.copyOf(HammerDropSystem.onGround(world))) {
+            if (item.isValid()) {
+                store.removeEntity(item, RemoveReason.REMOVE);
+            }
         }
     }
 

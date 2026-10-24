@@ -72,7 +72,7 @@ public class HealFoesInteraction extends SimpleInstantInteraction {
                 NPCEntity npc = chunk.getComponent(i, NPCEntity.getComponentType());
                 TransformComponent transform = chunk.getComponent(i, TransformComponent.getComponentType());
                 String role = npc == null ? null : npc.getRoleName();
-                if (transform != null && !SEAL_ROLE.equals(role) && !BOSS_ROLE.equals(role)
+                if (transform != null && (role == null || !role.startsWith(SEAL_ROLE)) && !BOSS_ROLE.equals(role)
                         && transform.getPosition().distance(center) <= radius) {
                     near.add(chunk.getReferenceTo(i));
                 }

@@ -35,10 +35,12 @@ import java.util.UUID;
  *   par joueur ;</li>
  *   <li>foyers de la passerelle du torse : toutes les {@value #FIRE_INTERVAL} s, deux foyers sur trois s'embrasent
  *   (cercle rouge de {@value #FIRE_WARNING} s, puis {@value #FIRE_PART} des PV et brûlure) ; le foyer sûr tourne ;</li>
- *   <li>bombes des rampes : une toutes les {@value #BOMB_INTERVAL} s descend la rampe case par case sous un cercle rouge ;
- *   qui la croise est projeté de côté ({@value #BOMB_PART} des PV) ; le levier R1 ou R2 arrête sa rampe.</li>
+ *   <li>bombes des rampes : une toutes les {@value #BOMB_INTERVAL} s descend la voie du milieu case par case sous un
+ *   cercle rouge ; qui la croise est projeté de côté ({@value #BOMB_PART} des PV), les bords de la rampe sont sûrs ; le
+ *   levier R1 ou R2 arrête sa rampe.</li>
  * </ul>
- * Les leviers figent qui les tire ({@value #LEVER_ROOT} s).
+ * Les leviers figent qui les tire ({@value #LEVER_ROOT} s) ; tirés, ils deviennent {@value #LEVER_PULLED} (bras
+ * abaissé, sans lueur).
  */
 final class Traps {
 
@@ -52,13 +54,19 @@ final class Traps {
     static final float FIRE_INTERVAL = 7f;
     static final float FIRE_WARNING = 2.2f;
     static final float FIRE_PART = 0.25f;
-    static final float BOMB_INTERVAL = 5f;
-    static final float BOMB_STEP = 0.25f;
-    static final double BOMB_RADIUS = 1.6;
+    /**
+     * Une bombe à la fois par rampe (elle met ~8 s à la descendre) et sur la seule voie du milieu : on l'esquive en
+     * passant sur un bord de la rampe (3 blocs de large). Avant (5 s, 1,6 bloc), elles s'enchaînaient sur toute la
+     * largeur et la montée était impossible.
+     */
+    static final float BOMB_INTERVAL = 10f;
+    static final float BOMB_STEP = 0.3f;
+    static final double BOMB_RADIUS = 0.9;
     static final float BOMB_PART = 0.12f;
     static final float LEVER_ROOT = 4f;
     static final String SPIKES = "Nakasar_Fractal_Spikes";
     static final String LEVER_ROOTED = "Nakasar_Fractal_Lever_Rooted";
+    static final String LEVER_PULLED = "Nakasar_Fractal_Lever_Pulled";
 
     private static final Set<Long> TRAPPED = new HashSet<>();
 
@@ -95,7 +103,7 @@ final class Traps {
         float before = clock;
         clock += dt;
         if (Cliffside.anyIn(store, players, CliffsideLayout.JUMP_ZONES.get(0))) {
-            gargoyles(store, players, before, clock);
+            gargoyles(world, store, players, before, clock);
         }
         plates(store, players, dt);
         if (st.stage == Cliffside.Stage.CHEST && Cliffside.anyIn(store, players, CliffsideLayout.CHEST_DECK)) {
@@ -110,7 +118,12 @@ final class Traps {
 
     // --- gargouilles ------------------------------------------------------------------------------
 
-    private void gargoyles(Store<EntityStore> store, List<PlayerRef> players, float before, float now) {
+    /**
+     * Gargouilles actives : à l'annonce, la gueule s'emplit de poussière et une bande rouge se remplit sur le chemin du
+     * souffle (il projette dans le vide) ; à chaque souffle, un jet de vent blanc file de la gueule au bout de sa
+     * portée, en vague. Un groupe coupé par son levier ne fait plus rien.
+     */
+    private void gargoyles(World world, Store<EntityStore> store, List<PlayerRef> players, float before, float now) {
         for (CliffsideLayout.Gargoyle g : CliffsideLayout.GARGOYLES) {
             if (pulled[g.group()]) {
                 continue;
@@ -119,12 +132,26 @@ final class Traps {
             float b = (now + g.offset()) % GUST_CYCLE;
             Vector3d mouth = new Vector3d(g.x() + 0.5, g.y() + 0.3, g.z() + 1.2);
             if (crossed(a, b, 0f)) {
-                Telegraphs.particle(store, "Nakasar_Fractal_Gust_Windup", mouth, 1f);
+                Telegraphs.particle(store, "Nakasar_Fractal_Gust_Windup", mouth, 1.4f);
+                // Sol des pierres du tronçon : un bloc sous la gargouille (elle est à hauteur de tête).
+                Telegraphs.Strip strip = new Telegraphs.Strip(new Vector3d(g.x() + 0.5, g.y() - 1, g.z() + 1),
+                        Math.PI / 2, CliffsideLayout.GUST_REACH - 1, 3, System.nanoTime(), GUST_AT);
+                TelegraphSystem.start(world, (w, s, t) -> strip.step(s, t));
             }
             if (crossed(a, b, GUST_AT) || crossed(a, b, GUST_AGAIN)) {
-                Telegraphs.particle(store, "Nakasar_Fractal_Gust", mouth, 1f);
+                Telegraphs.particle(store, "Nakasar_Fractal_Gust", mouth, 1.3f);
+                jet(world, g);
                 gust(store, players, g);
             }
+        }
+    }
+
+    /** Jet de vent visible : bouffées de la gueule jusqu'au bout de la portée, une tous les 1,5 bloc, en vague rapide. */
+    private static void jet(World world, CliffsideLayout.Gargoyle g) {
+        int k = 0;
+        for (double d = 1.5; d <= CliffsideLayout.GUST_REACH; d += 1.5, k++) {
+            Vector3d at = new Vector3d(g.x() + 0.5, g.y() - 0.2, g.z() + 1.2 + d);
+            Delayed.later(world, 0.035f * k, s -> Telegraphs.particle(s, "Nakasar_Fractal_Gust_Jet", at, 1f));
         }
     }
 
@@ -277,6 +304,9 @@ final class Traps {
             return;
         }
         pulled[index] = true;
+        // Levier tiré : bras abaissé, pommeau éteint (bloc Lever_Pulled), pour voir de loin qu'il ne sert plus.
+        WorldBlocks.swap(world.getChunkStore(), x, y, z, LEVER_PULLED);
+        Telegraphs.particle(store, "Nakasar_Fractal_Seal_Mend", new Vector3d(x + 0.5, y + 0.6, z + 0.5), 0.6f);
         Hurt.effect(store, ref, LEVER_ROOTED, LEVER_ROOT);
         Telegraphs.sound(store, "SFX_Lever_Metal_On", new Vector3d(x + 0.5, y + 0.5, z + 0.5));
         String key = index < CliffsideLayout.GARGOYLE_LEVERS ? "lever.gargoyles" : "lever.bombs";

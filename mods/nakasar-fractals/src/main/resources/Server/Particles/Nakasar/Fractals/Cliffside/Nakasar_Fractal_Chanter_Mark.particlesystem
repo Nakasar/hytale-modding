@@ -1,0 +1,12 @@
+{
+  "$Comment": "Rune au-dessus d'un incantateur : anneau rose-violet, chaque seconde. Généré par tools/generate_cliffside.py.",
+  "Spawners": [
+    {
+      "SpawnerId": "Nakasar_Fractal_Chanter_Mark_Ring",
+      "PositionOffset": {
+        "Y": 0.0
+      }
+    }
+  ],
+  "CullDistance": 72
+}

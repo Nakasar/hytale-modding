@@ -6,8 +6,8 @@
   "GradientSet": "Skin",
   "GradientId": "11",
   "Light": {
-    "Color": "#a6f",
-    "Radius": 2
+    "Color": "#d8f",
+    "Radius": 4
   },
   "DefaultAttachments": [
     {
