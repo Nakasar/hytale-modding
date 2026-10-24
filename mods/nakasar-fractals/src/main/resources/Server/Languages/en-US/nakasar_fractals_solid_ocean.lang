@@ -1,7 +1,13 @@
 items.Nakasar_Fractal_Reflecting_Crystal.name = Reflecting crystal
 items.Nakasar_Fractal_Reflecting_Crystal.description = Picked up while crouching, held in both hands and kept in hand (one at a time). It absorbs the Jade Maw's beam and charges you; right-click while aiming at the Maw: throw it.
-items.Nakasar_Fractal_Jade_Landing.name = Jade fragment
-items.Nakasar_Fractal_Jade_Landing.description = A fall brings you back to the last fragment you stood on.
+items.Nakasar_Fractal_Jade_Crystal_Block.name = Jade crystal block
+items.Nakasar_Fractal_Jade_Crystal_Block.description = A fall brings you back to the last jade fragment you stood on.
+items.Nakasar_Fractal_Jade_Crystal_Large.name = Large jade crystal
+items.Nakasar_Fractal_Jade_Crystal_Large.description = A fall brings you back to the last jade fragment you stood on.
+items.Nakasar_Fractal_Jade_Crystal_Medium.name = Jade crystal
+items.Nakasar_Fractal_Jade_Crystal_Medium.description = A fall brings you back to the last jade fragment you stood on.
+items.Nakasar_Fractal_Jade_Crystal_Small.name = Small jade crystal
+items.Nakasar_Fractal_Jade_Crystal_Small.description = A fall brings you back to the last jade fragment you stood on.
 npc.Jade_Maw.name = The Jade Maw
 npc.Jade_Tentacle.name = Jade Maw tentacle
 npc.Jade_Colossus.name = Jade colossus

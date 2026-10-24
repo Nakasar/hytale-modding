@@ -1,7 +1,13 @@
 items.Nakasar_Fractal_Reflecting_Crystal.name = Cristal réfléchissant
 items.Nakasar_Fractal_Reflecting_Crystal.description = Se ramasse accroupi, se tient à deux mains et reste en main (un seul à la fois). Il absorbe le rayon de l'Abîme de Jade et vous charge ; clic droit en visant l'Abîme : le lancer.
-items.Nakasar_Fractal_Jade_Landing.name = Fragment de jade
-items.Nakasar_Fractal_Jade_Landing.description = Une chute ramène au dernier fragment où l'on s'est tenu.
+items.Nakasar_Fractal_Jade_Crystal_Block.name = Bloc de cristal de jade
+items.Nakasar_Fractal_Jade_Crystal_Block.description = Une chute ramène au dernier fragment de jade où l'on s'est tenu.
+items.Nakasar_Fractal_Jade_Crystal_Large.name = Grand cristal de jade
+items.Nakasar_Fractal_Jade_Crystal_Large.description = Une chute ramène au dernier fragment de jade où l'on s'est tenu.
+items.Nakasar_Fractal_Jade_Crystal_Medium.name = Cristal de jade
+items.Nakasar_Fractal_Jade_Crystal_Medium.description = Une chute ramène au dernier fragment de jade où l'on s'est tenu.
+items.Nakasar_Fractal_Jade_Crystal_Small.name = Petit cristal de jade
+items.Nakasar_Fractal_Jade_Crystal_Small.description = Une chute ramène au dernier fragment de jade où l'on s'est tenu.
 npc.Jade_Maw.name = L'Abîme de Jade
 npc.Jade_Tentacle.name = Tentacule de l'Abîme
 npc.Jade_Colossus.name = Colosse de jade

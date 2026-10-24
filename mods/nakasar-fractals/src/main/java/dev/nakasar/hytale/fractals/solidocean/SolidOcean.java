@@ -45,7 +45,7 @@ public final class SolidOcean implements FractalStage {
     static final String COLOSSUS = "Nakasar_Fractal_Jade_Colossus";
     static final String IRUKANDJI = "Nakasar_Fractal_Irukandji";
     static final String CRYSTAL = "Nakasar_Fractal_Reflecting_Crystal";
-    static final String JADE_LANDING = "Nakasar_Fractal_Jade_Landing";
+    static final String JADE_LANDING = "Nakasar_Fractal_Jade_Crystal_Block";
     static final String BEAM_CAUSE = "Nakasar_Fractal_Jade_Beam";
 
     enum Step { PATH, MAW, DONE }

@@ -53,8 +53,8 @@ final class JadeMaw {
     static final float CRYSTAL_PART = 0.05f;
     static final float TENTACLE_PART = 0.03f;
     static final float SAME_HIT = 0.5f;
-    static final float BEAM_P2 = 40f;
-    static final float BEAM_P3 = 30f;
+    static final float BEAM_P2 = 15f;
+    static final float BEAM_P3 = 15f;
     /** Cristal posé près de chacun des huit tentacules au début de la phase 2, à ce nombre de blocs vers le centre. */
     static final double FIRST_CRYSTAL_OFFSET = 2.0;
     static final float TARGET_SECONDS = 6f;

@@ -3,7 +3,7 @@
   "Type": "Nakasar_Fractal_ThrowItem",
   "Item": "Nakasar_Fractal_Reflecting_Crystal",
   "Roles": "Nakasar_Fractal_Jade_Maw",
-  "Range": 48,
+  "Range": 72,
   "Cone": 35,
   "Particle": "Nakasar_Fractal_Crystal_Trail",
   "Action": "Crystal",

@@ -3,7 +3,7 @@
     "Name": "nakasar_fractals_solid_ocean.items.Nakasar_Fractal_Reflecting_Crystal.name",
     "Description": "nakasar_fractals_solid_ocean.items.Nakasar_Fractal_Reflecting_Crystal.description"
   },
-  "Icon": "Icons/ItemsGenerated/Rock_Crystal_Void_Large.png",
+  "Icon": "Icons/Items/Nakasar/Fractals/Jade_Crystal_Large.png",
   "IconProperties": {
     "Scale": 0.5,
     "Rotation": [
@@ -17,10 +17,10 @@
     ]
   },
   "Model": "Resources/Crystals/Crystal_Large_Pointy.blockymodel",
-  "Texture": "Resources/Crystals/Crystal_Big_Textures/Void.png",
+  "Texture": "Blocks/Nakasar/Fractals/Jade_Crystal_Big.png",
   "Scale": 0.4,
   "Light": {
-    "Color": "#74d",
+    "Color": "#3c8",
     "Radius": 2
   },
   "Quality": "Epic",

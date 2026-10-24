@@ -1,0 +1,69 @@
+{
+  "TranslationProperties": {
+    "Name": "nakasar_fractals_solid_ocean.items.Nakasar_Fractal_Jade_Crystal_Large.name",
+    "Description": "nakasar_fractals_solid_ocean.items.Nakasar_Fractal_Jade_Crystal_Large.description"
+  },
+  "Icon": "Icons/Items/Nakasar/Fractals/Jade_Crystal_Large.png",
+  "IconProperties": {
+    "Scale": 0.5,
+    "Rotation": [
+      4,
+      183,
+      1
+    ],
+    "Translation": [
+      -1,
+      -25
+    ]
+  },
+  "Categories": [
+    "Blocks.Ores"
+  ],
+  "Quality": "Technical",
+  "PlayerAnimationsId": "Block",
+  "BlockType": {
+    "Material": "Solid",
+    "Opacity": "Transparent",
+    "Flags": {},
+    "Gathering": {
+      "Breaking": {
+        "GatherType": "Unbreakable"
+      }
+    },
+    "BlockParticleSetId": "Crystal",
+    "BlockSoundSetId": "Crystal",
+    "PhysicalMaterialId": "Stone",
+    "Light": {
+      "Color": "#3c8"
+    },
+    "RequiresAlphaBlending": true,
+    "DrawType": "Model",
+    "CustomModel": "Resources/Crystals/Crystal_Large_Pointy.blockymodel",
+    "CustomModelTexture": [
+      {
+        "Texture": "Blocks/Nakasar/Fractals/Jade_Crystal_Big.png",
+        "Weight": 1
+      }
+    ],
+    "VariantRotation": "DoublePipe",
+    "RandomRotation": "YawStep1",
+    "ParticleColor": "#b0f0d0",
+    "Support": {
+      "Down": [
+        {
+          "FaceType": "Full"
+        }
+      ]
+    },
+    "TextureComputedColor": "#1c4934"
+  },
+  "Tags": {
+    "Type": [
+      "Rock"
+    ],
+    "Family": [
+      "Crystal"
+    ]
+  },
+  "ItemSoundSetId": "ISS_Blocks_Stone"
+}
