@@ -40,7 +40,7 @@ public final class VolcanicLayout {
             new Box(-120, -48, 89, 114, -101, -87));
     public static final double[][] BATS = {{-61.5, 104.0, -93.5}, {-77.5, 104.0, -93.5}, {-93.5, 104.0, -93.5}, {-107.5, 104.0, -93.5}};
     public static final Box END_PAD = new Box(-124, -116, 101, 106, -98, -90);
-    public static final double[] END_CHECKPOINT = {-116.5, 102.0, -93.5};
+    public static final double[] END_CHECKPOINT = {-119.5, 102.0, -93.5};
 
     /** Île du Chamane imprégné, au milieu du lac de lave. */
     public static final double[] ARENA_CENTER = {-83.5, 85.0, -145.5};

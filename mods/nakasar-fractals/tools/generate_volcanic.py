@@ -123,12 +123,14 @@ def ring_point(center, radius, angle, rounded=True):
 
 
 def mine_segments():
-    """Tronçons de rails de la mine : (x0, x1, debout), d'est en ouest ; trous de 2 à 3 blocs entre eux."""
+    """Tronçons de rails de la mine : (x0, x1, debout), d'est en ouest ; trous de 2 à 3 blocs entre eux. Le dernier
+    s'arrête un bloc avant le palier d'arrivée : jamais de rail sur le palier (point de retour)."""
     out, x, k = [], MINE[1], 0
     levels = [0, 1, 1, 2, 1, 2, 3, 2, 2, 3, 2, 2]
-    while x > MINE[0] + 2:
+    stop = END_PAD[1] + 2
+    while x >= stop:
         length = 5 if k % 3 else 4
-        out.append((x - length + 1, x, levels[k % len(levels)]))
+        out.append((max(x - length + 1, stop), x, levels[k % len(levels)]))
         x -= length + (3 if k % 2 else 2)
         k += 1
     return out
@@ -927,7 +929,7 @@ public final class VolcanicLayout {{
 {zones});
     public static final double[][] BATS = {bats};
     public static final Box END_PAD = {J.jbox(ex0, ex1, PAD_STAND - 1, PAD_STAND + 4, ez0, ez1)};
-    public static final double[] END_CHECKPOINT = {J.jpoint((ex1 - 1, PAD_STAND, -94))};
+    public static final double[] END_CHECKPOINT = {J.jpoint((ex0 + 4, PAD_STAND, -94))};
 
     /** Île du Chamane imprégné, au milieu du lac de lave. */
     public static final double[] ARENA_CENTER = {J.jpoint((AR_CENTER[0], AR_STAND, AR_CENTER[1]))};
