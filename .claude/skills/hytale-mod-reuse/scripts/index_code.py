@@ -19,7 +19,17 @@ import sys
 from collections import defaultdict
 from pathlib import Path
 
-ROOT = Path(__file__).resolve().parents[4]
+def repo_root():
+    """Dépôt du dossier courant (un worktree a son propre code), sinon celui du script."""
+    import subprocess
+    try:
+        out = subprocess.run(["git", "rev-parse", "--show-toplevel"], capture_output=True, text=True, check=True)
+        return Path(out.stdout.strip())
+    except Exception:  # noqa: BLE001
+        return Path(__file__).resolve().parents[4]
+
+
+ROOT = repo_root()
 MODS = ROOT / "mods"
 
 

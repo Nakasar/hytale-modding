@@ -30,7 +30,19 @@ from pathlib import Path
 import numpy as np
 from PIL import Image, ImageDraw
 
-ROOT = Path(__file__).resolve().parents[4]
+import subprocess
+
+
+def repo_root():
+    """Dépôt du dossier courant (un worktree garde ses propres outils), sinon celui du script."""
+    try:
+        out = subprocess.run(["git", "rev-parse", "--show-toplevel"], capture_output=True, text=True, check=True)
+        return Path(out.stdout.strip())
+    except Exception:  # noqa: BLE001
+        return Path(__file__).resolve().parents[4]
+
+
+ROOT = repo_root()
 sys.path.insert(0, str(ROOT / "mods/nakasar-fractals/tools"))
 try:
     from fractal_nature import nature_color  # palette d'aperçu déjà utilisée par les générateurs
@@ -188,9 +200,17 @@ def audit(top, idx, names, origin):
         else:
             for n, r, c in runs(border.T):
                 edges.append((n, label, (int(X0 + r), int(Z0 + c))))
+    # un bord posé sur la limite du prefab chargé est une coupure (sections de 64 en z), pas un vrai bord
+    H0, W0 = has.shape
+    def clipped(label, x, z):
+        return (label.startswith("nord") and z == Z0) or (label.startswith("sud") and z == Z0 + H0 - 1) or \
+               (label.startswith("ouest") and x == X0) or (label.startswith("est") and x == X0 + W0 - 1)
+    cut = [e for e in edges if clipped(e[1], *e[2])]
+    edges = [e for e in edges if not clipped(e[1], *e[2])]
     edges.sort(reverse=True)
     straight = [e for e in edges if e[0] >= 8]
-    out.append(f"Bords rectilignes ≥ 8 blocs : {len(straight)}")
+    out.append(f"Bords rectilignes ≥ 8 blocs : {len(straight)}"
+               + (f" (hors {len(cut)} coupures sur la limite du prefab chargé : charger les sections voisines)" if cut else ""))
     for n, label, (x, z) in straight[:8]:
         out.append(f"  - {n} blocs, bord {label}, depuis x={x} z={z}")
     # plateaux : composantes 4-connexes à hauteur égale

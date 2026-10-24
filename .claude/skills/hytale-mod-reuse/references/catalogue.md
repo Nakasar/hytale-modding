@@ -16,7 +16,7 @@ V = `mods/nakasar-vampires/src/main/java/dev/nakasar/hytale/vampires/`.
 | PV selon la taille du groupe | F/V `GroupHealth` (V dans `tower/`) | × (1 + part par joueur de plus) |
 | Vie fixée par le Java (ne baisse que par une mécanique) | F `boss/PinnedHealth` (`pin`, `noRegen`, `heal`) | dépend de `NPCPlugin.NPCEntityRegenerateStatsSystem`, pas du générique non enregistré |
 | Barre de défiance (breakbar GW2) | F `defiance/` | |
-| Invoquer des serviteurs, boss invulnérable tant qu'ils vivent | F/V `SummonMinionsInteraction` + `MinionShieldSystem` + `ShieldUnloadSystem` | serviteurs jamais sauvegardés ; invulnérabilité retirée au chargement |
+| Invoquer des serviteurs, boss invulnérable tant qu'ils vivent | F/V `SummonMinionsInteraction` + `MinionShieldSystem` + `ShieldUnloadSystem` | serviteurs jamais sauvegardés ; invulnérabilité retirée au chargement. Lire avant de s'en servir pour « une seule vague » : `summonFirstWave` relance une vague au premier coup si aucune invocation n'est notée (`summonNow` n'en note pas), et un serviteur à plus de 36 blocs est retiré, ce qui lève le bouclier ; sinon s'inspirer du bouclier du Chaman (`snowblind/Shaman`) |
 | Bouclier à compteur de coups | F `combat/HitShield` | |
 | Soin de groupe d'un incantateur | F `combat/HealFoesInteraction` | |
 | Camp d'ennemis qui ne se blessent pas entre eux | F `combat/Foes` ; V `allegiance/` (attitudes + filtre de dégâts) | |

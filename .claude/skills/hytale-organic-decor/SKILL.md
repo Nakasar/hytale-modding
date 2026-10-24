@@ -32,6 +32,9 @@ alignées produit l'inverse : des couloirs de test. Le gameplay (sauts, arènes,
   une raison (rempart, mur de château, quai). Sinon : courbe, renflement, encoche, rocher qui déborde.
 - **Pas de plateau plat rectangulaire.** Le sol varie d'1-2 blocs avec un bruit lent, les bords descendent en
   pente ou en falaise irrégulière, les dessous d'îles pendent (stalactites de terre, racines).
+  Exception assumée : un sol d'arène dont la mécanique exige un plat (charge à hauteur fixe arrêtée par tout
+  bloc entre y 0 et 2, cercles au sol à lire) reste plat ; l'organique passe alors par le contour, les talus,
+  les matières et le décor autour, jamais par des obstacles sur l'aire de combat. Le dire dans le rapport.
 - **Les chemins sont ronds** : coins arrondis, largeur qui respire, bulles de bruit ; gardés à ≥ 3 blocs de tout
   autre élément et ≥ 6 des barrières (`curve_walkways` de la Falaise). Un éperon rocheux naturel
   (`buttress_rock`) plutôt qu'un pilier carré.
@@ -70,7 +73,9 @@ python3 .claude/skills/hytale-organic-decor/scripts/render_prefab.py \
     --out /tmp/apercu-volcanique --quarters 0,2 --k 2
 ```
 
-Le script assemble un prefab ou un dossier de sections, écrit des vues isométriques (`iso_q*.png`, quatre côtés
+Le lancer depuis le dépôt où l'on travaille (un worktree garde ses propres outils). Charger toutes les
+sections qui touchent le lieu : un bord coupé par la limite d'une section n'est pas un vrai bord (l'audit
+les met à part). Le script assemble un prefab ou un dossier de sections, écrit des vues isométriques (`iso_q*.png`, quatre côtés
 possibles) et de dessus (`top.png`), et un `audit.txt` : bords rectilignes ≥ 8 blocs, plus grands plateaux plats
 et leur ressemblance à un rectangle, relief, part de la matière dominante. Ces mesures sont des signaux : un
 bord droit peut être voulu, un bord droit non voulu doit disparaître. **Regarder les images** (lire les PNG),

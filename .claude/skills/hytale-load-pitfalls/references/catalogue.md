@@ -30,7 +30,7 @@ piège.
 | Objet porté « perdu » | `canRemoveItemStack(new ItemStack(id, 1))` compare la durabilité | compter par id (lint) |
 | Objet au sol impossible à ramasser par Interact | le client ne cible jamais les entités d'objet | ramassage accroupi (`arena/CrouchPickup`) |
 | Coups sur un bloc sans effet dans une instance | `BlockModificationAllowed false` : `DamageBlockEvent` jamais émis | PNJ gelés ou interactions Use |
-| Blocs cassés et lâchés à l'ouverture d'une porte | les blocs `Material Empty` dans le battant (3×3) sont détruits | `generate_prefabs.door_swings` + vérification |
+| Blocs cassés et lâchés à l'ouverture d'une porte | les blocs `Material Empty` dans le battant (3×3) sont détruits | `generate_prefabs.door_swings` + vérification (mod Vampires seulement : les générateurs des Fractales n'ont pas encore ce contrôle) |
 | Élite restée invulnérable / joueur resté gelé après redémarrage | état temporaire sauvegardé (Invulnerable, Frozen) | composants sans codec, nettoyage au chargement/déchargement |
 | Lumière d'un joueur vue par tous | `DynamicLight` est diffusé à tous les spectateurs | file privée (`PrivateNightLightSystem`) (lint) |
 | PNJ figé 1,5 s après apparition | `SpawnLockTime` par défaut de 1,5 s | le baisser dans le rôle (vrilles : 0,5) |

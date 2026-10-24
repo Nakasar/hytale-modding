@@ -42,6 +42,17 @@ RULES = [
 GENERATED_HINT = re.compile(r"(Layout\.java|\.prefab\.json|TriggerVolumeData\.json|PointData\.json|docs/npc-reference)")
 
 
+def stereo_sounds():
+    ids = set()
+    for f in subprocess.run(["git", "ls-files", "mods/*/tools/vanilla-stereo-sounds-*.txt"], capture_output=True,
+                            text=True).stdout.split():
+        for line in open(f, encoding="utf-8"):
+            line = line.split("#")[0].strip()
+            if line:
+                ids.add(line)
+    return ids
+
+
 def git(*args):
     return subprocess.run(["git", *args], capture_output=True, text=True, check=True).stdout
 
@@ -53,6 +64,7 @@ def main():
     a = ap.parse_args()
     diff_args = ["diff", "--cached"] if a.staged else ["diff", f"{a.base}...HEAD"]
     alerts = []
+    stereo = stereo_sounds()
     # 1. lignes ajoutées
     current = None
     line_no = 0
@@ -69,6 +81,11 @@ def main():
             code = line[1:].strip()
             if current.endswith(".java") and code.startswith(("*", "//", "/*")):
                 continue  # commentaires et Javadoc : ils citent souvent le piège pour l'expliquer
+            for m in re.finditer(r"WorldSoundEventId[\"']?\s*[:=]\s*[\"']([^\"']+)", line):
+                sid = m.group(1)
+                if sid in stereo:
+                    alerts.append(("ERREUR", f"{current}:{line_no}", f"{sid} est stéréo (vanilla-stereo-sounds) : "
+                                                                    "WorldSoundEventId doit être mono."))
             for level, frx, lrx, why in RULES:
                 if re.search(frx, current) and re.search(lrx, line):
                     alerts.append((level, f"{current}:{line_no}", why))
