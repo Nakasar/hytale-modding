@@ -88,7 +88,6 @@ S1 = (25, -37)                    # escalier d'échafaudage du camp aux genoux (
 D1 = (-18, 20, -41, -33)          # passerelle des genoux (x0, x1, z0, z1), debout à KNEES
 KNEE_SEALS = [(-8.5, KNEES, -39.5), (8.5, KNEES, -39.5)]
 KNEE_WAVES = [[(-11, -36), (-6, -36), (-9, -34)], [(11, -36), (6, -36), (9, -34)]]
-BUTTRESS = (-42, -19, -41, -32, 14, 28)   # contrefort percé du tunnel (x0, x1, z0, z1, y0, y1)
 TUNNEL = (-42, -19, -38, -35)             # tunnel aux plaques, sol en KNEES - 1, haut de 4
 GATE1 = [(-18, y, z) for y in range(KNEES, KNEES + 4) for z in range(-38, -34)]
 PATH = (-47, -43, -49, -35)               # du tunnel au saut des gargouilles, debout à KNEES
@@ -142,6 +141,7 @@ MIST_BARRIER = "Nakasar_Fractal_Mist_Barrier"
 LANDING = "Nakasar_Fractal_Landing"
 PLATE = "Nakasar_Fractal_Pressure_Plate"
 RACK_BLOCK = "Nakasar_Fractal_Hammer_Rack"
+HAMMER_CHARGED = "Nakasar_Fractal_Hammer_Charged"
 GARGOYLE = "Nakasar_Fractal_Gargoyle"
 LEVER = "Nakasar_Fractal_Lever"
 CAGE_DOOR = "Nakasar_Fractal_Cage_Door"
@@ -507,19 +507,9 @@ def course_prefab():
     for x in range(D1[0], D1[1] + 1, 6):
         for y in range(0, KNEES - 1):
             p.set(x, y, D1[3], BEAM)
-    # Contrefort et tunnel aux plaques.
-    bx0, bx1, bz0, bz1, by0, by1 = BUTTRESS
+    # Contrefort et tunnel aux plaques : éperon rocheux au contour naturel, percé du tunnel.
     tx0, tx1, tz0, tz1 = TUNNEL
-    for x in range(bx0, bx1 + 1):
-        for y in range(by0, by1 + 1):
-            for z in range(bz0, bz1 + 1):
-                inside = tx0 <= x <= tx1 and tz0 <= z <= tz1 and KNEES <= y <= KNEES + 3
-                shell = x in (bx0, bx1) or y in (by0, by1) or z in (bz0, bz1) or (
-                    tx0 - 1 <= x <= tx1 + 1 and tz0 - 1 <= z <= tz1 + 1 and KNEES - 1 <= y <= KNEES + 4)
-                if inside:
-                    p.set(x, y, z, AIR)
-                elif shell:
-                    p.set(x, y, z, rock(x, y, z))
+    buttress_rock(p)
     for x in range(tx0, tx1 + 1):
         for z in range(tz0, tz1 + 1):
             p.set(x, KNEES - 1, z, "Rock_Stone_Brick")
@@ -627,8 +617,245 @@ def course_prefab():
     for x in range(cx - 1, cx + 2):
         for z in range(cz - 1, cz + 2):
             p.set(x, ARENA - 1, z, SEAL_STONE)
+    scaffold_dressing(p, curve_walkways(p))
     plateau_vegetation(p, tops, edge)
     return p
+
+
+FENCE = "Wood_Darkwood_Fence"
+PROPS = ["Furniture_Ancient_Crate", "Furniture_Ancient_Barrel", "Furniture_Ancient_Sack", "Furniture_Ancient_Crate"]
+
+
+WALKWAY_GROUPS = [([D1], KNEES, True), ([PATH], KNEES, True), ([D2] + WALK_TOP, CHEST, True), ([BRIDGE_S2], SHOULDERS, False)]
+BULGE = 5.0                       # avancée maxi des renflements des passerelles (blocs)
+
+
+def curve_walkways(p):
+    """Courbe les passerelles d'échafaudage : renflements arrondis (bruit lisse) sur les bords qui donnent sur le
+    vide, coins adoucis, planches neuves bordées de poutres et étayées par des jambes de force. Un renflement ne
+    s'approche jamais à moins de 3 blocs d'autre chose (autre passerelle, colosse, falaise, sauts) ni à moins de 6
+    d'une barrière : il ne crée ni raccourci ni contournement. Rend [(cases (x, z), debout, garde-corps)]."""
+    colossus, _ = colossus_cells()
+    keep = scaffold_keepouts()
+    out = []
+    for g, (boxes, stand, rails) in enumerate(WALKWAY_GROUPS):
+        floor_y = stand - 1
+        gates = [(x, z) for x, y, z in GATE1 + GATE2 + GATE3 if stand - 1 <= y <= stand + 3]
+        base = {(x, z) for x0, x1, z0, z1 in boxes for x in range(x0, x1 + 1) for z in range(z0, z1 + 1)}
+
+        def foreign(x, y, z):
+            # Les poteaux d'étai (poutres) ne comptent pas : un renflement peut venir s'y appuyer.
+            return ((x, y, z) in p.blocks and (x, z) not in base and p.blocks[(x, y, z)][0] != BEAM) or (x, y, z) in colossus
+
+        def allowed(x, z):
+            if any(x0 - 1 <= x <= x1 + 1 and y0 <= stand <= y1 and z0 - 1 <= z <= z1 + 1 for x0, x1, y0, y1, z0, z1 in JUMP_ZONES):
+                return False
+            if any(math.hypot(x - gx, z - gz) < 6 for gx, gz in gates) or z <= cliff_face(x, stand) + 3:
+                return False
+            return not any(foreign(x + i, y, z + j) for i in range(-3, 4) for j in range(-3, 4)
+                           for y in range(floor_y - 2, stand + 4))
+
+        def rounded(x, z):
+            """Distance signée au contour des boîtes aux coins arrondis (négative dedans)."""
+            out = []
+            for x0, x1, z0, z1 in boxes:
+                hx, hz = (x1 - x0 + 1) / 2, (z1 - z0 + 1) / 2
+                r = min(3.0, hx - 0.5, hz - 0.5)
+                qx = abs(x - (x0 + x1) / 2) - (hx - r)
+                qz = abs(z - (z0 + z1) / 2) - (hz - r)
+                out.append(math.hypot(max(qx, 0), max(qz, 0)) + min(max(qx, qz), 0) - r)
+            return min(out)
+
+        shape = set()
+        for x in range(min(b[0] for b in boxes) - 6, max(b[1] for b in boxes) + 7):
+            for z in range(min(b[2] for b in boxes) - 6, max(b[3] for b in boxes) + 7):
+                sd = rounded(x, z)
+                if (x, z) in base:
+                    # Coin arrondi : on ne retire une case que loin de tout raccord et de tout point du parcours.
+                    if sd <= 0 or not allowed(x, z) or any(math.hypot(x - kx, z - kz) <= 3 for kx, kz in keep):
+                        shape.add((x, z))
+                elif sd <= BULGE * max(0.0, min(1.0, 0.55 + 1.1 * fn.fbm2(x, z, 8, 2, 460 + g))) and allowed(x, z):
+                    shape.add((x, z))
+        dist = lambda x, z: max(0.0, rounded(x, z))
+        # Pas de trou d'une case, et rien d'isolé : chaque case neuve tient à 2 voisines au moins.
+        n4 = ((1, 0), (-1, 0), (0, 1), (0, -1))
+        shape |= {(x + dx, z + dz) for x, z in shape for dx, dz in n4
+                  if sum((x + dx + i, z + dz + j) in shape for i, j in n4) >= 3 and allowed(x + dx, z + dz)}
+        for _ in range(2):
+            shape = {c for c in shape if c in base or sum((c[0] + dx, c[1] + dz) in shape
+                                                          for dx, dz in ((1, 0), (-1, 0), (0, 1), (0, -1))) >= 2}
+        # Seules restent les cases reliées à la passerelle (pas d'îlot de planches détaché).
+        linked, todo = set(), [c for c in shape if c in base]
+        while todo:
+            c = todo.pop()
+            if c in linked or c not in shape:
+                continue
+            linked.add(c)
+            todo += [(c[0] + dx, c[1] + dz) for dx, dz in n4]
+        shape = linked
+        for x, z in sorted(shape):
+            if (x, z) in base and (x, z) not in shape:
+                continue
+            edge = any((x + dx, z + dz) not in shape for dx, dz in ((1, 0), (-1, 0), (0, 1), (0, -1)))
+            if (x, z) in base:
+                if p.blocks.get((x, floor_y, z), (AIR,))[0] == BEAM and not edge:
+                    p.set(x, floor_y, z, PLANKS)
+                continue
+            p.set(x, floor_y, z, BEAM if edge else PLANKS)
+            # Jambe de force sous le bout des renflements : poutre en biais vers la passerelle.
+            d = dist(x, z)
+            if edge and d >= 2 and fn.hash01(x, z, g, 451) < 0.5:
+                bx = min(max(x, min(b[0] for b in boxes)), max(b[1] for b in boxes))
+                bz = min(max(z, min(b[2] for b in boxes)), max(b[3] for b in boxes))
+                for k in range(1, int(d) + 1):
+                    t = k / (d + 1)
+                    p.set(round(x + (bx - x) * t), floor_y - k, round(z + (bz - z) * t), BEAM)
+        for c in base - shape:
+            p.set(c[0], floor_y, c[1], AIR)
+        out.append((shape, stand, rails))
+    return out
+
+
+BUTTRESS_ROCK = (-30.5, KNEES + 1, -36.5, 12.5, 7.5, 11.0, 6.5)   # centre x, y, z ; demi-axes x, haut, bas, z
+
+
+def buttress_rock(p):
+    """Éperon rocheux percé du tunnel : masse bosselée (ellipsoïde déformé par le bruit), dessous en pointe comme les
+    îles des Brumes, dessus moussu et herbu, lianes dessous. Ne dépasse jamais en x les bouches du tunnel (les
+    passerelles D1 et PATH y touchent) ; la coque du tunnel est toujours pleine."""
+    cx, cy, cz, rx, ry_up, ry_down, rz = BUTTRESS_ROCK
+    tx0, tx1, tz0, tz1 = TUNNEL
+    bx0, bx1 = tx0, tx1
+
+    def tunnel(x, y, z):
+        return tx0 <= x <= tx1 and tz0 <= z <= tz1 and KNEES <= y <= KNEES + 3
+
+    def solid(x, y, z):
+        if not bx0 <= x <= bx1 or tunnel(x, y, z):
+            return False
+        if tx0 <= x <= tx1 and tz0 - 1 <= z <= tz1 + 1 and KNEES - 1 <= y <= KNEES + 4:
+            return True
+        dy = (y - cy) / (ry_up if y >= cy else ry_down)
+        # Dessous en pointe : la section rétrécit vers le bas.
+        taper = 1 - 0.55 * max(0.0, -dy)
+        dx = (x - cx) / (rx * (0.75 + 0.25 * taper))
+        dz = (z - cz) / (rz * taper)
+        n = fn.vnoise3(x, y, z, 5, 470) * 0.22 + fn.vnoise3(x, y, z, 2.5, 471) * 0.08
+        return dx * dx + dy * dy + dz * dz < 1 + n
+
+    cells = set()
+    for x in range(bx0, bx1 + 1):
+        for y in range(int(cy - ry_down) - 2, int(cy + ry_up) + 3):
+            for z in range(int(cz - rz) - 3, int(cz + rz) + 4):
+                if solid(x, y, z):
+                    cells.add((x, y, z))
+    top = []
+    for (x, y, z) in cells:
+        if all((x + dx, y + dy, z + dz) in cells for dx in (-1, 0, 1) for dy in (-1, 0, 1) for dz in (-1, 0, 1)
+               if (dx, dy, dz) != (0, 0, 0) and (x + dx, y + dy, z + dz)[0] in range(bx0, bx1 + 1)):
+            continue
+        if (x, y + 1, z) not in cells and not tunnel(x, y + 1, z) and y > KNEES + 3:
+            p.set(x, y, z, fn.soil(x, z, 5))
+            top.append((x, y, z))
+        elif (x, y + 1, z) not in cells and not tunnel(x, y + 1, z) and (x, y + 2, z) not in cells and y > cy:
+            p.set(x, y, z, "Rock_Stone_Mossy")
+        else:
+            p.set(x, y, z, rock(x, y, z))
+    for (x, y, z) in cells:
+        if (x, y - 1, z) not in cells and not tunnel(x, y - 1, z) and y < KNEES - 1 and fn.hash01(x, y, z, 472) < 0.18:
+            vine = fn.HANGING[int(fn.hash01(z, y, x, 473) * len(fn.HANGING))]
+            for k in range(1 + int(fn.hash01(y, z, x, 474) * 5)):
+                if fn.free(p, x, y - 1 - k, z):
+                    p.set(x, y - 1 - k, z, vine)
+    fn.flora(p, top, seed=475, density=0.6, flowers=0.15)
+    for x, y, z in top:
+        if fn.hash01(x, y, z, 476) < 0.025 and 2 < x - bx0 and bx1 - x > 2:
+            fn.shrub(p, x, y + 1, z, seed=x + z, leaves="Plant_Leaves_Oak")
+
+
+def scaffold_keepouts():
+    """Points du parcours à laisser dégagés (rayon 3) : sceaux, vagues, foyers, barrières, leviers."""
+    pts = [(x, z) for x, _, z in KNEE_SEALS] + [(CHEST_SEAL[0], CHEST_SEAL[2])]
+    pts += [xz for wave in KNEE_WAVES for xz in wave] + CHEST_WAVES + FIRES
+    pts += [(x, z) for x, _, z in GATE1 + GATE2 + GATE3] + [(x, z) for x, _, z in LEVERS_TOP]
+    return pts
+
+
+def scaffold_dressing(p, walkways):
+    """Habille les passerelles d'échafaudage (genoux, chemin du saut, torse, pont des épaules) : garde-corps là où le
+    bord donne sur le vide (jamais devant un raccord), poteaux à lanterne, caisses et sacs du culte contre le colosse,
+    croisillons des étais, lanternes suspendues, lianes et toiles d'araignée sous les planchers, torches sur les
+    escaliers. Rien ne se pose sur le chemin d'un saut, d'un sceau, d'une vague ou d'un foyer."""
+    def empty(x, y, z):
+        return p.blocks.get((x, y, z), (AIR,))[0] == AIR
+
+    keep = scaffold_keepouts()
+
+    def clear_of(x, z, r=3.0):
+        return all(math.hypot(x - kx, z - kz) > r for kx, kz in keep)
+
+    for cells, stand, rails in walkways:
+        floor_y = stand - 1
+        border = []
+        for x, z in sorted(cells):
+            for dx, dz in ((0, -1), (0, 1), (-1, 0), (1, 0)):
+                if (x + dx, z + dz) not in cells:
+                    border.append((x, z, dx, dz))
+                    break
+        border.sort(key=lambda c: math.atan2(c[1] - sum(z for _, z in cells) / len(cells),
+                                             c[0] - sum(x for x, _ in cells) / len(cells)))
+        k = 0
+        for x, z, dx, dz in border:
+            # Bord sur le vide : rien autour du pas dehors (hors de la passerelle), sur 2 cases (pas de raccord).
+            ox, oz = x + dx, z + dz
+            open_edge = all(empty(ox + i, y, oz + j) for i in range(-2, 3) for j in range(-2, 3) for y in (floor_y, stand)
+                            if (ox + i, oz + j) not in cells)
+            if not open_edge:
+                continue
+            # Dessous : liane ou toile pendue au rebord.
+            h = fn.hash01(x, stand, z, 401)
+            if h < 0.16 and empty(x, floor_y - 1, z):
+                p.set(x, floor_y - 1, z, "Plant_Vine_Green_Hanging")
+            elif h < 0.2 and empty(x, floor_y - 1, z):
+                p.set(x, floor_y - 1, z, "Deco_SpiderWeb")
+            if not rails or not clear_of(x, z, 2.0) or not empty(x, stand, z):
+                continue
+            k += 1
+            if k % 6 == 0:
+                p.set(x, stand, z, BEAM)
+                p.set(x, stand + 1, z, "Deco_Lantern")
+            else:
+                p.set(x, stand, z, FENCE, 1 if dx else 0)
+        # Caisses, tonneaux et sacs le long du côté du colosse (nord), en petits tas.
+        if rails:
+            for x in sorted({x for x, _ in cells}):
+                z0 = min(z for cx, z in cells if cx == x)
+                if fn.hash01(x, stand, z0, 402) > 0.22 or not clear_of(x, z0 + 1, 3.0):
+                    continue
+                for dz in (1, 2):
+                    if (x, z0 + dz) in cells and fn.hash01(x, dz, stand, 403) < (0.9 if dz == 1 else 0.35) and empty(x, stand, z0 + dz):
+                        prop = PROPS[int(fn.hash01(x, z0, dz, 404) * len(PROPS))]
+                        p.set(x, stand, z0 + dz, prop)
+                        if prop == "Furniture_Ancient_Crate" and fn.hash01(x, dz, 405) < 0.4 and empty(x, stand + 1, z0 + dz):
+                            p.set(x, stand + 1, z0 + dz, "Furniture_Crude_Candle")
+        # Lanternes suspendues sous le plancher (vues d'en bas).
+        for x, z in cells:
+            if x % 7 == 3 and z % 5 == 0 and empty(x, floor_y - 1, z):
+                p.set(x, floor_y - 1, z, "Deco_Lantern_Ceiling")
+    # Croisillons des étais : traverses horizontales entre les poteaux des passerelles.
+    for (x0, x1, z), (y0, y1) in (((D1[0], D1[1], D1[3]), (0, KNEES - 1)), ((D2[0], D2[1], D2[3] - 1), (KNEES, CHEST - 1))):
+        for y in range(y1 - 5, y0, -6):
+            for x in range(x0, x1 + 1):
+                if empty(x, y, z):
+                    p.set(x, y, z, BEAM)
+            for x in range(x0, x1 + 1, 6):
+                if fn.hash01(x, y, z, 406) < 0.3 and empty(x + 1, y - 1, z):
+                    p.set(x + 1, y - 1, z, "Deco_SpiderWeb")
+    # Torches du culte aux coins des escaliers en colimaçon.
+    for (cx, cz), y1 in ((S1, KNEES), (S2, SHOULDERS)):
+        for dx, dz in ((-5, -5), (5, -5), (5, 5), (-5, 5)):
+            if empty(cx + dx, y1, cz + dz) and clear_of(cx + dx, cz + dz, 2.0):
+                p.set(cx + dx, y1, cz + dz, "Furniture_Crude_Torch")
 
 
 def plateau_tops():
@@ -839,6 +1066,10 @@ def status_icon(path, color, glyph):
             d.polygon(((30 + k * 22, 36), (52 + k * 22, 64), (30 + k * 22, 92)), fill=color + (255,))
     elif glyph == "shield":
         d.polygon(((64, 24), (100, 38), (94, 86), (64, 108), (34, 86), (28, 38)), outline=color + (255,), width=8)
+    elif glyph == "hammer":
+        d.polygon(((58, 52), (70, 52), (72, 108), (56, 108)), fill=(150, 110, 80, 255))
+        d.rectangle((34, 26, 94, 54), fill=color + (255,))
+        d.polygon(((66, 4), (48, 40), (64, 40), (56, 66), (82, 30), (66, 30), (76, 4)), fill=(255, 240, 170, 255))
     elif glyph == "demon":
         d.polygon(((30, 40), (44, 18), (52, 46)), fill=color + (255,))
         d.polygon(((98, 40), (84, 18), (76, 46)), fill=color + (255,))
@@ -872,6 +1103,14 @@ def effects():
                     "coups. Copie de Nakasar_Elite_Rooted du mod Vampires.",
         "Duration": 2.5, "OverlapBehavior": "Overwrite", "RemovalBehavior": "Duration", "Debuff": False,
         "ApplicationEffects": {"KnockbackMultiplier": 0},
+    }
+    out[HAMMER_CHARGED] = {
+        "$Comment": "Marteau du culte chargé (Brise-sceau) : posé par HammerSystem tant que le porteur a la charge, "
+                    "retiré quand un coup sur un sceau la consomme ou quand il lâche le marteau. Sans autre effet.",
+        "Name": f"{LANG}.effects.{HAMMER_CHARGED}",
+        "Debuff": False,
+        "StatusEffectIcon": f"{STATUS_ICONS}/Hammer_Charged.png",
+        "OverlapBehavior": "Overwrite", "Infinite": False, "Duration": 600,
     }
     out["Nakasar_Fractal_Lever_Rooted"] = {
         "$Comment": "Joueur qui tire un levier de la Falaise : immobile quelques secondes (le levier est dur).",
@@ -1402,6 +1641,7 @@ def lang():
         put(f"npc.{role_id.removeprefix('Nakasar_Fractal_')}.name", nf, ne)
     for tier, *_ in CORRUPTION_TIERS:
         put(f"effects.{CORRUPTION}_{tier}", f"Corruption {tier}", f"Corruption {tier}")
+    put(f"effects.{HAMMER_CHARGED}", "Marteau chargé : frappez un sceau", "Hammer charged: strike a seal")
     put("effects.Nakasar_Fractal_Lever_Rooted", "Levier tiré", "Pulling a lever")
     put("effects.Nakasar_Fractal_Archdiviner_Haste", "Hâte", "Haste")
     put("effects.Nakasar_Fractal_Archdiviner_Protection", "Protection", "Protection")
@@ -1644,6 +1884,7 @@ def main():
     for tier, top, _ in CORRUPTION_TIERS:
         status_icon(COMMON / STATUS_ICONS / f"Corruption_{tier}.png", tuple(int(top[i:i + 2], 16) for i in (1, 3, 5)), "corruption")
     status_icon(COMMON / STATUS_ICONS / "Rooted.png", (150, 200, 120), "rooted")
+    status_icon(COMMON / STATUS_ICONS / "Hammer_Charged.png", (196, 120, 255), "hammer")
     status_icon(COMMON / STATUS_ICONS / "Haste.png", (255, 154, 74), "haste")
     status_icon(COMMON / STATUS_ICONS / "Protection.png", (200, 170, 255), "shield")
     status_icon(COMMON / STATUS_ICONS / "Demon.png", (220, 40, 60), "demon")
