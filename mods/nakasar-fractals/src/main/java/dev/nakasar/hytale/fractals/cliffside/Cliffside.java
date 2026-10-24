@@ -1,5 +1,6 @@
 package dev.nakasar.hytale.fractals.cliffside;
 
+import dev.nakasar.hytale.fractals.FractalsPlugin;
 import com.hypixel.hytale.component.Ref;
 import com.hypixel.hytale.component.RemoveReason;
 import com.hypixel.hytale.component.Store;
@@ -302,6 +303,9 @@ public final class Cliffside {
             return;
         }
         Seal seal = st.seals[index];
+        FractalsPlugin.get().getLogger().atInfo().log("Nakasar_Fractal_Hammer : sceau %d frappé par %s (marteau en main %s, "
+                + "chargé %s, bulle %s)", index, player.getUsername(), Hammer.holds(store, playerRef),
+                Hammer.isCharged(player.getUuid()), seal.shielded);
         if (!Hammer.holds(store, playerRef)) {
             tell(st, player, "seal.needHammer");
             return;

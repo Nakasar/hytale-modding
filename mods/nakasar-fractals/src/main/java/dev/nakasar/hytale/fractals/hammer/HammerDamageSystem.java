@@ -1,5 +1,6 @@
 package dev.nakasar.hytale.fractals.hammer;
 
+import dev.nakasar.hytale.fractals.FractalsPlugin;
 import com.hypixel.hytale.component.ArchetypeChunk;
 import com.hypixel.hytale.component.CommandBuffer;
 import com.hypixel.hytale.component.Ref;
@@ -81,6 +82,8 @@ public final class HammerDamageSystem extends DamageEventSystem {
             return;
         }
         Credit credit = CREDITS.remove(victim);
+        FractalsPlugin.get().getLogger().atInfo().log("Nakasar_Fractal_Hammer : mort de %s (crédit %s)", npc.getRoleName(),
+                credit == null ? "aucun" : credit.player().getUsername());
         if (credit != null && System.nanoTime() - credit.at() <= Telegraphs.seconds(Hammer.CREDIT_SECONDS)) {
             charge(credit.player());
         }
@@ -101,6 +104,7 @@ public final class HammerDamageSystem extends DamageEventSystem {
             return;
         }
         carrier.charged = true;
+        FractalsPlugin.get().getLogger().atInfo().log("Nakasar_Fractal_Hammer : %s chargé", player.getUsername());
         player.sendMessage(Message.translation("nakasar_fractals_cliffside.hammer.charged"));
     }
 }

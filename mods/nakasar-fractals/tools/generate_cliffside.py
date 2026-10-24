@@ -142,6 +142,7 @@ MIST_BARRIER = "Nakasar_Fractal_Mist_Barrier"
 LANDING = "Nakasar_Fractal_Landing"
 PLATE = "Nakasar_Fractal_Pressure_Plate"
 RACK_BLOCK = "Nakasar_Fractal_Hammer_Rack"
+HAMMER_CHARGED = "Nakasar_Fractal_Hammer_Charged"
 GARGOYLE = "Nakasar_Fractal_Gargoyle"
 LEVER = "Nakasar_Fractal_Lever"
 CAGE_DOOR = "Nakasar_Fractal_Cage_Door"
@@ -839,6 +840,10 @@ def status_icon(path, color, glyph):
             d.polygon(((30 + k * 22, 36), (52 + k * 22, 64), (30 + k * 22, 92)), fill=color + (255,))
     elif glyph == "shield":
         d.polygon(((64, 24), (100, 38), (94, 86), (64, 108), (34, 86), (28, 38)), outline=color + (255,), width=8)
+    elif glyph == "hammer":
+        d.polygon(((58, 52), (70, 52), (72, 108), (56, 108)), fill=(150, 110, 80, 255))
+        d.rectangle((34, 26, 94, 54), fill=color + (255,))
+        d.polygon(((66, 4), (48, 40), (64, 40), (56, 66), (82, 30), (66, 30), (76, 4)), fill=(255, 240, 170, 255))
     elif glyph == "demon":
         d.polygon(((30, 40), (44, 18), (52, 46)), fill=color + (255,))
         d.polygon(((98, 40), (84, 18), (76, 46)), fill=color + (255,))
@@ -872,6 +877,14 @@ def effects():
                     "coups. Copie de Nakasar_Elite_Rooted du mod Vampires.",
         "Duration": 2.5, "OverlapBehavior": "Overwrite", "RemovalBehavior": "Duration", "Debuff": False,
         "ApplicationEffects": {"KnockbackMultiplier": 0},
+    }
+    out[HAMMER_CHARGED] = {
+        "$Comment": "Marteau du culte chargé (Brise-sceau) : posé par HammerSystem tant que le porteur a la charge, "
+                    "retiré quand un coup sur un sceau la consomme ou quand il lâche le marteau. Sans autre effet.",
+        "Name": f"{LANG}.effects.{HAMMER_CHARGED}",
+        "Debuff": False,
+        "StatusEffectIcon": f"{STATUS_ICONS}/Hammer_Charged.png",
+        "OverlapBehavior": "Overwrite", "Infinite": False, "Duration": 600,
     }
     out["Nakasar_Fractal_Lever_Rooted"] = {
         "$Comment": "Joueur qui tire un levier de la Falaise : immobile quelques secondes (le levier est dur).",
@@ -1402,6 +1415,7 @@ def lang():
         put(f"npc.{role_id.removeprefix('Nakasar_Fractal_')}.name", nf, ne)
     for tier, *_ in CORRUPTION_TIERS:
         put(f"effects.{CORRUPTION}_{tier}", f"Corruption {tier}", f"Corruption {tier}")
+    put(f"effects.{HAMMER_CHARGED}", "Marteau chargé : frappez un sceau", "Hammer charged: strike a seal")
     put("effects.Nakasar_Fractal_Lever_Rooted", "Levier tiré", "Pulling a lever")
     put("effects.Nakasar_Fractal_Archdiviner_Haste", "Hâte", "Haste")
     put("effects.Nakasar_Fractal_Archdiviner_Protection", "Protection", "Protection")
@@ -1644,6 +1658,7 @@ def main():
     for tier, top, _ in CORRUPTION_TIERS:
         status_icon(COMMON / STATUS_ICONS / f"Corruption_{tier}.png", tuple(int(top[i:i + 2], 16) for i in (1, 3, 5)), "corruption")
     status_icon(COMMON / STATUS_ICONS / "Rooted.png", (150, 200, 120), "rooted")
+    status_icon(COMMON / STATUS_ICONS / "Hammer_Charged.png", (196, 120, 255), "hammer")
     status_icon(COMMON / STATUS_ICONS / "Haste.png", (255, 154, 74), "haste")
     status_icon(COMMON / STATUS_ICONS / "Protection.png", (200, 170, 255), "shield")
     status_icon(COMMON / STATUS_ICONS / "Demon.png", (220, 40, 60), "demon")

@@ -41,6 +41,9 @@ public final class HammerSystem extends TickingSystem<EntityStore> {
     public static final float STUN_DROP = 3f;
     public static final String CAUSE = "Nakasar_Fractal_Corruption";
     public static final String STUN = "Hazard_Electric_Stun";
+    /** Buff « Marteau chargé », posé tant que la charge Brise-sceau est prête. */
+    public static final String CHARGED = "Nakasar_Fractal_Hammer_Charged";
+    private static final float CHARGED_SECONDS = 600f;
     private static final String TIER = "Nakasar_Fractal_Corruption_";
     private static final String MESSAGES = "nakasar_fractals_cliffside.hammer.";
     private static final Map<World, float[]> ELAPSED = Collections.synchronizedMap(new WeakHashMap<>());
@@ -103,6 +106,13 @@ public final class HammerSystem extends TickingSystem<EntityStore> {
             carrier.carrying = carrying;
             if (!carrying) {
                 carrier.charged = false;
+            }
+            // Buff visible tant que le marteau est chargé (retiré quand un sceau consomme la charge).
+            boolean shown = Hurt.has(store, ref, CHARGED);
+            if (carrier.charged && !shown) {
+                Hurt.effect(store, ref, CHARGED, CHARGED_SECONDS);
+            } else if (!carrier.charged && shown) {
+                Hurt.clear(store, ref, CHARGED);
             }
             boolean holding = carrying && Hammer.holds(store, ref);
             if (carrier.tier == 0) {

@@ -1,0 +1,9 @@
+{
+  "$Comment": "Marteau du culte chargé (Brise-sceau) : posé par HammerSystem tant que le porteur a la charge, retiré quand un coup sur un sceau la consomme ou quand il lâche le marteau. Sans autre effet.",
+  "Name": "nakasar_fractals_cliffside.effects.Nakasar_Fractal_Hammer_Charged",
+  "Debuff": false,
+  "StatusEffectIcon": "UI/StatusEffects/Nakasar/Fractals/Hammer_Charged.png",
+  "OverlapBehavior": "Overwrite",
+  "Infinite": false,
+  "Duration": 600
+}
