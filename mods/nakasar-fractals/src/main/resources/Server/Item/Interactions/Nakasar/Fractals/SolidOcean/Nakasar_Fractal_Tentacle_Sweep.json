@@ -28,7 +28,16 @@
       "Type": "Simple",
       "RunTime": 1.4,
       "Effects": {
-        "WorldSoundEventId": "SFX_Spear_Throw_Charge"
+        "WorldSoundEventId": "SFX_Spear_Throw_Charge",
+        "ItemPlayerAnimationsId": "Nakasar_Fractal_Jade_Tentacle",
+        "ItemAnimationId": "Sweep"
+      }
+    },
+    {
+      "Type": "Simple",
+      "RunTime": 0.7,
+      "Effects": {
+        "WorldSoundEventId": "SFX_Unarmed_Swing"
       }
     }
   ]

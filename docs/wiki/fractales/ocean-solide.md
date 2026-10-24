@@ -10,7 +10,7 @@ Une traversée de fragments de jade flottants mène à l'**Abîme de Jade**, un 
 
 ## Déroulé
 
-1. **Les fragments de jade** à sauter au-dessus de l'océan ; une chute ramène au fragment d'avant. Des **irukandjis** gardent le chemin.
+1. **Les fragments de jade** à sauter au-dessus de l'océan ; une chute ramène au fragment d'avant. De nuit, des **irukandjis** gardent le chemin (600 PV) : leur **décharge** (cercle de 3,5 blocs) jette dans le vide, leur **filament** marque un joueur puis l'attire contre eux, au-dessus du vide s'ils flottent entre deux fragments. Abattez-les ou passez hors de leur portée (12 blocs).
 2. **L'Abîme de Jade**, immobile au milieu de l'arène.
 
 ## L'Abîme de Jade
@@ -18,5 +18,6 @@ Une traversée de fragments de jade flottants mène à l'**Abîme de Jade**, un 
 **Le rayon** : toutes les 11 s, un **crâne** marque un joueur. Quand il disparaît, le rayon se fixe sur sa place : **0,7 s** pour s'écarter du cercle rouge. Si vous tenez un **cristal réfléchissant**, il absorbe le rayon et vous charge ; **lancez** alors le cristal sur l'Abîme (clic droit vers lui) : **−5 %** de sa vie (−3 % sur un tentacule).
 
 - **Phase 1** : deux **tentacules** à abattre ; dès le niveau 26, un test d'agonie.
-- **Phase 2** : des **colosses de jade** (3, +1 par joueur) **renvoient les projectiles** sauf quand ils sont étourdis, et lâchent les cristaux réfléchissants.
+- **Tout le combat** : un **colosse de jade** sort du jade toutes les **15 s** (3 en vie au plus). Insensible aux attaques à distance, il se bat au contact et lâche deux cristaux réfléchissants.
+- **Phase 2** : abattre les colosses (3, +1 par joueur) fait avancer le combat.
 - **Fin** : les tentacules lâchent les cristaux. **Sous 8 %**, un dernier rayon frappe tout le monde, sans esquive.

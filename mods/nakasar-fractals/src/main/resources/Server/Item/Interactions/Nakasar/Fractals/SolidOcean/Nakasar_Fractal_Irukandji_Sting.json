@@ -1,5 +1,5 @@
 {
-  "$Comment": "Irukandji au contact : piqûre (8 dégâts et poison 3 s).",
+  "$Comment": "Irukandji au contact : piqûre (12 dégâts et poison 4 s).",
   "Type": "Serial",
   "Interactions": [
     {
@@ -19,7 +19,7 @@
           "ExtendTop": 0.8,
           "ExtendBottom": 0.8,
           "StartDistance": 0.2,
-          "EndDistance": 2.2,
+          "EndDistance": 2.4,
           "Length": 70,
           "RollOffset": 0,
           "YawStartOffset": 35
@@ -30,7 +30,7 @@
               "Parent": "DamageEntityParent",
               "DamageCalculator": {
                 "BaseDamage": {
-                  "Physical": 8
+                  "Physical": 12
                 },
                 "RandomPercentageModifier": 0.1
               },
@@ -47,7 +47,7 @@
               "Type": "ApplyEffect",
               "EffectId": "Poison_T1",
               "Entity": "Target",
-              "Duration": 3
+              "Duration": 4
             }
           ]
         }

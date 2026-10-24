@@ -1,12 +1,10 @@
 {
-  "$Comment": "Tentacule de l'Abîme de Jade : colonne de jade segmentée, immobile, balaie autour de lui.",
-  "Model": "NPC/Nakasar/Fractals/Jade_Tentacle/Model.blockymodel",
-  "Texture": "NPC/Nakasar/Fractals/Jade_Tentacle/Texture.png",
-  "EyeHeight": 2.4,
+  "$Comment": "Tentacule de l'Abîme de Jade, animé (tools/generate_solid_ocean.py, moteur fractal_anim) : huit segments octogonaux bleu nuit à taches turquoise, ventouses orangées, griffe de cristal, motte de jade fendue. Ondule au repos, balaie (Sweep) et s'abat (Slam).",
+  "EyeHeight": 3.2,
   "HitBox": {
     "Max": {
       "X": 0.6,
-      "Y": 2.9,
+      "Y": 3.9,
       "Z": 0.6
     },
     "Min": {
@@ -15,6 +13,164 @@
       "Z": -0.6
     }
   },
-  "MinScale": 1.4,
-  "MaxScale": 1.4
+  "MinScale": 1,
+  "MaxScale": 1,
+  "Light": {
+    "Color": "#4fd",
+    "Radius": 3
+  },
+  "Model": "NPC/Nakasar/Fractals/Jade_Tentacle/Model.blockymodel",
+  "Texture": "NPC/Nakasar/Fractals/Jade_Tentacle/Texture.png",
+  "AnimationSets": {
+    "Idle": {
+      "Animations": [
+        {
+          "Animation": "NPC/Nakasar/Fractals/Jade_Tentacle/Animations/Idle.blockyanim"
+        }
+      ]
+    },
+    "Spawn": {
+      "Animations": [
+        {
+          "Animation": "NPC/Nakasar/Fractals/Jade_Tentacle/Animations/Spawn.blockyanim",
+          "Looping": false
+        }
+      ]
+    },
+    "Hurt": {
+      "Animations": [
+        {
+          "Animation": "NPC/Nakasar/Fractals/Jade_Tentacle/Animations/Hurt.blockyanim",
+          "Looping": false
+        }
+      ]
+    },
+    "Death": {
+      "Animations": [
+        {
+          "Animation": "NPC/Nakasar/Fractals/Jade_Tentacle/Animations/Death.blockyanim",
+          "Looping": false
+        }
+      ]
+    },
+    "Walk": {
+      "Animations": [
+        {
+          "Animation": "NPC/Nakasar/Fractals/Jade_Tentacle/Animations/Idle.blockyanim"
+        }
+      ]
+    },
+    "WalkBackward": {
+      "Animations": [
+        {
+          "Animation": "NPC/Nakasar/Fractals/Jade_Tentacle/Animations/Idle.blockyanim"
+        }
+      ]
+    },
+    "Run": {
+      "Animations": [
+        {
+          "Animation": "NPC/Nakasar/Fractals/Jade_Tentacle/Animations/Idle.blockyanim"
+        }
+      ]
+    },
+    "Sprint": {
+      "Animations": [
+        {
+          "Animation": "NPC/Nakasar/Fractals/Jade_Tentacle/Animations/Idle.blockyanim"
+        }
+      ]
+    },
+    "Jump": {
+      "Animations": [
+        {
+          "Animation": "NPC/Nakasar/Fractals/Jade_Tentacle/Animations/Idle.blockyanim"
+        }
+      ]
+    },
+    "JumpWalk": {
+      "Animations": [
+        {
+          "Animation": "NPC/Nakasar/Fractals/Jade_Tentacle/Animations/Idle.blockyanim"
+        }
+      ]
+    },
+    "JumpRun": {
+      "Animations": [
+        {
+          "Animation": "NPC/Nakasar/Fractals/Jade_Tentacle/Animations/Idle.blockyanim"
+        }
+      ]
+    },
+    "Fall": {
+      "Animations": [
+        {
+          "Animation": "NPC/Nakasar/Fractals/Jade_Tentacle/Animations/Idle.blockyanim"
+        }
+      ]
+    },
+    "Sleep": {
+      "Animations": [
+        {
+          "Animation": "NPC/Nakasar/Fractals/Jade_Tentacle/Animations/Idle.blockyanim"
+        }
+      ]
+    },
+    "Laydown": {
+      "Animations": [
+        {
+          "Animation": "NPC/Nakasar/Fractals/Jade_Tentacle/Animations/Idle.blockyanim"
+        }
+      ]
+    },
+    "Crouch": {
+      "Animations": [
+        {
+          "Animation": "NPC/Nakasar/Fractals/Jade_Tentacle/Animations/Idle.blockyanim"
+        }
+      ]
+    },
+    "CrouchWalk": {
+      "Animations": [
+        {
+          "Animation": "NPC/Nakasar/Fractals/Jade_Tentacle/Animations/Idle.blockyanim"
+        }
+      ]
+    },
+    "CrouchWalkBackward": {
+      "Animations": [
+        {
+          "Animation": "NPC/Nakasar/Fractals/Jade_Tentacle/Animations/Idle.blockyanim"
+        }
+      ]
+    },
+    "SwimIdle": {
+      "Animations": [
+        {
+          "Animation": "NPC/Nakasar/Fractals/Jade_Tentacle/Animations/Idle.blockyanim"
+        }
+      ]
+    },
+    "FluidIdle": {
+      "Animations": [
+        {
+          "Animation": "NPC/Nakasar/Fractals/Jade_Tentacle/Animations/Idle.blockyanim"
+        }
+      ]
+    },
+    "Alerted": {
+      "Animations": [
+        {
+          "Animation": "NPC/Nakasar/Fractals/Jade_Tentacle/Animations/Idle.blockyanim"
+        }
+      ]
+    },
+    "Wake": {
+      "Animations": [
+        {
+          "Animation": "NPC/Nakasar/Fractals/Jade_Tentacle/Animations/Idle.blockyanim"
+        }
+      ]
+    }
+  }
 }

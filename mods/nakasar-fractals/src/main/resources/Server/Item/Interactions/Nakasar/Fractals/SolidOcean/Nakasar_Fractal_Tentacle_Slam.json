@@ -21,13 +21,23 @@
       "EffectId": "Hazard_Electric_Stun",
       "EffectDuration": 1.5,
       "PlayersOnly": true,
-      "ImpactParticle": "Stick_Slam_Ground_Large"
+      "ImpactParticle": "Stick_Slam_Ground_Large",
+      "ImpactSound": "SFX_Goblin_Feastmaster_Slam"
     },
     {
       "Type": "Simple",
       "RunTime": 1.2,
       "Effects": {
-        "WorldSoundEventId": "SFX_Spear_Throw_Charge"
+        "WorldSoundEventId": "SFX_Spear_Throw_Charge",
+        "ItemPlayerAnimationsId": "Nakasar_Fractal_Jade_Tentacle",
+        "ItemAnimationId": "Slam"
+      }
+    },
+    {
+      "Type": "Simple",
+      "RunTime": 0.8,
+      "Effects": {
+        "WorldSoundEventId": "SFX_Unarmed_Swing"
       }
     }
   ]
