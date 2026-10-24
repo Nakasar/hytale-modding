@@ -1,0 +1,104 @@
+{
+  "TranslationProperties": {
+    "Name": "nakasar_fractals.items.Nakasar_Fractal_Mists_Portal.name",
+    "Description": "nakasar_fractals.items.Nakasar_Fractal_Mists_Portal.description"
+  },
+  "Icon": "Icons/Items/Nakasar/Fractals/Mists_Portal.png",
+  "Categories": [
+    "Blocks.Deco"
+  ],
+  "Quality": "Epic",
+  "PlayerAnimationsId": "Block",
+  "BlockType": {
+    "Material": "Empty",
+    "DrawType": "Model",
+    "Opacity": "Transparent",
+    "HitboxType": "Nakasar_Fractal_Mists_Portal",
+    "Flags": {},
+    "Gathering": {
+      "Breaking": {
+        "GatherType": "Benches",
+        "ItemId": "Nakasar_Fractal_Mists_Portal"
+      }
+    },
+    "BlockParticleSetId": "Stone",
+    "BlockSoundSetId": "Stone",
+    "ParticleColor": "#a87ae8",
+    "Light": {
+      "Color": "#a8f"
+    },
+    "Interactions": {
+      "CollisionEnter": {
+        "Interactions": [
+          {
+            "Type": "TeleportInstance",
+            "InstanceName": "Nakasar_Fractal_Observatory",
+            "PersonalReturnPoint": true,
+            "CloseOnBlockRemove": true,
+            "OriginSource": "Block",
+            "PositionOffset": {
+              "X": 2.5,
+              "Y": 0,
+              "Z": 2.5
+            },
+            "Next": {
+              "Type": "Simple",
+              "Effects": {
+                "LocalSoundEventId": "SFX_Portal_Neutral_Teleport_Local"
+              }
+            }
+          }
+        ]
+      }
+    },
+    "CustomModel": "Blocks/Nakasar/Fractals/Mists_Portal.blockymodel",
+    "CustomModelTexture": [
+      {
+        "Texture": "Blocks/Nakasar/Fractals/Mists_Portal_Texture.png",
+        "Weight": 1
+      }
+    ],
+    "VariantRotation": "NESW",
+    "CustomModelAnimation": "Blocks/Nakasar/Fractals/Mists_Portal.blockyanim",
+    "Particles": [
+      {
+        "SystemId": "Dungeon_Goblin_Void_Motes_Cluster",
+        "Scale": 1.6,
+        "PositionOffset": {
+          "X": 0,
+          "Y": 2.0,
+          "Z": 0
+        }
+      },
+      {
+        "SystemId": "Dust_Sparkles_Fine",
+        "Scale": 1.4,
+        "PositionOffset": {
+          "X": 0,
+          "Y": 1.2,
+          "Z": 0
+        }
+      }
+    ],
+    "AmbientSoundEventId": "SFX_Goblin_World_Breach_Portal"
+  },
+  "Tags": {
+    "Type": [
+      "Deco"
+    ]
+  },
+  "ItemSoundSetId": "ISS_Blocks_Stone",
+  "MaxStack": 1,
+  "IconProperties": {
+    "Scale": 0.55,
+    "Translation": [
+      0,
+      -12
+    ],
+    "Rotation": [
+      22.5,
+      45,
+      22.5
+    ]
+  }
+}
