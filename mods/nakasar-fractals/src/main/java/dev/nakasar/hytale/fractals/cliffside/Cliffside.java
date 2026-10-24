@@ -7,7 +7,9 @@ import com.hypixel.hytale.component.Store;
 import com.hypixel.hytale.math.vector.Rotation3f;
 import com.hypixel.hytale.math.vector.Transform;
 import com.hypixel.hytale.protocol.packets.interface_.EventTitleStyle;
+import com.hypixel.hytale.protocol.packets.interface_.NotificationStyle;
 import com.hypixel.hytale.server.core.Message;
+import com.hypixel.hytale.server.core.util.NotificationUtil;
 import com.hypixel.hytale.server.core.entity.Frozen;
 import com.hypixel.hytale.server.core.modules.entity.component.Invulnerable;
 import com.hypixel.hytale.server.core.modules.entity.teleport.Teleport;
@@ -550,7 +552,7 @@ public final class Cliffside {
             return;
         }
         st.throttle.put(player.getUuid(), now);
-        player.sendMessage(Message.translation(MESSAGES + key));
+        NotificationUtil.sendNotification(player.getPacketHandler(), Message.translation(MESSAGES + key), NotificationStyle.Default);
     }
 
     static List<PlayerRef> alivePlayers(World world, Store<EntityStore> store) {

@@ -13,6 +13,8 @@ import com.hypixel.hytale.server.core.modules.entity.item.ItemComponent;
 import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
 import org.joml.Vector3d;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
@@ -51,9 +53,17 @@ public final class Hammer {
         return InventoryComponent.getCombined(store, ref, InventoryComponent.EVERYTHING);
     }
 
-    /** Vrai si le joueur a le marteau quelque part dans son inventaire. */
+    /**
+     * Vrai si le joueur a le marteau quelque part dans son inventaire. On compare l'id seul : le marteau s'use à
+     * chaque coup, et un {@code canRemoveItemStack(new ItemStack(ID, 1))} (qui compare aussi la durabilité) ne le
+     * reconnaissait plus après le premier coup, ce qui effaçait la charge aussitôt gagnée.
+     */
     public static boolean carries(ComponentAccessor<EntityStore> store, Ref<EntityStore> ref) {
-        return inventory(store, ref).canRemoveItemStack(new ItemStack(ID, 1));
+        return inventory(store, ref).countItemStacks(Hammer::isHammer) > 0;
+    }
+
+    static boolean isHammer(ItemStack stack) {
+        return stack != null && !stack.isEmpty() && ID.equals(stack.getItemId());
     }
 
     /** Vrai si le joueur tient le marteau en main. */
@@ -62,14 +72,19 @@ public final class Hammer {
         return held != null && ID.equals(held.getItemId());
     }
 
-    /** Retire tous les marteaux de l'inventaire ; vrai s'il y en avait. */
+    /** Retire tous les marteaux de l'inventaire, usés ou non ; vrai s'il y en avait. */
     public static boolean remove(ComponentAccessor<EntityStore> store, Ref<EntityStore> ref) {
         CombinedItemContainer inventory = inventory(store, ref);
-        boolean removed = false;
-        for (int i = 0; i < 4 && inventory.removeItemStack(new ItemStack(ID, 1), true, true).succeeded(); i++) {
-            removed = true;
+        List<Short> slots = new ArrayList<>();
+        inventory.forEach((slot, stack) -> {
+            if (isHammer(stack)) {
+                slots.add(slot);
+            }
+        });
+        for (short slot : slots) {
+            inventory.removeItemStackFromSlot(slot);
         }
-        return removed;
+        return !slots.isEmpty();
     }
 
     /** Donne le marteau au joueur (il tombe à ses pieds si l'inventaire est plein). */

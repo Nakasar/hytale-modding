@@ -7,6 +7,7 @@ import com.hypixel.hytale.component.Ref;
 import com.hypixel.hytale.component.Store;
 import com.hypixel.hytale.component.SystemGroup;
 import com.hypixel.hytale.component.query.Query;
+import com.hypixel.hytale.protocol.packets.interface_.NotificationStyle;
 import com.hypixel.hytale.server.core.Message;
 import com.hypixel.hytale.server.core.modules.entity.component.TransformComponent;
 import com.hypixel.hytale.server.core.modules.entity.damage.Damage;
@@ -18,6 +19,7 @@ import com.hypixel.hytale.server.core.modules.entitystats.asset.DefaultEntitySta
 import com.hypixel.hytale.server.core.universe.PlayerRef;
 import com.hypixel.hytale.server.core.universe.world.World;
 import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
+import com.hypixel.hytale.server.core.util.NotificationUtil;
 import com.hypixel.hytale.server.npc.entities.NPCEntity;
 import dev.nakasar.hytale.fractals.combat.Foes;
 import dev.nakasar.hytale.fractals.combat.Telegraphs;
@@ -105,6 +107,8 @@ public final class HammerDamageSystem extends DamageEventSystem {
         }
         carrier.charged = true;
         FractalsPlugin.get().getLogger().atInfo().log("Nakasar_Fractal_Hammer : %s chargé", player.getUsername());
-        player.sendMessage(Message.translation("nakasar_fractals_cliffside.hammer.charged"));
+        // Bandeau en plus du chat : on ne doit pas pouvoir rater la charge.
+        NotificationUtil.sendNotification(player.getPacketHandler(), Message.translation("nakasar_fractals_cliffside.hammer.charged"),
+                NotificationStyle.Default);
     }
 }
