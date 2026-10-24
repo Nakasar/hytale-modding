@@ -152,6 +152,37 @@ def exit_stone():
     return p, a
 
 
+def mists_portal():
+    """Portail des Brumes : arche de pierre 3 × 4 blocs, bandes de laiton, voile de brume, clé de voûte de cristal."""
+    s = fb.stone(STONE, (9, 6))
+    dark = fb.smooth_stone(STONE_DARK)
+    c = glow(MIST)
+    p = [
+        part("Base", (0, 2, 0), (100, 4, 18), fb.stone(STONE_DARK, (10, 6))),
+        part("Pillar_L", (-41, 62, 0), (14, 116, 14), s),
+        part("Pillar_R", (41, 62, 0), (14, 116, 14), s),
+        part("Foot_L", (-41, 8, 0), (18, 8, 18), dark),
+        part("Foot_R", (41, 8, 0), (18, 8, 18), dark),
+        part("Lintel", (0, 124, 0), (100, 10, 16), s),
+        part("Lintel_Cap", (0, 130.5, 0), (90, 3, 12), dark),
+        part("Keystone", (0, 120, 0), (14, 16, 18), dark),
+        part("Keystone_Gem", (0, 138, 0), (8, 10, 8), c, glow=True, rot=(0, 45, 0)),
+        part("Veil", (0, 62, 0), (68, 112, 1), fb.mist(MIST_DARK, MIST_LIGHT, 200), glow=True),
+    ]
+    for side, x in (("L", -41), ("R", 41)):
+        for k, y in enumerate((30, 62, 94)):
+            p.append(part(f"Band_{side}_{k + 1}", (x, y, 0), (15, 2, 15), fb.metal(BRASS, False)))
+        p.append(inlay(f"Rune_{side}_Front", (x, 46, 7.25), (9, 9, 0.5), MIST, "eye", ("front",)))
+        p.append(inlay(f"Rune_{side}_Back", (x, 46, -7.25), (9, 9, 0.5), MIST, "eye", ("back",)))
+        p.append(inlay(f"Rune_{side}_Front_2", (x, 78, 7.25), (9, 9, 0.5), MIST, "ring", ("front",)))
+        p.append(inlay(f"Rune_{side}_Back_2", (x, 78, -7.25), (9, 9, 0.5), MIST, "ring", ("back",)))
+    tracks = {
+        "Keystone_Gem": {"position": bob(2, 120), "orientation": spin_y(240)},
+        "Veil": {"shapeStretch": [(0, (1, 1, 1)), (60, (1.02, 0.99, 1)), (120, (0.98, 1.01, 1)), (180, (1, 1, 1))]},
+    }
+    return p, fb.anim(240, tracks)
+
+
 def archivist_counter():
     """Comptoir de l'Archiviste : bois sombre, balance de laiton, registre ouvert, bocal d'éclats."""
     c = fb.crystal(MIST_DARK, MIST_LIGHT)
@@ -766,6 +797,10 @@ BLOCKS = {
     "Reward_Chest": (reward_chest, {"particles": motes(0.6, "Block_Treasure_Sparks"), "orient": "open"}),
     "Exit_Stone": (exit_stone, {"particles": motes(0.7), "orient": "open"}),
     "Archivist_Counter": (archivist_counter, {"orient": "open"}),
+    "Mists_Portal": (mists_portal, {"particles": [
+        {"SystemId": VOID_MOTES, "Scale": 1.6, "PositionOffset": {"X": 0, "Y": 2.0, "Z": 0}},
+        {"SystemId": "Dust_Sparkles_Fine", "Scale": 1.4, "PositionOffset": {"X": 0, "Y": 1.2, "Z": 0}},
+    ], "extra": {"AmbientSoundEventId": "SFX_Goblin_World_Breach_Portal"}}),
     "Core_Distributor": (core_distributor, {"particles": motes(0.6, "Dust_Sparkles_Fine"), "orient": "open"}),
     "Level_Distributor": (level_distributor, {"orient": "open"}),
     "Daily_Board": (daily_board, {"orient": "open"}),

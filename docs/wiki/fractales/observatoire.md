@@ -1,7 +1,7 @@
 # Observatoire
 
 <Infobox pending title="Observatoire des fractales" kind="Hub" icon="/jeu/Icons/Items/Nakasar/Fractals/Astrolabe_Ring.png" caption="Anneau de l'Astrolabe">
-<Info label="Accès">Fragment des Brumes dans l'Ancienne passerelle</Info>
+<Info label="Accès">Fragment des Brumes dans l'Ancienne passerelle, ou Portail des Brumes</Info>
 <Info label="Groupe">5 joueurs au plus, sur le cercle</Info>
 <Info label="Marchand">l'Archiviste (est)</Info>
 <Info label="Commande">`/fractale`</Info>
@@ -12,6 +12,10 @@ L'**Observatoire** est une île ronde suspendue dans les Brumes. Tout s'y choisi
 ## Fragment des Brumes {#fragment-des-brumes}
 
 Le **Fragment des Brumes** se fabrique à l'**établi** : **4 éclats de rune + 1 cœur du Vide** (celui des Deepworks). Posé dans l'**Ancienne passerelle**, il ouvre l'Observatoire et il est consommé. Au **Creuset des Brumes**, **25 éclats de Brume + 1 éclat de rune** en refont un sans repasser par les Deepworks ; l'Archiviste en vend aussi.
+
+## Portail des Brumes {#portail-des-brumes}
+
+Le **Portail des Brumes** est une arche de pierre de 3 blocs de large et 4 de haut, à poser chez soi. Il se fabrique au **Creuset des Brumes** (onglet Fragments) : **4 Fragments des Brumes + 50 éclats de Brume**. Il est **toujours ouvert** : le traverser mène à l'Observatoire sans consommer de fragment. Tous ceux qui passent par le même portail arrivent dans le même Observatoire tant qu'il reste ouvert ; vide, il se referme et le portail en ouvre un nouveau au passage suivant. En sortant, on revient devant l'arche. Il se casse et se reprend pour le déplacer.
 
 ## Choisir et lancer une fractale
 

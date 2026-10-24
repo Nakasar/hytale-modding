@@ -127,6 +127,10 @@ DAILY_BLOCK = "Nakasar_Fractal_Daily_Board"
 EXIT_STONE = "Nakasar_Fractal_Exit_Stone"
 ALTAR = "Nakasar_Fractal_Infusion_Altar"
 FORGE = "Nakasar_Fractal_Mist_Forge"
+# Portail des Brumes : arche fabriquée au Creuset et posée chez soi, toujours ouverte vers un Observatoire (sans fragment).
+PORTAL = "Nakasar_Fractal_Mists_Portal"
+PORTAL_INPUTS = [(KEY, 4), ("Nakasar_Fractal_Mist_Shard", 50)]
+PORTAL_HITBOX = SERVER / "Item/Block/Hitboxes/Nakasar/Fractals" / f"{PORTAL}.json"
 REWARD_CHEST = "Nakasar_Fractal_Reward_Chest"
 COUNTER_BLOCK = "Nakasar_Fractal_Archivist_Counter"
 PROGRESS_LANG = "nakasar_fractals_progress"   # langue des objets de tools/generate_progression.py
@@ -510,6 +514,44 @@ def portable(doc, name):
     return doc
 
 
+def portal_item():
+    """Portail des Brumes : arche de 3 × 4 blocs (cases de remplissage posées par le moteur selon la hitbox), traversable.
+    La traverser mène à l'Observatoire du portail (TeleportInstance, comme la déchirure du mod Vampires) : le moteur garde
+    l'instance sur le bloc et en rouvre une quand l'ancienne a fermé. Retour devant l'arche, en diagonale pour ne pas
+    retomber dans la hitbox quelle que soit la rotation."""
+    doc = portable(block_item(PORTAL, "Mists_Portal", "#a8f", particle="#a87ae8"), PORTAL)
+    doc["Quality"] = "Epic"
+    block = doc["BlockType"]
+    block["Material"] = "Empty"
+    block["HitboxType"] = PORTAL
+    block["Interactions"] = {"CollisionEnter": {"Interactions": [{
+        "Type": "TeleportInstance",
+        "InstanceName": OBSERVATORY,
+        "PersonalReturnPoint": True,
+        "CloseOnBlockRemove": True,
+        "OriginSource": "Block",
+        "PositionOffset": {"X": 2.5, "Y": 0, "Z": 2.5},
+        "Next": {"Type": "Simple", "Effects": {"LocalSoundEventId": "SFX_Portal_Neutral_Teleport_Local"}},
+    }]}}
+    return doc
+
+
+def portal_hitbox():
+    return {"Boxes": [{"Min": {"X": -1.0, "Y": 0.0, "Z": 0.375}, "Max": {"X": 2.0, "Y": 4.0, "Z": 0.625}}]}
+
+
+def portal_recipe():
+    return {
+        "TimeSeconds": 6,
+        "KnowledgeRequired": False,
+        "Input": [{"ItemId": k, "Quantity": q} for k, q in PORTAL_INPUTS],
+        "PrimaryOutput": {"ItemId": PORTAL, "Quantity": 1},
+        "Output": [{"ItemId": PORTAL, "Quantity": 1}],
+        "BenchRequirement": [{"Type": "Crafting", "Id": FORGE, "Categories": ["Nakasar_Fractal_Fragments"],
+                              "RequiredTierLevel": 1}],
+    }
+
+
 def hexcolor(rgb):
     return "#%02x%02x%02x" % rgb
 
@@ -886,6 +928,9 @@ def lang():
         f"items.{HARMONY}.description": "Les joueurs debout sur le cercle forment le groupe (5 au plus).",
         f"items.{TRIAL}.name": "Pupitre du golem d'essai",
         f"items.{TRIAL}.description": "Utiliser : le golem rejoue sur vous les attaques des fractales.",
+        f"items.{PORTAL}.name": "Portail des Brumes",
+        f"items.{PORTAL}.description": "Arche à poser chez soi, toujours ouverte : la traverser mène à l'Observatoire "
+                                       "des fractales, sans Fragment des Brumes. Se casse et se reprend.",
         f"items.{EXIT_STONE}.name": "Pierre de retour",
         f"items.{EXIT_STONE}.description": "Utiliser : retour à l'Observatoire.",
         f"items.{ALTAR}.name": "Autel des infusions",
@@ -982,6 +1027,9 @@ def lang():
         f"items.{HARMONY}.description": "Players standing on the circle form the group (5 at most).",
         f"items.{TRIAL}.name": "Training Golem Console",
         f"items.{TRIAL}.description": "Use: the golem replays the fractal attacks on you.",
+        f"items.{PORTAL}.name": "Mists Portal",
+        f"items.{PORTAL}.description": "An arch to place at home, always open: walking through leads to the Fractal "
+                                       "Observatory, no Mists Fragment needed. Can be broken and picked up again.",
         f"items.{EXIT_STONE}.name": "Return Stone",
         f"items.{EXIT_STONE}.description": "Use: back to the Observatory.",
         f"items.{ALTAR}.name": "Infusion Altar",
@@ -1159,6 +1207,11 @@ def main():
         if model:
             previews[-1] = model.resize((32, 32), Image.LANCZOS)
         write_json(ITEMS / f"{name}.json", doc)
+    portal = portal_item()
+    previews.append(block_models.apply(portal, "Mists_Portal").resize((32, 32), Image.LANCZOS))
+    write_json(ITEMS / f"{PORTAL}.json", portal)
+    write_json(PORTAL_HITBOX, portal_hitbox())
+    write_json(SERVER / "Item/Recipes/Nakasar/Fractals" / f"Recipe_{PORTAL}.json", portal_recipe())
     key_tex = texture(COMMON / TEXTURES / "PortalKey_Fractal.png", (40, 50, 110), (150, 200, 255), "ring")
     icon(COMMON / ICONS / "PortalKey_Fractal.png", key_tex)
     (COMMON / CATEGORY_ICONS).mkdir(parents=True, exist_ok=True)
