@@ -42,7 +42,7 @@
   "EmitOffset": {
     "X": {
       "Min": 0,
-      "Max": 0.4
+      "Max": 1.6
     },
     "Y": {
       "Min": 0,
@@ -50,7 +50,7 @@
     },
     "Z": {
       "Min": 0,
-      "Max": 0.4
+      "Max": 1.6
     }
   },
   "InitialVelocity": {
@@ -68,8 +68,8 @@
     }
   },
   "TotalParticles": {
-    "Min": 4,
-    "Max": 4
+    "Min": 10,
+    "Max": 10
   },
-  "MaxConcurrentParticles": 4
+  "MaxConcurrentParticles": 10
 }

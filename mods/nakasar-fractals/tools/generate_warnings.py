@@ -131,8 +131,9 @@ GREEN_LIFE = 0.6       # le Java le repose toutes les 0,5 s (combat.Telegraphs.g
 
 
 def _green_zone_files():
-    """Zone favorable (cercle vert de Carnasse) : même contour et même disque que les zones rouges, en vert, à opacité
-    fixe ; posée de nouveau toutes les 0,5 s à l'échelle du rayon du moment (le cercle rétrécit)."""
+    """Zone favorable (cercle vert de Carnasse) : même contour que les zones rouges, en vert, à opacité fixe, sans
+    disque (un sol vert jugé laid, Kevin 2026-10-24 : des émanations montent dans le cercle à la place) ; posée de
+    nouveau toutes les 0,5 s à l'échelle du rayon du moment (le cercle rétrécit)."""
     flat = {"X": {"Min": 90, "Max": 90}}
     edge = _spawner(GREEN_LIFE, "Particles/Textures/Indicators/Warning_Circle_Base.png", {
         "0": {"Opacity": 0.6, "Color": GREEN},
@@ -140,21 +141,13 @@ def _green_zone_files():
         "85": {"Opacity": 1},
         "100": {"Opacity": 0.6, "Color": GREEN},
     }, {"Opacity": 1, "Rotation": flat, "Scale": {"X": {"Min": BASE, "Max": BASE}}})
-    fill = _spawner(GREEN_LIFE, "Particles/Textures/Basic/Ball5.png", {
-        "0": {"Opacity": 0.25, "Color": GREEN},
-        "15": {"Opacity": 0.4},
-        "85": {"Opacity": 0.4},
-        "100": {"Opacity": 0.25, "Color": GREEN},
-    }, {"Opacity": 0.4, "Rotation": flat, "Scale": {"X": {"Min": BASE, "Max": BASE}}})
     return {f"{GREEN_ZONE}.particlesystem": {
-                "$Comment": "Zone favorable (cercle vert de Carnasse) : contour et disque verts, reposés par le Java toutes "
-                            "les 0,5 s. Généré par tools/generate_warnings.py.",
-                "Spawners": [{"SpawnerId": f"{GREEN_ZONE}_Edge", "PositionOffset": {"Y": 0.03}},
-                             {"SpawnerId": f"{GREEN_ZONE}_Fill", "PositionOffset": {"Y": 0.02}}],
+                "$Comment": "Zone favorable (cercle vert de Carnasse) : contour vert, reposé par le Java toutes les 0,5 s. "
+                            "Généré par tools/generate_warnings.py.",
+                "Spawners": [{"SpawnerId": f"{GREEN_ZONE}_Edge", "PositionOffset": {"Y": 0.03}}],
                 "CullDistance": 96,
                 "IsImportant": True},
-            f"{GREEN_ZONE}_Edge.particlespawner": edge,
-            f"{GREEN_ZONE}_Fill.particlespawner": fill}
+            f"{GREEN_ZONE}_Edge.particlespawner": edge}
 
 
 def write():

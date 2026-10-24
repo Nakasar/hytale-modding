@@ -10,7 +10,7 @@ Une course chronométrée aux feux-follets à travers un marais piégé, une emb
 
 ## La course aux feux-follets
 
-Rapportez **trois feux-follets** dans leurs failles avant la fin du minuteur : **64 s**, **38 s** dès le niveau 26, **30 s** dès le niveau 51.
+Rapportez **trois feux-follets** dans leurs failles avant la fin du minuteur : **80 s**, **50 s** dès le niveau 26, **42 s** dès le niveau 51.
 
 - Chaque feu-follet attend sur une **souche** : on repère de loin où le prendre.
 - Des **murs de racines** de deux blocs surgissent au premier feu-follet pris : on ne peut pas sauter par-dessus, il faut les contourner.

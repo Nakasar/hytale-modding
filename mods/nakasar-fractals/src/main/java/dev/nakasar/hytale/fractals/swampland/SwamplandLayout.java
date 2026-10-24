@@ -18,6 +18,7 @@ public final class SwamplandLayout {
     public static final double[][][] WISP_POINTS = {{{-32.5, 101.0, 27.5}, {-33.5, 101.0, -13.5}}, {{33.5, 101.0, 27.5}, {34.5, 101.0, -13.5}}, {{-12.5, 101.0, 34.5}, {13.5, 101.0, 34.5}}};
     /** Murs qui surgissent dès qu'un feu-follet est pris : {x0, x1, y, z}, un bloc de haut. */
     public static final int[][] WALLS = {{-30, -6, 100, 20}, {6, 30, 100, 20}, {-20, 20, 100, 5}, {-34, -10, 100, -11}, {10, 34, 100, -11}, {-22, 22, 100, -24}};
+    public static final int WALL_HEIGHT = 2;
     /** Pièges : {x, y, z, sorte} ; sortes : 0 fil tendu, 1 piège à loup, 2 plaque à piques, 3 œufs d'araignée. */
     public static final int[][] TRAPS = {{-27, 99, 8, 0}, {-19, 99, -7, 1}, {-16, 99, -23, 2}, {-26, 99, -20, 3}, {-22, 99, -26, 0}, {-14, 99, -31, 1}, {22, 99, 8, 2}, {16, 99, -8, 3}, {6, 99, -22, 0}, {25, 99, -21, 1}, {14, 99, -27, 2}, {8, 99, -32, 3}, {-7, 99, 13, 0}, {1, 99, -4, 1}, {4, 99, -21, 2}, {13, 99, 13, 3}, {10, 99, -4, 0}, {12, 99, -21, 1}};
     public static final int[][] RACKS = {{-17, 100, -34}, {17, 100, -34}};

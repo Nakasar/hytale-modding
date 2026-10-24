@@ -226,7 +226,8 @@ def mine_lava_y(x):
 
 def mine_segments():
     """Tronçons de rails de la mine : (x0, x1, debout, z du milieu), d'est en ouest ; trous de 2 à 3 blocs entre
-    eux ; ils descendent peu à peu (une marche d'un bloc vers le haut au plus). Le dernier s'arrête un bloc avant le
+    eux ; ils descendent peu à peu (une marche d'un bloc vers le haut au plus) et suivent la courbe d'un bloc de côté au
+    plus. Le dernier s'arrête un bloc avant le
     palier d'arrivée : jamais de rail sur le palier (point de retour)."""
     out, x, k = [], MINE[1] - 7, 0
     bumps = [0, 1, 0, 0, 1, 0, 1, 0, 0]
@@ -237,7 +238,10 @@ def mine_segments():
         stand = math.floor(mine_base((x0 + x) / 2)) + bumps[k % len(bumps)]
         if out:
             stand = min(stand, out[-1][2] + 1)
-        out.append((x0, x, stand, round(mine_z((x0 + x) / 2))))
+        zc = round(mine_z((x0 + x) / 2))
+        if out:   # un bloc de côté au plus d'un tronçon au suivant : les sauts restent droits et courts
+            zc = max(out[-1][3] - 1, min(out[-1][3] + 1, zc))
+        out.append((x0, x, stand, zc))
         x -= length + (3 if k % 2 else 2)
         k += 1
     return out
@@ -265,6 +269,8 @@ def galleries(p):
     galeries courbes creusées dans le volcan, qui descendent peu à peu."""
     floors = {}                                         # (x, z) -> debout
     corridor = path_cells(corridor_samples(), CORRIDOR_HALF, 51)
+    gate_z = GATE_CAMP[0][2]
+    corridor = {(x, z): v for (x, z), v in corridor.items() if z < gate_z or (z == gate_z and abs(x) <= 3)}
     floors.update({c: v[0] for c, v in corridor.items()})
     for i, side in alcoves():
         for c, stand in alcove_cells(i, side).items():
@@ -412,9 +418,9 @@ def course_prefab():
         p.set(x + 2, 4, z, "Deco_Bone_Skulls")
     for x, z in ((-5, -10), (5, -10), (0, 8)):
         p.set(x, 0, z, "Furniture_Crude_Torch")
-    for (x, y, z) in GATE_CAMP:
-        p.set(x, y, z, MIST)
     galleries(p)
+    for (x, y, z) in GATE_CAMP:   # après les galeries : le couloir ne doit pas creuser la brume
+        p.set(x, y, z, MIST)
     island(p)
     dress(p)
     cavern(p)

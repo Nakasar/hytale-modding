@@ -37,7 +37,13 @@ final class Boulders {
      *  fond des niches est au-delà. */
     static final double HIT_MARGIN = 1.4;
     /** Le couloir pour le déclenchement : à moins de la demi-largeur + cette marge du chemin. */
-    static final double AREA_MARGIN = 4;
+    static final double AREA_MARGIN = 3;
+    /**
+     * Les premiers et derniers blocs du chemin ne comptent ni pour le déclenchement ni pour les coups : derrière la porte
+     * du camp, le rocher sort de la bouche sans toucher ; il se brise avant le palier nord (point de retour).
+     */
+    static final int SAFE_START = 4;
+    static final int SAFE_END = 9;
 
     private static final class Boulder {
         /** Distance parcourue le long du chemin (un point par bloc). */
@@ -75,8 +81,13 @@ final class Boulders {
 
     /** Vrai si `at` est dans le couloir (près du chemin, à sa hauteur). */
     static boolean inCorridor(Vector3d at) {
+        if (VolcanicLayout.CAMP.contains(at.x(), at.y(), at.z())) {
+            return false;
+        }
         double reach = VolcanicLayout.CORRIDOR_HALF_WIDTH + AREA_MARGIN;
-        for (double[] point : VolcanicLayout.BOULDER_PATH) {
+        double[][] path = VolcanicLayout.BOULDER_PATH;
+        for (int i = SAFE_START; i < path.length - SAFE_END; i++) {
+            double[] point = path[i];
             if (Math.hypot(at.x() - point[0], at.z() - point[2]) <= reach && at.y() >= point[1] - 2 && at.y() <= point[1] + 6) {
                 return true;
             }
@@ -95,7 +106,7 @@ final class Boulders {
     }
 
     void step(World world, Store<EntityStore> store, List<PlayerRef> players, boolean active, float dt) {
-        double end = VolcanicLayout.BOULDER_PATH.length - 1;
+        double end = VolcanicLayout.BOULDER_PATH.length - 1 - SAFE_END;   // il se brise avant le palier nord
         if (active) {
             clock += dt;
             if (clock >= INTERVAL) {
@@ -114,12 +125,15 @@ final class Boulders {
             }
             b.s = Math.min(b.s + SPEED * dt, end);
             Vector3d at = along(b.s);
+            boolean harmful = b.s >= SAFE_START;
             Telegraphs.particle(store, "Nakasar_Fractal_Boulder", at, 2f);
-            Telegraphs.circle(store, along(b.s + 3), 3.5, 0.5f);
+            if (harmful) {
+                Telegraphs.circle(store, along(b.s + 3), 3.5, 0.5f);
+            }
             for (PlayerRef player : players) {
                 Ref<EntityStore> ref = player.getReference();
                 Vector3d p = Telegraphs.position(store, ref);
-                if (p == null || b.hit.contains(player.getUuid()) || Telegraphs.horizontal(p, at) > reach
+                if (p == null || !harmful || b.hit.contains(player.getUuid()) || Telegraphs.horizontal(p, at) > reach
                         || p.y() < at.y() - 1 || p.y() > at.y() + 3) {
                     continue;
                 }
@@ -129,7 +143,7 @@ final class Boulders {
                 Hurt.effect(store, ref, "Burn", 4f);
                 player.sendMessage(Message.translation(Volcanic.MESSAGES + "boulder.hit"));
             }
-            if (b.s - b.lastTrail >= TRAIL_STEP) {
+            if (harmful && b.s - b.lastTrail >= TRAIL_STEP) {
                 b.lastTrail = b.s;
                 trails.add(new Trail(at));
             }

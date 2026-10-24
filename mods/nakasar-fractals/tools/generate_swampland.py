@@ -6,7 +6,7 @@
 Le déroulé de GW2 (wiki.guildwars2.com/wiki/Swampland_Fractal), dans l'ordre :
 
 1. les feux-follets : ramener trois feux-follets dans leurs failles avant la fin du minuteur, lancé au premier
-   ramassé (1 min 04 en Initié, 38 s en Adepte, 30 s au-delà). Dès qu'un feu-follet est pris, des murs de racines
+   ramassé (1 min 20 en Initié, 50 s en Adepte, 42 s au-delà ; murs à contourner). Dès qu'un feu-follet est pris, des murs de racines
    de deux blocs surgissent entre les arbres : impossible de sauter par-dessus, il faut contourner. Pièges au sol : fils tendus (renversent et estropient),
    pièges à loup, plaques à piques (dangereuses quand elles rougissent), œufs d'araignée. Des fusils revigorants près
    des failles accélèrent les alliés et ralentissent les ennemis. Raté : tout se remet en place, les feux-follets
@@ -85,6 +85,7 @@ SWAMP = (-38, 38, -40, 38)               # x0, x1, z0, z1
 CLEFTS = [(-10, -35), (0, -37), (10, -35)]
 WISP_SPOTS = [[(-33, 27), (-34, -14)], [(33, 27), (34, -14)], [(-13, 34), (13, 34)]]   # un feu-follet par groupe
 WALLS = [(-30, -6, 20), (6, 30, 20), (-20, 20, 5), (-34, -10, -11), (10, 34, -11), (-22, 22, -24)]   # x0, x1, z
+WALL_HEIGHT = 2                         # murs de racines du Java : trop hauts pour sauter ; colonnes gardées libres
 RACKS = [(-17, -34), (17, -34)]
 GATE_SWAMP = [(x, y, -41) for x in range(-2, 3) for y in range(0, 5)]
 PASSAGE = (-3, 3, -92, -42)             # x0, x1, z0 (nord), z1 (sud)
@@ -346,8 +347,8 @@ PARTICLE_SYSTEMS = {
                                               life=(0.6, 0.9), size=(0.35, 0.55)), 0.1)]),
     "Nakasar_Fractal_Green_Emanation": ("Cercle vert de Carnasse : émanations vertes qui montent du sol, semées dans "
                                         "tout le cercle (Java).",
-                                        [("Rise", S("#e0ffe8", "#40e080", 4, (0.6, 1.4), (75, 90), 0.4, 1.4,
-                                                    life=(1.0, 1.6), size=(0.25, 0.45)), 0.1)]),
+                                        [("Rise", S("#e0ffe8", "#40e080", 10, (0.6, 1.4), (75, 90), 1.6, 1.4,
+                                                    life=(1.0, 1.6), size=(0.25, 0.45)), 0.0)]),
     "Nakasar_Fractal_Wall_Rise": ("Un mur surgit entre les arbres : terre et racines.",
                                   [("Dirt", S("#a08060", "#3a2a18", 10, (1.0, 2.5), (40, 90), 0.8, 0.4,
                                               life=(0.4, 0.7), blend="BlendLinear"), 0.2)]),
@@ -726,6 +727,7 @@ public final class SwamplandLayout {{
     public static final double[][][] WISP_POINTS = {spots};
     /** Murs qui surgissent dès qu'un feu-follet est pris : {{x0, x1, y, z}}, un bloc de haut. */
     public static final int[][] WALLS = {walls};
+    public static final int WALL_HEIGHT = {WALL_HEIGHT};
     /** Pièges : {{x, y, z, sorte}} ; sortes : 0 fil tendu, 1 piège à loup, 2 plaque à piques, 3 œufs d'araignée. */
     public static final int[][] TRAPS = {traps_j};
     public static final int[][] RACKS = {racks};

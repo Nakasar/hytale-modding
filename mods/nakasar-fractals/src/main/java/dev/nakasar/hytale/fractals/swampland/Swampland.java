@@ -57,7 +57,9 @@ public final class Swampland implements FractalStage {
     static final String MIST = "Nakasar_Fractal_Mist_Barrier";
     /** Murs de racines du début : deux blocs de tronc, trop hauts pour sauter, pas escaladables (Kevin, 2026-10-24). */
     static final String WALL = "Wood_Poisoned_Trunk";
-    static final int WALL_HEIGHT = 2;
+    static final int WALL_HEIGHT = SwamplandLayout.WALL_HEIGHT;
+    /** Ancien mur d'un bloc : retiré aussi quand les murs retombent (monde sauvegardé avec un ancien mur levé). */
+    static final String OLD_WALL = "Rock_Stone_Mossy";
     static final String SWIFTNESS = "Nakasar_Fractal_Swiftness";
     static final String CRIPPLED = "Nakasar_Fractal_Crippled";
     static final String PURGE_CAUSE = "Nakasar_Fractal_Purge";

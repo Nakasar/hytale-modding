@@ -73,9 +73,11 @@ final class Bloomhunger {
     static final float RESET_SECONDS = 20f;
     static final float[] THRESHOLDS = {0.75f, 0.5f, 0.25f};
     static final String VIGOR = "Nakasar_Fractal_Wisp_Vigor";
-    /** Émanations vertes qui montent du sol dans le cercle (plus de disque vert au sol, jugé laid). */
+    /** Contour vert (sans disque au sol, jugé laid) et émanations vertes qui montent du sol dans le cercle. */
+    static final String GREEN_ZONE = "Nakasar_Fractal_Green_Zone";
     static final String EMANATION = "Nakasar_Fractal_Green_Emanation";
-    static final double EMANATIONS_PER_BLOCK = 0.3;
+    /** Bouffées d'émanations par bloc² de cercle (chacune une dizaine de lueurs sur 1,6 bloc). */
+    static final double EMANATIONS_PER_BLOCK = 0.08;
 
     private Ref<EntityStore> boss;
     private final List<Ref<EntityStore>> spirits = new ArrayList<>();
@@ -153,36 +155,39 @@ final class Bloomhunger {
     }
 
     private void circle(Store<EntityStore> store, List<PlayerRef> inside, float dt) {
-        if (everywhere) {
-            return;
-        }
-        circleClock += dt;
-        if (circleClock >= CIRCLE_SECONDS) {
-            circleClock = 0f;
-            cleft = (cleft + 1) % SwamplandLayout.CLEARING_CLEFTS.length;
-        }
-        Vector3d center = circleCenter();
-        double radius = circleRadius();
         drawClock += dt;
         boolean draw = drawClock >= 0.5f;
         if (draw) {
             drawClock = 0f;
-            // Contour de lueurs vertes et émanations qui montent du sol, semées dans tout le cercle.
+        }
+        if (!everywhere) {
+            circleClock += dt;
+            if (circleClock >= CIRCLE_SECONDS) {
+                circleClock = 0f;
+                cleft = (cleft + 1) % SwamplandLayout.CLEARING_CLEFTS.length;
+            }
+        }
+        Vector3d center = circleCenter();
+        double radius = circleRadius();
+        if (draw && !everywhere) {
+            // Contour vert, lueurs du bord et émanations qui montent du sol, semées dans tout le cercle.
+            Telegraphs.particle(store, GREEN_ZONE, new Vector3d(center).add(0, 0.1, 0), (float) (Telegraphs.WARNING_SCALE * radius));
             ThreadLocalRandom random = ThreadLocalRandom.current();
             int puffs = (int) Math.ceil(EMANATIONS_PER_BLOCK * radius * radius);
             for (int i = 0; i < puffs; i++) {
                 double a = random.nextDouble(0, Math.PI * 2);
                 double d = radius * Math.sqrt(random.nextDouble());
                 Telegraphs.particle(store, EMANATION,
-                        new Vector3d(center.x() + Math.cos(a) * d, center.y() + 0.1, center.z() + Math.sin(a) * d), 1f);
+                        new Vector3d(center.x() + Math.cos(a) * d - 0.8, center.y() + 0.1, center.z() + Math.sin(a) * d - 0.8), 1f);
             }
-            int n = (int) Math.ceil(Math.PI * 2 * radius / 1.0);
+            int n = (int) Math.ceil(Math.PI * 2 * radius / 1.5);
             for (int i = 0; i < n; i++) {
                 double a = Math.PI * 2 * i / n;
                 Telegraphs.particle(store, "Nakasar_Fractal_Wisp_Ring",
                         new Vector3d(center.x() + Math.cos(a) * radius, center.y() + 0.1, center.z() + Math.sin(a) * radius), 1f);
             }
         }
+        // Endurance et vigueur dans le cercle, ou partout une fois le cercle levé (après la charge des feux-follets).
         for (PlayerRef p : inside) {
             Ref<EntityStore> ref = p.getReference();
             if (!inCircle(Telegraphs.position(store, ref))) {
