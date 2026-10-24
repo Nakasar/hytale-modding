@@ -120,7 +120,7 @@ public final class BossBarSystem extends TickingSystem<EntityStore> {
             Elite nearest = null;
             if (transform != null) {
                 double best = RANGE * RANGE;
-                double farthest = Double.MAX_VALUE;
+                double nearestGlobal = Double.MAX_VALUE;
                 Elite global = null;
                 for (Elite elite : engaged) {
                     double distance = elite.position().distanceSquared(transform.getPosition());
@@ -128,8 +128,8 @@ public final class BossBarSystem extends TickingSystem<EntityStore> {
                         best = distance;
                         nearest = elite;
                     }
-                    if (elite.everywhere() && distance < farthest) {
-                        farthest = distance;
+                    if (elite.everywhere() && distance < nearestGlobal) {
+                        nearestGlobal = distance;
                         global = elite;
                     }
                 }
