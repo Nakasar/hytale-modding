@@ -18,10 +18,11 @@ import java.util.Set;
 import java.util.UUID;
 
 /**
- * Le couloir aux rochers du Volcanique : tant qu'un joueur est dans le couloir, un rocher en feu sort de la bouche du
- * volcan toutes les {@value #INTERVAL} s (grondement {@value #RUMBLE} s avant), puis dévale vers le sud à
- * {@value #SPEED} blocs/s sur toute la largeur, un cercle rouge devant lui. Qui est sur sa route (hors des niches)
- * perd {@value #PART} des PV max et brûle ; il laisse derrière lui une traînée de feu ({@value #TRAIL_LIFE} s).
+ * Le couloir aux rochers du Volcanique, galerie courbe qui descend vers le nord : tant qu'un joueur est dans le
+ * couloir, un rocher en feu sort de la bouche du haut toutes les {@value #INTERVAL} s (grondement {@value #RUMBLE} s
+ * avant), puis dévale la pente le long de {@link VolcanicLayout#BOULDER_PATH} à {@value #SPEED} blocs/s sur toute la
+ * largeur de la voie, un cercle rouge devant lui. Qui est sur sa route (hors des niches) perd {@value #PART} des PV
+ * max et brûle ; il laisse derrière lui une traînée de feu ({@value #TRAIL_LIFE} s).
  */
 final class Boulders {
 
@@ -32,10 +33,16 @@ final class Boulders {
     static final float TRAIL_LIFE = 4f;
     static final double TRAIL_RADIUS = 1.5;
     static final double TRAIL_STEP = 2.5;
+    /** Un joueur à moins de la demi-largeur de la voie (+ cette marge : le bord irrégulier) du rocher est touché ; le
+     *  fond des niches est au-delà. */
+    static final double HIT_MARGIN = 1.4;
+    /** Le couloir pour le déclenchement : à moins de la demi-largeur + cette marge du chemin. */
+    static final double AREA_MARGIN = 4;
 
     private static final class Boulder {
-        double z = VolcanicLayout.BOULDER_START[2];
-        double lastTrail = z;
+        /** Distance parcourue le long du chemin (un point par bloc). */
+        double s;
+        double lastTrail;
         float wait = RUMBLE;
         final Set<UUID> hit = new HashSet<>();
     }
@@ -54,37 +61,66 @@ final class Boulders {
     private final List<Trail> trails = new ArrayList<>();
     private float clock = INTERVAL - 1f;
 
+    /** Point du chemin à la distance `s` (interpolé entre deux points). */
+    static Vector3d along(double s) {
+        double[][] path = VolcanicLayout.BOULDER_PATH;
+        int last = path.length - 1;
+        double t = Math.max(0, Math.min(s, last));
+        int i = Math.min((int) t, last - 1);
+        double f = t - i;
+        double[] a = path[i];
+        double[] b = path[i + 1];
+        return new Vector3d(a[0] + (b[0] - a[0]) * f, a[1] + (b[1] - a[1]) * f, a[2] + (b[2] - a[2]) * f);
+    }
+
+    /** Vrai si `at` est dans le couloir (près du chemin, à sa hauteur). */
+    static boolean inCorridor(Vector3d at) {
+        double reach = VolcanicLayout.CORRIDOR_HALF_WIDTH + AREA_MARGIN;
+        for (double[] point : VolcanicLayout.BOULDER_PATH) {
+            if (Math.hypot(at.x() - point[0], at.z() - point[2]) <= reach && at.y() >= point[1] - 2 && at.y() <= point[1] + 6) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    static boolean anyInCorridor(Store<EntityStore> store, List<PlayerRef> players) {
+        for (PlayerRef player : players) {
+            Vector3d at = Telegraphs.position(store, player.getReference());
+            if (at != null && inCorridor(at)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     void step(World world, Store<EntityStore> store, List<PlayerRef> players, boolean active, float dt) {
-        double[] start = VolcanicLayout.BOULDER_START;
-        double x = start[0];
-        double y = start[1];
+        double end = VolcanicLayout.BOULDER_PATH.length - 1;
         if (active) {
             clock += dt;
             if (clock >= INTERVAL) {
                 clock = 0f;
                 boulders.add(new Boulder());
-                Telegraphs.sound(store, "SFX_Goblin_Feastmaster_Slam", new Vector3d(x, y, start[2]));
+                Telegraphs.sound(store, "SFX_Goblin_Feastmaster_Slam", along(0));
             }
         }
-        double x0 = VolcanicLayout.CORRIDOR_X0;
-        double x1 = VolcanicLayout.CORRIDOR_X1 + 1;
+        double reach = VolcanicLayout.CORRIDOR_HALF_WIDTH + HIT_MARGIN;
         for (Iterator<Boulder> it = boulders.iterator(); it.hasNext(); ) {
             Boulder b = it.next();
             if (b.wait > 0f) {
                 b.wait -= dt;
-                Telegraphs.particle(store, "Nakasar_Fractal_Boulder_Rumble", new Vector3d(x, y, b.z - 1), 1f);
+                Telegraphs.particle(store, "Nakasar_Fractal_Boulder_Rumble", along(1), 1f);
                 continue;
             }
-            double from = b.z;
-            b.z = Math.min(b.z + SPEED * dt, VolcanicLayout.BOULDER_END_Z);
-            Vector3d at = new Vector3d(x, y, b.z);
+            b.s = Math.min(b.s + SPEED * dt, end);
+            Vector3d at = along(b.s);
             Telegraphs.particle(store, "Nakasar_Fractal_Boulder", at, 2f);
-            Telegraphs.circle(store, new Vector3d(x, y, b.z + 3), 3.5, 0.5f);
+            Telegraphs.circle(store, along(b.s + 3), 3.5, 0.5f);
             for (PlayerRef player : players) {
                 Ref<EntityStore> ref = player.getReference();
                 Vector3d p = Telegraphs.position(store, ref);
-                if (p == null || b.hit.contains(player.getUuid()) || p.x() < x0 || p.x() > x1
-                        || p.z() < from - 1.5 || p.z() > Math.min(b.z + 1.5, VolcanicLayout.BOULDER_END_Z) || p.y() < y - 1 || p.y() > y + 3) {
+                if (p == null || b.hit.contains(player.getUuid()) || Telegraphs.horizontal(p, at) > reach
+                        || p.y() < at.y() - 1 || p.y() > at.y() + 3) {
                     continue;
                 }
                 b.hit.add(player.getUuid());
@@ -93,11 +129,11 @@ final class Boulders {
                 Hurt.effect(store, ref, "Burn", 4f);
                 player.sendMessage(Message.translation(Volcanic.MESSAGES + "boulder.hit"));
             }
-            if (b.z - b.lastTrail >= TRAIL_STEP) {
-                b.lastTrail = b.z;
-                trails.add(new Trail(new Vector3d(x, y, b.z)));
+            if (b.s - b.lastTrail >= TRAIL_STEP) {
+                b.lastTrail = b.s;
+                trails.add(new Trail(at));
             }
-            if (b.z >= VolcanicLayout.BOULDER_END_Z) {
+            if (b.s >= end) {
                 Telegraphs.particle(store, "Nakasar_Fractal_Rock_Impact", at, 1.5f);
                 it.remove();
             }

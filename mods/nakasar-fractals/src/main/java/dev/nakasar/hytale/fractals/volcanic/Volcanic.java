@@ -163,7 +163,7 @@ public final class Volcanic implements FractalStage {
             st.required = GROUP_SIZE * (CAMP_GROUPS + (FractalRuns.partySize(world) - 1) / 2);
             Spawns.tellAll(world, Message.translation(MESSAGES + "intro").param("count", st.required));
         }
-        st.boulders.step(world, store, players, Spawns.anyIn(store, players, VolcanicLayout.CORRIDOR), dt);
+        st.boulders.step(world, store, players, Boulders.anyInCorridor(store, players), dt);
         st.landings.step(world, store, players);
         lavaFloor(world, store, st, players, dt);
         switch (st.step) {
