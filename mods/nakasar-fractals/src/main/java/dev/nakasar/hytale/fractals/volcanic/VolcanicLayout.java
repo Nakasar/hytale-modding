@@ -45,6 +45,9 @@ public final class VolcanicLayout {
     /** Île du Chamane imprégné, au milieu du lac de lave. */
     public static final double[] ARENA_CENTER = {-83.5, 85.0, -145.5};
     public static final double ARENA_RADIUS = 22;
+    /** Lac de vraie lave autour de l'île : disques {x, z, rayon} et dessus de la lave (y du monde). */
+    public static final double[][] LAKE = {{-84, -146, 40}, {-38, -124, 20}, {-122, -122, 16}};
+    public static final double LAKE_SURFACE = 83;
     public static final double[][] VILLAGERS = {{-70.5, 85.0, -132.5}, {-96.5, 85.0, -132.5}, {-96.5, 85.0, -158.5}, {-70.5, 85.0, -158.5}};
     /** Cratères de l'île : centres (pieds) et cases du dessus ; blocs du froid à la lave active. */
     public static final double[][] CRATERS = {{-85.5, 85.0, -129.5}, {-93.5, 85.0, -151.5}, {-82.5, 85.0, -152.5}, {-76.5, 85.0, -132.5}, {-70.5, 85.0, -150.5}, {-77.5, 85.0, -147.5}, {-93.5, 85.0, -139.5}, {-70.5, 85.0, -139.5}, {-81.5, 85.0, -140.5}, {-83.5, 85.0, -162.5}, {-76.5, 85.0, -159.5}};

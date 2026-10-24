@@ -28,7 +28,7 @@
               {
                 "X": 0,
                 "Y": 100,
-                "Z": -171
+                "Z": -167
               }
             ]
           }
@@ -61,7 +61,7 @@
               {
                 "X": 0,
                 "Y": 100,
-                "Z": -107
+                "Z": -103
               }
             ]
           }
@@ -94,7 +94,7 @@
               {
                 "X": 0,
                 "Y": 100,
-                "Z": -43
+                "Z": -39
               }
             ]
           }
@@ -127,7 +127,7 @@
               {
                 "X": 0,
                 "Y": 100,
-                "Z": 21
+                "Z": 25
               }
             ]
           }
@@ -139,39 +139,6 @@
             "WeightedPrefabPaths": [
               {
                 "Path": "Nakasar/Fractals/Volcanic/Section_03",
-                "Weight": 1.0
-              }
-            ]
-          }
-        }
-      }
-    },
-    {
-      "Runtime": 0,
-      "ContextPrecision": "Prop",
-      "PropDistribution": {
-        "Type": "Assigned",
-        "OverrideAllProps": true,
-        "PropDistribution": {
-          "Type": "Positions",
-          "Positions": {
-            "Type": "List",
-            "Positions": [
-              {
-                "X": 0,
-                "Y": 100,
-                "Z": 85
-              }
-            ]
-          }
-        },
-        "Assignments": {
-          "Type": "Constant",
-          "Prop": {
-            "Type": "Prefab",
-            "WeightedPrefabPaths": [
-              {
-                "Path": "Nakasar/Fractals/Volcanic/Section_04",
                 "Weight": 1.0
               }
             ]

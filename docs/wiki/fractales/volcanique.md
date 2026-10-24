@@ -3,10 +3,10 @@
 <Infobox pending title="Volcanique" kind="Fractale" icon="/jeu/Icons/Items/Nakasar/Fractals/Core_Volcanic.png" caption="Noyau de la Volcanique">
 <Info label="Boss">Champion chaman, Chaman imprégné</Info>
 <Info label="Objet lancé">pierre imprégnée</Info>
-<Info label="Ciel">fumée de volcan</Info>
+<Info label="Ciel">aucun : voûtes et grottes du volcan</Info>
 </Infobox>
 
-Un rituel grawl au cœur d'un volcan : groupes de grawls sous les chutes de pierres, couloir de rochers roulants, sauvetage de captifs au bord d'une falaise, puzzle de saut dans une mine, puis un boss ailé sur une île au milieu d'un lac de lave.
+Un rituel grawl au cœur d'un volcan : groupes de grawls sous les chutes de pierres, couloir de rochers roulants, sauvetage de captifs au bord d'une falaise, puzzle de saut dans une mine, puis un boss ailé sur une île au milieu d'un lac de lave. Tout se passe dans les galeries et les vastes grottes du volcan en activité.
 
 ## Déroulé
 

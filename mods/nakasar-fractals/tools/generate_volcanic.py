@@ -110,6 +110,9 @@ ROCK = ["Rock_Volcanic", "Rock_Volcanic", "Rock_Volcanic_Cobble", "Rock_Basalt"]
 GROUND = ["Soil_Ash", "Soil_Ash", "Rock_Volcanic_Cobble", "Rock_Magma_Cooled"]
 BRICK = ["Rock_Volcanic_Brick", "Rock_Volcanic_Brick_Smooth"]
 LAVA = "Rock_Volcanic_Cracked_Lava"
+LAVA_FLUID = "Lava_Source"              # vraie lave vanilla (fluide des prefabs de grottes volcaniques), lac de l'île
+EMBER = "Rock_Volcanic_Cracked_Incandescent"
+CAVE_ROCK = ["Rock_Basalt", "Rock_Volcanic", "Rock_Basalt_Cobble", "Rock_Volcanic", "Rock_Magma_Cooled"]
 PLANKS = "Wood_Darkwood_Planks"
 BEAM = "Wood_Darkwood_Beam"
 pick = fc.pick
@@ -273,6 +276,8 @@ def course_prefab():
     p.set(ex1, PAD_STAND, ez1, "Furniture_Ancient_Crate")
     island(p)
     dress(p)
+    cavern(p)
+    contain_lava(p)
     return p
 
 
@@ -339,7 +344,6 @@ def island(p):
 
 
 THEME = fn.THEMES["volcanic"]
-VOLCANO = (-78, -28, 34, 64)            # centre x, z, rayon, hauteur : le volcan d'où viennent les rochers
 
 
 def ridge(p, x0, x1, z0, z1, low, high, seed):
@@ -351,37 +355,13 @@ def ridge(p, x0, x1, z0, z1, low, high, seed):
     inland = fn.edge_distance(tops)
     cells = fn.island(p, tops, lambda x, z: tops[(x, z)] - LAVA_Y + 4 + min(10, inland[(x, z)] * 2), seed, hang=0.0,
                       theme=THEME)
-    fn.dress(p, cells, THEME, seed, trees=0.03, spacing=7, bushes=0.05, boulders=0.004)
-
-
-def volcano(p):
-    """Cône du volcan : pentes de cendre et de roche, coulées de lave figée qui luisent, cratère de lave."""
-    cx, cz, r, h = VOLCANO
-    tops = {}
-    for x in range(cx - r - 4, cx + r + 5):
-        for z in range(cz - r - 4, cz + r + 5):
-            d = math.hypot(x - cx, z - cz)
-            reach = r * (0.9 + 0.2 * (fn.fbm2(x, z, 12, 2, 61) + 1) / 2)
-            if d > reach:
-                continue
-            t = 1 - d / reach
-            y = LAVA_Y + round(h * t ** 1.25 + 3 * fn.fbm2(x, z, 6, 2, 62))
-            if d < 7:
-                y = LAVA_Y + h - 8 + round(d * 0.6)     # cratère
-            tops[(x, z)] = y
-    lava = lambda x, z: (math.hypot(x - cx, z - cz) < 6 or
-                         abs(math.sin(math.atan2(z - cz, x - cx) * 3 + fn.fbm2(x, z, 9, 2, 63))) < 0.06)
-    inland = fn.edge_distance(tops)
-    cells = fn.island(p, tops, lambda x, z: tops[(x, z)] - LAVA_Y + 4 + min(30, inland[(x, z)] * 1.3), 61, hang=0.0,
-                      theme=THEME,
-                      grass=lambda x, z: "Rock_Volcanic_Cracked_Lava" if lava(x, z) else fn.soil(x, z, 61, THEME["soil"]))
-    fn.dress(p, [c for c in cells if math.hypot(c[0] - cx, c[2] - cz) > r * 0.45], THEME, 64, trees=0.02, spacing=8,
-             bushes=0.04, boulders=0.008, density=0.25)
+    fn.dress(p, cells, THEME, seed, trees=0, spacing=7, bushes=0.05, boulders=0.004)
 
 
 def dress(p):
-    """Terres brûlées autour du camp et des arènes, falaises du canyon aux rochers et de la mine, volcan au loin,
-    îlots de roche volcanique. Jamais de sol en plus au-dessus de la lave de la mine ni entre deux sauts."""
+    """Terres brûlées autour du camp et des arènes, falaises du canyon aux rochers et de la mine, la caldeira. Pas
+    d'arbres : tout se passe dans le volcan (cavern). Jamais de sol en plus au-dessus de la lave de la mine ni entre
+    deux sauts."""
     def footprint(y, x0, x1, z0, z1):
         return {(x, z): y for x in range(x0, x1 + 1) for z in range(z0, z1 + 1) if (x, y, z) in p.blocks}
 
@@ -389,7 +369,7 @@ def dress(p):
     x0, x1, z0, z1 = CAMP
     camp = footprint(-1, x0, x1, z0, z1)
     tops = fn.rim(camp, 4, 13, seed=21, block=lambda x, z: z < z0 + 2 and abs(x) < 10)
-    fn.natural_ground(p, tops, THEME, seed=21, trees=0.03, spacing=7, density=0.3)
+    fn.natural_ground(p, tops, THEME, seed=21, trees=0, spacing=7, density=0.3)
     # Canyon aux rochers : falaises de part et d'autre (les niches restent creusées dans le mur).
     cx0, cx1, cz0, cz1 = CORRIDOR
     ridge(p, cx1 + 2, cx1 + 12, LANDING_N[2] - 2, z0 - 1, 7, 14, 23)
@@ -404,7 +384,7 @@ def dress(p):
                 ring[(x, z)] = -1
     tops = fn.rim(ring, 4, 12, seed=27, block=lambda x, z: abs(z - chz) <= 6 or z < chz)   # nord : la falaise
     tops = {c: y for c, y in tops.items() if not any((c[0], yy, c[1]) in p.blocks for yy in range(-1, 6))}
-    fn.natural_ground(p, tops, THEME, seed=27, trees=0.025, spacing=7, density=0.3)
+    fn.natural_ground(p, tops, THEME, seed=27, trees=0, spacing=7, density=0.3)
     # Mine : hautes parois rocheuses au-dessus des murs de la coulée de lave.
     mz0, mz1 = MINE_Z
     ridge(p, MINE[0] - 2, MINE[1], mz0 - 13, mz0 - 6, 12, 20, 29)
@@ -412,9 +392,159 @@ def dress(p):
     # Bout de la mine : une crête à l'ouest du palier, d'où part la descente vers le lac.
     ex0, ex1, ez0, ez1 = END_PAD
     ridge(p, ex0 - 12, ex0 - 1, ez0 + 1, ez1 + 8, 8, 15, 35)
-    volcano(p)
     caldera(p)
-    fn.scatter_islets(p, (-200, 70, -200, 90), 22, (LAVA_Y - 20, 20), (3, 9), THEME, seed=33)
+
+
+# --- l'intérieur du volcan (Kevin, 2026-10-24) -------------------------------------------------------------------------
+# Toute la fractale se passe dans le volcan : une voûte de basalte au-dessus de chaque lieu (galeries de 7 à 16 blocs de
+# haut, une vaste grotte en dôme au-dessus de la caldeira), des parois tout autour, des gouffres au fond de lave figée
+# entre les lieux, des stalactites (blocs vanilla Rock_*_Stalactite_*, rotation 8 = pendue, comme dans les prefabs de
+# grottes du jeu), des veines incandescentes et des coulées de lave sur les parois.
+CEILING_THICKNESS = 2
+WALL_THICKNESS = 3
+OVERHANG = 3                            # la voûte déborde des lieux de 3 blocs (les gouffres entre deux lieux)
+DOME_Y = LAKE_Y + 44                    # sommet de la grande grotte de la caldeira
+STALACTITES = ["Rock_Basalt_Stalactite_Large", "Rock_Volcanic_Stalactite_Large", "Rock_Basalt_Stalactite_Small",
+               "Rock_Volcanic_Stalactite_Small"]
+HANGING = 8                             # rotation d'un bloc retourné (prefabs de grottes vanilla)
+
+
+def disc_offsets(r):
+    return [(dx, dz) for dx in range(-r, r + 1) for dz in range(-r, r + 1) if dx * dx + dz * dz <= r * r]
+
+
+def cave_rock(x, y, z):
+    """Roche de la voûte et des parois : basalte et roche volcanique en plaques, veines incandescentes."""
+    vein = abs(fn.fbm2(x + 0.37 * y, z - 0.29 * y, 9, 2, 91))
+    if vein < 0.012:
+        return LAVA         # veines de roche en fusion : la lumière des galeries
+    if vein < 0.035:
+        return EMBER
+    return pick(CAVE_ROCK, x, y, z)
+
+
+def cavern(p):
+    tops, bottoms = {}, {}
+    for (x, y, z), (name, _) in p.blocks.items():
+        if name == go.AIR and (x, y, z) not in p.fluids:
+            continue
+        tops[(x, z)] = max(tops.get((x, z), y), y)
+        bottoms[(x, z)] = min(bottoms.get((x, z), y), y)
+    inner = set(tops)
+    for dx, dz in disc_offsets(OVERHANG):
+        inner |= {(x + dx, z + dz) for x, z in tops}
+    outer = set(inner)
+    for dx, dz in disc_offsets(WALL_THICKNESS):
+        outer |= {(x + dx, z + dz) for x, z in inner}
+    walls = outer - inner
+    # Plus haut et plus bas voisins de chaque colonne (la voûte passe au-dessus des crêtes, les parois descendent sous
+    # les fonds), puis hauteur de voûte : dôme sur la caldeira, galeries ailleurs.
+    near_top, near_bottom = {}, {}
+    reach = disc_offsets(6)
+    for x, z in outer:
+        ts = [tops[(x + dx, z + dz)] for dx, dz in reach if (x + dx, z + dz) in tops]
+        bs = [bottoms[(x + dx, z + dz)] for dx, dz in reach if (x + dx, z + dz) in bottoms]
+        near_top[(x, z)] = max(ts) if ts else LAKE_Y
+        near_bottom[(x, z)] = min(bs) if bs else LAKE_Y - 2
+    raw = {}
+    for x, z in outer:
+        gallery = near_top[(x, z)] + 7 + round(9 * (fn.fbm2(x, z, 23, 2, 92) + 1) / 2)
+        d = min(math.hypot(x - cx, z - cz) - r for cx, cz, r in LAKE_DISCS)
+        dome = DOME_Y + round(5 * fn.fbm2(x, z, 17, 2, 93)) - max(0, d) * 0.8
+        raw[(x, z)] = max(gallery, dome)
+    ceiling = {}
+    blur = disc_offsets(3)
+    for x, z in outer:
+        vals = [raw[(x + dx, z + dz)] for dx, dz in blur if (x + dx, z + dz) in raw]
+        ceiling[(x, z)] = max(round(sum(vals) / len(vals)), near_top[(x, z)] + 5)
+    # Gouffres entre les lieux : fond de lave figée qui luit, sous le plus bas voisin.
+    for x, z in inner - set(tops):
+        floor = near_bottom[(x, z)] - 3
+        p.set(x, floor, z, LAVA if fn.hash01(x, 5, z, 94) < 0.5 else "Rock_Magma_Cooled")
+        p.set(x, floor - 1, z, pick(ROCK, x, floor - 1, z))
+    # Voûte.
+    for x, z in inner:
+        c = ceiling[(x, z)]
+        for y in range(c, c + CEILING_THICKNESS):
+            p.set(x, y, z, cave_rock(x, y, z))
+    # Parois, du fond des gouffres à la voûte.
+    for x, z in walls:
+        for y in range(near_bottom[(x, z)] - 5, ceiling[(x, z)] + CEILING_THICKNESS):
+            if fn.free(p, x, y, z):
+                p.set(x, y, z, cave_rock(x, y, z))
+    lava_falls(p, walls, inner, ceiling, near_bottom)
+    stalactites(p, inner, ceiling, tops)
+    cave_flora(p, tops)
+
+
+def lava_falls(p, walls, inner, ceiling, near_bottom):
+    """Coulées de lave sur les parois qui bordent le lac de la caldeira et la coulée de la mine : une bande de roche en
+    fusion de la voûte jusqu'en bas, sur la face tournée vers la grotte."""
+    faces = sorted((x, z) for x, z in walls if any((x + dx, z + dz) in inner for dx, dz in ((1, 0), (-1, 0), (0, 1), (0, -1))))
+    mine = lambda x, z: MINE[0] - 2 <= x <= MINE[1] and MINE_Z[0] - 8 <= z <= MINE_Z[1] + 8
+    placed = []
+    for x, z in faces:
+        lake = any(math.hypot(x - cx, z - cz) <= r + 12 for cx, cz, r in LAKE_DISCS)
+        if not (lake or mine(x, z)) or fn.hash01(x, 7, z, 95) > 0.08:
+            continue
+        if any(math.hypot(x - a, z - b) < 11 for a, b in placed):
+            continue
+        placed.append((x, z))
+        width = 1 + int(fn.hash01(z, 7, x, 96) * 2)
+        for k in range(width):
+            fx, fz = (x + k, z) if (x + k, z) in walls else (x, z + k)
+            for y in range(near_bottom[(x, z)] - 4, ceiling[(x, z)]):
+                p.set(fx, y, fz, LAVA)
+    # Coulées des hautes parois de la mine (côté rails : on ne s'y tient jamais).
+    for x in range(MINE[0] + 4, MINE[1] - 4, 13):
+        for z in (MINE_Z[0] - 5, MINE_Z[1] + 5):
+            for y in range(LAVA_Y, 12):
+                p.set(x, y, z, LAVA)
+
+
+def stalactites(p, inner, ceiling, tops):
+    """Stalactites sous la voûte, loin au-dessus des têtes : cône de roche (large en haut) et pointe vanilla pendue."""
+    for x, z in sorted(inner):
+        h = fn.hash01(x, 9, z, 97)
+        if h > 0.035:
+            continue
+        c = ceiling[(x, z)]
+        room = c - tops.get((x, z), LAKE_Y - 2)
+        if room < 10:
+            continue
+        length = 1 + int(fn.hash01(z, 9, x, 98) * min(7, room - 8))
+        for k in range(1, length + 1):
+            y = c - k
+            p.set(x, y, z, cave_rock(x, y, z))
+            if k <= length // 2:
+                for dx, dz in ((1, 0), (-1, 0), (0, 1), (0, -1)):
+                    if fn.hash01(x + dx, y, z + dz, 99) < 0.7 and fn.free(p, x + dx, y, z + dz):
+                        p.set(x + dx, y, z + dz, cave_rock(x + dx, y, z + dz))
+        p.set(x, c - length - 1, z, STALACTITES[int(h / 0.035 * len(STALACTITES)) % len(STALACTITES)], HANGING)
+
+
+def cave_flora(p, tops):
+    """Roseaux de lave au bord du lac et des coulées, ronces de lave sur la cendre."""
+    for (x, z), y in sorted(tops.items()):
+        name = p.blocks.get((x, y, z), ("",))[0]
+        if not fn.free(p, x, y + 1, z) or math.hypot(x - AR_CENTER[0], z - AR_CENTER[1]) <= AR_RADIUS + 1:
+            continue
+        lava_near = any(p.blocks.get((x + dx, y + dy, z + dz), ("",))[0] == LAVA or (x + dx, y + dy, z + dz) in p.fluids
+                        for dx, dz in ((2, 0), (-2, 0), (0, 2), (0, -2)) for dy in (0, -1, -2, -3))
+        h = fn.hash01(x, y, z, 100)
+        if name.startswith("Soil_") and lava_near and h < 0.35:
+            p.set(x, y + 1, z, "Plant_Reeds_Lava")
+        elif name == "Soil_Ash" and h < 0.012:
+            p.set(x, y + 1, z, "Plant_Bramble_Dead_Lavathorn")
+
+
+def contain_lava(p):
+    """La lave du lac ne doit couler nulle part : chaque case de fluide a de la lave ou de la roche à côté et dessous."""
+    for (x, y, z) in list(p.fluids):
+        for dx, dy, dz in ((1, 0, 0), (-1, 0, 0), (0, 0, 1), (0, 0, -1), (0, -1, 0)):
+            at = (x + dx, y + dy, z + dz)
+            if at not in p.fluids and not p.solid_at(*at):
+                p.set(*at, pick(ROCK, at[0], at[1], at[2]))
 
 
 def descent_cells():
@@ -439,7 +569,7 @@ def in_lake(x, z):
 def caldera(p):
     """Le lac de lave au pied du volcan : la descente (sentier puis chaussée), la lave autour de l'île du Chamane,
     les falaises qui tombent jusqu'au lac (sous l'arène du Champion, la crête de la mine) et les parois du cratère
-    tout autour. La lave du lac brûle (Java : Volcanic.lavaFloor)."""
+    tout autour. Le lac est de la vraie lave (fluide Lava_Source) ; y tomber brûle (Java : Volcanic.lavaFloor)."""
     path = descent_cells()
     for (x, z), stand in path.items():
         p.set(x, stand - 1, z, pick(GROUND, x, stand - 1, z))
@@ -460,13 +590,14 @@ def caldera(p):
     zs = [cz - r - 4 for _, cz, r in LAKE_DISCS] + [cz + r + 4 for _, cz, r in LAKE_DISCS]
     lake = {(x, z) for x in range(min(xs), max(xs) + 1) for z in range(min(zs), max(zs) + 1)
             if in_lake(x, z) and (x, z) not in columns}
-    for x, z in lake:
-        p.set(x, LAKE_Y, z, LAVA if fn.hash01(x, 3, z, 83) > 0.12 else "Rock_Magma_Cooled")
-        p.set(x, LAKE_Y - 1, z, pick(ROCK, x, LAKE_Y - 1, z))
+    for x, z in lake:   # vraie lave sur deux blocs de fond (Kevin, 2026-10-24)
+        p.fluid(x, LAKE_Y, z, LAVA_FLUID)
+        p.fluid(x, LAKE_Y - 1, z, LAVA_FLUID)
+        p.set(x, LAKE_Y - 2, z, pick(ROCK, x, LAKE_Y - 2, z))
     near = lambda x, z, d: any((x + dx, z + dz) in lake for dx in range(-d, d + 1) for dz in range(-d, d + 1))
     for (x, z), low in columns.items():   # falaises : ce qui borde le lac descend jusqu'au fond
-        if low > LAKE_Y - 1 and near(x, z, 2):
-            for y in range(LAKE_Y - 1, low):
+        if low > LAKE_Y - 2 and near(x, z, 2):
+            for y in range(LAKE_Y - 2, low):
                 p.set(x, y, z, pick(ROCK, x, y, z))
     # Parois du cratère autour du lac (pas sur ce qui existe déjà, ni contre la descente).
     tops = {}
@@ -481,7 +612,7 @@ def caldera(p):
                 tops[(x, z)] = LAKE_Y + 6 + round(20 * (fn.fbm2(x, z, 13, 3, 86) + 1) / 2)
     inland = fn.edge_distance(tops)
     cells = fn.island(p, tops, lambda x, z: tops[(x, z)] - LAKE_Y + 2, 87, hang=0.0, theme=THEME)
-    fn.dress(p, [c for c in cells if inland[(c[0], c[2])] > 1], THEME, 88, trees=0.02, spacing=8, bushes=0.04,
+    fn.dress(p, [c for c in cells if inland[(c[0], c[2])] > 1], THEME, 88, trees=0, spacing=8, bushes=0.04,
              boulders=0.006, density=0.25)
 
 
@@ -934,6 +1065,9 @@ public final class VolcanicLayout {{
     /** Île du Chamane imprégné, au milieu du lac de lave. */
     public static final double[] ARENA_CENTER = {J.jpoint((AR_CENTER[0], AR_STAND, AR_CENTER[1]))};
     public static final double ARENA_RADIUS = {AR_RADIUS};
+    /** Lac de vraie lave autour de l'île : disques {{x, z, rayon}} et dessus de la lave (y du monde). */
+    public static final double[][] LAKE = {{{", ".join(f"{{{x}, {z}, {r}}}" for x, z, r in LAKE_DISCS)}}};
+    public static final double LAKE_SURFACE = {fc.GROUND_Y + LAKE_Y + 1};
     public static final double[][] VILLAGERS = {villagers};
     /** Cratères de l'île : centres (pieds) et cases du dessus ; blocs du froid à la lave active. */
     public static final double[][] CRATERS = {crater_points};

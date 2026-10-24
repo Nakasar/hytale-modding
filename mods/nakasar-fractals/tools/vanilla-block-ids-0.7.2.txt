@@ -4046,3 +4046,6 @@ Rock_Crystal_Void_Block
 Rock_Crystal_Void_Large
 Rock_Crystal_Void_Medium
 Rock_Crystal_Void_Small
+# Volcan intérieur (Server/Item/Items/Rock/Volcanic/Rock_Volcanic_Cracked_Incandescent.json ; Server/Item/Block/Fluids/Lava_Source.json, lave des prefabs vanilla Cave/Nodes/*/Lava), vus dans Assets.zip 0.7.2 le 24 octobre 2026 :
+Rock_Volcanic_Cracked_Incandescent
+Lava_Source

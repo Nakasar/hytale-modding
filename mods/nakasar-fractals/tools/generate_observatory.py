@@ -188,9 +188,17 @@ class Prefab:
 
     def __init__(self):
         self.blocks = {}
+        self.fluids = {}      # (x, y, z) -> (fluide, niveau), dans une case d'air (lac de lave du Volcanique)
 
     def set(self, x, y, z, name, rot=0):
+        if name != AIR:
+            self.fluids.pop((x, y, z), None)
         self.blocks[(x, y, z)] = (name, rot)
+
+    def fluid(self, x, y, z, name, level=1):
+        """Fluide dans une case d'air, comme les sources des prefabs vanilla (Lava_Source, niveau 1)."""
+        self.set(x, y, z, AIR)
+        self.fluids[(x, y, z)] = (name, level)
 
     def fill(self, x0, y0, z0, x1, y1, z1, name):
         for x in range(min(x0, x1), max(x0, x1) + 1):
@@ -239,7 +247,14 @@ class Prefab:
             f.write('{\n  "version": 8,\n  "blockIdVersion": 8,\n  "anchorX": 0,\n  "anchorY": 0,\n  "anchorZ": 0,\n')
             f.write('  "blocks": [\n')
             f.write(",\n".join("    " + json.dumps(b, separators=(",", ":")) for b in blocks))
-            f.write("\n  ]\n}\n")
+            f.write("\n  ]")
+            if self.fluids:
+                fluids = [{"x": x, "y": y, "z": z, "name": name, "level": level} for (x, y, z), (name, level)
+                          in sorted(self.fluids.items(), key=lambda kv: (kv[0][1], kv[0][2], kv[0][0]))]
+                f.write(',\n  "fluids": [\n')
+                f.write(",\n".join("    " + json.dumps(e, separators=(",", ":")) for e in fluids))
+                f.write("\n  ]")
+            f.write("\n}\n")
         return len(blocks)
 
 
