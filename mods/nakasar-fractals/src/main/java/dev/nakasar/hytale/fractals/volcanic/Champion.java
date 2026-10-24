@@ -32,8 +32,10 @@ import java.util.concurrent.ThreadLocalRandom;
  * <ul>
  *   <li>{@value #STACKS} charges de protection : chacune retire 11 % des dégâts qu'il subit ; seule une pierre
  *   imprégnée lancée sur lui en retire une ; elle se ramasse accroupi, une par joueur, et se garde en main
- *   ({@link CrouchPickup}). À 50 % de vie, deuxième phase de protection : il reprend toutes ses charges (une fois) ;</li>
- *   <li>vétérans et pierres imprégnées seulement pendant les phases de protection ; à la dernière charge retirée, les
+ *   ({@link CrouchPickup}). À 50 % de vie, deuxième phase de protection : il reprend {@value #RESHIELD_STACKS} charge
+ *   (une fois) ;</li>
+ *   <li>pierres imprégnées seulement pendant les phases de protection, vétérans seulement pendant la première (Kevin,
+ *   2026-10-24) ; à la dernière charge retirée, les
  *   pierres disparaissent (sol et mains) : on frappe avec ses armes ;</li>
  *   <li>sa vie ne remonte jamais d'elle-même ({@link PinnedHealth#noRegen}) : pas de répit pendant qu'on attend les
  *   pierres ;</li>
@@ -47,6 +49,7 @@ import java.util.concurrent.ThreadLocalRandom;
 final class Champion {
 
     static final int STACKS = 8;
+    static final int RESHIELD_STACKS = 1;
     static final float STACK_REDUCTION = 0.11f;
     static final float ROCK_INTERVAL = 6f;
     static final float VETERAN_INTERVAL = 20f;
@@ -122,10 +125,7 @@ final class Champion {
         }
         if (!reshielded && Hurt.healthFraction(store, boss) < 0.5f) {
             reshielded = true;
-            if (stacks <= 0) {
-                veteranClock = VETERAN_INTERVAL - 6f;
-            }
-            stacks = STACKS;
+            stacks = Math.max(stacks, RESHIELD_STACKS);
             showStacks();
             Vector3d at = Telegraphs.position(store, boss);
             if (at != null) {
@@ -138,7 +138,7 @@ final class Champion {
             rockClock = 0f;
             Volcanic.fallingRocks(world, store, st, inArena, 2 + (FractalRuns.partySize(world) >= 3 ? 1 : 0), stacks > 0);
         }
-        veteranClock += stacks > 0 ? dt : 0f;
+        veteranClock += stacks > 0 && !reshielded ? dt : 0f;   // vétérans : première phase de protection seulement
         if (veteranClock >= VETERAN_INTERVAL) {
             veteranClock = 0f;
             veterans(world, store);

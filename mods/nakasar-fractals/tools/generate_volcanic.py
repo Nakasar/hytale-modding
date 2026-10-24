@@ -12,7 +12,8 @@ Le déroulé de GW2, dans l'ordre :
 3. le Champion chaman des grawls, au bord d'une falaise au-dessus du lac de lave du volcan : huit charges de
    protection que seules les pierres imprégnées (lâchées par les rochers qui tombent, ramassées accroupi et gardées en
    main) retirent ; ses vétérans sortent des grottes du sud et marchent lentement vers les trois captifs du bord nord ;
-   vétérans et pierres seulement tant qu'il est protégé, nouvelle phase de protection complète à 50 % ;
+   pierres seulement tant qu'il est protégé, vétérans seulement dans la première phase de protection, une charge de
+   protection reprise à 50 % ;
 4. la mine : des rails sur des planches au-dessus de la lave, des chauves-souris ; une chute ramène au départ du
    tronçon ; au bout, une descente jusqu'au lac ;
 5. le Chamane imprégné, sur une île au milieu du lac (on la voit du bord de la falaise du Champion) : petits cratères
@@ -959,8 +960,8 @@ def lang():
                            "The Champion shaman is protected: pick up the imbued stones (crouch) and throw them at him "
                            "(right-click). Don't let his veterans reach the captives!"),
         "champion.stack": ("Une charge de protection en moins ({count} restantes).", "One protection stack fewer ({count} left)."),
-        "champion.shield": ("Le Champion se protège de nouveau : toutes ses charges sont revenues, ses vétérans repartent !",
-                            "The Champion protects himself again: all his stacks are back, his veterans march again!"),
+        "champion.shield": ("Le Champion se protège de nouveau : une charge de protection, lancez-lui une pierre imprégnée !",
+                            "The Champion protects himself again: one protection stack, throw an imbued stone at him!"),
         "champion.exposed": ("Le Champion n'est plus protégé : frappez-le !", "The Champion is no longer protected: strike him!"),
         "champion.veterans": ("Des vétérans sortent des grottes du sud et marchent vers les captifs !",
                               "Veterans leave the southern caves and march on the captives!"),
