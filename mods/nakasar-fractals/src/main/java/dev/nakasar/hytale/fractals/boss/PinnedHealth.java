@@ -11,6 +11,7 @@ import com.hypixel.hytale.server.core.modules.entitystats.EntityStatValue;
 import com.hypixel.hytale.server.core.modules.entitystats.EntityStatsSystems;
 import com.hypixel.hytale.server.core.modules.entitystats.asset.DefaultEntityStatTypes;
 import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
+import com.hypixel.hytale.server.npc.NPCPlugin;
 
 import java.util.Map;
 import java.util.Set;
@@ -20,12 +21,14 @@ import java.util.concurrent.ConcurrentHashMap;
  * Vie fixée par le Java ({@link #pin}) : remise à chaque tick, juste après la régénération naturelle des PNJ et avant
  * l'envoi des changements de stats aux clients. Sans cela, la régénération remonte la vie entre deux pas du Java et la
  * barre de boss monte et redescend sans cesse (Abîme de Jade, retour du 2026-10-24).
+ * La dépendance vise la sous-classe enregistrée par le NPCPlugin : la classe générique
+ * {@code EntityStatsSystems.Regenerate} n'est jamais enregistrée, et la citer fait échouer le chargement du plugin.
  */
 public final class PinnedHealth extends TickingSystem<EntityStore> {
 
     @SuppressWarnings({"rawtypes", "unchecked"})
     private static final Set<Dependency<EntityStore>> DEPENDENCIES = Set.of(
-            new SystemDependency(Order.AFTER, EntityStatsSystems.Regenerate.class),
+            new SystemDependency(Order.AFTER, NPCPlugin.NPCEntityRegenerateStatsSystem.class),
             new SystemDependency(Order.BEFORE, EntityStatsSystems.Changes.class));
 
     private static final Map<Ref<EntityStore>, Float> PINNED = new ConcurrentHashMap<>();
