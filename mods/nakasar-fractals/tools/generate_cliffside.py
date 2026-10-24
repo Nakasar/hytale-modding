@@ -628,8 +628,96 @@ def course_prefab():
     for x in range(cx - 1, cx + 2):
         for z in range(cz - 1, cz + 2):
             p.set(x, ARENA - 1, z, SEAL_STONE)
+    scaffold_dressing(p)
     plateau_vegetation(p, tops, edge)
     return p
+
+
+FENCE = "Wood_Darkwood_Fence"
+PROPS = ["Furniture_Ancient_Crate", "Furniture_Ancient_Barrel", "Furniture_Ancient_Sack", "Furniture_Ancient_Crate"]
+
+
+def scaffold_keepouts():
+    """Points du parcours à laisser dégagés (rayon 3) : sceaux, vagues, foyers, barrières, leviers."""
+    pts = [(x, z) for x, _, z in KNEE_SEALS] + [(CHEST_SEAL[0], CHEST_SEAL[2])]
+    pts += [xz for wave in KNEE_WAVES for xz in wave] + CHEST_WAVES + FIRES
+    pts += [(x, z) for x, _, z in GATE1 + GATE2 + GATE3] + [(x, z) for x, _, z in LEVERS_TOP]
+    return pts
+
+
+def scaffold_dressing(p):
+    """Habille les passerelles d'échafaudage (genoux, chemin du saut, torse, pont des épaules) : garde-corps là où le
+    bord donne sur le vide (jamais devant un raccord), poteaux à lanterne, caisses et sacs du culte contre le colosse,
+    croisillons des étais, lanternes suspendues, lianes et toiles d'araignée sous les planchers, torches sur les
+    escaliers. Rien ne se pose sur le chemin d'un saut, d'un sceau, d'une vague ou d'un foyer."""
+    def empty(x, y, z):
+        return p.blocks.get((x, y, z), (AIR,))[0] == AIR
+
+    keep = scaffold_keepouts()
+
+    def clear_of(x, z, r=3.0):
+        return all(math.hypot(x - kx, z - kz) > r for kx, kz in keep)
+
+    walkways = [(D1, KNEES, True), (PATH, KNEES, True), (D2, CHEST, True), (BRIDGE_S2, SHOULDERS, False)]
+    walkways += [(box, CHEST, False) for box in WALK_TOP]
+    for (x0, x1, z0, z1), stand, rails in walkways:
+        floor_y = stand - 1
+        border = []
+        for x in range(x0, x1 + 1):
+            border += [(x, z0, 0, -1), (x, z1, 0, 1)]
+        for z in range(z0, z1 + 1):
+            border += [(x0, z, -1, 0), (x1, z, 1, 0)]
+        k = 0
+        for x, z, dx, dz in border:
+            # Bord sur le vide : rien sous le pas dehors, sur 2 cases de part et d'autre (pas de raccord).
+            along = [(x + dz * t + dx, z + dx * t + dz) for t in range(-2, 3)]
+            open_edge = all(empty(ox, floor_y, oz) and empty(ox, stand, oz) for ox, oz in along)
+            if not open_edge:
+                continue
+            # Dessous : liane ou toile pendue au rebord.
+            h = fn.hash01(x, stand, z, 401)
+            if h < 0.16 and empty(x, floor_y - 1, z):
+                p.set(x, floor_y - 1, z, "Plant_Vine_Green_Hanging")
+            elif h < 0.2 and empty(x, floor_y - 1, z):
+                p.set(x, floor_y - 1, z, "Deco_SpiderWeb")
+            if not rails or not clear_of(x, z, 2.0) or not empty(x, stand, z):
+                continue
+            k += 1
+            if k % 6 == 0:
+                p.set(x, stand, z, BEAM)
+                p.set(x, stand + 1, z, "Deco_Lantern")
+            else:
+                p.set(x, stand, z, FENCE, 1 if dx else 0)
+        # Caisses, tonneaux et sacs le long du côté du colosse (nord), en petits tas.
+        if rails:
+            for x in range(x0 + 1, x1):
+                if fn.hash01(x, stand, z0, 402) > 0.22 or not clear_of(x, z0 + 1, 3.0):
+                    continue
+                for dz in (1, 2):
+                    if fn.hash01(x, dz, stand, 403) < (0.9 if dz == 1 else 0.35) and empty(x, stand, z0 + dz):
+                        prop = PROPS[int(fn.hash01(x, z0, dz, 404) * len(PROPS))]
+                        p.set(x, stand, z0 + dz, prop)
+                        if prop == "Furniture_Ancient_Crate" and fn.hash01(x, dz, 405) < 0.4 and empty(x, stand + 1, z0 + dz):
+                            p.set(x, stand + 1, z0 + dz, "Furniture_Crude_Candle")
+        # Lanternes suspendues sous le plancher (vues d'en bas).
+        for x in range(x0 + 2, x1 - 1, 7):
+            zc = (z0 + z1) // 2
+            if empty(x, floor_y - 1, zc):
+                p.set(x, floor_y - 1, zc, "Deco_Lantern_Ceiling")
+    # Croisillons des étais : traverses horizontales entre les poteaux des passerelles.
+    for (x0, x1, z), (y0, y1) in (((D1[0], D1[1], D1[3]), (0, KNEES - 1)), ((D2[0], D2[1], D2[3] - 1), (KNEES, CHEST - 1))):
+        for y in range(y1 - 5, y0, -6):
+            for x in range(x0, x1 + 1):
+                if empty(x, y, z):
+                    p.set(x, y, z, BEAM)
+            for x in range(x0, x1 + 1, 6):
+                if fn.hash01(x, y, z, 406) < 0.3 and empty(x + 1, y - 1, z):
+                    p.set(x + 1, y - 1, z, "Deco_SpiderWeb")
+    # Torches du culte aux coins des escaliers en colimaçon.
+    for (cx, cz), y1 in ((S1, KNEES), (S2, SHOULDERS)):
+        for dx, dz in ((-5, -5), (5, -5), (5, 5), (-5, 5)):
+            if empty(cx + dx, y1, cz + dz) and clear_of(cx + dx, cz + dz, 2.0):
+                p.set(cx + dx, y1, cz + dz, "Furniture_Crude_Torch")
 
 
 def plateau_tops():
