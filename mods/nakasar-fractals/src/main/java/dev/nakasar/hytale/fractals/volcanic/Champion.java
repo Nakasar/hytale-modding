@@ -30,7 +30,7 @@ import java.util.concurrent.ThreadLocalRandom;
 /**
  * Le Champion chaman des grawls. Son IA (JSON) frappe et lance les flammes sous chaque joueur ; le Java mène le reste :
  * <ul>
- *   <li>{@value #STACKS} charges de protection : chacune retire 11 % des dégâts qu'il subit ; seule une pierre
+ *   <li>{@value #STACKS} charges de protection : invulnérable tant qu'il en garde une ; seule une pierre
  *   imprégnée lancée sur lui en retire une ; elle se ramasse accroupi, une par joueur, et se garde en main
  *   ({@link CrouchPickup}). À 50 % de vie, deuxième phase de protection : il reprend {@value #RESHIELD_STACKS} charge
  *   (une fois) ;</li>
@@ -50,7 +50,6 @@ final class Champion {
 
     static final int STACKS = 8;
     static final int RESHIELD_STACKS = 1;
-    static final float STACK_REDUCTION = 0.11f;
     static final float ROCK_INTERVAL = 6f;
     static final float VETERAN_INTERVAL = 20f;
     static final double PUSH_RANGE = 2;
@@ -258,12 +257,11 @@ final class Champion {
 
     // --- charges -----------------------------------------------------------------------------------------
 
-    /** Coup sur le Champion (groupe de filtres) : chaque charge retire {@value #STACK_REDUCTION} des dégâts. */
+    /** Coup sur le Champion (groupe de filtres) : invulnérable tant qu'il lui reste une charge (Kevin, 2026-10-24). */
     void filter(Ref<EntityStore> victim, Damage damage) {
-        if (!victim.equals(boss) || stacks <= 0) {
-            return;
+        if (victim.equals(boss) && stacks > 0) {
+            damage.setCancelled(true);
         }
-        damage.setAmount(damage.getAmount() * Math.max(0.1f, 1f - STACK_REDUCTION * stacks));
     }
 
     /** Pierre imprégnée arrivée sur `target`. */

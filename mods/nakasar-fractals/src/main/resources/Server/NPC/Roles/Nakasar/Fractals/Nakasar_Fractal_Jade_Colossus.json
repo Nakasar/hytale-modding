@@ -1,9 +1,9 @@
 {
-  "$Comment": "Colosse de jade : en phase 2, un sort du jade toutes les 30 s (10 en tout), insensible aux attaques à distance (Java), frappe le sol (cercle annoncé, renverse) et enchaîne le combo du golem vanilla au contact ; il lâche un cristal réfléchissant (Java). Généré par tools/generate_solid_ocean.py.",
+  "$Comment": "Colosse de jade : sort du jade toutes les 15 s (Java), insensible aux attaques à distance (Java), enchaîne au contact le combo du golem vanilla sans ses toupies ; il lâche un cristal réfléchissant (Java). Généré par tools/generate_solid_ocean.py.",
   "Type": "Generic",
   "Appearance": "Nakasar_Fractal_Jade_Colossus",
   "NameTranslationKey": "nakasar_fractals_solid_ocean.npc.Jade_Colossus.name",
-  "MaxHealth": 490,
+  "MaxHealth": 300,
   "StartState": "Idle",
   "DefaultPlayerAttitude": "Hostile",
   "DefaultNPCAttitude": "Ignore",
@@ -61,25 +61,6 @@
         }
       ]
     },
-    "Spin_Damage": {
-      "Interactions": [
-        {
-          "Parent": "Golem_Crystal_Spin_Damage",
-          "DamageCalculator": {
-            "Type": "Absolute",
-            "BaseDamage": {
-              "Physical": 16
-            },
-            "RandomPercentageModifier": 0.1
-          },
-          "DamageEffects": {
-            "Knockback": {
-              "Force": -4
-            }
-          }
-        }
-      ]
-    },
     "Ground_Slam_Damage": {
       "Interactions": [
         {
@@ -118,25 +99,6 @@
         }
       ]
     },
-    "Spin_Heavy_Damage": {
-      "Interactions": [
-        {
-          "Parent": "Golem_Crystal_Spin_Heavy_Damage",
-          "DamageCalculator": {
-            "Type": "Absolute",
-            "BaseDamage": {
-              "Physical": 16
-            },
-            "RandomPercentageModifier": 0.1
-          },
-          "DamageEffects": {
-            "Knockback": {
-              "Force": -4
-            }
-          }
-        }
-      ]
-    },
     "Clap_Damage": {
       "Interactions": [
         {
@@ -157,35 +119,6 @@
       ]
     }
   },
-  "StateTransitions": [
-    {
-      "$Comment": "Entrée en combat : chaque attaque spéciale a sa propre recharge.",
-      "States": [
-        {
-          "From": [
-            "Idle"
-          ],
-          "To": [
-            "Combat"
-          ]
-        }
-      ],
-      "Actions": [
-        {
-          "Type": "TimerStart",
-          "Name": "Slam",
-          "StartValueRange": [
-            3,
-            5
-          ],
-          "RestartValueRange": [
-            8,
-            10
-          ]
-        }
-      ]
-    }
-  ],
   "Instructions": [
     {
       "Sensor": {
@@ -271,46 +204,6 @@
           ]
         },
         {
-          "$Comment": "Frappe au sol annoncée.",
-          "Sensor": {
-            "Type": "And",
-            "Sensors": [
-              {
-                "Type": "Target",
-                "Range": 5,
-                "Filters": [
-                  {
-                    "Type": "LineOfSight"
-                  }
-                ]
-              },
-              {
-                "Type": "Timer",
-                "Name": "Slam",
-                "State": "STOPPED"
-              }
-            ]
-          },
-          "ActionsBlocking": true,
-          "Actions": [
-            {
-              "Type": "TimerRestart",
-              "Name": "Slam"
-            },
-            {
-              "Type": "Attack",
-              "Attack": "Root_Nakasar_Fractal_NPC_Colossus_Slam",
-              "SkipAiming": true,
-              "LineOfSight": false,
-              "AvoidFriendlyFire": false
-            }
-          ],
-          "HeadMotion": {
-            "Type": "Watch",
-            "RelativeTurnSpeed": 1.0
-          }
-        },
-        {
           "Sensor": {
             "Type": "Target",
             "Range": 3.0,
@@ -328,7 +221,7 @@
           "Actions": [
             {
               "Type": "Attack",
-              "Attack": "Root_NPC_Golem_Crystal_Attack",
+              "Attack": "Root_Nakasar_Fractal_NPC_Colossus_Attack",
               "AttackPauseRange": [
                 1.0,
                 1.4

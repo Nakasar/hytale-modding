@@ -55,6 +55,8 @@ public final class BossBarSystem extends TickingSystem<EntityStore> {
     private static final Set<String> EVERYWHERE = ConcurrentHashMap.newKeySet();
     /** Texte ajouté au nom de la barre, par rôle (barre de défiance) ; null : rien. Lu à chaque passage. */
     private static final Map<String, Function<Ref<EntityStore>, String>> LABELS = new ConcurrentHashMap<>();
+    /** Portée de la barre par rôle, quand elle n'est pas {@link #RANGE} ({@link #range}). */
+    private static final Map<String, Double> RANGES = new ConcurrentHashMap<>();
 
     private static final double RANGE = 40;
     private static final float INTERVAL = 0.25f;
@@ -69,7 +71,7 @@ public final class BossBarSystem extends TickingSystem<EntityStore> {
     private record Shown(World world, int networkId, PlayerRef player, String label) {
     }
 
-    private record Elite(int networkId, Vector3d position, String nameKey, String label, boolean everywhere) {
+    private record Elite(int networkId, Vector3d position, String nameKey, String label, boolean everywhere, double range) {
     }
 
     /** Donne une barre de boss au rôle `role`. */
@@ -81,6 +83,12 @@ public final class BossBarSystem extends TickingSystem<EntityStore> {
     public static void everywhere(String role) {
         ELITES.add(role);
         EVERYWHERE.add(role);
+    }
+
+    /** Donne au rôle `role` une barre vue jusqu'à `range` blocs (toute une arène), au lieu de {@link #RANGE}. */
+    public static void range(String role, double range) {
+        ELITES.add(role);
+        RANGES.put(role, range);
     }
 
     /** Ajoute au nom de la barre du rôle `role` le texte rendu par `label` (null : rien) ; la barre est renvoyée quand il change. */
@@ -126,12 +134,12 @@ public final class BossBarSystem extends TickingSystem<EntityStore> {
                     : store.getComponent(ref, TransformComponent.getComponentType());
             Elite nearest = null;
             if (transform != null) {
-                double best = RANGE * RANGE;
+                double best = Double.MAX_VALUE;
                 double nearestGlobal = Double.MAX_VALUE;
                 Elite global = null;
                 for (Elite elite : engaged) {
                     double distance = elite.position().distanceSquared(transform.getPosition());
-                    if (distance <= best) {
+                    if (distance <= elite.range() * elite.range() && distance <= best) {
                         best = distance;
                         nearest = elite;
                     }
@@ -166,7 +174,8 @@ public final class BossBarSystem extends TickingSystem<EntityStore> {
             String nameKey = npc.getRole() == null ? null : npc.getRole().getNameTranslationKey();
             Function<Ref<EntityStore>, String> labeler = LABELS.get(role);
             engaged.add(new Elite(networkId.getId(), new Vector3d(transform.getPosition()),
-                    nameKey != null ? nameKey : role, labeler == null ? null : labeler.apply(ref), everywhere));
+                    nameKey != null ? nameKey : role, labeler == null ? null : labeler.apply(ref), everywhere,
+                    RANGES.getOrDefault(role, RANGE)));
         }
     }
 

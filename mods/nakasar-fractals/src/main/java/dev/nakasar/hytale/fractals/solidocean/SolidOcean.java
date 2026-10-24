@@ -62,9 +62,12 @@ public final class SolidOcean implements FractalStage {
 
     private final Map<World, State> states = Collections.synchronizedMap(new WeakHashMap<>());
 
+    private static final double MAW_BAR_RANGE = 2 * SolidOceanLayout.ARENA_RADIUS + 30;
+
     /** Barre de boss de l'Abîme (sa vie, la phase et les colosses), rôles fixes que les instabilités laissent tranquilles. */
     public static void register() {
-        BossBarSystem.register(MAW);
+        // Vue de toute la plateforme finale et de ses gradins (Kevin, 2026-10-24) : l'Abîme flotte au bord nord.
+        BossBarSystem.range(MAW, MAW_BAR_RANGE);
         BossBarSystem.label(MAW, JadeMaw::label);
         Instabilities.exempt(MAW, TENTACLE);
         CrystalHold.register();

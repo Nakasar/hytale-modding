@@ -18,7 +18,7 @@ Un rituel grawl au cœur d'un volcan : groupes de grawls sous les chutes de pier
 
 ## Champion chaman
 
-- Il porte **8 piles** qui réduisent les dégâts qu'il subit. Chaque **pierre imprégnée** lancée sur lui (clic droit vers lui) en retire une ; les pierres tombent des chutes de pierres.
+- Il porte **8 piles** de protection : tant qu'il en garde une, il est **invulnérable**. Chaque **pierre imprégnée** lancée sur lui (clic droit vers lui) en retire une ; les pierres tombent des chutes de pierres.
 - Une pierre au sol se ramasse **accroupi**, une seule à la fois ; tant qu'on la tient, on ne peut pas changer d'objet en main.
 - Les pierres n'apparaissent que tant qu'il est protégé, les vétérans seulement pendant sa première protection. Sa dernière pile retirée, les pierres disparaissent : frappez-le avec vos armes.
 - À **50 %** de vie, il se protège de nouveau avec **une seule pile** (sans vétérans).

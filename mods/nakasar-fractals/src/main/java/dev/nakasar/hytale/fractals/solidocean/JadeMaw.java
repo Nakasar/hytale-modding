@@ -2,6 +2,7 @@ package dev.nakasar.hytale.fractals.solidocean;
 
 import com.hypixel.hytale.component.Ref;
 import com.hypixel.hytale.component.Store;
+import com.hypixel.hytale.protocol.packets.interface_.EventTitleStyle;
 import com.hypixel.hytale.server.core.Message;
 import com.hypixel.hytale.server.core.entity.Frozen;
 import com.hypixel.hytale.server.core.modules.entity.component.Invulnerable;
@@ -12,6 +13,7 @@ import com.hypixel.hytale.server.core.modules.entitystats.asset.DefaultEntitySta
 import com.hypixel.hytale.server.core.universe.PlayerRef;
 import com.hypixel.hytale.server.core.universe.world.World;
 import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
+import com.hypixel.hytale.server.core.util.EventTitleUtil;
 import dev.nakasar.hytale.fractals.arena.CrouchPickup;
 import dev.nakasar.hytale.fractals.boss.PinnedHealth;
 import dev.nakasar.hytale.fractals.combat.Hurt;
@@ -422,8 +424,12 @@ final class JadeMaw {
         beamTargets.addAll(targets);
         lastBeam = everyone;
         countdown = (everyone ? LAST_TARGET_SECONDS : TARGET_SECONDS) * FractalRuns.windupFactor(world);
+        // Message au centre de l'écran, pour la seule cible (Kevin, 2026-10-24).
+        Message title = Message.translation(SolidOcean.MESSAGES + "skull.title");
+        Message subtitle = Message.translation(SolidOcean.MESSAGES + "skull.subtitle");
         for (PlayerRef p : targets) {
             Hurt.effect(store, p.getReference(), TARGETED, countdown + 0.5f);
+            EventTitleUtil.showEventTitleToPlayer(p, title, subtitle, EventTitleStyle.Default, null, 2.5f, 0.2f, 0.5f);
         }
         if (everyone) {
             Spawns.tellAll(world, Message.translation(SolidOcean.MESSAGES + "last.beam"));

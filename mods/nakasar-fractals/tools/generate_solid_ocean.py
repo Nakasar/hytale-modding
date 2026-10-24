@@ -792,16 +792,20 @@ def models():
 # --- attaques et rôles ------------------------------------------------------------------------------------
 
 CI, RF = gc.CLEAR_INTERRUPT, gc.ROOTED_FX
-GOLEM_ANIMS = "Golem_Crystal_Thunder_Default"
 COLOSSUS_SCALE = 1.1           # ×1,25 : trop gros (Kevin, 2026-10-24)
 COLOSSUS_DAMAGE = 16
 # Combo du golem de cristal vanilla (Root_NPC_Golem_Crystal_Attack), comme le golem de la Tour du mod Vampires : notre
 # balayage au contact ne touchait jamais (même descendu aux pieds). Ses coups gardent leurs zones et animations vanilla,
 # on ne règle que les dégâts et un recul faible (pas de chute dans le vide).
+# Sans attaque circulaire (Kevin, 2026-10-24) : ni les deux toupies du combo vanilla ni notre frappe au sol annoncée.
 GOLEM_HITS = {"Swing_Left_Damage": "Golem_Crystal_Swing_Left_Damage", "Swing_Right_Damage": "Golem_Crystal_Swing_Right_Damage",
-              "Spin_Damage": "Golem_Crystal_Spin_Damage", "Ground_Slam_Damage": "Golem_Crystal_Ground_Slam_Damage",
-              "Stomp_Damage": "Golem_Crystal_Stomp_Damage", "Spin_Heavy_Damage": "Golem_Crystal_Spin_Heavy_Damage",
+              "Ground_Slam_Damage": "Golem_Crystal_Ground_Slam_Damage", "Stomp_Damage": "Golem_Crystal_Stomp_Damage",
               "Clap_Damage": "Golem_Crystal_Clap_Damage"}
+# Root_NPC_Golem_Crystal_Attack vanilla moins Golem_Crystal_Spin et Golem_Crystal_Spin_Heavy.
+COLOSSUS_COMBO = ["Golem_Crystal_Swing_Left", "Golem_Crystal_Swing_Right", "Golem_Crystal_Ground_Slam",
+                  "Golem_Crystal_Stomp", "Golem_Crystal_Clap"]
+COLOSSUS_ATTACK = "Root_Nakasar_Fractal_NPC_Colossus_Attack"
+COLOSSUS_HEALTH = 300          # 490 puis moins encore (Kevin, 2026-10-24)
 TENTACLE_ANIMS = "Nakasar_Fractal_Jade_Tentacle"
 
 
@@ -824,14 +828,6 @@ def interactions():
                                                      ImpactSound="SFX_Goblin_Feastmaster_Slam"),
                                            fc.windup(1.2, "SFX_Spear_Throw_Charge", TENTACLE_ANIMS, "Slam"),
                                            fc.windup(0.8, "SFX_Unarmed_Swing")]}
-    out["Nakasar_Fractal_Colossus_Slam"] = {
-        "$Comment": "Colosse de jade : frappe le sol, cercle rouge de 5,5 blocs (1,5 s), 26 dégâts, projection et "
-                    "étourdissement 1,5 s (renversement de GW2).",
-        "Type": "Serial", "Interactions": [CI, RF, T("Circle", 1.5, Radius=5.5, Damage=26, Knockback=7, KnockUp=4,
-                                                     EffectId="Hazard_Electric_Stun", EffectDuration=1.5, PlayersOnly=True,
-                                                     ImpactParticle="Stick_Slam_Ground_Large",
-                                                     ImpactSound="SFX_Goblin_Feastmaster_Slam"),
-                                           fc.windup(1.5, "SFX_Spear_Throw_Charge", GOLEM_ANIMS, "GroundSlam")]}
     out["Nakasar_Fractal_Irukandji_Sting"] = {
         "$Comment": "Irukandji au contact : piqûre (12 dégâts et poison 4 s).",
         "Type": "Serial", "Interactions": [fr.swing("Piqûre.", None, None, 0.3, 12, end=2.4, length=70, yaw=35,
@@ -858,7 +854,7 @@ def interactions():
     return out
 
 
-MELEE = ["Tentacle_Sweep", "Tentacle_Slam", "Colossus_Slam", "Irukandji_Sting", "Irukandji_Shock",
+MELEE = ["Tentacle_Sweep", "Tentacle_Slam", "Irukandji_Sting", "Irukandji_Shock",
          "Irukandji_Tether"]
 RANGED = []
 R = fc.root
@@ -880,13 +876,11 @@ def roles():
         DeathAnimationTime=1.0)
     out[TENTACLE] = tentacle
     out[COLOSSUS] = fr.role(
-        COLOSSUS, "Colosse de jade : en phase 2, un sort du jade toutes les 30 s (10 en tout), insensible aux attaques à "
-        "distance (Java), frappe le sol (cercle annoncé, renverse) et enchaîne le combo du golem vanilla au contact ; il lâche un cristal "
-        "réfléchissant (Java).", COLOSSUS, n(COLOSSUS), 490,
-        [fr.timed_attack("Slam", R("Colossus_Slam"), rng=5, los=True, comment="Frappe au sol annoncée."),
-         fr.melee("Root_NPC_Golem_Crystal_Attack", 3.0, (1.0, 1.4), turn=0.6), fr.chase(40, stop=2.4)],
-        fr.walk(3.0), GENERATOR, sight=30, leash=40, home=False,
-        timers=[fr.timer("Slam", (3, 5), (8, 10))], KnockbackScale=0.1, DeathAnimationTime=1.5,
+        COLOSSUS, "Colosse de jade : sort du jade toutes les 15 s (Java), insensible aux attaques à distance (Java), "
+        "enchaîne au contact le combo du golem vanilla sans ses toupies ; il lâche un cristal réfléchissant (Java).",
+        COLOSSUS, n(COLOSSUS), COLOSSUS_HEALTH,
+        [fr.melee(COLOSSUS_ATTACK, 3.0, (1.0, 1.4), turn=0.6), fr.chase(40, stop=2.4)],
+        fr.walk(3.0), GENERATOR, sight=30, leash=40, home=False, KnockbackScale=0.1, DeathAnimationTime=1.5,
         InteractionVars={var: {"Interactions": [{"Parent": parent, "DamageCalculator": {
             "Type": "Absolute", "BaseDamage": {"Physical": COLOSSUS_DAMAGE}, "RandomPercentageModifier": 0.1},
             "DamageEffects": {"Knockback": {"Force": -4}}}]} for var, parent in GOLEM_HITS.items()})
@@ -945,6 +939,8 @@ def lang():
                   "The Maw targets you: hold a crystal before the countdown ends, or the beam kills you!"),
         "crystal.crouch": ("Accroupissez-vous pour ramasser le cristal.", "Crouch to pick up the crystal."),
         "crystal.already": ("Vous portez déjà un cristal.", "You already carry a crystal."),
+        "skull.title": ("L'Abîme vous vise !", "The Maw targets you!"),
+        "skull.subtitle": ("Tenez un cristal avant la fin du compte", "Hold a crystal before the countdown ends"),
         "skull.other": ("L'Abîme vise {name}.", "The Maw targets {name}."),
         "absorbed": ("Le cristal absorbe le rayon : vous êtes chargé. Lancez-le sur l'Abîme (clic droit) !",
                      "The crystal absorbs the beam: you are charged. Throw it at the Maw (right-click)!"),
@@ -1058,6 +1054,9 @@ def main():
     for name, doc in interactions().items():
         fc.write_json(INTERACTIONS / f"{name}.json", doc)
     fc.write_roots(MELEE, RANGED)
+    fc.write_json(fc.ROOTS / f"{COLOSSUS_ATTACK}.json", {
+        "Interactions": [{"Type": "Chaining", "ChainId": "Slashes", "ChainingAllowance": 15, "Next": COLOSSUS_COMBO}],
+        "Tags": {"Attack": ["Melee"]}})
     for role, doc in models().items():
         fc.write_json(fc.MODELS / f"{role}.json", doc)
     write_tentacle(preview)
