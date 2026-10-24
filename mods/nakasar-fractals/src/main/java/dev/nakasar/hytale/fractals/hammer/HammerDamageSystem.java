@@ -9,7 +9,6 @@ import com.hypixel.hytale.component.SystemGroup;
 import com.hypixel.hytale.component.query.Query;
 import com.hypixel.hytale.protocol.packets.interface_.NotificationStyle;
 import com.hypixel.hytale.server.core.Message;
-import com.hypixel.hytale.server.core.modules.entity.component.TransformComponent;
 import com.hypixel.hytale.server.core.modules.entity.damage.Damage;
 import com.hypixel.hytale.server.core.modules.entity.damage.DamageEventSystem;
 import com.hypixel.hytale.server.core.modules.entity.damage.DamageModule;
@@ -17,13 +16,11 @@ import com.hypixel.hytale.server.core.modules.entitystats.EntityStatMap;
 import com.hypixel.hytale.server.core.modules.entitystats.EntityStatValue;
 import com.hypixel.hytale.server.core.modules.entitystats.asset.DefaultEntityStatTypes;
 import com.hypixel.hytale.server.core.universe.PlayerRef;
-import com.hypixel.hytale.server.core.universe.world.World;
 import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
 import com.hypixel.hytale.server.core.util.NotificationUtil;
 import com.hypixel.hytale.server.npc.entities.NPCEntity;
 import dev.nakasar.hytale.fractals.combat.Foes;
 import dev.nakasar.hytale.fractals.combat.Telegraphs;
-import org.joml.Vector3d;
 
 import java.util.Collections;
 import java.util.Map;
@@ -31,9 +28,9 @@ import java.util.WeakHashMap;
 
 /**
  * Charge Brise-sceau du marteau du culte ({@link Hammer}) : un ennemi des fractales ({@link Foes}) frappé avec le
- * marteau en main charge le marteau ; à sa mort, un ennemi charge aussi le porteur qui l'a frappé dans les
- * {@value Hammer#CREDIT_SECONDS} s (même s'il meurt d'une chute, loin de lui) et les porteurs à moins de
- * {@value Hammer#CHARGE_RADIUS} blocs. Les sceaux ne comptent pas (leurs coups sont annulés avant).
+ * marteau en main, qui meurt dans les {@value Hammer#CREDIT_SECONDS} s (même d'une chute, loin de lui), charge le
+ * marteau de ce joueur. Rien d'autre ne charge (retour de Kevin du 2026-10-24 : ni le coup lui-même, ni une mort à
+ * côté d'un porteur qui n'a pas frappé). Les sceaux ne comptent pas (leurs coups sont annulés avant).
  *
  * <p>Groupe d'inspection : il passe après {@code DamageSystems.ApplyDamage}, la vie lue est donc déjà diminuée du coup.
  */
@@ -71,17 +68,13 @@ public final class HammerDamageSystem extends DamageEventSystem {
         if (damage.getSource() instanceof Damage.EntitySource source && source.getRef() != null && source.getRef().isValid()) {
             PlayerRef attacker = buffer.getComponent(source.getRef(), PlayerRef.getComponentType());
             Hammer.Carrier carrier = attacker == null ? null : Hammer.CARRIERS.get(attacker.getUuid());
-            if (carrier != null && carrier.carrying) {
+            if (carrier != null && carrier.carrying && Hammer.holds(buffer, source.getRef())) {
                 CREDITS.put(victim, new Credit(attacker, System.nanoTime()));
-                if (Hammer.holds(buffer, source.getRef())) {
-                    charge(attacker);
-                }
             }
         }
         EntityStatMap stats = chunk.getComponent(index, EntityStatMap.getComponentType());
         EntityStatValue health = stats == null ? null : stats.get(DefaultEntityStatTypes.getHealth());
-        TransformComponent transform = chunk.getComponent(index, TransformComponent.getComponentType());
-        if (health == null || transform == null || health.get() > health.getMin()) {
+        if (health == null || health.get() > health.getMin()) {
             return;
         }
         Credit credit = CREDITS.remove(victim);
@@ -89,15 +82,6 @@ public final class HammerDamageSystem extends DamageEventSystem {
                 credit == null ? "aucun" : credit.player().getUsername());
         if (credit != null && System.nanoTime() - credit.at() <= Telegraphs.seconds(Hammer.CREDIT_SECONDS)) {
             charge(credit.player());
-        }
-        Vector3d at = new Vector3d(transform.getPosition());
-        World world = store.getExternalData().getWorld();
-        for (PlayerRef player : world.getPlayerRefs()) {
-            Hammer.Carrier carrier = Hammer.CARRIERS.get(player.getUuid());
-            Vector3d where = carrier == null || !carrier.carrying ? null : Telegraphs.position(buffer, player.getReference());
-            if (where != null && where.distance(at) <= Hammer.CHARGE_RADIUS) {
-                charge(player);
-            }
         }
     }
 

@@ -357,15 +357,9 @@ def crystal_parts():
 def crystal_item():
     root = "Root_Nakasar_Fractal_Throw_Reflecting_Crystal"
     return fc.held_item(LANG, CRYSTAL, "Reflecting_Crystal", crystal_parts(), 61, (0, 6, 0), 14.0, quality="Epic", stack=1,
-                        extra={"Interactions": {"Secondary": root, "SwapFrom": "Root_Nakasar_Fractal_Crystal_Keep"},
+                        extra={"Interactions": {"Secondary": root, "SwapFrom": fc.KEEP_IN_HAND},
                                "Utility": {"Compatible": False}, "Categories": ["Items.Misc"]})
 
-
-def keep_interaction():
-    return {"$Comment": "Cristal réfléchissant en main : changer d'objet ne fait rien (pas de ChangeActiveSlot). Il se "
-                        "tient à deux mains et reste sélectionné tant qu'on le porte ; le Java (solidocean.CrystalHold) "
-                        "le remet en main s'il en sort.",
-            "Type": "Simple", "RunTime": 0}
 
 
 def throw_interaction():
@@ -852,8 +846,7 @@ def main():
     fc.write_json(INTERACTIONS / "Nakasar_Fractal_Throw_Reflecting_Crystal.json", throw_interaction())
     fc.write_json(fc.ROOTS / "Root_Nakasar_Fractal_Throw_Reflecting_Crystal.json",
                   {"Interactions": ["Nakasar_Fractal_Throw_Reflecting_Crystal"], "RequireNewClick": True})
-    fc.write_json(INTERACTIONS / "Nakasar_Fractal_Crystal_Keep.json", keep_interaction())
-    fc.write_json(fc.ROOTS / "Root_Nakasar_Fractal_Crystal_Keep.json", {"Interactions": ["Nakasar_Fractal_Crystal_Keep"]})
+    fc.write_keep_in_hand()
     for name, doc in effects().items():
         fc.write_json(fc.EFFECTS / f"{name}.json", doc)
     fc.status_icon(fc.COMMON / fc.STATUS_ICONS / "Crystal_Charged.png", (120, 255, 180), "stone")

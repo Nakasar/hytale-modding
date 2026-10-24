@@ -30,6 +30,10 @@ def write_json(path, doc):
     fr.write_json(path, doc)
 
 
+KEEP_IN_HAND = gc.KEEP_IN_HAND
+write_keep_in_hand = gc.write_keep_in_hand
+
+
 # --- prefab en tronçons -----------------------------------------------------------------------------
 
 def split_sections(p, z_min):

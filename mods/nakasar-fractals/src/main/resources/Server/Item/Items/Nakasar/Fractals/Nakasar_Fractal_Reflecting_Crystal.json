@@ -15,7 +15,7 @@
   "MaxStack": 1,
   "Interactions": {
     "Secondary": "Root_Nakasar_Fractal_Throw_Reflecting_Crystal",
-    "SwapFrom": "Root_Nakasar_Fractal_Crystal_Keep"
+    "SwapFrom": "Root_Nakasar_Fractal_Keep_In_Hand"
   },
   "Utility": {
     "Compatible": false

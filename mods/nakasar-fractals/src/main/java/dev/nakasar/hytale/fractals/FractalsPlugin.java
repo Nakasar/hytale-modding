@@ -25,6 +25,7 @@ import dev.nakasar.hytale.fractals.stage.Stages;
 import dev.nakasar.hytale.fractals.stage.ThrowItemInteraction;
 import dev.nakasar.hytale.fractals.uncategorized.Uncategorized;
 import dev.nakasar.hytale.fractals.solidocean.CrystalHold;
+import dev.nakasar.hytale.fractals.arena.HandLock;
 import dev.nakasar.hytale.fractals.solidocean.SolidOcean;
 import dev.nakasar.hytale.fractals.snowblind.Snowblind;
 import dev.nakasar.hytale.fractals.swampland.Swampland;
@@ -167,7 +168,8 @@ public final class FractalsPlugin extends JavaPlugin {
         systems.registerSystem(new HammerPickupSystem());
         systems.registerSystem(new CrystalHold.Drops());
         systems.registerSystem(new CrystalHold.Pickup());
-        systems.registerSystem(new CrystalHold.Lock());
+        systems.registerSystem(new HandLock.Lock());
+        HandLock.lock(Hammer.ID);
         systems.registerSystem(new DefianceDamageSystem());
         systems.registerSystem(new CliffsideSystem());
         systems.registerSystem(new CliffsideDamageFilter());

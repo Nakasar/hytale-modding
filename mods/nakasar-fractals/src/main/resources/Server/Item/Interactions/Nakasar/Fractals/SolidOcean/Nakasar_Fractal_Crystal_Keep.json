@@ -1,5 +1,0 @@
-{
-  "$Comment": "Cristal réfléchissant en main : changer d'objet ne fait rien (pas de ChangeActiveSlot). Il se tient à deux mains et reste sélectionné tant qu'on le porte ; le Java (solidocean.CrystalHold) le remet en main s'il en sort.",
-  "Type": "Simple",
-  "RunTime": 0
-}

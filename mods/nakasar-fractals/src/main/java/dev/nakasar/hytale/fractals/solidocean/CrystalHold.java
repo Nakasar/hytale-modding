@@ -1,27 +1,21 @@
 package dev.nakasar.hytale.fractals.solidocean;
 
 import com.hypixel.hytale.component.AddReason;
-import com.hypixel.hytale.component.ArchetypeChunk;
 import com.hypixel.hytale.component.CommandBuffer;
 import com.hypixel.hytale.component.ComponentAccessor;
 import com.hypixel.hytale.component.Ref;
 import com.hypixel.hytale.component.RemoveReason;
 import com.hypixel.hytale.component.Store;
 import com.hypixel.hytale.component.query.Query;
-import com.hypixel.hytale.component.system.EntityEventSystem;
 import com.hypixel.hytale.component.system.RefSystem;
 import com.hypixel.hytale.component.system.tick.TickingSystem;
 import com.hypixel.hytale.protocol.MovementStates;
 import com.hypixel.hytale.protocol.packets.interface_.NotificationStyle;
-import com.hypixel.hytale.protocol.packets.inventory.SetActiveSlot;
 import com.hypixel.hytale.server.core.Message;
 import com.hypixel.hytale.server.core.entity.movement.MovementStatesComponent;
-import com.hypixel.hytale.server.core.event.events.ecs.InventoryActiveSlotRequestEvent;
 import com.hypixel.hytale.server.core.inventory.InventoryComponent;
 import com.hypixel.hytale.server.core.inventory.ItemStack;
 import com.hypixel.hytale.server.core.inventory.container.CombinedItemContainer;
-import com.hypixel.hytale.server.core.inventory.container.ItemContainer;
-import com.hypixel.hytale.server.core.inventory.container.SimpleItemContainer;
 import com.hypixel.hytale.server.core.modules.entity.component.TransformComponent;
 import com.hypixel.hytale.server.core.modules.entity.damage.DeathComponent;
 import com.hypixel.hytale.server.core.modules.entity.item.ItemComponent;
@@ -30,6 +24,7 @@ import com.hypixel.hytale.server.core.universe.PlayerRef;
 import com.hypixel.hytale.server.core.universe.world.World;
 import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
 import com.hypixel.hytale.server.core.util.NotificationUtil;
+import dev.nakasar.hytale.fractals.arena.HandLock;
 import dev.nakasar.hytale.fractals.party.FractalCatalog;
 import org.joml.Vector3d;
 
@@ -51,7 +46,7 @@ import java.util.concurrent.ConcurrentHashMap;
  *   <li>ramassé (ou rendu après un lancer à vide), il va dans la barre d'inventaire et y est sélectionné ; la main
  *   secondaire est vidée (objet à deux mains) ;</li>
  *   <li>tant qu'on le porte, on ne change pas d'objet sélectionné : son interaction {@code SwapFrom} ne fait rien
- *   (côté client), les demandes de changement de case sont refusées ({@link Lock}) et, s'il sort de la main malgré
+ *   (côté client), les demandes de changement de case sont refusées ({@link HandLock}) et, s'il sort de la main malgré
  *   tout (rangé à la main dans le sac), il y est remis ; un cristal en trop retombe au sol.</li>
  * </ul>
  */
@@ -102,86 +97,23 @@ public final class CrystalHold {
         return slots.size();
     }
 
-    /**
-     * Met un cristal dans la barre d'inventaire et le sélectionne : la case active si elle est vide, sinon la première
-     * case vide, sinon la case active dont l'objet part dans le sac. Vide la main secondaire.
-     */
+    /** Met un cristal dans la barre d'inventaire et le sélectionne ({@link HandLock}). */
     static void give(Store<EntityStore> store, Ref<EntityStore> ref) {
-        InventoryComponent.Hotbar hotbar = store.getComponent(ref, InventoryComponent.Hotbar.getComponentType());
-        if (hotbar == null) {
-            SimpleItemContainer.addOrDropItemStack(store, ref,
-                    InventoryComponent.getCombined(store, ref, InventoryComponent.HOTBAR_STORAGE_BACKPACK),
-                    new ItemStack(SolidOcean.CRYSTAL, 1));
-            return;
-        }
-        ItemContainer bar = hotbar.getInventory();
-        short slot = hotbar.getActiveSlot();
-        if (slot < 0 || slot >= bar.getCapacity() || !empty(bar.getItemStack(slot))) {
-            short free = -1;
-            for (short i = 0; i < bar.getCapacity() && free < 0; i++) {
-                if (empty(bar.getItemStack(i))) {
-                    free = i;
-                }
-            }
-            if (free >= 0) {
-                slot = free;
-            } else {
-                slot = (short) Math.max(0, Math.min(bar.getCapacity() - 1, slot));
-                ItemStack moved = bar.getItemStack(slot);
-                bar.removeItemStackFromSlot(slot);
-                SimpleItemContainer.addOrDropItemStack(store, ref,
-                        InventoryComponent.getCombined(store, ref, InventoryComponent.STORAGE_FIRST), moved);
-            }
-        }
-        bar.setItemStackForSlot(slot, new ItemStack(SolidOcean.CRYSTAL, 1));
-        select(store, ref, hotbar, (byte) slot);
-        freeOffHand(store, ref);
+        HandLock.putInHand(store, ref, new ItemStack(SolidOcean.CRYSTAL, 1));
     }
 
-    private static boolean empty(ItemStack stack) {
-        return stack == null || stack.isEmpty();
-    }
-
-    private static void select(Store<EntityStore> store, Ref<EntityStore> ref, InventoryComponent.Hotbar hotbar, byte slot) {
-        if (hotbar.getActiveSlot() != slot) {
-            hotbar.setActiveSlot(slot, ref, store);
-        }
-        PlayerRef player = store.getComponent(ref, PlayerRef.getComponentType());
-        if (player != null) {
-            player.getPacketHandler().writeNoCache(new SetActiveSlot(InventoryComponent.HOTBAR_SECTION_ID, slot));
-        }
-    }
-
-    /** Objet à deux mains : rien dans la main secondaire. */
-    private static void freeOffHand(Store<EntityStore> store, Ref<EntityStore> ref) {
-        InventoryComponent.Utility utility = store.getComponent(ref, InventoryComponent.Utility.getComponentType());
-        if (utility == null || utility.getActiveSlot() == InventoryComponent.INACTIVE_SLOT_INDEX) {
-            return;
-        }
-        utility.setActiveSlot(InventoryComponent.INACTIVE_SLOT_INDEX, ref, store);
-        PlayerRef player = store.getComponent(ref, PlayerRef.getComponentType());
-        if (player != null) {
-            player.getPacketHandler().writeNoCache(new SetActiveSlot(InventoryComponent.UTILITY_SECTION_ID,
-                    InventoryComponent.INACTIVE_SLOT_INDEX));
-        }
-    }
-
-    /** Le cristal reste en main : un seul, sélectionné, main secondaire vide. */
+    /** Le cristal reste en main ; un cristal en trop retombe au sol. */
     private static void keep(Store<EntityStore> store, Ref<EntityStore> ref, Vector3d at) {
         int n = count(store, ref);
-        if (n == 0 || n == 1 && holds(store, ref) && offHandFree(store, ref)) {
-            return;
+        if (n > 1) {
+            removeAll(store, ref);
+            give(store, ref);
+            for (int i = 1; i < n; i++) {
+                SolidOcean.dropCrystal(store, at);
+            }
+        } else if (n == 1) {
+            HandLock.ensureHeld(store, ref, SolidOcean.CRYSTAL);
         }
-        removeAll(store, ref);
-        give(store, ref);
-        for (int i = 1; i < n; i++) {
-            SolidOcean.dropCrystal(store, at);
-        }
-    }
-
-    private static boolean offHandFree(Store<EntityStore> store, Ref<EntityStore> ref) {
-        InventoryComponent.Utility utility = store.getComponent(ref, InventoryComponent.Utility.getComponentType());
-        return utility == null || utility.getActiveSlot() == InventoryComponent.INACTIVE_SLOT_INDEX;
     }
 
     private static boolean crouching(Store<EntityStore> store, Ref<EntityStore> ref) {
@@ -282,31 +214,6 @@ public final class CrystalHold {
             }
             elapsed[0] = 0f;
             world.execute(() -> step(world));
-        }
-    }
-
-    /** Cristal en main : les demandes de changement de case (barre ou main secondaire) sont refusées. */
-    public static final class Lock extends EntityEventSystem<EntityStore, InventoryActiveSlotRequestEvent> {
-
-        public Lock() {
-            super(InventoryActiveSlotRequestEvent.class);
-        }
-
-        @Override
-        public Query<EntityStore> getQuery() {
-            return PlayerRef.getComponentType();
-        }
-
-        @Override
-        public void handle(int index, ArchetypeChunk<EntityStore> chunk, Store<EntityStore> store,
-                           CommandBuffer<EntityStore> buffer, InventoryActiveSlotRequestEvent event) {
-            if (event.isCancelled() || !event.isClientRequest()) {
-                return;
-            }
-            Ref<EntityStore> ref = chunk.getReferenceTo(index);
-            if (holds(store, ref)) {
-                event.setCancelled(true);
-            }
         }
     }
 }
