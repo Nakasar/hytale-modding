@@ -513,7 +513,7 @@ public class TelegraphInteraction extends SimpleInstantInteraction {
             }
             if (zone == null) {
                 zone = switch (config.shape) {
-                    case "Cone" -> Telegraphs.Sweep.cone(center, facing, Math.toRadians(config.angle), config.radius, now, config.seconds);
+                    case "Cone" -> new Telegraphs.Cone(center, facing, Math.toRadians(config.angle), config.radius, now, config.seconds);
                     case "Line" -> new Telegraphs.Strip(center, facing, config.length, config.width, now, config.seconds);
                     case "Circle" -> new Telegraphs.Circle(center, config.radius, now, config.seconds);
                     default -> null;
