@@ -103,8 +103,15 @@ public final class BossBarSystem extends TickingSystem<EntityStore> {
         for (PlayerRef player : players) {
             present.add(player.getUuid());
         }
-        // Joueurs partis de ce monde (déconnexion, changement de monde) : on oublie leur barre.
-        SHOWN.entrySet().removeIf(entry -> entry.getValue().world() == world && !present.contains(entry.getKey()));
+        // Joueurs partis de ce monde (déconnexion, changement de monde) : on retire leur barre, sinon le client la garde.
+        SHOWN.entrySet().removeIf(entry -> {
+            Shown shown = entry.getValue();
+            if (shown.world() != world || present.contains(entry.getKey())) {
+                return false;
+            }
+            hide(shown.player(), shown.networkId());
+            return true;
+        });
         if (players.isEmpty()) {
             return;
         }
@@ -181,7 +188,9 @@ public final class BossBarSystem extends TickingSystem<EntityStore> {
         UUID uuid = player.getUuid();
         Shown before = SHOWN.get(uuid);
         if (before != null && before.player() != player) {
-            // Nouvelle session du même joueur : son client n'a aucune barre.
+            // Autre PlayerRef du même joueur (reconnexion, changement de monde) : on retire quand même la barre, sans
+            // effet si le client ne l'a plus.
+            hide(player, before.networkId());
             SHOWN.remove(uuid);
             before = null;
         }
@@ -190,7 +199,7 @@ public final class BossBarSystem extends TickingSystem<EntityStore> {
             return;
         }
         if (before != null) {
-            player.getPacketHandler().writeNoCache(new UpdateBossBar(before.networkId(), null, true, false));
+            hide(player, before.networkId());
             SHOWN.remove(uuid);
         }
         if (elite != null) {
@@ -200,6 +209,14 @@ public final class BossBarSystem extends TickingSystem<EntityStore> {
             }
             player.getPacketHandler().writeNoCache(new UpdateBossBar(elite.networkId(), name.getFormattedMessage(), false, false));
             SHOWN.put(uuid, new Shown(world, elite.networkId(), player, elite.label()));
+        }
+    }
+
+    private static void hide(PlayerRef player, int networkId) {
+        try {
+            player.getPacketHandler().writeNoCache(new UpdateBossBar(networkId, null, true, false));
+        } catch (RuntimeException ignored) {
+            // Session fermée : plus de client à prévenir.
         }
     }
 
