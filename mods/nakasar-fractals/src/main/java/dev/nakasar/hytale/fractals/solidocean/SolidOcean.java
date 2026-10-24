@@ -10,7 +10,6 @@ import com.hypixel.hytale.server.core.universe.world.World;
 import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
 import dev.nakasar.hytale.fractals.arena.Carried;
 import dev.nakasar.hytale.fractals.arena.Gates;
-import dev.nakasar.hytale.fractals.arena.HandLock;
 import dev.nakasar.hytale.fractals.arena.SafeLandings;
 import dev.nakasar.hytale.fractals.boss.BossBarSystem;
 import dev.nakasar.hytale.fractals.combat.Spawns;
@@ -68,7 +67,7 @@ public final class SolidOcean implements FractalStage {
         BossBarSystem.register(MAW);
         BossBarSystem.label(MAW, JadeMaw::label);
         Instabilities.exempt(MAW, TENTACLE);
-        HandLock.lock(CRYSTAL);
+        CrystalHold.register();
     }
 
     @Override

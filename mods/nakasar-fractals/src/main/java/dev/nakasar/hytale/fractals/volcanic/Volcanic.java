@@ -11,11 +11,15 @@ import com.hypixel.hytale.server.core.modules.entitystats.EntityStatValue;
 import com.hypixel.hytale.server.core.modules.entitystats.asset.DefaultEntityStatTypes;
 import com.hypixel.hytale.server.core.universe.PlayerRef;
 import com.hypixel.hytale.server.core.universe.world.World;
+import com.hypixel.hytale.server.core.universe.world.storage.ChunkStore;
 import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
 import dev.nakasar.hytale.fractals.arena.Carried;
+import dev.nakasar.hytale.fractals.arena.CrouchPickup;
 import dev.nakasar.hytale.fractals.arena.Gates;
 import dev.nakasar.hytale.fractals.arena.SafeLandings;
+import dev.nakasar.hytale.fractals.arena.WorldBlocks;
 import dev.nakasar.hytale.fractals.boss.BossBarSystem;
+import dev.nakasar.hytale.fractals.boss.PinnedHealth;
 import dev.nakasar.hytale.fractals.combat.Delayed;
 import dev.nakasar.hytale.fractals.combat.HitShield;
 import dev.nakasar.hytale.fractals.combat.Hurt;
@@ -31,6 +35,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.UUID;
 import java.util.WeakHashMap;
 import java.util.concurrent.ThreadLocalRandom;
@@ -38,8 +43,9 @@ import java.util.concurrent.ThreadLocalRandom;
 /**
  * Le Volcanique (étape 6 du GDD), fidèle au déroulé de GW2 :
  * <ol>
- *   <li>{@link Step#CAMP} : le camp des grawls, {@value #CAMP_KILLS} grawls à abattre (+{@value #CAMP_KILLS_PER_PLAYER}
- *   par joueur de plus), la vie du totem du rituel montre ce qu'il en reste ; des rochers tombent près des joueurs ;</li>
+ *   <li>{@link Step#CAMP} : le camp des grawls, {@value #CAMP_GROUPS} groupes de {@value #GROUP_SIZE} grawls qui
+ *   chargent (un de plus tous les deux joueurs de plus) ; la vie du totem du rituel, fixée par le Java, ne descend qu'à
+ *   chaque grawl abattu, et sa barre se voit de toute la fractale ; des rochers tombent près des joueurs ;</li>
  *   <li>{@link Step#CORRIDOR} : le couloir aux rochers ({@link Boulders}) ;</li>
  *   <li>{@link Step#CHAMPION} : le Champion chaman, ses vétérans et les captifs ({@link Champion}) ;</li>
  *   <li>{@link Step#MINE} : la mine, rails au-dessus de la lave ({@link SafeLandings}), chauves-souris ;</li>
@@ -62,10 +68,16 @@ public final class Volcanic implements FractalStage {
     static final String LARVA = "Nakasar_Fractal_Ember_Larva";
     static final String STONE = "Nakasar_Fractal_Imbued_Stone";
     static final String FIRE_CAUSE = "Nakasar_Fractal_Fire";
+    static final String LAVA_BURN = "Nakasar_Fractal_Lava_Burn";
+    /** Blocs de lave qui brûlent : le lac du volcan et les cratères en fusion de l'île du Chamane. */
+    static final Set<String> LAVA_BLOCKS = Set.of("Rock_Volcanic_Cracked_Lava", "Nakasar_Fractal_Crater_Lava");
+    static final float LAVA_PART = 0.30f;
 
-    static final int CAMP_KILLS = 12;
-    static final int CAMP_KILLS_PER_PLAYER = 3;
-    static final float CAMP_REFILL = 3f;
+    static final int CAMP_GROUPS = 3;
+    static final int GROUP_SIZE = 7;
+    /** Un nouveau groupe quand il reste au plus tant de grawls du précédent, après {@value #CAMP_PAUSE} s. */
+    static final int GROUP_LEFT = 2;
+    static final float CAMP_PAUSE = 4f;
     static final float CAMP_ROCKS = 8f;
     static final double ROCK_RADIUS = 2;
     static final float ROCK_SECONDS = 1.6f;
@@ -82,7 +94,8 @@ public final class Volcanic implements FractalStage {
         Ref<EntityStore> totem;
         float refill;
         float rocks;
-        int spawned;
+        int groups;
+        int shownKills = -1;
         final Boulders boulders = new Boulders();
         final Champion champion = new Champion();
         final SafeLandings landings = new SafeLandings(VolcanicLayout.JUMP_ZONES, MESSAGES + "landing.back");
@@ -91,18 +104,27 @@ public final class Volcanic implements FractalStage {
         final ImbuedShaman shaman = new ImbuedShaman();
         final Map<UUID, Long> throttle = new HashMap<>();
         long stoneMessage;
+        float lavaClock;
     }
 
     private final Map<World, State> states = Collections.synchronizedMap(new WeakHashMap<>());
 
     /** Barres de boss du Volcanique, charges du Champion et rôles fixes que les instabilités laissent tranquilles. */
     public static void register() {
-        BossBarSystem.register(TOTEM);
+        BossBarSystem.everywhere(TOTEM);
         BossBarSystem.register(CHAMPION);
         BossBarSystem.label(CHAMPION, Champion::label);
         BossBarSystem.register(IMBUED);
         BossBarSystem.label(IMBUED, HitShield::label);
         Instabilities.exempt(TOTEM, CAPTIVE);
+        CrouchPickup.register(new CrouchPickup.Item(STONE, FRACTAL, MESSAGES + "stone.crouch", MESSAGES + "stone.already",
+                Volcanic::dropStone));
+    }
+
+    /** Fait tomber une pierre imprégnée en `at` ; elle se ramasse accroupi ({@link CrouchPickup}). */
+    static void dropStone(Store<EntityStore> store, Vector3d at) {
+        Carried.drop(store, STONE, at);
+        Telegraphs.particle(store, "Nakasar_Fractal_Imbued_Glow", at, 1f);
     }
 
     @Override
@@ -134,11 +156,12 @@ public final class Volcanic implements FractalStage {
         }
         if (!st.started) {
             st.started = true;
-            st.required = CAMP_KILLS + CAMP_KILLS_PER_PLAYER * (FractalRuns.partySize(world) - 1);
+            st.required = GROUP_SIZE * (CAMP_GROUPS + (FractalRuns.partySize(world) - 1) / 2);
             Spawns.tellAll(world, Message.translation(MESSAGES + "intro").param("count", st.required));
         }
         st.boulders.step(world, store, players, Spawns.anyIn(store, players, VolcanicLayout.CORRIDOR), dt);
         st.landings.step(world, store, players);
+        lavaFloor(world, store, st, players, dt);
         switch (st.step) {
             case CAMP -> camp(world, store, st, players, dt);
             case CORRIDOR -> {
@@ -182,6 +205,7 @@ public final class Volcanic implements FractalStage {
             if (at != null) {
                 Telegraphs.particle(store, "Nakasar_Fractal_Seal_Break", at, 1.5f);
             }
+            PinnedHealth.unpin(st.totem);
             Spawns.remove(store, st.totem);
             st.totem = null;
             Spawns.removeAll(store, st.camp);
@@ -192,16 +216,10 @@ public final class Volcanic implements FractalStage {
             return;
         }
         st.camp.removeIf(ref -> !Spawns.alive(store, ref));
-        int cap = 4 + FractalRuns.partySize(world) - 1;
-        st.refill += dt;
-        if (st.refill >= CAMP_REFILL && st.camp.size() < cap && st.kills + st.camp.size() < st.required) {
+        st.refill = st.camp.size() <= GROUP_LEFT ? st.refill + dt : 0f;
+        if ((st.refill >= CAMP_PAUSE || st.groups == 0) && st.kills + st.camp.size() < st.required) {
             st.refill = 0f;
-            double[][] points = VolcanicLayout.CAMP_SPAWNS;
-            String role = st.spawned % 4 == 3 ? GRAWL_SHAMAN : WARRIOR;
-            Ref<EntityStore> grawl = Spawns.spawnFoe(world, store, role, points[st.spawned++ % points.length]);
-            if (grawl != null) {
-                st.camp.add(grawl);
-            }
+            group(world, store, st);
         }
         List<PlayerRef> inCamp = Spawns.in(store, players, VolcanicLayout.CAMP);
         st.rocks += dt;
@@ -211,7 +229,27 @@ public final class Volcanic implements FractalStage {
         }
     }
 
-    /** La vie du totem montre les grawls qu'il reste à abattre. */
+    /**
+     * Un groupe de {@value #GROUP_SIZE} grawls (deux chamans) serrés autour d'un point du bord du camp, à tour de rôle ;
+     * ils voient tout le camp et chargent aussitôt.
+     */
+    private void group(World world, Store<EntityStore> store, State st) {
+        double[][] points = VolcanicLayout.CAMP_SPAWNS;
+        double[] center = points[st.groups++ % points.length];
+        int count = Math.min(GROUP_SIZE, st.required - st.kills - st.camp.size());
+        for (int k = 0; k < count; k++) {
+            double a = Math.PI * 2 * k / count;
+            double[] at = {center[0] + Math.cos(a) * 2.2, center[1], center[2] + Math.sin(a) * 2.2};
+            Ref<EntityStore> grawl = Spawns.spawnFoe(world, store, k % 4 == 3 ? GRAWL_SHAMAN : WARRIOR, at);
+            if (grawl != null) {
+                st.camp.add(grawl);
+            }
+        }
+        Telegraphs.sound(store, "SFX_Goblin_Feastmaster_Slam", Spawns.point(center));
+        Spawns.tellAll(world, Message.translation(MESSAGES + "camp.group"));
+    }
+
+    /** La vie du totem montre les grawls qu'il reste à abattre : fixée ({@link PinnedHealth}), elle ne bouge qu'aux morts. */
     private void showProgress(Store<EntityStore> store, State st) {
         EntityStatMap stats = st.totem == null ? null : store.getComponent(st.totem, EntityStatMap.getComponentType());
         EntityStatValue health = stats == null ? null : stats.get(DefaultEntityStatTypes.getHealth());
@@ -219,10 +257,13 @@ public final class Volcanic implements FractalStage {
             return;
         }
         float wanted = Math.max(1f, health.getMax() * (st.required - st.kills) / st.required);
-        if (Math.abs(health.get() - wanted) > 0.5f) {
+        PinnedHealth.pin(st.totem, wanted);
+        if (st.shownKills != st.kills) {
+            boolean first = st.shownKills < 0;
+            st.shownKills = st.kills;
             stats.setStatValue(DefaultEntityStatTypes.getHealth(), wanted);
             Vector3d at = Telegraphs.position(store, st.totem);
-            if (at != null) {
+            if (at != null && !first) {
                 Telegraphs.particle(store, "Nakasar_Fractal_Totem_Pulse", at, 1.2f);
             }
         }
@@ -259,8 +300,7 @@ public final class Volcanic implements FractalStage {
                     }
                 }
                 if (drop) {
-                    Carried.drop(s, STONE, center);
-                    Telegraphs.particle(s, "Nakasar_Fractal_Imbued_Glow", center, 1f);
+                    dropStone(s, center);
                     long now = System.nanoTime();
                     if (now - st.stoneMessage > Telegraphs.seconds(10f)) {
                         st.stoneMessage = now;
@@ -268,6 +308,33 @@ public final class Volcanic implements FractalStage {
                     }
                 }
             });
+        }
+    }
+
+    /**
+     * Debout sur de la lave (lac du volcan, cratère en fusion) : {@value #LAVA_PART} des PV max par seconde, l'armure
+     * n'y fait rien.
+     */
+    static void lavaFloor(World world, Store<EntityStore> store, State st, List<PlayerRef> players, float dt) {
+        st.lavaClock += dt;
+        if (st.lavaClock < 0.5f) {
+            return;
+        }
+        float seconds = st.lavaClock;
+        st.lavaClock = 0f;
+        ChunkStore chunks = world.getChunkStore();
+        for (PlayerRef player : players) {
+            Ref<EntityStore> ref = player.getReference();
+            Vector3d at = Telegraphs.position(store, ref);
+            if (at == null) {
+                continue;
+            }
+            String floor = WorldBlocks.name(chunks, (int) Math.floor(at.x()), (int) Math.floor(at.y() - 0.2), (int) Math.floor(at.z()));
+            if (floor != null && LAVA_BLOCKS.contains(floor)) {
+                Hurt.percent(store, ref, LAVA_PART * seconds, FIRE_CAUSE);
+                Hurt.effect(store, ref, LAVA_BURN, 1f);
+                tell(st, player, "lava.burn");
+            }
         }
     }
 

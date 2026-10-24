@@ -159,9 +159,9 @@ Un rituel grawl au cœur d'un volcan : vagues d'ennemis sous les chutes de pierr
 
 1. **Gardes grawls** : vagues jusqu'à remplir la barre d'événement ; des pierres tombent (cercles, renversement 2 s).
 2. **Couloir des rochers** : chutes de pierres et **rochers enflammés qui dévalent** (mortels, laissent une traînée qui brûle) ; des alcôves sur les côtés servent d'abri. Point de contrôle au bout.
-3. **Chaman grawl champion** : protégé par **8 piles de bouclier**. Certaines pierres qui tombent laissent une **pierre imprégnée** à ramasser et **lancer** sur lui : chaque coup retire une pile. Pendant ce temps, des chamans vétérans marchent vers **4 captifs** au bord de la falaise pour les pousser dans le vide ; si tous tombent, le groupe perd. Tous sauvés : coffre bonus. Bouclier tombé : on le tue (il peut remettre un bouclier d'une seule pile).
+3. **Chaman grawl champion** : protégé par **8 piles de bouclier**. Certaines pierres qui tombent laissent une **pierre imprégnée** à ramasser et **lancer** sur lui : chaque coup retire une pile. Pendant ce temps, des chamans vétérans marchent lentement vers **3 captifs** au bord de la falaise pour les pousser dans le vide ; si tous tombent, le groupe perd. Tous sauvés : coffre bonus. Bouclier tombé : on le tue (il peut remettre un bouclier d'une seule pile).
 4. **La mine abandonnée** (saut) : puzzle de saut linéaire sur des rails cassés au-dessus de la lave, avec des chauves-souris. Un squelette à chapeau marque la fin (clin d'œil à garder). Point de contrôle.
-5. **Chaman imprégné légendaire** sur une plateforme : rester immobile ou sauter donne **Pieds brûlants** (brûlure) ; des fosses se remplissent de lave sans prévenir.
+5. **Chaman imprégné légendaire** sur une île au milieu d'un lac de lave, visible depuis la falaise du Champion : de petits **cratères** changent de couleur (brun → orange → jaune) puis crachent de la lave active (remplace les Pieds brûlants et les fosses silencieuses de GW2, retour de Kevin du 2026-10-24).
    - *Flèche enflammée* : le joueur touché prend feu et brûle aussi ses voisins (agonie dès le niveau 10).
    - *Plongeon* et *coup d'ailes* (cercle rouge, recul) contre les joueurs au corps à corps.
    - *Tempête de feu* : zone instantanée.

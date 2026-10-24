@@ -11,6 +11,8 @@ import com.hypixel.hytale.server.core.universe.world.World;
 import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
 import com.hypixel.hytale.server.npc.entities.NPCEntity;
 import dev.nakasar.hytale.fractals.arena.Carried;
+import dev.nakasar.hytale.fractals.arena.CrouchPickup;
+import dev.nakasar.hytale.fractals.boss.PinnedHealth;
 import dev.nakasar.hytale.fractals.combat.Hurt;
 import dev.nakasar.hytale.fractals.combat.Spawns;
 import dev.nakasar.hytale.fractals.combat.Telegraphs;
@@ -29,7 +31,10 @@ import java.util.concurrent.ThreadLocalRandom;
  * Le Champion chaman des grawls. Son IA (JSON) frappe et lance les flammes sous chaque joueur ; le Java mène le reste :
  * <ul>
  *   <li>{@value #STACKS} charges de protection : chacune retire 11 % des dégâts qu'il subit ; seule une pierre
- *   imprégnée lancée sur lui en retire une. À 50 % de vie, il en reprend une (une fois) ;</li>
+ *   imprégnée lancée sur lui en retire une ; elle se ramasse accroupi, une par joueur, et se garde en main
+ *   ({@link CrouchPickup}). À 50 % de vie, il en reprend une (une fois) ;</li>
+ *   <li>sa vie ne remonte jamais d'elle-même ({@link PinnedHealth#noRegen}) : pas de répit pendant qu'on attend les
+ *   pierres ;</li>
  *   <li>des rochers tombent toutes les {@value #ROCK_INTERVAL} s, un sur trois laisse une pierre imprégnée ;</li>
  *   <li>toutes les {@value #VETERAN_INTERVAL} s, des vétérans sortent des grottes et marchent vers un captif (leur
  *   point d'attache) ; un vétéran à {@value #PUSH_RANGE} blocs d'un captif pendant {@value #PUSH_TIME} s le jette dans
@@ -100,6 +105,7 @@ final class Champion {
             if (boss == null) {
                 return false;
             }
+            PinnedHealth.noRegen(boss);
         }
         List<PlayerRef> inArena = inArena(store, players);
         if (inArena.isEmpty()) {
@@ -226,7 +232,8 @@ final class Champion {
                 left.add(i);
             }
         }
-        Spawns.tellAll(world, Message.translation(Volcanic.MESSAGES + "captive.lost").param("count", count));
+        Spawns.tellAll(world, Message.translation(Volcanic.MESSAGES + "captive.lost").param("count", count)
+                .param("total", lost.length));
         if (left.isEmpty()) {
             Spawns.tellAll(world, Message.translation(Volcanic.MESSAGES + "captive.allLost"));
             reset(store);
@@ -284,6 +291,7 @@ final class Champion {
         veterans.clear();
         if (boss != null) {
             LABELS.remove(boss);
+            PinnedHealth.unpin(boss);
         }
         Spawns.remove(store, boss);
         boss = null;
@@ -300,7 +308,9 @@ final class Champion {
         veterans.clear();
         if (boss != null) {
             LABELS.remove(boss);
+            PinnedHealth.unpin(boss);
         }
+        CrouchPickup.removeGround(world, store, Volcanic.STONE);
         boolean allSaved = true;
         for (boolean l : lost) {
             allSaved &= !l;
@@ -310,7 +320,7 @@ final class Champion {
             if (ref == null || !ref.isValid()) {
                 continue;
             }
-            Carried.removeAll(store, ref, Volcanic.STONE);
+            CrouchPickup.removeAll(store, ref, Volcanic.STONE);
             if (allSaved) {
                 for (int k = 0; k < BONUS; k++) {
                     Carried.give(store, ref, SHARD);

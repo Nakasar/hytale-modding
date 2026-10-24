@@ -5,22 +5,24 @@
 
 Le déroulé de GW2, dans l'ordre :
 
-1. le camp des grawls : des vagues de grawls autour du totem du rituel (sa vie montre ce qu'il reste à abattre), des
-   rochers qui tombent du volcan (cercles rouges) ;
+1. le camp des grawls : des groupes de 7 grawls qui chargent, autour du totem du rituel (sa vie, fixée par le Java,
+   montre ce qu'il reste à abattre ; sa barre se voit de toute la fractale), des rochers qui tombent du volcan ;
 2. le couloir aux rochers : des rochers en feu dévalent toutes les 5 s, on s'abrite dans les niches ; un rocher coûte
    60 % des PV, brûle et laisse une traînée de feu ;
-3. le Champion chaman des grawls : huit charges de protection que seules les pierres imprégnées (lâchées par les
-   rochers qui tombent) retirent ; ses vétérans marchent vers les quatre captifs au bord de la lave ;
+3. le Champion chaman des grawls, au bord d'une falaise au-dessus du lac de lave du volcan : huit charges de
+   protection que seules les pierres imprégnées (lâchées par les rochers qui tombent, ramassées accroupi et gardées en
+   main) retirent ; ses vétérans sortent des grottes du sud et marchent lentement vers les trois captifs du bord nord ;
 4. la mine : des rails sur des planches au-dessus de la lave, des chauves-souris ; une chute ramène au départ du
-   tronçon ;
-5. le Chamane imprégné : pieds brûlants (rester immobile ou sauter brûle), puits de lave silencieux, flèche
-   enflammée qui se propage, piqué, souffle des ailes, tempête de feu ; à chaque quart de sa vie, un bouclier de 40
-   coups, des larves de braise, et il plane vers un villageois pour s'en nourrir.
+   tronçon ; au bout, une descente jusqu'au lac ;
+5. le Chamane imprégné, sur une île au milieu du lac (on la voit du bord de la falaise du Champion) : petits cratères
+   qui rougissent puis crachent de la lave, flèche enflammée qui se propage, piqué, souffle des ailes, tempête de feu ;
+   à chaque quart de sa vie, un bouclier de 40 coups, des larves de braise, et il plane lentement vers un villageois
+   pour s'en nourrir.
 
 Le générateur écrit les prefabs (tronçons de 64 blocs), l'instance `Nakasar_Fractal_Volcanic`, la pierre imprégnée
-(clic droit : la lancer), les effets, la cause de dégâts du feu, les particules, les modèles et rôles, la langue
-`nakasar_fractals_volcanic.lang` et `volcanic/VolcanicLayout.java`. Repère comme la Falaise : y monde = GROUND_Y + y
-prefab, « debout à y » : le sol est en y - 1.
+(clic droit : la lancer), les effets, la cause de dégâts du feu, les particules, les modèles et rôles, les blocs des
+cratères, la langue `nakasar_fractals_volcanic.lang` et `volcanic/VolcanicLayout.java`. Repère comme la Falaise :
+y monde = GROUND_Y + y prefab, « debout à y » : le sol est en y - 1.
 """
 import math
 import sys
@@ -57,21 +59,35 @@ BOULDER_END_Z = -21.5
 PASSAGE = (-20, -4, -96, -92)
 CH_CENTER = (-34, -94)
 CH_RADIUS = 14
-CAPTIVE_ANGLES = [45, 135, 225, 315]
+CAPTIVE_ANGLES = [240, 270, 300]       # au nord, au bord de la falaise qui tombe dans la lave du volcan
 CAPTIVE_RADIUS = 12
-VETERAN_GATES = [(-34, -81), (-34, -107)]
+VETERAN_GATES = [(-41, -80), (-27, -80)]   # grottes du côté sud, en face des captifs
 GATE_CH = [(-49, y, z) for y in range(0, 5) for z in range(-96, -91)]
 MINE = (-118, -50)                      # x de fin (ouest) et de départ (est) de la mine
 MINE_Z = (-96, -92)
 LAVA_Y = -7
 END_PAD = (-124, -116, -98, -90)        # x0, x1, z0, z1, debout à 2
-AR_CENTER = (-140, -94)
-AR_RADIUS = 16
-AR_STAND = 2
-VILLAGER_ANGLES = [30, 150, 210, 330]
-VILLAGER_RADIUS = 14
-REWARD_AT = (-142, AR_STAND, -94)
-END_EXIT_AT = (-138, AR_STAND, -94)
+PAD_STAND = 2
+# Lac de lave du volcan, en bas de la falaise du Champion : surface en LAKE_Y, union de disques (centre x, z, rayon).
+LAKE_Y = -18
+LAKE_DISCS = [(-84, -146, 40), (-38, -124, 20), (-122, -122, 16)]
+# Île du Chamane imprégné au milieu du lac, deux blocs au-dessus de la lave ; on la voit du bord de la falaise.
+AR_CENTER = (-84, -146)
+AR_RADIUS = 22
+AR_STAND = LAKE_Y + 3
+VILLAGER_ANGLES = [45, 135, 225, 315]
+VILLAGER_RADIUS = 19
+ENTRY_ANGLE = 180
+# Descente du bout de la mine à l'île : (x, z, debout) ; chaussée au-dessus de la lave en bas.
+DESCENT = [(-120, -99, PAD_STAND), (-122, -114, -5), (-114, -132, -11), (-105, -146, AR_STAND)]
+DESCENT_WIDTH = 2.6
+# Petits cratères de l'île (rayon CRATER_RADIUS) : chauffent puis deviennent de la lave active (Java).
+CRATER_RADIUS = 2.3
+CRATER_COUNT = 11
+CRATER_STAGES = ["Nakasar_Fractal_Crater_Cold", "Nakasar_Fractal_Crater_Warm_1", "Nakasar_Fractal_Crater_Warm_2",
+                 "Nakasar_Fractal_Crater_Warm_3", "Nakasar_Fractal_Crater_Lava"]
+REWARD_AT = (-86, AR_STAND, -146)
+END_EXIT_AT = (-82, AR_STAND, -146)
 JUMP_ZONES = [(-120, -48, LAVA_Y - 4, 14, -101, -87)]
 
 # --- blocs et rôles -------------------------------------------------------------------------------------
@@ -96,6 +112,7 @@ LAVA = "Rock_Volcanic_Cracked_Lava"
 PLANKS = "Wood_Darkwood_Planks"
 BEAM = "Wood_Darkwood_Beam"
 pick = fc.pick
+CAMP_SIGHT = 56                          # les grawls du camp voient tout le camp (40 x 52)
 
 
 def ring_point(center, radius, angle, rounded=True):
@@ -190,25 +207,32 @@ def course_prefab():
     for y in range(0, 8):   # le mur ouest du couloir s'ouvre sur le passage
         for z in range(pz0, pz1 + 1):
             p.set(cx0 - 1, y, z, go.AIR if y < 5 else pick(ROCK, 0, y, z))
+    # Arène du Champion : au nord, le bord d'une falaise au-dessus du lac de lave du volcan (la vue
+    # reste dégagée sur l'île du Chamane, sans muret) ; au sud, le mur de roche et les grottes des vétérans.
     chx, chz = CH_CENTER
     fc.disc(p, chx, chz, CH_RADIUS, 0, lambda x, z: pick(GROUND, x, 0, z), ROCK, 8)
     for a in range(0, 360, 6):
         x, z = ring_point(CH_CENTER, CH_RADIUS + 1, a)
-        if abs(z - chz) <= 3:
-            continue
+        if abs(z - chz) <= 3 or z < chz - 4 or any(abs(x - gx) <= 2 and z > chz for gx, _ in VETERAN_GATES):
+            continue   # nord : rien entre l'arène et le vide, la vue sur l'île reste dégagée
         for y in range(-1, 4):
             p.set(x, y, z, pick(ROCK, x, y, z))
-    for a in CAPTIVE_ANGLES:   # ledges des captifs, au bord de la lave
+    for a in CAPTIVE_ANGLES:   # cages des captifs, au bord de la falaise
         x, z = ring_point(CH_CENTER, CAPTIVE_RADIUS, a)
         p.set(x, -1, z, "Rock_Magma_Cooled")
-        p.set(x + (1 if x > chx else -1), 0, z, "Deco_Trork_Cage")
-        x2, z2 = ring_point(CH_CENTER, CH_RADIUS + 1, a)
-        for y in range(-1, 4):
-            p.set(x2, y, z2, LAVA if y < 0 else go.AIR)
-    for x, z in VETERAN_GATES:
-        for dx in (-1, 0, 1):
-            for y in range(0, 3):
-                p.set(x + dx, y, z, go.AIR)
+        p.set(x, 0, z - 1, "Deco_Trork_Cage")
+    for gx, gz in VETERAN_GATES:   # grottes : un porche de roche, ouvert vers l'arène
+        for dx in range(-3, 4):
+            for dz in range(-2, 7):
+                x, z = gx + dx, gz + dz
+                p.set(x, -1, z, pick(GROUND, x, -1, z))
+                p.set(x, -2, z, pick(ROCK, x, -2, z))
+                if dz < 1:
+                    continue
+                inside = abs(dx) <= 1 and dz <= 5
+                for y in range(0, 6):
+                    p.set(x, y, z, go.AIR if inside and y < 3 else pick(ROCK, x, y, z))
+        p.set(gx, 2, gz + 1, "Furniture_Crude_Torch")
     for (x, y, z) in GATE_CH:
         p.set(x, y, z, MIST)
     for x in range(-49, chx - CH_RADIUS + 1):
@@ -238,29 +262,77 @@ def course_prefab():
     ex0, ex1, ez0, ez1 = END_PAD
     for x in range(ex0, ex1 + 1):
         for z in range(ez0, ez1 + 1):
-            p.set(x, AR_STAND - 1, z, LANDING if x >= ex1 - 2 else pick(GROUND, x, AR_STAND - 1, z))
-            for y in range(LAVA_Y, AR_STAND - 1):
+            p.set(x, PAD_STAND - 1, z, LANDING if x >= ex1 - 2 else pick(GROUND, x, PAD_STAND - 1, z))
+            for y in range(LAVA_Y, PAD_STAND - 1):
                 p.set(x, y, z, pick(ROCK, x, y, z))
-    p.set(ex1 - 1, AR_STAND, ez0, "Deco_Bone_Skulls")
-    p.set(ex1 - 2, AR_STAND, ez0, "Deco_Bone_Pile")
-    p.set(ex1, AR_STAND, ez0, "Furniture_Ancient_Crate")
-    # Arène du Chamane imprégné.
+    p.set(ex1 - 1, PAD_STAND, ez1, "Deco_Bone_Skulls")
+    p.set(ex1 - 2, PAD_STAND, ez1, "Deco_Bone_Pile")
+    p.set(ex1, PAD_STAND, ez1, "Furniture_Ancient_Crate")
+    island(p)
+    dress(p)
+    return p
+
+
+def craters():
+    """Centres des petits cratères de l'île : à 7 blocs l'un de l'autre au moins, loin du centre (le Chamane y
+    apparaît), des villageois et de l'arrivée de la chaussée."""
+    villagers = [ring_point(AR_CENTER, VILLAGER_RADIUS, a) for a in VILLAGER_ANGLES]
+    entry = ring_point(AR_CENTER, AR_RADIUS, ENTRY_ANGLE)
+    out, k = [], 0
+    while len(out) < CRATER_COUNT and k < 5000:
+        k += 1
+        a = fn.hash01(k, 7, 1, 71) * 360
+        d = 5 + fn.hash01(k, 8, 2, 71) * (AR_RADIUS - 9)
+        x, z = ring_point(AR_CENTER, d, a)
+        if (any(math.hypot(x - cx, z - cz) < 7 for cx, cz in out) or
+                any(math.hypot(x - vx, z - vz) < 5 for vx, vz in villagers) or math.hypot(x - entry[0], z - entry[1]) < 7):
+            continue
+        out.append((x, z))
+    assert len(out) == CRATER_COUNT, "pas assez de place pour les cratères"
+    return out
+
+
+def crater_cells(center):
+    """Cases (x, y, z) du dessus de l'île qui forment le cratère."""
+    cx, cz = center
+    r = int(CRATER_RADIUS) + 1
+    return [(x, AR_STAND - 1, z) for x in range(cx - r, cx + r + 1) for z in range(cz - r, cz + r + 1)
+            if math.hypot(x - cx, z - cz) <= CRATER_RADIUS]
+
+
+def island(p):
+    """Île du Chamane imprégné au milieu du lac de lave : bord irrégulier, roche jusqu'au fond du lac, anneau de
+    briques, braseros au bord, cages des villageois, petits cratères (cendre froide au repos, cerclés de magma figé)."""
     ax, az = AR_CENTER
-    fc.disc(p, ax, az, AR_RADIUS, AR_STAND,
-            lambda x, z: "Rock_Volcanic_Brick_Smooth" if abs(math.hypot(x - ax, z - az) - 8) < 0.5 else pick(GROUND, x, AR_STAND, z),
-            ROCK, 10)
+    holes = {(x, z) for c in craters() for x, _, z in crater_cells(c)}
+    lips = {(x + dx, z + dz) for x, z in holes for dx in (-1, 0, 1) for dz in (-1, 0, 1)} - holes
+    for x in range(ax - AR_RADIUS - 3, ax + AR_RADIUS + 4):
+        for z in range(az - AR_RADIUS - 3, az + AR_RADIUS + 4):
+            d = math.hypot(x - ax, z - az)
+            if d > AR_RADIUS + 0.5 + 1.5 * fn.fbm2(x, z, 6, 2, 73):
+                continue
+            if (x, z) in holes:
+                top = CRATER_STAGES[0]
+            elif (x, z) in lips:
+                top = "Rock_Magma_Cooled"
+            elif abs(d - 8) < 0.5:
+                top = "Rock_Volcanic_Brick_Smooth"
+            else:
+                top = pick(GROUND, x, AR_STAND - 1, z)
+            p.set(x, AR_STAND - 1, z, top)
+            for y in range(LAKE_Y - 1, AR_STAND - 1):
+                p.set(x, y, z, pick(ROCK, x, y, z))
+    entry = ring_point(AR_CENTER, AR_RADIUS, ENTRY_ANGLE)
     for a in range(0, 360, 20):
         x, z = ring_point(AR_CENTER, AR_RADIUS - 1, a)
-        if x > ax + 12 and abs(z - az) < 5:
-            continue   # entrée est
+        if math.hypot(x - entry[0], z - entry[1]) < 6:
+            continue   # arrivée de la chaussée
         p.set(x, AR_STAND, z, "Rock_Volcanic_Brick_Pillar_Base")
         p.set(x, AR_STAND + 1, z, "Rock_Volcanic_Brick_Pillar_Middle")
         p.set(x, AR_STAND + 2, z, "Furniture_Crude_Brazier")
     for a in VILLAGER_ANGLES:
         x, z = ring_point(AR_CENTER, VILLAGER_RADIUS, a)
         p.set(x + (1 if x > ax else -1), AR_STAND, z, "Deco_Trork_Cage")
-    dress(p)
-    return p
 
 
 THEME = fn.THEMES["volcanic"]
@@ -327,21 +399,87 @@ def dress(p):
         for z in range(chz - CH_RADIUS - 2, chz + CH_RADIUS + 3):
             if math.hypot(x - chx, z - chz) <= CH_RADIUS + 1.5:
                 ring[(x, z)] = -1
-    gates = [(gx, gz) for gx, gz in VETERAN_GATES]
-    tops = fn.rim(ring, 4, 12, seed=27, block=lambda x, z: (abs(z - chz) <= 6 and (x > chx or x < chx - 10)) or
-                  any(abs(x - gx) <= 2 and (z - gz) * (gz - chz) >= 0 for gx, gz in gates) or abs(z - chz) <= 6 and x < chx)
+    tops = fn.rim(ring, 4, 12, seed=27, block=lambda x, z: abs(z - chz) <= 6 or z < chz)   # nord : la falaise
+    tops = {c: y for c, y in tops.items() if not any((c[0], yy, c[1]) in p.blocks for yy in range(-1, 6))}
     fn.natural_ground(p, tops, THEME, seed=27, trees=0.025, spacing=7, density=0.3)
     # Mine : hautes parois rocheuses au-dessus des murs de la coulée de lave.
     mz0, mz1 = MINE_Z
     ridge(p, MINE[0] - 2, MINE[1], mz0 - 13, mz0 - 6, 12, 20, 29)
     ridge(p, MINE[0] - 2, MINE[1], mz1 + 6, mz1 + 13, 12, 20, 30)
-    # Arène du Chamane imprégné : terres brûlées, pas vers l'est (arrivée de la mine).
-    ax, az = AR_CENTER
-    arena = footprint(AR_STAND - 1, ax - AR_RADIUS, ax + AR_RADIUS, az - AR_RADIUS, az + AR_RADIUS)
-    tops = fn.rim(arena, 4, 12, seed=31, block=lambda x, z: x > ax + AR_RADIUS - 6 and abs(z - az) < 12)
-    fn.natural_ground(p, tops, THEME, seed=31, trees=0.03, spacing=7, density=0.3)
+    # Bout de la mine : une crête à l'ouest du palier, d'où part la descente vers le lac.
+    ex0, ex1, ez0, ez1 = END_PAD
+    ridge(p, ex0 - 12, ex0 - 1, ez0 + 1, ez1 + 8, 8, 15, 35)
     volcano(p)
+    caldera(p)
     fn.scatter_islets(p, (-200, 70, -200, 90), 22, (LAVA_Y - 20, 20), (3, 9), THEME, seed=33)
+
+
+def descent_cells():
+    """{(x, z): debout} de la descente du bout de la mine jusqu'à l'île, le long de DESCENT (marches d'un bloc)."""
+    cells = {}
+    for (x0, z0, s0), (x1, z1, s1) in zip(DESCENT, DESCENT[1:]):
+        n = int(math.hypot(x1 - x0, z1 - z0) * 3)
+        for i in range(n + 1):
+            t = i / n
+            x, z, stand = x0 + (x1 - x0) * t, z0 + (z1 - z0) * t, round(s0 + (s1 - s0) * t)
+            for gx in range(math.floor(x - DESCENT_WIDTH), math.ceil(x + DESCENT_WIDTH) + 1):
+                for gz in range(math.floor(z - DESCENT_WIDTH), math.ceil(z + DESCENT_WIDTH) + 1):
+                    if math.hypot(gx - x, gz - z) <= DESCENT_WIDTH:
+                        cells[(gx, gz)] = max(cells.get((gx, gz), stand), stand)
+    return cells
+
+
+def in_lake(x, z):
+    return any(math.hypot(x - cx, z - cz) <= r for cx, cz, r in LAKE_DISCS)
+
+
+def caldera(p):
+    """Le lac de lave au pied du volcan : la descente (sentier puis chaussée), la lave autour de l'île du Chamane,
+    les falaises qui tombent jusqu'au lac (sous l'arène du Champion, la crête de la mine) et les parois du cratère
+    tout autour. La lave du lac brûle (Java : Volcanic.lavaFloor)."""
+    path = descent_cells()
+    for (x, z), stand in path.items():
+        p.set(x, stand - 1, z, pick(GROUND, x, stand - 1, z))
+        for y in range(LAKE_Y - 1, stand - 1):
+            p.set(x, y, z, pick(ROCK, x, y, z))
+    for (x, z), stand in path.items():   # le sentier traverse la crête et le mur de la mine : on le creuse
+        for dx in (-1, 0, 1):
+            for dz in (-1, 0, 1):
+                if (x + dx, z + dz) in path or dx == dz == 0:
+                    for y in range(path.get((x + dx, z + dz), stand), 30):
+                        if (x + dx, y, z + dz) in p.blocks:
+                            p.set(x + dx, y, z + dz, go.AIR)
+    columns = {}
+    for (x, y, z), (name, _) in p.blocks.items():
+        if name != go.AIR and y >= LAKE_Y:
+            columns[(x, z)] = min(columns.get((x, z), 99), y)
+    xs = [cx - r - 4 for cx, _, r in LAKE_DISCS] + [cx + r + 4 for cx, _, r in LAKE_DISCS]
+    zs = [cz - r - 4 for _, cz, r in LAKE_DISCS] + [cz + r + 4 for _, cz, r in LAKE_DISCS]
+    lake = {(x, z) for x in range(min(xs), max(xs) + 1) for z in range(min(zs), max(zs) + 1)
+            if in_lake(x, z) and (x, z) not in columns}
+    for x, z in lake:
+        p.set(x, LAKE_Y, z, LAVA if fn.hash01(x, 3, z, 83) > 0.12 else "Rock_Magma_Cooled")
+        p.set(x, LAKE_Y - 1, z, pick(ROCK, x, LAKE_Y - 1, z))
+    near = lambda x, z, d: any((x + dx, z + dz) in lake for dx in range(-d, d + 1) for dz in range(-d, d + 1))
+    for (x, z), low in columns.items():   # falaises : ce qui borde le lac descend jusqu'au fond
+        if low > LAKE_Y - 1 and near(x, z, 2):
+            for y in range(LAKE_Y - 1, low):
+                p.set(x, y, z, pick(ROCK, x, y, z))
+    # Parois du cratère autour du lac (pas sur ce qui existe déjà, ni contre la descente).
+    tops = {}
+    for x in range(min(xs) - 10, max(xs) + 11):
+        for z in range(min(zs) - 10, max(zs) + 11):
+            if (x, z) in lake or (x, z) in columns or any((x + dx, z + dz) in path for dx in (-2, 0, 2) for dz in (-2, 0, 2)):
+                continue
+            if z < CH_CENTER[1] and math.hypot(x - CH_CENTER[0], z - CH_CENTER[1]) < CH_RADIUS + 10:
+                continue   # rien devant le bord de la falaise du Champion : la vue sur l'île reste dégagée
+            reach = 4 + round(6 * (fn.fbm2(x, z, 11, 2, 85) + 1) / 2)
+            if near(x, z, reach) and not in_lake(x, z):
+                tops[(x, z)] = LAKE_Y + 6 + round(20 * (fn.fbm2(x, z, 13, 3, 86) + 1) / 2)
+    inland = fn.edge_distance(tops)
+    cells = fn.island(p, tops, lambda x, z: tops[(x, z)] - LAKE_Y + 2, 87, hang=0.0, theme=THEME)
+    fn.dress(p, [c for c in cells if inland[(c[0], c[2])] > 1], THEME, 88, trees=0.02, spacing=8, bushes=0.04,
+             boulders=0.006, density=0.25)
 
 
 # --- objets, effets, particules -----------------------------------------------------------------------
@@ -355,8 +493,9 @@ def stone_parts():
 
 def stone_item():
     root = "Root_Nakasar_Fractal_Throw_Imbued_Stone"
-    return fc.held_item(LANG, STONE, "Imbued_Stone", stone_parts(), 41, (0, 4, 0), 16.0, quality="Epic", stack=4,
-                        extra={"Interactions": {"Secondary": root}, "Categories": ["Items.Misc"]})
+    return fc.held_item(LANG, STONE, "Imbued_Stone", stone_parts(), 41, (0, 4, 0), 16.0, quality="Epic",
+                        extra={"Interactions": {"Secondary": root, "SwapFrom": fc.KEEP_IN_HAND},
+                               "Utility": {"Compatible": False}, "Categories": ["Items.Misc"]})
 
 
 def throw_interaction():
@@ -370,10 +509,10 @@ def throw_interaction():
 def effects():
     L = LANG
     return {
-        "Nakasar_Fractal_Burning_Feet": fc.effect(
-            L, "Nakasar_Fractal_Burning_Feet", "Pieds brûlants (Chamane imprégné) : immobile plus d'une seconde, ou en "
-            "l'air, le sol brûle (Java, volcanic.ImbuedShaman).", "Burning_Feet", 1.5, debuff=True,
-            ApplicationEffects={"EntityBottomTint": "#ff6a1a"}),
+        "Nakasar_Fractal_Lava_Burn": fc.effect(
+            L, "Nakasar_Fractal_Lava_Burn", "Dans la lave (lac du volcan, cratère en fusion de l'île du Chamane) : "
+            "grosse brûlure tant qu'on y reste (Java, volcanic.Volcanic.lavaFloor et volcanic.ImbuedShaman).",
+            "Lava_Burn", 1.0, debuff=True, ApplicationEffects={"EntityBottomTint": "#ff6a1a", "EntityTopTint": "#ffb040"}),
         "Nakasar_Fractal_Spreading_Flame": fc.effect(
             L, "Nakasar_Fractal_Spreading_Flame", "Flèche enflammée du Chamane imprégné : brûle et passe aux joueurs "
             "à moins de 2,5 blocs (Java).", "Spreading_Flame", 6, debuff=True,
@@ -381,8 +520,17 @@ def effects():
     }
 
 
+def crater_blocks():
+    """Les cinq états d'un cratère (write_block) : du brun volcanique solide à la lave orange et jaune."""
+    colors = [((74, 60, 54), (112, 84, 64), None), ((112, 66, 42), (196, 104, 46), None),
+              ((158, 74, 32), (250, 142, 44), "#510"), ((212, 96, 26), (255, 196, 70), "#830"),
+              ((255, 146, 30), (255, 236, 120), "#f80")]
+    return [(name, name.removeprefix("Nakasar_Fractal_"), base, accent, "cracks", light)
+            for name, (base, accent, light) in zip(CRATER_STAGES, colors)]
+
+
 def fire_cause():
-    return fc.cause("Feu du Volcanique (rochers, traînées, puits de lave, pieds brûlants, flamme qui se propage) : une "
+    return fc.cause("Feu du Volcanique (rochers, traînées, lave, cratères en fusion, flamme qui se propage) : une "
                     "part des PV max, l'armure ne le réduit pas.", "#ff8a3a")
 
 
@@ -579,17 +727,18 @@ def roles():
     n = lambda role: fc.npc_name(LANG, role)
     out = {}
     out[WARRIOR] = fr.role(
-        WARRIOR, "Guerrier grawl (vagues du camp) : deux coups, et un coup abattu annoncé.", WARRIOR, n(WARRIOR), 90,
+        WARRIOR, "Guerrier grawl (groupes de 7 du camp) : voit tout le camp et charge aussitôt ; deux coups, et un coup "
+        "abattu annoncé.", WARRIOR, n(WARRIOR), 90,
         [fr.timed_attack("Slam", R("Grawl_Slam"), rng=2.8, los=True, comment="Coup abattu annoncé."),
-         fr.melee(R("Grawl_Strike"), 2.4, (0.6, 1.0)), fr.chase(36, stop=1.6)],
-        fr.walk(4.4), GENERATOR, sight=24, leash=40, home=False,
+         fr.melee(R("Grawl_Strike"), 2.4, (0.6, 1.0)), fr.chase(60, stop=1.6)],
+        fr.walk(5.2), GENERATOR, sight=CAMP_SIGHT, los=False, leash=64, home=False,
         timers=[fr.timer("Slam", (3, 5), (8, 11))], HotbarItems=["Weapon_Sword_Steel_Rusty"], KnockbackScale=0.9,
         DeathAnimationTime=1.0)
     out[GRAWL_SHAMAN] = fr.role(
         GRAWL_SHAMAN, "Chaman grawl : garde ses distances, feu annoncé sous sa cible.", GRAWL_SHAMAN, n(GRAWL_SHAMAN), 70,
         [fr.cast("Fire", R("Grawl_Shaman_Fire"), 16, "Feu annoncé."),
-         fr.melee(R("Grawl_Shaman_Staff"), 2.0, (0.9, 1.3)), fr.keep_distance(36, 6, 10)],
-        fr.walk(3.8), GENERATOR, sight=24, leash=40, home=False,
+         fr.melee(R("Grawl_Shaman_Staff"), 2.0, (0.9, 1.3)), fr.keep_distance(60, 6, 10)],
+        fr.walk(4.2), GENERATOR, sight=CAMP_SIGHT, los=False, leash=64, home=False,
         timers=[fr.timer("Fire", (1, 3), (5, 7))], HotbarItems=["Weapon_Staff_Crystal_Purple"], KnockbackScale=1.0,
         DeathAnimationTime=1.0)
     out[TOTEM] = fc.static_role(LANG, TOTEM, "Totem du rituel grawl : les coups ne lui font rien ; sa vie montre les "
@@ -597,10 +746,10 @@ def roles():
     vet = fr.role(
         VETERAN, "Vétéran grawl (Champion chaman) : part de sa grotte et marche vers un captif (point d'attache posé "
         "par le Java) ; il ne se bat que si on le frappe, ou une fois arrivé. À côté du captif 1,5 s, il le jette dans "
-        "la lave.", VETERAN, n(VETERAN), 160,
+        "la lave. Marche lente : on a le temps de l'intercepter.", VETERAN, n(VETERAN), 450,
         [fr.timed_attack("Slam", R("Grawl_Slam"), rng=2.8, los=True, comment="Coup abattu annoncé."),
          fr.melee(R("Grawl_Strike"), 2.4, (0.6, 1.0)), fr.chase(24, stop=1.6)],
-        fr.walk(3.2), GENERATOR, sight=4, leash=14, home=True,
+        fr.walk(1.7), GENERATOR, sight=4, leash=14, home=True,
         timers=[fr.timer("Slam", (3, 5), (8, 11))], HotbarItems=["Weapon_Sword_Steel_Rusty"], KnockbackScale=0.6,
         DeathAnimationTime=1.0)
     vet["StartState"] = "ReturnHome"
@@ -624,14 +773,14 @@ def roles():
         fc.fly(7, 1, 6), GENERATOR, sight=20, leash=36, home=False, KnockbackScale=0.6, DeathAnimationTime=0.8)
     out[IMBUED] = fr.role(
         IMBUED, "Le Chamane imprégné (boss du Volcanique), barre de boss : coups, flèche enflammée (marque), piqué, "
-        "souffle des ailes, tempête de feu. Les pieds brûlants, les puits de lave, les boucliers, les larves et le vol "
-        "vers les villageois sont menés par le Java (volcanic.ImbuedShaman).", IMBUED, n(IMBUED), 4000,
+        "souffle des ailes, tempête de feu. Les cratères de lave, les boucliers, les larves et le vol (lent) vers les "
+        "villageois sont menés par le Java (volcanic.ImbuedShaman).", IMBUED, n(IMBUED), 4000,
         [fr.timed_attack("Firestorm", R("Imbued_Firestorm"), rng=6, los=True, comment="Tempête de feu."),
          fr.timed_attack("Wings", R("Imbued_Wings"), rng=5.5, los=True, comment="Souffle des ailes."),
          fr.timed_attack("Dive", R("Imbued_Dive"), rng=20, los=True, comment="Piqué."),
          fr.timed_attack("Arrow", R("Imbued_Arrow"), rng=24, los=True, comment="Flèche enflammée."),
          fr.melee(R("Imbued_Staff"), 3.2, (0.9, 1.3)), fr.chase(34, stop=2.4)],
-        fr.walk(3.6), GENERATOR, sight=22, leash=30, home=True,
+        fr.walk(2.4), GENERATOR, sight=26, leash=40, home=True,
         timers=[fr.timer("Firestorm", (9, 12), (16, 20)), fr.timer("Wings", (4, 6), (10, 13)),
                 fr.timer("Dive", (6, 8), (13, 16)), fr.timer("Arrow", (2, 4), (8, 10))],
         HotbarItems=["Weapon_Staff_Crystal_Purple"], KnockbackScale=0.0, DeathAnimationTime=2.0)
@@ -646,17 +795,22 @@ def roles():
 
 def lang():
     t = fc.Lang()
-    t.item(STONE, "Pierre imprégnée", "Clic droit en visant le Champion chaman : lui retire une charge de protection. "
-           "Se dissipe hors du Volcanique.", "Imbued stone",
-           "Right-click while aiming at the Champion shaman: removes one of his protection stacks. Fades outside the "
-           "Volcanic fractal.")
+    t.item(STONE, "Pierre imprégnée", "Se ramasse accroupi et se garde en main. Clic droit en visant le Champion "
+           "chaman : lui retire une charge de protection. Se dissipe hors du Volcanique.", "Imbued stone",
+           "Picked up by crouching, kept in hand. Right-click while aiming at the Champion shaman: removes one of his "
+           "protection stacks. Fades outside the Volcanic fractal.")
     for role, f, e in ((WARRIOR, "Guerrier grawl", "Grawl warrior"), (GRAWL_SHAMAN, "Chaman grawl", "Grawl shaman"),
                        (TOTEM, "Totem du rituel", "Ritual totem"), (VETERAN, "Vétéran grawl", "Grawl veteran"),
                        (CHAMPION, "Champion chaman des grawls", "Champion grawl shaman"), (CAPTIVE, "Captif", "Captive"),
                        (BAT, "Chauve-souris de la mine", "Mine bat"), (IMBUED, "Le Chamane imprégné", "The Imbued Shaman"),
                        (LARVA, "Larve de braise", "Ember larva")):
         t.npc(role, f, e)
-    t.put("effects.Nakasar_Fractal_Burning_Feet", "Pieds brûlants", "Burning feet")
+    t.put("effects.Nakasar_Fractal_Lava_Burn", "Dans la lave", "In the lava")
+    for name, f, e in zip(CRATER_STAGES, ["Cratère refroidi", "Cratère tiède", "Cratère brûlant", "Cratère rougeoyant",
+                                          "Cratère en fusion"],
+                          ["Cooled crater", "Warm crater", "Hot crater", "Glowing crater", "Molten crater"]):
+        t.item(name, f, "Île du Chamane imprégné : chauffe puis devient de la lave active.", e,
+               "Imbued Shaman's island: heats up, then turns into active lava.")
     t.put("effects.Nakasar_Fractal_Spreading_Flame", "Flamme qui se propage", "Spreading flame")
     msgs = {
         "intro": ("Volcanique : abattez les grawls du rituel ({count}), sous les rochers du volcan.",
@@ -666,15 +820,16 @@ def lang():
         "corridor.enter": ("Des rochers dévalent le couloir : abritez-vous dans les niches !",
                            "Boulders roll down the corridor: shelter in the alcoves!"),
         "boulder.hit": ("Écrasé par un rocher en feu !", "Crushed by a burning boulder!"),
-        "champion.enter": ("Le Champion chaman est protégé : lancez-lui les pierres imprégnées (clic droit). Ne laissez "
-                           "pas ses vétérans rejoindre les captifs !",
-                           "The Champion shaman is protected: throw the imbued stones at him (right-click). Don't let his "
-                           "veterans reach the captives!"),
+        "champion.enter": ("Le Champion chaman est protégé : ramassez les pierres imprégnées (accroupi) et lancez-les-lui "
+                           "(clic droit). Ne laissez pas ses vétérans rejoindre les captifs !",
+                           "The Champion shaman is protected: pick up the imbued stones (crouch) and throw them at him "
+                           "(right-click). Don't let his veterans reach the captives!"),
         "champion.stack": ("Une charge de protection en moins ({count} restantes).", "One protection stack fewer ({count} left)."),
         "champion.shield": ("Le Champion se protège de nouveau !", "The Champion protects himself again!"),
-        "champion.veterans": ("Des vétérans sortent des grottes et marchent vers les captifs !",
-                              "Veterans leave the caves and march on the captives!"),
-        "captive.lost": ("Un captif est jeté dans la lave ({count}/4 perdus).", "A captive is thrown into the lava ({count}/4 lost)."),
+        "champion.veterans": ("Des vétérans sortent des grottes du sud et marchent vers les captifs !",
+                              "Veterans leave the southern caves and march on the captives!"),
+        "captive.lost": ("Un captif est jeté dans la lave ({count}/{total} perdus).",
+                         "A captive is thrown into the lava ({count}/{total} lost)."),
         "captive.allLost": ("Tous les captifs sont perdus : le Champion recommence son rituel.",
                             "All the captives are lost: the Champion starts his ritual again."),
         "champion.reset": ("Le Champion chaman reprend des forces.", "The Champion shaman regains his strength."),
@@ -683,19 +838,23 @@ def lang():
                            "Every captive is saved: they thank you with Mist shards."),
         "stone.noTarget": ("Visez le Champion chaman pour lancer la pierre.", "Aim at the Champion shaman to throw the stone."),
         "stone.drop": ("Un rocher se brise en laissant une pierre imprégnée.", "A rock shatters, leaving an imbued stone."),
+        "stone.crouch": ("Accroupissez-vous pour ramasser la pierre imprégnée.", "Crouch to pick up the imbued stone."),
+        "stone.already": ("Vous portez déjà une pierre imprégnée.", "You already carry an imbued stone."),
+        "camp.group": ("Un groupe de grawls charge !", "A pack of grawls charges!"),
+        "lava.burn": ("La lave vous brûle : sortez-en !", "The lava burns you: get out!"),
         "mine.enter": ("La mine : sautez de rail en rail. Une chute ramène au départ.",
                        "The mine: jump from rail to rail. A fall brings you back to the start."),
         "landing.back": ("Rattrapé au-dessus de la lave : retour au départ de la mine.",
                          "Caught above the lava: back to the start of the mine."),
-        "shaman.enter": ("Le Chamane imprégné ! Ne restez jamais immobile et ne sautez pas : le sol brûle.",
-                         "The Imbued Shaman! Never stand still and don't jump: the ground burns."),
+        "shaman.enter": ("Le Chamane imprégné ! Les cratères de l'île rougissent avant de cracher de la lave : "
+                         "écartez-vous-en.",
+                         "The Imbued Shaman! The island's craters glow before they spew lava: stay away from them."),
         "shaman.shield": ("Le Chamane se protège ({hits} coups) et plane vers un villageois : brisez le bouclier !",
                           "The Shaman shields himself ({hits} hits) and glides to a villager: break the shield!"),
         "shaman.broken": ("Bouclier brisé : le Chamane est étourdi.", "Shield broken: the Shaman is stunned."),
         "shaman.fed": ("Le Chamane se nourrit d'un villageois et reprend des forces.", "The Shaman feeds on a villager and regains strength."),
         "shaman.reset": ("Le Chamane imprégné reprend des forces.", "The Imbued Shaman regains his strength."),
         "shaman.victory": ("Le Chamane imprégné s'effondre dans la lave.", "The Imbued Shaman collapses into the lava."),
-        "feet.burning": ("Pieds brûlants : bougez sans sauter !", "Burning feet: keep moving, don't jump!"),
         "title.victory": ("Volcanique terminée", "Volcanic complete"),
     }
     for k, (f, e) in msgs.items():
@@ -709,7 +868,11 @@ def java_layout():
     J = fc
     camp = J.jpoints([(x, 0, z) for x, z in CAMP_SPAWNS])
     captives = J.jpoints([(x, 0, z) for x, z in (ring_point(CH_CENTER, CAPTIVE_RADIUS, a) for a in CAPTIVE_ANGLES)])
-    vgates = J.jpoints([(x, 0, z) for x, z in VETERAN_GATES])
+    vgates = J.jpoints([(x, 0, z + 4) for x, z in VETERAN_GATES])
+    crater_list = craters()
+    crater_points = J.jpoints([(x, AR_STAND, z) for x, z in crater_list])
+    crater_cells_java = ",\n".join("            " + J.jblocks(crater_cells(c)) for c in crater_list)
+    stages = ", ".join(f'"{name}"' for name in CRATER_STAGES)
     villagers = J.jpoints([(ring_point(AR_CENTER, VILLAGER_RADIUS, a)[0], AR_STAND, ring_point(AR_CENTER, VILLAGER_RADIUS, a)[1])
                            for a in VILLAGER_ANGLES])
     alcoves = ", ".join(f"{{{zs - 2}, {zs}, {side}}}" for zs, side in ALCOVES)
@@ -748,7 +911,7 @@ public final class VolcanicLayout {{
     public static final double[] CORRIDOR_CHECKPOINT = {J.jpoint((0, 0, -19))};
     public static final double[] LANDING_CHECKPOINT = {J.jpoint((-6, 0, -94))};
 
-    /** Arène du Champion chaman. */
+    /** Arène du Champion chaman : captifs au bord nord (falaise), vétérans au fond des grottes du sud. */
     public static final double[] CHAMPION = {J.jpoint((CH_CENTER[0], 0, CH_CENTER[1]))};
     public static final double CHAMPION_RADIUS = {CH_RADIUS};
     public static final double[][] CAPTIVES = {captives};
@@ -760,13 +923,19 @@ public final class VolcanicLayout {{
     public static final List<Box> JUMP_ZONES = List.of(
 {zones});
     public static final double[][] BATS = {bats};
-    public static final Box END_PAD = {J.jbox(ex0, ex1, AR_STAND - 1, AR_STAND + 4, ez0, ez1)};
-    public static final double[] END_CHECKPOINT = {J.jpoint((ex1 - 1, AR_STAND, -94))};
+    public static final Box END_PAD = {J.jbox(ex0, ex1, PAD_STAND - 1, PAD_STAND + 4, ez0, ez1)};
+    public static final double[] END_CHECKPOINT = {J.jpoint((ex1 - 1, PAD_STAND, -94))};
 
-    /** Arène du Chamane imprégné. */
+    /** Île du Chamane imprégné, au milieu du lac de lave. */
     public static final double[] ARENA_CENTER = {J.jpoint((AR_CENTER[0], AR_STAND, AR_CENTER[1]))};
     public static final double ARENA_RADIUS = {AR_RADIUS};
     public static final double[][] VILLAGERS = {villagers};
+    /** Cratères de l'île : centres (pieds) et cases du dessus ; blocs du froid à la lave active. */
+    public static final double[][] CRATERS = {crater_points};
+    public static final double CRATER_RADIUS = {CRATER_RADIUS};
+    public static final int[][][] CRATER_CELLS = {{
+{crater_cells_java}}};
+    public static final String[] CRATER_STAGES = {{{stages}}};
     public static final int[] REWARD = {J.jblock(REWARD_AT)};
     public static final int[] END_EXIT = {J.jblock(END_EXIT_AT)};
 
@@ -784,6 +953,8 @@ def color_of(name):
         return (120, 200, 255)
     if name in (LAVA, "Rock_Magma_Cooled"):
         return (230, 90, 30)
+    if name in CRATER_STAGES:
+        return (150, 90, 60)
     if name == MIST:
         return (230, 140, 220)
     if name.startswith("Wood_") or name == "Rail":
@@ -795,13 +966,16 @@ def color_of(name):
 
 def main():
     preview = Path(sys.argv[sys.argv.index("--preview") + 1]) if "--preview" in sys.argv else None
+    fc.write_keep_in_hand()
     fc.write_json(fc.OBJECTS / f"{STONE}.json", stone_item())
     fc.write_json(INTERACTIONS / "Nakasar_Fractal_Throw_Imbued_Stone.json", throw_interaction())
     fc.write_json(fc.ROOTS / "Root_Nakasar_Fractal_Throw_Imbued_Stone.json",
                   {"Interactions": ["Nakasar_Fractal_Throw_Imbued_Stone"], "RequireNewClick": True})
     for name, doc in effects().items():
         fc.write_json(fc.EFFECTS / f"{name}.json", doc)
-    fc.status_icon(fc.COMMON / fc.STATUS_ICONS / "Burning_Feet.png", (255, 120, 40), "feet")
+    fc.status_icon(fc.COMMON / fc.STATUS_ICONS / "Lava_Burn.png", (255, 120, 40), "flame")
+    for args in crater_blocks():
+        fc.write_block(LANG, *args)
     fc.status_icon(fc.COMMON / fc.STATUS_ICONS / "Spreading_Flame.png", (255, 140, 50), "flame")
     fc.write_json(fc.SERVER / "Entity/Damage/Nakasar_Fractal_Fire.json", fire_cause())
     for name, doc in fc.particle_files(PARTICLE_SYSTEMS, GENERATOR).items():

@@ -1,0 +1,43 @@
+{
+  "TranslationProperties": {
+    "Name": "nakasar_fractals_volcanic.items.Nakasar_Fractal_Crater_Warm_2.name",
+    "Description": "nakasar_fractals_volcanic.items.Nakasar_Fractal_Crater_Warm_2.description"
+  },
+  "Icon": "Icons/Items/Nakasar/Fractals/Crater_Warm_2.png",
+  "Categories": [
+    "Blocks.Deco"
+  ],
+  "Quality": "Technical",
+  "PlayerAnimationsId": "Block",
+  "BlockType": {
+    "Material": "Solid",
+    "DrawType": "Cube",
+    "Opacity": "Solid",
+    "Textures": [
+      {
+        "Sides": "BlockTextures/Nakasar/Fractals/Crater_Warm_2.png",
+        "UpDown": "BlockTextures/Nakasar/Fractals/Crater_Warm_2.png",
+        "Weight": 1
+      }
+    ],
+    "HitboxType": "Full",
+    "Flags": {},
+    "Gathering": {
+      "Breaking": {
+        "GatherType": "Unbreakable"
+      }
+    },
+    "BlockParticleSetId": "Stone",
+    "BlockSoundSetId": "Stone",
+    "ParticleColor": "#fa8e2c",
+    "Light": {
+      "Color": "#510"
+    }
+  },
+  "Tags": {
+    "Type": [
+      "Deco"
+    ]
+  },
+  "ItemSoundSetId": "ISS_Blocks_Stone"
+}

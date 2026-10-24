@@ -12,8 +12,12 @@
   ],
   "PlayerAnimationsId": "Item",
   "ItemSoundSetId": "ISS_Items_Gems",
-  "MaxStack": 4,
+  "MaxStack": 1,
   "Interactions": {
-    "Secondary": "Root_Nakasar_Fractal_Throw_Imbued_Stone"
+    "Secondary": "Root_Nakasar_Fractal_Throw_Imbued_Stone",
+    "SwapFrom": "Root_Nakasar_Fractal_Keep_In_Hand"
+  },
+  "Utility": {
+    "Compatible": false
   }
 }
