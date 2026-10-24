@@ -245,7 +245,7 @@ def stumps(p):
     for k, (x, z) in enumerate([q for g in WISP_SPOTS for q in g] + [CL_WISP] + CL_CORNERS):
         for y in range(0, WISP_Y):
             p.set(x, y, z, STUMP)
-        p.set(x, WISP_Y, z, go.AIR)
+        p.blocks.pop((x, WISP_Y, z), None)   # rien dans le prefab : le Java pose le feu-follet, le prefab ne doit pas l'effacer
         for i, (dx, dz) in enumerate(((1, 0), (0, 1), (-1, 0), (0, -1))):
             if (k + i) % 2 == 0 and not p.solid_at(x + dx, 0, z + dz):
                 p.set(x + dx, 0, z + dz, STUMP_ROOTS)

@@ -9,6 +9,7 @@ import com.hypixel.hytale.server.core.universe.world.World;
 import com.hypixel.hytale.server.core.universe.world.storage.ChunkStore;
 import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
 import com.hypixel.hytale.server.core.util.EventTitleUtil;
+import dev.nakasar.hytale.fractals.FractalsPlugin;
 import dev.nakasar.hytale.fractals.arena.Carried;
 import dev.nakasar.hytale.fractals.arena.WorldBlocks;
 import dev.nakasar.hytale.fractals.combat.Hurt;
@@ -75,9 +76,21 @@ final class WispRun {
         ThreadLocalRandom random = ThreadLocalRandom.current();
         for (int g = 0; g < spot.length; g++) {
             spot[g] = random.nextInt(SwamplandLayout.WISP_SPOTS[g].length);
-            int[] b = SwamplandLayout.WISP_SPOTS[g][spot[g]];
-            WorldBlocks.set(chunks, b[0], b[1], b[2], Swampland.WISP_BLOCK, 0);
+            place(chunks, SwamplandLayout.WISP_SPOTS[g][spot[g]]);
         }
+    }
+
+    /**
+     * Pose un feu-follet ; faux (et une ligne de log) si la section n'est pas chargée. Kevin, 2026-10-24 : les
+     * feux-follets du marais n'apparaissaient pas, d'où la repose dans {@link #glow} tant que la course n'a pas commencé.
+     */
+    static boolean place(ChunkStore chunks, int[] b) {
+        boolean ok = WorldBlocks.set(chunks, b[0], b[1], b[2], Swampland.WISP_BLOCK, 0);
+        if (!ok) {
+            FractalsPlugin.get().getLogger().atInfo().log("Nakasar_Fractal_Wisp : pose impossible en %d %d %d (section non chargée)",
+                    b[0], b[1], b[2]);
+        }
+        return ok;
     }
 
     // --- feux-follets, murs, minuteur ------------------------------------------------------------------
@@ -157,7 +170,7 @@ final class WispRun {
         }
     }
 
-    /** Lueur au-dessus des feux-follets encore au sol. */
+    /** Lueur au-dessus des feux-follets encore au sol ; avant le premier pris, repose ceux qui manquent. */
     private void glow(World world, Store<EntityStore> store, float dt) {
         glow += dt;
         if (glow < 1f) {
@@ -167,7 +180,13 @@ final class WispRun {
         ChunkStore chunks = world.getChunkStore();
         for (int g = 0; g < spot.length; g++) {
             int[] b = SwamplandLayout.WISP_SPOTS[g][spot[g]];
-            if (Swampland.WISP_BLOCK.equals(WorldBlocks.name(chunks, b[0], b[1], b[2]))) {
+            boolean there = Swampland.WISP_BLOCK.equals(WorldBlocks.name(chunks, b[0], b[1], b[2]));
+            if (!there && !running) {
+                FractalsPlugin.get().getLogger().atInfo().log("Nakasar_Fractal_Wisp : feu-follet absent en %d %d %d (%s), reposé",
+                        b[0], b[1], b[2], WorldBlocks.name(chunks, b[0], b[1], b[2]));
+                there = place(chunks, b);
+            }
+            if (there) {
                 Telegraphs.particle(store, "Nakasar_Fractal_Wisp_Glow", new Vector3d(b[0] + 0.5, b[1] + 1, b[2] + 0.5), 1f);
             }
         }

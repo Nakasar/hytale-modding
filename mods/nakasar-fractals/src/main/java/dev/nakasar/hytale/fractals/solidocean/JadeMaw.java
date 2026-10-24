@@ -36,11 +36,12 @@ import java.util.concurrent.ConcurrentHashMap;
  * <ul>
  *   <li>phase 1 : un test d'agonie à l'arrivée, deux tentacules devant lui ; tant qu'ils vivent, ni rayon ni
  *   colosse ;</li>
- *   <li>phase 2 : huit tentacules percent le jade (ils ne repoussent pas, un cristal chacun), un cristal posé près de chacun et
+ *   <li>phase 2 : quatre tentacules percent le jade (ils ne repoussent pas, un cristal chacun), un cristal posé près de chacun et
  *   le rayon aussitôt, un colosse sort toutes les
  *   {@value #COLOSSUS_EVERY} s ({@value #COLOSSUS_POOL} en tout, {@value #MAX_COLOSSI} en vie au plus, insensibles aux
  *   attaques à distance, un cristal chacun), le rayon toutes les {@value #BEAM_P2} s ;</li>
- *   <li>phase 3, quand le dernier colosse est tombé : retour à huit tentacules, chacun repousse
+ *   <li>phase 3, quand le dernier colosse est tombé : les tentacules restants replongent, six autres sortent sur toute
+ *   l'arène, chacun repousse
  *   {@value #TENTACLE_RESPAWN} s après sa mort et lâche un cristal ; le rayon toutes les {@value #BEAM_P3} s.</li>
  * </ul>
  * Le rayon : un joueur est visé ({@value #TARGET_SECONDS} s, effet {@value #TARGETED} dans la barre d'état, lueur
@@ -62,8 +63,10 @@ final class JadeMaw {
     static final float LAST_TARGET_SECONDS = 7f;
     static final float RESET_SECONDS = 20f;
     static final float TENTACLE_RESPAWN = 30f;
-    static final float COLOSSUS_EVERY = 30f;
+    static final float COLOSSUS_EVERY = 15f;
     static final int COLOSSUS_POOL = 10;
+    static final int MAX_TENTACLES = Math.max(SolidOceanLayout.TENTACLES.length,
+            Math.max(SolidOceanLayout.TENTACLES_P2.length, SolidOceanLayout.TENTACLES_P3.length));
     static final int MAX_COLOSSI = 3;
     /** Plancher de vie des deux premières phases : la fin et son dernier rayon arrivent toujours. */
     static final float PHASE_FLOOR = 0.4f;
@@ -75,8 +78,10 @@ final class JadeMaw {
 
     private Ref<EntityStore> maw;
     @SuppressWarnings("unchecked")
-    private final Ref<EntityStore>[] tentacles = new Ref[SolidOceanLayout.TENTACLES.length];
-    private final float[] regrow = new float[SolidOceanLayout.TENTACLES.length];
+    /** Places des tentacules de la phase en cours ({@link SolidOceanLayout#TENTACLES}, _P2, _P3). */
+    private double[][] spots = SolidOceanLayout.TENTACLES;
+    private final Ref<EntityStore>[] tentacles = new Ref[MAX_TENTACLES];
+    private final float[] regrow = new float[MAX_TENTACLES];
     private final List<Ref<EntityStore>> colossi = new ArrayList<>();
     private final List<Ref<EntityStore>> irukandji = new ArrayList<>();
     private final List<Vector3d> tentacleDeaths = new ArrayList<>();
@@ -230,9 +235,8 @@ final class JadeMaw {
         p1Down = 0;
         lastBeamDone = false;
         Spawns.tellAll(world, Message.translation(SolidOcean.MESSAGES + "arena"));
-        for (int i = 0; i < 2; i++) {
-            spawnTentacle(world, store, i);
-        }
+        spots = SolidOceanLayout.TENTACLES;
+        fillTentacles(world, store);
         for (double[] at : SolidOceanLayout.ARENA_IRUKANDJI) {
             Ref<EntityStore> foe = Spawns.spawnFoe(world, store, SolidOcean.IRUKANDJI, at);
             if (foe != null) {
@@ -249,7 +253,7 @@ final class JadeMaw {
     }
 
     /**
-     * Les deux premiers tentacules sont tombés : huit tentacules, chacun avec un cristal à côté de lui, les colosses, et
+     * Les deux premiers tentacules sont tombés : quatre tentacules, chacun avec un cristal à côté de lui, les colosses, et
      * le premier rayon aussitôt.
      */
     private void awaken(World world, Store<EntityStore> store) {
@@ -258,9 +262,10 @@ final class JadeMaw {
         colossiSpawned = 0;
         colossusClock = COLOSSUS_EVERY - 5f;
         beamClock = BEAM_P2;
+        spots = SolidOceanLayout.TENTACLES_P2;
         fillTentacles(world, store);
         Vector3d center = Spawns.point(SolidOceanLayout.ARENA_CENTER);
-        for (double[] point : SolidOceanLayout.TENTACLES) {
+        for (double[] point : spots) {
             Vector3d at = Spawns.point(point);
             Vector3d toward = new Vector3d(center.x() - at.x(), 0, center.z() - at.z());
             if (toward.lengthSquared() > 1e-6) {
@@ -278,6 +283,8 @@ final class JadeMaw {
         if (phase == 2 && colossiDown >= COLOSSUS_POOL) {
             phase = 3;
             beamClock = Math.min(beamClock, BEAM_P3 - 10f);
+            removeTentacles(store);
+            spots = SolidOceanLayout.TENTACLES_P3;
             fillTentacles(world, store);
             Spawns.tellAll(world, Message.translation(SolidOcean.MESSAGES + "phase.final"));
             showLabel();
@@ -301,9 +308,9 @@ final class JadeMaw {
         }
     }
 
-    /** Un tentacule à chaque place libre. */
+    /** Un tentacule à chaque place libre de la phase. */
     private void fillTentacles(World world, Store<EntityStore> store) {
-        for (int i = 0; i < tentacles.length; i++) {
+        for (int i = 0; i < spots.length; i++) {
             regrow[i] = 0f;
             if (!Spawns.alive(store, tentacles[i])) {
                 spawnTentacle(world, store, i);
@@ -316,7 +323,7 @@ final class JadeMaw {
         if (phase != 3) {
             return;
         }
-        for (int i = 0; i < tentacles.length; i++) {
+        for (int i = 0; i < spots.length; i++) {
             if (Spawns.alive(store, tentacles[i])) {
                 regrow[i] = 0f;
                 continue;
@@ -330,7 +337,7 @@ final class JadeMaw {
     }
 
     private void spawnTentacle(World world, Store<EntityStore> store, int index) {
-        Vector3d at = Spawns.point(SolidOceanLayout.TENTACLES[index]);
+        Vector3d at = Spawns.point(spots[index]);
         tentacles[index] = Spawns.spawnFoe(world, store, SolidOcean.TENTACLE, at,
                 Telegraphs.yawToward(at, Spawns.point(SolidOceanLayout.ARENA_CENTER)));
         Telegraphs.particle(store, "Nakasar_Fractal_Tentacle_Emerge", at, 2f);
@@ -535,11 +542,16 @@ final class JadeMaw {
         sync(store);
     }
 
-    private void clear(World world, Store<EntityStore> store) {
+    /** Les tentacules en vie replongent (sans compter comme abattus). */
+    private void removeTentacles(Store<EntityStore> store) {
         for (int i = 0; i < tentacles.length; i++) {
             Spawns.remove(store, tentacles[i]);
             tentacles[i] = null;
         }
+    }
+
+    private void clear(World world, Store<EntityStore> store) {
+        removeTentacles(store);
         Spawns.removeAll(store, colossi);
         colossi.clear();
         Spawns.removeAll(store, irukandji);

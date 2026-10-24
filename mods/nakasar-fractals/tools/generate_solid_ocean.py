@@ -73,12 +73,14 @@ RADII = [3, 2, 3, 4, 2, 3, 2, 4, 3, 2, 3, 4, 2, 3, 3, 4, 3]
 AR_RADIUS = 27                          # ×1,5 (Kevin, 2026-10-24)
 MAW_BACK = 7                            # l'Abîme flotte au nord de l'arène, hors de portée de mêlée
 # Tentacules (dx, dz depuis le centre ; z vers le sud) : répartis sur toute l'arène plutôt qu'en cercle (Kevin,
-# 2026-10-24), le sud (l'entrée) restant libre. Huit en phases 2 et 3 ; les deux premiers : phase 1 (au nord).
-TENTACLE_SPOTS = [(-8, -15), (8, -15), (-20, -5), (20, -5), (0, -3), (0, -23), (-12, 9), (12, 9)]
+# 2026-10-24), le sud (l'entrée) restant libre. Deux en phase 1 (au nord), quatre en phase 2, six en phase 3.
+TENTACLE_SPOTS = [(-8, -15), (8, -15)]
+TENTACLE_SPOTS_P2 = [(-16, -8), (16, -8), (-10, 9), (10, 9)]
+TENTACLE_SPOTS_P3 = [(0, -22), (-20, -1), (20, -1), (0, -4), (-12, 13), (12, 13)]
 COLOSSUS_ANGLES = [150, 30, 270, 90]
 COLOSSUS_RADIUS = 12
-TREE_ANGLES = (45, 135, 225, 315)       # cerisiers en fleurs (arbres de cristal vanilla, feuilles roses)
-SCAFFOLD_ARCS = ((160, 205), (285, 312), (8, 32))
+TREE_ANGLES = (50, 125, 220, 300)       # cerisiers en fleurs (arbres de cristal vanilla, feuilles roses)
+SCAFFOLD_ARCS = ((150, 192), (322, 355), (8, 38))
 ARENA_IRUKANDJI = [200, 340]           # deux seulement : ils ont 600 PV
 
 
@@ -156,6 +158,7 @@ def course_prefab():
                 p.set(x, y, z, pick(JADE if y > top - 2 else UNDER, x, y, z))
     arena_ruins(p)
     dress(p)
+    amphitheater(p)
     monoliths(p)
     jade_crystals(p)
     return p
@@ -254,22 +257,80 @@ def column(p, x, y0, z, height, seed=0):
 
 
 def arena_ruins(p):
-    """Colonnes en ruine sur le pourtour de l'arène (pas au sud, l'entrée), cerisiers en fleurs et échafaudages de bois
-    accrochés au bord, avec leurs lanternes ; tout reste au bord de l'aire de combat."""
-    for k, a in enumerate((20, 155, 200, 245, 295, 340)):
-        x, z = ring_point(AR_CENTER, AR_RADIUS - 1, a)
-        column(p, x, AR_STAND, z, 5 + int(fn.hash01(k, 0, 0, 66) * 5), seed=k)
+    """Décor de l'arène d'après les captures de GW2 (Kevin, 2026-10-24) : cerisiers en fleurs, échafaudages de bois sur
+    le bord (plancher, garde-corps, lanternes pendues, toiles rouges déchirées), gros cubes de jade sur le sol."""
     for k, a in enumerate(TREE_ANGLES):
         cherry(p, *ring_point(AR_CENTER, AR_RADIUS - 4, a), seed=k)
     for k, (a0, a1) in enumerate(SCAFFOLD_ARCS):
-        scaffold(p, a0, a1, 3 + k % 2, seed=k)
-    # Lanternes au ras du sol entre les colonnes (lumière de l'arène la nuit).
-    for a in range(0, 360, 30):
-        if 60 <= a <= 120:
+        scaffold(p, a0, a1, 4, seed=k)
+    cubes(p)
+
+
+def amphitheater(p):
+    """L'arène au fond d'une cuvette : gradins de gros blocs de jade et de pierre moussue qui montent tout autour (de 1 à
+    16 blocs sur 12 de large), taillés en cubes de 3 ; ouverts au sud (l'entrée) et bas au nord, où flotte l'Abîme, entre
+    deux grands piliers. Des cubes de jade flottent au-dessus."""
+    ax, az = AR_CENTER
+    reach = AR_RADIUS + 12
+    for x in range(ax - reach, ax + reach + 1):
+        for z in range(az - reach, az + reach + 1):
+            # cubes de 3 : hauteur et rayon pris au coin de la case de 3, comme des blocs empilés
+            cx, cz = x - (x - ax) % 3 + 1, z - (z - az) % 3 + 1
+            d = math.hypot(cx - ax, cz - az)
+            if d <= AR_RADIUS + 1 or d > reach:
+                continue
+            a = math.degrees(math.atan2(cz - az, cx - ax)) % 360
+            if 55 <= a <= 125:
+                continue   # entrée au sud
+            t = (d - AR_RADIUS) / 12
+            h = round(1 + 15 * t ** 1.3 + 3 * fn.hash01(cx, cz, 0, 73))
+            if 245 <= a <= 295:
+                h = min(h, 2)   # nord : on voit l'Abîme
+            for y in range(AR_STAND - 4 - int(t * 10), AR_STAND - 1 + h):
+                p.set(x, y, z, "Rock_Crystal_Green_Block" if fn.hash01(cx, y // 3, cz, 74) < 0.3 else stratum(x, y, z))
+            if fn.hash01(cx, cz, 1, 75) < 0.04 and fn.free(p, x, AR_STAND - 1 + h, z):
+                p.set(x, AR_STAND - 1 + h, z, VINE if h > 4 else "Plant_Coral_Bush_Green")
+    for a in (240, 300):   # piliers de part et d'autre de l'Abîme
+        x, z = ring_point(AR_CENTER, AR_RADIUS + 5, a)
+        column(p, x, AR_STAND - 4, z, 22, seed=a)
+    for k in range(26):   # cubes de jade qui flottent
+        a = fn.hash01(k, 1, 0, 76) * 360
+        r = AR_RADIUS + 6 + fn.hash01(k, 2, 0, 76) * 22
+        x, z = ring_point(AR_CENTER, r, a)
+        y = AR_STAND + 12 + int(fn.hash01(k, 3, 0, 76) * 22)
+        size = 1 + int(fn.hash01(k, 4, 0, 76) * 3)
+        for dx in range(size):
+            for dy in range(size):
+                for dz in range(size):
+                    if fn.free(p, x + dx, y + dy, z + dz):
+                        p.set(x + dx, y + dy, z + dz, "Rock_Crystal_Green_Block" if (dx + dy + dz) % 3 == 0 else
+                              stratum(x + dx, y + dy, z + dz))
+
+
+def cubes(p):
+    """Gros cubes de jade (2 ou 3 de côté) posés sur le sol de l'arène, à l'écart des tentacules, des colosses et de
+    l'allée de l'entrée : de quoi se mettre à couvert."""
+    keep = [(AR_CENTER[0] + dx, AR_CENTER[1] + dz) for dx, dz in TENTACLE_SPOTS + TENTACLE_SPOTS_P2 + TENTACLE_SPOTS_P3]
+    keep += [ring_point(AR_CENTER, COLOSSUS_RADIUS, a) for a in COLOSSUS_ANGLES]
+    keep += [ring_point(AR_CENTER, AR_RADIUS - 4, a) for a in TREE_ANGLES]
+    placed = []
+    for k in range(200):
+        if len(placed) >= 9:
+            break
+        a = fn.hash01(k, 5, 0, 77) * 360
+        r = 7 + fn.hash01(k, 6, 0, 77) * (AR_RADIUS - 13)
+        x, z = ring_point(AR_CENTER, r, a)
+        if abs(x - AR_CENTER[0]) <= 3 and z > AR_CENTER[1]:
+            continue   # allée de l'entrée
+        if any(math.hypot(x - kx, z - kz) < 5 for kx, kz in keep + placed):
             continue
-        x, z = ring_point(AR_CENTER, AR_RADIUS - 2, a + 15)
-        if fn.free(p, x, AR_STAND, z):
-            p.set(x, AR_STAND, z, LANTERN)
+        placed.append((x, z))
+        size = 2 + k % 2
+        for dx in range(size):
+            for dy in range(size):
+                for dz in range(size):
+                    p.set(x + dx, AR_STAND + dy, z + dz, "Rock_Crystal_Green_Block" if dy == size - 1 else
+                          stratum(x + dx, AR_STAND + dy, z + dz))
 
 
 # Cerisier en fleurs : pas de cerisier vanilla en 0.7.2 ; l'arbre de cristal (Wood_Crystal_Trunk, Plant_Leaves_Crystal
@@ -288,30 +349,49 @@ def cherry(p, x, z, seed=0):
 
 
 def scaffold(p, a0, a1, floor, seed=0):
-    """Échafaudage de bois hors du disque (rayons R+1 à R+3) : poteaux qui plongent sous le bord, plancher à `floor`
-    blocs, garde-corps côté vide, lanternes au sommet d'un poteau sur deux."""
+    """Échafaudage de bois sur le bord de l'arène (rayons R-3 à R-1, poteaux posés sur le jade) : plancher à `floor`
+    blocs, garde-corps devant, bras de bois avec une lanterne pendue à une chaîne, corde tendue entre les poteaux de
+    devant et toiles rouges déchirées qui pendent dessous."""
     y = AR_STAND + floor
-    step = math.degrees(1.0 / (AR_RADIUS + 2))
+    step = math.degrees(0.8 / AR_RADIUS)
     a = a0
     while a <= a1:
-        for r in (AR_RADIUS + 1, AR_RADIUS + 2, AR_RADIUS + 3):
+        for r in (AR_RADIUS - 3, AR_RADIUS - 2, AR_RADIUS - 1):
             x, z = ring_point(AR_CENTER, r, a)
-            if fn.free(p, x, y, z) and fn.hash01(x, z, seed, 67) < 0.88:
+            if fn.hash01(x, z, seed, 67) < 0.9:
                 p.set(x, y, z, PLANKS)
-        x, z = ring_point(AR_CENTER, AR_RADIUS + 4, a)
-        if fn.free(p, x, y + 1, z):
-            p.set(x, y + 1, z, FENCE)
+        x, z = ring_point(AR_CENTER, AR_RADIUS - 4, a)
+        p.set(x, y + 1, z, FENCE)
         a += step
-    posts = max(2, round((a1 - a0) / 9) + 1)
+    posts = max(2, round((a1 - a0) / 8) + 1)
+    front = []
     for k in range(posts):
         pa = a0 + (a1 - a0) * k / (posts - 1)
-        for r in (AR_RADIUS + 1, AR_RADIUS + 3):
+        for r in (AR_RADIUS - 4, AR_RADIUS - 1):
             x, z = ring_point(AR_CENTER, r, pa)
-            for yy in range(AR_STAND - 8, y + (3 if r == AR_RADIUS + 3 else 0)):
-                if fn.free(p, x, yy, z):
-                    p.set(x, yy, z, BEAM)
-            if r == AR_RADIUS + 3 and k % 2 == 0:
-                p.set(x, y + 3, z, LANTERN)
+            for yy in range(AR_STAND - 3, y + 4):
+                p.set(x, yy, z, BEAM)
+            if r == AR_RADIUS - 4:
+                front.append((x, z))
+                if k % 2 == 0:   # bras vers l'arène, lanterne pendue
+                    ix, iz = ring_point(AR_CENTER, r - 1, pa)
+                    p.set(ix, y + 3, iz, BEAM)
+                    p.set(ix, y + 2, iz, "Deco_Iron_Chains_Vertical")
+                    p.set(ix, y + 1, iz, "Deco_Lantern_Ceiling")
+    # Corde entre deux poteaux de devant, toiles rouges dessous (une case sur deux, longueurs inégales).
+    for (x0, z0), (x1, z1) in zip(front, front[1:]):
+        n = max(abs(x1 - x0), abs(z1 - z0))
+        along_z = abs(z1 - z0) > abs(x1 - x0)
+        for i in range(1, n):
+            x, z = round(x0 + (x1 - x0) * i / n), round(z0 + (z1 - z0) * i / n)
+            sag = round(1.5 * math.sin(math.pi * i / n))
+            top = y + 3 - sag
+            if fn.free(p, x, top, z):
+                p.set(x, top, z, "Deco_Rope")
+            if i % 2 and fn.hash01(x, z, seed, 68) < 0.8:
+                for k in range(1 + int(fn.hash01(z, x, seed, 69) * 3)):
+                    if fn.free(p, x, top - 1 - k, z):
+                        p.set(x, top - 1 - k, z, "Cloth_Roof_Red_Vertical", 1 if along_z else 0)
 
 
 def monoliths(p):
@@ -853,10 +933,10 @@ def lang():
                   "slay the two tentacles guarding it."),
         "checkpoint": ("Point de retour déplacé.", "Respawn point moved."),
         "agony": ("L'Abîme vous écrase de son agonie !", "The Maw crushes you with agony!"),
-        "phase.colossi": ("L'Abîme s'éveille : huit tentacules percent le jade et des colosses surgissent ({count} en "
+        "phase.colossi": ("L'Abîme s'éveille : quatre tentacules percent le jade et des colosses surgissent ({count} en "
                           "tout). Colosses et tentacules lâchent un cristal : ramassez-le (accroupi) et, quand l'Abîme "
                           "vous vise, tenez-en un !",
-                          "The Maw awakens: eight tentacles pierce the jade and colossi emerge ({count} in all). Colossi "
+                          "The Maw awakens: four tentacles pierce the jade and colossi emerge ({count} in all). Colossi "
                           "and tentacles drop a crystal: pick it up (crouch) and hold one when the Maw targets you!"),
         "phase.final": ("Le dernier colosse est tombé : de nouveaux tentacules surgissent et "
                         "repoussent 30 s après leur mort.", "The last colossus has fallen: new tentacles emerge and "
@@ -903,7 +983,10 @@ def java_layout():
     colossi = ring(COLOSSUS_RADIUS, COLOSSUS_ANGLES)
     zx0, zx1, zy0, zy1, zz0, zz1 = jump_zone()
     entry = (LAST[0], LAST[3], LAST[1])
-    tentacles = J.jpoints([(AR_CENTER[0] + dx, AR_STAND, AR_CENTER[1] + dz) for dx, dz in TENTACLE_SPOTS])
+    def spots(offsets):
+        return J.jpoints([(AR_CENTER[0] + dx, AR_STAND, AR_CENTER[1] + dz) for dx, dz in offsets])
+
+    tentacles, tentacles_p2, tentacles_p3 = spots(TENTACLE_SPOTS), spots(TENTACLE_SPOTS_P2), spots(TENTACLE_SPOTS_P3)
     return f"""package dev.nakasar.hytale.fractals.solidocean;
 
 import dev.nakasar.hytale.fractals.arena.Box;
@@ -928,8 +1011,10 @@ public final class SolidOceanLayout {{
     public static final double[] ARENA_CENTER = {J.jpoint((AR_CENTER[0], AR_STAND, AR_CENTER[1]))};
     public static final double ARENA_RADIUS = {AR_RADIUS};
     public static final double[] MAW = {J.jpoint(MAW_AT)};
-    /** Points des tentacules : les deux premiers sont ceux de la phase 1. */
+    /** Points des tentacules : phase 1, phase 2, phase 3. */
     public static final double[][] TENTACLES = {tentacles};
+    public static final double[][] TENTACLES_P2 = {tentacles_p2};
+    public static final double[][] TENTACLES_P3 = {tentacles_p3};
     public static final double[][] COLOSSI = {colossi};
     public static final double[][] ARENA_IRUKANDJI = {arena_iru};
     public static final int[] REWARD = {J.jblock(REWARD_AT)};
