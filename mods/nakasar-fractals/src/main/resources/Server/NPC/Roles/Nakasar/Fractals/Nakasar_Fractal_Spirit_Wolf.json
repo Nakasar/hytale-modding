@@ -1,8 +1,8 @@
 {
-  "$Comment": "Esprit animal de Carnasse : invulnérable hors du cercle vert (Java), fonce et mord. Généré par tools/generate_swampland.py.",
+  "$Comment": "Esprit animal de Carnasse : invulnérable hors du cercle vert (Java), fonce et attaque comme l'animal vanilla. Généré par tools/generate_swampland.py.",
   "Type": "Generic",
-  "Appearance": "Nakasar_Fractal_Spirit_Animal",
-  "NameTranslationKey": "nakasar_fractals_swampland.npc.Spirit_Animal.name",
+  "Appearance": "Nakasar_Fractal_Spirit_Wolf",
+  "NameTranslationKey": "nakasar_fractals_swampland.npc.Spirit_Wolf.name",
   "MaxHealth": 70,
   "StartState": "Idle",
   "DefaultPlayerAttitude": "Hostile",
@@ -22,6 +22,39 @@
   ],
   "KnockbackScale": 0.8,
   "DeathAnimationTime": 0.8,
+  "InteractionVars": {
+    "Melee_Start": {
+      "Interactions": [
+        {
+          "Parent": "Wolf_Bite",
+          "Effects": {
+            "ItemPlayerAnimationsId": "Wolf_Black_Default",
+            "ItemAnimationId": "Bite"
+          },
+          "RunTime": 0.167
+        }
+      ]
+    },
+    "Bite_Damage": {
+      "Interactions": [
+        {
+          "Parent": "Wolf_Bite_Damage",
+          "DamageCalculator": {
+            "Type": "Absolute",
+            "BaseDamage": {
+              "Physical": 8
+            },
+            "RandomPercentageModifier": 0.1
+          },
+          "DamageEffects": {
+            "Knockback": {
+              "Force": 1
+            }
+          }
+        }
+      ]
+    }
+  },
   "Instructions": [
     {
       "Sensor": {
@@ -109,7 +142,7 @@
         {
           "Sensor": {
             "Type": "Target",
-            "Range": 2.2,
+            "Range": 2.5,
             "Filters": [
               {
                 "Type": "LineOfSight"
@@ -124,7 +157,7 @@
           "Actions": [
             {
               "Type": "Attack",
-              "Attack": "Root_Nakasar_Fractal_NPC_Wolf_Bite",
+              "Attack": "Root_NPC_Wolf_Attack",
               "AttackPauseRange": [
                 0.7,
                 1.1

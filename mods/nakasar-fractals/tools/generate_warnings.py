@@ -125,9 +125,41 @@ def _cone_files(t):
     return out
 
 
+GREEN = "#3dff7a"
+GREEN_ZONE = "Nakasar_Fractal_Green_Zone"
+GREEN_LIFE = 0.6       # le Java le repose toutes les 0,5 s (combat.Telegraphs.greenZone) : pas de trou
+
+
+def _green_zone_files():
+    """Zone favorable (cercle vert de Carnasse) : même contour et même disque que les zones rouges, en vert, à opacité
+    fixe ; posée de nouveau toutes les 0,5 s à l'échelle du rayon du moment (le cercle rétrécit)."""
+    flat = {"X": {"Min": 90, "Max": 90}}
+    edge = _spawner(GREEN_LIFE, "Particles/Textures/Indicators/Warning_Circle_Base.png", {
+        "0": {"Opacity": 0.6, "Color": GREEN},
+        "15": {"Opacity": 1},
+        "85": {"Opacity": 1},
+        "100": {"Opacity": 0.6, "Color": GREEN},
+    }, {"Opacity": 1, "Rotation": flat, "Scale": {"X": {"Min": BASE, "Max": BASE}}})
+    fill = _spawner(GREEN_LIFE, "Particles/Textures/Basic/Ball5.png", {
+        "0": {"Opacity": 0.25, "Color": GREEN},
+        "15": {"Opacity": 0.4},
+        "85": {"Opacity": 0.4},
+        "100": {"Opacity": 0.25, "Color": GREEN},
+    }, {"Opacity": 0.4, "Rotation": flat, "Scale": {"X": {"Min": BASE, "Max": BASE}}})
+    return {f"{GREEN_ZONE}.particlesystem": {
+                "$Comment": "Zone favorable (cercle vert de Carnasse) : contour et disque verts, reposés par le Java toutes "
+                            "les 0,5 s. Généré par tools/generate_warnings.py.",
+                "Spawners": [{"SpawnerId": f"{GREEN_ZONE}_Edge", "PositionOffset": {"Y": 0.03}},
+                             {"SpawnerId": f"{GREEN_ZONE}_Fill", "PositionOffset": {"Y": 0.02}}],
+                "CullDistance": 96,
+                "IsImportant": True},
+            f"{GREEN_ZONE}_Edge.particlespawner": edge,
+            f"{GREEN_ZONE}_Fill.particlespawner": fill}
+
+
 def write():
     PARTICLES.mkdir(parents=True, exist_ok=True)
-    files = {}
+    files = _green_zone_files()
     for t in sorted(set(WARNING_TENTHS) | _wanted):
         files.update(_files(t))
     for t in CONE_TENTHS:

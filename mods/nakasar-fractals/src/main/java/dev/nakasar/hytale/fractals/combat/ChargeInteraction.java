@@ -176,6 +176,11 @@ public class ChargeInteraction extends SimpleInstantInteraction {
         }
 
         @Override
+        public Ref<EntityStore> caster() {
+            return caster;
+        }
+
+        @Override
         public void abort(World world, Store<EntityStore> store) {
             // Tâche interrompue (exception) : l'élite ne doit jamais rester figée.
             if (charging) {

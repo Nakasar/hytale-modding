@@ -495,6 +495,11 @@ public class TelegraphInteraction extends SimpleInstantInteraction {
         }
 
         @Override
+        public Ref<EntityStore> caster() {
+            return caster;
+        }
+
+        @Override
         public boolean step(World world, Store<EntityStore> store, long now) {
             if (start < 0) {
                 start = now + Telegraphs.seconds(config.delay);

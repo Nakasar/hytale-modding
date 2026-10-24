@@ -10,7 +10,10 @@ import com.hypixel.hytale.component.system.HolderSystem;
 import com.hypixel.hytale.server.core.asset.type.entityeffect.config.EntityEffect;
 import com.hypixel.hytale.server.core.asset.type.entityeffect.config.OverlapBehavior;
 import com.hypixel.hytale.server.core.entity.Frozen;
+import com.hypixel.hytale.server.core.entity.InteractionChain;
+import com.hypixel.hytale.server.core.entity.InteractionManager;
 import com.hypixel.hytale.server.core.entity.effect.EffectControllerComponent;
+import com.hypixel.hytale.server.core.modules.interaction.InteractionModule;
 import com.hypixel.hytale.server.core.universe.world.World;
 import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
 import com.hypixel.hytale.server.npc.entities.NPCEntity;
@@ -18,6 +21,7 @@ import dev.nakasar.hytale.fractals.FractalsPlugin;
 import dev.nakasar.hytale.fractals.combat.TelegraphSystem;
 import dev.nakasar.hytale.fractals.combat.Telegraphs;
 
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -81,6 +85,24 @@ public final class BossStun {
     /** Gèle le PNJ sans fin (transition de boss) jusqu'à {@link #release}. */
     public static void hold(World world, Store<EntityStore> store, Ref<EntityStore> ref) {
         stun(world, store, ref, 3600f, null);
+    }
+
+    /**
+     * Coupe net les attaques en cours du PNJ : ses chaînes d'interactions (la suite d'une attaque ne part pas) et ses
+     * annonces ou charges menées par le Java ({@link TelegraphSystem#cancel}). Avant une transition où le boss doit
+     * rester sur place (retour du 2026-10-24 : Carnasse partait en charge en devenant invulnérable).
+     */
+    public static void interrupt(World world, Store<EntityStore> store, Ref<EntityStore> ref) {
+        if (ref == null || !ref.isValid()) {
+            return;
+        }
+        InteractionManager interactions = store.getComponent(ref, InteractionModule.get().getInteractionManagerComponent());
+        if (interactions != null) {
+            for (InteractionChain chain : List.copyOf(interactions.getChains().values())) {
+                interactions.cancelChains(chain);
+            }
+        }
+        TelegraphSystem.cancel(world, store, ref);
     }
 
     /** Dégèle le PNJ tout de suite (fin d'une transition). */

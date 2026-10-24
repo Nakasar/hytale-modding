@@ -1,5 +1,6 @@
 package dev.nakasar.hytale.fractals.combat;
 
+import com.hypixel.hytale.component.Ref;
 import com.hypixel.hytale.component.Store;
 import com.hypixel.hytale.component.system.tick.TickingSystem;
 import com.hypixel.hytale.server.core.universe.world.World;
@@ -28,6 +29,11 @@ public final class TelegraphSystem extends TickingSystem<EntityStore> {
 
         /** Appelé si {@link #step} lève une exception, avant que la tâche ne soit retirée : défaire ce qu'elle a posé. */
         default void abort(World world, Store<EntityStore> store) {
+        }
+
+        /** Le PNJ qui a lancé l'annonce ou la charge (null : aucun), pour {@link #cancel}. */
+        default Ref<EntityStore> caster() {
+            return null;
         }
     }
 
@@ -74,6 +80,27 @@ public final class TelegraphSystem extends TickingSystem<EntityStore> {
             }
             if (done) {
                 tasks.remove(task);
+            }
+        }
+    }
+
+    /**
+     * Retire tout de suite les annonces et charges en cours de `caster`, sans leur coup ({@link Task#abort} défait ce
+     * qu'elles ont posé). À appeler sur le thread du monde.
+     */
+    public static void cancel(World world, Store<EntityStore> store, Ref<EntityStore> caster) {
+        List<Task> tasks = TASKS.get(world);
+        if (tasks == null || caster == null) {
+            return;
+        }
+        for (Task task : List.copyOf(tasks)) {
+            if (caster.equals(task.caster())) {
+                tasks.remove(task);
+                try {
+                    task.abort(world, store);
+                } catch (RuntimeException e) {
+                    FractalsPlugin.get().getLogger().atWarning().withCause(e).log("Annonce de boss : annulation");
+                }
             }
         }
     }

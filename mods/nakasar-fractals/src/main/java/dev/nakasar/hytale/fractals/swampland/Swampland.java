@@ -46,7 +46,9 @@ public final class Swampland implements FractalStage {
     static final String MOSSMAN_BEAST = "Nakasar_Fractal_Mossman_Beast";
     static final String MOSS_WOLF = "Nakasar_Fractal_Moss_Wolf";
     static final String BLOOMHUNGER = "Nakasar_Fractal_Bloomhunger";
-    static final String SPIRIT = "Nakasar_Fractal_Spirit_Animal";
+    /** Esprits animaux de Carnasse (loup, renard, ours vanilla en teintes spectrales). */
+    static final List<String> SPIRITS = List.of("Nakasar_Fractal_Spirit_Wolf", "Nakasar_Fractal_Spirit_Fox",
+            "Nakasar_Fractal_Spirit_Bear");
     static final String BLOOM = "Nakasar_Fractal_Poison_Bloom";
     static final String WISP = "Nakasar_Fractal_Wisp";
     static final String WISP_BLOCK = "Nakasar_Fractal_Wisp_Light";
@@ -235,7 +237,7 @@ public final class Swampland implements FractalStage {
             return;
         }
         State st = state(world);
-        if (BLOOMHUNGER.equals(victimRole) || SPIRIT.equals(victimRole) || BLOOM.equals(victimRole)) {
+        if (BLOOMHUNGER.equals(victimRole) || SPIRITS.contains(victimRole) || BLOOM.equals(victimRole)) {
             st.bloom.filter(buffer, victim, victimRole, damage);
         }
     }
@@ -243,9 +245,12 @@ public final class Swampland implements FractalStage {
     @Override
     public void onFoeDeath(World world, Store<EntityStore> store, String role, Vector3d at) {
         State st = state(world);
+        if (SPIRITS.contains(role)) {
+            st.bloom.spiritDown();
+            return;
+        }
         switch (role) {
             case MOSSMAN, MOSSMAN_BEAST -> st.mossman.down();
-            case SPIRIT -> st.bloom.spiritDown();
             case BLOOMHUNGER -> st.bloom.down();
             default -> {
             }
