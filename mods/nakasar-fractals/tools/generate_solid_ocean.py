@@ -595,8 +595,8 @@ def models():
     m[MAW] = fc.character_model("Jade_Maw", maw_parts(), 71, "L'Abîme de Jade (boss de l'Océan solide) : tête de kraken "
                                 "en jade, œil unique. Immobile ; ses écailles denses le rendent invulnérable (Java).",
                                 3.0, (1.0, 2.2), light={"Color": "#9f6", "Radius": 6}, scale=3.0)
-    m[COLOSSUS] = {"$Comment": "Colosse de jade (phase 2) : le golem de cristal vanilla, plus grand.",
-                   "Parent": "Golem_Crystal_Thunder", "MinScale": 1.25, "MaxScale": 1.25,
+    m[COLOSSUS] = {"$Comment": "Colosse de jade (phase 2) : le golem de cristal vanilla, un peu plus grand.",
+                   "Parent": "Golem_Crystal_Thunder", "MinScale": COLOSSUS_SCALE, "MaxScale": COLOSSUS_SCALE,
                    "Light": {"Color": "#6f9", "Radius": 3}}
     m[IRUKANDJI] = {"$Comment": "Irukandji (provisoire) : l'esprit de givre vanilla, en attendant une méduse vérifiée dans "
                                 "Assets.zip.", "Parent": "Spirit_Frost", "MinScale": 0.9, "MaxScale": 0.9,
@@ -608,7 +608,15 @@ def models():
 
 CI, RF = gc.CLEAR_INTERRUPT, gc.ROOTED_FX
 GOLEM_ANIMS = "Golem_Crystal_Thunder_Default"
-COLOSSUS_REACH_DOWN = 4.0      # yeux du golem ×1,25 à environ 3,5 blocs : le coup doit descendre aux pieds
+COLOSSUS_SCALE = 1.1           # ×1,25 : trop gros (Kevin, 2026-10-24)
+COLOSSUS_DAMAGE = 16
+# Combo du golem de cristal vanilla (Root_NPC_Golem_Crystal_Attack), comme le golem de la Tour du mod Vampires : notre
+# balayage au contact ne touchait jamais (même descendu aux pieds). Ses coups gardent leurs zones et animations vanilla,
+# on ne règle que les dégâts et un recul faible (pas de chute dans le vide).
+GOLEM_HITS = {"Swing_Left_Damage": "Golem_Crystal_Swing_Left_Damage", "Swing_Right_Damage": "Golem_Crystal_Swing_Right_Damage",
+              "Spin_Damage": "Golem_Crystal_Spin_Damage", "Ground_Slam_Damage": "Golem_Crystal_Ground_Slam_Damage",
+              "Stomp_Damage": "Golem_Crystal_Stomp_Damage", "Spin_Heavy_Damage": "Golem_Crystal_Spin_Heavy_Damage",
+              "Clap_Damage": "Golem_Crystal_Clap_Damage"}
 TENTACLE_ANIMS = "Nakasar_Fractal_Jade_Tentacle"
 
 
@@ -639,11 +647,6 @@ def interactions():
                                                      ImpactParticle="Stick_Slam_Ground_Large",
                                                      ImpactSound="SFX_Goblin_Feastmaster_Slam"),
                                            fc.windup(1.5, "SFX_Spear_Throw_Charge", GOLEM_ANIMS, "GroundSlam")]}
-    out["Nakasar_Fractal_Colossus_Strike"] = {
-        "$Comment": "Colosse de jade au contact : coup de cristal (16 dégâts). Le balayage part de ses yeux, bien plus haut "
-                    "que la tête d'un joueur : il descend jusqu'aux pieds (ExtendBottom), sans quoi il ne touchait rien.",
-        "Type": "Serial", "Interactions": [fr.swing("Coup de cristal.", GOLEM_ANIMS, "GroundSlam", 0.6, 16, end=3.4,
-                                                     extend_bottom=COLOSSUS_REACH_DOWN)]}
     out["Nakasar_Fractal_Irukandji_Sting"] = {
         "$Comment": "Irukandji au contact : piqûre (12 dégâts et poison 4 s).",
         "Type": "Serial", "Interactions": [fr.swing("Piqûre.", None, None, 0.3, 12, end=2.4, length=70, yaw=35,
@@ -670,7 +673,7 @@ def interactions():
     return out
 
 
-MELEE = ["Tentacle_Sweep", "Tentacle_Slam", "Colossus_Slam", "Colossus_Strike", "Irukandji_Sting", "Irukandji_Shock",
+MELEE = ["Tentacle_Sweep", "Tentacle_Slam", "Colossus_Slam", "Irukandji_Sting", "Irukandji_Shock",
          "Irukandji_Tether"]
 RANGED = []
 R = fc.root
@@ -693,11 +696,15 @@ def roles():
     out[TENTACLE] = tentacle
     out[COLOSSUS] = fr.role(
         COLOSSUS, "Colosse de jade : en phase 2, un sort du jade toutes les 30 s (20 en tout), insensible aux attaques à "
-        "distance (Java), frappe le sol (cercle annoncé, renverse) ; il lâche deux cristaux réfléchissants.", COLOSSUS, n(COLOSSUS), 700,
+        "distance (Java), frappe le sol (cercle annoncé, renverse) et enchaîne le combo du golem vanilla au contact ; il lâche un cristal "
+        "réfléchissant (Java).", COLOSSUS, n(COLOSSUS), 700,
         [fr.timed_attack("Slam", R("Colossus_Slam"), rng=5, los=True, comment="Frappe au sol annoncée."),
-         fr.melee(R("Colossus_Strike"), 3.4, (1.0, 1.4)), fr.chase(40, stop=2.6)],
+         fr.melee("Root_NPC_Golem_Crystal_Attack", 3.0, (1.0, 1.4), turn=0.6), fr.chase(40, stop=2.4)],
         fr.walk(3.0), GENERATOR, sight=30, leash=40, home=False,
-        timers=[fr.timer("Slam", (3, 5), (8, 10))], KnockbackScale=0.1, DeathAnimationTime=1.5)
+        timers=[fr.timer("Slam", (3, 5), (8, 10))], KnockbackScale=0.1, DeathAnimationTime=1.5,
+        InteractionVars={var: {"Interactions": [{"Parent": parent, "DamageCalculator": {
+            "Type": "Absolute", "BaseDamage": {"Physical": COLOSSUS_DAMAGE}, "RandomPercentageModifier": 0.1},
+            "DamageEffects": {"Knockback": {"Force": -4}}}]} for var, parent in GOLEM_HITS.items()})
     out[IRUKANDJI] = fr.role(
         IRUKANDJI, "Irukandji : flotte au-dessus des fragments de jade et garde le passage (600 PV) : décharge qui jette "
         "dans le vide, filament qui attire au-dessus du vide, piqûre empoisonnée.", IRUKANDJI, n(IRUKANDJI), 600,
@@ -739,12 +746,13 @@ def lang():
         "checkpoint": ("Point de retour déplacé.", "Respawn point moved."),
         "agony": ("L'Abîme vous écrase de son agonie !", "The Maw crushes you with agony!"),
         "phase.colossi": ("L'Abîme s'éveille : huit tentacules percent le jade et des colosses surgissent ({count} en "
-                          "tout). Ramassez leurs cristaux (accroupi) : quand l'Abîme vous vise, tenez-en un !",
-                          "The Maw awakens: eight tentacles pierce the jade and colossi emerge ({count} in all). Pick up "
-                          "their crystals (crouch): when the Maw targets you, hold one!"),
-        "phase.final": ("Le dernier colosse est tombé : l'Abîme fait repousser ses tentacules, qui lâchent désormais les "
-                        "cristaux.", "The last colossus has fallen: the Maw regrows its tentacles, which now drop the "
-                        "crystals."),
+                          "tout). Colosses et tentacules lâchent un cristal : ramassez-le (accroupi) et, quand l'Abîme "
+                          "vous vise, tenez-en un !",
+                          "The Maw awakens: eight tentacles pierce the jade and colossi emerge ({count} in all). Colossi "
+                          "and tentacles drop a crystal: pick it up (crouch) and hold one when the Maw targets you!"),
+        "phase.final": ("Le dernier colosse est tombé : de nouveaux tentacules surgissent et "
+                        "repoussent 30 s après leur mort.", "The last colossus has fallen: new tentacles emerge and "
+                        "regrow 30 s after they fall."),
         "skull": ("L'Abîme vous vise : tenez un cristal avant la fin du compte à rebours, sinon le rayon vous tue !",
                   "The Maw targets you: hold a crystal before the countdown ends, or the beam kills you!"),
         "crystal.crouch": ("Accroupissez-vous pour ramasser le cristal.", "Crouch to pick up the crystal."),

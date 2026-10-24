@@ -36,9 +36,9 @@ import java.util.concurrent.ConcurrentHashMap;
  * <ul>
  *   <li>phase 1 : un test d'agonie à l'arrivée, deux tentacules devant lui ; tant qu'ils vivent, ni rayon ni
  *   colosse ;</li>
- *   <li>phase 2 : huit tentacules percent le jade (ils ne repoussent pas), un colosse sort toutes les
+ *   <li>phase 2 : huit tentacules percent le jade (ils ne repoussent pas, un cristal chacun), un colosse sort toutes les
  *   {@value #COLOSSUS_EVERY} s ({@value #COLOSSUS_POOL} en tout, {@value #MAX_COLOSSI} en vie au plus, insensibles aux
- *   attaques à distance, deux cristaux chacun), le rayon toutes les {@value #BEAM_P2} s ;</li>
+ *   attaques à distance, un cristal chacun), le rayon toutes les {@value #BEAM_P2} s ;</li>
  *   <li>phase 3, quand le dernier colosse est tombé : retour à huit tentacules, chacun repousse
  *   {@value #TENTACLE_RESPAWN} s après sa mort et lâche un cristal ; le rayon toutes les {@value #BEAM_P3} s.</li>
  * </ul>
@@ -338,7 +338,7 @@ final class JadeMaw {
                 p1Down++;
             }
             hurt(store, TENTACLE_PART);
-            if (phase == 3) {
+            if (phase >= 2) {   // les deux premiers (phase 1) ne lâchent rien
                 dropCrystal(world, store, at);
             }
         }
@@ -347,7 +347,6 @@ final class JadeMaw {
                 colossiDown++;
             }
             dropCrystal(world, store, at);
-            dropCrystal(world, store, new Vector3d(at).add(1, 0, 1));
         }
         if (!tentacleAt.isEmpty() || !colossusAt.isEmpty()) {
             showLabel();

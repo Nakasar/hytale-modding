@@ -1,5 +1,5 @@
 {
-  "$Comment": "Colosse de jade : en phase 2, un sort du jade toutes les 30 s (20 en tout), insensible aux attaques à distance (Java), frappe le sol (cercle annoncé, renverse) ; il lâche deux cristaux réfléchissants. Généré par tools/generate_solid_ocean.py.",
+  "$Comment": "Colosse de jade : en phase 2, un sort du jade toutes les 30 s (20 en tout), insensible aux attaques à distance (Java), frappe le sol (cercle annoncé, renverse) et enchaîne le combo du golem vanilla au contact ; il lâche un cristal réfléchissant (Java). Généré par tools/generate_solid_ocean.py.",
   "Type": "Generic",
   "Appearance": "Nakasar_Fractal_Jade_Colossus",
   "NameTranslationKey": "nakasar_fractals_solid_ocean.npc.Jade_Colossus.name",
@@ -22,6 +22,141 @@
   ],
   "KnockbackScale": 0.1,
   "DeathAnimationTime": 1.5,
+  "InteractionVars": {
+    "Swing_Left_Damage": {
+      "Interactions": [
+        {
+          "Parent": "Golem_Crystal_Swing_Left_Damage",
+          "DamageCalculator": {
+            "Type": "Absolute",
+            "BaseDamage": {
+              "Physical": 16
+            },
+            "RandomPercentageModifier": 0.1
+          },
+          "DamageEffects": {
+            "Knockback": {
+              "Force": -4
+            }
+          }
+        }
+      ]
+    },
+    "Swing_Right_Damage": {
+      "Interactions": [
+        {
+          "Parent": "Golem_Crystal_Swing_Right_Damage",
+          "DamageCalculator": {
+            "Type": "Absolute",
+            "BaseDamage": {
+              "Physical": 16
+            },
+            "RandomPercentageModifier": 0.1
+          },
+          "DamageEffects": {
+            "Knockback": {
+              "Force": -4
+            }
+          }
+        }
+      ]
+    },
+    "Spin_Damage": {
+      "Interactions": [
+        {
+          "Parent": "Golem_Crystal_Spin_Damage",
+          "DamageCalculator": {
+            "Type": "Absolute",
+            "BaseDamage": {
+              "Physical": 16
+            },
+            "RandomPercentageModifier": 0.1
+          },
+          "DamageEffects": {
+            "Knockback": {
+              "Force": -4
+            }
+          }
+        }
+      ]
+    },
+    "Ground_Slam_Damage": {
+      "Interactions": [
+        {
+          "Parent": "Golem_Crystal_Ground_Slam_Damage",
+          "DamageCalculator": {
+            "Type": "Absolute",
+            "BaseDamage": {
+              "Physical": 16
+            },
+            "RandomPercentageModifier": 0.1
+          },
+          "DamageEffects": {
+            "Knockback": {
+              "Force": -4
+            }
+          }
+        }
+      ]
+    },
+    "Stomp_Damage": {
+      "Interactions": [
+        {
+          "Parent": "Golem_Crystal_Stomp_Damage",
+          "DamageCalculator": {
+            "Type": "Absolute",
+            "BaseDamage": {
+              "Physical": 16
+            },
+            "RandomPercentageModifier": 0.1
+          },
+          "DamageEffects": {
+            "Knockback": {
+              "Force": -4
+            }
+          }
+        }
+      ]
+    },
+    "Spin_Heavy_Damage": {
+      "Interactions": [
+        {
+          "Parent": "Golem_Crystal_Spin_Heavy_Damage",
+          "DamageCalculator": {
+            "Type": "Absolute",
+            "BaseDamage": {
+              "Physical": 16
+            },
+            "RandomPercentageModifier": 0.1
+          },
+          "DamageEffects": {
+            "Knockback": {
+              "Force": -4
+            }
+          }
+        }
+      ]
+    },
+    "Clap_Damage": {
+      "Interactions": [
+        {
+          "Parent": "Golem_Crystal_Clap_Damage",
+          "DamageCalculator": {
+            "Type": "Absolute",
+            "BaseDamage": {
+              "Physical": 16
+            },
+            "RandomPercentageModifier": 0.1
+          },
+          "DamageEffects": {
+            "Knockback": {
+              "Force": -4
+            }
+          }
+        }
+      ]
+    }
+  },
   "StateTransitions": [
     {
       "$Comment": "Entrée en combat : chaque attaque spéciale a sa propre recharge.",
@@ -178,7 +313,7 @@
         {
           "Sensor": {
             "Type": "Target",
-            "Range": 3.4,
+            "Range": 3.0,
             "Filters": [
               {
                 "Type": "LineOfSight"
@@ -187,13 +322,13 @@
           },
           "HeadMotion": {
             "Type": "Aim",
-            "RelativeTurnSpeed": 1.5
+            "RelativeTurnSpeed": 0.6
           },
           "ActionsBlocking": true,
           "Actions": [
             {
               "Type": "Attack",
-              "Attack": "Root_Nakasar_Fractal_NPC_Colossus_Strike",
+              "Attack": "Root_NPC_Golem_Crystal_Attack",
               "AttackPauseRange": [
                 1.0,
                 1.4
@@ -216,8 +351,8 @@
           "BodyMotion": {
             "Type": "Seek",
             "RelativeSpeed": 1.0,
-            "SlowDownDistance": 3.6,
-            "StopDistance": 2.6,
+            "SlowDownDistance": 3.4,
+            "StopDistance": 2.4,
             "UsePathfinder": true
           },
           "HeadMotion": {
