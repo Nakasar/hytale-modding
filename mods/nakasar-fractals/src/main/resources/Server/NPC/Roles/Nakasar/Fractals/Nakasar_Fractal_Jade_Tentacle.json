@@ -3,7 +3,7 @@
   "Type": "Generic",
   "Appearance": "Nakasar_Fractal_Jade_Tentacle",
   "NameTranslationKey": "nakasar_fractals_solid_ocean.npc.Jade_Tentacle.name",
-  "MaxHealth": 260,
+  "MaxHealth": 900,
   "StartState": "Idle",
   "DefaultPlayerAttitude": "Hostile",
   "DefaultNPCAttitude": "Ignore",

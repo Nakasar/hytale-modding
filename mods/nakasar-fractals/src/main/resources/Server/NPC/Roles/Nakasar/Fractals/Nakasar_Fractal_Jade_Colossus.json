@@ -1,5 +1,5 @@
 {
-  "$Comment": "Colosse de jade : sort du jade toutes les 15 s pendant tout le combat, insensible aux attaques à distance (Java), frappe le sol (cercle annoncé, renverse) ; il lâche des cristaux réfléchissants. Généré par tools/generate_solid_ocean.py.",
+  "$Comment": "Colosse de jade : en phase 2, un sort du jade toutes les 30 s (20 en tout), insensible aux attaques à distance (Java), frappe le sol (cercle annoncé, renverse) ; il lâche deux cristaux réfléchissants. Généré par tools/generate_solid_ocean.py.",
   "Type": "Generic",
   "Appearance": "Nakasar_Fractal_Jade_Colossus",
   "NameTranslationKey": "nakasar_fractals_solid_ocean.npc.Jade_Colossus.name",

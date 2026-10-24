@@ -8,6 +8,7 @@ import com.hypixel.hytale.server.core.modules.entity.damage.Damage;
 import com.hypixel.hytale.server.core.universe.PlayerRef;
 import com.hypixel.hytale.server.core.universe.world.World;
 import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
+import dev.nakasar.hytale.fractals.arena.Carried;
 import dev.nakasar.hytale.fractals.arena.Gates;
 import dev.nakasar.hytale.fractals.arena.SafeLandings;
 import dev.nakasar.hytale.fractals.boss.BossBarSystem;
@@ -157,6 +158,12 @@ public final class SolidOcean implements FractalStage {
         } else if (COLOSSUS.equals(role)) {
             st.maw.colossusDown(at);
         }
+    }
+
+    /** Fait tomber un cristal réfléchissant en `at` ; il se ramasse accroupi ({@link CrystalHold}). */
+    static void dropCrystal(Store<EntityStore> store, Vector3d at) {
+        Carried.drop(store, CRYSTAL, at);
+        Telegraphs.particle(store, "Nakasar_Fractal_Crystal_Glow", at, 1f);
     }
 
     static void tell(State st, PlayerRef player, String key) {

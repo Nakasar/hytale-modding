@@ -245,6 +245,15 @@ def status_icon(path, color, glyph):
         d.polygon(((30, 108), (64, 84), (98, 108)), fill=(255, 140, 60, 255))
     elif glyph == "stone":
         d.polygon(((40, 40), (88, 34), (98, 80), (60, 100), (30, 78)), fill=c)
+    elif glyph == "skull":
+        dark = (26, 20, 34, 255)
+        d.ellipse((30, 22, 98, 86), fill=c)
+        d.rounded_rectangle((44, 70, 84, 102), 6, fill=c)
+        d.ellipse((40, 46, 60, 66), fill=dark)
+        d.ellipse((68, 46, 88, 66), fill=dark)
+        d.polygon(((64, 68), (58, 80), (70, 80)), fill=dark)
+        for x in (52, 64, 76):
+            d.line((x, 88, x, 102), fill=dark, width=4)
     path.parent.mkdir(parents=True, exist_ok=True)
     img.save(path)
 

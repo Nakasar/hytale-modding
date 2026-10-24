@@ -215,7 +215,10 @@ def effect_on_target(effect, seconds):
 
 
 def swing(comment, anim_set, anim, run_time, amount, end=2.8, length=100, direction="ToLeft", yaw=50, extra=None,
-          sound="SFX_Light_Melee_T2_Swing", impact="SFX_T1_Impact_Blunt", knockback=None, interrupt=False):
+          sound="SFX_Light_Melee_T2_Swing", impact="SFX_T1_Impact_Blunt", knockback=None, interrupt=False,
+          extend_bottom=0.8):
+    """Coup au contact : balayage horizontal à hauteur des yeux de l'attaquant ; `extend_bottom` le fait descendre
+    (grands monstres dont les yeux sont au-dessus de la tête d'un joueur)."""
     effects = {"WorldSoundEventId": sound}
     if anim_set:
         effects.update({"ItemPlayerAnimationsId": anim_set, "ItemAnimationId": anim})
@@ -228,7 +231,7 @@ def swing(comment, anim_set, anim, run_time, amount, end=2.8, length=100, direct
             "Type": "Selector",
             "RunTime": 0.15,
             "Selector": {"Id": "Horizontal", "Direction": direction, "TestLineOfSight": True, "ExtendTop": 0.8,
-                         "ExtendBottom": 0.8, "StartDistance": 0.2, "EndDistance": end, "Length": length,
+                         "ExtendBottom": extend_bottom, "StartDistance": 0.2, "EndDistance": end, "Length": length,
                          "RollOffset": 0, "YawStartOffset": yaw},
             "HitEntity": {"Interactions": damage(amount, sound=impact, particles="Impact_Sword_Basic_Stronk",
                                                  knockback=knockback, extra=extra, interrupt=interrupt)},

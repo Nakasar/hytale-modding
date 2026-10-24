@@ -14,6 +14,10 @@
   "ItemSoundSetId": "ISS_Items_Gems",
   "MaxStack": 1,
   "Interactions": {
-    "Secondary": "Root_Nakasar_Fractal_Throw_Reflecting_Crystal"
+    "Secondary": "Root_Nakasar_Fractal_Throw_Reflecting_Crystal",
+    "SwapFrom": "Root_Nakasar_Fractal_Crystal_Keep"
+  },
+  "Utility": {
+    "Compatible": false
   }
 }

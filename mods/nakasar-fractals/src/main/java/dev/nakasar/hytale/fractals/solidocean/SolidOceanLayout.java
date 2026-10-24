@@ -23,7 +23,7 @@ public final class SolidOceanLayout {
     public static final double ARENA_RADIUS = 18;
     public static final double[] MAW = {13.5, 105.0, -139.5};
     /** Points des tentacules : les deux premiers sont ceux de la phase 1. */
-    public static final double[][] TENTACLES = {{7.5, 105.0, -123.5}, {19.5, 105.0, -123.5}, {3.5, 105.0, -118.5}, {23.5, 105.0, -118.5}, {3.5, 105.0, -110.5}, {23.5, 105.0, -110.5}};
+    public static final double[][] TENTACLES = {{7.5, 105.0, -123.5}, {19.5, 105.0, -123.5}, {3.5, 105.0, -118.5}, {23.5, 105.0, -118.5}, {3.5, 105.0, -110.5}, {23.5, 105.0, -110.5}, {7.5, 105.0, -105.5}, {19.5, 105.0, -105.5}};
     public static final double[][] COLOSSI = {{6.5, 105.0, -110.5}, {20.5, 105.0, -110.5}, {13.5, 105.0, -122.5}, {13.5, 105.0, -106.5}};
     public static final double[][] ARENA_IRUKANDJI = {{0.5, 107.0, -119.5}, {26.5, 107.0, -119.5}};
     public static final int[] REWARD = {11, 105, -109};
