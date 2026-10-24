@@ -29,7 +29,10 @@
     },
     "BlockParticleSetId": "Stone",
     "BlockSoundSetId": "Stone",
-    "ParticleColor": "#b4ffd6"
+    "ParticleColor": "#b4ffd6",
+    "Light": {
+      "Color": "#2a6"
+    }
   },
   "Tags": {
     "Type": [

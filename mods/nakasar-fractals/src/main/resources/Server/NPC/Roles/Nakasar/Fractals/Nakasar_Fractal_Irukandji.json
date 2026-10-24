@@ -1,9 +1,9 @@
 {
-  "$Comment": "Irukandji : flotte au-dessus des fragments de jade, pique et décharge autour de lui. Généré par tools/generate_solid_ocean.py.",
+  "$Comment": "Irukandji : flotte au-dessus des fragments de jade et garde le passage (600 PV) : décharge qui jette dans le vide, filament qui attire au-dessus du vide, piqûre empoisonnée. Généré par tools/generate_solid_ocean.py.",
   "Type": "Generic",
   "Appearance": "Nakasar_Fractal_Irukandji",
   "NameTranslationKey": "nakasar_fractals_solid_ocean.npc.Irukandji.name",
-  "MaxHealth": 60,
+  "MaxHealth": 600,
   "StartState": "Idle",
   "DefaultPlayerAttitude": "Hostile",
   "DefaultNPCAttitude": "Ignore",
@@ -23,7 +23,7 @@
       "MaxHeightOverGround": 4
     }
   ],
-  "KnockbackScale": 0.8,
+  "KnockbackScale": 0.3,
   "DeathAnimationTime": 0.8,
   "StateTransitions": [
     {
@@ -49,7 +49,19 @@
           ],
           "RestartValueRange": [
             6,
-            9
+            8
+          ]
+        },
+        {
+          "Type": "TimerStart",
+          "Name": "Tether",
+          "StartValueRange": [
+            2,
+            5
+          ],
+          "RestartValueRange": [
+            9,
+            12
           ]
         }
       ]
@@ -78,7 +90,7 @@
         {
           "Sensor": {
             "Type": "Player",
-            "Range": 12,
+            "Range": 14,
             "LockOnTarget": true,
             "Filters": [
               {
@@ -140,13 +152,53 @@
           ]
         },
         {
+          "$Comment": "Filament : attire sa cible.",
+          "Sensor": {
+            "Type": "And",
+            "Sensors": [
+              {
+                "Type": "Target",
+                "Range": 12,
+                "Filters": [
+                  {
+                    "Type": "LineOfSight"
+                  }
+                ]
+              },
+              {
+                "Type": "Timer",
+                "Name": "Tether",
+                "State": "STOPPED"
+              }
+            ]
+          },
+          "ActionsBlocking": true,
+          "Actions": [
+            {
+              "Type": "TimerRestart",
+              "Name": "Tether"
+            },
+            {
+              "Type": "Attack",
+              "Attack": "Root_Nakasar_Fractal_NPC_Irukandji_Tether",
+              "SkipAiming": true,
+              "LineOfSight": false,
+              "AvoidFriendlyFire": false
+            }
+          ],
+          "HeadMotion": {
+            "Type": "Watch",
+            "RelativeTurnSpeed": 1.0
+          }
+        },
+        {
           "$Comment": "Décharge annoncée.",
           "Sensor": {
             "Type": "And",
             "Sensors": [
               {
                 "Type": "Target",
-                "Range": 3,
+                "Range": 3.5,
                 "Filters": [
                   {
                     "Type": "LineOfSight"

@@ -1,0 +1,27 @@
+{
+  "$Comment": "Animations d'attaque jouées par les interactions (Effects.ItemAnimationId), générées par les outils des Fractales.",
+  "Animations": {
+    "Sweep": {
+      "ThirdPerson": "NPC/Nakasar/Fractals/Jade_Tentacle/Animations/Sweep.blockyanim",
+      "Looping": false,
+      "Speed": 1
+    },
+    "Slam": {
+      "ThirdPerson": "NPC/Nakasar/Fractals/Jade_Tentacle/Animations/Slam.blockyanim",
+      "Looping": false,
+      "Speed": 1
+    }
+  },
+  "WiggleWeights": {
+    "Pitch": 0,
+    "PitchDeceleration": 0.1,
+    "Roll": 0,
+    "RollDeceleration": 0.1,
+    "X": 0,
+    "XDeceleration": 0.1,
+    "Y": 0,
+    "YDeceleration": 0.1,
+    "Z": 0,
+    "ZDeceleration": 0.1
+  }
+}

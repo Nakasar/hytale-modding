@@ -1,13 +1,15 @@
 {
-  "$Comment": "Irukandji : décharge autour de lui, cercle rouge de 3 blocs (1,2 s), 14 dégâts.",
+  "$Comment": "Irukandji : décharge autour de lui, cercle rouge de 3,5 blocs (1,2 s), 16 dégâts et forte projection : sur un fragment de jade, elle jette dans le vide (la chute ramène au fragment d'avant).",
   "Type": "Serial",
   "Interactions": [
     {
       "Type": "Nakasar_Fractal_Telegraph",
       "Shape": "Circle",
       "Seconds": 1.2,
-      "Radius": 3,
-      "Damage": 14,
+      "Radius": 3.5,
+      "Damage": 16,
+      "Knockback": 9,
+      "KnockUp": 4,
       "PlayersOnly": true,
       "ImpactParticle": "Nakasar_Fractal_Colossus_Reflect"
     },

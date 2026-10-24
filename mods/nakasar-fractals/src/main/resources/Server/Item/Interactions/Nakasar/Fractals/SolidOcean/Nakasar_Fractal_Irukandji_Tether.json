@@ -1,0 +1,47 @@
+{
+  "$Comment": "Irukandji : filament sur sa cible (marque d'éclairs 1,2 s, 8 dégâts), puis il l'attire contre lui, au-dessus du vide s'il flotte entre deux fragments ; une piqûre suit (cercle de 2 blocs, 0,8 s, 14 dégâts et poison). S'éloigner hors de portée (12 blocs) ou l'abattre avant de sauter.",
+  "Type": "Serial",
+  "Interactions": [
+    {
+      "Type": "Nakasar_Fractal_Telegraph",
+      "Shape": "Mark",
+      "Seconds": 1.2,
+      "Damage": 8,
+      "MarkParticle": "Nakasar_Fractal_Lightning_Arc",
+      "MarkParticleScale": 1.0,
+      "HitParticle": "Nakasar_Fractal_Lightning_Arc"
+    },
+    {
+      "Type": "Simple",
+      "RunTime": 1.2,
+      "Effects": {
+        "WorldSoundEventId": "SFX_Spirit_Root_Alerted"
+      }
+    },
+    {
+      "Type": "Nakasar_Fractal_Pull",
+      "Range": 12,
+      "StopDistance": 1.5,
+      "Up": 3,
+      "Particle": "Nakasar_Fractal_Lightning_Arc"
+    },
+    {
+      "Type": "Nakasar_Fractal_Telegraph",
+      "Shape": "Circle",
+      "Seconds": 0.8,
+      "Radius": 2,
+      "Damage": 14,
+      "EffectId": "Poison_T1",
+      "EffectDuration": 4,
+      "PlayersOnly": true,
+      "ImpactParticle": "Nakasar_Fractal_Colossus_Reflect"
+    },
+    {
+      "Type": "Simple",
+      "RunTime": 0.8,
+      "Effects": {
+        "WorldSoundEventId": "SFX_Spear_Throw_Charge"
+      }
+    }
+  ]
+}

@@ -13,7 +13,7 @@ import com.hypixel.hytale.server.core.universe.PlayerRef;
 import com.hypixel.hytale.server.core.universe.world.World;
 import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
 import dev.nakasar.hytale.fractals.arena.Carried;
-import dev.nakasar.hytale.fractals.combat.BossStun;
+import dev.nakasar.hytale.fractals.boss.PinnedHealth;
 import dev.nakasar.hytale.fractals.combat.Hurt;
 import dev.nakasar.hytale.fractals.combat.Spawns;
 import dev.nakasar.hytale.fractals.combat.Telegraphs;
@@ -37,6 +37,8 @@ import java.util.concurrent.ThreadLocalRandom;
  * <ul>
  *   <li>phase 1 : un test d'agonie à l'arrivée, puis deux tentacules à abattre (irukandjis autour) ;</li>
  *   <li>phase 2 : des colosses de jade, à abattre ({@value #COLOSSI} + 1 par joueur) ; ils lâchent les cristaux ;</li>
+ *   <li>tout au long du combat, un colosse sort du jade toutes les {@value #COLOSSUS_EVERY} s ({@value #MAX_COLOSSI} en vie
+ *   au plus) ; insensibles aux attaques à distance, ils se battent au contact ;</li>
  *   <li>fin : tentacules seuls, qui lâchent désormais les cristaux.</li>
  * </ul>
  * Dès la phase 2, toutes les {@value #BEAM_INTERVAL} s, un crâne rouge marque un joueur ({@value #SKULL_SECONDS} s),
@@ -59,7 +61,8 @@ final class JadeMaw {
     static final float LAST_SKULL_SECONDS = 4.5f;
     static final float RESET_SECONDS = 20f;
     static final float TENTACLE_RESPAWN = 14f;
-    static final float COLOSSUS_EVERY = 9f;
+    static final float COLOSSUS_EVERY = 15f;
+    static final int MAX_COLOSSI = 3;
     /** Plancher de vie des deux premières phases : la fin et son dernier rayon arrivent toujours. */
     static final float PHASE_FLOOR = 0.4f;
     static final String CHARGED = "Nakasar_Fractal_Crystal_Charged";
@@ -146,9 +149,7 @@ final class JadeMaw {
         if (phase == 1 && p1Down >= 2) {
             startColossi(world);
         }
-        if (phase == 2) {
-            colossi(world, store, dt);
-        }
+        colossi(world, store, dt);
         if (phase >= 2) {
             keepTentacles(world, store, dt);
             beam(world, store, st, inArena, dt);
@@ -175,7 +176,10 @@ final class JadeMaw {
         }
     }
 
-    /** La barre de boss suit la vie tenue par le Java. */
+    /**
+     * La barre de boss suit la vie tenue par le Java : fixée à chaque tick ({@link PinnedHealth}), sans quoi la
+     * régénération naturelle des PNJ la ferait remonter entre deux pas.
+     */
     private void sync(Store<EntityStore> store) {
         EntityStatMap stats = maw == null ? null : store.getComponent(maw, EntityStatMap.getComponentType());
         EntityStatValue value = stats == null ? null : stats.get(DefaultEntityStatTypes.getHealth());
@@ -183,7 +187,8 @@ final class JadeMaw {
             return;
         }
         float wanted = Math.max(1f, value.getMax() * health);
-        if (Math.abs(value.get() - wanted) > 0.5f) {
+        PinnedHealth.pin(maw, wanted);
+        if (Math.abs(value.get() - wanted) > 0.01f) {
             stats.setStatValue(DefaultEntityStatTypes.getHealth(), wanted);
         }
     }
@@ -224,6 +229,8 @@ final class JadeMaw {
         health = 1f;
         p1Down = 0;
         lastBeamDone = false;
+        colossiSpawned = 0;
+        colossusClock = COLOSSUS_EVERY - 5f;
         Spawns.tellAll(world, Message.translation(SolidOcean.MESSAGES + "arena"));
         for (int i = 0; i < 2; i++) {
             spawnTentacle(world, store, i);
@@ -247,16 +254,15 @@ final class JadeMaw {
         phase = 2;
         colossiNeeded = COLOSSI + FractalRuns.partySize(world);
         colossiDown = 0;
-        colossiSpawned = 0;
-        colossusClock = COLOSSUS_EVERY - 2f;
         beamClock = BEAM_INTERVAL - 4f;
         Spawns.tellAll(world, Message.translation(SolidOcean.MESSAGES + "phase.colossi").param("count", colossiNeeded));
         showLabel();
     }
 
+    /** Un colosse toutes les {@value #COLOSSUS_EVERY} s pendant tout le combat ; en phase 2, les abattre la fait avancer. */
     private void colossi(World world, Store<EntityStore> store, float dt) {
         colossi.removeIf(ref -> !Spawns.alive(store, ref));
-        if (colossiDown >= colossiNeeded) {
+        if (phase == 2 && colossiDown >= colossiNeeded) {
             phase = 3;
             for (int i = 0; i < tentacles.length && aliveTentacles(store) < tentacleCap(world) + 1; i++) {
                 if (tentacles[i] == null || !tentacles[i].isValid()) {
@@ -265,18 +271,19 @@ final class JadeMaw {
             }
             Spawns.tellAll(world, Message.translation(SolidOcean.MESSAGES + "phase.final"));
             showLabel();
-            return;
         }
         colossusClock += dt;
-        if (colossusClock >= COLOSSUS_EVERY && colossi.size() < 2 && colossiSpawned < colossiNeeded) {
-            colossusClock = 0f;
-            double[][] points = SolidOceanLayout.COLOSSI;
-            Ref<EntityStore> c = Spawns.spawnFoe(world, store, SolidOcean.COLOSSUS, points[colossiSpawned % points.length]);
-            if (c != null) {
-                colossi.add(c);
-                colossiSpawned++;
-                Telegraphs.particle(store, "Nakasar_Fractal_Tentacle_Emerge", Spawns.point(points[(colossiSpawned - 1) % points.length]), 2f);
-            }
+        if (colossusClock < COLOSSUS_EVERY || colossi.size() >= MAX_COLOSSI) {
+            return;
+        }
+        colossusClock = 0f;
+        double[][] points = SolidOceanLayout.COLOSSI;
+        double[] point = points[colossiSpawned % points.length];
+        Ref<EntityStore> c = Spawns.spawnFoe(world, store, SolidOcean.COLOSSUS, point);
+        if (c != null) {
+            colossi.add(c);
+            colossiSpawned++;
+            Telegraphs.particle(store, "Nakasar_Fractal_Tentacle_Emerge", Spawns.point(point), 2f);
         }
     }
 
@@ -503,11 +510,8 @@ final class JadeMaw {
         }
     }
 
-    /** Un colosse renvoie les projectiles tant qu'il n'est pas étourdi. */
+    /** Un colosse est insensible aux attaques à distance : il les renvoie (éclair blanc). */
     void reflect(World world, SolidOcean.State st, Ref<EntityStore> colossus, Ref<EntityStore> attacker, Damage damage) {
-        if (BossStun.isStunned(colossus)) {
-            return;
-        }
         damage.setCancelled(true);
         world.execute(() -> {
             Store<EntityStore> s = world.getEntityStore().getStore();
@@ -582,6 +586,7 @@ final class JadeMaw {
         if (maw != null) {
             LABELS.remove(maw);
         }
+        PinnedHealth.unpin(maw);
         Spawns.remove(store, maw);
         maw = null;
         return true;
