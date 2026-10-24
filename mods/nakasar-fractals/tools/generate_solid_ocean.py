@@ -152,7 +152,21 @@ def course_prefab():
     arena_ruins(p)
     dress(p)
     monoliths(p)
+    void_crystals(p)
     return p
+
+
+# Cristaux du décor en cristal du Néant (Kevin, 2026-10-24) : bloc et fragments vanilla (petit, moyen, grand), vus dans
+# Assets.zip 0.7.2 (Server/Item/Items/Rock/Crystal/Rock_Crystal_Void_*). Le décor garde ses formes ; seuls les
+# cristaux verts et cyan changent, au même calibre.
+VOID_SIZES = ("Block", "Large", "Medium", "Small")
+
+
+def void_crystals(p):
+    for pos, (name, rot) in list(p.blocks.items()):
+        parts = name.split("_")
+        if len(parts) == 4 and parts[:2] == ["Rock", "Crystal"] and parts[2] in ("Green", "Cyan") and parts[3] in VOID_SIZES:
+            p.blocks[pos] = (f"Rock_Crystal_Void_{parts[3]}", rot)
 
 
 # --- décor de nuit (retours du 2026-10-24, d'après les captures de GW2) ----------------------------------------------
@@ -347,18 +361,30 @@ def dress(p):
 
 # --- objets, blocs, effets, particules ------------------------------------------------------------------
 
-def crystal_parts():
-    jade, light = (90, 220, 170), (220, 255, 240)
-    return [("Core", (0, 6, 0), (5, 12, 5), 45, fm.crystal(jade, light), "fullbright"),
-            ("Shard_A", (3, 3, 1), (3, 6, 3), 20, fm.crystal(jade, light), "fullbright"),
-            ("Shard_B", (-3, 2, -1), (3, 5, 3), -30, fm.crystal(jade, light), "fullbright")]
-
-
 def crystal_item():
+    """Le cristal réfléchissant a le modèle du grand cristal du Néant vanilla (Rock_Crystal_Void_Large : modèle de bloc
+    Crystal_Large_Pointy, texture Void), réduit comme les objets vanilla tenus qui reprennent un modèle de bloc
+    (Weapon_Deployable_Slowness_Totem, Scale 0.305). Icône et cadrage de l'icône : ceux du bloc vanilla."""
     root = "Root_Nakasar_Fractal_Throw_Reflecting_Crystal"
-    return fc.held_item(LANG, CRYSTAL, "Reflecting_Crystal", crystal_parts(), 61, (0, 6, 0), 14.0, quality="Epic", stack=1,
-                        extra={"Interactions": {"Secondary": root, "SwapFrom": fc.KEEP_IN_HAND},
-                               "Utility": {"Compatible": False}, "Categories": ["Items.Misc"]})
+    return {
+        "TranslationProperties": {"Name": f"{LANG}.items.{CRYSTAL}.name", "Description": f"{LANG}.items.{CRYSTAL}.description"},
+        "Icon": "Icons/ItemsGenerated/Rock_Crystal_Void_Large.png",
+        "IconProperties": {"Scale": 0.5, "Rotation": [4, 183, 1], "Translation": [-1, -25]},
+        "Model": "Resources/Crystals/Crystal_Large_Pointy.blockymodel",
+        "Texture": "Resources/Crystals/Crystal_Big_Textures/Void.png",
+        "Scale": CRYSTAL_SCALE,
+        "Light": {"Color": "#74d", "Radius": 2},
+        "Quality": "Epic",
+        "Categories": ["Items.Misc"],
+        "PlayerAnimationsId": "Item",
+        "ItemSoundSetId": "ISS_Items_Gems",
+        "MaxStack": 1,
+        "Interactions": {"Secondary": root, "SwapFrom": fc.KEEP_IN_HAND},
+        "Utility": {"Compatible": False},
+    }
+
+
+CRYSTAL_SCALE = 0.4
 
 
 
