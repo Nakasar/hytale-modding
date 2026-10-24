@@ -1,0 +1,18 @@
+{
+  "$Comment": "Un sceau vole en éclats : morceaux de pierre et de cristal qui retombent. Généré par tools/generate_cliffside.py.",
+  "Spawners": [
+    {
+      "SpawnerId": "Nakasar_Fractal_Seal_Shatter_Stone",
+      "PositionOffset": {
+        "Y": 0.3
+      }
+    },
+    {
+      "SpawnerId": "Nakasar_Fractal_Seal_Shatter_Crystal",
+      "PositionOffset": {
+        "Y": 0.6
+      }
+    }
+  ],
+  "CullDistance": 72
+}

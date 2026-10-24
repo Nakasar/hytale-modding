@@ -159,7 +159,10 @@ public final class Observatory {
             return;
         }
         state.level = harmony.level();
-        launch(world, player, harmony.fractal());
+        if (launch(world, player, harmony.fractal())) {
+            // Noyau et diapason sont consommés par le lancement (ceux des inventaires partent en quittant l'Observatoire).
+            state.console.clear();
+        }
     }
 
     /** Fractale d'un noyau ({@code Nakasar_Fractal_Core_<Id>}), ou null. */
@@ -193,19 +196,19 @@ public final class Observatory {
         return container;
     }
 
-    /** Ouvre la fractale pour le cercle (meneur seulement ; il rejoint le groupe s'il reste une place). */
-    public static void launch(World world, PlayerRef player, String fractalInput) {
+    /** Ouvre la fractale pour le cercle (meneur seulement ; il rejoint le groupe s'il reste une place). Vrai si elle est lancée. */
+    public static boolean launch(World world, PlayerRef player, String fractalInput) {
         if (!checkLeader(world, player)) {
-            return;
+            return false;
         }
         String fractal = FractalCatalog.resolve(fractalInput);
         if (fractal == null) {
             player.sendMessage(Message.translation(MESSAGES + "unknown").param("fractal", String.valueOf(fractalInput)));
-            return;
+            return false;
         }
         if (!FractalCatalog.isOpen(fractal)) {
             player.sendMessage(Message.translation(MESSAGES + "soon").param("fractal", FractalCatalog.name(fractal)));
-            return;
+            return false;
         }
         State state = state(world);
         // le meneur part toujours, même hors du cercle (seul si le cercle est vide)
@@ -229,6 +232,7 @@ public final class Observatory {
         });
         int level = state.level;
         world.execute(() -> FractalRuns.launch(world, world.getEntityStore().getStore(), fractal, level, group));
+        return true;
     }
 
     /** Résumé du groupe pour {@code /fractale groupe}. */

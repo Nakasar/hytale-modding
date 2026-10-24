@@ -52,6 +52,7 @@ import dev.nakasar.hytale.fractals.observatory.DailyBoardInteraction;
 import dev.nakasar.hytale.fractals.observatory.TrialDemoInteraction;
 import dev.nakasar.hytale.fractals.observatory.ObservatoryNpcSystem;
 import dev.nakasar.hytale.fractals.observatory.TrialHitSystem;
+import dev.nakasar.hytale.fractals.observatory.SelectionItemsSystem;
 import dev.nakasar.hytale.fractals.party.ClaimRewardInteraction;
 import dev.nakasar.hytale.fractals.party.FallRescueSystem;
 import dev.nakasar.hytale.fractals.party.FractalRuns;
@@ -152,6 +153,7 @@ public final class FractalsPlugin extends JavaPlugin {
         systems.registerSystem(new ShieldUnloadSystem());
         systems.registerSystem(new BossBarSystem());
         systems.registerSystem(new HarmonyCircleSystem());
+        systems.registerSystem(new SelectionItemsSystem());
         systems.registerSystem(new ObservatoryNpcSystem());
         systems.registerSystem(new TrialHitSystem());
         systems.registerSystem(new FallRescueSystem());
@@ -168,7 +170,8 @@ public final class FractalsPlugin extends JavaPlugin {
         systems.registerSystem(new FoeDeathSystem());
         systems.registerSystem(new InstabilitySystem());
         Cliffside.registerBossBars();
-        Instabilities.exempt(Cliffside.SEAL_ROLE, Cliffside.SEEKER);
+        Instabilities.exempt(Cliffside.SEAL_ROLES);
+        Instabilities.exempt(Cliffside.SEEKER);
         Uncategorized.register();
         Stages.register(new Uncategorized());
         Volcanic.register();

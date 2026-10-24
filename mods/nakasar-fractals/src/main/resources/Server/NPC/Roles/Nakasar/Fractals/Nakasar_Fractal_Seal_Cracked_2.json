@@ -1,0 +1,38 @@
+{
+  "$Comment": "Sceau du culte : immobile et gelé, posé par le Java à sa place. Les coups ordinaires ne lui font rien ; un coup de marteau chargé le fissure (sa vie montre ce qui reste). Fissuré, le Java le remplace par sa variante _Cracked_1 puis _Cracked_2 (même rôle, modèle lézardé). Généré par tools/generate_cliffside.py.",
+  "Type": "Generic",
+  "Appearance": "Nakasar_Fractal_Seal_Cracked_2",
+  "NameTranslationKey": "nakasar_fractals_cliffside.npc.Seal_Cracked_2.name",
+  "MaxHealth": 300,
+  "StartState": "Idle",
+  "DefaultPlayerAttitude": "Hostile",
+  "DefaultNPCAttitude": "Ignore",
+  "DisableDamageGroups": [
+    "Nakasar_Fractal_Foes"
+  ],
+  "MotionControllerList": [
+    {
+      "Type": "Walk",
+      "MaxWalkSpeed": 0.1,
+      "Gravity": 10,
+      "MaxFallSpeed": 10,
+      "Acceleration": 10,
+      "JumpHeight": 1.0
+    }
+  ],
+  "KnockbackScale": 0,
+  "SpawnLockTime": 0.2,
+  "Instructions": [
+    {
+      "Sensor": {
+        "Type": "State",
+        "State": "Idle"
+      },
+      "Instructions": [
+        {
+          "Actions": []
+        }
+      ]
+    }
+  ]
+}

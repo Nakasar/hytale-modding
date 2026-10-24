@@ -39,6 +39,7 @@ import java.util.WeakHashMap;
  */
 public final class HammerDamageSystem extends DamageEventSystem {
 
+    /** Préfixe des sceaux, intacts ou fissurés. */
     private static final String SEAL_ROLE = "Nakasar_Fractal_Seal";
     /** Dernier porteur du marteau à avoir frappé chaque ennemi, et quand (System.nanoTime). */
     private static final Map<Ref<EntityStore>, Credit> CREDITS = Collections.synchronizedMap(new WeakHashMap<>());
@@ -64,7 +65,7 @@ public final class HammerDamageSystem extends DamageEventSystem {
         }
         NPCEntity npc = chunk.getComponent(index, NPCEntity.getComponentType());
         Ref<EntityStore> victim = chunk.getReferenceTo(index);
-        if (npc == null || SEAL_ROLE.equals(npc.getRoleName()) || !Foes.inGroup(victim, buffer)) {
+        if (npc == null || npc.getRoleName() != null && npc.getRoleName().startsWith(SEAL_ROLE) || !Foes.inGroup(victim, buffer)) {
             return;
         }
         if (damage.getSource() instanceof Damage.EntitySource source && source.getRef() != null && source.getRef().isValid()) {

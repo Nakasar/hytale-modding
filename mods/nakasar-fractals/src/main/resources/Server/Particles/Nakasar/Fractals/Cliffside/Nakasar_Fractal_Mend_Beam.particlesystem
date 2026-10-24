@@ -1,0 +1,12 @@
+{
+  "$Comment": "Fil d'incantation d'un incantateur vers le sceau qu'il répare (posé point par point). Généré par tools/generate_cliffside.py.",
+  "Spawners": [
+    {
+      "SpawnerId": "Nakasar_Fractal_Mend_Beam_Beam",
+      "PositionOffset": {
+        "Y": 0.0
+      }
+    }
+  ],
+  "CullDistance": 72
+}

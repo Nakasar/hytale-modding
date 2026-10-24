@@ -16,7 +16,7 @@ Le **Fragment des Brumes** se fabrique à l'**établi** : **4 éclats de rune + 
 ## Choisir et lancer une fractale
 
 1. À l'entrée du cercle, deux **distributeurs** gratuits : celui des **noyaux** (une fractale chacun) et celui des **diapasons** (un niveau de 1 à 100).
-2. Posez un noyau et un diapason dans la **console de sélection**, sur le socle de l'Astrolabe. La console est partagée par tout l'Observatoire et garde ses objets d'une partie à l'autre. Le cercle est **harmonisé** : la fractale, le niveau et le rang s'affichent à l'écran.
+2. Posez un noyau et un diapason dans la **console de sélection**, sur le socle de l'Astrolabe. La console est partagée par tout l'Observatoire. Elle se vide au lancement de la fractale, et les noyaux et diapasons de votre inventaire disparaissent quand vous quittez l'Observatoire : reprenez-en aux distributeurs à chaque partie. Le cercle est **harmonisé** : la fractale, le niveau et le rang s'affichent à l'écran.
 3. Montez sur le **cercle d'harmonisation** : les joueurs qui s'y tiennent forment le groupe (5 au plus). Le **meneur** est le premier arrivé dans l'Observatoire ; il part toujours avec le groupe.
 4. Le meneur utilise un des 4 **résonateurs** au bord intérieur du cercle : tout le cercle part dans une instance de la fractale, à lui seul. Le niveau ne peut pas dépasser le plus haut niveau débloqué par le meneur.
 

@@ -1,0 +1,12 @@
+{
+  "$Comment": "Bulle d'un sceau protégé : une étincelle du dôme (le Java en pose des dizaines). Généré par tools/generate_cliffside.py.",
+  "Spawners": [
+    {
+      "SpawnerId": "Nakasar_Fractal_Shield_Spark_Spark",
+      "PositionOffset": {
+        "Y": 0.0
+      }
+    }
+  ],
+  "CullDistance": 72
+}

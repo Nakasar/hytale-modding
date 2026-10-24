@@ -37,7 +37,16 @@
         "Weight": 1
       }
     ],
-    "VariantRotation": "NESW"
+    "VariantRotation": "NESW",
+    "Particles": [
+      {
+        "SystemId": "Dust_Sparkles_Fine",
+        "Scale": 1,
+        "PositionOffset": {
+          "Y": 1.0
+        }
+      }
+    ]
   },
   "Tags": {
     "Type": [

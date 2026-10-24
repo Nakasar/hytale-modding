@@ -68,6 +68,8 @@ public final class Cliffside {
 
     public static final String FRACTAL = "Cliffside";
     public static final String SEAL_ROLE = "Nakasar_Fractal_Seal";
+    /** Sceau intact, fissuré, très fissuré : un modèle par état (tools/generate_cliffside.py). */
+    public static final String[] SEAL_ROLES = {SEAL_ROLE, SEAL_ROLE + "_Cracked_1", SEAL_ROLE + "_Cracked_2"};
     public static final String FANATIC = "Nakasar_Fractal_Cultist_Fanatic";
     public static final String CHANTER = "Nakasar_Fractal_Cultist_Chanter";
     public static final String SEEKER = "Nakasar_Fractal_Seeker";
@@ -82,11 +84,13 @@ public final class Cliffside {
     static final float ARM_REFILL = 12f;
     static final int WAVE_CAP = 4;
     static final float MEND_INTERVAL = 20f;
-    static final double MEND_RANGE = 10;
     /** Index des sceaux dans {@link CliffsideLayout#SEALS}. */
     static final int KNEE_W = 0, KNEE_E = 1, CHEST_SEAL = 2, WRIST_W = 3, WRIST_E = 4, NECK = 5;
     private static final int[] BREAKS = {KNEE_BREAKS, KNEE_BREAKS, CHEST_BREAKS, WRIST_BREAKS, WRIST_BREAKS, 1};
     private static final double SEAL_RESPAWN_RANGE = 80;
+    static final double SHIELD_RADIUS = 2.2;
+    /** Distance de l'incantateur au sceau qu'il répare (côté de sa vague). */
+    static final double CHANNEL_DISTANCE = 2.5;
     static final double FALL_LIMIT = 3;
 
     public enum Stage { CAMP, KNEES, CLIMB, CHEST, ARMS, RAMPS, ARENA, DONE }
@@ -94,11 +98,17 @@ public final class Cliffside {
     /** Un sceau : son PNJ, les coups chargés qu'il lui faut encore, sa bulle. */
     static final class Seal {
         Ref<EntityStore> ref;
+        /** Rôle posé (sceau intact ou fissuré) : il change avec les coups qui restent. */
+        String shown;
         int left;
         boolean shielded;
         boolean broken;
         float mend;
         float glow;
+        /** Incantateur figé devant le sceau qui le répare (null : aucun). */
+        Ref<EntityStore> channeler;
+        float channelFx;
+        boolean swing;
     }
 
     /** Une partie de la Falaise. */
@@ -123,6 +133,7 @@ public final class Cliffside {
         final Map<UUID, Long> throttle = new HashMap<>();
         /** Point d'apparition de chaque cultiste et dévoreur : ils ne tombent jamais des plates-formes. */
         final Map<Ref<EntityStore>, Vector3d> homes = new HashMap<>();
+        float markClock;
 
         State() {
             for (int i = 0; i < seals.length; i++) {
@@ -142,6 +153,17 @@ public final class Cliffside {
     private Cliffside() {
     }
 
+    /** Vrai pour un sceau, intact ou fissuré. */
+    public static boolean isSeal(String role) {
+        return role != null && role.startsWith(SEAL_ROLE);
+    }
+
+    /** Rôle du sceau selon les coups déjà portés (le sceau du cou, lui, ne se fissure pas). */
+    static String sealRole(Seal seal, int index) {
+        int cracks = index == NECK ? 0 : Math.min(SEAL_ROLES.length - 1, BREAKS[index] - seal.left);
+        return SEAL_ROLES[Math.max(0, cracks)];
+    }
+
     public static boolean isCliffside(World world) {
         return FRACTAL.equals(FractalCatalog.fractalOf(world));
     }
@@ -154,7 +176,9 @@ public final class Cliffside {
     public static void registerBossBars() {
         BossBarSystem.register(Archdiviner.ROLE);
         BossBarSystem.label(Archdiviner.ROLE, Defiance::label);
-        BossBarSystem.register(SEAL_ROLE);
+        for (String role : SEAL_ROLES) {
+            BossBarSystem.register(role);
+        }
     }
 
     public static void clearAll() {
@@ -186,6 +210,7 @@ public final class Cliffside {
         }
         keepSeeker(store, st);
         keepSeals(world, store, st, players);
+        markChanters(store, st);
         if (!st.campCleared && st.camp.stream().noneMatch(ref -> alive(store, ref))) {
             st.campCleared = true;
         }
@@ -259,21 +284,48 @@ public final class Cliffside {
             }
             double[] at = CliffsideLayout.SEALS[i];
             Vector3d where = new Vector3d(at[0], at[1], at[2]);
+            String wanted = sealRole(seal, i);
+            if (seal.ref != null && seal.ref.isValid() && !wanted.equals(seal.shown)) {
+                // Fissuré (ou réparé) : le sceau change de modèle, reposé tout de suite à sa place.
+                store.removeEntity(seal.ref, RemoveReason.REMOVE);
+                seal.ref = null;
+            }
             if (seal.ref == null || !seal.ref.isValid()) {
                 if (nearest(store, players, where) > SEAL_RESPAWN_RANGE) {
                     continue;
                 }
-                seal.ref = spawn(store, SEAL_ROLE, where, (float) Math.PI);
+                seal.ref = spawn(store, wanted, where, (float) Math.PI);
+                seal.shown = wanted;
                 if (seal.ref != null) {
                     store.ensureAndGetComponent(seal.ref, Frozen.getComponentType());
                     showBreaks(store, seal, i);
                 }
             }
             seal.glow += 0.25f;
-            if (seal.shielded && seal.glow >= 1f && seal.ref != null) {
-                seal.glow = 0f;
-                Telegraphs.particle(store, "Nakasar_Fractal_Shield_Glow", where, 1.6f);
+            if (seal.shielded && seal.ref != null) {
+                shield(store, where, st.clock);
+                if (seal.glow >= 1f) {
+                    seal.glow = 0f;
+                    Telegraphs.particle(store, "Nakasar_Fractal_Shield_Glow", new Vector3d(where).add(0, 1.2, 0), 2.4f);
+                }
             }
+        }
+    }
+
+    /**
+     * Bulle d'un sceau protégé : étincelles posées sur une sphère de {@value #SHIELD_RADIUS} blocs autour de lui
+     * (douze par passage, quatre passages par seconde, qui tournent), assez denses pour dessiner un dôme.
+     */
+    private static void shield(Store<EntityStore> store, Vector3d where, float clock) {
+        double golden = Math.PI * (3 - Math.sqrt(5));
+        int n = 48;
+        int offset = (int) (clock * 4) % 4;
+        for (int k = offset; k < n; k += 4) {
+            double y = 1 - (k + 0.5) / n * 1.6;   // du sommet à un peu sous l'équateur : un dôme posé au sol
+            double r = Math.sqrt(Math.max(0, 1 - y * y));
+            double a = golden * k + clock * 0.6;
+            Telegraphs.particle(store, "Nakasar_Fractal_Shield_Spark", new Vector3d(where.x() + Math.cos(a) * r * SHIELD_RADIUS,
+                    where.y() + 1.2 + y * SHIELD_RADIUS, where.z() + Math.sin(a) * r * SHIELD_RADIUS), 1f);
         }
     }
 
@@ -357,6 +409,13 @@ public final class Cliffside {
         Seal seal = st.seals[index];
         seal.broken = true;
         seal.shielded = false;
+        release(store, seal);
+        // Le sceau vole en éclats : gerbe de pierre et de cristal, puis il disparaît.
+        double[] at = CliffsideLayout.SEALS[index];
+        Vector3d where = new Vector3d(at[0], at[1] + 1, at[2]);
+        Telegraphs.particle(store, "Nakasar_Fractal_Seal_Shatter", where, 1.5f);
+        Telegraphs.particle(store, "Nakasar_Fractal_Seal_Break", where, 2.2f);
+        Telegraphs.sound(store, "SFX_Goblin_Feastmaster_Slam", where);
         if (seal.ref != null && seal.ref.isValid()) {
             store.removeEntity(seal.ref, RemoveReason.REMOVE);
         }
@@ -384,6 +443,11 @@ public final class Cliffside {
             }
             case WRIST_W, WRIST_E -> {
                 if (st.seals[WRIST_W].broken && st.seals[WRIST_E].broken) {
+                    // L'Archidevin rappelle son marteau : il ne le rendra qu'au fil de ses transitions.
+                    Hammer.recallAll(world, store);
+                    for (PlayerRef p : world.getPlayerRefs()) {
+                        p.sendMessage(Message.translation(MESSAGES + "hammer.recalled"));
+                    }
                     openGate(world, store, CliffsideLayout.GATE3);
                     checkpoint(world, CliffsideLayout.CHECKPOINT_SHOULDERS);
                     st.stage = Stage.RAMPS;
@@ -394,22 +458,60 @@ public final class Cliffside {
         }
     }
 
-    /** Incantateurs à moins de {@value #MEND_RANGE} blocs d'un sceau fissuré : un coup réparé toutes les {@value #MEND_INTERVAL} s. */
+    /**
+     * Réparation d'un sceau fissuré : un incantateur vivant de sa vague vient se placer devant lui (fumée, puis il
+     * réapparaît à {@value #CHANNEL_DISTANCE} blocs, du côté de sa vague), y reste figé et incante — bâton levé, fil
+     * violet vers le sceau — ; au bout de {@value #MEND_INTERVAL} s d'incantation, un coup est réparé. L'abattre
+     * coupe la réparation ; le suivant prend sa place.
+     */
     private static void mend(World world, Store<EntityStore> store, State st, int index, float dt) {
         Seal seal = st.seals[index];
         if (seal.broken || seal.left >= BREAKS[index]) {
+            release(store, seal);
             seal.mend = 0f;
             return;
         }
         double[] at = CliffsideLayout.SEALS[index];
         Vector3d where = new Vector3d(at[0], at[1], at[2]);
-        boolean chanter = st.waves[index].stream().anyMatch(ref -> {
-            Vector3d p = Telegraphs.position(store, ref);
-            return p != null && p.distance(where) <= MEND_RANGE && CHANTER.equals(role(store, ref));
-        });
-        if (!chanter) {
+        if (seal.channeler == null || !alive(store, seal.channeler)) {
+            seal.channeler = null;
             seal.mend = 0f;
+            Ref<EntityStore> chanter = st.waves[index].stream()
+                    .filter(ref -> alive(store, ref) && CHANTER.equals(role(store, ref)))
+                    .findFirst().orElse(null);
+            Vector3d from = chanter == null ? null : Telegraphs.position(store, chanter);
+            if (from == null) {
+                return;
+            }
+            Vector3d spot = channelSpot(index, where);
+            Telegraphs.particle(store, "Nakasar_Fractal_Stealth_Smoke", new Vector3d(from), 1.2f);
+            Telegraphs.particle(store, "Nakasar_Fractal_Stealth_Smoke", spot, 1.2f);
+            store.putComponent(chanter, Teleport.getComponentType(),
+                    new Teleport(spot, new Rotation3f(0f, Telegraphs.yawToward(spot, where), 0f)));
+            store.ensureAndGetComponent(chanter, Frozen.getComponentType());
+            st.homes.put(chanter, spot);
+            seal.channeler = chanter;
+            seal.channelFx = 1f;
+            for (PlayerRef p : world.getPlayerRefs()) {
+                p.sendMessage(Message.translation(MESSAGES + "seal.channel"));
+            }
+        }
+        Vector3d hands = Telegraphs.position(store, seal.channeler);
+        if (hands == null) {
             return;
+        }
+        seal.channelFx += dt;
+        if (seal.channelFx >= 1f) {
+            seal.channelFx = 0f;
+            seal.swing = !seal.swing;
+            Chanting.cast(store, seal.channeler, seal.swing);
+            Vector3d a = new Vector3d(hands).add(0, 1.5, 0);
+            Vector3d b = new Vector3d(where).add(0, 1.4, 0);
+            double length = a.distance(b);
+            for (double d = 0.5; d < length; d += 0.5) {
+                Telegraphs.particle(store, "Nakasar_Fractal_Mend_Beam", new Vector3d(a).lerp(b, d / length), 1f);
+            }
+            Telegraphs.particle(store, "Nakasar_Fractal_Seal_Mend", where, 1.2f);
         }
         seal.mend += dt;
         if (seal.mend < MEND_INTERVAL) {
@@ -418,9 +520,52 @@ public final class Cliffside {
         seal.mend = 0f;
         seal.left++;
         showBreaks(store, seal, index);
-        Telegraphs.particle(store, "Nakasar_Fractal_Seal_Mend", where, 1.2f);
+        Telegraphs.particle(store, "Nakasar_Fractal_Seal_Mend", where, 2f);
         for (PlayerRef p : world.getPlayerRefs()) {
             p.sendMessage(Message.translation(MESSAGES + "seal.mended"));
+        }
+    }
+
+    /** Place de l'incantateur : devant le sceau, du côté où arrive sa vague. */
+    private static Vector3d channelSpot(int index, Vector3d seal) {
+        double cx = 0;
+        double cz = 0;
+        double[][] points = CliffsideLayout.WAVES[index];
+        for (double[] p : points) {
+            cx += p[0] / points.length;
+            cz += p[2] / points.length;
+        }
+        double dx = cx - seal.x();
+        double dz = cz - seal.z();
+        double d = Math.max(1e-6, Math.sqrt(dx * dx + dz * dz));
+        return new Vector3d(seal.x() + dx / d * CHANNEL_DISTANCE, seal.y(), seal.z() + dz / d * CHANNEL_DISTANCE);
+    }
+
+    /** L'incantateur cesse d'incanter (sceau réparé ou brisé) : il reprend le combat. */
+    private static void release(Store<EntityStore> store, Seal seal) {
+        if (seal.channeler != null && seal.channeler.isValid()) {
+            store.tryRemoveComponent(seal.channeler, Frozen.getComponentType());
+        }
+        seal.channeler = null;
+    }
+
+    /** Une rune violette au-dessus de chaque incantateur, chaque seconde : on les repère dans la mêlée. */
+    private static void markChanters(Store<EntityStore> store, State st) {
+        st.markClock += 0.25f;
+        if (st.markClock < 1f) {
+            return;
+        }
+        st.markClock = 0f;
+        List<Ref<EntityStore>> all = new ArrayList<>(st.camp);
+        for (List<Ref<EntityStore>> wave : st.waves) {
+            all.addAll(wave);
+        }
+        all.addAll(st.boss.adds());
+        for (Ref<EntityStore> ref : all) {
+            Vector3d at = Telegraphs.position(store, ref);
+            if (at != null && CHANTER.equals(role(store, ref))) {
+                Telegraphs.particle(store, "Nakasar_Fractal_Chanter_Mark", new Vector3d(at).add(0, 2.5, 0), 1f);
+            }
         }
     }
 

@@ -75,7 +75,7 @@ public final class CliffsideDamageFilter extends DamageEventSystem {
         }
         NPCEntity npc = chunk.getComponent(index, NPCEntity.getComponentType());
         String role = npc == null ? null : npc.getRoleName();
-        if (Cliffside.SEAL_ROLE.equals(role)) {
+        if (Cliffside.isSeal(role)) {
             damage.setCancelled(true);
             if (attacker != null && buffer.getComponent(attacker, PlayerRef.getComponentType()) != null) {
                 Ref<EntityStore> player = attacker;
