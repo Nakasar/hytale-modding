@@ -8,6 +8,7 @@ import com.hypixel.hytale.server.core.modules.entity.damage.DeathComponent;
 import com.hypixel.hytale.server.core.universe.PlayerRef;
 import com.hypixel.hytale.server.core.universe.world.World;
 import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
+import dev.nakasar.hytale.fractals.arena.HandLock;
 import dev.nakasar.hytale.fractals.combat.Hurt;
 import dev.nakasar.hytale.fractals.combat.Telegraphs;
 import dev.nakasar.hytale.fractals.party.FractalCatalog;
@@ -106,7 +107,9 @@ public final class HammerSystem extends TickingSystem<EntityStore> {
                 player.sendMessage(Message.translation(MESSAGES + "taken"));
             }
             carrier.carrying = carrying;
-            if (!carrying) {
+            if (carrying) {
+                HandLock.ensureHeld(store, ref, Hammer.ID);
+            } else {
                 carrier.charged = false;
             }
             // Buff visible tant que le marteau est chargé (retiré quand un sceau consomme la charge).

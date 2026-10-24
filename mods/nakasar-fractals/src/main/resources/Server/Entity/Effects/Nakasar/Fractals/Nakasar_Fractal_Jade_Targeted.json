@@ -1,0 +1,13 @@
+{
+  "$Comment": "Visé par l'Abîme de Jade : tête de mort rouge dans la barre d'état, lueur orange (Java, solidocean.JadeMaw). À la fin, le rayon tue le joueur s'il ne tient pas de cristal, ou charge son cristal.",
+  "Name": "nakasar_fractals_solid_ocean.effects.Nakasar_Fractal_Jade_Targeted",
+  "Debuff": true,
+  "StatusEffectIcon": "UI/StatusEffects/Nakasar/Fractals/Jade_Targeted.png",
+  "ApplicationEffects": {
+    "EntityTopTint": "#ff9a30",
+    "EntityBottomTint": "#ff5a10"
+  },
+  "OverlapBehavior": "Overwrite",
+  "Infinite": false,
+  "Duration": 8
+}

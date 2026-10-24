@@ -1038,17 +1038,34 @@ def blocks():
     ]
 
 
+KEEP_IN_HAND = "Root_Nakasar_Fractal_Keep_In_Hand"
+
+
+def write_keep_in_hand():
+    """Interaction SwapFrom des objets gardés en main (marteau du culte, cristal réfléchissant) : changer d'objet ne
+    fait rien (pas de ChangeActiveSlot). Le Java (arena.HandLock) refuse aussi les changements de case et remet l'objet
+    en main s'il en sort. Rend l'id de la racine."""
+    write_json(go.INTERACTIONS / "Nakasar_Fractal_Keep_In_Hand.json",
+               {"$Comment": "Objets gardés en main (marteau du culte, cristal réfléchissant) : changer d'objet ne fait "
+                           "rien (pas de ChangeActiveSlot). Le Java (arena.HandLock) refuse aussi les changements de "
+                           "case et remet l'objet en main s'il en sort.", "Type": "Simple", "RunTime": 0})
+    write_json(ROOTS / f"{KEEP_IN_HAND}.json", {"Interactions": ["Nakasar_Fractal_Keep_In_Hand"]})
+    return KEEP_IN_HAND
+
+
 def hammer_item():
     return {
         "$Comment": "Marteau du culte (Falaise) : la masse d'onyx vanilla, seule arme qui brise les sceaux. Tenu en main, "
-                    "il fait monter la Corruption d'un cran toutes les 10 s tant qu'on le porte, même rangé (lâché au sol, elle redescend) ; un ennemi frappé "
-                    "avec, ou tué après avoir été frappé par le porteur, ou tué à moins de 10 blocs, le charge "
-                    "(Brise-sceau). Retiré quand on quitte la fractale (dev.nakasar.hytale.fractals.hammer.HammerSystem). "
+                    "il fait monter la Corruption d'un cran toutes les 10 s tant qu'on le porte (lâché au sol, elle redescend). "
+                    "Porté, il reste en main : on ne change pas d'objet (SwapFrom sans effet, arena.HandLock). Un ennemi "
+                    "frappé avec, qui meurt dans les 15 s, le charge (Brise-sceau). Retiré quand on quitte la fractale "
+                    "(dev.nakasar.hytale.fractals.hammer.HammerSystem). "
                     "Généré par tools/generate_cliffside.py.",
         "Parent": "Weapon_Mace_Onyxium",
         "TranslationProperties": {"Name": f"{LANG}.items.{HAMMER}.name", "Description": f"{LANG}.items.{HAMMER}.description"},
         "Quality": "Legendary",
         "MaxStack": 1,
+        "Interactions": {"SwapFrom": write_keep_in_hand()},
     }
 
 
@@ -1657,14 +1674,14 @@ def lang():
         put(f"items.{item_id}.description", df, de)
 
     item(HAMMER, "Marteau du culte",
-         "Seule arme capable de briser les sceaux du colosse. Le recevoir coûte 10 % des PV. Tant qu'on le porte, même rangé, il "
-         "corrompt : toutes les 10 s, la Corruption monte d'un cran (dégâts subis en hausse, faiblesse, étourdissement, "
+         "Seule arme capable de briser les sceaux du colosse. Le recevoir coûte 10 % des PV. Porté, il reste en main (on "
+         "ne change pas d'objet) et corrompt : toutes les 10 s, la Corruption monte d'un cran (dégâts subis en hausse, faiblesse, étourdissement, "
          "puis il vous échappe) ; lâché au sol, elle redescend d'un cran (s'accroupir tout près pour le reprendre). "
-         "Frapper ou tuer un cultiste avec le charge : un coup chargé fissure un sceau.",
+         "Un ennemi frappé avec qui meurt dans les 15 s le charge : un coup chargé fissure un sceau.",
          "Cult Hammer",
-         "The only weapon that can break the colossus' seals. Receiving it costs 10% HP. While carried, even put away, it "
-         "corrupts: every 10 s, Corruption rises one tier (more damage taken, weakness, stun, then you drop it); dropped "
-         "on the ground, it falls one tier (crouch next to it to take it back). Hitting or killing a cultist with it "
+         "The only weapon that can break the colossus' seals. Receiving it costs 10% HP. While carried, it stays in hand "
+         "(you cannot switch items) and corrupts: every 10 s, Corruption rises one tier (more damage taken, weakness, stun, then you drop it); dropped "
+         "on the ground, it falls one tier (crouch next to it to take it back). A foe hit with it that dies within 15 s "
          "charges it: a charged blow cracks a seal.")
     item(SEAL_STONE, "Pierre de sceau", "Pierre gravée du culte, sous le sceau du cou.", "Seal stone",
          "Carved cult stone, under the neck seal.")
@@ -1722,8 +1739,8 @@ def lang():
         "hammer.removed": ("Le marteau du culte se dissipe hors de la Falaise.", "The cult hammer fades outside the Cliffside."),
         "seal.needHammer": ("Seul le marteau du culte, chargé, fissure ce sceau.",
                             "Only the charged cult hammer can crack this seal."),
-        "seal.needCharge": ("Le marteau n'est pas chargé : frappez ou tuez un cultiste avec.",
-                            "The hammer is not charged: hit or kill a cultist with it."),
+        "seal.needCharge": ("Le marteau n'est pas chargé : frappez un cultiste avec, puis achevez-le.",
+                            "The hammer is not charged: hit a cultist with it, then finish it off."),
         "seal.shielded": ("Une bulle protège ce sceau : frappez l'autre.", "A bubble shields this seal: strike the other one."),
         "seal.cracked": ("Sceau fissuré ({left} coup(s) encore).", "Seal cracked ({left} more blow(s))."),
         "seal.mended": ("Un incantateur répare le sceau !", "A chanter mends the seal!"),
@@ -1739,6 +1756,8 @@ def lang():
         "lever.done": ("Ce levier est déjà tiré.", "This lever is already pulled."),
         "cage.pried": ("La porte cède un peu ({left}).", "The door gives a little ({left})."),
         "cage.open": ("La cage s'ouvre !", "The cage opens!"),
+        "cage.marked": ("L'Archidevin vous désigne : vous allez être jeté en cage !",
+                        "The Archdiviner points at you: you are about to be caged!"),
         "cage.jailed": ("L'Archidevin vous jette en cage : vos alliés peuvent forcer la porte.",
                         "The Archdiviner cages you: your allies can force the door."),
         "cage.self": ("La porte ne s'ouvre pas de l'intérieur.", "The door does not open from the inside."),

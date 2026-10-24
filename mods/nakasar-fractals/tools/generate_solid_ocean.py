@@ -52,6 +52,7 @@ COLOSSUS = "Nakasar_Fractal_Jade_Colossus"
 IRUKANDJI = "Nakasar_Fractal_Irukandji"
 FOE_ROLES = [MAW, TENTACLE, COLOSSUS, IRUKANDJI]
 BEAM_CAUSE = "Nakasar_Fractal_Jade_Beam"
+TARGETED = "Nakasar_Fractal_Jade_Targeted"
 
 JADE = ["Rock_Crystal_Green_Block", "Rock_Crystal_Green_Block", "Plant_Coral_Block_Green", "Rock_Crystal_Cyan_Block"]
 UNDER = ["Soil_Clay_Ocean", "Soil_Clay_Ocean", "Rock_Crystal_Green_Block", "Soil_Clay_Smooth_Green"]
@@ -69,7 +70,7 @@ STANDS = [0, 1, 1, 2, 1, 2, 3, 2, 3, 3, 4, 3, 4, 5, 4, 5, 5]
 RADII = [3, 2, 3, 4, 2, 3, 2, 4, 3, 2, 3, 4, 2, 3, 3, 4, 3]
 AR_RADIUS = 18
 MAW_BACK = 7                            # l'Abîme flotte au nord de l'arène, hors de portée de mêlée
-TENTACLE_ANGLES = [235, 305, 200, 340, 160, 20]   # deux premiers : phase 1 (au nord, sous l'Abîme)
+TENTACLE_ANGLES = [235, 305, 200, 340, 160, 20, 125, 55]   # huit en phases 2 et 3 ; les deux premiers : phase 1 (au nord)
 TENTACLE_RADIUS = 11
 COLOSSUS_ANGLES = [150, 30, 270, 90]
 COLOSSUS_RADIUS = 8
@@ -356,7 +357,9 @@ def crystal_parts():
 def crystal_item():
     root = "Root_Nakasar_Fractal_Throw_Reflecting_Crystal"
     return fc.held_item(LANG, CRYSTAL, "Reflecting_Crystal", crystal_parts(), 61, (0, 6, 0), 14.0, quality="Epic", stack=1,
-                        extra={"Interactions": {"Secondary": root}, "Categories": ["Items.Misc"]})
+                        extra={"Interactions": {"Secondary": root, "SwapFrom": fc.KEEP_IN_HAND},
+                               "Utility": {"Compatible": False}, "Categories": ["Items.Misc"]})
+
 
 
 def throw_interaction():
@@ -382,6 +385,11 @@ def effects():
             LANG, "Nakasar_Fractal_Crystal_Charged", "Cristal chargé par le rayon de l'Abîme : le prochain cristal lancé "
             "le blesse (Java, solidocean.JadeMaw). Perdu quand l'Abîme choisit sa prochaine cible.", "Crystal_Charged", 30,
             ApplicationEffects={"EntityTopTint": "#8affc8"}),
+        TARGETED: fc.effect(
+            LANG, TARGETED, "Visé par l'Abîme de Jade : tête de mort rouge dans la barre d'état, lueur orange (Java, "
+            "solidocean.JadeMaw). À la fin, le rayon tue le joueur s'il ne tient pas de cristal, ou charge son cristal.",
+            "Jade_Targeted", 8, debuff=True,
+            ApplicationEffects={"EntityTopTint": "#ff9a30", "EntityBottomTint": "#ff5a10"}),
     }
 
 
@@ -600,6 +608,7 @@ def models():
 
 CI, RF = gc.CLEAR_INTERRUPT, gc.ROOTED_FX
 GOLEM_ANIMS = "Golem_Crystal_Thunder_Default"
+COLOSSUS_REACH_DOWN = 4.0      # yeux du golem ×1,25 à environ 3,5 blocs : le coup doit descendre aux pieds
 TENTACLE_ANIMS = "Nakasar_Fractal_Jade_Tentacle"
 
 
@@ -631,8 +640,10 @@ def interactions():
                                                      ImpactSound="SFX_Goblin_Feastmaster_Slam"),
                                            fc.windup(1.5, "SFX_Spear_Throw_Charge", GOLEM_ANIMS, "GroundSlam")]}
     out["Nakasar_Fractal_Colossus_Strike"] = {
-        "$Comment": "Colosse de jade au contact : coup de cristal (16 dégâts).",
-        "Type": "Serial", "Interactions": [fr.swing("Coup de cristal.", GOLEM_ANIMS, "GroundSlam", 0.6, 16, end=3.4)]}
+        "$Comment": "Colosse de jade au contact : coup de cristal (16 dégâts). Le balayage part de ses yeux, bien plus haut "
+                    "que la tête d'un joueur : il descend jusqu'aux pieds (ExtendBottom), sans quoi il ne touchait rien.",
+        "Type": "Serial", "Interactions": [fr.swing("Coup de cristal.", GOLEM_ANIMS, "GroundSlam", 0.6, 16, end=3.4,
+                                                     extend_bottom=COLOSSUS_REACH_DOWN)]}
     out["Nakasar_Fractal_Irukandji_Sting"] = {
         "$Comment": "Irukandji au contact : piqûre (12 dégâts et poison 4 s).",
         "Type": "Serial", "Interactions": [fr.swing("Piqûre.", None, None, 0.3, 12, end=2.4, length=70, yaw=35,
@@ -673,7 +684,7 @@ def roles():
                               "(solidocean.JadeMaw).", GENERATOR, 1000)
     tentacle = fr.role(
         TENTACLE, "Tentacule de l'Abîme : ne bouge pas, balaie autour de lui et s'abat devant lui. L'abattre blesse "
-        "l'Abîme (Java).", TENTACLE, n(TENTACLE), 260,
+        "l'Abîme (Java).", TENTACLE, n(TENTACLE), 900,
         [fr.timed_attack("Sweep", R("Tentacle_Sweep"), rng=7, los=True, comment="Balayage annoncé."),
          fr.timed_attack("Slam", R("Tentacle_Slam"), rng=8, los=True, comment="Coup abattu annoncé.")],
         fr.walk(0.1, jump=0), GENERATOR, sight=12, leash=40, home=False,
@@ -681,8 +692,8 @@ def roles():
         DeathAnimationTime=1.0)
     out[TENTACLE] = tentacle
     out[COLOSSUS] = fr.role(
-        COLOSSUS, "Colosse de jade : sort du jade toutes les 15 s pendant tout le combat, insensible aux attaques à distance (Java), frappe le sol "
-        "(cercle annoncé, renverse) ; il lâche des cristaux réfléchissants.", COLOSSUS, n(COLOSSUS), 700,
+        COLOSSUS, "Colosse de jade : en phase 2, un sort du jade toutes les 30 s (20 en tout), insensible aux attaques à "
+        "distance (Java), frappe le sol (cercle annoncé, renverse) ; il lâche deux cristaux réfléchissants.", COLOSSUS, n(COLOSSUS), 700,
         [fr.timed_attack("Slam", R("Colossus_Slam"), rng=5, los=True, comment="Frappe au sol annoncée."),
          fr.melee(R("Colossus_Strike"), 3.4, (1.0, 1.4)), fr.chase(40, stop=2.6)],
         fr.walk(3.0), GENERATOR, sight=30, leash=40, home=False,
@@ -703,16 +714,17 @@ def roles():
 
 def lang():
     t = fc.Lang()
-    t.item(CRYSTAL, "Cristal réfléchissant", "Le tenir en main absorbe le rayon de l'Abîme de Jade et vous charge ; "
-           "clic droit en visant l'Abîme : le lancer. Tenu en main, il empêche d'attaquer.", "Reflecting crystal",
-           "Holding it absorbs the Jade Maw's beam and charges you; right-click while aiming at the Maw: throw it. Held "
-           "in hand, it keeps you from attacking.")
+    t.item(CRYSTAL, "Cristal réfléchissant", "Se ramasse accroupi, se tient à deux mains et reste en main (un seul à la "
+           "fois). Il absorbe le rayon de l'Abîme de Jade et vous charge ; clic droit en visant l'Abîme : le lancer.",
+           "Reflecting crystal", "Picked up while crouching, held in both hands and kept in hand (one at a time). It "
+           "absorbs the Jade Maw's beam and charges you; right-click while aiming at the Maw: throw it.")
     t.item(JADE_LANDING, "Fragment de jade", "Une chute ramène au dernier fragment où l'on s'est tenu.", "Jade fragment",
            "A fall brings you back to the last fragment you stood on.")
     for role, f, e in ((MAW, "L'Abîme de Jade", "The Jade Maw"), (TENTACLE, "Tentacule de l'Abîme", "Jade Maw tentacle"),
                        (COLOSSUS, "Colosse de jade", "Jade colossus"), (IRUKANDJI, "Irukandji", "Irukandji")):
         t.npc(role, f, e)
     t.put("effects.Nakasar_Fractal_Crystal_Charged", "Cristal chargé", "Charged crystal")
+    t.put(f"effects.{TARGETED}", "Visé par l'Abîme : tenez un cristal !", "Targeted by the Maw: hold a crystal!")
     msgs = {
         "intro": ("Dessa : « Étrange. Les relevés disent que c'était de l'eau. Bonne nouvelle, la fractale semble "
                   "stable. » Traversez les fragments de jade : une chute ramène au fragment d'avant.",
@@ -721,19 +733,22 @@ def lang():
         "landing.back": ("Rattrapé au-dessus de l'océan figé : retour au dernier fragment.",
                          "Caught above the solid ocean: back to the last fragment."),
         "arena": ("Dessa : « Je retire ce que j'ai dit. Instabilité ! Juste devant vous ! » L'Abîme de Jade est "
-                  "invulnérable : abattez ses deux tentacules.",
+                  "invulnérable : abattez les deux tentacules qui le protègent.",
                   "Dessa: \"I retract my statement. Unstable event! Right in front of you!\" The Jade Maw is invulnerable: "
-                  "slay its two tentacles."),
+                  "slay the two tentacles guarding it."),
         "checkpoint": ("Point de retour déplacé.", "Respawn point moved."),
         "agony": ("L'Abîme vous écrase de son agonie !", "The Maw crushes you with agony!"),
-        "phase.colossi": ("Des colosses de jade surgissent : abattez-les ({count}) et ramassez leurs cristaux. Tenez un "
-                          "cristal quand le crâne rouge vous vise !",
-                          "Jade colossi emerge: slay them ({count}) and pick up their crystals. Hold a crystal when the "
-                          "red skull targets you!"),
-        "phase.final": ("Les colosses sont tombés : l'Abîme rappelle ses tentacules, qui lâchent désormais les cristaux.",
-                        "The colossi have fallen: the Maw calls back its tentacles, which now drop the crystals."),
-        "skull": ("Le crâne rouge vous vise : tenez un cristal, ou écartez-vous quand il disparaît !",
-                  "The red skull targets you: hold a crystal, or step aside when it vanishes!"),
+        "phase.colossi": ("L'Abîme s'éveille : huit tentacules percent le jade et des colosses surgissent ({count} en "
+                          "tout). Ramassez leurs cristaux (accroupi) : quand l'Abîme vous vise, tenez-en un !",
+                          "The Maw awakens: eight tentacles pierce the jade and colossi emerge ({count} in all). Pick up "
+                          "their crystals (crouch): when the Maw targets you, hold one!"),
+        "phase.final": ("Le dernier colosse est tombé : l'Abîme fait repousser ses tentacules, qui lâchent désormais les "
+                        "cristaux.", "The last colossus has fallen: the Maw regrows its tentacles, which now drop the "
+                        "crystals."),
+        "skull": ("L'Abîme vous vise : tenez un cristal avant la fin du compte à rebours, sinon le rayon vous tue !",
+                  "The Maw targets you: hold a crystal before the countdown ends, or the beam kills you!"),
+        "crystal.crouch": ("Accroupissez-vous pour ramasser le cristal.", "Crouch to pick up the crystal."),
+        "crystal.already": ("Vous portez déjà un cristal.", "You already carry a crystal."),
         "skull.other": ("L'Abîme vise {name}.", "The Maw targets {name}."),
         "absorbed": ("Le cristal absorbe le rayon : vous êtes chargé. Lancez-le sur l'Abîme (clic droit) !",
                      "The crystal absorbs the beam: you are charged. Throw it at the Maw (right-click)!"),
@@ -831,9 +846,11 @@ def main():
     fc.write_json(INTERACTIONS / "Nakasar_Fractal_Throw_Reflecting_Crystal.json", throw_interaction())
     fc.write_json(fc.ROOTS / "Root_Nakasar_Fractal_Throw_Reflecting_Crystal.json",
                   {"Interactions": ["Nakasar_Fractal_Throw_Reflecting_Crystal"], "RequireNewClick": True})
+    fc.write_keep_in_hand()
     for name, doc in effects().items():
         fc.write_json(fc.EFFECTS / f"{name}.json", doc)
     fc.status_icon(fc.COMMON / fc.STATUS_ICONS / "Crystal_Charged.png", (120, 255, 180), "stone")
+    fc.status_icon(fc.COMMON / fc.STATUS_ICONS / "Jade_Targeted.png", (255, 48, 48), "skull")
     fc.write_json(fc.SERVER / f"Entity/Damage/{BEAM_CAUSE}.json", beam_cause())
     for name, doc in fc.particle_files(PARTICLE_SYSTEMS, GENERATOR).items():
         fc.write_json(PARTICLES / name, doc)

@@ -1,0 +1,5 @@
+{
+  "$Comment": "Objets gardés en main (marteau du culte, cristal réfléchissant) : changer d'objet ne fait rien (pas de ChangeActiveSlot). Le Java (arena.HandLock) refuse aussi les changements de case et remet l'objet en main s'il en sort.",
+  "Type": "Simple",
+  "RunTime": 0
+}

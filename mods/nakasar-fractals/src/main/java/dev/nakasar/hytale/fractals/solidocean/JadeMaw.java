@@ -12,7 +12,6 @@ import com.hypixel.hytale.server.core.modules.entitystats.asset.DefaultEntitySta
 import com.hypixel.hytale.server.core.universe.PlayerRef;
 import com.hypixel.hytale.server.core.universe.world.World;
 import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
-import dev.nakasar.hytale.fractals.arena.Carried;
 import dev.nakasar.hytale.fractals.boss.PinnedHealth;
 import dev.nakasar.hytale.fractals.combat.Hurt;
 import dev.nakasar.hytale.fractals.combat.Spawns;
@@ -28,44 +27,46 @@ import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ThreadLocalRandom;
 
 /**
  * L'Abîme de Jade, boss de l'Océan solide, d'après GW2. Il ne bouge pas et ses écailles denses le rendent
  * invulnérable : sa vie ne baisse que par un cristal chargé lancé ({@value #CRYSTAL_PART}) ou un tentacule abattu
  * ({@value #TENTACLE_PART}), deux coups au même instant n'en comptant qu'un ({@value #SAME_HIT} s).
  * <ul>
- *   <li>phase 1 : un test d'agonie à l'arrivée, puis deux tentacules à abattre (irukandjis autour) ;</li>
- *   <li>phase 2 : des colosses de jade, à abattre ({@value #COLOSSI} + 1 par joueur) ; ils lâchent les cristaux ;</li>
- *   <li>tout au long du combat, un colosse sort du jade toutes les {@value #COLOSSUS_EVERY} s ({@value #MAX_COLOSSI} en vie
- *   au plus) ; insensibles aux attaques à distance, ils se battent au contact ;</li>
- *   <li>fin : tentacules seuls, qui lâchent désormais les cristaux.</li>
+ *   <li>phase 1 : un test d'agonie à l'arrivée, deux tentacules devant lui ; tant qu'ils vivent, ni rayon ni
+ *   colosse ;</li>
+ *   <li>phase 2 : huit tentacules percent le jade (ils ne repoussent pas), un colosse sort toutes les
+ *   {@value #COLOSSUS_EVERY} s ({@value #COLOSSUS_POOL} en tout, {@value #MAX_COLOSSI} en vie au plus, insensibles aux
+ *   attaques à distance, deux cristaux chacun), le rayon toutes les {@value #BEAM_P2} s ;</li>
+ *   <li>phase 3, quand le dernier colosse est tombé : retour à huit tentacules, chacun repousse
+ *   {@value #TENTACLE_RESPAWN} s après sa mort et lâche un cristal ; le rayon toutes les {@value #BEAM_P3} s.</li>
  * </ul>
- * Dès la phase 2, toutes les {@value #BEAM_INTERVAL} s, un crâne rouge marque un joueur ({@value #SKULL_SECONDS} s),
- * puis le rayon frappe l'endroit où il se tenait quand le crâne a disparu ({@value #LOCK_SECONDS} s pour s'écarter).
- * Tenir un cristal en main l'absorbe et charge le joueur, jusqu'à la cible suivante ; sinon il est mortel. Sous
- * {@value #LAST_BEAM_AT} de vie, un dernier rayon frappe tout le monde, sans esquive : il faut tenir un cristal.
- * Personne de vivant dans l'arène pendant {@value #RESET_SECONDS} s : tout recommence.
+ * Le rayon : un joueur est visé ({@value #TARGET_SECONDS} s, effet {@value #TARGETED} dans la barre d'état, lueur
+ * orange, crâne rouge au-dessus de lui). Au bout du compte, s'il tient un cristal, le cristal est chargé ; sinon il est
+ * tué. Il n'y a pas de zone au sol : seul le joueur visé est touché. Sous {@value #LAST_BEAM_AT} de vie, un dernier
+ * rayon vise tout le monde. Personne de vivant dans l'arène pendant {@value #RESET_SECONDS} s : tout recommence.
  */
 final class JadeMaw {
 
     static final float CRYSTAL_PART = 0.05f;
     static final float TENTACLE_PART = 0.03f;
     static final float SAME_HIT = 0.5f;
-    static final int COLOSSI = 3;
-    static final float BEAM_INTERVAL = 11f;
-    static final float SKULL_SECONDS = 3f;
-    static final float LOCK_SECONDS = 0.7f;
-    static final double BEAM_RADIUS = 1.6;
+    static final float BEAM_P2 = 40f;
+    static final float BEAM_P3 = 30f;
+    /** Premier rayon de la phase 2 : le temps d'abattre un colosse et de ramasser son cristal. */
+    static final float FIRST_BEAM = 35f;
+    static final float TARGET_SECONDS = 6f;
     static final float LAST_BEAM_AT = 0.08f;
-    static final float LAST_SKULL_SECONDS = 4.5f;
+    static final float LAST_TARGET_SECONDS = 7f;
     static final float RESET_SECONDS = 20f;
-    static final float TENTACLE_RESPAWN = 14f;
-    static final float COLOSSUS_EVERY = 15f;
+    static final float TENTACLE_RESPAWN = 30f;
+    static final float COLOSSUS_EVERY = 30f;
+    static final int COLOSSUS_POOL = 20;
     static final int MAX_COLOSSI = 3;
     /** Plancher de vie des deux premières phases : la fin et son dernier rayon arrivent toujours. */
     static final float PHASE_FLOOR = 0.4f;
     static final String CHARGED = "Nakasar_Fractal_Crystal_Charged";
+    static final String TARGETED = "Nakasar_Fractal_Jade_Targeted";
     static final String SKULL = "Nakasar_Fractal_Jade_Skull";
 
     private static final Map<Ref<EntityStore>, String> LABELS = new ConcurrentHashMap<>();
@@ -73,6 +74,7 @@ final class JadeMaw {
     private Ref<EntityStore> maw;
     @SuppressWarnings("unchecked")
     private final Ref<EntityStore>[] tentacles = new Ref[SolidOceanLayout.TENTACLES.length];
+    private final float[] regrow = new float[SolidOceanLayout.TENTACLES.length];
     private final List<Ref<EntityStore>> colossi = new ArrayList<>();
     private final List<Ref<EntityStore>> irukandji = new ArrayList<>();
     private final List<Vector3d> tentacleDeaths = new ArrayList<>();
@@ -86,18 +88,14 @@ final class JadeMaw {
     private long lastHit;
     private int p1Down;
     private int colossiDown;
-    private int colossiNeeded;
     private int colossiSpawned;
     private float colossusClock;
-    private float tentacleClock;
     private float idle;
 
-    // rayon en cours : cible(s), temps du crâne, point visé
+    // rayon en cours : cible(s) et temps restant
     private final List<PlayerRef> beamTargets = new ArrayList<>();
-    private final List<Vector3d> beamSpots = new ArrayList<>();
     private float beamClock;
-    private float skull = -1f;
-    private float lock = -1f;
+    private float countdown = -1f;
     private boolean lastBeam;
     private boolean lastBeamDone;
 
@@ -147,11 +145,11 @@ final class JadeMaw {
         }
         deaths(world, store, inArena);
         if (phase == 1 && p1Down >= 2) {
-            startColossi(world);
+            awaken(world, store);
         }
-        colossi(world, store, dt);
         if (phase >= 2) {
-            keepTentacles(world, store, dt);
+            colossi(world, store, dt);
+            regrowTentacles(world, store, dt);
             beam(world, store, st, inArena, dt);
         }
         sync(store);
@@ -215,7 +213,7 @@ final class JadeMaw {
         }
         String text = switch (phase) {
             case 1 -> "Tentacules " + Math.min(2, p1Down) + "/2";
-            case 2 -> "Colosses " + colossiDown + "/" + colossiNeeded;
+            case 2 -> "Colosses " + colossiDown + "/" + COLOSSUS_POOL;
             default -> "";
         };
         LABELS.put(maw, text);
@@ -229,8 +227,6 @@ final class JadeMaw {
         health = 1f;
         p1Down = 0;
         lastBeamDone = false;
-        colossiSpawned = 0;
-        colossusClock = COLOSSUS_EVERY - 5f;
         Spawns.tellAll(world, Message.translation(SolidOcean.MESSAGES + "arena"));
         for (int i = 0; i < 2; i++) {
             spawnTentacle(world, store, i);
@@ -250,27 +246,31 @@ final class JadeMaw {
         showLabel();
     }
 
-    private void startColossi(World world) {
+    /** Les deux premiers tentacules sont tombés : huit tentacules, les colosses et le rayon. */
+    private void awaken(World world, Store<EntityStore> store) {
         phase = 2;
-        colossiNeeded = COLOSSI + FractalRuns.partySize(world);
         colossiDown = 0;
-        beamClock = BEAM_INTERVAL - 4f;
-        Spawns.tellAll(world, Message.translation(SolidOcean.MESSAGES + "phase.colossi").param("count", colossiNeeded));
+        colossiSpawned = 0;
+        colossusClock = COLOSSUS_EVERY - 5f;
+        beamClock = BEAM_P2 - FIRST_BEAM;
+        fillTentacles(world, store);
+        Spawns.tellAll(world, Message.translation(SolidOcean.MESSAGES + "phase.colossi").param("count", COLOSSUS_POOL));
         showLabel();
     }
 
-    /** Un colosse toutes les {@value #COLOSSUS_EVERY} s pendant tout le combat ; en phase 2, les abattre la fait avancer. */
+    /** Un colosse toutes les {@value #COLOSSUS_EVERY} s, jusqu'à {@value #COLOSSUS_POOL} ; le dernier abattu ouvre la fin. */
     private void colossi(World world, Store<EntityStore> store, float dt) {
         colossi.removeIf(ref -> !Spawns.alive(store, ref));
-        if (phase == 2 && colossiDown >= colossiNeeded) {
+        if (phase == 2 && colossiDown >= COLOSSUS_POOL) {
             phase = 3;
-            for (int i = 0; i < tentacles.length && aliveTentacles(store) < tentacleCap(world) + 1; i++) {
-                if (tentacles[i] == null || !tentacles[i].isValid()) {
-                    spawnTentacle(world, store, i);
-                }
-            }
+            beamClock = Math.min(beamClock, BEAM_P3 - 10f);
+            fillTentacles(world, store);
             Spawns.tellAll(world, Message.translation(SolidOcean.MESSAGES + "phase.final"));
             showLabel();
+            return;
+        }
+        if (phase != 2 || colossiSpawned >= COLOSSUS_POOL) {
+            return;
         }
         colossusClock += dt;
         if (colossusClock < COLOSSUS_EVERY || colossi.size() >= MAX_COLOSSI) {
@@ -287,37 +287,31 @@ final class JadeMaw {
         }
     }
 
-    private int tentacleCap(World world) {
-        return FractalRuns.partySize(world) >= 3 ? 3 : 2;
-    }
-
-    private int aliveTentacles(Store<EntityStore> store) {
-        int n = 0;
-        for (Ref<EntityStore> t : tentacles) {
-            n += Spawns.alive(store, t) ? 1 : 0;
-        }
-        return n;
-    }
-
-    /** Les tentacules repoussent un à un, à une place libre au hasard. */
-    private void keepTentacles(World world, Store<EntityStore> store, float dt) {
-        if (aliveTentacles(store) >= tentacleCap(world)) {
-            tentacleClock = 0f;
-            return;
-        }
-        tentacleClock += dt;
-        if (tentacleClock < TENTACLE_RESPAWN) {
-            return;
-        }
-        tentacleClock = 0f;
-        List<Integer> free = new ArrayList<>();
+    /** Un tentacule à chaque place libre. */
+    private void fillTentacles(World world, Store<EntityStore> store) {
         for (int i = 0; i < tentacles.length; i++) {
+            regrow[i] = 0f;
             if (!Spawns.alive(store, tentacles[i])) {
-                free.add(i);
+                spawnTentacle(world, store, i);
             }
         }
-        if (!free.isEmpty()) {
-            spawnTentacle(world, store, free.get(ThreadLocalRandom.current().nextInt(free.size())));
+    }
+
+    /** Phase 3 : chaque tentacule abattu repousse à sa place {@value #TENTACLE_RESPAWN} s plus tard. */
+    private void regrowTentacles(World world, Store<EntityStore> store, float dt) {
+        if (phase != 3) {
+            return;
+        }
+        for (int i = 0; i < tentacles.length; i++) {
+            if (Spawns.alive(store, tentacles[i])) {
+                regrow[i] = 0f;
+                continue;
+            }
+            regrow[i] += dt;
+            if (regrow[i] >= TENTACLE_RESPAWN) {
+                regrow[i] = 0f;
+                spawnTentacle(world, store, i);
+            }
         }
     }
 
@@ -360,21 +354,20 @@ final class JadeMaw {
     }
 
     private void dropCrystal(World world, Store<EntityStore> store, Vector3d at) {
-        Carried.drop(store, SolidOcean.CRYSTAL, at);
-        Telegraphs.particle(store, "Nakasar_Fractal_Crystal_Glow", at, 1f);
+        SolidOcean.dropCrystal(store, at);
         Spawns.tellAll(world, Message.translation(SolidOcean.MESSAGES + "crystal.drop"));
     }
 
     // --- le rayon --------------------------------------------------------------------------------------
 
     private void beam(World world, Store<EntityStore> store, SolidOcean.State st, List<PlayerRef> inArena, float dt) {
-        if (skull < 0f && lock < 0f) {
+        if (countdown < 0f) {
             if (phase == 3 && !lastBeamDone && health <= LAST_BEAM_AT) {
                 mark(world, store, inArena, true);
                 return;
             }
             beamClock += dt;
-            if (beamClock >= BEAM_INTERVAL) {
+            if (beamClock >= (phase == 3 ? BEAM_P3 : BEAM_P2)) {
                 beamClock = 0f;
                 List<PlayerRef> picked = Spawns.pick(inArena, 1);
                 if (!picked.isEmpty()) {
@@ -383,26 +376,22 @@ final class JadeMaw {
             }
             return;
         }
-        if (skull >= 0f) {
-            skull -= dt;
-            for (PlayerRef p : beamTargets) {
-                Vector3d at = Telegraphs.position(store, p.getReference());
-                if (at != null) {
-                    Telegraphs.particle(store, SKULL, new Vector3d(at).add(0, 2.6, 0), 1.2f);
-                }
+        countdown -= dt;
+        for (PlayerRef p : beamTargets) {
+            Vector3d at = Telegraphs.position(store, p.getReference());
+            if (at != null) {
+                Telegraphs.particle(store, SKULL, new Vector3d(at).add(0, 2.6, 0), 1.2f);
             }
-            if (skull < 0f) {
-                lockOn(store);
-            }
-            return;
         }
-        lock -= dt;
-        if (lock < 0f) {
+        if (countdown < 0f) {
             fire(world, store, st);
         }
     }
 
-    /** Nouvelle cible : les charges précédentes se perdent, le crâne apparaît au-dessus de la (des) cible(s). */
+    /**
+     * Nouvelle cible : les charges précédentes se perdent ; la (les) cible(s) reçoit l'effet {@value #TARGETED}
+     * (tête de mort rouge dans la barre d'état, lueur orange) et un crâne flotte au-dessus d'elle.
+     */
     private void mark(World world, Store<EntityStore> store, List<PlayerRef> targets, boolean everyone) {
         for (PlayerRef p : Spawns.alivePlayers(world, store)) {
             if (charged.remove(p.getUuid())) {
@@ -412,8 +401,10 @@ final class JadeMaw {
         beamTargets.clear();
         beamTargets.addAll(targets);
         lastBeam = everyone;
-        float wf = FractalRuns.windupFactor(world);
-        skull = (everyone ? LAST_SKULL_SECONDS : SKULL_SECONDS) * wf;
+        countdown = (everyone ? LAST_TARGET_SECONDS : TARGET_SECONDS) * FractalRuns.windupFactor(world);
+        for (PlayerRef p : targets) {
+            Hurt.effect(store, p.getReference(), TARGETED, countdown + 0.5f);
+        }
         if (everyone) {
             Spawns.tellAll(world, Message.translation(SolidOcean.MESSAGES + "last.beam"));
             return;
@@ -427,43 +418,28 @@ final class JadeMaw {
         }
     }
 
-    /** Le crâne disparaît : le rayon se fixe là où se tient la cible (cercle rouge), on a {@value #LOCK_SECONDS} s. */
-    private void lockOn(Store<EntityStore> store) {
-        beamSpots.clear();
-        for (PlayerRef p : beamTargets) {
-            Vector3d at = Telegraphs.position(store, p.getReference());
-            beamSpots.add(at == null ? null : new Vector3d(at));
-            if (at != null && !lastBeam) {
-                Telegraphs.circle(store, at, BEAM_RADIUS, LOCK_SECONDS);
-            }
-        }
-        lock = lastBeam ? 0f : LOCK_SECONDS;
-    }
-
+    /** Fin du compte : chaque cible vivante est frappée, où qu'elle soit ; un cristal en main absorbe le rayon. */
     private void fire(World world, Store<EntityStore> store, SolidOcean.State st) {
         Vector3d eye = Telegraphs.position(store, maw);
         if (eye != null) {
             eye = new Vector3d(eye).add(0, 5, 0);
         }
-        for (int i = 0; i < beamTargets.size(); i++) {
-            PlayerRef p = beamTargets.get(i);
-            Vector3d spot = beamSpots.get(i);
+        for (PlayerRef p : beamTargets) {
             Ref<EntityStore> ref = p.getReference();
+            if (ref == null || !Spawns.alive(store, ref)) {
+                continue;
+            }
+            Hurt.clear(store, ref, TARGETED);
             Vector3d at = Telegraphs.position(store, ref);
-            if (spot == null || at == null || !Spawns.alive(store, ref)) {
+            if (at == null) {
                 continue;
             }
-            Vector3d end = lastBeam ? at : spot;
             if (eye != null) {
-                drawBeam(store, eye, new Vector3d(end).add(0, 1, 0));
+                drawBeam(store, eye, new Vector3d(at).add(0, 1, 0));
             }
-            boolean hit = lastBeam || Telegraphs.horizontal(at, spot) <= BEAM_RADIUS && Math.abs(at.y() - spot.y()) <= 2.5;
-            if (!hit) {
-                continue;
-            }
-            if (Carried.holds(store, ref, SolidOcean.CRYSTAL)) {
+            if (CrystalHold.holds(store, ref)) {
                 charged.add(p.getUuid());
-                Hurt.effect(store, ref, CHARGED, 30f);
+                Hurt.effect(store, ref, CHARGED, BEAM_P2);
                 Telegraphs.particle(store, "Nakasar_Fractal_Crystal_Charge", at, 1.2f);
                 SolidOcean.tell(st, p, "absorbed");
             } else {
@@ -475,9 +451,7 @@ final class JadeMaw {
             lastBeamDone = true;
         }
         beamTargets.clear();
-        beamSpots.clear();
-        lock = -1f;
-        skull = -1f;
+        countdown = -1f;
     }
 
     private static void drawBeam(Store<EntityStore> store, Vector3d from, Vector3d to) {
@@ -500,7 +474,7 @@ final class JadeMaw {
     /** Un cristal lancé sur l'Abîme : chargé, il le blesse ; sinon il revient au lanceur. */
     void crystal(World world, Store<EntityStore> store, Ref<EntityStore> ref, PlayerRef player) {
         if (!charged.remove(player.getUuid())) {
-            Carried.give(store, ref, SolidOcean.CRYSTAL);
+            CrystalHold.give(store, ref);
             player.sendMessage(Message.translation(SolidOcean.MESSAGES + "crystal.uncharged"));
             return;
         }
@@ -562,22 +536,27 @@ final class JadeMaw {
             colossusDeaths.clear();
         }
         beamTargets.clear();
-        beamSpots.clear();
-        skull = -1f;
-        lock = -1f;
+        countdown = -1f;
         lastBeam = false;
         for (PlayerRef p : Spawns.alivePlayers(world, store)) {
             charged.remove(p.getUuid());
             Hurt.clear(store, p.getReference(), CHARGED);
+            Hurt.clear(store, p.getReference(), TARGETED);
         }
         charged.clear();
+        for (Ref<EntityStore> crystal : List.copyOf(CrystalHold.onGround(world))) {
+            Spawns.remove(store, crystal);
+        }
     }
 
     private boolean win(World world, Store<EntityStore> store, List<PlayerRef> players) {
         victory = true;
         clear(world, store);
         for (PlayerRef p : players) {
-            Carried.removeAll(store, p.getReference(), SolidOcean.CRYSTAL);
+            Ref<EntityStore> ref = p.getReference();
+            if (ref != null && ref.isValid()) {
+                CrystalHold.removeAll(store, ref);
+            }
         }
         Vector3d at = Telegraphs.position(store, maw);
         if (at != null) {

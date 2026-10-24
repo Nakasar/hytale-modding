@@ -14,6 +14,7 @@ import com.hypixel.hytale.server.core.modules.entity.item.ItemComponent;
 import com.hypixel.hytale.server.core.universe.PlayerRef;
 import com.hypixel.hytale.server.core.universe.world.World;
 import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
+import dev.nakasar.hytale.fractals.arena.HandLock;
 import dev.nakasar.hytale.fractals.combat.Telegraphs;
 import org.joml.Vector3d;
 
@@ -24,11 +25,10 @@ import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
- * Le marteau du culte de la Falaise ({@value #ID}) : seule arme qui brise les sceaux. Le tenir en main fait monter la
- * Corruption, cran par cran ({@link HammerSystem}) ; il se charge (Brise-sceau) quand son porteur frappe un ennemi
- * avec, quand un ennemi qu'il a frappé (n'importe quelle arme) meurt dans les {@value #CREDIT_SECONDS} s, ou quand un
- * ennemi meurt à moins de {@value #CHARGE_RADIUS} blocs de lui ({@link HammerDamageSystem}). Un coup chargé sur un
- * sceau le fissure et consomme la charge.
+ * Le marteau du culte de la Falaise ({@value #ID}) : seule arme qui brise les sceaux. Porté, il reste en main (on ne
+ * change pas d'objet, {@link HandLock}) et fait monter la Corruption, cran par cran ({@link HammerSystem}) ; il se
+ * charge (Brise-sceau) quand un ennemi que son porteur a frappé avec meurt dans les {@value #CREDIT_SECONDS} s
+ * ({@link HammerDamageSystem}). Un coup chargé sur un sceau le fissure et consomme la charge.
  *
  * <p>L'état de chaque porteur est gardé en mémoire par joueur ; il ne survit ni à la sortie de la Falaise ni au
  * redémarrage (le marteau est alors retiré).
@@ -36,7 +36,6 @@ import java.util.concurrent.ConcurrentHashMap;
 public final class Hammer {
 
     public static final String ID = "Nakasar_Fractal_Cult_Hammer";
-    public static final double CHARGE_RADIUS = 10;
     public static final float CREDIT_SECONDS = 15f;
 
     /** Porteur : cran de Corruption (0 à 3) et temps restant du cran, marteau porté, marteau chargé. */
@@ -91,10 +90,9 @@ public final class Hammer {
         return !slots.isEmpty();
     }
 
-    /** Donne le marteau au joueur (il tombe à ses pieds si l'inventaire est plein). */
-    public static void give(ComponentAccessor<EntityStore> store, Ref<EntityStore> ref) {
-        com.hypixel.hytale.server.core.inventory.container.SimpleItemContainer.addOrDropItemStack(store, ref,
-                InventoryComponent.getCombined(store, ref, InventoryComponent.HOTBAR_STORAGE_BACKPACK), new ItemStack(ID, 1));
+    /** Donne le marteau au joueur, en main et sélectionné ({@link HandLock}). */
+    public static void give(Store<EntityStore> store, Ref<EntityStore> ref) {
+        HandLock.putInHand(store, ref, new ItemStack(ID, 1));
     }
 
     /** Fait tomber un marteau au sol en `at` ; on le ramasse en s'accroupissant tout près ({@link HammerPickupSystem}). */

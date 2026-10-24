@@ -3,7 +3,7 @@
 <Infobox pending title="Océan solide" kind="Fractale" icon="/jeu/Icons/Items/Nakasar/Fractals/Core_SolidOcean.png" caption="Noyau de l'Océan solide">
 <Info label="Boss">l'Abîme de Jade</Info>
 <Info label="Puzzle de saut">fragments de jade</Info>
-<Info label="Ciel">midi</Info>
+<Info label="Ciel">nuit</Info>
 </Infobox>
 
 Une traversée de fragments de jade flottants mène à l'**Abîme de Jade**, un monstre invulnérable qu'on ne blesse qu'en lui renvoyant son propre rayon avec des cristaux.
@@ -15,9 +15,10 @@ Une traversée de fragments de jade flottants mène à l'**Abîme de Jade**, un 
 
 ## L'Abîme de Jade
 
-**Le rayon** : toutes les 11 s, un **crâne** marque un joueur. Quand il disparaît, le rayon se fixe sur sa place : **0,7 s** pour s'écarter du cercle rouge. Si vous tenez un **cristal réfléchissant**, il absorbe le rayon et vous charge ; **lancez** alors le cristal sur l'Abîme (clic droit vers lui) : **−5 %** de sa vie (−3 % sur un tentacule).
+**Le cristal réfléchissant** tombe des colosses (et des tentacules en fin de combat). Il ne se ramasse pas en passant dessus : **accroupissez-vous** tout près. Il se met aussitôt dans la barre d'inventaire, sélectionné, et se tient **à deux mains** ; tant que vous le portez, impossible de changer d'objet. **Un seul** cristal par joueur. Clic droit vers l'Abîme : le **lancer**.
 
-- **Phase 1** : deux **tentacules** à abattre ; dès le niveau 26, un test d'agonie.
-- **Tout le combat** : un **colosse de jade** sort du jade toutes les **15 s** (3 en vie au plus). Insensible aux attaques à distance, il se bat au contact et lâche deux cristaux réfléchissants.
-- **Phase 2** : abattre les colosses (3, +1 par joueur) fait avancer le combat.
-- **Fin** : les tentacules lâchent les cristaux. **Sous 8 %**, un dernier rayon frappe tout le monde, sans esquive.
+**Le rayon** : l'Abîme **vise un joueur** : une tête de mort rouge apparaît dans sa barre d'état, il luit d'orange et un crâne flotte au-dessus de lui. Au bout de **6 s**, le rayon le frappe, où qu'il soit : sans cristal en main, il est **tué** ; avec un cristal, celui-ci est **chargé**. Lancé chargé sur l'Abîme : **−5 %** de sa vie (−3 % par tentacule abattu). Il n'y a pas de zone au sol : seul le joueur visé est concerné.
+
+- **Phase 1** : deux **tentacules** devant l'Abîme (900 PV). Tant qu'ils vivent, l'Abîme n'attaque pas et aucun colosse ne sort. Dès le niveau 26, un test d'agonie.
+- **Phase 2** : huit **tentacules** percent le jade (ils ne repoussent pas), un **colosse de jade** sort toutes les **30 s** (**20** en tout, 3 en vie au plus) et l'Abîme vise un joueur toutes les **40 s**. Insensible aux attaques à distance, le colosse se bat au contact et lâche deux cristaux.
+- **Phase 3**, quand le 20e colosse est tombé : de nouveau huit tentacules ; chacun **repousse 30 s** après sa mort et lâche un cristal. L'Abîme vise toutes les **30 s**. **Sous 8 %**, un dernier rayon vise tout le monde : tenez un cristal.

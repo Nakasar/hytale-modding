@@ -4,6 +4,7 @@ import com.hypixel.hytale.component.Ref;
 import com.hypixel.hytale.component.RemoveReason;
 import com.hypixel.hytale.component.Store;
 import com.hypixel.hytale.protocol.packets.interface_.EventTitleStyle;
+import com.hypixel.hytale.protocol.packets.interface_.NotificationStyle;
 import com.hypixel.hytale.server.core.Message;
 import com.hypixel.hytale.server.core.modules.entity.component.Invulnerable;
 import com.hypixel.hytale.server.core.modules.entity.damage.Damage;
@@ -15,11 +16,14 @@ import com.hypixel.hytale.server.core.universe.world.World;
 import com.hypixel.hytale.server.core.universe.world.storage.ChunkStore;
 import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
 import com.hypixel.hytale.server.core.util.EventTitleUtil;
+import com.hypixel.hytale.server.core.util.NotificationUtil;
+import dev.nakasar.hytale.fractals.FractalsPlugin;
 import dev.nakasar.hytale.fractals.arena.WorldBlocks;
 import dev.nakasar.hytale.fractals.boss.GroupHealth;
 import dev.nakasar.hytale.fractals.combat.BossStun;
 import dev.nakasar.hytale.fractals.combat.Delayed;
 import dev.nakasar.hytale.fractals.combat.Hurt;
+import dev.nakasar.hytale.fractals.combat.Spawns;
 import dev.nakasar.hytale.fractals.combat.TelegraphInteraction;
 import dev.nakasar.hytale.fractals.combat.Telegraphs;
 import dev.nakasar.hytale.fractals.defiance.Defiance;
@@ -40,8 +44,8 @@ import java.util.concurrent.ThreadLocalRandom;
  *   invulnérable, et puise dans le sceau du cou, qui perd sa bulle ; quatre incantateurs arrivent (de quoi charger le
  *   marteau, lâché aux pieds du boss si personne ne le porte). Un coup chargé sur le sceau met fin à la transition
  *   (onde qui étourdit 1 s, marteaux repris, bulle revenue) ; à la dernière, il achève le boss ;</li>
- *   <li>entre 50 et 25 % : protection (dégâts subis −33 %), cage toutes les {@value #CAGE_INTERVAL} s (cercle rouge
- *   sous un joueur, rayon 2 + niveau / 50 ; resté dedans, il est enfermé, {@link Cages}), deux dévoreurs toutes les
+ *   <li>entre 50 et 25 % : protection (dégâts subis −33 %), cage toutes les {@value #CAGE_INTERVAL} s (un joueur
+ *   prévenu est enfermé, sans esquive, {@link Cages}), deux dévoreurs toutes les
  *   {@value #DEVOURER_INTERVAL} s ({@value #DEVOURER_CAP} au plus) ;</li>
  *   <li>sous 25 % : hâte, frappes marquées toutes les {@value #MARK_INTERVAL} s sur trois joueurs au plus ; dès le
  *   niveau 71, forme démoniaque (dégâts ×1,3, {@link CliffsideDamageFilter}) ;</li>
@@ -58,6 +62,10 @@ final class Archdiviner {
     static final String PROTECTION = "Nakasar_Fractal_Archdiviner_Protection";
     static final String DEMON = "Nakasar_Fractal_Archdiviner_Demon";
     static final float CAGE_INTERVAL = 20f;
+    /** Délai entre l'annonce de la cage et l'enfermement. */
+    static final float CAGE_WINDUP = 2.5f;
+    /** Première cage après la transition à 50 %. */
+    static final float FIRST_CAGE = 5f;
     static final float DEVOURER_INTERVAL = 30f;
     static final int DEVOURER_CAP = 4;
     static final float MARK_INTERVAL = 8f;
@@ -327,7 +335,7 @@ final class Archdiviner {
         }
         transition = false;
         threshold++;
-        cageClock = 0f;
+        cageClock = CAGE_INTERVAL - FIRST_CAGE;
         devourerClock = DEVOURER_INTERVAL - 5f;
         markClock = 0f;
         st.seals[Cliffside.NECK].shielded = true;
@@ -419,7 +427,11 @@ final class Archdiviner {
 
     // --- mécaniques ---------------------------------------------------------------------------------------
 
-    /** Cercle rouge sous la cible ; restée dedans au coup, elle part en cage. */
+    /**
+     * Cage : la cible est prévenue (message, volute au-dessus d'elle) et part en cage {@value #CAGE_WINDUP} s plus tard,
+     * où qu'elle soit (comme le capitaine des Vampires : on ne l'esquive pas, ses alliés la délivrent). Journal
+     * {@code Nakasar_Fractal_Cage} pour comprendre une cage qui ne se ferme pas.
+     */
     private void cage(World world, Store<EntityStore> store, Cliffside.State st, List<PlayerRef> targets, int level, float wf) {
         for (PlayerRef target : targets) {
             Ref<EntityStore> r = target.getReference();
@@ -427,16 +439,20 @@ final class Archdiviner {
             if (at == null) {
                 continue;
             }
-            Vector3d center = new Vector3d(at);
-            double radius = 2 + level / 50.0;
-            float seconds = 2.2f * wf;
-            Telegraphs.circle(store, center, radius, seconds);
+            float seconds = CAGE_WINDUP * wf;
+            target.sendMessage(Message.translation(Cliffside.MESSAGES + "cage.marked"));
+            NotificationUtil.sendNotification(target.getPacketHandler(), Message.translation(Cliffside.MESSAGES + "cage.marked"),
+                    NotificationStyle.Warning);
+            Telegraphs.particle(store, "Nakasar_Fractal_Corruption_Pulse", new Vector3d(at).add(0, 2.4, 0), 1f);
             Delayed.later(world, seconds, s -> {
-                Vector3d now = Telegraphs.position(s, r);
-                if (now != null && !victory && Telegraphs.horizontal(now, center) <= radius && Math.abs(now.y() - center.y()) <= 2.5) {
-                    if (st.cages.imprison(world, s, r, target)) {
-                        target.sendMessage(Message.translation(Cliffside.MESSAGES + "cage.jailed"));
-                    }
+                if (victory || !Spawns.alive(s, r)) {
+                    return;
+                }
+                boolean jailed = st.cages.imprison(world, s, r, target);
+                FractalsPlugin.get().getLogger().atInfo().log("Nakasar_Fractal_Cage : %s %s", target.getUsername(),
+                        jailed ? "enfermé" : "pas de cage libre (ou déjà enfermé)");
+                if (jailed) {
+                    target.sendMessage(Message.translation(Cliffside.MESSAGES + "cage.jailed"));
                 }
             });
         }

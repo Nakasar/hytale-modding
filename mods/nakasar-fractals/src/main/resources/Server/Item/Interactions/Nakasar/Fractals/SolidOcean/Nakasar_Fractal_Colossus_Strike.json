@@ -1,5 +1,5 @@
 {
-  "$Comment": "Colosse de jade au contact : coup de cristal (16 dégâts).",
+  "$Comment": "Colosse de jade au contact : coup de cristal (16 dégâts). Le balayage part de ses yeux, bien plus haut que la tête d'un joueur : il descend jusqu'aux pieds (ExtendBottom), sans quoi il ne touchait rien.",
   "Type": "Serial",
   "Interactions": [
     {
@@ -19,7 +19,7 @@
           "Direction": "ToLeft",
           "TestLineOfSight": true,
           "ExtendTop": 0.8,
-          "ExtendBottom": 0.8,
+          "ExtendBottom": 4.0,
           "StartDistance": 0.2,
           "EndDistance": 3.4,
           "Length": 100,
