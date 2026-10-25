@@ -10,11 +10,11 @@ import com.hypixel.hytale.server.core.universe.world.storage.ChunkStore;
 import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
 import dev.nakasar.hytale.fractals.arena.Carried;
 import dev.nakasar.hytale.fractals.arena.CrouchPickup;
+import dev.nakasar.hytale.fractals.arena.Moves;
 import dev.nakasar.hytale.fractals.arena.WorldBlocks;
 import dev.nakasar.hytale.fractals.combat.Hurt;
 import dev.nakasar.hytale.fractals.combat.Spawns;
 import dev.nakasar.hytale.fractals.combat.Telegraphs;
-import dev.nakasar.hytale.fractals.silentsurf.Moves;
 import org.joml.Vector3d;
 
 import java.util.ArrayList;
@@ -171,6 +171,9 @@ final class CursedTreasure {
             if (fx) {
                 Telegraphs.particle(store, "Nakasar_Fractal_Treasure_Glow", at, 1f);
             }
+            if (hidden(at)) {
+                continue;               // déjà dans une cachette : les escrocs n'y touchent plus
+            }
             for (Ref<EntityStore> s : swindlers) {
                 Vector3d sp = Telegraphs.position(store, s);
                 if (sp != null && sp.distance(at) <= SWINDLE_RADIUS) {
@@ -189,6 +192,15 @@ final class CursedTreasure {
             audit = 0f;
             audit(world, store, players);
         }
+    }
+
+    private boolean hidden(Vector3d at) {
+        for (double[] h : homes) {
+            if (Spawns.point(h).distance(at) <= SWINDLE_RADIUS) {
+                return true;
+            }
+        }
+        return false;
     }
 
     private void curse(World world, Store<EntityStore> store, SirensReef.State st, PlayerRef p, float dt, boolean fx) {

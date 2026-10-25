@@ -21,11 +21,11 @@ L'île du trésor maudit de la capitaine **Arabella Crowe**. Le capitaine **Stro
 Trois **canons des ombres** se trouvent sur l'île : sur la corniche au-dessus du ravin, sur le rempart du fort, et quatre sur le pont du navire.
 
 - **Utilisez** le canon pour vous y poster : les trois boulets arrivent dans votre inventaire. Réutilisez-le, ou éloignez-vous de plus de 3,5 blocs, pour le quitter (les boulets disparaissent).
-- **Clic droit** avec un boulet : le canon tire là où vous regardez, jusqu'à 70 blocs.
+- **Clic droit** avec un boulet : le canon tire là où vous regardez, jusqu'à 96 blocs. De la corniche, on voit tout le fond du ravin jusqu'à la palissade.
   - **Boulet ricochet** (4 s de recharge) : trois impacts de 2,5 blocs qui rebondissent dans l'axe du tir.
   - **Mitraille** (8 s) : un impact de 4 blocs, gros dégâts, étourdit les ennemis.
   - **Boulet de glace** (15 s) : un impact de 5 blocs qui gèle les ennemis 4 s.
-- Tout impact fait **sauter les mines** (sans blesser personne), abat la **palissade** du bout du ravin et entame la **défiance** des boss. Les boulets ne blessent jamais les joueurs.
+- Tout impact fait **sauter les mines** (sans blesser personne), abat la **palissade** du bout du ravin (une fois Tête-de-pierre vaincu) et entame la **défiance** des boss. Les boulets ne blessent jamais les joueurs.
 
 ## Les mines
 

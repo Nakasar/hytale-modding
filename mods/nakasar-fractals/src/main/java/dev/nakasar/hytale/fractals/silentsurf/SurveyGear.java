@@ -7,6 +7,7 @@ import com.hypixel.hytale.server.core.universe.world.World;
 import com.hypixel.hytale.server.core.universe.world.storage.ChunkStore;
 import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
 import dev.nakasar.hytale.fractals.arena.Carried;
+import dev.nakasar.hytale.fractals.arena.Moves;
 import dev.nakasar.hytale.fractals.arena.WorldBlocks;
 import dev.nakasar.hytale.fractals.combat.Delayed;
 import dev.nakasar.hytale.fractals.combat.Hurt;

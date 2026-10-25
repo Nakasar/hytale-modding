@@ -15,6 +15,7 @@ import com.hypixel.hytale.server.core.universe.PlayerRef;
 import com.hypixel.hytale.server.core.universe.world.World;
 import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
 import dev.nakasar.hytale.fractals.arena.Leash;
+import dev.nakasar.hytale.fractals.arena.Moves;
 import dev.nakasar.hytale.fractals.combat.BossStun;
 import dev.nakasar.hytale.fractals.combat.Hurt;
 import dev.nakasar.hytale.fractals.combat.Spawns;

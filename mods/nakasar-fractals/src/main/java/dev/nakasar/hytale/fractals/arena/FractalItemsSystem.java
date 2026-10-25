@@ -1,4 +1,4 @@
-package dev.nakasar.hytale.fractals.silentsurf;
+package dev.nakasar.hytale.fractals.arena;
 
 import com.hypixel.hytale.component.AddReason;
 import com.hypixel.hytale.component.CommandBuffer;
@@ -18,15 +18,21 @@ import dev.nakasar.hytale.fractals.party.FractalCatalog;
 import java.util.Set;
 
 /**
- * L'équipement de prospection et les effets du Ressac silencieux (Garde de Thess...) ne servent que dans cette
- * fractale : un joueur qui arrive dans un autre monde les perd (comme les noyaux et diapasons de l'Observatoire, {@code observatory.SelectionItemsSystem}).
+ * Objets et effets qui ne servent que dans une fractale (torche de la Tempête de neige, équipement du Ressac, trésor
+ * maudit du Récif...) : un joueur qui arrive dans un autre monde les perd (comme les noyaux et diapasons de
+ * l'Observatoire, {@code observatory.SelectionItemsSystem}). Un système par fractale.
  */
-public final class GearItemsSystem extends RefSystem<EntityStore> {
+public final class FractalItemsSystem extends RefSystem<EntityStore> {
 
-    private static final Set<String> GEAR = Set.of(SurveyGear.ITEMS);
-    /** Effets propres au Ressac (la Garde de Thess dure une heure, rafraîchie dans la fractale). */
-    private static final String[] EFFECTS = {SilentSurf.WARD_EFFECT, "Nakasar_Fractal_Phantasmagoria",
-            "Nakasar_Fractal_Torment", "Nakasar_Fractal_Parachute_Open"};
+    private final String fractal;
+    private final Set<String> items;
+    private final String[] effects;
+
+    public FractalItemsSystem(String fractal, Set<String> items, String... effects) {
+        this.fractal = fractal;
+        this.items = Set.copyOf(items);
+        this.effects = effects.clone();
+    }
 
     @Override
     public Query<EntityStore> getQuery() {
@@ -36,12 +42,12 @@ public final class GearItemsSystem extends RefSystem<EntityStore> {
     @Override
     public void onEntityAdded(Ref<EntityStore> ref, AddReason reason, Store<EntityStore> store, CommandBuffer<EntityStore> buffer) {
         World world = store.getExternalData().getWorld();
-        if (world == null || SilentSurf.FRACTAL.equals(FractalCatalog.fractalOf(world))) {
+        if (world == null || fractal.equals(FractalCatalog.fractalOf(world))) {
             return;
         }
         InventoryComponent.getCombined(store, ref, InventoryComponent.EVERYTHING)
-                .replaceAll((slot, stack) -> !ItemStack.isEmpty(stack) && GEAR.contains(stack.getItemId()) ? ItemStack.EMPTY : stack);
-        for (String effect : EFFECTS) {
+                .replaceAll((slot, stack) -> !ItemStack.isEmpty(stack) && items.contains(stack.getItemId()) ? ItemStack.EMPTY : stack);
+        for (String effect : effects) {
             Hurt.clear(buffer, ref, effect);
         }
     }

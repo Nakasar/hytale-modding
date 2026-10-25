@@ -10,13 +10,13 @@ import com.hypixel.hytale.server.core.modules.entity.teleport.Teleport;
 import com.hypixel.hytale.server.core.universe.PlayerRef;
 import com.hypixel.hytale.server.core.universe.world.World;
 import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
+import dev.nakasar.hytale.fractals.arena.Moves;
 import dev.nakasar.hytale.fractals.combat.BossStun;
 import dev.nakasar.hytale.fractals.combat.Hurt;
 import dev.nakasar.hytale.fractals.combat.Spawns;
 import dev.nakasar.hytale.fractals.combat.TelegraphSystem;
 import dev.nakasar.hytale.fractals.combat.Telegraphs;
 import dev.nakasar.hytale.fractals.party.FractalRuns;
-import dev.nakasar.hytale.fractals.silentsurf.Moves;
 import org.joml.Vector3d;
 
 import java.util.ArrayList;
@@ -91,7 +91,6 @@ final class ReefShip {
     private float teethClock;
     private float idle;
     private float fx;
-    private int spawned;
     private volatile int killed;
     private float waveClock;
     private int epoch;
@@ -167,7 +166,7 @@ final class ReefShip {
         if (inCove(store, players).isEmpty()) {
             idle += dt;
             if (idle >= RESET_SECONDS) {
-                reset(world, store);
+                reset(world, store, st);
             }
             return;
         }
@@ -239,7 +238,6 @@ final class ReefShip {
             }
             case CALIX -> {
                 step = Step.DEFEND;
-                spawned = 0;
                 killed = 0;
                 waveClock = DEFEND_WAVE;
                 Spawns.tellAll(world, Message.translation(SirensReef.MESSAGES + "ship.defend"));
@@ -248,8 +246,9 @@ final class ReefShip {
         }
     }
 
-    private void reset(World world, Store<EntityStore> store) {
+    private void reset(World world, Store<EntityStore> store, SirensReef.State st) {
         Spawns.remove(store, boss);
+        st.cannons.clear(world, store);
         clearFight(store);
         pending = true;
         Spawns.tellAll(world, Message.translation(SirensReef.MESSAGES + "ship.reset"));
@@ -270,12 +269,7 @@ final class ReefShip {
     /** Le boss ne quitte pas le pont : jeté à l'eau ou sur une plage, il y revient. */
     private static void keepAboard(Store<EntityStore> store, Ref<EntityStore> ref) {
         Vector3d at = Telegraphs.position(store, ref);
-        if (at == null || store.getComponent(ref, Teleport.getComponentType()) != null) {
-            return;
-        }
-        int[] d = SirensReefLayout.DECK_BOX;
-        if (at.x() >= d[0] && at.x() <= d[1] + 1 && at.z() >= d[2] && at.z() <= d[3] + 1
-                && at.y() >= SirensReefLayout.DECK_STAND - 1.5) {
+        if (at == null || store.getComponent(ref, Teleport.getComponentType()) != null || deck(at)) {
             return;
         }
         Vector3d back = Spawns.point(SirensReefLayout.DECK);
@@ -469,13 +463,12 @@ final class ReefShip {
             return;
         }
         waveClock += dt;
-        if (waveClock < DEFEND_WAVE || adds.size() >= DEFEND_ALIVE || spawned >= DEFEND_TOTAL + DEFEND_ALIVE) {
+        // Pas plus en vie que ce qu'il reste à abattre : un membre d'équipage disparu sans mourir est remplacé.
+        if (waveClock < DEFEND_WAVE || adds.size() >= Math.min(DEFEND_ALIVE, DEFEND_TOTAL - killed)) {
             return;
         }
         waveClock = 0f;
-        int before = adds.size();
         crew(world, store, st, 2 + (FractalRuns.partySize(world) > 2 ? 1 : 0));
-        spawned += adds.size() - before;
     }
 
     /** Un membre d'équipage tombe : compte pour la défense. */

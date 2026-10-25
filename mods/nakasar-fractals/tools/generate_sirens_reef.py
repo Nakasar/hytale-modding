@@ -123,7 +123,45 @@ def build_course():
     sc.maze_decor(p, t, keep)
     sc.dress_beaches(p, t, keep)
     sc.dress_jungle(p, t, soils, cliff_tops, keep)
+    check_sight(c)
     return c
+
+
+def see_through(name):
+    """Herbes, fougères et lianes : le regard (et le boulet) passe au travers."""
+    return name == go.AIR or name.startswith(("Plant_Grass", "Plant_Fern", "Plant_Vine", "Plant_Flower"))
+
+
+def check_sight(c):
+    """Depuis la corniche, le canon doit toucher chaque mine du ravin et la palissade (même lancer de rayon que
+    Moves.cast : premier bloc plein le long du regard), à portée, depuis n'importe où à 2,5 blocs du canon."""
+    p = c.p
+    cx, cy, cz = sc.CANNON_LEDGE
+    eyes = [(x + 0.5, cy + 1.6, z + 0.5) for x in range(cx - 3, cx + 4) for z in range(cz - 3, cz + 4)
+            if 1 <= math.hypot(x - cx, z - cz) <= 2.5 and c.t.stand.get((x, z)) == cy]
+    assert eyes, "corniche : aucune place pour l'artilleur"
+
+    def cast(a, b):
+        d = [b[i] - a[i] for i in range(3)]
+        n = math.sqrt(sum(v * v for v in d))
+        u = [v / n for v in d]
+        prev, k = a, 0.5
+        while k <= sc.CANNON_RANGE:
+            q = tuple(a[i] + u[i] * k for i in range(3))
+            cell = tuple(math.floor(v) for v in q)
+            if not see_through(p.blocks.get(cell, (go.AIR,))[0]):
+                return prev
+            prev, k = q, k + 0.25
+        return None
+
+    # visée : le sol au pied de chaque mine (souffle du ricochet : 2,5 blocs), le milieu de la palissade
+    w = c.wall2[len(c.wall2) // 2]
+    targets = [((x + 0.5, y + 0.05, z + 0.5), 2.5) for x, y, z in c.mines] + [((w[0] + 0.5, w[1] + 1.5, w[2] + 0.5), 2.5 + 3)]
+    for eye in eyes:
+        for at, tolerance in targets:
+            hit = cast(eye, at)
+            assert hit is not None and math.dist(hit, at) <= tolerance, \
+                f"canon de la corniche : depuis {eye}, {at} caché (impact {hit})"
 
 
 def gates(c):
@@ -195,6 +233,10 @@ def keep_out(c):
     keep += [(sc.SOUTH_TREASURE[0], sc.SOUTH_TREASURE[2], 5), (sc.NORTH_TREASURE[0], sc.NORTH_TREASURE[2], 5)]
     keep += [(x, z, 2) for x, _, z in c.wall1 + c.wall2 + c.fort_gate + c.maze_exit]
     keep += [(c.maze_chest[0], c.maze_chest[2], 3)]
+    # ligne de visée du canon de la corniche vers la palissade
+    (ax, _, az), (bx, bz) = sc.CANNON_LEDGE, sc.WALL2_AT
+    n = math.hypot(bx - ax, bz - az)
+    keep += [(ax + (bx - ax) * k / n, az + (bz - az) * k / n, 3.5) for k in range(0, int(n), 3)]
     return keep
 
 
@@ -884,6 +926,8 @@ public final class SirensReefLayout {{
 
     /** Canons des ombres (bloc), sens du tir (rotation : 0 sud, 1 est, 2 nord, 3 ouest) et lieu (0 ravin, 1 fort, 2 navire). */
     public static final int[][] CANNONS = {J.jblocks([at for at, _, _ in c.cannons])};
+    /** Portée du tir (blocs), vérifiée à la génération : de la corniche, on touche les mines et la palissade. */
+    public static final double CANNON_RANGE = {jd(sc.CANNON_RANGE)};
     public static final int[] CANNON_FACING = {{{", ".join(str(r) for _, r, _ in c.cannons)}}};
     public static final int[] CANNON_PLACE = {{{", ".join(str(cannon_where[w]) for _, _, w in c.cannons)}}};
 

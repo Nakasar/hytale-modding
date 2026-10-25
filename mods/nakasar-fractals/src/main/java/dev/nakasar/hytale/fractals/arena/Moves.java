@@ -1,4 +1,4 @@
-package dev.nakasar.hytale.fractals.silentsurf;
+package dev.nakasar.hytale.fractals.arena;
 
 import com.hypixel.hytale.component.ComponentAccessor;
 import com.hypixel.hytale.component.Ref;
@@ -12,12 +12,11 @@ import com.hypixel.hytale.server.core.modules.entity.teleport.Teleport;
 import com.hypixel.hytale.server.core.modules.physics.component.Velocity;
 import com.hypixel.hytale.server.core.universe.world.storage.ChunkStore;
 import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
-import dev.nakasar.hytale.fractals.arena.WorldBlocks;
 import org.joml.Vector3d;
 
 /**
- * Mouvements de joueur posés par le serveur (vitesse, téléportation) et ce qu'on lit de son état ; aussi pour le Récif de
- * la Sirène (canons, trésors lancés).
+ * Mouvements de joueur posés par le serveur (vitesse, téléportation), ce qu'on lit de son état et le premier bloc
+ * plein le long du regard : partagés par les fractales (Ressac silencieux, Récif de la Sirène).
  */
 public final class Moves {
 

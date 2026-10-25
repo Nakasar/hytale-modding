@@ -16,12 +16,12 @@ import com.hypixel.hytale.server.core.universe.world.World;
 import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
 import dev.nakasar.hytale.fractals.arena.Gates;
 import dev.nakasar.hytale.fractals.arena.Leash;
+import dev.nakasar.hytale.fractals.arena.Moves;
 import dev.nakasar.hytale.fractals.combat.BossStun;
 import dev.nakasar.hytale.fractals.combat.Hurt;
 import dev.nakasar.hytale.fractals.combat.Spawns;
 import dev.nakasar.hytale.fractals.combat.TelegraphSystem;
 import dev.nakasar.hytale.fractals.combat.Telegraphs;
-import dev.nakasar.hytale.fractals.silentsurf.Moves;
 import org.joml.Vector3d;
 
 import java.util.ArrayList;
@@ -152,35 +152,61 @@ final class Stonehead {
         double[] travelled = {0};
         long[] last = {0};
         boolean[] roared = {false};
-        TelegraphSystem.start(world, (w, s, now) -> {
-            if (e != epoch || !runner.isValid()) {
-                return true;
-            }
-            if (begin[0] < 0) {
-                begin[0] = now;
+        TelegraphSystem.start(world, new TelegraphSystem.Task() {
+            @Override
+            public boolean step(World w, Store<EntityStore> s, long now) {
+                if (e != epoch) {
+                    return true;
+                }
+                if (!runner.isValid()) {
+                    ranOff(w, s, e, runner);     // retiré pendant sa course : il ne reviendra pas
+                    return true;
+                }
+                if (begin[0] < 0) {
+                    begin[0] = now;
+                    last[0] = now;
+                }
+                if (now - begin[0] < Telegraphs.seconds(ROAR_WINDUP)) {
+                    last[0] = now;
+                    return false;
+                }
+                if (!roared[0]) {
+                    roared[0] = true;
+                    roar(w, s, roar);
+                    Gates.open(w, s, SirensReefLayout.WALL1, null);
+                }
+                travelled[0] += RUN_SPEED * (now - last[0]) / 1e9;
                 last[0] = now;
-            }
-            if (now - begin[0] < Telegraphs.seconds(ROAR_WINDUP)) {
-                last[0] = now;
+                Vector3d at = along(path, travelled[0]);
+                if (at == null) {
+                    trip(w, s, st, runner);
+                    return true;
+                }
+                Vector3d ahead = along(path, travelled[0] + 1);
+                float yaw = ahead == null ? 0f : Telegraphs.yawToward(at, ahead);
+                s.putComponent(runner, Teleport.getComponentType(), new Teleport(at, new Rotation3f(0f, yaw, 0f)));
                 return false;
             }
-            if (!roared[0]) {
-                roared[0] = true;
-                roar(w, s, roar);
-                Gates.open(w, s, SirensReefLayout.WALL1, null);
+
+            @Override
+            public void abort(World w, Store<EntityStore> s) {
+                ranOff(w, s, e, runner);
             }
-            travelled[0] += RUN_SPEED * (now - last[0]) / 1e9;
-            last[0] = now;
-            Vector3d at = along(path, travelled[0]);
-            if (at == null) {
-                trip(w, s, st, runner);
-                return true;
-            }
-            Vector3d ahead = along(path, travelled[0] + 1);
-            float yaw = ahead == null ? 0f : Telegraphs.yawToward(at, ahead);
-            s.putComponent(runner, Teleport.getComponentType(), new Teleport(at, new Rotation3f(0f, yaw, 0f)));
-            return false;
         });
+    }
+
+    /** La course n'a pas pu finir (il a disparu, ou la tâche a échoué) : la route du ravin s'ouvre quand même. */
+    private void ranOff(World world, Store<EntityStore> store, int e, Ref<EntityStore> runner) {
+        if (e != epoch || done) {
+            return;
+        }
+        if (runner.isValid()) {
+            BossStun.release(store, runner);
+            Spawns.remove(store, runner);
+        }
+        Gates.open(world, store, SirensReefLayout.WALL1, null);
+        done = true;
+        fleeing = false;
     }
 
     /** Peur et recul pour qui est dans le cercle du rugissement. */

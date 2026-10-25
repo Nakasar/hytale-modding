@@ -6,11 +6,11 @@ import com.hypixel.hytale.server.core.universe.PlayerRef;
 import com.hypixel.hytale.server.core.universe.world.World;
 import com.hypixel.hytale.server.core.universe.world.storage.ChunkStore;
 import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
+import dev.nakasar.hytale.fractals.arena.Moves;
 import dev.nakasar.hytale.fractals.arena.WorldBlocks;
 import dev.nakasar.hytale.fractals.combat.Hurt;
 import dev.nakasar.hytale.fractals.combat.Spawns;
 import dev.nakasar.hytale.fractals.combat.Telegraphs;
-import dev.nakasar.hytale.fractals.silentsurf.Moves;
 import org.joml.Vector3d;
 
 import java.util.ArrayList;
@@ -60,8 +60,17 @@ final class ReefMines {
 
     private final List<Mine> mines = new ArrayList<>();
 
-    /** Pose une mine en {x, y, z} (bloc) ; `respawn` : elle revient après avoir sauté. */
+    /** Pose une mine en {x, y, z} (bloc) ; `respawn` : elle revient après avoir sauté. Une case n'en porte qu'une : la
+     * mine encore là (semée à une vague précédente) est gardée telle quelle. */
     Mine add(World world, int[] cell, String group, boolean respawn) {
+        for (Mine old : mines) {
+            if (old.x == cell[0] && old.y == cell[1] && old.z == cell[2]) {
+                if (!old.placed) {
+                    place(world, old);
+                }
+                return old;
+            }
+        }
         Mine m = new Mine(cell[0], cell[1], cell[2], group, respawn);
         mines.add(m);
         place(world, m);

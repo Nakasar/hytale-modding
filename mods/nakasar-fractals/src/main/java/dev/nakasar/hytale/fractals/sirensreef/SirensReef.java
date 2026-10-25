@@ -9,6 +9,7 @@ import com.hypixel.hytale.server.core.modules.entity.damage.Damage;
 import com.hypixel.hytale.server.core.universe.PlayerRef;
 import com.hypixel.hytale.server.core.universe.world.World;
 import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
+import dev.nakasar.hytale.fractals.arena.FractalItemsSystem;
 import dev.nakasar.hytale.fractals.arena.Gates;
 import dev.nakasar.hytale.fractals.arena.Leash;
 import dev.nakasar.hytale.fractals.boss.BossBarSystem;
@@ -28,6 +29,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.UUID;
 import java.util.WeakHashMap;
 
@@ -123,6 +125,14 @@ public final class SirensReef implements FractalStage {
     }
 
     private final Map<World, State> states = Collections.synchronizedMap(new WeakHashMap<>());
+
+    /** Le trésor maudit, les boulets du canon et les effets du Récif se perdent hors de la fractale. */
+    public static FractalItemsSystem itemsSystem() {
+        return new FractalItemsSystem(FRACTAL, Set.of(TREASURE, ShadowCannon.ITEMS[0], ShadowCannon.ITEMS[1],
+                ShadowCannon.ITEMS[2]), "Nakasar_Fractal_Cursed_1", "Nakasar_Fractal_Cursed_2",
+                "Nakasar_Fractal_Cursed_3", CursedTreasure.RELIEF, "Nakasar_Fractal_Fetid_Fog", "Nakasar_Fractal_Piranhas",
+                "Nakasar_Fractal_Grim_Lagoon", "Nakasar_Fractal_Cinders", "Nakasar_Fractal_Chilled", "Nakasar_Fractal_Dazed");
+    }
 
     /** Barres de boss ; défiance de Black Peter ; le trésor maudit se ramasse accroupi. */
     public static void register() {
@@ -220,6 +230,7 @@ public final class SirensReef implements FractalStage {
             case SHIP -> {
                 if (st.ship.step(world, store, st, players, dt)) {
                     st.phase = Phase.DONE;
+                    st.cannons.clear(world, store);
                     Gates.victory(world, SirensReefLayout.REWARD, SirensReefLayout.END_EXIT, MESSAGES + "title.victory",
                             MESSAGES + "ship.victory");
                 }
@@ -380,7 +391,9 @@ public final class SirensReef implements FractalStage {
         if (st.mines.shot(world, store, at, radius) > 0) {
             Spawns.tellAll(world, Message.translation(MESSAGES + "mine.cleared"));
         }
-        if (!st.wall2Open && near(at, SirensReefLayout.WALL2, radius + ShadowCannon.WALL_REACH)) {
+        // La palissade ne tombe qu'une fois Tête-de-pierre vaincu (on peut sauter de la corniche dans le ravin).
+        if (!st.wall2Open && st.phase.ordinal() >= Phase.RAVINE.ordinal()
+                && near(at, SirensReefLayout.WALL2, radius + ShadowCannon.WALL_REACH)) {
             st.wall2Open = true;
             Gates.open(world, store, SirensReefLayout.WALL2, MESSAGES + "wall2.open");
         }

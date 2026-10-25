@@ -7,10 +7,10 @@ import com.hypixel.hytale.server.core.universe.PlayerRef;
 import com.hypixel.hytale.server.core.universe.world.World;
 import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
 import dev.nakasar.hytale.fractals.arena.Carried;
+import dev.nakasar.hytale.fractals.arena.Moves;
 import dev.nakasar.hytale.fractals.combat.BossStun;
 import dev.nakasar.hytale.fractals.combat.Delayed;
 import dev.nakasar.hytale.fractals.combat.Telegraphs;
-import dev.nakasar.hytale.fractals.silentsurf.Moves;
 import org.joml.Vector3d;
 
 import java.util.Arrays;
@@ -38,7 +38,7 @@ final class ShadowCannon {
     static final String[] ITEMS = {"Nakasar_Fractal_Cannon_Ripple", "Nakasar_Fractal_Cannon_Scatter",
             "Nakasar_Fractal_Cannon_Ice"};
     static final float[] RELOAD = {4f, 8f, 15f};
-    static final double RANGE = 70;
+    static final double RANGE = SirensReefLayout.CANNON_RANGE;
     static final double LEAVE = 3.5;
     /** Vitesse du boulet (blocs/s) : l'impact tombe au bout de distance / vitesse. */
     static final double SPEED = 45;

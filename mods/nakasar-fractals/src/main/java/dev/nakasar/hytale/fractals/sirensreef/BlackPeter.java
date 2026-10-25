@@ -9,6 +9,7 @@ import com.hypixel.hytale.server.core.universe.PlayerRef;
 import com.hypixel.hytale.server.core.universe.world.World;
 import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
 import dev.nakasar.hytale.fractals.arena.Leash;
+import dev.nakasar.hytale.fractals.arena.Moves;
 import dev.nakasar.hytale.fractals.combat.BossStun;
 import dev.nakasar.hytale.fractals.combat.Hurt;
 import dev.nakasar.hytale.fractals.combat.Spawns;
@@ -16,7 +17,6 @@ import dev.nakasar.hytale.fractals.combat.TelegraphSystem;
 import dev.nakasar.hytale.fractals.combat.Telegraphs;
 import dev.nakasar.hytale.fractals.defiance.Defiance;
 import dev.nakasar.hytale.fractals.party.FractalRuns;
-import dev.nakasar.hytale.fractals.silentsurf.Moves;
 import org.joml.Vector3d;
 
 import java.util.ArrayList;
@@ -292,11 +292,11 @@ final class BlackPeter {
         if (now < powderUntil - Telegraphs.seconds(POWDER_WINDUP)) {
             return;
         }
-        blowing = true;
         Vector3d at = Telegraphs.position(store, boss);
         if (at == null) {
-            return;
+            return;                     // on réessaie au tick suivant
         }
+        blowing = true;
         Vector3d c = new Vector3d(at);
         BossStun.interrupt(world, store, boss);
         BossStun.stun(world, store, boss, POWDER_WINDUP, null);

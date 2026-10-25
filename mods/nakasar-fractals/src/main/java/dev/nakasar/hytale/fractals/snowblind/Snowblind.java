@@ -12,6 +12,7 @@ import com.hypixel.hytale.server.core.universe.world.storage.ChunkStore;
 import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
 import com.hypixel.hytale.server.npc.entities.NPCEntity;
 import dev.nakasar.hytale.fractals.arena.Carried;
+import dev.nakasar.hytale.fractals.arena.FractalItemsSystem;
 import dev.nakasar.hytale.fractals.arena.Gates;
 import dev.nakasar.hytale.fractals.arena.HandLock;
 import dev.nakasar.hytale.fractals.arena.WorldBlocks;
@@ -30,6 +31,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.UUID;
 import java.util.WeakHashMap;
 
@@ -92,6 +94,11 @@ public final class Snowblind implements FractalStage {
     }
 
     private final Map<World, State> states = Collections.synchronizedMap(new WeakHashMap<>());
+
+    /** La torche et les fagots se perdent hors de la fractale. */
+    public static FractalItemsSystem itemsSystem() {
+        return new FractalItemsSystem(FRACTAL, Set.of(TORCH, FIREWOOD));
+    }
 
     /** Barres de boss de la Source (bouclier de givre), du Chaman (ses deux formes) et de l'Effigie (défiance). */
     public static void register() {

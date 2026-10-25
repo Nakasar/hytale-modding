@@ -87,9 +87,10 @@ PATHS = {
     "shore": [(40, 146, 1, 7), (34, 132, 1, 6), (26, 121, 1, 5.5), (12, 116, 2, 5), (-4, 117, 2, 5), (-12, 104, 2, 5),
               (-12, 88, 2, 5), (-26, 86, 2, 5), (-40, 84, 2, 5), (-50, 72, 2, 5), (-54, 60, 2, 5)],
     "ledge_ramp": [(-58, 56, 2, 1.8), (-60, 53, 3, 1.8), (-62, 50, 4, 1.8), (-63, 48, 5, 1.8), (-64, 46, 6, 1.8)],
-    # Le ravin ondule à peine (± 3 blocs) : le canon de la corniche doit voir ses mines.
-    "ravine": [(-55, 47, 2, 3.5), (-52, 36, 2, 3.5), (-41, 25, 2, 3.5), (-34, 12, 2, 3.5), (-20, 3, 2, 3.5),
-               (-15, -10, 2, 3.5), (-6, -19, 1, 4)],
+    # Le ravin tourne au sortir de la clairière puis file vers la palissade dans l'axe de la corniche (à ± 1 bloc,
+    # les bords restent bruités) : le canon doit voir ses mines et la palissade par-dessus le fond du ravin.
+    "ravine": [(-55, 47, 2, 3.5), (-56, 40, 2, 3.5), (-53, 33.5, 2, 3.5), (-43, 23, 2, 3.5), (-33, 11, 2, 3.5),
+               (-23, 0.5, 2, 3.5), (-14, -10, 2, 3.5), (-6, -19, 1, 4)],
     "rampart_ramp": [(6, -44, 1, 1.8), (8, -47, 2, 1.8), (10, -50, 3, 1.8), (12, -52, 4, 1.8), (14, -54, 5, 1.8)],
     "jungle": [(-15, -48, 1, 4.5), (-27, -55, 2, 4.5), (-30, -70, 2, 4.5), (-25, -81, 2, 4), (-38, -87, 2, 4),
                (-46, -92, 2, 4), (-38, -100, 2, 4), (-44, -106, 2, 4.5)],
@@ -115,6 +116,9 @@ CLEARING_RADIUS = 16
 STONEHEAD_AT = (-56, 2, 64)
 WALL1_AT = (-54, 50)                             # barrière de rochers entre la clairière et le ravin (Tête-de-pierre la brise)
 CANNON_LEDGE = (-64, 6, 46)                      # canon des ombres sur sa corniche, face au ravin
+CANNON_RANGE = 96                                # portée du canon des ombres (blocs) : de la corniche à la palissade
+SIGHT_NEAR = 15                                  # falaise rabotée sous la ligne de visée, jusqu'à cette distance du canon
+SIGHT_HALF = 3.5                                 # demi-largeur de l'entaille
 MINE_FRACTIONS = (0.2, 0.45, 0.7)                # mines du ravin, le long du chemin
 WALL2_AT = (-8, -17)                             # palissade au bout du ravin, que le canon doit abattre
 FORT_C = (4, -40)
@@ -381,6 +385,19 @@ class Terrain:
         for c, t in list(self.top.items()):
             if self.center.get(self.near[c], ("",))[0] == "ravine":
                 self.top[c] = max(t, self.stand[self.near[c]] + 9 + math.floor(min(6, self.dist[c])))
+        self._sight()
+
+    def _sight(self):
+        """Entaille de la corniche : sous la ligne de visée du canon vers la palissade, la falaise (bord de la
+        corniche, paroi de l'entrée du ravin) descend à deux blocs sous la corniche, pour que le canon voie le fond
+        du ravin. Plus bas que la corniche, plus haut que le fond du ravin de deux blocs : on n'y remonte pas."""
+        (ax, ay, az), (bx, bz) = CANNON_LEDGE, WALL2_AT
+        dx, dz = bx - ax, bz - az
+        n = math.hypot(dx, dz)
+        for (x, z), t in list(self.top.items()):
+            k = ((x - ax) * dx + (z - az) * dz) / n
+            if 0 <= k <= SIGHT_NEAR and abs((x - ax) * dz - (z - az) * dx) / n <= SIGHT_HALF:
+                self.top[(x, z)] = min(t, ay - 2)
 
     @staticmethod
     def _dijkstra(sources, reach):
