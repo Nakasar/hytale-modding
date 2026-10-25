@@ -616,7 +616,7 @@ def course_prefab():
                     continue
                 for y in (ARENA, ARENA + 1):
                     if (dx, dz) == (ddx, ddz):
-                        p.set(x + dx, y, z + dz, CAGE_DOOR)
+                        p.set(x + dx, y, z + dz, CAGE_DOOR, 1 if dx != 0 else 0)  # barreaux vanilla
                     elif dx != 0 and dz != 0:
                         p.set(x + dx, y, z + dz, "Rock_Basalt_Brick_Pillar_Middle")
                     else:

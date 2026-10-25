@@ -3,7 +3,7 @@
     "Name": "nakasar_fractals_cliffside.items.Nakasar_Fractal_Seal_Stone.name",
     "Description": "nakasar_fractals_cliffside.items.Nakasar_Fractal_Seal_Stone.description"
   },
-  "Icon": "Icons/Items/Nakasar/Fractals/Seal_Stone.png",
+  "Icon": "Icons/ItemsGenerated/Rock_Runic_Brick_Dark.png",
   "Categories": [
     "Blocks.Deco"
   ],
@@ -13,13 +13,6 @@
     "Material": "Solid",
     "DrawType": "Cube",
     "Opacity": "Solid",
-    "Textures": [
-      {
-        "Sides": "BlockTextures/Nakasar/Fractals/Seal_Stone.png",
-        "UpDown": "BlockTextures/Nakasar/Fractals/Seal_Stone_Top.png",
-        "Weight": 1
-      }
-    ],
     "HitboxType": "Full",
     "Flags": {},
     "Gathering": {
@@ -32,7 +25,24 @@
     "ParticleColor": "#c478ff",
     "Light": {
       "Color": "#a6f"
-    }
+    },
+    "Textures": [
+      {
+        "Sides": "BlockTextures/Runic_Brick_Dark.png",
+        "UpDown": "BlockTextures/Runic_Brick_Top_Dark.png",
+        "Weight": 4
+      },
+      {
+        "Sides": "BlockTextures/Runic_Brick_Dark_02.png",
+        "UpDown": "BlockTextures/Runic_Brick_Top_Dark_02.png",
+        "Weight": 1
+      },
+      {
+        "Sides": "BlockTextures/Runic_Brick_Dark_03.png",
+        "UpDown": "BlockTextures/Runic_Brick_Top_Dark_03.png",
+        "Weight": 1
+      }
+    ]
   },
   "Tags": {
     "Type": [

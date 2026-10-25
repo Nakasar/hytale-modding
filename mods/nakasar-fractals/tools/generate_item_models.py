@@ -47,15 +47,6 @@ def metal_or_glow(color, lit):
 
 # ---------------------------------------------------------------- objets
 
-def mist_shard():
-    """Éclat de Brume : grappe de trois pointes violettes sur une base givrée."""
-    c = glow(MIST)
-    return [part("Base", (0, 0.75, 0), (6, 1.5, 5), fb.smooth_stone((200, 196, 230), rim=False)),
-            part("Spike", (0, 5.5, 0), (3.5, 9, 3.5), c, glow=True, rot=(0, 45, 6)),
-            part("Spike_B", (2.4, 3.8, 0.8), (2.5, 6, 2.5), c, glow=True, rot=(0, 20, -26)),
-            part("Spike_C", (-2.2, 3.2, -0.6), (2, 4.5, 2), c, glow=True, rot=(0, 60, 30))]
-
-
 def core(color):
     """Noyau de fractale : sphère de cristal (deux boîtes croisées) dans une monture de laiton à quatre griffes."""
     p = [part("Mount", (0, 1, 0), (7, 2, 7), fb.metal(BRASS, False)),
@@ -105,21 +96,6 @@ def infusion(n):
     return p
 
 
-def coffer(band, lit=False, sun=False):
-    """Coffret de récompense : bois sombre, ferrures du rang, serrure lumineuse (soleil doré pour celui du jour)."""
-    wood = fb.planks(WOOD_DARK, 3, vertical=False)
-    b = metal_or_glow(band, lit)
-    p = [part("Box", (0, 3.5, 0), (11, 6, 8), wood),
-         part("Lid", (0, 8, 0), (11, 3, 8), wood),
-         part("Band_L", (-3.5, 5, 0), (1.2, 9.4, 8.4), b, glow=lit),
-         part("Band_R", (3.5, 5, 0), (1.2, 9.4, 8.4), b, glow=lit),
-         part("Foot", (0, 0.4, 0), (12, 0.8, 9), fb.metal(BRASS, False)),
-         part("Lock", (0, 6, 4.25), (2.5, 3, 0.6), glow((255, 220, 110)) if sun else glow(MIST), glow=True)]
-    if sun:
-        p.append(part("Sun", (0, 9.75, 0), (5, 0.5, 5), fb.glyph((255, 220, 110), "ring", ("top",)), glow=True))
-    return p
-
-
 def mist_tear():
     """Larme de Brume : goutte de cristal cyan dans une cage de fil de cuivre."""
     c = glow((120, 210, 255))
@@ -156,17 +132,6 @@ def wisp():
             part("Flame_Tip", (0, 7, 0), (1.5, 2, 1.5), glow((240, 255, 250)), glow=True, rot=(0, 45, 0))]
 
 
-def frost_torch():
-    """Torche épaisse : manche de bois, tête enveloppée de tissu, flamme vive."""
-    return [part("Handle", (0, 7, 0), (2.5, 14, 2.5), fb.planks((120, 84, 50), 2)),
-            part("Wrap", (0, 14.5, 0), (3.6, 4, 3.6), fb.cloth((150, 120, 80), (110, 80, 50))),
-            part("Head", (0, 17, 0), (3, 1.5, 3), fb.smooth_stone((40, 32, 30), rim=False)),
-            part("Flame", (0, 19.5, 0), (3.5, 4.5, 3.5), fb.crystal(FIRE_DARK, FIRE_LIGHT), glow=True,
-                 rot=(0, 45, 0)),
-            part("Flame_Tip", (0, 22.5, 0), (1.8, 2.5, 1.8), fb.crystal((255, 190, 70), (255, 250, 210)), glow=True,
-                 rot=(0, 20, 0))]
-
-
 def firewood():
     """Fagot : trois bûches liées par deux tours de corde."""
     log = fb.log((84, 60, 44))
@@ -178,19 +143,14 @@ def firewood():
 
 
 ITEMS = {
-    "Mist_Shard": mist_shard,
     "Mist_Tear": mist_tear,
     "Imbued_Stone": imbued_stone,
     "Wisp": wisp,
-    "Frost_Torch": frost_torch,
     "Firewood": firewood,
-    "Daily_Bag": lambda: coffer(GOLD, sun=True),
 }
 ITEMS.update({f"Core_{fid}": (lambda c: lambda: core(c))(color) for fid, color in CORE_COLORS.items()})
 ITEMS.update({f"Level_Fork_{rank}": (lambda r: lambda: level_fork(r))(rank) for rank in RANK_METALS})
 ITEMS.update({f"Infusion_{n:02d}": (lambda k: lambda: infusion(k))(n) for n in range(1, 16)})
-ITEMS.update({f"Reward_Bag_{rank}": (lambda c, l: lambda: coffer(c, l))(color, lit)
-              for rank, (color, lit) in RANK_METALS.items()})
 
 
 def render(parts, atlas, uv, size, bg=None):

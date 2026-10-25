@@ -3,7 +3,7 @@
     "Name": "nakasar_fractals_cliffside.items.Nakasar_Fractal_Pressure_Plate.name",
     "Description": "nakasar_fractals_cliffside.items.Nakasar_Fractal_Pressure_Plate.description"
   },
-  "Icon": "Icons/Items/Nakasar/Fractals/Pressure_Plate.png",
+  "Icon": "Icons/ItemsGenerated/Rock_Runic_Cobble.png",
   "Categories": [
     "Blocks.Deco"
   ],
@@ -13,13 +13,6 @@
     "Material": "Solid",
     "DrawType": "Cube",
     "Opacity": "Solid",
-    "Textures": [
-      {
-        "Sides": "BlockTextures/Nakasar/Fractals/Pressure_Plate.png",
-        "UpDown": "BlockTextures/Nakasar/Fractals/Pressure_Plate_Top.png",
-        "Weight": 1
-      }
-    ],
     "HitboxType": "Full",
     "Flags": {},
     "Gathering": {
@@ -29,7 +22,24 @@
     },
     "BlockParticleSetId": "Stone",
     "BlockSoundSetId": "Stone",
-    "ParticleColor": "#8c8278"
+    "ParticleColor": "#8c8278",
+    "Textures": [
+      {
+        "Sides": "BlockTextures/Rock_Runic_Cobble_Side.png",
+        "UpDown": "BlockTextures/Rock_Runic_Cobble_Top.png",
+        "Weight": 1
+      },
+      {
+        "Sides": "BlockTextures/Rock_Runic_Cobble_Side02.png",
+        "UpDown": "BlockTextures/Rock_Runic_Cobble_Top2.png",
+        "Weight": 1
+      },
+      {
+        "Sides": "BlockTextures/Rock_Runic_Cobble_Side03.png",
+        "UpDown": "BlockTextures/Rock_Runic_Cobble_Top3.png",
+        "Weight": 1
+      }
+    ]
   },
   "Tags": {
     "Type": [

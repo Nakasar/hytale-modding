@@ -3,7 +3,7 @@
     "Name": "nakasar_fractals.items.Nakasar_Fractal_Harmony_Tile.name",
     "Description": "nakasar_fractals.items.Nakasar_Fractal_Harmony_Tile.description"
   },
-  "Icon": "Icons/Items/Nakasar/Fractals/Harmony_Tile.png",
+  "Icon": "Icons/ItemsGenerated/Rock_Runic_Brick_Blue.png",
   "Categories": [
     "Blocks.Deco"
   ],
@@ -13,13 +13,6 @@
     "Material": "Solid",
     "DrawType": "Cube",
     "Opacity": "Solid",
-    "Textures": [
-      {
-        "Sides": "BlockTextures/Nakasar/Fractals/Harmony_Tile.png",
-        "UpDown": "BlockTextures/Nakasar/Fractals/Harmony_Tile_Top.png",
-        "Weight": 1
-      }
-    ],
     "HitboxType": "Full",
     "Flags": {},
     "Gathering": {
@@ -32,7 +25,22 @@
     "ParticleColor": "#78beff",
     "Light": {
       "Color": "#6bf"
-    }
+    },
+    "Textures": [
+      {
+        "All": "BlockTextures/Rock_Runic_Blue_Brick.png",
+        "Weight": 1
+      }
+    ],
+    "Particles": [
+      {
+        "SystemId": "Dust_Sparkles_Fine",
+        "Scale": 1.2,
+        "PositionOffset": {
+          "Y": 1.05
+        }
+      }
+    ]
   },
   "Tags": {
     "Type": [

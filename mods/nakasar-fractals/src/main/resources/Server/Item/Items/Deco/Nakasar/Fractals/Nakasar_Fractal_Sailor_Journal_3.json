@@ -3,7 +3,7 @@
     "Name": "nakasar_fractals_silent_surf.items.Nakasar_Fractal_Sailor_Journal_3.name",
     "Description": "nakasar_fractals_silent_surf.items.Nakasar_Fractal_Sailor_Journal_3.description"
   },
-  "Icon": "Icons/Items/Nakasar/Fractals/Sailor_Journal.png",
+  "Icon": "Icons/ItemsGenerated/Deco_Scrap_Book_Pile_Small.png",
   "Categories": [
     "Blocks.Deco"
   ],
@@ -11,16 +11,9 @@
   "PlayerAnimationsId": "Block",
   "BlockType": {
     "Material": "Solid",
-    "DrawType": "Cube",
-    "Opacity": "Solid",
-    "Textures": [
-      {
-        "Sides": "BlockTextures/Nakasar/Fractals/Sailor_Journal.png",
-        "UpDown": "BlockTextures/Nakasar/Fractals/Sailor_Journal.png",
-        "Weight": 1
-      }
-    ],
-    "HitboxType": "Full",
+    "DrawType": "Model",
+    "Opacity": "Transparent",
+    "HitboxType": "Block_Half",
     "Flags": {},
     "Gathering": {
       "Breaking": {
@@ -36,7 +29,15 @@
           "Nakasar_Fractal_Read_Registry"
         ]
       }
-    }
+    },
+    "CustomModel": "Blocks/Dungeons/Book_Pile_Small.blockymodel",
+    "CustomModelTexture": [
+      {
+        "Texture": "Blocks/Dungeons/Book_Pile_Texture.png",
+        "Weight": 1
+      }
+    ],
+    "VariantRotation": "NESW"
   },
   "Tags": {
     "Type": [

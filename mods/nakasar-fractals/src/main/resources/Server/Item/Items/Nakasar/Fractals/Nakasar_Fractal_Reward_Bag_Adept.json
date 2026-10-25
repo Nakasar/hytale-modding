@@ -3,18 +3,30 @@
     "Name": "nakasar_fractals_progress.items.Nakasar_Fractal_Reward_Bag_Adept.name",
     "Description": "nakasar_fractals_progress.items.Nakasar_Fractal_Reward_Bag_Adept.description"
   },
-  "Icon": "Icons/Items/Nakasar/Fractals/Reward_Bag_Adept.png",
-  "Model": "Items/Nakasar/Fractals/Reward_Bag_Adept.blockymodel",
-  "Texture": "Items/Nakasar/Fractals/Reward_Bag_Adept.png",
+  "Icon": "Icons/ItemsGenerated/Furniture_Human_Ruins_Chest_Small.png",
+  "Model": "Blocks/Decorative_Sets/Human_Ruins/Chest_Small.blockymodel",
+  "Texture": "Blocks/Decorative_Sets/Human_Ruins/Chest_Small_Texture.png",
   "Quality": "Rare",
   "Categories": [
     "Items.Ingredients"
   ],
   "PlayerAnimationsId": "Item",
   "ItemSoundSetId": "ISS_Items_Gems",
-  "Scale": 1.0,
+  "Scale": 0.5,
   "MaxStack": 16,
   "Interactions": {
     "Secondary": "Root_Nakasar_Fractal_Reward_Bag_Adept"
+  },
+  "IconProperties": {
+    "Scale": 0.55,
+    "Translation": [
+      0,
+      -15
+    ],
+    "Rotation": [
+      22.5,
+      45,
+      22.5
+    ]
   }
 }

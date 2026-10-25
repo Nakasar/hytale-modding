@@ -3,7 +3,7 @@
     "Name": "nakasar_fractals_cliffside.items.Nakasar_Fractal_Landing.name",
     "Description": "nakasar_fractals_cliffside.items.Nakasar_Fractal_Landing.description"
   },
-  "Icon": "Icons/Items/Nakasar/Fractals/Landing.png",
+  "Icon": "Icons/ItemsGenerated/Rock_Runic_Brick.png",
   "Categories": [
     "Blocks.Deco"
   ],
@@ -13,13 +13,6 @@
     "Material": "Solid",
     "DrawType": "Cube",
     "Opacity": "Solid",
-    "Textures": [
-      {
-        "Sides": "BlockTextures/Nakasar/Fractals/Landing.png",
-        "UpDown": "BlockTextures/Nakasar/Fractals/Landing_Top.png",
-        "Weight": 1
-      }
-    ],
     "HitboxType": "Full",
     "Flags": {},
     "Gathering": {
@@ -29,7 +22,24 @@
     },
     "BlockParticleSetId": "Stone",
     "BlockSoundSetId": "Stone",
-    "ParticleColor": "#96c8ff"
+    "ParticleColor": "#96c8ff",
+    "Textures": [
+      {
+        "Sides": "BlockTextures/Runic_Brick.png",
+        "UpDown": "BlockTextures/Rock_Runic_Brick_Top.png",
+        "Weight": 4
+      },
+      {
+        "Sides": "BlockTextures/Runic_Brick_2.png",
+        "UpDown": "BlockTextures/Rock_Runic_Brick_Top.png",
+        "Weight": 1
+      },
+      {
+        "Sides": "BlockTextures/Runic_Brick_3.png",
+        "UpDown": "BlockTextures/Rock_Runic_Brick_Top.png",
+        "Weight": 1
+      }
+    ]
   },
   "Tags": {
     "Type": [

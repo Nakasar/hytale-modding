@@ -3,7 +3,7 @@
     "Name": "nakasar_fractals.items.Nakasar_Fractal_Light_Spring.name",
     "Description": "nakasar_fractals.items.Nakasar_Fractal_Light_Spring.description"
   },
-  "Icon": "Icons/Items/Nakasar/Fractals/Light_Spring.png",
+  "Icon": "Icons/ItemsGenerated/Build_Lightsource_Cyan.png",
   "Categories": [
     "Blocks.Deco"
   ],
@@ -11,7 +11,7 @@
   "PlayerAnimationsId": "Block",
   "BlockType": {
     "Material": "Solid",
-    "DrawType": "Model",
+    "DrawType": "Cube",
     "Opacity": "Transparent",
     "HitboxType": "Full",
     "Flags": {},
@@ -26,15 +26,12 @@
     "Light": {
       "Color": "#8cf"
     },
-    "CustomModel": "Blocks/Nakasar/Fractals/Light_Spring.blockymodel",
-    "CustomModelTexture": [
+    "Textures": [
       {
-        "Texture": "Blocks/Nakasar/Fractals/Light_Spring_Texture.png",
+        "All": "BlockTextures/Dev_Lightsource_Cyan_Side.png",
         "Weight": 1
       }
     ],
-    "VariantRotation": "NESW",
-    "CustomModelAnimation": "Blocks/Nakasar/Fractals/Light_Spring.blockyanim",
     "Particles": [
       {
         "SystemId": "Nakasar_Fractal_Light_Fall",
@@ -49,17 +46,5 @@
       "Deco"
     ]
   },
-  "ItemSoundSetId": "ISS_Blocks_Stone",
-  "IconProperties": {
-    "Scale": 0.55,
-    "Translation": [
-      0,
-      -12
-    ],
-    "Rotation": [
-      22.5,
-      45,
-      22.5
-    ]
-  }
+  "ItemSoundSetId": "ISS_Blocks_Stone"
 }

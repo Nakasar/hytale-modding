@@ -111,24 +111,6 @@ def resonator():
     return p, a
 
 
-def reward_chest():
-    """Coffre bombé cerclé de laiton, serrure en cristal : mêmes nœuds que le coffre vanilla (couvercle « Lid »)."""
-    wood = fb.planks(WOOD_DARK, 5, vertical=False)
-    p = [
-        part("Block", (0, 9, 0), (30, 16, 23), wood),
-        part("Frame", (0, 2, 0), (32, 4, 26), fb.metal(BRASS), parent="Block"),
-        part("Corner_FL", (-12.5, 4, 10.5), (6, 6, 6), fb.metal(GOLD), parent="Frame"),
-        part("Corner_FR", (12.5, 4, 10.5), (6, 6, 6), fb.metal(GOLD), parent="Frame"),
-        part("Corner_BL", (-12.5, 4, -10.5), (6, 6, 6), fb.metal(GOLD), parent="Frame"),
-        part("Corner_BR", (12.5, 4, -10.5), (6, 6, 6), fb.metal(GOLD), parent="Frame"),
-        part("Lid", (0, 23.5, 0), (29, 13, 24), wood, pivot=(0, 17, -12)),
-        part("Lid_Frame_R", (12, 23.5, 0), (4, 14, 25), fb.metal(BRASS), parent="Lid"),
-        part("Lid_Frame_L", (-12, 23.5, 0), (4, 14, 25), fb.metal(BRASS), parent="Lid"),
-        part("Lock_Plate", (0, 18, 12.5), (10, 10, 2), fb.metal(GOLD), parent="Lid"),
-        part("Lock", (0, 18, 13.75), (5, 6, 1), fb.crystal(MIST_DARK, MIST_LIGHT), glow=True, parent="Lid"),
-        inlay("Lid_Rune", (0, 30.25, 0), (14, 0.5, 14), MIST, "ring", ("top",), parent="Lid"),
-    ]
-    return p, None
 
 
 def exit_stone():
@@ -142,6 +124,10 @@ def exit_stone():
         part("Body", (0, 17, 0), (17, 22, 13), s),
         part("Upper", (0, 33, 0), (14, 10, 11), s),
         part("Cap", (0, 40, 0), (10, 4, 8), fb.smooth_stone(STONE), rot=(0, 8, 0)),
+        # Style Hytale : cerclage de laiton, mousse sur le socle.
+        part("Band", (0, 28.5, 0), (18, 2, 14), fb.metal(BRASS, False)),
+        part("Moss_1", (-5, 6.25, 3), (8, 0.5, 6), fb.ground((70, 110, 60), (96, 150, 70))),
+        part("Moss_2", (6, 6.25, -4), (6, 0.5, 5), fb.ground((70, 110, 60), (96, 150, 70))),
         inlay("Rune_Front", (0, 19, 6.75), (11, 11, 0.5), MIST, "eye", ("front",)),
         inlay("Rune_Back", (0, 19, -6.75), (11, 11, 0.5), MIST, "eye", ("back",)),
         part("Shard_A", (13, 26, 0), (3, 5, 3), c, glow=True, pivot=(0, 26, 0)),
@@ -168,6 +154,12 @@ def mists_portal():
         part("Keystone", (0, 120, 0), (14, 16, 18), dark),
         part("Keystone_Gem", (0, 138, 0), (8, 10, 8), c, glow=True, rot=(0, 45, 0)),
         part("Veil", (0, 62, 0), (68, 112, 1), fb.mist(MIST_DARK, MIST_LIGHT, 200), glow=True),
+        # Style Hytale : chapiteaux débordants, marche devant, éboulis au pied des piliers.
+        part("Capital_L", (-41, 117, 0), (18, 4, 18), dark),
+        part("Capital_R", (41, 117, 0), (18, 4, 18), dark),
+        part("Step", (0, 1.5, 12), (72, 3, 6), fb.stone(STONE_DARK, (10, 3))),
+        part("Rubble_L", (-52, 2, 9), (7, 4, 6), dark, rot=(0, 25, 0)),
+        part("Rubble_R", (53, 1.5, -8), (6, 3, 6), dark, rot=(0, 40, 0)),
     ]
     for side, x in (("L", -41), ("R", 41)):
         for k, y in enumerate((30, 62, 94)):
@@ -203,9 +195,15 @@ def archivist_counter():
         part("Pan_Shards", (-15.5, 30.75, -3), (2.5, 1.5, 2.5), c, glow=True, rot=(0, 30, 0)),
         part("Book_Cover", (8, 23.5, 4), (14, 1, 10), fb.solid((120, 48, 42)), rot=(0, -14, 0)),
         part("Book_Pages", (8, 24.4, 4), (12.5, 1, 8.5), fb.paper(), rot=(0, -14, 0)),
-        part("Jar", (10, 27, -7), (5, 6, 5), c, glow=True),
+        part("Jar", (10, 26, -7), (5, 4, 5), c, glow=True),
+        part("Jar_Glass", (10, 27, -7), (6, 6, 6), fb.glass((210, 220, 255), 90)),
         part("Jar_Cork", (10, 31, -7), (3.5, 2, 3.5), fb.planks(WOOD, 2)),
     ]
+    # Style Hytale : montants d'angle, chemin de table violet bordé d'or, bougie.
+    for k, (x, z) in enumerate(((-14, 10), (14, 10), (-14, -10), (14, -10))):
+        p.append(part(f"Post_{k + 1}", (x, 11, z), (3, 18, 3), fb.planks(WOOD_DARK, 3)))
+    p += runner("Runner", 23, 26, 9, 14.25, 12)
+    p += candle("Candle", 3, 23, -8)
     return p, None
 
 
@@ -224,6 +222,23 @@ SILVER = (200, 206, 218)
 IRON = (86, 88, 98)
 IRON_DARK = (58, 58, 66)
 PAPER = (232, 220, 190)
+
+
+VELVET = (92, 52, 150)        # toile violette des Brumes (chemins de table, tentures)
+CANDLE = (236, 222, 186)
+
+
+def runner(name, top_y, depth, width, front_z, drop, parent=None):
+    """Chemin de table en toile violette bordée d'or (comme l'établi arcanique vanilla) : dessus et pan qui tombe devant."""
+    cloth = fb.cloth(VELVET, fb.shade(GOLD, 0.9))
+    return [part(f"{name}_Top", (0, top_y + 0.25, front_z - depth / 2), (width, 0.5, depth), cloth, parent=parent),
+            part(f"{name}_Drop", (0, top_y - drop / 2 + 0.5, front_z + 0.25), (width, drop, 0.5), cloth, parent=parent)]
+
+
+def candle(name, x, y, z, h=5):
+    """Bougie de cire et sa flamme (lueur)."""
+    return [part(f"{name}", (x, y + h / 2, z), (2, h, 2), fb.solid(CANDLE)),
+            part(f"{name}_Flame", (x, y + h + 1, z), (1, 2, 1), glow((255, 190, 90)), glow=True)]
 
 
 def glow(color):
@@ -304,6 +319,14 @@ def daily_board():
         part("Frame_Bottom", (0, 9.25, 0), (26, 1.5, 3), fb.metal(BRASS, False)),
         part("Roof", (0, 31, 0), (31, 2, 8), fb.planks(WOOD_DARK, 4, vertical=False)),
         part("Roof_Ridge", (0, 32.5, 0), (31, 1, 3), fb.planks(WOOD_DARK, 4, vertical=False)),
+        # Style Hytale : pieds de pierre, jambes de force sous le toit, lanterne.
+        part("Foot_L", (-13, 1.5, 0), (6, 3, 6), fb.smooth_stone(STONE_DARK)),
+        part("Foot_R", (13, 1.5, 0), (6, 3, 6), fb.smooth_stone(STONE_DARK)),
+        part("Brace_L", (-11, 28, 2.5), (2, 2, 4), fb.planks(WOOD_DARK, 2)),
+        part("Brace_R", (11, 28, 2.5), (2, 2, 4), fb.planks(WOOD_DARK, 2)),
+        part("Lantern", (0, 27.5, 3.5), (3, 4, 3), fb.glass((255, 214, 140), 170)),
+        part("Lantern_Light", (0, 27.5, 3.5), (1.5, 2.5, 1.5), glow((255, 200, 110)), glow=True),
+        part("Lantern_Cap", (0, 30, 3.5), (3.5, 1, 3.5), fb.metal(BRASS, False)),
     ]
     for k, color in enumerate((CORE_COLORS["Cliffside"], GOLD, CORE_COLORS["Swampland"])):
         x = (-8, 0, 8)[k]
@@ -328,7 +351,12 @@ def registry():
         part("Pages_L", fb.tilt(top, top_rot, (-4.6, 2.3, -0.5)), (9, 1, 11.5), fb.paper(), rot=top_rot),
         part("Pages_R", fb.tilt(top, top_rot, (4.6, 2.3, -0.5)), (9, 1, 11.5), fb.paper(), rot=top_rot),
         part("Ribbon", fb.tilt(top, top_rot, (1, 2.9, 4)), (1, 0.4, 7), fb.solid((170, 40, 50)), rot=top_rot),
+        # Style Hytale : tenture violette sous le plateau, encrier et plume, bougie sur le pied.
+        part("Banner", (0, 14, 4.5), (7, 9, 0.5), fb.cloth(VELVET, fb.shade(GOLD, 0.9))),
+        part("Ink", (-6, 4, 4), (3, 2, 3), fb.glass((40, 40, 70), 200)),
+        part("Quill", (-6, 7, 4), (0.5, 5, 1.5), fb.solid((236, 236, 240)), rot=(0, 0, 15)),
     ]
+    p += candle("Candle", 6, 3, 4, 4)
     return p, None
 
 
@@ -342,6 +370,11 @@ def infusion_altar():
         part("Crystal", (0, 22, 0), (5, 8, 5), glow(MIST), glow=True, rot=(0, 45, 0)),
         part("Crystal_Tip", (0, 27, 0), (3, 3, 3), glow(MIST), glow=True, rot=(0, 45, 0)),
     ]
+    # Style Hytale : colonnettes d'angle coiffées de laiton, chemin de toile violette devant.
+    for k, (x, z) in enumerate(((-12.5, 12.5), (12.5, 12.5), (-12.5, -12.5), (12.5, -12.5))):
+        p.append(part(f"Pillar_{k + 1}", (x, 10, z), (4, 8, 4), fb.stone(STONE_DARK, (4, 4))))
+        p.append(part(f"Pillar_Cap_{k + 1}", (x, 18, z), (3, 2, 3), fb.metal(GOLD, False)))
+    p += runner("Runner", 17, 10, 8, 14.25, 7)
     tiers = [fb.mix((110, 170, 255), (190, 120, 255), k / 7) for k in range(8)] + \
             [fb.mix((190, 120, 255), (255, 210, 110), k / 3) for k in range(1, 5)]
     for k in range(12):
@@ -370,6 +403,13 @@ def mist_forge():
         part("Liquid", (0, 23.25, 0), (18, 0.5, 18), fb.mist((120, 70, 210), (220, 190, 255)), glow=True),
         part("Bubble_1", (-4, 23.8, 3), (2, 1, 2), glow(MIST), glow=True),
         part("Bubble_2", (5, 23.8, -4), (1.5, 1, 1.5), glow(MIST), glow=True),
+        # Style Hytale : cerclages du creuset, soufflet de cuir et bois sur le côté, pile de charbon.
+        part("Band_1", (0, 14.5, 0), (23, 1.5, 23), fb.metal(IRON_DARK, False)),
+        part("Band_2", (0, 20.5, 0), (23, 1.5, 23), fb.metal(IRON_DARK, False)),
+        part("Bellows_Board", (-17.5, 5, 6), (3, 1, 10), fb.planks(WOOD, 3)),
+        part("Bellows_Leather", (-17.5, 7, 6), (3, 3, 9), fb.cloth((110, 70, 48))),
+        part("Bellows_Nozzle", (-15.5, 6, 0), (1.5, 1.5, 4), fb.metal(BRASS, False)),
+        part("Coal", (12, 13, 11), (5, 2, 5), fb.smooth_stone((44, 40, 46)), rot=(0, 20, 0)),
     ]
     a = fb.anim(80, {"Liquid": {"position": bob(0.4, 80)},
                      "Bubble_1": {"position": [(0, (0, 0, 0)), (40, (0, 1.2, 0)), (80, (0, 0, 0))]},
@@ -426,62 +466,6 @@ def hammer_rack():
         part("Head_Band_R", (3.5, 24, -3), (1, 7.4, 7.4), fb.metal(IRON, False)),
         inlay("Head_Rune", (0, 24, 0.75), (5, 5, 0.5), CULT_GLOW, "eye", ("front",)),
     ]
-    return p, None
-
-
-def gargoyle():
-    """Gargouille de pierre accroupie sur son socle, gueule ouverte, ailes repliées, yeux luisants."""
-    s = fb.smooth_stone(CLIFF_STONE)
-    dark = fb.smooth_stone(fb.shade(CLIFF_STONE, 0.8))
-    p = [
-        part("Base", (0, 3, 0), (26, 6, 26), fb.stone(fb.shade(CLIFF_STONE, 0.85), (8, 6))),
-        part("Body", (0, 13, -2), (14, 12, 14), s),
-        part("Chest", (0, 15, 5), (12, 9, 6), s),
-        part("Head", (0, 21, 6), (12, 9, 10), s),
-        part("Snout", (0, 20, 12), (8, 4, 4), s),
-        part("Jaw", (0, 15.5, 11), (8, 2.5, 6), dark, rot=(18, 0, 0)),
-        part("Mouth", (0, 17.5, 13.6), (6, 2, 0.5), fb.solid((30, 26, 34))),
-        part("Eye_L", (-3, 23, 11.1), (2, 1.5, 0.5), glow((255, 210, 120)), glow=True),
-        part("Eye_R", (3, 23, 11.1), (2, 1.5, 0.5), glow((255, 210, 120)), glow=True),
-        part("Horn_L", (-4, 27, 4), (2, 5, 2), dark, rot=(-25, 0, -10)),
-        part("Horn_R", (4, 27, 4), (2, 5, 2), dark, rot=(-25, 0, 10)),
-        part("Wing_L", (-9, 16, -3), (3, 15, 13), dark, rot=(0, 0, 12)),
-        part("Wing_R", (9, 16, -3), (3, 15, 13), dark, rot=(0, 0, -12)),
-        part("Claw_L", (-5, 7.5, 8), (4, 3, 5), dark),
-        part("Claw_R", (5, 7.5, 8), (4, 3, 5), dark),
-        part("Tail", (0, 7.5, -11), (3, 3, 6), dark, rot=(0, 20, 0)),
-    ]
-    return p, None
-
-
-def lever(pulled=False):
-    """Levier massif : deux joues de pierre, axe de fer, long bras incliné à pommeau de laiton. Tiré : bras rabattu
-    de l'autre côté, pommeau de fer terni (le piège est coupé, on le voit de loin)."""
-    arm_rot = (-60, 0, 0) if pulled else (30, 0, 0)
-    axle = (0, 9, 0)
-    p = [
-        part("Plinth", (0, 1.5, 0), (20, 3, 18), fb.stone(fb.shade(CLIFF_STONE, 0.9), (6, 3))),
-        part("Cheek_L", (-5.5, 7, 0), (4, 8, 10), fb.smooth_stone(CLIFF_STONE)),
-        part("Cheek_R", (5.5, 7, 0), (4, 8, 10), fb.smooth_stone(CLIFF_STONE)),
-        part("Axle", axle, (14, 2, 2), fb.metal(IRON_DARK, False)),
-        part("Arm", fb.tilt(axle, arm_rot, (0, 9, 0)), (2.5, 18, 2.5), fb.metal(IRON, False), rot=arm_rot),
-        part("Knob", fb.tilt(axle, arm_rot, (0, 19, 0)), (5, 5, 5), fb.metal(IRON_DARK if pulled else GOLD, not pulled),
-             rot=arm_rot),
-    ]
-    return p, None
-
-
-def cage_door():
-    """Grille de cage en fer forgé (le long de X ; tournée d'un quart de tour sur une ligne en Z), cadenas."""
-    iron = fb.metal(IRON_DARK, False)
-    p = [
-        part("Bottom", (0, 1.5, 0), (32, 3, 5), iron),
-        part("Top", (0, 30.5, 0), (32, 3, 5), iron),
-        part("Middle", (0, 16, 0), (32, 2, 3), iron),
-    ]
-    for k, x in enumerate((-12, -6, 0, 6, 12)):
-        p.append(part(f"Bar_{k + 1}", (x, 16, 0), (2, 26, 2), fb.metal(IRON, False)))
-    p.append(part("Lock", (9, 13, 2), (4, 5, 2), fb.metal(BRASS)))
     return p, None
 
 
@@ -556,20 +540,6 @@ def asura_hologram():
         "Holo_Top": {"position": [(0, (0, 0, 0)), (40, (0, 1.5, 0)), (120, (0, -0.5, 0)), (160, (0, 0, 0))]},
     })
     return p, a
-
-
-def light_spring():
-    """Source d'une cascade de lumière, au fond d'un bassin : anneau de laiton, cristal bleu qui tourne lentement
-    (la cascade elle-même est la particule Nakasar_Fractal_Light_Fall)."""
-    c = glow((140, 210, 255))
-    p = [
-        part("Ring", (0, 1.5, 0), (26, 3, 26), fb.metal(GOLD, False)),
-        part("Plate", (0, 2.5, 0), (20, 1, 20), fb.smooth_stone((70, 110, 150))),
-        part("Crystal", (0, 9, 0), (7, 11, 7), c, glow=True, rot=(0, 45, 0)),
-        part("Crystal_Tip", (0, 16, 0), (4, 4, 4), c, glow=True, rot=(0, 45, 0)),
-    ]
-    rise = bob(1.5, 160)
-    return p, fb.anim(160, {"Crystal": {"position": rise}, "Crystal_Tip": {"position": rise}})
 
 
 def fan():
@@ -649,47 +619,10 @@ def tripwire():
     return p, None
 
 
-def bear_trap():
-    """Piège à loup ouvert sur un bloc de sol : plaque, deux mâchoires dentées relevées, chaîne."""
-    iron = fb.metal(IRON, False)
-    p = [swamp_ground(),
-         part("Plate", (0, 32.5, 0), (14, 1, 10), fb.metal(IRON_DARK, False)),
-         part("Pan", (0, 33.25, 0), (5, 0.5, 5), fb.metal(fb.shade(IRON, 1.2), False)),
-         part("Jaw_F", (0, 34.2, 5.2), (16, 4, 1.5), iron, rot=(55, 0, 0)),
-         part("Jaw_B", (0, 34.2, -5.2), (16, 4, 1.5), iron, rot=(-55, 0, 0)),
-         part("Spring_L", (-8, 33, 0), (3, 2, 8), fb.metal(IRON_DARK, False)),
-         part("Spring_R", (8, 33, 0), (3, 2, 8), fb.metal(IRON_DARK, False)),
-         part("Chain", (12, 32.4, 6), (1.5, 0.8, 8), fb.metal(IRON_DARK, False), rot=(0, 30, 0))]
-    for k, x in enumerate((-6, -2, 2, 6)):
-        p.append(part(f"Tooth_F_{k + 1}", (x, 36, 6.4), (1.2, 2, 1.2), fb.metal(SILVER, False), rot=(55, 0, 0)))
-        p.append(part(f"Tooth_B_{k + 1}", (x, 36, -6.4), (1.2, 2, 1.2), fb.metal(SILVER, False), rot=(-55, 0, 0)))
-    return p, None
 
 
-def spider_eggs():
-    """Grappe d'œufs blanchâtres dans la toile, sur un bloc de sol moussu ; ils palpitent."""
-    egg = fb.smooth_stone((226, 222, 196), rim=False)
-    p = [swamp_ground(),
-         part("Web", (0, 32.25, 0), (26, 0.5, 26), fb.glyph((230, 230, 230), "ring", ("top",))),
-         part("Egg_1", (0, 35, 0), (7, 6, 7), egg),
-         part("Egg_2", (-6, 34, 4), (5, 4, 5), egg),
-         part("Egg_3", (6, 34, -3), (5, 4.5, 5), egg),
-         part("Egg_4", (4, 33.5, 7), (4, 3, 4), egg),
-         part("Egg_5", (-5, 33.5, -6), (4, 3, 4), egg)]
-    pulse = [(0, (1, 1, 1)), (45, (1.08, 1.1, 1.08)), (90, (1, 1, 1))]
-    return p, fb.anim(90, {"Egg_1": {"shapeStretch": pulse}, "Egg_3": {"shapeStretch": pulse}})
 
 
-def spike_plate():
-    """Plaque de fer percée sur un bloc de sol : les pointes affleurent."""
-    p = [swamp_ground(),
-         part("Plate", (0, 32.5, 0), (28, 1, 28), fb.metal(fb.shade(IRON, 0.9), False))]
-    for i in range(3):
-        for j in range(3):
-            x, z = (i - 1) * 8, (j - 1) * 8
-            p.append(part(f"Hole_{i}{j}", (x, 33.05, z), (4, 0.2, 4), fb.solid((26, 22, 22))))
-            p.append(part(f"Spike_{i}{j}", (x, 34, z), (1.5, 2, 1.5), fb.metal(SILVER, False), rot=(0, 45, 0)))
-    return p, None
 
 
 def invigorator_rack():
@@ -752,45 +685,8 @@ def fire(core=False):
     return fb.crystal((250, 120, 30), (255, 236, 150)) if not core else fb.crystal((255, 190, 70), (255, 250, 210))
 
 
-def bonfire(lit):
-    """Grand feu de camp : cercle de pierres, rondins en tipi ; allumé, trois flammes qui dansent."""
-    bark = fb.log(BARK if lit else CHAR, (190, 150, 100) if lit else (70, 60, 56))
-    p = [part("Embers", (0, 1, 0), (16, 2, 16), glow((255, 110, 40)) if lit else fb.smooth_stone((60, 56, 56)),
-              glow=lit)]
-    for k in range(8):
-        a = math.radians(45 * k + 10)
-        p.append(part(f"Stone_{k + 1}", (round(13 * math.sin(a), 2), 2, round(13 * math.cos(a), 2)), (6, 4, 6),
-                      fb.ground((110, 110, 116), SNOW), rot=(0, 45 * k + 10, 0)))
-    p += [part("Log_X", (0, 3.5, 0), (4, 4, 24), bark, rot=(0, 90, 0)),
-          part("Log_Z", (0, 6, 0), (4, 4, 24), bark)]
-    for k, (rx, rz, x, z) in enumerate(((28, 0, 0, -8), (-28, 0, 0, 8), (0, 28, 8, 0), (0, -28, -8, 0))):
-        p.append(part(f"Pole_{k + 1}", (x, 10, z), (3, 16, 3), bark, rot=(rx, 0, rz)))
-    if not lit:
-        return p, None
-    p += [part("Flame01", (0, 12, 0), (10, 14, 10), fire(), glow=True, rot=(0, 45, 0)),
-          part("Flame02", (0, 21, 0), (6, 9, 6), fire(), glow=True, rot=(0, 20, 0)),
-          part("Flame03", (0, 27, 0), (3, 5, 3), fire(True), glow=True, rot=(0, 60, 0)),
-          part("Flame_Core", (0, 10, 0), (6, 8, 6), fire(True), glow=True, rot=(0, 10, 0))]
-    return p, fb.anim(40, {"Flame01": {"shapeStretch": flicker(40)}, "Flame02": {"shapeStretch": flicker(30)},
-                           "Flame03": {"position": bob(1.5, 40)}})
 
 
-def frost_brazier(lit):
-    """Brasero de fer sur trois pieds, coupe pleine de bûches ; éteint, son bord est givré."""
-    iron = fb.metal(IRON, False)
-    p = [part("Leg_1", (0, 8, 6), (2, 17, 2), iron, rot=(-12, 0, 0)),
-         part("Leg_2", (5.2, 8, -3), (2, 17, 2), iron, rot=(6, 0, 10)),
-         part("Leg_3", (-5.2, 8, -3), (2, 17, 2), iron, rot=(6, 0, -10)),
-         part("Bowl", (0, 19, 0), (18, 5, 18), fb.metal(IRON_DARK)),
-         part("Rim", (0, 22, 0), (21, 1.5, 21), fb.metal(SNOW if not lit else IRON, False)),
-         part("Log_1", (0, 23.5, 0), (3.5, 3.5, 15), fb.log(BARK if lit else CHAR)),
-         part("Log_2", (0, 24.5, 0), (3.5, 3.5, 15), fb.log(BARK if lit else CHAR), rot=(0, 90, 0))]
-    if not lit:
-        p.append(part("Frost", (2, 26.6, -1), (6, 0.5, 5), fb.smooth_stone(SNOW, rim=False)))
-        return p, None
-    p += [part("Flame01", (0, 29, 0), (8, 10, 8), fire(), glow=True, rot=(0, 45, 0)),
-          part("Flame02", (0, 35, 0), (4, 5, 4), fire(True), glow=True, rot=(0, 20, 0))]
-    return p, fb.anim(40, {"Flame01": {"shapeStretch": flicker(40)}, "Flame02": {"position": bob(1.2, 40)}})
 
 
 def firewood_pile():
@@ -827,11 +723,6 @@ def torch_rack():
 
 CUBES = {
     # tex -> (peintre des côtés, peintre du dessus, rune du dessus (couleur, forme) ou None, alpha)
-    "Harmony_Tile": (fb.stone((72, 84, 124), (8, 8)), fb.smooth_stone((88, 104, 150)), ((120, 200, 255), "ring"), 255),
-    "Astrolabe_Ring": (fb.metal(BRASS), fb.metal(GOLD), ((90, 60, 30), "tick"), 255),
-    "Landing": (fb.stone((96, 104, 128), (8, 6)), fb.smooth_stone((128, 136, 160)), ((170, 210, 255), "ring"), 255),
-    "Pressure_Plate": (fb.stone((96, 90, 84), (8, 8)), fb.stone((110, 104, 96), (8, 8), mortar=0.7), None, 255),
-    "Seal_Stone": (fb.stone((58, 44, 80), (8, 6)), fb.smooth_stone((70, 54, 96)), ((196, 120, 255), "eye"), 255),
     "Mist_Barrier": (fb.mist((70, 46, 130), (210, 180, 255)), fb.mist((70, 46, 130), (210, 180, 255)), None, 255),
     "Glimmer": (fb.glass((255, 226, 120), 150), fb.glass((255, 236, 150), 150), None, 150),
 }
@@ -859,7 +750,6 @@ def motes(y, system=VOID_MOTES, scale=1):
 BLOCKS = {
     "Selection_Console": (selection_console, {"particles": motes(0.8), "orient": "open"}),
     "Resonator": (resonator, {"particles": motes(1.0, "Dust_Sparkles_Fine")}),
-    "Reward_Chest": (reward_chest, {"particles": motes(0.6, "Block_Treasure_Sparks"), "orient": "open"}),
     "Exit_Stone": (exit_stone, {"particles": motes(0.7), "orient": "open"}),
     "Archivist_Counter": (archivist_counter, {"orient": "open"}),
     "Mists_Portal": (mists_portal, {"particles": [
@@ -874,36 +764,138 @@ BLOCKS = {
     "Mist_Forge": (mist_forge, {"particles": motes(0.8), "orient": "open"}),
     "Trial_Panel": (trial_panel, {"orient": "open"}),
     "Hammer_Rack": (hammer_rack, {"particles": motes(0.8), "orient": "wall"}),
-    "Gargoyle": (gargoyle, {"orient": "wall"}),
-    "Lever": (lever, {"orient": "open", "particles": motes(1.0, "Dust_Sparkles_Fine")}),
-    "Lever_Pulled": (lambda: lever(True), {"orient": "open"}),
-    "Cage_Door": (cage_door, {"orient": "line"}),
     "Console": (console, {"orient": "open"}),
     "Fan": (fan, {"orient": "open"}),
     "Battery": (lambda: battery(False), {}),
     "Battery_Charged": (lambda: battery(True), {"particles": motes(0.9, "Dust_Sparkles_Fine")}),
     "Charge_Pylon": (charge_pylon, {"particles": motes(1.3, "Dust_Sparkles_Fine")}),
     "Tripwire": (tripwire, {"orient": "line"}),
-    "Bear_Trap": (bear_trap, {}),
-    "Spider_Eggs": (spider_eggs, {}),
-    "Spike_Plate": (spike_plate, {}),
     "Invigorator_Rack": (invigorator_rack, {"orient": "open"}),
     "Wisp_Light": (wisp_light, {"particles": motes(0.5, "Torch_Fire_Green", 0.6)}),
     "Wisp_Cleft": (lambda: wisp_cleft(False), {"orient": "open"}),
     "Wisp_Cleft_Lit": (lambda: wisp_cleft(True), {"particles": motes(0.55, "Torch_Fire_Green", 0.5), "orient": "open"}),
-    "Bonfire": (lambda: bonfire(True), {"particles": fires(1.4, 0.35), "extra": FIRE_SOUND}),
-    "Bonfire_Out": (lambda: bonfire(False), {"particles": motes(0.5, "Smoke_Black")}),
-    "Frost_Brazier": (lambda: frost_brazier(True), {"particles": fires(0.7, 0.85), "extra": FIRE_SOUND}),
-    "Frost_Brazier_Out": (lambda: frost_brazier(False), {}),
     "Firewood_Pile": (firewood_pile, {"orient": "open"}),
     "Asura_Console": (asura_hologram, {"particles": motes(1.4, "Dust_Sparkles_Fine"), "orient": "open"}),
-    "Light_Spring": (light_spring, {"particles": [{"SystemId": "Nakasar_Fractal_Light_Fall", "PositionOffset": {"Y": 0.5}}]}),
     "Torch_Rack": (torch_rack, {"orient": "wall", "particles": [
         {"SystemId": "Torch_Fire", "Scale": 0.45, "TargetNodeName": f"Flame_{k}"} for k in (1, 2, 3)]}),
 }
-# Les pièges du marais sont posés sur un cube de sol plein (hitbox Full) : le joueur marche dessus, à y + 1.
+
+
+# ---------------------------------------------------------------- blocs vanilla (passe « vanilla très proche »)
+
+# Ces blocs gardent leur id (Java, interactions, préfabs) mais prennent un modèle, une texture et une icône vanilla
+# lus dans Assets.zip 0.7.2 ; nos anciens modèles, atlas, textures de cube et icônes sont supprimés.
+VANILLA_ICONS = "Icons/ItemsGenerated"
+TRAPS = "Blocks/Tinkering/Traps"
+OVERLAY = {"CustomModel": "Blocks/Structures/Base_Shapes/Cube_Overlay.blockymodel",
+           "CustomModelTexture": [{"Texture": "Blocks/Structures/Base_Shapes/Lava_Cracks.png", "Weight": 1}]}
+
+
+def vanilla_model(model, texture, **extra):
+    keys = {"DrawType": "Model", "Opacity": "Transparent", "CustomModel": model,
+            "CustomModelTexture": [{"Texture": texture, "Weight": 1}], "VariantRotation": "NESW"}
+    keys.update(extra)
+    return keys
+
+
+def cube(texture, **extra):
+    """Cube vanilla : une texture (toutes faces) ou la liste « Textures » d'un bloc du jeu."""
+    textures = texture if isinstance(texture, list) else [{"All": texture, "Weight": 1}]
+    return {"DrawType": "Cube", "Textures": textures, **extra}
+
+
+def runic(sides, tops, weights=(4, 1, 1)):
+    return [{"Sides": f"BlockTextures/{s}.png", "UpDown": f"BlockTextures/{t}.png", "Weight": w}
+            for s, t, w in zip(sides, tops, weights)]
+
+
+LEVER = vanilla_model("Blocks/Tinkering/Lever.blockymodel", "Blocks/Tinkering/Lever_Texture.png", HitboxType="Plant_Large")
+BRAZIER = vanilla_model("Blocks/Decorative_Sets/Temple_Light/Brazier.blockymodel",
+                        "Blocks/Decorative_Sets/Temple_Light/Brazier_Texture.png", HitboxType="Brazier_Small")
+
+# tex -> (clés du BlockType, icône vanilla ou None (icône à nous dans ICONS/Vanilla), orientation comme BLOCKS)
+VANILLA = {
+    # Pièges du marais : posés SUR le sol (y = 0), le joueur marche dedans ; Material Empty.
+    "Bear_Trap": (vanilla_model(f"{TRAPS}/Bear_Trap.blockymodel", f"{TRAPS}/Bear_Trap_Texture.png", Material="Empty",
+                                HitboxType="Block_Quarter", CustomModelAnimation=f"{TRAPS}/Bear_Trap_Opened.blockyanim"),
+                  "Trap_Bear", None),
+    "Spike_Plate": (vanilla_model(f"{TRAPS}/Spikes.blockymodel", f"{TRAPS}/Spikes_Iron.png", Material="Empty",
+                                  HitboxType="Block_Three_Quarter"), "Trap_Spikes_Metal", None),
+    "Spider_Eggs": (vanilla_model("Blocks/Dungeons/EggSacks_Scarak_Medium.blockymodel",
+                                  "Blocks/Dungeons/EggSacks_Scarak_Medium_Texture.png", Material="Empty",
+                                  CustomModelAnimation="Blocks/Dungeons/EggSacks_Scarak_Medium_Idle.blockyanim",
+                                  Light={"Radius": 5, "Color": "#779"}), "Container_Scarak_Eggsacks", None),
+    # Falaise : levier vanilla ; tiré = même modèle + petite animation tenue (manche basculé).
+    "Lever": ({**LEVER, "Particles": motes(1.0, "Dust_Sparkles_Fine")}, "Deco_Lever", "open"),
+    "Lever_Pulled": ({**LEVER, "CustomModelAnimation": f"{MODELS}/Lever_Pulled.blockyanim"}, "Deco_Lever", "open"),
+    # Porte de cage : barreaux de fer vanilla (rotation posée par le préfab, comme les barreaux voisins).
+    "Cage_Door": (vanilla_model("Blocks/Tinkering/Iron_Bars.blockymodel", "Blocks/Tinkering/Iron_Bars_Texture.png",
+                                HitboxType="Fence_Thin", VariantRotation="Wall"), "Deco_Iron_Bars", None),
+    # Tempête de neige : feu de camp vanilla (éteint : Campfire_Off), braseros du temple de lumière à feu orange.
+    "Bonfire": (vanilla_model("Blocks/Benches/Campfire.blockymodel", "Blocks/Benches/Campfire_Texture.png",
+                              Particles=fires(1.0, 0.0), **FIRE_SOUND), "Bench_Campfire", None),
+    "Bonfire_Out": (vanilla_model("Blocks/Benches/Campfire_Off.blockymodel", "Blocks/Benches/Campfire_Off_Texture.png",
+                                  HitboxType="Brazier_Small", Particles=motes(0.3, "Smoke_Black")),
+                    "Deco_Campfire_Off", None),
+    "Frost_Brazier": ({**BRAZIER, "Particles": fires(0.6, 0.1, "Flame01"), **FIRE_SOUND},
+                      "Furniture_Temple_Light_Brazier", None),
+    "Frost_Brazier_Out": (BRAZIER, "Furniture_Temple_Light_Brazier", None),
+    # Coffre de récompense : coffre épique vanilla, étincelles gardées.
+    "Reward_Chest": (vanilla_model("Blocks/Dungeons/Chest_Epic_Small.blockymodel",
+                                   "Blocks/Dungeons/Chest_Epic_Small_Texture.png",
+                                   Particles=motes(0.6, "Block_Treasure_Sparks")), "Furniture_Dungeon_Chest_Epic", "open"),
+    # Surf silencieux : journaux = petite pile de livres ; canon à vent = canon du Gobliterator réduit.
+    "Sailor_Journal": (vanilla_model("Blocks/Dungeons/Book_Pile_Small.blockymodel",
+                                     "Blocks/Dungeons/Book_Pile_Texture.png", HitboxType="Block_Half"),
+                       "Deco_Scrap_Book_Pile_Small", "open"),
+    "Wind_Cannon": (vanilla_model("NPC/Boss/Goblin_Gobliterator/Models/Goblin_Cannon.blockymodel",
+                                  "NPC/Boss/Goblin_Gobliterator/Models/Goblin_Cannon.png", CustomModelScale=0.4),
+                    None, None),
+    # Volcanique : cratère froid -> fissures -> lave (textures et surcouche des roches volcaniques vanilla).
+    "Crater_Cold": (cube("BlockTextures/Rock_Volcanic.png"), "Rock_Volcanic", None),
+    "Crater_Warm_1": ({**cube("BlockTextures/Rock_Volcanic.png", DrawType="CubeWithModel"), **OVERLAY},
+                      "Rock_Volcanic_Cracked_Lava", None),
+    "Crater_Warm_2": (cube("BlockTextures/Rock_Volcanic_LavaCracks.png"), "Rock_Volcanic_Cracked_Lava", None),
+    "Crater_Warm_3": ({**cube("BlockTextures/Rock_Volcanic_LavaCracks.png", DrawType="CubeWithModel"), **OVERLAY},
+                      "Rock_Volcanic_Cracked_Lava_Incandescent", None),
+    "Crater_Lava": (cube("BlockTextures/Fluid_Lava.png"), "Fluid_Lava", None),
+    # Seconde série (Kevin, 25 octobre 2026). Sols de l'Observatoire et de la Falaise : briques et pavés runiques ; la
+    # dalle d'harmonisation perd son cercle gravé, des étincelles montrent où se tenir.
+    "Harmony_Tile": (cube("BlockTextures/Rock_Runic_Blue_Brick.png",
+                          Particles=motes(1.05, "Dust_Sparkles_Fine", 1.2)), "Rock_Runic_Brick_Blue", None),
+    "Landing": (cube(runic(["Runic_Brick", "Runic_Brick_2", "Runic_Brick_3"], ["Rock_Runic_Brick_Top"] * 3)),
+                "Rock_Runic_Brick", None),
+    "Pressure_Plate": (cube(runic(["Rock_Runic_Cobble_Side", "Rock_Runic_Cobble_Side02", "Rock_Runic_Cobble_Side03"],
+                                  ["Rock_Runic_Cobble_Top", "Rock_Runic_Cobble_Top2", "Rock_Runic_Cobble_Top3"], (1, 1, 1))),
+                       "Rock_Runic_Cobble", None),
+    "Seal_Stone": (cube(runic(["Runic_Brick_Dark", "Runic_Brick_Dark_02", "Runic_Brick_Dark_03"],
+                              ["Runic_Brick_Top_Dark", "Runic_Brick_Top_Dark_02", "Runic_Brick_Top_Dark_03"])),
+                   "Rock_Runic_Brick_Dark", None),
+    "Gargoyle": (vanilla_model("Blocks/Decorative_Sets/Temple_Dark/Statue_Owl.blockymodel",
+                               "Blocks/Decorative_Sets/Temple_Dark/Statue_Owl_Texture.png", HitboxType="Statue_Small"),
+                 "Furniture_Temple_Dark_Statue", "wall"),
+    # Ressac : ancre de tyrolienne en fer gobelin.
+    # Kevin (25 octobre 2026, 22 h 36) : anneau de l'astrolabe = bloc de bronze vanilla (Metal_Bronze).
+    "Astrolabe_Ring": (cube([{"All": f"BlockTextures/Metal_Bronze{n}.png", "Weight": 1} for n in ("", "02")]), "Metal_Bronze", None),
+    "Zipline_Anchor": (cube([{"All": f"BlockTextures/Metal_Goblin_Iron{n}.png", "Weight": w}
+                             for n, w in (("", 20), ("02", 20), ("03", 6), ("04", 20), ("06", 6))]),
+                       "Metal_Goblin_Iron", None),
+    # Blocs de lumière vanilla (Build_Lightsource) : Kevin vérifiera en jeu s'ils restent visibles hors création.
+    "Light_Spring": (cube("BlockTextures/Dev_Lightsource_Cyan_Side.png", Opacity="Transparent", Particles=[
+        {"SystemId": "Nakasar_Fractal_Light_Fall", "PositionOffset": {"Y": 0.5}}]), "Build_Lightsource_Cyan", None),
+    "Flare_Light": (cube("BlockTextures/Dev_Lightsource_Orange.png", Opacity="Transparent"), "Build_Lightsource_Orange",
+                    None),
+}
+
+
+def lever_pulled_animation():
+    """Levier vanilla tiré : le manche (Stick, +38,8° sur X) bascule à -38,8°, la boule (nœud racine) suit en z."""
+    return fb.anim(6, {"Stick": {"orientation": [(0, (0, 0, 0)), (6, (-77.6, 0, 0))]},
+                       "Ball": {"position": [(0, (0, 0, 0)), (6, (0, 0, -22.6))]}}, loop=False)
+
 
 ORIENT = {f"Nakasar_Fractal_{tex}": cfg["orient"] for tex, (_, cfg) in BLOCKS.items() if cfg.get("orient")}
+ORIENT.update({f"Nakasar_Fractal_{tex}": orient for tex, (_, _, orient) in VANILLA.items() if orient})
 
 
 def build(tex):
@@ -956,6 +948,8 @@ def build_cube(tex):
 def apply(doc, tex):
     """Remplace le cube de l'objet bloc `doc` par le modèle de `tex`, ou repeint son cube ; rend l'aperçu ou None."""
     block = doc["BlockType"]
+    if tex in VANILLA:
+        return apply_vanilla(doc, tex)
     if tex in CUBES:
         preview, textures = build_cube(tex)
         block["Textures"] = textures
@@ -970,6 +964,30 @@ def apply(doc, tex):
     if stale.exists():
         stale.unlink()
     return preview
+
+
+def remove_custom(tex):
+    """Supprime ce que les passes précédentes écrivaient pour `tex` (modèle, atlas, animation, texture, icône)."""
+    for path in (COMMON / MODELS / f"{tex}.blockymodel", COMMON / MODELS / f"{tex}_Texture.png",
+                 COMMON / MODELS / f"{tex}.blockyanim", COMMON / CUBE_TEXTURES / f"{tex}.png",
+                 COMMON / CUBE_TEXTURES / f"{tex}_Top.png", COMMON / ICONS / f"{tex}.png"):
+        if path.exists():
+            path.unlink()
+
+
+def apply_vanilla(doc, tex):
+    keys, icon, _ = VANILLA[tex]
+    block = doc["BlockType"]
+    remove_custom(tex)
+    block.pop("Textures", None)
+    block.update(json.loads(json.dumps(keys)))
+    if tex == "Lever_Pulled":
+        path = COMMON / MODELS / "Lever_Pulled.blockyanim"
+        path.write_text(json.dumps(lever_pulled_animation(), indent=2) + "\n")
+    # Icône vanilla telle quelle, ou la nôtre rendue depuis Assets.zip (generate_vanilla_recolors.py).
+    doc["Icon"] = f"{VANILLA_ICONS}/{icon}.png" if icon else f"{ICONS}/Vanilla/{tex}.png"
+    doc.pop("IconProperties", None)
+    return None
 
 
 def sheet(previews, path, per_row=6):

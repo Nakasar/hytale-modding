@@ -3,14 +3,14 @@
     "Name": "nakasar_fractals_swampland.items.Nakasar_Fractal_Spider_Eggs.name",
     "Description": "nakasar_fractals_swampland.items.Nakasar_Fractal_Spider_Eggs.description"
   },
-  "Icon": "Icons/Items/Nakasar/Fractals/Spider_Eggs.png",
+  "Icon": "Icons/ItemsGenerated/Container_Scarak_Eggsacks.png",
   "Categories": [
     "Blocks.Deco"
   ],
   "Quality": "Technical",
   "PlayerAnimationsId": "Block",
   "BlockType": {
-    "Material": "Solid",
+    "Material": "Empty",
     "DrawType": "Model",
     "Opacity": "Transparent",
     "HitboxType": "Full",
@@ -23,32 +23,24 @@
     "BlockParticleSetId": "Stone",
     "BlockSoundSetId": "Stone",
     "ParticleColor": "#e6e2c8",
-    "CustomModel": "Blocks/Nakasar/Fractals/Spider_Eggs.blockymodel",
+    "CustomModel": "Blocks/Dungeons/EggSacks_Scarak_Medium.blockymodel",
     "CustomModelTexture": [
       {
-        "Texture": "Blocks/Nakasar/Fractals/Spider_Eggs_Texture.png",
+        "Texture": "Blocks/Dungeons/EggSacks_Scarak_Medium_Texture.png",
         "Weight": 1
       }
     ],
     "VariantRotation": "NESW",
-    "CustomModelAnimation": "Blocks/Nakasar/Fractals/Spider_Eggs.blockyanim"
+    "CustomModelAnimation": "Blocks/Dungeons/EggSacks_Scarak_Medium_Idle.blockyanim",
+    "Light": {
+      "Radius": 5,
+      "Color": "#779"
+    }
   },
   "Tags": {
     "Type": [
       "Deco"
     ]
   },
-  "ItemSoundSetId": "ISS_Blocks_Stone",
-  "IconProperties": {
-    "Scale": 0.55,
-    "Translation": [
-      0,
-      -12
-    ],
-    "Rotation": [
-      22.5,
-      45,
-      22.5
-    ]
-  }
+  "ItemSoundSetId": "ISS_Blocks_Stone"
 }

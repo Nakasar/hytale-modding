@@ -175,7 +175,8 @@ def course_prefab():
     for x, z in RACKS:
         p.set(x, 0, z, RACK)
     for x, z, kind in TRAPS:
-        p.set(x, -1, z, kind)
+        # Fil tendu : cube de sol à nous ; piège à loup, piques et œufs : modèles vanilla posés SUR le sol (y = 0).
+        p.set(x, -1 if kind == TRIPWIRE else 0, z, kind)
     for (x, y, z) in GATE_SWAMP:
         p.set(x, y, z, MIST)
     # Passage vers le nord, et la salle de l'embuscade.
@@ -417,17 +418,6 @@ def wolf_parts(body, dark, eye, glow=False):
         for k, (x, z) in enumerate(((-6, 12), (6, 12), (-6, -12), (6, -12)))]
 
 
-def bloom_parts():
-    stem, petal, heart = (60, 120, 40), (170, 220, 70), (220, 255, 120)
-    parts = [("Stem", (0, 14, 0), (6, 28, 6), 0, fm.smooth(stem), "flat"),
-             ("Heart", (0, 32, 0), (10, 8, 10), 0, fm.crystal((120, 180, 30), heart), "fullbright")]
-    for k in range(5):
-        a = math.radians(k * 72)
-        parts.append((f"Petal_{k}", (math.cos(a) * 9, 30, math.sin(a) * 9), (10, 3, 6), k * 72 + 90,
-                      fm.smooth(petal), "flat"))
-    return parts
-
-
 def models():
     m = {}
     hood = ("Cosmetics/Head/Hoodie_LongEnd.blockymodel", "Cosmetics/Head/Blazen_Wizard_Hoodie_Green_Texture.png")
@@ -456,9 +446,14 @@ def models():
     m[BLOOMHUNGER] = {"$Comment": "Carnasse (boss du Marais) : l'esprit de racine vanilla, très grand ; GW2 en fait un "
                                   "tréant des esprits.", "Parent": "Spirit_Root", "MinScale": 2.4, "MaxScale": 2.4,
                       "Light": {"Color": "#9f6", "Radius": 5}}
-    m[BLOOM] = fc.character_model("Poison_Bloom", bloom_parts(), 84, "Fleur de poison (après les assauts de Carnasse) : "
-                                  "PNJ fixe qui empoisonne autour d'elle et protège les ennemis proches (Java).", 0.6,
-                                  (0.4, 0.8), light={"Color": "#bf6", "Radius": 2}, scale=1.4)
+    # Plante vanilla (Plant_Flower_Poisoned_Orange) copiée dans NPC/ par generate_vanilla_recolors.py : modèle de bloc à
+    # 32 unités par bloc, d'où l'échelle 2.
+    m[BLOOM] = {"$Comment": "Fleur de poison (après les assauts de Carnasse) : PNJ fixe qui empoisonne autour d'elle et "
+                            "protège les ennemis proches (Java) ; la fleur empoisonnée vanilla.",
+                "Model": f"{fc.NPC_MODELS}/Poison_Bloom/Model.blockymodel",
+                "Texture": f"{fc.NPC_MODELS}/Poison_Bloom/Texture.png", "EyeHeight": 0.6,
+                "HitBox": {"Max": {"X": 0.4, "Y": 0.8, "Z": 0.4}, "Min": {"X": -0.4, "Y": 0, "Z": -0.4}},
+                "MinScale": 2.0, "MaxScale": 2.0, "Light": {"Color": "#bf6", "Radius": 2}}
     return m
 
 

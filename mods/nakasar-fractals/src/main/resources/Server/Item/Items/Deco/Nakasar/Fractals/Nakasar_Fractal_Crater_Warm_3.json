@@ -3,7 +3,7 @@
     "Name": "nakasar_fractals_volcanic.items.Nakasar_Fractal_Crater_Warm_3.name",
     "Description": "nakasar_fractals_volcanic.items.Nakasar_Fractal_Crater_Warm_3.description"
   },
-  "Icon": "Icons/Items/Nakasar/Fractals/Crater_Warm_3.png",
+  "Icon": "Icons/ItemsGenerated/Rock_Volcanic_Cracked_Lava_Incandescent.png",
   "Categories": [
     "Blocks.Deco"
   ],
@@ -11,15 +11,8 @@
   "PlayerAnimationsId": "Block",
   "BlockType": {
     "Material": "Solid",
-    "DrawType": "Cube",
+    "DrawType": "CubeWithModel",
     "Opacity": "Solid",
-    "Textures": [
-      {
-        "Sides": "BlockTextures/Nakasar/Fractals/Crater_Warm_3.png",
-        "UpDown": "BlockTextures/Nakasar/Fractals/Crater_Warm_3.png",
-        "Weight": 1
-      }
-    ],
     "HitboxType": "Full",
     "Flags": {},
     "Gathering": {
@@ -32,7 +25,20 @@
     "ParticleColor": "#ffc446",
     "Light": {
       "Color": "#830"
-    }
+    },
+    "Textures": [
+      {
+        "All": "BlockTextures/Rock_Volcanic_LavaCracks.png",
+        "Weight": 1
+      }
+    ],
+    "CustomModel": "Blocks/Structures/Base_Shapes/Cube_Overlay.blockymodel",
+    "CustomModelTexture": [
+      {
+        "Texture": "Blocks/Structures/Base_Shapes/Lava_Cracks.png",
+        "Weight": 1
+      }
+    ]
   },
   "Tags": {
     "Type": [

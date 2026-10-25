@@ -1,5 +1,5 @@
 {
-  "$Comment": "Éclat de glace (PNJ fixe) : enferme un joueur gelé jusqu'à ce que ses alliés le brisent.",
+  "$Comment": "Éclat de glace (PNJ fixe) : enferme un joueur gelé jusqu'à ce que ses alliés le brisent ; le grand cristal blanc vanilla.",
   "Model": "NPC/Nakasar/Fractals/Ice_Shard/Model.blockymodel",
   "Texture": "NPC/Nakasar/Fractals/Ice_Shard/Texture.png",
   "EyeHeight": 1.0,
@@ -15,8 +15,8 @@
       "Z": -0.6
     }
   },
-  "MinScale": 1.2,
-  "MaxScale": 1.2,
+  "MinScale": 3.0,
+  "MaxScale": 3.0,
   "Light": {
     "Color": "#9cf",
     "Radius": 2

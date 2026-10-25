@@ -3,14 +3,25 @@
     "Name": "nakasar_fractals_snowblind.items.Nakasar_Fractal_Torch.name",
     "Description": "nakasar_fractals_snowblind.items.Nakasar_Fractal_Torch.description"
   },
-  "Icon": "Icons/Items/Nakasar/Fractals/Frost_Torch.png",
-  "Model": "Items/Nakasar/Fractals/Frost_Torch.blockymodel",
-  "Texture": "Items/Nakasar/Fractals/Frost_Torch.png",
+  "Icon": "Icons/ItemsGenerated/Furniture_Crude_Torch.png",
+  "Model": "Items/Torch/Torch_New.blockymodel",
+  "Texture": "Items/Torch/Torch_New_Texture.png",
+  "Particles": [
+    {
+      "SystemId": "Torch_Fire",
+      "TargetNodeName": "Flame",
+      "Scale": 0.7,
+      "PositionOffset": {
+        "Y": -0.2
+      }
+    }
+  ],
+  "PlayerAnimationsId": "Torch",
+  "Scale": 1.0,
   "Quality": "Uncommon",
   "Categories": [
     "Items.Misc"
   ],
-  "PlayerAnimationsId": "Item",
   "ItemSoundSetId": "ISS_Items_Gems",
   "MaxStack": 1,
   "Light": {

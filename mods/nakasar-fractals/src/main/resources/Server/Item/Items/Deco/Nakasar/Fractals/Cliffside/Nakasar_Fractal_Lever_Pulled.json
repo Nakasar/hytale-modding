@@ -3,7 +3,7 @@
     "Name": "nakasar_fractals_cliffside.items.Nakasar_Fractal_Lever_Pulled.name",
     "Description": "nakasar_fractals_cliffside.items.Nakasar_Fractal_Lever_Pulled.description"
   },
-  "Icon": "Icons/Items/Nakasar/Fractals/Lever_Pulled.png",
+  "Icon": "Icons/ItemsGenerated/Deco_Lever.png",
   "Categories": [
     "Blocks.Deco"
   ],
@@ -13,7 +13,7 @@
     "Material": "Solid",
     "DrawType": "Model",
     "Opacity": "Transparent",
-    "HitboxType": "Full",
+    "HitboxType": "Plant_Large",
     "Flags": {},
     "Gathering": {
       "Breaking": {
@@ -30,31 +30,20 @@
         ]
       }
     },
-    "CustomModel": "Blocks/Nakasar/Fractals/Lever_Pulled.blockymodel",
+    "CustomModel": "Blocks/Tinkering/Lever.blockymodel",
     "CustomModelTexture": [
       {
-        "Texture": "Blocks/Nakasar/Fractals/Lever_Pulled_Texture.png",
+        "Texture": "Blocks/Tinkering/Lever_Texture.png",
         "Weight": 1
       }
     ],
-    "VariantRotation": "NESW"
+    "VariantRotation": "NESW",
+    "CustomModelAnimation": "Blocks/Nakasar/Fractals/Lever_Pulled.blockyanim"
   },
   "Tags": {
     "Type": [
       "Deco"
     ]
   },
-  "ItemSoundSetId": "ISS_Blocks_Stone",
-  "IconProperties": {
-    "Scale": 0.55,
-    "Translation": [
-      0,
-      -12
-    ],
-    "Rotation": [
-      22.5,
-      45,
-      22.5
-    ]
-  }
+  "ItemSoundSetId": "ISS_Blocks_Stone"
 }

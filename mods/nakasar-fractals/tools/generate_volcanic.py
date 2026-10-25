@@ -848,17 +848,6 @@ def grawl(comment, skin, attachments, scale=(0.9, 0.9), light=None):
     return doc
 
 
-def totem_parts():
-    wood, paint, glow = (90, 60, 40), (170, 40, 30), (255, 140, 60)
-    return [("Pole", (0, 60, 0), (16, 120, 16), 0, fm.smooth(wood), "flat"),
-            ("Face_1", (0, 96, 8.5), (14, 18, 1), 0, fm.flat(paint), "flat"),
-            ("Face_2", (0, 60, 8.5), (14, 18, 1), 0, fm.flat(paint), "flat"),
-            ("Eyes", (0, 100, 9.2), (10, 3, 1), 0, fm.crystal((140, 30, 0), glow), "fullbright"),
-            ("Wing_L", (-16, 112, 0), (18, 6, 4), 20, fm.smooth(wood), "flat"),
-            ("Wing_R", (16, 112, 0), (18, 6, 4), -20, fm.smooth(wood), "flat"),
-            ("Skull", (0, 126, 0), (12, 12, 12), 0, fm.smooth((226, 220, 200)), "flat")]
-
-
 def models():
     m = {}
     tribal = [("Cosmetics/Face_Accessories/Bandana.blockymodel", "Cosmetics/Face_Accessories/Bandana.png"),
@@ -882,8 +871,12 @@ def models():
         ("Cosmetics/Pants/Pants_Straight.blockymodel", "Cosmetics/Pants/Pants_Straight_Textures/Leather_Greyscale.png",
          "Faded_Leather", "Brown")])
     m[CAPTIVE]["DefaultAttachments"][1]["GradientId"] = "Blue"
-    m[TOTEM] = fc.character_model("Grawl_Totem", totem_parts(), 51, "Totem du rituel grawl (PNJ fixe) : sa vie montre les "
-                                  "grawls qu'il reste à abattre.", 1.5, (0.5, 2.2), light={"Color": "#f84", "Radius": 3})
+    # Kevin (25 octobre 2026) : le totem de lenteur vanilla (modèle du totem déployé), à l'échelle du modèle vanilla.
+    m[TOTEM] = fc.vanilla_npc_model("Grawl_Totem", "Totem du rituel grawl (PNJ fixe) : sa vie montre les grawls qu'il "
+                                    "reste à abattre ; le totem de lenteur vanilla.",
+                                    model="Items/Deployables/Slowness_Totem/Slowness_Totem_Projectile.blockymodel",
+                                    texture="Items/Deployables/Slowness_Totem/Slowness_Totem_Projectile.png", eye=1.5,
+                                    hitbox=(0.5, 2.2), light={"Color": "#f84", "Radius": 3}, scale=1.5)
     m[BAT] = {"$Comment": "Chauve-souris de la mine : la chauve-souris vanilla, un peu plus grande.", "Parent": "Bat",
               "MinScale": 1.3, "MaxScale": 1.3}
     m[IMBUED] = fr.humanoid(

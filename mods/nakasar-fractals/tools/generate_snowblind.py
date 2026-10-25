@@ -389,12 +389,26 @@ def firewood_parts():
             ("Rope_B", (4, 5, 0), (1.5, 9, 10), 0, fm.flat(rope), "flat")]
 
 
-def torch_parts():
-    wood, cloth, flame, core = (96, 66, 40), (150, 120, 80), (255, 140, 40), (255, 236, 160)
-    return [("Handle", (0, 7, 0), (2, 14, 2), 0, fm.smooth(wood), "flat"),
-            ("Wrap", (0, 14.5, 0), (3, 3, 3), 0, fm.smooth(cloth), "flat"),
-            ("Flame", (0, 18, 0), (3.5, 5, 3.5), 45, fm.crystal(flame, core), "fullbright"),
-            ("Tip", (0, 21, 0), (2, 2, 2), 45, fm.crystal(flame, core), "fullbright")]
+def torch_item():
+    """Torche portée : la torche du jeu (Furniture_Crude_Torch tenue en main : modèle, flamme, animations, icône) avec
+    notre lumière ; l'ancien modèle à nous est supprimé."""
+    for old in (fc.COMMON / fc.ITEM_MODELS / "Frost_Torch.blockymodel", fc.COMMON / fc.ITEM_MODELS / "Frost_Torch.png",
+                fc.COMMON / go.ICONS / "Frost_Torch.png"):
+        old.unlink(missing_ok=True)
+    return {
+        "TranslationProperties": {"Name": f"{LANG}.items.{TORCH}.name", "Description": f"{LANG}.items.{TORCH}.description"},
+        "Icon": "Icons/ItemsGenerated/Furniture_Crude_Torch.png",
+        "Model": "Items/Torch/Torch_New.blockymodel",
+        "Texture": "Items/Torch/Torch_New_Texture.png",
+        "Particles": [{"SystemId": "Torch_Fire", "TargetNodeName": "Flame", "Scale": 0.7, "PositionOffset": {"Y": -0.2}}],
+        "PlayerAnimationsId": "Torch",
+        "Scale": 1.0,
+        "Quality": "Uncommon",
+        "Categories": ["Items.Misc"],
+        "ItemSoundSetId": "ISS_Items_Gems",
+        "MaxStack": 1,
+        "Light": {"Color": "#fa6", "Radius": 7},
+    }
 
 
 def items():
@@ -403,8 +417,7 @@ def items():
                                stack=3, extra={"Categories": ["Items.Misc"], "Utility": {"Compatible": False},
                                                # porté, il reste en main comme le marteau (Kevin, 25 octobre 2026)
                                                "Interactions": {"SwapFrom": fc.KEEP_IN_HAND}}),
-        TORCH: fc.held_item(LANG, TORCH, "Frost_Torch", torch_parts(), 92, (0, 11, 0), 9.0, quality="Uncommon", stack=1,
-                            extra={"Categories": ["Items.Misc"], "Light": {"Color": "#fa6", "Radius": 7}}),
+        TORCH: torch_item(),
     }
 
 
@@ -531,11 +544,12 @@ PARTICLE_SYSTEMS = {
 
 # --- modèles ----------------------------------------------------------------------------------------------
 
-def crystal_parts(color, light, height):
-    return [("Core", (0, height / 2, 0), (12, height, 12), 45, fm.crystal(color, light), "fullbright"),
-            ("Shard_A", (8, height * 0.3, 2), (6, height * 0.55, 6), 20, fm.crystal(color, light), "fullbright"),
-            ("Shard_B", (-7, height * 0.25, -3), (6, height * 0.45, 6), -30, fm.crystal(color, light), "fullbright"),
-            ("Base", (0, 2, 0), (20, 4, 20), 0, fm.smooth((180, 196, 214)), "flat")]
+def crystal_model(name, comment, eye, hitbox, scale, light, radius):
+    w, h = hitbox
+    return {"$Comment": comment, "Model": f"{fc.NPC_MODELS}/{name}/Model.blockymodel",
+            "Texture": f"{fc.NPC_MODELS}/{name}/Texture.png", "EyeHeight": eye,
+            "HitBox": {"Max": {"X": w, "Y": h, "Z": w}, "Min": {"X": -w, "Y": 0, "Z": -w}},
+            "MinScale": scale, "MaxScale": scale, "Light": {"Color": light, "Radius": radius}}
 
 
 def effigy_parts():
@@ -584,12 +598,12 @@ def models():
     m[EFFIGY] = fc.character_model("Ice_Effigy", effigy_parts(), 95, "Effigie de glace (PNJ fixe) : tant qu'elle tient, "
                                    "le Chaman reste sur son balcon.", 1.4, (0.6, 1.6), light={"Color": "#9cf", "Radius": 4},
                                    scale=1.2)
-    m[CRYSTAL] = fc.character_model("Corrupted_Crystal", crystal_parts((90, 40, 150), (200, 160, 255), 44), 96,
-                                    "Cristal de glace corrompu (PNJ fixe) : protège le Chaman tant qu'il tient.", 0.8,
-                                    (0.4, 1.0), light={"Color": "#a6f", "Radius": 3})
-    m[SHARD] = fc.character_model("Ice_Shard", crystal_parts((120, 180, 240), (235, 248, 255), 60), 97,
-                                  "Éclat de glace (PNJ fixe) : enferme un joueur gelé jusqu'à ce que ses alliés le "
-                                  "brisent.", 1.0, (0.6, 1.4), light={"Color": "#9cf", "Radius": 2}, scale=1.2)
+    # Kevin (25 octobre 2026) : grands cristaux vanilla (blocs Rock_Crystal_Void_Large / Rock_Crystal_White_Large) copiés
+    # dans NPC/ par generate_vanilla_recolors.py : modèles de bloc à 32 unités par bloc, d'où les échelles 2 et 3.
+    m[CRYSTAL] = crystal_model("Corrupted_Crystal", "Cristal de glace corrompu (PNJ fixe) : protège le Chaman tant qu'il "
+                               "tient ; le grand cristal du Vide vanilla.", 0.8, (0.4, 1.0), 2.0, "#a6f", 3)
+    m[SHARD] = crystal_model("Ice_Shard", "Éclat de glace (PNJ fixe) : enferme un joueur gelé jusqu'à ce que ses alliés "
+                             "le brisent ; le grand cristal blanc vanilla.", 1.0, (0.6, 1.4), 3.0, "#9cf", 2)
     return m
 
 

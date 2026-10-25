@@ -10,8 +10,8 @@ Trois pièces d'apparence de la **saison 1** des fractales. Elles se portent com
 
 | Pièce | Emplacement | Prix à l'Archiviste | Description |
 |---|---|---|---|
-| **Couronne des Brumes** | tête | 150 éclats de Brume | des éclats de Brume flottent autour du front |
-| **Capuche de l'Archidevin** | tête | 200 éclats de Brume | la capuche pointue du culte de la [Falaise](falaise.md), liseré d'or et rune dans le dos |
-| **Mantelet des Brumes** | torse | 250 éclats de Brume | épaulières de cristal et courte cape |
+| **Couronne des Brumes** | tête | 150 éclats de Brume | une couronne d'or sur un velours violet des Brumes |
+| **Capuche de l'Archidevin** | tête | 200 éclats de Brume | la capuche à longue pointe du culte de la [Falaise](falaise.md), liseré d'or |
+| **Mantelet des Brumes** | torse | 250 éclats de Brume | la cape royale bordée de fourrure, drap indigo de l'Archidevin |
 
 Le [coffre des fractales du jour](progression.md#fractales-du-jour) en donne parfois une au hasard.

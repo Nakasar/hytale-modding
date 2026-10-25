@@ -18,6 +18,8 @@ import random
 
 from PIL import Image, ImageFilter
 
+import fractal_materials as fmat
+
 FACES = ("top", "bottom", "front", "back", "left", "right")
 UNIT = 32
 
@@ -62,111 +64,48 @@ def _rim(x, y, w, h, face):
 
 # ---------------------------------------------------------------- peintres
 
-def planks(base, width=5, vertical=True, grain=0.16, rim=True):
-    """Planches de bois sombre : teinte par planche, joints foncés, veinage, contour."""
+def _lum(c):
+    return 0.299 * c[0] + 0.587 * c[1] + 0.114 * c[2]
+
+
+def _painted(key, base, rotate=False, aligned=False, contrast=1.0, bottom=0.7, rim=True):
+    """Peintre « façon Hytale » : texture de bloc vanilla (fractal_materials) recolorée vers `base`, arêtes vanilla."""
     def paint(rng, w, h, face):
         img, px = _canvas(w, h)
-        n = noise(rng, w, h, 3, 0.08)
-        along_v = vertical if face not in ("top", "bottom") else True
-        span = w if along_v else h
-        tints = [rng.uniform(0.86, 1.1) for _ in range(span // width + 2)]
-        streaks = {(rng.randrange(max(1, w)), rng.randrange(max(1, h))) for _ in range(max(1, w * h // 18))}
+        turn = rotate if face not in ("top", "bottom") else False
+        f = fmat.factors(key, rng, w, h, turn, aligned, contrast)
         for y in range(h):
             for x in range(w):
-                u, v = (x, y) if along_v else (y, x)
-                k = u // width
-                f = tints[k] * n[y][x]
-                if u % width == 0:
-                    f *= 0.62
-                elif u % width == 1:
-                    f *= 1.08
-                if (x, y) in streaks or ((x, y - 1) in streaks and along_v) or ((x - 1, y) in streaks and not along_v):
-                    f *= 1 - grain
-                if face == "bottom":
-                    f *= 0.7
+                k = f[y][x] * (bottom if face == "bottom" else 1.0)
                 if rim:
-                    f *= _rim(x, y, w, h, face)
-                px[x, y] = shade(base, f) + (255,)
+                    k *= _rim(x, y, w, h, face)
+                px[x, y] = shade(base, k) + (255,)
         return img
     return paint
+
+
+# Style Hytale (Kevin, 25 octobre 2026) : planches, pierre, métal, écorce et toile reprennent le dessin peint des blocs
+# vanilla (tools/materials/), recoloré ; les signatures d'origine sont gardées (les anciens réglages de dessin, largeur
+# de planche ou taille de pierre, ne servent plus).
+
+def planks(base, width=5, vertical=True, grain=0.16, rim=True):
+    """Planches : bois dur vanilla (bois sombre vanilla pour une teinte foncée), à la verticale par défaut."""
+    return _painted("planks_dark" if _lum(base) < 70 else "planks", base, rotate=vertical, rim=rim)
 
 
 def stone(base, brick=(8, 5), mortar=0.6, rim=True):
-    """Pierre taillée en assises : teinte par pierre, joints, coin haut-gauche éclairé."""
-    bw, bh = brick
-
-    def paint(rng, w, h, face):
-        img, px = _canvas(w, h)
-        n = noise(rng, w, h, 3, 0.09)
-        tints = {}
-        for y in range(h):
-            row = y // bh
-            off = (bw // 2) * (row % 2)
-            for x in range(w):
-                col = (x + off) // bw
-                t = tints.setdefault((row, col), rng.uniform(0.88, 1.08))
-                lx, ly = (x + off) % bw, y % bh
-                f = t * n[y][x]
-                if lx == 0 or ly == 0:
-                    f *= mortar
-                elif ly == 1 or lx == 1:
-                    f *= 1.1
-                elif ly == bh - 1:
-                    f *= 0.88
-                if face == "bottom":
-                    f *= 0.7
-                if rim:
-                    f *= _rim(x, y, w, h, face)
-                px[x, y] = shade(base, f) + (255,)
-        return img
-    return paint
+    """Pierre taillée : briques de pierre vanilla."""
+    return _painted("brick", base, contrast=1.1, rim=rim)
 
 
 def smooth_stone(base, rim=True):
-    """Pierre lisse (dalles, socles) : bruit doux, quelques éclats."""
-    def paint(rng, w, h, face):
-        img, px = _canvas(w, h)
-        n = noise(rng, w, h, 5, 0.12)
-        chips = {(rng.randrange(max(1, w)), rng.randrange(max(1, h))) for _ in range(max(1, w * h // 40))}
-        for y in range(h):
-            for x in range(w):
-                f = n[y][x] * (0.86 if (x, y) in chips else 1.0)
-                if face not in ("top", "bottom"):
-                    f *= 1.0 - 0.12 * y / max(1, h - 1)
-                if face == "bottom":
-                    f *= 0.7
-                if rim:
-                    f *= _rim(x, y, w, h, face)
-                px[x, y] = shade(base, f) + (255,)
-        return img
-    return paint
+    """Pierre lisse (dalles, socles) : pierre lisse vanilla à cadre, alignée sur l'arête."""
+    return _painted("smooth", base, aligned=True, rim=rim)
 
 
 def metal(base, rivets=True):
-    """Laiton / or : biseau (arêtes haute et gauche claires, basse et droite sombres), léger brossé, rivets."""
-    def paint(rng, w, h, face):
-        img, px = _canvas(w, h)
-        n = noise(rng, w, h, 2, 0.05)
-        for y in range(h):
-            for x in range(w):
-                if face in ("top", "bottom"):
-                    f = 1.1 - 0.14 * (x + y) / max(1, w + h - 2)
-                else:
-                    f = 1.08 - 0.3 * y / max(1, h - 1)
-                f *= n[y][x]
-                if y == 0 or x == 0:
-                    f *= 1.22
-                elif y == h - 1 or x == w - 1:
-                    f *= 0.7
-                if face == "bottom":
-                    f *= 0.7
-                px[x, y] = shade(base, f) + (255,)
-        if rivets and w >= 6 and h >= 4 and face not in ("top", "bottom"):
-            for x in (2, w - 3):
-                px[x, h // 2] = shade(base, 1.4) + (255,)
-                px[x, h // 2 + 1] = shade(base, 0.62) + (255,)
-        return img
-    return paint
+    """Laiton / or / fer : bronze lisse vanilla (rivets aux coins) ou fer lisse pour une teinte froide."""
+    return _painted("metal" if base[0] >= base[2] else "metal_cold", base, aligned=rivets, contrast=1.3)
 
 
 def crystal(dark, light):
@@ -222,6 +161,8 @@ def log(bark, core=(196, 156, 104)):
     def paint(rng, w, h, face):
         img, px = _canvas(w, h)
         n = noise(rng, w, h, 2, 0.1)
+        # Écorce de chêne vanilla, fibres le long du rondin (axe Z).
+        sides = fmat.factors("bark", rng, w, h, rotate=face in ("top", "bottom", "left", "right"))
         cx, cy = (w - 1) / 2, (h - 1) / 2
         for y in range(h):
             for x in range(w):
@@ -232,9 +173,7 @@ def log(bark, core=(196, 156, 104)):
                     else:
                         c = shade(core, (1.0 if int(d) % 2 else 0.86) * n[y][x])
                 else:
-                    along = y if face in ("left", "right") else x
-                    f = n[y][x] * (0.72 if (along * 7 + x * 3 + y) % 5 == 0 else 1.0)
-                    c = shade(bark, f * (1.12 if (x if face in ("left", "right") else y) == 0 else 1.0))
+                    c = shade(bark, sides[y][x] * (1.12 if (x if face in ("left", "right") else y) == 0 else 1.0))
                 px[x, y] = c + (255,)
         return img
     return paint
@@ -306,12 +245,13 @@ def glass(tint, alpha=150):
 
 
 def cloth(base, stripe=None):
+    """Toile : tissage de la toile blanche vanilla, recoloré."""
     def paint(rng, w, h, face):
         img, px = _canvas(w, h)
-        n = noise(rng, w, h, 2, 0.08)
+        n = fmat.factors("cloth", rng, w, h, contrast=1.4)
         for y in range(h):
             for x in range(w):
-                c = shade(base, n[y][x] * (0.9 if (x + y) % 2 else 1.0))
+                c = shade(base, n[y][x] * (0.75 if face == "bottom" else 1.0))
                 if stripe and y in (1, h - 2):
                     c = stripe
                 px[x, y] = c + (255,)

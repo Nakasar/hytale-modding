@@ -418,14 +418,6 @@ PARTICLE_SYSTEMS = {
 
 # --- modèles ----------------------------------------------------------------------------------------------
 
-def turret_parts():
-    steel, glow = (88, 92, 110), (140, 220, 255)
-    return [("Base", (0, 10, 0), (40, 20, 40), 0, fm.smooth(steel), "flat"),
-            ("Head", (0, 34, 0), (30, 22, 30), 0, fm.smooth(fm.shade(steel, 1.2)), "flat"),
-            ("Barrel", (0, 36, 22), (10, 10, 24), 0, fm.smooth(fm.shade(steel, 0.7)), "flat"),
-            ("Eye", (0, 38, 15.5), (12, 6, 1), 0, fm.crystal((40, 120, 200), glow), "fullbright")]
-
-
 def generator_parts():
     metal, glow = (72, 76, 96), (150, 220, 255)
     parts = [("Base", (0, 8, 0), (64, 16, 64), 0, fm.smooth(metal), "flat"),
@@ -438,21 +430,6 @@ def generator_parts():
     return parts
 
 
-def rabbit_parts():
-    fur, belly, eye = (200, 190, 180), (236, 230, 222), (255, 60, 60)
-    return [("Body", (0, 26, 0), (34, 30, 48), 0, fm.smooth(fur), "flat"),
-            ("Belly", (0, 22, 10), (26, 20, 30), 0, fm.smooth(belly), "flat"),
-            ("Head", (0, 50, 22), (26, 24, 24), 0, fm.smooth(fur), "flat"),
-            ("Ear_L", (-7, 74, 18), (6, 26, 4), 0, fm.smooth(fur), "flat"),
-            ("Ear_R", (7, 74, 18), (6, 26, 4), 0, fm.smooth(fur), "flat"),
-            ("Eye_L", (-8, 54, 34.5), (5, 5, 1), 0, fm.crystal((140, 0, 0), eye), "fullbright"),
-            ("Eye_R", (8, 54, 34.5), (5, 5, 1), 0, fm.crystal((140, 0, 0), eye), "fullbright"),
-            ("Teeth", (0, 42, 34.5), (8, 6, 1), 0, fm.flat((250, 250, 240)), "flat"),
-            ("Foot_L", (-12, 6, 6), (10, 12, 26), 0, fm.smooth(fur), "flat"),
-            ("Foot_R", (12, 6, 6), (10, 12, 26), 0, fm.smooth(fur), "flat"),
-            ("Tail", (0, 30, -26), (12, 12, 8), 0, fm.smooth(belly), "flat")]
-
-
 def models():
     m = {}
     m[HARPY] = {"$Comment": "Harpie (provisoire) : la chauve-souris vanilla, deux fois plus grande. Modèle de harpie à "
@@ -461,10 +438,13 @@ def models():
                                            "Générateur de la prison (PNJ fixe) : socle d'acier, cœur de cristal bleu. "
                                            "Généré par tools/generate_uncategorized.py.", 1.2, (0.9, 1.8),
                                            light={"Color": "#6cf", "Radius": 4})
-    m[TURRET] = fc.character_model("Turret", turret_parts(), 22, "Tourelle de l'escalier mortel (PNJ fixe, invulnérable).",
-                                   0.6, (0.4, 0.8), light={"Color": "#6cf", "Radius": 2})
-    m[RABBIT] = fc.character_model("Rabid_Rabbit", rabbit_parts(), 23, "Lapin enragé (prisonnier) : gros lapin gris aux "
-                                   "yeux rouges, modèle en boîtes sans animation (provisoire).", 0.8, (0.5, 1.2), scale=1.3)
+    m[TURRET] = fc.vanilla_npc_model("Turret", "Tourelle de l'escalier mortel (PNJ fixe, invulnérable) : le canon du "
+                                     "Gobliterator vanilla, réduit.",
+                                     model="NPC/Boss/Goblin_Gobliterator/Models/Goblin_Cannon.blockymodel",
+                                     texture="NPC/Boss/Goblin_Gobliterator/Models/Goblin_Cannon.png", eye=0.6,
+                                     hitbox=(0.4, 0.8), light={"Color": "#6cf", "Radius": 2}, scale=0.6)
+    m[RABBIT] = fc.vanilla_npc_model("Rabid_Rabbit", "Lapin enragé (prisonnier) : le lapin vanilla, plus gros.",
+                                     parent="Rabbit", scale=1.3)
     m[SABOTEUR] = fr.humanoid(
         "Saboteur (prisonnier) : bandit masqué, manteau sombre, bombes.", "08", "Face_Scar", [
             ("Cosmetics/Face_Accessories/Bandana.blockymodel", "Cosmetics/Face_Accessories/Bandana.png"),
