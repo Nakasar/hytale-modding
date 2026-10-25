@@ -151,8 +151,9 @@ ALTAR = "Nakasar_Fractal_Infusion_Altar"
 FORGE = "Nakasar_Fractal_Mist_Forge"
 # Portail des Brumes : arche fabriquée au Creuset et posée chez soi, toujours ouverte vers un Observatoire (sans fragment).
 PORTAL = "Nakasar_Fractal_Mists_Portal"
-# Cœur du Gobliterator vanilla en plus (Kevin, 25 octobre 2026) : id donné par Kevin, à vérifier dans Assets.zip.
-PORTAL_INPUTS = [(KEY, 4), ("Nakasar_Fractal_Mist_Shard", 50), ("Gobliterator_Core", 1)]
+# Noyau du Goblitérateur vanilla en plus (Kevin, 25 octobre 2026) : trophée du Gobliterator des Deepworks
+# (Ingredient_Gobliterator_Core, vu dans Assets.zip 0.7.2, /mnt/project-files/donjons/deepworks-reference.md).
+PORTAL_INPUTS = [(KEY, 4), ("Nakasar_Fractal_Mist_Shard", 50), ("Ingredient_Gobliterator_Core", 1)]
 PORTAL_HITBOX = SERVER / "Item/Block/Hitboxes/Nakasar/Fractals" / f"{PORTAL}.json"
 # Décor GW2 : voile violet de la porte asura (le traverser ramène chez soi, comme Portal_Return), consoles asura à
 # hologrammes, sources des cascades de lumière (Nakasar_Fractal_Light_Fall) dans les bassins.

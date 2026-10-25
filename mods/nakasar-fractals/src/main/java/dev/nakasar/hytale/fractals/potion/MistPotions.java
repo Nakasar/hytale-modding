@@ -16,7 +16,8 @@ import dev.nakasar.hytale.fractals.party.FractalCatalog;
  *   ({@link MistPotionSystem}) ;</li>
  *   <li>Défensive : dégâts subis -5 % par pile, sauf l'agonie ({@link MistPotionDamageFilter}).</li>
  * </ul>
- * Piles et durées sont sauvegardées avec le joueur ({@link MistPotionState}) ; les effets affichés en sont le reflet,
+ * Retourner dans le monde (hors fractales et Observatoire) retire toutes les piles. Piles et durées sont sauvegardées
+ * avec le joueur ({@link MistPotionState}) ; les effets affichés en sont le reflet,
  * posés par {@link MistPotionSystem}. Assets : tools/generate_potions.py.
  */
 public final class MistPotions {
@@ -68,6 +69,11 @@ public final class MistPotions {
     /** Vrai dans une instance de fractale (les potions y agissent). */
     public static boolean active(World world) {
         return FractalCatalog.fractalOf(world) != null;
+    }
+
+    /** Vrai dans une fractale ou l'Observatoire : ailleurs (le monde), les potions sont retirées. */
+    public static boolean kept(World world) {
+        return active(world) || FractalCatalog.isObservatory(world);
     }
 
     /** Piles de `kind` du joueur (0 sans potion ou si ce n'est pas un joueur), sans regarder le monde. */

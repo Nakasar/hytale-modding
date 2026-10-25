@@ -20,9 +20,10 @@ import java.util.WeakHashMap;
 /**
  * Potions des Brumes, quatre fois par seconde dans chaque monde où sont des joueurs :
  * <ul>
- *   <li>le temps restant de chaque potion s'écoule ({@link MistPotionState#elapse}) ;</li>
+ *   <li>le temps restant de chaque potion s'écoule ({@link MistPotionState#elapse}) ; hors des fractales et de
+ *   l'Observatoire (retour dans le monde), toutes les piles sont retirées (Kevin, 25 octobre 2026) ;</li>
  *   <li>les effets affichés suivent les piles : {@code Nakasar_Fractal_Mist_<Type>_<piles>} dans une fractale,
- *   {@code ..._Dormant} (gris, sans bonus) ailleurs, avec la durée restante ; les autres crans sont retirés. Un joueur
+ *   {@code ..._Dormant} (gris, sans bonus) dans l'Observatoire, avec la durée restante ; les autres crans sont retirés. Un joueur
  *   mort est laissé tel quel, ses effets reviennent quand il réapparaît ;</li>
  *   <li>Mobilité, dans une fractale : chaque gain d'endurance depuis le passage précédent est augmenté de
  *   {@link Kind#STAMINA_PER_STACK} par pile.</li>
@@ -55,6 +56,7 @@ public final class MistPotionSystem extends TickingSystem<EntityStore> {
     private static void step(World world, float dt) {
         Store<EntityStore> store = world.getEntityStore().getStore();
         boolean active = MistPotions.active(world);
+        boolean kept = MistPotions.kept(world);
         for (PlayerRef player : world.getPlayerRefs()) {
             Ref<EntityStore> ref = player.getReference();
             MistPotionState state = ref == null || !ref.isValid() ? null
@@ -62,7 +64,11 @@ public final class MistPotionSystem extends TickingSystem<EntityStore> {
             if (state == null || state.isIdle()) {
                 continue;
             }
-            state.elapse(dt);
+            if (kept) {
+                state.elapse(dt);
+            } else {
+                state.clear();
+            }
             if (store.getComponent(ref, DeathComponent.getComponentType()) != null) {
                 state.lastStamina = Float.NaN;
                 continue;

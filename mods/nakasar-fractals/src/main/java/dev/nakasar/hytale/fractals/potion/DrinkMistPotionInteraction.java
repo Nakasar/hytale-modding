@@ -22,7 +22,7 @@ import dev.nakasar.hytale.fractals.potion.MistPotions.Kind;
  * {@code "Type": "Nakasar_Fractal_DrinkMistPotion"} : fin de la chaîne de boisson d'une potion des Brumes. Ajoute les
  * piles au joueur ({@link MistPotionState}, {@value MistPotions#MAX_STACKS} au plus) et remet la durée à 1 h ; les
  * effets suivent au prochain passage de {@link MistPotionSystem}. Échoue (la potion n'est pas retirée) si le type est
- * inconnu ou si ce n'est pas un joueur.
+ * inconnu, si ce n'est pas un joueur ou hors des fractales et de l'Observatoire ({@link MistPotions#kept}).
  *
  * <p>Clés JSON : {@code Potion} (string) : {@code Offensive}, {@code Mobility} ou {@code Defensive} ; {@code Stacks}
  * (int, 1 par défaut) : piles ajoutées (5 pour une grande potion).
@@ -60,6 +60,12 @@ public class DrinkMistPotionInteraction extends SimpleInstantInteraction {
         // gorgées finies dans le même tick en créeraient chacune un.
         int added = Math.max(1, stacks);
         World world = buffer.getExternalData().getWorld();
+        if (!MistPotions.kept(world)) {
+            // Dans le monde, la potion serait aussitôt retirée (MistPotionSystem) : refusée, elle n'est pas consommée.
+            playerRef.sendMessage(Message.translation(MistPotions.MESSAGES + "refused"));
+            context.getState().state = InteractionState.Failed;
+            return;
+        }
         world.execute(() -> {
             if (!player.isValid()) {
                 return;

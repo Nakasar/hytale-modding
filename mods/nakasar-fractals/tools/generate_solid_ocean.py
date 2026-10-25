@@ -15,7 +15,7 @@ Le déroulé de GW2 (wiki.guildwars2.com/wiki/Solid_Ocean_Fractal), dans l'ordre
    l'Abîme marque un joueur d'un crâne rouge puis tire son rayon mortel : on s'écarte quand le crâne disparaît, ou on
    tient un cristal qui l'absorbe et charge le joueur ; un cristal lancé par un joueur chargé retire 5 % de la vie de
    l'Abîme, un tentacule abattu environ 3 %. Près de la mort, un dernier rayon frappe tout le monde : il faut tenir un
-   cristal.
+   cristal, puis l'Abîme meurt. Les tentacules sont remis à leur place s'ils sont déplacés (Java).
 
 Le générateur écrit les prefabs (tronçons de 64 blocs), l'instance `Nakasar_Fractal_SolidOcean`, le cristal
 réfléchissant (clic droit : le lancer), la plateforme de jade sûre, la cause de dégâts du rayon, les particules, les

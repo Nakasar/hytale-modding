@@ -5,11 +5,12 @@
 <Info label="Durée">1 h</Info>
 <Info label="Cumul">5 piles au plus</Info>
 <Info label="Effet">dans les fractales seulement</Info>
+<Info label="Perdues">en retournant dans le monde</Info>
 </Infobox>
 
 Comme dans *Guild Wars 2*, trois potions renforcent les joueurs **à l'intérieur des fractales**. Chacune existe en deux tailles : la **potion** donne **une pile** du bonus, la **grande potion** en donne **cinq** d'un coup. Les piles d'un même type se cumulent jusqu'à **5**, et chaque gorgée remet la durée à **1 h**. Les trois types se cumulent entre eux.
 
-Pour boire, maintenir le **clic droit** une seconde et demie, comme les potions du jeu. Le bonus s'affiche en haut de l'écran avec son nombre de piles ; hors des fractales (Observatoire, monde), l'icône devient **grise** : la potion dort et le bonus ne s'applique pas, mais le temps continue de s'écouler. Les piles restent après une mort et se gardent d'une session à l'autre (le temps ne s'écoule qu'en jeu).
+Pour boire, maintenir le **clic droit** une seconde et demie, comme les potions du jeu. Le bonus s'affiche en haut de l'écran avec son nombre de piles ; à l'Observatoire, l'icône devient **grise** : la potion dort et le bonus ne s'applique pas, mais le temps continue de s'écouler. **Retourner dans le monde** (hors des fractales et de l'Observatoire) **retire les potions**, et elles ne s'y boivent pas. Les piles restent après une mort et se gardent d'une session à l'autre (le temps ne s'écoule qu'en jeu).
 
 | Potion | Bonus par pile, dans les fractales | Prix (éclats de Brume) |
 |---|---|---|

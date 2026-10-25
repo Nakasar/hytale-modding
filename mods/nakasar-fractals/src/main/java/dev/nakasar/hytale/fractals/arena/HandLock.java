@@ -22,13 +22,16 @@ import java.util.concurrent.ConcurrentHashMap;
 /**
  * Objets de mécanique qu'on garde en main tant qu'on les porte (marteau du culte, cristal réfléchissant) :
  * <ul>
- *   <li>{@link #putInHand} les met dans la barre d'inventaire et les sélectionne, main secondaire vidée ;</li>
+ *   <li>{@link #putInHand} les met dans la barre d'inventaire et les sélectionne ;</li>
  *   <li>leur interaction {@code SwapFrom} ne fait rien (JSON, côté client) et {@link Lock} refuse toute demande de
  *   changement de case tant qu'ils sont en main ;</li>
  *   <li>{@link #ensureHeld}, appelé par le système de l'objet, les remet en main s'ils en sont sortis (rangés à la
  *   main dans le sac), sans les recréer : l'usure du marteau est gardée.</li>
  * </ul>
- * On peut toujours les jeter (touche de lâcher) : la Corruption du marteau compte dessus.
+ * On peut toujours les jeter (touche de lâcher) : la Corruption du marteau compte dessus. La main secondaire n'est pas
+ * touchée : comme une arme à deux mains vanilla, l'objet a {@code "Utility": {"Compatible": false}} (ou rien, même
+ * défaut), le bouclier ou la torche se range le temps qu'on le tient et revient quand on reprend une arme à une main
+ * (Kevin, 25 octobre 2026 ; vider la case active de la main secondaire la perdait).
  */
 public final class HandLock {
 
@@ -52,7 +55,7 @@ public final class HandLock {
 
     /**
      * Met `stack` dans la barre d'inventaire et le sélectionne : la case active si elle est vide, sinon la première
-     * case vide, sinon la case active dont l'objet part dans le sac. Vide la main secondaire.
+     * case vide, sinon la case active dont l'objet part dans le sac.
      */
     public static void putInHand(Store<EntityStore> store, Ref<EntityStore> ref, ItemStack stack) {
         InventoryComponent.Hotbar hotbar = store.getComponent(ref, InventoryComponent.Hotbar.getComponentType());
@@ -82,7 +85,6 @@ public final class HandLock {
         }
         bar.setItemStackForSlot(slot, stack);
         select(store, ref, hotbar, (byte) slot);
-        freeOffHand(store, ref);
     }
 
     /**
@@ -92,7 +94,6 @@ public final class HandLock {
     public static boolean ensureHeld(Store<EntityStore> store, Ref<EntityStore> ref, String id) {
         ItemStack held = InventoryComponent.getItemInHand(store, ref);
         if (held != null && id.equals(held.getItemId())) {
-            freeOffHand(store, ref);
             return true;
         }
         InventoryComponent.Hotbar hotbar = store.getComponent(ref, InventoryComponent.Hotbar.getComponentType());
@@ -102,7 +103,6 @@ public final class HandLock {
                 ItemStack stack = bar.getItemStack(i);
                 if (!empty(stack) && id.equals(stack.getItemId())) {
                     select(store, ref, hotbar, (byte) i);
-                    freeOffHand(store, ref);
                     return true;
                 }
             }
@@ -132,20 +132,6 @@ public final class HandLock {
         PlayerRef player = store.getComponent(ref, PlayerRef.getComponentType());
         if (player != null) {
             player.getPacketHandler().writeNoCache(new SetActiveSlot(InventoryComponent.HOTBAR_SECTION_ID, slot));
-        }
-    }
-
-    /** Objet tenu à deux mains : rien dans la main secondaire. */
-    private static void freeOffHand(Store<EntityStore> store, Ref<EntityStore> ref) {
-        InventoryComponent.Utility utility = store.getComponent(ref, InventoryComponent.Utility.getComponentType());
-        if (utility == null || utility.getActiveSlot() == InventoryComponent.INACTIVE_SLOT_INDEX) {
-            return;
-        }
-        utility.setActiveSlot(InventoryComponent.INACTIVE_SLOT_INDEX, ref, store);
-        PlayerRef player = store.getComponent(ref, PlayerRef.getComponentType());
-        if (player != null) {
-            player.getPacketHandler().writeNoCache(new SetActiveSlot(InventoryComponent.UTILITY_SECTION_ID,
-                    InventoryComponent.INACTIVE_SLOT_INDEX));
         }
     }
 
