@@ -20,6 +20,7 @@ import dev.nakasar.hytale.fractals.boss.BossBarSystem;
 import dev.nakasar.hytale.fractals.combat.Delayed;
 import dev.nakasar.hytale.fractals.combat.Hurt;
 import dev.nakasar.hytale.fractals.combat.Spawns;
+import dev.nakasar.hytale.fractals.combat.TelegraphSystem;
 import dev.nakasar.hytale.fractals.combat.Telegraphs;
 import dev.nakasar.hytale.fractals.instability.Instabilities;
 import dev.nakasar.hytale.fractals.party.FractalRuns;
@@ -70,7 +71,8 @@ public final class Uncategorized implements FractalStage {
     /** Tourelles : une voie toutes les {@value #TURRET_STAGGER} s, annonce de {@value #TURRET_WINDUP} s. */
     static final float TURRET_STAGGER = 1f;
     static final float TURRET_WINDUP = 1.4f;
-    static final double TURRET_HALF_WIDTH = 1.1;
+    /** Demi-largeur d'une voie : les quatre voies (x = -3, -1, 1, 3) se touchent sans se chevaucher. */
+    static final double TURRET_HALF_WIDTH = 1.0;
     static final float TURRET_PART = 0.25f;
     static final float CONSOLE_ROOT = 1.5f;
 
@@ -307,12 +309,25 @@ public final class Uncategorized implements FractalStage {
         fireLane(world, store, laneX + 0.5, FractalRuns.windupFactor(world));
     }
 
-    /** Une tourelle tire dans sa voie : petits cercles rouges sur toute la longueur, puis la décharge. */
+    /**
+     * Une tourelle tire dans sa voie : bande rouge de la largeur exacte de la voie sur toute la longueur (une ligne par
+     * marche, posée sur elle), puis la décharge.
+     */
     private void fireLane(World world, Store<EntityStore> store, double x, float wf) {
         float seconds = TURRET_WINDUP * wf;
-        for (int z = UncategorizedLayout.STAIRS_TOP_Z; z <= UncategorizedLayout.STAIRS_BOTTOM_Z; z += 2) {
-            Telegraphs.circle(store, new Vector3d(x, stairLevel(z), z + 0.5), TURRET_HALF_WIDTH, seconds);
+        long now = System.nanoTime();
+        List<Telegraphs.Strip> steps = new ArrayList<>();
+        for (int z = UncategorizedLayout.STAIRS_TOP_Z; z <= UncategorizedLayout.STAIRS_BOTTOM_Z; z++) {
+            steps.add(new Telegraphs.Strip(new Vector3d(x, stairLevel(z), z), Math.PI / 2, 1,
+                    2 * TURRET_HALF_WIDTH, now, seconds));
         }
+        TelegraphSystem.start(world, (w, s, t) -> {
+            boolean done = true;
+            for (Telegraphs.Strip step : steps) {
+                done &= step.step(s, t);
+            }
+            return done;
+        });
         Delayed.later(world, seconds, s -> {
             State st = state(world);
             if (st.step != Step.STAIRS) {
@@ -321,7 +336,7 @@ public final class Uncategorized implements FractalStage {
             for (PlayerRef player : Spawns.alivePlayers(world, s)) {
                 Ref<EntityStore> ref = player.getReference();
                 Vector3d at = Telegraphs.position(s, ref);
-                if (at == null || Math.abs(at.x() - x) > TURRET_HALF_WIDTH || !UncategorizedLayout.STAIRS.contains(at.x(), at.y(), at.z())) {
+                if (at == null || Math.abs(at.x() - x) > TURRET_HALF_WIDTH + Telegraphs.BODY || !UncategorizedLayout.STAIRS.contains(at.x(), at.y(), at.z())) {
                     continue;
                 }
                 double level = stairLevel((int) Math.floor(at.z()));

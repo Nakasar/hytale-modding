@@ -27,6 +27,7 @@ import com.hypixel.hytale.server.spawning.SpawnTestResult;
 import dev.nakasar.hytale.vampires.VampiresPlugin;
 import it.unimi.dsi.fastutil.Pair;
 import dev.nakasar.hytale.vampires.arena.WorldBlocks;
+import dev.nakasar.hytale.vampires.boss.RecentDamage;
 import org.joml.Vector3d;
 import org.joml.Vector3i;
 
@@ -550,9 +551,12 @@ public class SummonMinionsInteraction extends SimpleInstantInteraction {
         }
     }
 
-    /** Rend des PV à l'élite (plafonnés à son maximum par sa table de statistiques). */
+    /**
+     * Rend des PV à l'élite (plafonnés à son maximum par sa table de statistiques), seulement en combat et jamais
+     * invulnérable ({@link RecentDamage}, consigne permanente de Kevin, AGENTS.md).
+     */
     private static void heal(Store<EntityStore> store, Ref<EntityStore> summoner, float amount) {
-        if (amount <= 0f) {
+        if (amount <= 0f || !RecentDamage.mayHeal(summoner, store)) {
             return;
         }
         EntityStatMap stats = store.getComponent(summoner, EntityStatMap.getComponentType());

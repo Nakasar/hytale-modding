@@ -383,7 +383,7 @@ final class Bloomhunger {
                 Telegraphs.particle(s, "Nakasar_Fractal_Egg_Burst", drop, 1.2f);
                 for (PlayerRef p : Spawns.alivePlayers(world, s)) {
                     Vector3d at = Telegraphs.position(s, p.getReference());
-                    if (at != null && Telegraphs.horizontal(at, drop) <= RAIN_RADIUS && Math.abs(at.y() - drop.y()) <= 3) {
+                    if (at != null && Telegraphs.horizontal(at, drop) <= RAIN_RADIUS + Telegraphs.BODY && Math.abs(at.y() - drop.y()) <= 3) {
                         Hurt.percent(s, p.getReference(), RAIN_PART, "Physical");
                         Hurt.effect(s, p.getReference(), "Poison_T1", 4f);
                     }

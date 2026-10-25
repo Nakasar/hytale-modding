@@ -1,5 +1,5 @@
 {
-  "$Comment": "Le Chaman légendaire en ours (sous 25 %) : bonds qui renversent longtemps, griffes. Généré par tools/generate_snowblind.py.",
+  "$Comment": "Le Chaman légendaire en loup-garou (sous 25 %) : bonds qui renversent longtemps, griffes. Généré par tools/generate_snowblind.py.",
   "Type": "Generic",
   "Appearance": "Nakasar_Fractal_Shaman_Bear",
   "NameTranslationKey": "nakasar_fractals_snowblind.npc.Shaman_Bear.name",

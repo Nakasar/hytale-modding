@@ -280,7 +280,7 @@ final class WispRun {
         for (int t = 0; t < SwamplandLayout.TRAPS.length; t++) {
             int[] trap = SwamplandLayout.TRAPS[t];
             if (trap[3] == 2 && warn) {
-                Telegraphs.circle(store, new Vector3d(trap[0] + 0.5, trap[1] + 1, trap[2] + 0.5), 1.0, 1f);
+                Telegraphs.circle(store, new Vector3d(trap[0] + 0.5, trap[1] + 1, trap[2] + 0.5), 0.5, 1f);   // la case piégée
             }
             for (PlayerRef p : inSwamp) {
                 Ref<EntityStore> ref = p.getReference();

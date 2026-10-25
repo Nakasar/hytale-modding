@@ -1,5 +1,5 @@
 {
-  "$Comment": "Le Chaman légendaire, barre de boss : coups d'épée (hypothermie, Java), pluie de glace, pics de glace, souffle glacé. Les cristaux corrompus, le balcon, l'Effigie et la forme d'ours sont menés par le Java (snowblind.Shaman). Généré par tools/generate_snowblind.py.",
+  "$Comment": "Le Chaman légendaire, barre de boss : coups d'épée (hypothermie, Java), pluie de glace, pics de glace, souffle glacé. Les cristaux corrompus, le balcon, l'Effigie et la forme de loup-garou sont menés par le Java (snowblind.Shaman). Généré par tools/generate_snowblind.py.",
   "Type": "Generic",
   "Appearance": "Nakasar_Fractal_Legendary_Shaman",
   "NameTranslationKey": "nakasar_fractals_snowblind.npc.Legendary_Shaman.name",

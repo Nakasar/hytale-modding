@@ -277,7 +277,7 @@ final class MadAsura {
             for (PlayerRef p : Spawns.alivePlayers(world, s)) {
                 Ref<EntityStore> r = p.getReference();
                 Vector3d there = Telegraphs.position(s, r);
-                if (there != null && Telegraphs.horizontal(there, at) <= ORB_RADIUS && Math.abs(there.y() - at.y()) <= 2.5) {
+                if (there != null && Telegraphs.horizontal(there, at) <= ORB_RADIUS + Telegraphs.BODY && Math.abs(there.y() - at.y()) <= 2.5) {
                     Hurt.amount(s, r, ORB_DAMAGE * (1f + FractalRuns.level(world) / 150f), "Physical");
                     if (FractalRuns.level(world) > 25) {
                         Hurt.effect(s, r, Agony.EFFECT, 4f);

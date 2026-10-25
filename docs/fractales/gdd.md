@@ -20,6 +20,14 @@ Principes de design :
 
 Les descriptions de GW2 dans ce document viennent de ma mémoire du jeu, sans source consultée : à corriger si un détail ne correspond pas.
 
+## Règles permanentes (Kevin, 25 octobre 2026)
+
+Elles valent pour toutes les fractales, présentes et futures :
+
+1. **Aucun monstre ne se régénère** hors combat ou invulnérable. La régénération vanilla des PNJ (5 % toutes les 0,5 s après 15 s sans dégâts) est coupée pour tous les PNJ des fractales (`boss/NoRegenSystem`) ; un soin voulu passe par le Java.
+2. **Vanilla d'abord** : blocs, modèles 3D et monstres du jeu avant tout modèle généré.
+3. **Une zone rouge a exactement la taille de son effet** : le test de coup et le dessin partent de la même forme (`combat/Telegraphs`), avec pour seule marge la demi-largeur du corps du joueur (`Telegraphs.BODY`, 0,3 bloc), posée au sol là où l'effet frappe.
+
 ## Boucle de jeu
 
 Un fragment fabriqué ouvre l'Observatoire ; de là, le groupe enchaîne des fractales à un niveau choisi, et chaque fractale rapporte de quoi fabriquer le fragment suivant et monter sa résistance à l'agonie.

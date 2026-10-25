@@ -1,5 +1,5 @@
 {
-  "$Comment": "Kanaxai : coup de faux devant lui, cône de 120° sur 7 blocs (1,4 s), 34 dégâts.",
+  "$Comment": "Kanaxai : coup de faux devant lui, cône de 120° sur 7 blocs (1,8 s, faux levée puis balayage), 34 dégâts.",
   "Type": "Serial",
   "Interactions": [
     {
@@ -14,7 +14,7 @@
     {
       "Type": "Nakasar_Fractal_Telegraph",
       "Shape": "Cone",
-      "Seconds": 1.4,
+      "Seconds": 1.8,
       "Angle": 120,
       "Radius": 7,
       "Damage": 34,
@@ -23,11 +23,20 @@
     },
     {
       "Type": "Simple",
-      "RunTime": 1.4,
+      "RunTime": 1.8,
       "Effects": {
-        "WorldSoundEventId": "SFX_Spear_Throw_Charge",
-        "ItemPlayerAnimationsId": "Mace",
-        "ItemAnimationId": "SwingDownCharging"
+        "WorldSoundEventId": "SFX_Battleaxe_T2_Raise",
+        "ItemPlayerAnimationsId": "Battleaxe",
+        "ItemAnimationId": "SwingLeftCharging"
+      }
+    },
+    {
+      "Type": "Simple",
+      "RunTime": 0.5,
+      "Effects": {
+        "WorldSoundEventId": "SFX_Battleaxe_T2_Swing",
+        "ItemPlayerAnimationsId": "Battleaxe",
+        "ItemAnimationId": "Sweep"
       }
     }
   ]

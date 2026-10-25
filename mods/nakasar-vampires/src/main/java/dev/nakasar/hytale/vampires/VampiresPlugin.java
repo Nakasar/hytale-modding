@@ -16,6 +16,8 @@ import dev.nakasar.hytale.vampires.telegraph.TelegraphSystem;
 import dev.nakasar.hytale.vampires.allegiance.AllegianceAttitudeSystem;
 import dev.nakasar.hytale.vampires.allegiance.AllegianceDamageFilter;
 import dev.nakasar.hytale.vampires.boss.BossBarSystem;
+import dev.nakasar.hytale.vampires.boss.NoRegenSystem;
+import dev.nakasar.hytale.vampires.boss.RecentDamage;
 import dev.nakasar.hytale.vampires.breach.BreachHunterCleanupSystem;
 import dev.nakasar.hytale.vampires.breach.HunterBreachStarter;
 import dev.nakasar.hytale.vampires.breach.NightCondition;
@@ -110,7 +112,7 @@ import dev.nakasar.hytale.vampires.vampirism.VampireSystem;
  *       {@code OpenCustomUI} « BlockLore ») ;</li>
  *   <li>{@link LordsWrathSystem} (et le fournisseur d'attitude -5 d'{@link AllegianceAttitudeSystem}) : le Comte et la Comtesse laissent passer les joueurs,
  *       mais un coup porté contre eux les retourne contre tous les joueurs présents ({@link LordsWrath}) ;
- *       {@link CountRegenerationSystem} : le Comte régénère ses PV sans arrêt, il est presque invincible ;</li>
+ *       {@link CountRegenerationSystem} : le Comte régénère ses PV en combat, il est presque invincible ;</li>
  *   <li>{@link SilverDamageSystem} et {@link SilverProjectileSystems} : les armes en argent (et leurs projectiles)
  *       infligent le double de dégâts aux vampires ;</li>
  *   <li>{@link PurifyingFireSystem} et {@link PurifyingSteeringSystem} : les morts-vivants évitent les torches et
@@ -222,6 +224,8 @@ public final class VampiresPlugin extends JavaPlugin {
         systems.registerSystem(new AllegianceAttitudeSystem());
         systems.registerSystem(new AllegianceDamageFilter());
         systems.registerSystem(new LordsWrathSystem());
+        systems.registerSystem(new NoRegenSystem());
+        systems.registerSystem(new RecentDamage());
         systems.registerSystem(new CountRegenerationSystem());
         systems.registerSystem(new DominationExpirySystem());
         systems.registerSystem(new FireAffinitySystem());
@@ -285,6 +289,7 @@ public final class VampiresPlugin extends JavaPlugin {
         BossBarSystem.clearAll();
         Dominations.clearAll();
         LordsWrath.clearAll();
+        RecentDamage.clearAll();
         SilverWeapons.clearAll();
         TakePhilosopherStoneInteraction.clearAll();
         ArrowQuiver.clearAll();

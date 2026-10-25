@@ -451,6 +451,9 @@ public final class Cliffside {
                     openGate(world, store, CliffsideLayout.GATE3);
                     checkpoint(world, CliffsideLayout.CHECKPOINT_SHOULDERS);
                     st.stage = Stage.RAMPS;
+                    // Le piège des rampes part tout de suite (Kevin, 25 octobre 2026 : « dès que le dernier sceau est
+                    // détruit »), sans attendre qu'un joueur y monte ni un premier intervalle.
+                    st.traps.armBombs();
                 }
             }
             default -> {

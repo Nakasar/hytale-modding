@@ -19,6 +19,7 @@ import com.hypixel.hytale.server.core.universe.world.storage.ChunkStore;
 import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
 import dev.nakasar.hytale.fractals.arena.Carried;
 import dev.nakasar.hytale.fractals.arena.WorldBlocks;
+import dev.nakasar.hytale.fractals.combat.Delayed;
 import dev.nakasar.hytale.fractals.combat.Hurt;
 import dev.nakasar.hytale.fractals.combat.Spawns;
 import dev.nakasar.hytale.fractals.combat.TelegraphSystem;
@@ -66,6 +67,18 @@ final class Source {
     static final float SCATTER_EVERY = 9f;
     static final double SCATTER_MIN = 8;
     static final double ANCHOR_SLACK = 0.25;
+    /**
+     * Lances de glace (Kevin, 25 octobre 2026) : toutes les {@value #LANCE_EVERY} s, une projection de glace en ligne
+     * droite vers un joueur de l'arène (un de plus par tranche de deux joueurs, {@value #LANCE_MAX} au plus), annoncée
+     * par une bande rouge au sol de la taille exacte du coup ({@value #LANCE_LENGTH} × {@value #LANCE_WIDTH} blocs).
+     */
+    static final float LANCE_EVERY = 9f;
+    static final float LANCE_FIRST = 5f;
+    static final float LANCE_WINDUP = 1.8f;
+    static final double LANCE_LENGTH = 16;
+    static final double LANCE_WIDTH = 2;
+    static final float LANCE_PART = 0.18f;
+    static final int LANCE_MAX = 3;
     /** Libellé de la barre de boss de chaque Source en vie : piles de bouclier et bois des foyers. */
     private static final Map<Ref<EntityStore>, String> LABELS = new ConcurrentHashMap<>();
 
@@ -82,6 +95,7 @@ final class Source {
     private float idle;
     private float pulseClock;
     private float scatterClock;
+    private float lanceClock;
     /** Plus bas niveau de vie atteint : la Source ne remonte jamais au-dessus (pas de régénération). */
     private float lowest = -1f;
 
@@ -266,6 +280,11 @@ final class Source {
             stage++;
             strike(world, store);
         }
+        lanceClock += dt;
+        if (lanceClock >= LANCE_EVERY && at != null) {
+            lanceClock = 0f;
+            lances(world, store, new Vector3d(at), inside);
+        }
         return Outcome.NONE;
     }
 
@@ -282,6 +301,7 @@ final class Source {
         kindled = lit() > 0;
         labelKey = -1;
         scatterClock = SCATTER_EVERY - SCATTER_AFTER;
+        lanceClock = LANCE_EVERY - LANCE_FIRST;
         weather(store, false);
         Spawns.tellAll(world, Message.translation(Snowblind.MESSAGES + "source.enter"));
     }
@@ -402,6 +422,70 @@ final class Source {
             }
             Telegraphs.sound(s, "SFX_Ice_Break", circles.get(0).origin());
             return true;
+        });
+    }
+
+    /**
+     * Lances de glace : une bande rouge part de la Source vers chaque joueur visé et se remplit ; au bout de l'annonce, la
+     * glace jaillit le long de la bande (vague d'éclats) et qui s'y trouve perd {@value #LANCE_PART} de ses PV et est
+     * ralenti. La bande ne suit pas le joueur : on s'écarte de côté.
+     */
+    private void lances(World world, Store<EntityStore> store, Vector3d from, List<PlayerRef> inside) {
+        if (inside.isEmpty()) {
+            return;
+        }
+        int n = Math.min(LANCE_MAX, 1 + (inside.size() - 1) / 2);
+        float windup = LANCE_WINDUP * FractalRuns.windupFactor(world);
+        long now = System.nanoTime();
+        Vector3d ground = new Vector3d(from.x(), Spawns.point(SnowblindLayout.SOURCE).y(), from.z());
+        List<Telegraphs.Strip> strips = new ArrayList<>();
+        for (PlayerRef p : Spawns.pick(inside, n)) {
+            Vector3d at = Telegraphs.position(store, p.getReference());
+            if (at == null || Telegraphs.horizontal(at, ground) < 0.5) {
+                continue;
+            }
+            strips.add(new Telegraphs.Strip(ground, Telegraphs.angle(ground, at), LANCE_LENGTH, LANCE_WIDTH, now, windup));
+        }
+        if (strips.isEmpty()) {
+            return;
+        }
+        Telegraphs.sound(store, "SFX_Ice_Break", ground);
+        TelegraphSystem.start(world, new TelegraphSystem.Task() {
+            @Override
+            public boolean step(World w, Store<EntityStore> s, long t) {
+                boolean done = true;
+                for (Telegraphs.Strip strip : strips) {
+                    done &= strip.step(s, t);
+                }
+                if (!done) {
+                    return false;
+                }
+                if (!engaged) {
+                    return true;
+                }
+                for (Telegraphs.Strip strip : strips) {
+                    int k = 0;
+                    for (double d = 1; d <= LANCE_LENGTH; d += 2, k++) {
+                        Vector3d shard = strip.at(d, 0);
+                        Delayed.later(w, 0.04f * k, s2 -> Telegraphs.particle(s2, "Ice_Blast", shard, 0.8f));
+                    }
+                }
+                // Une seule touche par joueur, même au pied de la Source où toutes les bandes se croisent.
+                for (PlayerRef p : Spawns.alivePlayers(w, s)) {
+                    Vector3d at = Telegraphs.position(s, p.getReference());
+                    if (at != null && strips.stream().anyMatch(strip -> strip.contains(at))) {
+                        Hurt.percent(s, p.getReference(), LANCE_PART, "Physical");
+                        Hurt.effect(s, p.getReference(), "Ability_Frost_Slow", 2f);
+                    }
+                }
+                Telegraphs.sound(s, "SFX_Ice_Break", ground);
+                return true;
+            }
+
+            @Override
+            public Ref<EntityStore> caster() {
+                return boss;
+            }
         });
     }
 

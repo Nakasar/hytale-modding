@@ -1,7 +1,7 @@
 # Comtesse Vampire
 
 <Infobox title="Comtesse Vampire" kind="Boss" image={require("../images/pnj/Nakasar_Vampire_Countess.jpg").default} caption="La Comtesse Vampire, en jeu">
-<Info label="Points de vie">**8000**, régénère 150 PV/s</Info>
+<Info label="Points de vie">**8000**, régénère 150 PV/s en combat</Info>
 <Info label="Barre de vie">barre de boss en combat</Info>
 <Info label="Attitude">Neutre, hostile à tous les joueurs une fois frappée</Info>
 <Info label="Lieu">[Manoir du Comte](../fragment/manoir-du-comte.md), à la place du Comte (50 %)</Info>
@@ -26,7 +26,7 @@ Avec ses 8000 PV et sa régénération incessante, elle est **presque invincible
 | | |
 |---|---|
 | Points de vie | **8000**, affichés dans une **barre de vie de boss** pendant le combat |
-| Régénération | **150 PV par seconde**, en permanence, même en plein combat |
+| Régénération | **150 PV par seconde** en combat (15 s après le dernier coup reçu), jamais hors combat |
 | Vitesse | 5,5 |
 | Recul subi | ×0,2 |
 | Taille | ×1,15 |

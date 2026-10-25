@@ -3,7 +3,7 @@
     "Name": "nakasar_fractals_silent_surf.items.Nakasar_Fractal_Leftover_Supplies.name",
     "Description": "nakasar_fractals_silent_surf.items.Nakasar_Fractal_Leftover_Supplies.description"
   },
-  "Icon": "Icons/Items/Nakasar/Fractals/Leftover_Supplies.png",
+  "Icon": "Icons/ItemsGenerated/Furniture_Ancient_Crate.png",
   "Categories": [
     "Blocks.Deco"
   ],
@@ -11,15 +11,8 @@
   "PlayerAnimationsId": "Block",
   "BlockType": {
     "Material": "Solid",
-    "DrawType": "Cube",
-    "Opacity": "Solid",
-    "Textures": [
-      {
-        "Sides": "BlockTextures/Nakasar/Fractals/Leftover_Supplies.png",
-        "UpDown": "BlockTextures/Nakasar/Fractals/Leftover_Supplies.png",
-        "Weight": 1
-      }
-    ],
+    "DrawType": "Model",
+    "Opacity": "Transparent",
     "HitboxType": "Full",
     "Flags": {},
     "Gathering": {
@@ -27,9 +20,9 @@
         "GatherType": "Unbreakable"
       }
     },
-    "BlockParticleSetId": "Stone",
-    "BlockSoundSetId": "Stone",
-    "ParticleColor": "#3cbe82",
+    "BlockParticleSetId": "Wood",
+    "BlockSoundSetId": "Wood",
+    "ParticleColor": "#9aa7c8",
     "Light": {
       "Color": "#6c9"
     },
@@ -39,12 +32,20 @@
           "Nakasar_Fractal_Use_SilentSurf_Supplies"
         ]
       }
-    }
+    },
+    "CustomModel": "Blocks/Decorative_Sets/Ancient/Crate.blockymodel",
+    "CustomModelTexture": [
+      {
+        "Texture": "Blocks/Decorative_Sets/Ancient/Crate_Texture.png",
+        "Weight": 1
+      }
+    ],
+    "VariantRotation": "NESW"
   },
   "Tags": {
     "Type": [
       "Deco"
     ]
   },
-  "ItemSoundSetId": "ISS_Blocks_Stone"
+  "ItemSoundSetId": "ISS_Blocks_Wood"
 }

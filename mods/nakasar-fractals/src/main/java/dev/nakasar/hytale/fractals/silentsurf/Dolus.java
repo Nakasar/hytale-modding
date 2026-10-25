@@ -5,6 +5,7 @@ import com.hypixel.hytale.component.Store;
 import com.hypixel.hytale.server.core.Message;
 import com.hypixel.hytale.server.core.universe.world.World;
 import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
+import dev.nakasar.hytale.fractals.arena.Leash;
 import dev.nakasar.hytale.fractals.combat.BossStun;
 import dev.nakasar.hytale.fractals.combat.Spawns;
 import dev.nakasar.hytale.fractals.combat.Telegraphs;
@@ -23,6 +24,7 @@ final class Dolus {
     static final float RETRY = 5f;
 
     private Ref<EntityStore> boss;
+    private Vector3d home;
     private float dreadClock;
     private float speedClock;
     private boolean dashing;
@@ -46,6 +48,7 @@ final class Dolus {
         Vector3d c = Spawns.point(SilentSurfLayout.RINGS[4]);
         Vector3d at = new Vector3d(c).add(3, 0, 3);
         boss = Spawns.spawnBoss(world, store, SilentSurf.DOLUS, at, Telegraphs.yawToward(at, c));
+        home = at;
         if (boss == null) {
             retryAt = now + Telegraphs.seconds(RETRY);
             return;
@@ -68,6 +71,7 @@ final class Dolus {
             boss = null;
             return true;
         }
+        Leash.keepAbove(store, boss, home, SilentSurf.FALL_LIMIT);
         if (dashing || BossStun.isStunned(boss)) {
             return false;
         }

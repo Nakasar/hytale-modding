@@ -304,9 +304,11 @@ def arena(c):
             p.set(x, y, z, pick(sc.NIGHTMARE, x, y, z) if fn.hash01(x, y, z, 796) < 0.7 else sc.JADE)
         fn.island(p, itops, lambda x, z: 3 + iedge[(x, z)] * 1.6, 797 + k, hang=0.2, theme=sc.CAVERN)
         c.tops.update(itops)
-        # le champignon, du côté de l'arène
+        # le champignon, au fond de l'île, à l'opposé de l'arène : on arrive du côté de l'arène (grappin) sans retomber
+        # dessus, il ne renvoie qu'à qui va le chercher (Kevin, 25 octobre 2026 : il prenait trop de place et renvoyait
+        # aussitôt à l'arrivée)
         a = math.atan2(az - cz, ax - cx)
-        mx, mz = round(cx + math.cos(a) * 3), round(cz + math.sin(a) * 3)
+        mx, mz = round(cx - math.cos(a) * (sc.ISLAND_R - 2.5)), round(cz - math.sin(a) * (sc.ISLAND_R - 2.5))
         cells = sc.mushroom(p, mx, mz, 1, st + 1, 798 + k, stem_to=st - 1)
         land = (ax + 0.5 + (cx - ax) * 0.25, s, az + 0.5 + (cz - az) * 0.25)
         path = arc((mx + 0.5, st + 1, mz + 0.5), land, 6.0)
@@ -439,11 +441,31 @@ def items():
             (POWDER, "Survey_Powder", powder_parts(), 103, (0, 6, 0), 14.0),
             (FLARE, "Survey_Flare", flare_parts(), 104, (0, 7, 0), 13.0)):
         root = f"Root_{item_id}"
+        if item_id == POWDER:
+            # Charge de poudre noire : la bombe vanilla (modèle et icône), plus lisible qu'un modèle généré (Kevin,
+            # 25 octobre 2026).
+            out[item_id] = vanilla_held(item_id, "NPC/Intelligent/Goblin/Models/Weapons/Bomb/Fire.blockymodel",
+                                        "NPC/Intelligent/Goblin/Models/Weapons/Bomb/Fire_Texture.png",
+                                        "Icons/ItemsGenerated/Weapon_Bomb_Fire_Goblin.png", root)
+            continue
         out[item_id] = fc.held_item(LANG, item_id, model, parts, seed, center, scale, quality="Rare",
                                     stack=GEAR_STACK[item_id],
                                     extra={"Interactions": {"Secondary": root}, "Utility": {"Compatible": False},
                                            "Categories": ["Items.Misc"]})
     return out
+
+
+def vanilla_held(item_id, model, texture, icon, root):
+    for stale in (fc.COMMON / fc.ITEM_MODELS / "Survey_Powder.blockymodel", fc.COMMON / fc.ITEM_MODELS / "Survey_Powder.png",
+                  fc.COMMON / go.ICONS / "Survey_Powder.png"):
+        stale.unlink(missing_ok=True)
+    return {
+        "TranslationProperties": {"Name": f"{LANG}.items.{item_id}.name", "Description": f"{LANG}.items.{item_id}.description"},
+        "Icon": icon, "Model": model, "Texture": texture, "Quality": "Rare", "Categories": ["Items.Misc"],
+        "PlayerAnimationsId": "Item", "ItemSoundSetId": "ISS_Items_Gems", "MaxStack": GEAR_STACK[item_id],
+        "IconProperties": {"Scale": 0.87, "Translation": [-7.11, -7.7], "Rotation": [4.685, 6.935, 315]},
+        "Interactions": {"Secondary": root}, "Utility": {"Compatible": False},
+    }
 
 
 def gear_interactions():
@@ -802,15 +824,22 @@ def interactions():
         "Type": "Serial", "Interactions": [CI, RF, T("Cone", 1.2, Angle=100, Radius=5, Damage=28, PlayersOnly=True,
                                                      ImpactParticle="Stick_Slam_Ground_Large"),
                                            fc.windup(1.2, "SFX_Spear_Throw_Charge", "Mace", "SwingDownCharging")]}
+    # Kevin (25 octobre 2026) : attaques de Kanaxai plus claires. La faux se lève lentement (animations vanilla de la
+    # hache de bataille qu'il porte : charge puis balayage), le cône part un peu plus tard et la salve s'annonce
+    # par l'animation d'incantation ; chaque zone rouge est exactement celle du coup.
     out["Nakasar_Fractal_Kanaxai_Cleave"] = {
-        "$Comment": "Kanaxai : coup de faux devant lui, cône de 120° sur 7 blocs (1,4 s), 34 dégâts.",
-        "Type": "Serial", "Interactions": [CI, RF, T("Cone", 1.4, Angle=120, Radius=7, Damage=34, PlayersOnly=True,
+        "$Comment": "Kanaxai : coup de faux devant lui, cône de 120° sur 7 blocs (1,8 s, faux levée puis balayage), "
+                    "34 dégâts.",
+        "Type": "Serial", "Interactions": [CI, RF, T("Cone", 1.8, Angle=120, Radius=7, Damage=34, PlayersOnly=True,
                                                      ImpactParticle="Stick_Slam_Ground_Large"),
-                                           fc.windup(1.4, "SFX_Spear_Throw_Charge", "Mace", "SwingDownCharging")]}
+                                           fc.windup(1.8, "SFX_Battleaxe_T2_Raise", "Battleaxe", "SwingLeftCharging"),
+                                           fc.windup(0.5, "SFX_Battleaxe_T2_Swing", "Battleaxe", "Sweep")]}
     out["Nakasar_Fractal_Kanaxai_Volley"] = {
-        "$Comment": "Kanaxai, salve des aspects : un cercle rouge de 2 blocs sous chaque joueur (1,6 s), 14 dégâts.",
-        "Type": "Serial", "Interactions": [T("Circle", 1.6, Anchor="EachPlayer", Radius=2, Damage=14, PlayersOnly=True,
-                                             ImpactParticle="Nakasar_Fractal_Aspect_Rise"), fc.windup(1.6)]}
+        "$Comment": "Kanaxai, salve des aspects : un cercle rouge de 2 blocs sous chaque joueur (2 s, Kanaxai incante), "
+                    "14 dégâts.",
+        "Type": "Serial", "Interactions": [CI, RF, T("Circle", 2.0, Anchor="EachPlayer", Radius=2, Damage=14,
+                                                     PlayersOnly=True, ImpactParticle="Nakasar_Fractal_Aspect_Rise"),
+                                           fc.windup(2.0, "SFX_Spear_Throw_Charge", "Battleaxe", "CastLeftCharging")]}
     out["Nakasar_Fractal_Aspect_Strike"] = {
         "$Comment": "Aspect de Kanaxai au contact : griffe d'ombre (12 dégâts).",
         "Type": "Serial", "Interactions": [fr.swing("Griffe d'ombre.", None, None, 0.4, 12, end=2.6,
@@ -868,7 +897,8 @@ def roles():
     out[KANAXAI] = fr.role(
         KANAXAI, "Kanaxai, Faux de la maison Aurkus, barre de boss : coups de faux, salve des aspects. Visage de "
         "l'effroi, Tempête déchirante, Ombres rassemblées, Fantasmagorie, Fendeur de mondes et Vitesse effrayante sont "
-        "menés par le Java (silentsurf.Kanaxai).", KANAXAI, n(KANAXAI), 12000,
+        "menés par le Java (silentsurf.Kanaxai). 8000 PV (Kevin, 25 octobre 2026 : trop long à 12000).", KANAXAI, n(KANAXAI),
+        8000,
         [fr.timed_attack("Cleave", R("Kanaxai_Cleave"), rng=6, los=True, comment="Coup de faux."),
          fr.timed_attack("Volley", R("Kanaxai_Volley"), rng=40, comment="Salve des aspects."),
          fr.chase(40, stop=3.0)],
@@ -1191,10 +1221,55 @@ def preview_images(c, folder):
     img.save(path)
 
 
+# Kevin (25 octobre 2026) : modèles plus clairs, vanilla d'abord. Le chapeau rebondissant est un bloc de champignon violet
+# vanilla (le reste du champignon aussi), les provisions la caisse ancienne vanilla (modèle 3D, différente des caisses du
+# décor) ; leur lueur reste pour montrer qu'ils servent. Ces blocs n'ont plus de texture générée.
+VANILLA_BLOCKS = {
+    BOUNCE_CAP: {
+        "Icon": "Icons/ItemsGenerated/Plant_Crop_Mushroom_Block_Purple.png",
+        "BlockType": {"DrawType": "Cube", "Opacity": "Solid",
+                      "Textures": [{"Weight": 1, "Sides": "BlockTextures/Mushroom_Block_Purple.png",
+                                    "Up": "BlockTextures/Mushroom_Block_Top_Purple.png",
+                                    "Down": "BlockTextures/Mushroom_Block_Purple_Trunk_Top.png"}],
+                      "BlockParticleSetId": "Dust", "BlockSoundSetId": "Mushroom", "CubeShadingMode": "Flat"},
+        "ItemSoundSetId": "ISS_Items_Foliage",
+    },
+    SUPPLIES: {
+        "Icon": "Icons/ItemsGenerated/Furniture_Ancient_Crate.png",
+        "BlockType": {"DrawType": "Model", "Opacity": "Transparent",
+                      "CustomModel": "Blocks/Decorative_Sets/Ancient/Crate.blockymodel",
+                      "CustomModelTexture": [{"Texture": "Blocks/Decorative_Sets/Ancient/Crate_Texture.png", "Weight": 1}],
+                      "VariantRotation": "NESW", "BlockParticleSetId": "Wood", "BlockSoundSetId": "Wood"},
+        "ItemSoundSetId": "ISS_Blocks_Wood",
+    },
+}
+
+
+def write_vanilla_block(name, light, use):
+    doc = go.block_item(name, name, light, use)
+    doc["TranslationProperties"] = {"Name": f"{LANG}.items.{name}.name", "Description": f"{LANG}.items.{name}.description"}
+    look = VANILLA_BLOCKS[name]
+    doc["Icon"] = look["Icon"]
+    doc["ItemSoundSetId"] = look["ItemSoundSetId"]
+    block = doc["BlockType"]
+    block.pop("Textures", None)
+    block.update(look["BlockType"])
+    fc.write_json(go.ITEMS / f"{name}.json", doc)
+    for stale in (fc.COMMON / go.TEXTURES / f"{tex_of(name)}.png", fc.COMMON / go.ICONS / f"{tex_of(name)}.png"):
+        stale.unlink(missing_ok=True)
+
+
+def tex_of(name):
+    return next(tex for n, tex, *_ in blocks() if n == name)
+
+
 def main():
     preview = Path(sys.argv[sys.argv.index("--preview") + 1]) if "--preview" in sys.argv else None
     for name, tex, base, accent, glyph, light, use, solid, alpha, opacity in blocks():
-        fc.write_block(LANG, name, tex, base, accent, glyph, light, use, solid, alpha, opacity)
+        if name in VANILLA_BLOCKS:
+            write_vanilla_block(name, light, use)
+        else:
+            fc.write_block(LANG, name, tex, base, accent, glyph, light, use, solid, alpha, opacity)
     for item_id, doc in items().items():
         fc.write_json(fc.OBJECTS / f"{item_id}.json", doc)
     for name, doc in gear_interactions().items():

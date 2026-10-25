@@ -24,7 +24,7 @@ Le froid ne compte que pour les deux premières rencontres : **une fois la Sourc
 - Chaque pile coûte **0,3 % de vos PV max par seconde**, armure ignorée ; dès 5 piles, vous courez moins vite.
 - **À 10 piles**, vous êtes pris dans un **éclat de glace** : immobile tant que vos alliés ne l'ont pas brisé (vos propres coups n'y font rien). Libéré, vous repartez à 6 piles.
 
-**Fagots** : les **tas de fagots** en donnent un à chaque utilisation (3 portés au plus) et repoussent en 20 s.
+**Fagots** : les **tas de fagots** en donnent un à chaque utilisation (3 portés au plus) et repoussent en 20 s. Porté, le fagot **reste en main** (comme le marteau de la Falaise) : jetez-le pour reprendre une arme.
 
 ## Déroulé
 
@@ -40,6 +40,7 @@ Au pied de la colline des ruines, un **mur de glace** barre le col. Allumez le *
 Une fois le mur fondu, montez les **escaliers de glace** jusqu'au **camp Svanir** (tentes, bannières rouges, palissade). La Source s'éveille quand vous entrez dans le cercle. Elle est **immobile** (rien ne la déplace) et **ne regagne jamais de vie** : seul un camp vidé pendant 20 s la remet à neuf. **Cinq foyers** l'entourent :
 
 - un foyer **s'allume torche en inventaire** (prise au **râtelier** à l'entrée du cercle), puis **se nourrit de fagots** (tas devant les **tentes**, +40 %) ; il brûle 1 % par seconde ;
+- toutes les 9 s, elle lance des **lances de glace** en ligne droite vers un ou plusieurs joueurs (un de plus par tranche de deux joueurs, 3 au plus) : une **bande rouge** au sol, de la taille exacte du coup, se remplit en 1,8 s ; qui y reste perd 18 % de ses PV et est ralenti. Écartez-vous de côté ;
 - chaque foyer **éteint** donne à la Source une pile de **bouclier de givre** (❄ sur sa barre) : −18 % des dégâts qu'elle reçoit par pile ;
 - à **75, 50 et 25 %**, elle frappe les foyers allumés (cercles rouges) : **−50 %** de bois chacun ;
 - **le dernier foyer allumé s'éteint** : **blizzard**, une brume blanche qui cache presque tout, et le froid monte deux fois plus vite. Après 4 s puis toutes les 9 s, la tempête **jette chaque joueur ailleurs dans le camp** (sauf ceux pris dans la glace). Le blizzard dure jusqu'à ce qu'on rallume un foyer, et retombe si tout le monde quitte le camp.
@@ -58,6 +59,6 @@ Il vous attend dans la **grotte de glace**, sous un dôme de stalactites et de c
 - **Cristaux corrompus** : à chaque phase au sol, trois cristaux l'entourent ; tant qu'il en reste un, il ne prend aucun dégât.
 - **Pluie de glace** (cercle rouge sous chaque joueur), **anneau de pics** (cercle de 5 blocs autour de lui) et **souffle glacé** (cône, ralentit).
 - **À 75 et 50 %** : il saute sur sa **corniche**, invulnérable, et fait pleuvoir des pics (cercle rouge sous chaque joueur toutes les 3,5 s : 15 % des PV). L'**Effigie de glace** apparaît au centre, barre de défiance ouverte : **brisez sa défiance ou détruisez-la** pour le faire redescendre.
-- **À 25 %** : il prend sa **forme d'ours** ; ses **bonds** renversent 3 s.
+- **À 25 %** : il prend sa **forme de loup-garou** ; ses **bonds** renversent 3 s.
 
 Personne dans la grotte pendant 20 s : il se retire et tout est à refaire.

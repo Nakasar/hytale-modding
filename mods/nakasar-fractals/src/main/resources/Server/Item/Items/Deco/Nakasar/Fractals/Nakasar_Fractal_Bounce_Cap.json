@@ -3,7 +3,7 @@
     "Name": "nakasar_fractals_silent_surf.items.Nakasar_Fractal_Bounce_Cap.name",
     "Description": "nakasar_fractals_silent_surf.items.Nakasar_Fractal_Bounce_Cap.description"
   },
-  "Icon": "Icons/Items/Nakasar/Fractals/Bounce_Cap.png",
+  "Icon": "Icons/ItemsGenerated/Plant_Crop_Mushroom_Block_Purple.png",
   "Categories": [
     "Blocks.Deco"
   ],
@@ -13,13 +13,6 @@
     "Material": "Solid",
     "DrawType": "Cube",
     "Opacity": "Solid",
-    "Textures": [
-      {
-        "Sides": "BlockTextures/Nakasar/Fractals/Bounce_Cap.png",
-        "UpDown": "BlockTextures/Nakasar/Fractals/Bounce_Cap.png",
-        "Weight": 1
-      }
-    ],
     "HitboxType": "Full",
     "Flags": {},
     "Gathering": {
@@ -27,17 +20,26 @@
         "GatherType": "Unbreakable"
       }
     },
-    "BlockParticleSetId": "Stone",
-    "BlockSoundSetId": "Stone",
-    "ParticleColor": "#dc8cff",
+    "BlockParticleSetId": "Dust",
+    "BlockSoundSetId": "Mushroom",
+    "ParticleColor": "#9aa7c8",
     "Light": {
       "Color": "#a6f"
-    }
+    },
+    "Textures": [
+      {
+        "Weight": 1,
+        "Sides": "BlockTextures/Mushroom_Block_Purple.png",
+        "Up": "BlockTextures/Mushroom_Block_Top_Purple.png",
+        "Down": "BlockTextures/Mushroom_Block_Purple_Trunk_Top.png"
+      }
+    ],
+    "CubeShadingMode": "Flat"
   },
   "Tags": {
     "Type": [
       "Deco"
     ]
   },
-  "ItemSoundSetId": "ISS_Blocks_Stone"
+  "ItemSoundSetId": "ISS_Items_Foliage"
 }

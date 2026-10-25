@@ -1,9 +1,9 @@
 {
-  "$Comment": "La Source élémentaire, barre de boss, immobile (ancrée par le Java) : orbe lent qui repousse, tourbillon, coups de poing au contact. Les foyers, son bouclier de givre, ses frappes sur les foyers et le blizzard sont menés par le Java (snowblind.Source). Généré par tools/generate_snowblind.py.",
+  "$Comment": "La Source élémentaire, barre de boss, immobile (ancrée par le Java) : orbe lent qui repousse, tourbillon, coups de poing au contact. Les foyers, son bouclier de givre, ses frappes sur les foyers, ses lances de glace et le blizzard sont menés par le Java (snowblind.Source). 4500 PV (Kevin, 25 octobre 2026 : un peu moins). Généré par tools/generate_snowblind.py.",
   "Type": "Generic",
   "Appearance": "Nakasar_Fractal_Elemental_Source",
   "NameTranslationKey": "nakasar_fractals_snowblind.npc.Elemental_Source.name",
-  "MaxHealth": 6000,
+  "MaxHealth": 4500,
   "DropList": "Nakasar_Fractal_Loot_Elemental_Source",
   "StartState": "Idle",
   "DefaultPlayerAttitude": "Hostile",

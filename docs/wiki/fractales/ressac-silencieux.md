@@ -37,7 +37,7 @@ Les **Provisions abandonnées** (caisses dorées) de chaque point de contrôle r
 
 - **Tyroliennes** : utilisez l'ancre ; vous glissez le long du câble. S'accroupir pour lâcher.
 - **Canons à vent** : utilisez le canon ; le vent vous emporte, parfois jusqu'à une tyrolienne.
-- **Champignons rebondissants** (violets) : posez le pied sur le chapeau, il vous renvoie au loin.
+- **Champignons rebondissants** (champignons violets du jeu, qui luisent) : posez le pied sur le chapeau, il vous renvoie au loin. Sur les îles de Kanaxai, il est au **fond de l'île**, loin de là où l'on arrive.
 - Tant qu'un camp n'est pas dégagé, Thess refuse de vous laisser partir : « Pas encore ! »
 
 ## Déroulé
@@ -63,7 +63,7 @@ Des **nagas** (pillards, mande-tempête, mande-venin et un mande-vague corrompu)
 Au quatrième relevé, des **marins luxons corrompus** vous attendent. Quand ils tombent, leur second **Dolus** surgit :
 
 - **Visage de l'effroi** : un grand œil s'ouvre au-dessus de lui. **Détournez le regard** (tournez la caméra) avant qu'il ne se ferme : qui le regarde encore perd 25 % de ses PV, prend **Peur** (repoussé, sans pouvoir agir) et **Tourment**.
-- **Vitesse effrayante** : cinq marques **I à V** apparaissent au sol. Il bondit de l'une à l'autre dans l'ordre ; qui est dans le cercle prend 30 % de ses PV et est projeté.
+- **Vitesse effrayante** : cinq marques **I à V** apparaissent au sol. Il bondit de l'une à l'autre dans l'ordre ; un **cercle rouge** sous chaque numéro, de la taille exacte du coup, se remplit jusqu'à son arrivée ; qui est dans le cercle prend 30 % de ses PV et est projeté.
 
 Dolus vaincu, Thess vous envoie au gouffre : parachute jusqu'à l'arène.
 

@@ -213,7 +213,7 @@ public final class Instabilities {
             for (PlayerRef player : world.getPlayerRefs()) {
                 Ref<EntityStore> ref = player.getReference();
                 Vector3d p = Telegraphs.position(s, ref);
-                if (p != null && Telegraphs.horizontal(p, center) <= LAST_LAUGH_RADIUS + 0.3 && Math.abs(p.y() - center.y()) <= 3) {
+                if (p != null && Telegraphs.horizontal(p, center) <= LAST_LAUGH_RADIUS + Telegraphs.BODY && Math.abs(p.y() - center.y()) <= 3) {
                     Hurt.percent(s, ref, LAST_LAUGH_PART, CAUSE);
                 }
             }

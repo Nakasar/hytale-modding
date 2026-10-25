@@ -1,9 +1,9 @@
 {
-  "$Comment": "Kanaxai, Faux de la maison Aurkus, barre de boss : coups de faux, salve des aspects. Visage de l'effroi, Tempête déchirante, Ombres rassemblées, Fantasmagorie, Fendeur de mondes et Vitesse effrayante sont menés par le Java (silentsurf.Kanaxai). Généré par tools/generate_silent_surf.py.",
+  "$Comment": "Kanaxai, Faux de la maison Aurkus, barre de boss : coups de faux, salve des aspects. Visage de l'effroi, Tempête déchirante, Ombres rassemblées, Fantasmagorie, Fendeur de mondes et Vitesse effrayante sont menés par le Java (silentsurf.Kanaxai). 8000 PV (Kevin, 25 octobre 2026 : trop long à 12000). Généré par tools/generate_silent_surf.py.",
   "Type": "Generic",
   "Appearance": "Nakasar_Fractal_Kanaxai",
   "NameTranslationKey": "nakasar_fractals_silent_surf.npc.Kanaxai.name",
-  "MaxHealth": 12000,
+  "MaxHealth": 8000,
   "DropList": "Nakasar_Fractal_Loot_Kanaxai",
   "StartState": "Idle",
   "DefaultPlayerAttitude": "Hostile",

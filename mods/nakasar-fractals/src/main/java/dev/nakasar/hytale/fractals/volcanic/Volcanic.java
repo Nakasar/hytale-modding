@@ -298,7 +298,7 @@ public final class Volcanic implements FractalStage {
                 for (PlayerRef p : Spawns.alivePlayers(world, s)) {
                     Ref<EntityStore> ref = p.getReference();
                     Vector3d there = Telegraphs.position(s, ref);
-                    if (there != null && Telegraphs.horizontal(there, center) <= ROCK_RADIUS && Math.abs(there.y() - center.y()) <= 2.5) {
+                    if (there != null && Telegraphs.horizontal(there, center) <= ROCK_RADIUS + Telegraphs.BODY && Math.abs(there.y() - center.y()) <= 2.5) {
                         Hurt.percent(s, ref, ROCK_PART, FIRE_CAUSE);
                         Hurt.effect(s, ref, "Hazard_Electric_Stun", 2f);
                     }

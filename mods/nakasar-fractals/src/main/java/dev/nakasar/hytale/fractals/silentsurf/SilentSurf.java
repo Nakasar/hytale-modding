@@ -15,6 +15,7 @@ import com.hypixel.hytale.server.core.modules.entitystats.asset.DefaultEntitySta
 import com.hypixel.hytale.server.core.universe.PlayerRef;
 import com.hypixel.hytale.server.core.universe.world.World;
 import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
+import dev.nakasar.hytale.fractals.arena.Leash;
 import dev.nakasar.hytale.fractals.arena.Gates;
 import dev.nakasar.hytale.fractals.boss.BossBarSystem;
 import dev.nakasar.hytale.fractals.combat.Hurt;
@@ -73,6 +74,12 @@ public final class SilentSurf implements FractalStage {
     static final float BROOD_EVERY = 14f;
     static final int BROOD_MAX = 8;
     static final double ENGAGE_RADIUS = 9;
+    /**
+     * Un monstre tombé de plus de {@value #FALL_LIMIT} blocs sous son point d'apparition y est ramené (Kevin,
+     * 25 octobre 2026 : les monstres ne tombent pas des plates-formes ; un monstre perdu dans le gouffre bloquait le
+     * point de contrôle).
+     */
+    static final double FALL_LIMIT = 3;
 
     static final class State {
         boolean started;
@@ -80,6 +87,8 @@ public final class SilentSurf implements FractalStage {
         final boolean[] cleared = {true, false, false, false, false};
         int fight = -1;
         final List<Ref<EntityStore>> foes = new ArrayList<>();
+        /** Point d'apparition de chaque monstre des combats ({@link #FALL_LIMIT}). */
+        final Map<Ref<EntityStore>, Vector3d> homes = new HashMap<>();
         Ref<EntityStore> brood;
         float broodClock;
         Ref<EntityStore> thess;
@@ -262,6 +271,7 @@ public final class SilentSurf implements FractalStage {
         }
         st.fight = k;
         st.foes.clear();
+        st.homes.clear();
         double[][] spots = SilentSurfLayout.FIGHT_SPAWNS[k];
         Vector3d c = Spawns.point(SilentSurfLayout.RINGS[k]);
         int extra = (FractalRuns.partySize(world) - 1) / 2;
@@ -273,6 +283,7 @@ public final class SilentSurf implements FractalStage {
                 Ref<EntityStore> ref = Spawns.spawnFoe(world, store, roles[i], at, Telegraphs.yawToward(at, c));
                 if (ref != null) {
                     st.foes.add(ref);
+                    st.homes.put(ref, at);
                     if (BROOD_MOTHER.equals(roles[i])) {
                         st.brood = ref;
                         st.broodClock = 0f;
@@ -288,6 +299,10 @@ public final class SilentSurf implements FractalStage {
             return;
         }
         st.foes.removeIf(ref -> !Spawns.alive(store, ref));
+        st.homes.keySet().retainAll(st.foes);
+        for (Map.Entry<Ref<EntityStore>, Vector3d> e : st.homes.entrySet()) {
+            Leash.keepAbove(store, e.getKey(), e.getValue(), FALL_LIMIT);
+        }
         brood(world, store, st, dt);
         if (k == 4) {
             if (st.foes.isEmpty() && !st.dolus.engaged()) {
@@ -331,6 +346,8 @@ public final class SilentSurf implements FractalStage {
                     Spawns.spawnFoe(world, store, SPIDERLING, s, Telegraphs.yawToward(s, at) + (float) Math.PI));
             if (ref != null) {
                 st.foes.add(ref);
+                Vector3d home = st.homes.get(st.brood);
+                st.homes.put(ref, home != null ? home : s);
             }
         }
         Telegraphs.particle(store, "Nakasar_Fractal_Bounce", at, 1.2f);

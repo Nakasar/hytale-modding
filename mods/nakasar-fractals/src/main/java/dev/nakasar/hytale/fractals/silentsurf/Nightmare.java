@@ -128,10 +128,9 @@ final class Nightmare {
         BossStun.hold(world, store, caster);
         float windup = SPEED_WINDUP * FractalRuns.windupFactor(world);
         long now0 = System.nanoTime();
-        List<Telegraphs.Circle> circles = new ArrayList<>();
-        for (int i = 0; i < MARKS; i++) {
-            circles.add(new Telegraphs.Circle(marks.get(i), DASH_RADIUS, now0, windup + i * DASH_EVERY));
-        }
+        // Un cercle rouge sous chaque numéro, de la taille exacte du coup d'arrivée (Kevin, 25 octobre 2026) : posé pour
+        // se remplir pile à l'arrivée du lanceur (une annonce dure 6 s au plus : les dernières sont posées plus tard).
+        Telegraphs.Circle[] circles = new Telegraphs.Circle[MARKS];
         Vector3d back = home;
         long[] shown = {0};
         int[] next = {0};
@@ -143,7 +142,13 @@ final class Nightmare {
                     return true;
                 }
                 for (int i = next[0]; i < MARKS; i++) {
-                    circles.get(i).step(s, now);
+                    long hit = now0 + Telegraphs.seconds(windup + i * DASH_EVERY);
+                    if (circles[i] == null && hit - now <= Telegraphs.seconds(Telegraphs.WARNING_MAX_SECONDS)) {
+                        circles[i] = new Telegraphs.Circle(marks.get(i), DASH_RADIUS, now, Math.max(0.5f, (hit - now) / 1e9f));
+                    }
+                    if (circles[i] != null) {
+                        circles[i].step(s, now);
+                    }
                 }
                 if (now - shown[0] > Telegraphs.seconds(1.8f)) {
                     shown[0] = now;
@@ -164,7 +169,7 @@ final class Nightmare {
                     Telegraphs.sound(s, "SFX_Goblin_Feastmaster_Slam", mark);
                     for (PlayerRef p : Spawns.alivePlayers(w, s)) {
                         Vector3d pos = Telegraphs.position(s, p.getReference());
-                        if (pos != null && circles.get(next[0]).contains(pos)) {
+                        if (pos != null && Telegraphs.inCircle(pos, mark, DASH_RADIUS)) {
                             Hurt.percent(s, p.getReference(), DASH_PART, "Physical");
                             Vector3d away = new Vector3d(pos).sub(mark);
                             away.y = 0;

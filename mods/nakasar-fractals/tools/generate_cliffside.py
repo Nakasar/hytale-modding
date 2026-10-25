@@ -97,7 +97,11 @@ PUZZLE_WEST = (-66, -62)          # plates-formes ouest
 PUZZLE_Z = (-56, -50)             # plates-formes (z0, z1)
 STONE_Z = [(-55, -54), (-52, -51)]   # pierres des tronçons pairs / impairs (z0, z1)
 STONES_WEST = [(-52, -53), (-55, -56), (-58, -59), (-60, -61)]   # pierres d'un tronçon vers l'ouest (x)
-GARGOYLE_X = [-54, -59]           # gargouilles d'un tronçon, dans la falaise (z = CLIFF_Z + 1)
+# Gargouilles d'un tronçon, dans la falaise (z = CLIFF_Z + 1) : chacune face à une paire de pierres de même hauteur, son
+# souffle large exactement de cette paire (Kevin, 25 octobre 2026 : bande rouge = zone du vent, au sol de la pierre).
+GARGOYLE_PAIRS = [(-55, -56), (-58, -59)]
+GARGOYLE_X = [a for a, _ in GARGOYLE_PAIRS]
+GUST_WIDTH = 2                    # largeur du souffle : la paire de pierres en face (blocs)
 LEVERS_TOP = [(-49, CHEST, -56), (-48, CHEST, -56), (-47, CHEST, -56)]   # un levier par groupe de gargouilles
 WALK_TOP = [(-45, -20, -52, -50), (-21, -19, -52, -40), (-21, -17, -41, -39)]   # du saut au torse, debout à CHEST
 
@@ -433,9 +437,13 @@ def gargoyles():
     out = []
     for s in range(SEGMENTS):
         levels = {x: lv for x, _, _, lv, seg in stones if seg == s}
-        for k, gx in enumerate(GARGOYLE_X):
-            near = min(levels, key=lambda x: abs(x - gx))
-            out.append({"at": (gx, levels[near] + 1, CLIFF_Z + 1), "group": s // 2, "offset": round((s * 1.7 + k * 2.5) % 5, 2)})
+        for k, pair in enumerate(GARGOYLE_PAIRS):
+            floor = levels[pair[0]]
+            assert all(levels[x] == floor for x in pair), (s, pair)
+            wind_x = (min(pair) + max(pair) + 1) / 2          # milieu de la paire (blocs entiers)
+            assert max(pair) - min(pair) + 1 == GUST_WIDTH
+            out.append({"at": (pair[0], floor + 1, CLIFF_Z + 1), "group": s // 2, "floor": floor, "wind_x": wind_x,
+                        "offset": round((s * 1.7 + k * 2.5) % 5, 2)})
     return out
 
 
@@ -1620,7 +1628,7 @@ def boss_role():
         fr.walk(3.8), GENERATOR, sight=22, leash=34, home=True, heal=False,
         timers=[fr.timer("Cone", (5, 7), (11, 14)), fr.timer("Breaker", (6, 8), (14, 17)),
                 fr.timer("Ground", (3, 5), (9, 11))],
-        HotbarItems=["Weapon_Mace_Onyxium"], KnockbackScale=0.1, DeathAnimationTime=2.0)
+        HotbarItems=["Weapon_Mace_Onyxium"], KnockbackScale=0.0, DeathAnimationTime=2.0)
 
 
 # --- instance -----------------------------------------------------------------------------------
@@ -1804,7 +1812,7 @@ def java_layout():
     landings, stones = puzzle_layout()
     g = gargoyles()
     rows = lambda items: ",\n".join("            " + s for s in items)
-    garg = rows(f"new Gargoyle({x}, {GROUND_Y + y}, {z}, {d['group']}, {d['offset']}f)"
+    garg = rows(f"new Gargoyle({x}, {GROUND_Y + y}, {z}, {d['group']}, {d['offset']}f, {d['wind_x']}, {GROUND_Y + d['floor']})"
                 for d in g for (x, y, z) in [d["at"]])
     pl = rows(f"new Plate({x}, {z}, {str(real).lower()})" for x, z, real in plates())
     cg = rows(f"new Cage({x}, {z}, {dx}, {dz})" for x, z, (dx, dz) in cages())
@@ -1884,6 +1892,7 @@ public final class CliffsideLayout {{
 
     /** Gargouilles (bloc de la statue), groupe (levier) et décalage de cycle (s). Souffle vers +z sur {GUST_REACH} blocs. */
     public static final int GUST_REACH = {GUST_REACH};
+    public static final int GUST_WIDTH = {GUST_WIDTH};
     public static final List<Gargoyle> GARGOYLES = List.of(
 {garg});
     /** Leviers (blocs) : trois du saut (un par groupe de gargouilles), puis R1 et R2. */
@@ -1919,7 +1928,8 @@ public final class CliffsideLayout {{
     public record Plate(int x, int z, boolean trapped) {{
     }}
 
-    public record Gargoyle(int x, int y, int z, int group, float offset) {{
+    /** windX : milieu du souffle (la paire de pierres en face) ; floor : sol de ces pierres (debout). */
+    public record Gargoyle(int x, int y, int z, int group, float offset, double windX, int floor) {{
     }}
 
     public record Cage(int x, int z, int doorX, int doorZ) {{

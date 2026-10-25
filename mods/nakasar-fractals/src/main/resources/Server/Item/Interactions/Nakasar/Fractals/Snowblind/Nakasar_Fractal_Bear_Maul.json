@@ -1,5 +1,5 @@
 {
-  "$Comment": "Le Chaman en ours, au contact : deux coups de griffes (22 dégâts chacun).",
+  "$Comment": "Le Chaman en loup-garou, au contact : deux coups de griffes (22 dégâts chacun), animation du loup-garou vanilla.",
   "Type": "Serial",
   "Interactions": [
     {
@@ -7,7 +7,9 @@
       "Type": "Simple",
       "RunTime": 0.35,
       "Effects": {
-        "WorldSoundEventId": "SFX_Unarmed_Swing"
+        "WorldSoundEventId": "SFX_Unarmed_Swing",
+        "ItemPlayerAnimationsId": "Outlander_Brute_Default",
+        "ItemAnimationId": "Grab"
       },
       "Next": {
         "Type": "Selector",
@@ -52,7 +54,9 @@
       "Type": "Simple",
       "RunTime": 0.35,
       "Effects": {
-        "WorldSoundEventId": "SFX_Unarmed_Swing"
+        "WorldSoundEventId": "SFX_Unarmed_Swing",
+        "ItemPlayerAnimationsId": "Outlander_Brute_Default",
+        "ItemAnimationId": "Grab"
       },
       "Next": {
         "Type": "Selector",
