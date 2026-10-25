@@ -1,0 +1,25 @@
+{
+  "$Comment": "Mande-venin naga : crachat sous sa cible, cercle rouge de 2,5 blocs (1,4 s), 10 dégâts et ralentissement.",
+  "Type": "Serial",
+  "Interactions": [
+    {
+      "Type": "Nakasar_Fractal_Telegraph",
+      "Shape": "Circle",
+      "Seconds": 1.4,
+      "Anchor": "Target",
+      "Radius": 2.5,
+      "Damage": 10,
+      "EffectId": "Nakasar_Fractal_Crippled",
+      "EffectDuration": 3,
+      "PlayersOnly": true,
+      "ImpactParticle": "Nakasar_Fractal_Bleeding_Pool"
+    },
+    {
+      "Type": "Simple",
+      "RunTime": 1.4,
+      "Effects": {
+        "WorldSoundEventId": "SFX_Spear_Throw_Charge"
+      }
+    }
+  ]
+}

@@ -100,6 +100,7 @@ const sidebars = {
         "fractales/ocean-solide",
         "fractales/marais",
         "fractales/tempete-de-neige",
+        "fractales/ressac-silencieux",
       ],
     },
     "fractales/cosmetiques",

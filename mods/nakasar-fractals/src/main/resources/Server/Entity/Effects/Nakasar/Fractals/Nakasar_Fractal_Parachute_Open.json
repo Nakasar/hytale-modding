@@ -1,0 +1,8 @@
+{
+  "$Comment": "Parachute ouvert : descente lente (Java, vitesse posée à chaque pas).",
+  "Name": "nakasar_fractals_silent_surf.effects.Nakasar_Fractal_Parachute_Open",
+  "StatusEffectIcon": "UI/StatusEffects/Nakasar/Fractals/Parachute.png",
+  "OverlapBehavior": "Overwrite",
+  "Infinite": false,
+  "Duration": 1.0
+}

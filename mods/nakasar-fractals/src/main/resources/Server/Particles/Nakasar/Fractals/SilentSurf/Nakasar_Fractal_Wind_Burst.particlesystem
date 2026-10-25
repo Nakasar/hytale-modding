@@ -1,0 +1,12 @@
+{
+  "$Comment": "Canon à vent : souffle blanc et vert qui projette. Généré par tools/generate_silent_surf.py.",
+  "Spawners": [
+    {
+      "SpawnerId": "Nakasar_Fractal_Wind_Burst_Wind",
+      "PositionOffset": {
+        "Y": 0.4
+      }
+    }
+  ],
+  "CullDistance": 72
+}

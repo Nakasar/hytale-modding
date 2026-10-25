@@ -1,0 +1,16 @@
+{
+  "$Comment": "Peur : on fuit sans pouvoir rien faire (Java pousse le joueur loin de ce qui l'effraie).",
+  "Name": "nakasar_fractals_silent_surf.effects.Nakasar_Fractal_Fear",
+  "Debuff": true,
+  "StatusEffectIcon": "UI/StatusEffects/Nakasar/Fractals/Fear.png",
+  "ApplicationEffects": {
+    "MovementEffects": {
+      "DisableAll": true
+    },
+    "EntityTopTint": "#3a0a4a",
+    "EntityBottomTint": "#100018"
+  },
+  "OverlapBehavior": "Overwrite",
+  "Infinite": false,
+  "Duration": 2.0
+}

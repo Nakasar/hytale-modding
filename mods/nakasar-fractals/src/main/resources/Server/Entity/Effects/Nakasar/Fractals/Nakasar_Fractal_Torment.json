@@ -1,0 +1,12 @@
+{
+  "$Comment": "Tourment : dégâts chaque seconde, doublés quand on bouge (Java).",
+  "Name": "nakasar_fractals_silent_surf.effects.Nakasar_Fractal_Torment",
+  "Debuff": true,
+  "StatusEffectIcon": "UI/StatusEffects/Nakasar/Fractals/Torment.png",
+  "ApplicationEffects": {
+    "EntityTopTint": "#5a2a7a"
+  },
+  "OverlapBehavior": "Overwrite",
+  "Infinite": false,
+  "Duration": 6.0
+}

@@ -241,6 +241,7 @@ FRACTALS = {
     "ocean-solide": _generator("generate_solid_ocean"),
     "marais": _generator("generate_swampland"),
     "tempete-de-neige": _generator("generate_snowblind"),
+    "ressac-silencieux": _generator("generate_silent_surf"),
 }
 
 def face(prefabs):
@@ -288,6 +289,11 @@ def _markers(name):
         import generate_snowblind as g
         return [(g.BONFIRE_AT[0], g.BONFIRE_AT[2], 1), g.SOURCE_C + (2,), (g.ss.PACKS[2][0][0], g.ss.PACKS[2][0][1], 3),
                 (g.VILLAGE_C[0], g.VILLAGE_C[1], 4)]
+    if name == "ressac-silencieux":
+        import silent_surf_scenery as sc
+        rings = [cp[1] for cp in sc.CHECKPOINTS]
+        return ([(rings[0][0], rings[0][1], 1)] + [(x, z, k + 2) for k, (x, z, _) in enumerate(rings[1:])]
+                + [sc.ARENA_C + (6,)])
     return []
 
 

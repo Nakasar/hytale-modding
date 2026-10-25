@@ -1,0 +1,12 @@
+{
+  "$Comment": "Vitesse effrayante : marque 5 au sol, dans l'ordre où Kanaxai (ou Dolus) va bondir. Généré par tools/generate_silent_surf.py.",
+  "Spawners": [
+    {
+      "SpawnerId": "Nakasar_Fractal_Numeral_5_Mark",
+      "PositionOffset": {
+        "Y": 1.2
+      }
+    }
+  ],
+  "CullDistance": 72
+}

@@ -1,0 +1,22 @@
+{
+  "TranslationProperties": {
+    "Name": "nakasar_fractals_silent_surf.items.Nakasar_Fractal_Survey_Parachute.name",
+    "Description": "nakasar_fractals_silent_surf.items.Nakasar_Fractal_Survey_Parachute.description"
+  },
+  "Icon": "Icons/Items/Nakasar/Fractals/Survey_Parachute.png",
+  "Model": "Items/Nakasar/Fractals/Survey_Parachute.blockymodel",
+  "Texture": "Items/Nakasar/Fractals/Survey_Parachute.png",
+  "Quality": "Rare",
+  "Categories": [
+    "Items.Misc"
+  ],
+  "PlayerAnimationsId": "Item",
+  "ItemSoundSetId": "ISS_Items_Gems",
+  "MaxStack": 3,
+  "Interactions": {
+    "Secondary": "Root_Nakasar_Fractal_Survey_Parachute"
+  },
+  "Utility": {
+    "Compatible": false
+  }
+}

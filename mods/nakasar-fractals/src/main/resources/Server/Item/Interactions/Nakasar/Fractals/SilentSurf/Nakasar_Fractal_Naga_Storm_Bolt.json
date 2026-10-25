@@ -1,0 +1,23 @@
+{
+  "$Comment": "Mande-tempête naga : éclair sous sa cible, cercle rouge de 2 blocs (1,3 s), 16 dégâts.",
+  "Type": "Serial",
+  "Interactions": [
+    {
+      "Type": "Nakasar_Fractal_Telegraph",
+      "Shape": "Circle",
+      "Seconds": 1.3,
+      "Anchor": "Target",
+      "Radius": 2,
+      "Damage": 16,
+      "PlayersOnly": true,
+      "ImpactParticle": "Nakasar_Fractal_Wind_Burst"
+    },
+    {
+      "Type": "Simple",
+      "RunTime": 1.3,
+      "Effects": {
+        "WorldSoundEventId": "SFX_Spear_Throw_Charge"
+      }
+    }
+  ]
+}

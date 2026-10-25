@@ -1,0 +1,8 @@
+{
+  "$Comment": "Garde de Thess : une chute ramène au dernier point de contrôle (Java).",
+  "Name": "nakasar_fractals_silent_surf.effects.Nakasar_Fractal_Thess_Ward",
+  "StatusEffectIcon": "UI/StatusEffects/Nakasar/Fractals/Thess_Ward.png",
+  "OverlapBehavior": "Overwrite",
+  "Infinite": false,
+  "Duration": 3600.0
+}

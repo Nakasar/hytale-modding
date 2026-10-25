@@ -1,0 +1,13 @@
+{
+  "$Comment": "Léthargie : déplacement très ralenti.",
+  "Name": "nakasar_fractals_silent_surf.effects.Nakasar_Fractal_Lethargy",
+  "Debuff": true,
+  "StatusEffectIcon": "UI/StatusEffects/Nakasar/Fractals/Lethargy.png",
+  "ApplicationEffects": {
+    "HorizontalSpeedMultiplier": 0.5,
+    "EntityTopTint": "#6a8a9a"
+  },
+  "OverlapBehavior": "Overwrite",
+  "Infinite": false,
+  "Duration": 5.0
+}

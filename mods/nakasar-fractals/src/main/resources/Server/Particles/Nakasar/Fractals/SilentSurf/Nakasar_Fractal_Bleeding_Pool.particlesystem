@@ -1,0 +1,12 @@
+{
+  "$Comment": "Flaque de la Tempête déchirante : sang sombre au sol. Généré par tools/generate_silent_surf.py.",
+  "Spawners": [
+    {
+      "SpawnerId": "Nakasar_Fractal_Bleeding_Pool_Pool",
+      "PositionOffset": {
+        "Y": 0.1
+      }
+    }
+  ],
+  "CullDistance": 72
+}

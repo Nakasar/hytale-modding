@@ -1,0 +1,12 @@
+{
+  "$Comment": "Visage de l'effroi : grand œil violet au-dessus de celui qui le lance (ne pas le regarder). Généré par tools/generate_silent_surf.py.",
+  "Spawners": [
+    {
+      "SpawnerId": "Nakasar_Fractal_Dread_Eye_Eye",
+      "PositionOffset": {
+        "Y": 0.0
+      }
+    }
+  ],
+  "CullDistance": 72
+}

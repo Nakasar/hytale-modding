@@ -1,0 +1,21 @@
+{
+  "Type": "NoiseRange",
+  "DefaultBiome": "Nakasar_Fractal_SilentSurf",
+  "DefaultTransitionDistance": 16,
+  "MaxBiomeEdgeDistance": 0,
+  "Density": {
+    "Type": "Constant",
+    "Value": 0.0
+  },
+  "Biomes": [],
+  "SpawnPositions": {
+    "Type": "List",
+    "Positions": [
+      {
+        "X": 72,
+        "Y": 140,
+        "Z": -124
+      }
+    ]
+  }
+}

@@ -222,6 +222,17 @@ Une fractale d'environnement : le froid tue plus que les ennemis, et chaque renc
 
 Côté Hytale : le feu purificateur du mod Vampires (rayon, temps passé dans la zone) sert de modèle pour Chaleur et Hypothermie ; l'éclat de glace qui enferme un joueur est la même brique que la vrille de la citrouille géante.
 
+### Ressac silencieux (Silent Surf), première fractale de la saison 2
+
+Une grotte de jade sombre sous une mer de jade figée. La fractale est une longue descente guidée par **Thess**, avec l'**équipement de prospection** (objets à clic droit, charges = taille de la pile, rechargées aux **Provisions abandonnées** de chaque point de contrôle) : grappin (32 blocs), parachute, charge de poudre noire (après le repaire des araignées), fusée éclairante.
+
+1. **Relevés** : 4 cercles blancs. La **Garde de Thess** annule une chute de 35 % des PV ou plus et ramène au point de contrôle. Chaque relevé lance son combat : chauves-souris, mère de couvée (pond 2 araignées toutes les 14 s), nagas, marins luxons corrompus.
+2. **Trajets** : tyroliennes (s'accroupir pour lâcher), canons à vent, champignons rebondissants, guidés côté serveur par une vitesse imposée à chaque tick (tracés exportés par le générateur). Bloqués tant que le camp du relevé n'est pas dégagé.
+3. **Le second Dolus corrompu** : Visage de l'effroi (détourner la caméra : moins de 60° entre le regard et lui = 25 % des PV, Peur, Tourment) et Vitesse effrayante (5 marques I à V, bonds dans l'ordre).
+4. **Kanaxai** : Visage de l'effroi, Tempête déchirante (un marqué de plus à chaque fois, flaques de 25 s), Tir de herse des Aspects du bord (état de l'Aspect), liens qui mènent en **Fantasmagorie** (Aspect privé sur une île, masqué aux autres joueurs par le suivi des entités ; grappin pour y aller, champignon pour revenir), Ombres rassemblées (défiance à chaque 10 %), **Fendeur de mondes** à 66 et 33 % (20 s pour tuer les Aspects : 20 % + 30 % par Aspect vivant), Vitesse effrayante après le premier Fendeur.
+
+Générateurs : `tools/generate_silent_surf.py` (assets, rôles, trajets, `SilentSurfLayout.java`) et `tools/silent_surf_scenery.py` (grotte, mer, épave, plates-formes, arène). Code : paquet `silentsurf`.
+
 ### Saison 2 et suivantes
 
 Les autres fractales de GW2, à reprendre de la même façon (wiki relu avant chacune) :
@@ -232,9 +243,9 @@ Les autres fractales de GW2, à reprendre de la même façon (wiki relu avant ch
 | [Capitaine Mai Trin](https://wiki.guildwars2.com/wiki/Captain_Mai_Trin_Boss_Fractal) | 10 piles de bouclier retirées seulement en l'attirant dans les tirs électriques de son second, barrages à 75/50/25 % | Mai Trin et Horrik |
 | [Boss en fusion (Molten Boss)](https://wiki.guildwars2.com/wiki/Molten_Boss_Fractal) | 8 groupes avec Protecteurs (rendent un allié invulnérable), bombes à fumée annoncées | duo Berserker / Tempête de feu : chaque 25 % perdu enrage l'autre (50 coups retirent l'enrage), le survivant hérite des attaques ; ondes de choc à sauter |
 | Fournaise en fusion, Réacteur thaumanova, Installation souterraine, Champ de bataille urbain, Chaos, Oasis du crépuscule | rencontres en chaîne variées | à détailler |
-| Cauchemar, Observatoire brisé, Pic de Sunqua, Profonde-pierre, Récif silencieux, Tour solitaire, Kinfall | fractales « boss » avec mode défi | pour le rang Maître |
+| Cauchemar, Observatoire brisé, Pic de Sunqua, Profonde-pierre, Tour solitaire, Kinfall | fractales « boss » avec mode défi | pour le rang Maître |
 
-(Récif silencieux et Kinfall : noms français non vérifiés.)
+(Kinfall : nom français non vérifié. Silent Surf est devenu le Ressac silencieux, ci-dessus.)
 
 ## Instabilités et groupes de 1 à 5
 

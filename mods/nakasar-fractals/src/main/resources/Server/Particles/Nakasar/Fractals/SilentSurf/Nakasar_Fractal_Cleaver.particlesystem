@@ -1,0 +1,12 @@
+{
+  "$Comment": "Fendeur de mondes : éclair orange qui s'abat sur l'arène. Généré par tools/generate_silent_surf.py.",
+  "Spawners": [
+    {
+      "SpawnerId": "Nakasar_Fractal_Cleaver_Blast",
+      "PositionOffset": {
+        "Y": 0.4
+      }
+    }
+  ],
+  "CullDistance": 72
+}

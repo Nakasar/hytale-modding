@@ -1,0 +1,13 @@
+{
+  "$Comment": "Fantasmagorie : un Aspect que vous seul voyez vous attend sur une île (Java, silentsurf.Aspects).",
+  "Name": "nakasar_fractals_silent_surf.effects.Nakasar_Fractal_Phantasmagoria",
+  "Debuff": true,
+  "StatusEffectIcon": "UI/StatusEffects/Nakasar/Fractals/Phantasmagoria.png",
+  "ApplicationEffects": {
+    "EntityTopTint": "#7a3aa0",
+    "EntityBottomTint": "#200830"
+  },
+  "OverlapBehavior": "Overwrite",
+  "Infinite": false,
+  "Duration": 30.0
+}

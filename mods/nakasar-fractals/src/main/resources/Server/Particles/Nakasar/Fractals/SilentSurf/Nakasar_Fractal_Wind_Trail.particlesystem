@@ -1,0 +1,12 @@
+{
+  "$Comment": "Traînée de vent derrière un joueur porté par un canon. Généré par tools/generate_silent_surf.py.",
+  "Spawners": [
+    {
+      "SpawnerId": "Nakasar_Fractal_Wind_Trail_Trail",
+      "PositionOffset": {
+        "Y": 0.6
+      }
+    }
+  ],
+  "CullDistance": 72
+}

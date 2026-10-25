@@ -1,0 +1,12 @@
+{
+  "$Comment": "Garde de Thess : lueur de jade qui ramène un joueur tombé. Généré par tools/generate_silent_surf.py.",
+  "Spawners": [
+    {
+      "SpawnerId": "Nakasar_Fractal_Thess_Ward_Glow",
+      "PositionOffset": {
+        "Y": 0.2
+      }
+    }
+  ],
+  "CullDistance": 72
+}

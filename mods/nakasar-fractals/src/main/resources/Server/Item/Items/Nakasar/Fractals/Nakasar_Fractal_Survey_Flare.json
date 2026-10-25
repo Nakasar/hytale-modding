@@ -1,0 +1,22 @@
+{
+  "TranslationProperties": {
+    "Name": "nakasar_fractals_silent_surf.items.Nakasar_Fractal_Survey_Flare.name",
+    "Description": "nakasar_fractals_silent_surf.items.Nakasar_Fractal_Survey_Flare.description"
+  },
+  "Icon": "Icons/Items/Nakasar/Fractals/Survey_Flare.png",
+  "Model": "Items/Nakasar/Fractals/Survey_Flare.blockymodel",
+  "Texture": "Items/Nakasar/Fractals/Survey_Flare.png",
+  "Quality": "Rare",
+  "Categories": [
+    "Items.Misc"
+  ],
+  "PlayerAnimationsId": "Item",
+  "ItemSoundSetId": "ISS_Items_Gems",
+  "MaxStack": 1,
+  "Interactions": {
+    "Secondary": "Root_Nakasar_Fractal_Survey_Flare"
+  },
+  "Utility": {
+    "Compatible": false
+  }
+}

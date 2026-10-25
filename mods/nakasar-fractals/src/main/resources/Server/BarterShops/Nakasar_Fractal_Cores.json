@@ -51,6 +51,14 @@
       },
       "Input": [],
       "Stock": 999
+    },
+    {
+      "Output": {
+        "ItemId": "Nakasar_Fractal_Core_SilentSurf",
+        "Quantity": 1
+      },
+      "Input": [],
+      "Stock": 999
     }
   ]
 }

@@ -1,0 +1,32 @@
+{
+  "$Comment": "Exposition : +50 % de dégâts subis.",
+  "Name": "nakasar_fractals_silent_surf.effects.Nakasar_Fractal_Exposure",
+  "Debuff": true,
+  "StatusEffectIcon": "UI/StatusEffects/Nakasar/Fractals/Exposure.png",
+  "DamageResistance": {
+    "Physical": [
+      {
+        "CalculationType": "Percent",
+        "Amount": -0.5
+      }
+    ],
+    "Projectile": [
+      {
+        "CalculationType": "Percent",
+        "Amount": -0.5
+      }
+    ],
+    "Elemental": [
+      {
+        "CalculationType": "Percent",
+        "Amount": -0.5
+      }
+    ]
+  },
+  "ApplicationEffects": {
+    "EntityTopTint": "#c08040"
+  },
+  "OverlapBehavior": "Overwrite",
+  "Infinite": false,
+  "Duration": 8.0
+}

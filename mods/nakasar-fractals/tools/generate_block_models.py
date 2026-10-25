@@ -216,6 +216,7 @@ def archivist_counter():
 CORE_COLORS = {  # couleur de chaque fractale (noyaux du distributeur), dans l'ordre du catalogue
     "Cliffside": (186, 140, 255), "Uncategorized": (110, 210, 255), "Volcanic": (255, 140, 60),
     "SolidOcean": (90, 220, 160), "Swampland": (160, 230, 90), "Snowblind": (205, 235, 255),
+    "SilentSurf": (40, 160, 175),
 }
 COPPER = (190, 112, 70)
 SILVER = (200, 206, 218)
@@ -260,7 +261,8 @@ def core_distributor():
     ]
     tracks = {}
     for k, (fid, color) in enumerate(CORE_COLORS.items()):
-        x, z = (-8, 0, 8)[k % 3], (-2, 6)[k // 3]
+        rows = (-2, 6) if len(CORE_COLORS) <= 6 else (-4, 2, 8)   # trois rangées dès la septième fractale
+        x, z = (-8, 0, 8)[k % 3], rows[k // 3]
         p.append(part(f"Cup_{k + 1}", (x, 11.75, z), (5, 1.5, 5), fb.metal(BRASS, False)))
         p.append(part(f"Core_{k + 1}", (x, 16, z), (3.5, 3.5, 3.5), glow(color), glow=True, rot=(35, 45, 0)))
         tracks[f"Core_{k + 1}"] = {"position": bob(1.2, 120, invert=k % 2 == 1)}
