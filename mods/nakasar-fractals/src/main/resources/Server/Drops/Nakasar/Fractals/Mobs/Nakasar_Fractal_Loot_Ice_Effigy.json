@@ -1,0 +1,24 @@
+{
+  "$Comment": "Effigie de glace (balcon du Chaman) : gravats de glace, essence de glace. Généré par tools/generate_mob_loot.py.",
+  "Container": {
+    "Type": "Multiple",
+    "Containers": [
+      {
+        "Type": "Single",
+        "Item": {
+          "ItemId": "Rubble_Ice",
+          "QuantityMin": 2,
+          "QuantityMax": 3
+        }
+      },
+      {
+        "Type": "Single",
+        "Item": {
+          "ItemId": "Ingredient_Ice_Essence",
+          "QuantityMin": 1,
+          "QuantityMax": 2
+        }
+      }
+    ]
+  }
+}

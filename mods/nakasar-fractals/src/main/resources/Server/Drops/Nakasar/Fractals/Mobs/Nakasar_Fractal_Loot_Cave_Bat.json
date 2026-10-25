@@ -1,0 +1,44 @@
+{
+  "$Comment": "Chauve-souris (mine du Volcanique, grotte du Ressac silencieux) : peau souple, éclat d'os. Généré par tools/generate_mob_loot.py.",
+  "Container": {
+    "Type": "Multiple",
+    "Containers": [
+      {
+        "Type": "Choice",
+        "Containers": [
+          {
+            "Type": "Single",
+            "Item": {
+              "ItemId": "Ingredient_Hide_Soft",
+              "QuantityMin": 1,
+              "QuantityMax": 1
+            },
+            "Weight": 50
+          },
+          {
+            "Type": "Empty",
+            "Weight": 50
+          }
+        ]
+      },
+      {
+        "Type": "Choice",
+        "Containers": [
+          {
+            "Type": "Single",
+            "Item": {
+              "ItemId": "Ingredient_Bone_Fragment",
+              "QuantityMin": 1,
+              "QuantityMax": 1
+            },
+            "Weight": 30
+          },
+          {
+            "Type": "Empty",
+            "Weight": 70
+          }
+        ]
+      }
+    ]
+  }
+}

@@ -4,6 +4,7 @@
   "Appearance": "Nakasar_Fractal_Saboteur",
   "NameTranslationKey": "nakasar_fractals_uncategorized.npc.Saboteur.name",
   "MaxHealth": 300,
+  "DropList": "Nakasar_Fractal_Loot_Saboteur",
   "StartState": "Idle",
   "DefaultPlayerAttitude": "Hostile",
   "DefaultNPCAttitude": "Ignore",

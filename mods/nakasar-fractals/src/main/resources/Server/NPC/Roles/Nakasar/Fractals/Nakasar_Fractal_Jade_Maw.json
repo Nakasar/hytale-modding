@@ -4,6 +4,7 @@
   "Appearance": "Nakasar_Fractal_Jade_Maw",
   "NameTranslationKey": "nakasar_fractals_solid_ocean.npc.Jade_Maw.name",
   "MaxHealth": 1000,
+  "DropList": "Nakasar_Fractal_Loot_Jade_Maw",
   "StartState": "Idle",
   "DefaultPlayerAttitude": "Hostile",
   "DefaultNPCAttitude": "Ignore",

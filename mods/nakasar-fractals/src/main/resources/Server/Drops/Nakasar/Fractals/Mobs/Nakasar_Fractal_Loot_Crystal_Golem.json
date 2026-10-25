@@ -1,0 +1,34 @@
+{
+  "$Comment": "Golem de cristal de l'Asura : cristal bleu, essence de foudre. Généré par tools/generate_mob_loot.py.",
+  "Container": {
+    "Type": "Multiple",
+    "Containers": [
+      {
+        "Type": "Single",
+        "Item": {
+          "ItemId": "Ingredient_Crystal_Blue",
+          "QuantityMin": 1,
+          "QuantityMax": 2
+        }
+      },
+      {
+        "Type": "Choice",
+        "Containers": [
+          {
+            "Type": "Single",
+            "Item": {
+              "ItemId": "Ingredient_Lightning_Essence",
+              "QuantityMin": 1,
+              "QuantityMax": 1
+            },
+            "Weight": 40
+          },
+          {
+            "Type": "Empty",
+            "Weight": 60
+          }
+        ]
+      }
+    ]
+  }
+}

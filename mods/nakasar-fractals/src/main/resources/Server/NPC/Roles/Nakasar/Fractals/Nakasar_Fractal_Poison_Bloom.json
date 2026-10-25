@@ -4,6 +4,7 @@
   "Appearance": "Nakasar_Fractal_Poison_Bloom",
   "NameTranslationKey": "nakasar_fractals_swampland.npc.Poison_Bloom.name",
   "MaxHealth": 120,
+  "DropList": "Nakasar_Fractal_Loot_Poison_Bloom",
   "StartState": "Idle",
   "DefaultPlayerAttitude": "Hostile",
   "DefaultNPCAttitude": "Ignore",

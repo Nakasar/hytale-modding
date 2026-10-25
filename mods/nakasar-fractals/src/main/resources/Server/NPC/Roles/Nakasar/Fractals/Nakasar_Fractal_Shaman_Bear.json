@@ -4,6 +4,7 @@
   "Appearance": "Nakasar_Fractal_Shaman_Bear",
   "NameTranslationKey": "nakasar_fractals_snowblind.npc.Shaman_Bear.name",
   "MaxHealth": 7000,
+  "DropList": "Nakasar_Fractal_Loot_Shaman_Bear",
   "StartState": "Idle",
   "DefaultPlayerAttitude": "Hostile",
   "DefaultNPCAttitude": "Ignore",

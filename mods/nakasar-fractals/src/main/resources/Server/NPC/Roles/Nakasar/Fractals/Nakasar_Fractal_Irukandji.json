@@ -4,6 +4,7 @@
   "Appearance": "Nakasar_Fractal_Irukandji",
   "NameTranslationKey": "nakasar_fractals_solid_ocean.npc.Irukandji.name",
   "MaxHealth": 600,
+  "DropList": "Nakasar_Fractal_Loot_Irukandji",
   "StartState": "Idle",
   "DefaultPlayerAttitude": "Hostile",
   "DefaultNPCAttitude": "Ignore",

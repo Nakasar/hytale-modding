@@ -221,7 +221,8 @@ final class Campfire {
         double[] p = spawns[ThreadLocalRandom.current().nextInt(spawns.length)];
         for (int i = 0; i < Math.min(room, roles.size()); i++) {
             Vector3d at = Spawns.point(p).add((i % 4) - 1.5, 0, (i / 4) - 1.0);
-            Ref<EntityStore> ref = Spawns.spawnFoe(world, store, roles.get(i), at, Telegraphs.yawToward(at, center()));
+            Ref<EntityStore> ref = Spawns.noLoot(store,
+                    Spawns.spawnFoe(world, store, roles.get(i), at, Telegraphs.yawToward(at, center())));
             if (ref != null) {
                 raiders.add(ref);
             }

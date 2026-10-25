@@ -1,0 +1,62 @@
+{
+  "$Comment": "Loup des neiges (groupes de la forêt) : peau, viande sauvage, os. Généré par tools/generate_mob_loot.py.",
+  "Container": {
+    "Type": "Multiple",
+    "Containers": [
+      {
+        "Type": "Choice",
+        "Containers": [
+          {
+            "Type": "Single",
+            "Item": {
+              "ItemId": "Ingredient_Hide_Light",
+              "QuantityMin": 1,
+              "QuantityMax": 2
+            },
+            "Weight": 80
+          },
+          {
+            "Type": "Empty",
+            "Weight": 20
+          }
+        ]
+      },
+      {
+        "Type": "Choice",
+        "Containers": [
+          {
+            "Type": "Single",
+            "Item": {
+              "ItemId": "Food_Wildmeat_Raw",
+              "QuantityMin": 1,
+              "QuantityMax": 1
+            },
+            "Weight": 60
+          },
+          {
+            "Type": "Empty",
+            "Weight": 40
+          }
+        ]
+      },
+      {
+        "Type": "Choice",
+        "Containers": [
+          {
+            "Type": "Single",
+            "Item": {
+              "ItemId": "Ingredient_Bone_Fragment",
+              "QuantityMin": 1,
+              "QuantityMax": 1
+            },
+            "Weight": 30
+          },
+          {
+            "Type": "Empty",
+            "Weight": 70
+          }
+        ]
+      }
+    ]
+  }
+}

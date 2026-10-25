@@ -6,6 +6,7 @@ Les fonctions rendent des dictionnaires JSON ; generate_cliffside.py (et les fra
 """
 import json
 
+import generate_mob_loot as loot
 import generate_warnings as gw
 
 FOES = "Nakasar_Fractal_Foes"
@@ -13,6 +14,8 @@ ROOTED = "Nakasar_Fractal_Rooted"   # effet de pose : l'élite ne recule plus pe
 
 
 def write_json(path, doc):
+    if path.parent.name == "Fractals" and path.parent.parent.parent.name == "Roles":
+        doc = loot.with_drop_list(path.stem, doc)   # butin des mobs (generate_mob_loot.py)
     path.parent.mkdir(parents=True, exist_ok=True)
     path.write_text(json.dumps(doc, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
 

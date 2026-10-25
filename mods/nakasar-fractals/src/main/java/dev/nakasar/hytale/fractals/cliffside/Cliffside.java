@@ -597,7 +597,7 @@ public final class Cliffside {
         double[][] points = CliffsideLayout.WAVES[index];
         double[] at = points[st.spawned[index] % points.length];
         st.spawned[index]++;
-        Ref<EntityStore> foe = spawnFoe(world, store, role, at);
+        Ref<EntityStore> foe = Spawns.noLoot(store, spawnFoe(world, store, role, at));
         if (foe != null) {
             st.waves[index].add(foe);
         }

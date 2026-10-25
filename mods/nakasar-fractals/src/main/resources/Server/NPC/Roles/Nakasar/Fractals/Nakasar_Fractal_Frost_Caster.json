@@ -4,6 +4,7 @@
   "Appearance": "Nakasar_Fractal_Frost_Caster",
   "NameTranslationKey": "nakasar_fractals_snowblind.npc.Frost_Caster.name",
   "MaxHealth": 80,
+  "DropList": "Nakasar_Fractal_Loot_Frost_Caster",
   "StartState": "Idle",
   "DefaultPlayerAttitude": "Hostile",
   "DefaultNPCAttitude": "Ignore",

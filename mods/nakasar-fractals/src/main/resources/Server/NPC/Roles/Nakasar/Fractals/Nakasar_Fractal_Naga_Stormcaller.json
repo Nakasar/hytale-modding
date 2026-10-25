@@ -4,6 +4,7 @@
   "Appearance": "Nakasar_Fractal_Naga_Stormcaller",
   "NameTranslationKey": "nakasar_fractals_silent_surf.npc.Naga_Stormcaller.name",
   "MaxHealth": 100,
+  "DropList": "Nakasar_Fractal_Loot_Naga_Stormcaller",
   "StartState": "Idle",
   "DefaultPlayerAttitude": "Hostile",
   "DefaultNPCAttitude": "Ignore",

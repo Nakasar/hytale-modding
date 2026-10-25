@@ -1,0 +1,32 @@
+{
+  "$Comment": "Mère de couvée des cavernes : chitine, poches de venin, soie de sa toile. Généré par tools/generate_mob_loot.py.",
+  "Container": {
+    "Type": "Multiple",
+    "Containers": [
+      {
+        "Type": "Single",
+        "Item": {
+          "ItemId": "Ingredient_Chitin_Sturdy",
+          "QuantityMin": 2,
+          "QuantityMax": 3
+        }
+      },
+      {
+        "Type": "Single",
+        "Item": {
+          "ItemId": "Ingredient_Sac_Venom",
+          "QuantityMin": 1,
+          "QuantityMax": 2
+        }
+      },
+      {
+        "Type": "Single",
+        "Item": {
+          "ItemId": "Ingredient_Fabric_Scrap_Silk",
+          "QuantityMin": 2,
+          "QuantityMax": 4
+        }
+      }
+    ]
+  }
+}

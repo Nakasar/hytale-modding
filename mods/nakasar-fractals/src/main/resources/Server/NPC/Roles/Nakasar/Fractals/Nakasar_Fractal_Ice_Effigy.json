@@ -4,6 +4,7 @@
   "Appearance": "Nakasar_Fractal_Ice_Effigy",
   "NameTranslationKey": "nakasar_fractals_snowblind.npc.Ice_Effigy.name",
   "MaxHealth": 900,
+  "DropList": "Nakasar_Fractal_Loot_Ice_Effigy",
   "StartState": "Idle",
   "DefaultPlayerAttitude": "Hostile",
   "DefaultNPCAttitude": "Ignore",

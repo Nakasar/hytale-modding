@@ -4,6 +4,7 @@
   "Appearance": "Nakasar_Fractal_Brood_Mother",
   "NameTranslationKey": "nakasar_fractals_silent_surf.npc.Brood_Mother.name",
   "MaxHealth": 2400,
+  "DropList": "Nakasar_Fractal_Loot_Brood_Mother",
   "StartState": "Idle",
   "DefaultPlayerAttitude": "Hostile",
   "DefaultNPCAttitude": "Ignore",

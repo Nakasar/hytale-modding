@@ -4,6 +4,7 @@
   "Appearance": "Nakasar_Fractal_Corrupted_Crystal",
   "NameTranslationKey": "nakasar_fractals_snowblind.npc.Corrupted_Crystal.name",
   "MaxHealth": 160,
+  "DropList": "Nakasar_Fractal_Loot_Corrupted_Crystal",
   "StartState": "Idle",
   "DefaultPlayerAttitude": "Hostile",
   "DefaultNPCAttitude": "Ignore",

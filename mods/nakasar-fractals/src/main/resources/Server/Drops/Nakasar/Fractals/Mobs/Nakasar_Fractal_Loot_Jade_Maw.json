@@ -1,0 +1,60 @@
+{
+  "$Comment": "L'Abîme de Jade : cristal vert, émeraudes, essence d'eau, poisson des grands fonds. Généré par tools/generate_mob_loot.py.",
+  "Container": {
+    "Type": "Multiple",
+    "Containers": [
+      {
+        "Type": "Single",
+        "Item": {
+          "ItemId": "Ingredient_Crystal_Green",
+          "QuantityMin": 3,
+          "QuantityMax": 5
+        }
+      },
+      {
+        "Type": "Single",
+        "Item": {
+          "ItemId": "Ingredient_Water_Essence",
+          "QuantityMin": 3,
+          "QuantityMax": 5
+        }
+      },
+      {
+        "Type": "Choice",
+        "Containers": [
+          {
+            "Type": "Single",
+            "Item": {
+              "ItemId": "Rock_Gem_Emerald",
+              "QuantityMin": 1,
+              "QuantityMax": 2
+            },
+            "Weight": 70
+          },
+          {
+            "Type": "Empty",
+            "Weight": 30
+          }
+        ]
+      },
+      {
+        "Type": "Choice",
+        "Containers": [
+          {
+            "Type": "Single",
+            "Item": {
+              "ItemId": "Food_Fish_Raw_Epic",
+              "QuantityMin": 1,
+              "QuantityMax": 1
+            },
+            "Weight": 25
+          },
+          {
+            "Type": "Empty",
+            "Weight": 75
+          }
+        ]
+      }
+    ]
+  }
+}

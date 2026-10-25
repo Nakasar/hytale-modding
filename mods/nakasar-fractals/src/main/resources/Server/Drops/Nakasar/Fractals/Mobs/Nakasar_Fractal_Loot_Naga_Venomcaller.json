@@ -1,0 +1,34 @@
+{
+  "$Comment": "Mande-venin naga : poches de venin, fruit empoisonné. Généré par tools/generate_mob_loot.py.",
+  "Container": {
+    "Type": "Multiple",
+    "Containers": [
+      {
+        "Type": "Single",
+        "Item": {
+          "ItemId": "Ingredient_Sac_Venom",
+          "QuantityMin": 1,
+          "QuantityMax": 2
+        }
+      },
+      {
+        "Type": "Choice",
+        "Containers": [
+          {
+            "Type": "Single",
+            "Item": {
+              "ItemId": "Plant_Fruit_Poison",
+              "QuantityMin": 1,
+              "QuantityMax": 1
+            },
+            "Weight": 30
+          },
+          {
+            "Type": "Empty",
+            "Weight": 70
+          }
+        ]
+      }
+    ]
+  }
+}

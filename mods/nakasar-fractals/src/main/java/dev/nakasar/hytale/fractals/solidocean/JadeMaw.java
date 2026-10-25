@@ -342,6 +342,7 @@ final class JadeMaw {
             if (regrow[i] >= TENTACLE_RESPAWN) {
                 regrow[i] = 0f;
                 spawnTentacle(world, store, i);
+                Spawns.noLoot(store, tentacles[i]);   // repousse en boucle : pas de butin
             }
         }
     }

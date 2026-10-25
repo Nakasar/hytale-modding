@@ -4,6 +4,7 @@
   "Appearance": "Nakasar_Fractal_Frost_Wolf",
   "NameTranslationKey": "nakasar_fractals_snowblind.npc.Frost_Wolf.name",
   "MaxHealth": 70,
+  "DropList": "Nakasar_Fractal_Loot_Frost_Wolf",
   "StartState": "Idle",
   "DefaultPlayerAttitude": "Hostile",
   "DefaultNPCAttitude": "Ignore",
