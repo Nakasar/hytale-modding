@@ -94,7 +94,7 @@ public final class HandLock {
     public static boolean ensureHeld(Store<EntityStore> store, Ref<EntityStore> ref, String id) {
         ItemStack held = InventoryComponent.getItemInHand(store, ref);
         if (held != null && id.equals(held.getItemId())) {
-                return true;
+            return true;
         }
         InventoryComponent.Hotbar hotbar = store.getComponent(ref, InventoryComponent.Hotbar.getComponentType());
         if (hotbar != null) {
@@ -103,7 +103,7 @@ public final class HandLock {
                 ItemStack stack = bar.getItemStack(i);
                 if (!empty(stack) && id.equals(stack.getItemId())) {
                     select(store, ref, hotbar, (byte) i);
-                                return true;
+                    return true;
                 }
             }
         }

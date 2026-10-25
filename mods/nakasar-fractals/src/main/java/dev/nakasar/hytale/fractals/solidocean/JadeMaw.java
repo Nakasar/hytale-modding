@@ -9,6 +9,7 @@ import com.hypixel.hytale.server.core.entity.Frozen;
 import com.hypixel.hytale.server.core.modules.entity.component.Invulnerable;
 import com.hypixel.hytale.server.core.modules.entity.component.TransformComponent;
 import com.hypixel.hytale.server.core.modules.entity.teleport.Teleport;
+import com.hypixel.hytale.server.core.modules.physics.component.Velocity;
 import com.hypixel.hytale.server.core.modules.entity.damage.Damage;
 import com.hypixel.hytale.server.core.modules.entitystats.EntityStatMap;
 import com.hypixel.hytale.server.core.modules.entitystats.EntityStatValue;
@@ -360,6 +361,10 @@ final class JadeMaw {
             }
             Vector3d home = Spawns.point(spots[i]);
             Vector3d at = transform.getPosition();
+            Velocity velocity = store.getComponent(ref, Velocity.getComponentType());
+            if (velocity != null) {
+                velocity.setZero();   // une traction ou un recul en cours le ferait glisser à nouveau
+            }
             if (Telegraphs.horizontal(at, home) > ANCHOR_SLACK || Math.abs(at.y() - home.y()) > 1.0) {
                 store.putComponent(ref, Teleport.getComponentType(),
                         new Teleport(home, new Rotation3f(0f, transform.getRotation().yaw(), 0f)));
@@ -479,6 +484,7 @@ final class JadeMaw {
         if (eye != null) {
             eye = new Vector3d(eye).add(0, 5, 0);
         }
+        int absorbed = 0;
         for (PlayerRef p : beamTargets) {
             Ref<EntityStore> ref = p.getReference();
             if (ref == null || !Spawns.alive(store, ref)) {
@@ -497,15 +503,19 @@ final class JadeMaw {
                 Hurt.effect(store, ref, CHARGED, BEAM_P2);
                 Telegraphs.particle(store, "Nakasar_Fractal_Crystal_Charge", at, 1.2f);
                 SolidOcean.tell(st, p, "absorbed");
+                absorbed++;
             } else {
                 Hurt.percent(store, ref, 1f, SolidOcean.BEAM_CAUSE);
                 p.sendMessage(Message.translation(SolidOcean.MESSAGES + "beam.hit"));
             }
         }
         if (lastBeam) {
-            // Le dernier rayon épuise l'Abîme : il meurt aussitôt après (Kevin, 25 octobre 2026).
+            // Le dernier rayon épuise l'Abîme : il meurt aussitôt après (Kevin, 25 octobre 2026), si quelqu'un y a
+            // survécu (un cristal en main : les autres sont tués) ; sinon l'arène se réinitialise comme avant.
             lastBeamDone = true;
-            health = 0f;
+            if (absorbed > 0) {
+                health = 0f;
+            }
         }
         beamTargets.clear();
         countdown = -1f;
