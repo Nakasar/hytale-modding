@@ -1,0 +1,5 @@
+{
+  "$Comment": "Rune de l'ascenseur : rejoindre la plate-forme.",
+  "Type": "Nakasar_Fractal_Use",
+  "Action": "Deepstone_Lift_Rune"
+}

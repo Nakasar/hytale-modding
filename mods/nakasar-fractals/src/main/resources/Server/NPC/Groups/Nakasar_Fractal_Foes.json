@@ -11,6 +11,7 @@
     "Nakasar_Fractal_Blasting_Black_Peter",
     "Nakasar_Fractal_Bloomhunger",
     "Nakasar_Fractal_Brood_Mother",
+    "Nakasar_Fractal_Brood_Queen",
     "Nakasar_Fractal_Cave_Bat",
     "Nakasar_Fractal_Cave_Spiderling",
     "Nakasar_Fractal_Champion_Shaman",
@@ -19,6 +20,8 @@
     "Nakasar_Fractal_Crystal_Golem",
     "Nakasar_Fractal_Cultist_Chanter",
     "Nakasar_Fractal_Cultist_Fanatic",
+    "Nakasar_Fractal_Deepstone_Sentinel",
+    "Nakasar_Fractal_Deepstone_Shade",
     "Nakasar_Fractal_Devourer",
     "Nakasar_Fractal_Elemental_Source",
     "Nakasar_Fractal_Ember_Larva",
@@ -69,12 +72,20 @@
     "Nakasar_Fractal_Seal",
     "Nakasar_Fractal_Seal_Cracked_1",
     "Nakasar_Fractal_Seal_Cracked_2",
+    "Nakasar_Fractal_Shadow_Bloodsucker",
+    "Nakasar_Fractal_Shadow_Imp",
+    "Nakasar_Fractal_Shadow_Mauler",
+    "Nakasar_Fractal_Shadow_Minotaur",
     "Nakasar_Fractal_Shaman_Bear",
+    "Nakasar_Fractal_Spectral_Flame",
+    "Nakasar_Fractal_Spider_Nest",
     "Nakasar_Fractal_Spirit_Animal",
     "Nakasar_Fractal_Spirit_Bear",
     "Nakasar_Fractal_Spirit_Fox",
     "Nakasar_Fractal_Spirit_Wolf",
     "Nakasar_Fractal_Stonehead",
-    "Nakasar_Fractal_Turret"
+    "Nakasar_Fractal_The_Voice",
+    "Nakasar_Fractal_Turret",
+    "Nakasar_Fractal_Wind_Sprite"
   ]
 }

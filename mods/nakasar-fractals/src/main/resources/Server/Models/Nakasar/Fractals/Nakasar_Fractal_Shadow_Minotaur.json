@@ -1,0 +1,10 @@
+{
+  "$Comment": "Esprit du Minotaure des ombres : loup-garou vanilla (x 1,5), lueur violette.",
+  "Parent": "Werewolf",
+  "MinScale": 1.5,
+  "MaxScale": 1.5,
+  "Light": {
+    "Color": "#a6f",
+    "Radius": 4
+  }
+}

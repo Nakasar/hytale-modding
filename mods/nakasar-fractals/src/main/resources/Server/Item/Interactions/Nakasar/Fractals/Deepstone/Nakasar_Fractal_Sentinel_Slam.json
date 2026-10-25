@@ -1,0 +1,33 @@
+{
+  "$Comment": "Sentinelle : coup de vent autour d'elle, cercle rouge de 4 blocs (1,6 s), 28 dégâts et projection.",
+  "Type": "Serial",
+  "Interactions": [
+    {
+      "Type": "ClearEntityEffect",
+      "Entity": "User",
+      "EntityEffectId": "Hit_Interrupt_Eligible"
+    },
+    {
+      "Type": "ApplyEffect",
+      "EffectId": "Nakasar_Fractal_Rooted"
+    },
+    {
+      "Type": "Nakasar_Fractal_Telegraph",
+      "Shape": "Circle",
+      "Seconds": 1.6,
+      "Radius": 4,
+      "Damage": 28,
+      "Knockback": 5,
+      "KnockUp": 5,
+      "PlayersOnly": true,
+      "ImpactParticle": "Nakasar_Fractal_Sentinel_Burst"
+    },
+    {
+      "Type": "Simple",
+      "RunTime": 1.6,
+      "Effects": {
+        "WorldSoundEventId": "SFX_Spear_Throw_Charge"
+      }
+    }
+  ]
+}

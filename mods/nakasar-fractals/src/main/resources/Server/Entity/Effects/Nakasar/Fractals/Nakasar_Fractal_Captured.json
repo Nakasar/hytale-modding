@@ -1,0 +1,15 @@
+{
+  "$Comment": "Emporté par un esprit du vent : on ne peut plus bouger ni agir (Java).",
+  "Name": "nakasar_fractals_deepstone.effects.Nakasar_Fractal_Captured",
+  "Debuff": true,
+  "StatusEffectIcon": "UI/StatusEffects/Nakasar/Fractals/Captured.png",
+  "ApplicationEffects": {
+    "MovementEffects": {
+      "DisableAll": true
+    },
+    "EntityTopTint": "#e0f0ff"
+  },
+  "OverlapBehavior": "Overwrite",
+  "Infinite": false,
+  "Duration": 1.0
+}

@@ -1,0 +1,39 @@
+{
+  "$Comment": "Nid d'araignées : ne bouge pas, pond des araignées tant qu'on est près (Java, deepstone.EastPath). Généré par tools/generate_deepstone.py.",
+  "Type": "Generic",
+  "Appearance": "Nakasar_Fractal_Spider_Nest",
+  "NameTranslationKey": "nakasar_fractals_deepstone.npc.Spider_Nest.name",
+  "MaxHealth": 420,
+  "DropList": "Nakasar_Fractal_Loot_Spider_Nest",
+  "StartState": "Idle",
+  "DefaultPlayerAttitude": "Hostile",
+  "DefaultNPCAttitude": "Ignore",
+  "MotionControllerList": [
+    {
+      "Type": "Walk",
+      "MaxWalkSpeed": 0.1,
+      "Gravity": 10,
+      "MaxFallSpeed": 10,
+      "Acceleration": 10,
+      "JumpHeight": 1.0
+    }
+  ],
+  "KnockbackScale": 0,
+  "SpawnLockTime": 0.2,
+  "Instructions": [
+    {
+      "Sensor": {
+        "Type": "State",
+        "State": "Idle"
+      },
+      "Instructions": [
+        {
+          "Actions": []
+        }
+      ]
+    }
+  ],
+  "DisableDamageGroups": [
+    "Nakasar_Fractal_Foes"
+  ]
+}

@@ -216,6 +216,7 @@ CORE_COLORS = {  # couleur de chaque fractale (noyaux du distributeur), dans l'o
     "SolidOcean": (90, 220, 160), "Swampland": (160, 230, 90), "Snowblind": (205, 235, 255),
     "SilentSurf": (40, 160, 175),
     "SirensReef": (74, 160, 96),
+    "Deepstone": (110, 196, 214),
 }
 COPPER = (190, 112, 70)
 SILVER = (200, 206, 218)

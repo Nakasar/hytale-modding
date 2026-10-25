@@ -1,0 +1,53 @@
+{
+  "$Comment": "Reine de la couvée : deux estocades devant elle, deux cônes de 60° sur 6 blocs (1,3 s puis 1 s), 22 dégâts et venin 5 s chacune.",
+  "Type": "Serial",
+  "Interactions": [
+    {
+      "Type": "ClearEntityEffect",
+      "Entity": "User",
+      "EntityEffectId": "Hit_Interrupt_Eligible"
+    },
+    {
+      "Type": "ApplyEffect",
+      "EffectId": "Nakasar_Fractal_Rooted"
+    },
+    {
+      "Type": "Nakasar_Fractal_Telegraph",
+      "Shape": "Cone",
+      "Seconds": 1.3,
+      "Angle": 60,
+      "Radius": 6,
+      "Damage": 22,
+      "EffectId": "Nakasar_Fractal_Brood_Venom",
+      "EffectDuration": 5,
+      "PlayersOnly": true,
+      "ImpactParticle": "Stick_Slam_Ground_Large"
+    },
+    {
+      "Type": "Simple",
+      "RunTime": 1.3,
+      "Effects": {
+        "WorldSoundEventId": "SFX_Spear_Throw_Charge"
+      }
+    },
+    {
+      "Type": "Nakasar_Fractal_Telegraph",
+      "Shape": "Cone",
+      "Seconds": 1.0,
+      "Angle": 60,
+      "Radius": 6,
+      "Damage": 22,
+      "EffectId": "Nakasar_Fractal_Brood_Venom",
+      "EffectDuration": 5,
+      "PlayersOnly": true,
+      "ImpactParticle": "Stick_Slam_Ground_Large"
+    },
+    {
+      "Type": "Simple",
+      "RunTime": 1.0,
+      "Effects": {
+        "WorldSoundEventId": "SFX_Spear_Throw_Charge"
+      }
+    }
+  ]
+}

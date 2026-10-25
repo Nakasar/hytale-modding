@@ -1,0 +1,24 @@
+{
+  "$Comment": "La Voix : un petit cercle rouge de 2 blocs sous chaque joueur (1,4 s), 14 dégâts, renverse.",
+  "Type": "Serial",
+  "Interactions": [
+    {
+      "Type": "Nakasar_Fractal_Telegraph",
+      "Shape": "Circle",
+      "Seconds": 1.4,
+      "Anchor": "EachPlayer",
+      "Radius": 2,
+      "Damage": 14,
+      "KnockUp": 5,
+      "PlayersOnly": true,
+      "ImpactParticle": "Nakasar_Fractal_Shadow_Rise"
+    },
+    {
+      "Type": "Simple",
+      "RunTime": 1.4,
+      "Effects": {
+        "WorldSoundEventId": "SFX_Spear_Throw_Charge"
+      }
+    }
+  ]
+}

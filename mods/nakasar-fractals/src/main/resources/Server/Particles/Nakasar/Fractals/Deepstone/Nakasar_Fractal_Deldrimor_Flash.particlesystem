@@ -1,0 +1,18 @@
+{
+  "$Comment": "Lumière de Deldrimor : éclat d'or et de blanc autour du joueur. Généré par tools/generate_deepstone.py.",
+  "Spawners": [
+    {
+      "SpawnerId": "Nakasar_Fractal_Deldrimor_Flash_Burst",
+      "PositionOffset": {
+        "Y": 0.2
+      }
+    },
+    {
+      "SpawnerId": "Nakasar_Fractal_Deldrimor_Flash_Glow",
+      "PositionOffset": {
+        "Y": 0.4
+      }
+    }
+  ],
+  "CullDistance": 72
+}

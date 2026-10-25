@@ -67,6 +67,14 @@
       },
       "Input": [],
       "Stock": 999
+    },
+    {
+      "Output": {
+        "ItemId": "Nakasar_Fractal_Core_Deepstone",
+        "Quantity": 1
+      },
+      "Input": [],
+      "Stock": 999
     }
   ]
 }

@@ -1,0 +1,16 @@
+{
+  "TranslationProperties": {
+    "Name": "nakasar_fractals.items.Nakasar_Fractal_Core_Deepstone.name",
+    "Description": "nakasar_fractals.items.Nakasar_Fractal_Core_Deepstone.description"
+  },
+  "Icon": "Icons/Items/Nakasar/Fractals/Core_Deepstone.png",
+  "Model": "Items/Nakasar/Fractals/Core_Deepstone.blockymodel",
+  "Texture": "Items/Nakasar/Fractals/Core_Deepstone.png",
+  "Quality": "Rare",
+  "Categories": [
+    "Items.Ingredients"
+  ],
+  "PlayerAnimationsId": "Item",
+  "ItemSoundSetId": "ISS_Items_Gems",
+  "MaxStack": 1
+}

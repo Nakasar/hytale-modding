@@ -1,0 +1,51 @@
+{
+  "$Comment": "Suceur de sang : morsure (18 dégâts).",
+  "Type": "Serial",
+  "Interactions": [
+    {
+      "$Comment": "Morsure.",
+      "Type": "Simple",
+      "RunTime": 0.35,
+      "Effects": {
+        "WorldSoundEventId": "SFX_Unarmed_Swing"
+      },
+      "Next": {
+        "Type": "Selector",
+        "RunTime": 0.15,
+        "Selector": {
+          "Id": "Horizontal",
+          "Direction": "ToLeft",
+          "TestLineOfSight": true,
+          "ExtendTop": 0.8,
+          "ExtendBottom": 0.8,
+          "StartDistance": 0.2,
+          "EndDistance": 2.6,
+          "Length": 100,
+          "RollOffset": 0,
+          "YawStartOffset": 50
+        },
+        "HitEntity": {
+          "Interactions": [
+            {
+              "Parent": "DamageEntityParent",
+              "DamageCalculator": {
+                "BaseDamage": {
+                  "Physical": 18
+                },
+                "RandomPercentageModifier": 0.1
+              },
+              "DamageEffects": {
+                "WorldSoundEventId": "SFX_T1_Impact_Blunt",
+                "WorldParticles": [
+                  {
+                    "SystemId": "Impact_Sword_Basic_Stronk"
+                  }
+                ]
+              }
+            }
+          ]
+        }
+      }
+    }
+  ]
+}

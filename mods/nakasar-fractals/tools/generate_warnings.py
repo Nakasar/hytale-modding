@@ -51,6 +51,7 @@ JAVA_LINES = [
     (1, 2, "uncategorized.Uncategorized tourelles : une marche x 2 * TURRET_HALF_WIDTH"),
     (16, 2, "snowblind.Source lances de glace : LANCE_LENGTH x LANCE_WIDTH"),
     (14, 8, "sirensreef.ReefShip courants fantômes : DRAFT_LENGTH x DRAFT_WIDTH"),
+    (11, 5, "deepstone.EastPath vent du pont : WIND_LENGTH x WIND_WIDTH"),
 ]
 WARNING_TENTHS = range(5, 61)   # Telegraphs.WARNING_MIN / WARNING_MAX : toutes écrites, le Java en demande à la volée
 

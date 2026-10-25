@@ -1,0 +1,12 @@
+{
+  "$Comment": "Siphon spirituel de la Voix : la vie s'en va et la dalle s'effrite (Java).",
+  "Name": "nakasar_fractals_deepstone.effects.Nakasar_Fractal_Siphoned",
+  "Debuff": true,
+  "StatusEffectIcon": "UI/StatusEffects/Nakasar/Fractals/Siphoned.png",
+  "ApplicationEffects": {
+    "EntityTopTint": "#c02040"
+  },
+  "OverlapBehavior": "Overwrite",
+  "Infinite": false,
+  "Duration": 1.5
+}

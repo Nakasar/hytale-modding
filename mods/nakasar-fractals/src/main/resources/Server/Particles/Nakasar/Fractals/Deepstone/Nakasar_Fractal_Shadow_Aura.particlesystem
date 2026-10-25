@@ -1,0 +1,12 @@
+{
+  "$Comment": "Voile du Minotaure : fumée noire de 4 blocs autour de lui (zone du toucher des ombres). Généré par tools/generate_deepstone.py.",
+  "Spawners": [
+    {
+      "SpawnerId": "Nakasar_Fractal_Shadow_Aura_Smoke",
+      "PositionOffset": {
+        "Y": 0.6
+      }
+    }
+  ],
+  "CullDistance": 72
+}

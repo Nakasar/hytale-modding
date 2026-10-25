@@ -1,0 +1,31 @@
+{
+  "$Comment": "Protection de la Reine (à 50 %) : dégâts subis réduits d'un tiers.",
+  "Name": "nakasar_fractals_deepstone.effects.Nakasar_Fractal_Brood_Protection",
+  "StatusEffectIcon": "UI/StatusEffects/Nakasar/Fractals/Brood_Protection.png",
+  "DamageResistance": {
+    "Physical": [
+      {
+        "CalculationType": "Percent",
+        "Amount": 0.33
+      }
+    ],
+    "Projectile": [
+      {
+        "CalculationType": "Percent",
+        "Amount": 0.33
+      }
+    ],
+    "Elemental": [
+      {
+        "CalculationType": "Percent",
+        "Amount": 0.33
+      }
+    ]
+  },
+  "ApplicationEffects": {
+    "EntityTopTint": "#c0e080"
+  },
+  "OverlapBehavior": "Overwrite",
+  "Infinite": false,
+  "Duration": 15.0
+}

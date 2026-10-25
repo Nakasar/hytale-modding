@@ -1,0 +1,12 @@
+{
+  "$Comment": "Rafale du pont : un souffle blanc qui balaie le travers. Généré par tools/generate_deepstone.py.",
+  "Spawners": [
+    {
+      "SpawnerId": "Nakasar_Fractal_Wind_Gust_Gust",
+      "PositionOffset": {
+        "Y": 0.5
+      }
+    }
+  ],
+  "CullDistance": 72
+}

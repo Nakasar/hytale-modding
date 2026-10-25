@@ -1,0 +1,7 @@
+{
+  "$Comment": "Grille de runes, vent, venin, ombres, siphon et bombes de Pierre-Profonde : une part des PV max, l'armure ne la réduit pas.",
+  "BypassResistances": true,
+  "DurabilityLoss": false,
+  "StaminaLoss": false,
+  "DamageTextColor": "#9cf"
+}

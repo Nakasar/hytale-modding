@@ -1,0 +1,8 @@
+{
+  "$Comment": "Courant ascendant résiduel (1) : une chute dans l'arène de la Voix est rattrapée par charge (Java).",
+  "Name": "nakasar_fractals_deepstone.effects.Nakasar_Fractal_Updraft_1",
+  "StatusEffectIcon": "UI/StatusEffects/Nakasar/Fractals/Updraft_1.png",
+  "OverlapBehavior": "Overwrite",
+  "Infinite": false,
+  "Duration": 600.0
+}

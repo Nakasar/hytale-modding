@@ -1,0 +1,42 @@
+{
+  "$Comment": "Esprit du Minotaure des ombres : essence du Vide, ombretisse, pierre de vide. Généré par tools/generate_mob_loot.py.",
+  "Container": {
+    "Type": "Multiple",
+    "Containers": [
+      {
+        "Type": "Single",
+        "Item": {
+          "ItemId": "Ingredient_Void_Essence",
+          "QuantityMin": 2,
+          "QuantityMax": 3
+        }
+      },
+      {
+        "Type": "Single",
+        "Item": {
+          "ItemId": "Ingredient_Bolt_Shadoweave",
+          "QuantityMin": 1,
+          "QuantityMax": 1
+        }
+      },
+      {
+        "Type": "Choice",
+        "Containers": [
+          {
+            "Type": "Single",
+            "Item": {
+              "ItemId": "Rock_Gem_Voidstone",
+              "QuantityMin": 1,
+              "QuantityMax": 1
+            },
+            "Weight": 40
+          },
+          {
+            "Type": "Empty",
+            "Weight": 60
+          }
+        ]
+      }
+    ]
+  }
+}

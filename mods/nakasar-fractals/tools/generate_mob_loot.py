@@ -281,6 +281,48 @@ LOOT = {
         item("Ingredient_Crystal_Blue", 1, 2),
         item("Ingredient_Lightning_Essence", 1, chance=40),
     ]),
+    # --- Pierre-Profonde (bêtes et gardiens de base ou d'événement ; pas les araignées des nids, les esprits du vent,
+    # les flammes spectrales ni les ombres qui reviennent en boucle) --------------------------------------------------
+    "Deepstone_Sentinel": ("Sentinelle de Pierre-Profonde : essence de foudre et de glace, cristal blanc.", [
+        item("Ingredient_Lightning_Essence", 2, 3),
+        item("Ingredient_Ice_Essence", 1, 2),
+        item("Ingredient_Crystal_White", 1, 2),
+    ]),
+    "Spider_Nest": ("Nid d'araignées : soie, poche de venin.", [
+        item("Ingredient_Fabric_Scrap_Silk", 1, 3),
+        item("Ingredient_Sac_Venom", 1, chance=30),
+    ]),
+    "Brood_Queen": ("Reine de la couvée : chitine, poches de venin, soie en quantité.", [
+        item("Ingredient_Chitin_Sturdy", 3, 4),
+        item("Ingredient_Sac_Venom", 2, 3),
+        item("Ingredient_Fabric_Scrap_Silk", 3, 5),
+    ]),
+    "Shadow_Imp": ("Diablotin des ombres : ombretisse, essence du Vide.", [
+        item("Ingredient_Fabric_Scrap_Shadoweave", 1, chance=50),
+        item("Ingredient_Void_Essence", 1, chance=25),
+    ]),
+    "Shadow_Mauler": ("Écharpeur des ombres : cuir sombre, essence du Vide.", [
+        item("Ingredient_Hide_Dark", 1, 2),
+        item("Ingredient_Void_Essence", 1, chance=50),
+    ]),
+    "Shadow_Bloodsucker": ("Suceur de sang des ombres : cuir sombre, éclats d'os.", [
+        item("Ingredient_Hide_Dark", 1, 2),
+        item("Ingredient_Bone_Fragment", 1, 2),
+    ]),
+    "Shadow_Minotaur": ("Esprit du Minotaure des ombres : essence du Vide, ombretisse, pierre de vide.", [
+        item("Ingredient_Void_Essence", 2, 3),
+        item("Ingredient_Bolt_Shadoweave", 1),
+        item("Rock_Gem_Voidstone", 1, chance=40),
+    ]),
+    "Deepstone_Shade": ("Ombre de Pierre-Profonde : ombretisse.", [
+        item("Ingredient_Fabric_Scrap_Shadoweave", 1, chance=40),
+    ]),
+    "The_Voice": ("La Voix : essence du Vide, ombretisse, cristal violet, saphir des nains.", [
+        item("Ingredient_Void_Essence", 3, 4),
+        item("Ingredient_Bolt_Shadoweave", 1, 2),
+        item("Ingredient_Crystal_Purple", 1, 2),
+        item("Rock_Gem_Sapphire", 1, chance=50),
+    ]),
 }
 
 

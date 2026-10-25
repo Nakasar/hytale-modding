@@ -1,0 +1,41 @@
+{
+  "$Comment": "Flamme spectrale : flotte ; au gouffre elle condamne la dalle sous elle, dans l'arène elle file vers la Voix (Java, deepstone.AbyssPit et deepstone.Voice). Généré par tools/generate_deepstone.py.",
+  "Type": "Generic",
+  "Appearance": "Nakasar_Fractal_Spectral_Flame",
+  "NameTranslationKey": "nakasar_fractals_deepstone.npc.Spectral_Flame.name",
+  "MaxHealth": 160,
+  "StartState": "Idle",
+  "DefaultPlayerAttitude": "Hostile",
+  "DefaultNPCAttitude": "Ignore",
+  "MotionControllerList": [
+    {
+      "Type": "Fly",
+      "MaxHorizontalSpeed": 0.1,
+      "MaxClimbSpeed": 3,
+      "MaxSinkSpeed": 3,
+      "Acceleration": 3,
+      "Deceleration": 3,
+      "Gravity": 1,
+      "MinHeightOverGround": 0,
+      "MaxHeightOverGround": 2
+    }
+  ],
+  "KnockbackScale": 0,
+  "SpawnLockTime": 0.2,
+  "Instructions": [
+    {
+      "Sensor": {
+        "Type": "State",
+        "State": "Idle"
+      },
+      "Instructions": [
+        {
+          "Actions": []
+        }
+      ]
+    }
+  ],
+  "DisableDamageGroups": [
+    "Nakasar_Fractal_Foes"
+  ]
+}

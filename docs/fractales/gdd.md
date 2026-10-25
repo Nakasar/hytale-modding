@@ -257,6 +257,22 @@ Aucun boss ne se soigne (AGENTS.md) : une remise à zéro (personne dans la zone
 
 Générateurs : `tools/generate_sirens_reef.py` (assets, rôles, effets, `SirensReefLayout.java`) et `tools/sirens_reef_scenery.py` (terrain : mer à bord courbe et récif extérieur, falaises, labyrinthe à couloirs courbes, fort, tête de pierre, navire). Code : paquet `sirensreef`.
 
+### Pierre-Profonde (Deepstone), troisième fractale de la saison 2
+
+Le caveau des nains de Deldrimor sous une montagne enneigée, d'après la carte GW2 envoyée par Kevin. **Torin** et **Kay** attendent devant le **Cristal de Deldrimor** éteint (invulnérables).
+
+1. **Descente** de la montagne (chauves-souris), puis la **salle du cristal** : porte nord fermée, il faut les deux orbes de lumière.
+2. **Ouest** : grille de runes (rangées rouges qui glissent du nord au sud, 1 ou 2 colonnes libres ; la zone rouge est la dalle même), deux **runes à presser ensemble** (deux joueurs), puis la **Sentinelle** sur sa corniche ouverte au vide : spirales de vent, esprits du vent qui emportent un joueur vers le bord (défiance ou mort de l'esprit pour le relâcher).
+3. **Est** : nids d'araignées (pontes sans butin), **pont du vent** (bandes rouges qui jettent dans le gouffre, deux runes l'arrêtent), deux mères de couvée puis la **Reine de la couvée** (venin, protection à 50 %).
+4. Chaque boss laisse une **orbe** : la prendre ramène au cristal, l'y déposer. Les deux déposées : la **Lumière de Deldrimor** (objet à clic droit, éclat de 6 blocs, 5 s) pour tout le groupe, et le **Minotaure des ombres** surgit, invulnérable tant que la Lumière ne l'a pas dévoilé.
+5. **Gouffre invisible** : chemin de dalles tiré au hasard, révélé trois dalles à la fois par la Lumière ; quatre orbes à allumer (points de retour), flammes spectrales qui font tomber les dalles.
+6. **Ascenseur** : plate-forme qui descend bloc par bloc quand tout le groupe est dessus, deux vagues à mi-chemin.
+7. **La Voix** sur une arène de dalles : Courants ascendants (chutes rattrapées, 4 à 1 selon le rang), orbes rebondissantes, bombes d'ombre en chaîne, siphon (défiance) à 80/40 %, ombres, flammes spectrales et déflagration à 60/20 %.
+
+Aucun boss ne se soigne ; dix trésors nains cachés que révèle la Lumière.
+
+Générateurs : `tools/generate_deepstone.py` (assets, rôles, effets, `DeepstoneLayout.java`) et `tools/deepstone_scenery.py` (montagne, caveau, gouffres, pont, ascenseur, arène). Code : paquet `deepstone`.
+
 ### Saison 2 et suivantes
 
 Les autres fractales de GW2, à reprendre de la même façon (wiki relu avant chacune) :
@@ -267,9 +283,9 @@ Les autres fractales de GW2, à reprendre de la même façon (wiki relu avant ch
 | [Capitaine Mai Trin](https://wiki.guildwars2.com/wiki/Captain_Mai_Trin_Boss_Fractal) | 10 piles de bouclier retirées seulement en l'attirant dans les tirs électriques de son second, barrages à 75/50/25 % | Mai Trin et Horrik |
 | [Boss en fusion (Molten Boss)](https://wiki.guildwars2.com/wiki/Molten_Boss_Fractal) | 8 groupes avec Protecteurs (rendent un allié invulnérable), bombes à fumée annoncées | duo Berserker / Tempête de feu : chaque 25 % perdu enrage l'autre (50 coups retirent l'enrage), le survivant hérite des attaques ; ondes de choc à sauter |
 | Fournaise en fusion, Réacteur thaumanova, Installation souterraine, Champ de bataille urbain, Chaos, Oasis du crépuscule | rencontres en chaîne variées | à détailler |
-| Cauchemar, Observatoire brisé, Pic de Sunqua, Profonde-pierre, Tour solitaire, Kinfall | fractales « boss » avec mode défi | pour le rang Maître |
+| Cauchemar, Observatoire brisé, Pic de Sunqua, Tour solitaire, Kinfall | fractales « boss » avec mode défi | pour le rang Maître |
 
-(Kinfall : nom français non vérifié. Silent Surf est devenu le Ressac silencieux et Siren's Reef le Récif de la Sirène, ci-dessus.)
+(Kinfall : nom français non vérifié. Silent Surf est devenu le Ressac silencieux, Siren's Reef le Récif de la Sirène et Deepstone Pierre-Profonde, ci-dessus.)
 
 ## Instabilités et groupes de 1 à 5
 

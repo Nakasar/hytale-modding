@@ -1,0 +1,32 @@
+{
+  "$Comment": "Reine de la couvée : chitine, poches de venin, soie en quantité. Généré par tools/generate_mob_loot.py.",
+  "Container": {
+    "Type": "Multiple",
+    "Containers": [
+      {
+        "Type": "Single",
+        "Item": {
+          "ItemId": "Ingredient_Chitin_Sturdy",
+          "QuantityMin": 3,
+          "QuantityMax": 4
+        }
+      },
+      {
+        "Type": "Single",
+        "Item": {
+          "ItemId": "Ingredient_Sac_Venom",
+          "QuantityMin": 2,
+          "QuantityMax": 3
+        }
+      },
+      {
+        "Type": "Single",
+        "Item": {
+          "ItemId": "Ingredient_Fabric_Scrap_Silk",
+          "QuantityMin": 3,
+          "QuantityMax": 5
+        }
+      }
+    ]
+  }
+}

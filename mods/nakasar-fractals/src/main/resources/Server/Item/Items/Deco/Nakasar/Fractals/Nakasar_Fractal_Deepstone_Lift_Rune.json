@@ -1,0 +1,50 @@
+{
+  "TranslationProperties": {
+    "Name": "nakasar_fractals_deepstone.items.Nakasar_Fractal_Deepstone_Lift_Rune.name",
+    "Description": "nakasar_fractals_deepstone.items.Nakasar_Fractal_Deepstone_Lift_Rune.description"
+  },
+  "Icon": "Icons/Items/Nakasar/Fractals/Deepstone_Lift_Rune.png",
+  "Categories": [
+    "Blocks.Deco"
+  ],
+  "Quality": "Technical",
+  "PlayerAnimationsId": "Block",
+  "BlockType": {
+    "Material": "Solid",
+    "DrawType": "Cube",
+    "Opacity": "Solid",
+    "Textures": [
+      {
+        "Sides": "BlockTextures/Nakasar/Fractals/Deepstone_Lift_Rune.png",
+        "UpDown": "BlockTextures/Nakasar/Fractals/Deepstone_Lift_Rune.png",
+        "Weight": 1
+      }
+    ],
+    "HitboxType": "Full",
+    "Flags": {},
+    "Gathering": {
+      "Breaking": {
+        "GatherType": "Unbreakable"
+      }
+    },
+    "BlockParticleSetId": "Stone",
+    "BlockSoundSetId": "Stone",
+    "ParticleColor": "#82d2ff",
+    "Light": {
+      "Color": "#8cf"
+    },
+    "Interactions": {
+      "Use": {
+        "Interactions": [
+          "Nakasar_Fractal_Use_Deepstone_Lift_Rune"
+        ]
+      }
+    }
+  },
+  "Tags": {
+    "Type": [
+      "Deco"
+    ]
+  },
+  "ItemSoundSetId": "ISS_Blocks_Stone"
+}

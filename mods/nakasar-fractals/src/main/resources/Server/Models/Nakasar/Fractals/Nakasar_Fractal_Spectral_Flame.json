@@ -1,0 +1,10 @@
+{
+  "$Comment": "Flamme spectrale : petit esprit de braise vanilla, lueur bleue.",
+  "Parent": "Spirit_Ember",
+  "MinScale": 0.8,
+  "MaxScale": 0.8,
+  "Light": {
+    "Color": "#8af",
+    "Radius": 4
+  }
+}

@@ -109,6 +109,7 @@ FRACTALS = [
     ("Snowblind", "Tempête de neige", "Snowblind", (170, 210, 240)),
     ("SilentSurf", "Ressac silencieux", "Silent Surf", (40, 160, 175)),
     ("SirensReef", "Récif de la Sirène", "Siren's Reef", (74, 160, 96)),
+    ("Deepstone", "Pierre-Profonde", "Deepstone", (110, 196, 214)),
 ]
 FLAVOR = {
     "Cliffside": ("Un sentier taillé dans la falaise, le long d'un colosse enchaîné. Cinq sceaux à briser au marteau "
@@ -132,6 +133,10 @@ FLAVOR = {
                    "trésors et l'équipage fantôme d'Arabella Crowe sur son navire.",
                    "The island of cursed treasure: Stonehead, the shadow cannon, Black Peter, a maze of treasure and "
                    "Arabella Crowe's ghost crew aboard her ship."),
+    "Deepstone": ("La cité naine engloutie : runes, la sentinelle et la reine des couvées, la Lumière de Deldrimor, "
+                  "le Minotaure des ombres, le gouffre invisible et la Voix dans les profondeurs.",
+                  "The sunken dwarven city: runes, the sentinel and the brood queen, the Light of Deldrimor, the "
+                  "shadow minotaur, the invisible pit and the Voice in the deep."),
 }
 
 # Pierres du décor (ids vanilla de tools/vanilla-block-ids-0.7.2.txt).
@@ -1247,7 +1252,7 @@ def lang():
         "command.level.arg": "Niveau de 1 à 100",
         "command.group.desc": "Affiche le groupe d'harmonisation.",
         "command.launch.desc": "Lance une fractale pour le cercle (meneur, dans l'Observatoire).",
-        "command.launch.arg": "Fractale (Cliffside, Uncategorized, Volcanic, SolidOcean, Swampland, Snowblind, SilentSurf, SirensReef)",
+        "command.launch.arg": "Fractale (Cliffside, Uncategorized, Volcanic, SolidOcean, Swampland, Snowblind, SilentSurf, SirensReef, Deepstone)",
         "command.leave.desc": "Quitte la fractale et revient à l'Observatoire.",
     }
     en = {
@@ -1354,7 +1359,7 @@ def lang():
         "command.level.arg": "Level from 1 to 100",
         "command.group.desc": "Shows the attunement group.",
         "command.launch.desc": "Launches a fractal for the circle (leader, in the Observatory).",
-        "command.launch.arg": "Fractal (Cliffside, Uncategorized, Volcanic, SolidOcean, Swampland, Snowblind, SilentSurf, SirensReef)",
+        "command.launch.arg": "Fractal (Cliffside, Uncategorized, Volcanic, SolidOcean, Swampland, Snowblind, SilentSurf, SirensReef, Deepstone)",
         "command.leave.desc": "Leaves the fractal and returns to the Observatory.",
     }
     for fid, name_fr, name_en, *_ in FRACTALS:

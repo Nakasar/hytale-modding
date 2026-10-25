@@ -1,0 +1,10 @@
+{
+  "$Comment": "Suceur de sang des ombres (élite de l'ascenseur) : grande chauve-souris vanilla (x 2,2).",
+  "Parent": "Bat",
+  "MinScale": 2.2,
+  "MaxScale": 2.2,
+  "Light": {
+    "Color": "#f46",
+    "Radius": 3
+  }
+}

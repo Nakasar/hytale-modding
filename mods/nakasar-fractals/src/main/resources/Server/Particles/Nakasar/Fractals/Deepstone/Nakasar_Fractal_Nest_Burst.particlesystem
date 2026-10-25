@@ -1,0 +1,12 @@
+{
+  "$Comment": "Nid d'araignées détruit : éclats d'œufs et de soie. Généré par tools/generate_deepstone.py.",
+  "Spawners": [
+    {
+      "SpawnerId": "Nakasar_Fractal_Nest_Burst_Burst",
+      "PositionOffset": {
+        "Y": 0.3
+      }
+    }
+  ],
+  "CullDistance": 72
+}

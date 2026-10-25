@@ -1,0 +1,5 @@
+{
+  "$Comment": "Orbe de lumière d'un boss vaincu : la prendre, retour au cristal.",
+  "Type": "Nakasar_Fractal_Use",
+  "Action": "Deepstone_Orb"
+}
