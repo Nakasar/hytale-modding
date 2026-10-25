@@ -25,6 +25,7 @@ import dev.nakasar.hytale.fractals.silentsurf.AspectVisibilitySystem;
 import dev.nakasar.hytale.fractals.silentsurf.GearItemsSystem;
 import dev.nakasar.hytale.fractals.silentsurf.SilentSurf;
 import dev.nakasar.hytale.fractals.silentsurf.SurveyGearInteraction;
+import dev.nakasar.hytale.fractals.snowblind.CarriedItemsSystem;
 import dev.nakasar.hytale.fractals.stage.Stages;
 import dev.nakasar.hytale.fractals.stage.ThrowItemInteraction;
 import dev.nakasar.hytale.fractals.uncategorized.Uncategorized;
@@ -193,6 +194,7 @@ public final class FractalsPlugin extends JavaPlugin {
         systems.registerSystem(new CliffsideDamageFilter());
         systems.registerSystem(new StageSystem());
         systems.registerSystem(new GearItemsSystem());
+        systems.registerSystem(new CarriedItemsSystem());
         systems.registerSystem(new AspectVisibilitySystem());
         systems.registerSystem(new StageDamageFilter());
         systems.registerSystem(new FoeDeathSystem());
