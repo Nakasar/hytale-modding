@@ -1,0 +1,66 @@
+{
+  "TranslationProperties": {
+    "Name": "nakasar_fractals.items.Nakasar_Fractal_Asura_Console.name",
+    "Description": "nakasar_fractals.items.Nakasar_Fractal_Asura_Console.description"
+  },
+  "Icon": "Icons/Items/Nakasar/Fractals/Asura_Console.png",
+  "Categories": [
+    "Blocks.Deco"
+  ],
+  "Quality": "Technical",
+  "PlayerAnimationsId": "Block",
+  "BlockType": {
+    "Material": "Solid",
+    "DrawType": "Model",
+    "Opacity": "Transparent",
+    "HitboxType": "Full",
+    "Flags": {},
+    "Gathering": {
+      "Breaking": {
+        "GatherType": "Unbreakable"
+      }
+    },
+    "BlockParticleSetId": "Stone",
+    "BlockSoundSetId": "Stone",
+    "ParticleColor": "#6edcff",
+    "Light": {
+      "Color": "#6cf"
+    },
+    "CustomModel": "Blocks/Nakasar/Fractals/Asura_Console.blockymodel",
+    "CustomModelTexture": [
+      {
+        "Texture": "Blocks/Nakasar/Fractals/Asura_Console_Texture.png",
+        "Weight": 1
+      }
+    ],
+    "VariantRotation": "NESW",
+    "CustomModelAnimation": "Blocks/Nakasar/Fractals/Asura_Console.blockyanim",
+    "Particles": [
+      {
+        "SystemId": "Dust_Sparkles_Fine",
+        "Scale": 1,
+        "PositionOffset": {
+          "Y": 1.4
+        }
+      }
+    ]
+  },
+  "Tags": {
+    "Type": [
+      "Deco"
+    ]
+  },
+  "ItemSoundSetId": "ISS_Blocks_Stone",
+  "IconProperties": {
+    "Scale": 0.55,
+    "Translation": [
+      0,
+      -12
+    ],
+    "Rotation": [
+      22.5,
+      45,
+      22.5
+    ]
+  }
+}

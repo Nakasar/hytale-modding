@@ -1,0 +1,51 @@
+{
+  "TranslationProperties": {
+    "Name": "nakasar_fractals.items.Nakasar_Fractal_Gate_Veil.name",
+    "Description": "nakasar_fractals.items.Nakasar_Fractal_Gate_Veil.description"
+  },
+  "Icon": "Icons/Items/Nakasar/Fractals/Gate_Veil.png",
+  "Categories": [
+    "Blocks.Deco"
+  ],
+  "Quality": "Technical",
+  "PlayerAnimationsId": "Block",
+  "BlockType": {
+    "Material": "Empty",
+    "DrawType": "Cube",
+    "Opacity": "Semitransparent",
+    "Textures": [
+      {
+        "Sides": "BlockTextures/Nakasar/Fractals/Gate_Veil.png",
+        "UpDown": "BlockTextures/Nakasar/Fractals/Gate_Veil_Top.png",
+        "Weight": 1
+      }
+    ],
+    "HitboxType": "Full",
+    "Flags": {},
+    "Gathering": {
+      "Breaking": {
+        "GatherType": "Unbreakable"
+      }
+    },
+    "BlockParticleSetId": "Crystal",
+    "BlockSoundSetId": "Crystal",
+    "ParticleColor": "#f0d6ff",
+    "Light": {
+      "Color": "#b8f"
+    },
+    "Interactions": {
+      "CollisionEnter": {
+        "Interactions": [
+          "Portal_Return"
+        ]
+      }
+    },
+    "AmbientSoundEventId": "SFX_Portal_Neutral"
+  },
+  "Tags": {
+    "Type": [
+      "Deco"
+    ]
+  },
+  "ItemSoundSetId": "ISS_Blocks_Stone"
+}

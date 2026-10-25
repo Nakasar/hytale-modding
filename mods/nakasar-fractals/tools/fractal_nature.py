@@ -82,6 +82,8 @@ TREES = {
     "birch": ("Wood_Birch_Trunk", "Plant_Leaves_Birch"),
     "beech": ("Wood_Beech_Trunk", "Plant_Leaves_Beech"),
     "maple": ("Wood_Maple_Trunk", "Plant_Leaves_Maple"),
+    "autumn": ("Wood_Maple_Trunk", "Plant_Leaves_Autumn"),
+    "amber": ("Wood_Amber_Trunk", "Plant_Leaves_Amber"),
     "fir": ("Wood_Fir_Trunk", "Plant_Leaves_Fir"),
     "fir_snow": ("Wood_Fir_Trunk", "Plant_Leaves_Fir_Snow"),
     "cedar": ("Wood_Cedar_Trunk", "Plant_Leaves_Cedar"),
@@ -533,8 +535,10 @@ def nature_color(name):
         return next((c for k, c in _FLOWER_COLORS.items() if k in name), (230, 230, 120))
     if name.startswith("Plant_Leaves"):
         return {"Wisteria": (200, 140, 230), "Azure": (90, 150, 230), "Burnt": (60, 50, 45), "Crystal": (150, 230, 240),
-                "Fir": (40, 100, 40), "Cedar": (40, 100, 40), "Sallow": (110, 140, 60), "Windwillow": (120, 170, 90)}.get(
-            next((k for k in ("Wisteria", "Azure", "Burnt", "Crystal", "Fir", "Cedar", "Sallow", "Windwillow") if k in name), ""),
+                "Fir": (40, 100, 40), "Cedar": (40, 100, 40), "Sallow": (110, 140, 60), "Windwillow": (120, 170, 90),
+                "Autumn": (200, 84, 40), "Maple": (186, 62, 36), "Amber": (226, 150, 52)}.get(
+            next((k for k in ("Wisteria", "Azure", "Burnt", "Crystal", "Fir", "Cedar", "Sallow", "Windwillow", "Autumn",
+                              "Maple", "Amber") if k in name), ""),
             (60, 130, 50))
     if "Snow" in name:
         return (236, 242, 248)

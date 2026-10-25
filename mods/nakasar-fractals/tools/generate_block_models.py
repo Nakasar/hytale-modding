@@ -505,6 +505,70 @@ def console():
     return p, fb.anim(60, {"Button": {"shapeStretch": [(0, (1, 1, 1)), (30, (1.1, 1.6, 1.1)), (60, (1, 1, 1))]}})
 
 
+def holo(color, alpha=105):
+    """Panneau holographique asura : verre cyan très clair, cadre lumineux, alvéoles et lignes de données."""
+    def paint(rng, w, h, face):
+        img = fb.glass(color, alpha)(rng, w, h, face)
+        px = img.load()
+        light = fb.mix(color, (255, 255, 255), 0.55)
+        for y in range(h):
+            for x in range(w):
+                hexa = (x // 3 + (y // 4) % 2) % 3 == 0 and y % 4 == 0
+                data = y % 5 == 2 and rng.random() < 0.55 and 2 < x < w - 3
+                if hexa or data:
+                    px[x, y] = light + (min(255, alpha + 90),)
+        return img
+    return paint
+
+
+def asura_hologram():
+    """Console asura de l'Observatoire de GW2 : gros socle de bronze sombre aux arêtes vives, pupitre incliné aux
+    touches cyan, projecteur et trois panneaux holographiques qui flottent au-dessus en se balançant."""
+    bronze = fb.metal((92, 70, 52))
+    dark = fb.metal((54, 46, 44), False)
+    top_rot = (-28, 0, 0)
+    top = (0, 19, 4)
+    cyan = (110, 220, 255)
+    p = [
+        part("Foot", (0, 2, 0), (30, 4, 26), dark),
+        part("Body", (0, 11, -3), (24, 14, 18), bronze),
+        part("Body_Trim", (0, 17.5, -3), (25, 1.5, 19), fb.metal(BRASS, False)),
+        part("Desk", top, (28, 3, 14), bronze, rot=top_rot),
+        part("Keys", fb.tilt(top, top_rot, (-5, 1.75, 0)), (12, 0.5, 8), glow(cyan), glow=True, rot=top_rot),
+        part("Dial", fb.tilt(top, top_rot, (8, 2, 0)), (6, 1, 6), glow((120, 255, 200)), glow=True, rot=top_rot),
+        part("Side_Light_L", (-12.25, 11, -3), (0.5, 8, 3), glow(cyan), glow=True),
+        part("Side_Light_R", (12.25, 11, -3), (0.5, 8, 3), glow(cyan), glow=True),
+        part("Mast", (0, 25, -9), (4, 12, 4), dark),
+        part("Projector", (0, 32, -9), (8, 3, 8), fb.metal(BRASS)),
+        part("Lens", (0, 34, -9), (4, 1.5, 4), glow(cyan), glow=True),
+        part("Holo_Main", (0, 48, -9), (30, 20, 0.5), holo(cyan), glow=True, pivot=(0, 48, -9)),
+        part("Holo_Left", (-17, 58, -6), (12, 14, 0.5), holo(cyan), glow=True, rot=(0, 25, 0)),
+        part("Holo_Right", (17, 56, -6), (12, 16, 0.5), holo((150, 230, 255)), glow=True, rot=(0, -25, 0)),
+        part("Holo_Top", (0, 66, -8), (14, 8, 0.5), holo(cyan, 90), glow=True, pivot=(0, 66, -8)),
+    ]
+    a = fb.anim(160, {
+        "Holo_Main": {"position": [(0, (0, 0, 0)), (80, (0, 1.2, 0)), (160, (0, 0, 0))]},
+        "Holo_Left": {"position": [(0, (0, 1, 0)), (80, (0, -0.5, 0)), (160, (0, 1, 0))]},
+        "Holo_Right": {"position": [(0, (0, -0.5, 0)), (80, (0, 1, 0)), (160, (0, -0.5, 0))]},
+        "Holo_Top": {"position": [(0, (0, 0, 0)), (40, (0, 1.5, 0)), (120, (0, -0.5, 0)), (160, (0, 0, 0))]},
+    })
+    return p, a
+
+
+def light_spring():
+    """Source d'une cascade de lumière, au fond d'un bassin : anneau de laiton, cristal bleu qui tourne lentement
+    (la cascade elle-même est la particule Nakasar_Fractal_Light_Fall)."""
+    c = glow((140, 210, 255))
+    p = [
+        part("Ring", (0, 1.5, 0), (26, 3, 26), fb.metal(GOLD, False)),
+        part("Plate", (0, 2.5, 0), (20, 1, 20), fb.smooth_stone((70, 110, 150))),
+        part("Crystal", (0, 9, 0), (7, 11, 7), c, glow=True, rot=(0, 45, 0)),
+        part("Crystal_Tip", (0, 16, 0), (4, 4, 4), c, glow=True, rot=(0, 45, 0)),
+    ]
+    rise = bob(1.5, 160)
+    return p, fb.anim(160, {"Crystal": {"position": rise}, "Crystal_Tip": {"position": rise}})
+
+
 def fan():
     """Ventilateur mural : cadre carré, grille, hélice à quatre pales qui tourne."""
     frame = fb.metal(fb.shade(ASURA, 0.85))
@@ -767,6 +831,7 @@ CUBES = {
     "Seal_Stone": (fb.stone((58, 44, 80), (8, 6)), fb.smooth_stone((70, 54, 96)), ((196, 120, 255), "eye"), 255),
     "Mist_Barrier": (fb.mist((70, 46, 130), (210, 180, 255)), fb.mist((70, 46, 130), (210, 180, 255)), None, 255),
     "Glimmer": (fb.glass((255, 226, 120), 150), fb.glass((255, 236, 150), 150), None, 150),
+    "Gate_Veil": (fb.mist((96, 40, 160), (240, 214, 255), 175), fb.mist((96, 40, 160), (240, 214, 255), 175), None, 175),
 }
 
 
@@ -829,6 +894,8 @@ BLOCKS = {
     "Frost_Brazier": (lambda: frost_brazier(True), {"particles": fires(0.7, 0.85), "extra": FIRE_SOUND}),
     "Frost_Brazier_Out": (lambda: frost_brazier(False), {}),
     "Firewood_Pile": (firewood_pile, {"orient": "open"}),
+    "Asura_Console": (asura_hologram, {"particles": motes(1.4, "Dust_Sparkles_Fine"), "orient": "open"}),
+    "Light_Spring": (light_spring, {"particles": [{"SystemId": "Nakasar_Fractal_Light_Fall", "PositionOffset": {"Y": 0.5}}]}),
     "Torch_Rack": (torch_rack, {"orient": "wall", "particles": [
         {"SystemId": "Torch_Fire", "Scale": 0.45, "TargetNodeName": f"Flame_{k}"} for k in (1, 2, 3)]}),
 }

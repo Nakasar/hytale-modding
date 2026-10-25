@@ -8,9 +8,12 @@ portail, l'instance de l'Observatoire des fractales et son île (la Falaise vien
   vanilla (recette dans un fichier à part : un id inconnu ne retire que la recette, pas l'objet) ;
 - le type de portail et l'instance de l'Observatoire : monde vide (comme Deepworks), ciel des Brumes figé, ni pose
   ni casse de blocs, aucune perte d'objets à la mort ;
-- l'île de l'Observatoire, un prefab posé à hauteur fixe dans le vide : parvis d'arrivée et portail de retour au sud,
-  l'Astrolabe au centre (console de sélection), le cercle d'harmonisation autour (quatre résonateurs), les
-  distributeurs de noyaux et de diapasons à l'entrée du cercle, le golem d'essai et son pupitre à l'ouest, le registre des fractales à l'est ;
+- l'Observatoire, un prefab posé à hauteur fixe dans le vide, à la manière de l'Observatoire des Brumes de Guild Wars 2
+  (captures de Kevin, 25 octobre 2026 ; formes dans tools/observatory_scenery.py) : un plateau de roche moussue aux
+  falaises sombres, l'Astrolabe au centre (console de sélection) dans un bassin de lumière, le cercle d'harmonisation
+  autour (quatre résonateurs), les distributeurs de noyaux et de diapasons à l'entrée du cercle, la porte asura au sud
+  (voile et portail de retour, point d'arrivée devant), l'île asura de l'Archiviste à l'est et l'île du golem d'essai à
+  l'ouest, reliées par des ponts de roche courbes ; arbres d'automne, tours gothiques en ruine et aiguilles au loin ;
 - les blocs du décor (textures et icônes dessinées ici), leurs interactions, le golem d'essai, les langues ;
 - les objets de sélection : un noyau par fractale, un diapason par niveau (1 à 100), et les deux boutiques de troc
   gratuites des distributeurs ;
@@ -31,6 +34,7 @@ from PIL import Image, ImageDraw
 import fractal_models as fm
 import fractal_nature as fn
 import generate_block_models as block_models
+import observatory_scenery as sc
 
 MOD = Path(__file__).resolve().parent.parent
 PACK = MOD / "src" / "main" / "resources"
@@ -59,21 +63,35 @@ GOLEM = "Nakasar_Fractal_Trial_Golem"
 KEY_INPUTS = [("Ingredient_Rune_Shard", 4), ("Ingredient_Voidheart", 1)]
 
 GROUND_Y = 100
-ISLAND_RADIUS = 30
+# Disposition à la manière de l'Observatoire des Brumes de GW2 (Kevin, 25 octobre 2026) : un plateau rocheux au centre
+# (Astrolabe, cercle d'harmonisation en bassin), la porte asura au sud, l'île asura de l'Archiviste à l'est et l'île
+# d'essai à l'ouest, reliées au plateau par des ponts de roche courbes ; ruines et aiguilles dans le lointain.
+ISLAND_RADIUS = 22            # rayon moyen du plateau de l'Astrolabe
 ASTROLABE_RADIUS = 3          # socle de l'Astrolabe
 CIRCLE_INNER, CIRCLE_OUTER = 5, 8   # cercle d'harmonisation (dalles lumineuses)
-ARRIVAL = (0, GROUND_Y, 24)   # point d'apparition, sur le parvis au sud
-RETURN_PORTAL = (0, 0, 28)    # portail de retour (prefab), derrière le point d'apparition
-GOLEM_SPOT = (-19, GROUND_Y, 9)
-TRIAL_PANEL = (-15, 0, 7)
-TRIAL_CAGE = (-24, 0, 14)     # cage d'essai (bloc Nakasar_Fractal_Cage_Cell)
-REGISTRY = (16, 0, 8)
-# Coin de l'Archiviste (est, étape 3) : comptoir devant lui, autel des infusions et creuset des Brumes à côté.
-ARCHIVIST_SPOT = (18, GROUND_Y, 11)
-COUNTER = (16, 0, 11)
-DAILY_BOARD = (16, 0, 5)                # tableau des fractales du jour (étape 9), au nord du Registre
-ALTAR_SPOT = (13, 0, 13)
-FORGE_SPOT = (15, 0, 15)
+POOL_OUTER = CIRCLE_INNER - 0.5     # bassin de lumière entre le socle et le cercle
+BAND_OUTER = 10.5                   # couronne de pierre autour du cercle
+GATE_Z, GATE_CY = 31, 5.5     # porte asura : plan du voile (z) et centre de l'anneau (hauteur)
+GATE_INNER, GATE_OUTER = 6, 8.6
+ARRIVAL = (0, GROUND_Y, 23)   # point d'apparition, sur le parvis de la porte, tourné vers le cercle
+RETURN_PORTAL = (0, 0, GATE_Z)  # portail de retour vanilla, au pied du voile de la porte
+# Île asura (est) : l'Archiviste derrière son comptoir, autel des infusions, creuset, registre, consoles holographiques.
+LAB_CENTER, LAB_RADIUS = (46, 1), 12
+ARCHIVIST_SPOT = (49, GROUND_Y, 1)
+COUNTER = (47, 0, 1)
+REGISTRY = (44, 0, -6)
+DAILY_BOARD = (41, 0, -5)               # tableau des fractales du jour (étape 9), à côté du Registre
+ALTAR_SPOT = (43, 0, 8)
+FORGE_SPOT = (46, 0, 9)
+HOLO_CONSOLES = [(52, 0, -4), (52, 0, 6), (6, 0, 25), (-6, 0, 25)]
+# Île d'essai (ouest) : golem, pupitre, cage.
+TRIAL_CENTER, TRIAL_RADIUS = (-44, 9), 11
+GOLEM_SPOT = (-45, GROUND_Y, 8)
+TRIAL_PANEL = (-39, 0, 6)
+TRIAL_CAGE = (-50, 0, 14)     # cage d'essai (bloc Nakasar_Fractal_Cage_Cell)
+# Ponts de roche (Bézier : départ, point de contrôle, arrivée), du plateau vers chaque île.
+BRIDGES = [((17, 1), (27, -9), (37, 0)), ((-17, 5), (-26, 17), (-36, 9))]
+BRIDGE_WIDTH = 5
 CAGE_CELL = "Nakasar_Fractal_Cage_Cell"
 
 # Les fractales (GDD) : id (FractalCatalog), nom français, nom anglais, couleur de leur noyau. Une nouvelle fractale ne
@@ -105,13 +123,13 @@ FLAVOR = {
 
 # Pierres du décor (ids vanilla de tools/vanilla-block-ids-0.7.2.txt).
 FLOOR = ["Rock_Marble_Brick_Smooth", "Rock_Marble_Brick_Smooth", "Rock_Marble_Brick"]
+# Dalles des allées : pierre usée et moussue, comme les chemins de l'Observatoire de GW2.
+PATH = ["Rock_Stone_Brick_Smooth", "Rock_Stone_Brick", "Rock_Stone_Brick_Mossy", "Rock_Stone_Cobble_Mossy"]
 TRIM = "Rock_Gold_Brick_Smooth"
-EDGE = "Rock_Quartzite_Brick"
-EDGE_TOP = "Rock_Quartzite_Brick_Half"
-POST_BASE, POST = "Rock_Quartzite_Brick_Pillar_Base", "Rock_Quartzite_Brick_Pillar_Middle"
-LANTERN = "Furniture_Temple_Light_Lantern"
-UNDERSIDE = ["Rock_Stone", "Rock_Slate", "Rock_Marble", "Rock_Shale"]
 MIST_CRYSTALS = ["Rock_Crystal_Blue_Small", "Rock_Crystal_Purple_Small", "Rock_Crystal_White_Small"]
+POOL_FLOOR = "Rock_Aqua_Brick_Smooth"
+WATER = "Water_Source"
+GATE_STONE, GATE_TOOTH, GATE_INSET = "Rock_Shale_Brick_Smooth", "Rock_Shale_Brick_Ornate", "Rock_Crystal_Purple_Block"
 AIR = "Empty"
 
 # Blocs du mod.
@@ -131,6 +149,15 @@ FORGE = "Nakasar_Fractal_Mist_Forge"
 PORTAL = "Nakasar_Fractal_Mists_Portal"
 PORTAL_INPUTS = [(KEY, 4), ("Nakasar_Fractal_Mist_Shard", 50)]
 PORTAL_HITBOX = SERVER / "Item/Block/Hitboxes/Nakasar/Fractals" / f"{PORTAL}.json"
+# Décor GW2 : voile violet de la porte asura (le traverser ramène chez soi, comme Portal_Return), consoles asura à
+# hologrammes, sources des cascades de lumière (Nakasar_Fractal_Light_Fall) dans les bassins.
+GATE_VEIL = "Nakasar_Fractal_Gate_Veil"
+HOLO_CONSOLE = "Nakasar_Fractal_Asura_Console"
+LIGHT_SPRING = "Nakasar_Fractal_Light_Spring"
+LIGHT_FALL = "Nakasar_Fractal_Light_Fall"
+OBS_WEATHER = "Nakasar_Fractal_Weather_Observatory"
+OBS_TINT = "#7f9a46"          # herbe et mousse un peu dorées (la teinte du biome colore l'herbe)
+PARTICLES = SERVER / "Particles/Nakasar/Fractals/Observatory"
 REWARD_CHEST = "Nakasar_Fractal_Reward_Chest"
 COUNTER_BLOCK = "Nakasar_Fractal_Archivist_Counter"
 PROGRESS_LANG = "nakasar_fractals_progress"   # langue des objets de tools/generate_progression.py
@@ -152,8 +179,8 @@ LEVEL_RANKS = [("Initiate", (150, 96, 56), (236, 180, 120), (120, 190, 255)),
                ("Master", (96, 60, 150), (210, 170, 255), (255, 110, 200))]
 CONSOLE_SPOT = (0, 1, ASTROLABE_RADIUS)    # sur le socle de l'Astrolabe, côté sud
 RESONATORS = [(0, 0, CIRCLE_INNER - 1), (CIRCLE_INNER - 1, 0, 0), (0, 0, 1 - CIRCLE_INNER), (1 - CIRCLE_INNER, 0, 0)]
-CORE_DISTRIBUTOR_SPOT = (-3, 0, CIRCLE_OUTER + 3)   # de part et d'autre du chemin d'arrivée
-LEVEL_DISTRIBUTOR_SPOT = (3, 0, CIRCLE_OUTER + 3)
+CORE_DISTRIBUTOR_SPOT = (-3, 0, CIRCLE_OUTER + 5)   # de part et d'autre du chemin d'arrivée
+LEVEL_DISTRIBUTOR_SPOT = (3, 0, CIRCLE_OUTER + 5)
 
 
 def core_item(fid):
@@ -265,47 +292,59 @@ def pick(options, x, z):
     return options[min(len(options) - 1, int((n + 1) / 2 * len(options)))]
 
 
-def island(p, radius, depth):
-    """Disque dallé de `radius` blocs (dessus en y = -1), dessous en cône de `depth` blocs, garde-corps au bord."""
-    for x in range(-radius - 1, radius + 2):
-        for z in range(-radius - 1, radius + 2):
-            d = math.hypot(x, z)
-            if d > radius + 0.5:
-                continue
-            p.set(x, -1, z, pick(FLOOR, x, z))
-            # Dessous : se resserre vers le bas, irrégulier, comme les îles des Brumes de GW2.
-            shape = 0.7 + 0.6 * (fn.fbm2(x, z, 5, 2, 3) + 1) / 2
-            bottom = -2 - int(depth * (1 - (d / (radius + 0.5)) ** 1.6) * shape)
-            for y in range(bottom, -1):
-                p.set(x, y, z, fn.DEEP[int((y + 3 * fn.vnoise2(x, z, 11, 4)) // 3) % len(fn.DEEP)])
-            if d > radius - 4 and fn.hash01(x, bottom, z, 5) < 0.25:
-                for k in range(1 + int(fn.hash01(z, x, 6, 6) * 5)):
-                    p.set(x, bottom - 1 - k, z, fn.HANGING[k % 2])
-    # Garde-corps : muret de 1,5 bloc, poteaux à lanterne tous les 30 degrés.
-    posts = {heading_to_xz(h, radius) for h in range(0, 360, 30)}
-    for x in range(-radius - 1, radius + 2):
-        for z in range(-radius - 1, radius + 2):
-            d = math.hypot(x, z)
-            if radius - 0.5 < d <= radius + 0.5:
-                if (x, z) in posts:
-                    p.set(x, 0, z, POST_BASE)
-                    p.set(x, 1, z, POST)
-                    p.set(x, 2, z, LANTERN)
-                else:
-                    p.set(x, 0, z, EDGE)
-                    p.set(x, 1, z, EDGE_TOP)
+def disc_cells(cx, cz, r):
+    n = int(r) + 1
+    return {(x, z) for x in range(cx - n, cx + n + 1) for z in range(cz - n, cz + n + 1)
+            if math.hypot(x - cx, z - cz) <= r}
+
+
+def pool(p, cells, springs=()):
+    """Bassin de lumière : fond de pierre bleue en y = -2, eau en y = -1, sources de lumière (Light_Spring) au fond."""
+    for x, z in cells:
+        p.set(x, -2, z, POOL_FLOOR)
+        p.fluid(x, -1, z, WATER)
+    for x, z in springs:
+        p.set(x, -2, z, LIGHT_SPRING)
+
+
+def plateau_layout():
+    """Empreinte du plateau, des deux îles et des ponts : rend (tops, along) où `along[(x, z)]` (0 au milieu d'un
+    pont, 1 à ses bouts) creuse l'arche sous les ponts."""
+    tops = sc.blob_footprint([(0, 0, ISLAND_RADIUS - 1), (0, 22, 12), (-4, -19, 10), (11, -15, 8), (-14, -9, 8),
+                              (15, 11, 7)], seed=301, wobble=0.18)
+    # le cercle, l'allée et le parvis de la porte restent sur le plateau quoi que dise le bruit
+    for cell in disc_cells(0, 0, BAND_OUTER + 2) | disc_cells(0, GATE_Z - 3, GATE_OUTER + 3):
+        tops[cell] = -1
+    for (cx, cz), r, seed in ((LAB_CENTER, LAB_RADIUS, 311), (TRIAL_CENTER, TRIAL_RADIUS, 321)):
+        tops.update(sc.blob_footprint([(cx, cz, r), (cx + 3, cz - 4, r - 4)], seed=seed, wobble=0.2))
+    along = {}
+    for k, (a, c, b) in enumerate(BRIDGES):
+        bt, ba = sc.bridge_footprint(a, c, b, BRIDGE_WIDTH, seed=331 + k)
+        for cell, t in ba.items():
+            if cell not in tops:
+                along[cell] = t
+        for cell in bt:
+            tops.setdefault(cell, -1)
+    return tops, along
 
 
 def observatory_prefab():
     p = Prefab()
-    island(p, ISLAND_RADIUS, 22)
-    # Anneau d'or du cercle d'harmonisation et dalles lumineuses (couleur positive : bleu des Brumes).
-    for x in range(-CIRCLE_OUTER - 1, CIRCLE_OUTER + 2):
-        for z in range(-CIRCLE_OUTER - 1, CIRCLE_OUTER + 2):
-            d = math.hypot(x, z)
-            if CIRCLE_INNER - 0.5 <= d < CIRCLE_OUTER + 0.5:
-                edge = d < CIRCLE_INNER + 0.5 or d >= CIRCLE_OUTER - 0.5
-                p.set(x, -1, z, TRIM if edge else HARMONY)
+    tops, along = plateau_layout()
+    # --- cœur : Astrolabe, bassin de lumière, cercle d'harmonisation, couronne de pierre ---
+    for x, z in disc_cells(0, 0, BAND_OUTER):
+        d = math.hypot(x, z)
+        if d <= ASTROLABE_RADIUS + 0.3:
+            p.set(x, -1, z, "Rock_Gold_Brick_Smooth")
+        elif d < POOL_OUTER:
+            pass                                    # bassin, plus bas
+        elif d < CIRCLE_OUTER + 0.5:
+            edge = d < CIRCLE_INNER + 0.5 or d >= CIRCLE_OUTER - 0.5
+            p.set(x, -1, z, TRIM if edge else HARMONY)
+        else:
+            p.set(x, -1, z, TRIM if d > BAND_OUTER - 0.8 else pick(FLOOR, x, z))
+    inner_pool = {(x, z) for x, z in disc_cells(0, 0, POOL_OUTER) if math.hypot(x, z) > ASTROLABE_RADIUS + 0.3}
+    pool(p, inner_pool, springs=[(3, 3), (-3, 3), (3, -3), (-3, -3)])
     # Astrolabe : socle rond, anneaux armillaires (blocs lumineux) et cadran au sommet du socle, côté sud.
     for x in range(-ASTROLABE_RADIUS, ASTROLABE_RADIUS + 1):
         for z in range(-ASTROLABE_RADIUS, ASTROLABE_RADIUS + 1):
@@ -319,75 +358,125 @@ def observatory_prefab():
         p.set(k, 5 + round(math.sqrt(max(0, 4 - k * k))), 0, ASTROLABE_RING)
         p.set(k, 5 - round(math.sqrt(max(0, 4 - k * k))), 0, ASTROLABE_RING)
     p.set(0, 5, 0, "Rock_Crystal_White_Block")
-    # Sélection : console sur le socle, quatre résonateurs au bord intérieur du cercle (le meneur lance depuis le
-    # cercle), les deux distributeurs à l'entrée du cercle, de part et d'autre du chemin d'arrivée.
+    # Sélection : console sur le socle, quatre résonateurs sur leurs piédestaux dans le bassin (bord intérieur du
+    # cercle : le meneur lance depuis le cercle), les deux distributeurs à l'entrée du cercle, de part et d'autre de
+    # l'allée qui vient de la porte.
     p.set(*CONSOLE_SPOT, CONSOLE)
-    for spot in RESONATORS:
-        p.set(*spot, RESONATOR)
+    for x, y, z in RESONATORS:
+        p.set(x, -1, z, "Rock_Gold_Brick_Ornate")
+        p.set(x, -2, z, "Rock_Gold_Brick")
+        p.set(x, y, z, RESONATOR)
+    paved = set(disc_cells(0, 0, BAND_OUTER))
+    # --- allées courbes : vers la porte (sud), les ponts (est, ouest) et le belvédère du grand arbre (nord) ---
+    walks = [[(0, 10), (0.5, 15), (-1.5, 19), (0, 22)], [(9, -1), (13, -2), (17, 1)], [(-9, 1), (-13, 4), (-17, 5)],
+             [(0, -10), (-2, -14), (-5, -17)]]
+    for k, line in enumerate(walks):
+        for cell in sc.path_cells(sc.smooth_line(line), 3.2, seed=341 + k):
+            if cell not in paved and cell in tops:
+                p.set(cell[0], -1, cell[1], pick(PATH, *cell))
+                paved.add(cell)
     for (x, y, z), block, crown in ((CORE_DISTRIBUTOR_SPOT, CORE_DISTRIBUTOR, "Rock_Crystal_Purple_Block"),
                                     (LEVEL_DISTRIBUTOR_SPOT, LEVEL_DISTRIBUTOR, "Rock_Crystal_Blue_Block")):
         for dx in (-1, 0, 1):
             for dz in (-1, 0, 1):
                 p.set(x + dx, -1, z + dz, TRIM if dx == 0 or dz == 0 else "Rock_Gold_Brick_Ornate")
+                paved.add((x + dx, z + dz))
         p.set(x, y, z, block)
         p.set(x, y + 1, z, crown)
-    # Parvis d'arrivée au sud : chemin de dalles d'or vers le cercle, portail de retour derrière le point d'apparition.
-    for z in range(CIRCLE_OUTER + 1, ISLAND_RADIUS):
-        for x in (-1, 0, 1):
-            p.set(x, -1, z, TRIM if x == 0 else "Rock_Marble_Brick_Ornate")
+    # --- bassins de lumière latéraux (comme les vasques au bord du plateau de GW2) ---
+    for cx, cz in ((13, -8), (-13, -7)):
+        cells = {(x, z) for x in range(cx - 3, cx + 4) for z in range(cz - 2, cz + 3)}
+        for x, z in cells:
+            if abs(x - cx) == 3 or abs(z - cz) == 2:
+                p.set(x, -1, z, TRIM)
+                p.set(x, -2, z, POOL_FLOOR)
+        pool(p, {(x, z) for x, z in cells if abs(x - cx) < 3 and abs(z - cz) < 2}, springs=[(cx, cz)])
+        paved |= cells
+    # --- porte asura (sud) : parvis en demi-lune, anneau, voile, portail de retour vanilla au pied du voile ---
+    for x, z in disc_cells(0, GATE_Z - 1, GATE_OUTER + 1):
+        if (x, z) not in paved:
+            d = math.hypot(x, z - GATE_Z + 1)
+            p.set(x, -1, z, TRIM if GATE_OUTER - 0.3 < d else pick(FLOOR, x, z))
+            paved.add((x, z))
+    sc.asura_gate(p, 0, GATE_Z, GATE_CY, GATE_INNER, GATE_OUTER, GATE_VEIL, GATE_STONE, GATE_TOOTH, GATE_INSET)
     p.fill(-1, 0, RETURN_PORTAL[2] - 1, 1, 3, RETURN_PORTAL[2] + 1, AIR)
     p.set(*RETURN_PORTAL, "Portal_Return")
-    # Golem d'essai (ouest) : aire dallée, pupitre de démonstration, cage d'essai fermée par des cristaux.
+    assert math.hypot(ARRIVAL[0], ARRIVAL[2] - GATE_Z) >= 7, "le point d'arrivée touche le voile de la porte"
+    # --- île asura (est) : pont d'arrivée, plancher rond, Archiviste et ses blocs, consoles holographiques ---
+    lx, lz = LAB_CENTER
+    for x, z in disc_cells(lx, lz, 7.5):
+        d = math.hypot(x - lx, z - lz)
+        p.set(x, -1, z, TRIM if d > 6.8 else ("Rock_Gold_Brick_Ornate" if d < 1.5 else "Rock_Quartzite_Brick_Decorative"))
+        paved.add((x, z))
+    p.set(*COUNTER, COUNTER_BLOCK)
+    p.set(*REGISTRY, REGISTRY_BLOCK)
+    assert DAILY_BOARD not in p.blocks, "le tableau des fractales du jour tombe sur un bloc"
+    p.set(*DAILY_BOARD, DAILY_BLOCK)
+    p.set(*ALTAR_SPOT, ALTAR)
+    p.set(*FORGE_SPOT, FORGE)
+    for spot in HOLO_CONSOLES:
+        p.set(*spot, HOLO_CONSOLE)
+    # --- île d'essai (ouest) : aire du golem, pupitre, cage fermée par des cristaux ---
     gx, _, gz = GOLEM_SPOT
-    for x in range(gx - 3, gx + 4):
-        for z in range(gz - 3, gz + 4):
-            if math.hypot(x - gx, z - gz) <= 3.4:
-                p.set(x, -1, z, "Rock_Quartzite_Brick_Decorative")
+    for x, z in disc_cells(gx, gz, 4.5):
+        p.set(x, -1, z, TRIM if math.hypot(x - gx, z - gz) > 3.8 else "Rock_Quartzite_Brick_Decorative")
+        paved.add((x, z))
     p.set(*TRIAL_PANEL, TRIAL)
     cx, _, cz = TRIAL_CAGE
     for x in range(cx - 1, cx + 2):
         for z in range(cz - 1, cz + 2):
             p.set(x, -1, z, "Rock_Gold_Brick")
             p.set(x, 3, z, "Rock_Gold_Brick")
+            paved.add((x, z))
             if (x, z) != (cx, cz):
                 for y in (0, 1, 2):
                     p.set(x, y, z, "Rock_Crystal_Red_Block" if y == 1 else "Rock_Gold_Brick_Pillar_Middle")
     p.set(cx, 0, cz, CAGE_CELL)
     p.set(cx, 1, cz, AIR)
     p.set(cx, 2, cz, AIR)
-    # Registre des fractales (est) : là où se tiendra l'Archiviste.
-    p.set(*REGISTRY, REGISTRY_BLOCK)
-    assert DAILY_BOARD not in p.blocks, "le tableau des fractales du jour tombe sur un bloc"
-    p.set(*DAILY_BOARD, DAILY_BLOCK)
-    # Coin de l'Archiviste : dallage, comptoir, autel des infusions et creuset des Brumes.
-    ax, _, az = ARCHIVIST_SPOT
-    for x in range(ax - 6, ax + 2):
-        for z in range(az - 2, az + 6):
-            if math.hypot(x, z) <= ISLAND_RADIUS - 3:
-                p.set(x, -1, z, "Rock_Quartzite_Brick_Decorative")
-    p.set(*COUNTER, COUNTER_BLOCK)
-    p.set(*ALTAR_SPOT, ALTAR)
-    p.set(*FORGE_SPOT, FORGE)
-    # Cristaux de Brume semés sur le pourtour (décor).
-    for k, h in enumerate(range(15, 360, 30)):
-        x, z = heading_to_xz(h, ISLAND_RADIUS - 2)
-        if p.blocks.get((x, 0, z), (AIR,))[0] == AIR:
-            p.set(x, 0, z, MIST_CRYSTALS[k % len(MIST_CRYSTALS)])
-    gardens(p)
+    for spot in (ARRIVAL, GOLEM_SPOT, ARCHIVIST_SPOT):
+        assert (spot[0], spot[2]) in tops, f"{spot} tombe dans le vide"
+    # --- sol naturel : herbe et mousse dessus, falaise sombre et épaisse dessous, arche sous les ponts ---
+    def arch(x, z, d):
+        t = along.get((x, z))
+        return d if t is None else 2 + 9 * t ** 2
+    grass = sc.landmass(p, tops, sc.cliff_depth(tops, 9, 1.7, 40, 351, extra=arch), 351)
+    scenery(p, tops, grass, paved)
     return p
 
 
-def gardens(p):
-    """Jardins des Brumes hors du garde-corps (glycines, arbres bleus, fleurs froides, cristaux) et îles flottantes
-    tout autour, comme le décor de l'Observatoire de GW2."""
-    theme = fn.THEMES["mists"]
-    plaza = {(x, z): -1 for (x, y, z) in p.blocks if y == -1}
-    tops = fn.rim(plaza, 4, 14, seed=91)
-    cells = fn.natural_ground(p, tops, theme, seed=91, depth=(4, 1.3, 20), trees=0.05, spacing=6, flowers=0.2)
-    for x, y, z in cells:
-        if fn.hash01(x, y, z, 92) < 0.015 and fn.free(p, x, y + 1, z):
-            p.set(x, y + 1, z, MIST_CRYSTALS[int(fn.hash01(z, x, y, 93) * len(MIST_CRYSTALS))])
-    fn.scatter_islets(p, (-120, 120, -120, 120), 22, (-40, 25), (3, 11), theme, seed=95, margin=16)
+def scenery(p, tops, grass, paved):
+    """Habillage façon GW2 : grands arbres d'automne, aiguilles de roche au bord, végétation, puis le lointain (îles
+    flottantes, tours gothiques en ruine, aiguilles géantes, îlots)."""
+    keep = [(-12, 12, -12, 30), (LAB_CENTER[0] - 9, LAB_CENTER[0] + 9, LAB_CENTER[1] - 9, LAB_CENTER[1] + 11),
+            (TRIAL_CENTER[0] - 8, TRIAL_CENTER[0] + 7, TRIAL_CENTER[1] - 6, TRIAL_CENTER[1] + 8)]
+    near_paved = {(x + dx, z + dz) for x, z in paved for dx in range(-2, 3) for dz in range(-2, 3)}
+    # Grands arbres noueux : belvédère nord du plateau, bord de l'île asura, île d'essai.
+    for (x, z), h, leaves, seed in (((-6, -23), 9, "Plant_Leaves_Autumn", 361), ((19, 13), 7, "Plant_Leaves_Maple", 362),
+                                    ((LAB_CENTER[0] + 4, LAB_CENTER[1] + 11), 7, "Plant_Leaves_Amber", 363),
+                                    ((TRIAL_CENTER[0] - 5, TRIAL_CENTER[1] - 8), 7, "Plant_Leaves_Autumn", 364)):
+        assert (x, z) in tops and (x, z) not in near_paved, f"grand arbre hors de l'île ou sur une allée : {(x, z)}"
+        sc.great_tree(p, x, 0, z, h, seed, leaves=leaves)
+    # Aiguilles de roche au bord du plateau (les obélisques naturels des captures).
+    for (x, z), h, r in (((20, -11), 13, 2.2), ((-21, -2), 9, 1.8), ((-11, 24), 11, 2.0), ((25, -3), 7, 1.5)):
+        if (x, z) in tops and (x, z) not in near_paved:
+            sc.rock_spire(p, x, z, -1, h, r, seed=x * 31 + z)
+    cells = [c for c in grass if (c[0], c[2]) not in near_paved]
+    fn.dress(p, cells, sc.THEME, 371, trees=0.012, spacing=11, bushes=0.04, boulders=0.012, density=0.6, flowers=0.22,
+             keep=keep)
+    # Le lointain : grands rochers flottants, ruines gothiques, aiguilles géantes.
+    for (cx, cz), top, r, seed, tower in (((-54, -60), -6, 15, 381, (48, 4)), ((22, -80), 2, 13, 382, (56, 5)),
+                                         ((80, -30), -10, 12, 383, (40, 4)), ((92, 26), 8, 17, 384, None),
+                                         ((-84, -14), -14, 11, 385, None), ((-30, 74), -18, 13, 386, None)):
+        sc.floating_rock(p, cx, cz, top, r, seed)
+        if tower:
+            height, half = tower
+            sc.gothic_tower(p, cx, cz, top + 1, height, half, seed)
+            sc.ruined_facade(p, cx + half + 2, cx + half + 16, cz + 3, top + 1, int(height * 0.55), seed)
+    for (cx, cz), y0, h, r in (((-80, 26), -50, 80, 7), ((62, 58), -44, 62, 6), ((-40, -100), -36, 74, 6),
+                               ((100, -80), -30, 56, 5), ((50, -55), -40, 50, 4)):
+        sc.rock_spire(p, cx, cz, y0, h, r, seed=cx * 13 + cz)
+    fn.scatter_islets(p, (-140, 140, -140, 140), 24, (-38, 18), (3, 10), sc.THEME, seed=391, margin=12)
 
 
 # --- blocs, textures, icônes ------------------------------------------------------------------------
@@ -651,6 +740,88 @@ def weather():
         "MoonGlowColors": hours([(0, "#7aa0ff60"), (12, "#7aa0ff60")]),
         "WaterTints": hours([(0, "#1a2a5a"), (12, "#3a5a9a")]),
     }
+
+
+def observatory_weather():
+    """Ciel de l'Observatoire de GW2 (captures de Kevin) : après-midi doré et nuageux, brume chaude et lointaine qui
+    laisse voir les ruines et les aiguilles du fond."""
+    hours = lambda c: [{"Hour": 0, "Color": c}, {"Hour": 12, "Color": c}]
+    return {
+        "FogDistance": [-10, 300],
+        "FogColors": hours("#c8985a"),
+        "FogDensities": [{"Hour": 0, "Value": 0.3}, {"Hour": 12, "Value": 0.3}],
+        "SkyTopColors": hours("#7a6040ff"),
+        "SkyBottomColors": hours("#e8c48aff"),
+        "SkySunsetColors": hours("#f0b06080"),
+        "SunlightColors": hours("#ffe2b0"),
+        "SunColors": hours("#fff0c8"),
+        "MoonColors": hours("#e0e8ffff"),
+        "MoonGlowColors": hours("#7aa0ff60"),
+        "WaterTints": hours("#3a8ac8"),
+    }
+
+
+def gate_veil(doc):
+    """Voile de la porte asura : on le traverse (pas de collision) et le toucher ramène chez soi, comme le portail de
+    retour vanilla posé au pied du voile (même interaction racine Portal_Return, refusée les 15 premières secondes)."""
+    block = doc["BlockType"]
+    block["Material"] = "Empty"
+    block["Opacity"] = "Semitransparent"
+    block["BlockParticleSetId"] = "Crystal"
+    block["BlockSoundSetId"] = "Crystal"
+    block["Interactions"] = {"CollisionEnter": {"Interactions": ["Portal_Return"]}}
+    block["AmbientSoundEventId"] = "SFX_Portal_Neutral"
+
+
+def falling_light(life, rate, count, speed, spread, size, color0, color1, pitch=(-90, -86), blend="BlendAdd"):
+    """Particules continues (le bloc les émet en boucle) : traits de lumière qui tombent dans le bassin."""
+    return {
+        "RenderMode": blend,
+        "ParticleRotationInfluence": "Billboard",
+        "ParticleLifeSpan": {"Min": life[0], "Max": life[1]},
+        "ParticleRotateWithSpawner": False,
+        "TrailSpawnerPositionMultiplier": 1,
+        "TrailSpawnerRotationMultiplier": 1,
+        "LinearFiltering": True,
+        "Particle": {
+            "Texture": "Particles/Textures/Basic/Spark.png",
+            "ScaleRatioConstraint": "OneToOne",
+            "UVOption": "RandomFlipUV",
+            "SoftParticles": "Disable",
+            "Animation": {"0": {"Opacity": 0, "Color": color0}, "15": {"Opacity": 1}, "80": {"Opacity": 0.8},
+                          "100": {"Opacity": 0, "Color": color1}},
+            "InitialAnimationFrame": {"Opacity": 1, "Scale": {"X": {"Min": size[0], "Max": size[1]}}},
+        },
+        "Shape": "Sphere",
+        "SpawnBurst": False,
+        "EmitOffset": {"X": {"Min": 0, "Max": spread[0]}, "Y": {"Min": 0, "Max": spread[1]}, "Z": {"Min": 0, "Max": spread[0]}},
+        "InitialVelocity": {"Speed": {"Min": speed[0], "Max": speed[1]}, "Yaw": {"Min": -180, "Max": 180},
+                            "Pitch": {"Min": pitch[0], "Max": pitch[1]}},
+        "TotalParticles": {"Min": count, "Max": count},
+        "SpawnRate": {"Min": rate, "Max": rate},
+        "MaxConcurrentParticles": count,
+    }
+
+
+def particle_files():
+    """Cascade de lumière des bassins (Light_Spring) : pluie de traits bleus depuis 12 blocs de haut, colonne de
+    lueurs plus lentes, brume qui remonte de l'eau."""
+    sid = LIGHT_FALL
+    spawners = [
+        ("Streaks", falling_light((1.7, 2.1), 36, 80, (5.5, 6.5), (1.1, 0.4), (0.12, 0.26), "#f0fbff", "#4aa8ff"), 12.0),
+        ("Column", falling_light((2.5, 3.5), 14, 50, (0.6, 1.4), (0.9, 5.5), (0.35, 0.6), "#d0f0ff", "#3a80ff"), 6.5),
+        ("Mist", falling_light((1.2, 1.8), 10, 18, (0.3, 0.8), (1.4, 0.2), (0.7, 1.1), "#a8dcff", "#2a5aa0",
+                               pitch=(55, 90)), 0.6),
+    ]
+    out = {f"{sid}.particlesystem": {
+        "$Comment": "Cascade de lumière des bassins de l'Observatoire (comme celles de l'Observatoire des Brumes de GW2), "
+                    "émise en boucle par Nakasar_Fractal_Light_Spring. Généré par tools/generate_observatory.py.",
+        "Spawners": [{"SpawnerId": f"{sid}_{suffix}", "PositionOffset": {"Y": y}} for suffix, _, y in spawners],
+        "CullDistance": 110,
+    }}
+    for suffix, doc, _ in spawners:
+        out[f"{sid}_{suffix}.particlespawner"] = doc
+    return out
 
 
 def environment():
@@ -941,6 +1112,12 @@ def lang():
         f"items.{ASTROLABE_RING}.description": "Anneau armillaire de l'Astrolabe.",
         f"items.{HARMONY}.name": "Dalle d'harmonisation",
         f"items.{HARMONY}.description": "Les joueurs debout sur le cercle forment le groupe (5 au plus).",
+        f"items.{GATE_VEIL}.name": "Voile de la porte asura",
+        f"items.{GATE_VEIL}.description": "Le traverser : retour chez soi.",
+        f"items.{HOLO_CONSOLE}.name": "Console asura",
+        f"items.{HOLO_CONSOLE}.description": "Ses hologrammes suivent les fractales que l'Observatoire surveille.",
+        f"items.{LIGHT_SPRING}.name": "Source de lumière",
+        f"items.{LIGHT_SPRING}.description": "Une cascade de lumière des Brumes tombe dans le bassin.",
         f"items.{TRIAL}.name": "Pupitre du golem d'essai",
         f"items.{TRIAL}.description": "Utiliser : le golem rejoue sur vous les attaques des fractales.",
         f"items.{PORTAL}.name": "Portail des Brumes",
@@ -1040,6 +1217,12 @@ def lang():
         f"items.{ASTROLABE_RING}.description": "Armillary ring of the Astrolabe.",
         f"items.{HARMONY}.name": "Attunement Tile",
         f"items.{HARMONY}.description": "Players standing on the circle form the group (5 at most).",
+        f"items.{GATE_VEIL}.name": "Asura Gate Veil",
+        f"items.{GATE_VEIL}.description": "Walk through it: return home.",
+        f"items.{HOLO_CONSOLE}.name": "Asura Console",
+        f"items.{HOLO_CONSOLE}.description": "Its holograms follow the fractals the Observatory watches over.",
+        f"items.{LIGHT_SPRING}.name": "Light Spring",
+        f"items.{LIGHT_SPRING}.description": "A fall of Mists light pours into the pool.",
         f"items.{TRIAL}.name": "Training Golem Console",
         f"items.{TRIAL}.description": "Use: the golem replays the fractal attacks on you.",
         f"items.{PORTAL}.name": "Mists Portal",
@@ -1199,6 +1382,9 @@ def main():
         (EXIT_STONE, "Exit_Stone", stone, (190, 160, 255), "exit", "#b9f", "Nakasar_Fractal_Use_Exit"),
         (REGISTRY_BLOCK, "Registry", (90, 60, 40), (210, 190, 150), "book", None, "Nakasar_Fractal_Read_Registry"),
         (DAILY_BLOCK, "Daily_Board", (90, 60, 40), (255, 220, 110), "daily", "#fd8", "Nakasar_Fractal_Use_Daily_Board"),
+        (GATE_VEIL, "Gate_Veil", (96, 40, 160), (240, 214, 255), None, "#b8f", None),
+        (HOLO_CONSOLE, "Asura_Console", (92, 70, 52), (110, 220, 255), None, "#6cf", None),
+        (LIGHT_SPRING, "Light_Spring", (70, 110, 150), (140, 210, 255), None, "#8cf", None),
     ]
     blocks += [
         (ALTAR, "Infusion_Altar", (60, 50, 100), (200, 140, 255), "altar", "#c8f", "Nakasar_Fractal_Use_Infusion_Altar"),
@@ -1218,6 +1404,8 @@ def main():
             doc = block_item(name, tex, light, use, particle=hexcolor(accent))
             if name == ALTAR:
                 doc = portable(doc, name)
+            if name == GATE_VEIL:
+                gate_veil(doc)
         model = block_models.apply(doc, tex)
         if model:
             previews[-1] = model.resize((32, 32), Image.LANCZOS)
@@ -1241,11 +1429,16 @@ def main():
     write_json(SERVER / "PortalTypes" / f"{OBSERVATORY}.json", portal_type())
     write_json(SERVER / "GameplayConfigs" / f"{OBSERVATORY}.json", gameplay_config())
     write_json(SERVER / "Weathers" / f"{WEATHER}.json", weather())
+    write_json(SERVER / "Weathers" / f"{OBS_WEATHER}.json", observatory_weather())
+    for name, doc in particle_files().items():
+        write_json(PARTICLES / name, doc)
     write_json(SERVER / "Environments" / f"{ENVIRONMENT}.json", environment())
 
     write_json(SERVER / "Instances" / OBSERVATORY / "instance.bson",
-               instance(OBSERVATORY, "Observatoire des fractales", OBSERVATORY))
-    write_json(SERVER / "HytaleGenerator/Biomes" / f"{OBSERVATORY}.json", biome(OBSERVATORY, "Observatory"))
+               instance(OBSERVATORY, "Observatoire des fractales", OBSERVATORY, weather=OBS_WEATHER, time="16:00"))
+    obs_biome = biome(OBSERVATORY, "Observatory")
+    obs_biome["TintProvider"]["Color"] = OBS_TINT
+    write_json(SERVER / "HytaleGenerator/Biomes" / f"{OBSERVATORY}.json", obs_biome)
     write_json(SERVER / "HytaleGenerator/WorldStructures" / f"{OBSERVATORY}.json", world_structure(OBSERVATORY, ARRIVAL))
     obs = observatory_prefab()
     n = obs.write(SERVER / "Prefabs" / PREFABS / "Observatory" / "Observatory.prefab.json")
@@ -1281,7 +1474,7 @@ def plan(p, path):
             h = abs(hash(name)) % 360
             colors[name] = tuple(int(100 + 80 * math.sin(math.radians(h + k * 120))) for k in range(3))
         return colors[name]
-    r = ISLAND_RADIUS + 2
+    r = LAB_CENTER[0] + LAB_RADIUS + 4
     img = Image.new("RGB", ((2 * r + 1) * 6, (2 * r + 1) * 6), (10, 12, 30))
     d = ImageDraw.Draw(img)
     top = {}

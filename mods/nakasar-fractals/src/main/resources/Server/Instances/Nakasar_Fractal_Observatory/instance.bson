@@ -4,8 +4,8 @@
     "Type": "HytaleGenerator",
     "WorldStructure": "Nakasar_Fractal_Observatory"
   },
-  "ForcedWeather": "Nakasar_Fractal_Weather_Mists",
-  "GameTime": "0001-01-01T18:00:00Z",
+  "ForcedWeather": "Nakasar_Fractal_Weather_Observatory",
+  "GameTime": "0001-01-01T16:00:00Z",
   "IsGameTimePaused": true,
   "GameplayConfig": "Nakasar_Fractal_Observatory",
   "IsPvpEnabled": false,
@@ -15,7 +15,7 @@
     "SpawnPoint": {
       "X": 0.5,
       "Y": 100.0,
-      "Z": 24.5,
+      "Z": 23.5,
       "Pitch": 0,
       "Yaw": 0,
       "Roll": 0

@@ -1,0 +1,24 @@
+{
+  "$Comment": "Cascade de lumière des bassins de l'Observatoire (comme celles de l'Observatoire des Brumes de GW2), émise en boucle par Nakasar_Fractal_Light_Spring. Généré par tools/generate_observatory.py.",
+  "Spawners": [
+    {
+      "SpawnerId": "Nakasar_Fractal_Light_Fall_Streaks",
+      "PositionOffset": {
+        "Y": 12.0
+      }
+    },
+    {
+      "SpawnerId": "Nakasar_Fractal_Light_Fall_Column",
+      "PositionOffset": {
+        "Y": 6.5
+      }
+    },
+    {
+      "SpawnerId": "Nakasar_Fractal_Light_Fall_Mist",
+      "PositionOffset": {
+        "Y": 0.6
+      }
+    }
+  ],
+  "CullDistance": 110
+}
