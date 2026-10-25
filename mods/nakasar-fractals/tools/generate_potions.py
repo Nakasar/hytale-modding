@@ -345,11 +345,11 @@ def lang():
             fr[f"items.{item_id}.description"] = (
                 f"Boire (clic droit maintenu) : {'cinq piles' if large else 'une pile'} de {EFFECT_NAMES[kind][0]} "
                 f"pendant 1 h ; {bonus_fr}. Se cumule jusqu'à {MAX_STACKS} fois, chaque gorgée remet la durée à 1 h. "
-                "Sans effet hors des fractales. Vendue par l'Alchimiste de Dessa, à l'Observatoire.")
+                "Sans effet hors des fractales, perdue en retournant dans le monde. Vendue par l'Alchimiste de Dessa, à l'Observatoire.")
             en[f"items.{item_id}.description"] = (
                 f"Drink (hold right click): {'five stacks' if large else 'one stack'} of {EFFECT_NAMES[kind][1]} for "
                 f"1 h; {bonus_en}. Stacks up to {MAX_STACKS} times, each drink resets the duration to 1 h. No effect "
-                "outside fractals. Sold by Dessa's Alchemist, in the Observatory.")
+                "outside fractals, lost when returning to the world. Sold by Dessa's Alchemist, in the Observatory.")
         for n in range(1, MAX_STACKS + 1):
             for dormant in (False, True):
                 key = f"effects.{effect_id(kind, n, dormant)}"
@@ -361,6 +361,9 @@ def lang():
     # Messages Java (potion.DrinkMistPotionInteraction).
     fr["drink"] = "{name} : {stacks} pile(s) sur {max}, pendant 1 h. Actif dans les fractales seulement."
     en["drink"] = "{name}: {stacks} of {max} stack(s), for 1 h. Active in fractals only."
+    # Hors des fractales et de l'Observatoire, la potion serait aussitôt retirée (Kevin, 25 octobre 2026).
+    fr["refused"] = "Les potions des Brumes ne se boivent que dans les fractales ou à l'Observatoire."
+    en["refused"] = "Mist potions can only be drunk in fractals or in the Observatory."
     return fr, en
 
 

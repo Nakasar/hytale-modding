@@ -1,5 +1,5 @@
 {
-  "$Comment": "Coffre des fractales du jour : éclats de Brume, une infusion, un matériau, une petite chance d'un cosmétique de saison.",
+  "$Comment": "Coffre des fractales du jour : éclats de Brume, une infusion, un matériau, une potion des Brumes de base au hasard, une petite chance d'un cosmétique de saison.",
   "Container": {
     "Type": "Multiple",
     "Containers": [
@@ -62,6 +62,38 @@
               "ItemId": "Ingredient_Bar_Gold",
               "QuantityMin": 1,
               "QuantityMax": 2
+            }
+          }
+        ]
+      },
+      {
+        "Type": "Choice",
+        "Containers": [
+          {
+            "Type": "Single",
+            "Weight": 1,
+            "Item": {
+              "ItemId": "Nakasar_Fractal_Mist_Potion_Offensive",
+              "QuantityMin": 1,
+              "QuantityMax": 1
+            }
+          },
+          {
+            "Type": "Single",
+            "Weight": 1,
+            "Item": {
+              "ItemId": "Nakasar_Fractal_Mist_Potion_Mobility",
+              "QuantityMin": 1,
+              "QuantityMax": 1
+            }
+          },
+          {
+            "Type": "Single",
+            "Weight": 1,
+            "Item": {
+              "ItemId": "Nakasar_Fractal_Mist_Potion_Defensive",
+              "QuantityMin": 1,
+              "QuantityMax": 1
             }
           }
         ]

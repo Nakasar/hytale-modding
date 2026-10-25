@@ -2,10 +2,13 @@ package dev.nakasar.hytale.fractals.solidocean;
 
 import com.hypixel.hytale.component.Ref;
 import com.hypixel.hytale.component.Store;
+import com.hypixel.hytale.math.vector.Rotation3f;
 import com.hypixel.hytale.protocol.packets.interface_.EventTitleStyle;
 import com.hypixel.hytale.server.core.Message;
 import com.hypixel.hytale.server.core.entity.Frozen;
 import com.hypixel.hytale.server.core.modules.entity.component.Invulnerable;
+import com.hypixel.hytale.server.core.modules.entity.component.TransformComponent;
+import com.hypixel.hytale.server.core.modules.entity.teleport.Teleport;
 import com.hypixel.hytale.server.core.modules.entity.damage.Damage;
 import com.hypixel.hytale.server.core.modules.entitystats.EntityStatMap;
 import com.hypixel.hytale.server.core.modules.entitystats.EntityStatValue;
@@ -49,7 +52,8 @@ import java.util.concurrent.ConcurrentHashMap;
  * Le rayon : un joueur est visé ({@value #TARGET_SECONDS} s, effet {@value #TARGETED} dans la barre d'état, lueur
  * orange, crâne rouge au-dessus de lui). Au bout du compte, s'il tient un cristal, le cristal est chargé ; sinon il est
  * tué. Il n'y a pas de zone au sol : seul le joueur visé est touché. Sous {@value #LAST_BEAM_AT} de vie, un dernier
- * rayon vise tout le monde. Personne de vivant dans l'arène pendant {@value #RESET_SECONDS} s : tout recommence.
+ * rayon vise tout le monde, puis l'Abîme meurt. Les tentacules ne se laissent ni pousser ni tirer. Personne de vivant
+ * dans l'arène pendant {@value #RESET_SECONDS} s : tout recommence.
  */
 final class JadeMaw {
 
@@ -65,6 +69,8 @@ final class JadeMaw {
     static final float LAST_TARGET_SECONDS = 7f;
     static final float RESET_SECONDS = 20f;
     static final float TENTACLE_RESPAWN = 30f;
+    /** Écart toléré (blocs) avant qu'un tentacule déplacé soit remis à sa place. */
+    static final double ANCHOR_SLACK = 0.25;
     static final float COLOSSUS_EVERY = 15f;
     static final int COLOSSUS_POOL = 10;
     static final int MAX_TENTACLES = Math.max(SolidOceanLayout.TENTACLES.length,
@@ -161,6 +167,7 @@ final class JadeMaw {
             regrowTentacles(world, store, dt);
             beam(world, store, st, inArena, dt);
         }
+        anchorTentacles(store);
         sync(store);
         if (health <= 0f) {
             return win(world, store, players);
@@ -338,6 +345,28 @@ final class JadeMaw {
         }
     }
 
+    /**
+     * Les tentacules sortent du jade et n'en bougent pas (Kevin, 25 octobre 2026) : poussés, tirés ou projetés (runes,
+     * capacités, bousculade), ils sont remis à leur place aussitôt, avec leur orientation. {@code KnockbackScale} 0 du
+     * rôle ne couvre que le recul des coups ; {@link Frozen} couperait leur comportement (balayage, frappe).
+     */
+    private void anchorTentacles(Store<EntityStore> store) {
+        for (int i = 0; i < tentacles.length && i < spots.length; i++) {
+            Ref<EntityStore> ref = tentacles[i];
+            TransformComponent transform = ref == null || !Spawns.alive(store, ref) ? null
+                    : store.getComponent(ref, TransformComponent.getComponentType());
+            if (transform == null || store.getComponent(ref, Teleport.getComponentType()) != null) {
+                continue;
+            }
+            Vector3d home = Spawns.point(spots[i]);
+            Vector3d at = transform.getPosition();
+            if (Telegraphs.horizontal(at, home) > ANCHOR_SLACK || Math.abs(at.y() - home.y()) > 1.0) {
+                store.putComponent(ref, Teleport.getComponentType(),
+                        new Teleport(home, new Rotation3f(0f, transform.getRotation().yaw(), 0f)));
+            }
+        }
+    }
+
     private void spawnTentacle(World world, Store<EntityStore> store, int index) {
         Vector3d at = Spawns.point(spots[index]);
         tentacles[index] = Spawns.spawnFoe(world, store, SolidOcean.TENTACLE, at,
@@ -474,7 +503,9 @@ final class JadeMaw {
             }
         }
         if (lastBeam) {
+            // Le dernier rayon épuise l'Abîme : il meurt aussitôt après (Kevin, 25 octobre 2026).
             lastBeamDone = true;
+            health = 0f;
         }
         beamTargets.clear();
         countdown = -1f;

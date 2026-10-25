@@ -8,10 +8,12 @@ import com.hypixel.hytale.component.ComponentType;
 import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
 import dev.nakasar.hytale.fractals.potion.MistPotions.Kind;
 
+import java.util.Arrays;
+
 /**
  * Potions des Brumes bues par un joueur, sauvegardées avec lui (id {@value #ID}) : piles et secondes restantes de
  * chaque type. Le temps ne s'écoule que quand le joueur est en jeu ({@link MistPotionSystem}), et la mort ne retire
- * rien (comme dans GW2).
+ * rien (comme dans GW2) ; le retour dans le monde, hors fractales et Observatoire, retire tout (Kevin, 25 octobre 2026).
  */
 public final class MistPotionState implements Component<EntityStore> {
 
@@ -59,6 +61,12 @@ public final class MistPotionState implements Component<EntityStore> {
         stacks[k] = Math.max(1, Math.min(MistPotions.MAX_STACKS, stacks(kind) + added));
         seconds[k] = MistPotions.DURATION;
         return stacks[k];
+    }
+
+    /** Retire toutes les piles (retour dans le monde, hors fractales et Observatoire). */
+    public void clear() {
+        Arrays.fill(stacks, 0);
+        Arrays.fill(seconds, 0f);
     }
 
     /** Fait passer `dt` secondes ; un type arrivé au bout perd toutes ses piles. */

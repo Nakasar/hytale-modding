@@ -44,7 +44,7 @@ Le boss final vaincu, le **coffre de fin** et la **pierre de retour** apparaisse
 
 ## Fractales du jour {#fractales-du-jour}
 
-Chaque jour, **3 fractales** sont tirées pour tout le serveur. La **première fois du jour** que vous en terminez une, le coffre de fin vous donne en plus un **coffre des fractales du jour** : 12 à 18 éclats de Brume, une infusion (+1 ou +2), un matériau (éclats de rune, saphir ou or) et une petite chance (1 sur 10) d'un [cosmétique de saison](cosmetiques.md). Chacune des trois compte à part : les trois le même jour donnent trois coffres.
+Chaque jour, **3 fractales** sont tirées pour tout le serveur. La **première fois du jour** que vous en terminez une, le coffre de fin vous donne en plus un **coffre des fractales du jour** : 12 à 18 éclats de Brume, une infusion (+1 ou +2), un matériau (éclats de rune, saphir ou or), une [potion des Brumes](potions.md) de base au hasard (offensive, mobilité ou défensive) et une petite chance (1 sur 10) d'un [cosmétique de saison](cosmetiques.md). Chacune des trois compte à part : les trois le même jour donnent trois coffres.
 
 Le **tableau des fractales du jour**, près de l'Archiviste, et `/fractale jour` les listent, cochées si vous avez déjà pris leur coffre aujourd'hui.
 

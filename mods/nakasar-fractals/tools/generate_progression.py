@@ -28,6 +28,7 @@ from PIL import Image, ImageDraw
 
 import fractal_models as fm
 import generate_cosmetics as gcos
+import generate_potions as gpot
 
 MOD = Path(__file__).resolve().parent.parent
 PACK = MOD / "src" / "main" / "resources"
@@ -90,10 +91,12 @@ TRADES = [(infusion(1), 1, 10), (infusion(2), 1, 25), (infusion(4), 1, 120), (KE
     [(item_id, 1, price) for item_id, price in gcos.PRICES.items()]
 DAILY_BAG = "Nakasar_Fractal_Daily_Bag"
 DAILY_TIE = (255, 220, 110)
-# Coffre des fractales du jour : éclats, une infusion sûre, un matériau, une petite chance de cosmétique.
+# Coffre des fractales du jour : éclats, une infusion sûre, un matériau, une petite chance de cosmétique, et une
+# potion des Brumes de base (une pile) au hasard (Kevin, 25 octobre 2026).
 DAILY_LOOT = ((12, 18), [(infusion(1), 3), (infusion(2), 1)],
               [("Ingredient_Rune_Shard", 1, 2, 2), ("Rock_Gem_Sapphire", 1, 1, 1), ("Ingredient_Bar_Gold", 1, 2, 1)],
-              [(c, 1) for c in gcos.PRICES] + [(None, 27)])
+              [(c, 1) for c in gcos.PRICES] + [(None, 27)],
+              [(gpot.potion(kind, False), 1) for kind, *_ in gpot.KINDS])
 
 
 # --- couleurs et modèles --------------------------------------------------------------------------
@@ -197,7 +200,7 @@ def droplist(rank):
 
 
 def daily_droplist():
-    shards, infusions, materials, cosmetics = DAILY_LOOT
+    shards, infusions, materials, cosmetics, potions = DAILY_LOOT
 
     def choice(entries):
         return {"Type": "Choice", "Containers": [
@@ -205,14 +208,15 @@ def daily_droplist():
             {"Type": "Single", "Weight": w, "Item": {"ItemId": i, "QuantityMin": 1, "QuantityMax": 1}}
             for i, w in entries]}
 
-    return {"$Comment": "Coffre des fractales du jour : éclats de Brume, une infusion, un matériau, une petite chance "
-                        "d'un cosmétique de saison.",
+    return {"$Comment": "Coffre des fractales du jour : éclats de Brume, une infusion, un matériau, une potion des "
+                        "Brumes de base au hasard, une petite chance d'un cosmétique de saison.",
             "Container": {"Type": "Multiple", "Containers": [
                 {"Type": "Single", "Item": {"ItemId": SHARD, "QuantityMin": shards[0], "QuantityMax": shards[1]}},
                 choice(infusions),
                 {"Type": "Choice", "Containers": [
                     {"Type": "Single", "Weight": w, "Item": {"ItemId": i, "QuantityMin": a, "QuantityMax": b}}
                     for i, a, b, w in materials]},
+                choice(potions),
                 choice(cosmetics)]}}
 
 
@@ -345,10 +349,10 @@ def lang():
              "End-of-fractal reward. Right click: open it (Mist Shards, materials, sometimes an infusion).")
     item(DAILY_BAG, "Coffre des fractales du jour",
          "Donné la première fois du jour que vous terminez une des trois fractales du jour. Clic droit : l'ouvrir "
-         "(éclats de Brume, une infusion, un matériau, parfois un cosmétique de saison).",
+         "(éclats de Brume, une infusion, un matériau, une potion des Brumes, parfois un cosmétique de saison).",
          "Daily Fractal Chest",
          "Given the first time each day you complete one of the three daily fractals. Right click: open it (Mist "
-         "Shards, an infusion, a material, sometimes a seasonal cosmetic).")
+         "Shards, an infusion, a material, a Mist potion, sometimes a seasonal cosmetic).")
     fr[f"effects.{AGONY}"], en[f"effects.{AGONY}"] = "Agonie", "Agony"
     fr["npc.Archivist.name"], en["npc.Archivist.name"] = "L'Archiviste", "The Archivist"
     fr["shop.Archivist.name"], en["shop.Archivist.name"] = "Archives des Brumes", "Mist Archives"
