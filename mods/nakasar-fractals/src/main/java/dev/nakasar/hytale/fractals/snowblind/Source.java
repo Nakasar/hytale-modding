@@ -71,6 +71,10 @@ final class Source {
     private boolean engaged;
     private volatile boolean dead;
     private boolean blizzard;
+    /** Un foyer a-t-il brûlé depuis l'engagement ? Le blizzard ne se lève que quand le dernier feu allumé meurt. */
+    private boolean kindled;
+    private String label;
+    private int labelKey = -1;
     private int stage;
     private float idle;
     private float pulseClock;
@@ -191,7 +195,7 @@ final class Source {
 
     // --- pas de jeu ---------------------------------------------------------------------------------------
 
-    Outcome step(World world, Store<EntityStore> store, List<PlayerRef> players, float dt) {
+    Outcome step(World world, Store<EntityStore> store, List<PlayerRef> players, Frost frost, float dt) {
         List<PlayerRef> inside = Spawns.in(store, players, SnowblindLayout.SOURCE_ARENA);
         if (!engaged) {
             if (!inside.isEmpty()) {
@@ -204,13 +208,21 @@ final class Source {
             return Outcome.WON;
         }
         if (inside.isEmpty()) {
+            if (blizzard) {
+                // le temps est celui de tout le monde : personne dans l'arène, la tempête retombe
+                blizzard = false;
+                weather(store, false);
+            }
             return idle(world, store, dt) ? Outcome.RESET : Outcome.NONE;
         }
         idle = 0f;
         for (int i = 0; i < fuel.length; i++) {
             burn(world, store, i, DRAIN * dt);
         }
-        boolean now = lit() == 0;
+        if (lit() > 0) {
+            kindled = true;
+        }
+        boolean now = kindled && lit() == 0;
         if (now != blizzard) {
             blizzard = now;
             scatterClock = SCATTER_EVERY - SCATTER_AFTER;
@@ -221,14 +233,22 @@ final class Source {
             scatterClock += dt;
             if (scatterClock >= SCATTER_EVERY) {
                 scatterClock = 0f;
-                scatter(world, store, inside);
+                scatter(world, store, inside, frost);
             }
         }
         if (boss == null || !boss.isValid()) {
             return Outcome.NONE;
         }
         int stacks = fuel.length - lit();
-        LABELS.put(boss, describe(stacks));
+        int key = stacks;
+        for (float f : fuel) {
+            key = key * 101 + Math.round(f);
+        }
+        if (key != labelKey || label == null) {
+            labelKey = key;
+            label = describe(stacks);
+            LABELS.put(boss, label);
+        }
         pulseClock += dt;
         Vector3d at = Telegraphs.position(store, boss);
         if (pulseClock >= 2.5f && at != null && stacks > 0) {
@@ -244,15 +264,17 @@ final class Source {
 
     private void engage(World world, Store<EntityStore> store) {
         Vector3d at = Spawns.point(SnowblindLayout.SOURCE);
-        boss = Spawns.spawnBoss(world, store, Snowblind.SOURCE, at, Telegraphs.yawToward(at, new Vector3d(at).add(0, 0, 1)));
+        boss = Spawns.spawnBoss(world, store, Snowblind.SOURCE, at, Telegraphs.yawToward(at, new Vector3d(at).add(0, 0, -1)));
         Telegraphs.particle(store, "Nakasar_Fractal_Source_Pulse", at, 2.5f);
         engaged = true;
         dead = false;
         stage = 0;
         idle = 0f;
-        blizzard = lit() == 0;
+        blizzard = false;
+        kindled = lit() > 0;
+        labelKey = -1;
         scatterClock = SCATTER_EVERY - SCATTER_AFTER;
-        weather(store, blizzard);
+        weather(store, false);
         Spawns.tellAll(world, Message.translation(Snowblind.MESSAGES + "source.enter"));
     }
 
@@ -266,10 +288,13 @@ final class Source {
 
     /** La tempête jette chaque joueur de l'arène sur une tache de neige tirée au hasard, à {@value #SCATTER_MIN} blocs
      * au moins de là où il était. */
-    private static void scatter(World world, Store<EntityStore> store, List<PlayerRef> inside) {
+    private static void scatter(World world, Store<EntityStore> store, List<PlayerRef> inside, Frost frost) {
         double[][] spots = SnowblindLayout.BLIZZARD_SPOTS;
         ThreadLocalRandom random = ThreadLocalRandom.current();
         for (PlayerRef p : inside) {
+            if (frost.encased(p)) {
+                continue;               // pris dans la glace : il reste avec son éclat
+            }
             Ref<EntityStore> ref = p.getReference();
             Vector3d from = Telegraphs.position(store, ref);
             if (from == null) {
@@ -381,6 +406,7 @@ final class Source {
             weather(store, false);
         }
         blizzard = false;
+        kindled = false;
         idle = 0f;
         if (!extinguish) {
             return;

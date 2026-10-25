@@ -143,7 +143,7 @@ public final class Snowblind implements FractalStage {
                 }
             }
             case SOURCE -> {
-                Source.Outcome outcome = st.source.step(world, store, players, dt);
+                Source.Outcome outcome = st.source.step(world, store, players, st.frost, dt);
                 if (outcome == Source.Outcome.WON) {
                     st.step = Step.FOREST;
                     Gates.open(world, store, SnowblindLayout.GATE_SOURCE, MESSAGES + "source.victory");
@@ -155,6 +155,7 @@ public final class Snowblind implements FractalStage {
                 plateau(world, store, st, players);
                 if (Spawns.anyIn(store, players, SnowblindLayout.VILLAGE)) {
                     st.step = Step.VILLAGE;
+                    st.plateau = true;
                     close(world, SnowblindLayout.GATE_VILLAGE);
                     Gates.checkpoint(world, SnowblindLayout.VILLAGE_CHECKPOINT, MESSAGES + "checkpoint");
                     st.shaman.engage(world, store);

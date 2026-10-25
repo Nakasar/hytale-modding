@@ -286,7 +286,7 @@ def _markers(name):
         return [(0, (g.SPAWN[2] + g.ROOM[3]) // 2, 1), (g.MOSSMAN_AT[0], g.MOSSMAN_AT[2], 2), g.CL_CENTER + (3,)]
     if name == "tempete-de-neige":
         import generate_snowblind as g
-        return [(g.BONFIRE_AT[0], g.BONFIRE_AT[2], 1), g.SOURCE_C + (2,), (g.ss.PLATEAU_CHECKPOINT[0], g.ss.PLATEAU_CHECKPOINT[2], 3),
+        return [(g.BONFIRE_AT[0], g.BONFIRE_AT[2], 1), g.SOURCE_C + (2,), (g.ss.PACKS[2][0][0], g.ss.PACKS[2][0][1], 3),
                 (g.VILLAGE_C[0], g.VILLAGE_C[1], 4)]
     return []
 

@@ -40,14 +40,14 @@ Une fois le mur fondu, montez les **escaliers de glace** jusqu'au **camp Svanir*
 - un foyer **s'allume torche en inventaire** (prise au **râtelier** à l'entrée), puis **se nourrit de fagots** (tas devant les **tentes**, +40 %) ; il brûle 1 % par seconde ;
 - chaque foyer **éteint** donne à la Source une pile de **bouclier de givre** (❄ sur sa barre) : −18 % des dégâts qu'elle reçoit par pile ;
 - à **75, 50 et 25 %**, elle frappe les foyers allumés (cercles rouges) : **−50 %** de bois chacun ;
-- **tous éteints** : **blizzard**, une brume blanche qui cache presque tout, et le froid monte deux fois plus vite. Après 4 s puis toutes les 9 s, la tempête **jette chaque joueur ailleurs dans le camp**. Le blizzard dure jusqu'à ce qu'on rallume un foyer.
+- **le dernier foyer allumé s'éteint** : **blizzard**, une brume blanche qui cache presque tout, et le froid monte deux fois plus vite. Après 4 s puis toutes les 9 s, la tempête **jette chaque joueur ailleurs dans le camp** (sauf ceux pris dans la glace). Le blizzard dure jusqu'à ce qu'on rallume un foyer, et retombe si tout le monde quitte le camp.
 - sa barre affiche le bouclier et le bois de chaque foyer.
 
 Ses attaques : orbe lent qui repousse, **tourbillon** (cercle de 7 blocs) et coups de poing. Vaincue, la brume à l'est du camp s'ouvre et les foyers restent allumés.
 
 ### 3. La forêt sombre
 
-Prenez une **torche** et suivez les **empreintes** : le sentier fait le grand tour par l'est, de la clairière à la plaine rocheuse, au **plateau** (point de reprise), à la tanière et au creux du sud, sous des **torches** plantées le long du chemin. **Cinq groupes** de Fils de Svanir, d'Incantateurs et de loups veillent autour de leurs feux (qui réchauffent aussi) et attaquent quand vous approchez à 30 blocs. Le poste avancé au bout du chemin mène au tunnel de la grotte.
+Prenez une **torche** et suivez les **empreintes** : le sentier fait le grand tour par l'est, de la clairière à la plaine rocheuse, au **plateau** (point de reprise sur le sentier, juste avant), à la tanière et au creux du sud, sous des **torches** plantées le long du chemin. **Cinq groupes** de Fils de Svanir, d'Incantateurs et de loups veillent autour de leurs feux (qui réchauffent aussi) et attaquent quand vous approchez à 30 blocs. Le poste avancé au bout du chemin mène au tunnel de la grotte.
 
 ### 4. Le Chaman légendaire
 

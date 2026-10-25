@@ -200,7 +200,7 @@ def camp(c):
         keep.disc(tx, tz, 2.5)
     for x, z in ELEMENTAL_SPAWNS + WAVE_SPAWNS:
         assert (x, z) in t.stand, f"apparition hors du bol : {(x, z)}"
-        keep.disc(x, z, 2)
+        keep.disc(x, z, 3.5 if (x, z) in WAVE_SPAWNS else 2)
     # Planches et caisses brisées autour du feu (le camp ravagé des captures).
     for k, (dx, dz) in enumerate(((7, -4), (-8, 5), (5, 8), (-6, -7))):
         x, z = bx + dx, bz + dz
@@ -870,7 +870,8 @@ def java_layout(c):
     pack_centers = J.jpoints([center for center, _ in c.packs])
     pack_spawns = "{" + ", ".join(J.jpoints([at for _, at in spawns]) for _, spawns in c.packs) + "}"
     pack_roles = "{" + ", ".join("{" + ", ".join(f'"{role}"' for role, _ in spawns) + "}" for _, spawns in c.packs) + "}"
-    plateau = ss.PLATEAU_CHECKPOINT
+    plateau = c.at(*ss.PLATEAU_CHECKPOINT)
+    village = c.at(*ss.VILLAGE_CHECKPOINT)
     return f"""package dev.nakasar.hytale.fractals.snowblind;
 
 import dev.nakasar.hytale.fractals.arena.Box;
@@ -922,7 +923,7 @@ public final class SnowblindLayout {{
     public static final double VILLAGE_RADIUS = {VILLAGE_RADIUS};
     public static final int[][] VILLAGE_FIRES = {J.jblocks([c.at(x, z) for x, z in VILLAGE_FIRES])};
     public static final int[][] GATE_VILLAGE = {J.jblocks(c.gate_village)};
-    public static final double[] VILLAGE_CHECKPOINT = {J.jpoint(ss.VILLAGE_CHECKPOINT)};
+    public static final double[] VILLAGE_CHECKPOINT = {J.jpoint(village)};
     public static final double[] BALCONY = {J.jpoint(BALCONY)};
     public static final double[] EFFIGY = {J.jpoint(EFFIGY_AT)};
     public static final double[] SHAMAN = {J.jpoint(SHAMAN_AT)};

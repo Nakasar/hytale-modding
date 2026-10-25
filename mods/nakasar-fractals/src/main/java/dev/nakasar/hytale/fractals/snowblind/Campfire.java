@@ -205,21 +205,22 @@ final class Campfire {
         }
         int party = FractalRuns.partySize(world);
         List<String> roles = new ArrayList<>();
-        for (int i = 0; i < 2 + party / 2 + (waves == 0 ? 1 : 0); i++) {
-            roles.add(Snowblind.WOLF);
-        }
-        boolean svanir = waves % 2 == 1;
-        if (svanir) {
+        if (waves % 2 == 1) {
+            // les Svanir d'abord : si la place manque, ce sont des loups qui restent dans la forêt
             roles.add(Snowblind.ICE_CASTER);
             for (int i = 0; i < 1 + party / 3; i++) {
                 roles.add(Snowblind.CULTIST);
             }
         }
+        for (int i = 0; i < 2 + party / 2 + (waves == 0 ? 1 : 0); i++) {
+            roles.add(Snowblind.WOLF);
+        }
+        boolean svanir = !roles.get(0).equals(Snowblind.WOLF);
         waves++;
         double[][] spawns = SnowblindLayout.WAVE_SPAWNS;
         double[] p = spawns[ThreadLocalRandom.current().nextInt(spawns.length)];
         for (int i = 0; i < Math.min(room, roles.size()); i++) {
-            Vector3d at = Spawns.point(p).add((i % 3) * 1.5 - 1.5, 0, (i / 3) * 1.5 - 0.75);
+            Vector3d at = Spawns.point(p).add((i % 4) - 1.5, 0, (i / 4) - 1.0);
             Ref<EntityStore> ref = Spawns.spawnFoe(world, store, roles.get(i), at, Telegraphs.yawToward(at, center()));
             if (ref != null) {
                 raiders.add(ref);

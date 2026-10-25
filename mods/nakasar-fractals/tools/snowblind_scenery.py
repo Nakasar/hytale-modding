@@ -84,7 +84,7 @@ FIREWOOD_SPOTS = [(round(CAMP[0] + math.cos(math.radians(a)) * r), round(CAMP[1]
                   for a, r in ((-160, 18), (-120, 16), (-60, 16), (-20, 19), (20, 19), (160, 19), (200, 17), (-90, 17))]
 ELEMENTAL_SPAWNS = [(round(CAMP[0] + math.cos(math.radians(a)) * 23), round(CAMP[1] + math.sin(math.radians(a)) * 17))
                     for a in (-170, -135, -100, -45, -10, 25, 155)]
-WAVE_SPAWNS = [(-70, -70), (-20, -74), (-58, -80), (-27, -58)]
+WAVE_SPAWNS = [(-70, -70), (-20, -74), (-58, -80), (-23, -62)]
 WALL_Z = (-31, -29)                             # rangées z du mur de glace, dans le col
 WALL_HEIGHT = 7
 WALL_CHECKPOINT = (-53, 0, -25)
@@ -109,12 +109,12 @@ PACKS = [  # (centre, rôles) : groupes de la forêt autour de leur feu de camp
 ]
 OUTPOST = (-16, 104)
 FOREST_CHECKPOINT = (-30, 9, 47)
-PLATEAU_CHECKPOINT = (114, 12, -4)
-VILLAGE_CHECKPOINT = (-14, 2, 104)
+PLATEAU_CHECKPOINT = (86, -13)                  # sur le sentier, avant le plateau : hors de portée du groupe 2
+VILLAGE_CHECKPOINT = (-68, 104)                 # dans la grotte, côté arène de la brume (debout calculé)
 
 VILLAGE_C = (-84, 104)
 VILLAGE_RADIUS = 20
-GATE_VILLAGE_AT = (-44, 101)
+GATE_VILLAGE_AT = (-60, 104)                   # au bout du tunnel, juste avant la grotte
 GATES = [(-54, -30), GATE_SOURCE_AT, GATE_VILLAGE_AT]
 VILLAGE_FIRES = [(-74, 94), (-74, 114), (-96, 104)]
 BALCONY = (-100, 5, 104)                        # corniche de glace du Chaman, 7 blocs au-dessus de l'arène
@@ -237,6 +237,7 @@ class Terrain:
                 self.fixed.add((x, z))
         spots = [(GATE_SOURCE_AT, 9, 4), (GATE_VILLAGE_AT, None, 4), (OUTPOST, 2, 6)]
         spots += [(c, None, 4) for c, _ in PACKS]
+        spots += [(c, round(self.raw[c]), 4) for c in WAVE_SPAWNS]     # vagues du grand feu : formation de 4 x 3 à plat
         for (cx, cz), level, r in spots:
             for x in range(cx - r, cx + r + 1):
                 for z in range(cz - r, cz + r + 1):

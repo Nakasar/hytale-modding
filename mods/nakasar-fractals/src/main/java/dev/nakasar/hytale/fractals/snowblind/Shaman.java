@@ -78,7 +78,7 @@ final class Shaman {
 
     void engage(World world, Store<EntityStore> store) {
         Vector3d at = Spawns.point(SnowblindLayout.SHAMAN);
-        boss = Spawns.spawnBoss(world, store, Snowblind.SHAMAN, at, Telegraphs.yawToward(at, new Vector3d(at).add(0, 0, 1)));
+        boss = Spawns.spawnBoss(world, store, Snowblind.SHAMAN, at, Telegraphs.yawToward(at, new Vector3d(at).add(1, 0, 0)));
         engaged = true;
         dead = false;
         balcony = false;
@@ -229,7 +229,7 @@ final class Shaman {
         Vector3d at = Spawns.point(SnowblindLayout.SHAMAN);
         store.tryRemoveComponent(boss, Invulnerable.getComponentType());
         store.putComponent(boss, Teleport.getComponentType(),
-                new Teleport(at, new Rotation3f(0f, Telegraphs.yawToward(at, new Vector3d(at).add(0, 0, 1)), 0f)));
+                new Teleport(at, new Rotation3f(0f, Telegraphs.yawToward(at, new Vector3d(at).add(1, 0, 0)), 0f)));
         BossStun.release(store, boss);
         Telegraphs.particle(store, "Stick_Slam_Ground_Large", at, 1.2f);
         Spawns.tellAll(world, Message.translation(Snowblind.MESSAGES + "shaman.down"));
