@@ -22,7 +22,9 @@ import it.unimi.dsi.fastutil.Pair;
 import org.joml.Vector3d;
 
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 import java.util.WeakHashMap;
 
 /**
@@ -32,13 +34,16 @@ import java.util.WeakHashMap;
  *   <li>le golem d'essai ({@value #ROLE}) à {@link ObservatoryLayout#GOLEM} : il ne riposte pas, ses PV remontent au
  *       maximum toutes les deux secondes ; les dégâts reçus sont annoncés au joueur par {@link TrialHitSystem} ;</li>
  *   <li>l'Archiviste ({@value #ARCHIVIST}) à {@link ObservatoryLayout#ARCHIVIST}, derrière son comptoir :
- *       invulnérable, il ouvre sa boutique de troc quand on lui parle.</li>
+ *       invulnérable, il ouvre sa boutique de troc quand on lui parle ;</li>
+ *   <li>l'Alchimiste de Dessa ({@value #ALCHEMIST}) à {@link ObservatoryLayout#ALCHEMIST}, devant ses fioles :
+ *       invulnérable, il vend les potions des Brumes ({@code potion}).</li>
  * </ul>
  */
 public final class ObservatoryNpcSystem extends TickingSystem<EntityStore> {
 
     public static final String ROLE = "Nakasar_Fractal_Trial_Golem";
     public static final String ARCHIVIST = "Nakasar_Fractal_Archivist";
+    public static final String ALCHEMIST = "Nakasar_Fractal_Alchemist";
     private static final float INTERVAL = 2f;
     /** Temps écoulé depuis le dernier passage, par monde. */
     private static final Map<World, float[]> ELAPSED = Collections.synchronizedMap(new WeakHashMap<>());
@@ -63,13 +68,10 @@ public final class ObservatoryNpcSystem extends TickingSystem<EntityStore> {
             return;
         }
         Store<EntityStore> store = world.getEntityStore().getStore();
-        if (find(store, ARCHIVIST) == null) {
-            Ref<EntityStore> archivist = spawn(store, ARCHIVIST, ObservatoryLayout.ARCHIVIST);
-            if (archivist != null) {
-                store.ensureAndGetComponent(archivist, Invulnerable.getComponentType());
-            }
-        }
-        Ref<EntityStore> golem = find(store);
+        Map<String, Ref<EntityStore>> present = findAll(store, Set.of(ARCHIVIST, ALCHEMIST, ROLE));
+        spawnMerchant(store, present, ARCHIVIST, ObservatoryLayout.ARCHIVIST);
+        spawnMerchant(store, present, ALCHEMIST, ObservatoryLayout.ALCHEMIST);
+        Ref<EntityStore> golem = present.get(ROLE);
         if (golem == null) {
             spawn(store, ROLE, ObservatoryLayout.GOLEM);
             return;
@@ -81,9 +83,33 @@ public final class ObservatoryNpcSystem extends TickingSystem<EntityStore> {
         }
     }
 
+    /** Pose le marchand `role` s'il manque, invulnérable. */
+    private static void spawnMerchant(Store<EntityStore> store, Map<String, Ref<EntityStore>> present, String role, double[] at) {
+        if (!present.containsKey(role)) {
+            Ref<EntityStore> merchant = spawn(store, role, at);
+            if (merchant != null) {
+                store.ensureAndGetComponent(merchant, Invulnerable.getComponentType());
+            }
+        }
+    }
+
     /** Golem d'essai du monde, ou null. */
     public static Ref<EntityStore> find(Store<EntityStore> store) {
         return find(store, ROLE);
+    }
+
+    /** PNJ du monde dont le rôle est dans `roles`, par rôle (un parcours des PNJ pour tous). */
+    private static Map<String, Ref<EntityStore>> findAll(Store<EntityStore> store, Set<String> roles) {
+        Map<String, Ref<EntityStore>> found = new HashMap<>();
+        store.forEachChunk(NPCEntity.getComponentType(), (ArchetypeChunk<EntityStore> chunk, CommandBuffer<EntityStore> buffer) -> {
+            for (int i = 0; i < chunk.size(); i++) {
+                NPCEntity npc = chunk.getComponent(i, NPCEntity.getComponentType());
+                if (npc != null && roles.contains(npc.getRoleName())) {
+                    found.putIfAbsent(npc.getRoleName(), chunk.getReferenceTo(i));
+                }
+            }
+        });
+        return found;
     }
 
     /** PNJ de rôle `role` du monde, ou null. */
@@ -102,7 +128,7 @@ public final class ObservatoryNpcSystem extends TickingSystem<EntityStore> {
 
     private static Ref<EntityStore> spawn(Store<EntityStore> store, String role, double[] at) {
         Vector3d position = new Vector3d(at[0], at[1], at[2]);
-        // Face à l'Astrolabe : le golem vers l'est (son pupitre), l'Archiviste vers l'ouest (son comptoir).
+        // Face à l'Astrolabe : le golem vers l'est (son pupitre), l'Archiviste et l'Alchimiste vers l'ouest (comptoir, fioles derrière).
         Rotation3f rotation = new Rotation3f(0f, Telegraphs.yawToward(position, new Vector3d(0.5, at[1], at[2])), 0f);
         Pair<Ref<EntityStore>, INonPlayerCharacter> spawned = NPCPlugin.get().spawnNPC(store, role, null, position, rotation);
         if (spawned == null || spawned.first() == null) {

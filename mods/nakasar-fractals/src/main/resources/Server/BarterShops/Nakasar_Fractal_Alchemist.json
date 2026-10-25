@@ -1,0 +1,86 @@
+{
+  "DisplayNameKey": "nakasar_fractals_potions.shop.Alchemist.name",
+  "RefreshInterval": {
+    "Days": 1
+  },
+  "Trades": [
+    {
+      "Output": {
+        "ItemId": "Nakasar_Fractal_Mist_Potion_Offensive",
+        "Quantity": 1
+      },
+      "Input": [
+        {
+          "ItemId": "Nakasar_Fractal_Mist_Shard",
+          "Quantity": 4
+        }
+      ],
+      "Stock": 99
+    },
+    {
+      "Output": {
+        "ItemId": "Nakasar_Fractal_Mist_Potion_Mobility",
+        "Quantity": 1
+      },
+      "Input": [
+        {
+          "ItemId": "Nakasar_Fractal_Mist_Shard",
+          "Quantity": 3
+        }
+      ],
+      "Stock": 99
+    },
+    {
+      "Output": {
+        "ItemId": "Nakasar_Fractal_Mist_Potion_Defensive",
+        "Quantity": 1
+      },
+      "Input": [
+        {
+          "ItemId": "Nakasar_Fractal_Mist_Shard",
+          "Quantity": 3
+        }
+      ],
+      "Stock": 99
+    },
+    {
+      "Output": {
+        "ItemId": "Nakasar_Fractal_Mist_Potion_Large_Offensive",
+        "Quantity": 1
+      },
+      "Input": [
+        {
+          "ItemId": "Nakasar_Fractal_Mist_Shard",
+          "Quantity": 20
+        }
+      ],
+      "Stock": 99
+    },
+    {
+      "Output": {
+        "ItemId": "Nakasar_Fractal_Mist_Potion_Large_Mobility",
+        "Quantity": 1
+      },
+      "Input": [
+        {
+          "ItemId": "Nakasar_Fractal_Mist_Shard",
+          "Quantity": 15
+        }
+      ],
+      "Stock": 99
+    },
+    {
+      "Output": {
+        "ItemId": "Nakasar_Fractal_Mist_Potion_Large_Defensive",
+        "Quantity": 1
+      },
+      "Input": [
+        {
+          "ItemId": "Nakasar_Fractal_Mist_Shard",
+          "Quantity": 15
+        }
+      ],
+      "Stock": 99
+    }
+  ]
+}

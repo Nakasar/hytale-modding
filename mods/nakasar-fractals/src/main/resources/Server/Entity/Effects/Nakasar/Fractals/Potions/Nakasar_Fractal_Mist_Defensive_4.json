@@ -1,0 +1,8 @@
+{
+  "$Comment": "Defensive des Brumes, 4 pile(s) : posé et retiré par potion.MistPotionSystem, qui garde la durée. Généré par tools/generate_potions.py.",
+  "Name": "nakasar_fractals_potions.effects.Nakasar_Fractal_Mist_Defensive_4",
+  "StatusEffectIcon": "UI/StatusEffects/Nakasar/Fractals/Potions/Defensive_4.png",
+  "OverlapBehavior": "Overwrite",
+  "Infinite": false,
+  "Duration": 3600
+}

@@ -68,6 +68,7 @@ L'Observatoire est une instance hub suspendue dans les Brumes (monde `Void` comm
 - **Cercle d'harmonisation** : l'anneau au sol autour de l'Astrolabe. Les joueurs debout dessus forment le groupe (5 au plus, les suivants reçoivent un message de refus).
 - **Résonateurs** au bord intérieur du cercle : le meneur (premier arrivé) en utilise un, tout le cercle est téléporté dans une nouvelle instance de la fractale harmonisée, si le niveau ne dépasse pas son plus haut niveau débloqué.
 - **L'Archiviste (est)** : PNJ marchand qui échange les éclats de Brume, plus un tableau des fractales du jour.
+- **L'Alchimiste de Dessa (est, au nord de l'Archiviste)** : ajouté le 25 octobre 2026 (captures de Kevin). Il vend les **potions des Brumes** de GW2 contre des éclats de Brume : offensive (+3 % de dégâts infligés par pile), mobilité (+5 % de vitesse et +10 % d'endurance récupérée par pile), défensive (−5 % de dégâts subis par pile, agonie exclue). 1 h, 5 piles au plus ; la potion donne 1 pile (3 à 4 éclats), la grande 5 piles (5 fois le prix). Actives dans les instances de fractale seulement (Java `potion/`, assets `tools/generate_potions.py`). La conversion de résistance à l'agonie de la maîtrise d'Harmonisation de GW2 n'est pas reprise.
 - **Golem d'essai (ouest)** : mannequin qui applique de l'agonie et affiche les dégâts subis, pour tester sa résistance.
 
 Une commande `/fractale` (niveau, groupe, abandon) sert de secours et d'outil de test.

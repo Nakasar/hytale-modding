@@ -4,6 +4,7 @@ import com.hypixel.hytale.component.ComponentAccessor;
 import com.hypixel.hytale.component.Ref;
 import com.hypixel.hytale.server.core.asset.type.entityeffect.config.EntityEffect;
 import com.hypixel.hytale.server.core.asset.type.entityeffect.config.OverlapBehavior;
+import com.hypixel.hytale.server.core.entity.effect.ActiveEntityEffect;
 import com.hypixel.hytale.server.core.entity.effect.EffectControllerComponent;
 import com.hypixel.hytale.server.core.modules.entity.damage.Damage;
 import com.hypixel.hytale.server.core.modules.entity.damage.DamageCause;
@@ -57,6 +58,14 @@ public final class Hurt {
         if (index >= 0 && effects != null && effects.hasEffect(index)) {
             effects.removeEffect(ref, index, store);
         }
+    }
+
+    /** Secondes restantes de l'effet `effectId` sur l'entité (-1 s'il n'est pas actif). */
+    public static float remaining(ComponentAccessor<EntityStore> store, Ref<EntityStore> ref, String effectId) {
+        int index = EntityEffect.getAssetMap().getIndexOrDefault(effectId, -1);
+        EffectControllerComponent effects = store.getComponent(ref, EffectControllerComponent.getComponentType());
+        ActiveEntityEffect effect = index < 0 || effects == null ? null : effects.getActiveEffects().get(index);
+        return effect == null ? -1f : effect.getRemainingDuration();
     }
 
     public static boolean has(ComponentAccessor<EntityStore> store, Ref<EntityStore> ref, String effectId) {

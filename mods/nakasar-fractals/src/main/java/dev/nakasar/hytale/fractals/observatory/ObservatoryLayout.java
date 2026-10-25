@@ -22,6 +22,8 @@ public final class ObservatoryLayout {
     public static final double[] TRIAL_RELEASE = {-37.5, 100.0, 8.5};
     /** L'Archiviste (pieds), derrière son comptoir, tourné vers l'ouest. */
     public static final double[] ARCHIVIST = {49.5, 100.0, 1.5};
+    /** L'Alchimiste de Dessa (pieds), marchand des potions des Brumes, tourné vers l'ouest. */
+    public static final double[] ALCHEMIST = {50.5, 100.0, -4.5};
     /** Préfixes des objets de sélection : noyau d'une fractale ({@code <préfixe><Id>}) et diapason d'un niveau. */
     public static final String CORE_PREFIX = "Nakasar_Fractal_Core_";
     public static final String LEVEL_PREFIX = "Nakasar_Fractal_Level_";

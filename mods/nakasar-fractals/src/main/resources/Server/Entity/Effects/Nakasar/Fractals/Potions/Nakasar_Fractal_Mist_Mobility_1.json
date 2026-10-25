@@ -1,0 +1,11 @@
+{
+  "$Comment": "Mobility des Brumes, 1 pile(s) : posé et retiré par potion.MistPotionSystem, qui garde la durée. Généré par tools/generate_potions.py.",
+  "Name": "nakasar_fractals_potions.effects.Nakasar_Fractal_Mist_Mobility_1",
+  "StatusEffectIcon": "UI/StatusEffects/Nakasar/Fractals/Potions/Mobility_1.png",
+  "ApplicationEffects": {
+    "HorizontalSpeedMultiplier": 1.05
+  },
+  "OverlapBehavior": "Overwrite",
+  "Infinite": false,
+  "Duration": 3600
+}
