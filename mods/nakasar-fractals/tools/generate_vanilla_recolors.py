@@ -21,6 +21,9 @@ Seconde passe (Kevin, 25 octobre 2026, 22 h 19) :
   plus que les objets et la langue) : capuche = Hoodie_LongEnd du jeu (capuche du Sorcier de Blazen, violette) au liseré
   doré ; couronne = KingsCrown, velours violet des Brumes ; mantelet = Cape_King_NoNeck, drap indigo de l'Archidevin
   (fourrure et or d'origine). Les textures « greyscale » du jeu sont teintées ici, une pièce d'armure n'a pas de dégradé.
+
+Style Hytale (Kevin, 25 octobre 2026, 22 h 36) : échantillons de textures de blocs vanilla copiés dans tools/materials/
+(fractal_materials.SWATCHES), lus par nos peintres de modèles.
 """
 import colorsys
 import io
@@ -32,6 +35,7 @@ from pathlib import Path
 from PIL import Image
 
 import blockymodel_render as br
+import fractal_materials as fmat
 from generate_potions import KINDS
 
 PACK = Path(__file__).resolve().parent.parent / "src/main/resources/Common"
@@ -213,10 +217,13 @@ def main():
         doc["format"] = "character"
         (out / "Model.blockymodel").write_text(json.dumps(doc, indent=2) + "\n")
         (out / "Texture.png").write_bytes(assets.read(f"Common/Resources/Crystals/Crystal_Big_Textures/{texture}.png"))
+    fmat.DIR.mkdir(exist_ok=True)
+    for key, name in fmat.SWATCHES.items():
+        (fmat.DIR / f"{key}.png").write_bytes(assets.read(f"Common/BlockTextures/{name}.png"))
     cosmetic(assets, "Archdiviner_Hood", HOOD, is_trim, GOLD)
     cosmetic(assets, "Mist_Crown", CROWN, is_grey, VELVET)
     cosmetic(assets, "Mist_Mantle", MANTLE, is_cloth, ROBE, yaw=155)
-    print(f"{len(KINDS) * 2} potions, éclat de Brume, icône du canon à vent, fleur de poison, 2 cristaux, 3 cosmétiques")
+    print(f"{len(KINDS) * 2} potions, éclat de Brume, icône du canon à vent, fleur de poison, 2 cristaux, 3 cosmétiques, {len(fmat.SWATCHES)} échantillons de matières")
 
 
 if __name__ == "__main__":

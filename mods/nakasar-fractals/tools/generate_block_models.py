@@ -124,6 +124,10 @@ def exit_stone():
         part("Body", (0, 17, 0), (17, 22, 13), s),
         part("Upper", (0, 33, 0), (14, 10, 11), s),
         part("Cap", (0, 40, 0), (10, 4, 8), fb.smooth_stone(STONE), rot=(0, 8, 0)),
+        # Style Hytale : cerclage de laiton, mousse sur le socle.
+        part("Band", (0, 28.5, 0), (18, 2, 14), fb.metal(BRASS, False)),
+        part("Moss_1", (-5, 6.25, 3), (8, 0.5, 6), fb.ground((70, 110, 60), (96, 150, 70))),
+        part("Moss_2", (6, 6.25, -4), (6, 0.5, 5), fb.ground((70, 110, 60), (96, 150, 70))),
         inlay("Rune_Front", (0, 19, 6.75), (11, 11, 0.5), MIST, "eye", ("front",)),
         inlay("Rune_Back", (0, 19, -6.75), (11, 11, 0.5), MIST, "eye", ("back",)),
         part("Shard_A", (13, 26, 0), (3, 5, 3), c, glow=True, pivot=(0, 26, 0)),
@@ -150,6 +154,12 @@ def mists_portal():
         part("Keystone", (0, 120, 0), (14, 16, 18), dark),
         part("Keystone_Gem", (0, 138, 0), (8, 10, 8), c, glow=True, rot=(0, 45, 0)),
         part("Veil", (0, 62, 0), (68, 112, 1), fb.mist(MIST_DARK, MIST_LIGHT, 200), glow=True),
+        # Style Hytale : chapiteaux débordants, marche devant, éboulis au pied des piliers.
+        part("Capital_L", (-41, 117, 0), (18, 4, 18), dark),
+        part("Capital_R", (41, 117, 0), (18, 4, 18), dark),
+        part("Step", (0, 1.5, 12), (72, 3, 6), fb.stone(STONE_DARK, (10, 3))),
+        part("Rubble_L", (-52, 2, 9), (7, 4, 6), dark, rot=(0, 25, 0)),
+        part("Rubble_R", (53, 1.5, -8), (6, 3, 6), dark, rot=(0, 40, 0)),
     ]
     for side, x in (("L", -41), ("R", 41)):
         for k, y in enumerate((30, 62, 94)):
@@ -185,9 +195,15 @@ def archivist_counter():
         part("Pan_Shards", (-15.5, 30.75, -3), (2.5, 1.5, 2.5), c, glow=True, rot=(0, 30, 0)),
         part("Book_Cover", (8, 23.5, 4), (14, 1, 10), fb.solid((120, 48, 42)), rot=(0, -14, 0)),
         part("Book_Pages", (8, 24.4, 4), (12.5, 1, 8.5), fb.paper(), rot=(0, -14, 0)),
-        part("Jar", (10, 27, -7), (5, 6, 5), c, glow=True),
+        part("Jar", (10, 26, -7), (5, 4, 5), c, glow=True),
+        part("Jar_Glass", (10, 27, -7), (6, 6, 6), fb.glass((210, 220, 255), 90)),
         part("Jar_Cork", (10, 31, -7), (3.5, 2, 3.5), fb.planks(WOOD, 2)),
     ]
+    # Style Hytale : montants d'angle, chemin de table violet bordé d'or, bougie.
+    for k, (x, z) in enumerate(((-14, 10), (14, 10), (-14, -10), (14, -10))):
+        p.append(part(f"Post_{k + 1}", (x, 11, z), (3, 18, 3), fb.planks(WOOD_DARK, 3)))
+    p += runner("Runner", 23, 26, 9, 14.25, 12)
+    p += candle("Candle", 3, 23, -8)
     return p, None
 
 
@@ -206,6 +222,23 @@ SILVER = (200, 206, 218)
 IRON = (86, 88, 98)
 IRON_DARK = (58, 58, 66)
 PAPER = (232, 220, 190)
+
+
+VELVET = (92, 52, 150)        # toile violette des Brumes (chemins de table, tentures)
+CANDLE = (236, 222, 186)
+
+
+def runner(name, top_y, depth, width, front_z, drop, parent=None):
+    """Chemin de table en toile violette bordée d'or (comme l'établi arcanique vanilla) : dessus et pan qui tombe devant."""
+    cloth = fb.cloth(VELVET, fb.shade(GOLD, 0.9))
+    return [part(f"{name}_Top", (0, top_y + 0.25, front_z - depth / 2), (width, 0.5, depth), cloth, parent=parent),
+            part(f"{name}_Drop", (0, top_y - drop / 2 + 0.5, front_z + 0.25), (width, drop, 0.5), cloth, parent=parent)]
+
+
+def candle(name, x, y, z, h=5):
+    """Bougie de cire et sa flamme (lueur)."""
+    return [part(f"{name}", (x, y + h / 2, z), (2, h, 2), fb.solid(CANDLE)),
+            part(f"{name}_Flame", (x, y + h + 1, z), (1, 2, 1), glow((255, 190, 90)), glow=True)]
 
 
 def glow(color):
@@ -286,6 +319,14 @@ def daily_board():
         part("Frame_Bottom", (0, 9.25, 0), (26, 1.5, 3), fb.metal(BRASS, False)),
         part("Roof", (0, 31, 0), (31, 2, 8), fb.planks(WOOD_DARK, 4, vertical=False)),
         part("Roof_Ridge", (0, 32.5, 0), (31, 1, 3), fb.planks(WOOD_DARK, 4, vertical=False)),
+        # Style Hytale : pieds de pierre, jambes de force sous le toit, lanterne.
+        part("Foot_L", (-13, 1.5, 0), (6, 3, 6), fb.smooth_stone(STONE_DARK)),
+        part("Foot_R", (13, 1.5, 0), (6, 3, 6), fb.smooth_stone(STONE_DARK)),
+        part("Brace_L", (-11, 28, 2.5), (2, 2, 4), fb.planks(WOOD_DARK, 2)),
+        part("Brace_R", (11, 28, 2.5), (2, 2, 4), fb.planks(WOOD_DARK, 2)),
+        part("Lantern", (0, 27.5, 3.5), (3, 4, 3), fb.glass((255, 214, 140), 170)),
+        part("Lantern_Light", (0, 27.5, 3.5), (1.5, 2.5, 1.5), glow((255, 200, 110)), glow=True),
+        part("Lantern_Cap", (0, 30, 3.5), (3.5, 1, 3.5), fb.metal(BRASS, False)),
     ]
     for k, color in enumerate((CORE_COLORS["Cliffside"], GOLD, CORE_COLORS["Swampland"])):
         x = (-8, 0, 8)[k]
@@ -310,7 +351,12 @@ def registry():
         part("Pages_L", fb.tilt(top, top_rot, (-4.6, 2.3, -0.5)), (9, 1, 11.5), fb.paper(), rot=top_rot),
         part("Pages_R", fb.tilt(top, top_rot, (4.6, 2.3, -0.5)), (9, 1, 11.5), fb.paper(), rot=top_rot),
         part("Ribbon", fb.tilt(top, top_rot, (1, 2.9, 4)), (1, 0.4, 7), fb.solid((170, 40, 50)), rot=top_rot),
+        # Style Hytale : tenture violette sous le plateau, encrier et plume, bougie sur le pied.
+        part("Banner", (0, 14, 4.5), (7, 9, 0.5), fb.cloth(VELVET, fb.shade(GOLD, 0.9))),
+        part("Ink", (-6, 4, 4), (3, 2, 3), fb.glass((40, 40, 70), 200)),
+        part("Quill", (-6, 7, 4), (0.5, 5, 1.5), fb.solid((236, 236, 240)), rot=(0, 0, 15)),
     ]
+    p += candle("Candle", 6, 3, 4, 4)
     return p, None
 
 
@@ -324,6 +370,11 @@ def infusion_altar():
         part("Crystal", (0, 22, 0), (5, 8, 5), glow(MIST), glow=True, rot=(0, 45, 0)),
         part("Crystal_Tip", (0, 27, 0), (3, 3, 3), glow(MIST), glow=True, rot=(0, 45, 0)),
     ]
+    # Style Hytale : colonnettes d'angle coiffées de laiton, chemin de toile violette devant.
+    for k, (x, z) in enumerate(((-12.5, 12.5), (12.5, 12.5), (-12.5, -12.5), (12.5, -12.5))):
+        p.append(part(f"Pillar_{k + 1}", (x, 10, z), (4, 8, 4), fb.stone(STONE_DARK, (4, 4))))
+        p.append(part(f"Pillar_Cap_{k + 1}", (x, 18, z), (3, 2, 3), fb.metal(GOLD, False)))
+    p += runner("Runner", 17, 10, 8, 14.25, 7)
     tiers = [fb.mix((110, 170, 255), (190, 120, 255), k / 7) for k in range(8)] + \
             [fb.mix((190, 120, 255), (255, 210, 110), k / 3) for k in range(1, 5)]
     for k in range(12):
@@ -352,6 +403,13 @@ def mist_forge():
         part("Liquid", (0, 23.25, 0), (18, 0.5, 18), fb.mist((120, 70, 210), (220, 190, 255)), glow=True),
         part("Bubble_1", (-4, 23.8, 3), (2, 1, 2), glow(MIST), glow=True),
         part("Bubble_2", (5, 23.8, -4), (1.5, 1, 1.5), glow(MIST), glow=True),
+        # Style Hytale : cerclages du creuset, soufflet de cuir et bois sur le côté, pile de charbon.
+        part("Band_1", (0, 14.5, 0), (23, 1.5, 23), fb.metal(IRON_DARK, False)),
+        part("Band_2", (0, 20.5, 0), (23, 1.5, 23), fb.metal(IRON_DARK, False)),
+        part("Bellows_Board", (-17.5, 5, 6), (3, 1, 10), fb.planks(WOOD, 3)),
+        part("Bellows_Leather", (-17.5, 7, 6), (3, 3, 9), fb.cloth((110, 70, 48))),
+        part("Bellows_Nozzle", (-15.5, 6, 0), (1.5, 1.5, 4), fb.metal(BRASS, False)),
+        part("Coal", (12, 13, 11), (5, 2, 5), fb.smooth_stone((44, 40, 46)), rot=(0, 20, 0)),
     ]
     a = fb.anim(80, {"Liquid": {"position": bob(0.4, 80)},
                      "Bubble_1": {"position": [(0, (0, 0, 0)), (40, (0, 1.2, 0)), (80, (0, 0, 0))]},
@@ -665,7 +723,6 @@ def torch_rack():
 
 CUBES = {
     # tex -> (peintre des côtés, peintre du dessus, rune du dessus (couleur, forme) ou None, alpha)
-    "Astrolabe_Ring": (fb.metal(BRASS), fb.metal(GOLD), ((90, 60, 30), "tick"), 255),
     "Mist_Barrier": (fb.mist((70, 46, 130), (210, 180, 255)), fb.mist((70, 46, 130), (210, 180, 255)), None, 255),
     "Glimmer": (fb.glass((255, 226, 120), 150), fb.glass((255, 236, 150), 150), None, 150),
     "Gate_Veil": (fb.mist((96, 40, 160), (240, 214, 255), 175), fb.mist((96, 40, 160), (240, 214, 255), 175), None, 175),
@@ -819,6 +876,8 @@ VANILLA = {
                                "Blocks/Decorative_Sets/Temple_Dark/Statue_Owl_Texture.png", HitboxType="Statue_Small"),
                  "Furniture_Temple_Dark_Statue", "wall"),
     # Ressac : ancre de tyrolienne en fer gobelin.
+    # Kevin (25 octobre 2026, 22 h 36) : anneau de l'astrolabe = bloc de bronze vanilla (Metal_Bronze).
+    "Astrolabe_Ring": (cube([{"All": f"BlockTextures/Metal_Bronze{n}.png", "Weight": 1} for n in ("", "02")]), "Metal_Bronze", None),
     "Zipline_Anchor": (cube([{"All": f"BlockTextures/Metal_Goblin_Iron{n}.png", "Weight": w}
                              for n, w in (("", 20), ("02", 20), ("03", 6), ("04", 20), ("06", 6))]),
                        "Metal_Goblin_Iron", None),

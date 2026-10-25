@@ -11,6 +11,8 @@ import random
 
 from PIL import Image, ImageFilter
 
+import fractal_materials as fmat
+
 FACES = ("top", "bottom", "front", "back", "left", "right")
 
 
@@ -34,11 +36,12 @@ def soft_noise(rng, w, h, scale=6, amp=0.12):
 
 
 def smooth(base, top=None):
-    """Matière lisse : dessus éclairé, côtés plus sombres vers le bas, arête claire."""
+    """Matière lisse : dessus éclairé, côtés plus sombres vers le bas, arête claire ; grain peint de la pierre
+    vanilla (fractal_materials, style Hytale)."""
     def paint(rng, w, h, face):
         img = Image.new("RGBA", (w, h))
         px = img.load()
-        noise = soft_noise(rng, w, h)
+        noise = fmat.factors("rock", rng, w, h, contrast=0.8)
         for y in range(h):
             for x in range(w):
                 if face == "bottom":

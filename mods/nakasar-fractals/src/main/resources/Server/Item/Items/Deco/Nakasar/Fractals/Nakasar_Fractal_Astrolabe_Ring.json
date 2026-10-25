@@ -3,7 +3,7 @@
     "Name": "nakasar_fractals.items.Nakasar_Fractal_Astrolabe_Ring.name",
     "Description": "nakasar_fractals.items.Nakasar_Fractal_Astrolabe_Ring.description"
   },
-  "Icon": "Icons/Items/Nakasar/Fractals/Astrolabe_Ring.png",
+  "Icon": "Icons/ItemsGenerated/Metal_Bronze.png",
   "Categories": [
     "Blocks.Deco"
   ],
@@ -13,13 +13,6 @@
     "Material": "Solid",
     "DrawType": "Cube",
     "Opacity": "Solid",
-    "Textures": [
-      {
-        "Sides": "BlockTextures/Nakasar/Fractals/Astrolabe_Ring.png",
-        "UpDown": "BlockTextures/Nakasar/Fractals/Astrolabe_Ring_Top.png",
-        "Weight": 1
-      }
-    ],
     "HitboxType": "Full",
     "Flags": {},
     "Gathering": {
@@ -32,7 +25,17 @@
     "ParticleColor": "#ffe696",
     "Light": {
       "Color": "#fe9"
-    }
+    },
+    "Textures": [
+      {
+        "All": "BlockTextures/Metal_Bronze.png",
+        "Weight": 1
+      },
+      {
+        "All": "BlockTextures/Metal_Bronze02.png",
+        "Weight": 1
+      }
+    ]
   },
   "Tags": {
     "Type": [
