@@ -32,13 +32,16 @@ import java.util.WeakHashMap;
  *   <li>le golem d'essai ({@value #ROLE}) à {@link ObservatoryLayout#GOLEM} : il ne riposte pas, ses PV remontent au
  *       maximum toutes les deux secondes ; les dégâts reçus sont annoncés au joueur par {@link TrialHitSystem} ;</li>
  *   <li>l'Archiviste ({@value #ARCHIVIST}) à {@link ObservatoryLayout#ARCHIVIST}, derrière son comptoir :
- *       invulnérable, il ouvre sa boutique de troc quand on lui parle.</li>
+ *       invulnérable, il ouvre sa boutique de troc quand on lui parle ;</li>
+ *   <li>l'Alchimiste de Dessa ({@value #ALCHEMIST}) à {@link ObservatoryLayout#ALCHEMIST}, devant ses fioles :
+ *       invulnérable, il vend les potions des Brumes ({@code potion}).</li>
  * </ul>
  */
 public final class ObservatoryNpcSystem extends TickingSystem<EntityStore> {
 
     public static final String ROLE = "Nakasar_Fractal_Trial_Golem";
     public static final String ARCHIVIST = "Nakasar_Fractal_Archivist";
+    public static final String ALCHEMIST = "Nakasar_Fractal_Alchemist";
     private static final float INTERVAL = 2f;
     /** Temps écoulé depuis le dernier passage, par monde. */
     private static final Map<World, float[]> ELAPSED = Collections.synchronizedMap(new WeakHashMap<>());
@@ -63,12 +66,8 @@ public final class ObservatoryNpcSystem extends TickingSystem<EntityStore> {
             return;
         }
         Store<EntityStore> store = world.getEntityStore().getStore();
-        if (find(store, ARCHIVIST) == null) {
-            Ref<EntityStore> archivist = spawn(store, ARCHIVIST, ObservatoryLayout.ARCHIVIST);
-            if (archivist != null) {
-                store.ensureAndGetComponent(archivist, Invulnerable.getComponentType());
-            }
-        }
+        spawnMerchant(store, ARCHIVIST, ObservatoryLayout.ARCHIVIST);
+        spawnMerchant(store, ALCHEMIST, ObservatoryLayout.ALCHEMIST);
         Ref<EntityStore> golem = find(store);
         if (golem == null) {
             spawn(store, ROLE, ObservatoryLayout.GOLEM);
@@ -78,6 +77,16 @@ public final class ObservatoryNpcSystem extends TickingSystem<EntityStore> {
         EntityStatValue health = stats == null ? null : stats.get(DefaultEntityStatTypes.getHealth());
         if (health != null && health.get() < health.getMax()) {
             stats.setStatValue(DefaultEntityStatTypes.getHealth(), health.getMax());
+        }
+    }
+
+    /** Pose le marchand `role` s'il manque, invulnérable. */
+    private static void spawnMerchant(Store<EntityStore> store, String role, double[] at) {
+        if (find(store, role) == null) {
+            Ref<EntityStore> merchant = spawn(store, role, at);
+            if (merchant != null) {
+                store.ensureAndGetComponent(merchant, Invulnerable.getComponentType());
+            }
         }
     }
 
@@ -102,7 +111,7 @@ public final class ObservatoryNpcSystem extends TickingSystem<EntityStore> {
 
     private static Ref<EntityStore> spawn(Store<EntityStore> store, String role, double[] at) {
         Vector3d position = new Vector3d(at[0], at[1], at[2]);
-        // Face à l'Astrolabe : le golem vers l'est (son pupitre), l'Archiviste vers l'ouest (son comptoir).
+        // Face à l'Astrolabe : le golem vers l'est (son pupitre), l'Archiviste et l'Alchimiste vers l'ouest (comptoir, fioles derrière).
         Rotation3f rotation = new Rotation3f(0f, Telegraphs.yawToward(position, new Vector3d(0.5, at[1], at[2])), 0f);
         Pair<Ref<EntityStore>, INonPlayerCharacter> spawned = NPCPlugin.get().spawnNPC(store, role, null, position, rotation);
         if (spawned == null || spawned.first() == null) {

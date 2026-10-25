@@ -1,0 +1,26 @@
+{
+  "$Comment": "Boire : 5 pile(s) de Defensive des Brumes. Généré par tools/generate_potions.py.",
+  "Type": "Charging",
+  "FailOnDamage": false,
+  "Effects": {
+    "ItemAnimationId": "Consume",
+    "WorldSoundEventId": "SFX_Nakasar_Fractal_Drink",
+    "ClearAnimationOnFinish": true,
+    "ClearSoundEventOnFinish": true
+  },
+  "HorizontalSpeedMultiplier": 0.75,
+  "Next": {
+    "1.5": {
+      "Type": "Nakasar_Fractal_DrinkMistPotion",
+      "Potion": "Defensive",
+      "Stacks": 5,
+      "Next": {
+        "Type": "ModifyInventory",
+        "AdjustHeldItemQuantity": -1
+      }
+    }
+  },
+  "Failed": {
+    "Type": "Simple"
+  }
+}

@@ -1,0 +1,12 @@
+{
+  "Volume": -4,
+  "MaxDistance": 12,
+  "Layers": [
+    {
+      "Files": [
+        "Sounds/Nakasar/Fractals/Mist_Drink.ogg"
+      ],
+      "Volume": 0
+    }
+  ]
+}

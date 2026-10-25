@@ -60,6 +60,10 @@ import dev.nakasar.hytale.fractals.party.ClaimRewardInteraction;
 import dev.nakasar.hytale.fractals.party.FallRescueSystem;
 import dev.nakasar.hytale.fractals.party.FractalRuns;
 import dev.nakasar.hytale.fractals.prison.CagePlayerInteraction;
+import dev.nakasar.hytale.fractals.potion.DrinkMistPotionInteraction;
+import dev.nakasar.hytale.fractals.potion.MistPotionDamageFilter;
+import dev.nakasar.hytale.fractals.potion.MistPotionState;
+import dev.nakasar.hytale.fractals.potion.MistPotionSystem;
 import dev.nakasar.hytale.fractals.progress.AgonySystem;
 import dev.nakasar.hytale.fractals.progress.FractalProgress;
 import dev.nakasar.hytale.fractals.progress.OpenBagInteraction;
@@ -109,6 +113,10 @@ import dev.nakasar.hytale.fractals.progress.OpenInfusionsInteraction;
  * <p>Étape 6 : les déroulés communs ({@code stage} : {@link StageSystem}, blocs {@code Nakasar_Fractal_Use}, objet
  * lancé {@code Nakasar_Fractal_ThrowItem}), l'attraction {@code Nakasar_Fractal_Pull}, et les fractales Inclassable
  * ({@link Uncategorized}) et Volcanique ({@link Volcanic}).
+ *
+ * <p>Potions des Brumes ({@code potion}) : vendues par l'Alchimiste de Dessa ({@link ObservatoryNpcSystem}), bues avec
+ * {@code Nakasar_Fractal_DrinkMistPotion}, piles sauvegardées avec le joueur ({@link MistPotionState}), effets et
+ * endurance ({@link MistPotionSystem}), dégâts ({@link MistPotionDamageFilter}) ; actives dans les fractales seulement.
  */
 public final class FractalsPlugin extends JavaPlugin {
 
@@ -147,9 +155,11 @@ public final class FractalsPlugin extends JavaPlugin {
         interactions.register(PullInteraction.TYPE_ID, PullInteraction.class, PullInteraction.CODEC);
         interactions.register(StageUseInteraction.TYPE_ID, StageUseInteraction.class, StageUseInteraction.CODEC);
         interactions.register(ThrowItemInteraction.TYPE_ID, ThrowItemInteraction.class, ThrowItemInteraction.CODEC);
+        interactions.register(DrinkMistPotionInteraction.TYPE_ID, DrinkMistPotionInteraction.class, DrinkMistPotionInteraction.CODEC);
 
         var systems = getEntityStoreRegistry();
         FractalProgress.setComponentType(systems.registerComponent(FractalProgress.class, FractalProgress.ID, FractalProgress.CODEC));
+        MistPotionState.setComponentType(systems.registerComponent(MistPotionState.class, MistPotionState.ID, MistPotionState.CODEC));
         systems.registerSystem(new TelegraphSystem());
         systems.registerSystem(new BossStun.Unload());
         systems.registerSystem(new MinionShieldSystem());
@@ -162,6 +172,8 @@ public final class FractalsPlugin extends JavaPlugin {
         systems.registerSystem(new TrialHitSystem());
         systems.registerSystem(new FallRescueSystem());
         systems.registerSystem(new AgonySystem());
+        systems.registerSystem(new MistPotionSystem());
+        systems.registerSystem(new MistPotionDamageFilter());
         systems.registerSystem(new HammerSystem());
         systems.registerSystem(new HammerDamageSystem());
         systems.registerSystem(new HammerDropSystem());
@@ -193,14 +205,14 @@ public final class FractalsPlugin extends JavaPlugin {
 
         getCommandRegistry().registerCommand(new FractalCommand());
 
-        getLogger().atInfo().log("Nakasar Fractales : 20 types d'interaction (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s), progression, fractales du jour, Falaise, instabilités, Inclassable, Volcanique, Océan solide, Marais, Tempête de neige, systèmes et /fractale enregistrés",
+        getLogger().atInfo().log("Nakasar Fractales : 21 types d'interaction (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s), progression, fractales du jour, potions des Brumes, Falaise, instabilités, Inclassable, Volcanique, Océan solide, Marais, Tempête de neige, systèmes et /fractale enregistrés",
                 TelegraphInteraction.TYPE_ID, ChargeInteraction.TYPE_ID, StunSelfInteraction.TYPE_ID,
                 SummonMinionsInteraction.TYPE_ID, CagePlayerInteraction.TYPE_ID, OpenConsoleInteraction.TYPE_ID,
                 HarmonizeInteraction.TYPE_ID, LeaveInteraction.TYPE_ID, TrialDemoInteraction.TYPE_ID,
                 OpenInfusionsInteraction.TYPE_ID, OpenBagInteraction.TYPE_ID, ClaimRewardInteraction.TYPE_ID,
                 OpenShopInteraction.TYPE_ID, OpenDefianceInteraction.TYPE_ID, HealFoesInteraction.TYPE_ID,
                 CliffsideUseInteraction.TYPE_ID, PullInteraction.TYPE_ID, StageUseInteraction.TYPE_ID,
-                ThrowItemInteraction.TYPE_ID, DailyBoardInteraction.TYPE_ID);
+                ThrowItemInteraction.TYPE_ID, DailyBoardInteraction.TYPE_ID, DrinkMistPotionInteraction.TYPE_ID);
     }
 
     @Override
@@ -219,5 +231,6 @@ public final class FractalsPlugin extends JavaPlugin {
         Stages.clearAll();
         InstabilitySystem.clearAll();
         HitShield.clearAll();
+        MistPotionSystem.clearAll();
     }
 }

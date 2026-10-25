@@ -1,0 +1,33 @@
+{
+  "TranslationProperties": {
+    "Name": "nakasar_fractals_potions.items.Nakasar_Fractal_Mist_Potion_Mobility.name",
+    "Description": "nakasar_fractals_potions.items.Nakasar_Fractal_Mist_Potion_Mobility.description"
+  },
+  "Icon": "Icons/Items/Nakasar/Fractals/Mist_Potion_Mobility.png",
+  "Model": "Items/Nakasar/Fractals/Mist_Potion_Mobility.blockymodel",
+  "Texture": "Items/Nakasar/Fractals/Mist_Potion_Mobility.png",
+  "Quality": "Rare",
+  "Categories": [
+    "Items.Potions"
+  ],
+  "PlayerAnimationsId": {
+    "Parent": "Item",
+    "Animations": {
+      "Consume": {
+        "FirstPerson": "Characters/Animations/Items/Main_Handed/Item/Attacks/Drink/Drink_FPS.blockyanim",
+        "ThirdPerson": "Characters/Animations/Items/Main_Handed/Item/Attacks/Drink/Drink.blockyanim",
+        "Speed": 1,
+        "Looping": true
+      }
+    }
+  },
+  "ItemSoundSetId": "ISS_Items_Gems",
+  "Consumable": true,
+  "Utility": {
+    "Compatible": false
+  },
+  "MaxStack": 25,
+  "Interactions": {
+    "Secondary": "Root_Nakasar_Fractal_Mist_Potion_Mobility"
+  }
+}

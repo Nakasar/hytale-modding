@@ -75,9 +75,13 @@ GATE_Z, GATE_CY = 31, 5.5     # porte asura : plan du voile (z) et centre de l'a
 GATE_INNER, GATE_OUTER = 6, 8.6
 ARRIVAL = (0, GROUND_Y, 23)   # point d'apparition, sur le parvis de la porte, tourné vers le cercle
 RETURN_PORTAL = (0, 0, GATE_Z)  # portail de retour vanilla, au pied du voile de la porte
-# Île asura (est) : l'Archiviste derrière son comptoir, autel des infusions, creuset, registre, consoles holographiques.
+# Île asura (est) : l'Archiviste derrière son comptoir, l'Alchimiste de Dessa, autel des infusions, creuset, registre,
+# consoles holographiques.
 LAB_CENTER, LAB_RADIUS = (46, 1), 12
 ARCHIVIST_SPOT = (49, GROUND_Y, 1)
+# L'Alchimiste de Dessa (potions des Brumes, tools/generate_potions.py), au nord de l'Archiviste, ses fioles derrière lui.
+ALCHEMIST_SPOT = (50, GROUND_Y, -5)
+ALCHEMIST_SHELF = [(51, 0, -6), (51, 0, -4), (52, 0, -5)]
 COUNTER = (47, 0, 1)
 REGISTRY = (44, 0, -6)
 DAILY_BOARD = (41, 0, -5)               # tableau des fractales du jour (étape 9), à côté du Registre
@@ -416,6 +420,10 @@ def observatory_prefab():
     p.set(*FORGE_SPOT, FORGE)
     for spot in HOLO_CONSOLES:
         p.set(*spot, HOLO_CONSOLE)
+    for spot in ALCHEMIST_SHELF:
+        assert spot not in p.blocks, f"les fioles de l'Alchimiste tombent sur un bloc en {spot}"
+        p.set(*spot, "Deco_Potion")
+    assert (ALCHEMIST_SPOT[0], 0, ALCHEMIST_SPOT[2]) not in p.blocks, "l'Alchimiste tombe dans un bloc"
     # --- île d'essai (ouest) : aire du golem, pupitre, cage fermée par des cristaux ---
     gx, _, gz = GOLEM_SPOT
     for x, z in disc_cells(gx, gz, 4.5):
@@ -434,7 +442,7 @@ def observatory_prefab():
     p.set(cx, 0, cz, CAGE_CELL)
     p.set(cx, 1, cz, AIR)
     p.set(cx, 2, cz, AIR)
-    for spot in (ARRIVAL, GOLEM_SPOT, ARCHIVIST_SPOT):
+    for spot in (ARRIVAL, GOLEM_SPOT, ARCHIVIST_SPOT, ALCHEMIST_SPOT):
         assert (spot[0], spot[2]) in tops, f"{spot} tombe dans le vide"
     # --- sol naturel : herbe et mousse dessus, falaise sombre et épaisse dessous, arche sous les ponts ---
     def arch(x, z, d):
@@ -1151,7 +1159,7 @@ def lang():
             "Saison 1 : Falaise, Inclassable, Volcanique, Océan solide, Marais, Tempête de neige.\n"
             "Le golem d'essai, à l'ouest, sert à tester ses coups, sa résistance à l'agonie et à voir les attaques "
             "des fractales.\n"
-            "À l'est, l'Archiviste échange les éclats de Brume ; l'Autel des infusions porte votre résistance à "
+            "À l'est, l'Archiviste échange les éclats de Brume et l'Alchimiste de Dessa vend les potions des Brumes ; l'Autel des infusions porte votre résistance à "
             "l'agonie et le Creuset des Brumes fusionne les infusions.\n"
             "Chaque fractale terminée à votre plus haut niveau débloque le suivant ; le meneur ne peut choisir qu'un "
             "niveau qu'il a débloqué.\n\n"
@@ -1255,7 +1263,7 @@ def lang():
             "Season 1: Cliffside, Uncategorized, Volcanic, Solid Ocean, Swampland, Snowblind.\n"
             "The training golem, to the west, lets you test your hits, your agony resistance and see the fractal "
             "attacks.\n"
-            "To the east, the Archivist trades Mist Shards; the Infusion Altar holds your agony resistance and the "
+            "To the east, the Archivist trades Mist Shards and Dessa's Alchemist sells Mist potions; the Infusion Altar holds your agony resistance and the "
             "Mist Crucible fuses infusions.\n"
             "Each fractal completed at your highest level unlocks the next; the leader can only pick a level they "
             "have unlocked.\n\n"
@@ -1346,6 +1354,8 @@ public final class ObservatoryLayout {{
     public static final double[] TRIAL_RELEASE = {{{TRIAL_PANEL[0] + 1.5}, {float(GROUND_Y + TRIAL_PANEL[1])}, {TRIAL_PANEL[2] + 2.5}}};
     /** L'Archiviste (pieds), derrière son comptoir, tourné vers l'ouest. */
     public static final double[] ARCHIVIST = {{{ARCHIVIST_SPOT[0] + 0.5}, {float(ARCHIVIST_SPOT[1])}, {ARCHIVIST_SPOT[2] + 0.5}}};
+    /** L'Alchimiste de Dessa (pieds), marchand des potions des Brumes, tourné vers l'ouest. */
+    public static final double[] ALCHEMIST = {{{ALCHEMIST_SPOT[0] + 0.5}, {float(ALCHEMIST_SPOT[1])}, {ALCHEMIST_SPOT[2] + 0.5}}};
     /** Préfixes des objets de sélection : noyau d'une fractale ({{@code <préfixe><Id>}}) et diapason d'un niveau. */
     public static final String CORE_PREFIX = "{CORE_PREFIX}";
     public static final String LEVEL_PREFIX = "{LEVEL_PREFIX}";

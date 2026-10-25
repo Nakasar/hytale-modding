@@ -3,7 +3,7 @@
 <Infobox pending title="Observatoire des fractales" kind="Hub" icon="/jeu/Icons/Items/Nakasar/Fractals/Astrolabe_Ring.png" caption="Anneau de l'Astrolabe">
 <Info label="Accès">Fragment des Brumes dans l'Ancienne passerelle, ou Portail des Brumes</Info>
 <Info label="Groupe">5 joueurs au plus, sur le cercle</Info>
-<Info label="Marchand">l'Archiviste (est)</Info>
+<Info label="Marchands">l'Archiviste et l'Alchimiste de Dessa (est)</Info>
 <Info label="Commande">`/fractale`</Info>
 </Infobox>
 
@@ -15,7 +15,7 @@ On arrive devant la grande **porte asura**, au sud : traverser son voile violet 
 
 ![Carte de l'Observatoire](../images/fractales/carte-observatoire.png)
 
-*Carte de l'Observatoire, vue de dessus : 1 point d'arrivée devant la porte asura (retour chez soi), 2 distributeurs de noyaux et de diapasons, 3 Astrolabe et console de sélection au centre du cercle d'harmonisation, 4 île asura de l'Archiviste, 5 île du golem d'essai.*
+*Carte de l'Observatoire, vue de dessus : 1 point d'arrivée devant la porte asura (retour chez soi), 2 distributeurs de noyaux et de diapasons, 3 Astrolabe et console de sélection au centre du cercle d'harmonisation, 4 île asura de l'Archiviste et de l'Alchimiste de Dessa, 5 île du golem d'essai.*
 
 ## Fragment des Brumes {#fragment-des-brumes}
 
@@ -35,6 +35,7 @@ Le **Portail des Brumes** est une arche de pierre de 3 blocs de large et 4 de ha
 ## L'île de l'Archiviste (est)
 
 - **L'Archiviste** et son **comptoir** : troc d'[éclats de Brume](progression.md#eclats-de-brume) contre infusions, Fragments des Brumes et [cosmétiques de saison](cosmetiques.md).
+- **L'Alchimiste de Dessa**, au nord, devant ses fioles : il vend les [potions des Brumes](potions.md) contre des éclats de Brume.
 - **Autel des infusions** : vos 12 emplacements d'[infusion](progression.md#agonie-et-infusions).
 - **Creuset des Brumes** : fusion des infusions et nouveau Fragment.
 - **Tableau des fractales du jour** : les trois [fractales du jour](progression.md#fractales-du-jour), cochées si vous avez déjà pris leur coffre aujourd'hui.

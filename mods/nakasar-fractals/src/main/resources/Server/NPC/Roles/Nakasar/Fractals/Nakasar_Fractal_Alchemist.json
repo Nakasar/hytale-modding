@@ -1,0 +1,62 @@
+{
+  "$Comment": "L'Alchimiste de Dessa : posé par ObservatoryNpcSystem sur l'île asura de l'Observatoire, immobile et invulnérable. L'utiliser ouvre sa boutique de troc (potions des Brumes contre éclats de Brume). Généré par tools/generate_potions.py.",
+  "Type": "Generic",
+  "Appearance": "Nakasar_Fractal_Alchemist",
+  "NameTranslationKey": "nakasar_fractals_potions.npc.Alchemist.name",
+  "MaxHealth": 1000,
+  "StartState": "Idle",
+  "DefaultPlayerAttitude": "Neutral",
+  "DefaultNPCAttitude": "Ignore",
+  "MotionControllerList": [
+    {
+      "Type": "Walk",
+      "MaxWalkSpeed": 0.1,
+      "Gravity": 10,
+      "MaxFallSpeed": 10,
+      "Acceleration": 10,
+      "JumpHeight": 1.0
+    }
+  ],
+  "KnockbackScale": 0,
+  "Instructions": [
+    {
+      "Sensor": {
+        "Type": "State",
+        "State": "Idle"
+      },
+      "Instructions": [
+        {
+          "Actions": []
+        }
+      ]
+    }
+  ],
+  "InteractionInstruction": {
+    "Instructions": [
+      {
+        "Continue": true,
+        "Sensor": {
+          "Type": "Any"
+        },
+        "Actions": [
+          {
+            "Type": "SetInteractable",
+            "Interactable": true,
+            "Hint": "interactionHints.trade"
+          }
+        ]
+      },
+      {
+        "Sensor": {
+          "Type": "HasInteracted"
+        },
+        "Actions": [
+          {
+            "Type": "OpenBarterShop",
+            "Shop": "Nakasar_Fractal_Alchemist"
+          }
+        ]
+      }
+    ]
+  }
+}

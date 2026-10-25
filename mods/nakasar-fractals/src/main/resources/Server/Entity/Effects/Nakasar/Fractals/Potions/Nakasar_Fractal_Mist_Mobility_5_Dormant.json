@@ -1,0 +1,8 @@
+{
+  "$Comment": "Mobility des Brumes, 5 pile(s) en sommeil (hors fractale, sans bonus) : posé et retiré par potion.MistPotionSystem, qui garde la durée. Généré par tools/generate_potions.py.",
+  "Name": "nakasar_fractals_potions.effects.Nakasar_Fractal_Mist_Mobility_5_Dormant",
+  "StatusEffectIcon": "UI/StatusEffects/Nakasar/Fractals/Potions/Mobility_5_Dormant.png",
+  "OverlapBehavior": "Overwrite",
+  "Infinite": false,
+  "Duration": 3600
+}
