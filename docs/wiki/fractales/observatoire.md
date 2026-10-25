@@ -7,13 +7,15 @@
 <Info label="Commande">`/fractale`</Info>
 </Infobox>
 
-L'**Observatoire** est une île ronde suspendue dans les Brumes. Tout s'y choisit dans le décor : pas de menu à ouvrir.
+L'**Observatoire** est un petit archipel suspendu dans les Brumes, comme l'Observatoire des Brumes de *Guild Wars 2* : un plateau de roche moussue au centre, l'île asura de l'Archiviste à l'est et l'île du golem d'essai à l'ouest, reliées par des ponts de roche, sous un ciel doré où flottent des ruines gothiques et des aiguilles de pierre. Tout s'y choisit dans le décor : pas de menu à ouvrir.
+
+On arrive devant la grande **porte asura**, au sud : traverser son voile violet ramène chez soi (pas dans les 15 premières secondes). Au centre, l'Astrolabe se dresse dans un bassin où tombent des cascades de lumière.
 
 ## Carte
 
 ![Carte de l'Observatoire](../images/fractales/carte-observatoire.png)
 
-*Carte de l'Observatoire, vue de dessus : 1 point d'arrivée et portail de retour, 2 distributeurs de noyaux et de diapasons, 3 Astrolabe et console de sélection au centre du cercle d'harmonisation, 4 coin de l'Archiviste, 5 golem d'essai.*
+*Carte de l'Observatoire, vue de dessus : 1 point d'arrivée devant la porte asura (retour chez soi), 2 distributeurs de noyaux et de diapasons, 3 Astrolabe et console de sélection au centre du cercle d'harmonisation, 4 île asura de l'Archiviste, 5 île du golem d'essai.*
 
 ## Fragment des Brumes {#fragment-des-brumes}
 
@@ -30,7 +32,7 @@ Le **Portail des Brumes** est une arche de pierre de 3 blocs de large et 4 de ha
 3. Montez sur le **cercle d'harmonisation** : les joueurs qui s'y tiennent forment le groupe (5 au plus). Le **meneur** est le premier arrivé dans l'Observatoire ; il part toujours avec le groupe.
 4. Le meneur utilise un des 4 **résonateurs** au bord intérieur du cercle : tout le cercle part dans une instance de la fractale, à lui seul. Le niveau ne peut pas dépasser le plus haut niveau débloqué par le meneur.
 
-## Le coin de l'Archiviste (est)
+## L'île de l'Archiviste (est)
 
 - **L'Archiviste** et son **comptoir** : troc d'[éclats de Brume](progression.md#eclats-de-brume) contre infusions, Fragments des Brumes et [cosmétiques de saison](cosmetiques.md).
 - **Autel des infusions** : vos 12 emplacements d'[infusion](progression.md#agonie-et-infusions).
@@ -38,7 +40,7 @@ Le **Portail des Brumes** est une arche de pierre de 3 blocs de large et 4 de ha
 - **Tableau des fractales du jour** : les trois [fractales du jour](progression.md#fractales-du-jour), cochées si vous avez déjà pris leur coffre aujourd'hui.
 - **Registre des fractales** : le mode d'emploi de l'Observatoire.
 
-## Golem d'essai (ouest)
+## Golem d'essai (île de l'ouest)
 
 Un mannequin qui encaisse tout, annonce les dégâts reçus et reprend ses PV. Son **pupitre** lui fait rejouer sur vous les zones rouges des fractales (cercle, cône, ligne, puis une cage) ; le premier cercle pose de l'**agonie** au niveau harmonisé, pour tester votre résistance.
 

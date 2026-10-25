@@ -59,11 +59,11 @@ La boucle tourne dans l'Observatoire : on n'en sort que pour refabriquer un frag
 
 ## L'Observatoire des fractales
 
-L'Observatoire est une instance hub, île ronde d'environ 60 blocs suspendue dans les Brumes (monde `Void` comme les Deepworks), où tout se choisit physiquement dans le décor, sans interface à construire.
+L'Observatoire est une instance hub suspendue dans les Brumes (monde `Void` comme les Deepworks), où tout se choisit physiquement dans le décor, sans interface à construire. Depuis le 25 octobre 2026 (captures de Kevin), il reprend l'Observatoire des Brumes de GW2 : plateau de roche moussue aux falaises sombres, porte asura en anneau au sud, bassin de lumière autour de l'Astrolabe, île asura de l'Archiviste à l'est, île du golem d'essai à l'ouest, ponts de roche courbes, arbres d'automne, ruines gothiques et aiguilles au loin, ciel doré.
 
 ![Plan de l'Observatoire (première version, avec les 6 arches remplacées depuis par la console de sélection)](images/observatoire.png)
 
-- **Arrivée (sud)** : le groupe sort du portail ancien sur un parvis ; un portail de sortie juste à côté ramène au monde.
+- **Arrivée (sud)** : le groupe arrive devant la grande porte asura ; traverser son voile violet (ou le portail de retour à son pied) ramène au monde.
 - **L'Astrolabe (centre)** : grand instrument animé, portant la **console de sélection** (révisé le 21 octobre 2026 : une arche par fractale ne tient pas à des dizaines de fractales). Deux **distributeurs** à l'entrée du cercle donnent gratuitement le **noyau** d'une fractale et le **diapason** d'un niveau (1 à 100). Les joueurs posent un noyau et un diapason dans la console : le cercle est **harmonisé**, la fractale, le niveau et le rang s'affichent en titre à l'écran.
 - **Cercle d'harmonisation** : l'anneau au sol autour de l'Astrolabe. Les joueurs debout dessus forment le groupe (5 au plus, les suivants reçoivent un message de refus).
 - **Résonateurs** au bord intérieur du cercle : le meneur (premier arrivé) en utilise un, tout le cercle est téléporté dans une nouvelle instance de la fractale harmonisée, si le niveau ne dépasse pas son plus haut niveau débloqué.
