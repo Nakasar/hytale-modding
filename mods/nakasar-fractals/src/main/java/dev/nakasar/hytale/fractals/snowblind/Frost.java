@@ -189,6 +189,11 @@ final class Frost {
         player.sendMessage(Message.translation(Snowblind.MESSAGES + "cold.freed"));
     }
 
+    /** Ce joueur est-il enfermé dans un éclat de glace ? */
+    boolean encased(PlayerRef player) {
+        return prisoners.containsValue(player.getReference());
+    }
+
     /** Le joueur enfermé par cet éclat (null si ce n'est pas un éclat suivi). */
     Ref<EntityStore> prisoner(Ref<EntityStore> shard) {
         return prisoners.get(shard);

@@ -28,7 +28,7 @@
               {
                 "X": 0,
                 "Y": 100,
-                "Z": -239
+                "Z": -124
               }
             ]
           }
@@ -61,7 +61,7 @@
               {
                 "X": 0,
                 "Y": 100,
-                "Z": -175
+                "Z": -60
               }
             ]
           }
@@ -94,7 +94,7 @@
               {
                 "X": 0,
                 "Y": 100,
-                "Z": -111
+                "Z": 4
               }
             ]
           }
@@ -127,7 +127,7 @@
               {
                 "X": 0,
                 "Y": 100,
-                "Z": -47
+                "Z": 68
               }
             ]
           }
@@ -160,7 +160,7 @@
               {
                 "X": 0,
                 "Y": 100,
-                "Z": 17
+                "Z": 132
               }
             ]
           }
@@ -172,72 +172,6 @@
             "WeightedPrefabPaths": [
               {
                 "Path": "Nakasar/Fractals/Snowblind/Section_04",
-                "Weight": 1.0
-              }
-            ]
-          }
-        }
-      }
-    },
-    {
-      "Runtime": 0,
-      "ContextPrecision": "Prop",
-      "PropDistribution": {
-        "Type": "Assigned",
-        "OverrideAllProps": true,
-        "PropDistribution": {
-          "Type": "Positions",
-          "Positions": {
-            "Type": "List",
-            "Positions": [
-              {
-                "X": 0,
-                "Y": 100,
-                "Z": 81
-              }
-            ]
-          }
-        },
-        "Assignments": {
-          "Type": "Constant",
-          "Prop": {
-            "Type": "Prefab",
-            "WeightedPrefabPaths": [
-              {
-                "Path": "Nakasar/Fractals/Snowblind/Section_05",
-                "Weight": 1.0
-              }
-            ]
-          }
-        }
-      }
-    },
-    {
-      "Runtime": 0,
-      "ContextPrecision": "Prop",
-      "PropDistribution": {
-        "Type": "Assigned",
-        "OverrideAllProps": true,
-        "PropDistribution": {
-          "Type": "Positions",
-          "Positions": {
-            "Type": "List",
-            "Positions": [
-              {
-                "X": 0,
-                "Y": 100,
-                "Z": 145
-              }
-            ]
-          }
-        },
-        "Assignments": {
-          "Type": "Constant",
-          "Prop": {
-            "Type": "Prefab",
-            "WeightedPrefabPaths": [
-              {
-                "Path": "Nakasar/Fractals/Snowblind/Section_06",
                 "Weight": 1.0
               }
             ]

@@ -26,7 +26,8 @@ import java.util.concurrent.ThreadLocalRandom;
  * <ul>
  *   <li>toutes les {@value #ELEMENTAL_EVERY} s, des élémentaires de glace sortent de la lisière et marchent vers le
  *   feu ; arrivé, chacun lui retire {@value #DOUSE} % de bois et disparaît ;</li>
- *   <li>toutes les {@value #WAVE_EVERY} s, loups ou cultistes attaquent le camp ({@value #WAVE_CAP} vivants au plus).</li>
+ *   <li>toutes les {@value #WAVE_EVERY} s, une meute de loups des neiges attaque le camp, avec des Svanir une vague sur
+ *   deux ({@value #WAVE_CAP} vivants au plus) ; la première meute arrive peu après qu'on a allumé le feu.</li>
  * </ul>
  */
 final class Campfire {
@@ -37,7 +38,7 @@ final class Campfire {
     static final float MELT_SECONDS = 90f;
     static final float ELEMENTAL_EVERY = 14f;
     static final float WAVE_EVERY = 25f;
-    static final int WAVE_CAP = 8;
+    static final int WAVE_CAP = 10;
     static final float DOUSE = 35f;
     static final double REACH = 2.6;
 
@@ -48,7 +49,7 @@ final class Campfire {
     private int rowsGone;
     private float elementalClock;
     private float waveClock;
-    private boolean wolves;
+    private int waves;
     private final List<Ref<EntityStore>> elementals = new ArrayList<>();
     private final List<Ref<EntityStore>> raiders = new ArrayList<>();
 
@@ -80,7 +81,7 @@ final class Campfire {
             if (!started) {
                 started = true;
                 elementalClock = ELEMENTAL_EVERY - 6f;
-                waveClock = WAVE_EVERY - 10f;
+                waveClock = WAVE_EVERY - 5f;
             }
             Spawns.tellAll(world, Message.translation(Snowblind.MESSAGES + "fire.lit"));
             return;
@@ -198,21 +199,33 @@ final class Campfire {
             return;
         }
         waveClock = 0f;
-        int count = Math.min(WAVE_CAP - raiders.size(), 2 + FractalRuns.partySize(world) / 2);
-        if (count <= 0) {
+        int room = WAVE_CAP - raiders.size();
+        if (room <= 0) {
             return;
         }
-        wolves = !wolves;
+        int party = FractalRuns.partySize(world);
+        List<String> roles = new ArrayList<>();
+        if (waves % 2 == 1) {
+            // les Svanir d'abord : si la place manque, ce sont des loups qui restent dans la forêt
+            roles.add(Snowblind.ICE_CASTER);
+            for (int i = 0; i < 1 + party / 3; i++) {
+                roles.add(Snowblind.CULTIST);
+            }
+        }
+        for (int i = 0; i < 2 + party / 2 + (waves == 0 ? 1 : 0); i++) {
+            roles.add(Snowblind.WOLF);
+        }
+        boolean svanir = !roles.get(0).equals(Snowblind.WOLF);
+        waves++;
         double[][] spawns = SnowblindLayout.WAVE_SPAWNS;
         double[] p = spawns[ThreadLocalRandom.current().nextInt(spawns.length)];
-        for (int i = 0; i < count; i++) {
-            Vector3d at = Spawns.point(p).add((i % 2) * 1.5 - 0.75, 0, (i / 2) * 1.5 - 0.75);
-            String role = wolves ? Snowblind.WOLF : i == 0 ? Snowblind.ICE_CASTER : Snowblind.CULTIST;
-            Ref<EntityStore> ref = Spawns.spawnFoe(world, store, role, at, Telegraphs.yawToward(at, center()));
+        for (int i = 0; i < Math.min(room, roles.size()); i++) {
+            Vector3d at = Spawns.point(p).add((i % 4) - 1.5, 0, (i / 4) - 1.0);
+            Ref<EntityStore> ref = Spawns.spawnFoe(world, store, roles.get(i), at, Telegraphs.yawToward(at, center()));
             if (ref != null) {
                 raiders.add(ref);
             }
         }
-        Spawns.tellAll(world, Message.translation(Snowblind.MESSAGES + "fire.wave"));
+        Spawns.tellAll(world, Message.translation(Snowblind.MESSAGES + (svanir ? "fire.wave" : "fire.wolves")));
     }
 }
