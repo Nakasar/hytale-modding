@@ -21,8 +21,9 @@ import java.util.UUID;
 
 /**
  * Retours de saut des fractales : dans une zone de saut, la dernière plate-forme sûre ({@value #LANDING}) où chaque
- * joueur s'est tenu est retenue ; tombé plus de {@value #DROP} blocs plus bas au-dessus de la même zone, il y est
- * ramené. Hors des zones (ou avant toute plate-forme), rien ne change : la chute normale et le filet anti-chute
+ * joueur s'est tenu est retenue ; tombé plus de {@value #DROP} blocs sous la dernière plate-forme (sûre ou non) où il
+ * s'est tenu, au-dessus de la même zone, il est ramené à la plate-forme sûre. Hors des zones (ou avant toute
+ * plate-forme), rien ne change : la chute normale et le filet anti-chute
  * s'appliquent. Une zone dont seul le départ porte des plates-formes sûres ramène au départ (harpies de l'Inclassable).
  */
 public final class SafeLandings {
@@ -37,6 +38,8 @@ public final class SafeLandings {
     private final String messageKey;
     private final Set<String> landings;
     private final Map<UUID, Landing> last = new HashMap<>();
+    /** Hauteur de la dernière plate-forme (bloc plein quelconque de la zone) où chaque joueur s'est tenu. */
+    private final Map<UUID, Double> ground = new HashMap<>();
 
     /** `zones` : zones de saut ; `messageKey` : message au joueur ramené. */
     public SafeLandings(List<Box> zones, String messageKey) {
@@ -64,15 +67,27 @@ public final class SafeLandings {
             String below = zone >= 0 ? WorldBlocks.name(chunks, x, (int) Math.floor(at.y() - 0.1), z) : null;
             if (below != null && landings.contains(below)) {
                 last.put(player.getUuid(), new Landing(zone, new Vector3d(x + 0.5, Math.floor(at.y() + 0.05), z + 0.5)));
+                ground.remove(player.getUuid());
                 continue;
             }
             Landing landing = last.get(player.getUuid());
-            if (landing == null || at.y() >= landing.at().y() - DROP || !above(landing.zone(), at)) {
+            if (landing == null) {
+                continue;
+            }
+            if (zone == landing.zone() && WorldBlocks.solid(chunks, x, (int) Math.floor(at.y() - 0.1), z)) {
+                // Debout sur une plate-forme du parcours, même sans bloc sûr : la chute se compte depuis elle (les
+                // plates-formes de la mine descendent sous le départ, Kevin, 25 octobre 2026).
+                ground.put(player.getUuid(), Math.floor(at.y() + 0.05));
+                continue;
+            }
+            double from = ground.getOrDefault(player.getUuid(), landing.at().y());
+            if (at.y() >= from - DROP || !above(landing.zone(), at)) {
                 continue;
             }
             TransformComponent transform = store.getComponent(ref, TransformComponent.getComponentType());
             Rotation3f rotation = transform != null ? transform.getRotation() : new Rotation3f();
             store.putComponent(ref, Teleport.getComponentType(), Teleport.createForPlayer(new Vector3d(landing.at()), rotation));
+            ground.remove(player.getUuid());
             player.sendMessage(Message.translation(messageKey));
         }
     }
@@ -80,6 +95,7 @@ public final class SafeLandings {
     /** Oublie les plates-formes retenues (nouveau départ d'un saut). */
     public void forget(UUID player) {
         last.remove(player);
+        ground.remove(player);
     }
 
     /** Index de la zone de saut qui contient `at`, -1 sinon. */
