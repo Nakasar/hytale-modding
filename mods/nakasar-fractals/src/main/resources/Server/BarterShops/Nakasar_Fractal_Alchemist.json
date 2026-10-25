@@ -81,6 +81,58 @@
         }
       ],
       "Stock": 99
+    },
+    {
+      "Output": {
+        "ItemId": "Potion_Health",
+        "Quantity": 1
+      },
+      "Input": [
+        {
+          "ItemId": "Nakasar_Fractal_Mist_Shard",
+          "Quantity": 2
+        }
+      ],
+      "Stock": 99
+    },
+    {
+      "Output": {
+        "ItemId": "Potion_Stamina",
+        "Quantity": 1
+      },
+      "Input": [
+        {
+          "ItemId": "Nakasar_Fractal_Mist_Shard",
+          "Quantity": 2
+        }
+      ],
+      "Stock": 99
+    },
+    {
+      "Output": {
+        "ItemId": "Potion_Mana",
+        "Quantity": 1
+      },
+      "Input": [
+        {
+          "ItemId": "Nakasar_Fractal_Mist_Shard",
+          "Quantity": 2
+        }
+      ],
+      "Stock": 99
+    },
+    {
+      "Output": {
+        "ItemId": "Food_Salad_Caesar",
+        "Quantity": 1
+      },
+      "Input": [
+        {
+          "ItemId": "Nakasar_Fractal_Mist_Shard",
+          "Quantity": 2
+        }
+      ],
+      "Stock": 99
     }
   ]
 }

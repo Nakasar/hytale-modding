@@ -25,3 +25,12 @@ Pour boire, maintenir le **clic droit** une seconde et demie, comme les potions 
 ## L'Alchimiste de Dessa
 
 Le petit savant à lunettes de l'**île asura**, à l'est de l'[Observatoire](observatoire.md), au nord de l'Archiviste, devant ses fioles. Lui parler ouvre sa boutique : les six potions, contre des **éclats de Brume**. Comme dans GW2, une grande potion coûte cinq fois la petite.
+
+Il vend aussi, contre des éclats de Brume, quelques consommables du jeu pour préparer une fractale :
+
+| Objet | Prix (éclats de Brume) |
+|---|---|
+| Potion de soin | 2 |
+| Potion d'endurance | 2 |
+| Potion de mana | 2 |
+| Salade César | 2 |

@@ -12,7 +12,8 @@
   (potion.MistPotionDamageFilter, potion.MistPotionSystem) ;
 - le son de gorgée `SFX_Nakasar_Fractal_Drink` (mono, généré) ;
 - l'Alchimiste de Dessa : modèle, rôle et boutique de troc (`BarterShops/Nakasar_Fractal_Alchemist`, en éclats de
-  Brume, grande potion = 5 × la petite, comme dans GW2). Sa place dans l'Observatoire vient de
+  Brume, grande potion = 5 × la petite, comme dans GW2 ; plus des potions de soin, d'endurance et de mana et la salade
+  César du jeu, VANILLA_TRADES). Sa place dans l'Observatoire vient de
   tools/generate_observatory.py (ALCHEMIST_SPOT) et il est posé par observatory.ObservatoryNpcSystem ;
 - la langue `nakasar_fractals_potions.lang` (objets, effets, PNJ, messages Java).
 """
@@ -66,6 +67,9 @@ KINDS = [
      "dégâts subis dans les fractales -5 % par pile (l'agonie n'est pas réduite)",
      "incoming damage in fractals -5% per stack (agony is not reduced)"),
 ]
+# Consommables vanilla vendus en plus par l'Alchimiste (Kevin, 25 octobre 2026) : objet, prix en éclats de Brume.
+# Ids vus dans Assets.zip 0.7.2 (tools/vanilla-block-ids-0.7.2.txt).
+VANILLA_TRADES = [("Potion_Health", 2), ("Potion_Stamina", 2), ("Potion_Mana", 2), ("Food_Salad_Caesar", 2)]
 EFFECT_NAMES = {"Offensive": ("Offensive des Brumes", "Fractal Offensive"),
                 "Mobility": ("Mobilité des Brumes", "Fractal Mobility"),
                 "Defensive": ("Défense des Brumes", "Fractal Defensive")}
@@ -261,6 +265,7 @@ def barter_shop():
         trades.append((potion(kind, False), price))
     for kind, *_, price, _, _ in KINDS:
         trades.append((potion(kind, True), price * LARGE_STACKS))
+    trades += VANILLA_TRADES
     return {
         "DisplayNameKey": f"{LANG}.shop.Alchemist.name",
         "RefreshInterval": {"Days": 1},
