@@ -5,7 +5,7 @@
     "WorldStructure": "Nakasar_Fractal_Snowblind"
   },
   "ForcedWeather": "Nakasar_Fractal_Weather_Snowblind",
-  "GameTime": "0001-01-01T17:30:00Z",
+  "GameTime": "0001-01-01T00:30:00Z",
   "IsGameTimePaused": true,
   "GameplayConfig": "Nakasar_Fractal_Observatory",
   "IsPvpEnabled": false,
@@ -13,9 +13,9 @@
   "SpawnProvider": {
     "Id": "Global",
     "SpawnPoint": {
-      "X": 0.5,
-      "Y": 100.0,
-      "Z": 32.5,
+      "X": -49.5,
+      "Y": 108.0,
+      "Z": -113.5,
       "Pitch": 0,
       "Yaw": 0,
       "Roll": 0

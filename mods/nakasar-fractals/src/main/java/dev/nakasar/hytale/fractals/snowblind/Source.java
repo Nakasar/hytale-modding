@@ -1,10 +1,13 @@
 package dev.nakasar.hytale.fractals.snowblind;
 
+import com.hypixel.hytale.builtin.weather.resources.WeatherResource;
 import com.hypixel.hytale.component.ComponentAccessor;
 import com.hypixel.hytale.component.Ref;
 import com.hypixel.hytale.component.Store;
+import com.hypixel.hytale.math.vector.Rotation3f;
 import com.hypixel.hytale.server.core.Message;
 import com.hypixel.hytale.server.core.modules.entity.damage.Damage;
+import com.hypixel.hytale.server.core.modules.entity.teleport.Teleport;
 import com.hypixel.hytale.server.core.modules.entitystats.EntityStatMap;
 import com.hypixel.hytale.server.core.modules.entitystats.EntityStatValue;
 import com.hypixel.hytale.server.core.modules.entitystats.asset.DefaultEntityStatTypes;
@@ -25,6 +28,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ThreadLocalRandom;
 
 /**
  * Rencontre 2, la Source élémentaire, d'après GW2 : elle s'éveille quand on entre dans son arène. Cinq foyers
@@ -33,8 +37,12 @@ import java.util.concurrent.ConcurrentHashMap;
  * huttes) ; il brûle {@value #DRAIN} %/s. Allumé, il réchauffe (Hypothermie).
  * <ul>
  *   <li>à 75, 50 et 25 %, elle frappe les foyers allumés (cercles rouges) : −{@value #STRIKE_LOSS} % de bois chacun ;</li>
- *   <li>tous les foyers éteints : blizzard (le froid monte deux fois plus vite) jusqu'à ce qu'on en rallume un.</li>
+ *   <li>tous les foyers éteints : blizzard jusqu'à ce qu'on en rallume un (Kevin, 25 octobre 2026). Le temps du monde
+ *   passe au blizzard (brume blanche à quelques blocs), le froid monte deux fois plus vite et, au bout de
+ *   {@value #SCATTER_AFTER} s puis toutes les {@value #SCATTER_EVERY} s, la tempête jette chaque joueur de l'arène
+ *   ailleurs dans le camp.</li>
  * </ul>
+ * Sa barre de boss montre ses piles de bouclier et le bois de chaque foyer.
  * Sa vie ne descend pas sous le seuil suivant avant la frappe qui l'attend. Personne de vivant dans l'arène pendant
  * {@value #RESET_SECONDS} s : elle se fige, les foyers s'éteignent.
  */
@@ -52,8 +60,11 @@ final class Source {
     static final float STRIKE_PART = 0.2f;
     static final float RESET_SECONDS = 20f;
     static final float[] THRESHOLDS = {0.75f, 0.5f, 0.25f};
-    /** Piles de bouclier par Source en vie, pour sa barre de boss. */
-    private static final Map<Ref<EntityStore>, Integer> SHIELDS = new ConcurrentHashMap<>();
+    static final float SCATTER_AFTER = 4f;
+    static final float SCATTER_EVERY = 9f;
+    static final double SCATTER_MIN = 8;
+    /** Libellé de la barre de boss de chaque Source en vie : piles de bouclier et bois des foyers. */
+    private static final Map<Ref<EntityStore>, String> LABELS = new ConcurrentHashMap<>();
 
     private Ref<EntityStore> boss;
     private final float[] fuel = new float[SnowblindLayout.BRAZIERS.length];
@@ -63,14 +74,26 @@ final class Source {
     private int stage;
     private float idle;
     private float pulseClock;
+    private float scatterClock;
 
     static String label(Ref<EntityStore> ref) {
-        Integer stacks = SHIELDS.get(ref);
-        return stacks == null || stacks <= 0 ? null : "❄".repeat(stacks);
+        return LABELS.get(ref);
     }
 
     static void forgetAll() {
-        SHIELDS.clear();
+        LABELS.clear();
+    }
+
+    /** « ❄❄ | 62 % · 40 % · 0 % · 0 % · 15 % » : bouclier, puis le bois de chaque foyer (leurs barres de vie). */
+    private String describe(int stacks) {
+        StringBuilder out = new StringBuilder();
+        if (stacks > 0) {
+            out.append("❄".repeat(stacks)).append(" | ");
+        }
+        for (int i = 0; i < fuel.length; i++) {
+            out.append(i == 0 ? "" : " · ").append(Math.round(fuel[i])).append(" %");
+        }
+        return out.toString();
     }
 
     void down() {
@@ -190,13 +213,22 @@ final class Source {
         boolean now = lit() == 0;
         if (now != blizzard) {
             blizzard = now;
+            scatterClock = SCATTER_EVERY - SCATTER_AFTER;
+            weather(store, now);
             Spawns.tellAll(world, Message.translation(Snowblind.MESSAGES + (now ? "source.blizzard" : "source.calm")));
+        }
+        if (blizzard) {
+            scatterClock += dt;
+            if (scatterClock >= SCATTER_EVERY) {
+                scatterClock = 0f;
+                scatter(world, store, inside);
+            }
         }
         if (boss == null || !boss.isValid()) {
             return Outcome.NONE;
         }
         int stacks = fuel.length - lit();
-        SHIELDS.put(boss, stacks);
+        LABELS.put(boss, describe(stacks));
         pulseClock += dt;
         Vector3d at = Telegraphs.position(store, boss);
         if (pulseClock >= 2.5f && at != null && stacks > 0) {
@@ -219,7 +251,46 @@ final class Source {
         stage = 0;
         idle = 0f;
         blizzard = lit() == 0;
+        scatterClock = SCATTER_EVERY - SCATTER_AFTER;
+        weather(store, blizzard);
         Spawns.tellAll(world, Message.translation(Snowblind.MESSAGES + "source.enter"));
+    }
+
+    /** Temps du monde : blizzard (brume blanche à quelques blocs) ou nuit ordinaire de la fractale. */
+    private static void weather(Store<EntityStore> store, boolean blizzard) {
+        WeatherResource weather = store.getResource(WeatherResource.getResourceType());
+        if (weather != null) {
+            weather.setForcedWeather(blizzard ? Snowblind.BLIZZARD_WEATHER : Snowblind.WEATHER);
+        }
+    }
+
+    /** La tempête jette chaque joueur de l'arène sur une tache de neige tirée au hasard, à {@value #SCATTER_MIN} blocs
+     * au moins de là où il était. */
+    private static void scatter(World world, Store<EntityStore> store, List<PlayerRef> inside) {
+        double[][] spots = SnowblindLayout.BLIZZARD_SPOTS;
+        ThreadLocalRandom random = ThreadLocalRandom.current();
+        for (PlayerRef p : inside) {
+            Ref<EntityStore> ref = p.getReference();
+            Vector3d from = Telegraphs.position(store, ref);
+            if (from == null) {
+                continue;
+            }
+            Vector3d to = null;
+            for (int tries = 0; tries < 12 && to == null; tries++) {
+                Vector3d spot = Spawns.point(spots[random.nextInt(spots.length)]);
+                if (Telegraphs.horizontal(spot, from) >= SCATTER_MIN) {
+                    to = spot;
+                }
+            }
+            if (to == null) {
+                continue;
+            }
+            Telegraphs.particle(store, "Nakasar_Fractal_Blizzard", new Vector3d(from).add(0, 1, 0), 1.5f);
+            store.putComponent(ref, Teleport.getComponentType(),
+                    Teleport.createForPlayer(to, new Rotation3f(0f, (float) random.nextDouble(-Math.PI, Math.PI), 0f)));
+            Telegraphs.particle(store, "Nakasar_Fractal_Blizzard", new Vector3d(to).add(0, 1, 0), 1.5f);
+            p.sendMessage(Message.translation(Snowblind.MESSAGES + "source.scatter"));
+        }
     }
 
     /** Cercles rouges sur les foyers allumés ; au bout de l'annonce, chacun perd {@value #STRIKE_LOSS} % de bois. */
@@ -301,11 +372,14 @@ final class Source {
     /** Retire la Source ; `extinguish` : éteint aussi les foyers (sinon, vaincue, ils restent allumés et ne brûlent plus). */
     private void clear(World world, Store<EntityStore> store, boolean extinguish) {
         if (boss != null) {
-            SHIELDS.remove(boss);
+            LABELS.remove(boss);
         }
         Spawns.remove(store, boss);
         boss = null;
         engaged = false;
+        if (blizzard) {
+            weather(store, false);
+        }
         blizzard = false;
         idle = 0f;
         if (!extinguish) {

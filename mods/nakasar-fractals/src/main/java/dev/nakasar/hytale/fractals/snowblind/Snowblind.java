@@ -20,6 +20,7 @@ import dev.nakasar.hytale.fractals.combat.Spawns;
 import dev.nakasar.hytale.fractals.combat.Telegraphs;
 import dev.nakasar.hytale.fractals.defiance.Defiance;
 import dev.nakasar.hytale.fractals.instability.Instabilities;
+import dev.nakasar.hytale.fractals.party.FractalRuns;
 import dev.nakasar.hytale.fractals.stage.FractalStage;
 import org.joml.Vector3d;
 
@@ -36,8 +37,10 @@ import java.util.WeakHashMap;
  * <ol>
  *   <li>{@link Step#CAMP} : le grand feu fait fondre le mur de glace, harcelé par les élémentaires ({@link Campfire}) ;</li>
  *   <li>{@link Step#SOURCE} : la Source élémentaire et ses cinq foyers ({@link Source}) ;</li>
- *   <li>{@link Step#FOREST} : la forêt sombre, torche en main, en suivant les traces ; deux embuscades de cultistes ;</li>
- *   <li>{@link Step#VILLAGE} : le Chaman légendaire ({@link Shaman}) ; {@link Step#DONE} ensuite.</li>
+ *   <li>{@link Step#FOREST} : la forêt, torche en main, en suivant les traces ; cinq groupes de Svanir et de loups
+ *   autour de leurs feux s'éveillent à l'approche ;</li>
+ *   <li>{@link Step#VILLAGE} : le Chaman légendaire dans la grotte de glace ({@link Shaman}) ; {@link Step#DONE}
+ *   ensuite.</li>
  * </ol>
  * Les tas de fagots repoussent {@value #PILE_REGROW} s après qu'on s'y est servi. Tout ce que pose le Java est non
  * sauvegardé : une instance rechargée repart du camp.
@@ -64,6 +67,8 @@ public final class Snowblind implements FractalStage {
     static final String BRAZIER_OUT = "Nakasar_Fractal_Frost_Brazier_Out";
     static final String PILE = "Nakasar_Fractal_Firewood_Pile";
     static final String MIST = "Nakasar_Fractal_Mist_Barrier";
+    static final String WEATHER = "Nakasar_Fractal_Weather_Snowblind";
+    static final String BLIZZARD_WEATHER = "Nakasar_Fractal_Weather_Snowblind_Blizzard";
     static final int MAX_FIREWOOD = 3;
     static final float PILE_REGROW = 20f;
     static final float SNOW_EVERY = 2f;
@@ -78,7 +83,8 @@ public final class Snowblind implements FractalStage {
         final Campfire camp = new Campfire();
         final Source source = new Source();
         final Shaman shaman = new Shaman();
-        final boolean[] ambushed = new boolean[SnowblindLayout.AMBUSH_LINES.length];
+        final boolean[] packs = new boolean[SnowblindLayout.PACK_CENTERS.length];
+        boolean plateau;
         final Map<UUID, Long> throttle = new HashMap<>();
         float snowClock;
     }
@@ -145,7 +151,8 @@ public final class Snowblind implements FractalStage {
                 }
             }
             case FOREST -> {
-                ambushes(world, store, st, players);
+                packs(world, store, st, players);
+                plateau(world, store, st, players);
                 if (Spawns.anyIn(store, players, SnowblindLayout.VILLAGE)) {
                     st.step = Step.VILLAGE;
                     close(world, SnowblindLayout.GATE_VILLAGE);
@@ -182,10 +189,10 @@ public final class Snowblind implements FractalStage {
     private static void reopenVillage(World world, Store<EntityStore> store, State st) {
         st.step = Step.FOREST;
         Gates.open(world, store, SnowblindLayout.GATE_VILLAGE, null);
-        Gates.checkpoint(world, SnowblindLayout.FOREST_CHECKPOINT, MESSAGES + "checkpoint");
+        Gates.checkpoint(world, SnowblindLayout.VILLAGE_CHECKPOINT, MESSAGES + "checkpoint");
     }
 
-    /** Feux allumés : grand feu, foyers de la Source, feux du village (toujours allumés). */
+    /** Feux allumés : grand feu, foyers de la Source, feux de la forêt et de la grotte (toujours allumés). */
     private static List<Frost.Heat> heats(State st) {
         List<Frost.Heat> out = new ArrayList<>();
         if (st.camp.lit()) {
@@ -194,6 +201,9 @@ public final class Snowblind implements FractalStage {
         st.source.heats(out);
         for (int[] f : SnowblindLayout.VILLAGE_FIRES) {
             out.add(new Frost.Heat(new Vector3d(f[0] + 0.5, f[1], f[2] + 0.5), VILLAGE_FIRE_HEAT));
+        }
+        for (int[] f : SnowblindLayout.FOREST_FIRES) {
+            out.add(new Frost.Heat(new Vector3d(f[0] + 0.5, f[1], f[2] + 0.5), SnowblindLayout.FOREST_FIRE_HEAT));
         }
         return out;
     }
@@ -214,28 +224,37 @@ public final class Snowblind implements FractalStage {
         }
     }
 
-    /** Un joueur passe une ligne d'embuscade de la forêt : un groupe de cultistes surgit devant lui. */
-    private static void ambushes(World world, Store<EntityStore> store, State st, List<PlayerRef> players) {
-        int[] lines = SnowblindLayout.AMBUSH_LINES;
-        for (int i = 0; i < lines.length; i++) {
-            if (st.ambushed[i]) {
+    /** Un joueur approche d'un groupe de la forêt : ses Svanir et ses loups se lèvent autour de leur feu. */
+    private static void packs(World world, Store<EntityStore> store, State st, List<PlayerRef> players) {
+        double[][] centers = SnowblindLayout.PACK_CENTERS;
+        for (int i = 0; i < centers.length; i++) {
+            if (st.packs[i]) {
                 continue;
             }
-            for (PlayerRef p : players) {
-                Vector3d at = Telegraphs.position(store, p.getReference());
-                if (at != null && at.z() <= lines[i] && SnowblindLayout.FOREST.contains(at.x(), at.y(), at.z())) {
-                    st.ambushed[i] = true;
-                    double[][] spawns = SnowblindLayout.AMBUSH_SPAWNS[i];
-                    for (int k = 0; k < spawns.length; k++) {
-                        Vector3d s = Spawns.point(spawns[k]);
-                        Spawns.spawnFoe(world, store, k == spawns.length - 1 ? ICE_CASTER : CULTIST, s,
-                                Telegraphs.yawToward(s, at));
-                        Telegraphs.particle(store, "Effect_Snow", s, 1.5f);
-                    }
-                    Spawns.tellAll(world, Message.translation(MESSAGES + "forest.ambush"));
-                    break;
-                }
+            Vector3d c = Spawns.point(centers[i]);
+            if (Spawns.nearest(store, players, c) > SnowblindLayout.PACK_TRIGGER) {
+                continue;
             }
+            st.packs[i] = true;
+            double[][] spawns = SnowblindLayout.PACK_SPAWNS[i];
+            String[] roles = SnowblindLayout.PACK_ROLES[i];
+            for (int k = 0; k < spawns.length; k++) {
+                Vector3d s = Spawns.point(spawns[k]);
+                Spawns.spawnFoe(world, store, roles[k], s, Telegraphs.yawToward(s, c) + (float) Math.PI);
+            }
+            // Un loup de plus par paire de joueurs en plus du premier.
+            for (int k = 0; k < (FractalRuns.partySize(world) - 1) / 2; k++) {
+                Vector3d s = Spawns.point(spawns[k % spawns.length]).add(1.2, 0, 1.2);
+                Spawns.spawnFoe(world, store, WOLF, s, Telegraphs.yawToward(s, c) + (float) Math.PI);
+            }
+        }
+    }
+
+    /** Le plateau de l'est : point de retour à mi-forêt. */
+    private static void plateau(World world, Store<EntityStore> store, State st, List<PlayerRef> players) {
+        if (!st.plateau && Spawns.nearest(store, players, Spawns.point(SnowblindLayout.PLATEAU_CHECKPOINT)) < 8) {
+            st.plateau = true;
+            Gates.checkpoint(world, SnowblindLayout.PLATEAU_CHECKPOINT, MESSAGES + "checkpoint");
         }
     }
 
@@ -274,7 +293,8 @@ public final class Snowblind implements FractalStage {
                 player.sendMessage(Message.translation(MESSAGES + "torch.taken"));
             }
             case "Snowblind_Bonfire" -> {
-                if (st.step == Step.CAMP) {
+                int[] b = SnowblindLayout.BONFIRE;
+                if (st.step == Step.CAMP && x == b[0] && y == b[1] && z == b[2]) {
                     st.camp.use(world, store, ref, player, st);
                 }
             }

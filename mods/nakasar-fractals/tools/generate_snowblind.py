@@ -5,22 +5,25 @@
 
 Une fractale d'environnement (wiki.guildwars2.com/wiki/Snowblind_Fractal) : le froid tue plus que les ennemis.
 Loin d'un feu, chaque joueur cumule de l'Hypothermie (dégâts selon les piles, éclat de glace au maximum) ; près d'un
-feu allumé, la Chaleur la fait redescendre. Dans l'ordre :
+feu allumé, la Chaleur la fait redescendre. Toujours la nuit. La carte (snowblind_scenery.py) suit celle de GW2 :
+une vallée de montagne fermée, des ruines du nord à la grotte de glace du sud-ouest. Dans l'ordre :
 
-1. le mur de glace : allumer le grand feu de camp, qui fait fondre le mur bloquant la route, d'autant plus vite qu'il
-   est bien nourri. Les fagots se ramassent sous les arbres du camp. Des élémentaires de glace courent éteindre le
-   feu pendant que loups et cultistes du givre arrivent ;
-2. la Source élémentaire : un géant de glace entouré de cinq foyers à allumer avec une torche (râtelier à l'entrée)
-   et à nourrir avec les fagots des huttes. Chaque foyer éteint lui donne une pile de bouclier de givre. Orbe lent qui
-   repousse, tourbillon. À 75, 50 et 25 %, il frappe les foyers (la moitié de leur bois). Tous éteints : blizzard ;
-3. les traces : une forêt sombre, torche en main, en suivant les empreintes jusqu'au village ; deux embuscades ;
-4. le Chaman légendaire : coups d'épée qui ajoutent de l'hypothermie, pluie de glace, anneau de pics, souffle glacé ;
-   trois cristaux corrompus le protègent à chaque phase au contact. À 75 et 50 %, il saute sur le balcon et fait
-   pleuvoir des pics tant que l'Effigie de glace tient ; à 25 %, il devient ours.
+1. le mur de glace : au pied de la colline, allumer le grand feu, qui fait fondre le mur barrant le col, d'autant plus
+   vite qu'il est bien nourri. Les fagots se ramassent sous les sapins de la lisière. Des élémentaires de glace courent
+   éteindre le feu pendant que les meutes de loups des neiges (et des Fils de Svanir une vague sur deux) attaquent ;
+2. la Source élémentaire, au camp Svanir en haut des escaliers de glace : un géant de glace entouré de cinq foyers à
+   allumer avec une torche (râtelier à l'entrée) et à nourrir avec les fagots posés devant les tentes. Chaque foyer
+   éteint lui donne une pile de bouclier de givre. À 75, 50 et 25 %, il frappe les foyers (la moitié de leur bois).
+   Tous éteints : blizzard (brume blanche, la tempête jette les joueurs ailleurs dans le camp) jusqu'à ce qu'on en
+   rallume un ;
+3. la forêt : le grand tour par l'est en suivant les empreintes, cinq groupes de Svanir et de loups autour de leurs feux ;
+4. le Chaman légendaire, dans la grotte de glace : coups d'épée qui ajoutent de l'hypothermie, pluie de glace, anneau
+   de pics, souffle glacé ; trois cristaux corrompus le protègent à chaque phase au contact. À 75 et 50 %, il saute sur
+   sa corniche et fait pleuvoir des pics tant que l'Effigie de glace tient ; à 25 %, il devient ours.
 
 Le générateur écrit les prefabs (tronçons de 64 blocs), l'instance `Nakasar_Fractal_Snowblind`, le fagot et la
 torche portés, les blocs (feu de camp, foyers, tas de fagots, râtelier, empreintes), les effets, les particules, les
-modèles et rôles, la langue `nakasar_fractals_snowblind.lang` et `snowblind/SnowblindLayout.java`. Repère comme la
+modèles et rôles, les deux temps (nuit, blizzard), la langue `nakasar_fractals_snowblind.lang` et `snowblind/SnowblindLayout.java`. Repère comme la
 Falaise : y monde = GROUND_Y + y prefab, « debout à y » : le sol est en y - 1.
 """
 import math
@@ -37,11 +40,13 @@ import generate_cliffside as gc
 import generate_observatory as go
 import generate_swampland as gs
 import generate_volcanic as gv
+import snowblind_scenery as ss
 
 LANG = "nakasar_fractals_snowblind"
 GENERATOR = "generate_snowblind.py"
 INSTANCE = "Nakasar_Fractal_Snowblind"
 WEATHER = "Nakasar_Fractal_Weather_Snowblind"
+BLIZZARD_WEATHER = "Nakasar_Fractal_Weather_Snowblind_Blizzard"
 PREFAB_DIR = "Snowblind"
 JAVA_LAYOUT = go.MOD / "src/main/java/dev/nakasar/hytale/fractals/snowblind/SnowblindLayout.java"
 PARTICLES = fc.SERVER / "Particles/Nakasar/Fractals/Snowblind"
@@ -80,206 +85,296 @@ ROCK = ["Rock_Stone", "Rock_Slate", "Rock_Stone", "Rock_Ice_Permafrost"]
 PLANK = "Wood_Fir_Trunk"
 pick = fc.pick
 
-# --- lieux (y = debout à) ---------------------------------------------------------------------------
-SPAWN = (0, 0, 32)
-CAMP = (0, 10)                          # centre de la clairière du camp
-CAMP_RADIUS = 25
-BONFIRE_AT = (0, 0, 6)
-BONFIRE_HEAT = 7.0
-FIREWOOD_SPOTS = [(-19, 2), (-17, -8), (-10, -13), (10, -13), (17, -8), (19, 2), (-20, 14), (20, 14)]
-ELEMENTAL_SPAWNS = [(-23, 4), (-18, -9), (18, -9), (23, 4), (-22, 18), (22, 18)]
-WAVE_SPAWNS = [(-20, -6), (20, -6), (-22, 12), (22, 12)]
-ROAD = (-4, 4, -47, -14)                # x0, x1, z0 (nord), z1 (sud)
-ICE_WALL = [(x, y, z) for x in range(-4, 5) for y in range(0, 7) for z in range(-27, -24)]
-SOURCE_C = (0, -68)
-SOURCE_RADIUS = 20
-SOURCE_AT = (0, 0, -70)
-BRAZIERS = [(round(SOURCE_C[0] + math.cos(math.radians(-90 + k * 72)) * 13),
-             round(SOURCE_C[1] + math.sin(math.radians(-90 + k * 72)) * 13)) for k in range(5)]
-BRAZIER_HEAT = 5.0
-TORCH_RACK_AT = (5, 0, -50)
-HUTS = [(-15, -56), (15, -56)]          # huttes et leurs tas de fagots
-GATE_SOURCE = [(x, y, -89) for x in range(-2, 3) for y in range(0, 5)]
-FOREST_Z = (-89, -156)                  # sentier dans la forêt, du sud au nord
-VILLAGE_C = (0, -178)
-VILLAGE_RADIUS = 20
-VILLAGE_FIRES = [(-13, -172), (13, -172)]
-BALCONY = (0, 7, -196)                  # le balcon du Chaman (debout à y = 7)
-EFFIGY_AT = (0, 0, -180)
-SHAMAN_AT = (0, 0, -184)
-REWARD_AT = (-2, 0, -170)
-END_EXIT_AT = (2, 0, -170)
+# --- lieux (y = debout à) : la carte est dans snowblind_scenery ---------------------------------------------
+SPAWN = ss.SPAWN
+CAMP, CAMP_RADIUS = ss.CAMP, ss.CAMP_RADIUS
+BONFIRE_AT, BONFIRE_HEAT = ss.BONFIRE_AT, ss.BONFIRE_HEAT
+FIREWOOD_SPOTS, ELEMENTAL_SPAWNS, WAVE_SPAWNS = ss.FIREWOOD_SPOTS, ss.ELEMENTAL_SPAWNS, ss.WAVE_SPAWNS
+SOURCE_C, SOURCE_RADIUS, SOURCE_AT = ss.SOURCE_C, ss.SOURCE_RADIUS, ss.SOURCE_AT
+BRAZIERS, BRAZIER_HEAT, TORCH_RACK_AT = ss.BRAZIERS, ss.BRAZIER_HEAT, ss.TORCH_RACK_AT
+VILLAGE_C, VILLAGE_RADIUS, VILLAGE_FIRES = ss.VILLAGE_C, ss.VILLAGE_RADIUS, ss.VILLAGE_FIRES
+BALCONY, EFFIGY_AT, SHAMAN_AT = ss.BALCONY, ss.EFFIGY_AT, ss.SHAMAN_AT
+REWARD_AT, END_EXIT_AT = ss.REWARD_AT, ss.END_EXIT_AT
+PACK_ROLES = {"cultist": CULTIST, "caster": ICE_CASTER, "wolf": WOLF}
+PACK_TRIGGER = 30.0
+FOREST_FIRE_HEAT = 6.0
 
 
-def path_x(z):
-    """Le sentier serpente dans la forêt (centre x selon z)."""
-    return round(6 * math.sin((FOREST_Z[0] - z) / 11.0))
+class Course:
+    """Le parcours posé : le prefab et les cases que le Java doit connaître (mur, portes, tas, groupes...)."""
+
+    def __init__(self):
+        self.t = ss.Terrain()
+        self.p = go.Prefab()
+        self.keep = ss.Keep()
+        self.ice_wall = []
+        self.gate_source = []
+        self.gate_village = []
+        self.huts = []
+        self.packs = []                 # [(centre (x, y, z), [(rôle, (x, y, z))])]
+        self.forest_fires = []
+        self.blizzard_spots = []
+        self.footprints = []
+
+    def s(self, x, z):
+        """Debout (entier, au-dessus d'une demi-dalle) sur la case (x, z)."""
+        return math.ceil(self.t.stand[(x, z)])
+
+    def at(self, x, z):
+        return (x, self.s(x, z), z)
 
 
-GATE_VILLAGE = [(path_x(-158) + dx, y, -158) for dx in range(-3, 4) for y in range(0, 5)]
-# Remparts qui barrent toute l'île de part et d'autre des passages (sinon on contourne par la forêt du pourtour) :
-# (rangées z, bloc, x laissés au passage).
-BARRIERS = [((-27, -26, -25), ICE, range(-4, 5)), ((-89, -90), "Rock_Ice_Permafrost", range(-2, 3)),
-            ((-158, -159), "Rock_Ice_Permafrost", range(path_x(-158) - 3, path_x(-158) + 4))]
-BARRIER_HEIGHT = 10
-
-
-def near_barrier(z, margin=5):
-    return any(min(zs) - margin <= z <= max(zs) + margin for zs, _, _ in BARRIERS)
-SPURS = [(-108, -1), (-130, 1)]         # fausses pistes : (z de départ, côté)
-AMBUSHES = [(-110, [(path_x(-122) - 2, -122), (path_x(-122) + 2, -123), (path_x(-124), -125)]),
-            (-136, [(path_x(-148) - 2, -148), (path_x(-148) + 2, -149), (path_x(-150), -151)])]
-
-
-def footprints():
-    """Empreintes au milieu du sentier, tous les trois blocs, en alternant gauche et droite."""
-    out = []
-    for k, z in enumerate(range(FOREST_Z[0] - 2, FOREST_Z[1], -3)):
-        out.append((path_x(z) + (1 if k % 2 else -1) * 0, z))
-    return out
-
-
-FOOTPRINT_CELLS = footprints()
-
-
-# --- prefab ----------------------------------------------------------------------------------------------
-
-def ground(p, x, z, stand=0, depth=4):
-    p.set(x, stand - 1, z, pick(GROUND, x, stand - 1, z))
-    for y in range(stand - depth, stand - 1):
-        p.set(x, y, z, pick(UNDER, x, y, z))
-
-
-def hut(p, cx, cz, facing):
-    """Hutte de rondins ouverte vers l'arène (`facing` +1 : vers l'est), toit de neige ; le tas de fagots devant."""
-    for dz in range(-2, 3):
-        for y in range(0, 3):
-            p.set(cx - 2 * facing, y, cz + dz, PLANK)
-    for dx in range(-2, 2):
-        for y in range(0, 3):
-            for z in (cz - 2, cz + 2):
-                p.set(cx + dx * facing, y, z, PLANK)
-    for dx in range(-3, 3):
-        for dz in range(-3, 4):
-            p.set(cx + dx * facing, 3, cz + dz, "Soil_Snow")
-    p.set(cx, 0, cz, PILE)
+def gate_cells(t, center, path, top_of):
+    """Barrière en travers du chemin `path` près de `center` : les cases praticables à moins d'un bloc de la ligne
+    perpendiculaire au chemin, de debout à `top_of(x, z)` exclu."""
+    samples = ss.curve(ss.PATHS[path])
+    i, _ = ss.nearest_sample(samples, *center)
+    a, b = samples[max(0, i - 3)], samples[min(len(samples) - 1, i + 3)]
+    length = math.hypot(b[0] - a[0], b[1] - a[1]) or 1.0
+    tx, tz = (b[0] - a[0]) / length, (b[1] - a[1]) / length
+    cx, cz = samples[i][0], samples[i][1]
+    cells = []
+    for (x, z), s in t.stand.items():
+        along = (x - cx) * tx + (z - cz) * tz
+        across = abs(-(x - cx) * tz + (z - cz) * tx)
+        if -0.5 <= along <= 1.5 and across <= 9:
+            for y in range(math.ceil(s), top_of(x, z)):
+                cells.append((x, y, z))
+    return cells
 
 
 def course_prefab():
-    p = go.Prefab()
-    # Camp : clairière de neige, grand feu au centre, route vers le nord bouchée par le mur de glace.
-    cx, cz = CAMP
-    fc.disc(p, cx, cz, CAMP_RADIUS, 0, lambda x, z: pick(GROUND, x, -1, z), UNDER, 6)
-    bx, _, bz = BONFIRE_AT
-    for x in range(bx - 2, bx + 3):
-        for z in range(bz - 2, bz + 3):
-            if math.hypot(x - bx, z - bz) <= 2.3:
-                p.set(x, -1, z, "Rock_Stone_Cobble" if (x, z) != (bx, bz) else "Rock_Stone")
-    p.set(*BONFIRE_AT, BONFIRE_OUT)
-    for x, z in FIREWOOD_SPOTS:
-        p.set(x, 0, z, PILE)
-    x0, x1, z0, z1 = ROAD
-    for z in range(z0, z1 + 1):
-        for x in range(x0 - 1, x1 + 2):
-            ground(p, x, z)
-            if x in (x0 - 1, x1 + 1):
-                for y in range(0, 8):
-                    p.set(x, y, z, pick(ROCK, x, y, z))
-    for cell in ICE_WALL:
+    return build_course().p
+
+
+def build_course():
+    c = Course()
+    t, p, keep = c.t, c.p, c.keep
+    ss.lay_ground(p, t)
+    ss.lay_mountains(p, t)
+    ss.lay_ceilings(p, t)
+    start(c)
+    camp(c)
+    source_camp(c)
+    woods(c)
+    cave(c)
+    for x, z in c.footprints:
+        p.set(x, c.s(x, z) - 1, z, FOOTPRINTS)
+    ss.forest(p, t, keep)
+    ss.ground_cover(p, t, keep)
+    for cell in c.gate_source + c.gate_village:
+        p.set(*cell, MIST)
+    return c
+
+
+def start(c):
+    """Le départ : replat des ruines en bois (échafaudages, caisses), la colline qui descend vers le grand feu."""
+    p, keep = c.p, c.keep
+    keep.disc(SPAWN[0], SPAWN[2], 6)
+    for k, (x, z, w, d, h) in enumerate(((-70, -118, 4, 3, 5), (-34, -119, 5, 3, 6), (-64, -108, 3, 3, 4),
+                                        (-28, -108, 3, 4, 4))):
+        if all((xx, zz) in c.t.stand for xx in (x, x + w) for zz in (z, z + d)):
+            ss.scaffold(p, x, z, w, d, h, c.s(x, z), 340 + k)
+            keep.disc(x + w / 2, z + d / 2, max(w, d) / 2 + 2)
+    for k, (x, z) in enumerate(((-58, -116), (-41, -117), (-45, -104), (-60, -102))):
+        if (x, z) in c.t.stand:
+            p.set(x, c.s(x, z), z, "Furniture_Village_Crate" if k % 2 else "Furniture_Tavern_Barrel")
+            keep.disc(x, z, 1.5)
+
+
+def camp(c):
+    """Rencontre 1 : le grand feu au fond du bol, tas de fagots sous les sapins de la lisière, le col et son mur."""
+    p, t, keep = c.p, c.t, c.keep
+    bx, by, bz = BONFIRE_AT
+    ss.campfire_ring(p, bx, bz, by, BONFIRE_OUT)
+    keep.disc(bx, bz, 6)
+    for k, (x, z) in enumerate(FIREWOOD_SPOTS):
+        assert (x, z) in t.stand, f"tas de fagots hors du bol : {(x, z)}"
+        p.set(x, c.s(x, z), z, PILE)
+        keep.disc(x, z, 2)
+        # le sapin qui l'abrite, un peu plus loin du feu
+        a = math.atan2(z - bz, x - bx)
+        tx, tz = round(x + math.cos(a) * 3), round(z + math.sin(a) * 3)
+        if (tx, tz) in t.stand and fn.free(p, tx, c.s(tx, tz), tz):
+            fn.conifer(p, tx, c.s(tx, tz), tz, 13 + k % 4, "fir_snow", seed=tx * 13 + tz)
+        keep.disc(tx, tz, 2.5)
+    for x, z in ELEMENTAL_SPAWNS + WAVE_SPAWNS:
+        assert (x, z) in t.stand, f"apparition hors du bol : {(x, z)}"
+        keep.disc(x, z, 2)
+    # Planches et caisses brisées autour du feu (le camp ravagé des captures).
+    for k, (dx, dz) in enumerate(((7, -4), (-8, 5), (5, 8), (-6, -7))):
+        x, z = bx + dx, bz + dz
+        for j in range(3):
+            p.set(x + (j if k % 2 else 0), c.s(x, z), z + (0 if k % 2 else j), ss.PLANKS)
+    # Le mur de glace barre tout le col.
+    c.ice_wall = [(x, y, z) for (x, z), s in t.stand.items() if ss.WALL_Z[0] <= z <= ss.WALL_Z[1]
+                  and t.center.get((x, z), ("",))[0] == "pass" for y in range(math.ceil(s), math.ceil(s) + ss.WALL_HEIGHT)]
+    for cell in c.ice_wall:
         p.set(*cell, ICE)
-    # Arène de la Source : cinq foyers en pentagone, huttes et râtelier de torches à l'entrée.
+    keep.cells |= {(x, z) for x, _, z in c.ice_wall}
+    # Escaliers : bannières rouges en haut, de part et d'autre.
+    for x, z in ((-58, -3), (-46, -3), (-60, 9), (-50, 7)):
+        if (x, z) in t.stand:
+            ss.banner(p, x, z, c.s(x, z), 0, 1)
+            keep.disc(x, z, 2)
+
+
+def source_camp(c):
+    """Rencontre 2 : le camp Svanir. Cinq foyers autour de la Source, tentes en cercle (tas de fagots devant trois
+    d'entre elles), palissade, bannières, pics de glace à l'entrée nord, râtelier de torches."""
+    p, t, keep = c.p, c.t, c.keep
     sx, sz = SOURCE_C
-    fc.disc(p, sx, sz, SOURCE_RADIUS, 0, lambda x, z: pick(GROUND, x, -1, z), UNDER, 8)
+    keep.disc(sx, sz, SOURCE_RADIUS + 1)
     for x, z in BRAZIERS:
-        p.set(x, -1, z, "Rock_Stone_Cobble")
-        p.set(x, 0, z, BRAZIER_OUT)
-    for k, (x, z) in enumerate(HUTS):
-        hut(p, x, z, 1 if x < 0 else -1)
-    p.set(*TORCH_RACK_AT, TORCH_RACK)
-    for (x, y, z) in GATE_SOURCE:
-        p.set(x, y, z, MIST)
-    # Forêt : sentier sinueux, fausses pistes, empreintes au sol.
-    for z in range(FOREST_Z[0] + 1, FOREST_Z[1] - 3, -1):
-        c = path_x(z)
-        for x in range(c - 2, c + 3):
-            ground(p, x, z)
-    for z_start, side in SPURS:
-        for k in range(14):
-            z = z_start - k // 2
-            x = path_x(z_start) + side * (3 + k)
-            for dz in (-1, 0, 1):
-                ground(p, x, z + dz)
-    for x, z in FOOTPRINT_CELLS:
-        p.set(x, -1, z, FOOTPRINTS)
-    # Village du Chaman : arène ronde, feux du village, balcon au nord (on n'y monte pas).
+        p.set(x, c.s(x, z) - 1, z, "Rock_Stone_Cobble")
+        p.set(x, c.s(x, z), z, BRAZIER_OUT)
+    for a, r in ss.TEEPEES:
+        x = round(sx + math.cos(math.radians(a)) * r)
+        z = round(sz + math.sin(math.radians(a)) * r)
+        if (x, z) not in t.stand:
+            continue
+        ss.teepee(p, x, z, c.s(x, z), a + 180)
+        keep.disc(x, z, 5)
+        if a in ss.PILE_TEEPEES:
+            px = round(sx + math.cos(math.radians(a)) * (r - 5))
+            pz = round(sz + math.sin(math.radians(a)) * (r - 5))
+            p.set(px, c.s(px, pz), pz, PILE)
+            c.huts.append((px, pz))
+    assert len(c.huts) == len(ss.PILE_TEEPEES), "un tas de fagots du camp est hors du sol"
+    # Palissade sur le pourtour, ouverte au nord (escaliers) et à l'est (forêt).
+    ring = []
+    for k in range(0, 360, 3):
+        if any(abs((k - g + 180) % 360 - 180) < 16 for g in (-74, 8)):
+            continue
+        x = round(sx + math.cos(math.radians(k)) * 29)
+        z = round(sz + math.sin(math.radians(k)) * 29)
+        ring.append((x, z))
+    ss.palisade(p, t, ring, c.s)
+    for k in range(0, 360, 40):
+        x = round(sx + math.cos(math.radians(k + 12)) * 27.5)
+        z = round(sz + math.sin(math.radians(k + 12)) * 27.5)
+        if (x, z) in t.stand:
+            ss.banner(p, x, z, c.s(x, z), sx - x, sz - z, 7)
+    for x, z in ((-68, 12), (-56, 18)):
+        if (x, z) in t.stand:
+            ss.ice_spikes(p, x, z, c.s(x, z), 350 + x, 6, 2.5)
+            keep.disc(x, z, 4)
+    x, y, z = TORCH_RACK_AT
+    assert (x, z) in t.stand and c.s(x, z) == y, "râtelier hors du chemin du camp"
+    p.set(x, y, z, TORCH_RACK)
+    keep.disc(x, z, 2)
+    for k, (dx, dz) in enumerate(((-24, -8), (20, 18), (-10, 24), (22, -14))):
+        x, z = sx + dx, sz + dz
+        if (x, z) in t.stand and (x, z) not in keep:
+            p.set(x, c.s(x, z), z, "Deco_Bone_Skulls" if k % 2 else "Deco_Bone_Spike")
+    # Brume à la sortie est, jusqu'à la victoire.
+    c.gate_source = gate_cells(t, ss.GATE_SOURCE_AT, "forest", lambda x, z: c.s(x, z) + 5)
+    keep.cells |= {(x, z) for x, _, z in c.gate_source}
+    # Taches de neige tassée où se pose le blizzard : points de téléportation.
+    for r, n in ((6, 6), (11, 8), (16, 10)):
+        for k in range(n):
+            a = math.radians(k * 360 / n + r * 7)
+            x, z = round(sx + math.cos(a) * r), round(sz + math.sin(a) * r)
+            if (x, z) in t.stand and all(math.hypot(x - bx, z - bz) > 3 for bx, bz in BRAZIERS):
+                c.blizzard_spots.append(c.at(x, z))
+
+
+def woods(c):
+    """La forêt : sentier aux empreintes, torches plantées, cinq groupes (Svanir et loups) autour de leurs feux, le
+    plateau de l'est, l'avant-poste Svanir devant la grotte."""
+    p, t, keep = c.p, c.t, c.keep
+    samples = ss.curve(ss.PATHS["forest"], step=1.0)
+    for i, (x, z, _, half) in enumerate(samples):
+        keep.disc(x, z, 1.5)
+        if 20 < i < len(samples) - 10 and i % 24 == 0:
+            side = 1 if (i // 24) % 2 else -1
+            a, b = samples[i - 2], samples[i + 2]
+            length = math.hypot(b[0] - a[0], b[1] - a[1]) or 1.0
+            nx, nz = -(b[1] - a[1]) / length * side, (b[0] - a[0]) / length * side
+            tx, tz = round(x + nx * (half - 0.5)), round(z + nz * (half - 0.5))
+            if (tx, tz) in t.stand and fn.free(p, tx, c.s(tx, tz), tz):
+                p.set(tx, c.s(tx, tz), tz, ss.TORCH_POST)
+                keep.disc(tx, tz, 1.2)
+    for k, ((x, z), roles) in enumerate(ss.PACKS):
+        ss.campfire_ring(p, x, z, c.s(x, z), BONFIRE)
+        keep.disc(x, z, 5)
+        c.forest_fires.append((x, c.s(x, z), z))
+        spawns = []
+        for j, role in enumerate(roles):
+            a = math.radians(j * 360 / len(roles) + k * 40)
+            sx, sz = round(x + math.cos(a) * 4), round(z + math.sin(a) * 4)
+            assert (sx, sz) in t.stand, f"groupe {k} : apparition hors du sol {(sx, sz)}"
+            spawns.append((PACK_ROLES[role], c.at(sx, sz)))
+        c.packs.append((c.at(x, z), spawns))
+        if roles.count("wolf") == len(roles):
+            for dx, dz, deco in ((3, -5, "Deco_Bone_Pile"), (-4, 4, "Deco_Bone_Ribs"), (5, 3, "Deco_Bone_Skulls")):
+                if (x + dx, z + dz) in t.stand:
+                    p.set(x + dx, c.s(x + dx, z + dz), z + dz, deco)
+        else:
+            a = math.radians(k * 70 + 30)
+            tx, tz = round(x + math.cos(a) * 9), round(z + math.sin(a) * 9)
+            if all((tx + dx, tz + dz) in t.stand for dx in (-3, 3) for dz in (-3, 3)):
+                ss.teepee(p, tx, tz, c.s(tx, tz), math.degrees(a) + 180, 3.0, 6)
+                keep.disc(tx, tz, 4.5)
+            bx, bz = round(x - math.cos(a) * 7), round(z - math.sin(a) * 7)
+            if (bx, bz) in t.stand:
+                ss.banner(p, bx, bz, c.s(bx, bz), x - bx, z - bz)
+                keep.disc(bx, bz, 1.5)
+    # Avant-poste devant la grotte : feu, palissade, bannières, une tente.
+    ox, oz = ss.OUTPOST
+    ss.campfire_ring(p, ox, oz, c.s(ox, oz), BONFIRE)
+    c.forest_fires.append((ox, c.s(ox, oz), oz))
+    keep.disc(ox, oz, 6)
+    ss.palisade(p, t, [(ox + 8, oz + dz) for dz in range(-6, 7) if abs(dz) > 1] +
+                [(ox - 2 + dx, oz + 8) for dx in range(-6, 7)], c.s)
+    for x, z in ((-25, 99), (-25, 106), (-10, 98)):
+        if (x, z) in t.stand:
+            ss.banner(p, x, z, c.s(x, z), 1, 0)
+            keep.disc(x, z, 1.5)
+    if all((ox + dx, oz + dz) in t.stand for dx in (-12, -6) for dz in (-6, -2)):
+        ss.teepee(p, ox - 8, oz - 5, c.s(ox - 8, oz - 5), 45, 3.0, 6)
+    c.footprints = ss.footprints(t, keep.cells - {(round(x), round(z)) for x, z, _, _ in samples})
+    c.footprints = [f for f in c.footprints if t.stand[f] == math.floor(t.stand[f])]
+
+
+def cave(c):
+    """La grotte de glace : tunnel (brume à mi-chemin), arène sous le dôme, aiguilles et grappes de cristal au bord,
+    trois foyers, la corniche du Chaman contre la paroi ouest."""
+    p, t, keep = c.p, c.t, c.keep
     vx, vz = VILLAGE_C
-    fc.disc(p, vx, vz, VILLAGE_RADIUS, 0, lambda x, z: pick(GROUND, x, -1, z), UNDER, 8)
+    keep.disc(vx, vz, VILLAGE_RADIUS + 2)
     for x, z in VILLAGE_FIRES:
-        p.set(x, -1, z, "Rock_Stone_Cobble")
-        p.set(x, 0, z, BRAZIER)
+        p.set(x, c.s(x, z) - 1, z, "Rock_Stone_Cobble")
+        p.set(x, c.s(x, z), z, BRAZIER)
+    for k in range(14):
+        a = math.radians(k * 360 / 14 + 9)
+        r = VILLAGE_RADIUS - 2.5 - 2 * fn.hash01(k, 1, 0, 360)
+        x, z = round(vx + math.cos(a) * r), round(vz + math.sin(a) * r)
+        if (x, z) not in t.stand or x > vx + 12 and abs(z - vz) < 7:
+            continue                    # l'entrée (est) reste dégagée
+        if any(math.hypot(x - fx, z - fz) < 5 for fx, fz in VILLAGE_FIRES):
+            continue
+        color = ("Cyan", "Blue", "White")[k % 3]
+        fn.crystal_spire(p, x, c.s(x, z), z, 5 + int(fn.hash01(k, 2, 0, 361) * 6), color, seed=362 + k)
+    for (x, z) in sorted(t.cave):
+        if (x, z) in t.stand and fn.hash01(x, 3, z, 363) < 0.025 and math.hypot(x - vx, z - vz) > 12 \
+                and fn.free(p, x, c.s(x, z), z):
+            p.set(x, c.s(x, z), z, ("Rock_Crystal_Cyan_Medium", "Rock_Crystal_Blue_Small", "Rock_Crystal_White_Large",
+                                     "Rubble_Ice")[int(fn.hash01(z, 3, x, 364) * 4)])
+    # Corniche du Chaman : plate-forme de glace sur piliers, au pied de la paroi ouest (on n'y monte pas).
     bx, by, bz = BALCONY
-    for x in range(bx - 4, bx + 5):
-        for z in range(bz - 3, bz + 3):
-            p.set(x, by - 1, z, "Wood_Darkwood_Planks" if (x + z) % 2 else PLANK)
-    for x in (bx - 4, bx + 4):
-        for z in (bz - 3, bz + 2):
-            for y in range(0, by - 1):
-                p.set(x, y, z, PLANK)
-    for x in range(bx - 4, bx + 5):
-        p.set(x, by, bz + 2, "Wood_Darkwood_Fence" if abs(x - bx) < 4 else PLANK)
-    for k, a in enumerate(range(200, 341, 35)):     # huttes du village sur le pourtour nord
-        hx = round(vx + math.cos(math.radians(a)) * (VILLAGE_RADIUS - 3))
-        hz = round(vz + math.sin(math.radians(a)) * (VILLAGE_RADIUS - 3))
-        if abs(hx - bx) > 6:
-            hut(p, hx, hz, 1 if hx < 0 else -1)
-            p.set(hx, 0, hz, "Plant_Bush_Winter_Snow")
-    for (x, y, z) in GATE_VILLAGE:
-        p.set(x, y, z, go.AIR)
-    dress(p)
-    return p
-
-
-def dress(p):
-    """Forêt de sapins enneigés autour de tout le parcours (dense le long du sentier), rochers et glace, îlots de
-    neige au loin. Rien sur les lieux de jeu : feux, foyers, tas de fagots, empreintes, mur, portes."""
-    footprint = {(x, z): -1 for (x, y, z) in p.blocks if y == -1}
-    keep = set()
-    for x, z in FIREWOOD_SPOTS + BRAZIERS + HUTS + VILLAGE_FIRES + ELEMENTAL_SPAWNS + WAVE_SPAWNS:
-        keep |= {(x + dx, z + dz) for dx in range(-2, 3) for dz in range(-2, 3)}
-    keep |= {(x, z) for x, _, z in ICE_WALL}
-    keep |= {(x, z) for x in range(-3, 4) for z in range(SPAWN[2] - 3, SPAWN[2] + 4)}
-    keep |= {(x, z) for x, z in FOOTPRINT_CELLS}
-    for name_cells in (GATE_SOURCE, GATE_VILLAGE):
-        keep |= {(x, z) for x, _, z in name_cells}
-    cells = [(x, -1, z) for (x, z) in footprint if (x, z) not in keep and p.blocks.get((x, -1, z), ("",))[0] in GROUND]
-    # Clairières et arènes : herbe de neige et buissons seulement ; forêt : sapins le long du sentier.
-    forest = [c for c in cells if FOREST_Z[1] < c[2] < FOREST_Z[0] and abs(c[0] - path_x(c[2])) >= 2]
-    fn.flora(p, [c for c in cells if c not in forest], seed=81, density=0.3, flowers=0.0, theme=THEME)
-    ring = fn.rim(footprint, 6, 14, seed=83)
-    tops = {c: 0 for c in ring}
-    edge = fn.edge_distance({**tops, **{c: -1 for c in footprint}})
-    ground_cells = fn.island(p, {c: -1 for c in ring}, lambda x, z: 5 + min(10, edge.get((x, z), 0)), 85,
-                             hang=0.2, theme=THEME)
-    ground_cells = [c for c in ground_cells if not near_barrier(c[2])]
-    fn.dress(p, ground_cells, THEME, 85, trees=0.22, spacing=3, bushes=0.08, boulders=0.01, density=0.4, flowers=0.0)
-    # Sapins serrés de part et d'autre du sentier, sous lesquels il fait sombre.
-    for x, y, z in ground_cells + forest:
-        if FOREST_Z[1] - 4 < z < FOREST_Z[0] + 2 and abs(x - path_x(z)) >= 3 and not near_barrier(z, 4) and fn.hash01(x, z, 7, 87) < 0.18 \
-                and fn.free(p, x, 0, z) and all(not p.blocks.get((x + dx, 0, z + dz), ("Empty",))[0].startswith("Wood_")
-                                                for dx in (-2, -1, 0, 1, 2) for dz in (-2, -1, 0, 1, 2)):
-            fn.conifer(p, x, 0, z, 9 + int(fn.hash01(z, x, 3, 88) * 8), "fir_snow", seed=x * 13 + z)
-    fn.scatter_islets(p, (-120, 120, -260, 110), 20, (-32, 10), (3, 9), THEME, seed=89)
-    barriers(p)
-
-
-def barriers(p):
-    """Remparts de glace sur toute la largeur de l'île, sauf au passage (mur fondant, brume, porte du village)."""
-    for zs, block, gap in BARRIERS:
-        for z in zs:
-            columns = {x for (x, y, z2) in p.blocks if z2 == z and y == -1}
-            for x in columns - set(gap):
-                for y in range(0, BARRIER_HEIGHT):
-                    p.set(x, y, z, pick([block, block, "Rock_Ice_Permafrost", block], x, y, z))
+    for x in range(bx - 4, bx + 4):
+        for z in range(bz - 4, bz + 5):
+            if (x, z) in t.stand:
+                p.set(x, by - 1, z, ICE if (x + z) % 2 else "Rock_Ice_Permafrost")
+                if x == bx + 3 and abs(z - bz) <= 4:
+                    p.set(x, by, z, "Rock_Ice_Icicles")
+    for x, z in ((bx + 3, bz - 4), (bx + 3, bz + 4), (bx - 2, bz - 4), (bx - 2, bz + 4)):
+        for y in range(c.s(x, z), by - 1):
+            p.set(x, y, z, ICE)
+    # Brume au milieu du tunnel : elle se ferme quand on entre dans l'arène.
+    c.gate_village = gate_cells(t, ss.GATE_VILLAGE_AT, "tunnel", lambda x, z: t.ceiling.get((x, z), c.s(x, z) + 5))
+    keep.cells |= {(x, z) for x, _, z in c.gate_village}
 
 
 # --- objets, blocs, effets, particules ------------------------------------------------------------------
@@ -681,7 +776,7 @@ def lang():
     t.item(TORCH_RACK, "Râtelier de torches", "Utiliser : prendre une torche.", "Torch rack", "Use: take a torch.")
     t.item(FOOTPRINTS, "Empreintes", "Des traces de pas dans la neige.", "Footprints", "Tracks in the snow.")
     for role, f, e in ((ELEMENTAL, "Élémentaire de glace", "Ice elemental"), (WOLF, "Loup des neiges", "Snow wolf"),
-                       (CULTIST, "Cultiste du givre", "Frost cultist"), (ICE_CASTER, "Incantateur du givre", "Frost caster"),
+                       (CULTIST, "Fils de Svanir", "Son of Svanir"), (ICE_CASTER, "Incantateur de Svanir", "Svanir frost caster"),
                        (SOURCE, "Source élémentaire", "Elemental Source"), (SHAMAN, "Chaman légendaire", "Legendary Shaman"),
                        (BEAR, "Chaman légendaire (ours)", "Legendary Shaman (bear)"), (EFFIGY, "Effigie de glace", "Ice Effigy"),
                        (CRYSTAL, "Cristal de glace corrompu", "Corrupted ice crystal"), (SHARD, "Éclat de glace", "Ice shard")):
@@ -691,10 +786,10 @@ def lang():
     for tier in range(1, HYPOTHERMIA_TIERS + 1):
         t.put(f"effects.Nakasar_Fractal_Hypothermia_{tier}", f"Hypothermie {tier * 2}", f"Hypothermia {tier * 2}")
     msgs = {
-        "intro": ("Tempête de neige : loin d'un feu, le froid s'accumule (Hypothermie). Allumez le grand feu avec un fagot "
-                  "pris sous les arbres : il fera fondre le mur de glace au nord.",
-                  "Snowblind: away from a fire, the cold builds up (Hypothermia). Light the great campfire with firewood "
-                  "from under the trees: it will melt the ice wall to the north."),
+        "intro": ("Tempête de neige : loin d'un feu, le froid s'accumule (Hypothermie). Descendez la colline jusqu'au grand "
+                  "feu et allumez-le avec un fagot pris sous les sapins : il fera fondre le mur de glace du col.",
+                  "Snowblind: away from a fire, the cold builds up (Hypothermia). Go down the hill to the great campfire "
+                  "and light it with firewood from under the firs: it will melt the ice wall in the pass."),
         "fire.need": ("Il faut un fagot pour l'allumer.", "You need firewood to light it."),
         "fire.lit": ("Le grand feu prend : le mur de glace commence à fondre. Nourrissez-le !",
                      "The great fire catches: the ice wall starts to melt. Keep feeding it!"),
@@ -704,8 +799,10 @@ def lang():
         "fire.doused": ("Un élémentaire de glace atteint le feu et l'étouffe !", "An ice elemental reaches the fire and smothers it!"),
         "fire.elementals": ("Des élémentaires de glace sortent de la forêt : arrêtez-les avant le feu !",
                             "Ice elementals come out of the forest: stop them before the fire!"),
-        "fire.wave": ("Des ennemis attaquent le camp !", "Foes attack the camp!"),
-        "wall.melted": ("Le mur de glace a fondu : la route est libre.", "The ice wall has melted: the road is clear."),
+        "fire.wolves": ("Une meute de loups des neiges fond sur le feu !", "A pack of snow wolves rushes the fire!"),
+        "fire.wave": ("Loups et Fils de Svanir attaquent le feu !", "Wolves and Sons of Svanir attack the fire!"),
+        "wall.melted": ("Le mur de glace a fondu : le col est libre. Montez les escaliers de glace jusqu'au camp Svanir.",
+                        "The ice wall has melted: the pass is clear. Climb the ice stairs to the Svanir camp."),
         "wood.taken": ("Fagot pris ({count}/3).", "Firewood taken ({count}/3)."),
         "wood.full": ("Vous portez déjà trois fagots.", "You already carry three bundles of firewood."),
         "torch.taken": ("Torche prise : allumez les foyers autour de la Source.", "Torch taken: light the braziers around the Source."),
@@ -714,29 +811,32 @@ def lang():
         "brazier.lit": ("Foyer allumé ({count}/5) : le bouclier de givre de la Source faiblit.",
                         "Brazier lit ({count}/5): the Source's frost shield weakens."),
         "brazier.fed": ("Foyer nourri : {fuel} %.", "Brazier fed: {fuel} %."),
-        "brazier.wood": ("Il faut un fagot (dans les huttes) pour nourrir ce foyer.",
-                         "You need firewood (from the huts) to feed this brazier."),
+        "brazier.wood": ("Il faut un fagot (devant les tentes) pour nourrir ce foyer.",
+                         "You need firewood (in front of the tents) to feed this brazier."),
         "brazier.full": ("Ce foyer brûle déjà au plus fort.", "This brazier already burns at its strongest."),
         "brazier.out": ("Un foyer s'éteint ({count}/5 allumés).", "A brazier goes out ({count}/5 lit)."),
         "source.enter": ("La Source élémentaire ! Allumez les foyers (torche au râtelier) : chaque foyer éteint lui donne "
                          "une pile de bouclier de givre.", "The Elemental Source! Light the braziers (torch at the rack): "
                          "each unlit brazier gives it a stack of frost shield."),
         "source.strike": ("La Source frappe les foyers !", "The Source strikes the braziers!"),
-        "source.blizzard": ("Tous les foyers sont éteints : BLIZZARD ! Rallumez-en un vite.",
-                            "Every brazier is out: BLIZZARD! Relight one quickly."),
+        "source.blizzard": ("Tous les foyers sont éteints : BLIZZARD ! On n'y voit plus rien et la tempête va vous emporter. "
+                            "Rallumez un foyer avec une torche.",
+                            "Every brazier is out: BLIZZARD! You can't see a thing and the storm will sweep you away. "
+                            "Relight a brazier with a torch."),
+        "source.scatter": ("La tempête vous emporte !", "The storm sweeps you away!"),
         "source.calm": ("Un foyer brûle : le blizzard retombe.", "A brazier burns: the blizzard dies down."),
         "source.reset": ("La Source se fige dans la glace.", "The Source freezes in the ice."),
-        "source.victory": ("La Source élémentaire se brise : le chemin de la forêt s'ouvre. Prenez une torche et suivez "
-                           "les traces.", "The Elemental Source shatters: the forest path opens. Take a torch and follow "
-                           "the tracks."),
-        "forest.ambush": ("Des cultistes du givre surgissent entre les sapins !", "Frost cultists burst out between the firs!"),
-        "shaman.enter": ("Le Chaman légendaire ! Ses coups d'épée glacent : restez près des feux du village.",
-                         "The Legendary Shaman! His sword strikes freeze: stay near the village fires."),
+        "source.victory": ("La Source élémentaire se brise : la brume de l'est s'ouvre sur la forêt. Prenez une torche et "
+                           "suivez les traces jusqu'à la grotte de glace.", "The Elemental Source shatters: the eastern "
+                           "mist opens onto the forest. Take a torch and follow the tracks to the ice cave."),
+        "shaman.enter": ("Le Chaman légendaire, au fond de la grotte de glace ! Ses coups d'épée glacent : restez près des "
+                         "foyers.", "The Legendary Shaman, deep in the ice cave! His sword strikes freeze: stay near the "
+                         "braziers."),
         "shaman.crystals": ("Le Chaman invoque trois cristaux corrompus : il ne prend aucun dégât tant qu'ils tiennent.",
                             "The Shaman summons three corrupted crystals: he takes no damage while they stand."),
         "shaman.exposed": ("Les cristaux sont brisés : le Chaman est vulnérable !", "The crystals are shattered: the Shaman is vulnerable!"),
-        "shaman.balcony": ("Le Chaman saute sur son balcon et fait pleuvoir des pics : détruisez l'Effigie de glace !",
-                           "The Shaman leaps onto his balcony and rains spikes: destroy the Ice Effigy!"),
+        "shaman.balcony": ("Le Chaman saute sur sa corniche de glace et fait pleuvoir des pics : détruisez l'Effigie de "
+                           "glace !", "The Shaman leaps onto his ice ledge and rains spikes: destroy the Ice Effigy!"),
         "shaman.down": ("L'Effigie se brise : le Chaman redescend !", "The Effigy shatters: the Shaman comes down!"),
         "shaman.bear": ("Le Chaman prend sa forme d'ours !", "The Shaman takes his bear form!"),
         "shaman.reset": ("Le Chaman se retire dans le blizzard.", "The Shaman withdraws into the blizzard."),
@@ -758,16 +858,19 @@ def lang():
 GROUND_Y = fc.GROUND_Y
 
 
-def java_layout():
+def java_layout(c):
     J = fc
     cx, cz = CAMP
-    rows = sorted({y for _, y, _ in ICE_WALL}, reverse=True)
-    wall_rows = "{" + ", ".join(J.jblocks([c for c in ICE_WALL if c[1] == y]) for y in rows) + "}"
+    rows = sorted({y for _, y, _ in c.ice_wall}, reverse=True)
+    wall_rows = "{" + ", ".join(J.jblocks([w for w in c.ice_wall if w[1] == y]) for y in rows) + "}"
     sx, sz = SOURCE_C
+    sy = SOURCE_AT[1]
     vx, vz = VILLAGE_C
-    ambush_lines = ", ".join(str(GROUND_Y * 0 + z) for z, _ in AMBUSHES)
-    ambush_spawns = "{" + ", ".join(J.jpoints([(x, 0, z) for x, z in pts]) for _, pts in AMBUSHES) + "}"
-    fz0, fz1 = FOREST_Z
+    vy = EFFIGY_AT[1]
+    pack_centers = J.jpoints([center for center, _ in c.packs])
+    pack_spawns = "{" + ", ".join(J.jpoints([at for _, at in spawns]) for _, spawns in c.packs) + "}"
+    pack_roles = "{" + ", ".join("{" + ", ".join(f'"{role}"' for role, _ in spawns) + "}" for _, spawns in c.packs) + "}"
+    plateau = ss.PLATEAU_CHECKPOINT
     return f"""package dev.nakasar.hytale.fractals.snowblind;
 
 import dev.nakasar.hytale.fractals.arena.Box;
@@ -779,41 +882,47 @@ import dev.nakasar.hytale.fractals.arena.Box;
 public final class SnowblindLayout {{
 
     public static final double[] SPAWN = {J.jpoint(SPAWN)};
-    /** Le camp et son grand feu. */
-    public static final Box CAMP = {J.jbox(cx - CAMP_RADIUS, cx + CAMP_RADIUS, -1, 12, cz - CAMP_RADIUS, cz + CAMP_RADIUS)};
+    /** Le bol du grand feu, au pied de la colline. */
+    public static final Box CAMP = {J.jbox(cx - CAMP_RADIUS, cx + CAMP_RADIUS, -1, 14, cz - CAMP_RADIUS, cz + CAMP_RADIUS)};
     public static final int[] BONFIRE = {J.jblock(BONFIRE_AT)};
     public static final double BONFIRE_HEAT = {BONFIRE_HEAT};
-    /** Tas de fagots sous les arbres du camp. */
-    public static final int[][] CAMP_PILES = {J.jblocks([(x, 0, z) for x, z in FIREWOOD_SPOTS])};
-    /** Lisière d'où sortent les élémentaires de glace, et les vagues de loups et de cultistes. */
-    public static final double[][] ELEMENTAL_SPAWNS = {J.jpoints([(x, 0, z) for x, z in ELEMENTAL_SPAWNS])};
-    public static final double[][] WAVE_SPAWNS = {J.jpoints([(x, 0, z) for x, z in WAVE_SPAWNS])};
-    /** Mur de glace, rangée par rangée, du haut vers le bas (il fond dans cet ordre). */
+    /** Tas de fagots sous les sapins de la lisière. */
+    public static final int[][] CAMP_PILES = {J.jblocks([c.at(x, z) for x, z in FIREWOOD_SPOTS])};
+    /** Lisière d'où sortent les élémentaires de glace, et les vagues de loups et de Svanir. */
+    public static final double[][] ELEMENTAL_SPAWNS = {J.jpoints([c.at(x, z) for x, z in ELEMENTAL_SPAWNS])};
+    public static final double[][] WAVE_SPAWNS = {J.jpoints([c.at(x, z) for x, z in WAVE_SPAWNS])};
+    /** Mur de glace du col, rangée par rangée, du haut vers le bas (il fond dans cet ordre). */
     public static final int[][][] ICE_WALL = {wall_rows};
-    public static final double[] WALL_CHECKPOINT = {J.jpoint((0, 0, -42))};
+    public static final double[] WALL_CHECKPOINT = {J.jpoint(ss.WALL_CHECKPOINT)};
 
-    /** Arène de la Source élémentaire. */
-    public static final Box SOURCE_ARENA = {J.jbox(sx - SOURCE_RADIUS, sx + SOURCE_RADIUS, -1, 14, sz - SOURCE_RADIUS, sz + SOURCE_RADIUS - 2)};
+    /** Le camp Svanir et la Source élémentaire. */
+    public static final Box SOURCE_ARENA = {J.jbox(sx - SOURCE_RADIUS, sx + SOURCE_RADIUS, sy - 1, sy + 14, sz - SOURCE_RADIUS, sz + SOURCE_RADIUS)};
     public static final double[] SOURCE = {J.jpoint(SOURCE_AT)};
-    public static final int[][] BRAZIERS = {J.jblocks([(x, 0, z) for x, z in BRAZIERS])};
+    public static final int[][] BRAZIERS = {J.jblocks([c.at(x, z) for x, z in BRAZIERS])};
     public static final double BRAZIER_HEAT = {BRAZIER_HEAT};
-    public static final int[][] HUT_PILES = {J.jblocks([(x, 0, z) for x, z in HUTS])};
+    public static final int[][] HUT_PILES = {J.jblocks([c.at(x, z) for x, z in c.huts])};
     public static final int[] TORCH_RACK = {J.jblock(TORCH_RACK_AT)};
-    public static final int[][] GATE_SOURCE = {J.jblocks(GATE_SOURCE)};
+    public static final int[][] GATE_SOURCE = {J.jblocks(c.gate_source)};
+    /** Où le blizzard jette les joueurs (neige tassée de l'arène, loin des foyers). */
+    public static final double[][] BLIZZARD_SPOTS = {J.jpoints(c.blizzard_spots)};
 
-    /** Forêt sombre : lignes d'embuscade (z) et apparitions des cultistes de chacune. */
-    public static final Box FOREST = {J.jbox(-30, 30, -1, 20, fz1, fz0)};
-    public static final double[] FOREST_CHECKPOINT = {J.jpoint((path_x(-92), 0, -92))};
-    public static final int[] AMBUSH_LINES = {{{ambush_lines}}};
-    public static final double[][][] AMBUSH_SPAWNS = {ambush_spawns};
+    /** La forêt : groupes de Svanir et de loups autour de leurs feux (toujours allumés), éveillés à l'approche. */
+    public static final double[] FOREST_CHECKPOINT = {J.jpoint(ss.FOREST_CHECKPOINT)};
+    public static final double[] PLATEAU_CHECKPOINT = {J.jpoint(plateau)};
+    public static final double PACK_TRIGGER = {PACK_TRIGGER};
+    public static final double[][] PACK_CENTERS = {pack_centers};
+    public static final double[][][] PACK_SPAWNS = {pack_spawns};
+    public static final String[][] PACK_ROLES = {pack_roles};
+    public static final int[][] FOREST_FIRES = {J.jblocks(c.forest_fires)};
+    public static final double FOREST_FIRE_HEAT = {FOREST_FIRE_HEAT};
 
-    /** Village du Chaman légendaire. */
-    public static final Box VILLAGE = {J.jbox(vx - VILLAGE_RADIUS, vx + VILLAGE_RADIUS, -1, 14, vz - VILLAGE_RADIUS, vz + VILLAGE_RADIUS - 4)};
-    public static final double[] VILLAGE_CENTER = {J.jpoint((vx, 0, vz))};
+    /** La grotte de glace du Chaman légendaire. */
+    public static final Box VILLAGE = {J.jbox(vx - VILLAGE_RADIUS, vx + VILLAGE_RADIUS, vy - 1, vy + 24, vz - VILLAGE_RADIUS, vz + VILLAGE_RADIUS)};
+    public static final double[] VILLAGE_CENTER = {J.jpoint((vx, vy, vz))};
     public static final double VILLAGE_RADIUS = {VILLAGE_RADIUS};
-    public static final int[][] VILLAGE_FIRES = {J.jblocks([(x, 0, z) for x, z in VILLAGE_FIRES])};
-    public static final int[][] GATE_VILLAGE = {J.jblocks(GATE_VILLAGE)};
-    public static final double[] VILLAGE_CHECKPOINT = {J.jpoint((0, 0, -163))};
+    public static final int[][] VILLAGE_FIRES = {J.jblocks([c.at(x, z) for x, z in VILLAGE_FIRES])};
+    public static final int[][] GATE_VILLAGE = {J.jblocks(c.gate_village)};
+    public static final double[] VILLAGE_CHECKPOINT = {J.jpoint(ss.VILLAGE_CHECKPOINT)};
     public static final double[] BALCONY = {J.jpoint(BALCONY)};
     public static final double[] EFFIGY = {J.jpoint(EFFIGY_AT)};
     public static final double[] SHAMAN = {J.jpoint(SHAMAN_AT)};
@@ -872,13 +981,19 @@ def main():
         fc.write_json(fc.ROLES / f"{role}.json", doc)
     fc.add_foes(FOE_ROLES)
 
-    p = course_prefab()
+    course = build_course()
+    p = course.p
     sections = fc.split_sections(p, min(z for _, _, z in p.blocks))
+    # Toujours la nuit (Kevin, 25 octobre 2026) : ciel bleu nuit, brume bleutée, clair de lune froid.
     counts = fc.write_instance(INSTANCE, "Tempête de neige", PREFAB_DIR, sections, SPAWN, "#7a9a8a",
-                               WEATHER, fc.weather("#6a7a90", "#d8e0ea", "#c8d4e0", (10, 120), 0.6, "#d8e0f0"), "17:30")
+                               WEATHER, fc.weather("#060c1c", "#1a2a46", "#1e2c44", (14, 150), 0.5, "#5a72a8",
+                                                   sun="#c8d8ff"), "00:30")
+    # Blizzard de la Source (tous les foyers éteints) : brume blanche à quelques blocs, posé par le Java.
+    fc.write_json(fc.SERVER / "Weathers" / f"{BLIZZARD_WEATHER}.json",
+                  fc.weather("#7a8aa0", "#b8c4d4", "#c4d0de", (1, 9), 0.97, "#8a9ac0", sun="#c8d8ff"))
     lang().write(LANG)
     JAVA_LAYOUT.parent.mkdir(parents=True, exist_ok=True)
-    JAVA_LAYOUT.write_text(java_layout(), encoding="utf-8")
+    JAVA_LAYOUT.write_text(java_layout(course), encoding="utf-8")
     print(f"Tempête de neige : {sum(counts.values())} blocs en {len(counts)} tronçons, {len(roles())} rôles, "
           f"{len(PARTICLE_SYSTEMS)} particules")
     if preview:
