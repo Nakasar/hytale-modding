@@ -8,6 +8,12 @@
 
 Deux ascensions de plateformes sous le feu des harpies encadrent une ruine pleine de prisonniers, un escalier mortel et deux boss.
 
+## Carte
+
+![Carte de l'Inclassable](../images/fractales/carte-inclassable.png)
+
+*Carte de l'Inclassable, vue de dessus, le nord en haut : on part du sud. Les numéros suivent le déroulé ci-dessous.*
+
 ## Déroulé
 
 1. **Plateformes des harpies** : les harpies vous repoussent hors des plateformes ; une chute ramène à la dernière plateforme sûre.

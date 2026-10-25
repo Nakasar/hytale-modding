@@ -8,6 +8,12 @@
 
 Un rituel grawl au cœur d'un volcan : groupes de grawls sous les chutes de pierres, couloir de rochers roulants, sauvetage de captifs au bord d'une falaise, puzzle de saut dans une mine, puis un boss ailé sur une île au milieu d'un lac de lave. Tout se passe dans les galeries courbes et les vastes grottes du volcan en activité, et l'on descend peu à peu du camp jusqu'au lac de lave.
 
+## Carte
+
+![Carte de la Volcanique](../images/fractales/carte-volcanique.png)
+
+*Carte de la Volcanique, voûte retirée : on part du camp au sud-est et l'on descend vers le lac de lave au nord-ouest. Les numéros suivent le déroulé ci-dessous.*
+
 ## Déroulé
 
 1. **Le camp grawl** autour d'un **totem** : les grawls arrivent par **groupes de 7** et chargent. La barre du totem, visible de toute la fractale, ne baisse qu'à chaque grawl abattu (21, +7 tous les deux joueurs de plus).

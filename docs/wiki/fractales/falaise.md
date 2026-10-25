@@ -9,6 +9,12 @@
 
 Un colosse de pierre est enchaîné à une falaise par un culte. Le groupe l'escalade par des échafaudages et brise ses **cinq sceaux** un par un avec le **marteau du culte**, avant d'affronter l'**Archidevin**.
 
+## Carte
+
+![La Falaise vue de face](../images/fractales/carte-falaise.png)
+
+*La Falaise vue de face, depuis le sud : on grimpe le long du colosse enchaîné. Les numéros suivent le déroulé ci-dessous (5 : les deux poignets).*
+
 ## Déroulé
 
 1. **Le camp** au pied du colosse : le Chercheur et une vague de cultistes. Le **râtelier** ne donne le marteau qu'une fois le camp nettoyé, et à un seul joueur à la fois.

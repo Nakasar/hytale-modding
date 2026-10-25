@@ -9,6 +9,12 @@
 
 Une fractale d'environnement : le froid tue plus que les ennemis, et chaque rencontre tourne autour du feu.
 
+## Carte
+
+![Carte de la Tempête de neige](../images/fractales/carte-tempete-de-neige.png)
+
+*Carte de la Tempête de neige, vue de dessus, sans le feuillage : on part du camp au sud. Les numéros suivent le déroulé ci-dessous.*
+
 ## Hypothermie et Chaleur
 
 - **Loin d'un feu allumé**, vous prenez une pile d'**Hypothermie** toutes les **5 s** (2,5 s dans le **blizzard**, deux fois moins vite **torche en main**), jusqu'à 10.

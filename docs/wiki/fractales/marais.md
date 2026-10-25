@@ -8,6 +8,12 @@
 
 Une course chronométrée aux feux-follets à travers un marais piégé, une embuscade du **Moussu**, puis **Carnasse** dans une clairière où l'on se déplace de cercle vert en cercle vert.
 
+## Carte
+
+![Carte du Marais](../images/fractales/carte-marais.png)
+
+*Carte du Marais, vue de dessus, sans le feuillage : 1 la course aux feux-follets, 2 la salle de l'embuscade du Moussu, 3 la clairière de Carnasse.*
+
 ## La course aux feux-follets
 
 Rapportez **trois feux-follets** dans leurs failles avant la fin du minuteur : **80 s**, **50 s** dès le niveau 26, **42 s** dès le niveau 51.
