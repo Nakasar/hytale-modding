@@ -469,12 +469,13 @@ final class Source {
                         Vector3d shard = strip.at(d, 0);
                         Delayed.later(w, 0.04f * k, s2 -> Telegraphs.particle(s2, "Ice_Blast", shard, 0.8f));
                     }
-                    for (PlayerRef p : Spawns.alivePlayers(w, s)) {
-                        Vector3d at = Telegraphs.position(s, p.getReference());
-                        if (at != null && strip.contains(at)) {
-                            Hurt.percent(s, p.getReference(), LANCE_PART, "Physical");
-                            Hurt.effect(s, p.getReference(), "Ability_Frost_Slow", 2f);
-                        }
+                }
+                // Une seule touche par joueur, même au pied de la Source où toutes les bandes se croisent.
+                for (PlayerRef p : Spawns.alivePlayers(w, s)) {
+                    Vector3d at = Telegraphs.position(s, p.getReference());
+                    if (at != null && strips.stream().anyMatch(strip -> strip.contains(at))) {
+                        Hurt.percent(s, p.getReference(), LANCE_PART, "Physical");
+                        Hurt.effect(s, p.getReference(), "Ability_Frost_Slow", 2f);
                     }
                 }
                 Telegraphs.sound(s, "SFX_Ice_Break", ground);

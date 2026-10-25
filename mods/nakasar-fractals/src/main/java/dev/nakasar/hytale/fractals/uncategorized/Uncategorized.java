@@ -316,11 +316,18 @@ public final class Uncategorized implements FractalStage {
     private void fireLane(World world, Store<EntityStore> store, double x, float wf) {
         float seconds = TURRET_WINDUP * wf;
         long now = System.nanoTime();
+        List<Telegraphs.Strip> steps = new ArrayList<>();
         for (int z = UncategorizedLayout.STAIRS_TOP_Z; z <= UncategorizedLayout.STAIRS_BOTTOM_Z; z++) {
-            Telegraphs.Strip step = new Telegraphs.Strip(new Vector3d(x, stairLevel(z), z), Math.PI / 2, 1,
-                    2 * TURRET_HALF_WIDTH, now, seconds);
-            TelegraphSystem.start(world, (w, s, t) -> step.step(s, t));
+            steps.add(new Telegraphs.Strip(new Vector3d(x, stairLevel(z), z), Math.PI / 2, 1,
+                    2 * TURRET_HALF_WIDTH, now, seconds));
         }
+        TelegraphSystem.start(world, (w, s, t) -> {
+            boolean done = true;
+            for (Telegraphs.Strip step : steps) {
+                done &= step.step(s, t);
+            }
+            return done;
+        });
         Delayed.later(world, seconds, s -> {
             State st = state(world);
             if (st.step != Step.STAIRS) {

@@ -235,8 +235,8 @@ final class Kanaxai {
             } else if (!warned && cleaverAt - now <= Telegraphs.seconds(3f)) {
                 warned = true;
                 float left = (cleaverAt - now) / 1e9f;
-                for (Vector3d[] zone : cleaverZones()) {
-                    Telegraphs.circle(store, zone[0], zone[1].x(), left);
+                for (CleaverZone zone : cleaverZones()) {
+                    Telegraphs.circle(store, zone.center(), zone.radius(), left);
                 }
             }
             return Outcome.NONE;
@@ -477,7 +477,7 @@ final class Kanaxai {
             }
             for (PlayerRef p : inside) {
                 Vector3d at = Telegraphs.position(store, p.getReference());
-                if (at != null && Telegraphs.horizontal(at, pool.at()) <= POOL_RADIUS && Math.abs(at.y() - pool.at().y()) < 2) {
+                if (at != null && Telegraphs.inCircle(at, pool.at(), POOL_RADIUS)) {
                     Hurt.percent(store, p.getReference(), POOL_PART_PER_SECOND * dt, SilentSurf.TORMENT_CAUSE);
                     Hurt.effect(store, p.getReference(), "Nakasar_Fractal_Bleeding", 1.5f);
                 }
@@ -611,15 +611,10 @@ final class Kanaxai {
         Vector3d c = center();
         Telegraphs.particle(store, "Nakasar_Fractal_Cleaver", c, 4f);
         Telegraphs.sound(store, "SFX_Goblin_Feastmaster_Slam", c);
-        List<Vector3d[]> zones = cleaverZones();
+        List<CleaverZone> zones = cleaverZones();
         for (PlayerRef p : inside) {
             Vector3d at = Telegraphs.position(store, p.getReference());
-            boolean hit = false;
-            for (Vector3d[] zone : zones) {
-                hit |= at != null && Telegraphs.horizontal(at, zone[0]) <= zone[1].x() + Telegraphs.BODY
-                        && Math.abs(at.y() - zone[0].y()) < 6;
-            }
-            if (!hit) {
+            if (at == null || zones.stream().noneMatch(zone -> zone.contains(at))) {
                 continue;
             }
             Hurt.percent(store, p.getReference(), part, SilentSurf.TORMENT_CAUSE);
@@ -633,16 +628,26 @@ final class Kanaxai {
     }
 
     /**
-     * Zones du Fendeur : l'arène et chacune des cinq îles, cercles rouges de la taille exacte du coup ({centre, (rayon,
-     * 0, 0)}). Il touche tout le monde sur l'arène ou sur une île : se cacher sur une île ne l'évite pas.
+     * Zones du Fendeur : l'arène et chacune des cinq îles, cercles rouges de la taille exacte du coup. Il touche tout le
+     * monde sur l'arène ou sur une île : se cacher sur une île ne l'évite pas.
      */
-    private static List<Vector3d[]> cleaverZones() {
-        List<Vector3d[]> zones = new ArrayList<>();
-        zones.add(new Vector3d[]{center(), new Vector3d(SilentSurfLayout.ARENA_RADIUS, 0, 0)});
+    private static List<CleaverZone> cleaverZones() {
+        List<CleaverZone> zones = new ArrayList<>();
+        zones.add(new CleaverZone(center(), SilentSurfLayout.ARENA_RADIUS));
         for (double[] island : SilentSurfLayout.ISLANDS) {
-            zones.add(new Vector3d[]{Spawns.point(island), new Vector3d(ISLAND_RADIUS, 0, 0)});
+            zones.add(new CleaverZone(Spawns.point(island), ISLAND_RADIUS));
         }
         return zones;
+    }
+
+    /**
+     * Une zone du Fendeur : cercle de `radius` en `center`, corps compris ({@link Telegraphs#BODY}) ; plus haute qu'une
+     * zone ordinaire (6 blocs de part et d'autre) pour toucher aussi qui saute sur les champignons.
+     */
+    private record CleaverZone(Vector3d center, double radius) {
+        boolean contains(Vector3d p) {
+            return Telegraphs.horizontal(p, center) <= radius + Telegraphs.BODY && Math.abs(p.y() - center.y()) < 6;
+        }
     }
 
     // --- coups ---------------------------------------------------------------------------------------------------

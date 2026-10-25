@@ -1,5 +1,6 @@
 package dev.nakasar.hytale.vampires.boss;
 
+import com.hypixel.hytale.builtin.portals.resources.PortalWorld;
 import com.hypixel.hytale.component.ArchetypeChunk;
 import com.hypixel.hytale.component.CommandBuffer;
 import com.hypixel.hytale.component.Store;
@@ -19,8 +20,9 @@ import java.util.Set;
  * Aucun PNJ du mod ne se régénère hors combat ou invulnérable (consigne permanente de Kevin, 25 octobre 2026, voir
  * AGENTS.md). La vie des PNJ vanilla remonte de 5 % toutes les 0,5 s après 15 s sans dégâts (Server/Entity/Stats/
  * Health.json, condition {@code RegenHealth}), donc justement hors combat ou sous le composant {@code Invulnerable} des
- * élites protégées : on coupe {@link HealthRegenState} des rôles {@value #PREFIX}* à chaque tick, avant la
- * régénération. Les soins voulus (seigneurs, rouages) passent par le Java et ne valent qu'en combat
+ * élites protégées : on coupe {@link HealthRegenState} à chaque tick, avant la régénération, pour les rôles
+ * {@value #PREFIX}* partout et pour tous les PNJ (vanilla compris) des mondes du mod (fragment du Comté, îles de
+ * contrat, Tour de l'alchimiste : portails {@value #PREFIX}*). Les soins voulus (seigneurs, rouages) passent par le Java et ne valent qu'en combat
  * ({@link RecentDamage}).
  */
 public final class NoRegenSystem extends EntityTickingSystem<EntityStore> {
@@ -57,8 +59,15 @@ public final class NoRegenSystem extends EntityTickingSystem<EntityStore> {
         }
         NPCEntity npc = chunk.getComponent(index, NPCEntity.getComponentType());
         String role = npc == null ? null : npc.getRoleName();
-        if (role != null && role.startsWith(PREFIX)) {
+        if ((role != null && role.startsWith(PREFIX)) || isModWorld(store)) {
             regen.setRegenEnabled(false);
         }
+    }
+
+    /** Vrai dans un monde ouvert par un portail du mod. */
+    static boolean isModWorld(Store<EntityStore> store) {
+        PortalWorld portal = store.getResource(PortalWorld.getResourceType());
+        return portal != null && portal.exists() && portal.getPortalType() != null
+                && portal.getPortalType().getId().startsWith(PREFIX);
     }
 }

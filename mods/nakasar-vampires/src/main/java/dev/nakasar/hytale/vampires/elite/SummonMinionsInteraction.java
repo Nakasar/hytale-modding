@@ -24,10 +24,10 @@ import com.hypixel.hytale.server.core.universe.world.npc.INonPlayerCharacter;
 import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
 import com.hypixel.hytale.server.npc.NPCPlugin;
 import com.hypixel.hytale.server.spawning.SpawnTestResult;
-import dev.nakasar.hytale.vampires.boss.RecentDamage;
 import dev.nakasar.hytale.vampires.VampiresPlugin;
 import it.unimi.dsi.fastutil.Pair;
 import dev.nakasar.hytale.vampires.arena.WorldBlocks;
+import dev.nakasar.hytale.vampires.boss.RecentDamage;
 import org.joml.Vector3d;
 import org.joml.Vector3i;
 

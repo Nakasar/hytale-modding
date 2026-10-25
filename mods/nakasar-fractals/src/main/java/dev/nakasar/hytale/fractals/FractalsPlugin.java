@@ -6,6 +6,7 @@ import com.hypixel.hytale.server.core.plugin.JavaPluginInit;
 import dev.nakasar.hytale.fractals.arena.Restores;
 import dev.nakasar.hytale.fractals.boss.BossBarSystem;
 import dev.nakasar.hytale.fractals.boss.NoRegenSystem;
+import dev.nakasar.hytale.fractals.boss.RecentDamage;
 import dev.nakasar.hytale.fractals.boss.PinnedHealth;
 import dev.nakasar.hytale.fractals.cliffside.Cliffside;
 import dev.nakasar.hytale.fractals.cliffside.CliffsideDamageFilter;
@@ -175,6 +176,7 @@ public final class FractalsPlugin extends JavaPlugin {
         systems.registerSystem(new BossBarSystem());
         systems.registerSystem(new PinnedHealth());
         systems.registerSystem(new NoRegenSystem());
+        systems.registerSystem(new RecentDamage());
         systems.registerSystem(new HarmonyCircleSystem());
         systems.registerSystem(new SelectionItemsSystem());
         systems.registerSystem(new ObservatoryReturnSystem());
@@ -239,6 +241,7 @@ public final class FractalsPlugin extends JavaPlugin {
         SummonMinionsInteraction.clearAll();
         BossBarSystem.clearAll();
         PinnedHealth.clearAll();
+        RecentDamage.clearAll();
         Observatory.clearAll();
         FractalRuns.clearAll();
         AgonySystem.clearAll();

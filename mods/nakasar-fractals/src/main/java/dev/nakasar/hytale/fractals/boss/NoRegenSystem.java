@@ -15,7 +15,10 @@ import com.hypixel.hytale.server.npc.NPCPlugin;
 import com.hypixel.hytale.server.npc.entities.NPCEntity;
 import dev.nakasar.hytale.fractals.party.FractalCatalog;
 
+import java.util.Collections;
+import java.util.Map;
 import java.util.Set;
+import java.util.WeakHashMap;
 
 /**
  * Aucun PNJ des fractales ne se régénère (consigne permanente de Kevin, 25 octobre 2026 : « les mobs ne doivent pas se
@@ -28,6 +31,9 @@ import java.util.Set;
 public final class NoRegenSystem extends EntityTickingSystem<EntityStore> {
 
     private static final Query<EntityStore> QUERY = Query.and(NPCEntity.getComponentType(), HealthRegenState.getComponentType());
+
+    /** Monde de fractale ou non, retenu par monde (la config d'instance ne change pas) : pas de recherche à chaque tick. */
+    private static final Map<World, Boolean> FRACTAL_WORLDS = Collections.synchronizedMap(new WeakHashMap<>());
 
     @SuppressWarnings({"rawtypes", "unchecked"})
     private static final Set<Dependency<EntityStore>> DEPENDENCIES = Set.of(
@@ -56,7 +62,7 @@ public final class NoRegenSystem extends EntityTickingSystem<EntityStore> {
             return;
         }
         World world = store.getExternalData().getWorld();
-        if (FractalCatalog.fractalOf(world) != null) {
+        if (world != null && FRACTAL_WORLDS.computeIfAbsent(world, w -> FractalCatalog.fractalOf(w) != null)) {
             regen.setRegenEnabled(false);
         }
     }

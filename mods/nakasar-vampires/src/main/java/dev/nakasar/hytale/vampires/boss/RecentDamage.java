@@ -26,7 +26,11 @@ public final class RecentDamage extends DamageEventSystem {
 
     public static final float COMBAT_SECONDS = 15f;
 
+    private static final long COMBAT_NANOS = (long) (COMBAT_SECONDS * 1_000_000_000L);
+
     private static final Map<Ref<EntityStore>, Long> LAST_HIT = new ConcurrentHashMap<>();
+    /** Prochain élagage des PNJ qui ne sont plus en combat (une fois par fenêtre, pas à chaque coup). */
+    private static volatile long nextPrune;
 
     @Override
     public SystemGroup<EntityStore> getGroup() {
@@ -46,8 +50,10 @@ public final class RecentDamage extends DamageEventSystem {
         }
         long now = System.nanoTime();
         LAST_HIT.put(chunk.getReferenceTo(index), now);
-        LAST_HIT.entrySet().removeIf(e -> !e.getKey().isValid()
-                || now - e.getValue() > (long) (COMBAT_SECONDS * 1_000_000_000L));
+        if (now - nextPrune >= 0) {
+            nextPrune = now + COMBAT_NANOS;
+            LAST_HIT.entrySet().removeIf(e -> !e.getKey().isValid() || now - e.getValue() > COMBAT_NANOS);
+        }
     }
 
     /** Vrai si `ref` a été touché depuis moins de {@value #COMBAT_SECONDS} s et n'est pas invulnérable. */
@@ -56,7 +62,7 @@ public final class RecentDamage extends DamageEventSystem {
             return false;
         }
         Long at = LAST_HIT.get(ref);
-        return at != null && System.nanoTime() - at <= (long) (COMBAT_SECONDS * 1_000_000_000L);
+        return at != null && System.nanoTime() - at <= COMBAT_NANOS;
     }
 
     public static void clearAll() {
