@@ -79,11 +79,6 @@ final class Rides {
         active.remove(player);
     }
 
-    void clear() {
-        active.clear();
-        bounced.clear();
-    }
-
     /** Départ du trajet `ride` (bloc utilisé ou chapeau de champignon) ; refusé tant que sa rencontre n'est pas finie. */
     boolean start(SilentSurf.State st, PlayerRef player, int ride) {
         int lock = SilentSurfLayout.RIDE_LOCK[ride];
@@ -245,11 +240,6 @@ final class Rides {
         Vector3d b = point(ride, s + 0.5);
         Vector3d d = b.sub(a);
         return d.lengthSquared() < 1e-6 ? new Vector3d() : d.normalize();
-    }
-
-    static Vector3d start(int ride) {
-        double[] p = SilentSurfLayout.RIDE_PATHS[ride][0];
-        return new Vector3d(p[0], p[1], p[2]);
     }
 
     private static double dist(double[] a, double[] b) {

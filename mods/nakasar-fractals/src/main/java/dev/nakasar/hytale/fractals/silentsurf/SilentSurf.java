@@ -139,18 +139,26 @@ public final class SilentSurf implements FractalStage {
         State st = state(world);
         if (!st.ticking) {
             st.ticking = true;
-            TelegraphSystem.start(world, (w, s, now) -> {
-                if (states.get(w) != st) {
-                    return true;
+            TelegraphSystem.start(world, new TelegraphSystem.Task() {
+                @Override
+                public boolean step(World w, Store<EntityStore> s, long now) {
+                    if (states.get(w) != st) {
+                        return true;
+                    }
+                    st.rides.tick(w, s, st, now);
+                    return false;
                 }
-                st.rides.tick(w, s, st, now);
-                return false;
+
+                @Override
+                public void abort(World w, Store<EntityStore> s) {
+                    st.ticking = false;     // une erreur a coupé la tâche : on la relance au prochain pas
+                }
             });
         }
         List<PlayerRef> players = Spawns.alivePlayers(world, store);
         if (players.isEmpty()) {
-            if (st.kanaxai.idle(world, store, dt)) {
-                reopenArena(world, st);
+            if (st.kanaxai.engaged() && !st.done) {
+                arena(world, store, st, players, dt);     // victoire au dernier souffle, ou remise à zéro
             }
             return;
         }
@@ -160,7 +168,7 @@ public final class SilentSurf implements FractalStage {
             protect(store, st.thess);
             Spawns.tellAll(world, Message.translation(MESSAGES + "intro"));
         }
-        gearUp(store, st, players);
+        gearUp(world, store, st, players);
         ward(store, st, players, dt);
         torment(store, players, dt);
         reach(world, store, st, players);
@@ -171,7 +179,12 @@ public final class SilentSurf implements FractalStage {
     }
 
     /** L'équipement à qui ne l'a pas encore reçu (arrivée, retour dans la fractale). */
-    private static void gearUp(Store<EntityStore> store, State st, List<PlayerRef> players) {
+    private static void gearUp(World world, Store<EntityStore> store, State st, List<PlayerRef> players) {
+        Set<UUID> here = new HashSet<>();
+        for (PlayerRef p : world.getPlayerRefs()) {
+            here.add(p.getUuid());
+        }
+        st.geared.retainAll(here);      // parti ailleurs (l'équipement lui a été retiré) : il le retrouvera au retour
         for (PlayerRef p : players) {
             if (st.geared.add(p.getUuid())) {
                 SurveyGear.refill(store, p.getReference(), st.cleared[2]);
@@ -347,6 +360,9 @@ public final class SilentSurf implements FractalStage {
     }
 
     private static void engageKanaxai(World world, Store<EntityStore> store, State st) {
+        if (!st.kanaxai.engage(world, store)) {
+            return;
+        }
         double[] c = SilentSurfLayout.ARENA_CENTER;
         double[] edge = {c[0], c[1], c[2] + SilentSurfLayout.ARENA_RADIUS - 4};
         Gates.checkpoint(world, edge, MESSAGES + "checkpoint");
@@ -359,7 +375,6 @@ public final class SilentSurf implements FractalStage {
             st.thess = null;
             Spawns.tellAll(world, Message.translation(MESSAGES + "kanaxai.thess"));
         }
-        st.kanaxai.engage(world, store);
     }
 
     private static void reopenArena(World world, State st) {
@@ -393,6 +408,11 @@ public final class SilentSurf implements FractalStage {
                        String victimRole, Ref<EntityStore> attacker, Damage damage) {
         State st = state(world);
         if (victimRole == null) {
+            PlayerRef hit = buffer.getComponent(victim, PlayerRef.getComponentType());
+            if (hit != null && Kanaxai.strayPhantasmHit(attacker, hit.getUuid())) {
+                damage.setCancelled(true);
+                return;
+            }
             fall(world, buffer, st, victim, damage);
             return;
         }
@@ -436,10 +456,10 @@ public final class SilentSurf implements FractalStage {
             Store<EntityStore> store = world.getEntityStore().getStore();
             st.rides.cancel(player.getUuid());
             st.gear.cancel(player.getUuid());
-            Vector3d back = Spawns.point(st.kanaxai.engaged()
-                    ? new double[]{SilentSurfLayout.ARENA_CENTER[0], SilentSurfLayout.ARENA_CENTER[1],
-                    SilentSurfLayout.ARENA_CENTER[2] + SilentSurfLayout.ARENA_RADIUS - 4}
-                    : SilentSurfLayout.RINGS[st.checkpoint]);
+            Vector3d back = Gates.spawnPoint(world);    // le dernier point de contrôle (Gates.checkpoint)
+            if (back == null) {
+                back = Spawns.point(SilentSurfLayout.RINGS[st.checkpoint]);
+            }
             Moves.teleport(store, ref, back);
             Telegraphs.particle(store, "Nakasar_Fractal_Thess_Ward", back, 1f);
             player.sendMessage(Message.translation(MESSAGES + "ward"));

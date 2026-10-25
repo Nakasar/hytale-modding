@@ -47,6 +47,15 @@ public final class Gates {
         Spawns.tellAll(world, Message.translation(messageKey));
     }
 
+    /** Le point d'apparition posé par {@link #checkpoint} (null s'il n'y en a pas). */
+    public static Vector3d spawnPoint(World world) {
+        if (world.getWorldConfig().getSpawnProvider() instanceof GlobalSpawnProvider global
+                && global.getGlobalSpawnPoint() != null) {
+            return new Vector3d(global.getGlobalSpawnPoint().getPosition());
+        }
+        return null;
+    }
+
     /** Fin de la fractale : coffre de récompense et pierre de sortie, partie terminée, titre. */
     public static void victory(World world, int[] chest, int[] exit, String titleKey, String subtitleKey) {
         ChunkStore chunks = world.getChunkStore();

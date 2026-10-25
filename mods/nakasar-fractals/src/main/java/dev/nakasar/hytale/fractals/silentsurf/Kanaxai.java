@@ -120,6 +120,10 @@ final class Kanaxai {
     private int shadows;
     private long shadowsUntil;
     private boolean speeding;
+    private boolean warned;
+    private float tetherFx;
+    /** Change à chaque combat et remise à zéro : les attaques encore en vol d'un combat fini s'arrêtent. */
+    private int epoch;
 
     @SuppressWarnings("unchecked")
     private static Ref<EntityStore>[] newRefs(int n) {
@@ -134,10 +138,17 @@ final class Kanaxai {
         dead = true;
     }
 
-    void engage(World world, Store<EntityStore> store) {
+    /** Faux si Kanaxai n'a pas pu apparaître (l'arène reste ouverte, on réessaiera). */
+    boolean engage(World world, Store<EntityStore> store) {
         Vector3d c = center();
         boss = Spawns.spawnBoss(world, store, SilentSurf.KANAXAI, c, Telegraphs.yawToward(c, new Vector3d(c).add(0, 0, 1)));
+        if (boss == null) {
+            return false;
+        }
         engaged = true;
+        epoch++;
+        pools.clear();
+        warned = false;
         dead = false;
         storms = 0;
         cleavers = 0;
@@ -160,6 +171,12 @@ final class Kanaxai {
         for (int i = 0; i < START_ASPECTS; i++) {
             raiseEdge(world, store, kinds.get(i));
         }
+        return true;
+    }
+
+    /** Vrai tant que le combat lancé à l'époque `e` dure. */
+    private boolean live(int e) {
+        return engaged && !dead && epoch == e;
     }
 
     static Vector3d center() {
@@ -207,8 +224,9 @@ final class Kanaxai {
         if (cleaving) {
             if (now >= cleaverAt) {
                 cleave(world, store, inside);
-            } else if (cleaverAt - now <= Telegraphs.seconds(3f) && cleaverAt - now > Telegraphs.seconds(2.75f)) {
-                Telegraphs.circle(store, center(), SilentSurfLayout.ARENA_RADIUS, 3f);
+            } else if (!warned && cleaverAt - now <= Telegraphs.seconds(3f)) {
+                warned = true;
+                Telegraphs.circle(store, center(), SilentSurfLayout.ARENA_RADIUS, (cleaverAt - now) / 1e9f);
             }
             return Outcome.NONE;
         }
@@ -259,6 +277,11 @@ final class Kanaxai {
 
     /** Lien de chaque Aspect du bord vers le joueur le plus proche ; tenu trop longtemps : Fantasmagorie. */
     private void tethers(World world, Store<EntityStore> store, List<PlayerRef> inside, float dt) {
+        tetherFx += dt;
+        boolean fx = tetherFx >= 0.5f;
+        if (fx) {
+            tetherFx = 0f;
+        }
         for (int i = 0; i < edge.length; i++) {
             Tether t = tethers[i];
             if (t == null) {
@@ -293,7 +316,7 @@ final class Kanaxai {
                 SilentSurf.tellPlayer(near, "kanaxai.tether");
             }
             t.held += dt;
-            Vector3d to = Telegraphs.position(store, near.getReference());
+            Vector3d to = fx ? Telegraphs.position(store, near.getReference()) : null;
             if (to != null) {
                 Vector3d a = new Vector3d(from).add(0, 1.6, 0);
                 Vector3d b = new Vector3d(to).add(0, 1.0, 0);
@@ -332,7 +355,11 @@ final class Kanaxai {
             return;
         }
         Spawns.tellAll(world, Message.translation(SilentSurf.MESSAGES + "kanaxai.harrow"));
+        int e = epoch;
         TelegraphSystem.start(world, (w, s, t) -> {
+            if (!live(e)) {
+                return true;
+            }
             boolean done = true;
             for (Telegraphs.Circle c : circles) {
                 done &= c.step(s, t);
@@ -383,7 +410,11 @@ final class Kanaxai {
         float windup = STORM_WINDUP * FractalRuns.windupFactor(world);
         long[] begin = {-1};
         long[] shown = {0};
+        int e = epoch;
         TelegraphSystem.start(world, (w, s, now) -> {
+            if (!live(e)) {
+                return true;
+            }
             if (begin[0] < 0) {
                 begin[0] = now;
             }
@@ -540,6 +571,7 @@ final class Kanaxai {
     private void rise(World world, Store<EntityStore> store) {
         cleavers++;
         cleaving = true;
+        warned = false;
         cleaverAt = System.nanoTime() + Telegraphs.seconds(CLEAVER_SECONDS * FractalRuns.windupFactor(world));
         BossStun.interrupt(world, store, boss);
         BossStun.hold(world, store, boss);
@@ -610,10 +642,16 @@ final class Kanaxai {
         }
     }
 
+    /** Coup d'un Aspect de Fantasmagorie : il ne touche que son joueur (les autres ne le voient pas). */
+    static boolean strayPhantasmHit(Ref<EntityStore> attacker, UUID victimId) {
+        UUID owner = attacker == null ? null : AspectVisibilitySystem.owner(attacker);
+        return owner != null && !owner.equals(victimId);
+    }
+
     // --- remise à zéro -----------------------------------------------------------------------------------------------
 
-    boolean idle(World world, Store<EntityStore> store, float dt) {
-        if (!engaged) {
+    private boolean idle(World world, Store<EntityStore> store, float dt) {
+        if (!engaged || dead) {
             return false;
         }
         idle += dt;
@@ -646,6 +684,7 @@ final class Kanaxai {
         phantasms.clear();
         pools.clear();
         engaged = false;
+        epoch++;
         cleaving = false;
         speeding = false;
         shadowsUntil = 0;

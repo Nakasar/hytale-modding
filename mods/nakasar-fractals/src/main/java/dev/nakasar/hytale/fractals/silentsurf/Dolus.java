@@ -20,12 +20,14 @@ final class Dolus {
     static final float DREAD_EVERY = 18f;
     static final float SPEED_EVERY = 27f;
     static final double SPEED_RADIUS = 9;
+    static final float RETRY = 5f;
 
     private Ref<EntityStore> boss;
     private float dreadClock;
     private float speedClock;
     private boolean dashing;
     private volatile boolean dead;
+    private long retryAt;
 
     boolean engaged() {
         return boss != null;
@@ -35,10 +37,19 @@ final class Dolus {
         dead = true;
     }
 
+    /** Apparition de Dolus ; si elle échoue, nouvel essai {@value #RETRY} s plus tard, sans rien annoncer. */
     void engage(World world, Store<EntityStore> store) {
+        long now = System.nanoTime();
+        if (now < retryAt) {
+            return;
+        }
         Vector3d c = Spawns.point(SilentSurfLayout.RINGS[4]);
         Vector3d at = new Vector3d(c).add(3, 0, 3);
         boss = Spawns.spawnBoss(world, store, SilentSurf.DOLUS, at, Telegraphs.yawToward(at, c));
+        if (boss == null) {
+            retryAt = now + Telegraphs.seconds(RETRY);
+            return;
+        }
         dead = false;
         dashing = false;
         dreadClock = 8f;
@@ -73,12 +84,6 @@ final class Dolus {
             Nightmare.dread(world, store, boss, name());
         }
         return false;
-    }
-
-    void clear(Store<EntityStore> store) {
-        Spawns.remove(store, boss);
-        boss = null;
-        dashing = false;
     }
 
     static String name() {

@@ -13,6 +13,7 @@ import dev.nakasar.hytale.fractals.combat.Hurt;
 import dev.nakasar.hytale.fractals.combat.TelegraphSystem;
 import dev.nakasar.hytale.fractals.combat.Telegraphs;
 import org.joml.Vector3d;
+import org.joml.Vector3i;
 
 import java.util.HashMap;
 import java.util.HashSet;
@@ -59,16 +60,13 @@ final class SurveyGear {
     private final Set<UUID> busy = new HashSet<>();
     private final Set<UUID> cancelled = new HashSet<>();
     private final Map<UUID, Long> flareReady = new HashMap<>();
+    /** Lueurs posées (position du bloc) -> fin ; une nouvelle fusée au même endroit la prolonge. */
+    private final Map<Vector3i, Long> lights = new HashMap<>();
 
     void cancel(UUID player) {
         if (busy.contains(player)) {
             cancelled.add(player);
         }
-    }
-
-    void clear() {
-        cancelled.addAll(busy);
-        flareReady.clear();
     }
 
     /** Toutes les charges ; la poudre noire seulement après le repaire des araignées (Thess la donne là). */
@@ -77,16 +75,10 @@ final class SurveyGear {
             if (ITEMS[i].equals(POWDER) && !powder) {
                 continue;
             }
-            int have = Carried.count(store, ref, ITEMS[i]);
-            for (int k = have; k < MAX[i]; k++) {
-                Carried.give(store, ref, ITEMS[i]);
+            int missing = MAX[i] - Carried.count(store, ref, ITEMS[i]);
+            if (missing > 0) {
+                Carried.giveIfRoom(store, ref, ITEMS[i], missing);     // sac plein : rien au sol
             }
-        }
-    }
-
-    static void strip(Store<EntityStore> store, Ref<EntityStore> ref) {
-        for (String id : ITEMS) {
-            Carried.removeAll(store, ref, id);
         }
     }
 
@@ -246,11 +238,20 @@ final class SurveyGear {
             int y = (int) Math.floor(end.y());
             int z = (int) Math.floor(end.z());
             ChunkStore c = w.getChunkStore();
-            if (hit != null && WorldBlocks.name(c, x, y, z) == null) {
-                WorldBlocks.set(c, x, y, z, FLARE_LIGHT, 0);
+            String there = WorldBlocks.name(c, x, y, z);
+            if (hit != null && (there == null || FLARE_LIGHT.equals(there))) {
+                Vector3i spot = new Vector3i(x, y, z);
+                lights.put(spot, t + Telegraphs.seconds(FLARE_SECONDS));
+                if (there == null) {
+                    WorldBlocks.set(c, x, y, z, FLARE_LIGHT, 0);
+                }
                 Delayed.later(w, FLARE_SECONDS, st2 -> {
-                    if (FLARE_LIGHT.equals(WorldBlocks.name(w.getChunkStore(), x, y, z))) {
-                        WorldBlocks.clear(w.getChunkStore(), x, y, z);
+                    Long until = lights.get(spot);
+                    if (until != null && System.nanoTime() >= until - Telegraphs.seconds(0.5f)) {
+                        lights.remove(spot);
+                        if (FLARE_LIGHT.equals(WorldBlocks.name(w.getChunkStore(), x, y, z))) {
+                            WorldBlocks.clear(w.getChunkStore(), x, y, z);
+                        }
                     }
                 });
             }

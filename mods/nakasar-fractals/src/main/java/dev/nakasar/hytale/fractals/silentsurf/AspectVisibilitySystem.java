@@ -78,6 +78,8 @@ public final class AspectVisibilitySystem extends EntityTickingSystem<EntityStor
         if (OWNERS.isEmpty()) {
             return;
         }
+        // Aspect d'une instance fermée en pleine Fantasmagorie : sa Ref n'est plus valide, on l'oublie.
+        OWNERS.keySet().removeIf(ref -> !ref.isValid());
         PlayerRef viewer = chunk.getComponent(index, PlayerRef.getComponentType());
         EntityTrackerSystems.EntityViewer seen = chunk.getComponent(index, EntityTrackerSystems.EntityViewer.getComponentType());
         if (viewer == null || seen == null) {
