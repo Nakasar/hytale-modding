@@ -1,0 +1,5 @@
+{
+  "$Comment": "Canon des ombres, tir de glace : un impact de 5 blocs qui gèle les ennemis (Java).",
+  "Type": "Nakasar_Fractal_ReefAction",
+  "Action": "Ice"
+}

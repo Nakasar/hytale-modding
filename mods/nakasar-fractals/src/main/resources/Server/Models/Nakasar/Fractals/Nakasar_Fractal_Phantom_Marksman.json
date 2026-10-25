@@ -1,0 +1,10 @@
+{
+  "$Comment": "Tireur fantôme : le canonnier squelette vanilla, lueur cyan.",
+  "Parent": "Skeleton_Pirate_Gunner",
+  "MinScale": 1.0,
+  "MaxScale": 1.0,
+  "Light": {
+    "Color": "#7ef",
+    "Radius": 2
+  }
+}

@@ -1,0 +1,34 @@
+{
+  "$Comment": "Le second Calix : confettis du cadavre, cône de 70° sur 8 blocs (2 s), 18 dégâts, projette haut et loin.",
+  "Type": "Serial",
+  "Interactions": [
+    {
+      "Type": "ClearEntityEffect",
+      "Entity": "User",
+      "EntityEffectId": "Hit_Interrupt_Eligible"
+    },
+    {
+      "Type": "ApplyEffect",
+      "EffectId": "Nakasar_Fractal_Rooted"
+    },
+    {
+      "Type": "Nakasar_Fractal_Telegraph",
+      "Shape": "Cone",
+      "Seconds": 2.0,
+      "Angle": 70,
+      "Radius": 8,
+      "Damage": 18,
+      "Knockback": 10,
+      "KnockUp": 9,
+      "PlayersOnly": true,
+      "ImpactParticle": "Nakasar_Fractal_Ghost_Rise"
+    },
+    {
+      "Type": "Simple",
+      "RunTime": 2.0,
+      "Effects": {
+        "WorldSoundEventId": "SFX_Spear_Throw_Charge"
+      }
+    }
+  ]
+}

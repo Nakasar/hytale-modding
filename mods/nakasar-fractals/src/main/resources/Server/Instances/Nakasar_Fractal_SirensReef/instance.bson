@@ -1,0 +1,39 @@
+{
+  "DisplayName": "Récif de la Sirène",
+  "WorldGen": {
+    "Type": "HytaleGenerator",
+    "WorldStructure": "Nakasar_Fractal_SirensReef"
+  },
+  "ForcedWeather": "Nakasar_Fractal_Weather_SirensReef",
+  "GameTime": "0001-01-01T12:00:00Z",
+  "IsGameTimePaused": true,
+  "GameplayConfig": "Nakasar_Fractal_Observatory",
+  "IsPvpEnabled": false,
+  "IsSpawningNPC": true,
+  "SpawnProvider": {
+    "Id": "Global",
+    "SpawnPoint": {
+      "X": 46.5,
+      "Y": 101.0,
+      "Z": 152.5,
+      "Pitch": 0,
+      "Yaw": 0,
+      "Roll": 0
+    }
+  },
+  "GameMode": "Adventure",
+  "IsSpawnMarkersEnabled": true,
+  "IsBlockSpawnersEnabled": true,
+  "IsSavingPlayers": true,
+  "DeleteOnRemove": true,
+  "Plugin": {
+    "Instance": {
+      "RemovalConditions": [
+        {
+          "Type": "WorldEmpty",
+          "TimeoutSeconds": 60
+        }
+      ]
+    }
+  }
+}

@@ -1,0 +1,10 @@
+{
+  "$Comment": "Black Peter la Mèche : grand canonnier squelette vanilla (x 1,6), lueur de poudre.",
+  "Parent": "Skeleton_Pirate_Gunner",
+  "MinScale": 1.6,
+  "MaxScale": 1.6,
+  "Light": {
+    "Color": "#f84",
+    "Radius": 4
+  }
+}

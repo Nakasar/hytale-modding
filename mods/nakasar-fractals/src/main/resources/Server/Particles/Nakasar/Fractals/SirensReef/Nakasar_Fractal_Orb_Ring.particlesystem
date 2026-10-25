@@ -1,0 +1,12 @@
+{
+  "$Comment": "Cercle blanc d'une orbe spectrale : là où elle touche, des fantômes se lèvent. Généré par tools/generate_sirens_reef.py.",
+  "Spawners": [
+    {
+      "SpawnerId": "Nakasar_Fractal_Orb_Ring_Ring",
+      "PositionOffset": {
+        "Y": 0.1
+      }
+    }
+  ],
+  "CullDistance": 72
+}

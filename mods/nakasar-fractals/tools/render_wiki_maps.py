@@ -242,6 +242,7 @@ FRACTALS = {
     "marais": _generator("generate_swampland"),
     "tempete-de-neige": _generator("generate_snowblind"),
     "ressac-silencieux": _generator("generate_silent_surf"),
+    "recif-de-la-sirene": _generator("generate_sirens_reef"),
 }
 
 def face(prefabs):
@@ -294,6 +295,12 @@ def _markers(name):
         rings = [cp[1] for cp in sc.CHECKPOINTS]
         return ([(rings[0][0], rings[0][1], 1)] + [(x, z, k + 2) for k, (x, z, _) in enumerate(rings[1:])]
                 + [sc.ARENA_C + (6,)])
+    if name == "recif-de-la-sirene":
+        import sirens_reef_scenery as sc
+        maze = ((sc.MAZE[0] + sc.MAZE[1]) // 2, (sc.MAZE[2] + sc.MAZE[3]) // 2)
+        return [(sc.SPAWN[0], sc.SPAWN[2], 1), (sc.CLEARING[0], sc.CLEARING[1], 2), (sc.WALL1_AT[0], sc.WALL1_AT[1], 3),
+                (sc.FORT_C[0], sc.FORT_C[1], 4), (sc.PLAZA[0], sc.PLAZA[1], 5), maze + (6,),
+                ((sc.SHIP_X[0] + sc.SHIP_X[1]) // 2, sc.SHIP_Z, 7)]
     return []
 
 

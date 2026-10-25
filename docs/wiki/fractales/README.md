@@ -33,6 +33,7 @@ Les **fractales** sont des aventures courtes de 1 à 5 joueurs, tirées des frac
 | Fractale | En bref | Boss |
 |---|---|---|
 | [Ressac silencieux](ressac-silencieux.md) | descente d'une grotte de jade : grappin, parachute, tyroliennes, champignons | le second Dolus, Kanaxai |
+| [Récif de la Sirène](recif-de-la-sirene.md) | île au trésor maudit : canon des ombres, mines, trésors à se lancer, navire fantôme | Tête-de-pierre, Black Peter, Mad Jack, Calix, Arabella Crowe |
 
 ## Le reste
 

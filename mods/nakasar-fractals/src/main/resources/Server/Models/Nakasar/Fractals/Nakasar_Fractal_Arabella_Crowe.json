@@ -1,0 +1,10 @@
+{
+  "$Comment": "Capitaine Arabella Crowe : très grand capitaine squelette vanilla (x 1,8), lueur rouge.",
+  "Parent": "Skeleton_Pirate_Captain",
+  "MinScale": 1.8,
+  "MaxScale": 1.8,
+  "Light": {
+    "Color": "#f55",
+    "Radius": 5
+  }
+}

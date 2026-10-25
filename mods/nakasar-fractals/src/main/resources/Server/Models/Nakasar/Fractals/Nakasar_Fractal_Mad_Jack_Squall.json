@@ -1,0 +1,10 @@
+{
+  "$Comment": "Mad Jack Squall : grand capitaine squelette vanilla (x 1,4), lueur de givre.",
+  "Parent": "Skeleton_Pirate_Captain",
+  "MinScale": 1.4,
+  "MaxScale": 1.4,
+  "Light": {
+    "Color": "#9cf",
+    "Radius": 4
+  }
+}

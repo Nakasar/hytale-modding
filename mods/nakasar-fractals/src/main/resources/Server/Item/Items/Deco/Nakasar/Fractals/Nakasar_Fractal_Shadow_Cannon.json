@@ -1,0 +1,52 @@
+{
+  "TranslationProperties": {
+    "Name": "nakasar_fractals_sirens_reef.items.Nakasar_Fractal_Shadow_Cannon.name",
+    "Description": "nakasar_fractals_sirens_reef.items.Nakasar_Fractal_Shadow_Cannon.description"
+  },
+  "Icon": "Icons/ItemsGenerated/Weapon_Bomb_Fire_Goblin.png",
+  "Categories": [
+    "Blocks.Deco"
+  ],
+  "Quality": "Technical",
+  "PlayerAnimationsId": "Block",
+  "BlockType": {
+    "Material": "Solid",
+    "DrawType": "Model",
+    "Opacity": "Transparent",
+    "HitboxType": "Full",
+    "Flags": {},
+    "Gathering": {
+      "Breaking": {
+        "GatherType": "Unbreakable"
+      }
+    },
+    "BlockParticleSetId": "Stone",
+    "BlockSoundSetId": "Stone",
+    "ParticleColor": "#9aa7c8",
+    "Light": {
+      "Color": "#a6f"
+    },
+    "Interactions": {
+      "Use": {
+        "Interactions": [
+          "Nakasar_Fractal_Use_SirensReef_Cannon"
+        ]
+      }
+    },
+    "CustomModel": "NPC/Boss/Goblin_Gobliterator/Models/Goblin_Cannon.blockymodel",
+    "CustomModelTexture": [
+      {
+        "Texture": "NPC/Boss/Goblin_Gobliterator/Models/Goblin_Cannon.png",
+        "Weight": 1
+      }
+    ],
+    "CustomModelScale": 0.55,
+    "VariantRotation": "NESW"
+  },
+  "Tags": {
+    "Type": [
+      "Deco"
+    ]
+  },
+  "ItemSoundSetId": "ISS_Blocks_Stone"
+}

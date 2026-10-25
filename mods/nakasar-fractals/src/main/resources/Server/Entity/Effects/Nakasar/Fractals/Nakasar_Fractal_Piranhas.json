@@ -1,0 +1,12 @@
+{
+  "$Comment": "Piranhas des profondeurs : dans l'eau pendant un combat du navire, morsures (Java).",
+  "Name": "nakasar_fractals_sirens_reef.effects.Nakasar_Fractal_Piranhas",
+  "Debuff": true,
+  "StatusEffectIcon": "UI/StatusEffects/Nakasar/Fractals/Piranhas.png",
+  "ApplicationEffects": {
+    "EntityBottomTint": "#c02020"
+  },
+  "OverlapBehavior": "Overwrite",
+  "Infinite": false,
+  "Duration": 2.0
+}

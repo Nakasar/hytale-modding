@@ -1,0 +1,12 @@
+{
+  "$Comment": "Rugissement de Tête-de-pierre : onde de poussière. Généré par tools/generate_sirens_reef.py.",
+  "Spawners": [
+    {
+      "SpawnerId": "Nakasar_Fractal_Stonehead_Roar_Wave",
+      "PositionOffset": {
+        "Y": 0.6
+      }
+    }
+  ],
+  "CullDistance": 72
+}

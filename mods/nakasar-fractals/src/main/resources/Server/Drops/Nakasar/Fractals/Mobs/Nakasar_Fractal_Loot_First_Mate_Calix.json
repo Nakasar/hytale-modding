@@ -1,0 +1,52 @@
+{
+  "$Comment": "Le second Calix : essence d'eau, son coutelas, argent du bord. Généré par tools/generate_mob_loot.py.",
+  "Container": {
+    "Type": "Multiple",
+    "Containers": [
+      {
+        "Type": "Single",
+        "Item": {
+          "ItemId": "Ingredient_Water_Essence",
+          "QuantityMin": 2,
+          "QuantityMax": 3
+        }
+      },
+      {
+        "Type": "Choice",
+        "Containers": [
+          {
+            "Type": "Single",
+            "Item": {
+              "ItemId": "Weapon_Sword_Cutlass",
+              "QuantityMin": 1,
+              "QuantityMax": 1
+            },
+            "Weight": 15
+          },
+          {
+            "Type": "Empty",
+            "Weight": 85
+          }
+        ]
+      },
+      {
+        "Type": "Choice",
+        "Containers": [
+          {
+            "Type": "Single",
+            "Item": {
+              "ItemId": "Ingredient_Bar_Silver",
+              "QuantityMin": 1,
+              "QuantityMax": 2
+            },
+            "Weight": 50
+          },
+          {
+            "Type": "Empty",
+            "Weight": 50
+          }
+        ]
+      }
+    ]
+  }
+}

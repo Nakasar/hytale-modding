@@ -1,0 +1,5 @@
+{
+  "$Comment": "Trésor maudit : clic droit, le lancer au joueur visé (16 blocs) ; personne en vue : il tombe trois blocs devant. Le lanceur reçoit l'Allègement de la malédiction (Java, sirensreef.CursedTreasure).",
+  "Type": "Nakasar_Fractal_ReefAction",
+  "Action": "Throw"
+}

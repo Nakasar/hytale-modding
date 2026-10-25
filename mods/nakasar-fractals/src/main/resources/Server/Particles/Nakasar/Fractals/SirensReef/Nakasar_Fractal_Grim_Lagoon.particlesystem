@@ -1,0 +1,12 @@
+{
+  "$Comment": "Lagon sinistre : eau noire et bulles. Généré par tools/generate_sirens_reef.py.",
+  "Spawners": [
+    {
+      "SpawnerId": "Nakasar_Fractal_Grim_Lagoon_Pool",
+      "PositionOffset": {
+        "Y": 0.1
+      }
+    }
+  ],
+  "CullDistance": 72
+}

@@ -1,0 +1,35 @@
+{
+  "$Comment": "Le mousse Weyandt : reste près du capitaine ; on ne peut pas le blesser (Java). Généré par tools/generate_sirens_reef.py.",
+  "Type": "Generic",
+  "Appearance": "Nakasar_Fractal_Cabin_Boy_Weyandt",
+  "NameTranslationKey": "nakasar_fractals_sirens_reef.npc.Cabin_Boy_Weyandt.name",
+  "MaxHealth": 1000,
+  "StartState": "Idle",
+  "DefaultPlayerAttitude": "Neutral",
+  "DefaultNPCAttitude": "Ignore",
+  "MotionControllerList": [
+    {
+      "Type": "Walk",
+      "MaxWalkSpeed": 0.1,
+      "Gravity": 10,
+      "MaxFallSpeed": 10,
+      "Acceleration": 10,
+      "JumpHeight": 1.0
+    }
+  ],
+  "KnockbackScale": 0,
+  "SpawnLockTime": 0.2,
+  "Instructions": [
+    {
+      "Sensor": {
+        "Type": "State",
+        "State": "Idle"
+      },
+      "Instructions": [
+        {
+          "Actions": []
+        }
+      ]
+    }
+  ]
+}

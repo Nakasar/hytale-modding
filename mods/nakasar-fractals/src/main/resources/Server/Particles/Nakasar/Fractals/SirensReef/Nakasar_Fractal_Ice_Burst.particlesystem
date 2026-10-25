@@ -1,0 +1,12 @@
+{
+  "$Comment": "Tir de glace : éclats de givre. Généré par tools/generate_sirens_reef.py.",
+  "Spawners": [
+    {
+      "SpawnerId": "Nakasar_Fractal_Ice_Burst_Frost",
+      "PositionOffset": {
+        "Y": 0.3
+      }
+    }
+  ],
+  "CullDistance": 72
+}

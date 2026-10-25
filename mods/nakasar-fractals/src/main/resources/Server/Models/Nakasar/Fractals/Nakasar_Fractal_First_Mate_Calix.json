@@ -1,0 +1,10 @@
+{
+  "$Comment": "Le second Calix : grand pirate squelette vanilla (x 1,45), lueur verdâtre.",
+  "Parent": "Skeleton_Pirate_Striker",
+  "MinScale": 1.45,
+  "MaxScale": 1.45,
+  "Light": {
+    "Color": "#9f9",
+    "Radius": 4
+  }
+}

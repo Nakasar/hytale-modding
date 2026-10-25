@@ -1,0 +1,18 @@
+{
+  "$Comment": "Explosion d'une mine : feu et fumée noire. Généré par tools/generate_sirens_reef.py.",
+  "Spawners": [
+    {
+      "SpawnerId": "Nakasar_Fractal_Mine_Blast_Fire",
+      "PositionOffset": {
+        "Y": 0.3
+      }
+    },
+    {
+      "SpawnerId": "Nakasar_Fractal_Mine_Blast_Smoke",
+      "PositionOffset": {
+        "Y": 0.8
+      }
+    }
+  ],
+  "CullDistance": 72
+}

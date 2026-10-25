@@ -1,0 +1,34 @@
+{
+  "$Comment": "Fantôme pirate (fort, labyrinthe, plages de la crique) : coton de sa vareuse, essence du Vide. Généré par tools/generate_mob_loot.py.",
+  "Container": {
+    "Type": "Multiple",
+    "Containers": [
+      {
+        "Type": "Single",
+        "Item": {
+          "ItemId": "Ingredient_Fabric_Scrap_Cotton",
+          "QuantityMin": 1,
+          "QuantityMax": 2
+        }
+      },
+      {
+        "Type": "Choice",
+        "Containers": [
+          {
+            "Type": "Single",
+            "Item": {
+              "ItemId": "Ingredient_Void_Essence",
+              "QuantityMin": 1,
+              "QuantityMax": 1
+            },
+            "Weight": 20
+          },
+          {
+            "Type": "Empty",
+            "Weight": 80
+          }
+        ]
+      }
+    ]
+  }
+}

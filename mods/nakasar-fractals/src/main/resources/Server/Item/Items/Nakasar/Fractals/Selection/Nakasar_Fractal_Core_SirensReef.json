@@ -1,0 +1,16 @@
+{
+  "TranslationProperties": {
+    "Name": "nakasar_fractals.items.Nakasar_Fractal_Core_SirensReef.name",
+    "Description": "nakasar_fractals.items.Nakasar_Fractal_Core_SirensReef.description"
+  },
+  "Icon": "Icons/Items/Nakasar/Fractals/Core_SirensReef.png",
+  "Model": "Items/Nakasar/Fractals/Core_SirensReef.blockymodel",
+  "Texture": "Items/Nakasar/Fractals/Core_SirensReef.png",
+  "Quality": "Rare",
+  "Categories": [
+    "Items.Ingredients"
+  ],
+  "PlayerAnimationsId": "Item",
+  "ItemSoundSetId": "ISS_Items_Gems",
+  "MaxStack": 1
+}

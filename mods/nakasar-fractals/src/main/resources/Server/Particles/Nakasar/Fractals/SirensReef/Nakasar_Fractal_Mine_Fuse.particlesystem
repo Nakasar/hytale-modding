@@ -1,0 +1,12 @@
+{
+  "$Comment": "Mine armée : étincelles de la mèche. Généré par tools/generate_sirens_reef.py.",
+  "Spawners": [
+    {
+      "SpawnerId": "Nakasar_Fractal_Mine_Fuse_Sparks",
+      "PositionOffset": {
+        "Y": 0.8
+      }
+    }
+  ],
+  "CullDistance": 72
+}

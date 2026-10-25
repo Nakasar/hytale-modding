@@ -1,0 +1,12 @@
+{
+  "$Comment": "Bombe de Black Peter : explosion orange. Généré par tools/generate_sirens_reef.py.",
+  "Spawners": [
+    {
+      "SpawnerId": "Nakasar_Fractal_Peter_Bomb_Fire",
+      "PositionOffset": {
+        "Y": 0.3
+      }
+    }
+  ],
+  "CullDistance": 72
+}

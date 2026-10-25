@@ -1,0 +1,5 @@
+{
+  "$Comment": "Canon des ombres, tir ricochet : trois impacts de 2,5 blocs qui rebondissent dans l'axe du tir (Java, sirensreef.ShadowCannon).",
+  "Type": "Nakasar_Fractal_ReefAction",
+  "Action": "Ripple"
+}

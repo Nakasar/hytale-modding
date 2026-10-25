@@ -1,0 +1,15 @@
+{
+  "$Comment": "Hébété : on ne peut plus bouger ni agir.",
+  "Name": "nakasar_fractals_sirens_reef.effects.Nakasar_Fractal_Dazed",
+  "Debuff": true,
+  "StatusEffectIcon": "UI/StatusEffects/Nakasar/Fractals/Dazed.png",
+  "ApplicationEffects": {
+    "MovementEffects": {
+      "DisableAll": true
+    },
+    "EntityTopTint": "#d8d080"
+  },
+  "OverlapBehavior": "Overwrite",
+  "Infinite": false,
+  "Duration": 2.0
+}

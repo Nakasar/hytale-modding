@@ -1,0 +1,31 @@
+{
+  "$Comment": "Poudre noire (Black Peter a avalé une mine) : dégâts subis réduits de moitié tant que sa défiance tient (Java).",
+  "Name": "nakasar_fractals_sirens_reef.effects.Nakasar_Fractal_Gunpowder",
+  "StatusEffectIcon": "UI/StatusEffects/Nakasar/Fractals/Gunpowder.png",
+  "DamageResistance": {
+    "Physical": [
+      {
+        "CalculationType": "Percent",
+        "Amount": 0.5
+      }
+    ],
+    "Projectile": [
+      {
+        "CalculationType": "Percent",
+        "Amount": 0.5
+      }
+    ],
+    "Elemental": [
+      {
+        "CalculationType": "Percent",
+        "Amount": 0.5
+      }
+    ]
+  },
+  "ApplicationEffects": {
+    "EntityTopTint": "#ff8020"
+  },
+  "OverlapBehavior": "Overwrite",
+  "Infinite": false,
+  "Duration": 30.0
+}

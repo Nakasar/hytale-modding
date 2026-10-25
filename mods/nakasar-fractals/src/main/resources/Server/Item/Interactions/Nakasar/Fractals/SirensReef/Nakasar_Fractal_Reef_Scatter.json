@@ -1,0 +1,5 @@
+{
+  "$Comment": "Canon des ombres, mitraille : un impact de 4 blocs, gros dégâts et étourdissement (Java).",
+  "Type": "Nakasar_Fractal_ReefAction",
+  "Action": "Scatter"
+}

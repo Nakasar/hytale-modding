@@ -1,0 +1,26 @@
+{
+  "$Comment": "Black Peter : bombe lancée sous sa cible, cercle rouge de 3 blocs (1,8 s), 30 dégâts et recul.",
+  "Type": "Serial",
+  "Interactions": [
+    {
+      "Type": "Nakasar_Fractal_Telegraph",
+      "Shape": "Circle",
+      "Seconds": 1.8,
+      "Anchor": "Target",
+      "Radius": 3,
+      "Damage": 30,
+      "Knockback": 5,
+      "KnockUp": 3,
+      "PlayersOnly": true,
+      "ImpactParticle": "Nakasar_Fractal_Peter_Bomb",
+      "ImpactSound": "SFX_Weapon_Goblin_Cannon_Fire"
+    },
+    {
+      "Type": "Simple",
+      "RunTime": 1.8,
+      "Effects": {
+        "WorldSoundEventId": "SFX_Bomb_Fuse"
+      }
+    }
+  ]
+}

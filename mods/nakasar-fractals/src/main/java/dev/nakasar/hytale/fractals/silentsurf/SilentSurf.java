@@ -15,8 +15,10 @@ import com.hypixel.hytale.server.core.modules.entitystats.asset.DefaultEntitySta
 import com.hypixel.hytale.server.core.universe.PlayerRef;
 import com.hypixel.hytale.server.core.universe.world.World;
 import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
-import dev.nakasar.hytale.fractals.arena.Leash;
+import dev.nakasar.hytale.fractals.arena.FractalItemsSystem;
 import dev.nakasar.hytale.fractals.arena.Gates;
+import dev.nakasar.hytale.fractals.arena.Leash;
+import dev.nakasar.hytale.fractals.arena.Moves;
 import dev.nakasar.hytale.fractals.boss.BossBarSystem;
 import dev.nakasar.hytale.fractals.combat.Hurt;
 import dev.nakasar.hytale.fractals.combat.Spawns;
@@ -117,6 +119,13 @@ public final class SilentSurf implements FractalStage {
     private final Map<World, State> states = Collections.synchronizedMap(new WeakHashMap<>());
 
     /** Barres de boss de la Mère de couvée, du Mande-vague, de Dolus et de Kanaxai (défiance des Ombres rassemblées). */
+    /** L'équipement de prospection et les effets du Ressac (la Garde de Thess dure une heure) se perdent hors de la
+     * fractale. */
+    public static FractalItemsSystem itemsSystem() {
+        return new FractalItemsSystem(FRACTAL, Set.of(SurveyGear.ITEMS), WARD_EFFECT, "Nakasar_Fractal_Phantasmagoria",
+                "Nakasar_Fractal_Torment", "Nakasar_Fractal_Parachute_Open");
+    }
+
     public static void register() {
         for (String role : new String[]{BROOD_MOTHER, WAVECALLER, DOLUS, KANAXAI}) {
             BossBarSystem.register(role);

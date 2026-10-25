@@ -1,0 +1,13 @@
+{
+  "$Comment": "Malédiction du trésor, premier degré : un peu ralenti (Java).",
+  "Name": "nakasar_fractals_sirens_reef.effects.Nakasar_Fractal_Cursed_1",
+  "Debuff": true,
+  "StatusEffectIcon": "UI/StatusEffects/Nakasar/Fractals/Cursed_1.png",
+  "ApplicationEffects": {
+    "HorizontalSpeedMultiplier": 0.85,
+    "EntityTopTint": "#c0a040"
+  },
+  "OverlapBehavior": "Overwrite",
+  "Infinite": false,
+  "Duration": 3.0
+}

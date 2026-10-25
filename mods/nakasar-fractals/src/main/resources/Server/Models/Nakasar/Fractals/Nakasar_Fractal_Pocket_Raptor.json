@@ -1,0 +1,6 @@
+{
+  "$Comment": "Raptor de poche : le raptor des cavernes vanilla, petit (x 0,6).",
+  "Parent": "Raptor_Cave",
+  "MinScale": 0.6,
+  "MaxScale": 0.6
+}

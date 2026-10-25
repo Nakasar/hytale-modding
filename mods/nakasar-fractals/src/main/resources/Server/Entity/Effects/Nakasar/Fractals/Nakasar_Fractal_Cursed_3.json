@@ -1,0 +1,16 @@
+{
+  "$Comment": "Malédiction du trésor, dernier degré : figé sur place, le trésor tombe (Java).",
+  "Name": "nakasar_fractals_sirens_reef.effects.Nakasar_Fractal_Cursed_3",
+  "Debuff": true,
+  "StatusEffectIcon": "UI/StatusEffects/Nakasar/Fractals/Cursed_3.png",
+  "ApplicationEffects": {
+    "MovementEffects": {
+      "DisableAll": true
+    },
+    "EntityTopTint": "#602000",
+    "EntityBottomTint": "#200800"
+  },
+  "OverlapBehavior": "Overwrite",
+  "Infinite": false,
+  "Duration": 2.0
+}

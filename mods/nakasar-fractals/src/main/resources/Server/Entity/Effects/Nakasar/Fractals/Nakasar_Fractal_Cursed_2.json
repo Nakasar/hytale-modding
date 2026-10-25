@@ -1,0 +1,13 @@
+{
+  "$Comment": "Malédiction du trésor, deuxième degré : ralenti, la vie s'en va (Java).",
+  "Name": "nakasar_fractals_sirens_reef.effects.Nakasar_Fractal_Cursed_2",
+  "Debuff": true,
+  "StatusEffectIcon": "UI/StatusEffects/Nakasar/Fractals/Cursed_2.png",
+  "ApplicationEffects": {
+    "HorizontalSpeedMultiplier": 0.65,
+    "EntityTopTint": "#a06020"
+  },
+  "OverlapBehavior": "Overwrite",
+  "Infinite": false,
+  "Duration": 3.0
+}

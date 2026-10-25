@@ -241,6 +241,22 @@ Une grotte de jade sombre sous une mer de jade figée. La fractale est une longu
 
 Générateurs : `tools/generate_silent_surf.py` (assets, rôles, trajets, `SilentSurfLayout.java`) et `tools/silent_surf_scenery.py` (grotte, mer, épave, plates-formes, arène). Code : paquet `silentsurf`.
 
+### Récif de la Sirène (Siren's Reef), deuxième fractale de la saison 2
+
+L'île du trésor maudit d'Arabella Crowe, en plein soleil des tropiques : plages, jungle, ravin, fort englouti, labyrinthe et crique où mouille le **Fierté du Kraken**. Le capitaine **Strohm** et le mousse **Weyandt** attendent sur la plage du naufrage (invulnérables).
+
+1. **Rivage** : trois camps de sauriens vétérans (hérissés, brise-os, écaille-fumée) et des raptors de poche, modèles vanilla (crapauds-rhinos, crocodile, raptor des cavernes).
+2. **Tête-de-pierre** (rex vanilla) dans sa clairière : charge, piétinement, meutes à 75 et 50 %. À 25 % il rugit (peur), brise les rochers du ravin, fuit et saute sur une mine : il meurt, le ravin est miné.
+3. **Canon des ombres** (modèle du canon gobelin vanilla) : on s'y poste en l'utilisant ; trois boulets à clic droit (ricochet, mitraille, glace) avec temps de recharge. Les boulets font sauter les mines sans blesser personne, abattent la palissade du bout du ravin et entament la défiance des boss. Les mines reviennent 30 s après avoir sauté ; qui s'en approche arme une mèche (cercle rouge de la taille exacte du souffle).
+4. **Fort englouti** : vague de fantômes, puis **Black Peter la Mèche** : mines sous les joueurs, mines semées à 75/50/25 % qu'il avale (poudre noire, défiance à briser au canon du rempart, sinon il explose), fantômes à chaque 10 %, Cyclone de cendres hors du fort.
+5. **Sentier de jungle** : deux meutes de raptors ; vidées, la **grande tête de pierre** ouvre la bouche.
+6. **Labyrinthe** : trois **trésors maudits** à rapporter au coffre de la sirène. Ramassés accroupi, gardés en main ; la malédiction monte tant qu'on les porte (I ralentit, II fait perdre des PV, III fige et fait tomber le trésor) : on se les lance (clic droit vers un joueur, Allègement de la malédiction). Les escrocs fantômes rapportent un trésor au sol à sa cachette ; les orbes spectrales rebondissent contre les haies et font lever des fantômes.
+7. **Le navire** : deux trésors (plage sud puis nord) à rapporter au coffre du pont ; chacun réveille un second : **Mad Jack Squall** (souffle glacial, coup qui hébète, fantômes, courants fantômes dès 50 %) puis **le second Calix** (confettis, Lagon sinistre, courants à 50 et 25 %). Défense du navire (20 membres d'équipage), puis la capitaine **Arabella Crowe** : gourdin, Lagon sinistre, Dents des profondeurs (cercle vert à partager), fantômes à chaque 10 %, bonds d'un bout à l'autre du pont à 75/50/25 %, courants fantômes. Pendant ces combats, quitter le pont donne le Brouillard fétide, l'eau les Piranhas des profondeurs.
+
+Aucun boss ne se soigne (AGENTS.md) : une remise à zéro (personne dans la zone 20 à 25 s) le retire, il revient neuf au prochain venu.
+
+Générateurs : `tools/generate_sirens_reef.py` (assets, rôles, effets, `SirensReefLayout.java`) et `tools/sirens_reef_scenery.py` (terrain : mer à bord courbe et récif extérieur, falaises, labyrinthe à couloirs courbes, fort, tête de pierre, navire). Code : paquet `sirensreef`.
+
 ### Saison 2 et suivantes
 
 Les autres fractales de GW2, à reprendre de la même façon (wiki relu avant chacune) :
@@ -253,7 +269,7 @@ Les autres fractales de GW2, à reprendre de la même façon (wiki relu avant ch
 | Fournaise en fusion, Réacteur thaumanova, Installation souterraine, Champ de bataille urbain, Chaos, Oasis du crépuscule | rencontres en chaîne variées | à détailler |
 | Cauchemar, Observatoire brisé, Pic de Sunqua, Profonde-pierre, Tour solitaire, Kinfall | fractales « boss » avec mode défi | pour le rang Maître |
 
-(Kinfall : nom français non vérifié. Silent Surf est devenu le Ressac silencieux, ci-dessus.)
+(Kinfall : nom français non vérifié. Silent Surf est devenu le Ressac silencieux et Siren's Reef le Récif de la Sirène, ci-dessus.)
 
 ## Instabilités et groupes de 1 à 5
 

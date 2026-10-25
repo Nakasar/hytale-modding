@@ -1,0 +1,6 @@
+{
+  "$Comment": "Tête-de-pierre, champion des raptors : le rex des cavernes vanilla (x 1,25).",
+  "Parent": "Rex_Cave",
+  "MinScale": 1.25,
+  "MaxScale": 1.25
+}

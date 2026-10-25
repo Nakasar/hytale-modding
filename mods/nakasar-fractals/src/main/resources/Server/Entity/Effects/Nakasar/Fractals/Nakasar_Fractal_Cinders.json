@@ -1,0 +1,12 @@
+{
+  "$Comment": "Cyclone de cendres : brûlure qui s'aggrave tant que personne n'est dans le fort (Java).",
+  "Name": "nakasar_fractals_sirens_reef.effects.Nakasar_Fractal_Cinders",
+  "Debuff": true,
+  "StatusEffectIcon": "UI/StatusEffects/Nakasar/Fractals/Cinders.png",
+  "ApplicationEffects": {
+    "EntityBottomTint": "#ff6020"
+  },
+  "OverlapBehavior": "Overwrite",
+  "Infinite": false,
+  "Duration": 2.0
+}
