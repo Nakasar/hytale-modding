@@ -586,8 +586,8 @@ def models():
     m[SOURCE] = {"$Comment": "La Source élémentaire (provisoire) : l'esprit de givre vanilla, géant (× 3,2) ; GW2 en "
                              "fait un géant de glace.", "Parent": "Spirit_Frost", "MinScale": 3.2, "MaxScale": 3.2,
                  "Light": {"Color": "#9cf", "Radius": 6}}
-    m[WOLF] = fc.character_model("Frost_Wolf", gs.wolf_parts((214, 220, 230), (130, 140, 156), (120, 200, 255)), 93,
-                                 "Loup des neiges (provisoire) : loup en boîtes, sans animation.", 0.6, (0.5, 0.9))
+    m[WOLF] = {"$Comment": "Loup des neiges : le loup vanilla (modèle et animations du jeu), comme le loup du Moussu.",
+               "Parent": "Wolf_Black", "MinScale": 0.95, "MaxScale": 0.95}
     m[BEAR] = fc.character_model("Shaman_Bear", bear_parts(), 94, "Le Chaman légendaire en ours (provisoire) : ours "
                                  "polaire en boîtes, crinière de givre, sans animation.", 1.0, (0.9, 1.4),
                                  light={"Color": "#8cf", "Radius": 3}, scale=1.3)
@@ -705,10 +705,12 @@ def roles():
         fr.walk(3.6), GENERATOR, sight=2, leash=10, home=True, KnockbackScale=1.0, DeathAnimationTime=0.8)
     elem["StartState"] = "ReturnHome"
     out[ELEMENTAL] = elem
+    _, _, _, wolf_attack, wolf_reach, wolf_vars = gs.WILD["Wolf"]
     out[WOLF] = fr.role(
-        WOLF, "Loup des neiges : arrive en meute sur le camp, fonce et mord.", WOLF, n(WOLF), 70,
-        [fr.melee(R("Wolf_Bite"), 2.2, (0.7, 1.1)), fr.chase(40, stop=1.4)],
-        fr.walk(5.2), GENERATOR, sight=40, leash=48, home=False, KnockbackScale=0.8, DeathAnimationTime=0.8)
+        WOLF, "Loup des neiges : arrive en meute sur le camp, fonce et mord (morsure du loup vanilla, 8 dégâts).", WOLF,
+        n(WOLF), 70, [fr.melee(wolf_attack, wolf_reach, (0.7, 1.1)), fr.chase(40, stop=1.4)],
+        fr.walk(5.2), GENERATOR, sight=40, leash=48, home=False, KnockbackScale=0.8, DeathAnimationTime=0.8,
+        InteractionVars=wolf_vars)
     out[CULTIST] = fr.role(
         CULTIST, "Cultiste du givre : entailles au contact.", CULTIST, n(CULTIST), 110,
         [fr.melee(R("Cultist_Frost_Slash"), 2.4, (0.7, 1.1)), fr.chase(40, stop=1.6)],
