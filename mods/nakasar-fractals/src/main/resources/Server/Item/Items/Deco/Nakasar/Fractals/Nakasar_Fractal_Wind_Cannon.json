@@ -3,7 +3,7 @@
     "Name": "nakasar_fractals_silent_surf.items.Nakasar_Fractal_Wind_Cannon.name",
     "Description": "nakasar_fractals_silent_surf.items.Nakasar_Fractal_Wind_Cannon.description"
   },
-  "Icon": "Icons/Items/Nakasar/Fractals/Wind_Cannon.png",
+  "Icon": "Icons/Items/Nakasar/Fractals/Vanilla/Wind_Cannon.png",
   "Categories": [
     "Blocks.Deco"
   ],
@@ -11,15 +11,8 @@
   "PlayerAnimationsId": "Block",
   "BlockType": {
     "Material": "Solid",
-    "DrawType": "Cube",
-    "Opacity": "Solid",
-    "Textures": [
-      {
-        "Sides": "BlockTextures/Nakasar/Fractals/Wind_Cannon.png",
-        "UpDown": "BlockTextures/Nakasar/Fractals/Wind_Cannon.png",
-        "Weight": 1
-      }
-    ],
+    "DrawType": "Model",
+    "Opacity": "Transparent",
     "HitboxType": "Full",
     "Flags": {},
     "Gathering": {
@@ -39,7 +32,16 @@
           "Nakasar_Fractal_Use_SilentSurf_Ride"
         ]
       }
-    }
+    },
+    "CustomModel": "NPC/Boss/Goblin_Gobliterator/Models/Goblin_Cannon.blockymodel",
+    "CustomModelTexture": [
+      {
+        "Texture": "NPC/Boss/Goblin_Gobliterator/Models/Goblin_Cannon.png",
+        "Weight": 1
+      }
+    ],
+    "VariantRotation": "NESW",
+    "CustomModelScale": 0.4
   },
   "Tags": {
     "Type": [

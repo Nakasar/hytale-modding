@@ -3,7 +3,7 @@
     "Name": "nakasar_fractals_snowblind.items.Nakasar_Fractal_Bonfire.name",
     "Description": "nakasar_fractals_snowblind.items.Nakasar_Fractal_Bonfire.description"
   },
-  "Icon": "Icons/Items/Nakasar/Fractals/Bonfire.png",
+  "Icon": "Icons/ItemsGenerated/Bench_Campfire.png",
   "Categories": [
     "Blocks.Deco"
   ],
@@ -33,21 +33,20 @@
         ]
       }
     },
-    "CustomModel": "Blocks/Nakasar/Fractals/Bonfire.blockymodel",
+    "CustomModel": "Blocks/Benches/Campfire.blockymodel",
     "CustomModelTexture": [
       {
-        "Texture": "Blocks/Nakasar/Fractals/Bonfire_Texture.png",
+        "Texture": "Blocks/Benches/Campfire_Texture.png",
         "Weight": 1
       }
     ],
     "VariantRotation": "NESW",
-    "CustomModelAnimation": "Blocks/Nakasar/Fractals/Bonfire.blockyanim",
     "Particles": [
       {
         "SystemId": "Campfire_New_Cartoon",
-        "Scale": 1.4,
+        "Scale": 1.0,
         "PositionOffset": {
-          "Y": 0.35
+          "Y": 0.0
         }
       }
     ],
@@ -59,17 +58,5 @@
       "Deco"
     ]
   },
-  "ItemSoundSetId": "ISS_Blocks_Stone",
-  "IconProperties": {
-    "Scale": 0.55,
-    "Translation": [
-      0,
-      -12
-    ],
-    "Rotation": [
-      22.5,
-      45,
-      22.5
-    ]
-  }
+  "ItemSoundSetId": "ISS_Blocks_Stone"
 }

@@ -3,7 +3,7 @@
     "Name": "nakasar_fractals_volcanic.items.Nakasar_Fractal_Crater_Lava.name",
     "Description": "nakasar_fractals_volcanic.items.Nakasar_Fractal_Crater_Lava.description"
   },
-  "Icon": "Icons/Items/Nakasar/Fractals/Crater_Lava.png",
+  "Icon": "Icons/ItemsGenerated/Fluid_Lava.png",
   "Categories": [
     "Blocks.Deco"
   ],
@@ -13,13 +13,6 @@
     "Material": "Solid",
     "DrawType": "Cube",
     "Opacity": "Solid",
-    "Textures": [
-      {
-        "Sides": "BlockTextures/Nakasar/Fractals/Crater_Lava.png",
-        "UpDown": "BlockTextures/Nakasar/Fractals/Crater_Lava.png",
-        "Weight": 1
-      }
-    ],
     "HitboxType": "Full",
     "Flags": {},
     "Gathering": {
@@ -32,7 +25,13 @@
     "ParticleColor": "#ffec78",
     "Light": {
       "Color": "#f80"
-    }
+    },
+    "Textures": [
+      {
+        "All": "BlockTextures/Fluid_Lava.png",
+        "Weight": 1
+      }
+    ]
   },
   "Tags": {
     "Type": [

@@ -305,6 +305,31 @@ def character_model(name, parts, seed, comment, eye, hitbox, light=None, scale=1
     return doc
 
 
+def vanilla_npc_model(name, comment, parent=None, model=None, texture=None, eye=None, hitbox=None, light=None,
+                      scale=1.0):
+    """Modèle de PNJ vanilla (passe « vanilla très proche ») : `parent` (modèle de PNJ du jeu, animations comprises) ou
+    `model` + `texture` (un .blockymodel du jeu) ; supprime l'ancien modèle en boîtes `name` de character_model."""
+    old = COMMON / NPC_MODELS / name
+    if old.exists():
+        for f in old.iterdir():
+            f.unlink()
+        old.rmdir()
+    doc = {"$Comment": comment}
+    if parent:
+        doc["Parent"] = parent
+    else:
+        doc.update({"Model": model, "Texture": texture})
+    if eye is not None:
+        doc["EyeHeight"] = eye
+    if hitbox:
+        w, h = hitbox
+        doc["HitBox"] = {"Max": {"X": w, "Y": h, "Z": w}, "Min": {"X": -w, "Y": 0, "Z": -w}}
+    doc.update({"MinScale": scale, "MaxScale": scale})
+    if light:
+        doc["Light"] = light
+    return doc
+
+
 def static_role(lang, role_id, comment, generator, hp, attitude="Hostile", foe=True):
     doc = {
         "$Comment": f"{comment} Généré par tools/{generator}.",

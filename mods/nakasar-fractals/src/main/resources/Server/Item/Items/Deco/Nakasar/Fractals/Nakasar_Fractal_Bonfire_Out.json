@@ -3,7 +3,7 @@
     "Name": "nakasar_fractals_snowblind.items.Nakasar_Fractal_Bonfire_Out.name",
     "Description": "nakasar_fractals_snowblind.items.Nakasar_Fractal_Bonfire_Out.description"
   },
-  "Icon": "Icons/Items/Nakasar/Fractals/Bonfire_Out.png",
+  "Icon": "Icons/ItemsGenerated/Deco_Campfire_Off.png",
   "Categories": [
     "Blocks.Deco"
   ],
@@ -13,7 +13,7 @@
     "Material": "Solid",
     "DrawType": "Model",
     "Opacity": "Transparent",
-    "HitboxType": "Full",
+    "HitboxType": "Brazier_Small",
     "Flags": {},
     "Gathering": {
       "Breaking": {
@@ -30,10 +30,10 @@
         ]
       }
     },
-    "CustomModel": "Blocks/Nakasar/Fractals/Bonfire_Out.blockymodel",
+    "CustomModel": "Blocks/Benches/Campfire_Off.blockymodel",
     "CustomModelTexture": [
       {
-        "Texture": "Blocks/Nakasar/Fractals/Bonfire_Out_Texture.png",
+        "Texture": "Blocks/Benches/Campfire_Off_Texture.png",
         "Weight": 1
       }
     ],
@@ -43,7 +43,7 @@
         "SystemId": "Smoke_Black",
         "Scale": 1,
         "PositionOffset": {
-          "Y": 0.5
+          "Y": 0.3
         }
       }
     ]
@@ -53,17 +53,5 @@
       "Deco"
     ]
   },
-  "ItemSoundSetId": "ISS_Blocks_Stone",
-  "IconProperties": {
-    "Scale": 0.55,
-    "Translation": [
-      0,
-      -12
-    ],
-    "Rotation": [
-      22.5,
-      45,
-      22.5
-    ]
-  }
+  "ItemSoundSetId": "ISS_Blocks_Stone"
 }

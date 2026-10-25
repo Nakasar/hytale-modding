@@ -3,7 +3,7 @@
     "Name": "nakasar_fractals_volcanic.items.Nakasar_Fractal_Crater_Cold.name",
     "Description": "nakasar_fractals_volcanic.items.Nakasar_Fractal_Crater_Cold.description"
   },
-  "Icon": "Icons/Items/Nakasar/Fractals/Crater_Cold.png",
+  "Icon": "Icons/ItemsGenerated/Rock_Volcanic.png",
   "Categories": [
     "Blocks.Deco"
   ],
@@ -13,13 +13,6 @@
     "Material": "Solid",
     "DrawType": "Cube",
     "Opacity": "Solid",
-    "Textures": [
-      {
-        "Sides": "BlockTextures/Nakasar/Fractals/Crater_Cold.png",
-        "UpDown": "BlockTextures/Nakasar/Fractals/Crater_Cold.png",
-        "Weight": 1
-      }
-    ],
     "HitboxType": "Full",
     "Flags": {},
     "Gathering": {
@@ -29,7 +22,13 @@
     },
     "BlockParticleSetId": "Stone",
     "BlockSoundSetId": "Stone",
-    "ParticleColor": "#705440"
+    "ParticleColor": "#705440",
+    "Textures": [
+      {
+        "All": "BlockTextures/Rock_Volcanic.png",
+        "Weight": 1
+      }
+    ]
   },
   "Tags": {
     "Type": [

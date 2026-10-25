@@ -129,15 +129,6 @@ def infusion_parts(n):
     return parts, size
 
 
-def shard_parts():
-    blue, light, dark = (110, 150, 255), (220, 235, 255), (60, 50, 150)
-    return [
-        ("Shard_A", (0, 5, 0), (3, 10, 3), 20, fm.crystal(dark, light), "fullbright"),
-        ("Shard_B", (2.5, 3, 1), (2, 6, 2), -30, fm.crystal(dark, blue), "fullbright"),
-        ("Shard_C", (-2, 2.5, -1), (2, 5, 2), 60, fm.crystal(dark, blue), "fullbright"),
-    ]
-
-
 def bag_parts(tie):
     cloth, cloth_dark = (64, 70, 128), (42, 44, 92)
     return [
@@ -417,8 +408,16 @@ def main():
     recipes = SERVER / "Item/Recipes/Nakasar/Fractals"
     rendered = []
 
-    rendered.append(fm.write_item_model("Mist_Shard", shard_parts(), models, icons, 1, (0, 5, 0), 14.0))
-    write_json(items / f"{SHARD}.json", held_item(SHARD, "Mist_Shard", "Uncommon", 250))
+    # Éclat : fragment de cristal du jeu, texture et icône repeintes en dégradé des Brumes par
+    # tools/generate_vanilla_recolors.py ; réglages d'icône du modèle vanilla (Ingredient_Crystal_White).
+    for old in (models / "Mist_Shard.blockymodel", models / "Mist_Shard.png", icons / "Mist_Shard.png"):
+        old.unlink(missing_ok=True)
+    rendered.append(Image.open(COMMON / "Icons/Items/Nakasar/Fractals/Vanilla/Mist_Shard.png").convert("RGBA"))
+    write_json(items / f"{SHARD}.json", held_item(SHARD, "Mist_Shard", "Uncommon", 250, {
+        "Icon": "Icons/Items/Nakasar/Fractals/Vanilla/Mist_Shard.png",
+        "IconProperties": {"Scale": 0.75, "Translation": [-0.3, 0.3], "Rotation": [34.315, 29.815, 22.5]},
+        "Model": "Resources/Crystals/Crystal_Fragment.blockymodel",
+        "Texture": "Items/Nakasar/Fractals/Vanilla/Mist_Shard.png"}, scale=1.2))
 
     for n in range(1, MAX_INFUSION + 1):
         parts, size = infusion_parts(n)

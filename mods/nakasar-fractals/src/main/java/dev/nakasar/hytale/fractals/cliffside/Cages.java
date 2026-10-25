@@ -154,7 +154,8 @@ final class Cages {
         for (Vector3i c : door) {
             WorldBlocks.clear(chunks, c.x, c.y, c.z);
         }
-        Restores.add(world, door, DOOR, 0, DOOR_BACK);
+        // Barreaux vanilla (VariantRotation Wall) : porte sur un côté est/ouest = rotation 1, comme dans le préfab.
+        Restores.add(world, door, DOOR, cell.cage.doorX() != 0 ? 1 : 0, DOOR_BACK);
         Telegraphs.sound(store, "SFX_Lever_Metal_Off", cell.center());
         for (PlayerRef p : world.getPlayerRefs()) {
             if (p.getUuid().equals(cell.prisoner)) {

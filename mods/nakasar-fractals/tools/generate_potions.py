@@ -63,7 +63,7 @@ KINDS = [
     ("Mobility", "de mobilité", "Mobility", (156, 96, 236), "feather", 3,
      "vitesse de déplacement dans les fractales +5 % par pile, récupération d'endurance +10 % par pile",
      "movement speed in fractals +5% per stack, endurance recharge +10% per stack"),
-    ("Defensive", "défensive", "Defensive", (86, 214, 120), "shield", 3,
+    ("Defensive", "défensive", "Defensive", (230, 170, 60), "shield", 3,
      "dégâts subis dans les fractales -5 % par pile (l'agonie n'est pas réduite)",
      "incoming damage in fractals -5% per stack (agony is not reduced)"),
 ]
@@ -95,39 +95,12 @@ def write_lang(path, entries):
 
 # --- modèles ---------------------------------------------------------------------------------------
 
-GLASS = (196, 216, 236)
-CORK = (150, 104, 62)
-GOLD = (232, 190, 92)
-
-
-def bottle_parts(color, large):
-    """Fiole ronde à bouchon de liège : liquide lumineux, épaules et col de verre, bague dorée ; la grande est plus
-    ventrue, porte deux bagues et un cachet de cire."""
-    light = fm.mix(color, (255, 255, 255), 0.5)
-    dark = fm.shade(color, 0.55)
-    glass = fm.smooth(GLASS)
-    if not large:
-        return [
-            ("Liquid", (0, 4, 0), (7, 6, 7), 45, fm.crystal(dark, light), "fullbright"),
-            ("Belly", (0, 4, 0), (8, 4, 8), 0, fm.crystal(dark, color), "fullbright"),
-            ("Base", (0, 0.5, 0), (6, 1, 6), 0, glass, "flat"),
-            ("Shoulder", (0, 8, 0), (6, 2, 6), 0, glass, "flat"),
-            ("Neck", (0, 10, 0), (3, 2, 3), 0, glass, "flat"),
-            ("Band", (0, 4, 0), (8.6, 1.4, 8.6), 0, fm.flat(GOLD), "flat"),
-            ("Cork", (0, 11.6, 0), (3.6, 1.8, 3.6), 0, fm.smooth(CORK), "flat"),
-        ]
-    return [
-        ("Liquid", (0, 5.5, 0), (10, 9, 10), 45, fm.crystal(dark, light), "fullbright"),
-        ("Belly", (0, 5.5, 0), (11.4, 6, 11.4), 0, fm.crystal(dark, color), "fullbright"),
-        ("Base", (0, 0.5, 0), (9, 1, 9), 0, glass, "flat"),
-        ("Shoulder", (0, 11, 0), (8, 2, 8), 0, glass, "flat"),
-        ("Neck", (0, 13, 0), (4, 2.4, 4), 0, glass, "flat"),
-        ("Lip", (0, 14.4, 0), (5, 0.8, 5), 0, glass, "flat"),
-        ("Band_Low", (0, 3.5, 0), (12, 1.2, 12), 0, fm.flat(GOLD), "flat"),
-        ("Band_High", (0, 8, 0), (12, 1.2, 12), 0, fm.flat(GOLD), "flat"),
-        ("Seal", (0, 5.5, 5.9), (3, 3, 1), 0, fm.crystal(fm.shade(GOLD, 0.6), GOLD), "flat"),
-        ("Cork", (0, 15.6, 0), (4.6, 2.2, 4.6), 0, fm.smooth(CORK), "flat"),
-    ]
+# Flacon d'antidote du jeu (Potion_Antidote, Assets.zip 0.7.2) ; texture et icône repeintes (liquide à la couleur de la
+# potion, glyphe sur l'étiquette, bouchon doré pour les grandes) par tools/generate_vanilla_recolors.py.
+BOTTLE = "Items/Weapons/Bomb/Potion_Onion.blockymodel"
+RECOLORS = "Items/Nakasar/Fractals/Vanilla"
+RECOLOR_ICONS = "Icons/Items/Nakasar/Fractals/Vanilla"
+ICON_PROPERTIES = {"Scale": 0.75, "Translation": [-13, -12], "Rotation": [12.5, 12.5, 315]}
 
 
 # --- icônes d'état ---------------------------------------------------------------------------------
@@ -214,9 +187,11 @@ DRINK_ANIMATIONS = {"Parent": "Item", "Animations": {"Consume": {
 def potion_item(item_id, model, large):
     return {
         "TranslationProperties": {"Name": f"{LANG}.items.{item_id}.name", "Description": f"{LANG}.items.{item_id}.description"},
-        "Icon": f"{ICONS}/{model}.png",
-        "Model": f"{ITEM_MODELS}/{model}.blockymodel",
-        "Texture": f"{ITEM_MODELS}/{model}.png",
+        "Icon": f"{RECOLOR_ICONS}/{model}.png",
+        "IconProperties": ICON_PROPERTIES,
+        "Model": BOTTLE,
+        "Texture": f"{RECOLORS}/{model}.png",
+        "Scale": 1.3 if large else 1.0,
         "Quality": "Epic" if large else "Rare",
         "Categories": ["Items.Potions"],
         "PlayerAnimationsId": DRINK_ANIMATIONS,
@@ -376,9 +351,10 @@ def main():
             item_id = potion(kind, large)
             model = item_id.removeprefix("Nakasar_Fractal_")
             stacks = LARGE_STACKS if large else 1
-            center, scale = ((0, 8, 0), 9.0) if large else ((0, 6, 0), 12.0)
-            rendered.append(fm.write_item_model(model, bottle_parts(color, large), models, icons, 400 + len(rendered),
-                                                center, scale))
+            # Anciennes fioles à nous (avant le flacon vanilla) : modèle, atlas, icône.
+            for old in (models / f"{model}.blockymodel", models / f"{model}.png", icons / f"{model}.png"):
+                old.unlink(missing_ok=True)
+            rendered.append(Image.open(COMMON / RECOLOR_ICONS / f"{model}.png").convert("RGBA"))
             write_json(ITEMS / f"{item_id}.json", potion_item(item_id, model, large))
             write_json(ROOTS / f"Root_{item_id}.json", {"Interactions": [f"{item_id}_Drink"], "RequireNewClick": True})
             write_json(INTERACTIONS / f"{item_id}_Drink.json", drink_chain(kind, stacks))

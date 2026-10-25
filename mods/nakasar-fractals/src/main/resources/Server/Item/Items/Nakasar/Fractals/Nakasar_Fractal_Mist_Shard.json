@@ -3,15 +3,27 @@
     "Name": "nakasar_fractals_progress.items.Nakasar_Fractal_Mist_Shard.name",
     "Description": "nakasar_fractals_progress.items.Nakasar_Fractal_Mist_Shard.description"
   },
-  "Icon": "Icons/Items/Nakasar/Fractals/Mist_Shard.png",
-  "Model": "Items/Nakasar/Fractals/Mist_Shard.blockymodel",
-  "Texture": "Items/Nakasar/Fractals/Mist_Shard.png",
+  "Icon": "Icons/Items/Nakasar/Fractals/Vanilla/Mist_Shard.png",
+  "Model": "Resources/Crystals/Crystal_Fragment.blockymodel",
+  "Texture": "Items/Nakasar/Fractals/Vanilla/Mist_Shard.png",
   "Quality": "Uncommon",
   "Categories": [
     "Items.Ingredients"
   ],
   "PlayerAnimationsId": "Item",
   "ItemSoundSetId": "ISS_Items_Gems",
-  "Scale": 1.0,
-  "MaxStack": 250
+  "Scale": 1.2,
+  "MaxStack": 250,
+  "IconProperties": {
+    "Scale": 0.75,
+    "Translation": [
+      -0.3,
+      0.3
+    ],
+    "Rotation": [
+      34.315,
+      29.815,
+      22.5
+    ]
+  }
 }

@@ -1,20 +1,6 @@
 {
-  "$Comment": "Araignée des cavernes (provisoire) : araignée en boîtes, sans animation.",
-  "Model": "NPC/Nakasar/Fractals/Cave_Spiderling/Model.blockymodel",
-  "Texture": "NPC/Nakasar/Fractals/Cave_Spiderling/Texture.png",
-  "EyeHeight": 0.5,
-  "HitBox": {
-    "Max": {
-      "X": 0.5,
-      "Y": 0.7,
-      "Z": 0.5
-    },
-    "Min": {
-      "X": -0.5,
-      "Y": 0,
-      "Z": -0.5
-    }
-  },
-  "MinScale": 0.8,
-  "MaxScale": 0.8
+  "$Comment": "Araignée des cavernes : l'araignée des cavernes vanilla, petite (Spider_Cave_Spiderling).",
+  "Parent": "Spider_Cave_Spiderling",
+  "MinScale": 1.0,
+  "MaxScale": 1.0
 }

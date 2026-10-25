@@ -1,6 +1,6 @@
 # Potions des Brumes
 
-<Infobox pending title="Potions des Brumes" kind="Objets" icon="/jeu/Icons/Items/Nakasar/Fractals/Mist_Potion_Offensive.png" caption="Potion offensive des Brumes">
+<Infobox pending title="Potions des Brumes" kind="Objets" icon="/jeu/Icons/Items/Nakasar/Fractals/Vanilla/Mist_Potion_Offensive.png" caption="Potion offensive des Brumes">
 <Info label="Vendues par">l'Alchimiste de Dessa (Observatoire, île asura)</Info>
 <Info label="Durée">1 h</Info>
 <Info label="Cumul">5 piles au plus</Info>

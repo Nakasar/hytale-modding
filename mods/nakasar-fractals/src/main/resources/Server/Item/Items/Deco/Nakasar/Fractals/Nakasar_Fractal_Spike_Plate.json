@@ -3,17 +3,17 @@
     "Name": "nakasar_fractals_swampland.items.Nakasar_Fractal_Spike_Plate.name",
     "Description": "nakasar_fractals_swampland.items.Nakasar_Fractal_Spike_Plate.description"
   },
-  "Icon": "Icons/Items/Nakasar/Fractals/Spike_Plate.png",
+  "Icon": "Icons/ItemsGenerated/Trap_Spikes_Metal.png",
   "Categories": [
     "Blocks.Deco"
   ],
   "Quality": "Technical",
   "PlayerAnimationsId": "Block",
   "BlockType": {
-    "Material": "Solid",
+    "Material": "Empty",
     "DrawType": "Model",
     "Opacity": "Transparent",
-    "HitboxType": "Full",
+    "HitboxType": "Block_Three_Quarter",
     "Flags": {},
     "Gathering": {
       "Breaking": {
@@ -23,10 +23,10 @@
     "BlockParticleSetId": "Stone",
     "BlockSoundSetId": "Stone",
     "ParticleColor": "#c85a50",
-    "CustomModel": "Blocks/Nakasar/Fractals/Spike_Plate.blockymodel",
+    "CustomModel": "Blocks/Tinkering/Traps/Spikes.blockymodel",
     "CustomModelTexture": [
       {
-        "Texture": "Blocks/Nakasar/Fractals/Spike_Plate_Texture.png",
+        "Texture": "Blocks/Tinkering/Traps/Spikes_Iron.png",
         "Weight": 1
       }
     ],
@@ -37,17 +37,5 @@
       "Deco"
     ]
   },
-  "ItemSoundSetId": "ISS_Blocks_Stone",
-  "IconProperties": {
-    "Scale": 0.55,
-    "Translation": [
-      0,
-      -12
-    ],
-    "Rotation": [
-      22.5,
-      45,
-      22.5
-    ]
-  }
+  "ItemSoundSetId": "ISS_Blocks_Stone"
 }

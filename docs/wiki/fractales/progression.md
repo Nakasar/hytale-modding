@@ -1,6 +1,6 @@
 # Progression et récompenses
 
-<Infobox pending title="Progression" kind="Système" icon="/jeu/Icons/Items/Nakasar/Fractals/Mist_Shard.png" caption="Éclat de Brume">
+<Infobox pending title="Progression" kind="Système" icon="/jeu/Icons/Items/Nakasar/Fractals/Vanilla/Mist_Shard.png" caption="Éclat de Brume">
 <Info label="Niveaux">1 à 100, débloqués un par un</Info>
 <Info label="Agonie">dès le niveau 26</Info>
 <Info label="Résistance">infusions +1 à +15, 12 emplacements</Info>

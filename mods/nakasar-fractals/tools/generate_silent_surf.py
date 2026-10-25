@@ -209,7 +209,10 @@ def rides(c):
         if block:
             bx, bz, _ = block
             cell = (bx, c.stand(bx, bz), bz)
-            p.set(*cell, WIND_CANNON)
+            # Canon du Gobliterator (vanilla) : bouche vers +Z du modèle, tournée vers le départ de la trajectoire.
+            ahead = path[min(len(path) - 1, 8)]
+            dx, dz = ahead[0] - bx, ahead[2] - bz
+            p.set(*cell, WIND_CANNON, max(range(4), key=lambda k: go.FRONTS[k][0] * dx + go.FRONTS[k][1] * dz))
             c.anchors[cell] = name
         keep_path(c, path)
     for k, (mx, mz, r, s, target) in enumerate(sc.MUSHROOMS):
@@ -692,23 +695,6 @@ for _k in range(1, 6):
 
 # --- modèles ------------------------------------------------------------------------------------------------------
 
-def spider_parts(body, dark, eye):
-    parts = [("Abdomen", (0, 16, -14), (22, 18, 24), 0, fm.smooth(body), "flat"),
-             ("Thorax", (0, 13, 6), (14, 10, 14), 0, fm.smooth(dark), "flat"),
-             ("Head", (0, 14, 15), (10, 8, 8), 0, fm.smooth(dark), "flat"),
-             ("Eyes", (0, 16, 19.2), (8, 3, 1), 0, fm.crystal(eye, (255, 255, 255)), "fullbright"),
-             ("Fang_L", (-2, 9, 19), (1.5, 4, 1.5), 0, fm.smooth((220, 220, 200)), "flat"),
-             ("Fang_R", (2, 9, 19), (1.5, 4, 1.5), 0, fm.smooth((220, 220, 200)), "flat")]
-    for k in range(4):
-        z = 10 - k * 4
-        for side in (-1, 1):
-            parts.append((f"Leg_{k}_{'L' if side < 0 else 'R'}", (side * 14, 10, z), (16, 2.5, 2.5),
-                          side * (20 - k * 12), fm.smooth(dark), "flat"))
-            parts.append((f"Foot_{k}_{'L' if side < 0 else 'R'}", (side * 22, 5, z), (2.5, 10, 2.5), 0,
-                          fm.smooth(dark), "flat"))
-    return parts
-
-
 LUXON = [("Cosmetics/Head/Hoodie_LongEnd.blockymodel", "Cosmetics/Head/Blazen_Wizard_Hoodie_Green_Texture.png"),
          ("Cosmetics/Capes/Cape_Scavenger_NoNeck.blockymodel", "Cosmetics/Capes/Cape_Scavenger_Texture.png",
           gc.CLOTH, "Green"),
@@ -755,12 +741,11 @@ def models():
                               "un homme-serpent.", skin, face, NAGA[:2] + [(NAGA[2][0], NAGA[2][1], "Faded_Leather", gid)],
                               scale=(1.15, 1.15) if role == NAGA_WAVECALLER else None,
                               light={"Color": "#8cf" if role != NAGA_WAVECALLER else "#a6f", "Radius": 2})
-    m[SPIDERLING] = fc.character_model("Cave_Spiderling", spider_parts((60, 70, 60), (36, 40, 36), (120, 255, 160)), 111,
-                                       "Araignée des cavernes (provisoire) : araignée en boîtes, sans animation.", 0.5,
-                                       (0.5, 0.7), scale=0.8)
-    m[BROOD_MOTHER] = fc.character_model("Brood_Mother", spider_parts((70, 90, 70), (30, 36, 30), (180, 255, 120)), 112,
-                                         "Mère de couvée des cavernes (provisoire) : grande araignée en boîtes, sans "
-                                         "animation.", 1.0, (1.2, 1.4), light={"Color": "#9f6", "Radius": 3}, scale=2.2)
+    m[SPIDERLING] = fc.vanilla_npc_model("Cave_Spiderling", "Araignée des cavernes : l'araignée des cavernes vanilla, "
+                                         "petite (Spider_Cave_Spiderling).", parent="Spider_Cave_Spiderling")
+    m[BROOD_MOTHER] = fc.vanilla_npc_model("Brood_Mother", "Mère de couvée des cavernes : l'araignée des cavernes "
+                                           "vanilla, deux fois plus grande.", parent="Spider_Cave",
+                                           light={"Color": "#9f6", "Radius": 3}, scale=2.0)
     for kind in sc.ASPECT_KINDS:
         m[ASPECT + kind] = {"$Comment": f"Aspect ({kind}) de Kanaxai (provisoire) : le spectre vanilla, lueur de son "
                                         "aspect.", "Parent": "Wraith", "MinScale": 1.2, "MaxScale": 1.2,

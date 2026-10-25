@@ -3,9 +3,22 @@
     "Name": "nakasar_fractals_potions.items.Nakasar_Fractal_Mist_Potion_Large_Offensive.name",
     "Description": "nakasar_fractals_potions.items.Nakasar_Fractal_Mist_Potion_Large_Offensive.description"
   },
-  "Icon": "Icons/Items/Nakasar/Fractals/Mist_Potion_Large_Offensive.png",
-  "Model": "Items/Nakasar/Fractals/Mist_Potion_Large_Offensive.blockymodel",
-  "Texture": "Items/Nakasar/Fractals/Mist_Potion_Large_Offensive.png",
+  "Icon": "Icons/Items/Nakasar/Fractals/Vanilla/Mist_Potion_Large_Offensive.png",
+  "IconProperties": {
+    "Scale": 0.75,
+    "Translation": [
+      -13,
+      -12
+    ],
+    "Rotation": [
+      12.5,
+      12.5,
+      315
+    ]
+  },
+  "Model": "Items/Weapons/Bomb/Potion_Onion.blockymodel",
+  "Texture": "Items/Nakasar/Fractals/Vanilla/Mist_Potion_Large_Offensive.png",
+  "Scale": 1.3,
   "Quality": "Epic",
   "Categories": [
     "Items.Potions"

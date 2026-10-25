@@ -389,12 +389,26 @@ def firewood_parts():
             ("Rope_B", (4, 5, 0), (1.5, 9, 10), 0, fm.flat(rope), "flat")]
 
 
-def torch_parts():
-    wood, cloth, flame, core = (96, 66, 40), (150, 120, 80), (255, 140, 40), (255, 236, 160)
-    return [("Handle", (0, 7, 0), (2, 14, 2), 0, fm.smooth(wood), "flat"),
-            ("Wrap", (0, 14.5, 0), (3, 3, 3), 0, fm.smooth(cloth), "flat"),
-            ("Flame", (0, 18, 0), (3.5, 5, 3.5), 45, fm.crystal(flame, core), "fullbright"),
-            ("Tip", (0, 21, 0), (2, 2, 2), 45, fm.crystal(flame, core), "fullbright")]
+def torch_item():
+    """Torche portée : la torche du jeu (Furniture_Crude_Torch tenue en main : modèle, flamme, animations, icône) avec
+    notre lumière ; l'ancien modèle à nous est supprimé."""
+    for old in (fc.COMMON / fc.ITEM_MODELS / "Frost_Torch.blockymodel", fc.COMMON / fc.ITEM_MODELS / "Frost_Torch.png",
+                fc.COMMON / go.ICONS / "Frost_Torch.png"):
+        old.unlink(missing_ok=True)
+    return {
+        "TranslationProperties": {"Name": f"{LANG}.items.{TORCH}.name", "Description": f"{LANG}.items.{TORCH}.description"},
+        "Icon": "Icons/ItemsGenerated/Furniture_Crude_Torch.png",
+        "Model": "Items/Torch/Torch_New.blockymodel",
+        "Texture": "Items/Torch/Torch_New_Texture.png",
+        "Particles": [{"SystemId": "Torch_Fire", "TargetNodeName": "Flame", "Scale": 0.7, "PositionOffset": {"Y": -0.2}}],
+        "PlayerAnimationsId": "Torch",
+        "Scale": 1.0,
+        "Quality": "Uncommon",
+        "Categories": ["Items.Misc"],
+        "ItemSoundSetId": "ISS_Items_Gems",
+        "MaxStack": 1,
+        "Light": {"Color": "#fa6", "Radius": 7},
+    }
 
 
 def items():
@@ -403,8 +417,7 @@ def items():
                                stack=3, extra={"Categories": ["Items.Misc"], "Utility": {"Compatible": False},
                                                # porté, il reste en main comme le marteau (Kevin, 25 octobre 2026)
                                                "Interactions": {"SwapFrom": fc.KEEP_IN_HAND}}),
-        TORCH: fc.held_item(LANG, TORCH, "Frost_Torch", torch_parts(), 92, (0, 11, 0), 9.0, quality="Uncommon", stack=1,
-                            extra={"Categories": ["Items.Misc"], "Light": {"Color": "#fa6", "Radius": 7}}),
+        TORCH: torch_item(),
     }
 
 

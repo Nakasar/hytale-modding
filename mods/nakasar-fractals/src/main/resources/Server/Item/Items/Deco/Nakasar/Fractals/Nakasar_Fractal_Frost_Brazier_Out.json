@@ -3,7 +3,7 @@
     "Name": "nakasar_fractals_snowblind.items.Nakasar_Fractal_Frost_Brazier_Out.name",
     "Description": "nakasar_fractals_snowblind.items.Nakasar_Fractal_Frost_Brazier_Out.description"
   },
-  "Icon": "Icons/Items/Nakasar/Fractals/Frost_Brazier_Out.png",
+  "Icon": "Icons/ItemsGenerated/Furniture_Temple_Light_Brazier.png",
   "Categories": [
     "Blocks.Deco"
   ],
@@ -13,7 +13,7 @@
     "Material": "Solid",
     "DrawType": "Model",
     "Opacity": "Transparent",
-    "HitboxType": "Full",
+    "HitboxType": "Brazier_Small",
     "Flags": {},
     "Gathering": {
       "Breaking": {
@@ -30,10 +30,10 @@
         ]
       }
     },
-    "CustomModel": "Blocks/Nakasar/Fractals/Frost_Brazier_Out.blockymodel",
+    "CustomModel": "Blocks/Decorative_Sets/Temple_Light/Brazier.blockymodel",
     "CustomModelTexture": [
       {
-        "Texture": "Blocks/Nakasar/Fractals/Frost_Brazier_Out_Texture.png",
+        "Texture": "Blocks/Decorative_Sets/Temple_Light/Brazier_Texture.png",
         "Weight": 1
       }
     ],
@@ -44,17 +44,5 @@
       "Deco"
     ]
   },
-  "ItemSoundSetId": "ISS_Blocks_Stone",
-  "IconProperties": {
-    "Scale": 0.55,
-    "Translation": [
-      0,
-      -12
-    ],
-    "Rotation": [
-      22.5,
-      45,
-      22.5
-    ]
-  }
+  "ItemSoundSetId": "ISS_Blocks_Stone"
 }

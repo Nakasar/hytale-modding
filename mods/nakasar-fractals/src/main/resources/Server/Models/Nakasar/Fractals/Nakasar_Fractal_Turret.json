@@ -1,7 +1,7 @@
 {
-  "$Comment": "Tourelle de l'escalier mortel (PNJ fixe, invulnérable).",
-  "Model": "NPC/Nakasar/Fractals/Turret/Model.blockymodel",
-  "Texture": "NPC/Nakasar/Fractals/Turret/Texture.png",
+  "$Comment": "Tourelle de l'escalier mortel (PNJ fixe, invulnérable) : le canon du Gobliterator vanilla, réduit.",
+  "Model": "NPC/Boss/Goblin_Gobliterator/Models/Goblin_Cannon.blockymodel",
+  "Texture": "NPC/Boss/Goblin_Gobliterator/Models/Goblin_Cannon.png",
   "EyeHeight": 0.6,
   "HitBox": {
     "Max": {
@@ -15,8 +15,8 @@
       "Z": -0.4
     }
   },
-  "MinScale": 1.0,
-  "MaxScale": 1.0,
+  "MinScale": 0.6,
+  "MaxScale": 0.6,
   "Light": {
     "Color": "#6cf",
     "Radius": 2
