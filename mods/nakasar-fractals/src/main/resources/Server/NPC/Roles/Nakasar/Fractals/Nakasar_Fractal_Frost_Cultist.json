@@ -4,6 +4,7 @@
   "Appearance": "Nakasar_Fractal_Frost_Cultist",
   "NameTranslationKey": "nakasar_fractals_snowblind.npc.Frost_Cultist.name",
   "MaxHealth": 110,
+  "DropList": "Nakasar_Fractal_Loot_Frost_Cultist",
   "StartState": "Idle",
   "DefaultPlayerAttitude": "Hostile",
   "DefaultNPCAttitude": "Ignore",

@@ -4,6 +4,7 @@
   "Appearance": "Nakasar_Fractal_Cultist_Fanatic",
   "NameTranslationKey": "nakasar_fractals_cliffside.npc.Cultist_Fanatic.name",
   "MaxHealth": 110,
+  "DropList": "Nakasar_Fractal_Loot_Cultist_Fanatic",
   "StartState": "Idle",
   "DefaultPlayerAttitude": "Hostile",
   "DefaultNPCAttitude": "Ignore",

@@ -4,6 +4,7 @@
   "Appearance": "Nakasar_Fractal_Imbued_Shaman",
   "NameTranslationKey": "nakasar_fractals_volcanic.npc.Imbued_Shaman.name",
   "MaxHealth": 4000,
+  "DropList": "Nakasar_Fractal_Loot_Imbued_Shaman",
   "StartState": "Idle",
   "DefaultPlayerAttitude": "Hostile",
   "DefaultNPCAttitude": "Ignore",

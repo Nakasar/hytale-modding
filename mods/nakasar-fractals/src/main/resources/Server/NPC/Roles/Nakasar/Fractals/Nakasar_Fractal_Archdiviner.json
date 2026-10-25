@@ -4,6 +4,7 @@
   "Appearance": "Nakasar_Fractal_Archdiviner",
   "NameTranslationKey": "nakasar_fractals_cliffside.npc.Archdiviner.name",
   "MaxHealth": 2400,
+  "DropList": "Nakasar_Fractal_Loot_Archdiviner",
   "StartState": "Idle",
   "DefaultPlayerAttitude": "Hostile",
   "DefaultNPCAttitude": "Ignore",

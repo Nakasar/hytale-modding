@@ -4,6 +4,7 @@
   "Appearance": "Nakasar_Fractal_Ember_Larva",
   "NameTranslationKey": "nakasar_fractals_volcanic.npc.Ember_Larva.name",
   "MaxHealth": 50,
+  "DropList": "Nakasar_Fractal_Loot_Ember_Larva",
   "StartState": "Idle",
   "DefaultPlayerAttitude": "Hostile",
   "DefaultNPCAttitude": "Ignore",

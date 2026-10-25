@@ -4,6 +4,7 @@
   "Appearance": "Nakasar_Fractal_Rabid_Rabbit",
   "NameTranslationKey": "nakasar_fractals_uncategorized.npc.Rabid_Rabbit.name",
   "MaxHealth": 380,
+  "DropList": "Nakasar_Fractal_Loot_Rabid_Rabbit",
   "StartState": "Idle",
   "DefaultPlayerAttitude": "Hostile",
   "DefaultNPCAttitude": "Ignore",

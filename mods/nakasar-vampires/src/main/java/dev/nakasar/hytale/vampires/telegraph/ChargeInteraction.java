@@ -207,7 +207,7 @@ public class ChargeInteraction extends SimpleInstantInteraction {
             for (PlayerRef player : world.getPlayerRefs()) {
                 Ref<EntityStore> ref = player.getReference();
                 Vector3d p = Telegraphs.position(store, ref);
-                if (p == null || struck.contains(ref) || Telegraphs.horizontal(p, at) > config.width / 2 + 0.6
+                if (p == null || struck.contains(ref) || Telegraphs.horizontal(p, at) > config.width / 2 + Telegraphs.BODY
                         || p.y() - at.y() < -1 || p.y() - at.y() > 3) {
                     continue;
                 }

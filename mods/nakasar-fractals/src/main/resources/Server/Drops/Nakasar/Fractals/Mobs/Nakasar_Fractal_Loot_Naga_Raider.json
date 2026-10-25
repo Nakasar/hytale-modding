@@ -1,0 +1,62 @@
+{
+  "$Comment": "Pillard naga : peau écailleuse, poisson, essence d'eau. Généré par tools/generate_mob_loot.py.",
+  "Container": {
+    "Type": "Multiple",
+    "Containers": [
+      {
+        "Type": "Choice",
+        "Containers": [
+          {
+            "Type": "Single",
+            "Item": {
+              "ItemId": "Ingredient_Hide_Scaled",
+              "QuantityMin": 1,
+              "QuantityMax": 1
+            },
+            "Weight": 60
+          },
+          {
+            "Type": "Empty",
+            "Weight": 40
+          }
+        ]
+      },
+      {
+        "Type": "Choice",
+        "Containers": [
+          {
+            "Type": "Single",
+            "Item": {
+              "ItemId": "Food_Fish_Raw",
+              "QuantityMin": 1,
+              "QuantityMax": 1
+            },
+            "Weight": 40
+          },
+          {
+            "Type": "Empty",
+            "Weight": 60
+          }
+        ]
+      },
+      {
+        "Type": "Choice",
+        "Containers": [
+          {
+            "Type": "Single",
+            "Item": {
+              "ItemId": "Ingredient_Water_Essence",
+              "QuantityMin": 1,
+              "QuantityMax": 1
+            },
+            "Weight": 20
+          },
+          {
+            "Type": "Empty",
+            "Weight": 80
+          }
+        ]
+      }
+    ]
+  }
+}

@@ -44,6 +44,11 @@ public final class Telegraphs {
     private static final double DOT_RADIUS = 2.0;
     private static final double EDGE_STEP = 2.5;
     private static final double EDGE_RADIUS = 0.3;
+    /**
+     * Demi-largeur du corps d'un joueur, seule marge des tests de zone : la zone rouge a la taille exacte de la zone
+     * touchée (consigne permanente de Kevin, AGENTS.md).
+     */
+    public static final double BODY = 0.3;
     /** Hauteur d'une zone : on est touché de 1,5 bloc sous son sol à 3,5 blocs au-dessus. */
     private static final double BELOW = 1.5;
     private static final double ABOVE = 3.5;
@@ -148,7 +153,7 @@ public final class Telegraphs {
 
         @Override
         public boolean contains(Vector3d p) {
-            return horizontal(p, center) <= radius + 0.3 && inHeight(p, center);
+            return horizontal(p, center) <= radius + BODY && inHeight(p, center);
         }
 
         @Override
@@ -217,15 +222,15 @@ public final class Telegraphs {
 
         public boolean contains(Vector3d p) {
             double d = horizontal(p, center);
-            if (d < Math.min(from, to) - 0.5 || d > Math.max(from, to) + 0.5 || !inHeight(p, center)) {
+            if (d < Math.min(from, to) - BODY || d > Math.max(from, to) + BODY || !inHeight(p, center)) {
                 return false;
             }
             if (span >= Math.PI * 2 - 1e-6 || d < 0.75) {
                 return true;
             }
             double a = ((angle(center, p) - start) % (Math.PI * 2) + Math.PI * 2) % (Math.PI * 2);
-            // Marge d'un demi-bloc sur les côtés, comme sur les bords.
-            double margin = Math.atan2(0.5, Math.max(d, 0.5));
+            // Le corps sur les côtés, comme sur les bords.
+            double margin = Math.atan2(BODY, Math.max(d, 0.5));
             return a <= span + margin || a >= Math.PI * 2 - margin;
         }
 
@@ -327,7 +332,7 @@ public final class Telegraphs {
             double dz = p.z() - start.z();
             double along = dx * Math.cos(facing) + dz * Math.sin(facing);
             double side = -dx * Math.sin(facing) + dz * Math.cos(facing);
-            return along >= -0.5 && along <= length + 0.5 && Math.abs(side) <= width / 2 + 0.4 && inHeight(p, start);
+            return along >= -BODY && along <= length + BODY && Math.abs(side) <= width / 2 + BODY && inHeight(p, start);
         }
 
         @Override

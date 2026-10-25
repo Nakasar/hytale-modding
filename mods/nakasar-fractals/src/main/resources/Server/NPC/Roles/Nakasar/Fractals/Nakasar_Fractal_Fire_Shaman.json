@@ -4,6 +4,7 @@
   "Appearance": "Nakasar_Fractal_Fire_Shaman",
   "NameTranslationKey": "nakasar_fractals_uncategorized.npc.Fire_Shaman.name",
   "MaxHealth": 320,
+  "DropList": "Nakasar_Fractal_Loot_Fire_Shaman",
   "StartState": "Idle",
   "DefaultPlayerAttitude": "Hostile",
   "DefaultNPCAttitude": "Ignore",

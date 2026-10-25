@@ -4,6 +4,7 @@
   "Appearance": "Nakasar_Fractal_Cave_Bat",
   "NameTranslationKey": "nakasar_fractals_volcanic.npc.Cave_Bat.name",
   "MaxHealth": 40,
+  "DropList": "Nakasar_Fractal_Loot_Cave_Bat",
   "StartState": "Idle",
   "DefaultPlayerAttitude": "Hostile",
   "DefaultNPCAttitude": "Ignore",

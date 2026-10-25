@@ -4,6 +4,7 @@
   "Appearance": "Nakasar_Fractal_Champion_Shaman",
   "NameTranslationKey": "nakasar_fractals_volcanic.npc.Champion_Shaman.name",
   "MaxHealth": 2400,
+  "DropList": "Nakasar_Fractal_Loot_Champion_Shaman",
   "StartState": "Idle",
   "DefaultPlayerAttitude": "Hostile",
   "DefaultNPCAttitude": "Ignore",

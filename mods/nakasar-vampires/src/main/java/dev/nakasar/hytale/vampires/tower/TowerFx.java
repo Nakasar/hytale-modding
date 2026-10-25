@@ -89,7 +89,7 @@ final class TowerFx {
         }
     }
 
-    /** Joueurs vivants dans le cylindre de rayon `radius` posé en `at` (de 1 bloc dessous à 3 blocs dessus). */
+    /** Joueurs vivants dont le corps touche le cylindre de rayon `radius` posé en `at` (de 1 bloc dessous à 3 blocs dessus). */
     static List<Ref<EntityStore>> playersIn(World world, Store<EntityStore> store, Vector3d at, double radius) {
         List<Ref<EntityStore>> out = new ArrayList<>();
         for (PlayerRef player : world.getPlayerRefs()) {
@@ -99,7 +99,7 @@ final class TowerFx {
                 continue;
             }
             double dy = position.y() - at.y();
-            if (horizontal(position, at) <= radius && dy >= -1 && dy <= 3) {
+            if (horizontal(position, at) <= radius + Telegraphs.BODY && dy >= -1 && dy <= 3) {
                 out.add(ref);
             }
         }

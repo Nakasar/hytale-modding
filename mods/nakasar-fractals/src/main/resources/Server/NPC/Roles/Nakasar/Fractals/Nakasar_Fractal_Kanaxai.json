@@ -4,6 +4,7 @@
   "Appearance": "Nakasar_Fractal_Kanaxai",
   "NameTranslationKey": "nakasar_fractals_silent_surf.npc.Kanaxai.name",
   "MaxHealth": 8000,
+  "DropList": "Nakasar_Fractal_Loot_Kanaxai",
   "StartState": "Idle",
   "DefaultPlayerAttitude": "Hostile",
   "DefaultNPCAttitude": "Ignore",

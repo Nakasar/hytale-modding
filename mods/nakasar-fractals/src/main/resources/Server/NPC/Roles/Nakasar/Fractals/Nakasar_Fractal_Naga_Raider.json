@@ -4,6 +4,7 @@
   "Appearance": "Nakasar_Fractal_Naga_Raider",
   "NameTranslationKey": "nakasar_fractals_silent_surf.npc.Naga_Raider.name",
   "MaxHealth": 140,
+  "DropList": "Nakasar_Fractal_Loot_Naga_Raider",
   "StartState": "Idle",
   "DefaultPlayerAttitude": "Hostile",
   "DefaultNPCAttitude": "Ignore",

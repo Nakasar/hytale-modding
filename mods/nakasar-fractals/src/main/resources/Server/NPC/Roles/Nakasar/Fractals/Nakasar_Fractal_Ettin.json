@@ -4,6 +4,7 @@
   "Appearance": "Nakasar_Fractal_Ettin",
   "NameTranslationKey": "nakasar_fractals_uncategorized.npc.Ettin.name",
   "MaxHealth": 700,
+  "DropList": "Nakasar_Fractal_Loot_Ettin",
   "StartState": "Idle",
   "DefaultPlayerAttitude": "Hostile",
   "DefaultNPCAttitude": "Ignore",

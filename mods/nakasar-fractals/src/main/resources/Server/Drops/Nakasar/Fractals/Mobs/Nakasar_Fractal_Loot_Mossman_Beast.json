@@ -1,0 +1,50 @@
+{
+  "$Comment": "Le Moussu, vaincu sous sa forme sauvage : cuir lourd, mousse, essence de vie, bois de saule. Généré par tools/generate_mob_loot.py.",
+  "Container": {
+    "Type": "Multiple",
+    "Containers": [
+      {
+        "Type": "Single",
+        "Item": {
+          "ItemId": "Ingredient_Hide_Heavy",
+          "QuantityMin": 2,
+          "QuantityMax": 3
+        }
+      },
+      {
+        "Type": "Single",
+        "Item": {
+          "ItemId": "Plant_Moss_Green",
+          "QuantityMin": 3,
+          "QuantityMax": 5
+        }
+      },
+      {
+        "Type": "Single",
+        "Item": {
+          "ItemId": "Ingredient_Life_Essence",
+          "QuantityMin": 2,
+          "QuantityMax": 4
+        }
+      },
+      {
+        "Type": "Choice",
+        "Containers": [
+          {
+            "Type": "Single",
+            "Item": {
+              "ItemId": "Wood_Sallow_Trunk",
+              "QuantityMin": 2,
+              "QuantityMax": 4
+            },
+            "Weight": 60
+          },
+          {
+            "Type": "Empty",
+            "Weight": 40
+          }
+        ]
+      }
+    ]
+  }
+}

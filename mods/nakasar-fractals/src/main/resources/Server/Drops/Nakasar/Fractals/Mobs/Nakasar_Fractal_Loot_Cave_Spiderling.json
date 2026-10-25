@@ -1,0 +1,44 @@
+{
+  "$Comment": "Araignée des cavernes (cercle de la Mère de couvée, pas celles qu'elle pond) : soie, chitine. Généré par tools/generate_mob_loot.py.",
+  "Container": {
+    "Type": "Multiple",
+    "Containers": [
+      {
+        "Type": "Choice",
+        "Containers": [
+          {
+            "Type": "Single",
+            "Item": {
+              "ItemId": "Ingredient_Fabric_Scrap_Silk",
+              "QuantityMin": 1,
+              "QuantityMax": 1
+            },
+            "Weight": 50
+          },
+          {
+            "Type": "Empty",
+            "Weight": 50
+          }
+        ]
+      },
+      {
+        "Type": "Choice",
+        "Containers": [
+          {
+            "Type": "Single",
+            "Item": {
+              "ItemId": "Ingredient_Chitin_Sturdy",
+              "QuantityMin": 1,
+              "QuantityMax": 1
+            },
+            "Weight": 20
+          },
+          {
+            "Type": "Empty",
+            "Weight": 80
+          }
+        ]
+      }
+    ]
+  }
+}

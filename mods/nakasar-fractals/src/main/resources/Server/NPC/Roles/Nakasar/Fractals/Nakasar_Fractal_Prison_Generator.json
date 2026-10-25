@@ -4,6 +4,7 @@
   "Appearance": "Nakasar_Fractal_Prison_Generator",
   "NameTranslationKey": "nakasar_fractals_uncategorized.npc.Prison_Generator.name",
   "MaxHealth": 600,
+  "DropList": "Nakasar_Fractal_Loot_Prison_Generator",
   "StartState": "Idle",
   "DefaultPlayerAttitude": "Hostile",
   "DefaultNPCAttitude": "Ignore",

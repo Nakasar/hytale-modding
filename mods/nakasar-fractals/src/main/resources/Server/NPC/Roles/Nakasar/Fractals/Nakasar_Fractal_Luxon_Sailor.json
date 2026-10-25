@@ -4,6 +4,7 @@
   "Appearance": "Nakasar_Fractal_Luxon_Sailor",
   "NameTranslationKey": "nakasar_fractals_silent_surf.npc.Luxon_Sailor.name",
   "MaxHealth": 170,
+  "DropList": "Nakasar_Fractal_Loot_Luxon_Sailor",
   "StartState": "Idle",
   "DefaultPlayerAttitude": "Hostile",
   "DefaultNPCAttitude": "Ignore",

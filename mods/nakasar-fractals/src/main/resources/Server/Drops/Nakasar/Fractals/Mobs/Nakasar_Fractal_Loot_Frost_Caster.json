@@ -1,0 +1,42 @@
+{
+  "$Comment": "Incantateur de Svanir (groupes de la forêt) : essence de glace, laine, graine de givre. Généré par tools/generate_mob_loot.py.",
+  "Container": {
+    "Type": "Multiple",
+    "Containers": [
+      {
+        "Type": "Single",
+        "Item": {
+          "ItemId": "Ingredient_Ice_Essence",
+          "QuantityMin": 1,
+          "QuantityMax": 2
+        }
+      },
+      {
+        "Type": "Single",
+        "Item": {
+          "ItemId": "Ingredient_Fabric_Scrap_Wool",
+          "QuantityMin": 1,
+          "QuantityMax": 1
+        }
+      },
+      {
+        "Type": "Choice",
+        "Containers": [
+          {
+            "Type": "Single",
+            "Item": {
+              "ItemId": "Plant_Seeds_Ice",
+              "QuantityMin": 1,
+              "QuantityMax": 1
+            },
+            "Weight": 10
+          },
+          {
+            "Type": "Empty",
+            "Weight": 90
+          }
+        ]
+      }
+    ]
+  }
+}

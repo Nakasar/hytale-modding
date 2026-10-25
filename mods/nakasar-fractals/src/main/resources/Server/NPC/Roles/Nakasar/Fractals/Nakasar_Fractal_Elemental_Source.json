@@ -4,6 +4,7 @@
   "Appearance": "Nakasar_Fractal_Elemental_Source",
   "NameTranslationKey": "nakasar_fractals_snowblind.npc.Elemental_Source.name",
   "MaxHealth": 4500,
+  "DropList": "Nakasar_Fractal_Loot_Elemental_Source",
   "StartState": "Idle",
   "DefaultPlayerAttitude": "Hostile",
   "DefaultNPCAttitude": "Ignore",

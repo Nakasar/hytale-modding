@@ -4,6 +4,7 @@
   "Appearance": "Nakasar_Fractal_Bloomhunger",
   "NameTranslationKey": "nakasar_fractals_swampland.npc.Bloomhunger.name",
   "MaxHealth": 5000,
+  "DropList": "Nakasar_Fractal_Loot_Bloomhunger",
   "StartState": "Idle",
   "DefaultPlayerAttitude": "Hostile",
   "DefaultNPCAttitude": "Ignore",
