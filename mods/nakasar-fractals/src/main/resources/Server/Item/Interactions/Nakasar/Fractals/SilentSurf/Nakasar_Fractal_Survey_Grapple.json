@@ -1,0 +1,5 @@
+{
+  "$Comment": "Grappin : clic droit, le crochet file vers la roche visée (32 blocs) et tire le joueur jusqu'à elle (Java, silentsurf.SurveyGear). Une charge.",
+  "Type": "Nakasar_Fractal_SurveyGear",
+  "Gear": "Grapple"
+}

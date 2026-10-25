@@ -1,0 +1,5 @@
+{
+  "$Comment": "Provisions abandonnées : rendent toutes les charges de l'équipement de prospection (et le donnent à qui ne l'a plus).",
+  "Type": "Nakasar_Fractal_Use",
+  "Action": "SilentSurf_Supplies"
+}

@@ -1,0 +1,12 @@
+{
+  "$Comment": "Lien d'un Aspect : un point du fil violet (le Java en pose le long du lien). Généré par tools/generate_silent_surf.py.",
+  "Spawners": [
+    {
+      "SpawnerId": "Nakasar_Fractal_Tether_Beam",
+      "PositionOffset": {
+        "Y": 0.0
+      }
+    }
+  ],
+  "CullDistance": 72
+}

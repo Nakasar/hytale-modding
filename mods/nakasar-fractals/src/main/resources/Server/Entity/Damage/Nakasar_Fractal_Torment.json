@@ -1,0 +1,7 @@
+{
+  "$Comment": "Tourment, saignement et Visage de l'effroi du Ressac silencieux : une part des PV max, l'armure ne le réduit pas.",
+  "BypassResistances": true,
+  "DurabilityLoss": false,
+  "StaminaLoss": false,
+  "DamageTextColor": "#b070e0"
+}

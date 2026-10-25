@@ -1,0 +1,12 @@
+{
+  "$Comment": "Visage de l'effroi lancé : onde d'ombre. Généré par tools/generate_silent_surf.py.",
+  "Spawners": [
+    {
+      "SpawnerId": "Nakasar_Fractal_Dread_Wave_Wave",
+      "PositionOffset": {
+        "Y": 0.6
+      }
+    }
+  ],
+  "CullDistance": 72
+}

@@ -1,0 +1,5 @@
+{
+  "$Comment": "Charge de poudre noire : clic droit, l'explosion projette le joueur loin devant lui et vers le haut, sans dégâts de chute à l'arrivée (Java). Une charge.",
+  "Type": "Nakasar_Fractal_SurveyGear",
+  "Gear": "Powder"
+}

@@ -1,0 +1,12 @@
+{
+  "$Comment": "Ombres rassemblées : volutes noires qui convergent vers Kanaxai. Généré par tools/generate_silent_surf.py.",
+  "Spawners": [
+    {
+      "SpawnerId": "Nakasar_Fractal_Shadows_Wisps",
+      "PositionOffset": {
+        "Y": 0.4
+      }
+    }
+  ],
+  "CullDistance": 72
+}

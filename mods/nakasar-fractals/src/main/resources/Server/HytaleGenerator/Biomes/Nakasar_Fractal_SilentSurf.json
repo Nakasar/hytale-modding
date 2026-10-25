@@ -1,0 +1,191 @@
+{
+  "Name": "Nakasar_Fractal_SilentSurf",
+  "Terrain": {
+    "Type": "DAOTerrain",
+    "Density": {
+      "Type": "Constant",
+      "Value": -1.0
+    }
+  },
+  "MaterialProvider": {
+    "Type": "Constant",
+    "Material": {
+      "Solid": "Empty"
+    }
+  },
+  "Props": [
+    {
+      "Runtime": 0,
+      "ContextPrecision": "Prop",
+      "PropDistribution": {
+        "Type": "Assigned",
+        "OverrideAllProps": true,
+        "PropDistribution": {
+          "Type": "Positions",
+          "Positions": {
+            "Type": "List",
+            "Positions": [
+              {
+                "X": 0,
+                "Y": 100,
+                "Z": -137
+              }
+            ]
+          }
+        },
+        "Assignments": {
+          "Type": "Constant",
+          "Prop": {
+            "Type": "Prefab",
+            "WeightedPrefabPaths": [
+              {
+                "Path": "Nakasar/Fractals/SilentSurf/Section_00",
+                "Weight": 1.0
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "Runtime": 0,
+      "ContextPrecision": "Prop",
+      "PropDistribution": {
+        "Type": "Assigned",
+        "OverrideAllProps": true,
+        "PropDistribution": {
+          "Type": "Positions",
+          "Positions": {
+            "Type": "List",
+            "Positions": [
+              {
+                "X": 0,
+                "Y": 100,
+                "Z": -73
+              }
+            ]
+          }
+        },
+        "Assignments": {
+          "Type": "Constant",
+          "Prop": {
+            "Type": "Prefab",
+            "WeightedPrefabPaths": [
+              {
+                "Path": "Nakasar/Fractals/SilentSurf/Section_01",
+                "Weight": 1.0
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "Runtime": 0,
+      "ContextPrecision": "Prop",
+      "PropDistribution": {
+        "Type": "Assigned",
+        "OverrideAllProps": true,
+        "PropDistribution": {
+          "Type": "Positions",
+          "Positions": {
+            "Type": "List",
+            "Positions": [
+              {
+                "X": 0,
+                "Y": 100,
+                "Z": -9
+              }
+            ]
+          }
+        },
+        "Assignments": {
+          "Type": "Constant",
+          "Prop": {
+            "Type": "Prefab",
+            "WeightedPrefabPaths": [
+              {
+                "Path": "Nakasar/Fractals/SilentSurf/Section_02",
+                "Weight": 1.0
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "Runtime": 0,
+      "ContextPrecision": "Prop",
+      "PropDistribution": {
+        "Type": "Assigned",
+        "OverrideAllProps": true,
+        "PropDistribution": {
+          "Type": "Positions",
+          "Positions": {
+            "Type": "List",
+            "Positions": [
+              {
+                "X": 0,
+                "Y": 100,
+                "Z": 55
+              }
+            ]
+          }
+        },
+        "Assignments": {
+          "Type": "Constant",
+          "Prop": {
+            "Type": "Prefab",
+            "WeightedPrefabPaths": [
+              {
+                "Path": "Nakasar/Fractals/SilentSurf/Section_03",
+                "Weight": 1.0
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "Runtime": 0,
+      "ContextPrecision": "Prop",
+      "PropDistribution": {
+        "Type": "Assigned",
+        "OverrideAllProps": true,
+        "PropDistribution": {
+          "Type": "Positions",
+          "Positions": {
+            "Type": "List",
+            "Positions": [
+              {
+                "X": 0,
+                "Y": 100,
+                "Z": 119
+              }
+            ]
+          }
+        },
+        "Assignments": {
+          "Type": "Constant",
+          "Prop": {
+            "Type": "Prefab",
+            "WeightedPrefabPaths": [
+              {
+                "Path": "Nakasar/Fractals/SilentSurf/Section_04",
+                "Weight": 1.0
+              }
+            ]
+          }
+        }
+      }
+    }
+  ],
+  "EnvironmentProvider": {
+    "Type": "Constant",
+    "Environment": "Nakasar_Fractal_Env_Mists"
+  },
+  "TintProvider": {
+    "Type": "Constant",
+    "Color": "#2a5a4a"
+  }
+}

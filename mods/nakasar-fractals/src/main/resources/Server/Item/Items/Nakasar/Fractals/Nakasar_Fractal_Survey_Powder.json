@@ -1,0 +1,22 @@
+{
+  "TranslationProperties": {
+    "Name": "nakasar_fractals_silent_surf.items.Nakasar_Fractal_Survey_Powder.name",
+    "Description": "nakasar_fractals_silent_surf.items.Nakasar_Fractal_Survey_Powder.description"
+  },
+  "Icon": "Icons/Items/Nakasar/Fractals/Survey_Powder.png",
+  "Model": "Items/Nakasar/Fractals/Survey_Powder.blockymodel",
+  "Texture": "Items/Nakasar/Fractals/Survey_Powder.png",
+  "Quality": "Rare",
+  "Categories": [
+    "Items.Misc"
+  ],
+  "PlayerAnimationsId": "Item",
+  "ItemSoundSetId": "ISS_Items_Gems",
+  "MaxStack": 2,
+  "Interactions": {
+    "Secondary": "Root_Nakasar_Fractal_Survey_Powder"
+  },
+  "Utility": {
+    "Compatible": false
+  }
+}

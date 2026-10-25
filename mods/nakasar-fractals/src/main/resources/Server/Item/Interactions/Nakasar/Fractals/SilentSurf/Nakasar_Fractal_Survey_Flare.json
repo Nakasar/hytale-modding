@@ -1,0 +1,5 @@
+{
+  "$Comment": "Fusée éclairante : clic droit, une fusée file droit devant et éclaire la roche où elle se plante (40 s). Illimitée (Java).",
+  "Type": "Nakasar_Fractal_SurveyGear",
+  "Gear": "Flare"
+}

@@ -1,0 +1,10 @@
+{
+  "$Comment": "Aspect (Fear) de Kanaxai (provisoire) : le spectre vanilla, lueur de son aspect.",
+  "Parent": "Wraith",
+  "MinScale": 1.2,
+  "MaxScale": 1.2,
+  "Light": {
+    "Color": "#a6f",
+    "Radius": 3
+  }
+}

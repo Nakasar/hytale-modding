@@ -1,0 +1,12 @@
+{
+  "$Comment": "Fusée éclairante en vol : point rouge vif. Généré par tools/generate_silent_surf.py.",
+  "Spawners": [
+    {
+      "SpawnerId": "Nakasar_Fractal_Flare_Trail_Spark",
+      "PositionOffset": {
+        "Y": 0.0
+      }
+    }
+  ],
+  "CullDistance": 72
+}

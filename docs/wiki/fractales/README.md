@@ -5,7 +5,7 @@
 <Info label="Joueurs">1 à 5 par groupe</Info>
 <Info label="Accès">[Fragment des Brumes](observatoire.md#fragment-des-brumes) dans l'Ancienne passerelle</Info>
 <Info label="Lieu">[l'Observatoire](observatoire.md), île hub dans les Brumes</Info>
-<Info label="Fractales">**6** (saison 1)</Info>
+<Info label="Fractales">**7** (saisons 1 et 2)</Info>
 <Info label="Niveaux">1 à 100, en 4 rangs</Info>
 </Infobox>
 
@@ -27,6 +27,12 @@ Les **fractales** sont des aventures courtes de 1 à 5 joueurs, tirées des frac
 | [Océan solide](ocean-solide.md) | sauts sur des fragments de jade | l'Abîme de Jade |
 | [Marais](marais.md) | course aux feux-follets dans un marais piégé | le Moussu, Carnasse |
 | [Tempête de neige](tempete-de-neige.md) | le froid tue : feux à nourrir de fagots | Source élémentaire, Chaman légendaire |
+
+## Saison 2
+
+| Fractale | En bref | Boss |
+|---|---|---|
+| [Ressac silencieux](ressac-silencieux.md) | descente d'une grotte de jade : grappin, parachute, tyroliennes, champignons | le second Dolus, Kanaxai |
 
 ## Le reste
 

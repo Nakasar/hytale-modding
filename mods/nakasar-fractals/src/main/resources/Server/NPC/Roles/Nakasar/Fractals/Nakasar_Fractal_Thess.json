@@ -1,0 +1,35 @@
+{
+  "$Comment": "Thess, prospecteur luxon : guide les joueurs d'un point de contrôle à l'autre (Java) ; on ne peut pas le blesser. Généré par tools/generate_silent_surf.py.",
+  "Type": "Generic",
+  "Appearance": "Nakasar_Fractal_Thess",
+  "NameTranslationKey": "nakasar_fractals_silent_surf.npc.Thess.name",
+  "MaxHealth": 1000,
+  "StartState": "Idle",
+  "DefaultPlayerAttitude": "Neutral",
+  "DefaultNPCAttitude": "Ignore",
+  "MotionControllerList": [
+    {
+      "Type": "Walk",
+      "MaxWalkSpeed": 0.1,
+      "Gravity": 10,
+      "MaxFallSpeed": 10,
+      "Acceleration": 10,
+      "JumpHeight": 1.0
+    }
+  ],
+  "KnockbackScale": 0,
+  "SpawnLockTime": 0.2,
+  "Instructions": [
+    {
+      "Sensor": {
+        "Type": "State",
+        "State": "Idle"
+      },
+      "Instructions": [
+        {
+          "Actions": []
+        }
+      ]
+    }
+  ]
+}

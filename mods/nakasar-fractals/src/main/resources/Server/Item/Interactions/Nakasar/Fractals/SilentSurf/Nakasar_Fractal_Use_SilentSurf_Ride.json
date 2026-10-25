@@ -1,0 +1,5 @@
+{
+  "$Comment": "Ancre de tyrolienne ou canon à vent : départ du trajet guidé (Java, silentsurf.Rides).",
+  "Type": "Nakasar_Fractal_Use",
+  "Action": "SilentSurf_Ride"
+}

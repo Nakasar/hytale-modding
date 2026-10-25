@@ -60,6 +60,17 @@ public final class Carried {
         SimpleItemContainer.addOrDropItemStack(store, ref, inventory(store, ref), new ItemStack(id, 1));
     }
 
+    /** Donne `n` objets `id` d'un coup s'il y a la place ; sinon rien (rien ne tombe au sol). */
+    public static boolean giveIfRoom(ComponentAccessor<EntityStore> store, Ref<EntityStore> ref, String id, int n) {
+        CombinedItemContainer inventory = inventory(store, ref);
+        ItemStack stack = new ItemStack(id, n);
+        if (!inventory.canAddItemStack(stack)) {
+            return false;
+        }
+        inventory.addItemStack(stack);
+        return true;
+    }
+
     /** Fait tomber l'objet `id` au sol en `at` (ramassable au bout d'une seconde). */
     public static void drop(Store<EntityStore> store, String id, Vector3d at) {
         Holder<EntityStore> holder = ItemComponent.generateItemDrop(store, new ItemStack(id, 1), new Vector3d(at).add(0, 0.5, 0),

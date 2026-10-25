@@ -1,0 +1,43 @@
+{
+  "TranslationProperties": {
+    "Name": "nakasar_fractals_silent_surf.items.Nakasar_Fractal_Survey_Mark.name",
+    "Description": "nakasar_fractals_silent_surf.items.Nakasar_Fractal_Survey_Mark.description"
+  },
+  "Icon": "Icons/Items/Nakasar/Fractals/Survey_Mark.png",
+  "Categories": [
+    "Blocks.Deco"
+  ],
+  "Quality": "Technical",
+  "PlayerAnimationsId": "Block",
+  "BlockType": {
+    "Material": "Solid",
+    "DrawType": "Cube",
+    "Opacity": "Solid",
+    "Textures": [
+      {
+        "Sides": "BlockTextures/Nakasar/Fractals/Survey_Mark.png",
+        "UpDown": "BlockTextures/Nakasar/Fractals/Survey_Mark.png",
+        "Weight": 1
+      }
+    ],
+    "HitboxType": "Full",
+    "Flags": {},
+    "Gathering": {
+      "Breaking": {
+        "GatherType": "Unbreakable"
+      }
+    },
+    "BlockParticleSetId": "Stone",
+    "BlockSoundSetId": "Stone",
+    "ParticleColor": "#ffffff",
+    "Light": {
+      "Color": "#fff"
+    }
+  },
+  "Tags": {
+    "Type": [
+      "Deco"
+    ]
+  },
+  "ItemSoundSetId": "ISS_Blocks_Stone"
+}

@@ -1,0 +1,10 @@
+{
+  "$Comment": "Aspect (Exposure) de Kanaxai (provisoire) : le spectre vanilla, lueur de son aspect.",
+  "Parent": "Wraith",
+  "MinScale": 1.2,
+  "MaxScale": 1.2,
+  "Light": {
+    "Color": "#fa6",
+    "Radius": 3
+  }
+}

@@ -1,0 +1,12 @@
+{
+  "$Comment": "Saignement (flaque de la Tempête déchirante) : dégâts tant qu'on y reste (Java).",
+  "Name": "nakasar_fractals_silent_surf.effects.Nakasar_Fractal_Bleeding",
+  "Debuff": true,
+  "StatusEffectIcon": "UI/StatusEffects/Nakasar/Fractals/Bleeding.png",
+  "ApplicationEffects": {
+    "EntityBottomTint": "#8a1010"
+  },
+  "OverlapBehavior": "Overwrite",
+  "Infinite": false,
+  "Duration": 1.5
+}

@@ -1,0 +1,12 @@
+{
+  "$Comment": "Corde du grappin : un point de la corde (le Java en pose le long du trajet). Généré par tools/generate_silent_surf.py.",
+  "Spawners": [
+    {
+      "SpawnerId": "Nakasar_Fractal_Grapple_Line_Rope",
+      "PositionOffset": {
+        "Y": 0.0
+      }
+    }
+  ],
+  "CullDistance": 72
+}
