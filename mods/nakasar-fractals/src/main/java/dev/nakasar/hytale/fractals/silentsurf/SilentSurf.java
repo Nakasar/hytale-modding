@@ -121,8 +121,8 @@ public final class SilentSurf implements FractalStage {
     /** Barres de boss de la Mère de couvée, du Mande-vague, de Dolus et de Kanaxai (défiance des Ombres rassemblées). */
     /** L'équipement de prospection et les effets du Ressac (la Garde de Thess dure une heure) se perdent hors de la
      * fractale. */
-    public static FractalItemsSystem itemsSystem() {
-        return new FractalItemsSystem(FRACTAL, Set.of(SurveyGear.ITEMS), WARD_EFFECT, "Nakasar_Fractal_Phantasmagoria",
+    public static FractalItemsSystem.Rule itemsRule() {
+        return new FractalItemsSystem.Rule(FRACTAL, Set.of(SurveyGear.ITEMS), WARD_EFFECT, "Nakasar_Fractal_Phantasmagoria",
                 "Nakasar_Fractal_Torment", "Nakasar_Fractal_Parachute_Open");
     }
 

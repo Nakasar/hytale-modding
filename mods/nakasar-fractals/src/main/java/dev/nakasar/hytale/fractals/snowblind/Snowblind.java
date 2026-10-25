@@ -96,8 +96,8 @@ public final class Snowblind implements FractalStage {
     private final Map<World, State> states = Collections.synchronizedMap(new WeakHashMap<>());
 
     /** La torche et les fagots se perdent hors de la fractale. */
-    public static FractalItemsSystem itemsSystem() {
-        return new FractalItemsSystem(FRACTAL, Set.of(TORCH, FIREWOOD));
+    public static FractalItemsSystem.Rule itemsRule() {
+        return new FractalItemsSystem.Rule(FRACTAL, Set.of(TORCH, FIREWOOD));
     }
 
     /** Barres de boss de la Source (bouclier de givre), du Chaman (ses deux formes) et de l'Effigie (défiance). */

@@ -33,6 +33,7 @@ import dev.nakasar.hytale.fractals.stage.ThrowItemInteraction;
 import dev.nakasar.hytale.fractals.uncategorized.Uncategorized;
 import dev.nakasar.hytale.fractals.arena.CrouchPickup;
 import dev.nakasar.hytale.fractals.arena.HandLock;
+import dev.nakasar.hytale.fractals.arena.FractalItemsSystem;
 import dev.nakasar.hytale.fractals.solidocean.SolidOcean;
 import dev.nakasar.hytale.fractals.snowblind.Snowblind;
 import dev.nakasar.hytale.fractals.swampland.Swampland;
@@ -198,9 +199,8 @@ public final class FractalsPlugin extends JavaPlugin {
         systems.registerSystem(new CliffsideSystem());
         systems.registerSystem(new CliffsideDamageFilter());
         systems.registerSystem(new StageSystem());
-        systems.registerSystem(SilentSurf.itemsSystem());
-        systems.registerSystem(SirensReef.itemsSystem());
-        systems.registerSystem(Snowblind.itemsSystem());
+        // Un seul FractalItemsSystem (le serveur refuse deux systèmes de la même classe) : une règle par fractale.
+        systems.registerSystem(new FractalItemsSystem(SilentSurf.itemsRule(), SirensReef.itemsRule(), Snowblind.itemsRule()));
         systems.registerSystem(new AspectVisibilitySystem());
         systems.registerSystem(new StageDamageFilter());
         systems.registerSystem(new FoeDeathSystem());

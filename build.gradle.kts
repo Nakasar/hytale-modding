@@ -30,6 +30,31 @@ subprojects {
         tasks.withType<Javadoc>().configureEach {
             (options as StandardJavadocDocletOptions).addStringOption("Xdoclint:none", "-quiet")
         }
+
+        // Le serveur refuse deux systèmes de la même classe (« is already registered! ») et le plugin entier échoue :
+        // tools/CheckSystemRegistrations.java le repère dans les classes compilées.
+        val launcher = extensions.getByType<JavaToolchainService>().launcherFor { languageVersion.set(JavaLanguageVersion.of(25)) }
+        val tool = rootProject.file("tools/CheckSystemRegistrations.java")
+        val classes = extensions.getByType<SourceSetContainer>().named("main").get().output.classesDirs
+        val checkSystemRegistrations = tasks.register<Exec>("checkSystemRegistrations") {
+            group = "verification"
+            description = "Vérifie qu'aucune classe de système n'est enregistrée deux fois (registerSystem)."
+            inputs.file(tool)
+            inputs.files(classes)
+            dependsOn(tasks.named("classes"))
+            val marker = layout.buildDirectory.file("checkSystemRegistrations.ok")
+            outputs.file(marker)
+            doFirst {
+                executable = launcher.get().executablePath.asFile.absolutePath
+                args(listOf("-Dstdout.encoding=UTF-8", "-Dstderr.encoding=UTF-8", tool.absolutePath) + classes.files.map { it.absolutePath })
+            }
+            doLast {
+                marker.get().asFile.writeText("ok")
+            }
+        }
+        tasks.named("check") {
+            dependsOn(checkSystemRegistrations)
+        }
     }
 }
 

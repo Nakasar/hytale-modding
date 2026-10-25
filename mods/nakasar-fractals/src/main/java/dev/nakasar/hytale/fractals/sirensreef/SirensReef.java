@@ -127,8 +127,8 @@ public final class SirensReef implements FractalStage {
     private final Map<World, State> states = Collections.synchronizedMap(new WeakHashMap<>());
 
     /** Le trésor maudit, les boulets du canon et les effets du Récif se perdent hors de la fractale. */
-    public static FractalItemsSystem itemsSystem() {
-        return new FractalItemsSystem(FRACTAL, Set.of(TREASURE, ShadowCannon.ITEMS[0], ShadowCannon.ITEMS[1],
+    public static FractalItemsSystem.Rule itemsRule() {
+        return new FractalItemsSystem.Rule(FRACTAL, Set.of(TREASURE, ShadowCannon.ITEMS[0], ShadowCannon.ITEMS[1],
                 ShadowCannon.ITEMS[2]), "Nakasar_Fractal_Cursed_1", "Nakasar_Fractal_Cursed_2",
                 "Nakasar_Fractal_Cursed_3", CursedTreasure.RELIEF, "Nakasar_Fractal_Fetid_Fog", "Nakasar_Fractal_Piranhas",
                 "Nakasar_Fractal_Grim_Lagoon", "Nakasar_Fractal_Cinders", "Nakasar_Fractal_Chilled", "Nakasar_Fractal_Dazed");
