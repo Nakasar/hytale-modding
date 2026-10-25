@@ -90,7 +90,6 @@ FORGE_INPUTS = [(SHARD, 20), ("Ingredient_Bar_Iron", 6), ("Ingredient_Fire_Essen
 TRADES = [(infusion(1), 1, 10), (infusion(2), 1, 25), (infusion(4), 1, 120), (KEY, 1, 30)] + \
     [(item_id, 1, price) for item_id, price in gcos.PRICES.items()]
 DAILY_BAG = "Nakasar_Fractal_Daily_Bag"
-DAILY_TIE = (255, 220, 110)
 # Coffre des fractales du jour : éclats, une infusion sûre, un matériau, une petite chance de cosmétique, et une
 # potion des Brumes de base (une pile) au hasard (Kevin, 25 octobre 2026).
 DAILY_LOOT = ((12, 18), [(infusion(1), 3), (infusion(2), 1)],
@@ -129,16 +128,29 @@ def infusion_parts(n):
     return parts, size
 
 
-def bag_parts(tie):
-    cloth, cloth_dark = (64, 70, 128), (42, 44, 92)
-    return [
-        ("Body", (0, 5, 0), (10, 9, 9), 0, fm.smooth(cloth), "flat"),
-        ("Body_Wide", (0, 4, 0), (11, 6, 8), 0, fm.smooth(cloth), "flat"),
-        ("Neck", (0, 10.5, 0), (5, 2, 5), 0, fm.smooth(cloth_dark), "flat"),
-        ("Tie", (0, 11.8, 0), (6, 1, 6), 0, fm.flat(tie), "fullbright"),
-        ("Top", (0, 13, 0), (4, 2, 4), 0, fm.smooth(cloth), "flat"),
-        ("Seal", (2, 5, 4.6), (3, 3, 1), 0, fm.crystal(fm.shade(tie, 0.6), tie), "fullbright"),
-    ]
+# Coffres de fin de fractale : petits coffres vanilla réduits, un style par rang (Kevin, 25 octobre 2026) ; les clés
+# viennent des Furniture_<Style>_Chest_Small d'Assets.zip 0.7.2.
+CHEST_SETS = {"Initiate": ("Crude", "Furniture_Crude_Chest_Small"),
+              "Adept": ("Human_Ruins", "Furniture_Human_Ruins_Chest_Small"),
+              "Expert": ("Temple_Light", "Furniture_Temple_Light_Chest_Small"),
+              "Master": ("Royal_Magic", "Furniture_GrandWizard_Chest_Small"),
+              "Daily": ("Temple_Emerald", "Furniture_Temple_Emerald_Chest_Small")}
+
+
+def chest_look(chest):
+    style, icon = chest
+    return {"Icon": f"Icons/ItemsGenerated/{icon}.png",
+            "IconProperties": {"Scale": 0.55, "Translation": [0, -15], "Rotation": [22.5, 45, 22.5]},
+            "Model": f"Blocks/Decorative_Sets/{style}/Chest_Small.blockymodel",
+            "Texture": f"Blocks/Decorative_Sets/{style}/Chest_Small_Texture.png", "Scale": 0.5}
+
+
+def chest_icon(name, chest):
+    """Supprime l'ancien sac à nous (modèle, atlas, icône) ; l'aperçu reste vide (icône vanilla dans le jeu)."""
+    for old in (COMMON / ITEM_MODELS / f"{name}.blockymodel", COMMON / ITEM_MODELS / f"{name}.png",
+                COMMON / ICONS / f"{name}.png"):
+        old.unlink(missing_ok=True)
+    return Image.new("RGBA", (64, 64))
 
 
 def agony_icon(path):
@@ -432,12 +444,12 @@ def main():
             write_json(recipes / f"Recipe_{infusion(n + 1)}.json",
                        recipe(infusion(n + 1), [(infusion(n), 2), (SHARD, n * FUSION_SHARDS)], FORGE, CAT_INFUSIONS))
 
-    for rid, _, _, tie in RANKS:
+    for rid, *_ in RANKS:
         name = f"Reward_Bag_{rid}"
-        rendered.append(fm.write_item_model(name, bag_parts(tie), models, icons, 200, (0, 7, 0), 11.0))
+        rendered.append(chest_icon(name, CHEST_SETS[rid]))
         root = f"Root_{bag(rid)}"
         write_json(items / f"{bag(rid)}.json", held_item(bag(rid), name, "Epic" if rid in ("Expert", "Master") else "Rare",
-                                                         16, {"Interactions": {"Secondary": root}}))
+                                                         16, {"Interactions": {"Secondary": root}, **chest_look(CHEST_SETS[rid])}))
         write_json(SERVER / "Item/RootInteractions/Nakasar/Fractals" / f"{root}.json",
                    {"Interactions": [f"{bag(rid)}_Open"], "RequireNewClick": True})
         write_json(SERVER / "Item/Interactions/Nakasar/Fractals" / f"{bag(rid)}_Open.json",
@@ -445,10 +457,10 @@ def main():
                     "Type": "Nakasar_Fractal_OpenBag", "Droplist": f"Nakasar_Fractal_Reward_{rid}"})
         write_json(SERVER / "Drops/Nakasar/Fractals" / f"Nakasar_Fractal_Reward_{rid}.json", droplist(rid))
 
-    rendered.append(fm.write_item_model("Daily_Bag", bag_parts(DAILY_TIE), models, icons, 201, (0, 7, 0), 11.0))
+    rendered.append(chest_icon("Daily_Bag", CHEST_SETS["Daily"]))
     root = f"Root_{DAILY_BAG}"
     write_json(items / f"{DAILY_BAG}.json", held_item(DAILY_BAG, "Daily_Bag", "Epic", 16,
-                                                      {"Interactions": {"Secondary": root}}))
+                                                      {"Interactions": {"Secondary": root}, **chest_look(CHEST_SETS["Daily"])}))
     write_json(SERVER / "Item/RootInteractions/Nakasar/Fractals" / f"{root}.json",
                {"Interactions": [f"{DAILY_BAG}_Open"], "RequireNewClick": True})
     write_json(SERVER / "Item/Interactions/Nakasar/Fractals" / f"{DAILY_BAG}_Open.json",

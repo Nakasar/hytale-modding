@@ -96,21 +96,6 @@ def infusion(n):
     return p
 
 
-def coffer(band, lit=False, sun=False):
-    """Coffret de récompense : bois sombre, ferrures du rang, serrure lumineuse (soleil doré pour celui du jour)."""
-    wood = fb.planks(WOOD_DARK, 3, vertical=False)
-    b = metal_or_glow(band, lit)
-    p = [part("Box", (0, 3.5, 0), (11, 6, 8), wood),
-         part("Lid", (0, 8, 0), (11, 3, 8), wood),
-         part("Band_L", (-3.5, 5, 0), (1.2, 9.4, 8.4), b, glow=lit),
-         part("Band_R", (3.5, 5, 0), (1.2, 9.4, 8.4), b, glow=lit),
-         part("Foot", (0, 0.4, 0), (12, 0.8, 9), fb.metal(BRASS, False)),
-         part("Lock", (0, 6, 4.25), (2.5, 3, 0.6), glow((255, 220, 110)) if sun else glow(MIST), glow=True)]
-    if sun:
-        p.append(part("Sun", (0, 9.75, 0), (5, 0.5, 5), fb.glyph((255, 220, 110), "ring", ("top",)), glow=True))
-    return p
-
-
 def mist_tear():
     """Larme de Brume : goutte de cristal cyan dans une cage de fil de cuivre."""
     c = glow((120, 210, 255))
@@ -162,13 +147,10 @@ ITEMS = {
     "Imbued_Stone": imbued_stone,
     "Wisp": wisp,
     "Firewood": firewood,
-    "Daily_Bag": lambda: coffer(GOLD, sun=True),
 }
 ITEMS.update({f"Core_{fid}": (lambda c: lambda: core(c))(color) for fid, color in CORE_COLORS.items()})
 ITEMS.update({f"Level_Fork_{rank}": (lambda r: lambda: level_fork(r))(rank) for rank in RANK_METALS})
 ITEMS.update({f"Infusion_{n:02d}": (lambda k: lambda: infusion(k))(n) for n in range(1, 16)})
-ITEMS.update({f"Reward_Bag_{rank}": (lambda c, l: lambda: coffer(c, l))(color, lit)
-              for rank, (color, lit) in RANK_METALS.items()})
 
 
 def render(parts, atlas, uv, size, bg=None):

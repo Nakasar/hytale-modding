@@ -3,7 +3,7 @@
     "Name": "nakasar_fractals_silent_surf.items.Nakasar_Fractal_Zipline_Anchor.name",
     "Description": "nakasar_fractals_silent_surf.items.Nakasar_Fractal_Zipline_Anchor.description"
   },
-  "Icon": "Icons/Items/Nakasar/Fractals/Zipline_Anchor.png",
+  "Icon": "Icons/ItemsGenerated/Metal_Goblin_Iron.png",
   "Categories": [
     "Blocks.Deco"
   ],
@@ -13,13 +13,6 @@
     "Material": "Solid",
     "DrawType": "Cube",
     "Opacity": "Solid",
-    "Textures": [
-      {
-        "Sides": "BlockTextures/Nakasar/Fractals/Zipline_Anchor.png",
-        "UpDown": "BlockTextures/Nakasar/Fractals/Zipline_Anchor.png",
-        "Weight": 1
-      }
-    ],
     "HitboxType": "Full",
     "Flags": {},
     "Gathering": {
@@ -39,7 +32,29 @@
           "Nakasar_Fractal_Use_SilentSurf_Ride"
         ]
       }
-    }
+    },
+    "Textures": [
+      {
+        "All": "BlockTextures/Metal_Goblin_Iron.png",
+        "Weight": 20
+      },
+      {
+        "All": "BlockTextures/Metal_Goblin_Iron02.png",
+        "Weight": 20
+      },
+      {
+        "All": "BlockTextures/Metal_Goblin_Iron03.png",
+        "Weight": 6
+      },
+      {
+        "All": "BlockTextures/Metal_Goblin_Iron04.png",
+        "Weight": 20
+      },
+      {
+        "All": "BlockTextures/Metal_Goblin_Iron06.png",
+        "Weight": 6
+      }
+    ]
   },
   "Tags": {
     "Type": [

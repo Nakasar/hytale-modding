@@ -397,35 +397,6 @@ def decor(c):
 
 # --- objets ---------------------------------------------------------------------------------------------------
 
-def grapple_parts():
-    iron, dark, rope = (150, 156, 166), (70, 74, 84), (196, 170, 120)
-    return [("Grip", (0, 4, 0), (3, 8, 3), 0, fm.smooth(dark), "flat"),
-            ("Barrel", (0, 9, 0), (4, 4, 6), 0, fm.smooth(iron), "flat"),
-            ("Coil", (0, 9, -4), (5, 5, 3), 0, fm.smooth(rope), "flat"),
-            ("Hook_C", (0, 13, 2), (2, 4, 2), 0, fm.smooth(iron), "flat"),
-            ("Hook_L", (-2, 15, 2), (3, 1.5, 1.5), 0, fm.smooth(iron), "flat"),
-            ("Hook_R", (2, 15, 2), (3, 1.5, 1.5), 0, fm.smooth(iron), "flat"),
-            ("Jade", (0, 9, 3.2), (2, 2, 1), 0, fm.crystal((40, 180, 120), (180, 255, 210)), "fullbright")]
-
-
-def parachute_parts():
-    cloth, strap, jade = (230, 222, 196), (120, 90, 60), (40, 180, 120)
-    return [("Pack", (0, 5, 0), (8, 10, 4), 0, fm.smooth(cloth), "flat"),
-            ("Strap_L", (-3, 6, 2.2), (1.5, 10, 0.5), 0, fm.flat(strap), "flat"),
-            ("Strap_R", (3, 6, 2.2), (1.5, 10, 0.5), 0, fm.flat(strap), "flat"),
-            ("Flap", (0, 10.5, 0), (9, 1.5, 5), 0, fm.smooth(cloth), "flat"),
-            ("Seal", (0, 6, 2.3), (2, 2, 0.5), 0, fm.crystal(jade, (180, 255, 210)), "fullbright")]
-
-
-def powder_parts():
-    keg, band, fuse = (70, 50, 36), (40, 40, 44), (255, 170, 60)
-    return [("Keg", (0, 4, 0), (6, 8, 6), 0, fm.smooth(keg), "flat"),
-            ("Band_A", (0, 2, 0), (6.4, 1, 6.4), 0, fm.smooth(band), "flat"),
-            ("Band_B", (0, 6, 0), (6.4, 1, 6.4), 0, fm.smooth(band), "flat"),
-            ("Fuse", (0, 9.5, 0), (1, 3, 1), 0, fm.flat((200, 190, 160)), "flat"),
-            ("Spark", (0, 11.5, 0), (1.6, 1.6, 1.6), 45, fm.crystal(fuse, (255, 240, 180)), "fullbright")]
-
-
 def flare_parts():
     tube, cap, glow = (170, 40, 40), (60, 60, 64), (255, 120, 80)
     return [("Tube", (0, 5, 0), (3, 10, 3), 0, fm.smooth(tube), "flat"),
@@ -438,35 +409,40 @@ GEAR_STACK = {GRAPPLE: 3, PARACHUTE: 3, POWDER: 2, FLARE: 1}
 
 def items():
     out = {}
+    # Visuels vanilla (Kevin, 25 octobre 2026) : bombe gobeline pour la poudre, grappin (Tool_Hookshot) et planeur
+    # (Template_Glider) du jeu ; notre mécanique ne change pas. id -> (modèle, texture, icône, réglages d'icône).
+    looks = {
+        POWDER: ("NPC/Intelligent/Goblin/Models/Weapons/Bomb/Fire.blockymodel",
+                 "NPC/Intelligent/Goblin/Models/Weapons/Bomb/Fire_Texture.png",
+                 "Icons/ItemsGenerated/Weapon_Bomb_Fire_Goblin.png",
+                 {"Scale": 0.87, "Translation": [-7.11, -7.7], "Rotation": [4.685, 6.935, 315]}),
+        GRAPPLE: ("Items/Tools/Hookshot/Scrap.blockymodel", "Items/Tools/Hookshot/Scrap_Texture.png",
+                  "Icons/ItemsGenerated/Tool_Hookshot.png", {"Scale": 0.4, "Rotation": [333, 64, 0], "Translation": [-18, -24]}),
+        PARACHUTE: ("Items/Glider/Bone_Closed.blockymodel", "Items/Glider/Bone_Texture.png",
+                    "Icons/ItemsGenerated/Template_Glider.png", {"Scale": 0.275, "Rotation": [29, 48, 33], "Translation": [8, -18]}),
+    }
     for item_id, model, parts, seed, center, scale in (
-            (GRAPPLE, "Survey_Grapple", grapple_parts(), 101, (0, 8, 0), 13.0),
-            (PARACHUTE, "Survey_Parachute", parachute_parts(), 102, (0, 6, 0), 13.0),
-            (POWDER, "Survey_Powder", powder_parts(), 103, (0, 6, 0), 14.0),
-            (FLARE, "Survey_Flare", flare_parts(), 104, (0, 7, 0), 13.0)):
+            (FLARE, "Survey_Flare", flare_parts(), 104, (0, 7, 0), 13.0),):
         root = f"Root_{item_id}"
-        if item_id == POWDER:
-            # Charge de poudre noire : la bombe vanilla (modèle et icône), plus lisible qu'un modèle généré (Kevin,
-            # 25 octobre 2026).
-            out[item_id] = vanilla_held(item_id, "NPC/Intelligent/Goblin/Models/Weapons/Bomb/Fire.blockymodel",
-                                        "NPC/Intelligent/Goblin/Models/Weapons/Bomb/Fire_Texture.png",
-                                        "Icons/ItemsGenerated/Weapon_Bomb_Fire_Goblin.png", root)
-            continue
         out[item_id] = fc.held_item(LANG, item_id, model, parts, seed, center, scale, quality="Rare",
                                     stack=GEAR_STACK[item_id],
                                     extra={"Interactions": {"Secondary": root}, "Utility": {"Compatible": False},
                                            "Categories": ["Items.Misc"]})
+    for item_id, look in looks.items():
+        out[item_id] = vanilla_held(item_id, *look, f"Root_{item_id}")
     return out
 
 
-def vanilla_held(item_id, model, texture, icon, root):
-    for stale in (fc.COMMON / fc.ITEM_MODELS / "Survey_Powder.blockymodel", fc.COMMON / fc.ITEM_MODELS / "Survey_Powder.png",
-                  fc.COMMON / go.ICONS / "Survey_Powder.png"):
+def vanilla_held(item_id, model, texture, icon, icon_properties, root):
+    name = item_id.removeprefix("Nakasar_Fractal_")
+    for stale in (fc.COMMON / fc.ITEM_MODELS / f"{name}.blockymodel", fc.COMMON / fc.ITEM_MODELS / f"{name}.png",
+                  fc.COMMON / go.ICONS / f"{name}.png"):
         stale.unlink(missing_ok=True)
     return {
         "TranslationProperties": {"Name": f"{LANG}.items.{item_id}.name", "Description": f"{LANG}.items.{item_id}.description"},
         "Icon": icon, "Model": model, "Texture": texture, "Quality": "Rare", "Categories": ["Items.Misc"],
         "PlayerAnimationsId": "Item", "ItemSoundSetId": "ISS_Items_Gems", "MaxStack": GEAR_STACK[item_id],
-        "IconProperties": {"Scale": 0.87, "Translation": [-7.11, -7.7], "Rotation": [4.685, 6.935, 315]},
+        "IconProperties": icon_properties,
         "Interactions": {"Secondary": root}, "Utility": {"Compatible": False},
     }
 

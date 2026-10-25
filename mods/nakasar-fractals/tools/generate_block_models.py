@@ -411,35 +411,6 @@ def hammer_rack():
     return p, None
 
 
-def gargoyle():
-    """Gargouille de pierre accroupie sur son socle, gueule ouverte, ailes repliées, yeux luisants."""
-    s = fb.smooth_stone(CLIFF_STONE)
-    dark = fb.smooth_stone(fb.shade(CLIFF_STONE, 0.8))
-    p = [
-        part("Base", (0, 3, 0), (26, 6, 26), fb.stone(fb.shade(CLIFF_STONE, 0.85), (8, 6))),
-        part("Body", (0, 13, -2), (14, 12, 14), s),
-        part("Chest", (0, 15, 5), (12, 9, 6), s),
-        part("Head", (0, 21, 6), (12, 9, 10), s),
-        part("Snout", (0, 20, 12), (8, 4, 4), s),
-        part("Jaw", (0, 15.5, 11), (8, 2.5, 6), dark, rot=(18, 0, 0)),
-        part("Mouth", (0, 17.5, 13.6), (6, 2, 0.5), fb.solid((30, 26, 34))),
-        part("Eye_L", (-3, 23, 11.1), (2, 1.5, 0.5), glow((255, 210, 120)), glow=True),
-        part("Eye_R", (3, 23, 11.1), (2, 1.5, 0.5), glow((255, 210, 120)), glow=True),
-        part("Horn_L", (-4, 27, 4), (2, 5, 2), dark, rot=(-25, 0, -10)),
-        part("Horn_R", (4, 27, 4), (2, 5, 2), dark, rot=(-25, 0, 10)),
-        part("Wing_L", (-9, 16, -3), (3, 15, 13), dark, rot=(0, 0, 12)),
-        part("Wing_R", (9, 16, -3), (3, 15, 13), dark, rot=(0, 0, -12)),
-        part("Claw_L", (-5, 7.5, 8), (4, 3, 5), dark),
-        part("Claw_R", (5, 7.5, 8), (4, 3, 5), dark),
-        part("Tail", (0, 7.5, -11), (3, 3, 6), dark, rot=(0, 20, 0)),
-    ]
-    return p, None
-
-
-
-
-
-
 # ---------------------------------------------------------------- Inclassable (asura)
 
 ASURA = (84, 92, 140)
@@ -511,20 +482,6 @@ def asura_hologram():
         "Holo_Top": {"position": [(0, (0, 0, 0)), (40, (0, 1.5, 0)), (120, (0, -0.5, 0)), (160, (0, 0, 0))]},
     })
     return p, a
-
-
-def light_spring():
-    """Source d'une cascade de lumière, au fond d'un bassin : anneau de laiton, cristal bleu qui tourne lentement
-    (la cascade elle-même est la particule Nakasar_Fractal_Light_Fall)."""
-    c = glow((140, 210, 255))
-    p = [
-        part("Ring", (0, 1.5, 0), (26, 3, 26), fb.metal(GOLD, False)),
-        part("Plate", (0, 2.5, 0), (20, 1, 20), fb.smooth_stone((70, 110, 150))),
-        part("Crystal", (0, 9, 0), (7, 11, 7), c, glow=True, rot=(0, 45, 0)),
-        part("Crystal_Tip", (0, 16, 0), (4, 4, 4), c, glow=True, rot=(0, 45, 0)),
-    ]
-    rise = bob(1.5, 160)
-    return p, fb.anim(160, {"Crystal": {"position": rise}, "Crystal_Tip": {"position": rise}})
 
 
 def fan():
@@ -708,11 +665,7 @@ def torch_rack():
 
 CUBES = {
     # tex -> (peintre des côtés, peintre du dessus, rune du dessus (couleur, forme) ou None, alpha)
-    "Harmony_Tile": (fb.stone((72, 84, 124), (8, 8)), fb.smooth_stone((88, 104, 150)), ((120, 200, 255), "ring"), 255),
     "Astrolabe_Ring": (fb.metal(BRASS), fb.metal(GOLD), ((90, 60, 30), "tick"), 255),
-    "Landing": (fb.stone((96, 104, 128), (8, 6)), fb.smooth_stone((128, 136, 160)), ((170, 210, 255), "ring"), 255),
-    "Pressure_Plate": (fb.stone((96, 90, 84), (8, 8)), fb.stone((110, 104, 96), (8, 8), mortar=0.7), None, 255),
-    "Seal_Stone": (fb.stone((58, 44, 80), (8, 6)), fb.smooth_stone((70, 54, 96)), ((196, 120, 255), "eye"), 255),
     "Mist_Barrier": (fb.mist((70, 46, 130), (210, 180, 255)), fb.mist((70, 46, 130), (210, 180, 255)), None, 255),
     "Glimmer": (fb.glass((255, 226, 120), 150), fb.glass((255, 236, 150), 150), None, 150),
     "Gate_Veil": (fb.mist((96, 40, 160), (240, 214, 255), 175), fb.mist((96, 40, 160), (240, 214, 255), 175), None, 175),
@@ -755,7 +708,6 @@ BLOCKS = {
     "Mist_Forge": (mist_forge, {"particles": motes(0.8), "orient": "open"}),
     "Trial_Panel": (trial_panel, {"orient": "open"}),
     "Hammer_Rack": (hammer_rack, {"particles": motes(0.8), "orient": "wall"}),
-    "Gargoyle": (gargoyle, {"orient": "wall"}),
     "Console": (console, {"orient": "open"}),
     "Fan": (fan, {"orient": "open"}),
     "Battery": (lambda: battery(False), {}),
@@ -768,7 +720,6 @@ BLOCKS = {
     "Wisp_Cleft_Lit": (lambda: wisp_cleft(True), {"particles": motes(0.55, "Torch_Fire_Green", 0.5), "orient": "open"}),
     "Firewood_Pile": (firewood_pile, {"orient": "open"}),
     "Asura_Console": (asura_hologram, {"particles": motes(1.4, "Dust_Sparkles_Fine"), "orient": "open"}),
-    "Light_Spring": (light_spring, {"particles": [{"SystemId": "Nakasar_Fractal_Light_Fall", "PositionOffset": {"Y": 0.5}}]}),
     "Torch_Rack": (torch_rack, {"orient": "wall", "particles": [
         {"SystemId": "Torch_Fire", "Scale": 0.45, "TargetNodeName": f"Flame_{k}"} for k in (1, 2, 3)]}),
 }
@@ -792,7 +743,14 @@ def vanilla_model(model, texture, **extra):
 
 
 def cube(texture, **extra):
-    return {"DrawType": "Cube", "Textures": [{"All": texture, "Weight": 1}], **extra}
+    """Cube vanilla : une texture (toutes faces) ou la liste « Textures » d'un bloc du jeu."""
+    textures = texture if isinstance(texture, list) else [{"All": texture, "Weight": 1}]
+    return {"DrawType": "Cube", "Textures": textures, **extra}
+
+
+def runic(sides, tops, weights=(4, 1, 1)):
+    return [{"Sides": f"BlockTextures/{s}.png", "UpDown": f"BlockTextures/{t}.png", "Weight": w}
+            for s, t, w in zip(sides, tops, weights)]
 
 
 LEVER = vanilla_model("Blocks/Tinkering/Lever.blockymodel", "Blocks/Tinkering/Lever_Texture.png", HitboxType="Plant_Large")
@@ -845,6 +803,30 @@ VANILLA = {
     "Crater_Warm_3": ({**cube("BlockTextures/Rock_Volcanic_LavaCracks.png", DrawType="CubeWithModel"), **OVERLAY},
                       "Rock_Volcanic_Cracked_Lava_Incandescent", None),
     "Crater_Lava": (cube("BlockTextures/Fluid_Lava.png"), "Fluid_Lava", None),
+    # Seconde série (Kevin, 25 octobre 2026). Sols de l'Observatoire et de la Falaise : briques et pavés runiques ; la
+    # dalle d'harmonisation perd son cercle gravé, des étincelles montrent où se tenir.
+    "Harmony_Tile": (cube("BlockTextures/Rock_Runic_Blue_Brick.png",
+                          Particles=motes(1.05, "Dust_Sparkles_Fine", 1.2)), "Rock_Runic_Brick_Blue", None),
+    "Landing": (cube(runic(["Runic_Brick", "Runic_Brick_2", "Runic_Brick_3"], ["Rock_Runic_Brick_Top"] * 3)),
+                "Rock_Runic_Brick", None),
+    "Pressure_Plate": (cube(runic(["Rock_Runic_Cobble_Side", "Rock_Runic_Cobble_Side02", "Rock_Runic_Cobble_Side03"],
+                                  ["Rock_Runic_Cobble_Top", "Rock_Runic_Cobble_Top2", "Rock_Runic_Cobble_Top3"], (1, 1, 1))),
+                       "Rock_Runic_Cobble", None),
+    "Seal_Stone": (cube(runic(["Runic_Brick_Dark", "Runic_Brick_Dark_02", "Runic_Brick_Dark_03"],
+                              ["Runic_Brick_Top_Dark", "Runic_Brick_Top_Dark_02", "Runic_Brick_Top_Dark_03"])),
+                   "Rock_Runic_Brick_Dark", None),
+    "Gargoyle": (vanilla_model("Blocks/Decorative_Sets/Temple_Dark/Statue_Owl.blockymodel",
+                               "Blocks/Decorative_Sets/Temple_Dark/Statue_Owl_Texture.png", HitboxType="Statue_Small"),
+                 "Furniture_Temple_Dark_Statue", "wall"),
+    # Ressac : ancre de tyrolienne en fer gobelin.
+    "Zipline_Anchor": (cube([{"All": f"BlockTextures/Metal_Goblin_Iron{n}.png", "Weight": w}
+                             for n, w in (("", 20), ("02", 20), ("03", 6), ("04", 20), ("06", 6))]),
+                       "Metal_Goblin_Iron", None),
+    # Blocs de lumière vanilla (Build_Lightsource) : Kevin vérifiera en jeu s'ils restent visibles hors création.
+    "Light_Spring": (cube("BlockTextures/Dev_Lightsource_Cyan_Side.png", Opacity="Transparent", Particles=[
+        {"SystemId": "Nakasar_Fractal_Light_Fall", "PositionOffset": {"Y": 0.5}}]), "Build_Lightsource_Cyan", None),
+    "Flare_Light": (cube("BlockTextures/Dev_Lightsource_Orange.png", Opacity="Transparent"), "Build_Lightsource_Orange",
+                    None),
 }
 
 

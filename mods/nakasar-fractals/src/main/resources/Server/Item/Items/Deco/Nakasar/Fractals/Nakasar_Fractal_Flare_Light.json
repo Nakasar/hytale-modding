@@ -3,7 +3,7 @@
     "Name": "nakasar_fractals_silent_surf.items.Nakasar_Fractal_Flare_Light.name",
     "Description": "nakasar_fractals_silent_surf.items.Nakasar_Fractal_Flare_Light.description"
   },
-  "Icon": "Icons/Items/Nakasar/Fractals/Flare_Light.png",
+  "Icon": "Icons/ItemsGenerated/Build_Lightsource_Orange.png",
   "Categories": [
     "Blocks.Deco"
   ],
@@ -12,14 +12,7 @@
   "BlockType": {
     "Material": "Empty",
     "DrawType": "Cube",
-    "Opacity": "Solid",
-    "Textures": [
-      {
-        "Sides": "BlockTextures/Nakasar/Fractals/Flare_Light.png",
-        "UpDown": "BlockTextures/Nakasar/Fractals/Flare_Light.png",
-        "Weight": 1
-      }
-    ],
+    "Opacity": "Transparent",
     "HitboxType": "Full",
     "Flags": {},
     "Gathering": {
@@ -32,7 +25,13 @@
     "ParticleColor": "#ffe6c8",
     "Light": {
       "Color": "#f96"
-    }
+    },
+    "Textures": [
+      {
+        "All": "BlockTextures/Dev_Lightsource_Orange.png",
+        "Weight": 1
+      }
+    ]
   },
   "Tags": {
     "Type": [

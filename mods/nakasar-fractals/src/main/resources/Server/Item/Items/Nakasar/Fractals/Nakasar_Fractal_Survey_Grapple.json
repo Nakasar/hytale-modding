@@ -3,9 +3,9 @@
     "Name": "nakasar_fractals_silent_surf.items.Nakasar_Fractal_Survey_Grapple.name",
     "Description": "nakasar_fractals_silent_surf.items.Nakasar_Fractal_Survey_Grapple.description"
   },
-  "Icon": "Icons/Items/Nakasar/Fractals/Survey_Grapple.png",
-  "Model": "Items/Nakasar/Fractals/Survey_Grapple.blockymodel",
-  "Texture": "Items/Nakasar/Fractals/Survey_Grapple.png",
+  "Icon": "Icons/ItemsGenerated/Tool_Hookshot.png",
+  "Model": "Items/Tools/Hookshot/Scrap.blockymodel",
+  "Texture": "Items/Tools/Hookshot/Scrap_Texture.png",
   "Quality": "Rare",
   "Categories": [
     "Items.Misc"
@@ -13,6 +13,18 @@
   "PlayerAnimationsId": "Item",
   "ItemSoundSetId": "ISS_Items_Gems",
   "MaxStack": 3,
+  "IconProperties": {
+    "Scale": 0.4,
+    "Rotation": [
+      333,
+      64,
+      0
+    ],
+    "Translation": [
+      -18,
+      -24
+    ]
+  },
   "Interactions": {
     "Secondary": "Root_Nakasar_Fractal_Survey_Grapple"
   },

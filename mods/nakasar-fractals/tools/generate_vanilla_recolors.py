@@ -13,6 +13,14 @@ générateurs n'ont pas besoin d'Assets.zip, ils pointent vers ces fichiers.
 - Canon à vent : icône rendue depuis le canon du Gobliterator (le bloc garde le modèle vanilla).
 - Fleur de poison (PNJ) : copie de la fleur empoisonnée du jeu (Plant_Flower_Poisoned_Orange : Alien.blockymodel,
   texture Poisoned) dans NPC/, seul dossier où un modèle de PNJ peut lire ses fichiers (Characters/, NPC/, Items/, VFX/).
+
+Seconde passe (Kevin, 25 octobre 2026, 22 h 19) :
+- Cristal de glace corrompu et Éclat de glace (PNJ) : grands cristaux vanilla des blocs Rock_Crystal_Void_Large
+  (Crystal_Large_Pointy, texture Void) et Rock_Crystal_White_Large (Crystal_Big, texture White), copiés dans NPC/.
+- Cosmétiques de la saison 1 (Items/Nakasar/Fractals/Cosmetics/<Nom>/, icônes comprises ; generate_cosmetics.py n'écrit
+  plus que les objets et la langue) : capuche = Hoodie_LongEnd du jeu (capuche du Sorcier de Blazen, violette) au liseré
+  doré ; couronne = KingsCrown, velours violet des Brumes ; mantelet = Cape_King_NoNeck, drap indigo de l'Archidevin
+  (fourrure et or d'origine). Les textures « greyscale » du jeu sont teintées ici, une pièce d'armure n'a pas de dégradé.
 """
 import colorsys
 import io
@@ -37,11 +45,19 @@ SHARD_ICON = "Common/Icons/ItemsGenerated/Ingredient_Crystal_Fragments_Purple.pn
 CANNON = "Common/NPC/Boss/Goblin_Gobliterator/Models/Goblin_Cannon"
 PLANT = "Common/Blocks/Foliage/Plants/Alien"
 BLOOM = PACK / "NPC/Nakasar/Fractals/Poison_Bloom"
+CRYSTALS = {"Corrupted_Crystal": ("Crystal_Large_Pointy", "Void"), "Ice_Shard": ("Crystal_Big", "White")}
+COSMETICS = PACK / "Items/Nakasar/Fractals/Cosmetics"
+COSMETIC_ICONS = PACK / "Icons/Items/Nakasar/Fractals/Cosmetics"
+HOOD = ("Common/Cosmetics/Head/Hoodie_LongEnd", "Common/Cosmetics/Head/Blazen_Wizard_Hoodie_Texture.png")
+CROWN = ("Common/Cosmetics/Head/KingsCrown", "Common/Cosmetics/Head/KingsCrown_Red.png")
+MANTLE = ("Common/Cosmetics/Capes/Cape_King_NoNeck", "Common/Cosmetics/Capes/Cape_King_Texture.png")
 
 PARCHMENT = (236, 220, 178)
 PARCHMENT_EDGE = (196, 172, 124)
 GOLD = [(110, 70, 20), (200, 150, 50), (250, 214, 110), (255, 246, 200)]
 MIST = [(40, 30, 90), (140, 150, 240), (225, 240, 255)]
+VELVET = [(34, 16, 60), (96, 52, 168), (176, 134, 255), (226, 208, 255)]
+ROBE = [(18, 12, 34), (52, 36, 78), (98, 76, 150), (150, 130, 210)]
 
 # Glyphes de l'étiquette (7 × 7), haut = côté du goulot.
 GLYPHS = {
@@ -124,6 +140,35 @@ def paint_label(img, cells, glyph, ink):
                 px[ox + x, oy + y] = mark.getpixel((x, y))
 
 
+def is_grey(p):
+    return p[3] >= 16 and hsv(p)[1] < 0.1
+
+
+def is_trim(p):
+    h, s, v = hsv(p)
+    return p[3] >= 16 and 20 / 360 < h < 55 / 360 and s > 0.12 and v > 0.35
+
+
+def is_cloth(p):
+    """Drap gris foncé de la cape royale ; la fourrure, gris très clair, garde sa teinte."""
+    return is_grey(p) and hsv(p)[2] < 0.6
+
+
+def cosmetic(assets, name, source, select, stops, yaw=-25):
+    """Modèle porté du jeu copié tel quel, texture repeinte (pixels `select` le long de `stops`), icône rendue."""
+    model, texture = source
+    out = COSMETICS / name
+    out.mkdir(parents=True, exist_ok=True)
+    doc = json.loads(assets.read(f"{model}.blockymodel"))
+    doc["format"] = "character"
+    (out / "Model.blockymodel").write_text(json.dumps(doc, indent=2) + "\n")
+    img = assets.image(texture)
+    gradient_map(img, cells_of(img, select), stops)
+    img.save(out / "Texture.png")
+    COSMETIC_ICONS.mkdir(parents=True, exist_ok=True)
+    br.render(br.boxes(doc), img, 256, yaw=yaw, pitch=12).resize((64, 64), Image.LANCZOS).save(COSMETIC_ICONS / f"{name}.png")
+
+
 def potion(src, color, glyph, large, icon):
     # Zones lues sur le flacon d'origine (le liquide repeint peut prendre la teinte du parchemin). Icône : flacon couché
     # à 45° (goulot en haut à droite), étiquette en bas à gauche, bouchon en haut à droite.
@@ -161,7 +206,17 @@ def main():
     plant["format"] = "character"
     (BLOOM / "Model.blockymodel").write_text(json.dumps(plant, indent=2) + "\n")
     (BLOOM / "Texture.png").write_bytes(assets.read(f"{PLANT}_Textures/Poisoned.png"))
-    print(f"{len(KINDS) * 2} potions, éclat de Brume, icône du canon à vent, fleur de poison")
+    for name, (model, texture) in CRYSTALS.items():
+        out = PACK / f"NPC/Nakasar/Fractals/{name}"
+        out.mkdir(parents=True, exist_ok=True)
+        doc = json.loads(assets.read(f"Common/Resources/Crystals/{model}.blockymodel"))
+        doc["format"] = "character"
+        (out / "Model.blockymodel").write_text(json.dumps(doc, indent=2) + "\n")
+        (out / "Texture.png").write_bytes(assets.read(f"Common/Resources/Crystals/Crystal_Big_Textures/{texture}.png"))
+    cosmetic(assets, "Archdiviner_Hood", HOOD, is_trim, GOLD)
+    cosmetic(assets, "Mist_Crown", CROWN, is_grey, VELVET)
+    cosmetic(assets, "Mist_Mantle", MANTLE, is_cloth, ROBE, yaw=155)
+    print(f"{len(KINDS) * 2} potions, éclat de Brume, icône du canon à vent, fleur de poison, 2 cristaux, 3 cosmétiques")
 
 
 if __name__ == "__main__":

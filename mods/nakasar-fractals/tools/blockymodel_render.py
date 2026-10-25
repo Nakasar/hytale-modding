@@ -33,6 +33,13 @@ def boxes(model):
             st = v3(s.get("stretch", {"x": 1, "y": 1, "z": 1}))
             out.append(dict(c=c, m=m, size=size, real=tuple(size[k]*st[k] for k in range(3)),
                             layout=s.get("textureLayout", {}), glow=s.get("shadingMode") == "fullbright"))
+        elif s.get("type") == "quad" and s.get("visible", True):
+            # Plan sans épaisseur : une seule face texturée (« front »), posée selon sa normale.
+            w, h = s["settings"]["size"]["x"], s["settings"]["size"]["y"]
+            axis = s["settings"].get("normal", "+Z")[1]
+            size, face = {"Z": ((w, h, 0), "front"), "Y": ((w, 0, h), "top"), "X": ((0, h, w), "right")}[axis]
+            layout = {face: s.get("textureLayout", {}).get("front", {})}
+            out.append(dict(c=c, m=m, size=size, real=size, layout=layout, glow=s.get("shadingMode") == "fullbright"))
         for ch in n.get("children", []):
             walk(ch, c, m)
     for n in model["nodes"]:
