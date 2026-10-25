@@ -23,7 +23,7 @@ Le **Fragment des Brumes** se fabrique à l'**établi** : **4 éclats de rune + 
 
 ## Portail des Brumes {#portail-des-brumes}
 
-Le **Portail des Brumes** est une arche de pierre de 3 blocs de large et 4 de haut, à poser chez soi. Il se fabrique au **Creuset des Brumes** (onglet Fragments) : **4 Fragments des Brumes + 50 éclats de Brume + 1 cœur du Gobliterator** (le boss des Deepworks). Il est **toujours ouvert** : le traverser mène à l'Observatoire sans consommer de fragment. Tous ceux qui passent par le même portail arrivent dans le même Observatoire tant qu'il reste ouvert ; vide, il se referme et le portail en ouvre un nouveau au passage suivant. En sortant, on revient devant l'arche. Il se casse et se reprend pour le déplacer.
+Le **Portail des Brumes** est une arche de pierre de 3 blocs de large et 4 de haut, à poser chez soi. Il se fabrique au **Creuset des Brumes** (onglet Fragments) : **4 Fragments des Brumes + 50 éclats de Brume + 1 Noyau du Goblitérateur** (trophée du boss des Deepworks). Il est **toujours ouvert** : le traverser mène à l'Observatoire sans consommer de fragment. Tous ceux qui passent par le même portail arrivent dans le même Observatoire tant qu'il reste ouvert ; vide, il se referme et le portail en ouvre un nouveau au passage suivant. En sortant, on revient devant l'arche. Il se casse et se reprend pour le déplacer.
 
 ## Choisir et lancer une fractale
 
