@@ -1,0 +1,42 @@
+{
+  "$Comment": "Chaman du feu : essence de feu, chutes de tisse-cendre, charbon. Généré par tools/generate_mob_loot.py.",
+  "Container": {
+    "Type": "Multiple",
+    "Containers": [
+      {
+        "Type": "Single",
+        "Item": {
+          "ItemId": "Ingredient_Fire_Essence",
+          "QuantityMin": 2,
+          "QuantityMax": 3
+        }
+      },
+      {
+        "Type": "Single",
+        "Item": {
+          "ItemId": "Ingredient_Fabric_Scrap_Cindercloth",
+          "QuantityMin": 1,
+          "QuantityMax": 2
+        }
+      },
+      {
+        "Type": "Choice",
+        "Containers": [
+          {
+            "Type": "Single",
+            "Item": {
+              "ItemId": "Ingredient_Charcoal",
+              "QuantityMin": 2,
+              "QuantityMax": 3
+            },
+            "Weight": 50
+          },
+          {
+            "Type": "Empty",
+            "Weight": 50
+          }
+        ]
+      }
+    ]
+  }
+}

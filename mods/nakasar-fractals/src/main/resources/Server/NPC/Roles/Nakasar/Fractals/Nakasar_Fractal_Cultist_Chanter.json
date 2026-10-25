@@ -4,6 +4,7 @@
   "Appearance": "Nakasar_Fractal_Cultist_Chanter",
   "NameTranslationKey": "nakasar_fractals_cliffside.npc.Cultist_Chanter.name",
   "MaxHealth": 80,
+  "DropList": "Nakasar_Fractal_Loot_Cultist_Chanter",
   "StartState": "Idle",
   "DefaultPlayerAttitude": "Hostile",
   "DefaultNPCAttitude": "Ignore",

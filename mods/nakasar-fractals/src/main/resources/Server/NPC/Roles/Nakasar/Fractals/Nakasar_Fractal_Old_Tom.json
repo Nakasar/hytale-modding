@@ -4,6 +4,7 @@
   "Appearance": "Nakasar_Fractal_Old_Tom",
   "NameTranslationKey": "nakasar_fractals_uncategorized.npc.Old_Tom.name",
   "MaxHealth": 3200,
+  "DropList": "Nakasar_Fractal_Loot_Old_Tom",
   "StartState": "Idle",
   "DefaultPlayerAttitude": "Hostile",
   "DefaultNPCAttitude": "Ignore",

@@ -83,6 +83,19 @@ public final class Spawns {
         return ref;
     }
 
+    /**
+     * Un ennemi qui revient en boucle (vagues, renforts réguliers) ne laisse pas tomber la liste de butin de son rôle :
+     * seuls les ennemis présents de base ou apparus sur un événement en ont une (Kevin, 25 octobre 2026). Le rôle croit
+     * avoir déjà lâché son butin ({@code NPCDamageSystems.DropDeathItems} ne le tire alors pas).
+     */
+    public static Ref<EntityStore> noLoot(Store<EntityStore> store, Ref<EntityStore> ref) {
+        NPCEntity npc = ref == null || !ref.isValid() ? null : store.getComponent(ref, NPCEntity.getComponentType());
+        if (npc != null && npc.getRole() != null) {
+            npc.getRole().setDeathItemsDropped();
+        }
+        return ref;
+    }
+
     public static Vector3d point(double[] at) {
         return new Vector3d(at[0], at[1], at[2]);
     }

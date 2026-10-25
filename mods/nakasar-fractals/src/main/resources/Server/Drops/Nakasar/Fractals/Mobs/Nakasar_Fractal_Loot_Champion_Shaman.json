@@ -1,0 +1,60 @@
+{
+  "$Comment": "Champion chaman des grawls : essence de feu, cuir lourd, plumes rouges de sa parure, or de la falaise. Généré par tools/generate_mob_loot.py.",
+  "Container": {
+    "Type": "Multiple",
+    "Containers": [
+      {
+        "Type": "Single",
+        "Item": {
+          "ItemId": "Ingredient_Fire_Essence",
+          "QuantityMin": 2,
+          "QuantityMax": 4
+        }
+      },
+      {
+        "Type": "Single",
+        "Item": {
+          "ItemId": "Ingredient_Hide_Heavy",
+          "QuantityMin": 2,
+          "QuantityMax": 3
+        }
+      },
+      {
+        "Type": "Choice",
+        "Containers": [
+          {
+            "Type": "Single",
+            "Item": {
+              "ItemId": "Ingredient_Feathers_Red",
+              "QuantityMin": 2,
+              "QuantityMax": 4
+            },
+            "Weight": 70
+          },
+          {
+            "Type": "Empty",
+            "Weight": 30
+          }
+        ]
+      },
+      {
+        "Type": "Choice",
+        "Containers": [
+          {
+            "Type": "Single",
+            "Item": {
+              "ItemId": "Ore_Gold",
+              "QuantityMin": 1,
+              "QuantityMax": 2
+            },
+            "Weight": 40
+          },
+          {
+            "Type": "Empty",
+            "Weight": 60
+          }
+        ]
+      }
+    ]
+  }
+}

@@ -4,6 +4,7 @@
   "Appearance": "Nakasar_Fractal_Naga_Wavecaller",
   "NameTranslationKey": "nakasar_fractals_silent_surf.npc.Naga_Wavecaller.name",
   "MaxHealth": 1600,
+  "DropList": "Nakasar_Fractal_Loot_Naga_Wavecaller",
   "StartState": "Idle",
   "DefaultPlayerAttitude": "Hostile",
   "DefaultNPCAttitude": "Ignore",

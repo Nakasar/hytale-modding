@@ -1,0 +1,68 @@
+{
+  "$Comment": "Carnasse : essence de vie, bois empoisonné, sève, fleurs empoisonnées, graines de saule. Généré par tools/generate_mob_loot.py.",
+  "Container": {
+    "Type": "Multiple",
+    "Containers": [
+      {
+        "Type": "Single",
+        "Item": {
+          "ItemId": "Ingredient_Life_Essence",
+          "QuantityMin": 4,
+          "QuantityMax": 6
+        }
+      },
+      {
+        "Type": "Single",
+        "Item": {
+          "ItemId": "Wood_Poisoned_Trunk",
+          "QuantityMin": 3,
+          "QuantityMax": 5
+        }
+      },
+      {
+        "Type": "Single",
+        "Item": {
+          "ItemId": "Ingredient_Tree_Sap",
+          "QuantityMin": 2,
+          "QuantityMax": 3
+        }
+      },
+      {
+        "Type": "Choice",
+        "Containers": [
+          {
+            "Type": "Single",
+            "Item": {
+              "ItemId": "Plant_Flower_Common_Poisoned",
+              "QuantityMin": 2,
+              "QuantityMax": 3
+            },
+            "Weight": 70
+          },
+          {
+            "Type": "Empty",
+            "Weight": 30
+          }
+        ]
+      },
+      {
+        "Type": "Choice",
+        "Containers": [
+          {
+            "Type": "Single",
+            "Item": {
+              "ItemId": "Plant_Seeds_Sallow",
+              "QuantityMin": 1,
+              "QuantityMax": 2
+            },
+            "Weight": 60
+          },
+          {
+            "Type": "Empty",
+            "Weight": 40
+          }
+        ]
+      }
+    ]
+  }
+}

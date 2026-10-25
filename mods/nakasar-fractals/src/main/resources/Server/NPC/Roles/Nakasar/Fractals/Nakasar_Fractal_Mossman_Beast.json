@@ -4,6 +4,7 @@
   "Appearance": "Nakasar_Fractal_Mossman_Beast",
   "NameTranslationKey": "nakasar_fractals_swampland.npc.Mossman_Beast.name",
   "MaxHealth": 2800,
+  "DropList": "Nakasar_Fractal_Loot_Mossman_Beast",
   "StartState": "Idle",
   "DefaultPlayerAttitude": "Hostile",
   "DefaultNPCAttitude": "Ignore",

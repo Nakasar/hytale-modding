@@ -4,6 +4,7 @@
   "Appearance": "Nakasar_Fractal_Cave_Spiderling",
   "NameTranslationKey": "nakasar_fractals_silent_surf.npc.Cave_Spiderling.name",
   "MaxHealth": 55,
+  "DropList": "Nakasar_Fractal_Loot_Cave_Spiderling",
   "StartState": "Idle",
   "DefaultPlayerAttitude": "Hostile",
   "DefaultNPCAttitude": "Ignore",

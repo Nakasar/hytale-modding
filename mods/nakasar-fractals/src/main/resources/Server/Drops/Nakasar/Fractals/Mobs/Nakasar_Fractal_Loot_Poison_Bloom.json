@@ -1,0 +1,34 @@
+{
+  "$Comment": "Fleur de poison (après les assauts de Carnasse) : fleur empoisonnée, poche de venin. Généré par tools/generate_mob_loot.py.",
+  "Container": {
+    "Type": "Multiple",
+    "Containers": [
+      {
+        "Type": "Single",
+        "Item": {
+          "ItemId": "Plant_Flower_Bushy_Poisoned",
+          "QuantityMin": 1,
+          "QuantityMax": 2
+        }
+      },
+      {
+        "Type": "Choice",
+        "Containers": [
+          {
+            "Type": "Single",
+            "Item": {
+              "ItemId": "Ingredient_Sac_Venom",
+              "QuantityMin": 1,
+              "QuantityMax": 1
+            },
+            "Weight": 25
+          },
+          {
+            "Type": "Empty",
+            "Weight": 75
+          }
+        ]
+      }
+    ]
+  }
+}

@@ -1,0 +1,44 @@
+{
+  "$Comment": "Cristal de glace corrompu (grotte du Chaman) : cristal cyan, essence de glace. Généré par tools/generate_mob_loot.py.",
+  "Container": {
+    "Type": "Multiple",
+    "Containers": [
+      {
+        "Type": "Choice",
+        "Containers": [
+          {
+            "Type": "Single",
+            "Item": {
+              "ItemId": "Ingredient_Crystal_Cyan",
+              "QuantityMin": 1,
+              "QuantityMax": 1
+            },
+            "Weight": 60
+          },
+          {
+            "Type": "Empty",
+            "Weight": 40
+          }
+        ]
+      },
+      {
+        "Type": "Choice",
+        "Containers": [
+          {
+            "Type": "Single",
+            "Item": {
+              "ItemId": "Ingredient_Ice_Essence",
+              "QuantityMin": 1,
+              "QuantityMax": 1
+            },
+            "Weight": 40
+          },
+          {
+            "Type": "Empty",
+            "Weight": 60
+          }
+        ]
+      }
+    ]
+  }
+}

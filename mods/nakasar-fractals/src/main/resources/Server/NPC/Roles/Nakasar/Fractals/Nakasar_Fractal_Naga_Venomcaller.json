@@ -4,6 +4,7 @@
   "Appearance": "Nakasar_Fractal_Naga_Venomcaller",
   "NameTranslationKey": "nakasar_fractals_silent_surf.npc.Naga_Venomcaller.name",
   "MaxHealth": 100,
+  "DropList": "Nakasar_Fractal_Loot_Naga_Venomcaller",
   "StartState": "Idle",
   "DefaultPlayerAttitude": "Hostile",
   "DefaultNPCAttitude": "Ignore",

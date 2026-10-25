@@ -1,0 +1,42 @@
+{
+  "$Comment": "Saboteur : ses bombes, de la poudre, chutes de lin de son manteau. Généré par tools/generate_mob_loot.py.",
+  "Container": {
+    "Type": "Multiple",
+    "Containers": [
+      {
+        "Type": "Single",
+        "Item": {
+          "ItemId": "Weapon_Bomb",
+          "QuantityMin": 2,
+          "QuantityMax": 4
+        }
+      },
+      {
+        "Type": "Single",
+        "Item": {
+          "ItemId": "Ingredient_Powder_Boom",
+          "QuantityMin": 2,
+          "QuantityMax": 3
+        }
+      },
+      {
+        "Type": "Choice",
+        "Containers": [
+          {
+            "Type": "Single",
+            "Item": {
+              "ItemId": "Ingredient_Fabric_Scrap_Linen",
+              "QuantityMin": 1,
+              "QuantityMax": 2
+            },
+            "Weight": 50
+          },
+          {
+            "Type": "Empty",
+            "Weight": 50
+          }
+        ]
+      }
+    ]
+  }
+}

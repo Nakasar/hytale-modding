@@ -1,0 +1,52 @@
+{
+  "$Comment": "Fanatique du culte (camp de départ) : chutes de lin de sa robe, parfois de l'ombretisse, du pain. Généré par tools/generate_mob_loot.py.",
+  "Container": {
+    "Type": "Multiple",
+    "Containers": [
+      {
+        "Type": "Single",
+        "Item": {
+          "ItemId": "Ingredient_Fabric_Scrap_Linen",
+          "QuantityMin": 1,
+          "QuantityMax": 2
+        }
+      },
+      {
+        "Type": "Choice",
+        "Containers": [
+          {
+            "Type": "Single",
+            "Item": {
+              "ItemId": "Ingredient_Fabric_Scrap_Shadoweave",
+              "QuantityMin": 1,
+              "QuantityMax": 1
+            },
+            "Weight": 25
+          },
+          {
+            "Type": "Empty",
+            "Weight": 75
+          }
+        ]
+      },
+      {
+        "Type": "Choice",
+        "Containers": [
+          {
+            "Type": "Single",
+            "Item": {
+              "ItemId": "Food_Bread",
+              "QuantityMin": 1,
+              "QuantityMax": 1
+            },
+            "Weight": 15
+          },
+          {
+            "Type": "Empty",
+            "Weight": 85
+          }
+        ]
+      }
+    ]
+  }
+}

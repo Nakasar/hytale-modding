@@ -4,6 +4,7 @@
   "Appearance": "Nakasar_Fractal_Crystal_Golem",
   "NameTranslationKey": "nakasar_fractals_uncategorized.npc.Crystal_Golem.name",
   "MaxHealth": 900,
+  "DropList": "Nakasar_Fractal_Loot_Crystal_Golem",
   "StartState": "Idle",
   "DefaultPlayerAttitude": "Hostile",
   "DefaultNPCAttitude": "Ignore",

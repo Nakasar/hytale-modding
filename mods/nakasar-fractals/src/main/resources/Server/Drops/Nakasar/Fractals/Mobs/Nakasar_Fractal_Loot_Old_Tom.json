@@ -1,0 +1,50 @@
+{
+  "$Comment": "Vieux Tom : fer, rivets, charbon de sa chaudière, essence de feu. Généré par tools/generate_mob_loot.py.",
+  "Container": {
+    "Type": "Multiple",
+    "Containers": [
+      {
+        "Type": "Single",
+        "Item": {
+          "ItemId": "Ingredient_Bar_Iron",
+          "QuantityMin": 3,
+          "QuantityMax": 5
+        }
+      },
+      {
+        "Type": "Single",
+        "Item": {
+          "ItemId": "Ingredient_Stud_Iron",
+          "QuantityMin": 3,
+          "QuantityMax": 5
+        }
+      },
+      {
+        "Type": "Single",
+        "Item": {
+          "ItemId": "Ingredient_Charcoal",
+          "QuantityMin": 3,
+          "QuantityMax": 5
+        }
+      },
+      {
+        "Type": "Choice",
+        "Containers": [
+          {
+            "Type": "Single",
+            "Item": {
+              "ItemId": "Ingredient_Fire_Essence",
+              "QuantityMin": 1,
+              "QuantityMax": 2
+            },
+            "Weight": 50
+          },
+          {
+            "Type": "Empty",
+            "Weight": 50
+          }
+        ]
+      }
+    ]
+  }
+}

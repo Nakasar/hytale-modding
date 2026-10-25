@@ -4,6 +4,7 @@
   "Appearance": "Nakasar_Fractal_First_Mate_Dolus",
   "NameTranslationKey": "nakasar_fractals_silent_surf.npc.First_Mate_Dolus.name",
   "MaxHealth": 5000,
+  "DropList": "Nakasar_Fractal_Loot_First_Mate_Dolus",
   "StartState": "Idle",
   "DefaultPlayerAttitude": "Hostile",
   "DefaultNPCAttitude": "Ignore",

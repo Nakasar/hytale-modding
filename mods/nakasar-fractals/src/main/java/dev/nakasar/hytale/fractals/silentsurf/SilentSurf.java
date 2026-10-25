@@ -327,7 +327,8 @@ public final class SilentSurf implements FractalStage {
         }
         for (int i = 0; i < 2; i++) {
             Vector3d s = new Vector3d(at).add(i == 0 ? 1.5 : -1.5, 0, i == 0 ? -1 : 1);
-            Ref<EntityStore> ref = Spawns.spawnFoe(world, store, SPIDERLING, s, Telegraphs.yawToward(s, at) + (float) Math.PI);
+            Ref<EntityStore> ref = Spawns.noLoot(store,
+                    Spawns.spawnFoe(world, store, SPIDERLING, s, Telegraphs.yawToward(s, at) + (float) Math.PI));
             if (ref != null) {
                 st.foes.add(ref);
             }
