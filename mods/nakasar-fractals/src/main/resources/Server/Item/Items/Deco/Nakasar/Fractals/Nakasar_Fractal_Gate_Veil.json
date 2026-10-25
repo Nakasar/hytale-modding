@@ -11,15 +11,8 @@
   "PlayerAnimationsId": "Block",
   "BlockType": {
     "Material": "Empty",
-    "DrawType": "Cube",
-    "Opacity": "Semitransparent",
-    "Textures": [
-      {
-        "Sides": "BlockTextures/Nakasar/Fractals/Gate_Veil.png",
-        "UpDown": "BlockTextures/Nakasar/Fractals/Gate_Veil_Top.png",
-        "Weight": 1
-      }
-    ],
+    "DrawType": "Model",
+    "Opacity": "Transparent",
     "HitboxType": "Full",
     "Flags": {},
     "Gathering": {
@@ -33,14 +26,20 @@
     "Light": {
       "Color": "#b8f"
     },
+    "CustomModel": "Blocks/_Debug/Model.blockymodel",
+    "CustomModelTexture": [
+      {
+        "Texture": "Blocks/_Debug/TextureEmpty.png",
+        "Weight": 1
+      }
+    ],
     "Interactions": {
       "CollisionEnter": {
         "Interactions": [
           "Portal_Return"
         ]
       }
-    },
-    "AmbientSoundEventId": "SFX_Portal_Neutral"
+    }
   },
   "Tags": {
     "Type": [

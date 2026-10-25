@@ -12,7 +12,7 @@ portail, l'instance de l'Observatoire des fractales et son île (la Falaise vien
   (captures de Kevin, 25 octobre 2026 ; formes dans tools/observatory_scenery.py) : un plateau de roche moussue aux
   falaises sombres, l'Astrolabe au centre (console de sélection) dans un bassin de lumière, le cercle d'harmonisation
   autour (quatre résonateurs), les distributeurs de noyaux et de diapasons à l'entrée du cercle, la porte asura au sud
-  (voile et portail de retour, point d'arrivée devant), l'île asura de l'Archiviste à l'est et l'île du golem d'essai à
+  (anneau sur son estrade, voile tourbillonnant qui ramène chez soi, point d'arrivée devant), l'île asura de l'Archiviste à l'est et l'île du golem d'essai à
   l'ouest, reliées par des ponts de roche courbes ; arbres d'automne, tours gothiques en ruine et aiguilles au loin ;
 - les blocs du décor (textures et icônes dessinées ici), leurs interactions, le golem d'essai, les langues ;
 - les objets de sélection : un noyau par fractale, un diapason par niveau (1 à 100), et les deux boutiques de troc
@@ -71,10 +71,10 @@ ASTROLABE_RADIUS = 3          # socle de l'Astrolabe
 CIRCLE_INNER, CIRCLE_OUTER = 5, 8   # cercle d'harmonisation (dalles lumineuses)
 POOL_OUTER = CIRCLE_INNER - 0.5     # bassin de lumière entre le socle et le cercle
 BAND_OUTER = 10.5                   # couronne de pierre autour du cercle
-GATE_Z, GATE_CY = 31, 5.5     # porte asura : plan du voile (z) et centre de l'anneau (hauteur)
-GATE_INNER, GATE_OUTER = 6, 8.6
+GATE_Z, GATE_CY = 31, 7.3     # porte asura : plan du voile (z) et centre de l'anneau (hauteur, l'anneau touche le sol)
+GATE_INNER, GATE_OUTER = 5.5, 7.3
 ARRIVAL = (0, GROUND_Y, 23)   # point d'apparition, sur le parvis de la porte, tourné vers le cercle
-RETURN_PORTAL = (0, 0, GATE_Z)  # portail de retour vanilla, au pied du voile de la porte
+RETURN_PORTAL = (0, 0, GATE_Z)  # pied de la porte asura (repère de la carte du wiki)
 # Île asura (est) : l'Archiviste derrière son comptoir, l'Alchimiste de Dessa, autel des infusions, creuset, registre,
 # consoles holographiques.
 LAB_CENTER, LAB_RADIUS = (46, 1), 12
@@ -142,7 +142,6 @@ TRIM = "Rock_Gold_Brick_Smooth"
 MIST_CRYSTALS = ["Rock_Crystal_Blue_Small", "Rock_Crystal_Purple_Small", "Rock_Crystal_White_Small"]
 POOL_FLOOR = "Rock_Aqua_Brick_Smooth"
 WATER = "Water_Source"
-GATE_STONE, GATE_TOOTH, GATE_INSET = "Rock_Shale_Brick_Smooth", "Rock_Shale_Brick_Ornate", "Rock_Crystal_Purple_Block"
 AIR = "Empty"
 
 # Blocs du mod.
@@ -167,6 +166,12 @@ PORTAL_HITBOX = SERVER / "Item/Block/Hitboxes/Nakasar/Fractals" / f"{PORTAL}.jso
 # Décor GW2 : voile violet de la porte asura (le traverser ramène chez soi, comme Portal_Return), consoles asura à
 # hologrammes, sources des cascades de lumière (Nakasar_Fractal_Light_Fall) dans les bassins.
 GATE_VEIL = "Nakasar_Fractal_Gate_Veil"
+# Cœur du voile (case au centre de l'anneau) : porte le tourbillon de particules Nakasar_Fractal_Mists_Gate, fait des
+# émetteurs du portail de retour vanilla (MagicPortal_VoidKeyArt) agrandis à l'échelle de l'anneau.
+GATE_HEART = "Nakasar_Fractal_Gate_Heart"
+MISTS_GATE = "Nakasar_Fractal_Mists_Gate"
+# Échelle du tourbillon : le portail de retour vanilla (échelle 1) fait environ 2,6 blocs de large.
+GATE_SWIRL_SCALE = round(2 * GATE_INNER / 2.6, 1)
 HOLO_CONSOLE = "Nakasar_Fractal_Asura_Console"
 LIGHT_SPRING = "Nakasar_Fractal_Light_Spring"
 LIGHT_FALL = "Nakasar_Fractal_Light_Fall"
@@ -407,15 +412,13 @@ def observatory_prefab():
                 p.set(x, -2, z, POOL_FLOOR)
         pool(p, {(x, z) for x, z in cells if abs(x - cx) < 3 and abs(z - cz) < 2}, springs=[(cx, cz)])
         paved |= cells
-    # --- porte asura (sud) : parvis en demi-lune, anneau, voile, portail de retour vanilla au pied du voile ---
+    # --- porte asura (sud) : parvis en demi-lune, anneau sur son estrade, voile et tourbillon ---
     for x, z in disc_cells(0, GATE_Z - 1, GATE_OUTER + 1):
         if (x, z) not in paved:
             d = math.hypot(x, z - GATE_Z + 1)
             p.set(x, -1, z, TRIM if GATE_OUTER - 0.3 < d else pick(FLOOR, x, z))
             paved.add((x, z))
-    sc.asura_gate(p, 0, GATE_Z, GATE_CY, GATE_INNER, GATE_OUTER, GATE_VEIL, GATE_STONE, GATE_TOOTH, GATE_INSET)
-    p.fill(-1, 0, RETURN_PORTAL[2] - 1, 1, 3, RETURN_PORTAL[2] + 1, AIR)
-    p.set(*RETURN_PORTAL, "Portal_Return")
+    sc.asura_gate(p, 0, GATE_Z, GATE_CY, GATE_INNER, GATE_OUTER, GATE_VEIL, GATE_HEART)
     assert math.hypot(ARRIVAL[0], ARRIVAL[2] - GATE_Z) >= 7, "le point d'arrivée touche le voile de la porte"
     # --- île asura (est) : pont d'arrivée, plancher rond, Archiviste et ses blocs, consoles holographiques ---
     lx, lz = LAB_CENTER
@@ -718,8 +721,8 @@ def portal_type():
             "Objectives": [f"{LANG}.portal.objective"],
         },
         "Spawn": {
-            # Le portail de retour est dans le prefab, derrière le point d'arrivée (pas dessus : voir le mod Vampires,
-            # un joueur dont l'écran charge encore repartirait aussitôt).
+            # Le retour est le voile de la porte asura du prefab, derrière le point d'arrivée (pas dessus : voir le mod
+            # Vampires, un joueur dont l'écran charge encore repartirait aussitôt).
             "SpawnReturnPortal": False,
             "SpawnProviderOverride": {"Id": "Global", "SpawnPoint": {"X": ARRIVAL[0] + 0.5, "Y": float(ARRIVAL[1]),
                                                                      "Z": ARRIVAL[2] + 0.5, "Yaw": 0.0}},
@@ -780,16 +783,27 @@ def observatory_weather():
     }
 
 
-def gate_veil(doc):
-    """Voile de la porte asura : on le traverse (pas de collision) et le toucher ramène chez soi, comme le portail de
-    retour vanilla posé au pied du voile (même interaction racine Portal_Return, refusée les 15 premières secondes)."""
+def gate_veil(doc, heart=False):
+    """Voile de la porte asura : invisible (modèle vide, comme les émetteurs VFX vanilla et la déchirure du mod
+    Vampires) et traversable ; le toucher ramène chez soi, comme le portail de retour vanilla (même interaction racine
+    Portal_Return, refusée les 15 premières secondes). Ce qu'on voit, c'est le tourbillon de particules du cœur
+    (`heart`), la case au centre de l'anneau."""
     block = doc["BlockType"]
+    block.pop("Textures", None)
     block["Material"] = "Empty"
-    block["Opacity"] = "Semitransparent"
+    block["DrawType"] = "Model"
+    block["CustomModel"] = "Blocks/_Debug/Model.blockymodel"
+    block["CustomModelTexture"] = [{"Texture": "Blocks/_Debug/TextureEmpty.png", "Weight": 1}]
+    block["Opacity"] = "Transparent"
     block["BlockParticleSetId"] = "Crystal"
     block["BlockSoundSetId"] = "Crystal"
     block["Interactions"] = {"CollisionEnter": {"Interactions": ["Portal_Return"]}}
-    block["AmbientSoundEventId"] = "SFX_Portal_Neutral"
+    if heart:
+        block["Light"] = {"Color": "#b8f", "Radius": 8}
+        block["AmbientSoundEventId"] = "SFX_Portal_Neutral"
+        # origine des particules d'un bloc : bas de la case, au milieu en x et z
+        block["Particles"] = [{"SystemId": MISTS_GATE, "Scale": GATE_SWIRL_SCALE,
+                               "PositionOffset": {"X": 0, "Y": round(GATE_CY - math.floor(GATE_CY), 2), "Z": 0}}]
 
 
 def falling_light(life, rate, count, speed, spread, size, color0, color1, pitch=(-90, -86), blend="BlendAdd"):
@@ -822,6 +836,32 @@ def falling_light(life, rate, count, speed, spread, size, color0, color1, pitch=
     }
 
 
+def mists_gate_particles():
+    """Tourbillon de la porte asura : les émetteurs vanilla du portail de retour (MagicPortal_VoidKeyArt, le vortex
+    violet du vide), sans ses éclairs d'apparition (VoidSpawn, VoidFlash) ni ses tentacules, que l'agrandissement
+    rendrait grossiers. Mêmes décalages et rotations que le système vanilla ; le bloc cœur l'agrandit
+    (GATE_SWIRL_SCALE)."""
+    spawners = [
+        {"SpawnerId": "MagicPortal_VoidCenterCircle"},
+        {"SpawnerId": "MagicPortal_VoidSmokeAlpha", "PositionOffset": {"Y": 0.2}},
+        {"SpawnerId": "MagicPortal_VoidSparks"},
+        {"SpawnerId": "MagicPortal_VoidSparksDark"},
+        {"SpawnerId": "MagicPortal_Center", "StartDelay": 0.5},
+        {"SpawnerId": "MagicPortal_VoidCenterGlow", "StartDelay": 0.5},
+        {"SpawnerId": "MagicPortal_VoidSmokeMiddle", "RotationOffset": {"Pitch": 90.0}},
+        {"SpawnerId": "MagicPortal_VoidGlowSmoke", "RotationOffset": {"Pitch": 90.0}},
+        {"SpawnerId": "MagicPortal_VoidGlowCenterIntense"},
+        {"SpawnerId": "MagicPortal_VoidOuterCircle", "RotationOffset": {"Pitch": 90.0}},
+    ]
+    return {
+        "$Comment": "Tourbillon des Brumes de la porte asura de l'Observatoire (bloc Nakasar_Fractal_Gate_Heart) : "
+                    "émetteurs vanilla de MagicPortal_VoidKeyArt. Généré par tools/generate_observatory.py.",
+        "Spawners": spawners,
+        "CullDistance": 120.0,
+        "IsImportant": True,
+    }
+
+
 def particle_files():
     """Cascade de lumière des bassins (Light_Spring) : pluie de traits bleus depuis 12 blocs de haut, colonne de
     lueurs plus lentes, brume qui remonte de l'eau."""
@@ -832,7 +872,7 @@ def particle_files():
         ("Mist", falling_light((1.2, 1.8), 10, 18, (0.3, 0.8), (1.4, 0.2), (0.7, 1.1), "#a8dcff", "#2a5aa0",
                                pitch=(55, 90)), 0.6),
     ]
-    out = {f"{sid}.particlesystem": {
+    out = {f"{MISTS_GATE}.particlesystem": mists_gate_particles(), f"{sid}.particlesystem": {
         "$Comment": "Cascade de lumière des bassins de l'Observatoire (comme celles de l'Observatoire des Brumes de GW2), "
                     "émise en boucle par Nakasar_Fractal_Light_Spring. Généré par tools/generate_observatory.py.",
         "Spawners": [{"SpawnerId": f"{sid}_{suffix}", "PositionOffset": {"Y": y}} for suffix, _, y in spawners],
@@ -1133,6 +1173,8 @@ def lang():
         f"items.{HARMONY}.description": "Les joueurs debout sur le cercle forment le groupe (5 au plus).",
         f"items.{GATE_VEIL}.name": "Voile de la porte asura",
         f"items.{GATE_VEIL}.description": "Le traverser : retour chez soi.",
+        f"items.{GATE_HEART}.name": "Cœur de la porte asura",
+        f"items.{GATE_HEART}.description": "Le tourbillon des Brumes au centre de la porte. Le traverser : retour chez soi.",
         f"items.{HOLO_CONSOLE}.name": "Console asura",
         f"items.{HOLO_CONSOLE}.description": "Ses hologrammes suivent les fractales que l'Observatoire surveille.",
         f"items.{LIGHT_SPRING}.name": "Source de lumière",
@@ -1239,6 +1281,8 @@ def lang():
         f"items.{HARMONY}.description": "Players standing on the circle form the group (5 at most).",
         f"items.{GATE_VEIL}.name": "Asura Gate Veil",
         f"items.{GATE_VEIL}.description": "Walk through it: return home.",
+        f"items.{GATE_HEART}.name": "Asura Gate Heart",
+        f"items.{GATE_HEART}.description": "The swirl of the Mists at the heart of the gate. Walk through it: return home.",
         f"items.{HOLO_CONSOLE}.name": "Asura Console",
         f"items.{HOLO_CONSOLE}.description": "Its holograms follow the fractals the Observatory watches over.",
         f"items.{LIGHT_SPRING}.name": "Light Spring",
@@ -1406,6 +1450,7 @@ def main():
         (REGISTRY_BLOCK, "Registry", (90, 60, 40), (210, 190, 150), "book", None, "Nakasar_Fractal_Read_Registry"),
         (DAILY_BLOCK, "Daily_Board", (90, 60, 40), (255, 220, 110), "daily", "#fd8", "Nakasar_Fractal_Use_Daily_Board"),
         (GATE_VEIL, "Gate_Veil", (96, 40, 160), (240, 214, 255), None, "#b8f", None),
+        (GATE_HEART, "Gate_Veil", (96, 40, 160), (240, 214, 255), None, "#b8f", None),
         (HOLO_CONSOLE, "Asura_Console", (92, 70, 52), (110, 220, 255), None, "#6cf", None),
         (LIGHT_SPRING, "Light_Spring", (70, 110, 150), (140, 210, 255), None, "#8cf", None),
     ]
@@ -1427,12 +1472,14 @@ def main():
             doc = block_item(name, tex, light, use, particle=hexcolor(accent))
             if name == ALTAR:
                 doc = portable(doc, name)
-            if name == GATE_VEIL:
-                gate_veil(doc)
+            if name in (GATE_VEIL, GATE_HEART):
+                gate_veil(doc, heart=name == GATE_HEART)
         model = block_models.apply(doc, tex)
         if model:
             previews[-1] = model.resize((32, 32), Image.LANCZOS)
         write_json(ITEMS / f"{name}.json", doc)
+    for stale in ("Gate_Veil.png", "Gate_Veil_Top.png"):   # voile invisible : seule son icône reste
+        (COMMON / TEXTURES / stale).unlink(missing_ok=True)
     portal = portal_item()
     previews.append(block_models.apply(portal, "Mists_Portal").resize((32, 32), Image.LANCZOS))
     write_json(ITEMS / f"{PORTAL}.json", portal)
