@@ -1,0 +1,51 @@
+{
+  "$Comment": "Tourbillon des Brumes de la porte asura de l'Observatoire (bloc Nakasar_Fractal_Gate_Heart) : émetteurs vanilla de MagicPortal_VoidKeyArt. Généré par tools/generate_observatory.py.",
+  "Spawners": [
+    {
+      "SpawnerId": "MagicPortal_VoidCenterCircle"
+    },
+    {
+      "SpawnerId": "MagicPortal_VoidSmokeAlpha",
+      "PositionOffset": {
+        "Y": 0.2
+      }
+    },
+    {
+      "SpawnerId": "MagicPortal_VoidSparks"
+    },
+    {
+      "SpawnerId": "MagicPortal_VoidSparksDark"
+    },
+    {
+      "SpawnerId": "MagicPortal_Center",
+      "StartDelay": 0.5
+    },
+    {
+      "SpawnerId": "MagicPortal_VoidCenterGlow",
+      "StartDelay": 0.5
+    },
+    {
+      "SpawnerId": "MagicPortal_VoidSmokeMiddle",
+      "RotationOffset": {
+        "Pitch": 90.0
+      }
+    },
+    {
+      "SpawnerId": "MagicPortal_VoidGlowSmoke",
+      "RotationOffset": {
+        "Pitch": 90.0
+      }
+    },
+    {
+      "SpawnerId": "MagicPortal_VoidGlowCenterIntense"
+    },
+    {
+      "SpawnerId": "MagicPortal_VoidOuterCircle",
+      "RotationOffset": {
+        "Pitch": 90.0
+      }
+    }
+  ],
+  "CullDistance": 120.0,
+  "IsImportant": true
+}

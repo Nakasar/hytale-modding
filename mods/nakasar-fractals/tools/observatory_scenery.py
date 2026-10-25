@@ -201,32 +201,108 @@ def autumn_tree(p, x, y, z, seed, scale=1.0):
 
 # --- porte asura ------------------------------------------------------------------------------------------------
 
-def asura_gate(p, gx, gz, cy, inner, outer, veil, stone, tooth, inset, base_y=-3):
-    """Grande porte asura : anneau vertical (plan x-y, épaisseur 3 en z) centré en (gx, cy, gz), crans sur le
-    pourtour extérieur, pierres lumineuses violettes serties au bord intérieur, voile `veil` dans le disque (plan du
-    milieu). L'anneau s'enfonce dans le sol sous y = -1. Rend les cases du voile."""
+# Pierre de la porte : briques de schiste vanilla et leurs escaliers et demi-blocs, qui lissent le cercle au
+# demi-bloc près (au lieu des marches d'un anneau en blocs pleins). Rotations vues dans les prefabs vanilla de
+# Assets.zip 0.7.2 (rotation = quart de tour + 4 × bascule) : escalier 0-3 dos vers -z, -x, +z, +x, renversé 8-11
+# dos vers +z, +x, -z, -x ; demi-bloc 0 en bas, 8 en haut, 5 côté -x, 7 côté +x.
+GATE_BODY = "Rock_Shale_Brick"
+GATE_RIM = "Rock_Shale_Brick_Ornate"
+GATE_KEY = "Rock_Shale_Brick_Decorative"
+GATE_STAIRS = "Rock_Shale_Brick_Stairs"
+GATE_HALF = "Rock_Shale_Brick_Half"
+GATE_INSET = "Rock_Crystal_Purple_Block"
+# Quarts d'une case dans le plan de l'anneau : 0 bas -x, 1 bas +x, 2 haut -x, 3 haut +x.
+GATE_SHAPES = [
+    (frozenset(), None, 0),
+    (frozenset({0, 1, 2, 3}), "full", 0),
+    (frozenset({0, 1}), GATE_HALF, 0), (frozenset({2, 3}), GATE_HALF, 8),
+    (frozenset({0, 2}), GATE_HALF, 5), (frozenset({1, 3}), GATE_HALF, 7),
+    (frozenset({0, 1, 3}), GATE_STAIRS, 3), (frozenset({0, 1, 2}), GATE_STAIRS, 1),
+    (frozenset({1, 2, 3}), GATE_STAIRS, 9), (frozenset({0, 2, 3}), GATE_STAIRS, 11),
+]
+
+
+def gate_solid(px, py, cy, inner, outer, layer):
+    """Pierre de l'anneau au point (px, py) du plan de la porte (px depuis l'axe, py en hauteur) : anneau de rayons
+    `inner` à `outer` avec une clé de voûte en bosse au sommet, posé au sol sur deux pieds évasés. Les faces avant et
+    arrière (layer 1) sont en retrait d'un demi-bloc, ce qui arrondit le profil."""
+    d = math.hypot(px, py - cy)
+    theta = math.atan2(py - cy, px)
+    ro = outer + 0.9 * max(0.0, math.sin(theta)) ** 60 - 0.5 * layer
+    if inner + 0.5 * layer < d <= ro:
+        return True
+    foot = py < 2.6 - 0.4 * layer and abs(px) <= 6.4 - 1.3 * py - 0.5 * layer
+    return foot and d > inner + 0.5 * layer
+
+
+def gate_shape(x, y, cy, inner, outer, layer):
+    """Forme de la case (x, y) (x depuis l'axe, case [x-½, x+½] × [y, y+1]) : celle des GATE_SHAPES la plus proche
+    du remplissage de ses quatre quarts (16 points chacun)."""
+    cover = []
+    for q in range(4):
+        qx, qy = (q % 2) * 0.5 - 0.5, (q // 2) * 0.5
+        n = sum(gate_solid(x + qx + (i + 0.5) / 8, y + qy + (j + 0.5) / 8, cy, inner, outer, layer)
+                for i in range(4) for j in range(4))
+        cover.append(n / 16)
+    return min(GATE_SHAPES, key=lambda s: (sum(abs(cover[q] - (q in s[0])) for q in range(4)), len(s[0]) % 4 != 0))
+
+
+def asura_gate(p, gx, gz, cy, inner, outer, veil, heart):
+    """Grande porte asura : anneau vertical entier (plan x-y, épaisseur 3 en z) centré en (gx, cy, gz), posé au sol sur
+    deux pieds évasés, contours lissés par escaliers et demi-blocs, faces avant et arrière en retrait, pierres de
+    cristal violet serties au bord intérieur, clé de voûte et cristaux vanilla. Une estrade en demi-marches monte de
+    chaque côté jusqu'au bas de l'ouverture (on n'a jamais à sauter). Le disque intérieur du plan du milieu est rempli
+    du voile `veil` (invisible, traversable), sa case centrale du bloc `heart` qui porte le tourbillon de particules.
+    Rend les cases du voile."""
     veil_cells = []
     n = int(outer) + 2
     for x in range(gx - n, gx + n + 1):
-        for y in range(base_y, round(cy + outer) + 2):
-            d = math.hypot(x - gx, y - cy)
-            ang = math.degrees(math.atan2(y - cy, x - gx)) % 360
+        for y in range(0, math.ceil(cy + outer) + 2):
             for z in (gz - 1, gz, gz + 1):
-                if inner < d <= outer:
-                    rim = d <= inner + 0.9
-                    block = stone
-                    if rim and (round(ang / 15) % 2 == 0) and z == gz:
-                        block = inset
-                    elif rim:
-                        block = tooth
-                    p.set(x, y, z, block)
-                elif outer < d <= outer + 1.1 and (ang % 24) < 10 and y >= -1:
-                    p.set(x, y, z, tooth)                       # crans du pourtour
-                elif d <= inner and z == gz and y >= 0:
-                    p.set(x, y, z, veil)
-                    veil_cells.append((x, y, z))
-                elif d <= inner and y >= 0:
-                    p.set(x, y, z, AIR)
+                layer = abs(z - gz)
+                quarters, block, rot = gate_shape(x - gx, y, cy, inner, outer, layer)
+                d = math.hypot(x - gx, y + 0.5 - cy)
+                if block is None:
+                    if d < inner + 1:
+                        if layer == 0:
+                            p.set(x, y, z, heart if (x, y) == (gx, math.floor(cy)) else veil)
+                            veil_cells.append((x, y, z))
+                        else:
+                            p.set(x, y, z, AIR)
+                    continue
+                if block == "full":
+                    ang = math.degrees(math.atan2(y + 0.5 - cy, x - gx)) % 360
+                    block = GATE_BODY
+                    if d < inner + 1.0 + 0.5 * layer:
+                        block = GATE_RIM
+                        if layer == 0 and abs(ang - round(ang / 30) * 30) < 6 and not 225 < ang < 315:
+                            block = GATE_INSET
+                    elif abs(ang - 90) < 7:
+                        block = GATE_KEY
+                p.set(x, y, z, block, rot)
+    # estrade : demi-marches de 0,5 bloc jusqu'au seuil (bas de l'ouverture, plan du milieu)
+    sill = math.floor(cy - inner)
+    while gate_shape(0, sill, cy, inner, outer, 0)[1] is not None:
+        sill += 1
+    for side in (-1, 1):
+        for k in range(1, 2 * sill + 2):
+            h = sill - k * 0.5                    # hauteur du dessus de la marche k
+            z = gz + side * (1 + k)
+            if h <= 0:
+                break
+            for x in range(gx - 2, gx + 3):
+                for y in range(0, math.floor(h)):
+                    p.set(x, y, z, GATE_BODY if abs(x - gx) < 2 else GATE_RIM)
+                if h % 1:
+                    p.set(x, math.floor(h), z, GATE_HALF, 0)
+    # cristaux vanilla : couronne au sommet, gerbe sur chaque pied
+    crest = max(y for (x, y, z), (b, _) in p.blocks.items() if x == gx and z == gz and b != AIR)
+    p.set(gx, crest + 1, gz, "Rock_Crystal_Purple_Large")
+    for side in (-1, 1):
+        x = gx + side * 4
+        y = max(y for y in range(0, 4) if p.blocks.get((x, y, gz), (AIR,))[0] in (GATE_BODY, GATE_RIM))
+        p.set(x, y + 1, gz, "Rock_Crystal_Purple_Medium")
+        p.set(x, y + 1, gz - 1, "Rock_Crystal_Blue_Small")
     return veil_cells
 
 
