@@ -20,18 +20,24 @@ import java.util.Set;
 /**
  * Objets et effets qui ne servent que dans une fractale (torche de la Tempête de neige, équipement du Ressac, trésor
  * maudit du Récif...) : un joueur qui arrive dans un autre monde les perd (comme les noyaux et diapasons de
- * l'Observatoire, {@code observatory.SelectionItemsSystem}). Un système par fractale.
+ * l'Observatoire, {@code observatory.SelectionItemsSystem}). Un seul système pour toutes les fractales, avec une
+ * {@link Rule} par fractale : le serveur refuse d'enregistrer deux systèmes de la même classe (« System of type ... is
+ * already registered! » fait échouer tout le plugin).
  */
 public final class FractalItemsSystem extends RefSystem<EntityStore> {
 
-    private final String fractal;
-    private final Set<String> items;
-    private final String[] effects;
+    /** Les objets et effets propres à une fractale. */
+    public record Rule(String fractal, Set<String> items, String... effects) {
+        public Rule {
+            items = Set.copyOf(items);
+            effects = effects.clone();
+        }
+    }
 
-    public FractalItemsSystem(String fractal, Set<String> items, String... effects) {
-        this.fractal = fractal;
-        this.items = Set.copyOf(items);
-        this.effects = effects.clone();
+    private final Rule[] rules;
+
+    public FractalItemsSystem(Rule... rules) {
+        this.rules = rules.clone();
     }
 
     @Override
@@ -42,13 +48,19 @@ public final class FractalItemsSystem extends RefSystem<EntityStore> {
     @Override
     public void onEntityAdded(Ref<EntityStore> ref, AddReason reason, Store<EntityStore> store, CommandBuffer<EntityStore> buffer) {
         World world = store.getExternalData().getWorld();
-        if (world == null || fractal.equals(FractalCatalog.fractalOf(world))) {
+        if (world == null) {
             return;
         }
-        InventoryComponent.getCombined(store, ref, InventoryComponent.EVERYTHING)
-                .replaceAll((slot, stack) -> !ItemStack.isEmpty(stack) && items.contains(stack.getItemId()) ? ItemStack.EMPTY : stack);
-        for (String effect : effects) {
-            Hurt.clear(buffer, ref, effect);
+        String here = FractalCatalog.fractalOf(world);
+        for (Rule rule : rules) {
+            if (rule.fractal().equals(here)) {
+                continue;
+            }
+            InventoryComponent.getCombined(store, ref, InventoryComponent.EVERYTHING)
+                    .replaceAll((slot, stack) -> !ItemStack.isEmpty(stack) && rule.items().contains(stack.getItemId()) ? ItemStack.EMPTY : stack);
+            for (String effect : rule.effects()) {
+                Hurt.clear(buffer, ref, effect);
+            }
         }
     }
 
