@@ -20,6 +20,7 @@ import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
 import com.hypixel.hytale.server.core.util.EventTitleUtil;
 import dev.nakasar.hytale.fractals.arena.Carried;
 import dev.nakasar.hytale.fractals.arena.WorldBlocks;
+import dev.nakasar.hytale.fractals.boss.PinnedHealth;
 import dev.nakasar.hytale.fractals.combat.BossStun;
 import dev.nakasar.hytale.fractals.combat.Delayed;
 import dev.nakasar.hytale.fractals.combat.Hurt;
@@ -43,8 +44,9 @@ import java.util.concurrent.ThreadLocalRandom;
  *   (poison à moins de {@value #BLOOM_RADIUS} blocs, et les ennemis proches ne prennent que {@value #BLOOM_SHIELD}
  *   des dégâts) ;</li>
  *   <li>à 25 % : il se charge au centre ({@value #CHARGE_SECONDS} s) ; quatre feux-follets apparaissent aux coins.
- *   Les quatre failles allumées à temps : grand cercle vert de {@value #BIG_RADIUS} blocs au centre et Carnasse
- *   étourdi {@value #BIG_STUN} s ; sinon purge corporelle ({@value #PURGE_PART} des PV, tous dès le niveau 76).</li>
+ *   Les quatre failles allumées à temps : Carnasse étourdi {@value #BIG_STUN} s ; sinon purge corporelle
+ *   ({@value #PURGE_PART} des PV, tous dès le niveau 76). Dans les deux cas, ensuite, plus de cercle : il est
+ *   vulnérable dans toute la clairière (Kevin, 2026-10-24).</li>
  * </ul>
  * Sa vie ne descend pas sous le seuil suivant tant que l'étape qui y attend n'est pas passée. Personne de vivant dans
  * la clairière pendant {@value #RESET_SECONDS} s : tout recommence (le feu-follet de l'entrée revient).
@@ -56,8 +58,6 @@ final class Bloomhunger {
     static final double CIRCLE_MAX = 7;
     static final double CIRCLE_MIN = 3;
     static final float CIRCLE_SECONDS = 25f;
-    static final double BIG_RADIUS = 8;
-    static final float BIG_SECONDS = 12f;
     static final float BIG_STUN = 6f;
     static final float CHARGE_SECONDS = 35f;
     static final float PURGE_PART = 0.6f;
@@ -73,6 +73,11 @@ final class Bloomhunger {
     static final float RESET_SECONDS = 20f;
     static final float[] THRESHOLDS = {0.75f, 0.5f, 0.25f};
     static final String VIGOR = "Nakasar_Fractal_Wisp_Vigor";
+    /** Contour vert (sans disque au sol, jugé laid) et émanations vertes qui montent du sol dans le cercle. */
+    static final String GREEN_ZONE = "Nakasar_Fractal_Green_Zone";
+    static final String EMANATION = "Nakasar_Fractal_Green_Emanation";
+    /** Bouffées d'émanations par bloc² de cercle (chacune une dizaine de lueurs sur 1,6 bloc). */
+    static final double EMANATIONS_PER_BLOCK = 0.08;
 
     private Ref<EntityStore> boss;
     private final List<Ref<EntityStore>> spirits = new ArrayList<>();
@@ -92,7 +97,8 @@ final class Bloomhunger {
     private int lit;
     private int cleft;
     private float circleClock;
-    private float bigLeft;
+    /** Après les quatre feux-follets : plus de cercle, vulnérable partout. */
+    private boolean everywhere;
     private float drawClock;
     private float pulseClock;
     private float idle;
@@ -114,13 +120,13 @@ final class Bloomhunger {
             WorldBlocks.swap(chunks, c[0], c[1], c[2], Swampland.CLEFT);
         }
         clearCorners(chunks);
-        int[] w = SwamplandLayout.CLEARING_WISP;
-        WorldBlocks.set(chunks, w[0], w[1], w[2], Swampland.WISP_BLOCK, 0);
+        WispRun.place(chunks, SwamplandLayout.CLEARING_WISP);
     }
 
     void wake(World world, Store<EntityStore> store, int cleftIndex) {
         Vector3d at = Spawns.point(SwamplandLayout.CLEARING);
         boss = Spawns.spawnBoss(world, store, Swampland.BLOOMHUNGER, at, Telegraphs.yawToward(at, new Vector3d(at).add(0, 0, 1)));
+        PinnedHealth.noRegen(boss);   // invulnérable hors du cercle : il ne doit pas non plus se refaire une santé
         engaged = true;
         dead = false;
         stage = 0;
@@ -128,7 +134,7 @@ final class Bloomhunger {
         charging = false;
         cleft = cleftIndex;
         circleClock = 0f;
-        bigLeft = 0f;
+        everywhere = false;
         idle = 0f;
         Spawns.tellAll(world, Message.translation(Swampland.MESSAGES + "bloom.enter"));
     }
@@ -136,28 +142,25 @@ final class Bloomhunger {
     // --- le cercle vert ------------------------------------------------------------------------------------
 
     private Vector3d circleCenter() {
-        if (bigLeft > 0f) {
-            return Spawns.point(SwamplandLayout.CLEARING);
-        }
         int[] c = SwamplandLayout.CLEARING_CLEFTS[cleft];
         return new Vector3d(c[0] + 0.5, c[1], c[2] + 0.5);
     }
 
     private double circleRadius() {
-        if (bigLeft > 0f) {
-            return BIG_RADIUS;
-        }
         return CIRCLE_MAX - (CIRCLE_MAX - CIRCLE_MIN) * Math.min(1f, circleClock / CIRCLE_SECONDS);
     }
 
     private boolean inCircle(Vector3d p) {
-        return p != null && Telegraphs.horizontal(p, circleCenter()) <= circleRadius() + 0.5;
+        return p != null && (everywhere || Telegraphs.horizontal(p, circleCenter()) <= circleRadius() + 0.5);
     }
 
     private void circle(Store<EntityStore> store, List<PlayerRef> inside, float dt) {
-        if (bigLeft > 0f) {
-            bigLeft -= dt;
-        } else {
+        drawClock += dt;
+        boolean draw = drawClock >= 0.5f;
+        if (draw) {
+            drawClock = 0f;
+        }
+        if (!everywhere) {
             circleClock += dt;
             if (circleClock >= CIRCLE_SECONDS) {
                 circleClock = 0f;
@@ -166,10 +169,17 @@ final class Bloomhunger {
         }
         Vector3d center = circleCenter();
         double radius = circleRadius();
-        drawClock += dt;
-        boolean draw = drawClock >= 0.5f;
-        if (draw) {
-            drawClock = 0f;
+        if (draw && !everywhere) {
+            // Contour vert, lueurs du bord et émanations qui montent du sol, semées dans tout le cercle.
+            Telegraphs.particle(store, GREEN_ZONE, new Vector3d(center).add(0, 0.1, 0), (float) (Telegraphs.WARNING_SCALE * radius));
+            ThreadLocalRandom random = ThreadLocalRandom.current();
+            int puffs = (int) Math.ceil(EMANATIONS_PER_BLOCK * radius * radius);
+            for (int i = 0; i < puffs; i++) {
+                double a = random.nextDouble(0, Math.PI * 2);
+                double d = radius * Math.sqrt(random.nextDouble());
+                Telegraphs.particle(store, EMANATION,
+                        new Vector3d(center.x() + Math.cos(a) * d - 0.8, center.y() + 0.1, center.z() + Math.sin(a) * d - 0.8), 1f);
+            }
             int n = (int) Math.ceil(Math.PI * 2 * radius / 1.5);
             for (int i = 0; i < n; i++) {
                 double a = Math.PI * 2 * i / n;
@@ -177,6 +187,7 @@ final class Bloomhunger {
                         new Vector3d(center.x() + Math.cos(a) * radius, center.y() + 0.1, center.z() + Math.sin(a) * radius), 1f);
             }
         }
+        // Endurance et vigueur dans le cercle, ou partout une fois le cercle levé (après la charge des feux-follets).
         for (PlayerRef p : inside) {
             Ref<EntityStore> ref = p.getReference();
             if (!inCircle(Telegraphs.position(store, ref))) {
@@ -245,8 +256,10 @@ final class Bloomhunger {
             return Outcome.NONE;
         }
         if (onslaught) {
+            stayCentered(store);
             onslaught(world, store, inside, dt);
         } else if (charging) {
+            stayCentered(store);
             charge(world, store, inside, dt);
         } else if (stage < THRESHOLDS.length && Hurt.healthFraction(store, boss) <= THRESHOLDS[stage] + 0.001f) {
             if (stage < 2) {
@@ -271,14 +284,30 @@ final class Bloomhunger {
         return out;
     }
 
-    /** Le boss au centre, gelé et invulnérable (assaut, charge). */
+    /**
+     * Le boss au centre, gelé et invulnérable (assaut, charge) : ses attaques en cours sont coupées net (une charge
+     * partait au moment où il devenait invulnérable, retour du 2026-10-24).
+     */
     private void retreat(World world, Store<EntityStore> store) {
-        Vector3d c = Spawns.point(SwamplandLayout.CLEARING);
+        BossStun.interrupt(world, store, boss);
         Defiance.forget(boss);
-        store.putComponent(boss, Teleport.getComponentType(),
-                new Teleport(c, new Rotation3f(0f, Telegraphs.yawToward(c, new Vector3d(c).add(0, 0, 1)), 0f)));
+        toCenter(store);
         BossStun.hold(world, store, boss);
         store.ensureAndGetComponent(boss, Invulnerable.getComponentType());
+    }
+
+    private void toCenter(Store<EntityStore> store) {
+        Vector3d c = Spawns.point(SwamplandLayout.CLEARING);
+        store.putComponent(boss, Teleport.getComponentType(),
+                new Teleport(c, new Rotation3f(0f, Telegraphs.yawToward(c, new Vector3d(c).add(0, 0, 1)), 0f)));
+    }
+
+    /** Pendant l'assaut et la charge : s'il a été déplacé (coup en vol, poussée), il revient au centre. */
+    private void stayCentered(Store<EntityStore> store) {
+        Vector3d at = Telegraphs.position(store, boss);
+        if (at != null && Telegraphs.horizontal(at, Spawns.point(SwamplandLayout.CLEARING)) > 1.0) {
+            toCenter(store);
+        }
     }
 
     private void comeBack(Store<EntityStore> store) {
@@ -304,7 +333,8 @@ final class Bloomhunger {
         ThreadLocalRandom random = ThreadLocalRandom.current();
         while (spirits.size() < SPIRIT_CAP && spiritsSpawned < spiritsNeeded) {
             double a = random.nextDouble(0, Math.PI * 2);
-            Ref<EntityStore> spirit = Spawns.spawnFoe(world, store, Swampland.SPIRIT,
+            String animal = Swampland.SPIRITS.get(spiritsSpawned % Swampland.SPIRITS.size());
+            Ref<EntityStore> spirit = Spawns.spawnFoe(world, store, animal,
                     new double[]{c.x() + Math.cos(a) * 14, c.y(), c.z() + Math.sin(a) * 14});
             spiritsSpawned++;
             if (spirit != null) {
@@ -397,7 +427,7 @@ final class Bloomhunger {
             WorldBlocks.swap(chunks, c[0], c[1], c[2], Swampland.CLEFT);
         }
         for (int[] w : SwamplandLayout.CORNER_WISPS) {
-            WorldBlocks.set(chunks, w[0], w[1], w[2], Swampland.WISP_BLOCK, 0);
+            WispRun.place(chunks, w);
         }
         Spawns.tellAll(world, Message.translation(Swampland.MESSAGES + "bloom.wisps").param("seconds", (int) CHARGE_SECONDS));
     }
@@ -426,7 +456,6 @@ final class Bloomhunger {
         }
         if (lit >= SwamplandLayout.CLEARING_CLEFTS.length) {
             endCharge(world, store);
-            bigLeft = BIG_SECONDS;
             BossStun.stun(world, store, boss, BIG_STUN, BossStun.EFFECT);
             Spawns.tellAll(world, Message.translation(Swampland.MESSAGES + "bloom.wisps.done"));
             return;
@@ -445,6 +474,7 @@ final class Bloomhunger {
 
     private void endCharge(World world, Store<EntityStore> store) {
         charging = false;
+        everywhere = true;
         stage++;
         comeBack(store);
         clearCorners(world.getChunkStore());
@@ -472,6 +502,7 @@ final class Bloomhunger {
         if (boss != null) {
             Defiance.forget(boss);
             BossStun.release(store, boss);
+            PinnedHealth.unpin(boss);
         }
         Spawns.remove(store, boss);
         boss = null;
@@ -481,7 +512,7 @@ final class Bloomhunger {
         blooms.clear();
         onslaught = false;
         charging = false;
-        bigLeft = 0f;
+        everywhere = false;
         idle = 0f;
         clearCorners(world.getChunkStore());
         takeWisps(world, store);

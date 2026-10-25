@@ -3,9 +3,26 @@
     "Name": "nakasar_fractals_solid_ocean.items.Nakasar_Fractal_Reflecting_Crystal.name",
     "Description": "nakasar_fractals_solid_ocean.items.Nakasar_Fractal_Reflecting_Crystal.description"
   },
-  "Icon": "Icons/Items/Nakasar/Fractals/Reflecting_Crystal.png",
-  "Model": "Items/Nakasar/Fractals/Reflecting_Crystal.blockymodel",
-  "Texture": "Items/Nakasar/Fractals/Reflecting_Crystal.png",
+  "Icon": "Icons/Items/Nakasar/Fractals/Jade_Crystal_Large.png",
+  "IconProperties": {
+    "Scale": 0.5,
+    "Rotation": [
+      4,
+      183,
+      1
+    ],
+    "Translation": [
+      -1,
+      -25
+    ]
+  },
+  "Model": "Resources/Crystals/Crystal_Large_Pointy.blockymodel",
+  "Texture": "Blocks/Nakasar/Fractals/Jade_Crystal_Big.png",
+  "Scale": 0.4,
+  "Light": {
+    "Color": "#3c8",
+    "Radius": 2
+  },
   "Quality": "Epic",
   "Categories": [
     "Items.Misc"

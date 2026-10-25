@@ -766,8 +766,6 @@ CUBES = {
     "Pressure_Plate": (fb.stone((96, 90, 84), (8, 8)), fb.stone((110, 104, 96), (8, 8), mortar=0.7), None, 255),
     "Seal_Stone": (fb.stone((58, 44, 80), (8, 6)), fb.smooth_stone((70, 54, 96)), ((196, 120, 255), "eye"), 255),
     "Mist_Barrier": (fb.mist((70, 46, 130), (210, 180, 255)), fb.mist((70, 46, 130), (210, 180, 255)), None, 255),
-    "Jade_Landing": (fb.jade((60, 150, 116), (190, 255, 220)), fb.jade((80, 176, 136), (200, 255, 225)),
-                     ((220, 255, 235), "ring"), 255),
     "Glimmer": (fb.glass((255, 226, 120), 150), fb.glass((255, 236, 150), 150), None, 150),
 }
 

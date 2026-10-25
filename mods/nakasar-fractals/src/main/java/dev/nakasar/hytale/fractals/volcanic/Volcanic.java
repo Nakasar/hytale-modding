@@ -70,8 +70,8 @@ public final class Volcanic implements FractalStage {
     static final String FIRE_CAUSE = "Nakasar_Fractal_Fire";
     static final String LAVA_BURN = "Nakasar_Fractal_Lava_Burn";
     /**
-     * Blocs de lave qui brûlent : toute la lave du Volcanique (lac, mine, coulées du volcan ; dans la mine, les retours de
-     * saut rattrapent avant) et les cratères en fusion de l'île du Chamane.
+     * Blocs de lave qui brûlent : la roche en fusion du Volcanique (mine, fonds des gouffres ; dans la mine, les retours de
+     * saut rattrapent avant) et les cratères en fusion de l'île du Chamane. Le lac, lui, est un fluide ({@link #inLake}).
      */
     static final Set<String> LAVA_BLOCKS = Set.of("Rock_Volcanic_Cracked_Lava", "Nakasar_Fractal_Crater_Lava");
     static final float LAVA_PART = 0.30f;
@@ -163,7 +163,7 @@ public final class Volcanic implements FractalStage {
             st.required = GROUP_SIZE * (CAMP_GROUPS + (FractalRuns.partySize(world) - 1) / 2);
             Spawns.tellAll(world, Message.translation(MESSAGES + "intro").param("count", st.required));
         }
-        st.boulders.step(world, store, players, Spawns.anyIn(store, players, VolcanicLayout.CORRIDOR), dt);
+        st.boulders.step(world, store, players, Boulders.anyInCorridor(store, players), dt);
         st.landings.step(world, store, players);
         lavaFloor(world, store, st, players, dt);
         switch (st.step) {
@@ -303,7 +303,7 @@ public final class Volcanic implements FractalStage {
                         Hurt.effect(s, ref, "Hazard_Electric_Stun", 2f);
                     }
                 }
-                if (drop && st.step == Step.CHAMPION) {   // pas de pierre tombée après la victoire
+                if (drop && st.step == Step.CHAMPION && st.champion.shielded()) {   // seulement Champion protégé
                     dropStone(s, center);
                     long now = System.nanoTime();
                     if (now - st.stoneMessage > Telegraphs.seconds(10f)) {
@@ -316,8 +316,8 @@ public final class Volcanic implements FractalStage {
     }
 
     /**
-     * Debout sur de la lave (lac du volcan, cratère en fusion), ou juste au-dessus en sautant : {@value #LAVA_PART} des PV
-     * max par seconde, l'armure n'y fait rien.
+     * Dans la lave du lac du volcan, debout sur de la roche en fusion (coulées, cratère en fusion) ou juste au-dessus en
+     * sautant : {@value #LAVA_PART} des PV max par seconde, l'armure n'y fait rien.
      */
     static void lavaFloor(World world, Store<EntityStore> store, State st, List<PlayerRef> players, float dt) {
         st.lavaClock += dt;
@@ -334,12 +334,25 @@ public final class Volcanic implements FractalStage {
                 continue;
             }
             String floor = floorBelow(chunks, at);
-            if (floor != null && LAVA_BLOCKS.contains(floor)) {
+            if (inLake(at) || floor != null && LAVA_BLOCKS.contains(floor)) {
                 Hurt.percent(store, ref, LAVA_PART * seconds, FIRE_CAUSE);
                 Hurt.effect(store, ref, LAVA_BURN, 1f);
                 tell(st, player, "lava.burn");
             }
         }
+    }
+
+    /** Dans la lave du lac (fluide : pas un bloc sous les pieds), sous la surface et au-dessus du fond. */
+    static boolean inLake(Vector3d at) {
+        if (at.y() > VolcanicLayout.LAKE_SURFACE + 0.5) {
+            return false;
+        }
+        for (double[] disc : VolcanicLayout.LAKE) {
+            if (Math.hypot(at.x() - disc[0], at.z() - disc[1]) <= disc[2]) {
+                return true;
+            }
+        }
+        return false;
     }
 
     /** Premier bloc non vide sous les pieds, jusqu'à {@value #LAVA_REACH} blocs plus bas (un saut ne protège pas). */

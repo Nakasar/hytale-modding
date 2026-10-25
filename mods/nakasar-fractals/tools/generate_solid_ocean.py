@@ -44,7 +44,9 @@ INTERACTIONS = go.INTERACTIONS / "SolidOcean"
 PARTICLES = fc.SERVER / "Particles/Nakasar/Fractals/SolidOcean"
 
 # --- blocs et rôles -------------------------------------------------------------------------------------
-JADE_LANDING = "Nakasar_Fractal_Jade_Landing"
+# Dessus des fragments (atterrissage sûr) : le bloc de cristal de jade (Kevin, 2026-10-24 : plus de dalle à fissures).
+JADE_CRYSTAL = "Nakasar_Fractal_Jade_Crystal"
+JADE_LANDING = f"{JADE_CRYSTAL}_Block"
 CRYSTAL = "Nakasar_Fractal_Reflecting_Crystal"
 MAW = "Nakasar_Fractal_Jade_Maw"
 TENTACLE = "Nakasar_Fractal_Jade_Tentacle"
@@ -68,12 +70,17 @@ SEA_Y = -66                             # l'océan figé, sous le filet anti-chu
 GAP = 2.6                               # vide entre deux bords de plateformes (sauts d'environ 3 blocs)
 STANDS = [0, 1, 1, 2, 1, 2, 3, 2, 3, 3, 4, 3, 4, 5, 4, 5, 5]
 RADII = [3, 2, 3, 4, 2, 3, 2, 4, 3, 2, 3, 4, 2, 3, 3, 4, 3]
-AR_RADIUS = 18
+AR_RADIUS = 27                          # ×1,5 (Kevin, 2026-10-24)
 MAW_BACK = 7                            # l'Abîme flotte au nord de l'arène, hors de portée de mêlée
-TENTACLE_ANGLES = [235, 305, 200, 340, 160, 20, 125, 55]   # huit en phases 2 et 3 ; les deux premiers : phase 1 (au nord)
-TENTACLE_RADIUS = 11
+# Tentacules (dx, dz depuis le centre ; z vers le sud) : répartis sur toute l'arène plutôt qu'en cercle (Kevin,
+# 2026-10-24), le sud (l'entrée) restant libre. Deux en phase 1 (au nord), quatre en phase 2, six en phase 3.
+TENTACLE_SPOTS = [(-8, -15), (8, -15)]
+TENTACLE_SPOTS_P2 = [(-16, -8), (16, -8), (-10, 9), (10, 9)]
+TENTACLE_SPOTS_P3 = [(0, -22), (-20, -1), (20, -1), (0, -4), (-12, 13), (12, 13)]
 COLOSSUS_ANGLES = [150, 30, 270, 90]
-COLOSSUS_RADIUS = 8
+COLOSSUS_RADIUS = 12
+TREE_ANGLES = (50, 125, 220, 300)       # cerisiers en fleurs (arbres de cristal vanilla, feuilles roses)
+SCAFFOLD_ARCS = ((150, 192), (322, 355), (8, 38))
 ARENA_IRUKANDJI = [200, 340]           # deux seulement : ils ont 600 PV
 
 
@@ -151,8 +158,24 @@ def course_prefab():
                 p.set(x, y, z, pick(JADE if y > top - 2 else UNDER, x, y, z))
     arena_ruins(p)
     dress(p)
+    amphitheater(p)
     monoliths(p)
+    jade_crystals(p)
     return p
+
+
+# Cristaux du décor en cristal de jade (Kevin, 2026-10-24) : copies du bloc et des fragments du Néant vanilla (petit,
+# moyen, grand ; Assets.zip 0.7.2, Server/Item/Items/Rock/Crystal/Rock_Crystal_Void_*) aux textures passées au vert
+# jade par generate_jade_crystals.py. Le décor garde ses formes ; seuls les cristaux verts et cyan changent, au même
+# calibre.
+CRYSTAL_SIZES = ("Block", "Large", "Medium", "Small")
+
+
+def jade_crystals(p):
+    for pos, (name, rot) in list(p.blocks.items()):
+        parts = name.split("_")
+        if len(parts) == 4 and parts[:2] == ["Rock", "Crystal"] and parts[2] in ("Green", "Cyan") and parts[3] in CRYSTAL_SIZES:
+            p.blocks[pos] = (f"{JADE_CRYSTAL}_{parts[3]}", rot)
 
 
 # --- décor de nuit (retours du 2026-10-24, d'après les captures de GW2) ----------------------------------------------
@@ -234,32 +257,141 @@ def column(p, x, y0, z, height, seed=0):
 
 
 def arena_ruins(p):
-    """Colonnes en ruine sur le pourtour de l'arène (pas au sud, l'entrée) et un échafaudage de bois effondré à l'ouest,
-    avec ses lanternes ; tout reste hors de l'aire de combat (rayon > 15)."""
+    """Décor de l'arène d'après les captures de GW2 (Kevin, 2026-10-24) : cerisiers en fleurs, échafaudages de bois sur
+    le bord (plancher, garde-corps, lanternes pendues, toiles rouges déchirées), gros cubes de jade sur le sol."""
+    for k, a in enumerate(TREE_ANGLES):
+        cherry(p, *ring_point(AR_CENTER, AR_RADIUS - 4, a), seed=k)
+    for k, (a0, a1) in enumerate(SCAFFOLD_ARCS):
+        scaffold(p, a0, a1, 4, seed=k)
+    cubes(p)
+
+
+def amphitheater(p):
+    """L'arène au fond d'une cuvette : gradins de gros blocs de jade et de pierre moussue qui montent tout autour (de 1 à
+    16 blocs sur 12 de large), taillés en cubes de 3 ; ouverts au sud (l'entrée) et bas au nord, où flotte l'Abîme, entre
+    deux grands piliers. Des cubes de jade flottent au-dessus."""
     ax, az = AR_CENTER
-    for k, a in enumerate((20, 155, 200, 245, 295, 340)):
-        x, z = ring_point(AR_CENTER, AR_RADIUS - 1, a)
-        column(p, x, AR_STAND, z, 5 + int(fn.hash01(k, 0, 0, 66) * 5), seed=k)
-    # Échafaudage : deux travées de poteaux, plancher à 4 blocs, garde-corps, lanternes.
-    for a in (170, 185, 200):
-        x, z = ring_point(AR_CENTER, AR_RADIUS + 2, a)
-        for y in range(AR_STAND - 6, AR_STAND + 5):
-            if fn.free(p, x, y, z):
-                p.set(x, y, z, BEAM)
-        p.set(x, AR_STAND + 5, z, LANTERN)
-    x0, z0 = ring_point(AR_CENTER, AR_RADIUS + 2, 170)
-    x1, z1 = ring_point(AR_CENTER, AR_RADIUS + 2, 200)
-    for x in range(min(x0, x1), max(x0, x1) + 1):
-        for z in range(min(z0, z1), max(z0, z1) + 1):
-            if fn.free(p, x, AR_STAND + 3, z) and fn.hash01(x, z, 0, 67) < 0.8:
-                p.set(x, AR_STAND + 3, z, PLANKS)
-    # Lanternes au ras du sol entre les colonnes (lumière de l'arène la nuit).
-    for a in range(0, 360, 30):
-        if 60 <= a <= 120:
+    reach = AR_RADIUS + 12
+    for x in range(ax - reach, ax + reach + 1):
+        for z in range(az - reach, az + reach + 1):
+            # cubes de 3 : hauteur et rayon pris au coin de la case de 3, comme des blocs empilés
+            cx, cz = x - (x - ax) % 3 + 1, z - (z - az) % 3 + 1
+            d = math.hypot(cx - ax, cz - az)
+            if d <= AR_RADIUS + 1 or d > reach:
+                continue
+            a = math.degrees(math.atan2(cz - az, cx - ax)) % 360
+            if 55 <= a <= 125:
+                continue   # entrée au sud
+            t = (d - AR_RADIUS) / 12
+            h = round(1 + 15 * t ** 1.3 + 3 * fn.hash01(cx, cz, 0, 73))
+            if 245 <= a <= 295:
+                h = min(h, 2)   # nord : on voit l'Abîme
+            for y in range(AR_STAND - 4 - int(t * 10), AR_STAND - 1 + h):
+                p.set(x, y, z, "Rock_Crystal_Green_Block" if fn.hash01(cx, y // 3, cz, 74) < 0.3 else stratum(x, y, z))
+            if fn.hash01(cx, cz, 1, 75) < 0.04 and fn.free(p, x, AR_STAND - 1 + h, z):
+                p.set(x, AR_STAND - 1 + h, z, VINE if h > 4 else "Plant_Coral_Bush_Green")
+    for a in (240, 300):   # piliers de part et d'autre de l'Abîme
+        x, z = ring_point(AR_CENTER, AR_RADIUS + 5, a)
+        column(p, x, AR_STAND - 4, z, 22, seed=a)
+    for k in range(26):   # cubes de jade qui flottent
+        a = fn.hash01(k, 1, 0, 76) * 360
+        r = AR_RADIUS + 6 + fn.hash01(k, 2, 0, 76) * 22
+        x, z = ring_point(AR_CENTER, r, a)
+        y = AR_STAND + 12 + int(fn.hash01(k, 3, 0, 76) * 22)
+        size = 1 + int(fn.hash01(k, 4, 0, 76) * 3)
+        for dx in range(size):
+            for dy in range(size):
+                for dz in range(size):
+                    if fn.free(p, x + dx, y + dy, z + dz):
+                        p.set(x + dx, y + dy, z + dz, "Rock_Crystal_Green_Block" if (dx + dy + dz) % 3 == 0 else
+                              stratum(x + dx, y + dy, z + dz))
+
+
+def cubes(p):
+    """Gros cubes de jade (2 ou 3 de côté) posés sur le sol de l'arène, à l'écart des tentacules, des colosses et de
+    l'allée de l'entrée : de quoi se mettre à couvert."""
+    keep = [(AR_CENTER[0] + dx, AR_CENTER[1] + dz) for dx, dz in TENTACLE_SPOTS + TENTACLE_SPOTS_P2 + TENTACLE_SPOTS_P3]
+    keep += [ring_point(AR_CENTER, COLOSSUS_RADIUS, a) for a in COLOSSUS_ANGLES]
+    keep += [ring_point(AR_CENTER, AR_RADIUS - 4, a) for a in TREE_ANGLES]
+    placed = []
+    for k in range(200):
+        if len(placed) >= 9:
+            break
+        a = fn.hash01(k, 5, 0, 77) * 360
+        r = 7 + fn.hash01(k, 6, 0, 77) * (AR_RADIUS - 13)
+        x, z = ring_point(AR_CENTER, r, a)
+        if abs(x - AR_CENTER[0]) <= 3 and z > AR_CENTER[1]:
+            continue   # allée de l'entrée
+        if any(math.hypot(x - kx, z - kz) < 5 for kx, kz in keep + placed):
             continue
-        x, z = ring_point(AR_CENTER, AR_RADIUS - 2, a + 15)
-        if fn.free(p, x, AR_STAND, z):
-            p.set(x, AR_STAND, z, LANTERN)
+        placed.append((x, z))
+        size = 2 + k % 2
+        for dx in range(size):
+            for dy in range(size):
+                for dz in range(size):
+                    p.set(x + dx, AR_STAND + dy, z + dz, "Rock_Crystal_Green_Block" if dy == size - 1 else
+                          stratum(x + dx, AR_STAND + dy, z + dz))
+
+
+# Cerisier en fleurs : pas de cerisier vanilla en 0.7.2 ; l'arbre de cristal (Wood_Crystal_Trunk, Plant_Leaves_Crystal
+# roses) en a l'allure, avec un tapis de pétales roses (Plant_Petals_Pink) dessous.
+PETALS = "Plant_Petals_Pink"
+
+
+def cherry(p, x, z, seed=0):
+    fn.broadleaf(p, x, AR_STAND, z, 6 + int(fn.hash01(x, z, seed, 71) * 2), kind="crystal", seed=70 + seed, droop=0.08,
+                 hanging=["Plant_Leaves_Crystal"])
+    for dx in range(-5, 6):
+        for dz in range(-5, 6):
+            if math.hypot(dx, dz) <= 4.5 and fn.hash01(x + dx, z + dz, seed, 72) < 0.45 \
+                    and fn.free(p, x + dx, AR_STAND, z + dz) and not fn.free(p, x + dx, AR_STAND - 1, z + dz):
+                p.set(x + dx, AR_STAND, z + dz, PETALS)
+
+
+def scaffold(p, a0, a1, floor, seed=0):
+    """Échafaudage de bois sur le bord de l'arène (rayons R-3 à R-1, poteaux posés sur le jade) : plancher à `floor`
+    blocs, garde-corps devant, bras de bois avec une lanterne pendue à une chaîne, corde tendue entre les poteaux de
+    devant et toiles rouges déchirées qui pendent dessous."""
+    y = AR_STAND + floor
+    step = math.degrees(0.8 / AR_RADIUS)
+    a = a0
+    while a <= a1:
+        for r in (AR_RADIUS - 3, AR_RADIUS - 2, AR_RADIUS - 1):
+            x, z = ring_point(AR_CENTER, r, a)
+            if fn.hash01(x, z, seed, 67) < 0.9:
+                p.set(x, y, z, PLANKS)
+        x, z = ring_point(AR_CENTER, AR_RADIUS - 4, a)
+        p.set(x, y + 1, z, FENCE)
+        a += step
+    posts = max(2, round((a1 - a0) / 8) + 1)
+    front = []
+    for k in range(posts):
+        pa = a0 + (a1 - a0) * k / (posts - 1)
+        for r in (AR_RADIUS - 4, AR_RADIUS - 1):
+            x, z = ring_point(AR_CENTER, r, pa)
+            for yy in range(AR_STAND - 3, y + 4):
+                p.set(x, yy, z, BEAM)
+            if r == AR_RADIUS - 4:
+                front.append((x, z))
+                if k % 2 == 0:   # bras vers l'arène, lanterne pendue
+                    ix, iz = ring_point(AR_CENTER, r - 1, pa)
+                    p.set(ix, y + 3, iz, BEAM)
+                    p.set(ix, y + 2, iz, "Deco_Iron_Chains_Vertical")
+                    p.set(ix, y + 1, iz, "Deco_Lantern_Ceiling")
+    # Corde entre deux poteaux de devant, toiles rouges dessous (une case sur deux, longueurs inégales).
+    for (x0, z0), (x1, z1) in zip(front, front[1:]):
+        n = max(abs(x1 - x0), abs(z1 - z0))
+        along_z = abs(z1 - z0) > abs(x1 - x0)
+        for i in range(1, n):
+            x, z = round(x0 + (x1 - x0) * i / n), round(z0 + (z1 - z0) * i / n)
+            sag = round(1.5 * math.sin(math.pi * i / n))
+            top = y + 3 - sag
+            if fn.free(p, x, top, z):
+                p.set(x, top, z, "Deco_Rope")
+            if i % 2 and fn.hash01(x, z, seed, 68) < 0.8:
+                for k in range(1 + int(fn.hash01(z, x, seed, 69) * 3)):
+                    if fn.free(p, x, top - 1 - k, z):
+                        p.set(x, top - 1 - k, z, "Cloth_Roof_Red_Vertical", 1 if along_z else 0)
 
 
 def monoliths(p):
@@ -341,38 +473,91 @@ def dress(p):
     ax, az = AR_CENTER
     arena = {(x, z): AR_STAND - 1 for x in range(ax - AR_RADIUS, ax + AR_RADIUS + 1)
              for z in range(az - AR_RADIUS, az + AR_RADIUS + 1) if (x, AR_STAND - 1, z) in p.blocks}
-    tops = fn.rim(arena, 3, 8, seed=53, block=lambda x, z: z > az + 8)
+    tops = fn.rim(arena, 3, 8, seed=53, block=lambda x, z: z > az + 12)
     fn.natural_ground(p, tops, THEME, seed=53, trees=0.04, spacing=6, bushes=0.08, density=0.25, flowers=0.2)
 
 
 # --- objets, blocs, effets, particules ------------------------------------------------------------------
 
-def crystal_parts():
-    jade, light = (90, 220, 170), (220, 255, 240)
-    return [("Core", (0, 6, 0), (5, 12, 5), 45, fm.crystal(jade, light), "fullbright"),
-            ("Shard_A", (3, 3, 1), (3, 6, 3), 20, fm.crystal(jade, light), "fullbright"),
-            ("Shard_B", (-3, 2, -1), (3, 5, 3), -30, fm.crystal(jade, light), "fullbright")]
-
-
 def crystal_item():
+    """Le cristal réfléchissant a le modèle du grand cristal de jade (modèle vanilla Crystal_Large_Pointy du cristal du
+    Néant, texture passée au jade), réduit comme les objets vanilla tenus qui reprennent un modèle de bloc
+    (Weapon_Deployable_Slowness_Totem, Scale 0.305). Icône et cadrage de l'icône : ceux du bloc."""
     root = "Root_Nakasar_Fractal_Throw_Reflecting_Crystal"
-    return fc.held_item(LANG, CRYSTAL, "Reflecting_Crystal", crystal_parts(), 61, (0, 6, 0), 14.0, quality="Epic", stack=1,
-                        extra={"Interactions": {"Secondary": root, "SwapFrom": fc.KEEP_IN_HAND},
-                               "Utility": {"Compatible": False}, "Categories": ["Items.Misc"]})
+    return {
+        "TranslationProperties": {"Name": f"{LANG}.items.{CRYSTAL}.name", "Description": f"{LANG}.items.{CRYSTAL}.description"},
+        "Icon": f"{go.ICONS}/Jade_Crystal_Large.png",
+        "IconProperties": {"Scale": 0.5, "Rotation": [4, 183, 1], "Translation": [-1, -25]},
+        "Model": "Resources/Crystals/Crystal_Large_Pointy.blockymodel",
+        "Texture": JADE_MODEL_TEXTURE,
+        "Scale": CRYSTAL_SCALE,
+        "Light": {"Color": JADE_LIGHT, "Radius": 2},
+        "Quality": "Epic",
+        "Categories": ["Items.Misc"],
+        "PlayerAnimationsId": "Item",
+        "ItemSoundSetId": "ISS_Items_Gems",
+        "MaxStack": 1,
+        "Interactions": {"Secondary": root, "SwapFrom": fc.KEEP_IN_HAND},
+        "Utility": {"Compatible": False},
+    }
+
+
+CRYSTAL_SCALE = 0.4
+JADE_LIGHT = "#3c8"
+JADE_MODEL_TEXTURE = "Blocks/Nakasar/Fractals/Jade_Crystal_Big.png"
+# taille : (modèle vanilla ou None pour le cube, boîte de sélection, cadrage de l'icône vanilla)
+JADE_SHAPES = {
+    "Block": (None, None, {"Scale": 0.58823, "Rotation": [22.5, 45, 22.5], "Translation": [0, -13.5]}),
+    "Large": ("Crystal_Large_Pointy", None, {"Scale": 0.5, "Rotation": [4, 183, 1], "Translation": [-1, -25]}),
+    "Medium": ("Crystal_Medium_Pointy", "Plant_Large", {"Scale": 0.58823, "Rotation": [22.5, 18, 22.5], "Translation": [4, -14]}),
+    "Small": ("Crystal_Small_Pointy", "Plant_Medium", {"Scale": 0.58823, "Rotation": [22.5, 170, 22.5], "Translation": [-2, -11]}),
+}
+
+
+def jade_crystal_items():
+    """Bloc et fragments de cristal de jade : les Rock_Crystal_Void_* vanilla (lus dans Assets.zip 0.7.2), textures
+    et lumière en jade, sans recette."""
+    out = {}
+    for size, (model, hitbox, icon) in JADE_SHAPES.items():
+        name = f"{JADE_CRYSTAL}_{size}"
+        block = {"Material": "Solid", "Opacity": "Transparent", "Flags": {},
+                 "Gathering": {"Breaking": {"GatherType": "Unbreakable"}},
+                 "BlockParticleSetId": "Crystal", "BlockSoundSetId": "Crystal", "PhysicalMaterialId": "Stone",
+                 "Light": {"Color": JADE_LIGHT}, "RequiresAlphaBlending": True}
+        if model:
+            block.update({"DrawType": "Model", "CustomModel": f"Resources/Crystals/{model}.blockymodel",
+                          "CustomModelTexture": [{"Texture": JADE_MODEL_TEXTURE, "Weight": 1}],
+                          "VariantRotation": "DoublePipe", "RandomRotation": "YawStep1", "ParticleColor": "#b0f0d0",
+                          "Support": {"Down": [{"FaceType": "Full"}]}, "TextureComputedColor": "#1c4934"})
+            if hitbox:
+                block["HitboxType"] = hitbox
+        else:
+            texture = f"{go.TEXTURES}/Jade_Crystal.png"
+            block.update({"DrawType": "Cube", "Group": "Stone",
+                          "Textures": [{"Sides": texture, "UpDown": texture, "Weight": 1}],
+                          "ParticleColor": "#398560", "CubeShadingMode": "Reflective", "VariantRotation": "Pipe",
+                          "TextureComputedColor": "#425148"})
+        out[name] = {
+            "TranslationProperties": {"Name": f"{LANG}.items.{name}.name", "Description": f"{LANG}.items.{name}.description"},
+            "Icon": f"{go.ICONS}/Jade_Crystal_{size}.png",
+            "IconProperties": icon,
+            "Categories": ["Blocks.Ores"],
+            "Quality": "Technical",
+            "PlayerAnimationsId": "Block",
+            "BlockType": block,
+            "Tags": {"Type": ["Rock"], "Family": ["Crystal"]},
+            "ItemSoundSetId": "ISS_Blocks_Stone",
+        }
+    return out
 
 
 
 def throw_interaction():
     return {"$Comment": "Cristal réfléchissant : clic droit, le lancer sur l'Abîme de Jade (48 blocs, cône de 35°). "
                         "Chargé par le rayon, il lui retire 5 % de sa vie ; sinon il revient (Java, solidocean.JadeMaw).",
-            "Type": "Nakasar_Fractal_ThrowItem", "Item": CRYSTAL, "Roles": MAW, "Range": 48, "Cone": 35,
+            "Type": "Nakasar_Fractal_ThrowItem", "Item": CRYSTAL, "Roles": MAW, "Range": 72, "Cone": 35,
             "Particle": "Nakasar_Fractal_Crystal_Trail", "Action": "Crystal",
             "NoTargetMessage": f"{LANG}.crystal.noTarget"}
-
-
-def blocks():
-    # Lueur discrète des fragments : on voit où sauter la nuit.
-    return [(JADE_LANDING, "Jade_Landing", (70, 168, 130), (180, 255, 214), "cracks", "#2a6", None, True, 255, None)]
 
 
 def beam_cause():
@@ -595,8 +780,8 @@ def models():
     m[MAW] = fc.character_model("Jade_Maw", maw_parts(), 71, "L'Abîme de Jade (boss de l'Océan solide) : tête de kraken "
                                 "en jade, œil unique. Immobile ; ses écailles denses le rendent invulnérable (Java).",
                                 3.0, (1.0, 2.2), light={"Color": "#9f6", "Radius": 6}, scale=3.0)
-    m[COLOSSUS] = {"$Comment": "Colosse de jade (phase 2) : le golem de cristal vanilla, plus grand.",
-                   "Parent": "Golem_Crystal_Thunder", "MinScale": 1.25, "MaxScale": 1.25,
+    m[COLOSSUS] = {"$Comment": "Colosse de jade (phase 2) : le golem de cristal vanilla, un peu plus grand.",
+                   "Parent": "Golem_Crystal_Thunder", "MinScale": COLOSSUS_SCALE, "MaxScale": COLOSSUS_SCALE,
                    "Light": {"Color": "#6f9", "Radius": 3}}
     m[IRUKANDJI] = {"$Comment": "Irukandji (provisoire) : l'esprit de givre vanilla, en attendant une méduse vérifiée dans "
                                 "Assets.zip.", "Parent": "Spirit_Frost", "MinScale": 0.9, "MaxScale": 0.9,
@@ -607,8 +792,20 @@ def models():
 # --- attaques et rôles ------------------------------------------------------------------------------------
 
 CI, RF = gc.CLEAR_INTERRUPT, gc.ROOTED_FX
-GOLEM_ANIMS = "Golem_Crystal_Thunder_Default"
-COLOSSUS_REACH_DOWN = 4.0      # yeux du golem ×1,25 à environ 3,5 blocs : le coup doit descendre aux pieds
+COLOSSUS_SCALE = 1.1           # ×1,25 : trop gros (Kevin, 2026-10-24)
+COLOSSUS_DAMAGE = 16
+# Combo du golem de cristal vanilla (Root_NPC_Golem_Crystal_Attack), comme le golem de la Tour du mod Vampires : notre
+# balayage au contact ne touchait jamais (même descendu aux pieds). Ses coups gardent leurs zones et animations vanilla,
+# on ne règle que les dégâts et un recul faible (pas de chute dans le vide).
+# Sans attaque circulaire (Kevin, 2026-10-24) : ni les deux toupies du combo vanilla ni notre frappe au sol annoncée.
+GOLEM_HITS = {"Swing_Left_Damage": "Golem_Crystal_Swing_Left_Damage", "Swing_Right_Damage": "Golem_Crystal_Swing_Right_Damage",
+              "Ground_Slam_Damage": "Golem_Crystal_Ground_Slam_Damage", "Stomp_Damage": "Golem_Crystal_Stomp_Damage",
+              "Clap_Damage": "Golem_Crystal_Clap_Damage"}
+# Root_NPC_Golem_Crystal_Attack vanilla moins Golem_Crystal_Spin et Golem_Crystal_Spin_Heavy.
+COLOSSUS_COMBO = ["Golem_Crystal_Swing_Left", "Golem_Crystal_Swing_Right", "Golem_Crystal_Ground_Slam",
+                  "Golem_Crystal_Stomp", "Golem_Crystal_Clap"]
+COLOSSUS_ATTACK = "Root_Nakasar_Fractal_NPC_Colossus_Attack"
+COLOSSUS_HEALTH = 300          # 490 puis moins encore (Kevin, 2026-10-24)
 TENTACLE_ANIMS = "Nakasar_Fractal_Jade_Tentacle"
 
 
@@ -616,9 +813,9 @@ def interactions():
     T = fr.telegraph
     out = {}
     out["Nakasar_Fractal_Tentacle_Sweep"] = {
-        "$Comment": "Tentacule : balayage annoncé, cône de 160° et 7 blocs (1,4 s), 22 dégâts et forte projection "
-                    "(renversement de GW2).",
-        "Type": "Serial", "Interactions": [CI, RF, T("Cone", 1.4, Angle=160, Radius=7, Damage=22, Knockback=10, KnockUp=4,
+        "$Comment": "Tentacule : balayage annoncé tout autour de lui, cercle de 7 blocs (1,4 s), 22 dégâts et forte "
+                    "projection (renversement de GW2).",
+        "Type": "Serial", "Interactions": [CI, RF, T("Circle", 1.4, Radius=7, Damage=22, Knockback=10, KnockUp=4,
                                                      PlayersOnly=True, ImpactParticle="Nakasar_Fractal_Tentacle_Emerge",
                                                      ImpactSound="SFX_Goblin_Feastmaster_Slam"),
                                            fc.windup(1.4, "SFX_Spear_Throw_Charge", TENTACLE_ANIMS, "Sweep"),
@@ -631,19 +828,6 @@ def interactions():
                                                      ImpactSound="SFX_Goblin_Feastmaster_Slam"),
                                            fc.windup(1.2, "SFX_Spear_Throw_Charge", TENTACLE_ANIMS, "Slam"),
                                            fc.windup(0.8, "SFX_Unarmed_Swing")]}
-    out["Nakasar_Fractal_Colossus_Slam"] = {
-        "$Comment": "Colosse de jade : frappe le sol, cercle rouge de 5,5 blocs (1,5 s), 26 dégâts, projection et "
-                    "étourdissement 1,5 s (renversement de GW2).",
-        "Type": "Serial", "Interactions": [CI, RF, T("Circle", 1.5, Radius=5.5, Damage=26, Knockback=7, KnockUp=4,
-                                                     EffectId="Hazard_Electric_Stun", EffectDuration=1.5, PlayersOnly=True,
-                                                     ImpactParticle="Stick_Slam_Ground_Large",
-                                                     ImpactSound="SFX_Goblin_Feastmaster_Slam"),
-                                           fc.windup(1.5, "SFX_Spear_Throw_Charge", GOLEM_ANIMS, "GroundSlam")]}
-    out["Nakasar_Fractal_Colossus_Strike"] = {
-        "$Comment": "Colosse de jade au contact : coup de cristal (16 dégâts). Le balayage part de ses yeux, bien plus haut "
-                    "que la tête d'un joueur : il descend jusqu'aux pieds (ExtendBottom), sans quoi il ne touchait rien.",
-        "Type": "Serial", "Interactions": [fr.swing("Coup de cristal.", GOLEM_ANIMS, "GroundSlam", 0.6, 16, end=3.4,
-                                                     extend_bottom=COLOSSUS_REACH_DOWN)]}
     out["Nakasar_Fractal_Irukandji_Sting"] = {
         "$Comment": "Irukandji au contact : piqûre (12 dégâts et poison 4 s).",
         "Type": "Serial", "Interactions": [fr.swing("Piqûre.", None, None, 0.3, 12, end=2.4, length=70, yaw=35,
@@ -670,7 +854,7 @@ def interactions():
     return out
 
 
-MELEE = ["Tentacle_Sweep", "Tentacle_Slam", "Colossus_Slam", "Colossus_Strike", "Irukandji_Sting", "Irukandji_Shock",
+MELEE = ["Tentacle_Sweep", "Tentacle_Slam", "Irukandji_Sting", "Irukandji_Shock",
          "Irukandji_Tether"]
 RANGED = []
 R = fc.root
@@ -692,12 +876,14 @@ def roles():
         DeathAnimationTime=1.0)
     out[TENTACLE] = tentacle
     out[COLOSSUS] = fr.role(
-        COLOSSUS, "Colosse de jade : en phase 2, un sort du jade toutes les 30 s (20 en tout), insensible aux attaques à "
-        "distance (Java), frappe le sol (cercle annoncé, renverse) ; il lâche deux cristaux réfléchissants.", COLOSSUS, n(COLOSSUS), 700,
-        [fr.timed_attack("Slam", R("Colossus_Slam"), rng=5, los=True, comment="Frappe au sol annoncée."),
-         fr.melee(R("Colossus_Strike"), 3.4, (1.0, 1.4)), fr.chase(40, stop=2.6)],
-        fr.walk(3.0), GENERATOR, sight=30, leash=40, home=False,
-        timers=[fr.timer("Slam", (3, 5), (8, 10))], KnockbackScale=0.1, DeathAnimationTime=1.5)
+        COLOSSUS, "Colosse de jade : sort du jade toutes les 15 s (Java), insensible aux attaques à distance (Java), "
+        "enchaîne au contact le combo du golem vanilla sans ses toupies ; il lâche un cristal réfléchissant (Java).",
+        COLOSSUS, n(COLOSSUS), COLOSSUS_HEALTH,
+        [fr.melee(COLOSSUS_ATTACK, 3.0, (1.0, 1.4), turn=0.6), fr.chase(40, stop=2.4)],
+        fr.walk(3.0), GENERATOR, sight=30, leash=40, home=False, KnockbackScale=0.1, DeathAnimationTime=1.5,
+        InteractionVars={var: {"Interactions": [{"Parent": parent, "DamageCalculator": {
+            "Type": "Absolute", "BaseDamage": {"Physical": COLOSSUS_DAMAGE}, "RandomPercentageModifier": 0.1},
+            "DamageEffects": {"Knockback": {"Force": -4}}}]} for var, parent in GOLEM_HITS.items()})
     out[IRUKANDJI] = fr.role(
         IRUKANDJI, "Irukandji : flotte au-dessus des fragments de jade et garde le passage (600 PV) : décharge qui jette "
         "dans le vide, filament qui attire au-dessus du vide, piqûre empoisonnée.", IRUKANDJI, n(IRUKANDJI), 600,
@@ -718,8 +904,11 @@ def lang():
            "fois). Il absorbe le rayon de l'Abîme de Jade et vous charge ; clic droit en visant l'Abîme : le lancer.",
            "Reflecting crystal", "Picked up while crouching, held in both hands and kept in hand (one at a time). It "
            "absorbs the Jade Maw's beam and charges you; right-click while aiming at the Maw: throw it.")
-    t.item(JADE_LANDING, "Fragment de jade", "Une chute ramène au dernier fragment où l'on s'est tenu.", "Jade fragment",
-           "A fall brings you back to the last fragment you stood on.")
+    for size, f, e in (("Block", "Bloc de cristal de jade", "Jade crystal block"),
+                       ("Large", "Grand cristal de jade", "Large jade crystal"),
+                       ("Medium", "Cristal de jade", "Jade crystal"), ("Small", "Petit cristal de jade", "Small jade crystal")):
+        t.item(f"{JADE_CRYSTAL}_{size}", f, "Une chute ramène au dernier fragment de jade où l'on s'est tenu.", e,
+               "A fall brings you back to the last jade fragment you stood on.")
     for role, f, e in ((MAW, "L'Abîme de Jade", "The Jade Maw"), (TENTACLE, "Tentacule de l'Abîme", "Jade Maw tentacle"),
                        (COLOSSUS, "Colosse de jade", "Jade colossus"), (IRUKANDJI, "Irukandji", "Irukandji")):
         t.npc(role, f, e)
@@ -738,17 +927,20 @@ def lang():
                   "slay the two tentacles guarding it."),
         "checkpoint": ("Point de retour déplacé.", "Respawn point moved."),
         "agony": ("L'Abîme vous écrase de son agonie !", "The Maw crushes you with agony!"),
-        "phase.colossi": ("L'Abîme s'éveille : huit tentacules percent le jade et des colosses surgissent ({count} en "
-                          "tout). Ramassez leurs cristaux (accroupi) : quand l'Abîme vous vise, tenez-en un !",
-                          "The Maw awakens: eight tentacles pierce the jade and colossi emerge ({count} in all). Pick up "
-                          "their crystals (crouch): when the Maw targets you, hold one!"),
-        "phase.final": ("Le dernier colosse est tombé : l'Abîme fait repousser ses tentacules, qui lâchent désormais les "
-                        "cristaux.", "The last colossus has fallen: the Maw regrows its tentacles, which now drop the "
-                        "crystals."),
+        "phase.colossi": ("L'Abîme s'éveille : quatre tentacules percent le jade et des colosses surgissent ({count} en "
+                          "tout). Colosses et tentacules lâchent un cristal : ramassez-le (accroupi) et, quand l'Abîme "
+                          "vous vise, tenez-en un !",
+                          "The Maw awakens: four tentacles pierce the jade and colossi emerge ({count} in all). Colossi "
+                          "and tentacles drop a crystal: pick it up (crouch) and hold one when the Maw targets you!"),
+        "phase.final": ("Le dernier colosse est tombé : de nouveaux tentacules surgissent et "
+                        "repoussent 30 s après leur mort.", "The last colossus has fallen: new tentacles emerge and "
+                        "regrow 30 s after they fall."),
         "skull": ("L'Abîme vous vise : tenez un cristal avant la fin du compte à rebours, sinon le rayon vous tue !",
                   "The Maw targets you: hold a crystal before the countdown ends, or the beam kills you!"),
         "crystal.crouch": ("Accroupissez-vous pour ramasser le cristal.", "Crouch to pick up the crystal."),
         "crystal.already": ("Vous portez déjà un cristal.", "You already carry a crystal."),
+        "skull.title": ("L'Abîme vous vise !", "The Maw targets you!"),
+        "skull.subtitle": ("Tenez un cristal avant la fin du compte", "Hold a crystal before the countdown ends"),
         "skull.other": ("L'Abîme vise {name}.", "The Maw targets {name}."),
         "absorbed": ("Le cristal absorbe le rayon : vous êtes chargé. Lancez-le sur l'Abîme (clic droit) !",
                      "The crystal absorbs the beam: you are charged. Throw it at the Maw (right-click)!"),
@@ -784,10 +976,13 @@ def java_layout():
         return J.jpoints([(x, AR_STAND + up, z) for x, z in (ring_point(AR_CENTER, radius, a) for a in angles)])
 
     arena_iru = ring(AR_RADIUS - 4, ARENA_IRUKANDJI, 2)
-    tentacles = ring(TENTACLE_RADIUS, TENTACLE_ANGLES)
     colossi = ring(COLOSSUS_RADIUS, COLOSSUS_ANGLES)
     zx0, zx1, zy0, zy1, zz0, zz1 = jump_zone()
     entry = (LAST[0], LAST[3], LAST[1])
+    def spots(offsets):
+        return J.jpoints([(AR_CENTER[0] + dx, AR_STAND, AR_CENTER[1] + dz) for dx, dz in offsets])
+
+    tentacles, tentacles_p2, tentacles_p3 = spots(TENTACLE_SPOTS), spots(TENTACLE_SPOTS_P2), spots(TENTACLE_SPOTS_P3)
     return f"""package dev.nakasar.hytale.fractals.solidocean;
 
 import dev.nakasar.hytale.fractals.arena.Box;
@@ -812,8 +1007,10 @@ public final class SolidOceanLayout {{
     public static final double[] ARENA_CENTER = {J.jpoint((AR_CENTER[0], AR_STAND, AR_CENTER[1]))};
     public static final double ARENA_RADIUS = {AR_RADIUS};
     public static final double[] MAW = {J.jpoint(MAW_AT)};
-    /** Points des tentacules : les deux premiers sont ceux de la phase 1. */
+    /** Points des tentacules : phase 1, phase 2, phase 3. */
     public static final double[][] TENTACLES = {tentacles};
+    public static final double[][] TENTACLES_P2 = {tentacles_p2};
+    public static final double[][] TENTACLES_P3 = {tentacles_p3};
     public static final double[][] COLOSSI = {colossi};
     public static final double[][] ARENA_IRUKANDJI = {arena_iru};
     public static final int[] REWARD = {J.jblock(REWARD_AT)};
@@ -829,7 +1026,7 @@ def color_of(name):
     c = fn.nature_color(name)
     if c and not name.startswith("Nakasar_"):
         return c
-    if name == JADE_LANDING:
+    if name.startswith(JADE_CRYSTAL):
         return (90, 220, 160)
     if name.startswith("Rock_Crystal") or name.startswith("Plant_Coral"):
         return (120, 240, 200)
@@ -840,8 +1037,8 @@ def color_of(name):
 
 def main():
     preview = Path(sys.argv[sys.argv.index("--preview") + 1]) if "--preview" in sys.argv else None
-    for name, tex, base, accent, glyph, light, use, solid, alpha, opacity in blocks():
-        fc.write_block(LANG, name, tex, base, accent, glyph, light, use, solid, alpha, opacity)
+    for name, doc in jade_crystal_items().items():
+        fc.write_json(go.ITEMS / f"{name}.json", doc)
     fc.write_json(fc.OBJECTS / f"{CRYSTAL}.json", crystal_item())
     fc.write_json(INTERACTIONS / "Nakasar_Fractal_Throw_Reflecting_Crystal.json", throw_interaction())
     fc.write_json(fc.ROOTS / "Root_Nakasar_Fractal_Throw_Reflecting_Crystal.json",
@@ -857,6 +1054,9 @@ def main():
     for name, doc in interactions().items():
         fc.write_json(INTERACTIONS / f"{name}.json", doc)
     fc.write_roots(MELEE, RANGED)
+    fc.write_json(fc.ROOTS / f"{COLOSSUS_ATTACK}.json", {
+        "Interactions": [{"Type": "Chaining", "ChainId": "Slashes", "ChainingAllowance": 15, "Next": COLOSSUS_COMBO}],
+        "Tags": {"Attack": ["Melee"]}})
     for role, doc in models().items():
         fc.write_json(fc.MODELS / f"{role}.json", doc)
     write_tentacle(preview)

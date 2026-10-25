@@ -38,7 +38,7 @@ import java.util.List;
  *   {@value #LAVA_SECONDS} s : on y brûle très fort ({@link Volcanic#lavaFloor}) ; ils refroidissent ensuite ;</li>
  *   <li>flamme qui se propage : un joueur touché par la flèche brûle et allume ceux à moins de {@value #SPREAD_RANGE}
  *   blocs ;</li>
- *   <li>à 75, 50 et 25 % de vie : bouclier de {@value #SHIELD_HITS} coups (+10 par joueur de plus), larves de braise,
+ *   <li>à 75, 50 et 25 % de vie : bouclier de {@value #SHIELD_HITS} coups (quel que soit le nombre de joueurs), larves de braise,
  *   et il plane lentement vers un villageois : il met {@value #GLIDE_SECONDS} s (+{@value #GLIDE_PER_PLAYER} s par
  *   joueur de plus) à l'atteindre, puis s'en nourrit (+{@value #FEED_HEAL} de sa vie) ; bouclier brisé avant : étourdi
  *   {@value #STUN} s ;</li>
@@ -57,7 +57,7 @@ final class ImbuedShaman {
     private static final int LAVA = 4;
     static final double SPREAD_RANGE = 2.5;
     static final float SPREAD_PART = 0.03f;
-    static final int SHIELD_HITS = 40;
+    static final int SHIELD_HITS = 50;
     static final float GLIDE_SECONDS = 24f;
     static final float GLIDE_PER_PLAYER = 4f;
     static final double FEED_RANGE = 2;
@@ -258,7 +258,7 @@ final class ImbuedShaman {
 
     private void shield(World world, Store<EntityStore> store) {
         shielded = true;
-        int hits = SHIELD_HITS + 10 * (FractalRuns.partySize(world) - 1);
+        int hits = SHIELD_HITS;   // fixe, quel que soit le nombre de joueurs (Kevin, 2026-10-24)
         Ref<EntityStore> me = boss;
         HitShield.raise(boss, hits, () -> broken(world, me));
         Vector3d at = Telegraphs.position(store, boss);

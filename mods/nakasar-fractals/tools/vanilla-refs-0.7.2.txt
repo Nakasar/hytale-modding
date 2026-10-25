@@ -10,3 +10,7 @@ animations Golem_Firesteel_Default
 animations Golem_Crystal_Thunder_Default
 # Esprit de racine vanilla (validé par le mod Vampires dans Assets.zip 0.7.2, citrouille géante) : Carnasse (Marais).
 animations Spirit_Root_Default
+# Morsures du loup et du renard vanilla (Server/Item/Animations/NPC/Beast/{Wolf_Black,Fox}/*_Default.json, vus dans
+# Assets.zip 0.7.2 le 24 octobre 2026) : loups du Moussu et esprits de Carnasse (Marais).
+animations Wolf_Black_Default
+animations Fox_Default

@@ -49,6 +49,9 @@ def split_sections(p, z_min):
         part = go.Prefab()
         for (x, y, z), (name, rot) in groups[k].items():
             part.set(x, y, z - anchor, name, rot)
+        for (x, y, z), (name, level) in p.fluids.items():
+            if (z - z_min) // SECTION == k:
+                part.fluids[(x, y, z - anchor)] = (name, level)
         out.append((f"Section_{k:02d}", anchor, part))
     return out
 

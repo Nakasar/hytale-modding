@@ -1,0 +1,12 @@
+{
+  "$Comment": "Cercle vert de Carnasse : émanations vertes qui montent du sol, semées dans tout le cercle (Java). Généré par tools/generate_swampland.py.",
+  "Spawners": [
+    {
+      "SpawnerId": "Nakasar_Fractal_Green_Emanation_Rise",
+      "PositionOffset": {
+        "Y": 0.0
+      }
+    }
+  ],
+  "CullDistance": 72
+}

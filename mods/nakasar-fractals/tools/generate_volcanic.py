@@ -7,16 +7,19 @@ Le déroulé de GW2, dans l'ordre :
 
 1. le camp des grawls : des groupes de 7 grawls qui chargent, autour du totem du rituel (sa vie, fixée par le Java,
    montre ce qu'il reste à abattre ; sa barre se voit de toute la fractale), des rochers qui tombent du volcan ;
-2. le couloir aux rochers : des rochers en feu dévalent toutes les 5 s, on s'abrite dans les niches ; un rocher coûte
-   60 % des PV, brûle et laisse une traînée de feu ;
+2. le couloir aux rochers, galerie courbe qui descend : des rochers en feu dévalent la pente derrière les joueurs
+   toutes les 5 s, on s'abrite dans les niches ; un rocher coûte 60 % des PV, brûle et laisse une traînée de feu ;
+   toute la fractale descend peu à peu, du camp au lac de lave (galeries naturelles courbes, Kevin 2026-10-24) ;
 3. le Champion chaman des grawls, au bord d'une falaise au-dessus du lac de lave du volcan : huit charges de
    protection que seules les pierres imprégnées (lâchées par les rochers qui tombent, ramassées accroupi et gardées en
    main) retirent ; ses vétérans sortent des grottes du sud et marchent lentement vers les trois captifs du bord nord ;
+   pierres seulement tant qu'il est protégé, vétérans seulement dans la première phase de protection, une charge de
+   protection reprise à 50 % ;
 4. la mine : des rails sur des planches au-dessus de la lave, des chauves-souris ; une chute ramène au départ du
    tronçon ; au bout, une descente jusqu'au lac ;
 5. le Chamane imprégné, sur une île au milieu du lac (on la voit du bord de la falaise du Champion) : petits cratères
    qui rougissent puis crachent de la lave, flèche enflammée qui se propage, piqué, souffle des ailes, tempête de feu ;
-   à chaque quart de sa vie, un bouclier de 40 coups, des larves de braise, et il plane lentement vers un villageois
+   à chaque quart de sa vie, un bouclier de 50 coups, des larves de braise, et il plane lentement vers un villageois
    pour s'en nourrir.
 
 Le générateur écrit les prefabs (tronçons de 64 blocs), l'instance `Nakasar_Fractal_Volcanic`, la pierre imprégnée
@@ -51,25 +54,32 @@ CAMP = (-20, 20, -20, 32)               # x0, x1, z0, z1
 TOTEM_AT = (0.5, 0, -5.5)
 CAMP_SPAWNS = [(-14, -12), (14, -12), (-16, 8), (16, 8), (0, -16), (-8, 0), (8, 0)]
 GATE_CAMP = [(x, y, -21) for x in range(-3, 4) for y in range(0, 5)]
-CORRIDOR = (-3, 3, -91, -22)            # x0, x1, z0 (nord), z1 (sud)
-ALCOVES = [(-32, 1), (-44, -1), (-56, 1), (-68, -1), (-80, 1)]   # (z de départ, côté)
-LANDING_N = (-3, 3, -97, -92)
-BOULDER_START = (0.5, 0, -95.5)
-BOULDER_END_Z = -21.5
-PASSAGE = (-20, -4, -96, -92)
+# Galeries naturelles courbes qui descendent peu à peu, du camp (debout à 0) au lac (Kevin, 2026-10-24) : points de
+# passage (x, z, debout) d'une courbe lissée ; le sol descend d'un bloc à la fois, jamais plus d'un bloc par 5 blocs.
+# Couloir aux rochers : du camp au palier nord ; les rochers dévalent la pente depuis la bouche du haut (au sud).
+CORRIDOR_PATH = [(0, -22, 0), (1, -31, 0), (8, -43, -2), (8, -56, -3), (0, -66, -5), (-7, -77, -6), (-6, -89, -8),
+                 (-4, -97, -9)]
+CORRIDOR_HALF = 3.5                     # demi-largeur de la voie (le rocher la balaie toute)
+ALCOVE_EVERY = 11                       # une niche tous les 11 blocs de couloir, d'un côté puis de l'autre
+LANDING_N = (-4, -98, 5, -9)            # palier nord : centre x, z, rayon, debout
+PASSAGE_PATH = [(-4, -98, -9), (-10, -104, -10), (-17, -100, -12), (-22, -95, -13)]
+GALLERY_HALF = 3.0
 CH_CENTER = (-34, -94)
 CH_RADIUS = 14
+CH_STAND = -13
 CAPTIVE_ANGLES = [240, 270, 300]       # au nord, au bord de la falaise qui tombe dans la lave du volcan
 CAPTIVE_RADIUS = 12
 VETERAN_GATES = [(-41, -80), (-27, -80)]   # grottes du côté sud, en face des captifs
-GATE_CH = [(-49, y, z) for y in range(0, 5) for z in range(-96, -91)]
+GATE_CH = [(-49, CH_STAND + y, z) for y in range(0, 5) for z in range(-96, -91)]
+# Mine : galerie courbe d'est en ouest, rails sur planches au-dessus d'une coulée de lave qui descend avec eux.
 MINE = (-118, -50)                      # x de fin (ouest) et de départ (est) de la mine
-MINE_Z = (-96, -92)
-LAVA_Y = -7
-END_PAD = (-124, -116, -98, -90)        # x0, x1, z0, z1, debout à 2
-PAD_STAND = 2
+MINE_CURVE = [(-50, -94), (-64, -91), (-80, -97), (-96, -92), (-110, -96), (-118, -94)]   # (x, z) du milieu
+MINE_HALF = 6                           # demi-largeur de la coulée de lave
+MINE_DROP = 7                           # la lave, 7 blocs sous les rails
+END_PAD = (-124, -116, -98, -90)        # x0, x1, z0, z1, debout à PAD_STAND
+PAD_STAND = -21
 # Lac de lave du volcan, en bas de la falaise du Champion : surface en LAKE_Y, union de disques (centre x, z, rayon).
-LAKE_Y = -18
+LAKE_Y = -36
 LAKE_DISCS = [(-84, -146, 40), (-38, -124, 20), (-122, -122, 16)]
 # Île du Chamane imprégné au milieu du lac, deux blocs au-dessus de la lave ; on la voit du bord de la falaise.
 AR_CENTER = (-84, -146)
@@ -79,7 +89,7 @@ VILLAGER_ANGLES = [45, 135, 225, 315]
 VILLAGER_RADIUS = 19
 ENTRY_ANGLE = 180
 # Descente du bout de la mine à l'île : (x, z, debout) ; chaussée au-dessus de la lave en bas.
-DESCENT = [(-120, -99, PAD_STAND), (-122, -114, -5), (-114, -132, -11), (-105, -146, AR_STAND)]
+DESCENT = [(-120, -99, PAD_STAND), (-122, -114, PAD_STAND - 4), (-114, -132, PAD_STAND - 8), (-105, -146, AR_STAND)]
 DESCENT_WIDTH = 2.6
 # Petits cratères de l'île (rayon CRATER_RADIUS) : chauffent puis deviennent de la lave active (Java).
 CRATER_RADIUS = 2.3
@@ -88,7 +98,6 @@ CRATER_STAGES = ["Nakasar_Fractal_Crater_Cold", "Nakasar_Fractal_Crater_Warm_1",
                  "Nakasar_Fractal_Crater_Warm_3", "Nakasar_Fractal_Crater_Lava"]
 REWARD_AT = (-86, AR_STAND, -146)
 END_EXIT_AT = (-82, AR_STAND, -146)
-JUMP_ZONES = [(-120, -48, LAVA_Y - 4, 14, -101, -87)]
 
 # --- blocs et rôles -------------------------------------------------------------------------------------
 LANDING = gc.LANDING
@@ -109,6 +118,9 @@ ROCK = ["Rock_Volcanic", "Rock_Volcanic", "Rock_Volcanic_Cobble", "Rock_Basalt"]
 GROUND = ["Soil_Ash", "Soil_Ash", "Rock_Volcanic_Cobble", "Rock_Magma_Cooled"]
 BRICK = ["Rock_Volcanic_Brick", "Rock_Volcanic_Brick_Smooth"]
 LAVA = "Rock_Volcanic_Cracked_Lava"
+LAVA_FLUID = "Lava_Source"              # vraie lave vanilla (fluide des prefabs de grottes volcaniques), lac de l'île
+EMBER = "Rock_Volcanic_Cracked_Incandescent"
+CAVE_ROCK = ["Rock_Basalt", "Rock_Volcanic", "Rock_Basalt_Cobble", "Rock_Volcanic", "Rock_Magma_Cooled"]
 PLANKS = "Wood_Darkwood_Planks"
 BEAM = "Wood_Darkwood_Beam"
 pick = fc.pick
@@ -121,16 +133,264 @@ def ring_point(center, radius, angle, rounded=True):
     return (round(x), round(z)) if rounded else (round(x, 1), round(z, 1))
 
 
+def smooth_path(points, step=1.0):
+    """Courbe lissée (Catmull-Rom) par les points (x, z, debout) : échantillons (x, z, debout) tous les `step` blocs ;
+    le debout descend linéairement entre deux points, arrondi : des marches d'un bloc."""
+    dense = []
+    pts = [points[0]] + list(points) + [points[-1]]
+    for i in range(1, len(pts) - 2):
+        p0, p1, p2, p3 = pts[i - 1], pts[i], pts[i + 1], pts[i + 2]
+        for k in range(40):
+            t = k / 40
+            t2, t3 = t * t, t * t * t
+            x, z = (0.5 * (2 * p1[j] + (-p0[j] + p2[j]) * t + (2 * p0[j] - 5 * p1[j] + 4 * p2[j] - p3[j]) * t2
+                           + (-p0[j] + 3 * p1[j] - 3 * p2[j] + p3[j]) * t3) for j in (0, 1))
+            dense.append((x, z, p1[2] + (p2[2] - p1[2]) * t))
+    dense.append(tuple(points[-1]))
+    out, run = [dense[0]], 0.0
+    for (x0, z0, _), (x1, z1, s1) in zip(dense, dense[1:]):
+        run += math.hypot(x1 - x0, z1 - z0)
+        if run >= step:
+            out.append((x1, z1, s1))
+            run = 0.0
+    if out[-1] != dense[-1]:
+        out.append(dense[-1])
+    return [(x, z, round(stand)) for x, z, stand in out]
+
+
+def path_cells(samples, half, seed):
+    """{(x, z): (debout, i, distance)} des cases à moins de `half` (± bruit) de la courbe : le sol suit l'échantillon le
+    plus proche."""
+    xs = [x for x, _, _ in samples]
+    zs = [z for _, z, _ in samples]
+    cells = {}
+    for x in range(math.floor(min(xs) - half - 3), math.ceil(max(xs) + half + 4)):
+        for z in range(math.floor(min(zs) - half - 3), math.ceil(max(zs) + half + 4)):
+            best = min(range(len(samples)), key=lambda i: (samples[i][0] - x) ** 2 + (samples[i][1] - z) ** 2)
+            d = math.hypot(samples[best][0] - x, samples[best][1] - z)
+            if d <= half + 0.4 + 0.9 * (fn.fbm2(x, z, 6, 2, seed) + 1) / 2 - (0.5 if best in (0, len(samples) - 1) else 0):
+                cells[(x, z)] = (samples[best][2], best, d)
+    return cells
+
+
+def tangent(samples, i):
+    a, b = samples[max(0, i - 2)], samples[min(len(samples) - 1, i + 2)]
+    length = math.hypot(b[0] - a[0], b[1] - a[1]) or 1.0
+    return (b[0] - a[0]) / length, (b[1] - a[1]) / length
+
+
+def corridor_samples():
+    return smooth_path(CORRIDOR_PATH)
+
+
+def alcoves():
+    """Niches du couloir : (i, côté) — un échantillon de la courbe, -1 à gauche, +1 à droite de la descente."""
+    samples = corridor_samples()
+    return [(i, 1 if k % 2 == 0 else -1) for k, i in enumerate(range(12, len(samples) - 8, ALCOVE_EVERY))]
+
+
+def alcove_cells(i, side):
+    """{(x, z): debout} d'une niche : 3 blocs de large, creusée de 4 blocs dans la paroi, au niveau de la voie."""
+    samples = corridor_samples()
+    x, z, stand = samples[i]
+    tx, tz = tangent(samples, i)
+    nx, nz = -tz * side, tx * side
+    cells = {}
+    for d10 in range(int((CORRIDOR_HALF - 0.5) * 10), int((CORRIDOR_HALF + 4.6) * 10)):
+        for l10 in range(-15, 16):
+            d, lat = d10 / 10, l10 / 10
+            cells[(round(x + nx * d + tx * lat), round(z + nz * d + tz * lat))] = stand
+    return cells
+
+
+def mine_z(x):
+    """z du milieu de la mine en x (MINE_CURVE, lissé en cosinus)."""
+    pts = sorted(MINE_CURVE)
+    x = min(max(x, pts[0][0]), pts[-1][0])
+    for (x0, z0), (x1, z1) in zip(pts, pts[1:]):
+        if x0 <= x <= x1:
+            t = (x - x0) / (x1 - x0) if x1 != x0 else 0
+            return z0 + (z1 - z0) * (1 - math.cos(math.pi * t)) / 2
+    return pts[-1][1]
+
+
+def mine_base(x):
+    """Debout « moyen » des rails en x : de CH_STAND au départ (est) à PAD_STAND au bout (ouest)."""
+    t = (MINE[1] - x) / (MINE[1] - MINE[0])
+    return CH_STAND + (PAD_STAND - CH_STAND) * min(1.0, max(0.0, t))
+
+
+def mine_lava_y(x):
+    return math.floor(mine_base(x)) - MINE_DROP
+
+
 def mine_segments():
-    """Tronçons de rails de la mine : (x0, x1, debout), d'est en ouest ; trous de 2 à 3 blocs entre eux."""
-    out, x, k = [], MINE[1], 0
-    levels = [0, 1, 1, 2, 1, 2, 3, 2, 2, 3, 2, 2]
-    while x > MINE[0] + 2:
+    """Tronçons de rails de la mine : (x0, x1, debout, z du milieu), d'est en ouest ; trous de 2 à 3 blocs entre
+    eux ; ils descendent peu à peu (une marche d'un bloc vers le haut au plus) et suivent la courbe d'un bloc de côté au
+    plus. Le dernier s'arrête un bloc avant le
+    palier d'arrivée : jamais de rail sur le palier (point de retour)."""
+    out, x, k = [], MINE[1] - 7, 0
+    bumps = [0, 1, 0, 0, 1, 0, 1, 0, 0]
+    stop = END_PAD[1] + 2
+    while x >= stop:
         length = 5 if k % 3 else 4
-        out.append((x - length + 1, x, levels[k % len(levels)]))
+        x0 = max(x - length + 1, stop)
+        stand = math.floor(mine_base((x0 + x) / 2)) + bumps[k % len(bumps)]
+        if out:
+            stand = min(stand, out[-1][2] + 1)
+        zc = round(mine_z((x0 + x) / 2))
+        if out:   # un bloc de côté au plus d'un tronçon au suivant : les sauts restent droits et courts
+            zc = max(out[-1][3] - 1, min(out[-1][3] + 1, zc))
+        out.append((x0, x, stand, zc))
         x -= length + (3 if k % 2 else 2)
         k += 1
     return out
+
+
+def mine_cells():
+    """{(x, z): y de la lave} du fond de la mine."""
+    return {(x, z): mine_lava_y(x) for x in range(MINE[0] - 2, MINE[1] + 1)
+            for z in range(math.floor(mine_z(x) - MINE_HALF), math.ceil(mine_z(x) + MINE_HALF) + 1)
+            if abs(z - mine_z(x)) <= MINE_HALF - 0.5 + 1.2 * (fn.fbm2(x, z, 7, 2, 41) + 1) / 2}
+
+
+# Parois des galeries : montées jusqu'à la voûte par cavern() (des tubes de roche, pas des murets).
+GALLERY_WALLS = set()
+
+
+def mine_start():
+    """Plate-forme sûre du départ de la mine (est), au niveau de l'arène du Champion."""
+    zc = round(mine_z(MINE[1]))
+    return {(x, z): CH_STAND for x in range(MINE[1] - 4, MINE[1] + 1) for z in range(zc - 2, zc + 3)}
+
+
+def galleries(p):
+    """Couloir aux rochers, palier nord, passage vers le Champion, arène du Champion, mine et palier d'arrivée :
+    galeries courbes creusées dans le volcan, qui descendent peu à peu."""
+    floors = {}                                         # (x, z) -> debout
+    corridor = path_cells(corridor_samples(), CORRIDOR_HALF, 51)
+    gate_z = GATE_CAMP[0][2]
+    corridor = {(x, z): v for (x, z), v in corridor.items() if z < gate_z or (z == gate_z and abs(x) <= 3)}
+    floors.update({c: v[0] for c, v in corridor.items()})
+    for i, side in alcoves():
+        for c, stand in alcove_cells(i, side).items():
+            floors.setdefault(c, stand)
+    lx, lz, lr, ls = LANDING_N
+    for x in range(lx - lr - 1, lx + lr + 2):
+        for z in range(lz - lr - 1, lz + lr + 2):
+            if math.hypot(x - lx, z - lz) <= lr + 0.5:
+                floors[(x, z)] = ls
+    for c, v in path_cells(smooth_path(PASSAGE_PATH), GALLERY_HALF, 52).items():
+        floors.setdefault(c, v[0])
+    for x in range(-49, CH_CENTER[0] - CH_RADIUS + 1):   # seuil vers la mine
+        for z in range(-96, -91):
+            floors[(x, z)] = CH_STAND
+    floors.update(mine_start())
+    ex0, ex1, ez0, ez1 = END_PAD
+    pad = {(x, z): PAD_STAND for x in range(ex0, ex1 + 1) for z in range(ez0, ez1 + 1)}
+    chx, chz = CH_CENTER
+    disc = lambda x, z: math.hypot(x - chx, z - chz) <= CH_RADIUS + 0.5      # sol de l'arène (fc.disc)
+    arena = lambda x, z: math.hypot(x - chx, z - chz) <= CH_RADIUS + 1.5     # avec son anneau de roche
+    camp = lambda x, z: CAMP[0] <= x <= CAMP[1] and CAMP[2] <= z <= CAMP[3]
+    for (x, z), stand in floors.items():
+        if disc(x, z) or camp(x, z):
+            continue
+        p.set(x, stand - 1, z, pick(GROUND, x, stand - 1, z))
+        for y in range(stand - 4, stand - 1):
+            p.set(x, y, z, pick(ROCK, x, y, z))
+        for y in range(stand, stand + 4):
+            p.set(x, y, z, go.AIR)
+    lava = mine_cells()
+    for (x, z), y in lava.items():
+        if (x, z) in floors or (x, z) in pad:
+            continue
+        p.set(x, y, z, LAVA if fn.hash01(x, 3, z, 42) < 0.8 else "Rock_Magma_Cooled")
+        p.set(x, y - 1, z, pick(ROCK, x, y - 1, z))
+    # Parois : tout ce qui borde un sol ou la coulée, à 2 blocs, sauf les arènes, le camp et le palier d'arrivée.
+    ground = dict(floors)
+    bottom = {c: stand - 4 for c, stand in floors.items()}
+    for (x, z), y in lava.items():
+        if (x, z) not in floors:
+            ground[(x, z)] = math.floor(mine_base(x))
+            bottom[(x, z)] = y - 1
+    near, low = {}, {}
+    for (x, z), stand in ground.items():
+        for dx in range(-2, 3):
+            for dz in range(-2, 3):
+                c = (x + dx, z + dz)
+                if c not in ground and c not in pad and not arena(*c) and not camp(*c):
+                    near[c] = max(near.get(c, stand), stand)
+                    low[c] = min(low.get(c, bottom[(x, z)]), bottom[(x, z)])
+    for (x, z), stand in near.items():
+        for y in range(low[(x, z)], stand + 3):
+            if fn.free(p, x, y, z):
+                p.set(x, y, z, cave_rock(x, y, z))
+        GALLERY_WALLS.add((x, z))
+    # Bouche du volcan en haut du couloir : la roche y luit (les rochers en sortent).
+    x, z, stand = corridor_samples()[2]
+    for (cx, cz) in [c for c in near if math.hypot(c[0] - x, c[1] - z) <= 6]:
+        for y in range(stand, stand + 3):
+            if p.blocks.get((cx, y, cz), (go.AIR,))[0] != go.AIR:
+                p.set(cx, y, cz, LAVA if (cx + y + cz) % 3 else EMBER)
+    for i, side in alcoves():
+        x, z, stand = corridor_samples()[i]
+        tx, tz = tangent(corridor_samples(), i)
+        d = CORRIDOR_HALF + 4.2   # au fond de la niche, sur le côté
+        p.set(round(x - tz * side * d + tx), stand, round(z + tx * side * d + tz), "Furniture_Crude_Torch")
+    champion_arena(p)
+    # Mine : plate-forme sûre au départ, rails sur planches.
+    for (x, z), stand in mine_start().items():
+        p.set(x, stand - 1, z, LANDING)
+    for x0, x1, stand, zc in mine_segments():
+        for x in range(x0, x1 + 1):
+            for z in range(zc - 1, zc + 2):
+                p.set(x, stand - 1, z, PLANKS)
+            p.set(x, stand, zc, "Rail")
+        for x in (x0, x1):
+            for y in range(mine_lava_y(x) + 1, stand - 1):
+                p.set(x, y, zc - 1, BEAM)
+                p.set(x, y, zc + 1, BEAM)
+    for (x, z), stand in pad.items():
+        p.set(x, stand - 1, z, LANDING if x >= ex1 - 2 else pick(GROUND, x, stand - 1, z))
+        for y in range(mine_lava_y(MINE[0]) - 1, stand - 1):
+            p.set(x, y, z, pick(ROCK, x, y, z))
+        for y in range(stand, stand + 4):
+            p.set(x, y, z, go.AIR)
+    p.set(ex1 - 1, PAD_STAND, ez1, "Deco_Bone_Skulls")
+    p.set(ex1 - 2, PAD_STAND, ez1, "Deco_Bone_Pile")
+    p.set(ex1, PAD_STAND, ez1, "Furniture_Ancient_Crate")
+
+
+def champion_arena(p):
+    """Arène du Champion : au nord, le bord d'une falaise au-dessus du lac de lave du volcan (la vue reste dégagée
+    sur l'île du Chamane, sans muret) ; au sud, le mur de roche et les grottes des vétérans."""
+    chx, chz = CH_CENTER
+    s = CH_STAND
+    fc.disc(p, chx, chz, CH_RADIUS, s, lambda x, z: pick(GROUND, x, s, z), ROCK, 8)
+    for a in range(0, 360, 6):
+        x, z = ring_point(CH_CENTER, CH_RADIUS + 1, a)
+        if abs(z - chz) <= 3 or z < chz - 4 or any(abs(x - gx) <= 2 and z > chz for gx, _ in VETERAN_GATES):
+            continue   # nord : rien entre l'arène et le vide, la vue sur l'île reste dégagée
+        for y in range(s - 1, s + 4):
+            p.set(x, y, z, pick(ROCK, x, y, z))
+    for a in CAPTIVE_ANGLES:   # cages des captifs, au bord de la falaise
+        x, z = ring_point(CH_CENTER, CAPTIVE_RADIUS, a)
+        p.set(x, s - 1, z, "Rock_Magma_Cooled")
+        p.set(x, s, z - 1, "Deco_Trork_Cage")
+    for gx, gz in VETERAN_GATES:   # grottes : un porche de roche, ouvert vers l'arène
+        for dx in range(-3, 4):
+            for dz in range(-2, 7):
+                x, z = gx + dx, gz + dz
+                p.set(x, s - 1, z, pick(GROUND, x, s - 1, z))
+                p.set(x, s - 2, z, pick(ROCK, x, s - 2, z))
+                if dz < 1:
+                    continue
+                inside = abs(dx) <= 1 and dz <= 5
+                for y in range(s, s + 6):
+                    p.set(x, y, z, go.AIR if inside and y < s + 3 else pick(ROCK, x, y, z))
+        p.set(gx, s + 2, gz + 1, "Furniture_Crude_Torch")
+    for (x, y, z) in GATE_CH:
+        p.set(x, y, z, MIST)
 
 
 def course_prefab():
@@ -158,118 +418,13 @@ def course_prefab():
         p.set(x + 2, 4, z, "Deco_Bone_Skulls")
     for x, z in ((-5, -10), (5, -10), (0, 8)):
         p.set(x, 0, z, "Furniture_Crude_Torch")
-    for (x, y, z) in GATE_CAMP:
+    galleries(p)
+    for (x, y, z) in GATE_CAMP:   # après les galeries : le couloir ne doit pas creuser la brume
         p.set(x, y, z, MIST)
-    # Couloir aux rochers (ouvert sur le ciel), niches, palier nord.
-    cx0, cx1, cz0, cz1 = CORRIDOR
-    for z in range(LANDING_N[2], cz1 + 1):
-        for x in range(cx0 - 1, cx1 + 2):
-            p.set(x, -1, z, pick(ROCK, x, -1, z) if cx0 <= x <= cx1 else pick(BRICK, x, -1, z))
-            p.set(x, -2, z, pick(ROCK, x, -2, z))
-            if x in (cx0 - 1, cx1 + 1):
-                for y in range(0, 8):
-                    p.set(x, y, z, pick(ROCK, x, y, z))
-    for zs, side in ALCOVES:
-        wall = cx1 + 1 if side > 0 else cx0 - 1
-        for z in range(zs - 2, zs + 1):
-            for dx in range(0, 3):
-                x = wall + side * dx
-                p.set(x, -1, z, pick(GROUND, x, -1, z))
-                for y in range(0, 4):
-                    p.set(x, y, z, go.AIR)
-                for y in range(4, 8):
-                    p.set(x, y, z, pick(ROCK, x, y, z))
-            p.set(wall + side * 3, 0, z, pick(ROCK, 0, 0, z))
-            for y in range(0, 8):
-                p.set(wall + side * 3, y, z, pick(ROCK, wall, y, z))
-        for dx in range(0, 4):
-            for y in range(0, 8):
-                p.set(wall + side * dx, y, zs - 3, pick(ROCK, dx, y, zs))
-                p.set(wall + side * dx, y, zs + 1, pick(ROCK, dx, y, zs))
-        p.set(wall + side * 2, 3, zs - 1, "Furniture_Crude_Torch")
-    lx0, lx1, lz0, lz1 = LANDING_N
-    for x in range(lx0 - 1, lx1 + 2):   # bouche du volcan au nord : d'où sortent les rochers
-        for y in range(0, 9):
-            p.set(x, y, lz0 - 1, pick(ROCK, x, y, lz0))
-        p.set(x, 5, lz0, pick(ROCK, x, 5, lz0))
-    for y in range(0, 4):
-        for x in range(-1, 3):
-            p.set(x, y, lz0 - 1, LAVA if y < 3 else pick(ROCK, x, y, lz0))
-    # Passage vers l'ouest et arène du Champion.
-    px0, px1, pz0, pz1 = PASSAGE
-    for x in range(px0, cx0):
-        for z in range(pz0, pz1 + 1):
-            p.set(x, -1, z, pick(GROUND, x, -1, z))
-            p.set(x, -2, z, pick(ROCK, x, -2, z))
-        for z in (pz0 - 1, pz1 + 1):
-            for y in range(0, 6):
-                p.set(x, y, z, pick(ROCK, x, y, z))
-    for y in range(0, 8):   # le mur ouest du couloir s'ouvre sur le passage
-        for z in range(pz0, pz1 + 1):
-            p.set(cx0 - 1, y, z, go.AIR if y < 5 else pick(ROCK, 0, y, z))
-    # Arène du Champion : au nord, le bord d'une falaise au-dessus du lac de lave du volcan (la vue
-    # reste dégagée sur l'île du Chamane, sans muret) ; au sud, le mur de roche et les grottes des vétérans.
-    chx, chz = CH_CENTER
-    fc.disc(p, chx, chz, CH_RADIUS, 0, lambda x, z: pick(GROUND, x, 0, z), ROCK, 8)
-    for a in range(0, 360, 6):
-        x, z = ring_point(CH_CENTER, CH_RADIUS + 1, a)
-        if abs(z - chz) <= 3 or z < chz - 4 or any(abs(x - gx) <= 2 and z > chz for gx, _ in VETERAN_GATES):
-            continue   # nord : rien entre l'arène et le vide, la vue sur l'île reste dégagée
-        for y in range(-1, 4):
-            p.set(x, y, z, pick(ROCK, x, y, z))
-    for a in CAPTIVE_ANGLES:   # cages des captifs, au bord de la falaise
-        x, z = ring_point(CH_CENTER, CAPTIVE_RADIUS, a)
-        p.set(x, -1, z, "Rock_Magma_Cooled")
-        p.set(x, 0, z - 1, "Deco_Trork_Cage")
-    for gx, gz in VETERAN_GATES:   # grottes : un porche de roche, ouvert vers l'arène
-        for dx in range(-3, 4):
-            for dz in range(-2, 7):
-                x, z = gx + dx, gz + dz
-                p.set(x, -1, z, pick(GROUND, x, -1, z))
-                p.set(x, -2, z, pick(ROCK, x, -2, z))
-                if dz < 1:
-                    continue
-                inside = abs(dx) <= 1 and dz <= 5
-                for y in range(0, 6):
-                    p.set(x, y, z, go.AIR if inside and y < 3 else pick(ROCK, x, y, z))
-        p.set(gx, 2, gz + 1, "Furniture_Crude_Torch")
-    for (x, y, z) in GATE_CH:
-        p.set(x, y, z, MIST)
-    for x in range(-49, chx - CH_RADIUS + 1):
-        for z in range(MINE_Z[0], MINE_Z[1] + 1):
-            p.set(x, -1, z, pick(GROUND, x, -1, z))
-    # Mine : rails sur planches au-dessus de la lave.
-    mz0, mz1 = MINE_Z
-    for x in range(MINE[0] - 2, MINE[1] + 1):
-        for z in range(mz0 - 4, mz1 + 5):
-            p.set(x, LAVA_Y, z, LAVA if (x * 5 + z * 3) % 7 else "Rock_Magma_Cooled")
-            p.set(x, LAVA_Y - 1, z, pick(ROCK, x, LAVA_Y - 1, z))
-        for z in (mz0 - 5, mz1 + 5):
-            for y in range(LAVA_Y, 12):
-                p.set(x, y, z, pick(ROCK, x, y, z))
-    for x in range(MINE[1] - 3, MINE[1] + 1):   # départ de la mine : plate-forme sûre
-        for z in range(mz0, mz1 + 1):
-            p.set(x, -1, z, LANDING)
-    for x0, x1, stand in mine_segments():
-        for x in range(x0, x1 + 1):
-            for z in range(mz0 + 1, mz1):
-                p.set(x, stand - 1, z, PLANKS)
-            p.set(x, stand, mz0 + 2, "Rail")
-        for x in (x0, x1):
-            for y in range(LAVA_Y + 1, stand - 1):
-                p.set(x, y, mz0 + 1, BEAM)
-                p.set(x, y, mz1 - 1, BEAM)
-    ex0, ex1, ez0, ez1 = END_PAD
-    for x in range(ex0, ex1 + 1):
-        for z in range(ez0, ez1 + 1):
-            p.set(x, PAD_STAND - 1, z, LANDING if x >= ex1 - 2 else pick(GROUND, x, PAD_STAND - 1, z))
-            for y in range(LAVA_Y, PAD_STAND - 1):
-                p.set(x, y, z, pick(ROCK, x, y, z))
-    p.set(ex1 - 1, PAD_STAND, ez1, "Deco_Bone_Skulls")
-    p.set(ex1 - 2, PAD_STAND, ez1, "Deco_Bone_Pile")
-    p.set(ex1, PAD_STAND, ez1, "Furniture_Ancient_Crate")
     island(p)
     dress(p)
+    cavern(p)
+    contain_lava(p)
     return p
 
 
@@ -336,49 +491,11 @@ def island(p):
 
 
 THEME = fn.THEMES["volcanic"]
-VOLCANO = (-78, -28, 34, 64)            # centre x, z, rayon, hauteur : le volcan d'où viennent les rochers
-
-
-def ridge(p, x0, x1, z0, z1, low, high, seed):
-    """Crête rocheuse irrégulière (falaise du canyon) sur la boîte, dessus entre `low` et `high`."""
-    tops = {}
-    for x in range(min(x0, x1), max(x0, x1) + 1):
-        for z in range(min(z0, z1), max(z0, z1) + 1):
-            tops[(x, z)] = low + round((high - low) * (fn.fbm2(x, z, 7, 3, seed) + 1) / 2)
-    inland = fn.edge_distance(tops)
-    cells = fn.island(p, tops, lambda x, z: tops[(x, z)] - LAVA_Y + 4 + min(10, inland[(x, z)] * 2), seed, hang=0.0,
-                      theme=THEME)
-    fn.dress(p, cells, THEME, seed, trees=0.03, spacing=7, bushes=0.05, boulders=0.004)
-
-
-def volcano(p):
-    """Cône du volcan : pentes de cendre et de roche, coulées de lave figée qui luisent, cratère de lave."""
-    cx, cz, r, h = VOLCANO
-    tops = {}
-    for x in range(cx - r - 4, cx + r + 5):
-        for z in range(cz - r - 4, cz + r + 5):
-            d = math.hypot(x - cx, z - cz)
-            reach = r * (0.9 + 0.2 * (fn.fbm2(x, z, 12, 2, 61) + 1) / 2)
-            if d > reach:
-                continue
-            t = 1 - d / reach
-            y = LAVA_Y + round(h * t ** 1.25 + 3 * fn.fbm2(x, z, 6, 2, 62))
-            if d < 7:
-                y = LAVA_Y + h - 8 + round(d * 0.6)     # cratère
-            tops[(x, z)] = y
-    lava = lambda x, z: (math.hypot(x - cx, z - cz) < 6 or
-                         abs(math.sin(math.atan2(z - cz, x - cx) * 3 + fn.fbm2(x, z, 9, 2, 63))) < 0.06)
-    inland = fn.edge_distance(tops)
-    cells = fn.island(p, tops, lambda x, z: tops[(x, z)] - LAVA_Y + 4 + min(30, inland[(x, z)] * 1.3), 61, hang=0.0,
-                      theme=THEME,
-                      grass=lambda x, z: "Rock_Volcanic_Cracked_Lava" if lava(x, z) else fn.soil(x, z, 61, THEME["soil"]))
-    fn.dress(p, [c for c in cells if math.hypot(c[0] - cx, c[2] - cz) > r * 0.45], THEME, 64, trees=0.02, spacing=8,
-             bushes=0.04, boulders=0.008, density=0.25)
 
 
 def dress(p):
-    """Terres brûlées autour du camp et des arènes, falaises du canyon aux rochers et de la mine, volcan au loin,
-    îlots de roche volcanique. Jamais de sol en plus au-dessus de la lave de la mine ni entre deux sauts."""
+    """Terres brûlées autour du camp et de l'arène du Champion, la caldeira. Pas d'arbres : tout se passe dans le
+    volcan (galleries, cavern). Jamais de sol en plus au-dessus de la lave de la mine ni entre deux sauts."""
     def footprint(y, x0, x1, z0, z1):
         return {(x, z): y for x in range(x0, x1 + 1) for z in range(z0, z1 + 1) if (x, y, z) in p.blocks}
 
@@ -386,32 +503,179 @@ def dress(p):
     x0, x1, z0, z1 = CAMP
     camp = footprint(-1, x0, x1, z0, z1)
     tops = fn.rim(camp, 4, 13, seed=21, block=lambda x, z: z < z0 + 2 and abs(x) < 10)
-    fn.natural_ground(p, tops, THEME, seed=21, trees=0.03, spacing=7, density=0.3)
-    # Canyon aux rochers : falaises de part et d'autre (les niches restent creusées dans le mur).
-    cx0, cx1, cz0, cz1 = CORRIDOR
-    ridge(p, cx1 + 2, cx1 + 12, LANDING_N[2] - 2, z0 - 1, 7, 14, 23)
-    ridge(p, cx0 - 2, cx0 - 12, PASSAGE[3] + 3, z0 - 1, 7, 14, 24)
-    ridge(p, LANDING_N[0] - 3, LANDING_N[1] + 12, LANDING_N[2] - 10, LANDING_N[2] - 2, 9, 18, 25)
+    fn.natural_ground(p, tops, THEME, seed=21, trees=0, spacing=7, density=0.3)
     # Arène du Champion : terres brûlées autour du cercle (les brèches des vétérans restent ouvertes).
     chx, chz = CH_CENTER
     ring = {}
     for x in range(chx - CH_RADIUS - 2, chx + CH_RADIUS + 3):
         for z in range(chz - CH_RADIUS - 2, chz + CH_RADIUS + 3):
             if math.hypot(x - chx, z - chz) <= CH_RADIUS + 1.5:
-                ring[(x, z)] = -1
+                ring[(x, z)] = CH_STAND - 1
     tops = fn.rim(ring, 4, 12, seed=27, block=lambda x, z: abs(z - chz) <= 6 or z < chz)   # nord : la falaise
-    tops = {c: y for c, y in tops.items() if not any((c[0], yy, c[1]) in p.blocks for yy in range(-1, 6))}
-    fn.natural_ground(p, tops, THEME, seed=27, trees=0.025, spacing=7, density=0.3)
-    # Mine : hautes parois rocheuses au-dessus des murs de la coulée de lave.
-    mz0, mz1 = MINE_Z
-    ridge(p, MINE[0] - 2, MINE[1], mz0 - 13, mz0 - 6, 12, 20, 29)
-    ridge(p, MINE[0] - 2, MINE[1], mz1 + 6, mz1 + 13, 12, 20, 30)
-    # Bout de la mine : une crête à l'ouest du palier, d'où part la descente vers le lac.
-    ex0, ex1, ez0, ez1 = END_PAD
-    ridge(p, ex0 - 12, ex0 - 1, ez0 + 1, ez1 + 8, 8, 15, 35)
-    volcano(p)
+    tops = {c: y for c, y in tops.items()
+            if not any((c[0], yy, c[1]) in p.blocks for yy in range(CH_STAND - 1, CH_STAND + 6))}
+    fn.natural_ground(p, tops, THEME, seed=27, trees=0, spacing=7, density=0.3)
     caldera(p)
-    fn.scatter_islets(p, (-200, 70, -200, 90), 22, (LAVA_Y - 20, 20), (3, 9), THEME, seed=33)
+
+
+# --- l'intérieur du volcan (Kevin, 2026-10-24) -------------------------------------------------------------------------
+# Toute la fractale se passe dans le volcan : une voûte de basalte au-dessus de chaque lieu (galeries de 7 à 16 blocs de
+# haut, une vaste grotte en dôme au-dessus de la caldeira), des parois tout autour, des gouffres au fond de lave figée
+# entre les lieux, des stalactites (blocs vanilla Rock_*_Stalactite_*, rotation 8 = pendue, comme dans les prefabs de
+# grottes du jeu), des veines incandescentes et des coulées de lave sur les parois.
+CEILING_THICKNESS = 2
+WALL_THICKNESS = 3
+OVERHANG = 3                            # la voûte déborde des lieux de 3 blocs (les gouffres entre deux lieux)
+DOME_Y = LAKE_Y + 50                    # sommet de la grande grotte de la caldeira
+STALACTITES = ["Rock_Basalt_Stalactite_Large", "Rock_Volcanic_Stalactite_Large", "Rock_Basalt_Stalactite_Small",
+               "Rock_Volcanic_Stalactite_Small"]
+HANGING = 8                             # rotation d'un bloc retourné (prefabs de grottes vanilla)
+
+
+def disc_offsets(r):
+    return [(dx, dz) for dx in range(-r, r + 1) for dz in range(-r, r + 1) if dx * dx + dz * dz <= r * r]
+
+
+def cave_rock(x, y, z):
+    """Roche de la voûte et des parois : basalte et roche volcanique en plaques, veines incandescentes."""
+    vein = abs(fn.fbm2(x + 0.37 * y, z - 0.29 * y, 9, 2, 91))
+    if vein < 0.012:
+        return LAVA         # veines de roche en fusion : la lumière des galeries
+    if vein < 0.035:
+        return EMBER
+    return pick(CAVE_ROCK, x, y, z)
+
+
+def cavern(p):
+    tops, bottoms = {}, {}
+    for (x, y, z), (name, _) in p.blocks.items():
+        if name == go.AIR and (x, y, z) not in p.fluids:
+            continue
+        tops[(x, z)] = max(tops.get((x, z), y), y)
+        bottoms[(x, z)] = min(bottoms.get((x, z), y), y)
+    inner = set(tops)
+    for dx, dz in disc_offsets(OVERHANG):
+        inner |= {(x + dx, z + dz) for x, z in tops}
+    outer = set(inner)
+    for dx, dz in disc_offsets(WALL_THICKNESS):
+        outer |= {(x + dx, z + dz) for x, z in inner}
+    walls = outer - inner
+    # Plus haut et plus bas voisins de chaque colonne (la voûte passe au-dessus des crêtes, les parois descendent sous
+    # les fonds), puis hauteur de voûte : dôme sur la caldeira, galeries ailleurs.
+    near_top, near_bottom = {}, {}
+    reach = disc_offsets(6)
+    for x, z in outer:
+        ts = [tops[(x + dx, z + dz)] for dx, dz in reach if (x + dx, z + dz) in tops]
+        bs = [bottoms[(x + dx, z + dz)] for dx, dz in reach if (x + dx, z + dz) in bottoms]
+        near_top[(x, z)] = max(ts) if ts else LAKE_Y
+        near_bottom[(x, z)] = min(bs) if bs else LAKE_Y - 2
+    raw = {}
+    for x, z in outer:
+        gallery = near_top[(x, z)] + 7 + round(9 * (fn.fbm2(x, z, 23, 2, 92) + 1) / 2)
+        d = min(math.hypot(x - cx, z - cz) - r for cx, cz, r in LAKE_DISCS)
+        dome = DOME_Y + round(5 * fn.fbm2(x, z, 17, 2, 93)) - max(0, d) * 0.8
+        raw[(x, z)] = max(gallery, dome)
+    ceiling = {}
+    blur = disc_offsets(3)
+    for x, z in outer:
+        vals = [raw[(x + dx, z + dz)] for dx, dz in blur if (x + dx, z + dz) in raw]
+        ceiling[(x, z)] = max(round(sum(vals) / len(vals)), near_top[(x, z)] + 5)
+    # Gouffres entre les lieux : fond de lave figée qui luit, sous le plus bas voisin.
+    for x, z in inner - set(tops):
+        floor = near_bottom[(x, z)] - 3
+        p.set(x, floor, z, LAVA if fn.hash01(x, 5, z, 94) < 0.5 else "Rock_Magma_Cooled")
+        p.set(x, floor - 1, z, pick(ROCK, x, floor - 1, z))
+    # Voûte.
+    for x, z in inner:
+        c = ceiling[(x, z)]
+        for y in range(c, c + CEILING_THICKNESS):
+            p.set(x, y, z, cave_rock(x, y, z))
+    # Parois des galeries montées jusqu'à la voûte : des tubes de roche courbes.
+    for x, z in GALLERY_WALLS:
+        if (x, z) in ceiling:
+            for y in range(tops[(x, z)] + 1, ceiling[(x, z)]):
+                if fn.free(p, x, y, z):
+                    p.set(x, y, z, cave_rock(x, y, z))
+    # Parois, du fond des gouffres à la voûte.
+    for x, z in walls:
+        for y in range(near_bottom[(x, z)] - 5, ceiling[(x, z)] + CEILING_THICKNESS):
+            if fn.free(p, x, y, z):
+                p.set(x, y, z, cave_rock(x, y, z))
+    lava_falls(p, walls, inner, ceiling, near_bottom)
+    stalactites(p, inner, ceiling, tops)
+    cave_flora(p, tops)
+
+
+def lava_falls(p, walls, inner, ceiling, near_bottom):
+    """Coulées de lave sur les parois qui bordent le lac de la caldeira et la coulée de la mine : une bande de roche en
+    fusion de la voûte jusqu'en bas, sur la face tournée vers la grotte."""
+    faces = sorted((x, z) for x, z in walls if any((x + dx, z + dz) in inner for dx, dz in ((1, 0), (-1, 0), (0, 1), (0, -1))))
+    mine = lambda x, z: MINE[0] - 2 <= x <= MINE[1] and abs(z - mine_z(x)) <= MINE_HALF + 8
+    placed = []
+    for x, z in faces:
+        lake = any(math.hypot(x - cx, z - cz) <= r + 12 for cx, cz, r in LAKE_DISCS)
+        if not (lake or mine(x, z)) or fn.hash01(x, 7, z, 95) > 0.08:
+            continue
+        if any(math.hypot(x - a, z - b) < 11 for a, b in placed):
+            continue
+        placed.append((x, z))
+        width = 1 + int(fn.hash01(z, 7, x, 96) * 2)
+        for k in range(width):
+            fx, fz = (x + k, z) if (x + k, z) in walls else (x, z + k)
+            for y in range(near_bottom[(x, z)] - 4, ceiling[(x, z)]):
+                p.set(fx, y, fz, LAVA)
+    # Coulées des hautes parois de la mine (côté rails : on ne s'y tient jamais).
+    for x in range(MINE[0] + 4, MINE[1] - 4, 13):
+        for side in (-1, 1):
+            z = round(mine_z(x) + side * (MINE_HALF + 2))
+            if (x, z) in GALLERY_WALLS:
+                for y in range(mine_lava_y(x), math.floor(mine_base(x)) + 10):
+                    p.set(x, y, z, LAVA)
+
+
+def stalactites(p, inner, ceiling, tops):
+    """Stalactites sous la voûte, loin au-dessus des têtes : cône de roche (large en haut) et pointe vanilla pendue."""
+    for x, z in sorted(inner):
+        h = fn.hash01(x, 9, z, 97)
+        if h > 0.035:
+            continue
+        c = ceiling[(x, z)]
+        room = c - tops.get((x, z), LAKE_Y - 2)
+        if room < 10:
+            continue
+        length = 1 + int(fn.hash01(z, 9, x, 98) * min(7, room - 8))
+        for k in range(1, length + 1):
+            y = c - k
+            p.set(x, y, z, cave_rock(x, y, z))
+            if k <= length // 2:
+                for dx, dz in ((1, 0), (-1, 0), (0, 1), (0, -1)):
+                    if fn.hash01(x + dx, y, z + dz, 99) < 0.7 and fn.free(p, x + dx, y, z + dz):
+                        p.set(x + dx, y, z + dz, cave_rock(x + dx, y, z + dz))
+        p.set(x, c - length - 1, z, STALACTITES[int(h / 0.035 * len(STALACTITES)) % len(STALACTITES)], HANGING)
+
+
+def cave_flora(p, tops):
+    """Roseaux de lave au bord du lac et des coulées, ronces de lave sur la cendre."""
+    for (x, z), y in sorted(tops.items()):
+        name = p.blocks.get((x, y, z), ("",))[0]
+        if not fn.free(p, x, y + 1, z) or math.hypot(x - AR_CENTER[0], z - AR_CENTER[1]) <= AR_RADIUS + 1:
+            continue
+        lava_near = any(p.blocks.get((x + dx, y + dy, z + dz), ("",))[0] == LAVA or (x + dx, y + dy, z + dz) in p.fluids
+                        for dx, dz in ((2, 0), (-2, 0), (0, 2), (0, -2)) for dy in (0, -1, -2, -3))
+        h = fn.hash01(x, y, z, 100)
+        if name.startswith("Soil_") and lava_near and h < 0.35:
+            p.set(x, y + 1, z, "Plant_Reeds_Lava")
+        elif name == "Soil_Ash" and h < 0.012:
+            p.set(x, y + 1, z, "Plant_Bramble_Dead_Lavathorn")
+
+
+def contain_lava(p):
+    """La lave du lac ne doit couler nulle part : chaque case de fluide a de la lave ou de la roche à côté et dessous."""
+    for (x, y, z) in list(p.fluids):
+        for dx, dy, dz in ((1, 0, 0), (-1, 0, 0), (0, 0, 1), (0, 0, -1), (0, -1, 0)):
+            at = (x + dx, y + dy, z + dz)
+            if at not in p.fluids and not p.solid_at(*at):
+                p.set(*at, pick(ROCK, at[0], at[1], at[2]))
 
 
 def descent_cells():
@@ -436,7 +700,7 @@ def in_lake(x, z):
 def caldera(p):
     """Le lac de lave au pied du volcan : la descente (sentier puis chaussée), la lave autour de l'île du Chamane,
     les falaises qui tombent jusqu'au lac (sous l'arène du Champion, la crête de la mine) et les parois du cratère
-    tout autour. La lave du lac brûle (Java : Volcanic.lavaFloor)."""
+    tout autour. Le lac est de la vraie lave (fluide Lava_Source) ; y tomber brûle (Java : Volcanic.lavaFloor)."""
     path = descent_cells()
     for (x, z), stand in path.items():
         p.set(x, stand - 1, z, pick(GROUND, x, stand - 1, z))
@@ -457,13 +721,14 @@ def caldera(p):
     zs = [cz - r - 4 for _, cz, r in LAKE_DISCS] + [cz + r + 4 for _, cz, r in LAKE_DISCS]
     lake = {(x, z) for x in range(min(xs), max(xs) + 1) for z in range(min(zs), max(zs) + 1)
             if in_lake(x, z) and (x, z) not in columns}
-    for x, z in lake:
-        p.set(x, LAKE_Y, z, LAVA if fn.hash01(x, 3, z, 83) > 0.12 else "Rock_Magma_Cooled")
-        p.set(x, LAKE_Y - 1, z, pick(ROCK, x, LAKE_Y - 1, z))
+    for x, z in lake:   # vraie lave sur deux blocs de fond (Kevin, 2026-10-24)
+        p.fluid(x, LAKE_Y, z, LAVA_FLUID)
+        p.fluid(x, LAKE_Y - 1, z, LAVA_FLUID)
+        p.set(x, LAKE_Y - 2, z, pick(ROCK, x, LAKE_Y - 2, z))
     near = lambda x, z, d: any((x + dx, z + dz) in lake for dx in range(-d, d + 1) for dz in range(-d, d + 1))
     for (x, z), low in columns.items():   # falaises : ce qui borde le lac descend jusqu'au fond
-        if low > LAKE_Y - 1 and near(x, z, 2):
-            for y in range(LAKE_Y - 1, low):
+        if low > LAKE_Y - 2 and near(x, z, 2):
+            for y in range(LAKE_Y - 2, low):
                 p.set(x, y, z, pick(ROCK, x, y, z))
     # Parois du cratère autour du lac (pas sur ce qui existe déjà, ni contre la descente).
     tops = {}
@@ -478,7 +743,7 @@ def caldera(p):
                 tops[(x, z)] = LAKE_Y + 6 + round(20 * (fn.fbm2(x, z, 13, 3, 86) + 1) / 2)
     inland = fn.edge_distance(tops)
     cells = fn.island(p, tops, lambda x, z: tops[(x, z)] - LAKE_Y + 2, 87, hang=0.0, theme=THEME)
-    fn.dress(p, [c for c in cells if inland[(c[0], c[2])] > 1], THEME, 88, trees=0.02, spacing=8, bushes=0.04,
+    fn.dress(p, [c for c in cells if inland[(c[0], c[2])] > 1], THEME, 88, trees=0, spacing=8, bushes=0.04,
              boulders=0.006, density=0.25)
 
 
@@ -817,15 +1082,17 @@ def lang():
                   "Volcanic: slay the grawls of the ritual ({count}), under the volcano's falling rocks."),
         "camp.done": ("Le totem du rituel s'effondre : la barrière se dissipe.", "The ritual totem collapses: the barrier fades."),
         "checkpoint": ("Point de retour déplacé.", "Respawn point moved."),
-        "corridor.enter": ("Des rochers dévalent le couloir : abritez-vous dans les niches !",
-                           "Boulders roll down the corridor: shelter in the alcoves!"),
+        "corridor.enter": ("Des rochers dévalent la pente derrière vous : abritez-vous dans les niches !",
+                           "Boulders roll down the slope behind you: shelter in the alcoves!"),
         "boulder.hit": ("Écrasé par un rocher en feu !", "Crushed by a burning boulder!"),
         "champion.enter": ("Le Champion chaman est protégé : ramassez les pierres imprégnées (accroupi) et lancez-les-lui "
                            "(clic droit). Ne laissez pas ses vétérans rejoindre les captifs !",
                            "The Champion shaman is protected: pick up the imbued stones (crouch) and throw them at him "
                            "(right-click). Don't let his veterans reach the captives!"),
         "champion.stack": ("Une charge de protection en moins ({count} restantes).", "One protection stack fewer ({count} left)."),
-        "champion.shield": ("Le Champion se protège de nouveau !", "The Champion protects himself again!"),
+        "champion.shield": ("Le Champion se protège de nouveau : une charge de protection, lancez-lui une pierre imprégnée !",
+                            "The Champion protects himself again: one protection stack, throw an imbued stone at him!"),
+        "champion.exposed": ("Le Champion n'est plus protégé : frappez-le !", "The Champion is no longer protected: strike him!"),
         "champion.veterans": ("Des vétérans sortent des grottes du sud et marchent vers les captifs !",
                               "Veterans leave the southern caves and march on the captives!"),
         "captive.lost": ("Un captif est jeté dans la lave ({count}/{total} perdus).",
@@ -867,21 +1134,25 @@ def lang():
 def java_layout():
     J = fc
     camp = J.jpoints([(x, 0, z) for x, z in CAMP_SPAWNS])
-    captives = J.jpoints([(x, 0, z) for x, z in (ring_point(CH_CENTER, CAPTIVE_RADIUS, a) for a in CAPTIVE_ANGLES)])
-    vgates = J.jpoints([(x, 0, z + 4) for x, z in VETERAN_GATES])
+    captives = J.jpoints([(x, CH_STAND, z) for x, z in (ring_point(CH_CENTER, CAPTIVE_RADIUS, a) for a in CAPTIVE_ANGLES)])
+    vgates = J.jpoints([(x, CH_STAND, z + 4) for x, z in VETERAN_GATES])
     crater_list = craters()
     crater_points = J.jpoints([(x, AR_STAND, z) for x, z in crater_list])
     crater_cells_java = ",\n".join("            " + J.jblocks(crater_cells(c)) for c in crater_list)
     stages = ", ".join(f'"{name}"' for name in CRATER_STAGES)
     villagers = J.jpoints([(ring_point(AR_CENTER, VILLAGER_RADIUS, a)[0], AR_STAND, ring_point(AR_CENTER, VILLAGER_RADIUS, a)[1])
                            for a in VILLAGER_ANGLES])
-    alcoves = ", ".join(f"{{{zs - 2}, {zs}, {side}}}" for zs, side in ALCOVES)
-    zones = ",\n".join("            " + J.jbox(*b[:2], b[2], b[3], *b[4:]) for b in JUMP_ZONES)
-    cx0, cx1, cz0, cz1 = CORRIDOR
-    lx0, lx1, lz0, lz1 = LANDING_N
+    # Chemin des rochers : de la bouche (en haut, au sud) au palier nord, un point par bloc (centre de la voie).
+    path = J.jpoints([(x + 0.5, stand, z + 0.5) for x, z, stand in corridor_samples()[2:]], False)
+    lx, lz, _, ls = LANDING_N
     ex0, ex1, ez0, ez1 = END_PAD
     mx0, mx1 = MINE
-    bats = J.jpoints([(x, 4, -94) for x in (-62, -78, -94, -108)])
+    mzs = [mine_z(x) for x in range(mx0, mx1 + 1)]
+    mz0, mz1 = math.floor(min(mzs)) - MINE_HALF - 2, math.ceil(max(mzs)) + MINE_HALF + 2
+    lava_low = min(mine_lava_y(x) for x in range(mx0, mx1 + 1))
+    mine_box = J.jbox(mx0 - 2, mx1 + 2, lava_low - 1, CH_STAND + 8, mz0, mz1)
+    jump_box = J.jbox(mx0 - 2, mx1 + 2, lava_low - 4, CH_STAND + 10, mz0, mz1)
+    bats = J.jpoints([(x, math.floor(mine_base(x)) + 4, round(mine_z(x))) for x in (-62, -78, -94, -108)])
     return f"""package dev.nakasar.hytale.fractals.volcanic;
 
 import dev.nakasar.hytale.fractals.arena.Box;
@@ -901,34 +1172,35 @@ public final class VolcanicLayout {{
     public static final double[][] CAMP_SPAWNS = {camp};
     public static final int[][] GATE_CAMP = {J.jblocks(GATE_CAMP)};
 
-    /** Couloir aux rochers : voie (x0..x1, z nord..sud), niches {{z0, z1, côté}}, palier nord, départ des rochers. */
-    public static final Box CORRIDOR = {J.jbox(cx0, cx1, -1, 5, lz0, cz1)};
-    public static final int CORRIDOR_X0 = {cx0};
-    public static final int CORRIDOR_X1 = {cx1};
-    public static final int[][] ALCOVES = {{{alcoves}}};
-    public static final double[] BOULDER_START = {J.jpoint(BOULDER_START, False)};
-    public static final double BOULDER_END_Z = {BOULDER_END_Z};
+    /**
+     * Couloir aux rochers, galerie courbe qui descend vers le nord : chemin des rochers (pieds, un point par bloc, de
+     * la bouche du haut au palier nord) et demi-largeur de la voie ; les niches sont hors de la voie.
+     */
+    public static final double[][] BOULDER_PATH = {path};
+    public static final double CORRIDOR_HALF_WIDTH = {CORRIDOR_HALF};
     public static final double[] CORRIDOR_CHECKPOINT = {J.jpoint((0, 0, -19))};
-    public static final double[] LANDING_CHECKPOINT = {J.jpoint((-6, 0, -94))};
+    public static final double[] LANDING_CHECKPOINT = {J.jpoint((lx - 4, ls, lz - 1))};
 
     /** Arène du Champion chaman : captifs au bord nord (falaise), vétérans au fond des grottes du sud. */
-    public static final double[] CHAMPION = {J.jpoint((CH_CENTER[0], 0, CH_CENTER[1]))};
+    public static final double[] CHAMPION = {J.jpoint((CH_CENTER[0], CH_STAND, CH_CENTER[1]))};
     public static final double CHAMPION_RADIUS = {CH_RADIUS};
     public static final double[][] CAPTIVES = {captives};
     public static final double[][] VETERAN_GATES = {vgates};
     public static final int[][] GATE_CHAMPION = {J.jblocks(GATE_CH)};
 
     /** Mine. */
-    public static final Box MINE = {J.jbox(mx0 - 2, mx1 + 2, -2, 8, MINE_Z[0] - 3, MINE_Z[1] + 3)};
-    public static final List<Box> JUMP_ZONES = List.of(
-{zones});
+    public static final Box MINE = {mine_box};
+    public static final List<Box> JUMP_ZONES = List.of({jump_box});
     public static final double[][] BATS = {bats};
     public static final Box END_PAD = {J.jbox(ex0, ex1, PAD_STAND - 1, PAD_STAND + 4, ez0, ez1)};
-    public static final double[] END_CHECKPOINT = {J.jpoint((ex1 - 1, PAD_STAND, -94))};
+    public static final double[] END_CHECKPOINT = {J.jpoint((ex0 + 4, PAD_STAND, -94))};
 
     /** Île du Chamane imprégné, au milieu du lac de lave. */
     public static final double[] ARENA_CENTER = {J.jpoint((AR_CENTER[0], AR_STAND, AR_CENTER[1]))};
     public static final double ARENA_RADIUS = {AR_RADIUS};
+    /** Lac de vraie lave autour de l'île : disques {{x, z, rayon}} et dessus de la lave (y du monde). */
+    public static final double[][] LAKE = {{{", ".join(f"{{{x}, {z}, {r}}}" for x, z, r in LAKE_DISCS)}}};
+    public static final double LAKE_SURFACE = {fc.GROUND_Y + LAKE_Y + 1};
     public static final double[][] VILLAGERS = {villagers};
     /** Cratères de l'île : centres (pieds) et cases du dessus ; blocs du froid à la lave active. */
     public static final double[][] CRATERS = {crater_points};

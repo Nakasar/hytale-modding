@@ -6,8 +6,8 @@
 Le déroulé de GW2 (wiki.guildwars2.com/wiki/Swampland_Fractal), dans l'ordre :
 
 1. les feux-follets : ramener trois feux-follets dans leurs failles avant la fin du minuteur, lancé au premier
-   ramassé (1 min 04 en Initié, 38 s en Adepte, 30 s au-delà). Dès qu'un feu-follet est pris, des murs surgissent
-   entre les arbres : il faut sauter par-dessus ou contourner. Pièges au sol : fils tendus (renversent et estropient),
+   ramassé (1 min 20 en Initié, 50 s en Adepte, 42 s au-delà ; murs à contourner). Dès qu'un feu-follet est pris, des murs de racines
+   de deux blocs surgissent entre les arbres : impossible de sauter par-dessus, il faut contourner. Pièges au sol : fils tendus (renversent et estropient),
    pièges à loup, plaques à piques (dangereuses quand elles rougissent), œufs d'araignée. Des fusils revigorants près
    des failles accélèrent les alliés et ralentissent les ennemis. Raté : tout se remet en place, les feux-follets
    changent de place ;
@@ -61,9 +61,13 @@ MOSSMAN = "Nakasar_Fractal_Mossman"
 MOSSMAN_BEAST = "Nakasar_Fractal_Mossman_Beast"
 MOSS_WOLF = "Nakasar_Fractal_Moss_Wolf"
 BLOOMHUNGER = "Nakasar_Fractal_Bloomhunger"
-SPIRIT = "Nakasar_Fractal_Spirit_Animal"
+# Esprits animaux de Carnasse : animaux vanilla en teintes spectrales (Kevin, 2026-10-24). animal : (modèle parent,
+# échelle, vie, attaque vanilla, portée, variables d'interaction de l'attaque).
+SPIRIT_PREFIX = "Nakasar_Fractal_Spirit_"
+SPIRIT_ANIMALS = ["Wolf", "Fox", "Bear"]
+SPIRITS = [SPIRIT_PREFIX + a for a in SPIRIT_ANIMALS]
 BLOOM = "Nakasar_Fractal_Poison_Bloom"
-FOE_ROLES = [MOSSMAN, MOSSMAN_BEAST, MOSS_WOLF, BLOOMHUNGER, SPIRIT, BLOOM]
+FOE_ROLES = [MOSSMAN, MOSSMAN_BEAST, MOSS_WOLF, BLOOMHUNGER, BLOOM] + SPIRITS
 PURGE_CAUSE = "Nakasar_Fractal_Purge"
 
 GROUND = ["Soil_Mud", "Soil_Grass_Wet", "Soil_Mud", "Plant_Moss_Block_Green", "Soil_Grass_Deep", "Soil_Mud_Dry"]
@@ -81,6 +85,7 @@ SWAMP = (-38, 38, -40, 38)               # x0, x1, z0, z1
 CLEFTS = [(-10, -35), (0, -37), (10, -35)]
 WISP_SPOTS = [[(-33, 27), (-34, -14)], [(33, 27), (34, -14)], [(-13, 34), (13, 34)]]   # un feu-follet par groupe
 WALLS = [(-30, -6, 20), (6, 30, 20), (-20, 20, 5), (-34, -10, -11), (10, 34, -11), (-22, 22, -24)]   # x0, x1, z
+WALL_HEIGHT = 2                         # murs de racines du Java : trop hauts pour sauter ; colonnes gardées libres
 RACKS = [(-17, -34), (17, -34)]
 GATE_SWAMP = [(x, y, -41) for x in range(-2, 3) for y in range(0, 5)]
 PASSAGE = (-3, 3, -92, -42)             # x0, x1, z0 (nord), z1 (sud)
@@ -226,7 +231,25 @@ def course_prefab():
             for y in range(0, 5):
                 p.set(x, y, z, go.AIR)
     dress(p)
+    stumps(p)
     return p
+
+
+# Feux-follets posés sur une souche (Kevin, 2026-10-24) : on voit de loin où le prendre. Souche de saule des marais
+# (tronc vanilla, cernes sur le dessus) sur le sol, le feu-follet un bloc plus haut ; racines au pied si la place est libre.
+WISP_Y = 1
+STUMP = "Wood_Sallow_Trunk"
+STUMP_ROOTS = "Wood_Sallow_Roots"
+
+
+def stumps(p):
+    for k, (x, z) in enumerate([q for g in WISP_SPOTS for q in g] + [CL_WISP] + CL_CORNERS):
+        for y in range(0, WISP_Y):
+            p.set(x, y, z, STUMP)
+        p.blocks.pop((x, WISP_Y, z), None)   # rien dans le prefab : le Java pose le feu-follet, le prefab ne doit pas l'effacer
+        for i, (dx, dz) in enumerate(((1, 0), (0, 1), (-1, 0), (0, -1))):
+            if (k + i) % 2 == 0 and not p.solid_at(x + dx, 0, z + dz):
+                p.set(x + dx, 0, z + dz, STUMP_ROOTS)
 
 
 def cliffs(p, cells, low, high, seed):
@@ -320,8 +343,12 @@ PARTICLE_SYSTEMS = {
     "Nakasar_Fractal_Wisp_Glow": ("Feu-follet : lueur verte qui monte.",
                                   [("Glow", S("#f0fff8", "#60ffc0", 8, (0.3, 0.8), (60, 90), 0.4, 1.2), 0.5)]),
     "Nakasar_Fractal_Wisp_Ring": ("Cercle vert de Carnasse : lueurs vertes posées au sol (zone favorable).",
-                                  [("Ring", S("#d0ffe0", "#30e070", 3, (0.1, 0.3), (70, 90), 0.2, 0.6,
-                                              life=(0.5, 0.7), size=(0.25, 0.4)), 0.1)]),
+                                  [("Ring", S("#d0ffe0", "#30e070", 6, (0.6, 1.2), (80, 90), 0.2, 0.9,
+                                              life=(0.6, 0.9), size=(0.35, 0.55)), 0.1)]),
+    "Nakasar_Fractal_Green_Emanation": ("Cercle vert de Carnasse : émanations vertes qui montent du sol, semées dans "
+                                        "tout le cercle (Java).",
+                                        [("Rise", S("#e0ffe8", "#40e080", 10, (0.6, 1.4), (75, 90), 1.6, 1.4,
+                                                    life=(1.0, 1.6), size=(0.25, 0.45)), 0.0)]),
     "Nakasar_Fractal_Wall_Rise": ("Un mur surgit entre les arbres : terre et racines.",
                                   [("Dirt", S("#a08060", "#3a2a18", 10, (1.0, 2.5), (40, 90), 0.8, 0.4,
                                               life=(0.4, 0.7), blend="BlendLinear"), 0.2)]),
@@ -351,7 +378,32 @@ PARTICLE_SYSTEMS = {
 
 # --- modèles ----------------------------------------------------------------------------------------------
 
+def bite(start, start_anims, damage_parent, damage, knockback):
+    """Variables d'une morsure vanilla (Wolf_White, Fox) : animation de départ et dégâts."""
+    return {"Melee_Start": {"Interactions": [{"Parent": start, "Effects": {"ItemPlayerAnimationsId": start_anims,
+                                                                           "ItemAnimationId": "Bite"}, "RunTime": 0.167}]},
+            "Bite_Damage": {"Interactions": [{"Parent": damage_parent, "DamageCalculator": {
+                "Type": "Absolute", "BaseDamage": {"Physical": damage}, "RandomPercentageModifier": 0.1},
+                "DamageEffects": {"Knockback": {"Force": knockback}}}]}}
+
+
+def swipes(damage):
+    """Variables des coups du grizzly vanilla (Root_NPC_Bear_Grizzly_Attack) : dégâts, recul faible."""
+    return {f"{v}_Damage": {"Interactions": [{"Parent": f"Bear_Grizzly_{v}_Damage", "DamageCalculator": {
+        "Type": "Absolute", "BaseDamage": {"Physical": damage}, "RandomPercentageModifier": 0.1},
+        "DamageEffects": {"Knockback": {"Force": 0.5}}}]} for v in ("Swipe_Left", "Swipe_Right", "Stomp")}
+
+
+# Attaques vanilla des animaux (lues dans Assets.zip 0.7.2, rôles Wolf_White, Fox, Bear_Grizzly) : nos coups en boîtes
+# ne touchaient pas toujours (même leçon que les colosses de l'Océan solide).
+WILD = {
+    "Wolf": ("Wolf_Black", 0.9, 70, "Root_NPC_Wolf_Attack", 2.5, bite("Wolf_Bite", "Wolf_Black_Default", "Wolf_Bite_Damage", 8, 1)),
+    "Fox": ("Fox", 1.1, 55, "Root_NPC_Fox_Attack", 2.5, bite("Fox_Bite", "Fox_Default", "Fox_Bite_Damage", 7, 0.5)),
+    "Bear": ("Bear_Grizzly", 0.9, 90, "Root_NPC_Bear_Grizzly_Attack", 3.25, swipes(12)),
+}
+
 def wolf_parts(body, dark, eye, glow=False):
+    """Loup en boîtes : loup de givre de la Tempête de neige (generate_snowblind)."""
     shade = "fullbright" if glow else "flat"
     paint = fm.crystal(body, (230, 255, 250)) if glow else fm.smooth(body)
     return [("Body", (0, 26, 0), (18, 16, 38), 0, paint, shade),
@@ -392,11 +444,15 @@ def models():
     m[MOSSMAN_BEAST] = fr.humanoid("Le Moussu, forme sauvage (provisoire) : encore plus grand (× 1,55), yeux rouges ; GW2 "
                                    "en fait une bête des esprits du Sauvage (ours, loup, léopard, corbeau).", "07",
                                    "Face_Scar", norn, scale=(1.55, 1.55), light={"Color": "#f44", "Radius": 2})
-    m[MOSS_WOLF] = fc.character_model("Moss_Wolf", wolf_parts((96, 90, 80), (60, 54, 46), (255, 210, 80)), 82,
-                                      "Loup du Moussu (provisoire) : loup en boîtes, sans animation.", 0.6, (0.5, 0.9))
-    m[SPIRIT] = fc.character_model("Spirit_Animal", wolf_parts((120, 230, 200), (60, 160, 140), (230, 255, 240), True), 83,
-                                   "Esprit animal de Carnasse (provisoire) : loup spectral en boîtes, sans animation.",
-                                   0.6, (0.5, 0.9), light={"Color": "#9fd", "Radius": 2})
+    m[MOSS_WOLF] = {"$Comment": "Loup du Moussu : le loup noir vanilla (modèle et animations du jeu).",
+                    "Parent": "Wolf_Black", "MinScale": 0.9, "MaxScale": 0.9}
+    for animal in SPIRIT_ANIMALS:
+        parent, scale = WILD[animal][:2]
+        m[SPIRIT_PREFIX + animal] = {
+            "$Comment": f"Esprit animal de Carnasse : {parent} vanilla (modèle et animations du jeu), texture spectrale "
+                        "vert d'eau translucide (tools/generate_spirit_textures.py).",
+            "Parent": parent, "Texture": f"{fc.NPC_MODELS}/Spirits/{animal}.png", "MinScale": scale, "MaxScale": scale,
+            "Light": {"Color": "#9fd", "Radius": 2}}
     m[BLOOMHUNGER] = {"$Comment": "Carnasse (boss du Marais) : l'esprit de racine vanilla, très grand ; GW2 en fait un "
                                   "tréant des esprits.", "Parent": "Spirit_Root", "MinScale": 2.4, "MaxScale": 2.4,
                       "Light": {"Color": "#9f6", "Radius": 5}}
@@ -454,7 +510,8 @@ def interactions():
                                            fr.swing("Griffe droite.", "Mace", "SwingRight", 0.3, 24, end=3.4,
                                                     direction="ToRight", yaw=-50)]}
     out["Nakasar_Fractal_Wolf_Bite"] = {
-        "$Comment": "Loup (du Moussu ou esprit de Carnasse) : morsure (8 dégâts).",
+        "$Comment": "Morsure en boîte (8 dégâts) : loup de givre de la Tempête de neige (generate_snowblind) ; les loups "
+                    "et esprits du Marais mordent comme les animaux vanilla.",
         "Type": "Serial", "Interactions": [fr.swing("Morsure.", None, None, 0.3, 8, end=2.2, length=70, yaw=35,
                                                      sound="SFX_Unarmed_Swing")]}
     out["Nakasar_Fractal_Bloomhunger_Jab"] = {
@@ -528,14 +585,20 @@ def roles():
          fr.melee(R("Mossman_Maul"), 3.0, (0.6, 1.0)), fr.chase(34, stop=2.2)],
         fr.walk(5.0), GENERATOR, sight=34, leash=40, home=False,
         timers=[fr.timer("Leap", (1, 3), (6, 8))], KnockbackScale=0.1, DeathAnimationTime=2.0)
+    _, _, _, attack, reach, wolf_vars = WILD["Wolf"]
     out[MOSS_WOLF] = fr.role(
-        MOSS_WOLF, "Loup du Moussu : appelé par lui, fonce et mord.", MOSS_WOLF, n(MOSS_WOLF), 80,
-        [fr.melee(R("Wolf_Bite"), 2.2, (0.7, 1.1)), fr.chase(36, stop=1.4)],
-        fr.walk(5.2), GENERATOR, sight=30, leash=40, home=False, KnockbackScale=0.8, DeathAnimationTime=0.8)
-    out[SPIRIT] = fr.role(
-        SPIRIT, "Esprit animal de Carnasse : invulnérable hors du cercle vert (Java), fonce et mord.", SPIRIT, n(SPIRIT), 70,
-        [fr.melee(R("Wolf_Bite"), 2.2, (0.7, 1.1)), fr.chase(40, stop=1.4)],
-        fr.walk(5.0), GENERATOR, sight=40, leash=44, home=False, KnockbackScale=0.8, DeathAnimationTime=0.8)
+        MOSS_WOLF, "Loup du Moussu : appelé par lui, fonce et mord (morsure du loup vanilla, 8 dégâts).", MOSS_WOLF,
+        n(MOSS_WOLF), 80, [fr.melee(attack, reach, (0.7, 1.1)), fr.chase(36, stop=1.4)],
+        fr.walk(5.2), GENERATOR, sight=30, leash=40, home=False, KnockbackScale=0.8, DeathAnimationTime=0.8,
+        InteractionVars=wolf_vars)
+    for animal in SPIRIT_ANIMALS:
+        _, _, hp, attack, reach, variables = WILD[animal]
+        role = SPIRIT_PREFIX + animal
+        out[role] = fr.role(
+            role, "Esprit animal de Carnasse : invulnérable hors du cercle vert (Java), fonce et attaque comme l'animal "
+            "vanilla.", role, n(role), hp, [fr.melee(attack, reach, (0.7, 1.1)), fr.chase(40, stop=1.4)],
+            fr.walk(5.0), GENERATOR, sight=40, leash=44, home=False, KnockbackScale=0.8, DeathAnimationTime=0.8,
+            InteractionVars=variables)
     out[BLOOMHUNGER] = fr.role(
         BLOOMHUNGER, "Carnasse, barre de boss et de défiance : coup et revers, charge, bond suivi du martèlement, pluie de "
         "poison, tir de poison. Le cercle vert, les assauts d'esprits, les fleurs de poison et les feux-follets à 25 % "
@@ -572,7 +635,8 @@ def lang():
            "Use: speeds up nearby allies and slows nearby foes.")
     for role, f, e in ((MOSSMAN, "Le Moussu", "The Mossman"), (MOSSMAN_BEAST, "Le Moussu (forme sauvage)", "The Mossman (wild form)"),
                        (MOSS_WOLF, "Loup du Moussu", "Mossman's wolf"), (BLOOMHUNGER, "Carnasse", "Bloomhunger"),
-                       (SPIRIT, "Esprit animal", "Spirit animal"), (BLOOM, "Fleur de poison", "Poison bloom")):
+                       (SPIRITS[0], "Esprit du loup", "Wolf spirit"), (SPIRITS[1], "Esprit du renard", "Fox spirit"),
+                       (SPIRITS[2], "Esprit de l'ours", "Bear spirit"), (BLOOM, "Fleur de poison", "Poison bloom")):
         t.npc(role, f, e)
     for eff, f, e in (("Swiftness", "Rapidité", "Swiftness"), ("Crippled", "Estropié", "Crippled"),
                       ("Bear_Trapped", "Pris au piège", "Trapped"), ("Wisp_Vigor", "Vigueur du feu-follet", "Wisp vigor")):
@@ -581,7 +645,8 @@ def lang():
         "intro": ("Marais : ramenez les trois feux-follets dans leurs failles, au nord. Le minuteur part au premier pris : "
                   "{seconds} s.", "Swampland: bring the three wisps back to their clefts, to the north. The timer starts "
                   "with the first one: {seconds} s."),
-        "wisp.taken": ("Feu-follet pris : des murs surgissent entre les arbres !", "Wisp taken: walls rise between the trees!"),
+        "wisp.taken": ("Feu-follet pris : des murs de racines surgissent entre les arbres, contournez-les !",
+                       "Wisp taken: root walls rise between the trees, go around them!"),
         "wisp.full": ("Vous portez déjà un feu-follet.", "You already carry a wisp."),
         "wisp.none": ("Il vous faut un feu-follet pour cette faille.", "You need a wisp for this cleft."),
         "cleft.lit": ("Un feu-follet rejoint sa faille ({count}/{total}).", "A wisp reaches its cleft ({count}/{total})."),
@@ -614,9 +679,10 @@ def lang():
                        "Bloomhunger returns to the fight; poison blooms grow in the clearing."),
         "bloom.wisps": ("Carnasse se charge ! Rapportez les quatre feux-follets des coins avant la fin de sa charge ({seconds} s) !",
                         "Bloomhunger is charging! Bring the four corner wisps back before his charge ends ({seconds} s)!"),
-        "bloom.wisps.done": ("Les quatre failles brillent : Carnasse est étourdi dans un grand cercle vert !",
-                             "The four clefts shine: Bloomhunger is stunned in a large green circle!"),
-        "bloom.purge": ("Purge corporelle !", "Corporeal purge!"),
+        "bloom.wisps.done": ("Les quatre failles brillent : Carnasse est étourdi, et vulnérable dans toute la clairière !",
+                             "The four clefts shine: Bloomhunger is stunned, and vulnerable all over the clearing!"),
+        "bloom.purge": ("Purge corporelle ! Carnasse est maintenant vulnérable dans toute la clairière.",
+                        "Corporeal purge! Bloomhunger is now vulnerable all over the clearing."),
         "bloom.reset": ("Carnasse se rendort ; les failles s'éteignent.", "Bloomhunger falls asleep; the clefts go dark."),
         "bloom.victory": ("Carnasse se dessèche : le marais est purifié.", "Bloomhunger withers: the swamp is cleansed."),
         "title.victory": ("Marais terminé", "Swampland complete"),
@@ -631,8 +697,8 @@ def lang():
 def java_layout():
     J = fc
     clefts = J.jblocks([(x, 0, z) for x, z in CLEFTS])
-    spots = "{" + ", ".join(J.jpoints([(x, 0, z) for x, z in g]) for g in WISP_SPOTS) + "}"
-    spot_blocks = "{" + ", ".join(J.jblocks([(x, 0, z) for x, z in g]) for g in WISP_SPOTS) + "}"
+    spots = "{" + ", ".join(J.jpoints([(x, WISP_Y, z) for x, z in g]) for g in WISP_SPOTS) + "}"
+    spot_blocks = "{" + ", ".join(J.jblocks([(x, WISP_Y, z) for x, z in g]) for g in WISP_SPOTS) + "}"
     walls = "{" + ", ".join(f"{{{a}, {b}, {GROUND_Y + 0}, {z}}}" for a, b, z in WALLS) + "}"
     kinds = {TRIPWIRE: 0, BEAR_TRAP: 1, SPIKE_PLATE: 2, SPIDER_EGGS: 3}
     traps_j = "{" + ", ".join(f"{{{x}, {GROUND_Y - 1}, {z}, {kinds[k]}}}" for x, z, k in TRAPS) + "}"
@@ -640,7 +706,7 @@ def java_layout():
     sx0, sx1, sz0, sz1 = SWAMP
     rx0, rx1, rz0, rz1 = ROOM
     cl_clefts = J.jblocks([(x, 0, z) for x, z in CL_CLEFTS])
-    corners = J.jblocks([(x, 0, z) for x, z in CL_CORNERS])
+    corners = J.jblocks([(x, WISP_Y, z) for x, z in CL_CORNERS])
     return f"""package dev.nakasar.hytale.fractals.swampland;
 
 import dev.nakasar.hytale.fractals.arena.Box;
@@ -661,6 +727,7 @@ public final class SwamplandLayout {{
     public static final double[][][] WISP_POINTS = {spots};
     /** Murs qui surgissent dès qu'un feu-follet est pris : {{x0, x1, y, z}}, un bloc de haut. */
     public static final int[][] WALLS = {walls};
+    public static final int WALL_HEIGHT = {WALL_HEIGHT};
     /** Pièges : {{x, y, z, sorte}} ; sortes : 0 fil tendu, 1 piège à loup, 2 plaque à piques, 3 œufs d'araignée. */
     public static final int[][] TRAPS = {traps_j};
     public static final int[][] RACKS = {racks};
@@ -681,7 +748,7 @@ public final class SwamplandLayout {{
     public static final double CLEARING_RADIUS = {CL_RADIUS};
     /** Failles de la clairière, dans le sens horaire (N, E, S, O). */
     public static final int[][] CLEARING_CLEFTS = {cl_clefts};
-    public static final int[] CLEARING_WISP = {J.jblock((CL_WISP[0], 0, CL_WISP[1]))};
+    public static final int[] CLEARING_WISP = {J.jblock((CL_WISP[0], WISP_Y, CL_WISP[1]))};
     public static final int[][] CORNER_WISPS = {corners};
     public static final double[] CLEARING_CHECKPOINT = {J.jpoint((0, 0, -95))};
     public static final int[] REWARD = {J.jblock(REWARD_AT)};

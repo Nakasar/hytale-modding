@@ -2,13 +2,17 @@ package dev.nakasar.hytale.fractals.swampland;
 
 import com.hypixel.hytale.component.Ref;
 import com.hypixel.hytale.component.Store;
+import com.hypixel.hytale.math.vector.Rotation3f;
 import com.hypixel.hytale.protocol.packets.interface_.EventTitleStyle;
 import com.hypixel.hytale.server.core.Message;
+import com.hypixel.hytale.server.core.modules.entity.component.TransformComponent;
+import com.hypixel.hytale.server.core.modules.entity.teleport.Teleport;
 import com.hypixel.hytale.server.core.universe.PlayerRef;
 import com.hypixel.hytale.server.core.universe.world.World;
 import com.hypixel.hytale.server.core.universe.world.storage.ChunkStore;
 import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
 import com.hypixel.hytale.server.core.util.EventTitleUtil;
+import dev.nakasar.hytale.fractals.FractalsPlugin;
 import dev.nakasar.hytale.fractals.arena.Carried;
 import dev.nakasar.hytale.fractals.arena.WorldBlocks;
 import dev.nakasar.hytale.fractals.combat.Hurt;
@@ -59,10 +63,19 @@ final class WispRun {
     private float spikeClock;
     private float glow;
 
-    /** Minuteur des feux-follets selon le niveau : 64 s, puis 38 s dès le niveau 26, 30 s dès le 51. */
+    /**
+     * Minuteur des feux-follets selon le niveau : 80 s, puis 50 s dès le niveau 26, 42 s dès le 51 (rallongé depuis que
+     * les murs de racines ne se sautent plus : il faut les contourner).
+     */
     static float timer(World world) {
         int level = FractalRuns.level(world);
-        return level < Agony.FIRST_LEVEL ? 64f : level < 51 ? 38f : 30f;
+        return level < Agony.FIRST_LEVEL ? 80f : level < 51 ? 50f : 42f;
+    }
+
+    /** Bloc qu'un mur a remplacé (plante, liane), remis quand le mur retombe : clé x, y, z. */
+    private final Map<List<Integer>, Under> underWalls = new HashMap<>();
+
+    private record Under(String block, int rotation) {
     }
 
     boolean done() {
@@ -75,9 +88,21 @@ final class WispRun {
         ThreadLocalRandom random = ThreadLocalRandom.current();
         for (int g = 0; g < spot.length; g++) {
             spot[g] = random.nextInt(SwamplandLayout.WISP_SPOTS[g].length);
-            int[] b = SwamplandLayout.WISP_SPOTS[g][spot[g]];
-            WorldBlocks.set(chunks, b[0], b[1], b[2], Swampland.WISP_BLOCK, 0);
+            place(chunks, SwamplandLayout.WISP_SPOTS[g][spot[g]]);
         }
+    }
+
+    /**
+     * Pose un feu-follet ; faux (et une ligne de log) si la section n'est pas chargée. Kevin, 2026-10-24 : les
+     * feux-follets du marais n'apparaissaient pas, d'où la repose dans {@link #glow} tant que la course n'a pas commencé.
+     */
+    static boolean place(ChunkStore chunks, int[] b) {
+        boolean ok = WorldBlocks.set(chunks, b[0], b[1], b[2], Swampland.WISP_BLOCK, 0);
+        if (!ok) {
+            FractalsPlugin.get().getLogger().atInfo().log("Nakasar_Fractal_Wisp : pose impossible en %d %d %d (section non chargée)",
+                    b[0], b[1], b[2]);
+        }
+        return ok;
     }
 
     // --- feux-follets, murs, minuteur ------------------------------------------------------------------
@@ -111,19 +136,57 @@ final class WispRun {
 
     private void walls(World world, Store<EntityStore> store, boolean up) {
         ChunkStore chunks = world.getChunkStore();
+        if (up) {
+            stepOffWalls(world, store);
+        }
         for (int[] w : SwamplandLayout.WALLS) {
             for (int x = w[0]; x <= w[1]; x++) {
-                String here = WorldBlocks.name(chunks, x, w[2], w[3]);
-                if (up && !WorldBlocks.solid(chunks, x, w[2], w[3])) {
-                    WorldBlocks.set(chunks, x, w[2], w[3], Swampland.WALL, 0);
-                } else if (!up && Swampland.WALL.equals(here)) {
-                    WorldBlocks.clear(chunks, x, w[2], w[3]);
+                for (int y = w[2]; y < w[2] + Swampland.WALL_HEIGHT; y++) {
+                    String here = WorldBlocks.name(chunks, x, y, w[3]);
+                    List<Integer> key = List.of(x, y, w[3]);
+                    if (up && !WorldBlocks.solid(chunks, x, y, w[3])) {
+                        if (here != null) {
+                            underWalls.put(key, new Under(here, WorldBlocks.rotation(chunks, x, y, w[3])));
+                        }
+                        WorldBlocks.set(chunks, x, y, w[3], Swampland.WALL, 0);
+                    } else if (!up && (Swampland.WALL.equals(here) || y == w[2] && Swampland.OLD_WALL.equals(here))) {
+                        Under before = underWalls.remove(key);
+                        if (before != null) {
+                            WorldBlocks.set(chunks, x, y, w[3], before.block(), before.rotation());
+                        } else {
+                            WorldBlocks.clear(chunks, x, y, w[3]);
+                        }
+                    }
                 }
             }
             if (up) {
                 for (int x = w[0]; x <= w[1]; x += 4) {
                     Telegraphs.particle(store, "Nakasar_Fractal_Wall_Rise", new Vector3d(x + 0.5, w[2], w[3] + 0.5), 1f);
                 }
+            }
+        }
+    }
+
+    /** Un joueur debout sur la ligne d'un mur qui surgit est poussé d'un bloc et demi de côté : jamais pris dedans. */
+    private static void stepOffWalls(World world, Store<EntityStore> store) {
+        for (PlayerRef player : world.getPlayerRefs()) {
+            Ref<EntityStore> ref = player.getReference();
+            Vector3d at = Telegraphs.position(store, ref);
+            if (at == null) {
+                continue;
+            }
+            for (int[] w : SwamplandLayout.WALLS) {
+                double line = w[3] + 0.5;
+                if (at.x() < w[0] - 0.4 || at.x() > w[1] + 1.4 || Math.abs(at.z() - line) >= 0.9
+                        || at.y() < w[2] - 1 || at.y() > w[2] + Swampland.WALL_HEIGHT) {
+                    continue;
+                }
+                double side = at.z() >= line ? 1 : -1;
+                TransformComponent transform = store.getComponent(ref, TransformComponent.getComponentType());
+                Rotation3f rotation = transform != null ? transform.getRotation() : new Rotation3f();
+                store.putComponent(ref, Teleport.getComponentType(), Teleport.createForPlayer(
+                        new Vector3d(at.x(), at.y(), line + side * 1.5), rotation));
+                break;
             }
         }
     }
@@ -157,7 +220,7 @@ final class WispRun {
         }
     }
 
-    /** Lueur au-dessus des feux-follets encore au sol. */
+    /** Lueur au-dessus des feux-follets encore au sol ; avant le premier pris, repose ceux qui manquent. */
     private void glow(World world, Store<EntityStore> store, float dt) {
         glow += dt;
         if (glow < 1f) {
@@ -167,7 +230,13 @@ final class WispRun {
         ChunkStore chunks = world.getChunkStore();
         for (int g = 0; g < spot.length; g++) {
             int[] b = SwamplandLayout.WISP_SPOTS[g][spot[g]];
-            if (Swampland.WISP_BLOCK.equals(WorldBlocks.name(chunks, b[0], b[1], b[2]))) {
+            boolean there = Swampland.WISP_BLOCK.equals(WorldBlocks.name(chunks, b[0], b[1], b[2]));
+            if (!there && !running) {
+                FractalsPlugin.get().getLogger().atInfo().log("Nakasar_Fractal_Wisp : feu-follet absent en %d %d %d (%s), reposé",
+                        b[0], b[1], b[2], WorldBlocks.name(chunks, b[0], b[1], b[2]));
+                there = place(chunks, b);
+            }
+            if (there) {
                 Telegraphs.particle(store, "Nakasar_Fractal_Wisp_Glow", new Vector3d(b[0] + 0.5, b[1] + 1, b[2] + 0.5), 1f);
             }
         }

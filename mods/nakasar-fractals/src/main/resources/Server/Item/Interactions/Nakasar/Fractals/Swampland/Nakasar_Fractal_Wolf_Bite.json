@@ -1,5 +1,5 @@
 {
-  "$Comment": "Loup (du Moussu ou esprit de Carnasse) : morsure (8 dégâts).",
+  "$Comment": "Morsure en boîte (8 dégâts) : loup de givre de la Tempête de neige (generate_snowblind) ; les loups et esprits du Marais mordent comme les animaux vanilla.",
   "Type": "Serial",
   "Interactions": [
     {

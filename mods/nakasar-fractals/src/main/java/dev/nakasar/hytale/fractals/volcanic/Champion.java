@@ -30,12 +30,16 @@ import java.util.concurrent.ThreadLocalRandom;
 /**
  * Le Champion chaman des grawls. Son IA (JSON) frappe et lance les flammes sous chaque joueur ; le Java mène le reste :
  * <ul>
- *   <li>{@value #STACKS} charges de protection : chacune retire 11 % des dégâts qu'il subit ; seule une pierre
+ *   <li>{@value #STACKS} charges de protection : invulnérable tant qu'il en garde une ; seule une pierre
  *   imprégnée lancée sur lui en retire une ; elle se ramasse accroupi, une par joueur, et se garde en main
- *   ({@link CrouchPickup}). À 50 % de vie, il en reprend une (une fois) ;</li>
+ *   ({@link CrouchPickup}). À 50 % de vie, deuxième phase de protection : il reprend {@value #RESHIELD_STACKS} charge
+ *   (une fois) ;</li>
+ *   <li>pierres imprégnées seulement pendant les phases de protection, vétérans seulement pendant la première (Kevin,
+ *   2026-10-24) ; à la dernière charge retirée, les
+ *   pierres disparaissent (sol et mains) : on frappe avec ses armes ;</li>
  *   <li>sa vie ne remonte jamais d'elle-même ({@link PinnedHealth#noRegen}) : pas de répit pendant qu'on attend les
  *   pierres ;</li>
- *   <li>des rochers tombent toutes les {@value #ROCK_INTERVAL} s, un sur trois laisse une pierre imprégnée ;</li>
+ *   <li>des rochers tombent toutes les {@value #ROCK_INTERVAL} s ; protégé, un sur trois laisse une pierre imprégnée ;</li>
  *   <li>toutes les {@value #VETERAN_INTERVAL} s, des vétérans sortent des grottes et marchent vers un captif (leur
  *   point d'attache) ; un vétéran à {@value #PUSH_RANGE} blocs d'un captif pendant {@value #PUSH_TIME} s le jette dans
  *   la lave. Tous perdus : la rencontre repart de zéro. Tous sauvés : {@value #BONUS} éclats de Brume par joueur ;</li>
@@ -45,7 +49,7 @@ import java.util.concurrent.ThreadLocalRandom;
 final class Champion {
 
     static final int STACKS = 8;
-    static final float STACK_REDUCTION = 0.11f;
+    static final int RESHIELD_STACKS = 1;
     static final float ROCK_INTERVAL = 6f;
     static final float VETERAN_INTERVAL = 20f;
     static final double PUSH_RANGE = 2;
@@ -120,7 +124,7 @@ final class Champion {
         }
         if (!reshielded && Hurt.healthFraction(store, boss) < 0.5f) {
             reshielded = true;
-            stacks++;
+            stacks = Math.max(stacks, RESHIELD_STACKS);
             showStacks();
             Vector3d at = Telegraphs.position(store, boss);
             if (at != null) {
@@ -131,15 +135,20 @@ final class Champion {
         rockClock += dt;
         if (rockClock >= ROCK_INTERVAL) {
             rockClock = 0f;
-            Volcanic.fallingRocks(world, store, st, inArena, 2 + (FractalRuns.partySize(world) >= 3 ? 1 : 0), true);
+            Volcanic.fallingRocks(world, store, st, inArena, 2 + (FractalRuns.partySize(world) >= 3 ? 1 : 0), stacks > 0);
         }
-        veteranClock += dt;
+        veteranClock += stacks > 0 && !reshielded ? dt : 0f;   // vétérans : première phase de protection seulement
         if (veteranClock >= VETERAN_INTERVAL) {
             veteranClock = 0f;
             veterans(world, store);
         }
         march(world, store, dt);
         return false;
+    }
+
+    /** Phase de protection en cours (charges restantes) : vétérans et pierres imprégnées. */
+    boolean shielded() {
+        return stacks > 0;
     }
 
     private void showStacks() {
@@ -248,12 +257,11 @@ final class Champion {
 
     // --- charges -----------------------------------------------------------------------------------------
 
-    /** Coup sur le Champion (groupe de filtres) : chaque charge retire {@value #STACK_REDUCTION} des dégâts. */
+    /** Coup sur le Champion (groupe de filtres) : invulnérable tant qu'il lui reste une charge (Kevin, 2026-10-24). */
     void filter(Ref<EntityStore> victim, Damage damage) {
-        if (!victim.equals(boss) || stacks <= 0) {
-            return;
+        if (victim.equals(boss) && stacks > 0) {
+            damage.setCancelled(true);
         }
-        damage.setAmount(damage.getAmount() * Math.max(0.1f, 1f - STACK_REDUCTION * stacks));
     }
 
     /** Pierre imprégnée arrivée sur `target`. */
@@ -268,6 +276,21 @@ final class Champion {
             Telegraphs.particle(store, "Nakasar_Fractal_Rock_Impact", new Vector3d(at).add(0, 1.5, 0), 1f);
         }
         Spawns.tellAll(world, Message.translation(Volcanic.MESSAGES + "champion.stack").param("count", stacks));
+        if (stacks == 0) {
+            clearStones(world, store);
+            Spawns.tellAll(world, Message.translation(Volcanic.MESSAGES + "champion.exposed"));
+        }
+    }
+
+    /** Plus de pierres imprégnées, au sol comme en main : sans protection, elles ne servent à rien et bloquent la main. */
+    private static void clearStones(World world, Store<EntityStore> store) {
+        CrouchPickup.removeGround(world, store, Volcanic.STONE);
+        for (PlayerRef player : world.getPlayerRefs()) {
+            Ref<EntityStore> ref = player.getReference();
+            if (ref != null && ref.isValid()) {
+                CrouchPickup.removeAll(store, ref, Volcanic.STONE);
+            }
+        }
     }
 
     // --- remise à zéro et victoire ------------------------------------------------------------------------
@@ -310,7 +333,7 @@ final class Champion {
             LABELS.remove(boss);
             PinnedHealth.unpin(boss);
         }
-        CrouchPickup.removeGround(world, store, Volcanic.STONE);
+        clearStones(world, store);
         boolean allSaved = true;
         for (boolean l : lost) {
             allSaved &= !l;
@@ -320,7 +343,6 @@ final class Champion {
             if (ref == null || !ref.isValid()) {
                 continue;
             }
-            CrouchPickup.removeAll(store, ref, Volcanic.STONE);
             if (allSaved) {
                 for (int k = 0; k < BONUS; k++) {
                     Carried.give(store, ref, SHARD);

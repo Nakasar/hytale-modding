@@ -1,0 +1,11 @@
+{
+  "$Comment": "Esprit animal de Carnasse : Wolf_Black vanilla (modèle et animations du jeu), texture spectrale vert d'eau translucide (tools/generate_spirit_textures.py).",
+  "Parent": "Wolf_Black",
+  "Texture": "NPC/Nakasar/Fractals/Spirits/Wolf.png",
+  "MinScale": 0.9,
+  "MaxScale": 0.9,
+  "Light": {
+    "Color": "#9fd",
+    "Radius": 2
+  }
+}

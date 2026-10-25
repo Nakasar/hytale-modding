@@ -2,8 +2,8 @@
   "RenderMode": "BlendAdd",
   "ParticleRotationInfluence": "Billboard",
   "ParticleLifeSpan": {
-    "Min": 0.5,
-    "Max": 0.7
+    "Min": 0.6,
+    "Max": 0.9
   },
   "ParticleRotateWithSpawner": false,
   "TrailSpawnerPositionMultiplier": 1,
@@ -31,8 +31,8 @@
       "Opacity": 1,
       "Scale": {
         "X": {
-          "Min": 0.25,
-          "Max": 0.4
+          "Min": 0.35,
+          "Max": 0.55
         }
       }
     }
@@ -46,7 +46,7 @@
     },
     "Y": {
       "Min": 0,
-      "Max": 0.6
+      "Max": 0.9
     },
     "Z": {
       "Min": 0,
@@ -55,21 +55,21 @@
   },
   "InitialVelocity": {
     "Speed": {
-      "Min": 0.1,
-      "Max": 0.3
+      "Min": 0.6,
+      "Max": 1.2
     },
     "Yaw": {
       "Min": -180,
       "Max": 180
     },
     "Pitch": {
-      "Min": 70,
+      "Min": 80,
       "Max": 90
     }
   },
   "TotalParticles": {
-    "Min": 3,
-    "Max": 3
+    "Min": 6,
+    "Max": 6
   },
-  "MaxConcurrentParticles": 3
+  "MaxConcurrentParticles": 6
 }

@@ -1,0 +1,11 @@
+{
+  "$Comment": "Esprit animal de Carnasse : Fox vanilla (modèle et animations du jeu), texture spectrale vert d'eau translucide (tools/generate_spirit_textures.py).",
+  "Parent": "Fox",
+  "Texture": "NPC/Nakasar/Fractals/Spirits/Fox.png",
+  "MinScale": 1.1,
+  "MaxScale": 1.1,
+  "Light": {
+    "Color": "#9fd",
+    "Radius": 2
+  }
+}

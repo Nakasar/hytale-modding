@@ -55,6 +55,8 @@ public final class BossBarSystem extends TickingSystem<EntityStore> {
     private static final Set<String> EVERYWHERE = ConcurrentHashMap.newKeySet();
     /** Texte ajouté au nom de la barre, par rôle (barre de défiance) ; null : rien. Lu à chaque passage. */
     private static final Map<String, Function<Ref<EntityStore>, String>> LABELS = new ConcurrentHashMap<>();
+    /** Portée de la barre par rôle, quand elle n'est pas {@link #RANGE} ({@link #range}). */
+    private static final Map<String, Double> RANGES = new ConcurrentHashMap<>();
 
     private static final double RANGE = 40;
     private static final float INTERVAL = 0.25f;
@@ -69,7 +71,7 @@ public final class BossBarSystem extends TickingSystem<EntityStore> {
     private record Shown(World world, int networkId, PlayerRef player, String label) {
     }
 
-    private record Elite(int networkId, Vector3d position, String nameKey, String label, boolean everywhere) {
+    private record Elite(int networkId, Vector3d position, String nameKey, String label, boolean everywhere, double range) {
     }
 
     /** Donne une barre de boss au rôle `role`. */
@@ -81,6 +83,12 @@ public final class BossBarSystem extends TickingSystem<EntityStore> {
     public static void everywhere(String role) {
         ELITES.add(role);
         EVERYWHERE.add(role);
+    }
+
+    /** Donne au rôle `role` une barre vue jusqu'à `range` blocs (toute une arène), au lieu de {@link #RANGE}. */
+    public static void range(String role, double range) {
+        ELITES.add(role);
+        RANGES.put(role, range);
     }
 
     /** Ajoute au nom de la barre du rôle `role` le texte rendu par `label` (null : rien) ; la barre est renvoyée quand il change. */
@@ -103,8 +111,15 @@ public final class BossBarSystem extends TickingSystem<EntityStore> {
         for (PlayerRef player : players) {
             present.add(player.getUuid());
         }
-        // Joueurs partis de ce monde (déconnexion, changement de monde) : on oublie leur barre.
-        SHOWN.entrySet().removeIf(entry -> entry.getValue().world() == world && !present.contains(entry.getKey()));
+        // Joueurs partis de ce monde (déconnexion, changement de monde) : on retire leur barre, sinon le client la garde.
+        SHOWN.entrySet().removeIf(entry -> {
+            Shown shown = entry.getValue();
+            if (shown.world() != world || present.contains(entry.getKey())) {
+                return false;
+            }
+            hide(shown.player(), shown.networkId());
+            return true;
+        });
         if (players.isEmpty()) {
             return;
         }
@@ -119,12 +134,12 @@ public final class BossBarSystem extends TickingSystem<EntityStore> {
                     : store.getComponent(ref, TransformComponent.getComponentType());
             Elite nearest = null;
             if (transform != null) {
-                double best = RANGE * RANGE;
+                double best = Double.MAX_VALUE;
                 double nearestGlobal = Double.MAX_VALUE;
                 Elite global = null;
                 for (Elite elite : engaged) {
                     double distance = elite.position().distanceSquared(transform.getPosition());
-                    if (distance <= best) {
+                    if (distance <= elite.range() * elite.range() && distance <= best) {
                         best = distance;
                         nearest = elite;
                     }
@@ -159,7 +174,8 @@ public final class BossBarSystem extends TickingSystem<EntityStore> {
             String nameKey = npc.getRole() == null ? null : npc.getRole().getNameTranslationKey();
             Function<Ref<EntityStore>, String> labeler = LABELS.get(role);
             engaged.add(new Elite(networkId.getId(), new Vector3d(transform.getPosition()),
-                    nameKey != null ? nameKey : role, labeler == null ? null : labeler.apply(ref), everywhere));
+                    nameKey != null ? nameKey : role, labeler == null ? null : labeler.apply(ref), everywhere,
+                    RANGES.getOrDefault(role, RANGE)));
         }
     }
 
@@ -181,7 +197,9 @@ public final class BossBarSystem extends TickingSystem<EntityStore> {
         UUID uuid = player.getUuid();
         Shown before = SHOWN.get(uuid);
         if (before != null && before.player() != player) {
-            // Nouvelle session du même joueur : son client n'a aucune barre.
+            // Autre PlayerRef du même joueur (reconnexion, changement de monde) : on retire quand même la barre, sans
+            // effet si le client ne l'a plus.
+            hide(player, before.networkId());
             SHOWN.remove(uuid);
             before = null;
         }
@@ -190,7 +208,7 @@ public final class BossBarSystem extends TickingSystem<EntityStore> {
             return;
         }
         if (before != null) {
-            player.getPacketHandler().writeNoCache(new UpdateBossBar(before.networkId(), null, true, false));
+            hide(player, before.networkId());
             SHOWN.remove(uuid);
         }
         if (elite != null) {
@@ -200,6 +218,14 @@ public final class BossBarSystem extends TickingSystem<EntityStore> {
             }
             player.getPacketHandler().writeNoCache(new UpdateBossBar(elite.networkId(), name.getFormattedMessage(), false, false));
             SHOWN.put(uuid, new Shown(world, elite.networkId(), player, elite.label()));
+        }
+    }
+
+    private static void hide(PlayerRef player, int networkId) {
+        try {
+            player.getPacketHandler().writeNoCache(new UpdateBossBar(networkId, null, true, false));
+        } catch (RuntimeException ignored) {
+            // Session fermée : plus de client à prévenir.
         }
     }
 

@@ -142,16 +142,6 @@ def imbued_stone():
             part("Crack_Top", (-0.5, 6.05, 0), (4.5, 0.6, 1.2), lava, glow=True, rot=(0, 35, 0))]
 
 
-def reflecting_crystal():
-    """Cristal réfléchissant : grand cristal de jade facetté, cœur clair."""
-    c = fb.crystal((40, 140, 110), (210, 255, 230))
-    return [part("Base", (0, 1, 0), (6, 2, 6), fb.jade((60, 150, 116), (190, 255, 220)), rot=(0, 45, 0)),
-            part("Body", (0, 7, 0), (5, 10, 5), c, glow=True, rot=(0, 45, 0)),
-            part("Tip", (0, 13, 0), (3, 3, 3), c, glow=True, rot=(0, 45, 0)),
-            part("Side", (2.6, 5, 0), (2.5, 5, 2.5), c, glow=True, rot=(0, 30, -22)),
-            part("Heart", (0, 7, 2.6), (1.5, 4, 0.5), glow((255, 255, 255)), glow=True)]
-
-
 def wisp():
     """Feu-follet en lanterne : socle et chapeau de laiton, vitres, flamme verte."""
     flame = glow((150, 255, 210))
@@ -189,7 +179,6 @@ ITEMS = {
     "Mist_Shard": mist_shard,
     "Mist_Tear": mist_tear,
     "Imbued_Stone": imbued_stone,
-    "Reflecting_Crystal": reflecting_crystal,
     "Wisp": wisp,
     "Frost_Torch": frost_torch,
     "Firewood": firewood,
