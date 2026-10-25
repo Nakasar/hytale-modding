@@ -5,6 +5,7 @@ import com.hypixel.hytale.codec.KeyedCodec;
 import com.hypixel.hytale.codec.builder.BuilderCodec;
 import com.hypixel.hytale.component.CommandBuffer;
 import com.hypixel.hytale.component.Ref;
+import com.hypixel.hytale.component.Store;
 import com.hypixel.hytale.protocol.InteractionState;
 import com.hypixel.hytale.protocol.InteractionType;
 import com.hypixel.hytale.protocol.WaitForDataFrom;
@@ -13,6 +14,7 @@ import com.hypixel.hytale.server.core.entity.InteractionContext;
 import com.hypixel.hytale.server.core.modules.interaction.interaction.CooldownHandler;
 import com.hypixel.hytale.server.core.modules.interaction.interaction.config.SimpleInstantInteraction;
 import com.hypixel.hytale.server.core.universe.PlayerRef;
+import com.hypixel.hytale.server.core.universe.world.World;
 import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
 import dev.nakasar.hytale.fractals.potion.MistPotions.Kind;
 
@@ -54,14 +56,19 @@ public class DrinkMistPotionInteraction extends SimpleInstantInteraction {
             context.getState().state = InteractionState.Failed;
             return;
         }
-        MistPotionState state = buffer.getComponent(player, MistPotionState.getComponentType());
-        if (state == null) {
-            state = new MistPotionState();
-            buffer.addComponent(player, MistPotionState.getComponentType(), state);
-        }
-        int now = state.drink(kind, Math.max(1, stacks));
-        playerRef.sendMessage(Message.translation(MistPotions.MESSAGES + "drink").param("name", kind.displayName())
-                .param("stacks", now).param("max", MistPotions.MAX_STACKS));
+        // Sur le fil du monde, hors du tampon : un premier état créé par le tampon ne serait visible qu'au vidage, et deux
+        // gorgées finies dans le même tick en créeraient chacune un.
+        int added = Math.max(1, stacks);
+        World world = buffer.getExternalData().getWorld();
+        world.execute(() -> {
+            if (!player.isValid()) {
+                return;
+            }
+            Store<EntityStore> store = world.getEntityStore().getStore();
+            int now = store.ensureAndGetComponent(player, MistPotionState.getComponentType()).drink(kind, added);
+            playerRef.sendMessage(Message.translation(MistPotions.MESSAGES + "drink").param("name", kind.displayName())
+                    .param("stacks", now).param("max", MistPotions.MAX_STACKS));
+        });
     }
 
     @Override

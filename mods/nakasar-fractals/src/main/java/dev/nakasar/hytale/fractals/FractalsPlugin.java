@@ -173,7 +173,6 @@ public final class FractalsPlugin extends JavaPlugin {
         systems.registerSystem(new FallRescueSystem());
         systems.registerSystem(new AgonySystem());
         systems.registerSystem(new MistPotionSystem());
-        systems.registerSystem(new MistPotionDamageFilter());
         systems.registerSystem(new HammerSystem());
         systems.registerSystem(new HammerDamageSystem());
         systems.registerSystem(new HammerDropSystem());
@@ -189,6 +188,8 @@ public final class FractalsPlugin extends JavaPlugin {
         systems.registerSystem(new StageDamageFilter());
         systems.registerSystem(new FoeDeathSystem());
         systems.registerSystem(new InstabilitySystem());
+        // Après les filtres qu'il doit précéder (StageDamageFilter, CliffsideDamageFilter, MinionShieldSystem).
+        systems.registerSystem(new MistPotionDamageFilter());
         Cliffside.registerBossBars();
         Instabilities.exempt(Cliffside.SEAL_ROLES);
         Instabilities.exempt(Cliffside.SEEKER);

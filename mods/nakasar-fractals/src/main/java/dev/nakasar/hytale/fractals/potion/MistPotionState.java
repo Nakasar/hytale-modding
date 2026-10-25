@@ -32,6 +32,10 @@ public final class MistPotionState implements Component<EntityStore> {
     private float[] seconds = new float[Kind.values().length];
     /** Endurance relevée au passage précédent de {@link MistPotionSystem} (NaN : pas encore relevée). */
     float lastStamina = Float.NaN;
+    /** Effet affiché par type, posé par {@link MistPotionSystem} (null : aucun). */
+    final String[] shown = new String[Kind.values().length];
+    /** Faux tant que {@link MistPotionSystem} n'a pas retiré les crans restés d'une session précédente. */
+    boolean swept;
 
     public static ComponentType<EntityStore, MistPotionState> getComponentType() {
         return componentType;
@@ -70,6 +74,19 @@ public final class MistPotionState implements Component<EntityStore> {
         }
     }
 
+    /** Vrai quand plus aucune potion n'agit ni n'est affichée : {@link MistPotionSystem} n'a plus rien à faire. */
+    public boolean isIdle() {
+        if (!swept || !isEmpty()) {
+            return false;
+        }
+        for (String id : shown) {
+            if (id != null) {
+                return false;
+            }
+        }
+        return true;
+    }
+
     public boolean isEmpty() {
         for (int k = 0; k < stacks.length; k++) {
             if (stacks[k] > 0 && seconds[k] > 0f) {
@@ -99,6 +116,8 @@ public final class MistPotionState implements Component<EntityStore> {
         copy.stacks = stacks.clone();
         copy.seconds = seconds.clone();
         copy.lastStamina = lastStamina;
+        System.arraycopy(shown, 0, copy.shown, 0, shown.length);
+        copy.swept = swept;
         return copy;
     }
 }

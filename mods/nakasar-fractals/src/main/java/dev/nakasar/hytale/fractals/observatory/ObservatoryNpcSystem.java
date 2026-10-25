@@ -22,7 +22,9 @@ import it.unimi.dsi.fastutil.Pair;
 import org.joml.Vector3d;
 
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 import java.util.WeakHashMap;
 
 /**
@@ -66,9 +68,10 @@ public final class ObservatoryNpcSystem extends TickingSystem<EntityStore> {
             return;
         }
         Store<EntityStore> store = world.getEntityStore().getStore();
-        spawnMerchant(store, ARCHIVIST, ObservatoryLayout.ARCHIVIST);
-        spawnMerchant(store, ALCHEMIST, ObservatoryLayout.ALCHEMIST);
-        Ref<EntityStore> golem = find(store);
+        Map<String, Ref<EntityStore>> present = findAll(store, Set.of(ARCHIVIST, ALCHEMIST, ROLE));
+        spawnMerchant(store, present, ARCHIVIST, ObservatoryLayout.ARCHIVIST);
+        spawnMerchant(store, present, ALCHEMIST, ObservatoryLayout.ALCHEMIST);
+        Ref<EntityStore> golem = present.get(ROLE);
         if (golem == null) {
             spawn(store, ROLE, ObservatoryLayout.GOLEM);
             return;
@@ -81,8 +84,8 @@ public final class ObservatoryNpcSystem extends TickingSystem<EntityStore> {
     }
 
     /** Pose le marchand `role` s'il manque, invulnérable. */
-    private static void spawnMerchant(Store<EntityStore> store, String role, double[] at) {
-        if (find(store, role) == null) {
+    private static void spawnMerchant(Store<EntityStore> store, Map<String, Ref<EntityStore>> present, String role, double[] at) {
+        if (!present.containsKey(role)) {
             Ref<EntityStore> merchant = spawn(store, role, at);
             if (merchant != null) {
                 store.ensureAndGetComponent(merchant, Invulnerable.getComponentType());
@@ -93,6 +96,20 @@ public final class ObservatoryNpcSystem extends TickingSystem<EntityStore> {
     /** Golem d'essai du monde, ou null. */
     public static Ref<EntityStore> find(Store<EntityStore> store) {
         return find(store, ROLE);
+    }
+
+    /** PNJ du monde dont le rôle est dans `roles`, par rôle (un parcours des PNJ pour tous). */
+    private static Map<String, Ref<EntityStore>> findAll(Store<EntityStore> store, Set<String> roles) {
+        Map<String, Ref<EntityStore>> found = new HashMap<>();
+        store.forEachChunk(NPCEntity.getComponentType(), (ArchetypeChunk<EntityStore> chunk, CommandBuffer<EntityStore> buffer) -> {
+            for (int i = 0; i < chunk.size(); i++) {
+                NPCEntity npc = chunk.getComponent(i, NPCEntity.getComponentType());
+                if (npc != null && roles.contains(npc.getRoleName())) {
+                    found.putIfAbsent(npc.getRoleName(), chunk.getReferenceTo(i));
+                }
+            }
+        });
+        return found;
     }
 
     /** PNJ de rôle `role` du monde, ou null. */

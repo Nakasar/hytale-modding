@@ -16,13 +16,18 @@ import com.hypixel.hytale.server.core.modules.entity.damage.DamageModule;
 import com.hypixel.hytale.server.core.modules.entity.damage.DamageSystems;
 import com.hypixel.hytale.server.core.modules.entitystats.EntityStatMap;
 import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
+import dev.nakasar.hytale.fractals.cliffside.CliffsideDamageFilter;
+import dev.nakasar.hytale.fractals.minions.MinionShieldSystem;
 import dev.nakasar.hytale.fractals.potion.MistPotions.Kind;
 import dev.nakasar.hytale.fractals.progress.Agony;
+import dev.nakasar.hytale.fractals.stage.StageDamageFilter;
 
 import java.util.Set;
 
 /**
- * Potions des Brumes dans les dégâts (avant les armures), dans une fractale seulement :
+ * Potions des Brumes dans les dégâts, dans une fractale seulement. Passe avant les armures et avant les autres filtres
+ * des fractales (boucliers, phases et planchers de PV des boss, instabilités), qui travaillent ainsi sur le montant
+ * déjà modifié : un plancher de phase ne peut pas être dépassé à cause d'une potion.
  * <ul>
  *   <li>Offensive : les coups d'un joueur, et les dégâts des effets qu'il a posés (états), × (1 + 3 % par pile) ;</li>
  *   <li>Défensive : les dégâts reçus par un joueur × (1 - 5 % par pile), sauf l'agonie (seule la résistance la
@@ -32,7 +37,10 @@ import java.util.Set;
 public final class MistPotionDamageFilter extends DamageEventSystem {
 
     private static final Set<Dependency<EntityStore>> DEPENDENCIES = Set.of(
-            new SystemDependency<>(Order.BEFORE, DamageSystems.ArmorDamageReduction.class));
+            new SystemDependency<>(Order.BEFORE, DamageSystems.ArmorDamageReduction.class),
+            new SystemDependency<>(Order.BEFORE, StageDamageFilter.class),
+            new SystemDependency<>(Order.BEFORE, CliffsideDamageFilter.class),
+            new SystemDependency<>(Order.BEFORE, MinionShieldSystem.class));
 
     @Override
     public SystemGroup<EntityStore> getGroup() {

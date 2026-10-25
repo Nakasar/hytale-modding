@@ -3,9 +3,6 @@ package dev.nakasar.hytale.fractals.potion;
 import com.hypixel.hytale.component.Ref;
 import com.hypixel.hytale.component.Store;
 import com.hypixel.hytale.component.system.tick.TickingSystem;
-import com.hypixel.hytale.server.core.asset.type.entityeffect.config.EntityEffect;
-import com.hypixel.hytale.server.core.entity.effect.ActiveEntityEffect;
-import com.hypixel.hytale.server.core.entity.effect.EffectControllerComponent;
 import com.hypixel.hytale.server.core.modules.entity.damage.DeathComponent;
 import com.hypixel.hytale.server.core.modules.entitystats.EntityStatMap;
 import com.hypixel.hytale.server.core.modules.entitystats.EntityStatValue;
@@ -34,8 +31,10 @@ import java.util.WeakHashMap;
 public final class MistPotionSystem extends TickingSystem<EntityStore> {
 
     private static final float INTERVAL = 0.25f;
-    /** Écart toléré entre la durée de l'effet affiché et celle de la potion avant de reposer l'effet. */
+    /** Écart toléré quand l'effet affiché dure plus longtemps que la potion. */
     private static final float DRIFT = 5f;
+    /** Potion rebue : la durée de la potion dépasse celle de l'effet affiché de plus que cela, l'effet est reposé. */
+    private static final float REFRESH = 1f;
     private static final Map<World, float[]> ELAPSED = Collections.synchronizedMap(new WeakHashMap<>());
 
     @Override
@@ -60,7 +59,7 @@ public final class MistPotionSystem extends TickingSystem<EntityStore> {
             Ref<EntityStore> ref = player.getReference();
             MistPotionState state = ref == null || !ref.isValid() ? null
                     : store.getComponent(ref, MistPotionState.getComponentType());
-            if (state == null) {
+            if (state == null || state.isIdle()) {
                 continue;
             }
             state.elapse(dt);
@@ -68,35 +67,47 @@ public final class MistPotionSystem extends TickingSystem<EntityStore> {
                 state.lastStamina = Float.NaN;
                 continue;
             }
+            if (!state.swept) {
+                sweep(store, ref);
+                state.swept = true;
+            }
             for (Kind kind : Kind.values()) {
-                sync(store, ref, kind, state.stacks(kind), state.seconds(kind), active);
+                sync(store, ref, state, kind, active);
             }
             boostStamina(store, ref, state, active ? state.stacks(Kind.MOBILITY) : 0);
         }
     }
 
-    /** Pose l'effet du bon cran (durée restante) et retire les autres crans de ce type. */
-    private static void sync(Store<EntityStore> store, Ref<EntityStore> ref, Kind kind, int stacks, float seconds, boolean active) {
-        String wanted = stacks > 0 ? kind.effect(stacks, active) : null;
-        for (int n = 1; n <= MistPotions.MAX_STACKS; n++) {
-            for (boolean a : new boolean[]{true, false}) {
-                String id = kind.effect(n, a);
-                if (!id.equals(wanted) && Hurt.has(store, ref, id)) {
-                    Hurt.clear(store, ref, id);
-                }
+    /** Retire tous les crans, une fois par chargement du joueur (effets sauvegardés d'une session précédente). */
+    private static void sweep(Store<EntityStore> store, Ref<EntityStore> ref) {
+        for (Kind kind : Kind.values()) {
+            for (int n = 1; n <= MistPotions.MAX_STACKS; n++) {
+                Hurt.clear(store, ref, kind.effect(n, true));
+                Hurt.clear(store, ref, kind.effect(n, false));
             }
-        }
-        if (wanted != null && Math.abs(remaining(store, ref, wanted) - seconds) > DRIFT) {
-            Hurt.effect(store, ref, wanted, seconds);
         }
     }
 
-    /** Secondes restantes de l'effet `effectId` sur l'entité (-1 s'il n'est pas actif). */
-    private static float remaining(Store<EntityStore> store, Ref<EntityStore> ref, String effectId) {
-        int index = EntityEffect.getAssetMap().getIndexOrDefault(effectId, -1);
-        EffectControllerComponent effects = store.getComponent(ref, EffectControllerComponent.getComponentType());
-        ActiveEntityEffect effect = index < 0 || effects == null ? null : effects.getActiveEffects().get(index);
-        return effect == null ? -1f : effect.getRemainingDuration();
+    /**
+     * Pose l'effet du bon cran avec la durée restante et retire le cran affiché avant. L'effet est reposé s'il manque
+     * (mort, retrait), si la potion a été rebue (durée remontée) ou s'il dépasse la potion de plus de {@value #DRIFT} s.
+     */
+    private static void sync(Store<EntityStore> store, Ref<EntityStore> ref, MistPotionState state, Kind kind, boolean active) {
+        int k = kind.ordinal();
+        int stacks = state.stacks(kind);
+        float seconds = state.seconds(kind);
+        String wanted = stacks > 0 ? kind.effect(stacks, active) : null;
+        if (state.shown[k] != null && !state.shown[k].equals(wanted)) {
+            Hurt.clear(store, ref, state.shown[k]);
+        }
+        state.shown[k] = wanted;
+        if (wanted == null) {
+            return;
+        }
+        float remaining = Hurt.remaining(store, ref, wanted);
+        if (remaining < 0f || seconds - remaining > REFRESH || remaining - seconds > DRIFT) {
+            Hurt.effect(store, ref, wanted, seconds);
+        }
     }
 
     private static void boostStamina(Store<EntityStore> store, Ref<EntityStore> ref, MistPotionState state, int stacks) {
