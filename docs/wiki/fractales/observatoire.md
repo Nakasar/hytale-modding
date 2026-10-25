@@ -9,6 +9,12 @@
 
 L'**Observatoire** est une île ronde suspendue dans les Brumes. Tout s'y choisit dans le décor : pas de menu à ouvrir.
 
+## Carte
+
+![Carte de l'Observatoire](../images/fractales/carte-observatoire.png)
+
+*Carte de l'Observatoire, vue de dessus : 1 point d'arrivée et portail de retour, 2 distributeurs de noyaux et de diapasons, 3 Astrolabe et console de sélection au centre du cercle d'harmonisation, 4 coin de l'Archiviste, 5 golem d'essai.*
+
 ## Fragment des Brumes {#fragment-des-brumes}
 
 Le **Fragment des Brumes** se fabrique à l'**établi** : **4 éclats de rune + 1 cœur du Vide** (celui des Deepworks). Posé dans l'**Ancienne passerelle**, il ouvre l'Observatoire et il est consommé. Au **Creuset des Brumes**, **25 éclats de Brume + 1 éclat de rune** en refont un sans repasser par les Deepworks ; l'Archiviste en vend aussi.

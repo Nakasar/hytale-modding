@@ -8,6 +8,12 @@
 
 Une traversée de fragments de jade flottants mène à l'**Abîme de Jade**, un monstre invulnérable qu'on ne blesse qu'en lui renvoyant son propre rayon avec des cristaux.
 
+## Carte
+
+![Carte de l'Océan solide](../images/fractales/carte-ocean-solide.png)
+
+*Carte de l'Océan solide, vue de dessus : 1 les fragments de jade, 2 l'arène de l'Abîme de Jade.*
+
 ## Déroulé
 
 1. **Les fragments de jade** à sauter au-dessus de l'océan ; une chute ramène au fragment d'avant. De nuit, des **irukandjis** gardent le chemin (600 PV) : leur **décharge** (cercle de 3,5 blocs) jette dans le vide, leur **filament** marque un joueur puis l'attire contre eux, au-dessus du vide s'ils flottent entre deux fragments. Abattez-les ou passez hors de leur portée (12 blocs).
