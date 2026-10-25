@@ -9,6 +9,10 @@
     {
       "ItemId": "Nakasar_Fractal_Mist_Shard",
       "Quantity": 50
+    },
+    {
+      "ItemId": "Gobliterator_Core",
+      "Quantity": 1
     }
   ],
   "PrimaryOutput": {
