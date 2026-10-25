@@ -105,7 +105,7 @@ final class SurveyGear {
         if (eye == null || look == null || busy.contains(player.getUuid())) {
             return;
         }
-        Vector3d hit = cast(world.getChunkStore(), eye, look, GRAPPLE_RANGE);
+        Vector3d hit = Moves.cast(world.getChunkStore(), eye, look, GRAPPLE_RANGE);
         if (hit == null) {
             SilentSurf.tell(st, player, "grapple.miss");
             return;
@@ -220,7 +220,7 @@ final class SurveyGear {
             return;
         }
         ChunkStore chunks = world.getChunkStore();
-        Vector3d hit = cast(chunks, eye, look, FLARE_RANGE);
+        Vector3d hit = Moves.cast(chunks, eye, look, FLARE_RANGE);
         Vector3d end = hit != null ? hit : new Vector3d(look).mul(FLARE_RANGE).add(eye);
         long[] begin = {-1};
         float flight = (float) Math.max(0.2, eye.distance(end) / 40.0);
@@ -264,19 +264,5 @@ final class SurveyGear {
     private static Vector3d eye(Store<EntityStore> store, Ref<EntityStore> ref) {
         Vector3d at = Telegraphs.position(store, ref);
         return at == null ? null : new Vector3d(at).add(0, 1.6, 0);
-    }
-
-    /** Premier bloc plein le long du regard : rend le dernier point libre avant lui (null : rien à portée). */
-    static Vector3d cast(ChunkStore chunks, Vector3d from, Vector3d dir, double range) {
-        Vector3d d = new Vector3d(dir).normalize();
-        Vector3d prev = new Vector3d(from);
-        for (double t = 0.5; t <= range; t += 0.25) {
-            Vector3d p = new Vector3d(d).mul(t).add(from);
-            if (WorldBlocks.solid(chunks, (int) Math.floor(p.x()), (int) Math.floor(p.y()), (int) Math.floor(p.z()))) {
-                return prev;
-            }
-            prev = p;
-        }
-        return null;
     }
 }

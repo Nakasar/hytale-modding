@@ -1,0 +1,12 @@
+{
+  "$Comment": "Un fantôme pirate surgit : brume cyan. Généré par tools/generate_sirens_reef.py.",
+  "Spawners": [
+    {
+      "SpawnerId": "Nakasar_Fractal_Ghost_Rise_Mist",
+      "PositionOffset": {
+        "Y": 0.2
+      }
+    }
+  ],
+  "CullDistance": 72
+}

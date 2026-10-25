@@ -1,0 +1,8 @@
+{
+  "$Comment": "Allègement de la malédiction : la malédiction ne monte plus et retombe (Java).",
+  "Name": "nakasar_fractals_sirens_reef.effects.Nakasar_Fractal_Curse_Relief",
+  "StatusEffectIcon": "UI/StatusEffects/Nakasar/Fractals/Curse_Relief.png",
+  "OverlapBehavior": "Overwrite",
+  "Infinite": false,
+  "Duration": 8.0
+}

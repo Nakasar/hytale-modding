@@ -1,0 +1,12 @@
+{
+  "$Comment": "Brouillard fétide : hors du navire pendant un combat, poison (Java).",
+  "Name": "nakasar_fractals_sirens_reef.effects.Nakasar_Fractal_Fetid_Fog",
+  "Debuff": true,
+  "StatusEffectIcon": "UI/StatusEffects/Nakasar/Fractals/Fetid_Fog.png",
+  "ApplicationEffects": {
+    "EntityTopTint": "#70a040"
+  },
+  "OverlapBehavior": "Overwrite",
+  "Infinite": false,
+  "Duration": 2.0
+}

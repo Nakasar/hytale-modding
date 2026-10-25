@@ -1,0 +1,33 @@
+{
+  "$Comment": "Lagon sinistre : +30 % de dégâts subis et ralenti tant qu'on y reste ; les ennemis dedans sont protégés (Java).",
+  "Name": "nakasar_fractals_sirens_reef.effects.Nakasar_Fractal_Grim_Lagoon",
+  "Debuff": true,
+  "StatusEffectIcon": "UI/StatusEffects/Nakasar/Fractals/Grim_Lagoon.png",
+  "DamageResistance": {
+    "Physical": [
+      {
+        "CalculationType": "Percent",
+        "Amount": -0.3
+      }
+    ],
+    "Projectile": [
+      {
+        "CalculationType": "Percent",
+        "Amount": -0.3
+      }
+    ],
+    "Elemental": [
+      {
+        "CalculationType": "Percent",
+        "Amount": -0.3
+      }
+    ]
+  },
+  "ApplicationEffects": {
+    "HorizontalSpeedMultiplier": 0.8,
+    "EntityBottomTint": "#204040"
+  },
+  "OverlapBehavior": "Overwrite",
+  "Infinite": false,
+  "Duration": 1.5
+}

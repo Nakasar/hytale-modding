@@ -1,0 +1,5 @@
+{
+  "$Comment": "Canon des ombres : s'y poster (les trois boulets en main) ou le quitter (Java, sirensreef.ShadowCannon).",
+  "Type": "Nakasar_Fractal_Use",
+  "Action": "SirensReef_Cannon"
+}

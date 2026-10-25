@@ -1,0 +1,13 @@
+{
+  "$Comment": "Glacé (souffle de Mad Jack Squall) : déplacement ralenti.",
+  "Name": "nakasar_fractals_sirens_reef.effects.Nakasar_Fractal_Chilled",
+  "Debuff": true,
+  "StatusEffectIcon": "UI/StatusEffects/Nakasar/Fractals/Chilled.png",
+  "ApplicationEffects": {
+    "HorizontalSpeedMultiplier": 0.6,
+    "EntityTopTint": "#9ad0ff"
+  },
+  "OverlapBehavior": "Overwrite",
+  "Infinite": false,
+  "Duration": 4.0
+}

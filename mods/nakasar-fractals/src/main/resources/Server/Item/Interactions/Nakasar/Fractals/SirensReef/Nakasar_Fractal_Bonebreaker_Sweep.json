@@ -1,0 +1,34 @@
+{
+  "$Comment": "Saurien brise-os : coup de queue, cône de 120° sur 4 blocs (1,6 s), 26 dégâts et recul.",
+  "Type": "Serial",
+  "Interactions": [
+    {
+      "Type": "ClearEntityEffect",
+      "Entity": "User",
+      "EntityEffectId": "Hit_Interrupt_Eligible"
+    },
+    {
+      "Type": "ApplyEffect",
+      "EffectId": "Nakasar_Fractal_Rooted"
+    },
+    {
+      "Type": "Nakasar_Fractal_Telegraph",
+      "Shape": "Cone",
+      "Seconds": 1.6,
+      "Angle": 120,
+      "Radius": 4,
+      "Damage": 26,
+      "Knockback": 6,
+      "KnockUp": 2,
+      "PlayersOnly": true,
+      "ImpactParticle": "Stick_Slam_Ground_Large"
+    },
+    {
+      "Type": "Simple",
+      "RunTime": 1.6,
+      "Effects": {
+        "WorldSoundEventId": "SFX_Spear_Throw_Charge"
+      }
+    }
+  ]
+}

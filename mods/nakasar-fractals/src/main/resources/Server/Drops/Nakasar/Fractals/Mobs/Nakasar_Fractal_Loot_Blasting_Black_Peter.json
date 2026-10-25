@@ -1,0 +1,50 @@
+{
+  "$Comment": "Black Peter la Mèche : ses bombes, de la poudre, du fer, un rubis. Généré par tools/generate_mob_loot.py.",
+  "Container": {
+    "Type": "Multiple",
+    "Containers": [
+      {
+        "Type": "Single",
+        "Item": {
+          "ItemId": "Ingredient_Powder_Boom",
+          "QuantityMin": 4,
+          "QuantityMax": 6
+        }
+      },
+      {
+        "Type": "Single",
+        "Item": {
+          "ItemId": "Weapon_Bomb",
+          "QuantityMin": 2,
+          "QuantityMax": 4
+        }
+      },
+      {
+        "Type": "Single",
+        "Item": {
+          "ItemId": "Ingredient_Bar_Iron",
+          "QuantityMin": 1,
+          "QuantityMax": 2
+        }
+      },
+      {
+        "Type": "Choice",
+        "Containers": [
+          {
+            "Type": "Single",
+            "Item": {
+              "ItemId": "Rock_Gem_Ruby",
+              "QuantityMin": 1,
+              "QuantityMax": 1
+            },
+            "Weight": 30
+          },
+          {
+            "Type": "Empty",
+            "Weight": 70
+          }
+        ]
+      }
+    ]
+  }
+}

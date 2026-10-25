@@ -1,0 +1,21 @@
+{
+  "Type": "NoiseRange",
+  "DefaultBiome": "Nakasar_Fractal_SirensReef",
+  "DefaultTransitionDistance": 16,
+  "MaxBiomeEdgeDistance": 0,
+  "Density": {
+    "Type": "Constant",
+    "Value": 0.0
+  },
+  "Biomes": [],
+  "SpawnPositions": {
+    "Type": "List",
+    "Positions": [
+      {
+        "X": 46,
+        "Y": 101,
+        "Z": 152
+      }
+    ]
+  }
+}

@@ -1,0 +1,12 @@
+{
+  "$Comment": "Boulet des ombres en vol : un point de sa traînée (le Java en pose le long du trajet). Généré par tools/generate_sirens_reef.py.",
+  "Spawners": [
+    {
+      "SpawnerId": "Nakasar_Fractal_Cannon_Trail_Trail",
+      "PositionOffset": {
+        "Y": 0.0
+      }
+    }
+  ],
+  "CullDistance": 72
+}

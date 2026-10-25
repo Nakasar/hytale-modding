@@ -151,6 +151,66 @@ LOOT = {
         item("Rock_Gem_Voidstone", 1, chance=50),
         item("Ingredient_Voidheart", 1, chance=10),
     ]),
+    # --- Récif de la Sirène (camps, meutes des clairières, gardes : pas les meutes de Tête-de-pierre ni l'équipage
+    # appelé en combat, ni les fantômes des orbes) -----------------------------------------------------------------
+    "Saurian_Bristleback": ("Saurien hérissé vétéran (camp du rivage) : peau écailleuse, viande sauvage.", [
+        item("Ingredient_Hide_Scaled", 1, 2),
+        item("Food_Wildmeat_Raw", 1, chance=50),
+    ]),
+    "Saurian_Bonebreaker": ("Saurien brise-os vétéran (camp du rivage) : cuir écailleux, éclats d'os, viande sauvage.", [
+        item("Ingredient_Leather_Scaled", 1, 2),
+        item("Ingredient_Bone_Fragment", 2, 3),
+        item("Food_Wildmeat_Raw", 1, chance=50),
+    ]),
+    "Saurian_Smokescale": ("Saurien écaille-fumée vétéran (camp du rivage) : peau écailleuse, essence de feu.", [
+        item("Ingredient_Hide_Scaled", 1, 2),
+        item("Ingredient_Fire_Essence", 1, chance=40),
+    ]),
+    "Pocket_Raptor": ("Raptor de poche (errant ou des clairières) : peau souple, viande sauvage.", [
+        item("Ingredient_Hide_Soft", 1, chance=60),
+        item("Food_Wildmeat_Raw", 1, chance=40),
+    ]),
+    "Stonehead": ("Tête-de-pierre : cuir lourd, os, viande sauvage, un topaze de sa couronne.", [
+        item("Ingredient_Leather_Heavy", 2, 3),
+        item("Ingredient_Bone_Fragment", 3, 5),
+        item("Food_Wildmeat_Raw", 2, 3),
+        item("Rock_Gem_Topaz", 1, chance=30),
+    ]),
+    "Ghost_Pirate": ("Fantôme pirate (fort, labyrinthe, plages de la crique) : coton de sa vareuse, essence du Vide.", [
+        item("Ingredient_Fabric_Scrap_Cotton", 1, 2),
+        item("Ingredient_Void_Essence", 1, chance=20),
+    ]),
+    "Phantom_Marksman": ("Tireur fantôme : poudre, coton, parfois un tromblon rouillé.", [
+        item("Ingredient_Powder_Boom", 1, 2),
+        item("Ingredient_Fabric_Scrap_Cotton", 1, chance=50),
+        item("Weapon_Gun_Blunderbuss_Rusty", 1, chance=5),
+    ]),
+    "Ghostly_Swindler": ("Escroc fantôme : un peu du trésor qu'il volait, pièces d'or fondues, coton.", [
+        item("Ingredient_Bar_Gold", 1, chance=30),
+        item("Ingredient_Fabric_Scrap_Cotton", 1, 2),
+    ]),
+    "Blasting_Black_Peter": ("Black Peter la Mèche : ses bombes, de la poudre, du fer, un rubis.", [
+        item("Ingredient_Powder_Boom", 4, 6),
+        item("Weapon_Bomb", 2, 4),
+        item("Ingredient_Bar_Iron", 1, 2),
+        item("Rock_Gem_Ruby", 1, chance=30),
+    ]),
+    "Mad_Jack_Squall": ("Mad Jack Squall : essence de glace, rouleaux de coton, poisson de la crique.", [
+        item("Ingredient_Ice_Essence", 2, 3),
+        item("Ingredient_Bolt_Cotton", 1, 2),
+        item("Food_Fish_Raw_Uncommon", 1, 2, chance=50),
+    ]),
+    "First_Mate_Calix": ("Le second Calix : essence d'eau, son coutelas, argent du bord.", [
+        item("Ingredient_Water_Essence", 2, 3),
+        item("Weapon_Sword_Cutlass", 1, chance=15),
+        item("Ingredient_Bar_Silver", 1, 2, chance=50),
+    ]),
+    "Arabella_Crowe": ("Capitaine Arabella Crowe : le trésor du récif (or, saphir, diamant), essence du Vide.", [
+        item("Ingredient_Bar_Gold", 2, 4),
+        item("Rock_Gem_Sapphire", 1, 2),
+        item("Rock_Gem_Diamond", 1, chance=25),
+        item("Ingredient_Void_Essence", 2, 3),
+    ]),
     # --- Océan solide --------------------------------------------------------------------------------
     "Irukandji": ("Irukandji (chemin de jade, arène) : essence d'eau, de foudre (piqûre), cristal vert.", [
         item("Ingredient_Water_Essence", 1, chance=50),

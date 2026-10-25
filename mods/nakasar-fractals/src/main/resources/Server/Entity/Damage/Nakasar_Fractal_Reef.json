@@ -1,0 +1,7 @@
+{
+  "$Comment": "Mines, malédiction, cyclone de cendres, brouillard, piranhas et dents des profondeurs du Récif de la Sirène : une part des PV max, l'armure ne la réduit pas.",
+  "BypassResistances": true,
+  "DurabilityLoss": false,
+  "StaminaLoss": false,
+  "DamageTextColor": "#ffb040"
+}

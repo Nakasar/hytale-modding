@@ -1,0 +1,13 @@
+{
+  "$Comment": "Gelé par le tir de glace du canon des ombres.",
+  "Name": "nakasar_fractals_sirens_reef.effects.Nakasar_Fractal_Frozen_Shot",
+  "Debuff": true,
+  "StatusEffectIcon": "UI/StatusEffects/Nakasar/Fractals/Frozen_Shot.png",
+  "ApplicationEffects": {
+    "EntityTopTint": "#b0e8ff",
+    "EntityBottomTint": "#6090c0"
+  },
+  "OverlapBehavior": "Overwrite",
+  "Infinite": false,
+  "Duration": 4.0
+}

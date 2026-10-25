@@ -1,0 +1,10 @@
+{
+  "$Comment": "Escroc fantôme : petit pirate squelette vanilla, lueur d'or (il vole les trésors).",
+  "Parent": "Skeleton_Pirate_Striker",
+  "MinScale": 0.85,
+  "MaxScale": 0.85,
+  "Light": {
+    "Color": "#fd6",
+    "Radius": 2
+  }
+}

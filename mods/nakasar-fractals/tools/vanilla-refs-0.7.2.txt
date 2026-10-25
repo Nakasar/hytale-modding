@@ -19,3 +19,9 @@ animations Fox_Default
 # Assets.zip 0.7.2 le 25 octobre 2026 : Kanaxai (Ressac) et Chaman en loup-garou (Tempête de neige).
 animations Battleaxe
 animations Outlander_Brute_Default
+# Morsures de l'hyène, du raptor des cavernes et du crocodile vanilla (Server/Item/Animations/NPC/Beast/{Hyena,
+# Raptor_Cave}/*_Default.json, NPC/Swimming_Beast/Crocodile/Crocodile_Default.json, vus dans Assets.zip 0.7.2 le
+# 25 octobre 2026) : Tête-de-pierre, raptors de poche et saurien brise-os (Récif de la Sirène).
+animations Hyena_Default
+animations Raptor_Cave_Default
+animations Crocodile_Default

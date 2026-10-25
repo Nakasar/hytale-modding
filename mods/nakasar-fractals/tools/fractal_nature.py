@@ -92,6 +92,7 @@ TREES = {
     "sallow": ("Wood_Sallow_Trunk", "Plant_Leaves_Sallow"),
     "windwillow": ("Wood_Windwillow_Trunk", "Plant_Leaves_Windwillow"),
     "banyan": ("Wood_Banyan_Trunk", "Plant_Leaves_Banyan"),
+    "jungle": ("Wood_Jungle_Trunk", "Plant_Leaves_Jungle"),
     "poisoned": ("Wood_Poisoned_Trunk", "Plant_Leaves_Poisoned"),
     "burnt": ("Wood_Burnt_Trunk", "Plant_Leaves_Burnt"),
     "ash": ("Wood_Ash_Trunk", "Plant_Leaves_Ash"),

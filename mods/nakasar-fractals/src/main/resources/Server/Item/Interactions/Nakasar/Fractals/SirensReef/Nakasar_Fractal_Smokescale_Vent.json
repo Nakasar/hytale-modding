@@ -1,0 +1,23 @@
+{
+  "$Comment": "Saurien écaille-fumée : fumerolle sous sa cible, cercle rouge de 2,5 blocs (1,8 s), 20 dégâts.",
+  "Type": "Serial",
+  "Interactions": [
+    {
+      "Type": "Nakasar_Fractal_Telegraph",
+      "Shape": "Circle",
+      "Seconds": 1.8,
+      "Anchor": "Target",
+      "Radius": 2.5,
+      "Damage": 20,
+      "PlayersOnly": true,
+      "ImpactParticle": "Nakasar_Fractal_Peter_Bomb"
+    },
+    {
+      "Type": "Simple",
+      "RunTime": 1.8,
+      "Effects": {
+        "WorldSoundEventId": "SFX_Spear_Throw_Charge"
+      }
+    }
+  ]
+}

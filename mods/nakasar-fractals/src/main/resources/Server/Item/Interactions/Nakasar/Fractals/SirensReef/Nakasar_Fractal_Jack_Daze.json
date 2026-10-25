@@ -1,0 +1,25 @@
+{
+  "$Comment": "Mad Jack Squall : coup de crosse sous sa cible, cercle rouge de 3 blocs (1,6 s), 18 dégâts et Hébété 2 s.",
+  "Type": "Serial",
+  "Interactions": [
+    {
+      "Type": "Nakasar_Fractal_Telegraph",
+      "Shape": "Circle",
+      "Seconds": 1.6,
+      "Anchor": "Target",
+      "Radius": 3,
+      "Damage": 18,
+      "EffectId": "Nakasar_Fractal_Dazed",
+      "EffectDuration": 2,
+      "PlayersOnly": true,
+      "ImpactParticle": "Stick_Slam_Ground_Large"
+    },
+    {
+      "Type": "Simple",
+      "RunTime": 1.6,
+      "Effects": {
+        "WorldSoundEventId": "SFX_Spear_Throw_Charge"
+      }
+    }
+  ]
+}

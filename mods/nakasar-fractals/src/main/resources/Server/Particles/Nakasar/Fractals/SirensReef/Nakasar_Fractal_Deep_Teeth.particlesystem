@@ -1,0 +1,12 @@
+{
+  "$Comment": "Dents des profondeurs : mâchoires d'eau qui jaillissent. Généré par tools/generate_sirens_reef.py.",
+  "Spawners": [
+    {
+      "SpawnerId": "Nakasar_Fractal_Deep_Teeth_Jaws",
+      "PositionOffset": {
+        "Y": 0.2
+      }
+    }
+  ],
+  "CullDistance": 72
+}

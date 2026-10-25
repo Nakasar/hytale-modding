@@ -1,0 +1,12 @@
+{
+  "$Comment": "Trésor maudit au sol : lueur d'or qui monte. Généré par tools/generate_sirens_reef.py.",
+  "Spawners": [
+    {
+      "SpawnerId": "Nakasar_Fractal_Treasure_Glow_Glow",
+      "PositionOffset": {
+        "Y": 0.2
+      }
+    }
+  ],
+  "CullDistance": 72
+}

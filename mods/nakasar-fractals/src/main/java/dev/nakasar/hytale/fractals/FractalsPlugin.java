@@ -27,6 +27,9 @@ import dev.nakasar.hytale.fractals.silentsurf.AspectVisibilitySystem;
 import dev.nakasar.hytale.fractals.silentsurf.GearItemsSystem;
 import dev.nakasar.hytale.fractals.silentsurf.SilentSurf;
 import dev.nakasar.hytale.fractals.silentsurf.SurveyGearInteraction;
+import dev.nakasar.hytale.fractals.sirensreef.ReefActionInteraction;
+import dev.nakasar.hytale.fractals.sirensreef.ReefItemsSystem;
+import dev.nakasar.hytale.fractals.sirensreef.SirensReef;
 import dev.nakasar.hytale.fractals.snowblind.CarriedItemsSystem;
 import dev.nakasar.hytale.fractals.stage.Stages;
 import dev.nakasar.hytale.fractals.stage.ThrowItemInteraction;
@@ -165,6 +168,7 @@ public final class FractalsPlugin extends JavaPlugin {
         interactions.register(ThrowItemInteraction.TYPE_ID, ThrowItemInteraction.class, ThrowItemInteraction.CODEC);
         interactions.register(DrinkMistPotionInteraction.TYPE_ID, DrinkMistPotionInteraction.class, DrinkMistPotionInteraction.CODEC);
         interactions.register(SurveyGearInteraction.TYPE_ID, SurveyGearInteraction.class, SurveyGearInteraction.CODEC);
+        interactions.register(ReefActionInteraction.TYPE_ID, ReefActionInteraction.class, ReefActionInteraction.CODEC);
 
         var systems = getEntityStoreRegistry();
         FractalProgress.setComponentType(systems.registerComponent(FractalProgress.class, FractalProgress.ID, FractalProgress.CODEC));
@@ -198,6 +202,7 @@ public final class FractalsPlugin extends JavaPlugin {
         systems.registerSystem(new CliffsideDamageFilter());
         systems.registerSystem(new StageSystem());
         systems.registerSystem(new GearItemsSystem());
+        systems.registerSystem(new ReefItemsSystem());
         systems.registerSystem(new CarriedItemsSystem());
         systems.registerSystem(new AspectVisibilitySystem());
         systems.registerSystem(new StageDamageFilter());
@@ -220,10 +225,12 @@ public final class FractalsPlugin extends JavaPlugin {
         Stages.register(new Snowblind());
         SilentSurf.register();
         Stages.register(new SilentSurf());
+        SirensReef.register();
+        Stages.register(new SirensReef());
 
         getCommandRegistry().registerCommand(new FractalCommand());
 
-        getLogger().atInfo().log("Nakasar Fractales : 22 types d'interaction (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s), progression, fractales du jour, potions des Brumes, Falaise, instabilités, Inclassable, Volcanique, Océan solide, Marais, Tempête de neige, Ressac silencieux, systèmes et /fractale enregistrés",
+        getLogger().atInfo().log("Nakasar Fractales : 23 types d'interaction (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s), progression, fractales du jour, potions des Brumes, Falaise, instabilités, Inclassable, Volcanique, Océan solide, Marais, Tempête de neige, Ressac silencieux, Récif de la Sirène, systèmes et /fractale enregistrés",
                 TelegraphInteraction.TYPE_ID, ChargeInteraction.TYPE_ID, StunSelfInteraction.TYPE_ID,
                 SummonMinionsInteraction.TYPE_ID, CagePlayerInteraction.TYPE_ID, OpenConsoleInteraction.TYPE_ID,
                 HarmonizeInteraction.TYPE_ID, LeaveInteraction.TYPE_ID, TrialDemoInteraction.TYPE_ID,
@@ -231,7 +238,7 @@ public final class FractalsPlugin extends JavaPlugin {
                 OpenShopInteraction.TYPE_ID, OpenDefianceInteraction.TYPE_ID, HealFoesInteraction.TYPE_ID,
                 CliffsideUseInteraction.TYPE_ID, PullInteraction.TYPE_ID, StageUseInteraction.TYPE_ID,
                 ThrowItemInteraction.TYPE_ID, DailyBoardInteraction.TYPE_ID, DrinkMistPotionInteraction.TYPE_ID,
-                SurveyGearInteraction.TYPE_ID);
+                SurveyGearInteraction.TYPE_ID, ReefActionInteraction.TYPE_ID);
     }
 
     @Override

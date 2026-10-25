@@ -1,0 +1,10 @@
+{
+  "$Comment": "Fantôme pirate : le pirate squelette vanilla (Skeleton_Pirate_Striker), lueur cyan.",
+  "Parent": "Skeleton_Pirate_Striker",
+  "MinScale": 1.0,
+  "MaxScale": 1.0,
+  "Light": {
+    "Color": "#7ef",
+    "Radius": 2
+  }
+}

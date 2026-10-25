@@ -1,0 +1,44 @@
+{
+  "TranslationProperties": {
+    "Name": "nakasar_fractals_sirens_reef.items.Nakasar_Fractal_Reef_Mine.name",
+    "Description": "nakasar_fractals_sirens_reef.items.Nakasar_Fractal_Reef_Mine.description"
+  },
+  "Icon": "Icons/ItemsGenerated/Weapon_Bomb_Fire_Goblin.png",
+  "Categories": [
+    "Blocks.Deco"
+  ],
+  "Quality": "Technical",
+  "PlayerAnimationsId": "Block",
+  "BlockType": {
+    "Material": "Empty",
+    "DrawType": "Model",
+    "Opacity": "Transparent",
+    "HitboxType": "Full",
+    "Flags": {},
+    "Gathering": {
+      "Breaking": {
+        "GatherType": "Unbreakable"
+      }
+    },
+    "BlockParticleSetId": "Stone",
+    "BlockSoundSetId": "Stone",
+    "ParticleColor": "#9aa7c8",
+    "Light": {
+      "Color": "#f84"
+    },
+    "CustomModel": "NPC/Intelligent/Goblin/Models/Weapons/Bomb/Fire.blockymodel",
+    "CustomModelTexture": [
+      {
+        "Texture": "NPC/Intelligent/Goblin/Models/Weapons/Bomb/Fire_Texture.png",
+        "Weight": 1
+      }
+    ],
+    "CustomModelScale": 1.4
+  },
+  "Tags": {
+    "Type": [
+      "Deco"
+    ]
+  },
+  "ItemSoundSetId": "ISS_Blocks_Stone"
+}

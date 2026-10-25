@@ -108,6 +108,7 @@ FRACTALS = [
     ("Swampland", "Marais", "Swampland", (110, 170, 70)),
     ("Snowblind", "Tempête de neige", "Snowblind", (170, 210, 240)),
     ("SilentSurf", "Ressac silencieux", "Silent Surf", (40, 160, 175)),
+    ("SirensReef", "Récif de la Sirène", "Siren's Reef", (74, 160, 96)),
 ]
 FLAVOR = {
     "Cliffside": ("Un sentier taillé dans la falaise, le long d'un colosse enchaîné. Cinq sceaux à briser au marteau "
@@ -127,6 +128,10 @@ FLAVOR = {
     "SilentSurf": ("Une grotte sans fond sous la mer de jade, à traverser au grappin et au parachute, jusqu'à Kanaxai "
                    "et ses Aspects.", "A bottomless cave beneath the jade sea, crossed by grapple and parachute, down "
                    "to Kanaxai and his Aspects."),
+    "SirensReef": ("L'île du trésor maudit : Tête-de-pierre, le canon des ombres, Black Peter, un labyrinthe de "
+                   "trésors et l'équipage fantôme d'Arabella Crowe sur son navire.",
+                   "The island of cursed treasure: Stonehead, the shadow cannon, Black Peter, a maze of treasure and "
+                   "Arabella Crowe's ghost crew aboard her ship."),
 }
 
 # Pierres du décor (ids vanilla de tools/vanilla-block-ids-0.7.2.txt).
@@ -1163,7 +1168,7 @@ def lang():
             "Le premier arrivé dans l'Observatoire le mène.\n"
             "4. Le meneur utilise un résonateur du cercle : tout le cercle part.\n\n"
             "Saison 1 : Falaise, Inclassable, Volcanique, Océan solide, Marais, Tempête de neige.\n"
-            "Saison 2 : Ressac silencieux.\n"
+            "Saison 2 : Ressac silencieux, Récif de la Sirène.\n"
             "Le golem d'essai, à l'ouest, sert à tester ses coups, sa résistance à l'agonie et à voir les attaques "
             "des fractales.\n"
             "À l'est, l'Archiviste échange les éclats de Brume et l'Alchimiste de Dessa vend les potions des Brumes ; l'Autel des infusions porte votre résistance à "
@@ -1200,7 +1205,7 @@ def lang():
         "command.level.arg": "Niveau de 1 à 100",
         "command.group.desc": "Affiche le groupe d'harmonisation.",
         "command.launch.desc": "Lance une fractale pour le cercle (meneur, dans l'Observatoire).",
-        "command.launch.arg": "Fractale (Cliffside, Uncategorized, Volcanic, SolidOcean, Swampland, Snowblind, SilentSurf)",
+        "command.launch.arg": "Fractale (Cliffside, Uncategorized, Volcanic, SolidOcean, Swampland, Snowblind, SilentSurf, SirensReef)",
         "command.leave.desc": "Quitte la fractale et revient à l'Observatoire.",
     }
     en = {
@@ -1268,7 +1273,7 @@ def lang():
             "arrive in the Observatory leads it.\n"
             "4. The leader uses a circle resonator: the whole circle leaves.\n\n"
             "Season 1: Cliffside, Uncategorized, Volcanic, Solid Ocean, Swampland, Snowblind.\n"
-            "Season 2: Silent Surf.\n"
+            "Season 2: Silent Surf, Siren's Reef.\n"
             "The training golem, to the west, lets you test your hits, your agony resistance and see the fractal "
             "attacks.\n"
             "To the east, the Archivist trades Mist Shards and Dessa's Alchemist sells Mist potions; the Infusion Altar holds your agony resistance and the "
@@ -1305,7 +1310,7 @@ def lang():
         "command.level.arg": "Level from 1 to 100",
         "command.group.desc": "Shows the attunement group.",
         "command.launch.desc": "Launches a fractal for the circle (leader, in the Observatory).",
-        "command.launch.arg": "Fractal (Cliffside, Uncategorized, Volcanic, SolidOcean, Swampland, Snowblind, SilentSurf)",
+        "command.launch.arg": "Fractal (Cliffside, Uncategorized, Volcanic, SolidOcean, Swampland, Snowblind, SilentSurf, SirensReef)",
         "command.leave.desc": "Leaves the fractal and returns to the Observatory.",
     }
     for fid, name_fr, name_en, *_ in FRACTALS:

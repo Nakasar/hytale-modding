@@ -1,0 +1,250 @@
+{
+  "$Comment": "Black Peter la Mèche, barre de boss et de défiance : tromblon vanilla, bombes annoncées. Mines sous les joueurs, mines semées, poudre noire, fantômes et cyclone de cendres : Java (sirensreef.BlackPeter). Généré par tools/generate_sirens_reef.py.",
+  "Type": "Generic",
+  "Appearance": "Nakasar_Fractal_Blasting_Black_Peter",
+  "NameTranslationKey": "nakasar_fractals_sirens_reef.npc.Blasting_Black_Peter.name",
+  "MaxHealth": 6000,
+  "DropList": "Nakasar_Fractal_Loot_Blasting_Black_Peter",
+  "StartState": "Idle",
+  "DefaultPlayerAttitude": "Hostile",
+  "DefaultNPCAttitude": "Ignore",
+  "DisableDamageGroups": [
+    "Nakasar_Fractal_Foes"
+  ],
+  "MotionControllerList": [
+    {
+      "Type": "Walk",
+      "MaxWalkSpeed": 3.0,
+      "Gravity": 10,
+      "MaxFallSpeed": 10,
+      "Acceleration": 10,
+      "JumpHeight": 1.0
+    }
+  ],
+  "HotbarItems": [
+    "Weapon_Gun_Blunderbuss"
+  ],
+  "KnockbackScale": 0.0,
+  "DeathAnimationTime": 2.0,
+  "StateTransitions": [
+    {
+      "$Comment": "Entrée en combat : chaque attaque spéciale a sa propre recharge.",
+      "States": [
+        {
+          "From": [
+            "Idle"
+          ],
+          "To": [
+            "Combat"
+          ]
+        }
+      ],
+      "Actions": [
+        {
+          "Type": "TimerStart",
+          "Name": "Bomb",
+          "StartValueRange": [
+            2,
+            4
+          ],
+          "RestartValueRange": [
+            6,
+            8
+          ]
+        },
+        {
+          "Type": "TimerStart",
+          "Name": "Shoot",
+          "StartValueRange": [
+            3,
+            5
+          ],
+          "RestartValueRange": [
+            5,
+            7
+          ]
+        }
+      ]
+    }
+  ],
+  "Instructions": [
+    {
+      "Sensor": {
+        "Type": "State",
+        "State": "Idle"
+      },
+      "Instructions": [
+        {
+          "Sensor": {
+            "Type": "Damage",
+            "Combat": true,
+            "TargetSlot": "LockedTarget"
+          },
+          "Actions": [
+            {
+              "Type": "State",
+              "State": "Combat"
+            }
+          ]
+        },
+        {
+          "Sensor": {
+            "Type": "Player",
+            "Range": 30,
+            "LockOnTarget": true,
+            "Filters": [
+              {
+                "Type": "Attitude",
+                "Attitudes": [
+                  "Hostile"
+                ]
+              },
+              {
+                "Type": "LineOfSight"
+              }
+            ]
+          },
+          "Actions": [
+            {
+              "Type": "State",
+              "State": "Combat"
+            }
+          ]
+        },
+        {
+          "Actions": []
+        }
+      ]
+    },
+    {
+      "Sensor": {
+        "Type": "State",
+        "State": "Combat"
+      },
+      "Instructions": [
+        {
+          "$Comment": "Cible perdue ou partie à plus de 50 blocs.",
+          "Sensor": {
+            "Type": "Not",
+            "Sensor": {
+              "Type": "Target",
+              "Range": 50,
+              "Filters": [
+                {
+                  "Type": "Attitude",
+                  "Attitudes": [
+                    "Hostile",
+                    "Neutral",
+                    "Ignore"
+                  ]
+                }
+              ]
+            }
+          },
+          "Actions": [
+            {
+              "Type": "ReleaseTarget"
+            },
+            {
+              "Type": "State",
+              "State": "Idle"
+            }
+          ]
+        },
+        {
+          "$Comment": "Bombe lancée.",
+          "Sensor": {
+            "Type": "And",
+            "Sensors": [
+              {
+                "Type": "Target",
+                "Range": 20
+              },
+              {
+                "Type": "Timer",
+                "Name": "Bomb",
+                "State": "STOPPED"
+              }
+            ]
+          },
+          "ActionsBlocking": true,
+          "Actions": [
+            {
+              "Type": "TimerRestart",
+              "Name": "Bomb"
+            },
+            {
+              "Type": "Attack",
+              "Attack": "Root_Nakasar_Fractal_NPC_Peter_Bomb",
+              "SkipAiming": true,
+              "LineOfSight": false,
+              "AvoidFriendlyFire": false
+            }
+          ],
+          "HeadMotion": {
+            "Type": "Watch",
+            "RelativeTurnSpeed": 1.0
+          }
+        },
+        {
+          "$Comment": "Tir de tromblon.",
+          "Sensor": {
+            "Type": "And",
+            "Sensors": [
+              {
+                "Type": "Target",
+                "Range": 16,
+                "Filters": [
+                  {
+                    "Type": "LineOfSight"
+                  }
+                ]
+              },
+              {
+                "Type": "Timer",
+                "Name": "Shoot",
+                "State": "STOPPED"
+              }
+            ]
+          },
+          "HeadMotion": {
+            "Type": "Aim",
+            "RelativeTurnSpeed": 2
+          },
+          "ActionsBlocking": true,
+          "Actions": [
+            {
+              "Type": "TimerRestart",
+              "Name": "Shoot"
+            },
+            {
+              "Type": "Attack",
+              "Attack": "Skeleton_Pirate_Gunner_Gun_Shoot",
+              "AimingTimeRange": [
+                0.2,
+                0.4
+              ]
+            }
+          ]
+        },
+        {
+          "Sensor": {
+            "Type": "Target",
+            "Range": 40
+          },
+          "BodyMotion": {
+            "Type": "Seek",
+            "RelativeSpeed": 1.0,
+            "SlowDownDistance": 7.0,
+            "StopDistance": 6.0,
+            "UsePathfinder": true
+          },
+          "HeadMotion": {
+            "Type": "Watch",
+            "RelativeTurnSpeed": 1.5
+          }
+        }
+      ]
+    }
+  ]
+}

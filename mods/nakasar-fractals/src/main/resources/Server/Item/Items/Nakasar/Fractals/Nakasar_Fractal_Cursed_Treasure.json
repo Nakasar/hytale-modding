@@ -1,0 +1,40 @@
+{
+  "TranslationProperties": {
+    "Name": "nakasar_fractals_sirens_reef.items.Nakasar_Fractal_Cursed_Treasure.name",
+    "Description": "nakasar_fractals_sirens_reef.items.Nakasar_Fractal_Cursed_Treasure.description"
+  },
+  "Icon": "Icons/ItemsGenerated/Deco_Scrap_Treasure.png",
+  "IconProperties": {
+    "Scale": 0.6,
+    "Rotation": [
+      358,
+      265,
+      341
+    ],
+    "Translation": [
+      -1,
+      -10
+    ]
+  },
+  "Model": "Blocks/Dungeons/Treasure_Object.blockymodel",
+  "Texture": "Blocks/Dungeons/Treasure_Pile_Texture.png",
+  "Scale": 0.8,
+  "Light": {
+    "Color": "#fc6",
+    "Radius": 2
+  },
+  "Quality": "Epic",
+  "Categories": [
+    "Items.Misc"
+  ],
+  "PlayerAnimationsId": "Item",
+  "ItemSoundSetId": "ISS_Items_Gems",
+  "MaxStack": 1,
+  "Interactions": {
+    "Secondary": "Root_Nakasar_Fractal_Reef_Throw",
+    "SwapFrom": "Root_Nakasar_Fractal_Keep_In_Hand"
+  },
+  "Utility": {
+    "Compatible": false
+  }
+}
