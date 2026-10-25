@@ -47,7 +47,9 @@ SECTOR_TEXTURE = "Particles/Textures/Nakasar/Fractals/Warning_Sector"
 # Lignes posées en Java (longueur, largeur, où) : celles des interactions sont lues dans le pack.
 JAVA_LINES = [
     (9, 3, "swampland.Mossman STRIKE_LENGTH x STRIKE_WIDTH"),
-    (12, 3, "cliffside.Traps gargouilles : GUST_REACH - 1 x 3"),
+    (12, 2, "cliffside.Traps gargouilles : GUST_REACH - 1 x GUST_WIDTH"),
+    (1, 2, "uncategorized.Uncategorized tourelles : une marche x 2 * TURRET_HALF_WIDTH"),
+    (16, 2, "snowblind.Source lances de glace : LANCE_LENGTH x LANCE_WIDTH"),
 ]
 WARNING_TENTHS = range(5, 61)   # Telegraphs.WARNING_MIN / WARNING_MAX : toutes écrites, le Java en demande à la volée
 
@@ -264,7 +266,7 @@ def _shapes_in_use():
 
 
 def _aspect(length, width):
-    return max(10, int(round(10 * length / width)))
+    return max(5, int(round(10 * length / width)))
 
 
 def _write_java(lines, angles):

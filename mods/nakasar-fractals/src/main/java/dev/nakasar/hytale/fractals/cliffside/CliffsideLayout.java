@@ -92,19 +92,20 @@ public final class CliffsideLayout {
 
     /** Gargouilles (bloc de la statue), groupe (levier) et décalage de cycle (s). Souffle vers +z sur 13 blocs. */
     public static final int GUST_REACH = 13;
+    public static final int GUST_WIDTH = 2;
     public static final List<Gargoyle> GARGOYLES = List.of(
-            new Gargoyle(-54, 124, -57, 0, 0.0f),
-            new Gargoyle(-59, 126, -57, 0, 2.5f),
-            new Gargoyle(-54, 131, -57, 0, 1.7f),
-            new Gargoyle(-59, 130, -57, 0, 4.2f),
-            new Gargoyle(-54, 134, -57, 1, 3.4f),
-            new Gargoyle(-59, 136, -57, 1, 0.9f),
-            new Gargoyle(-54, 141, -57, 1, 0.1f),
-            new Gargoyle(-59, 140, -57, 1, 2.6f),
-            new Gargoyle(-54, 144, -57, 2, 1.8f),
-            new Gargoyle(-59, 146, -57, 2, 4.3f),
-            new Gargoyle(-54, 151, -57, 2, 3.5f),
-            new Gargoyle(-59, 150, -57, 2, 1.0f));
+            new Gargoyle(-55, 125, -57, 0, 0.0f, -55.0, 124),
+            new Gargoyle(-58, 126, -57, 0, 2.5f, -58.0, 125),
+            new Gargoyle(-55, 131, -57, 0, 1.7f, -55.0, 130),
+            new Gargoyle(-58, 130, -57, 0, 4.2f, -58.0, 129),
+            new Gargoyle(-55, 135, -57, 1, 3.4f, -55.0, 134),
+            new Gargoyle(-58, 136, -57, 1, 0.9f, -58.0, 135),
+            new Gargoyle(-55, 141, -57, 1, 0.1f, -55.0, 140),
+            new Gargoyle(-58, 140, -57, 1, 2.6f, -58.0, 139),
+            new Gargoyle(-55, 145, -57, 2, 1.8f, -55.0, 144),
+            new Gargoyle(-58, 146, -57, 2, 4.3f, -58.0, 145),
+            new Gargoyle(-55, 151, -57, 2, 3.5f, -55.0, 150),
+            new Gargoyle(-58, 150, -57, 2, 1.0f, -58.0, 149));
     /** Leviers (blocs) : trois du saut (un par groupe de gargouilles), puis R1 et R2. */
     public static final int[][] LEVERS = {{-49, 152, -56}, {-48, 152, -56}, {-47, 152, -56}, {-17, 190, -36}, {-15, 190, -36}};
     public static final int GARGOYLE_LEVERS = 3;
@@ -144,7 +145,8 @@ public final class CliffsideLayout {
     public record Plate(int x, int z, boolean trapped) {
     }
 
-    public record Gargoyle(int x, int y, int z, int group, float offset) {
+    /** windX : milieu du souffle (la paire de pierres en face) ; floor : sol de ces pierres (debout). */
+    public record Gargoyle(int x, int y, int z, int group, float offset, double windX, int floor) {
     }
 
     public record Cage(int x, int z, int doorX, int doorZ) {

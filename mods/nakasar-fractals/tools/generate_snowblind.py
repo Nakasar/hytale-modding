@@ -19,7 +19,7 @@ une vallée de montagne fermée, des ruines du nord à la grotte de glace du sud
 3. la forêt : le grand tour par l'est en suivant les empreintes, cinq groupes de Svanir et de loups autour de leurs feux ;
 4. le Chaman légendaire, dans la grotte de glace : coups d'épée qui ajoutent de l'hypothermie, pluie de glace, anneau
    de pics, souffle glacé ; trois cristaux corrompus le protègent à chaque phase au contact. À 75 et 50 %, il saute sur
-   sa corniche et fait pleuvoir des pics tant que l'Effigie de glace tient ; à 25 %, il devient ours.
+   sa corniche et fait pleuvoir des pics tant que l'Effigie de glace tient ; à 25 %, il devient loup-garou (modèle vanilla).
 
 Le générateur écrit les prefabs (tronçons de 64 blocs), l'instance `Nakasar_Fractal_Snowblind`, le fagot et la
 torche portés, les blocs (feu de camp, foyers, tas de fagots, râtelier, empreintes), les effets, les particules, les
@@ -400,7 +400,9 @@ def torch_parts():
 def items():
     return {
         FIREWOOD: fc.held_item(LANG, FIREWOOD, "Firewood", firewood_parts(), 91, (0, 5, 0), 12.0, quality="Common",
-                               stack=3, extra={"Categories": ["Items.Misc"]}),
+                               stack=3, extra={"Categories": ["Items.Misc"], "Utility": {"Compatible": False},
+                                               # porté, il reste en main comme le marteau (Kevin, 25 octobre 2026)
+                                               "Interactions": {"SwapFrom": fc.KEEP_IN_HAND}}),
         TORCH: fc.held_item(LANG, TORCH, "Frost_Torch", torch_parts(), 92, (0, 11, 0), 9.0, quality="Uncommon", stack=1,
                             extra={"Categories": ["Items.Misc"], "Light": {"Color": "#fa6", "Radius": 7}}),
     }
@@ -529,20 +531,6 @@ PARTICLE_SYSTEMS = {
 
 # --- modèles ----------------------------------------------------------------------------------------------
 
-def bear_parts():
-    fur, dark, frost = (210, 216, 226), (120, 128, 140), (150, 210, 255)
-    return [("Body", (0, 40, 0), (36, 30, 56), 0, fm.smooth(fur), "flat"),
-            ("Hump", (0, 56, 10), (28, 10, 22), 0, fm.smooth(fur), "flat"),
-            ("Head", (0, 50, 36), (22, 20, 20), 0, fm.smooth(fur), "flat"),
-            ("Snout", (0, 45, 48), (11, 9, 10), 0, fm.smooth(dark), "flat"),
-            ("Ear_L", (-8, 62, 34), (5, 5, 4), 0, fm.smooth(dark), "flat"),
-            ("Ear_R", (8, 62, 34), (5, 5, 4), 0, fm.smooth(dark), "flat"),
-            ("Eyes", (0, 53, 46.5), (14, 3, 1), 0, fm.crystal((40, 120, 255), frost), "fullbright"),
-            ("Mane", (0, 52, 22), (30, 16, 8), 0, fm.crystal((120, 170, 230), frost), "fullbright")] + [
-        (f"Leg_{k}", (x, 13, z), (11, 26, 11), 0, fm.smooth(dark), "flat")
-        for k, (x, z) in enumerate(((-11, 18), (11, 18), (-11, -18), (11, -18)))]
-
-
 def crystal_parts(color, light, height):
     return [("Core", (0, height / 2, 0), (12, height, 12), 45, fm.crystal(color, light), "fullbright"),
             ("Shard_A", (8, height * 0.3, 2), (6, height * 0.55, 6), 20, fm.crystal(color, light), "fullbright"),
@@ -589,9 +577,10 @@ def models():
                  "Light": {"Color": "#9cf", "Radius": 6}}
     m[WOLF] = {"$Comment": "Loup des neiges : le loup blanc vanilla (modèle et animations du jeu).",
                "Parent": "Wolf_White", "MinScale": 0.95, "MaxScale": 0.95}
-    m[BEAR] = fc.character_model("Shaman_Bear", bear_parts(), 94, "Le Chaman légendaire en ours (provisoire) : ours "
-                                 "polaire en boîtes, crinière de givre, sans animation.", 1.0, (0.9, 1.4),
-                                 light={"Color": "#8cf", "Radius": 3}, scale=1.3)
+    # Kevin (25 octobre 2026) : transformé, le Chaman est le loup-garou vanilla (modèle, attaches et animations du jeu),
+    # plus de modèle généré. L'id du rôle garde son nom historique (Shaman_Bear).
+    m[BEAR] = {"$Comment": "Le Chaman légendaire transformé : le loup-garou vanilla (Werewolf), lueur de givre.",
+               "Parent": "Werewolf", "MinScale": 1.25, "MaxScale": 1.25, "Light": {"Color": "#8cf", "Radius": 3}}
     m[EFFIGY] = fc.character_model("Ice_Effigy", effigy_parts(), 95, "Effigie de glace (PNJ fixe) : tant qu'elle tient, "
                                    "le Chaman reste sur son balcon.", 1.4, (0.6, 1.6), light={"Color": "#9cf", "Radius": 4},
                                    scale=1.2)
@@ -669,12 +658,14 @@ def interactions():
                                                      ImpactParticle="Weapon_Frost_Mist"),
                                            fc.windup(2.2, "SFX_Spear_Throw_Charge", "Mace", "SwingDownCharging")]}
     out["Nakasar_Fractal_Bear_Maul"] = {
-        "$Comment": "Le Chaman en ours, au contact : deux coups de griffes (22 dégâts chacun).",
-        "Type": "Serial", "Interactions": [fr.swing("Griffe gauche.", None, None, 0.35, 22, end=3.6, sound="SFX_Unarmed_Swing"),
-                                           fr.swing("Griffe droite.", None, None, 0.35, 22, end=3.6, direction="ToRight",
-                                                    yaw=-50, sound="SFX_Unarmed_Swing")]}
+        "$Comment": "Le Chaman en loup-garou, au contact : deux coups de griffes (22 dégâts chacun), animation du "
+                    "loup-garou vanilla.",
+        "Type": "Serial", "Interactions": [fr.swing("Griffe gauche.", "Outlander_Brute_Default", "Grab", 0.35, 22, end=3.6,
+                                                    sound="SFX_Unarmed_Swing"),
+                                           fr.swing("Griffe droite.", "Outlander_Brute_Default", "Grab", 0.35, 22, end=3.6,
+                                                    direction="ToRight", yaw=-50, sound="SFX_Unarmed_Swing")]}
     out["Nakasar_Fractal_Bear_Leap"] = {
-        "$Comment": "Le Chaman en ours : bond sur sa cible, cercle rouge de 4 blocs (1,5 s), 34 dégâts et renversement "
+        "$Comment": "Le Chaman en loup-garou : bond sur sa cible, cercle rouge de 4 blocs (1,5 s), 34 dégâts et renversement "
                     "long (3 s).",
         "Type": "Serial", "Interactions": [CI, RF, T("Circle", 1.5, Anchor="Target", Radius=4, Damage=34,
                                                      TeleportCaster=True, EffectId="Nakasar_Fractal_Stunned",
@@ -726,8 +717,9 @@ def roles():
     out[SOURCE] = fr.role(
         SOURCE, "La Source élémentaire, barre de boss, immobile (ancrée par le Java) : orbe lent qui repousse, "
         "tourbillon, coups de poing au contact. Les foyers, "
-        "son bouclier de givre, ses frappes sur les foyers et le blizzard sont menés par le Java (snowblind.Source).",
-        SOURCE, n(SOURCE), 6000,
+        "son bouclier de givre, ses frappes sur les foyers, ses lances de glace et le blizzard sont menés par le Java "
+        "(snowblind.Source). 4500 PV (Kevin, 25 octobre 2026 : un peu moins).",
+        SOURCE, n(SOURCE), 4500,
         [fr.timed_attack("Whirl", R("Source_Whirl"), rng=6, los=True, comment="Tourbillon."),
          fr.timed_attack("Orb", R("Source_Orb"), rng=26, los=True, comment="Orbe lent."),
          fr.melee(R("Source_Slam"), 4.4, (1.2, 1.6))],
@@ -736,7 +728,7 @@ def roles():
         KnockbackScale=0.0, DeathAnimationTime=2.0)
     out[SHAMAN] = fr.role(
         SHAMAN, "Le Chaman légendaire, barre de boss : coups d'épée (hypothermie, Java), pluie de glace, pics de glace, "
-        "souffle glacé. Les cristaux corrompus, le balcon, l'Effigie et la forme d'ours sont menés par le Java "
+        "souffle glacé. Les cristaux corrompus, le balcon, l'Effigie et la forme de loup-garou sont menés par le Java "
         "(snowblind.Shaman).", SHAMAN, n(SHAMAN), 7000,
         [fr.timed_attack("Breath", R("Shaman_Breath"), rng=10, los=True, comment="Souffle glacé."),
          fr.timed_attack("Spikes", R("Shaman_Spikes"), rng=4.5, los=True, comment="Pics de glace."),
@@ -747,7 +739,8 @@ def roles():
                 fr.timer("Rain", (9, 11), (15, 19))],
         HotbarItems=["Weapon_Sword_Steel_Rusty"], KnockbackScale=0.1, DeathAnimationTime=2.0)
     out[BEAR] = fr.role(
-        BEAR, "Le Chaman légendaire en ours (sous 25 %) : bonds qui renversent longtemps, griffes.", BEAR, n(BEAR), 7000,
+        BEAR, "Le Chaman légendaire en loup-garou (sous 25 %) : bonds qui renversent longtemps, griffes.", BEAR, n(BEAR),
+        7000,
         [fr.timed_attack("Leap", R("Bear_Leap"), rng=20, los=True, comment="Bond annoncé."),
          fr.melee(R("Bear_Maul"), 3.2, (0.6, 1.0)), fr.chase(40, stop=2.4)],
         fr.walk(5.0), GENERATOR, sight=40, leash=44, home=False, timers=[fr.timer("Leap", (2, 4), (8, 10))],
@@ -765,7 +758,9 @@ def roles():
 
 def lang():
     t = fc.Lang()
-    t.item(FIREWOOD, "Fagot", "Utiliser un feu ou un foyer : le nourrir.", "Firewood", "Use a fire or a brazier: feed it.")
+    t.item(FIREWOOD, "Fagot", "Porté, il reste en main. Utiliser un feu ou un foyer : le nourrir. Le jeter pour reprendre "
+           "une arme.", "Firewood", "Kept in hand while carried. Use a fire or a brazier: feed it. Drop it to take up a "
+           "weapon again.")
     t.item(TORCH, "Torche", "Allume les foyers ; en main, elle éclaire et ralentit le froid.", "Torch",
            "Lights braziers; in hand, it lights the way and slows the cold.")
     t.item(BONFIRE, "Grand feu de camp", "Utiliser avec un fagot : le nourrir. Il fait fondre le mur de glace.",
@@ -782,7 +777,7 @@ def lang():
     for role, f, e in ((ELEMENTAL, "Élémentaire de glace", "Ice elemental"), (WOLF, "Loup des neiges", "Snow wolf"),
                        (CULTIST, "Fils de Svanir", "Son of Svanir"), (ICE_CASTER, "Incantateur de Svanir", "Svanir frost caster"),
                        (SOURCE, "Source élémentaire", "Elemental Source"), (SHAMAN, "Chaman légendaire", "Legendary Shaman"),
-                       (BEAR, "Chaman légendaire (ours)", "Legendary Shaman (bear)"), (EFFIGY, "Effigie de glace", "Ice Effigy"),
+                       (BEAR, "Chaman légendaire (loup-garou)", "Legendary Shaman (werewolf)"), (EFFIGY, "Effigie de glace", "Ice Effigy"),
                        (CRYSTAL, "Cristal de glace corrompu", "Corrupted ice crystal"), (SHARD, "Éclat de glace", "Ice shard")):
         t.npc(role, f, e)
     t.put("effects.Nakasar_Fractal_Warmth", "Chaleur", "Warmth")
@@ -842,7 +837,7 @@ def lang():
         "shaman.balcony": ("Le Chaman saute sur sa corniche de glace et fait pleuvoir des pics : détruisez l'Effigie de "
                            "glace !", "The Shaman leaps onto his ice ledge and rains spikes: destroy the Ice Effigy!"),
         "shaman.down": ("L'Effigie se brise : le Chaman redescend !", "The Effigy shatters: the Shaman comes down!"),
-        "shaman.bear": ("Le Chaman prend sa forme d'ours !", "The Shaman takes his bear form!"),
+        "shaman.bear": ("Le Chaman prend sa forme de loup-garou !", "The Shaman takes his werewolf form!"),
         "shaman.reset": ("Le Chaman se retire dans le blizzard.", "The Shaman withdraws into the blizzard."),
         "shaman.victory": ("Le Chaman légendaire tombe : la tempête se calme.", "The Legendary Shaman falls: the storm calms."),
         "cold.encased": ("Le froid vous saisit : vous êtes pris dans un éclat de glace ! Vos alliés doivent le briser.",

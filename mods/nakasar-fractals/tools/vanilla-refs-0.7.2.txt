@@ -14,3 +14,8 @@ animations Spirit_Root_Default
 # Assets.zip 0.7.2 le 24 octobre 2026) : loups du Moussu et esprits de Carnasse (Marais).
 animations Wolf_Black_Default
 animations Fox_Default
+# Hache de bataille vanilla (Server/Item/Animations/Battleaxe.json : SwingLeftCharging, Sweep, CastLeftCharging) et
+# attaque du loup-garou vanilla (Server/NPC/Roles/Undead/Werewolf.json cite Outlander_Brute_Default / Grab), vus dans
+# Assets.zip 0.7.2 le 25 octobre 2026 : Kanaxai (Ressac) et Chaman en loup-garou (Tempête de neige).
+animations Battleaxe
+animations Outlander_Brute_Default

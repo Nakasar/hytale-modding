@@ -22,6 +22,7 @@ import dev.nakasar.hytale.fractals.arena.WorldBlocks;
 import dev.nakasar.hytale.fractals.boss.GroupHealth;
 import dev.nakasar.hytale.fractals.combat.BossStun;
 import dev.nakasar.hytale.fractals.combat.Delayed;
+import dev.nakasar.hytale.fractals.arena.Leash;
 import dev.nakasar.hytale.fractals.combat.Hurt;
 import dev.nakasar.hytale.fractals.combat.Spawns;
 import dev.nakasar.hytale.fractals.combat.TelegraphInteraction;
@@ -117,6 +118,9 @@ final class Archdiviner {
             }
         }
         keepHealth(store);
+        // Il ne doit jamais tomber de la plate-forme (Kevin, 25 octobre 2026) : remis sur l'arène dès qu'il en sort.
+        double[] c = CliffsideLayout.ARENA_CENTER;
+        Leash.keepOnDisc(store, ref, new Vector3d(c[0], c[1], c[2]), CliffsideLayout.ARENA_RADIUS - 0.5, 2, 1.5);
         adds.removeIf(a -> !Cliffside.alive(store, a));
         List<PlayerRef> inArena = new ArrayList<>();
         for (PlayerRef player : players) {

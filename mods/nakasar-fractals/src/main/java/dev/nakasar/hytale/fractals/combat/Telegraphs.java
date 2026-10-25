@@ -32,11 +32,19 @@ public final class Telegraphs {
     /** Durées des cercles (tools/generate_warnings.py, WARNING_TENTHS). */
     private static final int WARNING_MIN = 5;
     private static final int WARNING_MAX = 60;
+    /** Annonce de cercle la plus longue qui existe (s) : une plus longue doit être posée plus tard. */
+    public static final float WARNING_MAX_SECONDS = WARNING_MAX / 10f;
     private static final String LINE = "Nakasar_Fractal_Line_";
     private static final String SECTOR = "Nakasar_Fractal_Sector_";
     /** Hauteur d'une zone : on est touché de 1,5 bloc sous son sol à 3,5 blocs au-dessus. */
     private static final double BELOW = 1.5;
     private static final double ABOVE = 3.5;
+    /**
+     * Demi-largeur du corps d'un joueur : on est touché dès que le corps mord sur la zone rouge, ni plus ni moins
+     * (Kevin, 25 octobre 2026 : « les zones rouges d'alerte ont une taille strictement égale à la zone d'effet »). Tous
+     * les tests d'appartenance, ceux des formes comme ceux écrits à la main, passent par {@link #inCircle} ou cette marge.
+     */
+    public static final double BODY = 0.3;
 
     private Telegraphs() {
     }
@@ -79,6 +87,11 @@ public final class Telegraphs {
         }
         TransformComponent transform = store.getComponent(ref, TransformComponent.getComponentType());
         return transform == null ? null : transform.getPosition();
+    }
+
+    /** Vrai si le corps en `p` mord sur le disque rouge de `radius` blocs posé en `center` (même hauteur que les formes). */
+    public static boolean inCircle(Vector3d p, Vector3d center, double radius) {
+        return horizontal(p, center) <= radius + BODY && inHeight(p, center);
     }
 
     public static double horizontal(Vector3d a, Vector3d b) {
@@ -157,7 +170,7 @@ public final class Telegraphs {
 
         @Override
         public boolean contains(Vector3d p) {
-            return horizontal(p, center) <= radius + 0.3 && inHeight(p, center);
+            return inCircle(p, center, radius);
         }
 
         @Override
@@ -201,15 +214,15 @@ public final class Telegraphs {
         @Override
         public boolean contains(Vector3d p) {
             double d = horizontal(p, apex);
-            if (d > radius + 0.5 || !inHeight(p, apex)) {
+            if (d > radius + BODY || !inHeight(p, apex)) {
                 return false;
             }
             if (d < 0.75) {
                 return true;
             }
             double off = Math.abs(Math.IEEEremainder(angle(apex, p) - facing, Math.PI * 2));
-            // Marge d'un demi-bloc sur les côtés, comme sur l'arc.
-            return off <= width / 2 + Math.atan2(0.5, Math.max(d, 0.5));
+            // Le corps sur les côtés, comme sur l'arc.
+            return off <= width / 2 + Math.atan2(BODY, Math.max(d, 0.5));
         }
 
         @Override
@@ -264,7 +277,7 @@ public final class Telegraphs {
             double dz = p.z() - start.z();
             double along = dx * Math.cos(facing) + dz * Math.sin(facing);
             double side = -dx * Math.sin(facing) + dz * Math.cos(facing);
-            return along >= -0.5 && along <= length + 0.5 && Math.abs(side) <= width / 2 + 0.4 && inHeight(p, start);
+            return along >= -BODY && along <= length + BODY && Math.abs(side) <= width / 2 + BODY && inHeight(p, start);
         }
 
         @Override

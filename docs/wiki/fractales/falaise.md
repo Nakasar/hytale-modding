@@ -19,9 +19,9 @@ Un colosse de pierre est enchaîné à une falaise par un culte. Le groupe l'esc
 
 1. **Le camp** au pied du colosse : le Chercheur et une vague de cultistes. Le **râtelier** ne donne le marteau qu'une fois le camp nettoyé, et à un seul joueur à la fois.
 2. **Les sceaux des genoux** (2 coups chargés chacun), par le **tunnel aux dalles piégées** (18 % des PV par dalle).
-3. **L'escalade** sous le souffle des **gargouilles** ; trois **leviers** en haut les coupent.
+3. **L'escalade** sous le souffle des **gargouilles** : chacune souffle sur la paire de pierres en face d'elle, et la **bande rouge** au sol de ces pierres a exactement la largeur du vent ; trois **leviers** en haut les coupent.
 4. **Le sceau de la poitrine** (3 coups), par la passerelle du torse et ses **foyers** (deux sur trois s'embrasent toutes les 7 s).
-5. **Les sceaux des poignets** (3 coups chacun), par les **rampes aux bombes** (leviers R1 et R2). Une **bulle alternée** les protège : frapper l'un protège l'autre ; les incantateurs proches réparent un coup toutes les 20 s.
+5. **Les sceaux des poignets** (3 coups chacun), par les **rampes aux bombes** (leviers R1 et R2), qui s'activent **dès le dernier sceau brisé**. Une **bulle alternée** les protège : frapper l'un protège l'autre ; les incantateurs proches réparent un coup toutes les 20 s.
 6. **L'Archidevin**, au sommet.
 
 Chaque palier brisé ouvre une barrière de brume et déplace le point de retour. Tomber dans une zone de saut ramène à la dernière **plateforme sûre** ; tirer un levier fige 4 s.

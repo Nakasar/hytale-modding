@@ -1,5 +1,5 @@
 {
-  "$Comment": "Le Chaman en ours : bond sur sa cible, cercle rouge de 4 blocs (1,5 s), 34 dégâts et renversement long (3 s).",
+  "$Comment": "Le Chaman en loup-garou : bond sur sa cible, cercle rouge de 4 blocs (1,5 s), 34 dégâts et renversement long (3 s).",
   "Type": "Serial",
   "Interactions": [
     {

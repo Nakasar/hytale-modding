@@ -251,7 +251,7 @@ public final class InstabilitySystem extends TickingSystem<EntityStore> {
                     for (PlayerRef player : world.getPlayerRefs()) {
                         Ref<EntityStore> r = player.getReference();
                         Vector3d p = Telegraphs.position(s2, r);
-                        if (p != null && Telegraphs.horizontal(p, center) <= FLUX_RADIUS + 0.3 && Math.abs(p.y() - center.y()) <= 3) {
+                        if (p != null && Telegraphs.horizontal(p, center) <= FLUX_RADIUS + Telegraphs.BODY && Math.abs(p.y() - center.y()) <= 3) {
                             Hurt.percent(s2, r, FLUX_PART, Instabilities.CAUSE);
                         }
                     }

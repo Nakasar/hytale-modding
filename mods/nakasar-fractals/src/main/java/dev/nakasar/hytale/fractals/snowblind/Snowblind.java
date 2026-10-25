@@ -13,6 +13,7 @@ import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
 import com.hypixel.hytale.server.npc.entities.NPCEntity;
 import dev.nakasar.hytale.fractals.arena.Carried;
 import dev.nakasar.hytale.fractals.arena.Gates;
+import dev.nakasar.hytale.fractals.arena.HandLock;
 import dev.nakasar.hytale.fractals.arena.WorldBlocks;
 import dev.nakasar.hytale.fractals.boss.BossBarSystem;
 import dev.nakasar.hytale.fractals.combat.Delayed;
@@ -101,6 +102,7 @@ public final class Snowblind implements FractalStage {
             BossBarSystem.label(role, Defiance::label);
         }
         Instabilities.exempt(EFFIGY, CRYSTAL, SHARD);
+        HandLock.lock(FIREWOOD);
     }
 
     @Override
@@ -140,6 +142,11 @@ public final class Snowblind implements FractalStage {
             st.frost.thaw(store, players);   // la Source tombée, le froid ne mord plus
         }
         snow(store, st, players, blizzard, dt);
+        // Un fagot porté reste en main (Kevin, 25 octobre 2026), comme le marteau ou les cristaux : rangé dans le sac,
+        // il revient dans la main.
+        for (PlayerRef p : players) {
+            HandLock.ensureHeld(store, p.getReference(), FIREWOOD);
+        }
         switch (st.step) {
             case CAMP -> {
                 if (st.camp.step(world, store, dt)) {
@@ -280,6 +287,7 @@ public final class Snowblind implements FractalStage {
                 }
                 WorldBlocks.clear(chunks, x, y, z);
                 Carried.give(store, ref, FIREWOOD);
+                HandLock.ensureHeld(store, ref, FIREWOOD);
                 player.sendMessage(Message.translation(MESSAGES + "wood.taken").param("count", carried + 1));
                 Delayed.later(world, PILE_REGROW, s -> {
                     if (WorldBlocks.name(world.getChunkStore(), x, y, z) == null) {

@@ -12,5 +12,11 @@
   ],
   "PlayerAnimationsId": "Item",
   "ItemSoundSetId": "ISS_Items_Gems",
-  "MaxStack": 3
+  "MaxStack": 3,
+  "Utility": {
+    "Compatible": false
+  },
+  "Interactions": {
+    "SwapFrom": "Root_Nakasar_Fractal_Keep_In_Hand"
+  }
 }

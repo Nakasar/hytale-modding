@@ -3,9 +3,9 @@
     "Name": "nakasar_fractals_silent_surf.items.Nakasar_Fractal_Survey_Powder.name",
     "Description": "nakasar_fractals_silent_surf.items.Nakasar_Fractal_Survey_Powder.description"
   },
-  "Icon": "Icons/Items/Nakasar/Fractals/Survey_Powder.png",
-  "Model": "Items/Nakasar/Fractals/Survey_Powder.blockymodel",
-  "Texture": "Items/Nakasar/Fractals/Survey_Powder.png",
+  "Icon": "Icons/ItemsGenerated/Weapon_Bomb_Fire_Goblin.png",
+  "Model": "NPC/Intelligent/Goblin/Models/Weapons/Bomb/Fire.blockymodel",
+  "Texture": "NPC/Intelligent/Goblin/Models/Weapons/Bomb/Fire_Texture.png",
   "Quality": "Rare",
   "Categories": [
     "Items.Misc"
@@ -13,6 +13,18 @@
   "PlayerAnimationsId": "Item",
   "ItemSoundSetId": "ISS_Items_Gems",
   "MaxStack": 2,
+  "IconProperties": {
+    "Scale": 0.87,
+    "Translation": [
+      -7.11,
+      -7.7
+    ],
+    "Rotation": [
+      4.685,
+      6.935,
+      315
+    ]
+  },
   "Interactions": {
     "Secondary": "Root_Nakasar_Fractal_Survey_Powder"
   },

@@ -23,7 +23,7 @@
   "HotbarItems": [
     "Weapon_Mace_Onyxium"
   ],
-  "KnockbackScale": 0.1,
+  "KnockbackScale": 0.0,
   "DeathAnimationTime": 2.0,
   "StateTransitions": [
     {

@@ -14,6 +14,7 @@ import com.hypixel.hytale.server.core.modules.entitystats.asset.DefaultEntitySta
 import com.hypixel.hytale.server.core.universe.PlayerRef;
 import com.hypixel.hytale.server.core.universe.world.World;
 import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
+import dev.nakasar.hytale.fractals.arena.Leash;
 import dev.nakasar.hytale.fractals.combat.BossStun;
 import dev.nakasar.hytale.fractals.combat.Hurt;
 import dev.nakasar.hytale.fractals.combat.Spawns;
@@ -63,9 +64,9 @@ final class Kanaxai {
     static final float DREAD_EVERY = 32f;
     static final float STORM_EVERY = 24f;
     static final float STORM_WINDUP = 3f;
-    static final double STORM_RADIUS = 3;
+    static final double STORM_RADIUS = 2.2;
     static final float STORM_PART = 0.2f;
-    static final double POOL_RADIUS = 2.5;
+    static final double POOL_RADIUS = STORM_RADIUS;
     static final float POOL_SECONDS = 25f;
     static final float POOL_PART_PER_SECOND = 0.04f;
     static final float HARROW_EVERY = 16f;
@@ -87,8 +88,10 @@ final class Kanaxai {
     static final float RESET_SECONDS = 20f;
     static final double ARENA_REACH = 58;
     static final int START_ASPECTS = 2;
+    /** Rayon d'une île de Fantasmagorie (6 blocs, bord irrégulier jusqu'à 7 : silent_surf_scenery.ISLAND_R). */
+    static final double ISLAND_RADIUS = 7;
 
-    private record Phantasm(UUID owner, long until) {
+    private record Phantasm(UUID owner, Vector3d home, long until) {
     }
 
     private record Pool(Vector3d at, long until) {
@@ -213,9 +216,14 @@ final class Kanaxai {
             return Outcome.NONE;
         }
         long now = System.nanoTime();
+        // Personne ne tombe de l'arène ni des îles (Kevin, 25 octobre 2026) : Kanaxai reste sur l'arène, les Aspects
+        // sur leur bord ou leur île (élevé pendant le Fendeur, Kanaxai n'est ramené que s'il descend sous le sol).
+        Leash.keepOnDisc(store, boss, center(), SilentSurfLayout.ARENA_RADIUS - 1, 2, SilentSurf.FALL_LIMIT);
         for (int i = 0; i < edge.length; i++) {
             if (edge[i] != null && !Spawns.alive(store, edge[i])) {
                 edge[i] = null;
+            } else if (edge[i] != null) {
+                Leash.keepAbove(store, edge[i], Spawns.point(SilentSurfLayout.EDGE_ASPECTS[i]), SilentSurf.FALL_LIMIT);
             }
         }
         phantasms(world, store, now);
@@ -226,7 +234,10 @@ final class Kanaxai {
                 cleave(world, store, inside);
             } else if (!warned && cleaverAt - now <= Telegraphs.seconds(3f)) {
                 warned = true;
-                Telegraphs.circle(store, center(), SilentSurfLayout.ARENA_RADIUS, (cleaverAt - now) / 1e9f);
+                float left = (cleaverAt - now) / 1e9f;
+                for (Vector3d[] zone : cleaverZones()) {
+                    Telegraphs.circle(store, zone[0], zone[1].x(), left);
+                }
             }
             return Outcome.NONE;
         }
@@ -442,7 +453,7 @@ final class Kanaxai {
                 Telegraphs.sound(s, "SFX_Ability_Ground_Slam_Spike_Erupt", spot);
                 for (PlayerRef q : all) {
                     Vector3d qa = Telegraphs.position(s, q.getReference());
-                    if (qa != null && Telegraphs.horizontal(qa, spot) <= STORM_RADIUS && Math.abs(qa.y() - spot.y()) < 3) {
+                    if (qa != null && Telegraphs.horizontal(qa, spot) <= STORM_RADIUS + Telegraphs.BODY && Math.abs(qa.y() - spot.y()) < 3) {
                         Hurt.percent(s, q.getReference(), STORM_PART, SilentSurf.TORMENT_CAUSE);
                     }
                 }
@@ -539,7 +550,7 @@ final class Kanaxai {
             return;
         }
         AspectVisibilitySystem.hide(aspect, player.getUuid());
-        phantasms.put(aspect, new Phantasm(player.getUuid(), System.nanoTime() + Telegraphs.seconds(PHANTASM_SECONDS)));
+        phantasms.put(aspect, new Phantasm(player.getUuid(), at, System.nanoTime() + Telegraphs.seconds(PHANTASM_SECONDS)));
         Hurt.effect(store, player.getReference(), "Nakasar_Fractal_Phantasmagoria", PHANTASM_SECONDS);
         player.sendMessage(Message.translation(SilentSurf.MESSAGES + "kanaxai.phantasm").param("island", island + 1));
     }
@@ -551,6 +562,7 @@ final class Kanaxai {
             PlayerRef owner = SilentSurf.player(world, e.getValue().owner());
             boolean alive = Spawns.alive(store, e.getKey());
             if (alive && now < e.getValue().until() && owner != null) {
+                Leash.keepAbove(store, e.getKey(), e.getValue().home(), SilentSurf.FALL_LIMIT);
                 continue;
             }
             if (alive && owner != null) {
@@ -599,7 +611,17 @@ final class Kanaxai {
         Vector3d c = center();
         Telegraphs.particle(store, "Nakasar_Fractal_Cleaver", c, 4f);
         Telegraphs.sound(store, "SFX_Goblin_Feastmaster_Slam", c);
+        List<Vector3d[]> zones = cleaverZones();
         for (PlayerRef p : inside) {
+            Vector3d at = Telegraphs.position(store, p.getReference());
+            boolean hit = false;
+            for (Vector3d[] zone : zones) {
+                hit |= at != null && Telegraphs.horizontal(at, zone[0]) <= zone[1].x() + Telegraphs.BODY
+                        && Math.abs(at.y() - zone[0].y()) < 6;
+            }
+            if (!hit) {
+                continue;
+            }
             Hurt.percent(store, p.getReference(), part, SilentSurf.TORMENT_CAUSE);
             Hurt.effect(store, p.getReference(), Agony.EFFECT, CLEAVER_AGONY);
         }
@@ -608,6 +630,19 @@ final class Kanaxai {
         store.putComponent(boss, Teleport.getComponentType(), new Teleport(c, new Rotation3f()));
         BossStun.release(store, boss);
         speedClock = SPEED_EVERY - 6f;
+    }
+
+    /**
+     * Zones du Fendeur : l'arène et chacune des cinq îles, cercles rouges de la taille exacte du coup ({centre, (rayon,
+     * 0, 0)}). Il touche tout le monde sur l'arène ou sur une île : se cacher sur une île ne l'évite pas.
+     */
+    private static List<Vector3d[]> cleaverZones() {
+        List<Vector3d[]> zones = new ArrayList<>();
+        zones.add(new Vector3d[]{center(), new Vector3d(SilentSurfLayout.ARENA_RADIUS, 0, 0)});
+        for (double[] island : SilentSurfLayout.ISLANDS) {
+            zones.add(new Vector3d[]{Spawns.point(island), new Vector3d(ISLAND_RADIUS, 0, 0)});
+        }
+        return zones;
     }
 
     // --- coups ---------------------------------------------------------------------------------------------------

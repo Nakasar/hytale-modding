@@ -128,7 +128,8 @@ final class Boulders {
             boolean harmful = b.s >= SAFE_START;
             Telegraphs.particle(store, "Nakasar_Fractal_Boulder", at, 2f);
             if (harmful) {
-                Telegraphs.circle(store, along(b.s + 3), 3.5, 0.5f);
+                // Cercle de la taille exacte de la zone touchée (reach, corps compris), là où le rocher sera dans 0,5 s.
+                Telegraphs.circle(store, along(b.s + SPEED * 0.5), reach - Telegraphs.BODY, 0.5f);
             }
             for (PlayerRef player : players) {
                 Ref<EntityStore> ref = player.getReference();

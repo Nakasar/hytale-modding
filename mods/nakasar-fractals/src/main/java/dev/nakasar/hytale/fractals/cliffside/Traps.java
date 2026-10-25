@@ -111,8 +111,8 @@ final class Traps {
         } else {
             fireClock = 0f;
         }
-        boolean ramps = (st.stage == Cliffside.Stage.RAMPS || st.stage == Cliffside.Stage.ARENA)
-                && Cliffside.anyIn(store, players, CliffsideLayout.JUMP_ZONES.get(1));
+        boolean ramps = st.stage == Cliffside.Stage.RAMPS
+                || st.stage == Cliffside.Stage.ARENA && Cliffside.anyIn(store, players, CliffsideLayout.JUMP_ZONES.get(1));
         bombs(store, players, ramps, dt);
     }
 
@@ -133,9 +133,7 @@ final class Traps {
             Vector3d mouth = new Vector3d(g.x() + 0.5, g.y() + 0.3, g.z() + 1.2);
             if (crossed(a, b, 0f)) {
                 Telegraphs.particle(store, "Nakasar_Fractal_Gust_Windup", mouth, 1.4f);
-                // Sol des pierres du tronçon : un bloc sous la gargouille (elle est à hauteur de tête).
-                Telegraphs.Strip strip = new Telegraphs.Strip(new Vector3d(g.x() + 0.5, g.y() - 1, g.z() + 1),
-                        Math.PI / 2, CliffsideLayout.GUST_REACH - 1, 3, System.nanoTime(), GUST_AT);
+                Telegraphs.Strip strip = wind(g, GUST_AT);
                 TelegraphSystem.start(world, (w, s, t) -> strip.step(s, t));
             }
             if (crossed(a, b, GUST_AT) || crossed(a, b, GUST_AGAIN)) {
@@ -146,11 +144,21 @@ final class Traps {
         }
     }
 
+    /**
+     * Zone du souffle, la même pour la bande rouge et pour la poussée (Kevin, 25 octobre 2026 : largeur strictement
+     * égale, au sol des pierres en face) : de la falaise sur {@link CliffsideLayout#GUST_REACH} blocs vers +z, large de
+     * la paire de pierres en face ({@link CliffsideLayout#GUST_WIDTH}), posée au niveau de leur sol.
+     */
+    private static Telegraphs.Strip wind(CliffsideLayout.Gargoyle g, float seconds) {
+        return new Telegraphs.Strip(new Vector3d(g.windX(), g.floor(), g.z() + 1), Math.PI / 2,
+                CliffsideLayout.GUST_REACH - 1, CliffsideLayout.GUST_WIDTH, System.nanoTime(), seconds);
+    }
+
     /** Jet de vent visible : bouffées de la gueule jusqu'au bout de la portée, une tous les 1,5 bloc, en vague rapide. */
     private static void jet(World world, CliffsideLayout.Gargoyle g) {
         int k = 0;
         for (double d = 1.5; d <= CliffsideLayout.GUST_REACH; d += 1.5, k++) {
-            Vector3d at = new Vector3d(g.x() + 0.5, g.y() - 0.2, g.z() + 1.2 + d);
+            Vector3d at = new Vector3d(g.windX(), g.y() - 0.2, g.z() + 1.2 + d);
             Delayed.later(world, 0.035f * k, s -> Telegraphs.particle(s, "Nakasar_Fractal_Gust_Jet", at, 1f));
         }
     }
@@ -161,11 +169,11 @@ final class Traps {
     }
 
     private static void gust(Store<EntityStore> store, List<PlayerRef> players, CliffsideLayout.Gargoyle g) {
+        Telegraphs.Strip zone = wind(g, 0f);
         for (PlayerRef player : players) {
             Ref<EntityStore> ref = player.getReference();
             Vector3d at = Telegraphs.position(store, ref);
-            if (at == null || at.x() < g.x() - 1 || at.x() >= g.x() + 2 || at.y() < g.y() - 3 || at.y() >= g.y() + 2
-                    || at.z() < g.z() || at.z() > g.z() + CliffsideLayout.GUST_REACH) {
+            if (at == null || !zone.contains(at)) {
                 continue;
             }
             Velocity velocity = store.getComponent(ref, Velocity.getComponentType());
@@ -222,7 +230,7 @@ final class Traps {
                 for (PlayerRef player : world.getPlayerRefs()) {
                     Ref<EntityStore> ref = player.getReference();
                     Vector3d at = Telegraphs.position(s, ref);
-                    if (at != null && Telegraphs.horizontal(at, center) <= CliffsideLayout.FIRE_RADIUS
+                    if (at != null && Telegraphs.horizontal(at, center) <= CliffsideLayout.FIRE_RADIUS + Telegraphs.BODY
                             && Math.abs(at.y() - center.y()) <= 3) {
                         Hurt.percent(s, ref, FIRE_PART, "Fire");
                         Hurt.effect(s, ref, "Burn", 3f);
@@ -233,6 +241,13 @@ final class Traps {
     }
 
     // --- bombes -----------------------------------------------------------------------------------------
+
+    /** Dernier sceau brisé : une bombe part aussitôt sur chaque rampe encore active. */
+    void armBombs() {
+        for (int r = 0; r < CliffsideLayout.RAMPS.length; r++) {
+            bombClock[r] = BOMB_INTERVAL;
+        }
+    }
 
     private void bombs(Store<EntityStore> store, List<PlayerRef> players, boolean active, float dt) {
         if (active) {
@@ -268,7 +283,7 @@ final class Traps {
             for (PlayerRef player : players) {
                 Ref<EntityStore> ref = player.getReference();
                 Vector3d p = Telegraphs.position(store, ref);
-                if (p == null || bomb.hit.contains(player.getUuid()) || Telegraphs.horizontal(p, at) > BOMB_RADIUS
+                if (p == null || bomb.hit.contains(player.getUuid()) || Telegraphs.horizontal(p, at) > BOMB_RADIUS + Telegraphs.BODY
                         || Math.abs(p.y() - at.y()) > 2) {
                     continue;
                 }
