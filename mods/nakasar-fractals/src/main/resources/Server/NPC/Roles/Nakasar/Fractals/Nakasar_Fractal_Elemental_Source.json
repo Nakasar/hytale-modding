@@ -1,5 +1,5 @@
 {
-  "$Comment": "La Source élémentaire, barre de boss : orbe lent qui repousse, tourbillon, coups de poing. Les foyers, son bouclier de givre, ses frappes sur les foyers et le blizzard sont menés par le Java (snowblind.Source). Généré par tools/generate_snowblind.py.",
+  "$Comment": "La Source élémentaire, barre de boss, immobile (ancrée par le Java) : orbe lent qui repousse, tourbillon, coups de poing au contact. Les foyers, son bouclier de givre, ses frappes sur les foyers et le blizzard sont menés par le Java (snowblind.Source). Généré par tools/generate_snowblind.py.",
   "Type": "Generic",
   "Appearance": "Nakasar_Fractal_Elemental_Source",
   "NameTranslationKey": "nakasar_fractals_snowblind.npc.Elemental_Source.name",
@@ -13,11 +13,11 @@
   "MotionControllerList": [
     {
       "Type": "Walk",
-      "MaxWalkSpeed": 1.6,
+      "MaxWalkSpeed": 0.1,
       "Gravity": 10,
       "MaxFallSpeed": 10,
       "Acceleration": 10,
-      "JumpHeight": 1.0
+      "JumpHeight": 0
     }
   ],
   "KnockbackScale": 0.0,
@@ -259,23 +259,6 @@
               ]
             }
           ]
-        },
-        {
-          "Sensor": {
-            "Type": "Target",
-            "Range": 36
-          },
-          "BodyMotion": {
-            "Type": "Seek",
-            "RelativeSpeed": 1.0,
-            "SlowDownDistance": 4.4,
-            "StopDistance": 3.4,
-            "UsePathfinder": true
-          },
-          "HeadMotion": {
-            "Type": "Watch",
-            "RelativeTurnSpeed": 1.5
-          }
         }
       ]
     }

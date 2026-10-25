@@ -28,17 +28,18 @@ import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
 
 /**
- * Rencontre 4, le Chaman légendaire, d'après GW2. Il s'éveille quand on entre dans le village, dont la porte se ferme.
+ * Rencontre 4, le Chaman légendaire, d'après GW2. Il s'éveille quand on entre dans la grotte (sans porte :
+ * on peut y filer sans vider la forêt). Le froid ne mord plus depuis la chute de la Source : ses piles d'hypothermie
+ * ({@link Frost#add}) sont sans effet.
  * <ul>
  *   <li>à chaque phase au sol, trois cristaux corrompus l'entourent : tant qu'il en reste un, il ne prend aucun
  *   dégât ;</li>
- *   <li>ses coups d'épée ajoutent {@value #SLASH_STACKS} piles d'hypothermie ({@link Snowblind#filter}) ;</li>
  *   <li>à 75 % et 50 %, il saute sur son balcon, invulnérable, et fait pleuvoir des pics de glace (cercle rouge sous
- *   chaque joueur toutes les {@value #RAIN_EVERY} s : {@value #RAIN_PART} des PV et une pile) ; l'Effigie de glace
+ *   chaque joueur toutes les {@value #RAIN_EVERY} s : {@value #RAIN_PART} des PV) ; l'Effigie de glace
  *   apparaît au centre, défiance ouverte : brisée ou détruite, il redescend ;</li>
  *   <li>à 25 %, il prend sa forme d'ours (bonds qui renversent longtemps).</li>
  * </ul>
- * Personne de vivant dans le village pendant {@value #RESET_SECONDS} s : il se retire et la porte se rouvre.
+ * Personne de vivant dans la grotte pendant {@value #RESET_SECONDS} s : il se retire.
  */
 final class Shaman {
 

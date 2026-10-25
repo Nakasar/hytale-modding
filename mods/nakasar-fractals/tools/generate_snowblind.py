@@ -162,7 +162,7 @@ def build_course():
         p.set(x, c.s(x, z) - 1, z, FOOTPRINTS)
     ss.forest(p, t, keep)
     ss.ground_cover(p, t, keep)
-    for cell in c.gate_source + c.gate_village:
+    for cell in c.gate_source:
         p.set(*cell, MIST)
     return c
 
@@ -373,6 +373,7 @@ def cave(c):
         for y in range(c.s(x, z), by - 1):
             p.set(x, y, z, ICE)
     # Brume au milieu du tunnel : elle se ferme quand on entre dans l'arène.
+    # Pas de brume à l'entrée de la grotte (Kevin) : on peut filer à travers la forêt. Le passage reste dégagé.
     c.gate_village = gate_cells(t, ss.GATE_VILLAGE_AT, "tunnel", lambda x, z: t.ceiling.get((x, z), c.s(x, z) + 5))
     keep.cells |= {(x, z) for x, _, z in c.gate_village}
 
@@ -586,8 +587,8 @@ def models():
     m[SOURCE] = {"$Comment": "La Source élémentaire (provisoire) : l'esprit de givre vanilla, géant (× 3,2) ; GW2 en "
                              "fait un géant de glace.", "Parent": "Spirit_Frost", "MinScale": 3.2, "MaxScale": 3.2,
                  "Light": {"Color": "#9cf", "Radius": 6}}
-    m[WOLF] = fc.character_model("Frost_Wolf", gs.wolf_parts((214, 220, 230), (130, 140, 156), (120, 200, 255)), 93,
-                                 "Loup des neiges (provisoire) : loup en boîtes, sans animation.", 0.6, (0.5, 0.9))
+    m[WOLF] = {"$Comment": "Loup des neiges : le loup blanc vanilla (modèle et animations du jeu).",
+               "Parent": "Wolf_White", "MinScale": 0.95, "MaxScale": 0.95}
     m[BEAR] = fc.character_model("Shaman_Bear", bear_parts(), 94, "Le Chaman légendaire en ours (provisoire) : ours "
                                  "polaire en boîtes, crinière de givre, sans animation.", 1.0, (0.9, 1.4),
                                  light={"Color": "#8cf", "Radius": 3}, scale=1.3)
@@ -705,10 +706,12 @@ def roles():
         fr.walk(3.6), GENERATOR, sight=2, leash=10, home=True, KnockbackScale=1.0, DeathAnimationTime=0.8)
     elem["StartState"] = "ReturnHome"
     out[ELEMENTAL] = elem
+    _, _, _, wolf_attack, wolf_reach, wolf_vars = gs.WILD["Wolf"]
     out[WOLF] = fr.role(
-        WOLF, "Loup des neiges : arrive en meute sur le camp, fonce et mord.", WOLF, n(WOLF), 70,
-        [fr.melee(R("Wolf_Bite"), 2.2, (0.7, 1.1)), fr.chase(40, stop=1.4)],
-        fr.walk(5.2), GENERATOR, sight=40, leash=48, home=False, KnockbackScale=0.8, DeathAnimationTime=0.8)
+        WOLF, "Loup des neiges : arrive en meute sur le camp, fonce et mord (morsure du loup vanilla, 8 dégâts).", WOLF,
+        n(WOLF), 70, [fr.melee(wolf_attack, wolf_reach, (0.7, 1.1)), fr.chase(40, stop=1.4)],
+        fr.walk(5.2), GENERATOR, sight=40, leash=48, home=False, KnockbackScale=0.8, DeathAnimationTime=0.8,
+        InteractionVars=wolf_vars)
     out[CULTIST] = fr.role(
         CULTIST, "Cultiste du givre : entailles au contact.", CULTIST, n(CULTIST), 110,
         [fr.melee(R("Cultist_Frost_Slash"), 2.4, (0.7, 1.1)), fr.chase(40, stop=1.6)],
@@ -721,13 +724,14 @@ def roles():
         fr.walk(3.6), GENERATOR, sight=40, leash=48, home=False, timers=[fr.timer("Bolt", (1, 3), (5, 7))],
         HotbarItems=["Weapon_Staff_Crystal_Purple"], KnockbackScale=1.0, DeathAnimationTime=1.0)
     out[SOURCE] = fr.role(
-        SOURCE, "La Source élémentaire, barre de boss : orbe lent qui repousse, tourbillon, coups de poing. Les foyers, "
+        SOURCE, "La Source élémentaire, barre de boss, immobile (ancrée par le Java) : orbe lent qui repousse, "
+        "tourbillon, coups de poing au contact. Les foyers, "
         "son bouclier de givre, ses frappes sur les foyers et le blizzard sont menés par le Java (snowblind.Source).",
         SOURCE, n(SOURCE), 6000,
         [fr.timed_attack("Whirl", R("Source_Whirl"), rng=6, los=True, comment="Tourbillon."),
          fr.timed_attack("Orb", R("Source_Orb"), rng=26, los=True, comment="Orbe lent."),
-         fr.melee(R("Source_Slam"), 4.4, (1.2, 1.6)), fr.chase(36, stop=3.4)],
-        fr.walk(1.6), GENERATOR, sight=30, leash=40, home=False,
+         fr.melee(R("Source_Slam"), 4.4, (1.2, 1.6))],
+        fr.walk(0.1, jump=0), GENERATOR, sight=30, leash=40, home=False,
         timers=[fr.timer("Whirl", (5, 7), (11, 14)), fr.timer("Orb", (2, 4), (6, 8))],
         KnockbackScale=0.0, DeathAnimationTime=2.0)
     out[SHAMAN] = fr.role(
@@ -826,12 +830,12 @@ def lang():
         "source.scatter": ("La tempête vous emporte !", "The storm sweeps you away!"),
         "source.calm": ("Un foyer brûle : le blizzard retombe.", "A brazier burns: the blizzard dies down."),
         "source.reset": ("La Source se fige dans la glace.", "The Source freezes in the ice."),
-        "source.victory": ("La Source élémentaire se brise : la brume de l'est s'ouvre sur la forêt. Prenez une torche et "
-                           "suivez les traces jusqu'à la grotte de glace.", "The Elemental Source shatters: the eastern "
-                           "mist opens onto the forest. Take a torch and follow the tracks to the ice cave."),
-        "shaman.enter": ("Le Chaman légendaire, au fond de la grotte de glace ! Ses coups d'épée glacent : restez près des "
-                         "foyers.", "The Legendary Shaman, deep in the ice cave! His sword strikes freeze: stay near the "
-                         "braziers."),
+        "source.victory": ("La Source élémentaire se brise et le froid retombe : plus d'hypothermie. La brume de l'est "
+                           "s'ouvre sur la forêt : suivez les traces jusqu'à la grotte de glace.", "The Elemental Source "
+                           "shatters and the cold lifts: no more hypothermia. The eastern mist opens onto the forest: "
+                           "follow the tracks to the ice cave."),
+        "shaman.enter": ("Le Chaman légendaire, au fond de la grotte de glace ! Brisez ses cristaux et son Effigie.",
+                         "The Legendary Shaman, deep in the ice cave! Shatter his crystals and his Effigy."),
         "shaman.crystals": ("Le Chaman invoque trois cristaux corrompus : il ne prend aucun dégât tant qu'ils tiennent.",
                             "The Shaman summons three corrupted crystals: he takes no damage while they stand."),
         "shaman.exposed": ("Les cristaux sont brisés : le Chaman est vulnérable !", "The crystals are shattered: the Shaman is vulnerable!"),
@@ -922,7 +926,6 @@ public final class SnowblindLayout {{
     public static final double[] VILLAGE_CENTER = {J.jpoint((vx, vy, vz))};
     public static final double VILLAGE_RADIUS = {VILLAGE_RADIUS};
     public static final int[][] VILLAGE_FIRES = {J.jblocks([c.at(x, z) for x, z in VILLAGE_FIRES])};
-    public static final int[][] GATE_VILLAGE = {J.jblocks(c.gate_village)};
     public static final double[] VILLAGE_CHECKPOINT = {J.jpoint(village)};
     public static final double[] BALCONY = {J.jpoint(BALCONY)};
     public static final double[] EFFIGY = {J.jpoint(EFFIGY_AT)};
