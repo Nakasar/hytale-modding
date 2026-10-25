@@ -9,7 +9,7 @@
 
 L'**Observatoire** est un petit archipel suspendu dans les Brumes, comme l'Observatoire des Brumes de *Guild Wars 2* : un plateau de roche moussue au centre, l'île asura de l'Archiviste à l'est et l'île du golem d'essai à l'ouest, reliées par des ponts de roche, sous un ciel doré où flottent des ruines gothiques et des aiguilles de pierre. Tout s'y choisit dans le décor : pas de menu à ouvrir.
 
-On arrive devant la grande **porte asura**, au sud : traverser son voile violet ramène chez soi (pas dans les 15 premières secondes). Au centre, l'Astrolabe se dresse dans un bassin où tombent des cascades de lumière.
+On arrive devant la grande **porte asura**, au sud : traverser son voile violet ramène à l'endroit où l'on est entré dans l'Observatoire, un pas en arrière du portail (pas dans les 15 premières secondes). Au centre, l'Astrolabe se dresse dans un bassin où tombent des cascades de lumière.
 
 ## Carte
 
