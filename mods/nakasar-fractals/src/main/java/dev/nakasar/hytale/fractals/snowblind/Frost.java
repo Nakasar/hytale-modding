@@ -54,6 +54,8 @@ final class Frost {
     }
 
     private final Map<UUID, Chill> chills = new HashMap<>();
+    /** La Source est tombée : plus d'hypothermie jusqu'à la fin de la fractale. */
+    private boolean thawed;
     /** Éclat de glace → joueur qu'il enferme. */
     private final Map<Ref<EntityStore>, Ref<EntityStore>> prisoners = new HashMap<>();
 
@@ -62,8 +64,11 @@ final class Frost {
         return c == null ? 0 : c.stacks;
     }
 
-    /** Ajoute `n` piles (coups d'épée du Chaman, pics du balcon). */
+    /** Ajoute `n` piles (sans effet une fois le froid levé). */
     void add(UUID player, int n) {
+        if (thawed) {
+            return;
+        }
         Chill c = chills.computeIfAbsent(player, u -> new Chill());
         c.stacks = Math.min(MAX, c.stacks + n);
     }
@@ -187,6 +192,38 @@ final class Frost {
             Telegraphs.particle(store, "Nakasar_Fractal_Shard_Break", at, 1.2f);
         }
         player.sendMessage(Message.translation(Snowblind.MESSAGES + "cold.freed"));
+    }
+
+    /** Lève le froid pour de bon : piles et paliers effacés, éclats brisés, prisonniers libérés. */
+    void thaw(Store<EntityStore> store, List<PlayerRef> players) {
+        if (thawed) {
+            return;
+        }
+        thawed = true;
+        for (PlayerRef player : players) {
+            Chill c = chills.get(player.getUuid());
+            if (c == null) {
+                continue;
+            }
+            Ref<EntityStore> ref = player.getReference();
+            if (c.tier > 0) {
+                Hurt.clear(store, ref, TIER + c.tier);
+            }
+            if (c.shard != null) {
+                Hurt.clear(store, ref, ENCASED);
+            }
+        }
+        for (Chill c : chills.values()) {
+            if (c.shard != null) {
+                Spawns.remove(store, c.shard);
+            }
+        }
+        chills.clear();
+        prisoners.clear();
+    }
+
+    boolean thawed() {
+        return thawed;
     }
 
     /** Ce joueur est-il enfermé dans un éclat de glace ? */

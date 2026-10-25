@@ -6,11 +6,13 @@ import com.hypixel.hytale.component.Ref;
 import com.hypixel.hytale.component.Store;
 import com.hypixel.hytale.math.vector.Rotation3f;
 import com.hypixel.hytale.server.core.Message;
+import com.hypixel.hytale.server.core.modules.entity.component.TransformComponent;
 import com.hypixel.hytale.server.core.modules.entity.damage.Damage;
 import com.hypixel.hytale.server.core.modules.entity.teleport.Teleport;
 import com.hypixel.hytale.server.core.modules.entitystats.EntityStatMap;
 import com.hypixel.hytale.server.core.modules.entitystats.EntityStatValue;
 import com.hypixel.hytale.server.core.modules.entitystats.asset.DefaultEntityStatTypes;
+import com.hypixel.hytale.server.core.modules.physics.component.Velocity;
 import com.hypixel.hytale.server.core.universe.PlayerRef;
 import com.hypixel.hytale.server.core.universe.world.World;
 import com.hypixel.hytale.server.core.universe.world.storage.ChunkStore;
@@ -63,6 +65,7 @@ final class Source {
     static final float SCATTER_AFTER = 4f;
     static final float SCATTER_EVERY = 9f;
     static final double SCATTER_MIN = 8;
+    static final double ANCHOR_SLACK = 0.25;
     /** Libellé de la barre de boss de chaque Source en vie : piles de bouclier et bois des foyers. */
     private static final Map<Ref<EntityStore>, String> LABELS = new ConcurrentHashMap<>();
 
@@ -79,6 +82,8 @@ final class Source {
     private float idle;
     private float pulseClock;
     private float scatterClock;
+    /** Plus bas niveau de vie atteint : la Source ne remonte jamais au-dessus (pas de régénération). */
+    private float lowest = -1f;
 
     static String label(Ref<EntityStore> ref) {
         return LABELS.get(ref);
@@ -239,6 +244,8 @@ final class Source {
         if (boss == null || !boss.isValid()) {
             return Outcome.NONE;
         }
+        anchor(store);
+        keepHealth(store);
         int stacks = fuel.length - lit();
         int key = stacks;
         for (float f : fuel) {
@@ -271,11 +278,48 @@ final class Source {
         stage = 0;
         idle = 0f;
         blizzard = false;
+        lowest = -1f;
         kindled = lit() > 0;
         labelKey = -1;
         scatterClock = SCATTER_EVERY - SCATTER_AFTER;
         weather(store, false);
         Spawns.tellAll(world, Message.translation(Snowblind.MESSAGES + "source.enter"));
+    }
+
+    /**
+     * La Source ne bouge pas (Kevin, 25 octobre 2026) : poussée, tirée ou projetée, elle est remise à sa place aussitôt,
+     * avec son orientation. {@code KnockbackScale} 0 du rôle ne couvre que le recul des coups ; {@code Frozen} couperait
+     * ses attaques. Même ancrage que les tentacules de l'Océan solide.
+     */
+    private void anchor(Store<EntityStore> store) {
+        TransformComponent transform = store.getComponent(boss, TransformComponent.getComponentType());
+        if (transform == null || store.getComponent(boss, Teleport.getComponentType()) != null) {
+            return;
+        }
+        Velocity velocity = store.getComponent(boss, Velocity.getComponentType());
+        if (velocity != null) {
+            velocity.setZero();
+        }
+        Vector3d home = Spawns.point(SnowblindLayout.SOURCE);
+        Vector3d at = transform.getPosition();
+        if (Telegraphs.horizontal(at, home) > ANCHOR_SLACK || Math.abs(at.y() - home.y()) > 1.0) {
+            store.putComponent(boss, Teleport.getComponentType(),
+                    new Teleport(home, new Rotation3f(0f, transform.getRotation().yaw(), 0f)));
+        }
+    }
+
+    /** Sa vie ne remonte jamais au-dessus du plus bas atteint ; seule la remise à zéro la rend pleine (nouvelle Source). */
+    private void keepHealth(Store<EntityStore> store) {
+        EntityStatMap stats = store.getComponent(boss, EntityStatMap.getComponentType());
+        EntityStatValue health = stats == null ? null : stats.get(DefaultEntityStatTypes.getHealth());
+        if (health == null) {
+            return;
+        }
+        if (lowest < 0f || health.get() < lowest) {
+            lowest = health.get();
+        } else if (health.get() > lowest) {
+            stats.setStatValue(DefaultEntityStatTypes.getHealth(), lowest);
+        }
     }
 
     /** Temps du monde : blizzard (brume blanche à quelques blocs) ou nuit ordinaire de la fractale. */

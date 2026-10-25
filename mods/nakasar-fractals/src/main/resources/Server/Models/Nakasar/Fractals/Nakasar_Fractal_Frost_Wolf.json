@@ -1,6 +1,6 @@
 {
-  "$Comment": "Loup des neiges : le loup vanilla (modèle et animations du jeu), comme le loup du Moussu.",
-  "Parent": "Wolf_Black",
+  "$Comment": "Loup des neiges : le loup blanc vanilla (modèle et animations du jeu).",
+  "Parent": "Wolf_White",
   "MinScale": 0.95,
   "MaxScale": 0.95
 }

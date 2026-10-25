@@ -97,7 +97,7 @@ BRAZIERS = [(round(SOURCE_C[0] + math.cos(math.radians(-90 + k * 72)) * 13),
 BRAZIER_HEAT = 5.0
 TEEPEES = [(a, 25) for a in (-160, -125, -30, 50, 90, 130, 170)]   # (angle, rayon) autour de la Source
 PILE_TEEPEES = (-125, 90, 170)                  # tentes devant lesquelles on trouve un tas de fagots
-TORCH_RACK_AT = (-61, 9, 13)
+TORCH_RACK_AT = (-62, 9, 25)                    # dans l'arène : aller chercher une torche ne la vide pas
 GATE_SOURCE_AT = (-36, 46)
 
 PACKS = [  # (centre, rôles) : groupes de la forêt autour de leur feu de camp
@@ -114,7 +114,7 @@ VILLAGE_CHECKPOINT = (-68, 104)                 # dans la grotte, côté arène 
 
 VILLAGE_C = (-84, 104)
 VILLAGE_RADIUS = 20
-GATE_VILLAGE_AT = (-60, 104)                   # au bout du tunnel, juste avant la grotte
+GATE_VILLAGE_AT = (-60, 104)                   # bout du tunnel, juste avant la grotte (passage dégagé, sans brume)
 GATES = [(-54, -30), GATE_SOURCE_AT, GATE_VILLAGE_AT]
 VILLAGE_FIRES = [(-74, 94), (-74, 114), (-96, 104)]
 BALCONY = (-100, 5, 104)                        # corniche de glace du Chaman, 7 blocs au-dessus de l'arène

@@ -33,12 +33,13 @@ import java.util.UUID;
 import java.util.WeakHashMap;
 
 /**
- * La Tempête de neige (étape 8 du GDD), d'après GW2. Partout, l'Hypothermie ({@link Frost}) monte loin des feux.
+ * La Tempête de neige (étape 8 du GDD), d'après GW2. Jusqu'à la chute de la Source, l'Hypothermie ({@link Frost}) monte
+ * loin des feux ; ensuite le froid ne mord plus.
  * <ol>
  *   <li>{@link Step#CAMP} : le grand feu fait fondre le mur de glace, harcelé par les élémentaires ({@link Campfire}) ;</li>
  *   <li>{@link Step#SOURCE} : la Source élémentaire et ses cinq foyers ({@link Source}) ;</li>
- *   <li>{@link Step#FOREST} : la forêt, torche en main, en suivant les traces ; cinq groupes de Svanir et de loups
- *   autour de leurs feux s'éveillent à l'approche ;</li>
+ *   <li>{@link Step#FOREST} : la forêt, en suivant les traces ; cinq groupes de Svanir et de loups autour de leurs feux
+ *   s'éveillent à l'approche, mais rien n'oblige à les battre ;</li>
  *   <li>{@link Step#VILLAGE} : le Chaman légendaire dans la grotte de glace ({@link Shaman}) ; {@link Step#DONE}
  *   ensuite.</li>
  * </ol>
@@ -133,7 +134,11 @@ public final class Snowblind implements FractalStage {
             Spawns.tellAll(world, Message.translation(MESSAGES + "intro"));
         }
         boolean blizzard = st.step == Step.SOURCE && st.source.blizzard();
-        st.frost.step(world, store, players, heats(st), blizzard, dt);
+        if (st.step == Step.CAMP || st.step == Step.SOURCE) {
+            st.frost.step(world, store, players, heats(st), blizzard, dt);
+        } else {
+            st.frost.thaw(store, players);   // la Source tombée, le froid ne mord plus
+        }
         snow(store, st, players, blizzard, dt);
         switch (st.step) {
             case CAMP -> {
@@ -156,7 +161,6 @@ public final class Snowblind implements FractalStage {
                 if (Spawns.anyIn(store, players, SnowblindLayout.VILLAGE)) {
                     st.step = Step.VILLAGE;
                     st.plateau = true;
-                    close(world, SnowblindLayout.GATE_VILLAGE);
                     Gates.checkpoint(world, SnowblindLayout.VILLAGE_CHECKPOINT, MESSAGES + "checkpoint");
                     st.shaman.engage(world, store);
                 }
@@ -165,7 +169,6 @@ public final class Snowblind implements FractalStage {
                 Shaman.Outcome outcome = st.shaman.step(world, store, st, players, dt);
                 if (outcome == Shaman.Outcome.WON) {
                     st.step = Step.DONE;
-                    Gates.open(world, store, SnowblindLayout.GATE_VILLAGE, null);
                     Gates.victory(world, SnowblindLayout.REWARD, SnowblindLayout.END_EXIT, MESSAGES + "title.victory",
                             MESSAGES + "shaman.victory");
                 } else if (outcome == Shaman.Outcome.RESET) {
@@ -189,7 +192,6 @@ public final class Snowblind implements FractalStage {
 
     private static void reopenVillage(World world, Store<EntityStore> store, State st) {
         st.step = Step.FOREST;
-        Gates.open(world, store, SnowblindLayout.GATE_VILLAGE, null);
         Gates.checkpoint(world, SnowblindLayout.VILLAGE_CHECKPOINT, MESSAGES + "checkpoint");
     }
 
