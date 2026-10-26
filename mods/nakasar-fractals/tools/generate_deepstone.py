@@ -600,8 +600,12 @@ def lang():
         "hall.enter": ("Torin : « La salle du cristal. Le cristal réclame deux orbes de lumière : une à l'ouest, une à "
                        "l'est. »", "Torin: \"The crystal chamber. The crystal needs two orbs of light: one to the west, "
                        "one to the east.\""),
-        "grid.intro": ("Une grille de runes : ne touchez pas les dalles rouges. Au bout, deux runes à presser ensemble.",
-                       "A rune grid: don't touch the red tiles. At the end, two runes to press together."),
+        "grid.intro": ("Une grille de runes : ne touchez pas les dalles vertes allumées. Au bout, deux runes à presser "
+                       "ensemble.", "A rune grid: don't touch the lit green tiles. At the end, two runes to press "
+                       "together."),
+        "grid.runes": ("Montez sur les deux runes en même temps pour ouvrir la barrière (seul : courez de l'une à "
+                       "l'autre en moins de 3 s).", "Stand on both runes at once to open the barrier (alone: run from "
+                       "one to the other within 3 s)."),
         "grid.hit": ("Les runes vous brûlent !", "The runes burn you!"),
         "rune.one": ("Une rune s'allume... il faut presser l'autre en même temps.",
                      "A rune lights up... the other must be pressed at the same time."),

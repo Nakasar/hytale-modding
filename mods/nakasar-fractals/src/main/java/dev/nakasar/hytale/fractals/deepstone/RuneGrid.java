@@ -23,9 +23,9 @@ import java.util.Map;
 import java.util.UUID;
 
 /**
- * La grille de runes de l'ouest (GW2) : des rangées de dalles rouges glissent du nord vers le sud, une rangée toutes les
+ * La grille de runes de l'ouest (GW2) : des rangées de dalles vertes allumées glissent du nord vers le sud, une rangée toutes les
  * {@value #STEP_SECONDS} s ; chaque vague laisse {@value #GAPS_MIN} ou {@value #GAPS_MAX} colonnes éteintes où passer.
- * Le rouge est le danger même : un corps qui mord sur une dalle rouge prend {@value #HIT_PART} des PV, l'agonie
+ * La dalle allumée est le danger même (sa zone exacte) : un corps qui mord sur une dalle verte prend {@value #HIT_PART} des PV, l'agonie
  * {@value #AGONY_SECONDS} s et un recul vers le sud. Au bout, deux runes à presser ensemble ({@link RunePair}) éteignent
  * la grille et ouvrent la barrière de la corniche de la Sentinelle.
  */
@@ -48,6 +48,7 @@ final class RuneGrid {
     private final List<boolean[]> waveLit = new ArrayList<>();
     private final boolean[] lit = new boolean[DeepstoneLayout.GRID_COLS * DeepstoneLayout.GRID_ROWS];
     private final Map<UUID, Long> hits = new HashMap<>();
+    private final java.util.Set<UUID> hinted = new java.util.HashSet<>();
     private float clock;
     private int sinceWave = WAVE_GAP;
     private boolean told;
@@ -69,6 +70,14 @@ final class RuneGrid {
             Gates.open(world, store, DeepstoneLayout.WEST_GATE, Deepstone.MESSAGES + "grid.solved");
             Gates.checkpoint(world, DeepstoneLayout.GRID_END, Deepstone.MESSAGES + "checkpoint");
             return;
+        }
+        for (PlayerRef p : players) {
+            Vector3d at = Telegraphs.position(store, p.getReference());
+            if (at != null && at.z() <= DeepstoneLayout.GRID_END[2] + 3 && at.z() >= DeepstoneLayout.GRID_END[2] - 4
+                    && Math.abs(at.x() - DeepstoneLayout.GRID_END[0]) <= 5 && Math.abs(at.y() - DeepstoneLayout.VAULT_Y) < 3
+                    && hinted.add(p.getUuid())) {
+                p.sendMessage(Message.translation(Deepstone.MESSAGES + "grid.runes"));
+            }
         }
         List<PlayerRef> near = nearGrid(store, players);
         if (near.isEmpty()) {
@@ -132,7 +141,7 @@ final class RuneGrid {
         }
     }
 
-    /** Pose les dalles rouges et rallume les autres (seulement ce qui change). */
+    /** Allume les dalles des vagues et éteint les autres (seulement ce qui change). */
     private void paint(World world, boolean[] next) {
         ChunkStore chunks = world.getChunkStore();
         int size = DeepstoneLayout.GRID_TILE;
@@ -148,7 +157,7 @@ final class RuneGrid {
                     int x = DeepstoneLayout.GRID_X0 + c * size + dx;
                     int z = DeepstoneLayout.GRID_Z0 + r * size + dz;
                     boolean edge = dx == size - 1 || dz == size - 1;
-                    String block = next[i] ? Tiles.RED : edge ? Tiles.EDGE : RUNE_TILE;
+                    String block = next[i] ? Tiles.GREEN : edge ? Tiles.EDGE : RUNE_TILE;
                     WorldBlocks.set(chunks, x, DeepstoneLayout.FLOOR_Y, z, block, 0);
                 }
             }

@@ -39,7 +39,7 @@ Torin et Kay vous attendent devant le **Cristal de Deldrimor**, éteint (point d
 
 ### 3. La grille de runes (ouest)
 
-Le couloir de l'ouest est une grille de dalles : des rangées **rouges** glissent du nord vers le sud, une rangée toutes les 0,6 s, et chaque vague laisse une ou deux colonnes éteintes où passer. La zone rouge est exactement la dalle : qui marche sur une dalle rouge perd 15 % de ses PV, prend l'agonie 3 s et est repoussé vers le sud. Au bout, les **deux runes** éteignent la grille et ouvrent la barrière de brume de la corniche.
+Le couloir de l'ouest est une grille de dalles : des rangées de dalles **vertes** allumées glissent du nord vers le sud, une rangée toutes les 0,6 s, et chaque vague laisse une ou deux colonnes éteintes où passer. La zone dangereuse est exactement la dalle allumée : qui marche sur une dalle allumée perd 15 % de ses PV, prend l'agonie 3 s et est repoussé vers le sud. Au bout, les **deux runes** éteignent la grille et ouvrent la barrière de brume de la corniche.
 
 ### 4. La Sentinelle de Pierre-Profonde
 

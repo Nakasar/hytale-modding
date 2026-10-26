@@ -18,6 +18,8 @@ final class Tiles {
     static final String EDGE = "Rock_Basalt_Brick_Smooth";
     static final String CORE = "Rock_Runic_Teal_Brick";
     static final String RED = "Rock_Crystal_Red_Block";
+    /** Dalle allumée de la grille de runes : verte, comme dans GW2 (Kevin, 26 octobre 2026). */
+    static final String GREEN = "Rock_Crystal_Green_Block";
 
     final int x0;
     final int z0;
