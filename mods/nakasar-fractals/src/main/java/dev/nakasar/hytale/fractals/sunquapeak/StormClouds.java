@@ -28,6 +28,8 @@ final class StormClouds {
     static final double BOLT_RADIUS = 2.5;
     static final float BOLT_WINDUP = 1.5f;
     static final float BOLT_PART = 0.12f;
+    /** Nuages reposés toutes les demi-secondes (vie des particules 1 à 1,4 s) : une masse continue, bien visible. */
+    static final float SHOW_EVERY = 0.5f;
 
     private final double[][] points;
     private final boolean[] gone;
@@ -64,7 +66,7 @@ final class StormClouds {
             return false;
         }
         puff += dt;
-        boolean show = puff >= 1f;
+        boolean show = puff >= SHOW_EVERY;
         if (show) {
             puff = 0f;
         }
@@ -75,7 +77,7 @@ final class StormClouds {
             }
             Vector3d c = Spawns.point(points[i]);
             if (show) {
-                Telegraphs.particle(store, "Nakasar_Fractal_Storm_Cloud", c, 1.4f);
+                Telegraphs.particle(store, "Nakasar_Fractal_Storm_Cloud", c, 1.6f);
             }
             for (PlayerRef p : here) {
                 Vector3d at = Telegraphs.position(store, p.getReference());

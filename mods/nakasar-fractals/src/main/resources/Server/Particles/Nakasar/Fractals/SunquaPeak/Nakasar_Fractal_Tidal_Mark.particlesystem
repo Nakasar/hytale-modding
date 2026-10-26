@@ -1,0 +1,12 @@
+{
+  "$Comment": "Porteur du Marché des marées : anneau d'eau bleue qui tourne au-dessus de sa tête (le Java le pose chaque seconde, plus gros à chaque charge). Généré par tools/generate_sunqua_peak.py.",
+  "Spawners": [
+    {
+      "SpawnerId": "Nakasar_Fractal_Tidal_Mark_Ring",
+      "PositionOffset": {
+        "Y": 2.4
+      }
+    }
+  ],
+  "CullDistance": 72
+}

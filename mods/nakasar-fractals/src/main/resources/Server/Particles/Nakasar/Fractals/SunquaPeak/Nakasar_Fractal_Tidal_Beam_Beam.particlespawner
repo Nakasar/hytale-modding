@@ -17,22 +17,22 @@
     "Animation": {
       "0": {
         "Opacity": 0,
-        "Color": "#c0f0ff"
+        "Color": "#e0f8ff"
       },
       "25": {
         "Opacity": 1
       },
       "100": {
         "Opacity": 0,
-        "Color": "#204080"
+        "Color": "#2a70ff"
       }
     },
     "InitialAnimationFrame": {
       "Opacity": 1,
       "Scale": {
         "X": {
-          "Min": 0.2,
-          "Max": 0.3
+          "Min": 0.35,
+          "Max": 0.5
         }
       }
     }
@@ -68,8 +68,8 @@
     }
   },
   "TotalParticles": {
-    "Min": 3,
-    "Max": 3
+    "Min": 4,
+    "Max": 4
   },
-  "MaxConcurrentParticles": 3
+  "MaxConcurrentParticles": 4
 }

@@ -3,7 +3,7 @@
   "Type": "Generic",
   "Appearance": "Nakasar_Fractal_Ai_Keeper_Of_The_Peak",
   "NameTranslationKey": "nakasar_fractals_sunqua_peak.npc.Ai_Keeper_Of_The_Peak.name",
-  "MaxHealth": 22000,
+  "MaxHealth": 5000,
   "DropList": "Nakasar_Fractal_Loot_Ai_Keeper_Of_The_Peak",
   "StartState": "Idle",
   "DefaultPlayerAttitude": "Hostile",

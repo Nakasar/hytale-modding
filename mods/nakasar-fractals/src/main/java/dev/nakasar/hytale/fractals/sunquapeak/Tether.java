@@ -1,10 +1,12 @@
 package dev.nakasar.hytale.fractals.sunquapeak;
 
 import com.hypixel.hytale.component.Store;
+import com.hypixel.hytale.protocol.packets.interface_.NotificationStyle;
 import com.hypixel.hytale.server.core.Message;
 import com.hypixel.hytale.server.core.universe.PlayerRef;
 import com.hypixel.hytale.server.core.universe.world.World;
 import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
+import com.hypixel.hytale.server.core.util.NotificationUtil;
 import dev.nakasar.hytale.fractals.combat.Hurt;
 import dev.nakasar.hytale.fractals.combat.Spawns;
 import dev.nakasar.hytale.fractals.combat.Telegraphs;
@@ -23,6 +25,11 @@ import java.util.UUID;
  * {@value #SPLASH_RADIUS} blocs. Un autre joueur prend le lien en se tenant dans le rayon ({@value #BEAM_WIDTH} bloc
  * de l'axe) ; qui vient de le passer ne peut le reprendre avant {@value #LOCK} s. Les charges d'un joueur sans lien
  * tombent {@value #FADE} s après la dernière.
+ * <p>
+ * Lisibilité (Kevin, 26 octobre 2026 : « je ne comprends rien ») : rayon épais de {@value #BEAM_POINTS} points, anneau
+ * d'eau au-dessus du porteur qui grossit à chaque charge, notification à chaque charge, et dans les
+ * {@value #WARN_STACKS} dernières secondes un cercle rouge de {@value #SPLASH_RADIUS} blocs (le rayon de
+ * l'éclaboussure) qui le suit.
  */
 final class Tether {
 
@@ -37,6 +44,9 @@ final class Tether {
     static final double BEAM_WIDTH = 0.8;
     static final float LOCK = 6f;
     static final float PAUSE = 4f;
+    static final int BEAM_POINTS = 16;
+    /** Charges restantes à partir desquelles le cercle rouge de l'éclaboussure suit le porteur. */
+    static final int WARN_STACKS = 3;
 
     private static final class Stacks {
         int n;
@@ -97,16 +107,16 @@ final class Tether {
             if (holder == null) {
                 return;
             }
-            holder.sendMessage(Message.translation(SunquaPeak.MESSAGES + "sorrow.tether"));
+            holder.sendMessage(Message.translation(SunquaPeak.MESSAGES + "sorrow.tether").param("total", MAX_STACKS));
         }
         Vector3d h = Telegraphs.position(store, holder.getReference());
         if (h == null) {
             return;
         }
         Vector3d chest = new Vector3d(h).add(0, 1, 0);
-        for (int k = 1; k < 8; k++) {
-            double f = k / 8.0;
-            Telegraphs.particle(store, "Nakasar_Fractal_Tidal_Beam", new Vector3d(origin).lerp(chest, f), 0.6f);
+        for (int k = 1; k < BEAM_POINTS; k++) {
+            double f = k / (double) BEAM_POINTS;
+            Telegraphs.particle(store, "Nakasar_Fractal_Tidal_Beam", new Vector3d(origin).lerp(chest, f), 1f);
         }
         // Interception : un autre joueur dans le rayon prend le lien.
         for (PlayerRef p : here) {
@@ -140,6 +150,17 @@ final class Tether {
         if (s.n < MAX_STACKS) {
             clearEffects(store, holder);
             Hurt.effect(store, holder.getReference(), SunquaPeak.TIDAL + s.n, FADE);
+            Telegraphs.particle(store, "Nakasar_Fractal_Tidal_Mark", h, 0.6f + 0.08f * s.n);
+            int left = MAX_STACKS - s.n;
+            if (left <= WARN_STACKS) {
+                // Cercle de l'éclaboussure, plein quand la marée submerge (une charge par GAIN_EVERY seconde).
+                Telegraphs.circle(store, h, SPLASH_RADIUS, left * GAIN_EVERY);
+                NotificationUtil.sendNotification(holder.getPacketHandler(),
+                        Message.translation(SunquaPeak.MESSAGES + "tide.soon"), NotificationStyle.Warning);
+            } else {
+                NotificationUtil.sendNotification(holder.getPacketHandler(), Message.translation(SunquaPeak.MESSAGES
+                        + "tide.stacks").param("count", s.n).param("total", MAX_STACKS), NotificationStyle.Default);
+            }
             return;
         }
         // La marée submerge le porteur.

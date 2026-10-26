@@ -3,7 +3,7 @@
   "Type": "Generic",
   "Appearance": "Nakasar_Fractal_Sunqua_Tiger",
   "NameTranslationKey": "nakasar_fractals_sunqua_peak.npc.Sunqua_Tiger.name",
-  "MaxHealth": 1000,
+  "MaxHealth": 500,
   "DropList": "Nakasar_Fractal_Loot_Sunqua_Tiger",
   "StartState": "Idle",
   "DefaultPlayerAttitude": "Hostile",

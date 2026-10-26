@@ -75,6 +75,8 @@ final class Ai {
     static final double TIDE_RADIUS = 3;
     static final float TIDE_WINDUP = 4f;
     static final float TIDE_PART = 0.9f;
+    /** Zone favorable verte (tools/generate_warnings.py, GREEN_ZONE), comme les dents du récif de la Sirène. */
+    static final String GREEN_ZONE = "Nakasar_Fractal_Green_Zone";
     static final float FEAR_EVERY = 20f;
     static final float FEAR_SECONDS = 15f;
     static final double FEAR_RADIUS = 4;
@@ -216,7 +218,8 @@ final class Ai {
                     tide = TIDE_EVERY - TIDE_FIRST;
                     sweep = 0f;
                     tether.begin();
-                    Spawns.tellAll(world, Message.translation(SunquaPeak.MESSAGES + "ai.water"));
+                    Spawns.tellAll(world, Message.translation(SunquaPeak.MESSAGES + "ai.water")
+                            .param("total", Tether.MAX_STACKS));
                     Spawns.tellAll(world, Message.translation(SunquaPeak.MESSAGES + "ai.vulnerable"));
                 }
             }
@@ -452,37 +455,53 @@ final class Ai {
         sweepStep(world, store, here, dt);
     }
 
-    /** Marée partagée : ses dégâts se partagent entre ceux qui se tiennent dans le cercle. */
+    /**
+     * Marée partagée : ses dégâts se partagent entre ceux qui se tiennent dans le cercle. Zone favorable (on doit y
+     * entrer) : cercle vert ({@link #GREEN_ZONE}) qui suit le joueur visé pendant la charge, reposé toutes les 0,5 s ;
+     * le coup part du centre du cercle à la fin, même rayon {@value #TIDE_RADIUS}.
+     */
     private void sharedTide(World world, Store<EntityStore> store, List<PlayerRef> here) {
         PlayerRef target = here.get((int) (Math.random() * here.size()));
-        Vector3d at = Telegraphs.position(store, target.getReference());
-        if (at == null) {
+        Vector3d start = Telegraphs.position(store, target.getReference());
+        if (start == null) {
             return;
         }
-        Hurt.effect(store, target.getReference(), "Nakasar_Fractal_Shared_Tide", TIDE_WINDUP);
-        Telegraphs.particle(store, "Nakasar_Fractal_Shared_Mark", at, 1.2f);
-        Telegraphs.Circle circle = new Telegraphs.Circle(at, TIDE_RADIUS, System.nanoTime(),
-                TIDE_WINDUP * FractalRuns.windupFactor(world));
+        float windup = TIDE_WINDUP * FractalRuns.windupFactor(world);
+        Hurt.effect(store, target.getReference(), "Nakasar_Fractal_Shared_Tide", windup);
         Spawns.tellAll(world, Message.translation(SunquaPeak.MESSAGES + "ai.shared").param("name", target.getUsername()));
+        long end = System.nanoTime() + Telegraphs.seconds(windup);
+        Vector3d[] center = {new Vector3d(start)};
+        long[] shown = {0L};
         int e = epoch;
         TelegraphSystem.start(world, (w, s, t) -> {
             if (!live(e)) {
                 return true;
             }
-            if (!circle.step(s, t)) {
+            Vector3d now = Telegraphs.position(s, target.getReference());
+            if (now != null) {
+                center[0] = new Vector3d(now);
+            }
+            if (t < end) {
+                if (t - shown[0] >= Telegraphs.seconds(0.5f)) {
+                    shown[0] = t;
+                    Telegraphs.particle(s, GREEN_ZONE, new Vector3d(center[0]).add(0, 0.1, 0),
+                            (float) (Telegraphs.WARNING_SCALE * TIDE_RADIUS));
+                    Telegraphs.particle(s, "Nakasar_Fractal_Shared_Mark", center[0], 1.2f);
+                }
                 return false;
             }
             List<PlayerRef> inside = new ArrayList<>();
             for (PlayerRef p : Spawns.alivePlayers(w, s)) {
                 Vector3d pos = Telegraphs.position(s, p.getReference());
-                if (pos != null && circle.contains(pos)) {
+                if (pos != null && Telegraphs.inCircle(pos, center[0], TIDE_RADIUS)) {
                     inside.add(p);
                 }
             }
             if (inside.isEmpty() && target.getReference() != null && target.getReference().isValid()) {
                 inside.add(target);
             }
-            Telegraphs.particle(s, "Nakasar_Fractal_Tide_Burst", circle.origin(), 1.5f);
+            Telegraphs.particle(s, "Nakasar_Fractal_Tide_Burst", center[0], 1.5f);
+            Telegraphs.sound(s, "SFX_Water_MoveIn", center[0]);
             for (PlayerRef p : inside) {
                 Hurt.percent(s, p.getReference(), TIDE_PART / inside.size(), SunquaPeak.CAUSE);
             }
