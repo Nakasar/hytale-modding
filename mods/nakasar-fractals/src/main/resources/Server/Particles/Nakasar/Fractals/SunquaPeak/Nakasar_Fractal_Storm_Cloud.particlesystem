@@ -1,8 +1,14 @@
 {
-  "$Comment": "Nuage d'orage : boules grises et éclairs bleus (Java, toutes les demi-secondes). Généré par tools/generate_sunqua_peak.py.",
+  "$Comment": "Nuage d'orage (Java, toutes les demi-secondes) : masse gris bleu épaisse, cœur bleu lumineux, éclairs autour et pluie d'étincelles qui tombe jusqu'au sol pour le repérer d'en bas (Kevin, 26 octobre 2026 : nuages trop discrets). Généré par tools/generate_sunqua_peak.py.",
   "Spawners": [
     {
       "SpawnerId": "Nakasar_Fractal_Storm_Cloud_Cloud",
+      "PositionOffset": {
+        "Y": 0.4
+      }
+    },
+    {
+      "SpawnerId": "Nakasar_Fractal_Storm_Cloud_Glow",
       "PositionOffset": {
         "Y": 0.6
       }
@@ -11,6 +17,12 @@
       "SpawnerId": "Nakasar_Fractal_Storm_Cloud_Spark",
       "PositionOffset": {
         "Y": 0.6
+      }
+    },
+    {
+      "SpawnerId": "Nakasar_Fractal_Storm_Cloud_Rain",
+      "PositionOffset": {
+        "Y": 0.0
       }
     }
   ],

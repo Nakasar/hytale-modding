@@ -3,7 +3,7 @@
   "Type": "Generic",
   "Appearance": "Nakasar_Fractal_Sunqua_Fear",
   "NameTranslationKey": "nakasar_fractals_sunqua_peak.npc.Sunqua_Fear.name",
-  "MaxHealth": 500,
+  "MaxHealth": 250,
   "StartState": "Idle",
   "DefaultPlayerAttitude": "Hostile",
   "DefaultNPCAttitude": "Ignore",

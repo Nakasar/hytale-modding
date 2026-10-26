@@ -3,7 +3,7 @@
   "Type": "Generic",
   "Appearance": "Nakasar_Fractal_Fallen_Boulder",
   "NameTranslationKey": "nakasar_fractals_sunqua_peak.npc.Fallen_Boulder.name",
-  "MaxHealth": 1600,
+  "MaxHealth": 500,
   "StartState": "Idle",
   "DefaultPlayerAttitude": "Hostile",
   "DefaultNPCAttitude": "Ignore",

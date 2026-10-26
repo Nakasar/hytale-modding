@@ -3,7 +3,7 @@
   "Type": "Generic",
   "Appearance": "Nakasar_Fractal_Enraged_Water_Sprite",
   "NameTranslationKey": "nakasar_fractals_sunqua_peak.npc.Enraged_Water_Sprite.name",
-  "MaxHealth": 520,
+  "MaxHealth": 280,
   "StartState": "Idle",
   "DefaultPlayerAttitude": "Hostile",
   "DefaultNPCAttitude": "Ignore",
