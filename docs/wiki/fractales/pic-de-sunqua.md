@@ -4,7 +4,7 @@
 <Info label="Boss">Voix de la montagne, Fureur de la montagne, Ai gardienne du pic (Ai assombrie au rang Maître)</Info>
 <Info label="Règle">Bond chargé</Info>
 <Info label="Objets">orbes de foudre</Info>
-<Info label="Ciel">mer de nuages, plein jour</Info>
+<Info label="Ciel">mer de nuages, crépuscule avancé</Info>
 <Info label="Saison">2</Info>
 </Infobox>
 
@@ -56,7 +56,7 @@ Un chemin au flanc ouest du massif (point de retour), le long des chutes d'eau :
 
 Sur la terrasse autour du bassin (point de retour), la **Tristesse** est prisonnière de cinq **rochers tombés** : brisez-les.
 
-- L'**orbe sombre** au-dessus du bassin relie par un rayon le joueur le plus proche : chaque seconde, il prend une charge de **Marché des marées** (4 % plus lent, mais **5 % de dégâts en plus** par charge). À **10 charges**, la marée le submerge : la moitié de ses PV, et 20 % à qui est à moins de 4 blocs.
+- L'**orbe sombre** au-dessus du bassin relie par un rayon le joueur le plus proche : chaque seconde, il prend une charge de **Marché des marées** (4 % plus lent, mais **5 % de dégâts en plus** par charge). À **10 charges**, la marée le submerge : la moitié de ses PV, et 20 % à qui est à moins de 4 blocs. Le rayon bleu se voit de loin, un anneau d'eau grossit au-dessus du porteur à chaque charge, une notification lui donne le compte, et dans les 3 dernières secondes un cercle rouge de 4 blocs (l'éclaboussure) le suit : un allié doit passer dans le rayon avant.
 - Un autre joueur **prend le lien** en se plaçant dans le rayon ; celui qui vient de le passer ne peut pas le reprendre pendant 6 s. Les charges retombent 12 s après la dernière.
 - Toutes les 10 s, des **éclats d'eau** : un cercle rouge de 2,5 blocs sous chaque joueur (10 % des PV).
 - Personne sur la terrasse pendant 20 s : les rochers retombent, neufs.
@@ -70,7 +70,7 @@ Trois **murs de roche** barrent le sentier ; approchez-en un et ses trois **él�
 Dans le cratère, la **Fureur de la montagne** :
 
 - **Coups brûlants** (Brûlure), **bond** et **ruée**.
-- Toutes les 24 s, des **météores** : un cercle rouge de 4 blocs sous chaque joueur (15 % des PV, à terre). Chaque météore reste là : c'est un **abri**. Quelques secondes plus tard, la **frappe extrême** : un cercle rouge sur tout le cratère ; qui voit la Fureur perd **60 %** de ses PV. Caché derrière un météore, rien. Les météores s'effritent ensuite.
+- Toutes les 24 s, des **météores** : un cercle rouge de 4 blocs sous chaque joueur (15 % des PV, à terre). Chaque météore reste là : c'est un **abri**. Quelques secondes plus tard, la **frappe extrême** : la Fureur bondit au **centre du cratère** et s'y fige, un cercle rouge couvre tout le cratère ; qui la voit perd **60 %** de ses PV. Placez un météore entre vous et le centre. Caché derrière un météore, rien. Les météores s'effritent ensuite.
 - À **66 et 33 %**, elle se **divise** : protégée et immobile tant que trois petits élémentaires de lave vivent.
 - Sous **66 %** : une **onde de choc** toutes les 16 s, un anneau qui s'élargit au sol (12 % des PV, à terre) : **sautez-la**. Et sa **défiance** s'ouvre 8 s toutes les 26 s : brisée, elle est étourdie ; sinon un **brasier** frappe tout le cratère (40 % des PV, Brûlure).
 - Sous **33 %** : toutes les 25 s, deux joueurs sont **suivis par un météore** pendant 10 s. Croisez-les (moins de 4 blocs l'un de l'autre) : ils se brisent l'un l'autre. Sinon ils éclatent (cercle rouge de 4 blocs, 35 % des PV). Seul, le vôtre éclate toujours : éloignez-vous de lui.
@@ -87,7 +87,7 @@ La montée de bambous mène à l'arène de marbre du sommet (point de retour). A
 - **Front d'orage (66 %)** : protégée au centre, elle appelle quatre nuages d'orage ; quatre orbes de foudre s'allument au bord. Dispersez les nuages comme pour la Voix.
 - **Feu (66 à 33 %)** : météores et frappe extrême comme la Fureur, toutes les 22 s, et le balayage.
 - **Pluie de météores (33 %)** : protégée 15 s, des météores tombent sans arrêt (cercles rouges de 4 blocs).
-- **Eau (33 à 0 %)** : le **Marché des marées** revient, le rayon part d'Ai elle-même ; et toutes les 16 s, une **marée partagée** : un cercle rouge de 3 blocs sur un joueur ; ses dégâts (90 % des PV) se partagent entre tous ceux qui s'y tiennent. Regroupez-vous dedans.
+- **Eau (33 à 0 %)** : le **Marché des marées** revient, le rayon part d'Ai elle-même ; et toutes les 16 s, une **marée partagée** : un **cercle vert** de 3 blocs suit un joueur pendant 4 s ; ses dégâts (90 % des PV) se partagent entre tous ceux qui s'y tiennent. Regroupez-vous dedans.
 - **Rang Maître** : Ai vaincue s'**assombrit** (Ai assombrie, vague d'ombre). Toutes les 20 s, une **crainte** apparaît près de chaque joueur et le suit : tuez-la avant 15 s, sinon elle éclate (cercle rouge de 4 blocs, 40 % des PV).
 - Personne sur l'arène pendant 20 s : elle se retire et revient neuve (depuis le début).
 

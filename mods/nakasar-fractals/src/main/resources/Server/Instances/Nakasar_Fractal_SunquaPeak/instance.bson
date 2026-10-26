@@ -5,7 +5,7 @@
     "WorldStructure": "Nakasar_Fractal_SunquaPeak"
   },
   "ForcedWeather": "Nakasar_Fractal_Weather_SunquaPeak",
-  "GameTime": "0001-01-01T11:00:00Z",
+  "GameTime": "0001-01-01T21:00:00Z",
   "IsGameTimePaused": true,
   "GameplayConfig": "Nakasar_Fractal_Observatory",
   "IsPvpEnabled": false,

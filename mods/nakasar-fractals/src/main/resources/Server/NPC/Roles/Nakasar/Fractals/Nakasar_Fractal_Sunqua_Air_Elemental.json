@@ -3,7 +3,7 @@
   "Type": "Generic",
   "Appearance": "Nakasar_Fractal_Sunqua_Air_Elemental",
   "NameTranslationKey": "nakasar_fractals_sunqua_peak.npc.Sunqua_Air_Elemental.name",
-  "MaxHealth": 900,
+  "MaxHealth": 450,
   "DropList": "Nakasar_Fractal_Loot_Sunqua_Air_Elemental",
   "StartState": "Idle",
   "DefaultPlayerAttitude": "Hostile",

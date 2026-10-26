@@ -190,11 +190,17 @@ PARTICLE_SYSTEMS = {
     "Nakasar_Fractal_Wind_Column": ("Colonne de vent : volutes blanches qui montent (le Java en pose le long).",
                                     [("Swirl", S("#ffffff", "#c8e8ff", 14, (2.0, 4.0), (70, 90), 1.4, 1.0,
                                                  life=(0.8, 1.2), size=(0.2, 0.4)), 0.6)]),
-    "Nakasar_Fractal_Storm_Cloud": ("Nuage d'orage : boules grises et éclairs bleus (Java, toutes les demi-secondes).",
-                                    [("Cloud", S("#808898", "#30343c", 14, (0.2, 0.6), (-30, 30), 2.2, 1.2,
-                                                 life=(0.8, 1.2), size=(0.6, 1.0), blend="BlendLinear"), 0.6),
-                                     ("Spark", S("#ffffff", "#60b0ff", 6, (1.0, 3.0), (-90, -40), 1.4, 0.6,
-                                                 life=(0.2, 0.4), size=(0.1, 0.2)), 0.6)]),
+    "Nakasar_Fractal_Storm_Cloud": ("Nuage d'orage (Java, toutes les demi-secondes) : masse gris bleu épaisse, cœur bleu "
+                                    "lumineux, éclairs autour et pluie d'étincelles qui tombe jusqu'au sol pour le "
+                                    "repérer d'en bas (Kevin, 26 octobre 2026 : nuages trop discrets).",
+                                    [("Cloud", S("#a8b0c8", "#3a4058", 36, (0.2, 0.6), (-30, 30), 2.6, 1.4,
+                                                 life=(1.0, 1.4), size=(0.9, 1.5), blend="BlendLinear"), 0.4),
+                                     ("Glow", S("#a0c0ff", "#3050c0", 10, (0.1, 0.3), (-30, 30), 1.8, 1.0,
+                                                life=(0.8, 1.2), size=(1.2, 1.8)), 0.6),
+                                     ("Spark", S("#ffffff", "#60b0ff", 14, (1.0, 3.0), (-90, -40), 2.2, 0.8,
+                                                 life=(0.2, 0.4), size=(0.12, 0.24)), 0.6),
+                                     ("Rain", S("#d8ecff", "#4080ff", 8, (5.0, 6.0), (-90, -85), 1.6, 0.2,
+                                                life=(0.8, 1.0), size=(0.08, 0.14)), 0.0)]),
     "Nakasar_Fractal_Storm_Disperse": ("Nuage dispersé : éclat blanc et bleu.",
                                        [("Burst", S("#ffffff", "#80c8ff", 60, (4.0, 9.0), (-60, 90), 1.5, 0.5,
                                                     life=(0.4, 0.8), size=(0.2, 0.4)), 0.3)]),
@@ -207,9 +213,14 @@ PARTICLE_SYSTEMS = {
     "Nakasar_Fractal_Calm_Glow": ("Élémentaire d'eau rassuré : lueur bleu pâle qui monte.",
                                   [("Glow", S("#e0f8ff", "#60c0ff", 20, (0.5, 1.4), (60, 90), 0.8, 1.4,
                                               life=(0.8, 1.2), size=(0.15, 0.3)), 0.4)]),
-    "Nakasar_Fractal_Tidal_Beam": ("Lien de l'orbe sombre (Marché des marées) : un point du rayon (le Java en pose le "
-                                   "long).", [("Beam", S("#c0f0ff", "#204080", 3, (0.0, 0.2), (-90, 90), 0.1, 0.1,
-                                                         life=(0.3, 0.5), size=(0.2, 0.3)), 0.0)]),
+    "Nakasar_Fractal_Tidal_Beam": ("Lien du Marché des marées : un point du rayon (le Java en pose seize le long), "
+                                   "gros et lumineux pour se voir de loin.",
+                                   [("Beam", S("#e0f8ff", "#2a70ff", 4, (0.0, 0.2), (-90, 90), 0.1, 0.1,
+                                               life=(0.3, 0.5), size=(0.35, 0.5)), 0.0)]),
+    "Nakasar_Fractal_Tidal_Mark": ("Porteur du Marché des marées : anneau d'eau bleue qui tourne au-dessus de sa tête "
+                                   "(le Java le pose chaque seconde, plus gros à chaque charge).",
+                                   [("Ring", S("#e0f8ff", "#2060e0", 16, (0.6, 1.0), (-5, 5), 0.3, 0.1,
+                                               life=(0.6, 0.9), size=(0.15, 0.25)), 2.4)]),
     "Nakasar_Fractal_Dark_Orb": ("Orbe sombre de la Tristesse : sphère bleu nuit.",
                                  [("Core", S("#80a0ff", "#101830", 8, (0.0, 0.3), (-90, 90), 0.5, 0.5,
                                              life=(0.4, 0.6), size=(0.5, 0.8), blend="BlendLinear"), 0.0)]),
@@ -421,44 +432,44 @@ def roles():
                                  "pas la blesser (Java, sunquapeak.Sorrow).", GENERATOR, 1000, attitude="Neutral",
                                  foe=False)
     out[BOULDER] = fc.static_role(LANG, BOULDER, "Rocher tombé : à briser ; chaque coup peut faire jaillir une zone "
-                                  "(Java, sunquapeak.Sorrow).", GENERATOR, 1600)
+                                  "(Java, sunquapeak.Sorrow).", GENERATOR, 500)
     out[AIR_ELEMENTAL] = fr.role(
         AIR_ELEMENTAL, "Élémentaire d'air de l'escalier brisé : décharge, tourbillon qui projette.", AIR_ELEMENTAL,
-        n(AIR_ELEMENTAL), 900, [fr.timed_attack("Whirl", R("Air_Whirlwind"), rng=3.5, comment="Tourbillon."),
+        n(AIR_ELEMENTAL), 450, [fr.timed_attack("Whirl", R("Air_Whirlwind"), rng=3.5, comment="Tourbillon."),
                                 fr.melee(R("Air_Shock"), 2.6, (0.7, 1.1)), fr.chase(16, stop=1.6)],
         fr.walk(3.0), GENERATOR, sight=14, leash=12, home=False, timers=[fr.timer("Whirl", (2, 4), (7, 9))],
         KnockbackScale=0.3, DeathAnimationTime=1.0)
     out[VOICE] = fr.role(
         VOICE, "Voix de la montagne, barre de boss : ondes d'orbes, décharge, coup de foudre. Tornade et nuages d'orage "
-        "à 66 et 33 % : Java (sunquapeak.VoiceOfTheMountain).", VOICE, n(VOICE), 10000,
+        "à 66 et 33 % : Java (sunquapeak.VoiceOfTheMountain).", VOICE, n(VOICE), 3000,
         [fr.timed_attack("Wave", R("Voice_Orb_Wave"), rng=12, los=True, comment="Onde d'orbes."),
          fr.timed_attack("Discharge", R("Voice_Discharge"), rng=5, comment="Décharge."),
          fr.melee(R("Voice_Strike"), 3.6, (0.8, 1.2)), fr.chase(30, stop=3.0)], fr.walk(2.6), GENERATOR, sight=30,
         leash=36, home=False, timers=[fr.timer("Wave", (3, 5), (7, 9)), fr.timer("Discharge", (6, 8), (11, 14))],
         KnockbackScale=0.0, DeathAnimationTime=2.0)
     out[WATER_SPRITE] = fr.role(
-        WATER_SPRITE, "Esprit de l'eau enragé : sol glissant (à terre), gifles.", WATER_SPRITE, n(WATER_SPRITE), 520,
+        WATER_SPRITE, "Esprit de l'eau enragé : sol glissant (à terre), gifles.", WATER_SPRITE, n(WATER_SPRITE), 280,
         [fr.timed_attack("Slip", R("Sprite_Slippery"), rng=5, los=True, comment="Sol glissant."),
          fr.melee(R("Sprite_Splash"), 2.4, (0.7, 1.0)), fr.chase(24, stop=1.6)], fr.walk(3.6), GENERATOR, sight=20,
         leash=24, home=False, timers=[fr.timer("Slip", (2, 4), (7, 9))], KnockbackScale=0.6, DeathAnimationTime=1.0)
     out[LAVA_ELEMENTAL] = fr.role(
         LAVA_ELEMENTAL, "Élémentaire de lave : jet de flammes, coup brûlant ; il explose et se divise en mourant (Java, "
-        "sunquapeak.LavaPath).", LAVA_ELEMENTAL, n(LAVA_ELEMENTAL), 1100,
+        "sunquapeak.LavaPath).", LAVA_ELEMENTAL, n(LAVA_ELEMENTAL), 550,
         [fr.timed_attack("Burst", R("Lava_Burst"), rng=3, comment="Jet de flammes."),
          fr.melee(R("Lava_Touch"), 2.6, (0.7, 1.1)), fr.chase(24, stop=1.6)], fr.walk(3.0), GENERATOR, sight=18,
         leash=24, home=False, timers=[fr.timer("Burst", (3, 5), (8, 10))], KnockbackScale=0.2, DeathAnimationTime=0.6)
     out[LAVA_EMBER] = fr.role(
         LAVA_EMBER, "Petit élémentaire de lave (division) : étincelles ; il explose en mourant (Java).", LAVA_EMBER,
-        n(LAVA_EMBER), 300, [fr.melee(R("Ember_Touch"), 2.2, (0.6, 0.9)), fr.chase(24, stop=1.2)], fr.walk(4.2),
+        n(LAVA_EMBER), 160, [fr.melee(R("Ember_Touch"), 2.2, (0.6, 0.9)), fr.chase(24, stop=1.2)], fr.walk(4.2),
         GENERATOR, sight=24, leash=28, home=False, KnockbackScale=0.8, DeathAnimationTime=0.4)
     out[TIGER] = fr.role(
-        TIGER, "Tigre du pic : griffes, bond.", TIGER, n(TIGER), 1000,
+        TIGER, "Tigre du pic : griffes, bond.", TIGER, n(TIGER), 500,
         [fr.timed_attack("Pounce", R("Tiger_Pounce"), rng=14, los=True, comment="Bond."),
          fr.melee(R("Tiger_Swipe"), 2.8, (0.7, 1.0)), fr.chase(24, stop=1.8)], fr.walk(5.0), GENERATOR, sight=18,
         leash=24, home=False, timers=[fr.timer("Pounce", (3, 5), (9, 12))], KnockbackScale=0.4, DeathAnimationTime=1.2)
     out[FURY] = fr.role(
         FURY, "Fureur de la montagne, barre de boss et de défiance : coups brûlants, bond, ruée. Météores, frappe extrême "
-        "et météores qui suivent : Java (sunquapeak.FuryOfTheMountain).", FURY, n(FURY), 14000,
+        "et météores qui suivent : Java (sunquapeak.FuryOfTheMountain).", FURY, n(FURY), 3500,
         [fr.timed_attack("Leap", R("Fury_Leap"), rng=20, los=True, comment="Bond brûlant."),
          fr.timed_attack("Lunge", R("Fury_Lunge"), rng=14, los=True, comment="Ruée fumante."),
          fr.melee(R("Fury_Strikes"), 4.0, (0.8, 1.2)), fr.chase(30, stop=3.0)], fr.walk(3.4), GENERATOR, sight=30,
@@ -467,20 +478,20 @@ def roles():
     out[AI] = fr.role(
         AI, "Ai, gardienne du pic, barre de boss et de défiance : coup de bâton, rafale. Air, feu et eau (ondes d'orbes, "
         "bombes, balayage, front d'orage, météores, frappe extrême, Marché des marées, marée partagée) : Java "
-        "(sunquapeak.Ai).", AI, n(AI), 22000,
+        "(sunquapeak.Ai).", AI, n(AI), 5000,
         [fr.timed_attack("Gust", R("Ai_Gust"), rng=9, los=True, comment="Rafale."),
          fr.melee(R("Ai_Strike"), 3.4, (0.8, 1.2)), fr.chase(36, speed=0.8, stop=3.0)], fr.walk(3.0), GENERATOR,
         sight=40, leash=50, home=False, timers=[fr.timer("Gust", (4, 6), (8, 11))], KnockbackScale=0.0,
         DeathAnimationTime=2.0)
     out[AI_DARK] = fr.role(
         AI_DARK, "Ai assombrie (rang Maître), barre de boss : vague d'ombre, coup de bâton ; craintes (Java, "
-        "sunquapeak.Ai).", AI_DARK, n(AI_DARK), 9000,
+        "sunquapeak.Ai).", AI_DARK, n(AI_DARK), 2500,
         [fr.timed_attack("Wave", R("Ai_Dark_Wave"), rng=8, los=True, comment="Vague d'ombre."),
          fr.melee(R("Ai_Strike"), 3.4, (0.8, 1.2)), fr.chase(36, speed=0.8, stop=3.0)], fr.walk(3.0), GENERATOR,
         sight=40, leash=50, home=False, timers=[fr.timer("Wave", (4, 6), (9, 12))], KnockbackScale=0.0,
         DeathAnimationTime=2.5)
     out[FEAR] = fr.role(
-        FEAR, "Crainte d'Ai : suit un joueur 15 s puis éclate (Java) ; la tuer avant.", FEAR, n(FEAR), 500,
+        FEAR, "Crainte d'Ai : suit un joueur 15 s puis éclate (Java) ; la tuer avant.", FEAR, n(FEAR), 250,
         [fr.melee(R("Fear_Touch"), 2.4, (0.8, 1.2)), fr.chase(40, stop=1.2)], fr.walk(3.4), GENERATOR, sight=40,
         leash=50, home=False, KnockbackScale=0.5, DeathAnimationTime=0.8)
     return out
@@ -562,8 +573,15 @@ def lang():
                          "le plus proche : passez dans le rayon pour prendre le lien.",
                          "The Sorrow of the Mountain is trapped under fallen boulders: break them. The dark orb "
                          "tethers the closest player: step into the beam to take the tether."),
-        "sorrow.tether": ("L'orbe sombre vous lie : le Marché des marées monte !", "The dark orb tethers you: the Tidal "
-                          "Bargain rises!"),
+        "sorrow.tether": ("Marché des marées : le rayon bleu vous lie, une charge par seconde. À {total} charges, la "
+                          "marée vous submerge et éclabousse vos voisins : qu'un allié passe dans le rayon pour vous "
+                          "relayer !", "Tidal Bargain: the blue beam binds you, one stack per second. At {total} "
+                          "stacks the tide drowns you and splashes those nearby: have an ally step into the beam to "
+                          "take over!"),
+        "tide.stacks": ("Marché des marées : {count}/{total}. Faites-vous relayer dans le rayon !",
+                        "Tidal Bargain: {count}/{total}. Get an ally into the beam!"),
+        "tide.soon": ("La marée va vous submerger : écartez-vous des autres (cercle rouge) !",
+                      "The tide is about to drown you: move away from the others (red circle)!"),
         "sorrow.taken": ("{name} prend le lien.", "{name} takes the tether."),
         "tide.drowned": ("La marée submerge {name} !", "The tide drowns {name}!"),
         "sorrow.boulder": ("Un rocher tombé se brise ({count}/{total}).", "A fallen boulder breaks ({count}/{total})."),
@@ -577,7 +595,8 @@ def lang():
         "fury.enter": ("La Fureur de la montagne jaillit du cratère !", "The Fury of the Mountain bursts from the crater!"),
         "fury.meteors": ("La Fureur appelle des météores : écartez-vous des cercles, puis cachez-vous derrière un "
                          "météore !", "The Fury calls meteors: leave the circles, then hide behind a meteor!"),
-        "fury.extreme": ("Frappe extrême ! Cachez-vous derrière un météore !", "Extreme strike! Hide behind a meteor!"),
+        "fury.extreme": ("Frappe extrême : le boss bondit au centre ! Cachez-vous derrière un météore, hors de sa vue !",
+                         "Extreme strike: the boss leaps to the centre! Hide behind a meteor, out of its sight!"),
         "fury.tracking": ("Deux météores suivent {a} et {b} : croisez-les pour qu'ils se brisent !",
                           "Two meteors follow {a} and {b}: cross them so they shatter each other!"),
         "fury.shattered": ("Les deux météores se brisent l'un l'autre.", "The two meteors shatter each other."),
@@ -601,9 +620,12 @@ def lang():
         "ai.fire": ("Ai s'embrase : place au feu.", "Ai bursts into flame: fire takes over."),
         "ai.meteors": ("Ai appelle des météores !", "Ai calls meteors!"),
         "ai.rain": ("Pluie de météores : Ai se protège, tenez bon !", "Meteor rain: Ai shields herself, hold on!"),
-        "ai.water": ("Ai se fait marée : place à l'eau.", "Ai becomes the tide: water takes over."),
-        "ai.shared": ("Marée partagée sur {name} : rejoignez-le pour partager les dégâts !",
-                      "Shared tide on {name}: join them to share the damage!"),
+        "ai.water": ("Ai se fait marée : un rayon bleu la lie au plus proche (relayez-vous dedans avant {total} "
+                     "charges) ; la marée partagée se prend à plusieurs dans le cercle vert.",
+                     "Ai becomes the tide: a blue beam binds her to the closest player (take turns in it before "
+                     "{total} stacks); share the shared tide inside the green circle."),
+        "ai.shared": ("Marée partagée sur {name} : entrez dans son cercle vert pour partager les dégâts !",
+                      "Shared tide on {name}: step into their green circle to share the damage!"),
         "ai.dark": ("Ai s'assombrit : sa dernière émotion, la peur, prend le dessus !",
                     "Ai darkens: her last emotion, fear, takes over!"),
         "ai.fears": ("Des craintes vous suivent : tuez-les avant qu'elles n'éclatent !",
@@ -810,10 +832,12 @@ def main():
 
     p, t = sc.build_all()
     sections = fc.split_sections(p, min(z for _, _, z in p.blocks))
-    # Ciel clair et bleu du pic, brume blanche lointaine (le vide cerné de nuages de la carte), plein jour.
+    # Crépuscule avancé (Kevin, 26 octobre 2026) : ciel bleu nuit, horizon encore rose orangé, brume mauve lointaine,
+    # lumière froide et basse ; orbes, nuages d'orage et zones d'annonce ressortent mieux.
+    weather = fc.weather("#0e1430", "#7a4a6a", "#3a3456", (40, 220), 0.35, "#8a86b8", sun="#ffb070")
+    weather["SkySunsetColors"] = [{"Hour": 0, "Color": "#ff8a5060"}, {"Hour": 12, "Color": "#ff8a5060"}]
     counts = fc.write_instance(INSTANCE, "Pic de Sunqua", PREFAB_DIR, sections, sc.SPAWN, "#6ab060",
-                               WEATHER, fc.weather("#5a9ae0", "#d8eaf8", "#e8f0f8", (70, 260), 0.3, "#fff4e0",
-                                                   sun="#fff8e8"), "11:00")
+                               WEATHER, weather, "21:00")
     lang().write(LANG)
     JAVA_LAYOUT.parent.mkdir(parents=True, exist_ok=True)
     JAVA_LAYOUT.write_text(java_layout(p, t), encoding="utf-8")

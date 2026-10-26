@@ -9,6 +9,7 @@ import com.hypixel.hytale.server.core.universe.world.storage.ChunkStore;
 import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
 import dev.nakasar.hytale.fractals.arena.Moves;
 import dev.nakasar.hytale.fractals.arena.WorldBlocks;
+import dev.nakasar.hytale.fractals.combat.BossStun;
 import dev.nakasar.hytale.fractals.combat.Hurt;
 import dev.nakasar.hytale.fractals.combat.Spawns;
 import dev.nakasar.hytale.fractals.combat.TelegraphSystem;
@@ -24,7 +25,7 @@ import java.util.List;
  * <ul>
  *   <li>appel : un cercle rouge de {@value #RADIUS} blocs sous chaque joueur ; à l'impact, {@value #PART} des PV et à
  *   terre ; chaque météore reste là, rocher qui sert d'abri ;</li>
- *   <li>frappe extrême : un cercle rouge sur toute l'arène ; qui voit le boss (aucun bloc entre ses yeux et la poitrine
+ *   <li>frappe extrême : le boss bondit au centre et s'y fige ; un cercle rouge sur toute l'arène ; qui voit le boss (aucun bloc entre ses yeux et la poitrine
  *   du joueur) perd {@value #EXTREME_PART} de ses PV ; caché derrière un météore, rien. Les météores s'effritent
  *   ensuite ;</li>
  *   <li>météores qui suivent : deux joueurs marqués ; un météore les suit ({@value #TRACK_SPEED} blocs/s) pendant
@@ -47,6 +48,8 @@ final class Meteors {
     static final float TRACK_WINDUP = 1.5f;
     static final float TRACK_PART = 0.35f;
     static final String ROCK = "Rock_Volcanic";
+    /** Les rochers à moins de cette distance du centre s'effritent quand le boss y bondit (ils lui boucheraient la vue). */
+    static final double BOSS_SPOT = 2.5;
 
     private static final class Tracker {
         final PlayerRef target;
@@ -163,8 +166,18 @@ final class Meteors {
     /** Frappe extrême depuis `boss` sur le disque (`center`, `radius`) : seuls les joueurs à couvert y échappent. */
     void extreme(World world, Store<EntityStore> store, Ref<EntityStore> boss, Vector3d center, double radius,
                  String messageKey) {
-        Telegraphs.Circle circle = new Telegraphs.Circle(center, radius, System.nanoTime(),
-                EXTREME_WINDUP * FractalRuns.windupFactor(world));
+        float windup = EXTREME_WINDUP * FractalRuns.windupFactor(world);
+        Telegraphs.Circle circle = new Telegraphs.Circle(center, radius, System.nanoTime(), windup);
+        // Le boss bondit au centre et y reste figé pendant la charge (Kevin, 26 octobre 2026) : l'abri se lit
+        // d'un coup d'œil, c'est le côté d'un météore opposé au centre.
+        Vector3d from = Telegraphs.position(store, boss);
+        if (from != null) {
+            clearAround(world, center, BOSS_SPOT);
+            BossStun.interrupt(world, store, boss);
+            SunquaPeak.move(store, boss, center, from);
+            BossStun.stun(world, store, boss, windup + 0.5f, null);
+            Telegraphs.particle(store, "Golem_Fire_Glow", center, 1.5f);
+        }
         Spawns.tellAll(world, Message.translation(SunquaPeak.MESSAGES + messageKey));
         int e = epoch;
         TelegraphSystem.start(world, (w, s, t) -> {
@@ -294,6 +307,22 @@ final class Meteors {
             Telegraphs.particle(store, "Nakasar_Fractal_Boulder_Burst", new Vector3d(r[0] + 0.5, r[1], r[2] + 0.5), 1f);
         }
         rocks.clear();
+    }
+
+    /** Retire les rochers de météore à moins de `radius` blocs (à l'horizontale) de `center`. */
+    private void clearAround(World world, Vector3d center, double radius) {
+        ChunkStore chunks = world.getChunkStore();
+        rocks.removeIf(r -> {
+            double dx = r[0] + 0.5 - center.x();
+            double dz = r[2] + 0.5 - center.z();
+            if (dx * dx + dz * dz > radius * radius) {
+                return false;
+            }
+            if (ROCK.equals(WorldBlocks.name(chunks, r[0], r[1], r[2]))) {
+                WorldBlocks.clear(chunks, r[0], r[1], r[2]);
+            }
+            return true;
+        });
     }
 
     /** Fin de rencontre : tout s'arrête, les rochers disparaissent. */

@@ -3,7 +3,7 @@
   "Type": "Generic",
   "Appearance": "Nakasar_Fractal_Sunqua_Lava_Ember",
   "NameTranslationKey": "nakasar_fractals_sunqua_peak.npc.Sunqua_Lava_Ember.name",
-  "MaxHealth": 300,
+  "MaxHealth": 160,
   "StartState": "Idle",
   "DefaultPlayerAttitude": "Hostile",
   "DefaultNPCAttitude": "Ignore",

@@ -2,8 +2,8 @@
   "RenderMode": "BlendLinear",
   "ParticleRotationInfluence": "Billboard",
   "ParticleLifeSpan": {
-    "Min": 0.8,
-    "Max": 1.2
+    "Min": 1.0,
+    "Max": 1.4
   },
   "ParticleRotateWithSpawner": false,
   "TrailSpawnerPositionMultiplier": 1,
@@ -17,22 +17,22 @@
     "Animation": {
       "0": {
         "Opacity": 0,
-        "Color": "#808898"
+        "Color": "#a8b0c8"
       },
       "25": {
         "Opacity": 1
       },
       "100": {
         "Opacity": 0,
-        "Color": "#30343c"
+        "Color": "#3a4058"
       }
     },
     "InitialAnimationFrame": {
       "Opacity": 1,
       "Scale": {
         "X": {
-          "Min": 0.6,
-          "Max": 1.0
+          "Min": 0.9,
+          "Max": 1.5
         }
       }
     }
@@ -42,15 +42,15 @@
   "EmitOffset": {
     "X": {
       "Min": 0,
-      "Max": 2.2
+      "Max": 2.6
     },
     "Y": {
       "Min": 0,
-      "Max": 1.2
+      "Max": 1.4
     },
     "Z": {
       "Min": 0,
-      "Max": 2.2
+      "Max": 2.6
     }
   },
   "InitialVelocity": {
@@ -68,8 +68,8 @@
     }
   },
   "TotalParticles": {
-    "Min": 14,
-    "Max": 14
+    "Min": 36,
+    "Max": 36
   },
-  "MaxConcurrentParticles": 14
+  "MaxConcurrentParticles": 36
 }

@@ -3,7 +3,7 @@
   "Type": "Generic",
   "Appearance": "Nakasar_Fractal_Sunqua_Lava_Elemental",
   "NameTranslationKey": "nakasar_fractals_sunqua_peak.npc.Sunqua_Lava_Elemental.name",
-  "MaxHealth": 1100,
+  "MaxHealth": 550,
   "StartState": "Idle",
   "DefaultPlayerAttitude": "Hostile",
   "DefaultNPCAttitude": "Ignore",

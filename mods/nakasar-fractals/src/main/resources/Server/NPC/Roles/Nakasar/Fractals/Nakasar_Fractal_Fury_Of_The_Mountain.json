@@ -3,7 +3,7 @@
   "Type": "Generic",
   "Appearance": "Nakasar_Fractal_Fury_Of_The_Mountain",
   "NameTranslationKey": "nakasar_fractals_sunqua_peak.npc.Fury_Of_The_Mountain.name",
-  "MaxHealth": 14000,
+  "MaxHealth": 3500,
   "DropList": "Nakasar_Fractal_Loot_Fury_Of_The_Mountain",
   "StartState": "Idle",
   "DefaultPlayerAttitude": "Hostile",

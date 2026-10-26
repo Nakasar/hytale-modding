@@ -790,6 +790,39 @@ public class ValidateAssets {
         }
     }
 
+    /**
+     * Chaque fractale (instance Nakasar_Fractal_X hors Observatoire) a son écho Nakasar_Fractal_Echo_X : le coffre de fin
+     * le donne (support.Echoes) et un objet absent s'affiche « invalid item » (Pic de Sunqua, 26 octobre 2026 :
+     * tools/generate_support.py pas relancé après l'ajout de la fractale).
+     */
+    private static int checkFractalEchoes(Path root) throws Exception {
+        Path instances = root.resolve("Instances");
+        if (!Files.isDirectory(instances)) {
+            return 0;
+        }
+        Set<String> items;
+        try (Stream<Path> walk = Files.walk(root.resolve("Item/Items"))) {
+            items = walk.map(p -> p.getFileName().toString()).filter(n -> n.endsWith(".json"))
+                    .map(n -> n.substring(0, n.length() - 5)).collect(java.util.stream.Collectors.toSet());
+        }
+        int errors = 0;
+        try (Stream<Path> dirs = Files.list(instances)) {
+            for (Path dir : dirs.sorted().toList()) {
+                String name = dir.getFileName().toString();
+                if (!name.startsWith("Nakasar_Fractal_") || name.equals("Nakasar_Fractal_Observatory")) {
+                    continue;
+                }
+                String echo = "Nakasar_Fractal_Echo_" + name.substring("Nakasar_Fractal_".length());
+                if (!items.contains(echo)) {
+                    errors++;
+                    System.out.println("ERROR écho " + echo + " absent (relancer tools/generate_support.py)");
+                }
+            }
+        }
+        System.out.println("INFO  échos des fractales vérifiés, " + errors + " en erreur");
+        return errors;
+    }
+
     /** Les magasins d'assets publient leurs événements sur le bus du serveur : on en fournit un sans démarrer le serveur. */
     private static void fakeServer() throws Exception {
         Field unsafeField = Class.forName("sun.misc.Unsafe").getDeclaredField("theUnsafe");
@@ -1116,6 +1149,7 @@ public class ValidateAssets {
         errors += checkWorldEvents(root) + registrationErrors;
         errors += checkTriggerVolumes(root);
         errors += checkWarningZones(root);
+        errors += checkFractalEchoes(root);
         String blocks = System.getProperty("blocks");
         if (blocks != null) {
             errors += checkBlockIds(root, Path.of(blocks));
