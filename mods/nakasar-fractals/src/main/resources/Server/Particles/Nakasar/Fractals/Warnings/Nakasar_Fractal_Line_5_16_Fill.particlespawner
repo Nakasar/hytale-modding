@@ -1,5 +1,5 @@
 {
-  "RenderMode": "BlendAdd",
+  "RenderMode": "BlendLinear",
   "ParticleRotationInfluence": "None",
   "ParticleLifeSpan": {
     "Min": 1.6,
@@ -9,13 +9,13 @@
   "TrailSpawnerPositionMultiplier": 1,
   "TrailSpawnerRotationMultiplier": 1,
   "Particle": {
-    "Texture": "Particles/Textures/Nakasar/Fractals/Warning_Line_Fill.png",
+    "Texture": "Particles/Textures/Indicators/Warning_Square_Base.png",
     "ScaleRatioConstraint": "None",
     "UVOption": "None",
     "Animation": {
       "0": {
-        "Opacity": 0.35,
-        "Color": "#ff2a1a",
+        "Opacity": 0,
+        "Color": "#ff0000",
         "Scale": {
           "X": {
             "Min": 1,
@@ -27,8 +27,37 @@
           }
         }
       },
+      "15": {
+        "Opacity": 1,
+        "Color": "#ff0000"
+      },
+      "30": {
+        "Opacity": 0.5,
+        "Color": "#ff0000"
+      },
+      "45": {
+        "Opacity": 1,
+        "Color": "#ff0000"
+      },
+      "60": {
+        "Opacity": 0.5,
+        "Color": "#ff0000"
+      },
+      "75": {
+        "Opacity": 1,
+        "Color": "#ff0000"
+      },
+      "90": {
+        "Opacity": 0.5,
+        "Color": "#ff0000"
+      },
+      "95": {
+        "Opacity": 0.5,
+        "Color": "#ff0000"
+      },
       "97": {
-        "Opacity": 0.7,
+        "Opacity": 0.5,
+        "Color": "#ff0000",
         "Scale": {
           "X": {
             "Min": 1,
@@ -42,7 +71,7 @@
       },
       "100": {
         "Opacity": 0,
-        "Color": "#ff2a1a",
+        "Color": "#ff0000",
         "Scale": {
           "X": {
             "Min": 1,
@@ -57,7 +86,8 @@
     },
     "SoftParticles": "Disable",
     "InitialAnimationFrame": {
-      "Opacity": 0.35,
+      "Opacity": 0.75,
+      "Color": "#ff0000",
       "Rotation": {
         "X": {
           "Min": 90,

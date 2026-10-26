@@ -1,5 +1,5 @@
 {
-  "RenderMode": "BlendAdd",
+  "RenderMode": "BlendLinear",
   "ParticleRotationInfluence": "Velocity",
   "ParticleLifeSpan": {
     "Min": 0.5,
@@ -15,22 +15,49 @@
     "Animation": {
       "0": {
         "Opacity": 0,
-        "Color": "#ff2a1a"
+        "Color": "#ff0000"
       },
-      "10": {
-        "Opacity": 0.4
+      "15": {
+        "Opacity": 1,
+        "Color": "#ff0000"
+      },
+      "30": {
+        "Opacity": 0.5,
+        "Color": "#ff0000"
+      },
+      "45": {
+        "Opacity": 1,
+        "Color": "#ff0000"
+      },
+      "60": {
+        "Opacity": 0.5,
+        "Color": "#ff0000"
+      },
+      "75": {
+        "Opacity": 1,
+        "Color": "#ff0000"
+      },
+      "90": {
+        "Opacity": 0.5,
+        "Color": "#ff0000"
       },
       "95": {
-        "Opacity": 0.6
+        "Opacity": 0.5,
+        "Color": "#ff0000"
+      },
+      "97": {
+        "Opacity": 0.5,
+        "Color": "#ff0000"
       },
       "100": {
         "Opacity": 0,
-        "Color": "#ff2a1a"
+        "Color": "#ff0000"
       }
     },
     "SoftParticles": "Disable",
     "InitialAnimationFrame": {
-      "Opacity": 0.4,
+      "Opacity": 0.75,
+      "Color": "#ff0000",
       "Rotation": {
         "X": {
           "Min": 90,

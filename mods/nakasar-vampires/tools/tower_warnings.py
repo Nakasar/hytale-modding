@@ -14,7 +14,15 @@ Cônes et anneaux (Kevin, 20 octobre 2026 : « cône rouge qui se charge », com
 dessine en pastilles rouges posées à plat, anneau après anneau, du bord de départ au bord d'arrivée ; chaque pastille
 reste jusqu'à l'instant du coup. `Nakasar_Cone_<dixièmes>` est une pastille qui dure autant, `Nakasar_Cone_Edge_<dixièmes>`
 un point du contour, posé dès le début. Toutes les durées de CONE_TENTHS existent : le Java en choisit une à chaque
-anneau."""
+anneau.
+
+Couleur et opacité (Kevin, 26 octobre 2026 : « une zone d'annonce ennemie/danger doit être rouge orangée légère »,
+jamais blanche) : celles des annonces du donjon Deepworks vanilla (Assets.zip 0.7.2 : Gobliterator_Slam_Warning,
+Gobliterator_Quadrant_Warning, Gobliterator_Flamethrower_Warning), rouge pur #ff0000, contour à 0,5 qui pulse entre 1
+et 0,25, remplissage à 0,75 qui pulse entre 1 et 0,5. Mais en mélange normal (BlendLinear), pas additif comme les
+Deepworks : l'additif n'ajoute rien à un sol presque blanc, où la zone paraissait blanche ; le mélange normal teint en
+rouge n'importe quel sol (choix de Kevin, 26 octobre 2026). La couleur est écrite sur chaque image clé ; ValidateAssets refuse toute zone d'annonce qui s'en écarte. Même table que
+tools/generate_warnings.py du mod Fractales."""
 
 import json
 from pathlib import Path
@@ -23,7 +31,13 @@ PARTICLES = Path(__file__).resolve().parent.parent / "src" / "main" / "resources
 PREFIX = "Nakasar_Warning_"
 SCALE = 0.68           # échelle de particule par bloc de rayon
 BASE = 6.25            # taille de la particule à l'échelle 1 (comme Dungeon_Goblin_Mace_Slam_Warning)
-RED = "#ff2a1a"
+RED = "#ff0000"        # rouge des annonces Deepworks
+EDGE_OPACITY = 0.5     # opacité de départ du contour (Gobliterator_*_Warning_Cone / _Line / _Circle)
+FILL_OPACITY = 0.75    # opacité de départ du remplissage (Gobliterator_Slam_Warning_Circle_Fill, _Flamethrower_Warning_Line_Fill)
+# Pulsations Deepworks (image clé -> opacité) ; HIT : le disque touche le bord à l'instant du coup.
+EDGE_PULSE = {0: 0, 15: 1, 30: 0.25, 45: 1, 60: 0.25, 75: 1, 90: 0.25, 95: 0.25, 100: 0}
+FILL_PULSE = {0: 0, 15: 1, 30: 0.5, 45: 1, 60: 0.5, 75: 1, 90: 0.5, 95: 0.5, 97: 0.5, 100: 0}
+HIT = 97
 CONE_PREFIX = "Nakasar_Cone_"
 CONE_TENTHS = range(2, 61)   # Telegraphs.CONE_MIN / CONE_MAX en dixièmes de seconde
 WARNING_TENTHS = range(5, 61)   # Telegraphs.WARNING_MIN / WARNING_MAX : toutes écrites, les élites en demandent en Java
@@ -46,7 +60,7 @@ def scale(radius):
     return round(SCALE * radius, 2)
 
 
-def _spawner(life, texture, animation, initial, blend="BlendAdd"):
+def _spawner(life, texture, animation, initial, blend="BlendLinear"):
     return {
         "RenderMode": blend,
         "ParticleRotationInfluence": "Velocity",
@@ -72,21 +86,37 @@ def _spawner(life, texture, animation, initial, blend="BlendAdd"):
     }
 
 
+def edge_animation():
+    """Contour Deepworks : rouge sur chaque image clé, opacité qui pulse jusqu'au coup."""
+    return {str(k): {"Opacity": v, "Color": RED} for k, v in EDGE_PULSE.items()}
+
+
+def fill_animation(start=None, full=None):
+    """Remplissage Deepworks ; s'il grandit, de l'échelle `start` à `full`, il touche le bord à l'image HIT."""
+    frames = {}
+    for k, v in FILL_PULSE.items():
+        frame = {"Opacity": v, "Color": RED}
+        if start is not None and k == 0:
+            frame["Scale"] = start
+        elif full is not None and k >= HIT:
+            frame["Scale"] = full
+        frames[str(k)] = frame
+    return frames
+
+
+def initial(opacity, rotation, scale):
+    return {"Opacity": opacity, "Color": RED, "Rotation": rotation, "Scale": scale}
+
+
 def _files(t):
     life = t / 10
     flat = {"X": {"Min": 90, "Max": 90}}
-    edge = _spawner(life, "Particles/Textures/Indicators/Warning_Circle_Base.png", {
-        "0": {"Opacity": 0, "Color": RED},
-        "8": {"Opacity": 1},
-        "92": {"Opacity": 1},
-        "100": {"Opacity": 0, "Color": RED},
-    }, {"Opacity": 1, "Rotation": flat, "Scale": {"X": {"Min": BASE, "Max": BASE}}})
+    edge = _spawner(life, "Particles/Textures/Indicators/Warning_Circle_Base.png", edge_animation(),
+                    initial(EDGE_OPACITY, flat, {"X": {"Min": BASE, "Max": BASE}}))
     # Le disque grandit du centre jusqu'au contour : il le touche quand le coup tombe.
-    fill = _spawner(life, "Particles/Textures/Basic/Ball5.png", {
-        "0": {"Opacity": 0.35, "Color": RED, "Scale": {"X": {"Min": 0.05, "Max": 0.05}}},
-        "97": {"Opacity": 0.7, "Scale": {"X": {"Min": 1, "Max": 1}}},
-        "100": {"Opacity": 0, "Color": RED, "Scale": {"X": {"Min": 1, "Max": 1}}},
-    }, {"Opacity": 0.35, "Rotation": flat, "Scale": {"X": {"Min": BASE, "Max": BASE}}})
+    fill = _spawner(life, "Particles/Textures/Basic/Ball5.png",
+                    fill_animation({"X": {"Min": 0.05, "Max": 0.05}}, {"X": {"Min": 1, "Max": 1}}),
+                    initial(FILL_OPACITY, flat, {"X": {"Min": BASE, "Max": BASE}}))
     name = f"{PREFIX}{t}"
     system_doc = {
         "$Comment": f"Zone d'annonce de {life:g} s : contour rouge et disque qui se remplit jusqu'au coup. Généré par tools/tower_warnings.py.",
@@ -103,18 +133,10 @@ def _cone_files(t):
     """Pastille de cône (disque rouge à plat qui s'affirme jusqu'au coup) et point de contour, de t dixièmes."""
     life = t / 10
     flat = {"X": {"Min": 90, "Max": 90}}
-    fill = _spawner(life, "Particles/Textures/Basic/Ball5.png", {
-        "0": {"Opacity": 0, "Color": RED},
-        "10": {"Opacity": 0.4},
-        "95": {"Opacity": 0.6},
-        "100": {"Opacity": 0, "Color": RED},
-    }, {"Opacity": 0.4, "Rotation": flat, "Scale": {"X": {"Min": BASE, "Max": BASE}}})
-    edge = _spawner(life, "Particles/Textures/Basic/Ball5.png", {
-        "0": {"Opacity": 0, "Color": RED},
-        "8": {"Opacity": 0.9},
-        "95": {"Opacity": 0.9},
-        "100": {"Opacity": 0, "Color": RED},
-    }, {"Opacity": 0.9, "Rotation": flat, "Scale": {"X": {"Min": BASE, "Max": BASE}}})
+    fill = _spawner(life, "Particles/Textures/Basic/Ball5.png", fill_animation(),
+                    initial(FILL_OPACITY, flat, {"X": {"Min": BASE, "Max": BASE}}))
+    edge = _spawner(life, "Particles/Textures/Basic/Ball5.png", edge_animation(),
+                    initial(EDGE_OPACITY, flat, {"X": {"Min": BASE, "Max": BASE}}))
     out = {}
     for name, spawner, dy in ((f"{CONE_PREFIX}{t}", fill, 0.02), (f"{CONE_PREFIX}Edge_{t}", edge, 0.03)):
         out[f"{name}.particlesystem"] = {
