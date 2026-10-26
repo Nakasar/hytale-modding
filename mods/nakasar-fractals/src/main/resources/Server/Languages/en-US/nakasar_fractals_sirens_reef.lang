@@ -62,6 +62,7 @@ peter.ghosts = Black Peter calls the crew!
 peter.cinders = Cinder Cyclone: get back into the fort!
 peter.reset = Black Peter vanishes in the smoke.
 peter.victory = Black Peter fizzles out like a wet fuse. The jungle gate opens.
+head.last = The last jungle raptors rush to the plaza: slay them to open the head.
 head.open = The great stone head opens its mouth: the maze of cursed treasure.
 treasure.intro = Three cursed treasures sleep in the maze. Bring them to the siren's chest by the exit. The curse grows while you carry them: pass them around!
 treasure.crouch = Crouch to pick up the cursed treasure.

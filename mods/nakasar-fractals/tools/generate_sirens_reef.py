@@ -616,10 +616,22 @@ def interactions():
                                                      EffectId="Nakasar_Fractal_Dazed", EffectDuration=2,
                                                      PlayersOnly=True, ImpactParticle="Stick_Slam_Ground_Large"),
                                            fc.windup(2.0)]}
+    # Coups de coutelas des boss du navire. L'attaque vanilla du capitaine pirate balaie à hauteur de ses yeux : sur des
+    # modèles agrandis (x 1,4 à 1,8), elle passait au-dessus des joueurs. Ici le balayage descend jusqu'au sol.
+    for boss, damage, reach, low in (("Jack", 20, 3.8, 1.8), ("Calix", 20, 3.8, 1.8), ("Arabella", 26, 4.4, 2.6)):
+        out[f"Nakasar_Fractal_{boss}_Strike"] = {
+            "$Comment": f"Deux revers de coutelas ({damage} dégâts chacun, {str(reach).replace('.', ',')} blocs), "
+                        "sans annonce.",
+            "Type": "Serial", "Interactions": [
+                fr.swing("Revers gauche.", "Sword", "SwingLeft", 0.4, damage, end=reach, extend_bottom=low),
+                fr.swing("Revers droit.", "Sword", "SwingRight", 0.4, damage, end=reach, direction="ToRight", yaw=-50,
+                         extend_bottom=low)]}
     return out
 
 
-MELEE = ["Bonebreaker_Sweep", "Stonehead_Charge", "Stonehead_Stomp", "Jack_Chill", "Calix_Confetti", "Arabella_Bludgeon"]
+SHIP_STRIKES = ["Jack_Strike", "Calix_Strike", "Arabella_Strike"]
+MELEE = ["Bonebreaker_Sweep", "Stonehead_Charge", "Stonehead_Stomp", "Jack_Chill", "Calix_Confetti",
+         "Arabella_Bludgeon"] + SHIP_STRIKES
 RANGED = ["Smokescale_Vent", "Peter_Bomb", "Jack_Daze"]
 TOAD_ATTACK = "Root_NPC_Toad_Rhino_Attack"
 MAGMA_ATTACK = "Root_NPC_Toad_Rhino_Magma_Attack"
@@ -657,7 +669,7 @@ def roles():
     out[STONEHEAD] = fr.role(
         STONEHEAD, "Tête-de-pierre, champion des raptors, barre de boss : morsure du rex vanilla, charge (étourdi contre "
         "un mur), piétinement. Meutes à 75 et 50 %, fuite à 25 % : Java (sirensreef.Stonehead).", STONEHEAD,
-        n(STONEHEAD), 4000,
+        n(STONEHEAD), 2000,
         [fr.timed_attack("Charge", R("Stonehead_Charge"), rng=16, los=True, comment="Charge."),
          fr.timed_attack("Stomp", R("Stonehead_Stomp"), rng=4.5, comment="Piétinement."),
          fr.melee(BITE_ATTACK, 3.6, (0.9, 1.3)), fr.chase(36, stop=2.6)], fr.walk(3.6), GENERATOR, sight=20, leash=40,
@@ -683,35 +695,34 @@ def roles():
     out[PETER] = fr.role(
         PETER, "Black Peter la Mèche, barre de boss et de défiance : tromblon vanilla, bombes annoncées. Mines sous les "
         "joueurs, mines semées, poudre noire, fantômes et cyclone de cendres : Java (sirensreef.BlackPeter).", PETER,
-        n(PETER), 6000,
+        n(PETER), 3000,
         [fr.timed_attack("Bomb", R("Peter_Bomb"), rng=20, comment="Bombe lancée."),
          fr.cast("Shoot", GUN_ATTACK, 16, "Tir de tromblon."), fr.chase(40, stop=6.0)], fr.walk(3.0), GENERATOR,
         sight=30, leash=50, home=False, timers=[fr.timer("Bomb", (2, 4), (6, 8)), fr.timer("Shoot", (3, 5), (5, 7))],
         HotbarItems=["Weapon_Gun_Blunderbuss"], KnockbackScale=0.0, DeathAnimationTime=2.0)
     out[JACK] = fr.role(
         JACK, "Mad Jack Squall, barre de boss : coutelas vanilla, souffle glacial, coup qui hébète. Fantômes et courants "
-        "fantômes : Java (sirensreef.ReefShip).", JACK, n(JACK), 5000,
+        "fantômes : Java (sirensreef.ReefShip).", JACK, n(JACK), 2500,
         [fr.timed_attack("Chill", R("Jack_Chill"), rng=6, los=True, comment="Souffle glacial."),
          fr.timed_attack("Daze", R("Jack_Daze"), rng=16, comment="Coup qui hébète."),
-         fr.melee(CUTLASS_ATTACK, 3.4, (0.8, 1.2)), fr.chase(30, stop=2.4)], fr.walk(3.6), GENERATOR, sight=30,
+         fr.melee(R("Jack_Strike"), 3.4, (0.8, 1.2)), fr.chase(30, stop=2.4)], fr.walk(3.6), GENERATOR, sight=30,
         leash=40, home=False, timers=[fr.timer("Chill", (3, 5), (8, 10)), fr.timer("Daze", (5, 7), (10, 12))],
-        HotbarItems=["Weapon_Sword_Cutlass"], KnockbackScale=0.0, DeathAnimationTime=2.0,
-        InteractionVars=cutlass_vars(24))
+        HotbarItems=["Weapon_Sword_Cutlass"], KnockbackScale=0.0, DeathAnimationTime=2.0)
     out[CALIX] = fr.role(
         CALIX, "Le second Calix, barre de boss : coutelas vanilla, confettis du cadavre. Lagon sinistre et courants "
-        "fantômes : Java (sirensreef.ReefShip).", CALIX, n(CALIX), 5000,
+        "fantômes : Java (sirensreef.ReefShip).", CALIX, n(CALIX), 2500,
         [fr.timed_attack("Confetti", R("Calix_Confetti"), rng=7, los=True, comment="Confettis du cadavre."),
-         fr.melee(CUTLASS_ATTACK, 3.4, (0.8, 1.2)), fr.chase(30, stop=2.4)], fr.walk(3.6), GENERATOR, sight=30,
+         fr.melee(R("Calix_Strike"), 3.4, (0.8, 1.2)), fr.chase(30, stop=2.4)], fr.walk(3.6), GENERATOR, sight=30,
         leash=40, home=False, timers=[fr.timer("Confetti", (3, 5), (8, 10))], HotbarItems=["Weapon_Sword_Cutlass"],
-        KnockbackScale=0.0, DeathAnimationTime=2.0, InteractionVars=cutlass_vars(24))
+        KnockbackScale=0.0, DeathAnimationTime=2.0)
     out[ARABELLA] = fr.role(
         ARABELLA, "Capitaine Arabella Crowe, barre de boss : coutelas vanilla, gourdin sanglant. Lagon sinistre, dents "
         "des profondeurs, fantômes, sauts d'un bout à l'autre du pont et courants fantômes : Java "
-        "(sirensreef.ReefShip).", ARABELLA, n(ARABELLA), 9000,
+        "(sirensreef.ReefShip).", ARABELLA, n(ARABELLA), 3000,
         [fr.timed_attack("Bludgeon", R("Arabella_Bludgeon"), rng=6, los=True, comment="Gourdin sanglant."),
-         fr.melee(CUTLASS_ATTACK, 3.8, (0.8, 1.2)), fr.chase(30, stop=2.6)], fr.walk(3.6), GENERATOR, sight=30,
+         fr.melee(R("Arabella_Strike"), 3.8, (0.8, 1.2)), fr.chase(30, stop=2.6)], fr.walk(3.6), GENERATOR, sight=30,
         leash=40, home=False, timers=[fr.timer("Bludgeon", (3, 5), (7, 9))], HotbarItems=["Weapon_Sword_Cutlass"],
-        KnockbackScale=0.0, DeathAnimationTime=2.5, InteractionVars=cutlass_vars(30))
+        KnockbackScale=0.0, DeathAnimationTime=2.5)
     out[STROHM] = fc.static_role(LANG, STROHM, "Capitaine Strohm : attend sur la plage du naufrage ; on ne peut pas le "
                                  "blesser (Java).", GENERATOR, 1000, attitude="Neutral", foe=False)
     out[WEYANDT] = fc.static_role(LANG, WEYANDT, "Le mousse Weyandt : reste près du capitaine ; on ne peut pas le "
@@ -802,6 +813,8 @@ def lang():
         "peter.reset": ("Black Peter disparaît dans la fumée.", "Black Peter vanishes in the smoke."),
         "peter.victory": ("Black Peter s'éteint comme une mèche mouillée. La porte de la jungle s'ouvre.",
                           "Black Peter fizzles out like a wet fuse. The jungle gate opens."),
+        "head.last": ("Les derniers raptors de la jungle accourent à la place : abattez-les pour ouvrir la tête.",
+                      "The last jungle raptors rush to the plaza: slay them to open the head."),
         "head.open": ("La grande tête de pierre ouvre la bouche : le labyrinthe des trésors maudits.",
                       "The great stone head opens its mouth: the maze of cursed treasure."),
         "treasure.intro": ("Trois trésors maudits dorment dans le labyrinthe. Rapportez-les au coffre de la sirène, près "

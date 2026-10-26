@@ -3,9 +3,11 @@ package dev.nakasar.hytale.fractals.sirensreef;
 import com.hypixel.hytale.component.CommandBuffer;
 import com.hypixel.hytale.component.Ref;
 import com.hypixel.hytale.component.Store;
+import com.hypixel.hytale.math.vector.Rotation3f;
 import com.hypixel.hytale.server.core.Message;
 import com.hypixel.hytale.server.core.modules.entity.component.Invulnerable;
 import com.hypixel.hytale.server.core.modules.entity.damage.Damage;
+import com.hypixel.hytale.server.core.modules.entity.teleport.Teleport;
 import com.hypixel.hytale.server.core.universe.PlayerRef;
 import com.hypixel.hytale.server.core.universe.world.World;
 import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
@@ -72,6 +74,9 @@ public final class SirensReef implements FractalStage {
     static final int ROAMING_RAPTORS = 3;
     /** Raptors par clairière du sentier de jungle. */
     static final int GLADE_RAPTORS = 4;
+    /** Raptors des clairières encore en vie quand on arrive à la place : rappelés s'ils sont à plus de CALL_NEAR blocs. */
+    static final float CALL_EVERY = 10f;
+    static final double CALL_NEAR = 12;
     /** Un joueur à moins de cette distance du centre d'un lieu (fort, crique, place de la tête) y est arrivé. */
     static final double ARRIVE = 10;
     /** Un monstre tombé de plus de 3 blocs sous son point d'apparition y est ramené (comme au Ressac silencieux). */
@@ -96,6 +101,7 @@ public final class SirensReef implements FractalStage {
         final CursedTreasure treasure = new CursedTreasure();
         final ReefShip ship = new ReefShip();
         boolean fortWave;
+        long callRaptors;
         boolean wall2Open;
         boolean ticking;
         final Map<UUID, Long> throttle = new HashMap<>();
@@ -329,7 +335,11 @@ public final class SirensReef implements FractalStage {
 
     /** Meutes du sentier vidées et un joueur sur la place : la bouche s'ouvre sur le labyrinthe. */
     private static void jungle(World world, Store<EntityStore> store, State st, List<PlayerRef> players) {
-        if (!st.blockers.isEmpty() || !anyNear(store, players, SirensReefLayout.PLAZA, ARRIVE)) {
+        if (!anyNear(store, players, SirensReefLayout.PLAZA, ARRIVE)) {
+            return;
+        }
+        if (!st.blockers.isEmpty()) {
+            callRaptors(world, store, st);
             return;
         }
         Gates.open(world, store, SirensReefLayout.MOUTH, MESSAGES + "head.open");
@@ -346,6 +356,35 @@ public final class SirensReef implements FractalStage {
         }
         Spawns.tellAll(world, Message.translation(MESSAGES + "treasure.intro"));
         st.phase = Phase.MAZE;
+    }
+
+    /**
+     * Un joueur est sur la place et des raptors des clairières vivent encore (laissés derrière, coincés dans le décor) :
+     * ceux qui sont loin de la place y accourent, toutes les {@value #CALL_EVERY} s, pour qu'on puisse les abattre.
+     */
+    private static void callRaptors(World world, Store<EntityStore> store, State st) {
+        long now = System.nanoTime();
+        if (now < st.callRaptors) {
+            return;
+        }
+        st.callRaptors = now + Telegraphs.seconds(CALL_EVERY);
+        Vector3d plaza = Spawns.point(SirensReefLayout.PLAZA);
+        boolean called = false;
+        for (Ref<EntityStore> ref : st.blockers) {
+            Vector3d at = Telegraphs.position(store, ref);
+            if (at != null && Telegraphs.horizontal(at, plaza) <= CALL_NEAR && Math.abs(at.y() - plaza.y()) < 4) {
+                continue;
+            }
+            double a = Math.random() * 2 * Math.PI;
+            Vector3d to = new Vector3d(plaza).add(Math.cos(a) * 5, 0, Math.sin(a) * 5);
+            store.putComponent(ref, Teleport.getComponentType(), new Teleport(to, new Rotation3f(0f, Telegraphs.yawToward(to, plaza), 0f)));
+            st.homes.put(ref, to);
+            Telegraphs.particle(store, "Nakasar_Fractal_Stonehead_Roar", to, 0.4f);
+            called = true;
+        }
+        if (called) {
+            Spawns.tellAll(world, Message.translation(MESSAGES + "head.last"));
+        }
     }
 
     // --- blocs utilisés, objets, coups, morts --------------------------------------------------------------------

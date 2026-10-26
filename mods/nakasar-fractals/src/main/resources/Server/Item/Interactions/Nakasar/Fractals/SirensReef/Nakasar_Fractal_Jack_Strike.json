@@ -1,0 +1,100 @@
+{
+  "$Comment": "Deux revers de coutelas (20 dégâts chacun, 3,8 blocs), sans annonce.",
+  "Type": "Serial",
+  "Interactions": [
+    {
+      "$Comment": "Revers gauche.",
+      "Type": "Simple",
+      "RunTime": 0.4,
+      "Effects": {
+        "WorldSoundEventId": "SFX_Light_Melee_T2_Swing",
+        "ItemPlayerAnimationsId": "Sword",
+        "ItemAnimationId": "SwingLeft"
+      },
+      "Next": {
+        "Type": "Selector",
+        "RunTime": 0.15,
+        "Selector": {
+          "Id": "Horizontal",
+          "Direction": "ToLeft",
+          "TestLineOfSight": true,
+          "ExtendTop": 0.8,
+          "ExtendBottom": 1.8,
+          "StartDistance": 0.2,
+          "EndDistance": 3.8,
+          "Length": 100,
+          "RollOffset": 0,
+          "YawStartOffset": 50
+        },
+        "HitEntity": {
+          "Interactions": [
+            {
+              "Parent": "DamageEntityParent",
+              "DamageCalculator": {
+                "BaseDamage": {
+                  "Physical": 20
+                },
+                "RandomPercentageModifier": 0.1
+              },
+              "DamageEffects": {
+                "WorldSoundEventId": "SFX_T1_Impact_Blunt",
+                "WorldParticles": [
+                  {
+                    "SystemId": "Impact_Sword_Basic_Stronk"
+                  }
+                ]
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "$Comment": "Revers droit.",
+      "Type": "Simple",
+      "RunTime": 0.4,
+      "Effects": {
+        "WorldSoundEventId": "SFX_Light_Melee_T2_Swing",
+        "ItemPlayerAnimationsId": "Sword",
+        "ItemAnimationId": "SwingRight"
+      },
+      "Next": {
+        "Type": "Selector",
+        "RunTime": 0.15,
+        "Selector": {
+          "Id": "Horizontal",
+          "Direction": "ToRight",
+          "TestLineOfSight": true,
+          "ExtendTop": 0.8,
+          "ExtendBottom": 1.8,
+          "StartDistance": 0.2,
+          "EndDistance": 3.8,
+          "Length": 100,
+          "RollOffset": 0,
+          "YawStartOffset": -50
+        },
+        "HitEntity": {
+          "Interactions": [
+            {
+              "Parent": "DamageEntityParent",
+              "DamageCalculator": {
+                "BaseDamage": {
+                  "Physical": 20
+                },
+                "RandomPercentageModifier": 0.1
+              },
+              "DamageEffects": {
+                "WorldSoundEventId": "SFX_T1_Impact_Blunt",
+                "WorldParticles": [
+                  {
+                    "SystemId": "Impact_Sword_Basic_Stronk"
+                  }
+                ]
+              }
+            }
+          ]
+        }
+      }
+    }
+  ]
+}

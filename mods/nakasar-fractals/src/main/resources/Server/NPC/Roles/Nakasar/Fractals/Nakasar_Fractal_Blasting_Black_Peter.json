@@ -3,7 +3,7 @@
   "Type": "Generic",
   "Appearance": "Nakasar_Fractal_Blasting_Black_Peter",
   "NameTranslationKey": "nakasar_fractals_sirens_reef.npc.Blasting_Black_Peter.name",
-  "MaxHealth": 6000,
+  "MaxHealth": 3000,
   "DropList": "Nakasar_Fractal_Loot_Blasting_Black_Peter",
   "StartState": "Idle",
   "DefaultPlayerAttitude": "Hostile",
