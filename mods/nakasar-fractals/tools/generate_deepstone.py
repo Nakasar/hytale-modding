@@ -240,7 +240,7 @@ def status_icons():
 
 
 def deep_cause():
-    return fc.cause("Grille de runes, vent, venin, ombres, siphon et bombes de la Roche des Abysses : une part des PV max, "
+    return fc.cause("Vent, venin, ombres, siphon et bombes de la Roche des Abysses : une part des PV max, "
                     "l'armure ne la réduit pas.", "#9cf")
 
 
@@ -600,13 +600,13 @@ def lang():
         "hall.enter": ("Torin : « La salle du cristal. Le cristal réclame deux orbes de lumière : une à l'ouest, une à "
                        "l'est. »", "Torin: \"The crystal chamber. The crystal needs two orbs of light: one to the west, "
                        "one to the east.\""),
-        "grid.intro": ("Une grille de runes : ne touchez pas les dalles vertes allumées. Au bout, deux runes à presser "
-                       "ensemble.", "A rune grid: don't touch the lit green tiles. At the end, two runes to press "
+        "grid.intro": ("Une grille de runes : une dalle verte allumée vous renvoie au début. Au bout, deux runes à presser "
+                       "ensemble.", "A rune grid: a lit green tile sends you back to the start. At the end, two runes to press "
                        "together."),
         "grid.runes": ("Montez sur les deux runes en même temps pour ouvrir la barrière (seul : courez de l'une à "
                        "l'autre en moins de {seconds} s).", "Stand on both runes at once to open the barrier (alone: run "
                        "from one to the other within {seconds} s)."),
-        "grid.hit": ("Les runes vous brûlent !", "The runes burn you!"),
+        "grid.hit": ("Les runes vous renvoient au début du couloir !", "The runes send you back to the start of the corridor!"),
         "rune.one": ("Une rune s'allume... il faut presser l'autre en même temps.",
                      "A rune lights up... the other must be pressed at the same time."),
         "grid.solved": ("Les deux runes s'allument : la grille s'éteint et la barrière s'ouvre.",

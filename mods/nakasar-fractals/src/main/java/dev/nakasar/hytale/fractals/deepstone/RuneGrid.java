@@ -7,11 +7,9 @@ import com.hypixel.hytale.server.core.universe.world.World;
 import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
 import dev.nakasar.hytale.fractals.arena.Gates;
 import dev.nakasar.hytale.fractals.arena.Moves;
-import dev.nakasar.hytale.fractals.combat.Hurt;
 import dev.nakasar.hytale.fractals.combat.Spawns;
 import dev.nakasar.hytale.fractals.combat.Telegraphs;
 import dev.nakasar.hytale.fractals.party.FractalRuns;
-import dev.nakasar.hytale.fractals.progress.Agony;
 import org.joml.Vector3d;
 
 import java.util.ArrayList;
@@ -23,8 +21,8 @@ import java.util.UUID;
 /**
  * La grille de runes de l'ouest (GW2) : des rangées de dalles vertes allumées glissent du nord vers le sud, une rangée toutes les
  * {@value #STEP_SECONDS} s ; chaque vague laisse {@value #GAPS_MIN} ou {@value #GAPS_MAX} colonnes éteintes où passer.
- * La dalle allumée est le danger même (sa zone exacte) : un corps qui mord sur une dalle verte prend {@value #HIT_PART} des PV, l'agonie
- * {@value #AGONY_SECONDS} s et un recul vers le sud. Au bout, deux runes à presser ensemble ({@link RunePair}) éteignent
+ * La dalle allumée est le piège même (sa zone exacte) : un corps qui mord sur une dalle verte est renvoyé au début du
+ * couloir, sans dégâts (Kevin, 26 octobre 2026). Au bout, deux runes à presser ensemble ({@link RunePair}) éteignent
  * la grille et ouvrent la barrière de la corniche de la Sentinelle.
  */
 final class RuneGrid {
@@ -33,8 +31,6 @@ final class RuneGrid {
     static final int WAVE_GAP = 4;
     static final int GAPS_MIN = 1;
     static final int GAPS_MAX = 2;
-    static final float HIT_PART = 0.15f;
-    static final float AGONY_SECONDS = 3f;
     static final float HIT_GRACE = 1.2f;
     /** La grille ne tourne que si un joueur est à moins de cette distance de ses bords. */
     static final double WAKE = 8;
@@ -174,10 +170,8 @@ final class RuneGrid {
                 continue;
             }
             hits.put(p.getUuid(), now);
-            Hurt.percent(store, p.getReference(), HIT_PART, Deepstone.CAUSE);
-            Hurt.effect(store, p.getReference(), Agony.EFFECT, AGONY_SECONDS);
-            Moves.velocity(store, p.getReference(), new Vector3d(0, 5, 7));
             Telegraphs.particle(store, "Nakasar_Fractal_Rune_Glow", at, 0.8f);
+            Moves.teleport(store, p.getReference(), Spawns.point(DeepstoneLayout.GRID_START));
             Deepstone.tell(st, p, "grid.hit");
         }
     }
