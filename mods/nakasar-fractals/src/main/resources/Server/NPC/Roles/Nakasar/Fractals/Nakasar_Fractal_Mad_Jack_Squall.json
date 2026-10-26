@@ -3,7 +3,7 @@
   "Type": "Generic",
   "Appearance": "Nakasar_Fractal_Mad_Jack_Squall",
   "NameTranslationKey": "nakasar_fractals_sirens_reef.npc.Mad_Jack_Squall.name",
-  "MaxHealth": 5000,
+  "MaxHealth": 2500,
   "DropList": "Nakasar_Fractal_Loot_Mad_Jack_Squall",
   "StartState": "Idle",
   "DefaultPlayerAttitude": "Hostile",
@@ -26,22 +26,6 @@
   ],
   "KnockbackScale": 0.0,
   "DeathAnimationTime": 2.0,
-  "InteractionVars": {
-    "Melee_Damage": {
-      "Interactions": [
-        {
-          "Parent": "NPC_Attack_Melee_Damage",
-          "DamageCalculator": {
-            "Type": "Absolute",
-            "BaseDamage": {
-              "Physical": 24
-            },
-            "RandomPercentageModifier": 0.1
-          }
-        }
-      ]
-    }
-  },
   "StateTransitions": [
     {
       "$Comment": "Entrée en combat : chaque attaque spéciale a sa propre recharge.",
@@ -260,7 +244,7 @@
           "Actions": [
             {
               "Type": "Attack",
-              "Attack": "Root_NPC_Skeleton_Pirate_Captain_Attack",
+              "Attack": "Root_Nakasar_Fractal_NPC_Jack_Strike",
               "AttackPauseRange": [
                 0.8,
                 1.2

@@ -3,7 +3,7 @@
   "Type": "Generic",
   "Appearance": "Nakasar_Fractal_Arabella_Crowe",
   "NameTranslationKey": "nakasar_fractals_sirens_reef.npc.Arabella_Crowe.name",
-  "MaxHealth": 9000,
+  "MaxHealth": 3000,
   "DropList": "Nakasar_Fractal_Loot_Arabella_Crowe",
   "StartState": "Idle",
   "DefaultPlayerAttitude": "Hostile",
@@ -26,22 +26,6 @@
   ],
   "KnockbackScale": 0.0,
   "DeathAnimationTime": 2.5,
-  "InteractionVars": {
-    "Melee_Damage": {
-      "Interactions": [
-        {
-          "Parent": "NPC_Attack_Melee_Damage",
-          "DamageCalculator": {
-            "Type": "Absolute",
-            "BaseDamage": {
-              "Physical": 30
-            },
-            "RandomPercentageModifier": 0.1
-          }
-        }
-      ]
-    }
-  },
   "StateTransitions": [
     {
       "$Comment": "Entrée en combat : chaque attaque spéciale a sa propre recharge.",
@@ -213,7 +197,7 @@
           "Actions": [
             {
               "Type": "Attack",
-              "Attack": "Root_NPC_Skeleton_Pirate_Captain_Attack",
+              "Attack": "Root_Nakasar_Fractal_NPC_Arabella_Strike",
               "AttackPauseRange": [
                 0.8,
                 1.2

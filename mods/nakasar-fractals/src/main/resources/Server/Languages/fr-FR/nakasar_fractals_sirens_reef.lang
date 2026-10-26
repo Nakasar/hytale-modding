@@ -62,6 +62,7 @@ peter.ghosts = Black Peter appelle l'équipage !
 peter.cinders = Cyclone de cendres : revenez dans le fort !
 peter.reset = Black Peter disparaît dans la fumée.
 peter.victory = Black Peter s'éteint comme une mèche mouillée. La porte de la jungle s'ouvre.
+head.last = Les derniers raptors de la jungle accourent à la place : abattez-les pour ouvrir la tête.
 head.open = La grande tête de pierre ouvre la bouche : le labyrinthe des trésors maudits.
 treasure.intro = Trois trésors maudits dorment dans le labyrinthe. Rapportez-les au coffre de la sirène, près de la sortie. La malédiction monte tant qu'on les porte : passez-les-vous !
 treasure.crouch = Accroupissez-vous pour ramasser le trésor maudit.

@@ -3,7 +3,7 @@
   "Type": "Generic",
   "Appearance": "Nakasar_Fractal_Stonehead",
   "NameTranslationKey": "nakasar_fractals_sirens_reef.npc.Stonehead.name",
-  "MaxHealth": 4000,
+  "MaxHealth": 2000,
   "DropList": "Nakasar_Fractal_Loot_Stonehead",
   "StartState": "Idle",
   "DefaultPlayerAttitude": "Hostile",
