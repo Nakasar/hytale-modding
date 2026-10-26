@@ -19,9 +19,17 @@ de la texture au centre du quad, Rotation X 90 / Y 180 pour que le haut de la te
 
 Les rapports et les angles sont ceux des interactions du pack (Shape Line / Cone de Nakasar_Fractal_Telegraph,
 Nakasar_Fractal_Charge) et des lignes posées en Java (JAVA_LINES) : relancer ce script après en avoir ajouté. Ils sont
-exportés dans combat/WarningShapes.java ; une forme absente prend le rapport ou l'angle le plus proche. Textures :
-Common/Particles/Textures/Nakasar/Fractals/Warning_{Line,Sector_<angle>}_{Base,Fill}.png, blanches (teintes en rouge
+exportés dans combat/WarningShapes.java ; une forme absente prend le rapport ou l'angle le plus proche. Textures : la
+ligne reprend Warning_Square_Base vanilla (celle du lance-flammes) ; les secteurs, dont seul l'angle de 90° existe en
+vanilla, Common/Particles/Textures/Nakasar/Fractals/Warning_Sector_<angle>_{Base,Fill}.png, blanches (teintes en rouge
 par la particule).
+
+Couleur et opacité (Kevin, 26 octobre 2026 : « une zone d'annonce ennemie/danger doit être rouge orangée légère »,
+jamais blanche) : celles des annonces du donjon Deepworks vanilla (Assets.zip 0.7.2 : Gobliterator_Slam_Warning,
+Gobliterator_Quadrant_Warning, Gobliterator_Flamethrower_Warning), rouge pur #ff0000 en mélange additif, contour à 0,5
+qui pulse entre 1 et 0,25, remplissage à 0,75 qui pulse entre 1 et 0,5. En additif, des zones superposées ne cumulent
+que du rouge (l'ancien #ff2a1a cumulait aussi du vert et du bleu, jusqu'au blanc). La couleur est écrite sur chaque
+image clé ; ValidateAssets refuse toute zone d'annonce qui s'en écarte.
 
 Usage : python3 tools/generate_warnings.py"""
 
@@ -37,12 +45,18 @@ JAVA = MOD / "src" / "main" / "java" / "dev" / "nakasar" / "hytale" / "fractals"
 PREFIX = "Nakasar_Fractal_Warning_"
 SCALE = 0.68           # échelle de particule par bloc de rayon
 BASE = 6.25            # taille de la particule à l'échelle 1 (comme Dungeon_Goblin_Mace_Slam_Warning)
-RED = "#ff2a1a"
+RED = "#ff0000"        # rouge des annonces Deepworks
+EDGE_OPACITY = 0.5     # opacité de départ du contour (Gobliterator_*_Warning_Cone / _Line / _Circle)
+FILL_OPACITY = 0.75    # opacité de départ du remplissage (Gobliterator_Slam_Warning_Circle_Fill, _Flamethrower_Warning_Line_Fill)
+# Pulsations Deepworks (image clé -> opacité) ; HIT : le remplissage touche le bord à l'instant du coup.
+EDGE_PULSE = {0: 0, 15: 1, 30: 0.25, 45: 1, 60: 0.25, 75: 1, 90: 0.25, 95: 0.25, 100: 0}
+FILL_PULSE = {0: 0, 15: 1, 30: 0.5, 45: 1, 60: 0.5, 75: 1, 90: 0.5, 95: 0.5, 97: 0.5, 100: 0}
+HIT = 97
 LINE_PREFIX = "Nakasar_Fractal_Line_"
 SECTOR_PREFIX = "Nakasar_Fractal_Sector_"
 SHAPE_TENTHS = range(5, 31)   # WarningShapes.MIN_TENTHS / MAX_TENTHS : toutes les annonces de ligne et de cône durent moins de 3 s
 LINE_SCALE = SCALE / 2        # échelle d'une ligne par bloc de largeur : le quad fait BASE de large
-LINE_TEXTURE = "Particles/Textures/Nakasar/Fractals/Warning_Line"
+LINE_TEXTURE = "Particles/Textures/Indicators/Warning_Square_Base.png"   # rectangle dans la moitié haute du quad
 SECTOR_TEXTURE = "Particles/Textures/Nakasar/Fractals/Warning_Sector"
 # Lignes posées en Java (longueur, largeur, où) : celles des interactions sont lues dans le pack.
 JAVA_LINES = [
@@ -104,18 +118,12 @@ def _spawner(life, texture, animation, initial, blend="BlendAdd"):
 def _files(t):
     life = t / 10
     flat = {"X": {"Min": 90, "Max": 90}}
-    edge = _spawner(life, "Particles/Textures/Indicators/Warning_Circle_Base.png", {
-        "0": {"Opacity": 0, "Color": RED},
-        "8": {"Opacity": 1},
-        "92": {"Opacity": 1},
-        "100": {"Opacity": 0, "Color": RED},
-    }, {"Opacity": 1, "Rotation": flat, "Scale": {"X": {"Min": BASE, "Max": BASE}}})
+    edge = _spawner(life, "Particles/Textures/Indicators/Warning_Circle_Base.png", _edge_animation(),
+                    _initial(EDGE_OPACITY, flat, {"X": {"Min": BASE, "Max": BASE}}))
     # Le disque grandit du centre jusqu'au contour : il le touche quand le coup tombe.
-    fill = _spawner(life, "Particles/Textures/Basic/Ball5.png", {
-        "0": {"Opacity": 0.35, "Color": RED, "Scale": {"X": {"Min": 0.05, "Max": 0.05}}},
-        "97": {"Opacity": 0.7, "Scale": {"X": {"Min": 1, "Max": 1}}},
-        "100": {"Opacity": 0, "Color": RED, "Scale": {"X": {"Min": 1, "Max": 1}}},
-    }, {"Opacity": 0.35, "Rotation": flat, "Scale": {"X": {"Min": BASE, "Max": BASE}}})
+    fill = _spawner(life, "Particles/Textures/Basic/Ball5.png",
+                    _fill_animation({"X": {"Min": 0.05, "Max": 0.05}}, {"X": {"Min": 1, "Max": 1}}),
+                    _initial(FILL_OPACITY, flat, {"X": {"Min": BASE, "Max": BASE}}))
     name = f"{PREFIX}{t}"
     system_doc = {
         "$Comment": f"Zone d'annonce de {life:g} s : contour rouge et disque qui se remplit jusqu'au coup. Généré par tools/generate_warnings.py.",
@@ -155,22 +163,36 @@ def _shape_system(name, life, comment):
 
 
 def _edge_animation():
-    return {"0": {"Opacity": 0, "Color": RED}, "8": {"Opacity": 1}, "92": {"Opacity": 1},
-            "100": {"Opacity": 0, "Color": RED}}
+    """Contour Deepworks : rouge sur chaque image clé, opacité qui pulse jusqu'au coup."""
+    return {str(k): {"Opacity": v, "Color": RED} for k, v in EDGE_PULSE.items()}
+
+
+def _fill_animation(start, full):
+    """Remplissage Deepworks qui grandit de l'échelle `start` à `full` et touche le bord à l'image HIT."""
+    frames = {}
+    for k, v in FILL_PULSE.items():
+        frame = {"Opacity": v, "Color": RED}
+        if k == 0:
+            frame["Scale"] = start
+        elif k >= HIT:
+            frame["Scale"] = full
+        frames[str(k)] = frame
+    return frames
+
+
+def _initial(opacity, rotation, scale):
+    return {"Opacity": opacity, "Color": RED, "Rotation": rotation, "Scale": scale}
 
 
 def _line_files(aspect, t):
     """Rectangle de `aspect`/10 fois sa largeur : contour posé d'emblée, remplissage qui s'allonge depuis le lanceur
-    (la texture part du centre du quad, d'où le quad deux fois plus long que la zone)."""
+    (Warning_Square_Base occupe la moitié haute du quad, qui part du lanceur, d'où le quad deux fois plus long que la
+    zone ; contour et remplissage sur la même texture, comme Gobliterator_Flamethrower_Warning)."""
     life = t / 10
     size = _xy(BASE, 2 * aspect / 10 * BASE)
-    edge = _shape_spawner(life, LINE_TEXTURE + "_Base.png", _edge_animation(),
-                          {"Opacity": 1, "Rotation": FORWARD, "Scale": size}, "None")
-    fill = _shape_spawner(life, LINE_TEXTURE + "_Fill.png", {
-        "0": {"Opacity": 0.35, "Color": RED, "Scale": _xy(1, 0.02)},
-        "97": {"Opacity": 0.7, "Scale": _xy(1, 1)},
-        "100": {"Opacity": 0, "Color": RED, "Scale": _xy(1, 1)},
-    }, {"Opacity": 0.35, "Rotation": FORWARD, "Scale": size}, "None")
+    edge = _shape_spawner(life, LINE_TEXTURE, _edge_animation(), _initial(EDGE_OPACITY, FORWARD, size), "None")
+    fill = _shape_spawner(life, LINE_TEXTURE, _fill_animation(_xy(1, 0.02), _xy(1, 1)),
+                          _initial(FILL_OPACITY, FORWARD, size), "None")
     name = f"{LINE_PREFIX}{aspect}_{t}"
     return {f"{name}.particlesystem": _shape_system(name, life, "Ligne d'annonce rectangulaire"),
             f"{name}_Edge.particlespawner": edge, f"{name}_Fill.particlespawner": fill}
@@ -181,13 +203,11 @@ def _sector_files(angle, t):
     life = t / 10
     texture = f"{SECTOR_TEXTURE}_{angle}"
     size = {"X": {"Min": BASE, "Max": BASE}}
-    edge = _shape_spawner(life, texture + "_Base.png", _edge_animation(),
-                          {"Opacity": 1, "Rotation": FORWARD, "Scale": size}, "OneToOne")
-    fill = _shape_spawner(life, texture + "_Fill.png", {
-        "0": {"Opacity": 0.35, "Color": RED, "Scale": {"X": {"Min": 0.03, "Max": 0.03}}},
-        "97": {"Opacity": 0.7, "Scale": {"X": {"Min": 1, "Max": 1}}},
-        "100": {"Opacity": 0, "Color": RED, "Scale": {"X": {"Min": 1, "Max": 1}}},
-    }, {"Opacity": 0.35, "Rotation": FORWARD, "Scale": size}, "OneToOne")
+    edge = _shape_spawner(life, texture + "_Base.png", _edge_animation(), _initial(EDGE_OPACITY, FORWARD, size),
+                          "OneToOne")
+    fill = _shape_spawner(life, texture + "_Fill.png",
+                          _fill_animation({"X": {"Min": 0.03, "Max": 0.03}}, {"X": {"Min": 1, "Max": 1}}),
+                          _initial(FILL_OPACITY, FORWARD, size), "OneToOne")
     name = f"{SECTOR_PREFIX}{angle}_{t}"
     return {f"{name}.particlesystem": _shape_system(name, life, f"Cône d'annonce de {angle}°"),
             f"{name}_Edge.particlespawner": edge, f"{name}_Fill.particlespawner": fill}
@@ -223,22 +243,6 @@ def _sector_textures(angle):
             t = r / r_max
             base.putpixel((x, y), (255, 255, 255, 235 if edge < TEX_EDGE else int(25 + 45 * t)))
             fill.putpixel((x, y), (255, 255, 255, int(40 + 130 * t)))
-    return base, fill
-
-
-def _line_textures():
-    """Contour et remplissage d'un rectangle qui occupe la moitié haute de la texture (le lanceur au centre)."""
-    from PIL import Image
-    w, h = 64, 256
-    base = Image.new("RGBA", (w, h), (255, 255, 255, 0))
-    fill = Image.new("RGBA", (w, h), (255, 255, 255, 0))
-    edge = 3
-    for y in range(h // 2):
-        t = 1 - y / (h / 2)
-        for x in range(w):
-            border = x < edge or x >= w - edge or y < edge or y >= h // 2 - edge
-            base.putpixel((x, y), (255, 255, 255, 235 if border else int(25 + 35 * t)))
-            fill.putpixel((x, y), (255, 255, 255, 150))
     return base, fill
 
 
@@ -339,9 +343,8 @@ def write():
             old.unlink()
     for fname, doc in files.items():
         (PARTICLES / fname).write_text(json.dumps(doc, indent=2) + "\n", encoding="utf-8")
-    base, fill = _line_textures()
-    base.save(TEXTURES / "Warning_Line_Base.png")
-    fill.save(TEXTURES / "Warning_Line_Fill.png")
+    for old in TEXTURES.glob("Warning_Line_*.png"):
+        old.unlink()   # la ligne prend Warning_Square_Base vanilla (26 octobre 2026)
     for angle in angles:
         base, fill = _sector_textures(angle)
         base.save(TEXTURES / f"Warning_Sector_{angle}_Base.png")

@@ -951,6 +951,92 @@ public class ValidateAssets {
         }
     }
 
+    /** Rouge des zones d'annonce : celui des annonces du donjon Deepworks vanilla (Gobliterator_*_Warning, Assets.zip 0.7.2). */
+    private static final String WARNING_RED = "#ff0000";
+    /** Textures vanilla admises pour une zone d'annonce (celles des annonces vanilla) ; une texture du pack doit exister dans Common. */
+    private static final Pattern WARNING_VANILLA_TEXTURE =
+            Pattern.compile("Particles/Textures/(?:Indicators/Warning_[A-Za-z0-9_]+|Basic/Ball5)\\.png");
+    /** Zones favorables : pas d'annonce de danger, elles gardent leur couleur (cercle vert de Carnasse). */
+    private static final Set<String> POSITIVE_ZONES = Set.of("Nakasar_Fractal_Green_Zone_Edge");
+
+    /**
+     * Zones d'annonce des attaques (Kevin, 26 octobre 2026 : « une zone d'annonce ennemie/danger doit être rouge orangée
+     * légère », jamais blanche opaque) : tout émetteur rangé dans un dossier Warnings ou tracé avec une texture Warning_*
+     * est en mélange additif, teinté du rouge Deepworks sur l'image de départ et sur chaque image clé (une image sans
+     * couleur laisserait la texture blanche), avec des opacités entre 0 et 1 et une texture qui existe.
+     */
+    private static int checkWarningZones(Path root) throws Exception {
+        Path particles = root.resolve("Particles");
+        if (!Files.isDirectory(particles)) {
+            return 0;
+        }
+        Path common = root.resolveSibling("Common");
+        List<Path> files;
+        try (Stream<Path> walk = Files.walk(particles)) {
+            files = walk.filter(Files::isRegularFile).filter(f -> f.toString().endsWith(PARTICLE_SPAWNER)).sorted().toList();
+        }
+        int errors = 0;
+        int zones = 0;
+        for (Path file : files) {
+            String rel = root.relativize(file).toString().replace('\\', '/');
+            String name = file.getFileName().toString();
+            String id = name.substring(0, name.length() - PARTICLE_SPAWNER.length());
+            BsonDocument doc = BsonDocument.parse(Files.readString(file));
+            BsonDocument particle = doc.containsKey("Particle") ? doc.getDocument("Particle") : new BsonDocument();
+            String texture = particle.containsKey("Texture") ? particle.getString("Texture").getValue() : "";
+            String textureName = texture.substring(texture.lastIndexOf('/') + 1);
+            boolean warning = rel.contains("/Warnings/") || textureName.startsWith("Warning_");
+            if (!warning || POSITIVE_ZONES.contains(id)) {
+                continue;
+            }
+            zones++;
+            List<String> problems = new ArrayList<>();
+            String blend = doc.containsKey("RenderMode") ? doc.getString("RenderMode").getValue() : "(aucun)";
+            if (!blend.equals("BlendAdd")) {
+                problems.add("RenderMode " + blend + " : une zone d'annonce est en BlendAdd, comme celles des Deepworks");
+            }
+            if (!WARNING_VANILLA_TEXTURE.matcher(texture).matches() && !Files.isRegularFile(common.resolve(texture))) {
+                problems.add("texture " + texture + " : ni une texture d'annonce vanilla, ni un fichier du pack (Common)");
+            }
+            checkWarningFrame("InitialAnimationFrame", particle.get("InitialAnimationFrame"), problems);
+            BsonValue animation = particle.get("Animation");
+            if (animation == null || !animation.isDocument() || animation.asDocument().isEmpty()) {
+                problems.add("Animation absente : la couleur doit être posée sur chaque image clé");
+            } else {
+                for (Map.Entry<String, BsonValue> frame : animation.asDocument().entrySet()) {
+                    checkWarningFrame("Animation." + frame.getKey(), frame.getValue(), problems);
+                }
+            }
+            if (!problems.isEmpty()) {
+                errors++;
+                System.out.println("ERROR " + rel);
+                problems.forEach(pb -> System.out.println("      " + pb));
+            }
+        }
+        System.out.println(zones + " émetteurs de zones d'annonce vérifiés (rouge Deepworks " + WARNING_RED + ", BlendAdd), "
+                + errors + " en erreur");
+        return errors;
+    }
+
+    private static void checkWarningFrame(String where, BsonValue value, List<String> problems) {
+        if (value == null || !value.isDocument()) {
+            problems.add(where + " absent : la couleur " + WARNING_RED + " doit y être");
+            return;
+        }
+        BsonDocument frame = value.asDocument();
+        String color = frame.containsKey("Color") && frame.get("Color").isString() ? frame.getString("Color").getValue() : null;
+        if (color == null || !color.equalsIgnoreCase(WARNING_RED)) {
+            problems.add(where + " : Color " + (color == null ? "absente" : color) + ", attendu " + WARNING_RED
+                    + " (rouge des annonces Deepworks)");
+        }
+        if (frame.containsKey("Opacity")) {
+            double opacity = frame.get("Opacity").isNumber() ? frame.get("Opacity").asNumber().doubleValue() : -1;
+            if (opacity < 0 || opacity > 1) {
+                problems.add(where + " : Opacity " + frame.get("Opacity") + " hors de [0, 1]");
+            }
+        }
+    }
+
     public static void main(String[] args) throws Exception {
         Path root = Path.of(args[0]);
         // Les magasins d'assets lisent les options de ligne de commande du serveur.
@@ -1029,6 +1115,7 @@ public class ValidateAssets {
         System.out.println(checked + " fichiers vérifiés, " + errors + " en erreur");
         errors += checkWorldEvents(root) + registrationErrors;
         errors += checkTriggerVolumes(root);
+        errors += checkWarningZones(root);
         String blocks = System.getProperty("blocks");
         if (blocks != null) {
             errors += checkBlockIds(root, Path.of(blocks));
