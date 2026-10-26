@@ -104,6 +104,7 @@ const sidebars = {
         "fractales/ressac-silencieux",
         "fractales/recif-de-la-sirene",
         "fractales/pierre-profonde",
+        "fractales/pic-de-sunqua",
       ],
     },
     "fractales/cosmetiques",

@@ -1,0 +1,12 @@
+{
+  "$Comment": "Météore qui tombe : traînée de feu (le Java la pose de plus en plus bas). Généré par tools/generate_sunqua_peak.py.",
+  "Spawners": [
+    {
+      "SpawnerId": "Nakasar_Fractal_Meteor_Trail_Fire",
+      "PositionOffset": {
+        "Y": 0.0
+      }
+    }
+  ],
+  "CullDistance": 72
+}

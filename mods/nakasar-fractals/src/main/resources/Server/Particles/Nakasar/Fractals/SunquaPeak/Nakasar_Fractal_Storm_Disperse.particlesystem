@@ -1,0 +1,12 @@
+{
+  "$Comment": "Nuage dispersé : éclat blanc et bleu. Généré par tools/generate_sunqua_peak.py.",
+  "Spawners": [
+    {
+      "SpawnerId": "Nakasar_Fractal_Storm_Disperse_Burst",
+      "PositionOffset": {
+        "Y": 0.3
+      }
+    }
+  ],
+  "CullDistance": 72
+}

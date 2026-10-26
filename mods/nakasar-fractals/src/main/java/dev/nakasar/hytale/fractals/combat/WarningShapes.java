@@ -8,7 +8,7 @@ package dev.nakasar.hytale.fractals.combat;
  */
 final class WarningShapes {
 
-    static final int[] LINE_ASPECTS = {5, 18, 22, 25, 30, 40, 47, 53, 60, 80};
+    static final int[] LINE_ASPECTS = {5, 18, 22, 25, 28, 30, 40, 47, 53, 60, 80, 90};
     static final int[] SECTOR_ANGLES = {60, 70, 90, 100, 120};
     static final int MIN_TENTHS = 5;
     static final int MAX_TENTHS = 30;

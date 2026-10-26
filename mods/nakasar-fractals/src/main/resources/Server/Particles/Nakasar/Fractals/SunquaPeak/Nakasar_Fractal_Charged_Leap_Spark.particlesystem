@@ -1,0 +1,12 @@
+{
+  "$Comment": "Bond chargé : éclair bleu sous les pieds au saut et à la prise d'une orbe. Généré par tools/generate_sunqua_peak.py.",
+  "Spawners": [
+    {
+      "SpawnerId": "Nakasar_Fractal_Charged_Leap_Spark_Burst",
+      "PositionOffset": {
+        "Y": 0.2
+      }
+    }
+  ],
+  "CullDistance": 72
+}

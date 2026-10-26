@@ -1,0 +1,191 @@
+{
+  "Name": "Nakasar_Fractal_SunquaPeak",
+  "Terrain": {
+    "Type": "DAOTerrain",
+    "Density": {
+      "Type": "Constant",
+      "Value": -1.0
+    }
+  },
+  "MaterialProvider": {
+    "Type": "Constant",
+    "Material": {
+      "Solid": "Empty"
+    }
+  },
+  "Props": [
+    {
+      "Runtime": 0,
+      "ContextPrecision": "Prop",
+      "PropDistribution": {
+        "Type": "Assigned",
+        "OverrideAllProps": true,
+        "PropDistribution": {
+          "Type": "Positions",
+          "Positions": {
+            "Type": "List",
+            "Positions": [
+              {
+                "X": 0,
+                "Y": 100,
+                "Z": -123
+              }
+            ]
+          }
+        },
+        "Assignments": {
+          "Type": "Constant",
+          "Prop": {
+            "Type": "Prefab",
+            "WeightedPrefabPaths": [
+              {
+                "Path": "Nakasar/Fractals/SunquaPeak/Section_00",
+                "Weight": 1.0
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "Runtime": 0,
+      "ContextPrecision": "Prop",
+      "PropDistribution": {
+        "Type": "Assigned",
+        "OverrideAllProps": true,
+        "PropDistribution": {
+          "Type": "Positions",
+          "Positions": {
+            "Type": "List",
+            "Positions": [
+              {
+                "X": 0,
+                "Y": 100,
+                "Z": -59
+              }
+            ]
+          }
+        },
+        "Assignments": {
+          "Type": "Constant",
+          "Prop": {
+            "Type": "Prefab",
+            "WeightedPrefabPaths": [
+              {
+                "Path": "Nakasar/Fractals/SunquaPeak/Section_01",
+                "Weight": 1.0
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "Runtime": 0,
+      "ContextPrecision": "Prop",
+      "PropDistribution": {
+        "Type": "Assigned",
+        "OverrideAllProps": true,
+        "PropDistribution": {
+          "Type": "Positions",
+          "Positions": {
+            "Type": "List",
+            "Positions": [
+              {
+                "X": 0,
+                "Y": 100,
+                "Z": 5
+              }
+            ]
+          }
+        },
+        "Assignments": {
+          "Type": "Constant",
+          "Prop": {
+            "Type": "Prefab",
+            "WeightedPrefabPaths": [
+              {
+                "Path": "Nakasar/Fractals/SunquaPeak/Section_02",
+                "Weight": 1.0
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "Runtime": 0,
+      "ContextPrecision": "Prop",
+      "PropDistribution": {
+        "Type": "Assigned",
+        "OverrideAllProps": true,
+        "PropDistribution": {
+          "Type": "Positions",
+          "Positions": {
+            "Type": "List",
+            "Positions": [
+              {
+                "X": 0,
+                "Y": 100,
+                "Z": 69
+              }
+            ]
+          }
+        },
+        "Assignments": {
+          "Type": "Constant",
+          "Prop": {
+            "Type": "Prefab",
+            "WeightedPrefabPaths": [
+              {
+                "Path": "Nakasar/Fractals/SunquaPeak/Section_03",
+                "Weight": 1.0
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "Runtime": 0,
+      "ContextPrecision": "Prop",
+      "PropDistribution": {
+        "Type": "Assigned",
+        "OverrideAllProps": true,
+        "PropDistribution": {
+          "Type": "Positions",
+          "Positions": {
+            "Type": "List",
+            "Positions": [
+              {
+                "X": 0,
+                "Y": 100,
+                "Z": 133
+              }
+            ]
+          }
+        },
+        "Assignments": {
+          "Type": "Constant",
+          "Prop": {
+            "Type": "Prefab",
+            "WeightedPrefabPaths": [
+              {
+                "Path": "Nakasar/Fractals/SunquaPeak/Section_04",
+                "Weight": 1.0
+              }
+            ]
+          }
+        }
+      }
+    }
+  ],
+  "EnvironmentProvider": {
+    "Type": "Constant",
+    "Environment": "Nakasar_Fractal_Env_Mists"
+  },
+  "TintProvider": {
+    "Type": "Constant",
+    "Color": "#6ab060"
+  }
+}

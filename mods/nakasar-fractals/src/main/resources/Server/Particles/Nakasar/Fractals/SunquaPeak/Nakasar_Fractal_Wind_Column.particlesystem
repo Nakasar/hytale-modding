@@ -1,0 +1,12 @@
+{
+  "$Comment": "Colonne de vent : volutes blanches qui montent (le Java en pose le long). Généré par tools/generate_sunqua_peak.py.",
+  "Spawners": [
+    {
+      "SpawnerId": "Nakasar_Fractal_Wind_Column_Swirl",
+      "PositionOffset": {
+        "Y": 0.6
+      }
+    }
+  ],
+  "CullDistance": 72
+}

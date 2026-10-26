@@ -1,0 +1,12 @@
+{
+  "$Comment": "Lien de l'orbe sombre (Marché des marées) : un point du rayon (le Java en pose le long). Généré par tools/generate_sunqua_peak.py.",
+  "Spawners": [
+    {
+      "SpawnerId": "Nakasar_Fractal_Tidal_Beam_Beam",
+      "PositionOffset": {
+        "Y": 0.0
+      }
+    }
+  ],
+  "CullDistance": 72
+}

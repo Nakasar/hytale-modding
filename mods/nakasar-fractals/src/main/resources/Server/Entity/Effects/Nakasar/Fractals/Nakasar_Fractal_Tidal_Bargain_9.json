@@ -1,0 +1,13 @@
+{
+  "$Comment": "Marché des marées (9) : 45 % de dégâts infligés en plus (Java), 36 % plus lent ; à 10, la marée vous submerge.",
+  "Name": "nakasar_fractals_sunqua_peak.effects.Nakasar_Fractal_Tidal_Bargain_9",
+  "Debuff": true,
+  "StatusEffectIcon": "UI/StatusEffects/Nakasar/Fractals/Tidal_Bargain_9.png",
+  "ApplicationEffects": {
+    "HorizontalSpeedMultiplier": 0.64,
+    "EntityTopTint": "#3080c0"
+  },
+  "OverlapBehavior": "Overwrite",
+  "Infinite": false,
+  "Duration": 12.0
+}

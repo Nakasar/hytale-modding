@@ -1,0 +1,12 @@
+{
+  "$Comment": "Un météore vous suit (Java). Croisez-le avec l'autre pour les briser.",
+  "Name": "nakasar_fractals_sunqua_peak.effects.Nakasar_Fractal_Meteor_Marked",
+  "Debuff": true,
+  "StatusEffectIcon": "UI/StatusEffects/Nakasar/Fractals/Meteor_Marked.png",
+  "ApplicationEffects": {
+    "EntityTopTint": "#ff9040"
+  },
+  "OverlapBehavior": "Overwrite",
+  "Infinite": false,
+  "Duration": 3.0
+}

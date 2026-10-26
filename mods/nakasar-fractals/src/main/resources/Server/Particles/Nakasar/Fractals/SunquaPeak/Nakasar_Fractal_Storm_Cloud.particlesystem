@@ -1,0 +1,18 @@
+{
+  "$Comment": "Nuage d'orage : boules grises et éclairs bleus (Java, toutes les demi-secondes). Généré par tools/generate_sunqua_peak.py.",
+  "Spawners": [
+    {
+      "SpawnerId": "Nakasar_Fractal_Storm_Cloud_Cloud",
+      "PositionOffset": {
+        "Y": 0.6
+      }
+    },
+    {
+      "SpawnerId": "Nakasar_Fractal_Storm_Cloud_Spark",
+      "PositionOffset": {
+        "Y": 0.6
+      }
+    }
+  ],
+  "CullDistance": 72
+}

@@ -1,0 +1,12 @@
+{
+  "$Comment": "Élémentaire d'eau rassuré : lueur bleu pâle qui monte. Généré par tools/generate_sunqua_peak.py.",
+  "Spawners": [
+    {
+      "SpawnerId": "Nakasar_Fractal_Calm_Glow_Glow",
+      "PositionOffset": {
+        "Y": 0.4
+      }
+    }
+  ],
+  "CullDistance": 72
+}

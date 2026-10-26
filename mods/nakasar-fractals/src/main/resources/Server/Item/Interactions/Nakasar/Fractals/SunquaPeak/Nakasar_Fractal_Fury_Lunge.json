@@ -1,0 +1,32 @@
+{
+  "$Comment": "Fureur de la montagne : ruée fumante, ligne rouge de 14 x 3 blocs (1,6 s), 28 dégâts et projection.",
+  "Type": "Serial",
+  "Interactions": [
+    {
+      "Type": "ClearEntityEffect",
+      "Entity": "User",
+      "EntityEffectId": "Hit_Interrupt_Eligible"
+    },
+    {
+      "Type": "ApplyEffect",
+      "EffectId": "Nakasar_Fractal_Rooted"
+    },
+    {
+      "Type": "Nakasar_Fractal_Charge",
+      "Length": 14,
+      "Width": 3,
+      "Seconds": 1.6,
+      "Speed": 14,
+      "Damage": 28,
+      "Knockback": 7,
+      "ImpactSound": "SFX_Goblin_Feastmaster_Slam"
+    },
+    {
+      "Type": "Simple",
+      "RunTime": 1.6,
+      "Effects": {
+        "WorldSoundEventId": "SFX_Spear_Throw_Charge"
+      }
+    }
+  ]
+}

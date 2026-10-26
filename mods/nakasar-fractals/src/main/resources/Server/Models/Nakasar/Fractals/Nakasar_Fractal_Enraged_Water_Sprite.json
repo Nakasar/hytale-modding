@@ -1,0 +1,10 @@
+{
+  "$Comment": "Esprit de l'eau enragé : esprit de givre vanilla, lueur bleue.",
+  "Parent": "Spirit_Frost",
+  "MinScale": 1.0,
+  "MaxScale": 1.0,
+  "Light": {
+    "Color": "#6af",
+    "Radius": 3
+  }
+}

@@ -1,0 +1,12 @@
+{
+  "$Comment": "Crainte d'Ai : brume violette autour d'elle. Généré par tools/generate_sunqua_peak.py.",
+  "Spawners": [
+    {
+      "SpawnerId": "Nakasar_Fractal_Fear_Mist_Mist",
+      "PositionOffset": {
+        "Y": 0.6
+      }
+    }
+  ],
+  "CullDistance": 72
+}

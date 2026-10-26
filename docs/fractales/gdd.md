@@ -273,6 +273,22 @@ Aucun boss ne se soigne ; dix trésors nains cachés que révèle la Lumière.
 
 Générateurs : `tools/generate_deepstone.py` (assets, rôles, effets, `DeepstoneLayout.java`) et `tools/deepstone_scenery.py` (caverne, voûtes, caveau, gouffres, pont, ascenseur, arène ; runes lumineuses `Nakasar_Fractal_Deepstone_Rune_Glow`). Code : paquet `deepstone`.
 
+### Pic de Sunqua (Sunqua Peak), quatrième fractale de la saison 2
+
+Le massif flottant d'Ai dans une mer de nuages (d'après la carte GW2 et les captures de Kevin du 26 octobre 2026 : cerisiers roses, bambous, cascades, cratère de lave, arène de marbre ronde à l'est). L'**Esprit de la montagne** accueille le groupe.
+
+1. **Bond chargé** : orbes de foudre (blocs posés par le Java, prises en passant, 3 charges de 20 s, retour 8 s). La force de saut du joueur est changée côté serveur (`MovementManager`), pas de dégâts de chute sous Bond chargé.
+2. **Escalier brisé** : neuf îlots, trois élémentaires d'air ; vaincus, le socle refait l'escalier et la **colonne de vent** (trajet guidé comme ceux du Ressac) mène au plateau.
+3. **Voix de la montagne** : tornade et quatre nuages d'orage à disperser d'un bond (66/33 %).
+4. **Corniche des cascades** : cascades qui jettent dans le vide, trois élémentaires effrayés à rassurer accroupi, esprits de l'eau.
+5. **Tristesse** : cinq rochers à briser, **Marché des marées** (lien de l'orbe sombre à se passer, +5 % de dégâts et -4 % de vitesse par charge, la marée à 10).
+6. **Sentier de lave** (murs gardés, élémentaires qui explosent et se divisent, tigres) puis la **Fureur** : météores-abris et frappe extrême, divisions à 66/33 %, onde de choc à sauter, défiance ou brasier, météores qui suivent à croiser.
+7. **Ai** : air (ondes d'orbes avec défiance, bombes d'orage, balayage), front d'orage à 66 %, feu (météores, frappe extrême), pluie de météores à 33 %, eau (Marché des marées, marée partagée) ; au rang Maître, **Ai assombrie** et ses craintes.
+
+Aucun boss ne se soigne ; une remise à zéro (20 s sans personne) le retire et il revient neuf.
+
+Générateurs : `tools/generate_sunqua_peak.py` (assets, rôles, effets, `SunquaPeakLayout.java`) et `tools/sunqua_peak_scenery.py` (massif, îlots, plateau, corniche, terrasse, cratère, arène ; feuillage rose `Nakasar_Fractal_Sunqua_Blossom` = texture vanilla Rhododendron_Pink). Code : paquet `sunquapeak`.
+
 ### Saison 2 et suivantes
 
 Les autres fractales de GW2, à reprendre de la même façon (wiki relu avant chacune) :
@@ -283,9 +299,9 @@ Les autres fractales de GW2, à reprendre de la même façon (wiki relu avant ch
 | [Capitaine Mai Trin](https://wiki.guildwars2.com/wiki/Captain_Mai_Trin_Boss_Fractal) | 10 piles de bouclier retirées seulement en l'attirant dans les tirs électriques de son second, barrages à 75/50/25 % | Mai Trin et Horrik |
 | [Boss en fusion (Molten Boss)](https://wiki.guildwars2.com/wiki/Molten_Boss_Fractal) | 8 groupes avec Protecteurs (rendent un allié invulnérable), bombes à fumée annoncées | duo Berserker / Tempête de feu : chaque 25 % perdu enrage l'autre (50 coups retirent l'enrage), le survivant hérite des attaques ; ondes de choc à sauter |
 | Fournaise en fusion, Réacteur thaumanova, Installation souterraine, Champ de bataille urbain, Chaos, Oasis du crépuscule | rencontres en chaîne variées | à détailler |
-| Cauchemar, Observatoire brisé, Pic de Sunqua, Tour solitaire, Kinfall | fractales « boss » avec mode défi | pour le rang Maître |
+| Cauchemar, Observatoire brisé, Tour solitaire, Kinfall | fractales « boss » avec mode défi | pour le rang Maître |
 
-(Kinfall : nom français non vérifié. Silent Surf est devenu le Ressac silencieux, Siren's Reef le Récif de la Sirène et Deepstone Pierre-Profonde, ci-dessus.)
+(Kinfall : nom français non vérifié. Silent Surf est devenu le Ressac silencieux, Siren's Reef le Récif de la Sirène, Deepstone Pierre-Profonde et Sunqua Peak le Pic de Sunqua, ci-dessus.)
 
 ## Runes et objets de soutien (26 octobre 2026)
 

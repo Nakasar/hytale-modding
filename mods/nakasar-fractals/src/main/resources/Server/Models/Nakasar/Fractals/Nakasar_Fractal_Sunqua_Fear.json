@@ -1,0 +1,10 @@
+{
+  "$Comment": "Crainte d'Ai (rang Maître) : spectre vanilla, lueur violette.",
+  "Parent": "Wraith",
+  "MinScale": 0.9,
+  "MaxScale": 0.9,
+  "Light": {
+    "Color": "#a6f",
+    "Radius": 3
+  }
+}

@@ -1,0 +1,33 @@
+{
+  "$Comment": "Élémentaire d'air : tourbillon autour de lui, cercle rouge de 3,5 blocs (1,6 s), 16 dégâts et projection (gare au vide).",
+  "Type": "Serial",
+  "Interactions": [
+    {
+      "Type": "ClearEntityEffect",
+      "Entity": "User",
+      "EntityEffectId": "Hit_Interrupt_Eligible"
+    },
+    {
+      "Type": "ApplyEffect",
+      "EffectId": "Nakasar_Fractal_Rooted"
+    },
+    {
+      "Type": "Nakasar_Fractal_Telegraph",
+      "Shape": "Circle",
+      "Seconds": 1.6,
+      "Radius": 3.5,
+      "Damage": 16,
+      "Knockback": 9,
+      "KnockUp": 5,
+      "PlayersOnly": true,
+      "ImpactParticle": "Nakasar_Fractal_Storm_Disperse"
+    },
+    {
+      "Type": "Simple",
+      "RunTime": 1.6,
+      "Effects": {
+        "WorldSoundEventId": "SFX_Ability_Wind_Strike_Slash"
+      }
+    }
+  ]
+}

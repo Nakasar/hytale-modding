@@ -1,0 +1,10 @@
+{
+  "$Comment": "Esprit de la montagne : grand cerf vanilla (x 1,4), lueur turquoise.",
+  "Parent": "Model_Deer_Stag",
+  "MinScale": 1.4,
+  "MaxScale": 1.4,
+  "Light": {
+    "Color": "#8fe",
+    "Radius": 5
+  }
+}

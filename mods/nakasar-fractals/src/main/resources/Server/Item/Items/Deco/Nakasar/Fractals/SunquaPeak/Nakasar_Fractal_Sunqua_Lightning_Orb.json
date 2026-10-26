@@ -1,0 +1,53 @@
+{
+  "TranslationProperties": {
+    "Name": "nakasar_fractals_sunqua_peak.items.Nakasar_Fractal_Sunqua_Lightning_Orb.name",
+    "Description": "nakasar_fractals_sunqua_peak.items.Nakasar_Fractal_Sunqua_Lightning_Orb.description"
+  },
+  "Icon": "Icons/ItemsGenerated/Rock_Crystal_Cyan_Small.png",
+  "Categories": [
+    "Blocks.Deco"
+  ],
+  "Quality": "Technical",
+  "PlayerAnimationsId": "Block",
+  "BlockType": {
+    "Material": "Empty",
+    "DrawType": "Model",
+    "Opacity": "Transparent",
+    "HitboxType": "Full",
+    "Flags": {},
+    "Gathering": {
+      "Breaking": {
+        "GatherType": "Unbreakable"
+      }
+    },
+    "BlockParticleSetId": "Crystal",
+    "BlockSoundSetId": "Crystal",
+    "ParticleColor": "#a0e0ff",
+    "Light": {
+      "Color": "#8cf"
+    },
+    "CustomModel": "Resources/Crystals/Crystal_Small.blockymodel",
+    "CustomModelTexture": [
+      {
+        "Texture": "Resources/Crystals/Crystal_Big_Textures/Blue.png",
+        "Weight": 1
+      }
+    ],
+    "RequiresAlphaBlending": true,
+    "Particles": [
+      {
+        "SystemId": "Nakasar_Fractal_Lightning_Orb_Glow",
+        "Scale": 1,
+        "PositionOffset": {
+          "Y": 0.4
+        }
+      }
+    ]
+  },
+  "Tags": {
+    "Type": [
+      "Deco"
+    ]
+  },
+  "ItemSoundSetId": "ISS_Blocks_Stone"
+}
