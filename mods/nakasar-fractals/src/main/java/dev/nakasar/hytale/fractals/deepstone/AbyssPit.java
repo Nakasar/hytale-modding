@@ -164,6 +164,17 @@ final class AbyssPit {
                 f.clock = -FLAME_FUSE;
             }
         }
+        // une dalle du chemin déjà révélée puis tombée (flamme) revient à la Lumière, même si son tronçon est complet
+        for (int s = 0; s < segments.size(); s++) {
+            for (int i = 0; i < revealed[s]; i++) {
+                int[] cell = segments.get(s).get(i);
+                if (!tiles.present(cell[0], cell[1])
+                        && Telegraphs.horizontal(tiles.center(cell[0], cell[1]), at) <= REVEAL_REACH) {
+                    tiles.place(world, cell[0], cell[1]);
+                    Telegraphs.particle(store, "Nakasar_Fractal_Deldrimor_Glow", tiles.center(cell[0], cell[1]), 1f);
+                }
+            }
+        }
         if (count < lit.length) {
             int[] o = DeepstoneLayout.PIT_ORB_TILES[count];
             boolean reached = count == 0 || revealed[count - 1] >= segments.get(count - 1).size();
@@ -192,13 +203,6 @@ final class AbyssPit {
             Telegraphs.particle(store, "Nakasar_Fractal_Deldrimor_Glow", tiles.center(cell[0], cell[1]), 1f);
             revealed[seg] = i + 1;
         }
-        // une dalle tombée plus tôt sur ce tronçon revient aussi
-        for (int i = 0; i < revealed[seg]; i++) {
-            int[] cell = path.get(i);
-            if (!tiles.present(cell[0], cell[1])) {
-                tiles.place(world, cell[0], cell[1]);
-            }
-        }
     }
 
     private void lightOrb(World world, Store<EntityStore> store, Deepstone.State st) {
@@ -217,7 +221,9 @@ final class AbyssPit {
             int[][] orbs = DeepstoneLayout.PIT_ORB_TILES;
             for (int i = 0; i < n; i++) {
                 int[] o = orbs[1 + i % (orbs.length - 1)];
-                Ref<EntityStore> ref = st.foe(world, store, Deepstone.SHADE, tiles.center(o[0] + (i % 2 == 0 ? 1 : -1), o[1]), true);
+                int side = i % 2 == 0 ? 1 : -1;
+                int c = tiles.inside(o[0] + side, o[1]) ? o[0] + side : o[0] - side;   // dalles sûres autour de l'orbe
+                Ref<EntityStore> ref = st.foe(world, store, Deepstone.SHADE, tiles.center(c, o[1]), true);
                 if (ref != null) {
                     shades.add(ref);
                 }

@@ -16,6 +16,7 @@ import dev.nakasar.hytale.fractals.arena.FractalItemsSystem;
 import dev.nakasar.hytale.fractals.arena.Gates;
 import dev.nakasar.hytale.fractals.arena.Leash;
 import dev.nakasar.hytale.fractals.arena.Moves;
+import com.hypixel.hytale.server.core.universe.world.storage.ChunkStore;
 import dev.nakasar.hytale.fractals.arena.WorldBlocks;
 import dev.nakasar.hytale.fractals.boss.BossBarSystem;
 import dev.nakasar.hytale.fractals.combat.Hurt;
@@ -103,7 +104,8 @@ public final class Deepstone implements FractalStage {
         final boolean[] orbReady = new boolean[2];
         final UUID[] carrier = new UUID[2];
         final boolean[] deposited = new boolean[2];
-        final Map<UUID, Long> throttle = new HashMap<>();
+        /** Dernier envoi de chaque message (joueur:clé). */
+        final Map<String, Long> throttle = new HashMap<>();
         boolean ticking;
         float lightCheck;
 
@@ -201,9 +203,13 @@ public final class Deepstone implements FractalStage {
         st.homes.keySet().retainAll(st.foes);
         for (Map.Entry<Ref<EntityStore>, Vector3d> e : st.homes.entrySet()) {
             String role = Spawns.role(store, e.getKey());
-            if (!FLAME.equals(role) && !BLOODSUCKER.equals(role)) {
-                Leash.keepAbove(store, e.getKey(), e.getValue(), FALL_LIMIT);
+            Vector3d at = Telegraphs.position(store, e.getKey());
+            if (FLAME.equals(role) || BLOODSUCKER.equals(role) || at == null || at.y() >= e.getValue().y() - FALL_LIMIT) {
+                continue;
             }
+            // tombé : retour au-dessus d'un sol qui existe encore (sa dalle a pu tomber)
+            e.setValue(ground(world, e.getValue()));
+            Leash.keepAbove(store, e.getKey(), e.getValue(), FALL_LIMIT);
         }
         venom(store, players, dt);
         st.light.step(world, store, st, players, dt);
@@ -440,6 +446,27 @@ public final class Deepstone implements FractalStage {
     }
 
     /** Vrai si le joueur est sur la rune (plaque de pression) posée en `at` (pieds). */
+    /** `home` s'il a encore un sol sous lui, sinon la case de sol la plus proche (à 12 blocs au plus). */
+    static Vector3d ground(World world, Vector3d home) {
+        ChunkStore chunks = world.getChunkStore();
+        int bx = (int) Math.floor(home.x());
+        int by = (int) Math.floor(home.y()) - 1;
+        int bz = (int) Math.floor(home.z());
+        for (int r = 0; r <= 12; r++) {
+            for (int dx = -r; dx <= r; dx++) {
+                for (int dz = -r; dz <= r; dz++) {
+                    if (Math.max(Math.abs(dx), Math.abs(dz)) != r) {
+                        continue;
+                    }
+                    if (WorldBlocks.solid(chunks, bx + dx, by, bz + dz) && !WorldBlocks.solid(chunks, bx + dx, by + 1, bz + dz)) {
+                        return new Vector3d(bx + dx + 0.5, home.y(), bz + dz + 0.5);
+                    }
+                }
+            }
+        }
+        return home;
+    }
+
     static boolean onRune(Store<EntityStore> store, PlayerRef p, double[] at) {
         Vector3d pos = Telegraphs.position(store, p.getReference());
         return pos != null && Math.abs(pos.x() - at[0]) <= 0.5 + Telegraphs.BODY
@@ -448,11 +475,12 @@ public final class Deepstone implements FractalStage {
 
     static void tell(State st, PlayerRef player, String key) {
         long now = System.nanoTime();
-        Long last = st.throttle.get(player.getUuid());
+        String id = player.getUuid() + ":" + key;   // un message n'en masque pas un autre
+        Long last = st.throttle.get(id);
         if (last != null && now - last < Telegraphs.seconds(2.5f)) {
             return;
         }
-        st.throttle.put(player.getUuid(), now);
+        st.throttle.put(id, now);
         player.sendMessage(Message.translation(MESSAGES + key));
     }
 }

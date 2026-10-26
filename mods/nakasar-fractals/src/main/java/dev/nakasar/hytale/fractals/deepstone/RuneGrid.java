@@ -4,11 +4,9 @@ import com.hypixel.hytale.component.Store;
 import com.hypixel.hytale.server.core.Message;
 import com.hypixel.hytale.server.core.universe.PlayerRef;
 import com.hypixel.hytale.server.core.universe.world.World;
-import com.hypixel.hytale.server.core.universe.world.storage.ChunkStore;
 import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
 import dev.nakasar.hytale.fractals.arena.Gates;
 import dev.nakasar.hytale.fractals.arena.Moves;
-import dev.nakasar.hytale.fractals.arena.WorldBlocks;
 import dev.nakasar.hytale.fractals.combat.Hurt;
 import dev.nakasar.hytale.fractals.combat.Spawns;
 import dev.nakasar.hytale.fractals.combat.Telegraphs;
@@ -43,6 +41,8 @@ final class RuneGrid {
     static final String RUNE_TILE = "Rock_Runic_Brick";
 
     private final RunePair runes = new RunePair(DeepstoneLayout.WEST_RUNES);
+    private final Tiles tiles = new Tiles(DeepstoneLayout.GRID_X0, DeepstoneLayout.GRID_Z0, DeepstoneLayout.GRID_COLS,
+            DeepstoneLayout.GRID_ROWS, DeepstoneLayout.GRID_TILE, DeepstoneLayout.FLOOR_Y);
     /** Vagues : rangée atteinte, colonnes rouges. */
     private final List<int[]> waveRows = new ArrayList<>();
     private final List<boolean[]> waveLit = new ArrayList<>();
@@ -76,7 +76,7 @@ final class RuneGrid {
             if (at != null && at.z() <= DeepstoneLayout.GRID_END[2] + 3 && at.z() >= DeepstoneLayout.GRID_END[2] - 4
                     && Math.abs(at.x() - DeepstoneLayout.GRID_END[0]) <= 5 && Math.abs(at.y() - DeepstoneLayout.VAULT_Y) < 3
                     && hinted.add(p.getUuid())) {
-                p.sendMessage(Message.translation(Deepstone.MESSAGES + "grid.runes"));
+                p.sendMessage(Message.translation(Deepstone.MESSAGES + "grid.runes").param("seconds", (int) RunePair.GRACE));
             }
         }
         List<PlayerRef> near = nearGrid(store, players);
@@ -143,8 +143,6 @@ final class RuneGrid {
 
     /** Allume les dalles des vagues et éteint les autres (seulement ce qui change). */
     private void paint(World world, boolean[] next) {
-        ChunkStore chunks = world.getChunkStore();
-        int size = DeepstoneLayout.GRID_TILE;
         for (int i = 0; i < lit.length; i++) {
             if (lit[i] == next[i]) {
                 continue;
@@ -152,41 +150,25 @@ final class RuneGrid {
             lit[i] = next[i];
             int c = i % DeepstoneLayout.GRID_COLS;
             int r = i / DeepstoneLayout.GRID_COLS;
-            for (int dx = 0; dx < size; dx++) {
-                for (int dz = 0; dz < size; dz++) {
-                    int x = DeepstoneLayout.GRID_X0 + c * size + dx;
-                    int z = DeepstoneLayout.GRID_Z0 + r * size + dz;
-                    boolean edge = dx == size - 1 || dz == size - 1;
-                    String block = next[i] ? Tiles.GREEN : edge ? Tiles.EDGE : RUNE_TILE;
-                    WorldBlocks.set(chunks, x, DeepstoneLayout.FLOOR_Y, z, block, 0);
-                }
-            }
+            tiles.paint(world, c, r, next[i] ? Tiles.GREEN : RUNE_TILE, next[i] ? Tiles.GREEN : Tiles.EDGE);
         }
     }
 
     private void hurt(Store<EntityStore> store, Deepstone.State st, List<PlayerRef> near) {
         long now = System.nanoTime();
-        int size = DeepstoneLayout.GRID_TILE;
         for (PlayerRef p : near) {
             Vector3d at = Telegraphs.position(store, p.getReference());
-            if (at == null || at.y() > DeepstoneLayout.VAULT_Y + 1.2) {
+            if (at == null) {
                 continue;
             }
             Long last = hits.get(p.getUuid());
             if (last != null && now - last < Telegraphs.seconds(HIT_GRACE)) {
                 continue;
             }
+            // la dalle allumée brûle aussi qui saute par-dessus (Tiles.touches : jusqu'à 3,5 blocs au-dessus)
             boolean touched = false;
-            for (int i = 0; i < lit.length && !touched; i++) {
-                if (!lit[i]) {
-                    continue;
-                }
-                int c = i % DeepstoneLayout.GRID_COLS;
-                int r = i / DeepstoneLayout.GRID_COLS;
-                double x0 = DeepstoneLayout.GRID_X0 + c * size;
-                double z0 = DeepstoneLayout.GRID_Z0 + r * size;
-                double b = Telegraphs.BODY;
-                touched = at.x() >= x0 - b && at.x() <= x0 + size + b && at.z() >= z0 - b && at.z() <= z0 + size + b;
+            for (int[] cell : tiles.under(at)) {
+                touched |= lit[tiles.index(cell[0], cell[1])];
             }
             if (!touched) {
                 continue;

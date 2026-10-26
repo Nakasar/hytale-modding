@@ -137,6 +137,8 @@ final class Voice {
         shades.removeIf(ref -> !Spawns.alive(store, ref));
         if (!Spawns.alive(store, boss)) {
             clearAdds(store);
+            BossStun.release(store, boss);
+            Defiance.forget(boss);
             fill(world);
             engaged = false;
             epoch++;

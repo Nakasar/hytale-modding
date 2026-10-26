@@ -92,6 +92,31 @@ final class Tiles {
         red[index(c, r)] = false;
     }
 
+    /** Repeint la dalle : `inner` partout, sauf `rim` sur sa dernière ligne et sa dernière colonne (les joints). */
+    void paint(World world, int c, int r, String inner, String rim) {
+        ChunkStore chunks = world.getChunkStore();
+        for (int dx = 0; dx < size; dx++) {
+            for (int dz = 0; dz < size; dz++) {
+                boolean edge = dx == size - 1 || dz == size - 1;
+                WorldBlocks.set(chunks, x0 + c * size + dx, floorY, z0 + r * size + dz, edge ? rim : inner, 0);
+            }
+        }
+    }
+
+    /** Dalles {c, r} sous le corps en `p` (au plus quatre), même marge que les zones rouges. */
+    java.util.List<int[]> under(Vector3d p) {
+        double b = Telegraphs.BODY;
+        java.util.List<int[]> out = new java.util.ArrayList<>(4);
+        for (int c = (int) Math.floor((p.x() - b - x0) / size); c <= (int) Math.floor((p.x() + b - x0) / size); c++) {
+            for (int r = (int) Math.floor((p.z() - b - z0) / size); r <= (int) Math.floor((p.z() + b - z0) / size); r++) {
+                if (inside(c, r) && touches(p, c, r)) {
+                    out.add(new int[]{c, r});
+                }
+            }
+        }
+        return out;
+    }
+
     /** La dalle rougit : elle tombera (la zone rouge est la dalle elle-même). */
     void redden(World world, int c, int r) {
         if (!present(c, r)) {

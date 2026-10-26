@@ -604,8 +604,8 @@ def lang():
                        "ensemble.", "A rune grid: don't touch the lit green tiles. At the end, two runes to press "
                        "together."),
         "grid.runes": ("Montez sur les deux runes en même temps pour ouvrir la barrière (seul : courez de l'une à "
-                       "l'autre en moins de 3 s).", "Stand on both runes at once to open the barrier (alone: run from "
-                       "one to the other within 3 s)."),
+                       "l'autre en moins de {seconds} s).", "Stand on both runes at once to open the barrier (alone: run "
+                       "from one to the other within {seconds} s)."),
         "grid.hit": ("Les runes vous brûlent !", "The runes burn you!"),
         "rune.one": ("Une rune s'allume... il faut presser l'autre en même temps.",
                      "A rune lights up... the other must be pressed at the same time."),

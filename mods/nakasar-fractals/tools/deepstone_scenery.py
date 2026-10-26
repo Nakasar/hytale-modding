@@ -303,8 +303,7 @@ def layout():
     t.rect(-80, SENTINEL_EDGE_X, -76, -46, 0, Terrain.ABYSS_K, built=False)
     # passage naturel de la barrière à la corniche (sans lui, la barrière ouverte donnait sur la roche)
     t.blob((WEST_GATE[0] + WEST_GATE[1]) / 2 - 4, WEST_GATE[2] - 4, 8, 4.5, 0, noise=0.1, seed=32)
-    # est
-    t.rect(*EAST_HALL, 0)
+    # est (le couloir est posé après le gouffre, qui ne doit pas le mordre)
     t.blob(55, 5, 21, 24, 0, Terrain.ABYSS_K, seed=35)
     t.rect(*EAST_HALL, 0)                         # le gouffre ne mord pas le couloir : le pont part de son bout
     t.rect(BRIDGE_X0, BRIDGE_X1, BRIDGE_Z0, BRIDGE_Z1, 0, Terrain.BRIDGE)
