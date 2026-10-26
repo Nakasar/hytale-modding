@@ -1,0 +1,29 @@
+{
+  "$Comment": "Rune de soutien des fractales (Daze). Généré par tools/generate_support.py.",
+  "TranslationProperties": {
+    "Name": "nakasar_fractals_support.items.Rune_Nakasar_Fractal_Daze.name",
+    "Description": "nakasar_fractals_support.items.Rune_Nakasar_Fractal_Daze.description"
+  },
+  "Icon": "Icons/Items/Nakasar/Fractals/Support/Rune_Nakasar_Fractal_Daze.png",
+  "Model": "Items/Runes/Rune_Ability.blockymodel",
+  "Texture": "Items/Runes/Rune_Textures/Rune_Ability_Fireball.png",
+  "Quality": "Rare",
+  "Categories": [
+    "Items.Ingredients"
+  ],
+  "PlayerAnimationsId": "Item",
+  "Scale": 0.8,
+  "ItemSoundSetId": "ISS_Items_Gems",
+  "MaxStack": 1,
+  "Ability": {
+    "Slot": "Core",
+    "Cooldown": 12,
+    "Cost": 30,
+    "CostType": "Mana",
+    "AbilityKeywords": [
+      "Nakasar_Fractal_Support"
+    ],
+    "Attributes": {},
+    "Cast": "Root_Rune_Nakasar_Fractal_Daze"
+  }
+}

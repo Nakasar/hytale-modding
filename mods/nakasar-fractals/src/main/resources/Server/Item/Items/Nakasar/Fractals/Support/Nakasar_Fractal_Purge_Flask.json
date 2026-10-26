@@ -1,0 +1,24 @@
+{
+  "$Comment": "Consommable de soutien sur Potion_Purify (modèle et icône vanilla) : Purge remplace l'effet du jeu. Généré par tools/generate_support.py.",
+  "Parent": "Potion_Purify",
+  "TranslationProperties": {
+    "Name": "nakasar_fractals_support.items.Nakasar_Fractal_Purge_Flask.name",
+    "Description": "nakasar_fractals_support.items.Nakasar_Fractal_Purge_Flask.description"
+  },
+  "Quality": "Uncommon",
+  "MaxStack": 10,
+  "Interactions": {
+    "Secondary": "Root_Nakasar_Fractal_Purge_Flask"
+  },
+  "PlayerAnimationsId": {
+    "Parent": "Item",
+    "Animations": {
+      "Consume": {
+        "FirstPerson": "Characters/Animations/Items/Main_Handed/Item/Attacks/Drink/Drink_FPS.blockyanim",
+        "ThirdPerson": "Characters/Animations/Items/Main_Handed/Item/Attacks/Drink/Drink.blockyanim",
+        "Speed": 1,
+        "Looping": true
+      }
+    }
+  }
+}

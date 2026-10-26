@@ -1,0 +1,9 @@
+{
+  "$Comment": "Soutien des fractales : posé par le Java (support.Skills). Généré par tools/generate_support.py.",
+  "Name": "nakasar_fractals_support.effects.Nakasar_Fractal_Support_Feared",
+  "Debuff": true,
+  "StatusEffectIcon": "UI/StatusEffects/Nakasar/Fractals/Support/Feared.png",
+  "OverlapBehavior": "Overwrite",
+  "Infinite": false,
+  "Duration": 2.0
+}

@@ -1,0 +1,29 @@
+{
+  "$Comment": "Rune de soutien des fractales (Fear). Généré par tools/generate_support.py.",
+  "TranslationProperties": {
+    "Name": "nakasar_fractals_support.items.Rune_Nakasar_Fractal_Fear.name",
+    "Description": "nakasar_fractals_support.items.Rune_Nakasar_Fractal_Fear.description"
+  },
+  "Icon": "Icons/Items/Nakasar/Fractals/Support/Rune_Nakasar_Fractal_Fear.png",
+  "Model": "Items/Runes/Rune_Ability.blockymodel",
+  "Texture": "Items/Runes/Rune_Textures/Rune_Ability_Fireball.png",
+  "Quality": "Legendary",
+  "Categories": [
+    "Items.Ingredients"
+  ],
+  "PlayerAnimationsId": "Item",
+  "Scale": 0.8,
+  "ItemSoundSetId": "ISS_Items_Gems",
+  "MaxStack": 1,
+  "Ability": {
+    "Slot": "Core",
+    "Cooldown": 20,
+    "Cost": 40,
+    "CostType": "Mana",
+    "AbilityKeywords": [
+      "Nakasar_Fractal_Support"
+    ],
+    "Attributes": {},
+    "Cast": "Root_Rune_Nakasar_Fractal_Fear"
+  }
+}

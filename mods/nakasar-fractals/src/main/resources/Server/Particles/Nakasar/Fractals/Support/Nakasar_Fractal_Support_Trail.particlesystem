@@ -1,0 +1,12 @@
+{
+  "$Comment": "Traînée d'un objet lancé ou d'un sort visé : brume des Brumes. Généré par tools/generate_support.py.",
+  "Spawners": [
+    {
+      "SpawnerId": "Nakasar_Fractal_Support_Trail_Mist",
+      "PositionOffset": {
+        "Y": 0
+      }
+    }
+  ],
+  "CullDistance": 72
+}

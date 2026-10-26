@@ -1,0 +1,16 @@
+{
+  "$Comment": "Soutien HealingTotem : le Java échoue sans cible ou en recharge, et alors rien n'est consommé. Généré par tools/generate_support.py.",
+  "Type": "Nakasar_Fractal_Support",
+  "Skill": "HealingTotem",
+  "Next": {
+    "Type": "ModifyInventory",
+    "AdjustHeldItemQuantity": -1,
+    "Next": {
+      "Type": "Simple",
+      "RunTime": 0.3,
+      "Effects": {
+        "WorldSoundEventId": "SFX_Light_Melee_T2_Swing"
+      }
+    }
+  }
+}

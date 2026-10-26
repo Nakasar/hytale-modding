@@ -1,0 +1,38 @@
+{
+  "TimeSeconds": 3,
+  "KnowledgeRequired": false,
+  "Input": [
+    {
+      "ItemId": "Nakasar_Fractal_Echo_SilentSurf",
+      "Quantity": 6
+    },
+    {
+      "ItemId": "Nakasar_Fractal_Mist_Shard",
+      "Quantity": 80
+    },
+    {
+      "ItemId": "Ingredient_Rune_Shard",
+      "Quantity": 2
+    }
+  ],
+  "PrimaryOutput": {
+    "ItemId": "Rune_Nakasar_Fractal_Decoy",
+    "Quantity": 1
+  },
+  "Output": [
+    {
+      "ItemId": "Rune_Nakasar_Fractal_Decoy",
+      "Quantity": 1
+    }
+  ],
+  "BenchRequirement": [
+    {
+      "Type": "Crafting",
+      "Id": "Nakasar_Fractal_Mist_Forge",
+      "Categories": [
+        "Nakasar_Fractal_Runes"
+      ],
+      "RequiredTierLevel": 1
+    }
+  ]
+}

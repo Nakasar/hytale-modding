@@ -287,6 +287,15 @@ Les autres fractales de GW2, à reprendre de la même façon (wiki relu avant ch
 
 (Kinfall : nom français non vérifié. Silent Surf est devenu le Ressac silencieux, Siren's Reef le Récif de la Sirène et Deepstone Pierre-Profonde, ci-dessus.)
 
+## Runes et objets de soutien (26 octobre 2026)
+
+Kevin a retenu les trois lots du document « Fractales : runes et armes de soutien » (https://claude.ai/artifact/69fVzisstSWxQ1LztZjDVR), avec ces décisions : runes neuves dans le mod Fractales seulement (`Rune_Nakasar_Fractal_*`, rien du mod Vampires, pas de Domination) ; zones des joueurs **sans couleur**, montrées par leur seul effet (le rouge reste aux menaces). Mise en œuvre :
+
+- 14 runes (emplacement Core), 3 armes, 2 bannières et 5 consommables sur des objets vanilla (`Parent`), tous par une seule interaction Java `Nakasar_Fractal_Support` (paquet `support`), qui échoue sans cible : rien n'est alors dépensé. Générés par `tools/generate_support.py`.
+- Soins sur les joueurs seulement ; boss, élites et PNJ de mécanique ignorent les contrôles (défiance seulement, ralentissement plafonné à 25 % pour les mécaniques). Ralentissement et peur des PNJ par correction du pilotage (`SupportSteeringSystem`), égide, sursis et bannières dans le filtre de dégâts (`SupportDamageFilter`).
+- Échos `Nakasar_Fractal_Echo_<Fractale>` au coffre de fin (1 / 1-2 / 2 / 3 selon le rang, +2 fractale du jour), noyau stable 1 sur 3 au rang Maître ; recettes au Creuset (onglets Runes et Armes de soutien) ; consommables chez l'Alchimiste.
+- Écarts au document : les armes gardent l'attaque principale vanilla (effets au coup ajoutés), pas de recette vendue par l'Archiviste, leurre à 80 PV fixes, bannières en deux objets sur le bâton de bois.
+
 ## Instabilités et groupes de 1 à 5
 
 Chaque fractale reçoit 0 à 3 instabilités selon le rang, tirées une fois par jour et par fractale, et toute la difficulté s'adapte au nombre de joueurs sans changer les règles.

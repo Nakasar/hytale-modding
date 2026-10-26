@@ -28,11 +28,11 @@ import java.util.WeakHashMap;
  */
 public final class Skills {
 
-    // --- particules (tools/generate_support.py) et effets -------------------------------------------
-    static final String FX_HEAL = "Nakasar_Fractal_Support_Heal";
-    static final String FX_FROST = "Nakasar_Fractal_Support_Frost";
-    static final String FX_FIRE = "Nakasar_Fractal_Support_Fire";
-    static final String FX_ICE = "Nakasar_Fractal_Support_Ice";
+    // --- particules : vanilla d'abord (soin, feu, givre, glace), les autres de tools/generate_support.py ----------
+    static final String FX_HEAL = "Effect_Health_Pack";
+    static final String FX_FROST = "Effect_Snow";
+    static final String FX_FIRE = "Effect_Fire";
+    static final String FX_ICE = "Impact_Ice";
     static final String FX_SANCTUARY = "Nakasar_Fractal_Support_Sanctuary";
     static final String FX_GRAVITY = "Nakasar_Fractal_Support_Gravity";
     static final String FX_SMOKE = "Nakasar_Fractal_Support_Smoke";

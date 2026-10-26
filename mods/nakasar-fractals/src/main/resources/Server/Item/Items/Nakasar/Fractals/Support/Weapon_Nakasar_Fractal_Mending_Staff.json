@@ -1,0 +1,13 @@
+{
+  "$Comment": "Arme de soutien sur Weapon_Staff_Crystal_Purple (modèle, icône et attaque principale vanilla) ; clic droit : StaffMend. Généré par tools/generate_support.py.",
+  "Parent": "Weapon_Staff_Crystal_Purple",
+  "TranslationProperties": {
+    "Name": "nakasar_fractals_support.items.Weapon_Nakasar_Fractal_Mending_Staff.name",
+    "Description": "nakasar_fractals_support.items.Weapon_Nakasar_Fractal_Mending_Staff.description"
+  },
+  "Quality": "Rare",
+  "MaxStack": 1,
+  "Interactions": {
+    "Secondary": "Root_Weapon_Nakasar_Fractal_Mending_Staff"
+  }
+}

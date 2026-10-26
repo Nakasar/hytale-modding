@@ -1,0 +1,13 @@
+{
+  "$Comment": "Arme de soutien sur Weapon_Spellbook_Frost (modèle, icône et attaque principale vanilla) ; clic droit : GrimoireGlyph. Généré par tools/generate_support.py.",
+  "Parent": "Weapon_Spellbook_Frost",
+  "TranslationProperties": {
+    "Name": "nakasar_fractals_support.items.Weapon_Nakasar_Fractal_Frost_Grimoire.name",
+    "Description": "nakasar_fractals_support.items.Weapon_Nakasar_Fractal_Frost_Grimoire.description"
+  },
+  "Quality": "Rare",
+  "MaxStack": 1,
+  "Interactions": {
+    "Secondary": "Root_Weapon_Nakasar_Fractal_Frost_Grimoire"
+  }
+}

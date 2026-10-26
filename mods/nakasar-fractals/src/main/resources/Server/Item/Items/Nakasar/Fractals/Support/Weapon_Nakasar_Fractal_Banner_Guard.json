@@ -1,0 +1,13 @@
+{
+  "$Comment": "Arme de soutien sur Weapon_Staff_Wood (modèle, icône et attaque principale vanilla) ; clic droit : BannerGuard. Généré par tools/generate_support.py.",
+  "Parent": "Weapon_Staff_Wood",
+  "TranslationProperties": {
+    "Name": "nakasar_fractals_support.items.Weapon_Nakasar_Fractal_Banner_Guard.name",
+    "Description": "nakasar_fractals_support.items.Weapon_Nakasar_Fractal_Banner_Guard.description"
+  },
+  "Quality": "Legendary",
+  "MaxStack": 1,
+  "Interactions": {
+    "Secondary": "Root_Weapon_Nakasar_Fractal_Banner_Guard"
+  }
+}

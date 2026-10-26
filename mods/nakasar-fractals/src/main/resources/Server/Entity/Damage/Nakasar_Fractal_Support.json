@@ -1,0 +1,7 @@
+{
+  "$Comment": "Dégâts des runes et objets de soutien (Onde de choc, Brasier) : comptés à part de la défiance (defiance.DefianceDamageSystem les ignore).",
+  "BypassResistances": true,
+  "DurabilityLoss": false,
+  "StaminaLoss": false,
+  "DamageTextColor": "#f0e0a0"
+}

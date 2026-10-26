@@ -1,0 +1,42 @@
+{
+  "TimeSeconds": 4,
+  "KnowledgeRequired": false,
+  "Input": [
+    {
+      "ItemId": "Weapon_Spellbook_Frost",
+      "Quantity": 1
+    },
+    {
+      "ItemId": "Nakasar_Fractal_Mist_Shard",
+      "Quantity": 60
+    },
+    {
+      "ItemId": "Nakasar_Fractal_Echo_Snowblind",
+      "Quantity": 3
+    },
+    {
+      "ItemId": "Nakasar_Fractal_Echo_SolidOcean",
+      "Quantity": 3
+    }
+  ],
+  "PrimaryOutput": {
+    "ItemId": "Weapon_Nakasar_Fractal_Frost_Grimoire",
+    "Quantity": 1
+  },
+  "Output": [
+    {
+      "ItemId": "Weapon_Nakasar_Fractal_Frost_Grimoire",
+      "Quantity": 1
+    }
+  ],
+  "BenchRequirement": [
+    {
+      "Type": "Crafting",
+      "Id": "Nakasar_Fractal_Mist_Forge",
+      "Categories": [
+        "Nakasar_Fractal_Support"
+      ],
+      "RequiredTierLevel": 1
+    }
+  ]
+}

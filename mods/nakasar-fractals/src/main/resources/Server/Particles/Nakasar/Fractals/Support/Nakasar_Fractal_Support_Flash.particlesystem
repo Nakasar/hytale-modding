@@ -1,0 +1,12 @@
+{
+  "$Comment": "Bombe hébétante et leurre : éclair blanc bref. Généré par tools/generate_support.py.",
+  "Spawners": [
+    {
+      "SpawnerId": "Nakasar_Fractal_Support_Flash_Flash",
+      "PositionOffset": {
+        "Y": 0
+      }
+    }
+  ],
+  "CullDistance": 72
+}

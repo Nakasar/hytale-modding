@@ -1,0 +1,14 @@
+{
+  "$Comment": "Consommable de soutien sur Weapon_Deployable_Healing_Totem (modèle et icône vanilla) : HealingTotem remplace l'effet du jeu. Généré par tools/generate_support.py.",
+  "Parent": "Weapon_Deployable_Healing_Totem",
+  "TranslationProperties": {
+    "Name": "nakasar_fractals_support.items.Nakasar_Fractal_Healing_Totem.name",
+    "Description": "nakasar_fractals_support.items.Nakasar_Fractal_Healing_Totem.description"
+  },
+  "Quality": "Uncommon",
+  "MaxStack": 10,
+  "Interactions": {
+    "Primary": "Root_Nakasar_Fractal_Healing_Totem",
+    "Secondary": "Root_Nakasar_Fractal_Healing_Totem"
+  }
+}

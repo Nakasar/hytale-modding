@@ -1,0 +1,35 @@
+{
+  "$Comment": "Leurre des Brumes (rune) : immobile, attire les ennemis ordinaires 6 s (support.Decoys, qui le pose et le retire). Neutre envers les joueurs. Généré par tools/generate_support.py.",
+  "Type": "Generic",
+  "Appearance": "Nakasar_Fractal_Decoy",
+  "NameTranslationKey": "nakasar_fractals_support.npc.Decoy.name",
+  "MaxHealth": 80,
+  "StartState": "Idle",
+  "DefaultPlayerAttitude": "Neutral",
+  "DefaultNPCAttitude": "Ignore",
+  "MotionControllerList": [
+    {
+      "Type": "Walk",
+      "MaxWalkSpeed": 0.1,
+      "Gravity": 10,
+      "MaxFallSpeed": 10,
+      "Acceleration": 10,
+      "JumpHeight": 1.0
+    }
+  ],
+  "KnockbackScale": 0,
+  "SpawnLockTime": 0.2,
+  "Instructions": [
+    {
+      "Sensor": {
+        "Type": "State",
+        "State": "Idle"
+      },
+      "Instructions": [
+        {
+          "Actions": []
+        }
+      ]
+    }
+  ]
+}

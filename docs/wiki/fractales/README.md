@@ -41,6 +41,7 @@ Les **fractales** sont des aventures courtes de 1 à 5 joueurs, tirées des frac
 - [Observatoire](observatoire.md) : le hub, la sélection, le golem d'essai, la pierre de retour.
 - [Progression et récompenses](progression.md) : niveaux et rangs, agonie, infusions, coffres, éclats de Brume, l'Archiviste, les **fractales du jour**.
 - [Potions des Brumes](potions.md) : offensive, mobilité et défensive, vendues par l'Alchimiste de Dessa.
+- [Runes et objets de soutien](runes-et-soutien.md) : 14 runes, armes, totems, bombes et bannières, fabriqués avec les **échos** des fractales.
 - [Instabilités](instabilites.md) : les 8 modificateurs tirés chaque jour.
 - [Cosmétiques de saison](cosmetiques.md).
 

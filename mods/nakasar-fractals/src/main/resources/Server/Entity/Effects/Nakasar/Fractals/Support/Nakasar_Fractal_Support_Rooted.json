@@ -1,0 +1,17 @@
+{
+  "$Comment": "Soutien des fractales : posé par le Java (support.Skills). Généré par tools/generate_support.py.",
+  "Name": "nakasar_fractals_support.effects.Nakasar_Fractal_Support_Rooted",
+  "Debuff": true,
+  "StatusEffectIcon": "UI/StatusEffects/Nakasar/Fractals/Support/Rooted.png",
+  "ApplicationEffects": {
+    "Particles": [
+      {
+        "SystemId": "Nakasar_Fractal_Support_Roots",
+        "TargetEntityPart": "Self"
+      }
+    ]
+  },
+  "OverlapBehavior": "Overwrite",
+  "Infinite": false,
+  "Duration": 2.0
+}
