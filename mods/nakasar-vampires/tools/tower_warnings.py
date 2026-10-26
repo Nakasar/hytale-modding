@@ -18,10 +18,10 @@ anneau.
 
 Couleur et opacité (Kevin, 26 octobre 2026 : « une zone d'annonce ennemie/danger doit être rouge orangée légère »,
 jamais blanche) : celles des annonces du donjon Deepworks vanilla (Assets.zip 0.7.2 : Gobliterator_Slam_Warning,
-Gobliterator_Quadrant_Warning, Gobliterator_Flamethrower_Warning), rouge pur #ff0000 en mélange additif, contour à 0,5
-qui pulse entre 1 et 0,25, remplissage à 0,75 qui pulse entre 1 et 0,5. En additif, des zones ou des pastilles
-superposées ne cumulent que du rouge (l'ancien #ff2a1a cumulait aussi du vert et du bleu, jusqu'au blanc). La couleur
-est écrite sur chaque image clé ; ValidateAssets refuse toute zone d'annonce qui s'en écarte. Même table que
+Gobliterator_Quadrant_Warning, Gobliterator_Flamethrower_Warning), rouge pur #ff0000, contour à 0,5 qui pulse entre 1
+et 0,25, remplissage à 0,75 qui pulse entre 1 et 0,5. Mais en mélange normal (BlendLinear), pas additif comme les
+Deepworks : l'additif n'ajoute rien à un sol presque blanc, où la zone paraissait blanche ; le mélange normal teint en
+rouge n'importe quel sol (choix de Kevin, 26 octobre 2026). La couleur est écrite sur chaque image clé ; ValidateAssets refuse toute zone d'annonce qui s'en écarte. Même table que
 tools/generate_warnings.py du mod Fractales."""
 
 import json
@@ -60,7 +60,7 @@ def scale(radius):
     return round(SCALE * radius, 2)
 
 
-def _spawner(life, texture, animation, initial, blend="BlendAdd"):
+def _spawner(life, texture, animation, initial, blend="BlendLinear"):
     return {
         "RenderMode": blend,
         "ParticleRotationInfluence": "Velocity",

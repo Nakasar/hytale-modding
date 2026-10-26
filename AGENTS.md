@@ -21,9 +21,10 @@ Consignes de Kevin (25 octobre 2026), à respecter pour chaque mob, boss, élite
    sol où l'effet porte. La taille de l'alerte et celle du test de touche viennent de la même constante ; la seule
    marge admise est la demi-largeur du corps du joueur (`Telegraphs.BODY` = 0,3).
 4. **Les zones d'annonce ennemies ont la couleur et l'opacité de celles du donjon Deepworks vanilla** (Kevin,
-   26 octobre 2026 : rouge orangé léger, jamais blanc opaque) : rouge pur `#ff0000` en `BlendAdd`, contour à 0,5 qui
-   pulse entre 1 et 0,25, remplissage à 0,75 qui pulse entre 1 et 0,5, couleur écrite sur chaque image clé. Les
-   générateurs (`generate_warnings.py`, `tower_warnings.py`) portent ces valeurs ; `validateAssets` refuse tout émetteur
+   26 octobre 2026 : rouge orangé léger, jamais blanc opaque) : rouge pur `#ff0000`, contour à 0,5 qui
+   pulse entre 1 et 0,25, remplissage à 0,75 qui pulse entre 1 et 0,5, couleur écrite sur chaque image clé. Mais en
+   mélange normal `BlendLinear` (Kevin, 26 octobre 2026) et non additif comme les Deepworks : l'additif disparaît en
+   blanc sur un sol clair (dalles de la Voix de la montagne, neige). Les générateurs (`generate_warnings.py`, `tower_warnings.py`) portent ces valeurs ; `validateAssets` refuse tout émetteur
    d'un dossier `Warnings` ou à texture `Warning_*` qui s'en écarte. Seules les zones favorables listées dans
    `POSITIVE_ZONES` gardent une autre couleur.
 

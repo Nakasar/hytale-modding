@@ -962,7 +962,7 @@ public class ValidateAssets {
     /**
      * Zones d'annonce des attaques (Kevin, 26 octobre 2026 : « une zone d'annonce ennemie/danger doit être rouge orangée
      * légère », jamais blanche opaque) : tout émetteur rangé dans un dossier Warnings ou tracé avec une texture Warning_*
-     * est en mélange additif, teinté du rouge Deepworks sur l'image de départ et sur chaque image clé (une image sans
+     * est en mélange normal (BlendLinear : l'additif disparaît sur un sol clair), teinté du rouge Deepworks sur l'image de départ et sur chaque image clé (une image sans
      * couleur laisserait la texture blanche), avec des opacités entre 0 et 1 et une texture qui existe.
      */
     private static int checkWarningZones(Path root) throws Exception {
@@ -992,8 +992,8 @@ public class ValidateAssets {
             zones++;
             List<String> problems = new ArrayList<>();
             String blend = doc.containsKey("RenderMode") ? doc.getString("RenderMode").getValue() : "(aucun)";
-            if (!blend.equals("BlendAdd")) {
-                problems.add("RenderMode " + blend + " : une zone d'annonce est en BlendAdd, comme celles des Deepworks");
+            if (!blend.equals("BlendLinear")) {
+                problems.add("RenderMode " + blend + " : une zone d'annonce est en BlendLinear (l'additif blanchit sur un sol clair)");
             }
             if (!WARNING_VANILLA_TEXTURE.matcher(texture).matches() && !Files.isRegularFile(common.resolve(texture))) {
                 problems.add("texture " + texture + " : ni une texture d'annonce vanilla, ni un fichier du pack (Common)");
@@ -1013,7 +1013,7 @@ public class ValidateAssets {
                 problems.forEach(pb -> System.out.println("      " + pb));
             }
         }
-        System.out.println(zones + " émetteurs de zones d'annonce vérifiés (rouge Deepworks " + WARNING_RED + ", BlendAdd), "
+        System.out.println(zones + " émetteurs de zones d'annonce vérifiés (rouge Deepworks " + WARNING_RED + ", BlendLinear), "
                 + errors + " en erreur");
         return errors;
     }

@@ -1,5 +1,5 @@
 {
-  "RenderMode": "BlendAdd",
+  "RenderMode": "BlendLinear",
   "ParticleRotationInfluence": "None",
   "ParticleLifeSpan": {
     "Min": 1.4,

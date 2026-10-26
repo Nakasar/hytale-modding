@@ -200,7 +200,7 @@ def puddle():
     # Contour rouge des zones Deepworks (tower_warnings), sans pulsation : la flaque est rejouée chaque seconde.
     edge = spawner(EDGE, (1.3, 1.3), {
         "0": {"Opacity": 1, "Color": RED}, "100": {"Opacity": 1, "Color": RED},
-    }, {"Opacity": 0.5, "Color": RED, "Rotation": FLAT, "Scale": {"X": _range(BASE)}}, rotation="Velocity", count=(1, 1),
+    }, {"Opacity": 0.5, "Color": RED, "Rotation": FLAT, "Scale": {"X": _range(BASE)}}, blend="BlendLinear", rotation="Velocity", count=(1, 1),
         rate=(1, 1), burst=True, max_particles=1)
     bubbles = spawner(SPARK, (0.5, 0.9), {
         "0": {"Opacity": 0, "Color": "#c8ff9a"}, "30": {"Opacity": 0.9}, "100": {"Opacity": 0, "Color": "#2f9a12"},
