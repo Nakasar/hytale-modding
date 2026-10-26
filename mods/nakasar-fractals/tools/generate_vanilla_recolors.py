@@ -1,6 +1,6 @@
 """Textures et icônes tirées d'assets vanilla (passe « vanilla très proche », Kevin, 25 octobre 2026).
 
-    python3 mods/nakasar-fractals/tools/generate_vanilla_recolors.py --assets CHEMIN/Assets.zip
+    python3 mods/nakasar-fractals/tools/generate_vanilla_recolors.py --assets CHEMIN/Assets.zip [--only-support]
 
 `--assets` : Assets.zip du jeu 0.7.2 (ou un dossier où il est extrait). Les PNG produits sont versionnés : les autres
 générateurs n'ont pas besoin d'Assets.zip, ils pointent vers ces fichiers.
@@ -21,6 +21,10 @@ Seconde passe (Kevin, 25 octobre 2026, 22 h 19) :
   plus que les objets et la langue) : capuche = Hoodie_LongEnd du jeu (capuche du Sorcier de Blazen, violette) au liseré
   doré ; couronne = KingsCrown, velours violet des Brumes ; mantelet = Cape_King_NoNeck, drap indigo de l'Archidevin
   (fourrure et or d'origine). Les textures « greyscale » du jeu sont teintées ici, une pièce d'armure n'a pas de dégradé.
+
+Runes et objets de soutien (Kevin, 26 octobre 2026 ; `--only-support` ne fait que cette passe) : rune vierge du jeu
+(Rune_Ability_Blank, icône Rune_Empty) portant le glyphe de l'effet aux couleurs de la fractale ; échos = éclat de rune
+du jeu teint à la couleur de leur fractale ; bombe hébétante (jaune) et fumigène (gris) = bombe du gobelin reteinte.
 
 Style Hytale (Kevin, 25 octobre 2026, 22 h 36) : échantillons de textures de blocs vanilla copiés dans tools/materials/
 (fractal_materials.SWATCHES), lus par nos peintres de modèles.
@@ -186,10 +190,78 @@ def potion(src, color, glyph, large, icon):
     return img
 
 
+# --- runes et objets de soutien (tools/generate_support.py, Kevin 26 octobre 2026) ---------------------------------
+
+RUNE_BLANK = "Common/Items/Runes/Rune_Textures/Rune_Ability_Blank.png"
+RUNE_EMPTY_ICON = "Common/Icons/ItemsGenerated/Rune_Empty.png"
+RUNE_SHARD_ICON = "Common/Icons/ItemsGenerated/Ingredient_Rune_Shard.png"
+BOMB_TEXTURE = "Common/NPC/Intelligent/Goblin/Models/Weapons/Bomb/Fire_Texture.png"
+BOMB_ICON = "Common/Icons/ItemsGenerated/Weapon_Bomb_Fire_Goblin.png"
+# Faces de la texture de rune où le jeu peint son glyphe (comparaison des runes du jeu à la rune vierge) : la face
+# octogonale (x 32-61, y 0-29) et le décalque lumineux (x 6-30, y 37-61).
+RUNE_FACES = [((47, 15), 22), ((18, 49), 22)]
+# Bombes du gobelin (une seule texture pour les deux bombes du jeu) : teinte et saturation des parties colorées.
+BOMBS = {"Daze_Bomb": (52 / 360, 0.75), "Smoke_Bomb": (None, 0.0)}
+
+
+def paste_glyph(img, glyph, center, size):
+    g = glyph.resize((size, size), Image.LANCZOS)
+    # liseré sombre pour la lisibilité sur la pierre
+    shadow = Image.new("RGBA", g.size, (16, 12, 24, 0))
+    shadow.putalpha(g.getchannel("A").point(lambda a: min(255, a * 2)))
+    x, y = center[0] - size // 2, center[1] - size // 2
+    img.alpha_composite(shadow, (x + 1, y + 1))
+    img.alpha_composite(g, (x, y))
+
+
+def rehue(img, hue, sat):
+    px = img.load()
+    for y in range(img.height):
+        for x in range(img.width):
+            r, g, b, a = px[x, y]
+            h, s, v = hsv((r, g, b, a))
+            if a >= 16 and s > 0.25:
+                rr, gg, bb = colorsys.hsv_to_rgb(h if hue is None else hue, s * sat if hue is None else min(1, s * sat + 0.1), v)
+                px[x, y] = (round(rr * 255), round(gg * 255), round(bb * 255), a)
+    return img
+
+
+def support(assets):
+    """Runes de soutien : rune vierge du jeu + glyphe de l'effet aux couleurs de la fractale (texture et icône) ;
+    échos : éclat de rune du jeu teint à la couleur de la fractale ; bombes : bombe du gobelin reteinte."""
+    import generate_support as gs
+    out_t, out_i = TEXTURES / "Support", ICONS / "Support"
+    out_t.mkdir(parents=True, exist_ok=True)
+    out_i.mkdir(parents=True, exist_ok=True)
+    blank, empty = assets.image(RUNE_BLANK), assets.image(RUNE_EMPTY_ICON)
+    for skill, fractal, *_rest in gs.RUNES:
+        glyph = gs.glyph_image(gs.FRACTALS[fractal][2], _rest[3])
+        tex = blank.copy()
+        for center, size in RUNE_FACES:
+            paste_glyph(tex, glyph, center, size)
+        tex.save(out_t / f"Rune_{skill}.png")
+        icon = empty.copy()
+        paste_glyph(icon, glyph, (32, 31), 30)
+        icon.save(out_i / f"Rune_{skill}.png")
+    for fid, (_, _, color) in gs.FRACTALS.items():
+        for src, out in ((RUNE_BLANK, out_t), (RUNE_SHARD_ICON, out_i)):
+            img = assets.image(src)
+            gradient_map(img, cells_of(img, lambda p: p[3] >= 16), tint(color))
+            img.save(out / f"Echo_{fid}.png")
+    for name, (hue, sat) in BOMBS.items():
+        rehue(assets.image(BOMB_TEXTURE), hue, sat).save(out_t / f"{name}.png")
+        rehue(assets.image(BOMB_ICON), hue, sat).save(out_i / f"{name}.png")
+    print(f"Soutien : {len(gs.RUNES)} runes, {len(gs.FRACTALS)} échos, {len(BOMBS)} bombes")
+
+
 def main():
     if "--assets" not in sys.argv:
         sys.exit(__doc__)
     assets = Assets(sys.argv[sys.argv.index("--assets") + 1])
+    if "--only-support" in sys.argv:
+        support(assets)
+        return
+    support(assets)
     TEXTURES.mkdir(parents=True, exist_ok=True)
     ICONS.mkdir(parents=True, exist_ok=True)
     texture, icon = assets.image(POTION_TEXTURE), assets.image(POTION_ICON)

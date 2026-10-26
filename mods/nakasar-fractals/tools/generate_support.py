@@ -3,7 +3,7 @@
 
     python3 mods/nakasar-fractals/tools/generate_support.py [--preview DOSSIER]
 
-- 14 runes de capacité `Rune_Nakasar_Fractal_<Id>` (modèle et texture Rune_Ability vanilla, icône dessinée ici) :
+- 14 runes de capacité `Rune_Nakasar_Fractal_<Id>` (rune vierge du jeu portant le glyphe de l'effet, tools/generate_vanilla_recolors.py) :
   emplacement Core, mana et recharge du jeu ; l'effet est le Java `Nakasar_Fractal_Support` (support.SupportCastInteraction,
   clé `Skill`) qui échoue sans cible, et alors ni mana ni recharge ne partent ;
 - 3 armes `Weapon_Nakasar_Fractal_*` sur une arme vanilla (Parent : modèle, icône, attaques gardés) : clic droit = Java
@@ -20,6 +20,7 @@ Les nombres des descriptions sont ceux de support.Skills / support.SupportHitSys
 Zones des joueurs sans couleur (décision de Kevin) : seules leurs particules les montrent ; le rouge reste aux menaces.
 """
 import math
+import shutil
 import sys
 from pathlib import Path
 
@@ -42,7 +43,10 @@ INTERACTIONS = SERVER / "Item/Interactions/Nakasar/Fractals/Support"
 RECIPES = SERVER / "Item/Recipes/Nakasar/Fractals/Support"
 EFFECTS = SERVER / "Entity/Effects/Nakasar/Fractals/Support"
 PARTICLES = SERVER / "Particles/Nakasar/Fractals/Support"
-ICONS = "Icons/Items/Nakasar/Fractals/Support"
+ICONS = "Icons/Items/Nakasar/Fractals/Support"   # anciennes icônes dessinées ici (retirées au passage)
+# Textures et icônes tirées du jeu par tools/generate_vanilla_recolors.py (--only-support), versionnées.
+RECOLORS = "Items/Nakasar/Fractals/Vanilla/Support"
+RECOLOR_ICONS = "Icons/Items/Nakasar/Fractals/Vanilla/Support"
 STATUS = "Support"   # sous-dossier de fc.STATUS_ICONS
 CATEGORY_ICONS = go.CATEGORY_ICONS
 FORGE = gpr.FORGE
@@ -146,9 +150,10 @@ def rune_item(skill, rank, mana, cooldown):
     return {
         "$Comment": f"Rune de soutien des fractales ({skill}). Généré par tools/{GENERATOR}.",
         "TranslationProperties": {"Name": f"{LANG}.items.{rid}.name", "Description": f"{LANG}.items.{rid}.description"},
-        "Icon": f"{ICONS}/{rid}.png",
+        "Icon": f"{RECOLOR_ICONS}/Rune_{skill}.png",
+        "IconProperties": {"Scale": 0.75, "Rotation": [0, 30, 15], "Translation": [4, -18]},
         "Model": "Items/Runes/Rune_Ability.blockymodel",
-        "Texture": "Items/Runes/Rune_Textures/Rune_Ability_Fireball.png",
+        "Texture": f"{RECOLORS}/Rune_{skill}.png",
         "Quality": RANKS[rank][2],
         "Categories": ["Items.Ingredients"],
         "PlayerAnimationsId": "Item",
@@ -322,10 +327,11 @@ def echo_item(fractal):
     eid = echo(fractal)
     return {
         "$Comment": f"Écho de la fractale {fractal} : coffre de fin (party.ClaimRewardInteraction), ingrédient des runes "
-                    f"et armes de soutien. Modèle de l'éclat de rune vanilla. Généré par tools/{GENERATOR}.",
+                    f"et armes de soutien. Modèle de l'éclat de rune vanilla, teint à la couleur de la fractale. Généré par tools/{GENERATOR}.",
         "Parent": RUNE_SHARD,
         "TranslationProperties": {"Name": f"{LANG}.items.{eid}.name", "Description": f"{LANG}.items.{eid}.description"},
-        "Icon": f"{ICONS}/{eid}.png",
+        "Icon": f"{RECOLOR_ICONS}/Echo_{fractal}.png",
+        "Texture": f"{RECOLORS}/Echo_{fractal}.png",
         "Quality": "Rare",
         "Categories": ["Items.Ingredients"],
         "MaxStack": 99,
@@ -335,11 +341,10 @@ def echo_item(fractal):
 def core_item():
     return {
         "$Comment": f"Noyau stable : coffre de fin au rang Maître, une fois sur trois ; ingrédient des runes Maître. "
-                    f"Modèle du cœur du Vide vanilla. Généré par tools/{GENERATOR}.",
+                    f"Modèle et icône du cœur du Vide vanilla. Généré par tools/{GENERATOR}.",
         "Parent": "Ingredient_Voidheart",
         "TranslationProperties": {"Name": f"{LANG}.items.{STABLE_CORE}.name",
                                   "Description": f"{LANG}.items.{STABLE_CORE}.description"},
-        "Icon": f"{ICONS}/{STABLE_CORE}.png",
         "Quality": "Legendary",
         "MaxStack": 20,
     }
@@ -350,13 +355,13 @@ def core_item():
 DARK = (26, 20, 34, 255)
 
 
-def rune_icon(path, color, glyph):
-    """Pierre de rune sombre bordée de la couleur de la fractale, glyphe de l'effet au centre (64 × 64)."""
+def glyph_image(color, glyph):
+    """Glyphe de l'effet seul, sur fond transparent (64 × 64), aux couleurs de la fractale : posé sur la rune vanilla
+    vierge (texture et icône) par tools/generate_vanilla_recolors.py."""
     img = Image.new("RGBA", (64, 64), (0, 0, 0, 0))
     d = ImageDraw.Draw(img)
     c = color + (255,)
     light = tuple(min(255, int(v * 0.5 + 128)) for v in color) + (255,)
-    d.polygon(((32, 3), (59, 20), (54, 52), (32, 61), (10, 52), (5, 20)), fill=(46, 40, 58, 255), outline=c, width=3)
     g = glyph
     if g in ("breath", "well"):
         d.rectangle((28, 16, 36, 48), fill=light)
@@ -408,31 +413,9 @@ def rune_icon(path, color, glyph):
     elif g == "dome":
         d.chord((12, 16, 52, 56), 180, 360, fill=light)
         d.rectangle((10, 36, 54, 40), fill=c)
-    path.parent.mkdir(parents=True, exist_ok=True)
-    img.save(path)
+    return img
 
 
-def echo_icon(path, color):
-    img = Image.new("RGBA", (64, 64), (0, 0, 0, 0))
-    d = ImageDraw.Draw(img)
-    c = color + (255,)
-    light = tuple(min(255, int(v * 0.45 + 140)) for v in color) + (255,)
-    d.polygon(((32, 4), (46, 26), (38, 60), (26, 60), (18, 26)), fill=c, outline=DARK, width=2)
-    d.polygon(((32, 8), (40, 26), (32, 54)), fill=light)
-    for x, y in ((12, 14), (52, 20), (50, 48), (12, 44)):
-        d.ellipse((x - 2, y - 2, x + 2, y + 2), fill=light)
-    path.parent.mkdir(parents=True, exist_ok=True)
-    img.save(path)
-
-
-def core_icon(path):
-    img = Image.new("RGBA", (64, 64), (0, 0, 0, 0))
-    d = ImageDraw.Draw(img)
-    for r, col in ((26, (90, 60, 150, 120)), (20, (150, 110, 230, 255)), (12, (225, 205, 255, 255)), (5, (255, 255, 255, 255))):
-        d.ellipse((32 - r, 32 - r, 32 + r, 32 + r), fill=col)
-    d.arc((4, 14, 60, 50), 0, 360, fill=(240, 220, 140, 255), width=3)
-    path.parent.mkdir(parents=True, exist_ok=True)
-    img.save(path)
 
 
 # --- effets d'état ----------------------------------------------------------------------------------
@@ -586,10 +569,14 @@ def lang():
 def main():
     preview = Path(sys.argv[sys.argv.index("--preview") + 1]) if "--preview" in sys.argv else None
     icons = []
+    old = COMMON / ICONS   # icônes dessinées ici avant la passe vanilla : retirées
+    if old.is_dir():
+        for f in old.glob("*.png"):
+            f.unlink()
+        old.rmdir()
     for skill, fractal, rank, mana, cooldown, glyph, _, _, anim in RUNES:
         rid = rune_id(skill)
-        rune_icon(COMMON / ICONS / f"{rid}.png", FRACTALS[fractal][2], glyph)
-        icons.append(COMMON / ICONS / f"{rid}.png")
+        icons.append(COMMON / RECOLOR_ICONS / f"Rune_{skill}.png")
         fc.write_json(RUNE_ITEMS / f"{rid}.json", rune_item(skill, rank, mana, cooldown))
         fc.write_json(ROOTS / f"Root_{rid}.json", root(f"{rid}_Cast"))
         fc.write_json(INTERACTIONS / f"{rid}_Cast.json", rune_cast(skill, anim))
@@ -605,8 +592,13 @@ def main():
         fc.write_json(RECIPES / f"Recipe_{item_id}.json", gpr.recipe(item_id, inputs, FORGE, CAT_SUPPORT, seconds=4))
 
     for item_id, parent, skill, quality, _, _ in CONSUMABLES:
-        use = {"Primary": f"Root_{item_id}", "Secondary": f"Root_{item_id}"}
+        # Le fumigène vanilla lance aussi sa bombe en « Held » : remplacé par un temps mort.
+        use = {"Primary": f"Root_{item_id}", "Secondary": f"Root_{item_id}",
+               "Held": {"Interactions": [{"Type": "Simple"}]}}
         extra = None
+        if skill in ("DazeBomb", "SmokeBomb"):
+            name = item_id.removeprefix("Nakasar_Fractal_")
+            extra = {"Texture": f"{RECOLORS}/{name}.png", "Icon": f"{RECOLOR_ICONS}/{name}.png"}
         chain = use_chain(skill, consume=True)
         if skill == "Purge":
             use = {"Secondary": f"Root_{item_id}"}
@@ -614,16 +606,13 @@ def main():
             chain = drink_chain(skill)
         fc.write_json(ITEMS / f"{item_id}.json", support_item(
             item_id, parent, quality, 10, use,
-            f"Consommable de soutien sur {parent} (modèle et icône vanilla) : {skill} remplace l'effet du jeu.", extra))
+            f"Consommable de soutien sur {parent} (modèle vanilla, bombes reteintes) : {skill} remplace l'effet du jeu.", extra))
         fc.write_json(ROOTS / f"Root_{item_id}.json", root(f"{item_id}_Use"))
         fc.write_json(INTERACTIONS / f"{item_id}_Use.json", chain)
 
     for fid, (_, _, color) in FRACTALS.items():
-        echo_icon(COMMON / ICONS / f"{echo(fid)}.png", color)
-        icons.append(COMMON / ICONS / f"{echo(fid)}.png")
+        icons.append(COMMON / RECOLOR_ICONS / f"Echo_{fid}.png")
         fc.write_json(ITEMS / f"{echo(fid)}.json", echo_item(fid))
-    core_icon(COMMON / ICONS / f"{STABLE_CORE}.png")
-    icons.append(COMMON / ICONS / f"{STABLE_CORE}.png")
     fc.write_json(ITEMS / f"{STABLE_CORE}.json", core_item())
 
     for effect_id, _, color, glyph, debuff, particle in EFFECT_LIST:
@@ -636,10 +625,10 @@ def main():
     fc.write_json(SERVER / "Models/Nakasar/Fractals" / f"{DECOY}.json", decoy_model())
     fc.write_json(SERVER / "NPC/Roles/Nakasar/Fractals" / f"{DECOY}.json", decoy_role())
 
-    # Icônes des onglets du Creuset : une rune (Égide) et l'écho du Marais (armes).
+    # Icônes des onglets du Creuset : la rune d'Égide et celle du Souffle régénérant.
     (COMMON / CATEGORY_ICONS).mkdir(parents=True, exist_ok=True)
-    rune_icon(COMMON / CATEGORY_ICONS / "Runes.png", FRACTALS["Cliffside"][2], "ward")
-    rune_icon(COMMON / CATEGORY_ICONS / "Support.png", FRACTALS["Swampland"][2], "breath")
+    shutil.copyfile(COMMON / RECOLOR_ICONS / "Rune_Aegis.png", COMMON / CATEGORY_ICONS / "Runes.png")
+    shutil.copyfile(COMMON / RECOLOR_ICONS / "Rune_HealingBreath.png", COMMON / CATEGORY_ICONS / "Support.png")
 
     lg = lang()
     lg.write(LANG)

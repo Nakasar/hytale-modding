@@ -1,11 +1,12 @@
 {
-  "$Comment": "Écho de la fractale Cliffside : coffre de fin (party.ClaimRewardInteraction), ingrédient des runes et armes de soutien. Modèle de l'éclat de rune vanilla. Généré par tools/generate_support.py.",
+  "$Comment": "Écho de la fractale Cliffside : coffre de fin (party.ClaimRewardInteraction), ingrédient des runes et armes de soutien. Modèle de l'éclat de rune vanilla, teint à la couleur de la fractale. Généré par tools/generate_support.py.",
   "Parent": "Ingredient_Rune_Shard",
   "TranslationProperties": {
     "Name": "nakasar_fractals_support.items.Nakasar_Fractal_Echo_Cliffside.name",
     "Description": "nakasar_fractals_support.items.Nakasar_Fractal_Echo_Cliffside.description"
   },
-  "Icon": "Icons/Items/Nakasar/Fractals/Support/Nakasar_Fractal_Echo_Cliffside.png",
+  "Icon": "Icons/Items/Nakasar/Fractals/Vanilla/Support/Echo_Cliffside.png",
+  "Texture": "Items/Nakasar/Fractals/Vanilla/Support/Echo_Cliffside.png",
   "Quality": "Rare",
   "Categories": [
     "Items.Ingredients"

@@ -1,5 +1,5 @@
 {
-  "$Comment": "Consommable de soutien sur Potion_Purify (modèle et icône vanilla) : Purge remplace l'effet du jeu. Généré par tools/generate_support.py.",
+  "$Comment": "Consommable de soutien sur Potion_Purify (modèle vanilla, bombes reteintes) : Purge remplace l'effet du jeu. Généré par tools/generate_support.py.",
   "Parent": "Potion_Purify",
   "TranslationProperties": {
     "Name": "nakasar_fractals_support.items.Nakasar_Fractal_Purge_Flask.name",

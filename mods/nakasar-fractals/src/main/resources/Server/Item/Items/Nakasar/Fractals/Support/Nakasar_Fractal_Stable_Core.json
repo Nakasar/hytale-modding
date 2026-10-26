@@ -1,11 +1,10 @@
 {
-  "$Comment": "Noyau stable : coffre de fin au rang Maître, une fois sur trois ; ingrédient des runes Maître. Modèle du cœur du Vide vanilla. Généré par tools/generate_support.py.",
+  "$Comment": "Noyau stable : coffre de fin au rang Maître, une fois sur trois ; ingrédient des runes Maître. Modèle et icône du cœur du Vide vanilla. Généré par tools/generate_support.py.",
   "Parent": "Ingredient_Voidheart",
   "TranslationProperties": {
     "Name": "nakasar_fractals_support.items.Nakasar_Fractal_Stable_Core.name",
     "Description": "nakasar_fractals_support.items.Nakasar_Fractal_Stable_Core.description"
   },
-  "Icon": "Icons/Items/Nakasar/Fractals/Support/Nakasar_Fractal_Stable_Core.png",
   "Quality": "Legendary",
   "MaxStack": 20
 }

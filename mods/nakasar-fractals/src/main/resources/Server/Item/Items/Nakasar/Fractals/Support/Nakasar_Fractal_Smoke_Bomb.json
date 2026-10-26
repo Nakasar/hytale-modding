@@ -1,5 +1,5 @@
 {
-  "$Comment": "Consommable de soutien sur Weapon_Bomb_Continuous (modèle et icône vanilla) : SmokeBomb remplace l'effet du jeu. Généré par tools/generate_support.py.",
+  "$Comment": "Consommable de soutien sur Weapon_Bomb_Continuous (modèle vanilla, bombes reteintes) : SmokeBomb remplace l'effet du jeu. Généré par tools/generate_support.py.",
   "Parent": "Weapon_Bomb_Continuous",
   "TranslationProperties": {
     "Name": "nakasar_fractals_support.items.Nakasar_Fractal_Smoke_Bomb.name",
@@ -9,6 +9,15 @@
   "MaxStack": 10,
   "Interactions": {
     "Primary": "Root_Nakasar_Fractal_Smoke_Bomb",
-    "Secondary": "Root_Nakasar_Fractal_Smoke_Bomb"
-  }
+    "Secondary": "Root_Nakasar_Fractal_Smoke_Bomb",
+    "Held": {
+      "Interactions": [
+        {
+          "Type": "Simple"
+        }
+      ]
+    }
+  },
+  "Texture": "Items/Nakasar/Fractals/Vanilla/Support/Smoke_Bomb.png",
+  "Icon": "Icons/Items/Nakasar/Fractals/Vanilla/Support/Smoke_Bomb.png"
 }

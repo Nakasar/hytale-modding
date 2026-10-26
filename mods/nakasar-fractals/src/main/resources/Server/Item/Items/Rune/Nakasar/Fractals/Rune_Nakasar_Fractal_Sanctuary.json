@@ -4,9 +4,21 @@
     "Name": "nakasar_fractals_support.items.Rune_Nakasar_Fractal_Sanctuary.name",
     "Description": "nakasar_fractals_support.items.Rune_Nakasar_Fractal_Sanctuary.description"
   },
-  "Icon": "Icons/Items/Nakasar/Fractals/Support/Rune_Nakasar_Fractal_Sanctuary.png",
+  "Icon": "Icons/Items/Nakasar/Fractals/Vanilla/Support/Rune_Sanctuary.png",
+  "IconProperties": {
+    "Scale": 0.75,
+    "Rotation": [
+      0,
+      30,
+      15
+    ],
+    "Translation": [
+      4,
+      -18
+    ]
+  },
   "Model": "Items/Runes/Rune_Ability.blockymodel",
-  "Texture": "Items/Runes/Rune_Textures/Rune_Ability_Fireball.png",
+  "Texture": "Items/Nakasar/Fractals/Vanilla/Support/Rune_Sanctuary.png",
   "Quality": "Legendary",
   "Categories": [
     "Items.Ingredients"

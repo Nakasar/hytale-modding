@@ -1,6 +1,6 @@
 # Runes et objets de soutien
 
-<Infobox pending title="Runes et objets de soutien" kind="Objets" icon="/jeu/Icons/Items/Nakasar/Fractals/Support/Rune_Nakasar_Fractal_Aegis.png" caption="Rune : Égide des Brumes">
+<Infobox pending title="Runes et objets de soutien" kind="Objets" icon="/jeu/Icons/Items/Nakasar/Fractals/Vanilla/Support/Rune_Aegis.png" caption="Rune : Égide des Brumes">
 <Info label="Runes">**14**, emplacement de capacité</Info>
 <Info label="Armes">bâton, grimoire, baguette, 2 bannières</Info>
 <Info label="Consommables">2 totems, 2 bombes, fiole de purge</Info>
