@@ -2,9 +2,21 @@
   "$Comment": "C\u00f4ne d'annonce de 100\u00b0 (2.1 s jusqu'au coup), pos\u00e9 par combat.Telegraphs. G\u00e9n\u00e9r\u00e9 par tools/generate_warnings.py.",
   "Spawners": [
     {
+      "SpawnerId": "Nakasar_Fractal_Sector_100_21_Edge_Tint",
+      "PositionOffset": {
+        "Y": 0.025
+      }
+    },
+    {
       "SpawnerId": "Nakasar_Fractal_Sector_100_21_Edge",
       "PositionOffset": {
         "Y": 0.03
+      }
+    },
+    {
+      "SpawnerId": "Nakasar_Fractal_Sector_100_21_Fill_Tint",
+      "PositionOffset": {
+        "Y": 0.015
       }
     },
     {

@@ -953,6 +953,8 @@ public class ValidateAssets {
 
     /** Rouge des zones d'annonce : celui des annonces du donjon Deepworks vanilla (Gobliterator_*_Warning, Assets.zip 0.7.2). */
     private static final String WARNING_RED = "#ff0000";
+    /** Suffixe du voile BlendLinear posé sous chaque couche additive d'une annonce (sols clairs). */
+    private static final String WARNING_TINT = "_Tint";
     /** Textures vanilla admises pour une zone d'annonce (celles des annonces vanilla) ; une texture du pack doit exister dans Common. */
     private static final Pattern WARNING_VANILLA_TEXTURE =
             Pattern.compile("Particles/Textures/(?:Indicators/Warning_[A-Za-z0-9_]+|Basic/Ball5)\\.png");
@@ -962,8 +964,9 @@ public class ValidateAssets {
     /**
      * Zones d'annonce des attaques (Kevin, 26 octobre 2026 : « une zone d'annonce ennemie/danger doit être rouge orangée
      * légère », jamais blanche opaque) : tout émetteur rangé dans un dossier Warnings ou tracé avec une texture Warning_*
-     * est en mélange additif, teinté du rouge Deepworks sur l'image de départ et sur chaque image clé (une image sans
-     * couleur laisserait la texture blanche), avec des opacités entre 0 et 1 et une texture qui existe.
+     * est en mélange additif (son voile _Tint en mélange normal), teinté du rouge Deepworks sur l'image de départ et
+     * sur chaque image clé (une image sans couleur laisserait la texture blanche), avec des opacités entre 0 et 1 et une
+     * texture qui existe.
      */
     private static int checkWarningZones(Path root) throws Exception {
         Path particles = root.resolve("Particles");
@@ -992,8 +995,10 @@ public class ValidateAssets {
             zones++;
             List<String> problems = new ArrayList<>();
             String blend = doc.containsKey("RenderMode") ? doc.getString("RenderMode").getValue() : "(aucun)";
-            if (!blend.equals("BlendAdd")) {
-                problems.add("RenderMode " + blend + " : une zone d'annonce est en BlendAdd, comme celles des Deepworks");
+            String expected = id.endsWith(WARNING_TINT) ? "BlendLinear" : "BlendAdd";
+            if (!blend.equals(expected)) {
+                problems.add("RenderMode " + blend + ", attendu " + expected + " (couche Deepworks en BlendAdd, voile "
+                        + WARNING_TINT + " en BlendLinear)");
             }
             if (!WARNING_VANILLA_TEXTURE.matcher(texture).matches() && !Files.isRegularFile(common.resolve(texture))) {
                 problems.add("texture " + texture + " : ni une texture d'annonce vanilla, ni un fichier du pack (Common)");
@@ -1013,8 +1018,49 @@ public class ValidateAssets {
                 problems.forEach(pb -> System.out.println("      " + pb));
             }
         }
-        System.out.println(zones + " émetteurs de zones d'annonce vérifiés (rouge Deepworks " + WARNING_RED + ", BlendAdd), "
+        errors += checkWarningTints(particles);
+        System.out.println(zones + " émetteurs de zones d'annonce vérifiés (rouge Deepworks " + WARNING_RED + ", voiles _Tint), "
                 + errors + " en erreur");
+        return errors;
+    }
+
+    /**
+     * Chaque couche additive d'un système d'annonce (dossier Warnings) a son voile {@code <couche>_Tint} en BlendLinear
+     * dans le même système : sans lui, la zone ne se voit pas sur un sol clair (l'additif n'ajoute rien au blanc).
+     */
+    private static int checkWarningTints(Path particles) throws Exception {
+        List<Path> systems;
+        try (Stream<Path> walk = Files.walk(particles)) {
+            systems = walk.filter(Files::isRegularFile).filter(f -> f.toString().endsWith(PARTICLE_SYSTEM))
+                    .filter(f -> f.toString().replace('\\', '/').contains("/Warnings/")).sorted().toList();
+        }
+        int errors = 0;
+        for (Path file : systems) {
+            BsonDocument doc = BsonDocument.parse(Files.readString(file));
+            Set<String> ids = new HashSet<>();
+            doc.getArray("Spawners", new org.bson.BsonArray())
+                    .forEach(v -> ids.add(v.asDocument().getString("SpawnerId").getValue()));
+            List<String> missing = new ArrayList<>();
+            for (String spawner : ids) {
+                if (spawner.endsWith(WARNING_TINT) || POSITIVE_ZONES.contains(spawner)) {
+                    continue;
+                }
+                Path spawnerFile = file.resolveSibling(spawner + PARTICLE_SPAWNER);
+                if (!Files.isRegularFile(spawnerFile)) {
+                    continue;   // émetteur rangé ailleurs : décodé avec les autres
+                }
+                BsonDocument s = BsonDocument.parse(Files.readString(spawnerFile));
+                if (s.containsKey("RenderMode") && s.getString("RenderMode").getValue().equals("BlendAdd")
+                        && !ids.contains(spawner + WARNING_TINT)) {
+                    missing.add(spawner + WARNING_TINT);
+                }
+            }
+            if (!missing.isEmpty()) {
+                errors++;
+                System.out.println("ERROR " + particles.getParent().relativize(file).toString().replace('\\', '/'));
+                System.out.println("      voile BlendLinear absent du système : " + String.join(", ", missing));
+            }
+        }
         return errors;
     }
 

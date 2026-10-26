@@ -2,9 +2,21 @@
   "$Comment": "Zone d'annonce de 4 s : contour rouge et disque qui se remplit jusqu'au coup. G\u00e9n\u00e9r\u00e9 par tools/tower_warnings.py.",
   "Spawners": [
     {
+      "SpawnerId": "Nakasar_Warning_40_Edge_Tint",
+      "PositionOffset": {
+        "Y": 0.025
+      }
+    },
+    {
       "SpawnerId": "Nakasar_Warning_40_Edge",
       "PositionOffset": {
         "Y": 0.03
+      }
+    },
+    {
+      "SpawnerId": "Nakasar_Warning_40_Fill_Tint",
+      "PositionOffset": {
+        "Y": 0.015
       }
     },
     {
