@@ -11,6 +11,7 @@ import dev.nakasar.hytale.fractals.combat.TelegraphSystem;
 import dev.nakasar.hytale.fractals.combat.Telegraphs;
 import org.joml.Vector3d;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -19,8 +20,9 @@ import java.util.WeakHashMap;
 
 /**
  * Les 14 runes et les objets de soutien des fractales (Kevin, 26 octobre 2026). Chaque effet est lancé par
- * {@link SupportCastInteraction} sur le thread du monde ; il rend faux s'il n'a rien pu faire (pas de cible), et alors
- * ni mana, ni recharge, ni objet ne sont dépensés.
+ * {@link SupportCastInteraction} sur le thread du monde ; il rend faux s'il n'a rien pu faire (cible disparue, leurre
+ * refusé), et alors le mana, l'objet consommé et la recharge propre de l'objet sont rendus (la recharge d'une rune,
+ * gérée par le client, reste).
  *
  * <p>Toutes les tailles (rayons, longueurs, angles) sont ici : la même constante sert au dessin de la zone et au test
  * de qui est dedans (consigne permanente n° 3). Les nombres sont repris par tools/generate_support.py pour les
@@ -116,6 +118,9 @@ public final class Skills {
     static final double LINE_WIDTH = 1;
     static final double LINE_AHEAD = 3;
     static final float LINE_SECONDS = 8f;
+    /** Relevé des ennemis proches de la ligne : période, et marge couverte entre deux relevés (blocs). */
+    static final float LINE_SCAN = 0.5f;
+    static final double LINE_SCAN_MARGIN = 6;
     static final float LINE_ROOT = 1.5f;
 
     static final double SANCTUARY_RADIUS = 4;
@@ -381,12 +386,11 @@ public final class Skills {
                 double a = Telegraphs.angle(at, center);
                 double speed = Math.min(14, d / 0.5);
                 Support.velocity(s, foe, new Vector3d(Math.cos(a) * speed, 3, Math.sin(a) * speed));
-                w.execute(() -> {
-                    Store<EntityStore> s2 = w.getEntityStore().getStore();
+                TelegraphSystem.start(w, delayed(0.5f, (w3, s3) -> {
                     if (foe.isValid()) {
-                        TelegraphSystem.start(w, delayed(0.5f, (w3, s3) -> Support.stun(w3, s3, foe, WELL_STUN, 0)));
+                        Support.stun(w3, s3, foe, WELL_STUN, 0);
                     }
-                });
+                }));
             }
             Telegraphs.particle(s, FX_SLAM, center, 0.8f);
             Telegraphs.sound(s, "SFX_Mace_T2_Signature_Impact", center);
@@ -580,9 +584,21 @@ public final class Skills {
         Vector3d center = new Vector3d(feet).add(flat.x() * LINE_AHEAD, 0, flat.z() * LINE_AHEAD);
         double axis = Math.atan2(flat.z(), flat.x()) + Math.PI / 2;
         Set<Ref<EntityStore>> caught = new HashSet<>();
+        // Ennemis assez proches pour atteindre la ligne d'ici le prochain relevé : le balayage de tout le monde ne se
+        // fait que toutes les LINE_SCAN s, le test de la ligne toutes les 0,1 s sur eux seuls.
+        List<Ref<EntityStore>> near = new ArrayList<>();
+        long[] nextScan = {0L};
         TelegraphSystem.start(world, new Zone(LINE_SECONDS, 0.1f, 0.5f,
                 (w, s, now) -> {
-                    for (Ref<EntityStore> foe : Support.foes(w, s)) {
+                    if (now - nextScan[0] >= 0) {
+                        nextScan[0] = now + Telegraphs.seconds(LINE_SCAN);
+                        near.clear();
+                        near.addAll(Support.foesNear(w, s, center, LINE_LENGTH / 2 + LINE_SCAN_MARGIN));
+                    }
+                    for (Ref<EntityStore> foe : near) {
+                        if (!foe.isValid()) {
+                            continue;
+                        }
                         Vector3d at = Telegraphs.position(s, foe);
                         if (at == null || caught.contains(foe) || !Support.inStrip(at, center, axis, LINE_LENGTH, LINE_WIDTH)) {
                             continue;
@@ -607,7 +623,7 @@ public final class Skills {
             return false;
         }
         Vector3d center = new Vector3d(at);
-        SanctuarySystem.Dome dome = SanctuarySystem.raise(world, center, SANCTUARY_RADIUS, SANCTUARY_SECONDS);
+        SanctuarySystem.raise(world, center, SANCTUARY_RADIUS, SANCTUARY_SECONDS);
         TelegraphSystem.start(world, new Zone(SANCTUARY_SECONDS, 1f, 0.4f, (w, s, now) -> {
         }, (w, s, now) -> {
             Support.disk(s, FX_SANCTUARY, center, SANCTUARY_RADIUS, 1.2, 4, 0.9f);
@@ -622,7 +638,7 @@ public final class Skills {
                 }
             }
         }));
-        return dome != null;
+        return true;
     }
 
     // --- objets ------------------------------------------------------------------------------------

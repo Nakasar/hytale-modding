@@ -220,6 +220,7 @@ public final class FractalsPlugin extends JavaPlugin {
         // Après les filtres qu'il doit précéder (StageDamageFilter, CliffsideDamageFilter, MinionShieldSystem).
         systems.registerSystem(new MistPotionDamageFilter());
         systems.registerSystem(new SupportDamageFilter());
+        systems.registerSystem(new SupportDamageFilter.Lethal());
         systems.registerSystem(new SupportSteeringSystem());
         systems.registerSystem(new SupportHitSystem());
         systems.registerSystem(new SanctuarySystem.Launch());

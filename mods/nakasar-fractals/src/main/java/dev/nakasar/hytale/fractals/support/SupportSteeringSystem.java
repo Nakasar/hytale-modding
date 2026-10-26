@@ -59,13 +59,13 @@ public final class SupportSteeringSystem extends EntityTickingSystem<EntityStore
     @Override
     public void tick(float dt, int index, ArchetypeChunk<EntityStore> chunk, Store<EntityStore> store,
                      CommandBuffer<EntityStore> buffer) {
-        if (SupportStates.SLOWS.isEmpty() && SupportStates.FEARS.isEmpty()) {
-            return;
-        }
         long now = System.nanoTime();
         if (now - nextPrune >= 0) {
             nextPrune = now + PRUNE_EVERY;
             SupportStates.prune();
+        }
+        if (SupportStates.SLOWS.isEmpty() && SupportStates.FEARS.isEmpty()) {
+            return;
         }
         Ref<EntityStore> ref = chunk.getReferenceTo(index);
         float slow = SupportStates.slowOf(ref, now);

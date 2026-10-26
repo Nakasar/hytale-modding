@@ -13,6 +13,7 @@ import com.hypixel.hytale.server.core.entity.effect.ActiveEntityEffect;
 import com.hypixel.hytale.server.core.modules.entity.damage.Damage;
 import com.hypixel.hytale.server.core.modules.entity.damage.DamageEventSystem;
 import com.hypixel.hytale.server.core.modules.entity.damage.DamageModule;
+import com.hypixel.hytale.server.core.modules.entity.damage.DamageSystems;
 import com.hypixel.hytale.server.core.modules.entitystats.EntityStatMap;
 import com.hypixel.hytale.server.core.modules.entitystats.EntityStatValue;
 import com.hypixel.hytale.server.core.modules.entitystats.asset.DefaultEntityStatTypes;
@@ -35,8 +36,8 @@ import java.util.Set;
  *   <li>Égide des Brumes : le prochain coup <i>direct</i> d'un PNJ (corps à corps, projectile, coup de zone d'un boss)
  *   est annulé et l'égide tombe. L'agonie, les dégâts d'effets (poison, brûlure), les pièges et les dégâts du Java des
  *   fractales (rayons, explosions de mécanique, chutes) ne viennent pas d'un PNJ et passent ;</li>
- *   <li>Sursis : un coup qui tuerait un joueur couvert le laisse à 1 PV, une fois par lancer, puis
- *   {@value Skills#REPRIEVE_SPARE} s sans aucun dégât.</li>
+ *   <li>Sursis : un coup qui tuerait un joueur couvert (après armure, voir {@link Lethal}) le laisse à 1 PV, une
+ *   fois par lancer, puis {@value Skills#REPRIEVE_SPARE} s sans aucun dégât.</li>
  * </ul>
  */
 public final class SupportDamageFilter extends DamageEventSystem {
@@ -120,28 +121,64 @@ public final class SupportDamageFilter extends DamageEventSystem {
             });
             return;
         }
+    }
 
-        // Sursis : un coup mortel.
-        SupportStates.Reprieve reprieve = SupportStates.REPRIEVE.get(victim);
-        if (reprieve != null && now >= reprieve.until) {
-            SupportStates.REPRIEVE.remove(victim);
-            reprieve = null;
+    /**
+     * Sursis : le coup mortel, testé une fois les armures et la parade passées, pour ne pas dépenser le sursis sur un
+     * coup que l'armure aurait rendu survivable.
+     */
+    public static final class Lethal extends DamageEventSystem {
+
+        private static final Set<Dependency<EntityStore>> DEPENDENCIES = Set.of(
+                new SystemDependency<>(Order.AFTER, SupportDamageFilter.class),
+                new SystemDependency<>(Order.AFTER, DamageSystems.ArmorDamageReduction.class),
+                new SystemDependency<>(Order.AFTER, DamageSystems.WieldingDamageReduction.class));
+
+        @Override
+        public SystemGroup<EntityStore> getGroup() {
+            return DamageModule.get().getFilterDamageGroup();
         }
-        if (reprieve != null && !reprieve.used) {
-            EntityStatMap stats = chunk.getComponent(index, EntityStatMap.getComponentType());
-            EntityStatValue health = stats == null ? null : stats.get(DefaultEntityStatTypes.getHealth());
-            if (health != null && health.get() - damage.getAmount() <= 0f) {
-                reprieve.used = true;
-                damage.setAmount(Math.max(0f, health.get() - 1f));
-                SupportStates.SPARED.put(victim, now + Telegraphs.seconds(Skills.REPRIEVE_SPARE));
-                world.execute(() -> {
-                    if (victim.isValid()) {
-                        Store<EntityStore> s = world.getEntityStore().getStore();
-                        dev.nakasar.hytale.fractals.combat.Hurt.clear(s, victim, Skills.EFFECT_REPRIEVE);
-                        dev.nakasar.hytale.fractals.combat.Hurt.effect(s, victim, Skills.EFFECT_SPARED, Skills.REPRIEVE_SPARE);
-                        Support.tell(s, victim, "reprieve.saved");
-                    }
-                });
+
+        @Override
+        public Set<Dependency<EntityStore>> getDependencies() {
+            return DEPENDENCIES;
+        }
+
+        @Override
+        public Query<EntityStore> getQuery() {
+            return Query.and(EntityStatMap.getComponentType(), PlayerRef.getComponentType());
+        }
+
+        @Override
+        public void handle(int index, ArchetypeChunk<EntityStore> chunk, Store<EntityStore> store,
+                           CommandBuffer<EntityStore> buffer, Damage damage) {
+            if (damage.isCancelled() || damage.getAmount() <= 0f) {
+                return;
+            }
+            Ref<EntityStore> victim = chunk.getReferenceTo(index);
+            World world = store.getExternalData().getWorld();
+            long now = System.nanoTime();
+            SupportStates.Reprieve reprieve = SupportStates.REPRIEVE.get(victim);
+            if (reprieve != null && now >= reprieve.until) {
+                SupportStates.REPRIEVE.remove(victim);
+                reprieve = null;
+            }
+            if (reprieve != null && !reprieve.used) {
+                EntityStatMap stats = chunk.getComponent(index, EntityStatMap.getComponentType());
+                EntityStatValue health = stats == null ? null : stats.get(DefaultEntityStatTypes.getHealth());
+                if (health != null && health.get() - damage.getAmount() <= 0f) {
+                    reprieve.used = true;
+                    damage.setAmount(Math.max(0f, health.get() - 1f));
+                    SupportStates.SPARED.put(victim, now + Telegraphs.seconds(Skills.REPRIEVE_SPARE));
+                    world.execute(() -> {
+                        if (victim.isValid()) {
+                            Store<EntityStore> s = world.getEntityStore().getStore();
+                            dev.nakasar.hytale.fractals.combat.Hurt.clear(s, victim, Skills.EFFECT_REPRIEVE);
+                            dev.nakasar.hytale.fractals.combat.Hurt.effect(s, victim, Skills.EFFECT_SPARED, Skills.REPRIEVE_SPARE);
+                            Support.tell(s, victim, "reprieve.saved");
+                        }
+                    });
+                }
             }
         }
     }

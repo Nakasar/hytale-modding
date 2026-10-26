@@ -6,7 +6,6 @@ import com.hypixel.hytale.component.Ref;
 import com.hypixel.hytale.component.Store;
 import com.hypixel.hytale.protocol.ChangeVelocityType;
 import com.hypixel.hytale.server.core.Message;
-import com.hypixel.hytale.server.core.modules.entity.component.TransformComponent;
 import com.hypixel.hytale.server.core.modules.entity.damage.Damage;
 import com.hypixel.hytale.server.core.modules.entity.damage.DamageCause;
 import com.hypixel.hytale.server.core.modules.entity.damage.DamageSystems;
@@ -375,9 +374,13 @@ public final class Support {
         }
     }
 
-    public static Vector3d position(Store<EntityStore> store, Ref<EntityStore> ref) {
-        TransformComponent t = ref == null || !ref.isValid() ? null : store.getComponent(ref, TransformComponent.getComponentType());
-        return t == null ? null : new Vector3d(t.getPosition());
+    /** Annule la recharge propre `item` du joueur (effet qui n'a rien pu faire). */
+    static void forget(Store<EntityStore> store, Ref<EntityStore> player, String item) {
+        PlayerRef ref = store.getComponent(player, PlayerRef.getComponentType());
+        Map<String, Long> mine = ref == null ? null : COOLDOWNS.get(ref.getUuid());
+        if (mine != null) {
+            mine.remove(item);
+        }
     }
 
     public static void clearAll() {

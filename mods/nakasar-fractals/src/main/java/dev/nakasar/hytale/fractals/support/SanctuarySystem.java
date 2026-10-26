@@ -35,24 +35,18 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 public final class SanctuarySystem {
 
-    /** Un dôme levé (centre au sol, rayon de la sphère), jusqu'à {@code until}. */
-    public record Dome(World world, Vector3d center, double radius, long until) {
-    }
-
     /** Projectiles ennemis vivants, notés au tir → monde. */
     private static final Map<Ref<EntityStore>, World> HOSTILE = new ConcurrentHashMap<>();
-    private static final Map<World, Integer> DOMES = new ConcurrentHashMap<>();
 
     private SanctuarySystem() {
     }
 
     /** Lève un dôme : à chaque tick, les projectiles ennemis dans la sphère sont détruits. */
-    static Dome raise(World world, Vector3d center, double radius, float seconds) {
-        Dome dome = new Dome(world, new Vector3d(center), radius, System.nanoTime() + Telegraphs.seconds(seconds));
-        DOMES.merge(world, 1, Integer::sum);
+    static void raise(World world, Vector3d center, double radius, float seconds) {
+        Vector3d dome = new Vector3d(center);
+        long until = System.nanoTime() + Telegraphs.seconds(seconds);
         TelegraphSystem.start(world, (w, s, now) -> {
-            if (now >= dome.until()) {
-                DOMES.computeIfPresent(w, (k, n) -> n <= 1 ? null : n - 1);
+            if (now >= until) {
                 return true;
             }
             for (var it = HOSTILE.entrySet().iterator(); it.hasNext(); ) {
@@ -66,7 +60,7 @@ public final class SanctuarySystem {
                     continue;
                 }
                 Vector3d at = Telegraphs.position(s, projectile);
-                if (at != null && at.distance(dome.center()) <= dome.radius()) {
+                if (at != null && at.distance(dome) <= radius) {
                     it.remove();
                     Telegraphs.particle(s, Skills.FX_WARD, at, 0.8f);
                     Spawns.remove(s, projectile);
@@ -74,7 +68,6 @@ public final class SanctuarySystem {
             }
             return false;
         });
-        return dome;
     }
 
     private static void note(Store<EntityStore> store, CommandBuffer<EntityStore> buffer, Ref<EntityStore> shooter,
@@ -95,7 +88,6 @@ public final class SanctuarySystem {
 
     public static void clearAll() {
         HOSTILE.clear();
-        DOMES.clear();
     }
 
     public static final class Launch extends EntityEventSystem<EntityStore, ProjectileLaunchEvent> {

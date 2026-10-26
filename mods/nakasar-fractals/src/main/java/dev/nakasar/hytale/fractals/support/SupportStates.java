@@ -5,7 +5,9 @@ import com.hypixel.hytale.server.core.universe.world.World;
 import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
 import org.joml.Vector3d;
 
+import java.util.Collections;
 import java.util.Map;
+import java.util.WeakHashMap;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
@@ -36,8 +38,8 @@ public final class SupportStates {
     static final Map<Ref<EntityStore>, Reprieve> REPRIEVE = new ConcurrentHashMap<>();
     /** Invulnérabilité courte donnée par le Sursis. */
     static final Map<Ref<EntityStore>, Long> SPARED = new ConcurrentHashMap<>();
-    /** Une bannière par monde (la dernière plantée remplace l'autre). */
-    static final Map<World, Banner> BANNERS = new ConcurrentHashMap<>();
+    /** Une bannière par monde (la dernière plantée remplace l'autre) ; faible, pour ne pas retenir un monde fermé. */
+    static final Map<World, Banner> BANNERS = Collections.synchronizedMap(new WeakHashMap<>());
 
     /** Un lancer de Sursis : partagé par les joueurs couverts, consommé une fois. */
     static final class Reprieve {
@@ -90,13 +92,14 @@ public final class SupportStates {
         return true;
     }
 
-    /** Oublie les entités disparues (appelé de temps en temps par le système de pilotage). */
+    /** Oublie les entités disparues et les états échus (appelé de temps en temps par le système de pilotage). */
     static void prune() {
+        long now = System.nanoTime();
         SLOWS.keySet().removeIf(r -> !r.isValid());
-        FEARS.keySet().removeIf(r -> !r.isValid());
-        AEGIS.keySet().removeIf(r -> !r.isValid());
-        REPRIEVE.keySet().removeIf(r -> !r.isValid());
-        SPARED.keySet().removeIf(r -> !r.isValid());
+        FEARS.entrySet().removeIf(e -> !e.getKey().isValid() || now >= e.getValue().until());
+        AEGIS.entrySet().removeIf(e -> !e.getKey().isValid() || now >= e.getValue());
+        REPRIEVE.entrySet().removeIf(e -> !e.getKey().isValid() || now >= e.getValue().until);
+        SPARED.entrySet().removeIf(e -> !e.getKey().isValid() || now >= e.getValue());
     }
 
     public static void clearAll() {

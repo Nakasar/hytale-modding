@@ -6,22 +6,33 @@ import com.hypixel.hytale.codec.builder.BuilderCodec;
 import com.hypixel.hytale.component.CommandBuffer;
 import com.hypixel.hytale.component.Ref;
 import com.hypixel.hytale.component.Store;
+import com.hypixel.hytale.protocol.ChangeStatBehaviour;
 import com.hypixel.hytale.protocol.InteractionState;
 import com.hypixel.hytale.protocol.InteractionType;
+import com.hypixel.hytale.protocol.ValueType;
 import com.hypixel.hytale.protocol.WaitForDataFrom;
 import com.hypixel.hytale.server.core.entity.InteractionContext;
+import com.hypixel.hytale.server.core.inventory.InventoryComponent;
+import com.hypixel.hytale.server.core.inventory.ItemStack;
 import com.hypixel.hytale.server.core.modules.interaction.interaction.CooldownHandler;
+import com.hypixel.hytale.server.core.modules.entitystats.EntityStatMap;
 import com.hypixel.hytale.server.core.modules.interaction.interaction.config.SimpleInstantInteraction;
+import com.hypixel.hytale.server.core.modules.interaction.interaction.util.AbilityCastUtil;
 import com.hypixel.hytale.server.core.universe.PlayerRef;
 import com.hypixel.hytale.server.core.universe.world.World;
 import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
 import dev.nakasar.hytale.fractals.FractalsPlugin;
+import dev.nakasar.hytale.fractals.arena.Carried;
+import it.unimi.dsi.fastutil.ints.Int2FloatMap;
+import it.unimi.dsi.fastutil.ints.Int2FloatOpenHashMap;
 
 /**
  * {@code "Type": "Nakasar_Fractal_Support"} : lance une rune ou un objet de soutien ({@link Skills}). Ce qui peut
  * échouer est vérifié ici, tout de suite : la cible visée (allié pour la Transfusion et le bâton, ennemi pour
  * l'Hébètement) et la recharge propre de l'objet. En cas d'échec l'interaction est {@code Failed} et la suite de la
- * chaîne (mana, recharge de la rune, objet consommé) ne passe pas. L'effet lui-même part sur le thread du monde.
+ * chaîne (mana, recharge de la rune, objet consommé) ne passe pas. L'effet lui-même part sur le thread du monde, une
+ * fois la chaîne passée : s'il échoue alors (cible disparue entre-temps, leurre refusé par le jeu), le mana, l'objet
+ * consommé et la recharge propre de l'objet sont rendus. La recharge d'une rune, gérée par le client, reste.
  *
  * <p>Clé JSON : {@code Skill} (string), l'un de {@link Skill}.
  */
@@ -44,17 +55,28 @@ public class SupportCastInteraction extends SimpleInstantInteraction {
         HealingBreath, Transfusion, Aegis, Reprieve, Shockwave, Daze, GravityWell, Fear, HealingWell, FrostGlyph, Brazier,
         FrostLine, Sanctuary, Decoy,
         StaffMend(Skills.STAFF_COOLDOWN), GrimoireGlyph(Skills.GRIMOIRE_COOLDOWN), WandVines(Skills.VINES_COOLDOWN),
-        HealingTotem, SlownessTotem, DazeBomb, SmokeBomb,
-        BannerMight(Skills.BANNER_COOLDOWN), BannerGuard(Skills.BANNER_COOLDOWN), Purge;
+        HealingTotem(true), SlownessTotem(true), DazeBomb(true), SmokeBomb(true),
+        BannerMight(Skills.BANNER_COOLDOWN), BannerGuard(Skills.BANNER_COOLDOWN), Purge(true);
 
         final float cooldown;
+        /** Objet consommé au lancer (rendu si l'effet échoue). */
+        final boolean consumed;
 
         Skill() {
-            this(0f);
+            this(0f, false);
+        }
+
+        Skill(boolean consumed) {
+            this(0f, consumed);
         }
 
         Skill(float cooldown) {
+            this(cooldown, false);
+        }
+
+        Skill(float cooldown, boolean consumed) {
             this.cooldown = cooldown;
+            this.consumed = consumed;
         }
 
         static Skill of(String id) {
@@ -109,17 +131,42 @@ public class SupportCastInteraction extends SimpleInstantInteraction {
             return;
         }
         Ref<EntityStore> aimed = target;
+        Int2FloatMap cost = AbilityCastUtil.resolveCostMap(context, true);
+        ItemStack held = kind.consumed ? InventoryComponent.getItemInHand(buffer, caster) : null;
+        String item = held == null ? null : held.getItemId();
         world.execute(() -> {
             if (!caster.isValid()) {
                 return;
             }
-            run(kind, world, world.getEntityStore().getStore(), caster, aimed);
+            Store<EntityStore> s = world.getEntityStore().getStore();
+            if (!run(kind, world, s, caster, aimed)) {
+                refund(s, caster, kind, cost, item);
+            }
         });
     }
 
-    private static void run(Skill kind, World world, Store<EntityStore> store, Ref<EntityStore> caster,
+    /** L'effet n'a rien pu faire : rend le mana, l'objet consommé et la recharge propre de l'objet. */
+    private static void refund(Store<EntityStore> store, Ref<EntityStore> caster, Skill kind, Int2FloatMap cost, String item) {
+        if (cost != null && !cost.isEmpty()) {
+            EntityStatMap stats = store.getComponent(caster, EntityStatMap.getComponentType());
+            if (stats != null) {
+                Int2FloatMap back = new Int2FloatOpenHashMap();
+                cost.int2FloatEntrySet().forEach(e -> back.put(e.getIntKey(), -e.getFloatValue()));
+                stats.processStatChanges(EntityStatMap.Predictable.SELF, back, ValueType.Absolute, ChangeStatBehaviour.Add);
+            }
+        }
+        if (item != null) {
+            Carried.give(store, caster, item);
+        }
+        if (kind.cooldown > 0) {
+            Support.forget(store, caster, kind.name());
+        }
+        FractalsPlugin.get().getLogger().atInfo().log("Soutien : '%s' sans effet, coût rendu", kind.name());
+    }
+
+    private static boolean run(Skill kind, World world, Store<EntityStore> store, Ref<EntityStore> caster,
                             Ref<EntityStore> target) {
-        switch (kind) {
+        return switch (kind) {
             case HealingBreath -> Skills.healingBreath(world, store, caster);
             case Transfusion -> Skills.transfusion(world, store, caster, target);
             case Aegis -> Skills.aegis(world, store, caster);
@@ -144,7 +191,7 @@ public class SupportCastInteraction extends SimpleInstantInteraction {
             case BannerMight -> Skills.banner(world, store, caster, true);
             case BannerGuard -> Skills.banner(world, store, caster, false);
             case Purge -> Skills.purge(world, store, caster);
-        }
+        };
     }
 
     @Override
