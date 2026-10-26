@@ -1,7 +1,7 @@
 package dev.nakasar.hytale.fractals.deepstone;
 
 /**
- * Positions de Pierre-Profonde, écrites par tools/generate_deepstone.py (ne pas modifier à la main : relancer le
+ * Positions de la Roche des Abysses, écrites par tools/generate_deepstone.py (ne pas modifier à la main : relancer le
  * générateur). Repère du monde : x vers l'est, z vers le sud. Points {x, y, z} : pieds ; blocs {x, y, z} : coins.
  * Boîtes {x0, x1, z0, z1} en blocs.
  */

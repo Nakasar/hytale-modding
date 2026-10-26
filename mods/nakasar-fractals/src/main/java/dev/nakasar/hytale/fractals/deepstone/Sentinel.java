@@ -22,7 +22,7 @@ import java.util.List;
 import java.util.UUID;
 
 /**
- * La Sentinelle de Pierre-Profonde, sur sa corniche ouverte au vide à l'ouest (GW2). Souffle glacé et coup de vent :
+ * La Sentinelle de la Roche des Abysses, sur sa corniche ouverte au vide à l'ouest (GW2). Souffle glacé et coup de vent :
  * rôle JSON. En Java :
  * <ul>
  *   <li>toutes les {@value #SPIRAL_EVERY} s, une spirale de vent : {@value #SPIRAL_COUNT} cercles rouges de

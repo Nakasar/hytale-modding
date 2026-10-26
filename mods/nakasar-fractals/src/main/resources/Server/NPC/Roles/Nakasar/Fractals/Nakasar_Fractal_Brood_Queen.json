@@ -3,7 +3,7 @@
   "Type": "Generic",
   "Appearance": "Nakasar_Fractal_Brood_Queen",
   "NameTranslationKey": "nakasar_fractals_deepstone.npc.Brood_Queen.name",
-  "MaxHealth": 8000,
+  "MaxHealth": 3000,
   "DropList": "Nakasar_Fractal_Loot_Brood_Queen",
   "StartState": "Idle",
   "DefaultPlayerAttitude": "Hostile",

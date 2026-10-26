@@ -1,5 +1,5 @@
 {
-  "$Comment": "Ombre de Pierre-Profonde : griffes, onde qui hébète. Généré par tools/generate_deepstone.py.",
+  "$Comment": "Ombre de la Roche des Abysses : griffes, onde qui hébète. Généré par tools/generate_deepstone.py.",
   "Type": "Generic",
   "Appearance": "Nakasar_Fractal_Deepstone_Shade",
   "NameTranslationKey": "nakasar_fractals_deepstone.npc.Deepstone_Shade.name",

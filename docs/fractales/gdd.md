@@ -257,7 +257,7 @@ Aucun boss ne se soigne (AGENTS.md) : une remise à zéro (personne dans la zone
 
 Générateurs : `tools/generate_sirens_reef.py` (assets, rôles, effets, `SirensReefLayout.java`) et `tools/sirens_reef_scenery.py` (terrain : mer à bord courbe et récif extérieur, falaises, labyrinthe à couloirs courbes, fort, tête de pierre, navire). Code : paquet `sirensreef`.
 
-### Pierre-Profonde (Deepstone), troisième fractale de la saison 2
+### Roche des Abysses (Deepstone), troisième fractale de la saison 2
 
 Le caveau des nains de Deldrimor, entièrement souterrain (voûte de roche sur toute la carte, d'après la carte et les captures GW2 de Kevin). **Torin** et **Kay** attendent devant le **Cristal de Deldrimor** éteint (invulnérables).
 
@@ -301,7 +301,7 @@ Les autres fractales de GW2, à reprendre de la même façon (wiki relu avant ch
 | Fournaise en fusion, Réacteur thaumanova, Installation souterraine, Champ de bataille urbain, Chaos, Oasis du crépuscule | rencontres en chaîne variées | à détailler |
 | Cauchemar, Observatoire brisé, Tour solitaire, Kinfall | fractales « boss » avec mode défi | pour le rang Maître |
 
-(Kinfall : nom français non vérifié. Silent Surf est devenu le Ressac silencieux, Siren's Reef le Récif de la Sirène, Deepstone Pierre-Profonde et Sunqua Peak le Pic de Sunqua, ci-dessus.)
+(Kinfall : nom français non vérifié. Silent Surf est devenu le Ressac silencieux, Siren's Reef le Récif de la Sirène, Deepstone la Roche des Abysses et Sunqua Peak le Pic de Sunqua, ci-dessus.)
 
 ## Runes et objets de soutien (26 octobre 2026)
 

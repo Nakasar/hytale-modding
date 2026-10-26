@@ -22,7 +22,7 @@ import java.util.Collections;
 import java.util.List;
 
 /**
- * L'est de Pierre-Profonde (GW2) :
+ * L'est de la Roche des Abysses (GW2) :
  * <ul>
  *   <li>les nids (sur les œufs vanilla du Marais) pondent une araignée toutes les {@value #BROOD_EVERY} s tant qu'un
  *   joueur est à moins de {@value #BROOD_RANGE} blocs (au plus {@value #BROOD_MAX} vivantes, sans butin) ; détruit, le nid

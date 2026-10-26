@@ -34,7 +34,7 @@ Les **fractales** sont des aventures courtes de 1 à 5 joueurs, tirées des frac
 |---|---|---|
 | [Ressac silencieux](ressac-silencieux.md) | descente d'une grotte de jade : grappin, parachute, tyroliennes, champignons | le second Dolus, Kanaxai |
 | [Récif de la Sirène](recif-de-la-sirene.md) | île au trésor maudit : canon des ombres, mines, trésors à se lancer, navire fantôme | Tête-de-pierre, Black Peter, Mad Jack, Calix, Arabella Crowe |
-| [Pierre-Profonde](pierre-profonde.md) | caveau nain : grille de runes, pont du vent, Lumière de Deldrimor, gouffre invisible, ascenseur | Sentinelle, Reine de la couvée, Minotaure des ombres, la Voix |
+| [Roche des Abysses](roche-des-abysses.md) | caveau nain : grille de runes, pont du vent, Lumière de Deldrimor, gouffre invisible, ascenseur | Sentinelle, Reine de la couvée, Minotaure des ombres, la Voix |
 | [Pic de Sunqua](pic-de-sunqua.md) | massif flottant d'Ai : escalier brisé au Bond chargé, colonnes de vent, cascades, Marché des marées, sentier de lave, météores | Voix de la montagne, Fureur de la montagne, Ai (Ai assombrie au rang Maître) |
 
 ## Le reste

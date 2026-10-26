@@ -1,9 +1,9 @@
 {
-  "$Comment": "Sentinelle de Pierre-Profonde, barre de boss : souffle glacé, coup de vent. Spirale de vent et esprits du vent à 80, 50 et 20 % : Java (deepstone.Sentinel). Généré par tools/generate_deepstone.py.",
+  "$Comment": "Sentinelle de la Roche des Abysses, barre de boss : souffle glacé, coup de vent. Spirale de vent et esprits du vent à 80, 50 et 20 % : Java (deepstone.Sentinel). Généré par tools/generate_deepstone.py.",
   "Type": "Generic",
   "Appearance": "Nakasar_Fractal_Deepstone_Sentinel",
   "NameTranslationKey": "nakasar_fractals_deepstone.npc.Deepstone_Sentinel.name",
-  "MaxHealth": 7000,
+  "MaxHealth": 2500,
   "DropList": "Nakasar_Fractal_Loot_Deepstone_Sentinel",
   "StartState": "Idle",
   "DefaultPlayerAttitude": "Hostile",
