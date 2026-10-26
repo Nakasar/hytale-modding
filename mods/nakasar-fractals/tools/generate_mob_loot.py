@@ -323,6 +323,35 @@ LOOT = {
         item("Ingredient_Crystal_Purple", 1, 2),
         item("Rock_Gem_Sapphire", 1, chance=50),
     ]),
+    # --- Pic de Sunqua (gardiens de base et boss ; pas les esprits de l'eau, les rochers, les divisions de lave ni les
+    # craintes, qui reviennent ou naissent d'un combat) ---------------------------------------------------------------
+    "Sunqua_Air_Elemental": ("Élémentaire d'air du Pic de Sunqua : essence de foudre.", [
+        item("Ingredient_Lightning_Essence", 1, 2),
+    ]),
+    "Voice_Of_The_Mountain": ("Voix de la montagne : essence de foudre, cristal cyan, zéphyr.", [
+        item("Ingredient_Lightning_Essence", 2, 3),
+        item("Ingredient_Crystal_Cyan", 1, 2),
+        item("Rock_Gem_Zephyr", 1, chance=40),
+    ]),
+    "Sunqua_Tiger": ("Tigre du pic : cuir lourd, éclats d'os.", [
+        item("Ingredient_Hide_Heavy", 1, 2),
+        item("Ingredient_Bone_Fragment", 1, 2),
+    ]),
+    "Fury_Of_The_Mountain": ("Fureur de la montagne : essence de feu, cristal rouge, rubis.", [
+        item("Ingredient_Fire_Essence", 2, 3),
+        item("Ingredient_Crystal_Red", 1, 2),
+        item("Rock_Gem_Ruby", 1, chance=40),
+    ]),
+    "Ai_Keeper_Of_The_Peak": ("Ai, gardienne du pic : essences d'eau, de feu et de foudre, saphir.", [
+        item("Ingredient_Water_Essence", 2, 3),
+        item("Ingredient_Fire_Essence", 1, 2),
+        item("Ingredient_Lightning_Essence", 1, 2),
+        item("Rock_Gem_Sapphire", 1, chance=50),
+    ]),
+    "Ai_Dark": ("Ai assombrie (rang Maître) : essence du Vide, pierre de vide.", [
+        item("Ingredient_Void_Essence", 2, 3),
+        item("Rock_Gem_Voidstone", 1, chance=50),
+    ]),
 }
 
 

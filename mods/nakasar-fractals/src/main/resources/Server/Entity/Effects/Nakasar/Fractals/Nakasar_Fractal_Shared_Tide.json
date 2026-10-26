@@ -1,0 +1,12 @@
+{
+  "$Comment": "Marée partagée : un cercle sur vous ; ses dégâts se partagent entre ceux qui s'y tiennent (Java).",
+  "Name": "nakasar_fractals_sunqua_peak.effects.Nakasar_Fractal_Shared_Tide",
+  "Debuff": true,
+  "StatusEffectIcon": "UI/StatusEffects/Nakasar/Fractals/Shared_Tide.png",
+  "ApplicationEffects": {
+    "EntityTopTint": "#60e0a0"
+  },
+  "OverlapBehavior": "Overwrite",
+  "Infinite": false,
+  "Duration": 5.0
+}

@@ -1,0 +1,10 @@
+{
+  "$Comment": "Tristesse de la montagne (émotion d'Ai, l'eau) : golem de cristal de givre vanilla (x 1,6).",
+  "Parent": "Golem_Crystal_Frost",
+  "MinScale": 1.6,
+  "MaxScale": 1.6,
+  "Light": {
+    "Color": "#6af",
+    "Radius": 6
+  }
+}

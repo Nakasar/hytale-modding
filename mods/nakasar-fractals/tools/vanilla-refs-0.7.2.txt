@@ -25,3 +25,7 @@ animations Outlander_Brute_Default
 animations Hyena_Default
 animations Raptor_Cave_Default
 animations Crocodile_Default
+# Griffes et morsure du tigre à dents de sabre vanilla (Server/Item/Animations/NPC/Beast/Tiger_Sabertooth/
+# Tiger_Sabertooth_Default.json : SwipeLeft, SwipeRight, Bite ; vu dans Assets.zip 0.7.2 le 26 octobre 2026, déjà
+# accepté par le mod Vampires) : tigres du Pic de Sunqua.
+animations Tiger_Sabertooth_Default

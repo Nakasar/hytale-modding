@@ -1,0 +1,12 @@
+{
+  "$Comment": "Bombe d'Ai : un cercle vous suit ; il éclate à vos pieds (Java). Restez à l'écart des autres.",
+  "Name": "nakasar_fractals_sunqua_peak.effects.Nakasar_Fractal_Storm_Marked",
+  "Debuff": true,
+  "StatusEffectIcon": "UI/StatusEffects/Nakasar/Fractals/Storm_Marked.png",
+  "ApplicationEffects": {
+    "EntityTopTint": "#a0d0ff"
+  },
+  "OverlapBehavior": "Overwrite",
+  "Infinite": false,
+  "Duration": 4.0
+}

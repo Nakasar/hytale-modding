@@ -75,6 +75,14 @@
       },
       "Input": [],
       "Stock": 999
+    },
+    {
+      "Output": {
+        "ItemId": "Nakasar_Fractal_Core_SunquaPeak",
+        "Quantity": 1
+      },
+      "Input": [],
+      "Stock": 999
     }
   ]
 }

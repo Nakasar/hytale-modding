@@ -1,0 +1,12 @@
+{
+  "$Comment": "Élémentaire de lave qui explose : gerbe de braises. Généré par tools/generate_sunqua_peak.py.",
+  "Spawners": [
+    {
+      "SpawnerId": "Nakasar_Fractal_Lava_Blast_Blast",
+      "PositionOffset": {
+        "Y": 0.3
+      }
+    }
+  ],
+  "CullDistance": 72
+}

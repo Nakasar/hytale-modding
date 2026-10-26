@@ -1,0 +1,20 @@
+{
+  "$Comment": "Rocher tombé (PNJ fixe) : gros rocher moussu posé sur la Tristesse.",
+  "Model": "NPC/Nakasar/Fractals/Fallen_Boulder/Model.blockymodel",
+  "Texture": "NPC/Nakasar/Fractals/Fallen_Boulder/Texture.png",
+  "EyeHeight": 0.8,
+  "HitBox": {
+    "Max": {
+      "X": 0.9,
+      "Y": 1.6,
+      "Z": 0.9
+    },
+    "Min": {
+      "X": -0.9,
+      "Y": 0,
+      "Z": -0.9
+    }
+  },
+  "MinScale": 1.0,
+  "MaxScale": 1.0
+}

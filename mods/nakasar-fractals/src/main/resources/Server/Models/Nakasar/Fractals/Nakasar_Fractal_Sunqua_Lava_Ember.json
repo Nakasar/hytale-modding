@@ -1,0 +1,10 @@
+{
+  "$Comment": "Petit élémentaire de lave (division) : esprit de braise vanilla (x 0,8).",
+  "Parent": "Spirit_Ember",
+  "MinScale": 0.8,
+  "MaxScale": 0.8,
+  "Light": {
+    "Color": "#f60",
+    "Radius": 2
+  }
+}

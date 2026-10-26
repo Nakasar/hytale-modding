@@ -1,0 +1,52 @@
+{
+  "TranslationProperties": {
+    "Name": "nakasar_fractals_sunqua_peak.items.Nakasar_Fractal_Sunqua_Blossom.name",
+    "Description": "nakasar_fractals_sunqua_peak.items.Nakasar_Fractal_Sunqua_Blossom.description"
+  },
+  "Categories": [
+    "Blocks.Plants"
+  ],
+  "Icon": "Icons/ItemsGenerated/Plant_Rhododendron_Pink_Leaves.png",
+  "PlayerAnimationsId": "Item",
+  "Interactions": {
+    "Primary": "Block_Primary",
+    "Secondary": "Block_Secondary"
+  },
+  "BlockType": {
+    "DrawType": "Model",
+    "CustomModel": "Blocks/Foliage/Leaves/Ball.blockymodel",
+    "CustomModelTexture": [
+      {
+        "Texture": "Blocks/Foliage/Leaves/Ball_Textures/Rhododendron_Pink.png",
+        "Weight": 1
+      }
+    ],
+    "Opacity": "Cutout",
+    "Group": "Leaves",
+    "Effect": [
+      "Wind"
+    ],
+    "Flags": {},
+    "RandomRotation": "YawPitchRollStep1",
+    "Gathering": {
+      "Breaking": {
+        "GatherType": "Unbreakable"
+      }
+    },
+    "BlockParticleSetId": "Leaves",
+    "ParticleColor": "#e070a8",
+    "BlockSoundSetId": "Leaves",
+    "PhysicalMaterialId": "Foliage",
+    "IgnoreSupportWhenPlaced": true,
+    "TextureComputedColor": "#a13858"
+  },
+  "Tags": {
+    "Type": [
+      "Plant"
+    ],
+    "Family": [
+      "Leaves"
+    ]
+  },
+  "ItemSoundSetId": "ISS_Items_Foliage"
+}

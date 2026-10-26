@@ -1,0 +1,112 @@
+{
+  "$Comment": "Fureur de la montagne, au contact : deux coups brûlants (22 dégâts et Brûlure 4 s chacun).",
+  "Type": "Serial",
+  "Interactions": [
+    {
+      "$Comment": "Coup brûlant gauche.",
+      "Type": "Simple",
+      "RunTime": 0.5,
+      "Effects": {
+        "WorldSoundEventId": "SFX_Light_Melee_T2_Swing",
+        "ItemPlayerAnimationsId": "Golem_Firesteel_Default",
+        "ItemAnimationId": "SwingLeft"
+      },
+      "Next": {
+        "Type": "Selector",
+        "RunTime": 0.15,
+        "Selector": {
+          "Id": "Horizontal",
+          "Direction": "ToLeft",
+          "TestLineOfSight": true,
+          "ExtendTop": 0.8,
+          "ExtendBottom": 0.8,
+          "StartDistance": 0.2,
+          "EndDistance": 4.0,
+          "Length": 100,
+          "RollOffset": 0,
+          "YawStartOffset": 50
+        },
+        "HitEntity": {
+          "Interactions": [
+            {
+              "Parent": "DamageEntityParent",
+              "DamageCalculator": {
+                "BaseDamage": {
+                  "Physical": 22
+                },
+                "RandomPercentageModifier": 0.1
+              },
+              "DamageEffects": {
+                "WorldSoundEventId": "SFX_T1_Impact_Blunt",
+                "WorldParticles": [
+                  {
+                    "SystemId": "Impact_Sword_Basic_Stronk"
+                  }
+                ]
+              }
+            },
+            {
+              "Type": "ApplyEffect",
+              "EffectId": "Nakasar_Fractal_Sunqua_Burning",
+              "Entity": "Target",
+              "Duration": 4
+            }
+          ]
+        }
+      }
+    },
+    {
+      "$Comment": "Coup brûlant droit.",
+      "Type": "Simple",
+      "RunTime": 0.5,
+      "Effects": {
+        "WorldSoundEventId": "SFX_Light_Melee_T2_Swing",
+        "ItemPlayerAnimationsId": "Golem_Firesteel_Default",
+        "ItemAnimationId": "SwingRight"
+      },
+      "Next": {
+        "Type": "Selector",
+        "RunTime": 0.15,
+        "Selector": {
+          "Id": "Horizontal",
+          "Direction": "ToRight",
+          "TestLineOfSight": true,
+          "ExtendTop": 0.8,
+          "ExtendBottom": 0.8,
+          "StartDistance": 0.2,
+          "EndDistance": 4.0,
+          "Length": 100,
+          "RollOffset": 0,
+          "YawStartOffset": -50
+        },
+        "HitEntity": {
+          "Interactions": [
+            {
+              "Parent": "DamageEntityParent",
+              "DamageCalculator": {
+                "BaseDamage": {
+                  "Physical": 22
+                },
+                "RandomPercentageModifier": 0.1
+              },
+              "DamageEffects": {
+                "WorldSoundEventId": "SFX_T1_Impact_Blunt",
+                "WorldParticles": [
+                  {
+                    "SystemId": "Impact_Sword_Basic_Stronk"
+                  }
+                ]
+              }
+            },
+            {
+              "Type": "ApplyEffect",
+              "EffectId": "Nakasar_Fractal_Sunqua_Burning",
+              "Entity": "Target",
+              "Duration": 4
+            }
+          ]
+        }
+      }
+    }
+  ]
+}

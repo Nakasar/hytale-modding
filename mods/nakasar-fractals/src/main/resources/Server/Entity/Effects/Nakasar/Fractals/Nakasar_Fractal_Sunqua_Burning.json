@@ -1,0 +1,12 @@
+{
+  "$Comment": "Brûlure de la montagne : la vie s'en va (Java).",
+  "Name": "nakasar_fractals_sunqua_peak.effects.Nakasar_Fractal_Sunqua_Burning",
+  "Debuff": true,
+  "StatusEffectIcon": "UI/StatusEffects/Nakasar/Fractals/Sunqua_Burning.png",
+  "ApplicationEffects": {
+    "EntityBottomTint": "#ff6a1a"
+  },
+  "OverlapBehavior": "Overwrite",
+  "Infinite": false,
+  "Duration": 5.0
+}

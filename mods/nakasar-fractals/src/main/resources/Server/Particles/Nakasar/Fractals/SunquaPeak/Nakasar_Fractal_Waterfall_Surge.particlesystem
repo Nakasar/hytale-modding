@@ -1,0 +1,12 @@
+{
+  "$Comment": "Cascade qui déferle : gerbe d'eau blanche et bleue. Généré par tools/generate_sunqua_peak.py.",
+  "Spawners": [
+    {
+      "SpawnerId": "Nakasar_Fractal_Waterfall_Surge_Splash",
+      "PositionOffset": {
+        "Y": 0.5
+      }
+    }
+  ],
+  "CullDistance": 72
+}

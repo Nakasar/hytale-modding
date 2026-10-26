@@ -1,0 +1,10 @@
+{
+  "$Comment": "Élémentaire d'eau effrayé : grand esprit de givre vanilla (x 1,5), lueur pâle.",
+  "Parent": "Spirit_Frost",
+  "MinScale": 1.5,
+  "MaxScale": 1.5,
+  "Light": {
+    "Color": "#cef",
+    "Radius": 4
+  }
+}

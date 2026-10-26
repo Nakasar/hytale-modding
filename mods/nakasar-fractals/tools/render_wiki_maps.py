@@ -68,6 +68,16 @@ def main_area(top, gap=7, margin=6):
     return min(xs) - margin, min(zs) - margin, max(xs) + margin, max(zs) + margin
 
 
+def with_markers(crop, markers, margin=14):
+    """Le cadre `crop` agrandi aux repères qui en sortent (Pic de Sunqua : îlots du départ et plateau de la Voix
+    détachés du massif)."""
+    x0, z0, x1, z1 = crop
+    for x, z, _ in markers:
+        if not (x0 <= x <= x1 and z0 <= z <= z1):
+            x0, z0, x1, z1 = min(x0, x - margin), min(z0, z - margin), max(x1, x + margin), max(z1, z + margin)
+    return x0, z0, x1, z1
+
+
 def surface(prefabs, roofed=False, canopy=None):
     """Bloc vu d'en haut par colonne : (hauteur, nom). Sous une voûte, la première couche pleine qui a de l'air
     dessous est ignorée (on voit le sol)."""
@@ -244,6 +254,7 @@ FRACTALS = {
     "ressac-silencieux": _generator("generate_silent_surf"),
     "recif-de-la-sirene": _generator("generate_sirens_reef"),
     "pierre-profonde": _generator("generate_deepstone", roof=True),
+    "pic-de-sunqua": _generator("generate_sunqua_peak"),
 }
 
 def face(prefabs):
@@ -309,6 +320,11 @@ def _markers(name):
                 sc.SENTINEL_C + (4,), (sc.EAST_RUNES[0][0], sc.EAST_RUNES[0][2] + 4, 5), sc.QUEEN_C + (6,),
                 (sc.MINOTAUR_AT[0], sc.MINOTAUR_AT[2], 7), (0, (sc.PIT_ROOM[2] + sc.PIT_ROOM[3]) // 2, 8),
                 (0, (sc.LIFT[2] + sc.LIFT[3]) // 2, 9), sc.ARENA_C + (10,)]
+    if name == "pic-de-sunqua":
+        import sunqua_peak_scenery as sc
+        water = sc.polar(171, 62)
+        return [(sc.SPAWN[0], sc.SPAWN[2], 1), sc.PLINTH_C + (2,), sc.VOICE_C + (3,),
+                (round(water[0]), round(water[1]), 4), sc.SORROW_C + (5,), sc.CRATER_C + (6,), sc.SUMMIT_C + (7,)]
     return []
 
 
@@ -323,7 +339,8 @@ def main():
         else:
             canopy = {}
             top = surface(prefabs, roofed, canopy)
-            s = render(top, color_of, path, _markers(name), crop=main_area(top), shadows=not roofed, canopy=canopy)
+            s = render(top, color_of, path, _markers(name), crop=with_markers(main_area(top), _markers(name)),
+                       shadows=not roofed, canopy=canopy)
         print(f"{path} ({s} px par bloc)")
 
 

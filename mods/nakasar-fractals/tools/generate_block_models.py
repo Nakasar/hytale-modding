@@ -217,6 +217,7 @@ CORE_COLORS = {  # couleur de chaque fractale (noyaux du distributeur), dans l'o
     "SilentSurf": (40, 160, 175),
     "SirensReef": (74, 160, 96),
     "Deepstone": (110, 196, 214),
+    "SunquaPeak": (236, 140, 180),
 }
 COPPER = (190, 112, 70)
 SILVER = (200, 206, 218)
@@ -267,7 +268,7 @@ def flicker(period=40):
 
 
 def core_distributor():
-    """Présentoir de pierre à six alvéoles : un noyau de chaque fractale flotte au-dessus de sa coupelle."""
+    """Présentoir de pierre à alvéoles : un noyau de chaque fractale flotte au-dessus de sa coupelle."""
     p = [
         part("Base", (0, 3, 0), (30, 6, 30), fb.stone(STONE_DARK, (8, 6))),
         part("Band", (0, 6.5, 0), (26, 1, 26), fb.metal(BRASS, False)),
@@ -279,7 +280,8 @@ def core_distributor():
     tracks = {}
     for k, (fid, color) in enumerate(CORE_COLORS.items()):
         rows = (-2, 6) if len(CORE_COLORS) <= 6 else (-4, 2, 8)   # trois rangées dès la septième fractale
-        x, z = (-8, 0, 8)[k % 3], rows[k // 3]
+        cols = (-8, 0, 8) if len(CORE_COLORS) <= 9 else (-9, -3, 3, 9)   # quatre colonnes dès la dixième
+        x, z = cols[k % len(cols)], rows[k // len(cols)]
         p.append(part(f"Cup_{k + 1}", (x, 11.75, z), (5, 1.5, 5), fb.metal(BRASS, False)))
         p.append(part(f"Core_{k + 1}", (x, 16, z), (3.5, 3.5, 3.5), glow(color), glow=True, rot=(35, 45, 0)))
         tracks[f"Core_{k + 1}"] = {"position": bob(1.2, 120, invert=k % 2 == 1)}

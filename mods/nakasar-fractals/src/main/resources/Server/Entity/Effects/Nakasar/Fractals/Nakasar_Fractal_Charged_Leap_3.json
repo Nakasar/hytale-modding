@@ -1,0 +1,8 @@
+{
+  "$Comment": "Bond chargé (3) : sauts plus hauts, pas de dégâts de chute (Java, sunquapeak.ChargedLeap, force de saut du joueur).",
+  "Name": "nakasar_fractals_sunqua_peak.effects.Nakasar_Fractal_Charged_Leap_3",
+  "StatusEffectIcon": "UI/StatusEffects/Nakasar/Fractals/Charged_Leap_3.png",
+  "OverlapBehavior": "Overwrite",
+  "Infinite": false,
+  "Duration": 20.0
+}

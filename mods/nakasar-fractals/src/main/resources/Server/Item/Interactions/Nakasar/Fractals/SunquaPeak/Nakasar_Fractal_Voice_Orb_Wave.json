@@ -1,0 +1,32 @@
+{
+  "$Comment": "Voix de la montagne : onde d'orbes devant elle, cône de 70° sur 12 blocs (2 s), 24 dégâts.",
+  "Type": "Serial",
+  "Interactions": [
+    {
+      "Type": "ClearEntityEffect",
+      "Entity": "User",
+      "EntityEffectId": "Hit_Interrupt_Eligible"
+    },
+    {
+      "Type": "ApplyEffect",
+      "EffectId": "Nakasar_Fractal_Rooted"
+    },
+    {
+      "Type": "Nakasar_Fractal_Telegraph",
+      "Shape": "Cone",
+      "Seconds": 2.0,
+      "Angle": 70,
+      "Radius": 12,
+      "Damage": 24,
+      "PlayersOnly": true,
+      "ImpactParticle": "Nakasar_Fractal_Storm_Disperse"
+    },
+    {
+      "Type": "Simple",
+      "RunTime": 2.0,
+      "Effects": {
+        "WorldSoundEventId": "SFX_Ability_Wind_Strike_Slash"
+      }
+    }
+  ]
+}

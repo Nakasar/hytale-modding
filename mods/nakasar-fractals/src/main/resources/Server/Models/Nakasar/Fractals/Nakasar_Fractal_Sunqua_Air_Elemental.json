@@ -1,0 +1,10 @@
+{
+  "$Comment": "Élémentaire d'air de l'escalier : esprit de foudre vanilla (x 2).",
+  "Parent": "Spirit_Thunder",
+  "MinScale": 2.0,
+  "MaxScale": 2.0,
+  "Light": {
+    "Color": "#bdf",
+    "Radius": 4
+  }
+}

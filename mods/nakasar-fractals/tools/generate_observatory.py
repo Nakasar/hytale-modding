@@ -110,6 +110,7 @@ FRACTALS = [
     ("SilentSurf", "Ressac silencieux", "Silent Surf", (40, 160, 175)),
     ("SirensReef", "Récif de la Sirène", "Siren's Reef", (74, 160, 96)),
     ("Deepstone", "Pierre-Profonde", "Deepstone", (110, 196, 214)),
+    ("SunquaPeak", "Pic de Sunqua", "Sunqua Peak", (236, 140, 180)),
 ]
 FLAVOR = {
     "Cliffside": ("Un sentier taillé dans la falaise, le long d'un colosse enchaîné. Cinq sceaux à briser au marteau "
@@ -137,6 +138,10 @@ FLAVOR = {
                   "le Minotaure des ombres, le gouffre invisible et la Voix dans les profondeurs.",
                   "The sunken dwarven city: runes, the sentinel and the brood queen, the Light of Deldrimor, the "
                   "shadow minotaur, the invisible pit and the Voice in the deep."),
+    "SunquaPeak": ("Le massif flottant d'Ai : un escalier brisé au Bond chargé, la Voix, les cascades, la Tristesse et "
+                   "le Marché des marées, le sentier de lave, la Fureur, puis Ai elle-même au sommet.",
+                   "Ai's floating massif: broken stairs crossed with Charged Leap, the Voice, the waterfalls, the "
+                   "Sorrow and the Tidal Bargain, the lava path, the Fury, then Ai herself at the summit."),
 }
 
 # Pierres du décor (ids vanilla de tools/vanilla-block-ids-0.7.2.txt).
@@ -1257,7 +1262,7 @@ def lang():
         "command.level.arg": "Niveau de 1 à 100",
         "command.group.desc": "Affiche le groupe d'harmonisation.",
         "command.launch.desc": "Lance une fractale pour le cercle (meneur, dans l'Observatoire).",
-        "command.launch.arg": "Fractale (Cliffside, Uncategorized, Volcanic, SolidOcean, Swampland, Snowblind, SilentSurf, SirensReef, Deepstone)",
+        "command.launch.arg": "Fractale (Cliffside, Uncategorized, Volcanic, SolidOcean, Swampland, Snowblind, SilentSurf, SirensReef, Deepstone, SunquaPeak)",
         "command.leave.desc": "Quitte la fractale et revient à l'Observatoire.",
     }
     en = {
@@ -1364,7 +1369,7 @@ def lang():
         "command.level.arg": "Level from 1 to 100",
         "command.group.desc": "Shows the attunement group.",
         "command.launch.desc": "Launches a fractal for the circle (leader, in the Observatory).",
-        "command.launch.arg": "Fractal (Cliffside, Uncategorized, Volcanic, SolidOcean, Swampland, Snowblind, SilentSurf, SirensReef, Deepstone)",
+        "command.launch.arg": "Fractal (Cliffside, Uncategorized, Volcanic, SolidOcean, Swampland, Snowblind, SilentSurf, SirensReef, Deepstone, SunquaPeak)",
         "command.leave.desc": "Leaves the fractal and returns to the Observatory.",
     }
     for fid, name_fr, name_en, *_ in FRACTALS:

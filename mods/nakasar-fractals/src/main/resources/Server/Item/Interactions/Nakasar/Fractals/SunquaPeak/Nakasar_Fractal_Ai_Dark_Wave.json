@@ -1,0 +1,35 @@
+{
+  "$Comment": "Ai assombrie : vague d'ombre devant elle, cône de 100° sur 8 blocs (1,8 s), 30 dégâts et agonie 3 s.",
+  "Type": "Serial",
+  "Interactions": [
+    {
+      "Type": "ClearEntityEffect",
+      "Entity": "User",
+      "EntityEffectId": "Hit_Interrupt_Eligible"
+    },
+    {
+      "Type": "ApplyEffect",
+      "EffectId": "Nakasar_Fractal_Rooted"
+    },
+    {
+      "Type": "Nakasar_Fractal_Telegraph",
+      "Shape": "Cone",
+      "Seconds": 1.8,
+      "Angle": 100,
+      "Radius": 8,
+      "Damage": 30,
+      "AgonySeconds": 3,
+      "PlayersOnly": true,
+      "ImpactParticle": "Nakasar_Fractal_Fear_Mist"
+    },
+    {
+      "Type": "Simple",
+      "RunTime": 1.8,
+      "Effects": {
+        "WorldSoundEventId": "SFX_Spear_Throw_Charge",
+        "ItemPlayerAnimationsId": "Staff",
+        "ItemAnimationId": "CastSummonCharging"
+      }
+    }
+  ]
+}

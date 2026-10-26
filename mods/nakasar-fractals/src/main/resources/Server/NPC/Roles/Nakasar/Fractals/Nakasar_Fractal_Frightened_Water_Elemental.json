@@ -1,0 +1,35 @@
+{
+  "$Comment": "Élémentaire d'eau effrayé : rassuré par un joueur accroupi près de lui ; on ne peut pas le blesser (Java, sunquapeak.WaterPath). Généré par tools/generate_sunqua_peak.py.",
+  "Type": "Generic",
+  "Appearance": "Nakasar_Fractal_Frightened_Water_Elemental",
+  "NameTranslationKey": "nakasar_fractals_sunqua_peak.npc.Frightened_Water_Elemental.name",
+  "MaxHealth": 1000,
+  "StartState": "Idle",
+  "DefaultPlayerAttitude": "Neutral",
+  "DefaultNPCAttitude": "Ignore",
+  "MotionControllerList": [
+    {
+      "Type": "Walk",
+      "MaxWalkSpeed": 0.1,
+      "Gravity": 10,
+      "MaxFallSpeed": 10,
+      "Acceleration": 10,
+      "JumpHeight": 1.0
+    }
+  ],
+  "KnockbackScale": 0,
+  "SpawnLockTime": 0.2,
+  "Instructions": [
+    {
+      "Sensor": {
+        "Type": "State",
+        "State": "Idle"
+      },
+      "Instructions": [
+        {
+          "Actions": []
+        }
+      ]
+    }
+  ]
+}

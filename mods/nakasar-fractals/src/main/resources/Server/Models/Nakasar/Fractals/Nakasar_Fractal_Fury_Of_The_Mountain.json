@@ -1,0 +1,10 @@
+{
+  "$Comment": "Fureur de la montagne (émotion d'Ai, le feu) : golem d'acier de feu vanilla (x 1,4).",
+  "Parent": "Golem_Firesteel",
+  "MinScale": 1.4,
+  "MaxScale": 1.4,
+  "Light": {
+    "Color": "#f84",
+    "Radius": 6
+  }
+}

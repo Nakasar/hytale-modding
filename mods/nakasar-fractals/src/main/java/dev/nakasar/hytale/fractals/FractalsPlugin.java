@@ -26,6 +26,7 @@ import dev.nakasar.hytale.fractals.stage.StageUseInteraction;
 import dev.nakasar.hytale.fractals.silentsurf.AspectVisibilitySystem;
 import dev.nakasar.hytale.fractals.deepstone.Deepstone;
 import dev.nakasar.hytale.fractals.deepstone.DeepstoneActionInteraction;
+import dev.nakasar.hytale.fractals.sunquapeak.SunquaPeak;
 import dev.nakasar.hytale.fractals.silentsurf.SilentSurf;
 import dev.nakasar.hytale.fractals.silentsurf.SurveyGearInteraction;
 import dev.nakasar.hytale.fractals.sirensreef.ReefActionInteraction;
@@ -212,7 +213,8 @@ public final class FractalsPlugin extends JavaPlugin {
         systems.registerSystem(new CliffsideDamageFilter());
         systems.registerSystem(new StageSystem());
         // Un seul FractalItemsSystem (le serveur refuse deux systèmes de la même classe) : une règle par fractale.
-        systems.registerSystem(new FractalItemsSystem(SilentSurf.itemsRule(), SirensReef.itemsRule(), Snowblind.itemsRule(), Deepstone.itemsRule()));
+        systems.registerSystem(new FractalItemsSystem(SilentSurf.itemsRule(), SirensReef.itemsRule(), Snowblind.itemsRule(), Deepstone.itemsRule(),
+                SunquaPeak.itemsRule()));
         systems.registerSystem(new AspectVisibilitySystem());
         systems.registerSystem(new StageDamageFilter());
         systems.registerSystem(new FoeDeathSystem());
@@ -244,6 +246,8 @@ public final class FractalsPlugin extends JavaPlugin {
         Stages.register(new SirensReef());
         Deepstone.register();
         Stages.register(new Deepstone());
+        SunquaPeak.register();
+        Stages.register(new SunquaPeak());
 
         getCommandRegistry().registerCommand(new FractalCommand());
 

@@ -1,0 +1,12 @@
+{
+  "$Comment": "Orbe de foudre : étincelles bleues autour du cristal. Généré par tools/generate_sunqua_peak.py.",
+  "Spawners": [
+    {
+      "SpawnerId": "Nakasar_Fractal_Lightning_Orb_Glow_Spark",
+      "PositionOffset": {
+        "Y": 1.0
+      }
+    }
+  ],
+  "CullDistance": 72
+}

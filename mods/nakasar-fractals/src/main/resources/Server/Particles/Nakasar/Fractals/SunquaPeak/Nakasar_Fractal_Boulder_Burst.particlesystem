@@ -1,0 +1,12 @@
+{
+  "$Comment": "Rocher tombé brisé : éclats de pierre et d'eau. Généré par tools/generate_sunqua_peak.py.",
+  "Spawners": [
+    {
+      "SpawnerId": "Nakasar_Fractal_Boulder_Burst_Rock",
+      "PositionOffset": {
+        "Y": 0.3
+      }
+    }
+  ],
+  "CullDistance": 72
+}

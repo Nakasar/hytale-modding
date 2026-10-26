@@ -1,0 +1,33 @@
+{
+  "$Comment": "Voix de la montagne : décharge autour d'elle, cercle rouge de 5 blocs (2,2 s), 26 dégâts et Hébété 3 s (aveuglé).",
+  "Type": "Serial",
+  "Interactions": [
+    {
+      "Type": "ClearEntityEffect",
+      "Entity": "User",
+      "EntityEffectId": "Hit_Interrupt_Eligible"
+    },
+    {
+      "Type": "ApplyEffect",
+      "EffectId": "Nakasar_Fractal_Rooted"
+    },
+    {
+      "Type": "Nakasar_Fractal_Telegraph",
+      "Shape": "Circle",
+      "Seconds": 2.2,
+      "Radius": 5,
+      "Damage": 26,
+      "EffectId": "Nakasar_Fractal_Dazed",
+      "EffectDuration": 3,
+      "PlayersOnly": true,
+      "ImpactParticle": "Nakasar_Fractal_Storm_Disperse"
+    },
+    {
+      "Type": "Simple",
+      "RunTime": 2.2,
+      "Effects": {
+        "WorldSoundEventId": "SFX_Spear_Throw_Charge"
+      }
+    }
+  ]
+}

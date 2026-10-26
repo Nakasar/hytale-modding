@@ -1,6 +1,8 @@
 {
   "$Comment": "Tous les PNJ des fractales (boss, adds, serviteurs) : un seul camp face aux joueurs. Les attaques de zone du mod (Nakasar_Fractal_Telegraph) épargnent les membres du groupe (dev.nakasar.hytale.fractals.combat.Foes). Chaque fractale y ajoute ses rôles.",
   "IncludeRoles": [
+    "Nakasar_Fractal_Ai_Dark",
+    "Nakasar_Fractal_Ai_Keeper_Of_The_Peak",
     "Nakasar_Fractal_Arabella_Crowe",
     "Nakasar_Fractal_Archdiviner",
     "Nakasar_Fractal_Aspect_Death",
@@ -25,13 +27,16 @@
     "Nakasar_Fractal_Devourer",
     "Nakasar_Fractal_Elemental_Source",
     "Nakasar_Fractal_Ember_Larva",
+    "Nakasar_Fractal_Enraged_Water_Sprite",
     "Nakasar_Fractal_Ettin",
+    "Nakasar_Fractal_Fallen_Boulder",
     "Nakasar_Fractal_Fire_Shaman",
     "Nakasar_Fractal_First_Mate_Calix",
     "Nakasar_Fractal_First_Mate_Dolus",
     "Nakasar_Fractal_Frost_Caster",
     "Nakasar_Fractal_Frost_Cultist",
     "Nakasar_Fractal_Frost_Wolf",
+    "Nakasar_Fractal_Fury_Of_The_Mountain",
     "Nakasar_Fractal_Ghost_Pirate",
     "Nakasar_Fractal_Ghostly_Swindler",
     "Nakasar_Fractal_Grawl_Shaman",
@@ -84,8 +89,14 @@
     "Nakasar_Fractal_Spirit_Fox",
     "Nakasar_Fractal_Spirit_Wolf",
     "Nakasar_Fractal_Stonehead",
+    "Nakasar_Fractal_Sunqua_Air_Elemental",
+    "Nakasar_Fractal_Sunqua_Fear",
+    "Nakasar_Fractal_Sunqua_Lava_Elemental",
+    "Nakasar_Fractal_Sunqua_Lava_Ember",
+    "Nakasar_Fractal_Sunqua_Tiger",
     "Nakasar_Fractal_The_Voice",
     "Nakasar_Fractal_Turret",
+    "Nakasar_Fractal_Voice_Of_The_Mountain",
     "Nakasar_Fractal_Wind_Sprite"
   ]
 }

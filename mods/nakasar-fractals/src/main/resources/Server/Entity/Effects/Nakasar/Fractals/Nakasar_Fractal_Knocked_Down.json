@@ -1,0 +1,15 @@
+{
+  "$Comment": "À terre : on ne peut plus bouger ni agir.",
+  "Name": "nakasar_fractals_sunqua_peak.effects.Nakasar_Fractal_Knocked_Down",
+  "Debuff": true,
+  "StatusEffectIcon": "UI/StatusEffects/Nakasar/Fractals/Knocked_Down.png",
+  "ApplicationEffects": {
+    "MovementEffects": {
+      "DisableAll": true
+    },
+    "EntityTopTint": "#c0a080"
+  },
+  "OverlapBehavior": "Overwrite",
+  "Infinite": false,
+  "Duration": 2.0
+}
