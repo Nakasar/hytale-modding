@@ -1,0 +1,10 @@
+{
+  "$Comment": "Sentinelle de Pierre-Profonde (élémentaire d'air de GW2) : grand esprit de givre vanilla (x 2,4), lueur d'orage.",
+  "Parent": "Spirit_Frost",
+  "MinScale": 2.4,
+  "MaxScale": 2.4,
+  "Light": {
+    "Color": "#bdf",
+    "Radius": 5
+  }
+}

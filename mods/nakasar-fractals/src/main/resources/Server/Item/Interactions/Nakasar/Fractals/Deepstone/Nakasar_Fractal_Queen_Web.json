@@ -1,0 +1,28 @@
+{
+  "$Comment": "Reine de la couvée : quatre toiles autour d'elle, cercles rouges de 2,5 blocs (1,6 s) entre 3 et 10 blocs, 12 dégâts et Estropié 3 s.",
+  "Type": "Serial",
+  "Interactions": [
+    {
+      "Type": "Nakasar_Fractal_Telegraph",
+      "Shape": "Circle",
+      "Seconds": 1.6,
+      "Anchor": "Scatter",
+      "Count": 4,
+      "OffsetMin": 3,
+      "OffsetMax": 10,
+      "Radius": 2.5,
+      "Damage": 12,
+      "EffectId": "Nakasar_Fractal_Crippled",
+      "EffectDuration": 3,
+      "PlayersOnly": true,
+      "ImpactParticle": "Nakasar_Fractal_Bounce"
+    },
+    {
+      "Type": "Simple",
+      "RunTime": 1.6,
+      "Effects": {
+        "WorldSoundEventId": "SFX_Spear_Throw_Charge"
+      }
+    }
+  ]
+}

@@ -1,0 +1,199 @@
+{
+  "$Comment": "Écharpeur des ombres : coup de poings annoncé. Généré par tools/generate_deepstone.py.",
+  "Type": "Generic",
+  "Appearance": "Nakasar_Fractal_Shadow_Mauler",
+  "NameTranslationKey": "nakasar_fractals_deepstone.npc.Shadow_Mauler.name",
+  "MaxHealth": 1100,
+  "DropList": "Nakasar_Fractal_Loot_Shadow_Mauler",
+  "StartState": "Idle",
+  "DefaultPlayerAttitude": "Hostile",
+  "DefaultNPCAttitude": "Ignore",
+  "DisableDamageGroups": [
+    "Nakasar_Fractal_Foes"
+  ],
+  "MotionControllerList": [
+    {
+      "Type": "Walk",
+      "MaxWalkSpeed": 3.0,
+      "Gravity": 10,
+      "MaxFallSpeed": 10,
+      "Acceleration": 10,
+      "JumpHeight": 1.0
+    }
+  ],
+  "KnockbackScale": 0.1,
+  "DeathAnimationTime": 1.5,
+  "StateTransitions": [
+    {
+      "$Comment": "Entrée en combat : chaque attaque spéciale a sa propre recharge.",
+      "States": [
+        {
+          "From": [
+            "Idle"
+          ],
+          "To": [
+            "Combat"
+          ]
+        }
+      ],
+      "Actions": [
+        {
+          "Type": "TimerStart",
+          "Name": "Slam",
+          "StartValueRange": [
+            1,
+            2
+          ],
+          "RestartValueRange": [
+            4,
+            6
+          ]
+        }
+      ]
+    }
+  ],
+  "Instructions": [
+    {
+      "Sensor": {
+        "Type": "State",
+        "State": "Idle"
+      },
+      "Instructions": [
+        {
+          "Sensor": {
+            "Type": "Damage",
+            "Combat": true,
+            "TargetSlot": "LockedTarget"
+          },
+          "Actions": [
+            {
+              "Type": "State",
+              "State": "Combat"
+            }
+          ]
+        },
+        {
+          "Sensor": {
+            "Type": "Player",
+            "Range": 30,
+            "LockOnTarget": true,
+            "Filters": [
+              {
+                "Type": "Attitude",
+                "Attitudes": [
+                  "Hostile"
+                ]
+              },
+              {
+                "Type": "LineOfSight"
+              }
+            ]
+          },
+          "Actions": [
+            {
+              "Type": "State",
+              "State": "Combat"
+            }
+          ]
+        },
+        {
+          "Actions": []
+        }
+      ]
+    },
+    {
+      "Sensor": {
+        "Type": "State",
+        "State": "Combat"
+      },
+      "Instructions": [
+        {
+          "$Comment": "Cible perdue ou partie à plus de 40 blocs.",
+          "Sensor": {
+            "Type": "Not",
+            "Sensor": {
+              "Type": "Target",
+              "Range": 40,
+              "Filters": [
+                {
+                  "Type": "Attitude",
+                  "Attitudes": [
+                    "Hostile",
+                    "Neutral",
+                    "Ignore"
+                  ]
+                }
+              ]
+            }
+          },
+          "Actions": [
+            {
+              "Type": "ReleaseTarget"
+            },
+            {
+              "Type": "State",
+              "State": "Idle"
+            }
+          ]
+        },
+        {
+          "$Comment": "Coup de poings.",
+          "Sensor": {
+            "Type": "And",
+            "Sensors": [
+              {
+                "Type": "Target",
+                "Range": 4.5,
+                "Filters": [
+                  {
+                    "Type": "LineOfSight"
+                  }
+                ]
+              },
+              {
+                "Type": "Timer",
+                "Name": "Slam",
+                "State": "STOPPED"
+              }
+            ]
+          },
+          "ActionsBlocking": true,
+          "Actions": [
+            {
+              "Type": "TimerRestart",
+              "Name": "Slam"
+            },
+            {
+              "Type": "Attack",
+              "Attack": "Root_Nakasar_Fractal_NPC_Mauler_Slam",
+              "SkipAiming": true,
+              "LineOfSight": false,
+              "AvoidFriendlyFire": false
+            }
+          ],
+          "HeadMotion": {
+            "Type": "Watch",
+            "RelativeTurnSpeed": 1.0
+          }
+        },
+        {
+          "Sensor": {
+            "Type": "Target",
+            "Range": 36
+          },
+          "BodyMotion": {
+            "Type": "Seek",
+            "RelativeSpeed": 1.0,
+            "SlowDownDistance": 3.4,
+            "StopDistance": 2.4,
+            "UsePathfinder": true
+          },
+          "HeadMotion": {
+            "Type": "Watch",
+            "RelativeTurnSpeed": 1.5
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,227 @@
+{
+  "$Comment": "Ombre de Pierre-Profonde : griffes, onde qui hébète. Généré par tools/generate_deepstone.py.",
+  "Type": "Generic",
+  "Appearance": "Nakasar_Fractal_Deepstone_Shade",
+  "NameTranslationKey": "nakasar_fractals_deepstone.npc.Deepstone_Shade.name",
+  "MaxHealth": 420,
+  "DropList": "Nakasar_Fractal_Loot_Deepstone_Shade",
+  "StartState": "Idle",
+  "DefaultPlayerAttitude": "Hostile",
+  "DefaultNPCAttitude": "Ignore",
+  "DisableDamageGroups": [
+    "Nakasar_Fractal_Foes"
+  ],
+  "MotionControllerList": [
+    {
+      "Type": "Walk",
+      "MaxWalkSpeed": 3.6,
+      "Gravity": 10,
+      "MaxFallSpeed": 10,
+      "Acceleration": 10,
+      "JumpHeight": 1.0
+    }
+  ],
+  "KnockbackScale": 0.6,
+  "DeathAnimationTime": 1.0,
+  "StateTransitions": [
+    {
+      "$Comment": "Entrée en combat : chaque attaque spéciale a sa propre recharge.",
+      "States": [
+        {
+          "From": [
+            "Idle"
+          ],
+          "To": [
+            "Combat"
+          ]
+        }
+      ],
+      "Actions": [
+        {
+          "Type": "TimerStart",
+          "Name": "Burst",
+          "StartValueRange": [
+            3,
+            5
+          ],
+          "RestartValueRange": [
+            9,
+            12
+          ]
+        }
+      ]
+    }
+  ],
+  "Instructions": [
+    {
+      "Sensor": {
+        "Type": "State",
+        "State": "Idle"
+      },
+      "Instructions": [
+        {
+          "Sensor": {
+            "Type": "Damage",
+            "Combat": true,
+            "TargetSlot": "LockedTarget"
+          },
+          "Actions": [
+            {
+              "Type": "State",
+              "State": "Combat"
+            }
+          ]
+        },
+        {
+          "Sensor": {
+            "Type": "Player",
+            "Range": 30,
+            "LockOnTarget": true,
+            "Filters": [
+              {
+                "Type": "Attitude",
+                "Attitudes": [
+                  "Hostile"
+                ]
+              },
+              {
+                "Type": "LineOfSight"
+              }
+            ]
+          },
+          "Actions": [
+            {
+              "Type": "State",
+              "State": "Combat"
+            }
+          ]
+        },
+        {
+          "Actions": []
+        }
+      ]
+    },
+    {
+      "Sensor": {
+        "Type": "State",
+        "State": "Combat"
+      },
+      "Instructions": [
+        {
+          "$Comment": "Cible perdue ou partie à plus de 40 blocs.",
+          "Sensor": {
+            "Type": "Not",
+            "Sensor": {
+              "Type": "Target",
+              "Range": 40,
+              "Filters": [
+                {
+                  "Type": "Attitude",
+                  "Attitudes": [
+                    "Hostile",
+                    "Neutral",
+                    "Ignore"
+                  ]
+                }
+              ]
+            }
+          },
+          "Actions": [
+            {
+              "Type": "ReleaseTarget"
+            },
+            {
+              "Type": "State",
+              "State": "Idle"
+            }
+          ]
+        },
+        {
+          "$Comment": "Onde d'ombre.",
+          "Sensor": {
+            "Type": "And",
+            "Sensors": [
+              {
+                "Type": "Target",
+                "Range": 3.5
+              },
+              {
+                "Type": "Timer",
+                "Name": "Burst",
+                "State": "STOPPED"
+              }
+            ]
+          },
+          "ActionsBlocking": true,
+          "Actions": [
+            {
+              "Type": "TimerRestart",
+              "Name": "Burst"
+            },
+            {
+              "Type": "Attack",
+              "Attack": "Root_Nakasar_Fractal_NPC_Shade_Burst",
+              "SkipAiming": true,
+              "LineOfSight": false,
+              "AvoidFriendlyFire": false
+            }
+          ],
+          "HeadMotion": {
+            "Type": "Watch",
+            "RelativeTurnSpeed": 1.0
+          }
+        },
+        {
+          "Sensor": {
+            "Type": "Target",
+            "Range": 2.4,
+            "Filters": [
+              {
+                "Type": "LineOfSight"
+              }
+            ]
+          },
+          "HeadMotion": {
+            "Type": "Aim",
+            "RelativeTurnSpeed": 1.5
+          },
+          "ActionsBlocking": true,
+          "Actions": [
+            {
+              "Type": "Attack",
+              "Attack": "Root_Nakasar_Fractal_NPC_Shade_Strike",
+              "AttackPauseRange": [
+                0.7,
+                1.1
+              ]
+            },
+            {
+              "Type": "Timeout",
+              "Delay": [
+                0.2,
+                0.2
+              ]
+            }
+          ]
+        },
+        {
+          "Sensor": {
+            "Type": "Target",
+            "Range": 36
+          },
+          "BodyMotion": {
+            "Type": "Seek",
+            "RelativeSpeed": 1.0,
+            "SlowDownDistance": 2.6,
+            "StopDistance": 1.6,
+            "UsePathfinder": true
+          },
+          "HeadMotion": {
+            "Type": "Watch",
+            "RelativeTurnSpeed": 1.5
+          }
+        }
+      ]
+    }
+  ]
+}

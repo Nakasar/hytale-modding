@@ -1,0 +1,37 @@
+{
+  "$Comment": "Sentinelle : souffle glacé devant elle, cône de 90° sur 9 blocs (2 s), 26 dégâts, Glacé 3 s, agonie 2 s et recul.",
+  "Type": "Serial",
+  "Interactions": [
+    {
+      "Type": "ClearEntityEffect",
+      "Entity": "User",
+      "EntityEffectId": "Hit_Interrupt_Eligible"
+    },
+    {
+      "Type": "ApplyEffect",
+      "EffectId": "Nakasar_Fractal_Rooted"
+    },
+    {
+      "Type": "Nakasar_Fractal_Telegraph",
+      "Shape": "Cone",
+      "Seconds": 2.0,
+      "Angle": 90,
+      "Radius": 9,
+      "Damage": 26,
+      "Knockback": 6,
+      "KnockUp": 2,
+      "EffectId": "Nakasar_Fractal_Chilled",
+      "EffectDuration": 3,
+      "AgonySeconds": 2,
+      "PlayersOnly": true,
+      "ImpactParticle": "Nakasar_Fractal_Sentinel_Burst"
+    },
+    {
+      "Type": "Simple",
+      "RunTime": 2.0,
+      "Effects": {
+        "WorldSoundEventId": "SFX_Spear_Throw_Charge"
+      }
+    }
+  ]
+}

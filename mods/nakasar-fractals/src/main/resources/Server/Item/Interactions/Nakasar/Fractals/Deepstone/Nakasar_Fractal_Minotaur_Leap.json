@@ -1,0 +1,37 @@
+{
+  "$Comment": "Minotaure des ombres : bond sur sa cible lointaine, cercle rouge de 4 blocs (1,5 s), 30 dégâts et Hébété 2 s.",
+  "Type": "Serial",
+  "Interactions": [
+    {
+      "Type": "ClearEntityEffect",
+      "Entity": "User",
+      "EntityEffectId": "Hit_Interrupt_Eligible"
+    },
+    {
+      "Type": "ApplyEffect",
+      "EffectId": "Nakasar_Fractal_Rooted"
+    },
+    {
+      "Type": "Nakasar_Fractal_Telegraph",
+      "Shape": "Circle",
+      "Seconds": 1.5,
+      "Anchor": "Farthest",
+      "OffsetMax": 18,
+      "Radius": 4,
+      "Damage": 30,
+      "TeleportCaster": true,
+      "EffectId": "Nakasar_Fractal_Dazed",
+      "EffectDuration": 2,
+      "PlayersOnly": true,
+      "ImpactParticle": "Stick_Slam_Ground_Large",
+      "ImpactSound": "SFX_Goblin_Feastmaster_Slam"
+    },
+    {
+      "Type": "Simple",
+      "RunTime": 1.5,
+      "Effects": {
+        "WorldSoundEventId": "SFX_Spear_Throw_Charge"
+      }
+    }
+  ]
+}

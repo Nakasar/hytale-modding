@@ -1,0 +1,12 @@
+{
+  "$Comment": "Lueur dorée sur ce que la Lumière dévoile (Minotaure exposé, orbe allumée). Généré par tools/generate_deepstone.py.",
+  "Spawners": [
+    {
+      "SpawnerId": "Nakasar_Fractal_Deldrimor_Glow_Glow",
+      "PositionOffset": {
+        "Y": 1.0
+      }
+    }
+  ],
+  "CullDistance": 72
+}

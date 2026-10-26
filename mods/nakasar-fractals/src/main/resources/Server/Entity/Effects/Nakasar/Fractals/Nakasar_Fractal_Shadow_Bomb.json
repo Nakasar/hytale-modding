@@ -1,0 +1,12 @@
+{
+  "$Comment": "Bombe d'ombre : elle tombe à vos pieds dans un instant (Java).",
+  "Name": "nakasar_fractals_deepstone.effects.Nakasar_Fractal_Shadow_Bomb",
+  "Debuff": true,
+  "StatusEffectIcon": "UI/StatusEffects/Nakasar/Fractals/Shadow_Bomb.png",
+  "ApplicationEffects": {
+    "EntityTopTint": "#6020a0"
+  },
+  "OverlapBehavior": "Overwrite",
+  "Infinite": false,
+  "Duration": 2.0
+}

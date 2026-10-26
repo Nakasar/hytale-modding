@@ -243,6 +243,7 @@ FRACTALS = {
     "tempete-de-neige": _generator("generate_snowblind"),
     "ressac-silencieux": _generator("generate_silent_surf"),
     "recif-de-la-sirene": _generator("generate_sirens_reef"),
+    "pierre-profonde": _generator("generate_deepstone", roof=True),
 }
 
 def face(prefabs):
@@ -301,6 +302,13 @@ def _markers(name):
         return [(sc.SPAWN[0], sc.SPAWN[2], 1), (sc.CLEARING[0], sc.CLEARING[1], 2), (sc.WALL1_AT[0], sc.WALL1_AT[1], 3),
                 (sc.FORT_C[0], sc.FORT_C[1], 4), (sc.PLAZA[0], sc.PLAZA[1], 5), maze + (6,),
                 ((sc.SHIP_X[0] + sc.SHIP_X[1]) // 2, sc.SHIP_Z, 7)]
+    if name == "pierre-profonde":
+        import deepstone_scenery as sc
+        return [(sc.SPAWN[0], sc.SPAWN[2], 1), (sc.CRYSTAL_AT[0], sc.CRYSTAL_AT[2], 2),
+                ((sc.WEST_HALL[0] + sc.WEST_HALL[1]) // 2, (sc.WEST_HALL[2] + sc.GRID_END[2]) // 2, 3),
+                sc.SENTINEL_C + (4,), (sc.EAST_RUNES[0][0], sc.EAST_RUNES[0][2] + 4, 5), sc.QUEEN_C + (6,),
+                (sc.MINOTAUR_AT[0], sc.MINOTAUR_AT[2], 7), (0, (sc.PIT_ROOM[2] + sc.PIT_ROOM[3]) // 2, 8),
+                (0, (sc.LIFT[2] + sc.LIFT[3]) // 2, 9), sc.ARENA_C + (10,)]
     return []
 
 

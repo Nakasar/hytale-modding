@@ -8,8 +8,8 @@ package dev.nakasar.hytale.fractals.combat;
  */
 final class WarningShapes {
 
-    static final int[] LINE_ASPECTS = {5, 18, 25, 30, 40, 47, 53, 60, 80};
-    static final int[] SECTOR_ANGLES = {70, 90, 100, 120};
+    static final int[] LINE_ASPECTS = {5, 18, 22, 25, 30, 40, 47, 53, 60, 80};
+    static final int[] SECTOR_ANGLES = {60, 70, 90, 100, 120};
     static final int MIN_TENTHS = 5;
     static final int MAX_TENTHS = 30;
     /** Échelle de particule d'une ligne par bloc de largeur (celle d'un secteur est {@link Telegraphs#WARNING_SCALE} par bloc de rayon). */

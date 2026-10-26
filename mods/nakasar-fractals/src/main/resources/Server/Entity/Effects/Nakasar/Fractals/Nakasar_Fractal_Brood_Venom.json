@@ -1,0 +1,12 @@
+{
+  "$Comment": "Venin de la couvée : la vie s'en va (Java).",
+  "Name": "nakasar_fractals_deepstone.effects.Nakasar_Fractal_Brood_Venom",
+  "Debuff": true,
+  "StatusEffectIcon": "UI/StatusEffects/Nakasar/Fractals/Brood_Venom.png",
+  "ApplicationEffects": {
+    "EntityBottomTint": "#60a020"
+  },
+  "OverlapBehavior": "Overwrite",
+  "Infinite": false,
+  "Duration": 5.0
+}

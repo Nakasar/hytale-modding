@@ -1,0 +1,12 @@
+{
+  "$Comment": "Une flamme spectrale atteint la Voix : grande déflagration violette. Généré par tools/generate_deepstone.py.",
+  "Spawners": [
+    {
+      "SpawnerId": "Nakasar_Fractal_Flame_Absorb_Wave",
+      "PositionOffset": {
+        "Y": 0.4
+      }
+    }
+  ],
+  "CullDistance": 72
+}

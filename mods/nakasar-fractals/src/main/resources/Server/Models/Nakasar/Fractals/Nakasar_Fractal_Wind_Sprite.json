@@ -1,0 +1,10 @@
+{
+  "$Comment": "Esprit du vent (tornade de la Sentinelle) : petit esprit de givre vanilla, lueur blanche.",
+  "Parent": "Spirit_Frost",
+  "MinScale": 0.9,
+  "MaxScale": 0.9,
+  "Light": {
+    "Color": "#fff",
+    "Radius": 3
+  }
+}

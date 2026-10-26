@@ -1,0 +1,10 @@
+{
+  "$Comment": "Diablotin des ombres vétéran : petite aberration vanilla, lueur violette.",
+  "Parent": "Zombie_Aberrant_Small",
+  "MinScale": 1.0,
+  "MaxScale": 1.0,
+  "Light": {
+    "Color": "#a6f",
+    "Radius": 3
+  }
+}

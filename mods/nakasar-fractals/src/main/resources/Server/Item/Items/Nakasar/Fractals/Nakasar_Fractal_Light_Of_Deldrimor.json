@@ -1,0 +1,39 @@
+{
+  "TranslationProperties": {
+    "Name": "nakasar_fractals_deepstone.items.Nakasar_Fractal_Light_Of_Deldrimor.name",
+    "Description": "nakasar_fractals_deepstone.items.Nakasar_Fractal_Light_Of_Deldrimor.description"
+  },
+  "Icon": "Icons/Items/Nakasar/Fractals/Light_Of_Deldrimor.png",
+  "IconProperties": {
+    "Scale": 0.6,
+    "Rotation": [
+      4,
+      183,
+      1
+    ],
+    "Translation": [
+      -1,
+      -14
+    ]
+  },
+  "Model": "Resources/Crystals/Crystal_Small_Pointy.blockymodel",
+  "Texture": "Blocks/Nakasar/Fractals/Deepstone_Crystal_Big.png",
+  "Scale": 0.6,
+  "Light": {
+    "Color": "#fe9",
+    "Radius": 4
+  },
+  "Quality": "Legendary",
+  "Categories": [
+    "Items.Misc"
+  ],
+  "PlayerAnimationsId": "Item",
+  "ItemSoundSetId": "ISS_Items_Gems",
+  "MaxStack": 1,
+  "Interactions": {
+    "Secondary": "Root_Nakasar_Fractal_Deepstone_Light"
+  },
+  "Utility": {
+    "Compatible": false
+  }
+}

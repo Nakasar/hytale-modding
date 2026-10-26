@@ -1,0 +1,33 @@
+{
+  "$Comment": "Ombre : onde autour d'elle, cercle rouge de 3,5 blocs (1,6 s), 14 dégâts et Hébété 2 s.",
+  "Type": "Serial",
+  "Interactions": [
+    {
+      "Type": "ClearEntityEffect",
+      "Entity": "User",
+      "EntityEffectId": "Hit_Interrupt_Eligible"
+    },
+    {
+      "Type": "ApplyEffect",
+      "EffectId": "Nakasar_Fractal_Rooted"
+    },
+    {
+      "Type": "Nakasar_Fractal_Telegraph",
+      "Shape": "Circle",
+      "Seconds": 1.6,
+      "Radius": 3.5,
+      "Damage": 14,
+      "EffectId": "Nakasar_Fractal_Dazed",
+      "EffectDuration": 2,
+      "PlayersOnly": true,
+      "ImpactParticle": "Nakasar_Fractal_Shadow_Rise"
+    },
+    {
+      "Type": "Simple",
+      "RunTime": 1.6,
+      "Effects": {
+        "WorldSoundEventId": "SFX_Spear_Throw_Charge"
+      }
+    }
+  ]
+}

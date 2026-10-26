@@ -1,0 +1,12 @@
+{
+  "$Comment": "Une dalle s'effondre dans le gouffre. Généré par tools/generate_deepstone.py.",
+  "Spawners": [
+    {
+      "SpawnerId": "Nakasar_Fractal_Tile_Crumble_Dust",
+      "PositionOffset": {
+        "Y": 0.3
+      }
+    }
+  ],
+  "CullDistance": 72
+}

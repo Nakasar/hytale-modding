@@ -1,0 +1,12 @@
+{
+  "$Comment": "Orbe de la Voix en vol : sphère violette (le Java la déplace). Généré par tools/generate_deepstone.py.",
+  "Spawners": [
+    {
+      "SpawnerId": "Nakasar_Fractal_Voice_Orb_Core",
+      "PositionOffset": {
+        "Y": 0.0
+      }
+    }
+  ],
+  "CullDistance": 72
+}

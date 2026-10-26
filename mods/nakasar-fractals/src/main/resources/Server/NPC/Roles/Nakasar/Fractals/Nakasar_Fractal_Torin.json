@@ -1,0 +1,35 @@
+{
+  "$Comment": "Torin : guide l'expédition ; on ne peut pas le blesser (Java). Généré par tools/generate_deepstone.py.",
+  "Type": "Generic",
+  "Appearance": "Nakasar_Fractal_Torin",
+  "NameTranslationKey": "nakasar_fractals_deepstone.npc.Torin.name",
+  "MaxHealth": 1000,
+  "StartState": "Idle",
+  "DefaultPlayerAttitude": "Neutral",
+  "DefaultNPCAttitude": "Ignore",
+  "MotionControllerList": [
+    {
+      "Type": "Walk",
+      "MaxWalkSpeed": 0.1,
+      "Gravity": 10,
+      "MaxFallSpeed": 10,
+      "Acceleration": 10,
+      "JumpHeight": 1.0
+    }
+  ],
+  "KnockbackScale": 0,
+  "SpawnLockTime": 0.2,
+  "Instructions": [
+    {
+      "Sensor": {
+        "Type": "State",
+        "State": "Idle"
+      },
+      "Instructions": [
+        {
+          "Actions": []
+        }
+      ]
+    }
+  ]
+}

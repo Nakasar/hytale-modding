@@ -1,0 +1,12 @@
+{
+  "$Comment": "Une créature des ombres surgit. Généré par tools/generate_deepstone.py.",
+  "Spawners": [
+    {
+      "SpawnerId": "Nakasar_Fractal_Shadow_Rise_Rise",
+      "PositionOffset": {
+        "Y": 0.3
+      }
+    }
+  ],
+  "CullDistance": 72
+}

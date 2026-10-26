@@ -1,0 +1,10 @@
+{
+  "$Comment": "Reine de la couvée : très grande araignée des cavernes vanilla (x 2,8).",
+  "Parent": "Spider_Cave",
+  "MinScale": 2.8,
+  "MaxScale": 2.8,
+  "Light": {
+    "Color": "#9f6",
+    "Radius": 4
+  }
+}

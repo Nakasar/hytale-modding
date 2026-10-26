@@ -1,0 +1,51 @@
+{
+  "TranslationProperties": {
+    "Name": "nakasar_fractals_deepstone.items.Nakasar_Fractal_Deepstone_Crystal.name",
+    "Description": "nakasar_fractals_deepstone.items.Nakasar_Fractal_Deepstone_Crystal.description"
+  },
+  "Icon": "Icons/Items/Nakasar/Fractals/Deepstone_Crystal.png",
+  "Categories": [
+    "Blocks.Deco"
+  ],
+  "Quality": "Technical",
+  "PlayerAnimationsId": "Block",
+  "BlockType": {
+    "Material": "Solid",
+    "DrawType": "Model",
+    "Opacity": "Transparent",
+    "HitboxType": "Full",
+    "Flags": {},
+    "Gathering": {
+      "Breaking": {
+        "GatherType": "Unbreakable"
+      }
+    },
+    "BlockParticleSetId": "Crystal",
+    "BlockSoundSetId": "Crystal",
+    "ParticleColor": "#c0e0ff",
+    "Light": {
+      "Color": "#9cf"
+    },
+    "Interactions": {
+      "Use": {
+        "Interactions": [
+          "Nakasar_Fractal_Use_Deepstone_Crystal"
+        ]
+      }
+    },
+    "CustomModel": "Resources/Crystals/Crystal_Large_Pointy.blockymodel",
+    "CustomModelTexture": [
+      {
+        "Texture": "Blocks/Nakasar/Fractals/Deepstone_Crystal_Big.png",
+        "Weight": 1
+      }
+    ],
+    "RequiresAlphaBlending": true
+  },
+  "Tags": {
+    "Type": [
+      "Deco"
+    ]
+  },
+  "ItemSoundSetId": "ISS_Blocks_Stone"
+}

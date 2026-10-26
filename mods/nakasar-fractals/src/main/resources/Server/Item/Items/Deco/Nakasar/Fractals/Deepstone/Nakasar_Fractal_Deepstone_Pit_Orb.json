@@ -1,0 +1,41 @@
+{
+  "TranslationProperties": {
+    "Name": "nakasar_fractals_deepstone.items.Nakasar_Fractal_Deepstone_Pit_Orb.name",
+    "Description": "nakasar_fractals_deepstone.items.Nakasar_Fractal_Deepstone_Pit_Orb.description"
+  },
+  "Icon": "Icons/Items/Nakasar/Fractals/Deepstone_Pit_Orb.png",
+  "Categories": [
+    "Blocks.Deco"
+  ],
+  "Quality": "Technical",
+  "PlayerAnimationsId": "Block",
+  "BlockType": {
+    "Material": "Solid",
+    "DrawType": "Model",
+    "Opacity": "Transparent",
+    "HitboxType": "Full",
+    "Flags": {},
+    "Gathering": {
+      "Breaking": {
+        "GatherType": "Unbreakable"
+      }
+    },
+    "BlockParticleSetId": "Crystal",
+    "BlockSoundSetId": "Crystal",
+    "ParticleColor": "#c0e0ff",
+    "CustomModel": "Resources/Crystals/Crystal_Medium_Pointy.blockymodel",
+    "CustomModelTexture": [
+      {
+        "Texture": "Blocks/Nakasar/Fractals/Deepstone_Crystal_Dim.png",
+        "Weight": 1
+      }
+    ],
+    "RequiresAlphaBlending": true
+  },
+  "Tags": {
+    "Type": [
+      "Deco"
+    ]
+  },
+  "ItemSoundSetId": "ISS_Blocks_Stone"
+}

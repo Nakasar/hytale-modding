@@ -1,0 +1,12 @@
+{
+  "$Comment": "Siphon spirituel : un point du rayon rouge de la Voix (le Java en pose le long). Généré par tools/generate_deepstone.py.",
+  "Spawners": [
+    {
+      "SpawnerId": "Nakasar_Fractal_Siphon_Beam_Beam",
+      "PositionOffset": {
+        "Y": 0.0
+      }
+    }
+  ],
+  "CullDistance": 72
+}

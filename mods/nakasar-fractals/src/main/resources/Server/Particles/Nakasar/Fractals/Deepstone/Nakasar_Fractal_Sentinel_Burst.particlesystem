@@ -1,0 +1,12 @@
+{
+  "$Comment": "Spirale de la Sentinelle : éclat de vent. Généré par tools/generate_deepstone.py.",
+  "Spawners": [
+    {
+      "SpawnerId": "Nakasar_Fractal_Sentinel_Burst_Burst",
+      "PositionOffset": {
+        "Y": 0.3
+      }
+    }
+  ],
+  "CullDistance": 72
+}

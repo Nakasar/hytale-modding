@@ -1,0 +1,13 @@
+{
+  "$Comment": "Toucher des ombres (près du Minotaure voilé) : ralenti, la vie s'en va (Java).",
+  "Name": "nakasar_fractals_deepstone.effects.Nakasar_Fractal_Shadow_Touch",
+  "Debuff": true,
+  "StatusEffectIcon": "UI/StatusEffects/Nakasar/Fractals/Shadow_Touch.png",
+  "ApplicationEffects": {
+    "HorizontalSpeedMultiplier": 0.7,
+    "EntityBottomTint": "#301040"
+  },
+  "OverlapBehavior": "Overwrite",
+  "Infinite": false,
+  "Duration": 1.5
+}

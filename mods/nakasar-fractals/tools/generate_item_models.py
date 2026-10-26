@@ -29,7 +29,8 @@ FIRE_DARK, FIRE_LIGHT = (250, 120, 30), (255, 236, 150)
 CORE_COLORS = {"Cliffside": (186, 140, 255), "Uncategorized": (110, 210, 255), "Volcanic": (255, 140, 60),
                "SolidOcean": (90, 220, 160), "Swampland": (160, 230, 90), "Snowblind": (205, 235, 255),
                "SilentSurf": (40, 160, 175),
-               "SirensReef": (74, 160, 96)}
+               "SirensReef": (74, 160, 96),
+               "Deepstone": (110, 196, 214)}
 RANK_METALS = {"Initiate": (COPPER, False), "Adept": (SILVER, False), "Expert": (GOLD, False), "Master": (MIST, True)}
 
 

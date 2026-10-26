@@ -1,0 +1,12 @@
+{
+  "$Comment": "Voile d'ombre : aucun dégât tant que la Lumière de Deldrimor ne l'a pas dissipé (Java).",
+  "Name": "nakasar_fractals_deepstone.effects.Nakasar_Fractal_Shadow_Veil",
+  "StatusEffectIcon": "UI/StatusEffects/Nakasar/Fractals/Shadow_Veil.png",
+  "ApplicationEffects": {
+    "EntityTopTint": "#100820",
+    "EntityBottomTint": "#000000"
+  },
+  "OverlapBehavior": "Overwrite",
+  "Infinite": false,
+  "Duration": 1.5
+}

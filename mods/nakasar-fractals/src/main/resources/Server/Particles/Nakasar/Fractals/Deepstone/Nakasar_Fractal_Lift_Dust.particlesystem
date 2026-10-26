@@ -1,0 +1,12 @@
+{
+  "$Comment": "Plate-forme de l'ascenseur qui descend : poussière. Généré par tools/generate_deepstone.py.",
+  "Spawners": [
+    {
+      "SpawnerId": "Nakasar_Fractal_Lift_Dust_Dust",
+      "PositionOffset": {
+        "Y": 0.4
+      }
+    }
+  ],
+  "CullDistance": 72
+}

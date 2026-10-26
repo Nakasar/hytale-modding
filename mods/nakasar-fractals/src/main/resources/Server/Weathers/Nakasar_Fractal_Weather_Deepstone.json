@@ -1,0 +1,106 @@
+{
+  "FogDistance": [
+    12,
+    120
+  ],
+  "FogColors": [
+    {
+      "Hour": 0,
+      "Color": "#0a1220"
+    },
+    {
+      "Hour": 12,
+      "Color": "#0a1220"
+    }
+  ],
+  "FogDensities": [
+    {
+      "Hour": 0,
+      "Value": 0.5
+    },
+    {
+      "Hour": 12,
+      "Value": 0.5
+    }
+  ],
+  "SkyTopColors": [
+    {
+      "Hour": 0,
+      "Color": "#020408ff"
+    },
+    {
+      "Hour": 12,
+      "Color": "#020408ff"
+    }
+  ],
+  "SkyBottomColors": [
+    {
+      "Hour": 0,
+      "Color": "#08101aff"
+    },
+    {
+      "Hour": 12,
+      "Color": "#08101aff"
+    }
+  ],
+  "SkySunsetColors": [
+    {
+      "Hour": 0,
+      "Color": "#00000000"
+    },
+    {
+      "Hour": 12,
+      "Color": "#00000000"
+    }
+  ],
+  "SunlightColors": [
+    {
+      "Hour": 0,
+      "Color": "#4a5e78"
+    },
+    {
+      "Hour": 12,
+      "Color": "#4a5e78"
+    }
+  ],
+  "SunColors": [
+    {
+      "Hour": 0,
+      "Color": "#9ab4d0"
+    },
+    {
+      "Hour": 12,
+      "Color": "#9ab4d0"
+    }
+  ],
+  "MoonColors": [
+    {
+      "Hour": 0,
+      "Color": "#e0e8ffff"
+    },
+    {
+      "Hour": 12,
+      "Color": "#e0e8ffff"
+    }
+  ],
+  "MoonGlowColors": [
+    {
+      "Hour": 0,
+      "Color": "#7aa0ff60"
+    },
+    {
+      "Hour": 12,
+      "Color": "#7aa0ff60"
+    }
+  ],
+  "WaterTints": [
+    {
+      "Hour": 0,
+      "Color": "#3a7ac0"
+    },
+    {
+      "Hour": 12,
+      "Color": "#3a7ac0"
+    }
+  ]
+}

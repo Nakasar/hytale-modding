@@ -1,0 +1,5 @@
+{
+  "$Comment": "Lumière de Deldrimor : clic droit, éclat de lumière autour du joueur (recharge 5 s, Java deepstone.DeepLight) : dévoile le Minotaure, les trésors cachés et le chemin du gouffre, allume les orbes, protège et refait les dalles, donne un Courant ascendant dans l'arène de la Voix.",
+  "Type": "Nakasar_Fractal_DeepstoneAction",
+  "Action": "Light"
+}

@@ -1,0 +1,10 @@
+{
+  "$Comment": "Écharpeur des ombres : grande aberration vanilla, lueur violette.",
+  "Parent": "Zombie_Aberrant_Big",
+  "MinScale": 1.1,
+  "MaxScale": 1.1,
+  "Light": {
+    "Color": "#a6f",
+    "Radius": 3
+  }
+}
