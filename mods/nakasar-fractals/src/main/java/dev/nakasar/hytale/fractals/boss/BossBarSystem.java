@@ -79,6 +79,11 @@ public final class BossBarSystem extends TickingSystem<EntityStore> {
         ELITES.add(role);
     }
 
+    /** Vrai si le rôle a une barre de boss (boss et élites : runes de soutien, support.Support#immune). */
+    public static boolean isElite(String role) {
+        return role != null && ELITES.contains(role);
+    }
+
     /** Donne au rôle `role` une barre toujours affichée, à tous les joueurs du monde. */
     public static void everywhere(String role) {
         ELITES.add(role);

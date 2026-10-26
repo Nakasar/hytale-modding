@@ -75,6 +75,14 @@ import dev.nakasar.hytale.fractals.potion.DrinkMistPotionInteraction;
 import dev.nakasar.hytale.fractals.potion.MistPotionDamageFilter;
 import dev.nakasar.hytale.fractals.potion.MistPotionState;
 import dev.nakasar.hytale.fractals.potion.MistPotionSystem;
+import dev.nakasar.hytale.fractals.support.SanctuarySystem;
+import dev.nakasar.hytale.fractals.support.Skills;
+import dev.nakasar.hytale.fractals.support.Support;
+import dev.nakasar.hytale.fractals.support.SupportCastInteraction;
+import dev.nakasar.hytale.fractals.support.SupportDamageFilter;
+import dev.nakasar.hytale.fractals.support.SupportHitSystem;
+import dev.nakasar.hytale.fractals.support.SupportStates;
+import dev.nakasar.hytale.fractals.support.SupportSteeringSystem;
 import dev.nakasar.hytale.fractals.progress.AgonySystem;
 import dev.nakasar.hytale.fractals.progress.FractalProgress;
 import dev.nakasar.hytale.fractals.progress.OpenBagInteraction;
@@ -170,6 +178,7 @@ public final class FractalsPlugin extends JavaPlugin {
         interactions.register(SurveyGearInteraction.TYPE_ID, SurveyGearInteraction.class, SurveyGearInteraction.CODEC);
         interactions.register(ReefActionInteraction.TYPE_ID, ReefActionInteraction.class, ReefActionInteraction.CODEC);
         interactions.register(DeepstoneActionInteraction.TYPE_ID, DeepstoneActionInteraction.class, DeepstoneActionInteraction.CODEC);
+        interactions.register(SupportCastInteraction.TYPE_ID, SupportCastInteraction.class, SupportCastInteraction.CODEC);
 
         var systems = getEntityStoreRegistry();
         FractalProgress.setComponentType(systems.registerComponent(FractalProgress.class, FractalProgress.ID, FractalProgress.CODEC));
@@ -210,6 +219,11 @@ public final class FractalsPlugin extends JavaPlugin {
         systems.registerSystem(new InstabilitySystem());
         // Après les filtres qu'il doit précéder (StageDamageFilter, CliffsideDamageFilter, MinionShieldSystem).
         systems.registerSystem(new MistPotionDamageFilter());
+        systems.registerSystem(new SupportDamageFilter());
+        systems.registerSystem(new SupportSteeringSystem());
+        systems.registerSystem(new SupportHitSystem());
+        systems.registerSystem(new SanctuarySystem.Launch());
+        systems.registerSystem(new SanctuarySystem.Legacy());
         Cliffside.registerBossBars();
         Instabilities.exempt(Cliffside.SEAL_ROLES);
         Instabilities.exempt(Cliffside.SEEKER);
@@ -232,7 +246,7 @@ public final class FractalsPlugin extends JavaPlugin {
 
         getCommandRegistry().registerCommand(new FractalCommand());
 
-        getLogger().atInfo().log("Nakasar Fractales : 24 types d'interaction (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s), progression, fractales du jour, potions des Brumes, Falaise, instabilités, Inclassable, Volcanique, Océan solide, Marais, Tempête de neige, Ressac silencieux, Récif de la Sirène, Pierre-Profonde, systèmes et /fractale enregistrés",
+        getLogger().atInfo().log("Nakasar Fractales : 25 types d'interaction (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s), progression, fractales du jour, potions des Brumes, Falaise, instabilités, Inclassable, Volcanique, Océan solide, Marais, Tempête de neige, Ressac silencieux, Récif de la Sirène, Pierre-Profonde, runes et objets de soutien, systèmes et /fractale enregistrés",
                 TelegraphInteraction.TYPE_ID, ChargeInteraction.TYPE_ID, StunSelfInteraction.TYPE_ID,
                 SummonMinionsInteraction.TYPE_ID, CagePlayerInteraction.TYPE_ID, OpenConsoleInteraction.TYPE_ID,
                 HarmonizeInteraction.TYPE_ID, LeaveInteraction.TYPE_ID, TrialDemoInteraction.TYPE_ID,
@@ -241,7 +255,7 @@ public final class FractalsPlugin extends JavaPlugin {
                 CliffsideUseInteraction.TYPE_ID, PullInteraction.TYPE_ID, StageUseInteraction.TYPE_ID,
                 ThrowItemInteraction.TYPE_ID, DailyBoardInteraction.TYPE_ID, DrinkMistPotionInteraction.TYPE_ID,
                 SurveyGearInteraction.TYPE_ID, ReefActionInteraction.TYPE_ID,
-                DeepstoneActionInteraction.TYPE_ID);
+                DeepstoneActionInteraction.TYPE_ID, SupportCastInteraction.TYPE_ID);
     }
 
     @Override
@@ -263,5 +277,10 @@ public final class FractalsPlugin extends JavaPlugin {
         HitShield.clearAll();
         MistPotionSystem.clearAll();
         ObservatoryReturnSystem.clearAll();
+        Support.clearAll();
+        SupportStates.clearAll();
+        Skills.clearAll();
+        SanctuarySystem.clearAll();
+        SupportHitSystem.clearAll();
     }
 }

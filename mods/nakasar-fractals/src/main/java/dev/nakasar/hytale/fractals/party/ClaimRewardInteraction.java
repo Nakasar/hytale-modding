@@ -14,12 +14,14 @@ import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
 import dev.nakasar.hytale.fractals.observatory.Observatory;
 import dev.nakasar.hytale.fractals.observatory.PlayerInteraction;
 import dev.nakasar.hytale.fractals.progress.FractalProgress;
+import dev.nakasar.hytale.fractals.support.Echoes;
 
 /**
  * {@code "Type": "Nakasar_Fractal_ClaimReward"} : coffre de fin de fractale, un par joueur. Chaque membre du groupe
  * parti de l'Observatoire ({@link FractalRuns.Run#members}) y prend une fois le coffre du rang du niveau
  * ({@code Nakasar_Fractal_Reward_Bag_<Rang>}), et débloque le niveau suivant s'il jouait à son plus haut niveau. Une
- * fractale du jour ({@link DailyFractals}) donne en plus, la première fois du jour, le coffre des fractales du jour.
+ * fractale du jour ({@link DailyFractals}) donne en plus, la première fois du jour, le coffre des fractales du jour. Le
+ * coffre donne aussi les échos de la fractale ({@link Echoes}).
  */
 public class ClaimRewardInteraction extends PlayerInteraction {
 
@@ -52,8 +54,14 @@ public class ClaimRewardInteraction extends PlayerInteraction {
             return;
         }
         var inventory = InventoryComponent.getCombined(buffer, player, InventoryComponent.HOTBAR_STORAGE_BACKPACK);
+        String rank = Observatory.rankId(run.level());
+        SimpleItemContainer.addOrDropItemStack(buffer, player, inventory, new ItemStack(BAG_PREFIX + rank, 1));
+        // Échos de la fractale (runes et armes de soutien) ; noyau stable au rang Maître.
         SimpleItemContainer.addOrDropItemStack(buffer, player, inventory,
-                new ItemStack(BAG_PREFIX + Observatory.rankId(run.level()), 1));
+                new ItemStack(Echoes.echo(run.fractal()), Echoes.count(rank)));
+        if (Echoes.stableCore(rank)) {
+            SimpleItemContainer.addOrDropItemStack(buffer, player, inventory, new ItemStack(Echoes.STABLE_CORE, 1));
+        }
         playerRef.sendMessage(Message.translation(MESSAGES + "reward.claimed").param("level", run.level()));
         // Le composant de progression peut manquer : ajout hors du traitement du store.
         buffer.run(store -> {
@@ -69,6 +77,9 @@ public class ClaimRewardInteraction extends PlayerInteraction {
                 SimpleItemContainer.addOrDropItemStack(store, player,
                         InventoryComponent.getCombined(store, player, InventoryComponent.HOTBAR_STORAGE_BACKPACK),
                         new ItemStack(DailyFractals.BAG, 1));
+                SimpleItemContainer.addOrDropItemStack(store, player,
+                        InventoryComponent.getCombined(store, player, InventoryComponent.HOTBAR_STORAGE_BACKPACK),
+                        new ItemStack(Echoes.echo(run.fractal()), Echoes.DAILY_BONUS));
                 playerRef.sendMessage(Message.translation(MESSAGES + "daily.claimed").param("fractal", FractalCatalog.name(run.fractal())));
             }
         });
