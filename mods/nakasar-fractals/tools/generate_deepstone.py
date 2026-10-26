@@ -137,7 +137,9 @@ def write_blocks():
         fc.write_json(go.ITEMS / "Deepstone" / f"{name}.json", doc)
     # Médaillons des murs : la brique runique bleue vanilla, qui luit turquoise (salles sombres des captures de GW2).
     doc = go.block_item(sc.RUNE_GLOW, "Deepstone_Rune_Glow", "#3fc8b8", None, solid=True, particle="#3fc8b8")
-    doc["Icon"] = "Icons/ItemsGenerated/Rock_Runic_Blue_Brick.png"
+    # icône à nous (l'icône vanilla Icons/ItemsGenerated/Rock_Runic_Blue_Brick.png n'existe pas : asset rejeté en jeu)
+    icon = fc.COMMON / go.ICONS / "Deepstone_Rune_Glow.png"
+    go.icon(icon, fc.texture(icon, (40, 52, 70), (80, 230, 210), "rune"))
     doc["TranslationProperties"] = {"Name": f"{LANG}.items.{sc.RUNE_GLOW}.name",
                                     "Description": f"{LANG}.items.{sc.RUNE_GLOW}.description"}
     doc["BlockType"]["Textures"] = [{"All": "BlockTextures/Rock_Runic_Blue_Brick.png", "Weight": 1}]

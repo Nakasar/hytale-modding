@@ -3,7 +3,7 @@
     "Name": "nakasar_fractals_deepstone.items.Nakasar_Fractal_Deepstone_Rune_Glow.name",
     "Description": "nakasar_fractals_deepstone.items.Nakasar_Fractal_Deepstone_Rune_Glow.description"
   },
-  "Icon": "Icons/ItemsGenerated/Rock_Runic_Blue_Brick.png",
+  "Icon": "Icons/Items/Nakasar/Fractals/Deepstone_Rune_Glow.png",
   "Categories": [
     "Blocks.Deco"
   ],
