@@ -1,0 +1,12 @@
+{
+  "$Comment": "Onde de choc : poussière soulevée. Généré par tools/generate_support.py.",
+  "Spawners": [
+    {
+      "SpawnerId": "Nakasar_Fractal_Support_Shock_Dust",
+      "PositionOffset": {
+        "Y": 0.1
+      }
+    }
+  ],
+  "CullDistance": 72
+}

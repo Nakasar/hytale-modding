@@ -88,6 +88,7 @@ const sidebars = {
     "fractales/observatoire",
     "fractales/progression",
     "fractales/potions",
+    "fractales/runes-et-soutien",
     "fractales/instabilites",
     {
       type: "category",

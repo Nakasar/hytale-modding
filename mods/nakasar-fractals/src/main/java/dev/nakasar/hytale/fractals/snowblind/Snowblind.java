@@ -95,6 +95,24 @@ public final class Snowblind implements FractalStage {
 
     private final Map<World, State> states = Collections.synchronizedMap(new WeakHashMap<>());
 
+    /** L'étape enregistrée, pour la fiole de purge des objets de soutien. */
+    private static volatile Snowblind instance;
+
+    public Snowblind() {
+        instance = this;
+    }
+
+    /** Fiole de purge : retire `n` piles d'Hypothermie au joueur (rien hors de la Tempête de neige). */
+    public static void relieveCold(World world, Ref<EntityStore> ref, int n) {
+        Snowblind self = instance;
+        PlayerRef player = ref == null || !ref.isValid() ? null
+                : world.getEntityStore().getStore().getComponent(ref, PlayerRef.getComponentType());
+        State st = self == null || player == null ? null : self.states.get(world);
+        if (st != null) {
+            st.frost.relieve(player.getUuid(), n);
+        }
+    }
+
     /** La torche et les fagots se perdent hors de la fractale. */
     public static FractalItemsSystem.Rule itemsRule() {
         return new FractalItemsSystem.Rule(FRACTAL, Set.of(TORCH, FIREWOOD));

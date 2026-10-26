@@ -42,6 +42,8 @@ Le boss final vaincu, le **coffre de fin** et la **pierre de retour** apparaisse
 | Expert | 11 à 15 | lingots d'or, rubis ou éclats de rune | +1 ou +2 (1 sur 2) |
 | Maître | 16 à 22 | émeraudes, éclats de rune ou cœur du Vide | +2 ou +3 (3 sur 5) |
 
+Avec le coffre, chacun reçoit aussi les **échos** de la fractale terminée (1, 1 à 2, 2 ou 3 selon le rang ; au rang Maître, une fois sur trois, un **noyau stable**), et 2 échos de plus avec le coffre des fractales du jour : ils servent à fabriquer les [runes et objets de soutien](runes-et-soutien.md).
+
 ## Fractales du jour {#fractales-du-jour}
 
 Chaque jour, **3 fractales** sont tirées pour tout le serveur. La **première fois du jour** que vous en terminez une, le coffre de fin vous donne en plus un **coffre des fractales du jour** : 12 à 18 éclats de Brume, une infusion (+1 ou +2), un matériau (éclats de rune, saphir ou or), une [potion des Brumes](potions.md) de base au hasard (offensive, mobilité ou défensive) et une petite chance (1 sur 10) d'un [cosmétique de saison](cosmetiques.md). Chacune des trois compte à part : les trois le même jour donnent trois coffres.

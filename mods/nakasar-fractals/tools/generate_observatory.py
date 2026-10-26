@@ -632,6 +632,11 @@ def bench_item(name, tex):
              "Icon": f"{CATEGORY_ICONS}/Infusions.png"},
             {"Id": "Nakasar_Fractal_Fragments", "Name": f"{PROGRESS_LANG}.benchCategories.nakasar_fractal_fragments",
              "Icon": f"{CATEGORY_ICONS}/Fragments.png"},
+            # Runes et armes de soutien (tools/generate_support.py, qui dessine leurs icônes et écrit leur langue).
+            {"Id": "Nakasar_Fractal_Runes", "Name": "nakasar_fractals_support.benchCategories.nakasar_fractal_runes",
+             "Icon": f"{CATEGORY_ICONS}/Runes.png"},
+            {"Id": "Nakasar_Fractal_Support", "Name": "nakasar_fractals_support.benchCategories.nakasar_fractal_support",
+             "Icon": f"{CATEGORY_ICONS}/Support.png"},
         ],
     }
     return doc

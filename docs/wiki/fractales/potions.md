@@ -35,3 +35,5 @@ Il vend aussi, contre des éclats de Brume, quelques consommables du jeu pour pr
 | Potion d'endurance | 2 |
 | Potion de mana | 2 |
 | Salade César | 2 |
+
+Et les consommables de soutien des fractales (bombe hébétante, fiole de purge, fumigène, totems) : voir [Runes et objets de soutien](runes-et-soutien.md#consommables).

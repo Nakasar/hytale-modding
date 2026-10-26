@@ -1,0 +1,13 @@
+{
+  "$Comment": "Arme de soutien sur Weapon_Wand_Root (modèle, icône et attaque principale vanilla) ; clic droit : WandVines. Généré par tools/generate_support.py.",
+  "Parent": "Weapon_Wand_Root",
+  "TranslationProperties": {
+    "Name": "nakasar_fractals_support.items.Weapon_Nakasar_Fractal_Root_Wand.name",
+    "Description": "nakasar_fractals_support.items.Weapon_Nakasar_Fractal_Root_Wand.description"
+  },
+  "Quality": "Epic",
+  "MaxStack": 1,
+  "Interactions": {
+    "Secondary": "Root_Weapon_Nakasar_Fractal_Root_Wand"
+  }
+}

@@ -1,0 +1,15 @@
+{
+  "$Comment": "Écho de la fractale Deepstone : coffre de fin (party.ClaimRewardInteraction), ingrédient des runes et armes de soutien. Modèle de l'éclat de rune vanilla, teint à la couleur de la fractale. Généré par tools/generate_support.py.",
+  "Parent": "Ingredient_Rune_Shard",
+  "TranslationProperties": {
+    "Name": "nakasar_fractals_support.items.Nakasar_Fractal_Echo_Deepstone.name",
+    "Description": "nakasar_fractals_support.items.Nakasar_Fractal_Echo_Deepstone.description"
+  },
+  "Icon": "Icons/Items/Nakasar/Fractals/Vanilla/Support/Echo_Deepstone.png",
+  "Texture": "Items/Nakasar/Fractals/Vanilla/Support/Echo_Deepstone.png",
+  "Quality": "Rare",
+  "Categories": [
+    "Items.Ingredients"
+  ],
+  "MaxStack": 99
+}

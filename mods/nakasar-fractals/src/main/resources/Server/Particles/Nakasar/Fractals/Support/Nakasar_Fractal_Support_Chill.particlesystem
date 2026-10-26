@@ -1,0 +1,12 @@
+{
+  "$Comment": "Ennemi ralenti : flocons sur lui. Généré par tools/generate_support.py.",
+  "Spawners": [
+    {
+      "SpawnerId": "Nakasar_Fractal_Support_Chill_Snow",
+      "PositionOffset": {
+        "Y": 0.2
+      }
+    }
+  ],
+  "CullDistance": 72
+}

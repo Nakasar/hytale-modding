@@ -70,6 +70,9 @@ KINDS = [
 # Consommables vanilla vendus en plus par l'Alchimiste (Kevin, 25 octobre 2026) : objet, prix en éclats de Brume.
 # Ids vus dans Assets.zip 0.7.2 (tools/vanilla-block-ids-0.7.2.txt).
 VANILLA_TRADES = [("Potion_Health", 2), ("Potion_Stamina", 2), ("Potion_Mana", 2), ("Food_Salad_Caesar", 2)]
+# Consommables de soutien des fractales (tools/generate_support.py, Kevin 26 octobre 2026) : objet, prix en éclats.
+SUPPORT_TRADES = [("Nakasar_Fractal_Daze_Bomb", 3), ("Nakasar_Fractal_Purge_Flask", 4), ("Nakasar_Fractal_Smoke_Bomb", 5),
+                  ("Nakasar_Fractal_Healing_Totem", 6), ("Nakasar_Fractal_Slowness_Totem", 6)]
 EFFECT_NAMES = {"Offensive": ("Offensive des Brumes", "Fractal Offensive"),
                 "Mobility": ("Mobilité des Brumes", "Fractal Mobility"),
                 "Defensive": ("Défense des Brumes", "Fractal Defensive")}
@@ -240,7 +243,7 @@ def barter_shop():
         trades.append((potion(kind, False), price))
     for kind, *_, price, _, _ in KINDS:
         trades.append((potion(kind, True), price * LARGE_STACKS))
-    trades += VANILLA_TRADES
+    trades += VANILLA_TRADES + SUPPORT_TRADES
     return {
         "DisplayNameKey": f"{LANG}.shop.Alchemist.name",
         "RefreshInterval": {"Days": 1},

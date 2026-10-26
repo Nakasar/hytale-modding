@@ -1,0 +1,12 @@
+{
+  "$Comment": "Sanctuaire : étincelles dorées de la voûte. Généré par tools/generate_support.py.",
+  "Spawners": [
+    {
+      "SpawnerId": "Nakasar_Fractal_Support_Sanctuary_Gold",
+      "PositionOffset": {
+        "Y": 0
+      }
+    }
+  ],
+  "CullDistance": 72
+}

@@ -1,0 +1,16 @@
+{
+  "$Comment": "Soutien des fractales : posé par le Java (support.Skills). Généré par tools/generate_support.py.",
+  "Name": "nakasar_fractals_support.effects.Nakasar_Fractal_Support_Aegis",
+  "StatusEffectIcon": "UI/StatusEffects/Nakasar/Fractals/Support/Aegis.png",
+  "ApplicationEffects": {
+    "Particles": [
+      {
+        "SystemId": "Nakasar_Fractal_Support_Ward",
+        "TargetEntityPart": "Self"
+      }
+    ]
+  },
+  "OverlapBehavior": "Overwrite",
+  "Infinite": false,
+  "Duration": 2.0
+}

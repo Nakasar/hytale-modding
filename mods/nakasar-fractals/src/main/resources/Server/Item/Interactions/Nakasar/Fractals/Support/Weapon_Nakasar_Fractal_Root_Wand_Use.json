@@ -1,0 +1,12 @@
+{
+  "$Comment": "Soutien WandVines : le Java échoue sans cible ou en recharge, et alors rien n'est lancé. Généré par tools/generate_support.py.",
+  "Type": "Nakasar_Fractal_Support",
+  "Skill": "WandVines",
+  "Next": {
+    "Type": "Simple",
+    "RunTime": 0.3,
+    "Effects": {
+      "WorldSoundEventId": "SFX_Light_Melee_T2_Swing"
+    }
+  }
+}

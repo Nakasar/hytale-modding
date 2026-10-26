@@ -1,0 +1,12 @@
+{
+  "$Comment": "Égide et Sursis : éclat de lumière blanche. Généré par tools/generate_support.py.",
+  "Spawners": [
+    {
+      "SpawnerId": "Nakasar_Fractal_Support_Ward_Light",
+      "PositionOffset": {
+        "Y": 0
+      }
+    }
+  ],
+  "CullDistance": 72
+}

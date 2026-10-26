@@ -1,0 +1,12 @@
+{
+  "$Comment": "Transfusion et bâton : filet de vie vert pâle. Généré par tools/generate_support.py.",
+  "Spawners": [
+    {
+      "SpawnerId": "Nakasar_Fractal_Support_Beam_Life",
+      "PositionOffset": {
+        "Y": 0
+      }
+    }
+  ],
+  "CullDistance": 72
+}

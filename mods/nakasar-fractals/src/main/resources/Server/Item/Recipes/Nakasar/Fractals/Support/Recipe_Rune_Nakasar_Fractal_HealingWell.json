@@ -1,0 +1,34 @@
+{
+  "TimeSeconds": 3,
+  "KnowledgeRequired": false,
+  "Input": [
+    {
+      "ItemId": "Nakasar_Fractal_Echo_Swampland",
+      "Quantity": 2
+    },
+    {
+      "ItemId": "Nakasar_Fractal_Mist_Shard",
+      "Quantity": 15
+    }
+  ],
+  "PrimaryOutput": {
+    "ItemId": "Rune_Nakasar_Fractal_HealingWell",
+    "Quantity": 1
+  },
+  "Output": [
+    {
+      "ItemId": "Rune_Nakasar_Fractal_HealingWell",
+      "Quantity": 1
+    }
+  ],
+  "BenchRequirement": [
+    {
+      "Type": "Crafting",
+      "Id": "Nakasar_Fractal_Mist_Forge",
+      "Categories": [
+        "Nakasar_Fractal_Runes"
+      ],
+      "RequiredTierLevel": 1
+    }
+  ]
+}

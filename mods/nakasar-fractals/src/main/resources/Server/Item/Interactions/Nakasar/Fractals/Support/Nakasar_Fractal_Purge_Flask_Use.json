@@ -1,0 +1,25 @@
+{
+  "$Comment": "Boire : Purge. Généré par tools/generate_support.py.",
+  "Type": "Charging",
+  "FailOnDamage": false,
+  "Effects": {
+    "ItemAnimationId": "Consume",
+    "WorldSoundEventId": "SFX_Nakasar_Fractal_Drink",
+    "ClearAnimationOnFinish": true,
+    "ClearSoundEventOnFinish": true
+  },
+  "HorizontalSpeedMultiplier": 0.75,
+  "Next": {
+    "1.5": {
+      "Type": "Nakasar_Fractal_Support",
+      "Skill": "Purge",
+      "Next": {
+        "Type": "ModifyInventory",
+        "AdjustHeldItemQuantity": -1
+      }
+    }
+  },
+  "Failed": {
+    "Type": "Simple"
+  }
+}

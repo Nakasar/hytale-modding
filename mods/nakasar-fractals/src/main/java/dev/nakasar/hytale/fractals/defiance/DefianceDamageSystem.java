@@ -34,9 +34,14 @@ public final class DefianceDamageSystem extends DamageEventSystem {
     }
 
     @Override
+    @SuppressWarnings("deprecation")
     public void handle(int index, ArchetypeChunk<EntityStore> chunk, Store<EntityStore> store,
                        CommandBuffer<EntityStore> buffer, Damage damage) {
         if (damage.isCancelled() || !(damage.getSource() instanceof Damage.EntitySource source)) {
+            return;
+        }
+        // Les runes de soutien comptent leurs propres points de défiance (Support.stun / Support.defiance).
+        if (damage.getCause() != null && dev.nakasar.hytale.fractals.support.Support.CAUSE.equals(damage.getCause().getId())) {
             return;
         }
         Ref<EntityStore> boss = chunk.getReferenceTo(index);

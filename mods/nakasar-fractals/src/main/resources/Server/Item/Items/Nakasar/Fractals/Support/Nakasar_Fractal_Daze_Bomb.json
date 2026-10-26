@@ -1,0 +1,23 @@
+{
+  "$Comment": "Consommable de soutien sur Weapon_Bomb_Stun (modèle vanilla, bombes reteintes) : DazeBomb remplace l'effet du jeu. Généré par tools/generate_support.py.",
+  "Parent": "Weapon_Bomb_Stun",
+  "TranslationProperties": {
+    "Name": "nakasar_fractals_support.items.Nakasar_Fractal_Daze_Bomb.name",
+    "Description": "nakasar_fractals_support.items.Nakasar_Fractal_Daze_Bomb.description"
+  },
+  "Quality": "Uncommon",
+  "MaxStack": 10,
+  "Interactions": {
+    "Primary": "Root_Nakasar_Fractal_Daze_Bomb",
+    "Secondary": "Root_Nakasar_Fractal_Daze_Bomb",
+    "Held": {
+      "Interactions": [
+        {
+          "Type": "Simple"
+        }
+      ]
+    }
+  },
+  "Texture": "Items/Nakasar/Fractals/Vanilla/Support/Daze_Bomb.png",
+  "Icon": "Icons/Items/Nakasar/Fractals/Vanilla/Support/Daze_Bomb.png"
+}

@@ -56,6 +56,16 @@
           "Id": "Nakasar_Fractal_Fragments",
           "Name": "nakasar_fractals_progress.benchCategories.nakasar_fractal_fragments",
           "Icon": "Icons/CraftingCategories/Nakasar/Fractals/Fragments.png"
+        },
+        {
+          "Id": "Nakasar_Fractal_Runes",
+          "Name": "nakasar_fractals_support.benchCategories.nakasar_fractal_runes",
+          "Icon": "Icons/CraftingCategories/Nakasar/Fractals/Runes.png"
+        },
+        {
+          "Id": "Nakasar_Fractal_Support",
+          "Name": "nakasar_fractals_support.benchCategories.nakasar_fractal_support",
+          "Icon": "Icons/CraftingCategories/Nakasar/Fractals/Support.png"
         }
       ]
     },

@@ -133,6 +133,71 @@
         }
       ],
       "Stock": 99
+    },
+    {
+      "Output": {
+        "ItemId": "Nakasar_Fractal_Daze_Bomb",
+        "Quantity": 1
+      },
+      "Input": [
+        {
+          "ItemId": "Nakasar_Fractal_Mist_Shard",
+          "Quantity": 3
+        }
+      ],
+      "Stock": 99
+    },
+    {
+      "Output": {
+        "ItemId": "Nakasar_Fractal_Purge_Flask",
+        "Quantity": 1
+      },
+      "Input": [
+        {
+          "ItemId": "Nakasar_Fractal_Mist_Shard",
+          "Quantity": 4
+        }
+      ],
+      "Stock": 99
+    },
+    {
+      "Output": {
+        "ItemId": "Nakasar_Fractal_Smoke_Bomb",
+        "Quantity": 1
+      },
+      "Input": [
+        {
+          "ItemId": "Nakasar_Fractal_Mist_Shard",
+          "Quantity": 5
+        }
+      ],
+      "Stock": 99
+    },
+    {
+      "Output": {
+        "ItemId": "Nakasar_Fractal_Healing_Totem",
+        "Quantity": 1
+      },
+      "Input": [
+        {
+          "ItemId": "Nakasar_Fractal_Mist_Shard",
+          "Quantity": 6
+        }
+      ],
+      "Stock": 99
+    },
+    {
+      "Output": {
+        "ItemId": "Nakasar_Fractal_Slowness_Totem",
+        "Quantity": 1
+      },
+      "Input": [
+        {
+          "ItemId": "Nakasar_Fractal_Mist_Shard",
+          "Quantity": 6
+        }
+      ],
+      "Stock": 99
     }
   ]
 }

@@ -1,0 +1,41 @@
+{
+  "$Comment": "Rune de soutien des fractales (Reprieve). Généré par tools/generate_support.py.",
+  "TranslationProperties": {
+    "Name": "nakasar_fractals_support.items.Rune_Nakasar_Fractal_Reprieve.name",
+    "Description": "nakasar_fractals_support.items.Rune_Nakasar_Fractal_Reprieve.description"
+  },
+  "Icon": "Icons/Items/Nakasar/Fractals/Vanilla/Support/Rune_Reprieve.png",
+  "IconProperties": {
+    "Scale": 0.75,
+    "Rotation": [
+      0,
+      30,
+      15
+    ],
+    "Translation": [
+      4,
+      -18
+    ]
+  },
+  "Model": "Items/Runes/Rune_Ability.blockymodel",
+  "Texture": "Items/Nakasar/Fractals/Vanilla/Support/Rune_Reprieve.png",
+  "Quality": "Legendary",
+  "Categories": [
+    "Items.Ingredients"
+  ],
+  "PlayerAnimationsId": "Item",
+  "Scale": 0.8,
+  "ItemSoundSetId": "ISS_Items_Gems",
+  "MaxStack": 1,
+  "Ability": {
+    "Slot": "Core",
+    "Cooldown": 60,
+    "Cost": 50,
+    "CostType": "Mana",
+    "AbilityKeywords": [
+      "Nakasar_Fractal_Support"
+    ],
+    "Attributes": {},
+    "Cast": "Root_Rune_Nakasar_Fractal_Reprieve"
+  }
+}

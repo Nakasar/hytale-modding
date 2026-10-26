@@ -64,6 +64,14 @@ final class Frost {
         return c == null ? 0 : c.stacks;
     }
 
+    /** Retire `n` piles (fiole de purge), sans libérer d'un éclat de glace. */
+    void relieve(UUID player, int n) {
+        Chill c = chills.get(player);
+        if (c != null && c.shard == null) {
+            c.stacks = Math.max(0, c.stacks - n);
+        }
+    }
+
     /** Ajoute `n` piles (sans effet une fois le froid levé). */
     void add(UUID player, int n) {
         if (thawed) {

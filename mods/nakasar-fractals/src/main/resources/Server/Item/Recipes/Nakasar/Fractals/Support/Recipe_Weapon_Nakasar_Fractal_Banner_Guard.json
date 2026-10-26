@@ -1,0 +1,54 @@
+{
+  "TimeSeconds": 4,
+  "KnowledgeRequired": false,
+  "Input": [
+    {
+      "ItemId": "Weapon_Staff_Wood",
+      "Quantity": 1
+    },
+    {
+      "ItemId": "Nakasar_Fractal_Mist_Shard",
+      "Quantity": 80
+    },
+    {
+      "ItemId": "Nakasar_Fractal_Echo_Snowblind",
+      "Quantity": 4
+    },
+    {
+      "ItemId": "Nakasar_Fractal_Echo_SilentSurf",
+      "Quantity": 4
+    },
+    {
+      "ItemId": "Nakasar_Fractal_Echo_SirensReef",
+      "Quantity": 4
+    },
+    {
+      "ItemId": "Nakasar_Fractal_Echo_Deepstone",
+      "Quantity": 4
+    },
+    {
+      "ItemId": "Nakasar_Fractal_Echo_Cliffside",
+      "Quantity": 4
+    }
+  ],
+  "PrimaryOutput": {
+    "ItemId": "Weapon_Nakasar_Fractal_Banner_Guard",
+    "Quantity": 1
+  },
+  "Output": [
+    {
+      "ItemId": "Weapon_Nakasar_Fractal_Banner_Guard",
+      "Quantity": 1
+    }
+  ],
+  "BenchRequirement": [
+    {
+      "Type": "Crafting",
+      "Id": "Nakasar_Fractal_Mist_Forge",
+      "Categories": [
+        "Nakasar_Fractal_Support"
+      ],
+      "RequiredTierLevel": 1
+    }
+  ]
+}

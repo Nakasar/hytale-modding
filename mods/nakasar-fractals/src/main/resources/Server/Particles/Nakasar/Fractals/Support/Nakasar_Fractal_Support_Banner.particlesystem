@@ -1,0 +1,12 @@
+{
+  "$Comment": "Bannière : flammèches dorées autour de la hampe et du cercle. Généré par tools/generate_support.py.",
+  "Spawners": [
+    {
+      "SpawnerId": "Nakasar_Fractal_Support_Banner_Gold",
+      "PositionOffset": {
+        "Y": 0
+      }
+    }
+  ],
+  "CullDistance": 72
+}
