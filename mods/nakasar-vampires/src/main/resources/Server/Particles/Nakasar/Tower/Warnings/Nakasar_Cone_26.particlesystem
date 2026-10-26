@@ -2,12 +2,6 @@
   "$Comment": "C\u00f4ne ou anneau d'annonce de la Tour (2.6 s jusqu'au coup), dessin\u00e9 par telegraph.Telegraphs. G\u00e9n\u00e9r\u00e9 par tools/tower_warnings.py.",
   "Spawners": [
     {
-      "SpawnerId": "Nakasar_Cone_26_Dot_Tint",
-      "PositionOffset": {
-        "Y": 0.015
-      }
-    },
-    {
       "SpawnerId": "Nakasar_Cone_26_Dot",
       "PositionOffset": {
         "Y": 0.02

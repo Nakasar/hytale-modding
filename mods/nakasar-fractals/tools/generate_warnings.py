@@ -52,11 +52,6 @@ FILL_OPACITY = 0.75    # opacité de départ du remplissage (Gobliterator_Slam_W
 EDGE_PULSE = {0: 0, 15: 1, 30: 0.25, 45: 1, 60: 0.25, 75: 1, 90: 0.25, 95: 0.25, 100: 0}
 FILL_PULSE = {0: 0, 15: 1, 30: 0.5, 45: 1, 60: 0.5, 75: 1, 90: 0.5, 95: 0.5, 97: 0.5, 100: 0}
 HIT = 97
-# Voile en mélange normal sous chaque couche additive (Kevin, 26 octobre 2026 : zone blanche sur le plateau clair de la
-# Voix de la montagne) : l'additif n'ajoute rien à un sol déjà presque blanc (quartzite, neige), le voile le teinte en
-# rouge ; sur un sol sombre il ne fait que foncer le fond sous le rouge Deepworks. Même animation, opacité x TINT.
-TINT = 0.45
-TINT_SUFFIX = "_Tint"
 LINE_PREFIX = "Nakasar_Fractal_Line_"
 SECTOR_PREFIX = "Nakasar_Fractal_Sector_"
 SHAPE_TENTHS = range(5, 31)   # WarningShapes.MIN_TENTHS / MAX_TENTHS : toutes les annonces de ligne et de cône durent moins de 3 s
@@ -331,32 +326,6 @@ def _green_zone_files():
             f"{GREEN_ZONE}_Edge.particlespawner": edge}
 
 
-def with_tints(files, skip=()):
-    """Ajoute à chaque système d'annonce (sauf `skip`) un voile BlendLinear sous chacune de ses couches additives."""
-    import copy
-    out = dict(files)
-    for fname, doc in files.items():
-        if not fname.endswith(".particlesystem") or fname[:-len(".particlesystem")] in skip:
-            continue
-        spawners = []
-        for entry in doc["Spawners"]:
-            base = files.get(entry["SpawnerId"] + ".particlespawner")
-            if base is None or base.get("RenderMode") != "BlendAdd":
-                spawners.append(entry)
-                continue
-            tint = copy.deepcopy(base)
-            tint["RenderMode"] = "BlendLinear"
-            frame = tint["Particle"]["InitialAnimationFrame"]
-            frame["Opacity"] = round(frame["Opacity"] * TINT, 3)
-            out[entry["SpawnerId"] + TINT_SUFFIX + ".particlespawner"] = tint
-            offset = entry.get("PositionOffset", {}).get("Y", 0)
-            spawners.append({"SpawnerId": entry["SpawnerId"] + TINT_SUFFIX,
-                             "PositionOffset": {"Y": round(max(0.0, offset - 0.005), 3)}})
-            spawners.append(entry)
-        doc["Spawners"] = spawners
-    return out
-
-
 def write():
     PARTICLES.mkdir(parents=True, exist_ok=True)
     TEXTURES.mkdir(parents=True, exist_ok=True)
@@ -369,7 +338,6 @@ def write():
             files.update(_line_files(aspect, t))
         for angle in angles:
             files.update(_sector_files(angle, t))
-    files = with_tints(files, skip={GREEN_ZONE})
     for old in PARTICLES.iterdir():
         if old.name not in files:
             old.unlink()
