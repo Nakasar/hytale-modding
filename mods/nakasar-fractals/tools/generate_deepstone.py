@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Génère Pierre-Profonde (Deepstone), fractale de la saison 2 (docs/fractales/gdd.md), d'après GW2
+"""Génère Roche des Abysses (Deepstone), fractale de la saison 2 (docs/fractales/gdd.md), d'après GW2
 (metabattle.com/wiki/Guide:Deepstone et hardstuck.gg/gw2/guides/fractal-maps/deepstone) et la carte que Kevin a
 envoyée (25 octobre 2026).
 
@@ -9,7 +9,7 @@ Torin et Kay cherchent l'entrée du caveau des nains de Deldrimor, au fond d'une
 
 1. la descente des corniches enneigées (chauves-souris), la salle du cristal ;
 2. à l'ouest, la grille de runes (motifs lumineux qui glissent du nord vers le sud), deux runes à presser ensemble,
-   puis la Sentinelle de Pierre-Profonde sur sa corniche ouverte au vide (spirale de vent, souffle, esprits du vent qui
+   puis la Sentinelle de la Roche des Abysses sur sa corniche ouverte au vide (spirale de vent, souffle, esprits du vent qui
    emportent les joueurs vers le bord : à briser) ; son orbe de lumière ramène au cristal ;
 3. à l'est, les nids d'araignées, le pont balayé par le vent (deux runes l'arrêtent), deux mères de couvée puis la Reine
    de la couvée (estocades, toiles, charge ; invulnérable un instant à 50 %) ; son orbe aussi ;
@@ -18,7 +18,7 @@ Torin et Kay cherchent l'entrée du caveau des nains de Deldrimor, au fond d'une
 5. la salle du gouffre : le chemin de dalles se révèle à la Lumière, d'orbe en orbe ; des flammes spectrales condamnent
    les dalles, des ombres rôdent ;
 6. l'ascenseur : la plate-forme descend de 30 blocs, deux vagues d'ombres à mi-chemin ;
-7. l'arène de dalles de la Voix (Torin consumé par les ombres) : orbe rebondissante qui brise les dalles, bombes
+7. l'arène de dalles de la Voix (Torin consumé par les ombres) : orbe rebondissante qui marque les dalles, bombes
    d'ombre, siphon spirituel (défiance), ombres, flammes spectrales à 60 et 20 % ; la Lumière refait les dalles et donne
    des Courants ascendants (une chute sauvée par charge).
 
@@ -240,7 +240,7 @@ def status_icons():
 
 
 def deep_cause():
-    return fc.cause("Grille de runes, vent, venin, ombres, siphon et bombes de Pierre-Profonde : une part des PV max, "
+    return fc.cause("Vent, venin, ombres, siphon et bombes de la Roche des Abysses : une part des PV max, "
                     "l'armure ne la réduit pas.", "#9cf")
 
 
@@ -327,7 +327,7 @@ def models():
         ("Light", light)) if val is not None}
     shadow = {"Color": "#a6f", "Radius": 3}
     m = {
-        SENTINEL: v("Sentinelle de Pierre-Profonde (élémentaire d'air de GW2) : grand esprit de givre vanilla (x 2,4), "
+        SENTINEL: v("Sentinelle de la Roche des Abysses (élémentaire d'air de GW2) : grand esprit de givre vanilla (x 2,4), "
                     "lueur d'orage.", "Spirit_Frost", 2.4, {"Color": "#bdf", "Radius": 5}),
         WIND_SPRITE: v("Esprit du vent (tornade de la Sentinelle) : petit esprit de givre vanilla, lueur blanche.",
                        "Spirit_Frost", 0.9, {"Color": "#fff", "Radius": 3}),
@@ -340,7 +340,7 @@ def models():
                        2.2, {"Color": "#f46", "Radius": 3}),
         MINOTAUR: v("Esprit du Minotaure des ombres : loup-garou vanilla (x 1,5), lueur violette.", "Werewolf", 1.5,
                     {"Color": "#a6f", "Radius": 4}),
-        SHADE: v("Ombre de Pierre-Profonde : le spectre vanilla, lueur violette.", "Wraith", 1.1, shadow),
+        SHADE: v("Ombre de la Roche des Abysses : le spectre vanilla, lueur violette.", "Wraith", 1.1, shadow),
         FLAME: v("Flamme spectrale : petit esprit de braise vanilla, lueur bleue.", "Spirit_Ember", 0.8,
                  {"Color": "#8af", "Radius": 4}),
     }
@@ -487,8 +487,8 @@ def roles():
     n = lambda role: fc.npc_name(LANG, role)
     out = {}
     out[SENTINEL] = fr.role(
-        SENTINEL, "Sentinelle de Pierre-Profonde, barre de boss : souffle glacé, coup de vent. Spirale de vent et "
-        "esprits du vent à 80, 50 et 20 % : Java (deepstone.Sentinel).", SENTINEL, n(SENTINEL), 7000,
+        SENTINEL, "Sentinelle de la Roche des Abysses, barre de boss : souffle glacé, coup de vent. Spirale de vent et "
+        "esprits du vent à 80, 50 et 20 % : Java (deepstone.Sentinel).", SENTINEL, n(SENTINEL), 2500,
         [fr.timed_attack("Gust", R("Sentinel_Gust"), rng=9, los=True, comment="Souffle glacé."),
          fr.timed_attack("Slam", R("Sentinel_Slam"), rng=4, comment="Coup de vent."),
          fr.chase(30, stop=3.0)], fr.walk(2.8), GENERATOR, sight=26, leash=36, home=False,
@@ -500,7 +500,7 @@ def roles():
                                "(Java, deepstone.EastPath).", GENERATOR, 420)
     out[QUEEN] = fr.role(
         QUEEN, "Reine de la couvée, barre de boss : estocades (venin), toiles, charge. Invulnérable un instant à 50 % "
-        "(protection), araignées et diablotins : Java (deepstone.EastPath).", QUEEN, n(QUEEN), 8000,
+        "(protection), araignées et diablotins : Java (deepstone.EastPath).", QUEEN, n(QUEEN), 3000,
         [fr.timed_attack("Charge", R("Queen_Charge"), rng=16, los=True, comment="Charge."),
          fr.timed_attack("Web", R("Queen_Web"), rng=20, comment="Toiles."),
          fr.timed_attack("Stab", R("Queen_Stab"), rng=5.5, los=True, comment="Estocades."),
@@ -520,13 +520,13 @@ def roles():
         fc.fly(6, 1, 4), GENERATOR, sight=30, leash=40, home=False, KnockbackScale=0.3, DeathAnimationTime=1.0)
     out[MINOTAUR] = fr.role(
         MINOTAUR, "Esprit du Minotaure des ombres, barre de boss : griffes, coup de cornes, bond. Voile d'ombre (aucun "
-        "dégât sans la Lumière de Deldrimor) et diablotins : Java (deepstone.Minotaur).", MINOTAUR, n(MINOTAUR), 9000,
+        "dégât sans la Lumière de Deldrimor) et diablotins : Java (deepstone.Minotaur).", MINOTAUR, n(MINOTAUR), 3000,
         [fr.timed_attack("Leap", R("Minotaur_Leap"), rng=20, los=True, comment="Bond."),
          fr.timed_attack("Sweep", R("Minotaur_Sweep"), rng=5.5, los=True, comment="Coup de cornes."),
          fr.melee(R("Minotaur_Gore"), 3.4, (0.7, 1.1)), fr.chase(36, stop=2.6)], fr.walk(4.0), GENERATOR, sight=30,
         leash=40, home=False, timers=[fr.timer("Leap", (5, 7), (11, 14)), fr.timer("Sweep", (3, 5), (8, 10))],
         KnockbackScale=0.0, DeathAnimationTime=2.0)
-    out[SHADE] = fr.role(SHADE, "Ombre de Pierre-Profonde : griffes, onde qui hébète.", SHADE, n(SHADE), 420,
+    out[SHADE] = fr.role(SHADE, "Ombre de la Roche des Abysses : griffes, onde qui hébète.", SHADE, n(SHADE), 420,
                          [fr.timed_attack("Burst", R("Shade_Burst"), rng=3.5, comment="Onde d'ombre."),
                           fr.melee(R("Shade_Strike"), 2.4, (0.7, 1.1)), fr.chase(36, stop=1.6)], fr.walk(3.6),
                          GENERATOR, sight=30, leash=40, home=False, timers=[fr.timer("Burst", (3, 5), (9, 12))],
@@ -536,7 +536,7 @@ def roles():
     out[VOICE] = fr.role(
         VOICE, "La Voix (Torin consumé par les ombres), barre de boss et de défiance : coup d'ombre, vague d'ombre, "
         "secousses. Orbe rebondissante, bombes d'ombre, siphon spirituel, ombres, flammes spectrales et téléportations : "
-        "Java (deepstone.Voice).", VOICE, n(VOICE), 16000,
+        "Java (deepstone.Voice).", VOICE, n(VOICE), 5000,
         [fr.timed_attack("Cleave", R("Voice_Cleave"), rng=7, los=True, comment="Vague d'ombre."),
          fr.timed_attack("Quake", R("Voice_Quake"), rng=30, comment="Secousses."),
          fr.melee(R("Voice_Strike"), 3.6, (0.8, 1.2)), fr.chase(30, speed=0.6, stop=3.0)], fr.walk(2.0), GENERATOR,
@@ -554,7 +554,7 @@ def roles():
 def lang():
     t = fc.Lang()
     t.item(LIGHT, "Lumière de Deldrimor", "Clic droit : un éclat de lumière autour de vous (recharge 5 s). Elle dévoile "
-           "ce que cachent les ombres de Pierre-Profonde.", "Light of Deldrimor",
+           "ce que cachent les ombres de la Roche des Abysses.", "Light of Deldrimor",
            "Right click: a burst of light around you (5 s recharge). It reveals what Deepstone's shadows hide.")
     t.item(CRYSTAL, "Cristal de Deldrimor", "Utiliser : y déposer une orbe de lumière.", "Deldrimor crystal",
            "Use: place an orb of light in it.")
@@ -568,7 +568,7 @@ def lang():
     t.item(LIFT_RUNE, "Rune de l'ascenseur", "Utiliser : rejoindre la plate-forme.", "Lift rune",
            "Use: join the platform.")
     for role, f, e in ((TORIN, "Torin", "Torin"), (KAY, "Kay", "Kay"),
-                       (SENTINEL, "Sentinelle de Pierre-Profonde", "Deepstone Sentinel"),
+                       (SENTINEL, "Sentinelle de la Roche des Abysses", "Deepstone Sentinel"),
                        (WIND_SPRITE, "Esprit du vent", "Wind Sprite"), (NEST, "Nid d'araignées", "Spider Nest"),
                        (QUEEN, "Reine de la couvée", "Champion Brood Queen"),
                        (IMP, "Diablotin des ombres vétéran", "Veteran Shadow Imp"),
@@ -590,7 +590,7 @@ def lang():
                       ("Updraft_4", "Courant ascendant (4)", "Residual Updraft (4)")):
         t.put(f"effects.Nakasar_Fractal_{eid}", f, e)
     msgs = {
-        "intro": ("Torin : « Le caveau de Pierre-Profonde est au pied de cette montagne. Les nains de Deldrimor y ont "
+        "intro": ("Torin : « Le caveau de la Roche des Abysses est au pied de cette montagne. Les nains de Deldrimor y ont "
                   "enfermé quelque chose... descendons. »",
                   "Torin: \"The Deepstone vault lies at the foot of this mountain. The dwarves of Deldrimor sealed "
                   "something inside... let's go down.\""),
@@ -600,18 +600,18 @@ def lang():
         "hall.enter": ("Torin : « La salle du cristal. Le cristal réclame deux orbes de lumière : une à l'ouest, une à "
                        "l'est. »", "Torin: \"The crystal chamber. The crystal needs two orbs of light: one to the west, "
                        "one to the east.\""),
-        "grid.intro": ("Une grille de runes : ne touchez pas les dalles vertes allumées. Au bout, deux runes à presser "
-                       "ensemble.", "A rune grid: don't touch the lit green tiles. At the end, two runes to press "
+        "grid.intro": ("Une grille de runes : une dalle verte allumée vous renvoie au début. Au bout, deux runes à presser "
+                       "ensemble.", "A rune grid: a lit green tile sends you back to the start. At the end, two runes to press "
                        "together."),
         "grid.runes": ("Montez sur les deux runes en même temps pour ouvrir la barrière (seul : courez de l'une à "
                        "l'autre en moins de {seconds} s).", "Stand on both runes at once to open the barrier (alone: run "
                        "from one to the other within {seconds} s)."),
-        "grid.hit": ("Les runes vous brûlent !", "The runes burn you!"),
+        "grid.hit": ("Les runes vous renvoient au début du couloir !", "The runes send you back to the start of the corridor!"),
         "rune.one": ("Une rune s'allume... il faut presser l'autre en même temps.",
                      "A rune lights up... the other must be pressed at the same time."),
         "grid.solved": ("Les deux runes s'allument : la grille s'éteint et la barrière s'ouvre.",
                         "Both runes light up: the grid goes dark and the barrier opens."),
-        "sentinel.enter": ("La Sentinelle de Pierre-Profonde se dresse au bord du vide.",
+        "sentinel.enter": ("La Sentinelle de la Roche des Abysses se dresse au bord du vide.",
                            "The Deepstone Sentinel rises at the edge of the void."),
         "sentinel.spiral": ("La Sentinelle déchaîne une spirale de vent : restez sous elle !",
                             "The Sentinel unleashes a wind spiral: stay under it!"),
@@ -687,9 +687,9 @@ def lang():
         "voice.back": ("La Voix redevient vulnérable.", "The Voice is vulnerable again."),
         "voice.teleport": ("La Voix se déplace dans les ombres.", "The Voice shifts through the shadows."),
         "voice.reset": ("La Voix se tait... pour l'instant.", "The Voice falls silent... for now."),
-        "voice.victory": ("La Voix se tait : Torin s'effondre, libéré. Le trésor de Pierre-Profonde est à vous.",
+        "voice.victory": ("La Voix se tait : Torin s'effondre, libéré. Le trésor de la Roche des Abysses est à vous.",
                           "The Voice falls silent: Torin collapses, freed. Deepstone's treasure is yours."),
-        "title.victory": ("Pierre-Profonde terminée", "Deepstone complete"),
+        "title.victory": ("Roche des Abysses terminée", "Deepstone complete"),
     }
     for k, (f, e) in msgs.items():
         t.put(k, f, e)
@@ -721,7 +721,7 @@ def java_layout(p, t):
     return f"""package dev.nakasar.hytale.fractals.deepstone;
 
 /**
- * Positions de Pierre-Profonde, écrites par tools/generate_deepstone.py (ne pas modifier à la main : relancer le
+ * Positions de la Roche des Abysses, écrites par tools/generate_deepstone.py (ne pas modifier à la main : relancer le
  * générateur). Repère du monde : x vers l'est, z vers le sud. Points {{x, y, z}} : pieds ; blocs {{x, y, z}} : coins.
  * Boîtes {{x0, x1, z0, z1}} en blocs.
  */
@@ -865,13 +865,13 @@ def main():
     sections = fc.split_sections(p, min(z for _, _, z in p.blocks))
     # Tout sous terre (Kevin, 26 octobre 2026) : ciel noir, brume bleu nuit qui noie le fond des cavernes, lumière
     # froide et faible ; ce sont les runes, lanternes et cristaux qui éclairent.
-    counts = fc.write_instance(INSTANCE, "Pierre-Profonde", PREFAB_DIR, sections, sc.SPAWN, "#3a4a5e",
+    counts = fc.write_instance(INSTANCE, "Roche des Abysses", PREFAB_DIR, sections, sc.SPAWN, "#3a4a5e",
                                WEATHER, fc.weather("#020408", "#08101a", "#0a1220", (12, 120), 0.5, "#4a5e78",
                                                    sun="#9ab4d0"), "22:00")
     lang().write(LANG)
     JAVA_LAYOUT.parent.mkdir(parents=True, exist_ok=True)
     JAVA_LAYOUT.write_text(java_layout(p, t), encoding="utf-8")
-    print(f"Pierre-Profonde : {sum(counts.values())} blocs en {len(counts)} tronçons, {len(roles())} rôles, "
+    print(f"Roche des Abysses : {sum(counts.values())} blocs en {len(counts)} tronçons, {len(roles())} rôles, "
           f"{len(PARTICLE_SYSTEMS)} particules")
     if preview:
         preview.mkdir(parents=True, exist_ok=True)

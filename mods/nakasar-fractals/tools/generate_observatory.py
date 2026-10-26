@@ -109,7 +109,7 @@ FRACTALS = [
     ("Snowblind", "Tempête de neige", "Snowblind", (170, 210, 240)),
     ("SilentSurf", "Ressac silencieux", "Silent Surf", (40, 160, 175)),
     ("SirensReef", "Récif de la Sirène", "Siren's Reef", (74, 160, 96)),
-    ("Deepstone", "Pierre-Profonde", "Deepstone", (110, 196, 214)),
+    ("Deepstone", "Roche des Abysses", "Deepstone", (110, 196, 214)),
     ("SunquaPeak", "Pic de Sunqua", "Sunqua Peak", (236, 140, 180)),
 ]
 FLAVOR = {

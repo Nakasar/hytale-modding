@@ -1,4 +1,4 @@
-"""Carte et décor de Pierre-Profonde (Deepstone), d'après la carte GW2 que Kevin a envoyée (25 octobre 2026).
+"""Carte et décor de la Roche des Abysses (Deepstone), d'après la carte GW2 que Kevin a envoyée (25 octobre 2026).
 
 Tout est souterrain (Kevin, 26 octobre 2026, captures de GW2 à l'appui) : une voûte de roche couvre toute la carte.
 On arrive en haut d'une immense caverne aux rochers saupoudrés de neige et l'on descend une suite de corniches
@@ -6,7 +6,7 @@ au-dessus du vide jusqu'au pont à balustrades et à la porte sculptée du cavea
 
 - la salle du cristal (au centre), dont la porte nord reste fermée ;
 - à l'ouest, le couloir de la grille de runes (les motifs lumineux glissent du nord vers le sud) et, au bout, la
-  corniche de la Sentinelle de Pierre-Profonde, ouverte sur le vide à l'ouest ;
+  corniche de la Sentinelle de la Roche des Abysses, ouverte sur le vide à l'ouest ;
 - à l'est, le couloir des toiles, puis le pont étroit balayé par le vent au-dessus du gouffre, et la salle de la Reine
   de la couvée ;
 - au nord de la salle du cristal, la salle du gouffre (le chemin de dalles se révèle à la Lumière de Deldrimor), puis

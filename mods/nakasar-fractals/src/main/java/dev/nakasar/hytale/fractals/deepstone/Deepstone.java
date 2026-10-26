@@ -40,7 +40,7 @@ import java.util.UUID;
 import java.util.WeakHashMap;
 
 /**
- * Pierre-Profonde (saison 2), d'après GW2 : le caveau des nains de Deldrimor, au pied d'une montagne enneigée.
+ * Roche des Abysses (saison 2), d'après GW2 : le caveau des nains de Deldrimor, au pied d'une montagne enneigée.
  * <ol>
  *   <li>la descente des corniches (chauves-souris) jusqu'à la salle du cristal, avec Torin et Kay ;</li>
  *   <li>à l'ouest, la grille de runes ({@link RuneGrid}) puis la Sentinelle ({@link Sentinel}) ; à l'est, les nids et le
@@ -134,7 +134,7 @@ public final class Deepstone implements FractalStage {
 
     private final Map<World, State> states = Collections.synchronizedMap(new WeakHashMap<>());
 
-    /** La Lumière de Deldrimor et les effets de Pierre-Profonde se perdent hors de la fractale. */
+    /** La Lumière de Deldrimor et les effets de la Roche des Abysses se perdent hors de la fractale. */
     public static FractalItemsSystem.Rule itemsRule() {
         return new FractalItemsSystem.Rule(FRACTAL, Set.of(LIGHT), "Nakasar_Fractal_Captured",
                 "Nakasar_Fractal_Shadow_Touch", VENOM, "Nakasar_Fractal_Siphoned", "Nakasar_Fractal_Shadow_Bomb",

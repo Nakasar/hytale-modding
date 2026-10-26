@@ -251,7 +251,7 @@ public final class FractalsPlugin extends JavaPlugin {
 
         getCommandRegistry().registerCommand(new FractalCommand());
 
-        getLogger().atInfo().log("Nakasar Fractales : 25 types d'interaction (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s), progression, fractales du jour, potions des Brumes, Falaise, instabilités, Inclassable, Volcanique, Océan solide, Marais, Tempête de neige, Ressac silencieux, Récif de la Sirène, Pierre-Profonde, runes et objets de soutien, systèmes et /fractale enregistrés",
+        getLogger().atInfo().log("Nakasar Fractales : 25 types d'interaction (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s), progression, fractales du jour, potions des Brumes, Falaise, instabilités, Inclassable, Volcanique, Océan solide, Marais, Tempête de neige, Ressac silencieux, Récif de la Sirène, Roche des Abysses, runes et objets de soutien, systèmes et /fractale enregistrés",
                 TelegraphInteraction.TYPE_ID, ChargeInteraction.TYPE_ID, StunSelfInteraction.TYPE_ID,
                 SummonMinionsInteraction.TYPE_ID, CagePlayerInteraction.TYPE_ID, OpenConsoleInteraction.TYPE_ID,
                 HarmonizeInteraction.TYPE_ID, LeaveInteraction.TYPE_ID, TrialDemoInteraction.TYPE_ID,

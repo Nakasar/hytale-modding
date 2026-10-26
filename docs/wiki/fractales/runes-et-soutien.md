@@ -73,9 +73,9 @@ Au Creuset, onglet *Armes de soutien*. Elles gardent l'apparence et l'attaque de
 |---|---|---|---|
 | **Bâton de guérison des Brumes** | chaque coup soigne de 6 PV le joueur le plus blessé à 8 blocs | régénération 6 PV/s pendant 3 s sur l'allié visé (12 blocs), toutes les 8 s | bâton de cristal violet, 60 éclats, 3 échos Marais, 3 échos Inclassable |
 | **Grimoire de givre des Brumes** | chaque coup ralentit de 10 % de plus (5 piles, 4 s) | glyphe de gel de rayon 2,5 au point visé, 5 s, toutes les 15 s | grimoire de givre, 60 éclats, 3 échos Tempête de neige, 3 échos Océan solide |
-| **Baguette des racines des Brumes** | un coup enracine 2 s (une fois toutes les 8 s par ennemi) | vrilles en ligne de 6 × 1 devant vous : enracinent 1 s (défiance 2), toutes les 15 s | baguette de racines, 100 éclats, 3 échos Marais, 3 échos Pierre-Profonde |
+| **Baguette des racines des Brumes** | un coup enracine 2 s (une fois toutes les 8 s par ennemi) | vrilles en ligne de 6 × 1 devant vous : enracinent 1 s (défiance 2), toutes les 15 s | baguette de racines, 100 éclats, 3 échos Marais, 3 échos Roche des Abysses |
 | **Bannière de puissance des Brumes** | | plantée 30 s : joueurs à 8 blocs +10 % de dégâts ; toutes les 60 s | bâton de bois, 80 éclats, 4 échos de Falaise, Inclassable, Volcanique, Océan solide et Marais |
-| **Bannière de garde des Brumes** | | plantée 30 s : joueurs à 8 blocs −10 % de dégâts subis (pas l'agonie) ; toutes les 60 s | bâton de bois, 80 éclats, 4 échos de Tempête de neige, Ressac, Récif, Pierre-Profonde et Falaise |
+| **Bannière de garde des Brumes** | | plantée 30 s : joueurs à 8 blocs −10 % de dégâts subis (pas l'agonie) ; toutes les 60 s | bâton de bois, 80 éclats, 4 échos de Tempête de neige, Ressac, Récif, Roche des Abysses et Falaise |
 
 Une seule bannière par fractale : la dernière plantée remplace l'autre.
 

@@ -257,12 +257,12 @@ Aucun boss ne se soigne (AGENTS.md) : une remise à zéro (personne dans la zone
 
 Générateurs : `tools/generate_sirens_reef.py` (assets, rôles, effets, `SirensReefLayout.java`) et `tools/sirens_reef_scenery.py` (terrain : mer à bord courbe et récif extérieur, falaises, labyrinthe à couloirs courbes, fort, tête de pierre, navire). Code : paquet `sirensreef`.
 
-### Pierre-Profonde (Deepstone), troisième fractale de la saison 2
+### Roche des Abysses (Deepstone), troisième fractale de la saison 2
 
 Le caveau des nains de Deldrimor, entièrement souterrain (voûte de roche sur toute la carte, d'après la carte et les captures GW2 de Kevin). **Torin** et **Kay** attendent devant le **Cristal de Deldrimor** éteint (invulnérables).
 
 1. **Descente** de la grande caverne, de corniche en corniche au-dessus du vide (chauves-souris), pont à balustrades et porte sculptée, puis la **salle du cristal** : porte nord fermée, il faut les deux orbes de lumière.
-2. **Ouest** : grille de runes (rangées de dalles vertes allumées qui glissent du nord au sud, comme dans GW2, 1 ou 2 colonnes libres ; la zone dangereuse est la dalle même), deux **runes à presser ensemble** (deux joueurs), puis la **Sentinelle** sur sa corniche ouverte au vide : spirales de vent, esprits du vent qui emportent un joueur vers le bord (défiance ou mort de l'esprit pour le relâcher).
+2. **Ouest** : grille de runes (rangées de dalles vertes allumées qui glissent du nord au sud, comme dans GW2, 1 ou 2 colonnes libres ; une dalle allumée renvoie au début du couloir, sans dégâts), deux **runes à presser ensemble** (deux joueurs), puis la **Sentinelle** sur sa corniche ouverte au vide : spirales de vent, esprits du vent qui emportent un joueur vers le bord (défiance ou mort de l'esprit pour le relâcher).
 3. **Est** : nids d'araignées (pontes sans butin), **pont du vent** (bandes rouges qui jettent dans le gouffre, deux runes l'arrêtent), deux mères de couvée puis la **Reine de la couvée** (venin, protection à 50 %).
 4. Chaque boss laisse une **orbe** : la prendre ramène au cristal, l'y déposer. Les deux déposées : la **Lumière de Deldrimor** (objet à clic droit, éclat de 6 blocs, 5 s) pour tout le groupe, et le **Minotaure des ombres** surgit, invulnérable tant que la Lumière ne l'a pas dévoilé.
 5. **Gouffre invisible** : chemin de dalles tiré au hasard, révélé trois dalles à la fois par la Lumière ; quatre orbes à allumer (points de retour), flammes spectrales qui font tomber les dalles.
@@ -301,7 +301,7 @@ Les autres fractales de GW2, à reprendre de la même façon (wiki relu avant ch
 | Fournaise en fusion, Réacteur thaumanova, Installation souterraine, Champ de bataille urbain, Chaos, Oasis du crépuscule | rencontres en chaîne variées | à détailler |
 | Cauchemar, Observatoire brisé, Tour solitaire, Kinfall | fractales « boss » avec mode défi | pour le rang Maître |
 
-(Kinfall : nom français non vérifié. Silent Surf est devenu le Ressac silencieux, Siren's Reef le Récif de la Sirène, Deepstone Pierre-Profonde et Sunqua Peak le Pic de Sunqua, ci-dessus.)
+(Kinfall : nom français non vérifié. Silent Surf est devenu le Ressac silencieux, Siren's Reef le Récif de la Sirène, Deepstone la Roche des Abysses et Sunqua Peak le Pic de Sunqua, ci-dessus.)
 
 ## Runes et objets de soutien (26 octobre 2026)
 

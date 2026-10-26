@@ -3,7 +3,7 @@
   "Type": "Generic",
   "Appearance": "Nakasar_Fractal_Shadow_Minotaur",
   "NameTranslationKey": "nakasar_fractals_deepstone.npc.Shadow_Minotaur.name",
-  "MaxHealth": 9000,
+  "MaxHealth": 3000,
   "DropList": "Nakasar_Fractal_Loot_Shadow_Minotaur",
   "StartState": "Idle",
   "DefaultPlayerAttitude": "Hostile",

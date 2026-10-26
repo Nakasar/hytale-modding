@@ -1,5 +1,5 @@
 {
-  "$Comment": "Sentinelle de Pierre-Profonde : essence de foudre et de glace, cristal blanc. Généré par tools/generate_mob_loot.py.",
+  "$Comment": "Sentinelle de la Roche des Abysses : essence de foudre et de glace, cristal blanc. Généré par tools/generate_mob_loot.py.",
   "Container": {
     "Type": "Multiple",
     "Containers": [

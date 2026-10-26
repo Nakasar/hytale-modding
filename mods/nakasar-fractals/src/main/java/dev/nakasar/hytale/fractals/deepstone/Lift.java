@@ -19,7 +19,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * L'ascenseur de Pierre-Profonde (GW2) : tout le groupe vivant sur la plate-forme pendant {@value #BOARD_SECONDS} s,
+ * L'ascenseur de la Roche des Abysses (GW2) : tout le groupe vivant sur la plate-forme pendant {@value #BOARD_SECONDS} s,
  * elle descend d'un bloc toutes les {@value #STEP_SECONDS} s. À mi-chemin, elle s'arrête : une vague de diablotins des
  * ombres, puis une seconde menée par un écharpeur et un suceur de sang ; vidée, elle reprend jusqu'en bas. La rune de la
  * salle ramène un retardataire sur la plate-forme.

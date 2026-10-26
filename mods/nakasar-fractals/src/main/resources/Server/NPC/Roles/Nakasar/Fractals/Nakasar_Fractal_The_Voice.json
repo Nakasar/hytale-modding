@@ -3,7 +3,7 @@
   "Type": "Generic",
   "Appearance": "Nakasar_Fractal_The_Voice",
   "NameTranslationKey": "nakasar_fractals_deepstone.npc.The_Voice.name",
-  "MaxHealth": 16000,
+  "MaxHealth": 5000,
   "DropList": "Nakasar_Fractal_Loot_The_Voice",
   "StartState": "Idle",
   "DefaultPlayerAttitude": "Hostile",

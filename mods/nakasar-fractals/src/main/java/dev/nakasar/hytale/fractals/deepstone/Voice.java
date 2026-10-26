@@ -29,11 +29,11 @@ import java.util.UUID;
  *   <li>les dalles : une chute est rattrapée par un Courant ascendant résiduel (au plus 4, 3, 2 ou 1 selon le rang),
  *   sans courant on tombe pour de bon. La Lumière de Deldrimor refait les dalles à moins de {@value #RESTORE_RADIUS}
  *   blocs et donne un courant ;</li>
- *   <li>toutes les {@value #ORB_EVERY} s, une orbe sur un joueur (cercle rouge de {@value #ORB_RADIUS} blocs) qui brise la
- *   dalle touchée et rebondit 1 à 3 fois selon le rang ;</li>
+ *   <li>toutes les {@value #ORB_EVERY} s, une orbe sur un joueur (cercle rouge de {@value #ORB_RADIUS} blocs) qui marque la
+ *   dalle touchée (elle rougit {@value #CRUMBLE_SECONDS} s puis tombe) et rebondit 1 à 3 fois selon le rang ;</li>
  *   <li>sous 75 %, toutes les {@value #BOMB_EVERY} s, une bombe d'ombre suit un joueur {@value #BOMB_TRACK} s puis tombe :
  *   cercle rouge de {@value #BOMB_RADIUS} blocs ({@value #BOMB_WINDUP} s), {@value #BOMB_PART} des PV, Hébété, dalles
- *   brisées ; qui est touché en reçoit aussitôt une autre ;</li>
+ *   marquées (rouges, puis elles tombent) ; qui est touché en reçoit aussitôt une autre ;</li>
  *   <li>à chaque tranche de 10 %, une chance sur deux de se déplacer dans les ombres ;</li>
  *   <li>à 80 et 40 %, le siphon spirituel : défiance ouverte {@value #SIPHON_SECONDS} s, chaque seconde
  *   {@value #SIPHON_PART} des PV de chacun, la dalle d'un siphonné s'effrite ; brisée, la Voix est étourdie ;</li>
@@ -70,7 +70,7 @@ final class Voice {
     static final double BLAST_RADIUS = 26;
     static final float BLAST_WINDUP = 2f;
     static final float BLAST_PART = 0.25f;
-    static final float CRUMBLE_SECONDS = 1.5f;
+    static final float CRUMBLE_SECONDS = 2.5f;
     static final float SHADE_CRUMBLE_EVERY = 12f;
     static final float RESET_SECONDS = 30f;
     static final String VEIL = "Nakasar_Fractal_Shadow_Veil";
@@ -357,11 +357,12 @@ final class Voice {
         });
     }
 
-    private void dropUnder(World world, Store<EntityStore> store, Vector3d center, double radius) {
+    /** Marque les dalles touchées : elles rougissent puis tombent ({@link #crumble}), jamais sur-le-champ. */
+    private void crumbleUnder(World world, Vector3d center, double radius) {
         for (int c = 0; c < tiles.cols; c++) {
             for (int r = 0; r < tiles.rows; r++) {
                 if (tiles.present(c, r) && Telegraphs.horizontal(tiles.center(c, r), center) <= radius) {
-                    tiles.drop(world, store, c, r);
+                    crumble(world, c, r);
                 }
             }
         }
@@ -395,7 +396,7 @@ final class Voice {
             }
             int[] cell = tiles.cellOf(circle.origin());
             if (cell != null) {
-                tiles.drop(w, s, cell[0], cell[1]);
+                crumble(w, cell[0], cell[1]);
             }
             if (bounces > 1) {
                 List<PlayerRef> here = inArena(s, players);
@@ -452,7 +453,7 @@ final class Voice {
                     hit.add(p);
                 }
             }
-            dropUnder(w, s, c, BOMB_RADIUS);
+            crumbleUnder(w, c, BOMB_RADIUS);
             if (!hit.isEmpty() && chain + 1 < BOMB_CHAIN) {
                 bomb(w, s, hit.get((int) (Math.random() * hit.size())), chain + 1);
             }

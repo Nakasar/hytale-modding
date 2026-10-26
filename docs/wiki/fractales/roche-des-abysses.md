@@ -1,7 +1,7 @@
-# Pierre-Profonde
+# Roche des Abysses
 
-<Infobox pending title="Pierre-Profonde" kind="Fractale" icon="/jeu/Icons/Items/Nakasar/Fractals/Core_Deepstone.png" caption="Noyau de Pierre-Profonde">
-<Info label="Boss">Sentinelle de Pierre-Profonde, Reine de la couvée, Esprit du Minotaure des ombres, la Voix</Info>
+<Infobox pending title="Roche des Abysses" kind="Fractale" icon="/jeu/Icons/Items/Nakasar/Fractals/Core_Deepstone.png" caption="Noyau de la Roche des Abysses">
+<Info label="Boss">Sentinelle de la Roche des Abysses, Reine de la couvée, Esprit du Minotaure des ombres, la Voix</Info>
 <Info label="Règle">Lumière de Deldrimor</Info>
 <Info label="Objets">orbes de lumière, Lumière de Deldrimor</Info>
 <Info label="Ciel">aucun : tout est sous terre</Info>
@@ -12,9 +12,9 @@ Le caveau des nains de Deldrimor, tout entier sous terre : cavernes immenses, go
 
 ## Carte
 
-![Carte de Pierre-Profonde](../images/fractales/carte-pierre-profonde.png)
+![Carte de la Roche des Abysses](../images/fractales/carte-roche-des-abysses.png)
 
-*Carte de Pierre-Profonde, vue de dessus : on descend la grande caverne au sud jusqu'à la salle du cristal, on va chercher une orbe à l'ouest et une à l'est, puis on part vers le nord et vers le bas. Les numéros suivent le déroulé ci-dessous.*
+*Carte de la Roche des Abysses, vue de dessus : on descend la grande caverne au sud jusqu'à la salle du cristal, on va chercher une orbe à l'ouest et une à l'est, puis on part vers le nord et vers le bas. Les numéros suivent le déroulé ci-dessous.*
 
 ## La Lumière de Deldrimor
 
@@ -39,9 +39,9 @@ Torin et Kay vous attendent devant le **Cristal de Deldrimor**, éteint (point d
 
 ### 3. La grille de runes (ouest)
 
-Le couloir de l'ouest est une grille de dalles : des rangées de dalles **vertes** allumées glissent du nord vers le sud, une rangée toutes les 0,6 s, et chaque vague laisse une ou deux colonnes éteintes où passer. La zone dangereuse est exactement la dalle allumée : qui marche sur une dalle allumée perd 15 % de ses PV, prend l'agonie 3 s et est repoussé vers le sud. Au bout, les **deux runes** éteignent la grille et ouvrent la barrière de brume de la corniche.
+Le couloir de l'ouest est une grille de dalles : des rangées de dalles **vertes** allumées glissent du nord vers le sud, une rangée toutes les 0,6 s, et chaque vague laisse une ou deux colonnes éteintes où passer. Le piège est exactement la dalle allumée : qui marche (ou saute) sur une dalle allumée est renvoyé au début du couloir, sans dégâts. Au bout, les **deux runes** éteignent la grille et ouvrent la barrière de brume de la corniche.
 
-### 4. La Sentinelle de Pierre-Profonde
+### 4. La Sentinelle de la Roche des Abysses
 
 Sur une corniche ouverte au vide à l'ouest :
 
@@ -95,9 +95,10 @@ Tout le groupe vivant sur la plate-forme pendant 3 s : elle descend. À mi-chemi
 Torin consumé par les ombres, sur une arène de dalles au-dessus d'un gouffre :
 
 - **Coup d'ombre**, **vague d'ombre** et **secousses**.
-- **Les dalles** : une chute est rattrapée par un **Courant ascendant** (au plus 4, 3, 2 ou 1 selon le rang) ; sans courant, on tombe pour de bon. La Lumière de Deldrimor **refait les dalles** à moins de 4,5 blocs et rend un courant.
-- Toutes les 7 s, une **orbe** sur un joueur (cercle rouge de 2,5 blocs) qui brise la dalle touchée et rebondit 1 à 3 fois selon le rang.
-- Sous 75 %, toutes les 15 s, une **bombe d'ombre** suit un joueur 2 s puis tombe : cercle rouge de 3,5 blocs (2 s), 30 % des PV, Hébété, dalles brisées ; qui est touché en reçoit aussitôt une autre (trois au plus).
+- **Les dalles** : aucune ne tombe sans prévenir. Une dalle marquée (orbe, bombe, siphon, ombres) **rougit 2,5 s** puis tombe ; la zone rouge est la dalle même.
+- **Les chutes** : une chute est rattrapée par un **Courant ascendant** (au plus 4, 3, 2 ou 1 selon le rang) ; sans courant, on tombe pour de bon. La Lumière de Deldrimor **refait les dalles** à moins de 4,5 blocs et rend un courant.
+- Toutes les 7 s, une **orbe** sur un joueur (cercle rouge de 2,5 blocs) qui marque la dalle touchée et rebondit 1 à 3 fois selon le rang.
+- Sous 75 %, toutes les 15 s, une **bombe d'ombre** suit un joueur 2 s puis tombe : cercle rouge de 3,5 blocs (2 s), 30 % des PV, Hébété, dalles marquées ; qui est touché en reçoit aussitôt une autre (trois au plus).
 - À **80 et 40 %**, le **siphon spirituel** : sa défiance s'ouvre 13 s et chaque seconde elle prend 4 % des PV de chacun, la dalle d'un siphonné s'effrite. Brisée, la Voix est étourdie.
 - À **70, 50 et 30 %**, des **ombres** qui effritent les dalles.
 - À **60 et 20 %**, elle se retire au centre, invulnérable : dix **flammes spectrales** filent vers elle. Chaque flamme qui l'atteint déclenche une **déflagration** sur toute l'arène (cercle rouge de 26 blocs, 25 % des PV) : tuez-les en route. Les dix passées, elle redevient vulnérable.

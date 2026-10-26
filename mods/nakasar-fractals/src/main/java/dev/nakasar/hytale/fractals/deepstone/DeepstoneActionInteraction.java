@@ -17,7 +17,7 @@ import dev.nakasar.hytale.fractals.stage.Stages;
 
 /**
  * {@code "Type": "Nakasar_Fractal_DeepstoneAction", "Action": "Light"} : clic droit avec la Lumière de Deldrimor
- * ({@link DeepLight}) ; sans effet hors de Pierre-Profonde.
+ * ({@link DeepLight}) ; sans effet hors de la Roche des Abysses.
  */
 public class DeepstoneActionInteraction extends SimpleInstantInteraction {
 
@@ -25,7 +25,7 @@ public class DeepstoneActionInteraction extends SimpleInstantInteraction {
 
     public static final BuilderCodec<DeepstoneActionInteraction> CODEC = BuilderCodec
             .builder(DeepstoneActionInteraction.class, DeepstoneActionInteraction::new, SimpleInstantInteraction.CODEC)
-            .documentation("Objets de Pierre-Profonde : liberer la Lumiere de Deldrimor.")
+            .documentation("Objets de la Roche des Abysses : liberer la Lumiere de Deldrimor.")
             .append(new KeyedCodec<>("Action", Codec.STRING), (i, v) -> i.action = v, i -> i.action)
             .documentation("Light.").add()
             .build();

@@ -1,5 +1,5 @@
 {
-  "$Comment": "Ombre de Pierre-Profonde : ombretisse. Généré par tools/generate_mob_loot.py.",
+  "$Comment": "Ombre de la Roche des Abysses : ombretisse. Généré par tools/generate_mob_loot.py.",
   "Container": {
     "Type": "Multiple",
     "Containers": [
