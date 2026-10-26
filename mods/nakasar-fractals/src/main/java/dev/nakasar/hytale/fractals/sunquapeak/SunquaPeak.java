@@ -105,6 +105,8 @@ public final class SunquaPeak implements FractalStage {
         /** Dernier envoi de chaque message (joueur:clé). */
         final Map<String, Long> throttle = new HashMap<>();
         boolean ticking;
+        /** Dernier tick du monde (System.nanoTime) : un seul pas de temps pour les tâches par tick. */
+        long lastTick;
 
         void safe(UUID player, float seconds) {
             safe.merge(player, System.nanoTime() + Telegraphs.seconds(seconds), Math::max);
@@ -179,9 +181,11 @@ public final class SunquaPeak implements FractalStage {
                     if (states.get(w) != st) {
                         return true;
                     }
-                    st.columns.tick(w, s, st, now);
-                    st.fury.tick(w, s, st, now);
-                    st.ai.tick(w, s, st, now);
+                    float tickDt = st.lastTick == 0 ? 0f : Math.min(0.1f, (now - st.lastTick) / 1e9f);
+                    st.lastTick = now;
+                    st.columns.tick(w, s, st, tickDt);
+                    st.fury.tick(w, s, tickDt);
+                    st.ai.tick(w, s, tickDt);
                     return false;
                 }
 
@@ -258,9 +262,10 @@ public final class SunquaPeak implements FractalStage {
             st.leap.site(world, at, true);
         }
         for (int i = 0; i < SunquaPeakLayout.AIR_ELEMENTALS.length; i++) {
-            st.elementals.add(st.foe(world, store, AIR_ELEMENTAL, Spawns.point(SunquaPeakLayout.AIR_ELEMENTALS[i]), spawn,
-                    true));
-            st.leap.site(world, SunquaPeakLayout.STEP_ORBS[i], false);
+            Ref<EntityStore> ref = st.foe(world, store, AIR_ELEMENTAL, Spawns.point(SunquaPeakLayout.AIR_ELEMENTALS[i]),
+                    spawn, true);
+            st.elementals.add(ref);
+            st.leap.site(world, SunquaPeakLayout.STEP_ORBS[i], ref == null);   // sans gardien, l'orbe est déjà là
         }
         Spawns.tellAll(world, Message.translation(MESSAGES + "intro"));
         Spawns.tellAll(world, Message.translation(MESSAGES + "leap.intro"));
@@ -439,10 +444,16 @@ public final class SunquaPeak implements FractalStage {
 
     /** Joueurs à moins de `radius` blocs (horizontalement, 5 blocs de haut) du point `c`. */
     static List<PlayerRef> near(Store<EntityStore> store, List<PlayerRef> players, Vector3d c, double radius) {
+        return near(store, players, c, radius, 5);
+    }
+
+    /** Joueurs à moins de `radius` blocs (horizontalement) du point `c`, pieds de 5 blocs sous lui à `above` au-dessus. */
+    static List<PlayerRef> near(Store<EntityStore> store, List<PlayerRef> players, Vector3d c, double radius,
+                                double above) {
         List<PlayerRef> out = new ArrayList<>();
         for (PlayerRef p : players) {
             Vector3d pos = Telegraphs.position(store, p.getReference());
-            if (pos != null && Telegraphs.horizontal(pos, c) <= radius && Math.abs(pos.y() - c.y()) < 5) {
+            if (pos != null && Telegraphs.horizontal(pos, c) <= radius && pos.y() - c.y() > -5 && pos.y() - c.y() < above) {
                 out.add(p);
             }
         }

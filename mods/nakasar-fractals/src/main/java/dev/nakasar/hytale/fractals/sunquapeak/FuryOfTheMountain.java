@@ -76,7 +76,6 @@ final class FuryOfTheMountain {
     private float defiance;
     private long defianceUntil;
     private float track;
-    private long last;
     private int beat;
     private boolean held;
 
@@ -203,6 +202,10 @@ final class FuryOfTheMountain {
     private void split(World world, Store<EntityStore> store, SunquaPeak.State st, Vector3d c) {
         BossStun.interrupt(world, store, boss);
         held = true;
+        // Une défiance ouverte se ferme : son minuteur ne doit pas courir pendant la division (brasier sans annonce).
+        defianceUntil = 0;
+        defiance = 0f;
+        Defiance.forget(boss);
         Vector3d at = Telegraphs.position(store, boss);
         Vector3d from = at == null ? c : at;
         for (int k = 0; k < SPLITS; k++) {
@@ -218,10 +221,8 @@ final class FuryOfTheMountain {
     }
 
     /** Un tick du monde : ondes de choc et météores qui suivent. */
-    void tick(World world, Store<EntityStore> store, SunquaPeak.State st, long now) {
-        float dt = last == 0 ? 0f : Math.min(0.2f, (now - last) / 1e9f);
-        last = now;
-        meteors.tick(world, store, now);
+    void tick(World world, Store<EntityStore> store, float dt) {
+        meteors.tick(world, store, dt);
         if (waves.isEmpty()) {
             return;
         }

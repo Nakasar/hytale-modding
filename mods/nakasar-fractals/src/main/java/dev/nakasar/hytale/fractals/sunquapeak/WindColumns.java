@@ -12,6 +12,7 @@ import org.joml.Vector3d;
 
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
@@ -59,7 +60,6 @@ final class WindColumns {
 
     private final boolean[] open = new boolean[PATHS.length];
     private final Map<UUID, Ride> rides = new HashMap<>();
-    private long last;
     private int beat;
 
     void open(int column) {
@@ -67,9 +67,8 @@ final class WindColumns {
     }
 
     /** Un tick du monde : entrées dans les colonnes, trajets en cours. */
-    void tick(World world, Store<EntityStore> store, SunquaPeak.State st, long now) {
-        float dt = last == 0 ? 0.033f : Math.min(0.1f, (now - last) / 1e9f);
-        last = now;
+    void tick(World world, Store<EntityStore> store, SunquaPeak.State st, float dt) {
+        List<PlayerRef> players = Spawns.alivePlayers(world, store);
         boolean puff = ++beat % 12 == 0;
         for (int c = 0; c < PATHS.length; c++) {
             if (!open[c]) {
@@ -79,7 +78,7 @@ final class WindColumns {
             if (puff) {
                 Telegraphs.particle(store, "Nakasar_Fractal_Wind_Column", foot, 1f);
             }
-            for (PlayerRef p : Spawns.alivePlayers(world, store)) {
+            for (PlayerRef p : players) {
                 if (rides.containsKey(p.getUuid())) {
                     continue;
                 }

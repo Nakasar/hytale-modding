@@ -62,7 +62,6 @@ final class Meteors {
 
     private final List<int[]> rocks = new ArrayList<>();
     private final List<Tracker> trackers = new ArrayList<>();
-    private long last;
     private int beat;
     private int epoch;
 
@@ -222,9 +221,8 @@ final class Meteors {
     }
 
     /** Un tick du monde : les météores suivent leur cible, se brisent l'un l'autre, ou éclatent au bout du temps. */
-    void tick(World world, Store<EntityStore> store, long now) {
-        float dt = last == 0 ? 0f : Math.min(0.2f, (now - last) / 1e9f);
-        last = now;
+    void tick(World world, Store<EntityStore> store, float dt) {
+        long now = System.nanoTime();
         if (trackers.isEmpty()) {
             return;
         }

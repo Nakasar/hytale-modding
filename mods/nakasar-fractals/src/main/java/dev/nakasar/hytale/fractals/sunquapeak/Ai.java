@@ -100,8 +100,11 @@ final class Ai {
     private float tide;
     private float fear;
     private float swirl;
-    private final List<Ref<EntityStore>> fears = new ArrayList<>();
-    private final List<Long> fearEnds = new ArrayList<>();
+    /** Une crainte et l'instant (System.nanoTime) où elle éclate. */
+    private record Fear(Ref<EntityStore> ref, long end) {
+    }
+
+    private final List<Fear> fears = new ArrayList<>();
     private int epoch;
 
     Tether tether() {
@@ -124,7 +127,8 @@ final class Ai {
             arrived = true;
             Gates.checkpoint(world, SunquaPeakLayout.RISE_END, SunquaPeak.MESSAGES + "checkpoint");
         }
-        List<PlayerRef> here = SunquaPeak.near(store, players, c, radius + 3);
+        // Jusqu'à 3 blocs au-dessus des nuages d'orage : un saut chargé qui les traverse compte.
+        List<PlayerRef> here = SunquaPeak.near(store, players, c, radius + 3, StormClouds.HEIGHT_HINT + 3);
         if (!engaged) {
             if (!SunquaPeak.near(store, players, c, radius - 3).isEmpty()) {
                 engage(world, store, c, Element.AIR);
@@ -492,25 +496,27 @@ final class Ai {
         tether.stop(world, store);
         meteors.clear(world, store);
         epoch++;
-        Telegraphs.particle(store, "Nakasar_Fractal_Fear_Mist", c, 2.5f);
+        // DARK d'abord : si Ai assombrie n'apparaît pas, le pas suivant compte la victoire au lieu de recommencer.
+        element = Element.DARK;
         engage(world, store, c, Element.DARK);
-        Spawns.tellAll(world, Message.translation(SunquaPeak.MESSAGES + "ai.dark"));
+        if (boss != null && boss.isValid()) {
+            Telegraphs.particle(store, "Nakasar_Fractal_Fear_Mist", c, 2.5f);
+            Spawns.tellAll(world, Message.translation(SunquaPeak.MESSAGES + "ai.dark"));
+        }
     }
 
     private void dark(World world, Store<EntityStore> store, SunquaPeak.State st, List<PlayerRef> here, float dt) {
         long now = System.nanoTime();
         for (int i = fears.size() - 1; i >= 0; i--) {
-            Ref<EntityStore> ref = fears.get(i);
-            if (!Spawns.alive(store, ref)) {
+            Fear f = fears.get(i);
+            if (!Spawns.alive(store, f.ref())) {
                 fears.remove(i);
-                fearEnds.remove(i);
                 continue;
             }
-            if (now >= fearEnds.get(i)) {
-                Vector3d at = Telegraphs.position(store, ref);
+            if (now >= f.end()) {
+                Vector3d at = Telegraphs.position(store, f.ref());
                 fears.remove(i);
-                fearEnds.remove(i);
-                Spawns.remove(store, ref);
+                Spawns.remove(store, f.ref());
                 if (at != null) {
                     burst(world, at);
                 }
@@ -528,8 +534,7 @@ final class Ai {
                 Vector3d where = new Vector3d(at.x() + Math.cos(a) * 6, at.y(), at.z() + Math.sin(a) * 6);
                 Ref<EntityStore> ref = st.foe(world, store, SunquaPeak.FEAR, SunquaPeak.ground(world, where), at, false);
                 if (ref != null) {
-                    fears.add(ref);
-                    fearEnds.add(now + Telegraphs.seconds(FEAR_SECONDS));
+                    fears.add(new Fear(ref, now + Telegraphs.seconds(FEAR_SECONDS)));
                     Telegraphs.particle(store, "Nakasar_Fractal_Fear_Mist", where, 1f);
                 }
             }
@@ -558,8 +563,8 @@ final class Ai {
     // --- cycle ---------------------------------------------------------------------------------------------------
 
     /** Un tick du monde : météores qui suivent (aucun pour Ai, mais leur pas est commun). */
-    void tick(World world, Store<EntityStore> store, SunquaPeak.State st, long now) {
-        meteors.tick(world, store, now);
+    void tick(World world, Store<EntityStore> store, float dt) {
+        meteors.tick(world, store, dt);
     }
 
     private void engage(World world, Store<EntityStore> store, Vector3d c, Element first) {
@@ -590,9 +595,10 @@ final class Ai {
         tether.stop(world, store);
         meteors.clear(world, store);
         st.leap.remove(world, SunquaPeakLayout.SUMMIT_ORBS);
-        Spawns.removeAll(store, fears);
+        for (Fear f : fears) {
+            Spawns.remove(store, f.ref());
+        }
         fears.clear();
-        fearEnds.clear();
         if (boss != null) {
             BossStun.release(store, boss);
             Defiance.forget(boss);

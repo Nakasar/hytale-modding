@@ -14,7 +14,9 @@ import dev.nakasar.hytale.fractals.party.FractalRuns;
 import org.joml.Vector3d;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  * Le sentier de lave (GW2 : les murs de roche gardés par des élémentaires de lave, et les tigres). Trois murs barrent le
@@ -40,8 +42,23 @@ final class LavaPath {
     private final float[] idle = new float[SunquaPeakLayout.LAVA_WALLS.length];
     @SuppressWarnings("unchecked")
     private final List<Ref<EntityStore>>[] guards = new List[SunquaPeakLayout.LAVA_WALLS.length];
-    /** Divisions en attente (mur, position) : posées au pas suivant, hors de la mort de l'élémentaire. */
-    private final List<Object[]> pending = new ArrayList<>();
+    /** Délai au-delà duquel une division attendue (mort sans {@code onFoeDeath}) ne retient plus le mur. */
+    static final float OWED_SECONDS = 3f;
+
+    /** Une division en attente : posée au pas suivant, hors de la mort de l'élémentaire. */
+    private record Split(int wall, Vector3d at) {
+    }
+
+    private final List<Split> pending = new ArrayList<>();
+    /** Grands élémentaires vivants : leur mort annonce une division. */
+    private final Set<Ref<EntityStore>> bigs = new HashSet<>();
+    /**
+     * Divisions attendues par mur : la mort (DeathComponent) se voit avant {@code onFoeDeath}, qui arrive par un
+     * {@code world.execute} différé ; le mur reste fermé tant qu'elles ne sont pas en attente (au plus
+     * {@value #OWED_SECONDS} s).
+     */
+    private final int[] owed = new int[SunquaPeakLayout.LAVA_WALLS.length];
+    private final long[] owedUntil = new long[SunquaPeakLayout.LAVA_WALLS.length];
     private int epoch;
 
     LavaPath() {
@@ -58,9 +75,10 @@ final class LavaPath {
 
     /** Vrai quand les trois murs sont tombés. */
     boolean step(World world, Store<EntityStore> store, SunquaPeak.State st, List<PlayerRef> players, float dt) {
-        for (Object[] p : pending) {
-            int wall = (int) p[0];
-            Vector3d at = (Vector3d) p[1];
+        long now = System.nanoTime();
+        for (Split p : pending) {
+            int wall = p.wall();
+            Vector3d at = p.at();
             for (int k = 0; k < SPLIT; k++) {
                 double a = Math.random() * Math.PI * 2;
                 Vector3d where = SunquaPeak.ground(world, new Vector3d(at.x() + Math.cos(a) * 1.5, at.y(), at.z() + Math.sin(a) * 1.5));
@@ -85,8 +103,14 @@ final class LavaPath {
                 }
                 continue;
             }
+            for (Ref<EntityStore> ref : guards[i]) {
+                if (!Spawns.alive(store, ref) && bigs.remove(ref)) {
+                    owed[i]++;
+                    owedUntil[i] = now + Telegraphs.seconds(OWED_SECONDS);
+                }
+            }
             guards[i].removeIf(ref -> !Spawns.alive(store, ref));
-            if (guards[i].isEmpty()) {
+            if (guards[i].isEmpty() && (owed[i] == 0 || now >= owedUntil[i])) {
                 open[i] = true;
                 fallen++;
                 Gates.open(world, store, SunquaPeakLayout.LAVA_WALLS[i], SunquaPeak.MESSAGES + "lava.open");
@@ -97,8 +121,11 @@ final class LavaPath {
                 idle[i] += dt;
                 if (idle[i] >= SunquaPeak.RESET_SECONDS) {
                     Spawns.removeAll(store, guards[i]);
+                    bigs.removeAll(guards[i]);
                     guards[i].clear();
+                    owed[i] = 0;
                     woken[i] = false;
+                    epoch++;   // les explosions annoncées de ce mur ne partent pas
                 }
             } else {
                 idle[i] = 0f;
@@ -115,6 +142,7 @@ final class LavaPath {
             Ref<EntityStore> ref = st.foe(world, store, SunquaPeak.LAVA_ELEMENTAL, Spawns.point(at), wall, false);
             if (ref != null) {
                 guards[i].add(ref);
+                bigs.add(ref);
                 Telegraphs.particle(store, "Nakasar_Fractal_Lava_Blast", Spawns.point(at), 0.8f);
             }
         }
@@ -142,7 +170,11 @@ final class LavaPath {
             return true;
         });
         if (big) {
-            pending.add(new Object[]{wallOf(at), new Vector3d(at)});
+            int wall = wallOf(at);
+            if (wall >= 0) {
+                owed[wall] = Math.max(0, owed[wall] - 1);
+            }
+            pending.add(new Split(wall, new Vector3d(at)));
             Spawns.tellAll(world, Message.translation(SunquaPeak.MESSAGES + "lava.split"));
         }
     }

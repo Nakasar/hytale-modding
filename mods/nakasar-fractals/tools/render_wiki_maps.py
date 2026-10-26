@@ -68,6 +68,10 @@ def main_area(top, gap=7, margin=6):
     return min(xs) - margin, min(zs) - margin, max(xs) + margin, max(zs) + margin
 
 
+# Cartes dont des repères sont sur des îlots détachés du massif : le cadre s'agrandit pour les montrer.
+DETACHED = {"pic-de-sunqua"}
+
+
 def with_markers(crop, markers, margin=14):
     """Le cadre `crop` agrandi aux repères qui en sortent (Pic de Sunqua : îlots du départ et plateau de la Voix
     détachés du massif)."""
@@ -339,8 +343,10 @@ def main():
         else:
             canopy = {}
             top = surface(prefabs, roofed, canopy)
-            s = render(top, color_of, path, _markers(name), crop=with_markers(main_area(top), _markers(name)),
-                       shadows=not roofed, canopy=canopy)
+            crop = main_area(top)
+            if name in DETACHED:
+                crop = with_markers(crop, _markers(name))
+            s = render(top, color_of, path, _markers(name), crop=crop, shadows=not roofed, canopy=canopy)
         print(f"{path} ({s} px par bloc)")
 
 

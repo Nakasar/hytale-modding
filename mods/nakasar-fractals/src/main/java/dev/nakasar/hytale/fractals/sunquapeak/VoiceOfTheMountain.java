@@ -44,7 +44,8 @@ final class VoiceOfTheMountain {
     boolean step(World world, Store<EntityStore> store, SunquaPeak.State st, List<PlayerRef> players, float dt) {
         Vector3d c = Spawns.point(SunquaPeakLayout.VOICE);
         double radius = SunquaPeakLayout.VOICE_RADIUS;
-        List<PlayerRef> here = SunquaPeak.near(store, players, c, radius + 3);
+        // Jusqu'à 3 blocs au-dessus des nuages d'orage : un saut chargé qui les traverse compte.
+        List<PlayerRef> here = SunquaPeak.near(store, players, c, radius + 3, StormClouds.HEIGHT_HINT + 3);
         if (!orbs && !here.isEmpty()) {
             orbs = true;
             Gates.checkpoint(world, SunquaPeakLayout.VOICE, SunquaPeak.MESSAGES + "checkpoint");
