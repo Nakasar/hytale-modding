@@ -1,7 +1,8 @@
 """Carte et décor de Pierre-Profonde (Deepstone), d'après la carte GW2 que Kevin a envoyée (25 octobre 2026).
 
-On arrive en haut d'une montagne enneigée et l'on descend une suite de corniches jusqu'à la porte du caveau des nains
-de Deldrimor. Dedans :
+Tout est souterrain (Kevin, 26 octobre 2026, captures de GW2 à l'appui) : une voûte de roche couvre toute la carte.
+On arrive en haut d'une immense caverne aux rochers saupoudrés de neige et l'on descend une suite de corniches
+au-dessus du vide jusqu'au pont à balustrades et à la porte sculptée du caveau des nains de Deldrimor. Dedans :
 
 - la salle du cristal (au centre), dont la porte nord reste fermée ;
 - à l'ouest, le couloir de la grille de runes (les motifs lumineux glissent du nord vers le sud) et, au bout, la
@@ -41,6 +42,17 @@ TRIM = "Rock_Runic_Teal_Brick"
 PILLAR_BASE = "Rock_Basalt_Brick_Pillar_Base"
 PILLAR_MID = "Rock_Basalt_Brick_Pillar_Middle"
 BEAM = "Rock_Basalt_Brick_Beam"
+ORNATE = "Rock_Basalt_Brick_Ornate"
+RAIL = "Rock_Basalt_Brick_Wall"                  # balustrade (rotation 0 : ligne le long de X, 1 : le long de Z)
+STALACTITES = ["Rock_Slate_Stalactite_Large", "Rock_Basalt_Stalactite_Large", "Rock_Slate_Stalactite_Small",
+               "Rock_Basalt_Stalactite_Small", "Rock_Shale_Stalactites_Large"]
+ICE_STALACTITE = "Rock_Ice_Stalactite_Large"
+HANGING = 8                                      # bloc retourné (stalactites et cristaux pendus à la voûte)
+CEILING_LANTERN = "Furniture_Temple_Light_Lantern_Ceiling"
+GLOW_MUSHROOMS = ["Plant_Crop_Mushroom_Glowing_Blue", "Plant_Crop_Mushroom_Glowing_Green",
+                  "Plant_Crop_Mushroom_Glowing_Blue"]
+BIG_CRYSTALS = ["Rock_Crystal_Cyan_Large", "Rock_Crystal_Blue_Large", "Rock_Crystal_Cyan_Medium"]
+CHAINS = "Deco_Iron_Chains_Vertical"
 RUNE_TILE = "Rock_Runic_Brick"                  # grille de runes de l'ouest (éteinte)
 RUNE_INLAY = "Rock_Runic_Blue_Brick"
 TILE_EDGE = "Rock_Basalt_Brick_Smooth"           # dalles du gouffre et de l'arène (le centre en rune)
@@ -58,9 +70,11 @@ RUNE_PLATE = "Nakasar_Fractal_Pressure_Plate"     # plaque de la Falaise (pierre
 LIFT_RUNE = "Nakasar_Fractal_Deepstone_Lift_Rune"
 BARRIER = "Nakasar_Fractal_Mist_Barrier"          # barrière de brume de la Falaise
 SPIDER_EGGS = "Nakasar_Fractal_Spider_Eggs"       # œufs du Marais (modèle vanilla EggSacks_Scarak_Medium)
+RUNE_GLOW = "Nakasar_Fractal_Deepstone_Rune_Glow"  # brique runique vanilla qui luit (turquoise), generate_deepstone.py
 
 ABYSS = -50                                      # bas des parois des gouffres (filet anti-chute : s = -60)
-TOP = 18                                         # dessus des parois du caveau
+TOP = 18                                         # dessus des parois du caveau (hors voûte)
+ROOF = 4                                         # épaisseur de la voûte
 EMPRISE = (-90, 120, -204, 104)                   # x0, x1, z0, z1
 
 # --- l'arrivée : corniches de neige du sommet jusqu'à la porte du caveau ------------------------------------------
@@ -75,15 +89,17 @@ DESCENT = [
     (-4, 10, 38, 46, 15),
     (-16, -2, 32, 40, 12),
     (-20, -8, 24, 32, 9),
-    (-12, 0, 20, 26, 6),
-    (-6, 4, 18, 22, 3),
+    (-12, -2, 24, 32, 6),
+    (-4, 4, 24, 30, 3),
 ]
+CAVERN = (0, 56, 40, 40)                         # caverne de la descente (centre x, z, demi-axes) : vide sous les corniches
 BAT_SPOTS = [(13, 21, 60), (14, 18, 48), (2, 15, 42), (-10, 12, 36), (-14, 9, 28)]
 
 # --- la salle du cristal --------------------------------------------------------------------------------------------
 HALL = (-18, 18, -6, 18)                          # x0, x1, z0, z1 (debout 0)
 HALL_C = (0, 0, 5)
-ENTRY = (-4, 4, 18, 22)                           # porte sud (debout 0)
+ENTRY = (-2, 2, 19, 23)                           # pont de l'entrée et porte sud (debout 0)
+FACADE_Z = 19                                     # façade sculptée de la porte, côté caverne
 CRYSTAL_AT = (0, 0, 14)
 RETURN_AT = (0, 0, 10)                            # où ramènent les orbes de lumière
 MINOTAUR_AT = (0, 0, 0)
@@ -270,9 +286,12 @@ class Terrain:
 
 def layout():
     t = Terrain()
+    cx, cz, rx, rz = CAVERN
+    t.blob(cx, cz, rx, rz, 0, Terrain.ABYSS_K, noise=0.15, seed=58)
+    t.kind[:, :t.idx(0, 20)[1]] = np.where(t.kind[:, :t.idx(0, 20)[1]] == Terrain.ABYSS_K, 0, t.kind[:, :t.idx(0, 20)[1]])
     for n, (x0, x1, z0, z1, s) in enumerate(DESCENT):
         t.ledge(x0, x1, z0, z1, s, seed=60 + n)
-    t.rect(*ENTRY, 0)
+    t.rect(*ENTRY, 0, Terrain.BRIDGE)
     t.rect(*HALL, 0)
     # ouest
     t.rect(*WEST_HALL, 0)
@@ -306,6 +325,68 @@ def layout():
     return t
 
 
+# Hauteur de voûte des salles des nains (au-dessus du sol) ; les autres salles : ROOM_CEILING.
+ROOM_CEILINGS = [(LIFT, 12 + LIFT_TOP - LIFT_BOTTOM), (HALL, 14),
+                 ((PIT_ROOM[0] + 3, PIT_ROOM[1] - 3, PIT_ROOM[2] + 3, PIT_ROOM[3] - 1), 18), (LIFT_ROOM, 12)]
+ROOM_CEILING = 9
+TUNNEL_CEILING = 5
+
+
+def cave_ceiling(x, z, stand):
+    """Voûte naturelle (caverne de la descente, gouffres, corniches) : haute et bosselée, jamais à moins de 10 blocs
+    du sol."""
+    n = fbm2(x, z, 16, 3, 81)
+    if z > 18:                                   # caverne de la descente : plus haute vers l'arrivée
+        base = 30 + 0.3 * (z - 18) + 8 * n
+    elif z < -100:                               # gouffre de la Voix
+        base = 10 + 7 * n
+    else:
+        base = 26 + 7 * n
+    return int(round(max(base, stand + 10)))
+
+
+def ceilings(t):
+    """Dessous de la voûte de chaque case creusée (Terrain.NONE ailleurs)."""
+    c = np.full((t.w, t.h), Terrain.NONE, dtype=np.int32)
+    for i in range(t.w):
+        x = i + t.x0
+        for k in range(t.h):
+            kind = t.kind[i, k]
+            if kind == 0:
+                continue
+            z = k + t.z0
+            s = int(t.stand[i, k]) if kind != Terrain.ABYSS_K else 0
+            if kind == Terrain.TUNNEL:
+                c[i, k] = s + TUNNEL_CEILING
+            elif t.built[i, k] and kind != Terrain.BRIDGE:
+                h = ROOM_CEILING
+                for (x0, x1, z0, z1), room in ROOM_CEILINGS:
+                    if x0 <= x <= x1 and z0 <= z <= z1:
+                        h = room
+                        break
+                c[i, k] = s + h
+            else:
+                c[i, k] = cave_ceiling(x, z, s if kind != Terrain.ABYSS_K else -30 if z < -100 else 0)
+    # pont de l'entrée : sous la voûte de la caverne
+    for x in range(ENTRY[0], ENTRY[1] + 1):
+        for z in range(ENTRY[2], ENTRY[3] + 1):
+            c[t.idx(x, z)] = cave_ceiling(x, z, 0)
+    return c
+
+
+def spread_max(c, t, reach):
+    """Plus haute voûte à moins de `reach` blocs (carré) de chaque case."""
+    out = np.full_like(c, Terrain.NONE)
+    for dx in range(-reach, reach + 1):
+        for dz in range(-reach, reach + 1):
+            sx = slice(max(dx, 0), t.w + min(dx, 0))
+            tx = slice(max(-dx, 0), t.w + min(-dx, 0))
+            sz = slice(max(dz, 0), t.h + min(dz, 0))
+            tz = slice(max(-dz, 0), t.h + min(-dz, 0))
+            out[sx, sz] = np.maximum(out[sx, sz], c[tx, tz])
+    return out
+
+
 def top_height(x, z):
     """Dessus de la roche : parois du caveau, plus haut vers le sommet de l'arrivée."""
     h = TOP + 4 * fbm2(x, z, 18, 3, 71)
@@ -321,30 +402,31 @@ def build(p):
     t = layout()
     dist, low = t.distance()
     cliff = t.near_abyss(2)
+    t.ceil = ceilings(t)
+    near1 = spread_max(t.ceil, t, 1)
+    near5 = spread_max(t.ceil, t, 5)
     for i in range(t.w):
         x = i + t.x0
         for k in range(t.h):
             z = k + t.z0
             kind = t.kind[i, k]
-            if kind == Terrain.ABYSS_K:
-                continue
-            if kind in (Terrain.OPEN, Terrain.TUNNEL, Terrain.BRIDGE):
-                s = int(t.stand[i, k])
-                floor(p, t, x, z, s, kind, bool(t.built[i, k]), ABYSS - 3 if cliff[i, k] else s - 4)
+            if kind != 0:
+                if kind != Terrain.ABYSS_K:
+                    s = int(t.stand[i, k])
+                    floor(p, t, x, z, s, kind, bool(t.built[i, k]), ABYSS - 3 if cliff[i, k] else s - 4)
+                # voûte : du plafond de la case jusqu'au-dessus des voûtes voisines (pas de jour entre deux hauteurs)
+                c = int(t.ceil[i, k])
+                built = t.built[i, k] and kind not in (Terrain.BRIDGE, Terrain.ABYSS_K)
+                for y in range(c, max(c, int(near1[i, k])) + ROOF):
+                    p.set(x, y, z, pick(BRICK, x, y, z) if built and y == c else pick(DEEP_ROCK, x, y, z))
                 continue
             d = dist[i, k]
-            if d > 14:
+            if d > 5:
                 continue
-            top = top_height(x, z)
-            if d > 11:
-                top -= int((d - 11) * 4)
-            if d <= 3.5:
-                bottom = int(low[i, k]) - 3
-            else:
-                bottom = top - 1
+            top = max(top_height(x, z), int(near5[i, k]) + ROOF - 1)
+            bottom = int(low[i, k]) - 3 if d <= 3.5 else top - ROOF
             for y in range(bottom, top + 1):
                 p.set(x, y, z, pick(DEEP_ROCK if y < -4 else ROCK, x, y, z))
-            p.set(x, top + 1, z, SNOW if hash01(x, z, 0, 5) < 0.85 else SNOW_HALF)
     walls(p, t, dist)
     return t
 
@@ -358,20 +440,18 @@ def floor(p, t, x, z, s, kind, built, deep):
     if built:
         p.set(x, s - 1, z, pick(FLOOR, x, s - 1, z))
     else:
-        outside = s > 0 or z > 18
-        p.set(x, s - 1, z, SNOW if outside and hash01(x, z, 1, 9) < 0.8 else pick(ROCK, x, s - 1, z))
+        # caverne : roche sombre, neige en plaques (tombée des failles du sommet) sur les corniches de l'arrivée
+        snowy = z > 18 and fbm2(x, z, 7, 2, 9) > 0.1 + 0.02 * (24 - s)
+        p.set(x, s - 1, z, SNOW if snowy else pick(ROCK, x, s - 1, z))
     for y in range(deep, s - 1):
         p.set(x, y, z, pick(DEEP_ROCK, x, y, z))
     if kind == Terrain.TUNNEL:
-        top = top_height(x, z)
-        for y in range(s + 5, top + 1):
-            p.set(x, y, z, pick(DEEP_ROCK if y < -4 else ROCK, x, y, z))
-        p.set(x, top + 1, z, SNOW)
         p.set(x, s + 4, z, BEAM if z % 5 else PILLAR_MID)
 
 
 def walls(p, t, dist):
-    """Parement de briques des salles des nains : la face de roche contre une salle, jusqu'à 7 blocs, liseré runique."""
+    """Parement de briques des salles des nains : la face de roche contre une salle jusqu'à la voûte, liseré runique à
+    7 blocs, piliers engagés, et tous les 9 blocs un médaillon de runes turquoise qui luit (captures de GW2)."""
     for i in range(t.w):
         for k in range(t.h):
             if t.kind[i, k] != 0 or dist[i, k] > 1.01:
@@ -383,14 +463,24 @@ def walls(p, t, dist):
             if not rooms:
                 continue
             s = min(int(t.stand[t.idx(nx, nz)]) for nx, nz in rooms)
+            ceil = max(int(t.ceil[t.idx(nx, nz)]) for nx, nz in rooms)
             tunnel = any(t.kind[t.idx(nx, nz)] == Terrain.TUNNEL for nx, nz in rooms)
-            for y in range(s, s + (5 if tunnel else 7)):
+            for y in range(s, ceil):
                 p.set(x, y, z, pick(BRICK, x, y, z))
-            if not tunnel:
-                p.set(x, s + 7, z, TRIM)
-                if (x + z) % 7 == 0:
-                    for y in range(s, s + 7):
-                        p.set(x, y, z, PILLAR_BASE if y == s else PILLAR_MID)
+            if tunnel:
+                continue
+            p.set(x, s + 7, z, TRIM)
+            if (x + z) % 7 == 0:
+                for y in range(s, ceil):
+                    p.set(x, y, z, PILLAR_BASE if y == s else PILLAR_MID)
+            elif ceil - s >= 9:
+                m = (x + z) % 9
+                if m == 4:                      # médaillon : rune lumineuse cerclée de turquoise
+                    p.set(x, s + 4, z, RUNE_GLOW)
+                    p.set(x, s + 3, z, TRIM)
+                    p.set(x, s + 5, z, TRIM)
+                elif m in (3, 5):
+                    p.set(x, s + 4, z, TRIM)
 
 
 # --- salles ---------------------------------------------------------------------------------------------------------
@@ -408,8 +498,8 @@ def hall(p):
                         p.set(x, -1, z, RUNE_INLAY)
                     elif d < 1.5:
                         p.set(x, -1, z, TRIM)
-    for x, z in ((x0 + 3, z0 + 3), (x1 - 3, z0 + 3), (x0 + 3, z1 - 3), (x1 - 3, z1 - 3)):
-        pillar(p, x, 0, z, 12)
+    for x, z in ((x0 + 3, z0 + 3), (x1 - 3, z0 + 3), (x0 + 3, z1 - 3), (x1 - 3, z1 - 3), (x0 + 3, cz), (x1 - 3, cz)):
+        pillar(p, x, 0, z, 14)
         p.set(x + (1 if x < cx else -1), 0, z + (1 if z < cz else -1), BRAZIER)
     p.set(*CRYSTAL_AT, CRYSTAL)
     for dx, dz in ((-1, 0), (1, 0), (0, -1), (0, 1)):
@@ -506,7 +596,7 @@ def pit_room(p):
         p.set(x, 0, z, PIT_ORB)
     for x in (PIT_ROOM[0] + 3, PIT_ROOM[1] - 3):
         for z in range(PIT_ROOM[2] + 4, PIT_ROOM[3] - 1, 8):
-            pillar(p, x, 0, z, 9) if (x, -1, z) in p.blocks else None
+            pillar(p, x, 0, z, 18) if (x, -1, z) in p.blocks else None
 
 
 def tile(p, x0, z0, size, c, r, s):
@@ -544,7 +634,7 @@ def lift(p):
                     p.set(x, y, z, pick(DEEP_ROCK, x, y, z))
     for x, z in ((LIFT_ROOM[0] + 1, LIFT_ROOM[2] + 1), (LIFT_ROOM[1] - 1, LIFT_ROOM[2] + 1),
                  (LIFT_ROOM[0] + 1, LIFT_ROOM[3] - 1), (LIFT_ROOM[1] - 1, LIFT_ROOM[3] - 1)):
-        pillar(p, x, 0, z, 10)
+        pillar(p, x, 0, z, 12)
 
 
 def arena(p):
@@ -591,8 +681,115 @@ def near_grid(x, z):
     return False
 
 
+def entrance(p, t):
+    """Le pont de l'entrée (balustrades, lanternes) et la façade sculptée de la porte du caveau, face à la caverne."""
+    x0, x1, z0, z1 = ENTRY
+    for z in range(z0 + 1, z1 + 1):
+        for x in (x0, x1):
+            p.set(x, 0, z, RAIL, 1)
+    for x in (x0, x1):
+        p.set(x, 1, z1, LANTERN)
+    door = (x0 + 1, x1 - 1)
+    for x in range(-12, 13):
+        if t.kind[t.idx(x, FACADE_Z)] not in (0, Terrain.BRIDGE):
+            continue
+        top = int(t.ceil[t.idx(x, FACADE_Z + 1)]) if t.kind[t.idx(x, FACADE_Z + 1)] else 18
+        for y in range(-1, top):
+            if door[0] <= x <= door[1] and y < 6:
+                continue                         # baie de la porte
+            if abs(x) in (4, 9):
+                b = PILLAR_BASE if y == 0 else PILLAR_MID
+            elif y in (7, 13) or (y == 6 and abs(x) <= 3):
+                b = TRIM
+            elif abs(x) <= 3 and y < 10:
+                b = ORNATE
+            else:
+                b = pick(BRICK, x, y, FACADE_Z)
+            p.set(x, y, FACADE_Z, b)
+        if abs(x) == 6:
+            p.set(x, 4, FACADE_Z, RUNE_GLOW)
+    p.set(0, 10, FACADE_Z, RUNE_GLOW)
+    for x in (-3, 3):
+        p.set(x, 5, FACADE_Z + 1, ICE_STALACTITE, HANGING) if fn.free(p, x, 5, FACADE_Z + 1) else None
+
+
+def vaults(p, t):
+    """Sous les voûtes. Salles des nains : lanternes suspendues. Cavernes et gouffres : stalactites (de glace vers
+    l'arrivée), cristaux pendus, et au sol, contre les parois, champignons et cristaux qui luisent. Toiles à l'est."""
+    walk = np.isin(t.kind, (Terrain.OPEN, Terrain.TUNNEL, Terrain.BRIDGE))
+    high = spread_max(np.where(walk, t.stand, Terrain.NONE).astype(np.int32), t, 4)
+    # dalles posées au combat (gouffre, arène) : on y marche aussi
+    for x0, z0, n, m, size, st in ((PIT_X0, PIT_Z0, PIT_COLS, PIT_ROWS, PIT_TILE, 0),
+                                   (ARENA_X0, ARENA_Z0, ARENA_N, ARENA_N, ARENA_TILE, VOICE_STAND)):
+        i0, k0 = t.idx(x0 - 4, z0 - 4)
+        i1, k1 = t.idx(x0 + n * size + 4, z0 + m * size + 4)
+        high[i0:i1, k0:k1] = np.maximum(high[i0:i1, k0:k1], st)
+    for i in range(t.w):
+        x = i + t.x0
+        for k in range(t.h):
+            kind = t.kind[i, k]
+            if kind == 0:
+                continue
+            z = k + t.z0
+            c = int(t.ceil[i, k])
+            s = int(t.stand[i, k]) if kind != Terrain.ABYSS_K else ABYSS
+            h = hash01(x, z, 11, 501)
+            webs = EAST_HALL[0] <= x <= QUEEN_C[0] + QUEEN_R + 2 and abs(z - 5) <= QUEEN_R + 2 and kind != Terrain.BRIDGE
+            if not fn.free(p, x, c - 1, z):
+                continue
+            if webs and h < 0.16:
+                p.set(x, c - 1, z, WEBS[1])
+                continue
+            if t.built[i, k] and kind == Terrain.OPEN:
+                if x % 8 == 0 and z % 8 == 4 and c - s >= 9 and not near_grid(x, z):
+                    p.set(x, c - 1, z, CEILING_LANTERN)
+                continue
+            if kind == Terrain.TUNNEL:
+                continue
+            room = c - max(s, int(high[i, k])) - 5   # place libre au-dessus des sols voisins (aucun passage bouché)
+            if h < 0.012 and room > 3:
+                big_stalactite(p, x, z, c, min(room, 3 + int(hash01(z, x, 12, 502) * 9)), 1.6, 503 + x)
+            elif h < 0.09:
+                ice = z > 18 and hash01(x, z, 13, 504) < 0.5
+                p.set(x, c - 1, z, ICE_STALACTITE if ice else STALACTITES[int(hash01(z, x, 14, 505) * len(STALACTITES))],
+                      HANGING)
+            elif h < 0.1:
+                p.set(x, c - 1, z, BIG_CRYSTALS[int(hash01(z, x, 15, 506) * len(BIG_CRYSTALS))], HANGING)
+    # au sol des cavernes, contre les parois
+    for i in range(t.w):
+        x = i + t.x0
+        for k in range(t.h):
+            if t.kind[i, k] != Terrain.OPEN or t.built[i, k]:
+                continue
+            z = k + t.z0
+            s = int(t.stand[i, k])
+            if not fn.free(p, x, s, z) or fn.free(p, x, s - 1, z) or near_grid(x, z):
+                continue
+            against = sum(1 for dx, dz in ((1, 0), (-1, 0), (0, 1), (0, -1)) if not fn.free(p, x + dx, s, z + dz))
+            if not against:
+                continue
+            h = hash01(x, z, 16, 507)
+            if h < 0.14:
+                p.set(x, s, z, GLOW_MUSHROOMS[int(h * 100) % len(GLOW_MUSHROOMS)])
+            elif h < 0.2:
+                p.set(x, s, z, BIG_CRYSTALS[int(h * 1000) % len(BIG_CRYSTALS)])
+
+
+def big_stalactite(p, x, z, top, length, radius, seed):
+    """Stalactite en cône de roche, de la voûte `top` vers le bas sur `length` blocs."""
+    for k in range(length):
+        r = radius * (1 - k / length) ** 0.9
+        n = int(math.ceil(r))
+        for dx in range(-n, n + 1):
+            for dz in range(-n, n + 1):
+                if math.hypot(dx, dz) <= r + 0.3 * fn.vnoise2(x + dx + k, z + dz, 1.6, seed):
+                    y = top - 1 - k
+                    if fn.free(p, x + dx, y, z + dz):
+                        p.set(x + dx, y, z + dz, pick(DEEP_ROCK, x + dx, y, z + dz))
+
+
 def descent(p):
-    """Le sommet : congères, glaçons et quelques sapins enneigés au bord des corniches."""
+    """Les corniches de l'arrivée : congères au bord, quelques cristaux, une lanterne des nains par corniche."""
     for x0, x1, z0, z1, s in DESCENT:
         for x in range(x0, x1 + 1):
             for z in range(z0, z1 + 1):
@@ -604,6 +801,9 @@ def descent(p):
                     p.set(x, s, z, SNOW_HALF)
                 elif h > 0.985:
                     p.set(x, s, z, CRYSTALS[2])
+        lx, lz = (x0 + 1, z0 + 1) if hash01(x0, z0, 17, 508) < 0.5 else (x1 - 1, z1 - 1)
+        if fn.free(p, lx, s, lz) and not fn.free(p, lx, s - 1, lz):
+            p.set(lx, s, lz, LANTERN)
 
 
 def build_all():
@@ -615,6 +815,8 @@ def build_all():
     pit_room(p)
     lift(p)
     arena(p)
+    entrance(p, t)
     descent(p)
     lights(p, t)
+    vaults(p, t)
     return p, t

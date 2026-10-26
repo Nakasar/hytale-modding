@@ -4,17 +4,17 @@
 <Info label="Boss">Sentinelle de Pierre-Profonde, Reine de la couvée, Esprit du Minotaure des ombres, la Voix</Info>
 <Info label="Règle">Lumière de Deldrimor</Info>
 <Info label="Objets">orbes de lumière, Lumière de Deldrimor</Info>
-<Info label="Ciel">neige au sommet, ombre dans le caveau</Info>
+<Info label="Ciel">aucun : tout est sous terre</Info>
 <Info label="Saison">2</Info>
 </Infobox>
 
-Le caveau englouti des nains de Deldrimor, sous une montagne enneigée. Le nain **Torin** et l'asura **Kay** vous accompagnent : il faut rallumer le **Cristal de Deldrimor** avec les deux orbes de lumière gardées à l'ouest et à l'est, puis descendre, à la lumière retrouvée, jusqu'à la **Voix** qui murmure dans les profondeurs.
+Le caveau des nains de Deldrimor, tout entier sous terre : cavernes immenses, gouffres sans fond et salles sculptées éclairées de runes turquoise. Le nain **Torin** et l'asura **Kay** vous accompagnent : il faut rallumer le **Cristal de Deldrimor** avec les deux orbes de lumière gardées à l'ouest et à l'est, puis descendre, à la lumière retrouvée, jusqu'à la **Voix** qui murmure dans les profondeurs.
 
 ## Carte
 
 ![Carte de Pierre-Profonde](../images/fractales/carte-pierre-profonde.png)
 
-*Carte de Pierre-Profonde, vue de dessus : on descend la montagne au sud jusqu'à la salle du cristal, on va chercher une orbe à l'ouest et une à l'est, puis on part vers le nord et vers le bas. Les numéros suivent le déroulé ci-dessous.*
+*Carte de Pierre-Profonde, vue de dessus : on descend la grande caverne au sud jusqu'à la salle du cristal, on va chercher une orbe à l'ouest et une à l'est, puis on part vers le nord et vers le bas. Les numéros suivent le déroulé ci-dessous.*
 
 ## La Lumière de Deldrimor
 
@@ -31,7 +31,7 @@ Plusieurs passages s'ouvrent avec **deux runes** à presser **ensemble** : deux 
 
 ### 1. La descente
 
-On arrive au sommet d'une montagne enneigée et l'on descend de corniche en corniche jusqu'à la porte du caveau. Des **chauves-souris des cavernes** nichent sur le chemin.
+On arrive en haut d'une immense caverne aux rochers saupoudrés de neige et l'on descend de corniche en corniche au-dessus du vide, jusqu'au pont à balustrades et à la porte sculptée du caveau. Des **chauves-souris des cavernes** nichent sur le chemin.
 
 ### 2. La salle du cristal
 

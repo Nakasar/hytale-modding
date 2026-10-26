@@ -259,9 +259,9 @@ Générateurs : `tools/generate_sirens_reef.py` (assets, rôles, effets, `Sirens
 
 ### Pierre-Profonde (Deepstone), troisième fractale de la saison 2
 
-Le caveau des nains de Deldrimor sous une montagne enneigée, d'après la carte GW2 envoyée par Kevin. **Torin** et **Kay** attendent devant le **Cristal de Deldrimor** éteint (invulnérables).
+Le caveau des nains de Deldrimor, entièrement souterrain (voûte de roche sur toute la carte, d'après la carte et les captures GW2 de Kevin). **Torin** et **Kay** attendent devant le **Cristal de Deldrimor** éteint (invulnérables).
 
-1. **Descente** de la montagne (chauves-souris), puis la **salle du cristal** : porte nord fermée, il faut les deux orbes de lumière.
+1. **Descente** de la grande caverne, de corniche en corniche au-dessus du vide (chauves-souris), pont à balustrades et porte sculptée, puis la **salle du cristal** : porte nord fermée, il faut les deux orbes de lumière.
 2. **Ouest** : grille de runes (rangées rouges qui glissent du nord au sud, 1 ou 2 colonnes libres ; la zone rouge est la dalle même), deux **runes à presser ensemble** (deux joueurs), puis la **Sentinelle** sur sa corniche ouverte au vide : spirales de vent, esprits du vent qui emportent un joueur vers le bord (défiance ou mort de l'esprit pour le relâcher).
 3. **Est** : nids d'araignées (pontes sans butin), **pont du vent** (bandes rouges qui jettent dans le gouffre, deux runes l'arrêtent), deux mères de couvée puis la **Reine de la couvée** (venin, protection à 50 %).
 4. Chaque boss laisse une **orbe** : la prendre ramène au cristal, l'y déposer. Les deux déposées : la **Lumière de Deldrimor** (objet à clic droit, éclat de 6 blocs, 5 s) pour tout le groupe, et le **Minotaure des ombres** surgit, invulnérable tant que la Lumière ne l'a pas dévoilé.
@@ -271,7 +271,7 @@ Le caveau des nains de Deldrimor sous une montagne enneigée, d'après la carte 
 
 Aucun boss ne se soigne ; dix trésors nains cachés que révèle la Lumière.
 
-Générateurs : `tools/generate_deepstone.py` (assets, rôles, effets, `DeepstoneLayout.java`) et `tools/deepstone_scenery.py` (montagne, caveau, gouffres, pont, ascenseur, arène). Code : paquet `deepstone`.
+Générateurs : `tools/generate_deepstone.py` (assets, rôles, effets, `DeepstoneLayout.java`) et `tools/deepstone_scenery.py` (caverne, voûtes, caveau, gouffres, pont, ascenseur, arène ; runes lumineuses `Nakasar_Fractal_Deepstone_Rune_Glow`). Code : paquet `deepstone`.
 
 ### Saison 2 et suivantes
 

@@ -135,6 +135,13 @@ def write_blocks():
                       "CustomModelTexture": [{"Texture": texture, "Weight": 1}], "RequiresAlphaBlending": True,
                       "BlockParticleSetId": "Crystal", "BlockSoundSetId": "Crystal"})
         fc.write_json(go.ITEMS / "Deepstone" / f"{name}.json", doc)
+    # Médaillons des murs : la brique runique bleue vanilla, qui luit turquoise (salles sombres des captures de GW2).
+    doc = go.block_item(sc.RUNE_GLOW, "Deepstone_Rune_Glow", "#3fc8b8", None, solid=True, particle="#3fc8b8")
+    doc["Icon"] = "Icons/ItemsGenerated/Rock_Runic_Blue_Brick.png"
+    doc["TranslationProperties"] = {"Name": f"{LANG}.items.{sc.RUNE_GLOW}.name",
+                                    "Description": f"{LANG}.items.{sc.RUNE_GLOW}.description"}
+    doc["BlockType"]["Textures"] = [{"All": "BlockTextures/Rock_Runic_Blue_Brick.png", "Weight": 1}]
+    fc.write_json(go.ITEMS / "Deepstone" / f"{sc.RUNE_GLOW}.json", doc)
     fc.write_block(LANG, LIFT_RUNE, "Deepstone_Lift_Rune", (40, 44, 60), (130, 210, 255), "rune", "#8cf",
                    "Nakasar_Fractal_Use_Deepstone_Lift_Rune")
 
@@ -554,6 +561,8 @@ def lang():
     t.item(PIT_ORB, "Orbe éteinte", "La Lumière de Deldrimor l'allume.", "Unlit orb", "The Light of Deldrimor lights it.")
     t.item(PIT_ORB_LIT, "Orbe allumée", "Un point de retour au-dessus du gouffre.", "Lit orb",
            "A checkpoint above the abyss.")
+    t.item(sc.RUNE_GLOW, "Rune de Deldrimor", "Une rune des nains qui luit encore.", "Deldrimor rune",
+           "A dwarven rune that still glows.")
     t.item(LIFT_RUNE, "Rune de l'ascenseur", "Utiliser : rejoindre la plate-forme.", "Lift rune",
            "Use: join the platform.")
     for role, f, e in ((TORIN, "Torin", "Torin"), (KAY, "Kay", "Kay"),
@@ -848,10 +857,11 @@ def main():
 
     p, t = sc.build_all()
     sections = fc.split_sections(p, min(z for _, _, z in p.blocks))
-    # Montagne grise et neigeuse : ciel bas, brume proche, lumière froide.
-    counts = fc.write_instance(INSTANCE, "Pierre-Profonde", PREFAB_DIR, sections, sc.SPAWN, "#7a8aa0",
-                               WEATHER, fc.weather("#5a6a84", "#9aa8bc", "#8a96a8", (30, 140), 0.45, "#c8d4e8",
-                                                   sun="#e0e8f8"), "10:00")
+    # Tout sous terre (Kevin, 26 octobre 2026) : ciel noir, brume bleu nuit qui noie le fond des cavernes, lumière
+    # froide et faible ; ce sont les runes, lanternes et cristaux qui éclairent.
+    counts = fc.write_instance(INSTANCE, "Pierre-Profonde", PREFAB_DIR, sections, sc.SPAWN, "#3a4a5e",
+                               WEATHER, fc.weather("#020408", "#08101a", "#0a1220", (12, 120), 0.5, "#4a5e78",
+                                                   sun="#9ab4d0"), "22:00")
     lang().write(LANG)
     JAVA_LAYOUT.parent.mkdir(parents=True, exist_ok=True)
     JAVA_LAYOUT.write_text(java_layout(p, t), encoding="utf-8")
