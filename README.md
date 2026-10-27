@@ -726,6 +726,20 @@ mods/<mod>/                 # un sous-projet Gradle par mod
 docs/                       # notes de conception et d'API
 ```
 
+### Skills Claude (`.claude/skills/`)
+
+Sept skills de projet, chargées automatiquement par Claude Code dans ce dépôt :
+
+| Skill | Sert à |
+|---|---|
+| `hytale-vanilla-research` | trouver comment vanilla fait une chose (Assets.zip, jar serveur décompilé, ids) avant de la coder |
+| `hytale-mod-reuse` | retrouver et réutiliser les briques des deux mods (`scripts/index_code.py --grep MOT`) |
+| `hytale-3d-assets` | modèles, textures, animations et icônes au style vanilla, avec aperçu rendu |
+| `hytale-organic-decor` | décors naturels et crédibles ; aperçu iso + audit des prefabs (`scripts/render_prefab.py`) |
+| `hytale-load-pitfalls` | vérifications avant push (`./gradlew check`, `scripts/lint_diff.py`) et catalogue des pièges de chargement |
+| `hytale-encounter-design` | élites et boss lisibles (règles de lisibilité, échelle de groupe, récompenses) |
+| `hytale-ingame-feedback` | traiter un retour de test en jeu, tenir à jour les points à vérifier, le wiki et la mémoire |
+
 ## Ajouter un mod
 
 1. Créer `mods/<nom>` avec un `build.gradle.kts` (copier `nakasar-vampires` pour un plugin ; pour un pack pur,
