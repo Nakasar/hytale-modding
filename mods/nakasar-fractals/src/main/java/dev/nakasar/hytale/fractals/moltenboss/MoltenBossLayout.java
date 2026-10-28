@@ -55,6 +55,9 @@ public final class MoltenBossLayout {
     public static final double SHOCK_SPEED = 8.0;
     public static final double SHOCK_BAND = 0.75;
     public static final double AIR_RING_HEIGHT = 1.6;
+    public static final double SHOCK_REACH_EFFIGY = 22.0;
+    public static final double SHOCK_REACH_DUO = 56.0;
+    public static final double RING_SCALE = 0.68;
     /** Flammes de la Tempête (rayon, durée), débris, couronne de vent (24 bandes de 6.9 x 6.0 : JAVA_LINES). */
     public static final double FIRE_POOL_RADIUS = 3.0;
     public static final float FIRE_POOL_SECONDS = 8.0f;

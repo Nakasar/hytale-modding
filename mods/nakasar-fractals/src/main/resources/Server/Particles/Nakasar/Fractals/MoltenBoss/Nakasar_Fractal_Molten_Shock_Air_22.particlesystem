@@ -1,0 +1,19 @@
+{
+  "$Comment": "Onde de choc en l’air de 22 blocs : anneau qui grandit en 2.75 s (Java, moltenboss.Shockwaves). Généré par tools/generate_molten_boss.py.",
+  "Spawners": [
+    {
+      "SpawnerId": "Nakasar_Fractal_Molten_Shock_Air_22_Ring",
+      "PositionOffset": {
+        "Y": 0.15
+      }
+    },
+    {
+      "SpawnerId": "Nakasar_Fractal_Molten_Shock_Air_22_Glow",
+      "PositionOffset": {
+        "Y": 0.35
+      }
+    }
+  ],
+  "CullDistance": 128,
+  "IsImportant": true
+}

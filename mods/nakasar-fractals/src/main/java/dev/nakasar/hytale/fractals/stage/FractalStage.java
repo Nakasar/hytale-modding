@@ -31,6 +31,14 @@ public interface FractalStage {
                         String victimRole, Ref<EntityStore> attacker, Damage damage) {
     }
 
+    /**
+     * Vrai si le boss `ref` (rôle à barre de boss) est protégé en ce moment, tous ses coups annulés par
+     * {@link #filter} : {@link StageShieldSystem} lui pose alors l'invulnérabilité vanilla (barre invulnérable).
+     */
+    default boolean shielded(World world, Store<EntityStore> store, Ref<EntityStore> ref, String role) {
+        return false;
+    }
+
     /** Bloc utilisé ({@code Nakasar_Fractal_Use}, action `action`) par `player`, sur le thread du monde. */
     default void use(World world, Store<EntityStore> store, Ref<EntityStore> ref, PlayerRef player, String action,
                      int x, int y, int z) {

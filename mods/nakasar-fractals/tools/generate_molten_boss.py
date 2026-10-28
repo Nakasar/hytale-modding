@@ -86,6 +86,10 @@ EFFIGY_ADD_ROLES = [WARRIOR, MINER, SONIC, LEGION_SHAMAN, MINER, WARRIOR]
 SHOCK_SPEED = 8.0            # ondes de choc : vitesse de l'anneau (blocs/s)
 SHOCK_BAND = 0.75            # demi-épaisseur de l'anneau
 AIR_RING_HEIGHT = 1.6        # onde bleue : hauteur de l'anneau au-dessus du sol (on la prend en sautant)
+SHOCK_REACH_EFFIGY = sc.EFFIGY_R + 4      # l'onde de l'Effigie court jusqu'au-delà du bord de la fonderie
+SHOCK_REACH_DUO = 2 * sc.ARENA_R + 4      # celle du Berserker traverse toute la plate-forme, d'un bord à l'autre
+RING_SCALE = 0.68            # anneau d'onde de choc : échelle de particule par bloc de rayon (generate_warnings.SCALE)
+RING_BASE = 6.25             # taille de la particule à l'échelle 1 (generate_warnings.BASE)
 FIRE_POOL_R = 3.0            # flammes de la Tempête : rayon de la zone (rouge à l'annonce, flammes ensuite)
 FIRE_POOL_SECONDS = 8.0
 DEBRIS_R = 2.5               # débris du Berserker renforcé
@@ -133,12 +137,14 @@ S = gc.spawner
 PARTICLE_SYSTEMS = {
     "Nakasar_Fractal_Molten_Ring_Ground": ("Onde de choc au sol (à sauter) : un point de l'anneau blanc (le Java en pose "
                                            "tout autour).",
-                                           [("Dust", S("#ffffff", "#c8b8a0", 3, (0.2, 0.6), (40, 90), 0.2, 0.2,
-                                                       life=(0.3, 0.5), size=(0.25, 0.4)), 0.0)]),
+                                           [("Dust", S("#ffffff", "#c8b8a0", 6, (0.6, 1.6), (50, 90), 0.2, 0.6,
+                                                       life=(0.4, 0.7), size=(0.35, 0.6), blend="BlendLinear"), 0.0),
+                                            ("Ember", S("#fff0a0", "#ff5010", 4, (0.8, 2.0), (60, 90), 0.2, 0.4,
+                                                        life=(0.3, 0.6), size=(0.15, 0.3)), 0.1)]),
     "Nakasar_Fractal_Molten_Ring_Air": ("Onde de choc en l'air (rester au sol) : un point de l'anneau bleu, à hauteur de "
                                         "saut.",
-                                        [("Spark", S("#e0f0ff", "#3070ff", 3, (0.1, 0.3), (-20, 20), 0.15, 0.15,
-                                                     life=(0.3, 0.5), size=(0.25, 0.4)), 0.0)]),
+                                        [("Spark", S("#e0f0ff", "#3070ff", 6, (0.1, 0.4), (-20, 20), 0.2, 0.3,
+                                                     life=(0.4, 0.7), size=(0.35, 0.55)), 0.0)]),
     "Nakasar_Fractal_Molten_Windup_Ground": ("Le Berserker prépare une onde au sol : poussière blanche à ses pieds.",
                                              [("Dust", S("#ffffff", "#b0a090", 30, (0.5, 2.0), (0, 40), 1.5, 0.4,
                                                          life=(0.5, 0.9), size=(0.2, 0.4), blend="BlendLinear"), 0.1)]),
@@ -149,18 +155,25 @@ PARTICLE_SYSTEMS = {
                                          "échelle = rayon : les flammes couvrent exactement la zone qui brûle).",
                                          [("Flame", S("#fff0a0", "#ff3a00", 26, (0.6, 1.6), (70, 90), 1.0, 0.1,
                                                       life=(0.5, 0.8), size=(0.08, 0.16)), 0.0)]),
+    "Nakasar_Fractal_Molten_Impact": ("Coup qui tombe dans un cercle (boule de feu, bond, pluie de flammes) : gerbe de "
+                                      "flammes dans un rayon d'un bloc à l'échelle 1 ; posée à l'échelle du rayon de la "
+                                      "zone (ImpactParticleScale), elle ne déborde jamais du cercle rouge.",
+                                      [("Flame", S("#fff0a0", "#ff3a00", 36, (0.3, 1.0), (75, 90), 0.85, 0.3,
+                                                   life=(0.4, 0.6), size=(0.08, 0.16)), 0.0),
+                                       ("Ember", S("#fff4c0", "#ff5010", 16, (2.0, 4.0), (82, 90), 0.5, 0.2,
+                                                   life=(0.3, 0.6), size=(0.04, 0.08)), 0.1)]),
     "Nakasar_Fractal_Molten_Fire_Bolt": ("Trait de feu de la Tempête qui tombe : boule de flammes.",
-                                         [("Fire", S("#fff0a0", "#ff5010", 20, (0.5, 2.0), (60, 90), 0.8, 0.6,
-                                                     life=(0.3, 0.6), size=(0.4, 0.8)), 0.0)]),
+                                         [("Fire", S("#fff0a0", "#ff5010", 24, (0.5, 2.0), (80, 90), 0.7, 0.6,
+                                                     life=(0.3, 0.6), size=(0.15, 0.3)), 0.0)]),
     "Nakasar_Fractal_Molten_Link": ("Lien du résonateur ou du Protecteur : un point du rayon doré (le Java en pose le "
                                     "long).",
                                     [("Beam", S("#fff4c0", "#ff9020", 3, (0.0, 0.2), (-90, 90), 0.1, 0.1,
                                                 life=(0.3, 0.5), size=(0.25, 0.35)), 0.0)]),
     "Nakasar_Fractal_Molten_Debris": ("Débris qui tombent sur la plate-forme : éclats de roche et de braises.",
-                                      [("Rock", S("#c0b0a0", "#503020", 40, (2.0, 5.0), (10, 90), 1.0, 0.6,
-                                                  life=(0.6, 1.0), size=(0.2, 0.4), blend="BlendLinear"), 0.3),
-                                       ("Ember", S("#fff0a0", "#ff4010", 20, (2.0, 4.0), (20, 90), 0.8, 0.4,
-                                                   life=(0.4, 0.7), size=(0.1, 0.2)), 0.3)]),
+                                      [("Rock", S("#c0b0a0", "#503020", 40, (2.0, 3.5), (80, 90), 0.4, 0.6,
+                                                  life=(0.6, 1.0), size=(0.1, 0.2), blend="BlendLinear"), 0.3),
+                                       ("Ember", S("#fff0a0", "#ff4010", 20, (2.0, 3.5), (80, 90), 0.6, 0.4,
+                                                   life=(0.4, 0.7), size=(0.05, 0.1)), 0.3)]),
     "Nakasar_Fractal_Molten_Wind": ("Vent de la Tempête : volutes de cendre qui filent vers le vide.",
                                     [("Ash", S("#e8e0d8", "#806858", 12, (5.0, 9.0), (-5, 15), 1.5, 1.6,
                                                life=(0.6, 1.0), size=(0.15, 0.3), blend="BlendLinear"), 0.4)]),
@@ -173,23 +186,58 @@ PARTICLE_SYSTEMS = {
 }
 
 
-def resonator_parts():
-    iron, copper, amber = (70, 66, 64), (176, 104, 56), (255, 190, 80)
-    return [("Base", (0, 6, 0), (52, 12, 52), 0, fm.smooth(iron), "flat"),
-            ("Pipe_A", (-16, 50, -16), (10, 76, 10), 0, fm.smooth(copper), "flat"),
-            ("Pipe_B", (16, 50, 16), (10, 76, 10), 0, fm.smooth(copper), "flat"),
-            ("Column", (0, 46, 0), (26, 68, 26), 45, fm.smooth(iron), "flat"),
-            ("Core", (0, 100, 0), (34, 34, 34), 45, fm.smooth(amber), "flat"),
-            ("Cap", (0, 124, 0), (40, 8, 40), 0, fm.smooth(iron), "flat"),
-            ("Antenna", (0, 148, 0), (6, 40, 6), 0, fm.smooth(copper), "flat")]
+def shock_rings():
+    """Anneaux d'onde de choc (retour de Kevin, 28 octobre 2026 : « elle doit être visible, comme le Gobliterator des
+    Deepworks ») : un seul anneau à plat (contour Warning_Circle_Base des annonces Deepworks), lumineux, qui grandit du
+    centre jusqu'à la portée de l'onde en `portée / SHOCK_SPEED` s. Posé à l'échelle RING_SCALE * portée, il est à chaque
+    instant au rayon de l'anneau qui frappe (Java, moltenboss.Shockwaves). Un système par (sorte, portée)."""
+    out = {}
+    flat = {"X": {"Min": 90, "Max": 90}}
+    size = {"X": {"Min": RING_BASE, "Max": RING_BASE}}
+    for kind, edge, glow in (("Ground", "#fff4d0", "#ff7020"), ("Air", "#e8f4ff", "#3070ff")):
+        for reach in (SHOCK_REACH_EFFIGY, SHOCK_REACH_DUO):
+            life = round(reach / SHOCK_SPEED, 3)
+            name = f"Nakasar_Fractal_Molten_Shock_{kind}_{round(reach)}"
+            frames = {"0": {"Opacity": 1, "Color": edge, "Scale": {"X": {"Min": 0.02, "Max": 0.02}}},
+                      "70": {"Opacity": 1, "Color": glow},
+                      "100": {"Opacity": 0.4, "Color": glow, "Scale": {"X": {"Min": 1, "Max": 1}}}}
+            spawners = []
+            for suffix, texture, y in (("Ring", "Particles/Textures/Indicators/Warning_Circle_Base.png", 0.15),
+                                       ("Glow", "Particles/Textures/Indicators/Warning_Circle_Base.png", 0.35)):
+                doc = {
+                    "RenderMode": "BlendAdd",
+                    "ParticleRotationInfluence": "Velocity",
+                    "ParticleLifeSpan": {"Min": life, "Max": life},
+                    "ParticleRotateWithSpawner": True,
+                    "TrailSpawnerPositionMultiplier": 1,
+                    "TrailSpawnerRotationMultiplier": 1,
+                    "Particle": {"Texture": texture, "ScaleRatioConstraint": "OneToOne", "UVOption": "None",
+                                 "Animation": frames, "SoftParticles": "Disable",
+                                 "InitialAnimationFrame": {"Opacity": 1, "Color": edge, "Rotation": flat,
+                                                           "Scale": size}},
+                    "Shape": "Sphere",
+                    "TotalParticles": {"Min": 1, "Max": 1},
+                    "SpawnRate": {"Min": 1, "Max": 1},
+                    "LinearFiltering": True,
+                    "MaxConcurrentParticles": 1,
+                    "InitialVelocity": {"Speed": {"Min": 0.01, "Max": 0.01}},
+                    "SpawnBurst": True,
+                }
+                spawners.append({"SpawnerId": f"{name}_{suffix}", "PositionOffset": {"Y": y}})
+                out[f"{name}_{suffix}.particlespawner"] = doc
+            out[f"{name}.particlesystem"] = {
+                "$Comment": f"Onde de choc {'en l’air' if kind == 'Air' else 'au sol'} de {reach} blocs : anneau qui "
+                            f"grandit en {life:g} s (Java, moltenboss.Shockwaves). Généré par tools/{GENERATOR}.",
+                "Spawners": spawners, "CullDistance": 128, "IsImportant": True}
+    return out
 
 
 # --- modèles --------------------------------------------------------------------------------------------------------
 
 def models():
     """Parents vanilla d'abord : trorks (la Légion de la Flamme), gobelins (les Draguerres, mineurs), golem d'acier de
-    feu (l'Effigie et le Berserker), esprit de braise (le Protecteur et la Tempête de feu), un tuyau de gobelin vanilla
-    pour le résonateur ; Braham et Rox en humanoïdes habillés de cosmétiques vanilla."""
+    feu (l'Effigie et le Berserker), esprit de braise (le Protecteur et la Tempête de feu), gobelin gardien pour le
+    gardien résonateur ; Braham et Rox en humanoïdes habillés de cosmétiques vanilla."""
     v = lambda comment, parent, scale, light=None: {k: val for k, val in (
         ("$Comment", comment), ("Parent", parent), ("MinScale", scale), ("MaxScale", scale),
         ("Light", light)) if val is not None}
@@ -214,9 +262,9 @@ def models():
         FIRESTORM_2: v("Tempête de feu en fusion renforcée : la même (x 3), lueur blanche.", "Spirit_Ember", 3.0,
                        {"Color": "#ffd", "Radius": 9}),
     }
-    m[RESONATOR] = fc.character_model(
-        "Dredge_Resonator", resonator_parts(), 117, "Résonateur draguerre (PNJ fixe) : pylône de fer riveté, tuyaux de "
-        "cuivre et cœur d'ambre qui alimente le bouclier.", 1.6, (0.7, 2.6), light={"Color": "#fb4", "Radius": 4})
+    m[RESONATOR] = v("Gardien résonateur draguerre (retour de Kevin, 28 octobre 2026 : un monstre protecteur, pas un "
+                     "bloc) : gobelin gardien vanilla (x 1,3), lueur d'ambre du bouclier qu'il entretient.",
+                     MODEL["resonator"], 1.3, {"Color": "#fb4", "Radius": 4})
     coat = [("Cosmetics/Overtops/TrenchCoat.blockymodel", "Cosmetics/Overtops/TrenchCoat_Greyscale.png",
              "Faded_Leather", "BrownDark"),
             ("Cosmetics/Shoes/HeavyBoots.blockymodel", "Cosmetics/Shoes/HeavyBoots_Textures/HeavyLeather_Black.png"),
@@ -240,6 +288,7 @@ MODEL = {
     "sonic": "Goblin_Lobber",
     "warrior": "Trork_Warrior",
     "shaman": "Trork_Shaman",
+    "resonator": "Goblin_Guardian",
 }
 
 
@@ -248,6 +297,9 @@ MODEL = {
 CI, RF = gc.CLEAR_INTERRUPT, gc.ROOTED_FX
 R = fc.root
 BURN = "Nakasar_Fractal_Molten_Burning"
+# Impact des cercles : à l'échelle du rayon, la gerbe reste dans la zone rouge (AGENTS.md). Les cônes n'ont pas d'impact
+# au lanceur (une gerbe ronde y débordait du cône) : des flammes sur chaque joueur touché.
+IMPACT = "Nakasar_Fractal_Molten_Impact"
 
 
 def interactions():
@@ -260,7 +312,7 @@ def interactions():
     out["Nakasar_Fractal_Molten_Sonic_Blast"] = {
         "$Comment": "Draguerre sonique : onde sonore devant lui, cône de 60° sur 6 blocs (1,4 s), 14 dégâts et recul.",
         "Type": "Serial", "Interactions": [CI, RF, T("Cone", 1.4, Angle=60, Radius=6, Damage=14, Knockback=6,
-                                                     PlayersOnly=True, ImpactParticle="Nakasar_Fractal_Storm_Disperse"),
+                                                     PlayersOnly=True, HitParticle="Nakasar_Fractal_Storm_Disperse"),
                                            fc.windup(1.4)]}
     out["Nakasar_Fractal_Molten_Legion_Strike"] = {
         "$Comment": "Guerrier de la Légion : coup d'épée brûlant (14 dégâts, Brûlure 3 s).",
@@ -270,14 +322,14 @@ def interactions():
         "$Comment": "Guerrier de la Légion : bond sur sa cible lointaine, cercle rouge de 2,5 blocs (1,4 s), 18 dégâts.",
         "Type": "Serial", "Interactions": [CI, RF, T("Circle", 1.4, Anchor="Farthest", OffsetMax=12, Radius=2.5,
                                                      Damage=18, TeleportCaster=True, PlayersOnly=True,
-                                                     ImpactParticle="Fire_AoE_Spawn"),
+                                                     ImpactParticle=IMPACT, ImpactParticleScale=2.5),
                                            fc.windup(1.4)]}
     out["Nakasar_Fractal_Molten_Fireball"] = {
         "$Comment": "Chaman de la Légion : boule de feu sur sa cible, cercle rouge de 2,5 blocs (1,6 s), 16 dégâts et "
                     "Brûlure 3 s.",
         "Type": "Serial", "Interactions": [CI, RF, T("Circle", 1.6, Anchor="Target", Radius=2.5, Damage=16,
                                                      EffectId=BURN, EffectDuration=3, PlayersOnly=True,
-                                                     ImpactParticle="Fire_AoE_Spawn"),
+                                                     ImpactParticle=IMPACT, ImpactParticleScale=2.5),
                                            fc.windup(1.6)]}
     out["Nakasar_Fractal_Molten_Staff"] = {
         "$Comment": "Chamans : coup de bâton (8 dégâts).",
@@ -288,15 +340,18 @@ def interactions():
         "Type": "Serial", "Interactions": [CI, RF, T("Circle", 1.8, Anchor="Scatter", Count=4, OffsetMin=2,
                                                      OffsetMax=9, Radius=2.5, Damage=18, EffectId=BURN,
                                                      EffectDuration=4, PlayersOnly=True,
-                                                     ImpactParticle="Fire_AoE_Spawn"),
+                                                     ImpactParticle=IMPACT, ImpactParticleScale=2.5),
                                            fc.windup(1.8, "SFX_Spear_Throw_Charge", "Staff", "CastSummonCharging")]}
     out["Nakasar_Fractal_Molten_Flame_Wave"] = {
         "$Comment": "Chaman de la flamme d'élite : vague de flammes devant lui, cône de 80° sur 8 blocs (1,6 s), 20 "
                     "dégâts et Brûlure 4 s.",
         "Type": "Serial", "Interactions": [CI, RF, T("Cone", 1.6, Angle=80, Radius=8, Damage=20, EffectId=BURN,
-                                                     EffectDuration=4, PlayersOnly=True,
-                                                     ImpactParticle="Fire_AoE_Spawn"),
+                                                     EffectDuration=4, PlayersOnly=True, HitParticle=IMPACT),
                                            fc.windup(1.6, "SFX_Spear_Throw_Charge", "Staff", "CastSummonCharging")]}
+    out["Nakasar_Fractal_Molten_Resonator_Slam"] = {
+        "$Comment": "Gardien résonateur : coup de marteau (14 dégâts) qui repousse.",
+        "Type": "Serial", "Interactions": [fr.swing("Coup de marteau.", None, None, 0.45, 14, end=2.8,
+                                                    sound="SFX_Unarmed_Swing", knockback=6)]}
     out["Nakasar_Fractal_Molten_Protector_Touch"] = {
         "$Comment": "Protecteur en fusion : toucher brûlant (12 dégâts, Brûlure 3 s).",
         "Type": "Serial", "Interactions": [fr.swing("Toucher brûlant.", None, None, 0.4, 12, end=2.8,
@@ -311,8 +366,7 @@ def interactions():
         "$Comment": "Effigie en fusion : souffle de flammes devant elle, cône de 70° sur 10 blocs (1,8 s), 26 dégâts et "
                     "Brûlure 4 s.",
         "Type": "Serial", "Interactions": [CI, RF, T("Cone", 1.8, Angle=70, Radius=10, Damage=26, EffectId=BURN,
-                                                     EffectDuration=4, PlayersOnly=True,
-                                                     ImpactParticle="Fire_AoE_Spawn"),
+                                                     EffectDuration=4, PlayersOnly=True, HitParticle=IMPACT),
                                            fc.windup(1.8, "SFX_Spear_Throw_Charge", "Golem_Firesteel_Default",
                                                      "GroundSlam")]}
     out["Nakasar_Fractal_Molten_Berserker_Chain"] = {
@@ -333,8 +387,8 @@ def interactions():
 
 
 MELEE = ["Molten_Pick", "Molten_Sonic_Blast", "Molten_Legion_Strike", "Molten_Legion_Leap", "Molten_Fireball",
-         "Molten_Staff", "Molten_Flame_Rain", "Molten_Flame_Wave", "Molten_Protector_Touch", "Molten_Effigy_Swipes",
-         "Molten_Effigy_Breath", "Molten_Berserker_Chain", "Molten_Berserker_Swipe"]
+         "Molten_Staff", "Molten_Flame_Rain", "Molten_Flame_Wave", "Molten_Resonator_Slam", "Molten_Protector_Touch",
+         "Molten_Effigy_Swipes", "Molten_Effigy_Breath", "Molten_Berserker_Chain", "Molten_Berserker_Swipe"]
 RANGED = []
 
 
@@ -351,8 +405,12 @@ def roles():
     for role, comment in ((BRAHAM, "Braham Eirsson : accompagne le groupe ; on ne peut pas le blesser (Java)."),
                           (ROX, "Rox : accompagne le groupe ; on ne peut pas la blesser (Java).")):
         out[role] = fc.static_role(LANG, role, comment, GENERATOR, 1000, attitude="Neutral", foe=False)
-    out[RESONATOR] = fc.static_role(LANG, RESONATOR, "Résonateur draguerre : rend invulnérable l'allié qu'il relie "
-                                    "(Java, moltenboss.Packs et moltenboss.Effigy).", GENERATOR, HP[RESONATOR])
+    out[RESONATOR] = fr.role(
+        RESONATOR, "Gardien résonateur draguerre : rend invulnérable l'allié qu'il relie (Java, moltenboss.Packs et "
+        "moltenboss.Effigy) et le garde de près : il ne s'éloigne pas de son poste, frappe au marteau et repousse.",
+        RESONATOR, n(RESONATOR), HP[RESONATOR],
+        [fr.melee(R("Molten_Resonator_Slam"), 2.8, (0.9, 1.3)), fr.chase(14, stop=1.8)], fr.walk(3.0), GENERATOR,
+        sight=14, leash=12, home=True, KnockbackScale=0.2, DeathAnimationTime=1.2)
     out[MINER] = fr.role(
         MINER, "Mineur draguerre : coups de pioche.", MINER, n(MINER), HP[MINER],
         [fr.melee(R("Molten_Pick"), 2.6, (0.7, 1.1)), fr.chase(20, stop=1.6)], fr.walk(3.6), GENERATOR, sight=16,
@@ -425,7 +483,7 @@ def lang():
                        (SONIC, "Draguerre sonique", "Dredge Sonic Disruptor"),
                        (WARRIOR, "Guerrier de la Légion de la Flamme", "Flame Legion Warrior"),
                        (LEGION_SHAMAN, "Chaman de la Légion de la Flamme", "Flame Legion Shaman"),
-                       (RESONATOR, "Résonateur draguerre", "Dredge Resonator"),
+                       (RESONATOR, "Gardien résonateur draguerre", "Dredge Resonator Guardian"),
                        (ELITE_SHAMAN, "Chaman de la flamme d'élite", "Elite Flame Shaman"),
                        (PROTECTOR, "Protecteur en fusion", "Molten Protector"),
                        (EFFIGY, "Effigie en fusion", "Molten Effigy"),
@@ -442,19 +500,19 @@ def lang():
         "intro": ("Braham : « La Fonderie de l'Alliance en fusion. Ils forgent ici les armes qui brûleront la Tyrie. »",
                   "Braham: \"The Molten Alliance's facility. This is where they forge the weapons that will burn "
                   "Tyria.\""),
-        "intro.rox": ("Rox : « Quatre meutes entre nous et le pont. La dernière garde un résonateur : cassez-le "
-                      "d'abord. »", "Rox: \"Four packs between us and the bridge. The last one guards a resonator: "
-                      "break it first.\""),
-        "shielded": ("Le résonateur le protège : détruisez le résonateur !", "The resonator protects it: destroy the "
-                     "resonator!"),
+        "intro.rox": ("Rox : « Quatre meutes entre nous et le pont. La dernière a un gardien résonateur : "
+                      "abattez-le d'abord. »", "Rox: \"Four packs between us and the bridge. The last one has a "
+                      "resonator guardian: take it down first.\""),
+        "shielded": ("Le gardien résonateur le protège : abattez le gardien !", "The resonator guardian protects "
+                     "it: take the guardian down!"),
         "bridge": ("La meute est vaincue : le pont du canal de lave se pose.", "The pack is defeated: the bridge over "
                    "the lava channel lowers."),
         "lava": ("La lave vous brûle !", "The lava burns you!"),
         "lava.out": ("La lave vous rejette au dernier point de retour.", "The lava throws you back to the last "
                      "checkpoint."),
-        "effigy.enter": ("L'Effigie en fusion s'éveille. Son Protecteur la rend invulnérable, et un résonateur protège "
-                         "le Protecteur : dans l'ordre !", "The Molten Effigy awakens. Its Protector makes it "
-                         "invulnerable, and a resonator protects the Protector: in order!"),
+        "effigy.enter": ("L'Effigie en fusion s'éveille. Son Protecteur la rend invulnérable, et un gardien "
+                         "résonateur protège le Protecteur : dans l'ordre !", "The Molten Effigy awakens. Its "
+                         "Protector makes it invulnerable, and a resonator guardian protects the Protector: in order!"),
         "effigy.protected": ("Le Protecteur rend l'Effigie invulnérable : abattez-le d'abord !",
                              "The Protector makes the Effigy invulnerable: bring it down first!"),
         "effigy.protector": ("Le Protecteur tombe : l'Effigie est vulnérable.", "The Protector falls: the Effigy is "
@@ -463,7 +521,6 @@ def lang():
                          "{stacks})."),
         "effigy.shock": ("L'Effigie frappe le sol : sautez par-dessus l'onde !", "The Effigy pounds the ground: jump "
                          "over the shockwave!"),
-        "effigy.reset": ("L'Effigie retourne à sa forge.", "The Effigy returns to its forge."),
         "effigy.victory": ("L'Effigie s'effondre : la porte de la fonderie s'ouvre.", "The Effigy collapses: the "
                            "foundry door opens."),
         "checkpoint": ("Point de retour atteint.", "Checkpoint reached."),
@@ -483,7 +540,6 @@ def lang():
         "duo.debris": ("Des débris tombent !", "Debris is falling!"),
         "duo.wind": ("La Tempête lève un vent brûlant au bord de la plate-forme : éloignez-vous du bord !",
                      "The Firestorm raises a scorching wind at the platform's edge: move away from the edge!"),
-        "duo.reset": ("Les chefs de la fonderie attendent votre retour.", "The foundry bosses await your return."),
         "duo.victory": ("La fonderie s'éteint. Rox : « Plus de forge, plus d'armes. » Le trésor est à vous.",
                         "The foundry goes cold. Rox: \"No forge, no weapons.\" The treasure is yours."),
         "title.victory": ("Boss en fusion terminé", "Molten Boss complete"),
@@ -567,6 +623,9 @@ public final class MoltenBossLayout {{
     public static final double SHOCK_SPEED = {jd(SHOCK_SPEED)};
     public static final double SHOCK_BAND = {jd(SHOCK_BAND)};
     public static final double AIR_RING_HEIGHT = {jd(AIR_RING_HEIGHT)};
+    public static final double SHOCK_REACH_EFFIGY = {jd(SHOCK_REACH_EFFIGY)};
+    public static final double SHOCK_REACH_DUO = {jd(SHOCK_REACH_DUO)};
+    public static final double RING_SCALE = {jd(RING_SCALE)};
     /** Flammes de la Tempête (rayon, durée), débris, couronne de vent ({WIND_SEGMENTS} bandes de {WIND_LENGTH} x {WIND_BAND} : JAVA_LINES). */
     public static final double FIRE_POOL_RADIUS = {jd(FIRE_POOL_R)};
     public static final float FIRE_POOL_SECONDS = {FIRE_POOL_SECONDS}f;
@@ -628,6 +687,8 @@ def main():
     status_icons()
     fc.write_json(fc.SERVER / f"Entity/Damage/{CAUSE}.json", molten_cause())
     for name, doc in fc.particle_files(PARTICLE_SYSTEMS, GENERATOR).items():
+        fc.write_json(PARTICLES / name, doc)
+    for name, doc in shock_rings().items():
         fc.write_json(PARTICLES / name, doc)
     for name, doc in interactions().items():
         fc.write_json(go.INTERACTIONS / "MoltenBoss" / f"{name}.json", doc)

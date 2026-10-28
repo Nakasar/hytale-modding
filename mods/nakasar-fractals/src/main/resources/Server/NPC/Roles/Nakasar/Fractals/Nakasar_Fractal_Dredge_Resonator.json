@@ -1,5 +1,5 @@
 {
-  "$Comment": "Résonateur draguerre : rend invulnérable l'allié qu'il relie (Java, moltenboss.Packs et moltenboss.Effigy). Généré par tools/generate_molten_boss.py.",
+  "$Comment": "Gardien résonateur draguerre : rend invulnérable l'allié qu'il relie (Java, moltenboss.Packs et moltenboss.Effigy) et le garde de près : il ne s'éloigne pas de son poste, frappe au marteau et repousse. Généré par tools/generate_molten_boss.py.",
   "Type": "Generic",
   "Appearance": "Nakasar_Fractal_Dredge_Resonator",
   "NameTranslationKey": "nakasar_fractals_molten_boss.npc.Dredge_Resonator.name",
@@ -7,18 +7,21 @@
   "StartState": "Idle",
   "DefaultPlayerAttitude": "Hostile",
   "DefaultNPCAttitude": "Ignore",
+  "DisableDamageGroups": [
+    "Nakasar_Fractal_Foes"
+  ],
   "MotionControllerList": [
     {
       "Type": "Walk",
-      "MaxWalkSpeed": 0.1,
+      "MaxWalkSpeed": 3.0,
       "Gravity": 10,
       "MaxFallSpeed": 10,
       "Acceleration": 10,
       "JumpHeight": 1.0
     }
   ],
-  "KnockbackScale": 0,
-  "SpawnLockTime": 0.2,
+  "KnockbackScale": 0.2,
+  "DeathAnimationTime": 1.2,
   "Instructions": [
     {
       "Sensor": {
@@ -27,12 +30,176 @@
       },
       "Instructions": [
         {
+          "Sensor": {
+            "Type": "Damage",
+            "Combat": true,
+            "TargetSlot": "LockedTarget"
+          },
+          "Actions": [
+            {
+              "Type": "State",
+              "State": "Combat"
+            }
+          ]
+        },
+        {
+          "Sensor": {
+            "Type": "Player",
+            "Range": 14,
+            "LockOnTarget": true,
+            "Filters": [
+              {
+                "Type": "Attitude",
+                "Attitudes": [
+                  "Hostile"
+                ]
+              },
+              {
+                "Type": "LineOfSight"
+              }
+            ]
+          },
+          "Actions": [
+            {
+              "Type": "State",
+              "State": "Combat"
+            }
+          ]
+        },
+        {
           "Actions": []
         }
       ]
+    },
+    {
+      "Sensor": {
+        "Type": "State",
+        "State": "Combat"
+      },
+      "Instructions": [
+        {
+          "$Comment": "Cible perdue ou partie à plus de 12 blocs.",
+          "Sensor": {
+            "Type": "Not",
+            "Sensor": {
+              "Type": "Target",
+              "Range": 12,
+              "Filters": [
+                {
+                  "Type": "Attitude",
+                  "Attitudes": [
+                    "Hostile",
+                    "Neutral",
+                    "Ignore"
+                  ]
+                }
+              ]
+            }
+          },
+          "Actions": [
+            {
+              "Type": "ReleaseTarget"
+            },
+            {
+              "Type": "State",
+              "State": "ReturnHome"
+            }
+          ]
+        },
+        {
+          "Sensor": {
+            "Type": "Target",
+            "Range": 2.8,
+            "Filters": [
+              {
+                "Type": "LineOfSight"
+              }
+            ]
+          },
+          "HeadMotion": {
+            "Type": "Aim",
+            "RelativeTurnSpeed": 1.5
+          },
+          "ActionsBlocking": true,
+          "Actions": [
+            {
+              "Type": "Attack",
+              "Attack": "Root_Nakasar_Fractal_NPC_Molten_Resonator_Slam",
+              "AttackPauseRange": [
+                0.9,
+                1.3
+              ]
+            },
+            {
+              "Type": "Timeout",
+              "Delay": [
+                0.2,
+                0.2
+              ]
+            }
+          ]
+        },
+        {
+          "Sensor": {
+            "Type": "Target",
+            "Range": 14
+          },
+          "BodyMotion": {
+            "Type": "Seek",
+            "RelativeSpeed": 1.0,
+            "SlowDownDistance": 2.8,
+            "StopDistance": 1.8,
+            "UsePathfinder": true
+          },
+          "HeadMotion": {
+            "Type": "Watch",
+            "RelativeTurnSpeed": 1.5
+          }
+        }
+      ]
+    },
+    {
+      "Sensor": {
+        "Type": "State",
+        "State": "ReturnHome"
+      },
+      "Instructions": [
+        {
+          "Sensor": {
+            "Type": "Damage",
+            "Combat": true,
+            "TargetSlot": "LockedTarget"
+          },
+          "Actions": [
+            {
+              "Type": "State",
+              "State": "Combat"
+            }
+          ]
+        },
+        {
+          "Sensor": {
+            "Type": "Leash",
+            "Range": 2
+          },
+          "BodyMotion": {
+            "Type": "Seek",
+            "RelativeSpeed": 0.7,
+            "SlowDownDistance": 3,
+            "StopDistance": 1,
+            "UsePathfinder": true
+          }
+        },
+        {
+          "$Comment": "De retour à son poste.",
+          "Actions": [
+            {
+              "Type": "State",
+              "State": "Idle"
+            }
+          ]
+        }
+      ]
     }
-  ],
-  "DisableDamageGroups": [
-    "Nakasar_Fractal_Foes"
   ]
 }

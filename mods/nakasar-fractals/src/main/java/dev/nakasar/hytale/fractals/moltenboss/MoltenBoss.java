@@ -43,7 +43,7 @@ import java.util.WeakHashMap;
  *   <li>la plate-forme du creuset : le Berserker et la Tempête de feu en fusion ({@link MoltenDuo}).</li>
  * </ol>
  * La lave (bassins, creuset, canal) brûle ; tombé dans le canal, on revient au dernier point de retour. Pas de soin
- * nulle part (AGENTS.md) : un boss laissé seul {@value #RESET_SECONDS} s disparaît et revient neuf. Tout ce que pose le
+ * nulle part (AGENTS.md) : un boss laissé seul attend, avec ses PV du moment. Tout ce que pose le
  * Java est non sauvegardé : une instance rechargée repart du départ.
  */
 public final class MoltenBoss implements FractalStage {
@@ -71,7 +71,6 @@ public final class MoltenBoss implements FractalStage {
     static final float LAVA_PART = 0.08f;
     /** Tombé dans le canal : ramené au point de retour après ce temps. */
     static final float CHANNEL_SECONDS = 1.5f;
-    static final float RESET_SECONDS = 20f;
     /** Un monstre tombé de plus de 4 blocs sous son aire y est ramené. */
     static final double FALL_LIMIT = 4;
 
@@ -118,7 +117,7 @@ public final class MoltenBoss implements FractalStage {
             BossBarSystem.register(role);
         }
         BossBarSystem.label(EFFIGY, Effigy::label);
-        Instabilities.exempt(BRAHAM, ROX, RESONATOR);
+        Instabilities.exempt(BRAHAM, ROX);
     }
 
     @Override
@@ -262,6 +261,16 @@ public final class MoltenBoss implements FractalStage {
     // --- coups, morts ----------------------------------------------------------------------------------------------
 
     @Override
+    public boolean shielded(World world, Store<EntityStore> store, Ref<EntityStore> ref, String role) {
+        State st = state(world);
+        return switch (role) {
+            case ELITE_SHAMAN -> st.packs.shamanShielded(store);
+            case PROTECTOR, EFFIGY -> st.effigy.shielded(store, role);
+            default -> false;
+        };
+    }
+
+    @Override
     public void filter(World world, Store<EntityStore> store, CommandBuffer<EntityStore> buffer, Ref<EntityStore> victim,
                        String victimRole, Ref<EntityStore> attacker, Damage damage) {
         State st = state(world);
@@ -272,12 +281,7 @@ public final class MoltenBoss implements FractalStage {
             }
             return;
         }
-        boolean shielded = switch (victimRole) {
-            case ELITE_SHAMAN -> st.packs.shamanShielded(store);
-            case PROTECTOR, EFFIGY -> st.effigy.shielded(store, victimRole);
-            default -> false;
-        };
-        if (shielded) {
+        if (shielded(world, store, victim, victimRole)) {
             damage.setCancelled(true);
             PlayerRef by = attacker == null ? null : buffer.getComponent(attacker, PlayerRef.getComponentType());
             if (by != null) {

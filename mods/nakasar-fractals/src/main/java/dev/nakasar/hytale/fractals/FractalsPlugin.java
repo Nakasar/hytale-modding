@@ -21,6 +21,7 @@ import dev.nakasar.hytale.fractals.instability.Instabilities;
 import dev.nakasar.hytale.fractals.instability.InstabilitySystem;
 import dev.nakasar.hytale.fractals.stage.FoeDeathSystem;
 import dev.nakasar.hytale.fractals.stage.StageDamageFilter;
+import dev.nakasar.hytale.fractals.stage.StageShieldSystem;
 import dev.nakasar.hytale.fractals.stage.StageSystem;
 import dev.nakasar.hytale.fractals.stage.StageUseInteraction;
 import dev.nakasar.hytale.fractals.silentsurf.AspectVisibilitySystem;
@@ -213,6 +214,7 @@ public final class FractalsPlugin extends JavaPlugin {
         systems.registerSystem(new CliffsideSystem());
         systems.registerSystem(new CliffsideDamageFilter());
         systems.registerSystem(new StageSystem());
+        systems.registerSystem(new StageShieldSystem());
         // Un seul FractalItemsSystem (le serveur refuse deux systèmes de la même classe) : une règle par fractale.
         systems.registerSystem(new FractalItemsSystem(SilentSurf.itemsRule(), SirensReef.itemsRule(), Snowblind.itemsRule(), Deepstone.itemsRule(),
                 SunquaPeak.itemsRule(), MoltenBoss.itemsRule()));
