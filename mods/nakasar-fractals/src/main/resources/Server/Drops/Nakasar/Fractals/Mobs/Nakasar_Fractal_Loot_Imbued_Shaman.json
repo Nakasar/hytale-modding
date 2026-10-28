@@ -1,5 +1,5 @@
 {
-  "$Comment": "Le Chamane imprégné : essence de feu, rouleau de tisse-cendre, charbon du volcan, rubis. Généré par tools/generate_mob_loot.py.",
+  "$Comment": "Le Chamane imprégné : essence de feu, chutes de tisse-cendre, charbon du volcan, rubis. Généré par tools/generate_mob_loot.py.",
   "Container": {
     "Type": "Multiple",
     "Containers": [
@@ -14,7 +14,7 @@
       {
         "Type": "Single",
         "Item": {
-          "ItemId": "Ingredient_Bolt_Cindercloth",
+          "ItemId": "Ingredient_Fabric_Scrap_Cindercloth",
           "QuantityMin": 1,
           "QuantityMax": 2
         }
