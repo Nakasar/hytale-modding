@@ -3,27 +3,27 @@
 <Infobox pending title="Boss en fusion" kind="Fractale" icon="/jeu/Icons/Items/Nakasar/Fractals/Core_MoltenBoss.png" caption="Noyau du Boss en fusion">
 <Info label="Boss">Chaman de la flamme d'élite, Effigie en fusion, Berserker et Tempête de feu en fusion</Info>
 <Info label="Alliés">Braham et Rox</Info>
-<Info label="Ciel">fumée de la fonderie, soir rougeoyant</Info>
+<Info label="Lieu">caverne sous un volcan, gouffre et mer de lave</Info>
 <Info label="Saison">2</Info>
 </Infobox>
 
-La fonderie de l'**Alliance en fusion**, suspendue dans la fumée : draguerres et Légion de la Flamme y forgent des armes. **Braham** et **Rox** vous attendent au camp, en haut de la rampe ; il faut descendre jusqu'à la plate-forme du creuset et éteindre la fonderie.
+La fonderie de l'**Alliance en fusion**, creusée dans une immense caverne sous un volcan : draguerres et Légion de la Flamme y forgent des armes. Des stalactites pendent de la voûte, des cristaux bleus percent les parois et des chutes de lave tombent dans la mer de lave, tout au fond du gouffre. **Braham** et **Rox** vous attendent au camp, sur un surplomb ; il faut descendre jusqu'à la plate-forme du creuset, une trentaine de blocs plus bas, et éteindre la fonderie.
 
 ## Carte
 
 ![Carte du Boss en fusion](../images/fractales/carte-boss-en-fusion.png)
 
-*Carte du Boss en fusion, vue de dessus : du camp au centre, la rampe descend à la cour sud, puis l'atelier à l'ouest. Le pont du canal de lave mène à la fonderie de l'Effigie au nord-ouest ; la cour des wagonnets et la passerelle des cuves filent vers la salle des chaudières au nord-est, et le pont du creuset descend à la plate-forme ronde à l'est. Les numéros suivent le déroulé ci-dessous.*
+*Carte du Boss en fusion, vue de dessus sous la voûte : du surplomb du camp au centre, la rampe descend à la grotte sud, puis une galerie descend à l'atelier à l'ouest. Le pont du canal de lave mène à la fonderie de l'Effigie au nord-ouest ; la grotte des wagonnets puis la passerelle des cuves, suspendue à des chaînes au-dessus du gouffre (en orange, la mer de lave), descendent par paliers vers la salle des chaudières au nord-est, et le pont du creuset descend à la plate-forme ronde à l'est, pendue au-dessus du vide. Les numéros suivent le déroulé ci-dessous.*
 
 ## La lave
 
-Les bassins de lave, le creuset et le canal **brûlent** : 8 % des PV par seconde et **Brûlure** (2 % des PV par seconde tant qu'elle dure). Tombé dans le **canal**, on revient au dernier point de retour au bout d'une seconde et demie.
+Les bassins de lave, le creuset et le canal **brûlent** : 8 % des PV par seconde et **Brûlure** (2 % des PV par seconde tant qu'elle dure). Tombé dans le **canal** ou dans le **gouffre** (jusqu'à la mer de lave), on revient au dernier point de retour au bout d'une seconde et demie.
 
 ## Déroulé
 
 ### 1. Le camp
 
-Braham et Rox, intouchables, regardent la rampe. Elle descend vers la cour sud.
+Braham et Rox, intouchables, attendent sur le surplomb, au bord du grand gouffre : on y voit la passerelle et la plate-forme du creuset, loin en contrebas. La rampe descend vers la grotte sud, puis une galerie vers l'atelier.
 
 ### 2. L'atelier
 
@@ -53,9 +53,9 @@ Dans la fonderie, l'**Effigie en fusion** s'éveille avec son **Protecteur** et 
 
 Vaincue, la porte est de la fonderie s'ouvre (point de retour).
 
-### 6. La cour des wagonnets et la passerelle des cuves
+### 6. La grotte des wagonnets et la passerelle des cuves
 
-Quatre **groupes** : un dans la cour, un sur chaque cuve de la passerelle. Les quatre vaincus, la barrière du **pont du creuset** s'ouvre (point de retour dans la salle des chaudières) et Braham et Rox vous y rejoignent.
+Quatre **groupes** : un dans la grotte, un sur chaque cuve de la passerelle. Suspendue à la voûte par des chaînes, elle descend par paliers au-dessus du gouffre : gare au recul des ondes soniques près du garde-corps. Les quatre vaincus, la barrière du **pont du creuset** s'ouvre (point de retour dans la salle des chaudières) et Braham et Rox vous y rejoignent.
 
 ### 7. Le Berserker et la Tempête de feu en fusion
 

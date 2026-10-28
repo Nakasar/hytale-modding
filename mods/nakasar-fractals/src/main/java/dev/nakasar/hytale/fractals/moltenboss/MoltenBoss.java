@@ -26,7 +26,6 @@ import org.joml.Vector3d;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -91,12 +90,12 @@ public final class MoltenBoss implements FractalStage {
         long lastTick;
     }
 
-    /** Cases de lave (x, z) des bassins et du creuset, en clés {@link #cell}. */
-    private static final Set<Long> LAVA = new HashSet<>();
+    /** Cases de lave des bassins et du creuset, en clés {@link #cell} : y du sol autour (surface un bloc dessous). */
+    private static final Map<Long, Integer> LAVA = new HashMap<>();
 
     static {
         for (int[] c : MoltenBossLayout.LAVA_CELLS) {
-            LAVA.add(cell(c[0], c[1]));
+            LAVA.put(cell(c[0], c[1]), c[2]);
         }
     }
 
@@ -223,8 +222,8 @@ public final class MoltenBoss implements FractalStage {
     }
 
     /**
-     * La lave : dans un bassin ou le creuset, elle brûle ; dans le canal (sous le niveau du sol), elle brûle puis
-     * rejette au dernier point de retour au bout de {@value #CHANNEL_SECONDS} s. La brûlure ronge la vie tant qu'elle dure.
+     * La lave : dans un bassin ou le creuset, elle brûle ; dans le canal (sous le niveau du sol) ou au fond du gouffre,
+     * elle brûle puis rejette au dernier point de retour au bout de {@value #CHANNEL_SECONDS} s. La brûlure ronge la vie tant qu'elle dure.
      */
     private static void lava(World world, Store<EntityStore> store, State st, List<PlayerRef> players, float dt) {
         for (PlayerRef p : players) {
@@ -234,9 +233,10 @@ public final class MoltenBoss implements FractalStage {
                 continue;
             }
             // La surface de la lave est un bloc sous le sol : on y est quand les pieds sont sous le niveau du sol.
-            boolean inLava = at.y() < MoltenBossLayout.LAVA_FLOOR_Y - 0.1 && at.y() > MoltenBossLayout.LAVA_FLOOR_Y - 3
-                    && LAVA.contains(cell((int) Math.floor(at.x()), (int) Math.floor(at.z())));
-            if (MoltenBossLayout.CHANNEL.contains(at.x(), at.y(), at.z())) {
+            Integer floor = LAVA.get(cell((int) Math.floor(at.x()), (int) Math.floor(at.z())));
+            boolean inLava = floor != null && at.y() < floor - 0.1 && at.y() > floor - 3;
+            // Canal et gouffre : on brûle, puis on revient au dernier point de retour.
+            if (MoltenBossLayout.CHANNEL.contains(at.x(), at.y(), at.z()) || at.y() < MoltenBossLayout.ABYSS_Y) {
                 inLava = true;
                 float t = st.channel.merge(p.getUuid(), dt, Float::sum);
                 if (t >= CHANNEL_SECONDS) {

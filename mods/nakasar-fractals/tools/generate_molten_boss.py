@@ -4,7 +4,7 @@ Hardstuck (hardstuck.gg/gw2/guides/fractal-maps/molten-boss) et la carte que Kev
 
     python3 mods/nakasar-fractals/tools/generate_molten_boss.py [--preview DOSSIER]
 
-L'Alliance en fusion (Légion de la Flamme et Draguerres) forge ses armes dans une fonderie des Brumes. Avec Braham et
+L'Alliance en fusion (Légion de la Flamme et Draguerres) forge ses armes dans une caverne sous un volcan. Avec Braham et
 Rox, dans l'ordre :
 
 1. le surplomb du départ, la rampe, la cour et l'atelier : quatre meutes ; on peut courir jusqu'à la quatrième (un
@@ -553,7 +553,7 @@ def lang():
 
 def java_layout(p, t):
     J, jd = fc, fc.jd
-    on = lambda x, z: (x, 0, z)
+    on = lambda x, z: (x, t.stand_at(x, z), z)
     deck, rails = t.bridge
     packs = []
     for (cx, cz), members in PACKS:
@@ -561,9 +561,9 @@ def java_layout(p, t):
                      + "}, new double[][]" + J.jpoints([on(cx + dx, cz + dz) for _, dx, dz in members]) + ")")
     adds = [on(x + dx, z + dz) for x, z in sc.EFFIGY_ADDS for dx, dz in ((-1, 0), (1, 1))]
     px, pz = sc.PIT_C
-    lava = sorted(set(t.lava) | {(x, z) for x in range(px - sc.PIT_R - 1, px + sc.PIT_R + 2)
-                                for z in range(pz - sc.PIT_R - 1, pz + sc.PIT_R + 2)
-                                if math.hypot(x - px, z - pz) <= sc.PIT_R + 0.3})
+    lava = {(x, z): fc.GROUND_Y + math.floor(t.stand[(x, z)]) for x, z in t.lava}
+    lava.update({(x, z): fc.GROUND_Y + sc.ARENA_S for x in range(px - sc.PIT_R - 1, px + sc.PIT_R + 2)
+                 for z in range(pz - sc.PIT_R - 1, pz + sc.PIT_R + 2) if math.hypot(x - px, z - pz) <= sc.PIT_R + 0.3})
     cx0, cx1, cz0, cz1 = sc.CHANNEL
     channel = fc.jbox(cx0, cx1, sc.CHANNEL_LAVA_TOP - 2, -1, cz0 + 1, cz1 - 1)
     return f"""package dev.nakasar.hytale.fractals.moltenboss;
@@ -596,9 +596,10 @@ public final class MoltenBossLayout {{
     public static final int[][] BRIDGE_RAILS = {J.jblocks(rails)};
     /** Canal de lave : qui y tombe brûle puis revient au point de retour. */
     public static final Box CHANNEL = {channel};
-    /** Cases de lave des bassins et du creuset (x, z ; surface un bloc sous le sol) : la lave brûle qui s'y tient. */
-    public static final int[][] LAVA_CELLS = {{{", ".join("{" + f"{x}, {z}" + "}" for x, z in lava)}}};
-    public static final int LAVA_FLOOR_Y = {fc.GROUND_Y};
+    /** Cases de lave des bassins et du creuset (x, z, y du sol autour ; surface un bloc dessous) : la lave brûle. */
+    public static final int[][] LAVA_CELLS = {{{", ".join("{" + f"{x}, {z}, {y}" + "}" for (x, z), y in sorted(lava.items()))}}};
+    /** Pieds sous ce y : tombé dans le gouffre, vers la mer de lave (brûle, puis retour au dernier point de retour). */
+    public static final double ABYSS_Y = {fc.GROUND_Y + sc.ABYSS_S};
 
     /** La fonderie : centre de l'Effigie, rayon du combat, Protecteur, second résonateur, renforts, porte est. */
     public static final double[] EFFIGY = {J.jpoint(on(*sc.EFFIGY_C))};

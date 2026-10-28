@@ -301,7 +301,7 @@ La fonderie de l'Alliance en fusion (d'après le guide Hardstuck et la carte env
 
 Différences avec GW2 : pas de levée d'enrage en 50 coups (l'enrage dure 12 s) ; le survivant renforcé est un nouveau rôle (1600 PV) plutôt qu'un soin complet. Aucun boss ne se soigne hors combat ; une remise à zéro (20 s sans personne) le retire et il revient neuf.
 
-Générateurs : `tools/generate_molten_boss.py` (assets, rôles, effets, `MoltenBossLayout.java`) et `tools/molten_boss_scenery.py` (camp, rampe, atelier, canal, fonderie, cour, passerelle, chaudières, plate-forme). Code : paquet `moltenboss`.
+Générateurs : `tools/generate_molten_boss.py` (assets, rôles, effets, `MoltenBossLayout.java`) et `tools/molten_boss_scenery.py` (caverne voûtée : surplomb du camp à 16, rampe, grotte, galerie, atelier, canal, fonderie, grotte des wagonnets, passerelle suspendue qui descend par paliers, chaudières à -10, plate-forme pendue à -14 ; gouffre et mer de lave, chutes de lave, stalactites, cristaux bleus ; retours de Kevin du 28 octobre 2026). Code : paquet `moltenboss`.
 
 ### Saison 2 et suivantes
 
