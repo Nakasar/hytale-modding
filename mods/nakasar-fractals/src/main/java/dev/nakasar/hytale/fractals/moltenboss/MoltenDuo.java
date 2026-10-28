@@ -55,6 +55,8 @@ final class MoltenDuo {
     static final float ENRAGE_SECONDS = 12f;
     /** Enragé, ses recharges courent ce facteur plus vite. */
     static final float ENRAGE_RATE = 1.4f;
+    /** Vitesse de vol de la Tempête sur son orbite (blocs par seconde). */
+    static final double ORBIT_SPEED = 2.5;
 
     private record Pool(Vector3d center, long until) {
     }
@@ -79,6 +81,10 @@ final class MoltenDuo {
     private long galeUntil;
     private float pulse;
     private float poolBeat;
+    /** Numéro du combat en cours : un coup différé d'un combat fini ne tombe pas dans le suivant. */
+    private int fight;
+    /** Angle de la Tempête sur son orbite (radians, atan2(dz, dx)). */
+    private double orbit;
 
     /** Vrai quand les deux chefs sont vaincus. */
     boolean step(World world, Store<EntityStore> store, MoltenBoss.State st, List<PlayerRef> players, float dt) {
@@ -116,7 +122,6 @@ final class MoltenDuo {
             berserker(world, store, here, c, radius, dt * rate(store, berserker));
         }
         if (fAlive) {
-            Leash.keepOnDisc(store, firestorm, c, radius - 2, 2, MoltenBoss.FALL_LIMIT);
             enrage(world, store, firestorm, 1, berserker, bAlive);
             firestorm(world, store, here, c, radius, dt * rate(store, firestorm));
         }
@@ -184,6 +189,7 @@ final class MoltenDuo {
             double s = (radius - 3) / Telegraphs.horizontal(to, c);
             to = new Vector3d(c.x() + (to.x() - c.x()) * s, c.y(), c.z() + (to.z() - c.z()) * s);
         }
+        to = outOfPit(to);
         Telegraphs.particle(store, "Nakasar_Fractal_Molten_Teleport", from, 1.5f);
         Telegraphs.particle(store, "Nakasar_Fractal_Molten_Teleport", to, 1.5f);
         MoltenBoss.move(store, berserker, to, p);
@@ -222,6 +228,19 @@ final class MoltenDuo {
                         "Nakasar_Fractal_Molten_Debris", false);
             }
         }
+    }
+
+    /** `at` s'il est hors du creuset et de son muret, sinon poussé juste au-delà, à l'opposé du centre du creuset. */
+    static Vector3d outOfPit(Vector3d at) {
+        Vector3d pit = Spawns.point(MoltenBossLayout.PIT);
+        double keep = MoltenBossLayout.PIT_RADIUS + 1.5;
+        double d = Telegraphs.horizontal(at, pit);
+        if (d >= keep) {
+            return at;
+        }
+        double ax = d < 1e-3 ? 1 : (at.x() - pit.x()) / d;
+        double az = d < 1e-3 ? 0 : (at.z() - pit.z()) / d;
+        return new Vector3d(pit.x() + ax * keep, at.y(), pit.z() + az * keep);
     }
 
     // --- la Tempête de feu ---------------------------------------------------------------------------------------
@@ -311,12 +330,14 @@ final class MoltenDuo {
     private void fall(World world, Store<EntityStore> store, Vector3d at, double radius, float windup, float part,
                       String impact, boolean pool) {
         Telegraphs.circle(store, at, radius, windup);
+        int round = fight;
         Delayed.later(world, windup, s -> {
-            if (!engaged) {
+            if (!engaged || round != fight) {
                 return;
             }
             Telegraphs.particle(s, impact, at, (float) radius);
-            for (PlayerRef p : Spawns.alivePlayers(world, s)) {
+            for (PlayerRef p : MoltenBoss.near(s, Spawns.alivePlayers(world, s), Spawns.point(MoltenBossLayout.ARENA),
+                    MoltenBossLayout.ARENA_RADIUS + 4)) {
                 Vector3d pos = Telegraphs.position(s, p.getReference());
                 if (pos != null && Telegraphs.inCircle(pos, at, radius)) {
                     Hurt.percent(s, p.getReference(), part, MoltenBoss.CAUSE);
@@ -356,6 +377,7 @@ final class MoltenDuo {
 
     void tick(World world, Store<EntityStore> store, float dt) {
         waves.tick(world, store, dt);
+        fly(store, dt);
         flameBeat += dt;
         if (flameBeat >= 0.5f && !pools.isEmpty()) {
             flameBeat = 0f;
@@ -366,12 +388,30 @@ final class MoltenDuo {
         }
     }
 
+    /**
+     * La Tempête tourne autour du centre à {@link MoltenBossLayout#FIRESTORM_ORBIT} blocs et
+     * {@link MoltenBossLayout#FIRESTORM_HOVER} au-dessus du sol (on l'atteint au contact) ; enragée, plus vite.
+     */
+    private void fly(Store<EntityStore> store, float dt) {
+        if (!engaged || firestorm == null || !Spawns.alive(store, firestorm)) {
+            return;
+        }
+        Vector3d c = Spawns.point(MoltenBossLayout.ARENA);
+        orbit += ORBIT_SPEED * rate(store, firestorm) * dt / MoltenBossLayout.FIRESTORM_ORBIT;
+        Vector3d to = new Vector3d(c.x() + Math.cos(orbit) * MoltenBossLayout.FIRESTORM_ORBIT,
+                c.y() + MoltenBossLayout.FIRESTORM_HOVER, c.z() + Math.sin(orbit) * MoltenBossLayout.FIRESTORM_ORBIT);
+        MoltenBoss.move(store, firestorm, to, c);
+    }
+
     // --- entrée, renfort, fin ------------------------------------------------------------------------------------
 
     private void engage(World world, Store<EntityStore> store, Vector3d c) {
         Vector3d entry = Spawns.point(MoltenBossLayout.CHECKPOINT_D);
         if (empowered != null) {
-            Ref<EntityStore> ref = Spawns.spawnBoss(world, store, empowered, c, Telegraphs.yawToward(c, entry));
+            Vector3d at = MoltenBoss.BERSERKER_2.equals(empowered) ? outOfPit(new Vector3d(c.x() + 6, c.y(), c.z() + 5))
+                    : new Vector3d(c.x() + Math.cos(orbit) * MoltenBossLayout.FIRESTORM_ORBIT,
+                    c.y() + MoltenBossLayout.FIRESTORM_HOVER, c.z() + Math.sin(orbit) * MoltenBossLayout.FIRESTORM_ORBIT);
+            Ref<EntityStore> ref = Spawns.spawnBoss(world, store, empowered, at, Telegraphs.yawToward(at, entry));
             if (ref == null) {
                 return;
             }
@@ -381,8 +421,10 @@ final class MoltenDuo {
                 firestorm = ref;
             }
         } else {
-            Vector3d b = new Vector3d(c.x() - 5, c.y(), c.z() - 4);
-            Vector3d f = new Vector3d(c.x() + 5, c.y(), c.z() - 4);
+            Vector3d b = outOfPit(new Vector3d(c.x() + 6, c.y(), c.z() + 5));
+            orbit = Math.PI / 4;
+            Vector3d f = new Vector3d(c.x() + Math.cos(orbit) * MoltenBossLayout.FIRESTORM_ORBIT,
+                    c.y() + MoltenBossLayout.FIRESTORM_HOVER, c.z() + Math.sin(orbit) * MoltenBossLayout.FIRESTORM_ORBIT);
             berserker = Spawns.spawnBoss(world, store, MoltenBoss.BERSERKER, b, Telegraphs.yawToward(b, entry));
             firestorm = Spawns.spawnBoss(world, store, MoltenBoss.FIRESTORM, f, Telegraphs.yawToward(f, entry));
             if (berserker == null && firestorm == null) {
@@ -390,6 +432,7 @@ final class MoltenDuo {
             }
         }
         engaged = true;
+        fight++;
         idle = 0f;
         quarters[0] = 0;
         quarters[1] = 0;
@@ -406,14 +449,15 @@ final class MoltenDuo {
     /** Le premier chef tombé : le survivant disparaît dans une colonne de flammes et revient renforcé, à sa place. */
     private void upgrade(World world, Store<EntityStore> store, Ref<EntityStore> survivor, boolean isBerserker) {
         Vector3d at = Telegraphs.position(store, survivor);
-        if (at == null) {
-            return;
+        Vector3d c = Spawns.point(MoltenBossLayout.ARENA);
+        Vector3d where = at != null ? new Vector3d(at) : c;
+        String role = isBerserker ? MoltenBoss.BERSERKER_2 : MoltenBoss.FIRESTORM_2;
+        Ref<EntityStore> ref = Spawns.spawnBoss(world, store, role, where, Telegraphs.yawToward(where, c));
+        if (ref == null) {
+            return;   // le survivant reste tel quel ; on réessaie au pas suivant
         }
-        Vector3d where = new Vector3d(at);
-        empowered = isBerserker ? MoltenBoss.BERSERKER_2 : MoltenBoss.FIRESTORM_2;
+        empowered = role;
         Spawns.remove(store, survivor);
-        Ref<EntityStore> ref = Spawns.spawnBoss(world, store, empowered, where,
-                Telegraphs.yawToward(where, Spawns.point(MoltenBossLayout.ARENA)));
         if (isBerserker) {
             berserker = ref;
             firestorm = null;
@@ -437,6 +481,7 @@ final class MoltenDuo {
         waves.clear();
         pools.clear();
         gale = List.of();
+        fight++;
         if (all) {
             Spawns.remove(store, berserker);
             Spawns.remove(store, firestorm);

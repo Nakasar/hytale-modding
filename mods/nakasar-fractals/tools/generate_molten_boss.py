@@ -504,11 +504,12 @@ def java_layout(p, t):
         packs.append("new Pack(new double[]" + J.jpoint(on(cx, cz)) + ", new String[]{" + ", ".join(f'"{r}"' for r, _, _ in members)
                      + "}, new double[][]" + J.jpoints([on(cx + dx, cz + dz) for _, dx, dz in members]) + ")")
     adds = [on(x + dx, z + dz) for x, z in sc.EFFIGY_ADDS for dx, dz in ((-1, 0), (1, 1))]
-    pools = [(x, z, r) for x, z, r in sc.FOUNDRY_POOLS + [sc.LAVA_POOL_H, sc.LAVA_POOL_G]] + [(*sc.PIT_C, sc.PIT_R)]
+    px, pz = sc.PIT_C
+    lava = sorted(set(t.lava) | {(x, z) for x in range(px - sc.PIT_R - 1, px + sc.PIT_R + 2)
+                                for z in range(pz - sc.PIT_R - 1, pz + sc.PIT_R + 2)
+                                if math.hypot(x - px, z - pz) <= sc.PIT_R + 0.3})
     cx0, cx1, cz0, cz1 = sc.CHANNEL
     channel = fc.jbox(cx0, cx1, sc.CHANNEL_LAVA_TOP - 2, -1, cz0 + 1, cz1 - 1)
-    duo = fc.jbox(sc.ARENA_C[0] - sc.ARENA_R - 6, sc.ARENA_C[0] + sc.ARENA_R + 6, -12, 14,
-                  sc.ARENA_C[1] - sc.ARENA_R - 6, sc.ARENA_C[1] + sc.ARENA_R + 6)
     return f"""package dev.nakasar.hytale.fractals.moltenboss;
 
 import dev.nakasar.hytale.fractals.arena.Box;
@@ -539,8 +540,9 @@ public final class MoltenBossLayout {{
     public static final int[][] BRIDGE_RAILS = {J.jblocks(rails)};
     /** Canal de lave : qui y tombe brûle puis revient au point de retour. */
     public static final Box CHANNEL = {channel};
-    /** Bassins de lave (x, y du sol, z, rayon) : la lave brûle qui s'y tient. */
-    public static final double[][] LAVA_POOLS = {{{", ".join("{" + f"{jd(x + 0.5)}, {jd(fc.GROUND_Y)}, {jd(z + 0.5)}, {jd(r)}" + "}" for x, z, r in pools)}}};
+    /** Cases de lave des bassins et du creuset (x, z ; surface un bloc sous le sol) : la lave brûle qui s'y tient. */
+    public static final int[][] LAVA_CELLS = {{{", ".join("{" + f"{x}, {z}" + "}" for x, z in lava)}}};
+    public static final int LAVA_FLOOR_Y = {fc.GROUND_Y};
 
     /** La fonderie : centre de l'Effigie, rayon du combat, Protecteur, second résonateur, renforts, porte est. */
     public static final double[] EFFIGY = {J.jpoint(on(*sc.EFFIGY_C))};
@@ -556,12 +558,11 @@ public final class MoltenBossLayout {{
     public static final int[][] BOILERS_GATE = {J.jblocks(t.gates["boilers"])};
     public static final double[] CHECKPOINT_D = {J.jpoint(sc.CHECKPOINT_D)};
 
-    /** La plate-forme du creuset : centre, rayon, creuset de lave, zone du combat. */
+    /** La plate-forme du creuset : centre, rayon, creuset de lave (muret compris). */
     public static final double[] ARENA = {J.jpoint(on(*sc.ARENA_C))};
     public static final double ARENA_RADIUS = {jd(sc.ARENA_R)};
     public static final double[] PIT = {J.jpoint(on(*sc.PIT_C))};
     public static final double PIT_RADIUS = {jd(sc.PIT_R + 1.3)};
-    public static final Box DUO_ZONE = {duo};
     /** Ondes de choc : vitesse, demi-épaisseur, hauteur de l'onde bleue. */
     public static final double SHOCK_SPEED = {jd(SHOCK_SPEED)};
     public static final double SHOCK_BAND = {jd(SHOCK_BAND)};

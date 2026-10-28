@@ -63,10 +63,10 @@ final class Effigy {
         return 1f + MIGHT_BONUS * stacks;
     }
 
-    boolean shielded(String role) {
+    boolean shielded(Store<EntityStore> store, String role) {
         return switch (role) {
-            case MoltenBoss.PROTECTOR -> resonator != null && resonator.isValid();
-            case MoltenBoss.EFFIGY -> protector != null && protector.isValid();
+            case MoltenBoss.PROTECTOR -> resonator != null && Spawns.alive(store, resonator);
+            case MoltenBoss.EFFIGY -> protector != null && Spawns.alive(store, protector);
             default -> false;
         };
     }

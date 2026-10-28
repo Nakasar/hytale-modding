@@ -41,18 +41,18 @@ final class Packs {
         }
     }
 
-    boolean shamanShielded() {
-        return resonator != null && resonator.isValid();
+    boolean shamanShielded(Store<EntityStore> store) {
+        return resonator != null && Spawns.alive(store, resonator);
     }
 
     /** L'atelier : vrai quand la quatrième meute et son chaman sont tombés (le pont est posé). */
-    boolean workshop(World world, Store<EntityStore> store, MoltenBoss.State st, List<PlayerRef> players) {
+    boolean workshop(World world, Store<EntityStore> store, List<PlayerRef> players) {
         wake(world, store, players, 0, WORKSHOP_PACKS);
         if (resonator != null && !Spawns.alive(store, resonator)) {
             resonator = null;
         }
         if (shaman != null && Spawns.alive(store, shaman)) {
-            if (shamanShielded()) {
+            if (shamanShielded(store)) {
                 MoltenBoss.link(store, resonator, shaman, ++beat % 4 == 0);
             }
         } else {
@@ -76,7 +76,7 @@ final class Packs {
     }
 
     /** La cour et la passerelle : vrai quand les groupes 5 à 8 sont tous tombés. */
-    boolean gauntlet(World world, Store<EntityStore> store, MoltenBoss.State st, List<PlayerRef> players) {
+    boolean gauntlet(World world, Store<EntityStore> store, List<PlayerRef> players) {
         int total = MoltenBossLayout.PACKS.length - WORKSHOP_PACKS;
         wake(world, store, players, WORKSHOP_PACKS, MoltenBossLayout.PACKS.length);
         int done = 0;

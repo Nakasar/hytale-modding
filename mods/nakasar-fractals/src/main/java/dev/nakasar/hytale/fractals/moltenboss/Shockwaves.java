@@ -71,8 +71,9 @@ final class Shockwaves {
                 continue;
             }
             boolean air = wv.kind == Kind.AIR;
-            if ((int) (before * 2) != (int) (wv.radius * 2)) {
-                int n = Math.max(8, (int) (wv.radius * 2.5));
+            // Redessiné tous les 1,5 bloc de rayon, 48 points au plus : l'anneau reste lisible sans noyer le client.
+            if ((int) (before / 1.5) != (int) (wv.radius / 1.5)) {
+                int n = Math.min(48, Math.max(8, (int) (wv.radius * 2.5)));
                 double y = wv.center.y() + (air ? MoltenBossLayout.AIR_RING_HEIGHT : 0);
                 String id = air ? "Nakasar_Fractal_Molten_Ring_Air" : "Nakasar_Fractal_Molten_Ring_Ground";
                 for (int k = 0; k < n; k++) {

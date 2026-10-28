@@ -26,6 +26,7 @@ import org.joml.Vector3d;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -66,7 +67,7 @@ public final class MoltenBoss implements FractalStage {
     static final String LINK = "Nakasar_Fractal_Molten_Link";
     /** Brûlure de la fonderie : part des PV max par seconde. */
     static final float BURN_PART = 0.02f;
-    /** Dans la lave : part des PV max par seconde (en plus de la brûlure). */
+    /** Dans la lave : part des PV max par seconde (la brûlure ne s'y ajoute qu'une fois sorti). */
     static final float LAVA_PART = 0.08f;
     /** Tombé dans le canal : ramené au point de retour après ce temps. */
     static final float CHANNEL_SECONDS = 1.5f;
@@ -89,6 +90,19 @@ public final class MoltenBoss implements FractalStage {
         final Map<String, Long> throttle = new HashMap<>();
         boolean ticking;
         long lastTick;
+    }
+
+    /** Cases de lave (x, z) des bassins et du creuset, en clés {@link #cell}. */
+    private static final Set<Long> LAVA = new HashSet<>();
+
+    static {
+        for (int[] c : MoltenBossLayout.LAVA_CELLS) {
+            LAVA.add(cell(c[0], c[1]));
+        }
+    }
+
+    private static long cell(int x, int z) {
+        return ((long) x << 32) ^ (z & 0xffffffffL);
     }
 
     private final Map<World, State> states = Collections.synchronizedMap(new WeakHashMap<>());
@@ -159,7 +173,7 @@ public final class MoltenBoss implements FractalStage {
         lava(world, store, st, players, dt);
         switch (st.phase) {
             case FACILITY -> {
-                if (st.packs.workshop(world, store, st, players)) {
+                if (st.packs.workshop(world, store, players)) {
                     st.phase = Phase.EFFIGY;
                 }
             }
@@ -171,7 +185,7 @@ public final class MoltenBoss implements FractalStage {
                 }
             }
             case GAUNTLET -> {
-                if (st.packs.gauntlet(world, store, st, players)) {
+                if (st.packs.gauntlet(world, store, players)) {
                     Gates.open(world, store, MoltenBossLayout.BOILERS_GATE, MESSAGES + "boilers.open");
                     Gates.checkpoint(world, MoltenBossLayout.CHECKPOINT_D, MESSAGES + "checkpoint");
                     move(store, st.braham, Spawns.point(MoltenBossLayout.BRAHAM_END), Spawns.point(MoltenBossLayout.ARENA));
@@ -220,14 +234,9 @@ public final class MoltenBoss implements FractalStage {
             if (at == null) {
                 continue;
             }
-            boolean inLava = false;
-            for (double[] pool : MoltenBossLayout.LAVA_POOLS) {
-                if (Telegraphs.horizontal(at, new Vector3d(pool[0], pool[1], pool[2])) <= pool[3]
-                        && at.y() < pool[1] + 0.2 && at.y() > pool[1] - 3) {
-                    inLava = true;
-                    break;
-                }
-            }
+            // La surface de la lave est un bloc sous le sol : on y est quand les pieds sont sous le niveau du sol.
+            boolean inLava = at.y() < MoltenBossLayout.LAVA_FLOOR_Y - 0.1 && at.y() > MoltenBossLayout.LAVA_FLOOR_Y - 3
+                    && LAVA.contains(cell((int) Math.floor(at.x()), (int) Math.floor(at.z())));
             if (MoltenBossLayout.CHANNEL.contains(at.x(), at.y(), at.z())) {
                 inLava = true;
                 float t = st.channel.merge(p.getUuid(), dt, Float::sum);
@@ -264,9 +273,8 @@ public final class MoltenBoss implements FractalStage {
             return;
         }
         boolean shielded = switch (victimRole) {
-            case BRAHAM, ROX -> true;
-            case ELITE_SHAMAN -> st.packs.shamanShielded();
-            case PROTECTOR, EFFIGY -> st.effigy.shielded(victimRole);
+            case ELITE_SHAMAN -> st.packs.shamanShielded(store);
+            case PROTECTOR, EFFIGY -> st.effigy.shielded(store, victimRole);
             default -> false;
         };
         if (shielded) {
@@ -343,6 +351,9 @@ public final class MoltenBoss implements FractalStage {
         Long last = st.throttle.get(id);
         if (last != null && now - last < Telegraphs.seconds(2.5f)) {
             return;
+        }
+        if (st.throttle.size() > 256) {
+            st.throttle.values().removeIf(t -> now - t > Telegraphs.seconds(2.5f));
         }
         st.throttle.put(id, now);
         player.sendMessage(Message.translation(MESSAGES + key));
