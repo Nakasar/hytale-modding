@@ -1,0 +1,36 @@
+{
+  "$Comment": "Effigie en fusion : souffle de flammes devant elle, cône de 70° sur 10 blocs (1,8 s), 26 dégâts et Brûlure 4 s.",
+  "Type": "Serial",
+  "Interactions": [
+    {
+      "Type": "ClearEntityEffect",
+      "Entity": "User",
+      "EntityEffectId": "Hit_Interrupt_Eligible"
+    },
+    {
+      "Type": "ApplyEffect",
+      "EffectId": "Nakasar_Fractal_Rooted"
+    },
+    {
+      "Type": "Nakasar_Fractal_Telegraph",
+      "Shape": "Cone",
+      "Seconds": 1.8,
+      "Angle": 70,
+      "Radius": 10,
+      "Damage": 26,
+      "EffectId": "Nakasar_Fractal_Molten_Burning",
+      "EffectDuration": 4,
+      "PlayersOnly": true,
+      "ImpactParticle": "Fire_AoE_Spawn"
+    },
+    {
+      "Type": "Simple",
+      "RunTime": 1.8,
+      "Effects": {
+        "WorldSoundEventId": "SFX_Spear_Throw_Charge",
+        "ItemPlayerAnimationsId": "Golem_Firesteel_Default",
+        "ItemAnimationId": "GroundSlam"
+      }
+    }
+  ]
+}

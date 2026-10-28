@@ -105,6 +105,7 @@ const sidebars = {
         "fractales/recif-de-la-sirene",
         "fractales/roche-des-abysses",
         "fractales/pic-de-sunqua",
+        "fractales/boss-en-fusion",
       ],
     },
     "fractales/cosmetiques",

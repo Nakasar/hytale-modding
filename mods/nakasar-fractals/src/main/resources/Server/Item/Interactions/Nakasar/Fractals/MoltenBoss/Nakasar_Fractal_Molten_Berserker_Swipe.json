@@ -1,0 +1,53 @@
+{
+  "$Comment": "Berserker en fusion, au contact : coup (18 dégâts).",
+  "Type": "Serial",
+  "Interactions": [
+    {
+      "$Comment": "Coup.",
+      "Type": "Simple",
+      "RunTime": 0.45,
+      "Effects": {
+        "WorldSoundEventId": "SFX_Light_Melee_T2_Swing",
+        "ItemPlayerAnimationsId": "Golem_Firesteel_Default",
+        "ItemAnimationId": "SwingLeft"
+      },
+      "Next": {
+        "Type": "Selector",
+        "RunTime": 0.15,
+        "Selector": {
+          "Id": "Horizontal",
+          "Direction": "ToLeft",
+          "TestLineOfSight": true,
+          "ExtendTop": 0.8,
+          "ExtendBottom": 1.8,
+          "StartDistance": 0.2,
+          "EndDistance": 4.0,
+          "Length": 100,
+          "RollOffset": 0,
+          "YawStartOffset": 50
+        },
+        "HitEntity": {
+          "Interactions": [
+            {
+              "Parent": "DamageEntityParent",
+              "DamageCalculator": {
+                "BaseDamage": {
+                  "Physical": 18
+                },
+                "RandomPercentageModifier": 0.1
+              },
+              "DamageEffects": {
+                "WorldSoundEventId": "SFX_T1_Impact_Blunt",
+                "WorldParticles": [
+                  {
+                    "SystemId": "Impact_Sword_Basic_Stronk"
+                  }
+                ]
+              }
+            }
+          ]
+        }
+      }
+    }
+  ]
+}

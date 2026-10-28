@@ -1,0 +1,11 @@
+{
+  "$Comment": "Protégé : un allié le rend invulnérable tant qu'il vit (Java, moltenboss.Packs, moltenboss.Effigy).",
+  "Name": "nakasar_fractals_molten_boss.effects.Nakasar_Fractal_Molten_Shielded",
+  "StatusEffectIcon": "UI/StatusEffects/Nakasar/Fractals/Molten_Shielded.png",
+  "ApplicationEffects": {
+    "EntityTopTint": "#ffd060"
+  },
+  "OverlapBehavior": "Overwrite",
+  "Infinite": false,
+  "Duration": 1.5
+}

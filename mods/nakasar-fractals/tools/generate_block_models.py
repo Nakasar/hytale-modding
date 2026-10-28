@@ -218,6 +218,7 @@ CORE_COLORS = {  # couleur de chaque fractale (noyaux du distributeur), dans l'o
     "SirensReef": (74, 160, 96),
     "Deepstone": (110, 196, 214),
     "SunquaPeak": (236, 140, 180),
+    "MoltenBoss": (240, 110, 40),
 }
 COPPER = (190, 112, 70)
 SILVER = (200, 206, 218)

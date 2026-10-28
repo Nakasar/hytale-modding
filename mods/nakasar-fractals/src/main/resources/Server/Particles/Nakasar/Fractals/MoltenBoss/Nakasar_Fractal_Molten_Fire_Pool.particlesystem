@@ -1,0 +1,12 @@
+{
+  "$Comment": "Flammes de la Tempête au sol (le Java les repose toutes les demi-secondes, échelle = rayon : les flammes couvrent exactement la zone qui brûle). Généré par tools/generate_molten_boss.py.",
+  "Spawners": [
+    {
+      "SpawnerId": "Nakasar_Fractal_Molten_Fire_Pool_Flame",
+      "PositionOffset": {
+        "Y": 0.0
+      }
+    }
+  ],
+  "CullDistance": 72
+}

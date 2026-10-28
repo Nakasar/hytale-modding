@@ -1,0 +1,10 @@
+{
+  "$Comment": "Effigie en fusion (championne) : golem d'acier de feu vanilla (x 2,2), lueur orange.",
+  "Parent": "Golem_Firesteel",
+  "MinScale": 2.2,
+  "MaxScale": 2.2,
+  "Light": {
+    "Color": "#f60",
+    "Radius": 8
+  }
+}

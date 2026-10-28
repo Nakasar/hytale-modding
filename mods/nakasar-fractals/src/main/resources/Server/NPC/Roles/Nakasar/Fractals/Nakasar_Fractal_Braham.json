@@ -1,0 +1,35 @@
+{
+  "$Comment": "Braham Eirsson : accompagne le groupe ; on ne peut pas le blesser (Java). Généré par tools/generate_molten_boss.py.",
+  "Type": "Generic",
+  "Appearance": "Nakasar_Fractal_Braham",
+  "NameTranslationKey": "nakasar_fractals_molten_boss.npc.Braham.name",
+  "MaxHealth": 1000,
+  "StartState": "Idle",
+  "DefaultPlayerAttitude": "Neutral",
+  "DefaultNPCAttitude": "Ignore",
+  "MotionControllerList": [
+    {
+      "Type": "Walk",
+      "MaxWalkSpeed": 0.1,
+      "Gravity": 10,
+      "MaxFallSpeed": 10,
+      "Acceleration": 10,
+      "JumpHeight": 1.0
+    }
+  ],
+  "KnockbackScale": 0,
+  "SpawnLockTime": 0.2,
+  "Instructions": [
+    {
+      "Sensor": {
+        "Type": "State",
+        "State": "Idle"
+      },
+      "Instructions": [
+        {
+          "Actions": []
+        }
+      ]
+    }
+  ]
+}

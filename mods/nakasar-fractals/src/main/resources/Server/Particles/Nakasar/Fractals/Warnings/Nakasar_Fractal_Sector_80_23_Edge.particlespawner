@@ -1,0 +1,93 @@
+{
+  "RenderMode": "BlendLinear",
+  "ParticleRotationInfluence": "None",
+  "ParticleLifeSpan": {
+    "Min": 2.3,
+    "Max": 2.3
+  },
+  "ParticleRotateWithSpawner": true,
+  "TrailSpawnerPositionMultiplier": 1,
+  "TrailSpawnerRotationMultiplier": 1,
+  "Particle": {
+    "Texture": "Particles/Textures/Nakasar/Fractals/Warning_Sector_80_Base.png",
+    "ScaleRatioConstraint": "OneToOne",
+    "UVOption": "None",
+    "Animation": {
+      "0": {
+        "Opacity": 0,
+        "Color": "#ff0000"
+      },
+      "15": {
+        "Opacity": 1,
+        "Color": "#ff0000"
+      },
+      "30": {
+        "Opacity": 0.25,
+        "Color": "#ff0000"
+      },
+      "45": {
+        "Opacity": 1,
+        "Color": "#ff0000"
+      },
+      "60": {
+        "Opacity": 0.25,
+        "Color": "#ff0000"
+      },
+      "75": {
+        "Opacity": 1,
+        "Color": "#ff0000"
+      },
+      "90": {
+        "Opacity": 0.25,
+        "Color": "#ff0000"
+      },
+      "95": {
+        "Opacity": 0.25,
+        "Color": "#ff0000"
+      },
+      "100": {
+        "Opacity": 0,
+        "Color": "#ff0000"
+      }
+    },
+    "SoftParticles": "Disable",
+    "InitialAnimationFrame": {
+      "Opacity": 0.5,
+      "Color": "#ff0000",
+      "Rotation": {
+        "X": {
+          "Min": 90,
+          "Max": 90
+        },
+        "Y": {
+          "Min": 180,
+          "Max": 180
+        }
+      },
+      "Scale": {
+        "X": {
+          "Min": 6.25,
+          "Max": 6.25
+        }
+      }
+    }
+  },
+  "Shape": "Sphere",
+  "TotalParticles": {
+    "Min": 1,
+    "Max": 1
+  },
+  "SpawnRate": {
+    "Min": 1,
+    "Max": 1
+  },
+  "LinearFiltering": true,
+  "MaxConcurrentParticles": 1,
+  "InitialVelocity": {
+    "Speed": {
+      "Min": 0.01,
+      "Max": 0.01
+    }
+  },
+  "SpawnBurst": true
+}

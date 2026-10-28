@@ -352,6 +352,57 @@ LOOT = {
         item("Ingredient_Void_Essence", 2, 3),
         item("Rock_Gem_Voidstone", 1, chance=50),
     ]),
+    # --- Boss en fusion (meutes de base, gardes et chefs ; pas les résonateurs) --------------------------------------
+    "Molten_Dredge_Miner": ("Mineur draguerre : minerai de fer, charbon de bois.", [
+        item("Ore_Iron", 1, 2),
+        item("Ingredient_Charcoal", 1, 2),
+    ]),
+    "Molten_Dredge_Sonic": ("Draguerre sonique : barre de cuivre, charbon de bois.", [
+        item("Ingredient_Bar_Copper", 1),
+        item("Ingredient_Charcoal", 1, 2),
+    ]),
+    "Molten_Legion_Warrior": ("Guerrier de la Légion de la Flamme : cuir lourd, barre de fer.", [
+        item("Ingredient_Leather_Heavy", 1),
+        item("Ingredient_Bar_Iron", 1, chance=50),
+    ]),
+    "Molten_Legion_Shaman": ("Chaman de la Légion de la Flamme : chutes de tissu de cendre, essence de feu.", [
+        item("Ingredient_Fabric_Scrap_Cindercloth", 1, 2),
+        item("Ingredient_Fire_Essence", 1),
+    ]),
+    "Elite_Flame_Shaman": ("Chaman de la flamme d'élite : tissu de cendre, essence de feu, cristal rouge.", [
+        item("Ingredient_Fabric_Scrap_Cindercloth", 2, 3),
+        item("Ingredient_Fire_Essence", 1, 2),
+        item("Ingredient_Crystal_Red", 1),
+    ]),
+    "Molten_Protector": ("Protecteur en fusion : essence de feu, cristal rouge.", [
+        item("Ingredient_Fire_Essence", 2, 3),
+        item("Ingredient_Crystal_Red", 1),
+    ]),
+    "Molten_Effigy": ("Effigie en fusion : barres de fer et de cobalt, essence de feu, rubis.", [
+        item("Ingredient_Bar_Iron", 2, 3),
+        item("Ingredient_Bar_Cobalt", 1, 2),
+        item("Ingredient_Fire_Essence", 2, 3),
+        item("Rock_Gem_Ruby", 1, chance=40),
+    ]),
+    "Molten_Berserker": ("Berserker en fusion : barre de cobalt, essence de feu.", [
+        item("Ingredient_Bar_Cobalt", 1, 2),
+        item("Ingredient_Fire_Essence", 1, 2),
+    ]),
+    "Molten_Firestorm": ("Tempête de feu en fusion : essence de feu, cristal rouge.", [
+        item("Ingredient_Fire_Essence", 2, 3),
+        item("Ingredient_Crystal_Red", 1),
+    ]),
+    "Molten_Berserker_Empowered": ("Berserker renforcé : barres de cobalt et de thorium, essence de feu, rubis.", [
+        item("Ingredient_Bar_Cobalt", 2, 3),
+        item("Ingredient_Bar_Thorium", 1),
+        item("Ingredient_Fire_Essence", 2, 3),
+        item("Rock_Gem_Ruby", 1, chance=50),
+    ]),
+    "Molten_Firestorm_Empowered": ("Tempête de feu renforcée : essence de feu, cristal rouge, rubis.", [
+        item("Ingredient_Fire_Essence", 3, 4),
+        item("Ingredient_Crystal_Red", 1, 2),
+        item("Rock_Gem_Ruby", 1, chance=50),
+    ]),
 }
 
 

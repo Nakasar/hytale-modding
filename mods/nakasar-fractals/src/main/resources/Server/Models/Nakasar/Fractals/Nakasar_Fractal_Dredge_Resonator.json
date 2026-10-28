@@ -1,0 +1,24 @@
+{
+  "$Comment": "Résonateur draguerre (PNJ fixe) : pylône de fer riveté, tuyaux de cuivre et cœur d'ambre qui alimente le bouclier.",
+  "Model": "NPC/Nakasar/Fractals/Dredge_Resonator/Model.blockymodel",
+  "Texture": "NPC/Nakasar/Fractals/Dredge_Resonator/Texture.png",
+  "EyeHeight": 1.6,
+  "HitBox": {
+    "Max": {
+      "X": 0.7,
+      "Y": 2.6,
+      "Z": 0.7
+    },
+    "Min": {
+      "X": -0.7,
+      "Y": 0,
+      "Z": -0.7
+    }
+  },
+  "MinScale": 1.0,
+  "MaxScale": 1.0,
+  "Light": {
+    "Color": "#fb4",
+    "Radius": 4
+  }
+}

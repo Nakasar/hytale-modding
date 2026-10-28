@@ -1,0 +1,21 @@
+{
+  "Type": "NoiseRange",
+  "DefaultBiome": "Nakasar_Fractal_MoltenBoss",
+  "DefaultTransitionDistance": 16,
+  "MaxBiomeEdgeDistance": 0,
+  "Density": {
+    "Type": "Constant",
+    "Value": 0.0
+  },
+  "Biomes": [],
+  "SpawnPositions": {
+    "Type": "List",
+    "Positions": [
+      {
+        "X": -21,
+        "Y": 110,
+        "Z": -2
+      }
+    ]
+  }
+}

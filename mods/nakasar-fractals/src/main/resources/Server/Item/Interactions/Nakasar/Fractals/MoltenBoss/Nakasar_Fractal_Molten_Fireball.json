@@ -1,0 +1,34 @@
+{
+  "$Comment": "Chaman de la Légion : boule de feu sur sa cible, cercle rouge de 2,5 blocs (1,6 s), 16 dégâts et Brûlure 3 s.",
+  "Type": "Serial",
+  "Interactions": [
+    {
+      "Type": "ClearEntityEffect",
+      "Entity": "User",
+      "EntityEffectId": "Hit_Interrupt_Eligible"
+    },
+    {
+      "Type": "ApplyEffect",
+      "EffectId": "Nakasar_Fractal_Rooted"
+    },
+    {
+      "Type": "Nakasar_Fractal_Telegraph",
+      "Shape": "Circle",
+      "Seconds": 1.6,
+      "Anchor": "Target",
+      "Radius": 2.5,
+      "Damage": 16,
+      "EffectId": "Nakasar_Fractal_Molten_Burning",
+      "EffectDuration": 3,
+      "PlayersOnly": true,
+      "ImpactParticle": "Fire_AoE_Spawn"
+    },
+    {
+      "Type": "Simple",
+      "RunTime": 1.6,
+      "Effects": {
+        "WorldSoundEventId": "SFX_Spear_Throw_Charge"
+      }
+    }
+  ]
+}

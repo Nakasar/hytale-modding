@@ -1,0 +1,50 @@
+{
+  "$Comment": "Effigie en fusion : barres de fer et de cobalt, essence de feu, rubis. Généré par tools/generate_mob_loot.py.",
+  "Container": {
+    "Type": "Multiple",
+    "Containers": [
+      {
+        "Type": "Single",
+        "Item": {
+          "ItemId": "Ingredient_Bar_Iron",
+          "QuantityMin": 2,
+          "QuantityMax": 3
+        }
+      },
+      {
+        "Type": "Single",
+        "Item": {
+          "ItemId": "Ingredient_Bar_Cobalt",
+          "QuantityMin": 1,
+          "QuantityMax": 2
+        }
+      },
+      {
+        "Type": "Single",
+        "Item": {
+          "ItemId": "Ingredient_Fire_Essence",
+          "QuantityMin": 2,
+          "QuantityMax": 3
+        }
+      },
+      {
+        "Type": "Choice",
+        "Containers": [
+          {
+            "Type": "Single",
+            "Item": {
+              "ItemId": "Rock_Gem_Ruby",
+              "QuantityMin": 1,
+              "QuantityMax": 1
+            },
+            "Weight": 40
+          },
+          {
+            "Type": "Empty",
+            "Weight": 60
+          }
+        ]
+      }
+    ]
+  }
+}

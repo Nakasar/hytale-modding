@@ -259,6 +259,7 @@ FRACTALS = {
     "recif-de-la-sirene": _generator("generate_sirens_reef"),
     "roche-des-abysses": _generator("generate_deepstone", roof=True),
     "pic-de-sunqua": _generator("generate_sunqua_peak"),
+    "boss-en-fusion": _generator("generate_molten_boss"),
 }
 
 def face(prefabs):
@@ -329,6 +330,11 @@ def _markers(name):
         water = sc.polar(171, 62)
         return [(sc.SPAWN[0], sc.SPAWN[2], 1), sc.PLINTH_C + (2,), sc.VOICE_C + (3,),
                 (round(water[0]), round(water[1]), 4), sc.SORROW_C + (5,), sc.CRATER_C + (6,), sc.SUMMIT_C + (7,)]
+    if name == "boss-en-fusion":
+        import molten_boss_scenery as sc
+        return [(sc.SPAWN[0], sc.SPAWN[2], 1), sc.PACK_CENTERS[0] + (2,), sc.RESONATOR_1 + (3,),
+                ((sc.BRIDGE[0] + sc.BRIDGE[1]) // 2, (sc.BRIDGE[2] + sc.BRIDGE[3]) // 2, 4), sc.EFFIGY_C + (5,),
+                (sc.PODS[1][0], sc.PODS[1][1], 6), sc.ARENA_C + (7,)]
     return []
 
 

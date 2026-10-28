@@ -1,0 +1,10 @@
+{
+  "$Comment": "Berserker en fusion renforcé : le même (x 1,9), lueur blanche.",
+  "Parent": "Golem_Firesteel",
+  "MinScale": 1.9,
+  "MaxScale": 1.9,
+  "Light": {
+    "Color": "#ffd",
+    "Radius": 8
+  }
+}

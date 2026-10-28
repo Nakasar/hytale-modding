@@ -1,0 +1,7 @@
+{
+  "$Comment": "Lave, flammes et ondes de choc de la fonderie en fusion : une part des PV max, l'armure ne la réduit pas.",
+  "BypassResistances": true,
+  "DurabilityLoss": false,
+  "StaminaLoss": false,
+  "DamageTextColor": "#ff8030"
+}

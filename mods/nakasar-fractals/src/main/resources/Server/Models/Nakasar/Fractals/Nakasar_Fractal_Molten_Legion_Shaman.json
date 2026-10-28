@@ -1,0 +1,10 @@
+{
+  "$Comment": "Chaman de la Légion de la Flamme : trork chaman vanilla, lueur de feu.",
+  "Parent": "Trork_Shaman",
+  "MinScale": 1.0,
+  "MaxScale": 1.0,
+  "Light": {
+    "Color": "#f84",
+    "Radius": 3
+  }
+}

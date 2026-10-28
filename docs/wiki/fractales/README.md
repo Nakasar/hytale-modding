@@ -36,6 +36,7 @@ Les **fractales** sont des aventures courtes de 1 à 5 joueurs, tirées des frac
 | [Récif de la Sirène](recif-de-la-sirene.md) | île au trésor maudit : canon des ombres, mines, trésors à se lancer, navire fantôme | Tête-de-pierre, Black Peter, Mad Jack, Calix, Arabella Crowe |
 | [Roche des Abysses](roche-des-abysses.md) | caveau nain : grille de runes, pont du vent, Lumière de Deldrimor, gouffre invisible, ascenseur | Sentinelle, Reine de la couvée, Minotaure des ombres, la Voix |
 | [Pic de Sunqua](pic-de-sunqua.md) | massif flottant d'Ai : escalier brisé au Bond chargé, colonnes de vent, cascades, Marché des marées, sentier de lave, météores | Voix de la montagne, Fureur de la montagne, Ai (Ai assombrie au rang Maître) |
+| [Boss en fusion](boss-en-fusion.md) | fonderie de l'Alliance en fusion avec Braham et Rox : meutes, résonateurs, canal de lave, ondes de choc blanches et bleues | Chaman de la flamme d'élite, Effigie en fusion, Berserker et Tempête de feu en fusion |
 
 ## Le reste
 

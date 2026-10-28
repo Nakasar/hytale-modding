@@ -1,0 +1,33 @@
+{
+  "$Comment": "Draguerre sonique : onde sonore devant lui, cône de 60° sur 6 blocs (1,4 s), 14 dégâts et recul.",
+  "Type": "Serial",
+  "Interactions": [
+    {
+      "Type": "ClearEntityEffect",
+      "Entity": "User",
+      "EntityEffectId": "Hit_Interrupt_Eligible"
+    },
+    {
+      "Type": "ApplyEffect",
+      "EffectId": "Nakasar_Fractal_Rooted"
+    },
+    {
+      "Type": "Nakasar_Fractal_Telegraph",
+      "Shape": "Cone",
+      "Seconds": 1.4,
+      "Angle": 60,
+      "Radius": 6,
+      "Damage": 14,
+      "Knockback": 6,
+      "PlayersOnly": true,
+      "ImpactParticle": "Nakasar_Fractal_Storm_Disperse"
+    },
+    {
+      "Type": "Simple",
+      "RunTime": 1.4,
+      "Effects": {
+        "WorldSoundEventId": "SFX_Spear_Throw_Charge"
+      }
+    }
+  ]
+}

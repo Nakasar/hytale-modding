@@ -1,0 +1,42 @@
+{
+  "$Comment": "Tempête de feu en fusion renforcée, barre de boss : flammes et vent qui jette du bord de la plate-forme (Java, moltenboss.MoltenDuo). Généré par tools/generate_molten_boss.py.",
+  "Type": "Generic",
+  "Appearance": "Nakasar_Fractal_Molten_Firestorm_Empowered",
+  "NameTranslationKey": "nakasar_fractals_molten_boss.npc.Molten_Firestorm_Empowered.name",
+  "MaxHealth": 1600,
+  "DropList": "Nakasar_Fractal_Loot_Molten_Firestorm_Empowered",
+  "StartState": "Idle",
+  "DefaultPlayerAttitude": "Hostile",
+  "DefaultNPCAttitude": "Ignore",
+  "MotionControllerList": [
+    {
+      "Type": "Fly",
+      "MaxHorizontalSpeed": 0.1,
+      "MaxClimbSpeed": 3,
+      "MaxSinkSpeed": 3,
+      "Acceleration": 3,
+      "Deceleration": 3,
+      "Gravity": 1,
+      "MinHeightOverGround": 0,
+      "MaxHeightOverGround": 3
+    }
+  ],
+  "KnockbackScale": 0,
+  "SpawnLockTime": 0.2,
+  "Instructions": [
+    {
+      "Sensor": {
+        "Type": "State",
+        "State": "Idle"
+      },
+      "Instructions": [
+        {
+          "Actions": []
+        }
+      ]
+    }
+  ],
+  "DisableDamageGroups": [
+    "Nakasar_Fractal_Foes"
+  ]
+}

@@ -1,0 +1,11 @@
+{
+  "$Comment": "Enragé : l'autre boss a perdu un quart de sa vie ; ses attaques reviennent plus vite (Java, moltenboss.MoltenDuo).",
+  "Name": "nakasar_fractals_molten_boss.effects.Nakasar_Fractal_Molten_Enraged",
+  "StatusEffectIcon": "UI/StatusEffects/Nakasar/Fractals/Molten_Enraged.png",
+  "ApplicationEffects": {
+    "EntityTopTint": "#ff2000"
+  },
+  "OverlapBehavior": "Overwrite",
+  "Infinite": false,
+  "Duration": 12.0
+}

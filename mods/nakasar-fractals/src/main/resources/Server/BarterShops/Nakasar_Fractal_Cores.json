@@ -83,6 +83,14 @@
       },
       "Input": [],
       "Stock": 999
+    },
+    {
+      "Output": {
+        "ItemId": "Nakasar_Fractal_Core_MoltenBoss",
+        "Quantity": 1
+      },
+      "Input": [],
+      "Stock": 999
     }
   ]
 }

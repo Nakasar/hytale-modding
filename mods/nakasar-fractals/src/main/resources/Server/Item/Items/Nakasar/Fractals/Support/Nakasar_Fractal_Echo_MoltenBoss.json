@@ -1,0 +1,15 @@
+{
+  "$Comment": "Écho de la fractale MoltenBoss : coffre de fin (party.ClaimRewardInteraction), ingrédient des runes et armes de soutien. Modèle de l'éclat de rune vanilla, teint à la couleur de la fractale. Généré par tools/generate_support.py.",
+  "Parent": "Ingredient_Rune_Shard",
+  "TranslationProperties": {
+    "Name": "nakasar_fractals_support.items.Nakasar_Fractal_Echo_MoltenBoss.name",
+    "Description": "nakasar_fractals_support.items.Nakasar_Fractal_Echo_MoltenBoss.description"
+  },
+  "Icon": "Icons/Items/Nakasar/Fractals/Vanilla/Support/Echo_MoltenBoss.png",
+  "Texture": "Items/Nakasar/Fractals/Vanilla/Support/Echo_MoltenBoss.png",
+  "Quality": "Rare",
+  "Categories": [
+    "Items.Ingredients"
+  ],
+  "MaxStack": 99
+}

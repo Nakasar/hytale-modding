@@ -1,0 +1,24 @@
+{
+  "$Comment": "Draguerre sonique : barre de cuivre, charbon de bois. Généré par tools/generate_mob_loot.py.",
+  "Container": {
+    "Type": "Multiple",
+    "Containers": [
+      {
+        "Type": "Single",
+        "Item": {
+          "ItemId": "Ingredient_Bar_Copper",
+          "QuantityMin": 1,
+          "QuantityMax": 1
+        }
+      },
+      {
+        "Type": "Single",
+        "Item": {
+          "ItemId": "Ingredient_Charcoal",
+          "QuantityMin": 1,
+          "QuantityMax": 2
+        }
+      }
+    ]
+  }
+}
