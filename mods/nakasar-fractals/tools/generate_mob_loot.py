@@ -37,14 +37,14 @@ LOOT = {
         item("Ingredient_Fabric_Scrap_Shadoweave", 1, chance=25),
         item("Food_Bread", 1, chance=15),
     ]),
-    "Cultist_Chanter": ("Incantateur du culte (camp de départ, renforts de l'Archidevin) : soie de sa robe, essence du "
+    "Cultist_Chanter": ("Incantateur du culte (camp de départ, renforts de l'Archidevin) : chutes d'ombretisse de sa robe, essence du "
                         "Vide de ses incantations, pétales violets.", [
-        item("Ingredient_Fabric_Scrap_Silk", 1, 2),
+        item("Ingredient_Fabric_Scrap_Shadoweave", 1, 2),
         item("Ingredient_Void_Essence", 1, chance=30),
         item("Plant_Petals_Purple", 1, 2, chance=30),
     ]),
-    "Archdiviner": ("L'Archidevin : rouleaux d'ombretisse de sa cape, essence du Vide, cristal violet, pierre de Vide.", [
-        item("Ingredient_Bolt_Shadoweave", 2, 3),
+    "Archdiviner": ("L'Archidevin : chutes d'ombretisse de sa cape, essence du Vide, cristal violet, pierre de Vide.", [
+        item("Ingredient_Fabric_Scrap_Shadoweave", 2, 3),
         item("Ingredient_Void_Essence", 3, 5),
         item("Ingredient_Crystal_Purple", 1, 2, chance=60),
         item("Rock_Gem_Voidstone", 1, chance=35),
@@ -61,9 +61,9 @@ LOOT = {
         item("Ingredient_Feathers_Red", 2, 4, chance=70),
         item("Ore_Gold", 1, 2, chance=40),
     ]),
-    "Imbued_Shaman": ("Le Chamane imprégné : essence de feu, rouleau de tisse-cendre, charbon du volcan, rubis.", [
+    "Imbued_Shaman": ("Le Chamane imprégné : essence de feu, chutes de tisse-cendre, charbon du volcan, rubis.", [
         item("Ingredient_Fire_Essence", 4, 6),
-        item("Ingredient_Bolt_Cindercloth", 1, 2),
+        item("Ingredient_Fabric_Scrap_Cindercloth", 1, 2),
         item("Ingredient_Charcoal", 3, 6),
         item("Rock_Gem_Ruby", 1, chance=40),
     ]),
@@ -72,13 +72,13 @@ LOOT = {
         item("Ingredient_Charcoal", 1, 2, chance=50),
     ]),
     # --- Tempête de neige : Svanir et bêtes du froid -------------------------------------------------
-    "Frost_Cultist": ("Fils de Svanir (groupes de la forêt) : laine de sa cape, peau de bête.", [
-        item("Ingredient_Fabric_Scrap_Wool", 1, 2),
+    "Frost_Cultist": ("Fils de Svanir (groupes de la forêt) : ombretisse de sa cape, peau de bête.", [
+        item("Ingredient_Fabric_Scrap_Shadoweave", 1, 2),
         item("Ingredient_Hide_Medium", 1, chance=30),
     ]),
-    "Frost_Caster": ("Incantateur de Svanir (groupes de la forêt) : essence de glace, laine, graine de givre.", [
+    "Frost_Caster": ("Incantateur de Svanir (groupes de la forêt) : essence de glace, ombretisse, graine de givre.", [
         item("Ingredient_Ice_Essence", 1, 2),
-        item("Ingredient_Fabric_Scrap_Wool", 1),
+        item("Ingredient_Fabric_Scrap_Shadoweave", 1),
         item("Plant_Seeds_Ice", 1, chance=10),
     ]),
     "Frost_Wolf": ("Loup des neiges (groupes de la forêt) : peau, viande sauvage, os.", [
@@ -91,10 +91,10 @@ LOOT = {
         item("Ingredient_Crystal_Cyan", 1, 2, chance=70),
         item("Rock_Gem_Sapphire", 1, chance=30),
     ]),
-    "Shaman_Bear": ("Le Chaman légendaire, vaincu sous sa forme d'ours : cuir lourd, essence de glace, laine, saphir.", [
+    "Shaman_Bear": ("Le Chaman légendaire, vaincu sous sa forme d'ours : cuir lourd, essence de glace, ombretisse, saphir.", [
         item("Ingredient_Hide_Heavy", 3, 4),
         item("Ingredient_Ice_Essence", 3, 5),
-        item("Ingredient_Bolt_Wool", 1, 2, chance=70),
+        item("Ingredient_Fabric_Scrap_Shadoweave", 1, 2, chance=70),
         item("Rock_Gem_Sapphire", 1, chance=35),
     ]),
     "Corrupted_Crystal": ("Cristal de glace corrompu (grotte du Chaman) : cristal cyan, essence de glace.", [
@@ -133,21 +133,21 @@ LOOT = {
         item("Ingredient_Hide_Scaled", 2),
         item("Food_Fish_Raw_Rare", 1, chance=40),
     ]),
-    "Luxon_Sailor": ("Marin luxon corrompu (épave) : coton de sa tenue, poudre, flèches de fer, sangle.", [
-        item("Ingredient_Fabric_Scrap_Cotton", 1, 2),
+    "Luxon_Sailor": ("Marin luxon corrompu (épave) : ombretisse de sa tenue corrompue, poudre, flèches de fer, sangle.", [
+        item("Ingredient_Fabric_Scrap_Shadoweave", 1, 2),
         item("Ingredient_Powder_Boom", 1, chance=30),
         item("Weapon_Arrow_Iron", 2, 4, chance=30),
         item("Ingredient_Strap_Leather", 1, chance=20),
     ]),
-    "First_Mate_Dolus": ("Le second Dolus : rouleaux de coton, poudre de la cale, argent du bord, émeraude (jade).", [
-        item("Ingredient_Bolt_Cotton", 2),
+    "First_Mate_Dolus": ("Le second Dolus : chutes d'ombretisse, poudre de la cale, argent du bord, émeraude (jade).", [
+        item("Ingredient_Fabric_Scrap_Shadoweave", 2),
         item("Ingredient_Powder_Boom", 2, 4),
         item("Ingredient_Bar_Silver", 1, 2, chance=50),
         item("Rock_Gem_Emerald", 1, chance=30),
     ]),
-    "Kanaxai": ("Kanaxai : essence du Vide, ombretisse, pierre de Vide, rarement un cœur du Vide.", [
+    "Kanaxai": ("Kanaxai : essence du Vide, chutes d'ombretisse, pierre de Vide, rarement un cœur du Vide.", [
         item("Ingredient_Void_Essence", 4, 6),
-        item("Ingredient_Bolt_Shadoweave", 2, 3),
+        item("Ingredient_Fabric_Scrap_Shadoweave", 2, 3),
         item("Rock_Gem_Voidstone", 1, chance=50),
         item("Ingredient_Voidheart", 1, chance=10),
     ]),
@@ -311,7 +311,7 @@ LOOT = {
     ]),
     "Shadow_Minotaur": ("Esprit du Minotaure des ombres : essence du Vide, ombretisse, pierre de vide.", [
         item("Ingredient_Void_Essence", 2, 3),
-        item("Ingredient_Bolt_Shadoweave", 1),
+        item("Ingredient_Fabric_Scrap_Shadoweave", 1),
         item("Rock_Gem_Voidstone", 1, chance=40),
     ]),
     "Deepstone_Shade": ("Ombre de la Roche des Abysses : ombretisse.", [
@@ -319,7 +319,7 @@ LOOT = {
     ]),
     "The_Voice": ("La Voix : essence du Vide, ombretisse, cristal violet, saphir des nains.", [
         item("Ingredient_Void_Essence", 3, 4),
-        item("Ingredient_Bolt_Shadoweave", 1, 2),
+        item("Ingredient_Fabric_Scrap_Shadoweave", 1, 2),
         item("Ingredient_Crystal_Purple", 1, 2),
         item("Rock_Gem_Sapphire", 1, chance=50),
     ]),

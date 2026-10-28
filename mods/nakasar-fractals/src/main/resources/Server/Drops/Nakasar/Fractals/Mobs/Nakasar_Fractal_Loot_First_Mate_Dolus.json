@@ -1,12 +1,12 @@
 {
-  "$Comment": "Le second Dolus : rouleaux de coton, poudre de la cale, argent du bord, émeraude (jade). Généré par tools/generate_mob_loot.py.",
+  "$Comment": "Le second Dolus : chutes d'ombretisse, poudre de la cale, argent du bord, émeraude (jade). Généré par tools/generate_mob_loot.py.",
   "Container": {
     "Type": "Multiple",
     "Containers": [
       {
         "Type": "Single",
         "Item": {
-          "ItemId": "Ingredient_Bolt_Cotton",
+          "ItemId": "Ingredient_Fabric_Scrap_Shadoweave",
           "QuantityMin": 2,
           "QuantityMax": 2
         }

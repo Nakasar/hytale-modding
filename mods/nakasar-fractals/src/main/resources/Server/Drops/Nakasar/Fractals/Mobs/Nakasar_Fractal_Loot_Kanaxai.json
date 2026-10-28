@@ -1,5 +1,5 @@
 {
-  "$Comment": "Kanaxai : essence du Vide, ombretisse, pierre de Vide, rarement un cœur du Vide. Généré par tools/generate_mob_loot.py.",
+  "$Comment": "Kanaxai : essence du Vide, chutes d'ombretisse, pierre de Vide, rarement un cœur du Vide. Généré par tools/generate_mob_loot.py.",
   "Container": {
     "Type": "Multiple",
     "Containers": [
@@ -14,7 +14,7 @@
       {
         "Type": "Single",
         "Item": {
-          "ItemId": "Ingredient_Bolt_Shadoweave",
+          "ItemId": "Ingredient_Fabric_Scrap_Shadoweave",
           "QuantityMin": 2,
           "QuantityMax": 3
         }

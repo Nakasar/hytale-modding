@@ -1,12 +1,12 @@
 {
-  "$Comment": "L'Archidevin : rouleaux d'ombretisse de sa cape, essence du Vide, cristal violet, pierre de Vide. Généré par tools/generate_mob_loot.py.",
+  "$Comment": "L'Archidevin : chutes d'ombretisse de sa cape, essence du Vide, cristal violet, pierre de Vide. Généré par tools/generate_mob_loot.py.",
   "Container": {
     "Type": "Multiple",
     "Containers": [
       {
         "Type": "Single",
         "Item": {
-          "ItemId": "Ingredient_Bolt_Shadoweave",
+          "ItemId": "Ingredient_Fabric_Scrap_Shadoweave",
           "QuantityMin": 2,
           "QuantityMax": 3
         }
