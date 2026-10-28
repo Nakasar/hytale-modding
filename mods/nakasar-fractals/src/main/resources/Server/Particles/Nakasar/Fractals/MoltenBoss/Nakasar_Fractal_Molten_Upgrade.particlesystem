@@ -1,0 +1,12 @@
+{
+  "$Comment": "Le survivant absorbe la flamme de l'autre : colonne de feu. Généré par tools/generate_molten_boss.py.",
+  "Spawners": [
+    {
+      "SpawnerId": "Nakasar_Fractal_Molten_Upgrade_Pillar",
+      "PositionOffset": {
+        "Y": 0.0
+      }
+    }
+  ],
+  "CullDistance": 72
+}

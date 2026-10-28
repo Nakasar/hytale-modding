@@ -1,0 +1,16 @@
+{
+  "TranslationProperties": {
+    "Name": "nakasar_fractals.items.Nakasar_Fractal_Core_MoltenBoss.name",
+    "Description": "nakasar_fractals.items.Nakasar_Fractal_Core_MoltenBoss.description"
+  },
+  "Icon": "Icons/Items/Nakasar/Fractals/Core_MoltenBoss.png",
+  "Model": "Items/Nakasar/Fractals/Core_MoltenBoss.blockymodel",
+  "Texture": "Items/Nakasar/Fractals/Core_MoltenBoss.png",
+  "Quality": "Rare",
+  "Categories": [
+    "Items.Ingredients"
+  ],
+  "PlayerAnimationsId": "Item",
+  "ItemSoundSetId": "ISS_Items_Gems",
+  "MaxStack": 1
+}

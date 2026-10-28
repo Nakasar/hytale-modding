@@ -21,7 +21,7 @@ public final class FractalCatalog {
     public static final String OBSERVATORY = "Nakasar_Fractal_Observatory";
     /** Fractales connues, dans l'ordre du distributeur de noyaux. */
     public static final List<String> IDS = List.of("Cliffside", "Uncategorized", "Volcanic", "SolidOcean", "Swampland", "Snowblind", "SilentSurf", "SirensReef", "Deepstone",
-            "SunquaPeak");
+            "SunquaPeak", "MoltenBoss");
 
     private FractalCatalog() {
     }

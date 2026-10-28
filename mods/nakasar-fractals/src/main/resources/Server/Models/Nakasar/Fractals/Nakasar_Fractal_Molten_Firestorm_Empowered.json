@@ -1,0 +1,10 @@
+{
+  "$Comment": "Tempête de feu en fusion renforcée : la même (x 3), lueur blanche.",
+  "Parent": "Spirit_Ember",
+  "MinScale": 3.0,
+  "MaxScale": 3.0,
+  "Light": {
+    "Color": "#ffd",
+    "Radius": 9
+  }
+}

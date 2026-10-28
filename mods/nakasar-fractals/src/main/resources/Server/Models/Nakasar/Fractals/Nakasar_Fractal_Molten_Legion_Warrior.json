@@ -1,0 +1,6 @@
+{
+  "$Comment": "Guerrier de la Légion de la Flamme : trork guerrier vanilla.",
+  "Parent": "Trork_Warrior",
+  "MinScale": 1.0,
+  "MaxScale": 1.0
+}

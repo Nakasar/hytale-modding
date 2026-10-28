@@ -289,6 +289,20 @@ Aucun boss ne se soigne ; une remise à zéro (20 s sans personne) le retire et 
 
 Générateurs : `tools/generate_sunqua_peak.py` (assets, rôles, effets, `SunquaPeakLayout.java`) et `tools/sunqua_peak_scenery.py` (massif, îlots, plateau, corniche, terrasse, cratère, arène ; feuillage rose `Nakasar_Fractal_Sunqua_Blossom` = texture vanilla Rhododendron_Pink). Code : paquet `sunquapeak`.
 
+### Boss en fusion (Molten Boss), cinquième fractale de la saison 2
+
+La fonderie de l'Alliance en fusion (d'après le guide Hardstuck et la carte envoyée par Kevin le 28 octobre 2026), avec **Braham et Rox** (invulnérables, ils suivent le groupe au pont du creuset).
+
+1. **Atelier** : quatre meutes draguerres et Légion de la Flamme (gobelins et trorks vanilla), réveillées à 34 blocs.
+2. **Résonateur** : la quatrième meute garde un résonateur qui rend le chaman de la flamme d'élite invulnérable (rayon et icône) ; tout vaincu, le Java pose le **pont du canal de lave**. Le canal brûle et renvoie au point de retour.
+3. **Effigie en fusion** : chaîne de protections résonateur → Protecteur → Effigie, onde de choc blanche à sauter (recul), charges de Puissance (+12 % par charge, 5 au plus).
+4. **Cour et passerelle des cuves** : quatre groupes, puis la barrière du pont du creuset s'ouvre.
+5. **Berserker et Tempête de feu** : téléportations, ondes blanches au sol (sauter) et bleues en l'air (rester au sol), flammes qui laissent un brasier ; chaque quart de vie perdu enrage l'autre ; le survivant revient **renforcé** (débris, ou couronne de vent brûlant au bord qui pousse vers le vide). Une remise à zéro en phase 2 reprend la phase 2.
+
+Différences avec GW2 : pas de levée d'enrage en 50 coups (l'enrage dure 12 s) ; le survivant renforcé est un nouveau rôle (1600 PV) plutôt qu'un soin complet. Aucun boss ne se soigne hors combat ; une remise à zéro (20 s sans personne) le retire et il revient neuf.
+
+Générateurs : `tools/generate_molten_boss.py` (assets, rôles, effets, `MoltenBossLayout.java`) et `tools/molten_boss_scenery.py` (camp, rampe, atelier, canal, fonderie, cour, passerelle, chaudières, plate-forme). Code : paquet `moltenboss`.
+
 ### Saison 2 et suivantes
 
 Les autres fractales de GW2, à reprendre de la même façon (wiki relu avant chacune) :
@@ -297,11 +311,10 @@ Les autres fractales de GW2, à reprendre de la même façon (wiki relu avant ch
 | --- | --- | --- |
 | [Éthérolame (Aetherblade)](https://wiki.guildwars2.com/wiki/Aetherblade_Fractal) | sol en dalles qui s'illuminent (mortelles), champs de force tournants, barrage de canons | Frizz : champs de force rapide (sauter sur les caisses) et lent (le distancer), golems |
 | [Capitaine Mai Trin](https://wiki.guildwars2.com/wiki/Captain_Mai_Trin_Boss_Fractal) | 10 piles de bouclier retirées seulement en l'attirant dans les tirs électriques de son second, barrages à 75/50/25 % | Mai Trin et Horrik |
-| [Boss en fusion (Molten Boss)](https://wiki.guildwars2.com/wiki/Molten_Boss_Fractal) | 8 groupes avec Protecteurs (rendent un allié invulnérable), bombes à fumée annoncées | duo Berserker / Tempête de feu : chaque 25 % perdu enrage l'autre (50 coups retirent l'enrage), le survivant hérite des attaques ; ondes de choc à sauter |
 | Fournaise en fusion, Réacteur thaumanova, Installation souterraine, Champ de bataille urbain, Chaos, Oasis du crépuscule | rencontres en chaîne variées | à détailler |
 | Cauchemar, Observatoire brisé, Tour solitaire, Kinfall | fractales « boss » avec mode défi | pour le rang Maître |
 
-(Kinfall : nom français non vérifié. Silent Surf est devenu le Ressac silencieux, Siren's Reef le Récif de la Sirène, Deepstone la Roche des Abysses et Sunqua Peak le Pic de Sunqua, ci-dessus.)
+(Kinfall : nom français non vérifié. Silent Surf est devenu le Ressac silencieux, Siren's Reef le Récif de la Sirène, Deepstone la Roche des Abysses, Sunqua Peak le Pic de Sunqua et Molten Boss le Boss en fusion, ci-dessus.)
 
 ## Runes et objets de soutien (26 octobre 2026)
 

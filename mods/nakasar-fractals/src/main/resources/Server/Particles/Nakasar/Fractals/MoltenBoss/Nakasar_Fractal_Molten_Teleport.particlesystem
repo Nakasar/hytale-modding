@@ -1,0 +1,12 @@
+{
+  "$Comment": "Le Berserker se téléporte : gerbe de braises. Généré par tools/generate_molten_boss.py.",
+  "Spawners": [
+    {
+      "SpawnerId": "Nakasar_Fractal_Molten_Teleport_Burst",
+      "PositionOffset": {
+        "Y": 0.4
+      }
+    }
+  ],
+  "CullDistance": 72
+}

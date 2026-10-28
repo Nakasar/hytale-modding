@@ -1,0 +1,6 @@
+{
+  "$Comment": "Mineur draguerre : gobelin mineur vanilla.",
+  "Parent": "Goblin_Miner",
+  "MinScale": 1.0,
+  "MaxScale": 1.0
+}

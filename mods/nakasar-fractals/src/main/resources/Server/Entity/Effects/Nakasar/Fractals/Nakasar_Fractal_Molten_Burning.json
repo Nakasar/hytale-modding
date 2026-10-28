@@ -1,0 +1,12 @@
+{
+  "$Comment": "Brûlure de la fonderie : la vie s'en va (Java, moltenboss).",
+  "Name": "nakasar_fractals_molten_boss.effects.Nakasar_Fractal_Molten_Burning",
+  "Debuff": true,
+  "StatusEffectIcon": "UI/StatusEffects/Nakasar/Fractals/Molten_Burning.png",
+  "ApplicationEffects": {
+    "EntityBottomTint": "#ff5a10"
+  },
+  "OverlapBehavior": "Overwrite",
+  "Infinite": false,
+  "Duration": 4.0
+}

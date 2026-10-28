@@ -1,0 +1,10 @@
+{
+  "$Comment": "Tempête de feu en fusion : esprit de braise vanilla (x 2,6), en vol.",
+  "Parent": "Spirit_Ember",
+  "MinScale": 2.6,
+  "MaxScale": 2.6,
+  "Light": {
+    "Color": "#f60",
+    "Radius": 7
+  }
+}

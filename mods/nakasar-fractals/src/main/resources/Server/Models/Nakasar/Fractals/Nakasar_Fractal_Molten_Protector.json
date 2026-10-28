@@ -1,0 +1,10 @@
+{
+  "$Comment": "Protecteur en fusion : grand esprit de braise vanilla (x 1,8).",
+  "Parent": "Spirit_Ember",
+  "MinScale": 1.8,
+  "MaxScale": 1.8,
+  "Light": {
+    "Color": "#fc6",
+    "Radius": 5
+  }
+}

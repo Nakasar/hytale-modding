@@ -1,0 +1,57 @@
+{
+  "$Comment": "Guerrier de la Légion : coup d'épée brûlant (14 dégâts, Brûlure 3 s).",
+  "Type": "Serial",
+  "Interactions": [
+    {
+      "$Comment": "Coup brûlant.",
+      "Type": "Simple",
+      "RunTime": 0.4,
+      "Effects": {
+        "WorldSoundEventId": "SFX_Light_Melee_T2_Swing"
+      },
+      "Next": {
+        "Type": "Selector",
+        "RunTime": 0.15,
+        "Selector": {
+          "Id": "Horizontal",
+          "Direction": "ToLeft",
+          "TestLineOfSight": true,
+          "ExtendTop": 0.8,
+          "ExtendBottom": 0.8,
+          "StartDistance": 0.2,
+          "EndDistance": 2.8,
+          "Length": 100,
+          "RollOffset": 0,
+          "YawStartOffset": 50
+        },
+        "HitEntity": {
+          "Interactions": [
+            {
+              "Parent": "DamageEntityParent",
+              "DamageCalculator": {
+                "BaseDamage": {
+                  "Physical": 14
+                },
+                "RandomPercentageModifier": 0.1
+              },
+              "DamageEffects": {
+                "WorldSoundEventId": "SFX_T1_Impact_Blunt",
+                "WorldParticles": [
+                  {
+                    "SystemId": "Impact_Sword_Basic_Stronk"
+                  }
+                ]
+              }
+            },
+            {
+              "Type": "ApplyEffect",
+              "EffectId": "Nakasar_Fractal_Molten_Burning",
+              "Entity": "Target",
+              "Duration": 3
+            }
+          ]
+        }
+      }
+    }
+  ]
+}

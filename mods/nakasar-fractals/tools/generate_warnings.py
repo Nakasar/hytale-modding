@@ -69,6 +69,7 @@ JAVA_LINES = [
     (11, 5, "deepstone.EastPath vent du pont : WIND_LENGTH x WIND_WIDTH"),
     (11, 4, "sunquapeak.WaterPath cascades : SURGE_LENGTH x SURGE_WIDTH"),
     (36, 4, "sunquapeak.Ai ondes d'orbes : ORB_LINE_LENGTH x ORB_LINE_WIDTH"),
+    (6, 6.9, "moltenboss.MoltenDuo couronne de vent : WIND_BAND x WIND_LENGTH"),
 ]
 WARNING_TENTHS = range(5, 61)   # Telegraphs.WARNING_MIN / WARNING_MAX : toutes écrites, le Java en demande à la volée
 

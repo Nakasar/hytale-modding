@@ -1,0 +1,38 @@
+{
+  "$Comment": "Résonateur draguerre : rend invulnérable l'allié qu'il relie (Java, moltenboss.Packs et moltenboss.Effigy). Généré par tools/generate_molten_boss.py.",
+  "Type": "Generic",
+  "Appearance": "Nakasar_Fractal_Dredge_Resonator",
+  "NameTranslationKey": "nakasar_fractals_molten_boss.npc.Dredge_Resonator.name",
+  "MaxHealth": 300,
+  "StartState": "Idle",
+  "DefaultPlayerAttitude": "Hostile",
+  "DefaultNPCAttitude": "Ignore",
+  "MotionControllerList": [
+    {
+      "Type": "Walk",
+      "MaxWalkSpeed": 0.1,
+      "Gravity": 10,
+      "MaxFallSpeed": 10,
+      "Acceleration": 10,
+      "JumpHeight": 1.0
+    }
+  ],
+  "KnockbackScale": 0,
+  "SpawnLockTime": 0.2,
+  "Instructions": [
+    {
+      "Sensor": {
+        "Type": "State",
+        "State": "Idle"
+      },
+      "Instructions": [
+        {
+          "Actions": []
+        }
+      ]
+    }
+  ],
+  "DisableDamageGroups": [
+    "Nakasar_Fractal_Foes"
+  ]
+}

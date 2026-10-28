@@ -1,0 +1,10 @@
+{
+  "$Comment": "Berserker en fusion : golem d'acier de feu vanilla (x 1,7).",
+  "Parent": "Golem_Firesteel",
+  "MinScale": 1.7,
+  "MaxScale": 1.7,
+  "Light": {
+    "Color": "#f84",
+    "Radius": 6
+  }
+}
