@@ -26,7 +26,6 @@ import org.joml.Vector3d;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -43,7 +42,7 @@ import java.util.WeakHashMap;
  *   <li>la plate-forme du creuset : le Berserker et la Tempête de feu en fusion ({@link MoltenDuo}).</li>
  * </ol>
  * La lave (bassins, creuset, canal) brûle ; tombé dans le canal, on revient au dernier point de retour. Pas de soin
- * nulle part (AGENTS.md) : un boss laissé seul {@value #RESET_SECONDS} s disparaît et revient neuf. Tout ce que pose le
+ * nulle part (AGENTS.md) : un boss laissé seul attend, avec ses PV du moment. Tout ce que pose le
  * Java est non sauvegardé : une instance rechargée repart du départ.
  */
 public final class MoltenBoss implements FractalStage {
@@ -71,7 +70,6 @@ public final class MoltenBoss implements FractalStage {
     static final float LAVA_PART = 0.08f;
     /** Tombé dans le canal : ramené au point de retour après ce temps. */
     static final float CHANNEL_SECONDS = 1.5f;
-    static final float RESET_SECONDS = 20f;
     /** Un monstre tombé de plus de 4 blocs sous son aire y est ramené. */
     static final double FALL_LIMIT = 4;
 
@@ -92,12 +90,12 @@ public final class MoltenBoss implements FractalStage {
         long lastTick;
     }
 
-    /** Cases de lave (x, z) des bassins et du creuset, en clés {@link #cell}. */
-    private static final Set<Long> LAVA = new HashSet<>();
+    /** Cases de lave des bassins et du creuset, en clés {@link #cell} : y du sol autour (surface un bloc dessous). */
+    private static final Map<Long, Integer> LAVA = new HashMap<>();
 
     static {
         for (int[] c : MoltenBossLayout.LAVA_CELLS) {
-            LAVA.add(cell(c[0], c[1]));
+            LAVA.put(cell(c[0], c[1]), c[2]);
         }
     }
 
@@ -118,7 +116,7 @@ public final class MoltenBoss implements FractalStage {
             BossBarSystem.register(role);
         }
         BossBarSystem.label(EFFIGY, Effigy::label);
-        Instabilities.exempt(BRAHAM, ROX, RESONATOR);
+        Instabilities.exempt(BRAHAM, ROX);
     }
 
     @Override
@@ -224,8 +222,8 @@ public final class MoltenBoss implements FractalStage {
     }
 
     /**
-     * La lave : dans un bassin ou le creuset, elle brûle ; dans le canal (sous le niveau du sol), elle brûle puis
-     * rejette au dernier point de retour au bout de {@value #CHANNEL_SECONDS} s. La brûlure ronge la vie tant qu'elle dure.
+     * La lave : dans un bassin ou le creuset, elle brûle ; dans le canal (sous le niveau du sol) ou au fond du gouffre,
+     * elle brûle puis rejette au dernier point de retour au bout de {@value #CHANNEL_SECONDS} s. La brûlure ronge la vie tant qu'elle dure.
      */
     private static void lava(World world, Store<EntityStore> store, State st, List<PlayerRef> players, float dt) {
         for (PlayerRef p : players) {
@@ -235,9 +233,10 @@ public final class MoltenBoss implements FractalStage {
                 continue;
             }
             // La surface de la lave est un bloc sous le sol : on y est quand les pieds sont sous le niveau du sol.
-            boolean inLava = at.y() < MoltenBossLayout.LAVA_FLOOR_Y - 0.1 && at.y() > MoltenBossLayout.LAVA_FLOOR_Y - 3
-                    && LAVA.contains(cell((int) Math.floor(at.x()), (int) Math.floor(at.z())));
-            if (MoltenBossLayout.CHANNEL.contains(at.x(), at.y(), at.z())) {
+            Integer floor = LAVA.get(cell((int) Math.floor(at.x()), (int) Math.floor(at.z())));
+            boolean inLava = floor != null && at.y() < floor - 0.1 && at.y() > floor - 3;
+            // Canal et gouffre : on brûle, puis on revient au dernier point de retour.
+            if (MoltenBossLayout.CHANNEL.contains(at.x(), at.y(), at.z()) || at.y() < MoltenBossLayout.ABYSS_Y) {
                 inLava = true;
                 float t = st.channel.merge(p.getUuid(), dt, Float::sum);
                 if (t >= CHANNEL_SECONDS) {
@@ -262,6 +261,16 @@ public final class MoltenBoss implements FractalStage {
     // --- coups, morts ----------------------------------------------------------------------------------------------
 
     @Override
+    public boolean shielded(World world, Store<EntityStore> store, Ref<EntityStore> ref, String role) {
+        State st = state(world);
+        return switch (role) {
+            case ELITE_SHAMAN -> st.packs.shamanShielded(store);
+            case PROTECTOR, EFFIGY -> st.effigy.shielded(store, role);
+            default -> false;
+        };
+    }
+
+    @Override
     public void filter(World world, Store<EntityStore> store, CommandBuffer<EntityStore> buffer, Ref<EntityStore> victim,
                        String victimRole, Ref<EntityStore> attacker, Damage damage) {
         State st = state(world);
@@ -272,12 +281,7 @@ public final class MoltenBoss implements FractalStage {
             }
             return;
         }
-        boolean shielded = switch (victimRole) {
-            case ELITE_SHAMAN -> st.packs.shamanShielded(store);
-            case PROTECTOR, EFFIGY -> st.effigy.shielded(store, victimRole);
-            default -> false;
-        };
-        if (shielded) {
+        if (shielded(world, store, victim, victimRole)) {
             damage.setCancelled(true);
             PlayerRef by = attacker == null ? null : buffer.getComponent(attacker, PlayerRef.getComponentType());
             if (by != null) {

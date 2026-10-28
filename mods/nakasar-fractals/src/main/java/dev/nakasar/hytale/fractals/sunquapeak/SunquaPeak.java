@@ -322,6 +322,17 @@ public final class SunquaPeak implements FractalStage {
     // --- coups, morts ----------------------------------------------------------------------------------------------
 
     @Override
+    public boolean shielded(World world, Store<EntityStore> store, Ref<EntityStore> ref, String role) {
+        State st = state(world);
+        return switch (role) {
+            case VOICE -> st.voice.shielded();
+            case FURY -> st.fury.shielded();
+            case AI, AI_DARK -> st.ai.shielded();
+            default -> false;
+        };
+    }
+
+    @Override
     public void filter(World world, Store<EntityStore> store, CommandBuffer<EntityStore> buffer, Ref<EntityStore> victim,
                        String victimRole, Ref<EntityStore> attacker, Damage damage) {
         State st = state(world);

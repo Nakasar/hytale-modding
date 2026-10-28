@@ -21,7 +21,7 @@
       "EffectId": "Nakasar_Fractal_Molten_Burning",
       "EffectDuration": 4,
       "PlayersOnly": true,
-      "ImpactParticle": "Fire_AoE_Spawn"
+      "HitParticle": "Nakasar_Fractal_Molten_Impact"
     },
     {
       "Type": "Simple",

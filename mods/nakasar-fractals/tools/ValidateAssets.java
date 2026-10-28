@@ -991,6 +991,11 @@ public class ValidateAssets {
             Pattern.compile("Particles/Textures/(?:Indicators/Warning_[A-Za-z0-9_]+|Basic/Ball5)\\.png");
     /** Zones favorables : pas d'annonce de danger, elles gardent leur couleur (cercle vert de Carnasse). */
     private static final Set<String> POSITIVE_ZONES = Set.of("Nakasar_Fractal_Green_Zone_Edge");
+    /**
+     * Anneaux d'onde de choc du Boss en fusion (contour Warning_Circle_Base qui grandit) : c'est le coup lui-même, pas
+     * son annonce ; blanc au sol (à sauter), bleu en l'air (rester au sol), comme dans GW2.
+     */
+    private static final String SHOCK_RINGS = "Nakasar_Fractal_Molten_Shock_";
 
     /**
      * Zones d'annonce des attaques (Kevin, 26 octobre 2026 : « une zone d'annonce ennemie/danger doit être rouge orangée
@@ -1019,7 +1024,7 @@ public class ValidateAssets {
             String texture = particle.containsKey("Texture") ? particle.getString("Texture").getValue() : "";
             String textureName = texture.substring(texture.lastIndexOf('/') + 1);
             boolean warning = rel.contains("/Warnings/") || textureName.startsWith("Warning_");
-            if (!warning || POSITIVE_ZONES.contains(id)) {
+            if (!warning || POSITIVE_ZONES.contains(id) || id.startsWith(SHOCK_RINGS)) {
                 continue;
             }
             zones++;

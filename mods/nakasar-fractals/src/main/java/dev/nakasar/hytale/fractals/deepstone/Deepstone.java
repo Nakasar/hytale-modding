@@ -380,6 +380,17 @@ public final class Deepstone implements FractalStage {
     }
 
     @Override
+    public boolean shielded(World world, Store<EntityStore> store, Ref<EntityStore> ref, String role) {
+        State st = state(world);
+        return switch (role) {
+            case MINOTAUR -> !st.minotaur.vulnerable();
+            case QUEEN -> st.east.queenShielded();
+            case VOICE -> st.voice.shielded();
+            default -> false;
+        };
+    }
+
+    @Override
     public void filter(World world, Store<EntityStore> store, CommandBuffer<EntityStore> buffer, Ref<EntityStore> victim,
                        String victimRole, Ref<EntityStore> attacker, Damage damage) {
         if (victimRole == null) {

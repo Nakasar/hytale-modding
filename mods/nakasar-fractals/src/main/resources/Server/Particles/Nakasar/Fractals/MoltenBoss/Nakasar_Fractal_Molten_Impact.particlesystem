@@ -1,0 +1,18 @@
+{
+  "$Comment": "Coup qui tombe dans un cercle (boule de feu, bond, pluie de flammes) : gerbe de flammes dans un rayon d'un bloc à l'échelle 1 ; posée à l'échelle du rayon de la zone (ImpactParticleScale), elle ne déborde jamais du cercle rouge. Généré par tools/generate_molten_boss.py.",
+  "Spawners": [
+    {
+      "SpawnerId": "Nakasar_Fractal_Molten_Impact_Flame",
+      "PositionOffset": {
+        "Y": 0.0
+      }
+    },
+    {
+      "SpawnerId": "Nakasar_Fractal_Molten_Impact_Ember",
+      "PositionOffset": {
+        "Y": 0.1
+      }
+    }
+  ],
+  "CullDistance": 72
+}

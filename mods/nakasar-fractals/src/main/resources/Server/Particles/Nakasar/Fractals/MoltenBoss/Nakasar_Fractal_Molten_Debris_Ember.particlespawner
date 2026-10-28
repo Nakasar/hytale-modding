@@ -31,8 +31,8 @@
       "Opacity": 1,
       "Scale": {
         "X": {
-          "Min": 0.1,
-          "Max": 0.2
+          "Min": 0.05,
+          "Max": 0.1
         }
       }
     }
@@ -42,7 +42,7 @@
   "EmitOffset": {
     "X": {
       "Min": 0,
-      "Max": 0.8
+      "Max": 0.6
     },
     "Y": {
       "Min": 0,
@@ -50,20 +50,20 @@
     },
     "Z": {
       "Min": 0,
-      "Max": 0.8
+      "Max": 0.6
     }
   },
   "InitialVelocity": {
     "Speed": {
       "Min": 2.0,
-      "Max": 4.0
+      "Max": 3.5
     },
     "Yaw": {
       "Min": -180,
       "Max": 180
     },
     "Pitch": {
-      "Min": 20,
+      "Min": 80,
       "Max": 90
     }
   },

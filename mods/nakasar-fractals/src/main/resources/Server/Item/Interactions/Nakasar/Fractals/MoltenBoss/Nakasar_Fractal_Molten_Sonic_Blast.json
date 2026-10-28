@@ -20,7 +20,7 @@
       "Damage": 14,
       "Knockback": 6,
       "PlayersOnly": true,
-      "ImpactParticle": "Nakasar_Fractal_Storm_Disperse"
+      "HitParticle": "Nakasar_Fractal_Storm_Disperse"
     },
     {
       "Type": "Simple",

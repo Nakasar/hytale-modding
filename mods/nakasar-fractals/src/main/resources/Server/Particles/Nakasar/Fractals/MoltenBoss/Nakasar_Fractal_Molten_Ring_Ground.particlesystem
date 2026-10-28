@@ -6,6 +6,12 @@
       "PositionOffset": {
         "Y": 0.0
       }
+    },
+    {
+      "SpawnerId": "Nakasar_Fractal_Molten_Ring_Ground_Ember",
+      "PositionOffset": {
+        "Y": 0.1
+      }
     }
   ],
   "CullDistance": 72

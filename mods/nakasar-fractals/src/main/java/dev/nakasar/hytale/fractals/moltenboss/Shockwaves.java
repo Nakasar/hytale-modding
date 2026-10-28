@@ -49,8 +49,16 @@ final class Shockwaves {
 
     private final List<Wave> waves = new ArrayList<>();
 
-    void add(Vector3d center, double max, Kind kind, float part) {
+    /**
+     * Une onde qui part de `center` et court jusqu'à `max` blocs ({@link MoltenBossLayout#SHOCK_REACH_EFFIGY} ou
+     * {@link MoltenBossLayout#SHOCK_REACH_DUO} : l'anneau lumineux généré pour cette portée grandit à la même vitesse).
+     */
+    void add(Store<EntityStore> store, Vector3d center, double max, Kind kind, float part) {
         waves.add(new Wave(new Vector3d(center), max, kind, part));
+        boolean air = kind == Kind.AIR;
+        String ring = "Nakasar_Fractal_Molten_Shock_" + (air ? "Air_" : "Ground_") + Math.round(max);
+        Telegraphs.particle(store, ring, new Vector3d(center.x(), center.y() + (air ? MoltenBossLayout.AIR_RING_HEIGHT : 0),
+                center.z()), (float) (MoltenBossLayout.RING_SCALE * max));
     }
 
     void clear() {
@@ -71,15 +79,16 @@ final class Shockwaves {
                 continue;
             }
             boolean air = wv.kind == Kind.AIR;
-            // Redessiné tous les 1,5 bloc de rayon, 48 points au plus : l'anneau reste lisible sans noyer le client.
-            if ((int) (before / 1.5) != (int) (wv.radius / 1.5)) {
-                int n = Math.min(48, Math.max(8, (int) (wv.radius * 2.5)));
+            // Le front de l'onde : poussière (ou étincelles) redessinée tous les blocs de rayon, 64 points au plus, en
+            // plus de l'anneau lumineux posé au départ.
+            if ((int) before != (int) wv.radius) {
+                int n = Math.min(64, Math.max(10, (int) (wv.radius * 3)));
                 double y = wv.center.y() + (air ? MoltenBossLayout.AIR_RING_HEIGHT : 0);
                 String id = air ? "Nakasar_Fractal_Molten_Ring_Air" : "Nakasar_Fractal_Molten_Ring_Ground";
                 for (int k = 0; k < n; k++) {
                     double a = k * Math.PI * 2 / n;
                     Telegraphs.particle(store, id, new Vector3d(wv.center.x() + Math.cos(a) * wv.radius, y,
-                            wv.center.z() + Math.sin(a) * wv.radius), 0.6f);
+                            wv.center.z() + Math.sin(a) * wv.radius), 1f);
                 }
             }
             for (PlayerRef p : players) {

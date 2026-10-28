@@ -408,6 +408,11 @@ public final class Volcanic implements FractalStage {
     // --- coups, objets lancés, morts ---------------------------------------------------------------------
 
     @Override
+    public boolean shielded(World world, Store<EntityStore> store, Ref<EntityStore> ref, String role) {
+        return CHAMPION.equals(role) && state(world).champion.shielded(ref);
+    }
+
+    @Override
     public void filter(World world, Store<EntityStore> store, CommandBuffer<EntityStore> buffer, Ref<EntityStore> victim,
                        String victimRole, Ref<EntityStore> attacker, Damage damage) {
         if (TOTEM.equals(victimRole) || CAPTIVE.equals(victimRole)) {

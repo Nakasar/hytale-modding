@@ -31,8 +31,7 @@ import java.util.List;
  *   <li>le premier tombé, le survivant absorbe sa flamme (forme renforcée) : le Berserker fait pleuvoir des débris, la
  *   Tempête lève une couronne de vent brûlant au bord de la plate-forme, qui repousse vers le vide.</li>
  * </ul>
- * Personne sur la plate-forme pendant {@value MoltenBoss#RESET_SECONDS} s : les chefs disparaissent (sans soin) ; au
- * retour, le combat reprend à sa phase (le survivant renforcé seul, s'il en était là).
+ * Personne sur la plate-forme : les chefs attendent, avec leurs PV du moment (jamais de retour à neuf, AGENTS.md).
  */
 final class MoltenDuo {
 
@@ -69,7 +68,6 @@ final class MoltenDuo {
     /** Rôle renforcé du survivant (null : les deux vivent encore) ; gardé après une remise à zéro. */
     private String empowered;
     private final int[] quarters = new int[2];
-    private float idle;
     private float teleport;
     private float stomp;
     private boolean airNext;
@@ -99,19 +97,13 @@ final class MoltenDuo {
         boolean bAlive = berserker != null && Spawns.alive(store, berserker);
         boolean fAlive = firestorm != null && Spawns.alive(store, firestorm);
         if (!bAlive && !fAlive) {
-            clear(store, false);
+            clear();
             return true;
         }
         List<PlayerRef> here = MoltenBoss.near(store, players, c, radius + 4);
         if (here.isEmpty()) {
-            idle += dt;
-            if (idle >= MoltenBoss.RESET_SECONDS) {
-                clear(store, true);
-                Spawns.tellAll(world, Message.translation(MoltenBoss.MESSAGES + "duo.reset"));
-            }
-            return false;
+            return false;   // personne : les chefs attendent, avec leurs PV du moment
         }
-        idle = 0f;
         if (empowered == null && (!bAlive || !fAlive)) {
             upgrade(world, store, bAlive ? berserker : firestorm, bAlive);
             return false;
@@ -213,7 +205,7 @@ final class MoltenDuo {
             Vector3d from = Telegraphs.position(s, boss);
             if (from != null) {
                 Telegraphs.particle(s, "Stick_Slam_Ground_Large", from, 1.5f);
-                waves.add(from, radius * 2 + 4, air ? Shockwaves.Kind.AIR : Shockwaves.Kind.GROUND, STOMP_PART);
+                waves.add(s, from, MoltenBossLayout.SHOCK_REACH_DUO, air ? Shockwaves.Kind.AIR : Shockwaves.Kind.GROUND, STOMP_PART);
             }
         });
     }
@@ -407,33 +399,17 @@ final class MoltenDuo {
 
     private void engage(World world, Store<EntityStore> store, Vector3d c) {
         Vector3d entry = Spawns.point(MoltenBossLayout.CHECKPOINT_D);
-        if (empowered != null) {
-            Vector3d at = MoltenBoss.BERSERKER_2.equals(empowered) ? outOfPit(new Vector3d(c.x() + 6, c.y(), c.z() + 5))
-                    : new Vector3d(c.x() + Math.cos(orbit) * MoltenBossLayout.FIRESTORM_ORBIT,
-                    c.y() + MoltenBossLayout.FIRESTORM_HOVER, c.z() + Math.sin(orbit) * MoltenBossLayout.FIRESTORM_ORBIT);
-            Ref<EntityStore> ref = Spawns.spawnBoss(world, store, empowered, at, Telegraphs.yawToward(at, entry));
-            if (ref == null) {
-                return;
-            }
-            if (MoltenBoss.BERSERKER_2.equals(empowered)) {
-                berserker = ref;
-            } else {
-                firestorm = ref;
-            }
-        } else {
-            Vector3d b = outOfPit(new Vector3d(c.x() + 6, c.y(), c.z() + 5));
-            orbit = Math.PI / 4;
-            Vector3d f = new Vector3d(c.x() + Math.cos(orbit) * MoltenBossLayout.FIRESTORM_ORBIT,
-                    c.y() + MoltenBossLayout.FIRESTORM_HOVER, c.z() + Math.sin(orbit) * MoltenBossLayout.FIRESTORM_ORBIT);
-            berserker = Spawns.spawnBoss(world, store, MoltenBoss.BERSERKER, b, Telegraphs.yawToward(b, entry));
-            firestorm = Spawns.spawnBoss(world, store, MoltenBoss.FIRESTORM, f, Telegraphs.yawToward(f, entry));
-            if (berserker == null && firestorm == null) {
-                return;
-            }
+        Vector3d b = outOfPit(new Vector3d(c.x() + 6, c.y(), c.z() + 5));
+        orbit = Math.PI / 4;
+        Vector3d f = new Vector3d(c.x() + Math.cos(orbit) * MoltenBossLayout.FIRESTORM_ORBIT,
+                c.y() + MoltenBossLayout.FIRESTORM_HOVER, c.z() + Math.sin(orbit) * MoltenBossLayout.FIRESTORM_ORBIT);
+        berserker = Spawns.spawnBoss(world, store, MoltenBoss.BERSERKER, b, Telegraphs.yawToward(b, entry));
+        firestorm = Spawns.spawnBoss(world, store, MoltenBoss.FIRESTORM, f, Telegraphs.yawToward(f, entry));
+        if (berserker == null && firestorm == null) {
+            return;
         }
         engaged = true;
         fight++;
-        idle = 0f;
         quarters[0] = 0;
         quarters[1] = 0;
         teleport = 0f;
@@ -446,16 +422,21 @@ final class MoltenDuo {
         Spawns.tellAll(world, Message.translation(MoltenBoss.MESSAGES + "duo.enter"));
     }
 
-    /** Le premier chef tombé : le survivant disparaît dans une colonne de flammes et revient renforcé, à sa place. */
+    /**
+     * Le premier chef tombé : le survivant disparaît dans une colonne de flammes et revient renforcé, à sa place, avec
+     * la même part de vie.
+     */
     private void upgrade(World world, Store<EntityStore> store, Ref<EntityStore> survivor, boolean isBerserker) {
         Vector3d at = Telegraphs.position(store, survivor);
         Vector3d c = Spawns.point(MoltenBossLayout.ARENA);
         Vector3d where = at != null ? new Vector3d(at) : c;
         String role = isBerserker ? MoltenBoss.BERSERKER_2 : MoltenBoss.FIRESTORM_2;
+        float health = Hurt.healthFraction(store, survivor);
         Ref<EntityStore> ref = Spawns.spawnBoss(world, store, role, where, Telegraphs.yawToward(where, c));
         if (ref == null) {
             return;   // le survivant reste tel quel ; on réessaie au pas suivant
         }
+        Hurt.setHealthFraction(store, ref, health);   // renforcé, pas soigné (AGENTS.md)
         empowered = role;
         Spawns.remove(store, survivor);
         if (isBerserker) {
@@ -476,16 +457,12 @@ final class MoltenDuo {
         return Message.translation(MoltenBoss.MESSAGES + "npc." + suffix + ".name");
     }
 
-    /** Fin du combat ; `all` : les chefs encore là disparaissent aussi (remise à zéro, le renfort est gardé). */
-    private void clear(Store<EntityStore> store, boolean all) {
+    /** Fin du combat. */
+    private void clear() {
         waves.clear();
         pools.clear();
         gale = List.of();
         fight++;
-        if (all) {
-            Spawns.remove(store, berserker);
-            Spawns.remove(store, firestorm);
-        }
         berserker = null;
         firestorm = null;
         engaged = false;

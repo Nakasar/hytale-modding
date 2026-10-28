@@ -80,4 +80,13 @@ public final class Hurt {
         EntityStatValue health = stats == null ? null : stats.get(DefaultEntityStatTypes.getHealth());
         return health == null ? 0f : health.get() / Math.max(1f, health.getMax());
     }
+
+    /** Met la vie à `fraction` (0..1) de son max, 1 PV au moins : un boss qui change de rôle garde sa part de vie. */
+    public static void setHealthFraction(ComponentAccessor<EntityStore> store, Ref<EntityStore> ref, float fraction) {
+        EntityStatMap stats = store.getComponent(ref, EntityStatMap.getComponentType());
+        EntityStatValue health = stats == null ? null : stats.get(DefaultEntityStatTypes.getHealth());
+        if (health != null) {
+            stats.setStatValue(DefaultEntityStatTypes.getHealth(), Math.max(1f, health.getMax() * fraction));
+        }
+    }
 }

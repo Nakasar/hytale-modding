@@ -134,6 +134,11 @@ final class Kanaxai {
         return (Ref<EntityStore>[]) new Ref[n];
     }
 
+    /** Pendant le Fendeur de mondes : rien ne le blesse (barre invulnérable). */
+    boolean shielded(Ref<EntityStore> ref) {
+        return engaged && cleaving && ref.equals(boss);
+    }
+
     boolean engaged() {
         return engaged;
     }

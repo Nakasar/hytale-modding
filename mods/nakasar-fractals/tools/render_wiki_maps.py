@@ -259,7 +259,7 @@ FRACTALS = {
     "recif-de-la-sirene": _generator("generate_sirens_reef"),
     "roche-des-abysses": _generator("generate_deepstone", roof=True),
     "pic-de-sunqua": _generator("generate_sunqua_peak"),
-    "boss-en-fusion": _generator("generate_molten_boss"),
+    "boss-en-fusion": _generator("generate_molten_boss", roof=True),
 }
 
 def face(prefabs):

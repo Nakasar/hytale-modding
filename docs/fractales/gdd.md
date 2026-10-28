@@ -294,14 +294,14 @@ Générateurs : `tools/generate_sunqua_peak.py` (assets, rôles, effets, `Sunqua
 La fonderie de l'Alliance en fusion (d'après le guide Hardstuck et la carte envoyée par Kevin le 28 octobre 2026), avec **Braham et Rox** (invulnérables, ils suivent le groupe au pont du creuset).
 
 1. **Atelier** : quatre meutes draguerres et Légion de la Flamme (gobelins et trorks vanilla), réveillées à 34 blocs.
-2. **Résonateur** : la quatrième meute garde un résonateur qui rend le chaman de la flamme d'élite invulnérable (rayon et icône) ; tout vaincu, le Java pose le **pont du canal de lave**. Le canal brûle et renvoie au point de retour.
-3. **Effigie en fusion** : chaîne de protections résonateur → Protecteur → Effigie, onde de choc blanche à sauter (recul), charges de Puissance (+12 % par charge, 5 au plus).
+2. **Gardien résonateur** : la quatrième meute a un gardien résonateur (monstre, gobelin gardien vanilla) qui rend le chaman de la flamme d'élite invulnérable (rayon et icône) ; tout vaincu, le Java pose le **pont du canal de lave**. Le canal brûle et renvoie au point de retour.
+3. **Effigie en fusion** : chaîne de protections gardien résonateur → Protecteur → Effigie, onde de choc blanche à sauter (recul), charges de Puissance (+12 % par charge, 5 au plus).
 4. **Cour et passerelle des cuves** : quatre groupes, puis la barrière du pont du creuset s'ouvre.
 5. **Berserker et Tempête de feu** : téléportations, ondes blanches au sol (sauter) et bleues en l'air (rester au sol), flammes qui laissent un brasier ; chaque quart de vie perdu enrage l'autre ; le survivant revient **renforcé** (débris, ou couronne de vent brûlant au bord qui pousse vers le vide). Une remise à zéro en phase 2 reprend la phase 2.
 
 Différences avec GW2 : pas de levée d'enrage en 50 coups (l'enrage dure 12 s) ; le survivant renforcé est un nouveau rôle (1600 PV) plutôt qu'un soin complet. Aucun boss ne se soigne hors combat ; une remise à zéro (20 s sans personne) le retire et il revient neuf.
 
-Générateurs : `tools/generate_molten_boss.py` (assets, rôles, effets, `MoltenBossLayout.java`) et `tools/molten_boss_scenery.py` (camp, rampe, atelier, canal, fonderie, cour, passerelle, chaudières, plate-forme). Code : paquet `moltenboss`.
+Générateurs : `tools/generate_molten_boss.py` (assets, rôles, effets, `MoltenBossLayout.java`) et `tools/molten_boss_scenery.py` (caverne voûtée : surplomb du camp à 16, rampe, grotte, galerie, atelier, canal, fonderie, grotte des wagonnets, passerelle suspendue qui descend par paliers, chaudières à -10, plate-forme pendue à -14 ; gouffre et mer de lave, chutes de lave, stalactites, cristaux bleus ; retours de Kevin du 28 octobre 2026). Code : paquet `moltenboss`.
 
 ### Saison 2 et suivantes
 

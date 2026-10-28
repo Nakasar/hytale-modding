@@ -27,7 +27,8 @@ import java.util.WeakHashMap;
  *   <li>toutes les {@value #MIGHT_EVERY} s, une charge de Puissance (au plus {@value #MIGHT_MAX}) : ses coups
  *   font {@value #MIGHT_BONUS} de plus par charge.</li>
  * </ul>
- * Personne dans la fonderie pendant {@value MoltenBoss#RESET_SECONDS} s : tout disparaît (sans soin) et revient neuf.
+ * Personne dans la fonderie : tout attend, avec les PV du moment (un boss ne revient jamais neuf, retour du
+ * 2026-10-28 : l'Effigie avait repris ses PV en réapparaissant avec son Protecteur).
  */
 final class Effigy {
 
@@ -48,7 +49,6 @@ final class Effigy {
     private Ref<EntityStore> resonator;
     private final List<Ref<EntityStore>> adds = new ArrayList<>();
     private boolean engaged;
-    private float idle;
     private float shock;
     private float might;
     private int stacks;
@@ -82,18 +82,13 @@ final class Effigy {
             return false;
         }
         if (effigy == null || !Spawns.alive(store, effigy)) {
-            clear(store, false);
+            clear();
             return true;
         }
         if (MoltenBoss.near(store, players, c, radius + 3).isEmpty()) {
-            idle += dt;
-            if (idle >= MoltenBoss.RESET_SECONDS) {
-                clear(store, true);
-                Spawns.tellAll(world, Message.translation(MoltenBoss.MESSAGES + "effigy.reset"));
-            }
+            // Personne : tout s'arrête et attend, PV compris (ni soin ni retour à neuf, AGENTS.md).
             return false;
         }
-        idle = 0f;
         Leash.keepOnDisc(store, effigy, c, radius - 2, 2, MoltenBoss.FALL_LIMIT);
         if (resonator != null && !Spawns.alive(store, resonator)) {
             resonator = null;
@@ -120,13 +115,13 @@ final class Effigy {
         shock += dt;
         if (shock >= SHOCK_EVERY) {
             shock = 0f;
-            slam(world, store, radius);
+            slam(world, store);
         }
         return false;
     }
 
     /** Annonce (poussière au sol sous l'Effigie), puis l'onde part de là où elle se tient. */
-    private void slam(World world, Store<EntityStore> store, double radius) {
+    private void slam(World world, Store<EntityStore> store) {
         Vector3d at = Telegraphs.position(store, effigy);
         if (at == null) {
             return;
@@ -141,7 +136,7 @@ final class Effigy {
             Vector3d from = Telegraphs.position(s, boss);
             if (from != null) {
                 Telegraphs.particle(s, "Stick_Slam_Ground_Large", from, 1.5f);
-                waves.add(from, radius + 4, Shockwaves.Kind.GROUND, SHOCK_PART);
+                waves.add(s, from, MoltenBossLayout.SHOCK_REACH_EFFIGY, Shockwaves.Kind.GROUND, SHOCK_PART);
             }
         });
     }
@@ -166,7 +161,6 @@ final class Effigy {
                 adds.add(ref);
             }
         }
-        idle = 0f;
         shock = SHOCK_EVERY - SHOCK_FIRST;
         might = 0f;
         stacks = 0;
@@ -174,23 +168,16 @@ final class Effigy {
         Spawns.tellAll(world, Message.translation(MoltenBoss.MESSAGES + "effigy.enter"));
     }
 
-    /** Fin du combat ; `all` : l'Effigie et ses gardes disparaissent aussi (remise à zéro). */
-    private void clear(Store<EntityStore> store, boolean all) {
+    /** Fin du combat (l'Effigie tombée) : ses gardes restent, à achever ou non. */
+    private void clear() {
         waves.clear();
         if (effigy != null) {
             MIGHT.remove(effigy);
-        }
-        if (all) {
-            Spawns.remove(store, effigy);
-            Spawns.remove(store, protector);
-            Spawns.remove(store, resonator);
-            Spawns.removeAll(store, adds);
         }
         adds.clear();
         effigy = null;
         protector = null;
         resonator = null;
         stacks = 0;
-        engaged = false;
     }
 }

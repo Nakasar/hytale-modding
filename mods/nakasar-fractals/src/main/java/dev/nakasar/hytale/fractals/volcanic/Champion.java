@@ -257,6 +257,11 @@ final class Champion {
 
     // --- charges -----------------------------------------------------------------------------------------
 
+    /** Invulnérable tant qu'il lui reste une charge (barre invulnérable). */
+    boolean shielded(Ref<EntityStore> ref) {
+        return ref.equals(boss) && stacks > 0;
+    }
+
     /** Coup sur le Champion (groupe de filtres) : invulnérable tant qu'il lui reste une charge (Kevin, 2026-10-24). */
     void filter(Ref<EntityStore> victim, Damage damage) {
         if (victim.equals(boss) && stacks > 0) {

@@ -263,12 +263,17 @@ final class Shaman {
 
     // --- coups ------------------------------------------------------------------------------------------------
 
+    /** Cristaux debout ou balcon : rien ne le blesse (barre invulnérable). */
+    boolean shielded(Ref<EntityStore> ref) {
+        return engaged && !bear && ref.equals(boss) && (balcony || !crystals.isEmpty());
+    }
+
     /** Cristaux debout ou balcon : aucun dégât ; sinon sa vie ne passe pas le seuil suivant avant le balcon ou l'ours. */
     void filter(ComponentAccessor<EntityStore> accessor, Ref<EntityStore> victim, Damage damage) {
         if (!engaged || bear || !victim.equals(boss)) {
             return;
         }
-        if (balcony || !crystals.isEmpty()) {
+        if (shielded(victim)) {
             damage.setCancelled(true);
             return;
         }

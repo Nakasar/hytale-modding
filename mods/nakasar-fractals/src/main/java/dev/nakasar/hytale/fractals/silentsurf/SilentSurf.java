@@ -431,6 +431,11 @@ public final class SilentSurf implements FractalStage {
     }
 
     @Override
+    public boolean shielded(World world, Store<EntityStore> store, Ref<EntityStore> ref, String role) {
+        return KANAXAI.equals(role) && state(world).kanaxai.shielded(ref);
+    }
+
+    @Override
     public void filter(World world, Store<EntityStore> store, CommandBuffer<EntityStore> buffer, Ref<EntityStore> victim,
                        String victimRole, Ref<EntityStore> attacker, Damage damage) {
         State st = state(world);
