@@ -13,6 +13,7 @@ import com.hypixel.hytale.server.core.universe.PlayerRef;
 import com.hypixel.hytale.server.core.universe.world.World;
 import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
 import dev.nakasar.hytale.peuples.dialogue.Dialogue;
+import dev.nakasar.hytale.peuples.dialogue.DialogueCamera;
 import dev.nakasar.hytale.peuples.dialogue.Dialogues;
 import dev.nakasar.hytale.peuples.player.PeuplesPlayer;
 import dev.nakasar.hytale.peuples.request.BoardPage;
@@ -56,6 +57,7 @@ import java.util.Map;
  *   <li>{@code parler <dialogue>} : ouvre un dialogue dans la fenêtre du mod ; {@code tchat <dialogue>} : le même dans le
  *   tchat, puis {@code repondre <n>} (0 : partir) ;</li>
  *   <li>{@code drapeaux}, {@code oublier} : drapeaux de dialogue du joueur, et leur remise à zéro ;</li>
+ *   <li>{@code camera} : coupe ou rétablit la caméra qui cadre le joueur et le PNJ pendant les dialogues ;</li>
  *   <li>étape 3 : {@code demandes} (tableau à boutons), {@code mesdemandes}, {@code prendre <n>}, {@code rendre},
  *   {@code abandonner <n>} ; opérateurs : {@code demande <modèle> [case]} (pose ce modèle au tableau),
  *   {@code renouveler} (nouveau tirage des trois cases) ;</li>
@@ -94,6 +96,7 @@ public final class VillageCommand extends AbstractCommandCollection {
         addSubCommand(new ChatTalkCommand());
         addSubCommand(new AnswerCommand());
         addSubCommand(new FlagsCommand());
+        addSubCommand(new CameraCommand());
         addSubCommand(new ForgetCommand());
         addSubCommand(new RequestsCommand());
         addSubCommand(new MyRequestsCommand());
@@ -428,6 +431,21 @@ public final class VillageCommand extends AbstractCommandCollection {
             PeuplesPlayer state = PeuplesPlayer.get(store, ref);
             String flags = state == null || state.flags().isEmpty() ? "-" : String.join(", ", state.flags());
             player.sendMessage(Message.translation(KEYS + "flags.list").param("flags", flags));
+        }
+    }
+
+    /** Coupe ou rétablit la caméra de dialogue du joueur (drapeau persistant {@link DialogueCamera#OFF_FLAG}). */
+    private static final class CameraCommand extends PlayerCommand {
+        CameraCommand() {
+            super("camera", KEYS + "camera.desc");
+        }
+
+        @Override
+        protected void execute(CommandContext context, Store<EntityStore> store, Ref<EntityStore> ref, PlayerRef player, World world) {
+            PeuplesPlayer state = PeuplesPlayer.ensure(store, ref);
+            boolean off = !state.hasFlag(DialogueCamera.OFF_FLAG);
+            state.setFlag(DialogueCamera.OFF_FLAG, off);
+            player.sendMessage(Message.translation(KEYS + (off ? "camera.off" : "camera.on")));
         }
     }
 

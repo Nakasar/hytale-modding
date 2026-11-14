@@ -1,65 +1,143 @@
+$C = "../../../Common.ui";
+
+@LineStyle = LabelStyle(FontSize: 20, TextColor: #efe6d2, Wrap: true);
+@AsideStyle = LabelStyle(FontSize: 15, TextColor: #c9b98f, Wrap: true);
+@NameStyle = LabelStyle(FontSize: 17, FontName: "Secondary", RenderBold: true, RenderUppercase: true, TextColor: #d9c48a, VerticalAlignment: Center);
+@RoleStyle = LabelStyle(FontSize: 13, FontName: "Secondary", RenderBold: true, RenderUppercase: true, TextColor: #b4c8c9, VerticalAlignment: Center);
+@StandingStyle = LabelStyle(FontSize: 14, RenderBold: true, TextColor: #b9e08f, VerticalAlignment: Center);
+@NumberStyle = LabelStyle(FontSize: 18, RenderBold: true, TextColor: #e8a93b, VerticalAlignment: Center);
+@AnswerStyle = LabelStyle(FontSize: 19, TextColor: #d3d6db, VerticalAlignment: Center);
+@HintStyle = LabelStyle(FontSize: 15, TextColor: #7f93a8, VerticalAlignment: Center);
+
+@AnswerRowStyle = (
+  Hovered: (Background: PatchStyle(Color: #1a2538)),
+  Pressed: (Background: PatchStyle(Color: #233149))
+);
+
+@AnswerRow = Button {
+  @Number = "";
+  LayoutMode: Left;
+  Anchor: (Height: 34, Bottom: 2);
+  Padding: (Left: 10, Right: 8);
+  Style: @AnswerRowStyle;
+
+  Label {
+    Anchor: (Width: 28);
+    Style: @NumberStyle;
+    Text: @Number;
+  }
+};
+
 Group {
-  LayoutMode: Center;
+  Group #Shade {
+    Anchor: (Left: 0, Right: 0, Bottom: 0, Height: 420);
+    Background: (TexturePath: "../../../Common/RunicContainerBottomGradient.png");
+  }
 
-  Group #Panel {
-    Anchor: (Width: 760, Height: 520);
-    Padding: (Full: 24);
-    LayoutMode: Top;
+  Group #Dialog {
+    Anchor: (Width: 1240, Height: 320, Bottom: 34);
 
-    Label #NpcName {
-      Anchor: (Height: 34, Bottom: 6);
-      Style: (FontSize: 24, TextColor: #e8c46a);
+    $C.@DecoratedContainer #Box {
+      Anchor: (Full: 0);
+
+      #Title {
+        Group {
+          LayoutMode: Left;
+          Padding: (Left: 22, Right: 300);
+
+          Label #NpcName {
+            Style: @NameStyle;
+          }
+
+          Label #NpcRole {
+            Anchor: (Left: 14);
+            Style: @RoleStyle;
+          }
+
+          Group {
+            FlexWeight: 1;
+          }
+
+          Label #Standing {
+            Style: @StandingStyle;
+          }
+        }
+      }
+
+      #Content {
+        LayoutMode: Left;
+        Padding: (Left: 22, Right: 22, Top: 12, Bottom: 10);
+
+        Group #TextColumn {
+          FlexWeight: 1;
+          LayoutMode: Top;
+
+          Label #Line {
+            Anchor: (Bottom: 4);
+            Style: @LineStyle;
+          }
+
+          Label #Aside {
+            Anchor: (Bottom: 4);
+            Style: @AsideStyle;
+          }
+
+          $C.@PanelSeparatorFancy {
+            @Anchor = Anchor(Top: 4, Bottom: 8);
+          }
+
+          @AnswerRow #Answer0 {
+            @Number = "1.";
+            Label #Text0 { Style: @AnswerStyle; }
+            Label #Hint0 { Anchor: (Left: 14); Style: @HintStyle; }
+          }
+
+          @AnswerRow #Answer1 {
+            @Number = "2.";
+            Label #Text1 { Style: @AnswerStyle; }
+            Label #Hint1 { Anchor: (Left: 14); Style: @HintStyle; }
+          }
+
+          @AnswerRow #Answer2 {
+            @Number = "3.";
+            Label #Text2 { Style: @AnswerStyle; }
+            Label #Hint2 { Anchor: (Left: 14); Style: @HintStyle; }
+          }
+
+          @AnswerRow #Answer3 {
+            @Number = "4.";
+            Label #Text3 { Style: @AnswerStyle; }
+            Label #Hint3 { Anchor: (Left: 14); Style: @HintStyle; }
+          }
+        }
+
+        Group {
+          Anchor: (Width: 270);
+        }
+      }
     }
 
-    Label #Line {
-      Anchor: (Height: 110, Bottom: 18);
-      Style: (FontSize: 18, TextColor: #f2ead8, Wrap: true);
-    }
+    Group #PortraitColumn {
+      Anchor: (Right: 26, Top: -64, Width: 254, Bottom: 22);
+      LayoutMode: Top;
 
-    Label #Aside {
-      Anchor: (Height: 44, Bottom: 6);
-      Style: (FontSize: 15, TextColor: #c9b98f, Wrap: true);
-    }
+      Group #PortraitFrame {
+        Anchor: (Height: 254);
+        Padding: (Full: 10);
+        Background: (TexturePath: "../../../Common/ContainerPatch.png", Border: 23);
 
-    TextButton #Answer0 {
-      Anchor: (Height: 36, Bottom: 2);
-      Text: "";
-    }
-    Label #Hint0 {
-      Anchor: (Height: 20, Bottom: 8);
-      Style: (FontSize: 13, TextColor: #a8a08c);
-    }
+        AssetImage #Portrait {
+          Anchor: (Full: 0);
+        }
+      }
 
-    TextButton #Answer1 {
-      Anchor: (Height: 36, Bottom: 2);
-      Text: "";
-    }
-    Label #Hint1 {
-      Anchor: (Height: 20, Bottom: 8);
-      Style: (FontSize: 13, TextColor: #a8a08c);
-    }
+      Group {
+        FlexWeight: 1;
+      }
 
-    TextButton #Answer2 {
-      Anchor: (Height: 36, Bottom: 2);
-      Text: "";
-    }
-    Label #Hint2 {
-      Anchor: (Height: 20, Bottom: 8);
-      Style: (FontSize: 13, TextColor: #a8a08c);
-    }
-
-    TextButton #Answer3 {
-      Anchor: (Height: 36, Bottom: 2);
-      Text: "";
-    }
-    Label #Hint3 {
-      Anchor: (Height: 20, Bottom: 8);
-      Style: (FontSize: 13, TextColor: #a8a08c);
-    }
-
-    TextButton #Leave {
-      Anchor: (Height: 36, Width: 200);
-      Text: "";
+      $C.@SmallSecondaryTextButton #Leave {
+        @Text = "";
+      }
     }
   }
 }
