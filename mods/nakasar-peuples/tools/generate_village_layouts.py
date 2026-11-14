@@ -10,6 +10,10 @@ Les emprises viennent de tools/vanilla-prefabs-0.7.2.txt (bornes des blocs relat
 Assets.zip). Le script vérifie qu'aucune emprise n'en chevauche une autre (marge MARGIN) ni la place, et que tout
 tient dans le rayon du plan.
 
+Étape 5 : chaque palier au-delà du campement a son chantier (matériaux pris au dépôt, durée en heures de jeu), et le
+plan porte les métiers du village (rôle, dialogue, poste de jour et logis de nuit, calculés devant le bâtiment, du côté
+de la place). Les bâtiments gardent leur hauteur (MinY..MaxY) pour l'échafaudage et l'incendie.
+
 Sortie : src/main/resources/Server/Nakasar/VillageLayouts/<Id>.json, et un aperçu PNG (--preview DIR).
 
     python3 tools/generate_village_layouts.py [--preview /mnt/project-files/peuples/village]
@@ -62,6 +66,28 @@ LAYOUTS = {
             ("Grand_Pere", 3, OAK + "Grandfather/Kweebec_Oak_Grandfather_001", -2, -40, 0),
             ("Grand_Potager", 3, OAK + "Garden/Large/Kweebec_Oak_Garden_Large_001", 0, 32, 0),
         ],
+        # Chantiers (étape 5) : palier atteint -> matériaux à réunir au dépôt (objets vanilla) et durée en heures de jeu
+        # (GDD : « les villageois y travaillent 1 jour de jeu »).
+        "Chantiers": [
+            (1, 24, [("Wood_Oak_Trunk", 24), ("Rock_Stone_Cobble", 16), ("Ingredient_Fibre", 12)]),
+            (2, 24, [("Wood_Oak_Trunk", 48), ("Wood_Hardwood_Planks", 32), ("Soil_Clay_Brick", 24), ("Furniture_Kweebec_Lantern", 4)]),
+            (3, 24, [("Wood_Oak_Trunk", 64), ("Plant_Leaves_Oak", 32), ("Plant_Sapling_Oak", 4), ("Ingredient_Life_Essence", 20)]),
+        ],
+        # Métiers (étape 5) : (id, palier, rôle du mod, animation de travail, bâtiment de travail ou None (place),
+        # « front » (devant, côté place) ou « center », bâtiment du logis). Le bâtisseur part sur les chantiers.
+        "Jobs": [
+            ("Jardiniere", 0, "Gardener", "Potager", "center", "Abri_Ouest"),
+            ("Batisseur", 0, "Builder", None, None, "Abri_Est"),
+            ("Guetteur", 0, "Watcher", "Tour_De_Guet", "front", "Abri_Est"),
+            ("Puisatiere", 1, "WellKeeper", "Puits", "front", "Maison_Sud_Ouest"),
+            ("Eleveur", 1, "Breeder", "Enclos", "center", "Maison_Sud_Ouest"),
+            ("Garde", 2, "Guard", "Tour_Est", "front", "Maison_Des_Gardes"),
+            ("Soigneuse", 2, "Healer", "Grande_Maison", "front", "Grande_Maison"),
+            ("Ancien", 3, "Elder", "Grand_Pere", "front", "Grand_Pere"),
+            ("Jardinier_Du_Bourg", 3, "Gardener", "Grand_Potager", "center", "Grande_Maison"),
+        ],
+        # Tas de bois du bâtisseur sur la place, quand il n'a pas de chantier.
+        "Woodpile": (-4, -3),
     },
 }
 
@@ -97,6 +123,18 @@ def footprint(b, cx, cz, rotation):
 
 def overlaps(a, b, margin):
     return not (a[1] + margin < b[0] or b[1] + margin < a[0] or a[3] + margin < b[2] or b[3] + margin < a[2])
+
+
+def spot(building, where):
+    """Poste devant un bâtiment (2 blocs hors de l'emprise, côté place) ou en son centre, en coordonnées du plan."""
+    x0, x1, z0, z1 = (building["X"] + building["MinX"], building["X"] + building["MaxX"],
+                      building["Z"] + building["MinZ"], building["Z"] + building["MaxZ"])
+    cx, cz = (x0 + x1) // 2, (z0 + z1) // 2
+    if where == "center":
+        return cx, cz
+    if abs(cx) >= abs(cz):
+        return (x0 - 2, cz) if cx > 0 else (x1 + 2, cz)
+    return (cx, z0 - 2) if cz > 0 else (cx, z1 + 2)
 
 
 def build(layout_id, spec, bounds):
@@ -135,7 +173,32 @@ def build(layout_id, spec, bounds):
             "MaxX": rect[1] - x,
             "MinZ": rect[2] - z,
             "MaxZ": rect[3] - z,
+            "MinY": b[2],
+            "MaxY": b[3],
         })
+    by_id = {b["Id"]: b for b in buildings}
+    chantiers = []
+    for tier, hours, materials in spec.get("Chantiers", []):
+        if not any(b["Tier"] == tier for b in buildings):
+            errors.append(f"{layout_id} : chantier du palier {tier} sans bâtiment")
+        chantiers.append({"Tier": tier, "Hours": hours,
+                          "Materials": [{"ItemId": i, "Quantity": q} for i, q in materials]})
+    jobs = []
+    wx, wz = spec.get("Woodpile", (0, 0))
+    for jid, tier, kind, work, where, home in spec.get("Jobs", []):
+        if work is not None and work not in by_id:
+            errors.append(f"{layout_id}/{jid} : bâtiment de travail inconnu {work}")
+            continue
+        if home not in by_id:
+            errors.append(f"{layout_id}/{jid} : logis inconnu {home}")
+            continue
+        if work is not None and by_id[work]["Tier"] > tier:
+            errors.append(f"{layout_id}/{jid} : travaille dans {work} (palier {by_id[work]['Tier']}) avant qu'il existe")
+        px, pz = spot(by_id[work], where) if work else (wx, wz)
+        hx, hz = spot(by_id[home], "front")
+        jobs.append({"Id": jid, "Tier": tier, "Role": f"Nakasar_Peuples_{spec['People']}_{kind}",
+                     "Dialogue": f"{spec['People']}_{kind}", "Building": work or "", "WorkX": px, "WorkZ": pz,
+                     "Home": home, "HomeX": hx, "HomeZ": hz, "Builder": kind == "Builder"})
     bx, bz = spec["Banner"]
     doc = {
         "$Comment": "Plan de village généré par tools/generate_village_layouts.py (ne pas modifier à la main) : prefabs "
@@ -147,6 +210,8 @@ def build(layout_id, spec, bounds):
         "BannerX": bx,
         "BannerZ": bz,
         "Buildings": buildings,
+        "Chantiers": chantiers,
+        "Jobs": jobs,
     }
     return doc, rects, errors
 
@@ -172,9 +237,13 @@ def preview(layout_id, doc, rects, out_dir):
         d.rectangle([*px(rect[0], rect[2]), *px(rect[1] + 1, rect[3] + 1)], outline=c, width=3)
         tx, tz = px(building["X"], building["Z"])
         d.text((tx - 20, tz - 6), f"{building['Id']} ({building['Tier']})", fill=(255, 255, 255))
+    for job in doc.get("Jobs", []):
+        jx, jz = px(job["WorkX"], job["WorkZ"])
+        d.ellipse([jx - 4, jz - 4, jx + 4, jz + 4], fill=(255, 255, 255))
+        d.text((jx + 6, jz - 6), job["Id"], fill=(255, 240, 200))
     d.rectangle([*px(0, 0), *px(1, 1)], fill=(255, 60, 60))
     d.rectangle([*px(doc["BannerX"], doc["BannerZ"]), *px(doc["BannerX"] + 1, doc["BannerZ"] + 1)], fill=(80, 220, 80))
-    legend = "Paliers : 0 jaune (campement), 1 vert (hameau), 2 bleu (village), 3 rose (bourg). Rouge : coeur ; vert vif : banniere. Nord en haut (-Z)."
+    legend = "Paliers : 0 jaune (campement), 1 vert (hameau), 2 bleu (village), 3 rose (bourg). Rouge : coeur ; vert vif : banniere ; points blancs : postes des metiers. Nord en haut (-Z)."
     d.text((8, size + 20), f"{layout_id} - rayon {doc['Radius']}", fill=(255, 255, 255))
     d.text((8, size + 38), legend, fill=(230, 230, 230))
     out_dir.mkdir(parents=True, exist_ok=True)

@@ -66,6 +66,15 @@ public final class Village {
             .append(new KeyedCodec<>("RequestDay", Codec.LONG), (v, l) -> v.requestDay = l == null ? Long.MIN_VALUE : l, v -> v.requestDay)
             .documentation("Jour de jeu du dernier tirage des demandes (GameClock.day).")
             .add()
+            .append(new KeyedCodec<>("Sites", new ArrayCodec<>(Site.CODEC, Site[]::new)), (v, a) -> v.sites = a == null ? new Site[0] : a, v -> v.sites)
+            .documentation("Hauteur de pose de chaque bâtiment collé (étape 5).")
+            .add()
+            .append(new KeyedCodec<>("Burnt", new ArrayCodec<>(Codec.STRING, String[]::new)), (v, a) -> v.burnt = a == null ? new String[0] : a, v -> v.burnt)
+            .documentation("Bâtiments brûlés (étape 5) : en ruine jusqu'au prochain chantier.")
+            .add()
+            .append(new KeyedCodec<>("Chantier", ChantierState.CODEC), (v, c) -> v.chantier = c, v -> v.chantier)
+            .documentation("Chantier en cours, ou absent (étape 5).")
+            .add()
             .build();
 
     String id = "";
@@ -92,6 +101,9 @@ public final class Village {
     int bannerZ;
     VillageRequest[] requests = new VillageRequest[0];
     long requestDay = Long.MIN_VALUE;
+    Site[] sites = new Site[0];
+    String[] burnt = new String[0];
+    ChantierState chantier;
 
     Village() {
     }
@@ -135,6 +147,9 @@ public final class Village {
             v.requests[i] = requests[i] == null ? null : requests[i].copy();
         }
         v.requestDay = requestDay;
+        v.sites = sites.clone();
+        v.burnt = burnt.clone();
+        v.chantier = chantier == null ? null : chantier.copy();
         return v;
     }
 
@@ -284,6 +299,91 @@ public final class Village {
         if (slot >= 0 && slot < requests.length) {
             requests[slot] = request;
         }
+    }
+
+    /** Chantier en cours, ou null. */
+    public ChantierState chantier() {
+        return chantier;
+    }
+
+    void setChantier(ChantierState value) {
+        chantier = value;
+    }
+
+    /** Bâtiments brûlés (ids du plan). */
+    public String[] burnt() {
+        return burnt.clone();
+    }
+
+    public boolean isBuilt(String buildingId) {
+        return contains(built, buildingId);
+    }
+
+    public boolean isBurnt(String buildingId) {
+        return contains(burnt, buildingId);
+    }
+
+    /** Hauteur de pose du bâtiment, ou {@link Integer#MIN_VALUE} si elle n'a pas été gardée. */
+    public int siteY(String buildingId) {
+        for (Site s : sites) {
+            if (s.id.equals(buildingId)) {
+                return s.y;
+            }
+        }
+        return Integer.MIN_VALUE;
+    }
+
+    void setSiteY(String buildingId, int value) {
+        for (Site s : sites) {
+            if (s.id.equals(buildingId)) {
+                s.y = value;
+                return;
+            }
+        }
+        Site[] grown = java.util.Arrays.copyOf(sites, sites.length + 1);
+        grown[sites.length] = new Site(buildingId, value);
+        sites = grown;
+    }
+
+    /** Le bâtiment est debout (collé, pas brûlé). */
+    void markBuilt(String buildingId) {
+        if (!contains(built, buildingId)) {
+            String[] grown = java.util.Arrays.copyOf(built, built.length + 1);
+            grown[built.length] = buildingId;
+            built = grown;
+        }
+        burnt = without(burnt, buildingId);
+    }
+
+    /** Le bâtiment a brûlé : il reste compté comme collé (ses ruines sont là) mais plus debout. */
+    void markBurnt(String buildingId) {
+        if (!contains(burnt, buildingId)) {
+            String[] grown = java.util.Arrays.copyOf(burnt, burnt.length + 1);
+            grown[burnt.length] = buildingId;
+            burnt = grown;
+        }
+    }
+
+    /** Bâtiment debout : collé et pas brûlé. */
+    public boolean isStanding(String buildingId) {
+        return contains(built, buildingId) && !contains(burnt, buildingId);
+    }
+
+    void setEssor(int value) {
+        essor = Math.max(0, Math.min(Tiers.threshold(tier), value));
+    }
+
+    private static boolean contains(String[] values, String value) {
+        for (String v : values) {
+            if (v.equals(value)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private static String[] without(String[] values, String value) {
+        return java.util.Arrays.stream(values).filter(v -> !v.equals(value)).toArray(String[]::new);
     }
 
     void setTier(int value) {

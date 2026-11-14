@@ -1077,7 +1077,7 @@ public class ValidateAssets {
      */
     private static int checkDialogueTexts(Path root, String vanillaItems) throws Exception {
         List<Path> dirs = new ArrayList<>();
-        for (String d : List.of("Nakasar/Dialogues", "Nakasar/Requests", "BarterShops")) {
+        for (String d : List.of("Nakasar/Dialogues", "Nakasar/Requests", "BarterShops", "Nakasar/VillageLayouts")) {
             if (Files.isDirectory(root.resolve(d))) {
                 dirs.add(root.resolve(d));
             }
@@ -1201,16 +1201,97 @@ public class ValidateAssets {
                     }
                 }
             }
+            checkVillageLife(root, doc, problems);
             String rel = root.relativize(file).toString().replace('\\', '/');
             if (problems.isEmpty()) {
-                System.out.println("OK    prefabs de " + rel);
+                System.out.println("OK    prefabs, chantiers et métiers de " + rel);
             } else {
                 errors++;
-                System.out.println("ERROR prefabs de " + rel);
+                System.out.println("ERROR prefabs, chantiers et métiers de " + rel);
                 problems.forEach(pb -> System.out.println("      " + pb));
             }
         }
         return errors;
+    }
+
+    /**
+     * Étape 5 des Peuples : chaque métier ({@code Jobs}) cite un rôle PNJ et un dialogue du pack, chaque bâtiment et
+     * métier a son nom dans les .lang ({@code building.<Id>}, {@code job.<Id>}), et les blocs posés par le code
+     * (ruines calcinées, échafaudages, {@code Burning.REQUIRED_BLOCKS}) existent en vanilla ({@code -Dblocks}).
+     * Les {@code ItemId} des matériaux de chantier sont vérifiés avec les dialogues.
+     */
+    private static void checkVillageLife(Path root, BsonDocument doc, List<String> problems) throws Exception {
+        Set<String> roles = new HashSet<>();
+        Set<String> dialogues = new HashSet<>();
+        for (String[] pair : new String[][] {{"NPC/Roles", "r"}, {"Nakasar/Dialogues", "d"}}) {
+            Path dir = root.resolve(pair[0]);
+            if (Files.isDirectory(dir)) {
+                try (Stream<Path> walk = Files.walk(dir)) {
+                    walk.filter(f -> f.toString().endsWith(".json")).forEach(f -> {
+                        String id = f.getFileName().toString().replace(".json", "");
+                        (pair[1].equals("r") ? roles : dialogues).add(id);
+                    });
+                }
+            }
+        }
+        Map<String, Set<String>> langs = new LinkedHashMap<>();
+        for (String locale : List.of("fr-FR", "en-US")) {
+            Set<String> keys = new HashSet<>();
+            Path lang = root.resolve("Languages/" + locale + "/nakasar_peuples.lang");
+            if (Files.exists(lang)) {
+                for (String line : Files.readAllLines(lang, java.nio.charset.StandardCharsets.UTF_8)) {
+                    int eq = line.indexOf('=');
+                    if (eq > 0) {
+                        keys.add(line.substring(0, eq).trim());
+                    }
+                }
+            }
+            langs.put(locale, keys);
+        }
+        java.util.function.Consumer<String> needKey = key -> langs.forEach((locale, keys) -> {
+            if (!keys.contains(key)) {
+                problems.add("clé nakasar_peuples." + key + " absente des .lang " + locale);
+            }
+        });
+        if (doc.containsKey("Buildings")) {
+            for (BsonValue b : doc.getArray("Buildings")) {
+                if (b.isDocument() && b.asDocument().containsKey("Id")) {
+                    needKey.accept("building." + b.asDocument().getString("Id").getValue());
+                }
+            }
+        }
+        if (doc.containsKey("Jobs")) {
+            for (BsonValue j : doc.getArray("Jobs")) {
+                BsonDocument job = j.asDocument();
+                String id = job.getString("Id").getValue();
+                needKey.accept("job." + id);
+                String role = job.getString("Role").getValue();
+                if (!roles.contains(role)) {
+                    problems.add("métier " + id + " : rôle PNJ inconnu " + role);
+                }
+                String dialogue = job.getString("Dialogue").getValue();
+                if (!dialogues.contains(dialogue)) {
+                    problems.add("métier " + id + " : dialogue inconnu " + dialogue);
+                }
+            }
+        }
+        String blocks = System.getProperty("blocks");
+        if (blocks != null) {
+            Set<String> known = new HashSet<>();
+            for (String line : Files.readAllLines(Path.of(blocks))) {
+                if (!line.isBlank() && !line.startsWith("#")) {
+                    known.add(line.trim().split("\\s+")[0]);
+                }
+            }
+            @SuppressWarnings("unchecked")
+            List<String> required = (List<String>) Class.forName("dev.nakasar.hytale.peuples.village.Burning")
+                    .getField("REQUIRED_BLOCKS").get(null);
+            for (String id : required) {
+                if (!known.contains(id)) {
+                    problems.add("bloc posé par le code inconnu en vanilla : " + id);
+                }
+            }
+        }
     }
 
     /** Icônes des marqueurs de carte des blocs du pack ({@code BlockMapMarker}) : présentes sous Common/UI/WorldMap/MapMarkers. */

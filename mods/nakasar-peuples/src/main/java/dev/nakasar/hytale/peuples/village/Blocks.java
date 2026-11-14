@@ -38,6 +38,16 @@ public final class Blocks {
         return type == null ? null : type.getId();
     }
 
+    /** Rotation du bloc en (x, y, z) (index de RotationTuple), 0 si la section n'est pas chargée. */
+    public static int rotation(ChunkStore chunks, int x, int y, int z) {
+        Ref<ChunkStore> ref = chunks.getChunkSectionReferenceAtBlock(x, y, z);
+        if (ref == null || !ref.isValid()) {
+            return 0;
+        }
+        BlockSection section = chunks.getStore().getComponent(ref, BlockSection.getComponentType());
+        return section == null ? 0 : section.getRotationIndex(x, y, z);
+    }
+
     public static boolean isEmpty(ChunkStore chunks, int x, int y, int z) {
         return id(chunks, x, y, z) == BlockType.EMPTY_ID;
     }

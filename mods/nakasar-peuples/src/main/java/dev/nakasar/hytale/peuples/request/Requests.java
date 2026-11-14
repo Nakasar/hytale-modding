@@ -398,7 +398,7 @@ public final class Requests {
     }
 
     /** Coffre du dépôt du village, ou null s'il manque ou que sa section n'est pas chargée. */
-    static ItemContainer depositContainer(World world, Village village) {
+    public static ItemContainer depositContainer(World world, Village village) {
         int[] d = village.deposit();
         if (!village.people().depositBlock().equals(Blocks.name(world.getChunkStore(), d[0], d[1], d[2]))) {
             return null;
@@ -408,7 +408,7 @@ public final class Requests {
     }
 
     /** Retire jusqu'à `max` objets `itemId` du conteneur ; rend le nombre retiré. */
-    static int take(ItemContainer container, String itemId, int max) {
+    public static int take(ItemContainer container, String itemId, int max) {
         if (container == null || itemId == null || max <= 0) {
             return 0;
         }

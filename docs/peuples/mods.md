@@ -386,3 +386,112 @@ dialogues montre le rang du joueur.
 - Le marchand vanilla du prefab (`Kweebec_Merchant`) ouvre encore sa boutique vanilla sans condition de rang.
 - Pas encore fait : la perte pour un coffre du village vidé (aucun événement de retrait de conteneur connu), la
   parcelle de l'hôte et l'avant-poste du champion (étapes suivantes).
+
+## Étape 5 : les chantiers et la vie du village
+
+Le village grandit sous les yeux du joueur : quand la jauge d'essor est pleine et que le dépôt contient les
+matériaux du palier, un chantier s'ouvre. Des échafaudages montent autour des bâtiments du palier suivant, des
+bâtisseurs y travaillent, puis le prefab vanilla est collé au bout de la durée du chantier.
+
+### Le chantier
+
+`VillageLifeSystem` passe toutes les 2 s, seulement pour les villages qui ont un joueur à moins de 160 blocs. Il ouvre
+le chantier quand la jauge est pleine, et le finit quand l'heure de fin est passée.
+
+| Palier | Durée (heures de jeu) | Matériaux pris au dépôt |
+| --- | --- | --- |
+| 1 | 24 | 24 `Wood_Oak_Trunk`, 16 `Rock_Stone_Cobble`, 12 `Ingredient_Fibre` |
+| 2 | 24 | 48 `Wood_Oak_Trunk`, 32 `Wood_Hardwood_Planks`, 24 `Soil_Clay_Brick`, 4 `Furniture_Kweebec_Lantern` |
+| 3 | 24 | 64 `Wood_Oak_Trunk`, 32 `Plant_Leaves_Oak`, 4 `Plant_Sapling_Oak`, 20 `Ingredient_Life_Essence` |
+
+Les tables sont dans `tools/generate_village_layouts.py` (`CHANTIERS`), qui écrit `Chantiers` dans
+`Nakasar/VillageLayouts/Kweebec_Oak.json`.
+
+- À l'ouverture, les matériaux sont retirés du coffre du dépôt. Chaque parcelle est ensuite aplanie, ou débarrassée
+  de ses ruines. Les grands bâtiments reçoivent un échafaudage en blocs vanilla : poteaux `Wood_Hardwood_Beam` tous les
+  4 blocs, à 1 bloc du bâtiment, planchers `Wood_Hardwood_Planks_Half` tous les 5 niveaux (18 blocs de haut au plus)
+  et un tas de `Wood_Oak_Trunk` au centre. Il n'existe pas de bloc « échafaudage » vanilla.
+- Une parcelle où un joueur a construit n'est jamais touchée. Le bâtiment est sauté et le tableau le dit.
+- À la fin, l'échafaudage est retiré et le prefab collé. Le palier monte, la jauge repart à 0, et un titre s'affiche à
+  tous les joueurs à moins de 160 blocs (avec un message dans le chat).
+- Un chantier en cours se voit au tableau (heures restantes, bâtiments, parcelles sautées). Sinon le tableau dit ce
+  qu'il manque : jauge, matériaux déposés/attendus, nombre de bâtiments et durée.
+
+### Bâtiment brûlé
+
+`Burning` remplace les blocs d'un bâtiment par leur version calcinée vanilla : bois vers `Wood_Burnt_*` ou
+`Wood_Blackwood_*` (25 % du bois au-dessus de 3 blocs s'effondre), feuillages vers `Plant_Leaves_Burnt` (45 %, le
+reste disparaît), plantes et déco retirées, meubles en demi-planches noires (20 %), herbe vers `Soil_Grass_Burnt`,
+terre vers `Soil_Dirt_Burnt`, mousse et litière vers `Soil_Ash`. Les coffres et autres conteneurs ne sont jamais
+touchés.
+
+Un bâtiment brûlé fait perdre un palier au village (recommandation du GDD pour un raid perdu ; les raids arrivent à
+l'étape 6). Le chantier en cours est annulé et la jauge repart à 0. Le chantier suivant rebâtit les bâtiments brûlés
+de son palier, ruines débarrassées. Pour l'instant, seule la commande `bruler` déclenche un incendie.
+
+### Les villageois à métier
+
+Chaque palier ajoute des Kweebecs vanilla à métier, avec leur rôle (`Nakasar_Peuples_Kweebec_<Métier>`, généré par
+`tools/generate_villagers.py`) et leur dialogue (`Kweebec_<Métier>`).
+
+| Villageois | Palier | Travail | Maison |
+| --- | --- | --- | --- |
+| Jardinière | 0 | Potager | Abri ouest |
+| Bâtisseur | 0 | chantier en cours | Abri est |
+| Guetteur | 0 | Tour de guet | Abri est |
+| Puisatière | 1 | Puits | Maison sud-ouest |
+| Éleveur | 1 | Enclos | Maison sud-ouest |
+| Garde | 2 | Tour est | Maison des gardes |
+| Soigneuse | 2 | Grande maison | Grande maison |
+| Ancien | 3 | Grand-père | Grand-père |
+| Jardinier du bourg | 3 | Grand potager | Grande maison |
+
+- Le jour, chacun reste près de son poste et y joue l'animation de son métier (Interact, Feed, LookAround...) ou flâne
+  autour. La nuit (20 h à 6 h), il rentre chez lui, ou reste à son poste si sa maison a brûlé.
+- Le bâtisseur va devant le premier bâtiment du chantier. Pendant un chantier, jusqu'à 3 aides de jour s'ajoutent, un
+  par bâtiment.
+- Un villageois bloqué à plus de 18 blocs de sa cible pendant 40 s est téléporté, mais seulement si aucun joueur n'est
+  à moins de 20 blocs de lui ni de sa cible.
+- Un villageois tué revient le lendemain (jour de jeu).
+- Les villageois n'apparaissent que si un joueur est à moins de 72 blocs. Ils ne sont pas sauvegardés, le système les
+  recrée.
+- Parler à un villageois ouvre son dialogue de métier. Le bâtisseur répond aussi sur l'état du chantier (effet
+  `ChantierStatus`, condition `Chantier`). Ce dialogue a son repli en texte dans le chat, comme les autres.
+
+### Nouvelles commandes
+
+| Sous-commande | Qui | Effet |
+| --- | --- | --- |
+| `chantier` | joueur | état du chantier en cours, ou ce qu'attend le prochain (jauge, matériaux, ruines) |
+| `metiers` | joueur | villageois à métier présents et postes à pourvoir, aides de chantier |
+| `lancer` | opérateur | ouvre le chantier du palier suivant sans jauge ni matériaux |
+| `finir` | opérateur | finit le chantier en cours tout de suite |
+| `bruler [bâtiment]` | opérateur | brûle un bâtiment (au hasard dans le palier le plus haut si aucun n'est donné), le village perd un palier |
+| `palier <n>` | opérateur | bâtit d'un coup jusqu'au palier n (sans chantier) |
+
+### Tester en jeu (étape 5) : le village grandit sous les yeux
+
+1. `/village site` puis `/village metiers` : la jardinière, le bâtisseur et le guetteur sont à leur poste (potager,
+   tour de guet). Leur parler ouvre leur dialogue.
+2. `/village chantier` : le tableau dit ce qu'attend le palier 1. Mettre les matériaux dans le coffre du dépôt
+   (`/give Wood_Oak_Trunk 24`, `/give Rock_Stone_Cobble 16`, `/give Ingredient_Fibre 12`), puis `/village essor 100`.
+   En moins de 2 s, les matériaux disparaissent du coffre, les parcelles sont aplanies et les échafaudages montent.
+   Le bâtisseur et ses aides y vont. `/village chantier` donne les heures restantes.
+3. Attendre 24 h de jeu (`/time` pour avancer), ou `/village finir` : les échafaudages tombent, le puits, l'échoppe,
+   la maison sud-ouest et l'enclos apparaissent, avec le titre « palier 1 ». La puisatière et l'éleveur arrivent.
+4. La nuit (`/time midnight`), les villageois rentrent dans leur maison ; au matin ils retournent au poste.
+5. `/village lancer` puis `/village finir` pour les paliers 2 et 3 : garde, soigneuse, ancien, jardinier du bourg.
+6. `/village bruler Grande_Maison` : la maison est noircie et à moitié effondrée, coffres intacts, le village perd un
+   palier et la soigneuse dort à son poste. `/village lancer` puis `/village finir` : la maison est rebâtie.
+7. Construire un mur sur une parcelle vide, puis lancer le chantier : ce bâtiment est sauté et `/village chantier` le
+   signale.
+8. Redémarrer pendant un chantier : il reprend avec la même heure de fin.
+
+### À vérifier en jeu (étape 5)
+
+- Que les animations de métier jouent sur le modèle Kweebec_Sapling (Interact, Feed, LookAround, Rest...).
+- Le retour à la maison la nuit : le Seek et la laisse (`setLeashPoint`) suffisent-ils à passer les portes des prefabs ?
+- L'allure des échafaudages, et que leur retrait ne laisse rien derrière.
+- L'allure d'un bâtiment brûlé (proportions d'effondrement et de feuilles restantes).
+- Que l'aplanissement des parcelles ne coupe pas le relief autour de façon trop visible.
+- Le titre de fin de chantier, et sa portée de 160 blocs.

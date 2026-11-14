@@ -1,0 +1,35 @@
+{
+  "$Comment": "Dialogue du villageois à métier Gardener (étape 5), généré par tools/generate_villagers.py.",
+  "NpcNameKey": "nakasar_peuples.dialogue.Kweebec_Gardener.npc",
+  "RoleKey": "nakasar_peuples.dialogue.Kweebec_Gardener.role",
+  "People": "Kweebec",
+  "Entries": [
+    {
+      "Node": "Accueil"
+    }
+  ],
+  "Nodes": [
+    {
+      "Id": "Accueil",
+      "TextKey": "nakasar_peuples.dialogue.Kweebec_Gardener.accueil",
+      "Responses": [
+        {
+          "TextKey": "nakasar_peuples.dialogue.job.metier",
+          "Next": "Metier"
+        },
+        {
+          "TextKey": "nakasar_peuples.dialogue.job.aurevoir"
+        }
+      ]
+    },
+    {
+      "Id": "Metier",
+      "TextKey": "nakasar_peuples.dialogue.Kweebec_Gardener.metier",
+      "Responses": [
+        {
+          "TextKey": "nakasar_peuples.dialogue.job.aurevoir"
+        }
+      ]
+    }
+  ]
+}

@@ -44,6 +44,9 @@ public final class RequestDeathSystem extends DeathSystems.OnDeathSystem {
     public void onComponentAdded(Ref<EntityStore> ref, DeathComponent death, Store<EntityStore> store, CommandBuffer<EntityStore> buffer) {
         World world = store.getExternalData().getWorld();
         RequestSpawns.Owner owner = RequestSpawns.owner(ref);
+        if (dev.nakasar.hytale.peuples.village.Villagers.posted(ref) != null) {
+            dev.nakasar.hytale.peuples.village.Villagers.died(store, ref);
+        }
         if (Criers.isPosted(ref)) {
             Criers.died(store, ref);
             return;

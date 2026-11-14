@@ -16,7 +16,9 @@
       "MinX": -7,
       "MaxX": 7,
       "MinZ": -8,
-      "MaxZ": 9
+      "MaxZ": 9,
+      "MinY": -5,
+      "MaxY": 18
     },
     {
       "Id": "Abri_Est",
@@ -28,7 +30,9 @@
       "MinX": -7,
       "MaxX": 7,
       "MinZ": -9,
-      "MaxZ": 8
+      "MaxZ": 8,
+      "MinY": -5,
+      "MaxY": 18
     },
     {
       "Id": "Tour_De_Guet",
@@ -40,7 +44,9 @@
       "MinX": -4,
       "MaxX": 4,
       "MinZ": -4,
-      "MaxZ": 4
+      "MaxZ": 4,
+      "MinY": -3,
+      "MaxY": 6
     },
     {
       "Id": "Potager",
@@ -52,7 +58,9 @@
       "MinX": -4,
       "MaxX": 3,
       "MinZ": -4,
-      "MaxZ": 4
+      "MaxZ": 4,
+      "MinY": -3,
+      "MaxY": 5
     },
     {
       "Id": "Lanterne_Nord_Est",
@@ -64,7 +72,9 @@
       "MinX": -1,
       "MaxX": 2,
       "MinZ": -1,
-      "MaxZ": 0
+      "MaxZ": 0,
+      "MinY": -3,
+      "MaxY": 6
     },
     {
       "Id": "Lanterne_Sud_Ouest",
@@ -76,7 +86,9 @@
       "MinX": 0,
       "MaxX": 0,
       "MinZ": 0,
-      "MaxZ": 1
+      "MaxZ": 1,
+      "MinY": -3,
+      "MaxY": 4
     },
     {
       "Id": "Bancs_Sud_Est",
@@ -88,7 +100,9 @@
       "MinX": -2,
       "MaxX": 2,
       "MinZ": -2,
-      "MaxZ": 2
+      "MaxZ": 2,
+      "MinY": -1,
+      "MaxY": 2
     },
     {
       "Id": "Bancs_Nord_Ouest",
@@ -100,7 +114,9 @@
       "MinX": -2,
       "MaxX": 2,
       "MinZ": -2,
-      "MaxZ": 2
+      "MaxZ": 2,
+      "MinY": -1,
+      "MaxY": 2
     },
     {
       "Id": "Puits",
@@ -112,7 +128,9 @@
       "MinX": -3,
       "MaxX": 4,
       "MinZ": -4,
-      "MaxZ": 3
+      "MaxZ": 3,
+      "MinY": -8,
+      "MaxY": 5
     },
     {
       "Id": "Echoppe",
@@ -124,7 +142,9 @@
       "MinX": -3,
       "MaxX": 3,
       "MinZ": -3,
-      "MaxZ": 3
+      "MaxZ": 3,
+      "MinY": -3,
+      "MaxY": 5
     },
     {
       "Id": "Maison_Sud_Ouest",
@@ -136,7 +156,9 @@
       "MinX": -11,
       "MaxX": 14,
       "MinZ": -13,
-      "MaxZ": 12
+      "MaxZ": 12,
+      "MinY": -6,
+      "MaxY": 23
     },
     {
       "Id": "Enclos",
@@ -148,7 +170,9 @@
       "MinX": -6,
       "MaxX": 6,
       "MinZ": -6,
-      "MaxZ": 6
+      "MaxZ": 6,
+      "MinY": -5,
+      "MaxY": 1
     },
     {
       "Id": "Grande_Maison",
@@ -160,7 +184,9 @@
       "MinX": -15,
       "MaxX": 11,
       "MinZ": -11,
-      "MaxZ": 12
+      "MaxZ": 12,
+      "MinY": -6,
+      "MaxY": 23
     },
     {
       "Id": "Maison_Des_Gardes",
@@ -172,7 +198,9 @@
       "MinX": -14,
       "MaxX": 14,
       "MinZ": -13,
-      "MaxZ": 14
+      "MaxZ": 14,
+      "MinY": -6,
+      "MaxY": 28
     },
     {
       "Id": "Tour_Est",
@@ -184,7 +212,9 @@
       "MinX": -5,
       "MaxX": 4,
       "MinZ": -4,
-      "MaxZ": 4
+      "MaxZ": 4,
+      "MinY": -3,
+      "MaxY": 11
     },
     {
       "Id": "Echoppe_Ouest",
@@ -196,7 +226,9 @@
       "MinX": -4,
       "MaxX": 3,
       "MinZ": -3,
-      "MaxZ": 3
+      "MaxZ": 3,
+      "MinY": -3,
+      "MaxY": 6
     },
     {
       "Id": "Grand_Pere",
@@ -208,7 +240,9 @@
       "MinX": -5,
       "MaxX": 14,
       "MinZ": -9,
-      "MaxZ": 6
+      "MaxZ": 6,
+      "MinY": -4,
+      "MaxY": 12
     },
     {
       "Id": "Grand_Potager",
@@ -220,7 +254,192 @@
       "MinX": -6,
       "MaxX": 6,
       "MinZ": -4,
-      "MaxZ": 4
+      "MaxZ": 4,
+      "MinY": -3,
+      "MaxY": 6
+    }
+  ],
+  "Chantiers": [
+    {
+      "Tier": 1,
+      "Hours": 24,
+      "Materials": [
+        {
+          "ItemId": "Wood_Oak_Trunk",
+          "Quantity": 24
+        },
+        {
+          "ItemId": "Rock_Stone_Cobble",
+          "Quantity": 16
+        },
+        {
+          "ItemId": "Ingredient_Fibre",
+          "Quantity": 12
+        }
+      ]
+    },
+    {
+      "Tier": 2,
+      "Hours": 24,
+      "Materials": [
+        {
+          "ItemId": "Wood_Oak_Trunk",
+          "Quantity": 48
+        },
+        {
+          "ItemId": "Wood_Hardwood_Planks",
+          "Quantity": 32
+        },
+        {
+          "ItemId": "Soil_Clay_Brick",
+          "Quantity": 24
+        },
+        {
+          "ItemId": "Furniture_Kweebec_Lantern",
+          "Quantity": 4
+        }
+      ]
+    },
+    {
+      "Tier": 3,
+      "Hours": 24,
+      "Materials": [
+        {
+          "ItemId": "Wood_Oak_Trunk",
+          "Quantity": 64
+        },
+        {
+          "ItemId": "Plant_Leaves_Oak",
+          "Quantity": 32
+        },
+        {
+          "ItemId": "Plant_Sapling_Oak",
+          "Quantity": 4
+        },
+        {
+          "ItemId": "Ingredient_Life_Essence",
+          "Quantity": 20
+        }
+      ]
+    }
+  ],
+  "Jobs": [
+    {
+      "Id": "Jardiniere",
+      "Tier": 0,
+      "Role": "Nakasar_Peuples_Kweebec_Gardener",
+      "Dialogue": "Kweebec_Gardener",
+      "Building": "Potager",
+      "WorkX": -13,
+      "WorkZ": -17,
+      "Home": "Abri_Ouest",
+      "HomeX": -11,
+      "HomeZ": 2,
+      "Builder": false
+    },
+    {
+      "Id": "Batisseur",
+      "Tier": 0,
+      "Role": "Nakasar_Peuples_Kweebec_Builder",
+      "Dialogue": "Kweebec_Builder",
+      "Building": "",
+      "WorkX": -4,
+      "WorkZ": -3,
+      "Home": "Abri_Est",
+      "HomeX": 11,
+      "HomeZ": 1,
+      "Builder": true
+    },
+    {
+      "Id": "Guetteur",
+      "Tier": 0,
+      "Role": "Nakasar_Peuples_Kweebec_Watcher",
+      "Dialogue": "Kweebec_Watcher",
+      "Building": "Tour_De_Guet",
+      "WorkX": 0,
+      "WorkZ": -12,
+      "Home": "Abri_Est",
+      "HomeX": 11,
+      "HomeZ": 1,
+      "Builder": false
+    },
+    {
+      "Id": "Puisatiere",
+      "Tier": 1,
+      "Role": "Nakasar_Peuples_Kweebec_WellKeeper",
+      "Dialogue": "Kweebec_WellKeeper",
+      "Building": "Puits",
+      "WorkX": 0,
+      "WorkZ": 11,
+      "Home": "Maison_Sud_Ouest",
+      "HomeX": -25,
+      "HomeZ": 15,
+      "Builder": false
+    },
+    {
+      "Id": "Eleveur",
+      "Tier": 1,
+      "Role": "Nakasar_Peuples_Kweebec_Breeder",
+      "Dialogue": "Kweebec_Breeder",
+      "Building": "Enclos",
+      "WorkX": 37,
+      "WorkZ": -16,
+      "Home": "Maison_Sud_Ouest",
+      "HomeX": -25,
+      "HomeZ": 15,
+      "Builder": false
+    },
+    {
+      "Id": "Garde",
+      "Tier": 2,
+      "Role": "Nakasar_Peuples_Kweebec_Guard",
+      "Dialogue": "Kweebec_Guard",
+      "Building": "Tour_Est",
+      "WorkX": 37,
+      "WorkZ": 8,
+      "Home": "Maison_Des_Gardes",
+      "HomeX": -30,
+      "HomeZ": -12,
+      "Builder": false
+    },
+    {
+      "Id": "Soigneuse",
+      "Tier": 2,
+      "Role": "Nakasar_Peuples_Kweebec_Healer",
+      "Dialogue": "Kweebec_Healer",
+      "Building": "Grande_Maison",
+      "WorkX": 24,
+      "WorkZ": 23,
+      "Home": "Grande_Maison",
+      "HomeX": 24,
+      "HomeZ": 23,
+      "Builder": false
+    },
+    {
+      "Id": "Ancien",
+      "Tier": 3,
+      "Role": "Nakasar_Peuples_Kweebec_Elder",
+      "Dialogue": "Kweebec_Elder",
+      "Building": "Grand_Pere",
+      "WorkX": 2,
+      "WorkZ": -32,
+      "Home": "Grand_Pere",
+      "HomeX": 2,
+      "HomeZ": -32,
+      "Builder": false
+    },
+    {
+      "Id": "Jardinier_Du_Bourg",
+      "Tier": 3,
+      "Role": "Nakasar_Peuples_Kweebec_Gardener",
+      "Dialogue": "Kweebec_Gardener",
+      "Building": "Grand_Potager",
+      "WorkX": 0,
+      "WorkZ": 32,
+      "Home": "Grande_Maison",
+      "HomeX": 24,
+      "HomeZ": 23,
+      "Builder": false
     }
   ]
 }

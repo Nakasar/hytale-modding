@@ -24,6 +24,8 @@ import dev.nakasar.hytale.peuples.reputation.VillagerHarmSystems;
 import dev.nakasar.hytale.peuples.village.OpenBoardInteraction;
 import dev.nakasar.hytale.peuples.village.VillageEntrySystem;
 import dev.nakasar.hytale.peuples.village.VillageLayout;
+import dev.nakasar.hytale.peuples.village.VillageLifeSystem;
+import dev.nakasar.hytale.peuples.village.Villagers;
 import dev.nakasar.hytale.peuples.village.VillageNoRegenSystem;
 import dev.nakasar.hytale.peuples.village.VillageRegistry;
 import dev.nakasar.hytale.peuples.village.VillageSeeder;
@@ -71,6 +73,14 @@ import dev.nakasar.hytale.peuples.village.Villages;
  *   <li>{@link VillagerHarmSystems}, {@link VillageBlockSystem} : frapper, tuer un villageois ou casser un bâtiment du
  *       village coûte de la réputation ;</li>
  *   <li>le marchand de chaque village et ses échoppes de troc vanilla par rang ({@code Server/BarterShops}).</li>
+ * </ul>
+ * Étape 5, les chantiers et les métiers :
+ * <ul>
+ *   <li>{@link VillageLifeSystem} : jauge pleine et matériaux au dépôt, le chantier du palier suivant s'ouvre
+ *       (échafaudage en blocs vanilla, un jour de jeu), puis les prefabs vanilla sont collés et le village change de
+ *       palier ({@code village/Chantiers}) ; un bâtiment peut brûler ({@code village/Burning}) et sera rebâti ;</li>
+ *   <li>{@link Villagers} : les villageois à métier du plan (jardinière, bâtisseur, guetteur...), leur poste de jour et
+ *       leur logis de nuit.</li>
  * </ul>
  */
 public final class PeuplesPlugin extends JavaPlugin {
@@ -122,6 +132,7 @@ public final class PeuplesPlugin extends JavaPlugin {
         entities.registerSystem(new VillagerHarmSystems.Hit());
         entities.registerSystem(new VillagerHarmSystems.Kill());
         entities.registerSystem(new VillageBlockSystem());
+        entities.registerSystem(new VillageLifeSystem());
 
         getCommandRegistry().registerCommand(new VillageCommand());
 
@@ -136,5 +147,6 @@ public final class PeuplesPlugin extends JavaPlugin {
         Criers.clearAll();
         RequestHud.clearAll();
         VillageBlockSystem.clearAll();
+        Villagers.clearAll();
     }
 }

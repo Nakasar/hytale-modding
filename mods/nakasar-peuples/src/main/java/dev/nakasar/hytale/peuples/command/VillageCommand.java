@@ -23,7 +23,9 @@ import dev.nakasar.hytale.peuples.request.Requests;
 import dev.nakasar.hytale.peuples.request.VillageRequest;
 import dev.nakasar.hytale.peuples.reputation.Reputations;
 import dev.nakasar.hytale.peuples.reputation.Shops;
+import dev.nakasar.hytale.peuples.village.Chantiers;
 import dev.nakasar.hytale.peuples.village.People;
+import dev.nakasar.hytale.peuples.village.Villagers;
 import dev.nakasar.hytale.peuples.village.Tiers;
 import dev.nakasar.hytale.peuples.village.Village;
 import dev.nakasar.hytale.peuples.village.VillageBoard;
@@ -54,7 +56,11 @@ import java.util.List;
  *   {@code renouveler} (nouveau tirage des trois cases) ;</li>
  *   <li>étape 4 : {@code reputation} (rang, jauges et droits dans le village le plus proche), {@code troc} (meilleure
  *   échoppe ouverte au rang) ; opérateurs : {@code rep <valeur>} (réputation de village), {@code reppeuple <valeur>}
- *   (réputation de peuple).</li>
+ *   (réputation de peuple) ;</li>
+ *   <li>étape 5 : {@code chantier} (état du chantier ou de ce qu'attend le prochain), {@code metiers} (villageois à
+ *   métier) ; opérateurs : {@code lancer} (ouvre le chantier sans jauge ni matériaux), {@code finir} (finit le chantier
+ *   en cours), {@code bruler [bâtiment]} (brûle un bâtiment, le village perd un palier) ; {@code palier <n>} bâtit
+ *   maintenant sur-le-champ ce qui manque jusqu'au palier n.</li>
  * </ul>
  */
 public final class VillageCommand extends AbstractCommandCollection {
@@ -91,6 +97,11 @@ public final class VillageCommand extends AbstractCommandCollection {
         addSubCommand(new SetReputationCommand(false));
         addSubCommand(new SetReputationCommand(true));
         addSubCommand(new TradeCommand());
+        addSubCommand(new ChantierCommand());
+        addSubCommand(new StartChantierCommand());
+        addSubCommand(new FinishChantierCommand());
+        addSubCommand(new BurnCommand());
+        addSubCommand(new JobsCommand());
     }
 
     /** Sous-commande ouverte aux joueurs. */
@@ -222,6 +233,7 @@ public final class VillageCommand extends AbstractCommandCollection {
             Village village = nearest(world, player);
             if (village != null) {
                 Criers.remove(store, village.id());
+                Villagers.remove(store, village.id());
                 Villages.dissolve(world, village);
                 player.sendMessage(Message.translation(Villages.MESSAGES + "dissolved").param("name", village.name()));
             }
@@ -257,11 +269,20 @@ public final class VillageCommand extends AbstractCommandCollection {
         @Override
         protected void execute(CommandContext context, Store<EntityStore> store, Ref<EntityStore> ref, PlayerRef player, World world) {
             Village village = nearest(world, player);
-            if (village != null) {
-                Villages.setTier(village, tier.get(context));
+            if (village == null) {
+                return;
+            }
+            int target = tier.get(context);
+            Chantiers.buildNow(world, village, target, pasted -> {
+                Villagers.forgetGround();
+                if (pasted < 0) {
+                    player.sendMessage(Message.translation(Chantiers.KEYS + "busy"));
+                    return;
+                }
                 player.sendMessage(Message.translation(Villages.MESSAGES + "tierSet").param("name", village.name())
                         .param("tier", Message.translation(Tiers.nameKey(village.tier()))));
-            }
+                player.sendMessage(Message.translation(Chantiers.KEYS + "builtNow").param("count", pasted));
+            });
         }
     }
 
@@ -609,6 +630,142 @@ public final class VillageCommand extends AbstractCommandCollection {
             Village village = nearest(world, player);
             if (village != null) {
                 Shops.open(store, ref, player, village, Shops.best(village, Reputations.rank(store, ref, village)));
+            }
+        }
+    }
+
+    private static final class ChantierCommand extends PlayerCommand {
+        ChantierCommand() {
+            super("chantier", KEYS + "chantier.desc");
+        }
+
+        @Override
+        protected void execute(CommandContext context, Store<EntityStore> store, Ref<EntityStore> ref, PlayerRef player, World world) {
+            Village village = nearest(world, player);
+            if (village == null) {
+                return;
+            }
+            player.sendMessage(Message.raw(village.name()).bold(true).color("#e8c46a"));
+            player.sendMessage(Message.translation(Villages.MESSAGES + "listLine").param("name", village.name())
+                    .param("people", Message.translation(village.people().nameKey()))
+                    .param("tier", Message.translation(Tiers.nameKey(village.tier())))
+                    .param("x", village.x()).param("y", village.y()).param("z", village.z()));
+            List<Message> lines = VillageBoard.chantierLines(world, store, village);
+            if (lines.isEmpty()) {
+                player.sendMessage(Message.translation(Chantiers.KEYS + "none"));
+            }
+            lines.forEach(player::sendMessage);
+            Chantiers.Block blocker = Chantiers.blocker(world, village, false);
+            if (blocker != Chantiers.Block.NONE && blocker != Chantiers.Block.ACTIVE) {
+                player.sendMessage(Message.translation(Chantiers.KEYS + "blocker." + blocker.name()));
+            }
+        }
+    }
+
+    private static final class StartChantierCommand extends AbstractPlayerCommand {
+        StartChantierCommand() {
+            super("lancer", KEYS + "start.desc");
+            requirePermission(ADMIN);
+        }
+
+        @Override
+        protected void execute(CommandContext context, Store<EntityStore> store, Ref<EntityStore> ref, PlayerRef player, World world) {
+            Village village = nearest(world, player);
+            if (village == null) {
+                return;
+            }
+            Chantiers.Block blocker = Chantiers.start(world, village, true, state -> {
+                Villagers.forgetGround();
+                player.sendMessage(Message.translation(Chantiers.KEYS + "startedCommand").param("count", state.buildings().length)
+                        .param("skipped", state.skipped().length));
+            });
+            if (blocker != Chantiers.Block.NONE) {
+                player.sendMessage(Message.translation(Chantiers.KEYS + "blocker." + blocker.name()));
+            }
+        }
+    }
+
+    private static final class FinishChantierCommand extends AbstractPlayerCommand {
+        FinishChantierCommand() {
+            super("finir", KEYS + "finish.desc");
+            requirePermission(ADMIN);
+        }
+
+        @Override
+        protected void execute(CommandContext context, Store<EntityStore> store, Ref<EntityStore> ref, PlayerRef player, World world) {
+            Village village = nearest(world, player);
+            if (village == null) {
+                return;
+            }
+            if (village.chantier() == null) {
+                player.sendMessage(Message.translation(Chantiers.KEYS + "none"));
+                return;
+            }
+            if (!Chantiers.finish(world, village, Villagers::forgetGround)) {
+                player.sendMessage(Message.translation(Chantiers.KEYS + "busy"));
+            }
+        }
+    }
+
+    private static final class BurnCommand extends AbstractPlayerCommand {
+        private final OptionalArg<String> building = withOptionalArg("batiment", KEYS + "burn.arg", ArgTypes.STRING);
+
+        BurnCommand() {
+            super("bruler", KEYS + "burn.desc");
+            requirePermission(ADMIN);
+        }
+
+        @Override
+        protected void execute(CommandContext context, Store<EntityStore> store, Ref<EntityStore> ref, PlayerRef player, World world) {
+            Village village = nearest(world, player);
+            if (village == null) {
+                return;
+            }
+            var burnt = Chantiers.burn(world, village, building.get(context), true);
+            Villagers.forgetGround();
+            if (burnt == null) {
+                player.sendMessage(Message.translation(Chantiers.KEYS + "burnNothing"));
+            }
+        }
+    }
+
+    private static final class JobsCommand extends PlayerCommand {
+        JobsCommand() {
+            super("metiers", KEYS + "jobs.desc");
+        }
+
+        @Override
+        protected void execute(CommandContext context, Store<EntityStore> store, Ref<EntityStore> ref, PlayerRef player, World world) {
+            Village village = nearest(world, player);
+            if (village == null) {
+                return;
+            }
+            var layout = Chantiers.layout(village);
+            if (layout == null) {
+                player.sendMessage(Message.translation(Chantiers.KEYS + "noLayout"));
+                return;
+            }
+            var present = Villagers.jobs(village);
+            player.sendMessage(Message.translation(Chantiers.KEYS + "jobs.header").param("name", village.name()));
+            for (var job : layout.jobs()) {
+                String state;
+                if (job.tier() > village.tier()) {
+                    state = "jobs.tier";
+                } else if (!job.building().isEmpty() && !village.isStanding(job.building())) {
+                    state = "jobs.noBuilding";
+                } else {
+                    state = Boolean.TRUE.equals(present.get(job.id())) ? "jobs.here" : "jobs.away";
+                }
+                player.sendMessage(Message.translation(Chantiers.KEYS + "jobs.line")
+                        .param("job", Message.translation("nakasar_peuples.job." + job.id()))
+                        .param("state", Message.translation(Chantiers.KEYS + state).param("tier", Message.translation(Tiers.nameKey(job.tier())))
+                                .param("building", job.building().isEmpty() ? Message.raw("-") : Message.translation(Chantiers.buildingKey(job.building())))));
+            }
+            for (var e : present.entrySet()) {
+                if (e.getKey().startsWith("chantier:")) {
+                    player.sendMessage(Message.translation(Chantiers.KEYS + "jobs.helper")
+                            .param("building", Message.translation(Chantiers.buildingKey(e.getKey().substring("chantier:".length())))));
+                }
             }
         }
     }
