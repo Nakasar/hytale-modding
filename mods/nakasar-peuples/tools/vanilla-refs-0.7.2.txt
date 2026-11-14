@@ -31,3 +31,9 @@ animations Crocodile_Default
 # Tiger_Sabertooth_Default.json : SwipeLeft, SwipeRight, Bite ; vu dans Assets.zip 0.7.2 le 26 octobre 2026, déjà
 # accepté par le mod Vampires) : tigres du Pic de Sunqua.
 animations Tiger_Sabertooth_Default
+# Trorks vanilla (Server/NPC/Roles/Intelligent/Faction/Trork/*.json, vus dans Assets.zip du jeu le 14 novembre 2026) :
+# bandes et rôles chassés des demandes du tableau (étape 3 du mod Peuples).
+npc Trork_Warrior
+npc Trork_Hunter
+npc Trork_Brawler
+npc Trork_Guard

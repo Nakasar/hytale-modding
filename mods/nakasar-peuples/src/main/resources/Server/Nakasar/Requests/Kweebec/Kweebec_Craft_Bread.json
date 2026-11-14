@@ -1,0 +1,14 @@
+{
+  "$Comment": "Demande kweebec (Craft), étape 3 : voir RequestTemplate.",
+  "People": "Kweebec",
+  "Type": "Craft",
+  "MinTier": 0,
+  "MaxTier": 3,
+  "Weight": 1,
+  "TitleKey": "nakasar_peuples.request.Kweebec_Craft_Bread.title",
+  "TaskKey": "nakasar_peuples.request.Kweebec_Craft_Bread.task",
+  "ItemId": "Food_Bread",
+  "Quantity": 3,
+  "Essor": 15,
+  "Favors": 2
+}

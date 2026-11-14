@@ -4,13 +4,14 @@ import com.hypixel.hytale.codec.Codec;
 import com.hypixel.hytale.codec.KeyedCodec;
 import com.hypixel.hytale.codec.builder.BuilderCodec;
 import com.hypixel.hytale.codec.codecs.array.ArrayCodec;
+import dev.nakasar.hytale.peuples.request.VillageRequest;
 
 /**
  * Un village : son état sauvegardé avec le monde (ressource {@link VillageRegistry}), ancré sur le bloc cœur invisible
  * {@value Villages#HEART_BLOCK} (GDD, section Villages vivants). Le dépôt (coffre vanilla du peuple) et le tableau
  * (panneau du peuple) sont posés à côté du cœur et retrouvés par leurs coordonnées.
  *
- * <p>Étape 1 : nom, peuple, palier et jauge d'essor. Les demandes (étape 3), la réputation de village (étape 4), les
+ * <p>Étape 1 : nom, peuple, palier et jauge d'essor. Étape 3 : les demandes du tableau. La réputation de village (étape 4), les
  * bâtiments posés (étape 5) et le raid en attente (étape 6) s'ajoutent à ce même objet.
  */
 public final class Village {
@@ -58,6 +59,13 @@ public final class Village {
             .append(new KeyedCodec<>("BannerX", Codec.INTEGER), (v, i) -> v.bannerX = i == null ? 0 : i, v -> v.bannerX).add()
             .append(new KeyedCodec<>("BannerY", Codec.INTEGER), (v, i) -> v.bannerY = i == null ? 0 : i, v -> v.bannerY).add()
             .append(new KeyedCodec<>("BannerZ", Codec.INTEGER), (v, i) -> v.bannerZ = i == null ? 0 : i, v -> v.bannerZ).add()
+            .append(new KeyedCodec<>("Requests", new ArrayCodec<>(VillageRequest.CODEC, VillageRequest[]::new)),
+                    (v, a) -> v.requests = a == null ? new VillageRequest[0] : a, v -> v.requests)
+            .documentation("Demandes du tableau du jour (étape 3), trois au plus.")
+            .add()
+            .append(new KeyedCodec<>("RequestDay", Codec.LONG), (v, l) -> v.requestDay = l == null ? Long.MIN_VALUE : l, v -> v.requestDay)
+            .documentation("Jour de jeu du dernier tirage des demandes (GameClock.day).")
+            .add()
             .build();
 
     String id = "";
@@ -82,6 +90,8 @@ public final class Village {
     int bannerX;
     int bannerY;
     int bannerZ;
+    VillageRequest[] requests = new VillageRequest[0];
+    long requestDay = Long.MIN_VALUE;
 
     Village() {
     }
@@ -120,6 +130,11 @@ public final class Village {
         v.bannerX = bannerX;
         v.bannerY = bannerY;
         v.bannerZ = bannerZ;
+        v.requests = new VillageRequest[requests.length];
+        for (int i = 0; i < requests.length; i++) {
+            v.requests[i] = requests[i] == null ? null : requests[i].copy();
+        }
+        v.requestDay = requestDay;
         return v;
     }
 
@@ -248,6 +263,27 @@ public final class Village {
         int before = essor;
         essor = Math.max(0, Math.min(Tiers.threshold(tier), essor + amount));
         return essor - before;
+    }
+
+    /** Demandes du tableau (copie du tableau ; les cases vides sont null). */
+    public VillageRequest[] requests() {
+        return requests.clone();
+    }
+
+    /** Jour du dernier tirage des demandes. */
+    public long requestDay() {
+        return requestDay;
+    }
+
+    void setRequests(VillageRequest[] value, long day) {
+        requests = value == null ? new VillageRequest[0] : value.clone();
+        requestDay = day;
+    }
+
+    void setRequest(int slot, VillageRequest request) {
+        if (slot >= 0 && slot < requests.length) {
+            requests[slot] = request;
+        }
     }
 
     void setTier(int value) {

@@ -9,6 +9,13 @@ import dev.nakasar.hytale.peuples.command.VillageCommand;
 import dev.nakasar.hytale.peuples.dialogue.Dialogue;
 import dev.nakasar.hytale.peuples.dialogue.Dialogues;
 import dev.nakasar.hytale.peuples.player.PeuplesPlayer;
+import dev.nakasar.hytale.peuples.request.Criers;
+import dev.nakasar.hytale.peuples.request.RequestDeathSystem;
+import dev.nakasar.hytale.peuples.request.RequestHud;
+import dev.nakasar.hytale.peuples.request.RequestSpawns;
+import dev.nakasar.hytale.peuples.request.RequestSystem;
+import dev.nakasar.hytale.peuples.request.RequestTemplate;
+import dev.nakasar.hytale.peuples.request.VillagerUseSystem;
 import dev.nakasar.hytale.peuples.village.OpenBoardInteraction;
 import dev.nakasar.hytale.peuples.village.VillageEntrySystem;
 import dev.nakasar.hytale.peuples.village.VillageLayout;
@@ -40,6 +47,17 @@ import dev.nakasar.hytale.peuples.village.Villages;
  *   <li>{@link VillageEntrySystem} : titre d'écran à l'entrée d'un village, bannière de carte révélée à l'approche ;</li>
  *   <li>{@link VillageNoRegenSystem} : les Kweebecs des prefabs ne se régénèrent pas (règle permanente, AGENTS.md).</li>
  * </ul>
+ * Étape 3, les demandes du tableau :
+ * <ul>
+ *   <li>les modèles de demande, assets JSON {@code Server/}{@value RequestTemplate#PATH} (six types : récolte,
+ *       fabrication, chasse, livraison, escorte, défense), tirés chaque matin dans les trois cases du tableau ;</li>
+ *   <li>{@link RequestSystem} : suivi des demandes prises (lecture du dépôt, lieux, bandes, captif, veille de nuit,
+ *       échéance) et affichage dans le suivi d'objectifs vanilla du HUD ({@link RequestHud}) ;</li>
+ *   <li>{@link RequestDeathSystem} : morts de PNJ qui comptent (bande, Trorks chassés, captif, crieur) ;</li>
+ *   <li>{@link VillagerUseSystem} et {@link Criers} : le crieur de chaque village ouvre son dialogue, le guetteur prend
+ *       la missive, le captif suit ;</li>
+ *   <li>le tableau à boutons {@code BoardPage} (page .ui du pack), la page texte restant accessible accroupi.</li>
+ * </ul>
  */
 public final class PeuplesPlugin extends JavaPlugin {
 
@@ -69,6 +87,12 @@ public final class PeuplesPlugin extends JavaPlugin {
                 .setKeyFunction(VillageLayout::getId)
                 .build());
 
+        getAssetRegistry().register(HytaleAssetStore.builder(RequestTemplate.class, new DefaultAssetMap<String, RequestTemplate>())
+                .setPath(RequestTemplate.PATH)
+                .setCodec(RequestTemplate.CODEC)
+                .setKeyFunction(RequestTemplate::getId)
+                .build());
+
         getCodecRegistry(Interaction.CODEC).register(OpenBoardInteraction.TYPE_ID, OpenBoardInteraction.class, OpenBoardInteraction.CODEC);
 
         var entities = getEntityStoreRegistry();
@@ -77,15 +101,21 @@ public final class PeuplesPlugin extends JavaPlugin {
         entities.registerSystem(new VillageSeeder());
         entities.registerSystem(new VillageEntrySystem());
         entities.registerSystem(new VillageNoRegenSystem());
+        entities.registerSystem(new RequestSystem());
+        entities.registerSystem(new RequestDeathSystem());
+        entities.registerSystem(new VillagerUseSystem());
 
         getCommandRegistry().registerCommand(new VillageCommand());
 
-        getLogger().atInfo().log("Nakasar Peuples : villages (%s), plans (Server/%s), tableau (%s), dialogues (Server/%s), /village enregistrés",
-                VillageRegistry.ID, VillageLayout.PATH, OpenBoardInteraction.TYPE_ID, Dialogue.PATH);
+        getLogger().atInfo().log("Nakasar Peuples : villages (%s), plans (Server/%s), tableau (%s), dialogues (Server/%s), demandes (Server/%s), /village enregistrés",
+                VillageRegistry.ID, VillageLayout.PATH, OpenBoardInteraction.TYPE_ID, Dialogue.PATH, RequestTemplate.PATH);
     }
 
     @Override
     protected void shutdown() {
         Dialogues.clearAll();
+        RequestSpawns.clearAll();
+        Criers.clearAll();
+        RequestHud.clearAll();
     }
 }

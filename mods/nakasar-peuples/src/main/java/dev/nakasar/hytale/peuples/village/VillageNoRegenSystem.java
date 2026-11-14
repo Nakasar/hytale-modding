@@ -13,6 +13,8 @@ import com.hypixel.hytale.server.core.modules.entity.component.TransformComponen
 import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
 import com.hypixel.hytale.server.npc.NPCPlugin;
 import com.hypixel.hytale.server.npc.entities.NPCEntity;
+import dev.nakasar.hytale.peuples.request.Criers;
+import dev.nakasar.hytale.peuples.request.RequestSpawns;
 import org.joml.Vector3d;
 
 import java.util.List;
@@ -22,7 +24,8 @@ import java.util.Set;
  * Aucun mob ne se régénère hors combat ou invulnérable (règle permanente de Kevin, AGENTS.md). Les prefabs vanilla des
  * villages font apparaître des Kweebecs (marqueurs d'apparition) : on coupe {@link HealthRegenState}, avant la
  * régénération vanilla, pour tout PNJ à moins de {@value #RADIUS} blocs d'un village du mod, comme le
- * {@code NoRegenSystem} du mod Vampires.
+ * {@code NoRegenSystem} du mod Vampires. Étape 3 : aussi, partout, les PNJ des demandes (bandes de Trorks, captif,
+ * guetteur, crieur) et tout rôle du mod ({@code Nakasar_Peuples_*}).
  */
 public final class VillageNoRegenSystem extends EntityTickingSystem<EntityStore> {
 
@@ -54,6 +57,15 @@ public final class VillageNoRegenSystem extends EntityTickingSystem<EntityStore>
                      CommandBuffer<EntityStore> buffer) {
         HealthRegenState regen = chunk.getComponent(index, HealthRegenState.getComponentType());
         if (regen == null || !regen.isRegenEnabled()) {
+            return;
+        }
+        if (RequestSpawns.owner(chunk.getReferenceTo(index)) != null || Criers.villageOf(chunk.getReferenceTo(index)) != null) {
+            regen.setRegenEnabled(false);
+            return;
+        }
+        NPCEntity npc = chunk.getComponent(index, NPCEntity.getComponentType());
+        if (npc != null && npc.getRoleName() != null && npc.getRoleName().startsWith("Nakasar_Peuples_")) {
+            regen.setRegenEnabled(false);
             return;
         }
         List<Village> villages = Villages.registry(store.getExternalData().getWorld()).all();

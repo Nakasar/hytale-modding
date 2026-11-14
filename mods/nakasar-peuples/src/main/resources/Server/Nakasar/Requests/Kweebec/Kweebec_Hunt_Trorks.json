@@ -1,0 +1,25 @@
+{
+  "$Comment": "Demande kweebec (Hunt), étape 3 : voir RequestTemplate.",
+  "People": "Kweebec",
+  "Type": "Hunt",
+  "MinTier": 0,
+  "MaxTier": 3,
+  "Weight": 1,
+  "TitleKey": "nakasar_peuples.request.Kweebec_Hunt_Trorks.title",
+  "TaskKey": "nakasar_peuples.request.Kweebec_Hunt_Trorks.task",
+  "Spawns": [
+    "Trork_Warrior",
+    "Trork_Warrior",
+    "Trork_Hunter"
+  ],
+  "Roles": [
+    "Trork_Warrior",
+    "Trork_Hunter",
+    "Trork_Brawler",
+    "Trork_Guard"
+  ],
+  "MinDistance": 90,
+  "MaxDistance": 150,
+  "Essor": 15,
+  "Favors": 2
+}

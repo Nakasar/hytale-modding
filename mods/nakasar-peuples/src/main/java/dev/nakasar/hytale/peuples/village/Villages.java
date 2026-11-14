@@ -124,6 +124,16 @@ public final class Villages {
         return village.addEssor(amount);
     }
 
+    /** Remplace les demandes du tableau (tirage du matin). */
+    public static void setRequests(Village village, dev.nakasar.hytale.peuples.request.VillageRequest[] requests, long day) {
+        village.setRequests(requests, day);
+    }
+
+    /** Remplace une demande du tableau (celle qui vient d'être remplie). */
+    public static void setRequest(Village village, int slot, dev.nakasar.hytale.peuples.request.VillageRequest request) {
+        village.setRequest(slot, request);
+    }
+
     public static void setTier(Village village, int tier) {
         village.setTier(tier);
     }
