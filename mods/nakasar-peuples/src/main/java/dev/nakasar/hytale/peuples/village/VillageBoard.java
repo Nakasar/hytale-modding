@@ -27,7 +27,8 @@ import java.util.Map;
  *
  * <p>Étape 3 : les trois demandes du jour et leur état pour le joueur. Étape 4 : le rang du joueur dans le village,
  * ses deux jauges et ce que son rang ouvre ; les cases 2 et 3 restent fermées à l'étranger. La
- * page à boutons {@link dev.nakasar.hytale.peuples.request.BoardPage} reprend ce texte à droite.
+ * page à boutons {@link dev.nakasar.hytale.peuples.request.BoardPage} reprend ce texte à droite. Étape 5 : le chantier
+ * en cours ou ce qu'attend le prochain (matériaux au dépôt), les ruines, les villageois au travail.
  */
 public final class VillageBoard {
 
@@ -69,10 +70,13 @@ public final class VillageBoard {
         if (threshold > 0) {
             lines.add(Message.translation(KEYS + "essor").param("essor", village.essor()).param("max", threshold));
             lines.add(Message.raw(bar(village.essor(), threshold)).color(village.essor() >= threshold ? "#7ed957" : "#e8c46a"));
-            lines.add(Message.translation(village.essor() >= threshold ? KEYS + "essorFull" : KEYS + "nextTier")
-                    .param("tier", Message.translation(Tiers.nameKey(village.tier() + 1))));
-        } else {
+        } else if (village.chantier() == null) {
             lines.add(Message.translation(KEYS + "maxTier"));
+        }
+        lines.addAll(chantierLines(world, store == null ? world.getEntityStore().getStore() : store, village));
+        int[] people = Villagers.count(village);
+        if (people[1] > 0) {
+            lines.add(Message.translation(KEYS + "villagers").param("here", people[0]).param("total", people[1]));
         }
         lines.add(Message.empty());
         Rank rank = Rank.ETRANGER;
@@ -132,6 +136,50 @@ public final class VillageBoard {
             body.insert(lines.get(i));
         }
         return body;
+    }
+
+    /**
+     * Le chantier (étape 5) : en cours (palier visé, heures restantes, bâtiments, emplacements sautés), ou ce qu'attend
+     * le prochain (jauge, matériaux au dépôt), et les bâtiments en ruine. Aussi envoyé par le bâtisseur dans le tchat.
+     */
+    public static List<Message> chantierLines(World world, Store<EntityStore> store, Village village) {
+        List<Message> lines = new ArrayList<>();
+        VillageLayout layout = Chantiers.layout(village);
+        if (layout == null) {
+            return lines;
+        }
+        ChantierState c = village.chantier();
+        if (c != null) {
+            long left = Math.max(0, c.end() - dev.nakasar.hytale.peuples.request.GameClock.seconds(store));
+            lines.add(Message.translation(KEYS + "chantier.active").param("tier", Message.translation(Tiers.nameKey(c.tier())))
+                    .param("hours", (int) Math.ceil(left / 3600.0)));
+            for (String id : c.buildings()) {
+                lines.add(Message.translation(KEYS + "chantier.building").param("building", Message.translation(Chantiers.buildingKey(id))));
+            }
+            for (String id : c.skipped()) {
+                lines.add(Message.translation(KEYS + "chantier.skipped").param("building", Message.translation(Chantiers.buildingKey(id))));
+            }
+        } else if (village.tier() < Tiers.MAX) {
+            int target = village.tier() + 1;
+            VillageLayout.Chantier spec = layout.chantier(target);
+            boolean full = village.essor() >= Tiers.threshold(village.tier());
+            lines.add(Message.translation(KEYS + (full ? "chantier.waiting" : "chantier.next"))
+                    .param("tier", Message.translation(Tiers.nameKey(target))));
+            if (spec != null) {
+                Map<String, Integer> deposit = Villages.depositContents(world, village);
+                for (VillageLayout.Material m : spec.materials()) {
+                    int have = deposit == null ? 0 : Math.min(m.quantity(), deposit.getOrDefault(m.itemId(), 0));
+                    lines.add(Message.translation(KEYS + "chantier.material").param("have", have).param("need", m.quantity())
+                            .param("item", itemName(m.itemId())).color(have >= m.quantity() ? "#7ed957" : "#e8c46a"));
+                }
+                int count = Chantiers.pending(layout, village, target).size();
+                lines.add(Message.translation(KEYS + "chantier.count").param("count", count).param("hours", spec.hours()));
+            }
+        }
+        for (String id : village.burnt()) {
+            lines.add(Message.translation(KEYS + "chantier.ruin").param("building", Message.translation(Chantiers.buildingKey(id))));
+        }
+        return lines;
     }
 
     /** Nom traduit d'un objet (son id brut si l'objet est inconnu). */

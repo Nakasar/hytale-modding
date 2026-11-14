@@ -63,6 +63,8 @@ public final class DialogueTypes {
         DialogueCondition.CODEC.register("Rank", RankCondition.class, RankCondition.CODEC);
         DialogueEffect.CODEC.register("OpenShop", OpenShopEffect.class, OpenShopEffect.CODEC);
         DialogueEffect.CODEC.register("AddReputation", AddReputationEffect.class, AddReputationEffect.CODEC);
+        DialogueCondition.CODEC.register("Chantier", ChantierCondition.class, ChantierCondition.CODEC);
+        DialogueEffect.CODEC.register("ChantierStatus", ChantierStatusEffect.class, ChantierStatusEffect.CODEC);
     }
 
     static CombinedItemContainer inventory(DialogueContext context) {
@@ -147,6 +149,25 @@ public final class DialogueTypes {
         }
     }
 
+    /**
+     * {@code {"Type": "Chantier", "Active": true}} (étape 5) : le village du joueur a un chantier en cours ({@code Active}
+     * faux : n'en a pas).
+     */
+    public static final class ChantierCondition extends DialogueCondition {
+        public static final BuilderCodec<ChantierCondition> CODEC = BuilderCodec.builder(ChantierCondition.class, ChantierCondition::new)
+                .append(new KeyedCodec<>("Active", Codec.BOOLEAN), (c, v) -> c.active = v == null || v, c -> c.active)
+                .documentation("Vrai (défaut) : un chantier est en cours ; faux : aucun.")
+                .add()
+                .build();
+
+        boolean active = true;
+
+        @Override
+        public boolean test(DialogueContext context) {
+            return context.village() != null && (context.village().chantier() != null) == active;
+        }
+    }
+
     /** {@code {"Type": "HasItem", "ItemId": "x", "Quantity": 3}} : le joueur porte ces objets. */
     public static final class HasItemCondition extends DialogueCondition {
         public static final BuilderCodec<HasItemCondition> CODEC = BuilderCodec.builder(HasItemCondition.class, HasItemCondition::new)
@@ -172,6 +193,23 @@ public final class DialogueTypes {
     }
 
     // ---- Effets ----
+
+    /** {@code {"Type": "ChantierStatus"}} (étape 5) : l'état du chantier du village (ou de ce qui l'attend) dans le tchat. */
+    public static final class ChantierStatusEffect extends DialogueEffect {
+        public static final BuilderCodec<ChantierStatusEffect> CODEC = BuilderCodec.builder(ChantierStatusEffect.class, ChantierStatusEffect::new).build();
+
+        @Override
+        public boolean apply(DialogueContext context) {
+            if (context.village() == null) {
+                return false;
+            }
+            for (com.hypixel.hytale.server.core.Message line : dev.nakasar.hytale.peuples.village.VillageBoard.chantierLines(
+                    context.world(), context.store(), context.village())) {
+                context.playerRef().sendMessage(line);
+            }
+            return true;
+        }
+    }
 
     /** {@code {"Type": "SetFlag", "Flag": "x"}} : pose un drapeau sur le joueur. */
     public static final class SetFlagEffect extends DialogueEffect {

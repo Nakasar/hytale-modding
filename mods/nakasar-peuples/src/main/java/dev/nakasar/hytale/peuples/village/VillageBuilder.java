@@ -135,10 +135,12 @@ public final class VillageBuilder {
 
         Store<EntityStore> store = world.getEntityStore().getStore();
         List<String> built = new ArrayList<>();
+        List<Integer> builtHeights = new ArrayList<>();
         for (int i = 0; i < buildings.size(); i++) {
             VillageLayout.Building b = buildings.get(i);
             if (paste(world, store, b.prefab(), cx + b.x(), heights.get(i), cz + b.z(), b.rotation())) {
                 built.add(b.id());
+                builtHeights.add(heights.get(i));
             }
         }
 
@@ -148,6 +150,9 @@ public final class VillageBuilder {
         }
         Village village = founding.village();
         village.markGenerated(layout.getId(), auto, built.toArray(String[]::new));
+        for (int i = 0; i < built.size(); i++) {
+            village.setSiteY(built.get(i), builtHeights.get(i));
+        }
         Villages.placeBanner(world, village, cx + layout.bannerX(), h0 + 1, cz + layout.bannerZ());
         LOGGER.atInfo().log("Nakasar Peuples : village %s (%s, plan %s) généré en %d %d %d, %d/%d bâtiments collés%s",
                 name, layout.people().id(), layout.getId(), cx, h0 + 1, cz, built.size(), buildings.size(), auto ? " (automatique)" : "");

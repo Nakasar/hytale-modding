@@ -28,7 +28,8 @@ import java.util.ArrayList;
  *   <li>le crieur d'un village ouvre son dialogue ({@code <Peuple>_Crieur}) : voir les demandes, rendre ;</li>
  *   <li>le marchand d'un village ouvre le sien ({@code <Peuple>_Marchand}) : les échoppes de troc selon le rang ;</li>
  *   <li>le guetteur d'une livraison prend la missive et remplit la demande ;</li>
- *   <li>le captif d'une escorte répond qu'il suit le joueur.</li>
+ *   <li>le captif d'une escorte répond qu'il suit le joueur ;</li>
+ *   <li>un villageois à métier (étape 5) ouvre le dialogue de son métier.</li>
  * </ul>
  */
 public final class VillagerUseSystem extends EntityEventSystem<EntityStore, UseEntityEvent.Post> {
@@ -58,7 +59,8 @@ public final class VillagerUseSystem extends EntityEventSystem<EntityStore, UseE
         String crierVillage = Criers.villageOf(target);
         String merchantVillage = Criers.merchantVillageOf(target);
         RequestSpawns.Owner owner = RequestSpawns.owner(target);
-        if (crierVillage == null && merchantVillage == null && owner == null) {
+        dev.nakasar.hytale.peuples.village.Villagers.Posted villager = dev.nakasar.hytale.peuples.village.Villagers.posted(target);
+        if (crierVillage == null && merchantVillage == null && owner == null && villager == null) {
             return;
         }
         World world = store.getExternalData().getWorld();
@@ -67,7 +69,14 @@ public final class VillagerUseSystem extends EntityEventSystem<EntityStore, UseE
             if (!user.isValid()) {
                 return;
             }
-            if (crierVillage != null) {
+            if (villager != null) {
+                Dialogue dialogue = Dialogue.get(villager.dialogue());
+                if (dialogue == null) {
+                    player.sendMessage(Message.translation(Dialogues.KEYS + "unknown").param("id", villager.dialogue()));
+                } else {
+                    Dialogues.openPage(world, s, user, player, dialogue);
+                }
+            } else if (crierVillage != null) {
                 talk(world, s, user, player, crierVillage, false);
             } else if (merchantVillage != null) {
                 talk(world, s, user, player, merchantVillage, true);

@@ -1,0 +1,145 @@
+{
+  "$Comment": "Villageois à métier (Guard) d'un village kweebec (étape 5), généré par tools/generate_villagers.py. Posé par village/Villagers quand un joueur approche ; le Java déplace son point d'attache (poste le jour, logis la nuit) : loin de lui il y marche, près de lui il travaille (animation vanilla) ou flâne. L'utiliser ouvre le dialogue de son métier. Ne régénère jamais (VillageNoRegenSystem).",
+  "Type": "Generic",
+  "Appearance": "Kweebec_Sapling_Razorleaf",
+  "NameTranslationKey": "nakasar_peuples.npc.Kweebec_Guard.name",
+  "MaxHealth": 80,
+  "StartState": "Idle",
+  "DefaultPlayerAttitude": "Neutral",
+  "DefaultNPCAttitude": "Ignore",
+  "MotionControllerList": [
+    {
+      "Type": "Walk",
+      "MaxWalkSpeed": 3,
+      "Gravity": 10,
+      "RunThreshold": 0.6,
+      "MaxFallSpeed": 15,
+      "MaxRotationSpeed": 360,
+      "Acceleration": 10,
+      "JumpHeight": 1.0
+    }
+  ],
+  "KnockbackScale": 0.5,
+  "Instructions": [
+    {
+      "Sensor": {
+        "Type": "State",
+        "State": "Idle"
+      },
+      "Instructions": [
+        {
+          "$Comment": "Loin de son poste (le Java l'a déplacé) : il y marche.",
+          "Sensor": {
+            "Type": "Leash",
+            "Range": 6
+          },
+          "BodyMotion": {
+            "Type": "Seek",
+            "RelativeSpeed": 0.5,
+            "SlowDownDistance": 2,
+            "StopDistance": 1,
+            "UsePathfinder": true
+          }
+        },
+        {
+          "Type": "Random",
+          "Name": "Work",
+          "Instructions": [
+            {
+              "Weight": 45,
+              "Instructions": [
+                {
+                  "$Comment": "Il travaille sur place.",
+                  "ActionsBlocking": true,
+                  "BodyMotion": {
+                    "Type": "Nothing"
+                  },
+                  "Actions": [
+                    {
+                      "Type": "PlayAnimation",
+                      "Slot": "Status",
+                      "Animation": "InspectWeapon"
+                    },
+                    {
+                      "Type": "Timeout",
+                      "Delay": [
+                        4,
+                        7
+                      ]
+                    },
+                    {
+                      "Type": "PlayAnimation",
+                      "Slot": "Status"
+                    },
+                    {
+                      "Type": "ResetInstructions",
+                      "Instructions": [
+                        "Work"
+                      ]
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "Weight": 55,
+              "Instructions": [
+                {
+                  "Continue": true,
+                  "ActionsAtomic": true,
+                  "Actions": [
+                    {
+                      "Type": "Timeout",
+                      "Delay": [
+                        6,
+                        10
+                      ]
+                    },
+                    {
+                      "Type": "ResetInstructions",
+                      "Instructions": [
+                        "Work"
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "$Comment": "Il flâne autour de son poste.",
+                  "BodyMotion": {
+                    "Type": "WanderInCircle",
+                    "Radius": 3,
+                    "RelativeSpeed": 0.3,
+                    "MaxHeadingChange": 50
+                  }
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "InteractionInstruction": {
+    "Instructions": [
+      {
+        "Continue": true,
+        "Sensor": {
+          "Type": "Any"
+        },
+        "Actions": [
+          {
+            "Type": "SetInteractable",
+            "Interactable": true,
+            "Hint": "nakasar_peuples.hint.talk"
+          }
+        ]
+      },
+      {
+        "Sensor": {
+          "Type": "HasInteracted"
+        },
+        "Actions": []
+      }
+    ]
+  }
+}
