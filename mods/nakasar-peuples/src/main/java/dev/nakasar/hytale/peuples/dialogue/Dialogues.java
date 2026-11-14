@@ -7,6 +7,9 @@ import com.hypixel.hytale.server.core.entity.entities.Player;
 import com.hypixel.hytale.server.core.universe.PlayerRef;
 import com.hypixel.hytale.server.core.universe.world.World;
 import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
+import dev.nakasar.hytale.peuples.reputation.Rank;
+import dev.nakasar.hytale.peuples.reputation.Reputations;
+import dev.nakasar.hytale.peuples.village.People;
 
 import java.util.Map;
 import java.util.UUID;
@@ -134,6 +137,22 @@ public final class Dialogues {
         return Message.translation(KEYS + "header").param("name", name).param("role", Message.translation(dialogue.roleKey()));
     }
 
+    /**
+     * En-tête avec la pastille de rang (maquette du dialogue : « peuple · rang ») quand le dialogue a un peuple : rang
+     * dans le village où se trouve le joueur, sinon auprès du peuple.
+     */
+    public static Message header(Dialogue dialogue, DialogueContext context) {
+        People people = People.byId(dialogue.people());
+        if (people == null || !context.valid()) {
+            return header(dialogue);
+        }
+        Rank rank = context.village() != null && context.village().people() == people
+                ? Reputations.rank(context.store(), context.ref(), context.village())
+                : Reputations.peopleRank(context.store(), context.ref(), people);
+        return Message.translation(KEYS + "headerRank").param("header", header(dialogue))
+                .param("people", Message.translation(people.nameKey())).param("rank", Message.translation(rank.nameKey()));
+    }
+
     /** Texte d'une réponse grisée : sa condition, ou « indisponible ». */
     public static Message failText(DialogueResponse response) {
         return Message.translation(response.failKey() != null ? response.failKey() : KEYS + "unavailable");
@@ -141,7 +160,7 @@ public final class Dialogues {
 
     private static void printNode(Dialogue dialogue, DialogueNode node, DialogueContext context) {
         PlayerRef player = context.playerRef();
-        player.sendMessage(header(dialogue).bold(true).color("#e8c46a"));
+        player.sendMessage(header(dialogue, context).bold(true).color("#e8c46a"));
         player.sendMessage(Message.translation(KEYS + "quote").param("text", Message.translation(node.textKey())));
         DialogueResponse[] responses = node.responses();
         for (int i = 0; i < responses.length; i++) {

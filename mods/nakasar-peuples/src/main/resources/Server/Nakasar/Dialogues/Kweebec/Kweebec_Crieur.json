@@ -1,11 +1,29 @@
 {
-  "$Comment": "Le crieur kweebec (étape 3), posé près du tableau de chaque village kweebec : il lit les demandes du jour, reprend les objets portés pour les demandes prises ici, et renvoie au tableau à boutons.",
+  "$Comment": "Le crieur kweebec (étape 3), posé près du tableau de chaque village kweebec : il lit les demandes du jour, reprend les objets portés pour les demandes prises ici, et renvoie au tableau à boutons. Étape 4 : le honni n'a droit qu'à un reproche et à la première demande pour se racheter.",
   "NpcNameKey": "nakasar_peuples.dialogue.Kweebec_Crieur.npc",
   "RoleKey": "nakasar_peuples.dialogue.Kweebec_Crieur.role",
   "People": "Kweebec",
   "Entries": [
-    { "Node": "EnCours", "Conditions": [ { "Type": "HasRequest" } ] },
-    { "Node": "Accueil" }
+    {
+      "Node": "Honni",
+      "Conditions": [
+        {
+          "Type": "Rank",
+          "Max": "Honni"
+        }
+      ]
+    },
+    {
+      "Node": "EnCours",
+      "Conditions": [
+        {
+          "Type": "HasRequest"
+        }
+      ]
+    },
+    {
+      "Node": "Accueil"
+    }
   ],
   "Nodes": [
     {
@@ -15,12 +33,26 @@
         {
           "TextKey": "nakasar_peuples.dialogue.Kweebec_Crieur.voir",
           "HintKey": "nakasar_peuples.dialogue.hint.openRequests",
-          "Conditions": [ { "Type": "InVillage", "People": "Kweebec" } ],
+          "Conditions": [
+            {
+              "Type": "InVillage",
+              "People": "Kweebec"
+            }
+          ],
           "FailKey": "nakasar_peuples.dialogue.fail.inVillage",
-          "Effects": [ { "Type": "OpenRequests" } ]
+          "Effects": [
+            {
+              "Type": "OpenRequests"
+            }
+          ]
         },
-        { "TextKey": "nakasar_peuples.dialogue.Kweebec_Crieur.quoi", "Next": "Explication" },
-        { "TextKey": "nakasar_peuples.dialogue.Kweebec_Crieur.aurevoir" }
+        {
+          "TextKey": "nakasar_peuples.dialogue.Kweebec_Crieur.quoi",
+          "Next": "Explication"
+        },
+        {
+          "TextKey": "nakasar_peuples.dialogue.Kweebec_Crieur.aurevoir"
+        }
       ]
     },
     {
@@ -30,11 +62,22 @@
         {
           "TextKey": "nakasar_peuples.dialogue.Kweebec_Crieur.voir",
           "HintKey": "nakasar_peuples.dialogue.hint.openRequests",
-          "Conditions": [ { "Type": "InVillage", "People": "Kweebec" } ],
+          "Conditions": [
+            {
+              "Type": "InVillage",
+              "People": "Kweebec"
+            }
+          ],
           "FailKey": "nakasar_peuples.dialogue.fail.inVillage",
-          "Effects": [ { "Type": "OpenRequests" } ]
+          "Effects": [
+            {
+              "Type": "OpenRequests"
+            }
+          ]
         },
-        { "TextKey": "nakasar_peuples.dialogue.Kweebec_Crieur.aurevoir" }
+        {
+          "TextKey": "nakasar_peuples.dialogue.Kweebec_Crieur.aurevoir"
+        }
       ]
     },
     {
@@ -44,19 +87,39 @@
         {
           "TextKey": "nakasar_peuples.dialogue.Kweebec_Crieur.rendre",
           "HintKey": "nakasar_peuples.dialogue.hint.turnIn",
-          "Conditions": [ { "Type": "InVillage", "People": "Kweebec" } ],
+          "Conditions": [
+            {
+              "Type": "InVillage",
+              "People": "Kweebec"
+            }
+          ],
           "FailKey": "nakasar_peuples.dialogue.fail.inVillage",
-          "Effects": [ { "Type": "TurnInRequests" } ],
+          "Effects": [
+            {
+              "Type": "TurnInRequests"
+            }
+          ],
           "Next": "Rendu"
         },
         {
           "TextKey": "nakasar_peuples.dialogue.Kweebec_Crieur.voir",
           "HintKey": "nakasar_peuples.dialogue.hint.openRequests",
-          "Conditions": [ { "Type": "InVillage", "People": "Kweebec" } ],
+          "Conditions": [
+            {
+              "Type": "InVillage",
+              "People": "Kweebec"
+            }
+          ],
           "FailKey": "nakasar_peuples.dialogue.fail.inVillage",
-          "Effects": [ { "Type": "OpenRequests" } ]
+          "Effects": [
+            {
+              "Type": "OpenRequests"
+            }
+          ]
         },
-        { "TextKey": "nakasar_peuples.dialogue.Kweebec_Crieur.aurevoir" }
+        {
+          "TextKey": "nakasar_peuples.dialogue.Kweebec_Crieur.aurevoir"
+        }
       ]
     },
     {
@@ -66,11 +129,47 @@
         {
           "TextKey": "nakasar_peuples.dialogue.Kweebec_Crieur.voir",
           "HintKey": "nakasar_peuples.dialogue.hint.openRequests",
-          "Conditions": [ { "Type": "InVillage", "People": "Kweebec" } ],
+          "Conditions": [
+            {
+              "Type": "InVillage",
+              "People": "Kweebec"
+            }
+          ],
           "FailKey": "nakasar_peuples.dialogue.fail.inVillage",
-          "Effects": [ { "Type": "OpenRequests" } ]
+          "Effects": [
+            {
+              "Type": "OpenRequests"
+            }
+          ]
         },
-        { "TextKey": "nakasar_peuples.dialogue.Kweebec_Crieur.aurevoir" }
+        {
+          "TextKey": "nakasar_peuples.dialogue.Kweebec_Crieur.aurevoir"
+        }
+      ]
+    },
+    {
+      "Id": "Honni",
+      "TextKey": "nakasar_peuples.dialogue.Kweebec_Crieur.honni",
+      "Responses": [
+        {
+          "TextKey": "nakasar_peuples.dialogue.Kweebec_Crieur.racheter",
+          "HintKey": "nakasar_peuples.dialogue.hint.openRequests",
+          "Conditions": [
+            {
+              "Type": "InVillage",
+              "People": "Kweebec"
+            }
+          ],
+          "FailKey": "nakasar_peuples.dialogue.fail.inVillage",
+          "Effects": [
+            {
+              "Type": "OpenRequests"
+            }
+          ]
+        },
+        {
+          "TextKey": "nakasar_peuples.dialogue.Kweebec_Crieur.aurevoir"
+        }
       ]
     }
   ]

@@ -1,0 +1,200 @@
+{
+  "$Comment": "Échoppe kweebec, troc de base (rang Toléré) : graines, sève et nourriture kweebec, payées en feuilles de sève. Objets vanilla, mêmes familles que le marchand kweebec vanilla. Stock partagé par le monde, renouvelé tous les 3 jours à 6 h comme le marchand vanilla. Ouverte par le marchand du village (dialogue Kweebec_Marchand) ou /village troc, refusée sous son rang (reputation/Shops).",
+  "DisplayNameKey": "nakasar_peuples.barter.Kweebec_Tolere.title",
+  "RefreshInterval": {
+    "Days": 3
+  },
+  "RestockHour": 6,
+  "TradeSlots": [
+    {
+      "Type": "Fixed",
+      "Trade": {
+        "Output": {
+          "ItemId": "Plant_Seeds_Carrot",
+          "Quantity": 4
+        },
+        "Input": [
+          {
+            "ItemId": "Nakasar_Peuples_Favor_Kweebec",
+            "Quantity": 1
+          }
+        ],
+        "Stock": 10
+      }
+    },
+    {
+      "Type": "Fixed",
+      "Trade": {
+        "Output": {
+          "ItemId": "Ingredient_Tree_Sap",
+          "Quantity": 3
+        },
+        "Input": [
+          {
+            "ItemId": "Nakasar_Peuples_Favor_Kweebec",
+            "Quantity": 1
+          }
+        ],
+        "Stock": 10
+      }
+    },
+    {
+      "Type": "Fixed",
+      "Trade": {
+        "Output": {
+          "ItemId": "Ingredient_Dough",
+          "Quantity": 3
+        },
+        "Input": [
+          {
+            "ItemId": "Nakasar_Peuples_Favor_Kweebec",
+            "Quantity": 2
+          }
+        ],
+        "Stock": 8
+      }
+    },
+    {
+      "Type": "Pool",
+      "SlotCount": 3,
+      "Trades": [
+        {
+          "Weight": 30,
+          "Output": {
+            "ItemId": "Plant_Seeds_Wheat",
+            "Quantity": 4
+          },
+          "Input": [
+            {
+              "ItemId": "Nakasar_Peuples_Favor_Kweebec",
+              "Quantity": 1
+            }
+          ],
+          "Stock": [
+            8,
+            12
+          ]
+        },
+        {
+          "Weight": 30,
+          "Output": {
+            "ItemId": "Plant_Seeds_Pumpkin",
+            "Quantity": 2
+          },
+          "Input": [
+            {
+              "ItemId": "Nakasar_Peuples_Favor_Kweebec",
+              "Quantity": 1
+            }
+          ],
+          "Stock": [
+            6,
+            10
+          ]
+        },
+        {
+          "Weight": 30,
+          "Output": {
+            "ItemId": "Food_Salad_Berry",
+            "Quantity": 1
+          },
+          "Input": [
+            {
+              "ItemId": "Nakasar_Peuples_Favor_Kweebec",
+              "Quantity": 1
+            }
+          ],
+          "Stock": [
+            4,
+            8
+          ]
+        },
+        {
+          "Weight": 30,
+          "Output": {
+            "ItemId": "Food_Kebab_Vegetable",
+            "Quantity": 1
+          },
+          "Input": [
+            {
+              "ItemId": "Nakasar_Peuples_Favor_Kweebec",
+              "Quantity": 1
+            }
+          ],
+          "Stock": [
+            4,
+            8
+          ]
+        },
+        {
+          "Weight": 20,
+          "Output": {
+            "ItemId": "Food_Kebab_Fruit",
+            "Quantity": 1
+          },
+          "Input": [
+            {
+              "ItemId": "Nakasar_Peuples_Favor_Kweebec",
+              "Quantity": 1
+            }
+          ],
+          "Stock": [
+            4,
+            8
+          ]
+        },
+        {
+          "Weight": 20,
+          "Output": {
+            "ItemId": "Ingredient_Spices",
+            "Quantity": 3
+          },
+          "Input": [
+            {
+              "ItemId": "Nakasar_Peuples_Favor_Kweebec",
+              "Quantity": 2
+            }
+          ],
+          "Stock": [
+            4,
+            8
+          ]
+        },
+        {
+          "Weight": 20,
+          "Output": {
+            "ItemId": "Ingredient_Salt",
+            "Quantity": 3
+          },
+          "Input": [
+            {
+              "ItemId": "Nakasar_Peuples_Favor_Kweebec",
+              "Quantity": 2
+            }
+          ],
+          "Stock": [
+            4,
+            8
+          ]
+        },
+        {
+          "Weight": 20,
+          "Output": {
+            "ItemId": "Plant_Crop_Berry_Block",
+            "Quantity": 1
+          },
+          "Input": [
+            {
+              "ItemId": "Nakasar_Peuples_Favor_Kweebec",
+              "Quantity": 2
+            }
+          ],
+          "Stock": [
+            4,
+            8
+          ]
+        }
+      ]
+    }
+  ]
+}

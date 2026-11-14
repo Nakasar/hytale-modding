@@ -37,3 +37,8 @@ npc Trork_Warrior
 npc Trork_Hunter
 npc Trork_Brawler
 npc Trork_Guard
+# Groupe de PNJ vanilla des Kweebecs (Server/NPC/Groups/Intelligent/Neutral/Kweebec/Kweebec.json : IncludeRoles
+# Kweebec*, Template_Kweebec*), vu dans Assets.zip le 14 novembre 2026 : groupe de réputation Nakasar_Peuples_Kweebec.
+npcgroup Kweebec
+# Boutique de troc du marchand kweebec vanilla (Server/BarterShops/Kweebec_Merchant.json, Assets.zip, 14 novembre 2026).
+shop Kweebec_Merchant

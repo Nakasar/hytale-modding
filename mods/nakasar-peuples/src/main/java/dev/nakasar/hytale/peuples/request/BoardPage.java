@@ -104,9 +104,16 @@ public final class BoardPage extends InteractiveCustomUIPage<BoardPage.Event> {
                     event = null;
                 }
                 default -> {
-                    detail = Requests.reward(t, village);
-                    action = Message.translation(KEYS + "take");
-                    event = "Take" + n;
+                    if (Requests.slotOpen(store, ref, village, i)) {
+                        detail = Requests.reward(t, village);
+                        action = Message.translation(KEYS + "take");
+                        event = "Take" + n;
+                    } else {
+                        detail = Message.translation(KEYS + "locked").param("rank",
+                                Message.translation(dev.nakasar.hytale.peuples.reputation.Rank.TOLERE.nameKey()));
+                        action = null;
+                        event = null;
+                    }
                 }
             }
             cmd.set("#Detail" + n + ".Text", detail);
@@ -116,7 +123,7 @@ public final class BoardPage extends InteractiveCustomUIPage<BoardPage.Event> {
                 events.addEventBinding(CustomUIEventBindingType.Activating, "#Action" + n, EventData.of("Action", event));
             }
         }
-        cmd.set("#StateText.Text", VillageBoard.body(world, village, data));
+        cmd.set("#StateText.Text", VillageBoard.body(world, village, store, ref));
         cmd.set("#TurnIn.Text", Message.translation(KEYS + "turnIn"));
         events.addEventBinding(CustomUIEventBindingType.Activating, "#TurnIn", EventData.of("Action", "TurnIn"));
         cmd.set("#TextVersion.Text", Message.translation(KEYS + "textVersion"));

@@ -11,6 +11,10 @@ import dev.nakasar.hytale.peuples.request.BoardPage;
 import dev.nakasar.hytale.peuples.request.PlayerRequest;
 import dev.nakasar.hytale.peuples.request.RequestType;
 import dev.nakasar.hytale.peuples.request.Requests;
+import dev.nakasar.hytale.peuples.reputation.Rank;
+import dev.nakasar.hytale.peuples.reputation.Reputations;
+import dev.nakasar.hytale.peuples.reputation.Shops;
+import dev.nakasar.hytale.peuples.village.People;
 import dev.nakasar.hytale.peuples.village.VillageBoard;
 import dev.nakasar.hytale.peuples.village.Villages;
 
@@ -25,6 +29,9 @@ import dev.nakasar.hytale.peuples.village.Villages;
  *
  * <p>Étape 3 : condition {@code HasRequest} (le joueur a une demande dans ce village, type optionnel) ; effets
  * {@code OpenRequests} (tableau à boutons) et {@code TurnInRequests} (rendre les objets portés).
+ *
+ * <p>Étape 4 : condition {@code Rank} (rang du joueur dans le village, ou auprès du peuple, entre {@code Min} et
+ * {@code Max}) ; effets {@code OpenShop} (échoppe de troc vanilla, refusée sous son rang) et {@code AddReputation}.
  */
 public final class DialogueTypes {
 
@@ -53,6 +60,9 @@ public final class DialogueTypes {
         DialogueCondition.CODEC.register("HasRequest", HasRequestCondition.class, HasRequestCondition.CODEC);
         DialogueEffect.CODEC.register("OpenRequests", OpenRequestsEffect.class, OpenRequestsEffect.CODEC);
         DialogueEffect.CODEC.register("TurnInRequests", TurnInRequestsEffect.class, TurnInRequestsEffect.CODEC);
+        DialogueCondition.CODEC.register("Rank", RankCondition.class, RankCondition.CODEC);
+        DialogueEffect.CODEC.register("OpenShop", OpenShopEffect.class, OpenShopEffect.CODEC);
+        DialogueEffect.CODEC.register("AddReputation", AddReputationEffect.class, AddReputationEffect.CODEC);
     }
 
     static CombinedItemContainer inventory(DialogueContext context) {
@@ -383,6 +393,116 @@ public final class DialogueTypes {
                 return false;
             }
             Requests.turnIn(context.world(), context.store(), context.ref(), context.playerRef(), context.village());
+            return true;
+        }
+    }
+
+    // ---- Réputation (étape 4) ----
+
+    /**
+     * {@code {"Type": "Rank", "Min": "Tolere", "Max": "Ami", "Scope": "Village"}} : le rang du joueur est entre Min et
+     * Max (compris, chacun facultatif). Scope {@code Village} (défaut) : rang dans le village où il se trouve (faux hors
+     * d'un village) ; {@code People} : rang auprès du peuple {@code People} (défaut : celui du village).
+     */
+    public static final class RankCondition extends DialogueCondition {
+        public static final BuilderCodec<RankCondition> CODEC = BuilderCodec.builder(RankCondition.class, RankCondition::new)
+                .append(new KeyedCodec<>("Min", Codec.STRING), (c, v) -> c.min = v, c -> c.min)
+                .documentation("Rang minimal (Honni, Etranger, Tolere, Ami, Hote, Champion).")
+                .add()
+                .append(new KeyedCodec<>("Max", Codec.STRING), (c, v) -> c.max = v, c -> c.max)
+                .documentation("Rang maximal.")
+                .add()
+                .append(new KeyedCodec<>("Scope", Codec.STRING), (c, v) -> c.scope = v, c -> c.scope)
+                .documentation("Village (défaut) ou People.")
+                .add()
+                .append(new KeyedCodec<>("People", Codec.STRING), (c, v) -> c.people = v, c -> c.people)
+                .documentation("Peuple (Scope People ; défaut : celui du village).")
+                .add()
+                .validator((c, results) -> {
+                    if (c.min != null && Rank.byId(c.min) == null) {
+                        results.fail("Rang inconnu : " + c.min);
+                    }
+                    if (c.max != null && Rank.byId(c.max) == null) {
+                        results.fail("Rang inconnu : " + c.max);
+                    }
+                    if (c.scope != null && !c.scope.equals("Village") && !c.scope.equals("People")) {
+                        results.fail("Scope inconnu : " + c.scope + " (Village ou People)");
+                    }
+                })
+                .build();
+
+        String min;
+        String max;
+        String scope;
+        String people;
+
+        @Override
+        public boolean test(DialogueContext context) {
+            Rank rank;
+            if ("People".equals(scope)) {
+                People p = people != null ? People.byId(people) : context.village() == null ? null : context.village().people();
+                if (p == null) {
+                    return false;
+                }
+                rank = Reputations.peopleRank(context.store(), context.ref(), p);
+            } else {
+                if (context.village() == null) {
+                    return false;
+                }
+                rank = Reputations.rank(context.store(), context.ref(), context.village());
+            }
+            Rank lo = min == null ? null : Rank.byId(min);
+            Rank hi = max == null ? null : Rank.byId(max);
+            return rank.atLeast(lo) && (hi == null || hi.atLeast(rank));
+        }
+    }
+
+    /** {@code {"Type": "OpenShop", "Shop": "Nakasar_Peuples_Kweebec_Tolere"}} : ouvre l'échoppe de troc (ferme le dialogue). */
+    public static final class OpenShopEffect extends DialogueEffect {
+        public static final BuilderCodec<OpenShopEffect> CODEC = BuilderCodec.builder(OpenShopEffect.class, OpenShopEffect::new)
+                .append(new KeyedCodec<>("Shop", Codec.STRING), (e, v) -> e.shop = v, e -> e.shop)
+                .documentation("Id de la boutique de troc (BarterShops) ; vide : la meilleure ouverte au rang du joueur.")
+                .add()
+                .build();
+
+        String shop;
+
+        @Override
+        public boolean apply(DialogueContext context) {
+            if (context.village() == null) {
+                return false;
+            }
+            String id = shop != null ? shop : Shops.best(context.village(), Reputations.rank(context.store(), context.ref(), context.village()));
+            return Shops.open(context.store(), context.ref(), context.playerRef(), context.village(), id);
+        }
+
+        @Override
+        public boolean closesDialogue() {
+            return true;
+        }
+
+        public String shop() {
+            return shop;
+        }
+    }
+
+    /** {@code {"Type": "AddReputation", "Amount": 5}} : réputation dans le village du joueur (un tiers au peuple). */
+    public static final class AddReputationEffect extends DialogueEffect {
+        public static final BuilderCodec<AddReputationEffect> CODEC = BuilderCodec.builder(AddReputationEffect.class, AddReputationEffect::new)
+                .append(new KeyedCodec<>("Amount", Codec.INTEGER), (e, v) -> e.amount = v == null ? 0 : v, e -> e.amount)
+                .documentation("Réputation ajoutée (négatif : retirée).")
+                .add()
+                .build();
+
+        int amount;
+
+        @Override
+        public boolean apply(DialogueContext context) {
+            if (context.village() == null) {
+                return false;
+            }
+            Reputations.change(context.world(), context.store(), context.ref(), context.playerRef(), context.village(), amount,
+                    Reputations.KEYS + "reason.dialogue");
             return true;
         }
     }

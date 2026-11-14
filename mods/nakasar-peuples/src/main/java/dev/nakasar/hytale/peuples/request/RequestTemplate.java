@@ -29,6 +29,7 @@ import java.util.List;
  *   "Spawns": [ ... ],                         chasse, défense : la bande ; escorte : les gardiens du captif
  *   "MinDistance": 80, "MaxDistance": 140,     chasse, livraison, escorte : distance du lieu au cœur
  *   "Essor": 10, "Favors": 2                   récompenses : essor du village, faveurs du peuple au joueur
+ *   "Reputation": 10                           réputation de village du joueur (défaut : l'essor ; étape 4)
  * }
  * </pre>
  */
@@ -85,6 +86,9 @@ public final class RequestTemplate implements JsonAssetWithMap<String, DefaultAs
             .append(new KeyedCodec<>("Favors", Codec.INTEGER), (t, v) -> t.favors = v == null ? 0 : v, t -> t.favors)
             .documentation("Faveurs du peuple données au joueur.")
             .add()
+            .append(new KeyedCodec<>("Reputation", Codec.INTEGER), (t, v) -> t.reputation = v, t -> t.reputation)
+            .documentation("Réputation de village donnée au joueur (un tiers va au peuple) ; absente : autant que l'essor.")
+            .add()
             .validator(RequestTemplate::validate)
             .build();
 
@@ -107,6 +111,7 @@ public final class RequestTemplate implements JsonAssetWithMap<String, DefaultAs
     int maxDistance;
     int essor;
     int favors;
+    Integer reputation;
 
     RequestTemplate() {
     }
@@ -194,6 +199,11 @@ public final class RequestTemplate implements JsonAssetWithMap<String, DefaultAs
 
     public int essor() {
         return essor;
+    }
+
+    /** Réputation de village gagnée par le joueur qui remplit la demande (l'essor si le modèle ne la donne pas). */
+    public int reputation() {
+        return reputation != null ? reputation : essor;
     }
 
     public int favors() {

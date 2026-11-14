@@ -280,3 +280,109 @@ Nouveaux types de dialogue : condition `HasRequest` (`RequestType` optionnel), e
   vanilla choisie (Kweebec rose, Razorleaf, orange).
 - Le captif qui suit le joueur ; les Trorks de la défense qui marchent vers le cœur (point de laisse).
 - La feuille de sève et la missive (modèles de la sève et du parchemin vanilla en main et au sol).
+
+## Étape 4 : la réputation
+
+### Deux réputations, un rang
+
+Chaque joueur a deux réputations (GDD, Jauges) :
+
+- **de village**, propre à chaque village, gardée avec le joueur (`PeuplesPlayer`, champs `Reputation` et `Visits`) ;
+- **de peuple**, partagée par tous les villages d'un peuple, tenue par le `ReputationPlugin` vanilla (groupe
+  `Nakasar_Peuples_Kweebec`, stockage par joueur). Elle reçoit un tiers de chaque gain ou perte de village.
+
+Le rang d'un joueur dans un village est celui de la **meilleure des deux** : un ami des Kweebecs est accueilli dans un
+village kweebec qu'il découvre. Hors des villages, seul le rang de peuple compte.
+
+| Rang | Réputation | Attitude des villageois | Ce qu'il ouvre |
+| --- | --- | --- | --- |
+| Honni | -1000 à -100 | hostile (les gardes attaquent) | seule la première demande, pour se racheter |
+| Étranger | -100 à 50 | neutre (gardes méfiants, petits qui fuient) | une demande au tableau, échoppe fermée |
+| Toléré | 50 à 200 | neutre | les trois demandes, troc de base |
+| Ami | 200 à 500 | amicale | échoppe avancée |
+| Hôte | 500 à 1000 | amicale | réserve de l'hôte (tenue kweebec, lit, mobilier) |
+| Champion | 1000 et plus | vénérée | toutes les échoppes (parcelle et avant-poste : étapes suivantes) |
+
+Les rangs sont des assets vanilla `Server/NPC/Reputation/Ranks/Nakasar_Peuples_<Rang>.json` ; `validateAssets`
+vérifie qu'ils collent à l'enum `Rank` (bornes, attitude). Un joueur neuf part de 0 (Étranger).
+
+### Gains et pertes
+
+| Action | Village | Peuple |
+| --- | --- | --- |
+| Remplir une demande | + l'essor de la demande (10 à 25), à chaque joueur qui la remplit | + un tiers |
+| Frapper un villageois du peuple | -5 | -1 |
+| Tuer un villageois du peuple | -40 | -13 |
+| Casser un bloc d'un bâtiment collé, du dépôt, du tableau ou de la bannière (pas les potagers) | -2 par bloc | 0 |
+| Absence de plus de 10 jours de jeu | -10 par jour de plus, jamais sous Toléré | |
+
+Hors de tout village, frapper ou tuer un Kweebec coûte la même chose à la réputation de peuple seule. Chaque changement
+s'annonce par une notification ; un changement de rang l'annonce au tchat avec ce que le nouveau rang ouvre. Une
+demande peut fixer son gain avec le champ optionnel `Reputation` (sinon son essor).
+
+### Attitude des villageois
+
+Un fournisseur d'attitude Java (`VillageAttitudeSystem`, priorité 90, avant celui du ReputationPlugin à 100) donne à
+un PNJ du groupe de réputation l'attitude du rang du joueur dans le village de son peuple le plus proche (moins de 96
+blocs). Le groupe de réputation couvre le groupe vanilla `Kweebec` (tous les rôles `Kweebec*` : Razorleaf, jeunes,
+marchand vanilla) et le groupe du mod `Nakasar_Peuples_Kweebec` (crieur, marchand). Les rôles vanilla font le reste :
+les gardes Razorleaf attaquent un joueur hostile et surveillent un neutre, les petits fuient, tous sont calmes avec un
+ami.
+
+### Le marchand et les échoppes
+
+La marchande (`Nakasar_Peuples_Kweebec_Merchant`, Kweebec Rootling) est posée deux blocs au sud du dépôt quand un
+joueur approche, comme le crieur ; tuée, elle revient au matin. Son dialogue `Kweebec_Marchand` change selon le rang et
+ouvre l'une des trois échoppes de troc vanilla (`Server/BarterShops/Nakasar_Peuples_Kweebec_<Rang>.json`), payées en
+feuilles de sève, stock partagé par le monde et renouvelé tous les 3 jours à 6 h :
+
+| Échoppe | Rang | Contenu (objets vanilla) |
+| --- | --- | --- |
+| Troc de base | Toléré | graines, sève, pâte, et un lot tournant de nourriture |
+| Échoppe avancée | Ami | lanternes kweebecs, essence de vie concentrée, baies rares et tartes, un lot de recettes |
+| Réserve de l'hôte | Hôte | casque et plastron kweebecs, lit kweebec, un lot de peluches et de jeunes chênes |
+
+La page est la `BarterPage` vanilla (celle du marchand kweebec), donc pas de nouvelle page `.ui`. Secours au tchat :
+`/village troc`, et `/village tchat Kweebec_Marchand` pour le dialogue.
+
+Le crieur gagne un accueil Honni (« Que viens-tu faire ici ? ») qui ne propose que les demandes. Le tableau affiche le
+rang du joueur, sa réputation et ce que le rang ouvre ; sous Toléré, les cases 2 et 3 sont fermées.
+
+Nouveaux types de dialogue : condition `Rank` (`Min`, `Max`, `Scope` `Village`|`People`, `People`), effets
+`OpenShop` (`Shop` optionnel : sans lui, la meilleure échoppe du rang) et `AddReputation` (`Amount`). L'en-tête des
+dialogues montre le rang du joueur.
+
+### Nouvelles commandes
+
+| Sous-commande | Qui | Effet |
+| --- | --- | --- |
+| `reputation` | joueur | rang, réputations de village et de peuple, ce qu'ouvre le rang, échoppe ouverte |
+| `troc` | joueur | ouvre la meilleure échoppe que le rang ouvre |
+| `rep <valeur>` | opérateur | fixe sa réputation de village (Toléré 50, Ami 200, Hôte 500, Champion 1000) |
+| `reppeuple <valeur>` | opérateur | fixe sa réputation de peuple (ReputationPlugin vanilla) |
+
+### Tester en jeu (étape 4) : un étranger et un ami
+
+1. Aller au village kweebec (`/village site`) avec un joueur neuf : le titre d'entrée dit « Étranger ».
+   `/village reputation` donne 0 et 0. Le tableau n'ouvre que la case 1. Les gardes Razorleaf suivent le joueur du
+   regard, les petits s'écartent. La marchande (sud du dépôt) refuse le troc : « il faut être Toléré ».
+   `/village troc` répond pareil.
+2. `/village rep 220` : notification et message « Tu es maintenant Ami ». Les gardes se calment, les petits ne fuient
+   plus. La marchande propose « Troc » et « Échoppe avancée » ; « Réserve de l'hôte » reste grisé avec son indice.
+   Ouvrir les deux échoppes, acheter un objet avec des feuilles de sève (`/give Nakasar_Peuples_Favor_Kweebec 64`).
+3. `/village rep -150` : rang Honni. Les gardes attaquent ; le crieur n'offre que les demandes ; le tableau garde la
+   case 1 pour se racheter.
+4. Peuple : `/village rep 0` puis `/village reppeuple 300`. Le rang du village redevient Ami grâce au peuple.
+5. Pertes : `/village rep 60`, frapper un villageois (-5 et notification), casser un bloc d'une maison (-2, une
+   notification toutes les 6 s au plus), puis remplir une demande (`/village demande Kweebec_Gather_Seeds 1`) : +10.
+6. Redémarrer : réputations, rang et stock des échoppes restent.
+
+### À vérifier en jeu (étape 4)
+
+- L'attitude change bien selon le rang (priorité 90 avant le ReputationPlugin), y compris pour les PNJ du prefab déjà
+  chargés.
+- La `BarterPage` vanilla ouverte depuis le dialogue : titre, prix en feuilles de sève, stock, renouvellement.
+- L'apparence Kweebec Rootling de la marchande et sa place devant le dépôt.
+- Le marchand vanilla du prefab (`Kweebec_Merchant`) ouvre encore sa boutique vanilla sans condition de rang.
+- Pas encore fait : la perte pour un coffre du village vidé (aucun événement de retrait de conteneur connu), la
+  parcelle de l'hôte et l'avant-poste du champion (étapes suivantes).

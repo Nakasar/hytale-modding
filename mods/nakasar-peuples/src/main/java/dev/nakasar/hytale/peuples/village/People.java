@@ -10,6 +10,9 @@ import java.util.Locale;
  * <p>Étape 3 : chaque peuple a sa faveur, sa missive, son crieur, son guetteur et son captif (objets et rôles
  * {@code Nakasar_Peuples_*}).
  *
+ * <p>Étape 4 : chaque peuple a son marchand et ses échoppes de troc par rang, et son groupe de réputation vanilla
+ * ({@code Nakasar_Peuples_<Peuple>}, voir {@link dev.nakasar.hytale.peuples.reputation.Reputations}).
+ *
  * <p>Étapes 1 et 2 : seuls les Kweebecs (plan de village {@code Kweebec_Oak}, bannière de carte). Les autres peuples
  * s'ajoutent ici aux étapes 7 à 9.
  */
@@ -83,6 +86,27 @@ public enum People {
     /** Captif à ramener au village (escorte). */
     public String captiveRole() {
         return PREFIX + id + "_Captive";
+    }
+
+    /** Marchand du village (étape 4) : posé près du dépôt, ouvre les échoppes de troc selon le rang du joueur. */
+    public String merchantRole() {
+        return PREFIX + id + "_Merchant";
+    }
+
+    /** Dialogue du marchand. */
+    public String merchantDialogue() {
+        return id + "_Marchand";
+    }
+
+    /**
+     * Échoppe de troc vanilla (BarterShops) ouverte au rang `rank`, ou null si ce rang n'en a pas en propre :
+     * {@code Nakasar_Peuples_<Peuple>_Tolere}, {@code _Ami}, {@code _Hote}.
+     */
+    public String shop(dev.nakasar.hytale.peuples.reputation.Rank rank) {
+        return switch (rank) {
+            case TOLERE, AMI, HOTE -> PREFIX + id + "_" + rank.id();
+            default -> null;
+        };
     }
 
     /** Dialogue du crieur. */

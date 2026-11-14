@@ -59,7 +59,7 @@ public final class VillageNoRegenSystem extends EntityTickingSystem<EntityStore>
         if (regen == null || !regen.isRegenEnabled()) {
             return;
         }
-        if (RequestSpawns.owner(chunk.getReferenceTo(index)) != null || Criers.villageOf(chunk.getReferenceTo(index)) != null) {
+        if (RequestSpawns.owner(chunk.getReferenceTo(index)) != null || Criers.isPosted(chunk.getReferenceTo(index))) {
             regen.setRegenEnabled(false);
             return;
         }

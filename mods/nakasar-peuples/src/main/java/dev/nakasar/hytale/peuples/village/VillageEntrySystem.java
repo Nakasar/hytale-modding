@@ -13,6 +13,7 @@ import com.hypixel.hytale.server.core.universe.world.World;
 import com.hypixel.hytale.server.core.universe.world.meta.state.BlockMapMarkersResource;
 import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
 import com.hypixel.hytale.server.core.util.EventTitleUtil;
+import dev.nakasar.hytale.peuples.reputation.Reputations;
 import org.joml.Vector3d;
 
 import java.util.Collections;
@@ -26,7 +27,8 @@ import java.util.WeakHashMap;
 /**
  * Entrée dans un village (GDD, Exploration : « le village est repéré et nommé ») : quand un joueur passe à moins de
  * {@value #ENTER_RADIUS} blocs du cœur, un titre d'écran donne le nom du village, son peuple, le rang du joueur et
- * l'humeur du village. Il ne revient qu'après être ressorti au-delà de {@value #LEAVE_RADIUS} blocs.
+ * l'humeur du village. Il ne revient qu'après être ressorti au-delà de {@value #LEAVE_RADIUS} blocs. L'entrée note aussi
+ * la visite (déclin de la réputation après une longue absence, {@link Reputations#visit}).
  *
  * <p>La bannière du village est un marqueur de carte découvrable : on la révèle au joueur qui passe à moins de
  * {@value #REVEAL_RADIUS} blocs (elle reste ensuite sur sa carte).
@@ -100,18 +102,19 @@ public final class VillageEntrySystem extends TickingSystem<EntityStore> {
             }
             if (current == null && nearest != null && best <= (double) ENTER_RADIUS * ENTER_RADIUS) {
                 state.inside.put(id, nearest.id());
-                showTitle(player, nearest);
+                Reputations.visit(world, store, ref, player, nearest);
+                showTitle(store, ref, player, nearest);
             }
         }
         state.inside.keySet().retainAll(here);
     }
 
-    /** Titre d'écran d'entrée : nom du village, puis peuple · rang · humeur. */
-    public static void showTitle(PlayerRef player, Village village) {
+    /** Titre d'écran d'entrée : nom du village, puis peuple · rang du joueur · humeur. */
+    public static void showTitle(Store<EntityStore> store, Ref<EntityStore> ref, PlayerRef player, Village village) {
         Message title = Message.raw(village.name());
         Message subtitle = Message.translation(MESSAGES + "subtitle")
                 .param("people", Message.translation(village.people().nameKey()))
-                .param("rank", Message.translation("nakasar_peuples.rank.stranger"))
+                .param("rank", Message.translation(Reputations.rank(store, ref, village).nameKey()))
                 .param("mood", Message.translation(MESSAGES + "mood." + village.tier()));
         EventTitleUtil.showEventTitleToPlayer(player, title, subtitle, EventTitleStyle.Default, null, 3f, 0.5f, 1f);
     }

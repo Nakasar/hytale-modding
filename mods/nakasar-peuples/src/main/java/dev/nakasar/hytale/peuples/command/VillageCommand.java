@@ -21,6 +21,8 @@ import dev.nakasar.hytale.peuples.request.PlayerRequest;
 import dev.nakasar.hytale.peuples.request.RequestTemplate;
 import dev.nakasar.hytale.peuples.request.Requests;
 import dev.nakasar.hytale.peuples.request.VillageRequest;
+import dev.nakasar.hytale.peuples.reputation.Reputations;
+import dev.nakasar.hytale.peuples.reputation.Shops;
 import dev.nakasar.hytale.peuples.village.People;
 import dev.nakasar.hytale.peuples.village.Tiers;
 import dev.nakasar.hytale.peuples.village.Village;
@@ -49,7 +51,10 @@ import java.util.List;
  *   <li>{@code drapeaux}, {@code oublier} : drapeaux de dialogue du joueur, et leur remise à zéro ;</li>
  *   <li>étape 3 : {@code demandes} (tableau à boutons), {@code mesdemandes}, {@code prendre <n>}, {@code rendre},
  *   {@code abandonner <n>} ; opérateurs : {@code demande <modèle> [case]} (pose ce modèle au tableau),
- *   {@code renouveler} (nouveau tirage des trois cases).</li>
+ *   {@code renouveler} (nouveau tirage des trois cases) ;</li>
+ *   <li>étape 4 : {@code reputation} (rang, jauges et droits dans le village le plus proche), {@code troc} (meilleure
+ *   échoppe ouverte au rang) ; opérateurs : {@code rep <valeur>} (réputation de village), {@code reppeuple <valeur>}
+ *   (réputation de peuple).</li>
  * </ul>
  */
 public final class VillageCommand extends AbstractCommandCollection {
@@ -82,6 +87,10 @@ public final class VillageCommand extends AbstractCommandCollection {
         addSubCommand(new AbandonCommand());
         addSubCommand(new ForceRequestCommand());
         addSubCommand(new RedrawCommand());
+        addSubCommand(new ReputationCommand());
+        addSubCommand(new SetReputationCommand(false));
+        addSubCommand(new SetReputationCommand(true));
+        addSubCommand(new TradeCommand());
     }
 
     /** Sous-commande ouverte aux joueurs. */
@@ -266,7 +275,7 @@ public final class VillageCommand extends AbstractCommandCollection {
             Village village = nearest(world, player);
             if (village != null) {
                 player.sendMessage(Message.raw(village.name()).bold(true).color("#e8c46a"));
-                player.sendMessage(VillageBoard.body(world, village, PeuplesPlayer.get(store, ref)));
+                player.sendMessage(VillageBoard.body(world, village, store, ref));
                 if (!Villages.heartPresent(world, village)) {
                     player.sendMessage(Message.translation(Villages.MESSAGES + "heartMissing"));
                 }
@@ -532,6 +541,75 @@ public final class VillageCommand extends AbstractCommandCollection {
                 Requests.redraw(store, village, i);
             }
             player.sendMessage(Message.translation(KEYS + "redraw.done").param("name", village.name()));
+        }
+    }
+
+    // ---- Réputation (étape 4) ----
+
+    private static final class ReputationCommand extends PlayerCommand {
+        ReputationCommand() {
+            super("reputation", KEYS + "reputation.desc");
+        }
+
+        @Override
+        protected void execute(CommandContext context, Store<EntityStore> store, Ref<EntityStore> ref, PlayerRef player, World world) {
+            Village village = nearest(world, player);
+            if (village == null) {
+                return;
+            }
+            Reputations.Standing standing = Reputations.standing(store, ref, village);
+            player.sendMessage(Message.raw(village.name()).bold(true).color("#e8c46a"));
+            player.sendMessage(Message.translation(KEYS + "reputation.rank").param("rank", Reputations.describe(standing.rank(), standing.value())));
+            player.sendMessage(Message.translation(KEYS + "reputation.village").param("rank", Reputations.describe(standing.villageRank(), standing.village())));
+            player.sendMessage(Message.translation(KEYS + "reputation.people").param("people", Message.translation(village.people().nameKey()))
+                    .param("rank", Reputations.describe(standing.peopleRank(), standing.people())));
+            player.sendMessage(Message.translation(KEYS + "reputation.perks").param("perks", Message.translation(standing.rank().perksKey())));
+            String shop = Shops.best(village, standing.rank());
+            player.sendMessage(Message.translation(shop == null ? KEYS + "reputation.noShop" : KEYS + "reputation.shop")
+                    .param("shop", shop == null ? "" : shop));
+        }
+    }
+
+    private static final class SetReputationCommand extends AbstractPlayerCommand {
+        private final RequiredArg<Integer> value = withRequiredArg("valeur", KEYS + "rep.arg", ArgTypes.INTEGER);
+        private final boolean people;
+
+        SetReputationCommand(boolean people) {
+            super(people ? "reppeuple" : "rep", KEYS + (people ? "reppeople.desc" : "rep.desc"));
+            this.people = people;
+            requirePermission(ADMIN);
+        }
+
+        @Override
+        protected void execute(CommandContext context, Store<EntityStore> store, Ref<EntityStore> ref, PlayerRef player, World world) {
+            Village village = nearest(world, player);
+            if (village == null) {
+                return;
+            }
+            int v = value.get(context);
+            if (people) {
+                Reputations.setPeople(store, ref, village.people(), v);
+            } else {
+                Reputations.setVillage(store, ref, player, village, v);
+            }
+            Reputations.Standing standing = Reputations.standing(store, ref, village);
+            player.sendMessage(Message.translation(KEYS + "rep.done").param("name", village.name())
+                    .param("village", standing.village()).param("people", standing.people())
+                    .param("rank", Message.translation(standing.rank().nameKey())));
+        }
+    }
+
+    private static final class TradeCommand extends PlayerCommand {
+        TradeCommand() {
+            super("troc", KEYS + "trade.desc");
+        }
+
+        @Override
+        protected void execute(CommandContext context, Store<EntityStore> store, Ref<EntityStore> ref, PlayerRef player, World world) {
+            Village village = nearest(world, player);
+            if (village != null) {
+                Shops.open(store, ref, player, village, Shops.best(village, Reputations.rank(store, ref, village)));
+            }
         }
     }
 }

@@ -16,6 +16,11 @@ import dev.nakasar.hytale.peuples.request.RequestSpawns;
 import dev.nakasar.hytale.peuples.request.RequestSystem;
 import dev.nakasar.hytale.peuples.request.RequestTemplate;
 import dev.nakasar.hytale.peuples.request.VillagerUseSystem;
+import dev.nakasar.hytale.peuples.reputation.Rank;
+import dev.nakasar.hytale.peuples.reputation.Reputations;
+import dev.nakasar.hytale.peuples.reputation.VillageAttitudeSystem;
+import dev.nakasar.hytale.peuples.reputation.VillageBlockSystem;
+import dev.nakasar.hytale.peuples.reputation.VillagerHarmSystems;
 import dev.nakasar.hytale.peuples.village.OpenBoardInteraction;
 import dev.nakasar.hytale.peuples.village.VillageEntrySystem;
 import dev.nakasar.hytale.peuples.village.VillageLayout;
@@ -57,6 +62,15 @@ import dev.nakasar.hytale.peuples.village.Villages;
  *   <li>{@link VillagerUseSystem} et {@link Criers} : le crieur de chaque village ouvre son dialogue, le guetteur prend
  *       la missive, le captif suit ;</li>
  *   <li>le tableau à boutons {@code BoardPage} (page .ui du pack), la page texte restant accessible accroupi.</li>
+ * </ul>
+ * Étape 4, la réputation :
+ * <ul>
+ *   <li>{@link Reputations} : réputation de village (avec le joueur) et de peuple (ReputationPlugin vanilla, groupes
+ *       {@code Server/NPC/Reputation/Groups}), six rangs {@link Rank} (assets {@code Server/NPC/Reputation/Ranks}) ;</li>
+ *   <li>{@link VillageAttitudeSystem} : les PNJ d'un village traitent le joueur selon son rang (gardes, jeunes) ;</li>
+ *   <li>{@link VillagerHarmSystems}, {@link VillageBlockSystem} : frapper, tuer un villageois ou casser un bâtiment du
+ *       village coûte de la réputation ;</li>
+ *   <li>le marchand de chaque village et ses échoppes de troc vanilla par rang ({@code Server/BarterShops}).</li>
  * </ul>
  */
 public final class PeuplesPlugin extends JavaPlugin {
@@ -104,6 +118,10 @@ public final class PeuplesPlugin extends JavaPlugin {
         entities.registerSystem(new RequestSystem());
         entities.registerSystem(new RequestDeathSystem());
         entities.registerSystem(new VillagerUseSystem());
+        entities.registerSystem(new VillageAttitudeSystem());
+        entities.registerSystem(new VillagerHarmSystems.Hit());
+        entities.registerSystem(new VillagerHarmSystems.Kill());
+        entities.registerSystem(new VillageBlockSystem());
 
         getCommandRegistry().registerCommand(new VillageCommand());
 
@@ -117,5 +135,6 @@ public final class PeuplesPlugin extends JavaPlugin {
         RequestSpawns.clearAll();
         Criers.clearAll();
         RequestHud.clearAll();
+        VillageBlockSystem.clearAll();
     }
 }

@@ -111,6 +111,23 @@ public final class VillageRegistry implements Resource<EntityStore> {
         return best;
     }
 
+    /** Village du peuple `people` (null : tous) dont le cœur est le plus proche à l'horizontale, à moins de `radius` blocs, ou null. */
+    public Village nearestOf(People people, double x, double z, double radius) {
+        Village best = null;
+        double bestDistance = radius * radius;
+        for (Village v : villages) {
+            if (people != null && v.people() != people) {
+                continue;
+            }
+            double d = v.horizontalDistanceSquared(x, z);
+            if (d <= bestDistance) {
+                best = v;
+                bestDistance = d;
+            }
+        }
+        return best;
+    }
+
     @Override
     public Resource<EntityStore> clone() {
         VillageRegistry copy = new VillageRegistry();

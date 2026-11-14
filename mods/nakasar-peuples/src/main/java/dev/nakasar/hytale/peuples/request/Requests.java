@@ -21,6 +21,8 @@ import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
 import com.hypixel.hytale.server.core.util.NotificationUtil;
 import dev.nakasar.hytale.peuples.PeuplesPlugin;
 import dev.nakasar.hytale.peuples.player.PeuplesPlayer;
+import dev.nakasar.hytale.peuples.reputation.Rank;
+import dev.nakasar.hytale.peuples.reputation.Reputations;
 import dev.nakasar.hytale.peuples.village.Blocks;
 import dev.nakasar.hytale.peuples.village.Village;
 import dev.nakasar.hytale.peuples.village.VillageBoard;
@@ -39,7 +41,7 @@ import java.util.concurrent.ThreadLocalRandom;
  *
  * <p>Règles du GDD : 3 demandes au tableau, tirées chaque matin parmi les modèles du peuple et du palier
  * ({@link RequestTemplate}) ; quand l'une est remplie, sa place reçoit une nouvelle demande. Une demande remplie compte
- * pour le joueur (faveurs, et réputation à l'étape 4) et pour le village (essor), mais le village ne gagne l'essor
+ * pour le joueur (faveurs, réputation de village et de peuple depuis l'étape 4) et pour le village (essor), mais le village ne gagne l'essor
  * qu'une fois : les autres joueurs qui l'avaient prise peuvent encore la finir jusqu'à son terme, pour eux seuls.
  */
 public final class Requests {
@@ -156,6 +158,14 @@ public final class Requests {
 
     // ---- Ce que voit un joueur ----
 
+    /**
+     * Vrai si le joueur peut prendre la demande de la case `slot` (GDD, Par rang : l'étranger n'a droit qu'à une
+     * demande simple, les trois s'ouvrent au rang toléré ; un honni peut encore se racheter par la première).
+     */
+    public static boolean slotOpen(Store<EntityStore> store, Ref<EntityStore> ref, Village village, int slot) {
+        return slot == 0 || Reputations.rank(store, ref, village).atLeast(Rank.TOLERE);
+    }
+
     /** État d'une demande du tableau pour un joueur. */
     public enum Status { AVAILABLE, TAKEN, DONE, MISSING }
 
@@ -184,7 +194,7 @@ public final class Requests {
     /** Récompense d'une demande : essor du village et faveurs du peuple. */
     public static Message reward(RequestTemplate t, Village village) {
         return Message.translation(KEYS + "reward").param("essor", t.essor()).param("favors", t.favors())
-                .param("favor", VillageBoard.itemName(village.people().favorItem()));
+                .param("favor", VillageBoard.itemName(village.people().favorItem())).param("reputation", t.reputation());
     }
 
     /** Ligne de tâche d'une demande prise, vue depuis `from`, avec la distance et la direction de `target`. */
@@ -264,6 +274,11 @@ public final class Requests {
         }
         VillageRequest request = board[slot];
         RequestTemplate t = request.template();
+        if (!slotOpen(store, ref, village, slot)) {
+            player.sendMessage(Message.translation(KEYS + "slotLocked").param("slot", slot + 1)
+                    .param("rank", Message.translation(Rank.TOLERE.nameKey())));
+            return false;
+        }
         PeuplesPlayer state = PeuplesPlayer.ensure(store, ref);
         switch (status(state, request)) {
             case TAKEN -> {
@@ -456,6 +471,8 @@ public final class Requests {
         if (t.favors() > 0) {
             give(store, ref, new ItemStack(village.people().favorItem(), t.favors()));
         }
+        // Réputation : pour chaque joueur qui remplit la demande, même si le village a déjà reçu l'essor (GDD).
+        Reputations.change(world, store, ref, player, village, t.reputation(), KEYS + "reputationReason");
         int slot = slotOf(village, r.id());
         int gained = 0;
         if (slot >= 0) {
