@@ -1,0 +1,8 @@
+{
+  "$Comment": "Raid d'un village (étape 6), généré par tools/generate_raids.py. Lancé par raid/Raids, une instance par raid (plusieurs villages peuvent être attaqués la même nuit) ; le Java le stoppe au bilan. Il annonce seulement : compte à rebours sur la carte, titre et cri de guerre au camp trork (lieu donné par la condition Nakasar_Peuples_RaidLocation), durée du combat. Icône de la brèche gobeline vanilla.",
+  "Root": "Nakasar_Peuples_Raid_Warn",
+  "IterationCount": 1,
+  "InstanceCountMax": -1,
+  "Name": "nakasar_peuples.raid.event.name",
+  "Icon": "UI/WorldMap/MapMarkers/GoblinBreach.png"
+}

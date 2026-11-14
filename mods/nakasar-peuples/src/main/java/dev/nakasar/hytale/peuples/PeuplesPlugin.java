@@ -9,6 +9,12 @@ import dev.nakasar.hytale.peuples.command.VillageCommand;
 import dev.nakasar.hytale.peuples.dialogue.Dialogue;
 import dev.nakasar.hytale.peuples.dialogue.Dialogues;
 import dev.nakasar.hytale.peuples.player.PeuplesPlayer;
+import dev.nakasar.hytale.peuples.raid.RaidAttitudeSystem;
+import dev.nakasar.hytale.peuples.raid.RaidDeathSystem;
+import dev.nakasar.hytale.peuples.raid.RaidLocationCondition;
+import dev.nakasar.hytale.peuples.raid.RaidSystem;
+import dev.nakasar.hytale.peuples.raid.Raids;
+import com.hypixel.hytale.builtin.adventure.worldevents.WorldEventsPlugin;
 import dev.nakasar.hytale.peuples.request.Criers;
 import dev.nakasar.hytale.peuples.request.RequestDeathSystem;
 import dev.nakasar.hytale.peuples.request.RequestHud;
@@ -82,6 +88,16 @@ import dev.nakasar.hytale.peuples.village.Villages;
  *   <li>{@link Villagers} : les villageois à métier du plan (jardinière, bâtisseur, guetteur...), leur poste de jour et
  *       leur logis de nuit.</li>
  * </ul>
+ * Étape 6, les raids :
+ * <ul>
+ *   <li>{@link Raids} : une nuit, une bande trork marche sur un village ; c'est un évènement de monde
+ *       ({@value Raids#EVENT}, moteur des brèches vanilla, lieu donné par {@link RaidLocationCondition}) suivi par
+ *       {@link RaidSystem} ; les gardes du village (rôles du mod) se battent aux côtés du joueur
+ *       ({@link RaidAttitudeSystem}) ; {@link RaidDeathSystem} compte les morts ;</li>
+ *   <li>le bilan : victoire (essor, réputation, faveurs, trophée) ou défaite (un bâtiment brûle, le village perd un
+ *       palier) ;</li>
+ *   <li>la chaîne de quêtes kweebec, jusqu'à la Graine d'Écho.</li>
+ * </ul>
  */
 public final class PeuplesPlugin extends JavaPlugin {
 
@@ -133,6 +149,10 @@ public final class PeuplesPlugin extends JavaPlugin {
         entities.registerSystem(new VillagerHarmSystems.Kill());
         entities.registerSystem(new VillageBlockSystem());
         entities.registerSystem(new VillageLifeSystem());
+        entities.registerSystem(new RaidSystem());
+        entities.registerSystem(new RaidDeathSystem());
+        entities.registerSystem(new RaidAttitudeSystem());
+        WorldEventsPlugin.registerCondition(this, RaidLocationCondition.TYPE, RaidLocationCondition.CODEC, RaidLocationCondition.Config.CODEC);
 
         getCommandRegistry().registerCommand(new VillageCommand());
 
@@ -148,5 +168,6 @@ public final class PeuplesPlugin extends JavaPlugin {
         RequestHud.clearAll();
         VillageBlockSystem.clearAll();
         Villagers.clearAll();
+        Raids.clearAll();
     }
 }

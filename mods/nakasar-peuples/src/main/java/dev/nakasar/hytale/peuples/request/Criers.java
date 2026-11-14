@@ -25,7 +25,9 @@ import java.util.Map;
  *   <li>le <b>crieur</b> (étape 3 ; GDD : « une demande se prend au tableau ou auprès d'un villageois, et se rend par
  *       une réponse »), deux blocs au sud du tableau, dialogue {@code <Peuple>_Crieur} ;</li>
  *   <li>le <b>marchand</b> (étape 4 ; GDD, Le dépôt et le tableau : « les marchands du village ouvrent une boutique de
- *       troc vanilla, une par peuple et par rang »), deux blocs au sud du dépôt, dialogue {@code <Peuple>_Marchand}.</li>
+ *       troc vanilla, une par peuple et par rang »), deux blocs au sud du dépôt, dialogue {@code <Peuple>_Marchand} ;</li>
+ *   <li>le <b>chef</b> (étape 6 ; GDD, Qui parle et de quoi : « la chaîne du peuple, l'état du village »), à l'est du
+ *       cœur, dialogue {@code <Peuple>_Chef}.</li>
  * </ul>
  * Non sauvegardés : ils reviennent à chaque session. Tués, ils ne reviennent qu'au matin suivant (GDD, Villageois et
  * métiers : « un PNJ tué réapparaît au prochain matin »).
@@ -35,14 +37,22 @@ public final class Criers {
     /** Un villageois à poste fixe. */
     public enum Post {
         CRIER,
-        MERCHANT;
+        MERCHANT,
+        CHIEF;
 
         String role(Village village) {
-            return this == CRIER ? village.people().crierRole() : village.people().merchantRole();
+            return switch (this) {
+                case CRIER -> village.people().crierRole();
+                case MERCHANT -> village.people().merchantRole();
+                case CHIEF -> village.people().chiefRole();
+            };
         }
 
-        /** Où il se tient : deux blocs au sud du tableau (crieur) ou du dépôt (marchand). */
+        /** Où il se tient : deux blocs au sud du tableau (crieur) ou du dépôt (marchand), à l'est du cœur (chef). */
         public Vector3d spot(Village village) {
+            if (this == CHIEF) {
+                return new Vector3d(village.x() + 3.5, village.y(), village.z() - 2.5);
+            }
             int[] b = this == CRIER ? village.board() : village.deposit();
             return new Vector3d(b[0] + 0.5, b[1], b[2] + 2.5);
         }
@@ -122,6 +132,12 @@ public final class Criers {
     public static String merchantVillageOf(Ref<EntityStore> ref) {
         Spawned s = ref == null ? null : SPAWNED.get(ref);
         return s != null && s.post() == Post.MERCHANT ? s.village() : null;
+    }
+
+    /** Id du village dont `ref` est le chef, ou null. */
+    public static String chiefVillageOf(Ref<EntityStore> ref) {
+        Spawned s = ref == null ? null : SPAWNED.get(ref);
+        return s != null && s.post() == Post.CHIEF ? s.village() : null;
     }
 
     /** Vrai si `ref` est un villageois à poste fixe (crieur, marchand). */

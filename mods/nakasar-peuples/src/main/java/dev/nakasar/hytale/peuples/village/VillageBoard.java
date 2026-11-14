@@ -78,6 +78,13 @@ public final class VillageBoard {
         if (people[1] > 0) {
             lines.add(Message.translation(KEYS + "villagers").param("here", people[0]).param("total", people[1]));
         }
+        // Étape 6 : alerte de raid et bilan du dernier (GDD, maquette du tableau).
+        Store<EntityStore> raidStore = store == null ? world.getEntityStore().getStore() : store;
+        lines.add(dev.nakasar.hytale.peuples.raid.Raids.status(raidStore, village));
+        Message last = dev.nakasar.hytale.peuples.raid.Raids.lastReport(village);
+        if (last != null) {
+            lines.add(last);
+        }
         lines.add(Message.empty());
         Rank rank = Rank.ETRANGER;
         if (ref != null) {

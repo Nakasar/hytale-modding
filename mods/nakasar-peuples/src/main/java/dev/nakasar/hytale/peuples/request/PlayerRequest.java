@@ -35,6 +35,9 @@ public final class PlayerRequest {
             .append(new KeyedCodec<>("SiteX", Codec.INTEGER), (r, v) -> r.siteX = v == null ? 0 : v, r -> r.siteX).add()
             .append(new KeyedCodec<>("SiteY", Codec.INTEGER), (r, v) -> r.siteY = v == null ? NO_Y : v, r -> r.siteY).add()
             .append(new KeyedCodec<>("SiteZ", Codec.INTEGER), (r, v) -> r.siteZ = v == null ? 0 : v, r -> r.siteZ).add()
+            .append(new KeyedCodec<>("Prepared", Codec.BOOLEAN), (r, v) -> r.prepared = v != null && v, r -> r.prepared)
+            .documentation("Vrai quand le lieu de la demande a été préparé (bosquet brûlé d'une plantation).")
+            .add()
             .append(new KeyedCodec<>("Hud", Codec.STRING), (r, v) -> r.hud = v, r -> r.hud)
             .documentation("Id du suivi à l'écran (paquets d'objectif vanilla).")
             .add()
@@ -49,6 +52,7 @@ public final class PlayerRequest {
     int siteY = NO_Y;
     int siteZ;
     String hud;
+    boolean prepared;
 
     PlayerRequest() {
     }
@@ -121,6 +125,14 @@ public final class PlayerRequest {
         return t == null ? 1 : t.needed();
     }
 
+    public boolean prepared() {
+        return prepared;
+    }
+
+    public void setPrepared(boolean value) {
+        prepared = value;
+    }
+
     public boolean complete() {
         return progress >= needed();
     }
@@ -136,6 +148,7 @@ public final class PlayerRequest {
         c.siteY = siteY;
         c.siteZ = siteZ;
         c.hud = hud;
+        c.prepared = prepared;
         return c;
     }
 }

@@ -1,0 +1,226 @@
+{
+  "$Comment": "Assaillant trork d'un raid (étape 6), généré par tools/generate_raids.py. Apparence, arme, attaques et butin vanilla (Trork_Guard). Posé par raid/Raids au camp ; son point d'attache est le cœur du village : il y marche et frappe à vue joueurs et Kweebecs (attitude imposée par RaidAttitudeSystem). Retiré à la fin du raid. Ne se soigne jamais.",
+  "Type": "Generic",
+  "Appearance": "Trork_Guard",
+  "NameTranslationKey": "nakasar_peuples.npc.Raider_Trork_Warlord.name",
+  "MaxHealth": 150,
+  "DropList": "Drop_Trork_Warrior",
+  "StartState": "Idle",
+  "DefaultPlayerAttitude": "Hostile",
+  "DefaultNPCAttitude": "Ignore",
+  "DisableDamageGroups": [
+    "Nakasar_Peuples_Raiders"
+  ],
+  "KnockbackScale": 0.6,
+  "MotionControllerList": [
+    {
+      "Type": "Walk",
+      "MaxWalkSpeed": 4.6,
+      "Gravity": 10,
+      "MaxFallSpeed": 15,
+      "Acceleration": 10,
+      "JumpHeight": 1.2
+    }
+  ],
+  "HotbarItems": [
+    "Weapon_Battleaxe_Stone_Trork"
+  ],
+  "InteractionVars": {
+    "Melee_Damage": {
+      "Interactions": [
+        {
+          "Parent": "NPC_Attack_Melee_Damage",
+          "DamageCalculator": {
+            "BaseDamage": {
+              "Physical": 28
+            },
+            "RandomPercentageModifier": 0.1
+          }
+        }
+      ]
+    }
+  },
+  "Instructions": [
+    {
+      "Sensor": {
+        "Type": "State",
+        "State": "Idle"
+      },
+      "Instructions": [
+        {
+          "Sensor": {
+            "Type": "Damage",
+            "Combat": true,
+            "TargetSlot": "LockedTarget"
+          },
+          "Actions": [
+            {
+              "Type": "State",
+              "State": "Combat"
+            }
+          ]
+        },
+        {
+          "Sensor": {
+            "Type": "Mob",
+            "Range": 18,
+            "LockOnTarget": true,
+            "GetPlayers": true,
+            "GetNPCs": true,
+            "Filters": [
+              {
+                "Type": "Attitude",
+                "Attitudes": [
+                  "Hostile"
+                ]
+              },
+              {
+                "Type": "LineOfSight"
+              }
+            ]
+          },
+          "Actions": [
+            {
+              "Type": "State",
+              "State": "Combat"
+            }
+          ]
+        },
+        {
+          "$Comment": "En marche vers le cœur du village (point d'attache).",
+          "Sensor": {
+            "Type": "Leash",
+            "Range": 5
+          },
+          "BodyMotion": {
+            "Type": "Seek",
+            "RelativeSpeed": 0.8,
+            "SlowDownDistance": 3,
+            "StopDistance": 2,
+            "UsePathfinder": true
+          }
+        },
+        {
+          "$Comment": "Au cœur du village : il rôde et cherche des proies.",
+          "BodyMotion": {
+            "Type": "WanderInCircle",
+            "Radius": 8,
+            "RelativeSpeed": 0.6,
+            "MaxHeadingChange": 60
+          }
+        }
+      ]
+    },
+    {
+      "Sensor": {
+        "Type": "State",
+        "State": "Combat"
+      },
+      "Instructions": [
+        {
+          "Sensor": {
+            "Type": "Not",
+            "Sensor": {
+              "Type": "Target",
+              "Range": 28,
+              "Filters": [
+                {
+                  "Type": "Attitude",
+                  "Attitudes": [
+                    "Hostile",
+                    "Neutral",
+                    "Ignore"
+                  ]
+                }
+              ]
+            }
+          },
+          "Actions": [
+            {
+              "Type": "ReleaseTarget"
+            },
+            {
+              "Type": "State",
+              "State": "Idle"
+            }
+          ]
+        },
+        {
+          "Sensor": {
+            "Type": "Target",
+            "Range": 2.8,
+            "Filters": [
+              {
+                "Type": "LineOfSight"
+              }
+            ]
+          },
+          "HeadMotion": {
+            "Type": "Aim",
+            "RelativeTurnSpeed": 1.5
+          },
+          "ActionsBlocking": true,
+          "Actions": [
+            {
+              "Type": "Attack",
+              "Attack": "Trork_Warrior_Battleaxe_Swing_Left",
+              "AttackPauseRange": [
+                0.9,
+                1.4
+              ]
+            },
+            {
+              "Type": "Attack",
+              "Attack": "Trork_Warrior_Battleaxe_Swing_Right",
+              "AttackPauseRange": [
+                0.9,
+                1.4
+              ]
+            },
+            {
+              "Type": "Attack",
+              "Attack": "Trork_Warrior_Battleaxe_Swing_Down",
+              "AttackPauseRange": [
+                0.9,
+                1.4
+              ]
+            },
+            {
+              "Type": "Attack",
+              "Attack": "Trork_Warrior_Battleaxe_Swing_Up_Left",
+              "AttackPauseRange": [
+                0.9,
+                1.4
+              ]
+            },
+            {
+              "Type": "Attack",
+              "Attack": "Trork_Warrior_Battleaxe_Swing_Up_Right",
+              "AttackPauseRange": [
+                0.9,
+                1.4
+              ]
+            }
+          ]
+        },
+        {
+          "Sensor": {
+            "Type": "Target",
+            "Range": 28
+          },
+          "BodyMotion": {
+            "Type": "Seek",
+            "RelativeSpeed": 1.0,
+            "SlowDownDistance": 3,
+            "StopDistance": 2.2,
+            "UsePathfinder": true
+          },
+          "HeadMotion": {
+            "Type": "Watch",
+            "RelativeTurnSpeed": 1.5
+          }
+        }
+      ]
+    }
+  ]
+}

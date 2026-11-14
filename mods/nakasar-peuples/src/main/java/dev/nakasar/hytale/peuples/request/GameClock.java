@@ -38,6 +38,12 @@ public final class GameClock {
         return now == null ? 0L : now.toEpochSecond(ZoneOffset.UTC);
     }
 
+    /** Heure de jeu (0 à 23), ou -1 si l'horloge manque. */
+    public static int hour(Store<EntityStore> store) {
+        LocalDateTime now = now(store);
+        return now == null ? -1 : now.getHour();
+    }
+
     public static boolean isNight(Store<EntityStore> store) {
         LocalDateTime now = now(store);
         if (now == null) {

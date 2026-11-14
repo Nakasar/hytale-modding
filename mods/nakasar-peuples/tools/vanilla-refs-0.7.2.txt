@@ -42,3 +42,8 @@ npc Trork_Guard
 npcgroup Kweebec
 # Boutique de troc du marchand kweebec vanilla (Server/BarterShops/Kweebec_Merchant.json, Assets.zip, 14 novembre 2026).
 shop Kweebec_Merchant
+# Butins des Trorks vanilla (Server/NPC/Roles/Intelligent/Faction/Trork/Trork_{Warrior,Mauler,Brawler}.json citent
+# Drop_Trork_*, vus dans Assets.zip le 14 novembre 2026) : assaillants des raids (étape 6 du mod Peuples).
+droplist Drop_Trork_Warrior
+droplist Drop_Trork_Mauler
+droplist Drop_Trork_Brawler

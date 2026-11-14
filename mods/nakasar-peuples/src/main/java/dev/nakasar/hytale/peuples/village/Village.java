@@ -12,7 +12,7 @@ import dev.nakasar.hytale.peuples.request.VillageRequest;
  * (panneau du peuple) sont posés à côté du cœur et retrouvés par leurs coordonnées.
  *
  * <p>Étape 1 : nom, peuple, palier et jauge d'essor. Étape 3 : les demandes du tableau. La réputation de village (étape 4), les
- * bâtiments posés (étape 5) et le raid en attente (étape 6) s'ajoutent à ce même objet.
+ * bâtiments posés (étape 5) et les raids (étape 6, {@link RaidRecord}) s'ajoutent à ce même objet.
  */
 public final class Village {
 
@@ -75,6 +75,9 @@ public final class Village {
             .append(new KeyedCodec<>("Chantier", ChantierState.CODEC), (v, c) -> v.chantier = c, v -> v.chantier)
             .documentation("Chantier en cours, ou absent (étape 5).")
             .add()
+            .append(new KeyedCodec<>("Raid", RaidRecord.CODEC), (v, r) -> v.raid = r == null ? new RaidRecord() : r, v -> v.raid)
+            .documentation("Raids du village (étape 6) : raid attendu, raid en cours, bilan du dernier.")
+            .add()
             .build();
 
     String id = "";
@@ -104,6 +107,7 @@ public final class Village {
     Site[] sites = new Site[0];
     String[] burnt = new String[0];
     ChantierState chantier;
+    RaidRecord raid = new RaidRecord();
 
     Village() {
     }
@@ -150,6 +154,7 @@ public final class Village {
         v.sites = sites.clone();
         v.burnt = burnt.clone();
         v.chantier = chantier == null ? null : chantier.copy();
+        v.raid = raid == null ? new RaidRecord() : raid.copy();
         return v;
     }
 
@@ -299,6 +304,14 @@ public final class Village {
         if (slot >= 0 && slot < requests.length) {
             requests[slot] = request;
         }
+    }
+
+    /** Raids du village (étape 6) : l'objet sauvegardé, modifiable sur le thread du monde. */
+    public RaidRecord raid() {
+        if (raid == null) {
+            raid = new RaidRecord();
+        }
+        return raid;
     }
 
     /** Chantier en cours, ou null. */

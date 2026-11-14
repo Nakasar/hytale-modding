@@ -65,6 +65,10 @@ public final class DialogueTypes {
         DialogueEffect.CODEC.register("AddReputation", AddReputationEffect.class, AddReputationEffect.CODEC);
         DialogueCondition.CODEC.register("Chantier", ChantierCondition.class, ChantierCondition.CODEC);
         DialogueEffect.CODEC.register("ChantierStatus", ChantierStatusEffect.class, ChantierStatusEffect.CODEC);
+        DialogueCondition.CODEC.register("ChainRequest", ChainRequestCondition.class, ChainRequestCondition.CODEC);
+        DialogueEffect.CODEC.register("StartChainRequest", StartChainRequestEffect.class, StartChainRequestEffect.CODEC);
+        DialogueCondition.CODEC.register("Raid", RaidCondition.class, RaidCondition.CODEC);
+        DialogueEffect.CODEC.register("RaidStatus", RaidStatusEffect.class, RaidStatusEffect.CODEC);
     }
 
     static CombinedItemContainer inventory(DialogueContext context) {
@@ -192,7 +196,100 @@ public final class DialogueTypes {
         }
     }
 
+    /**
+     * {@code {"Type": "ChainRequest", "Template": "Kweebec_Chain_Prisoners"}} (étape 6) : le joueur mène cette étape de
+     * chaîne (demande en cours).
+     */
+    public static final class ChainRequestCondition extends DialogueCondition {
+        public static final BuilderCodec<ChainRequestCondition> CODEC = BuilderCodec.builder(ChainRequestCondition.class, ChainRequestCondition::new)
+                .append(new KeyedCodec<>("Template", Codec.STRING), (c, v) -> c.template = v, c -> c.template)
+                .documentation("Id du modèle de demande de l'étape (Server/Nakasar/Requests).")
+                .add()
+                .build();
+
+        String template;
+
+        @Override
+        public boolean test(DialogueContext context) {
+            return template != null && context.player().request(dev.nakasar.hytale.peuples.request.Requests.chainId(template)) != null;
+        }
+
+        public String template() {
+            return template;
+        }
+    }
+
+    /**
+     * {@code {"Type": "Raid", "State": "Active"}} (étape 6) : état du raid au village du joueur : {@code None} (aucun
+     * raid attendu ni en cours), {@code Pending} (attendu, cette nuit ou plus tard), {@code Active} (en cours).
+     */
+    public static final class RaidCondition extends DialogueCondition {
+        public static final BuilderCodec<RaidCondition> CODEC = BuilderCodec.builder(RaidCondition.class, RaidCondition::new)
+                .append(new KeyedCodec<>("State", Codec.STRING), (c, v) -> c.state = v == null ? "Active" : v, c -> c.state)
+                .documentation("None, Pending ou Active (défaut).")
+                .add()
+                .build();
+
+        String state = "Active";
+
+        @Override
+        public boolean test(DialogueContext context) {
+            dev.nakasar.hytale.peuples.village.Village v = context.village();
+            if (v == null) {
+                return false;
+            }
+            boolean active = dev.nakasar.hytale.peuples.raid.Raids.isActive(v);
+            return switch (state) {
+                case "None" -> !active && !v.raid().scheduled();
+                case "Pending" -> !active && v.raid().scheduled();
+                default -> active;
+            };
+        }
+    }
+
     // ---- Effets ----
+    /**
+     * {@code {"Type": "StartChainRequest", "Template": "Kweebec_Chain_Prisoners"}} (étape 6) : donne au joueur l'étape de
+     * chaîne (demande sans échéance, hors du tableau). Échoue s'il la mène déjà ou l'a remplie.
+     */
+    public static final class StartChainRequestEffect extends DialogueEffect {
+        public static final BuilderCodec<StartChainRequestEffect> CODEC = BuilderCodec.builder(StartChainRequestEffect.class, StartChainRequestEffect::new)
+                .append(new KeyedCodec<>("Template", Codec.STRING), (c, v) -> c.template = v, c -> c.template)
+                .documentation("Id du modèle de demande de l'étape (Server/Nakasar/Requests).")
+                .add()
+                .build();
+
+        String template;
+
+        @Override
+        public boolean apply(DialogueContext context) {
+            return template != null && context.village() != null && dev.nakasar.hytale.peuples.request.Requests.startChain(
+                    context.world(), context.store(), context.ref(), context.playerRef(), context.village(), template);
+        }
+
+        public String template() {
+            return template;
+        }
+    }
+
+    /** {@code {"Type": "RaidStatus"}} (étape 6) : l'état du raid du village et le bilan du dernier, dans le tchat. */
+    public static final class RaidStatusEffect extends DialogueEffect {
+        public static final BuilderCodec<RaidStatusEffect> CODEC = BuilderCodec.builder(RaidStatusEffect.class, RaidStatusEffect::new).build();
+
+        @Override
+        public boolean apply(DialogueContext context) {
+            if (context.village() == null) {
+                return false;
+            }
+            context.playerRef().sendMessage(dev.nakasar.hytale.peuples.raid.Raids.status(context.store(), context.village()));
+            com.hypixel.hytale.server.core.Message last = dev.nakasar.hytale.peuples.raid.Raids.lastReport(context.village());
+            if (last != null) {
+                context.playerRef().sendMessage(last);
+            }
+            return true;
+        }
+    }
+
 
     /** {@code {"Type": "ChantierStatus"}} (étape 5) : l'état du chantier du village (ou de ce qui l'attend) dans le tchat. */
     public static final class ChantierStatusEffect extends DialogueEffect {

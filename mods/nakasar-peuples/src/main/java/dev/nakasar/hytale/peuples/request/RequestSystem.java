@@ -9,7 +9,11 @@ import com.hypixel.hytale.server.core.universe.world.World;
 import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
 import com.hypixel.hytale.server.npc.entities.NPCEntity;
 import dev.nakasar.hytale.peuples.player.PeuplesPlayer;
+import com.hypixel.hytale.server.core.universe.world.storage.ChunkStore;
+import dev.nakasar.hytale.peuples.raid.Raids;
+import dev.nakasar.hytale.peuples.village.Blocks;
 import dev.nakasar.hytale.peuples.village.Terrain;
+import dev.nakasar.hytale.peuples.village.VillageBoard;
 import dev.nakasar.hytale.peuples.village.Village;
 import dev.nakasar.hytale.peuples.village.Villages;
 import org.joml.Vector3d;
@@ -40,8 +44,6 @@ public final class RequestSystem extends TickingSystem<EntityStore> {
     private static final float INTERVAL = 1f;
     /** Le lieu d'une demande s'anime quand le joueur passe à moins de cette distance (blocs, à plat). */
     public static final int SITE_RANGE = 72;
-    /** L'attaque d'une défense part de cette distance du cœur. */
-    public static final int DEFENSE_SPAWN_DISTANCE = 30;
     /** Une chasse compte les morts des rôles du modèle tuées par le joueur jusqu'à cette distance du village. */
     public static final int HUNT_RADIUS = 220;
 
@@ -49,8 +51,6 @@ public final class RequestSystem extends TickingSystem<EntityStore> {
         float elapsed;
         /** Joueurs déjà vus cette session (suivi renvoyé à la connexion). */
         final Set<UUID> seen = new HashSet<>();
-        /** Demandes dont l'attaque de nuit est partie (clé RequestSpawns). */
-        final Set<String> waves = new HashSet<>();
         /** Escortes dont les gardiens sont apparus cette session. */
         final Set<String> guards = new HashSet<>();
     }
@@ -124,7 +124,6 @@ public final class RequestSystem extends TickingSystem<EntityStore> {
             return;
         }
         if (now >= r.expires()) {
-            state.waves.remove(key);
             state.guards.remove(key);
             Requests.fail(world, store, ref, player, data, r, Requests.KEYS + "expired");
             return;
@@ -145,7 +144,8 @@ public final class RequestSystem extends TickingSystem<EntityStore> {
                 }
             }
             case ESCORT -> stepEscort(world, store, ref, player, data, r, t, village, at, key, state);
-            case DEFENSE -> stepDefense(world, store, ref, player, data, r, t, village, at, key, night, state);
+            case DEFENSE -> stepDefense(store, village);
+            case PLANT -> stepPlant(world, store, ref, player, data, r, t, at);
         }
     }
 
@@ -196,39 +196,80 @@ public final class RequestSystem extends TickingSystem<EntityStore> {
     }
 
     /**
-     * Défense : la nuit venue, si le joueur est au village, l'attaque part à {@value #DEFENSE_SPAWN_DISTANCE} blocs du
-     * cœur, avec le cœur pour point d'attache (les Trorks marchent sur le village). Chaque mort compte ; au matin, une
-     * attaque encore debout fait échouer la demande et les assaillants se retirent.
+     * Défense (étape 6) : la demande a attiré un raid sur le village (raid/Raids), qui la remplit ou la fait échouer au
+     * bilan. Si plus aucun raid n'est attendu (annulé par une commande), elle en attire un nouveau.
      */
-    private static void stepDefense(World world, Store<EntityStore> store, Ref<EntityStore> ref, PlayerRef player, PeuplesPlayer data,
-                                    PlayerRequest r, RequestTemplate t, Village village, Vector3d at, String key, boolean night, State state) {
-        if (!night) {
-            if (state.waves.remove(key)) {
-                Requests.fail(world, store, ref, player, data, r, Requests.KEYS + "defense.lost");
+    private static void stepDefense(Store<EntityStore> store, Village village) {
+        if (!Raids.pending(village)) {
+            Raids.schedule(village, Raids.nextNight(store, village), "Request");
+        }
+    }
+
+    /** Rayon du bosquet brûlé d'une plantation. */
+    public static final int GROVE_RADIUS = 6;
+    private static final String BURNT_SOIL = "Soil_Grass_Burnt";
+    private static final String BURNT_STUMP = "Wood_Burnt_Trunk";
+    /** Un tronc qui a poussé de la pousse compte aussi. */
+    private static final String GROWN_TRUNK = "Wood_Oak_Trunk";
+
+    /**
+     * Plantation (étape 6) : à l'approche, le lieu devient un bosquet brûlé (sol calciné, souches) ; chaque pousse
+     * ({@code ItemId}) plantée dans le bosquet compte, et l'avancement ne redescend pas si on en arrache une.
+     */
+    private static void stepPlant(World world, Store<EntityStore> store, Ref<EntityStore> ref, PlayerRef player, PeuplesPlayer data,
+                                  PlayerRequest r, RequestTemplate t, Vector3d at) {
+        if (!near(at, r.site(), SITE_RANGE) || !knowSiteHeight(world, r)) {
+            return;
+        }
+        int[] s = r.site();
+        ChunkStore chunks = world.getChunkStore();
+        Terrain terrain = new Terrain(world);
+        if (!r.prepared()) {
+            ThreadLocalRandom random = ThreadLocalRandom.current();
+            for (int dx = -GROVE_RADIUS; dx <= GROVE_RADIUS; dx++) {
+                for (int dz = -GROVE_RADIUS; dz <= GROVE_RADIUS; dz++) {
+                    if (dx * dx + dz * dz > GROVE_RADIUS * GROVE_RADIUS) {
+                        continue;
+                    }
+                    int x = s[0] + dx, z = s[2] + dz;
+                    int y = terrain.surface(x, z);
+                    if (y == Terrain.NONE || Math.abs(y - (s[1] - 1)) > 4) {
+                        continue;
+                    }
+                    String top = Blocks.name(chunks, x, y, z);
+                    if (top != null && top.startsWith("Soil_Grass")) {
+                        Blocks.set(chunks, x, y, z, BURNT_SOIL, 0);
+                    }
+                    // Les herbes et fleurs brûlées disparaissent ; quelques souches calcinées restent debout.
+                    String above = Blocks.name(chunks, x, y + 1, z);
+                    if (above != null && above.startsWith("Plant_")) {
+                        Blocks.set(chunks, x, y + 1, z, null, 0);
+                    }
+                    if (dx * dx + dz * dz >= 9 && random.nextInt(9) == 0 && Blocks.isEmpty(chunks, x, y + 1, z)) {
+                        int h = 1 + random.nextInt(2);
+                        for (int i = 1; i <= h; i++) {
+                            Blocks.set(chunks, x, y + i, z, BURNT_STUMP, 0);
+                        }
+                    }
+                }
             }
-            return;
+            r.setPrepared(true);
+            player.sendMessage(Message.translation(Requests.KEYS + "plant.found").param("item", VillageBoard.itemName(t.itemId())));
         }
-        boolean inVillage = village.horizontalDistanceSquared(at.x(), at.z()) <= (double) Villages.RADIUS * Villages.RADIUS;
-        int alive = RequestSpawns.of(key, RequestSpawns.Kind.FOE).size();
-        int missing = r.needed() - r.progress() - alive;
-        if (!inVillage || alive > 0 || missing <= 0) {
-            return;
+        int planted = 0;
+        for (int dx = -GROVE_RADIUS - 1; dx <= GROVE_RADIUS + 1; dx++) {
+            for (int dz = -GROVE_RADIUS - 1; dz <= GROVE_RADIUS + 1; dz++) {
+                for (int y = s[1] - 4; y <= s[1] + 3; y++) {
+                    String name = Blocks.name(chunks, s[0] + dx, y, s[2] + dz);
+                    if (t.itemId().equals(name) || GROWN_TRUNK.equals(name)) {
+                        planted++;
+                        break;
+                    }
+                }
+            }
         }
-        boolean first = state.waves.add(key);
-        double angle = ThreadLocalRandom.current().nextDouble(0, Math.PI * 2);
-        int cx = village.x() + (int) Math.round(Math.cos(angle) * DEFENSE_SPAWN_DISTANCE);
-        int cz = village.z() + (int) Math.round(Math.sin(angle) * DEFENSE_SPAWN_DISTANCE);
-        Vector3d heart = new Vector3d(village.x() + 0.5, village.y(), village.z() + 0.5);
-        String[] spawns = t.spawns();
-        for (int i = 0; i < missing; i++) {
-            spawnOnGround(world, store, key, RequestSpawns.Kind.FOE, spawns[(r.progress() + i) % spawns.length], cx, cz, 4, heart);
-        }
-        if (first) {
-            Message warn = Message.translation(Requests.KEYS + "defense.attack").param("village", village.name())
-                    .param("direction", Message.translation(Villages.MESSAGES + "dir." + Requests.direction(cx - village.x(), cz - village.z())));
-            player.sendMessage(warn);
-            com.hypixel.hytale.server.core.util.NotificationUtil.sendNotification(player.getPacketHandler(), warn,
-                    com.hypixel.hytale.protocol.packets.interface_.NotificationStyle.Danger);
+        if (planted > r.progress()) {
+            Requests.advance(world, store, ref, player, data, r, planted - r.progress());
         }
     }
 
@@ -289,7 +330,6 @@ public final class RequestSystem extends TickingSystem<EntityStore> {
     static void forget(World world, String key) {
         State state = STATES.get(world);
         if (state != null) {
-            state.waves.remove(key);
             state.guards.remove(key);
         }
     }
