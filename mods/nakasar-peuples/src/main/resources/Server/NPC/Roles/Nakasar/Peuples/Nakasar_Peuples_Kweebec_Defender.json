@@ -3,7 +3,7 @@
   "Type": "Generic",
   "Appearance": "Kweebec_Sapling_Razorleaf",
   "NameTranslationKey": "nakasar_peuples.npc.Kweebec_Defender.name",
-  "MaxHealth": 105,
+  "MaxHealth": 200,
   "StartState": "Idle",
   "DefaultPlayerAttitude": "Neutral",
   "DefaultNPCAttitude": "Ignore",

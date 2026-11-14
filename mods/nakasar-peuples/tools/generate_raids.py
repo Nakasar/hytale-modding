@@ -53,6 +53,11 @@ RAIDERS = [
 ]
 
 
+# PV du garde de raid kweebec : 105 jusqu'au 14/11/2026, monté à 200 (retour de Kevin : raid trork trop dur ; un
+# guerrier trork le tuait en 5 coups, il en faut maintenant 9).
+DEFENDER_HP = 200
+
+
 def damage(value):
     return {
         "Melee_Damage": {
@@ -166,7 +171,7 @@ def defender(people):
         "Type": "Generic",
         "Appearance": "Kweebec_Sapling_Razorleaf",
         "NameTranslationKey": f"nakasar_peuples.npc.{people}_Defender.name",
-        "MaxHealth": 105,
+        "MaxHealth": DEFENDER_HP,
         "StartState": "Idle",
         "DefaultPlayerAttitude": "Neutral",
         "DefaultNPCAttitude": "Ignore",
