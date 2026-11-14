@@ -8,13 +8,11 @@ Group {
 
     Label #NpcName {
       Anchor: (Height: 34, Bottom: 6);
-      Text: "";
       Style: (FontSize: 24, TextColor: #e8c46a);
     }
 
     Label #Line {
       Anchor: (Height: 110, Bottom: 18);
-      Text: "";
       Style: (FontSize: 18, TextColor: #f2ead8, Wrap: true);
     }
 
@@ -24,7 +22,6 @@ Group {
     }
     Label #Hint0 {
       Anchor: (Height: 20, Bottom: 8);
-      Text: "";
       Style: (FontSize: 13, TextColor: #a8a08c);
     }
 
@@ -34,7 +31,6 @@ Group {
     }
     Label #Hint1 {
       Anchor: (Height: 20, Bottom: 8);
-      Text: "";
       Style: (FontSize: 13, TextColor: #a8a08c);
     }
 
@@ -44,7 +40,6 @@ Group {
     }
     Label #Hint2 {
       Anchor: (Height: 20, Bottom: 8);
-      Text: "";
       Style: (FontSize: 13, TextColor: #a8a08c);
     }
 
@@ -54,7 +49,6 @@ Group {
     }
     Label #Hint3 {
       Anchor: (Height: 20, Bottom: 8);
-      Text: "";
       Style: (FontSize: 13, TextColor: #a8a08c);
     }
 
