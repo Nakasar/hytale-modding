@@ -1,0 +1,12 @@
+{
+  "$Comment": "Étape 4 de la chaîne kweebec (étape 6), générée par tools/generate_chain.py : donnée par le dialogue du chef (StartChainRequest), jamais tirée au tableau (Weight 0). Remplie, elle pose le drapeau Kweebec_Chain_4 sur le joueur.",
+  "People": "Kweebec",
+  "Type": "Defense",
+  "Weight": 0,
+  "TitleKey": "nakasar_peuples.request.Kweebec_Chain_Vigil.title",
+  "TaskKey": "nakasar_peuples.request.Kweebec_Chain_Vigil.task",
+  "Essor": 0,
+  "Favors": 6,
+  "Reputation": 200,
+  "Flag": "Kweebec_Chain_4"
+}

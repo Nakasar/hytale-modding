@@ -1121,6 +1121,15 @@ public class ValidateAssets {
                         .forEach(f -> items.add(f.getFileName().toString().replace(".json", "")));
             }
         }
+        // Modèles de demande, cités par les étapes de chaîne des dialogues ("Template").
+        Set<String> templates = new HashSet<>();
+        Path requestDir = root.resolve("Nakasar/Requests");
+        if (Files.isDirectory(requestDir)) {
+            try (Stream<Path> walk = Files.walk(requestDir)) {
+                walk.filter(f -> f.toString().endsWith(".json"))
+                        .forEach(f -> templates.add(f.getFileName().toString().replace(".json", "")));
+            }
+        }
         int errors = 0;
         List<Path> files = new ArrayList<>();
         for (Path dir : dirs) {
@@ -1131,7 +1140,7 @@ public class ValidateAssets {
         for (Path file : files) {
             List<String> problems = new ArrayList<>();
             BsonDocument doc = BsonDocument.parse(Files.readString(file));
-            collectDialogueRefs(doc, langs, vanillaItems == null ? null : items, problems);
+            collectDialogueRefs(doc, langs, vanillaItems == null ? null : items, templates, problems);
             String rel = root.relativize(file).toString().replace('\\', '/');
             if (problems.isEmpty()) {
                 System.out.println("OK    textes et objets de " + rel);
@@ -1144,7 +1153,8 @@ public class ValidateAssets {
         return errors;
     }
 
-    private static void collectDialogueRefs(BsonValue value, Map<String, Set<String>> langs, Set<String> items, List<String> problems) {
+    private static void collectDialogueRefs(BsonValue value, Map<String, Set<String>> langs, Set<String> items, Set<String> templates,
+                                            List<String> problems) {
         if (value.isDocument()) {
             for (Map.Entry<String, BsonValue> e : value.asDocument().entrySet()) {
                 if (e.getKey().endsWith("Key") && e.getValue().isString()) {
@@ -1158,13 +1168,16 @@ public class ValidateAssets {
                         && !items.contains(e.getValue().asString().getValue())) {
                     problems.add("objet inconnu " + e.getValue().asString().getValue()
                             + " (ni dans le pack ni dans tools/vanilla-item-ids-0.7.2.txt)");
+                } else if (e.getKey().equals("Template") && e.getValue().isString()
+                        && !templates.contains(e.getValue().asString().getValue())) {
+                    problems.add("modèle de demande inconnu " + e.getValue().asString().getValue() + " (Server/Nakasar/Requests)");
                 } else {
-                    collectDialogueRefs(e.getValue(), langs, items, problems);
+                    collectDialogueRefs(e.getValue(), langs, items, templates, problems);
                 }
             }
         } else if (value.isArray()) {
             for (BsonValue v : value.asArray()) {
-                collectDialogueRefs(v, langs, items, problems);
+                collectDialogueRefs(v, langs, items, templates, problems);
             }
         }
     }

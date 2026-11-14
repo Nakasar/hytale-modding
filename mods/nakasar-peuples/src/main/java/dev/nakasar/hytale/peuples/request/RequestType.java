@@ -11,8 +11,10 @@ import java.util.Locale;
  *   <li>{@link #HUNT} chasse (KillNPC / Bounty) : une bande apparaît à son repaire, chaque mort compte ;</li>
  *   <li>{@link #DELIVERY} livraison (UseEntity + objet marqué) : porter la missive reçue à un guetteur éloigné ;</li>
  *   <li>{@link #ESCORT} escorte (PNJ suiveur + ReachLocation) : ramener un captif jusqu'au cœur du village ;</li>
- *   <li>{@link #DEFENSE} défense (événement de monde) : une nuit, repousser l'attaque qui vient sur le village.
- *       Premier jet d'une veille ; les vrais raids (moteur des brèches) arrivent à l'étape 6.</li>
+ *   <li>{@link #DEFENSE} défense (événement de monde) : la prendre attire un raid (étape 6, raid/Raids) sur le
+ *       village la nuit même ; remplie si le raid est gagné avec le joueur, échouée s'il est perdu ;</li>
+ *   <li>{@link #PLANT} plantation (étape 6, chaîne kweebec) : un bosquet brûlé apparaît au lieu de la demande quand le
+ *       joueur approche ; il faut y planter des pousses ({@code ItemId}, le bloc de la pousse).</li>
  * </ul>
  */
 public enum RequestType {
@@ -21,7 +23,8 @@ public enum RequestType {
     HUNT("Hunt"),
     DELIVERY("Delivery"),
     ESCORT("Escort"),
-    DEFENSE("Defense");
+    DEFENSE("Defense"),
+    PLANT("Plant");
 
     private final String id;
 
@@ -41,7 +44,7 @@ public enum RequestType {
 
     /** Vrai pour les demandes qui ont un lieu hors du village (repaire, guetteur, captif). */
     public boolean hasSite() {
-        return this == HUNT || this == DELIVERY || this == ESCORT;
+        return this == HUNT || this == DELIVERY || this == ESCORT || this == PLANT;
     }
 
     /** Clé de traduction du nom du type. */

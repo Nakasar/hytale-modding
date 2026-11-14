@@ -495,3 +495,130 @@ Chaque palier ajoute des Kweebecs vanilla à métier, avec leur rôle (`Nakasar_
 - L'allure d'un bâtiment brûlé (proportions d'effondrement et de feuilles restantes).
 - Que l'aplanissement des parcelles ne coupe pas le relief autour de façon trop visible.
 - Le titre de fin de chantier, et sa portée de 160 blocs.
+
+## Étape 6 : les raids et la chaîne kweebec
+
+Une nuit, une bande trork marche sur le village. Les gardes du village se battent aux côtés du joueur. Au bout, un
+bilan : victoire ou défaite, et un bâtiment brûle si le raid est perdu. La chaîne de quêtes kweebec, menée par le chef
+du village, finit par la Graine d'Écho.
+
+### Quand un raid arrive
+
+Un raid est attendu (sauvegardé avec le village) pour une nuit donnée, pour l'une de ces causes :
+
+- **palier gagné** : le village attire un raid la nuit qui suit ;
+- **tirage du matin** : 10 %, 20 %, 30 % ou 40 % de chances selon le palier, jamais moins de 2 nuits après le dernier raid ;
+- **demande de défense** du tableau, ou **veillée** de la chaîne : le raid vient la nuit même ;
+- **commande** (`raidprevoir`, `raidlancer`).
+
+Le raid commence de nuit, avant 4 h, et seulement si un joueur est à moins de 80 blocs du cœur. Personne n'est venu ?
+Le raid attend la prochaine nuit, sans pénalité. Un redémarrage pendant un raid le fait reprendre depuis l'annonce, lui
+aussi sans pénalité.
+
+### Déroulé
+
+1. **Annonce, 1 min.** Les tambours (cor vanilla) sonnent, un titre et un message donnent la direction du camp trork, à
+   42 blocs du cœur (deux camps à partir du palier 2). Les gardes Razorleaf (1, 2, 4 ou 6 selon le palier) se postent
+   autour du cœur. L'évènement de monde `Nakasar_Peuples_Raid` (moteur des brèches vanilla) place le compte à rebours
+   sur la carte, avec l'icône de la brèche gobeline.
+2. **Assaut, 5 min au plus.** La vague apparaît au camp : 5, 7, 9 ou 12 assaillants (pillards, cogneurs, brutes, puis un
+   chef de guerre à partir du palier 2). Au camp, l'évènement joue le titre « Les Trorks attaquent ! » et le cri du chef
+   trork. Les assaillants marchent sur le cœur et frappent à vue joueurs et Kweebecs. Les gardes ne quittent pas leur
+   poste de plus de 24 blocs.
+3. **Bilan.**
+   - Victoire (tous les assaillants abattus) : +30 d'essor, et pour chaque joueur présent +50 de réputation et 4 Feuilles
+     de sève. Les joueurs qui ont abattu un assaillant reçoivent aussi un Trophée trork.
+   - Défaite : temps écoulé, village abandonné 90 s, ou tous les gardes tombés avec un Trork au cœur. Un bâtiment brûle
+     et le village perd un palier, comme le recommande le GDD. Un village sans plan voit sa jauge d'essor se vider.
+   - Les demandes de défense sont remplies à la victoire et échouent à la défaite.
+   - Le bilan s'affiche au tableau (page texte) et avec `/village raid`.
+
+Aucun PNJ du raid ne se soigne (règle n° 1 ; `VillageNoRegenSystem` couvre aussi les raids). Les apparences, armes,
+attaques, butins et sons sont vanilla (règle n° 2).
+
+### Les PNJ du raid
+
+| Rôle | Apparence et arme vanilla | PV | Dégâts |
+| --- | --- | --- | --- |
+| `Nakasar_Peuples_Raider_Trork_Warrior` | Trork_Warrior, hache de bataille | 61 | 23 |
+| `Nakasar_Peuples_Raider_Trork_Mauler` | Trork_Mauler, masse | 61 | 23 |
+| `Nakasar_Peuples_Raider_Trork_Brawler` | Trork_Brawler, gourdin | 80 | 20 |
+| `Nakasar_Peuples_Raider_Trork_Warlord` | Trork_Guard, hache de bataille | 150 | 28 |
+| `Nakasar_Peuples_Kweebec_Defender` | Razorleaf, lance de feuille | 105 | 14 |
+
+Les rôles du mod sont nécessaires parce que les rôles vanilla ne se battraient pas entre eux. Les Razorleaf vanilla ne
+voient que les joueurs, et les Trorks vanilla dorment la nuit. `RaidAttitudeSystem` (fournisseur d'attitude de
+priorité 80) rend les pillards hostiles aux Kweebecs, et réciproquement. Le générateur est `tools/generate_raids.py`.
+
+### La chaîne kweebec
+
+Le chef (Treesinger vanilla, à l'est du cœur, dialogue `Kweebec_Chef`) propose une étape par rang :
+
+| Étape | Rang | Ce qu'il faut faire | Réputation |
+| --- | --- | --- | --- |
+| 1. Soigner les jeunes pousses | Toléré | donner 10 Sève au chef | +80 |
+| 2. Libérer les prisonniers | Ami | escorte depuis le camp trork (90 à 150 blocs, 3 gardiens) | +120 |
+| 3. Replanter le bosquet brûlé | Ami | planter 6 pousses de chêne dans le bosquet calciné (60 à 110 blocs) | +150 |
+| 4. Veiller le Grand-Père | Hôte | repousser le raid que la veillée attire la nuit même | +200 |
+| 5. La Graine d'Écho | Champion | le chef donne la Graine d'Écho | — |
+
+- Les étapes 2 à 4 sont des demandes (modèles `Kweebec_Chain_*`, jamais au tableau). Elles n'expirent pas et posent le
+  drapeau `Kweebec_Chain_<n>` quand elles sont remplies.
+- La plantation est un nouveau type de demande, `Plant`. À l'approche, le lieu devient un bosquet brûlé (sol calciné,
+  souches) ; chaque pousse plantée, ou chaque arbre qui en a poussé, compte.
+- La Graine d'Écho (modèle du sac de graines de chêne vanilla) ne se plante pas encore : elle sert à l'étape 8.
+- Le générateur est `tools/generate_chain.py`. Le garde et le guetteur répondent « Aux armes ! » pendant un raid, et
+  sinon donnent une rumeur et l'état du raid attendu.
+
+### Nouvelles commandes
+
+| Sous-commande | Qui | Effet |
+| --- | --- | --- |
+| `raid` | joueur | raid attendu ou en cours au village le plus proche, bilan du dernier |
+| `chaine` | joueur | étapes de chaîne faites et prochaine étape |
+| `raidlancer` | opérateur | lance un raid tout de suite (de jour aussi) |
+| `raidfinir <gagne\|perdu>` | opérateur | bilan tout de suite |
+| `raidannuler` | opérateur | annule le raid en cours ou attendu |
+| `raidprevoir` | opérateur | prévoit un raid cette nuit |
+| `chaineetape <0-5>` | opérateur | règle les étapes de chaîne faites |
+
+### Tester en jeu (étape 6) : une nuit gagnée, une nuit perdue
+
+Préparation : un village kweebec généré (`/village generer`), palier 1 au moins (`/village palier 1`), pour avoir un
+bâtiment à brûler.
+
+**Nuit gagnée**
+
+1. `/time midnight`, puis `/village raidprevoir`. En moins d'une seconde, les tambours sonnent. Le titre « Tambours de
+   guerre » et le message donnent la direction. Deux gardes Razorleaf se postent au cœur, et le compte à rebours
+   apparaît sur la carte.
+2. Au bout d'1 min, 7 Trorks apparaissent à environ 42 blocs, avec le titre « Les Trorks attaquent ! ». Ils marchent sur
+   le cœur, et les gardes les attaquent dès qu'ils les voient.
+3. Les abattre tous : titre « Raid repoussé » et bilan dans le chat (+30 essor, +50 réputation, 4 Feuilles de sève,
+   Trophée trork). `/village raid` et le tableau (accroupi) montrent le bilan.
+
+**Nuit perdue**
+
+1. Le lendemain soir (`/time midnight`), `/village raidlancer`. S'éloigner à plus de 160 blocs pendant 90 s, ou
+   `/village raidfinir perdu`.
+2. Titre « Le village brûle » : un bâtiment du palier le plus haut est noirci et le village perd un palier. Le bilan
+   le nomme.
+
+**Chaîne**
+
+1. `/village rep 60`, puis parler au chef avec 10 Sève (`/give Ingredient_Tree_Sap 10`) : étape 1.
+2. `/village rep 250` : le chef propose l'escorte, puis le bosquet (`/give Plant_Seeds_Oak 6`).
+3. `/village rep 600` : la veillée prévoit le raid de la nuit ; le gagner remplit l'étape 4.
+4. `/village rep 1000` : le chef donne la Graine d'Écho. `/village chaineetape <n>` saute des étapes.
+
+Le joueur peut aussi prendre la défense au tableau (`/village demande Kweebec_Defense_Night 1`, puis `/village prendre 1`) :
+le raid vient la nuit même.
+
+### À vérifier en jeu (étape 6)
+
+- Que les gardes et les pillards se battent vraiment (fournisseur d'attitude de priorité 80, capteur `Mob` sur les PNJ).
+- Que les attaques vanilla `Trork_Warrior_Battleaxe_*` vont avec les masses et gourdins du cogneur et de la brute.
+- Le compte à rebours sur la carte, le titre au camp et le cri du chef trork (évènement de monde).
+- La marche sur le cœur : est-ce que le Seek et la laisse suffisent à traverser le village ?
+- Le bosquet brûlé : allure, et que les graines de chêne posées comptent bien (bloc `Plant_Sapling_Oak`).
+- L'allure du Trophée trork et de la Graine d'Écho en main (modèles de blocs et de sac vanilla).

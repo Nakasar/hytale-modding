@@ -131,8 +131,17 @@ def dialogue(people, job):
         nodes[0]["Responses"] = [status, metier, bye]
         nodes.insert(0, {"Id": "Chantier", "TextKey": k + "chantier", "Responses": [status, metier, bye]})
         nodes.append({"Id": "Statut", "TextKey": k + "statut", "Responses": [metier, bye]})
+    if job in ("Guard", "Watcher"):
+        # Étape 6 (GDD, Qui parle et de quoi : « alerte de raid, rumeur sur le camp ennemi ») : pendant un raid, « Aux
+        # armes ! » ; sinon une rumeur et l'état du raid attendu (RaidStatus, dans le tchat).
+        raid = {"TextKey": "nakasar_peuples.dialogue.job.raid", "Effects": [{"Type": "RaidStatus"}], "Next": "Rumeur"}
+        entries.insert(0, {"Node": "AuxArmes", "Conditions": [{"Type": "Raid", "State": "Active"}]})
+        nodes[0]["Responses"].insert(0, raid)
+        nodes.append({"Id": "AuxArmes", "TextKey": k + "auxArmes", "Responses": [raid, bye]})
+        nodes.append({"Id": "Rumeur", "TextKey": k + "rumeur", "Responses": [metier, bye]})
     return did, {
-        "$Comment": f"Dialogue du villageois à métier {job} (étape 5), généré par tools/generate_villagers.py.",
+        "$Comment": f"Dialogue du villageois à métier {job} ({'étapes 5 et 6' if job in ('Guard', 'Watcher') else 'étape 5'}), "
+                    "généré par tools/generate_villagers.py.",
         "NpcNameKey": k + "npc",
         "RoleKey": k + "role",
         "People": people,

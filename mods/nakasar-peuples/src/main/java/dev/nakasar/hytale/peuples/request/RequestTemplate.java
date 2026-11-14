@@ -89,6 +89,9 @@ public final class RequestTemplate implements JsonAssetWithMap<String, DefaultAs
             .append(new KeyedCodec<>("Reputation", Codec.INTEGER), (t, v) -> t.reputation = v, t -> t.reputation)
             .documentation("Réputation de village donnée au joueur (un tiers va au peuple) ; absente : autant que l'essor.")
             .add()
+            .append(new KeyedCodec<>("Flag", Codec.STRING), (t, v) -> t.flag = v, t -> t.flag)
+            .documentation("Drapeau posé sur le joueur quand il remplit la demande (étapes de la chaîne du peuple).")
+            .add()
             .validator(RequestTemplate::validate)
             .build();
 
@@ -112,6 +115,7 @@ public final class RequestTemplate implements JsonAssetWithMap<String, DefaultAs
     int essor;
     int favors;
     Integer reputation;
+    String flag;
 
     RequestTemplate() {
     }
@@ -210,23 +214,28 @@ public final class RequestTemplate implements JsonAssetWithMap<String, DefaultAs
         return favors;
     }
 
-    /** Ce qu'il faut atteindre : objets déposés, morts de la bande, ou 1 (livraison, escorte). */
+    /** Drapeau posé sur le joueur à la fin, ou null. */
+    public String flag() {
+        return flag;
+    }
+
+    /** Ce qu'il faut atteindre : objets déposés, morts de la bande, pousses plantées, ou 1 (livraison, escorte, raid). */
     public int needed() {
         RequestType t = type();
         if (t == null) {
             return 1;
         }
         return switch (t) {
-            case GATHER, CRAFT -> Math.max(1, quantity);
-            case HUNT, DEFENSE -> Math.max(1, spawns.length);
-            case DELIVERY, ESCORT -> 1;
+            case GATHER, CRAFT, PLANT -> Math.max(1, quantity);
+            case HUNT -> Math.max(1, spawns.length);
+            case DELIVERY, ESCORT, DEFENSE -> 1;
         };
     }
 
     private static void validate(RequestTemplate t, ValidationResults results) {
         RequestType type = t.type();
         if (type == null) {
-            results.fail("Type inconnu : " + t.type + " (Gather, Craft, Hunt, Delivery, Escort, Defense)");
+            results.fail("Type inconnu : " + t.type + " (Gather, Craft, Hunt, Delivery, Escort, Defense, Plant)");
             return;
         }
         if (t.people == null || t.people.isBlank()) {
@@ -238,10 +247,10 @@ public final class RequestTemplate implements JsonAssetWithMap<String, DefaultAs
         if (t.minTier < 0 || t.maxTier > 3 || t.minTier > t.maxTier) {
             results.fail("Paliers invalides : " + t.minTier + " à " + t.maxTier);
         }
-        if (type.usesDeposit() && (t.itemId == null || t.quantity < 1)) {
+        if ((type.usesDeposit() || type == RequestType.PLANT) && (t.itemId == null || t.quantity < 1)) {
             results.fail(type.id() + " : ItemId et Quantity (au moins 1) sont obligatoires");
         }
-        if ((type == RequestType.HUNT || type == RequestType.DEFENSE) && t.spawns.length == 0) {
+        if (type == RequestType.HUNT && t.spawns.length == 0) {
             results.fail(type.id() + " : Spawns (la bande) est obligatoire");
         }
         if (type.hasSite() && (t.minDistance < 48 || t.maxDistance < t.minDistance)) {

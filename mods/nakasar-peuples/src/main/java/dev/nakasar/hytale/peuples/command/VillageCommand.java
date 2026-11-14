@@ -27,6 +27,7 @@ import dev.nakasar.hytale.peuples.village.Chantiers;
 import dev.nakasar.hytale.peuples.village.People;
 import dev.nakasar.hytale.peuples.village.Villagers;
 import dev.nakasar.hytale.peuples.village.Tiers;
+import dev.nakasar.hytale.peuples.raid.Raids;
 import dev.nakasar.hytale.peuples.village.Village;
 import dev.nakasar.hytale.peuples.village.VillageBoard;
 import dev.nakasar.hytale.peuples.village.VillageBuilder;
@@ -60,7 +61,11 @@ import java.util.List;
  *   <li>étape 5 : {@code chantier} (état du chantier ou de ce qu'attend le prochain), {@code metiers} (villageois à
  *   métier) ; opérateurs : {@code lancer} (ouvre le chantier sans jauge ni matériaux), {@code finir} (finit le chantier
  *   en cours), {@code bruler [bâtiment]} (brûle un bâtiment, le village perd un palier) ; {@code palier <n>} bâtit
- *   maintenant sur-le-champ ce qui manque jusqu'au palier n.</li>
+ *   maintenant sur-le-champ ce qui manque jusqu'au palier n ;</li>
+ *   <li>étape 6 : {@code raid} (raid attendu ou en cours, bilan du dernier), {@code chaine} (étape de la chaîne du peuple) ;
+ *   opérateurs : {@code raidlancer} (raid tout de suite, de jour aussi), {@code raidfinir <gagne|perdu>} (bilan tout de
+ *   suite), {@code raidannuler}, {@code raidprevoir} (raid attendu cette nuit), {@code chaineetape <0-5>} (étapes de
+ *   chaîne faites).</li>
  * </ul>
  */
 public final class VillageCommand extends AbstractCommandCollection {
@@ -102,6 +107,13 @@ public final class VillageCommand extends AbstractCommandCollection {
         addSubCommand(new FinishChantierCommand());
         addSubCommand(new BurnCommand());
         addSubCommand(new JobsCommand());
+        addSubCommand(new RaidCommand());
+        addSubCommand(new RaidStartCommand());
+        addSubCommand(new RaidFinishCommand());
+        addSubCommand(new RaidCancelCommand());
+        addSubCommand(new RaidScheduleCommand());
+        addSubCommand(new ChainCommand());
+        addSubCommand(new ChainStepCommand());
     }
 
     /** Sous-commande ouverte aux joueurs. */
@@ -232,6 +244,7 @@ public final class VillageCommand extends AbstractCommandCollection {
         protected void execute(CommandContext context, Store<EntityStore> store, Ref<EntityStore> ref, PlayerRef player, World world) {
             Village village = nearest(world, player);
             if (village != null) {
+                Raids.cancel(world, village);
                 Criers.remove(store, village.id());
                 Villagers.remove(store, village.id());
                 Villages.dissolve(world, village);
@@ -767,6 +780,147 @@ public final class VillageCommand extends AbstractCommandCollection {
                             .param("building", Message.translation(Chantiers.buildingKey(e.getKey().substring("chantier:".length())))));
                 }
             }
+        }
+    }
+
+    // ---- Étape 6 : raids et chaîne ----
+
+    private static final class RaidCommand extends PlayerCommand {
+        RaidCommand() {
+            super("raid", KEYS + "raid.desc");
+        }
+
+        @Override
+        protected void execute(CommandContext context, Store<EntityStore> store, Ref<EntityStore> ref, PlayerRef player, World world) {
+            Village village = nearest(world, player);
+            if (village == null) {
+                return;
+            }
+            player.sendMessage(Message.raw(village.name()).bold(true).color("#e8c46a"));
+            player.sendMessage(Raids.status(store, village));
+            Message last = Raids.lastReport(village);
+            if (last != null) {
+                player.sendMessage(last);
+            }
+        }
+    }
+
+    private static final class RaidStartCommand extends AbstractPlayerCommand {
+        RaidStartCommand() {
+            super("raidlancer", KEYS + "raidStart.desc");
+            requirePermission(ADMIN);
+        }
+
+        @Override
+        protected void execute(CommandContext context, Store<EntityStore> store, Ref<EntityStore> ref, PlayerRef player, World world) {
+            Village village = nearest(world, player);
+            if (village != null && !Raids.startNow(world, village)) {
+                player.sendMessage(Message.translation(Raids.KEYS + "command.cannotStart"));
+            }
+        }
+    }
+
+    private static final class RaidFinishCommand extends AbstractPlayerCommand {
+        private final RequiredArg<String> outcome = withRequiredArg("issue", KEYS + "raidFinish.arg", ArgTypes.STRING);
+
+        RaidFinishCommand() {
+            super("raidfinir", KEYS + "raidFinish.desc");
+            requirePermission(ADMIN);
+        }
+
+        @Override
+        protected void execute(CommandContext context, Store<EntityStore> store, Ref<EntityStore> ref, PlayerRef player, World world) {
+            Village village = nearest(world, player);
+            if (village == null) {
+                return;
+            }
+            String o = outcome.get(context).toLowerCase(java.util.Locale.ROOT);
+            boolean victory = o.startsWith("g") || o.startsWith("w");
+            if (!Raids.finishNow(world, village, victory)) {
+                player.sendMessage(Message.translation(Raids.KEYS + "command.noRaid"));
+            }
+        }
+    }
+
+    private static final class RaidCancelCommand extends AbstractPlayerCommand {
+        RaidCancelCommand() {
+            super("raidannuler", KEYS + "raidCancel.desc");
+            requirePermission(ADMIN);
+        }
+
+        @Override
+        protected void execute(CommandContext context, Store<EntityStore> store, Ref<EntityStore> ref, PlayerRef player, World world) {
+            Village village = nearest(world, player);
+            if (village != null) {
+                Raids.cancel(world, village);
+                player.sendMessage(Message.translation(Raids.KEYS + "command.cancelled").param("village", village.name()));
+            }
+        }
+    }
+
+    private static final class RaidScheduleCommand extends AbstractPlayerCommand {
+        RaidScheduleCommand() {
+            super("raidprevoir", KEYS + "raidSchedule.desc");
+            requirePermission(ADMIN);
+        }
+
+        @Override
+        protected void execute(CommandContext context, Store<EntityStore> store, Ref<EntityStore> ref, PlayerRef player, World world) {
+            Village village = nearest(world, player);
+            if (village != null) {
+                Raids.schedule(village, dev.nakasar.hytale.peuples.request.GameClock.day(store), "Command");
+                player.sendMessage(Raids.status(store, village));
+            }
+        }
+    }
+
+    /** Étapes de chaîne : drapeaux {@code <Peuple>_Chain_<n>}. */
+    private static String chainFlag(Village village, int step) {
+        return village.people().id() + "_Chain_" + step;
+    }
+
+    private static final class ChainCommand extends PlayerCommand {
+        ChainCommand() {
+            super("chaine", KEYS + "chain.desc");
+        }
+
+        @Override
+        protected void execute(CommandContext context, Store<EntityStore> store, Ref<EntityStore> ref, PlayerRef player, World world) {
+            Village village = nearest(world, player);
+            if (village == null) {
+                return;
+            }
+            dev.nakasar.hytale.peuples.player.PeuplesPlayer data = dev.nakasar.hytale.peuples.player.PeuplesPlayer.ensure(store, ref);
+            int done = 0;
+            while (done < 5 && data.hasFlag(chainFlag(village, done + 1))) {
+                done++;
+            }
+            player.sendMessage(Message.translation("nakasar_peuples.chain.status")
+                    .param("people", Message.translation(village.people().nameKey())).param("done", done)
+                    .param("next", Message.translation("nakasar_peuples.chain." + village.people().id() + ".step" + Math.min(5, done + 1))));
+        }
+    }
+
+    private static final class ChainStepCommand extends AbstractPlayerCommand {
+        private final RequiredArg<Integer> steps = withRequiredArg("etapes", KEYS + "chainStep.arg", ArgTypes.INTEGER);
+
+        ChainStepCommand() {
+            super("chaineetape", KEYS + "chainStep.desc");
+            requirePermission(ADMIN);
+        }
+
+        @Override
+        protected void execute(CommandContext context, Store<EntityStore> store, Ref<EntityStore> ref, PlayerRef player, World world) {
+            Village village = nearest(world, player);
+            if (village == null) {
+                return;
+            }
+            int n = Math.max(0, Math.min(5, steps.get(context)));
+            dev.nakasar.hytale.peuples.player.PeuplesPlayer data = dev.nakasar.hytale.peuples.player.PeuplesPlayer.ensure(store, ref);
+            for (int i = 1; i <= 5; i++) {
+                data.setFlag(chainFlag(village, i), i <= n);
+            }
+            player.sendMessage(Message.translation("nakasar_peuples.chain.set").param("done", n));
         }
     }
 }

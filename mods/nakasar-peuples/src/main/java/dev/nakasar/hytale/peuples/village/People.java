@@ -93,6 +93,16 @@ public enum People {
         return PREFIX + id + "_Merchant";
     }
 
+    /** Chef du village (étape 6) : posé près du cœur, il mène la chaîne de quêtes du peuple. */
+    public String chiefRole() {
+        return PREFIX + id + "_Chief";
+    }
+
+    /** Dialogue du chef. */
+    public String chiefDialogue() {
+        return id + "_Chef";
+    }
+
     /** Dialogue du marchand. */
     public String merchantDialogue() {
         return id + "_Marchand";

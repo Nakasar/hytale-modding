@@ -1,9 +1,18 @@
 {
-  "$Comment": "Dialogue du villageois à métier Guard (étape 5), généré par tools/generate_villagers.py.",
+  "$Comment": "Dialogue du villageois à métier Guard (étapes 5 et 6), généré par tools/generate_villagers.py.",
   "NpcNameKey": "nakasar_peuples.dialogue.Kweebec_Guard.npc",
   "RoleKey": "nakasar_peuples.dialogue.Kweebec_Guard.role",
   "People": "Kweebec",
   "Entries": [
+    {
+      "Node": "AuxArmes",
+      "Conditions": [
+        {
+          "Type": "Raid",
+          "State": "Active"
+        }
+      ]
+    },
     {
       "Node": "Accueil"
     }
@@ -13,6 +22,15 @@
       "Id": "Accueil",
       "TextKey": "nakasar_peuples.dialogue.Kweebec_Guard.accueil",
       "Responses": [
+        {
+          "TextKey": "nakasar_peuples.dialogue.job.raid",
+          "Effects": [
+            {
+              "Type": "RaidStatus"
+            }
+          ],
+          "Next": "Rumeur"
+        },
         {
           "TextKey": "nakasar_peuples.dialogue.job.metier",
           "Next": "Metier"
@@ -26,6 +44,37 @@
       "Id": "Metier",
       "TextKey": "nakasar_peuples.dialogue.Kweebec_Guard.metier",
       "Responses": [
+        {
+          "TextKey": "nakasar_peuples.dialogue.job.aurevoir"
+        }
+      ]
+    },
+    {
+      "Id": "AuxArmes",
+      "TextKey": "nakasar_peuples.dialogue.Kweebec_Guard.auxArmes",
+      "Responses": [
+        {
+          "TextKey": "nakasar_peuples.dialogue.job.raid",
+          "Effects": [
+            {
+              "Type": "RaidStatus"
+            }
+          ],
+          "Next": "Rumeur"
+        },
+        {
+          "TextKey": "nakasar_peuples.dialogue.job.aurevoir"
+        }
+      ]
+    },
+    {
+      "Id": "Rumeur",
+      "TextKey": "nakasar_peuples.dialogue.Kweebec_Guard.rumeur",
+      "Responses": [
+        {
+          "TextKey": "nakasar_peuples.dialogue.job.metier",
+          "Next": "Metier"
+        },
         {
           "TextKey": "nakasar_peuples.dialogue.job.aurevoir"
         }

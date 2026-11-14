@@ -21,6 +21,7 @@ import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
 import com.hypixel.hytale.server.core.util.NotificationUtil;
 import dev.nakasar.hytale.peuples.PeuplesPlugin;
 import dev.nakasar.hytale.peuples.player.PeuplesPlayer;
+import dev.nakasar.hytale.peuples.raid.Raids;
 import dev.nakasar.hytale.peuples.reputation.Rank;
 import dev.nakasar.hytale.peuples.reputation.Reputations;
 import dev.nakasar.hytale.peuples.village.Blocks;
@@ -292,6 +293,15 @@ public final class Requests {
             default -> {
             }
         }
+        return start(world, store, ref, player, state, village, t, request.id(), GameClock.expiryFromNow(store));
+    }
+
+    /**
+     * Donne au joueur la demande `t` du village, sous l'id `id` : missive d'une livraison, lieu d'une demande au loin,
+     * raid attiré par une défense. Rend faux si elle n'a pas pu commencer (sac plein pour la missive).
+     */
+    static boolean start(World world, Store<EntityStore> store, Ref<EntityStore> ref, PlayerRef player, PeuplesPlayer state,
+                         Village village, RequestTemplate t, String id, long expires) {
         if (t.type() == RequestType.DELIVERY) {
             ItemStack missive = new ItemStack(village.people().missiveItem(), 1);
             CombinedItemContainer inventory = inventory(store, ref);
@@ -301,7 +311,7 @@ public final class Requests {
             }
             inventory.addItemStack(missive);
         }
-        PlayerRequest taken = new PlayerRequest(request.id(), village.id(), t.getId(), GameClock.expiryFromNow(store));
+        PlayerRequest taken = new PlayerRequest(id, village.id(), t.getId(), expires);
         if (t.type().hasSite()) {
             double angle = ThreadLocalRandom.current().nextDouble(0, Math.PI * 2);
             double distance = ThreadLocalRandom.current().nextDouble(t.minDistance(), t.maxDistance() + 1e-3);
@@ -310,12 +320,40 @@ public final class Requests {
         }
         state.addRequest(taken);
         player.sendMessage(Message.translation(KEYS + "taken").param("title", title(t)).param("village", village.name()));
+        if (t.type() == RequestType.DEFENSE) {
+            // Étape 6 : la défense attire le raid sur le village, cette nuit (ou la suivante si un raid y a déjà eu lieu).
+            Raids.schedule(village, Raids.nextNight(store, village), t.flag() != null ? "Chain" : "Request");
+            player.sendMessage(Raids.status(store, village));
+        }
         showHud(world, store, ref, player, taken, true);
         // Ce qui est déjà au dépôt compte tout de suite si le joueur est à côté.
         if (t.type().usesDeposit() && nearDeposit(store, ref, village)) {
             pullDeposit(world, store, ref, player, village, taken);
         }
         return true;
+    }
+
+    /** Id de la demande de chaîne faite du modèle `templateId` (une seule fois par joueur). */
+    public static String chainId(String templateId) {
+        return "chain-" + templateId;
+    }
+
+    /**
+     * Donne au joueur l'étape de chaîne `templateId` (dialogue de l'Ancien) : elle n'expire pas et ne compte pas au
+     * tableau. Rend faux s'il l'a déjà, l'a déjà remplie, ou si le modèle n'existe pas.
+     */
+    public static boolean startChain(World world, Store<EntityStore> store, Ref<EntityStore> ref, PlayerRef player, Village village,
+                                     String templateId) {
+        RequestTemplate t = RequestTemplate.get(templateId);
+        if (t == null || village == null) {
+            return false;
+        }
+        PeuplesPlayer state = PeuplesPlayer.ensure(store, ref);
+        String id = chainId(templateId);
+        if (state.request(id) != null || state.hasDone(id)) {
+            return false;
+        }
+        return start(world, store, ref, player, state, village, t, id, Long.MAX_VALUE);
     }
 
     /** Le joueur abandonne sa demande `requestId` ; ses PNJ disparaissent, la missive est reprise. */
@@ -470,6 +508,11 @@ public final class Requests {
         }
         if (t.favors() > 0) {
             give(store, ref, new ItemStack(village.people().favorItem(), t.favors()));
+        }
+        if (t.flag() != null) {
+            // Étape de la chaîne du peuple : l'Ancien proposera la suivante.
+            state.setFlag(t.flag(), true);
+            player.sendMessage(Message.translation("nakasar_peuples.chain.stepDone").param("title", title(t)));
         }
         // Réputation : pour chaque joueur qui remplit la demande, même si le village a déjà reçu l'essor (GDD).
         Reputations.change(world, store, ref, player, village, t.reputation(), KEYS + "reputationReason");

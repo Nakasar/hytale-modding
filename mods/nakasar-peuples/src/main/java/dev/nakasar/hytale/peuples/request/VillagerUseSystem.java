@@ -58,9 +58,10 @@ public final class VillagerUseSystem extends EntityEventSystem<EntityStore, UseE
         }
         String crierVillage = Criers.villageOf(target);
         String merchantVillage = Criers.merchantVillageOf(target);
+        String chiefVillage = Criers.chiefVillageOf(target);
         RequestSpawns.Owner owner = RequestSpawns.owner(target);
         dev.nakasar.hytale.peuples.village.Villagers.Posted villager = dev.nakasar.hytale.peuples.village.Villagers.posted(target);
-        if (crierVillage == null && merchantVillage == null && owner == null && villager == null) {
+        if (crierVillage == null && merchantVillage == null && chiefVillage == null && owner == null && villager == null) {
             return;
         }
         World world = store.getExternalData().getWorld();
@@ -80,6 +81,12 @@ public final class VillagerUseSystem extends EntityEventSystem<EntityStore, UseE
                 talk(world, s, user, player, crierVillage, false);
             } else if (merchantVillage != null) {
                 talk(world, s, user, player, merchantVillage, true);
+            } else if (chiefVillage != null) {
+                Village village = Villages.registry(world).byId(chiefVillage);
+                Dialogue dialogue = village == null ? null : Dialogue.get(village.people().chiefDialogue());
+                if (dialogue != null) {
+                    Dialogues.openPage(world, s, user, player, dialogue);
+                }
             } else if (owner.kind() == RequestSpawns.Kind.LOOKOUT) {
                 deliver(world, s, user, player, owner);
             } else if (owner.kind() == RequestSpawns.Kind.CAPTIVE) {

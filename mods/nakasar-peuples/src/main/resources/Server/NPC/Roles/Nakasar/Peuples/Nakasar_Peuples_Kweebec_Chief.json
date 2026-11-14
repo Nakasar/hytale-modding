@@ -1,0 +1,57 @@
+{
+  "$Comment": "Le chef d'un village kweebec (étape 6) : posé par Criers (Java) au pied du Grand-Père, à l'est du cœur, quand un joueur approche, immobile, avec l'apparence du Treesinger kweebec vanilla (Kweebec_Sapling_Treesinger). L'utiliser ouvre son dialogue (Kweebec_Chef, via VillagerUseSystem) : la chaîne de quêtes du peuple, jusqu'à la Graine d'Écho. Tué, il revient au matin suivant. Ne régénère jamais (VillageNoRegenSystem).",
+  "Type": "Generic",
+  "Appearance": "Kweebec_Sapling_Treesinger",
+  "NameTranslationKey": "nakasar_peuples.npc.Kweebec_Chief.name",
+  "MaxHealth": 100,
+  "StartState": "Idle",
+  "DefaultPlayerAttitude": "Neutral",
+  "DefaultNPCAttitude": "Ignore",
+  "MotionControllerList": [
+    {
+      "Type": "Walk",
+      "MaxWalkSpeed": 0.1,
+      "Gravity": 10,
+      "MaxFallSpeed": 10,
+      "Acceleration": 10,
+      "JumpHeight": 1.0
+    }
+  ],
+  "KnockbackScale": 0,
+  "Instructions": [
+    {
+      "Sensor": {
+        "Type": "State",
+        "State": "Idle"
+      },
+      "Instructions": [
+        {
+          "Actions": []
+        }
+      ]
+    }
+  ],
+  "InteractionInstruction": {
+    "Instructions": [
+      {
+        "Continue": true,
+        "Sensor": {
+          "Type": "Any"
+        },
+        "Actions": [
+          {
+            "Type": "SetInteractable",
+            "Interactable": true,
+            "Hint": "server.interactionHints.trade"
+          }
+        ]
+      },
+      {
+        "Sensor": {
+          "Type": "HasInteracted"
+        },
+        "Actions": []
+      }
+    ]
+  }
+}
