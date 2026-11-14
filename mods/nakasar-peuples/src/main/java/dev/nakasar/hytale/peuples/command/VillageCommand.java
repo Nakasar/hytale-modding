@@ -467,7 +467,7 @@ public final class VillageCommand extends AbstractCommandCollection {
                 int slot = Requests.slotOf(village, r.id());
                 player.sendMessage(Message.translation(KEYS + "mine.line").param("village", village.name())
                         .param("slot", slot < 0 ? "-" : Integer.toString(slot + 1)).param("title", Requests.title(t))
-                        .param("task", Requests.task(r, t, at, Requests.target(player, r, t, village))));
+                        .param("task", Requests.task(store, player, r, t, village, at)));
             }
         }
     }

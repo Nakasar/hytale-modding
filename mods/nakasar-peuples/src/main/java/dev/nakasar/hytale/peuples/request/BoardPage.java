@@ -99,7 +99,7 @@ public final class BoardPage extends InteractiveCustomUIPage<BoardPage.Event> {
             switch (status) {
                 case TAKEN -> {
                     PlayerRequest mine = data.request(request.id());
-                    detail = Requests.task(mine, t, Requests.position(store, ref), Requests.target(playerRef, mine, t, village));
+                    detail = Requests.task(store, playerRef, mine, t, village, Requests.position(store, ref));
                     action = Message.translation(KEYS + "abandon");
                     event = "Abandon" + n;
                 }
