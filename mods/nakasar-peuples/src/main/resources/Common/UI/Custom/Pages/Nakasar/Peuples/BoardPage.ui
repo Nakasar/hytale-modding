@@ -1,0 +1,91 @@
+$C = "../../../Common.ui";
+
+@RequestTitleStyle = LabelStyle(FontSize: 17, TextColor: #e8c46a, RenderBold: true, Wrap: true);
+@RequestDetailStyle = LabelStyle(FontSize: 15, TextColor: #96a9be, Wrap: true);
+
+@RequestRow = Group {
+  LayoutMode: Top;
+  Anchor: (Height: 132, Bottom: 8);
+  Padding: (Full: 10);
+  Background: (Color: #0c151e(0.45));
+};
+
+$C.@PageOverlay {
+  LayoutMode: Middle;
+
+  $C.@DecoratedContainer {
+    Anchor: (Width: 980, Height: 600);
+
+    #Title {
+      Label #PageTitle {
+        Style: (...$C.@TitleStyle, HorizontalAlignment: Center);
+        Padding: (Horizontal: 19);
+      }
+    }
+
+    #Content {
+      LayoutMode: Left;
+      Padding: (Full: 16);
+
+      Group #RequestsColumn {
+        LayoutMode: Top;
+        FlexWeight: 1;
+        Padding: (Right: 12);
+
+        Label #RequestsHeader {
+          Anchor: (Height: 26, Bottom: 8);
+          Style: (...$C.@SubtitleStyle);
+        }
+
+        @RequestRow #Request0 {
+          Label #Title0 { Anchor: (Height: 24); Style: @RequestTitleStyle; }
+          Label #Detail0 { Anchor: (Height: 48); Style: @RequestDetailStyle; }
+          $C.@SmallSecondaryTextButton #Action0 { @Text = ""; @Anchor = Anchor(Width: 180); }
+        }
+
+        @RequestRow #Request1 {
+          Label #Title1 { Anchor: (Height: 24); Style: @RequestTitleStyle; }
+          Label #Detail1 { Anchor: (Height: 48); Style: @RequestDetailStyle; }
+          $C.@SmallSecondaryTextButton #Action1 { @Text = ""; @Anchor = Anchor(Width: 180); }
+        }
+
+        @RequestRow #Request2 {
+          Label #Title2 { Anchor: (Height: 24); Style: @RequestTitleStyle; }
+          Label #Detail2 { Anchor: (Height: 48); Style: @RequestDetailStyle; }
+          $C.@SmallSecondaryTextButton #Action2 { @Text = ""; @Anchor = Anchor(Width: 180); }
+        }
+      }
+
+      Group {
+        Anchor: (Width: 1);
+        Background: (Color: #2b3542);
+      }
+
+      Group #StateColumn {
+        LayoutMode: Top;
+        FlexWeight: 1;
+        Padding: (Left: 12);
+
+        Group #StateScroll {
+          LayoutMode: TopScrolling;
+          ScrollbarStyle: $C.@DefaultScrollbarStyle;
+          FlexWeight: 1;
+
+          Label #StateText {
+            Style: (...$C.@DefaultLabelStyle, FontSize: 14, Wrap: true);
+          }
+        }
+
+        Group {
+          LayoutMode: Left;
+          Anchor: (Height: 44, Top: 8);
+
+          $C.@TextButton #TurnIn { @Text = ""; @Anchor = Anchor(Right: 8, MinWidth: 190); }
+          $C.@SecondaryTextButton #TextVersion { @Text = ""; @Anchor = Anchor(MinWidth: 190); }
+        }
+      }
+    }
+  }
+}
+
+$C.@BackButton {}

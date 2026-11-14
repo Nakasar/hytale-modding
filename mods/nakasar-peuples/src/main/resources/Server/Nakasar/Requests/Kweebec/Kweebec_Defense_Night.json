@@ -1,0 +1,18 @@
+{
+  "$Comment": "Demande kweebec (Defense), étape 3 : voir RequestTemplate.",
+  "People": "Kweebec",
+  "Type": "Defense",
+  "MinTier": 0,
+  "MaxTier": 3,
+  "Weight": 1,
+  "TitleKey": "nakasar_peuples.request.Kweebec_Defense_Night.title",
+  "TaskKey": "nakasar_peuples.request.Kweebec_Defense_Night.task",
+  "Spawns": [
+    "Trork_Warrior",
+    "Trork_Warrior",
+    "Trork_Warrior",
+    "Trork_Hunter"
+  ],
+  "Essor": 25,
+  "Favors": 3
+}

@@ -9,6 +9,10 @@ import com.hypixel.hytale.server.core.entity.entities.player.pages.BlockLorePage
 import com.hypixel.hytale.server.core.universe.PlayerRef;
 import com.hypixel.hytale.server.core.universe.world.World;
 import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
+import dev.nakasar.hytale.peuples.player.PeuplesPlayer;
+import dev.nakasar.hytale.peuples.request.RequestTemplate;
+import dev.nakasar.hytale.peuples.request.Requests;
+import dev.nakasar.hytale.peuples.request.VillageRequest;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -19,7 +23,8 @@ import java.util.Map;
  * notes et du tableau des brèches du mod Vampires, déjà éprouvée en jeu), remplie par le Java avec l'état du village
  * lu dans sa ressource : peuple et palier, jauge d'essor, rang du joueur, demandes, contenu du dépôt.
  *
- * <p>Étape 1 : les demandes (étape 3) et le rang (étape 4) affichent leur état d'attente.
+ * <p>Étape 3 : les trois demandes du jour et leur état pour le joueur ; le rang (étape 4) reste « étranger ». La
+ * page à boutons {@link dev.nakasar.hytale.peuples.request.BoardPage} reprend ce texte à droite.
  */
 public final class VillageBoard {
 
@@ -37,12 +42,19 @@ public final class VillageBoard {
             return;
         }
         Message title = Message.translation(KEYS + "title").param("name", village.name());
-        BlockLorePage page = new BlockLorePage(playerRef, title, body(world, village), BlockLorePage.TextAlignment.Left);
+        Requests.refresh(store, village);
+        PeuplesPlayer data = PeuplesPlayer.get(store, ref);
+        BlockLorePage page = new BlockLorePage(playerRef, title, body(world, village, data), BlockLorePage.TextAlignment.Left);
         player.getPageManager().openCustomPage(ref, store, page);
     }
 
     /** Texte du tableau, ligne par ligne (aussi envoyé dans le tchat par {@code /village info}). */
     public static Message body(World world, Village village) {
+        return body(world, village, null);
+    }
+
+    /** Texte du tableau, avec l'état des demandes pour le joueur `data` (null : sans état personnel). */
+    public static Message body(World world, Village village, PeuplesPlayer data) {
         List<Message> lines = new ArrayList<>();
         lines.add(Message.translation(KEYS + "people")
                 .param("people", Message.translation(village.people().nameKey()))
@@ -61,7 +73,26 @@ public final class VillageBoard {
         lines.add(Message.translation(KEYS + "rank").param("rank", Message.translation("nakasar_peuples.rank.stranger")));
         lines.add(Message.empty());
         lines.add(Message.translation(KEYS + "requests"));
-        lines.add(Message.translation(KEYS + "requestsNone"));
+        VillageRequest[] board = village.requests();
+        boolean any = false;
+        for (int i = 0; i < board.length; i++) {
+            RequestTemplate t = board[i] == null ? null : board[i].template();
+            if (t == null) {
+                continue;
+            }
+            any = true;
+            String state = switch (Requests.status(data, board[i])) {
+                case TAKEN -> "requestTaken";
+                case DONE -> "requestDone";
+                default -> "requestOpen";
+            };
+            lines.add(Message.translation(KEYS + "requestLine").param("number", i + 1)
+                    .param("type", Message.translation(t.type().nameKey())).param("title", Requests.title(t))
+                    .param("state", Message.translation(KEYS + state)));
+        }
+        if (!any) {
+            lines.add(Message.translation(KEYS + "requestsNone"));
+        }
         lines.add(Message.empty());
         lines.add(Message.translation(KEYS + "deposit"));
         Map<String, Integer> deposit = Villages.depositContents(world, village);

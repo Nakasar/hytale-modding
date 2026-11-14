@@ -3,20 +3,29 @@ package dev.nakasar.hytale.peuples.player;
 import com.hypixel.hytale.codec.Codec;
 import com.hypixel.hytale.codec.KeyedCodec;
 import com.hypixel.hytale.codec.builder.BuilderCodec;
+import com.hypixel.hytale.codec.codecs.array.ArrayCodec;
 import com.hypixel.hytale.component.Component;
 import com.hypixel.hytale.component.ComponentAccessor;
 import com.hypixel.hytale.component.ComponentType;
 import com.hypixel.hytale.component.Ref;
 import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
+import dev.nakasar.hytale.peuples.request.PlayerRequest;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Map;
 import java.util.Set;
+import java.util.TreeMap;
 import java.util.TreeSet;
 
 /**
- * Ce que le mod retient d'un joueur, sauvegardé avec lui (id {@value #ID}) : pour l'instant les drapeaux posés par
- * les dialogues (« a rencontré l'Ancien », « a reçu le cadeau ») ; la réputation de village (étape 4) et l'étape de la
- * chaîne de chaque peuple (étape 6) s'y ajouteront. La réputation de peuple, elle, reste au ReputationPlugin vanilla.
+ * Ce que le mod retient d'un joueur, sauvegardé avec lui (id {@value #ID}) : les drapeaux posés par les dialogues
+ * (« a rencontré l'Ancien », « a reçu le cadeau »), et depuis l'étape 3 ses demandes en cours, les demandes déjà
+ * remplies (pour ne pas reprendre deux fois la même) et le nombre de demandes remplies par village (base de la
+ * réputation de village de l'étape 4). L'étape de la chaîne de chaque peuple (étape 6) s'y ajoutera. La réputation de peuple, elle, reste au ReputationPlugin vanilla.
  */
 public final class PeuplesPlayer implements Component<EntityStore> {
 
@@ -26,11 +35,27 @@ public final class PeuplesPlayer implements Component<EntityStore> {
             .append(new KeyedCodec<>("Flags", Codec.STRING), (p, v) -> p.setFlags(v), p -> String.join(",", p.flags))
             .documentation("Drapeaux posés par les dialogues, séparés par des virgules.")
             .add()
+            .append(new KeyedCodec<>("Requests", new ArrayCodec<>(PlayerRequest.CODEC, PlayerRequest[]::new)),
+                    (p, v) -> p.setRequests(v), p -> p.requests.toArray(PlayerRequest[]::new))
+            .documentation("Demandes du tableau en cours.")
+            .add()
+            .append(new KeyedCodec<>("DoneRequests", Codec.STRING), (p, v) -> p.setDone(v), p -> String.join(",", p.done))
+            .documentation("Ids des dernières demandes remplies, séparés par des virgules.")
+            .add()
+            .append(new KeyedCodec<>("Helped", Codec.STRING), (p, v) -> p.setHelped(v), p -> p.helpedString())
+            .documentation("Demandes remplies par village : id=nombre, séparés par des virgules.")
+            .add()
             .build();
+
+    /** On garde les ids des dernières demandes remplies (assez pour couvrir plusieurs jours de tableau). */
+    private static final int DONE_MEMORY = 40;
 
     private static ComponentType<EntityStore, PeuplesPlayer> componentType;
 
     private final Set<String> flags = new TreeSet<>();
+    private final List<PlayerRequest> requests = new ArrayList<>();
+    private final LinkedHashSet<String> done = new LinkedHashSet<>();
+    private final Map<String, Integer> helped = new TreeMap<>();
 
     public static void setComponentType(ComponentType<EntityStore, PeuplesPlayer> type) {
         componentType = type;
@@ -80,10 +105,100 @@ public final class PeuplesPlayer implements Component<EntityStore> {
         }
     }
 
+    /** Demandes en cours (lecture seule). */
+    public List<PlayerRequest> requests() {
+        return Collections.unmodifiableList(requests);
+    }
+
+    public PlayerRequest request(String requestId) {
+        for (PlayerRequest r : requests) {
+            if (r.id().equals(requestId)) {
+                return r;
+            }
+        }
+        return null;
+    }
+
+    public void addRequest(PlayerRequest request) {
+        requests.add(request);
+    }
+
+    public boolean removeRequest(PlayerRequest request) {
+        return requests.remove(request);
+    }
+
+    /** Vrai si le joueur a déjà rempli la demande d'id `requestId`. */
+    public boolean hasDone(String requestId) {
+        return done.contains(requestId);
+    }
+
+    /** Note une demande remplie dans le village `villageId`. */
+    public void markDone(String requestId, String villageId) {
+        done.remove(requestId);
+        done.add(requestId);
+        while (done.size() > DONE_MEMORY) {
+            done.remove(done.iterator().next());
+        }
+        if (villageId != null && !villageId.isBlank() && !villageId.contains(",") && !villageId.contains("=")) {
+            helped.merge(villageId, 1, Integer::sum);
+        }
+    }
+
+    /** Nombre de demandes remplies par ce joueur pour le village `villageId`. */
+    public int helped(String villageId) {
+        return helped.getOrDefault(villageId, 0);
+    }
+
+    private void setRequests(PlayerRequest[] value) {
+        requests.clear();
+        if (value != null) {
+            for (PlayerRequest r : value) {
+                if (r != null) {
+                    requests.add(r);
+                }
+            }
+        }
+    }
+
+    private void setDone(String value) {
+        done.clear();
+        if (value != null && !value.isBlank()) {
+            Arrays.stream(value.split(",")).map(String::trim).filter(s -> !s.isEmpty()).forEach(done::add);
+        }
+    }
+
+    private void setHelped(String value) {
+        helped.clear();
+        if (value == null || value.isBlank()) {
+            return;
+        }
+        for (String part : value.split(",")) {
+            int eq = part.indexOf('=');
+            if (eq > 0) {
+                try {
+                    helped.put(part.substring(0, eq).trim(), Integer.parseInt(part.substring(eq + 1).trim()));
+                } catch (NumberFormatException ignored) {
+                    // Entrée abîmée : ignorée.
+                }
+            }
+        }
+    }
+
+    private String helpedString() {
+        List<String> parts = new ArrayList<>();
+        helped.forEach((k, v) -> parts.add(k + "=" + v));
+        return String.join(",", parts);
+    }
+
     @Override
     public Component<EntityStore> clone() {
         PeuplesPlayer copy = new PeuplesPlayer();
         copy.flags.addAll(flags);
+        for (PlayerRequest r : requests) {
+            copy.requests.add(r.copy());
+        }
+        copy.done.addAll(done);
+        copy.helped.putAll(helped);
         return copy;
     }
 }

@@ -1,0 +1,58 @@
+{
+  "$Comment": "Le guetteur kweebec d'une livraison : posé par RequestSystem au lieu de la demande, immobile et invulnérable. L'utiliser avec la missive remplit la livraison (VillagerUseSystem).",
+  "Type": "Generic",
+  "Appearance": "Kweebec_Sapling_Razorleaf",
+  "NameTranslationKey": "nakasar_peuples.npc.Kweebec_Lookout.name",
+  "MaxHealth": 100,
+  "StartState": "Idle",
+  "DefaultPlayerAttitude": "Neutral",
+  "DefaultNPCAttitude": "Ignore",
+  "MotionControllerList": [
+    {
+      "Type": "Walk",
+      "MaxWalkSpeed": 0.1,
+      "Gravity": 10,
+      "MaxFallSpeed": 10,
+      "Acceleration": 10,
+      "JumpHeight": 1.0
+    }
+  ],
+  "KnockbackScale": 0,
+  "Instructions": [
+    {
+      "Sensor": {
+        "Type": "State",
+        "State": "Idle"
+      },
+      "Instructions": [
+        {
+          "Actions": []
+        }
+      ]
+    }
+  ],
+  "InteractionInstruction": {
+    "Instructions": [
+      {
+        "Continue": true,
+        "Sensor": {
+          "Type": "Any"
+        },
+        "Actions": [
+          {
+            "Type": "SetInteractable",
+            "Interactable": true,
+            "Hint": "nakasar_peuples.hint.talk"
+          }
+        ]
+      },
+      {
+        "Sensor": {
+          "Type": "HasInteracted"
+        },
+        "Actions": []
+      }
+    ]
+  },
+  "Invulnerable": true
+}

@@ -7,15 +7,20 @@ import com.hypixel.hytale.protocol.BlockPosition;
 import com.hypixel.hytale.protocol.InteractionType;
 import com.hypixel.hytale.protocol.WaitForDataFrom;
 import com.hypixel.hytale.server.core.Message;
+import com.hypixel.hytale.protocol.MovementStates;
 import com.hypixel.hytale.server.core.entity.InteractionContext;
+import com.hypixel.hytale.server.core.entity.movement.MovementStatesComponent;
 import com.hypixel.hytale.server.core.modules.interaction.interaction.CooldownHandler;
 import com.hypixel.hytale.server.core.modules.interaction.interaction.config.SimpleInstantInteraction;
 import com.hypixel.hytale.server.core.universe.PlayerRef;
 import com.hypixel.hytale.server.core.universe.world.World;
 import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
+import dev.nakasar.hytale.peuples.request.BoardPage;
 
 /**
- * {@code "Type": "Nakasar_Peuples_OpenBoard"} : utiliser le tableau d'un village ouvre sa page ({@link VillageBoard}).
+ * {@code "Type": "Nakasar_Peuples_OpenBoard"} : utiliser le tableau d'un village ouvre sa page à boutons
+ * ({@link BoardPage}, étape 3) ; accroupi, la page texte vanilla ({@link VillageBoard}, secours si la page à boutons ne
+ * s'affiche pas).
  * Le village est celui dont le tableau est le bloc visé ; un panneau posé à la main hors d'un village le dit.
  */
 public class OpenBoardInteraction extends SimpleInstantInteraction {
@@ -40,6 +45,9 @@ public class OpenBoardInteraction extends SimpleInstantInteraction {
             return;
         }
         World world = buffer.getExternalData().getWorld();
+        MovementStatesComponent moves = buffer.getComponent(ref, MovementStatesComponent.getComponentType());
+        MovementStates states = moves == null ? null : moves.getMovementStates();
+        boolean crouching = states != null && (states.crouching || states.forcedCrouching);
         int x = target.x;
         int y = target.y;
         int z = target.z;
@@ -52,7 +60,11 @@ public class OpenBoardInteraction extends SimpleInstantInteraction {
                 playerRef.sendMessage(Message.translation(Villages.MESSAGES + "boardOrphan"));
                 return;
             }
-            VillageBoard.open(world, world.getEntityStore().getStore(), ref, playerRef, village);
+            if (crouching) {
+                VillageBoard.open(world, world.getEntityStore().getStore(), ref, playerRef, village);
+            } else {
+                BoardPage.open(world, world.getEntityStore().getStore(), ref, playerRef, village);
+            }
         });
     }
 

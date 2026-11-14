@@ -105,6 +105,7 @@ public class ValidateAssets {
         // Dialogues des PNJ : type d'asset écrit en Java par le plugin du mod (build/classes sur le classpath).
         CODECS.put("Nakasar/Dialogues/", "dev.nakasar.hytale.peuples.dialogue.Dialogue");
         CODECS.put("Nakasar/VillageLayouts/", "dev.nakasar.hytale.peuples.village.VillageLayout");
+        CODECS.put("Nakasar/Requests/", "dev.nakasar.hytale.peuples.request.RequestTemplate");
         CODECS.put("WorldEvent/Stage/", WE + "event.StageAsset");
     }
 
@@ -867,6 +868,8 @@ public class ValidateAssets {
     private static final Pattern SPAWN_KIND_REF = Pattern.compile("\"Kind\"\\s*:\\s*\"([^\"]+)\"");
     private static final Pattern SPAWN_MARKER_REF = Pattern.compile("\"SpawnMarker\"\\s*:\\s*\"([^\"]+)\"");
     private static final Pattern ITEM_ANIMATIONS_REF = Pattern.compile("\"ItemPlayerAnimationsId\"\\s*:\\s*\"([^\"]+)\"");
+    private static final Pattern REQUEST_ROLES_REF = Pattern.compile("\"(?:Spawns|Roles)\"\\s*:\\s*\\[([^\\]]*)\\]");
+    private static final Pattern QUOTED = Pattern.compile("\"([^\"]+)\"");
     /** Fichiers clients cités par les assets serveur (modèles, animations, textures). */
     private static final Pattern CLIENT_FILE_REF = Pattern.compile("\"([^\"]+\\.(?:blockymodel|blockyanim|png))\"");
 
@@ -899,6 +902,12 @@ public class ValidateAssets {
                 refs += checkRefs(WORLD_NPC_REF, json, "npc", "rôle de PNJ inconnu", known, problems);
             } else if (rel.startsWith("NPC/Roles/")) {
                 refs += checkRefs(SPAWN_KIND_REF, json, "npc", "rôle de PNJ inconnu", known, problems);
+            } else if (rel.startsWith("Nakasar/Requests/")) {
+                // Bandes (Spawns) et rôles chassés (Roles) des modèles de demande : posés ou comptés par le Java.
+                Matcher lists = REQUEST_ROLES_REF.matcher(json);
+                while (lists.find()) {
+                    refs += checkRefs(QUOTED, lists.group(1), "npc", "rôle de PNJ inconnu", known, problems);
+                }
             }
             refs += checkRefs(SPAWN_MARKER_REF, json, "marker", "marqueur d'apparition inconnu", known, problems);
             refs += checkRefs(ITEM_ANIMATIONS_REF, json, "animations", "jeu d'animations (ItemPlayerAnimationsId) inconnu", known, problems);
@@ -1047,13 +1056,18 @@ public class ValidateAssets {
     }
 
     /**
-     * Textes et objets des dialogues ({@code Nakasar/Dialogues}) : chaque clé {@code ...Key} doit exister dans les
+     * Textes et objets des dialogues ({@code Nakasar/Dialogues}) et des modèles de demande ({@code Nakasar/Requests}) : chaque clé {@code ...Key} doit exister dans les
      * fichiers .lang fr-FR et en-US du pack (une clé absente s'affiche brute en jeu), chaque {@code ItemId} dans le
      * pack ou dans la liste des objets vanilla (un id inconnu fait échouer l'effet en jeu).
      */
     private static int checkDialogueTexts(Path root, String vanillaItems) throws Exception {
-        Path dialogues = root.resolve("Nakasar/Dialogues");
-        if (!Files.isDirectory(dialogues)) {
+        List<Path> dirs = new ArrayList<>();
+        for (String d : List.of("Nakasar/Dialogues", "Nakasar/Requests")) {
+            if (Files.isDirectory(root.resolve(d))) {
+                dirs.add(root.resolve(d));
+            }
+        }
+        if (dirs.isEmpty()) {
             return 0;
         }
         Map<String, Set<String>> langs = new LinkedHashMap<>();
@@ -1091,9 +1105,11 @@ public class ValidateAssets {
             }
         }
         int errors = 0;
-        List<Path> files;
-        try (Stream<Path> walk = Files.walk(dialogues)) {
-            files = walk.filter(f -> f.toString().endsWith(".json")).sorted().toList();
+        List<Path> files = new ArrayList<>();
+        for (Path dir : dirs) {
+            try (Stream<Path> walk = Files.walk(dir)) {
+                files.addAll(walk.filter(f -> f.toString().endsWith(".json")).sorted().toList());
+            }
         }
         for (Path file : files) {
             List<String> problems = new ArrayList<>();

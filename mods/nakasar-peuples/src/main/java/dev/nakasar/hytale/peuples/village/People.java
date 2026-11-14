@@ -7,6 +7,9 @@ import java.util.Locale;
  * le dépôt est un coffre vanilla du peuple, le tableau un panneau vanilla du peuple dont seule l'interaction change
  * ({@code Nakasar_Peuples_Board_<Peuple>}, objet enfant du panneau vanilla).
  *
+ * <p>Étape 3 : chaque peuple a sa faveur, sa missive, son crieur, son guetteur et son captif (objets et rôles
+ * {@code Nakasar_Peuples_*}).
+ *
  * <p>Étapes 1 et 2 : seuls les Kweebecs (plan de village {@code Kweebec_Oak}, bannière de carte). Les autres peuples
  * s'ajoutent ici aux étapes 7 à 9.
  */
@@ -14,6 +17,9 @@ public enum People {
 
     KWEEBEC("Kweebec", "Furniture_Kweebec_Chest_Small", "Nakasar_Peuples_Board_Kweebec", "Nakasar_Peuples_Banner_Kweebec",
             "Kweebec_Oak");
+
+    /** Préfixe des objets et rôles propres à chaque peuple : {@code Nakasar_Peuples_<Quoi>_<Peuple>}. */
+    private static final String PREFIX = "Nakasar_Peuples_";
 
     private final String id;
     private final String depositBlock;
@@ -52,6 +58,36 @@ public enum People {
     /** Panneau du tableau du village. */
     public String boardBlock() {
         return boardBlock;
+    }
+
+    /** Faveur du peuple (GDD, Récompenses) : l'objet dont il paie les demandes remplies. */
+    public String favorItem() {
+        return PREFIX + "Favor_" + id;
+    }
+
+    /** Missive des demandes de livraison (objet marqué, rendu au guetteur). */
+    public String missiveItem() {
+        return PREFIX + "Missive_" + id;
+    }
+
+    /** Crieur du village : PNJ posé près du tableau, qui donne et reprend les demandes. */
+    public String crierRole() {
+        return PREFIX + id + "_Crier";
+    }
+
+    /** Guetteur à qui l'on porte la missive d'une livraison. */
+    public String lookoutRole() {
+        return PREFIX + id + "_Lookout";
+    }
+
+    /** Captif à ramener au village (escorte). */
+    public String captiveRole() {
+        return PREFIX + id + "_Captive";
+    }
+
+    /** Dialogue du crieur. */
+    public String crierDialogue() {
+        return id + "_Crieur";
     }
 
     /** Clé de traduction du nom du peuple. */

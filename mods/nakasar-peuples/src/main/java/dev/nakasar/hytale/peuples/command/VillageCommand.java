@@ -4,6 +4,7 @@ import com.hypixel.hytale.component.Ref;
 import com.hypixel.hytale.component.Store;
 import com.hypixel.hytale.server.core.Message;
 import com.hypixel.hytale.server.core.command.system.CommandContext;
+import com.hypixel.hytale.server.core.command.system.arguments.system.OptionalArg;
 import com.hypixel.hytale.server.core.command.system.arguments.system.RequiredArg;
 import com.hypixel.hytale.server.core.command.system.arguments.types.ArgTypes;
 import com.hypixel.hytale.server.core.command.system.basecommands.AbstractCommandCollection;
@@ -14,6 +15,12 @@ import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
 import dev.nakasar.hytale.peuples.dialogue.Dialogue;
 import dev.nakasar.hytale.peuples.dialogue.Dialogues;
 import dev.nakasar.hytale.peuples.player.PeuplesPlayer;
+import dev.nakasar.hytale.peuples.request.BoardPage;
+import dev.nakasar.hytale.peuples.request.Criers;
+import dev.nakasar.hytale.peuples.request.PlayerRequest;
+import dev.nakasar.hytale.peuples.request.RequestTemplate;
+import dev.nakasar.hytale.peuples.request.Requests;
+import dev.nakasar.hytale.peuples.request.VillageRequest;
 import dev.nakasar.hytale.peuples.village.People;
 import dev.nakasar.hytale.peuples.village.Tiers;
 import dev.nakasar.hytale.peuples.village.Village;
@@ -39,7 +46,10 @@ import java.util.List;
  *   <li>{@code info}, {@code tableau}, {@code liste} : état du village le plus proche, son tableau, tous les villages ;</li>
  *   <li>{@code parler <dialogue>} : ouvre un dialogue dans la fenêtre du mod ; {@code tchat <dialogue>} : le même dans le
  *   tchat, puis {@code repondre <n>} (0 : partir) ;</li>
- *   <li>{@code drapeaux}, {@code oublier} : drapeaux de dialogue du joueur, et leur remise à zéro.</li>
+ *   <li>{@code drapeaux}, {@code oublier} : drapeaux de dialogue du joueur, et leur remise à zéro ;</li>
+ *   <li>étape 3 : {@code demandes} (tableau à boutons), {@code mesdemandes}, {@code prendre <n>}, {@code rendre},
+ *   {@code abandonner <n>} ; opérateurs : {@code demande <modèle> [case]} (pose ce modèle au tableau),
+ *   {@code renouveler} (nouveau tirage des trois cases).</li>
  * </ul>
  */
 public final class VillageCommand extends AbstractCommandCollection {
@@ -65,6 +75,13 @@ public final class VillageCommand extends AbstractCommandCollection {
         addSubCommand(new AnswerCommand());
         addSubCommand(new FlagsCommand());
         addSubCommand(new ForgetCommand());
+        addSubCommand(new RequestsCommand());
+        addSubCommand(new MyRequestsCommand());
+        addSubCommand(new TakeCommand());
+        addSubCommand(new TurnInCommand());
+        addSubCommand(new AbandonCommand());
+        addSubCommand(new ForceRequestCommand());
+        addSubCommand(new RedrawCommand());
     }
 
     /** Sous-commande ouverte aux joueurs. */
@@ -195,6 +212,7 @@ public final class VillageCommand extends AbstractCommandCollection {
         protected void execute(CommandContext context, Store<EntityStore> store, Ref<EntityStore> ref, PlayerRef player, World world) {
             Village village = nearest(world, player);
             if (village != null) {
+                Criers.remove(store, village.id());
                 Villages.dissolve(world, village);
                 player.sendMessage(Message.translation(Villages.MESSAGES + "dissolved").param("name", village.name()));
             }
@@ -248,7 +266,7 @@ public final class VillageCommand extends AbstractCommandCollection {
             Village village = nearest(world, player);
             if (village != null) {
                 player.sendMessage(Message.raw(village.name()).bold(true).color("#e8c46a"));
-                player.sendMessage(VillageBoard.body(world, village));
+                player.sendMessage(VillageBoard.body(world, village, PeuplesPlayer.get(store, ref)));
                 if (!Villages.heartPresent(world, village)) {
                     player.sendMessage(Message.translation(Villages.MESSAGES + "heartMissing"));
                 }
@@ -367,6 +385,153 @@ public final class VillageCommand extends AbstractCommandCollection {
                 state.clearFlags();
             }
             player.sendMessage(Message.translation(KEYS + "forget.done"));
+        }
+    }
+
+    // ---- Demandes (étape 3) ----
+
+    private static final class RequestsCommand extends PlayerCommand {
+        RequestsCommand() {
+            super("demandes", KEYS + "requests.desc");
+        }
+
+        @Override
+        protected void execute(CommandContext context, Store<EntityStore> store, Ref<EntityStore> ref, PlayerRef player, World world) {
+            Village village = nearest(world, player);
+            if (village != null) {
+                BoardPage.open(world, store, ref, player, village);
+            }
+        }
+    }
+
+    private static final class MyRequestsCommand extends PlayerCommand {
+        MyRequestsCommand() {
+            super("mesdemandes", KEYS + "mine.desc");
+        }
+
+        @Override
+        protected void execute(CommandContext context, Store<EntityStore> store, Ref<EntityStore> ref, PlayerRef player, World world) {
+            PeuplesPlayer state = PeuplesPlayer.get(store, ref);
+            List<PlayerRequest> mine = state == null ? List.of() : state.requests();
+            player.sendMessage(Message.translation(KEYS + "mine.header").param("count", mine.size()));
+            Vector3d at = Requests.position(store, ref);
+            for (PlayerRequest r : mine) {
+                RequestTemplate t = r.template();
+                Village village = Villages.registry(world).byId(r.villageId());
+                if (t == null || village == null) {
+                    continue;
+                }
+                int slot = Requests.slotOf(village, r.id());
+                player.sendMessage(Message.translation(KEYS + "mine.line").param("village", village.name())
+                        .param("slot", slot < 0 ? "-" : Integer.toString(slot + 1)).param("title", Requests.title(t))
+                        .param("task", Requests.task(r, t, at, Requests.target(player, r, t, village))));
+            }
+        }
+    }
+
+    private static final class TakeCommand extends PlayerCommand {
+        private final RequiredArg<Integer> number = withRequiredArg("numero", KEYS + "take.arg", ArgTypes.INTEGER);
+
+        TakeCommand() {
+            super("prendre", KEYS + "take.desc");
+        }
+
+        @Override
+        protected void execute(CommandContext context, Store<EntityStore> store, Ref<EntityStore> ref, PlayerRef player, World world) {
+            Village village = nearest(world, player);
+            if (village != null) {
+                Requests.refresh(store, village);
+                Requests.take(world, store, ref, player, village, number.get(context) - 1);
+            }
+        }
+    }
+
+    private static final class TurnInCommand extends PlayerCommand {
+        TurnInCommand() {
+            super("rendre", KEYS + "turnIn.desc");
+        }
+
+        @Override
+        protected void execute(CommandContext context, Store<EntityStore> store, Ref<EntityStore> ref, PlayerRef player, World world) {
+            Village village = nearest(world, player);
+            if (village != null) {
+                Requests.turnIn(world, store, ref, player, village);
+            }
+        }
+    }
+
+    private static final class AbandonCommand extends PlayerCommand {
+        private final RequiredArg<Integer> number = withRequiredArg("numero", KEYS + "take.arg", ArgTypes.INTEGER);
+
+        AbandonCommand() {
+            super("abandonner", KEYS + "abandon.desc");
+        }
+
+        @Override
+        protected void execute(CommandContext context, Store<EntityStore> store, Ref<EntityStore> ref, PlayerRef player, World world) {
+            Village village = nearest(world, player);
+            if (village == null) {
+                return;
+            }
+            int slot = number.get(context) - 1;
+            VillageRequest[] board = village.requests();
+            if (slot < 0 || slot >= board.length || board[slot] == null
+                    || !Requests.abandon(world, store, ref, player, board[slot].id())) {
+                player.sendMessage(Message.translation(KEYS + "abandon.none").param("slot", slot + 1));
+            }
+        }
+    }
+
+    private static final class ForceRequestCommand extends AbstractPlayerCommand {
+        private final RequiredArg<String> template = withRequiredArg("modele", KEYS + "force.arg", ArgTypes.STRING);
+        private final OptionalArg<Integer> slot = withOptionalArg("case", KEYS + "force.slot", ArgTypes.INTEGER);
+
+        ForceRequestCommand() {
+            super("demande", KEYS + "force.desc");
+            requirePermission(ADMIN);
+        }
+
+        @Override
+        protected void execute(CommandContext context, Store<EntityStore> store, Ref<EntityStore> ref, PlayerRef player, World world) {
+            Village village = nearest(world, player);
+            if (village == null) {
+                return;
+            }
+            RequestTemplate t = RequestTemplate.get(template.get(context));
+            if (t == null) {
+                player.sendMessage(Message.translation(KEYS + "force.unknown").param("id", template.get(context)));
+                return;
+            }
+            Requests.refresh(store, village);
+            Integer n = slot.get(context);
+            int index = n == null ? 0 : n - 1;
+            if (index < 0 || index >= Requests.SLOTS) {
+                player.sendMessage(Message.translation(Requests.KEYS + "noSuchSlot").param("slot", index + 1));
+                return;
+            }
+            Requests.force(store, village, index, t);
+            player.sendMessage(Message.translation(KEYS + "force.done").param("slot", index + 1).param("title", Requests.title(t))
+                    .param("name", village.name()));
+        }
+    }
+
+    private static final class RedrawCommand extends AbstractPlayerCommand {
+        RedrawCommand() {
+            super("renouveler", KEYS + "redraw.desc");
+            requirePermission(ADMIN);
+        }
+
+        @Override
+        protected void execute(CommandContext context, Store<EntityStore> store, Ref<EntityStore> ref, PlayerRef player, World world) {
+            Village village = nearest(world, player);
+            if (village == null) {
+                return;
+            }
+            Requests.refresh(store, village);
+            for (int i = 0; i < Requests.SLOTS; i++) {
+                Requests.redraw(store, village, i);
+            }
+            player.sendMessage(Message.translation(KEYS + "redraw.done").param("name", village.name()));
         }
     }
 }

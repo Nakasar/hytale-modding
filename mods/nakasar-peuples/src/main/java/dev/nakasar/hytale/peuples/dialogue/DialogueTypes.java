@@ -7,6 +7,10 @@ import com.hypixel.hytale.server.core.Message;
 import com.hypixel.hytale.server.core.inventory.InventoryComponent;
 import com.hypixel.hytale.server.core.inventory.ItemStack;
 import com.hypixel.hytale.server.core.inventory.container.CombinedItemContainer;
+import dev.nakasar.hytale.peuples.request.BoardPage;
+import dev.nakasar.hytale.peuples.request.PlayerRequest;
+import dev.nakasar.hytale.peuples.request.RequestType;
+import dev.nakasar.hytale.peuples.request.Requests;
 import dev.nakasar.hytale.peuples.village.VillageBoard;
 import dev.nakasar.hytale.peuples.village.Villages;
 
@@ -18,6 +22,9 @@ import dev.nakasar.hytale.peuples.village.Villages;
  * <p>Conditions : {@code Flag}, {@code NotFlag}, {@code InVillage}, {@code VillageTier}, {@code HasItem}.
  * Effets : {@code SetFlag}, {@code ClearFlag}, {@code GiveItem}, {@code TakeItem}, {@code AddEssor},
  * {@code SendMessage}, {@code OpenBoard}.
+ *
+ * <p>Étape 3 : condition {@code HasRequest} (le joueur a une demande dans ce village, type optionnel) ; effets
+ * {@code OpenRequests} (tableau à boutons) et {@code TurnInRequests} (rendre les objets portés).
  */
 public final class DialogueTypes {
 
@@ -43,6 +50,9 @@ public final class DialogueTypes {
         DialogueEffect.CODEC.register("AddEssor", AddEssorEffect.class, AddEssorEffect.CODEC);
         DialogueEffect.CODEC.register("SendMessage", SendMessageEffect.class, SendMessageEffect.CODEC);
         DialogueEffect.CODEC.register("OpenBoard", OpenBoardEffect.class, OpenBoardEffect.CODEC);
+        DialogueCondition.CODEC.register("HasRequest", HasRequestCondition.class, HasRequestCondition.CODEC);
+        DialogueEffect.CODEC.register("OpenRequests", OpenRequestsEffect.class, OpenRequestsEffect.CODEC);
+        DialogueEffect.CODEC.register("TurnInRequests", TurnInRequestsEffect.class, TurnInRequestsEffect.CODEC);
     }
 
     static CombinedItemContainer inventory(DialogueContext context) {
@@ -310,6 +320,69 @@ public final class DialogueTypes {
 
         @Override
         public boolean closesDialogue() {
+            return true;
+        }
+    }
+
+    // ---- Demandes (étape 3) ----
+
+    /** {@code {"Type": "HasRequest", "RequestType": "Gather"}} : le joueur a une demande de ce village (de ce type). */
+    public static final class HasRequestCondition extends DialogueCondition {
+        public static final BuilderCodec<HasRequestCondition> CODEC = BuilderCodec.builder(HasRequestCondition.class, HasRequestCondition::new)
+                .append(new KeyedCodec<>("RequestType", Codec.STRING), (c, v) -> c.type = v, c -> c.type)
+                .documentation("Type de demande (Gather, Craft, Hunt, Delivery, Escort, Defense ; vide : n'importe lequel).")
+                .add()
+                .build();
+
+        String type;
+
+        @Override
+        public boolean test(DialogueContext context) {
+            if (context.village() == null) {
+                return false;
+            }
+            RequestType wanted = type == null ? null : RequestType.byId(type);
+            for (PlayerRequest r : context.player().requests()) {
+                if (r.villageId().equals(context.village().id())
+                        && (wanted == null || (r.template() != null && r.template().type() == wanted))) {
+                    return true;
+                }
+            }
+            return false;
+        }
+    }
+
+    /** {@code {"Type": "OpenRequests"}} : ouvre le tableau à boutons du village (ferme le dialogue). */
+    public static final class OpenRequestsEffect extends DialogueEffect {
+        public static final BuilderCodec<OpenRequestsEffect> CODEC = BuilderCodec.builder(OpenRequestsEffect.class, OpenRequestsEffect::new)
+                .build();
+
+        @Override
+        public boolean apply(DialogueContext context) {
+            if (context.village() == null) {
+                return false;
+            }
+            BoardPage.open(context.world(), context.store(), context.ref(), context.playerRef(), context.village());
+            return true;
+        }
+
+        @Override
+        public boolean closesDialogue() {
+            return true;
+        }
+    }
+
+    /** {@code {"Type": "TurnInRequests"}} : rend les objets portés pour les demandes de ce village. */
+    public static final class TurnInRequestsEffect extends DialogueEffect {
+        public static final BuilderCodec<TurnInRequestsEffect> CODEC = BuilderCodec.builder(TurnInRequestsEffect.class, TurnInRequestsEffect::new)
+                .build();
+
+        @Override
+        public boolean apply(DialogueContext context) {
+            if (context.village() == null) {
+                return false;
+            }
+            Requests.turnIn(context.world(), context.store(), context.ref(), context.playerRef(), context.village());
             return true;
         }
     }

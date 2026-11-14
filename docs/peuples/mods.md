@@ -189,3 +189,94 @@ kweebec, sans doublon dans le monde).
 - La bannière garde-t-elle le modèle de la statue avec son marqueur de carte ? Le marqueur apparaît-il sur la carte
   après la révélation sans reconnexion ?
 - Le titre d'écran s'affiche-t-il une seule fois par entrée ?
+
+## Étape 3 : les demandes du tableau
+
+### Modèles et tirage
+
+Un modèle de demande est un asset JSON `Server/Nakasar/Requests/<Peuple>/<Id>.json` (`RequestTemplate`, décodé et
+vérifié par `validateAssets` : type, paliers, objet, bande, distances, textes fr-FR et en-US). Chaque matin (6 h de jeu),
+le tableau de chaque village tire **trois demandes** parmi les modèles de son peuple et de son palier, au poids, en
+préférant trois types différents. Une demande remplie est remplacée tout de suite par une autre.
+
+| Type | Ce qu'il faut faire | Modèles kweebecs | Essor |
+| --- | --- | --- | --- |
+| Récolte | déposer des objets au dépôt (ou les rendre) | baies rouges ×20, sève ×10, graines de carotte ×12, tronc de chêne ×16 | 10 |
+| Fabrication | idem, objets fabriqués | lanternes kweebecs ×4, pain ×3 | 15 |
+| Chasse | abattre la bande posée à 80-150 blocs ; les Trorks du même rôle tués à moins de 220 blocs du village comptent aussi | 2 guerriers + 1 chasseur, ou 2 cogneurs | 15 |
+| Livraison | porter la missive (donnée à la prise) au guetteur posé à 90-150 blocs | guetteur Razorleaf | 10 |
+| Escorte | délivrer le jeune captif gardé par 2 gardes trorks (80-140 blocs) et le ramener à moins de 14 blocs du cœur | captif orange | 20 |
+| Défense | être au village la nuit (20 h à 6 h) : 4 Trorks attaquent à 30 blocs du cœur, il faut les abattre avant l'aube | 3 guerriers + 1 chasseur | 25 |
+
+Récompense : l'essor au village (une seule fois par demande du tableau, même à plusieurs joueurs) et des **feuilles de
+sève** (`Nakasar_Peuples_Favor_Kweebec`, faveur kweebec, modèle de la sève vanilla) au joueur, au sol si son sac est
+plein. Une demande prise tient jusqu'au premier matin au moins 12 h plus tard ; échue, abandonnée ou échouée (captif
+mort, aube sur une défense), elle se retire et la missive est reprise.
+
+Les bandes, le guetteur et le captif ne sont posés que quand le joueur passe à moins de 72 blocs du lieu, ne sont pas
+sauvegardés (ils reviennent à la session suivante) et ne se régénèrent jamais (règle n° 1).
+
+### Suivi à l'écran (Objectives vanilla)
+
+Le Java garde l'état des demandes (sauvegardé avec le joueur) ; le HUD les affiche avec les paquets vanilla
+`TrackOrUpdateObjective` / `UntrackObjective` : titre, village et récompense, et une ligne de tâche avec l'avancement,
+la distance et la direction du lieu (mise à jour chaque seconde quand elle change).
+
+### Où prendre et rendre une demande
+
+- **Le tableau** (ouest du cœur) : utilisé normalement, il ouvre le tableau à boutons (`BoardPage.ui`, sur les modèles
+  vanilla de `Common.ui`, maquette `tableau_village.png`) : les trois demandes avec **Prendre** / **Abandonner** à
+  gauche, l'état du village et **Rendre** à droite, **Version texte** pour la page BlockLore. **Accroupi**, il ouvre
+  directement la page texte (secours si la page à boutons ne s'affiche pas).
+- **Le crieur** (`Nakasar_Peuples_Kweebec_Crier`), posé deux blocs au sud du tableau quand un joueur approche : son
+  dialogue `Kweebec_Crieur` ouvre les demandes, ou reprend les objets portés si le joueur a une demande ici. Tué, il
+  revient au matin.
+- Le dépôt : se tenir à moins de 6 blocs du coffre compte ce qu'il contient pour les récoltes et fabrications prises.
+- Le tchat, avec les commandes ci-dessous.
+
+Nouveaux types de dialogue : condition `HasRequest` (`RequestType` optionnel), effets `OpenRequests` et
+`TurnInRequests`.
+
+### Nouvelles commandes
+
+| Sous-commande | Qui | Effet |
+| --- | --- | --- |
+| `demandes` | joueur | ouvre le tableau à boutons du village le plus proche |
+| `mesdemandes` | joueur | liste ses demandes en cours, avec avancement, distance et direction |
+| `prendre <n>` | joueur | prend la demande n° 1 à 3 |
+| `rendre` | joueur | rend le dépôt et le sac pour ses demandes de ce village |
+| `abandonner <n>` | joueur | abandonne sa demande n° 1 à 3 |
+| `demande <modèle> [case]` | opérateur | pose ce modèle au tableau (ex. `Kweebec_Escort_Captive 2`) |
+| `renouveler` | opérateur | tire trois nouvelles demandes |
+
+`info` montre maintenant l'état des demandes ; `effacer` retire aussi le crieur.
+
+### Tester en jeu (étape 3)
+
+1. Aller au village kweebec (`/village site`). Le crieur apparaît devant le tableau ; l'utiliser ouvre son dialogue,
+   « Montre-moi les demandes » ouvre le tableau à boutons. Utiliser le tableau donne la même page ; accroupi, la page
+   texte.
+2. **Récolte** : `/village demande Kweebec_Gather_Seeds 1`, puis **Prendre** la case 1. Le suivi d'objectif apparaît
+   au HUD. Avoir 12 graines de carotte (`Plant_Seeds_Carrot`, récoltées ou données en créatif), les mettre dans le dépôt (est du cœur) :
+   l'avancement monte, la demande se remplit, l'essor monte de 10 au tableau (`/village info`) et on reçoit une
+   feuille de sève. Variante : garder les graines dans le sac et cliquer **Rendre**.
+3. **Chasse** : `/village demande Kweebec_Hunt_Trorks 1`, prendre, suivre la direction du HUD ; la bande apparaît à
+   moins de 72 blocs du lieu ; chaque Trork tué fait monter le compteur.
+4. **Livraison** : `/village demande Kweebec_Delivery_Missive 1`, prendre (une missive arrive dans le sac), aller au
+   guetteur et l'utiliser.
+5. **Escorte** : `/village demande Kweebec_Escort_Captive 1`, prendre, battre les deux gardes, s'approcher du captif
+   (il suit à moins de 14 blocs) et le ramener près du cœur.
+6. **Défense** : `/village demande Kweebec_Defense_Night 1`, prendre, `/time midnight` en restant au village : une
+   alerte annonce l'attaque et sa direction ; abattre les 4 Trorks avant l'aube.
+7. Échéance : prendre une demande puis `/time` jusqu'au surlendemain matin : elle échoue (« Demande échue »).
+8. Redémarrer : les demandes prises et leur avancement restent, le suivi revient au HUD.
+
+### À vérifier en jeu (étape 3)
+
+- Le suivi d'objectif vanilla au HUD : titre, description, ligne de tâche, compteur, et son retrait.
+- Le tableau à boutons `BoardPage.ui` : mise en page, boutons (Prendre, Abandonner, Rendre, Version texte), défilement
+  de l'état à droite ; chemin `../../../Common.ui`.
+- L'interaction avec le crieur, le guetteur et le captif (touche d'utilisation, mot « Parler ») et l'apparence
+  vanilla choisie (Kweebec rose, Razorleaf, orange).
+- Le captif qui suit le joueur ; les Trorks de la défense qui marchent vers le cœur (point de laisse).
+- La feuille de sève et la missive (modèles de la sève et du parchemin vanilla en main et au sol).
