@@ -1,0 +1,12 @@
+{
+  "$Comment": "Corruption du Vide, piles 7 et 8 : 1.05 à 1.20 % des PV max par seconde (Java, zone/Climate). Zone 4, loin d'un brasero, d'un feu ou du monastère.",
+  "Name": "nakasar_peuples.effects.Nakasar_Peuples_Void_4",
+  "Debuff": true,
+  "StatusEffectIcon": "UI/StatusEffects/Nakasar/Peuples/Void_4.png",
+  "ApplicationEffects": {
+    "EntityTopTint": "#b48cff"
+  },
+  "OverlapBehavior": "Overwrite",
+  "Infinite": false,
+  "Duration": 1.5
+}

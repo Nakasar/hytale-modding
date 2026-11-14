@@ -60,6 +60,17 @@ public final class VillageNames {
             "Hameau de la Glace-Noire",
             "La Halte-sans-Totem");
 
+    /** Étape 9 : monastère et ermitages slothians (lents, la veille et la cendre). */
+    private static final List<String> SLOTHIAN = List.of(
+            "Monastère de la Veille-Lente",
+            "Ermitage de la Cendre-Douce",
+            "Monastère du Souffle-Long",
+            "Refuge des Braises-Calmes",
+            "Ermitage de la Mousse-Grise",
+            "Monastère de la Faille-Endormie",
+            "Halte du Pas-Paisible",
+            "Ermitage du Brasero-Patient");
+
     private VillageNames() {
     }
 
@@ -91,6 +102,7 @@ public final class VillageNames {
             case TRORK -> TRORK;
             case FERAN -> FERAN;
             case RENONCE -> RENONCE;
+            case SLOTHIAN -> SLOTHIAN;
         };
     }
 }

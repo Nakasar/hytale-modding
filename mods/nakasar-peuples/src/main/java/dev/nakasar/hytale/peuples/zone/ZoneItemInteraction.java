@@ -21,6 +21,7 @@ import com.hypixel.hytale.server.core.universe.world.World;
 import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
 import com.hypixel.hytale.server.core.util.NotificationUtil;
 import dev.nakasar.hytale.peuples.PeuplesPlugin;
+import dev.nakasar.hytale.peuples.outpost.OutpostPage;
 import dev.nakasar.hytale.peuples.reputation.Rank;
 import dev.nakasar.hytale.peuples.reputation.Reputations;
 import dev.nakasar.hytale.peuples.village.People;
@@ -34,7 +35,9 @@ import org.joml.Vector3d;
  *   <li>{@code Waterskin} (Outre d'oasis) : bue, elle est retirée et annule la soif {@value Climate#QUENCH_SECONDS} s ;</li>
  *   <li>{@code EchoSeed} (Graine d'Écho, fin de la chaîne kweebec) : plantée en zone 2 (les Dunes), elle fait pousser un
  *   abri d'eau (bassin kweebec vanilla {@value #POOL}, quatre blocs devant le joueur) où la soif ne prend pas, et les
- *   Feran reconnaissent le joueur : réputation de peuple feran portée au rang toléré au moins (GDD, Récompenses).</li>
+ *   Feran reconnaissent le joueur : réputation de peuple feran portée au rang toléré au moins (GDD, Récompenses) ;</li>
+ *   <li>{@code Foundation} (Pierre de fondation, étape 9) : ouvre la fenêtre de l'avant-poste du champion là où se tient
+ *   le joueur ({@link OutpostPage}) ; la pierre n'est prise qu'à la fondation.</li>
  * </ul>
  */
 public class ZoneItemInteraction extends SimpleInstantInteraction {
@@ -46,7 +49,7 @@ public class ZoneItemInteraction extends SimpleInstantInteraction {
             .builder(ZoneItemInteraction.class, ZoneItemInteraction::new, SimpleInstantInteraction.CODEC)
             .documentation("Utilise un objet des zones 2 et 3 (outre d'oasis, graine d'Écho).")
             .append(new KeyedCodec<>("Action", Codec.STRING), (i, v) -> i.action = v, i -> i.action)
-            .documentation("Waterskin ou EchoSeed.")
+            .documentation("Waterskin, EchoSeed ou Foundation.")
             .add()
             .build();
 
@@ -68,6 +71,17 @@ public class ZoneItemInteraction extends SimpleInstantInteraction {
         }
         World world = buffer.getExternalData().getWorld();
         Vector3d at = player.getTransform().getPosition();
+        if ("Foundation".equals(action)) {
+            // La pierre n'est prise qu'au clic « Fonder » de la fenêtre (Outposts.found).
+            int fx = (int) Math.floor(at.x());
+            int fz = (int) Math.floor(at.z());
+            world.execute(() -> {
+                if (ref.isValid()) {
+                    OutpostPage.open(world.getEntityStore().getStore(), ref, player, fx, fz);
+                }
+            });
+            return;
+        }
         if ("EchoSeed".equals(action)) {
             Integer forced = Climate.forced(player.getUuid());
             int zone = forced != null ? forced : Zones.at(world, at.x(), at.z());

@@ -155,6 +155,7 @@ public final class PeuplesPlugin extends JavaPlugin {
         PeuplesPlayer.setComponentType(entities.registerComponent(PeuplesPlayer.class, PeuplesPlayer.ID, PeuplesPlayer.CODEC));
         entities.registerSystem(new VillageSeeder());
         // Étape 8 : zones 2 et 3 (oasis feran, Renoncés, soif, froid, ruche scarak, objets de passage).
+        // Étape 9 : zone 4 (monastère slothian, corruption du Vide) et avant-poste du champion (outpost/, appelé par ZoneSystem).
         dev.nakasar.hytale.peuples.zone.ZoneRegistry.setResourceType(entities.registerResource(
                 dev.nakasar.hytale.peuples.zone.ZoneRegistry.class, dev.nakasar.hytale.peuples.zone.ZoneRegistry.ID,
                 dev.nakasar.hytale.peuples.zone.ZoneRegistry.CODEC));

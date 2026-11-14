@@ -857,3 +857,9 @@ Npc/Yeti/Camps/Yeti_Camps_YetiCamps_001 -4 6 -16 1 -4 4
 Npc/Yeti/Camps/Yeti_Camps_YetiCamps_002 -5 5 -17 0 -4 4
 Npc/Yeti/Camps/Yeti_Camps_YetiCamps_003 -5 5 -17 0 -4 4
 Npc/Yeti/Camps/Yeti_Camps_YetiCamps_004 -5 4 -18 -1 -5 3
+# Étape 9 : monuments slothians (Server/Prefabs/Monuments/Incidental/Slothian/Land, Assets.zip relu le 2026-11-14), sans
+# Block_Spawner_Block ni Prefab_Spawner_Block. Bornes = blocs bruts moins l'ancre du fichier.
+Monuments/Incidental/Slothian/Land/Temple/Incidental_Slothian_Slothian_Temple_001 -3 4 -2 16 -11 12
+Monuments/Incidental/Slothian/Land/Temple/Incidental_Slothian_Slothian_Temple_003 -3 4 -2 16 -11 11
+Monuments/Incidental/Slothian/Land/Merchant/Incidental_Slothian_Merchant_Slothian_Merchant_001 -3 3 0 3 -5 4
+Monuments/Incidental/Slothian/Land/Hunting/Incidental_Slothian_Slothian_Hunting_001 -4 4 0 11 -4 3

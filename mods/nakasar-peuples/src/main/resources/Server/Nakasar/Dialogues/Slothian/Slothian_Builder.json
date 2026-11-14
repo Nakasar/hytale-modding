@@ -1,0 +1,87 @@
+{
+  "$Comment": "Dialogue du villageois à métier Builder (étape 9), généré par tools/generate_slothians.py.",
+  "NpcNameKey": "nakasar_peuples.dialogue.Slothian_Builder.npc",
+  "RoleKey": "nakasar_peuples.dialogue.Slothian_Builder.role",
+  "People": "Slothian",
+  "Entries": [
+    {
+      "Node": "Chantier",
+      "Conditions": [
+        {
+          "Type": "Chantier"
+        }
+      ]
+    },
+    {
+      "Node": "Accueil"
+    }
+  ],
+  "Nodes": [
+    {
+      "Id": "Chantier",
+      "TextKey": "nakasar_peuples.dialogue.Slothian_Builder.chantier",
+      "Responses": [
+        {
+          "TextKey": "nakasar_peuples.dialogue.job.chantier",
+          "Effects": [
+            {
+              "Type": "ChantierStatus"
+            }
+          ],
+          "Next": "Statut"
+        },
+        {
+          "TextKey": "nakasar_peuples.dialogue.job.metier",
+          "Next": "Metier"
+        },
+        {
+          "TextKey": "nakasar_peuples.dialogue.job.aurevoir"
+        }
+      ]
+    },
+    {
+      "Id": "Accueil",
+      "TextKey": "nakasar_peuples.dialogue.Slothian_Builder.accueil",
+      "Responses": [
+        {
+          "TextKey": "nakasar_peuples.dialogue.job.chantier",
+          "Effects": [
+            {
+              "Type": "ChantierStatus"
+            }
+          ],
+          "Next": "Statut"
+        },
+        {
+          "TextKey": "nakasar_peuples.dialogue.job.metier",
+          "Next": "Metier"
+        },
+        {
+          "TextKey": "nakasar_peuples.dialogue.job.aurevoir"
+        }
+      ]
+    },
+    {
+      "Id": "Metier",
+      "TextKey": "nakasar_peuples.dialogue.Slothian_Builder.metier",
+      "Responses": [
+        {
+          "TextKey": "nakasar_peuples.dialogue.job.aurevoir"
+        }
+      ]
+    },
+    {
+      "Id": "Statut",
+      "TextKey": "nakasar_peuples.dialogue.Slothian_Builder.statut",
+      "Responses": [
+        {
+          "TextKey": "nakasar_peuples.dialogue.job.metier",
+          "Next": "Metier"
+        },
+        {
+          "TextKey": "nakasar_peuples.dialogue.job.aurevoir"
+        }
+      ]
+    }
+  ]
+}

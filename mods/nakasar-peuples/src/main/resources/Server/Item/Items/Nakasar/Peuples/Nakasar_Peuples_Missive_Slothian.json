@@ -1,0 +1,29 @@
+{
+  "$Comment": "Missive des demandes de livraison d'un village Slothian (étape 9), généré par tools/generate_slothians.py.",
+  "TranslationProperties": {
+    "Name": "nakasar_peuples.items.Nakasar_Peuples_Missive_Slothian.name",
+    "Description": "nakasar_peuples.items.Nakasar_Peuples_Missive_Slothian.description"
+  },
+  "Icon": "Icons/ItemsGenerated/Deco_Scroll.png",
+  "Categories": [
+    "Items.Ingredients"
+  ],
+  "Model": "Blocks/Miscellaneous/Scrolls.blockymodel",
+  "Texture": "Blocks/Miscellaneous/Scrolls_Texture.png",
+  "PlayerAnimationsId": "Item",
+  "Quality": "Uncommon",
+  "IconProperties": {
+    "Scale": 0.735,
+    "Translation": [
+      0,
+      -7.495
+    ],
+    "Rotation": [
+      22.5,
+      45,
+      22.5
+    ]
+  },
+  "ItemSoundSetId": "ISS_Blocks_Wood",
+  "DropOnDeath": false
+}

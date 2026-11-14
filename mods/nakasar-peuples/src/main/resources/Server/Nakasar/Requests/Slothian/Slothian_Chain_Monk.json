@@ -1,0 +1,19 @@
+{
+  "$Comment": "Étape 3 de la chaîne Slothian (étape 9), générée par tools/generate_slothians.py : donnée par le chef (StartChainRequest), jamais tirée au tableau (Weight 0). Remplie, elle pose Slothian_Chain_3.",
+  "People": "Slothian",
+  "Type": "Escort",
+  "Weight": 0,
+  "TitleKey": "nakasar_peuples.request.Slothian_Chain_Monk.title",
+  "TaskKey": "nakasar_peuples.request.Slothian_Chain_Monk.task",
+  "Spawns": [
+    "Crawler_Void",
+    "Crawler_Void",
+    "Skeleton_Burnt_Soldier"
+  ],
+  "MinDistance": 110,
+  "MaxDistance": 170,
+  "Essor": 0,
+  "Favors": 5,
+  "Reputation": 150,
+  "Flag": "Slothian_Chain_3"
+}

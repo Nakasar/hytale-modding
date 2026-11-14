@@ -19,6 +19,8 @@ import dev.nakasar.hytale.peuples.village.Villages;
  * <ul>
  *   <li>chaque gain de réputation de village chez l'un retire la moitié ({@value #SHARE}) de ce gain à la réputation
  *       de peuple de l'autre ;</li>
+ *   <li>étape 9 : un peuple allié ({@link People#ally()} : les Slothians pour les Feran et les Renoncés) gagne un
+ *       quart de chaque gain, en réputation de peuple ;</li>
  *   <li>chaque étape de la chaîne de l'un (drapeau {@code <Peuple>_Chain_<n>}) fait perdre un rang chez l'autre :
  *       réputation de peuple et réputation de chacun de ses villages.</li>
  * </ul>
@@ -27,6 +29,8 @@ public final class Rivals {
 
     /** Le rival perd 1/{@value #SHARE} de chaque gain. */
     public static final int SHARE = 2;
+    /** Étape 9 : l'allié ({@link People#ally()}) gagne 1/{@value #ALLY_SHARE} de chaque gain, en réputation de peuple. */
+    public static final int ALLY_SHARE = 4;
     private static final String CHAIN = "_Chain_";
 
     private Rivals() {
@@ -34,6 +38,14 @@ public final class Rivals {
 
     /** Le joueur a gagné `amount` de réputation de village chez `people`. */
     static void helped(Store<EntityStore> store, Ref<EntityStore> ref, PlayerRef player, People people, int amount) {
+        People ally = people.ally();
+        int gain = amount / ALLY_SHARE;
+        if (ally != null && gain > 0) {
+            Reputations.changePeople(store, ref, ally, gain);
+            NotificationUtil.sendNotification(player.getPacketHandler(), Message.translation(Reputations.KEYS + "allyGain")
+                    .param("amount", gain).param("people", Message.translation(ally.nameKey()))
+                    .param("helped", Message.translation(people.nameKey())), NotificationStyle.Success);
+        }
         People rival = people.rival();
         int loss = amount / SHARE;
         if (rival == null || loss <= 0) {

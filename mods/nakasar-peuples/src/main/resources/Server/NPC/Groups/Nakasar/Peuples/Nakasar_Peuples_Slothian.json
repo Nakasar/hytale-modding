@@ -1,0 +1,6 @@
+{
+  "$Comment": "Les PNJ du mod du peuple Slothian (étape 9).",
+  "IncludeRoles": [
+    "Nakasar_Peuples_Slothian*"
+  ]
+}

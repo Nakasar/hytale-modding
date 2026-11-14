@@ -109,10 +109,17 @@ public final class VillageEntrySystem extends TickingSystem<EntityStore> {
         state.inside.keySet().retainAll(here);
     }
 
+    /** Drapeau posé par l'Abbé slothian en donnant la Veille (étape 5 de la chaîne). */
+    public static final String VIGIL_FLAG = "Slothian_Chain_5";
+
     /** Titre d'écran d'entrée : nom du village, puis peuple · rang du joueur · humeur. */
     public static void showTitle(Store<EntityStore> store, Ref<EntityStore> ref, PlayerRef player, Village village) {
         Message title = Message.raw(village.name());
-        Message subtitle = Message.translation(MESSAGES + "subtitle")
+        // Étape 9 : la Veille des Slothians (fin de leur chaîne) fait du joueur un « Veilleur du Vide », titre affiché
+        // à l'entrée de tous les villages (GDD, Trophées et titres).
+        dev.nakasar.hytale.peuples.player.PeuplesPlayer data = dev.nakasar.hytale.peuples.player.PeuplesPlayer.get(store, ref);
+        boolean vigil = data != null && data.hasFlag(VIGIL_FLAG);
+        Message subtitle = Message.translation(MESSAGES + (vigil ? "subtitleVigil" : "subtitle"))
                 .param("people", Message.translation(village.people().nameKey()))
                 .param("rank", Message.translation(Reputations.rank(store, ref, village).nameKey()))
                 .param("mood", Message.translation(MESSAGES + "mood." + village.tier()));

@@ -12,6 +12,8 @@ import com.hypixel.hytale.server.core.command.system.basecommands.AbstractPlayer
 import com.hypixel.hytale.server.core.universe.PlayerRef;
 import com.hypixel.hytale.server.core.universe.world.World;
 import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
+import dev.nakasar.hytale.peuples.outpost.Outpost;
+import dev.nakasar.hytale.peuples.outpost.Outposts;
 import dev.nakasar.hytale.peuples.village.People;
 import dev.nakasar.hytale.peuples.village.Village;
 import dev.nakasar.hytale.peuples.village.Villages;
@@ -29,7 +31,9 @@ import java.util.List;
  *   <li>{@code zone} : la zone du joueur, ce que son climat lui fait, la ruche, les villages des zones ;</li>
  *   <li>{@code ruche [points]} (ops) : l'état de la ruche, ou ses points fixés ;</li>
  *   <li>{@code semer <peuple>} (ops) : cherche tout de suite un site dans la zone du peuple et y pose son village ;</li>
- *   <li>{@code climat <soif|froid|aucun>} (ops) : impose au joueur le climat d'une zone, où qu'il soit (essai).</li>
+ *   <li>{@code climat <soif|froid|vide|aucun>} (ops) : impose au joueur le climat d'une zone, où qu'il soit (essai) ;</li>
+ *   <li>{@code avantposte <liste|pierre|finir>} (ops, étape 9) : avant-postes du champion du monde, une Pierre de
+ *   fondation, ou les colons de toutes les fondations en attente tout de suite.</li>
  * </ul>
  */
 final class ZoneCommands {
@@ -40,7 +44,7 @@ final class ZoneCommands {
     }
 
     static List<AbstractCommand> all() {
-        return List.of(new ZoneCommand(), new HiveCommand(), new SeedCommand(), new ClimateCommand());
+        return List.of(new ZoneCommand(), new HiveCommand(), new SeedCommand(), new ClimateCommand(), new OutpostCommand());
     }
 
     private static final class ZoneCommand extends AbstractPlayerCommand {
@@ -97,7 +101,7 @@ final class ZoneCommands {
         @Override
         protected void execute(CommandContext context, Store<EntityStore> store, Ref<EntityStore> ref, PlayerRef player, World world) {
             People p = People.byId(people.get(context));
-            if (p != People.FERAN && p != People.RENONCE) {
+            if (p == null || p.zone() < 2) {
                 player.sendMessage(Message.translation(KEYS + "seed.unknown").param("people", people.get(context)));
                 return;
             }
@@ -123,10 +127,48 @@ final class ZoneCommands {
             int zone = switch (m) {
                 case "soif", "desert", "2" -> 2;
                 case "froid", "givre", "3" -> 3;
+                case "vide", "void", "4" -> 4;
                 default -> 0;
             };
             Climate.force(player.getUuid(), zone);
-            player.sendMessage(Message.translation(KEYS + "climate." + (zone == 2 ? "thirst" : zone == 3 ? "cold" : "off")));
+            player.sendMessage(Message.translation(KEYS + "climate." + (zone == 2 ? "thirst" : zone == 3 ? "cold" : zone == 4 ? "void" : "off")));
+        }
+    }
+
+    private static final class OutpostCommand extends AbstractPlayerCommand {
+        private final RequiredArg<String> what = withRequiredArg("action", KEYS + "outpost.arg", ArgTypes.STRING);
+
+        OutpostCommand() {
+            super("avantposte", KEYS + "outpost.desc");
+            requirePermission(VillageCommand.ADMIN);
+        }
+
+        @Override
+        protected void execute(CommandContext context, Store<EntityStore> store, Ref<EntityStore> ref, PlayerRef player, World world) {
+            String m = what.get(context).toLowerCase(java.util.Locale.ROOT);
+            switch (m) {
+                case "pierre", "stone" -> {
+                    dev.nakasar.hytale.peuples.request.Requests.give(store, ref,
+                            new com.hypixel.hytale.server.core.inventory.ItemStack(Outposts.STONE, 1));
+                    player.sendMessage(Message.translation(KEYS + "outpost.stone"));
+                }
+                case "finir", "finish" -> player.sendMessage(Message.translation(KEYS + "outpost.finished")
+                        .param("count", Outposts.finishAll(world)));
+                default -> {
+                    List<Outpost> all = Outposts.all(world);
+                    player.sendMessage(Message.translation(Outposts.KEYS + "list").param("count", all.size()));
+                    for (Outpost o : all) {
+                        People p = People.byId(o.people());
+                        Village v = o.villageId() == null ? null : Villages.registry(world).byId(o.villageId());
+                        Message state = v != null ? Message.translation(Outposts.KEYS + "stateBuilt").param("name", v.name())
+                                : Message.translation(Outposts.KEYS + "stateWaiting");
+                        player.sendMessage(Message.translation(Outposts.KEYS + "listLine")
+                                .param("people", p == null ? Message.raw(o.people()) : Message.translation(p.nameKey()))
+                                .param("x", o.x()).param("z", o.z()).param("owner", o.ownerName() == null ? "?" : o.ownerName())
+                                .param("state", state));
+                    }
+                }
+            }
         }
     }
 }

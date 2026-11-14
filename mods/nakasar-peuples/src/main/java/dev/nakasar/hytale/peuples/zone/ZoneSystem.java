@@ -4,8 +4,10 @@ import com.hypixel.hytale.component.Store;
 import com.hypixel.hytale.component.system.tick.TickingSystem;
 import com.hypixel.hytale.server.core.universe.world.World;
 import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
+import dev.nakasar.hytale.peuples.outpost.Outposts;
 
-/** Chaque pas : climats des joueurs ({@link Climate}) ; toutes les 5 s : croissance du matin de la ruche ({@link Hive}). */
+/** Chaque pas : climats des joueurs ({@link Climate}) ; toutes les 5 s : croissance du matin de la ruche ({@link Hive}) et
+ * avant-postes du champion ({@link Outposts}, étape 9). */
 public final class ZoneSystem extends TickingSystem<EntityStore> {
 
     private float hiveClock;
@@ -18,9 +20,12 @@ public final class ZoneSystem extends TickingSystem<EntityStore> {
         }
         Climate.step(world, store, dt);
         hiveClock += dt;
-        if (hiveClock >= 5f && Zones.generator(world) != null) {
+        if (hiveClock >= 5f) {
             hiveClock = 0f;
-            Hive.morning(world, store);
+            if (Zones.generator(world) != null) {
+                Hive.morning(world, store);
+            }
+            Outposts.step(world, store);
         }
     }
 }

@@ -1,0 +1,23 @@
+{
+  "$Comment": "Étape 2 de la chaîne Slothian (étape 9), générée par tools/generate_slothians.py : donnée par le chef (StartChainRequest), jamais tirée au tableau (Weight 0). Remplie, elle pose Slothian_Chain_2.",
+  "People": "Slothian",
+  "Type": "Hunt",
+  "Weight": 0,
+  "TitleKey": "nakasar_peuples.request.Slothian_Chain_Crystals.title",
+  "TaskKey": "nakasar_peuples.request.Slothian_Chain_Crystals.task",
+  "Spawns": [
+    "Void_Anomaly_Crystal_Small",
+    "Void_Anomaly_Crystal_Small",
+    "Void_Anomaly_Crystal_Small",
+    "Crawler_Void"
+  ],
+  "Roles": [
+    "Void_Anomaly_Crystal_Small"
+  ],
+  "MinDistance": 100,
+  "MaxDistance": 160,
+  "Essor": 0,
+  "Favors": 5,
+  "Reputation": 120,
+  "Flag": "Slothian_Chain_2"
+}

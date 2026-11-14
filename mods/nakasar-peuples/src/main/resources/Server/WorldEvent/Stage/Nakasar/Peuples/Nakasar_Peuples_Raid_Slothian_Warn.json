@@ -1,0 +1,44 @@
+{
+  "$Comment": "Annonce : 60 s avant l'arrivée de la bande (compte à rebours sur la carte), puis titre et cri de guerre au camp trork, au moment où le Java fait apparaître la vague.",
+  "Forks": [
+    {
+      "Conditions": [
+        {
+          "Type": "Nakasar_Peuples_RaidLocation",
+          "LocationKey": "RaidLocation"
+        },
+        {
+          "Type": "IntervalCondition",
+          "IntervalKey": "RaidWarning",
+          "MinSeconds": 60,
+          "MaxSeconds": 60,
+          "ShowOnMap": true,
+          "MapIntervalKey": "nakasar_peuples.raid.map.arrivesIn.Slothian"
+        }
+      ],
+      "Actions": [
+        {
+          "Type": "ShowEventTitleAction",
+          "LocationKey": "RaidLocation",
+          "Radius": 160,
+          "PrimaryTitle": "nakasar_peuples.raid.title.wave.Slothian",
+          "SecondaryTitle": "nakasar_peuples.raid.title.waveEvent",
+          "FadeInDuration": 0.5
+        },
+        {
+          "Type": "EffectsAction",
+          "LocationKey": "RaidLocation",
+          "Radius": 120,
+          "Shape": {
+            "Type": "Point",
+            "Count": 1
+          },
+          "SoundFX": {
+            "Effect": "SFX_Crawler_Void_Alerted"
+          }
+        }
+      ],
+      "Next": "Nakasar_Peuples_Raid_Slothian_Fight"
+    }
+  ]
+}

@@ -51,7 +51,9 @@ public final class ZoneSeeder extends TickingSystem<EntityStore> {
     private static final int PER_RING = 9;
     /** Après le village kweebec (15 s), pour ne pas charger deux régions à la fois. */
     private static final float FIRST_DELAY = 45f;
-    public static final People[] PEOPLES = {People.FERAN, People.RENONCE};
+    /** Étape 9 : la zone 4 est plus loin du point d'apparition, on y cherche plus large. */
+    public static final int FAR_SEARCH_RADIUS = 12000;
+    public static final People[] PEOPLES = {People.FERAN, People.RENONCE, People.SLOTHIAN};
 
     private float wait = FIRST_DELAY;
     private volatile World handled;
@@ -98,13 +100,14 @@ public final class ZoneSeeder extends TickingSystem<EntityStore> {
         int[] spawn = VillageSeederAccess.spawn(world);
         int seed = Zones.seed(world);
         int zone = people.zone();
-        CompletableFuture.supplyAsync(() -> SpiralSearchUtil.search(generator, seed, spawn[0], spawn[1], SEARCH_RADIUS,
+        int radius = zone >= 4 ? FAR_SEARCH_RADIUS : SEARCH_RADIUS;
+        CompletableFuture.supplyAsync(() -> SpiralSearchUtil.search(generator, seed, spawn[0], spawn[1], radius,
                 r -> r != null && r.getZoneResult() != null && r.getZoneResult().getZone() != null
                         && Zones.inland(r.getZoneResult().getZone().name(), zone)))
                 .whenComplete((found, error) -> world.execute(() -> {
                     if (error != null || found == null) {
                         LOGGER.atWarning().log("Nakasar Peuples : zone %d introuvable à moins de %d blocs du point d'apparition (%s)",
-                                zone, SEARCH_RADIUS, error == null ? "aucun résultat" : error.getMessage());
+                                zone, radius, error == null ? "aucun résultat" : error.getMessage());
                         done.accept(null);
                         return;
                     }
