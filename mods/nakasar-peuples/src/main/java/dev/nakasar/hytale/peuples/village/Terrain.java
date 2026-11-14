@@ -93,6 +93,72 @@ public final class Terrain {
         return fluids != null && fluids.getFluidId(x, y, z) != 0;
     }
 
+    /**
+     * Vrai si un PNJ peut apparaître debout sur la colonne (x, z) : sol naturel trouvé (pas de vide), ni eau ni lave
+     * sur le sol ni à hauteur du corps, deux blocs libres au-dessus (pas dans un tronc ou un mur ; herbes et fleurs
+     * permises), et au moins trois voisins à un bloc près (pas une pente impraticable ni un pic).
+     *
+     * @return la hauteur des pieds (sol + 1), ou {@link #NONE}
+     */
+    public int safeFeet(int x, int z) {
+        int y = surface(x, z);
+        if (y == NONE || hasFluid(x, y, z)) {
+            return NONE;
+        }
+        for (int dy = 1; dy <= 2; dy++) {
+            if (hasFluid(x, y + dy, z) || !passable(x, y + dy, z)) {
+                return NONE;
+            }
+        }
+        int level = 0;
+        int[][] around = {{1, 0}, {-1, 0}, {0, 1}, {0, -1}};
+        for (int[] d : around) {
+            int n = surface(x + d[0], z + d[1]);
+            if (n != NONE && Math.abs(n - y) <= 1 && !hasFluid(x + d[0], n + 1, z + d[1])) {
+                level++;
+            }
+        }
+        return level >= 3 ? y + 1 : NONE;
+    }
+
+    /** Vrai si un corps peut tenir dans le bloc : vide, ou herbe et fleur basses (ni feuillage, ni tronc, ni cactus). */
+    private boolean passable(int x, int y, int z) {
+        if (Blocks.isEmpty(chunks, x, y, z)) {
+            return true;
+        }
+        String name = Blocks.name(chunks, x, y, z);
+        return name != null && name.startsWith("Plant_") && !name.contains("Leaves") && !name.contains("Cactus")
+                && !name.contains("Trunk") && !name.contains("Sapling");
+    }
+
+    /**
+     * Le point sûr ({@link #safeFeet}) le plus proche de (x, z), cherché par anneaux jusqu'à `radius` blocs : un bloc
+     * sur deux au-delà de 4 blocs, pour rester léger. Recherche commune de toutes les apparitions de PNJ du mod
+     * (demandes, chaîne, raids, Klops, villageois).
+     *
+     * @return {x, pieds, z}, ou null si rien de sûr (ou rien de chargé) dans le rayon
+     */
+    public int[] safeSpot(int x, int z, int radius) {
+        for (int r = 0; r <= radius; r++) {
+            int step = r > 4 ? 2 : 1;
+            if (r > 4 && r % 2 == 1 && r != radius) {
+                continue;
+            }
+            for (int dx = -r; dx <= r; dx += step) {
+                for (int dz = -r; dz <= r; dz += step) {
+                    if (Math.max(Math.abs(dx), Math.abs(dz)) != r) {
+                        continue;
+                    }
+                    int feet = safeFeet(x + dx, z + dz);
+                    if (feet != NONE) {
+                        return new int[] {x + dx, feet, z + dz};
+                    }
+                }
+            }
+        }
+        return null;
+    }
+
     /** Hauteur médiane du sol sur le rectangle (pas de `step` blocs), ou {@link #NONE} si rien n'est chargé. */
     public int medianSurface(int x0, int x1, int z0, int z1, int step) {
         List<Integer> heights = new ArrayList<>();

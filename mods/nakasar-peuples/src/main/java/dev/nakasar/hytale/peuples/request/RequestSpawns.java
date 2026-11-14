@@ -27,7 +27,12 @@ import java.util.Map;
 public final class RequestSpawns {
 
     /** Ce qu'un PNJ apparu représente pour sa demande. */
-    public enum Kind { FOE, LOOKOUT, CAPTIVE, GUARD }
+    public enum Kind { FOE, LOOKOUT, CAPTIVE, GUARD, DEPARTING }
+
+    /** Clé des PNJ qui restent après leur demande (guetteur d'une missive) : ils partent quand plus personne n'est près. */
+    public static final String LINGER = "linger";
+    /** Un PNJ restant disparaît quand aucun joueur n'est à moins de cette distance (hors de vue). */
+    public static final int DEPART_RANGE = 56;
 
     public record Owner(String key, Kind kind) {
     }
@@ -113,6 +118,36 @@ public final class RequestSpawns {
         List<Ref<EntityStore>> refs = BY_KEY.get(key);
         if (refs != null && refs.isEmpty()) {
             BY_KEY.remove(key);
+        }
+    }
+
+    /**
+     * Les PNJ `kind` de la demande `key` ne disparaissent pas avec elle : ils restent (le guetteur reprend sa garde)
+     * jusqu'à ce qu'aucun joueur ne soit à moins de {@value #DEPART_RANGE} blocs ({@link #stepLingering}).
+     */
+    public static synchronized void release(String key, Kind kind) {
+        for (Ref<EntityStore> r : of(key, kind)) {
+            forget(r);
+            BY_KEY.computeIfAbsent(LINGER, k -> new ArrayList<>()).add(r);
+            OWNERS.put(r, new Owner(LINGER, Kind.DEPARTING));
+        }
+    }
+
+    /** Retire les PNJ restants que plus aucun joueur ne voit (thread du monde). */
+    public static synchronized void stepLingering(Store<EntityStore> store, List<Vector3d> players) {
+        for (Ref<EntityStore> r : of(LINGER, null)) {
+            Vector3d at = Requests.position(store, r);
+            boolean seen = false;
+            for (Vector3d p : players) {
+                if (at != null && p.distanceSquared(at) <= (double) DEPART_RANGE * DEPART_RANGE) {
+                    seen = true;
+                    break;
+                }
+            }
+            if (!seen) {
+                forget(r);
+                store.removeEntity(r, RemoveReason.REMOVE);
+            }
         }
     }
 

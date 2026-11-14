@@ -556,11 +556,14 @@ public final class Requests {
         NotificationUtil.sendNotification(player.getPacketHandler(), m, NotificationStyle.Warning);
     }
 
-    /** Termine la demande : retirée du joueur, suivi retiré de l'écran, PNJ et missive retirés. */
+    /** Termine la demande : retirée du joueur, suivi retiré de l'écran, PNJ (sauf le guetteur, qui reste) et missive retirés. */
     static void end(World world, Store<EntityStore> store, Ref<EntityStore> ref, PlayerRef player, PeuplesPlayer state, PlayerRequest r) {
         state.removeRequest(r);
         RequestHud.untrack(player, r.hud());
-        RequestSpawns.remove(store, RequestSpawns.key(player.getUuid(), r.id()), null);
+        String key = RequestSpawns.key(player.getUuid(), r.id());
+        // Le guetteur d'une missive reste à son poste et ne part que hors de vue des joueurs.
+        RequestSpawns.release(key, RequestSpawns.Kind.LOOKOUT);
+        RequestSpawns.remove(store, key, null);
         RequestTemplate t = r.template();
         Village village = Villages.registry(world).byId(r.villageId());
         if (t != null && t.type() == RequestType.DELIVERY && village != null) {

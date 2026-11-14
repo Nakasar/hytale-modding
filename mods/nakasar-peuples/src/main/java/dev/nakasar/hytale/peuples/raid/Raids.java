@@ -448,9 +448,9 @@ public final class Raids {
                 double angle = base + c * (Math.PI * 0.8) + attempt * (Math.PI / 4);
                 int x = village.x() + (int) Math.round(Math.cos(angle) * CAMP_DISTANCE);
                 int z = village.z() + (int) Math.round(Math.sin(angle) * CAMP_DISTANCE);
-                int y = terrain.surface(x, z);
-                if (y != Terrain.NONE && !terrain.hasFluid(x, y + 1, z)) {
-                    camps.add(new Vector3i(x, y + 1, z));
+                int[] spot = terrain.safeSpot(x, z, 8);
+                if (spot != null) {
+                    camps.add(new Vector3i(spot[0], spot[1], spot[2]));
                 }
             }
         }
@@ -479,11 +479,11 @@ public final class Raids {
             double angle = base + i * (Math.PI * 2 / guards);
             int x = village.x() + (int) Math.round(Math.cos(angle) * 4);
             int z = village.z() + (int) Math.round(Math.sin(angle) * 4);
-            int y = terrain.surface(x, z);
-            if (y == Terrain.NONE) {
+            int[] safe = terrain.safeSpot(x, z, 3);
+            if (safe == null) {
                 continue;
             }
-            Vector3d spot = new Vector3d(x + 0.5, y + 1, z + 0.5);
+            Vector3d spot = new Vector3d(safe[0] + 0.5, safe[1], safe[2] + 0.5);
             Ref<EntityStore> ref = spawn(store, village, Kind.DEFENDER, role, spot, (float) -angle);
             if (ref != null) {
                 a.defenders.add(ref);
@@ -548,16 +548,13 @@ public final class Raids {
         Vector3d heart = new Vector3d(village.x() + 0.5, village.y(), village.z() + 0.5);
         for (int i = 0; i < wave.size(); i++) {
             Vector3i camp = a.camps.get(i % a.camps.size());
-            int x = camp.x() + random.nextInt(-4, 5);
-            int z = camp.z() + random.nextInt(-4, 5);
-            int y = terrain.surface(x, z);
-            if (y == Terrain.NONE) {
-                x = camp.x();
-                z = camp.z();
-                y = camp.y() - 1;
-            }
+            // Point sûr près du camp (le camp lui-même l'est) : jamais sous l'eau, dans un bloc ou sur une pente.
+            int[] spot = terrain.safeSpot(camp.x() + random.nextInt(-4, 5), camp.z() + random.nextInt(-4, 5), 2);
+            int x = spot == null ? camp.x() : spot[0];
+            int z = spot == null ? camp.z() : spot[2];
+            int feet = spot == null ? camp.y() : spot[1];
             float yaw = (float) Math.atan2(-(village.x() - x), -(village.z() - z));
-            Ref<EntityStore> ref = spawn(store, village, Kind.RAIDER, wave.get(i), new Vector3d(x + 0.5, y + 1, z + 0.5), yaw);
+            Ref<EntityStore> ref = spawn(store, village, Kind.RAIDER, wave.get(i), new Vector3d(x + 0.5, feet, z + 0.5), yaw);
             if (ref != null) {
                 a.raiders.add(ref);
                 leash(store, ref, heart);
