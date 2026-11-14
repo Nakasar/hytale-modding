@@ -18,18 +18,21 @@ import com.hypixel.hytale.server.core.universe.world.World;
 import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
 
 /**
- * La fenêtre de dialogue (maquette /mnt/project-files/peuples/maquettes/dialogue.png) : nom et métier du PNJ, la
- * réplique, quatre réponses au plus avec leur ligne d'effet (ou leur condition si elles sont grisées), et « Partir ».
- * Mise en page {@value #LAYOUT} livrée par le pack du mod (Common/UI/Custom/), remplie et écoutée par le Java comme les
- * pages vanilla (BlockLorePage, DialogPage).
- *
- * <p>À vérifier en jeu (GDD) : que le client rende une page .ui livrée par un mod et que les clics remontent. Le
- * secours est le dialogue par le tchat ({@link Dialogues#openChat}).
+ * La fenêtre de dialogue, en bas de l'écran (maquette /mnt/project-files/peuples/maquettes/dialogue_bas_ecran.png) :
+ * nom, métier et rang du joueur auprès du peuple dans l'en-tête, la réplique, quatre réponses numérotées au plus avec
+ * leur effet (ou leur condition si elles sont grisées), le portrait du PNJ à droite et « Partir » dessous. La moitié haute
+ * de l'écran reste à la scène, que la caméra de dialogue ({@link DialogueCamera}) cadre quand un PNJ parle.
+ * Mise en page {@value #LAYOUT} livrée par le pack du mod (Common/UI/Custom/), bâtie sur les modèles vanilla de
+ * Common.ui (@DecoratedContainer, @PanelSeparatorFancy, @SmallSecondaryTextButton), remplie et écoutée par le Java
+ * comme les pages vanilla (BlockLorePage, MemoriesPage pour le portrait AssetImage). Secours : le dialogue par le tchat
+ * ({@link Dialogues#openChat}).
  */
 public final class DialoguePage extends InteractiveCustomUIPage<DialoguePage.Event> {
 
     public static final String LAYOUT = "Pages/Nakasar/Peuples/DialoguePage.ui";
     private static final String LEAVE = "Leave";
+    private static final String LOCKED_COLOR = "#c49a6c";
+    private static final String LOCKED_TEXT_COLOR = "#7c838c";
 
     /** Donnée d'un clic : l'index de la réponse, ou {@value #LEAVE}. */
     public static final class Event {
@@ -43,57 +46,96 @@ public final class DialoguePage extends InteractiveCustomUIPage<DialoguePage.Eve
 
     private final Dialogue dialogue;
     private final DialogueNode start;
+    private final String portrait;
     private DialogueNode node;
+    private boolean camera;
 
     public DialoguePage(PlayerRef playerRef, Dialogue dialogue, DialogueNode start) {
+        this(playerRef, dialogue, start, null);
+    }
+
+    /** `portrait` : chemin AssetImage du portrait du PNJ ({@link Portraits}), null pour aucun. */
+    public DialoguePage(PlayerRef playerRef, Dialogue dialogue, DialogueNode start, String portrait) {
         super(playerRef, CustomPageLifetime.CanDismiss, Event.CODEC);
         this.dialogue = dialogue;
         this.start = start;
+        this.portrait = portrait;
         this.node = start;
     }
 
-    // Libellés en « .TextSpans » (message composé ou vide sur « .Text » : plantage du client), boutons en « .Text »
+    /** La caméra de dialogue a été posée pour cette fenêtre : elle sera rendue à sa fermeture. */
+    void cameraFramed() {
+        camera = true;
+    }
+
+    // Libellés en « .TextSpans » (message composé ou vide sur « .Text » : plantage du client), bouton Partir en « .Text »
     // avec une traduction sans paramètre Message (non remplacé par le client), comme les pages vanilla (voir BoardPage).
+    // Les réponses sont des Button vanilla portant des Label : pas de texte de bouton imbriqué.
     @Override
     public void build(Ref<EntityStore> ref, UICommandBuilder cmd, UIEventBuilder events, Store<EntityStore> store) {
         cmd.append(LAYOUT);
         World world = store.getExternalData().getWorld();
         DialogueContext context = DialogueContext.of(world, store, ref, playerRef);
-        cmd.set("#NpcName.TextSpans", Dialogues.header(dialogue, context));
+        cmd.set("#NpcName.TextSpans", dialogue.npcNameKey() == null ? Message.raw("?") : Message.translation(dialogue.npcNameKey()));
+        cmd.set("#NpcRole.Visible", dialogue.roleKey() != null);
+        cmd.set("#NpcRole.TextSpans", dialogue.roleKey() == null ? Message.raw(" ") : Message.translation(dialogue.roleKey()));
+        Message standing = Dialogues.standing(dialogue, context);
+        cmd.set("#Standing.Visible", standing != null);
+        cmd.set("#Standing.TextSpans", standing == null ? Message.raw(" ") : standing);
+        cmd.set("#PortraitFrame.Visible", portrait != null);
+        if (portrait != null) {
+            cmd.set("#Portrait.AssetPath", portrait);
+        }
         cmd.set("#Line.TextSpans", Message.translation(node.textKey()));
         // À l'ouverture, le PNJ parle des PNJ du village tués aujourd'hui (ils reviennent au matin).
         Message aside = node == start ? dev.nakasar.hytale.peuples.village.Absences.aside(dialogue, context) : null;
         cmd.set("#Aside.Visible", aside != null);
-        cmd.set("#Aside.TextSpans", aside == null ? Message.raw("") : aside);
+        cmd.set("#Aside.TextSpans", aside == null ? Message.raw(" ") : aside);
         DialogueResponse[] responses = node.responses();
         for (int i = 0; i < Dialogue.MAX_RESPONSES; i++) {
             DialogueResponse r = i < responses.length ? responses[i] : null;
             String answer = "#Answer" + i;
-            String hint = "#Hint" + i;
+            cmd.set(answer + ".Visible", r != null);
             if (r == null) {
-                cmd.set(answer + ".Visible", false);
-                cmd.set(hint + ".Visible", false);
                 continue;
             }
-            cmd.set(answer + ".Visible", true);
-            cmd.set(hint + ".Visible", true);
-            // Un bouton n'accepte sur « .Text » qu'une traduction à paramètres simples : un paramètre Message
-            // ({text}) s'affiche brut. Le bouton reçoit donc directement la réponse traduite.
-            cmd.set(answer + ".Text", Message.translation(r.textKey()));
-            if (r.available(context)) {
-                cmd.set(hint + ".TextSpans", r.hintKey() == null ? Message.raw("") : Message.translation(r.hintKey()));
+            boolean available = r.available(context);
+            cmd.set(answer + ".Disabled", !available);
+            Message text = Message.translation(r.textKey());
+            Message hint;
+            if (available) {
+                hint = r.hintKey() == null ? null : Message.translation(Dialogues.KEYS + "pageHint").param("hint", Message.translation(r.hintKey()));
             } else {
-                cmd.set(hint + ".TextSpans", Message.translation(Dialogues.KEYS + "pageLocked").param("condition", Dialogues.failText(r)));
+                text = text.color(LOCKED_TEXT_COLOR);
+                hint = Message.translation(Dialogues.KEYS + "pageLockedShort").param("condition", Dialogues.failText(r)).color(LOCKED_COLOR);
             }
+            cmd.set("#Text" + i + ".TextSpans", text);
+            cmd.set("#Hint" + i + ".Visible", hint != null);
+            cmd.set("#Hint" + i + ".TextSpans", hint == null ? Message.raw(" ") : hint);
             events.addEventBinding(CustomUIEventBindingType.Activating, answer, EventData.of("Action", Integer.toString(i)));
         }
         cmd.set("#Leave.Text", Message.translation(Dialogues.KEYS + "leave"));
         events.addEventBinding(CustomUIEventBindingType.Activating, "#Leave", EventData.of("Action", LEAVE));
     }
 
+    /** Fermeture par Échap, par « Partir », par un effet ou par une autre fenêtre ouverte à sa place : caméra rendue. */
+    @Override
+    public void onDismiss(Ref<EntityStore> ref, Store<EntityStore> store) {
+        super.onDismiss(ref, store);
+        releaseCamera();
+    }
+
+    private void releaseCamera() {
+        if (camera) {
+            camera = false;
+            DialogueCamera.reset(playerRef);
+        }
+    }
+
     @Override
     public void handleDataEvent(Ref<EntityStore> ref, Store<EntityStore> store, Event data) {
         if (data == null || data.action == null || LEAVE.equals(data.action)) {
+            releaseCamera();
             close();
             return;
         }
@@ -110,6 +152,7 @@ public final class DialoguePage extends InteractiveCustomUIPage<DialoguePage.Eve
             return;
         }
         if (outcome.closed()) {
+            releaseCamera();
             // Un effet a pu ouvrir une autre page (tableau) : ne fermer que si la fenêtre affichée est encore celle-ci.
             Player player = store.getComponent(ref, Player.getComponentType());
             if (player == null || player.getPageManager().getCustomPage() == this) {

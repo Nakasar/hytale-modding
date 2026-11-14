@@ -63,11 +63,32 @@ enregistré par le plugin comme les rangs de réputation vanilla (l'id est le no
   étapes suivantes y ajoutent le rang de peuple (ReputationPlugin vanilla), les objectifs, l'étape de chaîne, l'heure.
 - Les drapeaux sont gardés avec le joueur (composant `Nakasar_Peuples_Player`, `player/PeuplesPlayer`).
 
-La **fenêtre** (`dialogue/DialoguePage`, maquette `images/dialogue.png`) est une `InteractiveCustomUIPage` sur la mise
-en page du pack `Common/UI/Custom/Pages/Nakasar/Peuples/DialoguePage.ui` : `#NpcName`, `#Line`, `#Answer0..3` avec leur
-ligne `#Hint0..3`, et `#Leave`. Ce premier jet est écrit sans fichier .ui vanilla sous les yeux (syntaxe de la
-documentation communautaire), sans import de `Common.ui` ni fond, pour limiter ce qu'il faut confirmer en jeu. Le
-**secours** est le même dialogue mené dans le tchat (`/village tchat`, `/village repondre`), qui ne dépend d'aucune page.
+La **fenêtre** (`dialogue/DialoguePage`, maquette `images/dialogue_bas_ecran.png`) est une `InteractiveCustomUIPage`
+sur la mise en page du pack `Common/UI/Custom/Pages/Nakasar/Peuples/DialoguePage.ui`. C'est une boîte en bas de l'écran,
+façon Baldur's Gate / Divinity, la moitié haute restant à la scène :
+
+- cadre vanilla `$C.@DecoratedContainer` (comme le tableau du village) et léger dégradé sombre en bas de l'écran ;
+- en-tête : `#NpcName`, `#NpcRole`, `#Standing` (« peuple · rang », `Dialogues.standing`) ;
+- `#Line` (réplique), `#Aside` (absents du jour), séparateur `$C.@PanelSeparatorFancy` ;
+- `#Answer0..3` : des `Button` vanilla (pas des `TextButton`) portant le numéro, `#Text0..3` et `#Hint0..3`
+  (« — effet » ; grisée : `.Disabled`, texte gris et « — condition » en ambre) ;
+- à droite, `#Portrait` (`AssetImage`, comme la page vanilla des Souvenirs) dans un cadre, et `#Leave` dessous
+  (Échap ferme aussi).
+
+**Portraits** : `dialogue/Portraits` choisit, d'après le modèle du PNJ (`ModelComponent`), un portrait tête et buste
+recadré dans les rendus vanilla `Common/Icons/ModelsGenerated/<Modèle>.png`. Ils sont livrés sous
+`Common/Icons/Nakasar/Peuples/Portraits/` par `tools/generate_portraits.py --assets <Assets.zip>` (46 modèles des
+peuples). Une variante sans rendu vanilla prend celui du plus long préfixe (`Kweebec_Sapling_Pink` → `Kweebec_Sapling`) ;
+un modèle sans rendu (`Klops_Merchant`) n'a pas de portrait (le cadre est masqué).
+
+**Caméra de dialogue** (`dialogue/DialogueCamera`) : quand un PNJ parle, le serveur pose la caméra du client derrière
+l'épaule du joueur, cadrant le joueur et le PNJ (paquet `SetServerCamera`, celui de `/camera topdown`). Elle revient à
+la vue normale à la fermeture (`onDismiss`, Partir, effet qui ferme, autre fenêtre ouverte à sa place). Pas de caméra
+si le PNJ est à plus de 9 blocs ou si aucune place libre (épaule droite, gauche, plus près) n'a de ligne de vue sans
+bloc plein. Chaque joueur peut la couper ou la rétablir avec `/village camera` (drapeau `option.dialogueCameraOff`).
+
+Le **secours** reste le même dialogue mené dans le tchat (`/village tchat`, `/village repondre`), qui ne dépend
+d'aucune page.
 
 Dialogue d'essai : `Kweebec_Essai` (Brindille, jardinière) passe par toutes les conditions et tous les effets.
 
@@ -82,6 +103,7 @@ Dialogue d'essai : `Kweebec_Essai` (Brindille, jardinière) passe par toutes les
 | `parler <dialogue>` | joueur | ouvre le dialogue dans la fenêtre du mod |
 | `tchat <dialogue>`, `repondre <n>` | joueur | le même dialogue dans le tchat (0 : partir) |
 | `drapeaux`, `oublier` | joueur | ses drapeaux de dialogue, et leur remise à zéro |
+| `camera` | joueur | coupe ou rétablit la caméra qui cadre le joueur et le PNJ pendant les dialogues |
 
 Les sous-commandes d'opérateur demandent la permission `nakasar.peuples.admin`.
 
@@ -103,6 +125,16 @@ chaque clé `...Key` existe dans les `.lang` fr-FR et en-US et chaque `ItemId` d
 6. Si la fenêtre ne s'affiche pas : `/village tchat Kweebec_Essai` et `/village repondre 1`... mène le même dialogue.
 7. Quitter et relancer le serveur : `/village liste` retrouve le village, l'essor et le palier ; `/village drapeaux`
    retrouve les drapeaux.
+
+### À vérifier en jeu (fenêtre de dialogue en bas d'écran)
+
+- La boîte s'affiche-t-elle en bas, centrée, avec le portrait qui dépasse au-dessus à droite ? Le dégradé du bas
+  (`RunicContainerBottomGradient`) assombrit-il bien le bas de l'écran ?
+- Survol des réponses (fond bleu sombre), réponse grisée non cliquable avec sa condition en ambre, couleurs des
+  `TextSpans` respectées ?
+- La caméra glisse-t-elle derrière l'épaule et regarde-t-elle le PNJ (sinon : signe du tangage ou du lacet à inverser
+  dans `DialogueCamera.send`) ? Revient-elle bien à la normale avec Échap, Partir, et en ouvrant l'échoppe ?
+- `/camera reset` (vanilla) rend la vue si jamais elle restait bloquée.
 
 ### À vérifier en jeu (étape 1)
 

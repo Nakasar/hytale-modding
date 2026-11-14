@@ -69,8 +69,17 @@ public final class Dialogues {
         return new Outcome(true, next, next == null);
     }
 
-    /** Ouvre le dialogue `dialogue` au joueur dans la fenêtre du mod (thread du monde). */
+    /** Ouvre le dialogue `dialogue` au joueur dans la fenêtre du mod (thread du monde), sans PNJ en face (commande). */
     public static void openPage(World world, Store<EntityStore> store, Ref<EntityStore> ref, PlayerRef playerRef, Dialogue dialogue) {
+        openPage(world, store, ref, playerRef, dialogue, null);
+    }
+
+    /**
+     * Ouvre le dialogue `dialogue` au joueur dans la fenêtre du mod (thread du monde). Avec le PNJ `npc` qui parle, la
+     * fenêtre montre son portrait et la caméra cadre le joueur et le PNJ ({@link DialogueCamera}).
+     */
+    public static void openPage(World world, Store<EntityStore> store, Ref<EntityStore> ref, PlayerRef playerRef, Dialogue dialogue,
+                                Ref<EntityStore> npc) {
         Player player = ref.isValid() ? store.getComponent(ref, Player.getComponentType()) : null;
         DialogueContext context = DialogueContext.of(world, store, ref, playerRef);
         DialogueNode start = dialogue.start(context);
@@ -78,7 +87,12 @@ public final class Dialogues {
             return;
         }
         CHAT.remove(playerRef.getUuid());
-        player.getPageManager().openCustomPage(ref, store, new DialoguePage(playerRef, dialogue, start));
+        DialoguePage page = new DialoguePage(playerRef, dialogue, start, Portraits.of(store, npc));
+        player.getPageManager().openCustomPage(ref, store, page);
+        // Après l'ouverture : remplacer une fenêtre de dialogue déjà ouverte rend d'abord sa caméra (onDismiss).
+        if (player.getPageManager().getCustomPage() == page && DialogueCamera.frame(world, store, ref, playerRef, npc)) {
+            page.cameraFramed();
+        }
     }
 
     /** Ouvre le dialogue dans le tchat (secours) : réplique et réponses numérotées. */
@@ -155,6 +169,22 @@ public final class Dialogues {
                 : Reputations.peopleRank(context.store(), context.ref(), people);
         return Message.translation(KEYS + "headerRank").param("header", header(dialogue))
                 .param("people", Message.translation(people.nameKey())).param("rank", Message.translation(rank.nameKey()));
+    }
+
+    /**
+     * Pastille de rang de la fenêtre (« peuple · rang ») : rang dans le village où se trouve le joueur s'il est de ce
+     * peuple, sinon auprès du peuple ; null si le dialogue n'a pas de peuple.
+     */
+    public static Message standing(Dialogue dialogue, DialogueContext context) {
+        People people = People.byId(dialogue.people());
+        if (people == null || !context.valid()) {
+            return null;
+        }
+        Rank rank = context.village() != null && context.village().people() == people
+                ? Reputations.rank(context.store(), context.ref(), context.village())
+                : Reputations.peopleRank(context.store(), context.ref(), people);
+        return Message.translation(KEYS + "standing").param("people", Message.translation(people.nameKey()))
+                .param("rank", Message.translation(rank.nameKey()));
     }
 
     /** Texte d'une réponse grisée : sa condition, ou « indisponible ». */

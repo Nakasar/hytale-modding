@@ -77,24 +77,24 @@ public final class VillagerUseSystem extends EntityEventSystem<EntityStore, UseE
             if (klops) {
                 Dialogue dialogue = Dialogue.get(dev.nakasar.hytale.peuples.klops.Klops.DIALOGUE);
                 if (dialogue != null) {
-                    Dialogues.openPage(world, s, user, player, dialogue);
+                    Dialogues.openPage(world, s, user, player, dialogue, target);
                 }
             } else if (villager != null) {
                 Dialogue dialogue = Dialogue.get(villager.dialogue());
                 if (dialogue == null) {
                     player.sendMessage(Message.translation(Dialogues.KEYS + "unknown").param("id", villager.dialogue()));
                 } else {
-                    Dialogues.openPage(world, s, user, player, dialogue);
+                    Dialogues.openPage(world, s, user, player, dialogue, target);
                 }
             } else if (crierVillage != null) {
-                talk(world, s, user, player, crierVillage, false);
+                talk(world, s, user, player, crierVillage, false, target);
             } else if (merchantVillage != null) {
-                talk(world, s, user, player, merchantVillage, true);
+                talk(world, s, user, player, merchantVillage, true, target);
             } else if (chiefVillage != null) {
                 Village village = Villages.registry(world).byId(chiefVillage);
                 Dialogue dialogue = village == null ? null : Dialogue.get(village.people().chiefDialogue());
                 if (dialogue != null) {
-                    Dialogues.openPage(world, s, user, player, dialogue);
+                    Dialogues.openPage(world, s, user, player, dialogue, target);
                 }
             } else if (owner.kind() == RequestSpawns.Kind.LOOKOUT) {
                 deliver(world, s, user, player, owner);
@@ -107,7 +107,8 @@ public final class VillagerUseSystem extends EntityEventSystem<EntityStore, UseE
     }
 
     /** Ouvre le dialogue du crieur ou du marchand du village. */
-    private static void talk(World world, Store<EntityStore> store, Ref<EntityStore> ref, PlayerRef player, String villageId, boolean merchant) {
+    private static void talk(World world, Store<EntityStore> store, Ref<EntityStore> ref, PlayerRef player, String villageId, boolean merchant,
+                             Ref<EntityStore> npc) {
         Village village = Villages.registry(world).byId(villageId);
         if (village == null) {
             return;
@@ -118,7 +119,7 @@ public final class VillagerUseSystem extends EntityEventSystem<EntityStore, UseE
             player.sendMessage(Message.translation(Dialogues.KEYS + "unknown").param("id", id));
             return;
         }
-        Dialogues.openPage(world, store, ref, player, dialogue);
+        Dialogues.openPage(world, store, ref, player, dialogue, npc);
     }
 
     /** Le guetteur reçoit la missive : la livraison du joueur à qui il est destiné est remplie. */
