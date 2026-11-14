@@ -49,6 +49,7 @@ public final class DialogueTypes {
         DialogueCondition.CODEC.register("NotFlag", NotFlagCondition.class, NotFlagCondition.CODEC);
         DialogueCondition.CODEC.register("InVillage", InVillageCondition.class, InVillageCondition.CODEC);
         DialogueCondition.CODEC.register("VillageTier", VillageTierCondition.class, VillageTierCondition.CODEC);
+        DialogueCondition.CODEC.register("Building", BuildingCondition.class, BuildingCondition.CODEC);
         DialogueCondition.CODEC.register("HasItem", HasItemCondition.class, HasItemCondition.CODEC);
         DialogueEffect.CODEC.register("SetFlag", SetFlagEffect.class, SetFlagEffect.CODEC);
         DialogueEffect.CODEC.register("ClearFlag", ClearFlagEffect.class, ClearFlagEffect.CODEC);
@@ -151,6 +152,31 @@ public final class DialogueTypes {
         @Override
         public boolean test(DialogueContext context) {
             return context.village() != null && context.village().tier() >= min;
+        }
+    }
+
+    /**
+     * {@code {"Type": "Building", "Id": "Grand_Pere", "Standing": true}} : le bâtiment du plan est debout dans le village
+     * du joueur (construit et pas en ruine) ; {@code Standing} faux : il n'y est pas. Sert aux étapes de chaîne qui se
+     * jouent autour d'un bâtiment (la veillée du Grand-Père, le fort des Renoncés).
+     */
+    public static final class BuildingCondition extends DialogueCondition {
+        public static final BuilderCodec<BuildingCondition> CODEC = BuilderCodec.builder(BuildingCondition.class, BuildingCondition::new)
+                .append(new KeyedCodec<>("Id", Codec.STRING), (c, v) -> c.id = v, c -> c.id)
+                .documentation("Id du bâtiment dans le plan du village.")
+                .add()
+                .append(new KeyedCodec<>("Standing", Codec.BOOLEAN), (c, v) -> c.standing = v == null || v, c -> c.standing)
+                .documentation("Vrai (défaut) : le bâtiment est debout ; faux : il n'y est pas.")
+                .add()
+                .build();
+
+        String id;
+        boolean standing = true;
+
+        @Override
+        public boolean test(DialogueContext context) {
+            boolean up = context.village() != null && id != null && context.village().isStanding(id);
+            return up == standing;
         }
     }
 
