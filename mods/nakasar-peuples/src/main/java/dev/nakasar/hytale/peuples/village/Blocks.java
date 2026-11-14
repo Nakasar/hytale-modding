@@ -48,6 +48,15 @@ public final class Blocks {
         return section == null ? 0 : section.getRotationIndex(x, y, z);
     }
 
+    /**
+     * Vrai si le bloc nommé `name` est `baseId` ou l'un de ses états : un coffre vanilla ouvert puis refermé devient
+     * {@code *<baseId>_State_Definitions_CloseWindow} (ou {@code _OpenWindow} tant qu'il est ouvert).
+     */
+    public static boolean is(String name, String baseId) {
+        return name != null && baseId != null
+                && (name.equals(baseId) || name.startsWith("*" + baseId + "_State_Definitions_"));
+    }
+
     public static boolean isEmpty(ChunkStore chunks, int x, int y, int z) {
         return id(chunks, x, y, z) == BlockType.EMPTY_ID;
     }

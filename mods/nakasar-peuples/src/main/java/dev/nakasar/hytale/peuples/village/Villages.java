@@ -1,5 +1,7 @@
 package dev.nakasar.hytale.peuples.village;
 
+import dev.nakasar.hytale.peuples.PeuplesPlugin;
+
 import com.hypixel.hytale.component.ResourceType;
 import com.hypixel.hytale.server.core.Message;
 import com.hypixel.hytale.server.core.inventory.ItemStack;
@@ -145,22 +147,14 @@ public final class Villages {
 
     /**
      * Contenu du dépôt (id d'objet → quantité, dans l'ordre des emplacements), ou null si le coffre manque ou que sa
-     * section n'est pas chargée. Lecture seule : le crédit des demandes (retrait des objets) vient à l'étape 3.
+     * section n'est pas chargée (voir {@link #depositChest}).
      */
     public static Map<String, Integer> depositContents(World world, Village village) {
-        int[] d = village.deposit();
-        if (!village.people().depositBlock().equals(Blocks.name(world.getChunkStore(), d[0], d[1], d[2]))) {
-            return null;
-        }
-        ItemContainerBlock container = BlockModule.getComponent(ItemContainerBlock.getComponentType(), world, d[0], d[1], d[2]);
-        if (container == null) {
-            return null;
-        }
-        ItemContainer items = container.getItemContainer();
-        Map<String, Integer> out = new LinkedHashMap<>();
+        ItemContainer items = depositChest(world, village);
         if (items == null) {
-            return out;
+            return null;
         }
+        Map<String, Integer> out = new LinkedHashMap<>();
         for (short slot = 0; slot < items.getCapacity(); slot++) {
             ItemStack stack = items.getItemStack(slot);
             if (!ItemStack.isEmpty(stack)) {
@@ -168,5 +162,39 @@ public final class Villages {
             }
         }
         return out;
+    }
+
+    /** Villages dont le dépôt introuvable a déjà été signalé dans le journal (une ligne par village et par raison). */
+    private static final java.util.Set<String> DEPOSIT_WARNED = java.util.concurrent.ConcurrentHashMap.newKeySet();
+
+    /**
+     * Conteneur du coffre de dépôt, ou null s'il manque ou que sa section n'est pas chargée. Le coffre peut porter
+     * l'id d'un de ses états (ouvert, refermé : voir {@link Blocks#is}). Un dépôt introuvable alors que sa section
+     * est chargée est signalé une fois dans le journal avec le bloc trouvé.
+     */
+    public static ItemContainer depositChest(World world, Village village) {
+        int[] d = village.deposit();
+        if (Blocks.id(world.getChunkStore(), d[0], d[1], d[2]) == Blocks.UNLOADED) {
+            return null;
+        }
+        String found = Blocks.name(world.getChunkStore(), d[0], d[1], d[2]);
+        if (!Blocks.is(found, village.people().depositBlock())) {
+            warnDeposit(village, "block", "bloc " + found + " au lieu de " + village.people().depositBlock());
+            return null;
+        }
+        ItemContainerBlock container = BlockModule.getComponent(ItemContainerBlock.getComponentType(), world, d[0], d[1], d[2]);
+        if (container == null || container.getItemContainer() == null) {
+            warnDeposit(village, "container", "bloc " + found + " sans conteneur");
+            return null;
+        }
+        return container.getItemContainer();
+    }
+
+    private static void warnDeposit(Village village, String reason, String detail) {
+        if (DEPOSIT_WARNED.add(village.id() + "|" + reason)) {
+            int[] d = village.deposit();
+            PeuplesPlugin.get().getLogger().atWarning().log("Peuples : dépôt de %s introuvable en %d %d %d (%s)",
+                    village.name(), d[0], d[1], d[2], detail);
+        }
     }
 }
