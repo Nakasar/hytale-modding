@@ -183,13 +183,21 @@ public final class Requests {
         return Status.AVAILABLE;
     }
 
-    /** Titre d'une demande ({count} et {item} pour récolte et fabrication). */
+    /**
+     * Titre court d'une demande, tel que le suivi d'objectif l'affiche (en capitales, coupé vers 30 caractères) : les
+     * titres tiennent en 24 caractères et ne portent aucun paramètre (ValidateAssets le vérifie).
+     */
     public static Message title(RequestTemplate t) {
-        Message m = Message.translation(t.titleKey()).param("needed", t.needed());
-        if (t.itemId() != null) {
-            m = m.param("item", VillageBoard.itemName(t.itemId()));
+        return Message.translation(t.titleKey());
+    }
+
+    /** Titre d'une demande au tableau et dans les listes : le titre court, suivi de la quantité pour récolte et fabrication. */
+    public static Message boardTitle(RequestTemplate t) {
+        if (t.itemId() == null || t.needed() <= 1) {
+            return title(t);
         }
-        return m;
+        return Message.translation(KEYS + "titleAmount").param("title", title(t)).param("needed", t.needed())
+                .param("item", VillageBoard.itemName(t.itemId()));
     }
 
     /** Récompense d'une demande : essor du village et faveurs du peuple. */
@@ -198,13 +206,39 @@ public final class Requests {
                 .param("favor", VillageBoard.itemName(village.people().favorItem())).param("reputation", t.reputation());
     }
 
-    /** Ligne de tâche d'une demande prise, vue depuis `from`, avec la distance et la direction de `target`. */
-    public static Message task(PlayerRequest r, RequestTemplate t, Vector3d from, int[] target) {
-        Message m = Message.translation(t.taskKey()).param("count", Math.min(r.progress(), r.needed())).param("needed", r.needed());
+    /** Une escorte dont le captif est à moins de cette distance du joueur le ramène : la tâche montre le village. */
+    public static final int ESCORT_WITH_PLAYER = 16;
+
+    /**
+     * Ligne de tâche d'une demande prise, vue depuis `from`, avec la distance et la direction de son but : le lieu tiré
+     * (repaire, guetteur, camp), le cœur du village (défense) ou le dépôt. Pour une escorte, une fois le captif apparu :
+     * le captif lui-même tant qu'il est loin du joueur, puis le cœur du village (texte {@code escort.home}).
+     */
+    public static Message task(Store<EntityStore> store, PlayerRef player, PlayerRequest r, RequestTemplate t, Village village, Vector3d from) {
+        String key = t.taskKey();
+        int[] target;
+        Ref<EntityStore> captive = t.type() == RequestType.ESCORT
+                ? RequestSpawns.first(RequestSpawns.key(player.getUuid(), r.id()), RequestSpawns.Kind.CAPTIVE) : null;
+        Vector3d c = captive == null ? null : position(store, captive);
+        if (c != null) {
+            double dx = c.x() - (from == null ? c.x() : from.x());
+            double dz = c.z() - (from == null ? c.z() : from.z());
+            if (dx * dx + dz * dz <= (double) ESCORT_WITH_PLAYER * ESCORT_WITH_PLAYER) {
+                key = KEYS + "escort.home";
+                target = new int[] {village.x(), village.y(), village.z()};
+            } else {
+                target = new int[] {(int) Math.floor(c.x()), (int) Math.floor(c.y()), (int) Math.floor(c.z())};
+            }
+        } else if (t.type().hasSite()) {
+            target = r.site();
+        } else {
+            target = t.type().usesDeposit() ? village.deposit() : new int[] {village.x(), village.y(), village.z()};
+        }
+        Message m = Message.translation(key).param("count", Math.min(r.progress(), r.needed())).param("needed", r.needed());
         if (t.itemId() != null) {
             m = m.param("item", VillageBoard.itemName(t.itemId()));
         }
-        if (from != null && target != null) {
+        if (from != null) {
             double dx = target[0] + 0.5 - from.x();
             double dz = target[2] + 0.5 - from.z();
             m = m.param("distance", (int) Math.round(Math.sqrt(dx * dx + dz * dz)))
@@ -213,21 +247,6 @@ public final class Requests {
             m = m.param("distance", "?").param("direction", "?");
         }
         return m;
-    }
-
-    /**
-     * Où mène la demande : le lieu tiré (repaire, guetteur, captif), sauf pour une escorte dont le captif suit déjà le
-     * joueur (le cœur du village), et le cœur du village pour une défense ou un dépôt.
-     */
-    public static int[] target(PlayerRef player, PlayerRequest r, RequestTemplate t, Village village) {
-        if (t.type().hasSite()) {
-            if (t.type() == RequestType.ESCORT
-                    && RequestSpawns.first(RequestSpawns.key(player.getUuid(), r.id()), RequestSpawns.Kind.CAPTIVE) != null) {
-                return new int[] {village.x(), village.y(), village.z()};
-            }
-            return r.site();
-        }
-        return t.type().usesDeposit() ? village.deposit() : new int[] {village.x(), village.y(), village.z()};
     }
 
     /** Point cardinal de (dx, dz) : nord = -Z, est = +X. */
@@ -248,7 +267,7 @@ public final class Requests {
         Vector3d at = position(store, ref);
         Message description = Message.translation(KEYS + "hudDescription").param("village", village.name())
                 .param("reward", reward(t, village));
-        Message task = task(r, t, at, target(player, r, t, village));
+        Message task = task(store, player, r, t, village, at);
         if (t.type() == RequestType.DEFENSE && !GameClock.isNight(store)) {
             task = Message.translation(KEYS + "defense.waitNight").param("village", village.name());
         }

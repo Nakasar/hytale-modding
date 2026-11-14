@@ -91,7 +91,7 @@ public final class BoardPage extends InteractiveCustomUIPage<BoardPage.Event> {
             }
             cmd.set("#Request" + n + ".Visible", true);
             cmd.set("#Title" + n + ".TextSpans", Message.translation(KEYS + "title").param("number", i + 1)
-                    .param("type", Message.translation(t.type().nameKey())).param("title", Requests.title(t)));
+                    .param("type", Message.translation(t.type().nameKey())).param("title", Requests.boardTitle(t)));
             Requests.Status status = Requests.status(data, request);
             Message detail;
             Message action;
@@ -99,7 +99,7 @@ public final class BoardPage extends InteractiveCustomUIPage<BoardPage.Event> {
             switch (status) {
                 case TAKEN -> {
                     PlayerRequest mine = data.request(request.id());
-                    detail = Requests.task(mine, t, Requests.position(store, ref), Requests.target(playerRef, mine, t, village));
+                    detail = Requests.task(store, playerRef, mine, t, village, Requests.position(store, ref));
                     action = Message.translation(KEYS + "abandon");
                     event = "Abandon" + n;
                 }

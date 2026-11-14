@@ -1077,6 +1077,36 @@ public class ValidateAssets {
      * fichiers .lang fr-FR et en-US du pack (une clé absente s'affiche brute en jeu), chaque {@code ItemId} dans le
      * pack ou dans la liste des objets vanilla (un id inconnu fait échouer l'effet en jeu).
      */
+    /** Le suivi d'objectif coupe le titre vers 30 caractères en capitales : un titre de demande tient en 24, sans paramètre. */
+    static final int MAX_REQUEST_TITLE = 24;
+
+    private static int checkRequestTitles(Path root) throws Exception {
+        int errors = 0;
+        for (String locale : List.of("fr-FR", "en-US")) {
+            Path lang = root.resolve("Languages/" + locale + "/nakasar_peuples.lang");
+            if (!Files.isRegularFile(lang)) {
+                continue;
+            }
+            for (String line : Files.readAllLines(lang, java.nio.charset.StandardCharsets.UTF_8)) {
+                int eq = line.indexOf('=');
+                if (eq < 0) {
+                    continue;
+                }
+                String key = line.substring(0, eq).trim();
+                String text = line.substring(eq + 1).trim();
+                if (!key.startsWith("request.") || !key.endsWith(".title")) {
+                    continue;
+                }
+                if (text.length() > MAX_REQUEST_TITLE || text.contains("{")) {
+                    System.out.println("  " + locale + " " + key + " : titre de demande trop long ou paramétré (" + text.length()
+                            + " > " + MAX_REQUEST_TITLE + " caractères ou {param}) : « " + text + " »");
+                    errors++;
+                }
+            }
+        }
+        return errors;
+    }
+
     private static int checkDialogueTexts(Path root, String vanillaItems) throws Exception {
         List<Path> dirs = new ArrayList<>();
         for (String d : List.of("Nakasar/Dialogues", "Nakasar/Requests", "BarterShops", "Nakasar/VillageLayouts")) {
@@ -1493,6 +1523,7 @@ public class ValidateAssets {
         errors += checkTriggerVolumes(root);
         errors += checkWarningZones(root);
         errors += checkDialogueTexts(root, System.getProperty("items"));
+        errors += checkRequestTitles(root);
         errors += checkVillageLayouts(root, System.getProperty("prefabs"));
         errors += checkMapMarkerIcons(root);
         errors += checkReputation(root);
