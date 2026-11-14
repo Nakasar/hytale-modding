@@ -412,6 +412,14 @@ def chain_dialogue(pid, steps, reward):
     for n in (4, 3, 2):
         tid, rank = steps[n]
         entries.append({"Node": f"Etape{n}EnCours", "Conditions": [{"Type": "ChainRequest", "Template": tid}]})
+        building = CHAIN_BUILDINGS.get(tid)
+        if building:
+            entries.append({"Node": f"Etape{n}Attente", "Conditions": [{"Type": "Flag", "Flag": flag(n - 1)},
+                                                                       {"Type": "Building", "Id": building, "Standing": False}]})
+            nodes.append(node(f"Etape{n}Attente", f"etape{n}Attente", [
+                {"TextKey": K + "accepter", "HintKey": "nakasar_peuples.dialogue.hint.chain",
+                 "Conditions": [{"Type": "Building", "Id": building}],
+                 "FailKey": f"nakasar_peuples.dialogue.fail.building.{building}"}, news, bye]))
         entries.append({"Node": f"Etape{n}", "Conditions": [{"Type": "Flag", "Flag": flag(n - 1)}]})
         nodes.append(node(f"Etape{n}", f"etape{n}", [start(tid, rank), news, bye]))
         nodes.append(node(f"Etape{n}EnCours", f"etape{n}EnCours", [news, bye]))
@@ -470,6 +478,9 @@ REQUESTS = {
         ("Renonce_Defense_Night", "Defense", {}, 25, 3),
     ],
 }
+
+# Étapes de chaîne qui se jouent autour d'un bâtiment du plan : sans lui debout, le chef attend (« Attente »).
+CHAIN_BUILDINGS = {"Renonce_Chain_Fort": "Tour_Du_Fort"}
 
 # Chaînes : étape 1 = (objet, quantité, réputation) ; 2 à 4 (et 5 chez les Feran) = demandes de chaîne.
 CHAINS = {
@@ -927,6 +938,8 @@ def texts():
         for rank, rfr, ren in (("Tolere", "Toléré", "Tolerated"), ("Ami", "Ami", "Friend"), ("Hote", "Hôte", "Host"),
                                ("Champion", "Champion", "Champion")):
             t(f"dialogue.fail.rank.{rank}.{pid}", f"il faut être {rfr} {fr}", f"you must be {ren} of {en}")
+    t("dialogue.fail.building.Tour_Du_Fort", "il faut que la tour du fort soit debout (palier Village)",
+      "the fort tower must be standing (Village tier)")
 
     # Crieur et marchand : textes propres à chaque peuple (voix du GDD : Feran formels, le vent et l'eau ; Renoncés
     # méfiants, chuchotent le culte).
@@ -1194,6 +1207,8 @@ CHAIN_TEXTS = {
         "etape4": ("Les bateaux sont prêts, et les Marauders l'ont vu. Ils viendront une nuit. Quand tu seras notre hôte, tiens le fort avec nous.",
                    "The boats are ready, and the Marauders have seen it. They will come one night. When you are our host, hold the fort with us."),
         "etape4EnCours": ("Cette nuit, les Marauders viendront. Reste au fort, avec nos gardes.", "Tonight, the Marauders will come. Stay at the fort, with our guards."),
+        "etape4Attente": ("Les bateaux sont prêts, et les Marauders l'ont vu. Mais nous n'avons pas encore de fort à tenir : aide le hameau à grandir jusqu'à ce que la tour se dresse.",
+                          "The boats are ready, and the Marauders have seen it. But we have no fort to hold yet: help the hamlet grow until the tower rises."),
         "recompense": ("Tu as tenu le fort. J'ai tissé ce manteau avec ce qu'il me restait de magie : le froid ne te mordra plus. Je ne le donne qu'à un champion.",
                        "You held the fort. I wove this mantle with what was left of my magic: the cold will bite you no more. I give it only to a champion."),
         "recevoir": ("Recevoir le Manteau du givre", "Receive the Frost Mantle"),

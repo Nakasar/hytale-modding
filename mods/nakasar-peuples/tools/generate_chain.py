@@ -31,6 +31,8 @@ SAP = "Ingredient_Tree_Sap"
 SAP_COUNT = 10
 SAP_REPUTATION = 80
 SEED = "Nakasar_Peuples_Echo_Seed"
+# La veillée (étape 4) se joue autour du Grand-Père, bâtiment du palier Bourg : sans lui, le chef attend.
+VIGIL_BUILDING = "Grand_Pere"
 
 
 def flag(n):
@@ -93,6 +95,8 @@ def dialogue():
         {"Node": "Fin", "Conditions": [{"Type": "Flag", "Flag": flag(5)}]},
         {"Node": "Graine", "Conditions": [{"Type": "Flag", "Flag": flag(4)}]},
         {"Node": "VeilleEnCours", "Conditions": [{"Type": "ChainRequest", "Template": "Kweebec_Chain_Vigil"}]},
+        {"Node": "VeilleAttente", "Conditions": [{"Type": "Flag", "Flag": flag(3)},
+                                                 {"Type": "Building", "Id": VIGIL_BUILDING, "Standing": False}]},
         {"Node": "Veille", "Conditions": [{"Type": "Flag", "Flag": flag(3)}]},
         {"Node": "BosquetEnCours", "Conditions": [{"Type": "ChainRequest", "Template": "Kweebec_Chain_Grove"}]},
         {"Node": "Bosquet", "Conditions": [{"Type": "Flag", "Flag": flag(2)}]},
@@ -127,6 +131,11 @@ def dialogue():
         node("BosquetEnCours", "bosquetEnCours", [news(), bye()]),
         # Étape 4 : la veillée du Grand-Père, pendant un raid.
         node("Veille", "veille", [start("Kweebec_Chain_Vigil", "Hote", "VeilleAcceptee"), news(), bye()]),
+        node("VeilleAttente", "veilleAttente", [
+            {"TextKey": K + "accepter", "HintKey": "nakasar_peuples.dialogue.hint.chain",
+             "Conditions": [{"Type": "Building", "Id": VIGIL_BUILDING}],
+             "FailKey": f"nakasar_peuples.dialogue.fail.building.{VIGIL_BUILDING}"},
+            news(), bye()]),
         node("VeilleAcceptee", "veilleAcceptee", [news(), bye()]),
         node("VeilleEnCours", "veilleEnCours", [news(), bye()]),
         # Étape 5 : la Graine d'Écho.

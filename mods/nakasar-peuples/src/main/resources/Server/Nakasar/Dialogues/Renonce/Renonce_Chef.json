@@ -59,6 +59,20 @@
       ]
     },
     {
+      "Node": "Etape4Attente",
+      "Conditions": [
+        {
+          "Type": "Flag",
+          "Flag": "Renonce_Chain_3"
+        },
+        {
+          "Type": "Building",
+          "Id": "Tour_Du_Fort",
+          "Standing": false
+        }
+      ]
+    },
+    {
       "Node": "Etape4",
       "Conditions": [
         {
@@ -236,6 +250,35 @@
       "Id": "Fin",
       "TextKey": "nakasar_peuples.dialogue.Renonce_Chef.fin",
       "Responses": [
+        {
+          "TextKey": "nakasar_peuples.dialogue.Renonce_Chef.nouvelles",
+          "Effects": [
+            {
+              "Type": "RaidStatus"
+            }
+          ],
+          "Next": "Nouvelles"
+        },
+        {
+          "TextKey": "nakasar_peuples.dialogue.Renonce_Chef.aurevoir"
+        }
+      ]
+    },
+    {
+      "Id": "Etape4Attente",
+      "TextKey": "nakasar_peuples.dialogue.Renonce_Chef.etape4Attente",
+      "Responses": [
+        {
+          "TextKey": "nakasar_peuples.dialogue.Renonce_Chef.accepter",
+          "HintKey": "nakasar_peuples.dialogue.hint.chain",
+          "Conditions": [
+            {
+              "Type": "Building",
+              "Id": "Tour_Du_Fort"
+            }
+          ],
+          "FailKey": "nakasar_peuples.dialogue.fail.building.Tour_Du_Fort"
+        },
         {
           "TextKey": "nakasar_peuples.dialogue.Renonce_Chef.nouvelles",
           "Effects": [

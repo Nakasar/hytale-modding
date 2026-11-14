@@ -59,6 +59,20 @@
       ]
     },
     {
+      "Node": "VeilleAttente",
+      "Conditions": [
+        {
+          "Type": "Flag",
+          "Flag": "Kweebec_Chain_3"
+        },
+        {
+          "Type": "Building",
+          "Id": "Grand_Pere",
+          "Standing": false
+        }
+      ]
+    },
+    {
       "Node": "Veille",
       "Conditions": [
         {
@@ -352,6 +366,35 @@
             }
           ],
           "Next": "VeilleAcceptee"
+        },
+        {
+          "TextKey": "nakasar_peuples.dialogue.Kweebec_Chef.nouvelles",
+          "Effects": [
+            {
+              "Type": "RaidStatus"
+            }
+          ],
+          "Next": "Nouvelles"
+        },
+        {
+          "TextKey": "nakasar_peuples.dialogue.Kweebec_Chef.aurevoir"
+        }
+      ]
+    },
+    {
+      "Id": "VeilleAttente",
+      "TextKey": "nakasar_peuples.dialogue.Kweebec_Chef.veilleAttente",
+      "Responses": [
+        {
+          "TextKey": "nakasar_peuples.dialogue.Kweebec_Chef.accepter",
+          "HintKey": "nakasar_peuples.dialogue.hint.chain",
+          "Conditions": [
+            {
+              "Type": "Building",
+              "Id": "Grand_Pere"
+            }
+          ],
+          "FailKey": "nakasar_peuples.dialogue.fail.building.Grand_Pere"
         },
         {
           "TextKey": "nakasar_peuples.dialogue.Kweebec_Chef.nouvelles",
