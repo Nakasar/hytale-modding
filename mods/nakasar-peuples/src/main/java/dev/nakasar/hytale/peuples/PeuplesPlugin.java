@@ -36,6 +36,12 @@ import dev.nakasar.hytale.peuples.village.VillageNoRegenSystem;
 import dev.nakasar.hytale.peuples.village.VillageRegistry;
 import dev.nakasar.hytale.peuples.village.VillageSeeder;
 import dev.nakasar.hytale.peuples.village.Villages;
+import dev.nakasar.hytale.peuples.village.TrorkCampSeeder;
+import dev.nakasar.hytale.peuples.trork.MeatOfferings;
+import dev.nakasar.hytale.peuples.trork.WarPaintInteraction;
+import dev.nakasar.hytale.peuples.trork.WarPaintSystem;
+import dev.nakasar.hytale.peuples.klops.Klops;
+import dev.nakasar.hytale.peuples.klops.KlopsSystem;
 
 /**
  * Point d'entrée du mod « Peuples d'Orbis » : des villages vivants des peuples d'Orbis qui grandissent avec l'aide du
@@ -98,6 +104,14 @@ import dev.nakasar.hytale.peuples.village.Villages;
  *       palier) ;</li>
  *   <li>la chaîne de quêtes kweebec, jusqu'à la Graine d'Écho.</li>
  * </ul>
+ * Étape 7, la deuxième route de la zone 1 :
+ * <ul>
+ *   <li>{@link TrorkCampSeeder} : un camp trork posé à l'écart du village kweebec ; il commence hostile et
+ *       s'apprivoise par la viande ({@link MeatOfferings}, comportement vanilla des Trorks), puis par ses demandes et
+ *       la chaîne du chef, jusqu'à la Peinture de guerre ({@code trork/WarPaint}) ;</li>
+ *   <li>réputations croisées ({@code reputation/Rivals}) : aider un peuple coûte auprès de son rival ;</li>
+ *   <li>{@link Klops} : le Klops errant va de village en village, troque et confie des colis.</li>
+ * </ul>
  */
 public final class PeuplesPlugin extends JavaPlugin {
 
@@ -134,6 +148,7 @@ public final class PeuplesPlugin extends JavaPlugin {
                 .build());
 
         getCodecRegistry(Interaction.CODEC).register(OpenBoardInteraction.TYPE_ID, OpenBoardInteraction.class, OpenBoardInteraction.CODEC);
+        getCodecRegistry(Interaction.CODEC).register(WarPaintInteraction.TYPE_ID, WarPaintInteraction.class, WarPaintInteraction.CODEC);
 
         var entities = getEntityStoreRegistry();
         Villages.setResourceType(entities.registerResource(VillageRegistry.class, VillageRegistry.ID, VillageRegistry.CODEC));
@@ -152,6 +167,11 @@ public final class PeuplesPlugin extends JavaPlugin {
         entities.registerSystem(new RaidSystem());
         entities.registerSystem(new RaidDeathSystem());
         entities.registerSystem(new RaidAttitudeSystem());
+        // Étape 7 : camp trork, viande, Peinture de guerre, Klops errant.
+        entities.registerSystem(new TrorkCampSeeder());
+        entities.registerSystem(new MeatOfferings());
+        entities.registerSystem(new WarPaintSystem());
+        entities.registerSystem(new KlopsSystem());
         WorldEventsPlugin.registerCondition(this, RaidLocationCondition.TYPE, RaidLocationCondition.CODEC, RaidLocationCondition.Config.CODEC);
 
         getCommandRegistry().registerCommand(new VillageCommand());
@@ -169,5 +189,7 @@ public final class PeuplesPlugin extends JavaPlugin {
         VillageBlockSystem.clearAll();
         Villagers.clearAll();
         Raids.clearAll();
+        MeatOfferings.clearAll();
+        Klops.clearAll();
     }
 }

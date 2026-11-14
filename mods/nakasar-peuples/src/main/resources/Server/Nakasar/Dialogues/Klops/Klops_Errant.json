@@ -1,0 +1,68 @@
+{
+  "$Comment": "Le Klops errant (étape 7), généré par tools/generate_trorks.py : troc (faveurs de tous les peuples, rouages), colis pour un autre village (effet KlopsParcel), tournée du lendemain (KlopsRoute).",
+  "NpcNameKey": "nakasar_peuples.dialogue.Klops_Errant.npc",
+  "RoleKey": "nakasar_peuples.dialogue.Klops_Errant.role",
+  "Entries": [
+    {
+      "Node": "Accueil"
+    }
+  ],
+  "Nodes": [
+    {
+      "Id": "Accueil",
+      "TextKey": "nakasar_peuples.dialogue.Klops_Errant.accueil",
+      "Responses": [
+        {
+          "TextKey": "nakasar_peuples.dialogue.Klops_Errant.troc",
+          "HintKey": "nakasar_peuples.dialogue.hint.shop.Tolere",
+          "Effects": [
+            {
+              "Type": "OpenShop",
+              "Shop": "Nakasar_Peuples_Klops"
+            }
+          ]
+        },
+        {
+          "TextKey": "nakasar_peuples.dialogue.Klops_Errant.colis",
+          "HintKey": "nakasar_peuples.dialogue.hint.parcel",
+          "Effects": [
+            {
+              "Type": "KlopsParcel"
+            }
+          ],
+          "Next": "Colis"
+        },
+        {
+          "TextKey": "nakasar_peuples.dialogue.Klops_Errant.route",
+          "Effects": [
+            {
+              "Type": "KlopsRoute"
+            }
+          ],
+          "Next": "Route"
+        },
+        {
+          "TextKey": "nakasar_peuples.dialogue.Klops_Errant.aurevoir"
+        }
+      ]
+    },
+    {
+      "Id": "Colis",
+      "TextKey": "nakasar_peuples.dialogue.Klops_Errant.colisTexte",
+      "Responses": [
+        {
+          "TextKey": "nakasar_peuples.dialogue.Klops_Errant.aurevoir"
+        }
+      ]
+    },
+    {
+      "Id": "Route",
+      "TextKey": "nakasar_peuples.dialogue.Klops_Errant.routeTexte",
+      "Responses": [
+        {
+          "TextKey": "nakasar_peuples.dialogue.Klops_Errant.aurevoir"
+        }
+      ]
+    }
+  ]
+}

@@ -622,3 +622,150 @@ le raid vient la nuit même.
 - La marche sur le cœur : est-ce que le Seek et la laisse suffisent à traverser le village ?
 - Le bosquet brûlé : allure, et que les graines de chêne posées comptent bien (bloc `Plant_Sapling_Oak`).
 - L'allure du Trophée trork et de la Graine d'Écho en main (modèles de blocs et de sac vanilla).
+
+## Étape 7 : la route trork, la Peinture de guerre et le Klops errant
+
+La zone 1 offre maintenant deux routes : le village kweebec (étapes 2 à 6) ou le camp trork. Aider l'un coûte auprès
+de l'autre. Le Klops errant passe de l'un à l'autre, troque et confie des colis.
+
+### Le camp trork
+
+- Posé tout seul (`TrorkCampSeeder`) à 220-450 blocs du premier village kweebec, une fois celui-ci posé. Les sites
+  suivent les mêmes règles (herbe, pas d'eau, relief modéré), avec 60 % d'herbe au lieu de 80 %. À la main :
+  `/village generer trork`.
+- Plan `Trork_Camp` (`tools/generate_village_layouts.py`) : 16 prefabs vanilla `Npc/Trork` « feuilles » (feu de camp,
+  tentes, tours de guet, terrier, piège, réserves, entrepôt...). Les Encampment vanilla ne servent pas, parce qu'ils
+  posent des `Prefab_Spawner_Block`. Les quatre paliers se bâtissent par chantiers, avec de la viande, des peaux, du
+  bois, de la pierre et des os.
+- Les Trorks du camp sont des **rôles vanilla** (`Trork_Guard`, `Trork_Warrior`, `Trork_Hunter`, `Trork_Brawler`,
+  `Trork_Sentry`, `Trork_Shaman`), postés comme les métiers kweebecs, sans dialogue. Leur IA vanilla lit le rang du
+  joueur au camp : Honni, ils attaquent ; neutre, ils saluent ; amical, ils l'ignorent.
+- Le crieur (`Trork_Sentry`), la marchande (`Trork_Doctor_Witch`) et le chef (`Trork_Chieftain`) sont des rôles du mod,
+  immobiles. Le dépôt est le coffre grossier vanilla, le tableau le panneau grossier, la bannière des crânes vanilla
+  (marqueur de carte « Camp trork »).
+- Un camp trork n'est jamais pillé par un raid.
+
+![Plan du camp trork : paliers 0 à 3, postes des Trorks](images/plan_trork_camp.png)
+
+### Réputation trork
+
+- Groupe de réputation `Nakasar_Peuples_Trork` (groupe PNJ vanilla `Trork` = `*Trork*`). Un joueur commence **Honni
+  (-250)** auprès du peuple et de chaque camp (`People.initialReputation`, contrôlé par validateAssets).
+- Hors d'un camp, les Trorks sauvages suivent la réputation de peuple : hostiles tant qu'elle est basse. Frapper ou tuer
+  un Trork hors d'un camp ne coûte rien. Les bandes des demandes et les pillards des raids ne coûtent jamais rien.
+- Les pillards des raids restent hostiles à tout joueur, même ami des Trorks ou peint.
+
+### Apprivoiser par la viande
+
+Les Trorks vanilla repèrent la viande au sol à 15 blocs, vont la ramasser et la mangent (`Dropped_Meat`). Un Trork qui
+voit un joueur hostile le poursuit d'abord : il faut jeter la viande et s'éloigner.
+
+- `MeatOfferings` suit la viande (tout objet `*meat*`) jetée par un joueur à moins de 40 blocs d'un camp. Si elle
+  disparaît sans qu'un joueur la ramasse, avec un Trork à moins de 4 blocs, le joueur gagne +15 de réputation au camp
+  par morceau (4 au plus par tas).
+- Le crieur et le chef prennent aussi 5 Viande crue contre +40, même au rang Honni.
+- La viande mène au plus jusqu'à **Toléré** (50). Au-delà, il faut les demandes du tableau et la chaîne.
+
+### Demandes du camp
+
+Les titres tiennent dans le suivi du HUD : 24 caractères au plus, contrôlé par le générateur.
+
+| Demande | Type | Palier | Quoi |
+|---|---|---|---|
+| Viande pour le feu | récolte | 0 | 8 Viande crue |
+| Des peaux | récolte | 0 | 6 Peau légère |
+| Du bois pour le camp | récolte | 0 | 16 Tronc de chêne |
+| Des os à graver | récolte | 1 | 8 Fragment d'os |
+| Brochettes du festin | fabrication | 2 | 4 Brochette de viande |
+| Chasser les loups | chasse | 0 | 2 loups noirs à 70-130 blocs |
+| Chasser le Mosshorn | chasse | 1 | 1 Mosshorn à 80-140 blocs |
+
+La faveur trork est la **Dent de trophée** (modèle du fragment d'os vanilla). La marchande ouvre trois échoppes : la
+camelote au rang Toléré, les armes trorks vanilla au rang Ami, l'armure trork vanilla au rang Hôte.
+
+### La chaîne trork (chef « Croc-de-Fer »)
+
+| Étape | Rang | Quoi | Réputation |
+|---|---|---|---|
+| 1. Nourrir le feu | Toléré | donner 10 Viande crue au chef | +80 |
+| 2. Chasser les loups | Ami | 3 loups noirs à 60-120 blocs | +120 |
+| 3. Abattre deux Mosshorns | Ami | 2 Mosshorns à 80-140 blocs | +150 |
+| 4. Battre le clan rival | Hôte | un cogneur et deux gardes trorks à 120-180 blocs | +200 |
+| 5. Peinture de guerre | Champion | le chef donne la Peinture de guerre | |
+
+### Réputations croisées (`reputation/Rivals`)
+
+- Chaque gain de réputation de village chez un peuple retire la moitié de ce gain à la réputation de peuple de son
+  rival (Kweebecs et Trorks).
+- Chaque étape de chaîne d'un peuple fait perdre **un rang** chez le rival, sur la réputation de peuple et sur celle de
+  chacun de ses villages. La valeur garde sa place dans le rang d'en dessous. Honni ne descend plus.
+
+### La Peinture de guerre
+
+- Pot `Nakasar_Peuples_War_Paint` (modèle de la petite potion rouge vanilla). Le clic secondaire met ou ôte la peinture.
+  Le pot n'est pas consommé. Le drapeau `Trork_War_Paint` est sauvegardé avec le joueur.
+- Peint, le joueur a une teinte ocre rouge et une icône d'effet. Hors d'un camp, les Trorks sont au moins neutres envers
+  lui. Les Kweebecs le voient un rang plus bas : une échoppe ou une étape de chaîne peut se fermer.
+
+### Le Klops errant
+
+- Un seul par monde, rôle `Nakasar_Peuples_Klops_Wanderer` (modèle Klops_Merchant). Chaque jour de jeu, il s'arrête dans
+  un autre village du mod : les villages sont rangés par id, et le jour modulo leur nombre choisit le village. Il
+  n'apparaît qu'à l'approche d'un joueur, à l'ouest du cœur, et part au changement de jour. S'il est tué, il revient le
+  lendemain.
+- Son dialogue `Klops_Errant` propose trois choses :
+  - le troc `Nakasar_Peuples_Klops` : 2 faveurs de n'importe quel peuple contre un Rouage klops, et des rouages contre
+    du lin, des potions ou des faveurs ;
+  - un **colis** pour un autre village, tiré au hasard : arriver à moins de 12 blocs de son cœur avec le colis le livre,
+    pour 3 rouages et +30 de réputation dans ce village ;
+  - la tournée du lendemain.
+
+### Nouvelles commandes
+
+| Commande | Qui | Effet |
+|---|---|---|
+| `/village generer trork` | op | pose un camp trork autour du joueur |
+| `/village klops` | joueurs | où est le Klops aujourd'hui et demain, et pour qui est le colis porté |
+| `/village peinture` | op | donne le pot de Peinture de guerre |
+
+### Tester en jeu (étape 7) : les deux routes de la zone 1
+
+**Route trork**
+
+1. Nouveau monde : le village kweebec se pose (15 s), puis le camp trork (40 s), avec deux lignes « posé » dans le
+   journal du serveur. Sinon, s'éloigner et lancer `/village generer trork`. `/village liste` donne les deux lieux.
+2. Approcher du camp : les gardes trorks attaquent (Honni, -250). `/village reputation` le confirme.
+3. Jeter de la viande crue (`/give Food_Wildmeat_Raw 16`, la touche de lâcher) vers un Trork, puis reculer. Quand il la
+   mange, une notification donne +15 par morceau. Arrivé à Toléré, les Trorks du camp saluent au lieu d'attaquer.
+   Autre moyen : parler au crieur ou au chef avec 5 viandes.
+4. Tableau du camp : prendre « Viande pour le feu » et vérifier que le titre tient dans le suivi.
+5. Chaîne : `/village rep 60` au camp, puis le chef avec 10 viandes (étape 1). Une notification annonce la chute d'un
+   rang chez les Kweebecs. `/village rep 250` : les loups, puis les Mosshorns ; `/village rep 600` : le clan rival ;
+   `/village rep 1000` : la Peinture de guerre.
+6. Peinture : clic secondaire avec le pot. La teinte et l'icône apparaissent. Loin du camp, un Trork sauvage croisé
+   en chemin ne doit plus attaquer. Au village kweebec, `/village reputation` montre un
+   rang de moins.
+
+**Route kweebec**
+
+1. Remplir une demande kweebec : la notification « -N auprès des Trorks » s'affiche.
+2. `/village chaineetape 1` puis une étape réelle de la chaîne kweebec : le rang trork descend d'un cran.
+
+**Klops**
+
+1. `/village klops` dit où il est aujourd'hui. Y aller (ou `/time` au lendemain) : le Klops errant se tient à l'ouest du
+   cœur.
+2. Lui parler : troc, colis (message avec village, distance, direction), tournée.
+3. Porter le colis jusqu'au cœur de l'autre lieu : « Colis livré », 3 rouages, +30 de réputation.
+
+### À vérifier en jeu (étape 7)
+
+- Que les Trorks vanilla mangent bien la viande jetée près d'un joueur hostile, ou qu'il faille s'éloigner, et que le
+  ramassage par le Trork retire bien l'objet (la viande est comptée à sa disparition, avec un Trork à moins de 4 blocs).
+- Que les Trorks vanilla postés au camp (laisse déplacée par le Java) restent près de leur poste, et qu'ils dorment la
+  nuit sans quitter le camp.
+- Que l'attitude neutre donne bien le salut (Reputation_Switch) et que l'amical les rend indifférents.
+- L'allure des prefabs `Npc/Trork` côte à côte, et la bannière de crânes (marqueur de carte).
+- La teinte de la Peinture de guerre (EntityTopTint/BottomTint sur un joueur) et son icône (potion vanilla).
+- L'allure en main de la Dent de trophée, du Rouage klops (tas de ferraille) et du colis (rouleau de lin).
+- Que le Klops répond (rôle Generic interactif) et que l'effet `KlopsParcel` donne bien le colis.

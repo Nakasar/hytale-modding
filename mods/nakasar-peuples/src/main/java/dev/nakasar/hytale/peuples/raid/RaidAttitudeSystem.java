@@ -12,6 +12,7 @@ import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
 import com.hypixel.hytale.server.npc.blackboard.Blackboard;
 import com.hypixel.hytale.server.npc.blackboard.view.attitude.AttitudeView;
 import com.hypixel.hytale.server.npc.blackboard.view.attitude.IAttitudeProvider;
+import com.hypixel.hytale.server.core.entity.entities.Player;
 import com.hypixel.hytale.server.npc.entities.NPCEntity;
 import com.hypixel.hytale.server.npc.systems.BlackboardSystems;
 
@@ -51,6 +52,11 @@ public final class RaidAttitudeSystem extends StoreSystem<EntityStore> {
             return null;
         }
         String self = role(ref, accessor);
+        if (self != null && Raids.isRaiderRole(self) && accessor.getComponent(target, Player.getComponentType()) != null) {
+            // Étape 7 : le groupe vanilla Trork (*Trork*) donne aux pillards la réputation de peuple trork ; un raid reste
+            // hostile à tout joueur, même ami du camp trork ou sous Peinture de guerre.
+            return Attitude.HOSTILE;
+        }
         String other = role(target, accessor);
         if (self == null || other == null) {
             return null;

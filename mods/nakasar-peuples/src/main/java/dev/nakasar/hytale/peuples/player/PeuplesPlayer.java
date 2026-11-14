@@ -164,6 +164,12 @@ public final class PeuplesPlayer implements Component<EntityStore> {
         return reputation.getOrDefault(villageId, 0L).intValue();
     }
 
+    /** Réputation du joueur dans le village `villageId`, ou `initial` s'il n'y a jamais rien fait (étape 7 : camp trork). */
+    public int villageReputation(String villageId, int initial) {
+        Long value = reputation.get(villageId);
+        return value == null ? initial : value.intValue();
+    }
+
     public void setVillageReputation(String villageId, int value) {
         if (validKey(villageId)) {
             reputation.put(villageId, (long) value);

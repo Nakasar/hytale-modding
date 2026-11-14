@@ -114,6 +114,8 @@ public final class VillageCommand extends AbstractCommandCollection {
         addSubCommand(new RaidScheduleCommand());
         addSubCommand(new ChainCommand());
         addSubCommand(new ChainStepCommand());
+        addSubCommand(new ZoneOneCommands.KlopsCommand());
+        addSubCommand(new ZoneOneCommands.WarPaintCommand());
     }
 
     /** Sous-commande ouverte aux joueurs. */
@@ -165,6 +167,8 @@ public final class VillageCommand extends AbstractCommandCollection {
     }
 
     private static final class GenerateCommand extends AbstractPlayerCommand {
+        private final OptionalArg<String> people = withOptionalArg("peuple", KEYS + "generate.people", ArgTypes.STRING);
+
         GenerateCommand() {
             super("generer", KEYS + "generate.desc");
             requirePermission(ADMIN);
@@ -172,7 +176,12 @@ public final class VillageCommand extends AbstractCommandCollection {
 
         @Override
         protected void execute(CommandContext context, Store<EntityStore> store, Ref<EntityStore> ref, PlayerRef player, World world) {
-            People p = People.KWEEBEC;
+            // Étape 7 : « /village generer trork » pose un camp trork.
+            People p = people.get(context) == null ? People.KWEEBEC : People.byId(people.get(context));
+            if (p == null) {
+                player.sendMessage(Message.translation(Villages.MESSAGES + "unknownPeople").param("people", people.get(context)));
+                return;
+            }
             VillageLayout layout = VillageLayout.get(p.layout());
             if (layout == null) {
                 player.sendMessage(Message.translation(Villages.MESSAGES + "layoutMissing").param("layout", p.layout()));

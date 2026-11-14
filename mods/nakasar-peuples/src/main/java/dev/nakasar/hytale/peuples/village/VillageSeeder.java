@@ -62,7 +62,8 @@ public final class VillageSeeder extends TickingSystem<EntityStore> {
     /** Lance la recherche de site (thread du monde) si le monde n'a pas encore son village automatique. */
     public static void start(World world) {
         VillageRegistry registry = Villages.registry(world);
-        if (registry.isSeeded() || registry.all().stream().anyMatch(Village::isAuto)) {
+        // Étape 7 : seul un village kweebec automatique compte (le camp trork, posé ensuite par TrorkCampSeeder, l'est aussi).
+        if (registry.isSeeded() || registry.all().stream().anyMatch(v -> v.isAuto() && v.people() == People.KWEEBEC)) {
             return;
         }
         VillageLayout layout = VillageLayout.get(People.KWEEBEC.layout());
@@ -142,6 +143,11 @@ public final class VillageSeeder extends TickingSystem<EntityStore> {
 
     /** Vrai si le site (cx, cz) convient au campement du plan : herbe, pas d'eau, relief modéré. */
     static boolean suitable(World world, VillageLayout layout, int cx, int cz) {
+        return suitable(world, layout, cx, cz, MIN_GRASS);
+    }
+
+    /** Comme {@link #suitable(World, VillageLayout, int, int)}, avec la part d'herbe minimale `minGrass` (camp trork). */
+    static boolean suitable(World world, VillageLayout layout, int cx, int cz, double minGrass) {
         Terrain terrain = new Terrain(world);
         int r = layout.radiusUpTo(0);
         int samples = 0;
@@ -168,6 +174,6 @@ public final class VillageSeeder extends TickingSystem<EntityStore> {
                 max = Math.max(max, h);
             }
         }
-        return samples > 0 && grass >= MIN_GRASS * samples && max - min <= MAX_RELIEF;
+        return samples > 0 && grass >= minGrass * samples && max - min <= MAX_RELIEF;
     }
 }

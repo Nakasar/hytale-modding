@@ -1,0 +1,7 @@
+{
+  "$Comment": "Réputation de peuple des Trorks (étape 7) : tous les Trorks vanilla et ceux du mod (groupe PNJ vanilla Trork = rôles *Trork*). Un joueur commence Honni (-250, comme People.initialReputation) : les Trorks l'attaquent. Les pillards des raids restent hostiles quoi qu'il arrive (raid/RaidAttitudeSystem).",
+  "NPCGroups": [
+    "Trork"
+  ],
+  "InitialReputationValue": -250
+}

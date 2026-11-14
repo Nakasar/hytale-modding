@@ -1,0 +1,18 @@
+{
+  "$Comment": "Colis du Klops errant (étape 7) : à porter jusqu'au cœur du village qu'il a nommé (drapeau Klops_Parcel:<id>). Modèle, texture et icône du rouleau de lin vanilla (Ingredient_Bolt_Linen).",
+  "TranslationProperties": {
+    "Name": "nakasar_peuples.items.Nakasar_Peuples_Klops_Parcel.name",
+    "Description": "nakasar_peuples.items.Nakasar_Peuples_Klops_Parcel.description"
+  },
+  "Icon": "Icons/ItemsGenerated/Ingredient_Bolt_Linen.png",
+  "Categories": [
+    "Items.Ingredients"
+  ],
+  "Model": "Resources/Materials/Cotton_Bolt.blockymodel",
+  "Texture": "Resources/Materials/Cotton_Bolt_Textures/Linen_Texture.png",
+  "PlayerAnimationsId": "Item",
+  "Quality": "Common",
+  "ItemSoundSetId": "ISS_Items_Cloth",
+  "DropOnDeath": true,
+  "MaxStack": 1
+}

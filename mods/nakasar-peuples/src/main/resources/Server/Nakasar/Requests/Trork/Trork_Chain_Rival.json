@@ -1,0 +1,23 @@
+{
+  "$Comment": "Étape 4 de la chaîne trork (étape 7), générée par tools/generate_trorks.py : donnée par le chef (StartChainRequest), jamais tirée au tableau (Weight 0). Remplie, elle pose Trork_Chain_4 : un rang de moins chez les Kweebecs (reputation/Rivals).",
+  "People": "Trork",
+  "Type": "Hunt",
+  "Weight": 0,
+  "TitleKey": "nakasar_peuples.request.Trork_Chain_Rival.title",
+  "TaskKey": "nakasar_peuples.request.Trork_Chain_Rival.task",
+  "Spawns": [
+    "Trork_Brawler",
+    "Trork_Guard",
+    "Trork_Guard"
+  ],
+  "Roles": [
+    "Trork_Brawler",
+    "Trork_Guard"
+  ],
+  "MinDistance": 120,
+  "MaxDistance": 180,
+  "Essor": 0,
+  "Favors": 6,
+  "Reputation": 200,
+  "Flag": "Trork_Chain_4"
+}

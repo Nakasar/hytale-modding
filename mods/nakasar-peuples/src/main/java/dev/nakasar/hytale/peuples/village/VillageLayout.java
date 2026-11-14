@@ -404,8 +404,9 @@ public final class VillageLayout implements JsonAssetWithMap<String, DefaultAsse
             if (j.id == null || !jobIds.add(j.id)) {
                 results.fail("Métier sans id ou en double : " + j.id);
             }
-            if (j.role == null || j.role.isBlank() || j.dialogue == null || j.dialogue.isBlank()) {
-                results.fail("Métier " + j.id + " sans rôle ou sans dialogue");
+            // Étape 7 : un métier sans dialogue est permis (Trorks vanilla du camp), pas un métier sans rôle.
+            if (j.role == null || j.role.isBlank()) {
+                results.fail("Métier " + j.id + " sans rôle");
             }
             if (!j.building.isEmpty() && !ids.contains(j.building)) {
                 results.fail("Métier " + j.id + " : bâtiment inconnu " + j.building);

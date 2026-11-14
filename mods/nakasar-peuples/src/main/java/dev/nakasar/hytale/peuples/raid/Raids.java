@@ -201,6 +201,11 @@ public final class Raids {
         return o == null ? null : o.kind();
     }
 
+    /** Étape 7 : un camp trork n'est jamais pillé (ce sont les Trorks qui pillent les Kweebecs). */
+    public static boolean raided(People people) {
+        return people != People.TRORK;
+    }
+
     /** Vrai si le rôle est un assaillant de raid. */
     public static boolean isRaiderRole(String role) {
         return role != null && role.startsWith(RAIDER_PREFIX);
@@ -310,6 +315,9 @@ public final class Raids {
             }
         }
         for (Village village : new ArrayList<>(Villages.registry(world).all())) {
+            if (!raided(village.people())) {
+                continue;
+            }
             Active a = ACTIVE.get(village.id());
             if (a != null) {
                 stepActive(world, store, village, a, dt);

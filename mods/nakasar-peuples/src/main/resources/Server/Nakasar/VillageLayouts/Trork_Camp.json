@@ -1,0 +1,378 @@
+{
+  "$Comment": "Plan de village généré par tools/generate_village_layouts.py (ne pas modifier à la main) : prefabs vanilla collés par village/VillageBuilder autour du cœur, emprises (MinX..MaxZ) relatives au point de collage après rotation.",
+  "People": "Trork",
+  "Radius": 47,
+  "PlazaRadius": 6,
+  "BannerX": 0,
+  "BannerZ": -5,
+  "Buildings": [
+    {
+      "Id": "Feu_De_Camp",
+      "Tier": 0,
+      "Prefab": "Npc/Trork/Bonfire/Trork_Bonfire_Trork_Bonfire_001",
+      "X": 0,
+      "Z": 13,
+      "Rotation": 0,
+      "MinX": -3,
+      "MaxX": 2,
+      "MinZ": -2,
+      "MaxZ": 3,
+      "MinY": -6,
+      "MaxY": 4
+    },
+    {
+      "Id": "Tente_Ouest",
+      "Tier": 0,
+      "Prefab": "Npc/Trork/Tent/Trork_Tent_001",
+      "X": -17,
+      "Z": 0,
+      "Rotation": 0,
+      "MinX": -4,
+      "MaxX": 4,
+      "MinZ": -4,
+      "MaxZ": 5,
+      "MinY": -6,
+      "MaxY": 8
+    },
+    {
+      "Id": "Tente_Est",
+      "Tier": 0,
+      "Prefab": "Npc/Trork/Tent/Trork_Tent_001",
+      "X": 17,
+      "Z": 0,
+      "Rotation": 2,
+      "MinX": -4,
+      "MaxX": 4,
+      "MinZ": -5,
+      "MaxZ": 4,
+      "MinY": -6,
+      "MaxY": 8
+    },
+    {
+      "Id": "Tour_De_Guet",
+      "Tier": 0,
+      "Prefab": "Npc/Trork/Tier_1/Watchtower/Trork_Tier_1_Watchtower_001",
+      "X": 0,
+      "Z": -16,
+      "Rotation": 0,
+      "MinX": -3,
+      "MaxX": 2,
+      "MinZ": -2,
+      "MaxZ": 3,
+      "MinY": -3,
+      "MaxY": 13
+    },
+    {
+      "Id": "Foyer",
+      "Tier": 0,
+      "Prefab": "Npc/Trork/Fireplace/Trork_Fireplace_001",
+      "X": -9,
+      "Z": 10,
+      "Rotation": 0,
+      "MinX": -1,
+      "MaxX": 1,
+      "MinZ": -1,
+      "MaxZ": 1,
+      "MinY": -4,
+      "MaxY": 1
+    },
+    {
+      "Id": "Avertissement",
+      "Tier": 0,
+      "Prefab": "Npc/Trork/Warning/Trork_Warning_Trork_Warning_001",
+      "X": 0,
+      "Z": 28,
+      "Rotation": 0,
+      "MinX": -4,
+      "MaxX": 5,
+      "MinZ": -3,
+      "MaxZ": 1,
+      "MinY": -3,
+      "MaxY": 12
+    },
+    {
+      "Id": "Terrier",
+      "Tier": 1,
+      "Prefab": "Npc/Trork/Burrow/Trork_Burrow_Trork_Burrow_001",
+      "X": -18,
+      "Z": -18,
+      "Rotation": 0,
+      "MinX": -4,
+      "MaxX": 4,
+      "MinZ": -4,
+      "MaxZ": 4,
+      "MinY": -6,
+      "MaxY": 10
+    },
+    {
+      "Id": "Piege",
+      "Tier": 1,
+      "Prefab": "Npc/Trork/Trap/Trork_Trap_Trork_Trap_001",
+      "X": 22,
+      "Z": 22,
+      "Rotation": 0,
+      "MinX": -3,
+      "MaxX": 3,
+      "MinZ": -2,
+      "MaxZ": 4,
+      "MinY": -7,
+      "MaxY": 6
+    },
+    {
+      "Id": "Reserve",
+      "Tier": 1,
+      "Prefab": "Npc/Trork/Tier_2/Store/Trork_Tier_2_Store_001",
+      "X": 18,
+      "Z": -18,
+      "Rotation": 0,
+      "MinX": -5,
+      "MaxX": 4,
+      "MinZ": -4,
+      "MaxZ": 5,
+      "MinY": -6,
+      "MaxY": 7
+    },
+    {
+      "Id": "Tente_Sud",
+      "Tier": 1,
+      "Prefab": "Npc/Trork/Tent/Trork_Tent_001",
+      "X": -18,
+      "Z": 18,
+      "Rotation": 0,
+      "MinX": -4,
+      "MaxX": 4,
+      "MinZ": -4,
+      "MaxZ": 5,
+      "MinY": -6,
+      "MaxY": 8
+    },
+    {
+      "Id": "Tour_Est",
+      "Tier": 2,
+      "Prefab": "Npc/Trork/Tier_2/Watchtower/Trork_Tier_2_Watchtower_001",
+      "X": 34,
+      "Z": 0,
+      "Rotation": 0,
+      "MinX": -4,
+      "MaxX": 4,
+      "MinZ": -4,
+      "MaxZ": 5,
+      "MinY": -4,
+      "MaxY": 19
+    },
+    {
+      "Id": "Entrepot",
+      "Tier": 2,
+      "Prefab": "Npc/Trork/Warehouse/Trork_Warehouse_Trork_Warehouse_001",
+      "X": -34,
+      "Z": 0,
+      "Rotation": 0,
+      "MinX": -4,
+      "MaxX": 4,
+      "MinZ": -5,
+      "MaxZ": 3,
+      "MinY": -6,
+      "MaxY": 7
+    },
+    {
+      "Id": "Bric_A_Brac",
+      "Tier": 2,
+      "Prefab": "Npc/Trork/Misc/Large/Trork_Misc_Large_001",
+      "X": 12,
+      "Z": 18,
+      "Rotation": 0,
+      "MinX": -3,
+      "MaxX": 3,
+      "MinZ": -3,
+      "MaxZ": 3,
+      "MinY": -6,
+      "MaxY": 3
+    },
+    {
+      "Id": "Reserve_Du_Chef",
+      "Tier": 3,
+      "Prefab": "Npc/Trork/Tier_3/Store/Trork_Tier_3_Store_001",
+      "X": 0,
+      "Z": -34,
+      "Rotation": 0,
+      "MinX": -5,
+      "MaxX": 4,
+      "MinZ": -5,
+      "MaxZ": 6,
+      "MinY": -6,
+      "MaxY": 7
+    },
+    {
+      "Id": "Tour_Ouest",
+      "Tier": 3,
+      "Prefab": "Npc/Trork/Tier_3/Watchtower/Trork_Tier_3_Watchtower_002",
+      "X": -34,
+      "Z": -22,
+      "Rotation": 0,
+      "MinX": -4,
+      "MaxX": 4,
+      "MinZ": -4,
+      "MaxZ": 4,
+      "MinY": -4,
+      "MaxY": 17
+    },
+    {
+      "Id": "Grand_Feu",
+      "Tier": 3,
+      "Prefab": "Npc/Trork/Bonfire/Trork_Bonfire_Trork_Bonfire_002",
+      "X": -12,
+      "Z": 32,
+      "Rotation": 0,
+      "MinX": -3,
+      "MaxX": 3,
+      "MinZ": -3,
+      "MaxZ": 3,
+      "MinY": -6,
+      "MaxY": 4
+    }
+  ],
+  "Chantiers": [
+    {
+      "Tier": 1,
+      "Hours": 24,
+      "Materials": [
+        {
+          "ItemId": "Food_Wildmeat_Raw",
+          "Quantity": 16
+        },
+        {
+          "ItemId": "Ingredient_Hide_Light",
+          "Quantity": 12
+        },
+        {
+          "ItemId": "Wood_Oak_Trunk",
+          "Quantity": 24
+        }
+      ]
+    },
+    {
+      "Tier": 2,
+      "Hours": 24,
+      "Materials": [
+        {
+          "ItemId": "Food_Wildmeat_Raw",
+          "Quantity": 32
+        },
+        {
+          "ItemId": "Ingredient_Hide_Medium",
+          "Quantity": 16
+        },
+        {
+          "ItemId": "Wood_Oak_Trunk",
+          "Quantity": 48
+        },
+        {
+          "ItemId": "Rock_Stone_Cobble",
+          "Quantity": 24
+        }
+      ]
+    },
+    {
+      "Tier": 3,
+      "Hours": 24,
+      "Materials": [
+        {
+          "ItemId": "Food_Wildmeat_Raw",
+          "Quantity": 48
+        },
+        {
+          "ItemId": "Ingredient_Hide_Heavy",
+          "Quantity": 16
+        },
+        {
+          "ItemId": "Wood_Oak_Trunk",
+          "Quantity": 64
+        },
+        {
+          "ItemId": "Ingredient_Bone_Fragment",
+          "Quantity": 24
+        }
+      ]
+    }
+  ],
+  "Jobs": [
+    {
+      "Id": "Garde",
+      "Tier": 0,
+      "Role": "Trork_Guard",
+      "Dialogue": "",
+      "Building": "Tour_De_Guet",
+      "WorkX": -1,
+      "WorkZ": -11,
+      "Home": "Tente_Est",
+      "HomeX": 11,
+      "HomeZ": -1,
+      "Builder": false
+    },
+    {
+      "Id": "Guerrier",
+      "Tier": 0,
+      "Role": "Trork_Warrior",
+      "Dialogue": "",
+      "Building": "Feu_De_Camp",
+      "WorkX": -1,
+      "WorkZ": 9,
+      "Home": "Tente_Ouest",
+      "HomeX": -11,
+      "HomeZ": 0,
+      "Builder": false
+    },
+    {
+      "Id": "Chasseur",
+      "Tier": 1,
+      "Role": "Trork_Hunter",
+      "Dialogue": "",
+      "Building": "Piege",
+      "WorkX": 22,
+      "WorkZ": 18,
+      "Home": "Tente_Sud",
+      "HomeX": -12,
+      "HomeZ": 18,
+      "Builder": false
+    },
+    {
+      "Id": "Cogneur",
+      "Tier": 2,
+      "Role": "Trork_Brawler",
+      "Dialogue": "",
+      "Building": "Entrepot",
+      "WorkX": -28,
+      "WorkZ": -1,
+      "Home": "Entrepot",
+      "HomeX": -28,
+      "HomeZ": -1,
+      "Builder": false
+    },
+    {
+      "Id": "Sentinelle",
+      "Tier": 2,
+      "Role": "Trork_Sentry",
+      "Dialogue": "",
+      "Building": "Tour_Est",
+      "WorkX": 28,
+      "WorkZ": 0,
+      "Home": "Tour_Est",
+      "HomeX": 28,
+      "HomeZ": 0,
+      "Builder": false
+    },
+    {
+      "Id": "Shaman",
+      "Tier": 3,
+      "Role": "Trork_Shaman",
+      "Dialogue": "",
+      "Building": "Reserve_Du_Chef",
+      "WorkX": -1,
+      "WorkZ": -26,
+      "Home": "Reserve_Du_Chef",
+      "HomeX": -1,
+      "HomeZ": -26,
+      "Builder": false
+    }
+  ]
+}

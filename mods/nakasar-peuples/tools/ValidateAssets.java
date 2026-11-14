@@ -1235,6 +1235,21 @@ public class ValidateAssets {
      * (ruines calcinées, échafaudages, {@code Burning.REQUIRED_BLOCKS}) existent en vanilla ({@code -Dblocks}).
      * Les {@code ItemId} des matériaux de chantier sont vérifiés avec les dialogues.
      */
+    /** Rôles vanilla de {@code -Drefs} (lignes « npc <id> »). */
+    private static Set<String> vanillaNpcRefs() throws Exception {
+        Set<String> out = new HashSet<>();
+        String refs = System.getProperty("refs");
+        if (refs != null) {
+            for (String line : Files.readAllLines(Path.of(refs))) {
+                String[] parts = line.trim().split("\\s+");
+                if (parts.length == 2 && parts[0].equals("npc")) {
+                    out.add(parts[1]);
+                }
+            }
+        }
+        return out;
+    }
+
     private static void checkVillageLife(Path root, BsonDocument doc, List<String> problems) throws Exception {
         Set<String> roles = new HashSet<>();
         Set<String> dialogues = new HashSet<>();
@@ -1281,11 +1296,12 @@ public class ValidateAssets {
                 String id = job.getString("Id").getValue();
                 needKey.accept("job." + id);
                 String role = job.getString("Role").getValue();
-                if (!roles.contains(role)) {
+                // Étape 7 : un métier peut être un rôle vanilla (Trorks du camp), cité dans -Drefs (« npc <id> »).
+                if (!roles.contains(role) && !vanillaNpcRefs().contains(role)) {
                     problems.add("métier " + id + " : rôle PNJ inconnu " + role);
                 }
                 String dialogue = job.getString("Dialogue").getValue();
-                if (!dialogues.contains(dialogue)) {
+                if (!dialogue.isEmpty() && !dialogues.contains(dialogue)) {
                     problems.add("métier " + id + " : dialogue inconnu " + dialogue);
                 }
             }
@@ -1394,8 +1410,17 @@ public class ValidateAssets {
         Class<?> peopleClass = Class.forName("dev.nakasar.hytale.peuples.village.People");
         for (Object people : peopleClass.getEnumConstants()) {
             String id = (String) peopleClass.getMethod("id").invoke(people);
-            if (!Files.exists(root.resolve("NPC/Reputation/Groups/Nakasar_Peuples_" + id + ".json"))) {
+            Path group = root.resolve("NPC/Reputation/Groups/Nakasar_Peuples_" + id + ".json");
+            if (!Files.exists(group)) {
                 problems.add("peuple " + id + " sans groupe de réputation NPC/Reputation/Groups/Nakasar_Peuples_" + id + ".json");
+            } else {
+                // Étape 7 : la réputation de départ du groupe vanilla et celle des villages du peuple sont la même.
+                BsonDocument g = BsonDocument.parse(Files.readString(group));
+                int initial = g.containsKey("InitialReputationValue") ? g.getInt32("InitialReputationValue").getValue() : 0;
+                int start = (int) peopleClass.getMethod("initialReputation").invoke(people);
+                if (initial != start) {
+                    problems.add("peuple " + id + " : InitialReputationValue " + initial + " ≠ People.initialReputation() " + start);
+                }
             }
             for (Object rank : rankClass.getEnumConstants()) {
                 String shop = (String) peopleClass.getMethod("shop", rankClass).invoke(people, rank);

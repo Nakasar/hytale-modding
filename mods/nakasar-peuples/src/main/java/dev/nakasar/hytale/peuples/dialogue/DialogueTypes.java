@@ -69,6 +69,7 @@ public final class DialogueTypes {
         DialogueEffect.CODEC.register("StartChainRequest", StartChainRequestEffect.class, StartChainRequestEffect.CODEC);
         DialogueCondition.CODEC.register("Raid", RaidCondition.class, RaidCondition.CODEC);
         DialogueEffect.CODEC.register("RaidStatus", RaidStatusEffect.class, RaidStatusEffect.CODEC);
+        dev.nakasar.hytale.peuples.klops.KlopsDialogueTypes.register();
     }
 
     static CombinedItemContainer inventory(DialogueContext context) {
@@ -320,7 +321,12 @@ public final class DialogueTypes {
 
         @Override
         public boolean apply(DialogueContext context) {
+            boolean fresh = !context.player().hasFlag(flag);
             context.player().setFlag(flag, true);
+            if (fresh) {
+                // Étape 7 : une étape de chaîne coûte un rang chez le peuple rival.
+                dev.nakasar.hytale.peuples.reputation.Rivals.flagged(context.world(), context.store(), context.ref(), context.playerRef(), flag);
+            }
             return true;
         }
 

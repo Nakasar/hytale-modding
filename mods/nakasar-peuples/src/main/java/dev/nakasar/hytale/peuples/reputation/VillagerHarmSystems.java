@@ -44,6 +44,17 @@ public final class VillagerHarmSystems {
         return damage != null && damage.getSource() instanceof Damage.EntitySource source ? source.getRef() : null;
     }
 
+    /** Étape 7 : bandes des demandes et pillards des raids ne sont pas des villageois (leur groupe vanilla Trork compte sinon). */
+    static boolean exempt(Ref<EntityStore> npc) {
+        if (npc == null) {
+            return false;
+        }
+        var owner = dev.nakasar.hytale.peuples.request.RequestSpawns.owner(npc);
+        return owner != null && (owner.kind() == dev.nakasar.hytale.peuples.request.RequestSpawns.Kind.FOE
+                || owner.kind() == dev.nakasar.hytale.peuples.request.RequestSpawns.Kind.GUARD)
+                || dev.nakasar.hytale.peuples.raid.Raids.kind(npc) == dev.nakasar.hytale.peuples.raid.Raids.Kind.RAIDER;
+    }
+
     static void punish(World world, PlayerRef player, People people, Vector3d where, int amount, String reasonKey) {
         world.execute(() -> {
             Store<EntityStore> store = world.getEntityStore().getStore();
@@ -54,7 +65,8 @@ public final class VillagerHarmSystems {
             Village village = Villages.registry(world).nearestOf(people, where.x(), where.z(), Reputations.ATTITUDE_RADIUS);
             if (village != null) {
                 Reputations.change(world, store, ref, player, village, amount, reasonKey);
-            } else {
+            } else if (people != People.TRORK) {
+                // Étape 7 : hors d'un camp, les Trorks sauvages sont des ennemis (chasses kweebecs) : pas de perte.
                 Reputations.changePeople(store, ref, people, amount);
             }
         });
@@ -87,7 +99,7 @@ public final class VillagerHarmSystems {
             ReputationGroupComponent group = chunk.getComponent(index, ReputationGroupComponent.getComponentType());
             People people = group == null ? null : Reputations.peopleOfGroup(group.getReputationGroupId());
             TransformComponent transform = chunk.getComponent(index, TransformComponent.getComponentType());
-            if (people == null || transform == null) {
+            if (people == null || transform == null || exempt(chunk.getReferenceTo(index))) {
                 return;
             }
             punish(store.getExternalData().getWorld(), player, people, new Vector3d(transform.getPosition()), HIT,
@@ -113,7 +125,7 @@ public final class VillagerHarmSystems {
             ReputationGroupComponent group = buffer.getComponent(ref, ReputationGroupComponent.getComponentType());
             People people = group == null ? null : Reputations.peopleOfGroup(group.getReputationGroupId());
             TransformComponent transform = buffer.getComponent(ref, TransformComponent.getComponentType());
-            if (people == null || transform == null) {
+            if (people == null || transform == null || exempt(ref)) {
                 return;
             }
             punish(store.getExternalData().getWorld(), player, people, new Vector3d(transform.getPosition()), KILL,

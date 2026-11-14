@@ -1,0 +1,57 @@
+{
+  "$Comment": "La marchande d'un camp trork (étape 7), au sud du dépôt. Posé par Criers (Java) quand un joueur approche du camp, immobile. Tué, il revient au matin suivant. Ne régénère jamais (VillageNoRegenSystem). Groupe vanilla Trork : il suit le rang du joueur au camp.",
+  "Type": "Generic",
+  "Appearance": "Trork_Doctor_Witch",
+  "NameTranslationKey": "nakasar_peuples.npc.Trork_Merchant.name",
+  "MaxHealth": 100,
+  "StartState": "Idle",
+  "DefaultPlayerAttitude": "Neutral",
+  "DefaultNPCAttitude": "Ignore",
+  "MotionControllerList": [
+    {
+      "Type": "Walk",
+      "MaxWalkSpeed": 0.1,
+      "Gravity": 10,
+      "MaxFallSpeed": 10,
+      "Acceleration": 10,
+      "JumpHeight": 1.0
+    }
+  ],
+  "KnockbackScale": 0,
+  "Instructions": [
+    {
+      "Sensor": {
+        "Type": "State",
+        "State": "Idle"
+      },
+      "Instructions": [
+        {
+          "Actions": []
+        }
+      ]
+    }
+  ],
+  "InteractionInstruction": {
+    "Instructions": [
+      {
+        "Continue": true,
+        "Sensor": {
+          "Type": "Any"
+        },
+        "Actions": [
+          {
+            "Type": "SetInteractable",
+            "Interactable": true,
+            "Hint": "server.interactionHints.trade"
+          }
+        ]
+      },
+      {
+        "Sensor": {
+          "Type": "HasInteracted"
+        },
+        "Actions": []
+      }
+    ]
+  }
+}

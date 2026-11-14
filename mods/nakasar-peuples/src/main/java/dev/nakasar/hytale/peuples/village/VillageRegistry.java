@@ -9,7 +9,9 @@ import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  * Les villages d'un monde : ressource du monde (id {@value #ID}), sauvegardée avec lui comme la réputation vanilla
@@ -30,11 +32,17 @@ public final class VillageRegistry implements Resource<EntityStore> {
             .append(new KeyedCodec<>("SeedAttempts", Codec.INTEGER), (r, i) -> r.seedAttempts = i == null ? 0 : i, r -> r.seedAttempts)
             .documentation("Recherches de site déjà faites sans succès (chacune essaie un autre jeu de sites).")
             .add()
+            .append(new KeyedCodec<>("SeededPeople", Codec.STRING_ARRAY),
+                    (r, a) -> r.setSeededPeople(a), r -> r.seededPeople.toArray(String[]::new))
+            .documentation("Peuples (ids) dont le lieu automatique est déjà posé, hors premier village kweebec (champ Seeded) : "
+                    + "camp trork (étape 7), villages des zones 2 et 3 (étape 8).")
+            .add()
             .build();
 
     private final List<Village> villages = new ArrayList<>();
     private boolean seeded;
     private int seedAttempts;
+    private final Set<String> seededPeople = new LinkedHashSet<>();
 
     public VillageRegistry() {
     }
@@ -56,6 +64,32 @@ public final class VillageRegistry implements Resource<EntityStore> {
 
     void setSeeded(boolean value) {
         seeded = value;
+    }
+
+    /** Vrai une fois le lieu automatique du peuple posé (le Kweebec garde son champ {@code Seeded}). */
+    public boolean isSeeded(People people) {
+        return people == People.KWEEBEC ? seeded : seededPeople.contains(people.id());
+    }
+
+    public void setSeeded(People people, boolean value) {
+        if (people == People.KWEEBEC) {
+            seeded = value;
+        } else if (value) {
+            seededPeople.add(people.id());
+        } else {
+            seededPeople.remove(people.id());
+        }
+    }
+
+    private void setSeededPeople(String[] ids) {
+        seededPeople.clear();
+        if (ids != null) {
+            for (String id : ids) {
+                if (id != null && !id.isBlank()) {
+                    seededPeople.add(id);
+                }
+            }
+        }
     }
 
     public int seedAttempts() {
@@ -136,6 +170,7 @@ public final class VillageRegistry implements Resource<EntityStore> {
         }
         copy.seeded = seeded;
         copy.seedAttempts = seedAttempts;
+        copy.seededPeople.addAll(seededPeople);
         return copy;
     }
 }

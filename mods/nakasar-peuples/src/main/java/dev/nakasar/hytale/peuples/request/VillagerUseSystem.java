@@ -60,8 +60,12 @@ public final class VillagerUseSystem extends EntityEventSystem<EntityStore, UseE
         String merchantVillage = Criers.merchantVillageOf(target);
         String chiefVillage = Criers.chiefVillageOf(target);
         RequestSpawns.Owner owner = RequestSpawns.owner(target);
-        dev.nakasar.hytale.peuples.village.Villagers.Posted villager = dev.nakasar.hytale.peuples.village.Villagers.posted(target);
-        if (crierVillage == null && merchantVillage == null && chiefVillage == null && owner == null && villager == null) {
+        dev.nakasar.hytale.peuples.village.Villagers.Posted posted = dev.nakasar.hytale.peuples.village.Villagers.posted(target);
+        // Étape 7 : les Trorks vanilla du camp n'ont pas de dialogue.
+        dev.nakasar.hytale.peuples.village.Villagers.Posted villager =
+                posted != null && posted.dialogue() != null && !posted.dialogue().isEmpty() ? posted : null;
+        boolean klops = dev.nakasar.hytale.peuples.klops.Klops.isWanderer(target);
+        if (crierVillage == null && merchantVillage == null && chiefVillage == null && owner == null && villager == null && !klops) {
             return;
         }
         World world = store.getExternalData().getWorld();
@@ -70,7 +74,12 @@ public final class VillagerUseSystem extends EntityEventSystem<EntityStore, UseE
             if (!user.isValid()) {
                 return;
             }
-            if (villager != null) {
+            if (klops) {
+                Dialogue dialogue = Dialogue.get(dev.nakasar.hytale.peuples.klops.Klops.DIALOGUE);
+                if (dialogue != null) {
+                    Dialogues.openPage(world, s, user, player, dialogue);
+                }
+            } else if (villager != null) {
                 Dialogue dialogue = Dialogue.get(villager.dialogue());
                 if (dialogue == null) {
                     player.sendMessage(Message.translation(Dialogues.KEYS + "unknown").param("id", villager.dialogue()));
