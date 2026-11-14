@@ -7,20 +7,36 @@ import java.util.Locale;
  * le dépôt est un coffre vanilla du peuple, le tableau un panneau vanilla du peuple dont seule l'interaction change
  * ({@code Nakasar_Peuples_Board_<Peuple>}, objet enfant du panneau vanilla).
  *
- * <p>Étape 1 (socle) : seuls les Kweebecs. Les autres peuples s'ajoutent ici aux étapes 7 à 9.
+ * <p>Étapes 1 et 2 : seuls les Kweebecs (plan de village {@code Kweebec_Oak}, bannière de carte). Les autres peuples
+ * s'ajoutent ici aux étapes 7 à 9.
  */
 public enum People {
 
-    KWEEBEC("Kweebec", "Furniture_Kweebec_Chest_Small", "Nakasar_Peuples_Board_Kweebec");
+    KWEEBEC("Kweebec", "Furniture_Kweebec_Chest_Small", "Nakasar_Peuples_Board_Kweebec", "Nakasar_Peuples_Banner_Kweebec",
+            "Kweebec_Oak");
 
     private final String id;
     private final String depositBlock;
     private final String boardBlock;
+    private final String bannerBlock;
+    private final String layout;
 
-    People(String id, String depositBlock, String boardBlock) {
+    People(String id, String depositBlock, String boardBlock, String bannerBlock, String layout) {
         this.id = id;
         this.depositBlock = depositBlock;
         this.boardBlock = boardBlock;
+        this.bannerBlock = bannerBlock;
+        this.layout = layout;
+    }
+
+    /** Bannière du peuple : bloc marqueur de carte posé sur la place du village. */
+    public String bannerBlock() {
+        return bannerBlock;
+    }
+
+    /** Plan de village par défaut du peuple ({@link VillageLayout}). */
+    public String layout() {
+        return layout;
     }
 
     /** Id du peuple dans les assets et les sauvegardes ({@code Kweebec}). */

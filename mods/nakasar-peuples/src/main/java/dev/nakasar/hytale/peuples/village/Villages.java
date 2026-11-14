@@ -82,15 +82,41 @@ public final class Villages {
     }
 
     /**
-     * Efface le village : retire son cœur et son tableau s'ils sont encore là. Le dépôt reste en place avec son
-     * contenu (les objets des joueurs ne disparaissent jamais).
+     * Efface le village : retire son cœur, son tableau et sa bannière s'ils sont encore là. Le dépôt reste en place avec
+     * son contenu (les objets des joueurs ne disparaissent jamais), les bâtiments collés aussi.
      */
     public static void dissolve(World world, Village village) {
         ChunkStore chunks = world.getChunkStore();
         Blocks.clearIf(chunks, village.x(), village.y(), village.z(), HEART_BLOCK);
         int[] b = village.board();
         Blocks.clearIf(chunks, b[0], b[1], b[2], village.people().boardBlock());
+        if (village.hasBanner()) {
+            int[] f = village.banner();
+            Blocks.clearIf(chunks, f[0], f[1], f[2], village.people().bannerBlock());
+        }
         registry(world).remove(village);
+    }
+
+    /**
+     * Pose la bannière du peuple (bloc marqueur de carte, découvert à moins de {@link VillageEntrySystem#REVEAL_RADIUS}
+     * blocs) en (x, y, z) si la case est libre. Vrai si elle est posée.
+     */
+    public static boolean placeBanner(World world, Village village, int x, int y, int z) {
+        ChunkStore chunks = world.getChunkStore();
+        String current = Blocks.name(chunks, x, y, z);
+        if (current != null && !Terrain.isVegetation(current)) {
+            return false;
+        }
+        if (!Blocks.set(chunks, x, y, z, village.people().bannerBlock(), 0)) {
+            return false;
+        }
+        village.setBanner(x, y, z);
+        return true;
+    }
+
+    /** Marque le premier village automatique comme posé (VillageSeeder). */
+    static void setSeeded(World world, boolean seeded) {
+        registry(world).setSeeded(seeded);
     }
 
     /** Ajoute de l'essor (borné par le seuil du palier) ; rend le gain réel. */

@@ -1,0 +1,26 @@
+{
+  "$Comment": "Bannière d'un village kweebec : la statue kweebec vanilla (modèle, texture, sons hérités du parent) posée au nord de la place, qui porte le marqueur de carte du village (découvrable : le Java le révèle au joueur qui approche, village/VillageEntrySystem). Icônes dessinées par tools/generate_map_icons.py.",
+  "Parent": "Furniture_Kweebec_Statue",
+  "TranslationProperties": {
+    "Name": "nakasar_peuples.items.Nakasar_Peuples_Banner_Kweebec.name",
+    "Description": "nakasar_peuples.items.Nakasar_Peuples_Banner_Kweebec.description"
+  },
+  "Quality": "Developer",
+  "BlockType": {
+    "Gathering": {
+      "Breaking": {
+        "GatherType": "Unbreakable"
+      }
+    },
+    "BlockEntity": {
+      "Components": {
+        "BlockMapMarker": {
+          "Name": "nakasar_peuples.marker.Kweebec",
+          "Icon": "Nakasar_Peuples_Kweebec.png",
+          "CompassIcon": "Nakasar_Peuples_KweebecCompass.png",
+          "Discoverable": true
+        }
+      }
+    }
+  }
+}

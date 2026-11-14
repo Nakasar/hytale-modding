@@ -1,5 +1,6 @@
 package dev.nakasar.hytale.peuples.village;
 
+import com.hypixel.hytale.codec.Codec;
 import com.hypixel.hytale.codec.KeyedCodec;
 import com.hypixel.hytale.codec.builder.BuilderCodec;
 import com.hypixel.hytale.codec.codecs.array.ArrayCodec;
@@ -23,9 +24,17 @@ public final class VillageRegistry implements Resource<EntityStore> {
                     (r, v) -> r.setAll(v), r -> r.villages.toArray(Village[]::new))
             .documentation("Villages du monde.")
             .add()
+            .append(new KeyedCodec<>("Seeded", Codec.BOOLEAN), (r, b) -> r.seeded = b != null && b, r -> r.seeded)
+            .documentation("Vrai une fois le premier village kweebec posé près du point d'apparition (VillageSeeder).")
+            .add()
+            .append(new KeyedCodec<>("SeedAttempts", Codec.INTEGER), (r, i) -> r.seedAttempts = i == null ? 0 : i, r -> r.seedAttempts)
+            .documentation("Recherches de site déjà faites sans succès (chacune essaie un autre jeu de sites).")
+            .add()
             .build();
 
     private final List<Village> villages = new ArrayList<>();
+    private boolean seeded;
+    private int seedAttempts;
 
     public VillageRegistry() {
     }
@@ -39,6 +48,22 @@ public final class VillageRegistry implements Resource<EntityStore> {
                 }
             }
         }
+    }
+
+    public boolean isSeeded() {
+        return seeded;
+    }
+
+    void setSeeded(boolean value) {
+        seeded = value;
+    }
+
+    public int seedAttempts() {
+        return seedAttempts;
+    }
+
+    void countSeedAttempt() {
+        seedAttempts++;
     }
 
     public List<Village> all() {
@@ -92,6 +117,8 @@ public final class VillageRegistry implements Resource<EntityStore> {
         for (Village v : villages) {
             copy.villages.add(v.copy());
         }
+        copy.seeded = seeded;
+        copy.seedAttempts = seedAttempts;
         return copy;
     }
 }
