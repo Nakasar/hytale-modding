@@ -10,7 +10,11 @@ import dev.nakasar.hytale.peuples.dialogue.Dialogue;
 import dev.nakasar.hytale.peuples.dialogue.Dialogues;
 import dev.nakasar.hytale.peuples.player.PeuplesPlayer;
 import dev.nakasar.hytale.peuples.village.OpenBoardInteraction;
+import dev.nakasar.hytale.peuples.village.VillageEntrySystem;
+import dev.nakasar.hytale.peuples.village.VillageLayout;
+import dev.nakasar.hytale.peuples.village.VillageNoRegenSystem;
 import dev.nakasar.hytale.peuples.village.VillageRegistry;
+import dev.nakasar.hytale.peuples.village.VillageSeeder;
 import dev.nakasar.hytale.peuples.village.Villages;
 
 /**
@@ -28,8 +32,14 @@ import dev.nakasar.hytale.peuples.village.Villages;
  *   <li>l'état du joueur ({@link PeuplesPlayer} : drapeaux de dialogue), sauvegardé avec lui ;</li>
  *   <li>la commande de test {@code /village}.</li>
  * </ul>
- * Le mod ne fait encore apparaître aucun PNJ : la règle « aucun mob ne se régénère hors combat » (AGENTS.md) arrive
- * avec les gardes et les raids (étape 6), avec son {@code NoRegenSystem}.
+ * Étape 2, le premier village :
+ * <ul>
+ *   <li>les plans de village, assets JSON {@code Server/}{@value VillageLayout#PATH} (prefabs vanilla autour du cœur,
+ *       générés par {@code tools/generate_village_layouts.py}), bâtis par {@code VillageBuilder} ;</li>
+ *   <li>{@link VillageSeeder} : un village kweebec posé tout seul près du point d'apparition du monde par défaut ;</li>
+ *   <li>{@link VillageEntrySystem} : titre d'écran à l'entrée d'un village, bannière de carte révélée à l'approche ;</li>
+ *   <li>{@link VillageNoRegenSystem} : les Kweebecs des prefabs ne se régénèrent pas (règle permanente, AGENTS.md).</li>
+ * </ul>
  */
 public final class PeuplesPlugin extends JavaPlugin {
 
@@ -53,16 +63,25 @@ public final class PeuplesPlugin extends JavaPlugin {
                 .setKeyFunction(Dialogue::getId)
                 .build());
 
+        getAssetRegistry().register(HytaleAssetStore.builder(VillageLayout.class, new DefaultAssetMap<String, VillageLayout>())
+                .setPath(VillageLayout.PATH)
+                .setCodec(VillageLayout.CODEC)
+                .setKeyFunction(VillageLayout::getId)
+                .build());
+
         getCodecRegistry(Interaction.CODEC).register(OpenBoardInteraction.TYPE_ID, OpenBoardInteraction.class, OpenBoardInteraction.CODEC);
 
         var entities = getEntityStoreRegistry();
         Villages.setResourceType(entities.registerResource(VillageRegistry.class, VillageRegistry.ID, VillageRegistry.CODEC));
         PeuplesPlayer.setComponentType(entities.registerComponent(PeuplesPlayer.class, PeuplesPlayer.ID, PeuplesPlayer.CODEC));
+        entities.registerSystem(new VillageSeeder());
+        entities.registerSystem(new VillageEntrySystem());
+        entities.registerSystem(new VillageNoRegenSystem());
 
         getCommandRegistry().registerCommand(new VillageCommand());
 
-        getLogger().atInfo().log("Nakasar Peuples : villages (%s), tableau (%s), dialogues (Server/%s), /village enregistrés",
-                VillageRegistry.ID, OpenBoardInteraction.TYPE_ID, Dialogue.PATH);
+        getLogger().atInfo().log("Nakasar Peuples : villages (%s), plans (Server/%s), tableau (%s), dialogues (Server/%s), /village enregistrés",
+                VillageRegistry.ID, VillageLayout.PATH, OpenBoardInteraction.TYPE_ID, Dialogue.PATH);
     }
 
     @Override

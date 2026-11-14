@@ -104,6 +104,7 @@ public class ValidateAssets {
         CODECS.put("WorldEvent/Event/", WE + "event.WorldEventAsset");
         // Dialogues des PNJ : type d'asset écrit en Java par le plugin du mod (build/classes sur le classpath).
         CODECS.put("Nakasar/Dialogues/", "dev.nakasar.hytale.peuples.dialogue.Dialogue");
+        CODECS.put("Nakasar/VillageLayouts/", "dev.nakasar.hytale.peuples.village.VillageLayout");
         CODECS.put("WorldEvent/Stage/", WE + "event.StageAsset");
     }
 
@@ -1135,6 +1136,89 @@ public class ValidateAssets {
         }
     }
 
+    /**
+     * Plans de village ({@code Nakasar/VillageLayouts}) : chaque {@code Prefab} doit être un prefab vanilla relevé dans
+     * Assets.zip ({@code -Dprefabs}, tools/vanilla-prefabs-0.7.2.txt) ; un chemin inconnu laisse un trou dans le village.
+     */
+    private static int checkVillageLayouts(Path root, String vanillaPrefabs) throws Exception {
+        Path layouts = root.resolve("Nakasar/VillageLayouts");
+        if (!Files.isDirectory(layouts) || vanillaPrefabs == null) {
+            return 0;
+        }
+        Set<String> known = new HashSet<>();
+        for (String line : Files.readAllLines(Path.of(vanillaPrefabs))) {
+            if (!line.isBlank() && !line.startsWith("#")) {
+                known.add(line.trim().split("\\s+")[0]);
+            }
+        }
+        int errors = 0;
+        List<Path> files;
+        try (Stream<Path> walk = Files.walk(layouts)) {
+            files = walk.filter(f -> f.toString().endsWith(".json")).sorted().toList();
+        }
+        for (Path file : files) {
+            List<String> problems = new ArrayList<>();
+            BsonDocument doc = BsonDocument.parse(Files.readString(file));
+            if (doc.containsKey("Buildings") && doc.get("Buildings").isArray()) {
+                for (BsonValue b : doc.getArray("Buildings")) {
+                    if (!b.isDocument() || !b.asDocument().containsKey("Prefab")) {
+                        continue;
+                    }
+                    String prefab = b.asDocument().getString("Prefab").getValue();
+                    if (!known.contains(prefab)) {
+                        problems.add("prefab vanilla inconnu : " + prefab);
+                    }
+                }
+            }
+            String rel = root.relativize(file).toString().replace('\\', '/');
+            if (problems.isEmpty()) {
+                System.out.println("OK    prefabs de " + rel);
+            } else {
+                errors++;
+                System.out.println("ERROR prefabs de " + rel);
+                problems.forEach(pb -> System.out.println("      " + pb));
+            }
+        }
+        return errors;
+    }
+
+    /** Icônes des marqueurs de carte des blocs du pack ({@code BlockMapMarker}) : présentes sous Common/UI/WorldMap/MapMarkers. */
+    private static int checkMapMarkerIcons(Path root) throws Exception {
+        Path items = root.resolve("Item/Items");
+        Path icons = root.getParent().resolve("Common/UI/WorldMap/MapMarkers");
+        if (!Files.isDirectory(items)) {
+            return 0;
+        }
+        int errors = 0;
+        List<Path> files;
+        try (Stream<Path> walk = Files.walk(items)) {
+            files = walk.filter(f -> f.toString().endsWith(".json")).sorted().toList();
+        }
+        for (Path file : files) {
+            String text = Files.readString(file);
+            if (!text.contains("BlockMapMarker")) {
+                continue;
+            }
+            BsonDocument doc = BsonDocument.parse(text);
+            BsonValue marker = doc;
+            for (String key : List.of("BlockType", "BlockEntity", "Components", "BlockMapMarker")) {
+                marker = marker != null && marker.isDocument() ? marker.asDocument().get(key) : null;
+            }
+            if (marker == null || !marker.isDocument()) {
+                continue;
+            }
+            for (String key : List.of("Icon", "CompassIcon")) {
+                BsonValue icon = marker.asDocument().get(key);
+                if (icon != null && icon.isString() && icon.asString().getValue().startsWith("Nakasar")
+                        && !Files.exists(icons.resolve(icon.asString().getValue()))) {
+                    errors++;
+                    System.out.println("ERROR " + root.relativize(file) + " : icône de carte absente " + icon.asString().getValue());
+                }
+            }
+        }
+        return errors;
+    }
+
     public static void main(String[] args) throws Exception {
         Path root = Path.of(args[0]);
         // Les magasins d'assets lisent les options de ligne de commande du serveur.
@@ -1215,6 +1299,8 @@ public class ValidateAssets {
         errors += checkTriggerVolumes(root);
         errors += checkWarningZones(root);
         errors += checkDialogueTexts(root, System.getProperty("items"));
+        errors += checkVillageLayouts(root, System.getProperty("prefabs"));
+        errors += checkMapMarkerIcons(root);
         String blocks = System.getProperty("blocks");
         if (blocks != null) {
             errors += checkBlockIds(root, Path.of(blocks));

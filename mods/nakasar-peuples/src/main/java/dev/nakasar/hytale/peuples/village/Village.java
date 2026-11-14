@@ -3,6 +3,7 @@ package dev.nakasar.hytale.peuples.village;
 import com.hypixel.hytale.codec.Codec;
 import com.hypixel.hytale.codec.KeyedCodec;
 import com.hypixel.hytale.codec.builder.BuilderCodec;
+import com.hypixel.hytale.codec.codecs.array.ArrayCodec;
 
 /**
  * Un village : son état sauvegardé avec le monde (ressource {@link VillageRegistry}), ancré sur le bloc cœur invisible
@@ -42,6 +43,21 @@ public final class Village {
             .append(new KeyedCodec<>("Created", Codec.LONG), (v, l) -> v.created = l == null ? 0L : l, v -> v.created)
             .documentation("Date de fondation (epoch, ms).")
             .add()
+            .append(new KeyedCodec<>("Layout", Codec.STRING), (v, s) -> v.layout = s, v -> v.layout)
+            .documentation("Plan du village (VillageLayout) s'il a été généré, sinon absent (village fondé à la main).")
+            .add()
+            .append(new KeyedCodec<>("Auto", Codec.BOOLEAN), (v, b) -> v.auto = b != null && b, v -> v.auto)
+            .documentation("Vrai pour le village posé automatiquement près du point d'apparition (VillageSeeder).")
+            .add()
+            .append(new KeyedCodec<>("Built", new ArrayCodec<>(Codec.STRING, String[]::new)), (v, a) -> v.built = a == null ? new String[0] : a, v -> v.built)
+            .documentation("Bâtiments du plan déjà collés (ids VillageLayout.Building).")
+            .add()
+            .append(new KeyedCodec<>("Banner", Codec.BOOLEAN), (v, b) -> v.banner = b != null && b, v -> v.banner)
+            .documentation("Vrai si la bannière de carte a été posée (BannerX/Y/Z).")
+            .add()
+            .append(new KeyedCodec<>("BannerX", Codec.INTEGER), (v, i) -> v.bannerX = i == null ? 0 : i, v -> v.bannerX).add()
+            .append(new KeyedCodec<>("BannerY", Codec.INTEGER), (v, i) -> v.bannerY = i == null ? 0 : i, v -> v.bannerY).add()
+            .append(new KeyedCodec<>("BannerZ", Codec.INTEGER), (v, i) -> v.bannerZ = i == null ? 0 : i, v -> v.bannerZ).add()
             .build();
 
     String id = "";
@@ -59,6 +75,13 @@ public final class Village {
     int tier;
     int essor;
     long created;
+    String layout;
+    boolean auto;
+    String[] built = new String[0];
+    boolean banner;
+    int bannerX;
+    int bannerY;
+    int bannerZ;
 
     Village() {
     }
@@ -90,6 +113,13 @@ public final class Village {
         v.tier = tier;
         v.essor = essor;
         v.created = created;
+        v.layout = layout;
+        v.auto = auto;
+        v.built = built.clone();
+        v.banner = banner;
+        v.bannerX = bannerX;
+        v.bannerY = bannerY;
+        v.bannerZ = bannerZ;
         return v;
     }
 
@@ -125,6 +155,53 @@ public final class Village {
 
     public int essor() {
         return essor;
+    }
+
+    /** Plan du village, ou null pour un village fondé à la main ({@code /village fonder}). */
+    public String layout() {
+        return layout;
+    }
+
+    /** Vrai pour le village posé automatiquement près du point d'apparition. */
+    public boolean isAuto() {
+        return auto;
+    }
+
+    /** Ids des bâtiments du plan déjà collés. */
+    public String[] built() {
+        return built.clone();
+    }
+
+    public boolean hasBanner() {
+        return banner;
+    }
+
+    public int[] banner() {
+        return new int[] {bannerX, bannerY, bannerZ};
+    }
+
+    void setBanner(int bx, int by, int bz) {
+        banner = true;
+        bannerX = bx;
+        bannerY = by;
+        bannerZ = bz;
+    }
+
+    void clearBanner() {
+        banner = false;
+    }
+
+    void markGenerated(String layoutId, boolean automatic, String[] buildings) {
+        layout = layoutId;
+        auto = automatic;
+        built = buildings.clone();
+    }
+
+    /** Distance horizontale au carré du cœur à (px, pz). */
+    public double horizontalDistanceSquared(double px, double pz) {
+        double dx = px - (x + 0.5);
+        double dz = pz - (z + 0.5);
+        return dx * dx + dz * dz;
     }
 
     public boolean isBoard(int bx, int by, int bz) {

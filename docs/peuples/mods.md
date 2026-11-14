@@ -115,6 +115,77 @@ chaque clé `...Key` existe dans les `.lang` fr-FR et en-US et chaque `ItemId` d
 
 ### Hors de l'étape 1
 
-Aucun PNJ n'apparaît encore : `NoRegenSystem` (règle permanente n° 1) arrive avec les gardes et les raids. Les
-demandes (étape 3), la réputation et les rangs (étape 4, groupes et rangs du ReputationPlugin vanilla), les chantiers
+Les demandes (étape 3), la réputation et les rangs (étape 4, groupes et rangs du ReputationPlugin vanilla), les chantiers
 (étape 5) et les raids (étape 6) s'ajoutent à `Village` et à `PeuplesPlayer`.
+
+## Étape 2 : le premier village kweebec
+
+### Plan du village
+
+Un plan (`Server/Nakasar/VillageLayouts/<Id>.json`, asset `VillageLayout`) place des prefabs **vanilla**
+(`Server/Prefabs/Npc/Kweebec/Oak/...`, règle n° 2) autour du cœur. Il est écrit par
+`tools/generate_village_layouts.py`, qui lit les emprises de `tools/vanilla-prefabs-0.7.2.txt` (relevées dans
+Assets.zip), refuse tout chevauchement (3 blocs entre bâtiments, 1 pour les lanternes et les bancs) et dessine un
+aperçu (`--preview DIR`). Chaque bâtiment a un palier : seul le campement (palier 0) est collé à la génération, les
+autres attendent les chantiers (étape 5).
+
+| Palier | Bâtiments du plan `Kweebec_Oak` (rayon 65) |
+| --- | --- |
+| 0, campement | deux abris, tour de guet, potager, deux lanternes, deux bancs |
+| 1, hameau | puits, échoppe, une maison, enclos des lapins |
+| 2, village | grande maison, maison des gardes, deuxième tour, deuxième échoppe |
+| 3, bourg | le Grand-Père, grand potager |
+
+Les prefabs vanilla gardent leurs marqueurs d'apparition : des Kweebecs (villageois, marchand, patrouilles de
+Razorleaf et de Sproutlings, lapins) apparaissent dans le campement.
+
+### Génération
+
+`VillageBuilder` charge les chunks, aplanit la place (chemin de terre) et l'emprise de chaque bâtiment (herbe, 2 blocs
+de marge plate, fondu de 4 blocs vers le relief, arbres abattus), à au plus 4 blocs de la hauteur de la place, puis colle
+les prefabs comme l'action vanilla `PrefabPasteAction`, et pose cœur, dépôt, tableau (étape 1) et bannière.
+
+`VillageSeeder` pose tout seul **le premier village kweebec du monde par défaut** : 15 s après le démarrage, il essaie
+40 sites sur des cercles de 280 à 700 blocs autour du point d'apparition (ordre tiré du seed), et prend le premier
+couvert d'herbe à 80 %, sans eau, avec au plus 9 blocs de relief. Le monde garde la trace du village posé ; si aucun
+site ne convient, il réessaie au démarrage suivant avec d'autres sites. Les noms viennent de `VillageNames` (liste
+kweebec, sans doublon dans le monde).
+
+### Bannière et entrée
+
+- La **bannière** (`Nakasar_Peuples_Banner_Kweebec`, statue kweebec vanilla en parent) est posée au nord de la place.
+  Elle porte un marqueur de carte découvrable (icônes `tools/generate_map_icons.py`) : `VillageEntrySystem` le révèle
+  au joueur qui passe à moins de 300 blocs, et il reste ensuite sur sa carte et sa boussole.
+- À moins de 40 blocs du cœur, un **titre d'écran** donne le nom du village, puis « peuple · rang · humeur » (le rang
+  est « Étranger » jusqu'à l'étape 4). Il revient après être ressorti au-delà de 52 blocs.
+- `VillageNoRegenSystem` : aucun PNJ à moins de 96 blocs d'un village ne se régénère (règle permanente n° 1).
+
+### Nouvelles commandes
+
+| Sous-commande | Qui | Effet |
+| --- | --- | --- |
+| `generer` | opérateur | bâtit un village kweebec (palier 0) centré sous les pieds, nom tiré de la liste |
+| `site` | opérateur | nom, position, distance et direction du village le plus proche, à toute distance |
+
+`effacer` retire aussi la bannière ; les bâtiments collés et le dépôt restent.
+
+### Tester en jeu (étape 2)
+
+1. Nouveau monde (ou monde existant : le village se pose au démarrage suivant). Attendre ~20 s après l'arrivée ; le
+   journal du serveur dit `recherche d'un site de village kweebec` puis `village ... généré en x y z`.
+2. `/village site` : nom, distance et direction du village. S'y rendre : la bannière apparaît sur la carte vers
+   300 blocs, puis le titre d'écran à l'entrée du campement.
+3. Vérifier les bâtiments, les Kweebecs, le tableau (ouest du cœur) et le dépôt (est).
+4. Ailleurs, sur un terrain d'herbe : `/village generer` bâtit un second village sous les pieds (il faut être à plus
+   de 146 blocs du premier).
+5. Redémarrer : le village reste, aucun second village automatique n'apparaît.
+
+### À vérifier en jeu (étape 2)
+
+- Les prefabs se collent-ils (sinon `prefab introuvable` / `zone du prefab ... pas chargée` dans le journal) ? Les
+  portes des maisons sont-elles tournées vers la place (abri ouest rotation 0, abri est 180°) ?
+- Les Kweebecs des marqueurs d'apparition apparaissent-ils, et les patrouilles restent-elles dans le campement ?
+- Le terrain aplani est-il propre (marches, trous, arbres coupés en l'air) ?
+- La bannière garde-t-elle le modèle de la statue avec son marqueur de carte ? Le marqueur apparaît-il sur la carte
+  après la révélation sans reconnexion ?
+- Le titre d'écran s'affiche-t-il une seule fois par entrée ?

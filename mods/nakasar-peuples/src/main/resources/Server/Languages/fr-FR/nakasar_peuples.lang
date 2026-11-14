@@ -2,6 +2,8 @@ items.Nakasar_Peuples_Village_Heart.name = Cœur de village
 items.Nakasar_Peuples_Village_Heart.description = Bloc invisible où le mod garde la mémoire d'un village.
 items.Nakasar_Peuples_Board_Kweebec.name = Tableau du village kweebec
 items.Nakasar_Peuples_Board_Kweebec.description = Les demandes du village, sa jauge d'essor et le contenu de son dépôt.
+items.Nakasar_Peuples_Banner_Kweebec.name = Bannière du village kweebec
+items.Nakasar_Peuples_Banner_Kweebec.description = Marque le village sur la carte des voyageurs qui passent à proximité.
 
 people.Kweebec.name = Kweebecs
 
@@ -40,6 +42,22 @@ village.heartMissing = Le cœur de ce village n'est plus à sa place.
 village.boardOrphan = Ce panneau n'est le tableau d'aucun village.
 village.listHeader = Villages de ce monde : {count}
 village.listLine = • {name} ({people}, {tier}) en {x} {y} {z}
+village.loadFailed = Le terrain du village n'a pas pu être chargé.
+village.siteTaken = Un autre village a pris la place entre-temps.
+village.terrainUnloaded = Le sol sous le village n'est pas chargé : rapproche-toi et recommence.
+village.layoutMissing = Plan de village introuvable : {layout}.
+village.generating = Construction du village « {name} »…
+village.generated = Village « {name} » bâti en {x} {y} {z} : {count} constructions collées.
+village.noneInWorld = Aucun village dans ce monde.
+village.siteLine = « {name} » en {x} {y} {z}, à {distance} blocs, direction {direction}.
+village.dir.n = nord
+village.dir.ne = nord-est
+village.dir.e = est
+village.dir.se = sud-est
+village.dir.s = sud
+village.dir.sw = sud-ouest
+village.dir.w = ouest
+village.dir.nw = nord-ouest
 
 dialogue.header = {name}, {role}
 dialogue.quote = « {text} »
@@ -103,3 +121,13 @@ command.flags.desc = Tes drapeaux de dialogue.
 command.flags.list = Drapeaux : {flags}
 command.forget.desc = Efface tes drapeaux de dialogue (pour rejouer les dialogues).
 command.forget.done = Drapeaux effacés.
+command.generate.desc = Bâtit un village kweebec (campement) centré ici : terrain aplani, prefabs vanilla.
+command.site.desc = Position, distance et direction du village le plus proche.
+
+marker.Kweebec = Village kweebec
+
+entry.subtitle = {people} · {rank} · {mood}
+entry.mood.0 = un campement fragile
+entry.mood.1 = un hameau qui s'éveille
+entry.mood.2 = un village plein de vie
+entry.mood.3 = un bourg prospère

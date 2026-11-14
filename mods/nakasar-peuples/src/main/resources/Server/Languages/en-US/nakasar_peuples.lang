@@ -2,6 +2,8 @@ items.Nakasar_Peuples_Village_Heart.name = Village Heart
 items.Nakasar_Peuples_Village_Heart.description = Invisible block where the mod keeps a village's memory.
 items.Nakasar_Peuples_Board_Kweebec.name = Kweebec Village Board
 items.Nakasar_Peuples_Board_Kweebec.description = The village's requests, growth gauge and deposit contents.
+items.Nakasar_Peuples_Banner_Kweebec.name = Kweebec Village Banner
+items.Nakasar_Peuples_Banner_Kweebec.description = Marks the village on the map of travellers passing nearby.
 
 people.Kweebec.name = Kweebecs
 
@@ -40,6 +42,22 @@ village.heartMissing = This village's heart is no longer in place.
 village.boardOrphan = This sign is not any village's board.
 village.listHeader = Villages in this world: {count}
 village.listLine = • {name} ({people}, {tier}) at {x} {y} {z}
+village.loadFailed = The village terrain could not be loaded.
+village.siteTaken = Another village took this spot in the meantime.
+village.terrainUnloaded = The ground under the village is not loaded: come closer and try again.
+village.layoutMissing = Village layout not found: {layout}.
+village.generating = Building the village "{name}"…
+village.generated = Village "{name}" built at {x} {y} {z}: {count} structures pasted.
+village.noneInWorld = No village in this world.
+village.siteLine = "{name}" at {x} {y} {z}, {distance} blocks to the {direction}.
+village.dir.n = north
+village.dir.ne = north-east
+village.dir.e = east
+village.dir.se = south-east
+village.dir.s = south
+village.dir.sw = south-west
+village.dir.w = west
+village.dir.nw = north-west
 
 dialogue.header = {name}, {role}
 dialogue.quote = "{text}"
@@ -103,3 +121,13 @@ command.flags.desc = Your dialogue flags.
 command.flags.list = Flags: {flags}
 command.forget.desc = Clear your dialogue flags (to replay dialogues).
 command.forget.done = Flags cleared.
+command.generate.desc = Builds a Kweebec village (camp) centred here: flattened terrain, vanilla prefabs.
+command.site.desc = Position, distance and direction of the nearest village.
+
+marker.Kweebec = Kweebec village
+
+entry.subtitle = {people} · {rank} · {mood}
+entry.mood.0 = a fragile camp
+entry.mood.1 = an awakening hamlet
+entry.mood.2 = a lively village
+entry.mood.3 = a thriving town

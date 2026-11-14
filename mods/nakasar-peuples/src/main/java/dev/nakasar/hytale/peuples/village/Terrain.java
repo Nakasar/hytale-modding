@@ -1,0 +1,158 @@
+package dev.nakasar.hytale.peuples.village;
+
+import com.hypixel.hytale.component.Ref;
+import com.hypixel.hytale.math.util.ChunkUtil;
+import com.hypixel.hytale.server.core.asset.type.blocktype.config.BlockType;
+import com.hypixel.hytale.server.core.universe.world.World;
+import com.hypixel.hytale.server.core.universe.world.chunk.section.FluidSection;
+import com.hypixel.hytale.server.core.universe.world.storage.ChunkStore;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.concurrent.CompletableFuture;
+import java.util.function.BiPredicate;
+
+/**
+ * Lecture et retouche du relief pour poser un village : hauteur du sol naturel d'une colonne, chargement des chunks
+ * d'une zone, aplanissement d'une emprise avec un fondu vers le terrain d'origine (GDD, Faisabilité : « emplacements en
+ * périphérie, terrain aplani par le Java »). Toutes les écritures se font sur le thread du monde.
+ */
+public final class Terrain {
+
+    /** Rendu par {@link #surface} quand la colonne n'est pas chargée ou n'a pas de sol. */
+    public static final int NONE = Integer.MIN_VALUE;
+    /** Plus haut bloc sondé pour trouver le sol. */
+    public static final int TOP = 300;
+    /** Hauteur au-dessus du sol où l'on abat les arbres d'une emprise. */
+    private static final int TREE_HEIGHT = 36;
+
+    public static final String GRASS = "Soil_Grass";
+    public static final String DIRT = "Soil_Dirt";
+    public static final String PATHWAY = "Soil_Pathway";
+
+    private final ChunkStore chunks;
+
+    public Terrain(World world) {
+        this.chunks = world.getChunkStore();
+    }
+
+    /** Charge (ou génère) les chunks qui couvrent le rectangle de blocs donné. À appeler depuis le thread du monde. */
+    public static CompletableFuture<Void> load(World world, int x0, int x1, int z0, int z1) {
+        ChunkStore store = world.getChunkStore();
+        List<CompletableFuture<?>> futures = new ArrayList<>();
+        for (int cx = ChunkUtil.chunkCoordinate(x0); cx <= ChunkUtil.chunkCoordinate(x1); cx++) {
+            for (int cz = ChunkUtil.chunkCoordinate(z0); cz <= ChunkUtil.chunkCoordinate(z1); cz++) {
+                futures.add(store.getChunkReferenceAsync(ChunkUtil.indexChunk(cx, cz)));
+            }
+        }
+        return CompletableFuture.allOf(futures.toArray(CompletableFuture[]::new));
+    }
+
+    /** Vrai pour un bloc de relief naturel (terre, pierre, sable...) : ni plante, ni bois, ni meuble. */
+    public static boolean isGround(String name) {
+        return name != null && (name.startsWith("Soil_") || name.startsWith("Rock_")) && !name.contains("_Brick");
+    }
+
+    /** Vrai pour la végétation qu'on peut abattre en dégageant une emprise (arbres, feuillages, herbes, fleurs). */
+    public static boolean isVegetation(String name) {
+        return name != null && (name.startsWith("Plant_") || name.startsWith("Wood_"));
+    }
+
+    /** Hauteur du bloc de sol le plus haut de la colonne (x, z), ou {@link #NONE}. */
+    public int surface(int x, int z) {
+        for (int y = TOP; y >= 0; y--) {
+            int id = Blocks.id(chunks, x, y, z);
+            if (id == Blocks.UNLOADED) {
+                continue;
+            }
+            if (id == BlockType.EMPTY_ID) {
+                continue;
+            }
+            BlockType type = BlockType.getAssetMap().getAsset(id);
+            if (type != null && isGround(type.getId())) {
+                return y;
+            }
+        }
+        return NONE;
+    }
+
+    /** Nom du bloc de sol de la colonne, ou null. */
+    public String surfaceBlock(int x, int z) {
+        int y = surface(x, z);
+        return y == NONE ? null : Blocks.name(chunks, x, y, z);
+    }
+
+    /** Vrai si un fluide (eau, lave) couvre le bloc (x, y, z). */
+    public boolean hasFluid(int x, int y, int z) {
+        Ref<ChunkStore> ref = chunks.getChunkSectionReferenceAtBlock(x, y, z);
+        if (ref == null || !ref.isValid()) {
+            return false;
+        }
+        FluidSection fluids = chunks.getStore().getComponent(ref, FluidSection.getComponentType());
+        return fluids != null && fluids.getFluidId(x, y, z) != 0;
+    }
+
+    /** Hauteur médiane du sol sur le rectangle (pas de `step` blocs), ou {@link #NONE} si rien n'est chargé. */
+    public int medianSurface(int x0, int x1, int z0, int z1, int step) {
+        List<Integer> heights = new ArrayList<>();
+        for (int x = x0; x <= x1; x += step) {
+            for (int z = z0; z <= z1; z += step) {
+                int h = surface(x, z);
+                if (h != NONE) {
+                    heights.add(h);
+                }
+            }
+        }
+        if (heights.isEmpty()) {
+            return NONE;
+        }
+        int[] sorted = heights.stream().mapToInt(Integer::intValue).toArray();
+        Arrays.sort(sorted);
+        return sorted[sorted.length / 2];
+    }
+
+    /**
+     * Aplanit le rectangle [x0, x1] x [z0, z1] à la hauteur `h` : marge plate de `margin` blocs autour, puis fondu sur
+     * `blend` blocs vers le sol d'origine. Le relief au-dessus est coupé, les creux comblés de terre, la couche du dessus
+     * devient `top` (herbe, chemin) et les arbres de l'emprise (marge comprise, plus 3 blocs) sont abattus. Hors de
+     * l'emprise, les colonnes que `keep` réserve (emprise d'un autre bâtiment) ne sont pas touchées.
+     */
+    public void flatten(int x0, int x1, int z0, int z1, int h, int margin, int blend, String top, BiPredicate<Integer, Integer> keep) {
+        int reach = margin + blend;
+        for (int x = x0 - reach; x <= x1 + reach; x++) {
+            for (int z = z0 - reach; z <= z1 + reach; z++) {
+                int dx = Math.max(0, Math.max(x0 - x, x - x1));
+                int dz = Math.max(0, Math.max(z0 - z, z - z1));
+                double d = Math.hypot(dx, dz);
+                if (d > reach || (d > 0 && keep != null && keep.test(x, z))) {
+                    continue;
+                }
+                int s = surface(x, z);
+                if (s == NONE) {
+                    continue;
+                }
+                int target = d <= margin ? h : (int) Math.round(h + (s - h) * ((d - margin) / blend));
+                if (d <= margin + 3) {
+                    for (int y = Math.max(target, s) + 1; y <= target + TREE_HEIGHT; y++) {
+                        if (isVegetation(Blocks.name(chunks, x, y, z))) {
+                            Blocks.set(chunks, x, y, z, null, 0);
+                        }
+                    }
+                } else if (isVegetation(Blocks.name(chunks, x, s + 1, z)) && target != s) {
+                    Blocks.set(chunks, x, s + 1, z, null, 0);
+                }
+                if (target == s && d > margin) {
+                    continue;
+                }
+                for (int y = target + 1; y <= s; y++) {
+                    Blocks.set(chunks, x, y, z, null, 0);
+                }
+                for (int y = s + 1; y < target; y++) {
+                    Blocks.set(chunks, x, y, z, DIRT, 0);
+                }
+                Blocks.set(chunks, x, target, z, d <= margin ? top : GRASS, 0);
+            }
+        }
+    }
+}

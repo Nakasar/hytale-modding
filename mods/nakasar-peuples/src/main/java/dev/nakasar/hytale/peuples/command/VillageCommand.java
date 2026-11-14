@@ -18,6 +18,9 @@ import dev.nakasar.hytale.peuples.village.People;
 import dev.nakasar.hytale.peuples.village.Tiers;
 import dev.nakasar.hytale.peuples.village.Village;
 import dev.nakasar.hytale.peuples.village.VillageBoard;
+import dev.nakasar.hytale.peuples.village.VillageBuilder;
+import dev.nakasar.hytale.peuples.village.VillageLayout;
+import dev.nakasar.hytale.peuples.village.VillageNames;
 import dev.nakasar.hytale.peuples.village.Villages;
 import org.joml.Vector3d;
 
@@ -28,6 +31,9 @@ import java.util.List;
  * consultent et parlent ; fonder, effacer et régler un village demandent la permission {@value #ADMIN} (opérateurs).
  * <ul>
  *   <li>{@code fonder <nom> <peuple>} : cœur sous les pieds, dépôt à 2 blocs à l'est, tableau à 2 blocs à l'ouest ;</li>
+ *   <li>{@code generer} (étape 2) : bâtit un village kweebec complet (plan {@code Kweebec_Oak}, palier 0) centré sous
+ *   les pieds, terrain aplani ;</li>
+ *   <li>{@code site} : nom, position, distance et direction du village le plus proche, à toute distance ;</li>
  *   <li>{@code effacer} : retire le village le plus proche (cœur et tableau ; le dépôt reste avec son contenu) ;</li>
  *   <li>{@code essor <n>}, {@code palier <n>} : règle la jauge et le palier du village le plus proche ;</li>
  *   <li>{@code info}, {@code tableau}, {@code liste} : état du village le plus proche, son tableau, tous les villages ;</li>
@@ -46,6 +52,8 @@ public final class VillageCommand extends AbstractCommandCollection {
         super("village", KEYS + "desc");
         setPermissionGroups(PLAYERS);
         addSubCommand(new FoundCommand());
+        addSubCommand(new GenerateCommand());
+        addSubCommand(new SiteCommand());
         addSubCommand(new DissolveCommand());
         addSubCommand(new EssorCommand());
         addSubCommand(new TierCommand());
@@ -104,6 +112,76 @@ public final class VillageCommand extends AbstractCommandCollection {
             Village v = founding.village();
             player.sendMessage(Message.translation(Villages.MESSAGES + "founded").param("name", v.name())
                     .param("people", Message.translation(p.nameKey())).param("x", v.x()).param("y", v.y()).param("z", v.z()));
+        }
+    }
+
+    private static final class GenerateCommand extends AbstractPlayerCommand {
+        GenerateCommand() {
+            super("generer", KEYS + "generate.desc");
+            requirePermission(ADMIN);
+        }
+
+        @Override
+        protected void execute(CommandContext context, Store<EntityStore> store, Ref<EntityStore> ref, PlayerRef player, World world) {
+            People p = People.KWEEBEC;
+            VillageLayout layout = VillageLayout.get(p.layout());
+            if (layout == null) {
+                player.sendMessage(Message.translation(Villages.MESSAGES + "layoutMissing").param("layout", p.layout()));
+                return;
+            }
+            Vector3d at = player.getTransform().getPosition();
+            int x = (int) Math.floor(at.x());
+            int z = (int) Math.floor(at.z());
+            String villageName = VillageNames.pick(world, p);
+            player.sendMessage(Message.translation(Villages.MESSAGES + "generating").param("name", villageName));
+            world.execute(() -> VillageBuilder.generate(world, layout, villageName, x, z, false, result -> {
+                if (result.village() == null) {
+                    player.sendMessage(result.error());
+                    return;
+                }
+                Village v = result.village();
+                player.sendMessage(Message.translation(Villages.MESSAGES + "generated").param("name", v.name())
+                        .param("count", v.built().length).param("x", v.x()).param("y", v.y()).param("z", v.z()));
+            }));
+        }
+    }
+
+    private static final class SiteCommand extends AbstractPlayerCommand {
+        SiteCommand() {
+            super("site", KEYS + "site.desc");
+            requirePermission(ADMIN);
+        }
+
+        @Override
+        protected void execute(CommandContext context, Store<EntityStore> store, Ref<EntityStore> ref, PlayerRef player, World world) {
+            Vector3d at = player.getTransform().getPosition();
+            Village best = null;
+            double bestD = Double.MAX_VALUE;
+            for (Village v : Villages.registry(world).all()) {
+                double d = v.horizontalDistanceSquared(at.x(), at.z());
+                if (d < bestD) {
+                    bestD = d;
+                    best = v;
+                }
+            }
+            if (best == null) {
+                player.sendMessage(Message.translation(Villages.MESSAGES + "noneInWorld"));
+                return;
+            }
+            double dx = best.x() - at.x();
+            double dz = best.z() - at.z();
+            player.sendMessage(Message.translation(Villages.MESSAGES + "siteLine").param("name", best.name())
+                    .param("x", best.x()).param("y", best.y()).param("z", best.z())
+                    .param("distance", (int) Math.round(Math.sqrt(bestD)))
+                    .param("direction", Message.translation(Villages.MESSAGES + "dir." + direction(dx, dz))));
+        }
+
+        /** Point cardinal de (dx, dz) : nord = -Z, est = +X. */
+        static String direction(double dx, double dz) {
+            String[] dirs = {"e", "se", "s", "sw", "w", "nw", "n", "ne"};
+            double angle = Math.atan2(dz, dx);
+            int i = (int) Math.floorMod(Math.round(angle / (Math.PI / 4)), 8L);
+            return dirs[i];
         }
     }
 
