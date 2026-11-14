@@ -1,0 +1,14 @@
+{
+  "$Comment": "Demande trork (Gather), étape 7 : voir RequestTemplate. Générée par tools/generate_trorks.py.",
+  "People": "Trork",
+  "Type": "Gather",
+  "MinTier": 0,
+  "MaxTier": 3,
+  "Weight": 1,
+  "TitleKey": "nakasar_peuples.request.Trork_Gather_Hides.title",
+  "TaskKey": "nakasar_peuples.request.Trork_Gather_Hides.task",
+  "ItemId": "Ingredient_Hide_Light",
+  "Quantity": 6,
+  "Essor": 10,
+  "Favors": 2
+}

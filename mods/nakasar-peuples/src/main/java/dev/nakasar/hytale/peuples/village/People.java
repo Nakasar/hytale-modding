@@ -19,7 +19,13 @@ import java.util.Locale;
 public enum People {
 
     KWEEBEC("Kweebec", "Furniture_Kweebec_Chest_Small", "Nakasar_Peuples_Board_Kweebec", "Nakasar_Peuples_Banner_Kweebec",
-            "Kweebec_Oak");
+            "Kweebec_Oak"),
+    /**
+     * Étape 7 : le camp trork apprivoisable de la zone 1 (plan {@code Trork_Camp}, prefabs vanilla Npc/Trork), coffre et
+     * panneau grossiers vanilla, bannière de crânes. Un joueur y commence Honni ({@link #initialReputation()}).
+     */
+    TRORK("Trork", "Furniture_Crude_Chest_Small", "Nakasar_Peuples_Board_Trork", "Nakasar_Peuples_Banner_Trork",
+            "Trork_Camp");
 
     /** Préfixe des objets et rôles propres à chaque peuple : {@code Nakasar_Peuples_<Quoi>_<Peuple>}. */
     private static final String PREFIX = "Nakasar_Peuples_";
@@ -122,6 +128,30 @@ public enum People {
     /** Dialogue du crieur. */
     public String crierDialogue() {
         return id + "_Crieur";
+    }
+
+    /**
+     * Réputation de village d'un joueur qui n'a encore rien fait dans un village du peuple (étape 7). Les Kweebecs
+     * accueillent l'étranger (0) ; un camp trork commence hostile (Honni, -250) et s'apprivoise par la viande. Même
+     * valeur que l'InitialReputationValue du groupe de réputation du peuple (vérifié par validateAssets).
+     */
+    public int initialReputation() {
+        return switch (this) {
+            case TRORK -> -250;
+            default -> 0;
+        };
+    }
+
+    /**
+     * Peuple rival (étape 7, réputations croisées : GDD, Progression des zones) : aider l'un coûte auprès de l'autre, ou
+     * null. Zone 1 : Kweebecs et Trorks.
+     */
+    public People rival() {
+        return switch (this) {
+            case KWEEBEC -> TRORK;
+            case TRORK -> KWEEBEC;
+            default -> null;
+        };
     }
 
     /** Clé de traduction du nom du peuple. */

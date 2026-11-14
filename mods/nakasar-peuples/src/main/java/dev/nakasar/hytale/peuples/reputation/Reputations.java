@@ -21,6 +21,7 @@ import dev.nakasar.hytale.peuples.request.GameClock;
 import dev.nakasar.hytale.peuples.village.People;
 import dev.nakasar.hytale.peuples.village.Village;
 import dev.nakasar.hytale.peuples.village.Villages;
+import dev.nakasar.hytale.peuples.trork.WarPaint;
 import org.joml.Vector3d;
 
 /**
@@ -104,14 +105,20 @@ public final class Reputations {
 
     /** Réputation de village du joueur. */
     public static int villageValue(PeuplesPlayer data, Village village) {
-        return data == null || village == null ? 0 : data.villageReputation(village.id());
+        if (village == null) {
+            return 0;
+        }
+        // Étape 7 : un camp trork commence hostile (People.initialReputation).
+        int initial = village.people().initialReputation();
+        return data == null ? initial : data.villageReputation(village.id(), initial);
     }
 
     public static Standing standing(Store<EntityStore> store, Ref<EntityStore> ref, Village village) {
         PeuplesPlayer data = PeuplesPlayer.get(store, ref);
         int v = villageValue(data, village);
         int p = peopleValue(store, ref, village.people());
-        return new Standing(v, p, Rank.of(Math.max(v, p)));
+        // Étape 7 : sous la Peinture de guerre, les Kweebecs voient le joueur un rang plus bas.
+        return new Standing(v, p, WarPaint.adjust(Rank.of(Math.max(v, p)), village.people(), store, ref));
     }
 
     /** Rang du joueur dans le village. */
@@ -147,11 +154,12 @@ public final class Reputations {
         World world = store.getExternalData().getWorld();
         Village village = Villages.registry(world).nearestOf(people, at.x(), at.z(), ATTITUDE_RADIUS);
         if (village == null) {
-            return null;
+            // Étape 7 : hors d'un camp, les Trorks laissent passer le joueur peint (au moins neutres).
+            return WarPaint.wildAttitude(store, target, people, accessor);
         }
         PeuplesPlayer data = accessor.getComponent(target, PeuplesPlayer.getComponentType());
         int value = Math.max(villageValue(data, village), peopleValue(store, target, people));
-        return Rank.of(value).attitude();
+        return WarPaint.adjust(Rank.of(value), people, accessor, target).attitude();
     }
 
     // ---- Écriture ----
@@ -177,6 +185,10 @@ public final class Reputations {
         data.setVillageReputation(village.id(), Rank.clamp((long) before.village() + amount));
         data.setLastVisit(village.id(), GameClock.day(store));
         changePeople(store, ref, village.people(), amount / PEOPLE_SHARE);
+        if (amount > 0) {
+            // Étape 7 : aider un peuple coûte auprès de son rival (réputations croisées).
+            Rivals.helped(store, ref, player, village.people(), amount);
+        }
         Standing after = standing(store, ref, village);
         int shown = after.village() - before.village();
         if (shown != 0 && notify) {
@@ -231,7 +243,7 @@ public final class Reputations {
         PeuplesPlayer data = PeuplesPlayer.ensure(store, ref);
         long today = GameClock.day(store);
         Long last = data.lastVisit(village.id());
-        int value = data.villageReputation(village.id());
+        int value = villageValue(data, village);
         if (last != null && today - last > ABSENCE_DAYS && value > Rank.TOLERE.min()) {
             long loss = Math.min(value - Rank.TOLERE.min(), (today - last - ABSENCE_DAYS) * (long) DECAY_PER_DAY);
             if (loss > 0) {

@@ -532,6 +532,7 @@ public final class Requests {
             // Étape de la chaîne du peuple : l'Ancien proposera la suivante.
             state.setFlag(t.flag(), true);
             player.sendMessage(Message.translation("nakasar_peuples.chain.stepDone").param("title", title(t)));
+            dev.nakasar.hytale.peuples.reputation.Rivals.flagged(world, store, ref, player, t.flag());
         }
         // Réputation : pour chaque joueur qui remplit la demande, même si le village a déjà reçu l'essor (GDD).
         Reputations.change(world, store, ref, player, village, t.reputation(), KEYS + "reputationReason");

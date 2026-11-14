@@ -1,0 +1,74 @@
+{
+  "$Comment": "Échoppe trork des amis : armes trorks vanilla, payées en dents de trophée.",
+  "DisplayNameKey": "nakasar_peuples.barter.Trork_Ami.title",
+  "RefreshInterval": {
+    "Days": 3
+  },
+  "RestockHour": 6,
+  "TradeSlots": [
+    {
+      "Type": "Fixed",
+      "Trade": {
+        "Output": {
+          "ItemId": "Weapon_Club_Stone_Trork",
+          "Quantity": 1
+        },
+        "Input": [
+          {
+            "ItemId": "Nakasar_Peuples_Favor_Trork",
+            "Quantity": 4
+          }
+        ],
+        "Stock": 2
+      }
+    },
+    {
+      "Type": "Fixed",
+      "Trade": {
+        "Output": {
+          "ItemId": "Weapon_Spear_Stone_Trork",
+          "Quantity": 1
+        },
+        "Input": [
+          {
+            "ItemId": "Nakasar_Peuples_Favor_Trork",
+            "Quantity": 4
+          }
+        ],
+        "Stock": 2
+      }
+    },
+    {
+      "Type": "Fixed",
+      "Trade": {
+        "Output": {
+          "ItemId": "Weapon_Battleaxe_Stone_Trork",
+          "Quantity": 1
+        },
+        "Input": [
+          {
+            "ItemId": "Nakasar_Peuples_Favor_Trork",
+            "Quantity": 6
+          }
+        ],
+        "Stock": 2
+      }
+    },
+    {
+      "Type": "Fixed",
+      "Trade": {
+        "Output": {
+          "ItemId": "Weapon_Daggers_Stone_Trork",
+          "Quantity": 1
+        },
+        "Input": [
+          {
+            "ItemId": "Nakasar_Peuples_Favor_Trork",
+            "Quantity": 5
+          }
+        ],
+        "Stock": 2
+      }
+    }
+  ]
+}

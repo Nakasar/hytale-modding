@@ -1,0 +1,228 @@
+{
+  "$Comment": "Le crieur trork (étape 7), près du tableau du camp. Honni : il grogne, prend la viande, et laisse prendre une demande pour se racheter. Généré par tools/generate_trorks.py.",
+  "NpcNameKey": "nakasar_peuples.dialogue.Trork_Crieur.npc",
+  "RoleKey": "nakasar_peuples.dialogue.Trork_Crieur.role",
+  "People": "Trork",
+  "Entries": [
+    {
+      "Node": "Honni",
+      "Conditions": [
+        {
+          "Type": "Rank",
+          "Max": "Honni"
+        }
+      ]
+    },
+    {
+      "Node": "EnCours",
+      "Conditions": [
+        {
+          "Type": "HasRequest"
+        }
+      ]
+    },
+    {
+      "Node": "Accueil"
+    }
+  ],
+  "Nodes": [
+    {
+      "Id": "Honni",
+      "TextKey": "nakasar_peuples.dialogue.Trork_Crieur.honni",
+      "Responses": [
+        {
+          "TextKey": "nakasar_peuples.dialogue.Trork_Crieur.offrirViande",
+          "HintKey": "nakasar_peuples.dialogue.hint.meat",
+          "Conditions": [
+            {
+              "Type": "HasItem",
+              "ItemId": "Food_Wildmeat_Raw",
+              "Quantity": 5
+            },
+            {
+              "Type": "InVillage",
+              "People": "Trork"
+            }
+          ],
+          "FailKey": "nakasar_peuples.dialogue.Trork_Crieur.failViande",
+          "Effects": [
+            {
+              "Type": "TakeItem",
+              "ItemId": "Food_Wildmeat_Raw",
+              "Quantity": 5
+            },
+            {
+              "Type": "AddReputation",
+              "Amount": 40
+            }
+          ],
+          "Next": "Mange"
+        },
+        {
+          "TextKey": "nakasar_peuples.dialogue.Trork_Crieur.travail",
+          "HintKey": "nakasar_peuples.dialogue.hint.openRequests",
+          "Effects": [
+            {
+              "Type": "OpenRequests"
+            }
+          ],
+          "Conditions": [
+            {
+              "Type": "InVillage",
+              "People": "Trork"
+            }
+          ],
+          "FailKey": "nakasar_peuples.dialogue.fail.inVillage"
+        },
+        {
+          "TextKey": "nakasar_peuples.dialogue.Trork_Crieur.aurevoir"
+        }
+      ]
+    },
+    {
+      "Id": "Mange",
+      "TextKey": "nakasar_peuples.dialogue.Trork_Crieur.mange",
+      "Responses": [
+        {
+          "TextKey": "nakasar_peuples.dialogue.Trork_Crieur.travail",
+          "HintKey": "nakasar_peuples.dialogue.hint.openRequests",
+          "Effects": [
+            {
+              "Type": "OpenRequests"
+            }
+          ],
+          "Conditions": [
+            {
+              "Type": "InVillage",
+              "People": "Trork"
+            }
+          ],
+          "FailKey": "nakasar_peuples.dialogue.fail.inVillage"
+        },
+        {
+          "TextKey": "nakasar_peuples.dialogue.Trork_Crieur.aurevoir"
+        }
+      ]
+    },
+    {
+      "Id": "Accueil",
+      "TextKey": "nakasar_peuples.dialogue.Trork_Crieur.accueil",
+      "Responses": [
+        {
+          "TextKey": "nakasar_peuples.dialogue.Trork_Crieur.voir",
+          "HintKey": "nakasar_peuples.dialogue.hint.openRequests",
+          "Effects": [
+            {
+              "Type": "OpenRequests"
+            }
+          ],
+          "Conditions": [
+            {
+              "Type": "InVillage",
+              "People": "Trork"
+            }
+          ],
+          "FailKey": "nakasar_peuples.dialogue.fail.inVillage"
+        },
+        {
+          "TextKey": "nakasar_peuples.dialogue.Trork_Crieur.offrirViande",
+          "HintKey": "nakasar_peuples.dialogue.hint.meat",
+          "Conditions": [
+            {
+              "Type": "HasItem",
+              "ItemId": "Food_Wildmeat_Raw",
+              "Quantity": 5
+            },
+            {
+              "Type": "InVillage",
+              "People": "Trork"
+            }
+          ],
+          "FailKey": "nakasar_peuples.dialogue.Trork_Crieur.failViande",
+          "Effects": [
+            {
+              "Type": "TakeItem",
+              "ItemId": "Food_Wildmeat_Raw",
+              "Quantity": 5
+            },
+            {
+              "Type": "AddReputation",
+              "Amount": 40
+            }
+          ],
+          "Next": "Mange"
+        },
+        {
+          "TextKey": "nakasar_peuples.dialogue.Trork_Crieur.aurevoir"
+        }
+      ]
+    },
+    {
+      "Id": "EnCours",
+      "TextKey": "nakasar_peuples.dialogue.Trork_Crieur.encours",
+      "Responses": [
+        {
+          "TextKey": "nakasar_peuples.dialogue.Trork_Crieur.rendre",
+          "HintKey": "nakasar_peuples.dialogue.hint.turnIn",
+          "Effects": [
+            {
+              "Type": "TurnInRequests"
+            }
+          ],
+          "Next": "Rendu",
+          "Conditions": [
+            {
+              "Type": "InVillage",
+              "People": "Trork"
+            }
+          ],
+          "FailKey": "nakasar_peuples.dialogue.fail.inVillage"
+        },
+        {
+          "TextKey": "nakasar_peuples.dialogue.Trork_Crieur.voir",
+          "HintKey": "nakasar_peuples.dialogue.hint.openRequests",
+          "Effects": [
+            {
+              "Type": "OpenRequests"
+            }
+          ],
+          "Conditions": [
+            {
+              "Type": "InVillage",
+              "People": "Trork"
+            }
+          ],
+          "FailKey": "nakasar_peuples.dialogue.fail.inVillage"
+        },
+        {
+          "TextKey": "nakasar_peuples.dialogue.Trork_Crieur.aurevoir"
+        }
+      ]
+    },
+    {
+      "Id": "Rendu",
+      "TextKey": "nakasar_peuples.dialogue.Trork_Crieur.rendu",
+      "Responses": [
+        {
+          "TextKey": "nakasar_peuples.dialogue.Trork_Crieur.voir",
+          "HintKey": "nakasar_peuples.dialogue.hint.openRequests",
+          "Effects": [
+            {
+              "Type": "OpenRequests"
+            }
+          ],
+          "Conditions": [
+            {
+              "Type": "InVillage",
+              "People": "Trork"
+            }
+          ],
+          "FailKey": "nakasar_peuples.dialogue.fail.inVillage"
+        },
+        {
+          "TextKey": "nakasar_peuples.dialogue.Trork_Crieur.aurevoir"
+        }
+      ]
+    }
+  ]
+}

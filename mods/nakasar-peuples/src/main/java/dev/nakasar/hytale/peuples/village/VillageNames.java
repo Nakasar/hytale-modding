@@ -27,6 +27,17 @@ public final class VillageNames {
             "Feuillée-Basse",
             "Le Nid-de-Ronces");
 
+    /** Étape 7 : les camps trorks. */
+    private static final List<String> TRORK = List.of(
+            "Camp des Crocs-Brisés",
+            "Foyer de la Viande-Crue",
+            "Camp du Crâne-Fendu",
+            "Les Tentes-Puantes",
+            "Camp des Cogne-Dur",
+            "Feu des Os-Rongés",
+            "Camp de la Défense-Noire",
+            "Bauge des Poings-Lourds");
+
     private VillageNames() {
     }
 
@@ -55,6 +66,7 @@ public final class VillageNames {
     static List<String> names(People people) {
         return switch (people) {
             case KWEEBEC -> KWEEBEC;
+            case TRORK -> TRORK;
         };
     }
 }

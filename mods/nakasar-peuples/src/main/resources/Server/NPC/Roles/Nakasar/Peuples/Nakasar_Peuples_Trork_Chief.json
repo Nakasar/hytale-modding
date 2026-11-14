@@ -1,0 +1,57 @@
+{
+  "$Comment": "Le chef d'un camp trork (étape 7), à l'est du cœur : la chaîne trork, jusqu'à la Peinture de guerre. Posé par Criers (Java) quand un joueur approche du camp, immobile. Tué, il revient au matin suivant. Ne régénère jamais (VillageNoRegenSystem). Groupe vanilla Trork : il suit le rang du joueur au camp.",
+  "Type": "Generic",
+  "Appearance": "Trork_Chieftain",
+  "NameTranslationKey": "nakasar_peuples.npc.Trork_Chief.name",
+  "MaxHealth": 100,
+  "StartState": "Idle",
+  "DefaultPlayerAttitude": "Neutral",
+  "DefaultNPCAttitude": "Ignore",
+  "MotionControllerList": [
+    {
+      "Type": "Walk",
+      "MaxWalkSpeed": 0.1,
+      "Gravity": 10,
+      "MaxFallSpeed": 10,
+      "Acceleration": 10,
+      "JumpHeight": 1.0
+    }
+  ],
+  "KnockbackScale": 0,
+  "Instructions": [
+    {
+      "Sensor": {
+        "Type": "State",
+        "State": "Idle"
+      },
+      "Instructions": [
+        {
+          "Actions": []
+        }
+      ]
+    }
+  ],
+  "InteractionInstruction": {
+    "Instructions": [
+      {
+        "Continue": true,
+        "Sensor": {
+          "Type": "Any"
+        },
+        "Actions": [
+          {
+            "Type": "SetInteractable",
+            "Interactable": true,
+            "Hint": "nakasar_peuples.hint.talk"
+          }
+        ]
+      },
+      {
+        "Sensor": {
+          "Type": "HasInteracted"
+        },
+        "Actions": []
+      }
+    ]
+  }
+}

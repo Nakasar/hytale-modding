@@ -48,9 +48,24 @@ def figure(scale):
     return mask
 
 
-def icon(fill, thickness):
+def trork_figure(scale):
+    """Étape 7, camp trork : une tente pointue et deux défenses recourbées de part et d'autre."""
+    s = scale
+    mask = Image.new("L", (SIZE * s, SIZE * s), 0)
+    d = ImageDraw.Draw(mask)
+    d.polygon([(24 * s, 12 * s), (36 * s, 39 * s), (12 * s, 39 * s)], fill=255)
+    d.polygon([(24 * s, 26 * s), (28 * s, 39 * s), (20 * s, 39 * s)], fill=0)  # entrée
+    d.line([(24 * s, 12 * s), (24 * s, 6 * s)], fill=255, width=2 * s)
+    for side in (-1, 1):
+        cx = 24 + side * 16
+        d.arc([(cx - 7) * s, 14 * s, (cx + 7) * s, 40 * s], 90 if side < 0 else -90 - 180, 270 if side < 0 else 90 - 180,
+              fill=255, width=3 * s)
+    return mask
+
+
+def icon(fill, thickness, shape=figure):
     big = SIZE * SS
-    mask = figure(SS)
+    mask = shape(SS)
     ring = mask.filter(ImageFilter.MaxFilter(2 * thickness * SS + 1))
     img = Image.new("RGBA", (big, big), (0, 0, 0, 0))
     img.paste(Image.new("RGBA", (big, big), (0, 0, 0, 255)), (0, 0), ring)
@@ -67,6 +82,8 @@ def main():
     compass = icon((176, 232, 132, 255), 3)
     marker.save(OUT / "Nakasar_Peuples_Kweebec.png")
     compass.save(OUT / "Nakasar_Peuples_KweebecCompass.png")
+    icon((246, 222, 196, 255), 2, trork_figure).save(OUT / "Nakasar_Peuples_Trork.png")
+    icon((232, 120, 84, 255), 3, trork_figure).save(OUT / "Nakasar_Peuples_TrorkCompass.png")
     print("icônes écrites dans", OUT.relative_to(ROOT))
     if args.preview:
         args.preview.mkdir(parents=True, exist_ok=True)

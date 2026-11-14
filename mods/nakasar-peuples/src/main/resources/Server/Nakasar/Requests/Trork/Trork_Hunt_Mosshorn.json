@@ -1,0 +1,20 @@
+{
+  "$Comment": "Demande trork (Hunt), étape 7 : voir RequestTemplate. Générée par tools/generate_trorks.py.",
+  "People": "Trork",
+  "Type": "Hunt",
+  "MinTier": 1,
+  "MaxTier": 3,
+  "Weight": 1,
+  "TitleKey": "nakasar_peuples.request.Trork_Hunt_Mosshorn.title",
+  "TaskKey": "nakasar_peuples.request.Trork_Hunt_Mosshorn.task",
+  "Spawns": [
+    "Mosshorn"
+  ],
+  "Roles": [
+    "Mosshorn"
+  ],
+  "MinDistance": 80,
+  "MaxDistance": 140,
+  "Essor": 20,
+  "Favors": 3
+}

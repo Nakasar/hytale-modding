@@ -91,6 +91,55 @@ LAYOUTS = {
     },
 }
 
+TRORK = "Npc/Trork/"
+
+# Étape 7 : le camp trork apprivoisable de la zone 1. Prefabs vanilla Npc/Trork « feuilles » seulement (les
+# Encampment vanilla posent des Prefab_Spawner_Block). Les Trorks du camp sont des rôles VANILLA (« @Rôle ») : leur
+# IA (Reputation_Switch, viande au sol, sommeil) lit le rang du joueur au camp ; ils n'ont pas de dialogue. Pas de
+# bâtisseur : les chantiers se font sans aides.
+LAYOUTS["Trork_Camp"] = {
+    "People": "Trork",
+    "PlazaRadius": 6,
+    "Banner": (0, -5),
+    "Buildings": [
+        # Palier 0, campement : le feu, deux tentes, la tour de guet, un foyer, le panneau d'avertissement.
+        ("Feu_De_Camp", 0, TRORK + "Bonfire/Trork_Bonfire_Trork_Bonfire_001", 0, 13, 0),
+        ("Tente_Ouest", 0, TRORK + "Tent/Trork_Tent_001", -17, 0, 0),
+        ("Tente_Est", 0, TRORK + "Tent/Trork_Tent_001", 17, 0, 2),
+        ("Tour_De_Guet", 0, TRORK + "Tier_1/Watchtower/Trork_Tier_1_Watchtower_001", 0, -16, 0),
+        ("Foyer", 0, TRORK + "Fireplace/Trork_Fireplace_001", -9, 10, 0),
+        ("Avertissement", 0, TRORK + "Warning/Trork_Warning_Trork_Warning_001", 0, 28, 0),
+        # Palier 1 : le terrier, le piège, la réserve, une troisième tente.
+        ("Terrier", 1, TRORK + "Burrow/Trork_Burrow_Trork_Burrow_001", -18, -18, 0),
+        ("Piege", 1, TRORK + "Trap/Trork_Trap_Trork_Trap_001", 22, 22, 0),
+        ("Reserve", 1, TRORK + "Tier_2/Store/Trork_Tier_2_Store_001", 18, -18, 0),
+        ("Tente_Sud", 1, TRORK + "Tent/Trork_Tent_001", -18, 18, 0),
+        # Palier 2 : la grande tour, l'entrepôt, le bric-à-brac.
+        ("Tour_Est", 2, TRORK + "Tier_2/Watchtower/Trork_Tier_2_Watchtower_001", 34, 0, 0),
+        ("Entrepot", 2, TRORK + "Warehouse/Trork_Warehouse_Trork_Warehouse_001", -34, 0, 0),
+        ("Bric_A_Brac", 2, TRORK + "Misc/Large/Trork_Misc_Large_001", 12, 18, 0),
+        # Palier 3 : la réserve du chef, la tour de l'ouest, le grand feu.
+        ("Reserve_Du_Chef", 3, TRORK + "Tier_3/Store/Trork_Tier_3_Store_001", 0, -34, 0),
+        ("Tour_Ouest", 3, TRORK + "Tier_3/Watchtower/Trork_Tier_3_Watchtower_002", -34, -22, 0),
+        ("Grand_Feu", 3, TRORK + "Bonfire/Trork_Bonfire_Trork_Bonfire_002", -12, 32, 0),
+    ],
+    # Chantiers : viande, peaux et bois (objets vanilla), un jour de jeu.
+    "Chantiers": [
+        (1, 24, [("Food_Wildmeat_Raw", 16), ("Ingredient_Hide_Light", 12), ("Wood_Oak_Trunk", 24)]),
+        (2, 24, [("Food_Wildmeat_Raw", 32), ("Ingredient_Hide_Medium", 16), ("Wood_Oak_Trunk", 48), ("Rock_Stone_Cobble", 24)]),
+        (3, 24, [("Food_Wildmeat_Raw", 48), ("Ingredient_Hide_Heavy", 16), ("Wood_Oak_Trunk", 64), ("Ingredient_Bone_Fragment", 24)]),
+    ],
+    "Jobs": [
+        ("Garde", 0, "@Trork_Guard", "Tour_De_Guet", "front", "Tente_Est"),
+        ("Guerrier", 0, "@Trork_Warrior", "Feu_De_Camp", "front", "Tente_Ouest"),
+        ("Chasseur", 1, "@Trork_Hunter", "Piege", "front", "Tente_Sud"),
+        ("Cogneur", 2, "@Trork_Brawler", "Entrepot", "front", "Entrepot"),
+        ("Sentinelle", 2, "@Trork_Sentry", "Tour_Est", "front", "Tour_Est"),
+        ("Shaman", 3, "@Trork_Shaman", "Reserve_Du_Chef", "front", "Reserve_Du_Chef"),
+    ],
+    "Woodpile": (-4, -4),
+}
+
 
 def load_bounds():
     bounds = {}
@@ -196,8 +245,11 @@ def build(layout_id, spec, bounds):
             errors.append(f"{layout_id}/{jid} : travaille dans {work} (palier {by_id[work]['Tier']}) avant qu'il existe")
         px, pz = spot(by_id[work], where) if work else (wx, wz)
         hx, hz = spot(by_id[home], "front")
-        jobs.append({"Id": jid, "Tier": tier, "Role": f"Nakasar_Peuples_{spec['People']}_{kind}",
-                     "Dialogue": f"{spec['People']}_{kind}", "Building": work or "", "WorkX": px, "WorkZ": pz,
+        # Étape 7 : « @Rôle » = rôle VANILLA (Trorks du camp), sans dialogue (le Java ne l'ouvre pas).
+        vanilla = kind.startswith("@")
+        role = kind[1:] if vanilla else f"Nakasar_Peuples_{spec['People']}_{kind}"
+        jobs.append({"Id": jid, "Tier": tier, "Role": role,
+                     "Dialogue": "" if vanilla else f"{spec['People']}_{kind}", "Building": work or "", "WorkX": px, "WorkZ": pz,
                      "Home": home, "HomeX": hx, "HomeZ": hz, "Builder": kind == "Builder"})
     bx, bz = spec["Banner"]
     doc = {
