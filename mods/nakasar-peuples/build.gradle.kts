@@ -65,9 +65,11 @@ val validateAssets = tasks.register<Exec>("validateAssets") {
     val stereo = file("tools/vanilla-stereo-sounds-0.7.2.txt")
     val items = file("tools/vanilla-item-ids-0.7.2.txt")
     val prefabs = file("tools/vanilla-prefabs-0.7.2.txt")
+    val uiTextures = file("tools/vanilla-ui-textures-0.7.7.txt")
     inputs.dir(serverAssets)
+    inputs.dir(file("src/main/resources/Common/UI"))
     inputs.file("tools/ValidateAssets.java")
-    inputs.files(blocks, gradients, refs, stereo, items, prefabs)
+    inputs.files(blocks, gradients, refs, stereo, items, prefabs, uiTextures)
     inputs.files(hytaleServer)
     // Les classes du plugin : types d'assets écrits en Java (dialogues).
     val pluginClasses = sourceSets.main.get().output.classesDirs
@@ -82,8 +84,10 @@ val validateAssets = tasks.register<Exec>("validateAssets") {
         // -Dstereo : sons vanilla stéréo, refusés en WorldSoundEventId (l'interaction entière est rejetée en jeu).
         // -Ditems : objets vanilla, pour les ItemId des dialogues.
         // -Dprefabs : prefabs vanilla (chemins et emprises relevés dans Assets.zip), pour les plans de village.
+        // -Duitextures : textures vanilla des pages, pour les .ui du mod (tableau du village, dialogue).
         args("-Dstdout.encoding=UTF-8", "--sun-misc-unsafe-memory-access=allow", "-Dblocks=" + blocks.absolutePath, "-Dgradients=" + gradients.absolutePath,
             "-Drefs=" + refs.absolutePath, "-Dstereo=" + stereo.absolutePath, "-Ditems=" + items.absolutePath, "-Dprefabs=" + prefabs.absolutePath,
+            "-Duitextures=" + uiTextures.absolutePath,
             "-cp", (hytaleServer + pluginClasses).asPath, file("tools/ValidateAssets.java").absolutePath, file(serverAssets).absolutePath)
     }
     doLast {

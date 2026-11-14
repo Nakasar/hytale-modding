@@ -1355,6 +1355,84 @@ public class ValidateAssets {
         }
     }
 
+    /**
+     * Pages .ui du mod (Common/UI/Custom/Pages/Nakasar) : chaque texture citée existe, dans le pack ou parmi les
+     * textures vanilla relevées dans Assets.zip ({@code -Duitextures}) ; chaque élément que remplit
+     * {@code request.BoardPage} ({@code "#Id"} et {@code "#Id" + n}, case 0) existe dans chaque mise en page du tableau
+     * (un id absent d'une page ouverte fait planter le client) ; les icônes de type de demande sont des objets vanilla.
+     */
+    private static int checkUiPages(Path root, String vanillaTextures, String vanillaItems) throws Exception {
+        Path custom = root.resolveSibling("Common/UI/Custom");
+        Path pages = custom.resolve("Pages/Nakasar");
+        if (!Files.isDirectory(pages)) {
+            return 0;
+        }
+        Set<String> vanilla = new HashSet<>();
+        if (vanillaTextures != null) {
+            for (String line : Files.readAllLines(Path.of(vanillaTextures))) {
+                if (!line.isBlank() && !line.startsWith("#")) {
+                    vanilla.add(line.trim());
+                }
+            }
+        }
+        int errors = 0;
+        List<Path> uis;
+        try (Stream<Path> walk = Files.walk(pages)) {
+            uis = walk.filter(f -> f.toString().endsWith(".ui")).sorted().toList();
+        }
+        Pattern texture = Pattern.compile("\"([^\"]+\\.png)\"");
+        for (Path ui : uis) {
+            Matcher m = texture.matcher(Files.readString(ui));
+            while (m.find()) {
+                Path target = ui.getParent().resolve(m.group(1)).normalize();
+                if (Files.exists(target)) {
+                    continue;
+                }
+                String rel = custom.relativize(target).toString().replace('\\', '/');
+                if (vanillaTextures != null && !vanilla.contains(rel)) {
+                    errors++;
+                    System.out.println("ERROR " + root.getParent().relativize(ui) + " : texture introuvable " + m.group(1) + " (" + rel + ")");
+                }
+            }
+        }
+        Path java = root.getParent().getParent().resolve("java/dev/nakasar/hytale/peuples/request/BoardPage.java");
+        if (Files.isRegularFile(java)) {
+            String code = Files.readString(java);
+            Set<String> ids = new HashSet<>();
+            Matcher indexed = Pattern.compile("\"#([A-Z][A-Za-z]*)\"\\s*\\+\\s*[a-z]\\b").matcher(code);
+            while (indexed.find()) {
+                ids.add(indexed.group(1) + "0");
+            }
+            Matcher plain = Pattern.compile("\"#([A-Z][A-Za-z0-9]*)(?:\\.[A-Za-z.]+\"|\"(?!\\s*\\+))").matcher(code);
+            while (plain.find()) {
+                ids.add(plain.group(1));
+            }
+            for (Path ui : uis) {
+                if (!ui.getFileName().toString().startsWith("BoardPage")) {
+                    continue;
+                }
+                String text = Files.readString(ui);
+                for (String id : ids) {
+                    if (!Pattern.compile("#" + id + "\\b").matcher(text).find()) {
+                        errors++;
+                        System.out.println("ERROR " + root.getParent().relativize(ui) + " : élément #" + id + " rempli par BoardPage.java absent");
+                    }
+                }
+            }
+            if (vanillaItems != null) {
+                Set<String> items = new HashSet<>(Files.readAllLines(Path.of(vanillaItems)));
+                Matcher icon = Pattern.compile("case [A-Z, ]+ -> \"([A-Z][A-Za-z_]+)\"").matcher(code);
+                while (icon.find()) {
+                    if (!items.contains(icon.group(1))) {
+                        errors++;
+                        System.out.println("ERROR BoardPage.java : icône de type " + icon.group(1) + " absente des objets vanilla");
+                    }
+                }
+            }
+        }
+        return errors;
+    }
+
     /** Icônes des marqueurs de carte des blocs du pack ({@code BlockMapMarker}) : présentes sous Common/UI/WorldMap/MapMarkers. */
     private static int checkMapMarkerIcons(Path root) throws Exception {
         Path items = root.resolve("Item/Items");
@@ -1552,6 +1630,7 @@ public class ValidateAssets {
         errors += checkVillageLayouts(root, System.getProperty("prefabs"));
         errors += checkMapMarkerIcons(root);
         errors += checkReputation(root);
+        errors += checkUiPages(root, System.getProperty("uitextures"), System.getProperty("items"));
         String blocks = System.getProperty("blocks");
         if (blocks != null) {
             errors += checkBlockIds(root, Path.of(blocks));

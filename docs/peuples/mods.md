@@ -256,10 +256,18 @@ la distance et la direction du lieu (mise à jour chaque seconde quand elle chan
 
 ### Où prendre et rendre une demande
 
-- **Le tableau** (ouest du cœur) : utilisé normalement, il ouvre le tableau à boutons (`BoardPage.ui`, sur les modèles
-  vanilla de `Common.ui`, maquette `tableau_village.png`) : les trois demandes avec **Prendre** / **Abandonner** à
-  gauche, l'état du village et **Rendre** à droite, **Version texte** pour la page BlockLore. **Accroupi**, il ouvre
-  directement la page texte (secours si la page à boutons ne s'affiche pas).
+- **Le tableau** (ouest du cœur) : utilisé normalement, il ouvre le tableau à boutons, aux couleurs du peuple
+  (`BoardPage_<Peuple>.ui`, générées par `tools/generate_board_ui.py` ; `BoardPage.ui` neutre pour un peuple sans
+  thème ; maquettes `peuples/maquettes/tableau-par-peuple/`). En haut, le bandeau du peuple : emblème vanilla de la
+  page des Souvenirs teinté à sa couleur (Voidtaken pour les Slothians, faute d'icône), palier, devise
+  (`boardPage.motto.<Peuple>`), villageois, rang du joueur et sa jauge. À gauche, les trois demandes en cartes : icône
+  d'objet vanilla du type (ou l'objet demandé), récompenses (essor, réputation, faveur en icône), jauge d'avancement
+  d'une demande prise, **Prendre** / **Abandonner**. À droite, l'essor (jauge), le chantier (matériaux en icônes
+  d'objets, coche verte quand le compte est bon ; ou fin des travaux et bâtiments), le dépôt en icônes et l'alerte de
+  raid. En bas, les absents, **Rendre** et **Version texte** (page BlockLore). **Accroupi**, il ouvre directement la
+  page texte (secours si la page à boutons ne s'affiche pas). `ValidateAssets` vérifie que chaque élément rempli par
+  `BoardPage.java` existe dans chaque page et que chaque texture citée existe (pack ou
+  `tools/vanilla-ui-textures-0.7.7.txt`).
 - **Le crieur** (`Nakasar_Peuples_Kweebec_Crier`), posé deux blocs au sud du tableau quand un joueur approche : son
   dialogue `Kweebec_Crieur` ouvre les demandes, ou reprend les objets portés si le joueur a une demande ici. Tué, il
   revient au matin.
@@ -306,8 +314,9 @@ Nouveaux types de dialogue : condition `HasRequest` (`RequestType` optionnel), e
 ### À vérifier en jeu (étape 3)
 
 - Le suivi d'objectif vanilla au HUD : titre, description, ligne de tâche, compteur, et son retrait.
-- Le tableau à boutons `BoardPage.ui` : mise en page, boutons (Prendre, Abandonner, Rendre, Version texte), défilement
-  de l'état à droite ; chemin `../../../Common.ui`.
+- Le tableau à boutons par peuple : mise en page, boutons (Prendre, Abandonner, Rendre, Version texte), teinte des
+  emblèmes (couleur du `PatchStyle` ; sinon livrer des copies recolorées), jauges (`ProgressBar` à remplissage
+  `Board/Bar_<Peuple>.png`), icônes d'objets (`ItemIcon`), pastilles qui prennent la largeur de leur texte.
 - L'interaction avec le crieur, le guetteur et le captif (touche d'utilisation, mot « Parler ») et l'apparence
   vanilla choisie (Kweebec rose, Razorleaf, orange).
 - Le captif qui suit le joueur ; les Trorks de la défense qui marchent vers le cœur (point de laisse).

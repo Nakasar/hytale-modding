@@ -1,88 +1,547 @@
 $C = "../../../Common.ui";
 
-@RequestTitleStyle = LabelStyle(FontSize: 17, TextColor: #e8c46a, RenderBold: true, Wrap: true);
-@RequestDetailStyle = LabelStyle(FontSize: 15, TextColor: #96a9be, Wrap: true);
+// Généré par tools/generate_board_ui.py (thème neutre) : ne pas modifier à la main.
 
-@RequestRow = Group {
-  LayoutMode: Top;
-  Anchor: (Height: 132, Bottom: 8);
-  Padding: (Full: 10);
-  Background: (Color: #0c151e(0.45));
+@Accent = #7a9cc6;
+@Caption = LabelStyle(FontSize: 12, RenderBold: true, RenderUppercase: true, TextColor: #7f93a8, VerticalAlignment: Center);
+@Section = LabelStyle(FontSize: 15, RenderBold: true, RenderUppercase: true, TextColor: #96a9be, VerticalAlignment: Center);
+@Body = LabelStyle(FontSize: 14, TextColor: #c9d1d9, VerticalAlignment: Center);
+@Small = LabelStyle(FontSize: 13, TextColor: #96a9be, VerticalAlignment: Center);
+@SmallWrap = LabelStyle(FontSize: 13, TextColor: #96a9be, Wrap: true);
+@Count = LabelStyle(FontSize: 14, RenderBold: true, TextColor: #e8c46a, HorizontalAlignment: Center, VerticalAlignment: Center);
+@SlotCount = LabelStyle(FontSize: 12, RenderBold: true, TextColor: #ffffff, HorizontalAlignment: End, VerticalAlignment: End);
+@RequestTitle = LabelStyle(FontSize: 18, RenderBold: true, TextColor: #e8c46a, VerticalAlignment: Center);
+@TypeStyle = LabelStyle(FontSize: 11, RenderBold: true, RenderUppercase: true, TextColor: #c9d1d9, HorizontalAlignment: Center, VerticalAlignment: Center);
+@PillStyle = LabelStyle(FontSize: 12, RenderBold: true, TextColor: @Accent, HorizontalAlignment: Center, VerticalAlignment: Center);
+@RepPillStyle = LabelStyle(FontSize: 12, RenderBold: true, TextColor: #a9c4e6, HorizontalAlignment: Center, VerticalAlignment: Center);
+
+@Card = Group {
+  Background: (Color: #0c151e(0.55));
+};
+
+@Pill = Group {
+  LayoutMode: Left;
+  Anchor: (Height: 20, Right: 6);
+  Padding: (Horizontal: 8);
+  Background: (Color: #1a2836);
+};
+
+@Bar = ProgressBar {
+  Background: "../../../Common/ProgressBar.png";
+  BarTexturePath: "Board/Bar_Default.png";
+  Value: 0;
 };
 
 $C.@PageOverlay {
   LayoutMode: Middle;
 
   $C.@DecoratedContainer {
-    Anchor: (Width: 980, Height: 600);
+    Anchor: (Width: 1060, Height: 690);
 
     #Title {
-      Label #PageTitle {
-        Style: (...$C.@TitleStyle, HorizontalAlignment: Center);
-        Padding: (Horizontal: 19);
+      Group {
+        LayoutMode: Center;
+        Group #TitleEmblem { Anchor: (Width: 26, Height: 26, Right: 8); Visible: false; }
+        Label #PageTitle { Style: (...$C.@TitleStyle, FontSize: 16, TextColor: #b4c8c9); }
       }
     }
 
     #Content {
-      LayoutMode: Left;
-      Padding: (Full: 16);
+      LayoutMode: Top;
+      Padding: (Full: 17, Top: 14);
 
-      Group #RequestsColumn {
-        LayoutMode: Top;
-        FlexWeight: 1;
-        Padding: (Right: 12);
+      Group #Band {
+        LayoutMode: Full;
+        Anchor: (Height: 104);
+        Background: (Color: #1d2c40(0.75));
 
-        Label #RequestsHeader {
-          Anchor: (Height: 26, Bottom: 8);
-          Style: (...$C.@SubtitleStyle);
-        }
+        Group { Anchor: (Left: 0, Top: 0, Bottom: 0, Width: 4); Background: (Color: #7a9cc6); }
+        Group { Anchor: (Left: 0, Right: 0, Bottom: 0, Height: 1); Background: (Color: #7a9cc6(0.35)); }
 
-        @RequestRow #Request0 {
-          Label #Title0 { Anchor: (Height: 24); Style: @RequestTitleStyle; }
-          Label #Detail0 { Anchor: (Height: 48); Style: @RequestDetailStyle; }
-          $C.@SmallSecondaryTextButton #Action0 { @Text = ""; @Anchor = Anchor(Width: 180); }
-        }
+        Group {
+          LayoutMode: Left;
+          Anchor: (Full: 0);
+          Padding: (Left: 18, Right: 18, Vertical: 10);
 
-        @RequestRow #Request1 {
-          Label #Title1 { Anchor: (Height: 24); Style: @RequestTitleStyle; }
-          Label #Detail1 { Anchor: (Height: 48); Style: @RequestDetailStyle; }
-          $C.@SmallSecondaryTextButton #Action1 { @Text = ""; @Anchor = Anchor(Width: 180); }
-        }
+          Group #EmblemFrame {
+            LayoutMode: Full;
+            Anchor: (Width: 84, Height: 84, Right: 20);
+            Background: (TexturePath: "../../../Common/ContainerPanelPatch.png", Border: 4);
+            Group #Emblem { Anchor: (Full: 0); Visible: false; }
+          }
 
-        @RequestRow #Request2 {
-          Label #Title2 { Anchor: (Height: 24); Style: @RequestTitleStyle; }
-          Label #Detail2 { Anchor: (Height: 48); Style: @RequestDetailStyle; }
-          $C.@SmallSecondaryTextButton #Action2 { @Text = ""; @Anchor = Anchor(Width: 180); }
+          Group {
+            LayoutMode: Top;
+            FlexWeight: 1;
+            Label #PeopleTier { Anchor: (Height: 30, Top: 2); Style: (FontSize: 19, FontName: "Secondary", RenderBold: true, RenderUppercase: true, TextColor: #7a9cc6, VerticalAlignment: Center); Text: ""; }
+            Label #Motto { Anchor: (Height: 24); Style: (FontSize: 15, TextColor: #c9b98f, VerticalAlignment: Center); Text: ""; }
+            Group {
+              LayoutMode: Left;
+              Anchor: (Height: 20, Top: 6);
+              @Pill #VillagersPill { Label #Villagers { Style: @RepPillStyle; Text: ""; } }
+              @Pill #ClimatePill { Visible: false; Label #Climate { Style: @PillStyle; Text: ""; } }
+            }
+          }
+
+          Group #RankBlock {
+            LayoutMode: Top;
+            Anchor: (Width: 290);
+            Label #RankCaption { Anchor: (Height: 16); Style: @Caption; Text: ""; }
+            Group {
+              LayoutMode: Left;
+              Anchor: (Height: 28);
+              Label #RankName { Style: (FontSize: 22, FontName: "Secondary", RenderBold: true, RenderUppercase: true, TextColor: #e8c46a, VerticalAlignment: Center); Text: ""; FlexWeight: 1; }
+              Label #RankNext { Style: (FontSize: 13, RenderBold: true, TextColor: #96a9be, HorizontalAlignment: End, VerticalAlignment: Center); Text: ""; }
+            }
+            @Bar #RankBar { Anchor: (Height: 12, Top: 4, Bottom: 4); }
+            Label #RankDetail { Anchor: (Height: 18); Style: @Small; Text: ""; }
+          }
         }
       }
 
       Group {
-        Anchor: (Width: 1);
-        Background: (Color: #2b3542);
-      }
-
-      Group #StateColumn {
-        LayoutMode: Top;
+        LayoutMode: Left;
         FlexWeight: 1;
-        Padding: (Left: 12);
+        Anchor: (Top: 14);
 
-        Group #StateScroll {
-          LayoutMode: TopScrolling;
-          ScrollbarStyle: $C.@DefaultScrollbarStyle;
+        Group #RequestsColumn {
+          LayoutMode: Top;
+          Anchor: (Width: 548, Right: 22);
+          Group {
+            LayoutMode: Left;
+            Anchor: (Height: 24, Bottom: 6);
+            Label #RequestsHeader { Style: @Section; Text: ""; FlexWeight: 1; }
+            Label #RequestsRenew { Style: (FontSize: 13, TextColor: #5a6a7a, HorizontalAlignment: End, VerticalAlignment: Center); Text: ""; }
+          }
+
+          @Card #Request0 {
+            LayoutMode: Full;
+            Anchor: (Height: 108, Bottom: 10);
+            Group #Stripe0 { Anchor: (Left: 0, Top: 0, Bottom: 0, Width: 3); Background: (Color: #7a9cc6); }
+            Group #StripeOff0 { Anchor: (Left: 0, Top: 0, Bottom: 0, Width: 3); Background: (Color: #3a4656); Visible: false; }
+
+            Group #TypeSlot0 {
+              LayoutMode: Full;
+              Anchor: (Left: 14, Top: 14, Width: 56, Height: 56);
+              Background: (TexturePath: "../../../Common/IngredientSlot.png", Border: 24);
+              ItemIcon #TypeIcon0 { Anchor: (Full: 6); }
+              Group #Lock0 {
+                LayoutMode: Middle;
+                Anchor: (Full: 0);
+                Background: (Color: #000000(0.5));
+                Visible: false;
+                Group { Anchor: (Width: 27, Height: 27); Background: "../../../Common/RunicCheckLocked.png"; }
+              }
+            }
+
+            Group #Check0 { Anchor: (Right: 12, Top: 12, Width: 27, Height: 27); Background: "../../../Common/RunicCheckReady.png"; Visible: false; }
+
+            Group {
+              LayoutMode: Top;
+              Anchor: (Left: 84, Right: 14, Top: 12, Bottom: 10);
+              Group {
+                LayoutMode: Left;
+                Anchor: (Height: 24);
+                @Pill #TypePill0 { Anchor: (Height: 20, Right: 8, Top: 2); Label #Type0 { Style: @TypeStyle; Text: ""; } }
+                Label #Title0 { Style: @RequestTitle; Text: ""; FlexWeight: 1; }
+              }
+
+              // Disponible : la récompense.
+              Group #RewardBox0 {
+                LayoutMode: Top;
+                Anchor: (Top: 6);
+                Label #RewardCaption0 { Anchor: (Height: 16); Style: @Caption; Text: ""; }
+                Group {
+                  LayoutMode: Left;
+                  Anchor: (Height: 30, Top: 4);
+                  @Pill { Anchor: (Height: 20, Right: 6, Top: 5); Label #Essor0 { Style: @PillStyle; Text: ""; } }
+                  @Pill { Anchor: (Height: 20, Right: 6, Top: 5); Label #Rep0 { Style: @RepPillStyle; Text: ""; } }
+                  ItemIcon #Favor0 { Anchor: (Width: 30, Height: 30, Right: 4); ShowItemTooltip: true; }
+                  Label #Favors0 { Style: (FontSize: 15, RenderBold: true, TextColor: #d3d6db, VerticalAlignment: Center); Text: ""; FlexWeight: 1; }
+                }
+              }
+
+              // Prise : la tâche et son avancement.
+              Group #TaskBox0 {
+                LayoutMode: Top;
+                Anchor: (Top: 4, Right: 150);
+                Visible: false;
+                Label #Task0 { Anchor: (Height: 36); Style: (FontSize: 14, TextColor: #c9d1d9, Wrap: true); Text: ""; }
+                Group {
+                  LayoutMode: Left;
+                  Anchor: (Height: 16, Top: 2);
+                  @Bar #Progress0 { Anchor: (Width: 240, Height: 10, Top: 3); }
+                  Label #ProgressText0 { Anchor: (Left: 10); Style: (FontSize: 13, RenderBold: true, TextColor: #96a9be, VerticalAlignment: Center); Text: ""; }
+                }
+              }
+
+              // Fermée ou remplie : une ligne.
+              Label #Detail0 { Anchor: (Top: 8, Right: 150); Style: (FontSize: 14, TextColor: #6f7d8c, Wrap: true); Text: ""; Visible: false; }
+            }
+
+            $C.@SmallSecondaryTextButton #Action0 { @Text = ""; @Anchor = Anchor(Right: 14, Bottom: 14, Width: 136); }
+          }
+
+          @Card #Request1 {
+            LayoutMode: Full;
+            Anchor: (Height: 108, Bottom: 10);
+            Group #Stripe1 { Anchor: (Left: 0, Top: 0, Bottom: 0, Width: 3); Background: (Color: #7a9cc6); }
+            Group #StripeOff1 { Anchor: (Left: 0, Top: 0, Bottom: 0, Width: 3); Background: (Color: #3a4656); Visible: false; }
+
+            Group #TypeSlot1 {
+              LayoutMode: Full;
+              Anchor: (Left: 14, Top: 14, Width: 56, Height: 56);
+              Background: (TexturePath: "../../../Common/IngredientSlot.png", Border: 24);
+              ItemIcon #TypeIcon1 { Anchor: (Full: 6); }
+              Group #Lock1 {
+                LayoutMode: Middle;
+                Anchor: (Full: 0);
+                Background: (Color: #000000(0.5));
+                Visible: false;
+                Group { Anchor: (Width: 27, Height: 27); Background: "../../../Common/RunicCheckLocked.png"; }
+              }
+            }
+
+            Group #Check1 { Anchor: (Right: 12, Top: 12, Width: 27, Height: 27); Background: "../../../Common/RunicCheckReady.png"; Visible: false; }
+
+            Group {
+              LayoutMode: Top;
+              Anchor: (Left: 84, Right: 14, Top: 12, Bottom: 10);
+              Group {
+                LayoutMode: Left;
+                Anchor: (Height: 24);
+                @Pill #TypePill1 { Anchor: (Height: 20, Right: 8, Top: 2); Label #Type1 { Style: @TypeStyle; Text: ""; } }
+                Label #Title1 { Style: @RequestTitle; Text: ""; FlexWeight: 1; }
+              }
+
+              // Disponible : la récompense.
+              Group #RewardBox1 {
+                LayoutMode: Top;
+                Anchor: (Top: 6);
+                Label #RewardCaption1 { Anchor: (Height: 16); Style: @Caption; Text: ""; }
+                Group {
+                  LayoutMode: Left;
+                  Anchor: (Height: 30, Top: 4);
+                  @Pill { Anchor: (Height: 20, Right: 6, Top: 5); Label #Essor1 { Style: @PillStyle; Text: ""; } }
+                  @Pill { Anchor: (Height: 20, Right: 6, Top: 5); Label #Rep1 { Style: @RepPillStyle; Text: ""; } }
+                  ItemIcon #Favor1 { Anchor: (Width: 30, Height: 30, Right: 4); ShowItemTooltip: true; }
+                  Label #Favors1 { Style: (FontSize: 15, RenderBold: true, TextColor: #d3d6db, VerticalAlignment: Center); Text: ""; FlexWeight: 1; }
+                }
+              }
+
+              // Prise : la tâche et son avancement.
+              Group #TaskBox1 {
+                LayoutMode: Top;
+                Anchor: (Top: 4, Right: 150);
+                Visible: false;
+                Label #Task1 { Anchor: (Height: 36); Style: (FontSize: 14, TextColor: #c9d1d9, Wrap: true); Text: ""; }
+                Group {
+                  LayoutMode: Left;
+                  Anchor: (Height: 16, Top: 2);
+                  @Bar #Progress1 { Anchor: (Width: 240, Height: 10, Top: 3); }
+                  Label #ProgressText1 { Anchor: (Left: 10); Style: (FontSize: 13, RenderBold: true, TextColor: #96a9be, VerticalAlignment: Center); Text: ""; }
+                }
+              }
+
+              // Fermée ou remplie : une ligne.
+              Label #Detail1 { Anchor: (Top: 8, Right: 150); Style: (FontSize: 14, TextColor: #6f7d8c, Wrap: true); Text: ""; Visible: false; }
+            }
+
+            $C.@SmallSecondaryTextButton #Action1 { @Text = ""; @Anchor = Anchor(Right: 14, Bottom: 14, Width: 136); }
+          }
+
+          @Card #Request2 {
+            LayoutMode: Full;
+            Anchor: (Height: 108, Bottom: 10);
+            Group #Stripe2 { Anchor: (Left: 0, Top: 0, Bottom: 0, Width: 3); Background: (Color: #7a9cc6); }
+            Group #StripeOff2 { Anchor: (Left: 0, Top: 0, Bottom: 0, Width: 3); Background: (Color: #3a4656); Visible: false; }
+
+            Group #TypeSlot2 {
+              LayoutMode: Full;
+              Anchor: (Left: 14, Top: 14, Width: 56, Height: 56);
+              Background: (TexturePath: "../../../Common/IngredientSlot.png", Border: 24);
+              ItemIcon #TypeIcon2 { Anchor: (Full: 6); }
+              Group #Lock2 {
+                LayoutMode: Middle;
+                Anchor: (Full: 0);
+                Background: (Color: #000000(0.5));
+                Visible: false;
+                Group { Anchor: (Width: 27, Height: 27); Background: "../../../Common/RunicCheckLocked.png"; }
+              }
+            }
+
+            Group #Check2 { Anchor: (Right: 12, Top: 12, Width: 27, Height: 27); Background: "../../../Common/RunicCheckReady.png"; Visible: false; }
+
+            Group {
+              LayoutMode: Top;
+              Anchor: (Left: 84, Right: 14, Top: 12, Bottom: 10);
+              Group {
+                LayoutMode: Left;
+                Anchor: (Height: 24);
+                @Pill #TypePill2 { Anchor: (Height: 20, Right: 8, Top: 2); Label #Type2 { Style: @TypeStyle; Text: ""; } }
+                Label #Title2 { Style: @RequestTitle; Text: ""; FlexWeight: 1; }
+              }
+
+              // Disponible : la récompense.
+              Group #RewardBox2 {
+                LayoutMode: Top;
+                Anchor: (Top: 6);
+                Label #RewardCaption2 { Anchor: (Height: 16); Style: @Caption; Text: ""; }
+                Group {
+                  LayoutMode: Left;
+                  Anchor: (Height: 30, Top: 4);
+                  @Pill { Anchor: (Height: 20, Right: 6, Top: 5); Label #Essor2 { Style: @PillStyle; Text: ""; } }
+                  @Pill { Anchor: (Height: 20, Right: 6, Top: 5); Label #Rep2 { Style: @RepPillStyle; Text: ""; } }
+                  ItemIcon #Favor2 { Anchor: (Width: 30, Height: 30, Right: 4); ShowItemTooltip: true; }
+                  Label #Favors2 { Style: (FontSize: 15, RenderBold: true, TextColor: #d3d6db, VerticalAlignment: Center); Text: ""; FlexWeight: 1; }
+                }
+              }
+
+              // Prise : la tâche et son avancement.
+              Group #TaskBox2 {
+                LayoutMode: Top;
+                Anchor: (Top: 4, Right: 150);
+                Visible: false;
+                Label #Task2 { Anchor: (Height: 36); Style: (FontSize: 14, TextColor: #c9d1d9, Wrap: true); Text: ""; }
+                Group {
+                  LayoutMode: Left;
+                  Anchor: (Height: 16, Top: 2);
+                  @Bar #Progress2 { Anchor: (Width: 240, Height: 10, Top: 3); }
+                  Label #ProgressText2 { Anchor: (Left: 10); Style: (FontSize: 13, RenderBold: true, TextColor: #96a9be, VerticalAlignment: Center); Text: ""; }
+                }
+              }
+
+              // Fermée ou remplie : une ligne.
+              Label #Detail2 { Anchor: (Top: 8, Right: 150); Style: (FontSize: 14, TextColor: #6f7d8c, Wrap: true); Text: ""; Visible: false; }
+            }
+
+            $C.@SmallSecondaryTextButton #Action2 { @Text = ""; @Anchor = Anchor(Right: 14, Bottom: 14, Width: 136); }
+          }
+
+          Group { FlexWeight: 1; }
+          Label #Perks { Anchor: (Bottom: 2); Style: @SmallWrap; Text: ""; }
+        }
+
+        Group #StateColumn {
+          LayoutMode: Top;
           FlexWeight: 1;
+          Label #EssorHeader { Anchor: (Height: 24, Bottom: 6); Style: @Section; Text: ""; }
 
-          Label #StateText {
-            Style: (...$C.@DefaultLabelStyle, FontSize: 14, Wrap: true);
+          @Card #EssorCard {
+            LayoutMode: Top;
+            Anchor: (Height: 356);
+            Padding: (Horizontal: 16, Top: 12, Bottom: 10);
+
+            Group {
+              LayoutMode: Left;
+              Anchor: (Height: 22);
+              Label #EssorLabel { Style: (FontSize: 15, RenderBold: true, TextColor: #d3d6db, VerticalAlignment: Center); Text: ""; FlexWeight: 1; }
+              Label #EssorValue { Style: (FontSize: 15, RenderBold: true, TextColor: #7a9cc6, HorizontalAlignment: End, VerticalAlignment: Center); Text: ""; }
+            }
+            @Bar #EssorBar { Anchor: (Height: 16, Top: 6, Bottom: 6); }
+            Label #EssorHint { Anchor: (Height: 18); Style: @SmallWrap; Text: ""; }
+            $C.@PanelSeparatorFancy { @Anchor = Anchor(Top: 8, Bottom: 8); }
+            Label #ChantierTitle { Anchor: (Height: 18, Bottom: 6); Style: (FontSize: 13, RenderBold: true, RenderUppercase: true, TextColor: #b4c8c9, VerticalAlignment: Center); Text: ""; }
+
+            // Prochain chantier : les matériaux attendus au dépôt.
+            Group #Materials {
+              LayoutMode: Left;
+              Anchor: (Height: 86);
+              Group #Mat0 {
+                LayoutMode: Top;
+                Anchor: (Width: 64, Right: 18);
+                Group {
+                  LayoutMode: Full;
+                  Anchor: (Width: 64, Height: 64);
+                  Group #MatSlot0 { Anchor: (Full: 0); Background: (TexturePath: "../../../Common/IngredientSlot.png", Border: 24); }
+                  Group #MatOk0 { Anchor: (Full: 0); Background: (TexturePath: "../../../Common/IngredientSlotValid.png", Border: 24); Visible: false; }
+                  ItemIcon #MatIcon0 { Anchor: (Full: 6); ShowItemTooltip: true; }
+                }
+                Label #MatCount0 { Anchor: (Height: 20, Top: 2); Style: @Count; Text: ""; }
+              }
+              Group #Mat1 {
+                LayoutMode: Top;
+                Anchor: (Width: 64, Right: 18);
+                Group {
+                  LayoutMode: Full;
+                  Anchor: (Width: 64, Height: 64);
+                  Group #MatSlot1 { Anchor: (Full: 0); Background: (TexturePath: "../../../Common/IngredientSlot.png", Border: 24); }
+                  Group #MatOk1 { Anchor: (Full: 0); Background: (TexturePath: "../../../Common/IngredientSlotValid.png", Border: 24); Visible: false; }
+                  ItemIcon #MatIcon1 { Anchor: (Full: 6); ShowItemTooltip: true; }
+                }
+                Label #MatCount1 { Anchor: (Height: 20, Top: 2); Style: @Count; Text: ""; }
+              }
+              Group #Mat2 {
+                LayoutMode: Top;
+                Anchor: (Width: 64, Right: 18);
+                Group {
+                  LayoutMode: Full;
+                  Anchor: (Width: 64, Height: 64);
+                  Group #MatSlot2 { Anchor: (Full: 0); Background: (TexturePath: "../../../Common/IngredientSlot.png", Border: 24); }
+                  Group #MatOk2 { Anchor: (Full: 0); Background: (TexturePath: "../../../Common/IngredientSlotValid.png", Border: 24); Visible: false; }
+                  ItemIcon #MatIcon2 { Anchor: (Full: 6); ShowItemTooltip: true; }
+                }
+                Label #MatCount2 { Anchor: (Height: 20, Top: 2); Style: @Count; Text: ""; }
+              }
+              Group #Mat3 {
+                LayoutMode: Top;
+                Anchor: (Width: 64, Right: 18);
+                Group {
+                  LayoutMode: Full;
+                  Anchor: (Width: 64, Height: 64);
+                  Group #MatSlot3 { Anchor: (Full: 0); Background: (TexturePath: "../../../Common/IngredientSlot.png", Border: 24); }
+                  Group #MatOk3 { Anchor: (Full: 0); Background: (TexturePath: "../../../Common/IngredientSlotValid.png", Border: 24); Visible: false; }
+                  ItemIcon #MatIcon3 { Anchor: (Full: 6); ShowItemTooltip: true; }
+                }
+                Label #MatCount3 { Anchor: (Height: 20, Top: 2); Style: @Count; Text: ""; }
+              }
+              Group #Mat4 {
+                LayoutMode: Top;
+                Anchor: (Width: 64, Right: 18);
+                Group {
+                  LayoutMode: Full;
+                  Anchor: (Width: 64, Height: 64);
+                  Group #MatSlot4 { Anchor: (Full: 0); Background: (TexturePath: "../../../Common/IngredientSlot.png", Border: 24); }
+                  Group #MatOk4 { Anchor: (Full: 0); Background: (TexturePath: "../../../Common/IngredientSlotValid.png", Border: 24); Visible: false; }
+                  ItemIcon #MatIcon4 { Anchor: (Full: 6); ShowItemTooltip: true; }
+                }
+                Label #MatCount4 { Anchor: (Height: 20, Top: 2); Style: @Count; Text: ""; }
+              }
+            }
+            Label #ChantierInfo { Anchor: (Top: 4); Style: @SmallWrap; Text: ""; }
+
+            // Chantier en cours : la fin des travaux et les bâtiments.
+            Group #Works {
+              LayoutMode: Top;
+              Visible: false;
+              Label #WorksLine { Anchor: (Height: 22); Style: (FontSize: 15, RenderBold: true, TextColor: #d3d6db, VerticalAlignment: Center); Text: ""; }
+              ProgressBar #WorksBar {
+                Anchor: (Height: 12, Top: 4, Bottom: 8);
+                Background: "../../../Common/ProgressBar.png";
+                BarTexturePath: "Board/Bar_Chantier.png";
+                Value: 0;
+              }
+              Group #Building0 {
+                LayoutMode: Left;
+                Anchor: (Height: 22);
+                Group #BuildingDone0 { Anchor: (Width: 18, Height: 18, Right: 8); Background: "../../../Common/RunicCheckChecked.png"; Visible: false; }
+                Group #BuildingTodo0 { Anchor: (Width: 18, Height: 18, Right: 8); Background: "../../../Common/RunicCheckEmpty.png"; }
+                Label #BuildingName0 { Style: @Body; Text: ""; FlexWeight: 1; }
+              }
+              Group #Building1 {
+                LayoutMode: Left;
+                Anchor: (Height: 22);
+                Group #BuildingDone1 { Anchor: (Width: 18, Height: 18, Right: 8); Background: "../../../Common/RunicCheckChecked.png"; Visible: false; }
+                Group #BuildingTodo1 { Anchor: (Width: 18, Height: 18, Right: 8); Background: "../../../Common/RunicCheckEmpty.png"; }
+                Label #BuildingName1 { Style: @Body; Text: ""; FlexWeight: 1; }
+              }
+              Group #Building2 {
+                LayoutMode: Left;
+                Anchor: (Height: 22);
+                Group #BuildingDone2 { Anchor: (Width: 18, Height: 18, Right: 8); Background: "../../../Common/RunicCheckChecked.png"; Visible: false; }
+                Group #BuildingTodo2 { Anchor: (Width: 18, Height: 18, Right: 8); Background: "../../../Common/RunicCheckEmpty.png"; }
+                Label #BuildingName2 { Style: @Body; Text: ""; FlexWeight: 1; }
+              }
+              Group #Building3 {
+                LayoutMode: Left;
+                Anchor: (Height: 22);
+                Group #BuildingDone3 { Anchor: (Width: 18, Height: 18, Right: 8); Background: "../../../Common/RunicCheckChecked.png"; Visible: false; }
+                Group #BuildingTodo3 { Anchor: (Width: 18, Height: 18, Right: 8); Background: "../../../Common/RunicCheckEmpty.png"; }
+                Label #BuildingName3 { Style: @Body; Text: ""; FlexWeight: 1; }
+              }
+            }
+
+            Label #ChantierNotes { Anchor: (Top: 4); Style: (FontSize: 13, TextColor: #e8c46a, Wrap: true); Text: ""; }
+            Group { FlexWeight: 1; }
+            $C.@PanelSeparatorFancy { @Anchor = Anchor(Bottom: 6); }
+            Label #DepositHeader { Anchor: (Height: 16, Bottom: 6); Style: @Caption; Text: ""; }
+            Group #DepositRow {
+              LayoutMode: Left;
+              Anchor: (Height: 40);
+              Group #Dep0 {
+                LayoutMode: Full;
+                Anchor: (Width: 40, Height: 40, Right: 6);
+                Background: (TexturePath: "../../../Common/IngredientSlot.png", Border: 24);
+                ItemIcon #DepIcon0 { Anchor: (Full: 4); ShowItemTooltip: true; }
+                Label #DepCount0 { Anchor: (Right: 3, Bottom: 1); Style: @SlotCount; Text: ""; }
+              }
+              Group #Dep1 {
+                LayoutMode: Full;
+                Anchor: (Width: 40, Height: 40, Right: 6);
+                Background: (TexturePath: "../../../Common/IngredientSlot.png", Border: 24);
+                ItemIcon #DepIcon1 { Anchor: (Full: 4); ShowItemTooltip: true; }
+                Label #DepCount1 { Anchor: (Right: 3, Bottom: 1); Style: @SlotCount; Text: ""; }
+              }
+              Group #Dep2 {
+                LayoutMode: Full;
+                Anchor: (Width: 40, Height: 40, Right: 6);
+                Background: (TexturePath: "../../../Common/IngredientSlot.png", Border: 24);
+                ItemIcon #DepIcon2 { Anchor: (Full: 4); ShowItemTooltip: true; }
+                Label #DepCount2 { Anchor: (Right: 3, Bottom: 1); Style: @SlotCount; Text: ""; }
+              }
+              Group #Dep3 {
+                LayoutMode: Full;
+                Anchor: (Width: 40, Height: 40, Right: 6);
+                Background: (TexturePath: "../../../Common/IngredientSlot.png", Border: 24);
+                ItemIcon #DepIcon3 { Anchor: (Full: 4); ShowItemTooltip: true; }
+                Label #DepCount3 { Anchor: (Right: 3, Bottom: 1); Style: @SlotCount; Text: ""; }
+              }
+              Group #Dep4 {
+                LayoutMode: Full;
+                Anchor: (Width: 40, Height: 40, Right: 6);
+                Background: (TexturePath: "../../../Common/IngredientSlot.png", Border: 24);
+                ItemIcon #DepIcon4 { Anchor: (Full: 4); ShowItemTooltip: true; }
+                Label #DepCount4 { Anchor: (Right: 3, Bottom: 1); Style: @SlotCount; Text: ""; }
+              }
+              Group #Dep5 {
+                LayoutMode: Full;
+                Anchor: (Width: 40, Height: 40, Right: 6);
+                Background: (TexturePath: "../../../Common/IngredientSlot.png", Border: 24);
+                ItemIcon #DepIcon5 { Anchor: (Full: 4); ShowItemTooltip: true; }
+                Label #DepCount5 { Anchor: (Right: 3, Bottom: 1); Style: @SlotCount; Text: ""; }
+              }
+              Group #Dep6 {
+                LayoutMode: Full;
+                Anchor: (Width: 40, Height: 40, Right: 6);
+                Background: (TexturePath: "../../../Common/IngredientSlot.png", Border: 24);
+                ItemIcon #DepIcon6 { Anchor: (Full: 4); ShowItemTooltip: true; }
+                Label #DepCount6 { Anchor: (Right: 3, Bottom: 1); Style: @SlotCount; Text: ""; }
+              }
+              Group #Dep7 {
+                LayoutMode: Full;
+                Anchor: (Width: 40, Height: 40, Right: 6);
+                Background: (TexturePath: "../../../Common/IngredientSlot.png", Border: 24);
+                ItemIcon #DepIcon7 { Anchor: (Full: 4); ShowItemTooltip: true; }
+                Label #DepCount7 { Anchor: (Right: 3, Bottom: 1); Style: @SlotCount; Text: ""; }
+              }
+              Group #Dep8 {
+                LayoutMode: Full;
+                Anchor: (Width: 40, Height: 40, Right: 6);
+                Background: (TexturePath: "../../../Common/IngredientSlot.png", Border: 24);
+                ItemIcon #DepIcon8 { Anchor: (Full: 4); ShowItemTooltip: true; }
+                Label #DepCount8 { Anchor: (Right: 3, Bottom: 1); Style: @SlotCount; Text: ""; }
+              }
+              Label #DepMore { Anchor: (Left: 4); Style: @Small; Text: ""; }
+              Label #DepEmpty { Style: @Small; Text: ""; Visible: false; }
+            }
+          }
+
+          Group #Alert {
+            LayoutMode: Left;
+            Anchor: (Top: 12, Height: 40);
+            Padding: (Horizontal: 14);
+            Background: (Color: #d9614c(0.18));
+            Label #AlertText { Style: (FontSize: 14, RenderBold: true, TextColor: #f0b0a0, Wrap: true, VerticalAlignment: Center); Text: ""; FlexWeight: 1; }
           }
         }
+      }
 
-        Group {
-          LayoutMode: Left;
-          Anchor: (Height: 44, Top: 8);
-
-          $C.@TextButton #TurnIn { @Text = ""; @Anchor = Anchor(Right: 8, MinWidth: 190); }
-          $C.@SecondaryTextButton #TextVersion { @Text = ""; @Anchor = Anchor(MinWidth: 190); }
-        }
+      Group {
+        LayoutMode: Left;
+        Anchor: (Height: 44, Top: 12);
+        Label #Absent { Style: @SmallWrap; Text: ""; FlexWeight: 1; }
+        $C.@TextButton #TurnIn { @Text = ""; @Anchor = Anchor(Right: 12, Width: 230); }
+        $C.@SecondaryTextButton #TextVersion { @Text = ""; @Anchor = Anchor(Width: 200); }
       }
     }
   }

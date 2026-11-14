@@ -1,0 +1,18 @@
+# Textures vanilla des pages (Assets.zip 0.7.7, Common/UI/Custom/, sans le suffixe @2x) citées par les .ui du mod.
+# N'ajouter qu'un chemin vu dans Assets.zip : une texture absente laisse un trou en jeu.
+Common/ContainerPanelPatch.png
+Common/ContainerPatch.png
+Common/IngredientSlot.png
+Common/IngredientSlotValid.png
+Common/ProgressBar.png
+Common/ProgressBarFill.png
+Common/RunicCheckChecked.png
+Common/RunicCheckEmpty.png
+Common/RunicCheckLocked.png
+Common/RunicCheckReady.png
+Common/RunicContainerBottomGradient.png
+Pages/Memories/categories/Feran.png
+Pages/Memories/categories/Kweebec.png
+Pages/Memories/categories/Outlander.png
+Pages/Memories/categories/Trork.png
+Pages/Memories/categories/Voidtaken.png
