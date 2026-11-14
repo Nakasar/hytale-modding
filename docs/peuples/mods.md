@@ -789,3 +789,25 @@ non plus.
 
 Tester en jeu : tuer le crieur, ouvrir le tableau puis parler au marchand ; dormir jusqu'au matin : le crieur revient et
 la ligne disparaît.
+
+## Apparitions sûres et guetteur qui reste
+
+**Point sûr** (`Terrain.safeFeet` / `Terrain.safeSpot`) : toutes les apparitions de PNJ du mod passent par la même
+recherche. Un point est sûr s'il réunit ces conditions :
+- un sol naturel existe (pas de vide) ;
+- il n'y a ni eau ni lave sur le sol ou à hauteur du corps ;
+- deux blocs sont libres au-dessus (herbes et fleurs permises) ;
+- au moins trois voisins sont à un bloc près (pas de pente impraticable).
+
+La recherche part du point voulu et s'élargit par anneaux. Elle sert à :
+- **Demandes et chaîne** : le lieu tiré est déplacé une fois au point sûr le plus proche, à 24 blocs au plus, puis 48.
+  Le guetteur, le captif et le bosquet s'y posent. La bande de chasse et les gardiens se posent sur des points sûrs
+  autour. Un lieu déjà fixé par une ancienne sauvegarde est revu une fois par session.
+- **Raids** : chaque camp est à 8 blocs au plus de l'angle tiré. Les assaillants et les gardes sont posés sur des
+  points sûrs.
+- **Klops** : à 6 blocs au plus de son étape.
+- **Villageois** : un poste sous l'eau ou dans la lave est décalé de 3 blocs au plus. Un poste dans un bâtiment reste
+  où il est.
+
+**Guetteur des missives** : il ne disparaît plus à la remise. Il reste à son poste (« Il reprend sa garde ») et part
+quand aucun joueur n'est à moins de 56 blocs (`RequestSpawns.release` / `stepLingering`).

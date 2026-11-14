@@ -71,6 +71,8 @@ public final class Villagers {
     private static final Map<Ref<EntityStore>, Float> STUCK = new IdentityHashMap<>();
     /** Hauteur du sol des postes (x, z) déjà sondée. */
     private static final Map<Long, Integer> GROUND = new HashMap<>();
+    /** Postes déplacés vers un point sûr voisin : (x, z) du poste -> (x, z) du point. */
+    private static final Map<Long, int[]> SHIFTED = new HashMap<>();
 
     private Villagers() {
     }
@@ -175,14 +177,25 @@ public final class Villagers {
         long key = ((long) x << 32) ^ (z & 0xffffffffL);
         Integer y = GROUND.get(key);
         if (y == null) {
-            int s = new Terrain(world).surface(x, z);
+            Terrain terrain = new Terrain(world);
+            int s = terrain.surface(x, z);
             if (s == Terrain.NONE) {
                 return new Vector3d(x + 0.5, village.y(), z + 0.5);
             }
-            y = s + 1;
+            // Poste sous l'eau ou dans la lave : le point sûr le plus proche, à 3 blocs au plus (sinon le poste). Un
+            // poste dans un bâtiment (plancher au-dessus du sol naturel) reste où il est.
+            boolean drowned = terrain.hasFluid(x, s + 1, z) || terrain.hasFluid(x, s + 2, z);
+            int[] safe = drowned ? terrain.safeSpot(x, z, 3) : null;
+            if (safe != null) {
+                SHIFTED.put(key, new int[] {safe[0], safe[2]});
+                y = safe[1];
+            } else {
+                y = s + 1;
+            }
             GROUND.put(key, y);
         }
-        return new Vector3d(x + 0.5, y, z + 0.5);
+        int[] shift = SHIFTED.get(key);
+        return shift == null ? new Vector3d(x + 0.5, y, z + 0.5) : new Vector3d(shift[0] + 0.5, y, shift[1] + 0.5);
     }
 
     private static void spawn(Store<EntityStore> store, Village village, Key key, Want want) {
@@ -352,11 +365,13 @@ public final class Villagers {
             }
         }
         GROUND.clear();
+        SHIFTED.clear();
     }
 
     /** Oublie les hauteurs sondées (le terrain a changé : chantier, incendie). */
     public static synchronized void forgetGround() {
         GROUND.clear();
+        SHIFTED.clear();
     }
 
     public static synchronized void clearAll() {
@@ -366,5 +381,6 @@ public final class Villagers {
         DEAD_DIALOGUE.clear();
         STUCK.clear();
         GROUND.clear();
+        SHIFTED.clear();
     }
 }

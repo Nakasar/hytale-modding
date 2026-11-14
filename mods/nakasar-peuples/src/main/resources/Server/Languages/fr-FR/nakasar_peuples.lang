@@ -555,6 +555,7 @@ request.vanished = Une de tes demandes n'existe plus (village ou modèle retiré
 request.escort.lost = Le captif est tombé : « {title} » échoue.
 request.escort.follow = Je te suis ! Ramène-moi au village, vite.
 request.escort.home = Le captif te suit : ramène-le au cœur du village, à {distance} blocs, {direction}.
+request.delivery.after = Le guetteur a lu ta missive. Il reprend sa garde.
 request.titleAmount = {title} ({needed} × {item})
 request.delivery.notYours = Ce n'est pas à toi que je dois parler, voyageur.
 request.delivery.noMissive = Tu n'as pas la missive ({item}).

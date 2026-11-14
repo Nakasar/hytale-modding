@@ -12,6 +12,7 @@ import dev.nakasar.hytale.peuples.player.PeuplesPlayer;
 import com.hypixel.hytale.server.core.universe.world.storage.ChunkStore;
 import dev.nakasar.hytale.peuples.raid.Raids;
 import dev.nakasar.hytale.peuples.village.Blocks;
+import dev.nakasar.hytale.peuples.PeuplesPlugin;
 import dev.nakasar.hytale.peuples.village.Terrain;
 import dev.nakasar.hytale.peuples.village.VillageBoard;
 import dev.nakasar.hytale.peuples.village.Village;
@@ -79,6 +80,15 @@ public final class RequestSystem extends TickingSystem<EntityStore> {
             Requests.refresh(store, village);
         }
         Set<UUID> here = new HashSet<>();
+        List<Vector3d> positions = new ArrayList<>();
+        for (PlayerRef p : world.getPlayerRefs()) {
+            Ref<EntityStore> pr = p.getReference();
+            Vector3d pos = pr == null || !pr.isValid() ? null : Requests.position(store, pr);
+            if (pos != null) {
+                positions.add(pos);
+            }
+        }
+        RequestSpawns.stepLingering(store, positions);
         boolean night = GameClock.isNight(store);
         long now = GameClock.seconds(store);
         for (PlayerRef player : world.getPlayerRefs()) {
@@ -273,23 +283,30 @@ public final class RequestSystem extends TickingSystem<EntityStore> {
         }
     }
 
-    /** Fait apparaître `role` sur le sol, à moins de `spread` blocs de (x, z) ; attaché à `leash` s'il est donné. */
+    /** Demandes dont le lieu a été vérifié sûr pendant cette session. */
+    private static final java.util.Set<PlayerRequest> CHECKED =
+            java.util.Collections.newSetFromMap(java.util.Collections.synchronizedMap(new java.util.WeakHashMap<>()));
+
+    /** Rayon de recherche d'un lieu sûr autour du lieu tiré d'une demande (lac, rivière, falaise). */
+    static final int SITE_SAFE_RADIUS = 24;
+
+    /**
+     * Fait apparaître `role` sur un point sûr ({@link Terrain#safeSpot}) à moins de `spread` blocs de (x, z), sinon
+     * sur le lieu lui-même (déjà sûr, voir {@link #knowSiteHeight}) ; attaché à `leash` s'il est donné.
+     */
     private static void spawnOnGround(World world, Store<EntityStore> store, String key, RequestSpawns.Kind kind, String role,
                                       int x, int z, int spread, Vector3d leash) {
         Terrain terrain = new Terrain(world);
         ThreadLocalRandom random = ThreadLocalRandom.current();
-        int px = x + random.nextInt(-spread, spread + 1);
-        int pz = z + random.nextInt(-spread, spread + 1);
-        int y = terrain.surface(px, pz);
-        if (y == Terrain.NONE) {
-            px = x;
-            pz = z;
-            y = terrain.surface(px, pz);
+        int[] spot = terrain.safeSpot(x + random.nextInt(-spread, spread + 1), z + random.nextInt(-spread, spread + 1), 2);
+        if (spot == null) {
+            spot = terrain.safeSpot(x, z, spread);
         }
-        if (y == Terrain.NONE) {
+        if (spot == null) {
+            PeuplesPlugin.get().getLogger().atWarning().log("Peuples : pas de point sûr pour '%s' autour de %d, %d", role, x, z);
             return;
         }
-        Ref<EntityStore> spawned = RequestSpawns.spawn(store, key, kind, role, new Vector3d(px + 0.5, y + 1, pz + 0.5),
+        Ref<EntityStore> spawned = RequestSpawns.spawn(store, key, kind, role, new Vector3d(spot[0] + 0.5, spot[1], spot[2] + 0.5),
                 (float) random.nextDouble(-Math.PI, Math.PI));
         if (spawned != null && leash != null) {
             NPCEntity npc = store.getComponent(spawned, NPCEntity.getComponentType());
@@ -299,17 +316,35 @@ public final class RequestSystem extends TickingSystem<EntityStore> {
         }
     }
 
-    /** Calcule la hauteur du lieu si sa colonne est chargée ; vrai si elle est connue. */
+    /**
+     * Fixe la hauteur du lieu quand sa colonne est chargée, en le déplaçant au point sûr le plus proche (pas sous l'eau,
+     * dans la lave, dans un bloc ou sur une pente) ; vrai si le lieu est connu. Le guetteur, le captif et le bosquet s'y
+     * posent, et la bande ou les gardiens s'y replient.
+     */
     private static boolean knowSiteHeight(World world, PlayerRequest r) {
-        if (r.siteHeightKnown()) {
-            return true;
-        }
         int[] s = r.site();
-        int y = new Terrain(world).surface(s[0], s[2]);
-        if (y == Terrain.NONE) {
+        Terrain terrain = new Terrain(world);
+        if (r.siteHeightKnown()) {
+            // Un lieu fixé avant la recherche de point sûr (sauvegarde ancienne) est revu une fois par session.
+            if (!CHECKED.add(r) || terrain.surface(s[0], s[2]) == Terrain.NONE || terrain.safeFeet(s[0], s[2]) != Terrain.NONE) {
+                return true;
+            }
+        } else if (terrain.surface(s[0], s[2]) == Terrain.NONE) {
             return false;
         }
-        r.setSite(s[0], y + 1, s[2]);
+        CHECKED.add(r);
+        int[] spot = terrain.safeSpot(s[0], s[2], SITE_SAFE_RADIUS);
+        if (spot == null) {
+            spot = terrain.safeSpot(s[0], s[2], SITE_SAFE_RADIUS * 2);
+        }
+        if (spot == null) {
+            // Rien de sûr à 48 blocs (pleine mer) : le lieu reste sur le sol, comme avant.
+            PeuplesPlugin.get().getLogger().atWarning().log("Peuples : aucun point sûr à %d blocs du lieu %d, %d de la demande %s",
+                    SITE_SAFE_RADIUS * 2, s[0], s[2], r.templateId());
+            r.setSite(s[0], terrain.surface(s[0], s[2]) + 1, s[2]);
+            return true;
+        }
+        r.setSite(spot[0], spot[1], spot[2]);
         return true;
     }
 

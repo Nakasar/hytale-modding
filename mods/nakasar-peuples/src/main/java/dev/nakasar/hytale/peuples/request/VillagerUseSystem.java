@@ -98,6 +98,8 @@ public final class VillagerUseSystem extends EntityEventSystem<EntityStore, UseE
                 }
             } else if (owner.kind() == RequestSpawns.Kind.LOOKOUT) {
                 deliver(world, s, user, player, owner);
+            } else if (owner.kind() == RequestSpawns.Kind.DEPARTING) {
+                player.sendMessage(Message.translation(Requests.KEYS + "delivery.after"));
             } else if (owner.kind() == RequestSpawns.Kind.CAPTIVE) {
                 player.sendMessage(Message.translation(Requests.KEYS + "escort.follow"));
             }

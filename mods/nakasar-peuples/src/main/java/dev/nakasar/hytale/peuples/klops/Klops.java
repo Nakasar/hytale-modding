@@ -111,8 +111,11 @@ public final class Klops {
     private static void spawn(World world, Store<EntityStore> store, Village village) {
         int x = village.x() + SPOT_X;
         int z = village.z() + SPOT_Z;
-        int s = new Terrain(world).surface(x, z);
-        Vector3d at = new Vector3d(x + 0.5, s == Terrain.NONE ? village.y() : s + 1, z + 0.5);
+        Terrain terrain = new Terrain(world);
+        int[] safe = terrain.safeSpot(x, z, 6);
+        int s = terrain.surface(x, z);
+        Vector3d at = safe != null ? new Vector3d(safe[0] + 0.5, safe[1], safe[2] + 0.5)
+                : new Vector3d(x + 0.5, s == Terrain.NONE ? village.y() : s + 1, z + 0.5);
         var spawned = NPCPlugin.get().spawnNPC(store, ROLE, null, at, new Rotation3f(0f, 0f, 0f));
         if (spawned == null || spawned.first() == null) {
             PeuplesPlugin.get().getLogger().atWarning().log("Peuples : impossible de poser le Klops au village %s", village.name());

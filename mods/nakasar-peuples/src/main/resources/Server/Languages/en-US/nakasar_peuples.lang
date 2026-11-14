@@ -555,6 +555,7 @@ request.vanished = One of your requests no longer exists (village or template re
 request.escort.lost = The captive has fallen: "{title}" fails.
 request.escort.follow = I'm right behind you! Take me back to the village, quick.
 request.escort.home = The captive follows you: bring them to the village heart, {distance} blocks, {direction}.
+request.delivery.after = The lookout has read your letter and goes back to keeping watch.
 request.titleAmount = {title} ({needed} × {item})
 request.delivery.notYours = You're not the one I'm waiting for, traveller.
 request.delivery.noMissive = You don't have the letter ({item}).
