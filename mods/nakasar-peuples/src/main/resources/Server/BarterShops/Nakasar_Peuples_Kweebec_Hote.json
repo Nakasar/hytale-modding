@@ -1,0 +1,115 @@
+{
+  "$Comment": "Réserve de l'hôte kweebec (rang Hôte) : la tenue kweebec vanilla (coiffe et tunique), mobilier kweebec et jeunes chênes. Stock partagé par le monde, renouvelé tous les 3 jours à 6 h comme le marchand vanilla. Ouverte par le marchand du village (dialogue Kweebec_Marchand) ou /village troc, refusée sous son rang (reputation/Shops).",
+  "DisplayNameKey": "nakasar_peuples.barter.Kweebec_Hote.title",
+  "RefreshInterval": {
+    "Days": 3
+  },
+  "RestockHour": 6,
+  "TradeSlots": [
+    {
+      "Type": "Fixed",
+      "Trade": {
+        "Output": {
+          "ItemId": "Armor_Kweebec_Head",
+          "Quantity": 1
+        },
+        "Input": [
+          {
+            "ItemId": "Nakasar_Peuples_Favor_Kweebec",
+            "Quantity": 12
+          }
+        ],
+        "Stock": 2
+      }
+    },
+    {
+      "Type": "Fixed",
+      "Trade": {
+        "Output": {
+          "ItemId": "Armor_Kweebec_Chest",
+          "Quantity": 1
+        },
+        "Input": [
+          {
+            "ItemId": "Nakasar_Peuples_Favor_Kweebec",
+            "Quantity": 16
+          }
+        ],
+        "Stock": 2
+      }
+    },
+    {
+      "Type": "Fixed",
+      "Trade": {
+        "Output": {
+          "ItemId": "Furniture_Kweebec_Bed",
+          "Quantity": 1
+        },
+        "Input": [
+          {
+            "ItemId": "Nakasar_Peuples_Favor_Kweebec",
+            "Quantity": 8
+          }
+        ],
+        "Stock": 2
+      }
+    },
+    {
+      "Type": "Pool",
+      "SlotCount": 2,
+      "Trades": [
+        {
+          "Weight": 30,
+          "Output": {
+            "ItemId": "Deco_Kweebec_Plush",
+            "Quantity": 1
+          },
+          "Input": [
+            {
+              "ItemId": "Nakasar_Peuples_Favor_Kweebec",
+              "Quantity": 5
+            }
+          ],
+          "Stock": [
+            1,
+            2
+          ]
+        },
+        {
+          "Weight": 30,
+          "Output": {
+            "ItemId": "Plant_Sapling_Oak",
+            "Quantity": 2
+          },
+          "Input": [
+            {
+              "ItemId": "Nakasar_Peuples_Favor_Kweebec",
+              "Quantity": 3
+            }
+          ],
+          "Stock": [
+            3,
+            5
+          ]
+        },
+        {
+          "Weight": 20,
+          "Output": {
+            "ItemId": "Furniture_Kweebec_Lantern",
+            "Quantity": 4
+          },
+          "Input": [
+            {
+              "ItemId": "Nakasar_Peuples_Favor_Kweebec",
+              "Quantity": 4
+            }
+          ],
+          "Stock": [
+            2,
+            4
+          ]
+        }
+      ]
+    }
+  ]
+}

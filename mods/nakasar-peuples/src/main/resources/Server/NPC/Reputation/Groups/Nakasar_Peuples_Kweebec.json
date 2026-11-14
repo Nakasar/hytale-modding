@@ -1,0 +1,8 @@
+{
+  "$Comment": "Réputation de peuple des Kweebecs (étape 4) : tous les Kweebecs vanilla (groupe PNJ Kweebec : Kweebec* et Template_Kweebec*) et les PNJ du mod (groupe Nakasar_Peuples_Kweebec). Un joueur commence Étranger (0). Le mod y verse un tiers de chaque gain ou perte de réputation de village (reputation/Reputations).",
+  "NPCGroups": [
+    "Kweebec",
+    "Nakasar_Peuples_Kweebec"
+  ],
+  "InitialReputationValue": 0
+}

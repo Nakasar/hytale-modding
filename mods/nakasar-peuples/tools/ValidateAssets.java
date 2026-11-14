@@ -101,6 +101,9 @@ public class ValidateAssets {
         CODECS.put("Item/Interactions/", "com.hypixel.hytale.server.core.modules.interaction.interaction.config.Interaction");
         CODECS.put("Entity/Damage/", "com.hypixel.hytale.server.core.modules.entity.damage.DamageCause");
         CODECS.put("BarterShops/", "com.hypixel.hytale.builtin.adventure.shop.barter.BarterShopAsset");
+        // Réputation (étape 4) : groupes et rangs du ReputationPlugin vanilla.
+        CODECS.put("NPC/Reputation/Groups/", "com.hypixel.hytale.builtin.adventure.reputation.assets.ReputationGroup");
+        CODECS.put("NPC/Reputation/Ranks/", "com.hypixel.hytale.builtin.adventure.reputation.assets.ReputationRank");
         CODECS.put("WorldEvent/Event/", WE + "event.WorldEventAsset");
         // Dialogues des PNJ : type d'asset écrit en Java par le plugin du mod (build/classes sur le classpath).
         CODECS.put("Nakasar/Dialogues/", "dev.nakasar.hytale.peuples.dialogue.Dialogue");
@@ -870,6 +873,8 @@ public class ValidateAssets {
     private static final Pattern ITEM_ANIMATIONS_REF = Pattern.compile("\"ItemPlayerAnimationsId\"\\s*:\\s*\"([^\"]+)\"");
     private static final Pattern REQUEST_ROLES_REF = Pattern.compile("\"(?:Spawns|Roles)\"\\s*:\\s*\\[([^\\]]*)\\]");
     private static final Pattern QUOTED = Pattern.compile("\"([^\"]+)\"");
+    private static final Pattern NPC_GROUPS_REF = Pattern.compile("\"NPCGroups\"\\s*:\\s*\\[([^\\]]*)\\]");
+    private static final Pattern SHOP_REF = Pattern.compile("\"Shop\"\\s*:\\s*\"([^\"]+)\"");
     /** Fichiers clients cités par les assets serveur (modèles, animations, textures). */
     private static final Pattern CLIENT_FILE_REF = Pattern.compile("\"([^\"]+\\.(?:blockymodel|blockyanim|png))\"");
 
@@ -879,6 +884,8 @@ public class ValidateAssets {
         known.put("npc", new HashSet<>(assetIds(root.resolve("NPC/Roles"))));
         known.put("marker", new HashSet<>(assetIds(root.resolve("NPC/Spawn/Markers"))));
         known.put("animations", new HashSet<>(assetIds(root.resolve("Item/Animations"))));
+        known.put("npcgroup", new HashSet<>(assetIds(root.resolve("NPC/Groups"))));
+        known.put("shop", new HashSet<>(assetIds(root.resolve("BarterShops"))));
         for (String line : Files.readAllLines(refsFile)) {
             String[] parts = line.strip().split("\\s+");
             if (parts.length == 2 && !parts[0].startsWith("#")) {
@@ -909,6 +916,14 @@ public class ValidateAssets {
                     refs += checkRefs(QUOTED, lists.group(1), "npc", "rôle de PNJ inconnu", known, problems);
                 }
             }
+            if (rel.startsWith("NPC/Reputation/Groups/")) {
+                // Un groupe PNJ inconnu fait lever NPCReputationHolderSystem à chaque apparition de PNJ.
+                Matcher groups = NPC_GROUPS_REF.matcher(json);
+                while (groups.find()) {
+                    refs += checkRefs(QUOTED, groups.group(1), "npcgroup", "groupe de PNJ inconnu", known, problems);
+                }
+            }
+            refs += checkRefs(SHOP_REF, json, "shop", "boutique de troc inconnue", known, problems);
             refs += checkRefs(SPAWN_MARKER_REF, json, "marker", "marqueur d'apparition inconnu", known, problems);
             refs += checkRefs(ITEM_ANIMATIONS_REF, json, "animations", "jeu d'animations (ItemPlayerAnimationsId) inconnu", known, problems);
             refs += checkClientFiles(root.resolveSibling("Common"), json, problems);
@@ -1062,7 +1077,7 @@ public class ValidateAssets {
      */
     private static int checkDialogueTexts(Path root, String vanillaItems) throws Exception {
         List<Path> dirs = new ArrayList<>();
-        for (String d : List.of("Nakasar/Dialogues", "Nakasar/Requests")) {
+        for (String d : List.of("Nakasar/Dialogues", "Nakasar/Requests", "BarterShops")) {
             if (Files.isDirectory(root.resolve(d))) {
                 dirs.add(root.resolve(d));
             }
@@ -1235,6 +1250,73 @@ public class ValidateAssets {
         return errors;
     }
 
+    /**
+     * Réputation (étape 4) : chaque rang de l'enum Java {@code reputation.Rank} a son asset
+     * {@code NPC/Reputation/Ranks/<assetId>.json} avec les mêmes bornes et la même attitude (le Java calcule les rangs
+     * lui-même, le jeu en tire l'attitude des PNJ), aucun autre rang n'existe (les rangs du ReputationPlugin sont
+     * communs à tous les groupes), chaque peuple a son groupe {@code NPC/Reputation/Groups/Nakasar_Peuples_<Peuple>.json}
+     * et ses échoppes {@code BarterShops/<shop>.json}.
+     */
+    private static int checkReputation(Path root) throws Exception {
+        Path ranks = root.resolve("NPC/Reputation/Ranks");
+        if (!Files.isDirectory(ranks)) {
+            return 0;
+        }
+        List<String> problems = new ArrayList<>();
+        Class<?> rankClass = Class.forName("dev.nakasar.hytale.peuples.reputation.Rank");
+        Set<String> expected = new HashSet<>();
+        for (Object rank : rankClass.getEnumConstants()) {
+            String id = (String) rankClass.getMethod("assetId").invoke(rank);
+            int min = (int) rankClass.getMethod("min").invoke(rank);
+            int max = (int) rankClass.getMethod("max").invoke(rank);
+            String attitude = rankClass.getMethod("defaultAttitude").invoke(rank).toString();
+            expected.add(id);
+            Path file = ranks.resolve(id + ".json");
+            if (!Files.exists(file)) {
+                problems.add("rang " + id + " sans asset " + root.relativize(file));
+                continue;
+            }
+            BsonDocument doc = BsonDocument.parse(Files.readString(file));
+            int fileMin = doc.containsKey("MinValue") ? doc.getNumber("MinValue").intValue() : Integer.MIN_VALUE;
+            int fileMax = doc.containsKey("MaxValue") ? doc.getNumber("MaxValue").intValue() : Integer.MIN_VALUE;
+            String fileAttitude = doc.containsKey("Attitude") ? doc.getString("Attitude").getValue() : "";
+            if (fileMin != min || fileMax != max) {
+                problems.add(id + " : bornes " + fileMin + ".." + fileMax + " dans l'asset, " + min + ".." + max + " dans Rank.java");
+            }
+            if (!fileAttitude.equalsIgnoreCase(attitude)) {
+                problems.add(id + " : attitude " + fileAttitude + " dans l'asset, " + attitude + " dans Rank.java");
+            }
+        }
+        try (Stream<Path> files = Files.list(ranks)) {
+            for (Path f : files.filter(f -> f.toString().endsWith(".json")).toList()) {
+                String id = f.getFileName().toString().replace(".json", "");
+                if (!expected.contains(id)) {
+                    problems.add("rang " + id + " absent de Rank.java (les rangs vanilla sont communs à tous les groupes)");
+                }
+            }
+        }
+        Class<?> peopleClass = Class.forName("dev.nakasar.hytale.peuples.village.People");
+        for (Object people : peopleClass.getEnumConstants()) {
+            String id = (String) peopleClass.getMethod("id").invoke(people);
+            if (!Files.exists(root.resolve("NPC/Reputation/Groups/Nakasar_Peuples_" + id + ".json"))) {
+                problems.add("peuple " + id + " sans groupe de réputation NPC/Reputation/Groups/Nakasar_Peuples_" + id + ".json");
+            }
+            for (Object rank : rankClass.getEnumConstants()) {
+                String shop = (String) peopleClass.getMethod("shop", rankClass).invoke(people, rank);
+                if (shop != null && !Files.exists(root.resolve("BarterShops/" + shop + ".json"))) {
+                    problems.add("peuple " + id + " : échoppe " + shop + " absente de BarterShops");
+                }
+            }
+        }
+        if (problems.isEmpty()) {
+            System.out.println("OK    rangs, groupes de réputation et échoppes des peuples");
+            return 0;
+        }
+        System.out.println("ERROR rangs, groupes de réputation et échoppes des peuples");
+        problems.forEach(p -> System.out.println("      " + p));
+        return 1;
+    }
+
     public static void main(String[] args) throws Exception {
         Path root = Path.of(args[0]);
         // Les magasins d'assets lisent les options de ligne de commande du serveur.
@@ -1317,6 +1399,7 @@ public class ValidateAssets {
         errors += checkDialogueTexts(root, System.getProperty("items"));
         errors += checkVillageLayouts(root, System.getProperty("prefabs"));
         errors += checkMapMarkerIcons(root);
+        errors += checkReputation(root);
         String blocks = System.getProperty("blocks");
         if (blocks != null) {
             errors += checkBlockIds(root, Path.of(blocks));

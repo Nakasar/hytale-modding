@@ -26,6 +26,7 @@ import java.util.ArrayList;
  * vanilla, et l'événement vanilla {@link UseEntityEvent} arrive ici) :
  * <ul>
  *   <li>le crieur d'un village ouvre son dialogue ({@code <Peuple>_Crieur}) : voir les demandes, rendre ;</li>
+ *   <li>le marchand d'un village ouvre le sien ({@code <Peuple>_Marchand}) : les échoppes de troc selon le rang ;</li>
  *   <li>le guetteur d'une livraison prend la missive et remplit la demande ;</li>
  *   <li>le captif d'une escorte répond qu'il suit le joueur.</li>
  * </ul>
@@ -55,8 +56,9 @@ public final class VillagerUseSystem extends EntityEventSystem<EntityStore, UseE
             return;
         }
         String crierVillage = Criers.villageOf(target);
+        String merchantVillage = Criers.merchantVillageOf(target);
         RequestSpawns.Owner owner = RequestSpawns.owner(target);
-        if (crierVillage == null && owner == null) {
+        if (crierVillage == null && merchantVillage == null && owner == null) {
             return;
         }
         World world = store.getExternalData().getWorld();
@@ -66,7 +68,9 @@ public final class VillagerUseSystem extends EntityEventSystem<EntityStore, UseE
                 return;
             }
             if (crierVillage != null) {
-                talkToCrier(world, s, user, player, crierVillage);
+                talk(world, s, user, player, crierVillage, false);
+            } else if (merchantVillage != null) {
+                talk(world, s, user, player, merchantVillage, true);
             } else if (owner.kind() == RequestSpawns.Kind.LOOKOUT) {
                 deliver(world, s, user, player, owner);
             } else if (owner.kind() == RequestSpawns.Kind.CAPTIVE) {
@@ -75,14 +79,16 @@ public final class VillagerUseSystem extends EntityEventSystem<EntityStore, UseE
         });
     }
 
-    private static void talkToCrier(World world, Store<EntityStore> store, Ref<EntityStore> ref, PlayerRef player, String villageId) {
+    /** Ouvre le dialogue du crieur ou du marchand du village. */
+    private static void talk(World world, Store<EntityStore> store, Ref<EntityStore> ref, PlayerRef player, String villageId, boolean merchant) {
         Village village = Villages.registry(world).byId(villageId);
         if (village == null) {
             return;
         }
-        Dialogue dialogue = Dialogue.get(village.people().crierDialogue());
+        String id = merchant ? village.people().merchantDialogue() : village.people().crierDialogue();
+        Dialogue dialogue = Dialogue.get(id);
         if (dialogue == null) {
-            player.sendMessage(Message.translation(Dialogues.KEYS + "unknown").param("id", village.people().crierDialogue()));
+            player.sendMessage(Message.translation(Dialogues.KEYS + "unknown").param("id", id));
             return;
         }
         Dialogues.openPage(world, store, ref, player, dialogue);

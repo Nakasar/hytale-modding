@@ -53,10 +53,10 @@ public final class DialoguePage extends InteractiveCustomUIPage<DialoguePage.Eve
     @Override
     public void build(Ref<EntityStore> ref, UICommandBuilder cmd, UIEventBuilder events, Store<EntityStore> store) {
         cmd.append(LAYOUT);
-        cmd.set("#NpcName.Text", Dialogues.header(dialogue));
-        cmd.set("#Line.Text", Message.translation(node.textKey()));
         World world = store.getExternalData().getWorld();
         DialogueContext context = DialogueContext.of(world, store, ref, playerRef);
+        cmd.set("#NpcName.Text", Dialogues.header(dialogue, context));
+        cmd.set("#Line.Text", Message.translation(node.textKey()));
         DialogueResponse[] responses = node.responses();
         for (int i = 0; i < Dialogue.MAX_RESPONSES; i++) {
             DialogueResponse r = i < responses.length ? responses[i] : null;

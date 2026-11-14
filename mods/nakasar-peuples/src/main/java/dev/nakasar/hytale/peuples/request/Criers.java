@@ -20,96 +20,141 @@ import java.util.IdentityHashMap;
 import java.util.Map;
 
 /**
- * Le crieur de chaque village (GDD : « une demande se prend au tableau ou auprès d'un villageois, et se rend par une
- * réponse ») : un Kweebec posé à deux blocs au sud du tableau quand un joueur approche, qu'on utilise pour ouvrir son
- * dialogue ({@code <Peuple>_Crieur}). Non sauvegardé : il revient à chaque session. Tué, il ne revient qu'au matin
- * suivant (GDD, Villageois et métiers : « un PNJ tué réapparaît au prochain matin »).
+ * Les villageois à poste fixe de chaque village, posés par le Java quand un joueur approche :
+ * <ul>
+ *   <li>le <b>crieur</b> (étape 3 ; GDD : « une demande se prend au tableau ou auprès d'un villageois, et se rend par
+ *       une réponse »), deux blocs au sud du tableau, dialogue {@code <Peuple>_Crieur} ;</li>
+ *   <li>le <b>marchand</b> (étape 4 ; GDD, Le dépôt et le tableau : « les marchands du village ouvrent une boutique de
+ *       troc vanilla, une par peuple et par rang »), deux blocs au sud du dépôt, dialogue {@code <Peuple>_Marchand}.</li>
+ * </ul>
+ * Non sauvegardés : ils reviennent à chaque session. Tués, ils ne reviennent qu'au matin suivant (GDD, Villageois et
+ * métiers : « un PNJ tué réapparaît au prochain matin »).
  */
 public final class Criers {
 
-    /** Le crieur apparaît quand un joueur passe à moins de cette distance du cœur. */
+    /** Un villageois à poste fixe. */
+    public enum Post {
+        CRIER,
+        MERCHANT;
+
+        String role(Village village) {
+            return this == CRIER ? village.people().crierRole() : village.people().merchantRole();
+        }
+
+        /** Où il se tient : deux blocs au sud du tableau (crieur) ou du dépôt (marchand). */
+        public Vector3d spot(Village village) {
+            int[] b = this == CRIER ? village.board() : village.deposit();
+            return new Vector3d(b[0] + 0.5, b[1], b[2] + 2.5);
+        }
+    }
+
+    /** Les villageois apparaissent quand un joueur passe à moins de cette distance du cœur. */
     public static final int RANGE = 48;
 
-    private static final Map<String, Ref<EntityStore>> BY_VILLAGE = new HashMap<>();
-    private static final Map<Ref<EntityStore>, String> VILLAGES = Collections.synchronizedMap(new IdentityHashMap<>());
-    /** Village -> jour de jeu de la mort de son crieur. */
-    private static final Map<String, Long> DEATHS = new HashMap<>();
+    private record Key(String village, Post post) {
+    }
+
+    private record Spawned(String village, Post post) {
+    }
+
+    private static final Map<Key, Ref<EntityStore>> BY_VILLAGE = new HashMap<>();
+    private static final Map<Ref<EntityStore>, Spawned> SPAWNED = Collections.synchronizedMap(new IdentityHashMap<>());
+    /** Poste -> jour de jeu de la mort de son villageois. */
+    private static final Map<Key, Long> DEATHS = new HashMap<>();
 
     private Criers() {
     }
 
-    /** Pose le crieur des villages proches de `at` qui n'en ont pas. */
+    /** Pose les villageois des villages proches de `at` qui n'en ont pas. */
     public static synchronized void ensureNear(World world, Store<EntityStore> store, Vector3d at) {
         for (Village village : Villages.registry(world).all()) {
             if (village.horizontalDistanceSquared(at.x(), at.z()) > (double) RANGE * RANGE) {
                 continue;
             }
-            Ref<EntityStore> crier = BY_VILLAGE.get(village.id());
-            if (crier != null && crier.isValid()) {
-                continue;
+            for (Post post : Post.values()) {
+                Key key = new Key(village.id(), post);
+                Ref<EntityStore> npc = BY_VILLAGE.get(key);
+                if (npc != null && npc.isValid()) {
+                    continue;
+                }
+                if (npc != null) {
+                    SPAWNED.remove(npc);
+                    BY_VILLAGE.remove(key);
+                }
+                Long death = DEATHS.get(key);
+                if (death != null && death >= GameClock.day(store)) {
+                    continue;
+                }
+                spawn(store, village, post);
             }
-            if (crier != null) {
-                VILLAGES.remove(crier);
-                BY_VILLAGE.remove(village.id());
-            }
-            Long death = DEATHS.get(village.id());
-            if (death != null && death >= GameClock.day(store)) {
-                continue;
-            }
-            spawn(store, village);
         }
     }
 
     /** Où se tient le crieur : deux blocs au sud du tableau. */
     public static Vector3d spot(Village village) {
-        int[] b = village.board();
-        return new Vector3d(b[0] + 0.5, b[1], b[2] + 2.5);
+        return Post.CRIER.spot(village);
     }
 
-    private static void spawn(Store<EntityStore> store, Village village) {
-        String role = village.people().crierRole();
-        Vector3d at = spot(village);
-        // Tourné vers le nord (le tableau et la place).
+    private static void spawn(Store<EntityStore> store, Village village, Post post) {
+        String role = post.role(village);
+        Vector3d at = post.spot(village);
+        Key key = new Key(village.id(), post);
+        // Tourné vers le nord (le tableau, le dépôt et la place).
         Pair<Ref<EntityStore>, INonPlayerCharacter> spawned = NPCPlugin.get().spawnNPC(store, role, null, at, new Rotation3f(0f, 0f, 0f));
         if (spawned == null || spawned.first() == null) {
-            PeuplesPlugin.get().getLogger().atWarning().log("Peuples : impossible de poser le crieur '%s' du village %s", role, village.name());
-            DEATHS.put(village.id(), Long.MAX_VALUE - 1);
+            PeuplesPlugin.get().getLogger().atWarning().log("Peuples : impossible de poser '%s' au village %s", role, village.name());
+            DEATHS.put(key, Long.MAX_VALUE - 1);
             return;
         }
         Ref<EntityStore> ref = spawned.first();
         store.ensureAndGetComponent(ref, EntityStore.REGISTRY.getNonSerializedComponentType());
-        BY_VILLAGE.put(village.id(), ref);
-        VILLAGES.put(ref, village.id());
+        BY_VILLAGE.put(key, ref);
+        SPAWNED.put(ref, new Spawned(village.id(), post));
     }
 
     /** Id du village dont `ref` est le crieur, ou null. */
     public static String villageOf(Ref<EntityStore> ref) {
-        return ref == null ? null : VILLAGES.get(ref);
+        Spawned s = ref == null ? null : SPAWNED.get(ref);
+        return s != null && s.post() == Post.CRIER ? s.village() : null;
     }
 
-    /** Le crieur `ref` est mort : il reviendra au matin. */
+    /** Id du village dont `ref` est le marchand, ou null. */
+    public static String merchantVillageOf(Ref<EntityStore> ref) {
+        Spawned s = ref == null ? null : SPAWNED.get(ref);
+        return s != null && s.post() == Post.MERCHANT ? s.village() : null;
+    }
+
+    /** Vrai si `ref` est un villageois à poste fixe (crieur, marchand). */
+    public static boolean isPosted(Ref<EntityStore> ref) {
+        return ref != null && SPAWNED.containsKey(ref);
+    }
+
+    /** Le villageois `ref` est mort : il reviendra au matin. */
     public static synchronized void died(Store<EntityStore> store, Ref<EntityStore> ref) {
-        String village = VILLAGES.remove(ref);
-        if (village != null) {
-            BY_VILLAGE.remove(village);
-            DEATHS.put(village, GameClock.day(store));
+        Spawned s = SPAWNED.remove(ref);
+        if (s != null) {
+            Key key = new Key(s.village(), s.post());
+            BY_VILLAGE.remove(key);
+            DEATHS.put(key, GameClock.day(store));
         }
     }
 
-    /** Retire le crieur du village (village effacé). */
+    /** Retire les villageois du village (village effacé). */
     public static synchronized void remove(Store<EntityStore> store, String villageId) {
-        Ref<EntityStore> ref = BY_VILLAGE.remove(villageId);
-        if (ref != null) {
-            VILLAGES.remove(ref);
-            if (ref.isValid()) {
-                store.removeEntity(ref, RemoveReason.REMOVE);
+        for (Post post : Post.values()) {
+            Ref<EntityStore> ref = BY_VILLAGE.remove(new Key(villageId, post));
+            if (ref != null) {
+                SPAWNED.remove(ref);
+                if (ref.isValid()) {
+                    store.removeEntity(ref, RemoveReason.REMOVE);
+                }
             }
         }
     }
 
     public static synchronized void clearAll() {
         BY_VILLAGE.clear();
-        VILLAGES.clear();
+        SPAWNED.clear();
         DEATHS.clear();
     }
 }

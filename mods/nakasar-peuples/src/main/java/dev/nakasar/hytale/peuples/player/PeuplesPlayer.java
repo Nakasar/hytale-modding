@@ -25,7 +25,9 @@ import java.util.TreeSet;
  * Ce que le mod retient d'un joueur, sauvegardé avec lui (id {@value #ID}) : les drapeaux posés par les dialogues
  * (« a rencontré l'Ancien », « a reçu le cadeau »), et depuis l'étape 3 ses demandes en cours, les demandes déjà
  * remplies (pour ne pas reprendre deux fois la même) et le nombre de demandes remplies par village (base de la
- * réputation de village de l'étape 4). L'étape de la chaîne de chaque peuple (étape 6) s'y ajoutera. La réputation de peuple, elle, reste au ReputationPlugin vanilla.
+ * réputation de village de l'étape 4). Depuis l'étape 4 : sa réputation dans chaque village et le dernier jour qu'il
+ * y a passé. L'étape de la chaîne de chaque peuple (étape 6) s'y ajoutera. La réputation de peuple, elle, reste au
+ * ReputationPlugin vanilla.
  */
 public final class PeuplesPlayer implements Component<EntityStore> {
 
@@ -45,6 +47,12 @@ public final class PeuplesPlayer implements Component<EntityStore> {
             .append(new KeyedCodec<>("Helped", Codec.STRING), (p, v) -> p.setHelped(v), p -> p.helpedString())
             .documentation("Demandes remplies par village : id=nombre, séparés par des virgules.")
             .add()
+            .append(new KeyedCodec<>("Reputation", Codec.STRING), (p, v) -> readMap(v, p.reputation), p -> writeMap(p.reputation))
+            .documentation("Réputation de village (étape 4) : id=valeur, séparés par des virgules.")
+            .add()
+            .append(new KeyedCodec<>("Visits", Codec.STRING), (p, v) -> readMap(v, p.visits), p -> writeMap(p.visits))
+            .documentation("Dernier jour de jeu passé dans chaque village : id=jour (déclin de la réputation après une longue absence).")
+            .add()
             .build();
 
     /** On garde les ids des dernières demandes remplies (assez pour couvrir plusieurs jours de tableau). */
@@ -56,6 +64,8 @@ public final class PeuplesPlayer implements Component<EntityStore> {
     private final List<PlayerRequest> requests = new ArrayList<>();
     private final LinkedHashSet<String> done = new LinkedHashSet<>();
     private final Map<String, Integer> helped = new TreeMap<>();
+    private final Map<String, Long> reputation = new TreeMap<>();
+    private final Map<String, Long> visits = new TreeMap<>();
 
     public static void setComponentType(ComponentType<EntityStore, PeuplesPlayer> type) {
         componentType = type;
@@ -149,6 +159,61 @@ public final class PeuplesPlayer implements Component<EntityStore> {
         return helped.getOrDefault(villageId, 0);
     }
 
+    /** Réputation du joueur dans le village `villageId` (0 s'il n'y a jamais rien fait). */
+    public int villageReputation(String villageId) {
+        return reputation.getOrDefault(villageId, 0L).intValue();
+    }
+
+    public void setVillageReputation(String villageId, int value) {
+        if (validKey(villageId)) {
+            reputation.put(villageId, (long) value);
+        }
+    }
+
+    /** Dernier jour de jeu passé dans le village, ou null. */
+    public Long lastVisit(String villageId) {
+        return visits.get(villageId);
+    }
+
+    public void setLastVisit(String villageId, long day) {
+        if (validKey(villageId)) {
+            visits.put(villageId, day);
+        }
+    }
+
+    /** Oublie la réputation de tous les villages (commande d'essai). */
+    public void clearVillageReputation() {
+        reputation.clear();
+        visits.clear();
+    }
+
+    private static boolean validKey(String key) {
+        return key != null && !key.isBlank() && !key.contains(",") && !key.contains("=");
+    }
+
+    private static void readMap(String value, Map<String, Long> into) {
+        into.clear();
+        if (value == null || value.isBlank()) {
+            return;
+        }
+        for (String part : value.split(",")) {
+            int eq = part.indexOf('=');
+            if (eq > 0) {
+                try {
+                    into.put(part.substring(0, eq).trim(), Long.parseLong(part.substring(eq + 1).trim()));
+                } catch (NumberFormatException ignored) {
+                    // Entrée abîmée : ignorée.
+                }
+            }
+        }
+    }
+
+    private static String writeMap(Map<String, Long> map) {
+        List<String> parts = new ArrayList<>();
+        map.forEach((k, v) -> parts.add(k + "=" + v));
+        return String.join(",", parts);
+    }
+
     private void setRequests(PlayerRequest[] value) {
         requests.clear();
         if (value != null) {
@@ -199,6 +264,8 @@ public final class PeuplesPlayer implements Component<EntityStore> {
         }
         copy.done.addAll(done);
         copy.helped.putAll(helped);
+        copy.reputation.putAll(reputation);
+        copy.visits.putAll(visits);
         return copy;
     }
 }

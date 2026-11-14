@@ -1,0 +1,293 @@
+{
+  "$Comment": "Le marchand kweebec (étape 4), posé près du dépôt de chaque village kweebec : deux répliques puis le troc, une ligne de plus par rang (GDD, Qui parle et de quoi). Chaque échoppe reste visible, grisée avec le rang qu'il faut (GDD : rien n'est caché derrière un rang sans l'indiquer). L'étranger n'entend qu'un refus et ce qu'il faudrait faire ; le honni, un refus sec.",
+  "NpcNameKey": "nakasar_peuples.dialogue.Kweebec_Marchand.npc",
+  "RoleKey": "nakasar_peuples.dialogue.Kweebec_Marchand.role",
+  "People": "Kweebec",
+  "Entries": [
+    {
+      "Node": "Honni",
+      "Conditions": [
+        {
+          "Type": "Rank",
+          "Max": "Honni"
+        }
+      ]
+    },
+    {
+      "Node": "Etranger",
+      "Conditions": [
+        {
+          "Type": "Rank",
+          "Max": "Etranger"
+        }
+      ]
+    },
+    {
+      "Node": "Hote",
+      "Conditions": [
+        {
+          "Type": "Rank",
+          "Min": "Hote"
+        }
+      ]
+    },
+    {
+      "Node": "Ami",
+      "Conditions": [
+        {
+          "Type": "Rank",
+          "Min": "Ami"
+        }
+      ]
+    },
+    {
+      "Node": "Accueil"
+    }
+  ],
+  "Nodes": [
+    {
+      "Id": "Honni",
+      "TextKey": "nakasar_peuples.dialogue.Kweebec_Marchand.honni",
+      "Responses": [
+        {
+          "TextKey": "nakasar_peuples.dialogue.Kweebec_Marchand.aurevoir"
+        }
+      ]
+    },
+    {
+      "Id": "Etranger",
+      "TextKey": "nakasar_peuples.dialogue.Kweebec_Marchand.etranger",
+      "Responses": [
+        {
+          "TextKey": "nakasar_peuples.dialogue.Kweebec_Marchand.commentAider",
+          "Next": "Conseil"
+        },
+        {
+          "TextKey": "nakasar_peuples.dialogue.Kweebec_Marchand.troc",
+          "HintKey": "nakasar_peuples.dialogue.hint.shop.Tolere",
+          "Conditions": [
+            {
+              "Type": "Rank",
+              "Min": "Tolere"
+            }
+          ],
+          "FailKey": "nakasar_peuples.dialogue.fail.rank.Tolere",
+          "Effects": [
+            {
+              "Type": "OpenShop",
+              "Shop": "Nakasar_Peuples_Kweebec_Tolere"
+            }
+          ]
+        },
+        {
+          "TextKey": "nakasar_peuples.dialogue.Kweebec_Marchand.aurevoir"
+        }
+      ]
+    },
+    {
+      "Id": "Conseil",
+      "TextKey": "nakasar_peuples.dialogue.Kweebec_Marchand.conseil",
+      "Responses": [
+        {
+          "TextKey": "nakasar_peuples.dialogue.Kweebec_Marchand.voirDemandes",
+          "HintKey": "nakasar_peuples.dialogue.hint.openRequests",
+          "Conditions": [
+            {
+              "Type": "InVillage",
+              "People": "Kweebec"
+            }
+          ],
+          "FailKey": "nakasar_peuples.dialogue.fail.inVillage",
+          "Effects": [
+            {
+              "Type": "OpenRequests"
+            }
+          ]
+        },
+        {
+          "TextKey": "nakasar_peuples.dialogue.Kweebec_Marchand.aurevoir"
+        }
+      ]
+    },
+    {
+      "Id": "Accueil",
+      "TextKey": "nakasar_peuples.dialogue.Kweebec_Marchand.accueil",
+      "Responses": [
+        {
+          "TextKey": "nakasar_peuples.dialogue.Kweebec_Marchand.troc",
+          "HintKey": "nakasar_peuples.dialogue.hint.shop.Tolere",
+          "Conditions": [
+            {
+              "Type": "Rank",
+              "Min": "Tolere"
+            }
+          ],
+          "FailKey": "nakasar_peuples.dialogue.fail.rank.Tolere",
+          "Effects": [
+            {
+              "Type": "OpenShop",
+              "Shop": "Nakasar_Peuples_Kweebec_Tolere"
+            }
+          ]
+        },
+        {
+          "TextKey": "nakasar_peuples.dialogue.Kweebec_Marchand.avance",
+          "HintKey": "nakasar_peuples.dialogue.hint.shop.Ami",
+          "Conditions": [
+            {
+              "Type": "Rank",
+              "Min": "Ami"
+            }
+          ],
+          "FailKey": "nakasar_peuples.dialogue.fail.rank.Ami",
+          "Effects": [
+            {
+              "Type": "OpenShop",
+              "Shop": "Nakasar_Peuples_Kweebec_Ami"
+            }
+          ]
+        },
+        {
+          "TextKey": "nakasar_peuples.dialogue.Kweebec_Marchand.reserve",
+          "HintKey": "nakasar_peuples.dialogue.hint.shop.Hote",
+          "Conditions": [
+            {
+              "Type": "Rank",
+              "Min": "Hote"
+            }
+          ],
+          "FailKey": "nakasar_peuples.dialogue.fail.rank.Hote",
+          "Effects": [
+            {
+              "Type": "OpenShop",
+              "Shop": "Nakasar_Peuples_Kweebec_Hote"
+            }
+          ]
+        },
+        {
+          "TextKey": "nakasar_peuples.dialogue.Kweebec_Marchand.aurevoir"
+        }
+      ]
+    },
+    {
+      "Id": "Ami",
+      "TextKey": "nakasar_peuples.dialogue.Kweebec_Marchand.ami",
+      "Responses": [
+        {
+          "TextKey": "nakasar_peuples.dialogue.Kweebec_Marchand.troc",
+          "HintKey": "nakasar_peuples.dialogue.hint.shop.Tolere",
+          "Conditions": [
+            {
+              "Type": "Rank",
+              "Min": "Tolere"
+            }
+          ],
+          "FailKey": "nakasar_peuples.dialogue.fail.rank.Tolere",
+          "Effects": [
+            {
+              "Type": "OpenShop",
+              "Shop": "Nakasar_Peuples_Kweebec_Tolere"
+            }
+          ]
+        },
+        {
+          "TextKey": "nakasar_peuples.dialogue.Kweebec_Marchand.avance",
+          "HintKey": "nakasar_peuples.dialogue.hint.shop.Ami",
+          "Conditions": [
+            {
+              "Type": "Rank",
+              "Min": "Ami"
+            }
+          ],
+          "FailKey": "nakasar_peuples.dialogue.fail.rank.Ami",
+          "Effects": [
+            {
+              "Type": "OpenShop",
+              "Shop": "Nakasar_Peuples_Kweebec_Ami"
+            }
+          ]
+        },
+        {
+          "TextKey": "nakasar_peuples.dialogue.Kweebec_Marchand.reserve",
+          "HintKey": "nakasar_peuples.dialogue.hint.shop.Hote",
+          "Conditions": [
+            {
+              "Type": "Rank",
+              "Min": "Hote"
+            }
+          ],
+          "FailKey": "nakasar_peuples.dialogue.fail.rank.Hote",
+          "Effects": [
+            {
+              "Type": "OpenShop",
+              "Shop": "Nakasar_Peuples_Kweebec_Hote"
+            }
+          ]
+        },
+        {
+          "TextKey": "nakasar_peuples.dialogue.Kweebec_Marchand.aurevoir"
+        }
+      ]
+    },
+    {
+      "Id": "Hote",
+      "TextKey": "nakasar_peuples.dialogue.Kweebec_Marchand.hote",
+      "Responses": [
+        {
+          "TextKey": "nakasar_peuples.dialogue.Kweebec_Marchand.troc",
+          "HintKey": "nakasar_peuples.dialogue.hint.shop.Tolere",
+          "Conditions": [
+            {
+              "Type": "Rank",
+              "Min": "Tolere"
+            }
+          ],
+          "FailKey": "nakasar_peuples.dialogue.fail.rank.Tolere",
+          "Effects": [
+            {
+              "Type": "OpenShop",
+              "Shop": "Nakasar_Peuples_Kweebec_Tolere"
+            }
+          ]
+        },
+        {
+          "TextKey": "nakasar_peuples.dialogue.Kweebec_Marchand.avance",
+          "HintKey": "nakasar_peuples.dialogue.hint.shop.Ami",
+          "Conditions": [
+            {
+              "Type": "Rank",
+              "Min": "Ami"
+            }
+          ],
+          "FailKey": "nakasar_peuples.dialogue.fail.rank.Ami",
+          "Effects": [
+            {
+              "Type": "OpenShop",
+              "Shop": "Nakasar_Peuples_Kweebec_Ami"
+            }
+          ]
+        },
+        {
+          "TextKey": "nakasar_peuples.dialogue.Kweebec_Marchand.reserve",
+          "HintKey": "nakasar_peuples.dialogue.hint.shop.Hote",
+          "Conditions": [
+            {
+              "Type": "Rank",
+              "Min": "Hote"
+            }
+          ],
+          "FailKey": "nakasar_peuples.dialogue.fail.rank.Hote",
+          "Effects": [
+            {
+              "Type": "OpenShop",
+              "Shop": "Nakasar_Peuples_Kweebec_Hote"
+            }
+          ]
+        },
+        {
+          "TextKey": "nakasar_peuples.dialogue.Kweebec_Marchand.aurevoir"
+        }
+      ]
+    }
+  ]
+}

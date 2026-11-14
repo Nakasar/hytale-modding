@@ -1,0 +1,57 @@
+{
+  "$Comment": "Le marchand d'un village kweebec (étape 4) : posé par Criers (Java) deux blocs au sud du dépôt quand un joueur approche, immobile, avec l'apparence du marchand kweebec vanilla (Kweebec_Rootling). L'utiliser ouvre son dialogue (Kweebec_Marchand, via VillagerUseSystem), qui ouvre les échoppes de troc vanilla selon le rang du joueur (reputation/Shops). Tué, il revient au matin suivant. Ne régénère jamais (VillageNoRegenSystem).",
+  "Type": "Generic",
+  "Appearance": "Kweebec_Rootling",
+  "NameTranslationKey": "nakasar_peuples.npc.Kweebec_Merchant.name",
+  "MaxHealth": 100,
+  "StartState": "Idle",
+  "DefaultPlayerAttitude": "Neutral",
+  "DefaultNPCAttitude": "Ignore",
+  "MotionControllerList": [
+    {
+      "Type": "Walk",
+      "MaxWalkSpeed": 0.1,
+      "Gravity": 10,
+      "MaxFallSpeed": 10,
+      "Acceleration": 10,
+      "JumpHeight": 1.0
+    }
+  ],
+  "KnockbackScale": 0,
+  "Instructions": [
+    {
+      "Sensor": {
+        "Type": "State",
+        "State": "Idle"
+      },
+      "Instructions": [
+        {
+          "Actions": []
+        }
+      ]
+    }
+  ],
+  "InteractionInstruction": {
+    "Instructions": [
+      {
+        "Continue": true,
+        "Sensor": {
+          "Type": "Any"
+        },
+        "Actions": [
+          {
+            "Type": "SetInteractable",
+            "Interactable": true,
+            "Hint": "server.interactionHints.trade"
+          }
+        ]
+      },
+      {
+        "Sensor": {
+          "Type": "HasInteracted"
+        },
+        "Actions": []
+      }
+    ]
+  }
+}

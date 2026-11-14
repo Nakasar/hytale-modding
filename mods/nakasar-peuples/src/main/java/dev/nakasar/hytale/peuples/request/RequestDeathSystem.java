@@ -44,7 +44,7 @@ public final class RequestDeathSystem extends DeathSystems.OnDeathSystem {
     public void onComponentAdded(Ref<EntityStore> ref, DeathComponent death, Store<EntityStore> store, CommandBuffer<EntityStore> buffer) {
         World world = store.getExternalData().getWorld();
         RequestSpawns.Owner owner = RequestSpawns.owner(ref);
-        if (Criers.villageOf(ref) != null) {
+        if (Criers.isPosted(ref)) {
             Criers.died(store, ref);
             return;
         }
