@@ -60,7 +60,6 @@ village.dir.nw = nord-ouest
 
 dialogue.header = {name}, {role}
 dialogue.quote = « {text} »
-dialogue.pageResponse = {number}. {text}
 dialogue.pageLocked = Indisponible : {condition}
 dialogue.leave = Partir
 dialogue.unavailable = pas encore.
