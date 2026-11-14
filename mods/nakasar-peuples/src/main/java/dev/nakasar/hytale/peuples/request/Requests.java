@@ -456,12 +456,7 @@ public final class Requests {
 
     /** Coffre du dépôt du village, ou null s'il manque ou que sa section n'est pas chargée. */
     public static ItemContainer depositContainer(World world, Village village) {
-        int[] d = village.deposit();
-        if (!village.people().depositBlock().equals(Blocks.name(world.getChunkStore(), d[0], d[1], d[2]))) {
-            return null;
-        }
-        ItemContainerBlock block = BlockModule.getComponent(ItemContainerBlock.getComponentType(), world, d[0], d[1], d[2]);
-        return block == null ? null : block.getItemContainer();
+        return Villages.depositChest(world, village);
     }
 
     /** Retire jusqu'à `max` objets `itemId` du conteneur ; rend le nombre retiré. */
