@@ -1,0 +1,66 @@
+Group {
+  LayoutMode: Center;
+
+  Group #Panel {
+    Anchor: (Width: 760, Height: 470);
+    Padding: (Full: 24);
+    LayoutMode: Top;
+
+    Label #NpcName {
+      Anchor: (Height: 34, Bottom: 6);
+      Text: "";
+      Style: (FontSize: 24, TextColor: #e8c46a);
+    }
+
+    Label #Line {
+      Anchor: (Height: 110, Bottom: 18);
+      Text: "";
+      Style: (FontSize: 18, TextColor: #f2ead8, Wrap: true);
+    }
+
+    TextButton #Answer0 {
+      Anchor: (Height: 36, Bottom: 2);
+      Text: "";
+    }
+    Label #Hint0 {
+      Anchor: (Height: 20, Bottom: 8);
+      Text: "";
+      Style: (FontSize: 13, TextColor: #a8a08c);
+    }
+
+    TextButton #Answer1 {
+      Anchor: (Height: 36, Bottom: 2);
+      Text: "";
+    }
+    Label #Hint1 {
+      Anchor: (Height: 20, Bottom: 8);
+      Text: "";
+      Style: (FontSize: 13, TextColor: #a8a08c);
+    }
+
+    TextButton #Answer2 {
+      Anchor: (Height: 36, Bottom: 2);
+      Text: "";
+    }
+    Label #Hint2 {
+      Anchor: (Height: 20, Bottom: 8);
+      Text: "";
+      Style: (FontSize: 13, TextColor: #a8a08c);
+    }
+
+    TextButton #Answer3 {
+      Anchor: (Height: 36, Bottom: 2);
+      Text: "";
+    }
+    Label #Hint3 {
+      Anchor: (Height: 20, Bottom: 8);
+      Text: "";
+      Style: (FontSize: 13, TextColor: #a8a08c);
+    }
+
+    TextButton #Leave {
+      Anchor: (Height: 36, Width: 200);
+      Text: "";
+    }
+  }
+}

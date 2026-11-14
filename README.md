@@ -2,14 +2,15 @@
 
 Mods pour **Hytale** (serveur `0.7.x`, « Update 7 »), développés par Nakasar.
 
-Deux mods, chacun avec son dossier de documentation :
+Trois mods, chacun avec son dossier de documentation :
 
 | Mod | Code | Documentation |
 |-----|------|---------------|
 | **Vampires** : le domaine du Comte vampire (plugin Java + pack d'assets, artefact `Nakasar-Vampires-<version>.jar`) | `mods/nakasar-vampires` | [docs/vampires](docs/vampires/) |
 | **Fractales des Brumes** : les fractales de Guild Wars 2 transposées dans Hytale, pour 1 à 5 joueurs (en cours : socle, Observatoire, progression, instabilités, fractales Falaise, Inclassable, Volcanique, Océan solide, Marais et Tempête de neige, fractales du jour, cosmétiques, wiki) | `mods/nakasar-fractals` | [docs/fractales](docs/fractales/) |
+| **Peuples d'Orbis** : des villages vivants des peuples d'Orbis (Kweebecs, Trorks, Feran...) qui grandissent avec l'aide du joueur, façon Millénaire (en cours : socle, villages, tableau, dialogues) | `mods/nakasar-peuples` | [docs/peuples](docs/peuples/mods.md) |
 
-Les notes communes aux deux mods (API serveur, PNJ) restent à la racine de `docs/`.
+Les notes communes aux mods (API serveur, PNJ) restent à la racine de `docs/`.
 
 ### Vampires
 
@@ -262,7 +263,8 @@ Création de PNJ (rôles, IA, modèles, apparitions) : [docs/npc-0.7.2.md](docs/
 - **JDK 25** (les classes du serveur 0.7.2 sont compilées en Java 25). Le build utilise une
   *toolchain* Gradle : si aucun JDK 25 n'est installé, le plugin `foojay-resolver` le télécharge.
 - Rien d'autre : le wrapper Gradle (`./gradlew`) télécharge Gradle 9.8.1, et l'artefact serveur
-  `com.hypixel.hytale:Server:0.7.2` vient du Maven officiel `https://maven.hytale.com/release`.
+  `com.hypixel.hytale:Server:0.7.7` vient du Maven officiel `https://maven.hytale.com/release` (0.7.2 n'y est plus
+  publié depuis novembre 2026 : `hytale_version` dans `gradle.properties`).
 
 ## Construire
 
@@ -272,6 +274,7 @@ Création de PNJ (rôles, IA, modèles, apparitions) : [docs/npc-0.7.2.md](docs/
 
 - `mods/nakasar-vampires/build/libs/Nakasar-Vampires-0.1.0.jar`
 - `mods/nakasar-fractals/build/libs/Nakasar-Fractals-0.1.0.jar`
+- `mods/nakasar-peuples/build/libs/Nakasar-Peuples-0.1.0.jar`
 
 `build` lance aussi `validateJson`, qui vérifie la syntaxe de tous les JSON d'assets (le parseur du
 serveur est strict : une virgule en trop fait échouer le chargement du mod).

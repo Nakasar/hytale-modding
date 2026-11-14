@@ -1,6 +1,6 @@
 # Consignes pour les agents
 
-Ce dépôt contient les mods Hytale de Nakasar (`mods/nakasar-vampires`, `mods/nakasar-fractals`). La documentation est
+Ce dépôt contient les mods Hytale de Nakasar (`mods/nakasar-vampires`, `mods/nakasar-fractals`, `mods/nakasar-peuples`). La documentation est
 rédigée en français.
 
 ## Règles permanentes (valables pour TOUS les mods)
