@@ -31,7 +31,13 @@ public enum People {
     FERAN("Feran", "Furniture_Feran_Chest_Small", "Nakasar_Peuples_Board_Feran", "Nakasar_Peuples_Banner_Feran",
             "Feran_Oasis"),
     RENONCE("Renonce", "Furniture_Lumberjack_Chest_Small", "Nakasar_Peuples_Board_Renonce", "Nakasar_Peuples_Banner_Renonce",
-            "Renonce_Givre");
+            "Renonce_Givre"),
+    /**
+     * Étape 9 : le monastère slothian de la zone 4 (plan {@code Slothian_Monastere}, prefabs vanilla Npc/Slothian et
+     * monuments slothians), au bord du Vide. Coffre de jungle vanilla, bannière = brasero de jungle vanilla.
+     */
+    SLOTHIAN("Slothian", "Furniture_Jungle_Chest_Small", "Nakasar_Peuples_Board_Slothian", "Nakasar_Peuples_Banner_Slothian",
+            "Slothian_Monastere");
 
     /** Préfixe des objets et rôles propres à chaque peuple : {@code Nakasar_Peuples_<Quoi>_<Peuple>}. */
     private static final String PREFIX = "Nakasar_Peuples_";
@@ -153,6 +159,7 @@ public enum People {
         return switch (this) {
             case FERAN -> 2;
             case RENONCE -> 3;
+            case SLOTHIAN -> 4;
             default -> 1;
         };
     }
@@ -170,6 +177,17 @@ public enum People {
     }
 
     /**
+     * Peuples alliés (étape 9 ; GDD, Relations entre peuples) : aider les Feran ou les Renoncés se sait au monastère, les
+     * Slothians y gagnent un quart ({@code reputation/Rivals#ALLY_SHARE}) de chaque gain de réputation de village.
+     */
+    public People ally() {
+        return switch (this) {
+            case FERAN, RENONCE -> SLOTHIAN;
+            default -> null;
+        };
+    }
+
+    /**
      * Sol posé sous les bâtiments et au fondu des emprises (VillageBuilder, chantiers) : herbe pour les Kweebecs, sable
      * pour les Feran, neige pour les Renoncés. Étape 8.
      */
@@ -177,6 +195,7 @@ public enum People {
         return switch (this) {
             case FERAN -> "Soil_Sand";
             case RENONCE -> "Soil_Snow";
+            case SLOTHIAN -> "Soil_Mud_Dry";
             default -> Terrain.GRASS;
         };
     }
@@ -186,6 +205,7 @@ public enum People {
         return switch (this) {
             case FERAN -> "Soil_Gravel_Sand";
             case RENONCE -> "Soil_Gravel";
+            case SLOTHIAN -> "Rock_Basalt_Cobble";
             default -> Terrain.PATHWAY;
         };
     }
@@ -198,6 +218,9 @@ public enum People {
         return switch (this) {
             case FERAN -> block.startsWith("Soil_Sand");
             case RENONCE -> block.startsWith("Soil_Snow") || block.startsWith("Soil_Grass_Cold") || block.startsWith("Soil_Dirt_Cold");
+            // Zone 4 (Zones/Zone4_Tier4-5, tuiles vanilla) : herbe et terre brûlées, cendre, sable cendreux, boue sèche.
+            case SLOTHIAN -> block.startsWith("Soil_Grass") || block.startsWith("Soil_Dirt_Burnt") || block.startsWith("Soil_Ash")
+                    || block.startsWith("Soil_Sand_Ashen") || block.startsWith("Soil_Mud_Dry") || block.equals("Soil_Dirt");
             default -> block.startsWith("Soil_Grass");
         };
     }
@@ -205,12 +228,13 @@ public enum People {
     /**
      * Ennemi des raids sur ce peuple : les assaillants s'appellent {@code Nakasar_Peuples_Raider_<Ennemi>_*} et le
      * trophée du raid gagné {@code Nakasar_Peuples_Trophy_<Ennemi>}. Étape 8 : Scaraks sur les Feran, culte outlander
-     * sur les Renoncés.
+     * sur les Renoncés. Étape 9 : le Vide sur les Slothians.
      */
     public String raidEnemy() {
         return switch (this) {
             case FERAN -> "Scarak";
             case RENONCE -> "Cult";
+            case SLOTHIAN -> "Void";
             default -> "Trork";
         };
     }

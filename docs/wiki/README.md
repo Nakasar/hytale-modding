@@ -62,3 +62,10 @@ Le second mod, **Nakasar : Fractales** : les fractales de *Guild Wars 2* pour 1 
 
 - [Observatoire](fractales/observatoire.md) · [Progression et récompenses](fractales/progression.md) · [Instabilités](fractales/instabilites.md) · [Cosmétiques de saison](fractales/cosmetiques.md)
 - **Saison 1 :** [Falaise](fractales/falaise.md) · [Inclassable](fractales/inclassable.md) · [Volcanique](fractales/volcanique.md) · [Océan solide](fractales/ocean-solide.md) · [Marais](fractales/marais.md) · [Tempête de neige](fractales/tempete-de-neige.md)
+
+## Peuples d'Orbis
+
+Le troisième mod, **Nakasar : Peuples** : des villages vivants des peuples d'Orbis, qui grandissent avec votre aide, de la forêt kweebec au monastère slothian au bord du Vide. [Tout sur les peuples](peuples/README.md).
+
+- [Réputation et rangs](peuples/reputation.md) · [Vivre au village](peuples/villages.md) · [Climats des zones](peuples/climats.md) · [Avant-poste du champion](peuples/avant-poste.md)
+- **Les peuples :** [Kweebecs](peuples/kweebecs.md) · [Trorks](peuples/trorks.md) · [Feran](peuples/feran.md) · [Renoncés](peuples/renonces.md) · [Slothians](peuples/slothians.md)

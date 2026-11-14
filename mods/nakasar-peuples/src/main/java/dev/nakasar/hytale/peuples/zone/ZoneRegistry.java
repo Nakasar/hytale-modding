@@ -2,11 +2,13 @@ package dev.nakasar.hytale.peuples.zone;
 
 import com.hypixel.hytale.codec.Codec;
 import com.hypixel.hytale.codec.KeyedCodec;
+import com.hypixel.hytale.codec.codecs.array.ArrayCodec;
 import com.hypixel.hytale.codec.builder.BuilderCodec;
 import com.hypixel.hytale.component.Resource;
 import com.hypixel.hytale.component.ResourceType;
 import com.hypixel.hytale.server.core.universe.world.World;
 import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
+import dev.nakasar.hytale.peuples.outpost.Outpost;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -30,6 +32,10 @@ public final class ZoneRegistry implements Resource<EntityStore> {
             .append(new KeyedCodec<>("Shelters", Codec.INT_ARRAY), (r, v) -> r.setShelters(v), r -> r.sheltersArray())
             .documentation("Abris d'eau des Graines d'Écho : x, y, z à la suite.")
             .add()
+            .append(new KeyedCodec<>("Outposts", new ArrayCodec<>(Outpost.CODEC, Outpost[]::new)),
+                    (r, v) -> r.setOutposts(v), r -> r.outposts.toArray(Outpost[]::new))
+            .documentation("Avant-postes du champion (étape 9) : prévus, bâtis ou à rembourser.")
+            .add()
             .build();
 
     private static ResourceType<EntityStore, ZoneRegistry> resourceType;
@@ -37,6 +43,7 @@ public final class ZoneRegistry implements Resource<EntityStore> {
     int hive = Hive.START;
     long hiveDay = -1L;
     private final List<int[]> shelters = new ArrayList<>();
+    private final List<Outpost> outposts = new ArrayList<>();
 
     public ZoneRegistry() {
     }
@@ -55,6 +62,22 @@ public final class ZoneRegistry implements Resource<EntityStore> {
 
     public List<int[]> shelters() {
         return shelters;
+    }
+
+    /** Avant-postes du champion (liste modifiable, thread du monde). */
+    public List<Outpost> outposts() {
+        return outposts;
+    }
+
+    private void setOutposts(Outpost[] list) {
+        outposts.clear();
+        if (list != null) {
+            for (Outpost o : list) {
+                if (o != null && o.people() != null) {
+                    outposts.add(o);
+                }
+            }
+        }
     }
 
     void addShelter(int x, int y, int z) {
@@ -85,6 +108,9 @@ public final class ZoneRegistry implements Resource<EntityStore> {
         copy.hiveDay = hiveDay;
         for (int[] s : shelters) {
             copy.shelters.add(s.clone());
+        }
+        for (Outpost o : outposts) {
+            copy.outposts.add(o.copy());
         }
         return copy;
     }

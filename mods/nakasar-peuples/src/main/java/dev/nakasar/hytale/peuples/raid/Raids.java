@@ -244,6 +244,9 @@ public final class Raids {
                     RAIDER_PREFIX + "Scarak_Defender", RAIDER_PREFIX + "Scarak_Broodmother"};
             case RENONCE -> new String[] {RAIDER_PREFIX + "Cult_Cultist", RAIDER_PREFIX + "Cult_Berserker",
                     RAIDER_PREFIX + "Cult_Brute", RAIDER_PREFIX + "Cult_Marauder"};
+            // Étape 9 : la montée du Vide sur les Slothians (larves, rampants, squelettes brûlés vanilla).
+            case SLOTHIAN -> new String[] {RAIDER_PREFIX + "Void_Larva", RAIDER_PREFIX + "Void_Crawler",
+                    RAIDER_PREFIX + "Void_Skeleton_Soldier", RAIDER_PREFIX + "Void_Skeleton_Knight"};
             default -> new String[] {WARRIOR, MAULER, BRAWLER, WARLORD};
         };
     }
@@ -262,6 +265,9 @@ public final class Raids {
         }
         if (rest.startsWith("Cult_")) {
             return role.contains("Renonce");
+        }
+        if (rest.startsWith("Void_")) {
+            return role.contains("Slothian");
         }
         return role.contains("Kweebec");
     }

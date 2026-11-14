@@ -79,3 +79,14 @@ droplist Drop_Outlander_Marauder
 # Groupe de PNJ vanilla des Feran (Server/NPC/Groups/Intelligent/Neutral/Feran/Feran.json), vu dans Assets.zip le
 # 14 novembre 2026 : groupe de réputation Nakasar_Peuples_Feran (étape 8).
 npcgroup Feran
+# Étape 9, peuples (zone 4) : créatures du Vide et squelettes brûlés vanilla, vus dans Assets.zip 0.7.7
+# (Server/NPC/Roles/Void/, Server/NPC/Roles/Undead/Skeleton/Skeleton_Burnt/, Server/Drops/NPCs/Void|Undead/, Server/Drops/Items/Empty.json).
+npc Crawler_Void
+npc Larva_Void
+npc Void_Anomaly_Crystal_Small
+npc Skeleton_Burnt_Soldier
+npc Skeleton_Burnt_Knight
+droplist Drop_Crawler_Void
+droplist Drop_Skeleton_Burnt_Soldier
+droplist Drop_Skeleton_Burnt_Knight
+droplist Empty

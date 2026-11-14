@@ -1,0 +1,23 @@
+{
+  "$Comment": "Tableau d'un village Slothian (étape 9) : panneau vanilla Furniture_Temple_Emerald_Sign, interaction du tableau.",
+  "Parent": "Furniture_Temple_Emerald_Sign",
+  "TranslationProperties": {
+    "Name": "nakasar_peuples.items.Nakasar_Peuples_Board_Slothian.name",
+    "Description": "nakasar_peuples.items.Nakasar_Peuples_Board_Slothian.description"
+  },
+  "Quality": "Developer",
+  "BlockType": {
+    "Gathering": {
+      "Breaking": {
+        "GatherType": "Unbreakable"
+      }
+    },
+    "Interactions": {
+      "Use": {
+        "Interactions": [
+          "Nakasar_Peuples_Open_Board"
+        ]
+      }
+    }
+  }
+}

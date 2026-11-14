@@ -1,11 +1,11 @@
-// Wiki joueur des mods Nakasar (Vampires, Fractales des Brumes). Les pages sont le Markdown de ../docs/wiki ; le site est publié sur
+// Wiki joueur des mods Nakasar (Vampires, Fractales des Brumes, Peuples d'Orbis). Les pages sont le Markdown de ../docs/wiki ; le site est publié sur
 // GitHub Pages par .github/workflows/wiki.yml. Aperçu local : npm ci puis npm start.
 import { themes as prismThemes } from "prism-react-renderer";
 
 /** @type {import('@docusaurus/types').Config} */
 const config = {
   title: "Wiki des mods Nakasar",
-  tagline: "Guide du joueur des mods Nakasar Vampires et Fractales des Brumes pour Hytale",
+  tagline: "Guide du joueur des mods Nakasar Vampires, Fractales des Brumes et Peuples d'Orbis pour Hytale",
   favicon: "img/favicon.png",
   url: "https://hunters.nakasar.xyz",
   baseUrl: "/",
@@ -56,12 +56,13 @@ const config = {
           { type: "docSidebar", sidebarId: "objets", label: "Objets", position: "left" },
           { type: "docSidebar", sidebarId: "donjons", label: "Donjons", position: "left" },
           { type: "docSidebar", sidebarId: "fractales", label: "Fractales", position: "left" },
+          { type: "docSidebar", sidebarId: "peuples", label: "Peuples", position: "left" },
           { href: "https://github.com/Nakasar/hytale-modding", label: "GitHub", position: "right" },
         ],
       },
       footer: {
         style: "dark",
-        copyright: "Mods Nakasar Vampires et Fractales des Brumes pour Hytale. Chiffres lus dans les fichiers des mods.",
+        copyright: "Mods Nakasar Vampires, Fractales des Brumes et Peuples d'Orbis pour Hytale. Chiffres lus dans les fichiers des mods.",
       },
       prism: { theme: prismThemes.github, darkTheme: prismThemes.dracula },
     }),

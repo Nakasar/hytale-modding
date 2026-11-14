@@ -44,6 +44,8 @@ import java.util.concurrent.ConcurrentHashMap;
  *   max par seconde (cause {@value #COLD}). Le Manteau du givre porté l'annule.</li>
  *   <li>Bracelet de vent porté dans l'inventaire : saut x{@value #JUMP_FACTOR} (force de saut envoyée au client, comme
  *   le Saut chargé des fractales).</li>
+ *   <li>Vide (zone 4, étape 9) : corruption loin des braseros, voir {@link #corruption}. Le Manteau du givre porté
+ *   révèle le monastère slothian.</li>
  *   <li>Révélations (GDD : l'objet de passage « révèle le village suivant ») : porter la Graine d'Écho donne la position de
  *   l'oasis feran, porter le Bracelet de vent celle du hameau des Renoncés, une fois par joueur.</li>
  * </ul>
@@ -64,6 +66,16 @@ public final class Climate {
     public static final String HYPOTHERMIA = "Nakasar_Peuples_Hypothermia_";
     public static final String WARMTH = "Nakasar_Peuples_Warmth";
     public static final float JUMP_FACTOR = 1.35f;
+    // Étape 9 : corruption du Vide (zone 4).
+    public static final int MAX_VOID = 10;
+    public static final float VOID_EVERY = 8f;
+    public static final float CALM_EVERY = 1.2f;
+    public static final float VOID_PER_STACK = 0.0015f;
+    public static final String VOID = "Nakasar_Peuples_Void";
+    public static final String VOID_TIER = "Nakasar_Peuples_Void_";
+    public static final String SANCTUARY = "Nakasar_Peuples_Sanctuary";
+    public static final String ROBE = "Nakasar_Peuples_Monk_Robe";
+    public static final String VIGIL = "Nakasar_Peuples_Vigil";
 
     public static final String BRACELET = "Nakasar_Peuples_Wind_Bracelet";
     public static final String MANTLE = "Nakasar_Peuples_Frost_Mantle";
@@ -90,17 +102,23 @@ public final class Climate {
         boolean coldTold;
         // Bracelet
         boolean boosted;
+        // Vide (étape 9)
+        int voidStacks;
+        float voidGain;
+        float calm;
+        int voidTier;
+        boolean voidTold;
     }
 
     private static final Map<UUID, State> STATES = new ConcurrentHashMap<>();
-    /** Climat imposé par la commande d'essai ({@code /village climat}) : 2 (soif) ou 3 (froid). */
+    /** Climat imposé par la commande d'essai ({@code /village climat}) : 2 (soif), 3 (froid) ou 4 (Vide). */
     private static final Map<UUID, Integer> FORCED = new ConcurrentHashMap<>();
 
     private Climate() {
     }
 
     public static void force(UUID player, int zone) {
-        if (zone == 2 || zone == 3) {
+        if (zone >= 2 && zone <= 4) {
             FORCED.put(player, zone);
         } else {
             FORCED.remove(player);
@@ -125,6 +143,9 @@ public final class Climate {
         }
         if (s != null && s.stacks > 0) {
             return Message.translation(KEYS + "status.cold").param("stacks", s.stacks).param("max", MAX_COLD);
+        }
+        if (s != null && s.voidStacks > 0) {
+            return Message.translation(KEYS + "status.void").param("stacks", s.voidStacks).param("max", MAX_VOID);
         }
         if (ref != null && ref.isValid() && Effects.has(store, ref, QUENCHED)) {
             return Message.translation(KEYS + "status.quenched");
@@ -183,6 +204,69 @@ public final class Climate {
             s.stacks = 0;
             tier(store, ref, s, 0);
         }
+
+        if (zone == 4 && !wears(store, ref, ROBE) && !carries(store, ref, VIGIL)) {
+            corruption(world, store, player, ref, s, at, dt);
+        } else if (s.voidStacks > 0 || s.voidTier > 0) {
+            s.voidStacks = 0;
+            voidTier(store, ref, s, 0);
+        }
+    }
+
+    // ---- Vide (étape 9) ----
+
+    /**
+     * Corruption du Vide (zone 4, GDD « dégâts lents loin des braseros slothians ») : loin d'un brasero ou d'un feu
+     * allumé ({@value #HEAT_RADIUS} blocs, la lave ne compte pas) et hors du monastère, une pile toutes les
+     * {@value #VOID_EVERY} s jusqu'à {@value #MAX_VOID} ; à l'abri, une pile de moins toutes les {@value #CALM_EVERY} s.
+     * Chaque pile retire {@value #VOID_PER_STACK} des PV max par seconde (cause {@value #VOID}). La Robe du moine portée
+     * ou la Veille dans l'inventaire l'annulent.
+     */
+    private static void corruption(World world, Store<EntityStore> store, PlayerRef player, Ref<EntityStore> ref, State s,
+                                   Vector3d at, float dt) {
+        int x = (int) Math.floor(at.x());
+        int y = (int) Math.floor(at.y());
+        int z = (int) Math.floor(at.z());
+        boolean safe = nearFlame(world.getChunkStore(), x, y, z, false)
+                || Villages.registry(world).nearestOf(People.SLOTHIAN, at.x(), at.z(), Villages.RADIUS) != null;
+        if (safe) {
+            s.voidGain = 0f;
+            s.calm += dt;
+            while (s.calm >= CALM_EVERY && s.voidStacks > 0) {
+                s.calm -= CALM_EVERY;
+                s.voidStacks--;
+            }
+            if (s.voidStacks == 0) {
+                s.calm = 0f;
+            }
+            Effects.apply(store, ref, SANCTUARY, 1.5f);
+        } else {
+            s.calm = 0f;
+            s.voidGain += dt;
+            if (s.voidGain >= VOID_EVERY) {
+                s.voidGain = 0f;
+                s.voidStacks = Math.min(MAX_VOID, s.voidStacks + 1);
+                if (!s.voidTold) {
+                    s.voidTold = true;
+                    NotificationUtil.sendNotification(player.getPacketHandler(), Message.translation(KEYS + "void.start"),
+                            NotificationStyle.Warning);
+                }
+            }
+        }
+        if (s.voidStacks > 0) {
+            Effects.percent(store, ref, VOID_PER_STACK * s.voidStacks, VOID);
+        }
+        voidTier(store, ref, s, (s.voidStacks + 1) / 2);
+    }
+
+    private static void voidTier(Store<EntityStore> store, Ref<EntityStore> ref, State s, int tier) {
+        if (tier != s.voidTier && s.voidTier > 0) {
+            Effects.clear(store, ref, VOID_TIER + s.voidTier);
+        }
+        if (tier > 0) {
+            Effects.apply(store, ref, VOID_TIER + tier, 1.5f);
+        }
+        s.voidTier = tier;
     }
 
     // ---- Soif ----
@@ -290,11 +374,16 @@ public final class Climate {
     }
 
     static boolean nearHeat(ChunkStore chunks, int x, int y, int z) {
+        return nearFlame(chunks, x, y, z, true);
+    }
+
+    /** Un feu de camp allumé ou un brasero à {@value #HEAT_RADIUS} blocs (et la lave si `lava`). */
+    static boolean nearFlame(ChunkStore chunks, int x, int y, int z, boolean lava) {
         for (int dx = -HEAT_RADIUS; dx <= HEAT_RADIUS; dx++) {
             for (int dz = -HEAT_RADIUS; dz <= HEAT_RADIUS; dz++) {
                 for (int dy = -2; dy <= 2; dy++) {
                     String name = Blocks.name(chunks, x + dx, y + dy, z + dz);
-                    if (name != null && (name.contains("Campfire") || name.contains("Brazier") || name.startsWith("Fluid_Lava"))
+                    if (name != null && (name.contains("Campfire") || name.contains("Brazier") || lava && name.startsWith("Fluid_Lava"))
                             && !name.startsWith("Deco_Campfire_Off")) {
                         return true;
                     }
@@ -365,12 +454,13 @@ public final class Climate {
         }
         reveal(world, player, data, ref, store, ECHO_SEED, People.FERAN);
         reveal(world, player, data, ref, store, BRACELET, People.RENONCE);
+        reveal(world, player, data, ref, store, MANTLE, People.SLOTHIAN);
     }
 
     private static void reveal(World world, PlayerRef player, PeuplesPlayer data, Ref<EntityStore> ref, Store<EntityStore> store,
                                String item, People people) {
         String flag = "Reveal_" + people.id();
-        if (data.hasFlag(flag) || !carries(store, ref, item)) {
+        if (data.hasFlag(flag) || !carries(store, ref, item) && !wears(store, ref, item)) {
             return;
         }
         Village village = Villages.registry(world).all().stream().filter(v -> v.people() == people).findFirst().orElse(null);

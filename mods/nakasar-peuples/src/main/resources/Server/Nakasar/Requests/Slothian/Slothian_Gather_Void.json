@@ -1,0 +1,14 @@
+{
+  "$Comment": "Demande du tableau d'un village Slothian (étape 9), générée par tools/generate_slothians.py.",
+  "People": "Slothian",
+  "Type": "Gather",
+  "MinTier": 0,
+  "MaxTier": 3,
+  "Weight": 1,
+  "TitleKey": "nakasar_peuples.request.Slothian_Gather_Void.title",
+  "TaskKey": "nakasar_peuples.request.Slothian_Gather_Void.task",
+  "ItemId": "Ingredient_Void_Essence",
+  "Quantity": 4,
+  "Essor": 15,
+  "Favors": 2
+}

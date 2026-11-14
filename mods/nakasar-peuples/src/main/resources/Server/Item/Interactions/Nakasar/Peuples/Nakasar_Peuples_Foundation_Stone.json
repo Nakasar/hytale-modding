@@ -1,0 +1,5 @@
+{
+  "$Comment": "Ouvre la fenêtre de fondation d'un avant-poste là où se tient le joueur (Java, outpost/OutpostPage).",
+  "Type": "Nakasar_Peuples_ZoneItem",
+  "Action": "Foundation"
+}

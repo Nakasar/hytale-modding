@@ -1,0 +1,322 @@
+{
+  "$Comment": "Plan de village généré par tools/generate_slothians.py (étape 9) (ne pas modifier à la main) : prefabs vanilla collés par village/VillageBuilder autour du cœur, emprises (MinX..MaxZ) relatives au point de collage après rotation.",
+  "People": "Slothian",
+  "Radius": 59,
+  "PlazaRadius": 6,
+  "BannerX": 0,
+  "BannerZ": -4,
+  "Buildings": [
+    {
+      "Id": "Hutte_Ouest",
+      "Tier": 0,
+      "Prefab": "Npc/Slothian/Disabled/House/Small/Slothian_Disabled_House_Small_001",
+      "X": -20,
+      "Z": 0,
+      "Rotation": 0,
+      "MinX": -8,
+      "MaxX": 9,
+      "MinZ": -7,
+      "MaxZ": 4,
+      "MinY": -7,
+      "MaxY": 10
+    },
+    {
+      "Id": "Hutte_Est",
+      "Tier": 0,
+      "Prefab": "Npc/Slothian/Disabled/House/Small/Slothian_Disabled_House_Small_003",
+      "X": 21,
+      "Z": 0,
+      "Rotation": 0,
+      "MinX": -9,
+      "MaxX": 9,
+      "MinZ": -10,
+      "MaxZ": 9,
+      "MinY": -7,
+      "MaxY": 11
+    },
+    {
+      "Id": "Etal_Des_Cendres",
+      "Tier": 0,
+      "Prefab": "Monuments/Incidental/Slothian/Land/Merchant/Incidental_Slothian_Merchant_Slothian_Merchant_001",
+      "X": 0,
+      "Z": -14,
+      "Rotation": 0,
+      "MinX": -3,
+      "MaxX": 3,
+      "MinZ": -5,
+      "MaxZ": 4,
+      "MinY": 0,
+      "MaxY": 3
+    },
+    {
+      "Id": "Affut",
+      "Tier": 0,
+      "Prefab": "Monuments/Incidental/Slothian/Land/Hunting/Incidental_Slothian_Slothian_Hunting_001",
+      "X": 0,
+      "Z": 15,
+      "Rotation": 0,
+      "MinX": -4,
+      "MaxX": 4,
+      "MinZ": -4,
+      "MaxZ": 3,
+      "MinY": 0,
+      "MaxY": 11
+    },
+    {
+      "Id": "Maison_Nord_Ouest",
+      "Tier": 1,
+      "Prefab": "Npc/Slothian/Disabled/House/Medium/Slothian_Disabled_House_Medium_001",
+      "X": -24,
+      "Z": -24,
+      "Rotation": 0,
+      "MinX": -9,
+      "MaxX": 9,
+      "MinZ": -9,
+      "MaxZ": 9,
+      "MinY": -7,
+      "MaxY": 13
+    },
+    {
+      "Id": "Maison_Sud_Est",
+      "Tier": 1,
+      "Prefab": "Npc/Slothian/Disabled/House/Medium/Slothian_Disabled_House_Medium_002",
+      "X": 24,
+      "Z": 26,
+      "Rotation": 0,
+      "MinX": -9,
+      "MaxX": 8,
+      "MinZ": -9,
+      "MaxZ": 9,
+      "MinY": -7,
+      "MaxY": 11
+    },
+    {
+      "Id": "Porte_Du_Monastere",
+      "Tier": 1,
+      "Prefab": "Npc/Slothian/Disabled/Gate/Slothian_Disabled_Gate_001",
+      "X": 0,
+      "Z": 32,
+      "Rotation": 0,
+      "MinX": -8,
+      "MaxX": 8,
+      "MinZ": -3,
+      "MaxZ": 3,
+      "MinY": -4,
+      "MaxY": 15
+    },
+    {
+      "Id": "Temple_De_Veille",
+      "Tier": 2,
+      "Prefab": "Monuments/Incidental/Slothian/Land/Temple/Incidental_Slothian_Slothian_Temple_001",
+      "X": 26,
+      "Z": -26,
+      "Rotation": 0,
+      "MinX": -3,
+      "MaxX": 4,
+      "MinZ": -11,
+      "MaxZ": 12,
+      "MinY": -2,
+      "MaxY": 16
+    },
+    {
+      "Id": "Grande_Maison_Slothian",
+      "Tier": 2,
+      "Prefab": "Npc/Slothian/Disabled/House/Medium/Tall/Slothian_Disabled_House_Medium_Tall_001",
+      "X": -26,
+      "Z": 26,
+      "Rotation": 0,
+      "MinX": -9,
+      "MaxX": 8,
+      "MinZ": -8,
+      "MaxZ": 9,
+      "MinY": -8,
+      "MaxY": 18
+    },
+    {
+      "Id": "Hutte_Nord",
+      "Tier": 2,
+      "Prefab": "Npc/Slothian/Disabled/House/Small/Slothian_Disabled_House_Small_002",
+      "X": 0,
+      "Z": -34,
+      "Rotation": 0,
+      "MinX": -10,
+      "MaxX": 9,
+      "MinZ": -9,
+      "MaxZ": 9,
+      "MinY": -7,
+      "MaxY": 11
+    },
+    {
+      "Id": "Monastere",
+      "Tier": 3,
+      "Prefab": "Npc/Slothian/Disabled/Temple/Medium/Slothian_Disabled_Temple_Medium_001",
+      "X": -48,
+      "Z": 0,
+      "Rotation": 0,
+      "MinX": -9,
+      "MaxX": 9,
+      "MinZ": -8,
+      "MaxZ": 12,
+      "MinY": -7,
+      "MaxY": 30
+    },
+    {
+      "Id": "Porte_Riche",
+      "Tier": 3,
+      "Prefab": "Npc/Slothian/Disabled/Gate/Rich/Slothian_Disabled_Gate_Rich_001",
+      "X": 48,
+      "Z": 0,
+      "Rotation": 0,
+      "MinX": -8,
+      "MaxX": 8,
+      "MinZ": -3,
+      "MaxZ": 3,
+      "MinY": -4,
+      "MaxY": 15
+    }
+  ],
+  "Chantiers": [
+    {
+      "Tier": 1,
+      "Hours": 24,
+      "Materials": [
+        {
+          "ItemId": "Rock_Basalt_Cobble",
+          "Quantity": 24
+        },
+        {
+          "ItemId": "Soil_Mud_Dry",
+          "Quantity": 16
+        },
+        {
+          "ItemId": "Ingredient_Fibre",
+          "Quantity": 12
+        }
+      ]
+    },
+    {
+      "Tier": 2,
+      "Hours": 24,
+      "Materials": [
+        {
+          "ItemId": "Rock_Basalt_Brick",
+          "Quantity": 32
+        },
+        {
+          "ItemId": "Wood_Hardwood_Planks",
+          "Quantity": 32
+        },
+        {
+          "ItemId": "Soil_Ash",
+          "Quantity": 16
+        },
+        {
+          "ItemId": "Ingredient_Fire_Essence",
+          "Quantity": 6
+        }
+      ]
+    },
+    {
+      "Tier": 3,
+      "Hours": 24,
+      "Materials": [
+        {
+          "ItemId": "Rock_Basalt_Brick",
+          "Quantity": 64
+        },
+        {
+          "ItemId": "Furniture_Jungle_Candle",
+          "Quantity": 8
+        },
+        {
+          "ItemId": "Ingredient_Fire_Essence",
+          "Quantity": 12
+        },
+        {
+          "ItemId": "Ingredient_Void_Essence",
+          "Quantity": 8
+        }
+      ]
+    }
+  ],
+  "Jobs": [
+    {
+      "Id": "Batisseur",
+      "Tier": 0,
+      "Role": "Nakasar_Peuples_Slothian_Builder",
+      "Dialogue": "Slothian_Builder",
+      "Building": "",
+      "WorkX": -4,
+      "WorkZ": -3,
+      "Home": "Hutte_Est",
+      "HomeX": 10,
+      "HomeZ": -1,
+      "Builder": true
+    },
+    {
+      "Id": "Guetteur",
+      "Tier": 0,
+      "Role": "Nakasar_Peuples_Slothian_Watcher",
+      "Dialogue": "Slothian_Watcher",
+      "Building": "Affut",
+      "WorkX": 0,
+      "WorkZ": 9,
+      "Home": "Hutte_Ouest",
+      "HomeX": -9,
+      "HomeZ": -2,
+      "Builder": false
+    },
+    {
+      "Id": "Porteur_Cendres",
+      "Tier": 0,
+      "Role": "Nakasar_Peuples_Slothian_AshBearer",
+      "Dialogue": "Slothian_AshBearer",
+      "Building": "Etal_Des_Cendres",
+      "WorkX": 0,
+      "WorkZ": -8,
+      "Home": "Hutte_Ouest",
+      "HomeX": -9,
+      "HomeZ": -2,
+      "Builder": false
+    },
+    {
+      "Id": "Garde",
+      "Tier": 1,
+      "Role": "Nakasar_Peuples_Slothian_Guard",
+      "Dialogue": "Slothian_Guard",
+      "Building": "Porte_Du_Monastere",
+      "WorkX": 0,
+      "WorkZ": 27,
+      "Home": "Maison_Sud_Est",
+      "HomeX": 23,
+      "HomeZ": 15,
+      "Builder": false
+    },
+    {
+      "Id": "Moine",
+      "Tier": 2,
+      "Role": "Nakasar_Peuples_Slothian_Monk",
+      "Dialogue": "Slothian_Monk",
+      "Building": "Temple_De_Veille",
+      "WorkX": 21,
+      "WorkZ": -26,
+      "Home": "Hutte_Nord",
+      "HomeX": -1,
+      "HomeZ": -23,
+      "Builder": false
+    },
+    {
+      "Id": "Doyen",
+      "Tier": 3,
+      "Role": "Nakasar_Peuples_Slothian_Elder",
+      "Dialogue": "Slothian_Elder",
+      "Building": "Monastere",
+      "WorkX": -37,
+      "WorkZ": 2,
+      "Home": "Monastere",
+      "HomeX": -37,
+      "HomeZ": 2,
+      "Builder": false
+    }
+  ]
+}

@@ -1,0 +1,18 @@
+{
+  "$Comment": "Demande du tableau d'un village Slothian (étape 9), générée par tools/generate_slothians.py.",
+  "People": "Slothian",
+  "Type": "Escort",
+  "MinTier": 0,
+  "MaxTier": 3,
+  "Weight": 1,
+  "TitleKey": "nakasar_peuples.request.Slothian_Escort_Pilgrim.title",
+  "TaskKey": "nakasar_peuples.request.Slothian_Escort_Pilgrim.task",
+  "Spawns": [
+    "Crawler_Void",
+    "Crawler_Void"
+  ],
+  "MinDistance": 80,
+  "MaxDistance": 140,
+  "Essor": 20,
+  "Favors": 3
+}

@@ -826,6 +826,12 @@ camelote au rang Toléré, les armes trorks vanilla au rang Ami, l'armure trork 
 Page à part : [zones-2-3.md](zones-2-3.md). Elle couvre les deux nouveaux peuples, la soif, le froid, la ruche
 scarak, la pose automatique des villages dans leur zone, les nouvelles commandes et les tests en jeu.
 
+## Étape 9 : les Slothians (zone 4), le Vide et l'avant-poste du champion
+
+Page à part : [zone-4.md](zone-4.md). Elle couvre le monastère slothian, la corruption du Vide, les raids du Vide,
+l'avant-poste du champion (Pierre de fondation), les nouvelles commandes et les tests en jeu. Le wiki joueur a un
+onglet **Peuples** (`docs/wiki/peuples/`).
+
 ## PNJ tués : retour au matin (`village/Absences`)
 
 Un PNJ du village tué (crieur, marchand, chef, ou villageois d'un métier ouvert) revient au matin suivant, à 6 h de jeu,

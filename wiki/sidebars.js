@@ -110,6 +110,19 @@ const sidebars = {
     },
     "fractales/cosmetiques",
   ],
+  peuples: [
+    "peuples/README",
+    "peuples/reputation",
+    "peuples/villages",
+    {
+      type: "category",
+      label: "Les peuples",
+      collapsed: false,
+      items: ["peuples/kweebecs", "peuples/trorks", "peuples/feran", "peuples/renonces", "peuples/slothians"],
+    },
+    "peuples/climats",
+    "peuples/avant-poste",
+  ],
 };
 
 export default sidebars;
