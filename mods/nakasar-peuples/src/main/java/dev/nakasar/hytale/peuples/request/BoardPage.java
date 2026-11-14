@@ -66,7 +66,8 @@ public final class BoardPage extends InteractiveCustomUIPage<BoardPage.Event> {
     // Les libellés (Label) reçoivent leur texte par « .TextSpans », comme les pages vanilla (BlockLorePage,
     // ConfirmationPage, RespawnPage) : un message composé (Message.empty() + insert, cas du texte d'état) envoyé
     // sur « .Text » fait planter le client (« No parameterless constructor defined for type 'System.String' »).
-    // Les boutons (TextButton) gardent « .Text » avec une simple traduction, comme ConfirmationPage.
+    // Les boutons (TextButton) gardent « .Text » avec une simple traduction, comme ConfirmationPage : sur « .Text »,
+    // un paramètre Message n'est pas remplacé par le client (le bouton afficherait « {text} »).
     @Override
     public void build(Ref<EntityStore> ref, UICommandBuilder cmd, UIEventBuilder events, Store<EntityStore> store) {
         cmd.append(LAYOUT);

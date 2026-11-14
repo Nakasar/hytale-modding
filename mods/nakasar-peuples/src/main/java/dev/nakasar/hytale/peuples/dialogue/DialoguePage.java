@@ -51,7 +51,7 @@ public final class DialoguePage extends InteractiveCustomUIPage<DialoguePage.Eve
     }
 
     // Libellés en « .TextSpans » (message composé ou vide sur « .Text » : plantage du client), boutons en « .Text »
-    // avec une traduction, comme les pages vanilla (voir BoardPage).
+    // avec une traduction sans paramètre Message (non remplacé par le client), comme les pages vanilla (voir BoardPage).
     @Override
     public void build(Ref<EntityStore> ref, UICommandBuilder cmd, UIEventBuilder events, Store<EntityStore> store) {
         cmd.append(LAYOUT);
@@ -71,9 +71,9 @@ public final class DialoguePage extends InteractiveCustomUIPage<DialoguePage.Eve
             }
             cmd.set(answer + ".Visible", true);
             cmd.set(hint + ".Visible", true);
-            Message text = Message.translation(Dialogues.KEYS + "pageResponse").param("number", i + 1)
-                    .param("text", Message.translation(r.textKey()));
-            cmd.set(answer + ".Text", text);
+            // Un bouton n'accepte sur « .Text » qu'une traduction à paramètres simples : un paramètre Message
+            // ({text}) s'affiche brut. Le bouton reçoit donc directement la réponse traduite.
+            cmd.set(answer + ".Text", Message.translation(r.textKey()));
             if (r.available(context)) {
                 cmd.set(hint + ".TextSpans", r.hintKey() == null ? Message.raw("") : Message.translation(r.hintKey()));
             } else {
