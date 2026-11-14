@@ -1,0 +1,32 @@
+{
+  "$Comment": "Graine d'Écho : fin de la chaîne de quêtes kweebec (étape 6). Elle ne se plante pas encore (étape 8). Modèle, texture et icône du sac de graines de chêne vanilla (Plant_Seeds_Oak).",
+  "TranslationProperties": {
+    "Name": "nakasar_peuples.items.Nakasar_Peuples_Echo_Seed.name",
+    "Description": "nakasar_peuples.items.Nakasar_Peuples_Echo_Seed.description"
+  },
+  "Icon": "Icons/ItemsGenerated/Plant_Seeds_Oak.png",
+  "Categories": [
+    "Items.Ingredients"
+  ],
+  "Model": "Resources/Plants/SeedBag.blockymodel",
+  "Texture": "Resources/Plants/SeedBag_Textures/Oak.png",
+  "PlayerAnimationsId": "Item",
+  "Quality": "Legendary",
+  "MaxStack": 1,
+  "IconProperties": {
+    "Scale": 1.1,
+    "Rotation": [
+      0,
+      30,
+      15
+    ],
+    "Translation": [
+      2.5,
+      -11
+    ]
+  },
+  "ItemEntity": {
+    "ParticleSystemId": null
+  },
+  "ItemSoundSetId": "ISS_Items_Foliage"
+}

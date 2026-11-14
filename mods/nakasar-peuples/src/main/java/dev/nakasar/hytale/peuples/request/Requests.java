@@ -460,7 +460,7 @@ public final class Requests {
      * La demande est remplie : faveurs au joueur (au sol s'il n'a plus de place), essor au village s'il ne l'a pas déjà
      * reçu pour cette demande, nouvelle demande à sa place au tableau.
      */
-    static void fulfil(World world, Store<EntityStore> store, Ref<EntityStore> ref, PlayerRef player, PeuplesPlayer state, PlayerRequest r) {
+    public static void fulfil(World world, Store<EntityStore> store, Ref<EntityStore> ref, PlayerRef player, PeuplesPlayer state, PlayerRequest r) {
         RequestTemplate t = r.template();
         Village village = Villages.registry(world).byId(r.villageId());
         end(world, store, ref, player, state, r);
@@ -511,7 +511,7 @@ public final class Requests {
     }
 
     /** Donne `stack` au joueur, ou le pose à ses pieds s'il n'a plus de place. */
-    static void give(Store<EntityStore> store, Ref<EntityStore> ref, ItemStack stack) {
+    public static void give(Store<EntityStore> store, Ref<EntityStore> ref, ItemStack stack) {
         CombinedItemContainer inventory = inventory(store, ref);
         if (inventory.canAddItemStack(stack)) {
             inventory.addItemStack(stack);

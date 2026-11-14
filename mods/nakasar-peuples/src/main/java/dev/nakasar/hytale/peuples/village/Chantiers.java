@@ -553,7 +553,7 @@ public final class Chantiers {
     }
 
     /** Message (tchat et notification) et titre facultatif aux joueurs proches du village. */
-    static void announce(World world, Village village, Message message, Message title, NotificationStyle style) {
+    public static void announce(World world, Village village, Message message, Message title, NotificationStyle style) {
         Store<EntityStore> store = world.getEntityStore().getStore();
         for (PlayerRef player : world.getPlayerRefs()) {
             Vector3d at = Requests.position(store, player.getReference());

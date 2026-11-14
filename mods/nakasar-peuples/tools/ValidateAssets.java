@@ -137,6 +137,8 @@ public class ValidateAssets {
             {WE + "condition.location.EventLocation$Config#TYPE_CODEC", "WildernessLocation",
                     "com.hypixel.hytale.builtin.adventure.wilderness.component.WildernessLocation$Config"},
             {WE + "condition.EventCondition$Config#TYPE_CODEC", "None", WE + "condition.NoCondition$Config"},
+            // Condition du mod (raid/RaidLocationCondition) : donne au raid son lieu.
+            {WE + "condition.EventCondition$Config#TYPE_CODEC", "Nakasar_Peuples_RaidLocation", "dev.nakasar.hytale.peuples.raid.RaidLocationCondition$Config"},
             {WE + "condition.EventCondition$Config#TYPE_CODEC", "IntervalCondition", WE + "condition.IntervalCondition$Config"},
             {WE + "condition.EventCondition$Config#TYPE_CODEC", "LocationCondition", WE + "condition.LocationCondition$Config"},
             {WE + "condition.EventCondition$Config#TYPE_CODEC", "ProximityCondition", WE + "condition.ProximityCondition$Config"},
