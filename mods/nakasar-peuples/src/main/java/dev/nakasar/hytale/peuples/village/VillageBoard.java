@@ -165,8 +165,15 @@ public final class VillageBoard {
             for (String id : c.buildings()) {
                 lines.add(Message.translation(KEYS + "chantier.building").param("building", Message.translation(Chantiers.buildingKey(id))));
             }
+            Map<VillageLayout.Building, Chantiers.Obstacles> blocked = Chantiers.blocked(world, village);
             for (String id : c.skipped()) {
-                lines.add(Message.translation(KEYS + "chantier.skipped").param("building", Message.translation(Chantiers.buildingKey(id))));
+                VillageLayout.Building b = layout.building(id);
+                Chantiers.Obstacles o = b == null ? null : blocked.get(b);
+                lines.add(o != null ? Chantiers.obstacleLine(b, o).color("#e8c46a")
+                        : Message.translation(KEYS + "chantier.skippedClear").param("building", Message.translation(Chantiers.buildingKey(id))));
+            }
+            if (!blocked.isEmpty()) {
+                lines.add(Message.translation(Chantiers.KEYS + "obstacles.hint"));
             }
         } else if (village.tier() < Tiers.MAX) {
             int target = village.tier() + 1;
@@ -183,6 +190,12 @@ public final class VillageBoard {
                 }
                 int count = Chantiers.pending(layout, village, target).size();
                 lines.add(Message.translation(KEYS + "chantier.count").param("count", count).param("hours", spec.hours()));
+            }
+            Map<VillageLayout.Building, Chantiers.Obstacles> blocked = Chantiers.blocked(world, village);
+            blocked.forEach((b, o) -> lines.add(Chantiers.obstacleLine(b, o).color("#e8c46a")));
+            if (!blocked.isEmpty()) {
+                lines.add(Message.translation(KEYS + "chantier.blockedNext"));
+                lines.add(Message.translation(Chantiers.KEYS + "obstacles.hint"));
             }
         }
         for (String id : village.burnt()) {
