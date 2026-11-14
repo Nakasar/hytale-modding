@@ -63,17 +63,21 @@ public final class BoardPage extends InteractiveCustomUIPage<BoardPage.Event> {
         player.getPageManager().openCustomPage(ref, store, new BoardPage(playerRef, village));
     }
 
+    // Les libellés (Label) reçoivent leur texte par « .TextSpans », comme les pages vanilla (BlockLorePage,
+    // ConfirmationPage, RespawnPage) : un message composé (Message.empty() + insert, cas du texte d'état) envoyé
+    // sur « .Text » fait planter le client (« No parameterless constructor defined for type 'System.String' »).
+    // Les boutons (TextButton) gardent « .Text » avec une simple traduction, comme ConfirmationPage.
     @Override
     public void build(Ref<EntityStore> ref, UICommandBuilder cmd, UIEventBuilder events, Store<EntityStore> store) {
         cmd.append(LAYOUT);
         World world = store.getExternalData().getWorld();
         Village village = Villages.registry(world).byId(villageId);
         if (village == null) {
-            cmd.set("#PageTitle.Text", Message.translation(Villages.MESSAGES + "boardOrphan"));
+            cmd.set("#PageTitle.TextSpans", Message.translation(Villages.MESSAGES + "boardOrphan"));
             return;
         }
-        cmd.set("#PageTitle.Text", Message.translation("nakasar_peuples.board.title").param("name", village.name()));
-        cmd.set("#RequestsHeader.Text", Message.translation(KEYS + "requests"));
+        cmd.set("#PageTitle.TextSpans", Message.translation("nakasar_peuples.board.title").param("name", village.name()));
+        cmd.set("#RequestsHeader.TextSpans", Message.translation(KEYS + "requests"));
         PeuplesPlayer data = PeuplesPlayer.get(store, ref);
         VillageRequest[] board = village.requests();
         for (int i = 0; i < Requests.SLOTS; i++) {
@@ -85,7 +89,7 @@ public final class BoardPage extends InteractiveCustomUIPage<BoardPage.Event> {
                 continue;
             }
             cmd.set("#Request" + n + ".Visible", true);
-            cmd.set("#Title" + n + ".Text", Message.translation(KEYS + "title").param("number", i + 1)
+            cmd.set("#Title" + n + ".TextSpans", Message.translation(KEYS + "title").param("number", i + 1)
                     .param("type", Message.translation(t.type().nameKey())).param("title", Requests.title(t)));
             Requests.Status status = Requests.status(data, request);
             Message detail;
@@ -116,14 +120,14 @@ public final class BoardPage extends InteractiveCustomUIPage<BoardPage.Event> {
                     }
                 }
             }
-            cmd.set("#Detail" + n + ".Text", detail);
+            cmd.set("#Detail" + n + ".TextSpans", detail);
             cmd.set("#Action" + n + ".Visible", action != null);
             if (action != null) {
                 cmd.set("#Action" + n + ".Text", action);
                 events.addEventBinding(CustomUIEventBindingType.Activating, "#Action" + n, EventData.of("Action", event));
             }
         }
-        cmd.set("#StateText.Text", VillageBoard.body(world, village, store, ref));
+        cmd.set("#StateText.TextSpans", VillageBoard.body(world, village, store, ref));
         cmd.set("#TurnIn.Text", Message.translation(KEYS + "turnIn"));
         events.addEventBinding(CustomUIEventBindingType.Activating, "#TurnIn", EventData.of("Action", "TurnIn"));
         cmd.set("#TextVersion.Text", Message.translation(KEYS + "textVersion"));

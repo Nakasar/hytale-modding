@@ -50,13 +50,15 @@ public final class DialoguePage extends InteractiveCustomUIPage<DialoguePage.Eve
         this.node = start;
     }
 
+    // Libellés en « .TextSpans » (message composé ou vide sur « .Text » : plantage du client), boutons en « .Text »
+    // avec une traduction, comme les pages vanilla (voir BoardPage).
     @Override
     public void build(Ref<EntityStore> ref, UICommandBuilder cmd, UIEventBuilder events, Store<EntityStore> store) {
         cmd.append(LAYOUT);
         World world = store.getExternalData().getWorld();
         DialogueContext context = DialogueContext.of(world, store, ref, playerRef);
-        cmd.set("#NpcName.Text", Dialogues.header(dialogue, context));
-        cmd.set("#Line.Text", Message.translation(node.textKey()));
+        cmd.set("#NpcName.TextSpans", Dialogues.header(dialogue, context));
+        cmd.set("#Line.TextSpans", Message.translation(node.textKey()));
         DialogueResponse[] responses = node.responses();
         for (int i = 0; i < Dialogue.MAX_RESPONSES; i++) {
             DialogueResponse r = i < responses.length ? responses[i] : null;
@@ -73,9 +75,9 @@ public final class DialoguePage extends InteractiveCustomUIPage<DialoguePage.Eve
                     .param("text", Message.translation(r.textKey()));
             cmd.set(answer + ".Text", text);
             if (r.available(context)) {
-                cmd.set(hint + ".Text", r.hintKey() == null ? Message.empty() : Message.translation(r.hintKey()));
+                cmd.set(hint + ".TextSpans", r.hintKey() == null ? Message.raw("") : Message.translation(r.hintKey()));
             } else {
-                cmd.set(hint + ".Text", Message.translation(Dialogues.KEYS + "pageLocked").param("condition", Dialogues.failText(r)));
+                cmd.set(hint + ".TextSpans", Message.translation(Dialogues.KEYS + "pageLocked").param("condition", Dialogues.failText(r)));
             }
             events.addEventBinding(CustomUIEventBindingType.Activating, answer, EventData.of("Action", Integer.toString(i)));
         }
