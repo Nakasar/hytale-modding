@@ -2,7 +2,7 @@ Group {
   LayoutMode: Center;
 
   Group #Panel {
-    Anchor: (Width: 760, Height: 470);
+    Anchor: (Width: 760, Height: 520);
     Padding: (Full: 24);
     LayoutMode: Top;
 
@@ -14,6 +14,11 @@ Group {
     Label #Line {
       Anchor: (Height: 110, Bottom: 18);
       Style: (FontSize: 18, TextColor: #f2ead8, Wrap: true);
+    }
+
+    Label #Aside {
+      Anchor: (Height: 44, Bottom: 6);
+      Style: (FontSize: 15, TextColor: #c9b98f, Wrap: true);
     }
 
     TextButton #Answer0 {

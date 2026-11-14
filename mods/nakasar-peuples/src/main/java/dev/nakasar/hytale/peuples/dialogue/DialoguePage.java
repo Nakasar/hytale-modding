@@ -42,11 +42,13 @@ public final class DialoguePage extends InteractiveCustomUIPage<DialoguePage.Eve
     }
 
     private final Dialogue dialogue;
+    private final DialogueNode start;
     private DialogueNode node;
 
     public DialoguePage(PlayerRef playerRef, Dialogue dialogue, DialogueNode start) {
         super(playerRef, CustomPageLifetime.CanDismiss, Event.CODEC);
         this.dialogue = dialogue;
+        this.start = start;
         this.node = start;
     }
 
@@ -59,6 +61,10 @@ public final class DialoguePage extends InteractiveCustomUIPage<DialoguePage.Eve
         DialogueContext context = DialogueContext.of(world, store, ref, playerRef);
         cmd.set("#NpcName.TextSpans", Dialogues.header(dialogue, context));
         cmd.set("#Line.TextSpans", Message.translation(node.textKey()));
+        // À l'ouverture, le PNJ parle des PNJ du village tués aujourd'hui (ils reviennent au matin).
+        Message aside = node == start ? dev.nakasar.hytale.peuples.village.Absences.aside(dialogue, context) : null;
+        cmd.set("#Aside.Visible", aside != null);
+        cmd.set("#Aside.TextSpans", aside == null ? Message.raw("") : aside);
         DialogueResponse[] responses = node.responses();
         for (int i = 0; i < Dialogue.MAX_RESPONSES; i++) {
             DialogueResponse r = i < responses.length ? responses[i] : null;

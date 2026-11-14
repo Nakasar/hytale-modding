@@ -66,6 +66,8 @@ public final class Villagers {
     private static final Map<Key, Ref<EntityStore>> BY_SLOT = new HashMap<>();
     private static final Map<Ref<EntityStore>, Posted> POSTED = Collections.synchronizedMap(new IdentityHashMap<>());
     private static final Map<Key, Long> DEATHS = new HashMap<>();
+    /** Dialogue du dernier villageois mort à chaque poste (son nom et son métier, pour le tableau et les autres PNJ). */
+    private static final Map<Key, String> DEAD_DIALOGUE = new HashMap<>();
     private static final Map<Ref<EntityStore>, Float> STUCK = new IdentityHashMap<>();
     /** Hauteur du sol des postes (x, z) déjà sondée. */
     private static final Map<Long, Integer> GROUND = new HashMap<>();
@@ -267,7 +269,34 @@ public final class Villagers {
             BY_SLOT.remove(key);
             STUCK.remove(ref);
             DEATHS.put(key, GameClock.day(store));
+            DEAD_DIALOGUE.put(key, p.dialogue());
         }
+    }
+
+    /**
+     * Dialogues des villageois du village tués aujourd'hui dont le métier est toujours ouvert : ils reviendront au matin.
+     * Les aides du chantier ne reviennent qu'au prochain chantier : ils n'y sont pas.
+     */
+    public static synchronized List<String> absent(Store<EntityStore> store, Village village) {
+        List<String> out = new ArrayList<>();
+        VillageLayout layout = Chantiers.layout(village);
+        if (layout == null) {
+            return out;
+        }
+        long day = GameClock.day(store);
+        for (VillageLayout.Job job : layout.jobs()) {
+            if (job.tier() > village.tier() || (!job.building().isEmpty() && !village.isStanding(job.building()))) {
+                continue;
+            }
+            Key key = new Key(village.id(), job.id());
+            Long death = DEATHS.get(key);
+            String dialogue = DEAD_DIALOGUE.get(key);
+            Ref<EntityStore> ref = BY_SLOT.get(key);
+            if (death != null && death >= day && death != Long.MAX_VALUE - 1 && dialogue != null && (ref == null || !ref.isValid())) {
+                out.add(dialogue);
+            }
+        }
+        return out;
     }
 
     /** Villageois présents et métiers ouverts du village : {présents, ouverts}. */
@@ -334,6 +363,7 @@ public final class Villagers {
         BY_SLOT.clear();
         POSTED.clear();
         DEATHS.clear();
+        DEAD_DIALOGUE.clear();
         STUCK.clear();
         GROUND.clear();
     }

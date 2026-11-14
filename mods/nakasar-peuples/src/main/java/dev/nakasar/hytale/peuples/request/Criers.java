@@ -16,7 +16,9 @@ import org.joml.Vector3d;
 
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.ArrayList;
 import java.util.IdentityHashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -45,6 +47,15 @@ public final class Criers {
                 case CRIER -> village.people().crierRole();
                 case MERCHANT -> village.people().merchantRole();
                 case CHIEF -> village.people().chiefRole();
+            };
+        }
+
+        /** Son dialogue, qui donne aussi son nom et son métier. */
+        public String dialogue(Village village) {
+            return switch (this) {
+                case CRIER -> village.people().crierDialogue();
+                case MERCHANT -> village.people().merchantDialogue();
+                case CHIEF -> village.people().chiefDialogue();
             };
         }
 
@@ -153,6 +164,19 @@ public final class Criers {
             BY_VILLAGE.remove(key);
             DEATHS.put(key, GameClock.day(store));
         }
+    }
+
+    /** Dialogues des villageois à poste fixe du village tués aujourd'hui : ils reviendront au matin. */
+    public static synchronized List<String> absent(Store<EntityStore> store, Village village) {
+        List<String> out = new ArrayList<>();
+        long day = GameClock.day(store);
+        for (Post post : Post.values()) {
+            Long death = DEATHS.get(new Key(village.id(), post));
+            if (death != null && death >= day && death != Long.MAX_VALUE - 1) {
+                out.add(post.dialogue(village));
+            }
+        }
+        return out;
     }
 
     /** Retire les villageois du village (village effacé). */

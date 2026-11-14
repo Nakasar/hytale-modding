@@ -78,6 +78,8 @@ public final class VillageBoard {
         if (people[1] > 0) {
             lines.add(Message.translation(KEYS + "villagers").param("here", people[0]).param("total", people[1]));
         }
+        // PNJ tués aujourd'hui : ils reviennent au matin.
+        lines.addAll(Absences.boardLines(store == null ? world.getEntityStore().getStore() : store, village));
         // Étape 6 : alerte de raid et bilan du dernier (GDD, maquette du tableau).
         Store<EntityStore> raidStore = store == null ? world.getEntityStore().getStore() : store;
         lines.add(dev.nakasar.hytale.peuples.raid.Raids.status(raidStore, village));
