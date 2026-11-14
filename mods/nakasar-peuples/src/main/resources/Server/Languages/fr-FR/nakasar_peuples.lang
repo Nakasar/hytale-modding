@@ -1049,3 +1049,14 @@ klops.routeNone = Le Klops errant n'a aucun village où passer.
 command.klops.desc = Où est le Klops errant, et ton colis
 command.warPaint.desc = Donne la Peinture de guerre (test)
 command.generate.people = Peuple (kweebec par défaut, trork, feran ou renonce)
+
+# PNJ tués : ils reviennent au matin (tableau et répliques des autres PNJ, village/Absences)
+absent.board = Absents, de retour à {morning} h (dans {hours} h) :
+absent.boardLine = • {who}
+absent.and = {a} et {b}
+absent.comma = {a}, {b}
+absent.others = {a}, {b} et {count} autres
+absent.voice.Kweebec = « La forêt pleure {who}… mais elle nous rend toujours les nôtres au matin. »
+absent.voice.Trork = « {who} a mordu la poussière. Bah ! Au matin, ça se relève toujours. »
+absent.voice.Feran = « Le sable a pris {who} pour la nuit. Le vent nous rend les nôtres à l'aube. »
+absent.voice.Renonce = « Plus de {who} pour aujourd'hui. Le froid nous rend les nôtres au matin. »

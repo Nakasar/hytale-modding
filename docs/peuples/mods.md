@@ -774,3 +774,18 @@ camelote au rang Toléré, les armes trorks vanilla au rang Ami, l'armure trork 
 
 Page à part : [zones-2-3.md](zones-2-3.md). Elle couvre les deux nouveaux peuples, la soif, le froid, la ruche
 scarak, la pose automatique des villages dans leur zone, les nouvelles commandes et les tests en jeu.
+
+## PNJ tués : retour au matin (`village/Absences`)
+
+Un PNJ du village tué (crieur, marchand, chef, ou villageois d'un métier ouvert) revient au matin suivant, à 6 h de jeu,
+quand un joueur passe près du village. Pour que les joueurs le sachent :
+- le tableau du village (page à boutons et version texte) liste les absents sous « Absents, de retour à 6 h (dans N h) »,
+  avec leur nom et leur métier ;
+- en ouvrant leur dialogue, les autres PNJ du village en parlent dans la voix de leur peuple (ligne `#Aside` de la
+  fenêtre de dialogue, ou une ligne du tchat). Au-delà de trois absents, la réplique dit « A, B et N autres ».
+
+Les aides du chantier ne sont pas listées : ils ne reviennent qu'au prochain chantier. Un métier fermé (bâtiment brûlé)
+non plus.
+
+Tester en jeu : tuer le crieur, ouvrir le tableau puis parler au marchand ; dormir jusqu'au matin : le crieur revient et
+la ligne disparaît.

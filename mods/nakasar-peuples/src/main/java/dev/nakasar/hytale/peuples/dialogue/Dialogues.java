@@ -90,6 +90,10 @@ public final class Dialogues {
         }
         CHAT.put(playerRef.getUuid(), new ChatSession(dialogue.getId(), start.id()));
         printNode(dialogue, start, context);
+        Message aside = dev.nakasar.hytale.peuples.village.Absences.aside(dialogue, context);
+        if (aside != null) {
+            playerRef.sendMessage(aside.color("#c9b98f"));
+        }
     }
 
     /** Réponse `number` (1 à 4, 0 : partir) au dialogue en cours dans le tchat. */

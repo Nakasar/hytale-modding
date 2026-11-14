@@ -1049,3 +1049,14 @@ klops.routeNone = The wandering Klops has no village to visit.
 command.klops.desc = Where the wandering Klops is, and your parcel
 command.warPaint.desc = Gives the War paint (test)
 command.generate.people = People (kweebec by default, trork, feran or renonce)
+
+# Killed NPCs come back in the morning (board and other NPCs' lines, village/Absences)
+absent.board = Away, back at {morning}:00 (in {hours} h):
+absent.boardLine = • {who}
+absent.and = {a} and {b}
+absent.comma = {a}, {b}
+absent.others = {a}, {b} and {count} others
+absent.voice.Kweebec = "The forest mourns {who}… but it always gives our own back by morning."
+absent.voice.Trork = "{who} bit the dust. Bah! Come morning, they always get back up."
+absent.voice.Feran = "The sand took {who} for the night. The wind gives our own back at dawn."
+absent.voice.Renonce = "No more {who} today. The cold gives our own back by morning."
