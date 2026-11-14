@@ -769,3 +769,8 @@ camelote au rang Toléré, les armes trorks vanilla au rang Ami, l'armure trork 
 - La teinte de la Peinture de guerre (EntityTopTint/BottomTint sur un joueur) et son icône (potion vanilla).
 - L'allure en main de la Dent de trophée, du Rouage klops (tas de ferraille) et du colis (rouleau de lin).
 - Que le Klops répond (rôle Generic interactif) et que l'effet `KlopsParcel` donne bien le colis.
+
+## Étape 8 : les Feran (zone 2) et les Renoncés (zone 3)
+
+Page à part : [zones-2-3.md](zones-2-3.md). Elle couvre les deux nouveaux peuples, la soif, le froid, la ruche
+scarak, la pose automatique des villages dans leur zone, les nouvelles commandes et les tests en jeu.

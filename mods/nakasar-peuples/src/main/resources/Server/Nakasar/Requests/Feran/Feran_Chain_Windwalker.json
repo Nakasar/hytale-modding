@@ -1,0 +1,19 @@
+{
+  "$Comment": "Étape 4 de la chaîne Feran (étape 8), générée par tools/generate_zones.py : donnée par le chef (StartChainRequest), jamais tirée au tableau (Weight 0). Remplie, elle pose Feran_Chain_4.",
+  "People": "Feran",
+  "Type": "Escort",
+  "Weight": 0,
+  "TitleKey": "nakasar_peuples.request.Feran_Chain_Windwalker.title",
+  "TaskKey": "nakasar_peuples.request.Feran_Chain_Windwalker.task",
+  "Spawns": [
+    "Scarak_Fighter",
+    "Scarak_Fighter",
+    "Scarak_Defender"
+  ],
+  "MinDistance": 110,
+  "MaxDistance": 170,
+  "Essor": 0,
+  "Favors": 6,
+  "Reputation": 200,
+  "Flag": "Feran_Chain_4"
+}

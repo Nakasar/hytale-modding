@@ -1,0 +1,6 @@
+{
+  "$Comment": "Les PNJ du mod du peuple Feran (étape 8).",
+  "IncludeRoles": [
+    "Nakasar_Peuples_Feran*"
+  ]
+}

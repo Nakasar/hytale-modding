@@ -1,0 +1,29 @@
+{
+  "$Comment": "Trophée scarak : donné au bilan d'un raid gagné sur un village feran (étape 8). Chitine vanilla.",
+  "TranslationProperties": {
+    "Name": "nakasar_peuples.items.Nakasar_Peuples_Trophy_Scarak.name",
+    "Description": "nakasar_peuples.items.Nakasar_Peuples_Trophy_Scarak.description"
+  },
+  "Icon": "Icons/ItemsGenerated/Ingredient_Chitin_Sturdy.png",
+  "Categories": [
+    "Items.Ingredients"
+  ],
+  "Model": "Resources/Materials/Chitin_Sturdy.blockymodel",
+  "Texture": "Resources/Materials/Chitin_Sturdy_Texture.png",
+  "PlayerAnimationsId": "Item",
+  "Quality": "Rare",
+  "MaxStack": 25,
+  "IconProperties": {
+    "Scale": 0.6,
+    "Rotation": [
+      22.5,
+      45,
+      22.5
+    ],
+    "Translation": [
+      -4,
+      1
+    ]
+  },
+  "ItemSoundSetId": "ISS_Items_Bones"
+}

@@ -1,0 +1,18 @@
+{
+  "$Comment": "Demande du tableau d'un village Feran (étape 8), générée par tools/generate_zones.py.",
+  "People": "Feran",
+  "Type": "Escort",
+  "MinTier": 0,
+  "MaxTier": 3,
+  "Weight": 1,
+  "TitleKey": "nakasar_peuples.request.Feran_Escort_Scout.title",
+  "TaskKey": "nakasar_peuples.request.Feran_Escort_Scout.task",
+  "Spawns": [
+    "Scarak_Fighter",
+    "Scarak_Fighter"
+  ],
+  "MinDistance": 80,
+  "MaxDistance": 140,
+  "Essor": 20,
+  "Favors": 3
+}

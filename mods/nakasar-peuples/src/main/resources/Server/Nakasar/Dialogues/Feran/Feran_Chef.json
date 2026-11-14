@@ -1,0 +1,531 @@
+{
+  "$Comment": "Le chef d'un village Feran (étape 8), généré par tools/generate_zones.py : la chaîne du peuple (GDD, La chaîne de chaque peuple), une étape par rang. Raid en cours → « Aux armes ! », puis l'étape en cours ou la suivante ; une étape au-dessus du rang du joueur reste visible, grisée.",
+  "NpcNameKey": "nakasar_peuples.dialogue.Feran_Chef.npc",
+  "RoleKey": "nakasar_peuples.dialogue.Feran_Chef.role",
+  "People": "Feran",
+  "Entries": [
+    {
+      "Node": "AuxArmes",
+      "Conditions": [
+        {
+          "Type": "Raid",
+          "State": "Active"
+        }
+      ]
+    },
+    {
+      "Node": "Honni",
+      "Conditions": [
+        {
+          "Type": "Rank",
+          "Max": "Honni"
+        }
+      ]
+    },
+    {
+      "Node": "Etranger",
+      "Conditions": [
+        {
+          "Type": "Rank",
+          "Max": "Etranger"
+        }
+      ]
+    },
+    {
+      "Node": "Fin",
+      "Conditions": [
+        {
+          "Type": "Flag",
+          "Flag": "Feran_Reward"
+        }
+      ]
+    },
+    {
+      "Node": "Recompense",
+      "Conditions": [
+        {
+          "Type": "Flag",
+          "Flag": "Feran_Chain_5"
+        }
+      ]
+    },
+    {
+      "Node": "Etape5EnCours",
+      "Conditions": [
+        {
+          "Type": "ChainRequest",
+          "Template": "Feran_Chain_Broodmother"
+        }
+      ]
+    },
+    {
+      "Node": "Etape5",
+      "Conditions": [
+        {
+          "Type": "Flag",
+          "Flag": "Feran_Chain_4"
+        }
+      ]
+    },
+    {
+      "Node": "Etape4EnCours",
+      "Conditions": [
+        {
+          "Type": "ChainRequest",
+          "Template": "Feran_Chain_Windwalker"
+        }
+      ]
+    },
+    {
+      "Node": "Etape4",
+      "Conditions": [
+        {
+          "Type": "Flag",
+          "Flag": "Feran_Chain_3"
+        }
+      ]
+    },
+    {
+      "Node": "Etape3EnCours",
+      "Conditions": [
+        {
+          "Type": "ChainRequest",
+          "Template": "Feran_Chain_Hive"
+        }
+      ]
+    },
+    {
+      "Node": "Etape3",
+      "Conditions": [
+        {
+          "Type": "Flag",
+          "Flag": "Feran_Chain_2"
+        }
+      ]
+    },
+    {
+      "Node": "Etape2EnCours",
+      "Conditions": [
+        {
+          "Type": "ChainRequest",
+          "Template": "Feran_Chain_Totems"
+        }
+      ]
+    },
+    {
+      "Node": "Etape2",
+      "Conditions": [
+        {
+          "Type": "Flag",
+          "Flag": "Feran_Chain_1"
+        }
+      ]
+    },
+    {
+      "Node": "Etape1"
+    }
+  ],
+  "Nodes": [
+    {
+      "Id": "AuxArmes",
+      "TextKey": "nakasar_peuples.dialogue.Feran_Chef.auxArmes",
+      "Responses": [
+        {
+          "TextKey": "nakasar_peuples.dialogue.Feran_Chef.nouvelles",
+          "Effects": [
+            {
+              "Type": "RaidStatus"
+            }
+          ],
+          "Next": "Nouvelles"
+        },
+        {
+          "TextKey": "nakasar_peuples.dialogue.Feran_Chef.aurevoir"
+        }
+      ]
+    },
+    {
+      "Id": "Honni",
+      "TextKey": "nakasar_peuples.dialogue.Feran_Chef.honni",
+      "Responses": [
+        {
+          "TextKey": "nakasar_peuples.dialogue.Feran_Chef.aurevoir"
+        }
+      ]
+    },
+    {
+      "Id": "Etranger",
+      "TextKey": "nakasar_peuples.dialogue.Feran_Chef.etranger",
+      "Responses": [
+        {
+          "TextKey": "nakasar_peuples.dialogue.Feran_Chef.commentAider",
+          "Next": "Conseil"
+        },
+        {
+          "TextKey": "nakasar_peuples.dialogue.Feran_Chef.aurevoir"
+        }
+      ]
+    },
+    {
+      "Id": "Conseil",
+      "TextKey": "nakasar_peuples.dialogue.Feran_Chef.conseil",
+      "Responses": [
+        {
+          "TextKey": "nakasar_peuples.dialogue.Feran_Chef.voirDemandes",
+          "HintKey": "nakasar_peuples.dialogue.hint.openRequests",
+          "Conditions": [
+            {
+              "Type": "InVillage",
+              "People": "Feran"
+            }
+          ],
+          "FailKey": "nakasar_peuples.dialogue.fail.inVillage",
+          "Effects": [
+            {
+              "Type": "OpenRequests"
+            }
+          ]
+        },
+        {
+          "TextKey": "nakasar_peuples.dialogue.Feran_Chef.aurevoir"
+        }
+      ]
+    },
+    {
+      "Id": "Accepte",
+      "TextKey": "nakasar_peuples.dialogue.Feran_Chef.accepte",
+      "Responses": [
+        {
+          "TextKey": "nakasar_peuples.dialogue.Feran_Chef.aurevoir"
+        }
+      ]
+    },
+    {
+      "Id": "Nouvelles",
+      "TextKey": "nakasar_peuples.dialogue.Feran_Chef.nouvellesTexte",
+      "Responses": [
+        {
+          "TextKey": "nakasar_peuples.dialogue.Feran_Chef.aurevoir"
+        }
+      ]
+    },
+    {
+      "Id": "Etape5",
+      "TextKey": "nakasar_peuples.dialogue.Feran_Chef.etape5",
+      "Responses": [
+        {
+          "TextKey": "nakasar_peuples.dialogue.Feran_Chef.accepter",
+          "HintKey": "nakasar_peuples.dialogue.hint.chain",
+          "Conditions": [
+            {
+              "Type": "Rank",
+              "Min": "Champion"
+            }
+          ],
+          "FailKey": "nakasar_peuples.dialogue.fail.rank.Champion.Feran",
+          "Effects": [
+            {
+              "Type": "StartChainRequest",
+              "Template": "Feran_Chain_Broodmother"
+            }
+          ],
+          "Next": "Accepte"
+        },
+        {
+          "TextKey": "nakasar_peuples.dialogue.Feran_Chef.nouvelles",
+          "Effects": [
+            {
+              "Type": "RaidStatus"
+            }
+          ],
+          "Next": "Nouvelles"
+        },
+        {
+          "TextKey": "nakasar_peuples.dialogue.Feran_Chef.aurevoir"
+        }
+      ]
+    },
+    {
+      "Id": "Etape5EnCours",
+      "TextKey": "nakasar_peuples.dialogue.Feran_Chef.etape5EnCours",
+      "Responses": [
+        {
+          "TextKey": "nakasar_peuples.dialogue.Feran_Chef.nouvelles",
+          "Effects": [
+            {
+              "Type": "RaidStatus"
+            }
+          ],
+          "Next": "Nouvelles"
+        },
+        {
+          "TextKey": "nakasar_peuples.dialogue.Feran_Chef.aurevoir"
+        }
+      ]
+    },
+    {
+      "Id": "Recompense",
+      "TextKey": "nakasar_peuples.dialogue.Feran_Chef.recompense",
+      "Responses": [
+        {
+          "TextKey": "nakasar_peuples.dialogue.Feran_Chef.recevoir",
+          "HintKey": "nakasar_peuples.dialogue.hint.reward.Feran",
+          "Effects": [
+            {
+              "Type": "GiveItem",
+              "ItemId": "Nakasar_Peuples_Wind_Bracelet",
+              "Quantity": 1
+            },
+            {
+              "Type": "SetFlag",
+              "Flag": "Feran_Reward"
+            }
+          ],
+          "Next": "Fin"
+        },
+        {
+          "TextKey": "nakasar_peuples.dialogue.Feran_Chef.nouvelles",
+          "Effects": [
+            {
+              "Type": "RaidStatus"
+            }
+          ],
+          "Next": "Nouvelles"
+        },
+        {
+          "TextKey": "nakasar_peuples.dialogue.Feran_Chef.aurevoir"
+        }
+      ]
+    },
+    {
+      "Id": "Fin",
+      "TextKey": "nakasar_peuples.dialogue.Feran_Chef.fin",
+      "Responses": [
+        {
+          "TextKey": "nakasar_peuples.dialogue.Feran_Chef.nouvelles",
+          "Effects": [
+            {
+              "Type": "RaidStatus"
+            }
+          ],
+          "Next": "Nouvelles"
+        },
+        {
+          "TextKey": "nakasar_peuples.dialogue.Feran_Chef.aurevoir"
+        }
+      ]
+    },
+    {
+      "Id": "Etape4",
+      "TextKey": "nakasar_peuples.dialogue.Feran_Chef.etape4",
+      "Responses": [
+        {
+          "TextKey": "nakasar_peuples.dialogue.Feran_Chef.accepter",
+          "HintKey": "nakasar_peuples.dialogue.hint.chain",
+          "Conditions": [
+            {
+              "Type": "Rank",
+              "Min": "Hote"
+            }
+          ],
+          "FailKey": "nakasar_peuples.dialogue.fail.rank.Hote.Feran",
+          "Effects": [
+            {
+              "Type": "StartChainRequest",
+              "Template": "Feran_Chain_Windwalker"
+            }
+          ],
+          "Next": "Accepte"
+        },
+        {
+          "TextKey": "nakasar_peuples.dialogue.Feran_Chef.nouvelles",
+          "Effects": [
+            {
+              "Type": "RaidStatus"
+            }
+          ],
+          "Next": "Nouvelles"
+        },
+        {
+          "TextKey": "nakasar_peuples.dialogue.Feran_Chef.aurevoir"
+        }
+      ]
+    },
+    {
+      "Id": "Etape4EnCours",
+      "TextKey": "nakasar_peuples.dialogue.Feran_Chef.etape4EnCours",
+      "Responses": [
+        {
+          "TextKey": "nakasar_peuples.dialogue.Feran_Chef.nouvelles",
+          "Effects": [
+            {
+              "Type": "RaidStatus"
+            }
+          ],
+          "Next": "Nouvelles"
+        },
+        {
+          "TextKey": "nakasar_peuples.dialogue.Feran_Chef.aurevoir"
+        }
+      ]
+    },
+    {
+      "Id": "Etape3",
+      "TextKey": "nakasar_peuples.dialogue.Feran_Chef.etape3",
+      "Responses": [
+        {
+          "TextKey": "nakasar_peuples.dialogue.Feran_Chef.accepter",
+          "HintKey": "nakasar_peuples.dialogue.hint.chain",
+          "Conditions": [
+            {
+              "Type": "Rank",
+              "Min": "Ami"
+            }
+          ],
+          "FailKey": "nakasar_peuples.dialogue.fail.rank.Ami.Feran",
+          "Effects": [
+            {
+              "Type": "StartChainRequest",
+              "Template": "Feran_Chain_Hive"
+            }
+          ],
+          "Next": "Accepte"
+        },
+        {
+          "TextKey": "nakasar_peuples.dialogue.Feran_Chef.nouvelles",
+          "Effects": [
+            {
+              "Type": "RaidStatus"
+            }
+          ],
+          "Next": "Nouvelles"
+        },
+        {
+          "TextKey": "nakasar_peuples.dialogue.Feran_Chef.aurevoir"
+        }
+      ]
+    },
+    {
+      "Id": "Etape3EnCours",
+      "TextKey": "nakasar_peuples.dialogue.Feran_Chef.etape3EnCours",
+      "Responses": [
+        {
+          "TextKey": "nakasar_peuples.dialogue.Feran_Chef.nouvelles",
+          "Effects": [
+            {
+              "Type": "RaidStatus"
+            }
+          ],
+          "Next": "Nouvelles"
+        },
+        {
+          "TextKey": "nakasar_peuples.dialogue.Feran_Chef.aurevoir"
+        }
+      ]
+    },
+    {
+      "Id": "Etape2",
+      "TextKey": "nakasar_peuples.dialogue.Feran_Chef.etape2",
+      "Responses": [
+        {
+          "TextKey": "nakasar_peuples.dialogue.Feran_Chef.accepter",
+          "HintKey": "nakasar_peuples.dialogue.hint.chain",
+          "Conditions": [
+            {
+              "Type": "Rank",
+              "Min": "Ami"
+            }
+          ],
+          "FailKey": "nakasar_peuples.dialogue.fail.rank.Ami.Feran",
+          "Effects": [
+            {
+              "Type": "StartChainRequest",
+              "Template": "Feran_Chain_Totems"
+            }
+          ],
+          "Next": "Accepte"
+        },
+        {
+          "TextKey": "nakasar_peuples.dialogue.Feran_Chef.nouvelles",
+          "Effects": [
+            {
+              "Type": "RaidStatus"
+            }
+          ],
+          "Next": "Nouvelles"
+        },
+        {
+          "TextKey": "nakasar_peuples.dialogue.Feran_Chef.aurevoir"
+        }
+      ]
+    },
+    {
+      "Id": "Etape2EnCours",
+      "TextKey": "nakasar_peuples.dialogue.Feran_Chef.etape2EnCours",
+      "Responses": [
+        {
+          "TextKey": "nakasar_peuples.dialogue.Feran_Chef.nouvelles",
+          "Effects": [
+            {
+              "Type": "RaidStatus"
+            }
+          ],
+          "Next": "Nouvelles"
+        },
+        {
+          "TextKey": "nakasar_peuples.dialogue.Feran_Chef.aurevoir"
+        }
+      ]
+    },
+    {
+      "Id": "Etape1",
+      "TextKey": "nakasar_peuples.dialogue.Feran_Chef.etape1",
+      "Responses": [
+        {
+          "TextKey": "nakasar_peuples.dialogue.Feran_Chef.donner",
+          "HintKey": "nakasar_peuples.dialogue.hint.chainGive.Feran",
+          "Conditions": [
+            {
+              "Type": "Rank",
+              "Min": "Tolere"
+            },
+            {
+              "Type": "HasItem",
+              "ItemId": "Ingredient_Water_Essence",
+              "Quantity": 8
+            }
+          ],
+          "FailKey": "nakasar_peuples.dialogue.Feran_Chef.failDonner",
+          "Effects": [
+            {
+              "Type": "TakeItem",
+              "ItemId": "Ingredient_Water_Essence",
+              "Quantity": 8
+            },
+            {
+              "Type": "AddReputation",
+              "Amount": 80
+            },
+            {
+              "Type": "SetFlag",
+              "Flag": "Feran_Chain_1"
+            }
+          ],
+          "Next": "Etape2"
+        },
+        {
+          "TextKey": "nakasar_peuples.dialogue.Feran_Chef.nouvelles",
+          "Effects": [
+            {
+              "Type": "RaidStatus"
+            }
+          ],
+          "Next": "Nouvelles"
+        },
+        {
+          "TextKey": "nakasar_peuples.dialogue.Feran_Chef.aurevoir"
+        }
+      ]
+    }
+  ]
+}

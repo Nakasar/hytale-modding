@@ -71,8 +71,8 @@ import java.util.List;
 public final class VillageCommand extends AbstractCommandCollection {
 
     public static final String ADMIN = "nakasar.peuples.admin";
-    private static final String KEYS = "nakasar_peuples.command.";
-    private static final String PLAYERS = "hytale:Adventurer";
+    static final String KEYS = "nakasar_peuples.command.";
+    static final String PLAYERS = "hytale:Adventurer";
 
     public VillageCommand() {
         super("village", KEYS + "desc");
@@ -116,6 +116,7 @@ public final class VillageCommand extends AbstractCommandCollection {
         addSubCommand(new ChainStepCommand());
         addSubCommand(new ZoneOneCommands.KlopsCommand());
         addSubCommand(new ZoneOneCommands.WarPaintCommand());
+        ZoneCommands.all().forEach(this::addSubCommand);
     }
 
     /** Sous-commande ouverte aux joueurs. */

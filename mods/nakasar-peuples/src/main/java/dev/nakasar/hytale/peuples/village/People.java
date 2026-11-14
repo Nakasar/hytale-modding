@@ -25,7 +25,13 @@ public enum People {
      * panneau grossiers vanilla, bannière de crânes. Un joueur y commence Honni ({@link #initialReputation()}).
      */
     TRORK("Trork", "Furniture_Crude_Chest_Small", "Nakasar_Peuples_Board_Trork", "Nakasar_Peuples_Banner_Trork",
-            "Trork_Camp");
+            "Trork_Camp"),
+    // Étape 8 : les Feran de la zone 2 (oasis du désert) et les Outlanders renoncés de la zone 3 (id « Renonce » : un
+    // rôle dont le nom contient « Outlander » tomberait dans le groupe vanilla Outlander, celui du culte).
+    FERAN("Feran", "Furniture_Feran_Chest_Small", "Nakasar_Peuples_Board_Feran", "Nakasar_Peuples_Banner_Feran",
+            "Feran_Oasis"),
+    RENONCE("Renonce", "Furniture_Lumberjack_Chest_Small", "Nakasar_Peuples_Board_Renonce", "Nakasar_Peuples_Banner_Renonce",
+            "Renonce_Givre");
 
     /** Préfixe des objets et rôles propres à chaque peuple : {@code Nakasar_Peuples_<Quoi>_<Peuple>}. */
     private static final String PREFIX = "Nakasar_Peuples_";
@@ -142,6 +148,15 @@ public enum People {
         };
     }
 
+    /** Zone du monde par défaut où vit le peuple (World/Default/Zones.json : Zone1 à Zone4). Étape 8. */
+    public int zone() {
+        return switch (this) {
+            case FERAN -> 2;
+            case RENONCE -> 3;
+            default -> 1;
+        };
+    }
+
     /**
      * Peuple rival (étape 7, réputations croisées : GDD, Progression des zones) : aider l'un coûte auprès de l'autre, ou
      * null. Zone 1 : Kweebecs et Trorks.
@@ -151,6 +166,52 @@ public enum People {
             case KWEEBEC -> TRORK;
             case TRORK -> KWEEBEC;
             default -> null;
+        };
+    }
+
+    /**
+     * Sol posé sous les bâtiments et au fondu des emprises (VillageBuilder, chantiers) : herbe pour les Kweebecs, sable
+     * pour les Feran, neige pour les Renoncés. Étape 8.
+     */
+    public String ground() {
+        return switch (this) {
+            case FERAN -> "Soil_Sand";
+            case RENONCE -> "Soil_Snow";
+            default -> Terrain.GRASS;
+        };
+    }
+
+    /** Sol de la place centrale. Étape 8. */
+    public String plaza() {
+        return switch (this) {
+            case FERAN -> "Soil_Gravel_Sand";
+            case RENONCE -> "Soil_Gravel";
+            default -> Terrain.PATHWAY;
+        };
+    }
+
+    /** Un bloc de surface qui convient au site du village (recherche automatique). Étape 8. */
+    public boolean suitsSite(String block) {
+        if (block == null) {
+            return false;
+        }
+        return switch (this) {
+            case FERAN -> block.startsWith("Soil_Sand");
+            case RENONCE -> block.startsWith("Soil_Snow") || block.startsWith("Soil_Grass_Cold") || block.startsWith("Soil_Dirt_Cold");
+            default -> block.startsWith("Soil_Grass");
+        };
+    }
+
+    /**
+     * Ennemi des raids sur ce peuple : les assaillants s'appellent {@code Nakasar_Peuples_Raider_<Ennemi>_*} et le
+     * trophée du raid gagné {@code Nakasar_Peuples_Trophy_<Ennemi>}. Étape 8 : Scaraks sur les Feran, culte outlander
+     * sur les Renoncés.
+     */
+    public String raidEnemy() {
+        return switch (this) {
+            case FERAN -> "Scarak";
+            case RENONCE -> "Cult";
+            default -> "Trork";
         };
     }
 

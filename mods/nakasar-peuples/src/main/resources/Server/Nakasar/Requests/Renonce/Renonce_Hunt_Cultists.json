@@ -1,0 +1,24 @@
+{
+  "$Comment": "Demande du tableau d'un village Renonce (étape 8), générée par tools/generate_zones.py.",
+  "People": "Renonce",
+  "Type": "Hunt",
+  "MinTier": 0,
+  "MaxTier": 3,
+  "Weight": 1,
+  "TitleKey": "nakasar_peuples.request.Renonce_Hunt_Cultists.title",
+  "TaskKey": "nakasar_peuples.request.Renonce_Hunt_Cultists.task",
+  "Spawns": [
+    "Outlander_Cultist",
+    "Outlander_Cultist",
+    "Outlander_Hunter"
+  ],
+  "Roles": [
+    "Outlander_Cultist",
+    "Outlander_Hunter",
+    "Outlander_Berserker"
+  ],
+  "MinDistance": 90,
+  "MaxDistance": 150,
+  "Essor": 20,
+  "Favors": 3
+}

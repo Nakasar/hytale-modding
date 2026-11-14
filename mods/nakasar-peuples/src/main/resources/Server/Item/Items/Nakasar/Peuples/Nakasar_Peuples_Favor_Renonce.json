@@ -1,0 +1,32 @@
+{
+  "$Comment": "Faveur des Renoncés (étape 8) : payée pour une demande remplie, dépensée aux échoppes.",
+  "TranslationProperties": {
+    "Name": "nakasar_peuples.items.Nakasar_Peuples_Favor_Renonce.name",
+    "Description": "nakasar_peuples.items.Nakasar_Peuples_Favor_Renonce.description"
+  },
+  "Icon": "Icons/ItemsGenerated/Ingredient_Ice_Essence.png",
+  "Categories": [
+    "Items.Ingredients"
+  ],
+  "Model": "Resources/Ingredients/Essence.blockymodel",
+  "Texture": "Resources/Ingredients/Essence_Textures/Ice_Essence_Texture.png",
+  "PlayerAnimationsId": "Item",
+  "Quality": "Uncommon",
+  "IconProperties": {
+    "Scale": 0.6,
+    "Rotation": [
+      0,
+      0,
+      0
+    ],
+    "Translation": [
+      0,
+      -13
+    ]
+  },
+  "ItemEntity": {
+    "ParticleSystemId": null
+  },
+  "ItemSoundSetId": "ISS_Items_Gems",
+  "DropOnDeath": true
+}

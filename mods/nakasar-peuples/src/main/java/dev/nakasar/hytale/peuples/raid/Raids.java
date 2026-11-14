@@ -216,8 +216,63 @@ public final class Raids {
         return "Nakasar_Peuples_" + people.id() + "_Defender";
     }
 
+    /**
+     * Évènement de monde du raid sur ce peuple : {@value #EVENT} pour les Kweebecs, {@code Nakasar_Peuples_Raid_<Peuple>}
+     * pour les autres (étape 8 : titre, compte à rebours et cri propres aux Scaraks et au culte).
+     */
+    public static String event(People people) {
+        return people == People.KWEEBEC ? EVENT : EVENT + "_" + people.id();
+    }
+
+    /** Trophée du raid gagné sur ce peuple (crânes trorks, carapace scarak, masque du culte). */
+    public static String trophy(People people) {
+        return "Nakasar_Peuples_Trophy_" + people.raidEnemy();
+    }
+
+    /**
+     * Clé de texte du raid qui nomme l'ennemi : la clé Kweebec (Trorks) telle quelle, suffixée du peuple pour les autres
+     * ({@code raid.title.wave.Feran}…).
+     */
+    public static String key(People people, String suffix) {
+        return people == People.KWEEBEC ? KEYS + suffix : KEYS + suffix + "." + people.id();
+    }
+
+    /** Rôles des quatre rangs d'assaillants (guerrier, cogneur, brute, chef) contre ce peuple. */
+    static String[] raiders(People people) {
+        return switch (people) {
+            case FERAN -> new String[] {RAIDER_PREFIX + "Scarak_Fighter", RAIDER_PREFIX + "Scarak_Louse",
+                    RAIDER_PREFIX + "Scarak_Defender", RAIDER_PREFIX + "Scarak_Broodmother"};
+            case RENONCE -> new String[] {RAIDER_PREFIX + "Cult_Cultist", RAIDER_PREFIX + "Cult_Berserker",
+                    RAIDER_PREFIX + "Cult_Brute", RAIDER_PREFIX + "Cult_Marauder"};
+            default -> new String[] {WARRIOR, MAULER, BRAWLER, WARLORD};
+        };
+    }
+
+    /**
+     * Vrai si l'assaillant `raider` s'en prend au PNJ `role` : Trorks contre Kweebecs, Scaraks contre Feran, culte contre
+     * Renoncés (étape 8).
+     */
+    public static boolean preys(String raider, String role) {
+        if (raider == null || role == null || !isRaiderRole(raider)) {
+            return false;
+        }
+        String rest = raider.substring(RAIDER_PREFIX.length());
+        if (rest.startsWith("Scarak_")) {
+            return role.contains("Feran");
+        }
+        if (rest.startsWith("Cult_")) {
+            return role.contains("Renonce");
+        }
+        return role.contains("Kweebec");
+    }
+
     /** La vague d'un raid sur un village de ce peuple et de ce palier (5, 7, 9 ou 12 assaillants). */
     public static List<String> wave(People people, int tier) {
+        return wave(people, tier, 0);
+    }
+
+    /** Idem, avec `extra` guerriers de plus (étape 8 : niveau de la ruche scarak sur les Feran). */
+    public static List<String> wave(People people, int tier, int extra) {
         List<String> out = new ArrayList<>();
         int[][] counts = {
                 // guerriers, cogneurs, brutes, chef de guerre
@@ -227,7 +282,10 @@ public final class Raids {
                 {5, 3, 3, 1},
         };
         int[] c = counts[Math.max(0, Math.min(3, tier))];
-        String[] roles = {WARRIOR, MAULER, BRAWLER, WARLORD};
+        String[] roles = raiders(people);
+        for (int n = 0; n < extra; n++) {
+            out.add(roles[0]);
+        }
         for (int i = 0; i < roles.length; i++) {
             for (int n = 0; n < c[i]; n++) {
                 out.add(roles[i]);
@@ -245,14 +303,15 @@ public final class Raids {
         if (a != null) {
             int alive = alive(a.raiders);
             return a.phase == Phase.WARN
-                    ? Message.translation(KEYS + "status.warn").param("seconds", Math.max(0, WARN_SECONDS - (int) a.elapsed))
+                    ? Message.translation(key(village.people(), "status.warn")).param("seconds", Math.max(0, WARN_SECONDS - (int) a.elapsed))
                     : Message.translation(KEYS + "status.fight").param("alive", alive).param("total", a.total)
                     .param("seconds", Math.max(0, FIGHT_SECONDS - (int) a.elapsed));
         }
         RaidRecord r = village.raid();
         if (r.scheduled()) {
             return Message.translation(r.night() <= GameClock.day(store) ? KEYS + "status.tonight" : KEYS + "status.later")
-                    .param("cause", Message.translation(KEYS + "cause." + (r.cause() == null ? "Random" : r.cause())));
+                    .param("cause", Message.translation(r.cause() == null || r.cause().equals("Random")
+                            ? key(village.people(), "cause.Random") : KEYS + "cause." + r.cause()));
         }
         return Message.translation(KEYS + "status.none");
     }
@@ -370,7 +429,9 @@ public final class Raids {
             return;
         }
         Random random = new Random(village.id().hashCode() * 7919L + day);
-        if (random.nextDouble() < CHANCE[Math.max(0, Math.min(3, village.tier()))]) {
+        double chance = CHANCE[Math.max(0, Math.min(3, village.tier()))]
+                + dev.nakasar.hytale.peuples.zone.Hive.extraChance(store.getExternalData().getWorld(), village);
+        if (random.nextDouble() < chance) {
             schedule(village, day, "Random");
         }
     }
@@ -405,10 +466,10 @@ public final class Raids {
         LOCATIONS.put(a.eventId, new Vector3i(camps.get(0)));
         if (WorldEventsWorldConfig.isEnabled(world)) {
             try {
-                EventStartAction.startEvent(store, new WorldEventRecord(a.eventId, EVENT, true));
+                EventStartAction.startEvent(store, new WorldEventRecord(a.eventId, event(village.people()), true));
                 a.eventRunning = true;
             } catch (RuntimeException e) {
-                PeuplesPlugin.get().getLogger().atWarning().log("Peuples : évènement de raid %s non lancé (%s)", EVENT, e.getMessage());
+                PeuplesPlugin.get().getLogger().atWarning().log("Peuples : évènement de raid %s non lancé (%s)", event(village.people()), e.getMessage());
             }
         }
         // Les gardes se postent autour du cœur.
@@ -434,7 +495,7 @@ public final class Raids {
         Message warn = Message.translation(KEYS + "warning").param("village", village.name()).param("direction", direction)
                 .param("seconds", WARN_SECONDS).param("enemy", Message.translation(KEYS + "enemy." + village.people().id()));
         announce(world, store, village, a, warn, Message.translation(KEYS + "title.warning"),
-                Message.translation(KEYS + "title.warningSub").param("direction", direction), NotificationStyle.Danger);
+                Message.translation(key(village.people(), "title.warningSub")).param("direction", direction), NotificationStyle.Danger);
         sound(store, HORN, new Vector3d(village.x() + 0.5, village.y() + 1, village.z() + 0.5));
         PeuplesPlugin.get().getLogger().atInfo().log("Peuples : raid sur %s (palier %d, %d camp(s), %d garde(s), évènement %s)",
                 village.name(), village.tier(), camps.size(), a.defenders.size(), a.eventRunning ? a.eventId : "aucun");
@@ -482,7 +543,8 @@ public final class Raids {
     private static void spawnWave(World world, Store<EntityStore> store, Village village, Active a) {
         Terrain terrain = new Terrain(world);
         ThreadLocalRandom random = ThreadLocalRandom.current();
-        List<String> wave = wave(village.people(), village.tier());
+        List<String> wave = wave(village.people(), village.tier(),
+                dev.nakasar.hytale.peuples.zone.Hive.extraRaiders(world, village));
         Vector3d heart = new Vector3d(village.x() + 0.5, village.y(), village.z() + 0.5);
         for (int i = 0; i < wave.size(); i++) {
             Vector3i camp = a.camps.get(i % a.camps.size());
@@ -505,7 +567,7 @@ public final class Raids {
         Message arrived = Message.translation(KEYS + "arrived").param("village", village.name()).param("count", a.total)
                 .param("enemy", Message.translation(KEYS + "enemy." + village.people().id()));
         // Avec l'évènement de monde, son étape d'arrivée joue le titre et le cri de guerre au camp.
-        announce(world, store, village, a, arrived, a.eventRunning ? null : Message.translation(KEYS + "title.wave"),
+        announce(world, store, village, a, arrived, a.eventRunning ? null : Message.translation(key(village.people(), "title.wave")),
                 Message.translation(KEYS + "title.waveSub").param("count", a.total), NotificationStyle.Danger);
     }
 
@@ -535,7 +597,7 @@ public final class Raids {
             }
             boolean took = a.participants.contains(p.getUuid());
             if (took) {
-                Message report = Message.translation(victory ? KEYS + "report.won" : KEYS + "report.lost." + why)
+                Message report = Message.translation(victory ? KEYS + "report.won" : key(village.people(), "report.lost." + why))
                         .param("village", village.name()).param("killed", killed).param("raiders", a.total)
                         .param("byPlayers", a.byPlayers).param("byGuards", a.byGuards).param("fallen", a.fallen)
                         .param("enemy", enemy).param("rep", REP_WIN).param("essor", ESSOR_WIN).param("favors", FAVORS_WIN)
@@ -548,8 +610,8 @@ public final class Raids {
                     Reputations.change(world, store, ref, p, village, REP_WIN, KEYS + "reputationReason");
                     Requests.give(store, ref, new ItemStack(village.people().favorItem(), FAVORS_WIN));
                     if (a.killers.contains(p.getUuid())) {
-                        Requests.give(store, ref, new ItemStack(TROPHY, 1));
-                        p.sendMessage(Message.translation(KEYS + "trophy").param("item", VillageBoard.itemName(TROPHY)));
+                        Requests.give(store, ref, new ItemStack(trophy(village.people()), 1));
+                        p.sendMessage(Message.translation(KEYS + "trophy").param("item", VillageBoard.itemName(trophy(village.people()))));
                     }
                 }
             }

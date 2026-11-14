@@ -1,0 +1,29 @@
+{
+  "$Comment": "Trophée du culte : donné au bilan d'un raid gagné sur le hameau des Renoncés (étape 8). Crânes vanilla.",
+  "TranslationProperties": {
+    "Name": "nakasar_peuples.items.Nakasar_Peuples_Trophy_Cult.name",
+    "Description": "nakasar_peuples.items.Nakasar_Peuples_Trophy_Cult.description"
+  },
+  "Icon": "Icons/ItemsGenerated/Bone_Skulls.png",
+  "Categories": [
+    "Items.Ingredients"
+  ],
+  "Model": "Blocks/Dungeons/Bone_Skulls.blockymodel",
+  "Texture": "Blocks/Dungeons/Bone_Skulls_Texture.png",
+  "PlayerAnimationsId": "Item",
+  "Quality": "Rare",
+  "MaxStack": 25,
+  "IconProperties": {
+    "Scale": 0.58823,
+    "Translation": [
+      1.8,
+      -9
+    ],
+    "Rotation": [
+      0,
+      293.625,
+      336.375
+    ]
+  },
+  "ItemSoundSetId": "ISS_Items_Bones"
+}

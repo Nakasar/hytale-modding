@@ -1,0 +1,309 @@
+{
+  "$Comment": "Plan de village généré par tools/generate_zones.py (étape 8) (ne pas modifier à la main) : prefabs vanilla collés par village/VillageBuilder autour du cœur, emprises (MinX..MaxZ) relatives au point de collage après rotation.",
+  "People": "Renonce",
+  "Radius": 60,
+  "PlazaRadius": 5,
+  "BannerX": 0,
+  "BannerZ": -4,
+  "Buildings": [
+    {
+      "Id": "Abri_Des_Fuyards",
+      "Tier": 0,
+      "Prefab": "Npc/Outlander/Houses/Tier0/Outlander_Houses_Tier0_001",
+      "X": -14,
+      "Z": 0,
+      "Rotation": 0,
+      "MinX": -4,
+      "MaxX": 4,
+      "MinZ": -5,
+      "MaxZ": 5,
+      "MinY": -9,
+      "MaxY": 5
+    },
+    {
+      "Id": "Abri_Du_Guet",
+      "Tier": 0,
+      "Prefab": "Npc/Outlander/Houses/Tier0/Outlander_Houses_Tier0_003",
+      "X": 14,
+      "Z": 0,
+      "Rotation": 0,
+      "MinX": -4,
+      "MaxX": 4,
+      "MinZ": -5,
+      "MaxZ": 5,
+      "MinY": -9,
+      "MaxY": 4
+    },
+    {
+      "Id": "Tour_De_Guet_Givre",
+      "Tier": 0,
+      "Prefab": "Npc/Outlander/Towers/Tier1/Outlander_Towers_Tier1_001",
+      "X": 0,
+      "Z": -14,
+      "Rotation": 0,
+      "MinX": -2,
+      "MaxX": 3,
+      "MinZ": -3,
+      "MaxZ": 2,
+      "MinY": -3,
+      "MaxY": 12
+    },
+    {
+      "Id": "Brasero",
+      "Tier": 0,
+      "Prefab": "Npc/Outlander/Braziers/Outlander_Braziers_Npc_Outlander_Brazier_001",
+      "X": -9,
+      "Z": -11,
+      "Rotation": 0,
+      "MinX": -1,
+      "MaxX": 1,
+      "MinZ": -1,
+      "MaxZ": 1,
+      "MinY": -3,
+      "MaxY": 3
+    },
+    {
+      "Id": "Maison_Des_Repentis",
+      "Tier": 1,
+      "Prefab": "Npc/Outlander/Houses/Tier1/Outlander_Houses_Tier1_002",
+      "X": -18,
+      "Z": 22,
+      "Rotation": 0,
+      "MinX": -6,
+      "MaxX": 6,
+      "MinZ": -9,
+      "MaxZ": 9,
+      "MinY": -3,
+      "MaxY": 7
+    },
+    {
+      "Id": "Maison_Du_Chasseur",
+      "Tier": 1,
+      "Prefab": "Npc/Outlander/Houses/Tier1/Outlander_Houses_Tier1_005",
+      "X": 18,
+      "Z": 22,
+      "Rotation": 0,
+      "MinX": -5,
+      "MaxX": 7,
+      "MinZ": -6,
+      "MaxZ": 9,
+      "MinY": -3,
+      "MaxY": 6
+    },
+    {
+      "Id": "Petit_Bateau",
+      "Tier": 1,
+      "Prefab": "Npc/Outlander/Boats/Small/Outlander_Boats_Small_001",
+      "X": 0,
+      "Z": 26,
+      "Rotation": 0,
+      "MinX": -2,
+      "MaxX": 2,
+      "MinZ": -5,
+      "MaxZ": 5,
+      "MinY": 0,
+      "MaxY": 6
+    },
+    {
+      "Id": "Grande_Maison_Givre",
+      "Tier": 2,
+      "Prefab": "Npc/Outlander/Houses/Tier2/Outlander_Houses_Tier2_003",
+      "X": -36,
+      "Z": -14,
+      "Rotation": 0,
+      "MinX": -13,
+      "MaxX": 7,
+      "MinZ": -9,
+      "MaxZ": 11,
+      "MinY": -3,
+      "MaxY": 11
+    },
+    {
+      "Id": "Tour_Du_Fort",
+      "Tier": 2,
+      "Prefab": "Npc/Outlander/Towers/Tier2/Outlander_Towers_Tier2_001",
+      "X": 30,
+      "Z": -12,
+      "Rotation": 0,
+      "MinX": -3,
+      "MaxX": 3,
+      "MinZ": -3,
+      "MaxZ": 3,
+      "MinY": -5,
+      "MaxY": 14
+    },
+    {
+      "Id": "Grand_Bateau",
+      "Tier": 2,
+      "Prefab": "Npc/Outlander/Boats/Large/Outlander_Boats_Large_001",
+      "X": 36,
+      "Z": 22,
+      "Rotation": 0,
+      "MinX": -6,
+      "MaxX": 6,
+      "MinZ": -10,
+      "MaxZ": 10,
+      "MinY": -1,
+      "MaxY": 14
+    },
+    {
+      "Id": "Maison_Du_Sorcier",
+      "Tier": 3,
+      "Prefab": "Npc/Outlander/Houses/Tier3/Outlander_Houses_Tier3_002",
+      "X": 0,
+      "Z": -40,
+      "Rotation": 0,
+      "MinX": -13,
+      "MaxX": 12,
+      "MinZ": -12,
+      "MaxZ": 14,
+      "MinY": -7,
+      "MaxY": 20
+    },
+    {
+      "Id": "Totem_Brise",
+      "Tier": 3,
+      "Prefab": "Npc/Outlander/Totems/Outlander_Totems_001",
+      "X": -30,
+      "Z": 44,
+      "Rotation": 0,
+      "MinX": -7,
+      "MaxX": 6,
+      "MinZ": -5,
+      "MaxZ": 3,
+      "MinY": -4,
+      "MaxY": 12
+    }
+  ],
+  "Chantiers": [
+    {
+      "Tier": 1,
+      "Hours": 24,
+      "Materials": [
+        {
+          "ItemId": "Wood_Fir_Trunk",
+          "Quantity": 24
+        },
+        {
+          "ItemId": "Rock_Stone_Cobble",
+          "Quantity": 16
+        },
+        {
+          "ItemId": "Ingredient_Fabric_Scrap_Wool",
+          "Quantity": 12
+        }
+      ]
+    },
+    {
+      "Tier": 2,
+      "Hours": 24,
+      "Materials": [
+        {
+          "ItemId": "Wood_Fir_Trunk",
+          "Quantity": 48
+        },
+        {
+          "ItemId": "Wood_Hardwood_Planks",
+          "Quantity": 32
+        },
+        {
+          "ItemId": "Rock_Stone_Cobble",
+          "Quantity": 24
+        },
+        {
+          "ItemId": "Ingredient_Leather_Light",
+          "Quantity": 8
+        }
+      ]
+    },
+    {
+      "Tier": 3,
+      "Hours": 24,
+      "Materials": [
+        {
+          "ItemId": "Wood_Fir_Trunk",
+          "Quantity": 64
+        },
+        {
+          "ItemId": "Ingredient_Bolt_Wool",
+          "Quantity": 12
+        },
+        {
+          "ItemId": "Ingredient_Ice_Essence",
+          "Quantity": 12
+        },
+        {
+          "ItemId": "Ingredient_Fire_Essence",
+          "Quantity": 12
+        }
+      ]
+    }
+  ],
+  "Jobs": [
+    {
+      "Id": "Batisseur",
+      "Tier": 0,
+      "Role": "Nakasar_Peuples_Renonce_Builder",
+      "Dialogue": "Renonce_Builder",
+      "Building": "",
+      "WorkX": -4,
+      "WorkZ": -3,
+      "Home": "Abri_Des_Fuyards",
+      "HomeX": -8,
+      "HomeZ": 0,
+      "Builder": true
+    },
+    {
+      "Id": "Guetteur",
+      "Tier": 0,
+      "Role": "Nakasar_Peuples_Renonce_Watcher",
+      "Dialogue": "Renonce_Watcher",
+      "Building": "Tour_De_Guet_Givre",
+      "WorkX": 0,
+      "WorkZ": -10,
+      "Home": "Abri_Du_Guet",
+      "HomeX": 8,
+      "HomeZ": 0,
+      "Builder": false
+    },
+    {
+      "Id": "Chasseur",
+      "Tier": 1,
+      "Role": "Nakasar_Peuples_Renonce_Hunter",
+      "Dialogue": "Renonce_Hunter",
+      "Building": "Maison_Du_Chasseur",
+      "WorkX": 19,
+      "WorkZ": 14,
+      "Home": "Maison_Du_Chasseur",
+      "HomeX": 19,
+      "HomeZ": 14,
+      "Builder": false
+    },
+    {
+      "Id": "Garde",
+      "Tier": 2,
+      "Role": "Nakasar_Peuples_Renonce_Guard",
+      "Dialogue": "Renonce_Guard",
+      "Building": "Tour_Du_Fort",
+      "WorkX": 25,
+      "WorkZ": -12,
+      "Home": "Grande_Maison_Givre",
+      "HomeX": -27,
+      "HomeZ": -13,
+      "Builder": false
+    },
+    {
+      "Id": "Ancien",
+      "Tier": 3,
+      "Role": "Nakasar_Peuples_Renonce_Elder",
+      "Dialogue": "Renonce_Elder",
+      "Building": "Maison_Du_Sorcier",
+      "WorkX": -1,
+      "WorkZ": -24,
+      "Home": "Maison_Du_Sorcier",
+      "HomeX": -1,
+      "HomeZ": -24,
+      "Builder": false
+    }
+  ]
+}

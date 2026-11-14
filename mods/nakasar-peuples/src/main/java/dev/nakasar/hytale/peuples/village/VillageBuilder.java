@@ -127,10 +127,10 @@ public final class VillageBuilder {
             return false;
         };
 
-        terrain.flatten(plaza[0], plaza[1], plaza[2], plaza[3], h0, 1, BLEND, Terrain.PATHWAY, keep);
+        terrain.flatten(plaza[0], plaza[1], plaza[2], plaza[3], h0, 1, BLEND, layout.people().plaza(), layout.people().ground(), keep);
         for (int i = 0; i < buildings.size(); i++) {
             int[] rect = rects.get(i);
-            terrain.flatten(rect[0], rect[1], rect[2], rect[3], heights.get(i), MARGIN, BLEND, Terrain.GRASS, keep);
+            terrain.flatten(rect[0], rect[1], rect[2], rect[3], heights.get(i), MARGIN, BLEND, layout.people().ground(), layout.people().ground(), keep);
         }
 
         Store<EntityStore> store = world.getEntityStore().getStore();
@@ -163,7 +163,7 @@ public final class VillageBuilder {
      * Colle le prefab vanilla `prefab` (chemin sous Server/Prefabs/ sans extension), son ancre (niveau du sol du
      * prefab) en (x, y, z). Faux si le prefab est introuvable ou que la zone n'est pas chargée.
      */
-    static boolean paste(World world, Store<EntityStore> store, String prefab, int x, int y, int z, int rotation) {
+    public static boolean paste(World world, Store<EntityStore> store, String prefab, int x, int y, int z, int rotation) {
         Path path = PrefabStore.get().findAssetPrefabPath(prefab + ".prefab.json");
         if (path == null) {
             path = PrefabStore.get().findAssetPrefabPath(prefab);

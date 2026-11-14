@@ -1,0 +1,8 @@
+{
+  "$Comment": "Raid sur un village Feran (étape 8), généré par tools/generate_zones.py (même principe que Nakasar_Peuples_Raid_Warn).",
+  "Root": "Nakasar_Peuples_Raid_Feran_Warn",
+  "IterationCount": 1,
+  "InstanceCountMax": -1,
+  "Name": "nakasar_peuples.raid.event.name.Feran",
+  "Icon": "UI/WorldMap/MapMarkers/GoblinBreach.png"
+}

@@ -1,0 +1,11 @@
+{
+  "$Comment": "Manteau du givre (étape 8) : fin de la chaîne des Renoncés. Porté (plastron), il annule le froid de la zone 3 (Java, zone/Climate). Plastron de laine vanilla.",
+  "Parent": "Armor_Wool_Chest",
+  "TranslationProperties": {
+    "Name": "nakasar_peuples.items.Nakasar_Peuples_Frost_Mantle.name",
+    "Description": "nakasar_peuples.items.Nakasar_Peuples_Frost_Mantle.description"
+  },
+  "Quality": "Legendary",
+  "MaxDurability": 400,
+  "DropOnDeath": false
+}

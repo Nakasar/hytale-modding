@@ -56,3 +56,26 @@ npc Trork_Sentry
 npc Trork_Shaman
 npc Wolf_Black
 npc Mosshorn
+# Étape 8 de Peuples d'Orbis (Scaraks de la zone 2, culte outlander de la zone 3) : rôles vus dans Assets.zip le 14 novembre 2026
+# (Server/NPC/Roles/Intelligent/Faction/{Scarak,Outlander}/*.json).
+npc Scarak_Fighter
+npc Scarak_Louse
+npc Scarak_Defender
+npc Scarak_Broodmother
+npc Outlander_Cultist
+npc Outlander_Hunter
+npc Outlander_Berserker
+npc Outlander_Priest
+# Butin vu dans Assets.zip le 14 novembre 2026 (Server/Drops/NPCs/Beast/Drop_Scarak_*.json,
+# Server/Drops/NPCs/Intelligent/Outlander/Drop_Outlander_*.json).
+droplist Drop_Scarak_Fighter
+droplist Drop_Scarak_Louse
+droplist Drop_Scarak_Defender
+droplist Drop_Scarak_Broodmother
+droplist Drop_Outlander_Cultist
+droplist Drop_Outlander_Berserker
+droplist Drop_Outlander_Brute
+droplist Drop_Outlander_Marauder
+# Groupe de PNJ vanilla des Feran (Server/NPC/Groups/Intelligent/Neutral/Feran/Feran.json), vu dans Assets.zip le
+# 14 novembre 2026 : groupe de réputation Nakasar_Peuples_Feran (étape 8).
+npcgroup Feran

@@ -119,6 +119,12 @@ public final class Terrain {
      * l'emprise, les colonnes que `keep` réserve (emprise d'un autre bâtiment) ne sont pas touchées.
      */
     public void flatten(int x0, int x1, int z0, int z1, int h, int margin, int blend, String top, BiPredicate<Integer, Integer> keep) {
+        flatten(x0, x1, z0, z1, h, margin, blend, top, GRASS, keep);
+    }
+
+    /** Comme {@link #flatten(int, int, int, int, int, int, int, String, BiPredicate)}, avec `ground` au fondu (étape 8 : sable, neige). */
+    public void flatten(int x0, int x1, int z0, int z1, int h, int margin, int blend, String top, String ground,
+                        BiPredicate<Integer, Integer> keep) {
         int reach = margin + blend;
         for (int x = x0 - reach; x <= x1 + reach; x++) {
             for (int z = z0 - reach; z <= z1 + reach; z++) {
@@ -151,7 +157,7 @@ public final class Terrain {
                 for (int y = s + 1; y < target; y++) {
                     Blocks.set(chunks, x, y, z, DIRT, 0);
                 }
-                Blocks.set(chunks, x, target, z, d <= margin ? top : GRASS, 0);
+                Blocks.set(chunks, x, target, z, d <= margin ? top : ground, 0);
             }
         }
     }

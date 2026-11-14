@@ -38,6 +38,28 @@ public final class VillageNames {
             "Camp de la Défense-Noire",
             "Bauge des Poings-Lourds");
 
+    /** Étape 8 : oasis feran (formels, le vent et l'eau). */
+    private static final List<String> FERAN = List.of(
+            "Oasis du Vent-Clair",
+            "Source des Dunes",
+            "Halte de l'Eau-Douce",
+            "Puits des Sept-Souffles",
+            "Oasis de la Plume",
+            "Bassin des Mirages",
+            "Halte du Sable-Rouge",
+            "Source des Longues-Dents");
+
+    /** Étape 8 : hameau des Outlanders renoncés (méfiants, à l'écart du culte). */
+    private static final List<String> RENONCE = List.of(
+            "Le Refuge-du-Givre",
+            "Hameau des Repentis",
+            "Le Feu-Caché",
+            "Les Cabanes-Muettes",
+            "Abri du Col-Blanc",
+            "Le Fort-des-Fuyards",
+            "Hameau de la Glace-Noire",
+            "La Halte-sans-Totem");
+
     private VillageNames() {
     }
 
@@ -67,6 +89,8 @@ public final class VillageNames {
         return switch (people) {
             case KWEEBEC -> KWEEBEC;
             case TRORK -> TRORK;
+            case FERAN -> FERAN;
+            case RENONCE -> RENONCE;
         };
     }
 }

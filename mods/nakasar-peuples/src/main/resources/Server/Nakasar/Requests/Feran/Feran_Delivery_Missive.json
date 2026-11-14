@@ -1,0 +1,14 @@
+{
+  "$Comment": "Demande du tableau d'un village Feran (étape 8), générée par tools/generate_zones.py.",
+  "People": "Feran",
+  "Type": "Delivery",
+  "MinTier": 0,
+  "MaxTier": 3,
+  "Weight": 1,
+  "TitleKey": "nakasar_peuples.request.Feran_Delivery_Missive.title",
+  "TaskKey": "nakasar_peuples.request.Feran_Delivery_Missive.task",
+  "MinDistance": 90,
+  "MaxDistance": 150,
+  "Essor": 10,
+  "Favors": 1
+}

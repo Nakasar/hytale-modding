@@ -1,0 +1,295 @@
+{
+  "$Comment": "Plan de village généré par tools/generate_zones.py (étape 8) (ne pas modifier à la main) : prefabs vanilla collés par village/VillageBuilder autour du cœur, emprises (MinX..MaxZ) relatives au point de collage après rotation.",
+  "People": "Feran",
+  "Radius": 65,
+  "PlazaRadius": 6,
+  "BannerX": 0,
+  "BannerZ": -4,
+  "Buildings": [
+    {
+      "Id": "Hutte_Ouest",
+      "Tier": 0,
+      "Prefab": "Npc/Feran/Tier3/Huts/Feran_Tier3_Huts_001",
+      "X": -16,
+      "Z": 0,
+      "Rotation": 0,
+      "MinX": -5,
+      "MaxX": 5,
+      "MinZ": -5,
+      "MaxZ": 5,
+      "MinY": 0,
+      "MaxY": 5
+    },
+    {
+      "Id": "Hutte_Est",
+      "Tier": 0,
+      "Prefab": "Npc/Feran/Tier3/Huts/Feran_Tier3_Huts_001",
+      "X": 16,
+      "Z": 0,
+      "Rotation": 2,
+      "MinX": -5,
+      "MaxX": 5,
+      "MinZ": -5,
+      "MaxZ": 5,
+      "MinY": 0,
+      "MaxY": 5
+    },
+    {
+      "Id": "Muret_Du_Vent",
+      "Tier": 0,
+      "Prefab": "Npc/Feran/Tier3/Walls/Feran_Tier3_Walls_001",
+      "X": 0,
+      "Z": -16,
+      "Rotation": 0,
+      "MinX": -3,
+      "MaxX": 7,
+      "MinZ": -8,
+      "MaxZ": 3,
+      "MinY": -1,
+      "MaxY": 2
+    },
+    {
+      "Id": "Grande_Hutte",
+      "Tier": 1,
+      "Prefab": "Npc/Feran/Tier2/Hut/Feran_Tier2_Hut_001",
+      "X": -32,
+      "Z": 22,
+      "Rotation": 0,
+      "MinX": -9,
+      "MaxX": 9,
+      "MinZ": -9,
+      "MaxZ": 10,
+      "MinY": -8,
+      "MaxY": 9
+    },
+    {
+      "Id": "Entree_Oasis",
+      "Tier": 1,
+      "Prefab": "Npc/Feran/Tier2/Entrance/Feran_Tier2_Entrance_001",
+      "X": 0,
+      "Z": 22,
+      "Rotation": 0,
+      "MinX": -6,
+      "MaxX": 7,
+      "MinZ": -3,
+      "MaxZ": 2,
+      "MinY": -4,
+      "MaxY": 12
+    },
+    {
+      "Id": "Hutte_Sud",
+      "Tier": 1,
+      "Prefab": "Npc/Feran/Tier3/Huts/Feran_Tier3_Huts_001",
+      "X": 18,
+      "Z": 22,
+      "Rotation": 0,
+      "MinX": -5,
+      "MaxX": 5,
+      "MinZ": -5,
+      "MaxZ": 5,
+      "MinY": 0,
+      "MaxY": 5
+    },
+    {
+      "Id": "Hutte_Nord_Ouest",
+      "Tier": 2,
+      "Prefab": "Npc/Feran/Tier2/Hut/Feran_Tier2_Hut_002",
+      "X": -32,
+      "Z": -24,
+      "Rotation": 0,
+      "MinX": -9,
+      "MaxX": 9,
+      "MinZ": -9,
+      "MaxZ": 10,
+      "MinY": -8,
+      "MaxY": 6
+    },
+    {
+      "Id": "Hutte_Pilier",
+      "Tier": 2,
+      "Prefab": "Npc/Feran/Portals_Oasis/Pillar_Hut/Feran_Tier3_Hut_001",
+      "X": 34,
+      "Z": 0,
+      "Rotation": 0,
+      "MinX": -5,
+      "MaxX": 5,
+      "MinZ": -5,
+      "MaxZ": 5,
+      "MinY": -12,
+      "MaxY": 5
+    },
+    {
+      "Id": "Hutte_Sud_Est",
+      "Tier": 2,
+      "Prefab": "Npc/Feran/Tier2/Hut/Feran_Tier2_Hut_003",
+      "X": 40,
+      "Z": 32,
+      "Rotation": 0,
+      "MinX": -11,
+      "MaxX": 9,
+      "MinZ": -10,
+      "MaxZ": 10,
+      "MinY": -9,
+      "MaxY": 14
+    },
+    {
+      "Id": "Hutte_Du_Chef",
+      "Tier": 3,
+      "Prefab": "Npc/Feran/Tier2/Chieftain/Feran_Tier2_Chieftain_001",
+      "X": 0,
+      "Z": -42,
+      "Rotation": 0,
+      "MinX": -9,
+      "MaxX": 9,
+      "MinZ": -10,
+      "MaxZ": 9,
+      "MinY": -7,
+      "MaxY": 19
+    },
+    {
+      "Id": "Hutte_Du_Windwalker",
+      "Tier": 3,
+      "Prefab": "Npc/Feran/Tier3/Chieftain/Feran_Tier3_Chieftain_001",
+      "X": 32,
+      "Z": -32,
+      "Rotation": 0,
+      "MinX": -8,
+      "MaxX": 7,
+      "MinZ": -10,
+      "MaxZ": 8,
+      "MinY": -2,
+      "MaxY": 14
+    }
+  ],
+  "Chantiers": [
+    {
+      "Tier": 1,
+      "Hours": 24,
+      "Materials": [
+        {
+          "ItemId": "Rock_Sandstone",
+          "Quantity": 24
+        },
+        {
+          "ItemId": "Wood_Palm_Trunk",
+          "Quantity": 16
+        },
+        {
+          "ItemId": "Ingredient_Fabric_Scrap_Linen",
+          "Quantity": 12
+        }
+      ]
+    },
+    {
+      "Tier": 2,
+      "Hours": 24,
+      "Materials": [
+        {
+          "ItemId": "Rock_Sandstone",
+          "Quantity": 48
+        },
+        {
+          "ItemId": "Wood_Palm_Trunk",
+          "Quantity": 32
+        },
+        {
+          "ItemId": "Ingredient_Fabric_Scrap_Linen",
+          "Quantity": 24
+        },
+        {
+          "ItemId": "Ingredient_Water_Essence",
+          "Quantity": 6
+        }
+      ]
+    },
+    {
+      "Tier": 3,
+      "Hours": 24,
+      "Materials": [
+        {
+          "ItemId": "Rock_Sandstone",
+          "Quantity": 64
+        },
+        {
+          "ItemId": "Ingredient_Feathers_Light",
+          "Quantity": 16
+        },
+        {
+          "ItemId": "Plant_Cactus_1",
+          "Quantity": 16
+        },
+        {
+          "ItemId": "Ingredient_Water_Essence",
+          "Quantity": 12
+        }
+      ]
+    }
+  ],
+  "Jobs": [
+    {
+      "Id": "Batisseur",
+      "Tier": 0,
+      "Role": "Nakasar_Peuples_Feran_Builder",
+      "Dialogue": "Feran_Builder",
+      "Building": "",
+      "WorkX": -4,
+      "WorkZ": -3,
+      "Home": "Hutte_Est",
+      "HomeX": 9,
+      "HomeZ": 0,
+      "Builder": true
+    },
+    {
+      "Id": "Guetteur",
+      "Tier": 0,
+      "Role": "Nakasar_Peuples_Feran_Watcher",
+      "Dialogue": "Feran_Watcher",
+      "Building": "Muret_Du_Vent",
+      "WorkX": 2,
+      "WorkZ": -11,
+      "Home": "Hutte_Ouest",
+      "HomeX": -9,
+      "HomeZ": 0,
+      "Builder": false
+    },
+    {
+      "Id": "Porteuse_Eau",
+      "Tier": 1,
+      "Role": "Nakasar_Peuples_Feran_WellKeeper",
+      "Dialogue": "Feran_WellKeeper",
+      "Building": "Entree_Oasis",
+      "WorkX": 0,
+      "WorkZ": 17,
+      "Home": "Grande_Hutte",
+      "HomeX": -21,
+      "HomeZ": 22,
+      "Builder": false
+    },
+    {
+      "Id": "Garde",
+      "Tier": 2,
+      "Role": "Nakasar_Peuples_Feran_Guard",
+      "Dialogue": "Feran_Guard",
+      "Building": "Hutte_Pilier",
+      "WorkX": 27,
+      "WorkZ": 0,
+      "Home": "Hutte_Nord_Ouest",
+      "HomeX": -21,
+      "HomeZ": -24,
+      "Builder": false
+    },
+    {
+      "Id": "Ancien",
+      "Tier": 3,
+      "Role": "Nakasar_Peuples_Feran_Elder",
+      "Dialogue": "Feran_Elder",
+      "Building": "Hutte_Du_Chef",
+      "WorkX": 0,
+      "WorkZ": -31,
+      "Home": "Hutte_Du_Chef",
+      "HomeX": 0,
+      "HomeZ": -31,
+      "Builder": false
+    }
+  ]
+}

@@ -1,0 +1,84 @@
+{
+  "$Comment": "Dialogue du villageois à métier Guard (étape 8), généré par tools/generate_zones.py.",
+  "NpcNameKey": "nakasar_peuples.dialogue.Renonce_Guard.npc",
+  "RoleKey": "nakasar_peuples.dialogue.Renonce_Guard.role",
+  "People": "Renonce",
+  "Entries": [
+    {
+      "Node": "AuxArmes",
+      "Conditions": [
+        {
+          "Type": "Raid",
+          "State": "Active"
+        }
+      ]
+    },
+    {
+      "Node": "Accueil"
+    }
+  ],
+  "Nodes": [
+    {
+      "Id": "Accueil",
+      "TextKey": "nakasar_peuples.dialogue.Renonce_Guard.accueil",
+      "Responses": [
+        {
+          "TextKey": "nakasar_peuples.dialogue.job.raid",
+          "Effects": [
+            {
+              "Type": "RaidStatus"
+            }
+          ],
+          "Next": "Rumeur"
+        },
+        {
+          "TextKey": "nakasar_peuples.dialogue.job.metier",
+          "Next": "Metier"
+        },
+        {
+          "TextKey": "nakasar_peuples.dialogue.job.aurevoir"
+        }
+      ]
+    },
+    {
+      "Id": "Metier",
+      "TextKey": "nakasar_peuples.dialogue.Renonce_Guard.metier",
+      "Responses": [
+        {
+          "TextKey": "nakasar_peuples.dialogue.job.aurevoir"
+        }
+      ]
+    },
+    {
+      "Id": "AuxArmes",
+      "TextKey": "nakasar_peuples.dialogue.Renonce_Guard.auxArmes",
+      "Responses": [
+        {
+          "TextKey": "nakasar_peuples.dialogue.job.raid",
+          "Effects": [
+            {
+              "Type": "RaidStatus"
+            }
+          ],
+          "Next": "Rumeur"
+        },
+        {
+          "TextKey": "nakasar_peuples.dialogue.job.aurevoir"
+        }
+      ]
+    },
+    {
+      "Id": "Rumeur",
+      "TextKey": "nakasar_peuples.dialogue.Renonce_Guard.rumeur",
+      "Responses": [
+        {
+          "TextKey": "nakasar_peuples.dialogue.job.metier",
+          "Next": "Metier"
+        },
+        {
+          "TextKey": "nakasar_peuples.dialogue.job.aurevoir"
+        }
+      ]
+    }
+  ]
+}

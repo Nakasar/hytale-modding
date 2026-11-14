@@ -291,7 +291,8 @@ def trophy():
 
 def echo_seed():
     return {
-        "$Comment": "Graine d'Écho : fin de la chaîne de quêtes kweebec (étape 6). Elle ne se plante pas encore (étape 8). "
+        "$Comment": "Graine d'Écho : fin de la chaîne de quêtes kweebec (étape 6). Plantée en zone 2 (clic droit, étape 8), "
+                    "elle fait jaillir une source qui abrite de la soif (Java Nakasar_Peuples_ZoneItem, Action EchoSeed). "
                     "Modèle, texture et icône du sac de graines de chêne vanilla (Plant_Seeds_Oak).",
         "TranslationProperties": {
             "Name": "nakasar_peuples.items.Nakasar_Peuples_Echo_Seed.name",
@@ -307,6 +308,7 @@ def echo_seed():
         "IconProperties": {"Scale": 1.1, "Rotation": [0, 30, 15], "Translation": [2.5, -11]},
         "ItemEntity": {"ParticleSystemId": None},
         "ItemSoundSetId": "ISS_Items_Foliage",
+        "Interactions": {"Secondary": "Root_Nakasar_Peuples_Plant_Echo_Seed"},
     }
 
 

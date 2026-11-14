@@ -1,0 +1,86 @@
+{
+  "$Comment": "Outre d'oasis (étape 8, GDD Récompenses feran) : se boit comme la potion d'endurance vanilla (Potion_Template) et pose Nakasar_Peuples_Quenched, qui annule la soif de la zone 2 (Java, zone/Climate).",
+  "Parent": "Potion_Template",
+  "TranslationProperties": {
+    "Name": "nakasar_peuples.items.Nakasar_Peuples_Oasis_Waterskin.name",
+    "Description": "nakasar_peuples.items.Nakasar_Peuples_Oasis_Waterskin.description"
+  },
+  "Quality": "Uncommon",
+  "Icon": "Icons/ItemsGenerated/Potion_Cyan.png",
+  "IconProperties": {
+    "Scale": 0.9,
+    "Rotation": [
+      22.5,
+      45,
+      22.5
+    ],
+    "Translation": [
+      0,
+      -9
+    ]
+  },
+  "Interactions": {
+    "Primary": "Block_Primary",
+    "Secondary": "Root_Secondary_Consume_Potion_Stamina"
+  },
+  "InteractionVars": {
+    "RemoveEffect": {
+      "Interactions": [
+        {
+          "Type": "Simple"
+        }
+      ]
+    },
+    "Effect": {
+      "Interactions": [
+        {
+          "Type": "Serial",
+          "Interactions": [
+            {
+              "Type": "ApplyEffect",
+              "EffectId": "Nakasar_Peuples_Quenched"
+            }
+          ]
+        }
+      ]
+    },
+    "ConsumeCooldown": {
+      "Interactions": [
+        "Consume_Potion_Stamina_Cooldown"
+      ]
+    },
+    "ConsumeSFX": {
+      "Interactions": [
+        {
+          "Type": "Simple",
+          "RunTime": 0,
+          "Effects": {
+            "LocalSoundEventId": "SFX_Health_Potion_Low_Drink",
+            "ClearSoundEventOnFinish": true
+          }
+        }
+      ]
+    },
+    "ConsumedSFX": {
+      "Interactions": [
+        {
+          "Type": "Simple"
+        }
+      ]
+    }
+  },
+  "BlockType": {
+    "CustomModel": "Items/Consumables/Potions/Potion_Large.blockymodel",
+    "CustomModelTexture": [
+      {
+        "Texture": "Items/Consumables/Potions/Potion_Textures/Cyan.png",
+        "Weight": 1
+      }
+    ],
+    "BlockParticleSetId": "GlassMagic",
+    "ParticleColor": "#7fd8e8",
+    "TextureComputedColor": "#8CC8D6"
+  },
+  "MaxStack": 8,
+  "DropOnDeath": true
+}

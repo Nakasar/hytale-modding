@@ -1,0 +1,35 @@
+{
+  "$Comment": "Dialogue du villageois à métier Elder (étape 8), généré par tools/generate_zones.py.",
+  "NpcNameKey": "nakasar_peuples.dialogue.Renonce_Elder.npc",
+  "RoleKey": "nakasar_peuples.dialogue.Renonce_Elder.role",
+  "People": "Renonce",
+  "Entries": [
+    {
+      "Node": "Accueil"
+    }
+  ],
+  "Nodes": [
+    {
+      "Id": "Accueil",
+      "TextKey": "nakasar_peuples.dialogue.Renonce_Elder.accueil",
+      "Responses": [
+        {
+          "TextKey": "nakasar_peuples.dialogue.job.metier",
+          "Next": "Metier"
+        },
+        {
+          "TextKey": "nakasar_peuples.dialogue.job.aurevoir"
+        }
+      ]
+    },
+    {
+      "Id": "Metier",
+      "TextKey": "nakasar_peuples.dialogue.Renonce_Elder.metier",
+      "Responses": [
+        {
+          "TextKey": "nakasar_peuples.dialogue.job.aurevoir"
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,12 @@
+{
+  "$Comment": "Soif (zone 2, le jour, hors de l'ombre et de l'eau) : l'endurance ne remonte plus (Java, zone/Climate).",
+  "Name": "nakasar_peuples.effects.Nakasar_Peuples_Thirst",
+  "Debuff": true,
+  "StatusEffectIcon": "UI/StatusEffects/Nakasar/Peuples/Thirst.png",
+  "ApplicationEffects": {
+    "EntityTopTint": "#ffe0a8"
+  },
+  "OverlapBehavior": "Overwrite",
+  "Infinite": false,
+  "Duration": 1.5
+}

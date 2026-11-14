@@ -1,0 +1,8 @@
+{
+  "$Comment": "Désaltéré (Outre d'oasis) : pas de soif pendant 20 minutes.",
+  "Name": "nakasar_peuples.effects.Nakasar_Peuples_Quenched",
+  "StatusEffectIcon": "UI/StatusEffects/Nakasar/Peuples/Quenched.png",
+  "OverlapBehavior": "Overwrite",
+  "Infinite": false,
+  "Duration": 1200
+}
