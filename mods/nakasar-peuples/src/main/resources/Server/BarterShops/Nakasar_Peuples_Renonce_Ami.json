@@ -1,0 +1,74 @@
+{
+  "$Comment": "Échoppe Renonce du rang Ami (étape 8), générée par tools/generate_zones.py.",
+  "DisplayNameKey": "nakasar_peuples.barter.Renonce_Ami.title",
+  "RefreshInterval": {
+    "Days": 3
+  },
+  "RestockHour": 6,
+  "TradeSlots": [
+    {
+      "Type": "Fixed",
+      "Trade": {
+        "Output": {
+          "ItemId": "Armor_Wool_Hands",
+          "Quantity": 1
+        },
+        "Input": [
+          {
+            "ItemId": "Nakasar_Peuples_Favor_Renonce",
+            "Quantity": 3
+          }
+        ],
+        "Stock": 3
+      }
+    },
+    {
+      "Type": "Fixed",
+      "Trade": {
+        "Output": {
+          "ItemId": "Armor_Wool_Head",
+          "Quantity": 1
+        },
+        "Input": [
+          {
+            "ItemId": "Nakasar_Peuples_Favor_Renonce",
+            "Quantity": 3
+          }
+        ],
+        "Stock": 3
+      }
+    },
+    {
+      "Type": "Fixed",
+      "Trade": {
+        "Output": {
+          "ItemId": "Ingredient_Ice_Essence",
+          "Quantity": 2
+        },
+        "Input": [
+          {
+            "ItemId": "Nakasar_Peuples_Favor_Renonce",
+            "Quantity": 2
+          }
+        ],
+        "Stock": 8
+      }
+    },
+    {
+      "Type": "Fixed",
+      "Trade": {
+        "Output": {
+          "ItemId": "Ingredient_Fire_Essence",
+          "Quantity": 2
+        },
+        "Input": [
+          {
+            "ItemId": "Nakasar_Peuples_Favor_Renonce",
+            "Quantity": 2
+          }
+        ],
+        "Stock": 8
+      }
+    }
+  ]
+}

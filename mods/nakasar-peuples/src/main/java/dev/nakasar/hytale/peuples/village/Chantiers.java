@@ -467,7 +467,8 @@ public final class Chantiers {
             return false;
         };
         int[] r = b.rect();
-        terrain.flatten(village.x() + r[0], village.x() + r[1], village.z() + r[2], village.z() + r[3], h, MARGIN, BLEND, Terrain.GRASS, keep);
+        terrain.flatten(village.x() + r[0], village.x() + r[1], village.z() + r[2], village.z() + r[3], h, MARGIN, BLEND,
+                village.people().ground(), village.people().ground(), keep);
     }
 
     /**

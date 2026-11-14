@@ -1,0 +1,13 @@
+{
+  "$Comment": "Hypothermie, piles 3 et 4 : 0.6 à 0.8 % des PV max par seconde (Java, zone/Climate ; copie de la fractale Tempête de neige).",
+  "Name": "nakasar_peuples.effects.Nakasar_Peuples_Hypothermia_2",
+  "Debuff": true,
+  "StatusEffectIcon": "UI/StatusEffects/Nakasar/Peuples/Hypothermia_2.png",
+  "ApplicationEffects": {
+    "HorizontalSpeedMultiplier": 1.0,
+    "EntityTopTint": "#e8f4ff"
+  },
+  "OverlapBehavior": "Overwrite",
+  "Infinite": false,
+  "Duration": 1.5
+}

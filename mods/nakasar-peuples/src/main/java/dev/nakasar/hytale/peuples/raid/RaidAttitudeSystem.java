@@ -19,8 +19,9 @@ import com.hypixel.hytale.server.npc.systems.BlackboardSystems;
 import java.util.Set;
 
 /**
- * Pillards contre villageois : un pillard ({@value Raids#RAIDER_PREFIX}*) est hostile à tout PNJ kweebec (gardes du
- * raid, villageois des prefabs) et amical envers les autres pillards ; un Kweebec est hostile aux pillards. Priorité
+ * Pillards contre villageois : un pillard ({@value Raids#RAIDER_PREFIX}*) est hostile aux PNJ du peuple qu'il attaque
+ * ({@link Raids#preys} : Trorks contre Kweebecs, Scaraks contre Feran, culte contre Renoncés ; gardes du raid, villageois
+ * des prefabs) et amical envers les autres pillards ; ses proies lui sont hostiles. Priorité
  * {@value #PRIORITY}, avant le rang de village (90) : les groupes vanilla ne suffisent pas (les Razorleaf vanilla ne
  * voient que les joueurs).
  */
@@ -66,7 +67,7 @@ public final class RaidAttitudeSystem extends StoreSystem<EntityStore> {
         if (selfRaider && otherRaider) {
             return Attitude.FRIENDLY;
         }
-        if (selfRaider && other.contains("Kweebec") || otherRaider && self.contains("Kweebec")) {
+        if (selfRaider && Raids.preys(self, other) || otherRaider && Raids.preys(other, self)) {
             return Attitude.HOSTILE;
         }
         return null;

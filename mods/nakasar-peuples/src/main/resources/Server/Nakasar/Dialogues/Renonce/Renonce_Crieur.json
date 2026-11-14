@@ -1,0 +1,176 @@
+{
+  "$Comment": "Dialogue crieur d'un village Renonce (étape 8), généré par tools/generate_zones.py (copie du kweebec).",
+  "NpcNameKey": "nakasar_peuples.dialogue.Renonce_Crieur.npc",
+  "RoleKey": "nakasar_peuples.dialogue.Renonce_Crieur.role",
+  "People": "Renonce",
+  "Entries": [
+    {
+      "Node": "Honni",
+      "Conditions": [
+        {
+          "Type": "Rank",
+          "Max": "Honni"
+        }
+      ]
+    },
+    {
+      "Node": "EnCours",
+      "Conditions": [
+        {
+          "Type": "HasRequest"
+        }
+      ]
+    },
+    {
+      "Node": "Accueil"
+    }
+  ],
+  "Nodes": [
+    {
+      "Id": "Accueil",
+      "TextKey": "nakasar_peuples.dialogue.Renonce_Crieur.accueil",
+      "Responses": [
+        {
+          "TextKey": "nakasar_peuples.dialogue.Renonce_Crieur.voir",
+          "HintKey": "nakasar_peuples.dialogue.hint.openRequests",
+          "Conditions": [
+            {
+              "Type": "InVillage",
+              "People": "Renonce"
+            }
+          ],
+          "FailKey": "nakasar_peuples.dialogue.fail.inVillage",
+          "Effects": [
+            {
+              "Type": "OpenRequests"
+            }
+          ]
+        },
+        {
+          "TextKey": "nakasar_peuples.dialogue.Renonce_Crieur.quoi",
+          "Next": "Explication"
+        },
+        {
+          "TextKey": "nakasar_peuples.dialogue.Renonce_Crieur.aurevoir"
+        }
+      ]
+    },
+    {
+      "Id": "Explication",
+      "TextKey": "nakasar_peuples.dialogue.Renonce_Crieur.explication",
+      "Responses": [
+        {
+          "TextKey": "nakasar_peuples.dialogue.Renonce_Crieur.voir",
+          "HintKey": "nakasar_peuples.dialogue.hint.openRequests",
+          "Conditions": [
+            {
+              "Type": "InVillage",
+              "People": "Renonce"
+            }
+          ],
+          "FailKey": "nakasar_peuples.dialogue.fail.inVillage",
+          "Effects": [
+            {
+              "Type": "OpenRequests"
+            }
+          ]
+        },
+        {
+          "TextKey": "nakasar_peuples.dialogue.Renonce_Crieur.aurevoir"
+        }
+      ]
+    },
+    {
+      "Id": "EnCours",
+      "TextKey": "nakasar_peuples.dialogue.Renonce_Crieur.encours",
+      "Responses": [
+        {
+          "TextKey": "nakasar_peuples.dialogue.Renonce_Crieur.rendre",
+          "HintKey": "nakasar_peuples.dialogue.hint.turnIn",
+          "Conditions": [
+            {
+              "Type": "InVillage",
+              "People": "Renonce"
+            }
+          ],
+          "FailKey": "nakasar_peuples.dialogue.fail.inVillage",
+          "Effects": [
+            {
+              "Type": "TurnInRequests"
+            }
+          ],
+          "Next": "Rendu"
+        },
+        {
+          "TextKey": "nakasar_peuples.dialogue.Renonce_Crieur.voir",
+          "HintKey": "nakasar_peuples.dialogue.hint.openRequests",
+          "Conditions": [
+            {
+              "Type": "InVillage",
+              "People": "Renonce"
+            }
+          ],
+          "FailKey": "nakasar_peuples.dialogue.fail.inVillage",
+          "Effects": [
+            {
+              "Type": "OpenRequests"
+            }
+          ]
+        },
+        {
+          "TextKey": "nakasar_peuples.dialogue.Renonce_Crieur.aurevoir"
+        }
+      ]
+    },
+    {
+      "Id": "Rendu",
+      "TextKey": "nakasar_peuples.dialogue.Renonce_Crieur.rendu",
+      "Responses": [
+        {
+          "TextKey": "nakasar_peuples.dialogue.Renonce_Crieur.voir",
+          "HintKey": "nakasar_peuples.dialogue.hint.openRequests",
+          "Conditions": [
+            {
+              "Type": "InVillage",
+              "People": "Renonce"
+            }
+          ],
+          "FailKey": "nakasar_peuples.dialogue.fail.inVillage",
+          "Effects": [
+            {
+              "Type": "OpenRequests"
+            }
+          ]
+        },
+        {
+          "TextKey": "nakasar_peuples.dialogue.Renonce_Crieur.aurevoir"
+        }
+      ]
+    },
+    {
+      "Id": "Honni",
+      "TextKey": "nakasar_peuples.dialogue.Renonce_Crieur.honni",
+      "Responses": [
+        {
+          "TextKey": "nakasar_peuples.dialogue.Renonce_Crieur.racheter",
+          "HintKey": "nakasar_peuples.dialogue.hint.openRequests",
+          "Conditions": [
+            {
+              "Type": "InVillage",
+              "People": "Renonce"
+            }
+          ],
+          "FailKey": "nakasar_peuples.dialogue.fail.inVillage",
+          "Effects": [
+            {
+              "Type": "OpenRequests"
+            }
+          ]
+        },
+        {
+          "TextKey": "nakasar_peuples.dialogue.Renonce_Crieur.aurevoir"
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,57 @@
+{
+  "$Comment": "Crier d'un village feran (étape 8), généré par tools/generate_zones.py : copie du rôle kweebec sur l'apparence vanilla Feran_Civilian. Ne régénère jamais (VillageNoRegenSystem).",
+  "Type": "Generic",
+  "Appearance": "Feran_Civilian",
+  "NameTranslationKey": "nakasar_peuples.npc.Feran_Crier.name",
+  "MaxHealth": 100,
+  "StartState": "Idle",
+  "DefaultPlayerAttitude": "Neutral",
+  "DefaultNPCAttitude": "Ignore",
+  "MotionControllerList": [
+    {
+      "Type": "Walk",
+      "MaxWalkSpeed": 0.1,
+      "Gravity": 10,
+      "MaxFallSpeed": 10,
+      "Acceleration": 10,
+      "JumpHeight": 1.0
+    }
+  ],
+  "KnockbackScale": 0,
+  "Instructions": [
+    {
+      "Sensor": {
+        "Type": "State",
+        "State": "Idle"
+      },
+      "Instructions": [
+        {
+          "Actions": []
+        }
+      ]
+    }
+  ],
+  "InteractionInstruction": {
+    "Instructions": [
+      {
+        "Continue": true,
+        "Sensor": {
+          "Type": "Any"
+        },
+        "Actions": [
+          {
+            "Type": "SetInteractable",
+            "Interactable": true,
+            "Hint": "nakasar_peuples.hint.talk"
+          }
+        ]
+      },
+      {
+        "Sensor": {
+          "Type": "HasInteracted"
+        },
+        "Actions": []
+      }
+    ]
+  }
+}

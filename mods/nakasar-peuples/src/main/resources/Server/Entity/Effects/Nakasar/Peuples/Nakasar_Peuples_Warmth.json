@@ -1,0 +1,11 @@
+{
+  "$Comment": "Chaleur (zone 3, à l'abri ou près d'un feu) : l'hypothermie redescend (Java, zone/Climate).",
+  "Name": "nakasar_peuples.effects.Nakasar_Peuples_Warmth",
+  "StatusEffectIcon": "UI/StatusEffects/Nakasar/Peuples/Warmth.png",
+  "ApplicationEffects": {
+    "EntityBottomTint": "#ffb060"
+  },
+  "OverlapBehavior": "Overwrite",
+  "Infinite": false,
+  "Duration": 1.5
+}

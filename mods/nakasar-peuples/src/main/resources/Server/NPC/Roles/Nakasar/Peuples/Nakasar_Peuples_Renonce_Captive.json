@@ -1,0 +1,71 @@
+{
+  "$Comment": "Captive d'un village renoncé (étape 8), généré par tools/generate_zones.py : copie du rôle kweebec sur l'apparence vanilla Outlander_Peon. Ne régénère jamais (VillageNoRegenSystem).",
+  "Type": "Generic",
+  "Appearance": "Outlander_Peon",
+  "NameTranslationKey": "nakasar_peuples.npc.Renonce_Captive.name",
+  "MaxHealth": 120,
+  "StartState": "Idle",
+  "DefaultPlayerAttitude": "Neutral",
+  "DefaultNPCAttitude": "Ignore",
+  "MotionControllerList": [
+    {
+      "Type": "Walk",
+      "MaxWalkSpeed": 6,
+      "RunThreshold": 0.7,
+      "RunThresholdRange": 0.1,
+      "Gravity": 10,
+      "MaxFallSpeed": 20,
+      "Acceleration": 10
+    }
+  ],
+  "KnockbackScale": 0.5,
+  "Instructions": [
+    {
+      "Sensor": {
+        "Type": "State",
+        "State": "Idle"
+      },
+      "Instructions": [
+        {
+          "Sensor": {
+            "Type": "Player",
+            "Range": 14,
+            "LockOnTarget": true
+          },
+          "BodyMotion": {
+            "Type": "Seek",
+            "SlowDownDistance": 5,
+            "StopDistance": 3,
+            "RelativeSpeed": 1
+          }
+        },
+        {
+          "Actions": []
+        }
+      ]
+    }
+  ],
+  "InteractionInstruction": {
+    "Instructions": [
+      {
+        "Continue": true,
+        "Sensor": {
+          "Type": "Any"
+        },
+        "Actions": [
+          {
+            "Type": "SetInteractable",
+            "Interactable": true,
+            "Hint": "nakasar_peuples.hint.talk"
+          }
+        ]
+      },
+      {
+        "Sensor": {
+          "Type": "HasInteracted"
+        },
+        "Actions": []
+      }
+    ]
+  }
+}

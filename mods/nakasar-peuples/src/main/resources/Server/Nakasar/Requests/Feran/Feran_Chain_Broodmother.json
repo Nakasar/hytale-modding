@@ -1,0 +1,22 @@
+{
+  "$Comment": "Étape 5 de la chaîne Feran (étape 8), générée par tools/generate_zones.py : donnée par le chef (StartChainRequest), jamais tirée au tableau (Weight 0). Remplie, elle pose Feran_Chain_5.",
+  "People": "Feran",
+  "Type": "Hunt",
+  "Weight": 0,
+  "TitleKey": "nakasar_peuples.request.Feran_Chain_Broodmother.title",
+  "TaskKey": "nakasar_peuples.request.Feran_Chain_Broodmother.task",
+  "Spawns": [
+    "Scarak_Broodmother",
+    "Scarak_Louse",
+    "Scarak_Louse"
+  ],
+  "Roles": [
+    "Scarak_Broodmother"
+  ],
+  "MinDistance": 120,
+  "MaxDistance": 180,
+  "Essor": 0,
+  "Favors": 8,
+  "Reputation": 250,
+  "Flag": "Feran_Chain_5"
+}

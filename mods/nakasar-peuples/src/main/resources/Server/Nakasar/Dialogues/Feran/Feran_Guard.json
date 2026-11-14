@@ -1,0 +1,84 @@
+{
+  "$Comment": "Dialogue du villageois à métier Guard (étape 8), généré par tools/generate_zones.py.",
+  "NpcNameKey": "nakasar_peuples.dialogue.Feran_Guard.npc",
+  "RoleKey": "nakasar_peuples.dialogue.Feran_Guard.role",
+  "People": "Feran",
+  "Entries": [
+    {
+      "Node": "AuxArmes",
+      "Conditions": [
+        {
+          "Type": "Raid",
+          "State": "Active"
+        }
+      ]
+    },
+    {
+      "Node": "Accueil"
+    }
+  ],
+  "Nodes": [
+    {
+      "Id": "Accueil",
+      "TextKey": "nakasar_peuples.dialogue.Feran_Guard.accueil",
+      "Responses": [
+        {
+          "TextKey": "nakasar_peuples.dialogue.job.raid",
+          "Effects": [
+            {
+              "Type": "RaidStatus"
+            }
+          ],
+          "Next": "Rumeur"
+        },
+        {
+          "TextKey": "nakasar_peuples.dialogue.job.metier",
+          "Next": "Metier"
+        },
+        {
+          "TextKey": "nakasar_peuples.dialogue.job.aurevoir"
+        }
+      ]
+    },
+    {
+      "Id": "Metier",
+      "TextKey": "nakasar_peuples.dialogue.Feran_Guard.metier",
+      "Responses": [
+        {
+          "TextKey": "nakasar_peuples.dialogue.job.aurevoir"
+        }
+      ]
+    },
+    {
+      "Id": "AuxArmes",
+      "TextKey": "nakasar_peuples.dialogue.Feran_Guard.auxArmes",
+      "Responses": [
+        {
+          "TextKey": "nakasar_peuples.dialogue.job.raid",
+          "Effects": [
+            {
+              "Type": "RaidStatus"
+            }
+          ],
+          "Next": "Rumeur"
+        },
+        {
+          "TextKey": "nakasar_peuples.dialogue.job.aurevoir"
+        }
+      ]
+    },
+    {
+      "Id": "Rumeur",
+      "TextKey": "nakasar_peuples.dialogue.Feran_Guard.rumeur",
+      "Responses": [
+        {
+          "TextKey": "nakasar_peuples.dialogue.job.metier",
+          "Next": "Metier"
+        },
+        {
+          "TextKey": "nakasar_peuples.dialogue.job.aurevoir"
+        }
+      ]
+    }
+  ]
+}

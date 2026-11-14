@@ -154,6 +154,15 @@ public final class PeuplesPlugin extends JavaPlugin {
         Villages.setResourceType(entities.registerResource(VillageRegistry.class, VillageRegistry.ID, VillageRegistry.CODEC));
         PeuplesPlayer.setComponentType(entities.registerComponent(PeuplesPlayer.class, PeuplesPlayer.ID, PeuplesPlayer.CODEC));
         entities.registerSystem(new VillageSeeder());
+        // Étape 8 : zones 2 et 3 (oasis feran, Renoncés, soif, froid, ruche scarak, objets de passage).
+        dev.nakasar.hytale.peuples.zone.ZoneRegistry.setResourceType(entities.registerResource(
+                dev.nakasar.hytale.peuples.zone.ZoneRegistry.class, dev.nakasar.hytale.peuples.zone.ZoneRegistry.ID,
+                dev.nakasar.hytale.peuples.zone.ZoneRegistry.CODEC));
+        getCodecRegistry(Interaction.CODEC).register(dev.nakasar.hytale.peuples.zone.ZoneItemInteraction.TYPE_ID,
+                dev.nakasar.hytale.peuples.zone.ZoneItemInteraction.class, dev.nakasar.hytale.peuples.zone.ZoneItemInteraction.CODEC);
+        entities.registerSystem(new dev.nakasar.hytale.peuples.zone.ZoneSeeder());
+        entities.registerSystem(new dev.nakasar.hytale.peuples.zone.ZoneSystem());
+        entities.registerSystem(new dev.nakasar.hytale.peuples.zone.HiveDeathSystem());
         entities.registerSystem(new VillageEntrySystem());
         entities.registerSystem(new VillageNoRegenSystem());
         entities.registerSystem(new RequestSystem());
@@ -191,5 +200,6 @@ public final class PeuplesPlugin extends JavaPlugin {
         Raids.clearAll();
         MeatOfferings.clearAll();
         Klops.clearAll();
+        dev.nakasar.hytale.peuples.zone.Climate.clearAll();
     }
 }

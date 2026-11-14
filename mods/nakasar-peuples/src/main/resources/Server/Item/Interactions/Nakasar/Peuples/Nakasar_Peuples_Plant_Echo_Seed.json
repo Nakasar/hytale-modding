@@ -1,0 +1,5 @@
+{
+  "$Comment": "Plante la Graine d'Écho en zone 2 : abri d'eau et accueil des Feran (Java, zone/ZoneItemInteraction).",
+  "Type": "Nakasar_Peuples_ZoneItem",
+  "Action": "EchoSeed"
+}

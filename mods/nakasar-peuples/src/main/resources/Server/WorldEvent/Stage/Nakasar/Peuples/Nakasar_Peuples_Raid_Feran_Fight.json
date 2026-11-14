@@ -1,0 +1,17 @@
+{
+  "$Comment": "Le combat : 300 s au plus (« … restant » sur la carte, marge de 30 s : le Java stoppe l'évènement au bilan).",
+  "Forks": [
+    {
+      "Conditions": [
+        {
+          "Type": "IntervalCondition",
+          "IntervalKey": "RaidFight",
+          "MinSeconds": 330,
+          "MaxSeconds": 330,
+          "ShowOnMap": true,
+          "MapIntervalKey": "server.map.worldEvents.runsFor"
+        }
+      ]
+    }
+  ]
+}
