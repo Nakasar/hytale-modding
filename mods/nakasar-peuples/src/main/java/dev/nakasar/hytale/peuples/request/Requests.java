@@ -183,13 +183,21 @@ public final class Requests {
         return Status.AVAILABLE;
     }
 
-    /** Titre d'une demande ({count} et {item} pour récolte et fabrication). */
+    /**
+     * Titre court d'une demande, tel que le suivi d'objectif l'affiche (en capitales, coupé vers 30 caractères) : les
+     * titres tiennent en 24 caractères et ne portent aucun paramètre (ValidateAssets le vérifie).
+     */
     public static Message title(RequestTemplate t) {
-        Message m = Message.translation(t.titleKey()).param("needed", t.needed());
-        if (t.itemId() != null) {
-            m = m.param("item", VillageBoard.itemName(t.itemId()));
+        return Message.translation(t.titleKey());
+    }
+
+    /** Titre d'une demande au tableau et dans les listes : le titre court, suivi de la quantité pour récolte et fabrication. */
+    public static Message boardTitle(RequestTemplate t) {
+        if (t.itemId() == null || t.needed() <= 1) {
+            return title(t);
         }
-        return m;
+        return Message.translation(KEYS + "titleAmount").param("title", title(t)).param("needed", t.needed())
+                .param("item", VillageBoard.itemName(t.itemId()));
     }
 
     /** Récompense d'une demande : essor du village et faveurs du peuple. */

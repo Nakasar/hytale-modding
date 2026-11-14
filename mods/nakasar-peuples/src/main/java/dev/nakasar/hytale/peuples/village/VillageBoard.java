@@ -112,7 +112,7 @@ public final class VillageBoard {
                 default -> open ? "requestOpen" : "requestLocked";
             };
             lines.add(Message.translation(KEYS + "requestLine").param("number", i + 1)
-                    .param("type", Message.translation(t.type().nameKey())).param("title", Requests.title(t))
+                    .param("type", Message.translation(t.type().nameKey())).param("title", Requests.boardTitle(t))
                     .param("state", Message.translation(KEYS + state)));
         }
         if (!any) {

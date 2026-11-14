@@ -91,7 +91,7 @@ public final class BoardPage extends InteractiveCustomUIPage<BoardPage.Event> {
             }
             cmd.set("#Request" + n + ".Visible", true);
             cmd.set("#Title" + n + ".TextSpans", Message.translation(KEYS + "title").param("number", i + 1)
-                    .param("type", Message.translation(t.type().nameKey())).param("title", Requests.title(t)));
+                    .param("type", Message.translation(t.type().nameKey())).param("title", Requests.boardTitle(t)));
             Requests.Status status = Requests.status(data, request);
             Message detail;
             Message action;
