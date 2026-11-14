@@ -1,0 +1,100 @@
+{
+  "$Comment": "Dialogue d'essai du socle (étape 1) : Brindille, jardinière kweebec. Sert à tester la fenêtre (/village parler Kweebec_Essai) et le tchat (/village tchat Kweebec_Essai) : drapeaux, objets, essor, palier, tableau. Les vrais dialogues viendront de tools/generate_dialogues.py (étape 3).",
+  "NpcNameKey": "nakasar_peuples.dialogue.Kweebec_Essai.npc",
+  "RoleKey": "nakasar_peuples.dialogue.Kweebec_Essai.role",
+  "People": "Kweebec",
+  "Entries": [
+    { "Node": "Retour", "Conditions": [ { "Type": "Flag", "Flag": "Kweebec_Essai_Met" } ] },
+    { "Node": "Accueil" }
+  ],
+  "Nodes": [
+    {
+      "Id": "Accueil",
+      "TextKey": "nakasar_peuples.dialogue.Kweebec_Essai.accueil",
+      "Responses": [
+        {
+          "TextKey": "nakasar_peuples.dialogue.Kweebec_Essai.accueil.qui",
+          "Effects": [ { "Type": "SetFlag", "Flag": "Kweebec_Essai_Met" } ],
+          "Next": "Presentation"
+        },
+        {
+          "TextKey": "nakasar_peuples.dialogue.Kweebec_Essai.tableau",
+          "HintKey": "nakasar_peuples.dialogue.hint.openBoard",
+          "Conditions": [ { "Type": "InVillage" } ],
+          "FailKey": "nakasar_peuples.dialogue.fail.inVillage",
+          "Effects": [ { "Type": "OpenBoard" } ]
+        },
+        { "TextKey": "nakasar_peuples.dialogue.Kweebec_Essai.aurevoir" }
+      ]
+    },
+    {
+      "Id": "Presentation",
+      "TextKey": "nakasar_peuples.dialogue.Kweebec_Essai.presentation",
+      "Responses": [
+        { "TextKey": "nakasar_peuples.dialogue.Kweebec_Essai.aider", "Next": "Aide" },
+        { "TextKey": "nakasar_peuples.dialogue.Kweebec_Essai.aplustard" }
+      ]
+    },
+    {
+      "Id": "Aide",
+      "TextKey": "nakasar_peuples.dialogue.Kweebec_Essai.aide",
+      "Responses": [
+        {
+          "TextKey": "nakasar_peuples.dialogue.Kweebec_Essai.aide.donner",
+          "HintKey": "nakasar_peuples.dialogue.Kweebec_Essai.aide.donner.hint",
+          "Conditions": [
+            { "Type": "InVillage" },
+            { "Type": "HasItem", "ItemId": "Plant_Seeds_Carrot", "Quantity": 3 }
+          ],
+          "FailKey": "nakasar_peuples.dialogue.Kweebec_Essai.aide.donner.fail",
+          "Effects": [
+            { "Type": "TakeItem", "ItemId": "Plant_Seeds_Carrot", "Quantity": 3 },
+            { "Type": "AddEssor", "Amount": 10 },
+            { "Type": "SetFlag", "Flag": "Kweebec_Essai_Gave_Seeds" }
+          ],
+          "Next": "Merci"
+        },
+        { "TextKey": "nakasar_peuples.dialogue.Kweebec_Essai.reviendrai" }
+      ]
+    },
+    {
+      "Id": "Merci",
+      "TextKey": "nakasar_peuples.dialogue.Kweebec_Essai.merci",
+      "Responses": [
+        {
+          "TextKey": "nakasar_peuples.dialogue.Kweebec_Essai.merci.cadeau",
+          "HintKey": "nakasar_peuples.dialogue.Kweebec_Essai.merci.cadeau.hint",
+          "Conditions": [ { "Type": "NotFlag", "Flag": "Kweebec_Essai_Gift" } ],
+          "FailKey": "nakasar_peuples.dialogue.Kweebec_Essai.merci.cadeau.fail",
+          "Effects": [
+            { "Type": "GiveItem", "ItemId": "Plant_Fruit_Apple", "Quantity": 2 },
+            { "Type": "SetFlag", "Flag": "Kweebec_Essai_Gift" }
+          ]
+        },
+        { "TextKey": "nakasar_peuples.dialogue.Kweebec_Essai.aurevoir" }
+      ]
+    },
+    {
+      "Id": "Retour",
+      "TextKey": "nakasar_peuples.dialogue.Kweebec_Essai.retour",
+      "Responses": [
+        { "TextKey": "nakasar_peuples.dialogue.Kweebec_Essai.aider", "Next": "Aide" },
+        {
+          "TextKey": "nakasar_peuples.dialogue.Kweebec_Essai.nouvelles",
+          "Conditions": [ { "Type": "VillageTier", "Min": 1 } ],
+          "FailKey": "nakasar_peuples.dialogue.Kweebec_Essai.nouvelles.fail",
+          "Effects": [ { "Type": "SendMessage", "TextKey": "nakasar_peuples.dialogue.Kweebec_Essai.nouvelles.message" } ],
+          "Next": "Retour"
+        },
+        {
+          "TextKey": "nakasar_peuples.dialogue.Kweebec_Essai.tableau",
+          "HintKey": "nakasar_peuples.dialogue.hint.openBoard",
+          "Conditions": [ { "Type": "InVillage" } ],
+          "FailKey": "nakasar_peuples.dialogue.fail.inVillage",
+          "Effects": [ { "Type": "OpenBoard" } ]
+        },
+        { "TextKey": "nakasar_peuples.dialogue.Kweebec_Essai.aurevoir" }
+      ]
+    }
+  ]
+}

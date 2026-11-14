@@ -1,0 +1,33 @@
+# Ids vanilla référencés par le mod Fractales, que ValidateAssets accepte sans les trouver dans le pack.
+# Une ligne par id : « <type> <id> ». Types : droplist (listes de butin), npc (rôles de PNJ), animations (ItemPlayerAnimationsId).
+# Un id absent du jeu fait échouer en jeu l'asset qui le cite, et parfois tout le mod. N'ajouter ici qu'un id
+# vu dans les fichiers du jeu ou chargé sans erreur en jeu ; préciser la source (même règle que le mod Vampires).
+# Jeux d'animations des armes vanilla (déjà acceptés par le mod Vampires, vus dans Assets.zip 0.7.2 ; Sword : coutelas
+# des boss du navire du Récif de la Sirène).
+animations Mace
+animations Sword
+animations Staff
+# Jeux d'animations des golems vanilla (validés par le mod Vampires dans Assets.zip 0.7.2, Tour de l'Alchimiste).
+animations Golem_Firesteel_Default
+animations Golem_Crystal_Thunder_Default
+# Esprit de racine vanilla (validé par le mod Vampires dans Assets.zip 0.7.2, citrouille géante) : Carnasse (Marais).
+animations Spirit_Root_Default
+# Morsures du loup et du renard vanilla (Server/Item/Animations/NPC/Beast/{Wolf_Black,Fox}/*_Default.json, vus dans
+# Assets.zip 0.7.2 le 24 octobre 2026) : loups du Moussu et esprits de Carnasse (Marais).
+animations Wolf_Black_Default
+animations Fox_Default
+# Hache de bataille vanilla (Server/Item/Animations/Battleaxe.json : SwingLeftCharging, Sweep, CastLeftCharging) et
+# attaque du loup-garou vanilla (Server/NPC/Roles/Undead/Werewolf.json cite Outlander_Brute_Default / Grab), vus dans
+# Assets.zip 0.7.2 le 25 octobre 2026 : Kanaxai (Ressac) et Chaman en loup-garou (Tempête de neige).
+animations Battleaxe
+animations Outlander_Brute_Default
+# Morsures de l'hyène, du raptor des cavernes et du crocodile vanilla (Server/Item/Animations/NPC/Beast/{Hyena,
+# Raptor_Cave}/*_Default.json, NPC/Swimming_Beast/Crocodile/Crocodile_Default.json, vus dans Assets.zip 0.7.2 le
+# 25 octobre 2026) : Tête-de-pierre, raptors de poche et saurien brise-os (Récif de la Sirène).
+animations Hyena_Default
+animations Raptor_Cave_Default
+animations Crocodile_Default
+# Griffes et morsure du tigre à dents de sabre vanilla (Server/Item/Animations/NPC/Beast/Tiger_Sabertooth/
+# Tiger_Sabertooth_Default.json : SwipeLeft, SwipeRight, Bite ; vu dans Assets.zip 0.7.2 le 26 octobre 2026, déjà
+# accepté par le mod Vampires) : tigres du Pic de Sunqua.
+animations Tiger_Sabertooth_Default

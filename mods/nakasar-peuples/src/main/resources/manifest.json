@@ -1,0 +1,12 @@
+{
+  "Group": "${group}",
+  "Name": "Peuples",
+  "Version": "${version}",
+  "Description": "Peuples d'Orbis : des villages vivants des peuples d'Orbis (Kweebecs, Trorks, Feran...) qui grandissent avec l'aide du joueur, avec tableau des demandes, dépôt et dialogues.",
+  "Authors": [
+    { "Name": "${author}" }
+  ],
+  "Main": "dev.nakasar.hytale.peuples.PeuplesPlugin",
+  "IncludesAssetPack": true,
+  "ServerVersion": "${serverRange}"
+}
