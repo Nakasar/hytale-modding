@@ -176,13 +176,24 @@ public final class Chantiers {
         Terrain terrain = new Terrain(world);
         List<String> working = new ArrayList<>();
         List<String> skipped = new ArrayList<>();
+        Map<String, Obstacles> blocking = new LinkedHashMap<>();
+        // Toutes les parcelles sont examinées avant de poser le moindre échafaudage : l'échafaudage d'un bâtiment
+        // (1 bloc autour de lui) ne doit pas faire sauter son voisin.
+        List<VillageLayout.Building> free = new ArrayList<>();
         for (VillageLayout.Building b : buildings) {
+            if (!village.isBuilt(b.id())) {
+                Obstacles o = obstacles(world, village, b, siteHeight(world, village, b));
+                if (o.any()) {
+                    skipped.add(b.id());
+                    blocking.put(b.id(), o);
+                    continue;
+                }
+            }
+            free.add(b);
+        }
+        for (VillageLayout.Building b : free) {
             boolean ruins = village.isBuilt(b.id());
             int h = siteHeight(world, village, b);
-            if (!ruins && occupied(world, village, b, h)) {
-                skipped.add(b.id());
-                continue;
-            }
             if (ruins) {
                 clearRuins(world, village, b, h);
             } else {
@@ -203,6 +214,13 @@ public final class Chantiers {
                 .param("hours", spec.hours()), null, NotificationStyle.Success);
         if (!skipped.isEmpty()) {
             announce(world, village, Message.translation(KEYS + "skipped").param("count", skipped.size()), null, NotificationStyle.Warning);
+            for (String id : skipped) {
+                announceChat(world, village, obstacleLine(layout.building(id), blocking.get(id)));
+                Obstacle first = blocking.get(id).sample().get(0);
+                LOGGER.atInfo().log("Nakasar Peuples : %s sauté à %s, %d bloc(s) gênant(s), dont %s en %d %d %d", id, village.name(),
+                        blocking.get(id).total(), first.block(), first.x(), first.y(), first.z());
+            }
+            announceChat(world, village, Message.translation(KEYS + "obstacles.hint"));
         }
         LOGGER.atInfo().log("Nakasar Peuples : chantier du palier %d ouvert à %s (%d bâtiments, %d sautés)", target, village.name(),
                 working.size(), skipped.size());
@@ -254,6 +272,23 @@ public final class Chantiers {
             if (village.isBuilt(b.id())) {
                 clearRuins(world, village, b, h);
             }
+            if (VillageBuilder.paste(world, store, b.prefab(), village.x() + b.x(), h, village.z() + b.z(), b.rotation())) {
+                village.markBuilt(b.id());
+                village.setSiteY(b.id(), h);
+                pasted++;
+            }
+        }
+        Terrain terrain = new Terrain(world);
+        for (String id : c.skipped()) {
+            VillageLayout.Building b = layout.building(id);
+            if (b == null || village.isStanding(id)) {
+                continue;
+            }
+            int h = siteHeight(world, village, b);
+            if (occupied(world, village, b, h)) {
+                continue;
+            }
+            prepare(world, terrain, village, layout, b, h);
             if (VillageBuilder.paste(world, store, b.prefab(), village.x() + b.x(), h, village.z() + b.z(), b.rotation())) {
                 village.markBuilt(b.id());
                 village.setSiteY(b.id(), h);
@@ -400,7 +435,7 @@ public final class Chantiers {
      * Hauteur de pose (ancre du prefab) d'un bâtiment : celle gardée avec le village, sinon le sol médian de son
      * emprise, à au plus {@value #MAX_STEP} blocs de la place (comme {@link VillageBuilder}).
      */
-    static int siteHeight(World world, Village village, VillageLayout.Building b) {
+    public static int siteHeight(World world, Village village, VillageLayout.Building b) {
         int saved = village.siteY(b.id());
         if (saved != Integer.MIN_VALUE) {
             return saved;
@@ -411,31 +446,104 @@ public final class Chantiers {
         return h == Terrain.NONE ? h0 : Math.max(h0 - MAX_STEP, Math.min(h0 + MAX_STEP, h));
     }
 
+    /** Un bloc qui gêne un chantier : position dans le monde et id du bloc (sans l'astérisque des variantes). */
+    public record Obstacle(int x, int y, int z, String block) {
+    }
+
+    /** Les blocs qui gênent une parcelle : les {@value #OBSTACLE_SAMPLE} premiers trouvés et leur nombre total. */
+    public record Obstacles(List<Obstacle> sample, int total) {
+        public boolean any() {
+            return total > 0;
+        }
+    }
+
+    /** Nombre de blocs gênants gardés par parcelle (coordonnées dans le tchat, repères en jeu). */
+    public static final int OBSTACLE_SAMPLE = 64;
+
     /**
-     * Vrai si l'emprise contient, au-dessus du sol, des blocs qu'un joueur a pu poser (ni relief, ni plante, ni arbre) :
-     * l'emplacement est alors sauté.
+     * Blocs de l'emprise, au-dessus du sol, qu'un joueur a pu poser (ni relief, ni plante, ni arbre) : la parcelle est
+     * sautée s'il y en a un seul. Même zone que celle que le chantier examine : l'emprise du bâtiment, de
+     * {@code h + 1} à {@code h + min(hauteur, 12)}.
      */
-    static boolean occupied(World world, Village village, VillageLayout.Building b, int h) {
+    public static Obstacles obstacles(World world, Village village, VillageLayout.Building b, int h) {
         ChunkStore chunks = world.getChunkStore();
         int[] r = b.rect();
-        for (int x = village.x() + r[0]; x <= village.x() + r[1]; x++) {
-            for (int z = village.z() + r[2]; z <= village.z() + r[3]; z++) {
-                for (int y = h + 1; y <= h + Math.min(b.height(), 12); y++) {
+        List<Obstacle> sample = new ArrayList<>();
+        int total = 0;
+        for (int y = h + 1; y <= h + scanHeight(b); y++) {
+            for (int x = village.x() + r[0]; x <= village.x() + r[1]; x++) {
+                for (int z = village.z() + r[2]; z <= village.z() + r[3]; z++) {
                     String name = Blocks.name(chunks, x, y, z);
                     if (name != null && !natural(name)) {
-                        return true;
+                        total++;
+                        if (sample.size() < OBSTACLE_SAMPLE) {
+                            sample.add(new Obstacle(x, y, z, name.startsWith("*") ? name.substring(1) : name));
+                        }
                     }
                 }
             }
         }
-        return false;
+        return new Obstacles(sample, total);
+    }
+
+    /** Hauteur examinée au-dessus du sol d'une parcelle (blocs). */
+    public static int scanHeight(VillageLayout.Building b) {
+        return Math.min(b.height(), 12);
+    }
+
+    /** Blocs gênants d'un bâtiment du plan, à sa hauteur de pose. */
+    public static Obstacles obstacles(World world, Village village, VillageLayout.Building b) {
+        return obstacles(world, village, b, siteHeight(world, village, b));
+    }
+
+    /**
+     * Bâtiments que des blocs empêchent de bâtir : ceux que le chantier en cours a sautés, sinon ceux qu'attend le
+     * prochain chantier (hors ruines, que le chantier débarrasse lui-même). Seuls ceux qui ont encore des blocs gênants.
+     */
+    public static Map<VillageLayout.Building, Obstacles> blocked(World world, Village village) {
+        Map<VillageLayout.Building, Obstacles> out = new LinkedHashMap<>();
+        VillageLayout layout = layout(village);
+        if (layout == null) {
+            return out;
+        }
+        List<VillageLayout.Building> candidates = new ArrayList<>();
+        ChantierState c = village.chantier();
+        if (c != null) {
+            for (String id : c.skipped()) {
+                VillageLayout.Building b = layout.building(id);
+                if (b != null) {
+                    candidates.add(b);
+                }
+            }
+        } else if (village.tier() < Tiers.MAX) {
+            for (VillageLayout.Building b : pending(layout, village, village.tier() + 1)) {
+                if (!village.isBuilt(b.id())) {
+                    candidates.add(b);
+                }
+            }
+        }
+        for (VillageLayout.Building b : candidates) {
+            Obstacles o = obstacles(world, village, b);
+            if (o.any()) {
+                out.put(b, o);
+            }
+        }
+        return out;
+    }
+
+    static boolean occupied(World world, Village village, VillageLayout.Building b, int h) {
+        return obstacles(world, village, b, h).any();
     }
 
     /** Bloc du monde naturel : relief, plante, arbre (pas de planches, de briques ni de meubles). */
     static boolean natural(String name) {
         String base = name.startsWith("*") ? name.substring(1) : name;
-        if (base.startsWith("Plant_")) {
+        if (base.startsWith("Plant_") || base.startsWith("Ore_") || base.startsWith("Rubble_") || base.startsWith("Fluid_")) {
             return true;
+        }
+        if (base.startsWith("Deco_")) {
+            return base.startsWith("Deco_Hive") || base.startsWith("Deco_Nest") || base.startsWith("Deco_Coral")
+                    || base.startsWith("Deco_SpiderWeb") || base.startsWith("Deco_Bone");
         }
         if (base.startsWith("Wood_")) {
             return base.contains("_Trunk") || base.contains("_Branch") || base.contains("_Roots");
@@ -551,6 +659,41 @@ public final class Chantiers {
             }
             then.run();
         }));
+    }
+
+    /** Charge les chunks du village puis lance `then` sur le thread du monde (commandes ; ne touche pas aux travaux). */
+    public static void loadThen(World world, Village village, Runnable then) {
+        VillageLayout layout = layout(village);
+        int r = (layout == null ? 32 : layout.radius()) + MARGIN + BLEND + 2;
+        Terrain.load(world, village.x() - r, village.x() + r, village.z() - r, village.z() + r).whenComplete((ignored, error) -> world.execute(() -> {
+            if (error != null) {
+                LOGGER.atWarning().withCause(error).log("Nakasar Peuples : chunks du village %s non chargés", village.name());
+                return;
+            }
+            then.run();
+        }));
+    }
+
+    /**
+     * Ligne de tchat d'une parcelle bloquée : bâtiment, nombre de blocs gênants et le premier (id et coordonnées, que
+     * le joueur peut viser avec F3 / la boussole).
+     */
+    public static Message obstacleLine(VillageLayout.Building b, Obstacles o) {
+        Obstacle first = o.sample().get(0);
+        return Message.translation(KEYS + "obstacles.line").param("building", Message.translation(buildingKey(b.id())))
+                .param("count", o.total()).param("block", first.block())
+                .param("x", first.x()).param("y", first.y()).param("z", first.z());
+    }
+
+    /** Message de tchat seul (sans notification) aux joueurs proches du village. */
+    static void announceChat(World world, Village village, Message message) {
+        Store<EntityStore> store = world.getEntityStore().getStore();
+        for (PlayerRef player : world.getPlayerRefs()) {
+            Vector3d at = Requests.position(store, player.getReference());
+            if (at != null && village.horizontalDistanceSquared(at.x(), at.z()) <= (double) ANNOUNCE_RADIUS * ANNOUNCE_RADIUS) {
+                player.sendMessage(message);
+            }
+        }
     }
 
     /** Message (tchat et notification) et titre facultatif aux joueurs proches du village. */

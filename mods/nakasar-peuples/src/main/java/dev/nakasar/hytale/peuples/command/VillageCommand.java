@@ -23,6 +23,7 @@ import dev.nakasar.hytale.peuples.request.Requests;
 import dev.nakasar.hytale.peuples.request.VillageRequest;
 import dev.nakasar.hytale.peuples.reputation.Reputations;
 import dev.nakasar.hytale.peuples.reputation.Shops;
+import dev.nakasar.hytale.peuples.village.ChantierMarkers;
 import dev.nakasar.hytale.peuples.village.Chantiers;
 import dev.nakasar.hytale.peuples.village.People;
 import dev.nakasar.hytale.peuples.village.Villagers;
@@ -36,7 +37,10 @@ import dev.nakasar.hytale.peuples.village.VillageNames;
 import dev.nakasar.hytale.peuples.village.Villages;
 import org.joml.Vector3d;
 
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * {@code /village} : commande de test du socle (étape 1 du plan). Les joueurs (groupe {@code hytale:Adventurer})
@@ -107,6 +111,7 @@ public final class VillageCommand extends AbstractCommandCollection {
         addSubCommand(new FinishChantierCommand());
         addSubCommand(new BurnCommand());
         addSubCommand(new JobsCommand());
+        addSubCommand(new ObstaclesCommand());
         addSubCommand(new RaidCommand());
         addSubCommand(new RaidStartCommand());
         addSubCommand(new RaidFinishCommand());
@@ -749,6 +754,99 @@ public final class VillageCommand extends AbstractCommandCollection {
             if (burnt == null) {
                 player.sendMessage(Message.translation(Chantiers.KEYS + "burnNothing"));
             }
+        }
+    }
+
+    /**
+     * Les blocs qui empêchent un chantier de bâtir (parcelles sautées, ou celles du prochain chantier) : coordonnées et
+     * id dans le tchat, et repères en jeu pendant {@value ChantierMarkers#SECONDS} s (contour de la parcelle, cube sur
+     * chaque bloc). Avec un id de bâtiment, ce seul bâtiment, même hors chantier.
+     */
+    private static final class ObstaclesCommand extends PlayerCommand {
+        private static final int LINES = 12;
+        private final OptionalArg<String> building = withOptionalArg("batiment", KEYS + "obstacles.arg", ArgTypes.STRING);
+
+        ObstaclesCommand() {
+            super("genes", KEYS + "obstacles.desc");
+        }
+
+        @Override
+        protected void execute(CommandContext context, Store<EntityStore> store, Ref<EntityStore> ref, PlayerRef player, World world) {
+            Village village = nearest(world, player);
+            if (village == null) {
+                return;
+            }
+            VillageLayout layout = Chantiers.layout(village);
+            if (layout == null) {
+                player.sendMessage(Message.translation(Chantiers.KEYS + "noLayout"));
+                return;
+            }
+            String wanted = building.get(context);
+            VillageLayout.Building only = null;
+            if (wanted != null) {
+                for (VillageLayout.Building b : layout.buildings()) {
+                    if (b.id().equalsIgnoreCase(wanted)) {
+                        only = b;
+                    }
+                }
+                if (only == null) {
+                    List<String> ids = new ArrayList<>();
+                    for (VillageLayout.Building b : layout.buildings()) {
+                        ids.add(b.id());
+                    }
+                    player.sendMessage(Message.translation(Chantiers.KEYS + "obstacles.unknown").param("building", wanted)
+                            .param("list", String.join(", ", ids)));
+                    return;
+                }
+            }
+            VillageLayout.Building target = only;
+            Chantiers.loadThen(world, village, () -> {
+                Map<VillageLayout.Building, Chantiers.Obstacles> blocked = new LinkedHashMap<>();
+                if (target != null) {
+                    blocked.put(target, Chantiers.obstacles(world, village, target));
+                } else {
+                    blocked.putAll(Chantiers.blocked(world, village));
+                }
+                ChantierMarkers.clear(player);
+                boolean any = false;
+                for (Map.Entry<VillageLayout.Building, Chantiers.Obstacles> e : blocked.entrySet()) {
+                    VillageLayout.Building b = e.getKey();
+                    Chantiers.Obstacles o = e.getValue();
+                    int h = Chantiers.siteHeight(world, village, b);
+                    int[] r = b.rect();
+                    if (!o.any()) {
+                        player.sendMessage(Message.translation(Chantiers.KEYS + "obstacles.clear")
+                                .param("building", Message.translation(Chantiers.buildingKey(b.id()))));
+                        ChantierMarkers.show(player, village, b, h, o);
+                        continue;
+                    }
+                    any = true;
+                    player.sendMessage(Message.translation(Chantiers.KEYS + "obstacles.header")
+                            .param("building", Message.translation(Chantiers.buildingKey(b.id()))).param("count", o.total())
+                            .param("x0", village.x() + r[0]).param("z0", village.z() + r[2])
+                            .param("x1", village.x() + r[1]).param("z1", village.z() + r[3])
+                            .param("y0", h + 1).param("y1", h + Chantiers.scanHeight(b)).color("#e8c46a"));
+                    int shown = 0;
+                    for (Chantiers.Obstacle obstacle : o.sample()) {
+                        if (shown++ == LINES) {
+                            break;
+                        }
+                        player.sendMessage(Message.translation(Chantiers.KEYS + "obstacles.block").param("block", obstacle.block())
+                                .param("x", obstacle.x()).param("y", obstacle.y()).param("z", obstacle.z()));
+                    }
+                    if (o.total() > Math.min(LINES, o.sample().size())) {
+                        player.sendMessage(Message.translation(Chantiers.KEYS + "obstacles.more")
+                                .param("count", o.total() - Math.min(LINES, o.sample().size())));
+                    }
+                    ChantierMarkers.show(player, village, b, h, o);
+                }
+                if (blocked.isEmpty()) {
+                    player.sendMessage(Message.translation(Chantiers.KEYS + "obstacles.none"));
+                } else {
+                    player.sendMessage(Message.translation(Chantiers.KEYS + (any ? "obstacles.shown" : "obstacles.shownClear"))
+                            .param("seconds", ChantierMarkers.SECONDS).param("sample", Chantiers.OBSTACLE_SAMPLE));
+                }
+            });
         }
     }
 

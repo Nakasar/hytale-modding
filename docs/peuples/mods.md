@@ -412,6 +412,24 @@ Les tables sont dans `tools/generate_village_layouts.py` (`CHANTIERS`), qui écr
   4 blocs, à 1 bloc du bâtiment, planchers `Wood_Hardwood_Planks_Half` tous les 5 niveaux (18 blocs de haut au plus)
   et un tas de `Wood_Oak_Trunk` au centre. Il n'existe pas de bloc « échafaudage » vanilla.
 - Une parcelle où un joueur a construit n'est jamais touchée. Le bâtiment est sauté et le tableau le dit.
+
+### Blocs qui gênent un chantier
+
+Une parcelle est sautée dès qu'un seul bloc « posé à la main » se trouve dans son emprise, au-dessus du sol de pose,
+sur `min(hauteur du prefab, 12)` niveaux. Comptent comme naturels, donc ne gênent pas : relief (`Soil_`, `Rock_` hors
+briques, pavés, poli, lisse, demi-blocs, escaliers, chemins), `Plant_`, troncs, branches et racines, `Ore_`, `Rubble_`,
+`Fluid_`, et quelques `Deco_` naturels (ruches, nids, coquillages, toiles, os).
+
+- À l'ouverture du chantier, chaque parcelle sautée est annoncée dans le tchat avec son nombre de blocs gênants et le
+  premier trouvé (id et coordonnées). Le journal du serveur garde la même ligne.
+- Le tableau et `/village chantier` donnent la même ligne : pour les parcelles sautées du chantier en cours, ou pour
+  celles du prochain chantier avant qu'il ne s'ouvre.
+- `/village genes [bâtiment]` liste les coordonnées (12 dans le tchat, 64 repères au plus par parcelle) et affiche pendant
+  60 s, au seul joueur, le contour de la parcelle examinée (fil de fer jaune) et un cube rose sur chaque bloc gênant.
+  Ce sont les formes de débogage du moteur (celles de `/debug shape`) : aucun bloc ni entité n'est posé.
+- Une parcelle dégagée avant la fin du chantier est bâtie à la fin, sans attendre le chantier suivant.
+- Toutes les parcelles sont examinées avant de poser le moindre échafaudage, pour que l'échafaudage d'un bâtiment ne
+  fasse pas sauter son voisin.
 - À la fin, l'échafaudage est retiré et le prefab collé. Le palier monte, la jauge repart à 0, et un titre s'affiche à
   tous les joueurs à moins de 160 blocs (avec un message dans le chat).
 - Un chantier en cours se voit au tableau (heures restantes, bâtiments, parcelles sautées). Sinon le tableau dit ce
@@ -464,6 +482,7 @@ Chaque palier ajoute des Kweebecs vanilla à métier, avec leur rôle (`Nakasar_
 | --- | --- | --- |
 | `chantier` | joueur | état du chantier en cours, ou ce qu'attend le prochain (jauge, matériaux, ruines) |
 | `metiers` | joueur | villageois à métier présents et postes à pourvoir, aides de chantier |
+| `genes [bâtiment]` | joueur | blocs qui gênent les chantiers : coordonnées et repères en jeu pendant 60 s |
 | `lancer` | opérateur | ouvre le chantier du palier suivant sans jauge ni matériaux |
 | `finir` | opérateur | finit le chantier en cours tout de suite |
 | `bruler [bâtiment]` | opérateur | brûle un bâtiment (au hasard dans le palier le plus haut si aucun n'est donné), le village perd un palier |
