@@ -25,6 +25,19 @@ Devenez **Champion** d'un peuple (1000 de réputation) : il vous offre une **Pie
 
 L'avant-poste commence au palier 0 et grandit avec ses demandes et ses chantiers, comme n'importe quel village.
 
+## Le colon : fonder sans être Champion
+
+Un village arrivé au **bourg** (palier max) fait venir un **colon**, au plus une fois tous les 7 jours de jeu. Il attend près du cœur du village.
+
+1. Parlez-lui : il cherche où fonder un nouveau village. Répondez **Je t'aide : suis-moi**, et il vous suit partout (s'il est distancé, il vous rejoint).
+2. Parlez-lui là où vous voulez fonder. Il examine l'endroit avec les règles des villages posés par le monde :
+   - au moins **600 blocs** d'un autre village de son peuple, et **300 blocs** des villages des autres peuples ;
+   - sur les terres de son peuple (sa zone, ni rivage ni océan) ;
+   - sur son sol (herbe, sable, neige, cendre…), sans eau, et un terrain assez plat.
+3. Si l'endroit convient, il propose **Fondons le village ici** : le village est bâti tout de suite autour de vous (si un bâtiment vous enferme, vous êtes poussé juste à côté). Sinon, il dit pourquoi (dans la fenêtre, et en détail dans le tchat : distance, pourcentage de bon sol, relief…).
+
+Vous pouvez aussi lui dire de rentrer au village : il vous y attendra. Si la fondation échoue, il rentre aussi à son village.
+
 ## Bon à savoir
 
 - Une seule fondation en attente à la fois.

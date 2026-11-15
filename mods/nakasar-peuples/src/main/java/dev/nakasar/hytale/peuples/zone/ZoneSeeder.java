@@ -139,7 +139,7 @@ public final class ZoneSeeder extends TickingSystem<EntityStore> {
         return out;
     }
 
-    private static boolean inZone(World world, int zone, int x, int z, int r) {
+    static boolean inZone(World world, int zone, int x, int z, int r) {
         int[][] points = {{0, 0}, {r, 0}, {-r, 0}, {0, r}, {0, -r}};
         for (int[] p : points) {
             if (!Zones.inland(Zones.name(world, x + p[0], z + p[1]), zone)) {

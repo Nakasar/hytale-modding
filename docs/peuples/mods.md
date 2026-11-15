@@ -222,6 +222,38 @@ couvert d'herbe à 80 %, sans eau, avec au plus 9 blocs de relief. Le monde gard
 site ne convient, il réessaie au démarrage suivant avec d'autres sites. Les noms viennent de `VillageNames` (liste
 kweebec, sans doublon dans le monde).
 
+#### Plusieurs villages par peuple
+
+Une fois le premier lieu d'un peuple posé (village kweebec, camp trork, oasis feran, hameau renoncé, monastère
+slothian), `zone/MoreVillagesSeeder` pose les suivants, 150 s après le démarrage puis un à la fois, jusqu'à
+`People.naturalVillages()` en tout : **3 Kweebecs, 3 Feran, 2 Trorks, 2 Renoncés, 2 Slothians**. Écarts retenus :
+
+- **600 à 1200 blocs** du village du même peuple le plus proche. À 600 blocs, les terrains de chasse des demandes
+  (220 blocs autour du cœur), la veille des raids et la vie du village (160 blocs) ne se chevauchent jamais, et la
+  bannière (révélée à 300 blocs) ne se voit pas depuis l'autre village. Au plus 1200 blocs, pour que les villages d'un
+  peuple forment une région et restent à portée des caravanes (2400 blocs au plus).
+- **Au moins 300 blocs** de tout village d'un autre peuple.
+- Dans la **terre ferme de la zone du peuple** (centre et quatre bords du plan entier, ni rivage ni océan ; zone 1 pour
+  les Kweebecs et les Trorks), sur son sol, sans eau et avec un relief modéré, comme le premier lieu.
+
+Les villages se posent avec `VillageBuilder` (même nivellement `Grading` que le premier). Le registre garde le compte
+(`MoreSeeded`) ; une recherche sans site compte un échec (`MoreFailures`), et un peuple n'est plus cherché après trois
+échecs. `/village semer <peuple>` pose un village de plus à la main avec les mêmes règles, et `/village zone` les liste
+tous. Un monde existant reçoit ses villages suivants au prochain démarrage.
+
+#### Le colon : fonder un village sans être Champion
+
+`outpost/Settlers` : un village au palier max (`Tiers.MAX`) fait venir un colon au plus une fois tous les 7 jours de
+jeu (`Village` : `SettlerDay`, `SettlerActive`, `SettlerOwner`). Le PNJ n'est pas sauvegardé : il apparaît au poste
+(cœur + 4, -4) quand un joueur passe à moins de 48 blocs (`Nakasar_Peuples_<Peuple>_Settler`), puis, accepté, suit son
+joueur (`…_Settler_Follow`, ramené près de lui au-delà de 32 blocs, retiré quand il se déconnecte). Lui parler ailleurs
+lance `zone/SiteRules.check` (règles communes avec `MoreVillagesSeeder` : écarts 600/300, fondations prévues, zone et
+rivage, sol, eau, relief) : la condition de dialogue `SettlerSite` choisit le nœud (« Ici » ou la raison), le détail
+chiffré part dans le tchat. « Fondons le village ici » bâtit le village tout de suite (`VillageBuilder.generate`) ; les joueurs dont
+les pieds ou la tête sont pris dans un bloc posé sont téléportés au point sûr le plus proche à moins de 4 blocs de leur
+hauteur (`Settlers.unstick`, pas sur un toit). Si la fondation échoue, le colon rentre à son village. Rôles, dialogue `Colon` et textes :
+`tools/generate_settlers.py`. `/village colon` (ops) fait venir un colon tout de suite au village le plus proche.
+
 ### Bannière et entrée
 
 - La **bannière** (`Nakasar_Peuples_Banner_Kweebec`, statue kweebec vanilla en parent) est posée au nord de la place.

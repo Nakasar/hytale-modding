@@ -197,6 +197,8 @@ public final class PeuplesPlugin extends JavaPlugin {
         entities.registerSystem(new RaidAttitudeSystem());
         // Étape 7 : camp trork, viande, Peinture de guerre, Klops errant.
         entities.registerSystem(new TrorkCampSeeder());
+        // Plusieurs villages par peuple : les suivants, loin du premier et dans la zone du peuple.
+        entities.registerSystem(new dev.nakasar.hytale.peuples.zone.MoreVillagesSeeder());
         entities.registerSystem(new MeatOfferings());
         entities.registerSystem(new WarPaintSystem());
         entities.registerSystem(new KlopsSystem());
@@ -216,6 +218,7 @@ public final class PeuplesPlugin extends JavaPlugin {
         dev.nakasar.hytale.peuples.boss.QuestBosses.clearAll();
         dev.nakasar.hytale.peuples.boss.QuestBossBar.clearAll();
         Criers.clearAll();
+        dev.nakasar.hytale.peuples.outpost.Settlers.clearAll();
         RequestHud.clearAll();
         VillageBlockSystem.clearAll();
         Villagers.clearAll();

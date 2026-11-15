@@ -9,7 +9,7 @@
 <Info label="Raids">aucun</Info>
 </Infobox>
 
-Le camp trork se pose à 220-450 blocs du premier village kweebec. C'est l'autre route de la zone 1 : aider les Trorks coûte auprès des Kweebecs, et inversement.
+Le camp trork se pose à 220-450 blocs du premier village kweebec. C'est l'autre route de la zone 1 : aider les Trorks coûte auprès des Kweebecs, et inversement. Un second camp trork se pose plus loin, à 600-1200 blocs du premier.
 
 ## Apprivoiser par la viande
 

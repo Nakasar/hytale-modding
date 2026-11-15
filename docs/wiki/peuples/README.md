@@ -20,7 +20,7 @@ Des **villages vivants** des peuples d'Orbis, qui grandissent avec votre aide. C
 | [Renoncés](renonces.md) | 3, toundra | hameau du givre | culte outlander | Manteau du givre |
 | [Slothians](slothians.md) | 4, terres brûlées | monastère au bord du Vide | créatures du Vide | Veille des Slothians |
 
-Les villages se posent tout seuls dans le monde : le premier village kweebec non loin de l'apparition, le camp trork à quelques centaines de blocs de lui, puis un village par peuple dans sa zone. Chaque village a une **bannière** au nord de sa place : elle apparaît sur votre carte et votre boussole quand vous passez à moins de 300 blocs.
+Les villages se posent tout seuls dans le monde : le premier village kweebec non loin de l'apparition, le camp trork à quelques centaines de blocs de lui, puis un village par peuple dans sa zone. D'autres villages suivent ensuite (trois kweebecs et trois feran, deux pour les autres peuples), toujours dans la zone de leur peuple et à 600-1200 blocs les uns des autres : chacun a son nom, sa réputation et ses raids. Chaque village a une **bannière** au nord de sa place : elle apparaît sur votre carte et votre boussole quand vous passez à moins de 300 blocs.
 
 ## Pour commencer
 

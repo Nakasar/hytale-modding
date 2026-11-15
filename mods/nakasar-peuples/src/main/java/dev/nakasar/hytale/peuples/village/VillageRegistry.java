@@ -9,8 +9,10 @@ import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 /**
@@ -37,8 +39,18 @@ public final class VillageRegistry implements Resource<EntityStore> {
             .documentation("Peuples (ids) dont le lieu automatique est déjà posé, hors premier village kweebec (champ Seeded) : "
                     + "camp trork (étape 7), villages des zones 2 et 3 (étape 8).")
             .add()
+            .append(new KeyedCodec<>("MoreSeeded", Codec.STRING_ARRAY),
+                    (r, a) -> readCounts(r.moreSeeded, a), r -> writeCounts(r.moreSeeded))
+            .documentation("Villages suivants posés tout seuls, par peuple (« Kweebec=2 ») : MoreVillagesSeeder, en plus du premier.")
+            .add()
+            .append(new KeyedCodec<>("MoreFailures", Codec.STRING_ARRAY),
+                    (r, a) -> readCounts(r.moreFailures, a), r -> writeCounts(r.moreFailures))
+            .documentation("Recherches de village suivant restées sans site, par peuple (on abandonne après quelques-unes).")
+            .add()
             .build();
 
+    private final Map<String, Integer> moreSeeded = new LinkedHashMap<>();
+    private final Map<String, Integer> moreFailures = new LinkedHashMap<>();
     private final List<Village> villages = new ArrayList<>();
     private boolean seeded;
     private int seedAttempts;
@@ -90,6 +102,49 @@ public final class VillageRegistry implements Resource<EntityStore> {
                 }
             }
         }
+    }
+
+    /** Villages suivants (après le premier) déjà posés tout seuls pour ce peuple. */
+    public int moreSeeded(People people) {
+        return moreSeeded.getOrDefault(people.id(), 0);
+    }
+
+    public void countMoreSeeded(People people) {
+        moreSeeded.merge(people.id(), 1, Integer::sum);
+    }
+
+    /** Recherches de village suivant sans site pour ce peuple. */
+    public int moreFailures(People people) {
+        return moreFailures.getOrDefault(people.id(), 0);
+    }
+
+    public void countMoreFailure(People people) {
+        moreFailures.merge(people.id(), 1, Integer::sum);
+    }
+
+    public void resetMoreFailures(People people) {
+        moreFailures.remove(people.id());
+    }
+
+    private static void readCounts(Map<String, Integer> into, String[] entries) {
+        into.clear();
+        if (entries == null) {
+            return;
+        }
+        for (String e : entries) {
+            int eq = e == null ? -1 : e.indexOf('=');
+            if (eq > 0) {
+                try {
+                    into.put(e.substring(0, eq), Integer.parseInt(e.substring(eq + 1).trim()));
+                } catch (NumberFormatException ignored) {
+                    // entrée abîmée : ignorée
+                }
+            }
+        }
+    }
+
+    private static String[] writeCounts(Map<String, Integer> counts) {
+        return counts.entrySet().stream().map(e -> e.getKey() + "=" + e.getValue()).toArray(String[]::new);
     }
 
     public int seedAttempts() {
@@ -181,6 +236,8 @@ public final class VillageRegistry implements Resource<EntityStore> {
         copy.seeded = seeded;
         copy.seedAttempts = seedAttempts;
         copy.seededPeople.addAll(seededPeople);
+        copy.moreSeeded.putAll(moreSeeded);
+        copy.moreFailures.putAll(moreFailures);
         return copy;
     }
 }

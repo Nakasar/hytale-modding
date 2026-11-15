@@ -19,6 +19,7 @@ import dev.nakasar.hytale.peuples.village.Village;
 import dev.nakasar.hytale.peuples.village.Villages;
 import dev.nakasar.hytale.peuples.zone.Climate;
 import dev.nakasar.hytale.peuples.zone.Hive;
+import dev.nakasar.hytale.peuples.zone.MoreVillagesSeeder;
 import dev.nakasar.hytale.peuples.zone.ZoneSeeder;
 import dev.nakasar.hytale.peuples.zone.Zones;
 import org.joml.Vector3d;
@@ -62,12 +63,15 @@ final class ZoneCommands {
                     .param("forced", forced == null ? "" : " (climat imposé : zone " + forced + ")"));
             player.sendMessage(Climate.describe(store, player));
             player.sendMessage(Hive.describe(world));
-            for (People p : ZoneSeeder.PEOPLES) {
-                Village v = Villages.registry(world).all().stream().filter(x -> x.people() == p).findFirst().orElse(null);
-                player.sendMessage(v == null
-                        ? Message.translation(KEYS + "zone.noVillage").param("people", Message.translation(p.nameKey()))
-                        : Message.translation(KEYS + "zone.village").param("people", Message.translation(p.nameKey()))
-                                .param("name", v.name()).param("x", v.x()).param("z", v.z()));
+            for (People p : MoreVillagesSeeder.ORDER) {
+                List<Village> list = Villages.registry(world).all().stream().filter(x -> x.people() == p).toList();
+                if (list.isEmpty()) {
+                    player.sendMessage(Message.translation(KEYS + "zone.noVillage").param("people", Message.translation(p.nameKey())));
+                }
+                for (Village v : list) {
+                    player.sendMessage(Message.translation(KEYS + "zone.village").param("people", Message.translation(p.nameKey()))
+                            .param("name", v.name()).param("x", v.x()).param("z", v.z()));
+                }
             }
         }
     }
@@ -101,15 +105,25 @@ final class ZoneCommands {
         @Override
         protected void execute(CommandContext context, Store<EntityStore> store, Ref<EntityStore> ref, PlayerRef player, World world) {
             People p = People.byId(people.get(context));
-            if (p == null || p.zone() < 2) {
+            // Un peuple qui a déjà un village en reçoit un de plus, à bonne distance (MoreVillagesSeeder) ; sinon, zones
+            // 2 à 4 : le premier village de la zone (ZoneSeeder).
+            boolean more = p != null && Villages.registry(world).all().stream().anyMatch(v -> v.people() == p);
+            if (p == null || !more && p.zone() < 2) {
                 player.sendMessage(Message.translation(KEYS + "seed.unknown").param("people", people.get(context)));
                 return;
             }
             player.sendMessage(Message.translation(KEYS + "seed.searching").param("people", Message.translation(p.nameKey())));
-            world.execute(() -> ZoneSeeder.start(world, p, true, v -> player.sendMessage(v == null
+            java.util.function.Consumer<Village> reply = v -> player.sendMessage(v == null
                     ? Message.translation(KEYS + "seed.failed").param("people", Message.translation(p.nameKey()))
                     : Message.translation(KEYS + "seed.done").param("name", v.name()).param("x", v.x()).param("y", v.y())
-                            .param("z", v.z()))));
+                            .param("z", v.z()));
+            world.execute(() -> {
+                if (more) {
+                    MoreVillagesSeeder.seedOne(world, p, reply);
+                } else {
+                    ZoneSeeder.start(world, p, true, reply);
+                }
+            });
         }
     }
 
