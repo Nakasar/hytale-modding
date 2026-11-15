@@ -86,12 +86,36 @@ public final class Villagers {
         long day = GameClock.day(store);
         for (Village village : Villages.registry(world).all()) {
             VillageLayout layout = Chantiers.layout(village);
-            if (layout == null || !near(village, players, RANGE)) {
+            if (layout == null) {
                 continue;
             }
-            Map<String, Want> wanted = wanted(world, village, layout, night);
+            // Avant-postes de métier (annex/) : leurs villageois apparaissent quand un joueur approche de l'avant-poste.
+            for (AnnexState annex : village.annexes()) {
+                if (!annex.granted() && nearSpot(annex.x(), annex.z(), players, RANGE)) {
+                    place(world, store, village, annexWanted(world, village, annex, night), ANNEX_PREFIX + annex.id() + "/", players, day, dt);
+                }
+            }
+            if (!near(village, players, RANGE)) {
+                continue;
+            }
+            place(world, store, village, wanted(world, village, layout, night), null, players, day, dt);
+        }
+    }
+
+    /** Slots des villageois d'avant-poste : {@code AP_<bâtiment>/<métier>}. */
+    public static final String ANNEX_PREFIX = "AP_";
+
+    /**
+     * Pose, retire et guide les villageois voulus d'un groupe de postes : ceux du village (`group` null : tous les postes
+     * hors avant-postes) ou ceux d'un avant-poste (`group` : préfixe de ses postes).
+     */
+    private static void place(World world, Store<EntityStore> store, Village village, Map<String, Want> wanted, String group,
+                              List<Vector3d> players, long day, float dt) {
+        {
             for (Map.Entry<Key, Ref<EntityStore>> e : new ArrayList<>(BY_SLOT.entrySet())) {
-                if (e.getKey().village().equals(village.id()) && !wanted.containsKey(e.getKey().slot())) {
+                String slot = e.getKey().slot();
+                boolean mine = group == null ? !slot.startsWith(ANNEX_PREFIX) : slot.startsWith(group);
+                if (e.getKey().village().equals(village.id()) && mine && !wanted.containsKey(slot)) {
                     despawn(store, e.getKey());
                 }
             }
@@ -159,6 +183,46 @@ public final class Villagers {
         return out;
     }
 
+    /**
+     * Postes voulus d'un avant-poste : pendant les travaux, ses deux premiers villageois s'affairent devant le chantier ;
+     * debout, chaque villageois arrivé au niveau de l'avant-poste travaille à son poste le jour et rentre la nuit.
+     */
+    private static Map<String, Want> annexWanted(World world, Village village, AnnexState annex, boolean night) {
+        Map<String, Want> out = new LinkedHashMap<>();
+        dev.nakasar.hytale.peuples.workshop.Workshop w = dev.nakasar.hytale.peuples.workshop.Workshop.get(annex.id());
+        if (w == null || !w.isAnnex()) {
+            return out;
+        }
+        int level = village.workshop(w.getId()).level();
+        VillageLayout.Job[] workers = w.annex().workers();
+        for (int i = 0; i < workers.length; i++) {
+            VillageLayout.Job job = workers[i];
+            if (annex.working() ? i >= 2 || night : job.tier() > level) {
+                continue;
+            }
+            int[] local = night && annex.built() ? job.homeSpot() : job.work();
+            int[] at = dev.nakasar.hytale.peuples.annex.Annexes.toWorld(annex, local[0], local[1]);
+            out.put(ANNEX_PREFIX + annex.id() + "/" + job.id(), new Want(job.role(), job.dialogue(), groundAt(world, at[0], at[1], annex.y())));
+        }
+        return out;
+    }
+
+    private static boolean nearSpot(int x, int z, List<Vector3d> players, int range) {
+        for (Vector3d p : players) {
+            double dx = p.x() - x;
+            double dz = p.z() - z;
+            if (dx * dx + dz * dz <= (double) range * range) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /** Vrai si le villageois de l'avant-poste `workshopId`, métier `jobId`, est là (apparu, vivant). */
+    public static synchronized boolean presentAt(Village village, String workshopId, String jobId) {
+        return present(village, ANNEX_PREFIX + workshopId + "/" + jobId);
+    }
+
     /** Poste devant un bâtiment (2 blocs hors de l'emprise, côté place), comme tools/generate_village_layouts.py. */
     static int[] front(VillageLayout.Building b) {
         int[] r = b.rect();
@@ -172,15 +236,18 @@ public final class Villagers {
 
     /** Point au sol du poste (x, z) relatif au cœur. */
     private static Vector3d ground(World world, Village village, int[] spot) {
-        int x = village.x() + spot[0];
-        int z = village.z() + spot[1];
+        return groundAt(world, village.x() + spot[0], village.z() + spot[1], village.y());
+    }
+
+    /** Point au sol de la colonne (x, z) du monde ; `fallbackY` si elle n'est pas chargée. */
+    private static Vector3d groundAt(World world, int x, int z, int fallbackY) {
         long key = ((long) x << 32) ^ (z & 0xffffffffL);
         Integer y = GROUND.get(key);
         if (y == null) {
             Terrain terrain = new Terrain(world);
             int s = terrain.surface(x, z);
             if (s == Terrain.NONE) {
-                return new Vector3d(x + 0.5, village.y(), z + 0.5);
+                return new Vector3d(x + 0.5, fallbackY, z + 0.5);
             }
             // Poste sous l'eau ou dans la lave : le point sûr le plus proche, à 3 blocs au plus (sinon le poste). Un
             // poste dans un bâtiment (plancher au-dessus du sol naturel) reste où il est.

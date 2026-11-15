@@ -1,0 +1,90 @@
+{
+  "$Comment": "Boutique du niveau 2 du bâtiment de métier Slothian_AP_Chasse, spécialité Pelleterie, générée par tools/generate_workshops.py.",
+  "DisplayNameKey": "nakasar_peuples.barter.W_Slothian_AP_Chasse_Pelleterie_2.title",
+  "RefreshInterval": {
+    "Days": 3
+  },
+  "RestockHour": 6,
+  "TradeSlots": [
+    {
+      "Type": "Fixed",
+      "Trade": {
+        "Output": {
+          "ItemId": "Food_Wildmeat_Raw",
+          "Quantity": 4
+        },
+        "Input": [
+          {
+            "ItemId": "Nakasar_Peuples_Favor_Slothian",
+            "Quantity": 1
+          }
+        ],
+        "Stock": 8
+      }
+    },
+    {
+      "Type": "Fixed",
+      "Trade": {
+        "Output": {
+          "ItemId": "Ingredient_Hide_Light",
+          "Quantity": 4
+        },
+        "Input": [
+          {
+            "ItemId": "Nakasar_Peuples_Favor_Slothian",
+            "Quantity": 1
+          }
+        ],
+        "Stock": 8
+      }
+    },
+    {
+      "Type": "Fixed",
+      "Trade": {
+        "Output": {
+          "ItemId": "Ingredient_Bone_Fragment",
+          "Quantity": 6
+        },
+        "Input": [
+          {
+            "ItemId": "Nakasar_Peuples_Favor_Slothian",
+            "Quantity": 1
+          }
+        ],
+        "Stock": 8
+      }
+    },
+    {
+      "Type": "Fixed",
+      "Trade": {
+        "Output": {
+          "ItemId": "Ingredient_Hide_Medium",
+          "Quantity": 4
+        },
+        "Input": [
+          {
+            "ItemId": "Nakasar_Peuples_Favor_Slothian",
+            "Quantity": 2
+          }
+        ],
+        "Stock": 6
+      }
+    },
+    {
+      "Type": "Fixed",
+      "Trade": {
+        "Output": {
+          "ItemId": "Ingredient_Leather_Light",
+          "Quantity": 4
+        },
+        "Input": [
+          {
+            "ItemId": "Nakasar_Peuples_Favor_Slothian",
+            "Quantity": 2
+          }
+        ],
+        "Stock": 6
+      }
+    }
+  ]
+}

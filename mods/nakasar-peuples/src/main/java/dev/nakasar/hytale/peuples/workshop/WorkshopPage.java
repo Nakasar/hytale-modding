@@ -167,7 +167,7 @@ public final class WorkshopPage extends InteractiveCustomUIPage<WorkshopPage.Eve
             return Message.translation(KEYS + "keeperNone");
         }
         Message name = keeperName(job);
-        if (Villagers.present(village, job.id())) {
+        if (Workshops.keeperPresent(village, w)) {
             return Message.translation(KEYS + "keeper").param("name", name);
         }
         return Message.translation(KEYS + "keeperAbsent").param("name", name).param("hour", GameClock.MORNING);

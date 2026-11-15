@@ -1,0 +1,24 @@
+{
+  "$Comment": "Commande du bâtiment de métier Trork_AP_Pecherie, générée par tools/generate_workshops.py (ne pas modifier à la main) : voir RequestTemplate.",
+  "People": "Trork",
+  "Workshop": "Trork_AP_Pecherie",
+  "Type": "Hunt",
+  "MinLevel": 1,
+  "MaxLevel": 3,
+  "Weight": 1,
+  "TitleKey": "nakasar_peuples.request.Trork_AP_Pecherie_Hunt.title",
+  "TaskKey": "nakasar_peuples.request.Trork_AP_Pecherie_Hunt.task",
+  "Spawns": [
+    "Outlander_Hunter",
+    "Outlander_Hunter"
+  ],
+  "Roles": [
+    "Outlander_Hunter"
+  ],
+  "MinDistance": 60,
+  "MaxDistance": 110,
+  "Knowledge": 45,
+  "Essor": 5,
+  "Favors": 2,
+  "Reputation": 8
+}

@@ -20,6 +20,7 @@ et vérifiée hors de toute autre emprise (tous paliers), de la place et des pos
 import json
 from pathlib import Path
 
+import outposts
 import plots
 
 ROOT = Path(__file__).resolve().parent.parent
@@ -29,6 +30,9 @@ OUT = RES / "Nakasar/Workshops"
 REQUESTS = RES / "Nakasar/Requests"
 ITEMS = Path(__file__).resolve().parent / "vanilla-item-ids-0.7.2.txt"
 REFS = Path(__file__).resolve().parent / "vanilla-refs-0.7.2.txt"
+PREFAB_BOUNDS = Path(__file__).resolve().parent / "vanilla-prefabs-0.7.2.txt"
+DIALOGUES = RES / "Nakasar/Dialogues"
+ANNEX_ITEMS = RES / "Item/Items/Nakasar/Peuples"
 
 LANG_BEGIN = "# ---- Bâtiments de métier (généré par tools/generate_workshops.py, ne pas modifier à la main) ----"
 LANG_END = "# ---- Fin des bâtiments de métier ----"
@@ -811,6 +815,162 @@ def plot_workshops(fr, en, errors):
                         RAID[(wid, sp[0])] = sp[8]
     return twins
 
+# Avant-postes de métier (Kevin, 2026-11-15, tools/outposts.py) : un bâtiment de métier <Peuple>_AP_<Type> par peuple et
+# par type, sans plan (champ « Annex ») : commandes dans Requests/<Peuple>/AP_<Type>, mêmes niveaux, spécialités,
+# boutiques et Part de l'Hôte que les autres. Rempli par annex_tables avant selling_rules.
+ANNEXES = []
+# Repère de l'avant-poste : le bâtiment principal à 3 blocs au nord de la fondation, les annexes à 2 blocs de côté.
+ANNEX_FRONT_GAP = 3
+ANNEX_SIDE_GAP = 2
+ANNEX_UPGRADE = {2: (1, 2), 3: (3, 4)}   # matériaux de l'amélioration = fondation × num / den
+
+
+def load_bounds():
+    out = {}
+    for line in PREFAB_BOUNDS.read_text(encoding="utf-8").splitlines():
+        parts = line.split()
+        if len(parts) == 7 and not line.startswith("#"):
+            try:
+                out[parts[0]] = tuple(int(v) for v in parts[1:])
+            except ValueError:
+                pass
+    return out
+
+
+def annex_tables(errors):
+    """Commandes, spécialités et boutiques des avant-postes, ajoutées aux tables du script (avant selling_rules)."""
+    for people in PEOPLES:
+        sub = outposts.MAT[people]
+        for t in outposts.TYPES:
+            data = outposts.TYPE_DATA[t]
+            wid = f"{people}_AP_{t}"
+            orders = [(suffix, rtype, what.format(**sub), q, tf, te) for suffix, rtype, what, q, tf, te in data["orders"]]
+            orders.append(("Hunt", "Hunt", list(outposts.HUNTS[people][t]), 0) + outposts.HUNT_TITLES[t])
+            fmt = lambda trades: [(item.format(**sub), q, price) for item, q, price in trades]
+            SHOPS[wid] = {"Base": fmt(data["base"])}
+            choices = []
+            for sid, sfr, sen, icon, lfr, len_, two, three, raid in data["specs"]:
+                SHOPS[wid][sid] = (fmt(two), fmt(three))
+                choices.append((sid, sfr, sen, icon, lfr, len_, []))
+                if raid and people not in outposts.NO_RAID:
+                    RAID[(wid, sid)] = raid
+            SPECIALTIES[wid] = ([], choices)
+            ANNEXES.append((wid, people, t, orders))
+
+
+def annex_layout(people, t, bounds, errors):
+    """Prefabs (« chemin x z rot »), emprise locale [x0, x1, z0, z1] et hauteur de l'avant-poste."""
+    lines, boxes, top = [], [], 0
+    main = None
+    for path, side in outposts.PREFABS[people][t]:
+        b = bounds.get(path)
+        if b is None:
+            errors.append(f"{people}_AP_{t} : prefab vanilla inconnu ou non mesuré {path}")
+            return [], [-4, 4, -12, -2], 8
+        x0, x1, _y0, y1, z0, z1 = b
+        if main is None:
+            px, pz = -((x0 + x1) // 2), -ANNEX_FRONT_GAP - z1
+            main = (px + x0, px + x1, pz + z0, pz + z1)
+        else:
+            mid = (main[2] + main[3]) // 2
+            pz = min(mid - (z0 + z1) // 2, main[3] - z1)
+            px = main[0] - ANNEX_SIDE_GAP - x1 if side == "W" else main[1] + ANNEX_SIDE_GAP - x0
+        box = (px + x0, px + x1, pz + z0, pz + z1)
+        for other in boxes:
+            if not (box[1] < other[0] or other[1] < box[0] or box[3] < other[2] or other[3] < box[2]):
+                errors.append(f"{people}_AP_{t} : {path} chevauche un autre prefab")
+        boxes.append(box)
+        lines.append(f"{path} {px} {pz} 0")
+        top = max(top, y1 + 1)
+    rect = [min(b[0] for b in boxes) - 1, max(b[1] for b in boxes) + 1, min(b[2] for b in boxes) - 1,
+            max(-ANNEX_FRONT_GAP + 1, max(b[3] for b in boxes) + 1)]
+    if rect[3] >= 0:
+        errors.append(f"{people}_AP_{t} : l'emprise {rect} touche la fondation")
+    return lines, rect, top
+
+
+def annex_workers(people, t, roles, errors):
+    out = []
+    for i, (kind, tier) in enumerate(zip(outposts.WORKERS[people][t], outposts.WORKER_TIERS)):
+        x = (-2, 2, -4, 4)[i]
+        if kind.startswith("@"):
+            role, dialogue = kind[1:], ""
+            if role not in roles:
+                errors.append(f"{people}_AP_{t} : rôle vanilla inconnu {role}")
+        else:
+            role = f"Nakasar_Peuples_{people}_{kind}"
+            dialogue = f"{people}_{outposts.DIALOGUE_ALIAS.get(kind, kind)}"
+            if not (RES / "NPC/Roles/Nakasar/Peuples" / f"{role}.json").exists():
+                errors.append(f"{people}_AP_{t} : rôle du mod absent {role}")
+            if not (DIALOGUES / people / f"{dialogue}.json").exists() and not (DIALOGUES / f"{dialogue}.json").exists():
+                errors.append(f"{people}_AP_{t} : dialogue absent {dialogue}")
+        out.append({"Id": f"AP_{t}_{i + 1}", "Tier": tier, "Role": role, "Dialogue": dialogue, "Building": "",
+                    "WorkX": x, "WorkZ": -1, "Home": "", "HomeX": x, "HomeZ": -2, "Builder": False})
+    return out
+
+
+def write_annexes(items, roles, fr, en, errors):
+    """Écrit les bâtiments de métier des avant-postes, leurs commandes et les six objets de fondation."""
+    bounds = load_bounds()
+    for t in outposts.TYPES:
+        name_fr, name_en, role_fr, role_en, job_fr, job_en, icon = outposts.NAMES[t]
+        item = outposts.ITEM_PREFIX + t
+        doc = {
+            "$Comment": f"Fondation d'avant-poste « {name_fr} », remise au panneau d'un village de palier 3 et posée là où "
+                        "l'on veut bâtir (Java annex/AnnexPlaceSystem). Générée par tools/generate_workshops.py.",
+            "Parent": "Furniture_Construction_Sign",
+            "TranslationProperties": {"Name": f"nakasar_peuples.items.{item}.name",
+                                      "Description": f"nakasar_peuples.items.{item}.description"},
+            "Quality": "Uncommon",
+        }
+        (ANNEX_ITEMS / f"{item}.json").write_text(json.dumps(doc, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
+        fr[f"items.{item}.name"], en[f"items.{item}.name"] = f"Fondation : {name_fr}", f"Foundation: {name_en}"
+        fr[f"items.{item}.description"] = f"À poser là où vous voulez bâtir l'avant-poste ({role_fr[0].lower()}{role_fr[1:]})"
+        en[f"items.{item}.description"] = f"Place it where you want to build the outpost ({role_en[0].lower()}{role_en[1:]})"
+        fr[f"annex.role.{t}"], en[f"annex.role.{t}"] = role_fr, role_en
+        for i in range(len(outposts.WORKER_TIERS)):
+            fr[f"job.AP_{t}_{i + 1}"], en[f"job.AP_{t}_{i + 1}"] = job_fr, job_en
+    for key, (f, e) in outposts.LANG.items():
+        fr[key], en[key] = f, e
+    for wid, people, t, orders in ANNEXES:
+        name_fr, name_en, _rf, _re, _jf, _je, icon = outposts.NAMES[t]
+        if icon not in items:
+            errors.append(f"{wid} : icône vanilla inconnue {icon}")
+        prefabs, local, height = annex_layout(people, t, bounds, errors)
+        materials = [{"ItemId": i, "Quantity": q} for i, q in outposts.FOUNDATION[people]]
+        for m in materials:
+            if m["ItemId"] not in items:
+                errors.append(f"{wid} : matériau vanilla inconnu {m['ItemId']}")
+        upgrades = [{"Level": level, "Hours": UPGRADE_HOURS, "Decor": DECOR[people][level],
+                     "Materials": [{"ItemId": i, "Quantity": max(1, q * num // den)} for i, q in outposts.FOUNDATION[people]]}
+                    for level, (num, den) in ANNEX_UPGRADE.items()]
+        annex = {"Type": t, "Item": outposts.ITEM_PREFIX + t, "Rule": outposts.RULES[t], "Prefabs": prefabs, "Rect": local,
+                 "Height": height, "Workers": annex_workers(people, t, roles, errors), "Materials": materials, "Hours": 24,
+                 "Decor": ["2 0 -1 0 " + DECOR[people][2][0].split()[-1]]}
+        delivery = outposts.TYPE_DATA[t]["delivery"]
+        if delivery:
+            lot = delivery[0].format(**outposts.MAT[people])
+            if lot not in items:
+                errors.append(f"{wid} : livraison vanilla inconnue {lot}")
+            annex["Delivery"] = {"ItemId": lot, "Quantity": delivery[1]}
+        if t == "Tour" and people not in outposts.NO_RAID:
+            annex["Warn"] = outposts.TOWER_WARN
+        doc = {
+            "$Comment": "Avant-poste de métier généré par tools/generate_workshops.py depuis tools/outposts.py (ne pas "
+                        "modifier à la main) : voir dev.nakasar.hytale.peuples.workshop.Workshop et annex/Annexes.",
+            "People": people,
+            "Icon": icon,
+            "NameKey": f"nakasar_peuples.workshop.{wid}.name",
+            "Board": [0, 0, 0],
+            "Upgrades": upgrades,
+            "Annex": annex,
+        }
+        specialties(doc, wid, people, name_fr, name_en, items, roles, fr, en, errors)
+        (OUT / f"{wid}.json").write_text(json.dumps(doc, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
+        fr[f"workshop.{wid}.name"], en[f"workshop.{wid}.name"] = name_fr, name_en
+        write_orders(wid, people, REQUESTS / people / f"AP_{t}", orders, items, roles, fr, en, errors)
+        print(f"{wid} : {len(orders)} commandes + 2 de maître, emprise {local}, hauteur {height}")
+
 
 # Kevin (2026-11-15) : une commande ne demande jamais un objet vendu en boutique, celle du bâtiment ou celle du
 # village ; une demande du tableau jamais un objet de la boutique du village. Contrôlé ici (selling_rules) : on corrige
@@ -845,7 +1005,7 @@ def selling_rules(errors):
             asked[doc["People"]].add(doc["ItemId"])
             if doc["ItemId"] in village_sold[doc["People"]]:
                 errors.append(f"demande {path.stem} : {doc['ItemId']} est vendu par la boutique du village")
-    for wid, _layout, _building, _job, _icon, _fr, _en, orders in WORKSHOPS:
+    for wid, orders in [(w[0], w[7]) for w in WORKSHOPS] + [(a[0], a[3]) for a in ANNEXES]:
         people = wid.split("_")[0]
         shops = SHOPS.get(wid, {})
         own = {t[0] for t in shops.get("Base", [])}
@@ -863,6 +1023,149 @@ def selling_rules(errors):
     return asked
 
 
+def specialties(doc, wid, people, name_fr, name_en, items, roles, fr, en, errors, building=None):
+    """Spécialités, bêtes et boutiques (niveaux I à III) d'un bâtiment de métier, ajoutées à `doc`."""
+    specs = SPECIALTIES.get(wid)
+    if specs is None:
+        errors.append(f"{wid} : pas de spécialités")
+    else:
+        base, choices = specs
+        if base:
+            doc["Livestock"] = base
+            doc["LivestockCount"] = LIVESTOCK_COUNT
+            r = rect(building)
+            doc["Pen"] = [r[0] + PEN_INSET, r[1] - PEN_INSET, r[2] + PEN_INSET, r[3] - PEN_INSET]
+        doc["Specialties"] = []
+        shops = SHOPS.get(wid)
+        if shops is None:
+            errors.append(f"{wid} : pas de boutiques (SHOPS)")
+            shops = {"Base": []}
+        if len(shops["Base"]) < 2:
+            errors.append(f"{wid} : boutique du niveau I avec moins de 2 échanges "
+                          f"({[t[0] for t in shops['Base']]})")
+        base_trades = [t + (SHOP_STOCK[1],) for t in shops["Base"]]
+        base_id = f"{SHOP_PREFIX}{wid}_Base_1"
+        write_shop(base_id, people, base_trades, f"nakasar_peuples.barter.W_{wid}_Base_1.title",
+                   f"Boutique du niveau I du bâtiment de métier {wid}, générée par tools/generate_workshops.py.",
+                   items, errors)
+        fr[f"barter.W_{wid}_Base_1.title"] = f"{name_fr} I"
+        en[f"barter.W_{wid}_Base_1.title"] = f"{name_en} I"
+        doc["Shop"] = base_id
+        for extra in set(shops) - {"Base"} - {c[0] for c in choices}:
+            errors.append(f"{wid} : boutique d'une spécialité inconnue {extra}")
+        for sid, sfr, sen, sicon, lfr, len_, animals in choices:
+            if sicon not in items:
+                errors.append(f"{wid}/{sid} : icône vanilla inconnue {sicon}")
+            for a in (base or []) + animals:
+                if not a.startswith(PEN) and a not in roles:
+                    errors.append(f"{wid}/{sid} : rôle vanilla inconnu {a}")
+                if a.startswith(PEN) and not (RES / "NPC/Roles/Nakasar/Peuples" / f"{a}.json").exists():
+                    errors.append(f"{wid}/{sid} : rôle du mod absent {a} (tools/generate_pens.py)")
+            if base and not animals:
+                errors.append(f"{wid}/{sid} : spécialité d'enclos sans bêtes")
+            spec = {"Id": sid, "NameKey": f"nakasar_peuples.workshop.specialty.{wid}.{sid}",
+                    "LineKey": f"nakasar_peuples.workshop.specialtyLine.{wid}.{sid}", "Icon": sicon}
+            if animals:
+                spec["Animals"] = animals
+            if (wid, sid) in RAID:
+                if people == "Trork":
+                    errors.append(f"{wid}/{sid} : les Trorks ne subissent pas de raid")
+                spec["Raid"] = RAID[(wid, sid)]
+            two, three = shops.get(sid, ([], []))
+            if not two or not three:
+                errors.append(f"{wid}/{sid} : boutique des niveaux II et III manquante")
+            else:
+                trades = list(base_trades)
+                spec["Shops"] = []
+                for level, add in ((2, two), (3, three)):
+                    trades = trades + [t + (SHOP_STOCK[level],) for t in add]
+                    shop_id = f"{SHOP_PREFIX}{wid}_{sid}_{level}"
+                    write_shop(shop_id, people, trades, f"nakasar_peuples.barter.W_{wid}_{sid}_{level}.title",
+                               f"Boutique du niveau {level} du bâtiment de métier {wid}, spécialité {sid}, générée "
+                               "par tools/generate_workshops.py.", items, errors)
+                    spec["Shops"].append(shop_id)
+                    fr[f"barter.W_{wid}_{sid}_{level}.title"] = f"{name_fr} : {sfr} {ROMAN[level]}"
+                    en[f"barter.W_{wid}_{sid}_{level}.title"] = f"{name_en}: {sen} {ROMAN[level]}"
+                spec["ShareItem"], spec["ShareQuantity"] = two[0][0], two[0][1]
+            doc["Specialties"].append(spec)
+            fr[f"workshop.specialty.{wid}.{sid}"] = sfr
+            en[f"workshop.specialty.{wid}.{sid}"] = sen
+            fr[f"workshop.specialtyLine.{wid}.{sid}"] = lfr
+            en[f"workshop.specialtyLine.{wid}.{sid}"] = len_
+
+
+def write_orders(wid, people, folder, orders, items, roles, fr, en, errors):
+    """Commandes du bâtiment et ses deux commandes de maître (dossier `folder`, vidé d'abord)."""
+    folder.mkdir(parents=True, exist_ok=True)
+    for old in folder.glob("*.json"):
+        old.unlink()
+    for suffix, rtype, what, quantity, title_fr, title_en in orders:
+        tid = f"{wid}_{suffix}"
+        for title in (title_fr, title_en):
+            if len(title) > 24:
+                errors.append(f"{tid} : titre de plus de 24 caractères « {title} »")
+        t = {
+            "$Comment": f"Commande du bâtiment de métier {wid}, générée par tools/generate_workshops.py "
+                        "(ne pas modifier à la main) : voir RequestTemplate.",
+            "People": people,
+            "Workshop": wid,
+            "Type": rtype,
+            "MinLevel": 1,
+            "MaxLevel": 3,
+            "Weight": 1,
+            "TitleKey": f"nakasar_peuples.request.{tid}.title",
+            "TaskKey": f"nakasar_peuples.request.{tid}.task",
+        }
+        if rtype == "Hunt":
+            for role in what:
+                if role not in roles:
+                    errors.append(f"{tid} : rôle vanilla inconnu {role}")
+            t["Spawns"] = list(what)
+            t["Roles"] = sorted(set(what))
+            t["MinDistance"], t["MaxDistance"] = HUNT_DISTANCE
+        else:
+            if what not in items:
+                errors.append(f"{tid} : objet vanilla inconnu {what}")
+            t["ItemId"] = what
+            t["Quantity"] = quantity
+        t.update(REWARD[rtype])
+        (folder / f"{tid}.json").write_text(json.dumps(t, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
+        fr[f"request.{tid}.title"] = title_fr
+        en[f"request.{tid}.title"] = title_en
+        fr[f"request.{tid}.task"] = TASKS[rtype][0]
+        en[f"request.{tid}.task"] = TASKS[rtype][1]
+    for level, (suffix, rtype, what, quantity, _tf, _te) in ((1, orders[0]), (2, orders[1])):
+        tid = f"{wid}_Master_{level}"
+        scale = MASTER_SCALE[level]
+        t = {
+            "$Comment": f"Commande de maître du niveau {level} du bâtiment de métier {wid}, générée par "
+                        "tools/generate_workshops.py (ne pas modifier à la main) : voir RequestTemplate.",
+            "People": people,
+            "Workshop": wid,
+            "Master": True,
+            "Type": rtype,
+            "MinLevel": level,
+            "MaxLevel": level,
+            "Weight": 1,
+            "TitleKey": f"nakasar_peuples.request.{tid}.title",
+            "TaskKey": f"nakasar_peuples.request.{tid}.task",
+        }
+        if rtype == "Hunt":
+            t["Spawns"] = list(what) * 2
+            t["Roles"] = sorted(set(what))
+            t["MinDistance"], t["MaxDistance"] = HUNT_DISTANCE[0] + 20, HUNT_DISTANCE[1] + 30
+        else:
+            t["ItemId"] = what
+            t["Quantity"] = quantity * scale
+        t.update(MASTER_REWARD)
+        (folder / f"{tid}.json").write_text(json.dumps(t, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
+        roman = "I" * level
+        fr[f"request.{tid}.title"] = f"Commande de maître {roman}"
+        en[f"request.{tid}.title"] = f"Master order {roman}"
+        fr[f"request.{tid}.task"] = TASKS[rtype][0]
+        en[f"request.{tid}.task"] = TASKS[rtype][1]
+
+
 def main():
     items = load_ids(ITEMS)
     roles = load_ids(REFS, "npc")
@@ -875,6 +1178,7 @@ def main():
         old.unlink()
     layouts = {}
     twins = plot_workshops(fr, en, errors)
+    annex_tables(errors)
     selling_rules(errors)
     for wid, layout_id, building_id, job_id, icon, name_fr, name_en, orders in WORKSHOPS:
         layout = layouts.setdefault(layout_id, json.loads((LAYOUTS / f"{layout_id}.json").read_text(encoding="utf-8")))
@@ -903,147 +1207,14 @@ def main():
         }
         if wid in twins:
             doc["Twin"] = twins[wid]
-        specs = SPECIALTIES.get(wid)
-        if specs is None:
-            errors.append(f"{wid} : pas de spécialités")
-        else:
-            base, choices = specs
-            if base:
-                doc["Livestock"] = base
-                doc["LivestockCount"] = LIVESTOCK_COUNT
-                r = rect(building)
-                doc["Pen"] = [r[0] + PEN_INSET, r[1] - PEN_INSET, r[2] + PEN_INSET, r[3] - PEN_INSET]
-            doc["Specialties"] = []
-            shops = SHOPS.get(wid)
-            if shops is None:
-                errors.append(f"{wid} : pas de boutiques (SHOPS)")
-                shops = {"Base": []}
-            if len(shops["Base"]) < 2:
-                errors.append(f"{wid} : boutique du niveau I avec moins de 2 échanges "
-                              f"({[t[0] for t in shops['Base']]})")
-            base_trades = [t + (SHOP_STOCK[1],) for t in shops["Base"]]
-            base_id = f"{SHOP_PREFIX}{wid}_Base_1"
-            write_shop(base_id, people, base_trades, f"nakasar_peuples.barter.W_{wid}_Base_1.title",
-                       f"Boutique du niveau I du bâtiment de métier {wid}, générée par tools/generate_workshops.py.",
-                       items, errors)
-            fr[f"barter.W_{wid}_Base_1.title"] = f"{name_fr} I"
-            en[f"barter.W_{wid}_Base_1.title"] = f"{name_en} I"
-            doc["Shop"] = base_id
-            for extra in set(shops) - {"Base"} - {c[0] for c in choices}:
-                errors.append(f"{wid} : boutique d'une spécialité inconnue {extra}")
-            for sid, sfr, sen, sicon, lfr, len_, animals in choices:
-                if sicon not in items:
-                    errors.append(f"{wid}/{sid} : icône vanilla inconnue {sicon}")
-                for a in (base or []) + animals:
-                    if not a.startswith(PEN) and a not in roles:
-                        errors.append(f"{wid}/{sid} : rôle vanilla inconnu {a}")
-                    if a.startswith(PEN) and not (RES / "NPC/Roles/Nakasar/Peuples" / f"{a}.json").exists():
-                        errors.append(f"{wid}/{sid} : rôle du mod absent {a} (tools/generate_pens.py)")
-                if base and not animals:
-                    errors.append(f"{wid}/{sid} : spécialité d'enclos sans bêtes")
-                spec = {"Id": sid, "NameKey": f"nakasar_peuples.workshop.specialty.{wid}.{sid}",
-                        "LineKey": f"nakasar_peuples.workshop.specialtyLine.{wid}.{sid}", "Icon": sicon}
-                if animals:
-                    spec["Animals"] = animals
-                if (wid, sid) in RAID:
-                    if people == "Trork":
-                        errors.append(f"{wid}/{sid} : les Trorks ne subissent pas de raid")
-                    spec["Raid"] = RAID[(wid, sid)]
-                two, three = shops.get(sid, ([], []))
-                if not two or not three:
-                    errors.append(f"{wid}/{sid} : boutique des niveaux II et III manquante")
-                else:
-                    trades = list(base_trades)
-                    spec["Shops"] = []
-                    for level, add in ((2, two), (3, three)):
-                        trades = trades + [t + (SHOP_STOCK[level],) for t in add]
-                        shop_id = f"{SHOP_PREFIX}{wid}_{sid}_{level}"
-                        write_shop(shop_id, people, trades, f"nakasar_peuples.barter.W_{wid}_{sid}_{level}.title",
-                                   f"Boutique du niveau {level} du bâtiment de métier {wid}, spécialité {sid}, générée "
-                                   "par tools/generate_workshops.py.", items, errors)
-                        spec["Shops"].append(shop_id)
-                        fr[f"barter.W_{wid}_{sid}_{level}.title"] = f"{name_fr} : {sfr} {ROMAN[level]}"
-                        en[f"barter.W_{wid}_{sid}_{level}.title"] = f"{name_en}: {sen} {ROMAN[level]}"
-                    spec["ShareItem"], spec["ShareQuantity"] = two[0][0], two[0][1]
-                doc["Specialties"].append(spec)
-                fr[f"workshop.specialty.{wid}.{sid}"] = sfr
-                en[f"workshop.specialty.{wid}.{sid}"] = sen
-                fr[f"workshop.specialtyLine.{wid}.{sid}"] = lfr
-                en[f"workshop.specialtyLine.{wid}.{sid}"] = len_
+        specialties(doc, wid, people, name_fr, name_en, items, roles, fr, en, errors, building)
         (OUT / f"{wid}.json").write_text(json.dumps(doc, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
         fr[f"workshop.{wid}.name"] = name_fr
         en[f"workshop.{wid}.name"] = name_en
 
-        folder = REQUESTS / people / building_id
-        folder.mkdir(parents=True, exist_ok=True)
-        for old in folder.glob("*.json"):
-            old.unlink()
-        for suffix, rtype, what, quantity, title_fr, title_en in orders:
-            tid = f"{wid}_{suffix}"
-            for title in (title_fr, title_en):
-                if len(title) > 24:
-                    errors.append(f"{tid} : titre de plus de 24 caractères « {title} »")
-            t = {
-                "$Comment": f"Commande du bâtiment de métier {wid}, générée par tools/generate_workshops.py "
-                            "(ne pas modifier à la main) : voir RequestTemplate.",
-                "People": people,
-                "Workshop": wid,
-                "Type": rtype,
-                "MinLevel": 1,
-                "MaxLevel": 3,
-                "Weight": 1,
-                "TitleKey": f"nakasar_peuples.request.{tid}.title",
-                "TaskKey": f"nakasar_peuples.request.{tid}.task",
-            }
-            if rtype == "Hunt":
-                for role in what:
-                    if role not in roles:
-                        errors.append(f"{tid} : rôle vanilla inconnu {role}")
-                t["Spawns"] = list(what)
-                t["Roles"] = sorted(set(what))
-                t["MinDistance"], t["MaxDistance"] = HUNT_DISTANCE
-            else:
-                if what not in items:
-                    errors.append(f"{tid} : objet vanilla inconnu {what}")
-                t["ItemId"] = what
-                t["Quantity"] = quantity
-            t.update(REWARD[rtype])
-            (folder / f"{tid}.json").write_text(json.dumps(t, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
-            fr[f"request.{tid}.title"] = title_fr
-            en[f"request.{tid}.title"] = title_en
-            fr[f"request.{tid}.task"] = TASKS[rtype][0]
-            en[f"request.{tid}.task"] = TASKS[rtype][1]
-        for level, (suffix, rtype, what, quantity, _tf, _te) in ((1, orders[0]), (2, orders[1])):
-            tid = f"{wid}_Master_{level}"
-            scale = MASTER_SCALE[level]
-            t = {
-                "$Comment": f"Commande de maître du niveau {level} du bâtiment de métier {wid}, générée par "
-                            "tools/generate_workshops.py (ne pas modifier à la main) : voir RequestTemplate.",
-                "People": people,
-                "Workshop": wid,
-                "Master": True,
-                "Type": rtype,
-                "MinLevel": level,
-                "MaxLevel": level,
-                "Weight": 1,
-                "TitleKey": f"nakasar_peuples.request.{tid}.title",
-                "TaskKey": f"nakasar_peuples.request.{tid}.task",
-            }
-            if rtype == "Hunt":
-                t["Spawns"] = list(what) * 2
-                t["Roles"] = sorted(set(what))
-                t["MinDistance"], t["MaxDistance"] = HUNT_DISTANCE[0] + 20, HUNT_DISTANCE[1] + 30
-            else:
-                t["ItemId"] = what
-                t["Quantity"] = quantity * scale
-            t.update(MASTER_REWARD)
-            (folder / f"{tid}.json").write_text(json.dumps(t, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
-            roman = "I" * level
-            fr[f"request.{tid}.title"] = f"Commande de maître {roman}"
-            en[f"request.{tid}.title"] = f"Master order {roman}"
-            fr[f"request.{tid}.task"] = TASKS[rtype][0]
-            en[f"request.{tid}.task"] = TASKS[rtype][1]
+        write_orders(wid, people, REQUESTS / people / building_id, orders, items, roles, fr, en, errors)
         print(f"{wid} : {len(orders)} commandes + 2 de maître, panneau {spot}")
+    write_annexes(items, roles, fr, en, errors)
     for key, (f, e) in PAGE.items():
         fr[key] = f
         en[key] = e

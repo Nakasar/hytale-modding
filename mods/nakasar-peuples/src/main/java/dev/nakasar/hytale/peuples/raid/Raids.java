@@ -150,6 +150,8 @@ public final class Raids {
         final Set<UUID> participants = new HashSet<>();
         final Set<UUID> killers = new HashSet<>();
         Phase phase = Phase.WARN;
+        /** Durée de l'annonce : {@link #WARN_SECONDS}, plus l'avance des tours de guet du village (avant-postes). */
+        int warn = WARN_SECONDS;
         float elapsed;
         float unwatched;
         int total;
@@ -325,7 +327,7 @@ public final class Raids {
         if (a != null) {
             int alive = alive(a.raiders);
             return a.phase == Phase.WARN
-                    ? Message.translation(key(village.people(), "status.warn")).param("seconds", Math.max(0, WARN_SECONDS - (int) a.elapsed))
+                    ? Message.translation(key(village.people(), "status.warn")).param("seconds", Math.max(0, a.warn - (int) a.elapsed))
                     : Message.translation(KEYS + "status.fight").param("alive", alive).param("total", a.total)
                     .param("seconds", Math.max(0, FIGHT_SECONDS - (int) a.elapsed));
         }
@@ -482,6 +484,7 @@ public final class Raids {
         }
         long night = GameClock.day(store);
         Active a = new Active(village.id(), night, UUID.randomUUID());
+        a.warn = WARN_SECONDS + dev.nakasar.hytale.peuples.annex.Annexes.raidWarnBonus(village);
         a.camps.addAll(camps);
         ACTIVE.put(village.id(), a);
         village.raid().setActive(true);
@@ -529,7 +532,7 @@ public final class Raids {
         Vector3i camp = camps.get(0);
         Message direction = Message.translation(Villages.MESSAGES + "dir." + Requests.direction(camp.x() - village.x(), camp.z() - village.z()));
         Message warn = Message.translation(KEYS + "warning").param("village", village.name()).param("direction", direction)
-                .param("seconds", WARN_SECONDS).param("enemy", Message.translation(KEYS + "enemy." + village.people().id()));
+                .param("seconds", a.warn).param("enemy", Message.translation(KEYS + "enemy." + village.people().id()));
         announce(world, store, village, a, warn, Message.translation(KEYS + "title.warning"),
                 Message.translation(key(village.people(), "title.warningSub")).param("direction", direction), NotificationStyle.Danger);
         sound(store, HORN, new Vector3d(village.x() + 0.5, village.y() + 1, village.z() + 0.5));
@@ -559,7 +562,7 @@ public final class Raids {
         }
         switch (a.phase) {
             case WARN -> {
-                if (a.elapsed >= WARN_SECONDS) {
+                if (a.elapsed >= a.warn) {
                     spawnWave(world, store, village, a);
                     a.phase = Phase.FIGHT;
                     a.elapsed = 0f;

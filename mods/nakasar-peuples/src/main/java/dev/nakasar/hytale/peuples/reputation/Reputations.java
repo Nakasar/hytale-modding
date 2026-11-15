@@ -154,6 +154,11 @@ public final class Reputations {
         World world = store.getExternalData().getWorld();
         Village village = Villages.registry(world).nearestOf(people, at.x(), at.z(), ATTITUDE_RADIUS);
         if (village == null) {
+            // Avant-postes de métier : leurs villageois, loin du cœur, regardent le joueur comme leur village.
+            dev.nakasar.hytale.peuples.village.Villagers.Posted posted = dev.nakasar.hytale.peuples.village.Villagers.posted(npc);
+            village = posted == null ? null : Villages.registry(world).byId(posted.village());
+        }
+        if (village == null) {
             // Étape 7 : hors d'un camp, les Trorks laissent passer le joueur peint (au moins neutres).
             return WarPaint.wildAttitude(store, target, people, accessor);
         }

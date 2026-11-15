@@ -1,0 +1,90 @@
+{
+  "$Comment": "Boutique du niveau 2 du bâtiment de métier Feran_AP_Ferme, spécialité Primeurs, générée par tools/generate_workshops.py.",
+  "DisplayNameKey": "nakasar_peuples.barter.W_Feran_AP_Ferme_Primeurs_2.title",
+  "RefreshInterval": {
+    "Days": 3
+  },
+  "RestockHour": 6,
+  "TradeSlots": [
+    {
+      "Type": "Fixed",
+      "Trade": {
+        "Output": {
+          "ItemId": "Plant_Seeds_Wheat",
+          "Quantity": 4
+        },
+        "Input": [
+          {
+            "ItemId": "Nakasar_Peuples_Favor_Feran",
+            "Quantity": 1
+          }
+        ],
+        "Stock": 8
+      }
+    },
+    {
+      "Type": "Fixed",
+      "Trade": {
+        "Output": {
+          "ItemId": "Plant_Crop_Wheat_Item",
+          "Quantity": 8
+        },
+        "Input": [
+          {
+            "ItemId": "Nakasar_Peuples_Favor_Feran",
+            "Quantity": 1
+          }
+        ],
+        "Stock": 8
+      }
+    },
+    {
+      "Type": "Fixed",
+      "Trade": {
+        "Output": {
+          "ItemId": "Plant_Seeds_Carrot",
+          "Quantity": 4
+        },
+        "Input": [
+          {
+            "ItemId": "Nakasar_Peuples_Favor_Feran",
+            "Quantity": 1
+          }
+        ],
+        "Stock": 8
+      }
+    },
+    {
+      "Type": "Fixed",
+      "Trade": {
+        "Output": {
+          "ItemId": "Plant_Crop_Tomato_Item",
+          "Quantity": 6
+        },
+        "Input": [
+          {
+            "ItemId": "Nakasar_Peuples_Favor_Feran",
+            "Quantity": 1
+          }
+        ],
+        "Stock": 6
+      }
+    },
+    {
+      "Type": "Fixed",
+      "Trade": {
+        "Output": {
+          "ItemId": "Plant_Crop_Onion_Item",
+          "Quantity": 6
+        },
+        "Input": [
+          {
+            "ItemId": "Nakasar_Peuples_Favor_Feran",
+            "Quantity": 1
+          }
+        ],
+        "Stock": 6
+      }
+    }
+  ]
+}

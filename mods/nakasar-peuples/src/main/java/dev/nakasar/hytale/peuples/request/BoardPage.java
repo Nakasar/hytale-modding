@@ -382,6 +382,13 @@ public final class BoardPage extends InteractiveCustomUIPage<BoardPage.Event> {
             cmd.set("#PlotsButton.Text", Message.translation(dev.nakasar.hytale.peuples.village.Plots.KEYS + "button"));
             events.addEventBinding(CustomUIEventBindingType.Activating, "#PlotsButton", EventData.of("Action", "Plots"));
         }
+        // Avant-postes de métier : l'onglet est toujours là (il dit le palier à atteindre).
+        boolean annexes = !dev.nakasar.hytale.peuples.annex.Annexes.catalog(village).isEmpty();
+        cmd.set("#AnnexButton.Visible", annexes);
+        if (annexes) {
+            cmd.set("#AnnexButton.Text", Message.translation(dev.nakasar.hytale.peuples.annex.Annexes.KEYS + "button"));
+            events.addEventBinding(CustomUIEventBindingType.Activating, "#AnnexButton", EventData.of("Action", "Annexes"));
+        }
         cmd.set("#TextVersion.Text", Message.translation(KEYS + "textVersion"));
         events.addEventBinding(CustomUIEventBindingType.Activating, "#TextVersion", EventData.of("Action", "Text"));
     }
@@ -472,6 +479,9 @@ public final class BoardPage extends InteractiveCustomUIPage<BoardPage.Event> {
             return;
         } else if (action.equals("Plots")) {
             dev.nakasar.hytale.peuples.village.PlotPage.open(store, ref, playerRef, village);
+            return;
+        } else if (action.equals("Annexes")) {
+            dev.nakasar.hytale.peuples.annex.AnnexPage.open(store, ref, playerRef, village);
             return;
         }
         rebuild();

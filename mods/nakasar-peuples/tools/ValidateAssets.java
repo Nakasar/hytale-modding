@@ -1228,7 +1228,7 @@ public class ValidateAssets {
      * bâtiment, chaque bâtiment a au moins {@value #MIN_WORKSHOP_ORDERS} commandes ; chaque commande
      * ({@code "Workshop"} d'un modèle de demande) cite un bâtiment de métier qui existe.
      */
-    private static int checkWorkshops(Path root) throws Exception {
+    private static int checkWorkshops(Path root, String prefabsFile) throws Exception {
         Path dir = root.resolve("Nakasar/Workshops");
         Path layouts = root.resolve("Nakasar/VillageLayouts");
         Path requests = root.resolve("Nakasar/Requests");
@@ -1263,9 +1263,11 @@ public class ValidateAssets {
             Path f = dir.resolve(e.getKey() + ".json");
             BsonDocument doc = BsonDocument.parse(Files.readString(f));
             List<String> problems = new ArrayList<>();
-            String layoutId = doc.getString("Layout").getValue();
-            Path layoutFile = layouts.resolve(layoutId + ".json");
-            if (!Files.isRegularFile(layoutFile)) {
+            String layoutId = doc.containsKey("Annex") ? null : doc.getString("Layout").getValue();
+            Path layoutFile = layoutId == null ? null : layouts.resolve(layoutId + ".json");
+            if (doc.containsKey("Annex")) {
+                checkAnnex(root, doc.getDocument("Annex"), prefabsFile, problems);
+            } else if (!Files.isRegularFile(layoutFile)) {
                 problems.add("plan inconnu " + layoutId);
             } else {
                 BsonDocument layout = BsonDocument.parse(Files.readString(layoutFile));
@@ -1356,6 +1358,73 @@ public class ValidateAssets {
             }
         }
         return errors;
+    }
+
+    private static final Set<String> ANNEX_RULES = Set.of("FERTILE", "ROCK", "TREES", "WATER", "NONE");
+
+    /**
+     * Avant-poste de métier (champ {@code Annex}, tools/outposts.py) : prefabs vanilla relevés ({@code -Dprefabs}) au
+     * format « chemin x z rot », emprise [x0, x1, z0, z1] au nord de la fondation, objet de fondation du pack, règle connue,
+     * villageois (rôle du mod présent, ou vanilla relevé) et décor « dx dy dz lacet Bloc ».
+     */
+    private static void checkAnnex(Path root, BsonDocument annex, String prefabsFile, List<String> problems) throws Exception {
+        Set<String> known = new HashSet<>();
+        if (prefabsFile != null) {
+            for (String line : Files.readAllLines(Path.of(prefabsFile))) {
+                if (!line.isBlank() && !line.startsWith("#")) {
+                    known.add(line.trim().split("\\s+")[0]);
+                }
+            }
+        }
+        String item = annex.containsKey("Item") ? annex.getString("Item").getValue() : "";
+        try (Stream<Path> walk = Files.walk(root.resolve("Item/Items"))) {
+            if (walk.noneMatch(f -> f.getFileName().toString().equals(item + ".json"))) {
+                problems.add("avant-poste : objet de fondation absent " + item);
+            }
+        }
+        String rule = annex.containsKey("Rule") ? annex.getString("Rule").getValue() : "NONE";
+        if (!ANNEX_RULES.contains(rule)) {
+            problems.add("avant-poste : règle inconnue " + rule);
+        }
+        if (!annex.containsKey("Prefabs") || annex.getArray("Prefabs").isEmpty()) {
+            problems.add("avant-poste sans Prefabs");
+        } else {
+            for (BsonValue v : annex.getArray("Prefabs")) {
+                String[] p = v.asString().getValue().trim().split("\\s+");
+                if (p.length != 4) {
+                    problems.add("avant-poste : prefab mal formé « " + v.asString().getValue() + " »");
+                } else if (prefabsFile != null && !known.contains(p[0])) {
+                    problems.add("avant-poste : prefab vanilla non relevé " + p[0] + " (tools/vanilla-prefabs-0.7.2.txt)");
+                }
+            }
+        }
+        if (!annex.containsKey("Rect") || annex.getArray("Rect").size() != 4) {
+            problems.add("avant-poste : il faut Rect [x0, x1, z0, z1]");
+        } else if (annex.getArray("Rect").get(3).asInt32().getValue() >= 0) {
+            problems.add("avant-poste : l'emprise doit rester au nord de la fondation (z1 < 0)");
+        }
+        if (!annex.containsKey("Workers") || annex.getArray("Workers").isEmpty()) {
+            problems.add("avant-poste sans villageois (Workers)");
+        } else {
+            for (BsonValue v : annex.getArray("Workers")) {
+                String role = v.asDocument().getString("Role").getValue();
+                if (role.startsWith("Nakasar_")) {
+                    if (!Files.isRegularFile(root.resolve("NPC/Roles/Nakasar/Peuples/" + role + ".json"))) {
+                        problems.add("avant-poste : rôle du mod absent " + role);
+                    }
+                } else if (WORKSHOP_NPCS != null && !WORKSHOP_NPCS.contains(role)) {
+                    problems.add("avant-poste : rôle vanilla non relevé " + role);
+                }
+            }
+        }
+        if (annex.containsKey("Decor")) {
+            for (BsonValue d : annex.getArray("Decor")) {
+                String[] p = d.asString().getValue().trim().split("\\s+");
+                if (p.length != 5 || (WORKSHOP_BLOCKS != null && !WORKSHOP_BLOCKS.contains(p[4]))) {
+                    problems.add("avant-poste : décor mal formé ou bloc inconnu " + d.asString().getValue());
+                }
+            }
+        }
     }
 
     /** Blocs vanilla connus (tools/vanilla-block-ids-0.7.2.txt), pour le décor des bâtiments de métier, ou null. */
@@ -1580,7 +1649,8 @@ public class ValidateAssets {
         }
         // Chaque id rempli par une page Java existe dans chacune de ses mises en page (BoardPage*.ui, WorkshopPage*.ui).
         for (String[] pageSpec : new String[][] {{"request/BoardPage.java", "BoardPage"}, {"workshop/WorkshopPage.java", "WorkshopPage"},
-                {"workshop/WorkshopSpecialtyPage.java", "WorkshopSpecialtyPage"}}) {
+                {"workshop/WorkshopSpecialtyPage.java", "WorkshopSpecialtyPage"}, {"village/PlotPage.java", "PlotPage"},
+                {"annex/AnnexPage.java", "AnnexPage"}}) {
         Path java = root.getParent().getParent().resolve("java/dev/nakasar/hytale/peuples/" + pageSpec[0]);
         String pageName = pageSpec[1];
         if (Files.isRegularFile(java)) {
@@ -1821,7 +1891,7 @@ public class ValidateAssets {
             WORKSHOP_BLOCKS = new HashSet<>(Files.readAllLines(Path.of(blockIds)));
         }
         WORKSHOP_NPCS = System.getProperty("refs") == null ? null : vanillaNpcRefs();
-        errors += checkWorkshops(root);
+        errors += checkWorkshops(root, System.getProperty("prefabs"));
         errors += checkTargetBlocks(root);
         errors += checkMapMarkerIcons(root);
         errors += checkReputation(root);

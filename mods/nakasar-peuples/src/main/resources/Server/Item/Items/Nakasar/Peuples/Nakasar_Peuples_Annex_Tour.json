@@ -1,0 +1,9 @@
+{
+  "$Comment": "Fondation d'avant-poste « Tour de guet », remise au panneau d'un village de palier 3 et posée là où l'on veut bâtir (Java annex/AnnexPlaceSystem). Générée par tools/generate_workshops.py.",
+  "Parent": "Furniture_Construction_Sign",
+  "TranslationProperties": {
+    "Name": "nakasar_peuples.items.Nakasar_Peuples_Annex_Tour.name",
+    "Description": "nakasar_peuples.items.Nakasar_Peuples_Annex_Tour.description"
+  },
+  "Quality": "Uncommon"
+}

@@ -116,6 +116,7 @@ const sidebars = {
     "peuples/villages",
     "peuples/batiments-de-metier",
     "peuples/emplacements",
+    "peuples/avant-postes-de-metier",
     {
       type: "category",
       label: "Les peuples",

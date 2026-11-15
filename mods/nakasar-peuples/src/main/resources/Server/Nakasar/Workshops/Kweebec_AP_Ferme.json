@@ -1,0 +1,175 @@
+{
+  "$Comment": "Avant-poste de métier généré par tools/generate_workshops.py depuis tools/outposts.py (ne pas modifier à la main) : voir dev.nakasar.hytale.peuples.workshop.Workshop et annex/Annexes.",
+  "People": "Kweebec",
+  "Icon": "Plant_Crop_Wheat_Item",
+  "NameKey": "nakasar_peuples.workshop.Kweebec_AP_Ferme.name",
+  "Board": [
+    0,
+    0,
+    0
+  ],
+  "Upgrades": [
+    {
+      "Level": 2,
+      "Hours": 12,
+      "Decor": [
+        "1 0 0 0 Furniture_Kweebec_Lantern"
+      ],
+      "Materials": [
+        {
+          "ItemId": "Wood_Oak_Trunk",
+          "Quantity": 16
+        },
+        {
+          "ItemId": "Rock_Stone_Cobble",
+          "Quantity": 12
+        },
+        {
+          "ItemId": "Ingredient_Fibre",
+          "Quantity": 6
+        }
+      ]
+    },
+    {
+      "Level": 3,
+      "Hours": 12,
+      "Decor": [
+        "-1 0 0 0 Furniture_Kweebec_Lantern",
+        "0 1 0 0 Furniture_Kweebec_Candle"
+      ],
+      "Materials": [
+        {
+          "ItemId": "Wood_Oak_Trunk",
+          "Quantity": 24
+        },
+        {
+          "ItemId": "Rock_Stone_Cobble",
+          "Quantity": 18
+        },
+        {
+          "ItemId": "Ingredient_Fibre",
+          "Quantity": 9
+        }
+      ]
+    }
+  ],
+  "Annex": {
+    "Type": "Ferme",
+    "Item": "Nakasar_Peuples_Annex_Ferme",
+    "Rule": "FERTILE",
+    "Prefabs": [
+      "Npc/Kweebec/Redwood/Normal_Plot/Farm/Kweebec_Redwood_Normal_Plot_Farm_001 0 -9 0",
+      "Npc/Kweebec/Redwood/Small_Plot/House/Kweebec_Redwood_Small_Plot_House_001 -12 -8 0"
+    ],
+    "Rect": [
+      -17,
+      8,
+      -16,
+      -2
+    ],
+    "Height": 8,
+    "Workers": [
+      {
+        "Id": "AP_Ferme_1",
+        "Tier": 1,
+        "Role": "Nakasar_Peuples_Kweebec_Gardener",
+        "Dialogue": "Kweebec_Gardener",
+        "Building": "",
+        "WorkX": -2,
+        "WorkZ": -1,
+        "Home": "",
+        "HomeX": -2,
+        "HomeZ": -2,
+        "Builder": false
+      },
+      {
+        "Id": "AP_Ferme_2",
+        "Tier": 1,
+        "Role": "Nakasar_Peuples_Kweebec_Gardener",
+        "Dialogue": "Kweebec_Gardener",
+        "Building": "",
+        "WorkX": 2,
+        "WorkZ": -1,
+        "Home": "",
+        "HomeX": 2,
+        "HomeZ": -2,
+        "Builder": false
+      },
+      {
+        "Id": "AP_Ferme_3",
+        "Tier": 2,
+        "Role": "Nakasar_Peuples_Kweebec_Breeder",
+        "Dialogue": "Kweebec_Breeder",
+        "Building": "",
+        "WorkX": -4,
+        "WorkZ": -1,
+        "Home": "",
+        "HomeX": -4,
+        "HomeZ": -2,
+        "Builder": false
+      },
+      {
+        "Id": "AP_Ferme_4",
+        "Tier": 3,
+        "Role": "Nakasar_Peuples_Kweebec_WellKeeper",
+        "Dialogue": "Kweebec_WellKeeper",
+        "Building": "",
+        "WorkX": 4,
+        "WorkZ": -1,
+        "Home": "",
+        "HomeX": 4,
+        "HomeZ": -2,
+        "Builder": false
+      }
+    ],
+    "Materials": [
+      {
+        "ItemId": "Wood_Oak_Trunk",
+        "Quantity": 32
+      },
+      {
+        "ItemId": "Rock_Stone_Cobble",
+        "Quantity": 24
+      },
+      {
+        "ItemId": "Ingredient_Fibre",
+        "Quantity": 12
+      }
+    ],
+    "Hours": 24,
+    "Decor": [
+      "2 0 -1 0 Furniture_Kweebec_Lantern"
+    ],
+    "Delivery": {
+      "ItemId": "Plant_Crop_Wheat_Item",
+      "Quantity": 6
+    }
+  },
+  "Specialties": [
+    {
+      "Id": "Cereales",
+      "NameKey": "nakasar_peuples.workshop.specialty.Kweebec_AP_Ferme.Cereales",
+      "LineKey": "nakasar_peuples.workshop.specialtyLine.Kweebec_AP_Ferme.Cereales",
+      "Icon": "Plant_Crop_Corn_Item",
+      "Shops": [
+        "Nakasar_Peuples_W_Kweebec_AP_Ferme_Cereales_2",
+        "Nakasar_Peuples_W_Kweebec_AP_Ferme_Cereales_3"
+      ],
+      "ShareItem": "Plant_Crop_Corn_Item",
+      "ShareQuantity": 8
+    },
+    {
+      "Id": "Primeurs",
+      "NameKey": "nakasar_peuples.workshop.specialty.Kweebec_AP_Ferme.Primeurs",
+      "LineKey": "nakasar_peuples.workshop.specialtyLine.Kweebec_AP_Ferme.Primeurs",
+      "Icon": "Plant_Crop_Tomato_Item",
+      "Shops": [
+        "Nakasar_Peuples_W_Kweebec_AP_Ferme_Primeurs_2",
+        "Nakasar_Peuples_W_Kweebec_AP_Ferme_Primeurs_3"
+      ],
+      "ShareItem": "Plant_Crop_Tomato_Item",
+      "ShareQuantity": 6
+    }
+  ],
+  "Shop": "Nakasar_Peuples_W_Kweebec_AP_Ferme_Base_1"
+}

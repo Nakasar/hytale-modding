@@ -1,0 +1,17 @@
+{
+  "$Comment": "Commande du bâtiment de métier Renonce_AP_Mine, générée par tools/generate_workshops.py (ne pas modifier à la main) : voir RequestTemplate.",
+  "People": "Renonce",
+  "Workshop": "Renonce_AP_Mine",
+  "Type": "Craft",
+  "MinLevel": 1,
+  "MaxLevel": 3,
+  "Weight": 1,
+  "TitleKey": "nakasar_peuples.request.Renonce_AP_Mine_Picks.title",
+  "TaskKey": "nakasar_peuples.request.Renonce_AP_Mine_Picks.task",
+  "ItemId": "Tool_Pickaxe_Crude",
+  "Quantity": 2,
+  "Knowledge": 40,
+  "Essor": 5,
+  "Favors": 1,
+  "Reputation": 6
+}
