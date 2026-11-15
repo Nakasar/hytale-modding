@@ -26,16 +26,15 @@ import dev.nakasar.hytale.peuples.reputation.Rank;
 import dev.nakasar.hytale.peuples.reputation.Reputations;
 import dev.nakasar.hytale.peuples.village.People;
 import dev.nakasar.hytale.peuples.village.Terrain;
-import dev.nakasar.hytale.peuples.village.VillageBuilder;
+import dev.nakasar.hytale.peuples.request.Requests;
 import org.joml.Vector3d;
 
 /**
  * {@code "Type": "Nakasar_Peuples_ZoneItem"} : objets des zones utilisés en main (étape 8). Clé JSON {@code Action} :
  * <ul>
  *   <li>{@code Waterskin} (Outre d'oasis) : bue, elle est retirée et annule la soif {@value Climate#QUENCH_SECONDS} s ;</li>
- *   <li>{@code EchoSeed} (Graine d'Écho, fin de la chaîne kweebec) : plantée en zone 2 (les Dunes), elle fait pousser un
- *   abri d'eau (bassin kweebec vanilla {@value #POOL}, quatre blocs devant le joueur) où la soif ne prend pas, et les
- *   Feran reconnaissent le joueur : réputation de peuple feran portée au rang toléré au moins (GDD, Récompenses) ;</li>
+ *   <li>{@code EchoSeed} (Graine d'Écho, fin de la chaîne kweebec) : plantée en zone 2 (les Dunes), elle fait jaillir la
+ *   Source de l'Écho ({@link EchoSpring}, dix blocs à l'est du joueur) où la soif ne prend pas, et les Feran reconnaissent le joueur : réputation de peuple feran portée au rang toléré au moins (GDD, Récompenses) ;</li>
  *   <li>{@code Foundation} (Pierre de fondation, étape 9) : ouvre la fenêtre de l'avant-poste du champion là où se tient
  *   le joueur ({@link OutpostPage}) ; la pierre n'est prise qu'à la fondation.</li>
  * </ul>
@@ -43,7 +42,6 @@ import org.joml.Vector3d;
 public class ZoneItemInteraction extends SimpleInstantInteraction {
 
     public static final String TYPE_ID = "Nakasar_Peuples_ZoneItem";
-    public static final String POOL = "Npc/Kweebec/Oak/Water_Pool/Kweebec_Oak_Water_Pool_005";
 
     public static final BuilderCodec<ZoneItemInteraction> CODEC = BuilderCodec
             .builder(ZoneItemInteraction.class, ZoneItemInteraction::new, SimpleInstantInteraction.CODEC)
@@ -91,6 +89,13 @@ public class ZoneItemInteraction extends SimpleInstantInteraction {
                 context.getState().state = InteractionState.Failed;
                 return;
             }
+            int[] c = EchoSpring.centreFor(at);
+            if (!EchoSpring.siteOk(world, c[0], c[1])) {
+                NotificationUtil.sendNotification(player.getPacketHandler(), Message.translation(EchoSpring.KEYS + "noRoom"),
+                        NotificationStyle.Warning);
+                context.getState().state = InteractionState.Failed;
+                return;
+            }
         }
         var inventory = InventoryComponent.getCombined(buffer, ref, InventoryComponent.HOTBAR_STORAGE_BACKPACK);
         if (!inventory.removeItemStack(new ItemStack(held.getItemId(), 1), true, true).succeeded()) {
@@ -115,22 +120,21 @@ public class ZoneItemInteraction extends SimpleInstantInteraction {
     }
 
     private static void plantSeed(World world, Store<EntityStore> store, Ref<EntityStore> ref, PlayerRef player, Vector3d at) {
-        int x = (int) Math.floor(at.x()) + 4;
-        int z = (int) Math.floor(at.z());
-        Terrain terrain = new Terrain(world);
-        int y = terrain.surface(x, z);
+        int[] c = EchoSpring.centreFor(at);
+        int y = EchoSpring.build(world, store, c[0], c[1], true);
         if (y == Terrain.NONE) {
-            y = (int) Math.floor(at.y()) - 1;
+            // Rien de chargé (cas limite : le site a été vérifié juste avant) : la graine est rendue.
+            Requests.give(store, ref, new ItemStack(Climate.ECHO_SEED, 1));
+            NotificationUtil.sendNotification(player.getPacketHandler(), Message.translation(EchoSpring.KEYS + "noRoom"),
+                    NotificationStyle.Warning);
+            return;
         }
-        boolean pasted = VillageBuilder.paste(world, store, POOL, x, y, z, 0);
-        ZoneRegistry.get(world).addShelter(x, y, z);
         int before = Reputations.peopleValue(store, ref, People.FERAN);
         if (before < Rank.TOLERE.min()) {
             Reputations.setPeople(store, ref, People.FERAN, Rank.TOLERE.min());
         }
-        PeuplesPlugin.get().getLogger().atInfo().log("Peuples : graine d'Écho plantée en %d %d %d (bassin %s)", x, y, z,
-                pasted ? "collé" : "non collé");
-        player.sendMessage(Message.translation(Climate.KEYS + "seed.planted").param("x", x).param("y", y).param("z", z));
+        PeuplesPlugin.get().getLogger().atInfo().log("Peuples : graine d'Écho plantée en %d %d %d", c[0], y, c[1]);
+        player.sendMessage(Message.translation(EchoSpring.KEYS + "planted").param("x", c[0]).param("y", y + 1).param("z", c[1]));
     }
 
     @Override

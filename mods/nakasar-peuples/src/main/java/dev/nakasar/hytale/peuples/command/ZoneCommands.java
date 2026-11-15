@@ -18,6 +18,7 @@ import dev.nakasar.hytale.peuples.village.People;
 import dev.nakasar.hytale.peuples.village.Village;
 import dev.nakasar.hytale.peuples.village.Villages;
 import dev.nakasar.hytale.peuples.zone.Climate;
+import dev.nakasar.hytale.peuples.zone.EchoSpring;
 import dev.nakasar.hytale.peuples.zone.Hive;
 import dev.nakasar.hytale.peuples.zone.MoreVillagesSeeder;
 import dev.nakasar.hytale.peuples.zone.ZoneSeeder;
@@ -35,6 +36,7 @@ import java.util.List;
  *   <li>{@code climat <soif|froid|vide|aucun>} (ops) : impose au joueur le climat d'une zone, où qu'il soit (essai) ;</li>
  *   <li>{@code avantposte <liste|pierre|finir>} (ops, étape 9) : avant-postes du champion du monde, une Pierre de
  *   fondation, ou les colons de toutes les fondations en attente tout de suite.</li>
+ *   <li>{@code source} (ops) : reconstruit la Source de l'Écho la plus proche (ancien bassin kweebec compris).</li>
  * </ul>
  */
 final class ZoneCommands {
@@ -45,7 +47,7 @@ final class ZoneCommands {
     }
 
     static List<AbstractCommand> all() {
-        return List.of(new ZoneCommand(), new HiveCommand(), new SeedCommand(), new ClimateCommand(), new OutpostCommand());
+        return List.of(new ZoneCommand(), new HiveCommand(), new SeedCommand(), new ClimateCommand(), new OutpostCommand(), new SpringCommand());
     }
 
     private static final class ZoneCommand extends AbstractPlayerCommand {
@@ -182,6 +184,29 @@ final class ZoneCommands {
                                 .param("state", state));
                     }
                 }
+            }
+        }
+    }
+
+    private static final class SpringCommand extends AbstractPlayerCommand {
+        private static final int REACH = 64;
+
+        SpringCommand() {
+            super("source", KEYS + "spring.desc");
+            requirePermission(VillageCommand.ADMIN);
+        }
+
+        @Override
+        protected void execute(CommandContext context, Store<EntityStore> store, Ref<EntityStore> ref, PlayerRef player, World world) {
+            Vector3d at = player.getTransform().getPosition();
+            int[] y = {Integer.MIN_VALUE};
+            int[] shelter = EchoSpring.rebuildNearest(world, store, at.x(), at.z(), REACH, y);
+            if (shelter == null) {
+                player.sendMessage(Message.translation(KEYS + "spring.none").param("radius", REACH));
+            } else if (y[0] == Integer.MIN_VALUE) {
+                player.sendMessage(Message.translation(KEYS + "spring.failed"));
+            } else {
+                player.sendMessage(Message.translation(KEYS + "spring.done").param("x", shelter[0]).param("y", y[0] + 1).param("z", shelter[2]));
             }
         }
     }

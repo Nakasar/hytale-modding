@@ -1,0 +1,23 @@
+{
+  "$Comment": "Jarre de la Source de l'Écho (generate_echo_spring.py) : jarre feran vanilla ; l'utiliser explique la source et remplit une Outre d'oasis par jour de jeu (zone/EchoSpring).",
+  "Parent": "Furniture_Feran_Pot",
+  "TranslationProperties": {
+    "Name": "nakasar_peuples.items.Nakasar_Peuples_Echo_Spring_Jar.name",
+    "Description": "nakasar_peuples.items.Nakasar_Peuples_Echo_Spring_Jar.description"
+  },
+  "Quality": "Developer",
+  "BlockType": {
+    "Gathering": {
+      "Breaking": {
+        "GatherType": "Unbreakable"
+      }
+    },
+    "Interactions": {
+      "Use": {
+        "Interactions": [
+          "Nakasar_Peuples_Echo_Spring"
+        ]
+      }
+    }
+  }
+}

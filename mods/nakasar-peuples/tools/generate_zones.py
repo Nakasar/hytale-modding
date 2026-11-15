@@ -1325,9 +1325,6 @@ def climate_texts():
     t(k + "status.quenched", "Climat : désaltéré.", "Climate: quenched.")
     t(k + "status.fine", "Climat : rien à craindre ici.", "Climate: nothing to fear here.")
     t(k + "seed.wrongZone", "La Graine d'Écho ne prendra que dans les Dunes (zone 2).", "The Echo Seed will only take root in the Dunes (zone 2).")
-    t(k + "seed.planted",
-      "La Graine d'Écho chante et un bassin naît du sable en {x} {y} {z}. Ici, la soif ne te prendra pas, et les Feran reconnaîtront son chant.",
-      "The Echo Seed sings and a pool rises from the sand at {x} {y} {z}. Here thirst will not take you, and the Feran will know its song.")
     t(k + "reveal.Feran", "La Graine d'Écho frémit : elle sent l'eau de l'oasis {village}, en {x} {z} ({distance} blocs).",
       "The Echo Seed stirs: it senses the water of the {village} oasis, at {x} {z} ({distance} blocks).")
     t(k + "reveal.Renonce", "Le Bracelet de vent tire vers le nord : des feux brûlent au hameau {village}, en {x} {z} ({distance} blocs).",
