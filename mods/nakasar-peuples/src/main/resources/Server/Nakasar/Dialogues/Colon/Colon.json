@@ -1,0 +1,318 @@
+{
+  "$Comment": "Le colon d'un village au palier max (outpost/Settlers), généré par tools/generate_settlers.py. Les entrées SettlerSite lisent l'examen du site fait quand le joueur qu'il suit lui parle (zone/SiteRules) ; le détail (distances, pourcentages) est aussi dit dans le tchat.",
+  "NpcNameKey": "nakasar_peuples.dialogue.Colon.npc",
+  "RoleKey": "nakasar_peuples.dialogue.Colon.role",
+  "Entries": [
+    {
+      "Node": "Ici",
+      "Conditions": [
+        {
+          "Type": "SettlerSite",
+          "Reason": "OK"
+        }
+      ]
+    },
+    {
+      "Node": "TropPresPeuple",
+      "Conditions": [
+        {
+          "Type": "SettlerSite",
+          "Reason": "TOO_CLOSE_SAME"
+        }
+      ]
+    },
+    {
+      "Node": "TropPresAutre",
+      "Conditions": [
+        {
+          "Type": "SettlerSite",
+          "Reason": "TOO_CLOSE_OTHER"
+        }
+      ]
+    },
+    {
+      "Node": "Prevu",
+      "Conditions": [
+        {
+          "Type": "SettlerSite",
+          "Reason": "PLANNED"
+        }
+      ]
+    },
+    {
+      "Node": "HorsZone",
+      "Conditions": [
+        {
+          "Type": "SettlerSite",
+          "Reason": "OUT_OF_ZONE"
+        }
+      ]
+    },
+    {
+      "Node": "Rivage",
+      "Conditions": [
+        {
+          "Type": "SettlerSite",
+          "Reason": "SHORE"
+        }
+      ]
+    },
+    {
+      "Node": "Eau",
+      "Conditions": [
+        {
+          "Type": "SettlerSite",
+          "Reason": "WATER"
+        }
+      ]
+    },
+    {
+      "Node": "Sol",
+      "Conditions": [
+        {
+          "Type": "SettlerSite",
+          "Reason": "GROUND"
+        }
+      ]
+    },
+    {
+      "Node": "Relief",
+      "Conditions": [
+        {
+          "Type": "SettlerSite",
+          "Reason": "RELIEF"
+        }
+      ]
+    },
+    {
+      "Node": "Examen",
+      "Conditions": [
+        {
+          "Type": "SettlerSite"
+        }
+      ]
+    },
+    {
+      "Node": "Accueil"
+    }
+  ],
+  "Nodes": [
+    {
+      "Id": "Accueil",
+      "TextKey": "nakasar_peuples.dialogue.Colon.accueilTexte",
+      "Responses": [
+        {
+          "TextKey": "nakasar_peuples.dialogue.Colon.aider",
+          "HintKey": "nakasar_peuples.dialogue.Colon.hintFollow",
+          "Effects": [
+            {
+              "Type": "SettlerFollow"
+            }
+          ],
+          "Next": "Suivre"
+        },
+        {
+          "TextKey": "nakasar_peuples.dialogue.Colon.plusTard"
+        }
+      ]
+    },
+    {
+      "Id": "Suivre",
+      "TextKey": "nakasar_peuples.dialogue.Colon.suivreTexte",
+      "Responses": [
+        {
+          "TextKey": "nakasar_peuples.dialogue.Colon.enRoute"
+        }
+      ]
+    },
+    {
+      "Id": "Ici",
+      "TextKey": "nakasar_peuples.dialogue.Colon.iciTexte",
+      "Responses": [
+        {
+          "TextKey": "nakasar_peuples.dialogue.Colon.fonder",
+          "HintKey": "nakasar_peuples.dialogue.Colon.hintFound",
+          "Effects": [
+            {
+              "Type": "SettlerFound"
+            }
+          ]
+        },
+        {
+          "TextKey": "nakasar_peuples.dialogue.Colon.chercher"
+        },
+        {
+          "TextKey": "nakasar_peuples.dialogue.Colon.rentrer",
+          "HintKey": "nakasar_peuples.dialogue.Colon.hintHome",
+          "Effects": [
+            {
+              "Type": "SettlerHome"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "Id": "TropPresPeuple",
+      "TextKey": "nakasar_peuples.dialogue.Colon.tropPresPeupleTexte",
+      "Responses": [
+        {
+          "TextKey": "nakasar_peuples.dialogue.Colon.chercher"
+        },
+        {
+          "TextKey": "nakasar_peuples.dialogue.Colon.rentrer",
+          "HintKey": "nakasar_peuples.dialogue.Colon.hintHome",
+          "Effects": [
+            {
+              "Type": "SettlerHome"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "Id": "TropPresAutre",
+      "TextKey": "nakasar_peuples.dialogue.Colon.tropPresAutreTexte",
+      "Responses": [
+        {
+          "TextKey": "nakasar_peuples.dialogue.Colon.chercher"
+        },
+        {
+          "TextKey": "nakasar_peuples.dialogue.Colon.rentrer",
+          "HintKey": "nakasar_peuples.dialogue.Colon.hintHome",
+          "Effects": [
+            {
+              "Type": "SettlerHome"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "Id": "Prevu",
+      "TextKey": "nakasar_peuples.dialogue.Colon.prevuTexte",
+      "Responses": [
+        {
+          "TextKey": "nakasar_peuples.dialogue.Colon.chercher"
+        },
+        {
+          "TextKey": "nakasar_peuples.dialogue.Colon.rentrer",
+          "HintKey": "nakasar_peuples.dialogue.Colon.hintHome",
+          "Effects": [
+            {
+              "Type": "SettlerHome"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "Id": "HorsZone",
+      "TextKey": "nakasar_peuples.dialogue.Colon.horsZoneTexte",
+      "Responses": [
+        {
+          "TextKey": "nakasar_peuples.dialogue.Colon.chercher"
+        },
+        {
+          "TextKey": "nakasar_peuples.dialogue.Colon.rentrer",
+          "HintKey": "nakasar_peuples.dialogue.Colon.hintHome",
+          "Effects": [
+            {
+              "Type": "SettlerHome"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "Id": "Rivage",
+      "TextKey": "nakasar_peuples.dialogue.Colon.rivageTexte",
+      "Responses": [
+        {
+          "TextKey": "nakasar_peuples.dialogue.Colon.chercher"
+        },
+        {
+          "TextKey": "nakasar_peuples.dialogue.Colon.rentrer",
+          "HintKey": "nakasar_peuples.dialogue.Colon.hintHome",
+          "Effects": [
+            {
+              "Type": "SettlerHome"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "Id": "Eau",
+      "TextKey": "nakasar_peuples.dialogue.Colon.eauTexte",
+      "Responses": [
+        {
+          "TextKey": "nakasar_peuples.dialogue.Colon.chercher"
+        },
+        {
+          "TextKey": "nakasar_peuples.dialogue.Colon.rentrer",
+          "HintKey": "nakasar_peuples.dialogue.Colon.hintHome",
+          "Effects": [
+            {
+              "Type": "SettlerHome"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "Id": "Sol",
+      "TextKey": "nakasar_peuples.dialogue.Colon.solTexte",
+      "Responses": [
+        {
+          "TextKey": "nakasar_peuples.dialogue.Colon.chercher"
+        },
+        {
+          "TextKey": "nakasar_peuples.dialogue.Colon.rentrer",
+          "HintKey": "nakasar_peuples.dialogue.Colon.hintHome",
+          "Effects": [
+            {
+              "Type": "SettlerHome"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "Id": "Relief",
+      "TextKey": "nakasar_peuples.dialogue.Colon.reliefTexte",
+      "Responses": [
+        {
+          "TextKey": "nakasar_peuples.dialogue.Colon.chercher"
+        },
+        {
+          "TextKey": "nakasar_peuples.dialogue.Colon.rentrer",
+          "HintKey": "nakasar_peuples.dialogue.Colon.hintHome",
+          "Effects": [
+            {
+              "Type": "SettlerHome"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "Id": "Examen",
+      "TextKey": "nakasar_peuples.dialogue.Colon.examenTexte",
+      "Responses": [
+        {
+          "TextKey": "nakasar_peuples.dialogue.Colon.chercher"
+        },
+        {
+          "TextKey": "nakasar_peuples.dialogue.Colon.rentrer",
+          "HintKey": "nakasar_peuples.dialogue.Colon.hintHome",
+          "Effects": [
+            {
+              "Type": "SettlerHome"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

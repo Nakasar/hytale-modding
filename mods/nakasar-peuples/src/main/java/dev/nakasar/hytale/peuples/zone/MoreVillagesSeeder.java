@@ -157,13 +157,7 @@ public final class MoreVillagesSeeder extends TickingSystem<EntityStore> {
 
     /** Vrai si (x, z) est à bonne distance des autres villages (même peuple et autres peuples). */
     static boolean spaced(List<Village> all, People people, int x, int z) {
-        for (Village v : all) {
-            double min = v.people() == people ? SAME_MIN : OTHER_MIN;
-            if (v.horizontalDistanceSquared(x, z) < min * min) {
-                return false;
-            }
-        }
-        return true;
+        return SiteRules.tooClose(all, people, x, z) == null;
     }
 
     private static void tryNext(World world, VillageLayout layout, People people, List<int[]> sites, int index, Consumer<Village> done) {
@@ -199,10 +193,6 @@ public final class MoreVillagesSeeder extends TickingSystem<EntityStore> {
 
     /** Mêmes exigences de site que le premier lieu du peuple (herbe à 80 % et 9 de relief pour les Kweebecs). */
     private static boolean suitable(World world, VillageLayout layout, People people, int cx, int cz) {
-        return switch (people) {
-            case KWEEBEC -> ZoneSeeder.suitable(world, layout, people, cx, cz, 0.8, 9);
-            case TRORK -> ZoneSeeder.suitable(world, layout, people, cx, cz, 0.6, 9);
-            default -> ZoneSeeder.suitable(world, layout, people, cx, cz);
-        };
+        return SiteRules.terrainOk(world, layout, people, cx, cz);
     }
 }

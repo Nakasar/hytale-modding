@@ -28,6 +28,9 @@ public final class Outpost {
             .add()
             .append(new KeyedCodec<>("Refund", Codec.BOOLEAN), (o, v) -> o.refund = v != null && v, o -> o.refund)
             .add()
+            .append(new KeyedCodec<>("From", Codec.STRING), (o, v) -> o.from = v, o -> o.from)
+            .documentation("Village d'où vient le colon qui a lancé cette fondation (Settlers) ; absent : pierre de fondation.")
+            .add()
             .build();
 
     String people;
@@ -38,6 +41,8 @@ public final class Outpost {
     long day;
     String villageId;
     boolean refund;
+    /** Village du colon (fondation sans pierre : rien à rembourser, le colon rentre chez lui si elle échoue). */
+    String from;
     /** Génération lancée (non sauvegardé : un redémarrage la relance au matin). */
     transient boolean building;
 
@@ -81,6 +86,10 @@ public final class Outpost {
         return villageId;
     }
 
+    public String from() {
+        return from;
+    }
+
     public boolean refund() {
         return refund;
     }
@@ -94,6 +103,7 @@ public final class Outpost {
         Outpost c = new Outpost(people, x, z, owner, ownerName, day);
         c.villageId = villageId;
         c.refund = refund;
+        c.from = from;
         return c;
     }
 }

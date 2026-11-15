@@ -241,6 +241,18 @@ Les villages se posent avec `VillageBuilder` (même nivellement `Grading` que le
 échecs. `/village semer <peuple>` pose un village de plus à la main avec les mêmes règles, et `/village zone` les liste
 tous. Un monde existant reçoit ses villages suivants au prochain démarrage.
 
+#### Le colon : fonder un village sans être Champion
+
+`outpost/Settlers` : un village au palier max (`Tiers.MAX`) fait venir un colon au plus une fois tous les 7 jours de
+jeu (`Village` : `SettlerDay`, `SettlerActive`, `SettlerOwner`). Le PNJ n'est pas sauvegardé : il apparaît au poste
+(cœur + 4, -4) quand un joueur passe à moins de 48 blocs (`Nakasar_Peuples_<Peuple>_Settler`), puis, accepté, suit son
+joueur (`…_Settler_Follow`, ramené près de lui au-delà de 32 blocs, retiré quand il se déconnecte). Lui parler ailleurs
+lance `zone/SiteRules.check` (règles communes avec `MoreVillagesSeeder` : écarts 600/300, fondations prévues, zone et
+rivage, sol, eau, relief) : la condition de dialogue `SettlerSite` choisit le nœud (« Ici » ou la raison), le détail
+chiffré part dans le tchat. « Fondons le village ici » enregistre un `Outpost` avec `From` = village du colon : bâti au
+matin suivant comme un avant-poste ; s'il échoue, le colon rentre à son village. Rôles, dialogue `Colon` et textes :
+`tools/generate_settlers.py`. `/village colon` (ops) fait venir un colon tout de suite au village le plus proche.
+
 ### Bannière et entrée
 
 - La **bannière** (`Nakasar_Peuples_Banner_Kweebec`, statue kweebec vanilla en parent) est posée au nord de la place.

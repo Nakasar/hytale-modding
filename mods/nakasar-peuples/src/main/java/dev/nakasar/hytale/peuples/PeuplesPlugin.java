@@ -218,6 +218,7 @@ public final class PeuplesPlugin extends JavaPlugin {
         dev.nakasar.hytale.peuples.boss.QuestBosses.clearAll();
         dev.nakasar.hytale.peuples.boss.QuestBossBar.clearAll();
         Criers.clearAll();
+        dev.nakasar.hytale.peuples.outpost.Settlers.clearAll();
         RequestHud.clearAll();
         VillageBlockSystem.clearAll();
         Villagers.clearAll();

@@ -89,6 +89,15 @@ public final class Village {
                     (v, a) -> v.plots = a == null ? new PlotState[0] : a, v -> v.plots)
             .documentation("Terrains libres E1 et E2 : projet, chantier, démolition, piquets.")
             .add()
+            .append(new KeyedCodec<>("SettlerDay", Codec.LONG), (v, l) -> v.settlerDay = l == null ? Long.MIN_VALUE : l, v -> v.settlerDay)
+            .documentation("Jour de jeu où le dernier colon est apparu (outpost/Settlers : un tous les 7 jours au palier max).")
+            .add()
+            .append(new KeyedCodec<>("SettlerActive", Codec.BOOLEAN), (v, b) -> v.settlerActive = b != null && b, v -> v.settlerActive)
+            .documentation("Vrai tant que le colon attend au village ou suit un joueur (pas encore parti fonder).")
+            .add()
+            .append(new KeyedCodec<>("SettlerOwner", Codec.STRING), (v, s) -> v.settlerOwner = s, v -> v.settlerOwner)
+            .documentation("UUID du joueur que le colon suit, ou absent s'il attend au village.")
+            .add()
             .build();
 
     String id = "";
@@ -122,6 +131,9 @@ public final class Village {
     RaidRecord raid = new RaidRecord();
     PlotState[] plots = new PlotState[0];
     WorkshopState[] workshops = new WorkshopState[0];
+    long settlerDay = Long.MIN_VALUE;
+    boolean settlerActive;
+    String settlerOwner;
 
     Village() {
     }
@@ -170,6 +182,9 @@ public final class Village {
         v.burnt = burnt.clone();
         v.chantier = chantier == null ? null : chantier.copy();
         v.raid = raid == null ? new RaidRecord() : raid.copy();
+        v.settlerDay = settlerDay;
+        v.settlerActive = settlerActive;
+        v.settlerOwner = settlerOwner;
         v.workshops = new WorkshopState[workshops.length];
         for (int i = 0; i < workshops.length; i++) {
             v.workshops[i] = workshops[i] == null ? null : workshops[i].copy();
@@ -485,5 +500,38 @@ public final class Village {
     void setTier(int value) {
         tier = Tiers.clamp(value);
         essor = Math.min(essor, Tiers.threshold(tier));
+    }
+
+    /** Jour où le dernier colon est apparu ({@code outpost/Settlers}), {@link Long#MIN_VALUE} jamais. */
+    public long settlerDay() {
+        return settlerDay;
+    }
+
+    /** Vrai tant que le colon du village attend ou suit un joueur. */
+    public boolean settlerActive() {
+        return settlerActive;
+    }
+
+    /** UUID du joueur que suit le colon, ou null. */
+    public String settlerOwner() {
+        return settlerOwner;
+    }
+
+    /** Un colon apparaît au village le jour `day`. */
+    public void startSettler(long day) {
+        settlerDay = day;
+        settlerActive = true;
+        settlerOwner = null;
+    }
+
+    /** Le colon suit `owner` (UUID), ou attend au village (null). */
+    public void setSettlerOwner(String owner) {
+        settlerOwner = owner;
+    }
+
+    /** Le colon est parti fonder (ou n'existe plus). */
+    public void endSettler() {
+        settlerActive = false;
+        settlerOwner = null;
     }
 }

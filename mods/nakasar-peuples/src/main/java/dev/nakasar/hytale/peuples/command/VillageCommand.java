@@ -125,6 +125,7 @@ public final class VillageCommand extends AbstractCommandCollection {
         addSubCommand(new KnowledgeCommand());
         addSubCommand(new WorkshopLevelCommand());
         addSubCommand(new ChainStepCommand());
+        addSubCommand(new SettlerCommand());
         addSubCommand(new ZoneOneCommands.KlopsCommand());
         addSubCommand(new ZoneOneCommands.WarPaintCommand());
         ZoneCommands.all().forEach(this::addSubCommand);
@@ -318,6 +319,25 @@ public final class VillageCommand extends AbstractCommandCollection {
                         .param("tier", Message.translation(Tiers.nameKey(village.tier()))));
                 player.sendMessage(Message.translation(Chantiers.KEYS + "builtNow").param("count", pasted));
             });
+        }
+    }
+
+    /** {@code /village colon} (ops) : un colon tout de suite au village le plus proche, sans attendre 7 jours ni le palier max. */
+    private static final class SettlerCommand extends AbstractPlayerCommand {
+        SettlerCommand() {
+            super("colon", KEYS + "settler.desc");
+            requirePermission(ADMIN);
+        }
+
+        @Override
+        protected void execute(CommandContext context, Store<EntityStore> store, Ref<EntityStore> ref, PlayerRef player, World world) {
+            Village village = nearest(world, player);
+            if (village == null) {
+                return;
+            }
+            dev.nakasar.hytale.peuples.outpost.Settlers.summon(world, village,
+                    dev.nakasar.hytale.peuples.request.GameClock.day(store));
+            player.sendMessage(Message.translation(KEYS + "settler.done").param("name", village.name()));
         }
     }
 

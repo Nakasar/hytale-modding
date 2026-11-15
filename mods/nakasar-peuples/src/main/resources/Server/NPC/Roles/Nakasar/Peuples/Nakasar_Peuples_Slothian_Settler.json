@@ -1,0 +1,78 @@
+{
+  "$Comment": "Colon Slothian qui attend près du cœur d'un village au palier max (outpost/Settlers), généré par tools/generate_settlers.py à partir du cueilleur du peuple. Il flâne autour de son poste (point d'attache posé par le Java) ; lui parler ouvre le dialogue Colon. Ne régénère jamais.",
+  "Type": "Generic",
+  "Appearance": "Slothian_Villager",
+  "NameTranslationKey": "nakasar_peuples.npc.Slothian_Settler.name",
+  "MaxHealth": 120,
+  "StartState": "Idle",
+  "DefaultPlayerAttitude": "Neutral",
+  "DefaultNPCAttitude": "Ignore",
+  "MotionControllerList": [
+    {
+      "Type": "Walk",
+      "MaxWalkSpeed": 6,
+      "RunThreshold": 0.7,
+      "RunThresholdRange": 0.1,
+      "Gravity": 10,
+      "MaxFallSpeed": 20,
+      "Acceleration": 10
+    }
+  ],
+  "KnockbackScale": 0.5,
+  "Instructions": [
+    {
+      "Sensor": {
+        "Type": "State",
+        "State": "Idle"
+      },
+      "Instructions": [
+        {
+          "$Comment": "Loin de son poste : il y retourne.",
+          "Sensor": {
+            "Type": "Leash",
+            "Range": 4
+          },
+          "BodyMotion": {
+            "Type": "Seek",
+            "RelativeSpeed": 0.5,
+            "SlowDownDistance": 2,
+            "StopDistance": 1,
+            "UsePathfinder": true
+          }
+        },
+        {
+          "$Comment": "Il flâne autour de son poste.",
+          "BodyMotion": {
+            "Type": "WanderInCircle",
+            "Radius": 2,
+            "RelativeSpeed": 0.3,
+            "MaxHeadingChange": 50
+          }
+        }
+      ]
+    }
+  ],
+  "InteractionInstruction": {
+    "Instructions": [
+      {
+        "Continue": true,
+        "Sensor": {
+          "Type": "Any"
+        },
+        "Actions": [
+          {
+            "Type": "SetInteractable",
+            "Interactable": true,
+            "Hint": "nakasar_peuples.hint.talk"
+          }
+        ]
+      },
+      {
+        "Sensor": {
+          "Type": "HasInteracted"
+        },
+        "Actions": []
+      }
+    ]
+  }
+}

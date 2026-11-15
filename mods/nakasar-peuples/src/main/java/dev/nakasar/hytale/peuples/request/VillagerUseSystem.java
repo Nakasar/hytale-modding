@@ -29,7 +29,8 @@ import java.util.ArrayList;
  *   <li>le marchand d'un village ouvre le sien ({@code <Peuple>_Marchand}) : les échoppes de troc selon le rang ;</li>
  *   <li>le guetteur d'une livraison prend la missive et remplit la demande ;</li>
  *   <li>le captif d'une escorte répond qu'il suit le joueur ;</li>
- *   <li>un villageois à métier (étape 5) ouvre le dialogue de son métier.</li>
+ *   <li>un villageois à métier (étape 5) ouvre le dialogue de son métier ;</li>
+ *   <li>le colon d'un village au palier max propose de fonder un village ({@code outpost/Settlers}).</li>
  * </ul>
  */
 public final class VillagerUseSystem extends EntityEventSystem<EntityStore, UseEntityEvent.Post> {
@@ -65,7 +66,8 @@ public final class VillagerUseSystem extends EntityEventSystem<EntityStore, UseE
         dev.nakasar.hytale.peuples.village.Villagers.Posted villager =
                 posted != null && posted.dialogue() != null && !posted.dialogue().isEmpty() ? posted : null;
         boolean klops = dev.nakasar.hytale.peuples.klops.Klops.isWanderer(target);
-        if (crierVillage == null && merchantVillage == null && chiefVillage == null && owner == null && villager == null && !klops) {
+        boolean settler = dev.nakasar.hytale.peuples.outpost.Settlers.villageOf(target) != null;
+        if (crierVillage == null && merchantVillage == null && chiefVillage == null && owner == null && villager == null && !klops && !settler) {
             return;
         }
         World world = store.getExternalData().getWorld();
@@ -74,7 +76,9 @@ public final class VillagerUseSystem extends EntityEventSystem<EntityStore, UseE
             if (!user.isValid()) {
                 return;
             }
-            if (klops) {
+            if (settler) {
+                dev.nakasar.hytale.peuples.outpost.Settlers.talk(world, s, user, player, target);
+            } else if (klops) {
                 Dialogue dialogue = Dialogue.get(dev.nakasar.hytale.peuples.klops.Klops.DIALOGUE);
                 if (dialogue != null) {
                     Dialogues.openPage(world, s, user, player, dialogue, target);
