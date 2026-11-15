@@ -8,7 +8,7 @@
   "Weight": 1,
   "TitleKey": "nakasar_peuples.request.Kweebec_E2_Deuxieme_Enclos_Hay.title",
   "TaskKey": "nakasar_peuples.request.Kweebec_E2_Deuxieme_Enclos_Hay.task",
-  "ItemId": "Ingredient_Hay",
+  "ItemId": "Plant_Crop_Wheat_Item",
   "Quantity": 12,
   "Knowledge": 30,
   "Essor": 5,

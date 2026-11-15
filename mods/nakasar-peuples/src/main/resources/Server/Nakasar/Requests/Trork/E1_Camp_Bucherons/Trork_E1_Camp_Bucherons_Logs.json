@@ -8,7 +8,7 @@
   "Weight": 1,
   "TitleKey": "nakasar_peuples.request.Trork_E1_Camp_Bucherons_Logs.title",
   "TaskKey": "nakasar_peuples.request.Trork_E1_Camp_Bucherons_Logs.task",
-  "ItemId": "Wood_Oak_Trunk",
+  "ItemId": "Wood_Beech_Trunk",
   "Quantity": 20,
   "Knowledge": 30,
   "Essor": 5,

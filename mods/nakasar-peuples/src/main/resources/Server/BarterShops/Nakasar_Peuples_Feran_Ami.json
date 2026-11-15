@@ -26,7 +26,7 @@
       "Type": "Fixed",
       "Trade": {
         "Output": {
-          "ItemId": "Ingredient_Water_Essence",
+          "ItemId": "Ingredient_Ice_Essence",
           "Quantity": 2
         },
         "Input": [
@@ -42,8 +42,8 @@
       "Type": "Fixed",
       "Trade": {
         "Output": {
-          "ItemId": "Ingredient_Feathers_Light",
-          "Quantity": 4
+          "ItemId": "Weapon_Arrow_Crude",
+          "Quantity": 16
         },
         "Input": [
           {

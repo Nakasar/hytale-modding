@@ -358,14 +358,14 @@ def map_icon():
 
 def shops():
     f = f"Nakasar_Peuples_Favor_{PID}"
-    gz.shop(PID, "Tolere", [("Furniture_Jungle_Brazier", 1, 2, 4), ("Furniture_Jungle_Candle", 2, 1, 10),
+    gz.shop(PID, "Tolere", [("Furniture_Jungle_Brazier", 1, 2, 4), ("Furniture_Jungle_Torch", 2, 1, 10),
                             ("Food_Wildmeat_Cooked", 2, 1, 10), ("Rock_Basalt_Brick", 16, 1, 10)],
             f, "Échoppe du monastère", "Monastery stall")
     gz.shop(PID, "Ami", [("Nakasar_Peuples_Monk_Robe", 1, 6, 2), ("Ingredient_Fire_Essence", 2, 2, 8),
                          ("Weapon_Spear_Tribal", 1, 6, 2), ("Weapon_Dart_Tribal", 16, 2, 6)],
             f, "Échoppe des amis du monastère", "Monastery friends' stall")
     gz.shop(PID, "Hote", [("Weapon_Longsword_Tribal", 1, 8, 2), ("Weapon_Battleaxe_Tribal", 1, 8, 2),
-                          ("Ingredient_Void_Essence", 2, 3, 6), ("Armor_Cloth_Cindercloth_Head", 1, 6, 2)],
+                          ("Ingredient_Voidheart", 1, 6, 2), ("Armor_Cloth_Cindercloth_Head", 1, 6, 2)],
             f, "Réserve de l'hôte du monastère", "Monastery host's reserve")
     # Les textes des échoppes passent par gz.t (bloc de l'étape 8) : on les reprend ici.
     for rank in ("Tolere", "Ami", "Hote"):

@@ -7,7 +7,7 @@
   "Weight": 1,
   "TitleKey": "nakasar_peuples.request.Kweebec_Craft_Lanterns.title",
   "TaskKey": "nakasar_peuples.request.Kweebec_Craft_Lanterns.task",
-  "ItemId": "Furniture_Kweebec_Lantern",
+  "ItemId": "Furniture_Kweebec_Candle",
   "Quantity": 4,
   "Essor": 15,
   "Favors": 2

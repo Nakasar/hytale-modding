@@ -8,7 +8,7 @@
   "Weight": 1,
   "TitleKey": "nakasar_peuples.request.Slothian_E1_Puits_De_Basalte_Buckets.title",
   "TaskKey": "nakasar_peuples.request.Slothian_E1_Puits_De_Basalte_Buckets.task",
-  "ItemId": "Container_Bucket",
+  "ItemId": "Tool_Pickaxe_Crude",
   "Quantity": 2,
   "Knowledge": 40,
   "Essor": 5,

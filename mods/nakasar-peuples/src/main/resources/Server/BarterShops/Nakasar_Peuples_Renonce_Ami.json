@@ -10,8 +10,8 @@
       "Type": "Fixed",
       "Trade": {
         "Output": {
-          "ItemId": "Armor_Wool_Hands",
-          "Quantity": 1
+          "ItemId": "Ingredient_Leather_Heavy",
+          "Quantity": 2
         },
         "Input": [
           {

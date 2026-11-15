@@ -1,5 +1,5 @@
 {
-  "$Comment": "Échoppe trork de base (rang Toléré) : viande, peaux, os, payés en dents de trophée. Objets vanilla.",
+  "$Comment": "Échoppe trork de base (rang Toléré) : viande rôtie, cuir, sangles, tourte, payés en dents de trophée. Objets vanilla, jamais ce que demandent les Trorks (Kevin, 2026-11-15).",
   "DisplayNameKey": "nakasar_peuples.barter.Trork_Tolere.title",
   "RefreshInterval": {
     "Days": 3
@@ -10,8 +10,8 @@
       "Type": "Fixed",
       "Trade": {
         "Output": {
-          "ItemId": "Food_Wildmeat_Raw",
-          "Quantity": 4
+          "ItemId": "Food_Wildmeat_Cooked",
+          "Quantity": 3
         },
         "Input": [
           {
@@ -26,40 +26,40 @@
       "Type": "Fixed",
       "Trade": {
         "Output": {
-          "ItemId": "Ingredient_Hide_Light",
-          "Quantity": 3
-        },
-        "Input": [
-          {
-            "ItemId": "Nakasar_Peuples_Favor_Trork",
-            "Quantity": 1
-          }
-        ],
-        "Stock": 8
-      }
-    },
-    {
-      "Type": "Fixed",
-      "Trade": {
-        "Output": {
-          "ItemId": "Ingredient_Bone_Fragment",
-          "Quantity": 4
-        },
-        "Input": [
-          {
-            "ItemId": "Nakasar_Peuples_Favor_Trork",
-            "Quantity": 1
-          }
-        ],
-        "Stock": 8
-      }
-    },
-    {
-      "Type": "Fixed",
-      "Trade": {
-        "Output": {
-          "ItemId": "Food_Kebab_Meat",
+          "ItemId": "Ingredient_Leather_Light",
           "Quantity": 2
+        },
+        "Input": [
+          {
+            "ItemId": "Nakasar_Peuples_Favor_Trork",
+            "Quantity": 1
+          }
+        ],
+        "Stock": 8
+      }
+    },
+    {
+      "Type": "Fixed",
+      "Trade": {
+        "Output": {
+          "ItemId": "Ingredient_Strap_Leather",
+          "Quantity": 2
+        },
+        "Input": [
+          {
+            "ItemId": "Nakasar_Peuples_Favor_Trork",
+            "Quantity": 1
+          }
+        ],
+        "Stock": 8
+      }
+    },
+    {
+      "Type": "Fixed",
+      "Trade": {
+        "Output": {
+          "ItemId": "Food_Pie_Meat",
+          "Quantity": 1
         },
         "Input": [
           {

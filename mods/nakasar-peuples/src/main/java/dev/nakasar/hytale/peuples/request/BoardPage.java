@@ -167,7 +167,13 @@ public final class BoardPage extends InteractiveCustomUIPage<BoardPage.Event> {
             cmd.set("#TypeIcon" + n + ".ItemId", typeIcon(t));
             cmd.set("#Type" + n + ".TextSpans", Message.translation(t.type().nameKey()));
             cmd.set("#Type" + n + ".Style.TextColor", typeColor(t.type()));
-            cmd.set("#Title" + n + ".TextSpans", Requests.boardTitle(t));
+            // Kevin (2026-11-15) : titre seul, la quantité en pastille sur la case de l'objet (sinon le titre est coupé).
+            cmd.set("#Title" + n + ".TextSpans", Requests.title(t));
+            boolean qty = t.itemId() != null && t.needed() > 1;
+            cmd.set("#Qty" + n + ".Visible", qty);
+            if (qty) {
+                cmd.set("#Qty" + n + ".TextSpans", Message.raw("×" + t.needed()));
+            }
             Requests.Status status = Requests.status(data, request);
             boolean open = Requests.slotOpen(store, ref, village, i);
             boolean taken = status == Requests.Status.TAKEN;
