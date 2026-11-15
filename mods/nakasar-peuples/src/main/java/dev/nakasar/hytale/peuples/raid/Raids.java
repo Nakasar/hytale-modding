@@ -215,6 +215,9 @@ public final class Raids {
     }
 
     /** Vrai si le rôle est un assaillant de raid. */
+    /** Préfixe des chefs des demandes de boss (request/Expeditions). */
+    public static final String BOSS_PREFIX = "Nakasar_Peuples_Boss_";
+
     public static boolean isRaiderRole(String role) {
         return role != null && role.startsWith(RAIDER_PREFIX);
     }
@@ -265,6 +268,11 @@ public final class Raids {
      */
     public static boolean preys(String raider, String role) {
         if (raider == null || role == null || !isRaiderRole(raider)) {
+            return false;
+        }
+        if (role.startsWith(BOSS_PREFIX)) {
+            // Nakasar_Peuples_Boss_<Peuple> porte le nom du peuple qui l'a mis à prix, pas le sien : le chef trork de la
+            // demande kweebec n'est pas une proie des pillards trorks (ses renforts l'attaquaient).
             return false;
         }
         String rest = raider.substring(RAIDER_PREFIX.length());
