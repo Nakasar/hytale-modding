@@ -1376,7 +1376,9 @@ d'un village, 20 min ; une bête chassée ne revient pas, le troupeau entier cha
 rouge `Telegraphs.Strip` 14 × 3 devant le chef pendant 1,6 s, puis le chef charge vraiment (comme
 `Nakasar_Fractal_Charge` : figé par `Frozen`, déplacé par le Java à 14 blocs/s, image par image via `WorldLifeSystem`,
 relief suivi d'un bloc en montée et deux en descente, arrêt net sur un mur ou un vide) ; les joueurs qu'il traverse
-dans la zone prennent 18 dégâts et sont projetés sur le côté ; 25 s de recharge.
+dans la zone prennent 18 dégâts et sont projetés sur le côté ; 25 s de recharge. La course est la classe commune `boss/Charge`, aussi
+utilisée par le chef trork des demandes de boss kweebecs (`QuestBosses.CHARGERS`, `Boss_Kweebec`) : sa ligne devient une
+charge à 16 blocs/s, et un mur l'étourdit 3 s (il reste figé).
 
 **Rumeurs (`Rumours`).** Tirées de l'état : voyageurs en route, campements, relations non neutres, auberges ouvertes,
 prochaine foire, vestige le plus proche pas encore vu.

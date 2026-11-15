@@ -28,6 +28,7 @@ import java.util.Collections;
 import java.util.IdentityHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.WeakHashMap;
 import java.util.concurrent.ThreadLocalRandom;
 
@@ -39,7 +40,8 @@ import java.util.concurrent.ThreadLocalRandom;
  * <ul>
  *   <li>{@link #SLAM_RADIUS} : cercle autour de lui (onde de choc) ;</li>
  *   <li>cône de {@link #CONE_DEGREES}° et {@link #CONE_RADIUS} blocs vers le joueur le plus proche (balayage) ;</li>
- *   <li>ligne de {@link #LINE_LENGTH} sur {@link #LINE_WIDTH} blocs vers le joueur le plus proche (déferlante).</li>
+ *   <li>ligne de {@link #LINE_LENGTH} sur {@link #LINE_WIDTH} blocs vers le joueur le plus proche (déferlante) ; pour le
+ *       chef trork des Kweebecs ({@link #CHARGERS}), c'est une vraie charge le long de la ligne ({@link Charge}).</li>
  * </ul>
  * Aux deux tiers puis au tiers de sa vie, il appelle ses renforts (les {@code Spawns} du modèle) et porte le composant
  * vanilla {@link Invulnerable} tant qu'ils vivent, comme les élites protégées des fractales ({@code minions.MinionShieldSystem}).
@@ -72,6 +74,15 @@ public final class QuestBosses extends TickingSystem<EntityStore> {
     public static final float LINE_SECONDS = 1.6f;
     public static final float LINE_DAMAGE = 34f;
 
+    /**
+     * Les chefs dont la ligne est une vraie charge ({@link Charge}, Kevin 2026-11-15) : le chef trork des Kweebecs. Après
+     * l'annonce, il fonce le long de la ligne ; un mur l'arrête et l'étourdit {@value #CHARGE_STUN_SECONDS} s.
+     */
+    private static final Set<String> CHARGERS = Set.of(ROLE_PREFIX + "Kweebec");
+    public static final double CHARGE_SPEED = 16;
+    public static final double CHARGE_KNOCKBACK = 9;
+    public static final float CHARGE_STUN_SECONDS = 3f;
+
     /** Seuils de vie des renforts. */
     private static final float[] PHASES = {2f / 3f, 1f / 3f};
     private static final String HIT_SOUND = "SFX_Gobliterator_Club_Slam_Impact";
@@ -85,6 +96,10 @@ public final class QuestBosses extends TickingSystem<EntityStore> {
         int phases;
         int ability = ThreadLocalRandom.current().nextInt(3);
         boolean shielded;
+        /** Course en cours (chefs de {@link #CHARGERS}). */
+        Charge charge;
+        /** Fin de l'étourdissement après un mur (0 : pas étourdi). */
+        long stunnedUntil;
     }
 
     private static final Map<Ref<EntityStore>, Fight> FIGHTS = Collections.synchronizedMap(new IdentityHashMap<>());
@@ -111,7 +126,7 @@ public final class QuestBosses extends TickingSystem<EntityStore> {
     public void tick(float dt, int systemIndex, Store<EntityStore> store) {
         World world = store.getExternalData().getWorld();
         float left = wait.getOrDefault(world, 0f) - dt;
-        if (left > 0f) {
+        if (left > 0f && !charging()) { // une course avance à chaque image
             wait.put(world, left);
             return;
         }
@@ -187,9 +202,42 @@ public final class QuestBosses extends TickingSystem<EntityStore> {
             }
         }
 
+        // Course en cours : le chef fonce le long de sa ligne.
+        if (fight.charge != null) {
+            Charge.Result r = fight.charge.step(world, store, now);
+            if (r == Charge.Result.RUNNING) {
+                return;
+            }
+            fight.charge = null;
+            if (r == Charge.Result.WALL) {
+                // Il percute un mur : étourdi (reste figé), la fenêtre pour le frapper.
+                Telegraphs.sound(store, HIT_SOUND, at);
+                fight.stunnedUntil = now + Telegraphs.nanos(CHARGE_STUN_SECONDS);
+                return;
+            }
+            store.tryRemoveComponent(boss, Frozen.getComponentType());
+            fight.next = now + Telegraphs.nanos(health < PHASES[1] ? ENRAGED_COOLDOWN : COOLDOWN);
+            return;
+        }
+        if (fight.stunnedUntil != 0) {
+            if (now < fight.stunnedUntil) {
+                return;
+            }
+            fight.stunnedUntil = 0;
+            store.tryRemoveComponent(boss, Frozen.getComponentType());
+            fight.next = now + Telegraphs.nanos(health < PHASES[1] ? ENRAGED_COOLDOWN : COOLDOWN);
+            return;
+        }
+
         // Annonce en cours : dessin, puis coup.
         if (fight.shape != null) {
             if (fight.shape.step(store, now)) {
+                if (fight.shape instanceof Telegraphs.Strip strip && CHARGERS.contains(RequestSpawns.role(store, boss))) {
+                    // La ligne annoncée devient sa course (il reste figé, le Java le déplace).
+                    fight.charge = new Charge(store, boss, strip, CHARGE_SPEED, fight.damage, CHARGE_KNOCKBACK, now);
+                    fight.shape = null;
+                    return;
+                }
                 hit(world, store, boss, fight.shape, fight.damage);
                 fight.shape = null;
                 store.tryRemoveComponent(boss, Frozen.getComponentType());
@@ -301,6 +349,18 @@ public final class QuestBosses extends TickingSystem<EntityStore> {
         if (health != null) {
             stats.setStatValue(DefaultEntityStatTypes.getHealth(), Math.max(1f, health.getMax() * Math.min(1f, fraction)));
         }
+    }
+
+    /** Vrai si un chef est en pleine course (le système avance alors à chaque image). */
+    private static boolean charging() {
+        synchronized (FIGHTS) {
+            for (Fight f : FIGHTS.values()) {
+                if (f.charge != null) {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 
     public static void clearAll() {
