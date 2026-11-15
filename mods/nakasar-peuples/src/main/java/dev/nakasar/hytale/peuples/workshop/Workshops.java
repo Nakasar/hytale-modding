@@ -247,6 +247,7 @@ public final class Workshops {
             }
             if (Blocks.set(chunks, x, y, z, village.people().boardBlock(), yaw)) {
                 state.setBoard(x, y, z);
+                hangBoard(chunks, village, x, y, z, yaw);
                 PeuplesPlugin.get().getLogger().atInfo().log("Peuples : panneau du bâtiment %s posé en %d %d %d (%s)",
                         w.getId(), x, y, z, village.name());
                 return;
@@ -311,10 +312,61 @@ public final class Workshops {
         if (y != at[1]) {
             Blocks.set(chunks, at[0], y, at[2], board, yaw);
             state.setBoard(at[0], y, at[2]);
+        }
+        hangBoard(chunks, village, at[0], y, at[2], yaw);
+        if (y != at[1]) {
             PeuplesPlugin.get().getLogger().atInfo().log("Peuples : panneau remonté de %d en %d %d %d (%s)", y - at[1], at[0], y, at[2],
                     village.name());
         }
         return true;
+    }
+
+    /** Poutre vanilla sous laquelle pend le panneau kweebec (Kevin, 2026-11-15 : le panneau kweebec est suspendu). */
+    public static final String HANG_BEAM = "Wood_Hardwood_Beam";
+
+    /**
+     * Le panneau kweebec est un panneau suspendu (ses cordes montent vers un bloc au-dessus) : on pose au-dessus de lui
+     * une poutre couchée qui sort du bâtiment, sur sa case et sur celle de derrière (côté bâtiment) si elle est libre.
+     * Seulement dans l'air ou la végétation non pleine ; sans effet pour les autres peuples ou si un bloc plein le
+     * couvre déjà.
+     */
+    static void hangBoard(ChunkStore chunks, Village village, int x, int y, int z, int yaw) {
+        if (!"Kweebec".equals(village.people().id())) {
+            return;
+        }
+        int[] back = back(yaw);
+        // Poutre couchée : rotation 4 le long de Z, 5 le long de X (troncs couchés des prefabs vanilla).
+        int rot = back[0] == 0 ? 4 : 5;
+        for (int k = 0; k <= 1; k++) {
+            int bx = x + back[0] * k;
+            int bz = z + back[1] * k;
+            if (Blocks.solid(chunks, bx, y + 1, bz)) {
+                return; // le panneau (ou la poutre) touche déjà un bloc plein
+            }
+            String current = Blocks.name(chunks, bx, y + 1, bz);
+            if (Blocks.id(chunks, bx, y + 1, bz) == Blocks.UNLOADED || current != null && !Terrain.isVegetation(current)) {
+                return;
+            }
+            Blocks.set(chunks, bx, y + 1, bz, HANG_BEAM, rot);
+        }
+    }
+
+    /** Retire la poutre d'un panneau suspendu (démolition, village dissous). */
+    public static void unhangBoard(ChunkStore chunks, int[] at, int yaw) {
+        int[] back = back(yaw);
+        for (int k = 0; k <= 1; k++) {
+            Blocks.clearIf(chunks, at[0] + back[0] * k, at[1] + 1, at[2] + back[1] * k, HANG_BEAM);
+        }
+    }
+
+    /** Vers l'arrière du panneau (côté bâtiment) : lacet 0 regarde le sud (+Z), 1 l'est, 2 le nord, 3 l'ouest. */
+    private static int[] back(int yaw) {
+        return switch (yaw & 3) {
+            case 0 -> new int[] {0, -1};
+            case 1 -> new int[] {-1, 0};
+            case 2 -> new int[] {0, 1};
+            default -> new int[] {1, 0};
+        };
     }
 
     /** Bloc plein partagé par au moins deux des quatre voisins de (x, y, z), ou null. */

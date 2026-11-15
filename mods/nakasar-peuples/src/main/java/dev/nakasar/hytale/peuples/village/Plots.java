@@ -266,6 +266,8 @@ public final class Plots {
             WorkshopState ws = village.workshop(w.getId());
             if (ws.hasBoard()) {
                 int[] at = ws.board();
+                dev.nakasar.hytale.peuples.workshop.Workshops.unhangBoard(world.getChunkStore(), at,
+                        Blocks.rotation(world.getChunkStore(), at[0], at[1], at[2]));
                 Blocks.set(world.getChunkStore(), at[0], at[1], at[2], null, 0);
             }
             village.forgetWorkshop(w.getId());
