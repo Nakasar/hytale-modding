@@ -78,7 +78,13 @@
       "Icon": "Ingredient_Feathers_Dark",
       "Animals": [
         "Nakasar_Peuples_Pen_Archaeopteryx"
-      ]
+      ],
+      "Shops": [
+        "Nakasar_Peuples_W_Slothian_Bauge_De_Veille_Archeopteryx_2",
+        "Nakasar_Peuples_W_Slothian_Bauge_De_Veille_Archeopteryx_3"
+      ],
+      "ShareItem": "Ingredient_Feathers_Dark",
+      "ShareQuantity": 4
     },
     {
       "Id": "Trillodons",
@@ -87,7 +93,13 @@
       "Icon": "Ingredient_Hide_Heavy",
       "Animals": [
         "Nakasar_Peuples_Pen_Trillodon"
-      ]
+      ],
+      "Shops": [
+        "Nakasar_Peuples_W_Slothian_Bauge_De_Veille_Trillodons_2",
+        "Nakasar_Peuples_W_Slothian_Bauge_De_Veille_Trillodons_3"
+      ],
+      "ShareItem": "Ingredient_Hide_Heavy",
+      "ShareQuantity": 2
     },
     {
       "Id": "Escargots",
@@ -96,7 +108,14 @@
       "Icon": "Ingredient_Fire_Essence",
       "Animals": [
         "Nakasar_Peuples_Pen_Snail_Magma"
-      ]
+      ],
+      "Shops": [
+        "Nakasar_Peuples_W_Slothian_Bauge_De_Veille_Escargots_2",
+        "Nakasar_Peuples_W_Slothian_Bauge_De_Veille_Escargots_3"
+      ],
+      "ShareItem": "Ingredient_Fire_Essence",
+      "ShareQuantity": 2
     }
-  ]
+  ],
+  "Shop": "Nakasar_Peuples_W_Slothian_Bauge_De_Veille_Base_1"
 }

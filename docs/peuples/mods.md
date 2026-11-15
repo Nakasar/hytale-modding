@@ -1045,3 +1045,33 @@ pose l'état, le panneau, les commandes et la jauge ; la montée de niveau (comm
   `Kweebec_Oak_Bunny_Area_003`) ; la barrière doit faire face à la place.
 - Animations des rôles du mod (loups, tortue, trillodon, archéoptéryx au sol, escargot de magme).
 - Les moutons restent tondables (récolte vanilla des `Tamed_Sheep`) : à couper si c'est une source gratuite de laine.
+
+## Bâtiments de métier, étape 4 : boutiques et Part de l'Hôte
+
+- **Une boutique par bâtiment, spécialité et niveau** : boutiques de troc vanilla
+  `Server/BarterShops/Nakasar_Peuples_W_<Bâtiment>_<Base|Spécialité>_<Niveau>.json`, payées en faveurs du peuple,
+  stock renouvelé tous les 3 jours à 6 h (comme le marchand vanilla). Le niveau I (et un bâtiment sans spécialité) vend
+  la « Base » ; aux niveaux II et III la boutique de la spécialité reprend la base et ajoute ses échanges. Données :
+  `SHOPS` dans `tools/generate_workshops.py` (objets vanilla seulement, vérifiés contre `vanilla-item-ids-0.7.2.txt`).
+- **Le rang choisit le niveau vu** : Toléré I, Ami II, Hôte III, jamais plus que le niveau du bâtiment
+  (`Workshops.shopLevel`). Bouton « Boutique (niveau N) » sur la carte des offres du panneau ; fermée si le villageois
+  du bâtiment est absent (il revient au matin) ou si le bâtiment est détruit (le panneau n'ouvre plus).
+- **Part de l'Hôte** (Kevin : niveau III seulement) : chaque matin, le bâtiment dépose un petit lot de sa production
+  (le premier échange du niveau II de sa spécialité) pour chaque joueur de rang Hôte : bouton « Prendre la Part de
+  l'Hôte », un lot par joueur et par jour de jeu (`WorkshopState.ShareDay/ShareTaken`). Le lot tombe aux pieds si
+  l'inventaire est plein. C'est une caisse virtuelle : pas de coffre ouvert à tous.
+- `ValidateAssets` vérifie que chaque bâtiment a sa boutique du niveau I, chaque spécialité ses boutiques II et III et
+  son lot.
+
+### Tester en jeu (étape 4)
+
+1. Panneau d'un bâtiment au rang Toléré : la carte des offres dit « niveau I », le bouton ouvre la boutique de troc.
+2. `/village niveauatelier Kweebec_Potager 3`, choisir « Verger », passer Ami : la boutique montre les baies (niveau
+   II) ; passer Hôte : tartes et salades (niveau III), et le bouton « Prendre la Part de l'Hôte » (6 baies rouges).
+   Le reprendre : refusé jusqu'au matin.
+3. La nuit, quand le villageois est rentré : la carte dit qu'il est absent, pas de bouton Boutique.
+
+### À vérifier en jeu (étape 4)
+
+- La page vanilla de troc affiche bien le titre traduit (`nakasar_peuples.barter.W_*.title`).
+- Prix et quantités : à équilibrer après quelques soirées de jeu.

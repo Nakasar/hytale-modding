@@ -61,13 +61,26 @@
       "Id": "Maraicher",
       "NameKey": "nakasar_peuples.workshop.specialty.Kweebec_Potager.Maraicher",
       "LineKey": "nakasar_peuples.workshop.specialtyLine.Kweebec_Potager.Maraicher",
-      "Icon": "Plant_Crop_Lettuce_Item"
+      "Icon": "Plant_Crop_Lettuce_Item",
+      "Shops": [
+        "Nakasar_Peuples_W_Kweebec_Potager_Maraicher_2",
+        "Nakasar_Peuples_W_Kweebec_Potager_Maraicher_3"
+      ],
+      "ShareItem": "Plant_Crop_Lettuce_Item",
+      "ShareQuantity": 4
     },
     {
       "Id": "Verger",
       "NameKey": "nakasar_peuples.workshop.specialty.Kweebec_Potager.Verger",
       "LineKey": "nakasar_peuples.workshop.specialtyLine.Kweebec_Potager.Verger",
-      "Icon": "Plant_Fruit_Berries_Red"
+      "Icon": "Plant_Fruit_Berries_Red",
+      "Shops": [
+        "Nakasar_Peuples_W_Kweebec_Potager_Verger_2",
+        "Nakasar_Peuples_W_Kweebec_Potager_Verger_3"
+      ],
+      "ShareItem": "Plant_Fruit_Berries_Red",
+      "ShareQuantity": 6
     }
-  ]
+  ],
+  "Shop": "Nakasar_Peuples_W_Kweebec_Potager_Base_1"
 }

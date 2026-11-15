@@ -61,13 +61,26 @@
       "Id": "Archers",
       "NameKey": "nakasar_peuples.workshop.specialty.Kweebec_Tour_Est.Archers",
       "LineKey": "nakasar_peuples.workshop.specialtyLine.Kweebec_Tour_Est.Archers",
-      "Icon": "Weapon_Shortbow_Crude"
+      "Icon": "Weapon_Shortbow_Crude",
+      "Shops": [
+        "Nakasar_Peuples_W_Kweebec_Tour_Est_Archers_2",
+        "Nakasar_Peuples_W_Kweebec_Tour_Est_Archers_3"
+      ],
+      "ShareItem": "Weapon_Arrow_Iron",
+      "ShareQuantity": 16
     },
     {
       "Id": "Vigiles",
       "NameKey": "nakasar_peuples.workshop.specialty.Kweebec_Tour_Est.Vigiles",
       "LineKey": "nakasar_peuples.workshop.specialtyLine.Kweebec_Tour_Est.Vigiles",
-      "Icon": "Armor_Kweebec_Chest"
+      "Icon": "Armor_Kweebec_Chest",
+      "Shops": [
+        "Nakasar_Peuples_W_Kweebec_Tour_Est_Vigiles_2",
+        "Nakasar_Peuples_W_Kweebec_Tour_Est_Vigiles_3"
+      ],
+      "ShareItem": "Tool_Repair_Kit_Crude",
+      "ShareQuantity": 1
     }
-  ]
+  ],
+  "Shop": "Nakasar_Peuples_W_Kweebec_Tour_Est_Base_1"
 }

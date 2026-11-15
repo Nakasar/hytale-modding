@@ -60,13 +60,26 @@
       "Id": "Braises",
       "NameKey": "nakasar_peuples.workshop.specialty.Slothian_Etal_Des_Cendres.Braises",
       "LineKey": "nakasar_peuples.workshop.specialtyLine.Slothian_Etal_Des_Cendres.Braises",
-      "Icon": "Ingredient_Charcoal"
+      "Icon": "Ingredient_Charcoal",
+      "Shops": [
+        "Nakasar_Peuples_W_Slothian_Etal_Des_Cendres_Braises_2",
+        "Nakasar_Peuples_W_Slothian_Etal_Des_Cendres_Braises_3"
+      ],
+      "ShareItem": "Ingredient_Fire_Essence",
+      "ShareQuantity": 3
     },
     {
       "Id": "Encens",
       "NameKey": "nakasar_peuples.workshop.specialty.Slothian_Etal_Des_Cendres.Encens",
       "LineKey": "nakasar_peuples.workshop.specialtyLine.Slothian_Etal_Des_Cendres.Encens",
-      "Icon": "Furniture_Jungle_Candle"
+      "Icon": "Furniture_Jungle_Candle",
+      "Shops": [
+        "Nakasar_Peuples_W_Slothian_Etal_Des_Cendres_Encens_2",
+        "Nakasar_Peuples_W_Slothian_Etal_Des_Cendres_Encens_3"
+      ],
+      "ShareItem": "Furniture_Jungle_Candle",
+      "ShareQuantity": 3
     }
-  ]
+  ],
+  "Shop": "Nakasar_Peuples_W_Slothian_Etal_Des_Cendres_Base_1"
 }

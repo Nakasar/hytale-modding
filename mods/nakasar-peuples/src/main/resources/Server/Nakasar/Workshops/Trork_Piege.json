@@ -60,13 +60,26 @@
       "Id": "Trappeur",
       "NameKey": "nakasar_peuples.workshop.specialty.Trork_Piege.Trappeur",
       "LineKey": "nakasar_peuples.workshop.specialtyLine.Trork_Piege.Trappeur",
-      "Icon": "Ingredient_Hide_Light"
+      "Icon": "Ingredient_Hide_Light",
+      "Shops": [
+        "Nakasar_Peuples_W_Trork_Piege_Trappeur_2",
+        "Nakasar_Peuples_W_Trork_Piege_Trappeur_3"
+      ],
+      "ShareItem": "Ingredient_Hide_Medium",
+      "ShareQuantity": 2
     },
     {
       "Id": "Rabatteur",
       "NameKey": "nakasar_peuples.workshop.specialty.Trork_Piege.Rabatteur",
       "LineKey": "nakasar_peuples.workshop.specialtyLine.Trork_Piege.Rabatteur",
-      "Icon": "Food_Wildmeat_Raw"
+      "Icon": "Food_Wildmeat_Raw",
+      "Shops": [
+        "Nakasar_Peuples_W_Trork_Piege_Rabatteur_2",
+        "Nakasar_Peuples_W_Trork_Piege_Rabatteur_3"
+      ],
+      "ShareItem": "Food_Wildmeat_Raw",
+      "ShareQuantity": 4
     }
-  ]
+  ],
+  "Shop": "Nakasar_Peuples_W_Trork_Piege_Base_1"
 }

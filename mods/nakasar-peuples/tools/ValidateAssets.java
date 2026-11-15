@@ -1310,7 +1310,24 @@ public class ValidateAssets {
                     if (spec.containsKey("Animals")) {
                         spec.getArray("Animals").forEach(a -> animals.add(a.asString().getValue()));
                     }
+                    // Étape 4 : une boutique par niveau II et III, et le lot de la Part de l'Hôte.
+                    if (!spec.containsKey("Shops") || spec.getArray("Shops").size() != 2) {
+                        problems.add("spécialité " + sid + " : il faut Shops [niveau II, niveau III]");
+                    } else {
+                        for (BsonValue shop : spec.getArray("Shops")) {
+                            if (!Files.isRegularFile(root.resolve("BarterShops/" + shop.asString().getValue() + ".json"))) {
+                                problems.add("spécialité " + sid + " : boutique absente " + shop.asString().getValue());
+                            }
+                        }
+                    }
+                    if (!spec.containsKey("ShareItem")) {
+                        problems.add("spécialité " + sid + " : pas de lot de Part de l'Hôte (ShareItem)");
+                    }
                 }
+            }
+            String baseShop = doc.containsKey("Shop") ? doc.getString("Shop").getValue() : null;
+            if (baseShop == null || !Files.isRegularFile(root.resolve("BarterShops/" + baseShop + ".json"))) {
+                problems.add("boutique du niveau I absente : " + baseShop);
             }
             for (String a : animals) {
                 if (a.startsWith("Nakasar_")) {

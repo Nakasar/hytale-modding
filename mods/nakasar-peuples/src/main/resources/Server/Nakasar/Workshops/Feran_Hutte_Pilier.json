@@ -60,13 +60,26 @@
       "Id": "Lanciers",
       "NameKey": "nakasar_peuples.workshop.specialty.Feran_Hutte_Pilier.Lanciers",
       "LineKey": "nakasar_peuples.workshop.specialtyLine.Feran_Hutte_Pilier.Lanciers",
-      "Icon": "Weapon_Spear_Crude"
+      "Icon": "Weapon_Spear_Crude",
+      "Shops": [
+        "Nakasar_Peuples_W_Feran_Hutte_Pilier_Lanciers_2",
+        "Nakasar_Peuples_W_Feran_Hutte_Pilier_Lanciers_3"
+      ],
+      "ShareItem": "Weapon_Spear_Bone",
+      "ShareQuantity": 1
     },
     {
       "Id": "Coureurs",
       "NameKey": "nakasar_peuples.workshop.specialty.Feran_Hutte_Pilier.Coureurs",
       "LineKey": "nakasar_peuples.workshop.specialtyLine.Feran_Hutte_Pilier.Coureurs",
-      "Icon": "Ingredient_Feathers_Light"
+      "Icon": "Ingredient_Feathers_Light",
+      "Shops": [
+        "Nakasar_Peuples_W_Feran_Hutte_Pilier_Coureurs_2",
+        "Nakasar_Peuples_W_Feran_Hutte_Pilier_Coureurs_3"
+      ],
+      "ShareItem": "Ingredient_Feathers_Light",
+      "ShareQuantity": 8
     }
-  ]
+  ],
+  "Shop": "Nakasar_Peuples_W_Feran_Hutte_Pilier_Base_1"
 }

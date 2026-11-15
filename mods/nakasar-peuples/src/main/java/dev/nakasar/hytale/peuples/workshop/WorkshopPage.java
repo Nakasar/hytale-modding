@@ -118,7 +118,7 @@ public final class WorkshopPage extends InteractiveCustomUIPage<WorkshopPage.Eve
         cmd.set("#PageTitle.TextSpans", title(village, w));
         band(cmd, events, village, w, state);
         orders(cmd, events, store, ref, village, state);
-        info(cmd, events, store, village, w, state);
+        info(cmd, events, store, ref, village, w, state);
         footer(cmd, events, store, ref, village);
     }
 
@@ -261,7 +261,7 @@ public final class WorkshopPage extends InteractiveCustomUIPage<WorkshopPage.Eve
         }
     }
 
-    private void info(UICommandBuilder cmd, UIEventBuilder events, Store<EntityStore> store, Village village, Workshop w, WorkshopState state) {
+    private void info(UICommandBuilder cmd, UIEventBuilder events, Store<EntityStore> store, Ref<EntityStore> ref, Village village, Workshop w, WorkshopState state) {
         cmd.set("#NextHeader.TextSpans", Message.translation(KEYS + "next"));
         Workshops.Next next = Workshops.next(village, state);
         Workshop.Upgrade up = w.upgrade(state.level() + 1);
@@ -305,10 +305,56 @@ public final class WorkshopPage extends InteractiveCustomUIPage<WorkshopPage.Eve
             events.addEventBinding(CustomUIEventBindingType.Activating, "#NextAction", EventData.of("Action", action));
         }
         cmd.set("#OffersHeader.TextSpans", Message.translation(KEYS + "offers"));
-        VillageLayout.Job job = Workshops.job(village, w);
-        Message offers = Message.translation(KEYS + "offersSoon")
-                .param("name", job == null ? Message.translation(w.nameKey()) : keeperName(job));
+        Message offers = offersLine(store, ref, village, w, state);
         cmd.set("#OffersLine.TextSpans", w.isPen() ? Message.empty().insert(offers).insert("\n\n").insert(beastsLine(village, w, state)) : offers);
+        int level = Workshops.shopLevel(store, ref, village, state);
+        boolean shop = level > 0 && Workshops.keeperPresent(village, w);
+        cmd.set("#ShopAction.Visible", shop);
+        if (shop) {
+            cmd.set("#ShopAction.Text", Message.translation(KEYS + "shopButton").param("level", roman(level)));
+            events.addEventBinding(CustomUIEventBindingType.Activating, "#ShopAction", EventData.of("Action", "Shop"));
+        }
+        PlayerRef player = store.getComponent(ref, PlayerRef.getComponentType());
+        boolean share = player != null && Workshops.shareBlock(store, ref, player, village, w) == null;
+        cmd.set("#ShareAction.Visible", share);
+        if (share) {
+            cmd.set("#ShareAction.Text", Message.translation(KEYS + "shareButton"));
+            events.addEventBinding(CustomUIEventBindingType.Activating, "#ShareAction", EventData.of("Action", "Share"));
+        }
+    }
+
+    /** Chiffre romain d'un niveau (I à III). */
+    static String roman(int level) {
+        return level >= 3 ? "III" : level == 2 ? "II" : "I";
+    }
+
+    /**
+     * Carte des offres : qui tient la boutique, le niveau que le rang du joueur ouvre, et la Part de l'Hôte au niveau III.
+     */
+    static Message offersLine(Store<EntityStore> store, Ref<EntityStore> ref, Village village, Workshop w, WorkshopState state) {
+        VillageLayout.Job job = Workshops.job(village, w);
+        Message name = job == null ? Message.translation(w.nameKey()) : keeperName(job);
+        int level = Workshops.shopLevel(store, ref, village, state);
+        Message line;
+        if (!Workshops.keeperPresent(village, w)) {
+            line = Message.translation(KEYS + "offersAbsent").param("name", name).param("hour", GameClock.MORNING);
+        } else if (level <= 0) {
+            line = Message.translation(KEYS + "offersRank").param("name", name).param("rank", Message.translation(Rank.TOLERE.nameKey()));
+        } else {
+            line = Message.translation(KEYS + "offersOpen").param("name", name).param("level", roman(level))
+                    .param("max", roman(state.level()));
+        }
+        Message out = Message.empty().insert(line).insert("\n").insert(Message.translation(KEYS + "offersRule"));
+        if (state.level() >= 2 && w.specialty(state.specialty()) == null && w.specialties().length > 0) {
+            out = out.insert("\n").insert(Message.translation(KEYS + "offersNoSpecialty"));
+        }
+        Workshop.Specialty spec = Workshops.shareSpecialty(w, state);
+        if (spec != null) {
+            out = out.insert("\n").insert(Message.translation(KEYS + "shareLine").param("quantity", spec.shareQuantity())
+                    .param("item", dev.nakasar.hytale.peuples.village.VillageBoard.itemName(spec.shareItem()))
+                    .param("rank", Message.translation(Workshops.SHARE_RANK.nameKey())));
+        }
+        return out;
     }
 
     private static final int MATERIALS = 4;
@@ -380,6 +426,7 @@ public final class WorkshopPage extends InteractiveCustomUIPage<WorkshopPage.Eve
         if (w.isPen()) {
             lines.add(beastsLine(village, w, state));
         }
+        lines.add(offersLine(store, ref, village, w, state));
         int max = Workshops.threshold(state.level());
         lines.add(max > 0 ? Message.translation(KEYS + "text.knowledge").param("value", state.knowledge()).param("max", max)
                 : Message.translation(KEYS + "knowledgeTop"));
@@ -466,6 +513,12 @@ public final class WorkshopPage extends InteractiveCustomUIPage<WorkshopPage.Eve
             Workshops.takeMaster(world, store, ref, playerRef, village, w);
         } else if (action.equals("Upgrade")) {
             Workshops.startUpgrade(world, store, ref, playerRef, village, w);
+        } else if (action.equals("Shop")) {
+            if (Workshops.openShop(store, ref, playerRef, village, w)) {
+                return;
+            }
+        } else if (action.equals("Share")) {
+            Workshops.takeShare(store, ref, playerRef, village, w);
         } else if (action.equals("Specialty")) {
             WorkshopSpecialtyPage.open(store, ref, playerRef, village, w);
             return;

@@ -392,6 +392,13 @@ $C.@PageOverlay {
             FlexWeight: 1;
             Padding: (Horizontal: 16, Vertical: 12);
             Label #OffersLine { Style: @Body; Text: ""; }
+            Group { FlexWeight: 1; }
+            Group {
+              LayoutMode: Left;
+              Anchor: (Height: 32, Top: 8);
+              $C.@SmallSecondaryTextButton #ShopAction { @Text = ""; @Anchor = Anchor(Width: 200, Height: 32, Right: 10); }
+              $C.@SmallSecondaryTextButton #ShareAction { @Text = ""; @Anchor = Anchor(Width: 220, Height: 32); }
+            }
           }
         }
       }

@@ -80,6 +80,9 @@ public final class Workshop implements JsonAssetWithMap<String, DefaultAssetMap<
                 .append(new KeyedCodec<>("LineKey", Codec.STRING), (s, v) -> s.lineKey = v, s -> s.lineKey).add()
                 .append(new KeyedCodec<>("Icon", Codec.STRING), (s, v) -> s.icon = v, s -> s.icon).add()
                 .append(new KeyedCodec<>("Animals", Codec.STRING_ARRAY), (s, v) -> s.animals = v == null ? new String[0] : v, s -> s.animals).add()
+                .append(new KeyedCodec<>("Shops", Codec.STRING_ARRAY), (s, v) -> s.shops = v == null ? new String[0] : v, s -> s.shops).add()
+                .append(new KeyedCodec<>("ShareItem", Codec.STRING), (s, v) -> s.shareItem = v, s -> s.shareItem).add()
+                .append(new KeyedCodec<>("ShareQuantity", Codec.INTEGER), (s, v) -> s.shareQuantity = v == null ? 1 : Math.max(1, v), s -> s.shareQuantity).add()
                 .build();
 
         String id;
@@ -87,6 +90,25 @@ public final class Workshop implements JsonAssetWithMap<String, DefaultAssetMap<
         String lineKey;
         String icon;
         String[] animals = new String[0];
+        /** Boutiques de la spécialité aux niveaux II et III (étape 4). */
+        String[] shops = new String[0];
+        /** Lot quotidien de la Part de l'Hôte (niveau III). */
+        String shareItem;
+        int shareQuantity = 1;
+
+        /** Boutique de la spécialité au niveau `level` (2 ou 3), ou null. */
+        public String shop(int level) {
+            int i = level - 2;
+            return i >= 0 && i < shops.length ? shops[i] : null;
+        }
+
+        public String shareItem() {
+            return shareItem;
+        }
+
+        public int shareQuantity() {
+            return shareQuantity;
+        }
 
         public String id() {
             return id;
@@ -149,6 +171,9 @@ public final class Workshop implements JsonAssetWithMap<String, DefaultAssetMap<
             .append(new KeyedCodec<>("Pen", Codec.INT_ARRAY), (w, v) -> w.pen = v, w -> w.pen)
             .documentation("Intérieur de l'enclos [x0, x1, z0, z1] relatif au cœur.")
             .add()
+            .append(new KeyedCodec<>("Shop", Codec.STRING), (w, v) -> w.shop = v, w -> w.shop)
+            .documentation("Boutique de troc vanilla du niveau I (et sans spécialité).")
+            .add()
             .validator(Workshop::validate)
             .build();
 
@@ -168,6 +193,7 @@ public final class Workshop implements JsonAssetWithMap<String, DefaultAssetMap<
     String[] livestock = new String[0];
     int[] livestockCount;
     int[] pen;
+    String shop;
 
     Workshop() {
     }
@@ -263,6 +289,11 @@ public final class Workshop implements JsonAssetWithMap<String, DefaultAssetMap<
             }
         }
         return null;
+    }
+
+    /** Boutique de base (niveau I, ou bâtiment sans spécialité), ou null. */
+    public String baseShop() {
+        return shop;
     }
 
     /** Vrai si le bâtiment est un enclos (il a des bêtes et une emprise). */

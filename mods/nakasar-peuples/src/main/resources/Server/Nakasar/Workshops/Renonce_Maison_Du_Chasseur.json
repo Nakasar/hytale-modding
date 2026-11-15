@@ -60,13 +60,26 @@
       "Id": "Trappeur",
       "NameKey": "nakasar_peuples.workshop.specialty.Renonce_Maison_Du_Chasseur.Trappeur",
       "LineKey": "nakasar_peuples.workshop.specialtyLine.Renonce_Maison_Du_Chasseur.Trappeur",
-      "Icon": "Ingredient_Hide_Heavy"
+      "Icon": "Ingredient_Hide_Heavy",
+      "Shops": [
+        "Nakasar_Peuples_W_Renonce_Maison_Du_Chasseur_Trappeur_2",
+        "Nakasar_Peuples_W_Renonce_Maison_Du_Chasseur_Trappeur_3"
+      ],
+      "ShareItem": "Ingredient_Hide_Heavy",
+      "ShareQuantity": 2
     },
     {
       "Id": "Pecheur",
       "NameKey": "nakasar_peuples.workshop.specialty.Renonce_Maison_Du_Chasseur.Pecheur",
       "LineKey": "nakasar_peuples.workshop.specialtyLine.Renonce_Maison_Du_Chasseur.Pecheur",
-      "Icon": "Food_Fish_Raw"
+      "Icon": "Food_Fish_Raw",
+      "Shops": [
+        "Nakasar_Peuples_W_Renonce_Maison_Du_Chasseur_Pecheur_2",
+        "Nakasar_Peuples_W_Renonce_Maison_Du_Chasseur_Pecheur_3"
+      ],
+      "ShareItem": "Food_Fish_Raw",
+      "ShareQuantity": 4
     }
-  ]
+  ],
+  "Shop": "Nakasar_Peuples_W_Renonce_Maison_Du_Chasseur_Base_1"
 }

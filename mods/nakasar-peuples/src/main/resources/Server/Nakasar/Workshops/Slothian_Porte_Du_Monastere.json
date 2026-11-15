@@ -60,13 +60,26 @@
       "Id": "Lances",
       "NameKey": "nakasar_peuples.workshop.specialty.Slothian_Porte_Du_Monastere.Lances",
       "LineKey": "nakasar_peuples.workshop.specialtyLine.Slothian_Porte_Du_Monastere.Lances",
-      "Icon": "Rock_Volcanic"
+      "Icon": "Rock_Volcanic",
+      "Shops": [
+        "Nakasar_Peuples_W_Slothian_Porte_Du_Monastere_Lances_2",
+        "Nakasar_Peuples_W_Slothian_Porte_Du_Monastere_Lances_3"
+      ],
+      "ShareItem": "Rock_Volcanic",
+      "ShareQuantity": 24
     },
     {
       "Id": "Veilleurs",
       "NameKey": "nakasar_peuples.workshop.specialty.Slothian_Porte_Du_Monastere.Veilleurs",
       "LineKey": "nakasar_peuples.workshop.specialtyLine.Slothian_Porte_Du_Monastere.Veilleurs",
-      "Icon": "Furniture_Jungle_Torch"
+      "Icon": "Furniture_Jungle_Torch",
+      "Shops": [
+        "Nakasar_Peuples_W_Slothian_Porte_Du_Monastere_Veilleurs_2",
+        "Nakasar_Peuples_W_Slothian_Porte_Du_Monastere_Veilleurs_3"
+      ],
+      "ShareItem": "Furniture_Jungle_Torch",
+      "ShareQuantity": 4
     }
-  ]
+  ],
+  "Shop": "Nakasar_Peuples_W_Slothian_Porte_Du_Monastere_Base_1"
 }

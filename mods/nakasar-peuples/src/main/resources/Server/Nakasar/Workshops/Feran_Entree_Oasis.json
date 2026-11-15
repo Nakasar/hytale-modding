@@ -60,13 +60,26 @@
       "Id": "Citerne",
       "NameKey": "nakasar_peuples.workshop.specialty.Feran_Entree_Oasis.Citerne",
       "LineKey": "nakasar_peuples.workshop.specialtyLine.Feran_Entree_Oasis.Citerne",
-      "Icon": "Ingredient_Water_Essence"
+      "Icon": "Ingredient_Water_Essence",
+      "Shops": [
+        "Nakasar_Peuples_W_Feran_Entree_Oasis_Citerne_2",
+        "Nakasar_Peuples_W_Feran_Entree_Oasis_Citerne_3"
+      ],
+      "ShareItem": "Ingredient_Water_Essence",
+      "ShareQuantity": 4
     },
     {
       "Id": "Jardin",
       "NameKey": "nakasar_peuples.workshop.specialty.Feran_Entree_Oasis.Jardin",
       "LineKey": "nakasar_peuples.workshop.specialtyLine.Feran_Entree_Oasis.Jardin",
-      "Icon": "Ingredient_Salt"
+      "Icon": "Ingredient_Salt",
+      "Shops": [
+        "Nakasar_Peuples_W_Feran_Entree_Oasis_Jardin_2",
+        "Nakasar_Peuples_W_Feran_Entree_Oasis_Jardin_3"
+      ],
+      "ShareItem": "Ingredient_Spices",
+      "ShareQuantity": 2
     }
-  ]
+  ],
+  "Shop": "Nakasar_Peuples_W_Feran_Entree_Oasis_Base_1"
 }

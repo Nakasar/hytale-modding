@@ -60,13 +60,26 @@
       "Id": "Pillards",
       "NameKey": "nakasar_peuples.workshop.specialty.Trork_Entrepot.Pillards",
       "LineKey": "nakasar_peuples.workshop.specialtyLine.Trork_Entrepot.Pillards",
-      "Icon": "Ingredient_Bar_Iron"
+      "Icon": "Ingredient_Bar_Iron",
+      "Shops": [
+        "Nakasar_Peuples_W_Trork_Entrepot_Pillards_2",
+        "Nakasar_Peuples_W_Trork_Entrepot_Pillards_3"
+      ],
+      "ShareItem": "Ingredient_Bar_Copper",
+      "ShareQuantity": 3
     },
     {
       "Id": "Bucherons",
       "NameKey": "nakasar_peuples.workshop.specialty.Trork_Entrepot.Bucherons",
       "LineKey": "nakasar_peuples.workshop.specialtyLine.Trork_Entrepot.Bucherons",
-      "Icon": "Wood_Oak_Trunk"
+      "Icon": "Wood_Oak_Trunk",
+      "Shops": [
+        "Nakasar_Peuples_W_Trork_Entrepot_Bucherons_2",
+        "Nakasar_Peuples_W_Trork_Entrepot_Bucherons_3"
+      ],
+      "ShareItem": "Wood_Oak_Trunk",
+      "ShareQuantity": 16
     }
-  ]
+  ],
+  "Shop": "Nakasar_Peuples_W_Trork_Entrepot_Base_1"
 }

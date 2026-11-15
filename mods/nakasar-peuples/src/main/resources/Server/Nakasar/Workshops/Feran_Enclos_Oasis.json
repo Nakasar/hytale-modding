@@ -79,7 +79,13 @@
       "Animals": [
         "Tamed_Camel",
         "Tamed_Camel_Calf"
-      ]
+      ],
+      "Shops": [
+        "Nakasar_Peuples_W_Feran_Enclos_Oasis_Chameaux_2",
+        "Nakasar_Peuples_W_Feran_Enclos_Oasis_Chameaux_3"
+      ],
+      "ShareItem": "Ingredient_Hide_Scaled",
+      "ShareQuantity": 2
     },
     {
       "Id": "Beliers",
@@ -89,7 +95,13 @@
       "Animals": [
         "Tamed_Ram",
         "Tamed_Ram_Lamb"
-      ]
+      ],
+      "Shops": [
+        "Nakasar_Peuples_W_Feran_Enclos_Oasis_Beliers_2",
+        "Nakasar_Peuples_W_Feran_Enclos_Oasis_Beliers_3"
+      ],
+      "ShareItem": "Ingredient_Fabric_Scrap_Wool",
+      "ShareQuantity": 6
     },
     {
       "Id": "Tortues",
@@ -98,7 +110,14 @@
       "Icon": "Ingredient_Hide_Scaled",
       "Animals": [
         "Nakasar_Peuples_Pen_Tortoise"
-      ]
+      ],
+      "Shops": [
+        "Nakasar_Peuples_W_Feran_Enclos_Oasis_Tortues_2",
+        "Nakasar_Peuples_W_Feran_Enclos_Oasis_Tortues_3"
+      ],
+      "ShareItem": "Ingredient_Hide_Scaled",
+      "ShareQuantity": 3
     }
-  ]
+  ],
+  "Shop": "Nakasar_Peuples_W_Feran_Enclos_Oasis_Base_1"
 }

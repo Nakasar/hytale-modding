@@ -60,13 +60,26 @@
       "Id": "Meditation",
       "NameKey": "nakasar_peuples.workshop.specialty.Slothian_Temple_De_Veille.Meditation",
       "LineKey": "nakasar_peuples.workshop.specialtyLine.Slothian_Temple_De_Veille.Meditation",
-      "Icon": "Potion_Regen_Mana_Small"
+      "Icon": "Potion_Regen_Mana_Small",
+      "Shops": [
+        "Nakasar_Peuples_W_Slothian_Temple_De_Veille_Meditation_2",
+        "Nakasar_Peuples_W_Slothian_Temple_De_Veille_Meditation_3"
+      ],
+      "ShareItem": "Potion_Regen_Mana_Small",
+      "ShareQuantity": 2
     },
     {
       "Id": "Chroniques",
       "NameKey": "nakasar_peuples.workshop.specialty.Slothian_Temple_De_Veille.Chroniques",
       "LineKey": "nakasar_peuples.workshop.specialtyLine.Slothian_Temple_De_Veille.Chroniques",
-      "Icon": "Ingredient_Life_Essence"
+      "Icon": "Ingredient_Life_Essence",
+      "Shops": [
+        "Nakasar_Peuples_W_Slothian_Temple_De_Veille_Chroniques_2",
+        "Nakasar_Peuples_W_Slothian_Temple_De_Veille_Chroniques_3"
+      ],
+      "ShareItem": "Ingredient_Life_Essence",
+      "ShareQuantity": 4
     }
-  ]
+  ],
+  "Shop": "Nakasar_Peuples_W_Slothian_Temple_De_Veille_Base_1"
 }

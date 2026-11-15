@@ -81,7 +81,13 @@
         "Tamed_Chicken",
         "Tamed_Turkey",
         "Tamed_Chicken_Chick"
-      ]
+      ],
+      "Shops": [
+        "Nakasar_Peuples_W_Kweebec_Enclos_Basse_Cour_2",
+        "Nakasar_Peuples_W_Kweebec_Enclos_Basse_Cour_3"
+      ],
+      "ShareItem": "Food_Egg",
+      "ShareQuantity": 6
     },
     {
       "Id": "Mousse_Cornes",
@@ -91,7 +97,13 @@
       "Animals": [
         "Tamed_Mosshorn",
         "Tamed_Mosshorn_Plain"
-      ]
+      ],
+      "Shops": [
+        "Nakasar_Peuples_W_Kweebec_Enclos_Mousse_Cornes_2",
+        "Nakasar_Peuples_W_Kweebec_Enclos_Mousse_Cornes_3"
+      ],
+      "ShareItem": "Ingredient_Fibre",
+      "ShareQuantity": 8
     },
     {
       "Id": "Bergerie",
@@ -101,7 +113,14 @@
       "Animals": [
         "Tamed_Sheep",
         "Tamed_Sheep_Lamb"
-      ]
+      ],
+      "Shops": [
+        "Nakasar_Peuples_W_Kweebec_Enclos_Bergerie_2",
+        "Nakasar_Peuples_W_Kweebec_Enclos_Bergerie_3"
+      ],
+      "ShareItem": "Ingredient_Fabric_Scrap_Wool",
+      "ShareQuantity": 6
     }
-  ]
+  ],
+  "Shop": "Nakasar_Peuples_W_Kweebec_Enclos_Base_1"
 }

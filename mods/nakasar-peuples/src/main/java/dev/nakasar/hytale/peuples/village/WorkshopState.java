@@ -54,6 +54,12 @@ public final class WorkshopState {
             .append(new KeyedCodec<>("Round", Codec.INTEGER), (w, i) -> w.round = i == null ? 0 : i, w -> w.round)
             .documentation("Nombre de reconversions : rend unique l'id de la commande de maître à refaire.")
             .add()
+            .append(new KeyedCodec<>("ShareDay", Codec.LONG), (w, l) -> w.shareDay = l == null ? Long.MIN_VALUE : l, w -> w.shareDay)
+            .documentation("Jour de jeu du lot de la Part de l'Hôte en cours.")
+            .add()
+            .append(new KeyedCodec<>("ShareTaken", Codec.STRING_ARRAY), (w, a) -> w.shareTaken = a == null ? new String[0] : a, w -> w.shareTaken)
+            .documentation("Joueurs (UUID) qui ont déjà pris leur lot du jour.")
+            .add()
             .build();
 
     String id = "";
@@ -71,6 +77,8 @@ public final class WorkshopState {
     long upgradeEnd;
     long reconverted = Long.MIN_VALUE;
     int round;
+    long shareDay = Long.MIN_VALUE;
+    String[] shareTaken = new String[0];
 
     WorkshopState() {
     }
@@ -231,5 +239,29 @@ public final class WorkshopState {
 
     public void nextRound() {
         round++;
+    }
+
+    /** Vrai si le joueur `uuid` a déjà pris le lot de la Part de l'Hôte du jour `day`. */
+    public boolean shareTaken(long day, String uuid) {
+        if (shareDay != day) {
+            return false;
+        }
+        for (String t : shareTaken) {
+            if (t.equals(uuid)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /** Le joueur `uuid` prend le lot du jour `day` (la liste repart à zéro chaque matin). */
+    public void takeShare(long day, String uuid) {
+        if (shareDay != day) {
+            shareDay = day;
+            shareTaken = new String[0];
+        }
+        String[] next = java.util.Arrays.copyOf(shareTaken, shareTaken.length + 1);
+        next[shareTaken.length] = uuid;
+        shareTaken = next;
     }
 }

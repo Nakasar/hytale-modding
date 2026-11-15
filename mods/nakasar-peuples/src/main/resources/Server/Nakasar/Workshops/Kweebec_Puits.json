@@ -61,13 +61,26 @@
       "Id": "Source",
       "NameKey": "nakasar_peuples.workshop.specialty.Kweebec_Puits.Source",
       "LineKey": "nakasar_peuples.workshop.specialtyLine.Kweebec_Puits.Source",
-      "Icon": "Ingredient_Water_Essence"
+      "Icon": "Ingredient_Water_Essence",
+      "Shops": [
+        "Nakasar_Peuples_W_Kweebec_Puits_Source_2",
+        "Nakasar_Peuples_W_Kweebec_Puits_Source_3"
+      ],
+      "ShareItem": "Ingredient_Water_Essence",
+      "ShareQuantity": 4
     },
     {
       "Id": "Vivier",
       "NameKey": "nakasar_peuples.workshop.specialty.Kweebec_Puits.Vivier",
       "LineKey": "nakasar_peuples.workshop.specialtyLine.Kweebec_Puits.Vivier",
-      "Icon": "Food_Fish_Raw"
+      "Icon": "Food_Fish_Raw",
+      "Shops": [
+        "Nakasar_Peuples_W_Kweebec_Puits_Vivier_2",
+        "Nakasar_Peuples_W_Kweebec_Puits_Vivier_3"
+      ],
+      "ShareItem": "Food_Fish_Raw",
+      "ShareQuantity": 3
     }
-  ]
+  ],
+  "Shop": "Nakasar_Peuples_W_Kweebec_Puits_Base_1"
 }

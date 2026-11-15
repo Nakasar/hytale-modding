@@ -61,13 +61,26 @@
       "Id": "Herbes",
       "NameKey": "nakasar_peuples.workshop.specialty.Kweebec_Grande_Maison.Herbes",
       "LineKey": "nakasar_peuples.workshop.specialtyLine.Kweebec_Grande_Maison.Herbes",
-      "Icon": "Potion_Health_Small"
+      "Icon": "Potion_Health_Small",
+      "Shops": [
+        "Nakasar_Peuples_W_Kweebec_Grande_Maison_Herbes_2",
+        "Nakasar_Peuples_W_Kweebec_Grande_Maison_Herbes_3"
+      ],
+      "ShareItem": "Potion_Health_Small",
+      "ShareQuantity": 2
     },
     {
       "Id": "Elixirs",
       "NameKey": "nakasar_peuples.workshop.specialty.Kweebec_Grande_Maison.Elixirs",
       "LineKey": "nakasar_peuples.workshop.specialtyLine.Kweebec_Grande_Maison.Elixirs",
-      "Icon": "Potion_Stamina_Small"
+      "Icon": "Potion_Stamina_Small",
+      "Shops": [
+        "Nakasar_Peuples_W_Kweebec_Grande_Maison_Elixirs_2",
+        "Nakasar_Peuples_W_Kweebec_Grande_Maison_Elixirs_3"
+      ],
+      "ShareItem": "Potion_Stamina_Small",
+      "ShareQuantity": 2
     }
-  ]
+  ],
+  "Shop": "Nakasar_Peuples_W_Kweebec_Grande_Maison_Base_1"
 }

@@ -299,6 +299,162 @@ LIVESTOCK_COUNT = [3, 5, 7]
 # Intérieur de l'enclos = emprise du bâtiment réduite de ce nombre de blocs (la clôture et une marge).
 PEN_INSET = 2
 
+# Étape 4 : une boutique de troc vanilla par bâtiment, spécialité et niveau, payée en faveurs du peuple. Le niveau I
+# (et un bâtiment sans spécialité) vend « Base » ; aux niveaux II et III la boutique de la spécialité reprend la base et
+# ajoute ses échanges, cumulés. Un échange : (objet vanilla, quantité, prix en faveurs). Le lot de la Part de l'Hôte
+# (niveau III, rang Hôte, une fois par jour) est le premier échange du niveau II de la spécialité.
+# Un bâtiment : {"Base": [échanges], spécialité: ([niveau II], [niveau III])}.
+SHOPS = {
+    "Kweebec_Enclos": {
+        "Base": [("Ingredient_Hay", 8, 1), ("Food_Egg", 3, 1), ("Plant_Crop_Carrot_Item", 4, 1)],
+        "Basse_Cour": ([("Food_Egg", 6, 1), ("Ingredient_Feathers_Light", 6, 1)],
+                       [("Food_Chicken_Raw", 4, 2), ("Food_Pie_Meat", 2, 3)]),
+        "Mousse_Cornes": ([("Ingredient_Fibre", 8, 1), ("Ingredient_Tree_Bark", 6, 1)],
+                          [("Ingredient_Life_Essence", 6, 2), ("Ingredient_Life_Essence_Concentrated", 1, 4)]),
+        "Bergerie": ([("Ingredient_Fabric_Scrap_Wool", 6, 1), ("Food_Cheese", 2, 2)],
+                     [("Ingredient_Bolt_Wool", 2, 3), ("Armor_Wool_Chest", 1, 5)]),
+    },
+    "Trork_Fosse_Aux_Betes": {
+        "Base": [("Food_Wildmeat_Raw", 3, 1), ("Ingredient_Bone_Fragment", 6, 1), ("Ingredient_Hide_Light", 2, 1)],
+        "Loups": ([("Ingredient_Bone_Fragment", 10, 1), ("Ingredient_Hide_Medium", 2, 2)],
+                  [("Ingredient_Leather_Medium", 3, 3), ("Weapon_Daggers_Claw_Bone", 1, 4)]),
+        "Porcs_Sauvages": ([("Food_Pork_Raw", 4, 1), ("Ingredient_Leather_Light", 3, 1)],
+                           [("Ingredient_Strap_Leather", 4, 2), ("Food_Pie_Meat", 2, 3)]),
+        "Chevres": ([("Ingredient_Hide_Medium", 3, 1), ("Food_Cheese", 2, 2)],
+                    [("Ingredient_Leather_Medium", 4, 3), ("Armor_Leather_Medium_Chest", 1, 5)]),
+    },
+    "Feran_Enclos_Oasis": {
+        "Base": [("Food_Egg", 4, 1), ("Ingredient_Feathers_Light", 4, 1), ("Plant_Seeds_Wheat", 6, 1)],
+        "Chameaux": ([("Ingredient_Hide_Scaled", 2, 2), ("Ingredient_Water_Essence", 2, 1)],
+                     [("Ingredient_Leather_Scaled", 3, 3), ("Armor_Leather_Light_Chest", 1, 4)]),
+        "Beliers": ([("Ingredient_Fabric_Scrap_Wool", 6, 1), ("Food_Cheese", 2, 2)],
+                    [("Ingredient_Bolt_Wool", 2, 3), ("Armor_Wool_Head", 1, 4)]),
+        "Tortues": ([("Ingredient_Hide_Scaled", 3, 2), ("Ingredient_Water_Essence", 3, 1)],
+                    [("Ingredient_Leather_Scaled", 4, 3), ("Ingredient_Chitin_Sturdy", 2, 3)]),
+    },
+    "Renonce_Bergerie_Du_Givre": {
+        "Base": [("Ingredient_Fabric_Scrap_Wool", 4, 1), ("Ingredient_Hay", 8, 1), ("Food_Cheese", 1, 1)],
+        "Bisons": ([("Food_Beef_Raw", 4, 1), ("Ingredient_Hide_Heavy", 2, 2)],
+                   [("Ingredient_Leather_Heavy", 3, 3), ("Armor_Leather_Heavy_Chest", 1, 5)]),
+        "Sangliers": ([("Food_Wildmeat_Raw", 4, 1), ("Ingredient_Hide_Medium", 2, 1)],
+                      [("Food_Kebab_Meat", 3, 2), ("Armor_Leather_Medium_Legs", 1, 4)]),
+        "Loups_Blancs": ([("Ingredient_Hide_Heavy", 2, 2), ("Ingredient_Bone_Fragment", 8, 1)],
+                         [("Ingredient_Leather_Heavy", 4, 3), ("Armor_Wool_Chest", 1, 4)]),
+    },
+    "Slothian_Bauge_De_Veille": {
+        "Base": [("Food_Pork_Raw", 2, 1), ("Ingredient_Leather_Light", 2, 1), ("Plant_Crop_Carrot_Item", 4, 1)],
+        "Archeopteryx": ([("Ingredient_Feathers_Dark", 4, 1), ("Food_Egg", 4, 1)],
+                         [("Ingredient_Feathers_Red", 4, 2), ("Weapon_Arrow_Iron", 16, 3)]),
+        "Trillodons": ([("Ingredient_Hide_Heavy", 2, 2), ("Food_Beef_Raw", 3, 1)],
+                       [("Ingredient_Leather_Heavy", 4, 3), ("Armor_Leather_Heavy_Legs", 1, 5)]),
+        "Escargots": ([("Ingredient_Fire_Essence", 2, 1), ("Ingredient_Charcoal", 6, 1)],
+                      [("Ingredient_Chitin_Sturdy", 2, 3), ("Ingredient_Fire_Essence", 6, 3)]),
+    },
+    "Kweebec_Potager": {
+        "Base": [("Plant_Seeds_Lettuce", 4, 1), ("Plant_Seeds_Carrot", 4, 1), ("Food_Vegetable_Cooked", 2, 1)],
+        "Maraicher": ([("Plant_Crop_Lettuce_Item", 4, 1), ("Plant_Seeds_Tomato", 4, 1)],
+                      [("Food_Salad_Caesar", 2, 2), ("Plant_Seeds_Carrot_Eternal", 1, 5)]),
+        "Verger": ([("Plant_Fruit_Berries_Red", 6, 1), ("Plant_Fruit_Apple", 4, 1)],
+                   [("Food_Salad_Berry", 2, 2), ("Food_Pie_Apple", 2, 3)]),
+    },
+    "Kweebec_Puits": {
+        "Base": [("Ingredient_Water_Essence", 2, 1), ("Container_Bucket", 1, 2), ("Rock_Stone_Cobble", 16, 1)],
+        "Source": ([("Ingredient_Water_Essence", 4, 1), ("Potion_Empty_Small", 3, 1)],
+                   [("Potion_Purify", 1, 3), ("Tool_Watering_Can", 1, 3)]),
+        "Vivier": ([("Food_Fish_Raw", 3, 1), ("Tool_Fishing_Trap", 1, 2)],
+                   [("Food_Fish_Grilled", 3, 2), ("Food_Fish_Raw_Rare", 1, 4)]),
+    },
+    "Kweebec_Grande_Maison": {
+        "Base": [("Potion_Health_Lesser", 1, 1), ("Plant_Flower_Common_Red", 4, 1), ("Ingredient_Life_Essence", 3, 1)],
+        "Herbes": ([("Potion_Health_Small", 2, 1), ("Potion_Regen_Health_Small", 1, 2)],
+                   [("Potion_Health", 1, 3), ("Potion_Health_Large", 1, 5)]),
+        "Elixirs": ([("Potion_Stamina_Small", 2, 1), ("Potion_Antidote", 1, 2)],
+                    [("Potion_Stamina", 1, 3), ("Potion_Regen_Stamina", 1, 4)]),
+    },
+    "Kweebec_Tour_Est": {
+        "Base": [("Weapon_Arrow_Crude", 16, 1), ("Wood_Oak_Trunk", 8, 1), ("Weapon_Shortbow_Crude", 1, 2)],
+        "Archers": ([("Weapon_Arrow_Iron", 16, 2), ("Weapon_Shortbow_Copper", 1, 3)],
+                    [("Weapon_Arrow_Trueshot", 8, 4), ("Weapon_Shortbow_Iron", 1, 5)]),
+        "Vigiles": ([("Tool_Repair_Kit_Crude", 1, 2), ("Armor_Kweebec_Head", 1, 3)],
+                    [("Tool_Repair_Kit_Iron", 1, 4), ("Armor_Kweebec_Chest", 1, 5)]),
+    },
+    "Trork_Piege": {
+        "Base": [("Ingredient_Hide_Light", 2, 1), ("Ingredient_Bone_Fragment", 6, 1), ("Tool_Trap_Bait", 2, 1)],
+        "Trappeur": ([("Ingredient_Hide_Medium", 2, 1), ("Ingredient_Leather_Light", 3, 1)],
+                     [("Ingredient_Leather_Medium", 3, 3), ("Armor_Leather_Light_Head", 1, 3)]),
+        "Rabatteur": ([("Food_Wildmeat_Raw", 4, 1), ("Food_Kebab_Meat", 2, 1)],
+                      [("Food_Pie_Meat", 2, 3), ("Tool_Capture_Crate", 1, 5)]),
+    },
+    "Trork_Feu_De_Camp": {
+        "Base": [("Food_Wildmeat_Cooked", 2, 1), ("Ingredient_Charcoal", 4, 1), ("Wood_Oak_Trunk", 8, 1)],
+        "Rotisserie": ([("Food_Wildmeat_Cooked", 4, 1), ("Food_Kebab_Meat", 3, 1)],
+                       [("Ingredient_Spices", 3, 2), ("Food_Pie_Meat", 2, 3)]),
+        "Fosse_De_Combat": ([("Weapon_Club_Crude", 1, 2), ("Weapon_Sword_Bone", 1, 3)],
+                            [("Weapon_Axe_Bone", 1, 4), ("Armor_Trork_Chest", 1, 5)]),
+    },
+    "Trork_Entrepot": {
+        "Base": [("Rock_Stone_Cobble", 16, 1), ("Ingredient_Bar_Copper", 1, 1), ("Ingredient_Stick", 8, 1)],
+        "Pillards": ([("Ingredient_Bar_Copper", 3, 2), ("Ingredient_Bar_Iron", 1, 2)],
+                     [("Ingredient_Stud_Iron", 4, 3), ("Ingredient_Bar_Iron", 3, 4)]),
+        "Bucherons": ([("Wood_Oak_Trunk", 16, 1), ("Ingredient_Tree_Bark", 6, 1)],
+                      [("Ingredient_Tree_Sap", 4, 2), ("Tool_Hatchet_Iron", 1, 5)]),
+    },
+    "Feran_Entree_Oasis": {
+        "Base": [("Ingredient_Water_Essence", 2, 1), ("Ingredient_Salt", 3, 1), ("Container_Bucket", 1, 2)],
+        "Citerne": ([("Ingredient_Water_Essence", 4, 1), ("Potion_Empty_Small", 3, 1)],
+                    [("Potion_Regen_Stamina_Small", 2, 3), ("Potion_Purify", 1, 3)]),
+        "Jardin": ([("Ingredient_Spices", 2, 1), ("Plant_Cactus_Flower", 2, 1)],
+                   [("Ingredient_Salt", 8, 2), ("Plant_Seeds_Chilli", 4, 2)]),
+    },
+    "Feran_Hutte_Pilier": {
+        "Base": [("Weapon_Spear_Crude", 1, 2), ("Ingredient_Feathers_Light", 4, 1), ("Weapon_Arrow_Crude", 16, 1)],
+        "Lanciers": ([("Weapon_Spear_Bone", 1, 3), ("Weapon_Spear_Copper", 1, 3)],
+                     [("Weapon_Spear_Tribal", 1, 4), ("Weapon_Spear_Iron", 1, 5)]),
+        "Coureurs": ([("Ingredient_Feathers_Light", 8, 1), ("Armor_Leather_Soft_Head", 1, 2)],
+                     [("Potion_Stamina", 1, 3), ("Armor_Leather_Soft_Chest", 1, 4)]),
+    },
+    "Renonce_Maison_Du_Chasseur": {
+        "Base": [("Ingredient_Hide_Heavy", 1, 1), ("Food_Wildmeat_Raw", 3, 1), ("Ingredient_Fabric_Scrap_Wool", 3, 1)],
+        "Trappeur": ([("Ingredient_Hide_Heavy", 2, 1), ("Ingredient_Leather_Heavy", 1, 2)],
+                     [("Armor_Leather_Heavy_Head", 1, 4), ("Armor_Leather_Heavy_Hands", 1, 4)]),
+        "Pecheur": ([("Food_Fish_Raw", 4, 1), ("Tool_Fishing_Trap", 1, 2)],
+                    [("Food_Fish_Grilled", 4, 2), ("Food_Fish_Raw_Uncommon", 2, 3)]),
+    },
+    "Renonce_Tour_Du_Fort": {
+        "Base": [("Weapon_Arrow_Crude", 16, 1), ("Wood_Fir_Trunk", 8, 1), ("Weapon_Shortbow_Crude", 1, 2)],
+        "Arbaletriers": ([("Weapon_Arrow_Iron", 16, 2), ("Weapon_Crossbow_Iron", 1, 4)],
+                         [("Weapon_Arrow_Deadeye", 8, 4), ("Weapon_Crossbow_Ancient_Steel", 1, 6)]),
+        "Gardes_Du_Givre": ([("Armor_Wool_Head", 1, 2), ("Armor_Wool_Hands", 1, 2)],
+                            [("Armor_Wool_Chest", 1, 4), ("Armor_Wool_Legs", 1, 4)]),
+    },
+    "Slothian_Etal_Des_Cendres": {
+        "Base": [("Ingredient_Charcoal", 4, 1), ("Ingredient_Fire_Essence", 1, 1), ("Furniture_Jungle_Torch", 2, 1)],
+        "Braises": ([("Ingredient_Fire_Essence", 3, 1), ("Ingredient_Charcoal", 8, 1)],
+                    [("Ingredient_Fire_Essence", 8, 3), ("Weapon_Shortbow_Flame", 1, 6)]),
+        "Encens": ([("Furniture_Jungle_Candle", 3, 1), ("Potion_Purify", 1, 2)],
+                   [("Potion_Antidote", 2, 3), ("Furniture_Jungle_Brazier", 1, 4)]),
+    },
+    "Slothian_Temple_De_Veille": {
+        "Base": [("Furniture_Jungle_Candle", 2, 1), ("Potion_Mana_Small", 1, 1), ("Ingredient_Void_Essence", 1, 2)],
+        "Meditation": ([("Potion_Regen_Mana_Small", 2, 1), ("Potion_Regen_Health_Small", 1, 2)],
+                       [("Potion_Regen_Mana", 1, 3), ("Potion_Regen_Health", 1, 4)]),
+        "Chroniques": ([("Ingredient_Life_Essence", 4, 1), ("Recipe_Page", 1, 2)],
+                       [("Recipe_Plant_Seeds_Mana1", 1, 4), ("Recipe_Book_Magic_Void", 1, 6)]),
+    },
+    "Slothian_Porte_Du_Monastere": {
+        "Base": [("Rock_Volcanic", 16, 1), ("Weapon_Spear_Crude", 1, 2), ("Furniture_Jungle_Torch", 2, 1)],
+        "Lances": ([("Rock_Volcanic", 24, 1), ("Weapon_Spear_Stone_Trork", 1, 3)],
+                   [("Weapon_Spear_Iron", 1, 5), ("Weapon_Spear_Bronze", 1, 5)]),
+        "Veilleurs": ([("Furniture_Jungle_Torch", 4, 1), ("Potion_Purify", 1, 2)],
+                      [("Potion_Health", 1, 3), ("Armor_Leather_Raven_Chest", 1, 5)]),
+    },
+}
+# Stock de chaque échange par niveau de la boutique (renouvelé tous les 3 jours, comme le marchand vanilla).
+SHOP_STOCK = {1: 8, 2: 6, 3: 3}
+BARTER = RES / "BarterShops"
+SHOP_PREFIX = "Nakasar_Peuples_W_"
+ROMAN = {1: "I", 2: "II", 3: "III"}
+
 TASKS = {
     "Gather": ("Dépose {count}/{needed} {item} au dépôt du village ({distance} blocs, {direction}).",
                "Drop {count}/{needed} {item} in the village deposit ({distance} blocks, {direction})."),
@@ -370,8 +526,32 @@ PAGE = {
                           "Level {level} needs a village of tier {tier}."),
     "workshop.nextNone": ("Niveau le plus haut atteint.", "Highest level reached."),
     "workshop.offers": ("Offres", "Offers"),
-    "workshop.offersSoon": ("La boutique de {name} ouvrira avec les spécialités.",
-                            "{name}'s shop opens with the specialties."),
+    "workshop.offersOpen": ("{name} troque la production du bâtiment contre des faveurs : ton rang t'ouvre le niveau {level} "
+                            "(bâtiment au niveau {max}).",
+                            "{name} trades the building's goods for favours: your rank opens level {level} "
+                            "(building at level {max})."),
+    "workshop.offersRank": ("{name} ne troque qu'à partir du rang {rank}.", "{name} only trades from rank {rank}."),
+    "workshop.offersAbsent": ("{name} n'est pas là : la boutique rouvre à {hour} h.",
+                              "{name} is away: the shop reopens at {hour}:00."),
+    "workshop.offersRule": ("Toléré : niveau I. Ami : niveau II. Hôte : niveau III. Jamais plus que le niveau du bâtiment ; "
+                            "le stock revient tous les 3 jours.",
+                            "Tolerated: level I. Friend: level II. Host: level III. Never above the building's level; "
+                            "stock returns every 3 days."),
+    "workshop.offersNoSpecialty": ("Sans spécialité, la boutique reste au niveau I.",
+                                   "Without a specialty, the shop stays at level I."),
+    "workshop.shopButton": ("Boutique (niveau {level})", "Shop (level {level})"),
+    "workshop.shopAbsent": ("Le villageois de ce bâtiment n'est pas là : la boutique rouvre à {hour} h.",
+                            "This building's villager is away: the shop reopens at {hour}:00."),
+    "workshop.shopRank": ("Cette boutique ouvre au rang {rank}.", "This shop opens at rank {rank}."),
+    "workshop.shareLine": ("Part de l'Hôte : chaque matin, {quantity} × {item} attendent chaque {rank} dans la caisse.",
+                           "Host's share: every morning, {quantity} × {item} wait in the crate for each {rank}."),
+    "workshop.shareButton": ("Prendre la Part de l'Hôte", "Take the Host's share"),
+    "workshop.shareLevel": ("La Part de l'Hôte ouvre au niveau III, avec une spécialité.",
+                            "The Host's share opens at level III, with a specialty."),
+    "workshop.shareRank": ("La Part de l'Hôte est réservée au rang {rank}.", "The Host's share is for rank {rank}."),
+    "workshop.shareTaken": ("Tu as déjà pris ta Part de l'Hôte : la caisse se remplit à {hour} h.",
+                            "You already took your Host's share: the crate refills at {hour}:00."),
+    "workshop.shareGiven": ("Part de l'Hôte : {quantity} × {item}.", "Host's share: {quantity} × {item}."),
     "workshop.limit": ("Tu suis déjà {count} demandes ou commandes : rends-en une avant d'en prendre une autre.",
                        "You already follow {count} requests or orders: finish one before taking another."),
     "workshop.knowledgeGained": ("{building} : +{knowledge} de savoir-faire ({value}/{max}).",
@@ -505,6 +685,23 @@ def upgrades(layout, wid, errors):
     return out
 
 
+def write_shop(sid, people, trades, title_key, comment, items, errors):
+    for item, qty, price in [t[:3] for t in trades]:
+        if item not in items:
+            errors.append(f"{sid} : objet vanilla inconnu {item}")
+    doc = {
+        "$Comment": comment,
+        "DisplayNameKey": title_key,
+        "RefreshInterval": {"Days": 3},
+        "RestockHour": 6,
+        "TradeSlots": [{"Type": "Fixed", "Trade": {
+            "Output": {"ItemId": item, "Quantity": qty},
+            "Input": [{"ItemId": f"Nakasar_Peuples_Favor_{people}", "Quantity": price}],
+            "Stock": stock}} for item, qty, price, stock in trades],
+    }
+    (BARTER / f"{sid}.json").write_text(json.dumps(doc, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
+
+
 def main():
     items = load_ids(ITEMS)
     roles = load_ids(REFS, "npc")
@@ -512,6 +709,8 @@ def main():
     fr, en = {}, {}
     OUT.mkdir(parents=True, exist_ok=True)
     for old in OUT.glob("*.json"):
+        old.unlink()
+    for old in BARTER.glob(SHOP_PREFIX + "*.json"):
         old.unlink()
     layouts = {}
     for wid, layout_id, building_id, job_id, icon, name_fr, name_en, orders in WORKSHOPS:
@@ -550,6 +749,20 @@ def main():
                 r = rect(building)
                 doc["Pen"] = [r[0] + PEN_INSET, r[1] - PEN_INSET, r[2] + PEN_INSET, r[3] - PEN_INSET]
             doc["Specialties"] = []
+            shops = SHOPS.get(wid)
+            if shops is None:
+                errors.append(f"{wid} : pas de boutiques (SHOPS)")
+                shops = {"Base": []}
+            base_trades = [t + (SHOP_STOCK[1],) for t in shops["Base"]]
+            base_id = f"{SHOP_PREFIX}{wid}_Base_1"
+            write_shop(base_id, people, base_trades, f"nakasar_peuples.barter.W_{wid}_Base_1.title",
+                       f"Boutique du niveau I du bâtiment de métier {wid}, générée par tools/generate_workshops.py.",
+                       items, errors)
+            fr[f"barter.W_{wid}_Base_1.title"] = f"{name_fr} I"
+            en[f"barter.W_{wid}_Base_1.title"] = f"{name_en} I"
+            doc["Shop"] = base_id
+            for extra in set(shops) - {"Base"} - {c[0] for c in choices}:
+                errors.append(f"{wid} : boutique d'une spécialité inconnue {extra}")
             for sid, sfr, sen, sicon, lfr, len_, animals in choices:
                 if sicon not in items:
                     errors.append(f"{wid}/{sid} : icône vanilla inconnue {sicon}")
@@ -564,6 +777,22 @@ def main():
                         "LineKey": f"nakasar_peuples.workshop.specialtyLine.{wid}.{sid}", "Icon": sicon}
                 if animals:
                     spec["Animals"] = animals
+                two, three = shops.get(sid, ([], []))
+                if not two or not three:
+                    errors.append(f"{wid}/{sid} : boutique des niveaux II et III manquante")
+                else:
+                    trades = list(base_trades)
+                    spec["Shops"] = []
+                    for level, add in ((2, two), (3, three)):
+                        trades = trades + [t + (SHOP_STOCK[level],) for t in add]
+                        shop_id = f"{SHOP_PREFIX}{wid}_{sid}_{level}"
+                        write_shop(shop_id, people, trades, f"nakasar_peuples.barter.W_{wid}_{sid}_{level}.title",
+                                   f"Boutique du niveau {level} du bâtiment de métier {wid}, spécialité {sid}, générée "
+                                   "par tools/generate_workshops.py.", items, errors)
+                        spec["Shops"].append(shop_id)
+                        fr[f"barter.W_{wid}_{sid}_{level}.title"] = f"{name_fr} : {sfr} {ROMAN[level]}"
+                        en[f"barter.W_{wid}_{sid}_{level}.title"] = f"{name_en}: {sen} {ROMAN[level]}"
+                    spec["ShareItem"], spec["ShareQuantity"] = two[0][0], two[0][1]
                 doc["Specialties"].append(spec)
                 fr[f"workshop.specialty.{wid}.{sid}"] = sfr
                 en[f"workshop.specialty.{wid}.{sid}"] = sen

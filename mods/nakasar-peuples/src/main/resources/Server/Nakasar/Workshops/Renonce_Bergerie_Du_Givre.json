@@ -79,7 +79,13 @@
       "Animals": [
         "Tamed_Bison",
         "Tamed_Bison_Calf"
-      ]
+      ],
+      "Shops": [
+        "Nakasar_Peuples_W_Renonce_Bergerie_Du_Givre_Bisons_2",
+        "Nakasar_Peuples_W_Renonce_Bergerie_Du_Givre_Bisons_3"
+      ],
+      "ShareItem": "Food_Beef_Raw",
+      "ShareQuantity": 4
     },
     {
       "Id": "Sangliers",
@@ -89,7 +95,13 @@
       "Animals": [
         "Tamed_Boar",
         "Tamed_Boar_Piglet"
-      ]
+      ],
+      "Shops": [
+        "Nakasar_Peuples_W_Renonce_Bergerie_Du_Givre_Sangliers_2",
+        "Nakasar_Peuples_W_Renonce_Bergerie_Du_Givre_Sangliers_3"
+      ],
+      "ShareItem": "Food_Wildmeat_Raw",
+      "ShareQuantity": 4
     },
     {
       "Id": "Loups_Blancs",
@@ -98,7 +110,14 @@
       "Icon": "Ingredient_Hide_Heavy",
       "Animals": [
         "Nakasar_Peuples_Pen_Wolf_White"
-      ]
+      ],
+      "Shops": [
+        "Nakasar_Peuples_W_Renonce_Bergerie_Du_Givre_Loups_Blancs_2",
+        "Nakasar_Peuples_W_Renonce_Bergerie_Du_Givre_Loups_Blancs_3"
+      ],
+      "ShareItem": "Ingredient_Hide_Heavy",
+      "ShareQuantity": 2
     }
-  ]
+  ],
+  "Shop": "Nakasar_Peuples_W_Renonce_Bergerie_Du_Givre_Base_1"
 }

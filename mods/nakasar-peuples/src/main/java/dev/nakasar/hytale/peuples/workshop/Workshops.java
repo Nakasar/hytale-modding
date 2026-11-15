@@ -598,6 +598,99 @@ public final class Workshops {
         return true;
     }
 
+    // ---- Boutiques et Part de l'Hôte (étape 4) ----
+
+    /** Rang qui ouvre le lot quotidien de la Part de l'Hôte (niveau III). */
+    public static final Rank SHARE_RANK = Rank.HOTE;
+
+    /** Niveau de boutique ouvert par le rang : Toléré I, Ami II, Hôte (et au-delà) III ; 0 en dessous de Toléré. */
+    public static int rankLevel(Rank rank) {
+        if (rank.atLeast(Rank.HOTE)) {
+            return 3;
+        }
+        if (rank.atLeast(Rank.AMI)) {
+            return 2;
+        }
+        return rank.atLeast(Rank.TOLERE) ? 1 : 0;
+    }
+
+    /** Niveau de boutique que voit le joueur : son rang, sans dépasser le niveau du bâtiment (0 : fermée). */
+    public static int shopLevel(Store<EntityStore> store, Ref<EntityStore> ref, Village village, WorkshopState ws) {
+        return Math.min(ws.level(), rankLevel(Reputations.rank(store, ref, village)));
+    }
+
+    /** Boutique du niveau `level` du bâtiment : celle de la spécialité aux niveaux II et III, sinon la base. */
+    public static String shop(Workshop w, WorkshopState ws, int level) {
+        if (level <= 0) {
+            return null;
+        }
+        Workshop.Specialty spec = level >= 2 ? w.specialty(ws.specialty()) : null;
+        String id = spec == null ? null : spec.shop(level);
+        return id != null ? id : w.baseShop();
+    }
+
+    /** Vrai si la boutique tient : son villageois est là (il revient au matin). */
+    public static boolean keeperPresent(Village village, Workshop w) {
+        VillageLayout.Job job = job(village, w);
+        return job != null && dev.nakasar.hytale.peuples.village.Villagers.present(village, job.id());
+    }
+
+    /** Ouvre la boutique du bâtiment au niveau que voit le joueur. Thread du monde. */
+    public static boolean openShop(Store<EntityStore> store, Ref<EntityStore> ref, PlayerRef player, Village village, Workshop w) {
+        WorkshopState ws = village.workshop(w.getId());
+        if (!keeperPresent(village, w)) {
+            player.sendMessage(Message.translation(KEYS + "shopAbsent").param("hour", GameClock.MORNING));
+            return false;
+        }
+        String id = shop(w, ws, shopLevel(store, ref, village, ws));
+        if (id == null) {
+            player.sendMessage(Message.translation(KEYS + "shopRank").param("rank", Message.translation(Rank.TOLERE.nameKey())));
+            return false;
+        }
+        return dev.nakasar.hytale.peuples.reputation.Shops.open(store, ref, player, village, id);
+    }
+
+    /** Lot du jour de la Part de l'Hôte, ou null (niveau III avec une spécialité qui en a un). */
+    public static Workshop.Specialty shareSpecialty(Workshop w, WorkshopState ws) {
+        Workshop.Specialty spec = ws.level() >= 3 ? w.specialty(ws.specialty()) : null;
+        return spec != null && spec.shareItem() != null ? spec : null;
+    }
+
+    /** Pourquoi le joueur ne peut pas prendre sa Part de l'Hôte, ou null s'il le peut. */
+    public static Message shareBlock(Store<EntityStore> store, Ref<EntityStore> ref, PlayerRef player, Village village, Workshop w) {
+        WorkshopState ws = village.workshop(w.getId());
+        if (shareSpecialty(w, ws) == null) {
+            return Message.translation(KEYS + "shareLevel");
+        }
+        if (!Reputations.rank(store, ref, village).atLeast(SHARE_RANK)) {
+            return Message.translation(KEYS + "shareRank").param("rank", Message.translation(SHARE_RANK.nameKey()));
+        }
+        if (ws.shareTaken(GameClock.day(store), player.getUuid().toString())) {
+            return Message.translation(KEYS + "shareTaken").param("hour", GameClock.MORNING);
+        }
+        return null;
+    }
+
+    /**
+     * Le joueur prend son lot du jour dans la caisse de la Part de l'Hôte (GDD, étape 4 ; Kevin : « une caisse où le
+     * bâtiment dépose chaque matin un petit lot de sa production pour les Hôtes ») : niveau III, rang Hôte, un lot par
+     * joueur et par jour de jeu. Le lot tombe à ses pieds si son inventaire est plein. Thread du monde.
+     */
+    public static boolean takeShare(Store<EntityStore> store, Ref<EntityStore> ref, PlayerRef player, Village village, Workshop w) {
+        Message block = shareBlock(store, ref, player, village, w);
+        if (block != null) {
+            player.sendMessage(block);
+            return false;
+        }
+        WorkshopState ws = village.workshop(w.getId());
+        Workshop.Specialty spec = shareSpecialty(w, ws);
+        ws.takeShare(GameClock.day(store), player.getUuid().toString());
+        Requests.give(store, ref, new com.hypixel.hytale.server.core.inventory.ItemStack(spec.shareItem(), spec.shareQuantity()));
+        notify(player, Message.translation(KEYS + "shareGiven").param("quantity", spec.shareQuantity())
+                .param("item", dev.nakasar.hytale.peuples.village.VillageBoard.itemName(spec.shareItem())), NotificationStyle.Success);
+        return true;
+    }
+
     /** Ligne de type d'une commande pour la version texte. */
     static Message typeName(RequestType type) {
         return Message.translation(type.nameKey());
