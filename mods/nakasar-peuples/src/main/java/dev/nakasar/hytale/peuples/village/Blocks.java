@@ -1,6 +1,7 @@
 package dev.nakasar.hytale.peuples.village;
 
 import com.hypixel.hytale.component.Ref;
+import com.hypixel.hytale.protocol.BlockMaterial;
 import com.hypixel.hytale.server.core.asset.type.blocktype.config.BlockType;
 import com.hypixel.hytale.server.core.universe.world.chunk.BlockOperations;
 import com.hypixel.hytale.server.core.universe.world.chunk.section.BlockSection;
@@ -73,6 +74,16 @@ public final class Blocks {
         }
         int id = blockId == null ? BlockType.EMPTY_ID : BlockType.getAssetMap().getIndex(blockId);
         return BlockOperations.setBlock(chunks, ref, x, y, z, id, type, rotation, 0, 0);
+    }
+
+    /** Vrai si le bloc en (x, y, z) est plein (matériau Solid : sol, racines, mousse en bloc...) ; faux si vide ou non chargé. */
+    public static boolean solid(ChunkStore chunks, int x, int y, int z) {
+        int id = id(chunks, x, y, z);
+        if (id == UNLOADED || id == BlockType.EMPTY_ID) {
+            return false;
+        }
+        BlockType type = BlockType.getAssetMap().getAsset(id);
+        return type != null && type.getMaterial() == BlockMaterial.Solid;
     }
 
     /** Retire le bloc en (x, y, z) s'il s'agit bien de `blockId` (on ne casse jamais un bloc posé par un joueur). */
