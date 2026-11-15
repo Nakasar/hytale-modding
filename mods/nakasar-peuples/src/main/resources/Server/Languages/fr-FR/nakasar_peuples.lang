@@ -2579,6 +2579,8 @@ boardPage.chantierNext = Prochain chantier : {tier}
 boardPage.chantierActive = Chantier : {tier}
 boardPage.worksLine = Fin des travaux dans {hours} h de jeu
 boardPage.moreBuildings = … et {count} autres bâtiments.
+boardPage.blockedShort = • {building} : {count} bloc(s) gênent
+boardPage.blockedHint = Sautés au prochain chantier tant que ces blocs restent. Détails : Version texte.
 boardPage.more = + {count}
 boardPage.allHere = Tout le monde est là.
 

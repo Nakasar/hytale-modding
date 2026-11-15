@@ -260,6 +260,15 @@ public final class BoardPage extends InteractiveCustomUIPage<BoardPage.Event> {
         }
     }
 
+    /**
+     * Bâtiment gêné, en une ligne courte : le panneau ne cite ni bloc ni coordonnées (la Version texte et
+     * /village genes les donnent), pour garder la colonne lisible.
+     */
+    private static Message blockedShort(VillageLayout.Building b, Chantiers.Obstacles o) {
+        return Message.translation(KEYS + "blockedShort").param("building", Message.translation(Chantiers.buildingKey(b.id())))
+                .param("count", o.total());
+    }
+
     private void chantier(UICommandBuilder cmd, World world, Store<EntityStore> store, Village village, ChantierState c) {
         VillageLayout layout = Chantiers.layout(village);
         List<Message> notes = new ArrayList<>();
@@ -294,7 +303,7 @@ public final class BoardPage extends InteractiveCustomUIPage<BoardPage.Event> {
             for (String id : c.skipped()) {
                 VillageLayout.Building b = layout == null ? null : layout.building(id);
                 Chantiers.Obstacles o = b == null ? null : blocked.get(b);
-                notes.add(o != null ? Chantiers.obstacleLine(b, o)
+                notes.add(o != null ? blockedShort(b, o)
                         : Message.translation(BOARD + "chantier.skippedClear").param("building", Message.translation(Chantiers.buildingKey(id))));
             }
         } else if (next) {
@@ -324,9 +333,9 @@ public final class BoardPage extends InteractiveCustomUIPage<BoardPage.Event> {
                 cmd.set("#ChantierInfo.Visible", false);
             }
             Map<VillageLayout.Building, Chantiers.Obstacles> blocked = Chantiers.blocked(world, village);
-            blocked.forEach((b, o) -> notes.add(Chantiers.obstacleLine(b, o)));
+            blocked.forEach((b, o) -> notes.add(blockedShort(b, o)));
             if (!blocked.isEmpty()) {
-                notes.add(Message.translation(BOARD + "chantier.blockedNext"));
+                notes.add(Message.translation(KEYS + "blockedHint"));
             }
         }
         for (String id : village.burnt()) {

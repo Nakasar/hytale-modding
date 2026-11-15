@@ -35,7 +35,7 @@ Group {
   }
 
   Group #Dialog {
-    Anchor: (Width: 1240, Height: 320, Bottom: 34);
+    Anchor: (Width: 1240, Height: 360, Bottom: 34);
 
     $C.@DecoratedContainer #Box {
       Anchor: (Full: 0);
@@ -68,9 +68,12 @@ Group {
         LayoutMode: Left;
         Padding: (Left: 22, Right: 22, Top: 12, Bottom: 10);
 
+        // Réplique la plus longue (≈ 200 caractères, 3 lignes) + aparté + 4 réponses : tient dans 360 px. Au-delà, la
+        // colonne défile (TopScrolling, comme les listes vanilla) au lieu de faire passer les réponses sous le cadre.
         Group #TextColumn {
           FlexWeight: 1;
-          LayoutMode: Top;
+          LayoutMode: TopScrolling;
+          ScrollbarStyle: $C.@DefaultScrollbarStyle;
 
           Label #Line {
             Anchor: (Bottom: 4);

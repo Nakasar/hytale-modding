@@ -332,10 +332,26 @@ $C.@PageOverlay {
           FlexWeight: 1;
           Label #EssorHeader { Anchor: (Height: 24, Bottom: 6); Style: @Section; Text: ""; }
 
-          @Card #EssorCard {
-            LayoutMode: Top;
+          Group #StateScroll {
             FlexWeight: 1;
-            Padding: (Horizontal: 16, Top: 12, Bottom: 10);
+            LayoutMode: TopScrolling;
+            ScrollbarStyle: $C.@DefaultScrollbarStyle;
+
+          Group #Alert {
+            Anchor: (Bottom: 10, Right: 10);
+            Padding: (Horizontal: 14, Vertical: 10);
+            Background: (Color: #d9614c(0.18));
+            Group {
+              LayoutMode: Top;
+              Label #AlertText { Style: (FontSize: 14, RenderBold: true, TextColor: #f0b0a0, Wrap: true); Text: ""; }
+            }
+          }
+
+          @Card #EssorCard {
+            Anchor: (Right: 10);
+            Padding: (Horizontal: 16, Top: 12, Bottom: 12);
+            Group {
+            LayoutMode: Top;
 
             Group {
               LayoutMode: Left;
@@ -344,7 +360,7 @@ $C.@PageOverlay {
               Label #EssorValue { Style: (FontSize: 15, RenderBold: true, TextColor: #b99be8, HorizontalAlignment: End, VerticalAlignment: Center); Text: ""; }
             }
             @Bar #EssorBar { Anchor: (Height: 16, Top: 6, Bottom: 6); }
-            Label #EssorHint { Anchor: (Height: 18); Style: @SmallWrap; Text: ""; }
+            Label #EssorHint { Style: @SmallWrap; Text: ""; }
             $C.@PanelSeparatorFancy { @Anchor = Anchor(Top: 8, Bottom: 8); }
             Label #ChantierTitle { Anchor: (Height: 18, Bottom: 6); Style: (FontSize: 13, RenderBold: true, RenderUppercase: true, TextColor: #d6c6f0, VerticalAlignment: Center); Text: ""; }
 
@@ -457,88 +473,79 @@ $C.@PageOverlay {
             }
 
             Label #ChantierNotes { Anchor: (Top: 4); Style: (FontSize: 13, TextColor: #e8c46a, Wrap: true); Text: ""; }
-            Group { FlexWeight: 1; }
-            $C.@PanelSeparatorFancy { @Anchor = Anchor(Bottom: 6); }
+            $C.@PanelSeparatorFancy { @Anchor = Anchor(Top: 8, Bottom: 6); }
             Label #DepositHeader { Anchor: (Height: 16, Bottom: 6); Style: @Caption; Text: ""; }
             Group #DepositRow {
               LayoutMode: Left;
-              Anchor: (Height: 40);
+              Anchor: (Height: 36);
               Group #Dep0 {
                 LayoutMode: Full;
-                Anchor: (Width: 40, Height: 40, Right: 6);
+                Anchor: (Width: 36, Height: 36, Right: 4);
                 Background: (TexturePath: "../../../Common/IngredientSlot.png", Border: 24);
-                ItemIcon #DepIcon0 { Anchor: (Full: 4); ShowItemTooltip: true; }
+                ItemIcon #DepIcon0 { Anchor: (Full: 3); ShowItemTooltip: true; }
                 Label #DepCount0 { Anchor: (Right: 3, Bottom: 1); Style: @SlotCount; Text: ""; }
               }
               Group #Dep1 {
                 LayoutMode: Full;
-                Anchor: (Width: 40, Height: 40, Right: 6);
+                Anchor: (Width: 36, Height: 36, Right: 4);
                 Background: (TexturePath: "../../../Common/IngredientSlot.png", Border: 24);
-                ItemIcon #DepIcon1 { Anchor: (Full: 4); ShowItemTooltip: true; }
+                ItemIcon #DepIcon1 { Anchor: (Full: 3); ShowItemTooltip: true; }
                 Label #DepCount1 { Anchor: (Right: 3, Bottom: 1); Style: @SlotCount; Text: ""; }
               }
               Group #Dep2 {
                 LayoutMode: Full;
-                Anchor: (Width: 40, Height: 40, Right: 6);
+                Anchor: (Width: 36, Height: 36, Right: 4);
                 Background: (TexturePath: "../../../Common/IngredientSlot.png", Border: 24);
-                ItemIcon #DepIcon2 { Anchor: (Full: 4); ShowItemTooltip: true; }
+                ItemIcon #DepIcon2 { Anchor: (Full: 3); ShowItemTooltip: true; }
                 Label #DepCount2 { Anchor: (Right: 3, Bottom: 1); Style: @SlotCount; Text: ""; }
               }
               Group #Dep3 {
                 LayoutMode: Full;
-                Anchor: (Width: 40, Height: 40, Right: 6);
+                Anchor: (Width: 36, Height: 36, Right: 4);
                 Background: (TexturePath: "../../../Common/IngredientSlot.png", Border: 24);
-                ItemIcon #DepIcon3 { Anchor: (Full: 4); ShowItemTooltip: true; }
+                ItemIcon #DepIcon3 { Anchor: (Full: 3); ShowItemTooltip: true; }
                 Label #DepCount3 { Anchor: (Right: 3, Bottom: 1); Style: @SlotCount; Text: ""; }
               }
               Group #Dep4 {
                 LayoutMode: Full;
-                Anchor: (Width: 40, Height: 40, Right: 6);
+                Anchor: (Width: 36, Height: 36, Right: 4);
                 Background: (TexturePath: "../../../Common/IngredientSlot.png", Border: 24);
-                ItemIcon #DepIcon4 { Anchor: (Full: 4); ShowItemTooltip: true; }
+                ItemIcon #DepIcon4 { Anchor: (Full: 3); ShowItemTooltip: true; }
                 Label #DepCount4 { Anchor: (Right: 3, Bottom: 1); Style: @SlotCount; Text: ""; }
               }
               Group #Dep5 {
                 LayoutMode: Full;
-                Anchor: (Width: 40, Height: 40, Right: 6);
+                Anchor: (Width: 36, Height: 36, Right: 4);
                 Background: (TexturePath: "../../../Common/IngredientSlot.png", Border: 24);
-                ItemIcon #DepIcon5 { Anchor: (Full: 4); ShowItemTooltip: true; }
+                ItemIcon #DepIcon5 { Anchor: (Full: 3); ShowItemTooltip: true; }
                 Label #DepCount5 { Anchor: (Right: 3, Bottom: 1); Style: @SlotCount; Text: ""; }
               }
               Group #Dep6 {
                 LayoutMode: Full;
-                Anchor: (Width: 40, Height: 40, Right: 6);
+                Anchor: (Width: 36, Height: 36, Right: 4);
                 Background: (TexturePath: "../../../Common/IngredientSlot.png", Border: 24);
-                ItemIcon #DepIcon6 { Anchor: (Full: 4); ShowItemTooltip: true; }
+                ItemIcon #DepIcon6 { Anchor: (Full: 3); ShowItemTooltip: true; }
                 Label #DepCount6 { Anchor: (Right: 3, Bottom: 1); Style: @SlotCount; Text: ""; }
               }
               Group #Dep7 {
                 LayoutMode: Full;
-                Anchor: (Width: 40, Height: 40, Right: 6);
+                Anchor: (Width: 36, Height: 36, Right: 4);
                 Background: (TexturePath: "../../../Common/IngredientSlot.png", Border: 24);
-                ItemIcon #DepIcon7 { Anchor: (Full: 4); ShowItemTooltip: true; }
+                ItemIcon #DepIcon7 { Anchor: (Full: 3); ShowItemTooltip: true; }
                 Label #DepCount7 { Anchor: (Right: 3, Bottom: 1); Style: @SlotCount; Text: ""; }
               }
               Group #Dep8 {
                 LayoutMode: Full;
-                Anchor: (Width: 40, Height: 40, Right: 6);
+                Anchor: (Width: 36, Height: 36, Right: 4);
                 Background: (TexturePath: "../../../Common/IngredientSlot.png", Border: 24);
-                ItemIcon #DepIcon8 { Anchor: (Full: 4); ShowItemTooltip: true; }
+                ItemIcon #DepIcon8 { Anchor: (Full: 3); ShowItemTooltip: true; }
                 Label #DepCount8 { Anchor: (Right: 3, Bottom: 1); Style: @SlotCount; Text: ""; }
               }
               Label #DepMore { Anchor: (Left: 4); Style: @Small; Text: ""; }
               Label #DepEmpty { Style: @Small; Text: ""; Visible: false; }
             }
-          }
-
-          Group #Alert {
-            Anchor: (Top: 12);
-            Padding: (Horizontal: 14, Vertical: 10);
-            Background: (Color: #d9614c(0.18));
-            Group {
-              LayoutMode: Top;
-              Label #AlertText { Style: (FontSize: 14, RenderBold: true, TextColor: #f0b0a0, Wrap: true); Text: ""; }
             }
+          }
           }
         }
       }
