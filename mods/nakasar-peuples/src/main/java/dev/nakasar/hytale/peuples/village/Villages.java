@@ -107,6 +107,7 @@ public final class Villages {
         for (WorkshopState w : village.workshops()) {
             if (w != null && w.hasBoard()) {
                 int[] p = w.board();
+                dev.nakasar.hytale.peuples.workshop.Workshops.unhangBoard(chunks, p, Blocks.rotation(chunks, p[0], p[1], p[2]));
                 Blocks.clearIf(chunks, p[0], p[1], p[2], village.people().boardBlock());
             }
         }

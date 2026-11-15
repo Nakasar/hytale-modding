@@ -146,6 +146,8 @@ public final class Workshops {
             draw(store, village, w, state, false);
             if (!state.hasBoard()) {
                 placeBoard(world, village, w, state);
+            } else if (!RAISED.contains(village.id() + "/" + w.getId()) && raiseBoard(world, village, state)) {
+                RAISED.add(village.id() + "/" + w.getId());
             }
         }
     }
@@ -212,9 +214,16 @@ public final class Workshops {
         return pool.get(pool.size() - 1);
     }
 
+    /** Panneaux déjà vérifiés par {@link #raiseBoard} depuis le chargement du mod. */
+    private static final java.util.Set<String> RAISED = java.util.concurrent.ConcurrentHashMap.newKeySet();
+    /** Blocs pleins (racines, mousse, souches) que le panneau peut enjamber au-dessus du sol. */
+    private static final int STAND_CLIMB = 3;
+
     /**
-     * Pose le panneau du bâtiment à la place du plan, sur le sol, si la case (ou une voisine le long de la face) est
-     * libre ou ne porte que de la végétation : on n'écrase jamais un bloc. Sans effet tant que la zone n'est pas chargée.
+     * Pose le panneau du bâtiment à la place du plan, si la case (ou une voisine le long de la face) est libre ou ne
+     * porte que de la végétation non pleine : on n'écrase jamais un bloc plein. Kevin (2026-11-15) : posé au niveau de
+     * la terre, le panneau s'enfonçait sous les racines et la mousse des villages kweebecs ; il se pose maintenant sur
+     * le premier bloc plein du dessus ({@link #standY}). Sans effet tant que la zone n'est pas chargée.
      */
     static void placeBoard(World world, Village village, Workshop w, WorkshopState state) {
         int[] spot = w.board();
@@ -229,25 +238,150 @@ public final class Workshops {
         for (int d : new int[] {0, 1, -1}) {
             int x = village.x() + spot[0] + (alongX ? d : 0);
             int z = village.z() + spot[1] + (alongX ? 0 : d);
-            int ground = terrain.surface(x, z);
-            if (ground == Terrain.NONE) {
+            int y = standY(chunks, terrain, x, z);
+            if (y == UNLOADED_SPOT) {
                 return;
             }
-            int y = ground + 1;
-            if (Blocks.id(chunks, x, y, z) == Blocks.UNLOADED) {
-                return;
-            }
-            String current = Blocks.name(chunks, x, y, z);
-            if (current != null && !Terrain.isVegetation(current)) {
+            if (y == Terrain.NONE) {
                 continue;
             }
             if (Blocks.set(chunks, x, y, z, village.people().boardBlock(), yaw)) {
                 state.setBoard(x, y, z);
+                hangBoard(chunks, village, x, y, z, yaw);
                 PeuplesPlugin.get().getLogger().atInfo().log("Peuples : panneau du bâtiment %s posé en %d %d %d (%s)",
                         w.getId(), x, y, z, village.name());
                 return;
             }
         }
+    }
+
+    private static final int UNLOADED_SPOT = Integer.MIN_VALUE + 1;
+
+    /**
+     * Hauteur où poser le panneau dans la colonne (x, z) : au-dessus du sol et des blocs pleins posés dessus (racines,
+     * mousse, au plus {@value #STAND_CLIMB}), sur une case vide ou de végétation non pleine. {@link Terrain#NONE} si la
+     * colonne ne convient pas (tronc, mur), {@link #UNLOADED_SPOT} si elle n'est pas chargée.
+     */
+    static int standY(ChunkStore chunks, Terrain terrain, int x, int z) {
+        int ground = terrain.surface(x, z);
+        if (ground == Terrain.NONE) {
+            return UNLOADED_SPOT;
+        }
+        int y = ground + 1;
+        for (int climb = 0; climb <= STAND_CLIMB; climb++, y++) {
+            if (Blocks.id(chunks, x, y, z) == Blocks.UNLOADED) {
+                return UNLOADED_SPOT;
+            }
+            if (Blocks.solid(chunks, x, y, z)) {
+                continue;
+            }
+            String current = Blocks.name(chunks, x, y, z);
+            return current == null || Terrain.isVegetation(current) ? y : Terrain.NONE;
+        }
+        return Terrain.NONE;
+    }
+
+    /**
+     * Remonte un panneau déjà posé trop bas (avant le correctif du 2026-11-15, il a pris la place d'une racine ou d'un
+     * bloc de mousse) : tant qu'au moins deux de ses voisins ont un bloc plein à son niveau, on rebouche sa case avec le
+     * bloc d'un voisin et le panneau monte d'un cran (au plus {@value #STAND_CLIMB}). Rend faux tant que la zone
+     * n'est pas chargée (à revoir), vrai une fois vérifié.
+     */
+    static boolean raiseBoard(World world, Village village, WorkshopState state) {
+        int[] at = state.board();
+        ChunkStore chunks = world.getChunkStore();
+        String board = village.people().boardBlock();
+        if (Blocks.id(chunks, at[0], at[1], at[2]) == Blocks.UNLOADED) {
+            return false;
+        }
+        if (!Blocks.is(Blocks.name(chunks, at[0], at[1], at[2]), board)) {
+            return true;
+        }
+        int yaw = Blocks.rotation(chunks, at[0], at[1], at[2]);
+        int y = at[1];
+        for (int climb = 0; climb < STAND_CLIMB; climb++) {
+            String filler = neighbourFill(chunks, at[0], y, at[2]);
+            String above = Blocks.name(chunks, at[0], y + 1, at[2]);
+            if (filler == null || Blocks.id(chunks, at[0], y + 1, at[2]) == Blocks.UNLOADED
+                    || !(above == null || Terrain.isVegetation(above) && !Blocks.solid(chunks, at[0], y + 1, at[2]))) {
+                break;
+            }
+            Blocks.set(chunks, at[0], y, at[2], filler, 0);
+            y++;
+        }
+        if (y != at[1]) {
+            Blocks.set(chunks, at[0], y, at[2], board, yaw);
+            state.setBoard(at[0], y, at[2]);
+        }
+        hangBoard(chunks, village, at[0], y, at[2], yaw);
+        if (y != at[1]) {
+            PeuplesPlugin.get().getLogger().atInfo().log("Peuples : panneau remonté de %d en %d %d %d (%s)", y - at[1], at[0], y, at[2],
+                    village.name());
+        }
+        return true;
+    }
+
+    /** Poutre vanilla sous laquelle pend le panneau kweebec (Kevin, 2026-11-15 : le panneau kweebec est suspendu). */
+    public static final String HANG_BEAM = "Wood_Hardwood_Beam";
+
+    /**
+     * Le panneau kweebec est un panneau suspendu (ses cordes montent vers un bloc au-dessus) : on pose au-dessus de lui
+     * une poutre couchée qui sort du bâtiment, sur sa case et sur celle de derrière (côté bâtiment) si elle est libre.
+     * Seulement dans l'air ou la végétation non pleine ; sans effet pour les autres peuples ou si un bloc plein le
+     * couvre déjà.
+     */
+    static void hangBoard(ChunkStore chunks, Village village, int x, int y, int z, int yaw) {
+        if (!"Kweebec".equals(village.people().id())) {
+            return;
+        }
+        int[] back = back(yaw);
+        // Poutre couchée : rotation 4 le long de Z, 5 le long de X (troncs couchés des prefabs vanilla).
+        int rot = back[0] == 0 ? 4 : 5;
+        for (int k = 0; k <= 1; k++) {
+            int bx = x + back[0] * k;
+            int bz = z + back[1] * k;
+            if (Blocks.solid(chunks, bx, y + 1, bz)) {
+                return; // le panneau (ou la poutre) touche déjà un bloc plein
+            }
+            String current = Blocks.name(chunks, bx, y + 1, bz);
+            if (Blocks.id(chunks, bx, y + 1, bz) == Blocks.UNLOADED || current != null && !Terrain.isVegetation(current)) {
+                return;
+            }
+            Blocks.set(chunks, bx, y + 1, bz, HANG_BEAM, rot);
+        }
+    }
+
+    /** Retire la poutre d'un panneau suspendu (démolition, village dissous). */
+    public static void unhangBoard(ChunkStore chunks, int[] at, int yaw) {
+        int[] back = back(yaw);
+        for (int k = 0; k <= 1; k++) {
+            Blocks.clearIf(chunks, at[0] + back[0] * k, at[1] + 1, at[2] + back[1] * k, HANG_BEAM);
+        }
+    }
+
+    /** Vers l'arrière du panneau (côté bâtiment) : lacet 0 regarde le sud (+Z), 1 l'est, 2 le nord, 3 l'ouest. */
+    private static int[] back(int yaw) {
+        return switch (yaw & 3) {
+            case 0 -> new int[] {0, -1};
+            case 1 -> new int[] {-1, 0};
+            case 2 -> new int[] {0, 1};
+            default -> new int[] {1, 0};
+        };
+    }
+
+    /** Bloc plein partagé par au moins deux des quatre voisins de (x, y, z), ou null. */
+    private static String neighbourFill(ChunkStore chunks, int x, int y, int z) {
+        java.util.Map<String, Integer> count = new java.util.HashMap<>();
+        for (int[] d : new int[][] {{1, 0}, {-1, 0}, {0, 1}, {0, -1}}) {
+            if (Blocks.solid(chunks, x + d[0], y, z + d[1])) {
+                count.merge(Blocks.name(chunks, x + d[0], y, z + d[1]), 1, Integer::sum);
+            }
+        }
+        int total = count.values().stream().mapToInt(Integer::intValue).sum();
+        if (total < 2) {
+            return null;
+        }
+        return count.entrySet().stream().max(java.util.Map.Entry.comparingByValue()).map(java.util.Map.Entry::getKey).orElse(null);
     }
 
     // ---- Ce que voit et fait un joueur ----
