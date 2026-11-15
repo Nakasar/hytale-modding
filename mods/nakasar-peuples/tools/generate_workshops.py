@@ -610,6 +610,8 @@ PAGE = {
     "workshop.works": ("Travaux en cours : encore {hours} h.", "Works under way: {hours} more hours."),
     "workshop.takeMaster": ("Commande de maître", "Master order"),
     "workshop.startUpgrade": ("Lancer le chantier", "Start the works"),
+    # Kevin (2026-11-15) : pendant les travaux, le bouton reste à sa place, grisé, avec le temps restant.
+    "workshop.busy": ("Chantier en cours · {hours} h", "Works underway · {hours} h"),
     "workshop.masterNotYet": ("La commande de maître s'ouvre quand la jauge est pleine et que le village a le palier voulu.",
                               "The master order opens once the gauge is full and the village has the tier needed."),
     "workshop.masterMissing": ("Ce bâtiment n'a pas de commande de maître pour ce niveau.", "This building has no master order for this level."),
@@ -653,6 +655,7 @@ PAGE = {
     "plot.page.select": ("Voir les projets", "See projects"),
     "plot.page.selected": ("Projets affichés", "Projects shown"),
     "plot.page.start": ("Lancer le chantier", "Start the works"),
+    "plot.page.busy": ("Chantier en cours · {hours} h", "Works underway · {hours} h"),
     "plot.page.demolish": ("Démolir", "Demolish"),
     "plot.page.catalog": ("Projets pour le terrain {plot}", "Projects for plot {plot}"),
     "plot.page.choose": ("Choisir", "Choose"),

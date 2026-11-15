@@ -305,7 +305,15 @@ public final class WorkshopPage extends InteractiveCustomUIPage<WorkshopPage.Eve
             }
         }
         cmd.set("#NextLine.TextSpans", line);
-        cmd.set("#NextAction.Visible", action != null);
+        // Kevin (2026-11-15) : pendant les travaux, le bouton reste visible mais grisé, « Chantier en cours » et le
+        // temps restant (comme le panneau du village) : on ne relance pas un chantier déjà en cours.
+        boolean busy = next == Workshops.Next.WORKS;
+        cmd.set("#NextAction.Visible", action != null || busy);
+        cmd.set("#NextAction.Disabled", busy);
+        if (busy) {
+            long left = Math.max(0, state.upgradeEnd() - GameClock.seconds(store));
+            cmd.set("#NextAction.Text", Message.translation(KEYS + "busy").param("hours", (int) Math.ceil(left / 3600.0)));
+        }
         if (action != null) {
             cmd.set("#NextAction.Text", Message.translation(KEYS + (action.equals("Master") ? "takeMaster" : "startUpgrade")));
             events.addEventBinding(CustomUIEventBindingType.Activating, "#NextAction", EventData.of("Action", action));

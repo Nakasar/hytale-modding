@@ -125,7 +125,14 @@ public final class PlotPage extends InteractiveCustomUIPage<PlotPage.Event> {
         if (Plots.isOpen(village, plot) && !s.working() && s.project() != null) {
             action = village.isBuilt(s.project()) ? "page.demolish" : "page.start";
         }
-        cmd.set("#PlotAction" + n + ".Visible", action != null);
+        // Kevin (2026-11-15) : chantier en cours = bouton grisé « Chantier en cours » avec le temps restant.
+        boolean busy = Plots.isOpen(village, plot) && s.working();
+        cmd.set("#PlotAction" + n + ".Visible", action != null || busy);
+        cmd.set("#PlotAction" + n + ".Disabled", busy);
+        if (busy) {
+            long left = Math.max(0, s.end() - GameClock.seconds(store));
+            cmd.set("#PlotAction" + n + ".Text", Message.translation(KEYS + "page.busy").param("hours", (int) Math.ceil(left / 3600.0)));
+        }
         if (action != null) {
             cmd.set("#PlotAction" + n + ".Text", Message.translation(KEYS + action));
             events.addEventBinding(CustomUIEventBindingType.Activating, "#PlotAction" + n, EventData.of("Action", "Action" + n));
