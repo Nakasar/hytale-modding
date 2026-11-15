@@ -65,7 +65,9 @@ public final class PlotState {
 
     /** Vrai si le chantier du terrain est en cours. */
     public boolean working() {
-        return end > 0;
+        // Les secondes de jeu (GameClock.seconds) sont NÉGATIVES : l'horloge vanilla part de l'an 1 (WorldTimeResource.ZERO_YEAR),
+        // avant l'époque Unix. Seul 0 veut dire « aucun » (bug du 2026-11-15 : « > 0 » rendait tout chantier invisible).
+        return end != 0L;
     }
 
     public long demolished() {

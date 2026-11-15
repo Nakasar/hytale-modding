@@ -32,7 +32,16 @@ public final class GameClock {
         return now == null ? 0L : now.minusHours(MORNING).toLocalDate().toEpochDay();
     }
 
-    /** Instant de jeu en secondes. */
+    /**
+     * Instant de jeu à poser comme fin de travaux « finis maintenant » ({@code /village finir}) : jamais 0, qui veut
+     * dire « pas de travaux ». Les secondes de jeu sont négatives (l'horloge part de l'an 1), d'où -1 si l'horloge manque.
+     */
+    public static long nowOrPast(Store<EntityStore> store) {
+        long now = seconds(store);
+        return now == 0L ? -1L : now;
+    }
+
+    /** Instant de jeu en secondes depuis l'époque Unix : NÉGATIF (l'horloge vanilla commence le 0001-01-01). */
     public static long seconds(Store<EntityStore> store) {
         LocalDateTime now = now(store);
         return now == null ? 0L : now.toEpochSecond(ZoneOffset.UTC);

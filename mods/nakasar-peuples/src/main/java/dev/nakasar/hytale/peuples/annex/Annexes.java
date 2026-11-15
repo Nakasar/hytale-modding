@@ -778,7 +778,7 @@ public final class Annexes {
         int n = 0;
         for (AnnexState a : village.annexes()) {
             if (a.working()) {
-                a.hurry(Math.max(1, GameClock.seconds(store)));
+                a.hurry(GameClock.nowOrPast(store));
                 n++;
             }
         }
