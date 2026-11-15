@@ -16,7 +16,6 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
-import java.util.function.BiPredicate;
 import java.util.function.Consumer;
 
 /**
@@ -60,7 +59,7 @@ public final class VillageBuilder {
                     .param("distance", (int) Math.sqrt(near.distanceSquared(cx, near.y(), cz))).param("min", spacing(layout))));
             return;
         }
-        int r = layout.radiusUpTo(0) + MARGIN + BLEND + 4;
+        int r = layout.radiusUpTo(0) + MARGIN + 2 * BLEND + 18; // talus et couronnes des arbres retirés
         Terrain.load(world, cx - r, cx + r, cz - r, cz + r).whenComplete((ignored, error) -> world.execute(() -> {
             if (error != null) {
                 LOGGER.atWarning().withCause(error).log("Nakasar Peuples : chunks du village %s non chargés", name);
@@ -117,22 +116,13 @@ public final class VillageBuilder {
             heights.add(h);
         }
         int[] plaza = {cx - p, cx + p, cz - p, cz + p};
-        List<int[]> reserved = new ArrayList<>(rects);
-        reserved.add(plaza);
-        BiPredicate<Integer, Integer> keep = (x, z) -> {
-            for (int[] rect : reserved) {
-                if (x >= rect[0] && x <= rect[1] && z >= rect[2] && z <= rect[3]) {
-                    return true;
-                }
-            }
-            return false;
-        };
-
-        terrain.flatten(plaza[0], plaza[1], plaza[2], plaza[3], h0, 1, BLEND, layout.people().plaza(), layout.people().ground(), keep);
+        // Un seul terrassement pour la place et toutes les emprises : talus doux entre elles, arbres retirés en entier.
+        Grading grading = new Grading(world).pad(plaza[0], plaza[1], plaza[2], plaza[3], h0, 1, layout.people().plaza());
         for (int i = 0; i < buildings.size(); i++) {
             int[] rect = rects.get(i);
-            terrain.flatten(rect[0], rect[1], rect[2], rect[3], heights.get(i), MARGIN, BLEND, layout.people().ground(), layout.people().ground(), keep);
+            grading.pad(rect[0], rect[1], rect[2], rect[3], heights.get(i), MARGIN, layout.people().ground());
         }
+        grading.apply(BLEND, layout.people().ground(), null);
 
         Store<EntityStore> store = world.getEntityStore().getStore();
         List<String> built = new ArrayList<>();

@@ -724,7 +724,7 @@ public final class Chantiers {
 
     /** Charge les chunks du plan entier puis lance `then` sur le thread du monde. */
     private static void withChunks(World world, Village village, VillageLayout layout, Runnable then) {
-        int r = layout.radius() + MARGIN + BLEND + 2;
+        int r = layout.radius() + MARGIN + 2 * BLEND + 18; // talus et couronnes des arbres retirés
         Terrain.load(world, village.x() - r, village.x() + r, village.z() - r, village.z() + r).whenComplete((ignored, error) -> world.execute(() -> {
             if (error != null) {
                 LOGGER.atWarning().withCause(error).log("Nakasar Peuples : chunks du village %s non chargés", village.name());
@@ -738,7 +738,7 @@ public final class Chantiers {
     /** Charge les chunks du village puis lance `then` sur le thread du monde (commandes ; ne touche pas aux travaux). */
     public static void loadThen(World world, Village village, Runnable then) {
         VillageLayout layout = layout(village);
-        int r = (layout == null ? 32 : layout.radius()) + MARGIN + BLEND + 2;
+        int r = (layout == null ? 32 : layout.radius()) + MARGIN + 2 * BLEND + 18;
         Terrain.load(world, village.x() - r, village.x() + r, village.z() - r, village.z() + r).whenComplete((ignored, error) -> world.execute(() -> {
             if (error != null) {
                 LOGGER.atWarning().withCause(error).log("Nakasar Peuples : chunks du village %s non chargés", village.name());
