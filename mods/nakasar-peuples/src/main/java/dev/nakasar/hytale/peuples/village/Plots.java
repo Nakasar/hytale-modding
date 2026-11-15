@@ -434,7 +434,7 @@ public final class Plots {
         for (VillageLayout.Plot plot : plots(village)) {
             PlotState s = village.plot(plot.id());
             if (s.working()) {
-                s.startWorks(s.start(), Math.max(1, GameClock.seconds(store)));
+                s.startWorks(s.start(), GameClock.nowOrPast(store));
                 n++;
             }
         }
