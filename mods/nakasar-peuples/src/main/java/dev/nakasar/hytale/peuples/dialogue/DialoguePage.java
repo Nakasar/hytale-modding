@@ -49,6 +49,8 @@ public final class DialoguePage extends InteractiveCustomUIPage<DialoguePage.Eve
     private final String portrait;
     private DialogueNode node;
     private boolean camera;
+    private Ref<EntityStore> npc;
+    private Ref<EntityStore> talker;
 
     public DialoguePage(PlayerRef playerRef, Dialogue dialogue, DialogueNode start) {
         this(playerRef, dialogue, start, null);
@@ -61,6 +63,12 @@ public final class DialoguePage extends InteractiveCustomUIPage<DialoguePage.Eve
         this.start = start;
         this.portrait = portrait;
         this.node = start;
+    }
+
+    /** Le PNJ `npc` fait face à `talker` ({@link DialogueFacing}) : il sera libéré à la fermeture. */
+    void facing(Ref<EntityStore> npc, Ref<EntityStore> talker) {
+        this.npc = npc;
+        this.talker = talker;
     }
 
     /** La caméra de dialogue a été posée pour cette fenêtre : elle sera rendue à sa fermeture. */
@@ -118,14 +126,19 @@ public final class DialoguePage extends InteractiveCustomUIPage<DialoguePage.Eve
         events.addEventBinding(CustomUIEventBindingType.Activating, "#Leave", EventData.of("Action", LEAVE));
     }
 
-    /** Fermeture par Échap, par « Partir », par un effet ou par une autre fenêtre ouverte à sa place : caméra rendue. */
+    /** Fermeture par Échap, par « Partir », par un effet ou par une autre fenêtre ouverte à sa place : caméra rendue, PNJ libéré. */
     @Override
     public void onDismiss(Ref<EntityStore> ref, Store<EntityStore> store) {
         super.onDismiss(ref, store);
         releaseCamera();
     }
 
+    /** Caméra rendue au joueur, PNJ libéré (il reprend sa vie). */
     private void releaseCamera() {
+        if (npc != null) {
+            DialogueFacing.stop(npc, talker);
+            npc = null;
+        }
         if (camera) {
             camera = false;
             DialogueCamera.reset(playerRef);

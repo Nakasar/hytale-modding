@@ -470,6 +470,8 @@ public final class Requests {
             return 0;
         }
         // Retrait pile par pile : les objets à durabilité (outils) ne se fusionnent pas avec un ItemStack neuf.
+        // removeItemStackFromSlot et non internal_removeItemStack : la variante internal_ n'envoie pas la mise à jour
+        // de l'inventaire au client, l'objet y restait affiché (missive remise au guetteur).
         int left = count;
         for (short slot = 0; slot < container.getCapacity() && left > 0; slot++) {
             ItemStack stack = container.getItemStack(slot);
@@ -477,7 +479,7 @@ public final class Requests {
                 continue;
             }
             int n = Math.min(left, stack.getQuantity());
-            container.internal_removeItemStack(slot, n);
+            container.removeItemStackFromSlot(slot, n);
             left -= n;
         }
         return count - left;
