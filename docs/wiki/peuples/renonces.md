@@ -12,6 +12,8 @@ Des Outlanders qui ont renoncé au culte et vivent cachés dans la toundra de la
 
 ## Le village
 
+Tous les bâtiments en images, sous trois angles : [Bâtiments des Renoncés](batiments/renonces.md).
+
 Huttes et bateaux, chasseur, bâtisseur, garde et ancien ; le défenseur des raids est un chasseur. Dans le hameau, le froid ne prend pas. Les échoppes vendent notamment des vêtements de laine.
 
 Demandes : 8 au tableau (collectes, artisanat, chasses, une missive, une escorte, une défense).

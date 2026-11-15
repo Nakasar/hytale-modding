@@ -12,6 +12,8 @@ L'oasis feran se pose toute seule dans le désert de la zone 2. La **Graine d'É
 
 ## Le village
 
+Tous les bâtiments en images, sous trois angles : [Bâtiments des Feran](batiments/feran.md).
+
 Huttes, porteuse d'eau et guetteur, bâtisseur, garde et ancien ; le défenseur des raids est un Longtooth. Dans l'oasis, la soif ne prend pas. Le marchand vend l'**Outre d'oasis** : bue, elle protège de la soif pendant 20 minutes.
 
 Demandes : 9 au tableau (collectes, artisanat, chasses, une missive, une escorte, une défense).
