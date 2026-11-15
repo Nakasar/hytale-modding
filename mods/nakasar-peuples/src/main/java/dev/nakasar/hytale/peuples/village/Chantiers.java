@@ -24,6 +24,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.function.BiPredicate;
 import java.util.function.Consumer;
@@ -31,8 +32,9 @@ import java.util.function.Consumer;
 /**
  * Les chantiers d'un village (étape 5 ; GDD, Paliers) : quand la jauge d'essor est pleine et que le dépôt contient les
  * matériaux du palier suivant, le village les prend et ouvre le chantier. Les bâtiments du palier (et ceux qui ont
- * brûlé) se couvrent d'un échafaudage en blocs vanilla, les bâtisseurs y travaillent un jour de jeu, puis le prefab
- * vanilla est collé, l'échafaudage disparaît et le village change de palier.
+ * brûlé) s'entourent d'un chantier propre au peuple ({@link SiteStyle} : jardin et lianes des Kweebecs, rondins et
+ * peaux des Trorks...) qui évolue en {@value SiteStyle#PHASES} phases pendant le jour de jeu des travaux, puis le prefab
+ * vanilla est collé, le chantier disparaît et le village change de palier.
  *
  * <p>Un emplacement occupé par des blocs posés par un joueur est sauté (le tableau le signale) : on ne casse jamais une
  * construction de joueur. Toutes les méthodes tournent sur le thread du monde.
@@ -42,15 +44,6 @@ public final class Chantiers {
     private static final HytaleLogger LOGGER = HytaleLogger.forEnclosingClass();
     public static final String KEYS = "nakasar_peuples.chantier.";
 
-    /** Poteaux et planchers de l'échafaudage, tas de matériaux : blocs vanilla (règle n° 2, pas de bloc d'échafaudage vanilla). */
-    public static final String SCAFFOLD_POST = "Wood_Hardwood_Beam";
-    public static final String SCAFFOLD_DECK = "Wood_Hardwood_Planks_Half";
-    public static final String MATERIAL_PILE = "Wood_Oak_Trunk";
-
-    /** Écart entre deux poteaux, entre deux planchers, hauteur maximale de l'échafaudage. */
-    private static final int POST_STEP = 4;
-    private static final int DECK_STEP = 5;
-    private static final int MAX_SCAFFOLD = 18;
     /** Les annonces vont aux joueurs à moins de cette distance du cœur. */
     public static final int ANNOUNCE_RADIUS = 160;
     /** Écart de hauteur maximal entre un bâtiment et la place (comme VillageBuilder). */
@@ -60,6 +53,11 @@ public final class Chantiers {
 
     /** Villages dont un chargement de chunks est en cours (pas deux opérations à la fois). */
     private static final Set<String> BUSY = Collections.synchronizedSet(new HashSet<>());
+    /**
+     * Phase du chantier déjà posée, par village (non sauvegardée : après un redémarrage la phase en cours est reposée,
+     * ce qui ne change rien puisque le plan est le même).
+     */
+    private static final Map<String, Integer> PHASE = new ConcurrentHashMap<>();
 
     private Chantiers() {
     }
@@ -139,7 +137,7 @@ public final class Chantiers {
 
     /**
      * Ouvre le chantier du palier suivant si tout est prêt (`force` : sans jauge ni matériaux, commande de test). Les
-     * matériaux sont pris au dépôt, puis les chunks chargés et l'échafaudage posé ; `done` reçoit le résultat.
+     * matériaux sont pris au dépôt, puis les chunks chargés et la première phase du chantier posée ; `done` reçoit le résultat.
      */
     public static Block start(World world, Village village, boolean force, Consumer<ChantierState> done) {
         Block blocker = blocker(world, village, force);
@@ -177,8 +175,8 @@ public final class Chantiers {
         List<String> working = new ArrayList<>();
         List<String> skipped = new ArrayList<>();
         Map<String, Obstacles> blocking = new LinkedHashMap<>();
-        // Toutes les parcelles sont examinées avant de poser le moindre échafaudage : l'échafaudage d'un bâtiment
-        // (1 bloc autour de lui) ne doit pas faire sauter son voisin.
+        // Toutes les parcelles sont examinées avant de poser le moindre chantier : le chantier d'un bâtiment (1 bloc
+        // autour de lui) ne doit pas faire sauter son voisin.
         List<VillageLayout.Building> free = new ArrayList<>();
         for (VillageLayout.Building b : buildings) {
             if (!village.isBuilt(b.id())) {
@@ -201,7 +199,7 @@ public final class Chantiers {
             }
             village.setSiteY(b.id(), h);
             if (!b.small()) {
-                scaffold(world, village, b, h, true);
+                site(world, village, b, h, 1);
             }
             working.add(b.id());
         }
@@ -209,6 +207,7 @@ public final class Chantiers {
         ChantierState state = new ChantierState(target, now, now + spec.hours() * 3600L, working.toArray(String[]::new),
                 skipped.toArray(String[]::new));
         village.setChantier(state);
+        PHASE.put(village.id(), 1);
         announce(world, village, Message.translation(KEYS + "started").param("village", village.name())
                 .param("tier", Message.translation(Tiers.nameKey(target))).param("count", working.size())
                 .param("hours", spec.hours()), null, NotificationStyle.Success);
@@ -234,7 +233,7 @@ public final class Chantiers {
     }
 
     /**
-     * Finit le chantier en cours : échafaudage retiré, prefabs collés, palier atteint, jauge remise à zéro, annonce. Faux
+     * Finit le chantier en cours : chantier retiré, prefabs collés, palier atteint, jauge remise à zéro, annonce. Faux
      * s'il n'y a pas de chantier ou qu'une opération est déjà en cours.
      */
     public static boolean finish(World world, Village village, Runnable done) {
@@ -268,7 +267,7 @@ public final class Chantiers {
                 continue;
             }
             int h = siteHeight(world, village, b);
-            scaffold(world, village, b, h, false);
+            site(world, village, b, h, 0);
             if (village.isBuilt(b.id())) {
                 clearRuins(world, village, b, h);
             }
@@ -296,6 +295,7 @@ public final class Chantiers {
             }
         }
         village.setChantier(null);
+        PHASE.remove(village.id());
         village.setTier(c.tier());
         village.setEssor(0);
         Message title = Message.translation(KEYS + "doneTitle").param("village", village.name())
@@ -305,7 +305,7 @@ public final class Chantiers {
         LOGGER.atInfo().log("Nakasar Peuples : %s passe au palier %d (%d bâtiments collés)", village.name(), c.tier(), pasted);
     }
 
-    /** Abandonne le chantier en cours sans le finir (échafaudage retiré ; matériaux perdus). */
+    /** Abandonne le chantier en cours sans le finir (chantier retiré ; matériaux perdus). */
     public static void cancel(World world, Village village) {
         ChantierState c = village.chantier();
         VillageLayout layout = layout(village);
@@ -316,15 +316,16 @@ public final class Chantiers {
             for (String id : c.buildings()) {
                 VillageLayout.Building b = layout.building(id);
                 if (b != null) {
-                    scaffold(world, village, b, siteHeight(world, village, b), false);
+                    site(world, village, b, siteHeight(world, village, b), 0);
                 }
             }
         }
         village.setChantier(null);
+        PHASE.remove(village.id());
     }
 
     /**
-     * Commande de test : bâtit sur-le-champ, sans échafaudage, tout ce qui manque jusqu'au palier `tier`, et règle le
+     * Commande de test : bâtit sur-le-champ, sans chantier, tout ce qui manque jusqu'au palier `tier`, et règle le
      * palier. Un chantier en cours est abandonné.
      */
     public static void buildNow(World world, Village village, int tier, Consumer<Integer> done) {
@@ -598,54 +599,122 @@ public final class Chantiers {
         }
     }
 
-    /**
-     * Pose (`raise`) ou retire l'échafaudage autour de l'emprise : poteaux tous les {@value #POST_STEP} blocs sur un
-     * anneau d'un bloc autour, planchers tous les {@value #DECK_STEP} blocs, et un tas de troncs au centre. On ne pose que
-     * dans l'air ou les plantes, on ne retire que nos propres blocs.
-     */
-    static void scaffold(World world, Village village, VillageLayout.Building b, int h, boolean raise) {
-        ChunkStore chunks = world.getChunkStore();
-        int[] r = b.rect();
-        int x0 = village.x() + r[0] - 1;
-        int x1 = village.x() + r[1] + 1;
-        int z0 = village.z() + r[2] - 1;
-        int z1 = village.z() + r[3] + 1;
-        int top = h + Math.min(b.height(), MAX_SCAFFOLD);
-        for (int x = x0; x <= x1; x++) {
-            for (int z = z0; z <= z1; z++) {
-                boolean ring = x == x0 || x == x1 || z == z0 || z == z1;
-                if (!ring) {
-                    continue;
-                }
-                boolean post = ((x == x0 || x == x1) && ((z - z0) % POST_STEP == 0 || z == z1))
-                        || ((z == z0 || z == z1) && ((x - x0) % POST_STEP == 0 || x == x1));
-                for (int y = h + 1; y <= top; y++) {
-                    boolean deck = (y - h) % DECK_STEP == 0;
-                    String block = post ? SCAFFOLD_POST : deck ? SCAFFOLD_DECK : null;
-                    if (block == null) {
-                        continue;
-                    }
-                    place(chunks, x, y, z, block, raise);
-                }
-            }
-        }
-        int cx = village.x() + (r[0] + r[1]) / 2;
-        int cz = village.z() + (r[2] + r[3]) / 2;
-        for (int[] d : new int[][] {{0, 0}, {1, 0}, {0, 1}}) {
-            place(chunks, cx + d[0], h + 1, cz + d[1], MATERIAL_PILE, raise);
-        }
-        place(chunks, cx, h + 2, cz, MATERIAL_PILE, raise);
+    /** Phase des travaux d'un chantier (1 à {@value SiteStyle#PHASES}), selon l'instant de jeu. */
+    public static int phase(Store<EntityStore> store, ChantierState c) {
+        long span = Math.max(1L, c.end() - c.start());
+        long done = GameClock.seconds(store) - c.start();
+        int p = 1 + (int) Math.floor((double) SiteStyle.PHASES * done / span);
+        return Math.max(1, Math.min(SiteStyle.PHASES, p));
     }
 
-    private static void place(ChunkStore chunks, int x, int y, int z, String block, boolean raise) {
-        String current = Blocks.name(chunks, x, y, z);
-        if (raise) {
-            if (current == null || (current.startsWith("Plant_") && !current.startsWith("Plant_Leaves"))) {
-                Blocks.set(chunks, x, y, z, block, 0);
-            }
-        } else if (block.equals(current)) {
-            Blocks.set(chunks, x, y, z, null, 0);
+    /**
+     * Fait avancer le chantier en cours d'une phase quand le temps est venu (appelé par {@link VillageLifeSystem}) : le
+     * chantier de chaque grand bâtiment passe à la phase suivante et les joueurs proches lisent ce que fait le peuple.
+     */
+    public static void grow(World world, Village village) {
+        ChantierState c = village.chantier();
+        VillageLayout layout = layout(village);
+        if (c == null || layout == null || BUSY.contains(village.id())) {
+            return;
         }
+        int phase = phase(world.getEntityStore().getStore(), c);
+        Integer known = PHASE.get(village.id());
+        if (known != null && known >= phase) {
+            return;
+        }
+        if (!BUSY.add(village.id())) {
+            return;
+        }
+        withChunks(world, village, layout, () -> {
+            try {
+                if (village.chantier() != c) {
+                    return;
+                }
+                for (String id : c.buildings()) {
+                    VillageLayout.Building b = layout.building(id);
+                    if (b != null && !b.small()) {
+                        site(world, village, b, siteHeight(world, village, b), phase);
+                    }
+                }
+                PHASE.put(village.id(), phase);
+                if (known != null) {
+                    announceChat(world, village, Message.translation(KEYS + "phase." + village.people().id() + "." + phase)
+                            .param("village", village.name()));
+                }
+                LOGGER.atInfo().log("Nakasar Peuples : chantier de %s en phase %d", village.name(), phase);
+            } finally {
+                BUSY.remove(village.id());
+            }
+        });
+    }
+
+    /**
+     * Pose le chantier d'un bâtiment à la phase `phase` (0 : le retire). On ne pose que dans l'air, dans les plantes
+     * (hors feuillages) ou à la place de nos propres blocs d'une autre phase ; on ne retire que nos propres blocs. Les
+     * retraits se font de haut en bas (ce qui pend avant ce qui le porte), les poses de bas en haut.
+     */
+    static void site(World world, Village village, VillageLayout.Building b, int h, int phase) {
+        ChunkStore chunks = world.getChunkStore();
+        People people = village.people();
+        int[] r = b.rect();
+        int x0 = village.x() + r[0];
+        int x1 = village.x() + r[1];
+        int z0 = village.z() + r[2];
+        int z1 = village.z() + r[3];
+        Map<Long, Set<String>> ours = SiteStyle.ours(people, x0, x1, z0, z1, h, b.height());
+        Map<Long, SiteStyle.Placement> want = SiteStyle.plan(people, x0, x1, z0, z1, h, b.height(), phase);
+        List<Long> keys = new ArrayList<>(ours.keySet());
+        keys.sort((a, c) -> Integer.compare(SiteStyle.keyY(c), SiteStyle.keyY(a)));
+        for (long k : keys) {
+            int x = SiteStyle.keyX(k);
+            int y = SiteStyle.keyY(k);
+            int z = SiteStyle.keyZ(k);
+            String current = Blocks.name(chunks, x, y, z);
+            SiteStyle.Placement p = want.get(k);
+            boolean mine = mine(current, ours.get(k));
+            if (mine && (p == null || !Blocks.is(current, p.block()))) {
+                Blocks.set(chunks, x, y, z, null, 0);
+            }
+        }
+        Collections.reverse(keys);
+        for (long k : keys) {
+            SiteStyle.Placement p = want.get(k);
+            if (p == null) {
+                continue;
+            }
+            int x = SiteStyle.keyX(k);
+            int y = SiteStyle.keyY(k);
+            int z = SiteStyle.keyZ(k);
+            String current = Blocks.name(chunks, x, y, z);
+            if (Blocks.is(current, p.block())) {
+                continue;
+            }
+            boolean free = current == null || (current.startsWith("Plant_") && !current.startsWith("Plant_Leaves"));
+            if (!free) {
+                continue;
+            }
+            if (p.grounded() && !solid(Blocks.name(chunks, x, y - 1, z))) {
+                continue;
+            }
+            Blocks.set(chunks, x, y, z, p.block(), p.rotation());
+        }
+    }
+
+    private static boolean mine(String current, Set<String> ids) {
+        if (current == null || ids == null) {
+            return false;
+        }
+        for (String id : ids) {
+            if (Blocks.is(current, id)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /** Un sol qui porte une plante ou un objet posé : ni air, ni plante, ni fluide. */
+    private static boolean solid(String below) {
+        return below != null && !below.startsWith("Plant_") && !below.startsWith("Fluid_") && !below.startsWith("*Fluid_");
     }
 
     /** Charge les chunks du plan entier puis lance `then` sur le thread du monde. */

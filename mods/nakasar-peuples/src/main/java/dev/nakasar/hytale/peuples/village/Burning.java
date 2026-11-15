@@ -8,6 +8,7 @@ import com.hypixel.hytale.server.core.universe.world.storage.ChunkStore;
 
 import java.util.List;
 import java.util.Random;
+import java.util.stream.Stream;
 
 /**
  * La version brûlée d'un bâtiment (GDD, Raids : « un raid perdu enflamme un bâtiment ») : ses blocs sont remplacés par
@@ -18,13 +19,13 @@ import java.util.Random;
  */
 public final class Burning {
 
-    /** Blocs vanilla posés par l'incendie et l'échafaudage (vérifiés par validateAssets dans les blocs du jeu). */
-    public static final List<String> REQUIRED_BLOCKS = List.of(
+    /** Blocs vanilla posés par l'incendie et les chantiers ({@link SiteStyle}) (vérifiés par validateAssets dans les blocs du jeu). */
+    public static final List<String> REQUIRED_BLOCKS = Stream.concat(Stream.of(
             "Wood_Burnt_Trunk", "Wood_Burnt_Trunk_Full", "Wood_Burnt_Branch_Corner", "Wood_Burnt_Branch_Long",
             "Wood_Burnt_Branch_Short", "Wood_Burnt_Roots", "Wood_Blackwood_Planks", "Wood_Blackwood_Planks_Half",
             "Wood_Blackwood_Beam", "Wood_Blackwood_Fence", "Wood_Blackwood_Stairs", "Wood_Blackwood_Roof",
-            "Plant_Leaves_Burnt", "Soil_Grass_Burnt", "Soil_Dirt_Burnt", "Soil_Ash",
-            Chantiers.SCAFFOLD_POST, Chantiers.SCAFFOLD_DECK, Chantiers.MATERIAL_PILE);
+            "Plant_Leaves_Burnt", "Soil_Grass_Burnt", "Soil_Dirt_Burnt", "Soil_Ash"),
+            SiteStyle.allBlocks().stream()).distinct().toList();
 
     /** Part du bois calciné qui s'effondre au-dessus de {@value #COLLAPSE_ABOVE} blocs. */
     private static final double COLLAPSE = 0.25;

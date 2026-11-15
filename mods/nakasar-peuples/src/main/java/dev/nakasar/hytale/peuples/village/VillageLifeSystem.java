@@ -66,6 +66,8 @@ public final class VillageLifeSystem extends TickingSystem<EntityStore> {
                 }
             } else if (Chantiers.due(store, village)) {
                 Chantiers.finish(world, village, Villagers::forgetGround);
+            } else {
+                Chantiers.grow(world, village);
             }
         }
         Villagers.step(world, store, players, dt);
