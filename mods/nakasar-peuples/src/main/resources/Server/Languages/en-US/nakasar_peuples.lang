@@ -2579,6 +2579,8 @@ boardPage.chantierNext = Next works: {tier}
 boardPage.chantierActive = Works: {tier}
 boardPage.worksLine = Done in {hours} in-game hours
 boardPage.moreBuildings = … and {count} more buildings.
+boardPage.blockedShort = • {building}: {count} block(s) in the way
+boardPage.blockedHint = Skipped by the next build while these blocks remain. Details: Text version.
 boardPage.more = + {count}
 boardPage.allHere = Everyone is here.
 

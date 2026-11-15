@@ -317,13 +317,15 @@ $C.@PageOverlay {
         }
 
         Group #InfoColumn {
-          LayoutMode: Top;
+          LayoutMode: TopScrolling;
+          ScrollbarStyle: $C.@DefaultScrollbarStyle;
           FlexWeight: 1;
           Label #NextHeader { Anchor: (Height: 24, Bottom: 6); Style: @Section; Text: ""; }
           @Card #NextCard {
-            LayoutMode: Top;
-            Anchor: (Height: 236);
+            Anchor: (Right: 10);
             Padding: (Horizontal: 16, Vertical: 12);
+            Group {
+            LayoutMode: Top;
             Group { Anchor: (Height: 3, Bottom: 10); Background: (Color: #e0773e(0.6)); }
             Label #NextLine { Style: @Body; Text: ""; }
             // Chantier d'amélioration : matériaux attendus au dépôt, ou travaux en cours.
@@ -386,21 +388,22 @@ $C.@PageOverlay {
               Value: 0;
               Visible: false;
             }
-            Group { FlexWeight: 1; }
-            $C.@SmallSecondaryTextButton #NextAction { @Text = ""; @Anchor = Anchor(Width: 240, Height: 32); }
+            $C.@SmallSecondaryTextButton #NextAction { @Text = ""; @Anchor = Anchor(Width: 240, Height: 32, Top: 12); }
+            }
           }
           Label #OffersHeader { Anchor: (Height: 24, Top: 14, Bottom: 6); Style: @Section; Text: ""; }
           @Card #OffersCard {
-            LayoutMode: Top;
-            FlexWeight: 1;
+            Anchor: (Right: 10);
             Padding: (Horizontal: 16, Vertical: 12);
+            Group {
+            LayoutMode: Top;
             Label #OffersLine { Style: @Body; Text: ""; }
-            Group { FlexWeight: 1; }
             Group {
               LayoutMode: Left;
               Anchor: (Height: 32, Top: 8);
               $C.@SmallSecondaryTextButton #ShopAction { @Text = ""; @Anchor = Anchor(Width: 200, Height: 32, Right: 10); }
               $C.@SmallSecondaryTextButton #ShareAction { @Text = ""; @Anchor = Anchor(Width: 220, Height: 32); }
+            }
             }
           }
         }

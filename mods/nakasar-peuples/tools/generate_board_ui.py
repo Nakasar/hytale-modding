@@ -44,7 +44,6 @@ MATERIALS = 5              # matériaux d'un chantier (4 au plus dans les plans 
 BUILDINGS = 4              # bâtiments listés d'un chantier en cours (les autres : « et N autres »)
 DEPOSIT = 9                # sortes d'objets montrées du dépôt
 
-# 740 : place pour l'alerte de raid sur 3-4 lignes sous la carte d'essor, au-dessus des boutons du pied.
 WIDTH, HEIGHT = 1060, 740
 LEFT_WIDTH = 548
 
@@ -287,12 +286,29 @@ def page(theme_id):
     w("          FlexWeight: 1;")
     w(f'          {label("EssorHeader", "@Section", anchor="Height: 24, Bottom: 6")}')
     w("")
-    # La carte prend la hauteur restante (FlexWeight) : l'alerte de raid, de hauteur variable, reste au-dessus du pied
-    # au lieu de déborder sous les boutons ; l'espace libre de la carte (Group FlexWeight) absorbe la différence.
-    w("          @Card #EssorCard {")
-    w("            LayoutMode: Top;")
+    # Colonne qui défile (LayoutMode TopScrolling, comme les listes vanilla CommandListPage/ItemRepairPage) : l'alerte
+    # de raid puis la carte d'essor, toutes deux sans hauteur fixe (fond + Padding, enfant LayoutMode: Top, comme
+    # #DeathData de RespawnPage). Rien ne peut se chevaucher : un contenu plus long fait défiler la colonne.
+    w("          Group #StateScroll {")
     w("            FlexWeight: 1;")
-    w("            Padding: (Horizontal: 16, Top: 12, Bottom: 10);")
+    w("            LayoutMode: TopScrolling;")
+    w("            ScrollbarStyle: $C.@DefaultScrollbarStyle;")
+    w("")
+    w("          Group #Alert {")
+    w("            Anchor: (Bottom: 10, Right: 10);")
+    w("            Padding: (Horizontal: 14, Vertical: 10);")
+    w("            Background: (Color: #d9614c(0.18));")
+    w("            Group {")
+    w("              LayoutMode: Top;")
+    w(f'              {label("AlertText", "LabelStyle(FontSize: 14, RenderBold: true, TextColor: #f0b0a0, Wrap: true)")}')
+    w("            }")
+    w("          }")
+    w("")
+    w("          @Card #EssorCard {")
+    w("            Anchor: (Right: 10);")
+    w("            Padding: (Horizontal: 16, Top: 12, Bottom: 12);")
+    w("            Group {")
+    w("            LayoutMode: Top;")
     w("")
     w("            Group {")
     w("              LayoutMode: Left;")
@@ -301,7 +317,7 @@ def page(theme_id):
     w(f'              {label("EssorValue", f"LabelStyle(FontSize: 15, RenderBold: true, TextColor: {acc}, HorizontalAlignment: End, VerticalAlignment: Center)")}')
     w("            }")
     w("            @Bar #EssorBar { Anchor: (Height: 16, Top: 6, Bottom: 6); }")
-    w(f'            {label("EssorHint", "@SmallWrap", anchor="Height: 18")}')
+    w(f'            {label("EssorHint", "@SmallWrap")}')
     w("            $C.@PanelSeparatorFancy { @Anchor = Anchor(Top: 8, Bottom: 8); }")
     w(f'            {label("ChantierTitle", f"LabelStyle(FontSize: 13, RenderBold: true, RenderUppercase: true, TextColor: {title}, VerticalAlignment: Center)", anchor="Height: 18, Bottom: 6")}')
     w("")
@@ -347,35 +363,25 @@ def page(theme_id):
     w("            }")
     w("")
     w(f'            {label("ChantierNotes", "LabelStyle(FontSize: 13, TextColor: #e8c46a, Wrap: true)", anchor="Top: 4")}')
-    w("            Group { FlexWeight: 1; }")
-    w("            $C.@PanelSeparatorFancy { @Anchor = Anchor(Bottom: 6); }")
+    w("            $C.@PanelSeparatorFancy { @Anchor = Anchor(Top: 8, Bottom: 6); }")
     w(f'            {label("DepositHeader", "@Caption", anchor="Height: 16, Bottom: 6")}')
     w("            Group #DepositRow {")
     w("              LayoutMode: Left;")
-    w("              Anchor: (Height: 40);")
+    w("              Anchor: (Height: 36);")
     for k in range(DEPOSIT):
         w(f"              Group #Dep{k} {{")
         w("                LayoutMode: Full;")
-        w("                Anchor: (Width: 40, Height: 40, Right: 6);")
+        # 9 cases de 36 + 4 = 360 px : tiennent dans la colonne (≈ 410 px utiles avec la barre de défilement).
+        w("                Anchor: (Width: 36, Height: 36, Right: 4);")
         w(f'                Background: (TexturePath: "{COMMON}IngredientSlot.png", Border: 24);')
-        w(f"                ItemIcon #DepIcon{k} {{ Anchor: (Full: 4); ShowItemTooltip: true; }}")
+        w(f"                ItemIcon #DepIcon{k} {{ Anchor: (Full: 3); ShowItemTooltip: true; }}")
         w(f'                {label(f"DepCount{k}", "@SlotCount", anchor="Right: 3, Bottom: 1")}')
         w("              }")
     w(f'              {label("DepMore", "@Small", anchor="Left: 4")}')
     w(f'              {label("DepEmpty", "@Small", extra=" Visible: false;")}')
     w("            }")
-    w("          }")
-    w("")
-    # Pas de hauteur fixe : le fond suit le texte (2 ou 3 lignes avec le bilan du dernier raid), comme le cadre
-    # #DeathData de la page vanilla RespawnPage (groupe à fond + Padding, enfant LayoutMode: Top).
-    w("          Group #Alert {")
-    w("            Anchor: (Top: 12);")
-    w("            Padding: (Horizontal: 14, Vertical: 10);")
-    w("            Background: (Color: #d9614c(0.18));")
-    w("            Group {")
-    w("              LayoutMode: Top;")
-    w(f'              {label("AlertText", "LabelStyle(FontSize: 14, RenderBold: true, TextColor: #f0b0a0, Wrap: true)")}')
     w("            }")
+    w("          }")
     w("          }")
     w("        }")
     w("      }")
