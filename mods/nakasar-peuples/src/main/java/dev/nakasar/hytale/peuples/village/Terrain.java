@@ -24,16 +24,15 @@ public final class Terrain {
     public static final int NONE = Integer.MIN_VALUE;
     /** Plus haut bloc sondé pour trouver le sol. */
     public static final int TOP = 300;
-    /** Hauteur au-dessus du sol où l'on abat les arbres d'une emprise. */
-    private static final int TREE_HEIGHT = 36;
-
     public static final String GRASS = "Soil_Grass";
     public static final String DIRT = "Soil_Dirt";
     public static final String PATHWAY = "Soil_Pathway";
 
+    private final World world;
     private final ChunkStore chunks;
 
     public Terrain(World world) {
+        this.world = world;
         this.chunks = world.getChunkStore();
     }
 
@@ -179,52 +178,17 @@ public final class Terrain {
     }
 
     /**
-     * Aplanit le rectangle [x0, x1] x [z0, z1] à la hauteur `h` : marge plate de `margin` blocs autour, puis fondu sur
-     * `blend` blocs vers le sol d'origine. Le relief au-dessus est coupé, les creux comblés de terre, la couche du dessus
-     * devient `top` (herbe, chemin) et les arbres de l'emprise (marge comprise, plus 3 blocs) sont abattus. Hors de
+     * Aplanit le rectangle [x0, x1] x [z0, z1] à la hauteur `h` avec une marge plate de `margin` blocs, des talus doux
+     * vers le relief d'origine et le retrait des arbres entiers qui touchent l'emprise ({@link Grading}). Hors de
      * l'emprise, les colonnes que `keep` réserve (emprise d'un autre bâtiment) ne sont pas touchées.
      */
     public void flatten(int x0, int x1, int z0, int z1, int h, int margin, int blend, String top, BiPredicate<Integer, Integer> keep) {
         flatten(x0, x1, z0, z1, h, margin, blend, top, GRASS, keep);
     }
 
-    /** Comme {@link #flatten(int, int, int, int, int, int, int, String, BiPredicate)}, avec `ground` au fondu (étape 8 : sable, neige). */
+    /** Comme {@link #flatten(int, int, int, int, int, int, int, String, BiPredicate)}, avec `ground` aux talus (étape 8 : sable, neige). */
     public void flatten(int x0, int x1, int z0, int z1, int h, int margin, int blend, String top, String ground,
                         BiPredicate<Integer, Integer> keep) {
-        int reach = margin + blend;
-        for (int x = x0 - reach; x <= x1 + reach; x++) {
-            for (int z = z0 - reach; z <= z1 + reach; z++) {
-                int dx = Math.max(0, Math.max(x0 - x, x - x1));
-                int dz = Math.max(0, Math.max(z0 - z, z - z1));
-                double d = Math.hypot(dx, dz);
-                if (d > reach || (d > 0 && keep != null && keep.test(x, z))) {
-                    continue;
-                }
-                int s = surface(x, z);
-                if (s == NONE) {
-                    continue;
-                }
-                int target = d <= margin ? h : (int) Math.round(h + (s - h) * ((d - margin) / blend));
-                if (d <= margin + 3) {
-                    for (int y = Math.max(target, s) + 1; y <= target + TREE_HEIGHT; y++) {
-                        if (isVegetation(Blocks.name(chunks, x, y, z))) {
-                            Blocks.set(chunks, x, y, z, null, 0);
-                        }
-                    }
-                } else if (isVegetation(Blocks.name(chunks, x, s + 1, z)) && target != s) {
-                    Blocks.set(chunks, x, s + 1, z, null, 0);
-                }
-                if (target == s && d > margin) {
-                    continue;
-                }
-                for (int y = target + 1; y <= s; y++) {
-                    Blocks.set(chunks, x, y, z, null, 0);
-                }
-                for (int y = s + 1; y < target; y++) {
-                    Blocks.set(chunks, x, y, z, DIRT, 0);
-                }
-                Blocks.set(chunks, x, target, z, d <= margin ? top : ground, 0);
-            }
-        }
+        new Grading(world).pad(x0, x1, z0, z1, h, margin, top).apply(blend, ground, keep);
     }
 }

@@ -174,9 +174,17 @@ Razorleaf et de Sproutlings, lapins) apparaissent dans le campement.
 ### Génération
 
 `VillageBuilder` charge les chunks, aplanit la place (chemin de terre) et l'emprise de chaque bâtiment (herbe, 2 blocs
-de marge plate, fondu de 4 blocs vers le relief, arbres abattus), à au plus 4 blocs de la hauteur de la place, puis colle
+de marge plate), à au plus 4 blocs de la hauteur de la place, puis colle
 les prefabs comme l'action vanilla `PrefabPasteAction`, puis pose le cœur du peuple, le dépôt, le tableau (étape 1) et la
 bannière aux places que donne le plan.
+
+Le terrassement (`Grading`, aussi utilisé par les chantiers) traite toutes les plateformes en une passe :
+- talus d'un bloc de pente au plus vers le relief d'origine, sur 8 blocs au-delà des marges ; seules les colonnes qui
+  l'exigent sont retouchées, les sols non naturels (chemins, constructions) et les emprises réservées jamais ;
+- arbres retirés en entier (tronc, branches, racines remplacées par de la terre, et le feuillage qu'ils portent : chaque
+  feuille appartient au bois le plus proche) dès qu'un de leurs blocs ou une de leurs feuilles surplombe une colonne
+  retouchée, jusqu'à 14 blocs autour du site ;
+- toute grappe de bois et de feuilles qui ne touche plus aucun bloc solide est retirée, ainsi que les plantes sans sol.
 
 ### Cœur du village (place propre à chaque peuple)
 
