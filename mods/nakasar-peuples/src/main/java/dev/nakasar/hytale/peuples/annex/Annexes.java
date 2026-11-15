@@ -89,6 +89,10 @@ public final class Annexes {
     /** Phase de chantier posée par avant-poste (mémoire de session). */
     private static final Map<String, Integer> PHASE = new ConcurrentHashMap<>();
     private static final Set<String> BUSY = ConcurrentHashMap.newKeySet();
+    /** Avant-postes debout dont on a vérifié qu'il ne reste pas de panneau de chantier (depuis le chargement du mod). */
+    private static final Set<String> SWEPT = ConcurrentHashMap.newKeySet();
+    /** Bloc vanilla dont héritent les objets de fondation (panneau « WIP »). */
+    static final String FOUNDATION_BLOCK = "Furniture_Construction_Sign";
 
     private Annexes() {
     }
@@ -251,6 +255,25 @@ public final class Annexes {
     }
 
     /** Vrai si `itemId` est une fondation d'avant-poste. */
+    /**
+     * Retire la fondation posée en (x, z) : le bloc de l'objet de fondation ou le panneau de chantier vanilla dont il
+     * hérite ({@code Furniture_Construction_Sign}), cherché de y - 1 à y + 2 (la case visée à la pose peut être le sol
+     * sous la fondation). Rend la hauteur du bloc retiré, ou {@link Integer#MIN_VALUE} s'il n'y en a pas.
+     */
+    static int clearFoundation(ChunkStore chunks, int x, int y, int z) {
+        for (int dy = -1; dy <= 2; dy++) {
+            String name = Blocks.name(chunks, x, y + dy, z);
+            if (name == null) {
+                continue;
+            }
+            String base = name.startsWith("*") ? name.substring(1) : name;
+            if ((isFoundation(base) || Blocks.is(name, FOUNDATION_BLOCK)) && Blocks.set(chunks, x, y + dy, z, null, 0)) {
+                return y + dy;
+            }
+        }
+        return Integer.MIN_VALUE;
+    }
+
     public static boolean isFoundation(String itemId) {
         return itemId != null && itemId.startsWith("Nakasar_Peuples_Annex_");
     }
@@ -578,6 +601,16 @@ public final class Annexes {
             }
             String key = key(village, w);
             if (a.built()) {
+                if (!SWEPT.contains(key) && watched(a, players)) {
+                    // Avant-postes bâtis avant le correctif : le panneau de chantier était resté sur place.
+                    ChunkStore chunks = world.getChunkStore();
+                    if (Blocks.id(chunks, a.x(), a.y(), a.z()) != Blocks.UNLOADED) {
+                        if (clearFoundation(chunks, a.x(), a.y(), a.z()) != Integer.MIN_VALUE) {
+                            LOGGER.atInfo().log("Nakasar Peuples : panneau de chantier retiré de l'avant-poste %s (%s)", w.getId(), village.name());
+                        }
+                        SWEPT.add(key);
+                    }
+                }
                 // Livraison au dépôt du village : un convoi de porteurs part chaque matin.
                 if (a.convoy()) {
                     Convoys.step(world, store, village, w, a, players, dt);
@@ -701,8 +734,10 @@ public final class Annexes {
         int x = a.x();
         int y = a.y();
         int z = a.z();
-        if (current != null && isFoundation(current.startsWith("*") ? current.substring(1) : current)) {
-            Blocks.set(chunks, x, y, z, null, 0);
+        int sign = clearFoundation(chunks, x, y, z);
+        if (sign != Integer.MIN_VALUE) {
+            // Le panneau du village prend la place de la fondation (le panneau de chantier « WIP »).
+            y = sign;
         } else if (current != null && !Terrain.isVegetation(current)) {
             int stand = Workshops.standY(chunks, new Terrain(world), x, z);
             if (stand == Workshops.UNLOADED_SPOT) {
@@ -829,5 +864,6 @@ public final class Annexes {
         Convoys.clearAll();
         PHASE.clear();
         BUSY.clear();
+        SWEPT.clear();
     }
 }
