@@ -36,7 +36,7 @@ $C.@PageOverlay {
   LayoutMode: Middle;
 
   $C.@DecoratedContainer {
-    Anchor: (Width: 1060, Height: 690);
+    Anchor: (Width: 1060, Height: 740);
 
     #Title {
       Group {
@@ -332,7 +332,7 @@ $C.@PageOverlay {
 
           @Card #EssorCard {
             LayoutMode: Top;
-            Anchor: (Height: 356);
+            FlexWeight: 1;
             Padding: (Horizontal: 16, Top: 12, Bottom: 10);
 
             Group {

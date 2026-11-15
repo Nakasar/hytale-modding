@@ -44,7 +44,8 @@ MATERIALS = 5              # matériaux d'un chantier (4 au plus dans les plans 
 BUILDINGS = 4              # bâtiments listés d'un chantier en cours (les autres : « et N autres »)
 DEPOSIT = 9                # sortes d'objets montrées du dépôt
 
-WIDTH, HEIGHT = 1060, 690
+# 740 : place pour l'alerte de raid sur 3-4 lignes sous la carte d'essor, au-dessus des boutons du pied.
+WIDTH, HEIGHT = 1060, 740
 LEFT_WIDTH = 548
 
 
@@ -286,9 +287,11 @@ def page(theme_id):
     w("          FlexWeight: 1;")
     w(f'          {label("EssorHeader", "@Section", anchor="Height: 24, Bottom: 6")}')
     w("")
+    # La carte prend la hauteur restante (FlexWeight) : l'alerte de raid, de hauteur variable, reste au-dessus du pied
+    # au lieu de déborder sous les boutons ; l'espace libre de la carte (Group FlexWeight) absorbe la différence.
     w("          @Card #EssorCard {")
     w("            LayoutMode: Top;")
-    w("            Anchor: (Height: 356);")
+    w("            FlexWeight: 1;")
     w("            Padding: (Horizontal: 16, Top: 12, Bottom: 10);")
     w("")
     w("            Group {")
