@@ -1,0 +1,85 @@
+{
+  "$Comment": "Bâtiment de métier généré par tools/generate_workshops.py (ne pas modifier à la main) : voir dev.nakasar.hytale.peuples.workshop.Workshop.",
+  "People": "Trork",
+  "Layout": "Trork_Camp",
+  "Building": "E1_Tannerie",
+  "Job": "Tanneur_E1",
+  "Icon": "Ingredient_Leather_Light",
+  "NameKey": "nakasar_peuples.workshop.Trork_E1_Tannerie.name",
+  "Board": [
+    23,
+    -31,
+    0
+  ],
+  "Upgrades": [
+    {
+      "Level": 2,
+      "Hours": 12,
+      "Materials": [
+        {
+          "ItemId": "Food_Wildmeat_Raw",
+          "Quantity": 16
+        },
+        {
+          "ItemId": "Ingredient_Hide_Medium",
+          "Quantity": 8
+        },
+        {
+          "ItemId": "Wood_Oak_Trunk",
+          "Quantity": 24
+        }
+      ],
+      "Decor": [
+        "1 0 0 0 Furniture_Crude_Torch"
+      ]
+    },
+    {
+      "Level": 3,
+      "Hours": 12,
+      "Materials": [
+        {
+          "ItemId": "Food_Wildmeat_Raw",
+          "Quantity": 24
+        },
+        {
+          "ItemId": "Ingredient_Hide_Heavy",
+          "Quantity": 8
+        },
+        {
+          "ItemId": "Wood_Oak_Trunk",
+          "Quantity": 32
+        }
+      ],
+      "Decor": [
+        "-1 0 0 0 Furniture_Crude_Brazier"
+      ]
+    }
+  ],
+  "Specialties": [
+    {
+      "Id": "Cuirs",
+      "NameKey": "nakasar_peuples.workshop.specialty.Trork_E1_Tannerie.Cuirs",
+      "LineKey": "nakasar_peuples.workshop.specialtyLine.Trork_E1_Tannerie.Cuirs",
+      "Icon": "Ingredient_Leather_Medium",
+      "Shops": [
+        "Nakasar_Peuples_W_Trork_E1_Tannerie_Cuirs_2",
+        "Nakasar_Peuples_W_Trork_E1_Tannerie_Cuirs_3"
+      ],
+      "ShareItem": "Ingredient_Leather_Medium",
+      "ShareQuantity": 2
+    },
+    {
+      "Id": "Sangles",
+      "NameKey": "nakasar_peuples.workshop.specialty.Trork_E1_Tannerie.Sangles",
+      "LineKey": "nakasar_peuples.workshop.specialtyLine.Trork_E1_Tannerie.Sangles",
+      "Icon": "Ingredient_Strap_Leather",
+      "Shops": [
+        "Nakasar_Peuples_W_Trork_E1_Tannerie_Sangles_2",
+        "Nakasar_Peuples_W_Trork_E1_Tannerie_Sangles_3"
+      ],
+      "ShareItem": "Ingredient_Strap_Leather",
+      "ShareQuantity": 4
+    }
+  ],
+  "Shop": "Nakasar_Peuples_W_Trork_E1_Tannerie_Base_1"
+}

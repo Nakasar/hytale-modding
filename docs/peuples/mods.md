@@ -1106,3 +1106,72 @@ pas de raid, la Fosse de combat n'a pas d'effet en raid (sa ligne ne le promet p
 
 - Les gardes postés à la tour : point sûr au centre de son emprise, ils peuvent apparaître sur le toit ; à déplacer
   devant la porte si c'est gênant.
+
+## Bâtiments de métier, étape 6 : emplacements libres E1 et E2
+
+Chaque plan de village réserve deux terrains de 24 × 24 blocs (`tools/plots.py`, champ `Plots` du plan). Kevin :
+E1 s'ouvre au palier 2, E2 au palier 3 ; des piquets (barrière vanilla du peuple aux quatre coins et un écriteau de
+chantier) marquent le terrain un palier plus tôt. Les plans ont grandi pour les loger :
+
+| Plan | E1 (palier 2) | E2 (palier 3) | Rayon |
+|---|---|---|---|
+| Kweebec_Oak | 28, -37 | -22, -42 | 65 |
+| Trork_Camp | 20, -37 | 7, 45 | 59 |
+| Feran_Oasis | -2, 40 | 55, 0 | 68 |
+| Renonce_Givre | 28, -30 | -39, 13 | 60 |
+| Slothian_Monastere | 0, 51 | 48, 19 | 67 |
+
+Le bouton **Emplacements** du panneau du village ouvre la page `PlotPage` (`village/PlotPage.java`, mise en page par
+peuple générée par `tools/generate_workshop_ui.py`) : les deux terrains, puis le catalogue des 5 projets du peuple
+pour le terrain sélectionné. Toute la logique est dans `village/Plots.java`, l'état est sauvegardé avec le village
+(`PlotState` : projet, chantier, dernière démolition, piquets).
+
+- **Choisir** (rang Ami) : un projet par terrain, changeable sans frais tant que le chantier n'est pas lancé. Un projet
+  ne peut être que sur un terrain, sauf le deuxième élevage.
+- **Lancer le chantier** (rang Ami) : les 3 matériaux du terrain sont pris au dépôt du village (`MATERIALS`), le
+  terrain est aplani, l'échafaudage du peuple monte en 4 phases pendant 24 h de jeu, puis le prefab vanilla est collé
+  et le villageois du projet arrive. C'est alors un bâtiment de métier complet : panneau, niveaux I à III, deux
+  spécialités, boutiques, Part de l'Hôte.
+- **Démolir** (rang Ami) : retire les blocs au-dessus du sol de l'emprise (sauf les coffres et autres conteneurs),
+  rend un quart des matériaux au dépôt, et le bâtiment repart au niveau I. Une démolition tous les 7 jours de jeu
+  par terrain.
+
+Un projet est modélisé par deux bâtiments du plan (`E1_<Projet>`, `E2_<Projet>`, champ `Plot`) et deux métiers
+(`<Métier>_E1`, `<Métier>_E2`). Les chantiers de palier ne les collent jamais, sauf pour rebâtir leurs ruines après un
+raid perdu. `tools/generate_workshops.py` en fait 50 bâtiments de métier `<Peuple>_<E1|E2>_<Projet>`.
+
+| Peuple | Projets |
+|---|---|
+| Kweebec | Atelier d'archerie, Herboristerie, Grand bassin, Menuiserie, Deuxième enclos |
+| Trork | Forge de guerre, Camp des bûcherons, Carrière, Tannerie, Deuxième fosse |
+| Feran | Caravansérail, Tissage, Citerne, Volerie des plumes, Deuxième enclos |
+| Renoncés | Forge, Fumoir, Cabane de pêche, Chenil (Loups de garde : +1 garde en raid), Deuxième bergerie |
+| Slothians | Scriptorium, Cabane de pêche, Sanctuaire, Puits de basalte, Deuxième bauge |
+
+Le deuxième élevage reprend les commandes, les bêtes, les spécialités et les boutiques de l'enclos de base (champ
+`Twin` du bâtiment de métier). Deux élevages du même genre ne peuvent pas avoir la même spécialité
+(`Workshops.twinWith`, ligne d'état sur la page des spécialités).
+
+Les villageois des projets réutilisent les rôles et les dialogues du peuple (garde, soigneuse, puisatière, marchand,
+guetteur…) : noms et répliques peuvent donc se répéter avec ceux du village. Les prefabs viennent tous du jeu (règle
+n° 2), sauf les enclos du mod (`Nakasar/Peuples/Pens/`). Le Sanctuaire slothian prend le petit temple
+`Slothian_Disabled_Temple_Medium_001` : le temple prévu (`Temple_003`, 8 × 23) ne tient pas dans le terrain.
+
+### Tester en jeu (étape 6)
+
+1. `/village palier 1` : les piquets d'E1 apparaissent. `/village palier 2` : E1 s'ouvre, les piquets d'E2 apparaissent.
+2. `/village rep 220` (rang Ami), puis panneau du village, **Emplacements**, terrain E1 : choisir un projet,
+   le changer, y renoncer.
+3. Déposer les matériaux affichés dans le coffre du dépôt, **Lancer le chantier** : les piquets partent, l'échafaudage
+   monte. `/village finir` finit le chantier d'emplacement au pas suivant : le bâtiment est collé, son villageois
+   arrive, son panneau de métier est posé.
+4. Sur E2 (`/village palier 3`), le même projet est refusé (« déjà sur l'autre terrain »), sauf le deuxième élevage.
+5. **Démolir** : le bâtiment disparaît, un quart des matériaux revient au dépôt ; une deuxième démolition est refusée
+   pendant 7 jours.
+
+### À vérifier en jeu (étape 6)
+
+- La démolition enlève tout ce qui dépasse du sol dans l'emprise, pas seulement les blocs du prefab : un bloc posé par
+  un joueur sur le bâtiment part avec lui (les conteneurs restent).
+- Les piquets sur un sol en pente ou dans l'eau, l'écriteau de chantier (orientation).
+- Le panneau de métier des projets : posé dans le terrain, hors de l'emprise du prefab.

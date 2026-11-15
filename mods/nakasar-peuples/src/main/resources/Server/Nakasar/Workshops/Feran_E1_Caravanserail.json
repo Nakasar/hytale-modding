@@ -1,0 +1,85 @@
+{
+  "$Comment": "Bâtiment de métier généré par tools/generate_workshops.py (ne pas modifier à la main) : voir dev.nakasar.hytale.peuples.workshop.Workshop.",
+  "People": "Feran",
+  "Layout": "Feran_Oasis",
+  "Building": "E1_Caravanserail",
+  "Job": "Caravaniere_E1",
+  "Icon": "Ingredient_Spices",
+  "NameKey": "nakasar_peuples.workshop.Feran_E1_Caravanserail.name",
+  "Board": [
+    1,
+    30,
+    2
+  ],
+  "Upgrades": [
+    {
+      "Level": 2,
+      "Hours": 12,
+      "Materials": [
+        {
+          "ItemId": "Rock_Sandstone",
+          "Quantity": 24
+        },
+        {
+          "ItemId": "Wood_Palm_Trunk",
+          "Quantity": 16
+        },
+        {
+          "ItemId": "Ingredient_Fabric_Scrap_Linen",
+          "Quantity": 12
+        }
+      ],
+      "Decor": [
+        "1 0 0 0 Furniture_Feran_Torch"
+      ]
+    },
+    {
+      "Level": 3,
+      "Hours": 12,
+      "Materials": [
+        {
+          "ItemId": "Rock_Sandstone",
+          "Quantity": 32
+        },
+        {
+          "ItemId": "Ingredient_Feathers_Light",
+          "Quantity": 8
+        },
+        {
+          "ItemId": "Plant_Cactus_1",
+          "Quantity": 8
+        }
+      ],
+      "Decor": [
+        "-1 0 0 0 Furniture_Feran_Torch_Tall"
+      ]
+    }
+  ],
+  "Specialties": [
+    {
+      "Id": "Epices",
+      "NameKey": "nakasar_peuples.workshop.specialty.Feran_E1_Caravanserail.Epices",
+      "LineKey": "nakasar_peuples.workshop.specialtyLine.Feran_E1_Caravanserail.Epices",
+      "Icon": "Ingredient_Salt",
+      "Shops": [
+        "Nakasar_Peuples_W_Feran_E1_Caravanserail_Epices_2",
+        "Nakasar_Peuples_W_Feran_E1_Caravanserail_Epices_3"
+      ],
+      "ShareItem": "Ingredient_Spices",
+      "ShareQuantity": 4
+    },
+    {
+      "Id": "Ailleurs",
+      "NameKey": "nakasar_peuples.workshop.specialty.Feran_E1_Caravanserail.Ailleurs",
+      "LineKey": "nakasar_peuples.workshop.specialtyLine.Feran_E1_Caravanserail.Ailleurs",
+      "Icon": "Ingredient_Bolt_Silk",
+      "Shops": [
+        "Nakasar_Peuples_W_Feran_E1_Caravanserail_Ailleurs_2",
+        "Nakasar_Peuples_W_Feran_E1_Caravanserail_Ailleurs_3"
+      ],
+      "ShareItem": "Ingredient_Bolt_Linen",
+      "ShareQuantity": 2
+    }
+  ],
+  "Shop": "Nakasar_Peuples_W_Feran_E1_Caravanserail_Base_1"
+}

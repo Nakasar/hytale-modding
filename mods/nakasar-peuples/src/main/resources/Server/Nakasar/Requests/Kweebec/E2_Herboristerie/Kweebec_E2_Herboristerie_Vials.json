@@ -1,0 +1,17 @@
+{
+  "$Comment": "Commande du bâtiment de métier Kweebec_E2_Herboristerie, générée par tools/generate_workshops.py (ne pas modifier à la main) : voir RequestTemplate.",
+  "People": "Kweebec",
+  "Workshop": "Kweebec_E2_Herboristerie",
+  "Type": "Craft",
+  "MinLevel": 1,
+  "MaxLevel": 3,
+  "Weight": 1,
+  "TitleKey": "nakasar_peuples.request.Kweebec_E2_Herboristerie_Vials.title",
+  "TaskKey": "nakasar_peuples.request.Kweebec_E2_Herboristerie_Vials.task",
+  "ItemId": "Potion_Empty_Small",
+  "Quantity": 3,
+  "Knowledge": 40,
+  "Essor": 5,
+  "Favors": 1,
+  "Reputation": 6
+}

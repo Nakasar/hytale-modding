@@ -368,6 +368,107 @@ def specialty_page(theme_id):
     return "\n".join(L).replace("Style: LabelStyle(", "Style: (") + "\n"
 
 
+PLOT_CARDS = 2             # terrains E1 et E2 (étape 6)
+PROJECTS = 5               # projets par peuple (tools/plots.py)
+PLOT_WIDTH = 1040
+PLOT_HEIGHT = 800
+
+
+def plot_page(theme_id):
+    """Page « Emplacements » du panneau du village (étape 6, maquette 3 du GDD) : les deux terrains, puis le catalogue."""
+    t = THEMES[theme_id]
+    acc, band, title = t["accent"], t["band"], t["title"]
+    emblem = (f'Background: (TexturePath: "{MEMORIES}{t["emblem"]}.png", Color: {acc});' if t["emblem"]
+              else "Visible: false;")
+    L = []
+    w = L.append
+    w('$C = "../../../Common.ui";')
+    w("")
+    w(f"// Généré par tools/generate_workshop_ui.py (thème {theme_id or 'neutre'}) : ne pas modifier à la main.")
+    w("")
+    w(f"@Accent = {acc};")
+    w("@Body = LabelStyle(FontSize: 14, TextColor: #c9d1d9, Wrap: true);")
+    w("@SmallWrap = LabelStyle(FontSize: 13, TextColor: #96a9be, Wrap: true);")
+    w("")
+    w("$C.@PageOverlay {")
+    w("  LayoutMode: Middle;")
+    w("")
+    w("  $C.@DecoratedContainer {")
+    w(f"    Anchor: (Width: {PLOT_WIDTH}, Height: {PLOT_HEIGHT});")
+    w("")
+    w("    #Title {")
+    w("      Group {")
+    w("        LayoutMode: Center;")
+    w(f"        Group #TitleEmblem {{ Anchor: (Width: 26, Height: 26, Right: 8); {emblem} }}")
+    w(f'        Label #PageTitle {{ Style: (...$C.@TitleStyle, FontSize: 16, TextColor: {title}); }}')
+    w("      }")
+    w("    }")
+    w("")
+    w("    #Content {")
+    w("      LayoutMode: Top;")
+    w("      Padding: (Full: 17, Top: 14);")
+    w(f'      {label("Intro", "@Body", anchor="Height: 40, Bottom: 10")}')
+    w("      Group #Plots {")
+    w("        LayoutMode: Left;")
+    w("        Anchor: (Height: 170);")
+    for i in range(PLOT_CARDS):
+        w(f"        Group #Plot{i} {{")
+        w("          LayoutMode: Top;")
+        w("          FlexWeight: 1;")
+        w(f"          Anchor: (Right: {14 if i < PLOT_CARDS - 1 else 0});")
+        w("          Padding: (Horizontal: 16, Vertical: 12);")
+        w(f"          Background: (Color: {band}(0.75));")
+        w(f"          Group #PlotStripe{i} {{ Anchor: (Height: 3, Bottom: 10); Background: (Color: {acc}(0.6)); }}")
+        w(f'          {label(f"PlotName{i}", f"LabelStyle(FontSize: 17, FontName: \"Secondary\", RenderBold: true, RenderUppercase: true, TextColor: {acc})", anchor="Height: 24")}')
+        w(f'          {label(f"PlotState{i}", "@Body", anchor="Top: 6")}')
+        w("          Group { FlexWeight: 1; }")
+        w("          Group {")
+        w("            LayoutMode: Left;")
+        w("            Anchor: (Height: 32);")
+        w(f'            $C.@SmallSecondaryTextButton #PlotSelect{i} {{ @Text = ""; @Anchor = Anchor(Width: 200, Height: 32, Right: 10); }}')
+        w(f'            $C.@SmallSecondaryTextButton #PlotAction{i} {{ @Text = ""; @Anchor = Anchor(Width: 240, Height: 32); }}')
+        w("          }")
+        w("        }")
+    w("      }")
+    w(f'      {label("CatalogHeader", f"LabelStyle(FontSize: 15, RenderBold: true, RenderUppercase: true, TextColor: {title})", anchor="Height: 24, Top: 14, Bottom: 6")}')
+    w("      Group #Catalog {")
+    w("        LayoutMode: Top;")
+    w("        FlexWeight: 1;")
+    for j in range(PROJECTS):
+        w(f"        Group #Proj{j} {{")
+        w("          LayoutMode: Left;")
+        w(f"          Anchor: (Height: 70, Bottom: {6 if j < PROJECTS - 1 else 0});")
+        w("          Padding: (Horizontal: 12, Vertical: 6);")
+        w(f"          Background: (Color: {band}(0.55));")
+        w("          Group {")
+        w("            LayoutMode: Full;")
+        w("            Anchor: (Width: 56, Height: 56, Right: 12);")
+        w(f'            Background: (TexturePath: "{COMMON}IngredientSlot.png", Border: 24);')
+        w(f"            ItemIcon #ProjIcon{j} {{ Anchor: (Full: 7); ShowItemTooltip: true; }}")
+        w("          }")
+        w("          Group {")
+        w("            LayoutMode: Top;")
+        w("            FlexWeight: 1;")
+        w(f'            {label(f"ProjName{j}", f"LabelStyle(FontSize: 15, RenderBold: true, TextColor: {acc})", anchor="Height: 20")}')
+        w(f'            {label(f"ProjLine{j}", "@SmallWrap", anchor="Top: 2")}')
+        w("          }")
+        w(f'          $C.@SmallSecondaryTextButton #ProjChoose{j} {{ @Text = ""; @Anchor = Anchor(Width: 200, Height: 32, Left: 12); }}')
+        w("        }")
+    w("      }")
+    w("      Group {")
+    w("        LayoutMode: Left;")
+    w("        Anchor: (Height: 44, Top: 12);")
+    w(f'        {label("Rule", "@SmallWrap", extra=" FlexWeight: 1;")}')
+    w('        $C.@SecondaryTextButton #Back { @Text = ""; @Anchor = Anchor(Width: 240); }')
+    w("      }")
+    w("    }")
+    w("  }")
+    w("}")
+    w("")
+    w("$C.@BackButton {}")
+    return "\n".join(L).replace("Style: LabelStyle(", "Style: (") + "\n"
+
+
 def main():
     for theme_id in THEMES:
         name = f"WorkshopPage_{theme_id}.ui" if theme_id else "WorkshopPage.ui"
@@ -375,6 +476,9 @@ def main():
         print("écrit", name)
         name = f"WorkshopSpecialtyPage_{theme_id}.ui" if theme_id else "WorkshopSpecialtyPage.ui"
         (OUT / name).write_text(specialty_page(theme_id), encoding="utf-8")
+        print("écrit", name)
+        name = f"PlotPage_{theme_id}.ui" if theme_id else "PlotPage.ui"
+        (OUT / name).write_text(plot_page(theme_id), encoding="utf-8")
         print("écrit", name)
 
 

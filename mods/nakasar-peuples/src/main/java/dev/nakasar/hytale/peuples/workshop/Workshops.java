@@ -579,6 +579,11 @@ public final class Workshops {
             player.sendMessage(block);
             return false;
         }
+        Workshop twin = twinWith(village, w, spec.id());
+        if (twin != null) {
+            player.sendMessage(Message.translation(KEYS + "specialtyTwin").param("building", Message.translation(twin.nameKey())));
+            return false;
+        }
         boolean reconvert = ws.specialty() != null;
         ws.setSpecialty(spec.id());
         if (reconvert) {
@@ -596,6 +601,26 @@ public final class Workshops {
         PeuplesPlugin.get().getLogger().atInfo().log("Peuples : %s choisit la spécialité %s pour %s (%s, reconversion %s)",
                 player.getUsername(), spec.id(), w.getId(), village.name(), reconvert);
         return true;
+    }
+
+    /**
+     * Les élevages du même genre (enclos de base et deuxièmes élevages des emplacements libres) qui ont déjà la
+     * spécialité `specialtyId` : le premier trouvé, ou null. GDD : chaque élevage a une spécialité différente.
+     */
+    public static Workshop twinWith(Village village, Workshop w, String specialtyId) {
+        String root = w.twin() != null ? w.twin() : w.getId();
+        for (Workshop other : Workshop.forLayout(village.layout())) {
+            if (other == w || !(root.equals(other.getId()) || root.equals(other.twin()))) {
+                continue;
+            }
+            if (!village.isBuilt(other.building())) {
+                continue;
+            }
+            if (specialtyId.equals(village.workshop(other.getId()).specialty())) {
+                return other;
+            }
+        }
+        return null;
     }
 
     // ---- Boutiques et Part de l'Hôte (étape 4) ----

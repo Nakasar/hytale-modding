@@ -20,6 +20,8 @@ et vérifiée hors de toute autre emprise (tous paliers), de la place et des pos
 import json
 from pathlib import Path
 
+import plots
+
 ROOT = Path(__file__).resolve().parent.parent
 RES = ROOT / "src/main/resources/Server"
 LAYOUTS = RES / "Nakasar/VillageLayouts"
@@ -618,6 +620,57 @@ PAGE = {
     "workshop.levelUp": ("{building} passe au {level} !", "{building} reaches {level}!"),
     "workshop.levelUpTitle": ("{building} : {level}", "{building}: {level}"),
     "workshop.taken": ("Commande prise : {title} ({building}).", "Order taken: {title} ({building})."),
+    "workshop.specialtyTwin": ("Déjà la spécialité de {building} : un autre élevage doit en prendre une autre.",
+                               "Already the specialty of {building}: another pen must pick another one."),
+    # Étape 6 : emplacements libres E1 et E2 (village/Plots, page PlotPage).
+    "plot.button": ("Emplacements", "Free plots"),
+    "plot.none": ("Ce village n'a pas d'emplacement libre.", "This village has no free plot."),
+    "plot.locked": ("Ce terrain s'ouvre au palier {tier}.", "This plot opens at tier {tier}."),
+    "plot.rank": ("Il faut le rang {rank} pour décider de ce terrain.", "You need rank {rank} to decide about this plot."),
+    "plot.busy": ("Le terrain a déjà un chantier ou un bâtiment.", "The plot already has works or a building."),
+    "plot.taken": ("Ce projet est déjà sur l'autre terrain.", "This project is already on the other plot."),
+    "plot.chosen": ("{player} choisit {building} pour le terrain {plot}.", "{player} picks {building} for plot {plot}."),
+    "plot.noProject": ("Choisissez d'abord un projet pour ce terrain.", "Pick a project for this plot first."),
+    "plot.missing": ("Il manque au dépôt du village : {list}.", "The village deposit still lacks: {list}."),
+    "plot.started": ("{player} lance le chantier : {building}, {hours} h de travaux.", "{player} starts the works: {building}, {hours} h of work."),
+    "plot.nothing": ("Rien à démolir sur ce terrain.", "Nothing to demolish on this plot."),
+    "plot.cooldown": ("Une démolition par semaine : encore {days} jour(s).", "One demolition per week: {days} more day(s)."),
+    "plot.demolished": ("{player} fait démolir {building} (terrain {plot}). Un quart des matériaux revient au dépôt.",
+                        "{player} has {building} torn down (plot {plot}). A quarter of the materials goes back to the deposit."),
+    "plot.done": ("{building} est bâti à {village} !", "{building} is built in {village}!"),
+    "plot.doneTitle": ("{building} bâti", "{building} built"),
+    "plot.hurried": ("Les chantiers d'emplacement finissent au prochain pas du village.", "The plot works finish at the village's next step."),
+    "plot.material": ("{count} × {item}", "{count} × {item}"),
+    "plot.page.orphan": ("Ce village n'existe plus.", "This village no longer exists."),
+    "plot.page.title": ("Emplacements de {village}", "Free plots of {village}"),
+    "plot.page.intro": ("Deux terrains réservés pour les bâtiments que le village choisit. Choisissez un projet, réunissez ses matériaux au dépôt, puis lancez le chantier.",
+                        "Two plots kept for the buildings the village chooses. Pick a project, gather its materials in the deposit, then start the works."),
+    "plot.page.plot": ("Terrain {plot}", "Plot {plot}"),
+    "plot.page.select": ("Voir les projets", "See projects"),
+    "plot.page.selected": ("Projets affichés", "Projects shown"),
+    "plot.page.start": ("Lancer le chantier", "Start the works"),
+    "plot.page.demolish": ("Démolir", "Demolish"),
+    "plot.page.catalog": ("Projets pour le terrain {plot}", "Projects for plot {plot}"),
+    "plot.page.choose": ("Choisir", "Choose"),
+    "plot.page.switch": ("Choisir à la place", "Choose instead"),
+    "plot.page.clear": ("Renoncer", "Give up"),
+    "plot.page.taken": ("Déjà sur l'autre terrain.", "Already on the other plot."),
+    "plot.page.projectLine": ("{job} · {specialties}", "{job} · {specialties}"),
+    "plot.page.rule": ("Choisir, lancer ou démolir demande le rang {rank}. Démolir rend un quart des matériaux, une fois tous les {days} jours par terrain.",
+                       "Choosing, starting or demolishing needs rank {rank}. Demolishing gives back a quarter of the materials, once every {days} days per plot."),
+    "plot.page.back": ("Retour au panneau", "Back to the board"),
+    "plot.state.locked": ("Fermé : s'ouvre au palier {tier}.", "Closed: opens at tier {tier}."),
+    "plot.state.free": ("Libre : choisissez un projet.", "Free: pick a project."),
+    "plot.state.freeCooldown": ("Libre : choisissez un projet. Prochaine démolition possible dans {days} jour(s).",
+                                "Free: pick a project. Next demolition possible in {days} day(s)."),
+    "plot.state.chosen": ("Projet : {building}. Matériaux : {list}. Il manque : {missing}.",
+                          "Project: {building}. Materials: {list}. Still missing: {missing}."),
+    "plot.state.chosenNoDeposit": ("Projet : {building}. Matériaux : {list}.", "Project: {building}. Materials: {list}."),
+    "plot.state.ready": ("Projet : {building}. Matériaux réunis ({list}) : prêt pour {hours} h de travaux.",
+                         "Project: {building}. Materials gathered ({list}): ready for {hours} h of work."),
+    "plot.state.working": ("Chantier : {building}, encore {hours} h.", "Works: {building}, {hours} h left."),
+    "plot.state.built": ("{building}, niveau {level}.", "{building}, level {level}."),
+    "plot.state.demolishIn": ("Démolition possible dans {days} jour(s).", "Can be demolished in {days} day(s)."),
 }
 
 
@@ -675,7 +728,9 @@ def board_spot(layout, building, errors):
     for x, z, yaw in candidates:
         if not inside(x, z, r, 1):
             continue
-        if any(inside(x, z, rect(o), 0) for oid, o in by_id.items() if oid != building["Id"]):
+        # Les autres projets du même terrain (étape 6) ne sont jamais bâtis en même temps que lui.
+        if any(inside(x, z, rect(o), 0) for oid, o in by_id.items()
+               if oid != building["Id"] and not (building.get("Plot") and o.get("Plot") == building.get("Plot"))):
             continue
         if abs(x) <= plaza + 1 and abs(z) <= plaza + 1:
             continue
@@ -716,6 +771,47 @@ def write_shop(sid, people, trades, title_key, comment, items, errors):
     (BARTER / f"{sid}.json").write_text(json.dumps(doc, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
 
 
+LAYOUT_PEOPLE = {"Kweebec_Oak": "Kweebec", "Trork_Camp": "Trork", "Feran_Oasis": "Feran", "Renonce_Givre": "Renonce",
+                 "Slothian_Monastere": "Slothian"}
+
+
+def plot_workshops(fr, en, errors):
+    """Étape 6 : un bâtiment de métier par projet et par terrain (tools/plots.py), ajouté aux tables du script.
+
+    Id <Peuple>_<E1|E2>_<Projet>, bâtiment du plan E1_<Projet>, métier <Métier>_E1. Un deuxième élevage (« twin »)
+    reprend les commandes, les bêtes, les spécialités et les boutiques de l'enclos de base. Renvoie {id: enclos de base}.
+    """
+    twins = {}
+    by_id = {w[0]: w for w in WORKSHOPS}
+    for layout_id, projects in plots.PROJECTS.items():
+        people = LAYOUT_PEOPLE[layout_id]
+        for pid in sorted(plots.PLOTS[layout_id]):
+            for project in projects:
+                wid = f"{people}_{pid}_{project['id']}"
+                bid = plots.building_id(pid, project["id"])
+                jid = plots.job_id(pid, project["job"])
+                fr[f"building.{bid}"], en[f"building.{bid}"] = project["fr"], project["en"]
+                fr[f"job.{jid}"], en[f"job.{jid}"] = project["job_fr"], project["job_en"]
+                twin = project.get("twin")
+                if twin:
+                    base = by_id.get(twin)
+                    if base is None or twin not in SPECIALTIES or twin not in SHOPS:
+                        errors.append(f"{wid} : enclos de base inconnu {twin}")
+                        continue
+                    WORKSHOPS.append((wid, layout_id, bid, jid, project["icon"], project["fr"], project["en"], base[7]))
+                    SPECIALTIES[wid] = SPECIALTIES[twin]
+                    SHOPS[wid] = SHOPS[twin]
+                    twins[wid] = twin
+                    continue
+                WORKSHOPS.append((wid, layout_id, bid, jid, project["icon"], project["fr"], project["en"], project["orders"]))
+                SPECIALTIES[wid] = ([], [(sid, sfr, sen, icon, lfr, len_, []) for sid, sfr, sen, icon, lfr, len_, *_ in project["specs"]])
+                SHOPS[wid] = {"Base": project["base"], **{sp[0]: (sp[6], sp[7]) for sp in project["specs"]}}
+                for sp in project["specs"]:
+                    if sp[8]:
+                        RAID[(wid, sp[0])] = sp[8]
+    return twins
+
+
 def main():
     items = load_ids(ITEMS)
     roles = load_ids(REFS, "npc")
@@ -727,6 +823,7 @@ def main():
     for old in BARTER.glob(SHOP_PREFIX + "*.json"):
         old.unlink()
     layouts = {}
+    twins = plot_workshops(fr, en, errors)
     for wid, layout_id, building_id, job_id, icon, name_fr, name_en, orders in WORKSHOPS:
         layout = layouts.setdefault(layout_id, json.loads((LAYOUTS / f"{layout_id}.json").read_text(encoding="utf-8")))
         people = layout["People"]
@@ -752,6 +849,8 @@ def main():
             "Board": spot or [0, 0, 0],
             "Upgrades": upgrades(layout, wid, errors),
         }
+        if wid in twins:
+            doc["Twin"] = twins[wid]
         specs = SPECIALTIES.get(wid)
         if specs is None:
             errors.append(f"{wid} : pas de spécialités")

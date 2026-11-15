@@ -209,6 +209,9 @@ public final class Workshop implements JsonAssetWithMap<String, DefaultAssetMap<
             .append(new KeyedCodec<>("Shop", Codec.STRING), (w, v) -> w.shop = v, w -> w.shop)
             .documentation("Boutique de troc vanilla du niveau I (et sans spécialité).")
             .add()
+            .append(new KeyedCodec<>("Twin", Codec.STRING), (w, v) -> w.twin = v == null || v.isBlank() ? null : v, w -> w.twin)
+            .documentation("Deuxième élevage d'un emplacement libre : l'enclos de base qu'il double (spécialités différentes).")
+            .add()
             .validator(Workshop::validate)
             .build();
 
@@ -229,6 +232,7 @@ public final class Workshop implements JsonAssetWithMap<String, DefaultAssetMap<
     int[] livestockCount;
     int[] pen;
     String shop;
+    String twin;
 
     Workshop() {
     }
@@ -284,6 +288,11 @@ public final class Workshop implements JsonAssetWithMap<String, DefaultAssetMap<
 
     public String job() {
         return job;
+    }
+
+    /** Enclos de base que double ce deuxième élevage (emplacement libre), ou null. */
+    public String twin() {
+        return twin;
     }
 
     public String icon() {

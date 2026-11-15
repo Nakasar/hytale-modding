@@ -1,7 +1,7 @@
 {
   "$Comment": "Plan de village généré par tools/generate_slothians.py (étape 9) (ne pas modifier à la main) : prefabs vanilla collés par village/VillageBuilder autour du cœur, emprises (MinX..MaxZ) relatives au point de collage après rotation.",
   "People": "Slothian",
-  "Radius": 59,
+  "Radius": 67,
   "PlazaRadius": 9,
   "BannerX": 0,
   "BannerZ": 4,
@@ -187,6 +187,156 @@
       "MaxZ": 3,
       "MinY": -4,
       "MaxY": 15
+    },
+    {
+      "Id": "E1_Scriptorium",
+      "Tier": 2,
+      "Prefab": "Npc/Slothian/Disabled/House/Medium/Slothian_Disabled_House_Medium_003",
+      "X": 1,
+      "Z": 52,
+      "Rotation": 0,
+      "MinX": -9,
+      "MaxX": 7,
+      "MinZ": -10,
+      "MaxZ": 9,
+      "MinY": -8,
+      "MaxY": 13,
+      "Plot": "E1"
+    },
+    {
+      "Id": "E1_Cabane_De_Peche",
+      "Tier": 2,
+      "Prefab": "Npc/Slothian/Disabled/House/Small/Slothian_Disabled_House_Small_002",
+      "X": 1,
+      "Z": 51,
+      "Rotation": 0,
+      "MinX": -10,
+      "MaxX": 9,
+      "MinZ": -9,
+      "MaxZ": 9,
+      "MinY": -7,
+      "MaxY": 11,
+      "Plot": "E1"
+    },
+    {
+      "Id": "E1_Sanctuaire",
+      "Tier": 2,
+      "Prefab": "Npc/Slothian/Disabled/Temple/Medium/Slothian_Disabled_Temple_Medium_001",
+      "X": 0,
+      "Z": 49,
+      "Rotation": 0,
+      "MinX": -9,
+      "MaxX": 9,
+      "MinZ": -8,
+      "MaxZ": 12,
+      "MinY": -7,
+      "MaxY": 30,
+      "Plot": "E1"
+    },
+    {
+      "Id": "E1_Puits_De_Basalte",
+      "Tier": 2,
+      "Prefab": "Npc/Slothian/Disabled/House/Small/Slothian_Disabled_House_Small_001",
+      "X": 0,
+      "Z": 53,
+      "Rotation": 0,
+      "MinX": -8,
+      "MaxX": 9,
+      "MinZ": -7,
+      "MaxZ": 4,
+      "MinY": -7,
+      "MaxY": 10,
+      "Plot": "E1"
+    },
+    {
+      "Id": "E1_Deuxieme_Bauge",
+      "Tier": 2,
+      "Prefab": "Nakasar/Peuples/Pens/Slothian_Pen",
+      "X": 0,
+      "Z": 51,
+      "Rotation": 0,
+      "MinX": -6,
+      "MaxX": 6,
+      "MinZ": -6,
+      "MaxZ": 6,
+      "MinY": 0,
+      "MaxY": 1,
+      "Plot": "E1"
+    },
+    {
+      "Id": "E2_Scriptorium",
+      "Tier": 3,
+      "Prefab": "Npc/Slothian/Disabled/House/Medium/Slothian_Disabled_House_Medium_003",
+      "X": 49,
+      "Z": 20,
+      "Rotation": 0,
+      "MinX": -9,
+      "MaxX": 7,
+      "MinZ": -10,
+      "MaxZ": 9,
+      "MinY": -8,
+      "MaxY": 13,
+      "Plot": "E2"
+    },
+    {
+      "Id": "E2_Cabane_De_Peche",
+      "Tier": 3,
+      "Prefab": "Npc/Slothian/Disabled/House/Small/Slothian_Disabled_House_Small_002",
+      "X": 49,
+      "Z": 19,
+      "Rotation": 0,
+      "MinX": -10,
+      "MaxX": 9,
+      "MinZ": -9,
+      "MaxZ": 9,
+      "MinY": -7,
+      "MaxY": 11,
+      "Plot": "E2"
+    },
+    {
+      "Id": "E2_Sanctuaire",
+      "Tier": 3,
+      "Prefab": "Npc/Slothian/Disabled/Temple/Medium/Slothian_Disabled_Temple_Medium_001",
+      "X": 48,
+      "Z": 17,
+      "Rotation": 0,
+      "MinX": -9,
+      "MaxX": 9,
+      "MinZ": -8,
+      "MaxZ": 12,
+      "MinY": -7,
+      "MaxY": 30,
+      "Plot": "E2"
+    },
+    {
+      "Id": "E2_Puits_De_Basalte",
+      "Tier": 3,
+      "Prefab": "Npc/Slothian/Disabled/House/Small/Slothian_Disabled_House_Small_001",
+      "X": 48,
+      "Z": 21,
+      "Rotation": 0,
+      "MinX": -8,
+      "MaxX": 9,
+      "MinZ": -7,
+      "MaxZ": 4,
+      "MinY": -7,
+      "MaxY": 10,
+      "Plot": "E2"
+    },
+    {
+      "Id": "E2_Deuxieme_Bauge",
+      "Tier": 3,
+      "Prefab": "Nakasar/Peuples/Pens/Slothian_Pen",
+      "X": 48,
+      "Z": 19,
+      "Rotation": 0,
+      "MinX": -6,
+      "MaxX": 6,
+      "MinZ": -6,
+      "MaxZ": 6,
+      "MinY": 0,
+      "MaxY": 1,
+      "Plot": "E2"
     }
   ],
   "Chantiers": [
@@ -344,6 +494,182 @@
       "HomeX": -37,
       "HomeZ": 2,
       "Builder": false
+    },
+    {
+      "Id": "Copiste_E1",
+      "Tier": 2,
+      "Role": "Nakasar_Peuples_Slothian_Monk",
+      "Dialogue": "Slothian_Monk",
+      "Building": "E1_Scriptorium",
+      "WorkX": 0,
+      "WorkZ": 40,
+      "Home": "E1_Scriptorium",
+      "HomeX": 0,
+      "HomeZ": 40,
+      "Builder": false
+    },
+    {
+      "Id": "Pecheur_E1",
+      "Tier": 2,
+      "Role": "Nakasar_Peuples_Slothian_Watcher",
+      "Dialogue": "Slothian_Watcher",
+      "Building": "E1_Cabane_De_Peche",
+      "WorkX": 0,
+      "WorkZ": 40,
+      "Home": "E1_Cabane_De_Peche",
+      "HomeX": 0,
+      "HomeZ": 40,
+      "Builder": false
+    },
+    {
+      "Id": "Gardien_Sanctuaire_E1",
+      "Tier": 2,
+      "Role": "Nakasar_Peuples_Slothian_Monk",
+      "Dialogue": "Slothian_Monk",
+      "Building": "E1_Sanctuaire",
+      "WorkX": 0,
+      "WorkZ": 39,
+      "Home": "E1_Sanctuaire",
+      "HomeX": 0,
+      "HomeZ": 39,
+      "Builder": false
+    },
+    {
+      "Id": "Puisatier_E1",
+      "Tier": 2,
+      "Role": "Nakasar_Peuples_Slothian_AshBearer",
+      "Dialogue": "Slothian_AshBearer",
+      "Building": "E1_Puits_De_Basalte",
+      "WorkX": 0,
+      "WorkZ": 44,
+      "Home": "E1_Puits_De_Basalte",
+      "HomeX": 0,
+      "HomeZ": 44,
+      "Builder": false
+    },
+    {
+      "Id": "Gardien_Bauge_Bis_E1",
+      "Tier": 2,
+      "Role": "Nakasar_Peuples_Slothian_Breeder",
+      "Dialogue": "Slothian_Breeder",
+      "Building": "E1_Deuxieme_Bauge",
+      "WorkX": 0,
+      "WorkZ": 43,
+      "Home": "E1_Deuxieme_Bauge",
+      "HomeX": 0,
+      "HomeZ": 43,
+      "Builder": false
+    },
+    {
+      "Id": "Copiste_E2",
+      "Tier": 3,
+      "Role": "Nakasar_Peuples_Slothian_Monk",
+      "Dialogue": "Slothian_Monk",
+      "Building": "E2_Scriptorium",
+      "WorkX": 38,
+      "WorkZ": 19,
+      "Home": "E2_Scriptorium",
+      "HomeX": 38,
+      "HomeZ": 19,
+      "Builder": false
+    },
+    {
+      "Id": "Pecheur_E2",
+      "Tier": 3,
+      "Role": "Nakasar_Peuples_Slothian_Watcher",
+      "Dialogue": "Slothian_Watcher",
+      "Building": "E2_Cabane_De_Peche",
+      "WorkX": 37,
+      "WorkZ": 19,
+      "Home": "E2_Cabane_De_Peche",
+      "HomeX": 37,
+      "HomeZ": 19,
+      "Builder": false
+    },
+    {
+      "Id": "Gardien_Sanctuaire_E2",
+      "Tier": 3,
+      "Role": "Nakasar_Peuples_Slothian_Monk",
+      "Dialogue": "Slothian_Monk",
+      "Building": "E2_Sanctuaire",
+      "WorkX": 37,
+      "WorkZ": 19,
+      "Home": "E2_Sanctuaire",
+      "HomeX": 37,
+      "HomeZ": 19,
+      "Builder": false
+    },
+    {
+      "Id": "Puisatier_E2",
+      "Tier": 3,
+      "Role": "Nakasar_Peuples_Slothian_AshBearer",
+      "Dialogue": "Slothian_AshBearer",
+      "Building": "E2_Puits_De_Basalte",
+      "WorkX": 38,
+      "WorkZ": 19,
+      "Home": "E2_Puits_De_Basalte",
+      "HomeX": 38,
+      "HomeZ": 19,
+      "Builder": false
+    },
+    {
+      "Id": "Gardien_Bauge_Bis_E2",
+      "Tier": 3,
+      "Role": "Nakasar_Peuples_Slothian_Breeder",
+      "Dialogue": "Slothian_Breeder",
+      "Building": "E2_Deuxieme_Bauge",
+      "WorkX": 40,
+      "WorkZ": 19,
+      "Home": "E2_Deuxieme_Bauge",
+      "HomeX": 40,
+      "HomeZ": 19,
+      "Builder": false
+    }
+  ],
+  "Plots": [
+    {
+      "Id": "E1",
+      "X": 0,
+      "Z": 51,
+      "Size": 24,
+      "Tier": 2,
+      "Materials": [
+        {
+          "ItemId": "Wood_Jungle_Trunk",
+          "Quantity": 32
+        },
+        {
+          "ItemId": "Rock_Volcanic",
+          "Quantity": 32
+        },
+        {
+          "ItemId": "Furniture_Jungle_Candle",
+          "Quantity": 4
+        }
+      ],
+      "Hours": 24
+    },
+    {
+      "Id": "E2",
+      "X": 48,
+      "Z": 19,
+      "Size": 24,
+      "Tier": 3,
+      "Materials": [
+        {
+          "ItemId": "Wood_Jungle_Trunk",
+          "Quantity": 32
+        },
+        {
+          "ItemId": "Rock_Volcanic",
+          "Quantity": 32
+        },
+        {
+          "ItemId": "Furniture_Jungle_Candle",
+          "Quantity": 4
+        }
+      ],
+      "Hours": 24
     }
   ],
   "Heart": {

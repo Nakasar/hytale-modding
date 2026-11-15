@@ -1,7 +1,7 @@
 {
   "$Comment": "Plan de village généré par tools/generate_zones.py (étape 8) (ne pas modifier à la main) : prefabs vanilla collés par village/VillageBuilder autour du cœur, emprises (MinX..MaxZ) relatives au point de collage après rotation.",
   "People": "Feran",
-  "Radius": 65,
+  "Radius": 68,
   "PlazaRadius": 9,
   "BannerX": 0,
   "BannerZ": -7,
@@ -173,6 +173,156 @@
       "MaxZ": 8,
       "MinY": -2,
       "MaxY": 14
+    },
+    {
+      "Id": "E1_Caravanserail",
+      "Tier": 2,
+      "Prefab": "Npc/Feran/Portals_Oasis/Hut/Feran_Tier2_Hut_002",
+      "X": -2,
+      "Z": 40,
+      "Rotation": 0,
+      "MinX": -9,
+      "MaxX": 9,
+      "MinZ": -9,
+      "MaxZ": 10,
+      "MinY": -8,
+      "MaxY": 6,
+      "Plot": "E1"
+    },
+    {
+      "Id": "E1_Tissage",
+      "Tier": 2,
+      "Prefab": "Npc/Feran/Portals_Oasis/Hut/Feran_Tier2_Hut_001",
+      "X": -2,
+      "Z": 40,
+      "Rotation": 0,
+      "MinX": -9,
+      "MaxX": 9,
+      "MinZ": -9,
+      "MaxZ": 10,
+      "MinY": -8,
+      "MaxY": 9,
+      "Plot": "E1"
+    },
+    {
+      "Id": "E1_Citerne",
+      "Tier": 2,
+      "Prefab": "Npc/Feran/Portals_Oasis/Wall/Feran_Tier2_Wall_005",
+      "X": -2,
+      "Z": 40,
+      "Rotation": 0,
+      "MinX": -2,
+      "MaxX": 2,
+      "MinZ": -1,
+      "MaxZ": 2,
+      "MinY": -2,
+      "MaxY": 3,
+      "Plot": "E1"
+    },
+    {
+      "Id": "E1_Volerie",
+      "Tier": 2,
+      "Prefab": "Npc/Feran/Portals_Oasis/Pillar_Hut/Feran_Tier3_Hut_001",
+      "X": -2,
+      "Z": 40,
+      "Rotation": 0,
+      "MinX": -5,
+      "MaxX": 5,
+      "MinZ": -5,
+      "MaxZ": 5,
+      "MinY": -12,
+      "MaxY": 5,
+      "Plot": "E1"
+    },
+    {
+      "Id": "E1_Deuxieme_Enclos",
+      "Tier": 2,
+      "Prefab": "Nakasar/Peuples/Pens/Feran_Pen",
+      "X": -2,
+      "Z": 40,
+      "Rotation": 0,
+      "MinX": -6,
+      "MaxX": 6,
+      "MinZ": -6,
+      "MaxZ": 6,
+      "MinY": 0,
+      "MaxY": 1,
+      "Plot": "E1"
+    },
+    {
+      "Id": "E2_Caravanserail",
+      "Tier": 3,
+      "Prefab": "Npc/Feran/Portals_Oasis/Hut/Feran_Tier2_Hut_002",
+      "X": 55,
+      "Z": 0,
+      "Rotation": 0,
+      "MinX": -9,
+      "MaxX": 9,
+      "MinZ": -9,
+      "MaxZ": 10,
+      "MinY": -8,
+      "MaxY": 6,
+      "Plot": "E2"
+    },
+    {
+      "Id": "E2_Tissage",
+      "Tier": 3,
+      "Prefab": "Npc/Feran/Portals_Oasis/Hut/Feran_Tier2_Hut_001",
+      "X": 55,
+      "Z": 0,
+      "Rotation": 0,
+      "MinX": -9,
+      "MaxX": 9,
+      "MinZ": -9,
+      "MaxZ": 10,
+      "MinY": -8,
+      "MaxY": 9,
+      "Plot": "E2"
+    },
+    {
+      "Id": "E2_Citerne",
+      "Tier": 3,
+      "Prefab": "Npc/Feran/Portals_Oasis/Wall/Feran_Tier2_Wall_005",
+      "X": 55,
+      "Z": 0,
+      "Rotation": 0,
+      "MinX": -2,
+      "MaxX": 2,
+      "MinZ": -1,
+      "MaxZ": 2,
+      "MinY": -2,
+      "MaxY": 3,
+      "Plot": "E2"
+    },
+    {
+      "Id": "E2_Volerie",
+      "Tier": 3,
+      "Prefab": "Npc/Feran/Portals_Oasis/Pillar_Hut/Feran_Tier3_Hut_001",
+      "X": 55,
+      "Z": 0,
+      "Rotation": 0,
+      "MinX": -5,
+      "MaxX": 5,
+      "MinZ": -5,
+      "MaxZ": 5,
+      "MinY": -12,
+      "MaxY": 5,
+      "Plot": "E2"
+    },
+    {
+      "Id": "E2_Deuxieme_Enclos",
+      "Tier": 3,
+      "Prefab": "Nakasar/Peuples/Pens/Feran_Pen",
+      "X": 55,
+      "Z": 0,
+      "Rotation": 0,
+      "MinX": -6,
+      "MaxX": 6,
+      "MinZ": -6,
+      "MaxZ": 6,
+      "MinY": 0,
+      "MaxY": 1,
+      "Plot": "E2"
     }
   ],
   "Chantiers": [
@@ -317,6 +467,182 @@
       "HomeX": 0,
       "HomeZ": -31,
       "Builder": false
+    },
+    {
+      "Id": "Caravaniere_E1",
+      "Tier": 2,
+      "Role": "Nakasar_Peuples_Feran_Merchant",
+      "Dialogue": "Feran_Marchand",
+      "Building": "E1_Caravanserail",
+      "WorkX": -2,
+      "WorkZ": 29,
+      "Home": "E1_Caravanserail",
+      "HomeX": -2,
+      "HomeZ": 29,
+      "Builder": false
+    },
+    {
+      "Id": "Tisserande_E1",
+      "Tier": 2,
+      "Role": "Nakasar_Peuples_Feran_Watcher",
+      "Dialogue": "Feran_Watcher",
+      "Building": "E1_Tissage",
+      "WorkX": -2,
+      "WorkZ": 29,
+      "Home": "E1_Tissage",
+      "HomeX": -2,
+      "HomeZ": 29,
+      "Builder": false
+    },
+    {
+      "Id": "Gardien_Eau_E1",
+      "Tier": 2,
+      "Role": "Nakasar_Peuples_Feran_WellKeeper",
+      "Dialogue": "Feran_WellKeeper",
+      "Building": "E1_Citerne",
+      "WorkX": -2,
+      "WorkZ": 37,
+      "Home": "E1_Citerne",
+      "HomeX": -2,
+      "HomeZ": 37,
+      "Builder": false
+    },
+    {
+      "Id": "Fauconnier_E1",
+      "Tier": 2,
+      "Role": "Nakasar_Peuples_Feran_Lookout",
+      "Dialogue": "Feran_Watcher",
+      "Building": "E1_Volerie",
+      "WorkX": -2,
+      "WorkZ": 33,
+      "Home": "E1_Volerie",
+      "HomeX": -2,
+      "HomeZ": 33,
+      "Builder": false
+    },
+    {
+      "Id": "Eleveuse_Bis_E1",
+      "Tier": 2,
+      "Role": "Nakasar_Peuples_Feran_Breeder",
+      "Dialogue": "Feran_Breeder",
+      "Building": "E1_Deuxieme_Enclos",
+      "WorkX": -2,
+      "WorkZ": 32,
+      "Home": "E1_Deuxieme_Enclos",
+      "HomeX": -2,
+      "HomeZ": 32,
+      "Builder": false
+    },
+    {
+      "Id": "Caravaniere_E2",
+      "Tier": 3,
+      "Role": "Nakasar_Peuples_Feran_Merchant",
+      "Dialogue": "Feran_Marchand",
+      "Building": "E2_Caravanserail",
+      "WorkX": 44,
+      "WorkZ": 0,
+      "Home": "E2_Caravanserail",
+      "HomeX": 44,
+      "HomeZ": 0,
+      "Builder": false
+    },
+    {
+      "Id": "Tisserande_E2",
+      "Tier": 3,
+      "Role": "Nakasar_Peuples_Feran_Watcher",
+      "Dialogue": "Feran_Watcher",
+      "Building": "E2_Tissage",
+      "WorkX": 44,
+      "WorkZ": 0,
+      "Home": "E2_Tissage",
+      "HomeX": 44,
+      "HomeZ": 0,
+      "Builder": false
+    },
+    {
+      "Id": "Gardien_Eau_E2",
+      "Tier": 3,
+      "Role": "Nakasar_Peuples_Feran_WellKeeper",
+      "Dialogue": "Feran_WellKeeper",
+      "Building": "E2_Citerne",
+      "WorkX": 51,
+      "WorkZ": 0,
+      "Home": "E2_Citerne",
+      "HomeX": 51,
+      "HomeZ": 0,
+      "Builder": false
+    },
+    {
+      "Id": "Fauconnier_E2",
+      "Tier": 3,
+      "Role": "Nakasar_Peuples_Feran_Lookout",
+      "Dialogue": "Feran_Watcher",
+      "Building": "E2_Volerie",
+      "WorkX": 48,
+      "WorkZ": 0,
+      "Home": "E2_Volerie",
+      "HomeX": 48,
+      "HomeZ": 0,
+      "Builder": false
+    },
+    {
+      "Id": "Eleveuse_Bis_E2",
+      "Tier": 3,
+      "Role": "Nakasar_Peuples_Feran_Breeder",
+      "Dialogue": "Feran_Breeder",
+      "Building": "E2_Deuxieme_Enclos",
+      "WorkX": 47,
+      "WorkZ": 0,
+      "Home": "E2_Deuxieme_Enclos",
+      "HomeX": 47,
+      "HomeZ": 0,
+      "Builder": false
+    }
+  ],
+  "Plots": [
+    {
+      "Id": "E1",
+      "X": -2,
+      "Z": 40,
+      "Size": 24,
+      "Tier": 2,
+      "Materials": [
+        {
+          "ItemId": "Wood_Dry_Trunk",
+          "Quantity": 32
+        },
+        {
+          "ItemId": "Ingredient_Fibre",
+          "Quantity": 16
+        },
+        {
+          "ItemId": "Ingredient_Salt",
+          "Quantity": 8
+        }
+      ],
+      "Hours": 24
+    },
+    {
+      "Id": "E2",
+      "X": 55,
+      "Z": 0,
+      "Size": 24,
+      "Tier": 3,
+      "Materials": [
+        {
+          "ItemId": "Wood_Dry_Trunk",
+          "Quantity": 32
+        },
+        {
+          "ItemId": "Ingredient_Fibre",
+          "Quantity": 16
+        },
+        {
+          "ItemId": "Ingredient_Salt",
+          "Quantity": 8
+        }
+      ],
+      "Hours": 24
     }
   ],
   "Heart": {

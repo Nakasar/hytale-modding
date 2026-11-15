@@ -1,0 +1,18 @@
+{
+  "$Comment": "Commande de maître du niveau 1 du bâtiment de métier Slothian_E1_Scriptorium, générée par tools/generate_workshops.py (ne pas modifier à la main) : voir RequestTemplate.",
+  "People": "Slothian",
+  "Workshop": "Slothian_E1_Scriptorium",
+  "Master": true,
+  "Type": "Craft",
+  "MinLevel": 1,
+  "MaxLevel": 1,
+  "Weight": 1,
+  "TitleKey": "nakasar_peuples.request.Slothian_E1_Scriptorium_Master_1.title",
+  "TaskKey": "nakasar_peuples.request.Slothian_E1_Scriptorium_Master_1.task",
+  "ItemId": "Furniture_Jungle_Candle",
+  "Quantity": 12,
+  "Knowledge": 0,
+  "Essor": 15,
+  "Favors": 3,
+  "Reputation": 15
+}

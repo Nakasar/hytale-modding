@@ -543,6 +543,7 @@ $C.@PageOverlay {
         Anchor: (Height: 44, Top: 12);
         Label #Absent { Style: @SmallWrap; Text: ""; FlexWeight: 1; }
         $C.@TextButton #TurnIn { @Text = ""; @Anchor = Anchor(Right: 12, Width: 230); }
+        $C.@SecondaryTextButton #PlotsButton { @Text = ""; @Anchor = Anchor(Right: 12, Width: 200); }
         $C.@SecondaryTextButton #TextVersion { @Text = ""; @Anchor = Anchor(Width: 200); }
       }
     }

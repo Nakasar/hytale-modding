@@ -69,6 +69,7 @@ public final class VillageLifeSystem extends TickingSystem<EntityStore> {
             } else {
                 Chantiers.grow(world, village);
             }
+            Plots.step(world, store, village);
         }
         Villagers.step(world, store, players, dt);
         dev.nakasar.hytale.peuples.workshop.Livestock.step(world, store, players);

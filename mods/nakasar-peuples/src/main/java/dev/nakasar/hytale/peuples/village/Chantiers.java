@@ -79,7 +79,8 @@ public final class Chantiers {
     public static List<VillageLayout.Building> pending(VillageLayout layout, Village village, int tier) {
         List<VillageLayout.Building> out = new ArrayList<>();
         for (VillageLayout.Building b : layout.buildings()) {
-            if (b.tier() <= tier && !village.isStanding(b.id())) {
+            // Un bâtiment d'emplacement n'est collé que par son chantier d'emplacement (Plots) ; brûlé, il est rebâti.
+            if (b.tier() <= tier && !village.isStanding(b.id()) && (b.plot() == null || village.isBuilt(b.id()))) {
                 out.add(b);
             }
         }
@@ -559,12 +560,14 @@ public final class Chantiers {
     }
 
     /** Aplanit l'emprise d'un bâtiment neuf (comme {@link VillageBuilder}) sans toucher aux autres emprises ni à la place. */
-    private static void prepare(World world, Terrain terrain, Village village, VillageLayout layout, VillageLayout.Building b, int h) {
+    static void prepare(World world, Terrain terrain, Village village, VillageLayout layout, VillageLayout.Building b, int h) {
         int p = layout.plazaRadius();
         List<int[]> reserved = new ArrayList<>();
         reserved.add(new int[] {village.x() - p, village.x() + p, village.z() - p, village.z() + p});
         for (VillageLayout.Building other : layout.buildings()) {
-            if (other != b) {
+            // Les autres projets du même terrain partagent son emprise : ils ne la réservent pas.
+            boolean samePlot = b.plot() != null && b.plot().equals(other.plot());
+            if (other != b && !samePlot) {
                 int[] r = other.rect();
                 reserved.add(new int[] {village.x() + r[0], village.x() + r[1], village.z() + r[2], village.z() + r[3]});
             }
@@ -586,7 +589,7 @@ public final class Chantiers {
      * Retire les ruines d'un bâtiment brûlé avant de le rebâtir : tout ce qui dépasse du sol dans l'emprise, sauf les
      * conteneurs (objets des joueurs).
      */
-    private static void clearRuins(World world, Village village, VillageLayout.Building b, int h) {
+    static void clearRuins(World world, Village village, VillageLayout.Building b, int h) {
         ChunkStore chunks = world.getChunkStore();
         int[] r = b.rect();
         for (int x = village.x() + r[0]; x <= village.x() + r[1]; x++) {

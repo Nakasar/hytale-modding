@@ -102,9 +102,11 @@ public final class WorkshopSpecialtyPage extends InteractiveCustomUIPage<Worksho
             cmd.set("#SpecName" + n + ".TextSpans", Message.translation(spec.nameKey()));
             cmd.set("#SpecLine" + n + ".TextSpans", Message.translation(spec.lineKey()));
             cmd.set("#SpecStripe" + n + ".Visible", current);
-            Message stateLine = current ? Message.translation(KEYS + "specialtyCurrent") : block;
+            Workshop twin = current ? null : Workshops.twinWith(village, w, spec.id());
+            Message stateLine = current ? Message.translation(KEYS + "specialtyCurrent")
+                    : twin != null ? Message.translation(KEYS + "specialtyTwin").param("building", Message.translation(twin.nameKey())) : block;
             cmd.set("#SpecState" + n + ".TextSpans", stateLine == null ? Message.empty() : stateLine);
-            boolean can = !current && block == null;
+            boolean can = !current && block == null && twin == null;
             cmd.set("#SpecChoose" + n + ".Visible", can);
             if (can) {
                 cmd.set("#SpecChoose" + n + ".Text", Message.translation(KEYS + (state.specialty() == null ? "specialtyPick" : "specialtyReconvert")));

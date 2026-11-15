@@ -209,6 +209,7 @@ public final class PeuplesPlugin extends JavaPlugin {
         VillageBlockSystem.clearAll();
         Villagers.clearAll();
         dev.nakasar.hytale.peuples.workshop.Livestock.clearAll();
+        dev.nakasar.hytale.peuples.village.Plots.clearAll();
         Raids.clearAll();
         MeatOfferings.clearAll();
         Klops.clearAll();

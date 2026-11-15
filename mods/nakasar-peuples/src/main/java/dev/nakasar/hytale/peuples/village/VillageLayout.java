@@ -60,9 +60,13 @@ public final class VillageLayout implements JsonAssetWithMap<String, DefaultAsse
                 .append(new KeyedCodec<>("MaxY", Codec.INTEGER), (b, v) -> b.maxY = v == null ? 8 : v, b -> b.maxY)
                 .documentation("Plus haut bloc du prefab au-dessus de son ancre (échafaudage, incendie).")
                 .add()
+                .append(new KeyedCodec<>("Plot", Codec.STRING), (b, v) -> b.plot = v == null || v.isBlank() ? null : v, b -> b.plot)
+                .documentation("Terrain libre (E1, E2) du projet : collé seulement par son chantier d'emplacement.")
+                .add()
                 .build();
 
         String id;
+        String plot;
         int tier;
         String prefab;
         int x;
@@ -81,6 +85,11 @@ public final class VillageLayout implements JsonAssetWithMap<String, DefaultAsse
 
         public int tier() {
             return tier;
+        }
+
+        /** Terrain libre du bâtiment (projet d'emplacement), ou null pour un bâtiment des paliers. */
+        public String plot() {
+            return plot;
         }
 
         public String prefab() {
@@ -321,6 +330,59 @@ public final class VillageLayout implements JsonAssetWithMap<String, DefaultAsse
         }
     }
 
+    /** Un terrain libre du plan (E1, E2 ; étape 6 des bâtiments de métier) : 24 × 24 blocs centrés en (X, Z). */
+    public static final class Plot {
+        public static final BuilderCodec<Plot> CODEC = BuilderCodec.builder(Plot.class, Plot::new)
+                .append(new KeyedCodec<>("Id", Codec.STRING), (p, v) -> p.id = v, p -> p.id).add()
+                .append(new KeyedCodec<>("X", Codec.INTEGER), (p, v) -> p.x = v == null ? 0 : v, p -> p.x).add()
+                .append(new KeyedCodec<>("Z", Codec.INTEGER), (p, v) -> p.z = v == null ? 0 : v, p -> p.z).add()
+                .append(new KeyedCodec<>("Size", Codec.INTEGER), (p, v) -> p.size = v == null ? 24 : v, p -> p.size).add()
+                .append(new KeyedCodec<>("Tier", Codec.INTEGER), (p, v) -> p.tier = v == null ? 3 : v, p -> p.tier).add()
+                .append(new KeyedCodec<>("Hours", Codec.INTEGER), (p, v) -> p.hours = v == null ? 24 : Math.max(0, v), p -> p.hours).add()
+                .append(new KeyedCodec<>("Materials", new ArrayCodec<>(Material.CODEC, Material[]::new)),
+                        (p, v) -> p.materials = v == null ? new Material[0] : v, p -> p.materials).add()
+                .build();
+
+        String id;
+        int x;
+        int z;
+        int size = 24;
+        int tier = 3;
+        int hours = 24;
+        Material[] materials = new Material[0];
+
+        public String id() {
+            return id;
+        }
+
+        public int x() {
+            return x;
+        }
+
+        public int z() {
+            return z;
+        }
+
+        /** Palier qui ouvre le terrain (les piquets apparaissent un palier plus tôt). */
+        public int tier() {
+            return tier;
+        }
+
+        public int hours() {
+            return hours;
+        }
+
+        public Material[] materials() {
+            return materials;
+        }
+
+        /** {@code [x0, x1, z0, z1]} du terrain relatif au cœur. */
+        public int[] rect() {
+            int half = size / 2;
+            return new int[] {x - half, x + half - 1, z - half, z + half - 1};
+        }
+    }
+
     /**
      * Cœur du village (tools/generate_village_hearts.py) : places du tableau, du dépôt et de la bannière ({@code [x, y,
      * z, lacet]}, y relatif à la surface de la place, lacet tourné vers le cœur) et paliers de la place.
@@ -379,6 +441,9 @@ public final class VillageLayout implements JsonAssetWithMap<String, DefaultAsse
             .append(new KeyedCodec<>("Jobs", new ArrayCodec<>(Job.CODEC, Job[]::new)), (l, v) -> l.jobs = v == null ? new Job[0] : v, l -> l.jobs)
             .documentation("Métiers du village (étape 5).")
             .add()
+            .append(new KeyedCodec<>("Plots", new ArrayCodec<>(Plot.CODEC, Plot[]::new)), (l, v) -> l.plots = v == null ? new Plot[0] : v, l -> l.plots)
+            .documentation("Terrains libres E1 et E2 (étape 6 des bâtiments de métier).")
+            .add()
             .append(new KeyedCodec<>("Heart", Heart.CODEC), (l, v) -> l.heart = v, l -> l.heart)
             .documentation("Cœur du village par peuple (place, pièces vanilla par palier), ou absent (place carrée d'avant).")
             .add()
@@ -397,6 +462,7 @@ public final class VillageLayout implements JsonAssetWithMap<String, DefaultAsse
     Building[] buildings = new Building[0];
     Chantier[] chantiers = new Chantier[0];
     Job[] jobs = new Job[0];
+    Plot[] plots = new Plot[0];
     Heart heart;
 
     VillageLayout() {
@@ -453,6 +519,20 @@ public final class VillageLayout implements JsonAssetWithMap<String, DefaultAsse
 
     public Job[] jobs() {
         return jobs;
+    }
+
+    public Plot[] plots() {
+        return plots;
+    }
+
+    /** Terrain d'id `id`, ou null. */
+    public Plot plot(String id) {
+        for (Plot p : plots) {
+            if (p.id.equals(id)) {
+                return p;
+            }
+        }
+        return null;
     }
 
     /** Bâtiment d'id `id`, ou null. */

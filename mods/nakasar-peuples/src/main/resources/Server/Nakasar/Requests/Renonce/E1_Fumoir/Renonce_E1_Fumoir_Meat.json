@@ -1,0 +1,17 @@
+{
+  "$Comment": "Commande du bâtiment de métier Renonce_E1_Fumoir, générée par tools/generate_workshops.py (ne pas modifier à la main) : voir RequestTemplate.",
+  "People": "Renonce",
+  "Workshop": "Renonce_E1_Fumoir",
+  "Type": "Gather",
+  "MinLevel": 1,
+  "MaxLevel": 3,
+  "Weight": 1,
+  "TitleKey": "nakasar_peuples.request.Renonce_E1_Fumoir_Meat.title",
+  "TaskKey": "nakasar_peuples.request.Renonce_E1_Fumoir_Meat.task",
+  "ItemId": "Food_Wildmeat_Raw",
+  "Quantity": 8,
+  "Knowledge": 30,
+  "Essor": 5,
+  "Favors": 1,
+  "Reputation": 5
+}

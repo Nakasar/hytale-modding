@@ -85,6 +85,10 @@ public final class Village {
                     (v, a) -> v.workshops = a == null ? new WorkshopState[0] : a, v -> v.workshops)
             .documentation("Bâtiments de métier : niveau, savoir-faire, spécialité, commandes du jour, panneau.")
             .add()
+            .append(new KeyedCodec<>("Plots", new ArrayCodec<>(PlotState.CODEC, PlotState[]::new)),
+                    (v, a) -> v.plots = a == null ? new PlotState[0] : a, v -> v.plots)
+            .documentation("Terrains libres E1 et E2 : projet, chantier, démolition, piquets.")
+            .add()
             .build();
 
     String id = "";
@@ -116,6 +120,7 @@ public final class Village {
     String[] burnt = new String[0];
     ChantierState chantier;
     RaidRecord raid = new RaidRecord();
+    PlotState[] plots = new PlotState[0];
     WorkshopState[] workshops = new WorkshopState[0];
 
     Village() {
@@ -337,6 +342,32 @@ public final class Village {
         grown[workshops.length] = created;
         workshops = grown;
         return created;
+    }
+
+    /** État sauvegardé du terrain `plotId` (E1, E2), créé vide s'il manque (thread du monde). */
+    public PlotState plot(String plotId) {
+        for (PlotState p : plots) {
+            if (p != null && p.id.equals(plotId)) {
+                return p;
+            }
+        }
+        PlotState created = new PlotState(plotId);
+        PlotState[] grown = java.util.Arrays.copyOf(plots, plots.length + 1);
+        grown[plots.length] = created;
+        plots = grown;
+        return created;
+    }
+
+    /** Oublie l'état du bâtiment de métier `workshopId` (bâtiment d'emplacement démoli : il repartira au niveau I). */
+    void forgetWorkshop(String workshopId) {
+        workshops = java.util.Arrays.stream(workshops).filter(w -> w != null && !w.id.equals(workshopId)).toArray(WorkshopState[]::new);
+    }
+
+    /** Le bâtiment n'est plus là du tout (démoli) : ni collé ni brûlé, sa hauteur de pose oubliée. */
+    void unmarkBuilt(String buildingId) {
+        built = without(built, buildingId);
+        burnt = without(burnt, buildingId);
+        sites = java.util.Arrays.stream(sites).filter(s -> !s.id.equals(buildingId)).toArray(Site[]::new);
     }
 
     /** Bâtiment de métier dont le panneau est en (x, y, z), ou null. */

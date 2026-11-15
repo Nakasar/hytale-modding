@@ -846,6 +846,11 @@ public final class VillageCommand extends AbstractCommandCollection {
                 return;
             }
             if (village.chantier() == null) {
+                // Étape 6 : sans chantier de palier, finit les chantiers d'emplacement (au prochain pas du village).
+                if (dev.nakasar.hytale.peuples.village.Plots.hurry(store, village) > 0) {
+                    player.sendMessage(Message.translation(dev.nakasar.hytale.peuples.village.Plots.KEYS + "hurried"));
+                    return;
+                }
                 player.sendMessage(Message.translation(Chantiers.KEYS + "none"));
                 return;
             }
