@@ -1,0 +1,40 @@
+{
+  "$Comment": "Hôte de la foire (étape 6) : course aux drapeaux. Généré par tools/generate_world_life.py ; effets WorldAction et conditions WorldCheck (world/WorldDialogueTypes).",
+  "NpcNameKey": "nakasar_peuples.dialogue.Monde_Foire.npc",
+  "RoleKey": "nakasar_peuples.dialogue.Monde_Foire.role",
+  "Entries": [
+    {
+      "Node": "Accueil"
+    }
+  ],
+  "Nodes": [
+    {
+      "Id": "Accueil",
+      "TextKey": "nakasar_peuples.dialogue.Monde_Foire.accueil",
+      "Responses": [
+        {
+          "TextKey": "nakasar_peuples.dialogue.Monde_Foire.course",
+          "Effects": [
+            {
+              "Type": "WorldAction",
+              "Action": "FairRace"
+            }
+          ]
+        },
+        {
+          "TextKey": "nakasar_peuples.dialogue.Monde.rumeur",
+          "Effects": [
+            {
+              "Type": "WorldAction",
+              "Action": "Rumour"
+            }
+          ],
+          "Next": "Accueil"
+        },
+        {
+          "TextKey": "nakasar_peuples.dialogue.Monde.aurevoir"
+        }
+      ]
+    }
+  ]
+}

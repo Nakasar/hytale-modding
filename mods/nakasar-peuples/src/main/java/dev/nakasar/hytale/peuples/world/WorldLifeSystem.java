@@ -1,0 +1,87 @@
+package dev.nakasar.hytale.peuples.world;
+
+import com.hypixel.hytale.component.Store;
+import com.hypixel.hytale.component.system.tick.TickingSystem;
+import com.hypixel.hytale.server.core.universe.Universe;
+import com.hypixel.hytale.server.core.universe.world.World;
+import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
+import dev.nakasar.hytale.peuples.PeuplesPlugin;
+import dev.nakasar.hytale.peuples.request.GameClock;
+import dev.nakasar.hytale.peuples.village.Villages;
+import org.joml.Vector3d;
+
+import java.util.List;
+import java.util.Random;
+
+/**
+ * Le pas du monde vivant, dans le monde par défaut, joueurs connectés : chaque seconde les jeux et les charges (à
+ * l'heure près des annonces rouges), toutes les {@value #INTERVAL} s le reste ; au changement de jour de jeu (le
+ * matin, {@value GameClock#MORNING} h), les départs et tirages du jour.
+ */
+public final class WorldLifeSystem extends TickingSystem<EntityStore> {
+
+    private static final float FAST = 1f;
+    private static final float INTERVAL = 2f;
+
+    private float fast;
+    private float slow;
+
+    @Override
+    public void tick(float dt, int systemIndex, Store<EntityStore> store) {
+        World world = store.getExternalData().getWorld();
+        if (world != Universe.get().getDefaultWorld()) {
+            return;
+        }
+        fast += dt;
+        slow += dt;
+        if (fast < FAST) {
+            return;
+        }
+        float fastDt = fast;
+        fast = 0f;
+        boolean full = slow >= INTERVAL;
+        float slowDt = slow;
+        if (full) {
+            slow = 0f;
+        }
+        world.execute(() -> {
+            Store<EntityStore> s = world.getEntityStore().getStore();
+            if (Villages.registry(world).all().isEmpty() || world.getPlayerRefs().isEmpty()) {
+                return;
+            }
+            try {
+                Hunts.step(world, s);
+                List<Vector3d> players = WorldLife.players(world, s);
+                Calendar.step(world, s, players, fastDt);
+                if (full) {
+                    daily(world, s);
+                    Travellers.step(world, s, players, slowDt);
+                    Travellers.letters(world, s);
+                    Surroundings.step(world, s, players);
+                    Traces.step(world, s, players);
+                    Inns.step(world, s, players);
+                    Camps.step(world, s, players);
+                    Relations.step(world, s, players);
+                }
+            } catch (RuntimeException e) {
+                PeuplesPlugin.get().getLogger().atWarning().withCause(e).log("Peuples (monde vivant) : erreur du pas");
+            }
+        });
+    }
+
+    /** Une fois par jour de jeu : départs, campements, relations, auberges, vestiges. */
+    private static void daily(World world, Store<EntityStore> store) {
+        WorldLifeRegistry r = WorldLife.registry(world);
+        long day = GameClock.day(store);
+        if (r.getLong(WorldLifeRegistry.Part.CALENDAR, "day", Long.MIN_VALUE) == day) {
+            return;
+        }
+        r.put(WorldLifeRegistry.Part.CALENDAR, "day", Long.toString(day));
+        Random random = new Random();
+        Traces.seed(world);
+        Relations.morning(world, store, day, random);
+        Travellers.morning(world, store, random);
+        Camps.morning(world, store, day, random);
+        Inns.morning(world, store, day);
+    }
+}

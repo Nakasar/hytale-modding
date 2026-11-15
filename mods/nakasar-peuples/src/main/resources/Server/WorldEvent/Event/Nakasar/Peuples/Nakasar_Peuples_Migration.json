@@ -1,0 +1,8 @@
+{
+  "$Comment": "Migration d'un troupeau (monde vivant, étape 6), généré par tools/generate_world_life.py. Lancé par world/Calendar, une instance par lieu ; le Java le stoppe à la fin (lieu donné par Nakasar_Peuples_WorldLocation).",
+  "Root": "Nakasar_Peuples_Migration_Start",
+  "IterationCount": 1,
+  "InstanceCountMax": -1,
+  "Name": "nakasar_peuples.world.event.Migration.name",
+  "Icon": "UI/WorldMap/MapMarkers/GoblinBreach.png"
+}

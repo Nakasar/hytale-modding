@@ -251,7 +251,7 @@ public final class Raids {
     }
 
     /** Rôles des quatre rangs d'assaillants (guerrier, cogneur, brute, chef) contre ce peuple. */
-    static String[] raiders(People people) {
+    public static String[] raiders(People people) {
         return switch (people) {
             case FERAN -> new String[] {RAIDER_PREFIX + "Scarak_Fighter", RAIDER_PREFIX + "Scarak_Louse",
                     RAIDER_PREFIX + "Scarak_Defender", RAIDER_PREFIX + "Scarak_Broodmother"};
@@ -500,7 +500,9 @@ public final class Raids {
         // Les gardes se postent autour du cœur ; les spécialités de garde en ajoutent (étape 5).
         Workshops.RaidBonus bonus = Workshops.raidBonus(village);
         a.guardHealth = bonus.health();
-        int guards = DEFENDERS[Math.max(0, Math.min(3, village.tier()))] + bonus.guards();
+        // Monde vivant (étape 5) : un garde de plus par village allié proche, deux au plus.
+        int guards = DEFENDERS[Math.max(0, Math.min(3, village.tier()))] + bonus.guards()
+                + dev.nakasar.hytale.peuples.world.Relations.reinforcements(world, village);
         String role = defenderRole(village.people());
         for (int[] post : bonus.posts()) {
             int[] safe = terrain.safeSpot(post[0], post[1], 4);
@@ -630,6 +632,11 @@ public final class Raids {
         } else {
             VillageLayout.Building b = Chantiers.burn(world, village, null, true);
             burnt = b == null ? null : b.id();
+            if (b != null) {
+                // Monde vivant (étape 4) : les habitants du bâtiment brûlé campent au bord du village jusqu'à sa
+                // reconstruction ; des arbres brûlés gardent la trace du raid.
+                dev.nakasar.hytale.peuples.world.Camps.refugees(world, store, village, b.id());
+            }
             if (b == null) {
                 // Village sans plan (fondé à la main) : rien à brûler, la jauge d'essor se vide.
                 Villages.addEssor(village, -village.essor());

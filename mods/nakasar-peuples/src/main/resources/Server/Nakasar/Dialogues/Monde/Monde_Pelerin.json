@@ -1,0 +1,50 @@
+{
+  "$Comment": "Pèlerin sur la route (étape 1) : rumeurs, escorte. Généré par tools/generate_world_life.py ; effets WorldAction et conditions WorldCheck (world/WorldDialogueTypes).",
+  "NpcNameKey": "nakasar_peuples.dialogue.Monde_Pelerin.npc",
+  "RoleKey": "nakasar_peuples.dialogue.Monde_Pelerin.role",
+  "Entries": [
+    {
+      "Node": "Accueil"
+    }
+  ],
+  "Nodes": [
+    {
+      "Id": "Accueil",
+      "TextKey": "nakasar_peuples.dialogue.Monde_Pelerin.accueil",
+      "Responses": [
+        {
+          "TextKey": "nakasar_peuples.dialogue.Monde_Pelerin.escorte",
+          "Effects": [
+            {
+              "Type": "WorldAction",
+              "Action": "Escort"
+            }
+          ],
+          "Next": "Escorte"
+        },
+        {
+          "TextKey": "nakasar_peuples.dialogue.Monde.rumeur",
+          "Effects": [
+            {
+              "Type": "WorldAction",
+              "Action": "Rumour"
+            }
+          ],
+          "Next": "Accueil"
+        },
+        {
+          "TextKey": "nakasar_peuples.dialogue.Monde.aurevoir"
+        }
+      ]
+    },
+    {
+      "Id": "Escorte",
+      "TextKey": "nakasar_peuples.dialogue.Monde_Pelerin.escorteTexte",
+      "Responses": [
+        {
+          "TextKey": "nakasar_peuples.dialogue.Monde.aurevoir"
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,30 @@
+{
+  "$Comment": "Début : le lieu (choisi par le Java), puis le titre à 200 blocs.",
+  "Forks": [
+    {
+      "Conditions": [
+        {
+          "Type": "Nakasar_Peuples_WorldLocation",
+          "LocationKey": "WorldLifeLocation"
+        },
+        {
+          "Type": "IntervalCondition",
+          "IntervalKey": "MigrationStart",
+          "MinSeconds": 2,
+          "MaxSeconds": 2
+        }
+      ],
+      "Actions": [
+        {
+          "Type": "ShowEventTitleAction",
+          "LocationKey": "WorldLifeLocation",
+          "Radius": 200,
+          "PrimaryTitle": "nakasar_peuples.world.event.Migration.title",
+          "SecondaryTitle": "nakasar_peuples.world.event.Migration.subtitle",
+          "FadeInDuration": 0.5
+        }
+      ],
+      "Next": "Nakasar_Peuples_Migration_Run"
+    }
+  ]
+}

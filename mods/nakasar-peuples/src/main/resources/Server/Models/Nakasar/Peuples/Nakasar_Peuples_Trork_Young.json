@@ -1,0 +1,6 @@
+{
+  "$Comment": "Enfant Trork : pas d'enfant vanilla, donc le modèle adulte Trork à l'échelle 0,6 (Kevin, 15 novembre 2026).",
+  "Parent": "Trork",
+  "MinScale": 0.6,
+  "MaxScale": 0.6
+}

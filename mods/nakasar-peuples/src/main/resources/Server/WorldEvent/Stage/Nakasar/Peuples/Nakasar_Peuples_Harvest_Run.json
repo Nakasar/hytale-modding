@@ -1,0 +1,17 @@
+{
+  "$Comment": "Le rendez-vous : 1200 s (« … restant » sur la carte, marge de 30 s : le Java le stoppe à la fin).",
+  "Forks": [
+    {
+      "Conditions": [
+        {
+          "Type": "IntervalCondition",
+          "IntervalKey": "HarvestRun",
+          "MinSeconds": 1230,
+          "MaxSeconds": 1230,
+          "ShowOnMap": true,
+          "MapIntervalKey": "server.map.worldEvents.runsFor"
+        }
+      ]
+    }
+  ]
+}
