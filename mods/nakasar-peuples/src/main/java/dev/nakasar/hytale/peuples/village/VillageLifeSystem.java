@@ -71,6 +71,7 @@ public final class VillageLifeSystem extends TickingSystem<EntityStore> {
             }
         }
         Villagers.step(world, store, players, dt);
+        dev.nakasar.hytale.peuples.workshop.Livestock.step(world, store, players);
     }
 
     private static boolean watched(Village village, List<Vector3d> players) {

@@ -1,0 +1,35 @@
+{
+  "$Comment": "Dialogue du villageois à métier Breeder (étape 8), généré par tools/generate_zones.py.",
+  "NpcNameKey": "nakasar_peuples.dialogue.Renonce_Breeder.npc",
+  "RoleKey": "nakasar_peuples.dialogue.Renonce_Breeder.role",
+  "People": "Renonce",
+  "Entries": [
+    {
+      "Node": "Accueil"
+    }
+  ],
+  "Nodes": [
+    {
+      "Id": "Accueil",
+      "TextKey": "nakasar_peuples.dialogue.Renonce_Breeder.accueil",
+      "Responses": [
+        {
+          "TextKey": "nakasar_peuples.dialogue.job.metier",
+          "Next": "Metier"
+        },
+        {
+          "TextKey": "nakasar_peuples.dialogue.job.aurevoir"
+        }
+      ]
+    },
+    {
+      "Id": "Metier",
+      "TextKey": "nakasar_peuples.dialogue.Renonce_Breeder.metier",
+      "Responses": [
+        {
+          "TextKey": "nakasar_peuples.dialogue.job.aurevoir"
+        }
+      ]
+    }
+  ]
+}

@@ -123,6 +123,7 @@ public final class VillageCommand extends AbstractCommandCollection {
         addSubCommand(new ChainCommand());
         addSubCommand(new WorkshopCommand());
         addSubCommand(new KnowledgeCommand());
+        addSubCommand(new WorkshopLevelCommand());
         addSubCommand(new ChainStepCommand());
         addSubCommand(new ZoneOneCommands.KlopsCommand());
         addSubCommand(new ZoneOneCommands.WarPaintCommand());
@@ -267,6 +268,7 @@ public final class VillageCommand extends AbstractCommandCollection {
                 Raids.cancel(world, village);
                 Criers.remove(store, village.id());
                 Villagers.remove(store, village.id());
+                dev.nakasar.hytale.peuples.workshop.Livestock.remove(store, village.id());
                 Villages.dissolve(world, village);
                 player.sendMessage(Message.translation(Villages.MESSAGES + "dissolved").param("name", village.name()));
             }
@@ -411,6 +413,41 @@ public final class VillageCommand extends AbstractCommandCollection {
             state.setKnowledge(Math.min(max, state.knowledge() + amount.get(context)));
             player.sendMessage(Message.translation(dev.nakasar.hytale.peuples.workshop.Workshops.KEYS + "text.knowledge")
                     .param("value", state.knowledge()).param("max", max));
+        }
+    }
+
+    /** {@code /village niveauatelier <batiment> <niveau>} : met un bâtiment de métier au niveau voulu (test). */
+    private static final class WorkshopLevelCommand extends AbstractPlayerCommand {
+        private final RequiredArg<String> id = withRequiredArg("batiment", KEYS + "workshop.arg", ArgTypes.STRING);
+        private final RequiredArg<Integer> level = withRequiredArg("niveau", KEYS + "workshopLevel.arg", ArgTypes.INTEGER);
+
+        WorkshopLevelCommand() {
+            super("niveauatelier", KEYS + "workshopLevel.desc");
+            requirePermission(ADMIN);
+        }
+
+        @Override
+        protected void execute(CommandContext context, Store<EntityStore> store, Ref<EntityStore> ref, PlayerRef player, World world) {
+            Village village = nearest(world, player);
+            dev.nakasar.hytale.peuples.workshop.Workshop w = village == null ? null : workshop(player, village, id.get(context));
+            if (w == null) {
+                return;
+            }
+            dev.nakasar.hytale.peuples.village.WorkshopState state = village.workshop(w.getId());
+            int value = Math.max(1, Math.min(dev.nakasar.hytale.peuples.workshop.Workshops.MAX_LEVEL, level.get(context)));
+            state.clearUpgrade();
+            state.setLevel(value);
+            state.setKnowledge(0);
+            state.setMasterDone(false);
+            if (value < dev.nakasar.hytale.peuples.workshop.Workshops.SPECIALTY_LEVEL) {
+                state.setSpecialty(null);
+            }
+            state.setReconverted(Long.MIN_VALUE);
+            dev.nakasar.hytale.peuples.workshop.Workshops.draw(store, village, w, state, true);
+            dev.nakasar.hytale.peuples.workshop.Livestock.changed(store, village, w);
+            player.sendMessage(Message.translation(dev.nakasar.hytale.peuples.workshop.Workshops.KEYS + "levelUp")
+                    .param("building", Message.translation(w.nameKey()))
+                    .param("level", Message.translation(dev.nakasar.hytale.peuples.workshop.Workshops.KEYS + "level." + value)));
         }
     }
 

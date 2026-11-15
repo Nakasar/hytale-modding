@@ -65,6 +65,30 @@ WORKSHOPS = [
         ("Hay", "Gather", "Ingredient_Hay", 12, "Foin de l'enclos", "Hay for the pen"),
         ("Poachers", "Hunt", ["Trork_Hunter", "Trork_Hunter"], 0, "Braconniers trorks", "Trork poachers"),
     ]),
+    # Étape 3 : les enclos des quatre autres peuples (tools/generate_pens.py, palier 1).
+    ("Trork_Fosse_Aux_Betes", "Trork_Camp", "Fosse_Aux_Betes", "Dresseur", "Food_Wildmeat_Raw", "Fosse aux bêtes",
+     "Beast pit", [
+        ("Meat", "Gather", "Food_Wildmeat_Raw", 10, "Viande pour la fosse", "Meat for the pit"),
+        ("Bones", "Gather", "Ingredient_Bone_Fragment", 12, "Os à ronger", "Bones to gnaw"),
+        ("Wolves", "Hunt", ["Wolf_Black", "Wolf_Black"], 0, "Loups affamés", "Hungry wolves"),
+    ]),
+    ("Feran_Enclos_Oasis", "Feran_Oasis", "Enclos_Oasis", "Eleveuse", "Food_Egg", "Enclos de l'oasis", "Oasis pen", [
+        ("Grain", "Gather", "Plant_Seeds_Wheat", 12, "Grain des poules", "Grain for the hens"),
+        ("Water", "Gather", "Ingredient_Water_Essence", 4, "Eau pour l'enclos", "Water for the pen"),
+        ("Scaraks", "Hunt", ["Scarak_Fighter", "Scarak_Fighter"], 0, "Scaraks voleurs d'œufs", "Egg-thief Scaraks"),
+    ]),
+    ("Renonce_Bergerie_Du_Givre", "Renonce_Givre", "Bergerie_Du_Givre", "Berger", "Ingredient_Fabric_Scrap_Wool",
+     "Bergerie du givre", "Frost fold", [
+        ("Hay", "Gather", "Ingredient_Hay", 12, "Foin pour l'hiver", "Hay for winter"),
+        ("Wool", "Gather", "Ingredient_Fabric_Scrap_Wool", 8, "Laine de la bergerie", "Wool for the fold"),
+        ("Wolves", "Hunt", ["Wolf_White", "Wolf_White"], 0, "Loups des neiges", "Snow wolves"),
+    ]),
+    ("Slothian_Bauge_De_Veille", "Slothian_Monastere", "Bauge_De_Veille", "Gardien_Bauge", "Food_Pork_Raw",
+     "Bauge de veille", "Vigil pen", [
+        ("Mud", "Gather", "Soil_Mud_Dry", 16, "Boue de la bauge", "Mud for the pen"),
+        ("Roots", "Gather", "Plant_Crop_Carrot_Item", 10, "Racines des porcs", "Roots for the pigs"),
+        ("Crawlers", "Hunt", ["Crawler_Void", "Crawler_Void"], 0, "Rampants à la bauge", "Crawlers at the pen"),
+    ]),
     ("Kweebec_Potager", "Kweebec_Oak", "Potager", "Jardiniere", "Plant_Seeds_Lettuce", "Potager", "Vegetable garden", [
         ("Lettuce", "Gather", "Plant_Seeds_Lettuce", 10, "Graines de salade", "Lettuce seeds"),
         ("Wheat", "Gather", "Plant_Seeds_Wheat", 12, "Semences de blé", "Wheat seeds"),
@@ -148,6 +172,133 @@ WORKSHOPS = [
     ]),
 ]
 
+# Étape 3 : spécialités (choisies au niveau II, rang Ami ; une reconversion tous les 7 jours) et bêtes des enclos.
+# Un bâtiment : (bêtes de base, [(id, nom fr, nom en, icône, ligne fr, ligne en, bêtes)]). Les bêtes sont des rôles
+# vanilla Tamed_* (Assets.zip), ou du mod (tools/generate_pens.py) quand le jeu n'en a pas d'apprivoisé.
+PEN = "Nakasar_Peuples_Pen_"
+SPECIALTIES = {
+    "Kweebec_Enclos": (["Tamed_Bunny", "Tamed_Rabbit"], [
+        ("Basse_Cour", "Basse-cour", "Poultry yard", "Food_Egg", "Poules et dindons : œufs, plumes, volaille.",
+         "Hens and turkeys: eggs, feathers, poultry.", ["Tamed_Chicken", "Tamed_Turkey", "Tamed_Chicken_Chick"]),
+        ("Mousse_Cornes", "Mousse-cornes", "Mosshorns", "Ingredient_Life_Essence",
+         "Mousse-cornes : fibre, écorce et essence de vie.", "Mosshorns: fibre, bark and life essence.",
+         ["Tamed_Mosshorn", "Tamed_Mosshorn_Plain"]),
+        ("Bergerie", "Bergerie", "Sheepfold", "Ingredient_Fabric_Scrap_Wool", "Moutons : laine, rouleaux de laine.",
+         "Sheep: wool, bolts of wool.", ["Tamed_Sheep", "Tamed_Sheep_Lamb"]),
+    ]),
+    "Trork_Fosse_Aux_Betes": (["Tamed_Boar", "Tamed_Boar_Piglet"], [
+        ("Loups", "Loups de chasse", "Hunting wolves", "Ingredient_Bone_Fragment", "Loups dressés : crocs, os, peaux.",
+         "Trained wolves: fangs, bones, hides.", [PEN + "Wolf_Trork"]),
+        ("Porcs_Sauvages", "Porcs sauvages", "Wild pigs", "Food_Pork_Raw", "Porcs sauvages : viande et cuir.",
+         "Wild pigs: meat and leather.", ["Tamed_Pig_Wild", "Tamed_Pig_Wild_Piglet"]),
+        ("Chevres", "Chèvres des cimes", "Peak goats", "Ingredient_Hide_Medium", "Chèvres : peaux moyennes et lait caillé.",
+         "Goats: medium hides and curds.", ["Tamed_Goat", "Tamed_Goat_Kid"]),
+    ]),
+    "Feran_Enclos_Oasis": (["Tamed_Chicken_Desert", "Tamed_Chicken_Desert_Chick"], [
+        ("Chameaux", "Chameaux", "Camels", "Ingredient_Hide_Scaled", "Chameaux : cuir et eau des caravanes.",
+         "Camels: leather and caravan water.", ["Tamed_Camel", "Tamed_Camel_Calf"]),
+        ("Beliers", "Béliers du plateau", "Plateau rams", "Ingredient_Fabric_Scrap_Wool", "Béliers : laine et cornes.",
+         "Rams: wool and horns.", ["Tamed_Ram", "Tamed_Ram_Lamb"]),
+        ("Tortues", "Tortues de l'oasis", "Oasis tortoises", "Ingredient_Hide_Scaled", "Tortues : écailles et essence d'eau.",
+         "Tortoises: scales and water essence.", [PEN + "Tortoise"]),
+    ]),
+    "Renonce_Bergerie_Du_Givre": (["Tamed_Mouflon", "Tamed_Mouflon_Lamb"], [
+        ("Bisons", "Bisons", "Bison", "Food_Beef_Raw", "Bisons : bœuf et peaux lourdes.", "Bison: beef and heavy hides.",
+         ["Tamed_Bison", "Tamed_Bison_Calf"]),
+        ("Sangliers", "Sangliers des neiges", "Snow boars", "Food_Wildmeat_Raw", "Sangliers : viande et défenses.",
+         "Boars: meat and tusks.", ["Tamed_Boar", "Tamed_Boar_Piglet"]),
+        ("Loups_Blancs", "Loups blancs des repentis", "Penitents' white wolves", "Ingredient_Hide_Heavy",
+         "Loups blancs : fourrures épaisses.", "White wolves: thick furs.", [PEN + "Wolf_White"]),
+    ]),
+    "Slothian_Bauge_De_Veille": (["Tamed_Pig_Wild", "Tamed_Pig_Wild_Piglet"], [
+        ("Archeopteryx", "Archéoptéryx", "Archaeopteryx", "Ingredient_Feathers_Dark", "Archéoptéryx : plumes sombres.",
+         "Archaeopteryx: dark feathers.", [PEN + "Archaeopteryx"]),
+        ("Trillodons", "Trillodons", "Trillodons", "Ingredient_Hide_Heavy", "Trillodons : cuir épais et cornes.",
+         "Trillodons: thick leather and horns.", [PEN + "Trillodon"]),
+        ("Escargots", "Escargots de magme", "Magma snails", "Ingredient_Fire_Essence",
+         "Escargots de magme : coquilles et essence de feu.", "Magma snails: shells and fire essence.", [PEN + "Snail_Magma"]),
+    ]),
+    # Les autres bâtiments de métier (GDD, « Les autres bâtiments de métier ») : deux spécialités sans bêtes.
+    "Kweebec_Potager": (None, [
+        ("Maraicher", "Maraîcher", "Market garden", "Plant_Crop_Lettuce_Item", "Graines, légumes et salades.",
+         "Seeds, vegetables and salads.", []),
+        ("Verger", "Verger à baies", "Berry orchard", "Plant_Fruit_Berries_Red", "Baies, baies d'hiver et tartes.",
+         "Berries, winter berries and pies.", []),
+    ]),
+    "Kweebec_Puits": (None, [
+        ("Source", "Source claire", "Clear spring", "Ingredient_Water_Essence", "Essence d'eau et fioles.",
+         "Water essence and vials.", []),
+        ("Vivier", "Vivier", "Fish pond", "Food_Fish_Raw", "Poissons d'eau douce et nasses.", "Freshwater fish and traps.", []),
+    ]),
+    "Kweebec_Grande_Maison": (None, [
+        ("Herbes", "Herbes de soin", "Healing herbs", "Potion_Health_Small", "Potions de vie.", "Health potions.", []),
+        ("Elixirs", "Élixirs", "Elixirs", "Potion_Stamina_Small", "Endurance et antidotes.", "Stamina and antidotes.", []),
+    ]),
+    "Kweebec_Tour_Est": (None, [
+        ("Archers", "Archers", "Archers", "Weapon_Shortbow_Crude", "Arcs courts et flèches ; 2 archers en raid.",
+         "Short bows and arrows; 2 archers in raids.", []),
+        ("Vigiles", "Vigiles", "Wardens", "Armor_Kweebec_Chest", "Armure kweebec ; +1 défenseur en raid.",
+         "Kweebec armour; +1 defender in raids.", []),
+    ]),
+    "Trork_Piege": (None, [
+        ("Trappeur", "Trappeur", "Trapper", "Ingredient_Hide_Light", "Peaux et os.", "Hides and bones.", []),
+        ("Rabatteur", "Rabatteur", "Beater", "Food_Wildmeat_Raw", "Viande et brochettes.", "Meat and skewers.", []),
+    ]),
+    "Trork_Feu_De_Camp": (None, [
+        ("Rotisserie", "Rôtisserie", "Roasting pit", "Food_Wildmeat_Cooked", "Viandes cuites.", "Cooked meats.", []),
+        ("Fosse_De_Combat", "Fosse de combat", "Fighting pit", "Weapon_Club_Crude", "Armes en os ; +1 brute en raid.",
+         "Bone weapons; +1 brute in raids.", []),
+    ]),
+    "Trork_Entrepot": (None, [
+        ("Pillards", "Pillards", "Raiders", "Ingredient_Bar_Iron", "Lingots de cuivre et de fer récupérés.",
+         "Salvaged copper and iron bars.", []),
+        ("Bucherons", "Bûcherons", "Lumberjacks", "Wood_Oak_Trunk", "Rondins, bâtons et écorce.", "Logs, sticks and bark.", []),
+    ]),
+    "Feran_Entree_Oasis": (None, [
+        ("Citerne", "Citerne", "Cistern", "Ingredient_Water_Essence", "Essence d'eau ; la soif s'apaise au village.",
+         "Water essence; thirst eases in the village.", []),
+        ("Jardin", "Jardin d'oasis", "Oasis garden", "Ingredient_Salt", "Cactus, épices et sel.", "Cactus, spices and salt.", []),
+    ]),
+    "Feran_Hutte_Pilier": (None, [
+        ("Lanciers", "Lanciers", "Spearmen", "Weapon_Spear_Crude", "Lances ; défenseurs à lance en raid.",
+         "Spears; spear defenders in raids.", []),
+        ("Coureurs", "Coureurs des vents", "Windrunners", "Ingredient_Feathers_Light", "Plumes, armure légère ; défenseurs rapides.",
+         "Feathers, light armour; fast defenders.", []),
+    ]),
+    "Renonce_Maison_Du_Chasseur": (None, [
+        ("Trappeur", "Trappeur des neiges", "Snow trapper", "Ingredient_Hide_Heavy", "Peaux lourdes et fourrures.",
+         "Heavy hides and furs.", []),
+        ("Pecheur", "Pêcheur des glaces", "Ice fisher", "Food_Fish_Raw", "Poissons des eaux froides.", "Cold-water fish.", []),
+    ]),
+    "Renonce_Tour_Du_Fort": (None, [
+        ("Arbaletriers", "Arbalétriers", "Crossbowmen", "Weapon_Crossbow_Iron", "Arbalètes ; 2 tireurs en raid.",
+         "Crossbows; 2 shooters in raids.", []),
+        ("Gardes_Du_Givre", "Gardes du givre", "Frost guards", "Ingredient_Fabric_Scrap_Wool",
+         "Manteaux contre le froid ; +1 défenseur en raid.", "Coats against the cold; +1 defender in raids.", []),
+    ]),
+    "Slothian_Etal_Des_Cendres": (None, [
+        ("Braises", "Braises", "Embers", "Ingredient_Charcoal", "Essence de feu et charbon.", "Fire essence and charcoal.", []),
+        ("Encens", "Encens de veille", "Vigil incense", "Furniture_Jungle_Candle", "Objets contre la corruption du Vide.",
+         "Wares against the Void's corruption.", []),
+    ]),
+    "Slothian_Temple_De_Veille": (None, [
+        ("Meditation", "Méditation", "Meditation", "Potion_Regen_Mana_Small", "Potions de régénération.",
+         "Regeneration potions.", []),
+        ("Chroniques", "Chroniques", "Chronicles", "Ingredient_Life_Essence", "Recettes et objets de mémoire.",
+         "Recipes and memory items.", []),
+    ]),
+    "Slothian_Porte_Du_Monastere": (None, [
+        ("Lances", "Lances de basalte", "Basalt spears", "Rock_Volcanic", "Défenseurs lourds en raid.",
+         "Heavy defenders in raids.", []),
+        ("Veilleurs", "Veilleurs", "Watchers", "Furniture_Jungle_Torch", "+1 défenseur, veille contre le Vide.",
+         "+1 defender, vigil against the Void.", []),
+    ]),
+}
+# Bêtes d'un enclos selon le niveau (GDD : 3, 5 puis 7, les petits en font partie).
+LIVESTOCK_COUNT = [3, 5, 7]
+# Intérieur de l'enclos = emprise du bâtiment réduite de ce nombre de blocs (la clôture et une marge).
+PEN_INSET = 2
+
 TASKS = {
     "Gather": ("Dépose {count}/{needed} {item} au dépôt du village ({distance} blocs, {direction}).",
                "Drop {count}/{needed} {item} in the village deposit ({distance} blocks, {direction})."),
@@ -170,6 +321,31 @@ PAGE = {
     "workshop.keeperAbsent": ("{name} revient à {hour} h", "{name} is back at {hour}:00"),
     "workshop.keeperNone": ("Personne n'y travaille encore", "Nobody works here yet"),
     "workshop.noSpecialty": ("Pas encore de spécialité (au niveau II)", "No specialty yet (at level II)"),
+    "workshop.specialtyChoose": ("Choisir la spécialité", "Choose the specialty"),
+    "workshop.specialtyChange": ("Spécialités", "Specialties"),
+    "workshop.specialtyTitle": ("Spécialité : {building}", "Specialty: {building}"),
+    "workshop.specialtyIntro": ("Une seule spécialité par bâtiment, choisie au niveau II pour tout le village. Elle change ses commandes, ses offres et ses bêtes.",
+                                "One specialty per building, chosen at level II for the whole village. It changes its orders, offers and beasts."),
+    "workshop.specialtyRule": ("Choisir ou changer demande le rang {rank}. Changer remet le savoir-faire du niveau à 0, une fois tous les {days} jours.",
+                               "Choosing or changing needs rank {rank}. Changing resets the level's know-how to 0, once every {days} days."),
+    "workshop.specialtyCurrent": ("Spécialité du bâtiment", "The building's specialty"),
+    "workshop.specialtyPick": ("Choisir", "Choose"),
+    "workshop.specialtyReconvert": ("Se reconvertir", "Convert"),
+    "workshop.specialtyLevel": ("La spécialité se choisit au niveau II.", "The specialty is chosen at level II."),
+    "workshop.specialtyRank": ("Il faut le rang {rank} pour choisir la spécialité.", "You need rank {rank} to choose the specialty."),
+    "workshop.specialtyCooldown": ("Le bâtiment s'est reconverti récemment : encore {days} jour(s).",
+                                   "The building converted recently: {days} more day(s)."),
+    "workshop.specialtyChosen": ("{player} a choisi la spécialité {specialty} pour {building}.",
+                                 "{player} chose the {specialty} specialty for {building}."),
+    "workshop.specialtyConverted": ("{player} a reconverti {building} : {specialty}. Le savoir-faire du niveau repart de 0.",
+                                    "{player} converted {building}: {specialty}. The level's know-how starts again from 0."),
+    "workshop.specialtyWorks": ("Pas de changement de spécialité pendant les travaux.", "No specialty change during the works."),
+    "workshop.specialtyUnknown": ("Spécialité inconnue : {id}", "Unknown specialty: {id}"),
+    "workshop.beastsLine": ("Enclos : {count}/{max} bêtes. Une bête tuée revient au matin ; la tuer coûte {rep} de réputation.",
+                            "Pen: {count}/{max} beasts. A slain beast comes back in the morning; killing one costs {rep} reputation."),
+    "workshop.specialtyBack": ("Retour au bâtiment", "Back to the building"),
+    "workshop.specialtyNone": ("Ce bâtiment n'a pas de spécialité.", "This building has no specialty."),
+    "reputation.reason.livestock": ("une bête de l'enclos tuée", "a pen beast killed"),
     "workshop.knowledge": ("Savoir-faire", "Know-how"),
     "workshop.knowledgeValue": ("{value} / {max}", "{value} / {max}"),
     "workshop.knowledgeMax": ("Au plus haut", "At the top"),
@@ -224,6 +400,9 @@ PAGE = {
     "command.knowledge.desc": ("Ajoute du savoir-faire à un bâtiment de métier du village le plus proche",
                                "Adds know-how to a workshop of the nearest village"),
     "command.knowledge.arg": ("Quantité de savoir-faire", "Amount of know-how"),
+    "command.workshopLevel.desc": ("Met un bâtiment de métier du village le plus proche au niveau voulu (test : savoir-faire à 0, spécialité gardée dès le niveau II, reconversion libre)",
+                                   "Sets a workshop of the nearest village to the given level (test: know-how at 0, specialty kept from level II, free conversion)"),
+    "command.workshopLevel.arg": ("Niveau (1 à 3)", "Level (1 to 3)"),
     "workshop.nextMaster": ("Jauge pleine : remplis la commande de maître « {title} » pour ouvrir le chantier.",
                             "Gauge full: fill the master order \"{title}\" to open the works."),
     "workshop.nextMaterials": ("Commande de maître remplie : réunis ces matériaux au dépôt, puis lance {hours} h de travaux.",
@@ -360,6 +539,36 @@ def main():
             "Board": spot or [0, 0, 0],
             "Upgrades": upgrades(layout, wid, errors),
         }
+        specs = SPECIALTIES.get(wid)
+        if specs is None:
+            errors.append(f"{wid} : pas de spécialités")
+        else:
+            base, choices = specs
+            if base:
+                doc["Livestock"] = base
+                doc["LivestockCount"] = LIVESTOCK_COUNT
+                r = rect(building)
+                doc["Pen"] = [r[0] + PEN_INSET, r[1] - PEN_INSET, r[2] + PEN_INSET, r[3] - PEN_INSET]
+            doc["Specialties"] = []
+            for sid, sfr, sen, sicon, lfr, len_, animals in choices:
+                if sicon not in items:
+                    errors.append(f"{wid}/{sid} : icône vanilla inconnue {sicon}")
+                for a in (base or []) + animals:
+                    if not a.startswith(PEN) and a not in roles:
+                        errors.append(f"{wid}/{sid} : rôle vanilla inconnu {a}")
+                    if a.startswith(PEN) and not (RES / "NPC/Roles/Nakasar/Peuples" / f"{a}.json").exists():
+                        errors.append(f"{wid}/{sid} : rôle du mod absent {a} (tools/generate_pens.py)")
+                if base and not animals:
+                    errors.append(f"{wid}/{sid} : spécialité d'enclos sans bêtes")
+                spec = {"Id": sid, "NameKey": f"nakasar_peuples.workshop.specialty.{wid}.{sid}",
+                        "LineKey": f"nakasar_peuples.workshop.specialtyLine.{wid}.{sid}", "Icon": sicon}
+                if animals:
+                    spec["Animals"] = animals
+                doc["Specialties"].append(spec)
+                fr[f"workshop.specialty.{wid}.{sid}"] = sfr
+                en[f"workshop.specialty.{wid}.{sid}"] = sen
+                fr[f"workshop.specialtyLine.{wid}.{sid}"] = lfr
+                en[f"workshop.specialtyLine.{wid}.{sid}"] = len_
         (OUT / f"{wid}.json").write_text(json.dumps(doc, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
         fr[f"workshop.{wid}.name"] = name_fr
         en[f"workshop.{wid}.name"] = name_en

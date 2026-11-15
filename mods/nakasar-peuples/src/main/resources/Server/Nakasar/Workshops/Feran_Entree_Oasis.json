@@ -54,5 +54,19 @@
         "-1 0 0 0 Furniture_Feran_Torch_Tall"
       ]
     }
+  ],
+  "Specialties": [
+    {
+      "Id": "Citerne",
+      "NameKey": "nakasar_peuples.workshop.specialty.Feran_Entree_Oasis.Citerne",
+      "LineKey": "nakasar_peuples.workshop.specialtyLine.Feran_Entree_Oasis.Citerne",
+      "Icon": "Ingredient_Water_Essence"
+    },
+    {
+      "Id": "Jardin",
+      "NameKey": "nakasar_peuples.workshop.specialty.Feran_Entree_Oasis.Jardin",
+      "LineKey": "nakasar_peuples.workshop.specialtyLine.Feran_Entree_Oasis.Jardin",
+      "Icon": "Ingredient_Salt"
+    }
   ]
 }

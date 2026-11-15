@@ -55,5 +55,19 @@
         "0 1 0 0 Furniture_Kweebec_Candle"
       ]
     }
+  ],
+  "Specialties": [
+    {
+      "Id": "Archers",
+      "NameKey": "nakasar_peuples.workshop.specialty.Kweebec_Tour_Est.Archers",
+      "LineKey": "nakasar_peuples.workshop.specialtyLine.Kweebec_Tour_Est.Archers",
+      "Icon": "Weapon_Shortbow_Crude"
+    },
+    {
+      "Id": "Vigiles",
+      "NameKey": "nakasar_peuples.workshop.specialty.Kweebec_Tour_Est.Vigiles",
+      "LineKey": "nakasar_peuples.workshop.specialtyLine.Kweebec_Tour_Est.Vigiles",
+      "Icon": "Armor_Kweebec_Chest"
+    }
   ]
 }

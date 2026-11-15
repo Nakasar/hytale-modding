@@ -54,5 +54,19 @@
         "-1 0 0 0 Furniture_Crude_Brazier"
       ]
     }
+  ],
+  "Specialties": [
+    {
+      "Id": "Pillards",
+      "NameKey": "nakasar_peuples.workshop.specialty.Trork_Entrepot.Pillards",
+      "LineKey": "nakasar_peuples.workshop.specialtyLine.Trork_Entrepot.Pillards",
+      "Icon": "Ingredient_Bar_Iron"
+    },
+    {
+      "Id": "Bucherons",
+      "NameKey": "nakasar_peuples.workshop.specialty.Trork_Entrepot.Bucherons",
+      "LineKey": "nakasar_peuples.workshop.specialtyLine.Trork_Entrepot.Bucherons",
+      "Icon": "Wood_Oak_Trunk"
+    }
   ]
 }

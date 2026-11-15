@@ -54,5 +54,19 @@
         "-1 0 0 0 Furniture_Lumberjack_Lantern"
       ]
     }
+  ],
+  "Specialties": [
+    {
+      "Id": "Arbaletriers",
+      "NameKey": "nakasar_peuples.workshop.specialty.Renonce_Tour_Du_Fort.Arbaletriers",
+      "LineKey": "nakasar_peuples.workshop.specialtyLine.Renonce_Tour_Du_Fort.Arbaletriers",
+      "Icon": "Weapon_Crossbow_Iron"
+    },
+    {
+      "Id": "Gardes_Du_Givre",
+      "NameKey": "nakasar_peuples.workshop.specialty.Renonce_Tour_Du_Fort.Gardes_Du_Givre",
+      "LineKey": "nakasar_peuples.workshop.specialtyLine.Renonce_Tour_Du_Fort.Gardes_Du_Givre",
+      "Icon": "Ingredient_Fabric_Scrap_Wool"
+    }
   ]
 }

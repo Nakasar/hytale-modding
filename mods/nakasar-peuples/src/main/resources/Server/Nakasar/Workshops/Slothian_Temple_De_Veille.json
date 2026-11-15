@@ -54,5 +54,19 @@
         "-1 0 0 0 Furniture_Jungle_Brazier"
       ]
     }
+  ],
+  "Specialties": [
+    {
+      "Id": "Meditation",
+      "NameKey": "nakasar_peuples.workshop.specialty.Slothian_Temple_De_Veille.Meditation",
+      "LineKey": "nakasar_peuples.workshop.specialtyLine.Slothian_Temple_De_Veille.Meditation",
+      "Icon": "Potion_Regen_Mana_Small"
+    },
+    {
+      "Id": "Chroniques",
+      "NameKey": "nakasar_peuples.workshop.specialty.Slothian_Temple_De_Veille.Chroniques",
+      "LineKey": "nakasar_peuples.workshop.specialtyLine.Slothian_Temple_De_Veille.Chroniques",
+      "Icon": "Ingredient_Life_Essence"
+    }
   ]
 }

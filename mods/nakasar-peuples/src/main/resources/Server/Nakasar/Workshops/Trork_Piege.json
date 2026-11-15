@@ -54,5 +54,19 @@
         "-1 0 0 0 Furniture_Crude_Brazier"
       ]
     }
+  ],
+  "Specialties": [
+    {
+      "Id": "Trappeur",
+      "NameKey": "nakasar_peuples.workshop.specialty.Trork_Piege.Trappeur",
+      "LineKey": "nakasar_peuples.workshop.specialtyLine.Trork_Piege.Trappeur",
+      "Icon": "Ingredient_Hide_Light"
+    },
+    {
+      "Id": "Rabatteur",
+      "NameKey": "nakasar_peuples.workshop.specialty.Trork_Piege.Rabatteur",
+      "LineKey": "nakasar_peuples.workshop.specialtyLine.Trork_Piege.Rabatteur",
+      "Icon": "Food_Wildmeat_Raw"
+    }
   ]
 }

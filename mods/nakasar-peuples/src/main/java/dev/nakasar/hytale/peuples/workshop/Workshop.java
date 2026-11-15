@@ -69,6 +69,46 @@ public final class Workshop implements JsonAssetWithMap<String, DefaultAssetMap<
         }
     }
 
+    /**
+     * Une spécialité (étape 3), choisie au niveau II par un joueur de rang Ami, pour tout le village : son nom, sa ligne
+     * de description, son icône vanilla et, pour un enclos, les bêtes qu'elle y met (rôles vanilla Tamed_* ou du mod).
+     */
+    public static final class Specialty {
+        public static final BuilderCodec<Specialty> CODEC = BuilderCodec.builder(Specialty.class, Specialty::new)
+                .append(new KeyedCodec<>("Id", Codec.STRING), (s, v) -> s.id = v, s -> s.id).add()
+                .append(new KeyedCodec<>("NameKey", Codec.STRING), (s, v) -> s.nameKey = v, s -> s.nameKey).add()
+                .append(new KeyedCodec<>("LineKey", Codec.STRING), (s, v) -> s.lineKey = v, s -> s.lineKey).add()
+                .append(new KeyedCodec<>("Icon", Codec.STRING), (s, v) -> s.icon = v, s -> s.icon).add()
+                .append(new KeyedCodec<>("Animals", Codec.STRING_ARRAY), (s, v) -> s.animals = v == null ? new String[0] : v, s -> s.animals).add()
+                .build();
+
+        String id;
+        String nameKey;
+        String lineKey;
+        String icon;
+        String[] animals = new String[0];
+
+        public String id() {
+            return id;
+        }
+
+        public String nameKey() {
+            return nameKey;
+        }
+
+        public String lineKey() {
+            return lineKey;
+        }
+
+        public String icon() {
+            return icon;
+        }
+
+        public String[] animals() {
+            return animals;
+        }
+    }
+
     public static final AssetBuilderCodec<String, Workshop> CODEC = AssetBuilderCodec.builder(Workshop.class, Workshop::new,
                     Codec.STRING, (w, id) -> w.id = id, w -> w.id, (w, data) -> w.data = data, w -> w.data)
             .append(new KeyedCodec<>("People", Codec.STRING), (w, v) -> w.people = v, w -> w.people)
@@ -96,6 +136,19 @@ public final class Workshop implements JsonAssetWithMap<String, DefaultAssetMap<
                     (w, v) -> w.upgrades = v == null ? new Upgrade[0] : v, w -> w.upgrades)
             .documentation("Chantiers d'amélioration vers les niveaux II et III.")
             .add()
+            .append(new KeyedCodec<>("Specialties", new ArrayCodec<>(Specialty.CODEC, Specialty[]::new)),
+                    (w, v) -> w.specialties = v == null ? new Specialty[0] : v, w -> w.specialties)
+            .documentation("Spécialités au choix au niveau II.")
+            .add()
+            .append(new KeyedCodec<>("Livestock", Codec.STRING_ARRAY), (w, v) -> w.livestock = v == null ? new String[0] : v, w -> w.livestock)
+            .documentation("Bêtes de base d'un enclos (niveau I, ou sans spécialité).")
+            .add()
+            .append(new KeyedCodec<>("LivestockCount", Codec.INT_ARRAY), (w, v) -> w.livestockCount = v, w -> w.livestockCount)
+            .documentation("Nombre de bêtes par niveau (I, II, III).")
+            .add()
+            .append(new KeyedCodec<>("Pen", Codec.INT_ARRAY), (w, v) -> w.pen = v, w -> w.pen)
+            .documentation("Intérieur de l'enclos [x0, x1, z0, z1] relatif au cœur.")
+            .add()
             .validator(Workshop::validate)
             .build();
 
@@ -111,6 +164,10 @@ public final class Workshop implements JsonAssetWithMap<String, DefaultAssetMap<
     String nameKey;
     int[] board;
     Upgrade[] upgrades = new Upgrade[0];
+    Specialty[] specialties = new Specialty[0];
+    String[] livestock = new String[0];
+    int[] livestockCount;
+    int[] pen;
 
     Workshop() {
     }
@@ -189,6 +246,45 @@ public final class Workshop implements JsonAssetWithMap<String, DefaultAssetMap<
             }
         }
         return null;
+    }
+
+    public Specialty[] specialties() {
+        return specialties;
+    }
+
+    /** Spécialité `id` du bâtiment, ou null. */
+    public Specialty specialty(String id) {
+        if (id == null) {
+            return null;
+        }
+        for (Specialty s : specialties) {
+            if (s != null && id.equals(s.id)) {
+                return s;
+            }
+        }
+        return null;
+    }
+
+    /** Vrai si le bâtiment est un enclos (il a des bêtes et une emprise). */
+    public boolean isPen() {
+        return livestock.length > 0 && pen != null && pen.length == 4;
+    }
+
+    /** {@code [x0, x1, z0, z1]} de l'intérieur de l'enclos, relatif au cœur, ou null. */
+    public int[] pen() {
+        return isPen() ? pen : null;
+    }
+
+    /** Bêtes de l'enclos au niveau `level` avec la spécialité `specialty` (null : celles de base). */
+    public String[] animals(int level, String specialty) {
+        Specialty s = level >= 2 ? specialty(specialty) : null;
+        return s != null && s.animals.length > 0 ? s.animals : livestock;
+    }
+
+    /** Nombre de bêtes de l'enclos au niveau `level` (3, 5 puis 7). */
+    public int livestockCount(int level) {
+        int[] counts = livestockCount == null || livestockCount.length == 0 ? new int[] {3, 5, 7} : livestockCount;
+        return counts[Math.max(0, Math.min(counts.length - 1, level - 1))];
     }
 
     private static void validate(Workshop w, ValidationResults results) {

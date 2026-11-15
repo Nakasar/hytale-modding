@@ -1291,6 +1291,36 @@ public class ValidateAssets {
                     }
                 }
             }
+            // Étape 3 : spécialités (ids uniques) et bêtes d'enclos (rôle du mod présent, ou rôle vanilla relevé).
+            Set<String> specIds = new HashSet<>();
+            List<String> animals = new ArrayList<>();
+            if (doc.containsKey("Livestock")) {
+                doc.getArray("Livestock").forEach(v -> animals.add(v.asString().getValue()));
+                if (!doc.containsKey("Pen") || doc.getArray("Pen").size() != 4) {
+                    problems.add("enclos sans Pen [x0, x1, z0, z1]");
+                }
+            }
+            if (doc.containsKey("Specialties")) {
+                for (BsonValue v : doc.getArray("Specialties")) {
+                    BsonDocument spec = v.asDocument();
+                    String sid = spec.getString("Id").getValue();
+                    if (!specIds.add(sid)) {
+                        problems.add("spécialité en double " + sid);
+                    }
+                    if (spec.containsKey("Animals")) {
+                        spec.getArray("Animals").forEach(a -> animals.add(a.asString().getValue()));
+                    }
+                }
+            }
+            for (String a : animals) {
+                if (a.startsWith("Nakasar_")) {
+                    if (!Files.isRegularFile(root.resolve("NPC/Roles/Nakasar/Peuples/" + a + ".json"))) {
+                        problems.add("bête : rôle du mod absent " + a);
+                    }
+                } else if (WORKSHOP_NPCS != null && !WORKSHOP_NPCS.contains(a)) {
+                    problems.add("bête : rôle vanilla non relevé " + a + " (tools/vanilla-refs-0.7.2.txt)");
+                }
+            }
             if (e.getValue() < MIN_WORKSHOP_ORDERS) {
                 problems.add(e.getValue() + " commande(s), il en faut au moins " + MIN_WORKSHOP_ORDERS);
             }
@@ -1307,6 +1337,8 @@ public class ValidateAssets {
 
     /** Blocs vanilla connus (tools/vanilla-block-ids-0.7.2.txt), pour le décor des bâtiments de métier, ou null. */
     static Set<String> WORKSHOP_BLOCKS;
+    /** Rôles vanilla relevés ({@code -Drefs}) : bêtes des enclos. */
+    static Set<String> WORKSHOP_NPCS;
 
     /** Commandes d'un bâtiment de métier : de quoi remplir les 3 cases du niveau III sans doublon. */
     static final int MIN_WORKSHOP_ORDERS = 3;
@@ -1336,7 +1368,9 @@ public class ValidateAssets {
                         continue;
                     }
                     String prefab = b.asDocument().getString("Prefab").getValue();
-                    if (!known.contains(prefab)) {
+                    // Prefab du mod (enclos des peuples, tools/generate_pens.py) : présent dans le pack.
+                    boolean mod = prefab.startsWith("Nakasar/") && Files.isRegularFile(root.resolve("Prefabs/" + prefab + ".prefab.json"));
+                    if (!known.contains(prefab) && !mod) {
                         problems.add("prefab vanilla inconnu : " + prefab);
                     }
                 }
@@ -1491,7 +1525,8 @@ public class ValidateAssets {
             }
         }
         // Chaque id rempli par une page Java existe dans chacune de ses mises en page (BoardPage*.ui, WorkshopPage*.ui).
-        for (String[] pageSpec : new String[][] {{"request/BoardPage.java", "BoardPage"}, {"workshop/WorkshopPage.java", "WorkshopPage"}}) {
+        for (String[] pageSpec : new String[][] {{"request/BoardPage.java", "BoardPage"}, {"workshop/WorkshopPage.java", "WorkshopPage"},
+                {"workshop/WorkshopSpecialtyPage.java", "WorkshopSpecialtyPage"}}) {
         Path java = root.getParent().getParent().resolve("java/dev/nakasar/hytale/peuples/" + pageSpec[0]);
         String pageName = pageSpec[1];
         if (Files.isRegularFile(java)) {
@@ -1731,6 +1766,7 @@ public class ValidateAssets {
         if (blockIds != null && Files.isRegularFile(Path.of(blockIds))) {
             WORKSHOP_BLOCKS = new HashSet<>(Files.readAllLines(Path.of(blockIds)));
         }
+        WORKSHOP_NPCS = System.getProperty("refs") == null ? null : vanillaNpcRefs();
         errors += checkWorkshops(root);
         errors += checkMapMarkerIcons(root);
         errors += checkReputation(root);

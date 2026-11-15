@@ -91,6 +91,20 @@
       "MaxY": 5
     },
     {
+      "Id": "Enclos_Oasis",
+      "Tier": 1,
+      "Prefab": "Nakasar/Peuples/Pens/Feran_Pen",
+      "X": -13,
+      "Z": -20,
+      "Rotation": 0,
+      "MinX": -6,
+      "MaxX": 6,
+      "MinZ": -6,
+      "MaxZ": 6,
+      "MinY": 0,
+      "MaxY": 1
+    },
+    {
       "Id": "Hutte_Nord_Ouest",
       "Tier": 2,
       "Prefab": "Npc/Feran/Tier2/Hut/Feran_Tier2_Hut_002",
@@ -263,6 +277,19 @@
       "Home": "Grande_Hutte",
       "HomeX": -21,
       "HomeZ": 22,
+      "Builder": false
+    },
+    {
+      "Id": "Eleveuse",
+      "Tier": 1,
+      "Role": "Nakasar_Peuples_Feran_Breeder",
+      "Dialogue": "Feran_Breeder",
+      "Building": "Enclos_Oasis",
+      "WorkX": -13,
+      "WorkZ": -12,
+      "Home": "Hutte_Ouest",
+      "HomeX": -9,
+      "HomeZ": 0,
       "Builder": false
     },
     {

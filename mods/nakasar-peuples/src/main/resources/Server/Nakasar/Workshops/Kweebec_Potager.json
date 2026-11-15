@@ -55,5 +55,19 @@
         "0 1 0 0 Furniture_Kweebec_Candle"
       ]
     }
+  ],
+  "Specialties": [
+    {
+      "Id": "Maraicher",
+      "NameKey": "nakasar_peuples.workshop.specialty.Kweebec_Potager.Maraicher",
+      "LineKey": "nakasar_peuples.workshop.specialtyLine.Kweebec_Potager.Maraicher",
+      "Icon": "Plant_Crop_Lettuce_Item"
+    },
+    {
+      "Id": "Verger",
+      "NameKey": "nakasar_peuples.workshop.specialty.Kweebec_Potager.Verger",
+      "LineKey": "nakasar_peuples.workshop.specialtyLine.Kweebec_Potager.Verger",
+      "Icon": "Plant_Fruit_Berries_Red"
+    }
   ]
 }

@@ -54,5 +54,19 @@
         "-1 0 0 0 Furniture_Jungle_Brazier"
       ]
     }
+  ],
+  "Specialties": [
+    {
+      "Id": "Braises",
+      "NameKey": "nakasar_peuples.workshop.specialty.Slothian_Etal_Des_Cendres.Braises",
+      "LineKey": "nakasar_peuples.workshop.specialtyLine.Slothian_Etal_Des_Cendres.Braises",
+      "Icon": "Ingredient_Charcoal"
+    },
+    {
+      "Id": "Encens",
+      "NameKey": "nakasar_peuples.workshop.specialty.Slothian_Etal_Des_Cendres.Encens",
+      "LineKey": "nakasar_peuples.workshop.specialtyLine.Slothian_Etal_Des_Cendres.Encens",
+      "Icon": "Furniture_Jungle_Candle"
+    }
   ]
 }

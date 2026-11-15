@@ -105,6 +105,20 @@
       "MaxY": 15
     },
     {
+      "Id": "Bauge_De_Veille",
+      "Tier": 1,
+      "Prefab": "Nakasar/Peuples/Pens/Slothian_Pen",
+      "X": 40,
+      "Z": -13,
+      "Rotation": 3,
+      "MinX": -6,
+      "MaxX": 6,
+      "MinZ": -6,
+      "MaxZ": 6,
+      "MinY": 0,
+      "MaxY": 1
+    },
+    {
       "Id": "Temple_De_Veille",
       "Tier": 2,
       "Prefab": "Monuments/Incidental/Slothian/Land/Temple/Incidental_Slothian_Slothian_Temple_001",
@@ -290,6 +304,19 @@
       "Home": "Maison_Sud_Est",
       "HomeX": 23,
       "HomeZ": 15,
+      "Builder": false
+    },
+    {
+      "Id": "Gardien_Bauge",
+      "Tier": 1,
+      "Role": "Nakasar_Peuples_Slothian_Breeder",
+      "Dialogue": "Slothian_Breeder",
+      "Building": "Bauge_De_Veille",
+      "WorkX": 32,
+      "WorkZ": -13,
+      "Home": "Hutte_Est",
+      "HomeX": 10,
+      "HomeZ": -1,
       "Builder": false
     },
     {

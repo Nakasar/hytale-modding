@@ -54,5 +54,19 @@
         "-1 0 0 0 Furniture_Feran_Torch_Tall"
       ]
     }
+  ],
+  "Specialties": [
+    {
+      "Id": "Lanciers",
+      "NameKey": "nakasar_peuples.workshop.specialty.Feran_Hutte_Pilier.Lanciers",
+      "LineKey": "nakasar_peuples.workshop.specialtyLine.Feran_Hutte_Pilier.Lanciers",
+      "Icon": "Weapon_Spear_Crude"
+    },
+    {
+      "Id": "Coureurs",
+      "NameKey": "nakasar_peuples.workshop.specialty.Feran_Hutte_Pilier.Coureurs",
+      "LineKey": "nakasar_peuples.workshop.specialtyLine.Feran_Hutte_Pilier.Coureurs",
+      "Icon": "Ingredient_Feathers_Light"
+    }
   ]
 }

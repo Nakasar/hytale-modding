@@ -999,3 +999,49 @@ pose l'état, le panneau, les commandes et la jauge ; la montée de niveau (comm
   panneau (`Decor`, seulement dans l'air au-dessus d'un bloc), annonce et titre à l'écran aux joueurs proches.
 - Pas encore de variante de prefab plus grande : le décor suffit tant que les emprises de niveau III ne sont pas
   réservées dans les plans (à voir avec les emplacements de l'étape 6).
+
+## Bâtiments de métier, étape 3 : spécialités et élevage
+
+- **Spécialités** (`Specialties` de l'asset `Workshop`, `tools/generate_workshops.py`) : 3 par enclos, 2 pour les autres
+  bâtiments de métier. Au niveau II, le bouton **« Choisir la spécialité »** du bandeau ouvre `WorkshopSpecialtyPage`
+  (une carte par spécialité, mise en page par peuple). Rang **Ami** (réponse de Kevin, au lieu d'Hôte), pour tout le
+  village, annoncé aux joueurs proches. Changer ensuite est une **reconversion** : une fois tous les 7 jours de jeu, le
+  savoir-faire du niveau retombe à 0 et la commande de maître est à refaire (nouvel id) ; impossible pendant les travaux.
+- **Enclos des quatre autres peuples** au palier 1, prefabs du mod en blocs vanilla seulement
+  (`Server/Prefabs/Nakasar/Peuples/Pens/<Peuple>_Pen`, `tools/generate_pens.py`, 13 × 13, clôture du bois du peuple,
+  barrière tournée vers la place, auge et foin) : fosse aux bêtes trork (-32, 14), enclos de l'oasis feran (-13, -20),
+  bergerie du givre renoncée (-19, -15), bauge de veille slothiane (40, -13). Chacun a son villageois : dresseur trork
+  (rôle vanilla `Trork_Hunter`), éleveuse feran, berger renoncé, gardien de la bauge slothian (rôles et dialogues du mod).
+  `generate_village_layouts.load_bounds` lit les emprises des prefabs du mod ; `ValidateAssets` les accepte.
+- **Bêtes** (`workshop/Livestock`) : 3, 5 puis 7 selon le niveau, celles de base puis celles de la spécialité au niveau
+  II, posées comme les villageois (joueur à moins de 72 blocs, non sauvegardées, point sûr de l'intérieur de l'enclos,
+  attachées à son centre). Rôles vanilla `Tamed_*` d'abord ; sinon rôles du mod sur le modèle vanilla
+  (`Nakasar_Peuples_Pen_{Wolf_Trork,Wolf_White,Tortoise,Archaeopteryx,Trillodon,Snail_Magma}`, Generic, flânent et
+  n'attaquent jamais). **Aucun butin** : le rôle est marqué « butin déjà lâché » dès l'apparition (le système vanilla
+  `NPCDamageSystems.DropDeathItems` saute alors la liste de butin). Pas de régénération (`VillageNoRegenSystem`, 96
+  blocs). Tuée, une bête manque jusqu'au matin ; tuée par un joueur, **-5 de réputation** de village
+  (`LivestockDeathSystem`).
+
+### Nouvelles commandes
+
+- `/village niveauatelier <bâtiment> <niveau>` (admin, test) : met le bâtiment au niveau voulu, savoir-faire à 0,
+  reconversion libre (la spécialité est oubliée sous le niveau II).
+
+### Tester en jeu (étape 3)
+
+1. Près d'un village kweebec au palier 1 ou plus : trois lapins dans l'enclos (`Tamed_Bunny`, `Tamed_Rabbit`, en plus
+   des lapins des marqueurs du prefab vanilla).
+2. `/village niveauatelier Kweebec_Enclos 2`, puis le panneau de l'enclos : bouton « Choisir la spécialité ». Avec le
+   rang Ami (`/village reputation` au besoin), choisir « Bergerie » : annonce, les lapins partent, cinq moutons arrivent.
+3. Rouvrir le choix : les autres cartes disent « encore 7 jour(s) ». `/village niveauatelier Kweebec_Enclos 2` remet la
+   reconversion libre.
+4. Tuer une bête : aucun objet au sol, message de réputation (-5), elle revient le lendemain matin.
+5. Camp trork, oasis feran, hameau renoncé, monastère slothian au palier 1 : l'enclos est collé avec le chantier, le
+   villageois s'y poste, les bêtes de base apparaissent.
+
+### À vérifier en jeu (étape 3)
+
+- Rotation des clôtures, des coins et de la barrière des prefabs d'enclos (relevées dans le prefab vanilla
+  `Kweebec_Oak_Bunny_Area_003`) ; la barrière doit faire face à la place.
+- Animations des rôles du mod (loups, tortue, trillodon, archéoptéryx au sol, escargot de magme).
+- Les moutons restent tondables (récolte vanilla des `Tamed_Sheep`) : à couper si c'est une source gratuite de laine.

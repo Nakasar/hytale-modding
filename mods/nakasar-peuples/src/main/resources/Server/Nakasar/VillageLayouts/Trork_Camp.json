@@ -133,6 +133,20 @@
       "MaxY": 8
     },
     {
+      "Id": "Fosse_Aux_Betes",
+      "Tier": 1,
+      "Prefab": "Nakasar/Peuples/Pens/Trork_Pen",
+      "X": -32,
+      "Z": 14,
+      "Rotation": 1,
+      "MinX": -6,
+      "MaxX": 6,
+      "MinZ": -6,
+      "MaxZ": 6,
+      "MinY": 0,
+      "MaxY": 1
+    },
+    {
       "Id": "Tour_Est",
       "Tier": 2,
       "Prefab": "Npc/Trork/Tier_2/Watchtower/Trork_Tier_2_Watchtower_001",
@@ -319,6 +333,19 @@
       "Home": "Tente_Sud",
       "HomeX": -12,
       "HomeZ": 18,
+      "Builder": false
+    },
+    {
+      "Id": "Dresseur",
+      "Tier": 1,
+      "Role": "Trork_Hunter",
+      "Dialogue": "",
+      "Building": "Fosse_Aux_Betes",
+      "WorkX": -24,
+      "WorkZ": 14,
+      "Home": "Tente_Ouest",
+      "HomeX": -11,
+      "HomeZ": 0,
       "Builder": false
     },
     {

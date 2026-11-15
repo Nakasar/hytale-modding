@@ -176,6 +176,7 @@ public final class PeuplesPlugin extends JavaPlugin {
         entities.registerSystem(new VillageNoRegenSystem());
         entities.registerSystem(new RequestSystem());
         entities.registerSystem(new RequestDeathSystem());
+        entities.registerSystem(new dev.nakasar.hytale.peuples.workshop.LivestockDeathSystem());
         entities.registerSystem(new VillagerUseSystem());
         entities.registerSystem(new dev.nakasar.hytale.peuples.dialogue.DialogueFacingSystem());
         entities.registerSystem(new VillageAttitudeSystem());
@@ -207,6 +208,7 @@ public final class PeuplesPlugin extends JavaPlugin {
         RequestHud.clearAll();
         VillageBlockSystem.clearAll();
         Villagers.clearAll();
+        dev.nakasar.hytale.peuples.workshop.Livestock.clearAll();
         Raids.clearAll();
         MeatOfferings.clearAll();
         Klops.clearAll();

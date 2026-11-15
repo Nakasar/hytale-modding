@@ -54,5 +54,19 @@
         "-1 0 0 0 Furniture_Crude_Brazier"
       ]
     }
+  ],
+  "Specialties": [
+    {
+      "Id": "Rotisserie",
+      "NameKey": "nakasar_peuples.workshop.specialty.Trork_Feu_De_Camp.Rotisserie",
+      "LineKey": "nakasar_peuples.workshop.specialtyLine.Trork_Feu_De_Camp.Rotisserie",
+      "Icon": "Food_Wildmeat_Cooked"
+    },
+    {
+      "Id": "Fosse_De_Combat",
+      "NameKey": "nakasar_peuples.workshop.specialty.Trork_Feu_De_Camp.Fosse_De_Combat",
+      "LineKey": "nakasar_peuples.workshop.specialtyLine.Trork_Feu_De_Camp.Fosse_De_Combat",
+      "Icon": "Weapon_Club_Crude"
+    }
   ]
 }

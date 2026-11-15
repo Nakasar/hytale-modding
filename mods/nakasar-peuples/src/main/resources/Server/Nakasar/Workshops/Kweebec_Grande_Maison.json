@@ -55,5 +55,19 @@
         "0 1 0 0 Furniture_Kweebec_Candle"
       ]
     }
+  ],
+  "Specialties": [
+    {
+      "Id": "Herbes",
+      "NameKey": "nakasar_peuples.workshop.specialty.Kweebec_Grande_Maison.Herbes",
+      "LineKey": "nakasar_peuples.workshop.specialtyLine.Kweebec_Grande_Maison.Herbes",
+      "Icon": "Potion_Health_Small"
+    },
+    {
+      "Id": "Elixirs",
+      "NameKey": "nakasar_peuples.workshop.specialty.Kweebec_Grande_Maison.Elixirs",
+      "LineKey": "nakasar_peuples.workshop.specialtyLine.Kweebec_Grande_Maison.Elixirs",
+      "Icon": "Potion_Stamina_Small"
+    }
   ]
 }

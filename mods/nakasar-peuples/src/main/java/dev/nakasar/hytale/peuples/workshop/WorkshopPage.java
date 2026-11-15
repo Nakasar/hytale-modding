@@ -116,21 +116,28 @@ public final class WorkshopPage extends InteractiveCustomUIPage<WorkshopPage.Eve
         }
         WorkshopState state = village.workshop(w.getId());
         cmd.set("#PageTitle.TextSpans", title(village, w));
-        band(cmd, village, w, state);
+        band(cmd, events, village, w, state);
         orders(cmd, events, store, ref, village, state);
         info(cmd, events, store, village, w, state);
         footer(cmd, events, store, ref, village);
     }
 
-    private void band(UICommandBuilder cmd, Village village, Workshop w, WorkshopState state) {
+    private void band(UICommandBuilder cmd, UIEventBuilder events, Village village, Workshop w, WorkshopState state) {
         if (w.icon() != null) {
             cmd.set("#Icon.ItemId", w.icon());
         }
         cmd.set("#Name.TextSpans", Message.translation(w.nameKey()));
         cmd.set("#Level.TextSpans", Message.translation(KEYS + "level." + state.level()));
         cmd.set("#Keeper.TextSpans", keeperLine(village, w));
-        cmd.set("#Specialty.TextSpans", state.specialty() == null ? Message.translation(KEYS + "noSpecialty")
-                : Message.translation(KEYS + "specialty." + w.getId() + "." + state.specialty()));
+        Workshop.Specialty spec = w.specialty(state.specialty());
+        cmd.set("#Specialty.TextSpans", spec == null ? Message.translation(KEYS + "noSpecialty") : Message.translation(spec.nameKey()));
+        // Étape 3 : le choix de la spécialité s'ouvre au niveau II (la page dit ce qui manque : rang, délai).
+        boolean choose = w.specialties().length > 0 && state.level() >= Workshops.SPECIALTY_LEVEL;
+        cmd.set("#SpecialtyAction.Visible", choose);
+        if (choose) {
+            cmd.set("#SpecialtyAction.Text", Message.translation(KEYS + (spec == null ? "specialtyChoose" : "specialtyChange")));
+            events.addEventBinding(CustomUIEventBindingType.Activating, "#SpecialtyAction", EventData.of("Action", "Specialty"));
+        }
         cmd.set("#KnowledgeCaption.TextSpans", Message.translation(KEYS + "knowledge"));
         int max = Workshops.threshold(state.level());
         if (max <= 0) {
@@ -299,11 +306,18 @@ public final class WorkshopPage extends InteractiveCustomUIPage<WorkshopPage.Eve
         }
         cmd.set("#OffersHeader.TextSpans", Message.translation(KEYS + "offers"));
         VillageLayout.Job job = Workshops.job(village, w);
-        cmd.set("#OffersLine.TextSpans", Message.translation(KEYS + "offersSoon")
-                .param("name", job == null ? Message.translation(w.nameKey()) : keeperName(job)));
+        Message offers = Message.translation(KEYS + "offersSoon")
+                .param("name", job == null ? Message.translation(w.nameKey()) : keeperName(job));
+        cmd.set("#OffersLine.TextSpans", w.isPen() ? Message.empty().insert(offers).insert("\n\n").insert(beastsLine(village, w, state)) : offers);
     }
 
     private static final int MATERIALS = 4;
+
+    /** Ligne de l'enclos : bêtes présentes sur bêtes voulues, retour au matin, réputation perdue. */
+    static Message beastsLine(Village village, Workshop w, WorkshopState state) {
+        return Message.translation(KEYS + "beastsLine").param("count", Livestock.count(village, w))
+                .param("max", w.livestockCount(state.level())).param("rep", -Livestock.KILL_REPUTATION);
+    }
 
     private void materials(UICommandBuilder cmd, Store<EntityStore> store, Village village, Workshop.Upgrade up) {
         World world = store.getExternalData().getWorld();
@@ -361,6 +375,11 @@ public final class WorkshopPage extends InteractiveCustomUIPage<WorkshopPage.Eve
         lines.add(Message.translation(KEYS + "text.header").param("name", Message.translation(w.nameKey()))
                 .param("level", Message.translation(KEYS + "levelShort." + state.level())));
         lines.add(keeperLine(village, w));
+        Workshop.Specialty spec = w.specialty(state.specialty());
+        lines.add(spec == null ? Message.translation(KEYS + "noSpecialty") : Message.translation(spec.nameKey()));
+        if (w.isPen()) {
+            lines.add(beastsLine(village, w, state));
+        }
         int max = Workshops.threshold(state.level());
         lines.add(max > 0 ? Message.translation(KEYS + "text.knowledge").param("value", state.knowledge()).param("max", max)
                 : Message.translation(KEYS + "knowledgeTop"));
@@ -447,6 +466,9 @@ public final class WorkshopPage extends InteractiveCustomUIPage<WorkshopPage.Eve
             Workshops.takeMaster(world, store, ref, playerRef, village, w);
         } else if (action.equals("Upgrade")) {
             Workshops.startUpgrade(world, store, ref, playerRef, village, w);
+        } else if (action.equals("Specialty")) {
+            WorkshopSpecialtyPage.open(store, ref, playerRef, village, w);
+            return;
         } else if (action.equals("TurnIn")) {
             Requests.turnIn(world, store, ref, playerRef, village);
         } else if (action.equals("Text")) {

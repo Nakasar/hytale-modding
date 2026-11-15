@@ -107,9 +107,10 @@ def page(theme_id):
     w(f'            {label("Level", "LabelStyle(FontSize: 15, RenderBold: true, TextColor: #e8c46a, VerticalAlignment: Center)", anchor="Height: 22")}')
     w("            Group {")
     w("              LayoutMode: Left;")
-    w("              Anchor: (Height: 20, Top: 6);")
-    w(f'              @Pill #KeeperPill {{ {label("Keeper", "@RepPillStyle")} }}')
+    w("              Anchor: (Height: 26, Top: 4);")
+    w(f'              @Pill #KeeperPill {{ Anchor: (Height: 20, Right: 6, Top: 3); {label("Keeper", "@RepPillStyle")} }}')
     w(f'              {label("Specialty", "@Small", extra=" FlexWeight: 1;")}')
+    w('              $C.@SmallSecondaryTextButton #SpecialtyAction { @Text = ""; @Anchor = Anchor(Width: 170, Height: 26); }')
     w("            }")
     w("          }")
     w("")
@@ -280,10 +281,93 @@ def page(theme_id):
     return "\n".join(L).replace("Style: LabelStyle(", "Style: (") + "\n"
 
 
+SPECIALTIES = 3            # spécialités au plus par bâtiment (3 pour un enclos, 2 sinon)
+SPEC_WIDTH, SPEC_HEIGHT = 980, 520
+
+
+def specialty_page(theme_id):
+    """Choix de la spécialité (étape 3, maquette « choix de spécialité » du GDD) : une carte par spécialité."""
+    t = THEMES[theme_id]
+    acc, band, title = t["accent"], t["band"], t["title"]
+    emblem = (f'Background: (TexturePath: "{MEMORIES}{t["emblem"]}.png", Color: {acc});' if t["emblem"]
+              else "Visible: false;")
+    L = []
+    w = L.append
+    w('$C = "../../../Common.ui";')
+    w("")
+    w(f"// Généré par tools/generate_workshop_ui.py (thème {theme_id or 'neutre'}) : ne pas modifier à la main.")
+    w("")
+    w(f"@Accent = {acc};")
+    w("@Body = LabelStyle(FontSize: 14, TextColor: #c9d1d9, Wrap: true);")
+    w("@SmallWrap = LabelStyle(FontSize: 13, TextColor: #96a9be, Wrap: true);")
+    w("")
+    w("$C.@PageOverlay {")
+    w("  LayoutMode: Middle;")
+    w("")
+    w("  $C.@DecoratedContainer {")
+    w(f"    Anchor: (Width: {SPEC_WIDTH}, Height: {SPEC_HEIGHT});")
+    w("")
+    w("    #Title {")
+    w("      Group {")
+    w("        LayoutMode: Center;")
+    w(f"        Group #TitleEmblem {{ Anchor: (Width: 26, Height: 26, Right: 8); {emblem} }}")
+    w(f'        Label #PageTitle {{ Style: (...$C.@TitleStyle, FontSize: 16, TextColor: {title}); }}')
+    w("      }")
+    w("    }")
+    w("")
+    w("    #Content {")
+    w("      LayoutMode: Top;")
+    w("      Padding: (Full: 17, Top: 14);")
+    w(f'      {label("Intro", "@Body", anchor="Height: 40, Bottom: 12")}')
+    w("      Group #Cards {")
+    w("        LayoutMode: Left;")
+    w("        FlexWeight: 1;")
+    for i in range(SPECIALTIES):
+        w(f"        Group #Spec{i} {{")
+        w("          LayoutMode: Top;")
+        w("          FlexWeight: 1;")
+        w(f"          Anchor: (Right: {14 if i < SPECIALTIES - 1 else 0});")
+        w("          Padding: (Horizontal: 16, Vertical: 14);")
+        w(f"          Background: (Color: {band}(0.75));")
+        w(f"          Group #SpecStripe{i} {{ Anchor: (Height: 3, Bottom: 12); Background: (Color: {acc}(0.6)); }}")
+        w("          Group {")
+        w("            LayoutMode: Left;")
+        w("            Anchor: (Height: 64);")
+        w("            Group {")
+        w("              LayoutMode: Full;")
+        w("              Anchor: (Width: 64, Height: 64, Right: 14);")
+        w(f'              Background: (TexturePath: "{COMMON}IngredientSlot.png", Border: 24);')
+        w(f"              ItemIcon #SpecIcon{i} {{ Anchor: (Full: 8); }}")
+        w("            }")
+        w(f'            {label(f"SpecName{i}", f"LabelStyle(FontSize: 18, FontName: \"Secondary\", RenderBold: true, RenderUppercase: true, TextColor: {acc}, VerticalAlignment: Center, Wrap: true)", extra=" FlexWeight: 1;")}')
+        w("          }")
+        w(f'          {label(f"SpecLine{i}", "@Body", anchor="Top: 12")}')
+        w("          Group { FlexWeight: 1; }")
+        w(f'          {label(f"SpecState{i}", "LabelStyle(FontSize: 13, RenderBold: true, TextColor: #e8c46a, Wrap: true)", anchor="Height: 36, Bottom: 6")}')
+        w(f'          $C.@SmallSecondaryTextButton #SpecChoose{i} {{ @Text = ""; @Anchor = Anchor(Height: 32); }}')
+        w("        }")
+    w("      }")
+    w("      Group {")
+    w("        LayoutMode: Left;")
+    w("        Anchor: (Height: 44, Top: 12);")
+    w(f'        {label("Rule", "@SmallWrap", extra=" FlexWeight: 1;")}')
+    w('        $C.@SecondaryTextButton #Back { @Text = ""; @Anchor = Anchor(Width: 240); }')
+    w("      }")
+    w("    }")
+    w("  }")
+    w("}")
+    w("")
+    w("$C.@BackButton {}")
+    return "\n".join(L).replace("Style: LabelStyle(", "Style: (") + "\n"
+
+
 def main():
     for theme_id in THEMES:
         name = f"WorkshopPage_{theme_id}.ui" if theme_id else "WorkshopPage.ui"
         (OUT / name).write_text(page(theme_id), encoding="utf-8")
+        print("écrit", name)
+        name = f"WorkshopSpecialtyPage_{theme_id}.ui" if theme_id else "WorkshopSpecialtyPage.ui"
+        (OUT / name).write_text(specialty_page(theme_id), encoding="utf-8")
         print("écrit", name)
 
 

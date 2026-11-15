@@ -28,6 +28,9 @@ OUT = ROOT / "src/main/resources/Server/Nakasar/VillageLayouts"
 PREFABS = Path(__file__).resolve().parent / "vanilla-prefabs-0.7.2.txt"
 # Cœurs de village (place, pièces vanilla par palier, tableau/dépôt/bannière) : tools/generate_village_hearts.py.
 HEARTS = Path(__file__).resolve().parent / "village-hearts.json"
+# Prefabs du mod collés comme des bâtiments (enclos des peuples) : Server/Prefabs/Nakasar/Peuples/Pens.
+MOD_PREFABS = ROOT / "src/main/resources/Server/Prefabs/Nakasar/Peuples/Pens"
+PEN = "Nakasar/Peuples/Pens/"
 
 # Écart minimal entre deux emprises (blocs) : le Java aplanit chaque emprise avec une marge de 2 blocs et un fondu.
 MARGIN = 3
@@ -111,6 +114,8 @@ LAYOUTS["Trork_Camp"] = {
         ("Piege", 1, TRORK + "Trap/Trork_Trap_Trork_Trap_001", 22, 22, 0),
         ("Reserve", 1, TRORK + "Tier_2/Store/Trork_Tier_2_Store_001", 18, -18, 0),
         ("Tente_Sud", 1, TRORK + "Tent/Trork_Tent_001", -18, 18, 0),
+        # Bâtiments de métier, étape 3 : la fosse aux bêtes du dresseur (enclos du mod en blocs vanilla, barrière à l'est).
+        ("Fosse_Aux_Betes", 1, PEN + "Trork_Pen", -32, 14, 1),
         # Palier 2 : la grande tour, l'entrepôt, le bric-à-brac.
         ("Tour_Est", 2, TRORK + "Tier_2/Watchtower/Trork_Tier_2_Watchtower_001", 34, 0, 0),
         ("Entrepot", 2, TRORK + "Warehouse/Trork_Warehouse_Trork_Warehouse_001", -34, 0, 0),
@@ -130,6 +135,7 @@ LAYOUTS["Trork_Camp"] = {
         ("Garde", 0, "@Trork_Guard", "Tour_De_Guet", "front", "Tente_Est"),
         ("Guerrier", 0, "@Trork_Warrior", "Feu_De_Camp", "front", "Tente_Ouest"),
         ("Chasseur", 1, "@Trork_Hunter", "Piege", "front", "Tente_Sud"),
+        ("Dresseur", 1, "@Trork_Hunter", "Fosse_Aux_Betes", "front", "Tente_Ouest"),
         ("Cogneur", 2, "@Trork_Brawler", "Entrepot", "front", "Entrepot"),
         ("Sentinelle", 2, "@Trork_Sentry", "Tour_Est", "front", "Tour_Est"),
         ("Shaman", 3, "@Trork_Shaman", "Reserve_Du_Chef", "front", "Reserve_Du_Chef"),
@@ -148,6 +154,12 @@ def load_bounds():
             bounds[parts[0]] = tuple(int(v) for v in parts[1:])
         else:
             bounds[parts[0]] = None
+    # Prefabs du mod (enclos des peuples, tools/generate_pens.py) : bornes lues dans le fichier.
+    for f in sorted(MOD_PREFABS.glob("**/*.prefab.json")):
+        blocks = json.loads(f.read_text(encoding="utf-8"))["blocks"]
+        xs, ys, zs = [b["x"] for b in blocks], [b["y"] for b in blocks], [b["z"] for b in blocks]
+        key = f.relative_to(MOD_PREFABS.parent.parent.parent).as_posix()[: -len(".prefab.json")]
+        bounds[key] = (min(xs), max(xs), min(ys), max(ys), min(zs), max(zs))
     return bounds
 
 

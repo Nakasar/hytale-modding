@@ -54,5 +54,19 @@
         "-1 0 0 0 Furniture_Jungle_Brazier"
       ]
     }
+  ],
+  "Specialties": [
+    {
+      "Id": "Lances",
+      "NameKey": "nakasar_peuples.workshop.specialty.Slothian_Porte_Du_Monastere.Lances",
+      "LineKey": "nakasar_peuples.workshop.specialtyLine.Slothian_Porte_Du_Monastere.Lances",
+      "Icon": "Rock_Volcanic"
+    },
+    {
+      "Id": "Veilleurs",
+      "NameKey": "nakasar_peuples.workshop.specialty.Slothian_Porte_Du_Monastere.Veilleurs",
+      "LineKey": "nakasar_peuples.workshop.specialtyLine.Slothian_Porte_Du_Monastere.Veilleurs",
+      "Icon": "Furniture_Jungle_Torch"
+    }
   ]
 }

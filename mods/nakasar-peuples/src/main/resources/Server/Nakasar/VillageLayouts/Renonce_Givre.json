@@ -91,6 +91,20 @@
       "MaxY": 6
     },
     {
+      "Id": "Bergerie_Du_Givre",
+      "Tier": 1,
+      "Prefab": "Nakasar/Peuples/Pens/Renonce_Pen",
+      "X": -19,
+      "Z": -15,
+      "Rotation": 1,
+      "MinX": -6,
+      "MaxX": 6,
+      "MinZ": -6,
+      "MaxZ": 6,
+      "MinY": 0,
+      "MaxY": 1
+    },
+    {
       "Id": "Grande_Maison_Givre",
       "Tier": 2,
       "Prefab": "Npc/Outlander/Houses/Tier2/Outlander_Houses_Tier2_003",
@@ -263,6 +277,19 @@
       "Home": "Maison_Du_Chasseur",
       "HomeX": 19,
       "HomeZ": 14,
+      "Builder": false
+    },
+    {
+      "Id": "Berger",
+      "Tier": 1,
+      "Role": "Nakasar_Peuples_Renonce_Breeder",
+      "Dialogue": "Renonce_Breeder",
+      "Building": "Bergerie_Du_Givre",
+      "WorkX": -11,
+      "WorkZ": -15,
+      "Home": "Abri_Des_Fuyards",
+      "HomeX": -9,
+      "HomeZ": 0,
       "Builder": false
     },
     {

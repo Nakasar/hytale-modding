@@ -1,0 +1,104 @@
+{
+  "$Comment": "Bâtiment de métier généré par tools/generate_workshops.py (ne pas modifier à la main) : voir dev.nakasar.hytale.peuples.workshop.Workshop.",
+  "People": "Renonce",
+  "Layout": "Renonce_Givre",
+  "Building": "Bergerie_Du_Givre",
+  "Job": "Berger",
+  "Icon": "Ingredient_Fabric_Scrap_Wool",
+  "NameKey": "nakasar_peuples.workshop.Renonce_Bergerie_Du_Givre.name",
+  "Board": [
+    -12,
+    -12,
+    1
+  ],
+  "Upgrades": [
+    {
+      "Level": 2,
+      "Hours": 12,
+      "Materials": [
+        {
+          "ItemId": "Wood_Fir_Trunk",
+          "Quantity": 24
+        },
+        {
+          "ItemId": "Wood_Hardwood_Planks",
+          "Quantity": 16
+        },
+        {
+          "ItemId": "Rock_Stone_Cobble",
+          "Quantity": 12
+        }
+      ],
+      "Decor": [
+        "1 0 0 0 Furniture_Lumberjack_Lantern"
+      ]
+    },
+    {
+      "Level": 3,
+      "Hours": 12,
+      "Materials": [
+        {
+          "ItemId": "Wood_Fir_Trunk",
+          "Quantity": 32
+        },
+        {
+          "ItemId": "Ingredient_Bolt_Wool",
+          "Quantity": 6
+        },
+        {
+          "ItemId": "Ingredient_Ice_Essence",
+          "Quantity": 6
+        }
+      ],
+      "Decor": [
+        "-1 0 0 0 Furniture_Lumberjack_Lantern"
+      ]
+    }
+  ],
+  "Livestock": [
+    "Tamed_Mouflon",
+    "Tamed_Mouflon_Lamb"
+  ],
+  "LivestockCount": [
+    3,
+    5,
+    7
+  ],
+  "Pen": [
+    -23,
+    -15,
+    -19,
+    -11
+  ],
+  "Specialties": [
+    {
+      "Id": "Bisons",
+      "NameKey": "nakasar_peuples.workshop.specialty.Renonce_Bergerie_Du_Givre.Bisons",
+      "LineKey": "nakasar_peuples.workshop.specialtyLine.Renonce_Bergerie_Du_Givre.Bisons",
+      "Icon": "Food_Beef_Raw",
+      "Animals": [
+        "Tamed_Bison",
+        "Tamed_Bison_Calf"
+      ]
+    },
+    {
+      "Id": "Sangliers",
+      "NameKey": "nakasar_peuples.workshop.specialty.Renonce_Bergerie_Du_Givre.Sangliers",
+      "LineKey": "nakasar_peuples.workshop.specialtyLine.Renonce_Bergerie_Du_Givre.Sangliers",
+      "Icon": "Food_Wildmeat_Raw",
+      "Animals": [
+        "Tamed_Boar",
+        "Tamed_Boar_Piglet"
+      ]
+    },
+    {
+      "Id": "Loups_Blancs",
+      "NameKey": "nakasar_peuples.workshop.specialty.Renonce_Bergerie_Du_Givre.Loups_Blancs",
+      "LineKey": "nakasar_peuples.workshop.specialtyLine.Renonce_Bergerie_Du_Givre.Loups_Blancs",
+      "Icon": "Ingredient_Hide_Heavy",
+      "Animals": [
+        "Nakasar_Peuples_Pen_Wolf_White"
+      ]
+    }
+  ]
+}

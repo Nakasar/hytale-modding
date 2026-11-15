@@ -55,5 +55,19 @@
         "0 1 0 0 Furniture_Kweebec_Candle"
       ]
     }
+  ],
+  "Specialties": [
+    {
+      "Id": "Source",
+      "NameKey": "nakasar_peuples.workshop.specialty.Kweebec_Puits.Source",
+      "LineKey": "nakasar_peuples.workshop.specialtyLine.Kweebec_Puits.Source",
+      "Icon": "Ingredient_Water_Essence"
+    },
+    {
+      "Id": "Vivier",
+      "NameKey": "nakasar_peuples.workshop.specialty.Kweebec_Puits.Vivier",
+      "LineKey": "nakasar_peuples.workshop.specialtyLine.Kweebec_Puits.Vivier",
+      "Icon": "Food_Fish_Raw"
+    }
   ]
 }

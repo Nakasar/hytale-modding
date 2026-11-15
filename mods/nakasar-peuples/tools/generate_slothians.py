@@ -82,6 +82,8 @@ SPEC = {
             ("Maison_Nord_Ouest", 1, DIS + "House/Medium/Slothian_Disabled_House_Medium_001", -24, -24, 0),
             ("Maison_Sud_Est", 1, DIS + "House/Medium/Slothian_Disabled_House_Medium_002", 24, 26, 0),
             ("Porte_Du_Monastere", 1, DIS + "Gate/Slothian_Disabled_Gate_001", 0, 32, 0),
+            # Bâtiments de métier, étape 3 : la bauge de veille (enclos du mod en blocs vanilla, barrière à l'ouest).
+            ("Bauge_De_Veille", 1, gl.PEN + "Slothian_Pen", 40, -13, 3),
             # Palier 2 : le temple de veille (étape 4 de la chaîne), la grande maison, la hutte du nord.
             ("Temple_De_Veille", 2, MON + "Temple/Incidental_Slothian_Slothian_Temple_001", 26, -26, 0),
             ("Grande_Maison_Slothian", 2, DIS + "House/Medium/Tall/Slothian_Disabled_House_Medium_Tall_001", -26, 26, 0),
@@ -103,6 +105,7 @@ SPEC = {
             ("Guetteur", 0, "Watcher", "Affut", "front", "Hutte_Ouest"),
             ("Porteur_Cendres", 0, "AshBearer", "Etal_Des_Cendres", "front", "Hutte_Ouest"),
             ("Garde", 1, "Guard", "Porte_Du_Monastere", "front", "Maison_Sud_Est"),
+            ("Gardien_Bauge", 1, "Breeder", "Bauge_De_Veille", "front", "Hutte_Est"),
             ("Moine", 2, "Monk", "Temple_De_Veille", "front", "Hutte_Nord"),
             ("Doyen", 3, "Elder", "Monastere", "front", "Monastere"),
         ],
@@ -114,6 +117,7 @@ SPEC = {
         ("Watcher", "Slothian_Scout", "IdlePassive", 2),
         ("AshBearer", "Slothian_Villager", "Crouch", 2),
         ("Guard", "Slothian_Warrior", "IdlePassive", 3),
+        ("Breeder", "Slothian_Villager", "Crouch", 4),
         ("Monk", "Slothian_Monk", "SitGround", 2),
         ("Elder", "Slothian_Elder", "Sit", 2),
     ],
@@ -440,6 +444,10 @@ JOBS = {
               "auxArmes": ("Le Vide ! Tiens la porte… avec moi !", "The Void! Hold the gate… with me!"),
               "rumeur": ("Des squelettes brûlés… marchent la nuit. Ils sentent… nos feux.",
                          "Burnt skeletons… walk at night. They smell… our fires.")},
+    "Breeder": {"npc": ("Pas-Tranquille", "Quietstep"), "role": ("Gardien de la bauge", "Pen keeper"),
+                "accueil": ("Lentement… les bêtes n'aiment pas… les gestes vifs.", "Slowly… the beasts don't like… quick moves."),
+                "metier": ("Je garde la bauge… Des porcs, des plumes, des coquilles qui brûlent… Tout sert… à la veille.",
+                           "I keep the pen… Pigs, feathers, shells that burn… Everything serves… the vigil.")},
     "Monk": {"npc": ("Frère Souffle", "Brother Breath"), "role": ("Moine", "Monk"),
              "accueil": ("Assieds-toi… respire. Le Vide… déteste le calme.", "Sit… breathe. The Void… hates calm."),
              "metier": ("Je veille… au temple. Tant qu'un moine veille… la faille dort.",
@@ -525,6 +533,7 @@ def texts():
                            "Chief": ("Abbé du monastère", "Monastery abbot"), "Defender": ("Gardien slothian", "Slothian warden"),
                            "Builder": ("Bâtisseur slothian", "Slothian builder"), "Watcher": ("Guetteur slothian", "Slothian watcher"),
                            "AshBearer": ("Porteur de cendres", "Ash bearer"), "Guard": ("Garde slothian", "Slothian guard"),
+                           "Breeder": ("Gardien de la bauge", "Pen keeper"),
                            "Monk": ("Moine slothian", "Slothian monk"), "Elder": ("Doyenne slothiane", "Slothian dean")}.items():
         t(f"npc.{PID}_{kind}.name", fr, en)
     for bid, fr, en in [("Hutte_Ouest", None, None), ("Hutte_Est", None, None),
@@ -534,11 +543,13 @@ def texts():
                         ("Porte_Du_Monastere", "Porte du monastère", "Monastery gate"),
                         ("Temple_De_Veille", "Temple de veille", "Vigil temple"),
                         ("Grande_Maison_Slothian", "Grande maison", "Great house"), ("Hutte_Nord", "Hutte du nord", "North hut"),
-                        ("Monastere", "Monastère", "Monastery"), ("Porte_Riche", "Porte des pèlerins", "Pilgrims' gate")]:
+                        ("Monastere", "Monastère", "Monastery"), ("Porte_Riche", "Porte des pèlerins", "Pilgrims' gate"),
+                        ("Bauge_De_Veille", "Bauge de veille", "Vigil pen")]:
         if fr:
             t(f"building.{bid}", fr, en)
     t("job.Porteur_Cendres", "Porteur de cendres", "Ash bearer")
     t("job.Moine", "Moine", "Monk")
+    t("job.Gardien_Bauge", "Gardien de la bauge", "Pen keeper")
     t("job.Doyen", "Doyenne du monastère", "Dean of the monastery")
     t(f"dialogue.hint.reward.{PID}", "reçois la Veille des Slothians", "receive the Slothian Vigil")
     t(f"dialogue.hint.chainGive.{PID}", "rend 16 Cendres (étape 1 de la chaîne)", "hand over 16 Ash (chain step 1)")

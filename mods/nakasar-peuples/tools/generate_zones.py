@@ -94,6 +94,8 @@ PEOPLES = {
                 ("Grande_Hutte", 1, FERAN_T2 + "Hut/Feran_Tier2_Hut_001", -32, 22, 0),
                 ("Entree_Oasis", 1, FERAN_T2 + "Entrance/Feran_Tier2_Entrance_001", 0, 22, 0),
                 ("Hutte_Sud", 1, FERAN_T3 + "Huts/Feran_Tier3_Huts_001", 18, 22, 0),
+                # Bâtiments de métier, étape 3 : l'enclos de l'oasis (enclos du mod en blocs vanilla, barrière au sud).
+                ("Enclos_Oasis", 1, gl.PEN + "Feran_Pen", -13, -20, 0),
                 # Palier 2 : hutte du nord-ouest, hutte sur pilier, hutte du sud-est.
                 ("Hutte_Nord_Ouest", 2, FERAN_T2 + "Hut/Feran_Tier2_Hut_002", -32, -24, 0),
                 ("Hutte_Pilier", 2, OASIS + "Pillar_Hut/Feran_Tier3_Hut_001", 34, 0, 0),
@@ -113,6 +115,7 @@ PEOPLES = {
                 ("Batisseur", 0, "Builder", None, None, "Hutte_Est"),
                 ("Guetteur", 0, "Watcher", "Muret_Du_Vent", "front", "Hutte_Ouest"),
                 ("Porteuse_Eau", 1, "WellKeeper", "Entree_Oasis", "front", "Grande_Hutte"),
+                ("Eleveuse", 1, "Breeder", "Enclos_Oasis", "front", "Hutte_Ouest"),
                 ("Garde", 2, "Guard", "Hutte_Pilier", "front", "Hutte_Nord_Ouest"),
                 ("Ancien", 3, "Elder", "Hutte_Du_Chef", "front", "Hutte_Du_Chef"),
             ],
@@ -123,6 +126,7 @@ PEOPLES = {
             ("Builder", "Feran_Burrower", "Crouch", 2),
             ("Watcher", "Feran_Sharptooth", "Alerted", 2),
             ("WellKeeper", "Feran_Civilian", "Crouch", 2),
+            ("Breeder", "Feran_Burrower", "Crouch", 4),
             ("Guard", "Feran_Longtooth", "Alerted", 3),
             ("Elder", "Feran_Windwalker", "Sit", 2),
         ],
@@ -159,6 +163,8 @@ PEOPLES = {
                 ("Maison_Des_Repentis", 1, OUT + "Houses/Tier1/Outlander_Houses_Tier1_002", -18, 22, 0),
                 ("Maison_Du_Chasseur", 1, OUT + "Houses/Tier1/Outlander_Houses_Tier1_005", 18, 22, 0),
                 ("Petit_Bateau", 1, OUT + "Boats/Small/Outlander_Boats_Small_001", 0, 26, 0),
+                # Bâtiments de métier, étape 3 : la bergerie du givre (enclos du mod en blocs vanilla, barrière à l'est).
+                ("Bergerie_Du_Givre", 1, gl.PEN + "Renonce_Pen", -19, -15, 1),
                 # Palier 2 : la grande maison, la tour du fort, le grand bateau.
                 ("Grande_Maison_Givre", 2, OUT + "Houses/Tier2/Outlander_Houses_Tier2_003", -36, -14, 0),
                 ("Tour_Du_Fort", 2, OUT + "Towers/Tier2/Outlander_Towers_Tier2_001", 30, -12, 0),
@@ -178,6 +184,7 @@ PEOPLES = {
                 ("Batisseur", 0, "Builder", None, None, "Abri_Des_Fuyards"),
                 ("Guetteur", 0, "Watcher", "Tour_De_Guet_Givre", "front", "Abri_Du_Guet"),
                 ("Chasseur", 1, "Hunter", "Maison_Du_Chasseur", "front", "Maison_Du_Chasseur"),
+                ("Berger", 1, "Breeder", "Bergerie_Du_Givre", "front", "Abri_Des_Fuyards"),
                 ("Garde", 2, "Guard", "Tour_Du_Fort", "front", "Grande_Maison_Givre"),
                 ("Ancien", 3, "Elder", "Maison_Du_Sorcier", "front", "Maison_Du_Sorcier"),
             ],
@@ -187,6 +194,7 @@ PEOPLES = {
             ("Builder", "Outlander_Peon", "Kneel", 2),
             ("Watcher", "Outlander_Hunter", "Alerted", 2),
             ("Hunter", "Outlander_Hunter", "Eat", 3),
+            ("Breeder", "Outlander_Peon", "Kneel", 4),
             ("Guard", "Outlander_Hunter", "Alerted", 3),
             ("Elder", "Outlander_Sorcerer", "Kneel", 2),
         ],
@@ -899,12 +907,14 @@ def texts():
                   "Chief": ("Cheffe feran", "Feran chieftain"), "Defender": ("Garde Longtooth", "Longtooth guard"),
                   "Builder": ("Bâtisseur feran", "Feran builder"), "Watcher": ("Guetteur feran", "Feran watcher"),
                   "WellKeeper": ("Porteuse d'eau feran", "Feran water carrier"), "Guard": ("Garde feran", "Feran guard"),
+                  "Breeder": ("Éleveuse feran", "Feran herder"),
                   "Elder": ("Ancien feran", "Feran elder")},
         "Renonce": {"Crier": ("Crieur renoncé", "Forsworn crier"), "Lookout": ("Guetteuse renoncée", "Forsworn lookout"),
                     "Captive": ("Fuyard renoncé", "Forsworn fugitive"), "Merchant": ("Marchand renoncé", "Forsworn merchant"),
                     "Chief": ("Sorcier renoncé", "Forsworn sorcerer"), "Defender": ("Chasseur de garde", "Hunter on guard"),
                     "Builder": ("Bâtisseur renoncé", "Forsworn builder"), "Watcher": ("Guetteuse renoncée", "Forsworn watcher"),
                     "Hunter": ("Chasseur renoncé", "Forsworn hunter"), "Guard": ("Garde renoncé", "Forsworn guard"),
+                    "Breeder": ("Berger renoncé", "Forsworn shepherd"),
                     "Elder": ("Ancienne renoncée", "Forsworn elder")},
     }
     for pid, d in npcs.items():
@@ -925,9 +935,12 @@ def texts():
         ("Grande_Maison_Givre", "Grande maison", "Great house"), ("Tour_Du_Fort", "Tour du fort", "Fort tower"),
         ("Grand_Bateau", "Grand bateau", "Large boat"), ("Maison_Du_Sorcier", "Maison du Sorcier", "Sorcerer's house"),
         ("Totem_Brise", "Totem brisé", "Broken totem"),
+        ("Enclos_Oasis", "Enclos de l'oasis", "Oasis pen"), ("Bergerie_Du_Givre", "Bergerie du givre", "Frost fold"),
     ]:
         t(f"building.{bid}", fr, en)
     t("job.Porteuse_Eau", "Porteuse d'eau", "Water carrier")
+    t("job.Eleveuse", "Éleveuse", "Herder")
+    t("job.Berger", "Berger", "Shepherd")
     # job.Chasseur : déjà posé par l'étape 7 (chasseur trork).
     t("dialogue.hint.reward.Feran", "reçois le Bracelet de vent", "receive the Wind Bracelet")
     t("dialogue.hint.reward.Renonce", "reçois le Manteau du givre", "receive the Frost Mantle")
@@ -1037,6 +1050,11 @@ JOB_TEXTS = {
                        "accueil": ("Chaque goutte compte, voyageur. Chaque goutte.", "Every drop counts, traveller. Every drop."),
                        "metier": ("Je porte l'eau de la source aux huttes. Sans eau, pas de Feran. Bois à l'ombre, jamais au soleil.",
                                   "I carry water from the spring to the huts. Without water, no Feran. Drink in the shade, never in the sun.")},
+        "Breeder": {"npc": ("Plume-Douce", "Softfeather"), "role": ("Éleveuse", "Herder"),
+                    "accueil": ("Doucement près de l'enclos : mes poules pondent mieux dans le calme.",
+                                "Gently near the pen: my hens lay better in the calm."),
+                    "metier": ("J'élève les bêtes de l'oasis. Des œufs, du cuir, de la laine : rien ne se perd au désert.",
+                               "I raise the oasis beasts. Eggs, leather, wool: nothing goes to waste in the desert.")},
         "Guard": {"npc": ("Longue-Dent", "Longfang"), "role": ("Garde", "Guard"),
                   "accueil": ("Halte. L'oasis te tolère, moi je te surveille.", "Halt. The oasis tolerates you; I watch you."),
                   "metier": ("Je tiens la porte de l'oasis. Ma lance a goûté la chitine plus souvent que le pain.",
@@ -1067,6 +1085,11 @@ JOB_TEXTS = {
                    "accueil": ("Tu marches trop fort. Le gibier t'entend, et le culte aussi.", "You walk too loud. The game hears you, and so does the cult."),
                    "metier": ("Je chasse pour le hameau. Sans viande, le froid gagne. Ne reste jamais loin d'un feu.",
                               "I hunt for the hamlet. Without meat, the cold wins. Never stray far from a fire.")},
+        "Breeder": {"npc": ("Laine-Grise", "Greywool"), "role": ("Berger", "Shepherd"),
+                    "accueil": ("Ferme la barrière derrière toi. Les mouflons connaissent le chemin du nord.",
+                                "Close the gate behind you. The mouflons know the way north."),
+                    "metier": ("Je garde le troupeau du hameau. Leur laine nous tient chaud, leur lait nous tient debout.",
+                               "I keep the hamlet's flock. Their wool keeps us warm, their milk keeps us standing.")},
         "Guard": {"npc": ("Dos-Large", "Broadback"), "role": ("Garde", "Guard"),
                   "accueil": ("Tu es avec nous, ou avec eux ? Réponds vite.", "Are you with us, or with them? Answer fast."),
                   "metier": ("Je tiens la tour du fort. J'ai porté leurs couleurs, autrefois. Plus jamais.",

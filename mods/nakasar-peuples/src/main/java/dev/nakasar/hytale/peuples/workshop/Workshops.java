@@ -51,6 +51,12 @@ public final class Workshops {
     public static final int MAX_FOLLOWED = 3;
     /** Rang à partir duquel on prend une commande de bâtiment. */
     public static final Rank TAKE_RANK = Rank.TOLERE;
+    /** Rang qu'il faut pour choisir ou changer la spécialité d'un bâtiment (étape 3 ; Kevin : « Ami suffira »). */
+    public static final Rank SPECIALTY_RANK = Rank.AMI;
+    /** Niveau où se choisit la spécialité. */
+    public static final int SPECIALTY_LEVEL = 2;
+    /** Jours de jeu entre deux reconversions d'un bâtiment. */
+    public static final int RECONVERT_DAYS = 7;
 
     private Workshops() {
     }
@@ -522,6 +528,74 @@ public final class Workshops {
                 // Ligne mal formée : ValidateAssets la signale.
             }
         }
+    }
+
+    // ---- Spécialités (étape 3) ----
+
+    /** Pourquoi le joueur ne peut pas (re)choisir la spécialité : clé de message, ou null s'il le peut. */
+    public static Message specialtyBlock(Store<EntityStore> store, Ref<EntityStore> ref, Village village, WorkshopState ws) {
+        if (ws.level() < SPECIALTY_LEVEL) {
+            return Message.translation(KEYS + "specialtyLevel");
+        }
+        if (!Reputations.rank(store, ref, village).atLeast(SPECIALTY_RANK)) {
+            return Message.translation(KEYS + "specialtyRank").param("rank", Message.translation(SPECIALTY_RANK.nameKey()));
+        }
+        if (ws.upgrading()) {
+            return Message.translation(KEYS + "specialtyWorks");
+        }
+        int left = reconvertDaysLeft(store, ws);
+        if (ws.specialty() != null && left > 0) {
+            return Message.translation(KEYS + "specialtyCooldown").param("days", left);
+        }
+        return null;
+    }
+
+    /** Jours avant la prochaine reconversion possible (0 : maintenant). */
+    public static int reconvertDaysLeft(Store<EntityStore> store, WorkshopState ws) {
+        if (ws.reconverted() == Long.MIN_VALUE) {
+            return 0;
+        }
+        return (int) Math.max(0, ws.reconverted() + RECONVERT_DAYS - GameClock.day(store));
+    }
+
+    /**
+     * Le joueur choisit la spécialité `specialtyId` du bâtiment (niveau II, rang Ami), pour tout le village. Changer une
+     * spécialité déjà choisie est une reconversion : une fois tous les {@value #RECONVERT_DAYS} jours, le savoir-faire du
+     * niveau retombe à 0 et la commande de maître est à refaire. Les bêtes de l'enclos changent aussitôt.
+     */
+    public static boolean chooseSpecialty(World world, Store<EntityStore> store, Ref<EntityStore> ref, PlayerRef player, Village village,
+                                          Workshop w, String specialtyId) {
+        WorkshopState ws = village.workshop(w.getId());
+        Workshop.Specialty spec = w.specialty(specialtyId);
+        if (spec == null) {
+            player.sendMessage(Message.translation(KEYS + "specialtyUnknown").param("id", String.valueOf(specialtyId)));
+            return false;
+        }
+        if (spec.id().equals(ws.specialty())) {
+            return false;
+        }
+        Message block = specialtyBlock(store, ref, village, ws);
+        if (block != null) {
+            player.sendMessage(block);
+            return false;
+        }
+        boolean reconvert = ws.specialty() != null;
+        ws.setSpecialty(spec.id());
+        if (reconvert) {
+            ws.setReconverted(GameClock.day(store));
+            ws.setKnowledge(0);
+            ws.setMasterDone(false);
+            ws.nextRound();
+        }
+        draw(store, village, w, ws, true);
+        Livestock.changed(store, village, w);
+        Message m = Message.translation(KEYS + (reconvert ? "specialtyConverted" : "specialtyChosen"))
+                .param("player", player.getUsername()).param("building", Message.translation(w.nameKey()))
+                .param("specialty", Message.translation(spec.nameKey()));
+        Chantiers.announce(world, village, m, null, NotificationStyle.Success);
+        PeuplesPlugin.get().getLogger().atInfo().log("Peuples : %s choisit la spécialité %s pour %s (%s, reconversion %s)",
+                player.getUsername(), spec.id(), w.getId(), village.name(), reconvert);
+        return true;
     }
 
     /** Ligne de type d'une commande pour la version texte. */
