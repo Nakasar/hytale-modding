@@ -1302,6 +1302,26 @@ Les tas de rondins et de pierres à côté des scieries et des mines sont les pr
 - Les cibles des commandes de chasse apparaissent autour du village, pas de l'avant-poste.
 - Les Feran n'ont qu'une petite hutte vanilla (`Tier3_Huts_001`) : cinq de leurs avant-postes se ressemblent.
 
+## Quête « Baliser une route » (`request/RouteQuests`)
+
+Kevin (2026-11-15) : au lieu de générer des routes, une demande de village invite le joueur à en baliser une. Type
+`Route` (`RequestType.ROUTE`), un modèle par peuple `<Peuple>_Route_Build` (`tools/generate_quests.py`, palier 0 et
+plus, 25 d'essor, 4 faveurs).
+
+- **Cible** (`RouteQuests.choose`, tirée au tableau et à la prise) : la plus proche, parmi les avant-postes bâtis du
+  village et les villages non rivaux entre `MinDistance` (48) et `MaxDistance` (700), dont la route n'est pas encore
+  complète. Gardée dans `PlayerRequest.target` (`annex:<bâtiment>` ou `village:<id>`). Rien à relier : le modèle n'est
+  pas tiré.
+- **Bouts** : sortie de l'avant-poste et dépôt du village, comme le convoi (`Convoys.ends`) ; cœur à cœur entre deux
+  villages, comme `world/Links`.
+- **Avancement** : `Routes.gap` = plus courte distance entre ce qui est relié au départ et ce qui est relié à
+  l'arrivée (balises et cœurs, liens de 32 blocs), moins 32. Recalculé quand `beaconVersion` change. La tâche affiche
+  ce reste ; une notification à chaque gain de 24 blocs. Remplie dès que le reste vaut 0, où que soit le joueur.
+- **Départ** : `ItemId` × `Quantity` (4 balises) donnés à la prise.
+
+À vérifier en jeu : tirage de la demande quand un avant-poste est bâti, reste affiché qui baisse en posant les balises,
+remplissage à la dernière balise.
+
 ## Monde vivant (`world/`)
 
 Kevin (2026-11-15), proposition détaillée https://claude.ai/artifact/RZZyBJ4p8Q8Mk5WreHoxtv, six volets dans une seule

@@ -1,0 +1,16 @@
+{
+  "$Comment": "Demande du tableau d'un village Feran (Route), générée par tools/generate_quests.py : voir RequestTemplate et request/Expeditions.",
+  "People": "Feran",
+  "Type": "Route",
+  "MinTier": 0,
+  "MaxTier": 3,
+  "Weight": 1,
+  "TitleKey": "nakasar_peuples.request.Feran_Route_Build.title",
+  "TaskKey": "nakasar_peuples.request.Feran_Route_Build.task",
+  "ItemId": "Nakasar_Peuples_Route_Beacon",
+  "Quantity": 4,
+  "MinDistance": 48,
+  "MaxDistance": 700,
+  "Essor": 25,
+  "Favors": 4
+}

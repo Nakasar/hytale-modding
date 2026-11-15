@@ -359,7 +359,7 @@ public final class RequestTemplate implements JsonAssetWithMap<String, DefaultAs
         return switch (t) {
             case GATHER, CRAFT, PLANT, DESTROY -> Math.max(1, quantity);
             case HUNT -> Math.max(1, spawns.length);
-            case DELIVERY, ESCORT, DEFENSE, CARAVAN, HARVEST, BOSS -> 1;
+            case DELIVERY, ESCORT, DEFENSE, CARAVAN, HARVEST, BOSS, ROUTE -> 1;
         };
     }
 
@@ -395,6 +395,9 @@ public final class RequestTemplate implements JsonAssetWithMap<String, DefaultAs
         }
         if (type == RequestType.DESTROY && (t.targetBlock == null || t.targetBlock.isBlank() || t.quantity < 1)) {
             results.fail("Destroy : TargetBlock et Quantity (au moins 1) sont obligatoires");
+        }
+        if (type == RequestType.ROUTE && t.maxDistance < 48) {
+            results.fail("Route : MaxDistance (villages voisins à relier, 48 au moins) est obligatoire");
         }
         if (type == RequestType.BOSS && (t.boss == null || t.boss.isBlank())) {
             results.fail("Boss : le rôle Boss est obligatoire");

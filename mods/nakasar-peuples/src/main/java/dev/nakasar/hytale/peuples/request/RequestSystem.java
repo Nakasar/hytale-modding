@@ -161,6 +161,7 @@ public final class RequestSystem extends TickingSystem<EntityStore> {
             case DEFENSE -> stepDefense(store, village);
             case PLANT -> stepPlant(world, store, ref, player, data, r, t, at);
             case CARAVAN, HARVEST, DESTROY, BOSS -> Expeditions.step(world, store, ref, player, data, r, t, village, at, key);
+            case ROUTE -> RouteQuests.step(world, store, ref, player, data, r, village);
         }
     }
 

@@ -295,6 +295,16 @@ public final class Convoys {
     // ---- Géométrie ----
 
     /** Départ : sur la ligne de la fondation au dépôt, juste hors de l'emprise de l'avant-poste. */
+    /**
+     * Les deux bouts de la route d'un avant-poste, comme pour son convoi : {départ x, z (sortie de l'avant-poste),
+     * arrivée x, z (dépôt du village, ou son cœur s'il n'en a pas)}.
+     */
+    public static double[] ends(Village village, Workshop w, AnnexState a) {
+        double[] to = village.deposit() == null ? new double[] {village.x() + 0.5, village.z() + 0.5} : to(village);
+        double[] from = from(w, a, to);
+        return new double[] {from[0], from[1], to[0], to[1]};
+    }
+
     private static double[] from(Workshop w, AnnexState a, double[] to) {
         double x = a.x() + 0.5;
         double z = a.z() + 0.5;

@@ -195,6 +195,68 @@ public final class Routes {
         return new Path(registry.beaconVersion(), points, beacons);
     }
 
+    /**
+     * Ce qui manque à la route de (fx, fz) à (tx, tz) : la plus courte distance entre ce qui est relié au départ et ce
+     * qui est relié à l'arrivée (balises, cœurs), moins {@value #LINK} ; 0 quand la route est complète. Sert à la quête
+     * de village « Baliser une route » ({@link dev.nakasar.hytale.peuples.request.RouteQuests}).
+     */
+    public static double gap(World world, double fx, double fz, double tx, double tz) {
+        VillageRegistry registry = Villages.registry(world);
+        List<double[]> nodes = new ArrayList<>();
+        nodes.add(new double[] {fx, fz});
+        nodes.add(new double[] {tx, tz});
+        for (int[] b : registry.beacons()) {
+            nodes.add(new double[] {b[0] + 0.5, b[2] + 0.5});
+        }
+        for (Village v : registry.all()) {
+            nodes.add(new double[] {v.x() + 0.5, v.z() + 0.5});
+        }
+        boolean[] fromStart = reach(nodes, 0);
+        if (fromStart[1]) {
+            return 0;
+        }
+        boolean[] fromEnd = reach(nodes, 1);
+        double best = Double.MAX_VALUE;
+        for (int i = 0; i < nodes.size(); i++) {
+            if (!fromStart[i]) {
+                continue;
+            }
+            double[] a = nodes.get(i);
+            for (int j = 0; j < nodes.size(); j++) {
+                if (fromEnd[j]) {
+                    double[] b = nodes.get(j);
+                    best = Math.min(best, (a[0] - b[0]) * (a[0] - b[0]) + (a[1] - b[1]) * (a[1] - b[1]));
+                }
+            }
+        }
+        return Math.max(1, Math.sqrt(best) - LINK);
+    }
+
+    /** Points reliés (de proche en proche, liens de {@value #LINK} blocs au plus) au point `start`. */
+    private static boolean[] reach(List<double[]> nodes, int start) {
+        int n = nodes.size();
+        boolean[] seen = new boolean[n];
+        int[] queue = new int[n];
+        int head = 0;
+        int tail = 0;
+        seen[start] = true;
+        queue[tail++] = start;
+        double link2 = (double) LINK * LINK;
+        while (head < tail) {
+            double[] a = nodes.get(queue[head++]);
+            for (int i = 0; i < n; i++) {
+                if (!seen[i]) {
+                    double[] b = nodes.get(i);
+                    if ((a[0] - b[0]) * (a[0] - b[0]) + (a[1] - b[1]) * (a[1] - b[1]) <= link2) {
+                        seen[i] = true;
+                        queue[tail++] = i;
+                    }
+                }
+            }
+        }
+        return seen;
+    }
+
     /** Balises reliées à (x, z) (à moins de {@value #LINK} blocs), elle non comprise. */
     public static int links(World world, int x, int z) {
         int n = 0;

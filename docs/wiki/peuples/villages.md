@@ -22,6 +22,7 @@ Le **tableau** (à l'ouest du cœur) montre les trois demandes du jour, tirées 
 | Récolte escortée | protéger trois cueilleurs qui vont récolter à 60-110 blocs, puis les ramener |
 | Destruction | détruire les objets ennemis posés à 90-150 blocs (braseros, cages, œufs...) |
 | Chef | abattre un chef ennemi dans son repaire, à 110-170 blocs (palier 1 et plus) |
+| Route | relier par des balises de route un avant-poste du village ou un village voisin |
 
 Le **dépôt** est le coffre du village : se tenir à moins de 6 blocs compte ce qu'il contient pour vos récoltes et fabrications. Une demande prise tient jusqu'au premier matin au moins 12 h plus tard.
 
@@ -33,6 +34,14 @@ Les quatre dernières demandes sont des **expéditions** : il faut sortir du vil
 - **Récolte escortée** : une embuscade à mi-chemin, puis une minute de récolte sur place pendant laquelle deux vagues attaquent les cueilleurs. Restez à moins de 28 blocs, sinon la récolte s'arrête. Ramenez ensuite les cueilleurs au village pour toucher la récolte.
 - **Destruction** : les objets sont gardés par une bande. Le suivi d'objectifs compte ceux qui restent.
 - **Chef** : le chef a une barre de vie et plus de points de vie aux paliers élevés. Avant chaque coup, une **zone rouge** au sol montre exactement où il frappe (cercle, cône ou ligne) : sortez-en. Le chef trork chassé pour les Kweebecs charge le long de sa ligne et renverse ceux qu'il traverse ; s'il percute un mur, il reste étourdi 3 secondes. Aux deux tiers et au tiers de sa vie, il appelle des renforts et reste invulnérable tant qu'ils sont debout. Sous le tiers de sa vie, il frappe plus souvent. Comme tous les ennemis du mod, il ne regagne pas de vie hors combat.
+
+### Baliser une route
+
+Le village vous demande de relier par des [balises de route](avant-postes-de-metier.md#routes-à-balises) l'un de ses avant-postes, ou un village voisin à moins de 700 blocs qui n'est pas un rival. C'est toujours le plus proche qui n'est pas encore relié. Le village vous donne 4 balises pour commencer ; les autres se fabriquent à l'établi.
+
+- Posez les balises à **32 blocs** au plus l'une de l'autre. Pour un avant-poste, la route va de sa sortie au dépôt du village ; entre deux villages, d'un cœur à l'autre.
+- Le suivi d'objectifs dit combien de blocs il reste à baliser. Vous pouvez commencer par l'un ou l'autre bout.
+- La demande est remplie dès que la route est complète, où que vous soyez.
 
 Les lieux des demandes sont toujours sur la terre ferme : un lieu tiré dans un lac ou en mer est déplacé avant même que vous partiez. Les marchands, cueilleurs et ennemis ne disparaissent que quand plus aucun joueur n'est à proximité.
 
