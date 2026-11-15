@@ -243,6 +243,120 @@ public final class VillageLayout implements JsonAssetWithMap<String, DefaultAsse
         }
     }
 
+    /** Pièce vanilla d'un palier du cœur : prefab collé ancre en (X, Y, Z) relatifs à la surface de la place. */
+    public static final class HeartPiece {
+        public static final BuilderCodec<HeartPiece> CODEC = BuilderCodec.builder(HeartPiece.class, HeartPiece::new)
+                .append(new KeyedCodec<>("Prefab", Codec.STRING), (p, v) -> p.prefab = v, p -> p.prefab).add()
+                .append(new KeyedCodec<>("X", Codec.INTEGER), (p, v) -> p.x = v == null ? 0 : v, p -> p.x).add()
+                .append(new KeyedCodec<>("Y", Codec.INTEGER), (p, v) -> p.y = v == null ? 0 : v, p -> p.y).add()
+                .append(new KeyedCodec<>("Z", Codec.INTEGER), (p, v) -> p.z = v == null ? 0 : v, p -> p.z).add()
+                .append(new KeyedCodec<>("Rotation", Codec.INTEGER), (p, v) -> p.rotation = v == null ? 0 : Math.floorMod(v, 4), p -> p.rotation).add()
+                .build();
+
+        String prefab;
+        int x;
+        int y;
+        int z;
+        int rotation;
+
+        public String prefab() {
+            return prefab;
+        }
+
+        public int x() {
+            return x;
+        }
+
+        public int y() {
+            return y;
+        }
+
+        public int z() {
+            return z;
+        }
+
+        public int rotation() {
+            return rotation;
+        }
+    }
+
+    /**
+     * Un palier du cœur : pièces vanilla nouvelles, blocs posés un à un ({@code "x y z rotation Bloc"}, {@code Empty}
+     * pour vider), blocs retirés s'ils sont toujours là ({@code "x y z Bloc"}), prefab de fluides du mod.
+     */
+    public static final class HeartStep {
+        public static final BuilderCodec<HeartStep> CODEC = BuilderCodec.builder(HeartStep.class, HeartStep::new)
+                .append(new KeyedCodec<>("Tier", Codec.INTEGER), (s, v) -> s.tier = v == null ? 0 : v, s -> s.tier).add()
+                .append(new KeyedCodec<>("Pieces", new ArrayCodec<>(HeartPiece.CODEC, HeartPiece[]::new)),
+                        (s, v) -> s.pieces = v == null ? new HeartPiece[0] : v, s -> s.pieces).add()
+                .append(new KeyedCodec<>("Set", Codec.STRING_ARRAY), (s, v) -> s.set = v == null ? new String[0] : v, s -> s.set).add()
+                .append(new KeyedCodec<>("Clear", Codec.STRING_ARRAY), (s, v) -> s.clear = v == null ? new String[0] : v, s -> s.clear).add()
+                .append(new KeyedCodec<>("Fluids", Codec.STRING), (s, v) -> s.fluids = v == null ? "" : v, s -> s.fluids).add()
+                .build();
+
+        int tier;
+        HeartPiece[] pieces = new HeartPiece[0];
+        String[] set = new String[0];
+        String[] clear = new String[0];
+        String fluids = "";
+
+        public int tier() {
+            return tier;
+        }
+
+        public HeartPiece[] pieces() {
+            return pieces;
+        }
+
+        public String[] set() {
+            return set;
+        }
+
+        public String[] clear() {
+            return clear;
+        }
+
+        public String fluids() {
+            return fluids;
+        }
+    }
+
+    /**
+     * Cœur du village (tools/generate_village_hearts.py) : places du tableau, du dépôt et de la bannière ({@code [x, y,
+     * z, lacet]}, y relatif à la surface de la place, lacet tourné vers le cœur) et paliers de la place.
+     */
+    public static final class Heart {
+        public static final BuilderCodec<Heart> CODEC = BuilderCodec.builder(Heart.class, Heart::new)
+                .append(new KeyedCodec<>("Board", Codec.INT_ARRAY), (h, v) -> h.board = v, h -> h.board).add()
+                .append(new KeyedCodec<>("Deposit", Codec.INT_ARRAY), (h, v) -> h.deposit = v, h -> h.deposit).add()
+                .append(new KeyedCodec<>("Banner", Codec.INT_ARRAY), (h, v) -> h.banner = v, h -> h.banner).add()
+                .append(new KeyedCodec<>("Steps", new ArrayCodec<>(HeartStep.CODEC, HeartStep[]::new)),
+                        (h, v) -> h.steps = v == null ? new HeartStep[0] : v, h -> h.steps).add()
+                .build();
+
+        int[] board;
+        int[] deposit;
+        int[] banner;
+        HeartStep[] steps = new HeartStep[0];
+
+        /** {@code [x, y, z, lacet]} du tableau. */
+        public int[] board() {
+            return board;
+        }
+
+        public int[] deposit() {
+            return deposit;
+        }
+
+        public int[] banner() {
+            return banner;
+        }
+
+        public HeartStep[] steps() {
+            return steps;
+        }
+    }
+
     public static final AssetBuilderCodec<String, VillageLayout> CODEC = AssetBuilderCodec.builder(VillageLayout.class, VillageLayout::new,
                     Codec.STRING, (l, id) -> l.id = id, l -> l.id, (l, data) -> l.data = data, l -> l.data)
             .append(new KeyedCodec<>("People", Codec.STRING), (l, v) -> l.people = v, l -> l.people)
@@ -265,6 +379,9 @@ public final class VillageLayout implements JsonAssetWithMap<String, DefaultAsse
             .append(new KeyedCodec<>("Jobs", new ArrayCodec<>(Job.CODEC, Job[]::new)), (l, v) -> l.jobs = v == null ? new Job[0] : v, l -> l.jobs)
             .documentation("Métiers du village (étape 5).")
             .add()
+            .append(new KeyedCodec<>("Heart", Heart.CODEC), (l, v) -> l.heart = v, l -> l.heart)
+            .documentation("Cœur du village par peuple (place, pièces vanilla par palier), ou absent (place carrée d'avant).")
+            .add()
             .validator(VillageLayout::validate)
             .build();
 
@@ -280,6 +397,7 @@ public final class VillageLayout implements JsonAssetWithMap<String, DefaultAsse
     Building[] buildings = new Building[0];
     Chantier[] chantiers = new Chantier[0];
     Job[] jobs = new Job[0];
+    Heart heart;
 
     VillageLayout() {
     }
@@ -310,6 +428,11 @@ public final class VillageLayout implements JsonAssetWithMap<String, DefaultAsse
 
     public int radius() {
         return radius;
+    }
+
+    /** Cœur du village par peuple, ou null. */
+    public Heart heart() {
+        return heart;
     }
 
     public int plazaRadius() {

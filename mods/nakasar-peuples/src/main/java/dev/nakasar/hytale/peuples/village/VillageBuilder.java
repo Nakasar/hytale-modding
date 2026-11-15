@@ -22,7 +22,8 @@ import java.util.function.Consumer;
 /**
  * Bâtit un village à partir de son plan ({@link VillageLayout}) : charge les chunks, aplanit la place et l'emprise de
  * chaque bâtiment du palier atteint, colle les prefabs VANILLA (avec leurs marqueurs d'apparition de Kweebecs), puis
- * pose le cœur, le dépôt et le tableau ({@link Villages#found}) et la bannière de carte au nord de la place.
+ * pose le cœur du peuple ({@link VillageHeart}), le dépôt, le tableau ({@link Villages#found}) et la bannière de
+ * carte aux places que le plan leur donne.
  *
  * <p>Les prefabs se collent par {@link PrefabUtil#paste} comme l'action vanilla {@code PrefabPasteAction} des
  * évènements de monde ; le chemin se résout dans tous les packs ({@link PrefabStore#findAssetPrefabPath}).
@@ -144,7 +145,16 @@ public final class VillageBuilder {
             }
         }
 
-        Villages.Founding founding = Villages.found(world, name, layout.people(), cx, h0 + 1, cz);
+        // Cœur du peuple (palier 0) : pièces vanilla et blocs de la place, puis dépôt, tableau et bannière à leurs places.
+        VillageLayout.Heart heart = layout.heart();
+        Villages.Founding founding;
+        if (heart != null) {
+            VillageHeart.apply(world, layout, null, cx, h0, cz, -1, 0, true);
+            founding = Villages.found(world, name, layout.people(), cx, h0 + 1, cz,
+                    VillageHeart.at(heart.deposit(), cx, h0, cz), VillageHeart.at(heart.board(), cx, h0, cz));
+        } else {
+            founding = Villages.found(world, name, layout.people(), cx, h0 + 1, cz);
+        }
         if (founding.village() == null) {
             return new Result(null, founding.error());
         }
@@ -153,10 +163,44 @@ public final class VillageBuilder {
         for (int i = 0; i < built.size(); i++) {
             village.setSiteY(built.get(i), builtHeights.get(i));
         }
-        Villages.placeBanner(world, village, cx + layout.bannerX(), h0 + 1, cz + layout.bannerZ());
+        int[] banner = heart == null ? null : VillageHeart.at(heart.banner(), cx, h0, cz);
+        if (banner != null) {
+            village.setHeartTier(0);
+            Villages.placeBanner(world, village, banner[0], banner[1], banner[2], banner[3]);
+        } else {
+            Villages.placeBanner(world, village, cx + layout.bannerX(), h0 + 1, cz + layout.bannerZ());
+        }
         LOGGER.atInfo().log("Nakasar Peuples : village %s (%s, plan %s) généré en %d %d %d, %d/%d bâtiments collés%s",
                 name, layout.people().id(), layout.getId(), cx, h0 + 1, cz, built.size(), buildings.size(), auto ? " (automatique)" : "");
         return new Result(village, null);
+    }
+
+    /**
+     * Boîte {@code [x0, x1, y0, y1, z0, z1]} que couvrirait le prefab `prefab` collé en (x, y, z), un peu élargie
+     * (l'ancre peut ne pas être comptée dans les bornes du buffer), ou null s'il est introuvable.
+     */
+    public static int[] bounds(String prefab, int x, int y, int z, int rotation) {
+        IPrefabBuffer buffer = buffer(prefab);
+        if (buffer == null) {
+            return null;
+        }
+        PrefabRotation rot = PrefabRotation.VALUES[Math.floorMod(rotation, 4)];
+        int ax = buffer.getAnchorX();
+        int ay = buffer.getAnchorY();
+        int az = buffer.getAnchorZ();
+        int reach = Math.max(Math.abs(ax), Math.abs(az));
+        return new int[]{
+                x + buffer.getMinX(rot) - reach - 1, x + buffer.getMaxX(rot) + reach + 1,
+                y + Math.min(buffer.getMinY(), buffer.getMinY() - ay) - 1, y + Math.max(buffer.getMaxY(), buffer.getMaxY() - ay) + 1,
+                z + buffer.getMinZ(rot) - reach - 1, z + buffer.getMaxZ(rot) + reach + 1};
+    }
+
+    private static IPrefabBuffer buffer(String prefab) {
+        Path path = PrefabStore.get().findAssetPrefabPath(prefab + ".prefab.json");
+        if (path == null) {
+            path = PrefabStore.get().findAssetPrefabPath(prefab);
+        }
+        return path == null ? null : PrefabBufferUtil.getCached(path);
     }
 
     /**
