@@ -114,6 +114,8 @@ const sidebars = {
     "peuples/README",
     "peuples/reputation",
     "peuples/villages",
+    "peuples/batiments-de-metier",
+    "peuples/emplacements",
     {
       type: "category",
       label: "Les peuples",
