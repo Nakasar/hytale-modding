@@ -70,7 +70,7 @@ Entre les villages, il reste des ruines, de vieux campements et des sanctuaires.
 |---|---|---|
 | Fête des moissons | tous les 7 jours, dès 18 h, dans les villages qui ont une ferme de niveau II | offrir de la nourriture (10 aliments par fête au plus) : 4 de réputation par aliment |
 | Foire des peuples | tous les 14 jours, dès 9 h, dans le plus grand village | des marchands de tous les peuples, et une course aux 3 drapeaux en 90 secondes |
-| Migration | tous les 10 jours | un troupeau traverse la région : chassez-le (une bête chassée ne revient pas), mais fuyez la zone rouge devant le chef du troupeau |
+| Migration | tous les 10 jours | un troupeau traverse la région : chassez-le (une bête chassée ne revient pas), mais quittez la zone rouge devant le chef du troupeau : il charge tout droit et renverse ceux qu'il traverse |
 
 Une fête dure 20 minutes, la foire 30 minutes.
 

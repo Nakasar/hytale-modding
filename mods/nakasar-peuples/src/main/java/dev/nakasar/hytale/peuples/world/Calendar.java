@@ -6,15 +6,21 @@ import com.hypixel.hytale.builtin.adventure.worldevents.action.EventStartAction;
 import com.hypixel.hytale.builtin.adventure.worldevents.action.EventStopAction;
 import com.hypixel.hytale.component.Ref;
 import com.hypixel.hytale.component.Store;
+import com.hypixel.hytale.math.vector.Rotation3f;
+import com.hypixel.hytale.protocol.ChangeVelocityType;
 import com.hypixel.hytale.protocol.packets.interface_.NotificationStyle;
 import com.hypixel.hytale.server.core.Message;
+import com.hypixel.hytale.server.core.entity.Frozen;
 import com.hypixel.hytale.server.core.inventory.ItemStack;
 import com.hypixel.hytale.server.core.modules.entity.component.TransformComponent;
 import com.hypixel.hytale.server.core.modules.entity.damage.Damage;
 import com.hypixel.hytale.server.core.modules.entity.damage.DamageCause;
 import com.hypixel.hytale.server.core.modules.entity.damage.DamageSystems;
+import com.hypixel.hytale.server.core.modules.entity.teleport.Teleport;
+import com.hypixel.hytale.server.core.modules.physics.component.Velocity;
 import com.hypixel.hytale.server.core.universe.PlayerRef;
 import com.hypixel.hytale.server.core.universe.world.World;
+import com.hypixel.hytale.server.core.universe.world.storage.ChunkStore;
 import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
 import com.hypixel.hytale.server.core.util.NotificationUtil;
 import dev.nakasar.hytale.peuples.PeuplesPlugin;
@@ -26,6 +32,7 @@ import dev.nakasar.hytale.peuples.player.PeuplesPlayer;
 import dev.nakasar.hytale.peuples.reputation.Reputations;
 import dev.nakasar.hytale.peuples.request.GameClock;
 import dev.nakasar.hytale.peuples.request.Requests;
+import dev.nakasar.hytale.peuples.village.Blocks;
 import dev.nakasar.hytale.peuples.village.Chantiers;
 import dev.nakasar.hytale.peuples.village.People;
 import dev.nakasar.hytale.peuples.village.Village;
@@ -85,6 +92,11 @@ public final class Calendar {
     public static final float STAMPEDE_DAMAGE = 18f;
     public static final int STAMPEDE_RANGE = 20;
     public static final long STAMPEDE_COOLDOWN_MS = 25_000L;
+    /** Vitesse de la course du meneur (blocs/s) et poussée sur le côté des joueurs traversés. */
+    public static final double STAMPEDE_SPEED = 14;
+    public static final double STAMPEDE_KNOCKBACK = 7;
+    /** Plus grand pas de la course entre deux tests (blocs) : un tick long ne doit traverser ni mur ni joueur. */
+    private static final double CHARGE_STEP = 0.5;
     public static final String KEYS = WorldLife.KEYS + "calendar.";
     public static final String FEAST_EVENT = "Nakasar_Peuples_Harvest";
     public static final String FAIR_EVENT = "Nakasar_Peuples_Fair";
@@ -126,6 +138,8 @@ public final class Calendar {
         final UUID event = UUID.randomUUID();
         boolean eventRunning;
         Telegraphs.Strip charge;
+        /** La course du meneur, après la zone rouge. */
+        Run run;
         long nextCharge;
 
         Herd(String species, Routes.Path path, int count, int y, long end) {
@@ -602,37 +616,141 @@ public final class Calendar {
         Requests.give(store, ref, new ItemStack("Ingredient_Hide_Medium", 1));
     }
 
-    /** Vrai pendant une charge annoncée (WorldLifeSystem appelle alors {@link #stepCharge} à chaque image). */
+    /** Vrai pendant une charge annoncée ou en course (WorldLifeSystem appelle alors {@link #stepCharge} à chaque image). */
     static boolean charging() {
         Herd h = herd;
-        return h != null && h.charge != null;
+        return h != null && (h.charge != null || h.run != null);
     }
 
-    /** Fin de la zone rouge de la charge : dégâts dans la bande, puis le meneur est au bout de la ligne. */
+    /**
+     * La ruée, image par image, comme la charge des boss de fractales ({@code Nakasar_Fractal_Charge}) : la zone rouge,
+     * puis le meneur, figé ({@link Frozen}) et déplacé par le Java, fonce tout droit à {@value #STAMPEDE_SPEED} blocs/s
+     * jusqu'au bout de la ligne. Les joueurs qu'il traverse dans la zone prennent {@value #STAMPEDE_DAMAGE} dégâts et
+     * sont projetés sur le côté. Un mur ou un vide l'arrête net ; il suit le relief d'un bloc en montée, deux en descente.
+     */
     static void stepCharge(World world, Store<EntityStore> store) {
         Herd h = herd;
-        if (h == null || h.charge == null || !h.charge.step(store, System.nanoTime())) {
+        if (h == null) {
             return;
         }
-        Walk walk = Walk.peek(h.walkKey());
-        List<Ref<EntityStore>> live = walk == null ? List.of() : walk.alive();
-        DamageCause cause = DamageCause.getAssetMap().getAsset("Physical");
-        Ref<EntityStore> src = live.isEmpty() ? null : live.get(0);
-        for (PlayerRef p : world.getPlayerRefs()) {
-            Ref<EntityStore> ref = p.getReference();
-            TransformComponent t = ref == null || !ref.isValid() ? null : store.getComponent(ref, TransformComponent.getComponentType());
-            if (t != null && cause != null && src != null && h.charge.contains(t.getPosition())) {
-                DamageSystems.executeDamage(ref, store, new Damage(new Damage.EntitySource(src), cause, STAMPEDE_DAMAGE));
+        long now = System.nanoTime();
+        if (h.run == null) {
+            if (h.charge == null || !h.charge.step(store, now)) {
+                return;
             }
+            Walk walk = Walk.peek(h.walkKey());
+            List<Ref<EntityStore>> live = walk == null ? List.of() : walk.alive();
+            if (live.isEmpty() || !live.get(0).isValid()) {
+                endCharge(store, h);
+                return;
+            }
+            h.run = new Run(live.get(0), h.charge, now);
+            store.ensureAndGetComponent(h.run.src, Frozen.getComponentType());
+            return;
         }
-        if (src != null) {
-            // Le meneur a chargé : il est au bout de la ligne.
-            Vector3d o = h.charge.origin();
-            double f = Math.atan2(h.path.dir(h.at)[1], h.path.dir(h.at)[0]);
-            WorldLife.leash(store, src, new Vector3d(o.x() + Math.cos(f) * STAMPEDE_LENGTH, o.y(), o.z() + Math.sin(f) * STAMPEDE_LENGTH));
+        Run run = h.run;
+        Vector3d at = run.src.isValid() ? Requests.position(store, run.src) : null;
+        if (at == null) {
+            endCharge(store, h);
+            return;
         }
+        double move = Math.min(STAMPEDE_SPEED * (now - run.last) / 1e9, STAMPEDE_LENGTH - run.travelled);
+        run.last = now;
+        ChunkStore chunks = world.getChunkStore();
+        int steps = Math.max(1, (int) Math.ceil(move / CHARGE_STEP));
+        Vector3d current = new Vector3d(at.x(), run.y, at.z());
+        boolean stop = false;
+        for (int i = 0; i < steps && !stop; i++) {
+            double step = move / steps;
+            double nx = current.x() + run.dx * step;
+            double nz = current.z() + run.dz * step;
+            Double ny = groundAhead(chunks, nx, run.y, nz);
+            if (ny == null) {
+                stop = true; // mur ou vide : il s'arrête net
+                break;
+            }
+            run.y = ny;
+            current = new Vector3d(nx, ny, nz);
+            run.travelled += step;
+            trample(world, store, h, run, current);
+        }
+        store.putComponent(run.src, Teleport.getComponentType(), new Teleport(current, new Rotation3f(0f, run.yaw, 0f)));
+        if (stop || run.travelled >= STAMPEDE_LENGTH - 1e-3) {
+            WorldLife.leash(store, run.src, current);
+            endCharge(store, h);
+        }
+    }
+
+    private static void endCharge(Store<EntityStore> store, Herd h) {
+        if (h.run != null && h.run.src.isValid()) {
+            store.tryRemoveComponent(h.run.src, Frozen.getComponentType()); // jamais figé après la course
+        }
+        h.run = null;
         h.charge = null;
         h.nextCharge = System.currentTimeMillis() + STAMPEDE_COOLDOWN_MS;
+    }
+
+    /** Hauteur des pieds en (x, z) en partant de `y` : un bloc de montée, deux de descente ; null (mur, vide). */
+    private static Double groundAhead(ChunkStore chunks, double x, double y, double z) {
+        int bx = (int) Math.floor(x);
+        int bz = (int) Math.floor(z);
+        int by = (int) Math.floor(y);
+        for (int dy : new int[] {0, 1, -1, -2}) {
+            int feet = by + dy;
+            if (Blocks.solid(chunks, bx, feet - 1, bz) && !Blocks.solid(chunks, bx, feet, bz) && !Blocks.solid(chunks, bx, feet + 1, bz)) {
+                return (double) feet;
+            }
+        }
+        return null;
+    }
+
+    /** Les joueurs que le meneur traverse, dans la zone annoncée : dégâts, une fois chacun, et projetés sur le côté. */
+    private static void trample(World world, Store<EntityStore> store, Herd h, Run run, Vector3d at) {
+        DamageCause cause = DamageCause.getAssetMap().getAsset("Physical");
+        for (PlayerRef player : world.getPlayerRefs()) {
+            Ref<EntityStore> ref = player.getReference();
+            Vector3d p = ref == null || !ref.isValid() ? null : Requests.position(store, ref);
+            if (p == null || run.struck.contains(ref) || !run.strip.contains(p)
+                    || Math.hypot(p.x() - at.x(), p.z() - at.z()) > STAMPEDE_WIDTH / 2 + Telegraphs.BODY
+                    || p.y() - at.y() < -1 || p.y() - at.y() > 3) {
+                continue;
+            }
+            run.struck.add(ref);
+            if (cause != null) {
+                DamageSystems.executeDamage(ref, store, new Damage(new Damage.EntitySource(run.src), cause, STAMPEDE_DAMAGE));
+            }
+            Velocity velocity = store.getComponent(ref, Velocity.getComponentType());
+            if (velocity != null) {
+                double side = Math.signum(-(p.x() - at.x()) * run.dz + (p.z() - at.z()) * run.dx);
+                side = side == 0 ? 1 : side;
+                velocity.addInstruction(new Vector3d((-run.dz * side + run.dx * 0.5) * STAMPEDE_KNOCKBACK, 6,
+                        (run.dx * side + run.dz * 0.5) * STAMPEDE_KNOCKBACK), null, ChangeVelocityType.Set);
+            }
+        }
+    }
+
+    /** Une course de ruée en cours. */
+    private static final class Run {
+        final Ref<EntityStore> src;
+        final Telegraphs.Strip strip;
+        final double dx;
+        final double dz;
+        final float yaw;
+        final Set<Ref<EntityStore>> struck = Collections.newSetFromMap(new IdentityHashMap<>());
+        double travelled;
+        double y;
+        long last;
+
+        Run(Ref<EntityStore> src, Telegraphs.Strip strip, long now) {
+            this.src = src;
+            this.strip = strip;
+            double f = strip.facing();
+            this.dx = Math.cos(f);
+            this.dz = Math.sin(f);
+            this.yaw = (float) Math.atan2(-dx, -dz);
+            this.y = strip.origin().y();
+            this.last = now;
+        }
     }
 
     // ---- Évènements de monde ----

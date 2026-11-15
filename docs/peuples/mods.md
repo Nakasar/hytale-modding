@@ -1373,8 +1373,10 @@ niveau II, 20 min, 4 de réputation par aliment offert, 10 aliments par joueur e
 tournant par peuple, étals temporaires, colporteurs des autres peuples, hôte `<Peuple>_Host`, course aux 3
 `Furniture_Human_Ruins_Banner` en 90 s, 30 min), migration (`jour % 10 == 5`, troupeau `Herd_<espèce>` à 260 blocs
 d'un village, 20 min ; une bête chassée ne revient pas, le troupeau entier chassé met fin à la migration). Ruée : bande
-rouge `Telegraphs.Strip` 14 × 3 devant le chef pendant 1,6 s, 18 dégâts à la fin exacte de la zone (résolue à chaque
-image par `WorldLifeSystem`), 25 s de recharge.
+rouge `Telegraphs.Strip` 14 × 3 devant le chef pendant 1,6 s, puis le chef charge vraiment (comme
+`Nakasar_Fractal_Charge` : figé par `Frozen`, déplacé par le Java à 14 blocs/s, image par image via `WorldLifeSystem`,
+relief suivi d'un bloc en montée et deux en descente, arrêt net sur un mur ou un vide) ; les joueurs qu'il traverse
+dans la zone prennent 18 dégâts et sont projetés sur le côté ; 25 s de recharge.
 
 **Rumeurs (`Rumours`).** Tirées de l'état : voyageurs en route, campements, relations non neutres, auberges ouvertes,
 prochaine foire, vestige le plus proche pas encore vu.
@@ -1386,7 +1388,6 @@ prochaine foire, vestige le plus proche pas encore vu.
 - Renforts alliés en raid : gardes supplémentaires du peuple du village attaqué.
 - Camps de bûcherons et de prospecteurs : prefabs Softwood / Sandstone, pas le campement trork.
 - Fête, foire et migration durent un temps réel fixe (20, 30 et 20 minutes).
-- Ruée : zone rouge et dégâts devant le chef, mais l'animal ne charge pas vraiment (seul son point d'attache bouge).
 - L'embuscade d'un convoi d'avant-poste n'est pas sauvée : après un redémarrage, le convoi peut être retiré au sort.
 - Seuils des auberges : 6, 12 et 18 passages en 7 jours au lieu de 40, 80 et 120 (au plus un départ par liaison et
   par jour : 40 n'était pas atteignable). Une caravane compte ses 3 porteurs.
@@ -1414,4 +1415,4 @@ prochaine foire, vestige le plus proche pas encore vu.
 - Modèles des jeunes Trorks et Renoncés (échelle 0,6) et des enfants vanilla ; animations des troupeaux.
 - Placement des auberges, campements et étals (pente, arbres), retrait propre des prefabs temporaires.
 - Les voyageurs suivent bien leur point d'attache sur de longues distances (relief, rivières).
-- Ruée : la zone rouge suit le chef et les dégâts tombent exactement dedans.
+- Ruée : le chef charge bien le long de la zone rouge (rotation, relief, arrêt sur un mur), les dégâts ne tombent que sur les joueurs qu'il traverse dans la zone, et il n'est plus figé après la course.
