@@ -118,7 +118,7 @@ public final class WorkshopPage extends InteractiveCustomUIPage<WorkshopPage.Eve
         cmd.set("#PageTitle.TextSpans", title(village, w));
         band(cmd, village, w, state);
         orders(cmd, events, store, ref, village, state);
-        info(cmd, village, w, state);
+        info(cmd, events, store, village, w, state);
         footer(cmd, events, store, ref, village);
     }
 
@@ -254,13 +254,75 @@ public final class WorkshopPage extends InteractiveCustomUIPage<WorkshopPage.Eve
         }
     }
 
-    private void info(UICommandBuilder cmd, Village village, Workshop w, WorkshopState state) {
+    private void info(UICommandBuilder cmd, UIEventBuilder events, Store<EntityStore> store, Village village, Workshop w, WorkshopState state) {
         cmd.set("#NextHeader.TextSpans", Message.translation(KEYS + "next"));
-        cmd.set("#NextLine.TextSpans", nextLine(village, state));
+        Workshops.Next next = Workshops.next(village, state);
+        Workshop.Upgrade up = w.upgrade(state.level() + 1);
+        boolean mats = up != null && next == Workshops.Next.MATERIALS;
+        cmd.set("#NextMats.Visible", mats);
+        cmd.set("#WorksBar.Visible", next == Workshops.Next.WORKS);
+        Message line = nextLine(village, state);
+        String action = null;
+        switch (next) {
+            case MASTER -> {
+                RequestTemplate t = Workshops.master(w, state);
+                line = Message.translation(KEYS + "nextMaster").param("title", t == null ? Message.raw("?") : Requests.boardTitle(t));
+                PeuplesPlayer data = PeuplesPlayer.get(store, playerRef.getReference());
+                boolean mine = data != null && data.request(Workshops.masterId(village, w, state)) != null;
+                if (mine) {
+                    PlayerRequest r = data.request(Workshops.masterId(village, w, state));
+                    line = Message.empty().insert(line).insert("\n").insert(Requests.task(store, playerRef, r, t, village,
+                            Requests.position(store, playerRef.getReference())));
+                } else {
+                    action = "Master";
+                }
+            }
+            case MATERIALS -> {
+                line = Message.translation(KEYS + "nextMaterials").param("hours", up == null ? 12 : up.hours());
+                action = "Upgrade";
+                materials(cmd, store, village, up);
+            }
+            case WORKS -> {
+                long now = GameClock.seconds(store);
+                long left = Math.max(0, state.upgradeEnd() - now);
+                line = Message.translation(KEYS + "works").param("hours", (int) Math.ceil(left / 3600.0));
+                cmd.set("#WorksBar.Value", fraction(now - state.upgradeStart(), state.upgradeEnd() - state.upgradeStart()));
+            }
+            default -> {
+            }
+        }
+        cmd.set("#NextLine.TextSpans", line);
+        cmd.set("#NextAction.Visible", action != null);
+        if (action != null) {
+            cmd.set("#NextAction.Text", Message.translation(KEYS + (action.equals("Master") ? "takeMaster" : "startUpgrade")));
+            events.addEventBinding(CustomUIEventBindingType.Activating, "#NextAction", EventData.of("Action", action));
+        }
         cmd.set("#OffersHeader.TextSpans", Message.translation(KEYS + "offers"));
         VillageLayout.Job job = Workshops.job(village, w);
         cmd.set("#OffersLine.TextSpans", Message.translation(KEYS + "offersSoon")
                 .param("name", job == null ? Message.translation(w.nameKey()) : keeperName(job)));
+    }
+
+    private static final int MATERIALS = 4;
+
+    private void materials(UICommandBuilder cmd, Store<EntityStore> store, Village village, Workshop.Upgrade up) {
+        World world = store.getExternalData().getWorld();
+        java.util.Map<String, Integer> deposit = Villages.depositContents(world, village);
+        dev.nakasar.hytale.peuples.village.VillageLayout.Material[] list = up.materials();
+        for (int j = 0; j < MATERIALS; j++) {
+            boolean shown = j < list.length;
+            cmd.set("#NMat" + j + ".Visible", shown);
+            if (shown) {
+                var m = list[j];
+                int have = deposit == null ? 0 : Math.min(m.quantity(), deposit.getOrDefault(m.itemId(), 0));
+                boolean ok = have >= m.quantity();
+                cmd.set("#NMatIcon" + j + ".ItemId", m.itemId());
+                cmd.set("#NMatOk" + j + ".Visible", ok);
+                cmd.set("#NMatSlot" + j + ".Visible", !ok);
+                cmd.set("#NMatCount" + j + ".TextSpans", Message.translation(BOARD_PAGE + "progress").param("have", have).param("need", m.quantity()));
+                cmd.set("#NMatCount" + j + ".Style.TextColor", ok ? OK : "#e8c46a");
+            }
+        }
     }
 
     static Message nextLine(Village village, WorkshopState state) {
@@ -381,6 +443,10 @@ public final class WorkshopPage extends InteractiveCustomUIPage<WorkshopPage.Eve
             if (slot >= 0 && slot < board.length && board[slot] != null) {
                 Requests.abandon(world, store, ref, playerRef, board[slot].id());
             }
+        } else if (action.equals("Master")) {
+            Workshops.takeMaster(world, store, ref, playerRef, village, w);
+        } else if (action.equals("Upgrade")) {
+            Workshops.startUpgrade(world, store, ref, playerRef, village, w);
         } else if (action.equals("TurnIn")) {
             Requests.turnIn(world, store, ref, playerRef, village);
         } else if (action.equals("Text")) {

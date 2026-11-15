@@ -131,8 +131,12 @@ public final class Workshops {
         if (village.layout() == null) {
             return;
         }
+        long now = GameClock.seconds(store);
         for (Workshop w : opened(village)) {
             WorkshopState state = village.workshop(w.getId());
+            if (state.upgrading() && now >= state.upgradeEnd()) {
+                finishUpgrade(world, store, village, w, state);
+            }
             draw(store, village, w, state, false);
             if (!state.hasBoard()) {
                 placeBoard(world, village, w, state);
@@ -316,6 +320,17 @@ public final class Workshops {
             return 0;
         }
         WorkshopState ws = village.workshop(w.getId());
+        if (t.master()) {
+            // Commande de maître : une fois pour le village, si elle est bien celle du niveau en cours.
+            if (!requestId.equals(masterId(village, w, ws)) || ws.masterDone()) {
+                return 0;
+            }
+            ws.setMasterDone(true);
+            Message m = Message.translation(KEYS + "masterDone").param("building", Message.translation(w.nameKey()))
+                    .param("player", player.getUsername());
+            Chantiers.announce(world, village, m, null, NotificationStyle.Success);
+            return Villages.addEssor(village, t.essor());
+        }
         int slot = ws.slotOf(requestId);
         if (slot < 0) {
             return 0;
@@ -342,6 +357,171 @@ public final class Workshops {
         PeuplesPlugin.get().getLogger().atInfo().log("Peuples : commande %s du bâtiment %s remplie par %s (%s, savoir-faire %d/%d)",
                 t.getId(), w.getId(), player.getUsername(), village.name(), ws.knowledge(), max);
         return gained;
+    }
+
+    // ---- Montée de niveau (étape 2) : commande de maître puis chantier d'amélioration ----
+
+    /** Id (par village, bâtiment, niveau et reconversion) de la commande de maître du niveau en cours. */
+    public static String masterId(Village village, Workshop w, WorkshopState state) {
+        return "master-" + village.id() + "-" + w.getId() + "-" + state.level() + "-" + state.round();
+    }
+
+    /** Commande de maître du niveau en cours, ou null. */
+    public static RequestTemplate master(Workshop w, WorkshopState state) {
+        return RequestTemplate.master(w.getId(), state.level(), state.specialty());
+    }
+
+    /** Ce qui manque au bâtiment pour son prochain niveau. */
+    public enum Next { MAX, KNOWLEDGE, TIER, MASTER, MATERIALS, WORKS }
+
+    /** Prochaine étape de la montée de niveau du bâtiment. */
+    public static Next next(Village village, WorkshopState state) {
+        if (state.level() >= MAX_LEVEL) {
+            return Next.MAX;
+        }
+        if (state.upgrading()) {
+            return Next.WORKS;
+        }
+        if (state.knowledge() < threshold(state.level())) {
+            return Next.KNOWLEDGE;
+        }
+        if (village.tier() < tierFor(state.level() + 1)) {
+            return Next.TIER;
+        }
+        return state.masterDone() ? Next.MATERIALS : Next.MASTER;
+    }
+
+    /** Le joueur prend la commande de maître (jauge pleine, palier du village atteint, rang Toléré). */
+    public static boolean takeMaster(World world, Store<EntityStore> store, Ref<EntityStore> ref, PlayerRef player, Village village, Workshop w) {
+        WorkshopState ws = village.workshop(w.getId());
+        if (next(village, ws) != Next.MASTER) {
+            player.sendMessage(Message.translation(KEYS + "masterNotYet"));
+            return false;
+        }
+        if (!canTake(store, ref, village)) {
+            player.sendMessage(Message.translation(KEYS + "locked").param("rank", Message.translation(TAKE_RANK.nameKey())));
+            return false;
+        }
+        RequestTemplate t = master(w, ws);
+        if (t == null) {
+            player.sendMessage(Message.translation(KEYS + "masterMissing"));
+            return false;
+        }
+        PeuplesPlayer state = PeuplesPlayer.ensure(store, ref);
+        String id = masterId(village, w, ws);
+        if (state.request(id) != null) {
+            player.sendMessage(Message.translation(Requests.KEYS + "alreadyTaken").param("title", Requests.title(t)));
+            return false;
+        }
+        // Comme une étape de chaîne : elle n'expire pas et ne compte pas dans les 3 suivies.
+        return Requests.start(world, store, ref, player, state, village, t, id, Long.MAX_VALUE);
+    }
+
+    /** Matériaux qui manquent au dépôt pour le chantier d'amélioration (id → quantité), ou null si le dépôt manque. */
+    public static java.util.Map<String, Integer> missing(World world, Village village, Workshop.Upgrade up) {
+        java.util.Map<String, Integer> deposit = Villages.depositContents(world, village);
+        if (deposit == null) {
+            return null;
+        }
+        java.util.Map<String, Integer> out = new java.util.LinkedHashMap<>();
+        for (VillageLayout.Material m : up.materials()) {
+            int have = deposit.getOrDefault(m.itemId(), 0);
+            if (have < m.quantity()) {
+                out.put(m.itemId(), m.quantity() - have);
+            }
+        }
+        return out;
+    }
+
+    /** Lance le chantier d'amélioration : matériaux pris au dépôt, travaux pendant {@code Hours} heures de jeu. */
+    public static boolean startUpgrade(World world, Store<EntityStore> store, Ref<EntityStore> ref, PlayerRef player, Village village, Workshop w) {
+        WorkshopState ws = village.workshop(w.getId());
+        if (next(village, ws) != Next.MATERIALS) {
+            player.sendMessage(Message.translation(KEYS + "upgradeNotYet"));
+            return false;
+        }
+        if (!canTake(store, ref, village)) {
+            player.sendMessage(Message.translation(KEYS + "locked").param("rank", Message.translation(TAKE_RANK.nameKey())));
+            return false;
+        }
+        Workshop.Upgrade up = w.upgrade(ws.level() + 1);
+        if (up == null) {
+            return false;
+        }
+        java.util.Map<String, Integer> missing = missing(world, village, up);
+        if (missing == null) {
+            player.sendMessage(Message.translation("nakasar_peuples.board.depositMissing"));
+            return false;
+        }
+        if (!missing.isEmpty()) {
+            Message list = Message.empty();
+            boolean first = true;
+            for (java.util.Map.Entry<String, Integer> e : missing.entrySet()) {
+                if (!first) {
+                    list.insert(", ");
+                }
+                first = false;
+                list.insert(Message.translation(KEYS + "materialLine").param("count", e.getValue())
+                        .param("item", dev.nakasar.hytale.peuples.village.VillageBoard.itemName(e.getKey())));
+            }
+            player.sendMessage(Message.translation(KEYS + "upgradeMissing").param("list", list));
+            return false;
+        }
+        com.hypixel.hytale.server.core.inventory.container.ItemContainer chest = Villages.depositChest(world, village);
+        for (VillageLayout.Material m : up.materials()) {
+            Requests.take(chest, m.itemId(), m.quantity());
+        }
+        long now = GameClock.seconds(store);
+        ws.startUpgrade(now, now + up.hours() * 3600L);
+        Message m = Message.translation(KEYS + "upgradeStarted").param("building", Message.translation(w.nameKey()))
+                .param("level", Message.translation(KEYS + "levelShort." + up.level())).param("hours", up.hours());
+        Chantiers.announce(world, village, m, null, NotificationStyle.Default);
+        PeuplesPlugin.get().getLogger().atInfo().log("Peuples : chantier du bâtiment %s vers le niveau %d lancé par %s (%s)",
+                w.getId(), up.level(), player.getUsername(), village.name());
+        return true;
+    }
+
+    /** Fin du chantier d'amélioration : niveau suivant, jauge à zéro, commandes retirées, décor posé, annonce. */
+    public static void finishUpgrade(World world, Store<EntityStore> store, Village village, Workshop w, WorkshopState ws) {
+        int level = Math.min(MAX_LEVEL, ws.level() + 1);
+        ws.clearUpgrade();
+        ws.setLevel(level);
+        ws.setKnowledge(0);
+        ws.setMasterDone(false);
+        draw(store, village, w, ws, true);
+        Workshop.Upgrade up = w.upgrade(level);
+        if (up != null && ws.hasBoard()) {
+            placeDecor(world, ws.board(), up.decor());
+        }
+        Message name = Message.translation(w.nameKey());
+        Message levelName = Message.translation(KEYS + "level." + level);
+        Chantiers.announce(world, village, Message.translation(KEYS + "levelUp").param("building", name).param("level", levelName),
+                Message.translation(KEYS + "levelUpTitle").param("building", name).param("level", levelName), NotificationStyle.Success);
+        PeuplesPlugin.get().getLogger().atInfo().log("Peuples : bâtiment %s au niveau %d (%s)", w.getId(), level, village.name());
+    }
+
+    /** Pose le décor vanilla d'un niveau ({@code "dx dy dz lacet Bloc"} relatifs au panneau), seulement dans l'air. */
+    static void placeDecor(World world, int[] origin, String[] decor) {
+        ChunkStore chunks = world.getChunkStore();
+        for (String line : decor) {
+            String[] p = line.trim().split("\\s+");
+            if (p.length < 5) {
+                continue;
+            }
+            try {
+                int x = origin[0] + Integer.parseInt(p[0]);
+                int y = origin[1] + Integer.parseInt(p[1]);
+                int z = origin[2] + Integer.parseInt(p[2]);
+                int rot = Integer.parseInt(p[3]);
+                String current = Blocks.name(chunks, x, y, z);
+                if (Blocks.id(chunks, x, y, z) != Blocks.UNLOADED && (current == null || Terrain.isVegetation(current))
+                        && Blocks.name(chunks, x, y - 1, z) != null) {
+                    Blocks.set(chunks, x, y, z, p[4], rot);
+                }
+            } catch (NumberFormatException ignored) {
+                // Ligne mal formée : ValidateAssets la signale.
+            }
+        }
     }
 
     /** Ligne de type d'une commande pour la version texte. */

@@ -10,5 +10,49 @@
     22,
     15,
     2
+  ],
+  "Upgrades": [
+    {
+      "Level": 2,
+      "Hours": 12,
+      "Materials": [
+        {
+          "ItemId": "Wood_Fir_Trunk",
+          "Quantity": 24
+        },
+        {
+          "ItemId": "Wood_Hardwood_Planks",
+          "Quantity": 16
+        },
+        {
+          "ItemId": "Rock_Stone_Cobble",
+          "Quantity": 12
+        }
+      ],
+      "Decor": [
+        "1 0 0 0 Furniture_Lumberjack_Lantern"
+      ]
+    },
+    {
+      "Level": 3,
+      "Hours": 12,
+      "Materials": [
+        {
+          "ItemId": "Wood_Fir_Trunk",
+          "Quantity": 32
+        },
+        {
+          "ItemId": "Ingredient_Bolt_Wool",
+          "Quantity": 6
+        },
+        {
+          "ItemId": "Ingredient_Ice_Essence",
+          "Quantity": 6
+        }
+      ],
+      "Decor": [
+        "-1 0 0 0 Furniture_Lumberjack_Lantern"
+      ]
+    }
   ]
 }

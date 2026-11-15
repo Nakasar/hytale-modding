@@ -39,6 +39,22 @@ REWARD = {
     "Hunt": dict(Knowledge=45, Essor=5, Favors=2, Reputation=8),
 }
 HUNT_DISTANCE = (60, 110)
+# Commande de maître (étape 2) : une par niveau, plus longue, qui ouvre le chantier d'amélioration. Elle reprend une
+# commande du bâtiment en plus grand (×3 au niveau I, ×4 au niveau II ; bande doublée pour une chasse).
+MASTER_REWARD = dict(Knowledge=0, Essor=15, Favors=3, Reputation=15)
+MASTER_SCALE = {1: 3, 2: 4}
+# Chantier d'amélioration (étape 2) : 12 h de jeu, matériaux pris au dépôt = la moitié des 3 premiers matériaux du
+# chantier du palier correspondant du plan (palier 2 pour le niveau II, palier 3 pour le niveau III).
+UPGRADE_HOURS = 12
+# Décor vanilla posé à la fin d'un chantier d'amélioration, à côté du panneau (« dx dy dz lacet Bloc », seulement dans
+# l'air au-dessus d'un bloc) : lumières du peuple, comme les étapes du cœur du village.
+DECOR = {
+    "Kweebec": {2: ["1 0 0 0 Furniture_Kweebec_Lantern"], 3: ["-1 0 0 0 Furniture_Kweebec_Lantern", "0 1 0 0 Furniture_Kweebec_Candle"]},
+    "Trork": {2: ["1 0 0 0 Furniture_Crude_Torch"], 3: ["-1 0 0 0 Furniture_Crude_Brazier"]},
+    "Feran": {2: ["1 0 0 0 Furniture_Feran_Torch"], 3: ["-1 0 0 0 Furniture_Feran_Torch_Tall"]},
+    "Renonce": {2: ["1 0 0 0 Furniture_Lumberjack_Lantern"], 3: ["-1 0 0 0 Furniture_Lumberjack_Lantern"]},
+    "Slothian": {2: ["1 0 0 0 Furniture_Jungle_Torch"], 3: ["-1 0 0 0 Furniture_Jungle_Brazier"]},
+}
 
 # Une commande : (suffixe, type, objet ou bande, quantité, titre fr, titre en). Les titres tiennent en 24 caractères
 # (suivi d'objectif du HUD) ; la ligne de tâche est commune au type (TASKS).
@@ -208,6 +224,26 @@ PAGE = {
     "command.knowledge.desc": ("Ajoute du savoir-faire à un bâtiment de métier du village le plus proche",
                                "Adds know-how to a workshop of the nearest village"),
     "command.knowledge.arg": ("Quantité de savoir-faire", "Amount of know-how"),
+    "workshop.nextMaster": ("Jauge pleine : remplis la commande de maître « {title} » pour ouvrir le chantier.",
+                            "Gauge full: fill the master order \"{title}\" to open the works."),
+    "workshop.nextMaterials": ("Commande de maître remplie : réunis ces matériaux au dépôt, puis lance {hours} h de travaux.",
+                               "Master order done: gather these materials in the deposit, then start {hours} hours of works."),
+    "workshop.works": ("Travaux en cours : encore {hours} h.", "Works under way: {hours} more hours."),
+    "workshop.takeMaster": ("Commande de maître", "Master order"),
+    "workshop.startUpgrade": ("Lancer le chantier", "Start the works"),
+    "workshop.masterNotYet": ("La commande de maître s'ouvre quand la jauge est pleine et que le village a le palier voulu.",
+                              "The master order opens once the gauge is full and the village has the tier needed."),
+    "workshop.masterMissing": ("Ce bâtiment n'a pas de commande de maître pour ce niveau.", "This building has no master order for this level."),
+    "workshop.masterDone": ("{player} a rempli la commande de maître de {building} : le chantier peut commencer.",
+                            "{player} filled the master order of {building}: the works can begin."),
+    "workshop.upgradeNotYet": ("Le chantier attend la jauge pleine et la commande de maître.",
+                               "The works wait for a full gauge and the master order."),
+    "workshop.upgradeMissing": ("Il manque au dépôt : {list}.", "Missing from the deposit: {list}."),
+    "workshop.materialLine": ("{count} × {item}", "{count} × {item}"),
+    "workshop.upgradeStarted": ("Le chantier de {building} commence : niveau {level} dans {hours} h.",
+                                "Works on {building} begin: level {level} in {hours} hours."),
+    "workshop.levelUp": ("{building} passe au {level} !", "{building} reaches {level}!"),
+    "workshop.levelUpTitle": ("{building} : {level}", "{building}: {level}"),
     "workshop.taken": ("Commande prise : {title} ({building}).", "Order taken: {title} ({building})."),
 }
 
@@ -277,6 +313,19 @@ def board_spot(layout, building, errors):
     return None
 
 
+def upgrades(layout, wid, errors):
+    """Chantiers d'amélioration vers les niveaux II et III (matériaux pris au dépôt du village)."""
+    out = []
+    for level in (2, 3):
+        chantier = next((c for c in layout.get("Chantiers", []) if c["Tier"] == level), None)
+        if chantier is None:
+            errors.append(f"{wid} : le plan n'a pas de chantier du palier {level} pour le niveau {level}")
+            continue
+        materials = [{"ItemId": m["ItemId"], "Quantity": max(1, (m["Quantity"] + 1) // 2)} for m in chantier["Materials"][:3]]
+        out.append({"Level": level, "Hours": UPGRADE_HOURS, "Materials": materials, "Decor": DECOR[layout["People"]][level]})
+    return out
+
+
 def main():
     items = load_ids(ITEMS)
     roles = load_ids(REFS, "npc")
@@ -309,6 +358,7 @@ def main():
             "Icon": icon,
             "NameKey": f"nakasar_peuples.workshop.{wid}.name",
             "Board": spot or [0, 0, 0],
+            "Upgrades": upgrades(layout, wid, errors),
         }
         (OUT / f"{wid}.json").write_text(json.dumps(doc, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
         fr[f"workshop.{wid}.name"] = name_fr
@@ -353,7 +403,37 @@ def main():
             en[f"request.{tid}.title"] = title_en
             fr[f"request.{tid}.task"] = TASKS[rtype][0]
             en[f"request.{tid}.task"] = TASKS[rtype][1]
-        print(f"{wid} : {len(orders)} commandes, panneau {spot}")
+        for level, (suffix, rtype, what, quantity, _tf, _te) in ((1, orders[0]), (2, orders[1])):
+            tid = f"{wid}_Master_{level}"
+            scale = MASTER_SCALE[level]
+            t = {
+                "$Comment": f"Commande de maître du niveau {level} du bâtiment de métier {wid}, générée par "
+                            "tools/generate_workshops.py (ne pas modifier à la main) : voir RequestTemplate.",
+                "People": people,
+                "Workshop": wid,
+                "Master": True,
+                "Type": rtype,
+                "MinLevel": level,
+                "MaxLevel": level,
+                "Weight": 1,
+                "TitleKey": f"nakasar_peuples.request.{tid}.title",
+                "TaskKey": f"nakasar_peuples.request.{tid}.task",
+            }
+            if rtype == "Hunt":
+                t["Spawns"] = list(what) * 2
+                t["Roles"] = sorted(set(what))
+                t["MinDistance"], t["MaxDistance"] = HUNT_DISTANCE[0] + 20, HUNT_DISTANCE[1] + 30
+            else:
+                t["ItemId"] = what
+                t["Quantity"] = quantity * scale
+            t.update(MASTER_REWARD)
+            (folder / f"{tid}.json").write_text(json.dumps(t, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
+            roman = "I" * level
+            fr[f"request.{tid}.title"] = f"Commande de maître {roman}"
+            en[f"request.{tid}.title"] = f"Master order {roman}"
+            fr[f"request.{tid}.task"] = TASKS[rtype][0]
+            en[f"request.{tid}.task"] = TASKS[rtype][1]
+        print(f"{wid} : {len(orders)} commandes + 2 de maître, panneau {spot}")
     for key, (f, e) in PAGE.items():
         fr[key] = f
         en[key] = e

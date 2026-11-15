@@ -39,6 +39,21 @@ public final class WorkshopState {
             .append(new KeyedCodec<>("BoardX", Codec.INTEGER), (w, i) -> w.boardX = i == null ? 0 : i, w -> w.boardX).add()
             .append(new KeyedCodec<>("BoardY", Codec.INTEGER), (w, i) -> w.boardY = i == null ? 0 : i, w -> w.boardY).add()
             .append(new KeyedCodec<>("BoardZ", Codec.INTEGER), (w, i) -> w.boardZ = i == null ? 0 : i, w -> w.boardZ).add()
+            .append(new KeyedCodec<>("Master", Codec.BOOLEAN), (w, b) -> w.master = b != null && b, w -> w.master)
+            .documentation("Vrai si la commande de maître du niveau en cours est remplie.")
+            .add()
+            .append(new KeyedCodec<>("UpgradeStart", Codec.LONG), (w, l) -> w.upgradeStart = l == null ? 0L : l, w -> w.upgradeStart)
+            .documentation("Début du chantier d'amélioration (secondes de jeu, GameClock.seconds), 0 : aucun.")
+            .add()
+            .append(new KeyedCodec<>("UpgradeEnd", Codec.LONG), (w, l) -> w.upgradeEnd = l == null ? 0L : l, w -> w.upgradeEnd)
+            .documentation("Fin du chantier d'amélioration (secondes de jeu), 0 : aucun.")
+            .add()
+            .append(new KeyedCodec<>("Reconverted", Codec.LONG), (w, l) -> w.reconverted = l == null ? Long.MIN_VALUE : l, w -> w.reconverted)
+            .documentation("Jour de jeu du dernier choix ou changement de spécialité.")
+            .add()
+            .append(new KeyedCodec<>("Round", Codec.INTEGER), (w, i) -> w.round = i == null ? 0 : i, w -> w.round)
+            .documentation("Nombre de reconversions : rend unique l'id de la commande de maître à refaire.")
+            .add()
             .build();
 
     String id = "";
@@ -51,6 +66,11 @@ public final class WorkshopState {
     int boardX;
     int boardY;
     int boardZ;
+    boolean master;
+    long upgradeStart;
+    long upgradeEnd;
+    long reconverted = Long.MIN_VALUE;
+    int round;
 
     WorkshopState() {
     }
@@ -73,6 +93,11 @@ public final class WorkshopState {
         w.boardX = boardX;
         w.boardY = boardY;
         w.boardZ = boardZ;
+        w.master = master;
+        w.upgradeStart = upgradeStart;
+        w.upgradeEnd = upgradeEnd;
+        w.reconverted = reconverted;
+        w.round = round;
         return w;
     }
 
@@ -157,5 +182,54 @@ public final class WorkshopState {
 
     public void clearBoard() {
         board = false;
+    }
+
+    /** La commande de maître du niveau en cours est remplie. */
+    public boolean masterDone() {
+        return master;
+    }
+
+    public void setMasterDone(boolean value) {
+        master = value;
+    }
+
+    /** Vrai pendant le chantier d'amélioration. */
+    public boolean upgrading() {
+        return upgradeEnd > 0;
+    }
+
+    public long upgradeStart() {
+        return upgradeStart;
+    }
+
+    public long upgradeEnd() {
+        return upgradeEnd;
+    }
+
+    public void startUpgrade(long start, long end) {
+        upgradeStart = start;
+        upgradeEnd = end;
+    }
+
+    public void clearUpgrade() {
+        upgradeStart = 0L;
+        upgradeEnd = 0L;
+    }
+
+    /** Jour du dernier choix de spécialité (Long.MIN_VALUE : jamais). */
+    public long reconverted() {
+        return reconverted;
+    }
+
+    public void setReconverted(long day) {
+        reconverted = day;
+    }
+
+    public int round() {
+        return round;
+    }
+
+    public void nextRound() {
+        round++;
     }
 }

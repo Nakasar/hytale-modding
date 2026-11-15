@@ -107,6 +107,9 @@ public final class RequestTemplate implements JsonAssetWithMap<String, DefaultAs
             .append(new KeyedCodec<>("Knowledge", Codec.INTEGER), (t, v) -> t.knowledge = v == null ? 0 : v, t -> t.knowledge)
             .documentation("Commande : savoir-faire donné au bâtiment (une fois par commande, comme l'essor).")
             .add()
+            .append(new KeyedCodec<>("Master", Codec.BOOLEAN), (t, v) -> t.master = v != null && v, t -> t.master)
+            .documentation("Commande de maître (une par niveau, hors tirage du jour) : ouvre le chantier d'amélioration.")
+            .add()
             .validator(RequestTemplate::validate)
             .build();
 
@@ -136,6 +139,7 @@ public final class RequestTemplate implements JsonAssetWithMap<String, DefaultAs
     int maxLevel = 3;
     String specialty;
     int knowledge;
+    boolean master;
 
     RequestTemplate() {
     }
@@ -183,7 +187,7 @@ public final class RequestTemplate implements JsonAssetWithMap<String, DefaultAs
             return out;
         }
         for (RequestTemplate t : store.getAssetMap().getAssetMap().values()) {
-            if (t != null && workshop.equals(t.workshop) && level >= t.minLevel && level <= t.maxLevel && t.weight > 0
+            if (t != null && workshop.equals(t.workshop) && !t.master && level >= t.minLevel && level <= t.maxLevel && t.weight > 0
                     && t.type() != null && (t.specialty == null || t.specialty.equals(specialty))) {
                 out.add(t);
             }
@@ -195,6 +199,31 @@ public final class RequestTemplate implements JsonAssetWithMap<String, DefaultAs
     @Override
     public String getId() {
         return id;
+    }
+
+    /** Commande de maître du bâtiment `workshop` à son niveau `level` (spécialité d'abord, sinon commune), ou null. */
+    public static RequestTemplate master(String workshop, int level, String specialty) {
+        AssetStore<String, RequestTemplate, DefaultAssetMap<String, RequestTemplate>> store = getAssetStore();
+        if (store == null || workshop == null) {
+            return null;
+        }
+        RequestTemplate common = null;
+        for (RequestTemplate t : store.getAssetMap().getAssetMap().values()) {
+            if (t != null && t.master && workshop.equals(t.workshop) && level >= t.minLevel && level <= t.maxLevel && t.type() != null) {
+                if (t.specialty != null && t.specialty.equals(specialty)) {
+                    return t;
+                }
+                if (t.specialty == null && (common == null || t.id.compareTo(common.id) < 0)) {
+                    common = t;
+                }
+            }
+        }
+        return common;
+    }
+
+    /** Vrai pour une commande de maître. */
+    public boolean master() {
+        return master;
     }
 
     /** Bâtiment de métier dont c'est une commande, ou null (demande du tableau). */

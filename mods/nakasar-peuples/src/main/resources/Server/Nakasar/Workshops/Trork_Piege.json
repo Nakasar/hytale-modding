@@ -10,5 +10,49 @@
     25,
     19,
     2
+  ],
+  "Upgrades": [
+    {
+      "Level": 2,
+      "Hours": 12,
+      "Materials": [
+        {
+          "ItemId": "Food_Wildmeat_Raw",
+          "Quantity": 16
+        },
+        {
+          "ItemId": "Ingredient_Hide_Medium",
+          "Quantity": 8
+        },
+        {
+          "ItemId": "Wood_Oak_Trunk",
+          "Quantity": 24
+        }
+      ],
+      "Decor": [
+        "1 0 0 0 Furniture_Crude_Torch"
+      ]
+    },
+    {
+      "Level": 3,
+      "Hours": 12,
+      "Materials": [
+        {
+          "ItemId": "Food_Wildmeat_Raw",
+          "Quantity": 24
+        },
+        {
+          "ItemId": "Ingredient_Hide_Heavy",
+          "Quantity": 8
+        },
+        {
+          "ItemId": "Wood_Oak_Trunk",
+          "Quantity": 32
+        }
+      ],
+      "Decor": [
+        "-1 0 0 0 Furniture_Crude_Brazier"
+      ]
+    }
   ]
 }

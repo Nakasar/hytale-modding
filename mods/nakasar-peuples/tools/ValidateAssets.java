@@ -1243,10 +1243,11 @@ public class ValidateAssets {
                         continue;
                     }
                     String w = doc.getString("Workshop").getValue();
+                    boolean master = doc.containsKey("Master") && doc.getBoolean("Master").getValue();
                     if (!orders.containsKey(w)) {
                         errors++;
                         System.out.println("ERROR " + root.relativize(f) + " : bâtiment de métier inconnu " + w);
-                    } else {
+                    } else if (!master) {
                         orders.merge(w, 1, Integer::sum);
                     }
                 }
@@ -1276,6 +1277,20 @@ public class ValidateAssets {
                     problems.add("le métier " + job + " ne travaille pas dans " + building);
                 }
             }
+            // Décor des chantiers d'amélioration : « dx dy dz lacet Bloc », bloc vanilla connu.
+            if (doc.containsKey("Upgrades")) {
+                for (BsonValue u : doc.getArray("Upgrades")) {
+                    if (!u.asDocument().containsKey("Decor")) {
+                        continue;
+                    }
+                    for (BsonValue d : u.asDocument().getArray("Decor")) {
+                        String[] p = d.asString().getValue().trim().split("\\s+");
+                        if (p.length != 5 || (WORKSHOP_BLOCKS != null && !WORKSHOP_BLOCKS.contains(p[4]))) {
+                            problems.add("décor mal formé ou bloc inconnu : " + d.asString().getValue());
+                        }
+                    }
+                }
+            }
             if (e.getValue() < MIN_WORKSHOP_ORDERS) {
                 problems.add(e.getValue() + " commande(s), il en faut au moins " + MIN_WORKSHOP_ORDERS);
             }
@@ -1289,6 +1304,9 @@ public class ValidateAssets {
         }
         return errors;
     }
+
+    /** Blocs vanilla connus (tools/vanilla-block-ids-0.7.2.txt), pour le décor des bâtiments de métier, ou null. */
+    static Set<String> WORKSHOP_BLOCKS;
 
     /** Commandes d'un bâtiment de métier : de quoi remplir les 3 cases du niveau III sans doublon. */
     static final int MIN_WORKSHOP_ORDERS = 3;
@@ -1709,6 +1727,10 @@ public class ValidateAssets {
         errors += checkDialogueTexts(root, System.getProperty("items"));
         errors += checkRequestTitles(root);
         errors += checkVillageLayouts(root, System.getProperty("prefabs"));
+        String blockIds = System.getProperty("blocks");
+        if (blockIds != null && Files.isRegularFile(Path.of(blockIds))) {
+            WORKSHOP_BLOCKS = new HashSet<>(Files.readAllLines(Path.of(blockIds)));
+        }
         errors += checkWorkshops(root);
         errors += checkMapMarkerIcons(root);
         errors += checkReputation(root);

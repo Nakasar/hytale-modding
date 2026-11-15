@@ -318,10 +318,72 @@ $C.@PageOverlay {
           Label #NextHeader { Anchor: (Height: 24, Bottom: 6); Style: @Section; Text: ""; }
           @Card #NextCard {
             LayoutMode: Top;
-            Anchor: (Height: 150);
+            Anchor: (Height: 236);
             Padding: (Horizontal: 16, Vertical: 12);
             Group { Anchor: (Height: 3, Bottom: 10); Background: (Color: #8fd0ea(0.6)); }
             Label #NextLine { Style: @Body; Text: ""; }
+            // Chantier d'amélioration : matériaux attendus au dépôt, ou travaux en cours.
+            Group #NextMats {
+              LayoutMode: Left;
+              Anchor: (Height: 70, Top: 8);
+              Group #NMat0 {
+                LayoutMode: Top;
+                Anchor: (Width: 52, Right: 14);
+                Group {
+                  LayoutMode: Full;
+                  Anchor: (Width: 52, Height: 52);
+                  Group #NMatSlot0 { Anchor: (Full: 0); Background: (TexturePath: "../../../Common/IngredientSlot.png", Border: 24); }
+                  Group #NMatOk0 { Anchor: (Full: 0); Background: (TexturePath: "../../../Common/IngredientSlotValid.png", Border: 24); Visible: false; }
+                  ItemIcon #NMatIcon0 { Anchor: (Full: 5); ShowItemTooltip: true; }
+                }
+                Label #NMatCount0 { Anchor: (Height: 16, Top: 2); Style: (FontSize: 12, RenderBold: true, TextColor: #e8c46a, HorizontalAlignment: Center, VerticalAlignment: Center); Text: ""; }
+              }
+              Group #NMat1 {
+                LayoutMode: Top;
+                Anchor: (Width: 52, Right: 14);
+                Group {
+                  LayoutMode: Full;
+                  Anchor: (Width: 52, Height: 52);
+                  Group #NMatSlot1 { Anchor: (Full: 0); Background: (TexturePath: "../../../Common/IngredientSlot.png", Border: 24); }
+                  Group #NMatOk1 { Anchor: (Full: 0); Background: (TexturePath: "../../../Common/IngredientSlotValid.png", Border: 24); Visible: false; }
+                  ItemIcon #NMatIcon1 { Anchor: (Full: 5); ShowItemTooltip: true; }
+                }
+                Label #NMatCount1 { Anchor: (Height: 16, Top: 2); Style: (FontSize: 12, RenderBold: true, TextColor: #e8c46a, HorizontalAlignment: Center, VerticalAlignment: Center); Text: ""; }
+              }
+              Group #NMat2 {
+                LayoutMode: Top;
+                Anchor: (Width: 52, Right: 14);
+                Group {
+                  LayoutMode: Full;
+                  Anchor: (Width: 52, Height: 52);
+                  Group #NMatSlot2 { Anchor: (Full: 0); Background: (TexturePath: "../../../Common/IngredientSlot.png", Border: 24); }
+                  Group #NMatOk2 { Anchor: (Full: 0); Background: (TexturePath: "../../../Common/IngredientSlotValid.png", Border: 24); Visible: false; }
+                  ItemIcon #NMatIcon2 { Anchor: (Full: 5); ShowItemTooltip: true; }
+                }
+                Label #NMatCount2 { Anchor: (Height: 16, Top: 2); Style: (FontSize: 12, RenderBold: true, TextColor: #e8c46a, HorizontalAlignment: Center, VerticalAlignment: Center); Text: ""; }
+              }
+              Group #NMat3 {
+                LayoutMode: Top;
+                Anchor: (Width: 52, Right: 14);
+                Group {
+                  LayoutMode: Full;
+                  Anchor: (Width: 52, Height: 52);
+                  Group #NMatSlot3 { Anchor: (Full: 0); Background: (TexturePath: "../../../Common/IngredientSlot.png", Border: 24); }
+                  Group #NMatOk3 { Anchor: (Full: 0); Background: (TexturePath: "../../../Common/IngredientSlotValid.png", Border: 24); Visible: false; }
+                  ItemIcon #NMatIcon3 { Anchor: (Full: 5); ShowItemTooltip: true; }
+                }
+                Label #NMatCount3 { Anchor: (Height: 16, Top: 2); Style: (FontSize: 12, RenderBold: true, TextColor: #e8c46a, HorizontalAlignment: Center, VerticalAlignment: Center); Text: ""; }
+              }
+            }
+            ProgressBar #WorksBar {
+              Anchor: (Height: 12, Top: 8);
+              Background: "../../../Common/ProgressBar.png";
+              BarTexturePath: "Board/Bar_Chantier.png";
+              Value: 0;
+              Visible: false;
+            }
+            Group { FlexWeight: 1; }
+            $C.@SmallSecondaryTextButton #NextAction { @Text = ""; @Anchor = Anchor(Width: 240, Height: 32); }
           }
           Label #OffersHeader { Anchor: (Height: 24, Top: 14, Bottom: 6); Style: @Section; Text: ""; }
           @Card #OffersCard {

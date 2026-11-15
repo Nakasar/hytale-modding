@@ -8,8 +8,11 @@ import com.hypixel.hytale.assetstore.map.DefaultAssetMap;
 import com.hypixel.hytale.assetstore.map.JsonAssetWithMap;
 import com.hypixel.hytale.codec.Codec;
 import com.hypixel.hytale.codec.KeyedCodec;
+import com.hypixel.hytale.codec.builder.BuilderCodec;
+import com.hypixel.hytale.codec.codecs.array.ArrayCodec;
 import com.hypixel.hytale.codec.validation.ValidationResults;
 import dev.nakasar.hytale.peuples.village.People;
+import dev.nakasar.hytale.peuples.village.VillageLayout;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -30,6 +33,41 @@ import java.util.List;
 public final class Workshop implements JsonAssetWithMap<String, DefaultAssetMap<String, Workshop>> {
 
     public static final String PATH = "Nakasar/Workshops";
+
+    /**
+     * Le chantier d'amélioration vers le niveau {@code Level} (étape 2) : matériaux pris au dépôt, durée en heures de
+     * jeu, et décor vanilla posé à la fin ({@code "dx dy dz lacet Bloc"} relatifs au panneau, seulement dans l'air).
+     */
+    public static final class Upgrade {
+        public static final BuilderCodec<Upgrade> CODEC = BuilderCodec.builder(Upgrade.class, Upgrade::new)
+                .append(new KeyedCodec<>("Level", Codec.INTEGER), (u, v) -> u.level = v == null ? 2 : v, u -> u.level).add()
+                .append(new KeyedCodec<>("Hours", Codec.INTEGER), (u, v) -> u.hours = v == null ? 12 : Math.max(0, v), u -> u.hours).add()
+                .append(new KeyedCodec<>("Materials", new ArrayCodec<>(VillageLayout.Material.CODEC, VillageLayout.Material[]::new)),
+                        (u, v) -> u.materials = v == null ? new VillageLayout.Material[0] : v, u -> u.materials).add()
+                .append(new KeyedCodec<>("Decor", Codec.STRING_ARRAY), (u, v) -> u.decor = v == null ? new String[0] : v, u -> u.decor).add()
+                .build();
+
+        int level = 2;
+        int hours = 12;
+        VillageLayout.Material[] materials = new VillageLayout.Material[0];
+        String[] decor = new String[0];
+
+        public int level() {
+            return level;
+        }
+
+        public int hours() {
+            return hours;
+        }
+
+        public VillageLayout.Material[] materials() {
+            return materials;
+        }
+
+        public String[] decor() {
+            return decor;
+        }
+    }
 
     public static final AssetBuilderCodec<String, Workshop> CODEC = AssetBuilderCodec.builder(Workshop.class, Workshop::new,
                     Codec.STRING, (w, id) -> w.id = id, w -> w.id, (w, data) -> w.data = data, w -> w.data)
@@ -54,6 +92,10 @@ public final class Workshop implements JsonAssetWithMap<String, DefaultAssetMap<
             .append(new KeyedCodec<>("Board", Codec.INT_ARRAY), (w, v) -> w.board = v, w -> w.board)
             .documentation("Place du panneau [x, z, lacet] relative au cœur du village.")
             .add()
+            .append(new KeyedCodec<>("Upgrades", new ArrayCodec<>(Upgrade.CODEC, Upgrade[]::new)),
+                    (w, v) -> w.upgrades = v == null ? new Upgrade[0] : v, w -> w.upgrades)
+            .documentation("Chantiers d'amélioration vers les niveaux II et III.")
+            .add()
             .validator(Workshop::validate)
             .build();
 
@@ -68,6 +110,7 @@ public final class Workshop implements JsonAssetWithMap<String, DefaultAssetMap<
     String icon;
     String nameKey;
     int[] board;
+    Upgrade[] upgrades = new Upgrade[0];
 
     Workshop() {
     }
@@ -136,6 +179,16 @@ public final class Workshop implements JsonAssetWithMap<String, DefaultAssetMap<
     /** {@code [x, z, lacet]} du panneau, relatif au cœur, ou null. */
     public int[] board() {
         return board == null || board.length < 2 ? null : board;
+    }
+
+    /** Chantier d'amélioration vers le niveau `level`, ou null. */
+    public Upgrade upgrade(int level) {
+        for (Upgrade u : upgrades) {
+            if (u != null && u.level == level) {
+                return u;
+            }
+        }
+        return null;
     }
 
     private static void validate(Workshop w, ValidationResults results) {

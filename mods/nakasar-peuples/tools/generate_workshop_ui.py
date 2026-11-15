@@ -16,6 +16,7 @@ dev.nakasar.hytale.peuples.workshop.WorkshopPage.
 from generate_board_ui import COMMON, MEMORIES, OUT, THEMES, label
 
 ORDERS = 3                 # Workshops.slots au niveau III
+MATERIALS = 4              # matériaux d'un chantier d'amélioration (3 dans les assets actuels)
 WIDTH, HEIGHT = 1060, 690
 LEFT_WIDTH = 560
 
@@ -221,10 +222,37 @@ def page(theme_id):
     w(f'          {label("NextHeader", "@Section", anchor="Height: 24, Bottom: 6")}')
     w("          @Card #NextCard {")
     w("            LayoutMode: Top;")
-    w("            Anchor: (Height: 150);")
+    w("            Anchor: (Height: 236);")
     w("            Padding: (Horizontal: 16, Vertical: 12);")
     w(f"            Group {{ Anchor: (Height: 3, Bottom: 10); Background: (Color: {acc}(0.6)); }}")
     w(f'            {label("NextLine", "@Body")}')
+    w("            // Chantier d'amélioration : matériaux attendus au dépôt, ou travaux en cours.")
+    w("            Group #NextMats {")
+    w("              LayoutMode: Left;")
+    w("              Anchor: (Height: 70, Top: 8);")
+    for j in range(MATERIALS):
+        w(f"              Group #NMat{j} {{")
+        w("                LayoutMode: Top;")
+        w("                Anchor: (Width: 52, Right: 14);")
+        w("                Group {")
+        w("                  LayoutMode: Full;")
+        w("                  Anchor: (Width: 52, Height: 52);")
+        w(f'                  Group #NMatSlot{j} {{ Anchor: (Full: 0); Background: (TexturePath: "{COMMON}IngredientSlot.png", Border: 24); }}')
+        w(f'                  Group #NMatOk{j} {{ Anchor: (Full: 0); Background: (TexturePath: "{COMMON}IngredientSlotValid.png", Border: 24); Visible: false; }}')
+        w(f"                  ItemIcon #NMatIcon{j} {{ Anchor: (Full: 5); ShowItemTooltip: true; }}")
+        w("                }")
+        w(f'                {label(f"NMatCount{j}", "LabelStyle(FontSize: 12, RenderBold: true, TextColor: #e8c46a, HorizontalAlignment: Center, VerticalAlignment: Center)", anchor="Height: 16, Top: 2")}')
+        w("              }")
+    w("            }")
+    w("            ProgressBar #WorksBar {")
+    w("              Anchor: (Height: 12, Top: 8);")
+    w(f'              Background: "{COMMON}ProgressBar.png";')
+    w('              BarTexturePath: "Board/Bar_Chantier.png";')
+    w("              Value: 0;")
+    w("              Visible: false;")
+    w("            }")
+    w("            Group { FlexWeight: 1; }")
+    w('            $C.@SmallSecondaryTextButton #NextAction { @Text = ""; @Anchor = Anchor(Width: 240, Height: 32); }')
     w("          }")
     w(f'          {label("OffersHeader", "@Section", anchor="Height: 24, Top: 14, Bottom: 6")}')
     w("          @Card #OffersCard {")

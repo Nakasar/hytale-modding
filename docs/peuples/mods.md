@@ -978,7 +978,7 @@ pose l'état, le panneau, les commandes et la jauge ; la montée de niveau (comm
 
 1. `/village generer` puis `/village palier 1` (le village kweebec gagne puits et enclos).
 2. Attendre une seconde près des bâtiments : un panneau kweebec apparaît devant le potager, le puits et l'enclos.
-3. L'utiliser : la page montre l'enclos des lapins, niveau I, Pâquerette, la jauge 0/200 et 2 commandes.
+3. L'utiliser : la page montre l'enclos des lapins, niveau I, son éleveur, la jauge 0/200 et 2 commandes.
 4. Prendre « Carottes des lapins », déposer 10 carottes au dépôt : +30 de savoir-faire, +5 d'essor, une nouvelle commande.
 5. Accroupi devant le panneau : la version texte.
 
@@ -986,3 +986,16 @@ pose l'état, le panneau, les commandes et la jauge ; la montée de niveau (comm
 
 - Le panneau est-il bien tourné vers la place et hors du passage ? Ne bouche-t-il aucune entrée ?
 - Le panneau d'un bâtiment bâti par un chantier apparaît-il dans la seconde où un joueur est près ?
+
+## Bâtiments de métier, étape 2 : niveaux II et III
+
+- Quand la jauge est pleine (200 au niveau I, 400 au niveau II) et que le village a le palier voulu (village pour le
+  niveau II, bourg pour le III), le panneau propose la **commande de maître** du niveau (`<Bâtiment>_Master_<niveau>`,
+  `Master: true`, hors tirage du jour). Elle n'expire pas, ne compte pas dans les 3 suivies et ne se remplit qu'une
+  fois pour le village (id `master-<village>-<bâtiment>-<niveau>-<reconversion>`).
+- Ensuite **« Lancer le chantier »** (rang Toléré) prend au dépôt les matériaux de l'asset (`Upgrades`, la moitié des
+  3 premiers matériaux du chantier du palier correspondant du plan) et lance 12 h de travaux (heures de jeu).
+- À la fin : niveau suivant, jauge à zéro, commandes retirées (3 au niveau III), décor vanilla du peuple posé à côté du
+  panneau (`Decor`, seulement dans l'air au-dessus d'un bloc), annonce et titre à l'écran aux joueurs proches.
+- Pas encore de variante de prefab plus grande : le décor suffit tant que les emprises de niveau III ne sont pas
+  réservées dans les plans (à voir avec les emplacements de l'étape 6).
