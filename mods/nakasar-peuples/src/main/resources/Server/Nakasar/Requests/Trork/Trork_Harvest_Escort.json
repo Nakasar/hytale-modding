@@ -1,0 +1,23 @@
+{
+  "$Comment": "Demande du tableau d'un village Trork (Harvest), générée par tools/generate_quests.py : voir RequestTemplate et request/Expeditions.",
+  "People": "Trork",
+  "Type": "Harvest",
+  "MinTier": 0,
+  "MaxTier": 3,
+  "Weight": 1,
+  "TitleKey": "nakasar_peuples.request.Trork_Harvest_Escort.title",
+  "TaskKey": "nakasar_peuples.request.Trork_Harvest_Escort.task",
+  "Members": 3,
+  "Waves": 2,
+  "Duration": 60,
+  "Spawns": [
+    "Nakasar_Peuples_Raider_Trork_Warrior",
+    "Nakasar_Peuples_Raider_Trork_Mauler"
+  ],
+  "ItemId": "Wood_Oak_Trunk",
+  "Quantity": 12,
+  "MinDistance": 60,
+  "MaxDistance": 110,
+  "Essor": 20,
+  "Favors": 3
+}

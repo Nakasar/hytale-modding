@@ -29,6 +29,8 @@ import java.util.UUID;
  *   <li>un PNJ d'un rôle de chasse ({@link RequestTemplate#roles()}) tué par un joueur à moins de
  *       {@value RequestSystem#HUNT_RADIUS} blocs du village de sa demande : +1 aussi (les Trorks qui rôdent déjà) ;</li>
  *   <li>le captif d'une escorte : la demande échoue ;</li>
+ *   <li>le chef d'une demande de boss : elle est remplie ; un caravanier ou un cueilleur : un de moins, la demande
+ *       échoue quand il n'en reste aucun ({@link Expeditions#memberDied}) ;</li>
  *   <li>le crieur d'un village : il reviendra au matin.</li>
  * </ul>
  * Le travail se fait juste après le tick ({@code world.execute}) : il peut donner des objets et retirer des PNJ.
@@ -65,13 +67,15 @@ public final class RequestDeathSystem extends DeathSystems.OnDeathSystem {
             }
             String requestId = parts[1];
             switch (owner.kind()) {
-                case FOE -> world.execute(() -> withRequest(world, playerId, requestId, (p, r, data) -> {
+                case FOE, BOSS -> world.execute(() -> withRequest(world, playerId, requestId, (p, r, data) -> {
                     Requests.advance(world, world.getEntityStore().getStore(), p.getReference(), p, data, r, 1);
                 }));
                 case CAPTIVE -> world.execute(() -> withRequest(world, playerId, requestId, (p, r, data) -> {
                     RequestSystem.forget(world, owner.key());
                     Requests.fail(world, world.getEntityStore().getStore(), p.getReference(), p, data, r, Requests.KEYS + "escort.lost");
                 }));
+                case ESCORTED -> world.execute(() -> withRequest(world, playerId, requestId, (p, r, data) ->
+                        Expeditions.memberDied(world, world.getEntityStore().getStore(), p, data, r)));
                 default -> {
                 }
             }

@@ -157,6 +157,7 @@ public final class RequestSystem extends TickingSystem<EntityStore> {
             case ESCORT -> stepEscort(world, store, ref, player, data, r, t, village, at, key, state);
             case DEFENSE -> stepDefense(store, village);
             case PLANT -> stepPlant(world, store, ref, player, data, r, t, at);
+            case CARAVAN, HARVEST, DESTROY, BOSS -> Expeditions.step(world, store, ref, player, data, r, t, village, at, key);
         }
     }
 
@@ -295,8 +296,8 @@ public final class RequestSystem extends TickingSystem<EntityStore> {
      * Fait apparaître `role` sur un point sûr ({@link Terrain#safeSpot}) à moins de `spread` blocs de (x, z), sinon
      * sur le lieu lui-même (déjà sûr, voir {@link #knowSiteHeight}) ; attaché à `leash` s'il est donné.
      */
-    private static void spawnOnGround(World world, Store<EntityStore> store, String key, RequestSpawns.Kind kind, String role,
-                                      int x, int z, int spread, Vector3d leash) {
+    static Ref<EntityStore> spawnOnGround(World world, Store<EntityStore> store, String key, RequestSpawns.Kind kind, String role,
+                                          int x, int z, int spread, Vector3d leash) {
         Terrain terrain = new Terrain(world);
         ThreadLocalRandom random = ThreadLocalRandom.current();
         int[] spot = terrain.safeSpot(x + random.nextInt(-spread, spread + 1), z + random.nextInt(-spread, spread + 1), 2);
@@ -305,7 +306,7 @@ public final class RequestSystem extends TickingSystem<EntityStore> {
         }
         if (spot == null) {
             PeuplesPlugin.get().getLogger().atWarning().log("Peuples : pas de point sûr pour '%s' autour de %d, %d", role, x, z);
-            return;
+            return null;
         }
         Ref<EntityStore> spawned = RequestSpawns.spawn(store, key, kind, role, new Vector3d(spot[0] + 0.5, spot[1], spot[2] + 0.5),
                 (float) random.nextDouble(-Math.PI, Math.PI));
@@ -315,6 +316,7 @@ public final class RequestSystem extends TickingSystem<EntityStore> {
                 npc.setLeashPoint(new Vector3d(leash));
             }
         }
+        return spawned;
     }
 
     /**
@@ -322,7 +324,7 @@ public final class RequestSystem extends TickingSystem<EntityStore> {
      * dans la lave, dans un bloc ou sur une pente) ; vrai si le lieu est connu. Le guetteur, le captif et le bosquet s'y
      * posent, et la bande ou les gardiens s'y replient.
      */
-    private static boolean knowSiteHeight(World world, PlayerRequest r) {
+    static boolean knowSiteHeight(World world, PlayerRequest r) {
         int[] s = r.site();
         Terrain terrain = new Terrain(world);
         if (r.siteHeightKnown()) {
@@ -349,7 +351,7 @@ public final class RequestSystem extends TickingSystem<EntityStore> {
         return true;
     }
 
-    private static boolean near(Vector3d at, int[] site, int range) {
+    static boolean near(Vector3d at, int[] site, int range) {
         double dx = site[0] + 0.5 - at.x();
         double dz = site[2] + 0.5 - at.z();
         return dx * dx + dz * dz <= (double) range * range;

@@ -1,0 +1,71 @@
+{
+  "$Comment": "Caravanier Slothian d'une demande de caravane, généré par tools/generate_quests.py : copie du captif kweebec sur l'apparence vanilla Slothian_Villager. Posé par request/Expeditions au cœur du village ; il suit le joueur le plus proche à moins de 18 blocs et ne se bat pas. Les assaillants de sa demande le visent (RaidAttitudeSystem). Ne régénère jamais (VillageNoRegenSystem).",
+  "Type": "Generic",
+  "Appearance": "Slothian_Villager",
+  "NameTranslationKey": "nakasar_peuples.npc.Slothian_Caravaneer.name",
+  "MaxHealth": 150,
+  "StartState": "Idle",
+  "DefaultPlayerAttitude": "Neutral",
+  "DefaultNPCAttitude": "Ignore",
+  "MotionControllerList": [
+    {
+      "Type": "Walk",
+      "MaxWalkSpeed": 6,
+      "RunThreshold": 0.7,
+      "RunThresholdRange": 0.1,
+      "Gravity": 10,
+      "MaxFallSpeed": 20,
+      "Acceleration": 10
+    }
+  ],
+  "KnockbackScale": 0.5,
+  "Instructions": [
+    {
+      "Sensor": {
+        "Type": "State",
+        "State": "Idle"
+      },
+      "Instructions": [
+        {
+          "Sensor": {
+            "Type": "Player",
+            "Range": 18,
+            "LockOnTarget": true
+          },
+          "BodyMotion": {
+            "Type": "Seek",
+            "SlowDownDistance": 5,
+            "StopDistance": 3,
+            "RelativeSpeed": 1
+          }
+        },
+        {
+          "Actions": []
+        }
+      ]
+    }
+  ],
+  "InteractionInstruction": {
+    "Instructions": [
+      {
+        "Continue": true,
+        "Sensor": {
+          "Type": "Any"
+        },
+        "Actions": [
+          {
+            "Type": "SetInteractable",
+            "Interactable": true,
+            "Hint": "nakasar_peuples.hint.talk"
+          }
+        ]
+      },
+      {
+        "Sensor": {
+          "Type": "HasInteracted"
+        },
+        "Actions": []
+      }
+    ]
+  }
+}

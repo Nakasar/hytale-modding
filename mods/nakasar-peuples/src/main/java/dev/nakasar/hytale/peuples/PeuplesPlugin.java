@@ -176,6 +176,13 @@ public final class PeuplesPlugin extends JavaPlugin {
         entities.registerSystem(new VillageNoRegenSystem());
         entities.registerSystem(new RequestSystem());
         entities.registerSystem(new RequestDeathSystem());
+        // Demandes de boss (15 novembre 2026) : coups annoncés et barre de vie des fractales.
+        entities.registerSystem(new dev.nakasar.hytale.peuples.boss.QuestBosses());
+        entities.registerSystem(new dev.nakasar.hytale.peuples.boss.QuestBossBar());
+        dev.nakasar.hytale.peuples.boss.QuestBosses.setSummoner(dev.nakasar.hytale.peuples.request.Expeditions::summonAdds);
+        for (dev.nakasar.hytale.peuples.village.People people : dev.nakasar.hytale.peuples.village.People.values()) {
+            dev.nakasar.hytale.peuples.boss.QuestBossBar.register(dev.nakasar.hytale.peuples.boss.QuestBosses.ROLE_PREFIX + people.id());
+        }
         entities.registerSystem(new dev.nakasar.hytale.peuples.workshop.LivestockDeathSystem());
         entities.registerSystem(new VillagerUseSystem());
         entities.registerSystem(new dev.nakasar.hytale.peuples.dialogue.DialogueFacingSystem());
@@ -204,6 +211,9 @@ public final class PeuplesPlugin extends JavaPlugin {
     protected void shutdown() {
         Dialogues.clearAll();
         RequestSpawns.clearAll();
+        dev.nakasar.hytale.peuples.request.Expeditions.clearAll();
+        dev.nakasar.hytale.peuples.boss.QuestBosses.clearAll();
+        dev.nakasar.hytale.peuples.boss.QuestBossBar.clearAll();
         Criers.clearAll();
         RequestHud.clearAll();
         VillageBlockSystem.clearAll();

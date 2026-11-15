@@ -27,7 +27,15 @@ import java.util.Map;
 public final class RequestSpawns {
 
     /** Ce qu'un PNJ apparu représente pour sa demande. */
-    public enum Kind { FOE, LOOKOUT, CAPTIVE, GUARD, DEPARTING }
+    public enum Kind { FOE, LOOKOUT, CAPTIVE, GUARD, DEPARTING,
+        /** PNJ du village escorté (caravanier, cueilleur). */
+        ESCORTED,
+        /** Assaillant d'une embuscade. */
+        AMBUSH,
+        /** Chef d'une demande de boss. */
+        BOSS,
+        /** Renfort d'un chef. */
+        ADD }
 
     /** Clé des PNJ qui restent après leur demande (guetteur d'une missive) : ils partent quand plus personne n'est près. */
     public static final String LINGER = "linger";
@@ -80,6 +88,20 @@ public final class RequestSpawns {
             Owner o = OWNERS.get(r);
             if (kind == null || (o != null && o.kind() == kind)) {
                 out.add(r);
+            }
+        }
+        return out;
+    }
+
+    /** Tous les PNJ valides du genre `kind`, toutes demandes confondues, avec leur clé. */
+    public static synchronized Map<Ref<EntityStore>, String> all(Kind kind) {
+        Map<Ref<EntityStore>, String> out = new java.util.LinkedHashMap<>();
+        for (Map.Entry<String, List<Ref<EntityStore>>> e : BY_KEY.entrySet()) {
+            for (Ref<EntityStore> r : e.getValue()) {
+                Owner o = OWNERS.get(r);
+                if (r.isValid() && o != null && o.kind() == kind) {
+                    out.put(r, e.getKey());
+                }
             }
         }
         return out;

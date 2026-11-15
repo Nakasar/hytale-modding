@@ -15,6 +15,14 @@ import java.util.Locale;
  *       village la nuit même ; remplie si le raid est gagné avec le joueur, échouée s'il est perdu ;</li>
  *   <li>{@link #PLANT} plantation (étape 6, chaîne kweebec) : un bosquet brûlé apparaît au lieu de la demande quand le
  *       joueur approche ; il faut y planter des pousses ({@code ItemId}, le bloc de la pousse).</li>
+ *   <li>{@link #CARAVAN} caravane : escorter des caravaniers jusqu'à un autre village, embuscades en chemin
+ *       ({@link Expeditions}) ;</li>
+ *   <li>{@link #HARVEST} récolte escortée : mener des cueilleurs à un lieu proche, les garder pendant la récolte, les
+ *       ramener ; attaques à l'aller et pendant la récolte ({@link Expeditions}) ;</li>
+ *   <li>{@link #DESTROY} destruction : briser les blocs posés au lieu de la demande ({@code TargetBlock}), gardés par
+ *       une bande ({@link Expeditions}) ;</li>
+ *   <li>{@link #BOSS} boss : abattre un chef dans son repaire, avec les annonces rouges et la barre de vie des fractales
+ *       ({@link dev.nakasar.hytale.peuples.boss.QuestBosses}).</li>
  * </ul>
  */
 public enum RequestType {
@@ -24,7 +32,11 @@ public enum RequestType {
     DELIVERY("Delivery"),
     ESCORT("Escort"),
     DEFENSE("Defense"),
-    PLANT("Plant");
+    PLANT("Plant"),
+    CARAVAN("Caravan"),
+    HARVEST("Harvest"),
+    DESTROY("Destroy"),
+    BOSS("Boss");
 
     private final String id;
 
@@ -44,7 +56,18 @@ public enum RequestType {
 
     /** Vrai pour les demandes qui ont un lieu hors du village (repaire, guetteur, captif). */
     public boolean hasSite() {
-        return this == HUNT || this == DELIVERY || this == ESCORT || this == PLANT;
+        return this == HUNT || this == DELIVERY || this == ESCORT || this == PLANT || this == HARVEST || this == DESTROY
+                || this == BOSS;
+    }
+
+    /** Vrai pour les demandes où des PNJ du village accompagnent le joueur (caravane, récolte escortée). */
+    public boolean escorted() {
+        return this == CARAVAN || this == HARVEST;
+    }
+
+    /** Vrai pour les types menés par {@link Expeditions} et {@link dev.nakasar.hytale.peuples.boss.QuestBosses} (ajoutés le 15 novembre 2026). */
+    public boolean expedition() {
+        return this == CARAVAN || this == HARVEST || this == DESTROY || this == BOSS;
     }
 
     /** Clé de traduction du nom du type. */
