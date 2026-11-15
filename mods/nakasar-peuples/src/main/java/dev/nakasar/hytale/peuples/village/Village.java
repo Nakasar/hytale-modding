@@ -89,6 +89,10 @@ public final class Village {
                     (v, a) -> v.plots = a == null ? new PlotState[0] : a, v -> v.plots)
             .documentation("Terrains libres E1 et E2 : projet, chantier, démolition, piquets.")
             .add()
+            .append(new KeyedCodec<>("Annexes", new ArrayCodec<>(AnnexState.CODEC, AnnexState[]::new)),
+                    (v, a) -> v.annexes = a == null ? new AnnexState[0] : a, v -> v.annexes)
+            .documentation("Avant-postes de métier rattachés au village : fondation, place, travaux, bâtiment debout.")
+            .add()
             .append(new KeyedCodec<>("SettlerDay", Codec.LONG), (v, l) -> v.settlerDay = l == null ? Long.MIN_VALUE : l, v -> v.settlerDay)
             .documentation("Jour de jeu où le dernier colon est apparu (outpost/Settlers : un tous les 7 jours au palier max).")
             .add()
@@ -131,6 +135,7 @@ public final class Village {
     RaidRecord raid = new RaidRecord();
     PlotState[] plots = new PlotState[0];
     WorkshopState[] workshops = new WorkshopState[0];
+    AnnexState[] annexes = new AnnexState[0];
     long settlerDay = Long.MIN_VALUE;
     boolean settlerActive;
     String settlerOwner;
@@ -185,6 +190,10 @@ public final class Village {
         v.settlerDay = settlerDay;
         v.settlerActive = settlerActive;
         v.settlerOwner = settlerOwner;
+        v.annexes = new AnnexState[annexes.length];
+        for (int i = 0; i < annexes.length; i++) {
+            v.annexes[i] = annexes[i] == null ? null : annexes[i].copy();
+        }
         v.workshops = new WorkshopState[workshops.length];
         for (int i = 0; i < workshops.length; i++) {
             v.workshops[i] = workshops[i] == null ? null : workshops[i].copy();
@@ -357,6 +366,40 @@ public final class Village {
         grown[workshops.length] = created;
         workshops = grown;
         return created;
+    }
+
+    /** Avant-postes connus du village (copie du tableau, objets sauvegardés). */
+    public AnnexState[] annexes() {
+        return java.util.Arrays.stream(annexes).filter(java.util.Objects::nonNull).toArray(AnnexState[]::new);
+    }
+
+    /** Avant-poste du bâtiment de métier `workshopId`, ou null. */
+    public AnnexState annex(String workshopId) {
+        for (AnnexState a : annexes) {
+            if (a != null && a.id.equals(workshopId)) {
+                return a;
+            }
+        }
+        return null;
+    }
+
+    /** Avant-poste du bâtiment de métier `workshopId`, créé (fondation pas encore remise) s'il manque (thread du monde). */
+    public AnnexState ensureAnnex(String workshopId) {
+        AnnexState found = annex(workshopId);
+        if (found != null) {
+            return found;
+        }
+        AnnexState created = new AnnexState(workshopId);
+        AnnexState[] grown = java.util.Arrays.copyOf(annexes, annexes.length + 1);
+        grown[annexes.length] = created;
+        annexes = grown;
+        return created;
+    }
+
+    /** Oublie l'avant-poste `workshopId` et l'état de son bâtiment de métier (commande d'administration). */
+    public void forgetAnnex(String workshopId) {
+        annexes = java.util.Arrays.stream(annexes).filter(a -> a != null && !a.id.equals(workshopId)).toArray(AnnexState[]::new);
+        forgetWorkshop(workshopId);
     }
 
     /** État sauvegardé du terrain `plotId` (E1, E2), créé vide s'il manque (thread du monde). */

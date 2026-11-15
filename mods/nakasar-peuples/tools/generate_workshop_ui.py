@@ -477,6 +477,96 @@ def plot_page(theme_id):
     return "\n".join(L).replace("Style: LabelStyle(", "Style: (") + "\n"
 
 
+ANNEX_CARDS = 6            # avant-postes de métier par peuple (tools/outposts.py)
+ANNEX_COLUMNS = 3
+
+
+def annex_page(theme_id):
+    """Onglet « Avant-postes » du panneau du village : les six avant-postes de métier du peuple, en deux rangées."""
+    t = THEMES[theme_id]
+    acc, band, title = t["accent"], t["band"], t["title"]
+    emblem = (f'Background: (TexturePath: "{MEMORIES}{t["emblem"]}.png", Color: {acc});' if t["emblem"]
+              else "Visible: false;")
+    L = []
+    w = L.append
+    w('$C = "../../../Common.ui";')
+    w("")
+    w(f"// Généré par tools/generate_workshop_ui.py (thème {theme_id or 'neutre'}) : ne pas modifier à la main.")
+    w("")
+    w(f"@Accent = {acc};")
+    w("@Body = LabelStyle(FontSize: 14, TextColor: #c9d1d9, Wrap: true);")
+    w("@SmallWrap = LabelStyle(FontSize: 13, TextColor: #96a9be, Wrap: true);")
+    w("")
+    w("$C.@PageOverlay {")
+    w("  LayoutMode: Middle;")
+    w("")
+    w("  $C.@DecoratedContainer {")
+    w(f"    Anchor: (Width: {PLOT_WIDTH}, Height: {PLOT_HEIGHT});")
+    w("")
+    w("    #Title {")
+    w("      Group {")
+    w("        LayoutMode: Center;")
+    w(f"        Group #TitleEmblem {{ Anchor: (Width: 26, Height: 26, Right: 8); {emblem} }}")
+    w(f'        Label #PageTitle {{ Style: (...$C.@TitleStyle, FontSize: 16, TextColor: {title}); }}')
+    w("      }")
+    w("    }")
+    w("")
+    w("    #Content {")
+    w("      LayoutMode: Top;")
+    w("      Padding: (Full: 17, Top: 14);")
+    w(f'      {label("Intro", "@Body", anchor="Height: 40, Bottom: 10")}')
+    rows = (ANNEX_CARDS + ANNEX_COLUMNS - 1) // ANNEX_COLUMNS
+    for r in range(rows):
+        w(f"      Group #AnnexRow{r} {{")
+        w("        LayoutMode: Left;")
+        w(f"        FlexWeight: 1;")
+        w(f"        Anchor: (Bottom: {12 if r < rows - 1 else 0});")
+        for c in range(ANNEX_COLUMNS):
+            i = r * ANNEX_COLUMNS + c
+            if i >= ANNEX_CARDS:
+                break
+            w(f"        Group #Annex{i} {{")
+            w("          LayoutMode: Top;")
+            w("          FlexWeight: 1;")
+            w(f"          Anchor: (Right: {12 if c < ANNEX_COLUMNS - 1 else 0});")
+            w("          Padding: (Horizontal: 14, Vertical: 10);")
+            w(f"          Background: (Color: {band}(0.75));")
+            w(f"          Group {{ Anchor: (Height: 3, Bottom: 8); Background: (Color: {acc}(0.6)); }}")
+            w("          Group {")
+            w("            LayoutMode: Left;")
+            w("            Anchor: (Height: 56);")
+            w("            Group {")
+            w("              LayoutMode: Full;")
+            w("              Anchor: (Width: 56, Height: 56, Right: 10);")
+            w(f'              Background: (TexturePath: "{COMMON}IngredientSlot.png", Border: 24);')
+            w(f"              ItemIcon #AnnexIcon{i} {{ Anchor: (Full: 7); ShowItemTooltip: true; }}")
+            w("            }")
+            w("            Group {")
+            w("              LayoutMode: Top;")
+            w("              FlexWeight: 1;")
+            w(f'              {label(f"AnnexName{i}", f"LabelStyle(FontSize: 16, FontName: \"Secondary\", RenderBold: true, RenderUppercase: true, TextColor: {acc})", anchor="Height: 22")}')
+            w(f'              {label(f"AnnexRole{i}", "@SmallWrap", anchor="Top: 2")}')
+            w("            }")
+            w("          }")
+            w(f'          {label(f"AnnexState{i}", "@Body", anchor="Top: 8")}')
+            w("          Group { FlexWeight: 1; }")
+            w(f'          $C.@SmallSecondaryTextButton #AnnexAction{i} {{ @Text = ""; @Anchor = Anchor(Height: 32); }}')
+            w("        }")
+        w("      }")
+    w("      Group {")
+    w("        LayoutMode: Left;")
+    w("        Anchor: (Height: 44, Top: 12);")
+    w(f'        {label("Rule", "@SmallWrap", extra=" FlexWeight: 1;")}')
+    w('        $C.@SecondaryTextButton #Back { @Text = ""; @Anchor = Anchor(Width: 240); }')
+    w("      }")
+    w("    }")
+    w("  }")
+    w("}")
+    w("")
+    w("$C.@BackButton {}")
+    return "\n".join(L).replace("Style: LabelStyle(", "Style: (") + "\n"
+
+
 def main():
     for theme_id in THEMES:
         name = f"WorkshopPage_{theme_id}.ui" if theme_id else "WorkshopPage.ui"
@@ -487,6 +577,9 @@ def main():
         print("écrit", name)
         name = f"PlotPage_{theme_id}.ui" if theme_id else "PlotPage.ui"
         (OUT / name).write_text(plot_page(theme_id), encoding="utf-8")
+        print("écrit", name)
+        name = f"AnnexPage_{theme_id}.ui" if theme_id else "AnnexPage.ui"
+        (OUT / name).write_text(annex_page(theme_id), encoding="utf-8")
         print("écrit", name)
 
 

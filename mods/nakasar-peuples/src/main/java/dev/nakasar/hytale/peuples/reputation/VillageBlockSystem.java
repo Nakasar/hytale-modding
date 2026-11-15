@@ -57,7 +57,8 @@ public final class VillageBlockSystem extends EntityEventSystem<EntityStore, Bre
             return;
         }
         World world = store.getExternalData().getWorld();
-        Village village = villageAt(world, at.x, at.y, at.z);
+        Village found = villageAt(world, at.x, at.y, at.z);
+        Village village = found != null ? found : dev.nakasar.hytale.peuples.annex.Annexes.villageOfBlock(world, at.x, at.y, at.z);
         if (village == null) {
             return;
         }

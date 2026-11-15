@@ -867,7 +867,9 @@ public final class VillageCommand extends AbstractCommandCollection {
             }
             if (village.chantier() == null) {
                 // Étape 6 : sans chantier de palier, finit les chantiers d'emplacement (au prochain pas du village).
-                if (dev.nakasar.hytale.peuples.village.Plots.hurry(store, village) > 0) {
+                // Avant-postes de métier : finit aussi leurs travaux (au prochain pas, joueur à moins de 96 blocs).
+                int annexes = dev.nakasar.hytale.peuples.annex.Annexes.hurry(store, village);
+                if (dev.nakasar.hytale.peuples.village.Plots.hurry(store, village) > 0 || annexes > 0) {
                     player.sendMessage(Message.translation(dev.nakasar.hytale.peuples.village.Plots.KEYS + "hurried"));
                     return;
                 }

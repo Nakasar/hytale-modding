@@ -1,0 +1,18 @@
+{
+  "$Comment": "Commande de maître du niveau 1 du bâtiment de métier Renonce_AP_Ferme, générée par tools/generate_workshops.py (ne pas modifier à la main) : voir RequestTemplate.",
+  "People": "Renonce",
+  "Workshop": "Renonce_AP_Ferme",
+  "Master": true,
+  "Type": "Gather",
+  "MinLevel": 1,
+  "MaxLevel": 1,
+  "Weight": 1,
+  "TitleKey": "nakasar_peuples.request.Renonce_AP_Ferme_Master_1.title",
+  "TaskKey": "nakasar_peuples.request.Renonce_AP_Ferme_Master_1.task",
+  "ItemId": "Ingredient_Poop",
+  "Quantity": 30,
+  "Knowledge": 0,
+  "Essor": 15,
+  "Favors": 3,
+  "Reputation": 15
+}

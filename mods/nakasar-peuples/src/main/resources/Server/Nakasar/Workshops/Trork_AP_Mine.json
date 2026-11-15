@@ -1,0 +1,175 @@
+{
+  "$Comment": "Avant-poste de métier généré par tools/generate_workshops.py depuis tools/outposts.py (ne pas modifier à la main) : voir dev.nakasar.hytale.peuples.workshop.Workshop et annex/Annexes.",
+  "People": "Trork",
+  "Icon": "Tool_Pickaxe_Crude",
+  "NameKey": "nakasar_peuples.workshop.Trork_AP_Mine.name",
+  "Board": [
+    0,
+    0,
+    0
+  ],
+  "Upgrades": [
+    {
+      "Level": 2,
+      "Hours": 12,
+      "Decor": [
+        "1 0 0 0 Furniture_Crude_Torch"
+      ],
+      "Materials": [
+        {
+          "ItemId": "Wood_Oak_Trunk",
+          "Quantity": 12
+        },
+        {
+          "ItemId": "Ingredient_Hide_Light",
+          "Quantity": 4
+        },
+        {
+          "ItemId": "Ingredient_Bone_Fragment",
+          "Quantity": 8
+        }
+      ]
+    },
+    {
+      "Level": 3,
+      "Hours": 12,
+      "Decor": [
+        "-1 0 0 0 Furniture_Crude_Brazier"
+      ],
+      "Materials": [
+        {
+          "ItemId": "Wood_Oak_Trunk",
+          "Quantity": 18
+        },
+        {
+          "ItemId": "Ingredient_Hide_Light",
+          "Quantity": 6
+        },
+        {
+          "ItemId": "Ingredient_Bone_Fragment",
+          "Quantity": 12
+        }
+      ]
+    }
+  ],
+  "Annex": {
+    "Type": "Mine",
+    "Item": "Nakasar_Peuples_Annex_Mine",
+    "Rule": "ROCK",
+    "Prefabs": [
+      "Npc/Trork/Burrow/Trork_Burrow_Trork_Burrow_002 0 -7 0",
+      "Npc/Trork/Resource/Rock/Stone/Trork_Resource_Rock_Stone_001 6 -6 0",
+      "Npc/Trork/Resource/Rock/Stone/Trork_Resource_Rock_Stone_005 -8 -7 0"
+    ],
+    "Rect": [
+      -9,
+      8,
+      -12,
+      -2
+    ],
+    "Height": 11,
+    "Workers": [
+      {
+        "Id": "AP_Mine_1",
+        "Tier": 1,
+        "Role": "Trork_Brawler",
+        "Dialogue": "",
+        "Building": "",
+        "WorkX": -2,
+        "WorkZ": -1,
+        "Home": "",
+        "HomeX": -2,
+        "HomeZ": -2,
+        "Builder": false
+      },
+      {
+        "Id": "AP_Mine_2",
+        "Tier": 1,
+        "Role": "Trork_Brawler",
+        "Dialogue": "",
+        "Building": "",
+        "WorkX": 2,
+        "WorkZ": -1,
+        "Home": "",
+        "HomeX": 2,
+        "HomeZ": -2,
+        "Builder": false
+      },
+      {
+        "Id": "AP_Mine_3",
+        "Tier": 2,
+        "Role": "Trork_Warrior",
+        "Dialogue": "",
+        "Building": "",
+        "WorkX": -4,
+        "WorkZ": -1,
+        "Home": "",
+        "HomeX": -4,
+        "HomeZ": -2,
+        "Builder": false
+      },
+      {
+        "Id": "AP_Mine_4",
+        "Tier": 3,
+        "Role": "Trork_Guard",
+        "Dialogue": "",
+        "Building": "",
+        "WorkX": 4,
+        "WorkZ": -1,
+        "Home": "",
+        "HomeX": 4,
+        "HomeZ": -2,
+        "Builder": false
+      }
+    ],
+    "Materials": [
+      {
+        "ItemId": "Wood_Oak_Trunk",
+        "Quantity": 24
+      },
+      {
+        "ItemId": "Ingredient_Hide_Light",
+        "Quantity": 8
+      },
+      {
+        "ItemId": "Ingredient_Bone_Fragment",
+        "Quantity": 16
+      }
+    ],
+    "Hours": 24,
+    "Decor": [
+      "2 0 -1 0 Furniture_Crude_Torch"
+    ],
+    "Delivery": {
+      "ItemId": "Rock_Shale_Cobble",
+      "Quantity": 16
+    }
+  },
+  "Specialties": [
+    {
+      "Id": "Filons",
+      "NameKey": "nakasar_peuples.workshop.specialty.Trork_AP_Mine.Filons",
+      "LineKey": "nakasar_peuples.workshop.specialtyLine.Trork_AP_Mine.Filons",
+      "Icon": "Ingredient_Bar_Iron",
+      "Shops": [
+        "Nakasar_Peuples_W_Trork_AP_Mine_Filons_2",
+        "Nakasar_Peuples_W_Trork_AP_Mine_Filons_3"
+      ],
+      "ShareItem": "Ingredient_Bar_Iron",
+      "ShareQuantity": 2
+    },
+    {
+      "Id": "Carriere",
+      "NameKey": "nakasar_peuples.workshop.specialty.Trork_AP_Mine.Carriere",
+      "LineKey": "nakasar_peuples.workshop.specialtyLine.Trork_AP_Mine.Carriere",
+      "Icon": "Rock_Marble_Cobble",
+      "Shops": [
+        "Nakasar_Peuples_W_Trork_AP_Mine_Carriere_2",
+        "Nakasar_Peuples_W_Trork_AP_Mine_Carriere_3"
+      ],
+      "ShareItem": "Rock_Shale_Brick",
+      "ShareQuantity": 16
+    }
+  ],
+  "Shop": "Nakasar_Peuples_W_Trork_AP_Mine_Base_1"
+}

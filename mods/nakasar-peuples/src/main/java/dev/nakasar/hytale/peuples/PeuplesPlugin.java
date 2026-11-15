@@ -176,6 +176,8 @@ public final class PeuplesPlugin extends JavaPlugin {
         entities.registerSystem(new VillageNoRegenSystem());
         entities.registerSystem(new RequestSystem());
         entities.registerSystem(new RequestDeathSystem());
+        // Avant-postes de métier (15 novembre 2026) : pose de la fondation.
+        entities.registerSystem(new dev.nakasar.hytale.peuples.annex.AnnexPlaceSystem());
         // Demandes de boss (15 novembre 2026) : coups annoncés et barre de vie des fractales.
         entities.registerSystem(new dev.nakasar.hytale.peuples.boss.QuestBosses());
         entities.registerSystem(new dev.nakasar.hytale.peuples.request.EscortSpacingSystem());
@@ -222,6 +224,7 @@ public final class PeuplesPlugin extends JavaPlugin {
         RequestHud.clearAll();
         VillageBlockSystem.clearAll();
         Villagers.clearAll();
+        dev.nakasar.hytale.peuples.annex.Annexes.clearAll();
         dev.nakasar.hytale.peuples.workshop.Livestock.clearAll();
         dev.nakasar.hytale.peuples.village.Plots.clearAll();
         Raids.clearAll();

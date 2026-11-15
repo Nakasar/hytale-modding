@@ -1,0 +1,174 @@
+{
+  "$Comment": "Avant-poste de métier généré par tools/generate_workshops.py depuis tools/outposts.py (ne pas modifier à la main) : voir dev.nakasar.hytale.peuples.workshop.Workshop et annex/Annexes.",
+  "People": "Renonce",
+  "Icon": "Food_Fish_Raw",
+  "NameKey": "nakasar_peuples.workshop.Renonce_AP_Pecherie.name",
+  "Board": [
+    0,
+    0,
+    0
+  ],
+  "Upgrades": [
+    {
+      "Level": 2,
+      "Hours": 12,
+      "Decor": [
+        "1 0 0 0 Furniture_Lumberjack_Lantern"
+      ],
+      "Materials": [
+        {
+          "ItemId": "Wood_Fir_Trunk",
+          "Quantity": 16
+        },
+        {
+          "ItemId": "Rock_Stone_Cobble",
+          "Quantity": 12
+        },
+        {
+          "ItemId": "Ingredient_Hide_Heavy",
+          "Quantity": 2
+        }
+      ]
+    },
+    {
+      "Level": 3,
+      "Hours": 12,
+      "Decor": [
+        "-1 0 0 0 Furniture_Lumberjack_Lantern"
+      ],
+      "Materials": [
+        {
+          "ItemId": "Wood_Fir_Trunk",
+          "Quantity": 24
+        },
+        {
+          "ItemId": "Rock_Stone_Cobble",
+          "Quantity": 18
+        },
+        {
+          "ItemId": "Ingredient_Hide_Heavy",
+          "Quantity": 3
+        }
+      ]
+    }
+  ],
+  "Annex": {
+    "Type": "Pecherie",
+    "Item": "Nakasar_Peuples_Annex_Pecherie",
+    "Rule": "WATER",
+    "Prefabs": [
+      "Npc/Outlander/Houses/Tier0/Outlander_Houses_Tier0_004 0 -8 0",
+      "Npc/Outlander/Boats/Small/Outlander_Boats_Small_001 8 -8 0"
+    ],
+    "Rect": [
+      -5,
+      11,
+      -14,
+      -2
+    ],
+    "Height": 7,
+    "Workers": [
+      {
+        "Id": "AP_Pecherie_1",
+        "Tier": 1,
+        "Role": "Nakasar_Peuples_Renonce_Hunter",
+        "Dialogue": "Renonce_Hunter",
+        "Building": "",
+        "WorkX": -2,
+        "WorkZ": -1,
+        "Home": "",
+        "HomeX": -2,
+        "HomeZ": -2,
+        "Builder": false
+      },
+      {
+        "Id": "AP_Pecherie_2",
+        "Tier": 1,
+        "Role": "Nakasar_Peuples_Renonce_Hunter",
+        "Dialogue": "Renonce_Hunter",
+        "Building": "",
+        "WorkX": 2,
+        "WorkZ": -1,
+        "Home": "",
+        "HomeX": 2,
+        "HomeZ": -2,
+        "Builder": false
+      },
+      {
+        "Id": "AP_Pecherie_3",
+        "Tier": 2,
+        "Role": "Nakasar_Peuples_Renonce_Builder",
+        "Dialogue": "Renonce_Builder",
+        "Building": "",
+        "WorkX": -4,
+        "WorkZ": -1,
+        "Home": "",
+        "HomeX": -4,
+        "HomeZ": -2,
+        "Builder": false
+      },
+      {
+        "Id": "AP_Pecherie_4",
+        "Tier": 3,
+        "Role": "Nakasar_Peuples_Renonce_Watcher",
+        "Dialogue": "Renonce_Watcher",
+        "Building": "",
+        "WorkX": 4,
+        "WorkZ": -1,
+        "Home": "",
+        "HomeX": 4,
+        "HomeZ": -2,
+        "Builder": false
+      }
+    ],
+    "Materials": [
+      {
+        "ItemId": "Wood_Fir_Trunk",
+        "Quantity": 32
+      },
+      {
+        "ItemId": "Rock_Stone_Cobble",
+        "Quantity": 24
+      },
+      {
+        "ItemId": "Ingredient_Hide_Heavy",
+        "Quantity": 4
+      }
+    ],
+    "Hours": 24,
+    "Decor": [
+      "2 0 -1 0 Furniture_Lumberjack_Lantern"
+    ],
+    "Delivery": {
+      "ItemId": "Food_Fish_Raw",
+      "Quantity": 3
+    }
+  },
+  "Specialties": [
+    {
+      "Id": "Fumoir",
+      "NameKey": "nakasar_peuples.workshop.specialty.Renonce_AP_Pecherie.Fumoir",
+      "LineKey": "nakasar_peuples.workshop.specialtyLine.Renonce_AP_Pecherie.Fumoir",
+      "Icon": "Food_Fish_Grilled",
+      "Shops": [
+        "Nakasar_Peuples_W_Renonce_AP_Pecherie_Fumoir_2",
+        "Nakasar_Peuples_W_Renonce_AP_Pecherie_Fumoir_3"
+      ],
+      "ShareItem": "Food_Fish_Grilled",
+      "ShareQuantity": 4
+    },
+    {
+      "Id": "Viviers",
+      "NameKey": "nakasar_peuples.workshop.specialty.Renonce_AP_Pecherie.Viviers",
+      "LineKey": "nakasar_peuples.workshop.specialtyLine.Renonce_AP_Pecherie.Viviers",
+      "Icon": "Ingredient_Water_Essence",
+      "Shops": [
+        "Nakasar_Peuples_W_Renonce_AP_Pecherie_Viviers_2",
+        "Nakasar_Peuples_W_Renonce_AP_Pecherie_Viviers_3"
+      ],
+      "ShareItem": "Ingredient_Water_Essence",
+      "ShareQuantity": 3
+    }
+  ],
+  "Shop": "Nakasar_Peuples_W_Renonce_AP_Pecherie_Base_1"
+}

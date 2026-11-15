@@ -1,0 +1,25 @@
+{
+  "$Comment": "Commande du bâtiment de métier Feran_AP_Pecherie, générée par tools/generate_workshops.py (ne pas modifier à la main) : voir RequestTemplate.",
+  "People": "Feran",
+  "Workshop": "Feran_AP_Pecherie",
+  "Type": "Hunt",
+  "MinLevel": 1,
+  "MaxLevel": 3,
+  "Weight": 1,
+  "TitleKey": "nakasar_peuples.request.Feran_AP_Pecherie_Hunt.title",
+  "TaskKey": "nakasar_peuples.request.Feran_AP_Pecherie_Hunt.task",
+  "Spawns": [
+    "Scarak_Fighter",
+    "Scarak_Louse"
+  ],
+  "Roles": [
+    "Scarak_Fighter",
+    "Scarak_Louse"
+  ],
+  "MinDistance": 60,
+  "MaxDistance": 110,
+  "Knowledge": 45,
+  "Essor": 5,
+  "Favors": 2,
+  "Reputation": 8
+}

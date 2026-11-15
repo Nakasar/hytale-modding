@@ -1,0 +1,23 @@
+{
+  "$Comment": "Commande du bâtiment de métier Kweebec_AP_Chasse, générée par tools/generate_workshops.py (ne pas modifier à la main) : voir RequestTemplate.",
+  "People": "Kweebec",
+  "Workshop": "Kweebec_AP_Chasse",
+  "Type": "Hunt",
+  "MinLevel": 1,
+  "MaxLevel": 3,
+  "Weight": 1,
+  "TitleKey": "nakasar_peuples.request.Kweebec_AP_Chasse_Hunt.title",
+  "TaskKey": "nakasar_peuples.request.Kweebec_AP_Chasse_Hunt.task",
+  "Spawns": [
+    "Mosshorn"
+  ],
+  "Roles": [
+    "Mosshorn"
+  ],
+  "MinDistance": 60,
+  "MaxDistance": 110,
+  "Knowledge": 45,
+  "Essor": 5,
+  "Favors": 2,
+  "Reputation": 8
+}

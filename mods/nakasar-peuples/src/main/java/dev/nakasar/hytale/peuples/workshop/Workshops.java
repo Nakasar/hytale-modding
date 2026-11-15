@@ -82,7 +82,15 @@ public final class Workshops {
 
     /** Bâtiments de métier du village (debout ou non), d'après son plan. */
     public static List<Workshop> all(Village village) {
-        return Workshop.forLayout(village.layout());
+        List<Workshop> out = new ArrayList<>(Workshop.forLayout(village.layout()));
+        // Avant-postes de métier du village (annex/), fondés ou en travaux.
+        for (dev.nakasar.hytale.peuples.village.AnnexState a : village.annexes()) {
+            Workshop w = Workshop.get(a.id());
+            if (w != null && w.isAnnex() && !a.granted()) {
+                out.add(w);
+            }
+        }
+        return out;
     }
 
     /**
@@ -90,6 +98,10 @@ public final class Workshops {
      * peut être absent jusqu'au matin, le panneau reste ouvert).
      */
     public static boolean open(Village village, Workshop w) {
+        if (w.isAnnex()) {
+            dev.nakasar.hytale.peuples.village.AnnexState a = village.annex(w.getId());
+            return a != null && a.built();
+        }
         if (!village.isStanding(w.building())) {
             return false;
         }
@@ -118,6 +130,10 @@ public final class Workshops {
 
     /** Métier du plan qui tient le bâtiment, ou null. */
     public static VillageLayout.Job job(Village village, Workshop w) {
+        if (w.isAnnex()) {
+            // Le premier villageois de l'avant-poste tient sa boutique.
+            return w.annex().workers().length == 0 ? null : w.annex().workers()[0];
+        }
         VillageLayout layout = Chantiers.layout(village);
         if (layout == null) {
             return null;
@@ -226,6 +242,10 @@ public final class Workshops {
      * le premier bloc plein du dessus ({@link #standY}). Sans effet tant que la zone n'est pas chargée.
      */
     static void placeBoard(World world, Village village, Workshop w, WorkshopState state) {
+        if (w.isAnnex()) {
+            dev.nakasar.hytale.peuples.annex.Annexes.placeBoard(world, village, w, state);
+            return;
+        }
         int[] spot = w.board();
         if (spot == null) {
             return;
@@ -262,14 +282,14 @@ public final class Workshops {
         }
     }
 
-    private static final int UNLOADED_SPOT = Integer.MIN_VALUE + 1;
+    public static final int UNLOADED_SPOT = Integer.MIN_VALUE + 1;
 
     /**
      * Hauteur où poser le panneau dans la colonne (x, z) : au-dessus du sol et des blocs pleins posés dessus (racines,
      * mousse, au plus {@value #STAND_CLIMB}), sur une case vide ou de végétation non pleine. {@link Terrain#NONE} si la
      * colonne ne convient pas (tronc, mur), {@link #UNLOADED_SPOT} si elle n'est pas chargée.
      */
-    static int standY(ChunkStore chunks, Terrain terrain, int x, int z) {
+    public static int standY(ChunkStore chunks, Terrain terrain, int x, int z) {
         int ground = terrain.surface(x, z);
         if (ground == Terrain.NONE) {
             return UNLOADED_SPOT;
@@ -358,7 +378,7 @@ public final class Workshops {
      * marche de plus d'un bloc. Rend {x, y, z} (inchangé si aucun mur n'est trouvé), ou null si une colonne n'est pas
      * chargée.
      */
-    static int[] flushSpot(ChunkStore chunks, Terrain terrain, int x, int y, int z, int yaw) {
+    public static int[] flushSpot(ChunkStore chunks, Terrain terrain, int x, int y, int z, int yaw) {
         int[] b = back(yaw);
         int cx = x, cy = y, cz = z;
         for (int step = 1; step <= REACH; step++) {
@@ -394,7 +414,7 @@ public final class Workshops {
      * dans l'air ou la végétation non pleine ; sans effet pour les autres peuples ou si un bloc plein couvre déjà le
      * panneau.
      */
-    static void hangBoard(ChunkStore chunks, Village village, int x, int y, int z, int yaw) {
+    public static void hangBoard(ChunkStore chunks, Village village, int x, int y, int z, int yaw) {
         if (!"Kweebec".equals(village.people().id()) || Blocks.solid(chunks, x, y + 1, z)) {
             return;
         }
@@ -729,7 +749,11 @@ public final class Workshops {
         draw(store, village, w, ws, true);
         Workshop.Upgrade up = w.upgrade(level);
         if (up != null && ws.hasBoard()) {
-            placeDecor(world, ws.board(), up.decor());
+            if (w.isAnnex()) {
+                dev.nakasar.hytale.peuples.annex.Annexes.placeDecor(world, village, w, ws.board(), up.decor());
+            } else {
+                placeDecor(world, ws.board(), up.decor());
+            }
         }
         Message name = Message.translation(w.nameKey());
         Message levelName = Message.translation(KEYS + "level." + level);
@@ -889,6 +913,9 @@ public final class Workshops {
     /** Vrai si la boutique tient : son villageois est là (il revient au matin). */
     public static boolean keeperPresent(Village village, Workshop w) {
         VillageLayout.Job job = job(village, w);
+        if (job != null && w.isAnnex()) {
+            return dev.nakasar.hytale.peuples.village.Villagers.presentAt(village, w.getId(), job.id());
+        }
         return job != null && dev.nakasar.hytale.peuples.village.Villagers.present(village, job.id());
     }
 

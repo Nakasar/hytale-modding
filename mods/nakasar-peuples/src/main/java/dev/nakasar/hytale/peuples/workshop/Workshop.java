@@ -101,6 +101,101 @@ public final class Workshop implements JsonAssetWithMap<String, DefaultAssetMap<
         }
     }
 
+    /**
+     * Un avant-poste de métier (ferme, mine, scierie...) : un bâtiment de métier isolé, hors du plan du village, posé
+     * là où un joueur pose sa fondation. Coordonnées locales au plan de rotation 0, relatives à la fondation (le joueur
+     * se tenait au sud de la fondation, le bâtiment est au nord) ; le Java les tourne selon la rotation de la pose.
+     * <ul>
+     *   <li>{@code Prefabs} : {@code "prefab x z rotation"}, le premier est le bâtiment principal (ancre au sol) ;</li>
+     *   <li>{@code Rect} : emprise de tous les prefabs {@code [x0, x1, z0, z1]}, aplanie puis marquée pour le chantier ;</li>
+     *   <li>{@code Workers} : ses villageois (métiers ; {@code Tier} = niveau de l'avant-poste où il arrive) ;</li>
+     *   <li>{@code Materials} : prix de la fondation, pris au dépôt du village ; {@code Delivery} : lot livré chaque matin
+     *   au dépôt du village, multiplié par le niveau ;</li>
+     *   <li>{@code Rule} : ce que le terrain doit offrir (FERTILE, ROCK, TREES, WATER ou NONE) ;</li>
+     *   <li>{@code Warn} : secondes d'annonce de plus avant un raid sur le village (tour de guet), par niveau.</li>
+     * </ul>
+     */
+    public static final class Annex {
+        public static final BuilderCodec<Annex> CODEC = BuilderCodec.builder(Annex.class, Annex::new)
+                .append(new KeyedCodec<>("Type", Codec.STRING), (a, v) -> a.type = v, a -> a.type).add()
+                .append(new KeyedCodec<>("Item", Codec.STRING), (a, v) -> a.item = v, a -> a.item).add()
+                .append(new KeyedCodec<>("Rule", Codec.STRING), (a, v) -> a.rule = v == null ? "NONE" : v, a -> a.rule).add()
+                .append(new KeyedCodec<>("Prefabs", Codec.STRING_ARRAY), (a, v) -> a.prefabs = v == null ? new String[0] : v, a -> a.prefabs).add()
+                .append(new KeyedCodec<>("Rect", Codec.INT_ARRAY), (a, v) -> a.rect = v, a -> a.rect).add()
+                .append(new KeyedCodec<>("Height", Codec.INTEGER), (a, v) -> a.height = v == null ? 8 : Math.max(3, v), a -> a.height).add()
+                .append(new KeyedCodec<>("Workers", new ArrayCodec<>(VillageLayout.Job.CODEC, VillageLayout.Job[]::new)),
+                        (a, v) -> a.workers = v == null ? new VillageLayout.Job[0] : v, a -> a.workers).add()
+                .append(new KeyedCodec<>("Materials", new ArrayCodec<>(VillageLayout.Material.CODEC, VillageLayout.Material[]::new)),
+                        (a, v) -> a.materials = v == null ? new VillageLayout.Material[0] : v, a -> a.materials).add()
+                .append(new KeyedCodec<>("Hours", Codec.INTEGER), (a, v) -> a.hours = v == null ? 24 : Math.max(0, v), a -> a.hours).add()
+                .append(new KeyedCodec<>("Delivery", VillageLayout.Material.CODEC), (a, v) -> a.delivery = v, a -> a.delivery).add()
+                .append(new KeyedCodec<>("Decor", Codec.STRING_ARRAY), (a, v) -> a.decor = v == null ? new String[0] : v, a -> a.decor).add()
+                .append(new KeyedCodec<>("Warn", Codec.INTEGER), (a, v) -> a.warn = v == null ? 0 : Math.max(0, v), a -> a.warn).add()
+                .build();
+
+        String type;
+        String item;
+        String rule = "NONE";
+        String[] prefabs = new String[0];
+        int[] rect;
+        int height = 8;
+        VillageLayout.Job[] workers = new VillageLayout.Job[0];
+        VillageLayout.Material[] materials = new VillageLayout.Material[0];
+        int hours = 24;
+        VillageLayout.Material delivery;
+        String[] decor = new String[0];
+        int warn;
+
+        public String type() {
+            return type;
+        }
+
+        public String item() {
+            return item;
+        }
+
+        public String rule() {
+            return rule;
+        }
+
+        public String[] prefabs() {
+            return prefabs;
+        }
+
+        /** Emprise locale {@code [x0, x1, z0, z1]} (rotation 0). */
+        public int[] rect() {
+            return rect == null || rect.length != 4 ? new int[] {-4, 4, -12, -3} : rect;
+        }
+
+        public int height() {
+            return height;
+        }
+
+        public VillageLayout.Job[] workers() {
+            return workers;
+        }
+
+        public VillageLayout.Material[] materials() {
+            return materials;
+        }
+
+        public int hours() {
+            return hours;
+        }
+
+        public VillageLayout.Material delivery() {
+            return delivery;
+        }
+
+        public String[] decor() {
+            return decor;
+        }
+
+        public int warn() {
+            return warn;
+        }
+    }
+
     public static final class Specialty {
         public static final BuilderCodec<Specialty> CODEC = BuilderCodec.builder(Specialty.class, Specialty::new)
                 .append(new KeyedCodec<>("Id", Codec.STRING), (s, v) -> s.id = v, s -> s.id).add()
@@ -212,6 +307,9 @@ public final class Workshop implements JsonAssetWithMap<String, DefaultAssetMap<
             .append(new KeyedCodec<>("Twin", Codec.STRING), (w, v) -> w.twin = v == null || v.isBlank() ? null : v, w -> w.twin)
             .documentation("Deuxième élevage d'un emplacement libre : l'enclos de base qu'il double (spécialités différentes).")
             .add()
+            .append(new KeyedCodec<>("Annex", Annex.CODEC), (w, v) -> w.annex = v, w -> w.annex)
+            .documentation("Avant-poste de métier : bâtiment isolé hors du plan, fondé depuis le panneau du village.")
+            .add()
             .validator(Workshop::validate)
             .build();
 
@@ -233,6 +331,7 @@ public final class Workshop implements JsonAssetWithMap<String, DefaultAssetMap<
     int[] pen;
     String shop;
     String twin;
+    Annex annex;
 
     Workshop() {
     }
@@ -266,6 +365,31 @@ public final class Workshop implements JsonAssetWithMap<String, DefaultAssetMap<
         }
         out.sort((a, b) -> a.id.compareTo(b.id));
         return out;
+    }
+
+    /** Avant-postes du peuple `people`, triés par id. */
+    public static List<Workshop> annexes(People people) {
+        List<Workshop> out = new ArrayList<>();
+        AssetStore<String, Workshop, DefaultAssetMap<String, Workshop>> store = getAssetStore();
+        if (store == null || people == null) {
+            return out;
+        }
+        for (Workshop w : store.getAssetMap().getAssetMap().values()) {
+            if (w != null && w.annex != null && people.id().equals(w.people)) {
+                out.add(w);
+            }
+        }
+        out.sort((a, b) -> a.id.compareTo(b.id));
+        return out;
+    }
+
+    /** Avant-poste de métier (null : bâtiment du plan d'un village). */
+    public Annex annex() {
+        return annex;
+    }
+
+    public boolean isAnnex() {
+        return annex != null;
     }
 
     @Override
@@ -366,7 +490,11 @@ public final class Workshop implements JsonAssetWithMap<String, DefaultAssetMap<
         if (People.byId(w.people) == null) {
             results.fail("Peuple inconnu : " + w.people);
         }
-        if (w.layout == null || w.building == null || w.job == null) {
+        if (w.annex != null) {
+            if (w.annex.type == null || w.annex.item == null || w.annex.prefabs.length == 0 || w.annex.workers.length == 0) {
+                results.fail("Annex : Type, Item, Prefabs et Workers sont obligatoires");
+            }
+        } else if (w.layout == null || w.building == null || w.job == null) {
             results.fail("Layout, Building et Job sont obligatoires");
         }
         if (w.board == null || w.board.length < 2) {

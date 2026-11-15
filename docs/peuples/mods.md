@@ -1215,3 +1215,73 @@ n° 2), sauf les enclos du mod (`Nakasar/Peuples/Pens/`). Le Sanctuaire slothian
   un joueur sur le bâtiment part avec lui (les conteneurs restent).
 - Les piquets sur un sol en pente ou dans l'eau, l'écriteau de chantier (orientation).
 - Le panneau de métier des projets : posé dans le terrain, hors de l'emprise du prefab.
+
+## Avant-postes de métier (`annex/`)
+
+Kevin (2026-11-15) : un village de palier 3 au moins peut fonder de petits avant-postes isolés, d'un seul bâtiment au
+rôle précis. Six types par peuple (`tools/outposts.py`) : **Ferme**, **Mine**, **Scierie**, **Pêcherie**, **Pavillon
+de chasse**, **Tour de guet**. Ce ne sont pas les avant-postes de champion (`outpost/`, pierre d'avant-poste) :
+l'objet s'appelle « Fondation : Ferme », etc.
+
+1. **Fonder** : bouton **Avant-postes** du panneau du village (`annex/AnnexPage`, mise en page par peuple
+   `AnnexPage_<Peuple>.ui` de `tools/generate_workshop_ui.py`). Village de palier 3, rang Ami : les matériaux de la
+   fondation (`FOUNDATION`) sont pris au dépôt et le joueur reçoit l'objet `Nakasar_Peuples_Annex_<Type>` (parent
+   vanilla `Furniture_Construction_Sign`). Un avant-poste de chaque type par village. Une fondation perdue se reprend
+   sans frais, une fois par jour de jeu.
+2. **Poser** (`annex/AnnexPlaceSystem`, `PlaceBlockEvent`) : la fondation va au village qui l'attend le plus près. Le
+   plan est tourné vers le joueur (il se tient devant l'entrée). Si la place ne convient pas, l'évènement est annulé,
+   le bloc reste en main et le joueur lit la première règle non remplie (`Annexes.check`) :
+   - entre le rayon du plan du village + 20 et 256 blocs du cœur ;
+   - à plus du rayon + demi-emprise + 24 des autres villages, à 48 blocs d'un autre avant-poste, et pas sur un
+     avant-poste de champion en attente ;
+   - terrain chargé, au sec, relief de 5 blocs au plus, aucun bloc posé par un joueur dans l'emprise (mêmes règles de
+     « bloc naturel » que les chantiers du village) ;
+   - règle du type : Ferme 60 % de terre fertile (ou le sol du peuple, `People.suitsSite`), Mine roche ou flanc de
+     colline à 16 blocs, Scierie 6 troncs à 24 blocs, Pêcherie eau à 12 blocs (emprise au sec).
+3. **Chantier** : l'emprise est aplanie (`Grading`, colonne de la fondation gardée) et marquée par l'échafaudage du
+   peuple (`SiteStyle`, 4 phases) ; 2 villageois y travaillent de jour. Au bout de 24 h de jeu, les prefabs vanilla sont
+   collés (`Prefabs`, repère local tourné), la fondation devient le panneau de métier du peuple, ses villageois
+   arrivent. `/village finir` (près du village) finit aussi ces travaux.
+
+Debout, c'est un bâtiment de métier `<Peuple>_AP_<Type>` (champ `Annex` du Workshop, pas de `Layout`) : commandes du
+jour (`Requests/<Peuple>/AP_<Type>`), savoir-faire, niveaux I à III (amélioration de 12 h, la moitié puis les trois
+quarts des matériaux de la fondation), deux spécialités au niveau II, boutiques, Part de l'Hôte. En plus :
+
+- **Villageois** : 2 au niveau I, 1 de plus aux niveaux II et III (rôles et dialogues du peuple ; rôles vanilla pour
+  les Trorks). Postes `AP_<bâtiment>/<métier>` dans `Villagers`, posés quand un joueur est à portée de l'avant-poste,
+  sans régénération et vus par la réputation comme le village.
+- **Livraison** : chaque matin, un lot au coffre du dépôt du village (× niveau) : blé, pierre, rondins, poisson, viande.
+- **Tour de guet** : l'annonce de raid dure 30 s de plus par niveau (`Raids`, `Annexes.raidWarnBonus`) ; spécialités
+  Guetteurs (+1 garde) et Sentinelles (gardes plus solides). Pas d'effet en raid pour les Trorks.
+- Casser un bloc dans l'emprise d'un avant-poste debout coûte de la réputation (`VillageBlockSystem`).
+
+`tools/generate_workshops.py` génère les 30 bâtiments, leurs 150 commandes, leurs boutiques et les 6 objets de
+fondation depuis `tools/outposts.py` ; `ValidateAssets` vérifie le champ `Annex` (prefabs relevés, emprise au nord de
+la fondation, rôles, décor) et les éléments de `AnnexPage*.ui` (et désormais ceux de `PlotPage*.ui`).
+
+| Peuple | Prefabs vanilla (bâtiment principal) |
+|---|---|
+| Kweebec | ferme et maisons de séquoia (`Redwood/Normal_Plot`, `Small_Plot`), tour de garde `Oak_Guard_Towers_004` |
+| Trork | tente, terrier (mine), entrepôt (scierie), piège (chasse), tour de guet `Tier_1_Watchtower` |
+| Feran | hutte `Tier3_Huts_001` (5 types), hutte sur pilier (tour) |
+| Renoncés | maisons `Outlander_Houses_Tier0/1`, tour `Outlander_Towers_Tier2_002` |
+| Slothians | étal du marchand (ferme), maisons `Disabled_House_Small`, pavillon de chasse et temple (tour) |
+
+Les tas de rondins et de pierres à côté des scieries et des mines sont les prefabs `Trork/Resource` du jeu.
+
+### Tester en jeu (avant-postes)
+
+1. `/village palier 3`, `/village rep 220` (rang Ami), panneau du village, **Avant-postes** : les six cartes, leur coût.
+2. Remplir le dépôt, **Recevoir la fondation** ; poser la fondation dans le village : refusée (« trop près »), le bloc
+   reste en main. À 100 blocs sur un sol plat : la zone est aplanie, l'échafaudage monte.
+3. `/village finir` près du village, puis revenir à l'avant-poste : prefabs collés, panneau de métier à la place de la
+   fondation, deux villageois.
+4. Panneau de l'avant-poste : commandes, boutique. Le lendemain matin, le lot est au dépôt du village.
+
+### À vérifier en jeu (avant-postes)
+
+- L'orientation des prefabs : ils gardent leur rotation 0 dans le repère de l'avant-poste ; l'entrée ne fait pas
+  forcément face à la fondation.
+- `PlaceBlockEvent` annulé : le bloc ne doit pas apparaître ni être consommé.
+- Les cibles des commandes de chasse apparaissent autour du village, pas de l'avant-poste.
+- Les Feran n'ont qu'une petite hutte vanilla (`Tier3_Huts_001`) : cinq de leurs avant-postes se ressemblent.
