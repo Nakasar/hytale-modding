@@ -26,6 +26,8 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parent.parent
 OUT = ROOT / "src/main/resources/Server/Nakasar/VillageLayouts"
 PREFABS = Path(__file__).resolve().parent / "vanilla-prefabs-0.7.2.txt"
+# Cœurs de village (place, pièces vanilla par palier, tableau/dépôt/bannière) : tools/generate_village_hearts.py.
+HEARTS = Path(__file__).resolve().parent / "village-hearts.json"
 
 # Écart minimal entre deux emprises (blocs) : le Java aplanit chaque emprise avec une marge de 2 blocs et un fondu.
 MARGIN = 3
@@ -43,15 +45,11 @@ LAYOUTS = {
         "PlazaRadius": 5,
         "Banner": (0, -4),
         "Buildings": [
-            # Palier 0, campement : deux abris, une tour de guet, un potager, lanternes et bancs.
+            # Palier 0, campement : deux abris, une tour de guet, un potager (lanternes et bancs : cœur du village).
             ("Abri_Ouest", 0, OAK + "Houses_Small/Kweebec_Oak_Houses_Small_001", -20, 2, 0),
             ("Abri_Est", 0, OAK + "Houses_Small/Kweebec_Oak_Houses_Small_001", 20, 2, 2),
             ("Tour_De_Guet", 0, OAK + "Guard_Towers/Kweebec_Oak_Guard_Towers_001", 0, -18, 0),
             ("Potager", 0, OAK + "Garden/Medium/Kweebec_Oak_Garden_Medium_001", -12, -17, 0),
-            ("Lanterne_Nord_Est", 0, OAK + "Lampposts/Kweebec_Oak_Lampposts_004", 7, -7, 0),
-            ("Lanterne_Sud_Ouest", 0, OAK + "Lampposts/Kweebec_Oak_Lampposts_006", -7, 7, 0),
-            ("Bancs_Sud_Est", 0, OAK + "Seats/Small/Kweebec_Oak_Seats_Small_001", 9, 9, 0),
-            ("Bancs_Nord_Ouest", 0, OAK + "Seats/Small/Kweebec_Oak_Seats_Small_003", -9, -9, 0),
             # Palier 1, hameau : puits, échoppe, une maison de plus, l'enclos des lapins.
             ("Puits", 1, OAK + "Well/Kweebec_Oak_Well_001", 0, 17, 0),
             ("Echoppe", 1, OAK + "Shops/Kweebec_Oak_Shops_002", 12, -18, 0),
@@ -102,12 +100,11 @@ LAYOUTS["Trork_Camp"] = {
     "PlazaRadius": 6,
     "Banner": (0, -5),
     "Buildings": [
-        # Palier 0, campement : le feu, deux tentes, la tour de guet, un foyer, le panneau d'avertissement.
+        # Palier 0, campement : le feu, deux tentes, la tour de guet, le panneau d'avertissement (foyer : cœur du camp).
         ("Feu_De_Camp", 0, TRORK + "Bonfire/Trork_Bonfire_Trork_Bonfire_001", 0, 13, 0),
         ("Tente_Ouest", 0, TRORK + "Tent/Trork_Tent_001", -17, 0, 0),
         ("Tente_Est", 0, TRORK + "Tent/Trork_Tent_001", 17, 0, 2),
         ("Tour_De_Guet", 0, TRORK + "Tier_1/Watchtower/Trork_Tier_1_Watchtower_001", 0, -16, 0),
-        ("Foyer", 0, TRORK + "Fireplace/Trork_Fireplace_001", -9, 10, 0),
         ("Avertissement", 0, TRORK + "Warning/Trork_Warning_Trork_Warning_001", 0, 28, 0),
         # Palier 1 : le terrier, le piège, la réserve, une troisième tente.
         ("Terrier", 1, TRORK + "Burrow/Trork_Burrow_Trork_Burrow_001", -18, -18, 0),
@@ -186,10 +183,15 @@ def spot(building, where):
     return (cx, z0 - 2) if cz > 0 else (cx, z1 + 2)
 
 
+def load_hearts():
+    return json.loads(HEARTS.read_text(encoding="utf-8")) if HEARTS.exists() else {}
+
+
 def build(layout_id, spec, bounds):
     errors = []
     rects = []
-    plaza = spec["PlazaRadius"]
+    heart = load_hearts().get(layout_id)
+    plaza = heart["PlazaRadius"] if heart else spec["PlazaRadius"]
     plaza_rect = (-plaza, plaza, -plaza, plaza)
     buildings = []
     radius = plaza
@@ -233,7 +235,7 @@ def build(layout_id, spec, bounds):
         chantiers.append({"Tier": tier, "Hours": hours,
                           "Materials": [{"ItemId": i, "Quantity": q} for i, q in materials]})
     jobs = []
-    wx, wz = spec.get("Woodpile", (0, 0))
+    wx, wz = heart["Woodpile"] if heart else spec.get("Woodpile", (0, 0))
     for jid, tier, kind, work, where, home in spec.get("Jobs", []):
         if work is not None and work not in by_id:
             errors.append(f"{layout_id}/{jid} : bâtiment de travail inconnu {work}")
@@ -251,7 +253,7 @@ def build(layout_id, spec, bounds):
         jobs.append({"Id": jid, "Tier": tier, "Role": role,
                      "Dialogue": "" if vanilla else f"{spec['People']}_{kind}", "Building": work or "", "WorkX": px, "WorkZ": pz,
                      "Home": home, "HomeX": hx, "HomeZ": hz, "Builder": kind == "Builder"})
-    bx, bz = spec["Banner"]
+    bx, bz = (heart["Banner"][0], heart["Banner"][2]) if heart else spec["Banner"]
     doc = {
         "$Comment": "Plan de village généré par tools/generate_village_layouts.py (ne pas modifier à la main) : prefabs "
                     "vanilla collés par village/VillageBuilder autour du cœur, emprises (MinX..MaxZ) relatives au point "
@@ -265,6 +267,8 @@ def build(layout_id, spec, bounds):
         "Chantiers": chantiers,
         "Jobs": jobs,
     }
+    if heart:
+        doc["Heart"] = {k: heart[k] for k in ("Board", "Deposit", "Banner", "Steps")}
     return doc, rects, errors
 
 

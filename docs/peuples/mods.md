@@ -163,7 +163,7 @@ autres attendent les chantiers (étape 5).
 
 | Palier | Bâtiments du plan `Kweebec_Oak` (rayon 65) |
 | --- | --- |
-| 0, campement | deux abris, tour de guet, potager, deux lanternes, deux bancs |
+| 0, campement | deux abris, tour de guet, potager (lanternes et bancs : dans le cœur) |
 | 1, hameau | puits, échoppe, une maison, enclos des lapins |
 | 2, village | grande maison, maison des gardes, deuxième tour, deuxième échoppe |
 | 3, bourg | le Grand-Père, grand potager |
@@ -175,7 +175,38 @@ Razorleaf et de Sproutlings, lapins) apparaissent dans le campement.
 
 `VillageBuilder` charge les chunks, aplanit la place (chemin de terre) et l'emprise de chaque bâtiment (herbe, 2 blocs
 de marge plate, fondu de 4 blocs vers le relief, arbres abattus), à au plus 4 blocs de la hauteur de la place, puis colle
-les prefabs comme l'action vanilla `PrefabPasteAction`, et pose cœur, dépôt, tableau (étape 1) et bannière.
+les prefabs comme l'action vanilla `PrefabPasteAction`, puis pose le cœur du peuple, le dépôt, le tableau (étape 1) et la
+bannière aux places que donne le plan.
+
+### Cœur du village (place propre à chaque peuple)
+
+Le cœur n'est plus un carré de chemin avec un coffre et un panneau : chaque peuple a sa place mise en scène, écrite par
+`tools/generate_village_hearts.py` dans la clé `Heart` du plan (positions du tableau, du dépôt et de la bannière avec
+leur orientation vers le cœur, puis un « pas » par palier). La place s'enrichit à chaque chantier fini.
+
+| Plan | Cœur | Pièces vanilla, par palier |
+| --- | --- | --- |
+| `Kweebec_Oak` | clairière du rejeton | chêne qui grandit (Oak Stage 1, 2, 2, 3) sur un tertre de mousse, bassin `Water_Pool_005` (palier 1), lampadaires et bancs kweebecs, auvent de feuilles sur poteaux au-dessus du tableau |
+| `Trork_Camp` | arbre aux trophées | `Trork_Warning_002`, foyer `Fireplace_001`, rondins pour s'asseoir, râtelier `Misc_Large_002` (palier 2), cercle de pierres |
+| `Feran_Oasis` | bassin de l'oasis | bassin de grès (eau du mod), palmiers qui poussent, colonnes à torche, auvent de toile orange, pots et tabourets |
+| `Renonce_Givre` | foyer des repentis | camp `Outlander_Misc_003`, rondins de sapin, sapins enneigés (palier 1), braseros (palier 2) |
+| `Slothian_Monastere` | jardin de veille | sanctuaire slothian (son bloc d'apparition retiré), touffes de bambou, jardinières |
+
+Chaque pas pose, dans l'ordre : les pièces vanilla (`Pieces`), les blocs un à un (`Set`, `"x y z rotation Bloc"`,
+`Empty` pour vider), retire les blocs qui ne servent plus s'ils sont toujours là (`Clear`, ex. le jeune chêne remplacé),
+puis l'eau (`Fluids`, prefab `Server/Prefabs/Nakasar/Peuples/Hearts/*_Fluids` du mod : `Blocks.set` ne pose pas de
+fluide). Coordonnées relatives au cœur, y = 0 à la surface de la place. Rotations : lacet 0 sud, 1 est, 2 nord, 3 ouest ;
+rondin couché 4 (le long de z) et 5 (le long de x), comme dans les prefabs vanilla ; chapiteau = `Pillar_Base` en 8.
+
+`VillageHeart` ne touche jamais aux inventaires ni au cœur, au tableau, au dépôt et à la bannière. Au passage de palier
+(village habité), un bloc n'est remplacé que s'il est naturel, vide, du sol de la place ou du cœur lui-même, et une pièce
+vanilla n'est pas collée si un coffre se trouve dessous. Les villages fondés avant les cœurs (`HeartTier` absent) gardent
+leur ancienne place.
+
+Aperçus : `python3 tools/generate_village_hearts.py --vanilla dump.json --preview DIR --palette pal.json` (le dump vient
+de `tools/extract_vanilla_prefabs.py Assets.zip pieces.txt dump.json --palette pal.json`, la liste des pièces de
+`--list`). Le script refuse un bloc inconnu, un meuble de plusieurs cases posé bloc à bloc, un bloc hors de la place ou
+une case réservée occupée.
 
 `VillageSeeder` pose tout seul **le premier village kweebec du monde par défaut** : 15 s après le démarrage, il essaie
 40 sites sur des cercles de 280 à 700 blocs autour du point d'apparition (ordre tiré du seed), et prend le premier

@@ -76,7 +76,7 @@ SPEC = {
             # Palier 0 : deux huttes, l'étal des cendres, l'affût du guetteur.
             ("Hutte_Ouest", 0, DIS + "House/Small/Slothian_Disabled_House_Small_001", -20, 0, 0),
             ("Hutte_Est", 0, DIS + "House/Small/Slothian_Disabled_House_Small_003", 21, 0, 0),
-            ("Etal_Des_Cendres", 0, MON + "Merchant/Incidental_Slothian_Merchant_Slothian_Merchant_001", 0, -14, 0),
+            ("Etal_Des_Cendres", 0, MON + "Merchant/Incidental_Slothian_Merchant_Slothian_Merchant_001", 0, -15, 0),
             ("Affut", 0, MON + "Hunting/Incidental_Slothian_Slothian_Hunting_001", 0, 15, 0),
             # Palier 1 : deux maisons, la porte du monastère.
             ("Maison_Nord_Ouest", 1, DIS + "House/Medium/Slothian_Disabled_House_Medium_001", -24, -24, 0),

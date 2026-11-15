@@ -53,6 +53,15 @@ public final class Villages {
      * à l'ouest. Les trois cases doivent être vides (aucun bloc de joueur n'est écrasé).
      */
     public static Founding found(World world, String name, People people, int x, int y, int z) {
+        return found(world, name, people, x, y, z, new int[]{x + 2, y, z, 0}, new int[]{x - 2, y, z, 0});
+    }
+
+    /**
+     * Fonde un village dont le cœur est en (x, y, z), le dépôt et le tableau aux places {@code [x, y, z, rotation]}
+     * données (cœur du plan, {@link VillageHeart}). Les trois cases doivent être vides ou ne porter que de la
+     * végétation, retirée.
+     */
+    public static Founding found(World world, String name, People people, int x, int y, int z, int[] deposit, int[] board) {
         VillageRegistry registry = registry(world);
         for (Village other : registry.all()) {
             double d = Math.sqrt(other.distanceSquared(x + 0.5, y + 0.5, z + 0.5));
@@ -62,8 +71,11 @@ public final class Villages {
             }
         }
         ChunkStore chunks = world.getChunkStore();
-        int[][] cells = {{x, y, z}, {x + 2, y, z}, {x - 2, y, z}};
+        int[][] cells = {{x, y, z}, deposit, board};
         for (int[] c : cells) {
+            if (Terrain.isVegetation(Blocks.name(chunks, c[0], c[1], c[2]))) {
+                Blocks.set(chunks, c[0], c[1], c[2], null, 0);
+            }
             if (!Blocks.isEmpty(chunks, c[0], c[1], c[2])) {
                 return new Founding(null, Message.translation(MESSAGES + "notEmpty")
                         .param("x", c[0]).param("y", c[1]).param("z", c[2]));
@@ -73,11 +85,11 @@ public final class Villages {
             return new Founding(null, Message.translation(MESSAGES + "placeFailed").param("block", HEART_BLOCK));
         }
         Village village = new Village(UUID.randomUUID().toString(), name, people, x, y, z);
-        if (Blocks.set(chunks, x + 2, y, z, people.depositBlock(), 0)) {
-            village.setDeposit(x + 2, y, z);
+        if (Blocks.set(chunks, deposit[0], deposit[1], deposit[2], people.depositBlock(), deposit.length > 3 ? deposit[3] : 0)) {
+            village.setDeposit(deposit[0], deposit[1], deposit[2]);
         }
-        if (Blocks.set(chunks, x - 2, y, z, people.boardBlock(), 0)) {
-            village.setBoard(x - 2, y, z);
+        if (Blocks.set(chunks, board[0], board[1], board[2], people.boardBlock(), board.length > 3 ? board[3] : 0)) {
+            village.setBoard(board[0], board[1], board[2]);
         }
         registry.add(village);
         return new Founding(village, null);
@@ -104,12 +116,17 @@ public final class Villages {
      * blocs) en (x, y, z) si la case est libre. Vrai si elle est posée.
      */
     public static boolean placeBanner(World world, Village village, int x, int y, int z) {
+        return placeBanner(world, village, x, y, z, 0);
+    }
+
+    /** Comme {@link #placeBanner(World, Village, int, int, int)}, tournée de `rotation` (lacet du cœur du plan). */
+    public static boolean placeBanner(World world, Village village, int x, int y, int z, int rotation) {
         ChunkStore chunks = world.getChunkStore();
         String current = Blocks.name(chunks, x, y, z);
         if (current != null && !Terrain.isVegetation(current)) {
             return false;
         }
-        if (!Blocks.set(chunks, x, y, z, village.people().bannerBlock(), 0)) {
+        if (!Blocks.set(chunks, x, y, z, village.people().bannerBlock(), rotation)) {
             return false;
         }
         village.setBanner(x, y, z);

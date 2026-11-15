@@ -2,15 +2,15 @@
   "$Comment": "Plan de village généré par tools/generate_zones.py (étape 8) (ne pas modifier à la main) : prefabs vanilla collés par village/VillageBuilder autour du cœur, emprises (MinX..MaxZ) relatives au point de collage après rotation.",
   "People": "Renonce",
   "Radius": 60,
-  "PlazaRadius": 5,
+  "PlazaRadius": 9,
   "BannerX": 0,
-  "BannerZ": -4,
+  "BannerZ": 7,
   "Buildings": [
     {
       "Id": "Abri_Des_Fuyards",
       "Tier": 0,
       "Prefab": "Npc/Outlander/Houses/Tier0/Outlander_Houses_Tier0_001",
-      "X": -14,
+      "X": -15,
       "Z": 0,
       "Rotation": 0,
       "MinX": -4,
@@ -24,7 +24,7 @@
       "Id": "Abri_Du_Guet",
       "Tier": 0,
       "Prefab": "Npc/Outlander/Houses/Tier0/Outlander_Houses_Tier0_003",
-      "X": 14,
+      "X": 15,
       "Z": 0,
       "Rotation": 0,
       "MinX": -4,
@@ -47,20 +47,6 @@
       "MaxZ": 2,
       "MinY": -3,
       "MaxY": 12
-    },
-    {
-      "Id": "Brasero",
-      "Tier": 0,
-      "Prefab": "Npc/Outlander/Braziers/Outlander_Braziers_Npc_Outlander_Brazier_001",
-      "X": -9,
-      "Z": -11,
-      "Rotation": 0,
-      "MinX": -1,
-      "MaxX": 1,
-      "MinZ": -1,
-      "MaxZ": 1,
-      "MinY": -3,
-      "MaxY": 3
     },
     {
       "Id": "Maison_Des_Repentis",
@@ -246,10 +232,10 @@
       "Role": "Nakasar_Peuples_Renonce_Builder",
       "Dialogue": "Renonce_Builder",
       "Building": "",
-      "WorkX": -4,
-      "WorkZ": -3,
+      "WorkX": 2,
+      "WorkZ": 7,
       "Home": "Abri_Des_Fuyards",
-      "HomeX": -8,
+      "HomeX": -9,
       "HomeZ": 0,
       "Builder": true
     },
@@ -262,7 +248,7 @@
       "WorkX": 0,
       "WorkZ": -10,
       "Home": "Abri_Du_Guet",
-      "HomeX": 8,
+      "HomeX": 9,
       "HomeZ": 0,
       "Builder": false
     },
@@ -305,5 +291,180 @@
       "HomeZ": -24,
       "Builder": false
     }
-  ]
+  ],
+  "Heart": {
+    "Board": [
+      -3,
+      1,
+      6,
+      2
+    ],
+    "Deposit": [
+      3,
+      1,
+      6,
+      2
+    ],
+    "Banner": [
+      0,
+      1,
+      7,
+      2
+    ],
+    "Steps": [
+      {
+        "Tier": 0,
+        "Pieces": [
+          {
+            "Prefab": "Npc/Outlander/Misc/Outlander_Misc_003",
+            "X": 0,
+            "Y": -1,
+            "Z": -3,
+            "Rotation": 0
+          }
+        ],
+        "Set": [
+          "-7 0 2 0 Soil_Snow",
+          "-7 0 3 0 Soil_Pebbles_Frozen",
+          "-7 0 4 0 Soil_Snow",
+          "-7 0 5 0 Soil_Snow",
+          "-6 0 -1 0 Soil_Snow",
+          "-6 0 0 0 Soil_Pebbles_Frozen",
+          "-6 0 1 0 Soil_Snow",
+          "-6 0 2 0 Soil_Snow",
+          "-6 0 3 0 Soil_Snow",
+          "-6 0 4 0 Soil_Pebbles_Frozen",
+          "-6 0 5 0 Soil_Snow",
+          "-6 0 6 0 Soil_Snow",
+          "-5 0 0 0 Soil_Pebbles_Frozen",
+          "-5 0 1 0 Soil_Gravel",
+          "-5 0 2 0 Rock_Slate_Cobble",
+          "-5 0 3 0 Soil_Pebbles_Frozen",
+          "-5 0 4 0 Soil_Pebbles_Frozen",
+          "-5 0 5 0 Soil_Snow",
+          "-5 0 6 0 Soil_Snow",
+          "-5 1 6 0 Furniture_Lumberjack_Lantern",
+          "-4 0 2 0 Rock_Slate_Cobble",
+          "-4 0 3 0 Soil_Gravel",
+          "-4 0 4 0 Soil_Snow",
+          "-4 0 5 0 Soil_Snow",
+          "-4 0 6 0 Soil_Snow",
+          "-3 0 2 0 Rock_Slate_Cobble",
+          "-3 0 3 0 Soil_Gravel",
+          "-3 0 4 0 Soil_Pebbles_Frozen",
+          "-3 0 5 0 Soil_Snow",
+          "-3 0 6 0 Soil_Snow",
+          "-2 0 3 0 Soil_Gravel",
+          "-2 0 4 0 Soil_Pebbles_Frozen",
+          "-2 0 5 0 Rock_Slate_Cobble",
+          "-2 0 6 0 Soil_Snow",
+          "-1 0 3 0 Soil_Pebbles_Frozen",
+          "-1 0 4 0 Rock_Slate_Cobble",
+          "-1 0 5 0 Soil_Pebbles_Frozen",
+          "-1 0 6 0 Soil_Snow",
+          "0 0 3 0 Rock_Slate_Cobble",
+          "0 0 4 0 Soil_Gravel",
+          "0 0 5 0 Rock_Slate_Cobble",
+          "0 0 6 0 Soil_Pebbles_Frozen",
+          "0 0 7 0 Soil_Snow",
+          "1 0 3 0 Soil_Gravel",
+          "1 0 4 0 Rock_Slate_Cobble",
+          "1 0 5 0 Soil_Gravel",
+          "1 0 6 0 Soil_Snow",
+          "1 0 7 0 Soil_Snow",
+          "2 0 3 0 Rock_Slate_Cobble",
+          "2 0 4 0 Soil_Pebbles_Frozen",
+          "2 0 5 0 Soil_Pebbles_Frozen",
+          "2 0 6 0 Soil_Snow",
+          "2 0 7 0 Soil_Snow",
+          "3 0 3 0 Soil_Pebbles_Frozen",
+          "3 0 4 0 Rock_Slate_Cobble",
+          "3 0 5 0 Soil_Snow",
+          "3 0 6 0 Soil_Snow",
+          "4 0 3 0 Soil_Pebbles_Frozen",
+          "4 0 4 0 Soil_Snow",
+          "4 0 5 0 Soil_Snow",
+          "4 0 6 0 Soil_Pebbles_Frozen",
+          "5 0 3 0 Soil_Pebbles_Frozen",
+          "5 0 4 0 Soil_Snow",
+          "5 0 5 0 Soil_Snow",
+          "5 1 6 5 Wood_Fir_Trunk",
+          "5 1 7 5 Wood_Fir_Trunk",
+          "5 2 6 5 Wood_Fir_Trunk",
+          "5 2 7 5 Wood_Fir_Trunk",
+          "6 0 0 0 Soil_Snow",
+          "6 0 1 0 Soil_Snow",
+          "6 0 2 0 Soil_Snow",
+          "6 0 3 0 Soil_Snow",
+          "6 0 4 0 Soil_Pebbles_Frozen",
+          "7 0 -2 0 Soil_Snow",
+          "7 0 -1 0 Soil_Snow",
+          "7 0 0 0 Soil_Pebbles_Frozen",
+          "7 0 1 0 Soil_Snow",
+          "7 0 2 0 Soil_Snow",
+          "7 0 3 0 Soil_Pebbles_Frozen",
+          "8 0 -1 0 Soil_Pebbles_Frozen",
+          "8 0 0 0 Soil_Snow",
+          "8 0 1 0 Soil_Pebbles_Frozen",
+          "8 0 2 0 Soil_Snow"
+        ],
+        "Clear": [],
+        "Fluids": ""
+      },
+      {
+        "Tier": 1,
+        "Pieces": [
+          {
+            "Prefab": "Orbis/Trees/Fir_Snow/Stage_2/Fir_Snow_Stage2_001",
+            "X": -7,
+            "Y": 1,
+            "Z": 5,
+            "Rotation": 0
+          }
+        ],
+        "Set": [
+          "-5 1 6 0 Furniture_Lumberjack_Lantern"
+        ],
+        "Clear": [],
+        "Fluids": ""
+      },
+      {
+        "Tier": 2,
+        "Pieces": [
+          {
+            "Prefab": "Npc/Outlander/Braziers/Outlander_Braziers_Npc_Outlander_Brazier_001",
+            "X": -8,
+            "Y": 0,
+            "Z": -2,
+            "Rotation": 0
+          },
+          {
+            "Prefab": "Npc/Outlander/Braziers/Outlander_Braziers_Npc_Outlander_Brazier_001",
+            "X": 8,
+            "Y": 0,
+            "Z": -2,
+            "Rotation": 0
+          }
+        ],
+        "Set": [],
+        "Clear": [],
+        "Fluids": ""
+      },
+      {
+        "Tier": 3,
+        "Pieces": [
+          {
+            "Prefab": "Orbis/Trees/Fir_Snow/Stage_3/Fir_Snow_Stage3_001",
+            "X": -8,
+            "Y": 1,
+            "Z": -7,
+            "Rotation": 0
+          }
+        ],
+        "Set": [],
+        "Clear": [],
+        "Fluids": ""
+      }
+    ]
+  }
 }

@@ -152,10 +152,9 @@ PEOPLES = {
             "Banner": (0, -4),
             "Buildings": [
                 # Palier 0 : l'abri des fuyards (maisons Tier 0), une tour de guet, le brasero.
-                ("Abri_Des_Fuyards", 0, OUT + "Houses/Tier0/Outlander_Houses_Tier0_001", -14, 0, 0),
-                ("Abri_Du_Guet", 0, OUT + "Houses/Tier0/Outlander_Houses_Tier0_003", 14, 0, 0),
+                ("Abri_Des_Fuyards", 0, OUT + "Houses/Tier0/Outlander_Houses_Tier0_001", -15, 0, 0),
+                ("Abri_Du_Guet", 0, OUT + "Houses/Tier0/Outlander_Houses_Tier0_003", 15, 0, 0),
                 ("Tour_De_Guet_Givre", 0, OUT + "Towers/Tier1/Outlander_Towers_Tier1_001", 0, -14, 0),
-                ("Brasero", 0, OUT + "Braziers/Outlander_Braziers_Npc_Outlander_Brazier_001", -9, -11, 0),
                 # Palier 1 : deux maisons Tier 1, le petit bateau ramené.
                 ("Maison_Des_Repentis", 1, OUT + "Houses/Tier1/Outlander_Houses_Tier1_002", -18, 22, 0),
                 ("Maison_Du_Chasseur", 1, OUT + "Houses/Tier1/Outlander_Houses_Tier1_005", 18, 22, 0),

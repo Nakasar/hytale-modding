@@ -295,6 +295,7 @@ public final class Chantiers {
                 pasted++;
             }
         }
+        VillageHeart.upgrade(world, village, layout, c.tier());
         village.setChantier(null);
         village.setTier(c.tier());
         village.setEssor(0);
@@ -362,6 +363,7 @@ public final class Chantiers {
                         pasted++;
                     }
                 }
+                VillageHeart.upgrade(world, village, layout, target);
                 Villages.setTier(village, target);
                 village.setEssor(0);
                 done.accept(pasted);

@@ -75,6 +75,9 @@ public final class Village {
             .append(new KeyedCodec<>("Chantier", ChantierState.CODEC), (v, c) -> v.chantier = c, v -> v.chantier)
             .documentation("Chantier en cours, ou absent (étape 5).")
             .add()
+            .append(new KeyedCodec<>("HeartTier", Codec.INTEGER), (v, i) -> v.heartTier = i == null ? -1 : i, v -> v.heartTier)
+            .documentation("Dernier palier du cœur de village appliqué (VillageHeart), -1 : place d'avant les cœurs par peuple.")
+            .add()
             .append(new KeyedCodec<>("Raid", RaidRecord.CODEC), (v, r) -> v.raid = r == null ? new RaidRecord() : r, v -> v.raid)
             .documentation("Raids du village (étape 6) : raid attendu, raid en cours, bilan du dernier.")
             .add()
@@ -93,6 +96,7 @@ public final class Village {
     int boardY;
     int boardZ;
     int tier;
+    int heartTier = -1;
     int essor;
     long created;
     String layout;
@@ -137,6 +141,7 @@ public final class Village {
         v.boardY = boardY;
         v.boardZ = boardZ;
         v.tier = tier;
+        v.heartTier = heartTier;
         v.essor = essor;
         v.created = created;
         v.layout = layout;
@@ -397,6 +402,15 @@ public final class Village {
 
     private static String[] without(String[] values, String value) {
         return java.util.Arrays.stream(values).filter(v -> !v.equals(value)).toArray(String[]::new);
+    }
+
+    /** Dernier palier du cœur de village appliqué ({@link VillageHeart}), -1 avant les cœurs par peuple. */
+    public int heartTier() {
+        return heartTier;
+    }
+
+    void setHeartTier(int value) {
+        heartTier = value;
     }
 
     void setTier(int value) {
