@@ -64,6 +64,10 @@ public final class RaidAttitudeSystem extends StoreSystem<EntityStore> {
             if (a && eb || ea && b) {
                 return Attitude.HOSTILE;
             }
+            // Demande de chef : le chef et ses renforts sont du même camp, ils ne se battent jamais entre eux.
+            if (bossSide(so.kind()) && bossSide(to.kind())) {
+                return Attitude.FRIENDLY;
+            }
         }
         String self = role(ref, accessor);
         if (self != null && Raids.isRaiderRole(self) && accessor.getComponent(target, Player.getComponentType()) != null) {
@@ -84,6 +88,11 @@ public final class RaidAttitudeSystem extends StoreSystem<EntityStore> {
             return Attitude.HOSTILE;
         }
         return null;
+    }
+
+    private static boolean bossSide(dev.nakasar.hytale.peuples.request.RequestSpawns.Kind kind) {
+        return kind == dev.nakasar.hytale.peuples.request.RequestSpawns.Kind.BOSS
+                || kind == dev.nakasar.hytale.peuples.request.RequestSpawns.Kind.ADD;
     }
 
     private static String role(Ref<EntityStore> ref, ComponentAccessor<EntityStore> accessor) {
