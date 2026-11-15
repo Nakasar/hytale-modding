@@ -26,8 +26,8 @@
       "Type": "Fixed",
       "Trade": {
         "Output": {
-          "ItemId": "Ingredient_Fabric_Scrap_Linen",
-          "Quantity": 4
+          "ItemId": "Ingredient_Bolt_Linen",
+          "Quantity": 1
         },
         "Input": [
           {

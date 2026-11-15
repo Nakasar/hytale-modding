@@ -477,10 +477,11 @@ def shop(sid, comment, fr, en, slots):
 
 
 def shops():
-    shop(f"{PFX}Trork_Tolere", "Échoppe trork de base (rang Toléré) : viande, peaux, os, payés en dents de trophée. Objets vanilla.",
+    shop(f"{PFX}Trork_Tolere", "Échoppe trork de base (rang Toléré) : viande rôtie, cuir, sangles, tourte, payés en dents de trophée. Objets vanilla, "
+         "jamais ce que demandent les Trorks (Kevin, 2026-11-15).",
          "Camelote trork", "Trork junk",
-         [fixed(MEAT, 4, FAVOR, 1, 10), fixed("Ingredient_Hide_Light", 3, FAVOR, 1, 8),
-          fixed("Ingredient_Bone_Fragment", 4, FAVOR, 1, 8), fixed("Food_Kebab_Meat", 2, FAVOR, 2, 6)])
+         [fixed("Food_Wildmeat_Cooked", 3, FAVOR, 1, 10), fixed("Ingredient_Leather_Light", 2, FAVOR, 1, 8),
+          fixed("Ingredient_Strap_Leather", 2, FAVOR, 1, 8), fixed("Food_Pie_Meat", 1, FAVOR, 2, 6)])
     shop(f"{PFX}Trork_Ami", "Échoppe trork des amis : armes trorks vanilla, payées en dents de trophée.",
          "Lames du camp", "Camp blades",
          [fixed("Weapon_Club_Stone_Trork", 1, FAVOR, 4, 2), fixed("Weapon_Spear_Stone_Trork", 1, FAVOR, 4, 2),

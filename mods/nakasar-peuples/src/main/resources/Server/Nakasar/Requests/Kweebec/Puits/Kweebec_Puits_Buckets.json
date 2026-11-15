@@ -8,7 +8,7 @@
   "Weight": 1,
   "TitleKey": "nakasar_peuples.request.Kweebec_Puits_Buckets.title",
   "TaskKey": "nakasar_peuples.request.Kweebec_Puits_Buckets.task",
-  "ItemId": "Container_Bucket",
+  "ItemId": "Tool_Shovel_Crude",
   "Quantity": 2,
   "Knowledge": 40,
   "Essor": 5,

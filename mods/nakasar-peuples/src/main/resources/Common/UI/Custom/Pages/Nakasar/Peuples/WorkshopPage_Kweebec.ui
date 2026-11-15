@@ -124,6 +124,7 @@ $C.@PageOverlay {
               Anchor: (Left: 14, Top: 14, Width: 56, Height: 56);
               Background: (TexturePath: "../../../Common/IngredientSlot.png", Border: 24);
               ItemIcon #TypeIcon0 { Anchor: (Full: 6); }
+              Label #Qty0 { Anchor: (Right: 5, Bottom: 3); Style: (FontSize: 15, RenderBold: true, TextColor: #ffffff, HorizontalAlignment: End, VerticalAlignment: End); Text: ""; }
               Group #Lock0 {
                 LayoutMode: Middle;
                 Anchor: (Full: 0);
@@ -190,6 +191,7 @@ $C.@PageOverlay {
               Anchor: (Left: 14, Top: 14, Width: 56, Height: 56);
               Background: (TexturePath: "../../../Common/IngredientSlot.png", Border: 24);
               ItemIcon #TypeIcon1 { Anchor: (Full: 6); }
+              Label #Qty1 { Anchor: (Right: 5, Bottom: 3); Style: (FontSize: 15, RenderBold: true, TextColor: #ffffff, HorizontalAlignment: End, VerticalAlignment: End); Text: ""; }
               Group #Lock1 {
                 LayoutMode: Middle;
                 Anchor: (Full: 0);
@@ -256,6 +258,7 @@ $C.@PageOverlay {
               Anchor: (Left: 14, Top: 14, Width: 56, Height: 56);
               Background: (TexturePath: "../../../Common/IngredientSlot.png", Border: 24);
               ItemIcon #TypeIcon2 { Anchor: (Full: 6); }
+              Label #Qty2 { Anchor: (Right: 5, Bottom: 3); Style: (FontSize: 15, RenderBold: true, TextColor: #ffffff, HorizontalAlignment: End, VerticalAlignment: End); Text: ""; }
               Group #Lock2 {
                 LayoutMode: Middle;
                 Anchor: (Full: 0);

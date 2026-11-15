@@ -1,5 +1,5 @@
 {
-  "$Comment": "Échoppe kweebec, troc de base (rang Toléré) : graines, sève et nourriture kweebec, payées en feuilles de sève. Objets vanilla, mêmes familles que le marchand kweebec vanilla. Stock partagé par le monde, renouvelé tous les 3 jours à 6 h comme le marchand vanilla. Ouverte par le marchand du village (dialogue Kweebec_Marchand) ou /village troc, refusée sous son rang (reputation/Shops).",
+  "$Comment": "Échoppe kweebec, troc de base (rang Toléré) : graines, farine et nourriture kweebec (jamais ce que demande le tableau), payées en feuilles de sève. Objets vanilla, mêmes familles que le marchand kweebec vanilla. Stock partagé par le monde, renouvelé tous les 3 jours à 6 h comme le marchand vanilla. Ouverte par le marchand du village (dialogue Kweebec_Marchand) ou /village troc, refusée sous son rang (reputation/Shops).",
   "DisplayNameKey": "nakasar_peuples.barter.Kweebec_Tolere.title",
   "RefreshInterval": {
     "Days": 3
@@ -26,7 +26,7 @@
       "Type": "Fixed",
       "Trade": {
         "Output": {
-          "ItemId": "Ingredient_Tree_Sap",
+          "ItemId": "Ingredient_Flour",
           "Quantity": 3
         },
         "Input": [

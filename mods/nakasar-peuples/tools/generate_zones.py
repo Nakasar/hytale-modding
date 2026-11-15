@@ -617,20 +617,20 @@ def shop(pid, rank, slots, fav, title_fr, title_en):
 
 def shops():
     f = "Nakasar_Peuples_Favor_Feran"
-    shop("Feran", "Tolere", [("Nakasar_Peuples_Oasis_Waterskin", 1, 1, 10), ("Ingredient_Fabric_Scrap_Linen", 4, 1, 10),
+    shop("Feran", "Tolere", [("Nakasar_Peuples_Oasis_Waterskin", 1, 1, 10), ("Ingredient_Bolt_Linen", 1, 1, 10),
                              ("Furniture_Temple_Wind_Statue", 1, 1, 8), ("Food_Kebab_Fruit", 1, 1, 6)],
          f, "Échoppe feran", "Feran stall")
-    shop("Feran", "Ami", [("Nakasar_Peuples_Oasis_Waterskin", 3, 2, 8), ("Ingredient_Water_Essence", 2, 2, 8),
-                          ("Ingredient_Feathers_Light", 4, 1, 10), ("Weapon_Spear_Bone", 1, 6, 2)],
+    shop("Feran", "Ami", [("Nakasar_Peuples_Oasis_Waterskin", 3, 2, 8), ("Ingredient_Ice_Essence", 2, 2, 8),
+                          ("Weapon_Arrow_Crude", 16, 1, 10), ("Weapon_Spear_Bone", 1, 6, 2)],
          f, "Échoppe feran des amis", "Feran friends' stall")
     shop("Feran", "Hote", [("Armor_Cloth_Linen_Head", 1, 6, 2), ("Armor_Cloth_Linen_Chest", 1, 8, 2),
                            ("Ingredient_Lightning_Essence", 2, 3, 6), ("Weapon_Sword_Bone", 1, 8, 2)],
          f, "Réserve de l'hôte feran", "Feran host's reserve")
     f = "Nakasar_Peuples_Favor_Renonce"
-    shop("Renonce", "Tolere", [("Food_Wildmeat_Cooked", 2, 1, 10), ("Ingredient_Fabric_Scrap_Wool", 4, 1, 10),
-                               ("Furniture_Crude_Brazier", 1, 2, 4), ("Wood_Fir_Trunk", 8, 1, 10)],
+    shop("Renonce", "Tolere", [("Food_Wildmeat_Cooked", 2, 1, 10), ("Ingredient_Bolt_Wool", 1, 1, 10),
+                               ("Furniture_Crude_Brazier", 1, 2, 4), ("Wood_Softwood_Planks", 16, 1, 10)],
          f, "Échoppe des Renoncés", "Forsworn stall")
-    shop("Renonce", "Ami", [("Armor_Wool_Hands", 1, 3, 3), ("Armor_Wool_Head", 1, 3, 3),
+    shop("Renonce", "Ami", [("Ingredient_Leather_Heavy", 2, 3, 3), ("Armor_Wool_Head", 1, 3, 3),
                             ("Ingredient_Ice_Essence", 2, 2, 8), ("Ingredient_Fire_Essence", 2, 2, 8)],
          f, "Échoppe des amis renoncés", "Forsworn friends' stall")
     shop("Renonce", "Hote", [("Armor_Wool_Chest", 1, 6, 2), ("Armor_Wool_Legs", 1, 5, 2),

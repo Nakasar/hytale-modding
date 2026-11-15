@@ -9,7 +9,7 @@
   "Weight": 1,
   "TitleKey": "nakasar_peuples.request.Trork_Feu_De_Camp_Master_2.title",
   "TaskKey": "nakasar_peuples.request.Trork_Feu_De_Camp_Master_2.task",
-  "ItemId": "Wood_Oak_Trunk",
+  "ItemId": "Wood_Dry_Trunk",
   "Quantity": 64,
   "Knowledge": 0,
   "Essor": 15,

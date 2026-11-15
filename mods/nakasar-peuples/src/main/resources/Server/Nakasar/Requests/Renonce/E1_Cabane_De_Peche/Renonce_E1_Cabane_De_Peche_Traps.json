@@ -2,16 +2,16 @@
   "$Comment": "Commande du bâtiment de métier Renonce_E1_Cabane_De_Peche, générée par tools/generate_workshops.py (ne pas modifier à la main) : voir RequestTemplate.",
   "People": "Renonce",
   "Workshop": "Renonce_E1_Cabane_De_Peche",
-  "Type": "Craft",
+  "Type": "Gather",
   "MinLevel": 1,
   "MaxLevel": 3,
   "Weight": 1,
   "TitleKey": "nakasar_peuples.request.Renonce_E1_Cabane_De_Peche_Traps.title",
   "TaskKey": "nakasar_peuples.request.Renonce_E1_Cabane_De_Peche_Traps.task",
-  "ItemId": "Tool_Fishing_Trap",
-  "Quantity": 2,
-  "Knowledge": 40,
+  "ItemId": "Ingredient_Bone_Fragment",
+  "Quantity": 10,
+  "Knowledge": 30,
   "Essor": 5,
   "Favors": 1,
-  "Reputation": 6
+  "Reputation": 5
 }

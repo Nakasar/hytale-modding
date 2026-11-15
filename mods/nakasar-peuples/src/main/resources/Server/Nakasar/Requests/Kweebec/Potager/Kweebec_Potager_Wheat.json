@@ -2,16 +2,16 @@
   "$Comment": "Commande du bâtiment de métier Kweebec_Potager, générée par tools/generate_workshops.py (ne pas modifier à la main) : voir RequestTemplate.",
   "People": "Kweebec",
   "Workshop": "Kweebec_Potager",
-  "Type": "Gather",
+  "Type": "Craft",
   "MinLevel": 1,
   "MaxLevel": 3,
   "Weight": 1,
   "TitleKey": "nakasar_peuples.request.Kweebec_Potager_Wheat.title",
   "TaskKey": "nakasar_peuples.request.Kweebec_Potager_Wheat.task",
-  "ItemId": "Plant_Seeds_Wheat",
-  "Quantity": 12,
-  "Knowledge": 30,
+  "ItemId": "Tool_Hoe_Crude",
+  "Quantity": 2,
+  "Knowledge": 40,
   "Essor": 5,
   "Favors": 1,
-  "Reputation": 5
+  "Reputation": 6
 }

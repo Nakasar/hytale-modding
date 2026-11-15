@@ -2,16 +2,16 @@
   "$Comment": "Commande du bâtiment de métier Slothian_Temple_De_Veille, générée par tools/generate_workshops.py (ne pas modifier à la main) : voir RequestTemplate.",
   "People": "Slothian",
   "Workshop": "Slothian_Temple_De_Veille",
-  "Type": "Craft",
+  "Type": "Gather",
   "MinLevel": 1,
   "MaxLevel": 3,
   "Weight": 1,
   "TitleKey": "nakasar_peuples.request.Slothian_Temple_De_Veille_Candles.title",
   "TaskKey": "nakasar_peuples.request.Slothian_Temple_De_Veille_Candles.task",
-  "ItemId": "Furniture_Jungle_Candle",
-  "Quantity": 4,
-  "Knowledge": 40,
+  "ItemId": "Plant_Flower_Common_Purple",
+  "Quantity": 8,
+  "Knowledge": 30,
   "Essor": 5,
   "Favors": 1,
-  "Reputation": 6
+  "Reputation": 5
 }

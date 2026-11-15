@@ -9,7 +9,7 @@
   "Weight": 1,
   "TitleKey": "nakasar_peuples.request.Slothian_Porte_Du_Monastere_Master_2.title",
   "TaskKey": "nakasar_peuples.request.Slothian_Porte_Du_Monastere_Master_2.task",
-  "ItemId": "Rock_Volcanic",
+  "ItemId": "Rock_Basalt_Cobble",
   "Quantity": 80,
   "Knowledge": 0,
   "Essor": 15,

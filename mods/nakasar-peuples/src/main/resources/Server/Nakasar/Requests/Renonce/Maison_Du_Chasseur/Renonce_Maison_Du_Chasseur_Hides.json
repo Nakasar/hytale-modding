@@ -8,7 +8,7 @@
   "Weight": 1,
   "TitleKey": "nakasar_peuples.request.Renonce_Maison_Du_Chasseur_Hides.title",
   "TaskKey": "nakasar_peuples.request.Renonce_Maison_Du_Chasseur_Hides.task",
-  "ItemId": "Ingredient_Hide_Heavy",
+  "ItemId": "Ingredient_Hide_Soft",
   "Quantity": 4,
   "Knowledge": 30,
   "Essor": 5,

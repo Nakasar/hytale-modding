@@ -8,7 +8,7 @@
   "Weight": 1,
   "TitleKey": "nakasar_peuples.request.Feran_E1_Tissage_Fibre.title",
   "TaskKey": "nakasar_peuples.request.Feran_E1_Tissage_Fibre.task",
-  "ItemId": "Ingredient_Fibre",
+  "ItemId": "Ingredient_Stick",
   "Quantity": 12,
   "Knowledge": 30,
   "Essor": 5,

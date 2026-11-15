@@ -216,6 +216,8 @@ def page(theme_id):
         w("              Anchor: (Left: 14, Top: 14, Width: 56, Height: 56);")
         w(f'              Background: (TexturePath: "{COMMON}IngredientSlot.png", Border: 24);')
         w(f"              ItemIcon #TypeIcon{i} {{ Anchor: (Full: 6); }}")
+        # Quantité demandée en pastille de case (Kevin : « 10 × objet » dans le titre le rendait illisible).
+        w(f'              {label(f"Qty{i}", "LabelStyle(FontSize: 15, RenderBold: true, TextColor: #ffffff, HorizontalAlignment: End, VerticalAlignment: End)", anchor="Right: 5, Bottom: 3")}')
         w(f"              Group #Lock{i} {{")
         w("                LayoutMode: Middle;")
         w("                Anchor: (Full: 0);")

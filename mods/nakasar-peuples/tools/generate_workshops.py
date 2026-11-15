@@ -63,113 +63,113 @@ DECOR = {
 # Un bâtiment : (id, plan, bâtiment du plan, métier, icône vanilla, nom fr, nom en, commandes).
 WORKSHOPS = [
     ("Kweebec_Enclos", "Kweebec_Oak", "Enclos", "Eleveur", "Ingredient_Hay", "Enclos des lapins", "Rabbit pen", [
-        ("Carrots", "Gather", "Plant_Crop_Carrot_Item", 10, "Carottes des lapins", "Carrots for the rabbits"),
-        ("Hay", "Gather", "Ingredient_Hay", 12, "Foin de l'enclos", "Hay for the pen"),
+        ("Carrots", "Gather", "Plant_Crop_Turnip_Item", 10, "Navets des lapins", "Turnips for the rabbits"),
+        ("Hay", "Gather", "Plant_Crop_Wheat_Item", 12, "Blé pour la litière", "Wheat for bedding"),
         ("Poachers", "Hunt", ["Trork_Hunter", "Trork_Hunter"], 0, "Braconniers trorks", "Trork poachers"),
     ]),
     # Étape 3 : les enclos des quatre autres peuples (tools/generate_pens.py, palier 1).
     ("Trork_Fosse_Aux_Betes", "Trork_Camp", "Fosse_Aux_Betes", "Dresseur", "Food_Wildmeat_Raw", "Fosse aux bêtes",
      "Beast pit", [
-        ("Meat", "Gather", "Food_Wildmeat_Raw", 10, "Viande pour la fosse", "Meat for the pit"),
-        ("Bones", "Gather", "Ingredient_Bone_Fragment", 12, "Os à ronger", "Bones to gnaw"),
+        ("Meat", "Gather", "Food_Beef_Raw", 6, "Bœuf pour la fosse", "Beef for the pit"),
+        ("Bones", "Gather", "Food_Chicken_Raw", 8, "Volaille des bêtes", "Fowl for the beasts"),
         ("Wolves", "Hunt", ["Wolf_Black", "Wolf_Black"], 0, "Loups affamés", "Hungry wolves"),
     ]),
     ("Feran_Enclos_Oasis", "Feran_Oasis", "Enclos_Oasis", "Eleveuse", "Food_Egg", "Enclos de l'oasis", "Oasis pen", [
-        ("Grain", "Gather", "Plant_Seeds_Wheat", 12, "Grain des poules", "Grain for the hens"),
-        ("Water", "Gather", "Ingredient_Water_Essence", 4, "Eau pour l'enclos", "Water for the pen"),
+        ("Grain", "Gather", "Plant_Crop_Corn_Item", 8, "Maïs des poules", "Corn for the hens"),
+        ("Water", "Gather", "Plant_Crop_Rice_Item", 8, "Riz pour l'enclos", "Rice for the pen"),
         ("Scaraks", "Hunt", ["Scarak_Fighter", "Scarak_Fighter"], 0, "Scaraks voleurs d'œufs", "Egg-thief Scaraks"),
     ]),
     ("Renonce_Bergerie_Du_Givre", "Renonce_Givre", "Bergerie_Du_Givre", "Berger", "Ingredient_Fabric_Scrap_Wool",
      "Bergerie du givre", "Frost fold", [
-        ("Hay", "Gather", "Ingredient_Hay", 12, "Foin pour l'hiver", "Hay for winter"),
-        ("Wool", "Gather", "Ingredient_Fabric_Scrap_Wool", 8, "Laine de la bergerie", "Wool for the fold"),
+        ("Hay", "Gather", "Plant_Crop_Turnip_Item", 10, "Navets pour l'hiver", "Turnips for winter"),
+        ("Wool", "Gather", "Ingredient_Salt", 6, "Sel pour les brebis", "Salt for the ewes"),
         ("Wolves", "Hunt", ["Wolf_White", "Wolf_White"], 0, "Loups des neiges", "Snow wolves"),
     ]),
     ("Slothian_Bauge_De_Veille", "Slothian_Monastere", "Bauge_De_Veille", "Gardien_Bauge", "Food_Pork_Raw",
      "Bauge de veille", "Vigil pen", [
         ("Mud", "Gather", "Soil_Mud_Dry", 16, "Boue de la bauge", "Mud for the pen"),
-        ("Roots", "Gather", "Plant_Crop_Carrot_Item", 10, "Racines des porcs", "Roots for the pigs"),
+        ("Roots", "Gather", "Plant_Crop_Potato_Item", 10, "Patates des porcs", "Potatoes for the pigs"),
         ("Crawlers", "Hunt", ["Crawler_Void", "Crawler_Void"], 0, "Rampants à la bauge", "Crawlers at the pen"),
     ]),
     ("Kweebec_Potager", "Kweebec_Oak", "Potager", "Jardiniere", "Plant_Seeds_Lettuce", "Potager", "Vegetable garden", [
-        ("Lettuce", "Gather", "Plant_Seeds_Lettuce", 10, "Graines de salade", "Lettuce seeds"),
-        ("Wheat", "Gather", "Plant_Seeds_Wheat", 12, "Semences de blé", "Wheat seeds"),
-        ("Soup", "Craft", "Food_Vegetable_Cooked", 4, "Légumes pour la soupe", "Vegetables for soup"),
+        ("Lettuce", "Gather", "Ingredient_Poop", 8, "Fumier du potager", "Manure for the garden"),
+        ("Wheat", "Craft", "Tool_Hoe_Crude", 2, "Houes du potager", "Hoes for the garden"),
+        ("Soup", "Craft", "Food_Salad_Mushroom", 3, "Salades de champignons", "Mushroom salads"),
     ]),
     ("Kweebec_Puits", "Kweebec_Oak", "Puits", "Puisatiere", "Container_Bucket", "Puits", "Well", [
-        ("Buckets", "Craft", "Container_Bucket", 2, "Seaux pour le puits", "Buckets for the well"),
-        ("Water", "Gather", "Ingredient_Water_Essence", 4, "Eau vive", "Living water"),
-        ("Stones", "Gather", "Rock_Stone_Cobble", 20, "Pierres de la margelle", "Stones for the rim"),
+        ("Buckets", "Craft", "Tool_Shovel_Crude", 2, "Pelles du puisatier", "Shovels for the digger"),
+        ("Water", "Gather", "Soil_Clay", 16, "Argile du puits", "Clay for the well"),
+        ("Stones", "Gather", "Soil_Gravel", 16, "Gravier de la margelle", "Gravel for the rim"),
     ]),
     ("Kweebec_Grande_Maison", "Kweebec_Oak", "Grande_Maison", "Soigneuse", "Potion_Health_Small", "Maison de soins",
      "House of healing", [
-        ("Flowers", "Gather", "Plant_Flower_Common_Red", 8, "Fleurs de soin", "Healing flowers"),
-        ("Vials", "Craft", "Potion_Health_Small", 2, "Fioles de soin", "Healing vials"),
-        ("Essence", "Gather", "Ingredient_Life_Essence", 8, "Essence de vie", "Life essence"),
+        ("Flowers", "Gather", "Plant_Crop_Mushroom_Cap_White", 6, "Champignons de soin", "Healing mushrooms"),
+        ("Vials", "Craft", "Potion_Empty", 3, "Fioles vides", "Empty vials"),
+        ("Essence", "Gather", "Ingredient_Fabric_Scrap_Cotton", 8, "Charpie à bandages", "Lint for bandages"),
     ]),
     ("Kweebec_Tour_Est", "Kweebec_Oak", "Tour_Est", "Garde", "Weapon_Arrow_Crude", "Tour de la garde", "Guard tower", [
-        ("Arrows", "Craft", "Weapon_Arrow_Crude", 32, "Flèches pour la tour", "Arrows for the tower"),
+        ("Arrows", "Craft", "Weapon_Spear_Crude", 3, "Lances pour la tour", "Spears for the tower"),
         ("Scouts", "Hunt", ["Trork_Warrior", "Trork_Warrior", "Trork_Brawler"], 0, "Éclaireurs trorks", "Trork scouts"),
-        ("Palisade", "Gather", "Wood_Oak_Trunk", 12, "Bois de la palissade", "Palisade logs"),
+        ("Palisade", "Gather", "Wood_Birch_Trunk", 12, "Bouleau de palissade", "Birch for the palisade"),
     ]),
     ("Trork_Piege", "Trork_Camp", "Piege", "Chasseur", "Ingredient_Hide_Light", "Piège du chasseur", "Hunter's trap", [
-        ("Hides", "Gather", "Ingredient_Hide_Light", 8, "Peaux du piège", "Hides for the trap"),
+        ("Hides", "Gather", "Ingredient_Stick", 12, "Bois des collets", "Wood for snares"),
         ("Wolves", "Hunt", ["Wolf_Black", "Wolf_Black"], 0, "Loups du piège", "Wolves at the trap"),
-        ("Bait", "Gather", "Ingredient_Bone_Fragment", 10, "Os pour les appâts", "Bones for bait"),
+        ("Bait", "Gather", "Food_Fish_Raw", 6, "Poisson pour l'appât", "Fish for bait"),
     ]),
     ("Trork_Feu_De_Camp", "Trork_Camp", "Feu_De_Camp", "Guerrier", "Food_Wildmeat_Cooked", "Feu de camp", "Campfire", [
-        ("Roast", "Craft", "Food_Wildmeat_Cooked", 6, "Viande du feu", "Meat for the fire"),
-        ("Logs", "Gather", "Wood_Oak_Trunk", 16, "Bois pour le feu", "Logs for the fire"),
+        ("Roast", "Craft", "Food_Kebab_Mushroom", 4, "Brochettes du feu", "Skewers for the fire"),
+        ("Logs", "Gather", "Wood_Dry_Trunk", 16, "Bois sec du feu", "Dry wood for the fire"),
         ("Mosshorn", "Hunt", ["Mosshorn"], 0, "Gros gibier", "Big game"),
     ]),
     ("Trork_Entrepot", "Trork_Camp", "Entrepot", "Cogneur", "Ingredient_Bar_Copper", "Entrepôt", "Warehouse", [
-        ("Copper", "Gather", "Ingredient_Bar_Copper", 4, "Cuivre de l'entrepôt", "Copper for the store"),
-        ("Stones", "Gather", "Rock_Stone_Cobble", 24, "Pierres de l'entrepôt", "Stones for the store"),
+        ("Copper", "Gather", "Ingredient_Charcoal", 8, "Charbon de l'entrepôt", "Charcoal for the store"),
+        ("Stones", "Gather", "Rock_Shale_Cobble", 24, "Schiste de l'entrepôt", "Shale for the store"),
         ("Hides", "Gather", "Ingredient_Hide_Medium", 6, "Peaux épaisses", "Thick hides"),
     ]),
     ("Feran_Entree_Oasis", "Feran_Oasis", "Entree_Oasis", "Porteuse_Eau", "Container_Bucket", "Entrée de l'oasis",
      "Oasis gate", [
-        ("Buckets", "Craft", "Container_Bucket", 2, "Seaux de la porteuse", "Buckets for the carrier"),
-        ("Water", "Gather", "Ingredient_Water_Essence", 6, "Eau de l'oasis", "Oasis water"),
-        ("Salt", "Gather", "Ingredient_Salt", 6, "Sel de l'oasis", "Oasis salt"),
+        ("Buckets", "Gather", "Soil_Clay", 12, "Argile des jarres", "Clay for the jars"),
+        ("Water", "Gather", "Plant_Fruit_Coconut", 4, "Noix de coco", "Coconuts"),
+        ("Salt", "Gather", "Plant_Fruit_Mango", 4, "Mangues de l'oasis", "Oasis mangoes"),
     ]),
     ("Feran_Hutte_Pilier", "Feran_Oasis", "Hutte_Pilier", "Garde", "Weapon_Spear_Crude", "Hutte de la garde",
      "Guard hut", [
-        ("Spears", "Craft", "Weapon_Spear_Crude", 2, "Lances pour la garde", "Spears for the guard"),
+        ("Spears", "Craft", "Ingredient_Strap_Leather", 4, "Sangles de la garde", "Straps for the guard"),
         ("Scaraks", "Hunt", ["Scarak_Fighter", "Scarak_Fighter", "Scarak_Fighter"], 0, "Scaraks aux portes",
          "Scaraks at the gates"),
-        ("Feathers", "Gather", "Ingredient_Feathers_Light", 8, "Plumes des coureurs", "Runner feathers"),
+        ("Feathers", "Gather", "Food_Chicken_Raw", 6, "Volaille des coureurs", "Fowl for the runners"),
     ]),
     ("Renonce_Maison_Du_Chasseur", "Renonce_Givre", "Maison_Du_Chasseur", "Chasseur", "Ingredient_Hide_Heavy",
      "Maison du chasseur", "Hunter's lodge", [
-        ("Hides", "Gather", "Ingredient_Hide_Heavy", 4, "Peaux lourdes", "Heavy hides"),
-        ("Meat", "Gather", "Food_Wildmeat_Raw", 8, "Viande pour l'hiver", "Meat for winter"),
+        ("Hides", "Gather", "Ingredient_Hide_Soft", 4, "Peaux souples", "Soft hides"),
+        ("Meat", "Gather", "Ingredient_Stick", 12, "Bois des collets", "Wood for snares"),
         ("Poachers", "Hunt", ["Outlander_Hunter", "Outlander_Hunter"], 0, "Braconniers du culte", "Cult poachers"),
     ]),
     ("Renonce_Tour_Du_Fort", "Renonce_Givre", "Tour_Du_Fort", "Garde", "Weapon_Arrow_Crude", "Tour du fort",
      "Fort tower", [
-        ("Fir", "Gather", "Wood_Fir_Trunk", 16, "Sapin des remparts", "Fir for the ramparts"),
+        ("Fir", "Gather", "Rock_Stone_Cobble", 24, "Pierres des remparts", "Stones for the ramparts"),
         ("Cultists", "Hunt", ["Outlander_Cultist", "Outlander_Cultist", "Outlander_Cultist"], 0,
          "Cultistes près du fort", "Cultists near the fort"),
-        ("Arrows", "Craft", "Weapon_Arrow_Crude", 24, "Flèches du fort", "Arrows for the fort"),
+        ("Arrows", "Gather", "Ingredient_Feathers_Light", 10, "Plumes d'empennage", "Fletching feathers"),
     ]),
     ("Slothian_Etal_Des_Cendres", "Slothian_Monastere", "Etal_Des_Cendres", "Porteur_Cendres", "Ingredient_Charcoal",
      "Étal des cendres", "Ash stall", [
         ("Ash", "Gather", "Soil_Ash", 20, "Cendres de l'étal", "Ash for the stall"),
-        ("Charcoal", "Gather", "Ingredient_Charcoal", 8, "Charbon des braises", "Charcoal for embers"),
-        ("Fire", "Gather", "Ingredient_Fire_Essence", 4, "Essence de feu", "Fire essence"),
+        ("Charcoal", "Gather", "Wood_Jungle_Trunk", 12, "Bois des braises", "Wood for the embers"),
+        ("Fire", "Gather", "Plant_Crop_Chilli_Item", 6, "Piments ardents", "Fiery chillies"),
     ]),
     ("Slothian_Temple_De_Veille", "Slothian_Monastere", "Temple_De_Veille", "Moine", "Furniture_Jungle_Candle",
      "Temple de veille", "Vigil temple", [
-        ("Candles", "Craft", "Furniture_Jungle_Candle", 4, "Cierges du temple", "Temple candles"),
-        ("Void", "Gather", "Ingredient_Void_Essence", 3, "Essence du Vide", "Void essence"),
-        ("Potions", "Craft", "Potion_Regen_Mana_Small", 2, "Potions de veille", "Vigil potions"),
+        ("Candles", "Gather", "Plant_Flower_Common_Purple", 8, "Fleurs d'offrande", "Offering flowers"),
+        ("Void", "Gather", "Ingredient_Crystal_Purple", 2, "Cristaux du temple", "Temple crystals"),
+        ("Potions", "Craft", "Potion_Empty", 3, "Fioles de veille", "Vigil vials"),
     ]),
     ("Slothian_Porte_Du_Monastere", "Slothian_Monastere", "Porte_Du_Monastere", "Garde", "Rock_Volcanic",
      "Porte du monastère", "Monastery gate", [
         ("Crawlers", "Hunt", ["Crawler_Void", "Crawler_Void", "Crawler_Void"], 0, "Rampants du Vide",
          "Void crawlers"),
-        ("Basalt", "Gather", "Rock_Volcanic", 20, "Basalte de la porte", "Basalt for the gate"),
+        ("Basalt", "Gather", "Rock_Basalt_Cobble", 20, "Basalte de la porte", "Basalt for the gate"),
         ("Burnt", "Hunt", ["Skeleton_Burnt_Soldier", "Skeleton_Burnt_Soldier"], 0, "Morts brûlés", "Burnt dead"),
     ]),
 ]
@@ -812,6 +812,57 @@ def plot_workshops(fr, en, errors):
     return twins
 
 
+# Kevin (2026-11-15) : une commande ne demande jamais un objet vendu en boutique, celle du bâtiment ou celle du
+# village ; une demande du tableau jamais un objet de la boutique du village. Contrôlé ici (selling_rules) : on corrige
+# les données (objet demandé ou boutique), le script ne filtre rien.
+ASKED_TYPES = ("Gather", "Craft", "Harvest")
+PEOPLES = ("Kweebec", "Trork", "Feran", "Renonce", "Slothian")
+
+
+def shop_items(path):
+    doc = json.loads(path.read_text(encoding="utf-8"))
+    out = set()
+    for slot in doc.get("TradeSlots", []):
+        for t in [slot["Trade"]] if "Trade" in slot else slot.get("Trades", []):
+            out.add(t["Output"]["ItemId"])
+    return out
+
+
+def selling_rules(errors):
+    """Règle de Kevin : erreur si une demande du tableau ou une commande vise un objet vendu en boutique."""
+    village_sold = {p: set() for p in PEOPLES}
+    for path in BARTER.glob("Nakasar_Peuples_*.json"):
+        if path.name.startswith(SHOP_PREFIX):
+            continue
+        for p in PEOPLES:
+            if path.stem.startswith(f"Nakasar_Peuples_{p}_"):
+                village_sold[p] |= shop_items(path)
+    asked = {p: set() for p in PEOPLES}
+    workshop_folders = {(w[1], w[2]) for w in WORKSHOPS}
+    for path in REQUESTS.glob("*/*.json"):
+        doc = json.loads(path.read_text(encoding="utf-8"))
+        if doc.get("Type") in ASKED_TYPES and doc.get("ItemId"):
+            asked[doc["People"]].add(doc["ItemId"])
+            if doc["ItemId"] in village_sold[doc["People"]]:
+                errors.append(f"demande {path.stem} : {doc['ItemId']} est vendu par la boutique du village")
+    for wid, _layout, _building, _job, _icon, _fr, _en, orders in WORKSHOPS:
+        people = wid.split("_")[0]
+        shops = SHOPS.get(wid, {})
+        own = {t[0] for t in shops.get("Base", [])}
+        for key, value in shops.items():
+            if key != "Base":
+                own |= {t[0] for lst in value for t in lst}
+        for suffix, rtype, what, *_ in orders:
+            if rtype not in ASKED_TYPES:
+                continue
+            asked[people].add(what)
+            if what in own:
+                errors.append(f"commande {wid}_{suffix} : {what} est vendu par la boutique du bâtiment")
+            if what in village_sold[people]:
+                errors.append(f"commande {wid}_{suffix} : {what} est vendu par la boutique du village")
+    return asked
+
+
 def main():
     items = load_ids(ITEMS)
     roles = load_ids(REFS, "npc")
@@ -824,6 +875,7 @@ def main():
         old.unlink()
     layouts = {}
     twins = plot_workshops(fr, en, errors)
+    selling_rules(errors)
     for wid, layout_id, building_id, job_id, icon, name_fr, name_en, orders in WORKSHOPS:
         layout = layouts.setdefault(layout_id, json.loads((LAYOUTS / f"{layout_id}.json").read_text(encoding="utf-8")))
         people = layout["People"]
@@ -866,6 +918,9 @@ def main():
             if shops is None:
                 errors.append(f"{wid} : pas de boutiques (SHOPS)")
                 shops = {"Base": []}
+            if len(shops["Base"]) < 2:
+                errors.append(f"{wid} : boutique du niveau I avec moins de 2 échanges "
+                              f"({[t[0] for t in shops['Base']]})")
             base_trades = [t + (SHOP_STOCK[1],) for t in shops["Base"]]
             base_id = f"{SHOP_PREFIX}{wid}_Base_1"
             write_shop(base_id, people, base_trades, f"nakasar_peuples.barter.W_{wid}_Base_1.title",
