@@ -1,0 +1,23 @@
+{
+  "$Comment": "Demande du tableau d'un village Feran (Harvest), générée par tools/generate_quests.py : voir RequestTemplate et request/Expeditions.",
+  "People": "Feran",
+  "Type": "Harvest",
+  "MinTier": 0,
+  "MaxTier": 3,
+  "Weight": 1,
+  "TitleKey": "nakasar_peuples.request.Feran_Harvest_Escort.title",
+  "TaskKey": "nakasar_peuples.request.Feran_Harvest_Escort.task",
+  "Members": 3,
+  "Waves": 2,
+  "Duration": 60,
+  "Spawns": [
+    "Nakasar_Peuples_Raider_Scarak_Fighter",
+    "Nakasar_Peuples_Raider_Scarak_Fighter"
+  ],
+  "ItemId": "Plant_Cactus_1",
+  "Quantity": 8,
+  "MinDistance": 60,
+  "MaxDistance": 110,
+  "Essor": 20,
+  "Favors": 3
+}

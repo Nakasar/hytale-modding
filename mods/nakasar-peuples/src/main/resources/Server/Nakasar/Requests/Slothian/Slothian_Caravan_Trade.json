@@ -1,0 +1,21 @@
+{
+  "$Comment": "Demande du tableau d'un village Slothian (Caravan), générée par tools/generate_quests.py : voir RequestTemplate et request/Expeditions.",
+  "People": "Slothian",
+  "Type": "Caravan",
+  "MinTier": 1,
+  "MaxTier": 3,
+  "Weight": 1,
+  "TitleKey": "nakasar_peuples.request.Slothian_Caravan_Trade.title",
+  "TaskKey": "nakasar_peuples.request.Slothian_Caravan_Trade.task",
+  "Members": 3,
+  "Waves": 3,
+  "Spawns": [
+    "Nakasar_Peuples_Raider_Void_Larva",
+    "Nakasar_Peuples_Raider_Void_Larva",
+    "Nakasar_Peuples_Raider_Void_Crawler"
+  ],
+  "MinDistance": 150,
+  "MaxDistance": 2400,
+  "Essor": 35,
+  "Favors": 6
+}

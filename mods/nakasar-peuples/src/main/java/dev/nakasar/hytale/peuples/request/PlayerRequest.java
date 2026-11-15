@@ -38,6 +38,27 @@ public final class PlayerRequest {
             .append(new KeyedCodec<>("Prepared", Codec.BOOLEAN), (r, v) -> r.prepared = v != null && v, r -> r.prepared)
             .documentation("Vrai quand le lieu de la demande a été préparé (bosquet brûlé d'une plantation).")
             .add()
+            .append(new KeyedCodec<>("Target", Codec.STRING), (r, v) -> r.target = v, r -> r.target)
+            .documentation("Caravane : id du village où mener la caravane.")
+            .add()
+            .append(new KeyedCodec<>("Stage", Codec.INTEGER), (r, v) -> r.stage = v == null ? 0 : v, r -> r.stage)
+            .documentation("Caravane : embuscades passées ; récolte escortée : 0 aller, 1 récolte, 2 retour ; destruction : blocs posés.")
+            .add()
+            .append(new KeyedCodec<>("Count", Codec.INTEGER), (r, v) -> r.count = v == null ? -1 : v, r -> r.count)
+            .documentation("Caravane, récolte : PNJ escortés encore en vie (-1 : pas encore partis) ; boss : vie en millièmes.")
+            .add()
+            .append(new KeyedCodec<>("Timer", Codec.INTEGER), (r, v) -> r.timer = v == null ? 0 : v, r -> r.timer)
+            .documentation("Récolte escortée : secondes de récolte écoulées.")
+            .add()
+            .append(new KeyedCodec<>("WavesDone", Codec.INTEGER), (r, v) -> r.wavesDone = v == null ? 0 : v, r -> r.wavesDone)
+            .documentation("Caravane, récolte escortée : embuscades déjà lancées.")
+            .add()
+            .append(new KeyedCodec<>("Marks", Codec.STRING), (r, v) -> r.marks = v, r -> r.marks)
+            .documentation("Destruction : blocs posés au lieu, « x,y,z;x,y,z ».")
+            .add()
+            .append(new KeyedCodec<>("PosX", Codec.INTEGER), (r, v) -> r.posX = v == null ? 0 : v, r -> r.posX).add()
+            .append(new KeyedCodec<>("PosY", Codec.INTEGER), (r, v) -> r.posY = v == null ? NO_Y : v, r -> r.posY).add()
+            .append(new KeyedCodec<>("PosZ", Codec.INTEGER), (r, v) -> r.posZ = v == null ? 0 : v, r -> r.posZ).add()
             .append(new KeyedCodec<>("Hud", Codec.STRING), (r, v) -> r.hud = v, r -> r.hud)
             .documentation("Id du suivi à l'écran (paquets d'objectif vanilla).")
             .add()
@@ -53,6 +74,15 @@ public final class PlayerRequest {
     int siteZ;
     String hud;
     boolean prepared;
+    String target;
+    int stage;
+    int count = -1;
+    int timer;
+    int wavesDone;
+    String marks;
+    int posX;
+    int posY = NO_Y;
+    int posZ;
 
     PlayerRequest() {
     }
@@ -137,6 +167,82 @@ public final class PlayerRequest {
         return progress >= needed();
     }
 
+    /** Caravane : village de destination, ou null. */
+    public String target() {
+        return target;
+    }
+
+    void setTarget(String value) {
+        target = value;
+    }
+
+    public int stage() {
+        return stage;
+    }
+
+    void setStage(int value) {
+        stage = value;
+    }
+
+    public int count() {
+        return count;
+    }
+
+    void setCount(int value) {
+        count = value;
+    }
+
+    public int timer() {
+        return timer;
+    }
+
+    void setTimer(int value) {
+        timer = value;
+    }
+
+    /** Destruction : positions des blocs posés (x, y, z). */
+    public java.util.List<int[]> marks() {
+        java.util.List<int[]> out = new java.util.ArrayList<>();
+        if (marks == null || marks.isBlank()) {
+            return out;
+        }
+        for (String part : marks.split(";")) {
+            String[] c = part.split(",");
+            if (c.length == 3) {
+                try {
+                    out.add(new int[] {Integer.parseInt(c[0].trim()), Integer.parseInt(c[1].trim()), Integer.parseInt(c[2].trim())});
+                } catch (NumberFormatException ignored) {
+                    // entrée abîmée : ignorée
+                }
+            }
+        }
+        return out;
+    }
+
+    void addMark(int x, int y, int z) {
+        String m = x + "," + y + "," + z;
+        marks = marks == null || marks.isBlank() ? m : marks + ";" + m;
+    }
+
+    public int wavesDone() {
+        return wavesDone;
+    }
+
+    void setWavesDone(int value) {
+        wavesDone = value;
+    }
+
+    /** Dernière position connue du groupe escorté, ou null. */
+    public int[] position() {
+        return posY == NO_Y ? null : new int[] {posX, posY, posZ};
+    }
+
+    void setPosition(int x, int y, int z) {
+        posX = x;
+        posY = y;
+        posZ = z;
+    }
+
     public PlayerRequest copy() {
         PlayerRequest c = new PlayerRequest();
         c.id = id;
@@ -149,6 +255,15 @@ public final class PlayerRequest {
         c.siteZ = siteZ;
         c.hud = hud;
         c.prepared = prepared;
+        c.target = target;
+        c.stage = stage;
+        c.count = count;
+        c.timer = timer;
+        c.wavesDone = wavesDone;
+        c.marks = marks;
+        c.posX = posX;
+        c.posY = posY;
+        c.posZ = posZ;
         return c;
     }
 }

@@ -1,0 +1,21 @@
+{
+  "$Comment": "Demande du tableau d'un village Kweebec (Destroy), générée par tools/generate_quests.py : voir RequestTemplate et request/Expeditions.",
+  "People": "Kweebec",
+  "Type": "Destroy",
+  "MinTier": 0,
+  "MaxTier": 3,
+  "Weight": 1,
+  "TitleKey": "nakasar_peuples.request.Kweebec_Destroy_Camp.title",
+  "TaskKey": "nakasar_peuples.request.Kweebec_Destroy_Camp.task",
+  "TargetBlock": "Furniture_Crude_Brazier",
+  "Quantity": 5,
+  "Spawns": [
+    "Nakasar_Peuples_Raider_Trork_Warrior",
+    "Nakasar_Peuples_Raider_Trork_Warrior",
+    "Nakasar_Peuples_Raider_Trork_Brawler"
+  ],
+  "MinDistance": 90,
+  "MaxDistance": 150,
+  "Essor": 20,
+  "Favors": 3
+}

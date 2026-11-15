@@ -1,0 +1,21 @@
+{
+  "$Comment": "Demande du tableau d'un village Slothian (Destroy), générée par tools/generate_quests.py : voir RequestTemplate et request/Expeditions.",
+  "People": "Slothian",
+  "Type": "Destroy",
+  "MinTier": 0,
+  "MaxTier": 3,
+  "Weight": 1,
+  "TitleKey": "nakasar_peuples.request.Slothian_Destroy_Camp.title",
+  "TaskKey": "nakasar_peuples.request.Slothian_Destroy_Camp.task",
+  "TargetBlock": "Rock_Crystal_Void_Large",
+  "Quantity": 5,
+  "Spawns": [
+    "Nakasar_Peuples_Raider_Void_Larva",
+    "Nakasar_Peuples_Raider_Void_Larva",
+    "Nakasar_Peuples_Raider_Void_Crawler"
+  ],
+  "MinDistance": 90,
+  "MaxDistance": 150,
+  "Essor": 20,
+  "Favors": 3
+}

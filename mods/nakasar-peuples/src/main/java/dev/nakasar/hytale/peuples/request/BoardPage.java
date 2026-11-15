@@ -384,6 +384,10 @@ public final class BoardPage extends InteractiveCustomUIPage<BoardPage.Event> {
             case ESCORT -> "Tool_Map";
             case DEFENSE -> "Weapon_Shield_Wood";
             case PLANT -> "Plant_Sapling_Oak";
+            case CARAVAN -> "Furniture_Crude_Chest_Small";
+            case HARVEST -> "Tool_Sickle_Crude";
+            case DESTROY -> "Tool_Pickaxe_Crude";
+            case BOSS -> "Weapon_Battleaxe_Stone_Trork";
         };
     }
 
@@ -391,9 +395,11 @@ public final class BoardPage extends InteractiveCustomUIPage<BoardPage.Event> {
         return switch (type) {
             case DEFENSE -> "#e88a78";
             case HUNT -> "#e8b45a";
-            case ESCORT -> "#a9c4e6";
+            case ESCORT, CARAVAN -> "#a9c4e6";
+            case BOSS -> "#d98ae8";
+            case DESTROY -> "#e8a05a";
             case DELIVERY -> "#d9c48a";
-            case GATHER, PLANT -> "#9ed36a";
+            case GATHER, PLANT, HARVEST -> "#9ed36a";
             case CRAFT -> "#c9b98f";
         };
     }

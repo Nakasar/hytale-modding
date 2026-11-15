@@ -117,3 +117,10 @@ npc Tamed_Mouflon_Lamb
 npc Tamed_Bison
 npc Tamed_Bison_Calf
 npc Wolf_White
+# Chefs des demandes de boss (tools/generate_quests.py) : butins vus dans Assets.zip le 15 novembre 2026
+# (Server/Drops/NPCs/Intelligent/Trork/Drop_Trork_Chieftain.json, Server/Drops/NPCs/Beast/Drop_Bear_Grizzly.json,
+# Drop_Yeti.json, Server/Drops/NPCs/Elemental/Drop_Golem_Crystal_Sand.json).
+droplist Drop_Trork_Chieftain
+droplist Drop_Bear_Grizzly
+droplist Drop_Yeti
+droplist Drop_Golem_Crystal_Sand

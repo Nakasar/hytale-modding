@@ -71,7 +71,7 @@ public final class Requests {
         List<RequestType> used = new ArrayList<>();
         List<String> usedTemplates = new ArrayList<>();
         for (int i = 0; i < SLOTS; i++) {
-            RequestTemplate t = pick(village, random, used, usedTemplates);
+            RequestTemplate t = pick(store, village, random, used, usedTemplates);
             if (t != null) {
                 drawn[i] = new VillageRequest(UUID.randomUUID().toString(), t.getId(), day);
                 used.add(t.type());
@@ -97,7 +97,7 @@ public final class Requests {
             // On évite de retirer la même demande.
             usedTemplates.add(current[slot].templateId());
         }
-        RequestTemplate t = pick(village, ThreadLocalRandom.current(), used, usedTemplates);
+        RequestTemplate t = pick(store, village, ThreadLocalRandom.current(), used, usedTemplates);
         Villages.setRequest(village, slot, t == null ? null : new VillageRequest(UUID.randomUUID().toString(), t.getId(), GameClock.day(store)));
     }
 
@@ -111,8 +111,12 @@ public final class Requests {
      * Un modèle au poids parmi ceux du peuple et du palier : d'abord un type pas encore au tableau, sinon un modèle
      * pas encore au tableau, sinon n'importe lequel.
      */
-    private static RequestTemplate pick(Village village, Random random, List<RequestType> usedTypes, List<String> usedTemplates) {
+    private static RequestTemplate pick(Store<EntityStore> store, Village village, Random random, List<RequestType> usedTypes,
+                                        List<String> usedTemplates) {
         List<RequestTemplate> all = RequestTemplate.forVillage(village.people().id(), village.tier());
+        // Une caravane a besoin d'un autre village où aller (Expeditions.available).
+        World world = store.getExternalData().getWorld();
+        all.removeIf(t -> !Expeditions.available(world, village, t));
         List<RequestTemplate> pool = new ArrayList<>();
         for (RequestTemplate t : all) {
             if (!usedTypes.contains(t.type()) && !usedTemplates.contains(t.getId())) {
@@ -215,6 +219,9 @@ public final class Requests {
      * le captif lui-même tant qu'il est loin du joueur, puis le cœur du village (texte {@code escort.home}).
      */
     public static Message task(Store<EntityStore> store, PlayerRef player, PlayerRequest r, RequestTemplate t, Village village, Vector3d from) {
+        if (t.type().expedition()) {
+            return Expeditions.task(store.getExternalData().getWorld(), store, player, r, t, village, from);
+        }
         String key = t.taskKey();
         int[] target;
         Ref<EntityStore> captive = t.type() == RequestType.ESCORT
@@ -336,6 +343,9 @@ public final class Requests {
             double distance = ThreadLocalRandom.current().nextDouble(t.minDistance(), t.maxDistance() + 1e-3);
             taken.setSite(village.x() + (int) Math.round(Math.cos(angle) * distance), PlayerRequest.NO_Y,
                     village.z() + (int) Math.round(Math.sin(angle) * distance));
+        }
+        if (t.type().expedition() && !Expeditions.prepare(world, player, village, t, taken)) {
+            return false;
         }
         state.addRequest(taken);
         player.sendMessage(Message.translation(KEYS + "taken").param("title", title(t)).param("village", village.name()));
@@ -568,10 +578,14 @@ public final class Requests {
         state.removeRequest(r);
         RequestHud.untrack(player, r.hud());
         String key = RequestSpawns.key(player.getUuid(), r.id());
+        RequestTemplate t = r.template();
         // Le guetteur d'une missive reste à son poste et ne part que hors de vue des joueurs.
         RequestSpawns.release(key, RequestSpawns.Kind.LOOKOUT);
+        if (t != null && t.type().expedition()) {
+            // Caravaniers, cueilleurs, assaillants, gardes, chef et renforts aussi (Expeditions).
+            Expeditions.end(store, key);
+        }
         RequestSpawns.remove(store, key, null);
-        RequestTemplate t = r.template();
         Village village = Villages.registry(world).byId(r.villageId());
         if (t != null && t.type() == RequestType.DELIVERY && village != null) {
             take(inventory(store, ref), village.people().missiveItem(), 1);

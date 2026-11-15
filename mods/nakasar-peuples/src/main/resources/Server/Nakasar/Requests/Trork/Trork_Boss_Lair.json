@@ -1,0 +1,19 @@
+{
+  "$Comment": "Demande du tableau d'un village Trork (Boss), générée par tools/generate_quests.py : voir RequestTemplate et request/Expeditions.",
+  "People": "Trork",
+  "Type": "Boss",
+  "MinTier": 1,
+  "MaxTier": 3,
+  "Weight": 1,
+  "TitleKey": "nakasar_peuples.request.Trork_Boss_Lair.title",
+  "TaskKey": "nakasar_peuples.request.Trork_Boss_Lair.task",
+  "Boss": "Nakasar_Peuples_Boss_Trork",
+  "Spawns": [
+    "Nakasar_Peuples_Raider_Trork_Warrior",
+    "Nakasar_Peuples_Raider_Trork_Mauler"
+  ],
+  "MinDistance": 110,
+  "MaxDistance": 170,
+  "Essor": 40,
+  "Favors": 8
+}

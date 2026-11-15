@@ -30,6 +30,9 @@ import java.util.List;
  *   "MinDistance": 80, "MaxDistance": 140,     chasse, livraison, escorte : distance du lieu au cœur
  *   "Essor": 10, "Favors": 2                   récompenses : essor du village, faveurs du peuple au joueur
  *   "Reputation": 10                           réputation de village du joueur (défaut : l'essor ; étape 4)
+ *   "Members": 3, "Waves": 2, "Duration": 60   caravane, récolte escortée : PNJ escortés, embuscades, durée de récolte (s)
+ *   "TargetBlock": "Furniture_Crude_Brazier"   destruction : bloc vanilla posé au lieu (Quantity exemplaires)
+ *   "Boss": "Nakasar_Peuples_Boss_Kweebec"     boss : rôle du chef du repaire ; Spawns : ses renforts
  * }
  * </pre>
  */
@@ -45,7 +48,7 @@ public final class RequestTemplate implements JsonAssetWithMap<String, DefaultAs
             .documentation("Peuple dont les villages tirent cette demande.")
             .add()
             .append(new KeyedCodec<>("Type", Codec.STRING), (t, v) -> t.type = v, t -> t.type)
-            .documentation("Gather, Craft, Hunt, Delivery, Escort ou Defense.")
+            .documentation("Gather, Craft, Hunt, Delivery, Escort, Defense, Plant, Caravan, Harvest, Destroy ou Boss.")
             .add()
             .append(new KeyedCodec<>("MinTier", Codec.INTEGER), (t, v) -> t.minTier = v == null ? 0 : v, t -> t.minTier)
             .documentation("Palier minimal du village (0 campement).")
@@ -110,6 +113,21 @@ public final class RequestTemplate implements JsonAssetWithMap<String, DefaultAs
             .append(new KeyedCodec<>("Master", Codec.BOOLEAN), (t, v) -> t.master = v != null && v, t -> t.master)
             .documentation("Commande de maître (une par niveau, hors tirage du jour) : ouvre le chantier d'amélioration.")
             .add()
+            .append(new KeyedCodec<>("Members", Codec.INTEGER), (t, v) -> t.members = v == null ? 3 : v, t -> t.members)
+            .documentation("Caravane, récolte escortée : nombre de PNJ du village à escorter.")
+            .add()
+            .append(new KeyedCodec<>("Waves", Codec.INTEGER), (t, v) -> t.waves = v == null ? 2 : v, t -> t.waves)
+            .documentation("Caravane : embuscades le long du chemin ; récolte escortée : attaques pendant la récolte (une de plus à l'aller).")
+            .add()
+            .append(new KeyedCodec<>("Duration", Codec.INTEGER), (t, v) -> t.duration = v == null ? 60 : v, t -> t.duration)
+            .documentation("Récolte escortée : secondes de récolte, joueur présent.")
+            .add()
+            .append(new KeyedCodec<>("TargetBlock", Codec.STRING), (t, v) -> t.targetBlock = v, t -> t.targetBlock)
+            .documentation("Destruction : bloc vanilla posé Quantity fois au lieu de la demande, à briser.")
+            .add()
+            .append(new KeyedCodec<>("Boss", Codec.STRING), (t, v) -> t.boss = v, t -> t.boss)
+            .documentation("Boss : rôle du chef qui attend au repaire (Spawns : ses renforts aux deux tiers et au tiers de sa vie).")
+            .add()
             .validator(RequestTemplate::validate)
             .build();
 
@@ -140,6 +158,11 @@ public final class RequestTemplate implements JsonAssetWithMap<String, DefaultAs
     String specialty;
     int knowledge;
     boolean master;
+    int members = 3;
+    int waves = 2;
+    int duration = 60;
+    String targetBlock;
+    String boss;
 
     RequestTemplate() {
     }
@@ -297,6 +320,31 @@ public final class RequestTemplate implements JsonAssetWithMap<String, DefaultAs
         return favors;
     }
 
+    /** Caravane, récolte escortée : PNJ du village escortés. */
+    public int members() {
+        return Math.max(1, members);
+    }
+
+    /** Caravane : embuscades en chemin ; récolte escortée : attaques pendant la récolte. */
+    public int waves() {
+        return Math.max(0, waves);
+    }
+
+    /** Récolte escortée : secondes de récolte. */
+    public int duration() {
+        return Math.max(10, duration);
+    }
+
+    /** Destruction : bloc à briser. */
+    public String targetBlock() {
+        return targetBlock;
+    }
+
+    /** Boss : rôle du chef du repaire. */
+    public String boss() {
+        return boss;
+    }
+
     /** Drapeau posé sur le joueur à la fin, ou null. */
     public String flag() {
         return flag;
@@ -309,16 +357,16 @@ public final class RequestTemplate implements JsonAssetWithMap<String, DefaultAs
             return 1;
         }
         return switch (t) {
-            case GATHER, CRAFT, PLANT -> Math.max(1, quantity);
+            case GATHER, CRAFT, PLANT, DESTROY -> Math.max(1, quantity);
             case HUNT -> Math.max(1, spawns.length);
-            case DELIVERY, ESCORT, DEFENSE -> 1;
+            case DELIVERY, ESCORT, DEFENSE, CARAVAN, HARVEST, BOSS -> 1;
         };
     }
 
     private static void validate(RequestTemplate t, ValidationResults results) {
         RequestType type = t.type();
         if (type == null) {
-            results.fail("Type inconnu : " + t.type + " (Gather, Craft, Hunt, Delivery, Escort, Defense, Plant)");
+            results.fail("Type inconnu : " + t.type + " (Gather, Craft, Hunt, Delivery, Escort, Defense, Plant, Caravan, Harvest, Destroy, Boss)");
             return;
         }
         if (t.people == null || t.people.isBlank()) {
@@ -339,8 +387,17 @@ public final class RequestTemplate implements JsonAssetWithMap<String, DefaultAs
         if (type == RequestType.HUNT && t.spawns.length == 0) {
             results.fail(type.id() + " : Spawns (la bande) est obligatoire");
         }
-        if (type.hasSite() && (t.minDistance < 48 || t.maxDistance < t.minDistance)) {
+        if ((type.hasSite() || type == RequestType.CARAVAN) && (t.minDistance < 48 || t.maxDistance < t.minDistance)) {
             results.fail(type.id() + " : MinDistance (48 au moins, hors du village) et MaxDistance (au moins MinDistance) sont obligatoires");
+        }
+        if ((type == RequestType.CARAVAN || type == RequestType.HARVEST) && (t.spawns.length == 0 || t.members < 1)) {
+            results.fail(type.id() + " : Spawns (les assaillants des embuscades) et Members (au moins 1) sont obligatoires");
+        }
+        if (type == RequestType.DESTROY && (t.targetBlock == null || t.targetBlock.isBlank() || t.quantity < 1)) {
+            results.fail("Destroy : TargetBlock et Quantity (au moins 1) sont obligatoires");
+        }
+        if (type == RequestType.BOSS && (t.boss == null || t.boss.isBlank())) {
+            results.fail("Boss : le rôle Boss est obligatoire");
         }
     }
 }

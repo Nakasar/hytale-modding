@@ -875,6 +875,8 @@ public class ValidateAssets {
     private static final Pattern SPAWN_MARKER_REF = Pattern.compile("\"SpawnMarker\"\\s*:\\s*\"([^\"]+)\"");
     private static final Pattern ITEM_ANIMATIONS_REF = Pattern.compile("\"ItemPlayerAnimationsId\"\\s*:\\s*\"([^\"]+)\"");
     private static final Pattern REQUEST_ROLES_REF = Pattern.compile("\"(?:Spawns|Roles)\"\\s*:\\s*\\[([^\\]]*)\\]");
+    /** Chef d'une demande de boss ({@code "Boss": "<rôle>"}, tools/generate_quests.py). */
+    private static final Pattern REQUEST_BOSS_REF = Pattern.compile("\"Boss\"\\s*:\\s*(\"[^\"]*\")");
     private static final Pattern QUOTED = Pattern.compile("\"([^\"]+)\"");
     private static final Pattern NPC_GROUPS_REF = Pattern.compile("\"NPCGroups\"\\s*:\\s*\\[([^\\]]*)\\]");
     private static final Pattern SHOP_REF = Pattern.compile("\"Shop\"\\s*:\\s*\"([^\"]+)\"");
@@ -917,6 +919,10 @@ public class ValidateAssets {
                 Matcher lists = REQUEST_ROLES_REF.matcher(json);
                 while (lists.find()) {
                     refs += checkRefs(QUOTED, lists.group(1), "npc", "rôle de PNJ inconnu", known, problems);
+                }
+                Matcher boss = REQUEST_BOSS_REF.matcher(json);
+                while (boss.find()) {
+                    refs += checkRefs(QUOTED, boss.group(1), "npc", "rôle de PNJ inconnu", known, problems);
                 }
             }
             if (rel.startsWith("NPC/Reputation/Groups/")) {
@@ -1354,6 +1360,37 @@ public class ValidateAssets {
 
     /** Blocs vanilla connus (tools/vanilla-block-ids-0.7.2.txt), pour le décor des bâtiments de métier, ou null. */
     static Set<String> WORKSHOP_BLOCKS;
+
+    /**
+     * Demandes de destruction (tools/generate_quests.py) : le {@code TargetBlock} posé par le Java au lieu de la demande
+     * doit être un bloc vanilla relevé ({@code -Dblocks}) ou un bloc du pack ; un id inconnu ne pose rien.
+     */
+    private static int checkTargetBlocks(Path root) throws Exception {
+        Path requests = root.resolve("Nakasar/Requests");
+        if (!Files.isDirectory(requests)) {
+            return 0;
+        }
+        Set<String> pack = new HashSet<>(assetIds(root.resolve("Item/Items")));
+        int errors = 0;
+        try (Stream<Path> walk = Files.walk(requests)) {
+            for (Path f : walk.filter(p -> p.toString().endsWith(".json")).sorted().toList()) {
+                BsonDocument doc = BsonDocument.parse(Files.readString(f));
+                if (!doc.containsKey("TargetBlock")) {
+                    continue;
+                }
+                String block = doc.getString("TargetBlock").getValue();
+                if (!pack.contains(block) && WORKSHOP_BLOCKS != null && !WORKSHOP_BLOCKS.contains(block)) {
+                    errors++;
+                    System.out.println("ERROR " + root.relativize(f) + " : bloc à détruire inconnu " + block
+                            + " (ni dans le pack ni dans tools/vanilla-block-ids-0.7.2.txt)");
+                }
+            }
+        }
+        if (errors == 0) {
+            System.out.println("OK    blocs à détruire des demandes de destruction");
+        }
+        return errors;
+    }
     /** Rôles vanilla relevés ({@code -Drefs}) : bêtes des enclos. */
     static Set<String> WORKSHOP_NPCS;
 
@@ -1785,6 +1822,7 @@ public class ValidateAssets {
         }
         WORKSHOP_NPCS = System.getProperty("refs") == null ? null : vanillaNpcRefs();
         errors += checkWorkshops(root);
+        errors += checkTargetBlocks(root);
         errors += checkMapMarkerIcons(root);
         errors += checkReputation(root);
         errors += checkUiPages(root, System.getProperty("uitextures"), System.getProperty("items"));

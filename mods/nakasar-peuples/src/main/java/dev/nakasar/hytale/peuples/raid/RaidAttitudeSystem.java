@@ -52,6 +52,19 @@ public final class RaidAttitudeSystem extends StoreSystem<EntityStore> {
         if (ref == null || target == null || !ref.isValid() || !target.isValid()) {
             return null;
         }
+        // Demandes de caravane et de récolte escortée : les assaillants d'une embuscade et les PNJ escortés de la même
+        // demande se battent, quel que soit le peuple (un clan trork rival attaque aussi une caravane trork).
+        dev.nakasar.hytale.peuples.request.RequestSpawns.Owner so = dev.nakasar.hytale.peuples.request.RequestSpawns.owner(ref);
+        dev.nakasar.hytale.peuples.request.RequestSpawns.Owner to = so == null ? null : dev.nakasar.hytale.peuples.request.RequestSpawns.owner(target);
+        if (so != null && to != null && so.key().equals(to.key())) {
+            boolean a = so.kind() == dev.nakasar.hytale.peuples.request.RequestSpawns.Kind.AMBUSH;
+            boolean b = to.kind() == dev.nakasar.hytale.peuples.request.RequestSpawns.Kind.AMBUSH;
+            boolean ea = so.kind() == dev.nakasar.hytale.peuples.request.RequestSpawns.Kind.ESCORTED;
+            boolean eb = to.kind() == dev.nakasar.hytale.peuples.request.RequestSpawns.Kind.ESCORTED;
+            if (a && eb || ea && b) {
+                return Attitude.HOSTILE;
+            }
+        }
         String self = role(ref, accessor);
         if (self != null && Raids.isRaiderRole(self) && accessor.getComponent(target, Player.getComponentType()) != null) {
             // Étape 7 : le groupe vanilla Trork (*Trork*) donne aux pillards la réputation de peuple trork ; un raid reste

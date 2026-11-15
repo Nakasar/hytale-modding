@@ -1,0 +1,19 @@
+{
+  "$Comment": "Cercle d'annonce de 3.6 s, pos\u00e9 par boss.Telegraphs. G\u00e9n\u00e9r\u00e9 par tools/generate_quests.py.",
+  "Spawners": [
+    {
+      "SpawnerId": "Nakasar_Peuples_Warning_36_Edge",
+      "PositionOffset": {
+        "Y": 0.03
+      }
+    },
+    {
+      "SpawnerId": "Nakasar_Peuples_Warning_36_Fill",
+      "PositionOffset": {
+        "Y": 0.02
+      }
+    }
+  ],
+  "CullDistance": 96,
+  "IsImportant": true
+}

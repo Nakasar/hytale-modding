@@ -1,0 +1,311 @@
+{
+  "$Comment": "Chef de la demande de boss Feran, généré par tools/generate_quests.py : apparence, attaques et butin vanilla (Golem_Crystal_Sand), comportement des pillards de raid (generate_raids.raider). Posé par request/Expeditions dans son repaire (point d'attache) ; ses coups annoncés, ses renforts et sa barre de vie sont en Java (boss/QuestBosses, boss/QuestBossBar). Ne se soigne jamais.",
+  "Type": "Generic",
+  "Appearance": "Golem_Crystal_Sand",
+  "NameTranslationKey": "nakasar_peuples.npc.Boss_Feran.name",
+  "MaxHealth": 800,
+  "DropList": "Drop_Golem_Crystal_Sand",
+  "StartState": "Idle",
+  "DefaultPlayerAttitude": "Hostile",
+  "DefaultNPCAttitude": "Ignore",
+  "DisableDamageGroups": [
+    "Nakasar_Peuples_Raiders"
+  ],
+  "KnockbackScale": 0.2,
+  "MotionControllerList": [
+    {
+      "Type": "Walk",
+      "MaxWalkSpeed": 4.4,
+      "Gravity": 10,
+      "MaxFallSpeed": 15,
+      "Acceleration": 10,
+      "JumpHeight": 1.2
+    }
+  ],
+  "InteractionVars": {
+    "Swing_Left_Damage": {
+      "Interactions": [
+        {
+          "Parent": "Golem_Crystal_Swing_Left_Damage",
+          "DamageCalculator": {
+            "Type": "Absolute",
+            "BaseDamage": {
+              "Physical": 30
+            },
+            "RandomPercentageModifier": 0.1
+          },
+          "DamageEffects": {
+            "Knockback": {
+              "Force": -10
+            }
+          }
+        }
+      ]
+    },
+    "Swing_Right_Damage": {
+      "Interactions": [
+        {
+          "Parent": "Golem_Crystal_Swing_Right_Damage",
+          "DamageCalculator": {
+            "Type": "Absolute",
+            "BaseDamage": {
+              "Physical": 30
+            },
+            "RandomPercentageModifier": 0.1
+          },
+          "DamageEffects": {
+            "Knockback": {
+              "Force": -10
+            }
+          }
+        }
+      ]
+    },
+    "Spin_Damage": {
+      "Interactions": [
+        {
+          "Parent": "Golem_Crystal_Spin_Damage",
+          "DamageCalculator": {
+            "Type": "Absolute",
+            "BaseDamage": {
+              "Physical": 30
+            },
+            "RandomPercentageModifier": 0.1
+          },
+          "DamageEffects": {
+            "Knockback": {
+              "Force": -10
+            }
+          }
+        }
+      ]
+    },
+    "Ground_Slam_Damage": {
+      "Interactions": [
+        {
+          "Parent": "Golem_Crystal_Ground_Slam_Damage",
+          "DamageCalculator": {
+            "Type": "Absolute",
+            "BaseDamage": {
+              "Physical": 30
+            },
+            "RandomPercentageModifier": 0.1
+          },
+          "DamageEffects": {
+            "Knockback": {
+              "Force": -10
+            }
+          }
+        }
+      ]
+    },
+    "Stomp_Damage": {
+      "Interactions": [
+        {
+          "Parent": "Golem_Crystal_Stomp_Damage",
+          "DamageCalculator": {
+            "Type": "Absolute",
+            "BaseDamage": {
+              "Physical": 30
+            },
+            "RandomPercentageModifier": 0.1
+          },
+          "DamageEffects": {
+            "Knockback": {
+              "Force": -10
+            }
+          }
+        }
+      ]
+    },
+    "Spin_Heavy_Damage": {
+      "Interactions": [
+        {
+          "Parent": "Golem_Crystal_Spin_Heavy_Damage",
+          "DamageCalculator": {
+            "Type": "Absolute",
+            "BaseDamage": {
+              "Physical": 30
+            },
+            "RandomPercentageModifier": 0.1
+          },
+          "DamageEffects": {
+            "Knockback": {
+              "Force": -10
+            }
+          }
+        }
+      ]
+    },
+    "Clap_Damage": {
+      "Interactions": [
+        {
+          "Parent": "Golem_Crystal_Clap_Damage",
+          "DamageCalculator": {
+            "Type": "Absolute",
+            "BaseDamage": {
+              "Physical": 30
+            },
+            "RandomPercentageModifier": 0.1
+          },
+          "DamageEffects": {
+            "Knockback": {
+              "Force": -10
+            }
+          }
+        }
+      ]
+    }
+  },
+  "Instructions": [
+    {
+      "Sensor": {
+        "Type": "State",
+        "State": "Idle"
+      },
+      "Instructions": [
+        {
+          "Sensor": {
+            "Type": "Damage",
+            "Combat": true,
+            "TargetSlot": "LockedTarget"
+          },
+          "Actions": [
+            {
+              "Type": "State",
+              "State": "Combat"
+            }
+          ]
+        },
+        {
+          "Sensor": {
+            "Type": "Mob",
+            "Range": 18,
+            "LockOnTarget": true,
+            "GetPlayers": true,
+            "GetNPCs": true,
+            "Filters": [
+              {
+                "Type": "Attitude",
+                "Attitudes": [
+                  "Hostile"
+                ]
+              },
+              {
+                "Type": "LineOfSight"
+              }
+            ]
+          },
+          "Actions": [
+            {
+              "Type": "State",
+              "State": "Combat"
+            }
+          ]
+        },
+        {
+          "$Comment": "En marche vers le cœur du village (point d'attache).",
+          "Sensor": {
+            "Type": "Leash",
+            "Range": 5
+          },
+          "BodyMotion": {
+            "Type": "Seek",
+            "RelativeSpeed": 0.8,
+            "SlowDownDistance": 3,
+            "StopDistance": 2,
+            "UsePathfinder": true
+          }
+        },
+        {
+          "$Comment": "Au cœur du village : il rôde et cherche des proies.",
+          "BodyMotion": {
+            "Type": "WanderInCircle",
+            "Radius": 8,
+            "RelativeSpeed": 0.6,
+            "MaxHeadingChange": 60
+          }
+        }
+      ]
+    },
+    {
+      "Sensor": {
+        "Type": "State",
+        "State": "Combat"
+      },
+      "Instructions": [
+        {
+          "Sensor": {
+            "Type": "Not",
+            "Sensor": {
+              "Type": "Target",
+              "Range": 28,
+              "Filters": [
+                {
+                  "Type": "Attitude",
+                  "Attitudes": [
+                    "Hostile",
+                    "Neutral",
+                    "Ignore"
+                  ]
+                }
+              ]
+            }
+          },
+          "Actions": [
+            {
+              "Type": "ReleaseTarget"
+            },
+            {
+              "Type": "State",
+              "State": "Idle"
+            }
+          ]
+        },
+        {
+          "Sensor": {
+            "Type": "Target",
+            "Range": 2.6,
+            "Filters": [
+              {
+                "Type": "LineOfSight"
+              }
+            ]
+          },
+          "HeadMotion": {
+            "Type": "Aim",
+            "RelativeTurnSpeed": 1.5
+          },
+          "ActionsBlocking": true,
+          "Actions": [
+            {
+              "Type": "Attack",
+              "Attack": "Root_NPC_Golem_Crystal_Attack",
+              "AttackPauseRange": [
+                1.0,
+                1.6
+              ]
+            }
+          ]
+        },
+        {
+          "Sensor": {
+            "Type": "Target",
+            "Range": 28
+          },
+          "BodyMotion": {
+            "Type": "Seek",
+            "RelativeSpeed": 1.0,
+            "SlowDownDistance": 3,
+            "StopDistance": 2.2,
+            "UsePathfinder": true
+          },
+          "HeadMotion": {
+            "Type": "Watch",
+            "RelativeTurnSpeed": 1.5
+          }
+        }
+      ]
+    }
+  ]
+}
