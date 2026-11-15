@@ -46,6 +46,13 @@ public final class RequestDeathSystem extends DeathSystems.OnDeathSystem {
     public void onComponentAdded(Ref<EntityStore> ref, DeathComponent death, Store<EntityStore> store, CommandBuffer<EntityStore> buffer) {
         World world = store.getExternalData().getWorld();
         RequestSpawns.Owner owner = RequestSpawns.owner(ref);
+        if (dev.nakasar.hytale.peuples.annex.Convoys.isPorter(ref)) {
+            // Porteur d'un convoi d'avant-poste : sa cargaison tombe au sol, malus violent s'il est tué par un joueur.
+            TransformComponent at = buffer.getComponent(ref, TransformComponent.getComponentType());
+            Ref<EntityStore> by = dev.nakasar.hytale.peuples.reputation.VillagerHarmSystems.attacker(death.getDeathInfo());
+            PlayerRef killer = by == null || !by.isValid() ? null : buffer.getComponent(by, PlayerRef.getComponentType());
+            dev.nakasar.hytale.peuples.annex.Convoys.died(world, ref, at == null ? null : new Vector3d(at.getPosition()), killer);
+        }
         if (dev.nakasar.hytale.peuples.village.Villagers.posted(ref) != null) {
             dev.nakasar.hytale.peuples.village.Villagers.died(store, ref);
         }

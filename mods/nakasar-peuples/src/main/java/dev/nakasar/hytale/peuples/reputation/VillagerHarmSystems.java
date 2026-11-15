@@ -40,7 +40,7 @@ public final class VillagerHarmSystems {
     }
 
     /** Joueur attaquant de `damage`, ou null. */
-    static Ref<EntityStore> attacker(Damage damage) {
+    public static Ref<EntityStore> attacker(Damage damage) {
         return damage != null && damage.getSource() instanceof Damage.EntitySource source ? source.getRef() : null;
     }
 

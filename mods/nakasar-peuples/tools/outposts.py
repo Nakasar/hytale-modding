@@ -309,6 +309,10 @@ LANG = {
     "annex.started": ("{player} a posé la fondation : {building}. Travaux pendant {hours} h.", "{player} placed the foundation: {building}. Works for {hours} h."),
     "annex.startedHere": ("La zone est marquée : {building} de {village} sera debout dans {hours} h.", "The area is marked: {building} of {village} will stand in {hours} h."),
     "annex.phase": ("{building} : étape {phase} sur {phases} des travaux.", "{building}: stage {phase} of {phases} of the works."),
+    "annex.state.convoy": ("Debout en {x} {z}, niveau {level}. Un convoi de {porters} porteurs est en route vers le dépôt.", "Standing at {x} {z}, level {level}. A convoy of {porters} carriers is on its way to the deposit."),
+    "annex.convoy.porter": ("Un porteur du convoi de {building} a été tué : sa cargaison est tombée au sol. Il en reste {left}.", "A carrier of the {building} convoy was killed: its load fell to the ground. {left} left."),
+    "annex.convoy.lost": ("Le convoi de {building} a été anéanti : la livraison du jour est perdue.", "The {building} convoy was wiped out: today's delivery is lost."),
+    "annex.convoy.reason": ("tu as tué un porteur d'un convoi", "you killed a convoy carrier"),
     "annex.done": ("{building} de {village} est debout !", "{building} of {village} stands!"),
     "annex.doneTitle": ("{building} est debout", "{building} stands"),
 }

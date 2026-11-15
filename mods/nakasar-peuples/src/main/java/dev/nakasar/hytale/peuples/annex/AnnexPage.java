@@ -155,6 +155,10 @@ public final class AnnexPage extends InteractiveCustomUIPage<AnnexPage.Event> {
                     .param("x", a.x()).param("z", a.z());
         }
         int level = village.workshop(w.getId()).level();
+        if (a.convoy()) {
+            return Message.translation(KEYS + "state.convoy").param("level", Message.translation(Workshops.KEYS + "levelShort." + level))
+                    .param("porters", a.convoyPorters()).param("x", a.x()).param("z", a.z());
+        }
         return Message.translation(KEYS + "state.built").param("level", Message.translation(Workshops.KEYS + "levelShort." + level))
                 .param("x", a.x()).param("z", a.z());
     }

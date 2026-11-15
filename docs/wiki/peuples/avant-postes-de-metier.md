@@ -48,6 +48,9 @@ Debout, un avant-poste est un [bâtiment de métier](batiments-de-metier.md) com
 
 - **Villageois** : deux au niveau I, un de plus aux niveaux II et III.
 - **Livraison** : chaque matin, l'avant-poste envoie un lot de sa production au dépôt du village, plus gros à chaque niveau.
+  Le lot voyage à pied : un **convoi** de deux porteurs (trois dès le niveau II) marche de l'avant-poste jusqu'au dépôt.
+  Si un porteur meurt, sa part de la cargaison tombe au sol. Le tuer soi-même coûte très cher en réputation auprès du
+  village. Si tous les porteurs meurent, la livraison du jour est perdue ; le convoi suivant part le lendemain matin.
 - **Améliorer** : la moitié des matériaux de la fondation pour le niveau II, les trois quarts pour le niveau III.
 
 Casser un bloc d'un avant-poste coûte de la réputation, comme dans le village.

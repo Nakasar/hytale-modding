@@ -240,7 +240,7 @@ public final class Villagers {
     }
 
     /** Point au sol de la colonne (x, z) du monde ; `fallbackY` si elle n'est pas chargée. */
-    private static Vector3d groundAt(World world, int x, int z, int fallbackY) {
+    public static Vector3d groundAt(World world, int x, int z, int fallbackY) {
         long key = ((long) x << 32) ^ (z & 0xffffffffL);
         Integer y = GROUND.get(key);
         if (y == null) {
@@ -334,6 +334,19 @@ public final class Villagers {
                 store.removeEntity(ref, RemoveReason.REMOVE);
             }
         }
+    }
+
+    /**
+     * Inscrit un PNJ posé ailleurs (porteur d'un convoi d'avant-poste) comme villageois de `village` : pas de
+     * régénération, attitude et dialogue du village. Il n'a pas de poste à tenir ({@link #place} ne le touche pas).
+     */
+    public static void enlist(Ref<EntityStore> ref, String village, String slot, String dialogue) {
+        POSTED.put(ref, new Posted(village, slot, dialogue));
+    }
+
+    /** Oublie un PNJ inscrit par {@link #enlist}. */
+    public static void discharge(Ref<EntityStore> ref) {
+        POSTED.remove(ref);
     }
 
     /** Poste du villageois `ref`, ou null. */

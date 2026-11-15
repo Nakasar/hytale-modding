@@ -1251,6 +1251,14 @@ quarts des matériaux de la fondation), deux spécialités au niveau II, boutiqu
   les Trorks). Postes `AP_<bâtiment>/<métier>` dans `Villagers`, posés quand un joueur est à portée de l'avant-poste,
   sans régénération et vus par la réputation comme le village.
 - **Livraison** : chaque matin, un lot au coffre du dépôt du village (× niveau) : blé, pierre, rondins, poisson, viande.
+  Le lot part en **convoi** (`annex/Convoys.java`) : 2 porteurs au niveau I, 3 aux niveaux II et III (rôle du premier
+  métier de l'avant-poste), en ligne droite de la sortie de l'avant-poste au dépôt. La progression (blocs) est sauvée
+  dans `AnnexState` (`ConvoyCargo`, `ConvoyPorters`, `ConvoyAt`). Joueur à moins de 64 blocs du convoi : de vrais PNJ
+  (non sauvés) qui suivent leur point d'attache 10 blocs devant eux, la progression est celle du porteur de tête ;
+  coincés 30 s sans joueur à moins de 24 blocs, saut de 8 blocs. Sinon, pas de PNJ et le convoi avance seul à
+  3 blocs/s. Un porteur tué lâche sa part au sol ; tué par un joueur, −80 de réputation auprès du village en plus
+  du −40 du meurtre. Plus de porteur : livraison du jour perdue. Pas de nouveau convoi tant qu'un convoi est en route ;
+  arrivé, il attend que le coffre du dépôt soit chargé pour livrer.
 - **Tour de guet** : l'annonce de raid dure 30 s de plus par niveau (`Raids`, `Annexes.raidWarnBonus`) ; spécialités
   Guetteurs (+1 garde) et Sentinelles (gardes plus solides). Pas d'effet en raid pour les Trorks.
 - Casser un bloc dans l'emprise d'un avant-poste debout coûte de la réputation (`VillageBlockSystem`).
@@ -1276,7 +1284,7 @@ Les tas de rondins et de pierres à côté des scieries et des mines sont les pr
    reste en main. À 100 blocs sur un sol plat : la zone est aplanie, l'échafaudage monte.
 3. `/village finir` près du village, puis revenir à l'avant-poste : prefabs collés, panneau de métier à la place de la
    fondation, deux villageois.
-4. Panneau de l'avant-poste : commandes, boutique. Le lendemain matin, le lot est au dépôt du village.
+4. Panneau de l'avant-poste : commandes, boutique. Le lendemain matin, un convoi de porteurs part vers le dépôt ; le suivre, en tuer un (cargaison au sol, gros malus de réputation).
 
 ### À vérifier en jeu (avant-postes)
 

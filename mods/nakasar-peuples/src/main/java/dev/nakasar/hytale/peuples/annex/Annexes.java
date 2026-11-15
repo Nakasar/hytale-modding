@@ -569,7 +569,7 @@ public final class Annexes {
     // ---- Le pas des avant-postes (VillageLifeSystem) ----
 
     /** Chantiers des avant-postes (phases, fin) et livraisons du matin, pour les avant-postes près d'un joueur. */
-    public static void step(World world, Store<EntityStore> store, Village village, List<Vector3d> players) {
+    public static void step(World world, Store<EntityStore> store, Village village, List<Vector3d> players, float dt) {
         long now = GameClock.seconds(store);
         for (AnnexState a : village.annexes()) {
             Workshop w = Workshop.get(a.id());
@@ -578,8 +578,12 @@ public final class Annexes {
             }
             String key = key(village, w);
             if (a.built()) {
-                // Livraison au dépôt du village : dès que son coffre est chargé (joueur au village ou à l'avant-poste).
-                deliver(world, store, village, w, a);
+                // Livraison au dépôt du village : un convoi de porteurs part chaque matin.
+                if (a.convoy()) {
+                    Convoys.step(world, store, village, w, a, players, dt);
+                } else {
+                    deliver(world, store, village, w, a);
+                }
                 continue;
             }
             if (!watched(a, players)) {
@@ -743,22 +747,18 @@ public final class Annexes {
         }
     }
 
-    /** Lot du matin au dépôt du village (production de l'avant-poste × son niveau), une fois par jour de jeu. */
+    /**
+     * Lot du matin (production de l'avant-poste × son niveau), une fois par jour de jeu : il part en convoi vers le
+     * dépôt du village ({@link Convoys}). Pas de nouveau convoi tant que celui de la veille est en route.
+     */
     static void deliver(World world, Store<EntityStore> store, Village village, Workshop w, AnnexState a) {
         VillageLayout.Material lot = w.annex().delivery();
         long day = GameClock.day(store);
-        if (lot == null || a.deliveryDay() >= day || GameClock.hour(store) < GameClock.MORNING) {
+        if (lot == null || a.convoy() || a.deliveryDay() >= day || GameClock.hour(store) < GameClock.MORNING) {
             return;
         }
-        ItemContainer chest = Villages.depositChest(world, village);
-        if (chest == null) {
-            return;
-        }
-        int level = village.workshop(w.getId()).level();
-        chest.addItemStack(new ItemStack(lot.itemId(), lot.quantity() * level));
-        a.setDeliveryDay(day);
-        LOGGER.atInfo().log("Nakasar Peuples : l'avant-poste %s livre %d %s au dépôt de %s", w.getId(), lot.quantity() * level,
-                lot.itemId(), village.name());
+        int level = Math.max(1, village.workshop(w.getId()).level());
+        Convoys.start(store, village, w, a, lot.quantity() * level);
     }
 
     /** Secondes d'annonce de plus avant un raid sur le village : tours de guet debout, par niveau. */
@@ -826,6 +826,7 @@ public final class Annexes {
 
     /** Oublie les phases de chantier (rechargement du mod). */
     public static void clearAll() {
+        Convoys.clearAll();
         PHASE.clear();
         BUSY.clear();
     }

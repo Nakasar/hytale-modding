@@ -52,6 +52,15 @@ public final class AnnexState {
             .append(new KeyedCodec<>("DeliveryDay", Codec.LONG), (a, l) -> a.deliveryDay = l == null ? Long.MIN_VALUE : l, a -> a.deliveryDay)
             .documentation("Jour de jeu de la dernière livraison au dépôt du village.")
             .add()
+            .append(new KeyedCodec<>("ConvoyCargo", Codec.INTEGER), (a, v) -> a.convoyCargo = v == null ? 0 : v, a -> a.convoyCargo)
+            .documentation("Convoi en route vers le dépôt : quantité qu'il porte encore (0 : pas de convoi).")
+            .add()
+            .append(new KeyedCodec<>("ConvoyPorters", Codec.INTEGER), (a, v) -> a.convoyPorters = v == null ? 0 : v, a -> a.convoyPorters)
+            .documentation("Porteurs encore en vie dans le convoi.")
+            .add()
+            .append(new KeyedCodec<>("ConvoyAt", Codec.DOUBLE), (a, v) -> a.convoyAt = v == null ? 0 : v, a -> a.convoyAt)
+            .documentation("Blocs parcourus par le convoi depuis l'avant-poste.")
+            .add()
             .build();
 
     String id = "";
@@ -67,6 +76,9 @@ public final class AnnexState {
     long start;
     long end;
     long deliveryDay = Long.MIN_VALUE;
+    int convoyCargo;
+    int convoyPorters;
+    double convoyAt;
 
     AnnexState() {
     }
@@ -175,6 +187,46 @@ public final class AnnexState {
         this.deliveryDay = day;
     }
 
+    /** Vrai si un convoi de l'avant-poste est en route vers le dépôt du village. */
+    public boolean convoy() {
+        return convoyCargo > 0 && convoyPorters > 0;
+    }
+
+    public int convoyCargo() {
+        return convoyCargo;
+    }
+
+    public int convoyPorters() {
+        return convoyPorters;
+    }
+
+    public double convoyAt() {
+        return convoyAt;
+    }
+
+    /** Un convoi part : `cargo` objets portés par `porters` villageois. */
+    public void startConvoy(int cargo, int porters) {
+        this.convoyCargo = cargo;
+        this.convoyPorters = porters;
+        this.convoyAt = 0;
+    }
+
+    public void setConvoyAt(double at) {
+        this.convoyAt = at;
+    }
+
+    /** Un porteur est mort : sa part `lost` de la cargaison reste au sol. */
+    public void loseConvoyPorter(int lost) {
+        this.convoyPorters = Math.max(0, convoyPorters - 1);
+        this.convoyCargo = convoyPorters == 0 ? 0 : Math.max(0, convoyCargo - lost);
+    }
+
+    public void endConvoy() {
+        this.convoyCargo = 0;
+        this.convoyPorters = 0;
+        this.convoyAt = 0;
+    }
+
     /** Distance horizontale au carré entre la fondation et (px, pz). */
     public double distanceSquared(double px, double pz) {
         double dx = x + 0.5 - px;
@@ -196,6 +248,9 @@ public final class AnnexState {
         c.start = start;
         c.end = end;
         c.deliveryDay = deliveryDay;
+        c.convoyCargo = convoyCargo;
+        c.convoyPorters = convoyPorters;
+        c.convoyAt = convoyAt;
         return c;
     }
 }
