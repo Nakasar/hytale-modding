@@ -90,7 +90,15 @@ public final class Dialogues {
         DialoguePage page = new DialoguePage(playerRef, dialogue, start, Portraits.of(store, npc));
         player.getPageManager().openCustomPage(ref, store, page);
         // Après l'ouverture : remplacer une fenêtre de dialogue déjà ouverte rend d'abord sa caméra (onDismiss).
-        if (player.getPageManager().getCustomPage() == page && DialogueCamera.frame(world, store, ref, playerRef, npc)) {
+        if (player.getPageManager().getCustomPage() != page) {
+            return;
+        }
+        if (npc != null && npc.isValid()) {
+            // Le PNJ s'arrête et se tourne vers le joueur tant que la fenêtre est ouverte.
+            DialogueFacing.start(npc, ref);
+            page.facing(npc, ref);
+        }
+        if (DialogueCamera.frame(world, store, ref, playerRef, npc)) {
             page.cameraFramed();
         }
     }

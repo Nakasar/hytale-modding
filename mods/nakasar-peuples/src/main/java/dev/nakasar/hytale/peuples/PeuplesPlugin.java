@@ -169,6 +169,7 @@ public final class PeuplesPlugin extends JavaPlugin {
         entities.registerSystem(new RequestSystem());
         entities.registerSystem(new RequestDeathSystem());
         entities.registerSystem(new VillagerUseSystem());
+        entities.registerSystem(new dev.nakasar.hytale.peuples.dialogue.DialogueFacingSystem());
         entities.registerSystem(new VillageAttitudeSystem());
         entities.registerSystem(new VillagerHarmSystems.Hit());
         entities.registerSystem(new VillagerHarmSystems.Kill());

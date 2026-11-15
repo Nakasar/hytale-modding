@@ -37,15 +37,15 @@ public final class DialogueCamera {
 
     /** Recul derrière le joueur, décalage d'épaule et hauteur au-dessus de ses pieds (blocs), du plus large au plus serré. */
     private static final double[][] PLACEMENTS = {
-            {3.2, 1.4, 2.3},
-            {3.2, -1.4, 2.3},
-            {2.2, 1.0, 2.0},
-            {2.2, -1.0, 2.0},
+            {3.2, 2.1, 2.3},
+            {3.2, -2.1, 2.3},
+            {2.4, 1.5, 2.0},
+            {2.4, -1.5, 2.0},
     };
     /** Hauteur du regard visé au-dessus du sol, entre les deux têtes. */
     private static final double LOOK_HEIGHT = 1.35;
-    /** Part du chemin joueur → PNJ où la caméra vise : le PNJ, qui parle, reste au plus près du centre. */
-    private static final double LOOK_TOWARD_NPC = 0.62;
+    /** Part du chemin joueur → PNJ où la caméra vise : un peu côté PNJ, les deux personnages restent dans le cadre. */
+    private static final double LOOK_TOWARD_NPC = 0.55;
     /** Au-delà, le PNJ est trop loin pour un cadrage à deux : pas de caméra. */
     private static final double MAX_DISTANCE = 9.0;
     private static final float LERP = 0.12f;

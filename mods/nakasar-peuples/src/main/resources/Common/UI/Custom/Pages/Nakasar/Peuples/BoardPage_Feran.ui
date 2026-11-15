@@ -529,11 +529,13 @@ $C.@PageOverlay {
           }
 
           Group #Alert {
-            LayoutMode: Left;
-            Anchor: (Top: 12, Height: 40);
-            Padding: (Horizontal: 14);
+            Anchor: (Top: 12);
+            Padding: (Horizontal: 14, Vertical: 10);
             Background: (Color: #d9614c(0.18));
-            Label #AlertText { Style: (FontSize: 14, RenderBold: true, TextColor: #f0b0a0, Wrap: true, VerticalAlignment: Center); Text: ""; FlexWeight: 1; }
+            Group {
+              LayoutMode: Top;
+              Label #AlertText { Style: (FontSize: 14, RenderBold: true, TextColor: #f0b0a0, Wrap: true); Text: ""; }
+            }
           }
         }
       }
