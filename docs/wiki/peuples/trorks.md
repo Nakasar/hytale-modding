@@ -17,6 +17,8 @@ Vous commencez **Honni** : les Trorks vous attaquent. Jetez de la **viande** pr�
 
 ## Le camp
 
+Tous les bâtiments en images, sous trois angles : [Bâtiments des Trorks](batiments/trorks.md).
+
 Feu de camp, tentes, tours de guet, terrier, réserves et entrepôt, sur quatre paliers bâtis avec de la viande, des peaux, du bois, de la pierre et des os. Les Trorks du camp vous attaquent si vous êtes Honni, vous saluent si vous êtes neutre et vous ignorent si vous êtes leur ami. Un camp trork n'est jamais pillé par un raid.
 
 ## Demandes

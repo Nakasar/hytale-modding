@@ -119,6 +119,18 @@ const sidebars = {
     "peuples/avant-postes-de-metier",
     {
       type: "category",
+      label: "Bâtiments des villages",
+      link: { type: "doc", id: "peuples/batiments/README" },
+      items: [
+        "peuples/batiments/kweebecs",
+        "peuples/batiments/trorks",
+        "peuples/batiments/feran",
+        "peuples/batiments/renonces",
+        "peuples/batiments/slothians",
+      ],
+    },
+    {
+      type: "category",
       label: "Les peuples",
       collapsed: false,
       items: ["peuples/kweebecs", "peuples/trorks", "peuples/feran", "peuples/renonces", "peuples/slothians"],

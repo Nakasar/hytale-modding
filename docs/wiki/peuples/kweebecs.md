@@ -13,6 +13,8 @@ Le premier village du monde se pose tout seul à 280-700 blocs de l'apparition, 
 
 ## Le village
 
+Tous les bâtiments en images, sous trois angles : [Bâtiments des Kweebecs](batiments/kweebecs.md).
+
 | Palier | Bâtiments |
 | --- | --- |
 | 0, campement | deux abris, tour de guet, potager, lanternes, bancs |

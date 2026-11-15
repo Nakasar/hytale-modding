@@ -18,6 +18,8 @@ Les Slothians écoutent ce que disent d'eux leurs voisins : chaque gain de répu
 
 ## Le monastère
 
+Tous les bâtiments en images, sous trois angles : [Bâtiments des Slothians](batiments/slothians.md).
+
 | Palier | Bâtiments |
 | --- | --- |
 | 0, campement | deux huttes, l'étal des cendres, l'affût du guetteur |
