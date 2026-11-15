@@ -909,6 +909,33 @@ def annex_workers(people, t, roles, errors):
     return out
 
 
+def write_beacon(items, fr, en, errors):
+    """Balise de route (Java annex/Routes) : lanterne haute vanilla, fabriquée à l'établi."""
+    b = outposts.BEACON
+    for i in [b["parent"]] + [i for i, _ in b["recipe"]]:
+        if i not in items:
+            errors.append(f"{b['item']} : objet vanilla inconnu {i}")
+    doc = {
+        "$Comment": "Balise de route : les convois des avant-postes vont de balise en balise (Java annex/Routes, "
+                    "RouteBeaconSystems). Générée par tools/generate_workshops.py.",
+        "Parent": b["parent"],
+        "TranslationProperties": {"Name": f"nakasar_peuples.items.{b['item']}.name",
+                                  "Description": f"nakasar_peuples.items.{b['item']}.description"},
+        "Quality": "Uncommon",
+        "Recipe": {
+            "TimeSeconds": 2,
+            "KnowledgeRequired": False,
+            "Input": [{"ItemId": i, "Quantity": q} for i, q in b["recipe"]],
+            "BenchRequirement": [{"Type": "Crafting", "Id": "Workbench", "Categories": ["Workbench_Crafting"],
+                                  "RequiredTierLevel": 1}],
+            "OutputQuantity": b["output"],
+        },
+    }
+    (ANNEX_ITEMS / f"{b['item']}.json").write_text(json.dumps(doc, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
+    fr[f"items.{b['item']}.name"], en[f"items.{b['item']}.name"] = b["name"]
+    fr[f"items.{b['item']}.description"], en[f"items.{b['item']}.description"] = b["description"]
+
+
 def write_annexes(items, roles, fr, en, errors):
     """Écrit les bâtiments de métier des avant-postes, leurs commandes et les six objets de fondation."""
     bounds = load_bounds()
@@ -930,6 +957,7 @@ def write_annexes(items, roles, fr, en, errors):
         fr[f"annex.role.{t}"], en[f"annex.role.{t}"] = role_fr, role_en
         for i in range(len(outposts.WORKER_TIERS)):
             fr[f"job.AP_{t}_{i + 1}"], en[f"job.AP_{t}_{i + 1}"] = job_fr, job_en
+    write_beacon(items, fr, en, errors)
     for key, (f, e) in outposts.LANG.items():
         fr[key], en[key] = f, e
     for wid, people, t, orders in ANNEXES:

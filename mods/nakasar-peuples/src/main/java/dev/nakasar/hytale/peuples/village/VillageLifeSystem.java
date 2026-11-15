@@ -58,7 +58,7 @@ public final class VillageLifeSystem extends TickingSystem<EntityStore> {
         }
         for (Village village : new ArrayList<>(Villages.registry(world).all())) {
             // Avant-postes de métier : chacun a sa propre distance de veille, loin du cœur.
-            dev.nakasar.hytale.peuples.annex.Annexes.step(world, store, village, players);
+            dev.nakasar.hytale.peuples.annex.Annexes.step(world, store, village, players, dt);
             if (Chantiers.layout(village) == null || !watched(village, players)) {
                 continue;
             }

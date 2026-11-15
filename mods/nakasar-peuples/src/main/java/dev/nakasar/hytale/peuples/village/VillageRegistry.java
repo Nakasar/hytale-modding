@@ -47,6 +47,9 @@ public final class VillageRegistry implements Resource<EntityStore> {
                     (r, a) -> readCounts(r.moreFailures, a), r -> writeCounts(r.moreFailures))
             .documentation("Recherches de village suivant restées sans site, par peuple (on abandonne après quelques-unes).")
             .add()
+            .append(new KeyedCodec<>("Beacons", Codec.STRING_ARRAY), (r, a) -> r.setBeacons(a), r -> r.writeBeacons())
+            .documentation("Balises de route posées par les joueurs (« x,y,z ») : les convois des avant-postes les suivent (annex/Routes).")
+            .add()
             .build();
 
     private final Map<String, Integer> moreSeeded = new LinkedHashMap<>();
@@ -55,6 +58,8 @@ public final class VillageRegistry implements Resource<EntityStore> {
     private boolean seeded;
     private int seedAttempts;
     private final Set<String> seededPeople = new LinkedHashSet<>();
+    private final List<int[]> beacons = new ArrayList<>();
+    private int beaconVersion;
 
     public VillageRegistry() {
     }
@@ -145,6 +150,63 @@ public final class VillageRegistry implements Resource<EntityStore> {
 
     private static String[] writeCounts(Map<String, Integer> counts) {
         return counts.entrySet().stream().map(e -> e.getKey() + "=" + e.getValue()).toArray(String[]::new);
+    }
+
+    // ---- Balises de route (communes à tous les villages) ----
+
+    private void setBeacons(String[] entries) {
+        beacons.clear();
+        if (entries != null) {
+            for (String e : entries) {
+                String[] p = e == null ? new String[0] : e.split(",");
+                if (p.length == 3) {
+                    try {
+                        beacons.add(new int[] {Integer.parseInt(p[0].trim()), Integer.parseInt(p[1].trim()), Integer.parseInt(p[2].trim())});
+                    } catch (NumberFormatException ignored) {
+                        // entrée abîmée : ignorée
+                    }
+                }
+            }
+        }
+        beaconVersion++;
+    }
+
+    private String[] writeBeacons() {
+        return beacons.stream().map(b -> b[0] + "," + b[1] + "," + b[2]).toArray(String[]::new);
+    }
+
+    /** Balises de route du monde, {x, y, z} (lecture seule). */
+    public List<int[]> beacons() {
+        return Collections.unmodifiableList(beacons);
+    }
+
+    /** Change à chaque balise posée ou retirée (les convois recalculent alors leur route). */
+    public int beaconVersion() {
+        return beaconVersion;
+    }
+
+    public boolean isBeacon(int x, int y, int z) {
+        for (int[] b : beacons) {
+            if (b[0] == x && b[1] == y && b[2] == z) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public void addBeacon(int x, int y, int z) {
+        if (!isBeacon(x, y, z)) {
+            beacons.add(new int[] {x, y, z});
+            beaconVersion++;
+        }
+    }
+
+    public boolean removeBeacon(int x, int y, int z) {
+        boolean removed = beacons.removeIf(b -> b[0] == x && b[1] == y && b[2] == z);
+        if (removed) {
+            beaconVersion++;
+        }
+        return removed;
     }
 
     public int seedAttempts() {
@@ -238,6 +300,10 @@ public final class VillageRegistry implements Resource<EntityStore> {
         copy.seededPeople.addAll(seededPeople);
         copy.moreSeeded.putAll(moreSeeded);
         copy.moreFailures.putAll(moreFailures);
+        for (int[] b : beacons) {
+            copy.beacons.add(b.clone());
+        }
+        copy.beaconVersion = beaconVersion;
         return copy;
     }
 }
