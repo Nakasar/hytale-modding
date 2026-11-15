@@ -139,7 +139,7 @@ public final class ZoneSeeder extends TickingSystem<EntityStore> {
         return out;
     }
 
-    private static boolean inZone(World world, int zone, int x, int z, int r) {
+    static boolean inZone(World world, int zone, int x, int z, int r) {
         int[][] points = {{0, 0}, {r, 0}, {-r, 0}, {0, r}, {0, -r}};
         for (int[] p : points) {
             if (!Zones.inland(Zones.name(world, x + p[0], z + p[1]), zone)) {
@@ -181,6 +181,11 @@ public final class ZoneSeeder extends TickingSystem<EntityStore> {
 
     /** Vrai si le site convient au campement : sol du peuple, pas d'eau, relief modéré. */
     static boolean suitable(World world, VillageLayout layout, People people, int cx, int cz) {
+        return suitable(world, layout, people, cx, cz, MIN_GROUND, MAX_RELIEF);
+    }
+
+    /** Comme ci-dessus, avec la part de sol du peuple `minGround` et le relief `maxRelief` voulus (villages suivants). */
+    static boolean suitable(World world, VillageLayout layout, People people, int cx, int cz, double minGround, int maxRelief) {
         Terrain terrain = new Terrain(world);
         int r = layout.radiusUpTo(0);
         int samples = 0;
@@ -206,6 +211,6 @@ public final class ZoneSeeder extends TickingSystem<EntityStore> {
                 max = Math.max(max, h);
             }
         }
-        return samples > 0 && ground >= MIN_GROUND * samples && max - min <= MAX_RELIEF;
+        return samples > 0 && ground >= minGround * samples && max - min <= maxRelief;
     }
 }

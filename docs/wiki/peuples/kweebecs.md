@@ -9,7 +9,7 @@
 <Info label="Raids">bandes trorks</Info>
 </Infobox>
 
-Le premier village du monde se pose tout seul à 280-700 blocs de l'apparition, sur une prairie plate. C'est le village le plus complet pour apprendre le mod.
+Le premier village du monde se pose tout seul à 280-700 blocs de l'apparition, sur une prairie plate. C'est le village le plus complet pour apprendre le mod. Deux autres villages kweebecs se posent plus loin dans la zone 1, à 600-1200 blocs.
 
 ## Le village
 

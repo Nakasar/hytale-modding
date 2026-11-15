@@ -165,6 +165,18 @@ public enum People {
     }
 
     /**
+     * Nombre de villages que la génération naturelle pose pour ce peuple dans le monde par défaut, le premier compris
+     * ({@code zone/MoreVillagesSeeder}). Les Kweebecs et les Feran ont le plus de place (forêts et plaines de la zone 1,
+     * grand désert de la zone 2) ; les camps trorks restent rares pour garder la route trork une exception.
+     */
+    public int naturalVillages() {
+        return switch (this) {
+            case KWEEBEC, FERAN -> 3;
+            default -> 2;
+        };
+    }
+
+    /**
      * Peuple rival (étape 7, réputations croisées : GDD, Progression des zones) : aider l'un coûte auprès de l'autre, ou
      * null. Zone 1 : Kweebecs et Trorks.
      */

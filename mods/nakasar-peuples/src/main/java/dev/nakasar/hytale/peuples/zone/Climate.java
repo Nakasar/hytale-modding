@@ -463,12 +463,14 @@ public final class Climate {
         if (data.hasFlag(flag) || !carries(store, ref, item) && !wears(store, ref, item)) {
             return;
         }
-        Village village = Villages.registry(world).all().stream().filter(v -> v.people() == people).findFirst().orElse(null);
+        Vector3d at = player.getTransform().getPosition();
+        // Le village du peuple le plus proche du joueur (il peut y en avoir plusieurs : MoreVillagesSeeder).
+        Village village = Villages.registry(world).all().stream().filter(v -> v.people() == people)
+                .min(java.util.Comparator.comparingDouble(v -> v.horizontalDistanceSquared(at.x(), at.z()))).orElse(null);
         if (village == null) {
             return;   // pas encore posé : on réessaiera
         }
         data.setFlag(flag, true);
-        Vector3d at = player.getTransform().getPosition();
         int distance = (int) Math.round(Math.sqrt(village.horizontalDistanceSquared(at.x(), at.z())));
         player.sendMessage(Message.translation(KEYS + "reveal." + people.id()).param("village", village.name())
                 .param("x", village.x()).param("z", village.z()).param("distance", distance));
