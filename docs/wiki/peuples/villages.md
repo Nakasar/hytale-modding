@@ -34,7 +34,7 @@ Les quatre dernières demandes sont des **expéditions** : il faut sortir du vil
 - **Destruction** : les objets sont gardés par une bande. Le suivi d'objectifs compte ceux qui restent.
 - **Chef** : le chef a une barre de vie et plus de points de vie aux paliers élevés. Avant chaque coup, une **zone rouge** au sol montre exactement où il frappe (cercle, cône ou ligne) : sortez-en. Aux deux tiers et au tiers de sa vie, il appelle des renforts et reste invulnérable tant qu'ils sont debout. Sous le tiers de sa vie, il frappe plus souvent. Comme tous les ennemis du mod, il ne regagne pas de vie hors combat.
 
-Les marchands, cueilleurs et ennemis ne disparaissent que quand plus aucun joueur n'est à proximité.
+Les lieux des demandes sont toujours sur la terre ferme : un lieu tiré dans un lac ou en mer est déplacé avant même que vous partiez. Les marchands, cueilleurs et ennemis ne disparaissent que quand plus aucun joueur n'est à proximité.
 
 Récompense : de l'**essor** pour le village, de la [réputation](reputation.md) et des **faveurs** du peuple.
 
