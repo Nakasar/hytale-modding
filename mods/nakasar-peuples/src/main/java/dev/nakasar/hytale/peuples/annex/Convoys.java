@@ -41,8 +41,8 @@ import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * Convois des avant-postes : la production du matin part à pied vers le dépôt du village, portée par deux ou trois
- * villageois de l'avant-poste. Le convoi suit la ligne droite de l'entrée de l'avant-poste au dépôt ; sa progression
- * (en blocs) est sauvée dans {@link AnnexState}.
+ * villageois de l'avant-poste. Le convoi suit la route des balises posées par les joueurs ({@link Routes}), sinon la
+ * ligne droite de la sortie de l'avant-poste au dépôt ; sa progression (en blocs) est sauvée dans {@link AnnexState}.
  * <ul>
  *   <li>Un joueur à moins de {@value #SPAWN_RADIUS} blocs du convoi : les porteurs sont de vrais PNJ qui marchent (point
  *       d'attache {@value #LEAD} blocs devant eux, sur la ligne) ; la progression est celle du porteur de tête.</li>
@@ -60,6 +60,10 @@ public final class Convoys {
     static final int SPAWN_RADIUS = 64;
     static final int LEAD = 10;
     static final double SPEED = 3.0;
+    /** Vitesse sans PNJ quand la route passe par des balises. */
+    static final double ROUTE_SPEED = 4.0;
+    /** Plus que la portée du point d'attache des villageois (5) : arrivé près d'une balise, on vise la suivante. */
+    private static final double TURN_MARGIN = 7.0;
     private static final double ARRIVE = 4.0;
     private static final float STUCK_SECONDS = 30f;
     private static final int HOP = 8;
@@ -74,6 +78,8 @@ public final class Convoys {
     private static final Map<String, List<Ref<EntityStore>>> BY_CONVOY = new ConcurrentHashMap<>();
     /** Par convoi : {meilleure progression vue, secondes sans avancer}. */
     private static final Map<String, double[]> STUCK = new ConcurrentHashMap<>();
+    /** Route de chaque convoi (clé village/avant-poste), recalculée quand les balises changent. */
+    private static final Map<String, Routes.Path> PATHS = new ConcurrentHashMap<>();
 
     private Convoys() {
     }
@@ -98,31 +104,30 @@ public final class Convoys {
     /** Le pas d'un convoi en route (toutes les 2 s environ, joueurs connectés). */
     static void step(World world, Store<EntityStore> store, Village village, Workshop w, AnnexState a, List<Vector3d> players, float dt) {
         String key = key(village, w);
-        double[] to = to(village);
-        double[] from = from(w, a, to);
-        double length = Math.hypot(to[0] - from[0], to[1] - from[1]);
+        Routes.Path path = path(world, village, w, a, key);
+        double length = path.length();
         List<Ref<EntityStore>> refs = alive(key);
         if (a.convoyAt() >= length - ARRIVE) {
             arrive(world, store, village, w, a, key);
             return;
         }
-        double[] here = point(from, to, length, a.convoyAt());
+        double[] here = path.point(a.convoyAt());
         if (!near(players, here[0], here[1], SPAWN_RADIUS)) {
             despawn(store, key);
-            a.setConvoyAt(Math.min(length, a.convoyAt() + SPEED * dt));
+            double speed = path.beacons() > 0 ? ROUTE_SPEED : SPEED;
+            a.setConvoyAt(Math.min(length, a.convoyAt() + speed * dt));
             return;
         }
         if (refs.isEmpty()) {
-            spawn(world, store, village, w, a, key, from, to, length);
+            spawn(world, store, village, w, a, key, path);
             return;
         }
-        // Progression : le porteur de tête, projeté sur la ligne.
+        // Progression : le porteur de tête, ramené sur la route (près de là où en est le convoi).
         double best = a.convoyAt();
         for (Ref<EntityStore> ref : refs) {
             Vector3d at = Requests.position(store, ref);
             if (at != null) {
-                double t = ((at.x() - from[0]) * (to[0] - from[0]) + (at.z() - from[1]) * (to[1] - from[1])) / Math.max(1e-6, length);
-                best = Math.max(best, Math.min(length, t));
+                best = Math.max(best, path.closest(at.x(), at.z(), a.convoyAt() - 2, a.convoyAt() + LEAD + 6));
             }
         }
         double lead = best;
@@ -134,38 +139,66 @@ public final class Convoys {
             stuck[1] += dt;
         }
         if (stuck[1] >= STUCK_SECONDS && !near(players, here[0], here[1], WATCHED)) {
-            // Coincés (rivière, falaise) et personne ne les voit : un saut le long de la ligne.
+            // Coincés (rivière, falaise) et personne ne les voit : un saut le long de la route.
             best = Math.min(length, best + HOP);
-            double[] hop = point(from, to, length, best);
             for (int i = 0; i < refs.size(); i++) {
-                Vector3d spot = ground(world, a, hop, from, to, length, i);
+                Vector3d spot = ground(world, a, path, best, i);
                 store.putComponent(refs.get(i), Teleport.getComponentType(), new Teleport(spot, new Rotation3f(0f, 0f, 0f)));
             }
             stuck[0] = best;
             stuck[1] = 0;
         }
         a.setConvoyAt(best);
-        double[] ahead = point(from, to, length, Math.min(length, best + LEAD));
+        double ahead = target(path, best);
         for (int i = 0; i < refs.size(); i++) {
             NPCEntity npc = store.getComponent(refs.get(i), NPCEntity.getComponentType());
             if (npc != null) {
-                npc.setLeashPoint(ground(world, a, ahead, from, to, length, i));
+                npc.setLeashPoint(ground(world, a, path, ahead, i));
             }
         }
     }
 
+    /**
+     * Point d'attache : {@value #LEAD} blocs devant, mais pas au-delà de la prochaine balise (les porteurs passent par
+     * chacune au lieu de couper les coudes).
+     */
+    private static double target(Routes.Path path, double at) {
+        return Math.min(Math.min(path.length(), at + LEAD), path.nextTurn(at, TURN_MARGIN));
+    }
+
+    /**
+     * Route du convoi, recalculée quand une balise est posée ou retirée ; le convoi reprend alors au point de la
+     * nouvelle route le plus proche de là où il était.
+     */
+    private static Routes.Path path(World world, Village village, Workshop w, AnnexState a, String key) {
+        Routes.Path old = PATHS.get(key);
+        int version = Villages.registry(world).beaconVersion();
+        if (old != null && old.version == version) {
+            return old;
+        }
+        double[] to = to(village);
+        double[] from = from(w, a, to);
+        Routes.Path path = Routes.path(world, from[0], from[1], to[0], to[1]);
+        if (old != null && a.convoyAt() > 0) {
+            double[] was = old.point(a.convoyAt());
+            a.setConvoyAt(path.closest(was[0], was[1], 0, path.length()));
+            STUCK.remove(key);
+        }
+        PATHS.put(key, path);
+        return path;
+    }
+
     private static void spawn(World world, Store<EntityStore> store, Village village, Workshop w, AnnexState a, String key,
-                              double[] from, double[] to, double length) {
+                              Routes.Path path) {
         VillageLayout.Job[] workers = w.annex().workers();
         if (workers.length == 0) {
             return;
         }
         VillageLayout.Job job = workers[0];
-        double[] here = point(from, to, length, a.convoyAt());
-        double[] ahead = point(from, to, length, Math.min(length, a.convoyAt() + LEAD));
+        double ahead = target(path, a.convoyAt());
         List<Ref<EntityStore>> refs = new ArrayList<>();
         for (int i = 0; i < a.convoyPorters(); i++) {
-            Vector3d spot = ground(world, a, here, from, to, length, i);
+            Vector3d spot = ground(world, a, path, a.convoyAt(), i);
             Pair<Ref<EntityStore>, INonPlayerCharacter> spawned = NPCPlugin.get().spawnNPC(store, job.role(), null, spot, new Rotation3f(0f, 0f, 0f));
             if (spawned == null || spawned.first() == null) {
                 LOGGER.atWarning().log("Nakasar Peuples : porteur '%s' du convoi %s impossible à poser", job.role(), w.getId());
@@ -175,7 +208,7 @@ public final class Convoys {
             store.ensureAndGetComponent(ref, EntityStore.REGISTRY.getNonSerializedComponentType());
             NPCEntity npc = store.getComponent(ref, NPCEntity.getComponentType());
             if (npc != null) {
-                npc.setLeashPoint(ground(world, a, ahead, from, to, length, i));
+                npc.setLeashPoint(ground(world, a, path, ahead, i));
             }
             Villagers.enlist(ref, village.id(), "CV_" + w.getId() + "_" + i, job.dialogue());
             PORTERS.put(ref, new Porter(village.id(), w.getId()));
@@ -199,6 +232,7 @@ public final class Convoys {
         LOGGER.atInfo().log("Nakasar Peuples : le convoi de %s livre %d %s au dépôt de %s", w.getId(), a.convoyCargo(),
                 lot == null ? "?" : lot.itemId(), village.name());
         a.endConvoy();
+        PATHS.remove(key);
     }
 
     /** Le PNJ `ref` est un porteur de convoi. */
@@ -279,19 +313,14 @@ public final class Convoys {
         return new double[] {d[0] + 0.5, d[2] + 0.5};
     }
 
-    private static double[] point(double[] from, double[] to, double length, double at) {
-        double f = length <= 0 ? 1 : Math.max(0, Math.min(1, at / length));
-        return new double[] {from[0] + (to[0] - from[0]) * f, from[1] + (to[1] - from[1]) * f};
-    }
-
-    /** Place du porteur `i` autour du point `p` : en file, décalés sur le côté pour ne pas s'empiler. */
-    private static Vector3d ground(World world, AnnexState a, double[] p, double[] from, double[] to, double length, int i) {
-        double dx = (to[0] - from[0]) / Math.max(1e-6, length);
-        double dz = (to[1] - from[1]) / Math.max(1e-6, length);
+    /** Place du porteur `i` à `at` blocs sur la route : en file, décalés sur le côté pour ne pas s'empiler. */
+    private static Vector3d ground(World world, AnnexState a, Routes.Path path, double at, int i) {
+        double[] p = path.point(at);
+        double[] d = path.dir(at);
         double side = (i % 2 == 0 ? 1 : -1) * 1.5 * ((i + 1) / 2);
         double back = 1.5 * i;
-        int x = (int) Math.floor(p[0] - dx * back - dz * side);
-        int z = (int) Math.floor(p[1] - dz * back + dx * side);
+        int x = (int) Math.floor(p[0] - d[0] * back - d[1] * side);
+        int z = (int) Math.floor(p[1] - d[1] * back + d[0] * side);
         return Villagers.groundAt(world, x, z, a.ground() + 1);
     }
 
@@ -347,5 +376,6 @@ public final class Convoys {
         PORTERS.clear();
         BY_CONVOY.clear();
         STUCK.clear();
+        PATHS.clear();
     }
 }

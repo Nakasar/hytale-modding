@@ -51,6 +51,18 @@ Debout, un avant-poste est un [bâtiment de métier](batiments-de-metier.md) com
   Le lot voyage à pied : un **convoi** de deux porteurs (trois dès le niveau II) marche de l'avant-poste jusqu'au dépôt.
   Si un porteur meurt, sa part de la cargaison tombe au sol. Le tuer soi-même coûte très cher en réputation auprès du
   village. Si tous les porteurs meurent, la livraison du jour est perdue ; le convoi suivant part le lendemain matin.
+
+## Routes à balises
+
+Les porteurs vont tout droit de l'avant-poste au dépôt, quitte à buter sur une rivière ou une falaise. Pour leur
+tracer un chemin, posez des **balises de route** : on en fabrique deux à l'établi avec 4 bâtons et une torche.
+
+- Deux balises à moins de **32 blocs** l'une de l'autre sont reliées. La sortie de l'avant-poste, le dépôt et le
+  cœur des villages comptent aussi comme des balises.
+- Les convois prennent le chemin le plus court de balise en balise. S'il manque un maillon, ils reprennent la ligne
+  droite.
+- Les routes servent à tous les villages et à tous les avant-postes.
+- Casser une balise la retire : les convois en route recalculent leur chemin.
 - **Améliorer** : la moitié des matériaux de la fondation pour le niveau II, les trois quarts pour le niveau III.
 
 Casser un bloc d'un avant-poste coûte de la réputation, comme dans le village.

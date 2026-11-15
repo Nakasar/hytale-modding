@@ -1259,6 +1259,14 @@ quarts des matériaux de la fondation), deux spécialités au niveau II, boutiqu
   3 blocs/s. Un porteur tué lâche sa part au sol ; tué par un joueur, −80 de réputation auprès du village en plus
   du −40 du meurtre. Plus de porteur : livraison du jour perdue. Pas de nouveau convoi tant qu'un convoi est en route ;
   arrivé, il attend que le coffre du dépôt soit chargé pour livrer.
+- **Routes à balises** (`annex/Routes.java`, `RouteBeaconSystems`) : l'objet `Nakasar_Peuples_Route_Beacon` (lanterne
+  haute vanilla, 4 bâtons + 1 torche → 2 à l'établi) se pose n'importe où ; les balises sont communes à tous les
+  villages (champ `Beacons` du registre des villages, retirées quand on casse le bloc). Deux balises à moins de
+  32 blocs sont reliées ; la sortie de l'avant-poste, le dépôt et les cœurs des villages comptent comme balises.
+  Le convoi prend le plus court chemin (Dijkstra) ; sans route complète, la ligne droite. Point d'attache : 10 blocs
+  devant mais jamais au-delà de la prochaine balise. Une balise posée ou retirée : route recalculée, le convoi reprend
+  au point le plus proche. Sans PNJ, 4 blocs/s sur une route à balises. Les caravanes des demandes ne suivent pas
+  les routes (elles suivent le joueur).
 - **Tour de guet** : l'annonce de raid dure 30 s de plus par niveau (`Raids`, `Annexes.raidWarnBonus`) ; spécialités
   Guetteurs (+1 garde) et Sentinelles (gardes plus solides). Pas d'effet en raid pour les Trorks.
 - Casser un bloc dans l'emprise d'un avant-poste debout coûte de la réputation (`VillageBlockSystem`).

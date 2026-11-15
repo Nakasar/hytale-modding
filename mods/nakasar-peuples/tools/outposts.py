@@ -260,6 +260,17 @@ TYPE_DATA = {
 NO_RAID = {"Trork"}
 
 # Textes des messages et de l'onglet (Java annex/), fr puis en, clés sans le préfixe « nakasar_peuples. ».
+# Balise de route (Java annex/Routes) : id = Routes.BEACON, liens à 32 blocs = Routes.LINK.
+BEACON = {
+    "item": "Nakasar_Peuples_Route_Beacon",
+    "parent": "Furniture_Desert_Lantern_Tall",
+    "recipe": [("Ingredient_Stick", 4), ("Furniture_Crude_Torch", 1)],
+    "output": 2,
+    "name": ("Balise de route", "Route beacon"),
+    "description": ("Les convois des avant-postes vont de balise en balise vers le dépôt du village. Deux balises à moins de 32 blocs sont reliées.",
+                    "Outpost convoys walk from beacon to beacon to the village deposit. Two beacons less than 32 blocks apart are linked."),
+}
+
 LANG = {
     "annex.button": ("Avant-postes", "Outposts"),
     "annex.none": ("Ce peuple ne fonde pas d'avant-postes.", "This people founds no outposts."),
@@ -312,6 +323,10 @@ LANG = {
     "annex.state.convoy": ("Debout en {x} {z}, niveau {level}. Un convoi de {porters} porteurs est en route vers le dépôt.", "Standing at {x} {z}, level {level}. A convoy of {porters} carriers is on its way to the deposit."),
     "annex.convoy.porter": ("Un porteur du convoi de {building} a été tué : sa cargaison est tombée au sol. Il en reste {left}.", "A carrier of the {building} convoy was killed: its load fell to the ground. {left} left."),
     "annex.convoy.lost": ("Le convoi de {building} a été anéanti : la livraison du jour est perdue.", "The {building} convoy was wiped out: today's delivery is lost."),
+    "annex.route.placed": ("Balise de route posée : reliée à {links} balise(s) à moins de {range} blocs.", "Route beacon placed: linked to {links} beacon(s) within {range} blocks."),
+    "annex.route.alone": ("Balise de route posée, mais aucune autre balise à moins de {range} blocs : elle n'est reliée à rien.", "Route beacon placed, but no other beacon within {range} blocks: it is linked to nothing."),
+    "annex.route.removed": ("Balise de route retirée : les convois recalculent leur route.", "Route beacon removed: convoys recompute their route."),
+    "annex.route.full": ("Ce monde a déjà {max} balises de route.", "This world already has {max} route beacons."),
     "annex.convoy.reason": ("tu as tué un porteur d'un convoi", "you killed a convoy carrier"),
     "annex.done": ("{building} de {village} est debout !", "{building} of {village} stands!"),
     "annex.doneTitle": ("{building} est debout", "{building} stands"),
