@@ -73,6 +73,34 @@ public final class Workshop implements JsonAssetWithMap<String, DefaultAssetMap<
      * Une spécialité (étape 3), choisie au niveau II par un joueur de rang Ami, pour tout le village : son nom, sa ligne
      * de description, son icône vanilla et, pour un enclos, les bêtes qu'elle y met (rôles vanilla Tamed_* ou du mod).
      */
+    /** Effet en raid d'une spécialité de garde (étape 5). */
+    public static final class Raid {
+        public static final BuilderCodec<Raid> CODEC = BuilderCodec.builder(Raid.class, Raid::new)
+                .append(new KeyedCodec<>("Guards", Codec.INTEGER), (r, v) -> r.guards = v == null ? 0 : Math.max(0, v), r -> r.guards).add()
+                .append(new KeyedCodec<>("Posted", Codec.INTEGER), (r, v) -> r.posted = v == null ? 0 : Math.max(0, v), r -> r.posted).add()
+                .append(new KeyedCodec<>("Health", Codec.FLOAT), (r, v) -> r.health = v == null ? 1f : Math.max(1f, v), r -> r.health).add()
+                .build();
+
+        int guards;
+        int posted;
+        float health = 1f;
+
+        /** Gardes de plus autour du cœur. */
+        public int guards() {
+            return guards;
+        }
+
+        /** Gardes postés au bâtiment. */
+        public int posted() {
+            return posted;
+        }
+
+        /** Multiplicateur des PV maximaux des gardes. */
+        public float health() {
+            return health;
+        }
+    }
+
     public static final class Specialty {
         public static final BuilderCodec<Specialty> CODEC = BuilderCodec.builder(Specialty.class, Specialty::new)
                 .append(new KeyedCodec<>("Id", Codec.STRING), (s, v) -> s.id = v, s -> s.id).add()
@@ -83,6 +111,7 @@ public final class Workshop implements JsonAssetWithMap<String, DefaultAssetMap<
                 .append(new KeyedCodec<>("Shops", Codec.STRING_ARRAY), (s, v) -> s.shops = v == null ? new String[0] : v, s -> s.shops).add()
                 .append(new KeyedCodec<>("ShareItem", Codec.STRING), (s, v) -> s.shareItem = v, s -> s.shareItem).add()
                 .append(new KeyedCodec<>("ShareQuantity", Codec.INTEGER), (s, v) -> s.shareQuantity = v == null ? 1 : Math.max(1, v), s -> s.shareQuantity).add()
+                .append(new KeyedCodec<>("Raid", Raid.CODEC), (s, v) -> s.raid = v, s -> s.raid).add()
                 .build();
 
         String id;
@@ -95,6 +124,12 @@ public final class Workshop implements JsonAssetWithMap<String, DefaultAssetMap<
         /** Lot quotidien de la Part de l'Hôte (niveau III). */
         String shareItem;
         int shareQuantity = 1;
+        Raid raid;
+
+        /** Effet en raid (spécialité de garde), ou null. */
+        public Raid raid() {
+            return raid;
+        }
 
         /** Boutique de la spécialité au niveau `level` (2 ou 3), ou null. */
         public String shop(int level) {

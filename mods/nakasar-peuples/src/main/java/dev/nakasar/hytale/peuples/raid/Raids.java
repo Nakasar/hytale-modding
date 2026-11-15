@@ -39,6 +39,11 @@ import dev.nakasar.hytale.peuples.village.Village;
 import dev.nakasar.hytale.peuples.village.VillageBoard;
 import dev.nakasar.hytale.peuples.village.VillageLayout;
 import dev.nakasar.hytale.peuples.village.Villages;
+import dev.nakasar.hytale.peuples.workshop.Workshops;
+import com.hypixel.hytale.server.core.modules.entitystats.EntityStatMap;
+import com.hypixel.hytale.server.core.modules.entitystats.asset.DefaultEntityStatTypes;
+import com.hypixel.hytale.server.core.modules.entitystats.modifier.Modifier;
+import com.hypixel.hytale.server.core.modules.entitystats.modifier.StaticModifier;
 import it.unimi.dsi.fastutil.Pair;
 import org.joml.Vector3d;
 import org.joml.Vector3i;
@@ -152,6 +157,9 @@ public final class Raids {
         int byGuards;
         int fallen;
         boolean eventRunning;
+        /** PV des gardes (spécialités de garde, étape 5) et gardes déjà renforcés. */
+        float guardHealth = 1f;
+        final Set<Ref<EntityStore>> boosted = Collections.newSetFromMap(new IdentityHashMap<>());
 
         Active(String villageId, long night, UUID eventId) {
             this.villageId = villageId;
@@ -478,9 +486,23 @@ public final class Raids {
                 PeuplesPlugin.get().getLogger().atWarning().log("Peuples : évènement de raid %s non lancé (%s)", event(village.people()), e.getMessage());
             }
         }
-        // Les gardes se postent autour du cœur.
-        int guards = DEFENDERS[Math.max(0, Math.min(3, village.tier()))];
+        // Les gardes se postent autour du cœur ; les spécialités de garde en ajoutent (étape 5).
+        Workshops.RaidBonus bonus = Workshops.raidBonus(village);
+        a.guardHealth = bonus.health();
+        int guards = DEFENDERS[Math.max(0, Math.min(3, village.tier()))] + bonus.guards();
         String role = defenderRole(village.people());
+        for (int[] post : bonus.posts()) {
+            int[] safe = terrain.safeSpot(post[0], post[1], 4);
+            if (safe == null) {
+                continue;
+            }
+            Vector3d spot = new Vector3d(safe[0] + 0.5, safe[1], safe[2] + 0.5);
+            Ref<EntityStore> ref = spawn(store, village, Kind.DEFENDER, role, spot, (float) random.nextDouble(-Math.PI, Math.PI));
+            if (ref != null) {
+                a.defenders.add(ref);
+                leash(store, ref, spot);
+            }
+        }
         for (int i = 0; i < guards; i++) {
             double angle = base + i * (Math.PI * 2 / guards);
             int x = village.x() + (int) Math.round(Math.cos(angle) * 4);
@@ -512,6 +534,17 @@ public final class Raids {
         a.elapsed += dt;
         prune(a.raiders);
         prune(a.defenders);
+        if (a.guardHealth > 1f) {
+            for (Ref<EntityStore> d : a.defenders) {
+                if (!a.boosted.contains(d)) {
+                    EntityStatMap stats = store.getComponent(d, EntityStatMap.getComponentType());
+                    if (stats != null) {
+                        guardHealth(stats, a.guardHealth);
+                        a.boosted.add(d);
+                    }
+                }
+            }
+        }
         List<PlayerRef> watching = watchers(world, store, village);
         for (PlayerRef p : watching) {
             a.participants.add(p.getUuid());
@@ -734,6 +767,14 @@ public final class Raids {
         store.ensureAndGetComponent(ref, EntityStore.REGISTRY.getNonSerializedComponentType());
         OWNERS.put(ref, new Owner(village.id(), kind));
         return ref;
+    }
+
+    /** PV maximaux du garde × `multiplier` (spécialités de garde), plein de vie à l'apparition. Pas de soin ensuite. */
+    private static void guardHealth(EntityStatMap stats, float multiplier) {
+        int health = DefaultEntityStatTypes.getHealth();
+        stats.putModifier(health, "Nakasar_Peuples_GuardSpecialty", new StaticModifier(Modifier.ModifierTarget.MAX,
+                StaticModifier.CalculationType.MULTIPLICATIVE, multiplier));
+        stats.maximizeStatValue(health);
     }
 
     private static void leash(Store<EntityStore> store, Ref<EntityStore> ref, Vector3d at) {

@@ -61,6 +61,9 @@
       "NameKey": "nakasar_peuples.workshop.specialty.Feran_Hutte_Pilier.Lanciers",
       "LineKey": "nakasar_peuples.workshop.specialtyLine.Feran_Hutte_Pilier.Lanciers",
       "Icon": "Weapon_Spear_Crude",
+      "Raid": {
+        "Health": 1.35
+      },
       "Shops": [
         "Nakasar_Peuples_W_Feran_Hutte_Pilier_Lanciers_2",
         "Nakasar_Peuples_W_Feran_Hutte_Pilier_Lanciers_3"
@@ -73,6 +76,9 @@
       "NameKey": "nakasar_peuples.workshop.specialty.Feran_Hutte_Pilier.Coureurs",
       "LineKey": "nakasar_peuples.workshop.specialtyLine.Feran_Hutte_Pilier.Coureurs",
       "Icon": "Ingredient_Feathers_Light",
+      "Raid": {
+        "Guards": 1
+      },
       "Shops": [
         "Nakasar_Peuples_W_Feran_Hutte_Pilier_Coureurs_2",
         "Nakasar_Peuples_W_Feran_Hutte_Pilier_Coureurs_3"

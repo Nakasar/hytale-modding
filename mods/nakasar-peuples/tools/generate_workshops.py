@@ -235,10 +235,10 @@ SPECIALTIES = {
         ("Elixirs", "Élixirs", "Elixirs", "Potion_Stamina_Small", "Endurance et antidotes.", "Stamina and antidotes.", []),
     ]),
     "Kweebec_Tour_Est": (None, [
-        ("Archers", "Archers", "Archers", "Weapon_Shortbow_Crude", "Arcs courts et flèches ; 2 archers en raid.",
-         "Short bows and arrows; 2 archers in raids.", []),
-        ("Vigiles", "Vigiles", "Wardens", "Armor_Kweebec_Chest", "Armure kweebec ; +1 défenseur en raid.",
-         "Kweebec armour; +1 defender in raids.", []),
+        ("Archers", "Archers", "Archers", "Weapon_Shortbow_Crude", "Arcs et flèches ; en raid, 2 gardes de plus postés à la tour.",
+         "Bows and arrows; in raids, 2 more guards posted at the tower.", []),
+        ("Vigiles", "Vigiles", "Wardens", "Armor_Kweebec_Chest", "Armure kweebec ; en raid, +1 garde et des gardes plus solides.",
+         "Kweebec armour; in raids, +1 guard and sturdier guards.", []),
     ]),
     "Trork_Piege": (None, [
         ("Trappeur", "Trappeur", "Trapper", "Ingredient_Hide_Light", "Peaux et os.", "Hides and bones.", []),
@@ -246,8 +246,8 @@ SPECIALTIES = {
     ]),
     "Trork_Feu_De_Camp": (None, [
         ("Rotisserie", "Rôtisserie", "Roasting pit", "Food_Wildmeat_Cooked", "Viandes cuites.", "Cooked meats.", []),
-        ("Fosse_De_Combat", "Fosse de combat", "Fighting pit", "Weapon_Club_Crude", "Armes en os ; +1 brute en raid.",
-         "Bone weapons; +1 brute in raids.", []),
+        ("Fosse_De_Combat", "Fosse de combat", "Fighting pit", "Weapon_Club_Crude", "Armes en os et armure trork.",
+         "Bone weapons and Trork armour.", []),
     ]),
     "Trork_Entrepot": (None, [
         ("Pillards", "Pillards", "Raiders", "Ingredient_Bar_Iron", "Lingots de cuivre et de fer récupérés.",
@@ -260,10 +260,10 @@ SPECIALTIES = {
         ("Jardin", "Jardin d'oasis", "Oasis garden", "Ingredient_Salt", "Cactus, épices et sel.", "Cactus, spices and salt.", []),
     ]),
     "Feran_Hutte_Pilier": (None, [
-        ("Lanciers", "Lanciers", "Spearmen", "Weapon_Spear_Crude", "Lances ; défenseurs à lance en raid.",
-         "Spears; spear defenders in raids.", []),
-        ("Coureurs", "Coureurs des vents", "Windrunners", "Ingredient_Feathers_Light", "Plumes, armure légère ; défenseurs rapides.",
-         "Feathers, light armour; fast defenders.", []),
+        ("Lanciers", "Lanciers", "Spearmen", "Weapon_Spear_Crude", "Lances ; en raid, des gardes plus solides.",
+         "Spears; sturdier guards in raids.", []),
+        ("Coureurs", "Coureurs des vents", "Windrunners", "Ingredient_Feathers_Light", "Plumes, armure légère ; en raid, +1 garde.",
+         "Feathers, light armour; +1 guard in raids.", []),
     ]),
     "Renonce_Maison_Du_Chasseur": (None, [
         ("Trappeur", "Trappeur des neiges", "Snow trapper", "Ingredient_Hide_Heavy", "Peaux lourdes et fourrures.",
@@ -271,10 +271,11 @@ SPECIALTIES = {
         ("Pecheur", "Pêcheur des glaces", "Ice fisher", "Food_Fish_Raw", "Poissons des eaux froides.", "Cold-water fish.", []),
     ]),
     "Renonce_Tour_Du_Fort": (None, [
-        ("Arbaletriers", "Arbalétriers", "Crossbowmen", "Weapon_Crossbow_Iron", "Arbalètes ; 2 tireurs en raid.",
-         "Crossbows; 2 shooters in raids.", []),
+        ("Arbaletriers", "Arbalétriers", "Crossbowmen", "Weapon_Crossbow_Iron", "Arbalètes ; en raid, 2 gardes de plus postés à la tour.",
+         "Crossbows; in raids, 2 more guards posted at the tower.", []),
         ("Gardes_Du_Givre", "Gardes du givre", "Frost guards", "Ingredient_Fabric_Scrap_Wool",
-         "Manteaux contre le froid ; +1 défenseur en raid.", "Coats against the cold; +1 defender in raids.", []),
+         "Manteaux ; en raid, +1 garde et des gardes plus solides.",
+         "Coats; in raids, +1 guard and sturdier guards.", []),
     ]),
     "Slothian_Etal_Des_Cendres": (None, [
         ("Braises", "Braises", "Embers", "Ingredient_Charcoal", "Essence de feu et charbon.", "Fire essence and charcoal.", []),
@@ -288,11 +289,24 @@ SPECIALTIES = {
          "Recipes and memory items.", []),
     ]),
     "Slothian_Porte_Du_Monastere": (None, [
-        ("Lances", "Lances de basalte", "Basalt spears", "Rock_Volcanic", "Défenseurs lourds en raid.",
-         "Heavy defenders in raids.", []),
-        ("Veilleurs", "Veilleurs", "Watchers", "Furniture_Jungle_Torch", "+1 défenseur, veille contre le Vide.",
-         "+1 defender, vigil against the Void.", []),
+        ("Lances", "Lances de basalte", "Basalt spears", "Rock_Volcanic", "Lances ; en raid, des gardes bien plus solides.",
+         "Spears; much sturdier guards in raids.", []),
+        ("Veilleurs", "Veilleurs", "Watchers", "Furniture_Jungle_Torch", "Torches ; en raid, +1 garde.",
+         "Torches; +1 guard in raids.", []),
     ]),
+}
+# Étape 5 : effet en raid des spécialités de garde (bâtiment ouvert, niveau II ou plus, spécialité choisie) :
+# Guards gardes de plus autour du cœur, Posted gardes postés au bâtiment (la tour), Health multiplicateur des PV
+# maximaux de tous les gardes du raid. Au niveau III, Guards et Posted prennent +1. Les Trorks ne subissent pas de raid.
+RAID = {
+    ("Kweebec_Tour_Est", "Archers"): {"Posted": 2},
+    ("Kweebec_Tour_Est", "Vigiles"): {"Guards": 1, "Health": 1.25},
+    ("Feran_Hutte_Pilier", "Lanciers"): {"Health": 1.35},
+    ("Feran_Hutte_Pilier", "Coureurs"): {"Guards": 1},
+    ("Renonce_Tour_Du_Fort", "Arbaletriers"): {"Posted": 2},
+    ("Renonce_Tour_Du_Fort", "Gardes_Du_Givre"): {"Guards": 1, "Health": 1.25},
+    ("Slothian_Porte_Du_Monastere", "Lances"): {"Health": 1.5},
+    ("Slothian_Porte_Du_Monastere", "Veilleurs"): {"Guards": 1},
 }
 # Bêtes d'un enclos selon le niveau (GDD : 3, 5 puis 7, les petits en font partie).
 LIVESTOCK_COUNT = [3, 5, 7]
@@ -777,6 +791,10 @@ def main():
                         "LineKey": f"nakasar_peuples.workshop.specialtyLine.{wid}.{sid}", "Icon": sicon}
                 if animals:
                     spec["Animals"] = animals
+                if (wid, sid) in RAID:
+                    if people == "Trork":
+                        errors.append(f"{wid}/{sid} : les Trorks ne subissent pas de raid")
+                    spec["Raid"] = RAID[(wid, sid)]
                 two, three = shops.get(sid, ([], []))
                 if not two or not three:
                     errors.append(f"{wid}/{sid} : boutique des niveaux II et III manquante")

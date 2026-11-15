@@ -691,6 +691,51 @@ public final class Workshops {
         return true;
     }
 
+    // ---- Spécialités de garde en raid (étape 5) ----
+
+    /** Renfort d'un village en raid : gardes de plus au cœur, points où poster des gardes, PV des gardes. */
+    public record RaidBonus(int guards, List<int[]> posts, float health) {
+        public static final RaidBonus NONE = new RaidBonus(0, List.of(), 1f);
+    }
+
+    /**
+     * Renfort des spécialités de garde du village : pour chaque bâtiment ouvert au niveau II ou plus avec une spécialité
+     * qui a un effet en raid. Au niveau III, ses gardes (au cœur ou postés) prennent +1. Les PV se multiplient.
+     * Les postes sont le centre du bâtiment, en coordonnées du monde (x, z).
+     */
+    public static RaidBonus raidBonus(Village village) {
+        int guards = 0;
+        float health = 1f;
+        List<int[]> posts = new ArrayList<>();
+        VillageLayout layout = Chantiers.layout(village);
+        for (Workshop w : opened(village)) {
+            WorkshopState ws = village.workshop(w.getId());
+            Workshop.Specialty spec = ws.level() >= SPECIALTY_LEVEL ? w.specialty(ws.specialty()) : null;
+            Workshop.Raid raid = spec == null ? null : spec.raid();
+            if (raid == null) {
+                continue;
+            }
+            int extra = ws.level() >= 3 ? 1 : 0;
+            if (raid.guards() > 0) {
+                guards += raid.guards() + extra;
+            }
+            health *= raid.health();
+            if (raid.posted() > 0 && layout != null) {
+                for (VillageLayout.Building b : layout.buildings()) {
+                    if (b.id().equals(w.building())) {
+                        int[] r = b.rect();
+                        int cx = village.x() + Math.floorDiv(r[0] + r[1], 2);
+                        int cz = village.z() + Math.floorDiv(r[2] + r[3], 2);
+                        for (int i = 0; i < raid.posted() + extra; i++) {
+                            posts.add(new int[] {cx, cz});
+                        }
+                    }
+                }
+            }
+        }
+        return guards == 0 && posts.isEmpty() && health == 1f ? RaidBonus.NONE : new RaidBonus(guards, posts, health);
+    }
+
     /** Ligne de type d'une commande pour la version texte. */
     static Message typeName(RequestType type) {
         return Message.translation(type.nameKey());

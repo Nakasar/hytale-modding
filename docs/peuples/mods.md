@@ -1075,3 +1075,34 @@ pose l'état, le panneau, les commandes et la jauge ; la montée de niveau (comm
 
 - La page vanilla de troc affiche bien le titre traduit (`nakasar_peuples.barter.W_*.title`).
 - Prix et quantités : à équilibrer après quelques soirées de jeu.
+
+## Bâtiments de métier, étape 5 : spécialités de garde en raid
+
+Un bâtiment de garde ouvert, au niveau II ou plus, renforce les raids selon sa spécialité (`RAID` dans
+`tools/generate_workshops.py`, champ `Raid` de la spécialité, lu par `Workshops.raidBonus` au début du raid) :
+
+| Bâtiment | Spécialité | En raid |
+|---|---|---|
+| Tour de la garde (Kweebec) | Archers | 2 gardes de plus postés à la tour |
+| Tour de la garde (Kweebec) | Vigiles | +1 garde au cœur, PV des gardes × 1,25 |
+| Hutte de la garde (Feran) | Lanciers | PV des gardes × 1,35 |
+| Hutte de la garde (Feran) | Coureurs | +1 garde au cœur |
+| Tour du fort (Renoncés) | Arbalétriers | 2 gardes de plus postés à la tour |
+| Tour du fort (Renoncés) | Gardes du givre | +1 garde au cœur, PV des gardes × 1,25 |
+| Porte du monastère (Slothians) | Lances | PV des gardes × 1,5 |
+| Porte du monastère (Slothians) | Veilleurs | +1 garde au cœur |
+
+Au niveau III, les gardes de plus (au cœur ou postés) prennent +1. Les PV sont un modificateur du maximum posé au
+premier pas du raid, gardes pleins de vie à ce moment-là ; aucun soin ensuite (règle n° 1). Les Trorks ne subissant
+pas de raid, la Fosse de combat n'a pas d'effet en raid (sa ligne ne le promet plus).
+
+### Tester en jeu (étape 5)
+
+1. `/village niveauatelier Kweebec_Tour_Est 2`, choisir « Archers », puis `/time midnight` et `/village raidprevoir` : le journal dit 2 gardes de plus, deux gardes apparaissent à la tour.
+2. Reconvertir en « Vigiles » (`/village niveauatelier Kweebec_Tour_Est 2` libère la reconversion), relancer : un garde
+   de plus au cœur, barre de vie plus longue.
+
+### À vérifier en jeu (étape 5)
+
+- Les gardes postés à la tour : point sûr au centre de son emprise, ils peuvent apparaître sur le toit ; à déplacer
+  devant la porte si c'est gênant.
