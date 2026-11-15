@@ -941,3 +941,237 @@ La recherche part du point voulu et s'élargit par anneaux. Elle sert à :
 
 **Guetteur des missives** : il ne disparaît plus à la remise. Il reste à son poste (« Il reprend sa garde ») et part
 quand aucun joueur n'est à moins de 56 blocs (`RequestSpawns.release` / `stepLingering`).
+
+## Bâtiments de métier, étape 1 : panneau de commandes et savoir-faire (`workshop/`)
+
+GDD des bâtiments de métier (approuvé le 15 novembre 2026) : chaque bâtiment du plan dont le villageois à métier
+produit quelque chose a son niveau (I à III), sa jauge de savoir-faire et son propre panneau de commandes. L'étape 1
+pose l'état, le panneau, les commandes et la jauge ; la montée de niveau (commande de maître, chantier de 12 h) vient
+à l'étape 2.
+
+- **Bâtiments** : asset `Server/Nakasar/Workshops/<Peuple>_<Bâtiment>.json` (plan, bâtiment, métier, icône, place du
+  panneau), généré par `tools/generate_workshops.py` à partir des plans. 15 bâtiments : Kweebecs (enclos, potager,
+  puits, maison de soins, tour de la garde), Trorks (piège, feu de camp, entrepôt), Feran (entrée de l'oasis, hutte de
+  la garde), Renoncés (maison du chasseur, tour du fort), Slothians (étal des cendres, temple de veille, porte du
+  monastère). Un bâtiment est ouvert quand son bâtiment est debout et que son métier existe au palier du village.
+- **État** : `village/WorkshopState`, sauvegardé avec le village (`Workshops` du village) : niveau, savoir-faire,
+  spécialité, commandes du jour, place du panneau.
+- **Panneau** : le panneau vanilla du peuple (même bloc que le tableau du village), posé par le Java devant le bâtiment
+  à la place calculée par le générateur (face tournée vers la place, décalée de l'entrée), seulement sur une case vide
+  ou de végétation. L'utiliser ouvre `WorkshopPage_<Peuple>.ui` (`tools/generate_workshop_ui.py`) ; accroupi, la
+  version texte.
+- **Commandes** : modèles de demande ordinaires rangés dans `Server/Nakasar/Requests/<Peuple>/<Bâtiment>/`, avec
+  `Workshop`, `MinLevel`, `MaxLevel`, `Knowledge` (et `Specialty` pour l'étape 3). Le tableau du village ne les tire
+  plus ; chaque bâtiment en tire 2 à 6 h (3 au niveau III). Rang Toléré pour en prendre une ; un joueur suit au plus 3
+  demandes ou commandes à la fois (hors étapes de chaîne). Remplie : savoir-faire au bâtiment (borné à la jauge du
+  niveau : 200 au niveau I, 400 au niveau II), 5 d'essor au village, faveurs et réputation au joueur, une fois par
+  commande comme l'essor.
+- **Validation** : `ValidateAssets` vérifie les bâtiments (plan, bâtiment, métier, au moins 3 commandes), le
+  `Workshop` des commandes et les ids remplis par `WorkshopPage.java` dans chaque mise en page.
+
+### Nouvelles commandes
+
+- `/village atelier` : bâtiments de métier ouverts du village le plus proche ; `/village atelier <id>` ouvre la page.
+- `/village savoirfaire <id> <quantité>` (ops) : ajoute du savoir-faire.
+
+### Tester en jeu (étape 1)
+
+1. `/village generer` puis `/village palier 1` (le village kweebec gagne puits et enclos).
+2. Attendre une seconde près des bâtiments : un panneau kweebec apparaît devant le potager, le puits et l'enclos.
+3. L'utiliser : la page montre l'enclos des lapins, niveau I, son éleveur, la jauge 0/200 et 2 commandes.
+4. Prendre « Carottes des lapins », déposer 10 carottes au dépôt : +30 de savoir-faire, +5 d'essor, une nouvelle commande.
+5. Accroupi devant le panneau : la version texte.
+
+### À vérifier en jeu (étape 1)
+
+- Le panneau est-il bien tourné vers la place et hors du passage ? Ne bouche-t-il aucune entrée ?
+- Le panneau d'un bâtiment bâti par un chantier apparaît-il dans la seconde où un joueur est près ?
+
+## Bâtiments de métier, étape 2 : niveaux II et III
+
+- Quand la jauge est pleine (200 au niveau I, 400 au niveau II) et que le village a le palier voulu (village pour le
+  niveau II, bourg pour le III), le panneau propose la **commande de maître** du niveau (`<Bâtiment>_Master_<niveau>`,
+  `Master: true`, hors tirage du jour). Elle n'expire pas, ne compte pas dans les 3 suivies et ne se remplit qu'une
+  fois pour le village (id `master-<village>-<bâtiment>-<niveau>-<reconversion>`).
+- Ensuite **« Lancer le chantier »** (rang Toléré) prend au dépôt les matériaux de l'asset (`Upgrades`, la moitié des
+  3 premiers matériaux du chantier du palier correspondant du plan) et lance 12 h de travaux (heures de jeu).
+- À la fin : niveau suivant, jauge à zéro, commandes retirées (3 au niveau III), décor vanilla du peuple posé à côté du
+  panneau (`Decor`, seulement dans l'air au-dessus d'un bloc), annonce et titre à l'écran aux joueurs proches.
+- Pas encore de variante de prefab plus grande : le décor suffit tant que les emprises de niveau III ne sont pas
+  réservées dans les plans (à voir avec les emplacements de l'étape 6).
+
+## Bâtiments de métier, étape 3 : spécialités et élevage
+
+- **Spécialités** (`Specialties` de l'asset `Workshop`, `tools/generate_workshops.py`) : 3 par enclos, 2 pour les autres
+  bâtiments de métier. Au niveau II, le bouton **« Choisir la spécialité »** du bandeau ouvre `WorkshopSpecialtyPage`
+  (une carte par spécialité, mise en page par peuple). Rang **Ami** (réponse de Kevin, au lieu d'Hôte), pour tout le
+  village, annoncé aux joueurs proches. Changer ensuite est une **reconversion** : une fois tous les 7 jours de jeu, le
+  savoir-faire du niveau retombe à 0 et la commande de maître est à refaire (nouvel id) ; impossible pendant les travaux.
+- **Enclos des quatre autres peuples** au palier 1, prefabs du mod en blocs vanilla seulement
+  (`Server/Prefabs/Nakasar/Peuples/Pens/<Peuple>_Pen`, `tools/generate_pens.py`, 13 × 13, clôture du bois du peuple,
+  barrière tournée vers la place, auge et foin) : fosse aux bêtes trork (-32, 14), enclos de l'oasis feran (-13, -20),
+  bergerie du givre renoncée (-19, -15), bauge de veille slothiane (40, -13). Chacun a son villageois : dresseur trork
+  (rôle vanilla `Trork_Hunter`), éleveuse feran, berger renoncé, gardien de la bauge slothian (rôles et dialogues du mod).
+  `generate_village_layouts.load_bounds` lit les emprises des prefabs du mod ; `ValidateAssets` les accepte.
+- **Bêtes** (`workshop/Livestock`) : 3, 5 puis 7 selon le niveau, celles de base puis celles de la spécialité au niveau
+  II, posées comme les villageois (joueur à moins de 72 blocs, non sauvegardées, point sûr de l'intérieur de l'enclos,
+  attachées à son centre). Rôles vanilla `Tamed_*` d'abord ; sinon rôles du mod sur le modèle vanilla
+  (`Nakasar_Peuples_Pen_{Wolf_Trork,Wolf_White,Tortoise,Archaeopteryx,Trillodon,Snail_Magma}`, Generic, flânent et
+  n'attaquent jamais). **Aucun butin** : le rôle est marqué « butin déjà lâché » dès l'apparition (le système vanilla
+  `NPCDamageSystems.DropDeathItems` saute alors la liste de butin). Pas de régénération (`VillageNoRegenSystem`, 96
+  blocs). Tuée, une bête manque jusqu'au matin ; tuée par un joueur, **-5 de réputation** de village
+  (`LivestockDeathSystem`).
+
+### Nouvelles commandes
+
+- `/village niveauatelier <bâtiment> <niveau>` (admin, test) : met le bâtiment au niveau voulu, savoir-faire à 0,
+  reconversion libre (la spécialité est oubliée sous le niveau II).
+
+### Tester en jeu (étape 3)
+
+1. Près d'un village kweebec au palier 1 ou plus : trois lapins dans l'enclos (`Tamed_Bunny`, `Tamed_Rabbit`, en plus
+   des lapins des marqueurs du prefab vanilla).
+2. `/village niveauatelier Kweebec_Enclos 2`, puis le panneau de l'enclos : bouton « Choisir la spécialité ». Avec le
+   rang Ami (`/village reputation` au besoin), choisir « Bergerie » : annonce, les lapins partent, cinq moutons arrivent.
+3. Rouvrir le choix : les autres cartes disent « encore 7 jour(s) ». `/village niveauatelier Kweebec_Enclos 2` remet la
+   reconversion libre.
+4. Tuer une bête : aucun objet au sol, message de réputation (-5), elle revient le lendemain matin.
+5. Camp trork, oasis feran, hameau renoncé, monastère slothian au palier 1 : l'enclos est collé avec le chantier, le
+   villageois s'y poste, les bêtes de base apparaissent.
+
+### À vérifier en jeu (étape 3)
+
+- Rotation des clôtures, des coins et de la barrière des prefabs d'enclos (relevées dans le prefab vanilla
+  `Kweebec_Oak_Bunny_Area_003`) ; la barrière doit faire face à la place.
+- Animations des rôles du mod (loups, tortue, trillodon, archéoptéryx au sol, escargot de magme).
+- Les moutons restent tondables (récolte vanilla des `Tamed_Sheep`) : à couper si c'est une source gratuite de laine.
+
+## Bâtiments de métier, étape 4 : boutiques et Part de l'Hôte
+
+- **Une boutique par bâtiment, spécialité et niveau** : boutiques de troc vanilla
+  `Server/BarterShops/Nakasar_Peuples_W_<Bâtiment>_<Base|Spécialité>_<Niveau>.json`, payées en faveurs du peuple,
+  stock renouvelé tous les 3 jours à 6 h (comme le marchand vanilla). Le niveau I (et un bâtiment sans spécialité) vend
+  la « Base » ; aux niveaux II et III la boutique de la spécialité reprend la base et ajoute ses échanges. Données :
+  `SHOPS` dans `tools/generate_workshops.py` (objets vanilla seulement, vérifiés contre `vanilla-item-ids-0.7.2.txt`).
+- **Le rang choisit le niveau vu** : Toléré I, Ami II, Hôte III, jamais plus que le niveau du bâtiment
+  (`Workshops.shopLevel`). Bouton « Boutique (niveau N) » sur la carte des offres du panneau ; fermée si le villageois
+  du bâtiment est absent (il revient au matin) ou si le bâtiment est détruit (le panneau n'ouvre plus).
+- **Part de l'Hôte** (Kevin : niveau III seulement) : chaque matin, le bâtiment dépose un petit lot de sa production
+  (le premier échange du niveau II de sa spécialité) pour chaque joueur de rang Hôte : bouton « Prendre la Part de
+  l'Hôte », un lot par joueur et par jour de jeu (`WorkshopState.ShareDay/ShareTaken`). Le lot tombe aux pieds si
+  l'inventaire est plein. C'est une caisse virtuelle : pas de coffre ouvert à tous.
+- `ValidateAssets` vérifie que chaque bâtiment a sa boutique du niveau I, chaque spécialité ses boutiques II et III et
+  son lot.
+
+### Tester en jeu (étape 4)
+
+1. Panneau d'un bâtiment au rang Toléré : la carte des offres dit « niveau I », le bouton ouvre la boutique de troc.
+2. `/village niveauatelier Kweebec_Potager 3`, choisir « Verger », passer Ami : la boutique montre les baies (niveau
+   II) ; passer Hôte : tartes et salades (niveau III), et le bouton « Prendre la Part de l'Hôte » (6 baies rouges).
+   Le reprendre : refusé jusqu'au matin.
+3. La nuit, quand le villageois est rentré : la carte dit qu'il est absent, pas de bouton Boutique.
+
+### À vérifier en jeu (étape 4)
+
+- La page vanilla de troc affiche bien le titre traduit (`nakasar_peuples.barter.W_*.title`).
+- Prix et quantités : à équilibrer après quelques soirées de jeu.
+
+## Bâtiments de métier, étape 5 : spécialités de garde en raid
+
+Un bâtiment de garde ouvert, au niveau II ou plus, renforce les raids selon sa spécialité (`RAID` dans
+`tools/generate_workshops.py`, champ `Raid` de la spécialité, lu par `Workshops.raidBonus` au début du raid) :
+
+| Bâtiment | Spécialité | En raid |
+|---|---|---|
+| Tour de la garde (Kweebec) | Archers | 2 gardes de plus postés à la tour |
+| Tour de la garde (Kweebec) | Vigiles | +1 garde au cœur, PV des gardes × 1,25 |
+| Hutte de la garde (Feran) | Lanciers | PV des gardes × 1,35 |
+| Hutte de la garde (Feran) | Coureurs | +1 garde au cœur |
+| Tour du fort (Renoncés) | Arbalétriers | 2 gardes de plus postés à la tour |
+| Tour du fort (Renoncés) | Gardes du givre | +1 garde au cœur, PV des gardes × 1,25 |
+| Porte du monastère (Slothians) | Lances | PV des gardes × 1,5 |
+| Porte du monastère (Slothians) | Veilleurs | +1 garde au cœur |
+
+Au niveau III, les gardes de plus (au cœur ou postés) prennent +1. Les PV sont un modificateur du maximum posé au
+premier pas du raid, gardes pleins de vie à ce moment-là ; aucun soin ensuite (règle n° 1). Les Trorks ne subissant
+pas de raid, la Fosse de combat n'a pas d'effet en raid (sa ligne ne le promet plus).
+
+### Tester en jeu (étape 5)
+
+1. `/village niveauatelier Kweebec_Tour_Est 2`, choisir « Archers », puis `/time midnight` et `/village raidprevoir` : le journal dit 2 gardes de plus, deux gardes apparaissent à la tour.
+2. Reconvertir en « Vigiles » (`/village niveauatelier Kweebec_Tour_Est 2` libère la reconversion), relancer : un garde
+   de plus au cœur, barre de vie plus longue.
+
+### À vérifier en jeu (étape 5)
+
+- Les gardes postés à la tour : point sûr au centre de son emprise, ils peuvent apparaître sur le toit ; à déplacer
+  devant la porte si c'est gênant.
+
+## Bâtiments de métier, étape 6 : emplacements libres E1 et E2
+
+Chaque plan de village réserve deux terrains de 24 × 24 blocs (`tools/plots.py`, champ `Plots` du plan). Kevin :
+E1 s'ouvre au palier 2, E2 au palier 3 ; des piquets (barrière vanilla du peuple aux quatre coins et un écriteau de
+chantier) marquent le terrain un palier plus tôt. Les plans ont grandi pour les loger :
+
+| Plan | E1 (palier 2) | E2 (palier 3) | Rayon |
+|---|---|---|---|
+| Kweebec_Oak | 28, -37 | -22, -42 | 65 |
+| Trork_Camp | 20, -37 | 7, 45 | 59 |
+| Feran_Oasis | -2, 40 | 55, 0 | 68 |
+| Renonce_Givre | 28, -30 | -39, 13 | 60 |
+| Slothian_Monastere | 0, 51 | 48, 19 | 67 |
+
+Le bouton **Emplacements** du panneau du village ouvre la page `PlotPage` (`village/PlotPage.java`, mise en page par
+peuple générée par `tools/generate_workshop_ui.py`) : les deux terrains, puis le catalogue des 5 projets du peuple
+pour le terrain sélectionné. Toute la logique est dans `village/Plots.java`, l'état est sauvegardé avec le village
+(`PlotState` : projet, chantier, dernière démolition, piquets).
+
+- **Choisir** (rang Ami) : un projet par terrain, changeable sans frais tant que le chantier n'est pas lancé. Un projet
+  ne peut être que sur un terrain, sauf le deuxième élevage.
+- **Lancer le chantier** (rang Ami) : les 3 matériaux du terrain sont pris au dépôt du village (`MATERIALS`), le
+  terrain est aplani, l'échafaudage du peuple monte en 4 phases pendant 24 h de jeu, puis le prefab vanilla est collé
+  et le villageois du projet arrive. C'est alors un bâtiment de métier complet : panneau, niveaux I à III, deux
+  spécialités, boutiques, Part de l'Hôte.
+- **Démolir** (rang Ami) : retire les blocs au-dessus du sol de l'emprise (sauf les coffres et autres conteneurs),
+  rend un quart des matériaux au dépôt, et le bâtiment repart au niveau I. Une démolition tous les 7 jours de jeu
+  par terrain.
+
+Un projet est modélisé par deux bâtiments du plan (`E1_<Projet>`, `E2_<Projet>`, champ `Plot`) et deux métiers
+(`<Métier>_E1`, `<Métier>_E2`). Les chantiers de palier ne les collent jamais, sauf pour rebâtir leurs ruines après un
+raid perdu. `tools/generate_workshops.py` en fait 50 bâtiments de métier `<Peuple>_<E1|E2>_<Projet>`.
+
+| Peuple | Projets |
+|---|---|
+| Kweebec | Atelier d'archerie, Herboristerie, Grand bassin, Menuiserie, Deuxième enclos |
+| Trork | Forge de guerre, Camp des bûcherons, Carrière, Tannerie, Deuxième fosse |
+| Feran | Caravansérail, Tissage, Citerne, Volerie des plumes, Deuxième enclos |
+| Renoncés | Forge, Fumoir, Cabane de pêche, Chenil (Loups de garde : +1 garde en raid), Deuxième bergerie |
+| Slothians | Scriptorium, Cabane de pêche, Sanctuaire, Puits de basalte, Deuxième bauge |
+
+Le deuxième élevage reprend les commandes, les bêtes, les spécialités et les boutiques de l'enclos de base (champ
+`Twin` du bâtiment de métier). Deux élevages du même genre ne peuvent pas avoir la même spécialité
+(`Workshops.twinWith`, ligne d'état sur la page des spécialités).
+
+Les villageois des projets réutilisent les rôles et les dialogues du peuple (garde, soigneuse, puisatière, marchand,
+guetteur…) : noms et répliques peuvent donc se répéter avec ceux du village. Les prefabs viennent tous du jeu (règle
+n° 2), sauf les enclos du mod (`Nakasar/Peuples/Pens/`). Le Sanctuaire slothian prend le petit temple
+`Slothian_Disabled_Temple_Medium_001` : le temple prévu (`Temple_003`, 8 × 23) ne tient pas dans le terrain.
+
+### Tester en jeu (étape 6)
+
+1. `/village palier 1` : les piquets d'E1 apparaissent. `/village palier 2` : E1 s'ouvre, les piquets d'E2 apparaissent.
+2. `/village rep 220` (rang Ami), puis panneau du village, **Emplacements**, terrain E1 : choisir un projet,
+   le changer, y renoncer.
+3. Déposer les matériaux affichés dans le coffre du dépôt, **Lancer le chantier** : les piquets partent, l'échafaudage
+   monte. `/village finir` finit le chantier d'emplacement au pas suivant : le bâtiment est collé, son villageois
+   arrive, son panneau de métier est posé.
+4. Sur E2 (`/village palier 3`), le même projet est refusé (« déjà sur l'autre terrain »), sauf le deuxième élevage.
+5. **Démolir** : le bâtiment disparaît, un quart des matériaux revient au dépôt ; une deuxième démolition est refusée
+   pendant 7 jours.
+
+### À vérifier en jeu (étape 6)
+
+- La démolition enlève tout ce qui dépasse du sol dans l'emprise, pas seulement les blocs du prefab : un bloc posé par
+  un joueur sur le bâtiment part avec lui (les conteneurs restent).
+- Les piquets sur un sol en pente ou dans l'eau, l'écriteau de chantier (orientation).
+- Le panneau de métier des projets : posé dans le terrain, hors de l'emprise du prefab.

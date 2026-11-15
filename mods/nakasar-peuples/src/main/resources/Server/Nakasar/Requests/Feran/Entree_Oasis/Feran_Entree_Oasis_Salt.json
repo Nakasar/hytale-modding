@@ -1,0 +1,17 @@
+{
+  "$Comment": "Commande du bâtiment de métier Feran_Entree_Oasis, générée par tools/generate_workshops.py (ne pas modifier à la main) : voir RequestTemplate.",
+  "People": "Feran",
+  "Workshop": "Feran_Entree_Oasis",
+  "Type": "Gather",
+  "MinLevel": 1,
+  "MaxLevel": 3,
+  "Weight": 1,
+  "TitleKey": "nakasar_peuples.request.Feran_Entree_Oasis_Salt.title",
+  "TaskKey": "nakasar_peuples.request.Feran_Entree_Oasis_Salt.task",
+  "ItemId": "Ingredient_Salt",
+  "Quantity": 6,
+  "Knowledge": 30,
+  "Essor": 5,
+  "Favors": 1,
+  "Reputation": 5
+}

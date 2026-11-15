@@ -1,0 +1,85 @@
+{
+  "$Comment": "Bâtiment de métier généré par tools/generate_workshops.py (ne pas modifier à la main) : voir dev.nakasar.hytale.peuples.workshop.Workshop.",
+  "People": "Trork",
+  "Layout": "Trork_Camp",
+  "Building": "Feu_De_Camp",
+  "Job": "Guerrier",
+  "Icon": "Food_Wildmeat_Cooked",
+  "NameKey": "nakasar_peuples.workshop.Trork_Feu_De_Camp.name",
+  "Board": [
+    2,
+    10,
+    2
+  ],
+  "Upgrades": [
+    {
+      "Level": 2,
+      "Hours": 12,
+      "Materials": [
+        {
+          "ItemId": "Food_Wildmeat_Raw",
+          "Quantity": 16
+        },
+        {
+          "ItemId": "Ingredient_Hide_Medium",
+          "Quantity": 8
+        },
+        {
+          "ItemId": "Wood_Oak_Trunk",
+          "Quantity": 24
+        }
+      ],
+      "Decor": [
+        "1 0 0 0 Furniture_Crude_Torch"
+      ]
+    },
+    {
+      "Level": 3,
+      "Hours": 12,
+      "Materials": [
+        {
+          "ItemId": "Food_Wildmeat_Raw",
+          "Quantity": 24
+        },
+        {
+          "ItemId": "Ingredient_Hide_Heavy",
+          "Quantity": 8
+        },
+        {
+          "ItemId": "Wood_Oak_Trunk",
+          "Quantity": 32
+        }
+      ],
+      "Decor": [
+        "-1 0 0 0 Furniture_Crude_Brazier"
+      ]
+    }
+  ],
+  "Specialties": [
+    {
+      "Id": "Rotisserie",
+      "NameKey": "nakasar_peuples.workshop.specialty.Trork_Feu_De_Camp.Rotisserie",
+      "LineKey": "nakasar_peuples.workshop.specialtyLine.Trork_Feu_De_Camp.Rotisserie",
+      "Icon": "Food_Wildmeat_Cooked",
+      "Shops": [
+        "Nakasar_Peuples_W_Trork_Feu_De_Camp_Rotisserie_2",
+        "Nakasar_Peuples_W_Trork_Feu_De_Camp_Rotisserie_3"
+      ],
+      "ShareItem": "Food_Wildmeat_Cooked",
+      "ShareQuantity": 4
+    },
+    {
+      "Id": "Fosse_De_Combat",
+      "NameKey": "nakasar_peuples.workshop.specialty.Trork_Feu_De_Camp.Fosse_De_Combat",
+      "LineKey": "nakasar_peuples.workshop.specialtyLine.Trork_Feu_De_Camp.Fosse_De_Combat",
+      "Icon": "Weapon_Club_Crude",
+      "Shops": [
+        "Nakasar_Peuples_W_Trork_Feu_De_Camp_Fosse_De_Combat_2",
+        "Nakasar_Peuples_W_Trork_Feu_De_Camp_Fosse_De_Combat_3"
+      ],
+      "ShareItem": "Weapon_Club_Crude",
+      "ShareQuantity": 1
+    }
+  ],
+  "Shop": "Nakasar_Peuples_W_Trork_Feu_De_Camp_Base_1"
+}

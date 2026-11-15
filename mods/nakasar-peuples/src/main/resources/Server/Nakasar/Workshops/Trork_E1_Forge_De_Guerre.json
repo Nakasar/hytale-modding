@@ -1,0 +1,85 @@
+{
+  "$Comment": "Bâtiment de métier généré par tools/generate_workshops.py (ne pas modifier à la main) : voir dev.nakasar.hytale.peuples.workshop.Workshop.",
+  "People": "Trork",
+  "Layout": "Trork_Camp",
+  "Building": "E1_Forge_De_Guerre",
+  "Job": "Forgeron_E1",
+  "Icon": "Weapon_Club_Crude",
+  "NameKey": "nakasar_peuples.workshop.Trork_E1_Forge_De_Guerre.name",
+  "Board": [
+    23,
+    -33,
+    0
+  ],
+  "Upgrades": [
+    {
+      "Level": 2,
+      "Hours": 12,
+      "Materials": [
+        {
+          "ItemId": "Food_Wildmeat_Raw",
+          "Quantity": 16
+        },
+        {
+          "ItemId": "Ingredient_Hide_Medium",
+          "Quantity": 8
+        },
+        {
+          "ItemId": "Wood_Oak_Trunk",
+          "Quantity": 24
+        }
+      ],
+      "Decor": [
+        "1 0 0 0 Furniture_Crude_Torch"
+      ]
+    },
+    {
+      "Level": 3,
+      "Hours": 12,
+      "Materials": [
+        {
+          "ItemId": "Food_Wildmeat_Raw",
+          "Quantity": 24
+        },
+        {
+          "ItemId": "Ingredient_Hide_Heavy",
+          "Quantity": 8
+        },
+        {
+          "ItemId": "Wood_Oak_Trunk",
+          "Quantity": 32
+        }
+      ],
+      "Decor": [
+        "-1 0 0 0 Furniture_Crude_Brazier"
+      ]
+    }
+  ],
+  "Specialties": [
+    {
+      "Id": "Armes_Os",
+      "NameKey": "nakasar_peuples.workshop.specialty.Trork_E1_Forge_De_Guerre.Armes_Os",
+      "LineKey": "nakasar_peuples.workshop.specialtyLine.Trork_E1_Forge_De_Guerre.Armes_Os",
+      "Icon": "Weapon_Sword_Bone",
+      "Shops": [
+        "Nakasar_Peuples_W_Trork_E1_Forge_De_Guerre_Armes_Os_2",
+        "Nakasar_Peuples_W_Trork_E1_Forge_De_Guerre_Armes_Os_3"
+      ],
+      "ShareItem": "Weapon_Sword_Bone",
+      "ShareQuantity": 1
+    },
+    {
+      "Id": "Armures_Peau",
+      "NameKey": "nakasar_peuples.workshop.specialty.Trork_E1_Forge_De_Guerre.Armures_Peau",
+      "LineKey": "nakasar_peuples.workshop.specialtyLine.Trork_E1_Forge_De_Guerre.Armures_Peau",
+      "Icon": "Armor_Trork_Chest",
+      "Shops": [
+        "Nakasar_Peuples_W_Trork_E1_Forge_De_Guerre_Armures_Peau_2",
+        "Nakasar_Peuples_W_Trork_E1_Forge_De_Guerre_Armures_Peau_3"
+      ],
+      "ShareItem": "Armor_Leather_Light_Head",
+      "ShareQuantity": 1
+    }
+  ],
+  "Shop": "Nakasar_Peuples_W_Trork_E1_Forge_De_Guerre_Base_1"
+}

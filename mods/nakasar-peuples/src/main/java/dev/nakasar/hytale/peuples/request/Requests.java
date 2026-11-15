@@ -319,7 +319,7 @@ public final class Requests {
      * Donne au joueur la demande `t` du village, sous l'id `id` : missive d'une livraison, lieu d'une demande au loin,
      * raid attiré par une défense. Rend faux si elle n'a pas pu commencer (sac plein pour la missive).
      */
-    static boolean start(World world, Store<EntityStore> store, Ref<EntityStore> ref, PlayerRef player, PeuplesPlayer state,
+    public static boolean start(World world, Store<EntityStore> store, Ref<EntityStore> ref, PlayerRef player, PeuplesPlayer state,
                          Village village, RequestTemplate t, String id, long expires) {
         if (t.type() == RequestType.DELIVERY) {
             ItemStack missive = new ItemStack(village.people().missiveItem(), 1);
@@ -533,11 +533,16 @@ public final class Requests {
         }
         // Réputation : pour chaque joueur qui remplit la demande, même si le village a déjà reçu l'essor (GDD).
         Reputations.change(world, store, ref, player, village, t.reputation(), KEYS + "reputationReason");
-        int slot = slotOf(village, r.id());
         int gained = 0;
-        if (slot >= 0) {
-            gained = Villages.addEssor(village, t.essor());
-            redraw(store, village, slot);
+        if (t.workshop() != null) {
+            // Commande d'un bâtiment de métier : savoir-faire au bâtiment, essor au village, nouvelle commande.
+            gained = dev.nakasar.hytale.peuples.workshop.Workshops.fulfilled(world, store, player, village, t, r.id());
+        } else {
+            int slot = slotOf(village, r.id());
+            if (slot >= 0) {
+                gained = Villages.addEssor(village, t.essor());
+                redraw(store, village, slot);
+            }
         }
         Message done = Message.translation(gained > 0 ? KEYS + "fulfilled" : KEYS + "fulfilledNoEssor")
                 .param("title", title(t)).param("village", village.name()).param("essor", gained)

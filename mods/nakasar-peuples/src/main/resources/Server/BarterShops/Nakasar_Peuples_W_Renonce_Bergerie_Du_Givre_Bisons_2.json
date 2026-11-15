@@ -1,0 +1,90 @@
+{
+  "$Comment": "Boutique du niveau 2 du bâtiment de métier Renonce_Bergerie_Du_Givre, spécialité Bisons, générée par tools/generate_workshops.py.",
+  "DisplayNameKey": "nakasar_peuples.barter.W_Renonce_Bergerie_Du_Givre_Bisons_2.title",
+  "RefreshInterval": {
+    "Days": 3
+  },
+  "RestockHour": 6,
+  "TradeSlots": [
+    {
+      "Type": "Fixed",
+      "Trade": {
+        "Output": {
+          "ItemId": "Ingredient_Fabric_Scrap_Wool",
+          "Quantity": 4
+        },
+        "Input": [
+          {
+            "ItemId": "Nakasar_Peuples_Favor_Renonce",
+            "Quantity": 1
+          }
+        ],
+        "Stock": 8
+      }
+    },
+    {
+      "Type": "Fixed",
+      "Trade": {
+        "Output": {
+          "ItemId": "Ingredient_Hay",
+          "Quantity": 8
+        },
+        "Input": [
+          {
+            "ItemId": "Nakasar_Peuples_Favor_Renonce",
+            "Quantity": 1
+          }
+        ],
+        "Stock": 8
+      }
+    },
+    {
+      "Type": "Fixed",
+      "Trade": {
+        "Output": {
+          "ItemId": "Food_Cheese",
+          "Quantity": 1
+        },
+        "Input": [
+          {
+            "ItemId": "Nakasar_Peuples_Favor_Renonce",
+            "Quantity": 1
+          }
+        ],
+        "Stock": 8
+      }
+    },
+    {
+      "Type": "Fixed",
+      "Trade": {
+        "Output": {
+          "ItemId": "Food_Beef_Raw",
+          "Quantity": 4
+        },
+        "Input": [
+          {
+            "ItemId": "Nakasar_Peuples_Favor_Renonce",
+            "Quantity": 1
+          }
+        ],
+        "Stock": 6
+      }
+    },
+    {
+      "Type": "Fixed",
+      "Trade": {
+        "Output": {
+          "ItemId": "Ingredient_Hide_Heavy",
+          "Quantity": 2
+        },
+        "Input": [
+          {
+            "ItemId": "Nakasar_Peuples_Favor_Renonce",
+            "Quantity": 2
+          }
+        ],
+        "Stock": 6
+      }
+    }
+  ]
+}

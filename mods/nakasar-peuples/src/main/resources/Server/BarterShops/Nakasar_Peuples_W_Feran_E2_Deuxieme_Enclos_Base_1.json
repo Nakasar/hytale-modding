@@ -1,0 +1,58 @@
+{
+  "$Comment": "Boutique du niveau I du bâtiment de métier Feran_E2_Deuxieme_Enclos, générée par tools/generate_workshops.py.",
+  "DisplayNameKey": "nakasar_peuples.barter.W_Feran_E2_Deuxieme_Enclos_Base_1.title",
+  "RefreshInterval": {
+    "Days": 3
+  },
+  "RestockHour": 6,
+  "TradeSlots": [
+    {
+      "Type": "Fixed",
+      "Trade": {
+        "Output": {
+          "ItemId": "Food_Egg",
+          "Quantity": 4
+        },
+        "Input": [
+          {
+            "ItemId": "Nakasar_Peuples_Favor_Feran",
+            "Quantity": 1
+          }
+        ],
+        "Stock": 8
+      }
+    },
+    {
+      "Type": "Fixed",
+      "Trade": {
+        "Output": {
+          "ItemId": "Ingredient_Feathers_Light",
+          "Quantity": 4
+        },
+        "Input": [
+          {
+            "ItemId": "Nakasar_Peuples_Favor_Feran",
+            "Quantity": 1
+          }
+        ],
+        "Stock": 8
+      }
+    },
+    {
+      "Type": "Fixed",
+      "Trade": {
+        "Output": {
+          "ItemId": "Plant_Seeds_Wheat",
+          "Quantity": 6
+        },
+        "Input": [
+          {
+            "ItemId": "Nakasar_Peuples_Favor_Feran",
+            "Quantity": 1
+          }
+        ],
+        "Stock": 8
+      }
+    }
+  ]
+}

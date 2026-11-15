@@ -29,6 +29,10 @@ Les villages se posent tout seuls dans le monde : le premier village kweebec non
 3. Votre [réputation](reputation.md) monte : d'Étranger, vous passez Toléré, Ami, Hôte puis Champion. Chaque rang ouvre de nouvelles demandes, échoppes et étapes de la chaîne du chef.
 4. Champion d'un peuple, vous recevez une **Pierre de fondation** pour bâtir votre propre [avant-poste](avant-poste.md).
 
+## Bâtiments de métier
+
+Les enclos, potagers, puits et tours d'un village ont leur propre panneau : commandes du jour, niveaux I à III, spécialité et boutique en faveurs. À partir du palier 2, deux terrains libres attendent les bâtiments que vous choisissez. Voir [Bâtiments de métier](batiments-de-metier.md) et [Emplacements libres](emplacements.md).
+
 ## Les zones et leurs climats
 
 Plus loin de l'apparition, le monde devient hostile : la **soif** dans le désert, le **froid** dans la toundra, la **corruption du Vide** dans les terres brûlées. Chaque peuple sait s'en protéger, et l'objet de fin de chaîne d'un peuple ouvre souvent la route du suivant. Voir [Climats des zones](climats.md).

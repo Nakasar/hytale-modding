@@ -1,0 +1,18 @@
+{
+  "$Comment": "Commande de maître du niveau 2 du bâtiment de métier Trork_E1_Tannerie, générée par tools/generate_workshops.py (ne pas modifier à la main) : voir RequestTemplate.",
+  "People": "Trork",
+  "Workshop": "Trork_E1_Tannerie",
+  "Master": true,
+  "Type": "Gather",
+  "MinLevel": 2,
+  "MaxLevel": 2,
+  "Weight": 1,
+  "TitleKey": "nakasar_peuples.request.Trork_E1_Tannerie_Master_2.title",
+  "TaskKey": "nakasar_peuples.request.Trork_E1_Tannerie_Master_2.task",
+  "ItemId": "Ingredient_Hide_Medium",
+  "Quantity": 16,
+  "Knowledge": 0,
+  "Essor": 15,
+  "Favors": 3,
+  "Reputation": 15
+}

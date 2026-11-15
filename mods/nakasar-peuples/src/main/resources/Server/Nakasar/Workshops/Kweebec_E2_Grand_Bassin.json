@@ -1,0 +1,86 @@
+{
+  "$Comment": "Bâtiment de métier généré par tools/generate_workshops.py (ne pas modifier à la main) : voir dev.nakasar.hytale.peuples.workshop.Workshop.",
+  "People": "Kweebec",
+  "Layout": "Kweebec_Oak",
+  "Building": "E2_Grand_Bassin",
+  "Job": "Pecheuse_E2",
+  "Icon": "Food_Fish_Raw",
+  "NameKey": "nakasar_peuples.workshop.Kweebec_E2_Grand_Bassin.name",
+  "Board": [
+    -19,
+    -38,
+    0
+  ],
+  "Upgrades": [
+    {
+      "Level": 2,
+      "Hours": 12,
+      "Materials": [
+        {
+          "ItemId": "Wood_Oak_Trunk",
+          "Quantity": 24
+        },
+        {
+          "ItemId": "Wood_Hardwood_Planks",
+          "Quantity": 16
+        },
+        {
+          "ItemId": "Soil_Clay_Brick",
+          "Quantity": 12
+        }
+      ],
+      "Decor": [
+        "1 0 0 0 Furniture_Kweebec_Lantern"
+      ]
+    },
+    {
+      "Level": 3,
+      "Hours": 12,
+      "Materials": [
+        {
+          "ItemId": "Wood_Oak_Trunk",
+          "Quantity": 32
+        },
+        {
+          "ItemId": "Plant_Leaves_Oak",
+          "Quantity": 16
+        },
+        {
+          "ItemId": "Plant_Sapling_Oak",
+          "Quantity": 2
+        }
+      ],
+      "Decor": [
+        "-1 0 0 0 Furniture_Kweebec_Lantern",
+        "0 1 0 0 Furniture_Kweebec_Candle"
+      ]
+    }
+  ],
+  "Specialties": [
+    {
+      "Id": "Poissons",
+      "NameKey": "nakasar_peuples.workshop.specialty.Kweebec_E2_Grand_Bassin.Poissons",
+      "LineKey": "nakasar_peuples.workshop.specialtyLine.Kweebec_E2_Grand_Bassin.Poissons",
+      "Icon": "Food_Fish_Raw",
+      "Shops": [
+        "Nakasar_Peuples_W_Kweebec_E2_Grand_Bassin_Poissons_2",
+        "Nakasar_Peuples_W_Kweebec_E2_Grand_Bassin_Poissons_3"
+      ],
+      "ShareItem": "Food_Fish_Raw",
+      "ShareQuantity": 4
+    },
+    {
+      "Id": "Essence_Eau",
+      "NameKey": "nakasar_peuples.workshop.specialty.Kweebec_E2_Grand_Bassin.Essence_Eau",
+      "LineKey": "nakasar_peuples.workshop.specialtyLine.Kweebec_E2_Grand_Bassin.Essence_Eau",
+      "Icon": "Ingredient_Water_Essence",
+      "Shops": [
+        "Nakasar_Peuples_W_Kweebec_E2_Grand_Bassin_Essence_Eau_2",
+        "Nakasar_Peuples_W_Kweebec_E2_Grand_Bassin_Essence_Eau_3"
+      ],
+      "ShareItem": "Ingredient_Water_Essence",
+      "ShareQuantity": 4
+    }
+  ],
+  "Shop": "Nakasar_Peuples_W_Kweebec_E2_Grand_Bassin_Base_1"
+}

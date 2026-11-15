@@ -20,6 +20,7 @@ Sortie : src/main/resources/Server/Nakasar/VillageLayouts/<Id>.json, et un aper�
 """
 import argparse
 import json
+import plots
 import math
 from pathlib import Path
 
@@ -28,6 +29,9 @@ OUT = ROOT / "src/main/resources/Server/Nakasar/VillageLayouts"
 PREFABS = Path(__file__).resolve().parent / "vanilla-prefabs-0.7.2.txt"
 # Cœurs de village (place, pièces vanilla par palier, tableau/dépôt/bannière) : tools/generate_village_hearts.py.
 HEARTS = Path(__file__).resolve().parent / "village-hearts.json"
+# Prefabs du mod collés comme des bâtiments (enclos des peuples) : Server/Prefabs/Nakasar/Peuples/Pens.
+MOD_PREFABS = ROOT / "src/main/resources/Server/Prefabs/Nakasar/Peuples/Pens"
+PEN = "Nakasar/Peuples/Pens/"
 
 # Écart minimal entre deux emprises (blocs) : le Java aplanit chaque emprise avec une marge de 2 blocs et un fondu.
 MARGIN = 3
@@ -111,6 +115,8 @@ LAYOUTS["Trork_Camp"] = {
         ("Piege", 1, TRORK + "Trap/Trork_Trap_Trork_Trap_001", 22, 22, 0),
         ("Reserve", 1, TRORK + "Tier_2/Store/Trork_Tier_2_Store_001", 18, -18, 0),
         ("Tente_Sud", 1, TRORK + "Tent/Trork_Tent_001", -18, 18, 0),
+        # Bâtiments de métier, étape 3 : la fosse aux bêtes du dresseur (enclos du mod en blocs vanilla, barrière à l'est).
+        ("Fosse_Aux_Betes", 1, PEN + "Trork_Pen", -32, 14, 1),
         # Palier 2 : la grande tour, l'entrepôt, le bric-à-brac.
         ("Tour_Est", 2, TRORK + "Tier_2/Watchtower/Trork_Tier_2_Watchtower_001", 34, 0, 0),
         ("Entrepot", 2, TRORK + "Warehouse/Trork_Warehouse_Trork_Warehouse_001", -34, 0, 0),
@@ -130,6 +136,7 @@ LAYOUTS["Trork_Camp"] = {
         ("Garde", 0, "@Trork_Guard", "Tour_De_Guet", "front", "Tente_Est"),
         ("Guerrier", 0, "@Trork_Warrior", "Feu_De_Camp", "front", "Tente_Ouest"),
         ("Chasseur", 1, "@Trork_Hunter", "Piege", "front", "Tente_Sud"),
+        ("Dresseur", 1, "@Trork_Hunter", "Fosse_Aux_Betes", "front", "Tente_Ouest"),
         ("Cogneur", 2, "@Trork_Brawler", "Entrepot", "front", "Entrepot"),
         ("Sentinelle", 2, "@Trork_Sentry", "Tour_Est", "front", "Tour_Est"),
         ("Shaman", 3, "@Trork_Shaman", "Reserve_Du_Chef", "front", "Reserve_Du_Chef"),
@@ -148,6 +155,12 @@ def load_bounds():
             bounds[parts[0]] = tuple(int(v) for v in parts[1:])
         else:
             bounds[parts[0]] = None
+    # Prefabs du mod (enclos des peuples, tools/generate_pens.py) : bornes lues dans le fichier.
+    for f in sorted(MOD_PREFABS.glob("**/*.prefab.json")):
+        blocks = json.loads(f.read_text(encoding="utf-8"))["blocks"]
+        xs, ys, zs = [b["x"] for b in blocks], [b["y"] for b in blocks], [b["z"] for b in blocks]
+        key = f.relative_to(MOD_PREFABS.parent.parent.parent).as_posix()[: -len(".prefab.json")]
+        bounds[key] = (min(xs), max(xs), min(ys), max(ys), min(zs), max(zs))
     return bounds
 
 
@@ -227,6 +240,47 @@ def build(layout_id, spec, bounds):
             "MinY": b[2],
             "MaxY": b[3],
         })
+    # Étape 6 des bâtiments de métier : terrains E1/E2 (tools/plots.py) et leurs projets, deux bâtiments par projet
+    # (un par terrain), collés seulement par le chantier d'emplacement (Java village/Plots).
+    plot_docs = []
+    plot_jobs = []
+    plot_dialogues = {}
+    for pid, (px_, pz_, ptier) in sorted(plots.PLOTS.get(layout_id, {}).items()):
+        prect = plots.plot_rect(px_, pz_)
+        if overlaps(prect, plaza_rect, 1):
+            errors.append(f"{layout_id}/{pid} : le terrain empiète sur la place {prect}")
+        for other_id, other, _ in rects:
+            if overlaps(prect, other, MARGIN):
+                errors.append(f"{layout_id}/{pid} : le terrain chevauche {other_id} : {prect} / {other}")
+        for other in plot_docs:
+            if overlaps(prect, plots.plot_rect(other["X"], other["Z"]), MARGIN):
+                errors.append(f"{layout_id}/{pid} : le terrain chevauche {other['Id']}")
+        far = max(math.hypot(a, c) for a in prect[:2] for c in prect[2:])
+        radius = max(radius, math.ceil(far))
+        plot_docs.append({"Id": pid, "X": px_, "Z": pz_, "Size": plots.PLOT_SIZE, "Tier": ptier,
+                          "Materials": [{"ItemId": i, "Quantity": q} for i, q in plots.MATERIALS[spec["People"]]],
+                          "Hours": plots.PLOT_HOURS})
+        for project in plots.PROJECTS.get(layout_id, []):
+            prefab = project["prefab"]
+            if prefab not in bounds or bounds[prefab] is None:
+                errors.append(f"{layout_id}/{pid}/{project['id']} : prefab inconnu ou non mesuré {prefab}")
+                continue
+            b = bounds[prefab]
+            r0 = footprint(b, 0, 0, project["rotation"])
+            ax = px_ - (r0[0] + r0[1]) // 2
+            az = pz_ - (r0[2] + r0[3]) // 2
+            rect = footprint(b, ax, az, project["rotation"])
+            if rect[0] < prect[0] + 1 or rect[1] > prect[1] - 1 or rect[2] < prect[2] + 1 or rect[3] > prect[3] - 1:
+                errors.append(f"{layout_id}/{pid}/{project['id']} : {prefab} ne tient pas dans le terrain ({rect} / {prect})")
+            bid = plots.building_id(pid, project["id"])
+            buildings.append({
+                "Id": bid, "Tier": ptier, "Prefab": prefab, "X": ax, "Z": az, "Rotation": project["rotation"],
+                "MinX": rect[0] - ax, "MaxX": rect[1] - ax, "MinZ": rect[2] - az, "MaxZ": rect[3] - az,
+                "MinY": b[2], "MaxY": b[3], "Plot": pid,
+            })
+            plot_jobs.append((plots.job_id(pid, project["job"]), ptier, project["kind"], bid, "front", bid))
+            if project.get("dialogue"):
+                plot_dialogues[plots.job_id(pid, project["job"])] = project["dialogue"]
     by_id = {b["Id"]: b for b in buildings}
     chantiers = []
     for tier, hours, materials in spec.get("Chantiers", []):
@@ -236,7 +290,7 @@ def build(layout_id, spec, bounds):
                           "Materials": [{"ItemId": i, "Quantity": q} for i, q in materials]})
     jobs = []
     wx, wz = heart["Woodpile"] if heart else spec.get("Woodpile", (0, 0))
-    for jid, tier, kind, work, where, home in spec.get("Jobs", []):
+    for jid, tier, kind, work, where, home in list(spec.get("Jobs", [])) + plot_jobs:
         if work is not None and work not in by_id:
             errors.append(f"{layout_id}/{jid} : bâtiment de travail inconnu {work}")
             continue
@@ -251,7 +305,7 @@ def build(layout_id, spec, bounds):
         vanilla = kind.startswith("@")
         role = kind[1:] if vanilla else f"Nakasar_Peuples_{spec['People']}_{kind}"
         jobs.append({"Id": jid, "Tier": tier, "Role": role,
-                     "Dialogue": "" if vanilla else f"{spec['People']}_{kind}", "Building": work or "", "WorkX": px, "WorkZ": pz,
+                     "Dialogue": "" if vanilla else plot_dialogues.get(jid, f"{spec['People']}_{kind}"), "Building": work or "", "WorkX": px, "WorkZ": pz,
                      "Home": home, "HomeX": hx, "HomeZ": hz, "Builder": kind == "Builder"})
     bx, bz = (heart["Banner"][0], heart["Banner"][2]) if heart else spec["Banner"]
     doc = {
@@ -267,6 +321,8 @@ def build(layout_id, spec, bounds):
         "Chantiers": chantiers,
         "Jobs": jobs,
     }
+    if plot_docs:
+        doc["Plots"] = plot_docs
     if heart:
         doc["Heart"] = {k: heart[k] for k in ("Board", "Deposit", "Banner", "Steps")}
     return doc, rects, errors

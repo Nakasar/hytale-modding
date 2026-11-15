@@ -1,0 +1,17 @@
+{
+  "$Comment": "Commande du bâtiment de métier Kweebec_Grande_Maison, générée par tools/generate_workshops.py (ne pas modifier à la main) : voir RequestTemplate.",
+  "People": "Kweebec",
+  "Workshop": "Kweebec_Grande_Maison",
+  "Type": "Craft",
+  "MinLevel": 1,
+  "MaxLevel": 3,
+  "Weight": 1,
+  "TitleKey": "nakasar_peuples.request.Kweebec_Grande_Maison_Vials.title",
+  "TaskKey": "nakasar_peuples.request.Kweebec_Grande_Maison_Vials.task",
+  "ItemId": "Potion_Health_Small",
+  "Quantity": 2,
+  "Knowledge": 40,
+  "Essor": 5,
+  "Favors": 1,
+  "Reputation": 6
+}

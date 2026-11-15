@@ -1,0 +1,17 @@
+{
+  "$Comment": "Commande du bâtiment de métier Feran_E1_Deuxieme_Enclos, générée par tools/generate_workshops.py (ne pas modifier à la main) : voir RequestTemplate.",
+  "People": "Feran",
+  "Workshop": "Feran_E1_Deuxieme_Enclos",
+  "Type": "Gather",
+  "MinLevel": 1,
+  "MaxLevel": 3,
+  "Weight": 1,
+  "TitleKey": "nakasar_peuples.request.Feran_E1_Deuxieme_Enclos_Grain.title",
+  "TaskKey": "nakasar_peuples.request.Feran_E1_Deuxieme_Enclos_Grain.task",
+  "ItemId": "Plant_Seeds_Wheat",
+  "Quantity": 12,
+  "Knowledge": 30,
+  "Essor": 5,
+  "Favors": 1,
+  "Reputation": 5
+}

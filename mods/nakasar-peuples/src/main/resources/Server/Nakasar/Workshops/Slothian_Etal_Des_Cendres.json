@@ -1,0 +1,85 @@
+{
+  "$Comment": "Bâtiment de métier généré par tools/generate_workshops.py (ne pas modifier à la main) : voir dev.nakasar.hytale.peuples.workshop.Workshop.",
+  "People": "Slothian",
+  "Layout": "Slothian_Monastere",
+  "Building": "Etal_Des_Cendres",
+  "Job": "Porteur_Cendres",
+  "Icon": "Ingredient_Charcoal",
+  "NameKey": "nakasar_peuples.workshop.Slothian_Etal_Des_Cendres.name",
+  "Board": [
+    -4,
+    -13,
+    3
+  ],
+  "Upgrades": [
+    {
+      "Level": 2,
+      "Hours": 12,
+      "Materials": [
+        {
+          "ItemId": "Rock_Basalt_Brick",
+          "Quantity": 16
+        },
+        {
+          "ItemId": "Wood_Hardwood_Planks",
+          "Quantity": 16
+        },
+        {
+          "ItemId": "Soil_Ash",
+          "Quantity": 8
+        }
+      ],
+      "Decor": [
+        "1 0 0 0 Furniture_Jungle_Torch"
+      ]
+    },
+    {
+      "Level": 3,
+      "Hours": 12,
+      "Materials": [
+        {
+          "ItemId": "Rock_Basalt_Brick",
+          "Quantity": 32
+        },
+        {
+          "ItemId": "Furniture_Jungle_Candle",
+          "Quantity": 4
+        },
+        {
+          "ItemId": "Ingredient_Fire_Essence",
+          "Quantity": 6
+        }
+      ],
+      "Decor": [
+        "-1 0 0 0 Furniture_Jungle_Brazier"
+      ]
+    }
+  ],
+  "Specialties": [
+    {
+      "Id": "Braises",
+      "NameKey": "nakasar_peuples.workshop.specialty.Slothian_Etal_Des_Cendres.Braises",
+      "LineKey": "nakasar_peuples.workshop.specialtyLine.Slothian_Etal_Des_Cendres.Braises",
+      "Icon": "Ingredient_Charcoal",
+      "Shops": [
+        "Nakasar_Peuples_W_Slothian_Etal_Des_Cendres_Braises_2",
+        "Nakasar_Peuples_W_Slothian_Etal_Des_Cendres_Braises_3"
+      ],
+      "ShareItem": "Ingredient_Fire_Essence",
+      "ShareQuantity": 3
+    },
+    {
+      "Id": "Encens",
+      "NameKey": "nakasar_peuples.workshop.specialty.Slothian_Etal_Des_Cendres.Encens",
+      "LineKey": "nakasar_peuples.workshop.specialtyLine.Slothian_Etal_Des_Cendres.Encens",
+      "Icon": "Furniture_Jungle_Candle",
+      "Shops": [
+        "Nakasar_Peuples_W_Slothian_Etal_Des_Cendres_Encens_2",
+        "Nakasar_Peuples_W_Slothian_Etal_Des_Cendres_Encens_3"
+      ],
+      "ShareItem": "Furniture_Jungle_Candle",
+      "ShareQuantity": 3
+    }
+  ],
+  "Shop": "Nakasar_Peuples_W_Slothian_Etal_Des_Cendres_Base_1"
+}

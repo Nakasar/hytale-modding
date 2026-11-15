@@ -109,6 +109,7 @@ public class ValidateAssets {
         CODECS.put("Nakasar/Dialogues/", "dev.nakasar.hytale.peuples.dialogue.Dialogue");
         CODECS.put("Nakasar/VillageLayouts/", "dev.nakasar.hytale.peuples.village.VillageLayout");
         CODECS.put("Nakasar/Requests/", "dev.nakasar.hytale.peuples.request.RequestTemplate");
+        CODECS.put("Nakasar/Workshops/", "dev.nakasar.hytale.peuples.workshop.Workshop");
         CODECS.put("WorldEvent/Stage/", WE + "event.StageAsset");
     }
 
@@ -1109,7 +1110,7 @@ public class ValidateAssets {
 
     private static int checkDialogueTexts(Path root, String vanillaItems) throws Exception {
         List<Path> dirs = new ArrayList<>();
-        for (String d : List.of("Nakasar/Dialogues", "Nakasar/Requests", "BarterShops", "Nakasar/VillageLayouts")) {
+        for (String d : List.of("Nakasar/Dialogues", "Nakasar/Requests", "BarterShops", "Nakasar/VillageLayouts", "Nakasar/Workshops")) {
             if (Files.isDirectory(root.resolve(d))) {
                 dirs.add(root.resolve(d));
             }
@@ -1216,6 +1217,149 @@ public class ValidateAssets {
      * Plans de village ({@code Nakasar/VillageLayouts}) : chaque {@code Prefab} doit être un prefab vanilla relevé dans
      * Assets.zip ({@code -Dprefabs}, tools/vanilla-prefabs-0.7.2.txt) ; un chemin inconnu laisse un trou dans le village.
      */
+    /**
+     * Bâtiments de métier ({@code Nakasar/Workshops}) : plan, bâtiment et métier existent, le métier travaille dans ce
+     * bâtiment, chaque bâtiment a au moins {@value #MIN_WORKSHOP_ORDERS} commandes ; chaque commande
+     * ({@code "Workshop"} d'un modèle de demande) cite un bâtiment de métier qui existe.
+     */
+    private static int checkWorkshops(Path root) throws Exception {
+        Path dir = root.resolve("Nakasar/Workshops");
+        Path layouts = root.resolve("Nakasar/VillageLayouts");
+        Path requests = root.resolve("Nakasar/Requests");
+        int errors = 0;
+        Map<String, Integer> orders = new LinkedHashMap<>();
+        if (Files.isDirectory(dir)) {
+            try (Stream<Path> walk = Files.list(dir)) {
+                for (Path f : walk.filter(p -> p.toString().endsWith(".json")).sorted().toList()) {
+                    orders.put(f.getFileName().toString().replace(".json", ""), 0);
+                }
+            }
+        }
+        if (Files.isDirectory(requests)) {
+            try (Stream<Path> walk = Files.walk(requests)) {
+                for (Path f : walk.filter(p -> p.toString().endsWith(".json")).sorted().toList()) {
+                    BsonDocument doc = BsonDocument.parse(Files.readString(f));
+                    if (!doc.containsKey("Workshop")) {
+                        continue;
+                    }
+                    String w = doc.getString("Workshop").getValue();
+                    boolean master = doc.containsKey("Master") && doc.getBoolean("Master").getValue();
+                    if (!orders.containsKey(w)) {
+                        errors++;
+                        System.out.println("ERROR " + root.relativize(f) + " : bâtiment de métier inconnu " + w);
+                    } else if (!master) {
+                        orders.merge(w, 1, Integer::sum);
+                    }
+                }
+            }
+        }
+        for (Map.Entry<String, Integer> e : orders.entrySet()) {
+            Path f = dir.resolve(e.getKey() + ".json");
+            BsonDocument doc = BsonDocument.parse(Files.readString(f));
+            List<String> problems = new ArrayList<>();
+            String layoutId = doc.getString("Layout").getValue();
+            Path layoutFile = layouts.resolve(layoutId + ".json");
+            if (!Files.isRegularFile(layoutFile)) {
+                problems.add("plan inconnu " + layoutId);
+            } else {
+                BsonDocument layout = BsonDocument.parse(Files.readString(layoutFile));
+                String building = doc.getString("Building").getValue();
+                String job = doc.getString("Job").getValue();
+                boolean hasBuilding = layout.getArray("Buildings").stream().anyMatch(b -> b.asDocument().getString("Id").getValue().equals(building));
+                BsonDocument jobDoc = layout.getArray("Jobs").stream().map(BsonValue::asDocument)
+                        .filter(j -> j.getString("Id").getValue().equals(job)).findFirst().orElse(null);
+                if (!hasBuilding) {
+                    problems.add("bâtiment " + building + " absent du plan " + layoutId);
+                }
+                if (jobDoc == null) {
+                    problems.add("métier " + job + " absent du plan " + layoutId);
+                } else if (!jobDoc.getString("Building", new org.bson.BsonString("")).getValue().equals(building)) {
+                    problems.add("le métier " + job + " ne travaille pas dans " + building);
+                }
+            }
+            // Décor des chantiers d'amélioration : « dx dy dz lacet Bloc », bloc vanilla connu.
+            if (doc.containsKey("Upgrades")) {
+                for (BsonValue u : doc.getArray("Upgrades")) {
+                    if (!u.asDocument().containsKey("Decor")) {
+                        continue;
+                    }
+                    for (BsonValue d : u.asDocument().getArray("Decor")) {
+                        String[] p = d.asString().getValue().trim().split("\\s+");
+                        if (p.length != 5 || (WORKSHOP_BLOCKS != null && !WORKSHOP_BLOCKS.contains(p[4]))) {
+                            problems.add("décor mal formé ou bloc inconnu : " + d.asString().getValue());
+                        }
+                    }
+                }
+            }
+            // Étape 3 : spécialités (ids uniques) et bêtes d'enclos (rôle du mod présent, ou rôle vanilla relevé).
+            Set<String> specIds = new HashSet<>();
+            List<String> animals = new ArrayList<>();
+            if (doc.containsKey("Livestock")) {
+                doc.getArray("Livestock").forEach(v -> animals.add(v.asString().getValue()));
+                if (!doc.containsKey("Pen") || doc.getArray("Pen").size() != 4) {
+                    problems.add("enclos sans Pen [x0, x1, z0, z1]");
+                }
+            }
+            if (doc.containsKey("Specialties")) {
+                for (BsonValue v : doc.getArray("Specialties")) {
+                    BsonDocument spec = v.asDocument();
+                    String sid = spec.getString("Id").getValue();
+                    if (!specIds.add(sid)) {
+                        problems.add("spécialité en double " + sid);
+                    }
+                    if (spec.containsKey("Animals")) {
+                        spec.getArray("Animals").forEach(a -> animals.add(a.asString().getValue()));
+                    }
+                    // Étape 4 : une boutique par niveau II et III, et le lot de la Part de l'Hôte.
+                    if (!spec.containsKey("Shops") || spec.getArray("Shops").size() != 2) {
+                        problems.add("spécialité " + sid + " : il faut Shops [niveau II, niveau III]");
+                    } else {
+                        for (BsonValue shop : spec.getArray("Shops")) {
+                            if (!Files.isRegularFile(root.resolve("BarterShops/" + shop.asString().getValue() + ".json"))) {
+                                problems.add("spécialité " + sid + " : boutique absente " + shop.asString().getValue());
+                            }
+                        }
+                    }
+                    if (!spec.containsKey("ShareItem")) {
+                        problems.add("spécialité " + sid + " : pas de lot de Part de l'Hôte (ShareItem)");
+                    }
+                }
+            }
+            String baseShop = doc.containsKey("Shop") ? doc.getString("Shop").getValue() : null;
+            if (baseShop == null || !Files.isRegularFile(root.resolve("BarterShops/" + baseShop + ".json"))) {
+                problems.add("boutique du niveau I absente : " + baseShop);
+            }
+            for (String a : animals) {
+                if (a.startsWith("Nakasar_")) {
+                    if (!Files.isRegularFile(root.resolve("NPC/Roles/Nakasar/Peuples/" + a + ".json"))) {
+                        problems.add("bête : rôle du mod absent " + a);
+                    }
+                } else if (WORKSHOP_NPCS != null && !WORKSHOP_NPCS.contains(a)) {
+                    problems.add("bête : rôle vanilla non relevé " + a + " (tools/vanilla-refs-0.7.2.txt)");
+                }
+            }
+            if (e.getValue() < MIN_WORKSHOP_ORDERS) {
+                problems.add(e.getValue() + " commande(s), il en faut au moins " + MIN_WORKSHOP_ORDERS);
+            }
+            if (problems.isEmpty()) {
+                System.out.println("OK    bâtiment de métier " + e.getKey() + " (" + e.getValue() + " commandes)");
+            } else {
+                errors++;
+                System.out.println("ERROR bâtiment de métier " + e.getKey());
+                problems.forEach(p -> System.out.println("      " + p));
+            }
+        }
+        return errors;
+    }
+
+    /** Blocs vanilla connus (tools/vanilla-block-ids-0.7.2.txt), pour le décor des bâtiments de métier, ou null. */
+    static Set<String> WORKSHOP_BLOCKS;
+    /** Rôles vanilla relevés ({@code -Drefs}) : bêtes des enclos. */
+    static Set<String> WORKSHOP_NPCS;
+
+    /** Commandes d'un bâtiment de métier : de quoi remplir les 3 cases du niveau III sans doublon. */
+    static final int MIN_WORKSHOP_ORDERS = 3;
+
     private static int checkVillageLayouts(Path root, String vanillaPrefabs) throws Exception {
         Path layouts = root.resolve("Nakasar/VillageLayouts");
         if (!Files.isDirectory(layouts) || vanillaPrefabs == null) {
@@ -1241,7 +1385,9 @@ public class ValidateAssets {
                         continue;
                     }
                     String prefab = b.asDocument().getString("Prefab").getValue();
-                    if (!known.contains(prefab)) {
+                    // Prefab du mod (enclos des peuples, tools/generate_pens.py) : présent dans le pack.
+                    boolean mod = prefab.startsWith("Nakasar/") && Files.isRegularFile(root.resolve("Prefabs/" + prefab + ".prefab.json"));
+                    if (!known.contains(prefab) && !mod) {
                         problems.add("prefab vanilla inconnu : " + prefab);
                     }
                 }
@@ -1395,7 +1541,11 @@ public class ValidateAssets {
                 }
             }
         }
-        Path java = root.getParent().getParent().resolve("java/dev/nakasar/hytale/peuples/request/BoardPage.java");
+        // Chaque id rempli par une page Java existe dans chacune de ses mises en page (BoardPage*.ui, WorkshopPage*.ui).
+        for (String[] pageSpec : new String[][] {{"request/BoardPage.java", "BoardPage"}, {"workshop/WorkshopPage.java", "WorkshopPage"},
+                {"workshop/WorkshopSpecialtyPage.java", "WorkshopSpecialtyPage"}}) {
+        Path java = root.getParent().getParent().resolve("java/dev/nakasar/hytale/peuples/" + pageSpec[0]);
+        String pageName = pageSpec[1];
         if (Files.isRegularFile(java)) {
             String code = Files.readString(java);
             Set<String> ids = new HashSet<>();
@@ -1408,14 +1558,14 @@ public class ValidateAssets {
                 ids.add(plain.group(1));
             }
             for (Path ui : uis) {
-                if (!ui.getFileName().toString().startsWith("BoardPage")) {
+                if (!ui.getFileName().toString().startsWith(pageName + "_") && !ui.getFileName().toString().equals(pageName + ".ui")) {
                     continue;
                 }
                 String text = Files.readString(ui);
                 for (String id : ids) {
                     if (!Pattern.compile("#" + id + "\\b").matcher(text).find()) {
                         errors++;
-                        System.out.println("ERROR " + root.getParent().relativize(ui) + " : élément #" + id + " rempli par BoardPage.java absent");
+                        System.out.println("ERROR " + root.getParent().relativize(ui) + " : élément #" + id + " rempli par " + pageName + ".java absent");
                     }
                 }
             }
@@ -1425,10 +1575,11 @@ public class ValidateAssets {
                 while (icon.find()) {
                     if (!items.contains(icon.group(1))) {
                         errors++;
-                        System.out.println("ERROR BoardPage.java : icône de type " + icon.group(1) + " absente des objets vanilla");
+                        System.out.println("ERROR " + pageName + ".java : icône de type " + icon.group(1) + " absente des objets vanilla");
                     }
                 }
             }
+        }
         }
         return errors;
     }
@@ -1628,6 +1779,12 @@ public class ValidateAssets {
         errors += checkDialogueTexts(root, System.getProperty("items"));
         errors += checkRequestTitles(root);
         errors += checkVillageLayouts(root, System.getProperty("prefabs"));
+        String blockIds = System.getProperty("blocks");
+        if (blockIds != null && Files.isRegularFile(Path.of(blockIds))) {
+            WORKSHOP_BLOCKS = new HashSet<>(Files.readAllLines(Path.of(blockIds)));
+        }
+        WORKSHOP_NPCS = System.getProperty("refs") == null ? null : vanillaNpcRefs();
+        errors += checkWorkshops(root);
         errors += checkMapMarkerIcons(root);
         errors += checkReputation(root);
         errors += checkUiPages(root, System.getProperty("uitextures"), System.getProperty("items"));

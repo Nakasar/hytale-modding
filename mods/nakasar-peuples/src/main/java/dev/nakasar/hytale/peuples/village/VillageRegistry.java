@@ -131,6 +131,16 @@ public final class VillageRegistry implements Resource<EntityStore> {
         return null;
     }
 
+    /** Village dont un bâtiment de métier a son panneau en (x, y, z), ou null. */
+    public Village byWorkshopBoard(int x, int y, int z) {
+        for (Village v : villages) {
+            if (v.workshopAt(x, y, z) != null) {
+                return v;
+            }
+        }
+        return null;
+    }
+
     /** Village dont le cœur est le plus proche de (x, y, z), à moins de `radius` blocs, ou null. */
     public Village nearest(double x, double y, double z, double radius) {
         Village best = null;

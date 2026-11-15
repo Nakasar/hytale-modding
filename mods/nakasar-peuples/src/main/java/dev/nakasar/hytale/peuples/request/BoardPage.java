@@ -361,12 +361,18 @@ public final class BoardPage extends InteractiveCustomUIPage<BoardPage.Event> {
         cmd.set("#Absent.TextSpans", absent.isEmpty() ? Message.translation(KEYS + "allHere") : lines(absent));
         cmd.set("#TurnIn.Text", Message.translation(KEYS + "turnIn"));
         events.addEventBinding(CustomUIEventBindingType.Activating, "#TurnIn", EventData.of("Action", "TurnIn"));
+        boolean plots = Chantiers.layout(village) != null && Chantiers.layout(village).plots().length > 0;
+        cmd.set("#PlotsButton.Visible", plots);
+        if (plots) {
+            cmd.set("#PlotsButton.Text", Message.translation(dev.nakasar.hytale.peuples.village.Plots.KEYS + "button"));
+            events.addEventBinding(CustomUIEventBindingType.Activating, "#PlotsButton", EventData.of("Action", "Plots"));
+        }
         cmd.set("#TextVersion.Text", Message.translation(KEYS + "textVersion"));
         events.addEventBinding(CustomUIEventBindingType.Activating, "#TextVersion", EventData.of("Action", "Text"));
     }
 
     /** Icône de la carte : l'objet demandé (récolte, artisanat), sinon un objet vanilla qui dit le type. */
-    static String typeIcon(RequestTemplate t) {
+    public static String typeIcon(RequestTemplate t) {
         if (t.type().usesDeposit() && t.itemId() != null) {
             return t.itemId();
         }
@@ -381,7 +387,7 @@ public final class BoardPage extends InteractiveCustomUIPage<BoardPage.Event> {
         };
     }
 
-    static String typeColor(RequestType type) {
+    public static String typeColor(RequestType type) {
         return switch (type) {
             case DEFENSE -> "#e88a78";
             case HUNT -> "#e8b45a";
@@ -442,6 +448,9 @@ public final class BoardPage extends InteractiveCustomUIPage<BoardPage.Event> {
             Requests.turnIn(world, store, ref, playerRef, village);
         } else if (action.equals("Text")) {
             VillageBoard.open(world, store, ref, playerRef, village);
+            return;
+        } else if (action.equals("Plots")) {
+            dev.nakasar.hytale.peuples.village.PlotPage.open(store, ref, playerRef, village);
             return;
         }
         rebuild();

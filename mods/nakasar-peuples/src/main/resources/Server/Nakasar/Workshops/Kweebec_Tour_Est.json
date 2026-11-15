@@ -1,0 +1,93 @@
+{
+  "$Comment": "Bâtiment de métier généré par tools/generate_workshops.py (ne pas modifier à la main) : voir dev.nakasar.hytale.peuples.workshop.Workshop.",
+  "People": "Kweebec",
+  "Layout": "Kweebec_Oak",
+  "Building": "Tour_Est",
+  "Job": "Garde",
+  "Icon": "Weapon_Arrow_Crude",
+  "NameKey": "nakasar_peuples.workshop.Kweebec_Tour_Est.name",
+  "Board": [
+    38,
+    11,
+    3
+  ],
+  "Upgrades": [
+    {
+      "Level": 2,
+      "Hours": 12,
+      "Materials": [
+        {
+          "ItemId": "Wood_Oak_Trunk",
+          "Quantity": 24
+        },
+        {
+          "ItemId": "Wood_Hardwood_Planks",
+          "Quantity": 16
+        },
+        {
+          "ItemId": "Soil_Clay_Brick",
+          "Quantity": 12
+        }
+      ],
+      "Decor": [
+        "1 0 0 0 Furniture_Kweebec_Lantern"
+      ]
+    },
+    {
+      "Level": 3,
+      "Hours": 12,
+      "Materials": [
+        {
+          "ItemId": "Wood_Oak_Trunk",
+          "Quantity": 32
+        },
+        {
+          "ItemId": "Plant_Leaves_Oak",
+          "Quantity": 16
+        },
+        {
+          "ItemId": "Plant_Sapling_Oak",
+          "Quantity": 2
+        }
+      ],
+      "Decor": [
+        "-1 0 0 0 Furniture_Kweebec_Lantern",
+        "0 1 0 0 Furniture_Kweebec_Candle"
+      ]
+    }
+  ],
+  "Specialties": [
+    {
+      "Id": "Archers",
+      "NameKey": "nakasar_peuples.workshop.specialty.Kweebec_Tour_Est.Archers",
+      "LineKey": "nakasar_peuples.workshop.specialtyLine.Kweebec_Tour_Est.Archers",
+      "Icon": "Weapon_Shortbow_Crude",
+      "Raid": {
+        "Posted": 2
+      },
+      "Shops": [
+        "Nakasar_Peuples_W_Kweebec_Tour_Est_Archers_2",
+        "Nakasar_Peuples_W_Kweebec_Tour_Est_Archers_3"
+      ],
+      "ShareItem": "Weapon_Arrow_Iron",
+      "ShareQuantity": 16
+    },
+    {
+      "Id": "Vigiles",
+      "NameKey": "nakasar_peuples.workshop.specialty.Kweebec_Tour_Est.Vigiles",
+      "LineKey": "nakasar_peuples.workshop.specialtyLine.Kweebec_Tour_Est.Vigiles",
+      "Icon": "Armor_Kweebec_Chest",
+      "Raid": {
+        "Guards": 1,
+        "Health": 1.25
+      },
+      "Shops": [
+        "Nakasar_Peuples_W_Kweebec_Tour_Est_Vigiles_2",
+        "Nakasar_Peuples_W_Kweebec_Tour_Est_Vigiles_3"
+      ],
+      "ShareItem": "Tool_Repair_Kit_Crude",
+      "ShareQuantity": 1
+    }
+  ],
+  "Shop": "Nakasar_Peuples_W_Kweebec_Tour_Est_Base_1"
+}

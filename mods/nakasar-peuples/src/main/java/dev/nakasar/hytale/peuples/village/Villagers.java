@@ -333,6 +333,12 @@ public final class Villagers {
         return new int[] {here, open};
     }
 
+    /** Vrai si le villageois du métier `jobId` du village est là (apparu, vivant). */
+    public static synchronized boolean present(Village village, String jobId) {
+        Ref<EntityStore> ref = BY_SLOT.get(new Key(village.id(), jobId));
+        return ref != null && ref.isValid();
+    }
+
     /** Les métiers du village et leur état, pour {@code /village metiers} : id -> villageois présent ? */
     public static synchronized Map<String, Boolean> jobs(Village village) {
         Map<String, Boolean> out = new LinkedHashMap<>();

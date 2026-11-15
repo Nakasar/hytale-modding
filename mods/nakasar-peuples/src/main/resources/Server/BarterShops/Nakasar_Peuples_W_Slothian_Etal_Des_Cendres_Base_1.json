@@ -1,0 +1,58 @@
+{
+  "$Comment": "Boutique du niveau I du bâtiment de métier Slothian_Etal_Des_Cendres, générée par tools/generate_workshops.py.",
+  "DisplayNameKey": "nakasar_peuples.barter.W_Slothian_Etal_Des_Cendres_Base_1.title",
+  "RefreshInterval": {
+    "Days": 3
+  },
+  "RestockHour": 6,
+  "TradeSlots": [
+    {
+      "Type": "Fixed",
+      "Trade": {
+        "Output": {
+          "ItemId": "Ingredient_Charcoal",
+          "Quantity": 4
+        },
+        "Input": [
+          {
+            "ItemId": "Nakasar_Peuples_Favor_Slothian",
+            "Quantity": 1
+          }
+        ],
+        "Stock": 8
+      }
+    },
+    {
+      "Type": "Fixed",
+      "Trade": {
+        "Output": {
+          "ItemId": "Ingredient_Fire_Essence",
+          "Quantity": 1
+        },
+        "Input": [
+          {
+            "ItemId": "Nakasar_Peuples_Favor_Slothian",
+            "Quantity": 1
+          }
+        ],
+        "Stock": 8
+      }
+    },
+    {
+      "Type": "Fixed",
+      "Trade": {
+        "Output": {
+          "ItemId": "Furniture_Jungle_Torch",
+          "Quantity": 2
+        },
+        "Input": [
+          {
+            "ItemId": "Nakasar_Peuples_Favor_Slothian",
+            "Quantity": 1
+          }
+        ],
+        "Stock": 8
+      }
+    }
+  ]
+}

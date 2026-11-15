@@ -201,6 +201,156 @@
       "MaxZ": 4,
       "MinY": -3,
       "MaxY": 6
+    },
+    {
+      "Id": "E1_Archerie",
+      "Tier": 2,
+      "Prefab": "Npc/Kweebec/Oak/Shops/Kweebec_Oak_Shops_001",
+      "X": 28,
+      "Z": -36,
+      "Rotation": 0,
+      "MinX": -3,
+      "MaxX": 3,
+      "MinZ": -4,
+      "MaxZ": 2,
+      "MinY": -3,
+      "MaxY": 6,
+      "Plot": "E1"
+    },
+    {
+      "Id": "E1_Herboristerie",
+      "Tier": 2,
+      "Prefab": "Npc/Kweebec/Oak/Shops/Kweebec_Oak_Shops_003",
+      "X": 28,
+      "Z": -37,
+      "Rotation": 0,
+      "MinX": -3,
+      "MaxX": 3,
+      "MinZ": -3,
+      "MaxZ": 3,
+      "MinY": -3,
+      "MaxY": 6,
+      "Plot": "E1"
+    },
+    {
+      "Id": "E1_Grand_Bassin",
+      "Tier": 2,
+      "Prefab": "Npc/Kweebec/Oak/Water_Pool/Kweebec_Oak_Water_Pool_005",
+      "X": 28,
+      "Z": -37,
+      "Rotation": 0,
+      "MinX": -3,
+      "MaxX": 3,
+      "MinZ": -3,
+      "MaxZ": 3,
+      "MinY": -2,
+      "MaxY": 3,
+      "Plot": "E1"
+    },
+    {
+      "Id": "E1_Menuiserie",
+      "Tier": 2,
+      "Prefab": "Npc/Kweebec/Oak/Shops/Kweebec_Oak_Shops_004",
+      "X": 29,
+      "Z": -37,
+      "Rotation": 0,
+      "MinX": -4,
+      "MaxX": 3,
+      "MinZ": -3,
+      "MaxZ": 3,
+      "MinY": -3,
+      "MaxY": 6,
+      "Plot": "E1"
+    },
+    {
+      "Id": "E1_Deuxieme_Enclos",
+      "Tier": 2,
+      "Prefab": "Npc/Kweebec/Oak/Bunny_Area/Kweebec_Oak_Bunny_Area_005",
+      "X": 28,
+      "Z": -37,
+      "Rotation": 0,
+      "MinX": -6,
+      "MaxX": 6,
+      "MinZ": -6,
+      "MaxZ": 6,
+      "MinY": -5,
+      "MaxY": 2,
+      "Plot": "E1"
+    },
+    {
+      "Id": "E2_Archerie",
+      "Tier": 3,
+      "Prefab": "Npc/Kweebec/Oak/Shops/Kweebec_Oak_Shops_001",
+      "X": -22,
+      "Z": -41,
+      "Rotation": 0,
+      "MinX": -3,
+      "MaxX": 3,
+      "MinZ": -4,
+      "MaxZ": 2,
+      "MinY": -3,
+      "MaxY": 6,
+      "Plot": "E2"
+    },
+    {
+      "Id": "E2_Herboristerie",
+      "Tier": 3,
+      "Prefab": "Npc/Kweebec/Oak/Shops/Kweebec_Oak_Shops_003",
+      "X": -22,
+      "Z": -42,
+      "Rotation": 0,
+      "MinX": -3,
+      "MaxX": 3,
+      "MinZ": -3,
+      "MaxZ": 3,
+      "MinY": -3,
+      "MaxY": 6,
+      "Plot": "E2"
+    },
+    {
+      "Id": "E2_Grand_Bassin",
+      "Tier": 3,
+      "Prefab": "Npc/Kweebec/Oak/Water_Pool/Kweebec_Oak_Water_Pool_005",
+      "X": -22,
+      "Z": -42,
+      "Rotation": 0,
+      "MinX": -3,
+      "MaxX": 3,
+      "MinZ": -3,
+      "MaxZ": 3,
+      "MinY": -2,
+      "MaxY": 3,
+      "Plot": "E2"
+    },
+    {
+      "Id": "E2_Menuiserie",
+      "Tier": 3,
+      "Prefab": "Npc/Kweebec/Oak/Shops/Kweebec_Oak_Shops_004",
+      "X": -21,
+      "Z": -42,
+      "Rotation": 0,
+      "MinX": -4,
+      "MaxX": 3,
+      "MinZ": -3,
+      "MaxZ": 3,
+      "MinY": -3,
+      "MaxY": 6,
+      "Plot": "E2"
+    },
+    {
+      "Id": "E2_Deuxieme_Enclos",
+      "Tier": 3,
+      "Prefab": "Npc/Kweebec/Oak/Bunny_Area/Kweebec_Oak_Bunny_Area_005",
+      "X": -22,
+      "Z": -42,
+      "Rotation": 0,
+      "MinX": -6,
+      "MaxX": 6,
+      "MinZ": -6,
+      "MaxZ": 6,
+      "MinY": -5,
+      "MaxY": 2,
+      "Plot": "E2"
     }
   ],
   "Chantiers": [
@@ -384,6 +534,182 @@
       "HomeX": 24,
       "HomeZ": 23,
       "Builder": false
+    },
+    {
+      "Id": "Archer_E1",
+      "Tier": 2,
+      "Role": "Nakasar_Peuples_Kweebec_Guard",
+      "Dialogue": "Kweebec_Guard",
+      "Building": "E1_Archerie",
+      "WorkX": 28,
+      "WorkZ": -32,
+      "Home": "E1_Archerie",
+      "HomeX": 28,
+      "HomeZ": -32,
+      "Builder": false
+    },
+    {
+      "Id": "Herboriste_E1",
+      "Tier": 2,
+      "Role": "Nakasar_Peuples_Kweebec_Healer",
+      "Dialogue": "Kweebec_Healer",
+      "Building": "E1_Herboristerie",
+      "WorkX": 28,
+      "WorkZ": -32,
+      "Home": "E1_Herboristerie",
+      "HomeX": 28,
+      "HomeZ": -32,
+      "Builder": false
+    },
+    {
+      "Id": "Pecheuse_E1",
+      "Tier": 2,
+      "Role": "Nakasar_Peuples_Kweebec_WellKeeper",
+      "Dialogue": "Kweebec_WellKeeper",
+      "Building": "E1_Grand_Bassin",
+      "WorkX": 28,
+      "WorkZ": -32,
+      "Home": "E1_Grand_Bassin",
+      "HomeX": 28,
+      "HomeZ": -32,
+      "Builder": false
+    },
+    {
+      "Id": "Menuisier_E1",
+      "Tier": 2,
+      "Role": "Nakasar_Peuples_Kweebec_Gardener",
+      "Dialogue": "Kweebec_Gardener",
+      "Building": "E1_Menuiserie",
+      "WorkX": 28,
+      "WorkZ": -32,
+      "Home": "E1_Menuiserie",
+      "HomeX": 28,
+      "HomeZ": -32,
+      "Builder": false
+    },
+    {
+      "Id": "Eleveur_Bis_E1",
+      "Tier": 2,
+      "Role": "Nakasar_Peuples_Kweebec_Breeder",
+      "Dialogue": "Kweebec_Breeder",
+      "Building": "E1_Deuxieme_Enclos",
+      "WorkX": 28,
+      "WorkZ": -29,
+      "Home": "E1_Deuxieme_Enclos",
+      "HomeX": 28,
+      "HomeZ": -29,
+      "Builder": false
+    },
+    {
+      "Id": "Archer_E2",
+      "Tier": 3,
+      "Role": "Nakasar_Peuples_Kweebec_Guard",
+      "Dialogue": "Kweebec_Guard",
+      "Building": "E2_Archerie",
+      "WorkX": -22,
+      "WorkZ": -37,
+      "Home": "E2_Archerie",
+      "HomeX": -22,
+      "HomeZ": -37,
+      "Builder": false
+    },
+    {
+      "Id": "Herboriste_E2",
+      "Tier": 3,
+      "Role": "Nakasar_Peuples_Kweebec_Healer",
+      "Dialogue": "Kweebec_Healer",
+      "Building": "E2_Herboristerie",
+      "WorkX": -22,
+      "WorkZ": -37,
+      "Home": "E2_Herboristerie",
+      "HomeX": -22,
+      "HomeZ": -37,
+      "Builder": false
+    },
+    {
+      "Id": "Pecheuse_E2",
+      "Tier": 3,
+      "Role": "Nakasar_Peuples_Kweebec_WellKeeper",
+      "Dialogue": "Kweebec_WellKeeper",
+      "Building": "E2_Grand_Bassin",
+      "WorkX": -22,
+      "WorkZ": -37,
+      "Home": "E2_Grand_Bassin",
+      "HomeX": -22,
+      "HomeZ": -37,
+      "Builder": false
+    },
+    {
+      "Id": "Menuisier_E2",
+      "Tier": 3,
+      "Role": "Nakasar_Peuples_Kweebec_Gardener",
+      "Dialogue": "Kweebec_Gardener",
+      "Building": "E2_Menuiserie",
+      "WorkX": -22,
+      "WorkZ": -37,
+      "Home": "E2_Menuiserie",
+      "HomeX": -22,
+      "HomeZ": -37,
+      "Builder": false
+    },
+    {
+      "Id": "Eleveur_Bis_E2",
+      "Tier": 3,
+      "Role": "Nakasar_Peuples_Kweebec_Breeder",
+      "Dialogue": "Kweebec_Breeder",
+      "Building": "E2_Deuxieme_Enclos",
+      "WorkX": -22,
+      "WorkZ": -34,
+      "Home": "E2_Deuxieme_Enclos",
+      "HomeX": -22,
+      "HomeZ": -34,
+      "Builder": false
+    }
+  ],
+  "Plots": [
+    {
+      "Id": "E1",
+      "X": 28,
+      "Z": -37,
+      "Size": 24,
+      "Tier": 2,
+      "Materials": [
+        {
+          "ItemId": "Wood_Oak_Trunk",
+          "Quantity": 40
+        },
+        {
+          "ItemId": "Rock_Stone_Cobble",
+          "Quantity": 32
+        },
+        {
+          "ItemId": "Ingredient_Fibre",
+          "Quantity": 16
+        }
+      ],
+      "Hours": 24
+    },
+    {
+      "Id": "E2",
+      "X": -22,
+      "Z": -42,
+      "Size": 24,
+      "Tier": 3,
+      "Materials": [
+        {
+          "ItemId": "Wood_Oak_Trunk",
+          "Quantity": 40
+        },
+        {
+          "ItemId": "Rock_Stone_Cobble",
+          "Quantity": 32
+        },
+        {
+          "ItemId": "Ingredient_Fibre",
+          "Quantity": 16
+        }
+      ],
+      "Hours": 24
     }
   ],
   "Heart": {

@@ -1,0 +1,86 @@
+{
+  "$Comment": "Bâtiment de métier généré par tools/generate_workshops.py (ne pas modifier à la main) : voir dev.nakasar.hytale.peuples.workshop.Workshop.",
+  "People": "Kweebec",
+  "Layout": "Kweebec_Oak",
+  "Building": "Grande_Maison",
+  "Job": "Soigneuse",
+  "Icon": "Potion_Health_Small",
+  "NameKey": "nakasar_peuples.workshop.Kweebec_Grande_Maison.name",
+  "Board": [
+    27,
+    24,
+    2
+  ],
+  "Upgrades": [
+    {
+      "Level": 2,
+      "Hours": 12,
+      "Materials": [
+        {
+          "ItemId": "Wood_Oak_Trunk",
+          "Quantity": 24
+        },
+        {
+          "ItemId": "Wood_Hardwood_Planks",
+          "Quantity": 16
+        },
+        {
+          "ItemId": "Soil_Clay_Brick",
+          "Quantity": 12
+        }
+      ],
+      "Decor": [
+        "1 0 0 0 Furniture_Kweebec_Lantern"
+      ]
+    },
+    {
+      "Level": 3,
+      "Hours": 12,
+      "Materials": [
+        {
+          "ItemId": "Wood_Oak_Trunk",
+          "Quantity": 32
+        },
+        {
+          "ItemId": "Plant_Leaves_Oak",
+          "Quantity": 16
+        },
+        {
+          "ItemId": "Plant_Sapling_Oak",
+          "Quantity": 2
+        }
+      ],
+      "Decor": [
+        "-1 0 0 0 Furniture_Kweebec_Lantern",
+        "0 1 0 0 Furniture_Kweebec_Candle"
+      ]
+    }
+  ],
+  "Specialties": [
+    {
+      "Id": "Herbes",
+      "NameKey": "nakasar_peuples.workshop.specialty.Kweebec_Grande_Maison.Herbes",
+      "LineKey": "nakasar_peuples.workshop.specialtyLine.Kweebec_Grande_Maison.Herbes",
+      "Icon": "Potion_Health_Small",
+      "Shops": [
+        "Nakasar_Peuples_W_Kweebec_Grande_Maison_Herbes_2",
+        "Nakasar_Peuples_W_Kweebec_Grande_Maison_Herbes_3"
+      ],
+      "ShareItem": "Potion_Health_Small",
+      "ShareQuantity": 2
+    },
+    {
+      "Id": "Elixirs",
+      "NameKey": "nakasar_peuples.workshop.specialty.Kweebec_Grande_Maison.Elixirs",
+      "LineKey": "nakasar_peuples.workshop.specialtyLine.Kweebec_Grande_Maison.Elixirs",
+      "Icon": "Potion_Stamina_Small",
+      "Shops": [
+        "Nakasar_Peuples_W_Kweebec_Grande_Maison_Elixirs_2",
+        "Nakasar_Peuples_W_Kweebec_Grande_Maison_Elixirs_3"
+      ],
+      "ShareItem": "Potion_Stamina_Small",
+      "ShareQuantity": 2
+    }
+  ],
+  "Shop": "Nakasar_Peuples_W_Kweebec_Grande_Maison_Base_1"
+}

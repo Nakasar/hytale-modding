@@ -381,6 +381,7 @@ def page(theme_id):
     w("        Anchor: (Height: 44, Top: 12);")
     w(f'        {label("Absent", "@SmallWrap", extra=" FlexWeight: 1;")}')
     w('        $C.@TextButton #TurnIn { @Text = ""; @Anchor = Anchor(Right: 12, Width: 230); }')
+    w('        $C.@SecondaryTextButton #PlotsButton { @Text = ""; @Anchor = Anchor(Right: 12, Width: 200); }')
     w('        $C.@SecondaryTextButton #TextVersion { @Text = ""; @Anchor = Anchor(Width: 200); }')
     w("      }")
     w("    }")

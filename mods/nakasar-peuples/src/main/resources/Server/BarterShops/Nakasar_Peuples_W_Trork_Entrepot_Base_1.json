@@ -1,0 +1,58 @@
+{
+  "$Comment": "Boutique du niveau I du bâtiment de métier Trork_Entrepot, générée par tools/generate_workshops.py.",
+  "DisplayNameKey": "nakasar_peuples.barter.W_Trork_Entrepot_Base_1.title",
+  "RefreshInterval": {
+    "Days": 3
+  },
+  "RestockHour": 6,
+  "TradeSlots": [
+    {
+      "Type": "Fixed",
+      "Trade": {
+        "Output": {
+          "ItemId": "Rock_Stone_Cobble",
+          "Quantity": 16
+        },
+        "Input": [
+          {
+            "ItemId": "Nakasar_Peuples_Favor_Trork",
+            "Quantity": 1
+          }
+        ],
+        "Stock": 8
+      }
+    },
+    {
+      "Type": "Fixed",
+      "Trade": {
+        "Output": {
+          "ItemId": "Ingredient_Bar_Copper",
+          "Quantity": 1
+        },
+        "Input": [
+          {
+            "ItemId": "Nakasar_Peuples_Favor_Trork",
+            "Quantity": 1
+          }
+        ],
+        "Stock": 8
+      }
+    },
+    {
+      "Type": "Fixed",
+      "Trade": {
+        "Output": {
+          "ItemId": "Ingredient_Stick",
+          "Quantity": 8
+        },
+        "Input": [
+          {
+            "ItemId": "Nakasar_Peuples_Favor_Trork",
+            "Quantity": 1
+          }
+        ],
+        "Stock": 8
+      }
+    }
+  ]
+}

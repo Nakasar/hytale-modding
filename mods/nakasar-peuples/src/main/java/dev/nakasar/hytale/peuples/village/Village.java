@@ -81,6 +81,14 @@ public final class Village {
             .append(new KeyedCodec<>("Raid", RaidRecord.CODEC), (v, r) -> v.raid = r == null ? new RaidRecord() : r, v -> v.raid)
             .documentation("Raids du village (étape 6) : raid attendu, raid en cours, bilan du dernier.")
             .add()
+            .append(new KeyedCodec<>("Workshops", new ArrayCodec<>(WorkshopState.CODEC, WorkshopState[]::new)),
+                    (v, a) -> v.workshops = a == null ? new WorkshopState[0] : a, v -> v.workshops)
+            .documentation("Bâtiments de métier : niveau, savoir-faire, spécialité, commandes du jour, panneau.")
+            .add()
+            .append(new KeyedCodec<>("Plots", new ArrayCodec<>(PlotState.CODEC, PlotState[]::new)),
+                    (v, a) -> v.plots = a == null ? new PlotState[0] : a, v -> v.plots)
+            .documentation("Terrains libres E1 et E2 : projet, chantier, démolition, piquets.")
+            .add()
             .build();
 
     String id = "";
@@ -112,6 +120,8 @@ public final class Village {
     String[] burnt = new String[0];
     ChantierState chantier;
     RaidRecord raid = new RaidRecord();
+    PlotState[] plots = new PlotState[0];
+    WorkshopState[] workshops = new WorkshopState[0];
 
     Village() {
     }
@@ -160,6 +170,10 @@ public final class Village {
         v.burnt = burnt.clone();
         v.chantier = chantier == null ? null : chantier.copy();
         v.raid = raid == null ? new RaidRecord() : raid.copy();
+        v.workshops = new WorkshopState[workshops.length];
+        for (int i = 0; i < workshops.length; i++) {
+            v.workshops[i] = workshops[i] == null ? null : workshops[i].copy();
+        }
         return v;
     }
 
@@ -309,6 +323,61 @@ public final class Village {
         if (slot >= 0 && slot < requests.length) {
             requests[slot] = request;
         }
+    }
+
+    /** États des bâtiments de métier connus du village (copie du tableau, objets sauvegardés). */
+    public WorkshopState[] workshops() {
+        return workshops.clone();
+    }
+
+    /** État sauvegardé du bâtiment de métier `workshopId`, créé au niveau I s'il manque (thread du monde). */
+    public WorkshopState workshop(String workshopId) {
+        for (WorkshopState w : workshops) {
+            if (w != null && w.id.equals(workshopId)) {
+                return w;
+            }
+        }
+        WorkshopState created = new WorkshopState(workshopId);
+        WorkshopState[] grown = java.util.Arrays.copyOf(workshops, workshops.length + 1);
+        grown[workshops.length] = created;
+        workshops = grown;
+        return created;
+    }
+
+    /** État sauvegardé du terrain `plotId` (E1, E2), créé vide s'il manque (thread du monde). */
+    public PlotState plot(String plotId) {
+        for (PlotState p : plots) {
+            if (p != null && p.id.equals(plotId)) {
+                return p;
+            }
+        }
+        PlotState created = new PlotState(plotId);
+        PlotState[] grown = java.util.Arrays.copyOf(plots, plots.length + 1);
+        grown[plots.length] = created;
+        plots = grown;
+        return created;
+    }
+
+    /** Oublie l'état du bâtiment de métier `workshopId` (bâtiment d'emplacement démoli : il repartira au niveau I). */
+    void forgetWorkshop(String workshopId) {
+        workshops = java.util.Arrays.stream(workshops).filter(w -> w != null && !w.id.equals(workshopId)).toArray(WorkshopState[]::new);
+    }
+
+    /** Le bâtiment n'est plus là du tout (démoli) : ni collé ni brûlé, sa hauteur de pose oubliée. */
+    void unmarkBuilt(String buildingId) {
+        built = without(built, buildingId);
+        burnt = without(burnt, buildingId);
+        sites = java.util.Arrays.stream(sites).filter(s -> !s.id.equals(buildingId)).toArray(Site[]::new);
+    }
+
+    /** Bâtiment de métier dont le panneau est en (x, y, z), ou null. */
+    public WorkshopState workshopAt(int bx, int by, int bz) {
+        for (WorkshopState w : workshops) {
+            if (w != null && w.isBoard(bx, by, bz)) {
+                return w;
+            }
+        }
+        return null;
     }
 
     /** Raids du village (étape 6) : l'objet sauvegardé, modifiable sur le thread du monde. */

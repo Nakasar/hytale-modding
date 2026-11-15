@@ -1,0 +1,18 @@
+{
+  "$Comment": "Commande de maître du niveau 2 du bâtiment de métier Trork_Entrepot, générée par tools/generate_workshops.py (ne pas modifier à la main) : voir RequestTemplate.",
+  "People": "Trork",
+  "Workshop": "Trork_Entrepot",
+  "Master": true,
+  "Type": "Gather",
+  "MinLevel": 2,
+  "MaxLevel": 2,
+  "Weight": 1,
+  "TitleKey": "nakasar_peuples.request.Trork_Entrepot_Master_2.title",
+  "TaskKey": "nakasar_peuples.request.Trork_Entrepot_Master_2.task",
+  "ItemId": "Rock_Stone_Cobble",
+  "Quantity": 96,
+  "Knowledge": 0,
+  "Essor": 15,
+  "Favors": 3,
+  "Reputation": 15
+}

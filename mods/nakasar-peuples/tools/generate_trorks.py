@@ -509,10 +509,12 @@ def java_texts():
                       ("Tente_Sud", "la tente sud", "the south tent"), ("Tour_Est", "la tour est", "the east tower"),
                       ("Entrepot", "l'entrepôt", "the warehouse"), ("Bric_A_Brac", "le bric-à-brac", "the junk pile"),
                       ("Reserve_Du_Chef", "la réserve du chef", "the chief's store"), ("Tour_Ouest", "la tour ouest", "the west tower"),
-                      ("Grand_Feu", "le grand feu", "the great fire")]:
+                      ("Grand_Feu", "le grand feu", "the great fire"),
+                      ("Fosse_Aux_Betes", "la fosse aux bêtes", "the beast pit")]:
         tr(f"building.{b}", fr, en)
     for j, fr, en in [("Garde", "Garde", "Guard"), ("Guerrier", "Guerrier", "Warrior"), ("Chasseur", "Chasseur", "Hunter"),
-                      ("Cogneur", "Cogneur", "Brawler"), ("Sentinelle", "Sentinelle", "Sentry"), ("Shaman", "Shaman", "Shaman")]:
+                      ("Cogneur", "Cogneur", "Brawler"), ("Sentinelle", "Sentinelle", "Sentry"), ("Shaman", "Shaman", "Shaman"),
+                      ("Dresseur", "Dresseur", "Beast tamer")]:
         tr(f"job.{j}", fr, en)
     tr("chain.Trork.step1", "nourrir le feu du camp (10 Viande crue, rang Toléré)", "feed the camp fire (10 Raw meat, Tolerated rank)")
     tr("chain.Trork.step2", "chasser la meute de loups (rang Ami)", "hunt the wolf pack (Friend rank)")

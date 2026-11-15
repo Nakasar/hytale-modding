@@ -92,6 +92,24 @@ public final class RequestTemplate implements JsonAssetWithMap<String, DefaultAs
             .append(new KeyedCodec<>("Flag", Codec.STRING), (t, v) -> t.flag = v, t -> t.flag)
             .documentation("Drapeau posé sur le joueur quand il remplit la demande (étapes de la chaîne du peuple).")
             .add()
+            .append(new KeyedCodec<>("Workshop", Codec.STRING), (t, v) -> t.workshop = v == null || v.isBlank() ? null : v, t -> t.workshop)
+            .documentation("Bâtiment de métier (Workshop) dont c'est une commande ; absent : demande du tableau du village.")
+            .add()
+            .append(new KeyedCodec<>("MinLevel", Codec.INTEGER), (t, v) -> t.minLevel = v == null ? 1 : v, t -> t.minLevel)
+            .documentation("Commande : niveau minimal du bâtiment (1 à 3).")
+            .add()
+            .append(new KeyedCodec<>("MaxLevel", Codec.INTEGER), (t, v) -> t.maxLevel = v == null ? 3 : v, t -> t.maxLevel)
+            .documentation("Commande : niveau maximal du bâtiment (1 à 3).")
+            .add()
+            .append(new KeyedCodec<>("Specialty", Codec.STRING), (t, v) -> t.specialty = v == null || v.isBlank() ? null : v, t -> t.specialty)
+            .documentation("Commande : spécialité du bâtiment qui la propose ; absente : toutes.")
+            .add()
+            .append(new KeyedCodec<>("Knowledge", Codec.INTEGER), (t, v) -> t.knowledge = v == null ? 0 : v, t -> t.knowledge)
+            .documentation("Commande : savoir-faire donné au bâtiment (une fois par commande, comme l'essor).")
+            .add()
+            .append(new KeyedCodec<>("Master", Codec.BOOLEAN), (t, v) -> t.master = v != null && v, t -> t.master)
+            .documentation("Commande de maître (une par niveau, hors tirage du jour) : ouvre le chantier d'amélioration.")
+            .add()
             .validator(RequestTemplate::validate)
             .build();
 
@@ -116,6 +134,12 @@ public final class RequestTemplate implements JsonAssetWithMap<String, DefaultAs
     int favors;
     Integer reputation;
     String flag;
+    String workshop;
+    int minLevel = 1;
+    int maxLevel = 3;
+    String specialty;
+    int knowledge;
+    boolean master;
 
     RequestTemplate() {
     }
@@ -135,7 +159,7 @@ public final class RequestTemplate implements JsonAssetWithMap<String, DefaultAs
         return store == null || id == null ? null : store.getAssetMap().getAsset(id);
     }
 
-    /** Modèles du peuple `people` tirables au palier `tier`. */
+    /** Modèles du peuple `people` tirables au palier `tier` (tableau du village : sans les commandes des bâtiments). */
     public static List<RequestTemplate> forVillage(String people, int tier) {
         List<RequestTemplate> out = new ArrayList<>();
         AssetStore<String, RequestTemplate, DefaultAssetMap<String, RequestTemplate>> store = getAssetStore();
@@ -144,7 +168,27 @@ public final class RequestTemplate implements JsonAssetWithMap<String, DefaultAs
         }
         for (RequestTemplate t : store.getAssetMap().getAssetMap().values()) {
             if (t != null && t.people != null && t.people.equalsIgnoreCase(people) && tier >= t.minTier && tier <= t.maxTier
-                    && t.weight > 0 && t.type() != null) {
+                    && t.weight > 0 && t.type() != null && t.workshop == null) {
+                out.add(t);
+            }
+        }
+        out.sort((a, b) -> a.id.compareTo(b.id));
+        return out;
+    }
+
+    /**
+     * Commandes du bâtiment de métier `workshop` tirables à son niveau `level` et pour sa spécialité `specialty` (null :
+     * pas encore choisie, seules les commandes sans spécialité).
+     */
+    public static List<RequestTemplate> forWorkshop(String workshop, int level, String specialty) {
+        List<RequestTemplate> out = new ArrayList<>();
+        AssetStore<String, RequestTemplate, DefaultAssetMap<String, RequestTemplate>> store = getAssetStore();
+        if (store == null || workshop == null) {
+            return out;
+        }
+        for (RequestTemplate t : store.getAssetMap().getAssetMap().values()) {
+            if (t != null && workshop.equals(t.workshop) && !t.master && level >= t.minLevel && level <= t.maxLevel && t.weight > 0
+                    && t.type() != null && (t.specialty == null || t.specialty.equals(specialty))) {
                 out.add(t);
             }
         }
@@ -155,6 +199,45 @@ public final class RequestTemplate implements JsonAssetWithMap<String, DefaultAs
     @Override
     public String getId() {
         return id;
+    }
+
+    /** Commande de maître du bâtiment `workshop` à son niveau `level` (spécialité d'abord, sinon commune), ou null. */
+    public static RequestTemplate master(String workshop, int level, String specialty) {
+        AssetStore<String, RequestTemplate, DefaultAssetMap<String, RequestTemplate>> store = getAssetStore();
+        if (store == null || workshop == null) {
+            return null;
+        }
+        RequestTemplate common = null;
+        for (RequestTemplate t : store.getAssetMap().getAssetMap().values()) {
+            if (t != null && t.master && workshop.equals(t.workshop) && level >= t.minLevel && level <= t.maxLevel && t.type() != null) {
+                if (t.specialty != null && t.specialty.equals(specialty)) {
+                    return t;
+                }
+                if (t.specialty == null && (common == null || t.id.compareTo(common.id) < 0)) {
+                    common = t;
+                }
+            }
+        }
+        return common;
+    }
+
+    /** Vrai pour une commande de maître. */
+    public boolean master() {
+        return master;
+    }
+
+    /** Bâtiment de métier dont c'est une commande, ou null (demande du tableau). */
+    public String workshop() {
+        return workshop;
+    }
+
+    /** Savoir-faire donné au bâtiment de métier. */
+    public int knowledge() {
+        return knowledge;
+    }
+
+    public String specialty() {
+        return specialty;
     }
 
     public RequestType type() {
@@ -243,6 +326,9 @@ public final class RequestTemplate implements JsonAssetWithMap<String, DefaultAs
         }
         if (t.titleKey == null || t.taskKey == null) {
             results.fail("TitleKey et TaskKey sont obligatoires");
+        }
+        if (t.workshop != null && (t.minLevel < 1 || t.maxLevel > 3 || t.minLevel > t.maxLevel)) {
+            results.fail("Niveaux de bâtiment invalides : " + t.minLevel + " à " + t.maxLevel);
         }
         if (t.minTier < 0 || t.maxTier > 3 || t.minTier > t.maxTier) {
             results.fail("Paliers invalides : " + t.minTier + " à " + t.maxTier);

@@ -28,7 +28,8 @@ Récompense : de l'**essor** pour le village, de la [réputation](reputation.md)
 Quand la jauge d'essor est pleine et que le dépôt contient les matériaux du palier suivant, un **chantier** s'ouvre : les matériaux sont pris et les bâtisseurs se mettent au travail, chaque peuple à sa façon : les Kweebecs sèment un jardin d'où sortent des troncs couverts de lierre et de lianes, les Trorks plantent une palissade de rondins et tendent des peaux, les Feran montent des murets de briques séchées au soleil sous des toiles, les Renoncés dressent un échafaudage de sapin, les Slothians de hautes cannes de bambou. Le chantier change d'allure toutes les 6 heures de jeu. 24 heures de jeu plus tard, les bâtiments sont là, le palier monte et un titre l'annonce à tous les joueurs proches. Le tableau dit toujours ce qu'il manque.
 
 - Un bâtiment dont la parcelle contient un bloc que vous avez posé est sauté : le tableau donne le bloc gênant et ses coordonnées.
-- Chaque palier amène de nouveaux villageois à métier : le jour ils travaillent à leur poste, la nuit ils rentrent chez eux.
+- Chaque palier amène de nouveaux villageois à métier : le jour ils travaillent à leur poste, la nuit ils rentrent chez eux. Leurs bâtiments ont leur propre panneau de commandes : voir [Bâtiments de métier](batiments-de-metier.md).
+- Aux paliers 2 et 3, les terrains E1 et E2 accueillent un bâtiment choisi par les joueurs : voir [Emplacements libres](emplacements.md).
 
 ## Les raids
 
