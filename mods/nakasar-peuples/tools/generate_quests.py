@@ -44,6 +44,17 @@ LANG_BEGIN = "# ---- Quêtes : caravane, récolte escortée, destruction, boss (
 LANG_END = "# ---- Fin des quêtes ----"
 
 # Mêmes valeurs que boss/QuestBosses.java (la zone rouge et le test de touche viennent de ces constantes).
+# Quête « Baliser une route » : mêmes valeurs que annex/Routes.java (BEACON) ; villages voisins à 700 blocs au plus
+# (une balise tous les 32 blocs : une vingtaine de balises).
+BEACON = "Nakasar_Peuples_Route_Beacon"
+ROUTE_KIT = 4
+ROUTE_MAX = 700
+ROUTE_TEXT = ("Baliser une route", "Mark out a road",
+              "Relie {place} par des balises de route, à 32 blocs au plus l'une de l'autre : encore {gap} blocs à baliser. "
+              "{place} : {distance} blocs, {direction}.",
+              "Link {place} with road beacons, at most 32 blocks apart: {gap} more blocks to mark out. "
+              "{place}: {distance} blocks, {direction}.")
+
 LINE_LENGTH = 14
 LINE_WIDTH = 3
 CONE_DEGREES = 90
@@ -202,6 +213,11 @@ def requests(pid, spec):
             {"TargetBlock": block, "Quantity": count, "Spawns": foes, "MinDistance": 90, "MaxDistance": 150}, 0, 20, 3)
     request(pid, f"{pid}_Boss_Lair", "Boss",
             {"Boss": f"Nakasar_Peuples_Boss_{pid}", "Spawns": foes[:2], "MinDistance": 110, "MaxDistance": 170}, 1, 40, 8)
+    # Baliser une route (Kevin, 15 novembre 2026) : vers un avant-poste du village ou un village voisin pas encore relié
+    # (request/RouteQuests). Le village donne des balises pour commencer (ItemId × Quantity).
+    request(pid, f"{pid}_Route_Build", "Route",
+            {"ItemId": BEACON, "Quantity": ROUTE_KIT, "MinDistance": 48, "MaxDistance": ROUTE_MAX}, 0, 25, 4)
+    REQUEST_TEXTS[f"{pid}_Route_Build"] = ROUTE_TEXT
 
 
 # ----------------------------------------------------------------------------------------------------------------------
@@ -488,6 +504,7 @@ def texts():
     t("request.type.Harvest", "Récolte escortée", "Escorted harvest")
     t("request.type.Destroy", "Destruction", "Sabotage")
     t("request.type.Boss", "Chef", "Boss")
+    t("request.type.Route", "Route", "Road")
     r = "request."
     t(r + "caravan.noDestination", "Aucun autre village ami n'est assez proche pour une caravane.",
       "No other friendly village is close enough for a caravan.")
@@ -517,6 +534,15 @@ def texts():
       "The boss is here: \"{title}\". Leave the red zones before the blow.")
     t(r + "boss.summon", "Le chef appelle ses renforts ! Il ne prend aucun coup tant qu'ils vivent.",
       "The boss calls for reinforcements! It takes no damage while they live.")
+    t(r + "route.noTarget", "Tous les avant-postes et villages voisins sont déjà reliés par une route.",
+      "Every outpost and neighbouring village is already linked by a road.")
+    t(r + "route.kit", "Le village te confie {count} balises de route pour commencer.",
+      "The village hands you {count} road beacons to start with.")
+    t(r + "route.progress", "Route vers {place} : encore {gap} blocs à baliser.",
+      "Road to {place}: {gap} more blocks to mark out.")
+    t(r + "route.done", "La route vers {place} est complète !", "The road to {place} is complete!")
+    t(r + "route.gone", "Il n'y a plus rien à relier : « {title} » s'arrête.",
+      "There is nothing left to link: \"{title}\" ends.")
     t(r + "boss.unshielded", "Ses renforts sont tombés : le chef est de nouveau vulnérable.",
       "Its reinforcements have fallen: the boss is vulnerable again.")
     for pid, names in NAMES.items():
@@ -535,7 +561,9 @@ def write_langs():
     for locale, table in (("fr-FR", FR), ("en-US", EN)):
         path = RES / f"Languages/{locale}/nakasar_peuples.lang"
         text = path.read_text(encoding="utf-8")
+        before, after = "", text
         if LANG_BEGIN in text:
+            # Le bloc reste à sa place dans le fichier (diff minimal).
             before, rest = text.split(LANG_BEGIN, 1)
             after = rest.split(LANG_END, 1)[1].lstrip("\n")
             text = before + after
@@ -544,7 +572,7 @@ def write_langs():
         if dup:
             raise SystemExit(f"clés déjà présentes dans {locale} (hors bloc des quêtes) : {dup[:10]}")
         block = [LANG_BEGIN] + [f"{k} = {v}" for k, v in table.items()] + [LANG_END, ""]
-        path.write_text("\n".join(block) + text, encoding="utf-8")
+        path.write_text(before + "\n".join(block) + after, encoding="utf-8")
         print(f"{path.relative_to(ROOT)} : {len(table)} clés des quêtes")
 
 
@@ -557,7 +585,7 @@ def main():
     n = warnings()
     texts()
     write_langs()
-    print(f"{len(PEOPLES) * 3} rôles, {len(PEOPLES) * 4} demandes, {n} fichiers de zones d'annonce")
+    print(f"{len(PEOPLES) * 3} rôles, {len(PEOPLES) * 5} demandes, {n} fichiers de zones d'annonce")
 
 
 if __name__ == "__main__":

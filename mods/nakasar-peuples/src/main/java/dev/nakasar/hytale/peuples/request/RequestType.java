@@ -23,6 +23,8 @@ import java.util.Locale;
  *       une bande ({@link Expeditions}) ;</li>
  *   <li>{@link #BOSS} boss : abattre un chef dans son repaire, avec les annonces rouges et la barre de vie des fractales
  *       ({@link dev.nakasar.hytale.peuples.boss.QuestBosses}).</li>
+ *   <li>{@link #ROUTE} route : relier par des balises de route un avant-poste ou un village voisin ; remplie quand la
+ *       route est complète ({@link RouteQuests}).</li>
  * </ul>
  */
 public enum RequestType {
@@ -36,7 +38,8 @@ public enum RequestType {
     CARAVAN("Caravan"),
     HARVEST("Harvest"),
     DESTROY("Destroy"),
-    BOSS("Boss");
+    BOSS("Boss"),
+    ROUTE("Route");
 
     private final String id;
 

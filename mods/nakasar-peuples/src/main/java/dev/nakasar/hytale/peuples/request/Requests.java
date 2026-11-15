@@ -116,7 +116,8 @@ public final class Requests {
         List<RequestTemplate> all = RequestTemplate.forVillage(village.people().id(), village.tier());
         // Une caravane a besoin d'un autre village où aller (Expeditions.available).
         World world = store.getExternalData().getWorld();
-        all.removeIf(t -> !Expeditions.available(world, village, t));
+        all.removeIf(t -> !Expeditions.available(world, village, t)
+                || (t.type() == RequestType.ROUTE && !RouteQuests.available(world, village, t)));
         List<RequestTemplate> pool = new ArrayList<>();
         for (RequestTemplate t : all) {
             if (!usedTypes.contains(t.type()) && !usedTemplates.contains(t.getId())) {
@@ -219,6 +220,9 @@ public final class Requests {
      * le captif lui-même tant qu'il est loin du joueur, puis le cœur du village (texte {@code escort.home}).
      */
     public static Message task(Store<EntityStore> store, PlayerRef player, PlayerRequest r, RequestTemplate t, Village village, Vector3d from) {
+        if (t.type() == RequestType.ROUTE) {
+            return RouteQuests.task(store.getExternalData().getWorld(), r, t, village, from);
+        }
         if (t.type().expedition()) {
             return Expeditions.task(store.getExternalData().getWorld(), store, player, r, t, village, from);
         }
@@ -347,12 +351,18 @@ public final class Requests {
         if (t.type().expedition() && !Expeditions.prepare(world, player, village, t, taken)) {
             return false;
         }
+        if (t.type() == RequestType.ROUTE && !RouteQuests.prepare(world, player, village, t, taken)) {
+            return false;
+        }
         state.addRequest(taken);
         player.sendMessage(Message.translation(KEYS + "taken").param("title", title(t)).param("village", village.name()));
         if (t.type() == RequestType.DEFENSE) {
             // Étape 6 : la défense attire le raid sur le village, cette nuit (ou la suivante si un raid y a déjà eu lieu).
             Raids.schedule(village, Raids.nextNight(store, village), t.flag() != null ? "Chain" : "Request");
             player.sendMessage(Raids.status(store, village));
+        }
+        if (t.type() == RequestType.ROUTE) {
+            RouteQuests.started(store, ref, player, taken, t);
         }
         showHud(world, store, ref, player, taken, true);
         // Ce qui est déjà au dépôt compte tout de suite si le joueur est à côté.
