@@ -174,8 +174,13 @@ public final class Expeditions {
             }
             String role = t.type() == RequestType.CARAVAN ? caravaneerRole(village.people()) : gathererRole(village.people());
             int spawned = 0;
-            for (int i = 0; i < alive; i++) {
-                Ref<EntityStore> m = RequestSystem.spawnOnGround(world, store, key, RequestSpawns.Kind.ESCORTED, role, pos[0], pos[2], 3, null);
+            List<int[]> spots = spreadSpots(terrain, pos[0], pos[2], alive);
+            if (spots.isEmpty()) {
+                PeuplesPlugin.get().getLogger().atWarning().log("Peuples : pas de point sûr pour '%s' autour de %d, %d", role, pos[0], pos[2]);
+            }
+            for (int[] spot : spots) {
+                Ref<EntityStore> m = RequestSpawns.spawn(store, key, RequestSpawns.Kind.ESCORTED, role,
+                        new Vector3d(spot[0] + 0.5, spot[1], spot[2] + 0.5), (float) ThreadLocalRandom.current().nextDouble(-Math.PI, Math.PI));
                 if (m != null) {
                     spawned++;
                     if (t.type() == RequestType.HARVEST && r.stage() == 1) {
@@ -225,6 +230,49 @@ public final class Expeditions {
             }
         }
         return lead;
+    }
+
+    /**
+     * Jusqu'à `n` points sûrs ({@link Terrain#safeFeet}) autour de (x, z), à au moins
+     * {@value EscortSpacingSystem#SPACING} blocs les uns des autres : chaque PNJ escorté a le sien, jamais empilés.
+     * D'abord en cercle à 3 blocs, puis par anneaux jusqu'à 12 blocs.
+     */
+    static List<int[]> spreadSpots(Terrain terrain, int x, int z, int n) {
+        List<int[]> spots = new java.util.ArrayList<>();
+        double offset = ThreadLocalRandom.current().nextDouble(0, Math.PI * 2);
+        for (int i = 0; i < n; i++) {
+            double angle = offset + i * Math.PI * 2 / n;
+            int[] spot = terrain.safeSpot(x + (int) Math.round(Math.cos(angle) * 3), z + (int) Math.round(Math.sin(angle) * 3), 1);
+            if (spot != null && apart(spots, spot)) {
+                spots.add(spot);
+            }
+        }
+        for (int r = 0; r <= 12 && spots.size() < n; r++) {
+            for (int dx = -r; dx <= r && spots.size() < n; dx++) {
+                for (int dz = -r; dz <= r && spots.size() < n; dz++) {
+                    if (Math.max(Math.abs(dx), Math.abs(dz)) != r) {
+                        continue;
+                    }
+                    int feet = terrain.safeFeet(x + dx, z + dz);
+                    int[] spot = {x + dx, feet, z + dz};
+                    if (feet != Terrain.NONE && apart(spots, spot)) {
+                        spots.add(spot);
+                    }
+                }
+            }
+        }
+        return spots;
+    }
+
+    private static boolean apart(List<int[]> spots, int[] spot) {
+        for (int[] s : spots) {
+            double dx = s[0] - spot[0];
+            double dz = s[2] - spot[2];
+            if (dx * dx + dz * dz < EscortSpacingSystem.SPACING * EscortSpacingSystem.SPACING) {
+                return false;
+            }
+        }
+        return true;
     }
 
     /** Vrai si un PNJ escorté est à moins de {@value #HOME} blocs du cœur de `village`. */

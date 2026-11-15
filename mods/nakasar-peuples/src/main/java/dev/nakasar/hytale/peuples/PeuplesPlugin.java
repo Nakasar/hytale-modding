@@ -178,6 +178,7 @@ public final class PeuplesPlugin extends JavaPlugin {
         entities.registerSystem(new RequestDeathSystem());
         // Demandes de boss (15 novembre 2026) : coups annoncés et barre de vie des fractales.
         entities.registerSystem(new dev.nakasar.hytale.peuples.boss.QuestBosses());
+        entities.registerSystem(new dev.nakasar.hytale.peuples.request.EscortSpacingSystem());
         entities.registerSystem(new dev.nakasar.hytale.peuples.boss.QuestBossBar());
         dev.nakasar.hytale.peuples.boss.QuestBosses.setSummoner(dev.nakasar.hytale.peuples.request.Expeditions::summonAdds);
         for (dev.nakasar.hytale.peuples.village.People people : dev.nakasar.hytale.peuples.village.People.values()) {
