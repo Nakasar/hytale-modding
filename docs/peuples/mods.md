@@ -431,8 +431,9 @@ dialogues montre le rang du joueur.
 ## Étape 5 : les chantiers et la vie du village
 
 Le village grandit sous les yeux du joueur : quand la jauge d'essor est pleine et que le dépôt contient les
-matériaux du palier, un chantier s'ouvre. Des échafaudages montent autour des bâtiments du palier suivant, des
-bâtisseurs y travaillent, puis le prefab vanilla est collé au bout de la durée du chantier.
+matériaux du palier, un chantier s'ouvre. Autour des bâtiments du palier suivant monte un chantier propre au peuple
+(voir « Chantiers par peuple »), des bâtisseurs y travaillent, puis le prefab vanilla est collé au bout de la durée du
+chantier.
 
 ### Le chantier
 
@@ -449,10 +450,39 @@ Les tables sont dans `tools/generate_village_layouts.py` (`CHANTIERS`), qui écr
 `Nakasar/VillageLayouts/Kweebec_Oak.json`.
 
 - À l'ouverture, les matériaux sont retirés du coffre du dépôt. Chaque parcelle est ensuite aplanie, ou débarrassée
-  de ses ruines. Les grands bâtiments reçoivent un échafaudage en blocs vanilla : poteaux `Wood_Hardwood_Beam` tous les
-  4 blocs, à 1 bloc du bâtiment, planchers `Wood_Hardwood_Planks_Half` tous les 5 niveaux (18 blocs de haut au plus)
-  et un tas de `Wood_Oak_Trunk` au centre. Il n'existe pas de bloc « échafaudage » vanilla.
+  de ses ruines. Les grands bâtiments reçoivent la première phase du chantier de leur peuple, sur un anneau d'un bloc
+  autour de leur emprise (voir ci-dessous).
 - Une parcelle où un joueur a construit n'est jamais touchée. Le bâtiment est sauté et le tableau le dit.
+
+### Chantiers par peuple
+
+Les échafaudages des débuts étaient provisoires (Kevin, 15 novembre 2026). Chaque peuple bâtit selon ses techniques,
+en 4 phases réparties sur la durée du chantier : préparation, montée, charpente, finitions. Le code est dans
+`village/SiteStyle.java`. Tous les blocs sont vanilla et viennent des prefabs vanilla du peuple (Npc/Kweebec,
+Npc/Trork, Npc/Feran, Npc/Outlander, Npc/Slothian dans Assets.zip 0.7.2).
+
+![Les 4 phases du chantier de chaque peuple](images/chantiers-phases.png)
+
+| Peuple | Préparation | Montée | Charpente | Finitions |
+| --- | --- | --- | --- | --- |
+| Kweebecs | jardin semé (fleurs, fougères, mousse), buissons aux angles | troncs de chêne couverts de lierre aux angles | guirlande de feuillage, touffes aux angles, lianes qui pendent | grandes fleurs, lanternes kweebec à des cordes |
+| Trorks | pieux d'os, tas d'os, rondins entassés | palissade de rondins de hêtre (ouverture au milieu des côtés) | auvents de cuir sur les angles | crânes, torches grossières |
+| Feran | briques de grès qui sèchent, poteries, argile | premier rang de briques, poteaux de bois sec | deuxième rang, ombrières de peau sur les angles | torches feran aux ouvertures |
+| Renoncés | cairns de schiste, rondins de sapin, caisse | poteaux de sapin, passerelle basse de bois mort | passerelle haute, chaînes | torches aux angles |
+| Slothians | mousse, fougères, jeunes bambous | cannes de bambou aux angles et au milieu des côtés | cannes plus hautes que le toit, plancher tropical, lianes | torches de jungle |
+
+- Le plan d'une phase est une fonction pure de l'emprise, du sol de pose et de la phase. `VillageLifeSystem` appelle
+  `Chantiers.grow` : quand la phase du moment (selon l'heure de jeu entre le début et la fin) dépasse celle déjà posée,
+  le chantier de chaque grand bâtiment passe à la nouvelle phase et une ligne propre au peuple s'affiche dans le tchat
+  (`chantier.phase.<Peuple>.<n>`). La phase posée n'est pas sauvegardée : après un redémarrage, la phase en cours est
+  reposée à l'identique, sans message.
+- On ne pose que dans l'air, dans les plantes (hors feuillages) ou à la place de nos propres blocs d'une autre phase.
+  On ne retire que les blocs que le plan pose à cette position, toutes phases confondues. Les retraits se font de haut
+  en bas, les poses de bas en haut. Ce qui va au sol (fleurs, poteries, os) n'est posé que sur un bloc plein.
+- Le tas de matériaux du centre diminue à la phase 3 et disparaît à la phase 4.
+- Les blocs posés par les chantiers sont dans `Burning.REQUIRED_BLOCKS` : validateAssets vérifie qu'ils existent.
+- Le repérage des blocs gênants ne change pas. Les parcelles sont toutes examinées avant que la première phase ne soit
+  posée, et le chantier des bâtiments en travaux est retiré avant de bâtir une parcelle sautée puis dégagée.
 
 ### Blocs qui gênent un chantier
 
@@ -469,9 +499,9 @@ briques, pavés, poli, lisse, demi-blocs, escaliers, chemins), `Plant_`, troncs,
   60 s, au seul joueur, le contour de la parcelle examinée (fil de fer jaune) et un cube rose sur chaque bloc gênant.
   Ce sont les formes de débogage du moteur (celles de `/debug shape`) : aucun bloc ni entité n'est posé.
 - Une parcelle dégagée avant la fin du chantier est bâtie à la fin, sans attendre le chantier suivant.
-- Toutes les parcelles sont examinées avant de poser le moindre échafaudage, pour que l'échafaudage d'un bâtiment ne
+- Toutes les parcelles sont examinées avant de poser le moindre chantier, pour que le chantier d'un bâtiment ne
   fasse pas sauter son voisin.
-- À la fin, l'échafaudage est retiré et le prefab collé. Le palier monte, la jauge repart à 0, et un titre s'affiche à
+- À la fin, le chantier est retiré et le prefab collé. Le palier monte, la jauge repart à 0, et un titre s'affiche à
   tous les joueurs à moins de 160 blocs (avec un message dans le chat).
 - Un chantier en cours se voit au tableau (heures restantes, bâtiments, parcelles sautées). Sinon le tableau dit ce
   qu'il manque : jauge, matériaux déposés/attendus, nombre de bâtiments et durée.
@@ -535,9 +565,10 @@ Chaque palier ajoute des Kweebecs vanilla à métier, avec leur rôle (`Nakasar_
    tour de guet). Leur parler ouvre leur dialogue.
 2. `/village chantier` : le tableau dit ce qu'attend le palier 1. Mettre les matériaux dans le coffre du dépôt
    (`/give Wood_Oak_Trunk 24`, `/give Rock_Stone_Cobble 16`, `/give Ingredient_Fibre 12`), puis `/village essor 100`.
-   En moins de 2 s, les matériaux disparaissent du coffre, les parcelles sont aplanies et les échafaudages montent.
+   En moins de 2 s, les matériaux disparaissent du coffre, les parcelles sont aplanies et le jardin est semé.
    Le bâtisseur et ses aides y vont. `/village chantier` donne les heures restantes.
-3. Attendre 24 h de jeu (`/time` pour avancer), ou `/village finir` : les échafaudages tombent, le puits, l'échoppe,
+3. Attendre 24 h de jeu (`/time` pour avancer) : toutes les 6 h le chantier change de phase (troncs, feuillage et
+   lianes, lanternes) avec une ligne dans le tchat. Ou `/village finir` : le chantier disparaît, le puits, l'échoppe,
    la maison sud-ouest et l'enclos apparaissent, avec le titre « palier 1 ». La puisatière et l'éleveur arrivent.
 4. La nuit (`/time midnight`), les villageois rentrent dans leur maison ; au matin ils retournent au poste.
 5. `/village lancer` puis `/village finir` pour les paliers 2 et 3 : garde, soigneuse, ancien, jardinier du bourg.
@@ -551,7 +582,9 @@ Chaque palier ajoute des Kweebecs vanilla à métier, avec leur rôle (`Nakasar_
 
 - Que les animations de métier jouent sur le modèle Kweebec_Sapling (Interact, Feed, LookAround, Rest...).
 - Le retour à la maison la nuit : le Seek et la laisse (`setLeashPoint`) suffisent-ils à passer les portes des prefabs ?
-- L'allure des échafaudages, et que leur retrait ne laisse rien derrière.
+- L'allure des chantiers de chaque peuple, et que leur retrait ne laisse rien derrière (voir « Chantiers par
+  peuple »). Que le lierre (`Plant_Vine`, rotations 0 à 3 supposées tournées vers le tronc), les lianes
+  (`Plant_Vine_Hanging`) sous le feuillage et les lanternes sous les cordes tiennent sans tomber.
 - L'allure d'un bâtiment brûlé (proportions d'effondrement et de feuilles restantes).
 - Que l'aplanissement des parcelles ne coupe pas le relief autour de façon trop visible.
 - Le titre de fin de chantier, et sa portée de 160 blocs.
