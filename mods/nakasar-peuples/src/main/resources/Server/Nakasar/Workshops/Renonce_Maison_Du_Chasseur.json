@@ -1,0 +1,14 @@
+{
+  "$Comment": "Bâtiment de métier généré par tools/generate_workshops.py (ne pas modifier à la main) : voir dev.nakasar.hytale.peuples.workshop.Workshop.",
+  "People": "Renonce",
+  "Layout": "Renonce_Givre",
+  "Building": "Maison_Du_Chasseur",
+  "Job": "Chasseur",
+  "Icon": "Ingredient_Hide_Heavy",
+  "NameKey": "nakasar_peuples.workshop.Renonce_Maison_Du_Chasseur.name",
+  "Board": [
+    22,
+    15,
+    2
+  ]
+}

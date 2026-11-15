@@ -1,0 +1,14 @@
+{
+  "$Comment": "Bâtiment de métier généré par tools/generate_workshops.py (ne pas modifier à la main) : voir dev.nakasar.hytale.peuples.workshop.Workshop.",
+  "People": "Renonce",
+  "Layout": "Renonce_Givre",
+  "Building": "Tour_Du_Fort",
+  "Job": "Garde",
+  "Icon": "Weapon_Arrow_Crude",
+  "NameKey": "nakasar_peuples.workshop.Renonce_Tour_Du_Fort.name",
+  "Board": [
+    26,
+    -9,
+    3
+  ]
+}

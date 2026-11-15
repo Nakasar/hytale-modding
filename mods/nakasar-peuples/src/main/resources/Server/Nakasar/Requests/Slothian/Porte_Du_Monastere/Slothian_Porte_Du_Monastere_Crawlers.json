@@ -1,0 +1,25 @@
+{
+  "$Comment": "Commande du bâtiment de métier Slothian_Porte_Du_Monastere, générée par tools/generate_workshops.py (ne pas modifier à la main) : voir RequestTemplate.",
+  "People": "Slothian",
+  "Workshop": "Slothian_Porte_Du_Monastere",
+  "Type": "Hunt",
+  "MinLevel": 1,
+  "MaxLevel": 3,
+  "Weight": 1,
+  "TitleKey": "nakasar_peuples.request.Slothian_Porte_Du_Monastere_Crawlers.title",
+  "TaskKey": "nakasar_peuples.request.Slothian_Porte_Du_Monastere_Crawlers.task",
+  "Spawns": [
+    "Crawler_Void",
+    "Crawler_Void",
+    "Crawler_Void"
+  ],
+  "Roles": [
+    "Crawler_Void"
+  ],
+  "MinDistance": 60,
+  "MaxDistance": 110,
+  "Knowledge": 45,
+  "Essor": 5,
+  "Favors": 2,
+  "Reputation": 8
+}

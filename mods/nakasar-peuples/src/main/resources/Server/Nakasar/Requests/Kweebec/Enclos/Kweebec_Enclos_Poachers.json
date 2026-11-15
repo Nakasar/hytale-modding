@@ -1,0 +1,24 @@
+{
+  "$Comment": "Commande du bâtiment de métier Kweebec_Enclos, générée par tools/generate_workshops.py (ne pas modifier à la main) : voir RequestTemplate.",
+  "People": "Kweebec",
+  "Workshop": "Kweebec_Enclos",
+  "Type": "Hunt",
+  "MinLevel": 1,
+  "MaxLevel": 3,
+  "Weight": 1,
+  "TitleKey": "nakasar_peuples.request.Kweebec_Enclos_Poachers.title",
+  "TaskKey": "nakasar_peuples.request.Kweebec_Enclos_Poachers.task",
+  "Spawns": [
+    "Trork_Hunter",
+    "Trork_Hunter"
+  ],
+  "Roles": [
+    "Trork_Hunter"
+  ],
+  "MinDistance": 60,
+  "MaxDistance": 110,
+  "Knowledge": 45,
+  "Essor": 5,
+  "Favors": 2,
+  "Reputation": 8
+}

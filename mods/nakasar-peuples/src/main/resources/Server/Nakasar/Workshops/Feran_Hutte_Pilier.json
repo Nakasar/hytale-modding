@@ -1,0 +1,14 @@
+{
+  "$Comment": "Bâtiment de métier généré par tools/generate_workshops.py (ne pas modifier à la main) : voir dev.nakasar.hytale.peuples.workshop.Workshop.",
+  "People": "Feran",
+  "Layout": "Feran_Oasis",
+  "Building": "Hutte_Pilier",
+  "Job": "Garde",
+  "Icon": "Weapon_Spear_Crude",
+  "NameKey": "nakasar_peuples.workshop.Feran_Hutte_Pilier.name",
+  "Board": [
+    28,
+    3,
+    3
+  ]
+}

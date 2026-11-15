@@ -104,6 +104,12 @@ public final class Villages {
         Blocks.clearIf(chunks, village.x(), village.y(), village.z(), HEART_BLOCK);
         int[] b = village.board();
         Blocks.clearIf(chunks, b[0], b[1], b[2], village.people().boardBlock());
+        for (WorkshopState w : village.workshops()) {
+            if (w != null && w.hasBoard()) {
+                int[] p = w.board();
+                Blocks.clearIf(chunks, p[0], p[1], p[2], village.people().boardBlock());
+            }
+        }
         if (village.hasBanner()) {
             int[] f = village.banner();
             Blocks.clearIf(chunks, f[0], f[1], f[2], village.people().bannerBlock());

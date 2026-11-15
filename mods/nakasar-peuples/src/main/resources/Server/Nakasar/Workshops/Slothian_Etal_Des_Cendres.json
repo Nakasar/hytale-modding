@@ -1,0 +1,14 @@
+{
+  "$Comment": "Bâtiment de métier généré par tools/generate_workshops.py (ne pas modifier à la main) : voir dev.nakasar.hytale.peuples.workshop.Workshop.",
+  "People": "Slothian",
+  "Layout": "Slothian_Monastere",
+  "Building": "Etal_Des_Cendres",
+  "Job": "Porteur_Cendres",
+  "Icon": "Ingredient_Charcoal",
+  "NameKey": "nakasar_peuples.workshop.Slothian_Etal_Des_Cendres.name",
+  "Board": [
+    -4,
+    -13,
+    3
+  ]
+}

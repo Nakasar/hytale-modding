@@ -78,6 +78,7 @@ public final class RequestSystem extends TickingSystem<EntityStore> {
         List<Village> villages = Villages.registry(world).all();
         for (Village village : villages) {
             Requests.refresh(store, village);
+            dev.nakasar.hytale.peuples.workshop.Workshops.refresh(world, store, village);
         }
         Set<UUID> here = new HashSet<>();
         List<Vector3d> positions = new ArrayList<>();

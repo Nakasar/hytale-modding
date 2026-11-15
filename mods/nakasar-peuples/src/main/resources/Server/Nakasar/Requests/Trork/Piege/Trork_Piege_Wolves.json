@@ -1,0 +1,24 @@
+{
+  "$Comment": "Commande du bâtiment de métier Trork_Piege, générée par tools/generate_workshops.py (ne pas modifier à la main) : voir RequestTemplate.",
+  "People": "Trork",
+  "Workshop": "Trork_Piege",
+  "Type": "Hunt",
+  "MinLevel": 1,
+  "MaxLevel": 3,
+  "Weight": 1,
+  "TitleKey": "nakasar_peuples.request.Trork_Piege_Wolves.title",
+  "TaskKey": "nakasar_peuples.request.Trork_Piege_Wolves.task",
+  "Spawns": [
+    "Wolf_Black",
+    "Wolf_Black"
+  ],
+  "Roles": [
+    "Wolf_Black"
+  ],
+  "MinDistance": 60,
+  "MaxDistance": 110,
+  "Knowledge": 45,
+  "Essor": 5,
+  "Favors": 2,
+  "Reputation": 8
+}

@@ -366,7 +366,7 @@ public final class BoardPage extends InteractiveCustomUIPage<BoardPage.Event> {
     }
 
     /** Icône de la carte : l'objet demandé (récolte, artisanat), sinon un objet vanilla qui dit le type. */
-    static String typeIcon(RequestTemplate t) {
+    public static String typeIcon(RequestTemplate t) {
         if (t.type().usesDeposit() && t.itemId() != null) {
             return t.itemId();
         }
@@ -381,7 +381,7 @@ public final class BoardPage extends InteractiveCustomUIPage<BoardPage.Event> {
         };
     }
 
-    static String typeColor(RequestType type) {
+    public static String typeColor(RequestType type) {
         return switch (type) {
             case DEFENSE -> "#e88a78";
             case HUNT -> "#e8b45a";

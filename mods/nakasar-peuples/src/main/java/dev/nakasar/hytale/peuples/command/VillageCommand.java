@@ -121,6 +121,8 @@ public final class VillageCommand extends AbstractCommandCollection {
         addSubCommand(new RaidCancelCommand());
         addSubCommand(new RaidScheduleCommand());
         addSubCommand(new ChainCommand());
+        addSubCommand(new WorkshopCommand());
+        addSubCommand(new KnowledgeCommand());
         addSubCommand(new ChainStepCommand());
         addSubCommand(new ZoneOneCommands.KlopsCommand());
         addSubCommand(new ZoneOneCommands.WarPaintCommand());
@@ -346,6 +348,69 @@ public final class VillageCommand extends AbstractCommandCollection {
             if (village != null) {
                 VillageBoard.open(world, store, ref, player, village);
             }
+        }
+    }
+
+    // ---- Bâtiments de métier ----
+
+    /** Bâtiment de métier `id` du village, ou null avec un message. */
+    static dev.nakasar.hytale.peuples.workshop.Workshop workshop(PlayerRef player, Village village, String id) {
+        dev.nakasar.hytale.peuples.workshop.Workshop w = dev.nakasar.hytale.peuples.workshop.Workshop.get(id);
+        if (w == null || !w.layout().equals(village.layout())) {
+            player.sendMessage(Message.translation(dev.nakasar.hytale.peuples.workshop.Workshops.KEYS + "unknown").param("id", id));
+            return null;
+        }
+        return w;
+    }
+
+    /** {@code /village atelier [id]} : liste les bâtiments de métier du village, ou ouvre la page de l'un d'eux. */
+    private static final class WorkshopCommand extends PlayerCommand {
+        private final OptionalArg<String> id = withOptionalArg("batiment", KEYS + "workshop.arg", ArgTypes.STRING);
+
+        WorkshopCommand() {
+            super("atelier", KEYS + "workshop.desc");
+        }
+
+        @Override
+        protected void execute(CommandContext context, Store<EntityStore> store, Ref<EntityStore> ref, PlayerRef player, World world) {
+            Village village = nearest(world, player);
+            if (village == null) {
+                return;
+            }
+            String wanted = id.get(context);
+            if (wanted == null) {
+                player.sendMessage(dev.nakasar.hytale.peuples.workshop.WorkshopPage.listLine(village));
+                return;
+            }
+            dev.nakasar.hytale.peuples.workshop.Workshop w = workshop(player, village, wanted);
+            if (w != null) {
+                dev.nakasar.hytale.peuples.workshop.WorkshopPage.open(world, store, ref, player, village, w, false);
+            }
+        }
+    }
+
+    /** {@code /village savoirfaire <id> <quantité>} (ops) : ajoute du savoir-faire à un bâtiment (borné à sa jauge). */
+    private static final class KnowledgeCommand extends AbstractPlayerCommand {
+        private final RequiredArg<String> id = withRequiredArg("batiment", KEYS + "workshop.arg", ArgTypes.STRING);
+        private final RequiredArg<Integer> amount = withRequiredArg("quantite", KEYS + "knowledge.arg", ArgTypes.INTEGER);
+
+        KnowledgeCommand() {
+            super("savoirfaire", KEYS + "knowledge.desc");
+            requirePermission(ADMIN);
+        }
+
+        @Override
+        protected void execute(CommandContext context, Store<EntityStore> store, Ref<EntityStore> ref, PlayerRef player, World world) {
+            Village village = nearest(world, player);
+            dev.nakasar.hytale.peuples.workshop.Workshop w = village == null ? null : workshop(player, village, id.get(context));
+            if (w == null) {
+                return;
+            }
+            dev.nakasar.hytale.peuples.village.WorkshopState state = village.workshop(w.getId());
+            int max = dev.nakasar.hytale.peuples.workshop.Workshops.threshold(state.level());
+            state.setKnowledge(Math.min(max, state.knowledge() + amount.get(context)));
+            player.sendMessage(Message.translation(dev.nakasar.hytale.peuples.workshop.Workshops.KEYS + "text.knowledge")
+                    .param("value", state.knowledge()).param("max", max));
         }
     }
 

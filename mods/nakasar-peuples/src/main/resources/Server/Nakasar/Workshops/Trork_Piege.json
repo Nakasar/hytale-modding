@@ -1,0 +1,14 @@
+{
+  "$Comment": "Bâtiment de métier généré par tools/generate_workshops.py (ne pas modifier à la main) : voir dev.nakasar.hytale.peuples.workshop.Workshop.",
+  "People": "Trork",
+  "Layout": "Trork_Camp",
+  "Building": "Piege",
+  "Job": "Chasseur",
+  "Icon": "Ingredient_Hide_Light",
+  "NameKey": "nakasar_peuples.workshop.Trork_Piege.name",
+  "Board": [
+    25,
+    19,
+    2
+  ]
+}

@@ -147,6 +147,14 @@ public final class PeuplesPlugin extends JavaPlugin {
                 .setKeyFunction(RequestTemplate::getId)
                 .build());
 
+        // Bâtiments de métier (GDD des bâtiments de métier) : un asset par bâtiment d'un plan de village.
+        getAssetRegistry().register(HytaleAssetStore.builder(dev.nakasar.hytale.peuples.workshop.Workshop.class,
+                        new DefaultAssetMap<String, dev.nakasar.hytale.peuples.workshop.Workshop>())
+                .setPath(dev.nakasar.hytale.peuples.workshop.Workshop.PATH)
+                .setCodec(dev.nakasar.hytale.peuples.workshop.Workshop.CODEC)
+                .setKeyFunction(dev.nakasar.hytale.peuples.workshop.Workshop::getId)
+                .build());
+
         getCodecRegistry(Interaction.CODEC).register(OpenBoardInteraction.TYPE_ID, OpenBoardInteraction.class, OpenBoardInteraction.CODEC);
         getCodecRegistry(Interaction.CODEC).register(WarPaintInteraction.TYPE_ID, WarPaintInteraction.class, WarPaintInteraction.CODEC);
 

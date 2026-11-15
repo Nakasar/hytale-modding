@@ -57,6 +57,17 @@ public class OpenBoardInteraction extends SimpleInstantInteraction {
             }
             Village village = Villages.registry(world).byBoard(x, y, z);
             if (village == null) {
+                // Panneau d'un bâtiment de métier : sa page de commandes (version texte accroupi).
+                Village owner = Villages.registry(world).byWorkshopBoard(x, y, z);
+                dev.nakasar.hytale.peuples.workshop.Workshop w = owner == null ? null
+                        : dev.nakasar.hytale.peuples.workshop.Workshops.atBoard(owner, x, y, z);
+                if (w != null) {
+                    dev.nakasar.hytale.peuples.workshop.WorkshopPage.open(world, world.getEntityStore().getStore(), ref, playerRef,
+                            owner, w, crouching);
+                    return;
+                }
+            }
+            if (village == null) {
                 playerRef.sendMessage(Message.translation(Villages.MESSAGES + "boardOrphan"));
                 return;
             }

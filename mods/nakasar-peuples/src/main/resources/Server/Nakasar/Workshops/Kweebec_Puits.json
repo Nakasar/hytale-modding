@@ -1,0 +1,14 @@
+{
+  "$Comment": "Bâtiment de métier généré par tools/generate_workshops.py (ne pas modifier à la main) : voir dev.nakasar.hytale.peuples.workshop.Workshop.",
+  "People": "Kweebec",
+  "Layout": "Kweebec_Oak",
+  "Building": "Puits",
+  "Job": "Puisatiere",
+  "Icon": "Container_Bucket",
+  "NameKey": "nakasar_peuples.workshop.Kweebec_Puits.name",
+  "Board": [
+    3,
+    12,
+    2
+  ]
+}

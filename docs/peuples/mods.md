@@ -941,3 +941,48 @@ La recherche part du point voulu et s'élargit par anneaux. Elle sert à :
 
 **Guetteur des missives** : il ne disparaît plus à la remise. Il reste à son poste (« Il reprend sa garde ») et part
 quand aucun joueur n'est à moins de 56 blocs (`RequestSpawns.release` / `stepLingering`).
+
+## Bâtiments de métier, étape 1 : panneau de commandes et savoir-faire (`workshop/`)
+
+GDD des bâtiments de métier (approuvé le 15 novembre 2026) : chaque bâtiment du plan dont le villageois à métier
+produit quelque chose a son niveau (I à III), sa jauge de savoir-faire et son propre panneau de commandes. L'étape 1
+pose l'état, le panneau, les commandes et la jauge ; la montée de niveau (commande de maître, chantier de 12 h) vient
+à l'étape 2.
+
+- **Bâtiments** : asset `Server/Nakasar/Workshops/<Peuple>_<Bâtiment>.json` (plan, bâtiment, métier, icône, place du
+  panneau), généré par `tools/generate_workshops.py` à partir des plans. 15 bâtiments : Kweebecs (enclos, potager,
+  puits, maison de soins, tour de la garde), Trorks (piège, feu de camp, entrepôt), Feran (entrée de l'oasis, hutte de
+  la garde), Renoncés (maison du chasseur, tour du fort), Slothians (étal des cendres, temple de veille, porte du
+  monastère). Un bâtiment est ouvert quand son bâtiment est debout et que son métier existe au palier du village.
+- **État** : `village/WorkshopState`, sauvegardé avec le village (`Workshops` du village) : niveau, savoir-faire,
+  spécialité, commandes du jour, place du panneau.
+- **Panneau** : le panneau vanilla du peuple (même bloc que le tableau du village), posé par le Java devant le bâtiment
+  à la place calculée par le générateur (face tournée vers la place, décalée de l'entrée), seulement sur une case vide
+  ou de végétation. L'utiliser ouvre `WorkshopPage_<Peuple>.ui` (`tools/generate_workshop_ui.py`) ; accroupi, la
+  version texte.
+- **Commandes** : modèles de demande ordinaires rangés dans `Server/Nakasar/Requests/<Peuple>/<Bâtiment>/`, avec
+  `Workshop`, `MinLevel`, `MaxLevel`, `Knowledge` (et `Specialty` pour l'étape 3). Le tableau du village ne les tire
+  plus ; chaque bâtiment en tire 2 à 6 h (3 au niveau III). Rang Toléré pour en prendre une ; un joueur suit au plus 3
+  demandes ou commandes à la fois (hors étapes de chaîne). Remplie : savoir-faire au bâtiment (borné à la jauge du
+  niveau : 200 au niveau I, 400 au niveau II), 5 d'essor au village, faveurs et réputation au joueur, une fois par
+  commande comme l'essor.
+- **Validation** : `ValidateAssets` vérifie les bâtiments (plan, bâtiment, métier, au moins 3 commandes), le
+  `Workshop` des commandes et les ids remplis par `WorkshopPage.java` dans chaque mise en page.
+
+### Nouvelles commandes
+
+- `/village atelier` : bâtiments de métier ouverts du village le plus proche ; `/village atelier <id>` ouvre la page.
+- `/village savoirfaire <id> <quantité>` (ops) : ajoute du savoir-faire.
+
+### Tester en jeu (étape 1)
+
+1. `/village generer` puis `/village palier 1` (le village kweebec gagne puits et enclos).
+2. Attendre une seconde près des bâtiments : un panneau kweebec apparaît devant le potager, le puits et l'enclos.
+3. L'utiliser : la page montre l'enclos des lapins, niveau I, Pâquerette, la jauge 0/200 et 2 commandes.
+4. Prendre « Carottes des lapins », déposer 10 carottes au dépôt : +30 de savoir-faire, +5 d'essor, une nouvelle commande.
+5. Accroupi devant le panneau : la version texte.
+
+### À vérifier en jeu (étape 1)
+
+- Le panneau est-il bien tourné vers la place et hors du passage ? Ne bouche-t-il aucune entrée ?
+- Le panneau d'un bâtiment bâti par un chantier apparaît-il dans la seconde où un joueur est près ?

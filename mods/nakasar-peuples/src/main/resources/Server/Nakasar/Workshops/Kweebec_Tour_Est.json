@@ -1,0 +1,14 @@
+{
+  "$Comment": "Bâtiment de métier généré par tools/generate_workshops.py (ne pas modifier à la main) : voir dev.nakasar.hytale.peuples.workshop.Workshop.",
+  "People": "Kweebec",
+  "Layout": "Kweebec_Oak",
+  "Building": "Tour_Est",
+  "Job": "Garde",
+  "Icon": "Weapon_Arrow_Crude",
+  "NameKey": "nakasar_peuples.workshop.Kweebec_Tour_Est.name",
+  "Board": [
+    38,
+    11,
+    3
+  ]
+}
