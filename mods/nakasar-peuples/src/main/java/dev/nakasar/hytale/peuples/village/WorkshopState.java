@@ -203,7 +203,9 @@ public final class WorkshopState {
 
     /** Vrai pendant le chantier d'amélioration. */
     public boolean upgrading() {
-        return upgradeEnd > 0;
+        // Les secondes de jeu (GameClock.seconds) sont NÉGATIVES : l'horloge vanilla part de l'an 1 (WorldTimeResource.ZERO_YEAR),
+        // avant l'époque Unix. Seul 0 veut dire « aucun » (bug du 2026-11-15 : « > 0 » rendait tout chantier invisible).
+        return upgradeEnd != 0L;
     }
 
     public long upgradeStart() {

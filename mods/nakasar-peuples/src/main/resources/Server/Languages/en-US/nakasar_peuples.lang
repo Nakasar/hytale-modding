@@ -287,6 +287,26 @@ world.command.calendar.migration = A herd migrates near {village}.
 world.command.calendar.noMigration = A migration is already under way.
 world.command.calendar.stopped = Gatherings stopped.
 # ---- Fin du monde vivant ----
+# ---- Source de l'Écho (généré par tools/generate_echo_spring.py, ne pas modifier à la main) ----
+items.Nakasar_Peuples_Echo_Spring_Jar.name = Spring Jar
+items.Nakasar_Peuples_Echo_Spring_Jar.description = The water of the Echo Spring stays cool inside. It fills one oasis waterskin a day.
+spring.planted = The Echo Seed sings: a spring wells up from the sand at {x} {y} {z}. Go to the jar by the water.
+spring.noRoom = The seed refuses this ground: find a clearer, flatter spot, away from other springs.
+spring.enter = Echo Spring: thirst will not take you here.
+spring.leave = You leave the shade of the Echo Spring.
+spring.title = Echo Spring
+spring.body1 = The Echo Seed made this spring well up. It still sings with the voice of the Kweebec Grandfather.
+spring.body2 = Shelter: within {radius} blocks of the spring, the thirst of the Dunes does not take you, even at midday.
+spring.body3 = The Feran know its song: you are at least Tolerated among them, and their merchants serve you.
+spring.body4 = The jar fills one oasis waterskin a day: drunk, it keeps the thirst away for 20 minutes far from here.
+spring.filled = You fill an oasis waterskin at the jar. Come back tomorrow for the next one.
+spring.alreadyFilled = The jar fills slowly: come back tomorrow for another waterskin.
+spring.orphan = This jar is dry: no Echo Spring here.
+command.spring.desc = Rebuild the nearest Echo Spring (old Kweebec pool included, ops)
+command.spring.none = No Echo Spring within {radius} blocks.
+command.spring.done = Echo Spring rebuilt at {x} {y} {z}.
+command.spring.failed = Could not rebuild here (area not loaded?).
+# ---- Fin de la Source de l'Écho ----
 # ---- Bâtiments de métier (généré par tools/generate_workshops.py, ne pas modifier à la main) ----
 building.E1_Archerie = Archery workshop
 job.Archer_E1 = Archer
@@ -3336,7 +3356,6 @@ climate.status.cold = Climate: hypothermia, {stacks}/{max} stacks.
 climate.status.quenched = Climate: quenched.
 climate.status.fine = Climate: nothing to fear here.
 climate.seed.wrongZone = The Echo Seed will only take root in the Dunes (zone 2).
-climate.seed.planted = The Echo Seed sings and a pool rises from the sand at {x} {y} {z}. Here thirst will not take you, and the Feran will know its song.
 climate.reveal.Feran = The Echo Seed stirs: it senses the water of the {village} oasis, at {x} {z} ({distance} blocks).
 climate.reveal.Renonce = The Wind Bracelet pulls north: fires burn at the {village} hamlet, at {x} {z} ({distance} blocks).
 hive.status = Scarak hive: level {level} ({points}/{max} points): +{extra} Scarak(s) per wave and +{chance}% raid chance each morning on the Feran.
@@ -3972,7 +3991,7 @@ npc.Kweebec_Chief.name = Kweebec chief
 items.Nakasar_Peuples_Trophy_Trork.name = Trork trophy
 items.Nakasar_Peuples_Trophy_Trork.description = Skulls taken from the raiders of a repelled raid. Display them proudly at home.
 items.Nakasar_Peuples_Echo_Seed.name = Echo Seed
-items.Nakasar_Peuples_Echo_Seed.description = Given by the Kweebec chief to the champion of their people. They say it still sings with the Grandfather's voice, and could draw water where nothing grows.
+items.Nakasar_Peuples_Echo_Seed.description = Given by the Kweebec chief to the champion of their people. It still sings with the Grandfather's voice. Planted in the Dunes (zone 2), it makes a spring well up where thirst cannot reach you.
 command.raid.desc = Expected or running raid at the nearest village, and the last raid's report
 command.raidStart.desc = Starts a raid on the nearest village right now (daytime too)
 command.raidFinish.desc = Ends the running raid: won or lost

@@ -287,6 +287,26 @@ world.command.calendar.migration = Un troupeau migre près de {village}.
 world.command.calendar.noMigration = Une migration est déjà en cours.
 world.command.calendar.stopped = Rendez-vous arrêtés.
 # ---- Fin du monde vivant ----
+# ---- Source de l'Écho (généré par tools/generate_echo_spring.py, ne pas modifier à la main) ----
+items.Nakasar_Peuples_Echo_Spring_Jar.name = Jarre de la Source
+items.Nakasar_Peuples_Echo_Spring_Jar.description = L'eau de la Source de l'Écho y reste fraîche. Elle remplit une Outre d'oasis par jour.
+spring.planted = La Graine d'Écho chante : une source jaillit du sable en {x} {y} {z}. Approche-toi de la jarre au bord de l'eau.
+spring.noRoom = La graine refuse ce sol : il faut un endroit plus dégagé et moins pentu, loin des autres sources.
+spring.enter = Source de l'Écho : la soif ne te prendra pas ici.
+spring.leave = Tu quittes l'ombre de la Source de l'Écho.
+spring.title = Source de l'Écho
+spring.body1 = La Graine d'Écho a fait jaillir cette source. Elle chante encore la voix du Grand-Père kweebec.
+spring.body2 = Abri : à moins de {radius} blocs de la source, la soif des Dunes ne te prend pas, même en plein jour.
+spring.body3 = Les Feran reconnaissent son chant : tu es au moins Toléré chez eux, leurs marchands te servent.
+spring.body4 = La jarre remplit une Outre d'oasis par jour : bue, elle chasse la soif 20 minutes loin d'ici.
+spring.filled = Tu remplis une Outre d'oasis à la jarre. Reviens demain pour la suivante.
+spring.alreadyFilled = La jarre se remplit lentement : reviens demain pour une autre outre.
+spring.orphan = Cette jarre est sèche : aucune Source de l'Écho ici.
+command.spring.desc = Reconstruit la Source de l'Écho la plus proche (ancien bassin kweebec compris, ops)
+command.spring.none = Aucune Source de l'Écho à moins de {radius} blocs.
+command.spring.done = Source de l'Écho reconstruite en {x} {y} {z}.
+command.spring.failed = Reconstruction impossible ici (zone pas chargée ?).
+# ---- Fin de la Source de l'Écho ----
 # ---- Bâtiments de métier (généré par tools/generate_workshops.py, ne pas modifier à la main) ----
 building.E1_Archerie = Atelier d'archerie
 job.Archer_E1 = Archer
@@ -3336,7 +3356,6 @@ climate.status.cold = Climat : hypothermie, {stacks}/{max} piles.
 climate.status.quenched = Climat : désaltéré.
 climate.status.fine = Climat : rien à craindre ici.
 climate.seed.wrongZone = La Graine d'Écho ne prendra que dans les Dunes (zone 2).
-climate.seed.planted = La Graine d'Écho chante et un bassin naît du sable en {x} {y} {z}. Ici, la soif ne te prendra pas, et les Feran reconnaîtront son chant.
 climate.reveal.Feran = La Graine d'Écho frémit : elle sent l'eau de l'oasis {village}, en {x} {z} ({distance} blocs).
 climate.reveal.Renonce = Le Bracelet de vent tire vers le nord : des feux brûlent au hameau {village}, en {x} {z} ({distance} blocs).
 hive.status = Ruche scarak : niveau {level} ({points}/{max} points) : +{extra} Scarak(s) par vague et +{chance} % de raid chaque matin sur les Feran.
@@ -3972,7 +3991,7 @@ npc.Kweebec_Chief.name = Chef kweebec
 items.Nakasar_Peuples_Trophy_Trork.name = Trophée trork
 items.Nakasar_Peuples_Trophy_Trork.description = Des crânes pris aux pillards d'un raid repoussé. À poser fièrement chez soi.
 items.Nakasar_Peuples_Echo_Seed.name = Graine d'Écho
-items.Nakasar_Peuples_Echo_Seed.description = Offerte par le chef kweebec au champion de son peuple. On dit qu'elle chante encore la voix du Grand-Père, et qu'elle saurait faire jaillir l'eau là où rien ne pousse.
+items.Nakasar_Peuples_Echo_Seed.description = Offerte par le chef kweebec au champion de son peuple. Elle chante encore la voix du Grand-Père. Plantée dans les Dunes (zone 2), elle fait jaillir une source où la soif ne prend pas.
 command.raid.desc = Raid attendu ou en cours au village le plus proche, et bilan du dernier
 command.raidStart.desc = Lance un raid tout de suite sur le village le plus proche (de jour aussi)
 command.raidFinish.desc = Termine le raid en cours : gagne ou perdu

@@ -169,6 +169,8 @@ public final class PeuplesPlugin extends JavaPlugin {
                 dev.nakasar.hytale.peuples.zone.ZoneRegistry.CODEC));
         getCodecRegistry(Interaction.CODEC).register(dev.nakasar.hytale.peuples.zone.ZoneItemInteraction.TYPE_ID,
                 dev.nakasar.hytale.peuples.zone.ZoneItemInteraction.class, dev.nakasar.hytale.peuples.zone.ZoneItemInteraction.CODEC);
+        getCodecRegistry(Interaction.CODEC).register(dev.nakasar.hytale.peuples.zone.EchoSpringInteraction.TYPE_ID,
+                dev.nakasar.hytale.peuples.zone.EchoSpringInteraction.class, dev.nakasar.hytale.peuples.zone.EchoSpringInteraction.CODEC);
         entities.registerSystem(new dev.nakasar.hytale.peuples.zone.ZoneSeeder());
         entities.registerSystem(new dev.nakasar.hytale.peuples.zone.ZoneSystem());
         entities.registerSystem(new dev.nakasar.hytale.peuples.zone.HiveDeathSystem());

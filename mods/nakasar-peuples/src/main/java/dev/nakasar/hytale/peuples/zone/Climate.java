@@ -102,6 +102,8 @@ public final class Climate {
         boolean coldTold;
         // Bracelet
         boolean boosted;
+        // Source de l'Écho : le joueur est dans son abri
+        boolean inSpring;
         // Vide (étape 9)
         int voidStacks;
         float voidGain;
@@ -182,6 +184,14 @@ public final class Climate {
         int zone = forced != null ? forced : Zones.at(world, at.x(), at.z());
         bracelet(store, player, ref, s);
         reveal(world, store, player, ref);
+
+        boolean inSpring = zone == 2 && EchoSpring.nearest(world, at.x(), at.z(), SHELTER_RADIUS) != null;
+        if (inSpring != s.inSpring) {
+            s.inSpring = inSpring;
+            NotificationUtil.sendNotification(player.getPacketHandler(),
+                    Message.translation(EchoSpring.KEYS + (inSpring ? "enter" : "leave")),
+                    inSpring ? NotificationStyle.Success : NotificationStyle.Default);
+        }
 
         boolean thirsty = zone == 2 && thirsty(world, store, ref, at);
         if (thirsty != s.thirsty) {
