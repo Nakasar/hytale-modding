@@ -139,6 +139,9 @@ public final class RequestSystem extends TickingSystem<EntityStore> {
             Requests.fail(world, store, ref, player, data, r, Requests.KEYS + "expired");
             return;
         }
+        if (t.type().hasSite() && !r.siteHeightKnown()) {
+            settleSite(world, r);
+        }
         switch (t.type()) {
             case GATHER, CRAFT -> {
                 if (Requests.nearDeposit(store, ref, village)) {
@@ -319,10 +322,36 @@ public final class RequestSystem extends TickingSystem<EntityStore> {
         return spawned;
     }
 
+    /** Demandes dont le lieu est en cours de chargement ({@link #settleSite}). */
+    private static final Set<PlayerRequest> SETTLING = Collections.newSetFromMap(Collections.synchronizedMap(new WeakHashMap<>()));
+    /** Nombre de lieux retirés par demande pendant cette session (lieu tiré en pleine eau). */
+    private static final Map<PlayerRequest, Integer> REROLLS = Collections.synchronizedMap(new WeakHashMap<>());
+    /** Lieux retirés autour du village avant de se rabattre sur ses abords. */
+    static final int SITE_REROLLS = 12;
+
+    /**
+     * Dès qu'une demande à lieu est prise, charge les chunks autour du lieu tiré et le pose sur la terre ferme
+     * ({@link #knowSiteHeight}) : le suivi montre tout de suite la vraie destination, jamais un point sous l'eau.
+     */
+    static void settleSite(World world, PlayerRequest r) {
+        if (r.siteHeightKnown() || !SETTLING.add(r)) {
+            return;
+        }
+        int[] s = r.site();
+        int reach = SITE_SAFE_RADIUS * 2;
+        Terrain.load(world, s[0] - reach, s[0] + reach, s[2] - reach, s[2] + reach).whenComplete((ignored, error) -> world.execute(() -> {
+            SETTLING.remove(r);
+            if (!r.siteHeightKnown()) {
+                knowSiteHeight(world, r);
+            }
+        }));
+    }
+
     /**
      * Fixe la hauteur du lieu quand sa colonne est chargée, en le déplaçant au point sûr le plus proche (pas sous l'eau,
-     * dans la lave, dans un bloc ou sur une pente) ; vrai si le lieu est connu. Le guetteur, le captif et le bosquet s'y
-     * posent, et la bande ou les gardiens s'y replient.
+     * dans la lave, dans un bloc ou sur une pente) ; vrai si le lieu est connu. Le guetteur, le captif, le bosquet, la
+     * récolte, les cibles à détruire et le chef s'y posent, et la bande ou les gardiens s'y replient. Sans terre ferme à
+     * 48 blocs (lac, mer), un autre lieu est tiré à la même distance du village, puis aux abords du village.
      */
     static boolean knowSiteHeight(World world, PlayerRequest r) {
         int[] s = r.site();
@@ -341,14 +370,45 @@ public final class RequestSystem extends TickingSystem<EntityStore> {
             spot = terrain.safeSpot(s[0], s[2], SITE_SAFE_RADIUS * 2);
         }
         if (spot == null) {
-            // Rien de sûr à 48 blocs (pleine mer) : le lieu reste sur le sol, comme avant.
-            PeuplesPlugin.get().getLogger().atWarning().log("Peuples : aucun point sûr à %d blocs du lieu %d, %d de la demande %s",
-                    SITE_SAFE_RADIUS * 2, s[0], s[2], r.templateId());
-            r.setSite(s[0], terrain.surface(s[0], s[2]) + 1, s[2]);
-            return true;
+            rerollSite(world, r, terrain);
+            return r.siteHeightKnown();
         }
         r.setSite(spot[0], spot[1], spot[2]);
         return true;
+    }
+
+    /** Tire un autre lieu pour `r` (même distance du village, autre direction), ou le pose aux abords du village. */
+    private static void rerollSite(World world, PlayerRequest r, Terrain terrain) {
+        int[] s = r.site();
+        Village village = Villages.registry(world).byId(r.villageId());
+        if (village == null) {
+            r.setSite(s[0], terrain.surface(s[0], s[2]) + 1, s[2]);
+            return;
+        }
+        int tries = REROLLS.merge(r, 1, Integer::sum);
+        double dx = s[0] - village.x();
+        double dz = s[2] - village.z();
+        double distance = Math.max(16, Math.sqrt(dx * dx + dz * dz));
+        if (tries <= SITE_REROLLS) {
+            // Angle d'or : les essais successifs couvrent tout le tour du village sans se répéter.
+            double angle = Math.atan2(dz, dx) + Math.PI * (3 - Math.sqrt(5));
+            PeuplesPlugin.get().getLogger().atInfo().log("Peuples : lieu %d, %d de la demande %s sous l'eau, nouvel essai (%d)",
+                    s[0], s[2], r.templateId(), tries);
+            r.setSite(village.x() + (int) Math.round(Math.cos(angle) * distance), PlayerRequest.NO_Y,
+                    village.z() + (int) Math.round(Math.sin(angle) * distance));
+            CHECKED.remove(r);
+            settleSite(world, r);
+            return;
+        }
+        // Tout le tour est en eau (île) : le lieu se pose sur la terre ferme la plus proche du village.
+        int[] spot = terrain.safeSpot(village.x(), village.z(), SITE_SAFE_RADIUS * 3);
+        PeuplesPlugin.get().getLogger().atWarning().log("Peuples : aucun lieu hors de l'eau pour la demande %s, posé près du village %s",
+                r.templateId(), village.id());
+        if (spot != null) {
+            r.setSite(spot[0], spot[1], spot[2]);
+        } else {
+            r.setSite(village.x(), terrain.surface(village.x(), village.z()) + 1, village.z());
+        }
     }
 
     static boolean near(Vector3d at, int[] site, int range) {
