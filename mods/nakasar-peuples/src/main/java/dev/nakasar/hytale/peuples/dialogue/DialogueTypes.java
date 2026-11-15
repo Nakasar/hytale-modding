@@ -71,6 +71,7 @@ public final class DialogueTypes {
         DialogueCondition.CODEC.register("Raid", RaidCondition.class, RaidCondition.CODEC);
         DialogueEffect.CODEC.register("RaidStatus", RaidStatusEffect.class, RaidStatusEffect.CODEC);
         dev.nakasar.hytale.peuples.klops.KlopsDialogueTypes.register();
+        dev.nakasar.hytale.peuples.world.WorldDialogueTypes.register();
         dev.nakasar.hytale.peuples.outpost.SettlerDialogueTypes.register();
     }
 

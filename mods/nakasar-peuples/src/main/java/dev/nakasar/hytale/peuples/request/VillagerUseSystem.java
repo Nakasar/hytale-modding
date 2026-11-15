@@ -67,10 +67,19 @@ public final class VillagerUseSystem extends EntityEventSystem<EntityStore, UseE
                 posted != null && posted.dialogue() != null && !posted.dialogue().isEmpty() ? posted : null;
         boolean klops = dev.nakasar.hytale.peuples.klops.Klops.isWanderer(target);
         boolean settler = dev.nakasar.hytale.peuples.outpost.Settlers.villageOf(target) != null;
+        World world = store.getExternalData().getWorld();
+        if (dev.nakasar.hytale.peuples.world.WorldLife.hasTalker(target)) {
+            // Monde vivant : voyageur, aubergiste, campeur, enfant, hôte de la fête ou de la foire.
+            world.execute(() -> {
+                if (user.isValid()) {
+                    dev.nakasar.hytale.peuples.world.WorldLife.talk(world, world.getEntityStore().getStore(), user, player, target);
+                }
+            });
+            return;
+        }
         if (crierVillage == null && merchantVillage == null && chiefVillage == null && owner == null && villager == null && !klops && !settler) {
             return;
         }
-        World world = store.getExternalData().getWorld();
         world.execute(() -> {
             Store<EntityStore> s = world.getEntityStore().getStore();
             if (!user.isValid()) {

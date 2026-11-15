@@ -54,6 +54,11 @@ public final class Routes {
         }
 
         /** Balises de joueur sur la route (0 : ligne droite). */
+        /** Version des balises au moment du calcul (comparer à {@code VillageRegistry.beaconVersion()}). */
+        public int version() {
+            return version;
+        }
+
         public int beacons() {
             return beacons;
         }

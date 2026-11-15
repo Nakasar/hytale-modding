@@ -140,6 +140,8 @@ public class ValidateAssets {
             {WE + "condition.EventCondition$Config#TYPE_CODEC", "None", WE + "condition.NoCondition$Config"},
             // Condition du mod (raid/RaidLocationCondition) : donne au raid son lieu.
             {WE + "condition.EventCondition$Config#TYPE_CODEC", "Nakasar_Peuples_RaidLocation", "dev.nakasar.hytale.peuples.raid.RaidLocationCondition$Config"},
+            // Condition du mod (world/WorldLocationCondition) : lieu des fêtes, foires et migrations.
+            {WE + "condition.EventCondition$Config#TYPE_CODEC", "Nakasar_Peuples_WorldLocation", "dev.nakasar.hytale.peuples.world.WorldLocationCondition$Config"},
             {WE + "condition.EventCondition$Config#TYPE_CODEC", "IntervalCondition", WE + "condition.IntervalCondition$Config"},
             {WE + "condition.EventCondition$Config#TYPE_CODEC", "LocationCondition", WE + "condition.LocationCondition$Config"},
             {WE + "condition.EventCondition$Config#TYPE_CODEC", "ProximityCondition", WE + "condition.ProximityCondition$Config"},

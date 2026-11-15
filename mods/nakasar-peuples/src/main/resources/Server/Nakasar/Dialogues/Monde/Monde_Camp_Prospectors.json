@@ -1,0 +1,46 @@
+{
+  "$Comment": "Campement de prospecteurs (étape 4). Généré par tools/generate_world_life.py ; effets WorldAction et conditions WorldCheck (world/WorldDialogueTypes).",
+  "NpcNameKey": "nakasar_peuples.dialogue.Monde_Camp_Prospectors.npc",
+  "RoleKey": "nakasar_peuples.dialogue.Monde_Camp_Prospectors.role",
+  "Entries": [
+    {
+      "Node": "Accueil"
+    }
+  ],
+  "Nodes": [
+    {
+      "Id": "Accueil",
+      "TextKey": "nakasar_peuples.dialogue.Monde_Camp_Prospectors.accueil",
+      "Responses": [
+        {
+          "TextKey": "nakasar_peuples.dialogue.Monde_Camp_Prospectors.quete",
+          "Conditions": [
+            {
+              "Type": "WorldCheck",
+              "Check": "CampOpen"
+            }
+          ],
+          "Effects": [
+            {
+              "Type": "WorldAction",
+              "Action": "CampDefend"
+            }
+          ]
+        },
+        {
+          "TextKey": "nakasar_peuples.dialogue.Monde.rumeur",
+          "Effects": [
+            {
+              "Type": "WorldAction",
+              "Action": "Rumour"
+            }
+          ],
+          "Next": "Accueil"
+        },
+        {
+          "TextKey": "nakasar_peuples.dialogue.Monde.aurevoir"
+        }
+      ]
+    }
+  ]
+}

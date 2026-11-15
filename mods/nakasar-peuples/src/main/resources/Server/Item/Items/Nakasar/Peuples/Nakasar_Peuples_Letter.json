@@ -1,0 +1,30 @@
+{
+  "$Comment": "Lettre d'un messager (monde vivant) : à porter près du cœur du village nommé (drapeau World_Letter:<id>). Modèle, texture et icône du parchemin vanilla (Deco_Scroll), comme les missives.",
+  "TranslationProperties": {
+    "Name": "nakasar_peuples.items.Nakasar_Peuples_Letter.name",
+    "Description": "nakasar_peuples.items.Nakasar_Peuples_Letter.description"
+  },
+  "Icon": "Icons/ItemsGenerated/Deco_Scroll.png",
+  "Categories": [
+    "Items.Ingredients"
+  ],
+  "Model": "Blocks/Miscellaneous/Scrolls.blockymodel",
+  "Texture": "Blocks/Miscellaneous/Scrolls_Texture.png",
+  "PlayerAnimationsId": "Item",
+  "Quality": "Uncommon",
+  "IconProperties": {
+    "Scale": 0.735,
+    "Translation": [
+      0,
+      -7.495
+    ],
+    "Rotation": [
+      22.5,
+      45,
+      22.5
+    ]
+  },
+  "ItemSoundSetId": "ISS_Blocks_Wood",
+  "DropOnDeath": false,
+  "MaxStack": 1
+}

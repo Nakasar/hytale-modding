@@ -1,0 +1,79 @@
+{
+  "$Comment": "Marchand ambulant ou meneur de caravane (world/Travellers), marchand de la foire (world/Calendar). Généré par tools/generate_world_life.py. Ne régénère jamais (VillageNoRegenSystem).",
+  "Type": "Generic",
+  "Appearance": "Trork_Doctor_Witch",
+  "NameTranslationKey": "nakasar_peuples.npc.Trork_Peddler.name",
+  "MaxHealth": 110,
+  "StartState": "Idle",
+  "DefaultPlayerAttitude": "Neutral",
+  "DefaultNPCAttitude": "Ignore",
+  "MotionControllerList": [
+    {
+      "Type": "Walk",
+      "MaxWalkSpeed": 6,
+      "Gravity": 10,
+      "RunThreshold": 0.6,
+      "MaxFallSpeed": 15,
+      "MaxRotationSpeed": 360,
+      "Acceleration": 10,
+      "JumpHeight": 1.0
+    }
+  ],
+  "KnockbackScale": 0.5,
+  "Instructions": [
+    {
+      "Sensor": {
+        "Type": "State",
+        "State": "Idle"
+      },
+      "Instructions": [
+        {
+          "$Comment": "Loin de son point d'attache (le Java le déplace) : il y marche.",
+          "Sensor": {
+            "Type": "Leash",
+            "Range": 3
+          },
+          "BodyMotion": {
+            "Type": "Seek",
+            "RelativeSpeed": 0.6,
+            "SlowDownDistance": 2,
+            "StopDistance": 1,
+            "UsePathfinder": true
+          }
+        },
+        {
+          "$Comment": "Arrivé : il flâne.",
+          "BodyMotion": {
+            "Type": "WanderInCircle",
+            "Radius": 2,
+            "RelativeSpeed": 0.3,
+            "MaxHeadingChange": 50
+          }
+        }
+      ]
+    }
+  ],
+  "InteractionInstruction": {
+    "Instructions": [
+      {
+        "Continue": true,
+        "Sensor": {
+          "Type": "Any"
+        },
+        "Actions": [
+          {
+            "Type": "SetInteractable",
+            "Interactable": true,
+            "Hint": "nakasar_peuples.hint.talk"
+          }
+        ]
+      },
+      {
+        "Sensor": {
+          "Type": "HasInteracted"
+        },
+        "Actions": []
+      }
+    ]
+  }
+}

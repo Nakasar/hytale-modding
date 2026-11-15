@@ -193,7 +193,7 @@ public final class Klops {
     }
 
     /** « Pour {village} ({people}), à {distance} blocs, direction {direction}. » */
-    static Message describe(Store<EntityStore> store, Ref<EntityStore> ref, Village to, String key) {
+    public static Message describe(Store<EntityStore> store, Ref<EntityStore> ref, Village to, String key) {
         Vector3d at = Requests.position(store, ref);
         double dx = at == null ? 0 : to.x() - at.x();
         double dz = at == null ? 0 : to.z() - at.z();

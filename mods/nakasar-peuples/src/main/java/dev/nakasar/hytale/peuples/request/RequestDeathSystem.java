@@ -53,6 +53,13 @@ public final class RequestDeathSystem extends DeathSystems.OnDeathSystem {
             PlayerRef killer = by == null || !by.isValid() ? null : buffer.getComponent(by, PlayerRef.getComponentType());
             dev.nakasar.hytale.peuples.annex.Convoys.died(world, ref, at == null ? null : new Vector3d(at.getPosition()), killer);
         }
+        if (dev.nakasar.hytale.peuples.world.WorldLife.isWorldNpc(ref)) {
+            // Monde vivant : voyageur, bête d'un troupeau, combattant d'une escarmouche...
+            TransformComponent at = buffer.getComponent(ref, TransformComponent.getComponentType());
+            Ref<EntityStore> by = dev.nakasar.hytale.peuples.reputation.VillagerHarmSystems.attacker(death.getDeathInfo());
+            PlayerRef killer = by == null || !by.isValid() ? null : buffer.getComponent(by, PlayerRef.getComponentType());
+            dev.nakasar.hytale.peuples.world.WorldLife.died(world, ref, at == null ? null : new Vector3d(at.getPosition()), killer);
+        }
         if (dev.nakasar.hytale.peuples.village.Villagers.posted(ref) != null) {
             dev.nakasar.hytale.peuples.village.Villagers.died(store, ref);
         }

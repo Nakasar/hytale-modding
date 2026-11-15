@@ -208,9 +208,19 @@ public final class PeuplesPlugin extends JavaPlugin {
         entities.registerSystem(new MeatOfferings());
         entities.registerSystem(new WarPaintSystem());
         entities.registerSystem(new KlopsSystem());
+        // Monde vivant entre les villages (voyageurs, vie autour du village, traces et auberges, campements, relations,
+        // calendrier) : dev.nakasar.hytale.peuples.world.
+        dev.nakasar.hytale.peuples.world.WorldLife.setResourceType(entities.registerResource(
+                dev.nakasar.hytale.peuples.world.WorldLifeRegistry.class, dev.nakasar.hytale.peuples.world.WorldLifeRegistry.ID,
+                dev.nakasar.hytale.peuples.world.WorldLifeRegistry.CODEC));
+        entities.registerSystem(new dev.nakasar.hytale.peuples.world.WorldLifeSystem());
+        entities.registerSystem(new dev.nakasar.hytale.peuples.world.WorldAttitudeSystem());
+        WorldEventsPlugin.registerCondition(this, dev.nakasar.hytale.peuples.world.WorldLocationCondition.TYPE,
+                dev.nakasar.hytale.peuples.world.WorldLocationCondition.CODEC, dev.nakasar.hytale.peuples.world.WorldLocationCondition.Config.CODEC);
         WorldEventsPlugin.registerCondition(this, RaidLocationCondition.TYPE, RaidLocationCondition.CODEC, RaidLocationCondition.Config.CODEC);
 
         getCommandRegistry().registerCommand(new VillageCommand());
+        getCommandRegistry().registerCommand(new dev.nakasar.hytale.peuples.world.WorldCommand());
 
         getLogger().atInfo().log("Nakasar Peuples : villages (%s), plans (Server/%s), tableau (%s), dialogues (Server/%s), demandes (Server/%s), /village enregistrés",
                 VillageRegistry.ID, VillageLayout.PATH, OpenBoardInteraction.TYPE_ID, Dialogue.PATH, RequestTemplate.PATH);
@@ -235,5 +245,6 @@ public final class PeuplesPlugin extends JavaPlugin {
         MeatOfferings.clearAll();
         Klops.clearAll();
         dev.nakasar.hytale.peuples.zone.Climate.clearAll();
+        dev.nakasar.hytale.peuples.world.WorldLife.clearAll();
     }
 }

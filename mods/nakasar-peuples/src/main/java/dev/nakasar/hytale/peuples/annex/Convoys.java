@@ -112,6 +112,10 @@ public final class Convoys {
             return;
         }
         double[] here = path.point(a.convoyAt());
+        // Monde vivant : embuscade à mi-chemin ; tant que la bande est là, le convoi attend.
+        if (dev.nakasar.hytale.peuples.world.Ambushes.convoy(world, store, key, a, path, village.people(), refs, players)) {
+            return;
+        }
         if (!near(players, here[0], here[1], SPAWN_RADIUS)) {
             despawn(store, key);
             double speed = path.beacons() > 0 ? ROUTE_SPEED : SPEED;

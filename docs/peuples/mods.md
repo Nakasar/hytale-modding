@@ -1301,3 +1301,120 @@ Les tas de rondins et de pierres à côté des scieries et des mines sont les pr
 - `PlaceBlockEvent` annulé : le bloc ne doit pas apparaître ni être consommé.
 - Les cibles des commandes de chasse apparaissent autour du village, pas de l'avant-poste.
 - Les Feran n'ont qu'une petite hutte vanilla (`Tier3_Huts_001`) : cinq de leurs avant-postes se ressemblent.
+
+## Monde vivant (`world/`)
+
+Kevin (2026-11-15), proposition détaillée https://claude.ai/artifact/RZZyBJ4p8Q8Mk5WreHoxtv, six volets dans une seule
+PR. Tout tourne dans le monde par défaut, seulement avec un joueur connecté (`WorldLifeSystem` : chaque seconde
+`Hunts` et `Calendar`, toutes les 2 s le reste ; au changement de jour de jeu `daily` : `Traces.seed`,
+`Relations.morning`, `Travellers.morning`, `Camps.morning`, `Inns.morning`).
+
+**Socle.**
+
+- État sauvé : ressource de monde `WorldLifeRegistry`, parties de « clé=valeur » (TRAVELLERS, RELATIONS, TRAFFIC,
+  CAMPS, INNS, TRACES, STRUCTURES, CALENDAR) ; les clés commençant par `~` sont des repères internes.
+- PNJ (`WorldLife.spawn`) : non sauvés, avec point d'attache ; budget 12 par joueur, 40 par monde ; posés par
+  `WorldLife.ground` (= `Terrain.safeSpot`, jamais dans l'eau, la lave ou un bloc). Rôles couverts par
+  `VillageNoRegenSystem` (préfixe `Nakasar_Peuples_`). Les PNJ parlants passent par `VillagerUseSystem` →
+  `WorldLife.talk` (dialogue du rôle), leur mort par `RequestDeathSystem` → `WorldLife.died`.
+- Camps de combat : `WorldLife.side(ref, clé, équipe)` lu par `WorldAttitudeSystem` (priorité 79) : même clé et autre
+  équipe = hostile, même équipe = amical.
+- Marche à deux vitesses (`Walk`, comme les convois d'avant-postes) : vrais PNJ à moins de 64 blocs d'un joueur
+  (attache 10 blocs devant), sinon progression virtuelle à 3 blocs/s (4 sur une route à balises) ; coincés 30 s
+  sans joueur à 24 blocs, saut de 8 blocs.
+- Liaisons (`Links`) : paires de villages à moins de 2400 blocs ; chemin `Routes` (balises) mis en cache par version
+  des balises (`Path.version()`) ; trafic des 7 derniers jours.
+- Dialogues `Server/Nakasar/Dialogues/Monde/*`, effet `WorldAction` et condition `WorldCheck`
+  (`WorldDialogueTypes`) ; le PNJ qui parle est le dernier utilisé (`WorldLife.talkingTo`).
+- Assets générés par `tools/generate_world_life.py` : rôles `<Peuple>_{Traveller,Peddler,Innkeeper,Camper,Outing,
+  Child,Host}`, `Trork_Patrol`, troupeaux `Herd_<espèce>`, modèles `Nakasar_Peuples_{Trork,Renonce}_Young`
+  (adulte vanilla × 0,6, choix de Kevin ; Kweebec `Kweebec_Sproutling`, Feran `Feran_Cub`, Slothian `Slothian_Kid`),
+  13 dialogues, boutiques `Travel_<Peuple>` et `Inn`, objet `Nakasar_Peuples_Letter`, évènements
+  `Nakasar_Peuples_{Harvest,Fair,Migration}` (condition `Nakasar_Peuples_WorldLocation`, déclarée dans
+  `ValidateAssets`) et le bloc de langue `world.*` entre LANG_BEGIN et LANG_END.
+
+**1. Voyageurs (`Travellers`, `Ambushes`).** Chaque matin, départ avec une chance de 0,35 par liaison (6 voyageurs au
+plus) : marchand (boutique, rang Toléré), pèlerin, messager, caravane. Alliés : toujours une caravane ; rivaux :
+seulement des messagers. Halte la nuit sauf auberge plus loin sur la route (`Inns.nightStopAhead`). Arrivée : trafic
++1 par marcheur arrivé (une caravane compte ses 3 porteurs) ; caravane = essor du village d'arrivée et relation +5,
+autre voyageur +1 ; escorte +25 au départ, +12 à l'arrivée, si le joueur est resté près du voyageur (à 48 blocs,
+escorte perdue après 60 s plus loin) et qu'il est là à l'arrivée. Lettre : flag `World_Letter:<vers>[:<paixDe>]`, livrée à 12 blocs du cœur : une faveur, +20, et
+`Relations.parley` pour une lettre de paix (Ami des deux). Embuscades : 1 chance sur 3, témoin à 160 blocs, bande de
+3-5 pillards de `Raids.raiders` 12 blocs devant, 180 s au plus ; sans témoin, `virtualLoss`. Les convois
+d'avant-postes y passent aussi (`Ambushes.convoy`, clé `C:<clé>`, `AnnexState.raidCargo` garde au moins 1 lot).
+
+**2. Auberges (`Inns`).** Liaison de 400 blocs au moins et 6 passages en 7 jours : chantier de 12 h de jeu à
+mi-chemin, 12 blocs de côté, prefab par zone + `Furniture_Tavern_Sign` ; niveaux 2 (12) et 3 (18) ; fermeture après 14 jours sans
+passage, réouverture si le trafic revient. Aubergiste `<Peuple>_Innkeeper`, dialogue `Monde_Aubergiste`.
+
+**3. Campements (`Camps`).** 25 % chaque matin, 4 au plus, 150-400 blocs d'un village, 3 à 5 jours, prefabs
+temporaires (`Sites.pasteTemporary` : différence sauvée dans STRUCTURES, `restore` ne remet que les blocs inchangés).
+Chasseurs (5 `Food_Wildmeat_Raw` → 3 `Ingredient_Leather_Light`), bûcherons (3 `Food_Bread` → 4
+`Ingredient_Tree_Sap`), prospecteurs (défense contre 4 pillards → 6 `Ore_Iron`, une faveur, +15), marchands
+(boutique), réfugiés (`Camps.refugees`, appelé par `Raids` après un bâtiment brûlé ; dons de nourriture = essor et
++2 par vivre, 10 vivres par joueur et par jour au plus). Un prefab temporaire n'est rendu que si tous ses blocs sont
+chargés ; abandonné (foire, course), il est marqué et `Sites.retry` le rend plus tard.
+
+**4. Relations (`Relations`).** −100 à 100 ; base : même peuple 40, alliés 20, rivaux −60 ; seuils allié 50, rival
+−20. Dérive d'un point tous les 3 jours vers la base, querelle hebdomadaire (5 %, −15), lettre de paix +25 et trêve de
+7 jours. Escarmouche hebdomadaire entre rivaux (`~sk:<liaison>` = `jour|heure`) : réelle avec témoin (3 combattants
+par camp, `Trork_Patrol` pour les Trorks, sinon `Raids.defenderRole`, 240 s), virtuelle sinon ; +15 au joueur proche
+du vainqueur. Raid : `Relations.reinforcements` ajoute un garde par village allié à moins de 1200 blocs (2 au plus).
+
+**5. Alentours et vestiges (`Surroundings`, `Traces`, `Hunts`).** Sorties de 8 h à 18 h (une par palier, 3 au plus,
+`<Peuple>_Outing`), récolte rapportée au dépôt, une sur quatre croise un monstre ; patrouille de 2 gardes dès le
+palier 2 (8 points à rayon + 20) ; enfants `<Peuple>_Child` (un par palier) ; cache-cache une fois par jour
+(`HideSeek:<village>:<jour>`, 3 enfants, 180 s, trouvé à 3 blocs, une faveur et +10). Vestiges : 0 à 2 par liaison,
+tirés du hash de la liaison (prefabs vanilla par zone), collés à 96 blocs d'un joueur, découverts à 10 blocs (flag
+`Trace:<id>`, note de lore) ; un raid perdu laisse des arbres brûlés (`Traces.raid`).
+
+**6. Calendrier (`Calendar`).** Fête des moissons (`jour % 7 == 3`, 18 h, villages avec Ferme/Potager/Enclos/Rizière
+niveau II, 20 min, 4 de réputation par aliment offert, 10 aliments par joueur et par fête), foire (`jour % 14 == 7`, 9 h, plus grand village de palier 2+
+tournant par peuple, étals temporaires, colporteurs des autres peuples, hôte `<Peuple>_Host`, course aux 3
+`Furniture_Human_Ruins_Banner` en 90 s, 30 min), migration (`jour % 10 == 5`, troupeau `Herd_<espèce>` à 260 blocs
+d'un village, 20 min ; une bête chassée ne revient pas, le troupeau entier chassé met fin à la migration). Ruée : bande
+rouge `Telegraphs.Strip` 14 × 3 devant le chef pendant 1,6 s, puis le chef charge vraiment (comme
+`Nakasar_Fractal_Charge` : figé par `Frozen`, déplacé par le Java à 14 blocs/s, image par image via `WorldLifeSystem`,
+relief suivi d'un bloc en montée et deux en descente, arrêt net sur un mur ou un vide) ; les joueurs qu'il traverse
+dans la zone prennent 18 dégâts et sont projetés sur le côté ; 25 s de recharge. La course est la classe commune `boss/Charge`, aussi
+utilisée par le chef trork des demandes de boss kweebecs (`QuestBosses.CHARGERS`, `Boss_Kweebec`) : sa ligne devient une
+charge à 16 blocs/s, et un mur l'étourdit 3 s (il reste figé).
+
+**Rumeurs (`Rumours`).** Tirées de l'état : voyageurs en route, campements, relations non neutres, auberges ouvertes,
+prochaine foire, vestige le plus proche pas encore vu.
+
+### Écarts avec la proposition
+
+- Foire : seulement la course aux drapeaux (pas de concours de tir).
+- Nouvelles des voisins : par les rumeurs (voyageurs, aubergiste, campeurs), pas par le crieur.
+- Renforts alliés en raid : gardes supplémentaires du peuple du village attaqué.
+- Camps de bûcherons et de prospecteurs : prefabs Softwood / Sandstone, pas le campement trork.
+- Fête, foire et migration durent un temps réel fixe (20, 30 et 20 minutes).
+- L'embuscade d'un convoi d'avant-poste n'est pas sauvée : après un redémarrage, le convoi peut être retiré au sort.
+- Seuils des auberges : 6, 12 et 18 passages en 7 jours au lieu de 40, 80 et 120 (au plus un départ par liaison et
+  par jour : 40 n'était pas atteignable). Une caravane compte ses 3 porteurs.
+- Relations : la dérive vers la base est d'un point tous les 3 jours (pas chaque jour), et un voyageur arrivé
+  rapproche les villages (+5 caravane, +1 autre), sinon l'état « allié » n'était jamais atteint.
+- Dons aux réfugiés et offrandes de fête plafonnés à 10 par joueur et par jour.
+
+### Nouvelles commandes
+
+`/monde etat` pour tous. Admin (`nakasar.peuples.admin`) : `voyageur [genre]`, `embuscade`, `campement [genre]`,
+`auberge`, `relation [valeur]`, `escarmouche`, `fete`, `foire`, `migration`, `arret`.
+
+### Tester en jeu (monde vivant)
+
+1. Deux villages proches : `/monde voyageur caravane`, suivre la caravane (escorte), `/monde embuscade` pendant le
+   trajet : bande de pillards, défendre.
+2. `/monde voyageur messager` : prendre la lettre, la porter au cœur du village destinataire.
+3. `/monde auberge` : chantier puis auberge à mi-chemin ; parler à l'aubergiste.
+4. `/monde campement chasseurs`, aller voir, apporter la viande ; attendre son départ (blocs remis).
+5. `/monde relation -50` puis `/monde escarmouche` près des deux villages ; `/monde etat`.
+6. `/monde fete`, `/monde foire` (course), `/monde migration` (ruée, zone rouge) ; `/monde arret`.
+
+### À vérifier en jeu (monde vivant)
+
+- Modèles des jeunes Trorks et Renoncés (échelle 0,6) et des enfants vanilla ; animations des troupeaux.
+- Placement des auberges, campements et étals (pente, arbres), retrait propre des prefabs temporaires.
+- Les voyageurs suivent bien leur point d'attache sur de longues distances (relief, rivières).
+- Ruée : le chef charge bien le long de la zone rouge (rotation, relief, arrêt sur un mur), les dégâts ne tombent que sur les joueurs qu'il traverse dans la zone, et il n'est plus figé après la course.

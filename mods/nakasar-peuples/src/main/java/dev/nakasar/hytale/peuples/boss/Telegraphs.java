@@ -224,5 +224,10 @@ public final class Telegraphs {
         public Vector3d origin() {
             return start;
         }
+
+        /** Direction de la ligne (radians, x = cos, z = sin). */
+        public double facing() {
+            return facing;
+        }
     }
 }

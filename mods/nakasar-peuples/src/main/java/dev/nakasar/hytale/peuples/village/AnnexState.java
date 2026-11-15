@@ -221,6 +221,11 @@ public final class AnnexState {
         this.convoyCargo = convoyPorters == 0 ? 0 : Math.max(0, convoyCargo - lost);
     }
 
+    /** Une embuscade sans témoin (monde vivant) : le convoi perd `lost` objets, ses porteurs s'en tirent. */
+    public void raidCargo(int lost) {
+        this.convoyCargo = Math.max(1, convoyCargo - lost);
+    }
+
     public void endConvoy() {
         this.convoyCargo = 0;
         this.convoyPorters = 0;

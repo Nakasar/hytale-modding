@@ -1,0 +1,59 @@
+{
+  "$Comment": "Meneur d'une caravane (étape 1) : troc, escorte ; peut tomber dans une embuscade à mi-chemin. Généré par tools/generate_world_life.py ; effets WorldAction et conditions WorldCheck (world/WorldDialogueTypes).",
+  "NpcNameKey": "nakasar_peuples.dialogue.Monde_Caravane.npc",
+  "RoleKey": "nakasar_peuples.dialogue.Monde_Caravane.role",
+  "Entries": [
+    {
+      "Node": "Accueil"
+    }
+  ],
+  "Nodes": [
+    {
+      "Id": "Accueil",
+      "TextKey": "nakasar_peuples.dialogue.Monde_Caravane.accueil",
+      "Responses": [
+        {
+          "TextKey": "nakasar_peuples.dialogue.Monde_Caravane.troc",
+          "Effects": [
+            {
+              "Type": "WorldAction",
+              "Action": "Shop"
+            }
+          ]
+        },
+        {
+          "TextKey": "nakasar_peuples.dialogue.Monde_Caravane.escorte",
+          "Effects": [
+            {
+              "Type": "WorldAction",
+              "Action": "Escort"
+            }
+          ],
+          "Next": "Escorte"
+        },
+        {
+          "TextKey": "nakasar_peuples.dialogue.Monde.rumeur",
+          "Effects": [
+            {
+              "Type": "WorldAction",
+              "Action": "Rumour"
+            }
+          ],
+          "Next": "Accueil"
+        },
+        {
+          "TextKey": "nakasar_peuples.dialogue.Monde.aurevoir"
+        }
+      ]
+    },
+    {
+      "Id": "Escorte",
+      "TextKey": "nakasar_peuples.dialogue.Monde_Caravane.escorteTexte",
+      "Responses": [
+        {
+          "TextKey": "nakasar_peuples.dialogue.Monde.aurevoir"
+        }
+      ]
+    }
+  ]
+}
