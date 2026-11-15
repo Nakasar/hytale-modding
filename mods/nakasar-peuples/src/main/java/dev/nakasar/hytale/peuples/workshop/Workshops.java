@@ -245,6 +245,13 @@ public final class Workshops {
             if (y == Terrain.NONE) {
                 continue;
             }
+            int[] flush = flushSpot(chunks, terrain, x, y, z, yaw);
+            if (flush == null) {
+                return;
+            }
+            x = flush[0];
+            y = flush[1];
+            z = flush[2];
             if (Blocks.set(chunks, x, y, z, village.people().boardBlock(), yaw)) {
                 state.setBoard(x, y, z);
                 hangBoard(chunks, village, x, y, z, yaw);
@@ -313,49 +320,140 @@ public final class Workshops {
             Blocks.set(chunks, at[0], y, at[2], board, yaw);
             state.setBoard(at[0], y, at[2]);
         }
-        hangBoard(chunks, village, at[0], y, at[2], yaw);
         if (y != at[1]) {
             PeuplesPlugin.get().getLogger().atInfo().log("Peuples : panneau remonté de %d en %d %d %d (%s)", y - at[1], at[0], y, at[2],
                     village.name());
         }
+        // Kevin (2026-11-15) : panneaux posés loin du bâtiment avant le correctif, poutre flottante : on retire la poutre,
+        // on recolle le panneau au bâtiment (flushSpot) et on le suspend de nouveau.
+        unhangBoard(chunks, new int[] {at[0], y, at[2]}, yaw);
+        int[] flush = flushSpot(chunks, new Terrain(world), at[0], y, at[2], yaw);
+        if (flush == null) {
+            return false;
+        }
+        if (flush[0] != at[0] || flush[1] != y || flush[2] != at[2]) {
+            Blocks.clearIf(chunks, at[0], y, at[2], board);
+            Blocks.set(chunks, flush[0], flush[1], flush[2], board, yaw);
+            state.setBoard(flush[0], flush[1], flush[2]);
+            PeuplesPlugin.get().getLogger().atInfo().log("Peuples : panneau recollé au bâtiment en %d %d %d (%s)", flush[0], flush[1],
+                    flush[2], village.name());
+        }
+        hangBoard(chunks, village, flush[0], flush[1], flush[2], yaw);
         return true;
     }
 
     /** Poutre vanilla sous laquelle pend le panneau kweebec (Kevin, 2026-11-15 : le panneau kweebec est suspendu). */
     public static final String HANG_BEAM = "Wood_Hardwood_Beam";
+    /** Corde vanilla entre le panneau et la poutre quand celle-ci s'accroche plus haut au bâtiment. */
+    public static final String HANG_ROPE = "Deco_Rope";
+    /** Pas au plus vers le bâtiment pour coller le panneau à son mur (emprise irrégulière des maisons-arbres). */
+    private static final int REACH = 8;
+    /** Hauteur au plus (au-dessus du panneau) où la poutre cherche le bâtiment. */
+    private static final int HANG_UP = 4;
 
     /**
-     * Le panneau kweebec est un panneau suspendu (ses cordes montent vers un bloc au-dessus) : on pose au-dessus de lui
-     * une poutre couchée qui sort du bâtiment, sur sa case et sur celle de derrière (côté bâtiment) si elle est libre.
-     * Seulement dans l'air ou la végétation non pleine ; sans effet pour les autres peuples ou si un bloc plein le
-     * couvre déjà.
+     * Kevin (2026-11-15) : le panneau doit toucher son bâtiment. La place du plan est un bloc hors du rectangle du
+     * bâtiment, souvent loin du tronc d'une maison-arbre : on avance vers le bâtiment (côté arrière du panneau), au plus
+     * {@value #REACH} pas, tant que la case suivante est libre au niveau du panneau et sur 2 blocs au-dessus, sans
+     * marche de plus d'un bloc. Rend {x, y, z} (inchangé si aucun mur n'est trouvé), ou null si une colonne n'est pas
+     * chargée.
      */
-    static void hangBoard(ChunkStore chunks, Village village, int x, int y, int z, int yaw) {
-        if (!"Kweebec".equals(village.people().id())) {
-            return;
-        }
-        int[] back = back(yaw);
-        // Poutre couchée : rotation 4 le long de Z, 5 le long de X (troncs couchés des prefabs vanilla).
-        int rot = back[0] == 0 ? 4 : 5;
-        for (int k = 0; k <= 1; k++) {
-            int bx = x + back[0] * k;
-            int bz = z + back[1] * k;
-            if (Blocks.solid(chunks, bx, y + 1, bz)) {
-                return; // le panneau (ou la poutre) touche déjà un bloc plein
+    static int[] flushSpot(ChunkStore chunks, Terrain terrain, int x, int y, int z, int yaw) {
+        int[] b = back(yaw);
+        int cx = x, cy = y, cz = z;
+        for (int step = 1; step <= REACH; step++) {
+            int nx = cx + b[0], nz = cz + b[1];
+            for (int h = 0; h <= 2; h++) {
+                if (Blocks.id(chunks, nx, cy + h, nz) == Blocks.UNLOADED) {
+                    return null;
+                }
+                if (Blocks.solid(chunks, nx, cy + h, nz) && (h > 0 || Blocks.solid(chunks, nx, cy + 1, nz))) {
+                    return new int[] {cx, cy, cz}; // mur (ou avancée) du bâtiment juste derrière : le panneau y touche
+                }
             }
-            String current = Blocks.name(chunks, bx, y + 1, bz);
-            if (Blocks.id(chunks, bx, y + 1, bz) == Blocks.UNLOADED || current != null && !Terrain.isVegetation(current)) {
-                return;
+            int ny = standY(chunks, terrain, nx, nz);
+            if (ny == UNLOADED_SPOT) {
+                return null;
             }
-            Blocks.set(chunks, bx, y + 1, bz, HANG_BEAM, rot);
+            if (ny == Terrain.NONE || Math.abs(ny - cy) > 1) {
+                return new int[] {cx, cy, cz};
+            }
+            cx = nx;
+            cy = ny;
+            cz = nz;
         }
+        return new int[] {x, y, z}; // pas de mur à portée : on garde la place du plan
     }
 
-    /** Retire la poutre d'un panneau suspendu (démolition, village dissous). */
+    /**
+     * Le panneau kweebec est un panneau suspendu (ses cordes montent vers un bloc au-dessus). Kevin (2026-11-15) : la
+     * poutre doit partir du bâtiment et le panneau pendre dessous. On cherche, juste derrière le panneau, le bloc plein
+     * du bâtiment le plus bas entre y+1 et y+{@value #HANG_UP} : la poutre couchée se pose au-dessus du panneau à cette
+     * hauteur (elle touche le bâtiment) et une corde vanilla descend d'elle jusqu'au panneau. Sans bloc plein derrière,
+     * la poutre part de y+1 et recule vers le bâtiment (au plus {@value #HANG_UP} blocs) jusqu'à le toucher. Seulement
+     * dans l'air ou la végétation non pleine ; sans effet pour les autres peuples ou si un bloc plein couvre déjà le
+     * panneau.
+     */
+    static void hangBoard(ChunkStore chunks, Village village, int x, int y, int z, int yaw) {
+        if (!"Kweebec".equals(village.people().id()) || Blocks.solid(chunks, x, y + 1, z)) {
+            return;
+        }
+        int[] b = back(yaw);
+        // Poutre couchée : rotation 4 le long de Z, 5 le long de X (troncs couchés des prefabs vanilla).
+        int rot = b[0] == 0 ? 4 : 5;
+        int beamY = -1;
+        for (int h = y + 1; h <= y + HANG_UP; h++) {
+            if (Blocks.solid(chunks, x + b[0], h, z + b[1])) {
+                beamY = h;
+                break;
+            }
+            if (!free(chunks, x, h, z)) {
+                break; // quelque chose au-dessus du panneau : on n'y monte pas
+            }
+        }
+        if (beamY > 0) {
+            if (!free(chunks, x, beamY, z)) {
+                return;
+            }
+            Blocks.set(chunks, x, beamY, z, HANG_BEAM, rot);
+            for (int h = y + 1; h < beamY; h++) {
+                Blocks.set(chunks, x, h, z, HANG_ROPE, 0);
+            }
+            log(x, y, z, "poutre à " + beamY + ", accrochée au bâtiment");
+            return;
+        }
+        int laid = 0;
+        for (int k = 0; k <= HANG_UP; k++) {
+            int bx = x + b[0] * k, bz = z + b[1] * k;
+            if (Blocks.solid(chunks, bx, y + 1, bz) || !free(chunks, bx, y + 1, bz)) {
+                break;
+            }
+            Blocks.set(chunks, bx, y + 1, bz, HANG_BEAM, rot);
+            laid++;
+        }
+        log(x, y, z, laid + " bloc(s) de poutre à " + (y + 1) + ", sans bâtiment touché à moins de " + HANG_UP + " blocs");
+    }
+
+    private static boolean free(ChunkStore chunks, int x, int y, int z) {
+        if (Blocks.id(chunks, x, y, z) == Blocks.UNLOADED || Blocks.solid(chunks, x, y, z)) {
+            return false;
+        }
+        String current = Blocks.name(chunks, x, y, z);
+        return current == null || Terrain.isVegetation(current);
+    }
+
+    private static void log(int x, int y, int z, String what) {
+        PeuplesPlugin.get().getLogger().atInfo().log("Peuples : panneau suspendu en %d %d %d : %s", x, y, z, what);
+    }
+
+    /** Retire la poutre et la corde d'un panneau suspendu (démolition, village dissous, panneau déplacé). */
     public static void unhangBoard(ChunkStore chunks, int[] at, int yaw) {
-        int[] back = back(yaw);
-        for (int k = 0; k <= 1; k++) {
-            Blocks.clearIf(chunks, at[0] + back[0] * k, at[1] + 1, at[2] + back[1] * k, HANG_BEAM);
+        int[] b = back(yaw);
+        for (int h = at[1] + 1; h <= at[1] + HANG_UP; h++) {
+            Blocks.clearIf(chunks, at[0], h, at[2], HANG_ROPE);
+            for (int k = 0; k <= HANG_UP; k++) {
+                Blocks.clearIf(chunks, at[0] + b[0] * k, h, at[2] + b[1] * k, HANG_BEAM);
+            }
         }
     }
 
