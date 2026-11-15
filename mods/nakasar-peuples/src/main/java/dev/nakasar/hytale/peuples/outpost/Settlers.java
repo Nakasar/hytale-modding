@@ -22,6 +22,9 @@ import dev.nakasar.hytale.peuples.village.People;
 import dev.nakasar.hytale.peuples.village.Terrain;
 import dev.nakasar.hytale.peuples.village.Tiers;
 import dev.nakasar.hytale.peuples.village.Village;
+import dev.nakasar.hytale.peuples.village.VillageBuilder;
+import dev.nakasar.hytale.peuples.village.VillageLayout;
+import dev.nakasar.hytale.peuples.village.VillageNames;
 import dev.nakasar.hytale.peuples.village.Villages;
 import dev.nakasar.hytale.peuples.zone.SiteRules;
 import org.joml.Vector3d;
@@ -41,8 +44,8 @@ import java.util.UUID;
  *   ({@code Nakasar_Peuples_<Peuple>_Settler_Follow}, ramené près de lui s'il est distancé) ;</li>
  *   <li>lui parler ailleurs : il examine l'endroit avec les règles de la génération naturelle ({@link SiteRules} :
  *   écarts, zone du peuple, sol, eau, relief). S'il convient, il propose de fonder ici ; sinon il dit pourquoi ;</li>
- *   <li>fonder : il part chercher les siens, et le village est bâti au matin suivant comme un avant-poste
- *   ({@link Outposts#foundBySettler}). Si la fondation échoue, il rentre à son village.</li>
+ *   <li>fonder : le village est bâti tout de suite à cet endroit ({@code VillageBuilder}) ; un joueur pris dans les blocs
+ *   posés est déplacé au point libre le plus proche. Si la fondation échoue, le colon rentre à son village.</li>
  * </ul>
  * Les colons ne sont pas sauvegardés avec le monde : l'état vit dans le village ({@code SettlerDay}, {@code SettlerActive},
  * {@code SettlerOwner}) et le PNJ réapparaît au besoin. Tout se passe sur le thread du monde.
@@ -295,11 +298,6 @@ public final class Settlers {
                 return false;
             }
         }
-        Outpost pending = Outposts.pendingOf(world, player);
-        if (pending != null) {
-            player.sendMessage(Message.translation(Outposts.KEYS + "alreadyPending").param("x", pending.x).param("z", pending.z));
-            return false;
-        }
         // Le PNJ qui attend est remplacé par celui qui suit au prochain pas (step), hors de la fenêtre de dialogue.
         village.setSettlerOwner(me);
         Message m = Message.translation(KEYS + "follows").param("village", village.name());
@@ -322,16 +320,94 @@ public final class Settlers {
         }
         int x = (int) Math.floor(at.x());
         int z = (int) Math.floor(at.z());
-        if (!Outposts.foundBySettler(world, store, player, village, x, z)) {
+        VillageLayout layout = VillageLayout.get(village.people().layout());
+        if (layout == null) {
             return false;
         }
-        village.endSettler(); // le PNJ s'en va au prochain pas (step)
+        // Fondation immédiate (Kevin) : le PNJ s'en va au prochain pas (step), le village est bâti dès les chunks chargés.
+        String homeId = village.id();
+        People people = village.people();
+        village.endSettler();
         CHECKS.remove(player.getUuid());
-        Message m = Message.translation(KEYS + "founding").param("people", Message.translation(village.people().nameKey()))
-                .param("x", x).param("z", z);
-        player.sendMessage(m);
-        NotificationUtil.sendNotification(player.getPacketHandler(), m, NotificationStyle.Success);
+        player.sendMessage(Message.translation(KEYS + "founding").param("people", Message.translation(people.nameKey())));
+        String name = VillageNames.pick(world, people);
+        VillageBuilder.generate(world, layout, name, x, z, false, result -> {
+            PlayerRef owner = online(world, player.getUuid().toString());
+            if (result.village() == null) {
+                returnHome(world, homeId);
+                if (owner != null) {
+                    Message back = Message.translation(KEYS + "failed").param("reason",
+                            result.error() == null ? Message.raw("") : result.error());
+                    owner.sendMessage(back);
+                    NotificationUtil.sendNotification(owner.getPacketHandler(), back, NotificationStyle.Warning);
+                }
+                return;
+            }
+            Village founded = result.village();
+            unstick(world, layout, founded);
+            PeuplesPlugin.get().getLogger().atInfo().log("Peuples : colon de %s : village %s fondé en %d %d par %s",
+                    homeId, founded.name(), founded.x(), founded.z(), player.getUsername());
+            if (owner != null) {
+                Message m = Message.translation(KEYS + "founded").param("name", founded.name())
+                        .param("people", Message.translation(people.nameKey()));
+                owner.sendMessage(m);
+                NotificationUtil.sendNotification(owner.getPacketHandler(), m, NotificationStyle.Success);
+            }
+        });
         return true;
+    }
+
+    /** Rayon de recherche d'une place libre pour un joueur pris dans les blocs posés. */
+    private static final int UNSTICK_RADIUS = 16;
+
+    /**
+     * Les joueurs que les bâtiments posés ont enfermés (pieds ou tête dans un bloc solide) sont déplacés au point sûr le
+     * plus proche, à une hauteur proche de la leur (pas sur un toit), sinon au point sûr le plus proche.
+     */
+    static void unstick(World world, VillageLayout layout, Village village) {
+        Store<EntityStore> store = world.getEntityStore().getStore();
+        Terrain terrain = new Terrain(world);
+        double reach = layout.radius() + 8;
+        for (PlayerRef p : world.getPlayerRefs()) {
+            Ref<EntityStore> r = p.getReference();
+            Vector3d at = r == null || !r.isValid() ? null : Requests.position(store, r);
+            if (at == null || village.horizontalDistanceSquared(at.x(), at.z()) > reach * reach) {
+                continue;
+            }
+            int bx = (int) Math.floor(at.x());
+            int by = (int) Math.floor(at.y());
+            int bz = (int) Math.floor(at.z());
+            if (terrain.bodyFree(bx, by, bz)) {
+                continue;
+            }
+            int[] spot = nearFeet(terrain, bx, by, bz);
+            if (spot == null) {
+                spot = terrain.safeSpot(bx, bz, UNSTICK_RADIUS);
+            }
+            if (spot != null) {
+                store.putComponent(r, Teleport.getComponentType(),
+                        new Teleport(new Vector3d(spot[0] + 0.5, spot[1], spot[2] + 0.5), new Rotation3f(0f, 0f, 0f)));
+                p.sendMessage(Message.translation(KEYS + "unstuck"));
+            }
+        }
+    }
+
+    /** Point sûr le plus proche dont les pieds sont à 4 blocs au plus de `y`, ou null. */
+    private static int[] nearFeet(Terrain terrain, int x, int y, int z) {
+        for (int r = 1; r <= UNSTICK_RADIUS; r++) {
+            for (int dx = -r; dx <= r; dx++) {
+                for (int dz = -r; dz <= r; dz++) {
+                    if (Math.max(Math.abs(dx), Math.abs(dz)) != r) {
+                        continue;
+                    }
+                    int feet = terrain.safeFeet(x + dx, z + dz);
+                    if (feet != Terrain.NONE && Math.abs(feet - y) <= 4) {
+                        return new int[] {x + dx, feet, z + dz};
+                    }
+                }
+            }
+        }
+        return null;
     }
 
     /** « Rentre au village » : le colon retourne attendre près du cœur. */
@@ -346,7 +422,7 @@ public final class Settlers {
         return true;
     }
 
-    /** Fondation d'un colon échouée : il rentre attendre à son village (Outposts). */
+    /** Fondation d'un colon échouée : il rentre attendre à son village. */
     static synchronized void returnHome(World world, String villageId) {
         Village village = Villages.registry(world).byId(villageId);
         if (village != null) {

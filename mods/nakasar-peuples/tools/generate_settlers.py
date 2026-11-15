@@ -96,7 +96,7 @@ def dialogue():
         t(f"dialogue.Colon.{key}", fr, en)
         return {"Id": nid, "TextKey": k + key, "Responses": responses}
 
-    t("dialogue.Colon.hintFound", "les colons arrivent au matin suivant", "the settlers arrive the next morning")
+    t("dialogue.Colon.hintFound", "le village est fondé tout de suite", "the village is founded right away")
     t("dialogue.Colon.hintFollow", "il te suit", "follows you")
     t("dialogue.Colon.hintHome", "il rentre au village", "goes back to the village")
     search = lambda: resp("chercher", "Cherchons encore.", "Let's keep looking.")
@@ -140,9 +140,9 @@ def dialogue():
              "Thank you! Lead me wherever you like. Far from other villages, on our kind of land, and talk to me when you like the place.",
              [resp("enRoute", "En route.", "Let's go.")]),
         node("Ici", "Cet endroit me plaît : assez loin des autres, la bonne terre, pas d'eau. Fondons-nous le village ici ? "
-                    "Je pars chercher les miens, ils arriveront au matin.",
+                    "Les miens n'attendent que mon signal.",
              "I like this place: far enough from the others, good soil, no water. Shall we found the village here? "
-             "I'll fetch my people, they'll arrive in the morning.",
+             "My people are only waiting for my signal.",
              [resp("fonder", "Fondons le village ici.", "Let's found the village here.", ["SettlerFound"], hint="hintFound"),
               search(), home()]),
     ]
@@ -167,11 +167,12 @@ def texts():
     t(s + "already", "Un colon de {village} vous suit déjà.", "A settler from {village} is already following you.")
     t(s + "follows", "Le colon de {village} vous suit. Parlez-lui là où vous voulez fonder un village.",
       "The settler from {village} follows you. Talk to them where you want to found a village.")
-    t(s + "founding", "Le colon part chercher les {people} : le village sera fondé en {x} {z} au matin suivant.",
-      "The settler goes to fetch the {people}: the village will be founded at {x} {z} the next morning.")
+    t(s + "founding", "Le colon plante le premier piquet : les {people} s'installent…", "The settler drives in the first stake: the {people} settle in…")
+    t(s + "founded", "Village fondé : {name}, chez les {people}.", "Village founded: {name}, among the {people}.")
+    t(s + "unstuck", "Les nouveaux bâtiments vous ont poussé un peu plus loin.", "The new buildings pushed you a little further away.")
     t(s + "home", "Le colon rentre à {village} et vous y attendra.", "The settler goes back to {village} and will wait for you there.")
-    t(s + "failed", "Les colons n'ont pas pu s'installer en {x} {z} ({reason}). Le colon est rentré à son village.",
-      "The settlers could not settle at {x} {z} ({reason}). The settler went back to their village.")
+    t(s + "failed", "Les colons n'ont pas pu s'installer ({reason}). Le colon est rentré à son village.",
+      "The settlers could not settle ({reason}). The settler went back to their village.")
     p = s + "site."
     t(p + "ok", "l'endroit convient.", "this place will do.")
     t(p + "tooCloseSame", "trop près de {name} ({distance} blocs, il en faut {min} entre deux villages {people}).",

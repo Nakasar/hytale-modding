@@ -249,8 +249,9 @@ jeu (`Village` : `SettlerDay`, `SettlerActive`, `SettlerOwner`). Le PNJ n'est pa
 joueur (`…_Settler_Follow`, ramené près de lui au-delà de 32 blocs, retiré quand il se déconnecte). Lui parler ailleurs
 lance `zone/SiteRules.check` (règles communes avec `MoreVillagesSeeder` : écarts 600/300, fondations prévues, zone et
 rivage, sol, eau, relief) : la condition de dialogue `SettlerSite` choisit le nœud (« Ici » ou la raison), le détail
-chiffré part dans le tchat. « Fondons le village ici » enregistre un `Outpost` avec `From` = village du colon : bâti au
-matin suivant comme un avant-poste ; s'il échoue, le colon rentre à son village. Rôles, dialogue `Colon` et textes :
+chiffré part dans le tchat. « Fondons le village ici » bâtit le village tout de suite (`VillageBuilder.generate`) ; les joueurs dont
+les pieds ou la tête sont pris dans un bloc posé sont téléportés au point sûr le plus proche à moins de 4 blocs de leur
+hauteur (`Settlers.unstick`, pas sur un toit). Si la fondation échoue, le colon rentre à son village. Rôles, dialogue `Colon` et textes :
 `tools/generate_settlers.py`. `/village colon` (ops) fait venir un colon tout de suite au village le plus proche.
 
 ### Bannière et entrée

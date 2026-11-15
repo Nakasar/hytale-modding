@@ -34,7 +34,7 @@ Un village arrivé au **bourg** (palier max) fait venir un **colon**, au plus un
    - au moins **600 blocs** d'un autre village de son peuple, et **300 blocs** des villages des autres peuples ;
    - sur les terres de son peuple (sa zone, ni rivage ni océan) ;
    - sur son sol (herbe, sable, neige, cendre…), sans eau, et un terrain assez plat.
-3. Si l'endroit convient, il propose **Fondons le village ici** : il part chercher les siens, et le village est bâti au matin suivant, comme un avant-poste. Sinon, il dit pourquoi (dans la fenêtre, et en détail dans le tchat : distance, pourcentage de bon sol, relief…).
+3. Si l'endroit convient, il propose **Fondons le village ici** : le village est bâti tout de suite autour de vous (si un bâtiment vous enferme, vous êtes poussé juste à côté). Sinon, il dit pourquoi (dans la fenêtre, et en détail dans le tchat : distance, pourcentage de bon sol, relief…).
 
 Vous pouvez aussi lui dire de rentrer au village : il vous y attendra. Si la fondation échoue, il rentre aussi à son village.
 

@@ -120,6 +120,11 @@ public final class Terrain {
         return level >= 3 ? y + 1 : NONE;
     }
 
+    /** Vrai si un corps (pieds en y, tête en y + 1) tient en (x, z) : deux blocs vides ou d'herbe basse. */
+    public boolean bodyFree(int x, int y, int z) {
+        return passable(x, y, z) && passable(x, y + 1, z);
+    }
+
     /** Vrai si un corps peut tenir dans le bloc : vide, ou herbe et fleur basses (ni feuillage, ni tronc, ni cactus). */
     private boolean passable(int x, int y, int z) {
         if (Blocks.isEmpty(chunks, x, y, z)) {

@@ -227,41 +227,11 @@ public final class Outposts {
         });
     }
 
-    /**
-     * Le colon d'un village au palier max part chercher les siens : la fondation attend le matin suivant comme un
-     * avant-poste, sans pierre. Le site a déjà été examiné ({@code SiteRules}). Rend faux si le joueur a déjà une
-     * fondation en attente (message envoyé).
-     */
-    public static boolean foundBySettler(World world, Store<EntityStore> store, PlayerRef player, Village home, int x, int z) {
-        Outpost pending = pendingOf(world, player);
-        if (pending != null) {
-            player.sendMessage(Message.translation(KEYS + "alreadyPending").param("x", pending.x).param("z", pending.z));
-            return false;
-        }
-        Outpost o = new Outpost(home.people().id(), x, z, player.getUuid().toString(), player.getUsername(), GameClock.day(store));
-        o.from = home.id();
-        ZoneRegistry.get(world).outposts().add(o);
-        LOGGER.atInfo().log("Peuples : colon de %s : village %s prévu en %d %d par %s", home.name(), o.people, x, z, player.getUsername());
-        return true;
-    }
-
     private static void fail(World world, Outpost o, Message reason) {
         LOGGER.atWarning().log("Peuples : avant-poste %s en %d %d n'a pas pu être bâti", o.people, o.x, o.z);
         PlayerRef owner = online(world, o.owner);
         Message msg = Message.translation(KEYS + "failed").param("x", o.x).param("z", o.z)
                 .param("reason", reason == null ? Message.raw("") : reason);
-        if (o.from != null) {
-            // Fondation d'un colon : pas de pierre à rendre, le colon rentre à son village et attendra un autre site.
-            ZoneRegistry.get(world).outposts().remove(o);
-            Settlers.returnHome(world, o.from);
-            if (owner != null) {
-                Message back = Message.translation(Settlers.KEYS + "failed").param("x", o.x).param("z", o.z)
-                        .param("reason", reason == null ? Message.raw("") : reason);
-                owner.sendMessage(back);
-                NotificationUtil.sendNotification(owner.getPacketHandler(), back, NotificationStyle.Warning);
-            }
-            return;
-        }
         if (owner != null && owner.getReference() != null && owner.getReference().isValid()) {
             Store<EntityStore> store = world.getEntityStore().getStore();
             Requests.give(store, owner.getReference(), new ItemStack(STONE, 1));
