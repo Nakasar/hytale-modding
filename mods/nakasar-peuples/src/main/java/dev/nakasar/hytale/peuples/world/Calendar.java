@@ -70,6 +70,7 @@ public final class Calendar {
     public static final int FEAST_EVERY = 7;
     public static final int FEAST_HOUR = 18;
     public static final int FEAST_SECONDS = 1200;
+    public static final int FEAST_OFFERINGS = 10;
     public static final int MIGRATION_EVERY = 10;
     public static final int MIGRATION_SECONDS = 1200;
     public static final int MIGRATION_DISTANCE = 260;
@@ -92,6 +93,7 @@ public final class Calendar {
     public static final String FAIR_DIALOGUE = "Monde_Foire";
     public static final String RACE_FLAG = "Furniture_Human_Ruins_Banner";
     private static final String FAIR_STRUCTURE = "fair:";
+    private static final String RACE_STRUCTURE = "race:";
 
     /** Un rendez-vous en cours (pas sauvé). */
     private static final class Gathering {
@@ -117,7 +119,8 @@ public final class Calendar {
         final String species;
         final Routes.Path path;
         double at;
-        final int count;
+        /** Bêtes encore vivantes (une bête chassée ne revient pas). */
+        int count;
         final int y;
         final long end;
         final UUID event = UUID.randomUUID();
@@ -179,8 +182,8 @@ public final class Calendar {
         if (!restored) {
             restored = true;
             for (String id : new ArrayList<>(r.part(WorldLifeRegistry.Part.STRUCTURES).keySet())) {
-                if (id.startsWith(FAIR_STRUCTURE)) {
-                    Sites.restore(world, id); // foire coupée par un redémarrage
+                if (id.startsWith(FAIR_STRUCTURE) || id.startsWith(RACE_STRUCTURE)) {
+                    Sites.release(world, id); // foire coupée par un redémarrage : rendue dès que la zone est chargée
                 }
             }
         }
@@ -244,11 +247,20 @@ public final class Calendar {
             player.sendMessage(Message.translation(KEYS + "feast.over"));
             return false;
         }
-        int given = WorldLife.take(store, ref, WorldLife::isFood, 10);
+        // Au plus FEAST_OFFERINGS offrandes par joueur et par fête.
+        long day = GameClock.day(store);
+        String what = "feast:" + v.id();
+        int left = WorldLife.allowance(player.getUuid(), what, day, FEAST_OFFERINGS);
+        if (left <= 0) {
+            player.sendMessage(Message.translation(KEYS + "feast.enough"));
+            return false;
+        }
+        int given = WorldLife.take(store, ref, WorldLife::isFood, left);
         if (given <= 0) {
             player.sendMessage(Message.translation(Camps.KEYS + "noFood"));
             return false;
         }
+        WorldLife.spend(player.getUuid(), what, day, given);
         Villages.addEssor(v, given / 5);
         Reputations.change(world, store, ref, player, v, given * 4, KEYS + "feast.reason");
         player.sendMessage(Message.translation(KEYS + "feast.thanks").param("count", given));
@@ -403,7 +415,7 @@ public final class Calendar {
             stopEvent(store, g.event);
         }
         if (g.kind.equals("fair")) {
-            Sites.restore(world, FAIR_STRUCTURE + g.village);
+            Sites.release(world, FAIR_STRUCTURE + g.village);
         }
         if (v != null) {
             Chantiers.announce(world, v, Message.translation(KEYS + g.kind + ".end").param("village", v.name()), null, NotificationStyle.Default);
@@ -439,7 +451,7 @@ public final class Calendar {
         ThreadLocalRandom random = ThreadLocalRandom.current();
         int radius = radius(v);
         List<Hunts.Spot> spots = new ArrayList<>();
-        String id = "race:" + player.getUuid();
+        String id = RACE_STRUCTURE + player.getUuid();
         for (int i = 0; i < RACE_FLAGS; i++) {
             double a = random.nextDouble() * Math.PI * 2;
             int d = radius + 10 + random.nextInt(25);
@@ -454,7 +466,7 @@ public final class Calendar {
             if (!Sites.setTemporary(world, structure, bx, by, bz, RACE_FLAG, 0)) {
                 continue;
             }
-            spots.add(new Hunts.Spot(null, at, () -> Sites.restore(world, structure)));
+            spots.add(new Hunts.Spot(null, at, () -> Sites.release(world, structure)));
             player.sendMessage(Message.translation(KEYS + "race.flag").param("n", i + 1)
                     .param("distance", d).param("direction",
                             Message.translation(Villages.MESSAGES + "dir." + Requests.direction(bx - v.x(), bz - v.z()))));
@@ -464,6 +476,9 @@ public final class Calendar {
         }
         player.sendMessage(Message.translation(KEYS + "race.start").param("count", spots.size()).param("seconds", RACE_SECONDS));
         Hunts.start(id, player, spots, RACE_SECONDS, KEYS + "race.found", (w, s, p, won) -> {
+            if (p == null) {
+                return;
+            }
             Message m = Message.translation(KEYS + (won ? "race.won" : "race.lost"));
             p.sendMessage(m);
             NotificationUtil.sendNotification(p.getPacketHandler(), m, won ? NotificationStyle.Success : NotificationStyle.Default);
@@ -536,7 +551,7 @@ public final class Calendar {
         if (h == null) {
             return;
         }
-        if (System.currentTimeMillis() >= h.end || h.at >= h.path.length() - Walk.ARRIVE) {
+        if (System.currentTimeMillis() >= h.end || h.at >= h.path.length() - Walk.ARRIVE || h.count <= 0) {
             Walk.end(store, h.walkKey());
             if (h.eventRunning) {
                 stopEvent(store, h.event);
@@ -548,32 +563,18 @@ public final class Calendar {
         Walk walk = Walk.of(h.walkKey());
         h.at = walk.step(world, store, players, h.path, h.at, dt, h.count, h.charge == null, h.y, (i, at, yaw) -> {
             Ref<EntityStore> ref = WorldLife.spawn(store, herdRole(i % 3 == 2 ? sp[1] : sp[0]), at, yaw);
-            WorldLife.mortal(ref, Calendar::hunted);
+            WorldLife.mortal(ref, (w, npc, where, killer) -> {
+                h.count = Math.max(0, h.count - 1);
+                hunted(w, npc, where, killer);
+            });
             return ref;
         });
-        // Charge : sous les yeux d'un joueur tout proche, le meneur fonce sur une ligne d'annonce.
+        // Charge : sous les yeux d'un joueur tout proche, le meneur fonce sur une ligne d'annonce. Elle se résout à
+        // chaque image (stepCharge, appelé par WorldLifeSystem), pas au pas d'une seconde : les dégâts tombent à la fin
+        // exacte de la zone rouge.
         long now = System.nanoTime();
         List<Ref<EntityStore>> live = walk.alive();
         if (h.charge != null) {
-            if (h.charge.step(store, now)) {
-                DamageCause cause = DamageCause.getAssetMap().getAsset("Physical");
-                Ref<EntityStore> src = live.isEmpty() ? null : live.get(0);
-                for (PlayerRef p : world.getPlayerRefs()) {
-                    Ref<EntityStore> ref = p.getReference();
-                    TransformComponent t = ref == null || !ref.isValid() ? null : store.getComponent(ref, TransformComponent.getComponentType());
-                    if (t != null && cause != null && src != null && h.charge.contains(t.getPosition())) {
-                        DamageSystems.executeDamage(ref, store, new Damage(new Damage.EntitySource(src), cause, STAMPEDE_DAMAGE));
-                    }
-                }
-                if (src != null) {
-                    // Le meneur a chargé : il est au bout de la ligne.
-                    Vector3d o = h.charge.origin();
-                    double f = Math.atan2(h.path.dir(h.at)[1], h.path.dir(h.at)[0]);
-                    WorldLife.leash(store, src, new Vector3d(o.x() + Math.cos(f) * STAMPEDE_LENGTH, o.y(), o.z() + Math.sin(f) * STAMPEDE_LENGTH));
-                }
-                h.charge = null;
-                h.nextCharge = System.currentTimeMillis() + STAMPEDE_COOLDOWN_MS;
-            }
             return;
         }
         if (live.isEmpty() || System.currentTimeMillis() < h.nextCharge) {
@@ -599,6 +600,39 @@ public final class Calendar {
         Store<EntityStore> store = world.getEntityStore().getStore();
         Requests.give(store, ref, new ItemStack("Food_Wildmeat_Raw", 2));
         Requests.give(store, ref, new ItemStack("Ingredient_Hide_Medium", 1));
+    }
+
+    /** Vrai pendant une charge annoncée (WorldLifeSystem appelle alors {@link #stepCharge} à chaque image). */
+    static boolean charging() {
+        Herd h = herd;
+        return h != null && h.charge != null;
+    }
+
+    /** Fin de la zone rouge de la charge : dégâts dans la bande, puis le meneur est au bout de la ligne. */
+    static void stepCharge(World world, Store<EntityStore> store) {
+        Herd h = herd;
+        if (h == null || h.charge == null || !h.charge.step(store, System.nanoTime())) {
+            return;
+        }
+        Walk walk = Walk.peek(h.walkKey());
+        List<Ref<EntityStore>> live = walk == null ? List.of() : walk.alive();
+        DamageCause cause = DamageCause.getAssetMap().getAsset("Physical");
+        Ref<EntityStore> src = live.isEmpty() ? null : live.get(0);
+        for (PlayerRef p : world.getPlayerRefs()) {
+            Ref<EntityStore> ref = p.getReference();
+            TransformComponent t = ref == null || !ref.isValid() ? null : store.getComponent(ref, TransformComponent.getComponentType());
+            if (t != null && cause != null && src != null && h.charge.contains(t.getPosition())) {
+                DamageSystems.executeDamage(ref, store, new Damage(new Damage.EntitySource(src), cause, STAMPEDE_DAMAGE));
+            }
+        }
+        if (src != null) {
+            // Le meneur a chargé : il est au bout de la ligne.
+            Vector3d o = h.charge.origin();
+            double f = Math.atan2(h.path.dir(h.at)[1], h.path.dir(h.at)[0]);
+            WorldLife.leash(store, src, new Vector3d(o.x() + Math.cos(f) * STAMPEDE_LENGTH, o.y(), o.z() + Math.sin(f) * STAMPEDE_LENGTH));
+        }
+        h.charge = null;
+        h.nextCharge = System.currentTimeMillis() + STAMPEDE_COOLDOWN_MS;
     }
 
     // ---- Évènements de monde ----
@@ -647,6 +681,12 @@ public final class Calendar {
             }
             herd = null;
         }
+    }
+
+    /** Le PNJ n'est plus (retiré ou mort). */
+    static void forget(Ref<EntityStore> ref) {
+        HOST_OF.remove(ref);
+        MERCHANT_SHOP.remove(ref);
     }
 
     public static void clearAll() {

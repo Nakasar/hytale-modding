@@ -1336,14 +1336,15 @@ PR. Tout tourne dans le monde par défaut, seulement avec un joueur connecté (`
 **1. Voyageurs (`Travellers`, `Ambushes`).** Chaque matin, départ avec une chance de 0,35 par liaison (6 voyageurs au
 plus) : marchand (boutique, rang Toléré), pèlerin, messager, caravane. Alliés : toujours une caravane ; rivaux :
 seulement des messagers. Halte la nuit sauf auberge plus loin sur la route (`Inns.nightStopAhead`). Arrivée : trafic
-+1 ; caravane = essor du village d'arrivée et relation +2 ; escorte (joueur à 24 blocs) +25 au départ, +12 à
-l'arrivée. Lettre : flag `World_Letter:<vers>[:<paixDe>]`, livrée à 12 blocs du cœur : une faveur, +20, et
++1 par marcheur arrivé (une caravane compte ses 3 porteurs) ; caravane = essor du village d'arrivée et relation +5,
+autre voyageur +1 ; escorte +25 au départ, +12 à l'arrivée, si le joueur est resté près du voyageur (à 48 blocs,
+escorte perdue après 60 s plus loin) et qu'il est là à l'arrivée. Lettre : flag `World_Letter:<vers>[:<paixDe>]`, livrée à 12 blocs du cœur : une faveur, +20, et
 `Relations.parley` pour une lettre de paix (Ami des deux). Embuscades : 1 chance sur 3, témoin à 160 blocs, bande de
 3-5 pillards de `Raids.raiders` 12 blocs devant, 180 s au plus ; sans témoin, `virtualLoss`. Les convois
 d'avant-postes y passent aussi (`Ambushes.convoy`, clé `C:<clé>`, `AnnexState.raidCargo` garde au moins 1 lot).
 
-**2. Auberges (`Inns`).** Liaison de 400 blocs au moins et 40 passages : chantier de 12 h de jeu à mi-chemin, 12 blocs
-de côté, prefab par zone + `Furniture_Tavern_Sign` ; niveaux 2 (80) et 3 (120) ; fermeture après 14 jours sans
+**2. Auberges (`Inns`).** Liaison de 400 blocs au moins et 6 passages en 7 jours : chantier de 12 h de jeu à
+mi-chemin, 12 blocs de côté, prefab par zone + `Furniture_Tavern_Sign` ; niveaux 2 (12) et 3 (18) ; fermeture après 14 jours sans
 passage, réouverture si le trafic revient. Aubergiste `<Peuple>_Innkeeper`, dialogue `Monde_Aubergiste`.
 
 **3. Campements (`Camps`).** 25 % chaque matin, 4 au plus, 150-400 blocs d'un village, 3 à 5 jours, prefabs
@@ -1351,10 +1352,11 @@ temporaires (`Sites.pasteTemporary` : différence sauvée dans STRUCTURES, `rest
 Chasseurs (5 `Food_Wildmeat_Raw` → 3 `Ingredient_Leather_Light`), bûcherons (3 `Food_Bread` → 4
 `Ingredient_Tree_Sap`), prospecteurs (défense contre 4 pillards → 6 `Ore_Iron`, une faveur, +15), marchands
 (boutique), réfugiés (`Camps.refugees`, appelé par `Raids` après un bâtiment brûlé ; dons de nourriture = essor et
-réputation).
++2 par vivre, 10 vivres par joueur et par jour au plus). Un prefab temporaire n'est rendu que si tous ses blocs sont
+chargés ; abandonné (foire, course), il est marqué et `Sites.retry` le rend plus tard.
 
 **4. Relations (`Relations`).** −100 à 100 ; base : même peuple 40, alliés 20, rivaux −60 ; seuils allié 50, rival
-−20. Dérive d'un point par jour vers la base, querelle hebdomadaire (5 %, −15), lettre de paix +25 et trêve de
+−20. Dérive d'un point tous les 3 jours vers la base, querelle hebdomadaire (5 %, −15), lettre de paix +25 et trêve de
 7 jours. Escarmouche hebdomadaire entre rivaux (`~sk:<liaison>` = `jour|heure`) : réelle avec témoin (3 combattants
 par camp, `Trork_Patrol` pour les Trorks, sinon `Raids.defenderRole`, 240 s), virtuelle sinon ; +15 au joueur proche
 du vainqueur. Raid : `Relations.reinforcements` ajoute un garde par village allié à moins de 1200 blocs (2 au plus).
@@ -1367,11 +1369,12 @@ tirés du hash de la liaison (prefabs vanilla par zone), collés à 96 blocs d'u
 `Trace:<id>`, note de lore) ; un raid perdu laisse des arbres brûlés (`Traces.raid`).
 
 **6. Calendrier (`Calendar`).** Fête des moissons (`jour % 7 == 3`, 18 h, villages avec Ferme/Potager/Enclos/Rizière
-niveau II, 20 min, 4 de réputation par aliment offert), foire (`jour % 14 == 7`, 9 h, plus grand village de palier 2+
+niveau II, 20 min, 4 de réputation par aliment offert, 10 aliments par joueur et par fête), foire (`jour % 14 == 7`, 9 h, plus grand village de palier 2+
 tournant par peuple, étals temporaires, colporteurs des autres peuples, hôte `<Peuple>_Host`, course aux 3
 `Furniture_Human_Ruins_Banner` en 90 s, 30 min), migration (`jour % 10 == 5`, troupeau `Herd_<espèce>` à 260 blocs
-d'un village, 20 min). Ruée : bande rouge `Telegraphs.Strip` 14 × 3 devant le chef pendant 1,6 s, 18 dégâts, 25 s de
-recharge.
+d'un village, 20 min ; une bête chassée ne revient pas, le troupeau entier chassé met fin à la migration). Ruée : bande
+rouge `Telegraphs.Strip` 14 × 3 devant le chef pendant 1,6 s, 18 dégâts à la fin exacte de la zone (résolue à chaque
+image par `WorldLifeSystem`), 25 s de recharge.
 
 **Rumeurs (`Rumours`).** Tirées de l'état : voyageurs en route, campements, relations non neutres, auberges ouvertes,
 prochaine foire, vestige le plus proche pas encore vu.
@@ -1385,6 +1388,11 @@ prochaine foire, vestige le plus proche pas encore vu.
 - Fête, foire et migration durent un temps réel fixe (20, 30 et 20 minutes).
 - Ruée : zone rouge et dégâts devant le chef, mais l'animal ne charge pas vraiment (seul son point d'attache bouge).
 - L'embuscade d'un convoi d'avant-poste n'est pas sauvée : après un redémarrage, le convoi peut être retiré au sort.
+- Seuils des auberges : 6, 12 et 18 passages en 7 jours au lieu de 40, 80 et 120 (au plus un départ par liaison et
+  par jour : 40 n'était pas atteignable). Une caravane compte ses 3 porteurs.
+- Relations : la dérive vers la base est d'un point tous les 3 jours (pas chaque jour), et un voyageur arrivé
+  rapproche les villages (+5 caravane, +1 autre), sinon l'état « allié » n'était jamais atteint.
+- Dons aux réfugiés et offrandes de fête plafonnés à 10 par joueur et par jour.
 
 ### Nouvelles commandes
 

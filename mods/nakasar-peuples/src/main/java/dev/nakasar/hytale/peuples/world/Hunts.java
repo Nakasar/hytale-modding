@@ -26,7 +26,7 @@ public final class Hunts {
 
     public static final double REACH = 3.0;
 
-    /** Fin d'un jeu : `won` vrai si tout a été trouvé à temps. */
+    /** Fin d'un jeu : `won` vrai si tout a été trouvé à temps ; `player` null s'il a quitté le monde. */
     @FunctionalInterface
     public interface End {
         void done(World world, Store<EntityStore> store, PlayerRef player, boolean won);
@@ -116,9 +116,7 @@ public final class Hunts {
                 s.cleanup.run();
             }
         }
-        if (player != null) {
-            h.end_().done(world, store, player, won);
-        }
+        h.end_().done(world, store, player, won && player != null);
     }
 
     public static void clearAll() {

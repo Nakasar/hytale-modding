@@ -108,9 +108,14 @@ public final class Links {
 
     /** Un passage de plus sur la liaison, le jour `day`. */
     public static void pass(World world, String link, long day) {
+        pass(world, link, day, 1);
+    }
+
+    /** `count` passages de plus sur la liaison, le jour `day` (une caravane : ses porteurs). */
+    public static void pass(World world, String link, long day, int count) {
         WorldLifeRegistry r = WorldLife.registry(world);
         Map<Long, Integer> days = days(r.get(WorldLifeRegistry.Part.TRAFFIC, link), day);
-        days.merge(day, 1, Integer::sum);
+        days.merge(day, count, Integer::sum);
         StringBuilder sb = new StringBuilder();
         for (Map.Entry<Long, Integer> e : days.entrySet()) {
             if (sb.length() > 0) {

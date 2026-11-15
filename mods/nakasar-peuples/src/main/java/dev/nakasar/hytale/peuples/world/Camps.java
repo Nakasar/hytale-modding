@@ -475,11 +475,20 @@ public final class Camps {
         if (v == null) {
             return false;
         }
-        int given = WorldLife.take(store, ref, WorldLife::isFood, DONATION_MAX);
+        // Au plus DONATION_MAX vivres par joueur et par jour de jeu pour ce campement (pas de réputation sans fin).
+        long day = dev.nakasar.hytale.peuples.request.GameClock.day(store);
+        String what = "donate:" + c.id;
+        int left = WorldLife.allowance(player.getUuid(), what, day, DONATION_MAX);
+        if (left <= 0) {
+            player.sendMessage(Message.translation(KEYS + "donatedEnough"));
+            return false;
+        }
+        int given = WorldLife.take(store, ref, WorldLife::isFood, left);
         if (given <= 0) {
             player.sendMessage(Message.translation(KEYS + "noFood"));
             return false;
         }
+        WorldLife.spend(player.getUuid(), what, day, given);
         Villages.addEssor(v, Math.max(1, given / 2));
         Reputations.change(world, store, ref, player, v, given * 2, KEYS + "donationReason");
         player.sendMessage(Message.translation(KEYS + "donated").param("count", given).param("village", v.name()));
@@ -489,6 +498,11 @@ public final class Camps {
     static boolean shop(World world, Store<EntityStore> store, Ref<EntityStore> ref, PlayerRef player, Camp c) {
         Village v = Villages.registry(world).byId(c.village);
         return v != null && dev.nakasar.hytale.peuples.reputation.Shops.open(store, ref, player, v, Travellers.shop(v.people()));
+    }
+
+    /** Le PNJ n'est plus (retiré ou mort). */
+    static void forget(Ref<EntityStore> ref) {
+        CAMP_OF.remove(ref);
     }
 
     public static void clearAll() {

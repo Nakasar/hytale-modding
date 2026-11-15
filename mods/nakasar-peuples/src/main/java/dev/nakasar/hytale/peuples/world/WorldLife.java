@@ -139,6 +139,37 @@ public final class WorldLife {
         SIDES.remove(ref);
         TALKERS.remove(ref);
         MORTALS.remove(ref);
+        forgetInModules(ref);
+    }
+
+    /** Les tables d'identité des modules (voyageur, aubergiste, campeur...) oublient ce PNJ. */
+    private static void forgetInModules(Ref<EntityStore> ref) {
+        Travellers.forget(ref);
+        Inns.forget(ref);
+        Camps.forget(ref);
+        Calendar.forget(ref);
+        Surroundings.forget(ref);
+    }
+
+    /** Oublie le camp de combat d'une entité qui n'est pas un PNJ du monde vivant (porteur de convoi). */
+    public static void unside(Ref<EntityStore> ref) {
+        SIDES.remove(ref);
+    }
+
+    private static final Map<String, Integer> DAILY = new ConcurrentHashMap<>();
+
+    /**
+     * Plafond quotidien d'un joueur pour `what` (dons, offrandes) : rend combien il peut encore donner aujourd'hui
+     * (au plus `max`) ; {@link #spend} compte ce qu'il a donné. Les jours passés sont oubliés.
+     */
+    public static int allowance(UUID player, String what, long day, int max) {
+        String suffix = "|" + day;
+        DAILY.keySet().removeIf(k -> !k.endsWith(suffix));
+        return Math.max(0, max - DAILY.getOrDefault(player + "|" + what + suffix, 0));
+    }
+
+    public static void spend(UUID player, String what, long day, int count) {
+        DAILY.merge(player + "|" + what + "|" + day, count, Integer::sum);
     }
 
     public static boolean isWorldNpc(Ref<EntityStore> ref) {
@@ -208,7 +239,12 @@ public final class WorldLife {
         Mortal mortal = MORTALS.remove(ref);
         boolean ours = NPCS.containsKey(ref);
         if (mortal != null) {
-            world.execute(() -> mortal.died(world, ref, where, killer));
+            world.execute(() -> {
+                mortal.died(world, ref, where, killer);
+                forgetInModules(ref);
+            });
+        } else if (ours) {
+            forgetInModules(ref);
         }
         if (ours) {
             NPCS.remove(ref);
@@ -361,5 +397,6 @@ public final class WorldLife {
         TALKERS.clear();
         MORTALS.clear();
         TALKING.clear();
+        DAILY.clear();
     }
 }

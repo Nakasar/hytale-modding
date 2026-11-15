@@ -386,6 +386,9 @@ public final class Surroundings {
         UUID uuid = player.getUuid();
         Hunts.start("hide:" + v.id(), player, spots, HIDE_SECONDS, KEYS + "hideFound", (w, s, p, won) -> {
             life.hiding = false;
+            if (p == null) {
+                return; // joueur parti : les enfants reviennent jouer près du cœur
+            }
             Message m = Message.translation(KEYS + (won ? "hideWon" : "hideLost"));
             p.sendMessage(m);
             NotificationUtil.sendNotification(p.getPacketHandler(), m, won ? NotificationStyle.Success : NotificationStyle.Default);
@@ -407,6 +410,11 @@ public final class Surroundings {
         }
         life.patrol.forEach(r -> WorldLife.remove(store, r));
         removeChildren(store, life);
+    }
+
+    /** Le PNJ n'est plus (retiré ou mort). */
+    static void forget(Ref<EntityStore> ref) {
+        CHILD_OF.remove(ref);
     }
 
     public static void clearAll() {

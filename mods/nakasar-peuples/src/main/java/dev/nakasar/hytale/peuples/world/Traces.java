@@ -155,7 +155,9 @@ public final class Traces {
     public static void raid(World world, Village village, long day) {
         Random random = new Random();
         double angle = random.nextDouble() * Math.PI * 2;
-        int radius = Villages.RADIUS + 6;
+        // Hors de l'emprise du plan du village (rayon du plan, jusqu'à 68 blocs) et au-delà du camp des réfugiés (rayon + 10).
+        int radius = (dev.nakasar.hytale.peuples.village.Chantiers.layout(village) == null ? Villages.RADIUS
+                : dev.nakasar.hytale.peuples.village.Chantiers.layout(village).radius()) + 18;
         for (int i = 0; i < 3; i++) {
             double a = angle + (i - 1) * 0.25;
             int x = village.x() + (int) Math.round(Math.cos(a) * (radius + random.nextInt(6)));

@@ -19,17 +19,17 @@ Chaque matin, des voyageurs partent d'un village vers un autre village (à moins
 | Messager | une lettre à porter, ou une lettre de paix entre deux villages rivaux |
 | Caravane | se faire escorter jusqu'à destination |
 
-- **Lettres** : le messager vous confie une **Lettre**. Portez-la près du cœur du village destinataire : une faveur et +20 de réputation. Une lettre de paix (vous devez être Ami des deux villages) leur apporte en plus une trêve.
-- **Escorte** : restez à moins de 24 blocs de la caravane jusqu'à son arrivée : +25 de réputation au village de départ, +12 à celui d'arrivée. Une caravane arrivée fait grandir le village qui la reçoit et rapproche les deux villages.
+- **Lettres** : le messager vous confie une **Lettre**. Portez-la près du cœur du village destinataire : une faveur et +20 de réputation. Une lettre de paix (vous devez être Ami des deux villages) leur apporte en plus une trêve. Si vous perdez la lettre, le prochain messager vous en confie une autre.
+- **Escorte** : restez près de la caravane pendant tout le trajet (elle vous attend une minute si vous vous éloignez) et soyez là à son arrivée : +25 de réputation au village de départ, +12 à celui d'arrivée. Une caravane arrivée fait grandir le village qui la reçoit et rapproche les deux villages.
 - **Embuscades** : un convoi sur trois environ tombe sur une bande de 3 à 5 pillards. Si vous êtes là, défendez-le. Si personne n'est là, il arrive que le convoi perde une partie de son chargement. Les convois de vos avant-postes de métier peuvent aussi être attaqués.
 
 ## Auberges de relais
 
-Quand un chemin d'au moins 400 blocs voit passer beaucoup de monde (40 voyageurs en 7 jours), une **auberge** se construit à mi-chemin, un peu à l'écart de la route (12 heures de jeu de travaux).
+Quand un chemin d'au moins 400 blocs voit passer du monde (6 voyageurs en 7 jours, une caravane en compte trois), une **auberge** se construit à mi-chemin, un peu à l'écart de la route (12 heures de jeu de travaux).
 
 - **Niveau 1** : l'aubergiste vend à boire et à manger, et donne des rumeurs.
-- **Niveau 2** (80 passages) : il revend les marchandises des voyageurs.
-- **Niveau 3** (120 passages) : il vous confie aussi du courrier.
+- **Niveau 2** (12 passages) : il revend les marchandises des voyageurs.
+- **Niveau 3** (18 passages) : il vous confie aussi du courrier.
 
 Une auberge où personne ne passe pendant 14 jours ferme. Elle rouvre si le passage reprend.
 
@@ -43,13 +43,13 @@ Chaque jour, un campement peut s'installer à 150-400 blocs d'un village (4 au p
 | Bûcherons | leur apporter 3 pains contre 4 sèves |
 | Prospecteurs | les défendre contre une bande de pillards : 6 minerais de fer, une faveur, +15 |
 | Marchands | une boutique |
-| Réfugiés | après un raid perdu : leur donner de la nourriture fait remonter le village |
+| Réfugiés | après un raid perdu : leur donner de la nourriture (10 vivres par jour au plus) fait remonter le village |
 
 Quand un campement lève le camp, il ne laisse rien derrière lui.
 
 ## Amis et rivaux
 
-Chaque paire de villages a une relation, de −100 à 100 : **alliés**, **amis**, **neutres**, **tendus** ou **rivaux**. Elle part de leur peuple (même peuple, alliés ou rivaux) et bouge avec les caravanes, les querelles et les lettres de paix.
+Chaque paire de villages a une relation, de −100 à 100 : **alliés**, **amis**, **neutres**, **tendus** ou **rivaux**. Elle part de leur peuple (même peuple, alliés ou rivaux) et bouge avec les voyageurs qui vont de l'un à l'autre, les querelles et les lettres de paix. Avec le temps, elle revient lentement vers son point de départ.
 
 - Les **alliés** s'envoient des caravanes, et un village allié proche envoie un ou deux gardes en renfort pendant un raid.
 - Entre **rivaux**, seuls les messagers circulent, et il y a parfois des **escarmouches** entre les deux villages. Aidez un camp : +15 auprès du vainqueur.
@@ -68,9 +68,9 @@ Entre les villages, il reste des ruines, de vieux campements et des sanctuaires.
 
 | Fête | Quand | Ce qu'on y fait |
 |---|---|---|
-| Fête des moissons | tous les 7 jours, dès 18 h, dans les villages qui ont une ferme de niveau II | offrir de la nourriture (10 au plus) : 4 de réputation par aliment |
+| Fête des moissons | tous les 7 jours, dès 18 h, dans les villages qui ont une ferme de niveau II | offrir de la nourriture (10 aliments par fête au plus) : 4 de réputation par aliment |
 | Foire des peuples | tous les 14 jours, dès 9 h, dans le plus grand village | des marchands de tous les peuples, et une course aux 3 drapeaux en 90 secondes |
-| Migration | tous les 10 jours | un troupeau traverse la région : chassez-le, mais fuyez la zone rouge devant le chef du troupeau |
+| Migration | tous les 10 jours | un troupeau traverse la région : chassez-le (une bête chassée ne revient pas), mais fuyez la zone rouge devant le chef du troupeau |
 
 Une fête dure 20 minutes, la foire 30 minutes.
 

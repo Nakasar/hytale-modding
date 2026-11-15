@@ -18,6 +18,9 @@ import java.util.Map;
  */
 public final class Sites {
 
+    /** Préfixe d'une note dont le propriétaire est parti : {@link #retry} la rendra dès que la zone sera chargée. */
+    private static final String RELEASED = "!";
+
     private Sites() {
     }
 
@@ -100,7 +103,12 @@ public final class Sites {
         if (note == null) {
             return true;
         }
+        if (note.startsWith(RELEASED)) {
+            note = note.substring(RELEASED.length());
+        }
         ChunkStore chunks = world.getChunkStore();
+        // Tous les blocs notés doivent être chargés (une emprise peut toucher plusieurs chunks) : sinon on ne touche à
+        // rien et la note reste.
         for (String group : note.split("#")) {
             String[] parts = group.split(";");
             String[] o = parts[0].split(",");
@@ -112,6 +120,13 @@ public final class Sites {
             int z = Integer.parseInt(o[2]);
             if (Blocks.id(chunks, x, y, z) == Blocks.UNLOADED) {
                 return false;
+            }
+            for (int i = 1; i < parts.length; i++) {
+                String[] c = parts[i].split(",");
+                if (c.length >= 3 && Blocks.id(chunks, x + Integer.parseInt(c[0]), y + Integer.parseInt(c[1]),
+                        z + Integer.parseInt(c[2])) == Blocks.UNLOADED) {
+                    return false;
+                }
             }
         }
         for (String group : note.split("#")) {
@@ -144,6 +159,31 @@ public final class Sites {
         }
         WorldLife.registry(world).put(WorldLifeRegistry.Part.STRUCTURES, id, null);
         return true;
+    }
+
+    /**
+     * Le propriétaire de la structure `id` n'en a plus besoin (foire finie, course finie) : elle est rendue tout de
+     * suite si sa zone est chargée, sinon marquée pour {@link #retry}.
+     */
+    public static void release(World world, String id) {
+        if (restore(world, id)) {
+            return;
+        }
+        WorldLifeRegistry r = WorldLife.registry(world);
+        String note = r.get(WorldLifeRegistry.Part.STRUCTURES, id);
+        if (note != null && !note.startsWith(RELEASED)) {
+            r.put(WorldLifeRegistry.Part.STRUCTURES, id, RELEASED + note);
+        }
+    }
+
+    /** Réessaie de rendre les structures abandonnées (pas toutes les 2 s du monde vivant). */
+    public static void retry(World world) {
+        Map<String, String> part = WorldLife.registry(world).part(WorldLifeRegistry.Part.STRUCTURES);
+        for (Map.Entry<String, String> e : new HashMap<>(part).entrySet()) {
+            if (e.getValue().startsWith(RELEASED)) {
+                restore(world, e.getKey());
+            }
+        }
     }
 
     /** Ids des structures encore posées (commande). */

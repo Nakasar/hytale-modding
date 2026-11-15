@@ -38,6 +38,8 @@ public final class Walk {
     public static final double ARRIVE = 4.0;
     private static final float STUCK_SECONDS = 30f;
     private static final int HOP = 8;
+    /** Rayon de recherche d'une place sûre autour de la place en file. */
+    private static final int SAFE_RADIUS = 6;
 
     private static final Map<String, Walk> WALKS = new ConcurrentHashMap<>();
 
@@ -96,7 +98,10 @@ public final class Walk {
                 return at; // trop de PNJ : la file attend que la place se libère (sans avancer, sous les yeux d'un joueur)
             }
             for (int i = 0; i < count; i++) {
-                Vector3d spot = spot(world, path, at, i, fallbackY);
+                Vector3d spot = safeSpot(world, path, at, i);
+                if (spot == null) {
+                    continue; // ni eau, ni lave, ni bloc : pas de place sûre ici, ce marcheur viendra au pas suivant
+                }
                 float yaw = (float) Math.atan2(-path.dir(at)[0], path.dir(at)[1]);
                 Ref<EntityStore> ref = spawner.spawn(i, spot, yaw);
                 if (ref != null) {
@@ -123,8 +128,10 @@ public final class Walk {
         if (moving && stuckFor >= STUCK_SECONDS && !WorldLife.near(players, here[0], here[1], WorldLife.WATCHED)) {
             lead = Math.min(length, lead + HOP);
             for (int i = 0; i < live.size(); i++) {
-                store.putComponent(live.get(i), Teleport.getComponentType(),
-                        new Teleport(spot(world, path, lead, i, fallbackY), new Rotation3f(0f, 0f, 0f)));
+                Vector3d to = safeSpot(world, path, lead, i);
+                if (to != null) {
+                    store.putComponent(live.get(i), Teleport.getComponentType(), new Teleport(to, new Rotation3f(0f, 0f, 0f)));
+                }
             }
             best = lead;
             stuckFor = 0;
@@ -153,7 +160,7 @@ public final class Walk {
         }
     }
 
-    /** Place du marcheur `i` à `at` blocs : en file, décalé sur le côté pour ne pas s'empiler. */
+    /** Point d'attache du marcheur `i` à `at` blocs : en file, décalé sur le côté pour ne pas s'empiler. */
     public static Vector3d spot(World world, Routes.Path path, double at, int i, int fallbackY) {
         double[] p = path.point(at);
         double[] d = path.dir(at);
@@ -162,6 +169,20 @@ public final class Walk {
         int x = (int) Math.floor(p[0] - d[0] * back - d[1] * side);
         int z = (int) Math.floor(p[1] - d[1] * back + d[0] * side);
         return Villagers.groundAt(world, x, z, fallbackY);
+    }
+
+    /**
+     * Place sûre du marcheur `i` à `at` blocs, pour le poser ou le téléporter ({@link WorldLife#ground} : jamais dans
+     * l'eau, la lave ou un bloc) ; null s'il n'y en a pas (ou que la zone n'est pas chargée).
+     */
+    public static Vector3d safeSpot(World world, Routes.Path path, double at, int i) {
+        double[] p = path.point(at);
+        double[] d = path.dir(at);
+        double side = (i % 2 == 0 ? 1 : -1) * 1.5 * ((i + 1) / 2);
+        double back = 1.5 * i;
+        int x = (int) Math.floor(p[0] - d[0] * back - d[1] * side);
+        int z = (int) Math.floor(p[1] - d[1] * back + d[0] * side);
+        return WorldLife.ground(world, x, z, SAFE_RADIUS);
     }
 
     /** Pose du marcheur `i`. */

@@ -48,6 +48,11 @@ public final class Travellers {
     public static final double DEPARTURE_CHANCE = 0.35;
     public static final int ESCORT_REPUTATION = 25;
     public static final int ESCORT_RANGE = 24;
+    /** L'escorte est perdue si le joueur reste plus de {@value #ESCORT_AWAY} s loin du voyageur (2 × ESCORT_RANGE). */
+    public static final int ESCORT_AWAY = 60;
+    /** Gain de relation à l'arrivée : caravane, autre voyageur. */
+    public static final int CARAVAN_RELATION = 5;
+    public static final int TRAVELLER_RELATION = 1;
     public static final int LETTER_REPUTATION = 20;
     public static final int LETTER_REACH = 12;
     public static final String LETTER = "Nakasar_Peuples_Letter";
@@ -134,6 +139,8 @@ public final class Travellers {
     }
 
     private static final Map<Ref<EntityStore>, String> OWNER = Collections.synchronizedMap(new IdentityHashMap<>());
+    /** Secondes passées par l'escorteur loin de son voyageur (id du voyageur). */
+    private static final Map<String, Float> ESCORT_AWAY_FOR = new java.util.concurrent.ConcurrentHashMap<>();
 
     private Travellers() {
     }
@@ -163,6 +170,13 @@ public final class Travellers {
     static void drop(World world, Store<EntityStore> store, Traveller t) {
         WorldLife.registry(world).put(WorldLifeRegistry.Part.TRAVELLERS, t.id, null);
         Walk.end(store, t.walkKey());
+        Ambushes.cancel(store, t.walkKey()); // la bande qui a tué tous les marcheurs repart
+        ESCORT_AWAY_FOR.remove(t.id);
+    }
+
+    /** Le PNJ n'est plus (retiré ou mort). */
+    static void forget(Ref<EntityStore> ref) {
+        OWNER.remove(ref);
     }
 
     /** Le voyageur de ce PNJ (ou null). */
@@ -261,6 +275,7 @@ public final class Travellers {
                     OWNER.put(ref, t.id);
                 }
             }
+            followEscort(world, store, t, path, dt);
             if (t.kind == Kind.CARAVAN && t.ambush == 0 && t.at >= path.length() / 2) {
                 t.ambush = Ambushes.roll(world, store, t.walkKey(), path.point(t.at), path.dir(t.at), from.people(),
                         walk.alive(), players) ? 2 : 1;
@@ -270,6 +285,38 @@ public final class Travellers {
                 }
             }
             save(world, t);
+        }
+    }
+
+    /** L'escorteur doit rester près du voyageur pendant le trajet, pas seulement l'attendre à l'arrivée. */
+    private static void followEscort(World world, Store<EntityStore> store, Traveller t, Routes.Path path, float dt) {
+        if ("-".equals(t.escort)) {
+            return;
+        }
+        PlayerRef escort = null;
+        for (PlayerRef p : world.getPlayerRefs()) {
+            if (p.getUuid().toString().equals(t.escort)) {
+                escort = p;
+            }
+        }
+        double[] here = path.point(t.at);
+        Vector3d at = escort == null ? null : Requests.position(store, escort.getReference());
+        double range = 2.0 * ESCORT_RANGE;
+        if (at != null && Math.hypot(at.x() - here[0], at.z() - here[1]) <= range) {
+            ESCORT_AWAY_FOR.remove(t.id);
+            return;
+        }
+        float away = ESCORT_AWAY_FOR.merge(t.id, dt, Float::sum);
+        if (away < ESCORT_AWAY) {
+            return;
+        }
+        ESCORT_AWAY_FOR.remove(t.id);
+        t.escort = "-";
+        if (escort != null) {
+            Village to = Villages.registry(world).byId(t.to);
+            Message m = Message.translation(KEYS + "escortLost").param("to", to == null ? "?" : to.name());
+            escort.sendMessage(m);
+            NotificationUtil.sendNotification(escort.getPacketHandler(), m, NotificationStyle.Warning);
         }
     }
 
@@ -319,10 +366,13 @@ public final class Travellers {
 
     private static void arrive(World world, Store<EntityStore> store, Traveller t, Village from, Village to) {
         long day = GameClock.day(store);
-        Links.pass(world, Links.key(from.id(), to.id()), day);
+        // Chaque marcheur arrivé compte pour un passage (une caravane : ses trois porteurs).
+        Links.pass(world, Links.key(from.id(), to.id()), day, Math.max(1, t.walkers));
         if (t.kind == Kind.CARAVAN && t.cargo > 0) {
             Villages.addEssor(to, t.cargo);
-            Relations.change(world, from, to, 2);
+            Relations.change(world, from, to, CARAVAN_RELATION);
+        } else if (t.kind != Kind.CARAVAN) {
+            Relations.change(world, from, to, TRAVELLER_RELATION);
         }
         // Escorte : le joueur qui l'a accompagnée est là à l'arrivée.
         if (!"-".equals(t.escort)) {
@@ -413,8 +463,13 @@ public final class Travellers {
     /** Donne une lettre pour `to` (de paix si `parleyFrom` n'est pas null). */
     static boolean giveLetter(World world, Store<EntityStore> store, Ref<EntityStore> ref, PlayerRef player, Village to, Village parleyFrom) {
         PeuplesPlayer data = PeuplesPlayer.ensure(store, ref);
-        for (String f : data.flags()) {
+        boolean carried = WorldLife.count(store, ref, LETTER::equals) > 0;
+        for (String f : new ArrayList<>(data.flags())) {
             if (f.startsWith(LETTER_FLAG)) {
+                if (!carried) {
+                    data.setFlag(f, false); // lettre perdue (mort, jetée, rangée) : elle ne compte plus
+                    continue;
+                }
                 player.sendMessage(Message.translation(KEYS + "letterAlready"));
                 return false;
             }
@@ -489,5 +544,6 @@ public final class Travellers {
 
     public static void clearAll() {
         OWNER.clear();
+        ESCORT_AWAY_FOR.clear();
     }
 }

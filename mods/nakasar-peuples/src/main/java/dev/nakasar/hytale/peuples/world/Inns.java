@@ -27,7 +27,8 @@ import java.util.Map;
 
 /**
  * Étape 3 : les auberges de relais. Une liaison de plus de {@value #MIN_LENGTH} blocs (le relais est à plus de
- * {@value #MIN_LENGTH_HALF} blocs de chaque village) qui voit {@value #TRAFFIC_1} passages en
+ * {@value #MIN_LENGTH_HALF} blocs de chaque village) qui voit {@value #TRAFFIC_1} passages (marcheurs arrivés : une
+ * caravane en compte trois ; au plus un départ par liaison et par jour) en
  * {@value Links#WINDOW_DAYS} jours lance le chantier d'une auberge à mi-chemin, un peu à l'écart de la route : une
  * journée de travaux ({@value #WORK_HOURS} h de jeu), puis le prefab vanilla de la zone et un aubergiste du peuple du
  * premier village. Niveaux : relais (repas), auberge à {@value #TRAFFIC_2} passages (troc des voyageurs), grand relais à
@@ -40,9 +41,9 @@ public final class Inns {
 
     public static final int MIN_LENGTH = 400;
     public static final int MIN_LENGTH_HALF = MIN_LENGTH / 2;
-    public static final int TRAFFIC_1 = 40;
-    public static final int TRAFFIC_2 = 80;
-    public static final int TRAFFIC_3 = 120;
+    public static final int TRAFFIC_1 = 6;
+    public static final int TRAFFIC_2 = 12;
+    public static final int TRAFFIC_3 = 18;
     public static final int WORK_HOURS = 12;
     public static final int CLOSE_DAYS = 14;
     /** Écart entre la route et l'auberge. */
@@ -288,6 +289,10 @@ public final class Inns {
     }
 
     private static void spawnKeeper(World world, Store<EntityStore> store, Inn inn, People people) {
+        Ref<EntityStore> old = KEEPERS.remove(inn.link);
+        if (old != null) {
+            WorldLife.remove(store, old); // l'ancien aubergiste (souvent déjà déchargé) est oublié
+        }
         int[] spot = front(inn, 5);
         Vector3d at = WorldLife.ground(world, spot[0], spot[1], 6);
         if (at == null) {
@@ -355,6 +360,11 @@ public final class Inns {
     /** Village du premier peuple de l'auberge (son troc). */
     static Village firstVillage(World world, Inn inn) {
         return Villages.registry(world).byId(inn.link.split("\\|")[0]);
+    }
+
+    /** Le PNJ n'est plus (retiré ou mort). */
+    static void forget(Ref<EntityStore> ref) {
+        KEEPER_OF.remove(ref);
     }
 
     public static void clearAll() {

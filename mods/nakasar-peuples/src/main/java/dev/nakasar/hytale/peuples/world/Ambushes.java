@@ -38,7 +38,8 @@ public final class Ambushes {
     public static final int MAX_SECONDS = 180;
     public static final String KEYS = WorldLife.KEYS + "ambush.";
 
-    private record Band(List<Ref<EntityStore>> raiders, long started) {
+    /** `walkers` : la file attaquée (leur camp est rendu à la fin). */
+    private record Band(List<Ref<EntityStore>> raiders, List<Ref<EntityStore>> walkers, long started) {
     }
 
     private static final Map<String, Band> ACTIVE = new ConcurrentHashMap<>();
@@ -94,7 +95,7 @@ public final class Ambushes {
         for (Ref<EntityStore> w : walkers) {
             WorldLife.side(w, key, 0);
         }
-        ACTIVE.put(key, new Band(band, System.currentTimeMillis()));
+        ACTIVE.put(key, new Band(band, new ArrayList<>(walkers), System.currentTimeMillis()));
         WorldLife.announce(world, store, here[0], here[1], WITNESS, Message.translation(KEYS + "start"), NotificationStyle.Danger);
         return true;
     }
@@ -119,10 +120,7 @@ public final class Ambushes {
         if (!band.raiders().isEmpty() && !timeout) {
             return false;
         }
-        for (Ref<EntityStore> ref : band.raiders()) {
-            WorldLife.remove(store, ref);
-        }
-        ACTIVE.remove(key);
+        release(store, key, band);
         if (!timeout) {
             Vector3d at = null;
             Walk w = Walk.peek(key);
@@ -134,6 +132,27 @@ public final class Ambushes {
             }
         }
         return true;
+    }
+
+    /** Fin sans vainqueur (la file n'est plus : tous ses marcheurs tués, arrivée, fin) : la bande repart. */
+    static void cancel(Store<EntityStore> store, String key) {
+        Band band = ACTIVE.get(key);
+        if (band != null) {
+            release(store, key, band);
+        }
+    }
+
+    private static void release(Store<EntityStore> store, String key, Band band) {
+        for (Ref<EntityStore> ref : band.raiders()) {
+            WorldLife.remove(store, ref);
+        }
+        // Les porteurs des convois d'avant-postes ne sont pas des PNJ du monde vivant : leur camp est oublié ici.
+        for (Ref<EntityStore> w : band.walkers()) {
+            if (!WorldLife.isWorldNpc(w)) {
+                WorldLife.unside(w);
+            }
+        }
+        ACTIVE.remove(key);
     }
 
     public static boolean active(String key) {
@@ -152,8 +171,12 @@ public final class Ambushes {
             if (porters.isEmpty() && WorldLife.near(players, at0[0], at0[1], WorldLife.REAL_RANGE)) {
                 return false; // un joueur arrive : les porteurs se posent (le pas suivant, ils attendent)
             }
+            Band band = ACTIVE.get(walkKey);
             for (Ref<EntityStore> p : porters) {
                 WorldLife.side(p, walkKey, 0);
+                if (band != null && band.walkers().stream().noneMatch(w -> w == p)) {
+                    band.walkers().add(p);
+                }
                 Vector3d at = Requests.position(store, p);
                 if (at != null) {
                     WorldLife.leash(store, p, at);
@@ -165,6 +188,7 @@ public final class Ambushes {
         if (a.convoyAt() < path.length() / 2 || CONVOYS_ROLLED.contains(rolled)) {
             return false;
         }
+        CONVOYS_ROLLED.removeIf(k -> k.startsWith(key + "@")); // un seul tirage gardé par avant-poste
         CONVOYS_ROLLED.add(rolled);
         double[] here = path.point(a.convoyAt());
         if (roll(world, store, walkKey, here, path.dir(a.convoyAt()), people, porters, players)) {

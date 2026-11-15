@@ -460,8 +460,9 @@ def texts():
     t(p + "lost.messenger", "Le messager parti pour {to} a été tué en route.", "The messenger bound for {to} was killed on the road.")
     t(p + "lost.caravan", "La caravane partie pour {to} a été détruite.", "The caravan bound for {to} was destroyed.")
     t(p + "shopRank", "Je ne commerce qu'avec les amis de {village} (rang Toléré).", "I only trade with friends of {village} (rank Tolerated).")
-    t(p + "escortStart", "Tu escortes ce voyageur jusqu'à {to}. Reste près de lui à l'arrivée.", "You're escorting this traveller to {to}. Stay close on arrival.")
+    t(p + "escortStart", "Tu escortes ce voyageur jusqu'à {to}. Reste près de lui jusqu'à l'arrivée.", "You're escorting this traveller to {to}. Stay close until arrival.")
     t(p + "escortDone", "Escorte réussie jusqu'à {to} !", "Escort to {to} complete!")
+    t(p + "escortLost", "Tu as laissé le voyageur pour {to} : l'escorte est perdue.", "You left the traveller bound for {to}: the escort is lost.")
     t(p + "escortReason", "escorte d'un voyageur", "escorting a traveller")
     t(p + "letterAlready", "Tu portes déjà une lettre.", "You already carry a letter.")
     t(p + "letterGiven", "Lettre pour {village} ({people}), à {distance} blocs, direction {direction}. Porte-la près du cœur du village.",
@@ -556,6 +557,7 @@ def texts():
     t(p + "noFood", "Tu n'as rien à manger à donner.", "You have no food to give.")
     t(p + "donated", "Tu donnes {count} vivres aux réfugiés de {village}.", "You give {count} food to the refugees of {village}.")
     t(p + "donationReason", "nourri les réfugiés", "fed the refugees")
+    t(p + "donatedEnough", "Tu as déjà beaucoup donné aujourd'hui : reviens demain.", "You've already given a lot today: come back tomorrow.")
     # Relations
     p = w + "relation."
     for k, fr, en in (("ally", "alliés", "allies"), ("friendly", "en bons termes", "on good terms"), ("neutral", "neutres", "neutral"),
@@ -575,6 +577,7 @@ def texts():
     t(p + "feast.over", "La fête est finie.", "The festival is over.")
     t(p + "feast.reason", "offrande à la fête des moissons", "offering at the harvest festival")
     t(p + "feast.thanks", "Merci pour ces {count} offrandes !", "Thank you for these {count} offerings!")
+    t(p + "feast.enough", "Tu as déjà fait tes offrandes à cette fête.", "You've already made your offerings at this festival.")
     t(p + "feast.end", "La fête des moissons de {village} s'achève.", "The harvest festival of {village} ends.")
     t(p + "fair.start", "La foire des peuples s'ouvre à {village} !", "The fair of the peoples opens in {village}!")
     t(p + "fair.over", "La foire est finie.", "The fair is over.")

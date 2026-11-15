@@ -25,12 +25,25 @@ public final class WorldLifeSystem extends TickingSystem<EntityStore> {
 
     private float fast;
     private float slow;
+    /** Une résolution de charge attend déjà son tour sur le fil du monde. */
+    private final java.util.concurrent.atomic.AtomicBoolean charge = new java.util.concurrent.atomic.AtomicBoolean();
 
     @Override
     public void tick(float dt, int systemIndex, Store<EntityStore> store) {
         World world = store.getExternalData().getWorld();
         if (world != Universe.get().getDefaultWorld()) {
             return;
+        }
+        if (Calendar.charging() && charge.compareAndSet(false, true)) {
+            // La ruée se résout à l'image près : les dégâts tombent à la fin exacte de la zone rouge.
+            world.execute(() -> {
+                charge.set(false);
+                try {
+                    Calendar.stepCharge(world, world.getEntityStore().getStore());
+                } catch (RuntimeException e) {
+                    PeuplesPlugin.get().getLogger().atWarning().withCause(e).log("Peuples (monde vivant) : erreur de la ruée");
+                }
+            });
         }
         fast += dt;
         slow += dt;
@@ -62,6 +75,7 @@ public final class WorldLifeSystem extends TickingSystem<EntityStore> {
                     Inns.step(world, s, players);
                     Camps.step(world, s, players);
                     Relations.step(world, s, players);
+                    Sites.retry(world);
                 }
             } catch (RuntimeException e) {
                 PeuplesPlugin.get().getLogger().atWarning().withCause(e).log("Peuples (monde vivant) : erreur du pas");

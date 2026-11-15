@@ -28,7 +28,8 @@ import java.util.concurrent.ConcurrentHashMap;
  * ({@link WorldLifeRegistry.Part#RELATIONS} : {@code a|b = valeur|trêve jusqu'au jour|dernière escarmouche}).
  * <ul>
  *   <li>Départ : même peuple {@value #SAME}, peuples alliés {@value #ALLIED}, Kweebecs et Trorks {@value #RIVALS},
- *       sinon 0. Chaque jour, la valeur revient d'un point vers son départ ; une caravane arrivée ajoute 2 ; chaque
+ *       sinon 0. Tous les {@value #DRIFT_DAYS} jours, la valeur revient d'un point vers son départ ; une caravane arrivée
+ *       ajoute {@value Travellers#CARAVAN_RELATION}, un autre voyageur {@value Travellers#TRAVELLER_RELATION} ; chaque
  *       semaine, une querelle (5 %) en retire 15.</li>
  *   <li>Alliés (≥ {@value #ALLY}) : une caravane par jour entre eux, et des renforts dans les raids
  *       ({@link #reinforcements}).</li>
@@ -53,6 +54,8 @@ public final class Relations {
     public static final int PARLEY = 25;
     public static final double QUARREL_CHANCE = 0.05;
     public static final int QUARREL = -15;
+    /** Le retour vers la valeur de départ : un point tous les {@value #DRIFT_DAYS} jours. */
+    public static final int DRIFT_DAYS = 3;
     public static final int REINFORCE_RANGE = 1200;
     public static final int MAX_REINFORCEMENTS = 2;
     public static final int SKIRMISH_FIGHTERS = 3;
@@ -169,7 +172,7 @@ public final class Relations {
         for (Links.Link l : Links.all(world)) {
             int[] v = read(world, l.a(), l.b());
             int base = base(l.a().people(), l.b().people());
-            if (v[0] != base) {
+            if (v[0] != base && Math.floorMod(day, (long) DRIFT_DAYS) == 0) {
                 v[0] += v[0] < base ? 1 : -1;
             }
             if (Math.floorMod(day, 7L) == 0 && random.nextDouble() < QUARREL_CHANCE) {
