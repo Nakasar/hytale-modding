@@ -1,0 +1,19 @@
+{
+  "$Comment": "Bannière d'un village (blason Red Axe) : modèle et balancement de la bannière vanilla des ruines humaines. Généré par tools/generate_conquest.py.",
+  "Parent": "Furniture_Outlander_Banner",
+  "TranslationProperties": {
+    "Name": "nakasar_peuples.items.Nakasar_Peuples_Standard_Red_Axe.name",
+    "Description": "nakasar_peuples.items.Nakasar_Peuples_Standard_Red_Axe.description"
+  },
+  "Icon": "Icons/Nakasar/Peuples/Standards/Nakasar_Peuples_Standard_Red_Axe.png",
+  "Quality": "Uncommon",
+  "BlockType": {
+    "CustomModelTexture": [
+      {
+        "Texture": "Blocks/Nakasar/Peuples/Standards/Nakasar_Peuples_Standard_Red_Axe.png",
+        "Weight": 1
+      }
+    ],
+    "TextureComputedColor": "#a8242a"
+  }
+}

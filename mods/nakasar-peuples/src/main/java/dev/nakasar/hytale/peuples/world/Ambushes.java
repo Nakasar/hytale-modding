@@ -63,8 +63,8 @@ public final class Ambushes {
         if (!WorldLife.near(players, here[0], here[1], WITNESS)) {
             return false; // sans témoin : virtualLoss
         }
-        if (!force && random.nextInt(ODDS) != 0) {
-            return false;
+        if (!force && (random.nextInt(ODDS) != 0 || Territories.spared(world, here))) {
+            return false; // en territoire gardé (Territories), une embuscade sur deux est évitée
         }
         int size = MIN_BAND + random.nextInt(MAX_BAND - MIN_BAND + 1);
         if (!WorldLife.budget(world, size)) {
@@ -104,9 +104,10 @@ public final class Ambushes {
      * Embuscade sans témoin (personne à moins de {@value #WITNESS} blocs) : une chance sur {@value #ODDS} d'être attaquée,
      * puis une fois sur deux la file y perd une part de sa cargaison.
      */
-    static boolean virtualLoss(List<Vector3d> players, double[] here) {
+    static boolean virtualLoss(World world, List<Vector3d> players, double[] here) {
         ThreadLocalRandom random = ThreadLocalRandom.current();
-        return !WorldLife.near(players, here[0], here[1], WITNESS) && random.nextInt(ODDS) == 0 && random.nextBoolean();
+        return !WorldLife.near(players, here[0], here[1], WITNESS) && random.nextInt(ODDS) == 0 && random.nextBoolean()
+                && !Territories.spared(world, here);
     }
 
     /** Vrai si l'embuscade de la file `key` est finie (bande morte, ou repartie au bout de {@value #MAX_SECONDS} s). */
@@ -194,7 +195,7 @@ public final class Ambushes {
         if (roll(world, store, walkKey, here, path.dir(a.convoyAt()), people, porters, players)) {
             return true;
         }
-        if (virtualLoss(players, here)) {
+        if (virtualLoss(world, players, here)) {
             a.raidCargo(Math.max(1, a.convoyCargo() / 3), null);
         }
         return false;

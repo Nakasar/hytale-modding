@@ -571,6 +571,9 @@ public final class Workshops {
             player.sendMessage(Message.translation(KEYS + "locked").param("rank", Message.translation(TAKE_RANK.nameKey())));
             return false;
         }
+        if (village.isHamlet() && dev.nakasar.hytale.peuples.world.Allegiance.refusesOrders(world, store, ref, player, village)) {
+            return false; // conquête : embargo du lieu-dit contre les Étrangers de son propriétaire
+        }
         VillageRequest request = board[slot];
         RequestTemplate t = request.template();
         PeuplesPlayer state = PeuplesPlayer.ensure(store, ref);

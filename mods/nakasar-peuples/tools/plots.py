@@ -2,7 +2,7 @@
 
 Chaque plan de village réserve deux terrains de 24 × 24 blocs. Kevin (2026-11-15) : E1 s'ouvre au palier 2, E2 au
 palier 3 ; les piquets du terrain apparaissent un palier plus tôt. Un joueur de rang Ami choisit au panneau du village
-(page « Emplacements ») un des 5 projets du peuple ; chaque projet devient un bâtiment de métier complet (villageois,
+(page « Emplacements ») un des 6 projets du peuple ; chaque projet devient un bâtiment de métier complet (villageois,
 panneau, niveaux, spécialités, boutiques). Un projet = deux bâtiments du plan, un par terrain (E1_<Projet>,
 E2_<Projet>), jamais collés par les chantiers de palier : le chantier d'emplacement (24 h) les colle.
 
@@ -318,6 +318,45 @@ PROJECTS = {
              twin="Slothian_Bauge_De_Veille"),
     ],
 }
+
+
+# Conquête des lieux-dits (Kevin, 16 novembre 2026) : sixième projet de chaque peuple, la Maison du conseil. Chaque
+# niveau ajoute un lieu-dit que le village peut tenir (world/Allegiance.cap) ; spécialités Diplomatie (ambassades
+# +15 %, ralliement dès +70) et Garnison (un garde de plus par lieu-dit, relève le jour même, un soldat de plus par
+# expédition). Au niveau III, le tribut prend un tiers de la production au lieu d'un quart.
+COUNCIL_SPECS = [
+    ("Diplomatie", "Diplomatie", "Diplomacy", "Recipe_Page", "Ambassades plus sûres, ralliement plus tôt ; rouleaux et parchemins.",
+     "Surer embassies, earlier rallies; bolts and scrolls.", [("Ingredient_Bolt_Cotton", 4, 1), ("Recipe_Page", 2, 1)],
+     [("Ingredient_Bolt_Linen", 4, 2), ("Ingredient_Bolt_Wool", 4, 2)], None),
+    ("Garnison", "Garnison", "Garrison", "Weapon_Shield_Iron", "Plus de gardes dans les lieux-dits ; boucliers et épées.",
+     "More guards in the hamlets; shields and swords.", [("Weapon_Shield_Copper", 1, 3), ("Weapon_Sword_Copper", 1, 3)],
+     [("Weapon_Shield_Iron", 1, 5), ("Weapon_Sword_Iron", 1, 5)], None),
+]
+COUNCIL_BASE = [("Ingredient_Bolt_Cotton", 2, 1), ("Ingredient_Stick", 8, 1), ("Ingredient_Leather_Light", 2, 1)]
+
+
+def council(prefab, kind, wood, extra, extra_fr, extra_en, dialogue=None):
+    d = dict(id="Conseil", prefab=NPC + prefab, rotation=0, job="Conseiller", kind=kind, fr="Maison du conseil", en="Council house",
+             job_fr="Conseiller", job_en="Councillor", icon="Recipe_Page",
+             orders=[("Bolts", "Gather", "Ingredient_Bolt_Cotton", 4, "Toile des bannières", "Cloth for the banners"),
+                     ("Wood", "Gather", wood, 16, "Bois de la grande table", "Wood for the great table"),
+                     ("Gifts", "Gather", extra, 6, extra_fr, extra_en)],
+             base=COUNCIL_BASE, specs=COUNCIL_SPECS)
+    if dialogue:
+        d["dialogue"] = dialogue
+    return d
+
+
+PROJECTS["Kweebec_Oak"].append(council("Kweebec/Oak/Houses_Small/Kweebec_Oak_Houses_Small_001", "Elder", "Wood_Oak_Trunk",
+                                       "Ingredient_Fibre", "Fibres des cordes", "Fibre for the ropes"))
+PROJECTS["Trork_Camp"].append(council("Trork/Misc/Large/Trork_Misc_Large_003", "@Trork_Warrior", "Wood_Oak_Trunk",
+                                      "Ingredient_Hide_Light", "Peaux des tentures", "Hides for the hangings"))
+PROJECTS["Feran_Oasis"].append(council("Feran/Portals_Oasis/Hut/Feran_Tier2_Hut_003", "Elder", "Wood_Dry_Trunk",
+                                       "Ingredient_Salt", "Sel des hôtes", "Salt for the guests"))
+PROJECTS["Renonce_Givre"].append(council("Outlander/Houses/Tier2/Outlander_Houses_Tier2_002", "Elder", "Wood_Fir_Trunk",
+                                         "Ingredient_Hide_Heavy", "Fourrures des bancs", "Furs for the benches"))
+PROJECTS["Slothian_Monastere"].append(council("Slothian/Disabled/House/Medium/Tall/Slothian_Disabled_House_Medium_Tall_002", "Elder",
+                                              "Wood_Jungle_Trunk", "Furniture_Jungle_Candle", "Bougies du conseil", "Candles for the council"))
 
 
 def building_id(plot, project):

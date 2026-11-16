@@ -1,0 +1,19 @@
+{
+  "$Comment": "Bannière d'un village (blason Red Dune) : modèle et balancement de la bannière vanilla des ruines humaines. Généré par tools/generate_conquest.py.",
+  "Parent": "Furniture_Outlander_Banner",
+  "TranslationProperties": {
+    "Name": "nakasar_peuples.items.Nakasar_Peuples_Standard_Red_Dune.name",
+    "Description": "nakasar_peuples.items.Nakasar_Peuples_Standard_Red_Dune.description"
+  },
+  "Icon": "Icons/Nakasar/Peuples/Standards/Nakasar_Peuples_Standard_Red_Dune.png",
+  "Quality": "Uncommon",
+  "BlockType": {
+    "CustomModelTexture": [
+      {
+        "Texture": "Blocks/Nakasar/Peuples/Standards/Nakasar_Peuples_Standard_Red_Dune.png",
+        "Weight": 1
+      }
+    ],
+    "TextureComputedColor": "#a8242a"
+  }
+}

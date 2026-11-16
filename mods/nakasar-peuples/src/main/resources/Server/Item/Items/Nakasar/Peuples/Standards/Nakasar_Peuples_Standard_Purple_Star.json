@@ -1,0 +1,19 @@
+{
+  "$Comment": "Bannière d'un village (blason Purple Star) : modèle et balancement de la bannière vanilla des ruines humaines. Généré par tools/generate_conquest.py.",
+  "Parent": "Furniture_Outlander_Banner",
+  "TranslationProperties": {
+    "Name": "nakasar_peuples.items.Nakasar_Peuples_Standard_Purple_Star.name",
+    "Description": "nakasar_peuples.items.Nakasar_Peuples_Standard_Purple_Star.description"
+  },
+  "Icon": "Icons/Nakasar/Peuples/Standards/Nakasar_Peuples_Standard_Purple_Star.png",
+  "Quality": "Uncommon",
+  "BlockType": {
+    "CustomModelTexture": [
+      {
+        "Texture": "Blocks/Nakasar/Peuples/Standards/Nakasar_Peuples_Standard_Purple_Star.png",
+        "Weight": 1
+      }
+    ],
+    "TextureComputedColor": "#6a3084"
+  }
+}

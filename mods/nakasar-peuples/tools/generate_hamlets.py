@@ -244,13 +244,19 @@ def dialogues():
     bye = resp(COMMON + "aurevoir")
     troc = t("dialogue.LieuDit.troc", "Montre-moi ce que tu as.", "Show me what you have.")
     visits = t("dialogue.LieuDit.visites", "Qui vient commercer ici ?", "Who comes to trade here?")
+    # Conquête (tools/generate_conquest.py, world/Allegiance) : propriétaire du lieu-dit, lettre de ralliement.
+    owner = t("dialogue.LieuDit.proprietaire", "À qui appartient ce lieu ?", "Who holds this place?")
+    rally = t("dialogue.LieuDit.ralliement", "Écris-moi une lettre pour le village dont je porte les couleurs.",
+              "Write me a letter for the village whose colours I wear.")
     for kind in hamlets.TYPES:
         name_fr, name_en, _icon, hello_fr, hello_en = hamlets.NAMES[kind]
         did = f"Monde_LieuDit_{kind}"
-        dialogue(did, f"Habitant d'un lieu-dit {name_fr} : troc du lieu-dit (élargi quand il est animé), marchands venus, rumeurs.",
+        dialogue(did, f"Habitant d'un lieu-dit {name_fr} : troc du lieu-dit (élargi quand il est animé), marchands venus, "
+                      "propriétaire et lettre de ralliement (conquête), rumeurs.",
                  ("Habitant", "Resident"), (name_fr, name_en), [
             node("Accueil", t(f"dialogue.{did}.accueil", hello_fr, hello_en), [
-                resp(troc, "HamletShop"), resp(visits, "HamletVisits", "Accueil"), rumour, bye]),
+                resp(troc, "HamletShop"), resp(visits, "HamletVisits", "Accueil"), resp(owner, "HamletOwner", "Accueil"),
+                resp(rally, "HamletRally", "Accueil", "HamletRally"), rumour, bye]),
         ])
     did = "Monde_Marchand_LieuDit"
     dialogue(did, "Marchand ou caravanier d'un village venu commercer dans un lieu-dit (world/HamletTrips).",
@@ -272,8 +278,8 @@ def texts():
     p = "hamlet."
     rows = [
         ("discover", "Lieu-dit : {name} ({people})", "Hamlet: {name} ({people})"),
-        ("discoverLine", "Un lieu-dit {people}, libre de tout village. Les marchands des villages voisins y viennent commercer.",
-         "A {people} hamlet, bound to no village. Merchants from nearby villages come here to trade."),
+        ("discoverLine", "Un lieu-dit {people}. Les marchands des villages voisins y viennent commercer ; un village peut en prendre le contrôle.",
+         "A {people} hamlet. Merchants from nearby villages come here to trade; a village may take control of it."),
         ("lively", "{name} est animé : les marchands se pressent, son troc s'élargit.",
          "{name} is lively: merchants crowd in, its wares grow."),
         ("visits.none", "Personne n'est venu depuis une semaine. Les routes sont calmes.",

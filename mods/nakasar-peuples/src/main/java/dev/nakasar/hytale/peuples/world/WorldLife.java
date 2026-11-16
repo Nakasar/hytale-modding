@@ -148,6 +148,7 @@ public final class WorldLife {
         Inns.forget(ref);
         Hamlets.forget(ref);
         HamletTrips.forget(ref);
+        Garrisons.forget(ref);
         Camps.forget(ref);
         Calendar.forget(ref);
         Surroundings.forget(ref);
@@ -393,6 +394,8 @@ public final class WorldLife {
         Inns.clearAll();
         Hamlets.clearAll();
         HamletTrips.clearAll();
+        Garrisons.clearAll();
+        Sieges.clearAll();
         Camps.clearAll();
         Surroundings.clearAll();
         Hunts.clearAll();

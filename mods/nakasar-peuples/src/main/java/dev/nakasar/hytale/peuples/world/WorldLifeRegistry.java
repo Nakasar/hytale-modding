@@ -42,7 +42,17 @@ public final class WorldLifeRegistry implements Resource<EntityStore> {
         /** Lieux-dits : id = état, plus les marques « ~seed:… » ({@link Hamlets}). */
         HAMLETS("Hamlets"),
         /** Marchands et caravanes en route vers un lieu-dit : id = état ({@link HamletTrips}). */
-        HAMLET_TRIPS("HamletTrips");
+        HAMLET_TRIPS("HamletTrips"),
+        /** Propriétaire et état de chaque lieu-dit, plus les marques « ~… » : id = état ({@link Allegiance}). */
+        ALLEGIANCE("Allegiance"),
+        /** Influence des villages sur les lieux-dits : « lieu-dit|village » = valeur ({@link Allegiance}). */
+        INFLUENCE("Influence"),
+        /** Gardes des lieux-dits tenus : id = état ({@link Garrisons}). */
+        GARRISONS("Garrisons"),
+        /** Blasons des villages : village = couleur|emblème|jour du dernier changement ({@link Heraldry}). */
+        HERALDRY("Heraldry"),
+        /** Bannières et fanions posés dans les lieux-dits : id = places ({@link Banners}). */
+        BANNERS("Banners");
 
         final String key;
 
@@ -80,6 +90,21 @@ public final class WorldLifeRegistry implements Resource<EntityStore> {
             .documentation("Monde vivant : « clé=valeur », lu par le Java du mod.")
             .add()
             .append(new KeyedCodec<>(Part.HAMLET_TRIPS.key, Codec.STRING_ARRAY), (r, a) -> r.read(Part.HAMLET_TRIPS, a), r -> r.write(Part.HAMLET_TRIPS))
+            .documentation("Monde vivant : « clé=valeur », lu par le Java du mod.")
+            .add()
+            .append(new KeyedCodec<>(Part.ALLEGIANCE.key, Codec.STRING_ARRAY), (r, a) -> r.read(Part.ALLEGIANCE, a), r -> r.write(Part.ALLEGIANCE))
+            .documentation("Monde vivant : « clé=valeur », lu par le Java du mod.")
+            .add()
+            .append(new KeyedCodec<>(Part.INFLUENCE.key, Codec.STRING_ARRAY), (r, a) -> r.read(Part.INFLUENCE, a), r -> r.write(Part.INFLUENCE))
+            .documentation("Monde vivant : « clé=valeur », lu par le Java du mod.")
+            .add()
+            .append(new KeyedCodec<>(Part.GARRISONS.key, Codec.STRING_ARRAY), (r, a) -> r.read(Part.GARRISONS, a), r -> r.write(Part.GARRISONS))
+            .documentation("Monde vivant : « clé=valeur », lu par le Java du mod.")
+            .add()
+            .append(new KeyedCodec<>(Part.HERALDRY.key, Codec.STRING_ARRAY), (r, a) -> r.read(Part.HERALDRY, a), r -> r.write(Part.HERALDRY))
+            .documentation("Monde vivant : « clé=valeur », lu par le Java du mod.")
+            .add()
+            .append(new KeyedCodec<>(Part.BANNERS.key, Codec.STRING_ARRAY), (r, a) -> r.read(Part.BANNERS, a), r -> r.write(Part.BANNERS))
             .documentation("Monde vivant : « clé=valeur », lu par le Java du mod.")
             .add()
             .build();

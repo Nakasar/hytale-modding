@@ -1,0 +1,38 @@
+{
+  "$Comment": "Bannière vierge : au tableau d'un village dont on porte les couleurs (onglet Domaine), elle prend son blason. Généré par tools/generate_conquest.py.",
+  "Parent": "Furniture_Outlander_Banner",
+  "TranslationProperties": {
+    "Name": "nakasar_peuples.items.Nakasar_Peuples_Standard_Blank.name",
+    "Description": "nakasar_peuples.items.Nakasar_Peuples_Standard_Blank.description"
+  },
+  "Icon": "Icons/Nakasar/Peuples/Standards/Nakasar_Peuples_Standard_Blank.png",
+  "Quality": "Common",
+  "BlockType": {
+    "CustomModelTexture": [
+      {
+        "Texture": "Blocks/Nakasar/Peuples/Standards/Nakasar_Peuples_Standard_Blank.png",
+        "Weight": 1
+      }
+    ],
+    "TextureComputedColor": "#d6cab0"
+  },
+  "Recipe": {
+    "Input": [
+      {
+        "ItemId": "Ingredient_Bolt_Cotton",
+        "Quantity": 2
+      },
+      {
+        "ItemId": "Ingredient_Stick",
+        "Quantity": 1
+      }
+    ],
+    "OutputQuantity": 1,
+    "BenchRequirement": [
+      {
+        "Type": "Crafting",
+        "Id": "Loombench"
+      }
+    ]
+  }
+}

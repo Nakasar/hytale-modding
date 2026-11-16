@@ -5,6 +5,7 @@ import com.hypixel.hytale.component.Store;
 import com.hypixel.hytale.server.core.Message;
 import com.hypixel.hytale.server.core.command.system.CommandContext;
 import com.hypixel.hytale.server.core.command.system.arguments.system.OptionalArg;
+import com.hypixel.hytale.server.core.command.system.arguments.system.RequiredArg;
 import com.hypixel.hytale.server.core.command.system.arguments.types.ArgTypes;
 import com.hypixel.hytale.server.core.command.system.basecommands.AbstractCommandCollection;
 import com.hypixel.hytale.server.core.command.system.basecommands.AbstractPlayerCommand;
@@ -42,6 +43,11 @@ public final class WorldCommand extends AbstractCommandCollection {
         addSubCommand(new InnCommand());
         addSubCommand(new HamletCommand());
         addSubCommand(new HamletTripCommand());
+        addSubCommand(new AllegianceCommand());
+        addSubCommand(new EmbassyCommand());
+        addSubCommand(new ExpeditionCommand());
+        addSubCommand(new InfluenceCommand());
+        addSubCommand(new OwnerCommand());
         addSubCommand(new RelationCommand());
         addSubCommand(new SkirmishCommand());
         addSubCommand(new CalendarCommand("fete"));
@@ -457,6 +463,149 @@ public final class WorldCommand extends AbstractCommandCollection {
                 return;
             }
             player.sendMessage(Message.translation(Hamlets.KEYS + "cmd.tripStarted").param("village", v.name()).param("hamlet", h.name()));
+        }
+    }
+
+    // ---- Conquête des lieux-dits ----
+
+    private static final String CONQUEST = Heraldry.KEYS + "cmd.";
+
+    /** Le lieu-dit posé le plus proche (ou null, avec un message). */
+    static Hamlets.Place nearHamlet(World world, PlayerRef player) {
+        Vector3d at = player.getTransform().getPosition();
+        Hamlets.Place h = Hamlets.nearest(world, at.x(), at.z(), HAMLET_RANGE);
+        if (h == null || h.stage() != Hamlets.BUILT) {
+            player.sendMessage(Message.translation(Hamlets.KEYS + "cmd.none").param("range", HAMLET_RANGE));
+            return null;
+        }
+        return h;
+    }
+
+    /** {@code /monde allegeance} : propriétaire, gardes et influences du lieu-dit le plus proche. */
+    private static final class AllegianceCommand extends AbstractPlayerCommand {
+        AllegianceCommand() {
+            super("allegeance", CONQUEST + "allegiance.desc");
+        }
+
+        @Override
+        protected void execute(CommandContext context, Store<EntityStore> store, Ref<EntityStore> ref, PlayerRef player, World world) {
+            Hamlets.Place h = nearHamlet(world, player);
+            if (h == null) {
+                return;
+            }
+            for (Message m : Allegiance.describe(world, store, h)) {
+                player.sendMessage(m);
+            }
+        }
+    }
+
+    /** {@code /monde ambassade <village>} : une ambassade du village part vers le lieu-dit le plus proche (opérateurs). */
+    private static final class EmbassyCommand extends AdminCommand {
+        private final RequiredArg<String> village = withRequiredArg("village", CONQUEST + "village.arg", ArgTypes.STRING);
+
+        EmbassyCommand() {
+            super("ambassade", CONQUEST + "embassy.desc");
+        }
+
+        @Override
+        protected void execute(CommandContext context, Store<EntityStore> store, Ref<EntityStore> ref, PlayerRef player, World world) {
+            Hamlets.Place h = nearHamlet(world, player);
+            Village v = h == null ? null : byName(world, village.get(context));
+            if (h == null) {
+                return;
+            }
+            if (v == null) {
+                player.sendMessage(Message.translation(KEYS + "noSuchVillage").param("name", village.get(context)));
+                return;
+            }
+            HamletTrips.Trip t = Embassies.start(world, store, h, v);
+            player.sendMessage(Message.translation(CONQUEST + (t == null ? "busy" : "embassy.started")).param("village", v.name())
+                    .param("hamlet", h.name()).param("chance", (int) Math.round(Embassies.chance(world, store, h, v) * 100)));
+        }
+    }
+
+    /** {@code /monde expedition <village>} : une expédition du village part vers le lieu-dit le plus proche, sans conditions (opérateurs). */
+    private static final class ExpeditionCommand extends AdminCommand {
+        private final RequiredArg<String> village = withRequiredArg("village", CONQUEST + "village.arg", ArgTypes.STRING);
+
+        ExpeditionCommand() {
+            super("expedition", CONQUEST + "expedition.desc");
+        }
+
+        @Override
+        protected void execute(CommandContext context, Store<EntityStore> store, Ref<EntityStore> ref, PlayerRef player, World world) {
+            Hamlets.Place h = nearHamlet(world, player);
+            Village v = h == null ? null : byName(world, village.get(context));
+            if (h == null) {
+                return;
+            }
+            if (v == null) {
+                player.sendMessage(Message.translation(KEYS + "noSuchVillage").param("name", village.get(context)));
+                return;
+            }
+            Message why = Sieges.blocked(world, h, v, GameClock.day(store));
+            if (why != null) {
+                player.sendMessage(Message.translation(CONQUEST + "expedition.forced").param("why", why));
+            }
+            HamletTrips.Trip t = Sieges.start(world, store, h, v);
+            player.sendMessage(Message.translation(CONQUEST + (t == null ? "busy" : "expedition.started")).param("village", v.name())
+                    .param("hamlet", h.name()));
+        }
+    }
+
+    /** {@code /monde influence <village> <valeur>} : pose l'influence du village sur le lieu-dit le plus proche (opérateurs). */
+    private static final class InfluenceCommand extends AdminCommand {
+        private final RequiredArg<String> village = withRequiredArg("village", CONQUEST + "village.arg", ArgTypes.STRING);
+        private final RequiredArg<Integer> value = withRequiredArg("valeur", CONQUEST + "influence.arg", ArgTypes.INTEGER);
+
+        InfluenceCommand() {
+            super("influence", CONQUEST + "influence.desc");
+        }
+
+        @Override
+        protected void execute(CommandContext context, Store<EntityStore> store, Ref<EntityStore> ref, PlayerRef player, World world) {
+            Hamlets.Place h = nearHamlet(world, player);
+            Village v = h == null ? null : byName(world, village.get(context));
+            if (h == null) {
+                return;
+            }
+            if (v == null) {
+                player.sendMessage(Message.translation(KEYS + "noSuchVillage").param("name", village.get(context)));
+                return;
+            }
+            Allegiance.set(world, h, v, value.get(context));
+            player.sendMessage(Message.translation(CONQUEST + "influence.set").param("village", v.name()).param("hamlet", h.name())
+                    .param("value", Allegiance.influence(world, h, v)));
+        }
+    }
+
+    /** {@code /monde proprietaire <village|libre>} : donne le lieu-dit le plus proche à un village, ou le libère (opérateurs). */
+    private static final class OwnerCommand extends AdminCommand {
+        private final RequiredArg<String> village = withRequiredArg("village", CONQUEST + "owner.arg", ArgTypes.STRING);
+
+        OwnerCommand() {
+            super("proprietaire", CONQUEST + "owner.desc");
+        }
+
+        @Override
+        protected void execute(CommandContext context, Store<EntityStore> store, Ref<EntityStore> ref, PlayerRef player, World world) {
+            Hamlets.Place h = nearHamlet(world, player);
+            if (h == null) {
+                return;
+            }
+            String name = village.get(context);
+            Village v = "libre".equalsIgnoreCase(name) || "free".equalsIgnoreCase(name) ? null : byName(world, name);
+            if (v == null && !"libre".equalsIgnoreCase(name) && !"free".equalsIgnoreCase(name)) {
+                player.sendMessage(Message.translation(KEYS + "noSuchVillage").param("name", name));
+                return;
+            }
+            Allegiance.setOwner(world, store, h, v, "command");
+            if (v != null) {
+                Garrisons.add(world, h, v, Garrisons.target(world, h, v));
+            }
+            for (Message m : Allegiance.describe(world, store, h)) {
+                player.sendMessage(m);
+            }
         }
     }
 }

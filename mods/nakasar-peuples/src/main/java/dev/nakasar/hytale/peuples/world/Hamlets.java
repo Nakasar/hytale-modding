@@ -451,6 +451,7 @@ public final class Hamlets {
             }
             for (PlayerRef p : WorldLife.playersNear(world, store, m[0], m[1], DISCOVER)) {
                 discover(world, store, p, h);
+                enter(world, store, p, h);
             }
         }
     }
@@ -818,6 +819,13 @@ public final class Hamlets {
                 continue;
             }
             WorldLife.talker(ref, Hamlets::talk);
+            String hid = h.id;
+            WorldLife.mortal(ref, (w, npc, where, killer) -> {
+                Place place = get(w, hid);
+                if (place != null) {
+                    Allegiance.residentKilled(w, w.getEntityStore().getStore(), place, killer);
+                }
+            });
             live.add(ref);
             RESIDENT_OF.put(ref, h.id);
         }
@@ -869,7 +877,11 @@ public final class Hamlets {
             DialogueSpeech.say(player, Message.translation(KEYS + "shopRank").param("people", Message.translation(type.people().nameKey())));
             return false;
         }
-        boolean busy = lively(world, h, GameClock.day(store));
+        if (Allegiance.refuses(world, store, ref, player, h)) {
+            return false; // embargo : Étranger ou pire chez le propriétaire
+        }
+        long day = GameClock.day(store);
+        boolean busy = lively(world, h, day) && !Allegiance.occupied(world, h, day);
         return Shops.open(store, ref, player, v, busy ? type.shopBusy() : type.shop());
     }
 
@@ -898,6 +910,39 @@ public final class Hamlets {
         player.sendMessage(title);
         player.sendMessage(Message.translation(KEYS + "discoverLine").param("people", people));
         NotificationUtil.sendNotification(player.getPacketHandler(), title, NotificationStyle.Default);
+    }
+
+    /** Joueurs déjà accueillis sur la place de chaque lieu-dit (titre « terre de … » une fois par passage). */
+    private static final Map<String, java.util.Set<java.util.UUID>> ENTERED = new ConcurrentHashMap<>();
+
+    /** Conquête : en arrivant sur la place d'un lieu-dit tenu, le joueur voit à qui il appartient (une fois par passage). */
+    private static void enter(World world, Store<EntityStore> store, PlayerRef player, Place h) {
+        java.util.Set<java.util.UUID> inside = ENTERED.computeIfAbsent(h.id, k -> ConcurrentHashMap.newKeySet());
+        int[] m = h.market();
+        Map<java.util.UUID, PlayerRef> online = new java.util.HashMap<>();
+        for (PlayerRef p : world.getPlayerRefs()) {
+            online.put(p.getUuid(), p);
+        }
+        inside.removeIf(uuid -> {
+            PlayerRef p = online.get(uuid);
+            if (p == null || p.getReference() == null) {
+                return true;
+            }
+            Vector3d at = Requests.position(store, p.getReference());
+            return at == null || (at.x() - m[0]) * (at.x() - m[0]) + (at.z() - m[1]) * (at.z() - m[1]) > (DISCOVER + 16) * (DISCOVER + 16);
+        });
+        if (!inside.add(player.getUuid())) {
+            return;
+        }
+        Village owner = Allegiance.owner(world, h);
+        if (owner == null) {
+            return;
+        }
+        Message title = Message.translation(Heraldry.KEYS + "enter").param("hamlet", h.name()).param("village", owner.name());
+        com.hypixel.hytale.server.core.util.EventTitleUtil.showEventTitleToPlayer(player, h.name(),
+                Message.translation(Heraldry.KEYS + "enter.sub").param("village", owner.name()),
+                com.hypixel.hytale.protocol.packets.interface_.EventTitleStyle.Default, null, 3f, 0.5f, 1f);
+        player.sendMessage(title);
     }
 
     /** Annonce aux joueurs proches qu'il est devenu animé. */
@@ -945,6 +990,7 @@ public final class Hamlets {
     }
 
     public static void clearAll() {
+        ENTERED.clear();
         RESIDENTS.clear();
         RESIDENT_OF.clear();
     }

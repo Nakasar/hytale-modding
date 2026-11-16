@@ -382,7 +382,7 @@ def specialty_page(theme_id):
 
 PLOT_CARDS = 2             # terrains E1 et E2 (étape 6)
 PLOT_MATERIALS = 4         # matériaux d'un projet affichés en icônes (ids à plat #PlotMat<terrain × 4 + j>)
-PROJECTS = 5               # projets par peuple (tools/plots.py)
+PROJECTS = 6               # projets par peuple (tools/plots.py, Maison du conseil comprise)
 PLOT_WIDTH = PANEL_WIDTH     # onglets du panneau : même taille que le tableau
 PLOT_HEIGHT = PANEL_HEIGHT
 
@@ -471,12 +471,12 @@ def plot_page(theme_id):
     for j in range(PROJECTS):
         w(f"        Group #Proj{j} {{")
         w("          LayoutMode: Left;")
-        w(f"          Anchor: (Height: 70, Bottom: {6 if j < PROJECTS - 1 else 0});")
-        w("          Padding: (Horizontal: 12, Vertical: 6);")
+        w(f"          Anchor: (Height: 60, Bottom: {4 if j < PROJECTS - 1 else 0});")
+        w("          Padding: (Horizontal: 12, Vertical: 5);")
         w(f"          Background: (Color: {band}(0.55));")
         w("          Group {")
         w("            LayoutMode: Full;")
-        w("            Anchor: (Width: 56, Height: 56, Right: 12);")
+        w("            Anchor: (Width: 50, Height: 50, Right: 12);")
         w(f'            Background: (TexturePath: "{COMMON}IngredientSlot.png", Border: 24);')
         w(f"            ItemIcon #ProjIcon{j} {{ Anchor: (Full: 7); ShowItemTooltip: true; }}")
         w("          }")
