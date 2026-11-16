@@ -459,7 +459,8 @@ public final class Grading {
             for (int i = 0; i < w; i++) {
                 for (int k = 0; k < d; k++) {
                     int c = i * d + k;
-                    if (kind[c] == FREE) {
+                    // Seulement là où le relief a bougé ou au pied du bâtiment : pas de dalles sur la pente naturelle.
+                    if (kind[c] == FREE && (target[c] != surface[c] || nearKind(kind, w, d, i, k, PAD, 2))) {
                         softenStep(rx0 + i, target[c], rz0 + k, slabs);
                     }
                 }
@@ -478,6 +479,17 @@ public final class Grading {
                 }
             }
         }
+    }
+
+    private static boolean nearKind(byte[] kind, int w, int d, int i, int k, byte wanted, int reach) {
+        for (int a = Math.max(0, i - reach); a <= Math.min(w - 1, i + reach); a++) {
+            for (int b = Math.max(0, k - reach); b <= Math.min(d - 1, k + reach); b++) {
+                if (kind[a * d + b] == wanted) {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 
     /**
