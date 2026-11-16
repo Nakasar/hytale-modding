@@ -110,7 +110,7 @@ public final class VillageStreets {
         if (insideBuilding(village, layout, x, z)) {
             return false;
         }
-        int y = terrain.surface(x, z);
+        int y = surface(chunks, plaza, x, z);
         if (y == Terrain.NONE || Math.abs(y - plaza) > MAX_DROP) {
             return false;
         }
@@ -140,7 +140,7 @@ public final class VillageStreets {
         if (insideBuilding(village, layout, x, z)) {
             return false;
         }
-        int y = terrain.surface(x, z);
+        int y = surface(chunks, plaza, x, z);
         if (y == Terrain.NONE || Math.abs(y - plaza) > MAX_DROP || terrain.hasFluid(x, y + 1, z)) {
             return false;
         }
@@ -162,7 +162,7 @@ public final class VillageStreets {
         // sol à un bloc près (pas de prefab à cheval sur une marche).
         for (int bx = box[0] + 1; bx <= box[1] - 1; bx++) {
             for (int bz = box[4] + 1; bz <= box[5] - 1; bz++) {
-                int s = terrain.surface(bx, bz);
+                int s = surface(chunks, plaza, bx, bz);
                 if (s == Terrain.NONE || Math.abs(s - y) > 1 || insideBuilding(village, layout, bx, bz)) {
                     return false;
                 }
@@ -175,6 +175,20 @@ public final class VillageStreets {
             }
         }
         return VillageBuilder.paste(world, store, id, x, y, z, rotation);
+    }
+
+    /**
+     * Hauteur du sol de la colonne, cherchée seulement autour de la hauteur de la place (bien plus court que
+     * {@link Terrain#surface}, qui part de y = 300 : quelques centaines de colonnes par palier), ou {@link Terrain#NONE}.
+     */
+    private static int surface(ChunkStore chunks, int plaza, int x, int z) {
+        for (int y = plaza + MAX_DROP + 6; y >= plaza - MAX_DROP - 1; y--) {
+            String name = Blocks.name(chunks, x, y, z);
+            if (name != null && Terrain.isGround(name)) {
+                return y;
+            }
+        }
+        return Terrain.NONE;
     }
 
     /** Sol naturel qu'on peut paver : terre, herbe, sable, neige, gravier, boue (pas un champ labouré). */
