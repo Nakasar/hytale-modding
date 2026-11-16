@@ -269,6 +269,33 @@ les pieds ou la tête sont pris dans un bloc posé sont téléportés au point s
 hauteur (`Settlers.unstick`, pas sur un toit). Si la fondation échoue, le colon rentre à son village. Rôles, dialogue `Colon` et textes :
 `tools/generate_settlers.py`. `/village colon` (ops) fait venir un colon tout de suite au village le plus proche.
 
+### Sentiers et décor entre les bâtiments
+
+Kevin (2026-11-16) : les bâtiments étaient posés sur des carrés de terre nue, sans rien entre eux. `tools/village_streets.py`
+(appelé par `generate_village_layouts.build`, donc aussi par `generate_zones.py` et `generate_slothians.py`) ajoute au plan
+une liste `Streets` de pas par palier :
+
+- `Paths` (`"x z Bloc"`) : chaque bâtiment (et terrain E1/E2) est relié à la place, ou au sentier déjà tracé le plus proche,
+  par un A* qui contourne les emprises (bruit lissé pour serpenter, chemins existants moins chers) : un réseau en arbre qui
+  grandit avec les paliers. Ligne lissée (Chaikin), 3 de large pour le campement, 2 ensuite, bords effilochés. Sol par
+  peuple : Kweebec `Soil_Pathway` (+ gravier moussu), Trork terre + gravier, Feran gravier de sable, Renoncés gravier + neige,
+  Slothians pavés de basalte + boue sèche.
+- `Decor` (`"x z rotation P|B Id"`) : lumières tous les 10 blocs de sentier en alternant les côtés, un ou deux objets près
+  des portes, bancs aux croisements, petits coins entre les bâtiments (Poisson, écart 7). Assets vanilla seulement : pour les
+  Kweebecs les petits prefabs du village Oak (`Lampposts`, `Seats/Small`, les 88 `Garden_Small`), pour les autres leurs
+  meubles et plantes (torches et pots feran, os, tonneaux et feux éteints trork, lanternes du bûcheron et tonneaux de taverne
+  renoncés, jardinières et torches de jungle slothianes).
+- Palier d'un décor : au moins celui du sentier, et le plus haut palier des emprises proches (10 blocs pour un décor
+  « naturel » que le terrassement raboterait : plantes, os, éboulis, jardinets ; 3 pour un meuble, que `Grading` garde).
+
+Java `village/VillageStreets` : posé par `VillageLifeSystem` quand un joueur est près du village et que `Village.StreetsTier`
+est sous le palier (génération, après chaque chantier, rattrapage une fois des villages déjà bâtis). Les sentiers de tous
+les paliers atteints sont reposés (un terrassement a pu en raboter), le décor seulement pour les nouveaux paliers. Seul le
+sol NATUREL est touché (pas de champ labouré, ni d'arbre, ni de bloc de joueur ; herbe et fleurs retirées), à 10 blocs au
+plus de la hauteur de la place ; un prefab de décor n'est collé que si son emprise est libre et à plat à un bloc près.
+
+![Sentiers et décor des cinq plans](images/sentiers-villages.png)
+
 ### Bannière et entrée
 
 - La **bannière** (`Nakasar_Peuples_Banner_Kweebec`, statue kweebec vanilla en parent) est posée au nord de la place.

@@ -22,6 +22,7 @@ import argparse
 import json
 import plots
 import math
+import village_streets
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
@@ -143,6 +144,10 @@ LAYOUTS["Trork_Camp"] = {
     ],
     "Woodpile": (-4, -4),
 }
+
+
+# Aperçu des sentiers par plan (rempli par build, lu par preview).
+STREET_PREVIEWS = {}
 
 
 def load_bounds():
@@ -307,6 +312,13 @@ def build(layout_id, spec, bounds):
         jobs.append({"Id": jid, "Tier": tier, "Role": role,
                      "Dialogue": "" if vanilla else plot_dialogues.get(jid, f"{spec['People']}_{kind}"), "Building": work or "", "WorkX": px, "WorkZ": pz,
                      "Home": home, "HomeX": hx, "HomeZ": hz, "Builder": kind == "Builder"})
+    # Sentiers et décor entre les bâtiments (tools/village_streets.py, Kevin 2026-11-16).
+    st_buildings = [(b["Id"], b["Tier"], (b["X"] + b["MinX"], b["X"] + b["MaxX"], b["Z"] + b["MinZ"], b["Z"] + b["MaxZ"]),
+                     any(k in b["Prefab"] for k in DECOR)) for b in buildings if "Plot" not in b]
+    st_plots = [(p["Id"], p["Tier"], plots.plot_rect(p["X"], p["Z"])) for p in plot_docs]
+    streets, street_errors, street_preview = village_streets.build(
+        layout_id, spec["People"], plaza, st_buildings, st_plots, radius, village_streets.load_block_ids(), bounds)
+    errors.extend(street_errors)
     bx, bz = (heart["Banner"][0], heart["Banner"][2]) if heart else spec["Banner"]
     doc = {
         "$Comment": "Plan de village généré par tools/generate_village_layouts.py (ne pas modifier à la main) : prefabs "
@@ -323,6 +335,9 @@ def build(layout_id, spec, bounds):
     }
     if plot_docs:
         doc["Plots"] = plot_docs
+    if streets:
+        doc["Streets"] = streets
+    STREET_PREVIEWS[layout_id] = street_preview
     if heart:
         doc["Heart"] = {k: heart[k] for k in ("Board", "Deposit", "DepositWide", "Banner", "Steps") if k in heart}
     return doc, rects, errors
@@ -349,6 +364,27 @@ def preview(layout_id, doc, rects, out_dir):
         d.rectangle([*px(rect[0], rect[2]), *px(rect[1] + 1, rect[3] + 1)], outline=c, width=3)
         tx, tz = px(building["X"], building["Z"])
         d.text((tx - 20, tz - 6), f"{building['Id']} ({building['Tier']})", fill=(255, 255, 255))
+    sp = STREET_PREVIEWS.get(layout_id)
+    if sp:
+        path_colors = [(196, 170, 120), (180, 150, 105), (165, 135, 95), (150, 120, 85)]
+        for (x, z), t in sp["paths"].items():
+            d.rectangle([*px(x, z), *px(x + 1, z + 1)], fill=path_colors[min(t, 3)])
+        for t, e in sp["decor"]:
+            x, z, _, kind, ident = e.split(" ", 4)
+            x, z = int(x), int(z)
+            if "Lamppost" in ident or "Torch" in ident or "Lantern" in ident:
+                c = (255, 220, 60)
+            elif "Seats" in ident or "Bench" in ident or "Campfire" in ident:
+                c = (150, 90, 40)
+            elif "Garden" in ident or ident.startswith("Plant_"):
+                c = (240, 120, 200)
+            else:
+                c = (120, 200, 230)
+            d.ellipse([px(x, z)[0] - 1, px(x, z)[1] - 1, px(x + 1, z + 1)[0] + 1, px(x + 1, z + 1)[1] + 1], fill=c)
+    for plot in doc.get("Plots", []):
+        pr = plots.plot_rect(plot["X"], plot["Z"])
+        d.rectangle([*px(pr[0], pr[2]), *px(pr[1] + 1, pr[3] + 1)], outline=(200, 200, 200), width=1)
+        d.text(px(pr[0] + 1, pr[2] + 1), plot["Id"], fill=(200, 200, 200))
     for job in doc.get("Jobs", []):
         jx, jz = px(job["WorkX"], job["WorkZ"])
         d.ellipse([jx - 4, jz - 4, jx + 4, jz + 4], fill=(255, 255, 255))

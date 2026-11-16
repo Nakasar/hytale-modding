@@ -63,6 +63,10 @@ public final class VillageLifeSystem extends TickingSystem<EntityStore> {
             if (!village.depositLarge() && village.tier() >= Deposits.LARGE_TIER && watched(village, players)) {
                 Deposits.upgrade(world, village);
             }
+            // Sentiers et décor entre les bâtiments : à la génération, après chaque chantier, et rattrapés une fois.
+            if (VillageStreets.due(village) && watched(village, players)) {
+                VillageStreets.lay(world, village);
+            }
             if (Chantiers.layout(village) == null || !watched(village, players)) {
                 continue;
             }
