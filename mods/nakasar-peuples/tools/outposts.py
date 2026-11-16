@@ -306,6 +306,17 @@ BEACON = {
                     "quel que soit leur modèle.",
                     "Convoys and travellers walk from beacon to beacon. Two beacons less than 64 blocks apart are linked, "
                     "whatever their model."),
+    # Casser une balise rend CETTE balise : Gathering du parent vanilla (lu dans Assets.zip 0.7.2) + ItemId de la
+    # variante (sans ItemId, le bloc hérité rend l'objet vanilla du parent). Clé = type de récolte du parent.
+    "parent_gathering": {
+        "Furniture_Desert_Lantern_Tall": {"Breaking": {"GatherType": "Woods"}},
+        "Deco_Lantern": {"Soft": {"IsWeaponBreakable": False}},
+        "Furniture_Kweebec_Lantern": {"Soft": {"IsWeaponBreakable": False}},
+        "Furniture_Lumberjack_Lantern": {"Soft": {"IsWeaponBreakable": False}},
+        "Furniture_Crude_Torch": {"Soft": {"IsWeaponBreakable": False}},
+        "Furniture_Desert_Torch": {"Soft": {"IsWeaponBreakable": False}},
+        "Furniture_Feran_Torch_Tall": {"Soft": {"IsWeaponBreakable": False}},
+    },
     # (suffixe d'id, parent vanilla, nom fr, nom en) ; suffixe vide = l'id de base.
     "variants": [
         ("", "Furniture_Desert_Lantern_Tall", "haute lanterne", "tall lantern"),

@@ -6,6 +6,14 @@
     "Description": "nakasar_peuples.items.Nakasar_Peuples_Route_Beacon_Lumberjack.description"
   },
   "Quality": "Uncommon",
+  "BlockType": {
+    "Gathering": {
+      "Soft": {
+        "IsWeaponBreakable": false,
+        "ItemId": "Nakasar_Peuples_Route_Beacon_Lumberjack"
+      }
+    }
+  },
   "Recipe": {
     "TimeSeconds": 2,
     "KnowledgeRequired": false,

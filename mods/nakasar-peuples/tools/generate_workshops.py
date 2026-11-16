@@ -922,6 +922,10 @@ def write_beacon(items, fr, en, errors):
         item = outposts.beacon_id(suffix)
         if parent not in items:
             errors.append(f"{item} : objet vanilla inconnu {parent}")
+        if parent not in b["parent_gathering"]:
+            errors.append(f"{item} : récolte du parent {parent} inconnue (outposts.BEACON['parent_gathering'])")
+            continue
+        gathering = {kind: dict(drop, ItemId=item) for kind, drop in b["parent_gathering"][parent].items()}
         doc = {
             "$Comment": f"Balise de route ({name_fr}, modèle vanilla {parent}) : les convois et les voyageurs vont de "
                         "balise en balise, toutes variantes confondues (Java annex/Routes, RouteBeaconSystems). "
@@ -930,6 +934,7 @@ def write_beacon(items, fr, en, errors):
             "TranslationProperties": {"Name": f"nakasar_peuples.items.{item}.name",
                                       "Description": f"nakasar_peuples.items.{item}.description"},
             "Quality": "Uncommon",
+            "BlockType": {"Gathering": gathering},
             "Recipe": {
                 "TimeSeconds": 2,
                 "KnowledgeRequired": False,

@@ -1348,7 +1348,7 @@ quarts des matériaux de la fondation), deux spécialités au niveau II, boutiqu
 - **Routes à balises** (`annex/Routes.java`, `RouteBeaconSystems`) : l'objet `Nakasar_Peuples_Route_Beacon` (lanterne
   haute vanilla, 4 bâtons + 1 torche → 2 à l'établi) et ses variantes `Nakasar_Peuples_Route_Beacon_<Variante>`
   (Kevin 2026-11-16 : autres modèles vanilla, même recette, mélangeables ; liste `tools/outposts.BEACON["variants"]`,
-  reconnues par `Routes.isBeacon` = id de base ou préfixe `id_`) se posent n'importe où ; les balises sont communes à tous les
+  reconnues par `Routes.isBeacon` = id de base ou préfixe `id_` ; chacune a `BlockType.Gathering` = récolte du parent + `ItemId` d'elle-même, sinon la casse rend l'objet vanilla du parent) se posent n'importe où ; les balises sont communes à tous les
   villages (champ `Beacons` du registre des villages, retirées quand on casse le bloc). Deux balises à moins de
   64 blocs (`Routes.LINK`, 32 avant le 2026-11-16) sont reliées ; la sortie de l'avant-poste, le dépôt et les cœurs des villages comptent comme balises.
   Le convoi prend le plus court chemin (Dijkstra) ; sans route complète, la ligne droite. Point d'attache : 10 blocs

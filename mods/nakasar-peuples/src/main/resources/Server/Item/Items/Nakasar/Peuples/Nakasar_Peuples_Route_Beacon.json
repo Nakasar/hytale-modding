@@ -6,6 +6,14 @@
     "Description": "nakasar_peuples.items.Nakasar_Peuples_Route_Beacon.description"
   },
   "Quality": "Uncommon",
+  "BlockType": {
+    "Gathering": {
+      "Breaking": {
+        "GatherType": "Woods",
+        "ItemId": "Nakasar_Peuples_Route_Beacon"
+      }
+    }
+  },
   "Recipe": {
     "TimeSeconds": 2,
     "KnowledgeRequired": false,
