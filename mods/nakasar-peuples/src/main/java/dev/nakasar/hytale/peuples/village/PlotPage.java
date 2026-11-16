@@ -35,13 +35,13 @@ public final class PlotPage extends InteractiveCustomUIPage<PlotPage.Event> {
     private static final String KEYS = Plots.KEYS;
     private static final List<String> THEMED = List.of("Kweebec", "Trork", "Feran", "Renonce", "Slothian");
     private static final int CARDS = 2;
-    private static final int PROJECTS = 5;
+    private static final int PROJECTS = 6;
     /** Matériaux du projet affichés en icônes par terrain (ids à plat {@code #PlotMat<terrain × MATERIALS + j>}). */
     private static final int MATERIALS = 4;
     private static final String OK = "#7ed957";
     private static final String MISSING = "#e8c46a";
 
-    /** Donnée d'un clic : {@code Select0..1}, {@code Action0..1}, {@code Choose0..4}, {@code Clear}, {@code Back}. */
+    /** Donnée d'un clic : {@code Select0..1}, {@code Action0..1}, {@code Choose0..5}, {@code Clear}, {@code Back}. */
     public static final class Event {
         public static final BuilderCodec<Event> CODEC = BuilderCodec.builder(Event.class, Event::new)
                 .append(new KeyedCodec<>("Action", Codec.STRING), (e, v) -> e.action = v, e -> e.action)

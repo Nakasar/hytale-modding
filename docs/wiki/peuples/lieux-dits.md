@@ -37,7 +37,7 @@ Un lieu-dit n'est jamais collé à un village, à une auberge, à un avant-poste
 
 ## Commercer
 
-Un lieu-dit ne dépend d'aucun village : il a sa propre réputation, gagnée en remplissant ses commandes. Parlez au tenancier. Son troc se paie avec les faveurs du peuple, et il faut être au moins **Toléré** auprès du lieu-dit (ou auprès de son peuple). Il peut aussi vous dire qui vient commercer chez lui.
+Un lieu-dit ne dépend d'aucun village : il a sa propre réputation, gagnée en remplissant ses commandes. Parlez au tenancier. Son troc se paie avec les faveurs du peuple, et il faut être au moins **Toléré** auprès du lieu-dit (ou auprès de son peuple). Demandez-lui « Parle-moi de cet endroit » : il vous dira qui vient commercer chez lui et à quel village il appartient (voir [La conquête des lieux-dits](conquete.md)).
 
 ## Faire grandir un lieu-dit
 

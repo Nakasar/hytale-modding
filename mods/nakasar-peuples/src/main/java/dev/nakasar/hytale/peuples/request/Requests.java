@@ -542,6 +542,8 @@ public final class Requests {
         if (t == null || village == null) {
             return;
         }
+        // Conquête : une commande de lieu-dit rendue aux couleurs d'un village lui gagne de l'influence.
+        dev.nakasar.hytale.peuples.world.Allegiance.playerOrder(world, store, ref, village);
         if (t.favors() > 0) {
             give(store, ref, new ItemStack(village.people().favorItem(), t.favors()));
         }

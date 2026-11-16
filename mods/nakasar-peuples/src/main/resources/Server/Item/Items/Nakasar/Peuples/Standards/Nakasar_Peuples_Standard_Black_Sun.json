@@ -1,0 +1,19 @@
+{
+  "$Comment": "Bannière d'un village (blason Black Sun) : modèle et balancement de la bannière vanilla des ruines humaines. Généré par tools/generate_conquest.py.",
+  "Parent": "Furniture_Outlander_Banner",
+  "TranslationProperties": {
+    "Name": "nakasar_peuples.items.Nakasar_Peuples_Standard_Black_Sun.name",
+    "Description": "nakasar_peuples.items.Nakasar_Peuples_Standard_Black_Sun.description"
+  },
+  "Icon": "Icons/ItemsGenerated/Nakasar_Peuples_Standard_Black_Sun.png",
+  "Quality": "Uncommon",
+  "BlockType": {
+    "CustomModelTexture": [
+      {
+        "Texture": "Blocks/Nakasar/Peuples/Standards/Nakasar_Peuples_Standard_Black_Sun.png",
+        "Weight": 1
+      }
+    ],
+    "TextureComputedColor": "#28262c"
+  }
+}

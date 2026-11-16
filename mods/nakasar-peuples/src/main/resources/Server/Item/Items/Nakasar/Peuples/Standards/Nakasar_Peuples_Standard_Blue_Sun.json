@@ -1,0 +1,19 @@
+{
+  "$Comment": "Bannière d'un village (blason Blue Sun) : modèle et balancement de la bannière vanilla des ruines humaines. Généré par tools/generate_conquest.py.",
+  "Parent": "Furniture_Outlander_Banner",
+  "TranslationProperties": {
+    "Name": "nakasar_peuples.items.Nakasar_Peuples_Standard_Blue_Sun.name",
+    "Description": "nakasar_peuples.items.Nakasar_Peuples_Standard_Blue_Sun.description"
+  },
+  "Icon": "Icons/ItemsGenerated/Nakasar_Peuples_Standard_Blue_Sun.png",
+  "Quality": "Uncommon",
+  "BlockType": {
+    "CustomModelTexture": [
+      {
+        "Texture": "Blocks/Nakasar/Peuples/Standards/Nakasar_Peuples_Standard_Blue_Sun.png",
+        "Weight": 1
+      }
+    ],
+    "TextureComputedColor": "#284c9c"
+  }
+}

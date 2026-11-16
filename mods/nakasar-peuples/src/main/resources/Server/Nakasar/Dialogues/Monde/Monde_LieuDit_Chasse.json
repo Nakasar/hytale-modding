@@ -1,5 +1,5 @@
 {
-  "$Comment": "Habitant d'un lieu-dit Pavillon de chasse : troc du lieu-dit (élargi quand il est animé), marchands venus, rumeurs. Généré par tools/generate_hamlets.py ; effets WorldAction et conditions WorldCheck (world/WorldDialogueTypes).",
+  "$Comment": "Habitant d'un lieu-dit Pavillon de chasse : troc du lieu-dit (élargi quand il est animé), marchands venus, propriétaire et lettre de ralliement (conquête), rumeurs. Généré par tools/generate_hamlets.py ; effets WorldAction et conditions WorldCheck (world/WorldDialogueTypes).",
   "NpcNameKey": "nakasar_peuples.dialogue.Monde_LieuDit_Chasse.npc",
   "RoleKey": "nakasar_peuples.dialogue.Monde_LieuDit_Chasse.role",
   "Entries": [
@@ -22,14 +22,8 @@
           ]
         },
         {
-          "TextKey": "nakasar_peuples.dialogue.LieuDit.visites",
-          "Effects": [
-            {
-              "Type": "WorldAction",
-              "Action": "HamletVisits"
-            }
-          ],
-          "Next": "Accueil"
+          "TextKey": "nakasar_peuples.dialogue.LieuDit.lieu",
+          "Next": "Lieu"
         },
         {
           "TextKey": "nakasar_peuples.dialogue.Monde.rumeur",
@@ -43,6 +37,52 @@
         },
         {
           "TextKey": "nakasar_peuples.dialogue.Monde.aurevoir"
+        }
+      ]
+    },
+    {
+      "Id": "Lieu",
+      "TextKey": "nakasar_peuples.dialogue.LieuDit.lieuTexte",
+      "Responses": [
+        {
+          "TextKey": "nakasar_peuples.dialogue.LieuDit.visites",
+          "Effects": [
+            {
+              "Type": "WorldAction",
+              "Action": "HamletVisits"
+            }
+          ],
+          "Next": "Lieu"
+        },
+        {
+          "TextKey": "nakasar_peuples.dialogue.LieuDit.proprietaire",
+          "Effects": [
+            {
+              "Type": "WorldAction",
+              "Action": "HamletOwner"
+            }
+          ],
+          "Next": "Lieu"
+        },
+        {
+          "TextKey": "nakasar_peuples.dialogue.LieuDit.ralliement",
+          "Conditions": [
+            {
+              "Type": "WorldCheck",
+              "Check": "HamletRally"
+            }
+          ],
+          "Effects": [
+            {
+              "Type": "WorldAction",
+              "Action": "HamletRally"
+            }
+          ],
+          "Next": "Lieu"
+        },
+        {
+          "TextKey": "nakasar_peuples.dialogue.Monde.retour",
+          "Next": "Accueil"
         }
       ]
     },

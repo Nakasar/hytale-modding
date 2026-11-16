@@ -278,6 +278,21 @@
       "Plot": "E1"
     },
     {
+      "Id": "E1_Conseil",
+      "Tier": 2,
+      "Prefab": "Npc/Kweebec/Oak/Houses_Small/Kweebec_Oak_Houses_Small_001",
+      "X": 28,
+      "Z": -37,
+      "Rotation": 0,
+      "MinX": -7,
+      "MaxX": 7,
+      "MinZ": -8,
+      "MaxZ": 9,
+      "MinY": -5,
+      "MaxY": 18,
+      "Plot": "E1"
+    },
+    {
       "Id": "E2_Archerie",
       "Tier": 3,
       "Prefab": "Npc/Kweebec/Oak/Shops/Kweebec_Oak_Shops_001",
@@ -350,6 +365,21 @@
       "MaxZ": 6,
       "MinY": -5,
       "MaxY": 2,
+      "Plot": "E2"
+    },
+    {
+      "Id": "E2_Conseil",
+      "Tier": 3,
+      "Prefab": "Npc/Kweebec/Oak/Houses_Small/Kweebec_Oak_Houses_Small_001",
+      "X": -22,
+      "Z": -42,
+      "Rotation": 0,
+      "MinX": -7,
+      "MaxX": 7,
+      "MinZ": -8,
+      "MaxZ": 9,
+      "MinY": -5,
+      "MaxY": 18,
       "Plot": "E2"
     }
   ],
@@ -601,6 +631,19 @@
       "Builder": false
     },
     {
+      "Id": "Conseiller_E1",
+      "Tier": 2,
+      "Role": "Nakasar_Peuples_Kweebec_Elder",
+      "Dialogue": "Kweebec_Elder",
+      "Building": "E1_Conseil",
+      "WorkX": 28,
+      "WorkZ": -26,
+      "Home": "E1_Conseil",
+      "HomeX": 28,
+      "HomeZ": -26,
+      "Builder": false
+    },
+    {
       "Id": "Archer_E2",
       "Tier": 3,
       "Role": "Nakasar_Peuples_Kweebec_Guard",
@@ -663,6 +706,19 @@
       "Home": "E2_Deuxieme_Enclos",
       "HomeX": -22,
       "HomeZ": -34,
+      "Builder": false
+    },
+    {
+      "Id": "Conseiller_E2",
+      "Tier": 3,
+      "Role": "Nakasar_Peuples_Kweebec_Elder",
+      "Dialogue": "Kweebec_Elder",
+      "Building": "E2_Conseil",
+      "WorkX": -22,
+      "WorkZ": -31,
+      "Home": "E2_Conseil",
+      "HomeX": -22,
+      "HomeZ": -31,
       "Builder": false
     }
   ],

@@ -1,0 +1,18 @@
+{
+  "$Comment": "Commande de maître du niveau 1 du bâtiment de métier Kweebec_E1_Conseil, générée par tools/generate_workshops.py (ne pas modifier à la main) : voir RequestTemplate.",
+  "People": "Kweebec",
+  "Workshop": "Kweebec_E1_Conseil",
+  "Master": true,
+  "Type": "Gather",
+  "MinLevel": 1,
+  "MaxLevel": 1,
+  "Weight": 1,
+  "TitleKey": "nakasar_peuples.request.Kweebec_E1_Conseil_Master_1.title",
+  "TaskKey": "nakasar_peuples.request.Kweebec_E1_Conseil_Master_1.task",
+  "ItemId": "Plant_Crop_Cotton_Item",
+  "Quantity": 36,
+  "Knowledge": 0,
+  "Essor": 15,
+  "Favors": 3,
+  "Reputation": 15
+}

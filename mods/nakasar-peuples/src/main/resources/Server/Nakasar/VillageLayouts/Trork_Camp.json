@@ -306,6 +306,21 @@
       "Plot": "E1"
     },
     {
+      "Id": "E1_Conseil",
+      "Tier": 2,
+      "Prefab": "Npc/Trork/Misc/Large/Trork_Misc_Large_003",
+      "X": 20,
+      "Z": -37,
+      "Rotation": 0,
+      "MinX": -3,
+      "MaxX": 3,
+      "MinZ": -3,
+      "MaxZ": 3,
+      "MinY": -6,
+      "MaxY": 10,
+      "Plot": "E1"
+    },
+    {
       "Id": "E2_Forge_De_Guerre",
       "Tier": 3,
       "Prefab": "Npc/Trork/Misc/Large/Trork_Misc_Large_002",
@@ -378,6 +393,21 @@
       "MaxZ": 6,
       "MinY": 0,
       "MaxY": 1,
+      "Plot": "E2"
+    },
+    {
+      "Id": "E2_Conseil",
+      "Tier": 3,
+      "Prefab": "Npc/Trork/Misc/Large/Trork_Misc_Large_003",
+      "X": 7,
+      "Z": 45,
+      "Rotation": 0,
+      "MinX": -3,
+      "MaxX": 3,
+      "MinZ": -3,
+      "MaxZ": 3,
+      "MinY": -6,
+      "MaxY": 10,
       "Plot": "E2"
     }
   ],
@@ -603,6 +633,19 @@
       "Builder": false
     },
     {
+      "Id": "Conseiller_E1",
+      "Tier": 2,
+      "Role": "Trork_Warrior",
+      "Dialogue": "",
+      "Building": "E1_Conseil",
+      "WorkX": 20,
+      "WorkZ": -32,
+      "Home": "E1_Conseil",
+      "HomeX": 20,
+      "HomeZ": -32,
+      "Builder": false
+    },
+    {
       "Id": "Forgeron_E2",
       "Tier": 3,
       "Role": "Trork_Brawler",
@@ -665,6 +708,19 @@
       "Home": "E2_Deuxieme_Fosse",
       "HomeX": 7,
       "HomeZ": 37,
+      "Builder": false
+    },
+    {
+      "Id": "Conseiller_E2",
+      "Tier": 3,
+      "Role": "Trork_Warrior",
+      "Dialogue": "",
+      "Building": "E2_Conseil",
+      "WorkX": 7,
+      "WorkZ": 40,
+      "Home": "E2_Conseil",
+      "HomeX": 7,
+      "HomeZ": 40,
       "Builder": false
     }
   ],

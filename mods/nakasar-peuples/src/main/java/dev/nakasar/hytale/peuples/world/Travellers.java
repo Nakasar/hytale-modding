@@ -211,6 +211,9 @@ public final class Travellers {
                 continue; // entre rivaux, seuls les messagers passent encore
             }
             boolean ab = random.nextBoolean();
+            if (Territories.turnedBack(world, ab ? link.a() : link.b(), ab ? link.b() : link.a())) {
+                continue; // conquête : la route passe par le territoire d'un rival, le voyageur renonce
+            }
             if (start(world, kind, ab ? link.a() : link.b(), ab ? link.b() : link.a()) != null) {
                 count++;
             }
@@ -297,7 +300,7 @@ public final class Travellers {
             if (t.kind == Kind.CARAVAN && t.ambush == 0 && t.at >= path.length() / 2) {
                 t.ambush = Ambushes.roll(world, store, t.walkKey(), path.point(t.at), path.dir(t.at), from.people(),
                         walk.alive(), players) ? 2 : 1;
-                if (t.ambush == 1 && Ambushes.virtualLoss(players, path.point(t.at))) {
+                if (t.ambush == 1 && Ambushes.virtualLoss(world, players, path.point(t.at))) {
                     t.cargo = Math.max(0, t.cargo - 1);
                     dev.nakasar.hytale.peuples.village.Chantiers.announce(world, to, Message.translation(KEYS + "ambushedAway").param("from", from.name()), null, NotificationStyle.Warning);
                 }

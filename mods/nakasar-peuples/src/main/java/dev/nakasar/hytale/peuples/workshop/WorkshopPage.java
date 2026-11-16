@@ -115,7 +115,11 @@ public final class WorkshopPage extends InteractiveCustomUIPage<WorkshopPage.Eve
             return;
         }
         WorkshopState state = village.workshop(w.getId());
-        cmd.set("#PageTitle.TextSpans", title(village, w));
+        Village holder = dev.nakasar.hytale.peuples.world.Allegiance.holder(world, village);
+        // Conquête : le panneau d'un lieu-dit tenu dit à quel village il appartient.
+        cmd.set("#PageTitle.TextSpans", holder == null ? title(village, w) : Message.translation(
+                dev.nakasar.hytale.peuples.world.Heraldry.KEYS + "panel.title").param("building", Message.translation(w.nameKey()))
+                .param("hamlet", village.name()).param("village", holder.name()));
         band(cmd, events, village, w, state);
         orders(cmd, events, store, ref, village, state);
         info(cmd, events, store, ref, village, w, state);
@@ -438,6 +442,10 @@ public final class WorkshopPage extends InteractiveCustomUIPage<WorkshopPage.Eve
         lines.add(Message.translation(KEYS + "text.header").param("name", Message.translation(w.nameKey()))
                 .param("level", Message.translation(KEYS + "levelShort." + state.level())));
         lines.add(keeperLine(village, w));
+        Village holder = dev.nakasar.hytale.peuples.world.Allegiance.holder(store.getExternalData().getWorld(), village);
+        if (holder != null) {
+            lines.add(Message.translation(dev.nakasar.hytale.peuples.world.Heraldry.KEYS + "panel.line").param("village", holder.name()));
+        }
         Workshop.Specialty spec = w.specialty(state.specialty());
         lines.add(spec == null ? Message.translation(KEYS + "noSpecialty") : Message.translation(spec.nameKey()));
         if (w.isPen()) {

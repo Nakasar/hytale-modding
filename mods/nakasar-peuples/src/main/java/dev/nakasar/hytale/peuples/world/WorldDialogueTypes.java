@@ -23,6 +23,8 @@ import java.util.concurrent.ThreadLocalRandom;
  *   <li>{@code {"Type": "WorldAction", "Action": "..."}} : Shop, Rumour, Escort, Letter, Parley (voyageurs) ; InnShop,
  *       InnTravel, InnLetter (aubergiste) ; CampTurnIn, CampDefend, CampDonate, CampShop (campements) ; HideAndSeek
  *       (enfants) ; FeastOffering, FairRace (hôtes du calendrier).</li>
+ *   <li>Conquête : HamletOwner (« à qui appartient ce lieu ? »), HamletRally (lettre de ralliement ; aussi en
+ *   WorldCheck).</li>
  *   <li>{@code {"Type": "WorldCheck", "Check": "..."}} : InnLevel2, InnLevel3, Parley (villages rivaux et joueur Ami des
  *       deux), CampOpen (quête du campement pas encore faite).</li>
  * </ul>
@@ -91,13 +93,17 @@ public final class WorldDialogueTypes {
                         }
                     };
                 }
-                case "HamletShop", "HamletVisits" -> {
+                case "HamletShop", "HamletVisits", "HamletOwner", "HamletRally" -> {
                     Hamlets.Place h = Hamlets.of(world, npc);
                     if (h == null) {
                         return false;
                     }
-                    return action.equals("HamletShop") ? Hamlets.openShop(world, c.store(), c.ref(), c.playerRef(), h)
-                            : Hamlets.sayVisits(world, c.store(), c.playerRef(), h);
+                    return switch (action) {
+                        case "HamletShop" -> Hamlets.openShop(world, c.store(), c.ref(), c.playerRef(), h);
+                        case "HamletOwner" -> Allegiance.sayOwner(world, c.store(), c.playerRef(), h);
+                        case "HamletRally" -> Allegiance.rally(world, c.store(), c.ref(), c.playerRef(), h);
+                        default -> Hamlets.sayVisits(world, c.store(), c.playerRef(), h);
+                    };
                 }
                 case "TripShop", "TripWhere" -> {
                     HamletTrips.Trip t = HamletTrips.of(world, npc);
@@ -167,6 +173,10 @@ public final class WorldDialogueTypes {
                     Village a = t == null ? null : Villages.registry(world).byId(t.from());
                     Village b = t == null ? null : Villages.registry(world).byId(t.to());
                     yield a != null && b != null && Relations.value(world, a, b) <= Relations.RIVAL;
+                }
+                case "HamletRally" -> {
+                    Hamlets.Place h = Hamlets.of(world, npc);
+                    yield h != null && Allegiance.canRally(world, c.store(), c.ref(), h);
                 }
                 case "CampOpen" -> {
                     Camps.Camp camp = Camps.of(world, npc);

@@ -31,11 +31,11 @@ Un même projet ne peut être que sur un des deux terrains. Seul le deuxième é
 
 | Peuple | Projets |
 | --- | --- |
-| [Kweebecs](kweebecs.md) | Atelier d'archerie, Herboristerie, Grand bassin, Atelier du menuisier, Deuxième enclos |
-| [Trorks](trorks.md) | Forge de guerre, Camp de bûcherons, Carrière, Tannerie, Deuxième fosse |
-| [Feran](feran.md) | Caravansérail, Atelier de tissage, Citerne, Volerie des plumes, Deuxième enclos |
-| [Renoncés](renonces.md) | Forge des repentis, Fumoir et tannerie, Cabane de pêche, Chenil, Deuxième bergerie |
-| [Slothians](slothians.md) | Scriptorium, Cabane de pêche, Sanctuaire, Puits de basalte, Deuxième bauge |
+| [Kweebecs](kweebecs.md) | Atelier d'archerie, Herboristerie, Grand bassin, Atelier du menuisier, Deuxième enclos, Maison du conseil |
+| [Trorks](trorks.md) | Forge de guerre, Camp de bûcherons, Carrière, Tannerie, Deuxième fosse, Maison du conseil |
+| [Feran](feran.md) | Caravansérail, Atelier de tissage, Citerne, Volerie des plumes, Deuxième enclos, Maison du conseil |
+| [Renoncés](renonces.md) | Forge des repentis, Fumoir et tannerie, Cabane de pêche, Chenil, Deuxième bergerie, Maison du conseil |
+| [Slothians](slothians.md) | Scriptorium, Cabane de pêche, Sanctuaire, Puits de basalte, Deuxième bauge, Maison du conseil |
 
 Les spécialités de chaque projet sont dans [Bâtiments de métier](batiments-de-metier.md#les-batiments-par-peuple).
 

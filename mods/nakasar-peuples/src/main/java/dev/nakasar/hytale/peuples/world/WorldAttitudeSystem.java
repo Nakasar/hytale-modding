@@ -44,6 +44,10 @@ public final class WorldAttitudeSystem extends StoreSystem<EntityStore> {
     }
 
     private static Attitude attitude(Ref<EntityStore> ref, Ref<EntityStore> target) {
+        Attitude guard = Garrisons.attitude(ref, target);
+        if (guard != null) {
+            return guard; // gardes d'un lieu-dit tenu contre un joueur Honni chez le propriétaire
+        }
         WorldLife.Side a = WorldLife.sideOf(ref);
         WorldLife.Side b = a == null ? null : WorldLife.sideOf(target);
         if (b == null || !a.key().equals(b.key())) {

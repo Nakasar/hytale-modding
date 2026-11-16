@@ -250,6 +250,21 @@
       "Plot": "E1"
     },
     {
+      "Id": "E1_Conseil",
+      "Tier": 2,
+      "Prefab": "Npc/Outlander/Houses/Tier2/Outlander_Houses_Tier2_002",
+      "X": 28,
+      "Z": -29,
+      "Rotation": 0,
+      "MinX": -7,
+      "MaxX": 8,
+      "MinZ": -12,
+      "MaxZ": 11,
+      "MinY": -3,
+      "MaxY": 12,
+      "Plot": "E1"
+    },
+    {
       "Id": "E2_Forge",
       "Tier": 3,
       "Prefab": "Npc/Outlander/Houses/Tier2/Outlander_Houses_Tier2_001",
@@ -322,6 +337,21 @@
       "MaxZ": 6,
       "MinY": 0,
       "MaxY": 1,
+      "Plot": "E2"
+    },
+    {
+      "Id": "E2_Conseil",
+      "Tier": 3,
+      "Prefab": "Npc/Outlander/Houses/Tier2/Outlander_Houses_Tier2_002",
+      "X": -39,
+      "Z": 14,
+      "Rotation": 0,
+      "MinX": -7,
+      "MaxX": 8,
+      "MinZ": -12,
+      "MaxZ": 11,
+      "MinY": -3,
+      "MaxY": 12,
       "Plot": "E2"
     }
   ],
@@ -534,6 +564,19 @@
       "Builder": false
     },
     {
+      "Id": "Conseiller_E1",
+      "Tier": 2,
+      "Role": "Nakasar_Peuples_Renonce_Elder",
+      "Dialogue": "Renonce_Elder",
+      "Building": "E1_Conseil",
+      "WorkX": 28,
+      "WorkZ": -16,
+      "Home": "E1_Conseil",
+      "HomeX": 28,
+      "HomeZ": -16,
+      "Builder": false
+    },
+    {
       "Id": "Forgeron_Repenti_E2",
       "Tier": 3,
       "Role": "Nakasar_Peuples_Renonce_Guard",
@@ -595,6 +638,19 @@
       "WorkZ": 13,
       "Home": "E2_Deuxieme_Bergerie",
       "HomeX": -31,
+      "HomeZ": 13,
+      "Builder": false
+    },
+    {
+      "Id": "Conseiller_E2",
+      "Tier": 3,
+      "Role": "Nakasar_Peuples_Renonce_Elder",
+      "Dialogue": "Renonce_Elder",
+      "Building": "E2_Conseil",
+      "WorkX": -29,
+      "WorkZ": 13,
+      "Home": "E2_Conseil",
+      "HomeX": -29,
       "HomeZ": 13,
       "Builder": false
     }

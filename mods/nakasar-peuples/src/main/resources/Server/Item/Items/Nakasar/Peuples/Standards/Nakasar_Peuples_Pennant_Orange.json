@@ -1,0 +1,64 @@
+{
+  "$Comment": "Fanion Orange du mât d'un lieu-dit : modèle du petit drapeau vanilla. Généré par tools/generate_conquest.py.",
+  "TranslationProperties": {
+    "Name": "nakasar_peuples.items.Nakasar_Peuples_Pennant_Orange.name",
+    "Description": "nakasar_peuples.items.Nakasar_Peuples_Pennant_Orange.description"
+  },
+  "PlayerAnimationsId": "Block",
+  "Categories": [
+    "Blocks.Deco"
+  ],
+  "Icon": "Icons/ItemsGenerated/Nakasar_Peuples_Pennant_Orange.png",
+  "IconProperties": {
+    "Scale": 0.5,
+    "Rotation": [
+      22.5,
+      49,
+      22.5
+    ],
+    "Translation": [
+      1,
+      -16
+    ]
+  },
+  "BlockType": {
+    "BlockParticleSetId": "Wood",
+    "BlockSoundSetId": "Wood",
+    "PhysicalMaterialId": "Wood",
+    "CustomModel": "Blocks/Miscellaneous/Flag_Small.blockymodel",
+    "CustomModelTexture": [
+      {
+        "Texture": "Blocks/Nakasar/Peuples/Standards/Nakasar_Peuples_Pennant_Orange.png",
+        "Weight": 1
+      }
+    ],
+    "DrawType": "Model",
+    "Flags": {},
+    "Gathering": {
+      "Breaking": {
+        "GatherType": "Benches"
+      }
+    },
+    "HitboxType": "Beam_Thin",
+    "Material": "Empty",
+    "Opacity": "Transparent",
+    "Support": {
+      "Down": [
+        {
+          "FaceType": "Full"
+        }
+      ]
+    },
+    "VariantRotation": "NESW",
+    "ParticleColor": "#3a2014",
+    "TextureComputedColor": "#d66e24"
+  },
+  "Tags": {
+    "Type": [
+      "Furniture"
+    ]
+  },
+  "Scale": 0.6,
+  "ItemSoundSetId": "ISS_Blocks_Wood",
+  "Quality": "Uncommon"
+}

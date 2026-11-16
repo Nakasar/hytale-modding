@@ -1,0 +1,19 @@
+{
+  "$Comment": "Bannière d'un village (blason Orange Hammer) : modèle et balancement de la bannière vanilla des ruines humaines. Généré par tools/generate_conquest.py.",
+  "Parent": "Furniture_Outlander_Banner",
+  "TranslationProperties": {
+    "Name": "nakasar_peuples.items.Nakasar_Peuples_Standard_Orange_Hammer.name",
+    "Description": "nakasar_peuples.items.Nakasar_Peuples_Standard_Orange_Hammer.description"
+  },
+  "Icon": "Icons/ItemsGenerated/Nakasar_Peuples_Standard_Orange_Hammer.png",
+  "Quality": "Uncommon",
+  "BlockType": {
+    "CustomModelTexture": [
+      {
+        "Texture": "Blocks/Nakasar/Peuples/Standards/Nakasar_Peuples_Standard_Orange_Hammer.png",
+        "Weight": 1
+      }
+    ],
+    "TextureComputedColor": "#d66e24"
+  }
+}
