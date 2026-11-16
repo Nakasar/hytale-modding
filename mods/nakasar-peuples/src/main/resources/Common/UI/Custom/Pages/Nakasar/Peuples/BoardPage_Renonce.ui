@@ -624,7 +624,12 @@ $C.@PageOverlay {
       Group {
         LayoutMode: Left;
         Anchor: (Height: 44, Top: 12);
-        Label #Absent { Style: @SmallWrap; Text: ""; FlexWeight: 1; }
+        Group #AbsentScroll {
+          LayoutMode: TopScrolling;
+          ScrollbarStyle: $C.@DefaultScrollbarStyle;
+          FlexWeight: 1;
+          Label #Absent { Anchor: (Right: 12); Style: @SmallWrap; Text: ""; }
+        }
         $C.@TextButton #TurnIn { @Text = ""; @Anchor = Anchor(Right: 12, Width: 210); }
         $C.@SecondaryTextButton #TextVersion { @Text = ""; @Anchor = Anchor(Width: 180); }
       }

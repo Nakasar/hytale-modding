@@ -64,6 +64,26 @@ public final class Absences {
     }
 
     /**
+     * Les absents en un paragraphe pour le pied du panneau (BoardPage) : « Absents, de retour à 6 h (dans 9 h) : Rosée,
+     * Puisatière · Trèfle, Éleveur… » ; null si personne ne manque. Une ligne par absent débordait de la fenêtre.
+     */
+    public static Message boardSummary(Store<EntityStore> store, Village village) {
+        List<String> ids = dialogues(store, village);
+        if (ids.isEmpty()) {
+            return null;
+        }
+        Message body = Message.translation(KEYS + "board").param("morning", GameClock.MORNING).param("hours", hoursUntilMorning(store));
+        for (int i = 0; i < ids.size(); i++) {
+            Dialogue d = Dialogue.get(ids.get(i));
+            Message name = Message.translation(d.npcNameKey());
+            body.insert(i == 0 ? " " : " · ");
+            body.insert(d.roleKey() == null ? name
+                    : Message.translation("nakasar_peuples.dialogue.header").param("name", name).param("role", Message.translation(d.roleKey())));
+        }
+        return body;
+    }
+
+    /**
      * Ce que dit `speaker` des absents de son village en ouvrant le dialogue, dans la voix de son peuple ; null si
      * personne ne manque, ou si le joueur n'est pas dans un village de ce peuple.
      */

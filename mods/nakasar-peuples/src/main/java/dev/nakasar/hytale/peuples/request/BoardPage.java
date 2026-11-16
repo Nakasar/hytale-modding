@@ -373,8 +373,8 @@ public final class BoardPage extends InteractiveCustomUIPage<BoardPage.Event> {
     }
 
     private void footer(UICommandBuilder cmd, UIEventBuilder events, Store<EntityStore> store, Village village) {
-        List<Message> absent = Absences.boardLines(store, village);
-        cmd.set("#Absent.TextSpans", absent.isEmpty() ? Message.translation(KEYS + "allHere") : lines(absent));
+        Message absent = Absences.boardSummary(store, village);
+        cmd.set("#Absent.TextSpans", absent == null ? Message.translation(KEYS + "allHere") : absent);
         cmd.set("#TurnIn.Text", Message.translation(KEYS + "turnIn"));
         events.addEventBinding(CustomUIEventBindingType.Activating, "#TurnIn", EventData.of("Action", "TurnIn"));
         cmd.set("#TextVersion.Text", Message.translation(KEYS + "textVersion"));
