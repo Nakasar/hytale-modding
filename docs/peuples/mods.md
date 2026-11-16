@@ -1807,6 +1807,12 @@ est évitée, et les voyageurs d'un rival du maître des lieux renoncent quand l
   fanion près de la place ; repeintes au changement de blason ou de main, retirées quand il redevient libre ; jamais
   posées sur un bloc d'un joueur. Panneaux des bâtiments : « {bâtiment} — {lieu-dit}, terre de {village} » ; titre à
   l'entrée du lieu-dit.
+- Le **village** lui-même est pavoisé (Kevin 2026-11-16, `Banners.syncVillage`) : une bannière au mur de chaque
+  bâtiment debout du plan (pas les petits décors), côté place, les plus proches du cœur d'abord, au plus 8 ; depuis
+  3 blocs devant la façade, on avance vers le bâtiment à 4 puis 3 blocs du sol. Un fanion à chaque coin de la place
+  (70 % du rayon, sol à ±3 de la place). Places cherchées de nouveau quand le palier ou la liste des bâtiments
+  change (registre `BANNERS`, clés `village:<id>` et `village:<id>#found`), repeintes au changement de blason, une
+  bannière retirée par un joueur n'est pas reposée. Joueur à moins de 128 blocs du cœur.
 - Un joueur **Ami** porte les couleurs d'un village (une à la fois, changeables tous les 3 jours) et brode ses
   bannières vierges à son blason.
 

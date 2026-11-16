@@ -7,8 +7,11 @@ import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
 import dev.nakasar.hytale.peuples.PeuplesPlugin;
 import dev.nakasar.hytale.peuples.annex.Annexes;
 import dev.nakasar.hytale.peuples.village.Blocks;
+import dev.nakasar.hytale.peuples.village.Chantiers;
 import dev.nakasar.hytale.peuples.village.Terrain;
 import dev.nakasar.hytale.peuples.village.Village;
+import dev.nakasar.hytale.peuples.village.VillageLayout;
+import dev.nakasar.hytale.peuples.village.Villages;
 import dev.nakasar.hytale.peuples.workshop.Workshops;
 import org.joml.Vector3d;
 
@@ -34,6 +37,10 @@ public final class Banners {
     public static final int MAX_STANDARDS = 2;
     public static final int HEIGHT = 4;
     public static final int RANGE = 96;
+    /** Bannières aux murs d'un village, au plus. */
+    public static final int VILLAGE_STANDARDS = 8;
+    /** Distance d'un joueur au cœur du village pour le pavoiser. */
+    private static final int VILLAGE_RANGE = 128;
     /** Pas au plus depuis la place vers le bâtiment pour trouver un mur. */
     private static final int REACH = 12;
     /** Plus de place (aucune trouvée, ou toutes retirées) : rien à poser jusqu'au prochain repavoisement. */
@@ -52,9 +59,9 @@ public final class Banners {
     private Banners() {
     }
 
-    private static List<Spot> read(World world, Hamlets.Place h) {
+    private static List<Spot> read(World world, String key) {
         List<Spot> out = new ArrayList<>();
-        String v = WorldLife.registry(world).get(WorldLifeRegistry.Part.BANNERS, h.id());
+        String v = WorldLife.registry(world).get(WorldLifeRegistry.Part.BANNERS, key);
         if (v == null || v.isEmpty() || NONE.equals(v)) {
             return out;
         }
@@ -69,7 +76,7 @@ public final class Banners {
         return out;
     }
 
-    private static void write(World world, Hamlets.Place h, List<Spot> spots) {
+    private static void write(World world, String key, List<Spot> spots) {
         StringBuilder sb = new StringBuilder();
         for (Spot s : spots) {
             if (!sb.isEmpty()) {
@@ -77,7 +84,7 @@ public final class Banners {
             }
             sb.append(s.format());
         }
-        WorldLife.registry(world).put(WorldLifeRegistry.Part.BANNERS, h.id(), sb.isEmpty() ? null : sb.toString());
+        WorldLife.registry(world).put(WorldLifeRegistry.Part.BANNERS, key, sb.isEmpty() ? null : sb.toString());
     }
 
     /** Le blason d'un village a changé : ses lieux-dits seront repeints à la prochaine visite. */
@@ -103,16 +110,161 @@ public final class Banners {
                 sync(world, h);
             }
         }
+        for (Village v : Villages.registry(world).all()) {
+            if (WorldLife.near(players, v.x(), v.z(), VILLAGE_RANGE)) {
+                syncVillage(world, v);
+            }
+        }
+    }
+
+    // ---- Les villages à leurs couleurs (Kevin 2026-11-16) ----
+
+    private static String villageKey(Village v) {
+        return "village:" + v.id();
+    }
+
+    /**
+     * Les bannières du village : une au mur de chaque bâtiment debout (côté place, les plus proches d'abord, au plus
+     * {@value #VILLAGE_STANDARDS}) et un fanion à chaque coin de la place. Places cherchées une fois par palier (les
+     * nouveaux bâtiments en reçoivent), repeintes quand le blason change ; une bannière retirée n'est pas reposée.
+     */
+    private static void syncVillage(World world, Village v) {
+        VillageLayout layout = Chantiers.layout(v);
+        if (layout == null) {
+            return;
+        }
+        WorldLifeRegistry r = WorldLife.registry(world);
+        String key = villageKey(v);
+        String found = v.tier() + ":" + v.built().length;
+        List<Spot> spots = read(world, key);
+        List<Spot> fresh = List.of();
+        if (!found.equals(r.get(WorldLifeRegistry.Part.BANNERS, key + "#found"))) {
+            List<Spot> more = findVillage(world, v, layout, spots);
+            if (more == null) {
+                return; // zone pas chargée
+            }
+            r.put(WorldLifeRegistry.Part.BANNERS, key + "#found", found);
+            if (!more.isEmpty()) {
+                spots = new ArrayList<>(spots);
+                spots.addAll(more);
+                fresh = more;
+                PeuplesPlugin.get().getLogger().atInfo().log("Peuples (blason) : %d bannières et fanions prévus au village %s", more.size(), v.id());
+            }
+        }
+        if (spots.isEmpty()) {
+            return;
+        }
+        paint(world, key, spots, Heraldry.of(world, v), fresh);
+    }
+
+    /** Nouvelles places (loin de celles de `known`) ; null si la zone n'est pas chargée. */
+    private static List<Spot> findVillage(World world, Village v, VillageLayout layout, List<Spot> known) {
+        ChunkStore chunks = world.getChunkStore();
+        Terrain terrain = new Terrain(world);
+        List<Spot> all = new ArrayList<>(known);
+        List<Spot> out = new ArrayList<>();
+        long standards = known.stream().filter(Spot::standard).count();
+        List<VillageLayout.Building> buildings = new ArrayList<>();
+        for (VillageLayout.Building b : layout.buildings()) {
+            if (!b.small() && v.isBuilt(b.id()) && !v.isBurnt(b.id())) {
+                buildings.add(b);
+            }
+        }
+        buildings.sort(java.util.Comparator.comparingInt(b -> centreDistance(b.rect())));
+        for (VillageLayout.Building b : buildings) {
+            if (standards >= VILLAGE_STANDARDS) {
+                break;
+            }
+            int[] rect = b.rect();
+            Spot spot = wallSpot(chunks, terrain, v, rect, all);
+            if (spot == UNLOADED) {
+                return null;
+            }
+            if (spot != null) {
+                all.add(spot);
+                out.add(spot);
+                standards++;
+            }
+        }
+        int d = Math.max(3, Math.round(layout.plazaRadius() * 0.7f));
+        for (int[] c : new int[][] {{d, d}, {-d, d}, {d, -d}, {-d, -d}}) {
+            int x = v.x() + c[0], z = v.z() + c[1];
+            if (near(all, x, z)) {
+                continue;
+            }
+            int y = Workshops.standY(chunks, terrain, x, z);
+            if (y == Workshops.UNLOADED_SPOT) {
+                return null;
+            }
+            if (y != Terrain.NONE && Math.abs(y - v.y()) <= 3 && Blocks.isEmpty(chunks, x, y, z) && Blocks.isEmpty(chunks, x, y + 1, z)) {
+                Spot s = new Spot(x, y, z, 0, false);
+                all.add(s);
+                out.add(s);
+            }
+        }
+        return out;
+    }
+
+    private static final Spot UNLOADED = new Spot(0, Integer.MIN_VALUE, 0, 0, false);
+
+    private static int centreDistance(int[] rect) {
+        return Math.abs(rect[0] + rect[1]) + Math.abs(rect[2] + rect[3]);
+    }
+
+    /**
+     * Une place au mur du bâtiment `rect` (local au cœur) côté place : depuis 3 blocs devant la face tournée vers la
+     * place, on avance vers le bâtiment jusqu'au premier bloc plein, à {@value #HEIGHT} puis {@value #HEIGHT}-1 blocs
+     * du sol, sous trois cases d'air. Null s'il n'y en a pas, {@link #UNLOADED} si la zone n'est pas chargée.
+     */
+    private static Spot wallSpot(ChunkStore chunks, Terrain terrain, Village v, int[] rect, List<Spot> taken) {
+        double cx = (rect[0] + rect[1]) / 2.0, cz = (rect[2] + rect[3]) / 2.0;
+        int[] out; // de la façade vers la place
+        if (Math.abs(cx) >= Math.abs(cz)) {
+            out = new int[] {cx > 0 ? -1 : 1, 0};
+        } else {
+            out = new int[] {0, cz > 0 ? -1 : 1};
+        }
+        int[] back = {-out[0], -out[1]};
+        int rotation = back[0] != 0 ? 0 : 1;
+        int faceX = out[0] > 0 ? rect[1] : out[0] < 0 ? rect[0] : (int) Math.round(cx);
+        int faceZ = out[1] > 0 ? rect[3] : out[1] < 0 ? rect[2] : (int) Math.round(cz);
+        for (int lane : new int[] {0, -2, 2}) {
+            int sx = v.x() + faceX + out[0] * 3 + (out[0] == 0 ? lane : 0);
+            int sz = v.z() + faceZ + out[1] * 3 + (out[1] == 0 ? lane : 0);
+            int ground = terrain.surface(sx, sz);
+            if (ground == Terrain.NONE) {
+                return UNLOADED;
+            }
+            for (int up : new int[] {HEIGHT, HEIGHT - 1}) {
+                int y = ground + up;
+                int x = sx, z = sz;
+                for (int step = 0; step < REACH; step++) {
+                    int nx = x + back[0], nz = z + back[1];
+                    if (Blocks.id(chunks, nx, y, nz) == Blocks.UNLOADED) {
+                        return UNLOADED;
+                    }
+                    if (Blocks.solid(chunks, nx, y, nz)) {
+                        if (step > 0 && Blocks.isEmpty(chunks, x, y, z) && Blocks.isEmpty(chunks, x, y - 1, z)
+                                && Blocks.isEmpty(chunks, x, y - 2, z) && !near(taken, x, z)) {
+                            return new Spot(x, y, z, rotation, true);
+                        }
+                        break;
+                    }
+                    x = nx;
+                    z = nz;
+                }
+            }
+        }
+        return null;
     }
 
     private static void sync(World world, Hamlets.Place h) {
         if (h.stage() != Hamlets.BUILT) {
             return;
         }
-        ChunkStore chunks = world.getChunkStore();
         Village owner = Allegiance.owner(world, h);
         String raw = WorldLife.registry(world).get(WorldLifeRegistry.Part.BANNERS, h.id());
-        List<Spot> spots = read(world, h);
+        List<Spot> spots = read(world, h.id());
         boolean fresh = false;
         if (owner != null && raw == null) {
             spots = find(world, h);
@@ -125,7 +277,15 @@ public final class Banners {
             }
             fresh = true;
         }
-        Heraldry.Arms arms = owner == null ? null : Heraldry.of(world, owner);
+        paint(world, h.id(), spots, owner == null ? null : Heraldry.of(world, owner), fresh ? spots : List.of());
+    }
+
+    /**
+     * Met les places `spots` (clé `key` du registre) aux couleurs de `arms` (null : décroche tout). Une place vide
+     * retrouvée après la pose, ou prise par un bloc de joueur, est oubliée ; plus aucune place : {@value #NONE}.
+     */
+    private static void paint(World world, String key, List<Spot> spots, Heraldry.Arms arms, List<Spot> fresh) {
+        ChunkStore chunks = world.getChunkStore();
         List<Spot> keep = new ArrayList<>();
         boolean changed = false;
         for (Spot s : spots) {
@@ -135,7 +295,7 @@ public final class Banners {
                 continue;
             }
             String here = Blocks.name(chunks, s.x(), s.y(), s.z());
-            if (here == null && !fresh && arms != null) {
+            if (here == null && !fresh.contains(s) && arms != null) {
                 changed = true; // posée puis retirée (le joueur a gardé l'objet) : on ne la repose pas
                 continue;
             }
@@ -157,10 +317,10 @@ public final class Banners {
             }
             keep.add(s);
         }
-        if (owner != null && keep.isEmpty()) {
-            WorldLife.registry(world).put(WorldLifeRegistry.Part.BANNERS, h.id(), NONE);
-        } else if (changed || fresh || !keep.equals(read(world, h))) {
-            write(world, h, keep);
+        if (arms != null && keep.isEmpty()) {
+            WorldLife.registry(world).put(WorldLifeRegistry.Part.BANNERS, key, NONE);
+        } else if (changed || !fresh.isEmpty() || !keep.equals(read(world, key))) {
+            write(world, key, keep);
         }
     }
 
