@@ -1,0 +1,34 @@
+{
+  "$Comment": "Balise de route (torche, modèle vanilla Furniture_Crude_Torch) : les convois et les voyageurs vont de balise en balise, toutes variantes confondues (Java annex/Routes, RouteBeaconSystems). Générée par tools/generate_workshops.py.",
+  "Parent": "Furniture_Crude_Torch",
+  "TranslationProperties": {
+    "Name": "nakasar_peuples.items.Nakasar_Peuples_Route_Beacon_Torch.name",
+    "Description": "nakasar_peuples.items.Nakasar_Peuples_Route_Beacon_Torch.description"
+  },
+  "Quality": "Uncommon",
+  "Recipe": {
+    "TimeSeconds": 2,
+    "KnowledgeRequired": false,
+    "Input": [
+      {
+        "ItemId": "Ingredient_Stick",
+        "Quantity": 4
+      },
+      {
+        "ItemId": "Furniture_Crude_Torch",
+        "Quantity": 1
+      }
+    ],
+    "BenchRequirement": [
+      {
+        "Type": "Crafting",
+        "Id": "Workbench",
+        "Categories": [
+          "Workbench_Crafting"
+        ],
+        "RequiredTierLevel": 1
+      }
+    ],
+    "OutputQuantity": 2
+  }
+}

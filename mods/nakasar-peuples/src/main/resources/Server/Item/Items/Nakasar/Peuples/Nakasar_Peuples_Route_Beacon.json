@@ -1,5 +1,5 @@
 {
-  "$Comment": "Balise de route : les convois des avant-postes vont de balise en balise (Java annex/Routes, RouteBeaconSystems). Générée par tools/generate_workshops.py.",
+  "$Comment": "Balise de route (haute lanterne, modèle vanilla Furniture_Desert_Lantern_Tall) : les convois et les voyageurs vont de balise en balise, toutes variantes confondues (Java annex/Routes, RouteBeaconSystems). Générée par tools/generate_workshops.py.",
   "Parent": "Furniture_Desert_Lantern_Tall",
   "TranslationProperties": {
     "Name": "nakasar_peuples.items.Nakasar_Peuples_Route_Beacon.name",

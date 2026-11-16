@@ -44,15 +44,16 @@ LANG_BEGIN = "# ---- Quêtes : caravane, récolte escortée, destruction, boss (
 LANG_END = "# ---- Fin des quêtes ----"
 
 # Mêmes valeurs que boss/QuestBosses.java (la zone rouge et le test de touche viennent de ces constantes).
-# Quête « Baliser une route » : mêmes valeurs que annex/Routes.java (BEACON) ; villages voisins à 700 blocs au plus
-# (une balise tous les 32 blocs : une vingtaine de balises).
-BEACON = "Nakasar_Peuples_Route_Beacon"
+# Quête « Baliser une route » : mêmes valeurs que annex/Routes.java (BEACON, LINK = 64) ; villages voisins à 700 blocs
+# au plus (une balise tous les 64 blocs : une dizaine de balises). Le kit donne la petite lanterne (une des variantes
+# de tools/outposts.BEACON, toutes reconnues comme la même balise).
+BEACON = "Nakasar_Peuples_Route_Beacon_Lantern"
 ROUTE_KIT = 4
 ROUTE_MAX = 700
 ROUTE_TEXT = ("Baliser une route", "Mark out a road",
-              "Relie {place} par des balises de route, à 32 blocs au plus l'une de l'autre : encore {gap} blocs à baliser. "
+              "Relie {place} par des balises de route, à 64 blocs au plus l'une de l'autre : encore {gap} blocs à baliser. "
               "{place} : {distance} blocs, {direction}.",
-              "Link {place} with road beacons, at most 32 blocks apart: {gap} more blocks to mark out. "
+              "Link {place} with road beacons, at most 64 blocks apart: {gap} more blocks to mark out. "
               "{place}: {distance} blocks, {direction}.")
 
 LINE_LENGTH = 14

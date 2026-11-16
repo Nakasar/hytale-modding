@@ -17,14 +17,24 @@ import java.util.List;
  */
 public final class Routes {
 
-    /** Objet (et bloc) balise de route. */
+    /** Objet (et bloc) balise de route de base ; ses variantes (autres modèles vanilla) sont {@code BEACON + "_<Variante>"}. */
     public static final String BEACON = "Nakasar_Peuples_Route_Beacon";
+    /** Variante donnée par la quête « Baliser une route » et montrée comme icône de la quête (petite lanterne). */
+    public static final String KIT_BEACON = BEACON + "_Lantern";
     /** Deux balises plus proches que ceci sont reliées. */
-    public static final int LINK = 32;
+    public static final int LINK = 64;
     /** Balises au plus dans un monde. */
     public static final int MAX_BEACONS = 1024;
 
     private Routes() {
+    }
+
+    /**
+     * Vrai pour toutes les variantes de balise (lanternes, torches : tools/outposts.BEACON), qui sont la même balise et
+     * se relient entre elles.
+     */
+    public static boolean isBeacon(String itemId) {
+        return itemId != null && (itemId.equals(BEACON) || itemId.startsWith(BEACON + "_"));
     }
 
     /** Une route : ses points (x, z) et la distance parcourue à chacun. */

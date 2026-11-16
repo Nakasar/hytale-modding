@@ -45,7 +45,7 @@ public final class RouteBeaconSystems {
             ItemStack stack = event.getItemInHand();
             Vector3i at = event.getTargetBlock();
             PlayerRef player = chunk.getComponent(index, PlayerRef.getComponentType());
-            if (stack == null || ItemStack.isEmpty(stack) || !Routes.BEACON.equals(stack.getItemId()) || at == null || player == null) {
+            if (stack == null || ItemStack.isEmpty(stack) || !Routes.isBeacon(stack.getItemId()) || at == null || player == null) {
                 return;
             }
             World world = store.getExternalData().getWorld();

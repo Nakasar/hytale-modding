@@ -37,9 +37,9 @@ Les quatre dernières demandes sont des **expéditions** : il faut sortir du vil
 
 ### Baliser une route
 
-Le village vous demande de relier par des [balises de route](avant-postes-de-metier.md#routes-à-balises) l'un de ses avant-postes, ou un village voisin à moins de 700 blocs qui n'est pas un rival. C'est toujours le plus proche qui n'est pas encore relié. Le village vous donne 4 balises pour commencer ; les autres se fabriquent à l'établi.
+Le village vous demande de relier par des [balises de route](avant-postes-de-metier.md#routes-à-balises) l'un de ses avant-postes, ou un village voisin à moins de 700 blocs qui n'est pas un rival. C'est toujours le plus proche qui n'est pas encore relié. Le village vous donne 4 balises (petites lanternes) pour commencer ; les autres se fabriquent à l'établi.
 
-- Posez les balises à **32 blocs** au plus l'une de l'autre. Pour un avant-poste, la route va de sa sortie au dépôt du village ; entre deux villages, d'un cœur à l'autre.
+- Posez les balises à **64 blocs** au plus l'une de l'autre. Pour un avant-poste, la route va de sa sortie au dépôt du village ; entre deux villages, d'un cœur à l'autre.
 - Le suivi d'objectifs dit combien de blocs il reste à baliser. Vous pouvez commencer par l'un ou l'autre bout.
 - La demande est remplie dès que la route est complète, où que vous soyez.
 
