@@ -71,6 +71,7 @@ $C.@PageOverlay {
           Group {
             LayoutMode: Top;
             FlexWeight: 1;
+            Anchor: (Right: 24);
             Label #Name { Anchor: (Height: 30, Top: 2); Style: (FontSize: 20, FontName: "Secondary", RenderBold: true, RenderUppercase: true, TextColor: #8fd0ea, VerticalAlignment: Center); Text: ""; }
             Label #Level { Anchor: (Height: 22); Style: (FontSize: 15, RenderBold: true, TextColor: #e8c46a, VerticalAlignment: Center); Text: ""; }
             Group {
@@ -78,7 +79,7 @@ $C.@PageOverlay {
               Anchor: (Height: 26, Top: 4);
               @Pill #KeeperPill { Anchor: (Height: 20, Right: 6, Top: 3); Label #Keeper { Style: @RepPillStyle; Text: ""; } }
               Label #Specialty { Style: @Small; Text: ""; FlexWeight: 1; }
-              $C.@SmallSecondaryTextButton #SpecialtyAction { @Text = ""; @Anchor = Anchor(Width: 170, Height: 26); }
+              $C.@SmallSecondaryTextButton #SpecialtyAction { @Text = ""; @Anchor = Anchor(Width: 240, Height: 26); }
             }
           }
 
