@@ -23,6 +23,7 @@ import dev.nakasar.hytale.peuples.request.Requests;
 import dev.nakasar.hytale.peuples.village.People;
 import dev.nakasar.hytale.peuples.village.Village;
 import dev.nakasar.hytale.peuples.village.Villages;
+import dev.nakasar.hytale.peuples.dialogue.DialogueSpeech;
 import org.joml.Vector3d;
 
 import java.util.ArrayList;
@@ -411,7 +412,7 @@ public final class Travellers {
             return false;
         }
         if (!Reputations.rank(store, ref, from).atLeast(Rank.TOLERE)) {
-            player.sendMessage(Message.translation(KEYS + "shopRank").param("village", from.name()));
+            DialogueSpeech.say(player, Message.translation(KEYS + "shopRank").param("village", from.name()));
             return false;
         }
         return dev.nakasar.hytale.peuples.reputation.Shops.open(store, ref, player, from, shop(from.people()));
@@ -429,7 +430,7 @@ public final class Travellers {
         }
         t.escort = player.getUuid().toString();
         save(world, t);
-        player.sendMessage(Message.translation(KEYS + "escortStart").param("to", to.name()));
+        DialogueSpeech.say(player, Message.translation(KEYS + "escortStart").param("to", to.name()));
         return true;
     }
 
@@ -444,7 +445,7 @@ public final class Travellers {
             return false;
         }
         if (parley && !canParley(world, store, ref, from, to)) {
-            player.sendMessage(Message.translation(KEYS + "parleyRank").param("a", from.name()).param("b", to.name()));
+            DialogueSpeech.say(player, Message.translation(KEYS + "parleyRank").param("a", from.name()).param("b", to.name()));
             return false;
         }
         if (!giveLetter(world, store, ref, player, to, parley ? from : null)) {
@@ -470,19 +471,19 @@ public final class Travellers {
                     data.setFlag(f, false); // lettre perdue (mort, jetée, rangée) : elle ne compte plus
                     continue;
                 }
-                player.sendMessage(Message.translation(KEYS + "letterAlready"));
+                DialogueSpeech.say(player, Message.translation(KEYS + "letterAlready"));
                 return false;
             }
         }
         CombinedItemContainer inventory = InventoryComponent.getCombined(store, ref, InventoryComponent.HOTBAR_STORAGE_BACKPACK);
         ItemStack stack = new ItemStack(LETTER, 1);
         if (!inventory.canAddItemStack(stack)) {
-            player.sendMessage(Message.translation("nakasar_peuples.dialogue.inventoryFull"));
+            DialogueSpeech.say(player, Message.translation("nakasar_peuples.dialogue.inventoryFull"));
             return false;
         }
         inventory.addItemStack(stack);
         data.setFlag(LETTER_FLAG + to.id() + (parleyFrom == null ? "" : ":" + parleyFrom.id()), true);
-        player.sendMessage(dev.nakasar.hytale.peuples.klops.Klops.describe(store, ref, to,
+        DialogueSpeech.say(player, dev.nakasar.hytale.peuples.klops.Klops.describe(store, ref, to,
                 KEYS + (parleyFrom == null ? "letterGiven" : "parleyGiven")));
         return true;
     }

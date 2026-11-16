@@ -11,6 +11,7 @@ import dev.nakasar.hytale.peuples.reputation.Rank;
 import dev.nakasar.hytale.peuples.reputation.Reputations;
 import dev.nakasar.hytale.peuples.village.People;
 
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
@@ -32,10 +33,13 @@ public final class Dialogues {
     private Dialogues() {
     }
 
-    /** Ce que donne le choix d'une réponse. */
-    public record Outcome(boolean chosen, DialogueNode next, boolean closed) {
-        static Outcome refused() {
-            return new Outcome(false, null, false);
+    /**
+     * Ce que donne le choix d'une réponse. `said` : ce que le PNJ a dit en appliquant les effets ({@link DialogueSpeech}),
+     * à montrer sous la réplique suivante (ou sous la même si le choix est refusé).
+     */
+    public record Outcome(boolean chosen, DialogueNode next, boolean closed, boolean closedByEffect, List<Message> said) {
+        static Outcome refused(List<Message> said) {
+            return new Outcome(false, null, false, false, said);
         }
     }
 
@@ -46,27 +50,32 @@ public final class Dialogues {
     public static Outcome choose(Dialogue dialogue, DialogueNode node, int index, DialogueContext context) {
         DialogueResponse[] responses = node.responses();
         if (index < 0 || index >= responses.length || !context.valid()) {
-            return Outcome.refused();
+            return Outcome.refused(List.of());
         }
         DialogueResponse response = responses[index];
         if (!response.available(context)) {
             if (response.failKey() != null) {
                 context.playerRef().sendMessage(Message.translation(response.failKey()));
             }
-            return Outcome.refused();
+            return Outcome.refused(List.of());
         }
         boolean closedByEffect = false;
-        for (DialogueEffect effect : response.effects()) {
-            if (effect == null) {
-                continue;
+        List<Message> said = DialogueSpeech.begin(context.playerRef());
+        try {
+            for (DialogueEffect effect : response.effects()) {
+                if (effect == null) {
+                    continue;
+                }
+                if (!effect.apply(context)) {
+                    return Outcome.refused(said);
+                }
+                closedByEffect |= effect.closesDialogue();
             }
-            if (!effect.apply(context)) {
-                return Outcome.refused();
-            }
-            closedByEffect |= effect.closesDialogue();
+        } finally {
+            DialogueSpeech.end();
         }
         DialogueNode next = closedByEffect ? null : dialogue.node(response.next());
-        return new Outcome(true, next, next == null);
+        return new Outcome(true, next, next == null, closedByEffect, said);
     }
 
     /** Ouvre le dialogue `dialogue` au joueur dans la fenêtre du mod (thread du monde), sans PNJ en face (commande). */
@@ -80,14 +89,25 @@ public final class Dialogues {
      */
     public static void openPage(World world, Store<EntityStore> store, Ref<EntityStore> ref, PlayerRef playerRef, Dialogue dialogue,
                                 Ref<EntityStore> npc) {
+        openPage(world, store, ref, playerRef, dialogue, npc, null, List.of());
+    }
+
+    /**
+     * Comme {@link #openPage(World, Store, Ref, PlayerRef, Dialogue, Ref)}, en commençant au nœud `startId` (null : les
+     * entrées du dialogue) et avec `said` déjà dit par le PNJ, affiché sous sa première réplique ({@link DialogueSpeech}).
+     */
+    public static void openPage(World world, Store<EntityStore> store, Ref<EntityStore> ref, PlayerRef playerRef, Dialogue dialogue,
+                                Ref<EntityStore> npc, String startId, List<Message> said) {
         Player player = ref.isValid() ? store.getComponent(ref, Player.getComponentType()) : null;
         DialogueContext context = DialogueContext.of(world, store, ref, playerRef);
-        DialogueNode start = dialogue.start(context);
+        DialogueNode start = startId != null ? dialogue.node(startId) : dialogue.start(context);
         if (player == null || start == null) {
+            DialogueSpeech.flush(playerRef, said);
             return;
         }
         CHAT.remove(playerRef.getUuid());
         DialoguePage page = new DialoguePage(playerRef, dialogue, start, Portraits.of(store, npc));
+        page.said(said);
         player.getPageManager().openCustomPage(ref, store, page);
         // Après l'ouverture : remplacer une fenêtre de dialogue déjà ouverte rend d'abord sa caméra (onDismiss).
         if (player.getPageManager().getCustomPage() != page) {
@@ -134,6 +154,7 @@ public final class Dialogues {
         }
         DialogueContext context = DialogueContext.of(world, store, ref, playerRef);
         Outcome outcome = choose(dialogue, node, number - 1, context);
+        DialogueSpeech.flush(playerRef, outcome.said());
         if (!outcome.chosen()) {
             return;
         }

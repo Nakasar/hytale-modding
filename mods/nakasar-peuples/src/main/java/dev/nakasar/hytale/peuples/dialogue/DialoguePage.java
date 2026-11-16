@@ -17,6 +17,8 @@ import com.hypixel.hytale.server.core.universe.PlayerRef;
 import com.hypixel.hytale.server.core.universe.world.World;
 import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
 
+import java.util.List;
+
 /**
  * La fenêtre de dialogue, en bas de l'écran (maquette /mnt/project-files/peuples/maquettes/dialogue_bas_ecran.png) :
  * nom, métier et rang du joueur auprès du peuple dans l'en-tête, la réplique, quatre réponses numérotées au plus avec
@@ -47,7 +49,10 @@ public final class DialoguePage extends InteractiveCustomUIPage<DialoguePage.Eve
     private final Dialogue dialogue;
     private final DialogueNode start;
     private final String portrait;
+    /** Nœud affiché ; null quand la réponse choisie fermait le dialogue mais que le PNJ a parlé ({@link #said}). */
     private DialogueNode node;
+    /** Ce que le PNJ vient de dire en réponse au dernier choix, affiché sous sa réplique. */
+    private List<Message> said = List.of();
     private boolean camera;
     private Ref<EntityStore> npc;
     private Ref<EntityStore> talker;
@@ -63,6 +68,11 @@ public final class DialoguePage extends InteractiveCustomUIPage<DialoguePage.Eve
         this.start = start;
         this.portrait = portrait;
         this.node = start;
+    }
+
+    /** Ce que le PNJ dit déjà à l'ouverture, sous sa première réplique. */
+    void said(List<Message> lines) {
+        said = lines == null ? List.of() : List.copyOf(lines);
     }
 
     /** Le PNJ `npc` fait face à `talker` ({@link DialogueFacing}) : il sera libéré à la fermeture. */
@@ -94,12 +104,15 @@ public final class DialoguePage extends InteractiveCustomUIPage<DialoguePage.Eve
         if (portrait != null) {
             cmd.set("#Portrait.AssetPath", portrait);
         }
-        cmd.set("#Line.TextSpans", Message.translation(node.textKey()));
+        // Paroles du dernier choix (où va le Klops, une rumeur, un refus...) sous la réplique ; seules si le PNJ n'a
+        // plus de réplique (réponse qui fermait le dialogue) : le joueur les lit avant de partir.
+        Message line = DialogueSpeech.withSaid(node == null ? null : Message.translation(node.textKey()), said);
+        cmd.set("#Line.TextSpans", line == null ? Message.raw(" ") : line);
         // À l'ouverture, le PNJ parle des PNJ du village tués aujourd'hui (ils reviennent au matin).
         Message aside = node == start ? dev.nakasar.hytale.peuples.village.Absences.aside(dialogue, context) : null;
         cmd.set("#Aside.Visible", aside != null);
         cmd.set("#Aside.TextSpans", aside == null ? Message.raw(" ") : aside);
-        DialogueResponse[] responses = node.responses();
+        DialogueResponse[] responses = node == null ? new DialogueResponse[0] : node.responses();
         for (int i = 0; i < Dialogue.MAX_RESPONSES; i++) {
             DialogueResponse r = i < responses.length ? responses[i] : null;
             String answer = "#Answer" + i;
@@ -152,6 +165,9 @@ public final class DialoguePage extends InteractiveCustomUIPage<DialoguePage.Eve
             close();
             return;
         }
+        if (node == null) {
+            return;
+        }
         int index;
         try {
             index = Integer.parseInt(data.action);
@@ -161,10 +177,20 @@ public final class DialoguePage extends InteractiveCustomUIPage<DialoguePage.Eve
         World world = store.getExternalData().getWorld();
         Dialogues.Outcome outcome = Dialogues.choose(dialogue, node, index, DialogueContext.of(world, store, ref, playerRef));
         if (!outcome.chosen()) {
+            said = outcome.said();
+            rebuild();
+            return;
+        }
+        if (outcome.closed() && !outcome.closedByEffect() && !outcome.said().isEmpty()) {
+            // La réponse terminait le dialogue, mais le PNJ a répondu : la fenêtre reste ouverte sur ses paroles.
+            node = null;
+            said = outcome.said();
             rebuild();
             return;
         }
         if (outcome.closed()) {
+            // Une autre page (boutique, tableau) remplace la fenêtre : ce que le PNJ a dit part au tchat.
+            DialogueSpeech.flush(playerRef, outcome.said());
             releaseCamera();
             // Un effet a pu ouvrir une autre page (tableau) : ne fermer que si la fenêtre affichée est encore celle-ci.
             Player player = store.getComponent(ref, Player.getComponentType());
@@ -174,6 +200,7 @@ public final class DialoguePage extends InteractiveCustomUIPage<DialoguePage.Eve
             return;
         }
         node = outcome.next();
+        said = outcome.said();
         rebuild();
     }
 }

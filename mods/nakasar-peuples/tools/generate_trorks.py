@@ -420,10 +420,10 @@ def klops():
                      resp(d, "route", "Où vas-tu demain ?", "Where are you off to tomorrow?",
                           Effects=[{"Type": "KlopsRoute"}], Next="Route"),
                      bye]),
-               node(d, "Colis", "colisTexte", "Fragile, fragile ! Porte-le jusqu'au cœur du village, ils te paieront en rouages.",
-                    "Fragile, fragile! Carry it to the village heart, they'll pay you in cogs.", [bye]),
-               node(d, "Route", "routeTexte", "La route, toujours la route ! Viens me trouver là-bas.",
-                    "The road, always the road! Come find me there.", [bye])])
+               node(d, "Colis", "colisTexte", "Fragile, fragile ! Ils te paieront en rouages.",
+                    "Fragile, fragile! They'll pay you in cogs.", [bye]),
+               # La tournée (KlopsRoute) s'affiche sous cette réplique, dans la fenêtre (dialogue/DialogueSpeech).
+               node(d, "Route", "routeTexte", "La route, toujours la route !", "The road, always the road!", [bye])])
     write(DIALOGUES / "Klops" / f"{d}.json", doc)
 
 
@@ -532,16 +532,21 @@ def java_texts():
     tr("reputation.rivalLost", "-{amount} auprès des {people} (tu aides les {helped})", "-{amount} with the {people} (you help the {helped})")
     tr("reputation.rivalRank", "Les {people} apprennent que tu sers les {helped} : tu tombes à {rank} chez eux.",
        "The {people} learn you serve the {helped}: you drop to {rank} with them.")
-    tr("klops.parcelGiven", "Colis pour {village} ({people}), à {distance} blocs, direction {direction}. Porte-le près du cœur du village.",
-       "Parcel for {village} ({people}), {distance} blocks away, heading {direction}. Carry it near the village heart.")
-    tr("klops.parcelAlready", "Tu portes déjà un colis pour {village}.", "You already carry a parcel for {village}.")
-    tr("klops.parcelNowhere", "Pas d'autre village où porter un colis.", "No other village to carry a parcel to.")
+    # Paroles du Klops dans la fenêtre de dialogue (dialogue/DialogueSpeech).
+    tr("klops.parcelGiven", "Ce colis est pour {village} ({people}), à {distance} blocs, direction {direction}. Porte-le près du cœur du village.",
+       "This parcel is for {village} ({people}), {distance} blocks away, heading {direction}. Carry it near the village heart.")
+    tr("klops.parcelAlready", "Tu portes déjà un colis pour {village} : livre-le d'abord !",
+       "You already carry a parcel for {village}: deliver it first!")
+    tr("klops.parcelNowhere", "Je n'ai aucun autre village où envoyer un colis.", "I have no other village to send a parcel to.")
     tr("klops.parcelFor", "Ton colis est pour {village}.", "Your parcel is for {village}.")
     tr("klops.delivered", "Colis livré à {village} : {cogs} rouages.", "Parcel delivered to {village}: {cogs} cogs.")
     tr("klops.reason", "colis du Klops livré", "Klops parcel delivered")
     tr("klops.route", "Le Klops errant est aujourd'hui à {today} ; demain, il sera à {tomorrow}.",
        "The wandering Klops is at {today} today; tomorrow it will be at {tomorrow}.")
     tr("klops.routeNone", "Le Klops errant n'a aucun village où passer.", "The wandering Klops has no village to visit.")
+    tr("klops.routeSaid", "Aujourd'hui, je suis à {today} ; demain, je serai à {tomorrow}. Viens me trouver là-bas !",
+       "Today I'm at {today}; tomorrow I'll be at {tomorrow}. Come find me there!")
+    tr("klops.routeNoneSaid", "Pour l'instant, je n'ai aucun village où passer.", "For now, I have no village to visit.")
     tr("command.klops.desc", "Où est le Klops errant, et ton colis", "Where the wandering Klops is, and your parcel")
     tr("command.warPaint.desc", "Donne la Peinture de guerre (test)", "Gives the War paint (test)")
     tr("command.generate.people", "Peuple (kweebec par défaut, ou trork)", "People (kweebec by default, or trork)")

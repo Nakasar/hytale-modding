@@ -17,6 +17,7 @@ import dev.nakasar.hytale.peuples.reputation.Shops;
 import dev.nakasar.hytale.peuples.village.People;
 import dev.nakasar.hytale.peuples.village.VillageBoard;
 import dev.nakasar.hytale.peuples.village.Villages;
+import dev.nakasar.hytale.peuples.dialogue.DialogueSpeech;
 
 /**
  * Les conditions et effets de dialogue du socle (étape 1), enregistrés dans {@link DialogueCondition#CODEC} et
@@ -301,7 +302,7 @@ public final class DialogueTypes {
         }
     }
 
-    /** {@code {"Type": "RaidStatus"}} (étape 6) : l'état du raid du village et le bilan du dernier, dans le tchat. */
+    /** {@code {"Type": "RaidStatus"}} (étape 6) : l'état du raid du village et le bilan du dernier, dits par le PNJ dans la fenêtre ({@link DialogueSpeech}). */
     public static final class RaidStatusEffect extends DialogueEffect {
         public static final BuilderCodec<RaidStatusEffect> CODEC = BuilderCodec.builder(RaidStatusEffect.class, RaidStatusEffect::new).build();
 
@@ -310,17 +311,17 @@ public final class DialogueTypes {
             if (context.village() == null) {
                 return false;
             }
-            context.playerRef().sendMessage(dev.nakasar.hytale.peuples.raid.Raids.status(context.store(), context.village()));
+            DialogueSpeech.say(context.playerRef(), dev.nakasar.hytale.peuples.raid.Raids.status(context.store(), context.village()));
             com.hypixel.hytale.server.core.Message last = dev.nakasar.hytale.peuples.raid.Raids.lastReport(context.village());
             if (last != null) {
-                context.playerRef().sendMessage(last);
+                DialogueSpeech.say(context.playerRef(), last);
             }
             return true;
         }
     }
 
 
-    /** {@code {"Type": "ChantierStatus"}} (étape 5) : l'état du chantier du village (ou de ce qui l'attend) dans le tchat. */
+    /** {@code {"Type": "ChantierStatus"}} (étape 5) : l'état du chantier du village (ou de ce qui l'attend), dit par le PNJ dans la fenêtre ({@link DialogueSpeech}). */
     public static final class ChantierStatusEffect extends DialogueEffect {
         public static final BuilderCodec<ChantierStatusEffect> CODEC = BuilderCodec.builder(ChantierStatusEffect.class, ChantierStatusEffect::new).build();
 
@@ -331,7 +332,7 @@ public final class DialogueTypes {
             }
             for (com.hypixel.hytale.server.core.Message line : dev.nakasar.hytale.peuples.village.VillageBoard.chantierLines(
                     context.world(), context.store(), context.village())) {
-                context.playerRef().sendMessage(line);
+                DialogueSpeech.say(context.playerRef(), line);
             }
             return true;
         }
@@ -402,7 +403,7 @@ public final class DialogueTypes {
             CombinedItemContainer inventory = inventory(context);
             ItemStack stack = new ItemStack(itemId, quantity);
             if (!inventory.canAddItemStack(stack)) {
-                context.playerRef().sendMessage(Message.translation("nakasar_peuples.dialogue.inventoryFull"));
+                DialogueSpeech.say(context.playerRef(), Message.translation("nakasar_peuples.dialogue.inventoryFull"));
                 return false;
             }
             inventory.addItemStack(stack);
@@ -460,7 +461,7 @@ public final class DialogueTypes {
         }
     }
 
-    /** {@code {"Type": "SendMessage", "TextKey": "..."}} : écrit une ligne dans le tchat du joueur. */
+    /** {@code {"Type": "SendMessage", "TextKey": "..."}} : le PNJ dit une ligne, dans la fenêtre de dialogue (tchat hors fenêtre, {@link DialogueSpeech}). */
     public static final class SendMessageEffect extends DialogueEffect {
         public static final BuilderCodec<SendMessageEffect> CODEC = BuilderCodec.builder(SendMessageEffect.class, SendMessageEffect::new)
                 .append(new KeyedCodec<>("TextKey", Codec.STRING), (e, v) -> e.textKey = v, e -> e.textKey)
@@ -473,7 +474,7 @@ public final class DialogueTypes {
         @Override
         public boolean apply(DialogueContext context) {
             if (textKey != null) {
-                context.playerRef().sendMessage(Message.translation(textKey));
+                DialogueSpeech.say(context.playerRef(), Message.translation(textKey));
             }
             return true;
         }

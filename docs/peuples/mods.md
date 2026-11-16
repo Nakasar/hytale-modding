@@ -57,6 +57,12 @@ enregistré par le plugin comme les rangs de réputation vanilla (l'id est le no
 - Quatre réponses au plus. Une réponse dont une condition manque reste visible et affiche sa condition (`FailKey`).
 - Les effets s'appliquent dans l'ordre ; le premier qui échoue (objet manquant, inventaire plein) arrête la suite et le
   dialogue reste sur le nœud. Sans `Next`, la fenêtre se ferme.
+- **Paroles du PNJ dans la fenêtre** (Kevin, 16 novembre 2026) : ce qu'un effet fait dire au PNJ (tournée du Klops,
+  rumeur, état du chantier ou du raid, destination d'une lettre ou d'un colis, refus « inventaire plein »…) passe par
+  `dialogue/DialogueSpeech.say` et s'affiche sous la réplique du nœud suivant, jamais dans le tchat. Si la réponse
+  fermait le dialogue, la fenêtre reste ouverte sur ces paroles seules (bouton Partir). Hors fenêtre (commande,
+  dialogue au tchat, autre page ouverte par l'effet), elles partent au tchat. Les retours du jeu (essor, réputation,
+  notifications) restent dans le tchat.
 - Conditions du socle : `Flag`, `NotFlag`, `InVillage` (`People` facultatif), `VillageTier` (`Min`), `HasItem`
   (`ItemId`, `Quantity`). Effets : `SetFlag`, `ClearFlag`, `GiveItem`, `TakeItem`, `AddEssor` (`Amount`),
   `SendMessage` (`TextKey`), `OpenBoard`. Les deux familles sont des `CodecMapCodec` (`dialogue/DialogueTypes`) : les
@@ -258,7 +264,7 @@ jeu (`Village` : `SettlerDay`, `SettlerActive`, `SettlerOwner`). Le PNJ n'est pa
 joueur (`…_Settler_Follow`, ramené près de lui au-delà de 32 blocs, retiré quand il se déconnecte). Lui parler ailleurs
 lance `zone/SiteRules.check` (règles communes avec `MoreVillagesSeeder` : écarts 600/300, fondations prévues, zone et
 rivage, sol, eau, relief) : la condition de dialogue `SettlerSite` choisit le nœud (« Ici » ou la raison), le détail
-chiffré part dans le tchat. « Fondons le village ici » bâtit le village tout de suite (`VillageBuilder.generate`) ; les joueurs dont
+chiffré s'affiche sous la réplique du colon. « Fondons le village ici » bâtit le village tout de suite (`VillageBuilder.generate`) ; les joueurs dont
 les pieds ou la tête sont pris dans un bloc posé sont téléportés au point sûr le plus proche à moins de 4 blocs de leur
 hauteur (`Settlers.unstick`, pas sur un toit). Si la fondation échoue, le colon rentre à son village. Rôles, dialogue `Colon` et textes :
 `tools/generate_settlers.py`. `/village colon` (ops) fait venir un colon tout de suite au village le plus proche.

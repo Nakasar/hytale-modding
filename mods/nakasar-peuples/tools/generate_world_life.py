@@ -203,10 +203,18 @@ def resp(text, action=None, next_=None, check=None, close=False):
     return r
 
 
+RUMOUR_NODE = "Rumeur"
+
+
 def dialogue(did, comment, npc_fr, npc_en, role_fr, role_en, nodes):
     k = f"dialogue.{did}."
     t(k + "npc", npc_fr, npc_en)
     t(k + "role", role_fr, role_en)
+    # La rumeur (WorldAction Rumour) s'affiche dans la fenêtre, sous la réplique du nœud Rumeur (dialogue/DialogueSpeech).
+    if any(e.get("Action") == "Rumour" for n in nodes for r in n["Responses"] for e in r.get("Effects", [])):
+        common = "nakasar_peuples.dialogue.Monde."
+        nodes = nodes + [node(RUMOUR_NODE, common + "rumeurTexte", [
+            resp(common + "rumeurAutre", "Rumour", RUMOUR_NODE), resp(common + "retour", None, "Accueil"), resp(common + "aurevoir")])]
     return {
         "$Comment": comment + " Généré par tools/generate_world_life.py ; effets WorldAction et conditions WorldCheck (world/WorldDialogueTypes).",
         "NpcNameKey": f"nakasar_peuples.{k}npc",
@@ -221,7 +229,9 @@ def dialogues():
     t("dialogue.Monde.rumeur", "Quelles nouvelles sur la route ?", "Any news from the road?")
     t("dialogue.Monde.aurevoir", "Bonne route.", "Safe travels.")
     t("dialogue.Monde.retour", "Autre chose…", "Something else…")
-    rumour = resp(common + "rumeur", "Rumour", "Accueil")
+    t("dialogue.Monde.rumeurTexte", "Voilà ce qu'on raconte sur la route :", "Here's what they say on the road:")
+    t("dialogue.Monde.rumeurAutre", "Une autre nouvelle ?", "Any other news?")
+    rumour = resp(common + "rumeur", "Rumour", RUMOUR_NODE)
     bye = resp(common + "aurevoir")
 
     def say(did, key, fr, en):
@@ -309,6 +319,14 @@ def dialogues():
             node("Accueil", say(d, "accueil", afr, aen), [
                 resp(say(d, "quete", qfr, qen), action, check=check), rumour, bye]),
         ]))
+    d = "Monde_Sortie"
+    bye_day = resp(say(d, "aurevoir", "Bonne journée !", "Have a good day!"))
+    sortie = dialogue(d, "Villageois en sortie (étape 2) : il dit où il va. world/Surroundings ouvre la fenêtre sur le nœud de son "
+                         "travail (gather, fish, wood, herd).", "Villageois", "Villager", "En sortie", "Out and about", [
+        node(job, f"nakasar_peuples.world.village.outing.{job}", [bye_day])
+        for job in ("gather", "fish", "wood", "herd")])
+    sortie["Entries"] = [{"Node": "gather"}]
+    write(DIALOGUES / f"{d}.json", sortie)
     d = "Monde_Enfants"
     write(DIALOGUES / f"{d}.json", dialogue(d, "Enfants du village (étape 2) : cache-cache, une fois par jour.", "Enfant", "Child",
                                             "Enfant du village", "Village child", [
