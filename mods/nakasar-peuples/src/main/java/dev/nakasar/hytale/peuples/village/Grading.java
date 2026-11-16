@@ -341,7 +341,31 @@ public final class Grading {
                 height[c] = s == Terrain.NONE ? h : s;
             }
         }
-        // Hauteur souhaitée des colonnes libres : membrane tendue sur le terrain qui les entoure (pas sur le bâtiment).
+        // Hauteur souhaitée des colonnes libres : départ par moyenne pondérée (1/d²) du terrain naturel du pourtour, puis
+        // membrane tendue sur le terrain qui les entoure (pas sur le bâtiment).
+        List<int[]> rim = new ArrayList<>();
+        for (int i = 0; i < w; i++) {
+            for (int k = 0; k < d; k++) {
+                boolean border = i == 0 || k == 0 || i == w - 1 || k == d - 1;
+                if (border && surface[i * d + k] != Terrain.NONE) {
+                    rim.add(new int[] {i, k, surface[i * d + k]});
+                }
+            }
+        }
+        for (int c = 0; c < w * d && !rim.isEmpty(); c++) {
+            if (kind[c] != FREE) {
+                continue;
+            }
+            int i = c / d, k = c % d;
+            double sum = 0, weight = 0;
+            for (int[] e : rim) {
+                double dd = (e[0] - i) * (e[0] - i) + (e[1] - k) * (e[1] - k);
+                double wgt = 1.0 / Math.max(1.0, dd);
+                sum += wgt * e[2];
+                weight += wgt;
+            }
+            height[c] = sum / weight;
+        }
         double[] next = new double[w * d];
         for (int it = 0; it < 160; it++) {
             for (int i = 0; i < w; i++) {
