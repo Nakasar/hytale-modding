@@ -340,6 +340,10 @@ public final class Plots {
         PHASE.remove(key(village, plot));
         s.clearWorks();
         if (VillageBuilder.paste(world, store, b.prefab(), village.x() + b.x(), h, village.z() + b.z(), b.rotation())) {
+            VillageLayout layout = Chantiers.layout(village);
+            if (layout != null) {
+                Chantiers.settle(world, village, layout, b, h);
+            }
             village.markBuilt(b.id());
             village.setSiteY(b.id(), h);
             Villagers.forgetGround();

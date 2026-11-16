@@ -269,6 +269,27 @@ les pieds ou la tête sont pris dans un bloc posé sont téléportés au point s
 hauteur (`Settlers.unstick`, pas sur un toit). Si la fondation échoue, le colon rentre à son village. Rôles, dialogue `Colon` et textes :
 `tools/generate_settlers.py`. `/village colon` (ops) fait venir un colon tout de suite au village le plus proche.
 
+### Relief autour des bâtiments et de la place
+
+Kevin (2026-11-16) : les bâtiments et le cœur laissaient de gros carrés (terre plate, arbres rasés au carré). Désormais :
+
+- **Place** : coins arrondis (rayon 5, toutes les pièces des cœurs y tiennent), bord effiloché sur 3 blocs où le sol de
+  la place cède au sol du peuple (le dessin du cœur garde son sol propre).
+- **Arbres** (`Grading.clearTrees`) : un arbre ne tombe que s'il occupe l'espace du bâtiment à coller (hauteur du prefab
+  + 1 au-dessus de la plateforme, 10 au-dessus de la place) ou les 3 blocs au-dessus d'un talus. Une couronne qui passe
+  au-dessus du toit, ou un voisin qui déborde sur la marge en hauteur, reste debout. (`Grading.pad` sans hauteur libre
+  garde l'ancien comportement : avant-postes, auberges, source de l'Écho.)
+- **Retour au relief** (`Grading.settle`, après chaque collage : génération, chantiers, terrains E1/E2) : dans
+  l'emprise, sa marge et ses talus (12 blocs), seules les colonnes que le prefab occupe vraiment (bloc posé à moins de 3
+  blocs au-dessus du sol, ou plancher qui n'est pas du relief) restent à la hauteur du bâtiment. Les autres reprennent une
+  hauteur interpolée depuis le terrain naturel autour (relaxation de Laplace), bornée à un bloc de pente par bloc ; la
+  terre nue laissée par le prefab (`Soil_Dirt`) redevient le sol du peuple.
+- **Demi-blocs** (`People.slabs`) sur chaque marche d'un bloc des talus et du relief rendu : Kweebec terre de sentier,
+  pavés moussus, planches ; Trork gravier, planches ; Feran gravier de sable, pavés de grès ; Renoncés neige, pavés
+  d'ardoise ; Slothians pavés de basalte, gravier, planches tropicales.
+
+Ne change que ce qui est bâti ensuite (génération, chantiers) : les bâtiments déjà debout ne sont pas retouchés.
+
 ### Sentiers et décor entre les bâtiments
 
 Kevin (2026-11-16) : les bâtiments étaient posés sur des carrés de terre nue, sans rien entre eux. `tools/village_streets.py`

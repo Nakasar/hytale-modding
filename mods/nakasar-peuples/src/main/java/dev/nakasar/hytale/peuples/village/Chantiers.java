@@ -273,6 +273,7 @@ public final class Chantiers {
                 clearRuins(world, village, b, h);
             }
             if (VillageBuilder.paste(world, store, b.prefab(), village.x() + b.x(), h, village.z() + b.z(), b.rotation())) {
+                settle(world, village, layout, b, h);
                 village.markBuilt(b.id());
                 village.setSiteY(b.id(), h);
                 pasted++;
@@ -290,6 +291,7 @@ public final class Chantiers {
             }
             prepare(world, terrain, village, layout, b, h);
             if (VillageBuilder.paste(world, store, b.prefab(), village.x() + b.x(), h, village.z() + b.z(), b.rotation())) {
+                settle(world, village, layout, b, h);
                 village.markBuilt(b.id());
                 village.setSiteY(b.id(), h);
                 pasted++;
@@ -360,6 +362,7 @@ public final class Chantiers {
                         prepare(world, terrain, village, layout, b, h);
                     }
                     if (VillageBuilder.paste(world, store, b.prefab(), village.x() + b.x(), h, village.z() + b.z(), b.rotation())) {
+                        settle(world, village, layout, b, h);
                         village.markBuilt(b.id());
                         village.setSiteY(b.id(), h);
                         pasted++;
@@ -561,6 +564,16 @@ public final class Chantiers {
 
     /** Aplanit l'emprise d'un bâtiment neuf (comme {@link VillageBuilder}) sans toucher aux autres emprises ni à la place. */
     static void prepare(World world, Terrain terrain, Village village, VillageLayout layout, VillageLayout.Building b, int h) {
+        int[] r = b.rect();
+        // Les arbres dont seule la couronne passe au-dessus du bâtiment restent debout ; marches adoucies de demi-blocs.
+        new Grading(world).slabs(village.people().slabs())
+                .pad(village.x() + r[0], village.x() + r[1], village.z() + r[2], village.z() + r[3], h, MARGIN,
+                        village.people().ground(), b.height() + 1, 2, 0)
+                .apply(BLEND, village.people().ground(), keep(village, layout, b));
+    }
+
+    /** Colonnes qu'un chantier ne retouche pas autour de `b` : la place et les emprises des autres bâtiments du plan. */
+    static BiPredicate<Integer, Integer> keep(Village village, VillageLayout layout, VillageLayout.Building b) {
         int p = layout.plazaRadius();
         List<int[]> reserved = new ArrayList<>();
         reserved.add(new int[] {village.x() - p, village.x() + p, village.z() - p, village.z() + p});
@@ -572,7 +585,7 @@ public final class Chantiers {
                 reserved.add(new int[] {village.x() + r[0], village.x() + r[1], village.z() + r[2], village.z() + r[3]});
             }
         }
-        BiPredicate<Integer, Integer> keep = (x, z) -> {
+        return (x, z) -> {
             for (int[] rect : reserved) {
                 if (x >= rect[0] && x <= rect[1] && z >= rect[2] && z <= rect[3]) {
                     return true;
@@ -580,9 +593,16 @@ public final class Chantiers {
             }
             return false;
         };
+    }
+
+    /**
+     * Après le collage de `b` à la hauteur `h` : le terrain que le prefab n'occupe pas reprend le relief alentour
+     * ({@link Grading#settle}), bords adoucis de demi-blocs. Kevin 2026-11-16 : plus de gros carrés plats.
+     */
+    static void settle(World world, Village village, VillageLayout layout, VillageLayout.Building b, int h) {
         int[] r = b.rect();
-        terrain.flatten(village.x() + r[0], village.x() + r[1], village.z() + r[2], village.z() + r[3], h, MARGIN, BLEND,
-                village.people().ground(), village.people().ground(), keep);
+        new Grading(world).slabs(village.people().slabs()).settle(village.x() + r[0], village.x() + r[1],
+                village.z() + r[2], village.z() + r[3], h, village.people().ground(), keep(village, layout, b));
     }
 
     /**

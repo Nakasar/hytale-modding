@@ -38,7 +38,7 @@ public final class VillageStreets {
     /** Vrai si le village a des sentiers ou du décor à poser pour son palier. */
     public static boolean due(Village village) {
         VillageLayout layout = Chantiers.layout(village);
-        return layout != null && layout.streets().length > 0 && village.streetsTier() < village.tier()
+        return layout != null && (!village.settled() || layout.streets().length > 0 && village.streetsTier() < village.tier())
                 && !BUSY.contains(village.id()) && !Chantiers.busy(village);
     }
 
@@ -66,6 +66,20 @@ public final class VillageStreets {
         VillageLayout layout = Chantiers.layout(village);
         if (layout == null) {
             return;
+        }
+        // Rattrapage unique des villages bâtis avant le retour au relief (Kevin 2026-11-16) : chaque bâtiment debout
+        // rend au terrain naturel les colonnes qu'il n'occupe pas (terre nue et carrés plats autour).
+        if (!village.settled()) {
+            int count = 0;
+            for (VillageLayout.Building b : layout.buildings()) {
+                int h = village.siteY(b.id());
+                if (village.isStanding(b.id()) && h != Integer.MIN_VALUE) {
+                    Chantiers.settle(world, village, layout, b, h);
+                    count++;
+                }
+            }
+            village.setSettled(true);
+            LOGGER.atInfo().log("Nakasar Peuples : relief rendu autour de %d bâtiments de %s", count, village.name());
         }
         int tier = village.tier();
         int from = village.streetsTier();
@@ -145,7 +159,7 @@ public final class VillageStreets {
             return false;
         }
         String top = Blocks.name(chunks, x, y, z);
-        if (top == null || !(soil(top) || top.startsWith("Soil_Pathway") || top.startsWith("Soil_Gravel"))) {
+        if (top == null || top.endsWith("_Half") || !(soil(top) || top.startsWith("Soil_Pathway") || top.startsWith("Soil_Gravel"))) {
             return false;
         }
         if (!prefab) {
