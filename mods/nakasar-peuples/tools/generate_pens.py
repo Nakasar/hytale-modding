@@ -46,42 +46,55 @@ ANIMALS = [
 ]
 
 
-def fence(x, z, wood):
+# Paliers 2 à 4 proposés pour la carte de revue (tools/building_tiers.py, Kevin 2026-11-16 : la différence se voit
+# sur le bâtiment lui-même) : enclos de plus en plus grand, plus d'auges et de foin. Pas encore utilisés en jeu.
+TIER_HALF = {2: 7, 3: 8, 4: 9}
+TIER_DECOR = {
+    2: [(5, -5, "Plant_Hay_Bundle", 0), (-5, 5, "Plant_Hay_Bundle", 0)],
+    3: [(5, -5, "Plant_Hay_Bundle", 0), (-5, 5, "Plant_Hay_Bundle", 0), (-4, -5, "Bench_Trough", 0),
+        (6, 6, "Plant_Hay_Bundle", 0)],
+    4: [(5, -5, "Plant_Hay_Bundle", 0), (-5, 5, "Plant_Hay_Bundle", 0), (-4, -5, "Bench_Trough", 0),
+        (6, 6, "Plant_Hay_Bundle", 0), (4, -6, "Bench_Trough", 0), (-6, -6, "Plant_Hay_Bundle", 0),
+        (6, 7, "Plant_Hay_Bundle", 0)],
+}
+
+
+def fence(x, z, wood, half=HALF):
     """Bloc de clôture du bord (x, z) : rotations et coins relevés dans Kweebec_Oak_Bunny_Area_003."""
     corner = "*" + wood + "_State_Definitions_Corner"
-    if (x, z) == (-HALF, -HALF):
+    if (x, z) == (-half, -half):
         return corner, 1
-    if (x, z) == (-HALF, HALF):
+    if (x, z) == (-half, half):
         return corner, 2
-    if (x, z) == (HALF, HALF):
+    if (x, z) == (half, half):
         return corner, 3
-    if (x, z) == (HALF, -HALF):
+    if (x, z) == (half, -half):
         return corner, 0
-    if z == -HALF:
+    if z == -half:
         return wood, 2
-    if z == HALF:
+    if z == half:
         return wood, 0
-    if x == -HALF:
+    if x == -half:
         return wood, 3
     return wood, 1
 
 
-def pen(people):
+def pen(people, half=HALF, extra=()):
     wood, floor = STYLE[people]
     blocks = []
-    for x in range(-HALF, HALF + 1):
-        for z in range(-HALF, HALF + 1):
+    for x in range(-half, half + 1):
+        for z in range(-half, half + 1):
             blocks.append({"x": x, "y": 0, "z": z, "name": floor})
-            if abs(x) == HALF or abs(z) == HALF:
-                if z == HALF and x == 0:
+            if abs(x) == half or abs(z) == half:
+                if z == half and x == 0:
                     name, rot = wood + "_Gate", 0
                 else:
-                    name, rot = fence(x, z, wood)
+                    name, rot = fence(x, z, wood, half)
                 b = {"x": x, "y": 1, "z": z, "name": name}
                 if rot:
                     b["rotation"] = rot
                 blocks.append(b)
-    for x, z, name, rot in DECOR:
+    for x, z, name, rot in list(DECOR) + list(extra):
         b = {"x": x, "y": 1, "z": z, "name": name}
         if rot:
             b["rotation"] = rot
@@ -165,13 +178,14 @@ def main():
     errors = []
     PENS.mkdir(parents=True, exist_ok=True)
     for people in STYLE:
-        doc = pen(people)
-        for b in doc["blocks"]:
-            if b["name"].lstrip("*") not in known:
-                errors.append(f"{people} : bloc vanilla inconnu {b['name']}")
-        path = PENS / f"{people}_Pen.prefab.json"
-        path.write_text(json.dumps(doc, indent=2) + "\n", encoding="utf-8")
-        print(f"{path.relative_to(ROOT)} : {len(doc['blocks'])} blocs")
+        docs = [("", pen(people))] + [(f"_T{t}", pen(people, h, TIER_DECOR[t])) for t, h in TIER_HALF.items()]
+        for suffix, doc in docs:
+            for b in doc["blocks"]:
+                if b["name"].lstrip("*") not in known:
+                    errors.append(f"{people} : bloc vanilla inconnu {b['name']}")
+            path = PENS / f"{people}_Pen{suffix}.prefab.json"
+            path.write_text(json.dumps(doc, indent=2) + "\n", encoding="utf-8")
+            print(f"{path.relative_to(ROOT)} : {len(doc['blocks'])} blocs")
     for aid, appearance, health, speed, name_key in ANIMALS:
         path = ROLES / f"Nakasar_Peuples_Pen_{aid}.json"
         path.write_text(json.dumps(role(aid, appearance, health, speed, name_key), indent=2, ensure_ascii=False) + "\n",
