@@ -4,7 +4,7 @@
     python3 mods/nakasar-vampires/tools/generate_wiki_loot.py
 
 Lit les listes Server/Drops/Nakasar/Halloween/*.json (produites par generate_loot.py) et écrit
-docs/wiki/fragment/butin-des-coffres.md. À relancer après chaque changement de generate_loot.py.
+docs/wiki/vampires/fragment/butin-des-coffres.md. À relancer après chaque changement de generate_loot.py.
 Les noms français des objets vanilla sont des traductions d'usage, l'id du jeu est donné à côté.
 """
 import json
@@ -14,7 +14,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[3]
 DROPS = ROOT / "mods" / "nakasar-vampires" / "src" / "main" / "resources" / "Server" / "Drops" / "Nakasar" / "Halloween"
-OUT = ROOT / "docs" / "wiki" / "fragment" / "butin-des-coffres.md"
+OUT = ROOT / "docs" / "wiki" / "vampires" / "fragment" / "butin-des-coffres.md"
 
 # Ordre de la page : (titre, liste, où).
 TABLES = [

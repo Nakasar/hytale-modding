@@ -1,3 +1,7 @@
+---
+sidebar_label: Présentation
+---
+
 # Fractales des Brumes
 
 <Infobox pending title="Fractales des Brumes" kind="Mod" icon="/jeu/Icons/Items/Nakasar/Fractals/PortalKey_Fractal.png" caption="Fragment des Brumes">
@@ -5,7 +9,7 @@
 <Info label="Joueurs">1 à 5 par groupe</Info>
 <Info label="Accès">[Fragment des Brumes](observatoire.md#fragment-des-brumes) dans l'Ancienne passerelle</Info>
 <Info label="Lieu">[l'Observatoire](observatoire.md), île hub dans les Brumes</Info>
-<Info label="Fractales">**7** (saisons 1 et 2)</Info>
+<Info label="Fractales">**11** (saisons 1 et 2)</Info>
 <Info label="Niveaux">1 à 100, en 4 rangs</Info>
 </Infobox>
 

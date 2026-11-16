@@ -1,27 +1,225 @@
-/* Comté Vampire : rouge sang et orange citrouille, nuit violette. */
+/* Identité commune des mods Nakasar : fond nuit neutre, titres Cinzel, texte Inter, or Nakasar pour les
+   pages communes. Chaque mod n'a que sa teinte (attribut data-mod sur <html>, posé par src/theme/Navbar
+   d'après src/mods.js) : Vampires = sang, Fractales = brume, Peuples = sylve. Les --mod-* servent à la barre
+   de sections, aux infobox, aux onglets et aux cartes de l'accueil. */
 :root {
-  --ifm-color-primary: #a3182b;
-  --ifm-color-primary-dark: #931627;
-  --ifm-color-primary-darker: #8b1425;
-  --ifm-color-primary-darkest: #72111e;
-  --ifm-color-primary-light: #b31a2f;
-  --ifm-color-primary-lighter: #bb1c31;
-  --ifm-color-primary-lightest: #d42139;
+  --ifm-font-family-base: "Inter", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --ifm-heading-font-family: "Cinzel", Georgia, serif;
+  --ifm-heading-font-weight: 700;
+  --ifm-navbar-height: 4rem;
+  --nk-gold: #8a6a1f;
+  --nk-vampires: #c0353d;
+  --nk-fractales: #6b5ad6;
+  --nk-peuples: #3c9a50;
+  --ifm-background-color: #fbf8f2;
+  --ifm-background-surface-color: #fffdf9;
+  --ifm-navbar-background-color: #fffdf9;
+  --ifm-footer-background-color: #1b1820;
+  --nk-card: #ffffff;
+  --nk-card-border: #e6dfd2;
+  --nk-muted: #5f5868;
+}
+[data-theme="dark"] {
+  --nk-gold: #d8b26a;
+  --nk-vampires: #e5534b;
+  --nk-fractales: #9f8cff;
+  --nk-peuples: #6cc77a;
+  --ifm-background-color: #121016;
+  --ifm-background-surface-color: #19161e;
+  --ifm-navbar-background-color: #19161e;
+  --ifm-footer-background-color: #0e0c11;
+  --ifm-font-color-base: #ece8f0;
+  --ifm-color-emphasis-100: #1b1820;
+  --ifm-color-emphasis-200: #24202b;
+  --ifm-color-emphasis-300: #34303c;
+  --nk-card: #1b1820;
+  --nk-card-border: #2e2a36;
+  --nk-muted: #bdb6c7;
 }
 
-[data-theme="dark"] {
-  --ifm-color-primary: #ff8a3d;
-  --ifm-color-primary-dark: #ff781f;
-  --ifm-color-primary-darker: #ff6f10;
-  --ifm-color-primary-darkest: #e65a00;
-  --ifm-color-primary-light: #ff9c5b;
-  --ifm-color-primary-lighter: #ffa56a;
-  --ifm-color-primary-lightest: #ffc196;
-  --ifm-background-color: #17121c;
-  --ifm-background-surface-color: #45070f;
-  --ifm-navbar-background-color: #45070f;
-  --ifm-footer-background-color: #2a0a12;
+:root {
+  --ifm-color-primary: #8a6a1f;
+  --ifm-color-primary-dark: #7c5f1c;
+  --ifm-color-primary-darker: #755a1a;
+  --ifm-color-primary-darkest: #614a16;
+  --ifm-color-primary-light: #967935;
+  --ifm-color-primary-lighter: #9c8041;
+  --ifm-color-primary-lightest: #ad9762;
+  --mod-accent: #b08a35;
+  --mod-deep: #6b521a;
+  --mod-band: #f3ead6;
+  --mod-band-border: #e3d3ad;
+  --mod-on-band: #4a3912;
+  --mod-label: #6b521a;
+  --mod-active: #e3d3ad;
 }
+
+[data-mod="vampires"] {
+  --ifm-color-primary: #a3242d;
+  --ifm-color-primary-dark: #932029;
+  --ifm-color-primary-darker: #8b1f26;
+  --ifm-color-primary-darkest: #721920;
+  --ifm-color-primary-light: #ac3a42;
+  --ifm-color-primary-lighter: #b1454c;
+  --ifm-color-primary-lightest: #bf666c;
+  --mod-accent: #c0353d;
+  --mod-deep: #8e1f28;
+  --mod-band: #f7e4e3;
+  --mod-band-border: #ebc9c7;
+  --mod-on-band: #5c1d24;
+  --mod-label: #8e1f28;
+  --mod-active: #ebc9c7;
+}
+
+[data-mod="fractales"] {
+  --ifm-color-primary: #5b47c9;
+  --ifm-color-primary-dark: #5240b5;
+  --ifm-color-primary-darker: #4d3cab;
+  --ifm-color-primary-darkest: #40328d;
+  --ifm-color-primary-light: #6b59ce;
+  --ifm-color-primary-lighter: #7463d1;
+  --ifm-color-primary-lightest: #8c7ed9;
+  --mod-accent: #6b5ad6;
+  --mod-deep: #3f3196;
+  --mod-band: #ebe8fb;
+  --mod-band-border: #d3cdf5;
+  --mod-on-band: #2b2266;
+  --mod-label: #3f3196;
+  --mod-active: #d3cdf5;
+}
+
+[data-mod="peuples"] {
+  --ifm-color-primary: #2f7d40;
+  --ifm-color-primary-dark: #2a703a;
+  --ifm-color-primary-darker: #286a36;
+  --ifm-color-primary-darkest: #21572d;
+  --ifm-color-primary-light: #448a53;
+  --ifm-color-primary-lighter: #4e905d;
+  --ifm-color-primary-lightest: #6da479;
+  --mod-accent: #3c9a50;
+  --mod-deep: #1f5a2e;
+  --mod-band: #e3f2e5;
+  --mod-band-border: #c4e3ca;
+  --mod-on-band: #173f22;
+  --mod-label: #1f5a2e;
+  --mod-active: #c4e3ca;
+}
+
+html[data-theme="dark"] {
+  --ifm-color-primary: #d8b26a;
+  --ifm-color-primary-dark: #c2a05f;
+  --ifm-color-primary-darker: #b8975a;
+  --ifm-color-primary-darkest: #977d4a;
+  --ifm-color-primary-light: #dcba79;
+  --ifm-color-primary-lighter: #debe80;
+  --ifm-color-primary-lightest: #e4c997;
+  --mod-accent: #d8b26a;
+  --mod-deep: #5a4520;
+  --mod-band: #221d14;
+  --mod-band-border: #3a3120;
+  --mod-on-band: #efe3c8;
+  --mod-label: #e8cf9a;
+  --mod-active: #3d321c;
+}
+
+[data-theme="dark"][data-mod="vampires"],
+[data-theme="dark"] [data-mod="vampires"] {
+  --ifm-color-primary: #ff8a83;
+  --ifm-color-primary-dark: #e67c76;
+  --ifm-color-primary-darker: #d9756f;
+  --ifm-color-primary-darkest: #b2615c;
+  --ifm-color-primary-light: #ff968f;
+  --ifm-color-primary-lighter: #ff9c96;
+  --ifm-color-primary-lightest: #ffada8;
+  --mod-accent: #e5534b;
+  --mod-deep: #5c1d24;
+  --mod-band: #2a1216;
+  --mod-band-border: #3c1a1f;
+  --mod-on-band: #f1d9d7;
+  --mod-label: #ffb3ad;
+  --mod-active: #4a1c22;
+}
+
+[data-theme="dark"][data-mod="fractales"],
+[data-theme="dark"] [data-mod="fractales"] {
+  --ifm-color-primary: #b0a3ff;
+  --ifm-color-primary-dark: #9e93e6;
+  --ifm-color-primary-darker: #968bd9;
+  --ifm-color-primary-darkest: #7b72b2;
+  --ifm-color-primary-light: #b8acff;
+  --ifm-color-primary-lighter: #bcb1ff;
+  --ifm-color-primary-lightest: #c8bfff;
+  --mod-accent: #9f8cff;
+  --mod-deep: #3a2f78;
+  --mod-band: #1c1836;
+  --mod-band-border: #2c2652;
+  --mod-on-band: #e1dcff;
+  --mod-label: #cfc6ff;
+  --mod-active: #2f2866;
+}
+
+[data-theme="dark"][data-mod="peuples"],
+[data-theme="dark"] [data-mod="peuples"] {
+  --ifm-color-primary: #82d68f;
+  --ifm-color-primary-dark: #75c181;
+  --ifm-color-primary-darker: #6eb67a;
+  --ifm-color-primary-darkest: #5b9664;
+  --ifm-color-primary-light: #8eda9a;
+  --ifm-color-primary-lighter: #95dca0;
+  --ifm-color-primary-lightest: #a8e2b1;
+  --mod-accent: #6cc77a;
+  --mod-deep: #1f5a2e;
+  --mod-band: #13261a;
+  --mod-band-border: #1f3d27;
+  --mod-on-band: #d6f3da;
+  --mod-label: #b5ecbd;
+  --mod-active: #1f4a2b;
+}
+
+/* Titres : Cinzel jusqu'à h3, Inter au-delà (petits titres plus lisibles). */
+.markdown h1, .markdown h2, .markdown h3 { letter-spacing: 0.01em; }
+.markdown h4, .markdown h5, .markdown h6 { font-family: var(--ifm-font-family-base); }
+.markdown h2 { padding-bottom: 0.3rem; border-bottom: 1px solid var(--ifm-color-emphasis-300); }
+
+/* En-tête collant = barre du haut + barre de sections du mod (src/theme/Navbar). Sur une page de mod,
+   --ifm-navbar-height compte les deux barres : la barre latérale, la table des matières et les ancres
+   se calent ainsi sous l'en-tête entier ; la barre du haut garde sa propre hauteur. */
+:root { --nk-topbar-height: 4rem; --nk-modbar-height: 2.75rem; }
+html:not([data-mod="commun"]) { --ifm-navbar-height: calc(var(--nk-topbar-height) + var(--nk-modbar-height)); }
+.nk-header { position: sticky; top: 0; z-index: var(--ifm-z-index-fixed); }
+.nk-header .navbar { position: relative; height: var(--nk-topbar-height); }
+
+/* Barre du haut : le logo et les trois mods, chacun avec sa pastille de couleur ; l'onglet du mod
+   ouvert est souligné de sa teinte. */
+.navbar { border-bottom: 1px solid var(--ifm-color-emphasis-300); box-shadow: none; }
+.navbar__title { font-family: var(--ifm-heading-font-family); font-weight: 700; letter-spacing: 0.04em; }
+.nk-mod-tab::before {
+  content: "";
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: var(--nk-dot);
+  flex-shrink: 0;
+}
+.nk-mod-tab--vampires { --nk-dot: var(--nk-vampires); }
+.nk-mod-tab--fractales { --nk-dot: var(--nk-fractales); }
+.nk-mod-tab--peuples { --nk-dot: var(--nk-peuples); }
+.menu__link.nk-mod-tab { display: flex; justify-content: flex-start; align-items: center; gap: 0.6rem; }
+@media (min-width: 997px) {
+  .navbar__link.nk-mod-tab { display: inline-flex; align-items: center; gap: 0.5rem; font-weight: 500; }
+  .navbar__link.nk-mod-tab { padding-bottom: 0.45rem; border-bottom: 3px solid transparent; }
+  .navbar__link.nk-mod-tab.navbar__link--active { color: var(--ifm-font-color-base); font-weight: 600; border-bottom-color: var(--nk-dot); }
+}
+
+/* Barre latérale : l'entrée ouverte porte la teinte du mod. */
+.menu__link--active:not(.menu__link--sublist) {
+  background: var(--mod-band);
+  box-shadow: inset 3px 0 0 var(--mod-accent);
+  color: var(--ifm-font-color-base);
+  font-weight: 600;
+}
+
+.footer { font-size: 0.875rem; }
 
 /* Images du Markdown : Docusaurus leur donne des attributs width/height ; dès qu'une règle limite une
    seule dimension, l'autre doit suivre (auto), sinon l'image est écrasée ou étirée. object-fit garde
