@@ -1,0 +1,22 @@
+{
+  "$Comment": "Lieu-dit Scierie (Feran), généré par tools/generate_hamlets.py depuis tools/hamlets.py. Bâtiments : « chemin x z rot côté chance x0 x1 z0 z1 haut » dans le repère de la place (bâtiment principal au nord) ; un tirage par côté (W, E) choisit au plus un bâtiment.",
+  "People": "Feran",
+  "Type": "Scierie",
+  "NameKey": "nakasar_peuples.hamlet.type.Scierie",
+  "Icon": "Tool_Hatchet_Crude",
+  "Rule": "TREES",
+  "Weight": 3,
+  "Buildings": [
+    "Npc/Feran/Tier3/Huts/Feran_Tier3_Huts_001 0 -9 0 M 1 -5 5 -14 -4 6",
+    "Npc/Trork/Resource/Lumber/Forest_Gully/Trork_Resource_Lumber_Forest_Gully_001 11 -8 0 E 1 8 13 -12 -5 3",
+    "Npc/Trork/Resource/Lumber/Forest_Gully/Trork_Resource_Lumber_Forest_Gully_002 -10 -9 0 W 1 -12 -8 -12 -6 3"
+  ],
+  "Decor": [],
+  "Residents": [
+    "Nakasar_Peuples_Feran_Hamlet_Keeper",
+    "Nakasar_Peuples_Feran_Hamlet_Worker"
+  ],
+  "Dialogue": "Monde_LieuDit_Scierie",
+  "Shop": "Nakasar_Peuples_Hamlet_Feran_Scierie",
+  "ShopBusy": "Nakasar_Peuples_Hamlet_Feran_Scierie_Anime"
+}

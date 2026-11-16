@@ -1,0 +1,73 @@
+{
+  "$Comment": "Habitant d'un lieu-dit Pavillon de chasse : troc du lieu-dit (élargi quand il est animé), marchands venus, rumeurs. Généré par tools/generate_hamlets.py ; effets WorldAction et conditions WorldCheck (world/WorldDialogueTypes).",
+  "NpcNameKey": "nakasar_peuples.dialogue.Monde_LieuDit_Chasse.npc",
+  "RoleKey": "nakasar_peuples.dialogue.Monde_LieuDit_Chasse.role",
+  "Entries": [
+    {
+      "Node": "Accueil"
+    }
+  ],
+  "Nodes": [
+    {
+      "Id": "Accueil",
+      "TextKey": "nakasar_peuples.dialogue.Monde_LieuDit_Chasse.accueil",
+      "Responses": [
+        {
+          "TextKey": "nakasar_peuples.dialogue.LieuDit.troc",
+          "Effects": [
+            {
+              "Type": "WorldAction",
+              "Action": "HamletShop"
+            }
+          ]
+        },
+        {
+          "TextKey": "nakasar_peuples.dialogue.LieuDit.visites",
+          "Effects": [
+            {
+              "Type": "WorldAction",
+              "Action": "HamletVisits"
+            }
+          ],
+          "Next": "Accueil"
+        },
+        {
+          "TextKey": "nakasar_peuples.dialogue.Monde.rumeur",
+          "Effects": [
+            {
+              "Type": "WorldAction",
+              "Action": "Rumour"
+            }
+          ],
+          "Next": "Rumeur"
+        },
+        {
+          "TextKey": "nakasar_peuples.dialogue.Monde.aurevoir"
+        }
+      ]
+    },
+    {
+      "Id": "Rumeur",
+      "TextKey": "nakasar_peuples.dialogue.Monde.rumeurTexte",
+      "Responses": [
+        {
+          "TextKey": "nakasar_peuples.dialogue.Monde.rumeurAutre",
+          "Effects": [
+            {
+              "Type": "WorldAction",
+              "Action": "Rumour"
+            }
+          ],
+          "Next": "Rumeur"
+        },
+        {
+          "TextKey": "nakasar_peuples.dialogue.Monde.retour",
+          "Next": "Accueil"
+        },
+        {
+          "TextKey": "nakasar_peuples.dialogue.Monde.aurevoir"
+        }
+      ]
+    }
+  ]
+}

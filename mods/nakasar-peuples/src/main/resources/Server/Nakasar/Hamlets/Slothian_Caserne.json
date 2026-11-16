@@ -1,0 +1,23 @@
+{
+  "$Comment": "Lieu-dit Caserne (Slothian), généré par tools/generate_hamlets.py depuis tools/hamlets.py. Bâtiments : « chemin x z rot côté chance x0 x1 z0 z1 haut » dans le repère de la place (bâtiment principal au nord) ; un tirage par côté (W, E) choisit au plus un bâtiment.",
+  "People": "Slothian",
+  "Type": "Caserne",
+  "NameKey": "nakasar_peuples.hamlet.type.Caserne",
+  "Icon": "Weapon_Arrow_Crude",
+  "Rule": "NONE",
+  "Weight": 2,
+  "Buildings": [
+    "Npc/Slothian/Disabled/House/Medium/Slothian_Disabled_House_Medium_001 0 -13 0 M 1 -9 9 -22 -4 14",
+    "Monuments/Incidental/Slothian/Land/Temple/Incidental_Slothian_Slothian_Temple_003 -16 -15 0 W 1 -19 -12 -26 -4 17",
+    "Monuments/Incidental/Slothian/Land/Temple/Incidental_Slothian_Slothian_Temple_001 15 -16 0 E 1 12 19 -27 -4 17"
+  ],
+  "Decor": [],
+  "Residents": [
+    "Nakasar_Peuples_Slothian_Hamlet_Keeper",
+    "Nakasar_Peuples_Slothian_Hamlet_Sentry",
+    "Nakasar_Peuples_Slothian_Hamlet_Sentry"
+  ],
+  "Dialogue": "Monde_LieuDit_Caserne",
+  "Shop": "Nakasar_Peuples_Hamlet_Slothian_Caserne",
+  "ShopBusy": "Nakasar_Peuples_Hamlet_Slothian_Caserne_Anime"
+}

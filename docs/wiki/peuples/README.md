@@ -35,7 +35,7 @@ Les villages se posent tout seuls dans le monde : le premier village kweebec non
 
 ## Bâtiments de métier
 
-Les enclos, potagers, puits et tours d'un village ont leur propre panneau : commandes du jour, niveaux I à III, spécialité et boutique en faveurs. À partir du palier 2, deux terrains libres attendent les bâtiments que vous choisissez. Voir [Bâtiments de métier](batiments-de-metier.md) et [Emplacements libres](emplacements.md). Au palier 3, le village peut aussi fonder des [avant-postes de métier](avant-postes-de-metier.md) isolés. Entre les villages, voyageurs, auberges, campements et fêtes font vivre la région : voir [Le monde vivant](monde-vivant.md). Tous les bâtiments de chaque peuple sont montrés en images dans [Bâtiments des villages](batiments/README.md).
+Les enclos, potagers, puits et tours d'un village ont leur propre panneau : commandes du jour, niveaux I à III, spécialité et boutique en faveurs. À partir du palier 2, deux terrains libres attendent les bâtiments que vous choisissez. Voir [Bâtiments de métier](batiments-de-metier.md) et [Emplacements libres](emplacements.md). Au palier 3, le village peut aussi fonder des [avant-postes de métier](avant-postes-de-metier.md) isolés. Entre les villages, voyageurs, auberges, campements et fêtes font vivre la région : voir [Le monde vivant](monde-vivant.md). Le long des routes, de petits [lieux-dits](lieux-dits.md) (mine, ferme, moulin, forge...) attirent les marchands des villages. Tous les bâtiments de chaque peuple sont montrés en images dans [Bâtiments des villages](batiments/README.md).
 
 ## Les zones et leurs climats
 

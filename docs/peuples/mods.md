@@ -1590,3 +1590,100 @@ Avant-postes si le peuple n'en a pas. `ValidateAssets` vérifie les ids de `Boar
 - Placement des auberges, campements et étals (pente, arbres), retrait propre des prefabs temporaires.
 - Les voyageurs suivent bien leur point d'attache sur de longues distances (relief, rivières).
 - Ruée : le chef charge bien le long de la zone rouge (rotation, relief, arrêt sur un mur), les dégâts ne tombent que sur les joueurs qu'il traverse dans la zone, et il n'est plus figé après la course.
+
+## Lieux-dits (`world/Hamlets`, `world/HamletTrips`)
+
+Kevin (2026-11-16) : des lieux-dits, qui ne sont pas des villages mais un groupe de 1 à 3 bâtiments proches, comme les
+auberges (mine isolée, ferme, moulin, caserne et ses deux tours de guet, forge avec une mine, un comptoir ou une tour de
+garde...). Ils attirent les marchands et les caravanes des villages, qui viennent y commercer.
+
+### Genres
+
+Un asset `Server/Nakasar/Hamlets/<Peuple>_<Genre>.json` par genre et par peuple (classe `world/Hamlet`, 38 assets),
+généré par `tools/generate_hamlets.py` depuis les données de `tools/hamlets.py`. Prefabs vanilla uniquement (règle n° 2),
+au style du peuple ; un prefab avec `Prefab_Spawner_Block` (prefab imbriqué tiré au hasard) n'est jamais utilisé.
+
+| Genre | Terrain | Bâtiments (principal, puis un tirage par côté) | Peuples |
+| --- | --- | --- | --- |
+| Mine isolée | ROCK | avant-poste de mine du peuple (Renoncés : entrée de mine vanilla `Start_Mine_001`) | tous sauf Kweebecs |
+| Ferme isolée | FERTILE | ferme de l'avant-poste du peuple, grange ou enclos | tous |
+| Moulin | FERTILE | maison, silo ou champ, puits ou bassin | tous sauf Trorks |
+| Caserne | — | maison de garde, deux tours de guet | tous |
+| Forge | — | atelier (forge, établi d'armes en décor) ; ouest : mine 50 % ; est : comptoir 35 % ou tour 35 % | tous sauf Kweebecs |
+| Comptoir commercial | — | boutique, étal ou entrepôt, bancs | tous |
+| Scierie, Pavillon de chasse | TREES / — | avant-poste de métier du peuple | tous |
+| Bosquet d'herboriste | TREES | avant-poste d'herboriste | Kweebecs (au lieu de la mine et de la forge) |
+
+Ligne de bâtiment : `"chemin x z rot côté chance x0 x1 z0 z1 haut"` dans le repère de la place (place à l'origine,
+principal au nord `-z`, marché à `z = 5`). Côté `M` toujours posé ; `W` et `E` : un tirage par côté (chaque choix a sa
+chance, au plus un). Le tirage est fait à la création (`mask`, bit i = bâtiment i). Décor `"dx dy dz lacet Bloc"` posé
+seulement dans l'air (bancs vanilla de la forge, caisses, sacs). Les emprises des nouveaux prefabs sont relevées dans
+`tools/vanilla-prefabs-0.7.2.txt`.
+
+Habitants (1 à 3) : rôles `Nakasar_Peuples_<Peuple>_Hamlet_{Keeper,Worker,Sentry}` (apparences vanilla du peuple),
+dialogue `Monde_LieuDit_<Genre>` (troc, « qui vient commercer ici ? », rumeurs). Troc `Nakasar_Peuples_Hamlet_<P>_<G>`
+en faveurs du peuple, au rang Toléré dans le village de rattachement ; `..._Anime` (plus de marchandises) quand le
+lieu-dit est animé. Les Kweebecs ne vendent rien en métal (caserne animée : flèches simples, cuir).
+
+### Où ils apparaissent
+
+`Hamlets.seed` (chaque matin, une fois pour toutes par liaison et par village, comme les vestiges ; marques
+`~seed:<liaison>` et `~seed:V:<village>` dans la partie `Hamlets` du registre) :
+
+- Liaison d'au moins 300 blocs : 0 (30 %), 1 ou 2 lieux-dits (2 seulement au-delà de 600 blocs), entre 30 et 70 % du
+  trajet, à 40-64 blocs de côté, la place tournée vers la route. Peuple du village le plus proche.
+- Alentours d'un village : 60 % de chances d'un lieu-dit à 200-380 blocs, tourné vers le village.
+- Écarts : rayon du plan + 70 blocs d'un village, 140 entre lieux-dits, 64 d'un avant-poste, 60 de l'auberge (ou du
+  milieu d'une liaison qui peut en avoir une). Terrain généré sec et relief ≤ 12 sur 24 blocs (`LandPath.drySite`).
+- Genre tiré selon les poids, si possible un que le village n'a pas encore.
+
+Pose (`Hamlets.place`) quand un joueur passe à moins de 112 blocs, une recherche par pas : point tiré puis 8 directions
+à 14 et 28 blocs ; place chargée, sèche, relief ≤ 7, aucun bloc non naturel sous les toits ; la règle de terrain du
+genre (`Annexes.ruleMet`, comme les avant-postes) est préférée, pas exigée. Terrassement `Grading` comme les annexes :
+une plateforme par bâtiment (± 2 de la place), la cour, talus de 4, puis `settle` autour de chaque prefab. Aucune place :
+état `FAILED` (log INFO `Peuples (lieux-dits)`).
+
+État sauvé : `id = asset|x|z|rot|étape|y|village|masque|rx|rz` (étapes 0 prévu, 1 posé, 2 échoué). Les habitants
+apparaissent quand un joueur est à moins de 64 blocs de la place, et disparaissent sinon. Un joueur à 16 blocs le
+découvre (titre, drapeau `Hamlet:<id>`) ; les rumeurs citent le lieu-dit non découvert le plus proche.
+
+### Tournées des marchands
+
+`HamletTrips.morning` : pour chaque lieu-dit posé sans tournée (5 au plus dans le monde), 40 % de chances qu'un
+marchand (70 %) ou une caravane de 3 porteurs (30 %) parte d'un village à moins de 900 blocs (le plus proche a plus de
+chances), sauf si ce village est rival de celui du lieu-dit. Aller par `Routes.path` (route balisée ou trajet à pied
+sec) du cœur du village à la place du marché, de jour seulement ; séjour de 3 heures de jeu sur la place ; retour. La
+simulation est celle des voyageurs (`Walk` : vrais PNJ à moins de 64 blocs d'un joueur, sinon 3 blocs/s).
+
+- Arrivée : chaque marcheur compte un passage au lieu-dit (`Links.pass`, clé `H:<id>`, fenêtre de 7 jours). À 4
+  passages, le lieu-dit devient **animé** : annonce aux joueurs proches et au village, troc élargi.
+- Retour : +1 d'essor au village (caravane : 1 par porteur rentré, 3 au plus), +1 de relation avec le village du
+  lieu-dit. Tous les marcheurs tués : annonce « jamais revenu ».
+- Dialogue `Monde_Marchand_LieuDit` : troc des voyageurs du peuple (rang Toléré), « où vas-tu ? », rumeurs.
+
+État sauvé (partie `HamletTrips`) : `id = lieu-dit|village|M ou C|étape|blocs|marcheurs|fin du séjour` et
+`~last:<lieu-dit> = village` (dernier venu, pour « qui vient commercer ici ? »).
+
+### Commandes
+
+`/monde etat` ajoute le nombre de lieux-dits et les tournées en cours. Admin : `/monde lieudit` (état du lieu-dit le
+plus proche à 200 blocs ; sinon, ou avec `--genre <Genre>`, en prévoit un à la place du joueur, du peuple du village le
+plus proche et tourné vers lui), `/monde commerce [--genre caravane]` (un marchand du village le plus proche part vers
+le lieu-dit le plus proche).
+
+### Tester en jeu (lieux-dits)
+
+1. Loin d'un village (au moins rayon + 70 blocs), `/monde lieudit --genre Forge` : le lieu-dit se pose à l'approche ;
+   vérifier le terrassement, l'orientation (place vers le village) et les bancs vanilla en décor.
+2. Parler au tenancier : troc, « qui vient commercer ici ? » ; `/monde lieudit` montre l'état.
+3. `/monde commerce --genre caravane`, suivre la caravane jusqu'à la place, attendre 3 h de jeu, la voir repartir.
+4. Quatre passages en 7 jours (quatre `/monde commerce` d'un marchand, ou une caravane et un marchand) : annonce
+   « animé », troc élargi.
+5. Nouveau monde avec plusieurs villages éloignés : lieux-dits le long des routes et autour des villages (`/monde etat`).
+
+### À vérifier en jeu (lieux-dits)
+
+- Orientation des prefabs de chaque peuple (la table des rotations suppose la porte au sud comme les avant-postes).
+- Emprises relevées pour les nouveaux prefabs (mine vanilla, silo, étal) : pas de bâtiment qui déborde sur un autre.
+- Les habitants restent près de la place (pas de laisse : ils errent selon leur rôle).
+- Le marchand attend bien sur la place et reprend la route après le séjour.

@@ -1,0 +1,23 @@
+{
+  "$Comment": "Lieu-dit Mine isolée (Trork), généré par tools/generate_hamlets.py depuis tools/hamlets.py. Bâtiments : « chemin x z rot côté chance x0 x1 z0 z1 haut » dans le repère de la place (bâtiment principal au nord) ; un tirage par côté (W, E) choisit au plus un bâtiment.",
+  "People": "Trork",
+  "Type": "Mine",
+  "NameKey": "nakasar_peuples.hamlet.type.Mine",
+  "Icon": "Tool_Pickaxe_Crude",
+  "Rule": "ROCK",
+  "Weight": 3,
+  "Buildings": [
+    "Npc/Trork/Burrow/Trork_Burrow_Trork_Burrow_002 0 -8 0 M 1 -4 4 -12 -4 11",
+    "Npc/Trork/Resource/Rock/Stone/Trork_Resource_Rock_Stone_001 7 -7 0 E 1 7 8 -8 -7 3",
+    "Npc/Trork/Resource/Rock/Stone/Trork_Resource_Rock_Stone_005 -9 -8 0 W 1 -9 -7 -9 -7 3"
+  ],
+  "Decor": [],
+  "Residents": [
+    "Nakasar_Peuples_Trork_Hamlet_Keeper",
+    "Nakasar_Peuples_Trork_Hamlet_Worker",
+    "Nakasar_Peuples_Trork_Hamlet_Worker"
+  ],
+  "Dialogue": "Monde_LieuDit_Mine",
+  "Shop": "Nakasar_Peuples_Hamlet_Trork_Mine",
+  "ShopBusy": "Nakasar_Peuples_Hamlet_Trork_Mine_Anime"
+}

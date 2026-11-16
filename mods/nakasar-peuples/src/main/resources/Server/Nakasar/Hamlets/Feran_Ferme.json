@@ -1,0 +1,21 @@
+{
+  "$Comment": "Lieu-dit Ferme isolée (Feran), généré par tools/generate_hamlets.py depuis tools/hamlets.py. Bâtiments : « chemin x z rot côté chance x0 x1 z0 z1 haut » dans le repère de la place (bâtiment principal au nord) ; un tirage par côté (W, E) choisit au plus un bâtiment.",
+  "People": "Feran",
+  "Type": "Ferme",
+  "NameKey": "nakasar_peuples.hamlet.type.Ferme",
+  "Icon": "Plant_Crop_Wheat_Item",
+  "Rule": "FERTILE",
+  "Weight": 4,
+  "Buildings": [
+    "Npc/Feran/Tier3/Huts/Feran_Tier3_Huts_001 0 -9 0 M 1 -5 5 -14 -4 6",
+    "Npc/Feran/Tier2/Wall/Feran_Tier2_Wall_002 10 -8 0 E 1 8 12 -9 -8 4"
+  ],
+  "Decor": [],
+  "Residents": [
+    "Nakasar_Peuples_Feran_Hamlet_Keeper",
+    "Nakasar_Peuples_Feran_Hamlet_Worker"
+  ],
+  "Dialogue": "Monde_LieuDit_Ferme",
+  "Shop": "Nakasar_Peuples_Hamlet_Feran_Ferme",
+  "ShopBusy": "Nakasar_Peuples_Hamlet_Feran_Ferme_Anime"
+}

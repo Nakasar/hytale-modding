@@ -863,3 +863,15 @@ Monuments/Incidental/Slothian/Land/Temple/Incidental_Slothian_Slothian_Temple_00
 Monuments/Incidental/Slothian/Land/Temple/Incidental_Slothian_Slothian_Temple_003 -3 4 -2 16 -11 11
 Monuments/Incidental/Slothian/Land/Merchant/Incidental_Slothian_Merchant_Slothian_Merchant_001 -3 3 0 3 -5 4
 Monuments/Incidental/Slothian/Land/Hunting/Incidental_Slothian_Slothian_Hunting_001 -4 4 0 11 -4 3
+# Lieux-dits (tools/hamlets.py, Kevin 2026-11-16) : monuments vanilla relevés dans Assets.zip le 2026-11-16, bornes = blocs
+# bruts moins l'ancre du fichier, sans Block_Spawner_Block (aucun Prefab_Spawner_Block dans ceux-ci).
+Monuments/Unique/Start_Mine/Unique_Start_Mine_001 -7 6 -14 8 -8 10
+Monuments/Incidental/Sandstone/Grass/Well/Incidental_Grass_Well_003 -4 4 -8 4 -4 5
+Monuments/Encounter/Zone2/Tier3/Tradingpost/Tent/Encounter_Zone2_Tier3_001 -5 5 -3 6 -3 3
+Monuments/Encounter/Zone2/Tier3/Tradingpost/Tent/Encounter_Zone2_Tier3_003 -5 5 -3 6 -3 3
+Monuments/Encounter/Zone2/Tier3/Tradingpost/Building_Small/Encounter_Tier3_Building_Small_002 -7 8 -5 11 -6 6
+Monuments/Incidental/Volcanic/Farm/Incidental_Volcanic_003 -7 5 -7 8 -5 4
+Monuments/Encounter/Zone4/Tier4/Village/Farm/Grainsilo/Encounter_Tier4_Grainsilo_001 -3 4 -6 11 -4 5
+Monuments/Incidental/Basalt/Farm/Incidental_Basalt_002 -5 3 -7 5 -6 4
+Monuments/Encounter/Zone4/Tier4/Village/Farm/Marketstall/Encounter_Tier4_Marketstall_001 -2 4 -6 4 -3 2
+Monuments/Encounter/Zone4/Tier4/Village/Farm/Storage/Encounter_Tier4_Storage_001 -3 4 -6 4 -4 4

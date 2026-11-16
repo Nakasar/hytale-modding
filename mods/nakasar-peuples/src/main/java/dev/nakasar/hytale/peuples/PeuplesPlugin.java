@@ -155,6 +155,14 @@ public final class PeuplesPlugin extends JavaPlugin {
                 .setKeyFunction(dev.nakasar.hytale.peuples.workshop.Workshop::getId)
                 .build());
 
+        // Lieux-dits (monde vivant) : un asset par genre et par peuple, généré par tools/generate_hamlets.py.
+        getAssetRegistry().register(HytaleAssetStore.builder(dev.nakasar.hytale.peuples.world.Hamlet.class,
+                        new DefaultAssetMap<String, dev.nakasar.hytale.peuples.world.Hamlet>())
+                .setPath(dev.nakasar.hytale.peuples.world.Hamlet.PATH)
+                .setCodec(dev.nakasar.hytale.peuples.world.Hamlet.CODEC)
+                .setKeyFunction(dev.nakasar.hytale.peuples.world.Hamlet::getId)
+                .build());
+
         getCodecRegistry(Interaction.CODEC).register(OpenBoardInteraction.TYPE_ID, OpenBoardInteraction.class, OpenBoardInteraction.CODEC);
         getCodecRegistry(Interaction.CODEC).register(WarPaintInteraction.TYPE_ID, WarPaintInteraction.class, WarPaintInteraction.CODEC);
 

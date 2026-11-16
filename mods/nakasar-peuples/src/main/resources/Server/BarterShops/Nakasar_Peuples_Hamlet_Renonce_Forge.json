@@ -1,0 +1,74 @@
+{
+  "$Comment": "Troc du lieu-dit Forge (Renonce), généré par tools/generate_hamlets.py : faveurs du peuple contre marchandises vanilla ; ouvert au rang Toléré dans le village du lieu-dit.",
+  "DisplayNameKey": "nakasar_peuples.barter.Hamlet_Renonce_Forge.title",
+  "RefreshInterval": {
+    "Days": 2
+  },
+  "RestockHour": 6,
+  "TradeSlots": [
+    {
+      "Type": "Fixed",
+      "Trade": {
+        "Output": {
+          "ItemId": "Ingredient_Bar_Copper",
+          "Quantity": 2
+        },
+        "Input": [
+          {
+            "ItemId": "Nakasar_Peuples_Favor_Renonce",
+            "Quantity": 2
+          }
+        ],
+        "Stock": 6
+      }
+    },
+    {
+      "Type": "Fixed",
+      "Trade": {
+        "Output": {
+          "ItemId": "Tool_Pickaxe_Copper",
+          "Quantity": 1
+        },
+        "Input": [
+          {
+            "ItemId": "Nakasar_Peuples_Favor_Renonce",
+            "Quantity": 3
+          }
+        ],
+        "Stock": 6
+      }
+    },
+    {
+      "Type": "Fixed",
+      "Trade": {
+        "Output": {
+          "ItemId": "Tool_Hatchet_Copper",
+          "Quantity": 1
+        },
+        "Input": [
+          {
+            "ItemId": "Nakasar_Peuples_Favor_Renonce",
+            "Quantity": 3
+          }
+        ],
+        "Stock": 6
+      }
+    },
+    {
+      "Type": "Fixed",
+      "Trade": {
+        "Output": {
+          "ItemId": "Nakasar_Peuples_Favor_Renonce",
+          "Quantity": 1
+        },
+        "Input": [
+          {
+            "ItemId": "Ingredient_Charcoal",
+            "Quantity": 12
+          }
+        ],
+        "Stock": 4
+      }
+    }
+  ]
+}

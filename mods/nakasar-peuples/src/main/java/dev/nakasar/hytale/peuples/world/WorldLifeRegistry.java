@@ -38,7 +38,11 @@ public final class WorldLifeRegistry implements Resource<EntityStore> {
         /** Structures temporaires collées (blocs à rendre) : id = blocs ({@link TempStructures}). */
         STRUCTURES("Structures"),
         /** Calendrier : nom = valeur ({@link Calendar}). */
-        CALENDAR("Calendar");
+        CALENDAR("Calendar"),
+        /** Lieux-dits : id = état, plus les marques « ~seed:… » ({@link Hamlets}). */
+        HAMLETS("Hamlets"),
+        /** Marchands et caravanes en route vers un lieu-dit : id = état ({@link HamletTrips}). */
+        HAMLET_TRIPS("HamletTrips");
 
         final String key;
 
@@ -70,6 +74,12 @@ public final class WorldLifeRegistry implements Resource<EntityStore> {
             .documentation("Monde vivant : « clé=valeur », lu par le Java du mod.")
             .add()
             .append(new KeyedCodec<>(Part.CALENDAR.key, Codec.STRING_ARRAY), (r, a) -> r.read(Part.CALENDAR, a), r -> r.write(Part.CALENDAR))
+            .documentation("Monde vivant : « clé=valeur », lu par le Java du mod.")
+            .add()
+            .append(new KeyedCodec<>(Part.HAMLETS.key, Codec.STRING_ARRAY), (r, a) -> r.read(Part.HAMLETS, a), r -> r.write(Part.HAMLETS))
+            .documentation("Monde vivant : « clé=valeur », lu par le Java du mod.")
+            .add()
+            .append(new KeyedCodec<>(Part.HAMLET_TRIPS.key, Codec.STRING_ARRAY), (r, a) -> r.read(Part.HAMLET_TRIPS, a), r -> r.write(Part.HAMLET_TRIPS))
             .documentation("Monde vivant : « clé=valeur », lu par le Java du mod.")
             .add()
             .build();

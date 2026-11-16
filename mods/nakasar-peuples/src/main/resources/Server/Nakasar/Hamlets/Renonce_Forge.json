@@ -1,0 +1,27 @@
+{
+  "$Comment": "Lieu-dit Forge (Renonce), généré par tools/generate_hamlets.py depuis tools/hamlets.py. Bâtiments : « chemin x z rot côté chance x0 x1 z0 z1 haut » dans le repère de la place (bâtiment principal au nord) ; un tirage par côté (W, E) choisit au plus un bâtiment.",
+  "People": "Renonce",
+  "Type": "Forge",
+  "NameKey": "nakasar_peuples.hamlet.type.Forge",
+  "Icon": "Ingredient_Bar_Iron",
+  "Rule": "NONE",
+  "Weight": 3,
+  "Buildings": [
+    "Npc/Outlander/Misc/Outlander_Misc_003 0 -11 0 M 1 -6 6 -18 -4 7",
+    "Monuments/Unique/Start_Mine/Unique_Start_Mine_001 -15 -14 0 W 0.5 -22 -9 -22 -4 9",
+    "Npc/Outlander/Houses/Tier0/Outlander_Houses_Tier0_004 13 -11 0 E 0.35 9 17 -16 -6 5",
+    "Npc/Outlander/Towers/Tier1/Outlander_Towers_Tier1_002 14 -11 0 E 0.35 9 16 -13 -8 13"
+  ],
+  "Decor": [
+    "-2 0 -2 0 Bench_Furnace",
+    "2 0 -2 0 Bench_Weapon",
+    "0 0 -2 0 Furniture_Village_Crate"
+  ],
+  "Residents": [
+    "Nakasar_Peuples_Renonce_Hamlet_Keeper",
+    "Nakasar_Peuples_Renonce_Hamlet_Worker"
+  ],
+  "Dialogue": "Monde_LieuDit_Forge",
+  "Shop": "Nakasar_Peuples_Hamlet_Renonce_Forge",
+  "ShopBusy": "Nakasar_Peuples_Hamlet_Renonce_Forge_Anime"
+}

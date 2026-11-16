@@ -1,0 +1,22 @@
+{
+  "$Comment": "Lieu-dit Scierie (Kweebec), généré par tools/generate_hamlets.py depuis tools/hamlets.py. Bâtiments : « chemin x z rot côté chance x0 x1 z0 z1 haut » dans le repère de la place (bâtiment principal au nord) ; un tirage par côté (W, E) choisit au plus un bâtiment.",
+  "People": "Kweebec",
+  "Type": "Scierie",
+  "NameKey": "nakasar_peuples.hamlet.type.Scierie",
+  "Icon": "Tool_Hatchet_Crude",
+  "Rule": "TREES",
+  "Weight": 3,
+  "Buildings": [
+    "Npc/Kweebec/Redwood/Normal_Plot/House/Kweebec_Redwood_Normal_Plot_House_001 0 -10 0 M 1 -5 6 -17 -4 14",
+    "Npc/Trork/Resource/Lumber/Forest_Aspen/Trork_Resource_Lumber_Forest_Aspen_001 12 -10 0 E 1 9 14 -14 -7 3",
+    "Npc/Trork/Resource/Lumber/Forest_Aspen/Trork_Resource_Lumber_Forest_Aspen_002 -10 -11 0 W 1 -12 -8 -14 -8 3"
+  ],
+  "Decor": [],
+  "Residents": [
+    "Nakasar_Peuples_Kweebec_Hamlet_Keeper",
+    "Nakasar_Peuples_Kweebec_Hamlet_Worker"
+  ],
+  "Dialogue": "Monde_LieuDit_Scierie",
+  "Shop": "Nakasar_Peuples_Hamlet_Kweebec_Scierie",
+  "ShopBusy": "Nakasar_Peuples_Hamlet_Kweebec_Scierie_Anime"
+}

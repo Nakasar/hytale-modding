@@ -1,0 +1,25 @@
+{
+  "$Comment": "Lieu-dit Comptoir commercial (Renonce), généré par tools/generate_hamlets.py depuis tools/hamlets.py. Bâtiments : « chemin x z rot côté chance x0 x1 z0 z1 haut » dans le repère de la place (bâtiment principal au nord) ; un tirage par côté (W, E) choisit au plus un bâtiment.",
+  "People": "Renonce",
+  "Type": "Comptoir",
+  "NameKey": "nakasar_peuples.hamlet.type.Comptoir",
+  "Icon": "Furniture_Village_Crate",
+  "Rule": "NONE",
+  "Weight": 4,
+  "Buildings": [
+    "Npc/Outlander/Houses/Tier1/Outlander_Houses_Tier1_005 -1 -13 0 M 1 -6 6 -19 -4 7",
+    "Npc/Outlander/Misc/Outlander_Misc_002 -16 -12 0 W 1 -23 -9 -19 -5 6",
+    "Npc/Outlander/Braziers/Outlander_Braziers_Npc_Outlander_Brazier_001 10 -12 0 E 1 9 11 -13 -11 4"
+  ],
+  "Decor": [
+    "-2 0 -1 0 Furniture_Village_Crate",
+    "2 0 -1 0 Furniture_Tavern_Barrel"
+  ],
+  "Residents": [
+    "Nakasar_Peuples_Renonce_Hamlet_Keeper",
+    "Nakasar_Peuples_Renonce_Hamlet_Worker"
+  ],
+  "Dialogue": "Monde_LieuDit_Comptoir",
+  "Shop": "Nakasar_Peuples_Hamlet_Renonce_Comptoir",
+  "ShopBusy": "Nakasar_Peuples_Hamlet_Renonce_Comptoir_Anime"
+}

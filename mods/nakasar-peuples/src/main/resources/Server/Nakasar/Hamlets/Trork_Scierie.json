@@ -1,0 +1,22 @@
+{
+  "$Comment": "Lieu-dit Scierie (Trork), généré par tools/generate_hamlets.py depuis tools/hamlets.py. Bâtiments : « chemin x z rot côté chance x0 x1 z0 z1 haut » dans le repère de la place (bâtiment principal au nord) ; un tirage par côté (W, E) choisit au plus un bâtiment.",
+  "People": "Trork",
+  "Type": "Scierie",
+  "NameKey": "nakasar_peuples.hamlet.type.Scierie",
+  "Icon": "Tool_Hatchet_Crude",
+  "Rule": "TREES",
+  "Weight": 3,
+  "Buildings": [
+    "Npc/Trork/Warehouse/Trork_Warehouse_Trork_Warehouse_001 0 -7 0 M 1 -4 4 -12 -4 8",
+    "Npc/Trork/Resource/Lumber/Forest_Autumn/Trork_Resource_Lumber_Forest_Autumn_001 10 -7 0 E 1 7 12 -11 -4 3",
+    "Npc/Trork/Resource/Lumber/Forest_Autumn/Trork_Resource_Lumber_Forest_Autumn_003 -8 -8 0 W 1 -11 -7 -11 -5 3"
+  ],
+  "Decor": [],
+  "Residents": [
+    "Nakasar_Peuples_Trork_Hamlet_Keeper",
+    "Nakasar_Peuples_Trork_Hamlet_Worker"
+  ],
+  "Dialogue": "Monde_LieuDit_Scierie",
+  "Shop": "Nakasar_Peuples_Hamlet_Trork_Scierie",
+  "ShopBusy": "Nakasar_Peuples_Hamlet_Trork_Scierie_Anime"
+}

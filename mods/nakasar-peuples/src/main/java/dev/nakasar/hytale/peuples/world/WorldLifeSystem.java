@@ -73,6 +73,8 @@ public final class WorldLifeSystem extends TickingSystem<EntityStore> {
                     Surroundings.step(world, s, players);
                     Traces.step(world, s, players);
                     Inns.step(world, s, players);
+                    Hamlets.step(world, s, players);
+                    HamletTrips.step(world, s, players, slowDt);
                     Camps.step(world, s, players);
                     Relations.step(world, s, players);
                     Sites.retry(world);
@@ -97,5 +99,7 @@ public final class WorldLifeSystem extends TickingSystem<EntityStore> {
         Travellers.morning(world, store, random);
         Camps.morning(world, store, day, random);
         Inns.morning(world, store, day);
+        Hamlets.seed(world);
+        HamletTrips.morning(world, store, random);
     }
 }

@@ -91,6 +91,22 @@ public final class WorldDialogueTypes {
                         }
                     };
                 }
+                case "HamletShop", "HamletVisits" -> {
+                    Hamlets.Place h = Hamlets.of(world, npc);
+                    if (h == null) {
+                        return false;
+                    }
+                    return action.equals("HamletShop") ? Hamlets.openShop(world, c.store(), c.ref(), c.playerRef(), h)
+                            : Hamlets.sayVisits(world, c.store(), c.playerRef(), h);
+                }
+                case "TripShop", "TripWhere" -> {
+                    HamletTrips.Trip t = HamletTrips.of(world, npc);
+                    if (t == null) {
+                        return false;
+                    }
+                    return action.equals("TripShop") ? HamletTrips.openShop(world, c.store(), c.ref(), c.playerRef(), t)
+                            : HamletTrips.where(world, c.store(), c.playerRef(), t);
+                }
                 case "CampTurnIn", "CampDefend", "CampDonate", "CampShop" -> {
                     Camps.Camp camp = Camps.of(world, npc);
                     if (camp == null) {

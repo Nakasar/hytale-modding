@@ -110,6 +110,7 @@ public class ValidateAssets {
         CODECS.put("Nakasar/VillageLayouts/", "dev.nakasar.hytale.peuples.village.VillageLayout");
         CODECS.put("Nakasar/Requests/", "dev.nakasar.hytale.peuples.request.RequestTemplate");
         CODECS.put("Nakasar/Workshops/", "dev.nakasar.hytale.peuples.workshop.Workshop");
+        CODECS.put("Nakasar/Hamlets/", "dev.nakasar.hytale.peuples.world.Hamlet");
         CODECS.put("WorldEvent/Stage/", WE + "event.StageAsset");
     }
 
@@ -1369,6 +1370,117 @@ public class ValidateAssets {
      * format « chemin x z rot », emprise [x0, x1, z0, z1] au nord de la fondation, objet de fondation du pack, règle connue,
      * villageois (rôle du mod présent, ou vanilla relevé) et décor « dx dy dz lacet Bloc ».
      */
+    /**
+     * Lieux-dits ({@code Nakasar/Hamlets}, tools/generate_hamlets.py) : bâtiments « chemin x z rot côté chance x0 x1 z0 z1
+     * haut » bien formés, un seul principal (M), chances d'un côté à 1 au plus, prefabs vanilla relevés, décor en blocs
+     * connus, 1 à 3 habitants dont les rôles existent, dialogue et trocs présents.
+     */
+    private static int checkHamlets(Path root, String prefabsFile) throws Exception {
+        Path dir = root.resolve("Nakasar/Hamlets");
+        if (!Files.isDirectory(dir)) {
+            return 0;
+        }
+        Set<String> known = new HashSet<>();
+        if (prefabsFile != null) {
+            for (String line : Files.readAllLines(Path.of(prefabsFile))) {
+                if (!line.isBlank() && !line.startsWith("#")) {
+                    known.add(line.trim().split("\\s+")[0]);
+                }
+            }
+        }
+        int errors = 0;
+        int count = 0;
+        try (Stream<Path> walk = Files.list(dir)) {
+            for (Path f : walk.filter(p -> p.toString().endsWith(".json")).sorted().toList()) {
+                count++;
+                BsonDocument doc = BsonDocument.parse(Files.readString(f));
+                List<String> problems = new ArrayList<>();
+                String rule = doc.containsKey("Rule") ? doc.getString("Rule").getValue() : "NONE";
+                if (!ANNEX_RULES.contains(rule)) {
+                    problems.add("règle inconnue " + rule);
+                }
+                int mains = 0;
+                Map<String, Double> sides = new LinkedHashMap<>();
+                if (!doc.containsKey("Buildings") || doc.getArray("Buildings").isEmpty()) {
+                    problems.add("aucun bâtiment");
+                } else {
+                    for (BsonValue v : doc.getArray("Buildings")) {
+                        String[] p = v.asString().getValue().trim().split("\\s+");
+                        if (p.length != 11) {
+                            problems.add("bâtiment mal formé « " + v.asString().getValue() + " »");
+                            continue;
+                        }
+                        if (prefabsFile != null && !known.contains(p[0])) {
+                            problems.add("prefab vanilla non relevé " + p[0] + " (tools/vanilla-prefabs-0.7.2.txt)");
+                        }
+                        try {
+                            double chance = Double.parseDouble(p[5]);
+                            for (int i : new int[] {1, 2, 3, 6, 7, 8, 9, 10}) {
+                                Integer.parseInt(p[i]);
+                            }
+                            if ("M".equals(p[4])) {
+                                mains++;
+                            } else if ("W".equals(p[4]) || "E".equals(p[4])) {
+                                sides.merge(p[4], chance, Double::sum);
+                            } else {
+                                problems.add("côté inconnu " + p[4] + " (M, W ou E)");
+                            }
+                        } catch (NumberFormatException e) {
+                            problems.add("nombre illisible dans « " + v.asString().getValue() + " »");
+                        }
+                    }
+                }
+                if (mains != 1) {
+                    problems.add("il faut un seul bâtiment principal (côté M), pas " + mains);
+                }
+                for (Map.Entry<String, Double> e : sides.entrySet()) {
+                    if (e.getValue() > 1.0001) {
+                        problems.add("chances du côté " + e.getKey() + " au-delà de 1 : " + e.getValue());
+                    }
+                }
+                if (doc.containsKey("Decor")) {
+                    for (BsonValue v : doc.getArray("Decor")) {
+                        String[] p = v.asString().getValue().trim().split("\\s+");
+                        if (p.length != 5) {
+                            problems.add("décor mal formé « " + v.asString().getValue() + " »");
+                        } else if (WORKSHOP_BLOCKS != null && !WORKSHOP_BLOCKS.contains(p[4])) {
+                            problems.add("bloc de décor inconnu " + p[4]);
+                        }
+                    }
+                }
+                int residents = doc.containsKey("Residents") ? doc.getArray("Residents").size() : 0;
+                if (residents < 1 || residents > 3) {
+                    problems.add("il faut 1 à 3 habitants, pas " + residents);
+                } else {
+                    for (BsonValue v : doc.getArray("Residents")) {
+                        String role = v.asString().getValue();
+                        if (!Files.isRegularFile(root.resolve("NPC/Roles/Nakasar/Peuples/" + role + ".json"))) {
+                            problems.add("rôle d'habitant absent " + role);
+                        }
+                    }
+                }
+                String dialogue = doc.containsKey("Dialogue") ? doc.getString("Dialogue").getValue() : "";
+                try (Stream<Path> d = Files.walk(root.resolve("Nakasar/Dialogues"))) {
+                    if (d.noneMatch(x -> x.getFileName().toString().equals(dialogue + ".json"))) {
+                        problems.add("dialogue absent " + dialogue);
+                    }
+                }
+                for (String key : new String[] {"Shop", "ShopBusy"}) {
+                    String shop = doc.containsKey(key) ? doc.getString(key).getValue() : "";
+                    if (!Files.isRegularFile(root.resolve("BarterShops/" + shop + ".json"))) {
+                        problems.add("troc absent " + key + " " + shop);
+                    }
+                }
+                for (String problem : problems) {
+                    errors++;
+                    System.out.println("ERROR " + root.relativize(f) + " : " + problem);
+                }
+            }
+        }
+        System.out.println("Lieux-dits : " + count + " genres vérifiés");
+        return errors;
+    }
+
     private static void checkAnnex(Path root, BsonDocument annex, String prefabsFile, List<String> problems) throws Exception {
         Set<String> known = new HashSet<>();
         if (prefabsFile != null) {
@@ -1897,6 +2009,7 @@ public class ValidateAssets {
         }
         WORKSHOP_NPCS = System.getProperty("refs") == null ? null : vanillaNpcRefs();
         errors += checkWorkshops(root, System.getProperty("prefabs"));
+        errors += checkHamlets(root, System.getProperty("prefabs"));
         errors += checkTargetBlocks(root);
         errors += checkMapMarkerIcons(root);
         errors += checkReputation(root);
