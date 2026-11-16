@@ -1537,6 +1537,23 @@ Kevin (2026-11-16), refait d'après la maquette Claude Design « Panneau du vill
   dernier ce qui manque (ferme de niveau II, village de palier 2).
 - **Sur les routes** (4 lignes) : voyageurs partis du village puis arrivants, genre coloré, jauge `at / longueur`.
 
+### Trajets à pied sec (`annex/LandPath`)
+
+Kevin (2026-11-16) : les PNJ qui vont d'un point à un autre ne traversent plus l'eau. Sans route balisée complète,
+`Routes.path` demande à `LandPath.find` un trajet par la terre (voyageurs, caravanes, messagers, convois des
+avant-postes, troupeaux de la migration, emplacement des auberges et vestiges, qui suivent tous `Routes.path`).
+
+- Relief et eau lus dans le générateur vanilla sans charger de chunk : `ChunkGenerator.getHeight(seed, x, z)` et
+  `Biome.getWaterContainer()` (une colonne est mouillée si une entrée a `max > sol` et `shouldPopulate`), comme
+  `UniquePrefabGenerator.getHeight` vanilla.
+- Ligne droite gardée si elle est sèche (sondée tous les 4 blocs). Sinon A* sur des cases de 16 blocs (8 voisins, chaque
+  pas sondé tous les 4 blocs, coins de lac interdits en diagonale, dénivelé 3 par bloc et 20 par bloc au-delà de 8),
+  boîte = les deux points + max(192, 60 % de la distance), 6000 cases au plus ; puis lissage (on saute les points tant
+  que la ligne reste sèche). Pas de passage ou pas de générateur : ligne droite. Log INFO `trajet à pied sec`.
+- Une route balisée complète reste prioritaire (les joueurs peuvent y avoir posé un pont). Le terrain modifié par les
+  joueurs n'est pas vu (seul le terrain généré compte). Trajets et colonnes gardés en mémoire pour la session.
+- L'onglet Monde montre la progression sur la longueur du trajet réel.
+
 ### Onglets du panneau (`request/BoardTabs`)
 
 Les quatre pages du panneau (Tableau, Emplacements, Avant-postes, Monde) ont la même taille (1060 × 840) et la même

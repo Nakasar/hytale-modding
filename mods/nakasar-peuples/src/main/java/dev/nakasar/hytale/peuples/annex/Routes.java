@@ -13,7 +13,7 @@ import java.util.List;
  * Routes des convois : les joueurs posent des balises de route ({@value #BEACON}), communes à tous les villages. Deux
  * balises à moins de {@value #LINK} blocs (à l'horizontale) sont reliées ; les cœurs des villages, la sortie de
  * l'avant-poste et le dépôt d'arrivée sont des balises aussi. Un convoi prend le plus court chemin de balise en balise
- * ({@link #path}) ; sans route complète, la ligne droite.
+ * ({@link #path}) ; sans route complète, un trajet à pied sec par la terre ({@link LandPath}), ou la ligne droite.
  */
 public final class Routes {
 
@@ -130,7 +130,7 @@ public final class Routes {
 
     /**
      * Plus court chemin de (fx, fz) à (tx, tz) par les balises du monde et les cœurs des villages (liens de
-     * {@value #LINK} blocs au plus). Sans chemin, la ligne droite.
+     * {@value #LINK} blocs au plus). Sans chemin, le trajet à pied sec de {@link LandPath}, ou la ligne droite.
      */
     public static Path path(World world, double fx, double fz, double tx, double tz) {
         VillageRegistry registry = Villages.registry(world);
@@ -178,8 +178,14 @@ public final class Routes {
         List<double[]> points = new ArrayList<>();
         int beacons = 0;
         if (prev[1] < 0) {
-            points.add(new double[] {fx, fz});
-            points.add(new double[] {tx, tz});
+            // Pas de route balisée complète : à pied sec par la terre (LandPath), sinon la ligne droite.
+            List<double[]> land = LandPath.find(world, fx, fz, tx, tz);
+            if (land != null) {
+                points.addAll(land);
+            } else {
+                points.add(new double[] {fx, fz});
+                points.add(new double[] {tx, tz});
+            }
         } else {
             for (int i = 1; i >= 0; i = prev[i]) {
                 double[] p = nodes.get(i);
