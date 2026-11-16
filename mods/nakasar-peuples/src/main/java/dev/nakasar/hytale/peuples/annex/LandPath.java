@@ -116,6 +116,38 @@ public final class LandPath {
         return path;
     }
 
+    /**
+     * Le site (x, z) est sec et assez plat d'après le terrain (réel s'il est chargé, généré sinon) : aucun point mouillé
+     * dans le rayon, et au plus `maxRelief` blocs entre le plus bas et le plus haut des points connus. Vrai sans
+     * générateur (on ne sait pas : la pose vérifiera le terrain réel).
+     */
+    public static synchronized boolean drySite(World world, int x, int z, int radius, int maxRelief) {
+        ChunkGenerator g = Zones.generator(world);
+        if (g == null) {
+            return true;
+        }
+        Probe p = new Probe(world, g, Zones.seed(world));
+        int lo = Integer.MAX_VALUE;
+        int hi = Integer.MIN_VALUE;
+        for (int dx = -radius; dx <= radius; dx += 6) {
+            for (int dz = -radius; dz <= radius; dz += 6) {
+                if (dx * dx + dz * dz > radius * radius) {
+                    continue;
+                }
+                int h = p.height(x + dx, z + dz);
+                if (h == WET) {
+                    return false;
+                }
+                if (h == UNKNOWN) {
+                    continue;
+                }
+                lo = Math.min(lo, h);
+                hi = Math.max(hi, h);
+            }
+        }
+        return lo == Integer.MAX_VALUE || hi - lo <= maxRelief;
+    }
+
     // ---- Recherche ----
 
     private record Node(int cx, int cz, double f) {

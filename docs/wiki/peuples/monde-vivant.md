@@ -74,9 +74,13 @@ Entre les villages, il reste des ruines, de vieux campements et des sanctuaires.
 
 Une fête dure 20 minutes, la foire 30 minutes.
 
+## Lieux-dits
+
+Mines isolées, fermes, moulins, casernes, forges et comptoirs : de petits groupes de bâtiments jalonnent les routes et les alentours des villages, et les marchands des villages viennent y commercer. Voir [Les lieux-dits](lieux-dits.md).
+
 ## Rumeurs
 
-Voyageurs, aubergistes et campeurs racontent ce qui se passe : caravanes en route, campements, villages brouillés ou alliés, prochaine foire, vestiges que vous n'avez pas encore vus (avec la distance et la direction).
+Voyageurs, aubergistes et campeurs racontent ce qui se passe : caravanes en route, campements, villages brouillés ou alliés, prochaine foire, marchands en route vers un lieu-dit, lieux-dits et vestiges que vous n'avez pas encore vus (avec la distance et la direction).
 
 ## L'onglet Monde du panneau
 

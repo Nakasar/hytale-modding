@@ -1,0 +1,22 @@
+{
+  "$Comment": "Lieu-dit Ferme isolée (Kweebec), généré par tools/generate_hamlets.py depuis tools/hamlets.py. Bâtiments : « chemin x z rot côté chance x0 x1 z0 z1 haut » dans le repère de la place (bâtiment principal au nord) ; un tirage par côté (W, E) choisit au plus un bâtiment.",
+  "People": "Kweebec",
+  "Type": "Ferme",
+  "NameKey": "nakasar_peuples.hamlet.type.Ferme",
+  "Icon": "Plant_Crop_Wheat_Item",
+  "Rule": "FERTILE",
+  "Weight": 4,
+  "Buildings": [
+    "Npc/Kweebec/Redwood/Normal_Plot/Farm/Kweebec_Redwood_Normal_Plot_Farm_001 0 -10 0 M 1 -7 7 -16 -4 6",
+    "Npc/Kweebec/Redwood/Small_Plot/House/Kweebec_Redwood_Small_Plot_House_001 -13 -9 0 W 1 -17 -10 -13 -6 8",
+    "Npc/Kweebec/Oak/Bunny_Area/Kweebec_Oak_Bunny_Area_003 16 -10 0 E 0.6 10 22 -16 -4 2"
+  ],
+  "Decor": [],
+  "Residents": [
+    "Nakasar_Peuples_Kweebec_Hamlet_Keeper",
+    "Nakasar_Peuples_Kweebec_Hamlet_Worker"
+  ],
+  "Dialogue": "Monde_LieuDit_Ferme",
+  "Shop": "Nakasar_Peuples_Hamlet_Kweebec_Ferme",
+  "ShopBusy": "Nakasar_Peuples_Hamlet_Kweebec_Ferme_Anime"
+}

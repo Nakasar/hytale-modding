@@ -58,6 +58,11 @@ public final class Rumours {
                 out.add(Message.translation(KEYS + "inn").param("a", a.name()).param("b", b.name()));
             }
         }
+        out.addAll(HamletTrips.rumours(world));
+        Message hamlet = Hamlets.rumour(world, store, player);
+        if (hamlet != null) {
+            out.add(hamlet);
+        }
         Object[] fair = Calendar.nextFair(world, day);
         if (fair != null && fair[0] != null) {
             out.add(Message.translation(KEYS + "fair").param("village", ((Village) fair[0]).name()).param("days", ((Number) fair[1]).intValue()));

@@ -149,6 +149,7 @@ const sidebars = {
         "peuples/reputation",
         "peuples/villages",
         "peuples/monde-vivant",
+        "peuples/lieux-dits",
         "peuples/climats",
       ],
     },

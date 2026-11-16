@@ -1,0 +1,21 @@
+{
+  "$Comment": "Lieu-dit Ferme isolée (Renonce), généré par tools/generate_hamlets.py depuis tools/hamlets.py. Bâtiments : « chemin x z rot côté chance x0 x1 z0 z1 haut » dans le repère de la place (bâtiment principal au nord) ; un tirage par côté (W, E) choisit au plus un bâtiment.",
+  "People": "Renonce",
+  "Type": "Ferme",
+  "NameKey": "nakasar_peuples.hamlet.type.Ferme",
+  "Icon": "Plant_Crop_Wheat_Item",
+  "Rule": "FERTILE",
+  "Weight": 4,
+  "Buildings": [
+    "Npc/Outlander/Houses/Tier1/Outlander_Houses_Tier1_004 0 -12 0 M 1 -4 5 -19 -4 8",
+    "Npc/Outlander/Braziers/Outlander_Braziers_Npc_Outlander_Brazier_001 9 -12 0 E 1 8 10 -13 -11 4"
+  ],
+  "Decor": [],
+  "Residents": [
+    "Nakasar_Peuples_Renonce_Hamlet_Keeper",
+    "Nakasar_Peuples_Renonce_Hamlet_Worker"
+  ],
+  "Dialogue": "Monde_LieuDit_Ferme",
+  "Shop": "Nakasar_Peuples_Hamlet_Renonce_Ferme",
+  "ShopBusy": "Nakasar_Peuples_Hamlet_Renonce_Ferme_Anime"
+}

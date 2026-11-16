@@ -146,6 +146,8 @@ public final class WorldLife {
     private static void forgetInModules(Ref<EntityStore> ref) {
         Travellers.forget(ref);
         Inns.forget(ref);
+        Hamlets.forget(ref);
+        HamletTrips.forget(ref);
         Camps.forget(ref);
         Calendar.forget(ref);
         Surroundings.forget(ref);
@@ -389,6 +391,8 @@ public final class WorldLife {
         Ambushes.clearAll();
         Relations.clearAll();
         Inns.clearAll();
+        Hamlets.clearAll();
+        HamletTrips.clearAll();
         Camps.clearAll();
         Surroundings.clearAll();
         Hunts.clearAll();

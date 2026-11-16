@@ -1,0 +1,22 @@
+{
+  "$Comment": "Lieu-dit Mine isolée (Slothian), généré par tools/generate_hamlets.py depuis tools/hamlets.py. Bâtiments : « chemin x z rot côté chance x0 x1 z0 z1 haut » dans le repère de la place (bâtiment principal au nord) ; un tirage par côté (W, E) choisit au plus un bâtiment.",
+  "People": "Slothian",
+  "Type": "Mine",
+  "NameKey": "nakasar_peuples.hamlet.type.Mine",
+  "Icon": "Tool_Pickaxe_Crude",
+  "Rule": "ROCK",
+  "Weight": 3,
+  "Buildings": [
+    "Npc/Slothian/Disabled/House/Small/Slothian_Disabled_House_Small_001 0 -8 0 M 1 -8 9 -15 -4 11",
+    "Npc/Trork/Resource/Rock/Stone/Trork_Resource_Rock_Stone_003 12 -9 0 E 1 12 14 -10 -9 3"
+  ],
+  "Decor": [],
+  "Residents": [
+    "Nakasar_Peuples_Slothian_Hamlet_Keeper",
+    "Nakasar_Peuples_Slothian_Hamlet_Worker",
+    "Nakasar_Peuples_Slothian_Hamlet_Worker"
+  ],
+  "Dialogue": "Monde_LieuDit_Mine",
+  "Shop": "Nakasar_Peuples_Hamlet_Slothian_Mine",
+  "ShopBusy": "Nakasar_Peuples_Hamlet_Slothian_Mine_Anime"
+}

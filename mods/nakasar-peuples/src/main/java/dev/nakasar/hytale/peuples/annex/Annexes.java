@@ -393,8 +393,17 @@ public final class Annexes {
 
     /** Ce que le terrain doit offrir selon le type (ferme, mine, scierie, pêcherie), ou null s'il l'offre. */
     static Message rule(World world, Terrain terrain, People people, Workshop.Annex spec, int[] rect, int ground) {
+        return rule(world, terrain, people, spec.rule(), rect, ground);
+    }
+
+    /** Le terrain offre ce que demande la règle (FERTILE, ROCK, TREES, WATER ; toute autre : oui), lieux-dits compris. */
+    public static boolean ruleMet(World world, Terrain terrain, People people, String rule, int[] rect, int ground) {
+        return rule == null || rule(world, terrain, people, rule, rect, ground) == null;
+    }
+
+    private static Message rule(World world, Terrain terrain, People people, String ruleName, int[] rect, int ground) {
         ChunkStore chunks = world.getChunkStore();
-        switch (spec.rule()) {
+        switch (ruleName) {
             case "FERTILE" -> {
                 int total = 0;
                 int fertile = 0;
@@ -477,7 +486,7 @@ public final class Annexes {
     }
 
     /** Bloc du monde naturel (relief, plante, arbre), comme les chantiers du village. */
-    static boolean natural(String name) {
+    public static boolean natural(String name) {
         String base = name.startsWith("*") ? name.substring(1) : name;
         if (base.startsWith("Plant_") || base.startsWith("Ore_") || base.startsWith("Rubble_") || base.startsWith("Fluid_")) {
             return true;

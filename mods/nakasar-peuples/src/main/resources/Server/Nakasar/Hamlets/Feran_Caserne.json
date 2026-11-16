@@ -1,0 +1,23 @@
+{
+  "$Comment": "Lieu-dit Caserne (Feran), généré par tools/generate_hamlets.py depuis tools/hamlets.py. Bâtiments : « chemin x z rot côté chance x0 x1 z0 z1 haut » dans le repère de la place (bâtiment principal au nord) ; un tirage par côté (W, E) choisit au plus un bâtiment.",
+  "People": "Feran",
+  "Type": "Caserne",
+  "NameKey": "nakasar_peuples.hamlet.type.Caserne",
+  "Icon": "Weapon_Arrow_Crude",
+  "Rule": "NONE",
+  "Weight": 2,
+  "Buildings": [
+    "Npc/Feran/Tier2/Hut/Feran_Tier2_Hut_003 1 -14 0 M 1 -10 10 -24 -4 15",
+    "Npc/Feran/Portals_Oasis/Pillar_Hut/Feran_Tier3_Hut_001 -18 -14 0 W 1 -23 -13 -19 -9 6",
+    "Npc/Feran/Portals_Oasis/Pillar_Hut/Feran_Tier3_Hut_001 18 -14 0 E 1 13 23 -19 -9 6"
+  ],
+  "Decor": [],
+  "Residents": [
+    "Nakasar_Peuples_Feran_Hamlet_Keeper",
+    "Nakasar_Peuples_Feran_Hamlet_Sentry",
+    "Nakasar_Peuples_Feran_Hamlet_Sentry"
+  ],
+  "Dialogue": "Monde_LieuDit_Caserne",
+  "Shop": "Nakasar_Peuples_Hamlet_Feran_Caserne",
+  "ShopBusy": "Nakasar_Peuples_Hamlet_Feran_Caserne_Anime"
+}

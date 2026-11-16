@@ -40,6 +40,8 @@ public final class WorldCommand extends AbstractCommandCollection {
         addSubCommand(new AmbushCommand());
         addSubCommand(new CampCommand());
         addSubCommand(new InnCommand());
+        addSubCommand(new HamletCommand());
+        addSubCommand(new HamletTripCommand());
         addSubCommand(new RelationCommand());
         addSubCommand(new SkirmishCommand());
         addSubCommand(new CalendarCommand("fete"));
@@ -136,6 +138,13 @@ public final class WorldCommand extends AbstractCommandCollection {
             for (Inns.Inn inn : Inns.all(world)) {
                 player.sendMessage(Message.translation(KEYS + "state.inn").param("link", inn.link()).param("level", inn.level())
                         .param("open", inn.open() ? 1 : 0).param("x", inn.x()).param("z", inn.z()));
+            }
+            List<Hamlets.Place> hamlets = Hamlets.all(world);
+            List<HamletTrips.Trip> trips = HamletTrips.all(world);
+            player.sendMessage(Message.translation(Hamlets.KEYS + "state").param("count", hamlets.size())
+                    .param("built", (int) hamlets.stream().filter(h -> h.stage() == Hamlets.BUILT).count()).param("trips", trips.size()));
+            for (HamletTrips.Trip t : trips) {
+                player.sendMessage(HamletTrips.describe(world, store, t));
             }
             for (Links.Link l : Links.all(world)) {
                 int value = Relations.value(world, l.a(), l.b());
@@ -351,6 +360,98 @@ public final class WorldCommand extends AbstractCommandCollection {
                     player.sendMessage(Message.translation(KEYS + "calendar.stopped"));
                 }
             }
+        }
+    }
+
+    /** Distance où {@code /monde lieudit} et {@code /monde commerce} cherchent le lieu-dit le plus proche. */
+    static final int HAMLET_RANGE = 200;
+
+    /** Message d'état d'un lieu-dit (commande). */
+    static Message describe(World world, Store<EntityStore> store, Hamlets.Place h) {
+        Hamlet type = h.type();
+        Village v = Hamlets.village(world, h);
+        return Message.translation(Hamlets.KEYS + "cmd.state").param("name", h.name())
+                .param("people", Message.translation(type == null ? "?" : type.people().nameKey()))
+                .param("village", v == null ? "?" : v.name()).param("x", h.x()).param("z", h.z())
+                .param("stage", Message.translation(Hamlets.KEYS + "cmd.stage." + h.stage()))
+                .param("visits", Hamlets.visits(world, h, GameClock.day(store)));
+    }
+
+    /**
+     * {@code /monde lieudit [--genre]} : l'état du lieu-dit le plus proche ; avec un genre (ou s'il n'y en a aucun près),
+     * en prévoit un à la place du joueur, du peuple du village le plus proche et tourné vers lui.
+     */
+    private static final class HamletCommand extends AdminCommand {
+        private final OptionalArg<String> type = withOptionalArg("genre", Hamlets.KEYS + "cmd.hamlet.arg", ArgTypes.STRING);
+
+        HamletCommand() {
+            super("lieudit", Hamlets.KEYS + "cmd.hamlet.desc");
+        }
+
+        @Override
+        protected void execute(CommandContext context, Store<EntityStore> store, Ref<EntityStore> ref, PlayerRef player, World world) {
+            Vector3d at = player.getTransform().getPosition();
+            String arg = type.get(context);
+            Hamlets.Place near = Hamlets.nearest(world, at.x(), at.z(), HAMLET_RANGE);
+            if (arg == null && near != null) {
+                player.sendMessage(describe(world, store, near));
+                return;
+            }
+            Village v = nearest(world, player);
+            if (v == null) {
+                return;
+            }
+            Hamlet asset = null;
+            if (arg != null) {
+                List<String> names = new java.util.ArrayList<>();
+                for (Hamlet h : Hamlet.of(v.people())) {
+                    names.add(h.type());
+                    if (h.type().equalsIgnoreCase(arg)) {
+                        asset = h;
+                    }
+                }
+                if (asset == null) {
+                    player.sendMessage(Message.translation(Hamlets.KEYS + "cmd.unknownType").param("type", arg).param("types", String.join(", ", names)));
+                    return;
+                }
+            }
+            int x = (int) Math.floor(at.x());
+            int z = (int) Math.floor(at.z());
+            Hamlets.Place h = Hamlets.create(world, "C" + Long.toString(System.currentTimeMillis(), 36), v, x, z, v.x(), v.z(), asset, new Random());
+            if (h == null) {
+                String why = Hamlets.blocked(world, x, z, null);
+                player.sendMessage(Message.translation(Hamlets.KEYS + "cmd.blocked").param("why", why == null ? "terrain" : why));
+                return;
+            }
+            player.sendMessage(Message.translation(Hamlets.KEYS + "cmd.created").param("name", h.name()).param("x", h.x()).param("z", h.z()));
+        }
+    }
+
+    /** {@code /monde commerce [--genre caravane]} : un marchand du village le plus proche part vers le lieu-dit le plus proche. */
+    private static final class HamletTripCommand extends AdminCommand {
+        private final OptionalArg<String> kind = withOptionalArg("genre", Hamlets.KEYS + "cmd.trip.arg", ArgTypes.STRING);
+
+        HamletTripCommand() {
+            super("commerce", Hamlets.KEYS + "cmd.trip.desc");
+        }
+
+        @Override
+        protected void execute(CommandContext context, Store<EntityStore> store, Ref<EntityStore> ref, PlayerRef player, World world) {
+            Vector3d at = player.getTransform().getPosition();
+            Hamlets.Place h = Hamlets.nearest(world, at.x(), at.z(), HAMLET_RANGE);
+            if (h == null || h.stage() != Hamlets.BUILT) {
+                player.sendMessage(Message.translation(Hamlets.KEYS + "cmd.none").param("range", HAMLET_RANGE));
+                return;
+            }
+            Village v = WorldLife.nearestVillage(world, h.x(), h.z(), HamletTrips.RANGE);
+            String arg = kind.get(context);
+            boolean caravan = arg != null && arg.toLowerCase(Locale.ROOT).startsWith("c");
+            HamletTrips.Trip t = v == null ? null : HamletTrips.start(world, h, v, caravan);
+            if (t == null) {
+                player.sendMessage(Message.translation(Hamlets.KEYS + "cmd.tripFailed").param("range", HamletTrips.RANGE));
+                return;
+            }
+            player.sendMessage(Message.translation(Hamlets.KEYS + "cmd.tripStarted").param("village", v.name()).param("hamlet", h.name()));
         }
     }
 }

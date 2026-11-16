@@ -1,0 +1,74 @@
+{
+  "$Comment": "Troc du lieu-dit Ferme isolée (Slothian), généré par tools/generate_hamlets.py : faveurs du peuple contre marchandises vanilla ; ouvert au rang Toléré dans le village du lieu-dit.",
+  "DisplayNameKey": "nakasar_peuples.barter.Hamlet_Slothian_Ferme.title",
+  "RefreshInterval": {
+    "Days": 2
+  },
+  "RestockHour": 6,
+  "TradeSlots": [
+    {
+      "Type": "Fixed",
+      "Trade": {
+        "Output": {
+          "ItemId": "Plant_Crop_Wheat_Item",
+          "Quantity": 8
+        },
+        "Input": [
+          {
+            "ItemId": "Nakasar_Peuples_Favor_Slothian",
+            "Quantity": 1
+          }
+        ],
+        "Stock": 6
+      }
+    },
+    {
+      "Type": "Fixed",
+      "Trade": {
+        "Output": {
+          "ItemId": "Plant_Seeds_Wheat",
+          "Quantity": 4
+        },
+        "Input": [
+          {
+            "ItemId": "Nakasar_Peuples_Favor_Slothian",
+            "Quantity": 1
+          }
+        ],
+        "Stock": 6
+      }
+    },
+    {
+      "Type": "Fixed",
+      "Trade": {
+        "Output": {
+          "ItemId": "Plant_Crop_Carrot_Item",
+          "Quantity": 6
+        },
+        "Input": [
+          {
+            "ItemId": "Nakasar_Peuples_Favor_Slothian",
+            "Quantity": 1
+          }
+        ],
+        "Stock": 6
+      }
+    },
+    {
+      "Type": "Fixed",
+      "Trade": {
+        "Output": {
+          "ItemId": "Nakasar_Peuples_Favor_Slothian",
+          "Quantity": 1
+        },
+        "Input": [
+          {
+            "ItemId": "Tool_Hoe_Crude",
+            "Quantity": 1
+          }
+        ],
+        "Stock": 4
+      }
+    }
+  ]
+}
