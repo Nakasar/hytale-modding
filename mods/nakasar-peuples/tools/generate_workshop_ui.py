@@ -379,6 +379,7 @@ def specialty_page(theme_id):
 
 
 PLOT_CARDS = 2             # terrains E1 et E2 (étape 6)
+PLOT_MATERIALS = 4         # matériaux d'un projet affichés en icônes (ids à plat #PlotMat<terrain × 4 + j>)
 PROJECTS = 5               # projets par peuple (tools/plots.py)
 PLOT_WIDTH = PANEL_WIDTH     # onglets du panneau : même taille que le tableau
 PLOT_HEIGHT = PANEL_HEIGHT
@@ -399,6 +400,7 @@ def plot_page(theme_id):
     w(f"@Accent = {acc};")
     w("@Body = LabelStyle(FontSize: 14, TextColor: #c9d1d9, Wrap: true);")
     w("@SmallWrap = LabelStyle(FontSize: 13, TextColor: #96a9be, Wrap: true);")
+    w("@Count = LabelStyle(FontSize: 13, RenderBold: true, TextColor: #e8c46a, HorizontalAlignment: Center, VerticalAlignment: Center);")
     w("")
     w("$C.@PageOverlay {")
     w("  LayoutMode: Middle;")
@@ -421,7 +423,7 @@ def plot_page(theme_id):
     w(f'      {label("Intro", "@Body", anchor="Height: 40, Bottom: 10")}')
     w("      Group #Plots {")
     w("        LayoutMode: Left;")
-    w("        Anchor: (Height: 170);")
+    w("        Anchor: (Height: 214);")
     for i in range(PLOT_CARDS):
         w(f"        Group #Plot{i} {{")
         w("          LayoutMode: Top;")
@@ -432,6 +434,25 @@ def plot_page(theme_id):
         w(f"          Group #PlotStripe{i} {{ Anchor: (Height: 3, Bottom: 10); Background: (Color: {acc}(0.6)); }}")
         w(f'          {label(f"PlotName{i}", f"LabelStyle(FontSize: 17, FontName: \"Secondary\", RenderBold: true, RenderUppercase: true, TextColor: {acc})", anchor="Height: 24")}')
         w(f'          {label(f"PlotState{i}", "@Body", anchor="Top: 6")}')
+        # Matériaux du projet, comme ceux des chantiers du tableau (Kevin, 2026-11-16) : icône, dépôt / voulus.
+        w(f"          Group #PlotMats{i} {{")
+        w("            LayoutMode: Left;")
+        w("            Anchor: (Height: 74, Top: 6);")
+        for j in range(PLOT_MATERIALS):
+            k = i * PLOT_MATERIALS + j
+            w(f"            Group #PlotMat{k} {{")
+            w("              LayoutMode: Top;")
+            w("              Anchor: (Width: 64, Right: 14);")
+            w("              Group {")
+            w("                LayoutMode: Full;")
+            w("                Anchor: (Width: 52, Height: 52, Left: 6);")
+            w(f'                Group #PlotMatSlot{k} {{ Anchor: (Full: 0); Background: (TexturePath: "{COMMON}IngredientSlot.png", Border: 24); }}')
+            w(f'                Group #PlotMatOk{k} {{ Anchor: (Full: 0); Background: (TexturePath: "{COMMON}IngredientSlotValid.png", Border: 24); Visible: false; }}')
+            w(f"                ItemIcon #PlotMatIcon{k} {{ Anchor: (Full: 5); ShowItemTooltip: true; }}")
+            w("              }")
+            w(f'              Label #PlotMatCount{k} {{ Anchor: (Height: 18, Top: 2); Style: @Count; Text: ""; }}')
+            w("            }")
+        w("          }")
         w("          Group { FlexWeight: 1; }")
         w("          Group {")
         w("            LayoutMode: Left;")
