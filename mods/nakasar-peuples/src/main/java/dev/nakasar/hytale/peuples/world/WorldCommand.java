@@ -57,6 +57,47 @@ public final class WorldCommand extends AbstractCommandCollection {
         return v;
     }
 
+    /**
+     * La liaison du village vers `dest` (nom ou id d'un village, sans tenir compte des majuscules, accents, espaces et
+     * tirets), ou vers son voisin le plus proche si `dest` est null ; null avec un message sinon.
+     */
+    static Links.Link link(World world, PlayerRef player, Village v, String dest) {
+        if (dest == null || dest.isBlank()) {
+            return link(world, player, v);
+        }
+        Village to = byName(world, dest);
+        if (to == null) {
+            player.sendMessage(Message.translation(KEYS + "noSuchVillage").param("name", dest));
+            return null;
+        }
+        Links.Link l = Links.of(world, v.id(), to.id());
+        if (l == null) {
+            player.sendMessage(Message.translation(KEYS + "noLinkTo").param("village", v.name()).param("to", to.name())
+                    .param("max", Links.MAX_LENGTH));
+        }
+        return l;
+    }
+
+    /** Le village dont l'id ou le nom correspond à `name`, ou null. */
+    static Village byName(World world, String name) {
+        Village exact = Villages.registry(world).byId(name);
+        if (exact != null) {
+            return exact;
+        }
+        String wanted = normalize(name);
+        for (Village v : Villages.registry(world).all()) {
+            if (normalize(v.name()).equals(wanted) || normalize(v.id()).equals(wanted)) {
+                return v;
+            }
+        }
+        return null;
+    }
+
+    private static String normalize(String s) {
+        String n = java.text.Normalizer.normalize(s, java.text.Normalizer.Form.NFD).replaceAll("\\p{M}", "");
+        return n.toLowerCase(Locale.ROOT).replaceAll("[^a-z0-9]", "");
+    }
+
     /** La liaison du village vers son voisin le plus proche (ou null, avec un message). */
     static Links.Link link(World world, PlayerRef player, Village v) {
         List<Links.Link> links = Links.of(world, v);
@@ -113,6 +154,7 @@ public final class WorldCommand extends AbstractCommandCollection {
 
     private static final class TravellerCommand extends AdminCommand {
         private final OptionalArg<String> kind = withOptionalArg("genre", KEYS + "traveller.arg", ArgTypes.STRING);
+        private final OptionalArg<String> to = withOptionalArg("vers", KEYS + "to.arg", ArgTypes.STRING);
 
         TravellerCommand() {
             super("voyageur", KEYS + "traveller.desc");
@@ -121,7 +163,7 @@ public final class WorldCommand extends AbstractCommandCollection {
         @Override
         protected void execute(CommandContext context, Store<EntityStore> store, Ref<EntityStore> ref, PlayerRef player, World world) {
             Village v = nearest(world, player);
-            Links.Link l = v == null ? null : link(world, player, v);
+            Links.Link l = v == null ? null : link(world, player, v, to.get(context));
             if (l == null) {
                 return;
             }
@@ -218,6 +260,7 @@ public final class WorldCommand extends AbstractCommandCollection {
     }
 
     private static final class InnCommand extends AdminCommand {
+        private final OptionalArg<String> to = withOptionalArg("vers", KEYS + "to.arg", ArgTypes.STRING);
         InnCommand() {
             super("auberge", KEYS + "inn.desc");
         }
@@ -225,7 +268,7 @@ public final class WorldCommand extends AbstractCommandCollection {
         @Override
         protected void execute(CommandContext context, Store<EntityStore> store, Ref<EntityStore> ref, PlayerRef player, World world) {
             Village v = nearest(world, player);
-            Links.Link l = v == null ? null : link(world, player, v);
+            Links.Link l = v == null ? null : link(world, player, v, to.get(context));
             if (l == null) {
                 return;
             }
@@ -242,6 +285,7 @@ public final class WorldCommand extends AbstractCommandCollection {
 
     private static final class RelationCommand extends AdminCommand {
         private final OptionalArg<Integer> value = withOptionalArg("valeur", KEYS + "relation.arg", ArgTypes.INTEGER);
+        private final OptionalArg<String> to = withOptionalArg("vers", KEYS + "to.arg", ArgTypes.STRING);
 
         RelationCommand() {
             super("relation", KEYS + "relation.desc");
@@ -250,7 +294,7 @@ public final class WorldCommand extends AbstractCommandCollection {
         @Override
         protected void execute(CommandContext context, Store<EntityStore> store, Ref<EntityStore> ref, PlayerRef player, World world) {
             Village v = nearest(world, player);
-            Links.Link l = v == null ? null : link(world, player, v);
+            Links.Link l = v == null ? null : link(world, player, v, to.get(context));
             if (l == null) {
                 return;
             }
@@ -265,6 +309,7 @@ public final class WorldCommand extends AbstractCommandCollection {
     }
 
     private static final class SkirmishCommand extends AdminCommand {
+        private final OptionalArg<String> to = withOptionalArg("vers", KEYS + "to.arg", ArgTypes.STRING);
         SkirmishCommand() {
             super("escarmouche", KEYS + "skirmish.desc");
         }
@@ -272,7 +317,7 @@ public final class WorldCommand extends AbstractCommandCollection {
         @Override
         protected void execute(CommandContext context, Store<EntityStore> store, Ref<EntityStore> ref, PlayerRef player, World world) {
             Village v = nearest(world, player);
-            Links.Link l = v == null ? null : link(world, player, v);
+            Links.Link l = v == null ? null : link(world, player, v, to.get(context));
             if (l != null) {
                 Relations.start(world, store, l, WorldLife.players(world, store));
             }

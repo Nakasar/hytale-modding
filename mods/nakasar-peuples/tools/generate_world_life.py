@@ -634,6 +634,11 @@ def texts():
     t(p + "desc", "Monde vivant entre les villages", "Living world between villages")
     t(p + "noVillage", "Aucun village à moins de {range} blocs.", "No village within {range} blocks.")
     t(p + "noLink", "{village} n'a aucun voisin à moins de {max} blocs.", "{village} has no neighbour within {max} blocks.")
+    t(p + "noSuchVillage", "Aucun village ne s'appelle « {name} ».", "No village is called \"{name}\".")
+    t(p + "noLinkTo", "{village} et {to} sont à plus de {max} blocs l'un de l'autre.",
+      "{village} and {to} are more than {max} blocks apart.")
+    t(p + "to.arg", "village d'arrivée (nom ou id) ; sinon le voisin le plus proche",
+      "destination village (name or id); otherwise the nearest neighbour")
     t(p + "state.desc", "État du monde vivant (voyageurs, campements, auberges, relations, calendrier)",
       "Living world state (travellers, camps, inns, relations, calendar)")
     t(p + "state.header", "Monde vivant : {npcs} PNJ, {links} liaison(s), {structures} structure(s) temporaire(s).",
