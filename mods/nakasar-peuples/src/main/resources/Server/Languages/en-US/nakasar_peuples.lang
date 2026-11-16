@@ -5897,3 +5897,13 @@ building.Fosse_Aux_Betes = the beast pit
 job.Dresseur = Beast tamer
 klops.routeSaid = Today I'm at {today}; tomorrow I'll be at {tomorrow}. Come find me there!
 klops.routeNoneSaid = For now, I have no village to visit.
+# ---- Building review map (/village revue) ----
+command.review.desc = Flat building review map (tiers 1 to 4 of every people): go there and build what is missing.
+command.review.people = People (kweebec by default, trork, feran, renonce, slothian)
+command.review.category = Category to arrive at: base, artisan, projet, avantposte, lieudit
+command.review.rebuild = Pastes every rectangle of the people again (overwrites manual edits)
+review.start = Review map: {count} rectangle(s) to build.
+review.progress = Review map: {done}/{count} rectangles built.
+review.done = Review map: {count} rectangle(s) built. Each sign tells the people, building, tier and category.
+review.busy = The review map is already being built: wait for it to finish.
+review.noWorld = Could not create or load the review world (see the server log).

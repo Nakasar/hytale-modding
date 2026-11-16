@@ -1851,3 +1851,53 @@ Javadoc des classes).
   transparence de la queue d'aronde.
 - Les gardes restent à leur poste ; combat soldats contre gardes (camps de `HG:<lieu-dit>`).
 - Mise en page de l'onglet Domaine (cinq onglets de 150 de large).
+
+## Carte de revue des bâtiments, paliers 1 à 4 (`review/ReviewMap`, `tools/building_tiers.py`)
+
+Kevin, 16 novembre 2026 (« parking à idées » du tableau blanc) : les bâtiments de base, d'artisan, les projets de
+terrain, les avant-postes et les lieux-dits passent à **4 paliers** avec une variation visuelle à chaque palier, et
+tout est posé sur une **carte plate** pour être revu et retouché à la main.
+
+### Paliers proposés (`tools/building_tiers.py`)
+
+Composés à partir des données du mod, avec des prefabs et blocs vanilla seulement (règle n° 2) :
+
+| Palier | Ce qui change |
+|---|---|
+| 1 | Le bâtiment tel qu'il est aujourd'hui. |
+| 2 | Abords : sentier de 3 de large devant l'entrée, deux lumières du peuple aux coins avant, caisses ou pots. Lieu-dit : premier bâtiment annexe. |
+| 3 | Version plus grande du prefab quand le jeu en a une dans la même famille (`CHAINS` : maison outlander Tier0 → Tier1, tour trork Tier_1 → Tier_2, maison slothian petite → moyenne...), petite pièce vanilla à côté (potager, foyer, brasero, puits), clôture avant avec barrière, fanion. Lieu-dit : second bâtiment annexe. |
+| 4 | Version la plus riche de la famille, enclos complet du bois du peuple (barrière au sud), grandes lumières aux quatre coins, deux fanions, deux pièces d'accompagnement. |
+
+L'entrée des prefabs vanilla est supposée au sud (+z) : ce qui ne tombe pas juste se retouche sur la carte. Le cœur du
+village garde ses paliers (`VillageHeart`) et n'est pas sur la carte. Ces paliers ne sont **pas encore branchés au jeu**
+(chantiers, niveaux I-III des bâtiments de métier) : la carte sert à les valider d'abord.
+
+Régénérer après un changement des plans, avant-postes ou lieux-dits :
+
+    python3 mods/nakasar-peuples/tools/building_tiers.py [--preview carte.png]
+
+Le script écrit `src/main/resources/nakasar-peuples/revue-batiments.json` (165 bâtiments, 660 rectangles) et refuse
+un bloc ou un prefab inconnu (listes `vanilla-*-0.7.2.txt` et objets du mod).
+
+### La carte (`/village revue`)
+
+- `/village revue [peuple] [--categorie base|artisan|projet|avantposte|lieudit]` (opérateurs) : crée au premier
+  appel le monde `nakasar_revue_batiments` (générateur plat vanilla, créatif, sans PNJ), y envoie le joueur au début
+  de la colonne du peuple (Kweebec par défaut) ou de la catégorie, et bâtit les rectangles de ce peuple pas encore
+  faits, un par un (message tous les 25).
+- `--rebatir` recolle tous les rectangles du peuple : **écrase les retouches** faites à la main.
+- Une colonne par peuple d'ouest en est (Kweebec, Trork, Feran, Renoncé, Slothian), une rangée par bâtiment du nord au
+  sud (base, artisan, projets, avant-postes, lieux-dits), les paliers 1 → 4 d'ouest en est dans la rangée.
+- Chaque rectangle a un liseré de briques et le sol du peuple ; devant son coin sud-ouest, un panneau vanilla et deux
+  textes flottants : « Peuple · Bâtiment · palier N/4 · Catégorie », puis la source et ce que le palier ajoute.
+- Les rectangles faits sont listés dans `nakasar_revue_batiments.txt` du dossier du monde : relancer la commande ne
+  touche jamais à un rectangle déjà bâti.
+
+### À vérifier en jeu (carte de revue)
+
+- Création du monde plat et téléportation d'un monde à l'autre.
+- Les textes flottants (porteur : modèle vanilla `NPC_Spawn_Marker` à l'échelle 0,2) s'affichent et restent après
+  redémarrage.
+- Sens d'entrée des bâtiments (sentier, barrière), rotation des coins de clôture, fanions.
+- Les prefabs agrandis (familles `CHAINS`) restent dans leur rectangle.

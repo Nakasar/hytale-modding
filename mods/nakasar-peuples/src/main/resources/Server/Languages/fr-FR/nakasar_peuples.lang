@@ -5897,3 +5897,13 @@ building.Fosse_Aux_Betes = la fosse aux bêtes
 job.Dresseur = Dresseur
 klops.routeSaid = Aujourd'hui, je suis à {today} ; demain, je serai à {tomorrow}. Viens me trouver là-bas !
 klops.routeNoneSaid = Pour l'instant, je n'ai aucun village où passer.
+# ---- Carte de revue des bâtiments (/village revue) ----
+command.review.desc = Carte plate de revue des bâtiments (paliers 1 à 4 de chaque peuple) : y aller et bâtir ce qui manque.
+command.review.people = Peuple (kweebec par défaut, trork, feran, renonce, slothian)
+command.review.category = Catégorie où arriver : base, artisan, projet, avantposte, lieudit
+command.review.rebuild = Recolle tous les rectangles du peuple (écrase les retouches à la main)
+review.start = Carte de revue : {count} rectangle(s) à bâtir.
+review.progress = Carte de revue : {done}/{count} rectangles bâtis.
+review.done = Carte de revue : {count} rectangle(s) bâtis. Chaque panneau dit le peuple, le bâtiment, le palier et la catégorie.
+review.busy = La carte de revue est déjà en construction : attends la fin avant de relancer.
+review.noWorld = Impossible de créer ou charger le monde de revue (voir le journal du serveur).
