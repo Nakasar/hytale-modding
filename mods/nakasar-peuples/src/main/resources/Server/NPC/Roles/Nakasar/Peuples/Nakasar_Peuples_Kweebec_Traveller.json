@@ -1,5 +1,5 @@
 {
-  "$Comment": "Voyageur du monde vivant (pèlerin, messager, porteur d'une caravane) : world/Travellers le fait marcher de village en village. Généré par tools/generate_world_life.py. Ne régénère jamais (VillageNoRegenSystem).",
+  "$Comment": "Voyageur du monde vivant (pèlerin, messager, porteur d'une caravane) : world/Travellers le fait marcher de village en village. Généré par tools/generate_world_life.py. Régénération vanilla hors combat (PNJ amical).",
   "Type": "Generic",
   "Appearance": "Kweebec_Sapling_Orange",
   "NameTranslationKey": "nakasar_peuples.npc.Kweebec_Traveller.name",

@@ -1,5 +1,5 @@
 {
-  "$Comment": "Caravanier Renonce d'une demande de caravane, généré par tools/generate_quests.py : copie du captif kweebec sur l'apparence vanilla Outlander_Peon. Posé par request/Expeditions au cœur du village ; il suit le joueur le plus proche à moins de 18 blocs et ne se bat pas. Les assaillants de sa demande le visent (RaidAttitudeSystem). Ne régénère jamais (VillageNoRegenSystem).",
+  "$Comment": "Caravanier Renonce d'une demande de caravane, généré par tools/generate_quests.py : copie du captif kweebec sur l'apparence vanilla Outlander_Peon. Posé par request/Expeditions au cœur du village ; il suit le joueur le plus proche à moins de 18 blocs et ne se bat pas. Les assaillants de sa demande le visent (RaidAttitudeSystem). Régénération vanilla hors combat (PNJ amical).",
   "Type": "Generic",
   "Appearance": "Outlander_Peon",
   "NameTranslationKey": "nakasar_peuples.npc.Renonce_Caravaneer.name",

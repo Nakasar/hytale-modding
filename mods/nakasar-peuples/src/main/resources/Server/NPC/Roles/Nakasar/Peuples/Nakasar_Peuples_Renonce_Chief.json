@@ -1,5 +1,5 @@
 {
-  "$Comment": "Chief d'un village renoncé (étape 8), généré par tools/generate_zones.py : copie du rôle kweebec sur l'apparence vanilla Outlander_Sorcerer. Ne régénère jamais (VillageNoRegenSystem).",
+  "$Comment": "Chief d'un village renoncé (étape 8), généré par tools/generate_zones.py : copie du rôle kweebec sur l'apparence vanilla Outlander_Sorcerer. Régénération vanilla hors combat (PNJ amical).",
   "Type": "Generic",
   "Appearance": "Outlander_Sorcerer",
   "NameTranslationKey": "nakasar_peuples.npc.Renonce_Chief.name",

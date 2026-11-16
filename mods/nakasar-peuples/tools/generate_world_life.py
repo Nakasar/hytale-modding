@@ -78,7 +78,7 @@ INTERACT = {
 def walker(role_id, comment, appearance, hp, speed, relative, wander, interact=True):
     """PNJ qui marche vers son point d'attache (déplacé par le Java) et flâne autour ; ne se bat pas."""
     role = {
-        "$Comment": comment + " Généré par tools/generate_world_life.py. Ne régénère jamais (VillageNoRegenSystem).",
+        "$Comment": comment + " Généré par tools/generate_world_life.py. Régénération vanilla hors combat (PNJ amical).",
         "Type": "Generic",
         "Appearance": appearance,
         "NameTranslationKey": f"nakasar_peuples.npc.{role_id}.name",

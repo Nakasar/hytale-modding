@@ -1,5 +1,5 @@
 {
-  "$Comment": "Lookout d'un village feran (étape 8), généré par tools/generate_zones.py : copie du rôle kweebec sur l'apparence vanilla Feran_Sharptooth. Ne régénère jamais (VillageNoRegenSystem).",
+  "$Comment": "Lookout d'un village feran (étape 8), généré par tools/generate_zones.py : copie du rôle kweebec sur l'apparence vanilla Feran_Sharptooth. Régénération vanilla hors combat (PNJ amical).",
   "Type": "Generic",
   "Appearance": "Feran_Sharptooth",
   "NameTranslationKey": "nakasar_peuples.npc.Feran_Lookout.name",

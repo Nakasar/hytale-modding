@@ -1,5 +1,5 @@
 {
-  "$Comment": "Hôte de la fête des moissons ou de la foire (world/Calendar). Généré par tools/generate_world_life.py. Ne régénère jamais (VillageNoRegenSystem).",
+  "$Comment": "Hôte de la fête des moissons ou de la foire (world/Calendar). Généré par tools/generate_world_life.py. Régénération vanilla hors combat (PNJ amical).",
   "Type": "Generic",
   "Appearance": "Kweebec_Sapling_Treesinger",
   "NameTranslationKey": "nakasar_peuples.npc.Kweebec_Host.name",

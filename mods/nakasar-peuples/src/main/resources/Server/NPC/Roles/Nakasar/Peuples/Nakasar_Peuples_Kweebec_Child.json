@@ -1,5 +1,5 @@
 {
-  "$Comment": "Enfant qui joue sur la place ; cache-cache (world/Surroundings). Généré par tools/generate_world_life.py. Ne régénère jamais (VillageNoRegenSystem).",
+  "$Comment": "Enfant qui joue sur la place ; cache-cache (world/Surroundings). Généré par tools/generate_world_life.py. Régénération vanilla hors combat (PNJ amical).",
   "Type": "Generic",
   "Appearance": "Kweebec_Sproutling",
   "NameTranslationKey": "nakasar_peuples.npc.Kweebec_Child.name",

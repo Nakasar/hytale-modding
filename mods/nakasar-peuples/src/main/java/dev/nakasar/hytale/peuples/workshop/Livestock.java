@@ -36,7 +36,7 @@ import java.util.concurrent.ThreadLocalRandom;
  *
  * <p>Comme les villageois ({@link Villagers}) : posées seulement quand un joueur est à moins de {@value Villagers#RANGE}
  * blocs du cœur, non sauvegardées, sur un point sûr de l'intérieur de l'enclos ({@link Terrain#safeSpot}), attachées
- * à son centre. Elles ne se régénèrent jamais (VillageNoRegenSystem couvre 96 blocs autour du cœur) et ne laissent
+ * à son centre. Elles se régénèrent hors combat (régénération vanilla, rôles amicaux) et ne laissent
  * aucun butin (Kevin : les produits passent par la boutique) : leur rôle est marqué « butin déjà lâché » dès leur
  * apparition. Une bête tuée ne revient qu'au matin suivant ({@value GameClock#MORNING} h) ; tuée par un joueur, elle
  * lui coûte {@value #KILL_REPUTATION} de réputation de village ({@link LivestockDeathSystem}).

@@ -173,7 +173,7 @@ def npcs():
         "InitialReputationValue": INITIAL,
     })
     common = "Posé par Criers (Java) quand un joueur approche du camp, immobile. Tué, il revient au matin suivant. " \
-             "Ne régénère jamais (VillageNoRegenSystem). Groupe vanilla Trork : il suit le rang du joueur au camp."
+             "Régénération vanilla hors combat (PNJ amical). Groupe vanilla Trork : il suit le rang du joueur au camp."
     role(PFX + "Trork_Crier", "Trork_Sentry", "Le crieur d'un camp trork (étape 7), deux blocs au sud du tableau. " + common,
          "Crieur trork", "Trork crier")
     role(PFX + "Trork_Merchant", "Trork_Doctor_Witch", "La marchande d'un camp trork (étape 7), au sud du dépôt. " + common,

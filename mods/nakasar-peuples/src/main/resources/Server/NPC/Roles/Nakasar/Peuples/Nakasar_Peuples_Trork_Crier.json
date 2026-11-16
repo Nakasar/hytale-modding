@@ -1,5 +1,5 @@
 {
-  "$Comment": "Le crieur d'un camp trork (étape 7), deux blocs au sud du tableau. Posé par Criers (Java) quand un joueur approche du camp, immobile. Tué, il revient au matin suivant. Ne régénère jamais (VillageNoRegenSystem). Groupe vanilla Trork : il suit le rang du joueur au camp.",
+  "$Comment": "Le crieur d'un camp trork (étape 7), deux blocs au sud du tableau. Posé par Criers (Java) quand un joueur approche du camp, immobile. Tué, il revient au matin suivant. Régénération vanilla hors combat (PNJ amical). Groupe vanilla Trork : il suit le rang du joueur au camp.",
   "Type": "Generic",
   "Appearance": "Trork_Sentry",
   "NameTranslationKey": "nakasar_peuples.npc.Trork_Crier.name",

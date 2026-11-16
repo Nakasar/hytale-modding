@@ -93,7 +93,7 @@ def role(aid, appearance, health, speed, name_key):
     return {
         "$Comment": f"Bête d'enclos ({appearance}) d'un village du mod, générée par tools/generate_pens.py : modèle vanilla, "
                     "flâne autour du centre de l'enclos (point d'attache posé par workshop/Livestock), n'attaque jamais. "
-                    "Pas de butin (Livestock), ne se régénère jamais (VillageNoRegenSystem).",
+                    "Pas de butin (Livestock), régénération vanilla hors combat (PNJ amical).",
         "Type": "Generic",
         "Appearance": appearance,
         "NameTranslationKey": name_key,

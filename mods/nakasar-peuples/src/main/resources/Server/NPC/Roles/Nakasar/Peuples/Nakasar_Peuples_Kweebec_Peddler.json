@@ -1,5 +1,5 @@
 {
-  "$Comment": "Marchand ambulant ou meneur de caravane (world/Travellers), marchand de la foire (world/Calendar). Généré par tools/generate_world_life.py. Ne régénère jamais (VillageNoRegenSystem).",
+  "$Comment": "Marchand ambulant ou meneur de caravane (world/Travellers), marchand de la foire (world/Calendar). Généré par tools/generate_world_life.py. Régénération vanilla hors combat (PNJ amical).",
   "Type": "Generic",
   "Appearance": "Kweebec_Rootling",
   "NameTranslationKey": "nakasar_peuples.npc.Kweebec_Peddler.name",

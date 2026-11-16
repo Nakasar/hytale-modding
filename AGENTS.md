@@ -11,6 +11,10 @@ Consignes de Kevin (25 octobre 2026), à respecter pour chaque mob, boss, élite
    - La régénération vanilla des PNJ (`Server/Entity/Stats/Health.json`, condition `RegenHealth` : +5 % toutes les
      0,5 s après 15 s sans dégâts) est coupée par un `NoRegenSystem` dans chaque mod (`HealthRegenState` désactivé
      avant `NPCPlugin.NPCEntityRegenerateStatsSystem`).
+   - Exception (Kevin, 16 novembre 2026) : les PNJ **amicaux** de Peuples d'Orbis (villageois, gardes, marchands,
+     voyageurs, bêtes) gardent la régénération vanilla ; son `VillageNoRegenSystem` ne la coupe que pour les PNJ
+     hostiles (attitude par défaut `Hostile` envers les joueurs, PNJ des demandes hostiles). Le `NoRegenSystem` des
+     Vampires laisse les rôles `Nakasar_Peuples_*` à ce mod.
    - Tout soin écrit en Java (régénération d'un boss, soigneurs, serviteurs) ne s'applique qu'en combat et jamais sous
      le composant `Invulnerable` (mod Vampires : `boss/RecentDamage.mayHeal`).
 2. **Assets vanilla d'abord.** Avant de créer un bloc, un modèle 3D, une texture, une animation ou un monstre, chercher

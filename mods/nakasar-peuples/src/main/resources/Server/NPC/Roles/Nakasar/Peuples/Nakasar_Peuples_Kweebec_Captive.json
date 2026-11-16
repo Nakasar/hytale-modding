@@ -1,5 +1,5 @@
 {
-  "$Comment": "Le captif kweebec d'une escorte : posé par RequestSystem au lieu de la demande, gardé par des Trorks. Il suit le joueur le plus proche à moins de 14 blocs ; ramené à moins de 14 blocs du cœur du village, la demande est remplie. S'il meurt, elle échoue (RequestDeathSystem). Ne régénère jamais (VillageNoRegenSystem).",
+  "$Comment": "Le captif kweebec d'une escorte : posé par RequestSystem au lieu de la demande, gardé par des Trorks. Il suit le joueur le plus proche à moins de 14 blocs ; ramené à moins de 14 blocs du cœur du village, la demande est remplie. S'il meurt, elle échoue (RequestDeathSystem). Régénération vanilla hors combat (PNJ amical).",
   "Type": "Generic",
   "Appearance": "Kweebec_Sapling_Orange",
   "NameTranslationKey": "nakasar_peuples.npc.Kweebec_Captive.name",

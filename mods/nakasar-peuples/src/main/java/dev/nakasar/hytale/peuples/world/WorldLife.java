@@ -39,8 +39,8 @@ import java.util.concurrent.ConcurrentHashMap;
  * état sauvé ; à moins de {@value #REAL_RANGE} blocs d'un joueur il devient un vrai PNJ (non sauvegardé), sinon il
  * avance seul. Au plus {@value #PER_PLAYER} PNJ du monde vivant par joueur connecté et {@value #PER_WORLD} par monde.
  *
- * <p>Règles permanentes : tous les rôles sont {@code Nakasar_Peuples_*} (aucune régénération,
- * {@code VillageNoRegenSystem}) ; aucun PNJ n'est posé dans l'eau, la lave ou un bloc ({@link #ground}).
+ * <p>Règles permanentes : tous les rôles sont {@code Nakasar_Peuples_*} (amicaux : régénération vanilla
+ * hors combat ; hostiles : aucune, {@code VillageNoRegenSystem}) ; aucun PNJ n'est posé dans l'eau, la lave ou un bloc ({@link #ground}).
  */
 public final class WorldLife {
 

@@ -1,5 +1,5 @@
 {
-  "$Comment": "Colon Feran qui attend près du cœur d'un village au palier max (outpost/Settlers), généré par tools/generate_settlers.py à partir du cueilleur du peuple. Il flâne autour de son poste (point d'attache posé par le Java) ; lui parler ouvre le dialogue Colon. Ne régénère jamais.",
+  "$Comment": "Colon Feran qui attend près du cœur d'un village au palier max (outpost/Settlers), généré par tools/generate_settlers.py à partir du cueilleur du peuple. Il flâne autour de son poste (point d'attache posé par le Java) ; lui parler ouvre le dialogue Colon. Régénération vanilla hors combat (PNJ amical).",
   "Type": "Generic",
   "Appearance": "Feran_Burrower",
   "NameTranslationKey": "nakasar_peuples.npc.Feran_Settler.name",
