@@ -22,6 +22,7 @@ import dev.nakasar.hytale.peuples.village.People;
 import dev.nakasar.hytale.peuples.village.Village;
 import dev.nakasar.hytale.peuples.village.VillageLayout;
 import dev.nakasar.hytale.peuples.village.Villages;
+import dev.nakasar.hytale.peuples.dialogue.DialogueSpeech;
 import org.joml.Vector3d;
 
 import java.util.ArrayList;
@@ -60,6 +61,9 @@ public final class Surroundings {
     public static final String HIDE_FLAG = "HideSeek:";
 
     /** Les sorties : {clé, objet rapporté, nombre}. */
+    /** Dialogue des villageois en sortie (tools/generate_world_life.py), un nœud par travail de {@link #JOBS}. */
+    public static final String OUTING_DIALOGUE = "Monde_Sortie";
+
     private static final String[][] JOBS = {
             {"gather", "Ingredient_Fibre", "4"},
             {"fish", "Food_Fish_Raw", "2"},
@@ -215,8 +219,19 @@ public final class Surroundings {
         o.npc = npc;
         o.target = target;
         o.job = random.nextInt(JOBS.length);
-        WorldLife.talker(npc, (w, s, p, pr, n) -> pr.sendMessage(Message.translation(KEYS + "outing." + JOBS[o.job][0])));
+        WorldLife.talker(npc, (w, s, p, pr, n) -> outingTalk(w, s, p, pr, n, JOBS[o.job][0]));
         life.outings[slot] = o;
+    }
+
+    /** Dialogue d'un villageois en sortie : il dit où il va, dans la fenêtre de dialogue (nœud = son travail). */
+    private static void outingTalk(World world, Store<EntityStore> store, Ref<EntityStore> player, PlayerRef playerRef,
+                                   Ref<EntityStore> npc, String job) {
+        Dialogue dialogue = Dialogue.get(OUTING_DIALOGUE);
+        if (dialogue == null || dialogue.node(job) == null) {
+            playerRef.sendMessage(Message.translation(KEYS + "outing." + job));
+            return;
+        }
+        Dialogues.openPage(world, store, player, playerRef, dialogue, npc, job, List.of());
     }
 
     private static void monster(World world, Store<EntityStore> store, Village v, Outing o, int slot) {
@@ -347,14 +362,14 @@ public final class Surroundings {
     static boolean hideAndSeek(World world, Store<EntityStore> store, Ref<EntityStore> ref, PlayerRef player, Village v) {
         Life life = v == null ? null : LIVES.get(v.id());
         if (life == null || life.hiding) {
-            player.sendMessage(Message.translation(KEYS + "hideBusy"));
+            DialogueSpeech.say(player, Message.translation(KEYS + "hideBusy"));
             return false;
         }
         long day = GameClock.day(store);
         PeuplesPlayer data = PeuplesPlayer.ensure(store, ref);
         String flag = HIDE_FLAG + v.id() + ":" + day;
         if (data.hasFlag(flag) || Hunts.playing(player.getUuid())) {
-            player.sendMessage(Message.translation(KEYS + "hideTired"));
+            DialogueSpeech.say(player, Message.translation(KEYS + "hideTired"));
             return false;
         }
         for (String f : new ArrayList<>(data.flags())) {
@@ -382,7 +397,7 @@ public final class Surroundings {
             life.hiding = false;
             return false;
         }
-        player.sendMessage(Message.translation(KEYS + "hideStart").param("count", spots.size()).param("seconds", HIDE_SECONDS));
+        DialogueSpeech.say(player, Message.translation(KEYS + "hideStart").param("count", spots.size()).param("seconds", HIDE_SECONDS));
         UUID uuid = player.getUuid();
         Hunts.start("hide:" + v.id(), player, spots, HIDE_SECONDS, KEYS + "hideFound", (w, s, p, won) -> {
             life.hiding = false;

@@ -167,20 +167,20 @@ public final class Klops {
         String current = parcelDestination(data);
         Village pending = current == null ? null : Villages.registry(world).byId(current);
         if (pending != null) {
-            player.sendMessage(Message.translation(KEYS + "parcelAlready").param("village", pending.name()));
+            dev.nakasar.hytale.peuples.dialogue.DialogueSpeech.say(player, Message.translation(KEYS + "parcelAlready").param("village", pending.name()));
             return false;
         }
         List<Village> others = new ArrayList<>(route(world));
         others.removeIf(v -> from != null && v.id().equals(from.id()));
         if (others.isEmpty()) {
-            player.sendMessage(Message.translation(KEYS + "parcelNowhere"));
+            dev.nakasar.hytale.peuples.dialogue.DialogueSpeech.say(player, Message.translation(KEYS + "parcelNowhere"));
             return false;
         }
         Village to = others.get(new Random().nextInt(others.size()));
         CombinedItemContainer inventory = InventoryComponent.getCombined(store, ref, InventoryComponent.HOTBAR_STORAGE_BACKPACK);
         ItemStack stack = new ItemStack(PARCEL, 1);
         if (!inventory.canAddItemStack(stack)) {
-            player.sendMessage(Message.translation("nakasar_peuples.dialogue.inventoryFull"));
+            dev.nakasar.hytale.peuples.dialogue.DialogueSpeech.say(player, Message.translation("nakasar_peuples.dialogue.inventoryFull"));
             return false;
         }
         inventory.addItemStack(stack);
@@ -188,7 +188,7 @@ public final class Klops {
             data.setFlag(FLAG + current, false);
         }
         data.setFlag(FLAG + to.id(), true);
-        player.sendMessage(describe(store, ref, to, KEYS + "parcelGiven"));
+        dev.nakasar.hytale.peuples.dialogue.DialogueSpeech.say(player, describe(store, ref, to, KEYS + "parcelGiven"));
         return true;
     }
 
@@ -230,14 +230,23 @@ public final class Klops {
         }
     }
 
-    /** Où le Klops est aujourd'hui et où il sera demain. */
+    /** Où le Klops est aujourd'hui et où il sera demain (récit, pour la commande). */
     public static Message route(World world, Store<EntityStore> store, Ref<EntityStore> ref) {
+        return route(world, store, "route", "routeNone");
+    }
+
+    /** Où le Klops est aujourd'hui et où il sera demain, dit par le Klops lui-même (fenêtre de dialogue). */
+    public static Message routeSaid(World world, Store<EntityStore> store) {
+        return route(world, store, "routeSaid", "routeNoneSaid");
+    }
+
+    private static Message route(World world, Store<EntityStore> store, String key, String noneKey) {
         long day = GameClock.day(store);
         Village today = stop(world, day);
         Village tomorrow = stop(world, day + 1);
         if (today == null) {
-            return Message.translation(KEYS + "routeNone");
+            return Message.translation(KEYS + noneKey);
         }
-        return Message.translation(KEYS + "route").param("today", today.name()).param("tomorrow", tomorrow.name());
+        return Message.translation(KEYS + key).param("today", today.name()).param("tomorrow", tomorrow.name());
     }
 }

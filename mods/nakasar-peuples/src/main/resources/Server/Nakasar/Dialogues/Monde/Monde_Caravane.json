@@ -39,7 +39,7 @@
               "Action": "Rumour"
             }
           ],
-          "Next": "Accueil"
+          "Next": "Rumeur"
         },
         {
           "TextKey": "nakasar_peuples.dialogue.Monde.aurevoir"
@@ -50,6 +50,29 @@
       "Id": "Escorte",
       "TextKey": "nakasar_peuples.dialogue.Monde_Caravane.escorteTexte",
       "Responses": [
+        {
+          "TextKey": "nakasar_peuples.dialogue.Monde.aurevoir"
+        }
+      ]
+    },
+    {
+      "Id": "Rumeur",
+      "TextKey": "nakasar_peuples.dialogue.Monde.rumeurTexte",
+      "Responses": [
+        {
+          "TextKey": "nakasar_peuples.dialogue.Monde.rumeurAutre",
+          "Effects": [
+            {
+              "Type": "WorldAction",
+              "Action": "Rumour"
+            }
+          ],
+          "Next": "Rumeur"
+        },
+        {
+          "TextKey": "nakasar_peuples.dialogue.Monde.retour",
+          "Next": "Accueil"
+        },
         {
           "TextKey": "nakasar_peuples.dialogue.Monde.aurevoir"
         }

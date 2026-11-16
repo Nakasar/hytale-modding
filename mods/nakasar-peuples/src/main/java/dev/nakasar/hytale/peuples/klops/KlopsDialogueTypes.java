@@ -3,6 +3,7 @@ package dev.nakasar.hytale.peuples.klops;
 import com.hypixel.hytale.codec.builder.BuilderCodec;
 import dev.nakasar.hytale.peuples.dialogue.DialogueContext;
 import dev.nakasar.hytale.peuples.dialogue.DialogueEffect;
+import dev.nakasar.hytale.peuples.dialogue.DialogueSpeech;
 
 /** Effets de dialogue du Klops errant (étape 7), enregistrés à part des effets de base ({@code DialogueTypes}). */
 public final class KlopsDialogueTypes {
@@ -25,13 +26,13 @@ public final class KlopsDialogueTypes {
         }
     }
 
-    /** {@code {"Type": "KlopsRoute"}} : dit où le Klops est aujourd'hui et où il sera demain. */
+    /** {@code {"Type": "KlopsRoute"}} : le Klops dit, dans la fenêtre de dialogue, où il est aujourd'hui et où il sera demain. */
     public static final class RouteEffect extends DialogueEffect {
         public static final BuilderCodec<RouteEffect> CODEC = BuilderCodec.builder(RouteEffect.class, RouteEffect::new).build();
 
         @Override
         public boolean apply(DialogueContext context) {
-            context.playerRef().sendMessage(Klops.route(context.world(), context.store(), context.ref()));
+            DialogueSpeech.say(context.playerRef(), Klops.routeSaid(context.world(), context.store()));
             return true;
         }
     }

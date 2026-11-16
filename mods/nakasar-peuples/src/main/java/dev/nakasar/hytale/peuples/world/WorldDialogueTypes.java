@@ -12,6 +12,7 @@ import dev.nakasar.hytale.peuples.dialogue.DialogueContext;
 import dev.nakasar.hytale.peuples.dialogue.DialogueEffect;
 import dev.nakasar.hytale.peuples.village.Village;
 import dev.nakasar.hytale.peuples.village.Villages;
+import dev.nakasar.hytale.peuples.dialogue.DialogueSpeech;
 
 import java.util.concurrent.ThreadLocalRandom;
 
@@ -58,7 +59,7 @@ public final class WorldDialogueTypes {
             }
             switch (action) {
                 case "Rumour" -> {
-                    c.playerRef().sendMessage(Rumours.random(world, c.store(), c.ref()));
+                    DialogueSpeech.say(c.playerRef(), Rumours.random(world, c.store(), c.ref()));
                     return true;
                 }
                 case "Shop", "Escort", "Letter", "Parley" -> {

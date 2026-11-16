@@ -33,6 +33,7 @@ import dev.nakasar.hytale.peuples.village.Village;
 import dev.nakasar.hytale.peuples.village.VillageLayout;
 import dev.nakasar.hytale.peuples.village.Villages;
 import dev.nakasar.hytale.peuples.village.WorkshopState;
+import dev.nakasar.hytale.peuples.dialogue.DialogueSpeech;
 import org.joml.Vector3d;
 import org.joml.Vector3i;
 
@@ -250,7 +251,7 @@ public final class Calendar {
     /** Offrande de nourriture à la fête : réputation doublée (2 par objet, ×2), un point d'essor par cinq objets. */
     static boolean feastOffering(World world, Store<EntityStore> store, Ref<EntityStore> ref, PlayerRef player, Village v) {
         if (v == null || !GATHERINGS.containsKey("feast:" + v.id())) {
-            player.sendMessage(Message.translation(KEYS + "feast.over"));
+            DialogueSpeech.say(player, Message.translation(KEYS + "feast.over"));
             return false;
         }
         // Au plus FEAST_OFFERINGS offrandes par joueur et par fête.
@@ -258,18 +259,18 @@ public final class Calendar {
         String what = "feast:" + v.id();
         int left = WorldLife.allowance(player.getUuid(), what, day, FEAST_OFFERINGS);
         if (left <= 0) {
-            player.sendMessage(Message.translation(KEYS + "feast.enough"));
+            DialogueSpeech.say(player, Message.translation(KEYS + "feast.enough"));
             return false;
         }
         int given = WorldLife.take(store, ref, WorldLife::isFood, left);
         if (given <= 0) {
-            player.sendMessage(Message.translation(Camps.KEYS + "noFood"));
+            DialogueSpeech.say(player, Message.translation(Camps.KEYS + "noFood"));
             return false;
         }
         WorldLife.spend(player.getUuid(), what, day, given);
         Villages.addEssor(v, given / 5);
         Reputations.change(world, store, ref, player, v, given * 4, KEYS + "feast.reason");
-        player.sendMessage(Message.translation(KEYS + "feast.thanks").param("count", given));
+        DialogueSpeech.say(player, Message.translation(KEYS + "feast.thanks").param("count", given));
         return true;
     }
 
@@ -446,11 +447,11 @@ public final class Calendar {
     static boolean race(World world, Store<EntityStore> store, Ref<EntityStore> ref, PlayerRef player, Village v) {
         Gathering g = v == null ? null : GATHERINGS.get("fair:" + v.id());
         if (g == null) {
-            player.sendMessage(Message.translation(KEYS + "fair.over"));
+            DialogueSpeech.say(player, Message.translation(KEYS + "fair.over"));
             return false;
         }
         if (g.raced.contains(player.getUuid().toString()) || Hunts.playing(player.getUuid())) {
-            player.sendMessage(Message.translation(KEYS + "race.already"));
+            DialogueSpeech.say(player, Message.translation(KEYS + "race.already"));
             return false;
         }
         g.raced.add(player.getUuid().toString());
@@ -473,14 +474,14 @@ public final class Calendar {
                 continue;
             }
             spots.add(new Hunts.Spot(null, at, () -> Sites.release(world, structure)));
-            player.sendMessage(Message.translation(KEYS + "race.flag").param("n", i + 1)
+            DialogueSpeech.say(player, Message.translation(KEYS + "race.flag").param("n", i + 1)
                     .param("distance", d).param("direction",
                             Message.translation(Villages.MESSAGES + "dir." + Requests.direction(bx - v.x(), bz - v.z()))));
         }
         if (spots.isEmpty()) {
             return false;
         }
-        player.sendMessage(Message.translation(KEYS + "race.start").param("count", spots.size()).param("seconds", RACE_SECONDS));
+        DialogueSpeech.say(player, Message.translation(KEYS + "race.start").param("count", spots.size()).param("seconds", RACE_SECONDS));
         Hunts.start(id, player, spots, RACE_SECONDS, KEYS + "race.found", (w, s, p, won) -> {
             if (p == null) {
                 return;

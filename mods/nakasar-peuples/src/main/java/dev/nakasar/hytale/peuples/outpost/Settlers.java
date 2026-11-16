@@ -27,11 +27,13 @@ import dev.nakasar.hytale.peuples.village.VillageLayout;
 import dev.nakasar.hytale.peuples.village.VillageNames;
 import dev.nakasar.hytale.peuples.village.Villages;
 import dev.nakasar.hytale.peuples.zone.SiteRules;
+import dev.nakasar.hytale.peuples.dialogue.DialogueSpeech;
 import org.joml.Vector3d;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.IdentityHashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
@@ -256,14 +258,16 @@ public final class Settlers {
         }
         TALKING.put(player.getUuid(), villageId);
         CHECKS.remove(player.getUuid());
+        List<Message> said = new ArrayList<>();
         if (me.equals(village.settlerOwner())) {
             SiteRules.Check check = examine(world, store, ref, village.people());
             CHECKS.put(player.getUuid(), check);
             if (!check.ok()) {
-                player.sendMessage(Message.translation(KEYS + "why").param("reason", check.message()));
+                // La raison détaillée s'affiche sous la réplique du colon, dans la fenêtre de dialogue.
+                said.add(Message.translation(KEYS + "why").param("reason", check.message()));
             }
         }
-        Dialogues.openPage(world, store, ref, player, dialogue, npc);
+        Dialogues.openPage(world, store, ref, player, dialogue, npc, null, said);
     }
 
     private static SiteRules.Check examine(World world, Store<EntityStore> store, Ref<EntityStore> ref, People people) {
@@ -294,7 +298,7 @@ public final class Settlers {
         String me = player.getUuid().toString();
         for (Village other : Villages.registry(world).all()) {
             if (other != village && me.equals(other.settlerOwner())) {
-                player.sendMessage(Message.translation(KEYS + "already").param("village", other.name()));
+                DialogueSpeech.say(player, Message.translation(KEYS + "already").param("village", other.name()));
                 return false;
             }
         }
@@ -315,7 +319,7 @@ public final class Settlers {
         Vector3d at = Requests.position(store, ref);
         SiteRules.Check check = examine(world, store, ref, village.people());
         if (!check.ok() || at == null) {
-            player.sendMessage(Message.translation(KEYS + "why").param("reason", check.message()));
+            DialogueSpeech.say(player, Message.translation(KEYS + "why").param("reason", check.message()));
             return false;
         }
         int x = (int) Math.floor(at.x());
@@ -329,7 +333,7 @@ public final class Settlers {
         People people = village.people();
         village.endSettler();
         CHECKS.remove(player.getUuid());
-        player.sendMessage(Message.translation(KEYS + "founding").param("people", Message.translation(people.nameKey())));
+        DialogueSpeech.say(player, Message.translation(KEYS + "founding").param("people", Message.translation(people.nameKey())));
         String name = VillageNames.pick(world, people);
         VillageBuilder.generate(world, layout, name, x, z, false, result -> {
             PlayerRef owner = online(world, player.getUuid().toString());
@@ -418,7 +422,7 @@ public final class Settlers {
         }
         village.setSettlerOwner(null); // le PNJ qui suit s'en va au prochain pas (step)
         CHECKS.remove(player.getUuid());
-        player.sendMessage(Message.translation(KEYS + "home").param("village", village.name()));
+        DialogueSpeech.say(player, Message.translation(KEYS + "home").param("village", village.name()));
         return true;
     }
 

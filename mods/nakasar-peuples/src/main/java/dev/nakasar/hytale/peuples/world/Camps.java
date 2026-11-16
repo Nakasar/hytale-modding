@@ -22,6 +22,7 @@ import dev.nakasar.hytale.peuples.village.People;
 import dev.nakasar.hytale.peuples.village.Terrain;
 import dev.nakasar.hytale.peuples.village.Village;
 import dev.nakasar.hytale.peuples.village.Villages;
+import dev.nakasar.hytale.peuples.dialogue.DialogueSpeech;
 import org.joml.Vector3d;
 
 import java.util.ArrayList;
@@ -403,12 +404,12 @@ public final class Camps {
         }
         PeuplesPlayer data = PeuplesPlayer.ensure(store, ref);
         if (data.hasFlag(FLAG + c.id)) {
-            player.sendMessage(Message.translation(KEYS + "already"));
+            DialogueSpeech.say(player, Message.translation(KEYS + "already"));
             return false;
         }
         int need = Integer.parseInt(t[1]);
         if (WorldLife.count(store, ref, t[0]::equals) < need) {
-            player.sendMessage(Message.translation(KEYS + "missing").param("count", need)
+            DialogueSpeech.say(player, Message.translation(KEYS + "missing").param("count", need)
                     .param("item", dev.nakasar.hytale.peuples.village.VillageBoard.itemName(t[0])));
             return false;
         }
@@ -417,7 +418,7 @@ public final class Camps {
         Requests.give(store, ref, new ItemStack(t[2], Integer.parseInt(t[3])));
         Requests.give(store, ref, new ItemStack(v.people().favorItem(), 1));
         Reputations.change(world, store, ref, player, v, REPUTATION, KEYS + "reason");
-        player.sendMessage(Message.translation(KEYS + "thanks"));
+        DialogueSpeech.say(player, Message.translation(KEYS + "thanks"));
         return true;
     }
 
@@ -425,7 +426,7 @@ public final class Camps {
     static boolean defend(World world, Store<EntityStore> store, Ref<EntityStore> ref, PlayerRef player, Camp c) {
         Village v = Villages.registry(world).byId(c.village);
         if (v == null || c.quest != 0) {
-            player.sendMessage(Message.translation(KEYS + (c.quest == 1 ? "underAttack" : "already")));
+            DialogueSpeech.say(player, Message.translation(KEYS + (c.quest == 1 ? "underAttack" : "already")));
             return false;
         }
         String[] ranks = Raids.raiders(v.people());
@@ -480,18 +481,18 @@ public final class Camps {
         String what = "donate:" + c.id;
         int left = WorldLife.allowance(player.getUuid(), what, day, DONATION_MAX);
         if (left <= 0) {
-            player.sendMessage(Message.translation(KEYS + "donatedEnough"));
+            DialogueSpeech.say(player, Message.translation(KEYS + "donatedEnough"));
             return false;
         }
         int given = WorldLife.take(store, ref, WorldLife::isFood, left);
         if (given <= 0) {
-            player.sendMessage(Message.translation(KEYS + "noFood"));
+            DialogueSpeech.say(player, Message.translation(KEYS + "noFood"));
             return false;
         }
         WorldLife.spend(player.getUuid(), what, day, given);
         Villages.addEssor(v, Math.max(1, given / 2));
         Reputations.change(world, store, ref, player, v, given * 2, KEYS + "donationReason");
-        player.sendMessage(Message.translation(KEYS + "donated").param("count", given).param("village", v.name()));
+        DialogueSpeech.say(player, Message.translation(KEYS + "donated").param("count", given).param("village", v.name()));
         return true;
     }
 
