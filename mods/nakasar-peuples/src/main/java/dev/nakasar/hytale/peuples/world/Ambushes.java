@@ -195,7 +195,7 @@ public final class Ambushes {
             return true;
         }
         if (virtualLoss(players, here)) {
-            a.raidCargo(Math.max(1, a.convoyCargo() / 3));
+            a.raidCargo(Math.max(1, a.convoyCargo() / 3), null);
         }
         return false;
     }

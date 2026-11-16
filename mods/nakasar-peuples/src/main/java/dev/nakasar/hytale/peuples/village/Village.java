@@ -59,6 +59,12 @@ public final class Village {
             .append(new KeyedCodec<>("BannerX", Codec.INTEGER), (v, i) -> v.bannerX = i == null ? 0 : i, v -> v.bannerX).add()
             .append(new KeyedCodec<>("BannerY", Codec.INTEGER), (v, i) -> v.bannerY = i == null ? 0 : i, v -> v.bannerY).add()
             .append(new KeyedCodec<>("BannerZ", Codec.INTEGER), (v, i) -> v.bannerZ = i == null ? 0 : i, v -> v.bannerZ).add()
+            .append(new KeyedCodec<>("DepositLarge", Codec.BOOLEAN), (v, b) -> v.depositLarge = b != null && b, v -> v.depositLarge)
+            .documentation("Vrai si le dépôt est devenu un grand coffre (palier 2) : Deposit2X/Y/Z est sa seconde case.")
+            .add()
+            .append(new KeyedCodec<>("Deposit2X", Codec.INTEGER), (v, i) -> v.deposit2X = i == null ? 0 : i, v -> v.deposit2X).add()
+            .append(new KeyedCodec<>("Deposit2Y", Codec.INTEGER), (v, i) -> v.deposit2Y = i == null ? 0 : i, v -> v.deposit2Y).add()
+            .append(new KeyedCodec<>("Deposit2Z", Codec.INTEGER), (v, i) -> v.deposit2Z = i == null ? 0 : i, v -> v.deposit2Z).add()
             .append(new KeyedCodec<>("Requests", new ArrayCodec<>(VillageRequest.CODEC, VillageRequest[]::new)),
                     (v, a) -> v.requests = a == null ? new VillageRequest[0] : a, v -> v.requests)
             .documentation("Demandes du tableau du jour (étape 3), trois au plus.")
@@ -127,6 +133,10 @@ public final class Village {
     int bannerX;
     int bannerY;
     int bannerZ;
+    boolean depositLarge;
+    int deposit2X;
+    int deposit2Y;
+    int deposit2Z;
     VillageRequest[] requests = new VillageRequest[0];
     long requestDay = Long.MIN_VALUE;
     Site[] sites = new Site[0];
@@ -178,6 +188,10 @@ public final class Village {
         v.bannerX = bannerX;
         v.bannerY = bannerY;
         v.bannerZ = bannerZ;
+        v.depositLarge = depositLarge;
+        v.deposit2X = deposit2X;
+        v.deposit2Y = deposit2Y;
+        v.deposit2Z = deposit2Z;
         v.requests = new VillageRequest[requests.length];
         for (int i = 0; i < requests.length; i++) {
             v.requests[i] = requests[i] == null ? null : requests[i].copy();
@@ -286,8 +300,29 @@ public final class Village {
         return bx == boardX && by == boardY && bz == boardZ;
     }
 
+    /** Vrai si (bx, by, bz) est une case du dépôt (les deux cases du grand coffre à partir du palier 2). */
     public boolean isDeposit(int bx, int by, int bz) {
-        return bx == depositX && by == depositY && bz == depositZ;
+        return bx == depositX && by == depositY && bz == depositZ
+                || depositLarge && bx == deposit2X && by == deposit2Y && bz == deposit2Z;
+    }
+
+    /** Vrai si le dépôt est un grand coffre (deux cases). */
+    public boolean depositLarge() {
+        return depositLarge;
+    }
+
+    /** Seconde case du grand coffre du dépôt, ou null tant que le dépôt est un petit coffre. */
+    public int[] deposit2() {
+        return depositLarge ? new int[] {deposit2X, deposit2Y, deposit2Z} : null;
+    }
+
+    /** Le dépôt devient un grand coffre : son bloc (conteneur) en `origin`, sa seconde case en `second`. */
+    void setDepositLarge(int[] origin, int[] second) {
+        setDeposit(origin[0], origin[1], origin[2]);
+        depositLarge = true;
+        deposit2X = second[0];
+        deposit2Y = second[1];
+        deposit2Z = second[2];
     }
 
     public int[] deposit() {

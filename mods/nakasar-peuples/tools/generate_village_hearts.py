@@ -153,11 +153,15 @@ def scatter(S, cells, rate, choices, salt, cond=None):
             S.set(x, 1, z, choices[int(h(x, z, salt + 1) * len(choices))])
 
 
-def functional(S, board, deposit, banner):
-    """Places du tableau, du dépôt et de la bannière (posés par le Java, tournés vers le cœur)."""
+def functional(S, board, deposit, banner, wide):
+    """Places du tableau, du dépôt et de la bannière (posés par le Java, tournés vers le cœur). `wide` : seconde case du
+    dépôt quand il devient un grand coffre (palier 2, Java village/Deposits), à côté du petit coffre sur l'axe du coffre
+    (perpendiculaire au lacet), choisie hors des allées de la place pour ne pas gêner les villageois."""
     for key, (x, y, z) in (("board", board), ("deposit", deposit), ("banner", banner)):
         S.marks[key] = (x, y, z, facing(x, z))
         S.reserved.add((x, y, z))
+    S.marks["deposit_wide"] = wide
+    S.reserved.add(wide)
     S.reserved.add((0, 1, 0))
     S.reserved.add((0, 2, 0))
     for cell in S.reserved:
@@ -224,7 +228,7 @@ def kweebec(tier):
     S.set(5, 1, -1, "Furniture_Village_Crate")
     S.set(5, 2, -1, "Plant_Fruit_Apple")
     S.set(2, 1, -3, "Furniture_Kweebec_Stool")
-    functional(S, board=(-4, 1, -2), deposit=(3, 1, -1), banner=(0, 1, -2))
+    functional(S, board=(-4, 1, -2), deposit=(3, 1, -1), banner=(0, 1, -2), wide=(3, 1, -2))
     S.marks["woodpile"] = (-3, 3)
     edge = {c for c in S.marks["plaza"] if math.hypot(*c) > 6.2}
     scatter(S, edge, 0.45, ["Plant_Grass_Sharp", "Plant_Grass_Sharp_Short", "Plant_Fern"] + FLOWERS[:3], 31)
@@ -292,7 +296,7 @@ def trork(tier):
     if tier >= 3:
         for (x, z) in ((-6, 3), (-3, -6), (3, -6)):
             S.set(x, 1, z, "Furniture_Crude_Brazier")
-    functional(S, board=(-4, 1, -1), deposit=(4, 1, -1), banner=(0, 1, -1))
+    functional(S, board=(-4, 1, -1), deposit=(4, 1, -1), banner=(0, 1, -1), wide=(4, 1, 0))
     S.marks["woodpile"] = (-2, 4)
     scatter(S, S.marks["plaza"], 0.08, ["Rubble_Stone", "Deco_Bone_Pile", "Rubble_Basalt"], 51,
             cond=lambda x, z: math.hypot(x, z) > 4.5)
@@ -362,7 +366,7 @@ def feran(tier):
     if tier >= 3:
         pillar_torch(S, -2, 6, 1)
         pillar_torch(S, 2, 6, 1)
-    functional(S, board=(-4, 1, 0), deposit=(4, 1, 1), banner=(0, 2, BZ - 3))
+    functional(S, board=(-4, 1, 0), deposit=(4, 1, 1), banner=(0, 2, BZ - 3), wide=(4, 1, 2))
     S.marks["woodpile"] = (-2, 5)
     edge = {c for c in S.marks["plaza"] if math.hypot(*c) > 6.4}
     scatter(S, edge, 0.3, ["Plant_Grass_Arid", "Plant_Bush_Arid", "Plant_Grass_Arid_Short"], 61)
@@ -394,7 +398,7 @@ def renonce(tier):
         S.paste("Npc/Outlander/Braziers/Outlander_Braziers_Npc_Outlander_Brazier_001", 8, 0, -2)
     if tier >= 3:
         S.paste("Orbis/Trees/Fir_Snow/Stage_3/Fir_Snow_Stage3_001", -8, 1, -7)
-    functional(S, board=(-3, 1, 6), deposit=(3, 1, 6), banner=(0, 1, 7))
+    functional(S, board=(-3, 1, 6), deposit=(3, 1, 6), banner=(0, 1, 7), wide=(4, 1, 6))
     S.marks["woodpile"] = (2, 7)
     scatter(S, {c for c in S.marks["plaza"] if c[1] > 4}, 0.15, ["Plant_Grass_Winter_Short", "Rubble_Slate"], 71)
     return S
@@ -427,7 +431,7 @@ def slothian(tier):
         for (x, z) in ((-4, 1), (4, 1)):
             S.set(x, 1, z, "Rock_Basalt_Brick_Pillar_Base")
             S.set(x, 2, z, "Furniture_Jungle_Torch")
-    functional(S, board=(-2, 1, 2), deposit=(2, 1, 2), banner=(0, 1, 4))
+    functional(S, board=(-2, 1, 2), deposit=(2, 1, 2), banner=(0, 1, 4), wide=(3, 1, 2))
     S.marks["woodpile"] = (-3, 5)
     return S
 
@@ -486,6 +490,18 @@ def check(layout_id, S, tier, known, errors):
         x, y, z, _ = S.marks[key]
         if S.b.get((x, y - 1, z)) is None:
             errors.append(f"{layout_id} T{tier} : {key} en {x} {y} {z} sans appui")
+    # Grand coffre du dépôt : case voisine sur l'axe du coffre (le lacet le tourne de face vers le cœur), avec appui,
+    # hors des grandes allées de la place (choisie à la main, voir les appels de functional).
+    dx, dy, dz, yaw = S.marks["deposit"]
+    wx, wy, wz = S.marks["deposit_wide"]
+    side = rot(-1, 0, yaw)
+    if wy != dy or (wx - dx, wz - dz) not in (side, (-side[0], -side[1])):
+        errors.append(f"{layout_id} : seconde case du dépôt {wx} {wy} {wz} pas à côté du coffre (axe {side})")
+    under = S.get(wx, wy - 1, wz)
+    if under is None:
+        errors.append(f"{layout_id} T{tier} : seconde case du dépôt {wx} {wy} {wz} sans appui")
+    if (wx, wy, wz) == (0, 1, 0):
+        errors.append(f"{layout_id} : seconde case du dépôt sur le cœur")
 
 
 def steps(layout_id, compose, errors, known):
@@ -588,6 +604,7 @@ def main():
             "PlazaRadius": PLAZA[layout_id],
             "Board": list(marks["board"]),
             "Deposit": list(marks["deposit"]),
+            "DepositWide": list(marks["deposit_wide"]),
             "Banner": list(marks["banner"]),
             "Woodpile": list(marks["woodpile"]),
             "Steps": st,

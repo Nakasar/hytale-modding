@@ -80,7 +80,7 @@ public final class VillageBlockSystem extends EntityEventSystem<EntityStore, Bre
     /** Village dont un bâtiment (ou le dépôt, le tableau, la bannière) occupe le bloc (x, y, z), ou null. */
     public static Village villageAt(World world, int x, int y, int z) {
         for (Village v : Villages.registry(world).all()) {
-            if (same(v.deposit(), x, y, z) || same(v.board(), x, y, z) || (v.hasBanner() && same(v.banner(), x, y, z))) {
+            if (v.isDeposit(x, y, z) || same(v.board(), x, y, z) || (v.hasBanner() && same(v.banner(), x, y, z))) {
                 return v;
             }
             VillageLayout layout = v.layout() == null ? null : VillageLayout.get(v.layout());

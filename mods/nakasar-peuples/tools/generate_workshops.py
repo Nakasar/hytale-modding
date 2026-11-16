@@ -715,7 +715,7 @@ def board_spot(layout, building, errors):
         taken.add((j["WorkX"], j["WorkZ"]))
         taken.add((j["HomeX"], j["HomeZ"]))
     heart = layout.get("Heart") or {}
-    for key in ("Board", "Deposit", "Banner"):
+    for key in ("Board", "Deposit", "DepositWide", "Banner"):
         if key in heart:
             taken.add((heart[key][0], heart[key][2]))
     # Lacets (VillageHeart) : 0 face au sud (+Z), 1 à l'est, 2 au nord, 3 à l'ouest.

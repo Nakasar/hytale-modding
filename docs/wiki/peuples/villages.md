@@ -24,7 +24,7 @@ Le **tableau** (à l'ouest du cœur) montre les trois demandes du jour, tirées 
 | Chef | abattre un chef ennemi dans son repaire, à 110-170 blocs (palier 1 et plus) |
 | Route | relier par des balises de route un avant-poste du village ou un village voisin |
 
-Le **dépôt** est le coffre du village : se tenir à moins de 6 blocs compte ce qu'il contient pour vos récoltes et fabrications. Une demande prise tient jusqu'au premier matin au moins 12 h plus tard.
+Le **dépôt** est le coffre du village : se tenir à moins de 6 blocs compte ce qu'il contient pour vos récoltes et fabrications. Au palier 2, il devient un grand coffre (36 places au lieu de 18), avec tout son contenu. Une demande prise tient jusqu'au premier matin au moins 12 h plus tard.
 
 ### Les expéditions
 

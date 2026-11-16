@@ -76,6 +76,19 @@ public enum People {
         return depositBlock;
     }
 
+    /**
+     * Grand coffre vanilla du même style que {@link #depositBlock()} (36 emplacements au lieu de 18, deux cases) : le
+     * dépôt du village à partir du palier 2 ({@link Deposits}).
+     */
+    public String depositLargeBlock() {
+        return depositBlock.replace("_Chest_Small", "_Chest_Large");
+    }
+
+    /** Vrai si `name` est le petit ou le grand coffre de dépôt du peuple (ou un de leurs états). */
+    public boolean isDepositBlock(String name) {
+        return Blocks.is(name, depositBlock) || Blocks.is(name, depositLargeBlock());
+    }
+
     /** Panneau du tableau du village. */
     public String boardBlock() {
         return boardBlock;

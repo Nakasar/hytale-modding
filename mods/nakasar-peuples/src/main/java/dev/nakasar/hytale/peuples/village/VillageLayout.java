@@ -391,6 +391,7 @@ public final class VillageLayout implements JsonAssetWithMap<String, DefaultAsse
         public static final BuilderCodec<Heart> CODEC = BuilderCodec.builder(Heart.class, Heart::new)
                 .append(new KeyedCodec<>("Board", Codec.INT_ARRAY), (h, v) -> h.board = v, h -> h.board).add()
                 .append(new KeyedCodec<>("Deposit", Codec.INT_ARRAY), (h, v) -> h.deposit = v, h -> h.deposit).add()
+                .append(new KeyedCodec<>("DepositWide", Codec.INT_ARRAY), (h, v) -> h.depositWide = v, h -> h.depositWide).add()
                 .append(new KeyedCodec<>("Banner", Codec.INT_ARRAY), (h, v) -> h.banner = v, h -> h.banner).add()
                 .append(new KeyedCodec<>("Steps", new ArrayCodec<>(HeartStep.CODEC, HeartStep[]::new)),
                         (h, v) -> h.steps = v == null ? new HeartStep[0] : v, h -> h.steps).add()
@@ -398,6 +399,7 @@ public final class VillageLayout implements JsonAssetWithMap<String, DefaultAsse
 
         int[] board;
         int[] deposit;
+        int[] depositWide;
         int[] banner;
         HeartStep[] steps = new HeartStep[0];
 
@@ -412,6 +414,11 @@ public final class VillageLayout implements JsonAssetWithMap<String, DefaultAsse
 
         public int[] banner() {
             return banner;
+        }
+
+        /** {@code [x, y, z]} de la seconde case du grand coffre du dépôt (palier 2), à côté de {@link #deposit()}, ou null. */
+        public int[] depositWide() {
+            return depositWide;
         }
 
         public HeartStep[] steps() {

@@ -211,6 +211,15 @@ rondin couché 4 (le long de z) et 5 (le long de x), comme dans les prefabs vani
 vanilla n'est pas collée si un coffre se trouve dessous. Les villages fondés avant les cœurs (`HeartTier` absent) gardent
 leur ancienne place.
 
+**Dépôt double** (`village/Deposits.java`, Kevin 2026-11-16) : à partir du palier 2, le petit coffre de dépôt du peuple
+(18 places) devient le grand coffre vanilla du même style (`Furniture_<Style>_Chest_Large`, 36 places, deux cases),
+avec tout son contenu, au premier pas où un joueur est près du village et le coffre fermé. La seconde case est la clé
+`DepositWide` du cœur, choisie à la main par peuple hors des allées de la place (et réservée : le cœur n'y pose rien) :
+Kweebec (3, 1, −2), Trork (4, 1, 0), Feran (4, 1, 2), Renoncés (4, 1, 6), Slothians (3, 1, 2). Les cases du grand coffre
+viennent de sa boîte de collision tournée par le moteur (`FillerBlockUtil`) ; si la case du plan n'est pas sur l'axe
+du coffre ou pas libre, l'autre voisine sur l'axe (hors d'un chemin d'abord). Le village (`DepositLarge`,
+`Deposit2X/Y/Z`) protège les deux cases. Un village qui redescend de palier garde son grand coffre.
+
 Aperçus : `python3 tools/generate_village_hearts.py --vanilla dump.json --preview DIR --palette pal.json` (le dump vient
 de `tools/extract_vanilla_prefabs.py Assets.zip pieces.txt dump.json --palette pal.json`, la liste des pièces de
 `--list`). Le script refuse un bloc inconnu, un meuble de plusieurs cases posé bloc à bloc, un bloc hors de la place ou
@@ -1250,7 +1259,17 @@ quarts des matériaux de la fondation), deux spécialités au niveau II, boutiqu
 - **Villageois** : 2 au niveau I, 1 de plus aux niveaux II et III (rôles et dialogues du peuple ; rôles vanilla pour
   les Trorks). Postes `AP_<bâtiment>/<métier>` dans `Villagers`, posés quand un joueur est à portée de l'avant-poste,
   sans régénération et vus par la réputation comme le village.
-- **Livraison** : chaque matin, un lot au coffre du dépôt du village (× niveau) : blé, pierre, rondins, poisson, viande.
+- **Coffre de l'avant-poste** (`annex/AnnexChests.java`, Kevin 2026-11-16) : petit coffre vanilla du peuple posé à
+  côté du panneau (repère local ±2/±3 blocs sur les côtés, jamais devant le bâtiment) à la fin des travaux, ou au
+  premier passage d'un joueur pour les avant-postes déjà debout ; reposé s'il est cassé. Chaque matin (6 h), le lot du
+  jour (× niveau : blé, pierre, rondins, poisson, viande) y entre. Coffre pas chargé ou plein : le lot attend dans le
+  champ `Stock` d'`AnnexState` (au plus 3 jours de production, au-delà la production du jour est perdue, annonce) et
+  entre au coffre dès qu'il est chargé. Les joueurs s'y servent librement. Pas de coffre pour la tour de guet.
+- **Livraison** : à 12 h, le convoi emporte tout le contenu du coffre (objets simples : ni usés ni porteurs de
+  données) et le stock (coffre pas chargé : le stock seulement). Cargaison sauvée en `ConvoyItems`
+  (« Objet*quantité|... »). **Dépôt du village plein** : chargé et plus rien n'y entre au départ, le convoi ne part pas
+  (tout reste à l'avant-poste, une annonce par jour) ; plein à l'arrivée, il livre ce qui entre et attend devant le
+  dépôt avec le reste (annonce, ligne d'état du panneau), sans nouveau convoi d'ici là.
   Le lot part en **convoi** (`annex/Convoys.java`) : 2 porteurs au niveau I, 3 aux niveaux II et III (rôle du premier
   métier de l'avant-poste), en ligne droite de la sortie de l'avant-poste au dépôt. La progression (blocs) est sauvée
   dans `AnnexState` (`ConvoyCargo`, `ConvoyPorters`, `ConvoyAt`). Joueur à moins de 64 blocs du convoi : de vrais PNJ
@@ -1292,7 +1311,11 @@ Les tas de rondins et de pierres à côté des scieries et des mines sont les pr
    reste en main. À 100 blocs sur un sol plat : la zone est aplanie, l'échafaudage monte.
 3. `/village finir` près du village, puis revenir à l'avant-poste : prefabs collés, panneau de métier à la place de la
    fondation, deux villageois.
-4. Panneau de l'avant-poste : commandes, boutique. Le lendemain matin, un convoi de porteurs part vers le dépôt ; le suivre, en tuer un (cargaison au sol, gros malus de réputation).
+4. Panneau de l'avant-poste : commandes, boutique ; un coffre à côté du panneau. Le lendemain à 6 h, la production y
+   entre (`/time 7`) ; en prendre une partie. À 12 h, un convoi part vers le dépôt avec le reste ; le suivre, en tuer un
+   (cargaison au sol, gros malus de réputation).
+5. Remplir le dépôt du village (36 places au palier 2) : le convoi suivant ne part pas (annonce), la production
+   s'accumule au coffre de l'avant-poste. Vider un peu le dépôt pendant qu'un convoi attend devant : il livre.
 
 ### À vérifier en jeu (avant-postes)
 

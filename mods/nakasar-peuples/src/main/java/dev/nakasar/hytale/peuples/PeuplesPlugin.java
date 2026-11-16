@@ -229,6 +229,7 @@ public final class PeuplesPlugin extends JavaPlugin {
     @Override
     protected void shutdown() {
         Dialogues.clearAll();
+        dev.nakasar.hytale.peuples.village.Deposits.clearAll();
         RequestSpawns.clearAll();
         dev.nakasar.hytale.peuples.request.Expeditions.clearAll();
         dev.nakasar.hytale.peuples.boss.QuestBosses.clearAll();
