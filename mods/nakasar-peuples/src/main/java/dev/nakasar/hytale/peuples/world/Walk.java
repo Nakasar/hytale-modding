@@ -143,6 +143,12 @@ public final class Walk {
         return lead;
     }
 
+    /** La route a changé : `at` est la progression sur la nouvelle (le suivi de blocage repart de là). */
+    public void reset(double at) {
+        best = at;
+        stuckFor = 0;
+    }
+
     /** Retire les PNJ de la file (personne près d'elle, arrivée, fin). */
     public void despawn(Store<EntityStore> store) {
         for (Ref<EntityStore> ref : refs) {

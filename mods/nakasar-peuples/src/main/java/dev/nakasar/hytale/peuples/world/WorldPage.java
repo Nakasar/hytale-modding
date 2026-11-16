@@ -373,8 +373,12 @@ public final class WorldPage extends InteractiveCustomUIPage<WorldPage.Event> {
             if (other == null || link == null) {
                 continue;
             }
-            int length = (int) Math.max(1, Math.round(link.length()));
-            int at = (int) Math.round(Math.min(t.at, link.length()));
+            // Longueur du trajet réel (route balisée ou détour par la terre), pas la distance à vol d'oiseau.
+            Village fromV = leaving ? v : other;
+            Village toV = leaving ? other : v;
+            double pathLength = Links.path(world, fromV, toV).length();
+            int length = (int) Math.max(1, Math.round(pathLength));
+            int at = (int) Math.round(Math.min(t.at, pathLength));
             cmd.set("#Tr" + n + ".Visible", true);
             cmd.set("#TrKind" + n + ".TextSpans", Message.translation(Travellers.KEYS + "kind." + t.kind().key()));
             cmd.set("#TrKind" + n + ".Style.TextColor", kindColor(t.kind()));

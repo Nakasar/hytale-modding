@@ -384,6 +384,7 @@ public final class WorldLife {
     public static void clearAll() {
         Walk.clearAll();
         Links.clearAll();
+        dev.nakasar.hytale.peuples.annex.LandPath.clear();
         Travellers.clearAll();
         Ambushes.clearAll();
         Relations.clearAll();
