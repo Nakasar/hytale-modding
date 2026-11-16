@@ -43,6 +43,10 @@ public final class AnnexPage extends InteractiveCustomUIPage<AnnexPage.Event> {
     private static final String KEYS = Annexes.KEYS;
     private static final List<String> THEMED = List.of("Kweebec", "Trork", "Feran", "Renonce", "Slothian");
     private static final int CARDS = 6;
+    /** Matériaux de fondation affichés en icônes par carte (ids à plat {@code #AnnexMat<carte × MATERIALS + j>}). */
+    private static final int MATERIALS = 3;
+    private static final String OK = "#7ed957";
+    private static final String MISSING = "#e8c46a";
 
     /** Donnée d'un clic : {@code Grant0..5}, {@code Destroy0..5}, {@code Back}. */
     public static final class Event {
@@ -123,7 +127,29 @@ public final class AnnexPage extends InteractiveCustomUIPage<AnnexPage.Event> {
         cmd.set("#AnnexState" + n + ".TextSpans", confirming
                 ? Message.translation(KEYS + "destroy.warn").param("building", Message.translation(w.nameKey()))
                 .param("refund", Annexes.REFUND_DIVISOR)
-                : stateLine(world, store, village, w, a));
+                : a == null ? Message.translation(KEYS + "state.foundation") : stateLine(world, store, village, w, a));
+        // Matériaux de la fondation, comme ceux des chantiers du tableau (Kevin, 2026-11-16) : icône et dépôt / voulu.
+        cmd.set("#AnnexMats" + n + ".Visible", a == null);
+        if (a == null) {
+            VillageLayout.Material[] materials = w.annex().materials();
+            Map<String, Integer> deposit = Villages.depositContents(world, village);
+            for (int j = 0; j < MATERIALS; j++) {
+                String k = Integer.toString(i * MATERIALS + j);
+                boolean shown = j < materials.length;
+                cmd.set("#AnnexMat" + k + ".Visible", shown);
+                if (shown) {
+                    VillageLayout.Material m = materials[j];
+                    int have = deposit == null ? 0 : Math.min(m.quantity(), deposit.getOrDefault(m.itemId(), 0));
+                    boolean ok = have >= m.quantity();
+                    cmd.set("#AnnexMatIcon" + k + ".ItemId", m.itemId());
+                    cmd.set("#AnnexMatOk" + k + ".Visible", ok);
+                    cmd.set("#AnnexMatSlot" + k + ".Visible", !ok);
+                    cmd.set("#AnnexMatCount" + k + ".TextSpans", Message.translation("nakasar_peuples.boardPage.progress")
+                            .param("have", have).param("need", m.quantity()));
+                    cmd.set("#AnnexMatCount" + k + ".Style.TextColor", ok ? OK : MISSING);
+                }
+            }
+        }
         String button = null;
         String action = "Grant" + n;
         if (allowed && a == null) {

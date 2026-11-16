@@ -5,6 +5,7 @@ $C = "../../../Common.ui";
 @Accent = #e0773e;
 @Body = LabelStyle(FontSize: 14, TextColor: #c9d1d9, Wrap: true);
 @SmallWrap = LabelStyle(FontSize: 13, TextColor: #96a9be, Wrap: true);
+@Count = LabelStyle(FontSize: 13, RenderBold: true, TextColor: #e8c46a, HorizontalAlignment: Center, VerticalAlignment: Center);
 
 $C.@PageOverlay {
   LayoutMode: Middle;
@@ -108,10 +109,10 @@ $C.@PageOverlay {
           Group { Anchor: (Height: 3, Bottom: 8); Background: (Color: #e0773e(0.6)); }
           Group {
             LayoutMode: Left;
-            Anchor: (Height: 56);
+            Anchor: (Height: 84);
             Group {
               LayoutMode: Full;
-              Anchor: (Width: 56, Height: 56, Right: 10);
+              Anchor: (Width: 56, Height: 56, Right: 10, Bottom: 28);
               Background: (TexturePath: "../../../Common/IngredientSlot.png", Border: 24);
               ItemIcon #AnnexIcon0 { Anchor: (Full: 7); ShowItemTooltip: true; }
             }
@@ -122,7 +123,47 @@ $C.@PageOverlay {
               Label #AnnexRole0 { Anchor: (Top: 2); Style: @SmallWrap; Text: ""; }
             }
           }
-          Label #AnnexState0 { Anchor: (Top: 8); Style: @Body; Text: ""; }
+          Label #AnnexState0 { Anchor: (Top: 6); Style: @Body; Text: ""; }
+          Group #AnnexMats0 {
+            LayoutMode: Left;
+            Anchor: (Height: 74, Top: 6);
+            Group #AnnexMat0 {
+              LayoutMode: Top;
+              Anchor: (Width: 64, Right: 14);
+              Group {
+                LayoutMode: Full;
+                Anchor: (Width: 52, Height: 52, Left: 6);
+                Group #AnnexMatSlot0 { Anchor: (Full: 0); Background: (TexturePath: "../../../Common/IngredientSlot.png", Border: 24); }
+                Group #AnnexMatOk0 { Anchor: (Full: 0); Background: (TexturePath: "../../../Common/IngredientSlotValid.png", Border: 24); Visible: false; }
+                ItemIcon #AnnexMatIcon0 { Anchor: (Full: 5); ShowItemTooltip: true; }
+              }
+              Label #AnnexMatCount0 { Anchor: (Height: 18, Top: 2); Style: @Count; Text: ""; }
+            }
+            Group #AnnexMat1 {
+              LayoutMode: Top;
+              Anchor: (Width: 64, Right: 14);
+              Group {
+                LayoutMode: Full;
+                Anchor: (Width: 52, Height: 52, Left: 6);
+                Group #AnnexMatSlot1 { Anchor: (Full: 0); Background: (TexturePath: "../../../Common/IngredientSlot.png", Border: 24); }
+                Group #AnnexMatOk1 { Anchor: (Full: 0); Background: (TexturePath: "../../../Common/IngredientSlotValid.png", Border: 24); Visible: false; }
+                ItemIcon #AnnexMatIcon1 { Anchor: (Full: 5); ShowItemTooltip: true; }
+              }
+              Label #AnnexMatCount1 { Anchor: (Height: 18, Top: 2); Style: @Count; Text: ""; }
+            }
+            Group #AnnexMat2 {
+              LayoutMode: Top;
+              Anchor: (Width: 64, Right: 14);
+              Group {
+                LayoutMode: Full;
+                Anchor: (Width: 52, Height: 52, Left: 6);
+                Group #AnnexMatSlot2 { Anchor: (Full: 0); Background: (TexturePath: "../../../Common/IngredientSlot.png", Border: 24); }
+                Group #AnnexMatOk2 { Anchor: (Full: 0); Background: (TexturePath: "../../../Common/IngredientSlotValid.png", Border: 24); Visible: false; }
+                ItemIcon #AnnexMatIcon2 { Anchor: (Full: 5); ShowItemTooltip: true; }
+              }
+              Label #AnnexMatCount2 { Anchor: (Height: 18, Top: 2); Style: @Count; Text: ""; }
+            }
+          }
           Group { FlexWeight: 1; }
           $C.@SmallSecondaryTextButton #AnnexAction0 { @Text = ""; @Anchor = Anchor(Height: 32); }
         }
@@ -135,10 +176,10 @@ $C.@PageOverlay {
           Group { Anchor: (Height: 3, Bottom: 8); Background: (Color: #e0773e(0.6)); }
           Group {
             LayoutMode: Left;
-            Anchor: (Height: 56);
+            Anchor: (Height: 84);
             Group {
               LayoutMode: Full;
-              Anchor: (Width: 56, Height: 56, Right: 10);
+              Anchor: (Width: 56, Height: 56, Right: 10, Bottom: 28);
               Background: (TexturePath: "../../../Common/IngredientSlot.png", Border: 24);
               ItemIcon #AnnexIcon1 { Anchor: (Full: 7); ShowItemTooltip: true; }
             }
@@ -149,7 +190,47 @@ $C.@PageOverlay {
               Label #AnnexRole1 { Anchor: (Top: 2); Style: @SmallWrap; Text: ""; }
             }
           }
-          Label #AnnexState1 { Anchor: (Top: 8); Style: @Body; Text: ""; }
+          Label #AnnexState1 { Anchor: (Top: 6); Style: @Body; Text: ""; }
+          Group #AnnexMats1 {
+            LayoutMode: Left;
+            Anchor: (Height: 74, Top: 6);
+            Group #AnnexMat3 {
+              LayoutMode: Top;
+              Anchor: (Width: 64, Right: 14);
+              Group {
+                LayoutMode: Full;
+                Anchor: (Width: 52, Height: 52, Left: 6);
+                Group #AnnexMatSlot3 { Anchor: (Full: 0); Background: (TexturePath: "../../../Common/IngredientSlot.png", Border: 24); }
+                Group #AnnexMatOk3 { Anchor: (Full: 0); Background: (TexturePath: "../../../Common/IngredientSlotValid.png", Border: 24); Visible: false; }
+                ItemIcon #AnnexMatIcon3 { Anchor: (Full: 5); ShowItemTooltip: true; }
+              }
+              Label #AnnexMatCount3 { Anchor: (Height: 18, Top: 2); Style: @Count; Text: ""; }
+            }
+            Group #AnnexMat4 {
+              LayoutMode: Top;
+              Anchor: (Width: 64, Right: 14);
+              Group {
+                LayoutMode: Full;
+                Anchor: (Width: 52, Height: 52, Left: 6);
+                Group #AnnexMatSlot4 { Anchor: (Full: 0); Background: (TexturePath: "../../../Common/IngredientSlot.png", Border: 24); }
+                Group #AnnexMatOk4 { Anchor: (Full: 0); Background: (TexturePath: "../../../Common/IngredientSlotValid.png", Border: 24); Visible: false; }
+                ItemIcon #AnnexMatIcon4 { Anchor: (Full: 5); ShowItemTooltip: true; }
+              }
+              Label #AnnexMatCount4 { Anchor: (Height: 18, Top: 2); Style: @Count; Text: ""; }
+            }
+            Group #AnnexMat5 {
+              LayoutMode: Top;
+              Anchor: (Width: 64, Right: 14);
+              Group {
+                LayoutMode: Full;
+                Anchor: (Width: 52, Height: 52, Left: 6);
+                Group #AnnexMatSlot5 { Anchor: (Full: 0); Background: (TexturePath: "../../../Common/IngredientSlot.png", Border: 24); }
+                Group #AnnexMatOk5 { Anchor: (Full: 0); Background: (TexturePath: "../../../Common/IngredientSlotValid.png", Border: 24); Visible: false; }
+                ItemIcon #AnnexMatIcon5 { Anchor: (Full: 5); ShowItemTooltip: true; }
+              }
+              Label #AnnexMatCount5 { Anchor: (Height: 18, Top: 2); Style: @Count; Text: ""; }
+            }
+          }
           Group { FlexWeight: 1; }
           $C.@SmallSecondaryTextButton #AnnexAction1 { @Text = ""; @Anchor = Anchor(Height: 32); }
         }
@@ -162,10 +243,10 @@ $C.@PageOverlay {
           Group { Anchor: (Height: 3, Bottom: 8); Background: (Color: #e0773e(0.6)); }
           Group {
             LayoutMode: Left;
-            Anchor: (Height: 56);
+            Anchor: (Height: 84);
             Group {
               LayoutMode: Full;
-              Anchor: (Width: 56, Height: 56, Right: 10);
+              Anchor: (Width: 56, Height: 56, Right: 10, Bottom: 28);
               Background: (TexturePath: "../../../Common/IngredientSlot.png", Border: 24);
               ItemIcon #AnnexIcon2 { Anchor: (Full: 7); ShowItemTooltip: true; }
             }
@@ -176,7 +257,47 @@ $C.@PageOverlay {
               Label #AnnexRole2 { Anchor: (Top: 2); Style: @SmallWrap; Text: ""; }
             }
           }
-          Label #AnnexState2 { Anchor: (Top: 8); Style: @Body; Text: ""; }
+          Label #AnnexState2 { Anchor: (Top: 6); Style: @Body; Text: ""; }
+          Group #AnnexMats2 {
+            LayoutMode: Left;
+            Anchor: (Height: 74, Top: 6);
+            Group #AnnexMat6 {
+              LayoutMode: Top;
+              Anchor: (Width: 64, Right: 14);
+              Group {
+                LayoutMode: Full;
+                Anchor: (Width: 52, Height: 52, Left: 6);
+                Group #AnnexMatSlot6 { Anchor: (Full: 0); Background: (TexturePath: "../../../Common/IngredientSlot.png", Border: 24); }
+                Group #AnnexMatOk6 { Anchor: (Full: 0); Background: (TexturePath: "../../../Common/IngredientSlotValid.png", Border: 24); Visible: false; }
+                ItemIcon #AnnexMatIcon6 { Anchor: (Full: 5); ShowItemTooltip: true; }
+              }
+              Label #AnnexMatCount6 { Anchor: (Height: 18, Top: 2); Style: @Count; Text: ""; }
+            }
+            Group #AnnexMat7 {
+              LayoutMode: Top;
+              Anchor: (Width: 64, Right: 14);
+              Group {
+                LayoutMode: Full;
+                Anchor: (Width: 52, Height: 52, Left: 6);
+                Group #AnnexMatSlot7 { Anchor: (Full: 0); Background: (TexturePath: "../../../Common/IngredientSlot.png", Border: 24); }
+                Group #AnnexMatOk7 { Anchor: (Full: 0); Background: (TexturePath: "../../../Common/IngredientSlotValid.png", Border: 24); Visible: false; }
+                ItemIcon #AnnexMatIcon7 { Anchor: (Full: 5); ShowItemTooltip: true; }
+              }
+              Label #AnnexMatCount7 { Anchor: (Height: 18, Top: 2); Style: @Count; Text: ""; }
+            }
+            Group #AnnexMat8 {
+              LayoutMode: Top;
+              Anchor: (Width: 64, Right: 14);
+              Group {
+                LayoutMode: Full;
+                Anchor: (Width: 52, Height: 52, Left: 6);
+                Group #AnnexMatSlot8 { Anchor: (Full: 0); Background: (TexturePath: "../../../Common/IngredientSlot.png", Border: 24); }
+                Group #AnnexMatOk8 { Anchor: (Full: 0); Background: (TexturePath: "../../../Common/IngredientSlotValid.png", Border: 24); Visible: false; }
+                ItemIcon #AnnexMatIcon8 { Anchor: (Full: 5); ShowItemTooltip: true; }
+              }
+              Label #AnnexMatCount8 { Anchor: (Height: 18, Top: 2); Style: @Count; Text: ""; }
+            }
+          }
           Group { FlexWeight: 1; }
           $C.@SmallSecondaryTextButton #AnnexAction2 { @Text = ""; @Anchor = Anchor(Height: 32); }
         }
@@ -194,10 +315,10 @@ $C.@PageOverlay {
           Group { Anchor: (Height: 3, Bottom: 8); Background: (Color: #e0773e(0.6)); }
           Group {
             LayoutMode: Left;
-            Anchor: (Height: 56);
+            Anchor: (Height: 84);
             Group {
               LayoutMode: Full;
-              Anchor: (Width: 56, Height: 56, Right: 10);
+              Anchor: (Width: 56, Height: 56, Right: 10, Bottom: 28);
               Background: (TexturePath: "../../../Common/IngredientSlot.png", Border: 24);
               ItemIcon #AnnexIcon3 { Anchor: (Full: 7); ShowItemTooltip: true; }
             }
@@ -208,7 +329,47 @@ $C.@PageOverlay {
               Label #AnnexRole3 { Anchor: (Top: 2); Style: @SmallWrap; Text: ""; }
             }
           }
-          Label #AnnexState3 { Anchor: (Top: 8); Style: @Body; Text: ""; }
+          Label #AnnexState3 { Anchor: (Top: 6); Style: @Body; Text: ""; }
+          Group #AnnexMats3 {
+            LayoutMode: Left;
+            Anchor: (Height: 74, Top: 6);
+            Group #AnnexMat9 {
+              LayoutMode: Top;
+              Anchor: (Width: 64, Right: 14);
+              Group {
+                LayoutMode: Full;
+                Anchor: (Width: 52, Height: 52, Left: 6);
+                Group #AnnexMatSlot9 { Anchor: (Full: 0); Background: (TexturePath: "../../../Common/IngredientSlot.png", Border: 24); }
+                Group #AnnexMatOk9 { Anchor: (Full: 0); Background: (TexturePath: "../../../Common/IngredientSlotValid.png", Border: 24); Visible: false; }
+                ItemIcon #AnnexMatIcon9 { Anchor: (Full: 5); ShowItemTooltip: true; }
+              }
+              Label #AnnexMatCount9 { Anchor: (Height: 18, Top: 2); Style: @Count; Text: ""; }
+            }
+            Group #AnnexMat10 {
+              LayoutMode: Top;
+              Anchor: (Width: 64, Right: 14);
+              Group {
+                LayoutMode: Full;
+                Anchor: (Width: 52, Height: 52, Left: 6);
+                Group #AnnexMatSlot10 { Anchor: (Full: 0); Background: (TexturePath: "../../../Common/IngredientSlot.png", Border: 24); }
+                Group #AnnexMatOk10 { Anchor: (Full: 0); Background: (TexturePath: "../../../Common/IngredientSlotValid.png", Border: 24); Visible: false; }
+                ItemIcon #AnnexMatIcon10 { Anchor: (Full: 5); ShowItemTooltip: true; }
+              }
+              Label #AnnexMatCount10 { Anchor: (Height: 18, Top: 2); Style: @Count; Text: ""; }
+            }
+            Group #AnnexMat11 {
+              LayoutMode: Top;
+              Anchor: (Width: 64, Right: 14);
+              Group {
+                LayoutMode: Full;
+                Anchor: (Width: 52, Height: 52, Left: 6);
+                Group #AnnexMatSlot11 { Anchor: (Full: 0); Background: (TexturePath: "../../../Common/IngredientSlot.png", Border: 24); }
+                Group #AnnexMatOk11 { Anchor: (Full: 0); Background: (TexturePath: "../../../Common/IngredientSlotValid.png", Border: 24); Visible: false; }
+                ItemIcon #AnnexMatIcon11 { Anchor: (Full: 5); ShowItemTooltip: true; }
+              }
+              Label #AnnexMatCount11 { Anchor: (Height: 18, Top: 2); Style: @Count; Text: ""; }
+            }
+          }
           Group { FlexWeight: 1; }
           $C.@SmallSecondaryTextButton #AnnexAction3 { @Text = ""; @Anchor = Anchor(Height: 32); }
         }
@@ -221,10 +382,10 @@ $C.@PageOverlay {
           Group { Anchor: (Height: 3, Bottom: 8); Background: (Color: #e0773e(0.6)); }
           Group {
             LayoutMode: Left;
-            Anchor: (Height: 56);
+            Anchor: (Height: 84);
             Group {
               LayoutMode: Full;
-              Anchor: (Width: 56, Height: 56, Right: 10);
+              Anchor: (Width: 56, Height: 56, Right: 10, Bottom: 28);
               Background: (TexturePath: "../../../Common/IngredientSlot.png", Border: 24);
               ItemIcon #AnnexIcon4 { Anchor: (Full: 7); ShowItemTooltip: true; }
             }
@@ -235,7 +396,47 @@ $C.@PageOverlay {
               Label #AnnexRole4 { Anchor: (Top: 2); Style: @SmallWrap; Text: ""; }
             }
           }
-          Label #AnnexState4 { Anchor: (Top: 8); Style: @Body; Text: ""; }
+          Label #AnnexState4 { Anchor: (Top: 6); Style: @Body; Text: ""; }
+          Group #AnnexMats4 {
+            LayoutMode: Left;
+            Anchor: (Height: 74, Top: 6);
+            Group #AnnexMat12 {
+              LayoutMode: Top;
+              Anchor: (Width: 64, Right: 14);
+              Group {
+                LayoutMode: Full;
+                Anchor: (Width: 52, Height: 52, Left: 6);
+                Group #AnnexMatSlot12 { Anchor: (Full: 0); Background: (TexturePath: "../../../Common/IngredientSlot.png", Border: 24); }
+                Group #AnnexMatOk12 { Anchor: (Full: 0); Background: (TexturePath: "../../../Common/IngredientSlotValid.png", Border: 24); Visible: false; }
+                ItemIcon #AnnexMatIcon12 { Anchor: (Full: 5); ShowItemTooltip: true; }
+              }
+              Label #AnnexMatCount12 { Anchor: (Height: 18, Top: 2); Style: @Count; Text: ""; }
+            }
+            Group #AnnexMat13 {
+              LayoutMode: Top;
+              Anchor: (Width: 64, Right: 14);
+              Group {
+                LayoutMode: Full;
+                Anchor: (Width: 52, Height: 52, Left: 6);
+                Group #AnnexMatSlot13 { Anchor: (Full: 0); Background: (TexturePath: "../../../Common/IngredientSlot.png", Border: 24); }
+                Group #AnnexMatOk13 { Anchor: (Full: 0); Background: (TexturePath: "../../../Common/IngredientSlotValid.png", Border: 24); Visible: false; }
+                ItemIcon #AnnexMatIcon13 { Anchor: (Full: 5); ShowItemTooltip: true; }
+              }
+              Label #AnnexMatCount13 { Anchor: (Height: 18, Top: 2); Style: @Count; Text: ""; }
+            }
+            Group #AnnexMat14 {
+              LayoutMode: Top;
+              Anchor: (Width: 64, Right: 14);
+              Group {
+                LayoutMode: Full;
+                Anchor: (Width: 52, Height: 52, Left: 6);
+                Group #AnnexMatSlot14 { Anchor: (Full: 0); Background: (TexturePath: "../../../Common/IngredientSlot.png", Border: 24); }
+                Group #AnnexMatOk14 { Anchor: (Full: 0); Background: (TexturePath: "../../../Common/IngredientSlotValid.png", Border: 24); Visible: false; }
+                ItemIcon #AnnexMatIcon14 { Anchor: (Full: 5); ShowItemTooltip: true; }
+              }
+              Label #AnnexMatCount14 { Anchor: (Height: 18, Top: 2); Style: @Count; Text: ""; }
+            }
+          }
           Group { FlexWeight: 1; }
           $C.@SmallSecondaryTextButton #AnnexAction4 { @Text = ""; @Anchor = Anchor(Height: 32); }
         }
@@ -248,10 +449,10 @@ $C.@PageOverlay {
           Group { Anchor: (Height: 3, Bottom: 8); Background: (Color: #e0773e(0.6)); }
           Group {
             LayoutMode: Left;
-            Anchor: (Height: 56);
+            Anchor: (Height: 84);
             Group {
               LayoutMode: Full;
-              Anchor: (Width: 56, Height: 56, Right: 10);
+              Anchor: (Width: 56, Height: 56, Right: 10, Bottom: 28);
               Background: (TexturePath: "../../../Common/IngredientSlot.png", Border: 24);
               ItemIcon #AnnexIcon5 { Anchor: (Full: 7); ShowItemTooltip: true; }
             }
@@ -262,7 +463,47 @@ $C.@PageOverlay {
               Label #AnnexRole5 { Anchor: (Top: 2); Style: @SmallWrap; Text: ""; }
             }
           }
-          Label #AnnexState5 { Anchor: (Top: 8); Style: @Body; Text: ""; }
+          Label #AnnexState5 { Anchor: (Top: 6); Style: @Body; Text: ""; }
+          Group #AnnexMats5 {
+            LayoutMode: Left;
+            Anchor: (Height: 74, Top: 6);
+            Group #AnnexMat15 {
+              LayoutMode: Top;
+              Anchor: (Width: 64, Right: 14);
+              Group {
+                LayoutMode: Full;
+                Anchor: (Width: 52, Height: 52, Left: 6);
+                Group #AnnexMatSlot15 { Anchor: (Full: 0); Background: (TexturePath: "../../../Common/IngredientSlot.png", Border: 24); }
+                Group #AnnexMatOk15 { Anchor: (Full: 0); Background: (TexturePath: "../../../Common/IngredientSlotValid.png", Border: 24); Visible: false; }
+                ItemIcon #AnnexMatIcon15 { Anchor: (Full: 5); ShowItemTooltip: true; }
+              }
+              Label #AnnexMatCount15 { Anchor: (Height: 18, Top: 2); Style: @Count; Text: ""; }
+            }
+            Group #AnnexMat16 {
+              LayoutMode: Top;
+              Anchor: (Width: 64, Right: 14);
+              Group {
+                LayoutMode: Full;
+                Anchor: (Width: 52, Height: 52, Left: 6);
+                Group #AnnexMatSlot16 { Anchor: (Full: 0); Background: (TexturePath: "../../../Common/IngredientSlot.png", Border: 24); }
+                Group #AnnexMatOk16 { Anchor: (Full: 0); Background: (TexturePath: "../../../Common/IngredientSlotValid.png", Border: 24); Visible: false; }
+                ItemIcon #AnnexMatIcon16 { Anchor: (Full: 5); ShowItemTooltip: true; }
+              }
+              Label #AnnexMatCount16 { Anchor: (Height: 18, Top: 2); Style: @Count; Text: ""; }
+            }
+            Group #AnnexMat17 {
+              LayoutMode: Top;
+              Anchor: (Width: 64, Right: 14);
+              Group {
+                LayoutMode: Full;
+                Anchor: (Width: 52, Height: 52, Left: 6);
+                Group #AnnexMatSlot17 { Anchor: (Full: 0); Background: (TexturePath: "../../../Common/IngredientSlot.png", Border: 24); }
+                Group #AnnexMatOk17 { Anchor: (Full: 0); Background: (TexturePath: "../../../Common/IngredientSlotValid.png", Border: 24); Visible: false; }
+                ItemIcon #AnnexMatIcon17 { Anchor: (Full: 5); ShowItemTooltip: true; }
+              }
+              Label #AnnexMatCount17 { Anchor: (Height: 18, Top: 2); Style: @Count; Text: ""; }
+            }
+          }
           Group { FlexWeight: 1; }
           $C.@SmallSecondaryTextButton #AnnexAction5 { @Text = ""; @Anchor = Anchor(Height: 32); }
         }

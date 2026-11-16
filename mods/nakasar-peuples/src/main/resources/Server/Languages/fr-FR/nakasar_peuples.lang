@@ -1614,6 +1614,7 @@ annex.destroy.convoy = Le convoi de l'avant-poste ({building}) est sur la route 
 annex.destroyed = {player} a détruit l'avant-poste : {building}.
 annex.destroyedHere = L'avant-poste ({building}) est rasé ({x} {z}). Une nouvelle fondation peut être reçue au panneau.
 annex.destroyedLater = L'avant-poste ({building}) est abandonné ({x} {z}) : il sera rasé au premier passage. Une nouvelle fondation peut être reçue au panneau.
+annex.state.foundation = Fondation, prise au dépôt du village :
 annex.state.cost = Fondation : {list}, pris au dépôt.
 annex.state.costMissing = Fondation : {list}. Il manque au dépôt : {missing}.
 annex.state.granted = Fondation remise à {player}, pas encore posée. {rule}
