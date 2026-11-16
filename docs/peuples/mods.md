@@ -279,16 +279,22 @@ Kevin (2026-11-16) : les bâtiments et le cœur laissaient de gros carrés (terr
   + 1 au-dessus de la plateforme, 10 au-dessus de la place) ou les 3 blocs au-dessus d'un talus. Une couronne qui passe
   au-dessus du toit, ou un voisin qui déborde sur la marge en hauteur, reste debout. (`Grading.pad` sans hauteur libre
   garde l'ancien comportement : avant-postes, auberges, source de l'Écho.)
-- **Retour au relief** (`Grading.settle`, après chaque collage : génération, chantiers, terrains E1/E2) : dans
-  l'emprise, sa marge et ses talus (12 blocs), seules les colonnes que le prefab occupe vraiment (bloc posé à moins de 3
-  blocs au-dessus du sol, ou plancher qui n'est pas du relief) restent à la hauteur du bâtiment. Les autres reprennent une
-  hauteur interpolée depuis le terrain naturel autour (relaxation de Laplace), bornée à un bloc de pente par bloc ; la
-  terre nue laissée par le prefab (`Soil_Dirt`) redevient le sol du peuple.
-- **Demi-blocs** (`People.slabs`) sur chaque marche d'un bloc des talus et du relief rendu : Kweebec terre de sentier,
-  pavés moussus, planches ; Trork gravier, planches ; Feran gravier de sable, pavés de grès ; Renoncés neige, pavés
-  d'ardoise ; Slothians pavés de basalte, gravier, planches tropicales.
+- **Retour au relief** (`Grading.settle`, après chaque collage : génération, chantiers, terrains E1/E2) : l'emprise
+  du prefab reste entièrement à sa hauteur (enclos, potagers et cours du prefab compris ; une colonne creusée y revient).
+  Autour, la marge et les talus (12 blocs) reprennent une hauteur interpolée depuis le terrain naturel (moyenne pondérée
+  du pourtour puis relaxation de Laplace), bornée à un bloc de pente par bloc.
+- **Demi-blocs** (`People.slabs`) sur les marches d'un bloc, seulement sur les colonnes dont le relief a bougé et face à
+  un vrai sol plus haut (jamais un autre demi-bloc : sinon ils se propagent en nappes). Jamais sur la place, dans
+  l'emprise d'un bâtiment du plan (même à venir) ou sur un terrain E1/E2. Comptés comme du relief : jamais « bloc
+  gênant » d'un chantier (`Chantiers.natural`), ni sol pour `Terrain.surface`, retirés quand une colonne est terrassée.
+  Kweebec terre de sentier, pavés moussus, planches ; Trork gravier, planches ; Feran gravier de sable, pavés de grès ;
+  Renoncés neige, pavés d'ardoise ; Slothians pavés de basalte, gravier, planches tropicales.
 
-Ne change que ce qui est bâti ensuite (génération, chantiers) : les bâtiments déjà debout ne sont pas retouchés.
+Villages déjà bâtis : rattrapage unique au premier passage d'un joueur (`Village.ReliefVersion` < 2 ;
+`VillageStreets.RELIEF_VERSION`), avant les sentiers. Un village passé par la v1 (Kevin 2026-11-16 : nappes de
+demi-dalles, enclos encaissés) perd d'abord tous ses demi-blocs d'adoucissement posés sur le sol (hors place et
+bâtiments debout), puis chaque bâtiment debout reprend son emprise à plat et le relief autour. Les arbres déjà rasés et
+la place déjà carrée ne reviennent pas.
 
 ### Sentiers et décor entre les bâtiments
 
