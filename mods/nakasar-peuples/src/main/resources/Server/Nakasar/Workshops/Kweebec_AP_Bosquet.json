@@ -1,8 +1,8 @@
 {
   "$Comment": "Avant-poste de métier généré par tools/generate_workshops.py depuis tools/outposts.py (ne pas modifier à la main) : voir dev.nakasar.hytale.peuples.workshop.Workshop et annex/Annexes.",
   "People": "Kweebec",
-  "Icon": "Tool_Pickaxe_Crude",
-  "NameKey": "nakasar_peuples.workshop.Kweebec_AP_Mine.name",
+  "Icon": "Plant_Crop_Health1",
+  "NameKey": "nakasar_peuples.workshop.Kweebec_AP_Bosquet.name",
   "Board": [
     0,
     0,
@@ -54,27 +54,27 @@
     }
   ],
   "Annex": {
-    "Type": "Mine",
-    "Item": "Nakasar_Peuples_Annex_Mine",
-    "Rule": "ROCK",
+    "Type": "Bosquet",
+    "Item": "Nakasar_Peuples_Annex_Bosquet",
+    "Rule": "TREES",
     "Prefabs": [
-      "Npc/Kweebec/Redwood/Small_Plot/House/Kweebec_Redwood_Small_Plot_House_003 0 -7 0",
-      "Npc/Kweebec/Redwood/Rock/Kweebec_Redwood_Rock_001 12 -7 0",
-      "Npc/Trork/Resource/Rock/Stone/Trork_Resource_Rock_Stone_003 -8 -6 0"
+      "Npc/Kweebec/Oak/Garden/Large/Kweebec_Oak_Garden_Large_003 0 -7 0",
+      "Npc/Kweebec/Oak/Water_Pool/Kweebec_Oak_Water_Pool_005 -11 -7 0",
+      "Npc/Kweebec/Oak/Lampposts/Kweebec_Oak_Lampposts_004 9 -6 0"
     ],
     "Rect": [
-      -9,
-      19,
-      -11,
+      -15,
+      12,
+      -12,
       -2
     ],
-    "Height": 6,
+    "Height": 9,
     "Workers": [
       {
-        "Id": "AP_Mine_1",
+        "Id": "AP_Bosquet_1",
         "Tier": 1,
-        "Role": "Nakasar_Peuples_Kweebec_Builder",
-        "Dialogue": "Kweebec_Builder",
+        "Role": "Nakasar_Peuples_Kweebec_Gardener",
+        "Dialogue": "Kweebec_Gardener",
         "Building": "",
         "WorkX": -2,
         "WorkZ": -1,
@@ -84,10 +84,10 @@
         "Builder": false
       },
       {
-        "Id": "AP_Mine_2",
+        "Id": "AP_Bosquet_2",
         "Tier": 1,
-        "Role": "Nakasar_Peuples_Kweebec_Builder",
-        "Dialogue": "Kweebec_Builder",
+        "Role": "Nakasar_Peuples_Kweebec_Gardener",
+        "Dialogue": "Kweebec_Gardener",
         "Building": "",
         "WorkX": 2,
         "WorkZ": -1,
@@ -97,10 +97,10 @@
         "Builder": false
       },
       {
-        "Id": "AP_Mine_3",
+        "Id": "AP_Bosquet_3",
         "Tier": 2,
-        "Role": "Nakasar_Peuples_Kweebec_Guard",
-        "Dialogue": "Kweebec_Guard",
+        "Role": "Nakasar_Peuples_Kweebec_Healer",
+        "Dialogue": "Kweebec_Healer",
         "Building": "",
         "WorkX": -4,
         "WorkZ": -1,
@@ -110,7 +110,7 @@
         "Builder": false
       },
       {
-        "Id": "AP_Mine_4",
+        "Id": "AP_Bosquet_4",
         "Tier": 3,
         "Role": "Nakasar_Peuples_Kweebec_Watcher",
         "Dialogue": "Kweebec_Watcher",
@@ -142,35 +142,45 @@
       "2 0 -1 0 Furniture_Kweebec_Lantern"
     ],
     "Delivery": {
-      "ItemId": "Rock_Stone_Cobble",
-      "Quantity": 16
-    }
+      "ItemId": "Plant_Crop_Health1",
+      "Quantity": 1
+    },
+    "Extra": [
+      {
+        "ItemId": "Plant_Crop_Mana1",
+        "Quantity": 1
+      },
+      {
+        "ItemId": "Plant_Crop_Stamina1",
+        "Quantity": 1
+      }
+    ]
   },
   "Specialties": [
     {
-      "Id": "Filons",
-      "NameKey": "nakasar_peuples.workshop.specialty.Kweebec_AP_Mine.Filons",
-      "LineKey": "nakasar_peuples.workshop.specialtyLine.Kweebec_AP_Mine.Filons",
-      "Icon": "Ingredient_Bar_Iron",
+      "Id": "Ecarlate",
+      "NameKey": "nakasar_peuples.workshop.specialty.Kweebec_AP_Bosquet.Ecarlate",
+      "LineKey": "nakasar_peuples.workshop.specialtyLine.Kweebec_AP_Bosquet.Ecarlate",
+      "Icon": "Plant_Crop_Health2",
       "Shops": [
-        "Nakasar_Peuples_W_Kweebec_AP_Mine_Filons_2",
-        "Nakasar_Peuples_W_Kweebec_AP_Mine_Filons_3"
+        "Nakasar_Peuples_W_Kweebec_AP_Bosquet_Ecarlate_2",
+        "Nakasar_Peuples_W_Kweebec_AP_Bosquet_Ecarlate_3"
       ],
-      "ShareItem": "Ingredient_Bar_Iron",
+      "ShareItem": "Plant_Crop_Health2",
       "ShareQuantity": 2
     },
     {
-      "Id": "Carriere",
-      "NameKey": "nakasar_peuples.workshop.specialty.Kweebec_AP_Mine.Carriere",
-      "LineKey": "nakasar_peuples.workshop.specialtyLine.Kweebec_AP_Mine.Carriere",
-      "Icon": "Rock_Marble_Cobble",
+      "Id": "Azur",
+      "NameKey": "nakasar_peuples.workshop.specialty.Kweebec_AP_Bosquet.Azur",
+      "LineKey": "nakasar_peuples.workshop.specialtyLine.Kweebec_AP_Bosquet.Azur",
+      "Icon": "Plant_Crop_Mana2",
       "Shops": [
-        "Nakasar_Peuples_W_Kweebec_AP_Mine_Carriere_2",
-        "Nakasar_Peuples_W_Kweebec_AP_Mine_Carriere_3"
+        "Nakasar_Peuples_W_Kweebec_AP_Bosquet_Azur_2",
+        "Nakasar_Peuples_W_Kweebec_AP_Bosquet_Azur_3"
       ],
-      "ShareItem": "Rock_Stone_Brick",
-      "ShareQuantity": 16
+      "ShareItem": "Plant_Crop_Mana2",
+      "ShareQuantity": 2
     }
   ],
-  "Shop": "Nakasar_Peuples_W_Kweebec_AP_Mine_Base_1"
+  "Shop": "Nakasar_Peuples_W_Kweebec_AP_Bosquet_Base_1"
 }

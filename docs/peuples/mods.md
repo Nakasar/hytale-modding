@@ -1237,6 +1237,11 @@ Kevin (2026-11-15) : un village de palier 3 au moins peut fonder de petits avant
 rôle précis. Six types par peuple (`tools/outposts.py`) : **Ferme**, **Mine**, **Scierie**, **Pêcherie**, **Pavillon
 de chasse**, **Tour de guet**. Ce ne sont pas les avant-postes de champion (`outpost/`, pierre d'avant-poste) :
 l'objet s'appelle « Fondation : Ferme », etc.
+Kevin (2026-11-16) : les Kweebecs ne minent pas et n'utilisent pas de métal ; leur **Bosquet** remplace la mine
+(`outposts.REPLACED`, `outposts.types(people)`). Jardin `Kweebec_Oak_Garden_Large_003`, mare et lampadaire ; il livre
+chaque matin les plantes alchimiques vanilla `Plant_Crop_Health1`, `Mana1`, `Stamina1` (champ `Extra` de `Annex` :
+lots en plus de `Delivery`, × niveau), spécialités massif écarlate (`Health2/3`) et mare azurée (`Mana2/3`,
+`Stamina2/3`). Une mine kweebec déjà bâtie (`Kweebec_AP_Mine`) n'est plus reconnue.
 
 1. **Fonder** : bouton **Avant-postes** du panneau du village (`annex/AnnexPage`, mise en page par peuple
    `AnnexPage_<Peuple>.ui` de `tools/generate_workshop_ui.py`). Village de palier 3, rang Ami : les matériaux de la
@@ -1302,7 +1307,7 @@ la fondation, rôles, décor) et les éléments de `AnnexPage*.ui` (et désormai
 
 | Peuple | Prefabs vanilla (bâtiment principal) |
 |---|---|
-| Kweebec | ferme et maisons de séquoia (`Redwood/Normal_Plot`, `Small_Plot`), tour de garde `Oak_Guard_Towers_004` |
+| Kweebec | ferme et maisons de séquoia (`Redwood/Normal_Plot`, `Small_Plot`), jardin `Oak_Garden_Large_003` (bosquet), tour de garde `Oak_Guard_Towers_004` |
 | Trork | tente, terrier (mine), entrepôt (scierie), piège (chasse), tour de guet `Tier_1_Watchtower` |
 | Feran | hutte `Tier3_Huts_001` (5 types), hutte sur pilier (tour) |
 | Renoncés | maisons `Outlander_Houses_Tier0/1`, tour `Outlander_Towers_Tier2_002` |

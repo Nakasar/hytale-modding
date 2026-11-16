@@ -844,7 +844,7 @@ def annex_tables(errors):
     """Commandes, spécialités et boutiques des avant-postes, ajoutées aux tables du script (avant selling_rules)."""
     for people in PEOPLES:
         sub = outposts.MAT[people]
-        for t in outposts.TYPES:
+        for t in outposts.types(people):
             data = outposts.TYPE_DATA[t]
             wid = f"{people}_AP_{t}"
             orders = [(suffix, rtype, what.format(**sub), q, tf, te) for suffix, rtype, what, q, tf, te in data["orders"]]
@@ -940,9 +940,9 @@ def write_beacon(items, fr, en, errors):
 
 
 def write_annexes(items, roles, fr, en, errors):
-    """Écrit les bâtiments de métier des avant-postes, leurs commandes et les six objets de fondation."""
+    """Écrit les bâtiments de métier des avant-postes, leurs commandes et les objets de fondation."""
     bounds = load_bounds()
-    for t in outposts.TYPES:
+    for t in outposts.ALL_TYPES:
         name_fr, name_en, role_fr, role_en, job_fr, job_en, icon = outposts.NAMES[t]
         item = outposts.ITEM_PREFIX + t
         doc = {
@@ -984,6 +984,14 @@ def write_annexes(items, roles, fr, en, errors):
             if lot not in items:
                 errors.append(f"{wid} : livraison vanilla inconnue {lot}")
             annex["Delivery"] = {"ItemId": lot, "Quantity": delivery[1]}
+            extra = []
+            for item, q in outposts.TYPE_DATA[t].get("extra", []):
+                item = item.format(**outposts.MAT[people])
+                if item not in items:
+                    errors.append(f"{wid} : livraison vanilla inconnue {item}")
+                extra.append({"ItemId": item, "Quantity": q})
+            if extra:
+                annex["Extra"] = extra
         if t == "Tour" and people not in outposts.NO_RAID:
             annex["Warn"] = outposts.TOWER_WARN
         doc = {

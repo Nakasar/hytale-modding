@@ -146,6 +146,12 @@ Bâtiments au choix sur les deux [terrains libres](../emplacements.md) : le prem
 
 Bâtiments isolés fondés à l'écart d'un village de palier 3. Voir [Avant-postes de métier](../avant-postes-de-metier.md).
 
+### Bosquet
+
+**Avant-poste.** Plantes rares et alchimiques ; livre des herbes rares au village chaque matin (plante écarlate, plante azurée, chardon des tempêtes). Les Kweebecs, amis de la nature, n'ont pas de mine. Spécialités : Massif écarlate (plantes écarlates rares et leurs graines) ; Mare azurée (plantes azurées et chardons des tempêtes, et leurs graines).
+
+![Bosquet](../../images/peuples/batiments/kweebec_9_ap_bosquet.jpg)
+
 ### Pavillon de chasse
 
 **Avant-poste.** Gibier et peaux ; livre de la viande au village chaque matin. Spécialités : Pelleterie (peaux et cuirs moyens et lourds) ; Vénerie (viande cuite, appâts, caisses de capture).
@@ -157,12 +163,6 @@ Bâtiments isolés fondés à l'écart d'un village de palier 3. Voir [Avant-pos
 **Avant-poste.** Champs et semences ; livre du blé au village chaque matin. Spécialités : Céréales (maïs, riz et semences éternelles) ; Primeurs (tomates, oignons et citrouilles).
 
 ![Ferme](../../images/peuples/batiments/kweebec_9_ap_ferme.jpg)
-
-### Mine
-
-**Avant-poste.** Pierre et métaux ; livre de la pierre au village chaque matin. Spécialités : Filons de métal (lingots de fer, de bronze, d'argent et d'or) ; Carrière (briques, marbre et quartzite).
-
-![Mine](../../images/peuples/batiments/kweebec_9_ap_mine.jpg)
 
 ### Pêcherie
 

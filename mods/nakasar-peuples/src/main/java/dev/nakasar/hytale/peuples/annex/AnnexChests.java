@@ -160,16 +160,22 @@ public final class AnnexChests {
             return;
         }
         a.setProduceDay(day);
-        VillageLayout.Material lot = w.annex().delivery();
         int level = Math.max(1, village.workshop(w.getId()).level());
-        int amount = lot.quantity() * level;
+        int amount = 0;
+        for (VillageLayout.Material lot : w.annex().lots()) {
+            amount += lot.quantity() * level;
+        }
         int room = amount * STOCK_DAYS - a.stockTotal();
         if (room <= 0) {
             notice(world, village, w, a, "stockFull", day, Message.translation(KEYS + "chest.full")
                     .param("building", Message.translation(w.nameKey())), NotificationStyle.Warning);
             return;
         }
-        a.addStock(lot.itemId(), Math.min(room, amount));
+        for (VillageLayout.Material lot : w.annex().lots()) {
+            int n = Math.min(room, lot.quantity() * level);
+            a.addStock(lot.itemId(), n);
+            room -= n;
+        }
     }
 
     /**
