@@ -35,12 +35,13 @@ import org.joml.Vector3d;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.IdentityHashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
- * Convois des avant-postes : la production du matin part à pied vers le dépôt du village, portée par deux ou trois
+ * Convois des avant-postes : le contenu du coffre de l'avant-poste ({@link AnnexChests}) part à pied vers le dépôt du village, portée par deux ou trois
  * villageois de l'avant-poste. Le convoi suit la route des balises posées par les joueurs ({@link Routes}), sinon la
  * ligne droite de la sortie de l'avant-poste au dépôt ; sa progression (en blocs) est sauvée dans {@link AnnexState}.
  * <ul>
@@ -50,7 +51,8 @@ import java.util.concurrent.ConcurrentHashMap;
  *   <li>Un porteur tué lâche sa part de la cargaison au sol. Tué par un joueur : malus de réputation violent
  *       ({@value #KILL_PENALTY}, en plus de celui du meurtre d'un villageois) auprès du village. Plus de porteur : la
  *       livraison du jour est perdue, le convoi suivant part le lendemain matin.</li>
- *   <li>Arrivé : la cargaison restante entre au dépôt (dès que son coffre est chargé).</li>
+ *   <li>Arrivé : la cargaison restante entre au dépôt (dès que son coffre est chargé). Dépôt plein : ce qui n'entre
+ *       pas reste porté et le convoi attend devant le dépôt qu'on y fasse de la place.</li>
  * </ul>
  */
 public final class Convoys {
@@ -89,15 +91,18 @@ public final class Convoys {
         return level >= 2 ? 3 : 2;
     }
 
-    /** Le convoi du matin part (la livraison du jour est comptée faite) ; false si le village n'a pas de dépôt. */
-    static boolean start(Store<EntityStore> store, Village village, Workshop w, AnnexState a, int cargo) {
-        if (village.deposit() == null || cargo <= 0) {
+    /**
+     * Le convoi du jour part avec `cargo` (id → quantité, pris au coffre de l'avant-poste : {@link AnnexChests}) ; la
+     * livraison du jour est comptée faite.
+     */
+    static boolean start(Store<EntityStore> store, Village village, Workshop w, AnnexState a, Map<String, Integer> cargo) {
+        if (village.deposit() == null || cargo.isEmpty()) {
             return false;
         }
         int level = Math.max(1, village.workshop(w.getId()).level());
         a.setDeliveryDay(GameClock.day(store));
         a.startConvoy(cargo, porters(level));
-        LOGGER.atInfo().log("Nakasar Peuples : convoi de %s (%d porteurs, %d objets) vers %s", w.getId(), porters(level), cargo, village.name());
+        LOGGER.atInfo().log("Nakasar Peuples : convoi de %s (%d porteurs, %d objets) vers %s", w.getId(), porters(level), a.convoyCargo(), village.name());
         return true;
     }
 
@@ -222,21 +227,56 @@ public final class Convoys {
         STUCK.remove(key);
     }
 
+    /**
+     * Arrivée au dépôt : la cargaison y entre. Dépôt plein : ce qui n'entre pas reste porté, le convoi attend au dépôt
+     * (annonce une fois par jour) et livre dès qu'il y a de la place ; pas de nouveau convoi d'ici là, la production
+     * s'accumule au coffre de l'avant-poste.
+     */
     private static void arrive(World world, Store<EntityStore> store, Village village, Workshop w, AnnexState a, String key) {
-        VillageLayout.Material lot = w.annex().delivery();
         ItemContainer chest = Villages.depositChest(world, village);
-        if (chest == null && lot != null) {
+        if (chest == null) {
             // Dépôt pas chargé : le convoi attend au village, il livrera quand un joueur s'en approchera.
             return;
         }
-        if (lot != null) {
-            chest.addItemStack(new ItemStack(lot.itemId(), a.convoyCargo()));
+        Map<String, Integer> cargo = a.convoyItems(lotId(w));
+        Map<String, Integer> left = new LinkedHashMap<>();
+        int delivered = 0;
+        for (Map.Entry<String, Integer> e : cargo.entrySet()) {
+            ItemStack rest = chest.addItemStack(new ItemStack(e.getKey(), e.getValue())).getRemainder();
+            int kept = ItemStack.isEmpty(rest) ? 0 : rest.getQuantity();
+            delivered += e.getValue() - kept;
+            if (kept > 0) {
+                left.put(e.getKey(), kept);
+            }
+        }
+        if (!left.isEmpty()) {
+            a.setConvoyItems(left);
+            if (delivered > 0) {
+                LOGGER.atInfo().log("Nakasar Peuples : le convoi de %s livre %d objets au dépôt plein de %s, %d attendent",
+                        w.getId(), delivered, village.name(), a.convoyCargo());
+            }
+            AnnexChests.notice(world, village, w, a, "convoyWaits", GameClock.day(store), Message.translation(Annexes.KEYS + "convoy.waiting")
+                    .param("building", Message.translation(w.nameKey())).param("count", a.convoyCargo()), NotificationStyle.Warning);
+            return;
         }
         despawn(store, key);
-        LOGGER.atInfo().log("Nakasar Peuples : le convoi de %s livre %d %s au dépôt de %s", w.getId(), a.convoyCargo(),
-                lot == null ? "?" : lot.itemId(), village.name());
+        LOGGER.atInfo().log("Nakasar Peuples : le convoi de %s livre %d objets au dépôt de %s", w.getId(), delivered, village.name());
         a.endConvoy();
         PATHS.remove(key);
+    }
+
+    /** Vrai si le convoi de l'avant-poste attend devant le dépôt du village (plein). */
+    public static boolean waiting(World world, Village village, Workshop w, AnnexState a) {
+        if (!a.convoy()) {
+            return false;
+        }
+        Routes.Path path = PATHS.get(key(village, w));
+        return path != null && a.convoyAt() >= path.length() - ARRIVE;
+    }
+
+    private static String lotId(Workshop w) {
+        VillageLayout.Material lot = w.annex().delivery();
+        return lot == null ? null : lot.itemId();
     }
 
     /** Le PNJ `ref` est un porteur de convoi. */
@@ -267,14 +307,16 @@ public final class Convoys {
                 return;
             }
             int share = a.convoyPorters() <= 1 ? a.convoyCargo() : (a.convoyCargo() + a.convoyPorters() - 1) / a.convoyPorters();
-            VillageLayout.Material lot = w.annex().delivery();
-            if (lot != null && share > 0 && where != null) {
-                for (Holder<EntityStore> drop : ItemComponent.generateItemDrops(store, List.of(new ItemStack(lot.itemId(), share)),
+            Map<String, Integer> lost = a.takeCargo(share, lotId(w));
+            List<ItemStack> stacks = new ArrayList<>();
+            lost.forEach((id, n) -> stacks.add(new ItemStack(id, n)));
+            if (!stacks.isEmpty() && where != null) {
+                for (Holder<EntityStore> drop : ItemComponent.generateItemDrops(store, stacks,
                         new Vector3d(where).add(0, 0.5, 0), new Rotation3f())) {
                     store.addEntity(drop, AddReason.SPAWN);
                 }
             }
-            a.loseConvoyPorter(share);
+            a.loseConvoyPorter();
             Message building = Message.translation(w.nameKey());
             if (!a.convoy()) {
                 a.endConvoy();

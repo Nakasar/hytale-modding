@@ -324,7 +324,7 @@ def build(layout_id, spec, bounds):
     if plot_docs:
         doc["Plots"] = plot_docs
     if heart:
-        doc["Heart"] = {k: heart[k] for k in ("Board", "Deposit", "Banner", "Steps")}
+        doc["Heart"] = {k: heart[k] for k in ("Board", "Deposit", "DepositWide", "Banner", "Steps") if k in heart}
     return doc, rects, errors
 
 

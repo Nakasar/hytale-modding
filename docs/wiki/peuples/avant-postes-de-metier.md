@@ -47,10 +47,16 @@ Une fondation perdue se reprend au panneau, sans frais, une fois par jour.
 Debout, un avant-poste est un [bâtiment de métier](batiments-de-metier.md) comme les autres : commandes du jour, savoir-faire, niveaux I à III, spécialité au niveau II, boutique en faveurs et Part de l'Hôte.
 
 - **Villageois** : deux au niveau I, un de plus aux niveaux II et III.
-- **Livraison** : chaque matin, l'avant-poste envoie un lot de sa production au dépôt du village, plus gros à chaque niveau.
-  Le lot voyage à pied : un **convoi** de deux porteurs (trois dès le niveau II) marche de l'avant-poste jusqu'au dépôt.
-  Si un porteur meurt, sa part de la cargaison tombe au sol. Le tuer soi-même coûte très cher en réputation auprès du
-  village. Si tous les porteurs meurent, la livraison du jour est perdue ; le convoi suivant part le lendemain matin.
+- **Coffre de l'avant-poste** : à côté du panneau de l'avant-poste. Chaque matin, la production du jour y est rangée
+  (plus grosse à chaque niveau). Vous pouvez vous y servir directement : ce que vous prenez n'ira pas au village.
+- **Livraison** : à midi, un **convoi** de deux porteurs (trois dès le niveau II) emporte tout le contenu du coffre et
+  marche de l'avant-poste jusqu'au dépôt du village. Si un porteur meurt, sa part de la cargaison tombe au sol. Le tuer
+  soi-même coûte très cher en réputation auprès du village. Si tous les porteurs meurent, la livraison du jour est
+  perdue ; le convoi suivant part le lendemain à midi.
+- **Dépôt plein** : si plus rien n'entre au dépôt du village, le convoi ne part pas et la production reste au coffre de
+  l'avant-poste. Si le dépôt se remplit pendant le trajet, les porteurs livrent ce qui entre et attendent devant le
+  dépôt avec le reste : faites de la place et ils finissent leur livraison. Le coffre de l'avant-poste garde au plus
+  trois jours de production ; au-delà, la production du jour est perdue.
 
 ## Routes à balises
 

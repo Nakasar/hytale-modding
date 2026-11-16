@@ -611,11 +611,13 @@ public final class Annexes {
                         SWEPT.add(key);
                     }
                 }
-                // Livraison au dépôt du village : un convoi de porteurs part chaque matin.
+                // Production du matin au coffre de l'avant-poste ; à midi, un convoi de porteurs emporte le coffre au
+                // dépôt du village.
+                AnnexChests.step(world, store, village, w, a, watched(a, players));
                 if (a.convoy()) {
                     Convoys.step(world, store, village, w, a, players, dt);
                 } else {
-                    deliver(world, store, village, w, a);
+                    AnnexChests.depart(world, store, village, w, a);
                 }
                 continue;
             }
@@ -689,6 +691,7 @@ public final class Annexes {
             WorkshopState ws = village.workshop(w.getId());
             placeBoard(world, village, w, ws);
             placeDecor(world, village, w, new int[] {a.x(), a.ground() + 1, a.z()}, w.annex().decor());
+            AnnexChests.place(world, village, w, a);
             Villagers.forgetGround();
             Message name = Message.translation(w.nameKey());
             Chantiers.announce(world, village, Message.translation(KEYS + "done").param("building", name).param("village", village.name()),
@@ -701,6 +704,18 @@ public final class Annexes {
     }
 
     /** Message aux joueurs près de l'avant-poste (ceux qui sont loin du village ne lisent pas les annonces du village). */
+    /** Message aux joueurs près de l'avant-poste mais loin du village (ceux du village lisent déjà ses annonces). */
+    static void announceNear(World world, Store<EntityStore> store, AnnexState a, Message message, NotificationStyle style, Village village) {
+        for (PlayerRef player : world.getPlayerRefs()) {
+            Vector3d at = Requests.position(store, player.getReference());
+            if (at != null && a.distanceSquared(at.x(), at.z()) <= (double) WATCH_RADIUS * WATCH_RADIUS
+                    && village.horizontalDistanceSquared(at.x(), at.z()) > (double) Chantiers.ANNOUNCE_RADIUS * Chantiers.ANNOUNCE_RADIUS) {
+                player.sendMessage(message);
+                com.hypixel.hytale.server.core.util.NotificationUtil.sendNotification(player.getPacketHandler(), message, style);
+            }
+        }
+    }
+
     private static void announceNear(World world, Store<EntityStore> store, AnnexState a, Message message) {
         for (PlayerRef player : world.getPlayerRefs()) {
             Vector3d at = Requests.position(store, player.getReference());
@@ -782,20 +797,6 @@ public final class Annexes {
         }
     }
 
-    /**
-     * Lot du matin (production de l'avant-poste × son niveau), une fois par jour de jeu : il part en convoi vers le
-     * dépôt du village ({@link Convoys}). Pas de nouveau convoi tant que celui de la veille est en route.
-     */
-    static void deliver(World world, Store<EntityStore> store, Village village, Workshop w, AnnexState a) {
-        VillageLayout.Material lot = w.annex().delivery();
-        long day = GameClock.day(store);
-        if (lot == null || a.convoy() || a.deliveryDay() >= day || GameClock.hour(store) < GameClock.MORNING) {
-            return;
-        }
-        int level = Math.max(1, village.workshop(w.getId()).level());
-        Convoys.start(store, village, w, a, lot.quantity() * level);
-    }
-
     /** Secondes d'annonce de plus avant un raid sur le village : tours de guet debout, par niveau. */
     public static int raidWarnBonus(Village village) {
         int bonus = 0;
@@ -862,6 +863,7 @@ public final class Annexes {
     /** Oublie les phases de chantier (rechargement du mod). */
     public static void clearAll() {
         Convoys.clearAll();
+        AnnexChests.clearAll();
         PHASE.clear();
         BUSY.clear();
         SWEPT.clear();

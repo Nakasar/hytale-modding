@@ -202,7 +202,7 @@ public final class Villages {
             return null;
         }
         String found = Blocks.name(world.getChunkStore(), d[0], d[1], d[2]);
-        if (!Blocks.is(found, village.people().depositBlock())) {
+        if (!village.people().isDepositBlock(found)) {
             warnDeposit(village, "block", "bloc " + found + " au lieu de " + village.people().depositBlock());
             return null;
         }

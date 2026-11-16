@@ -155,12 +155,34 @@ public final class AnnexPage extends InteractiveCustomUIPage<AnnexPage.Event> {
                     .param("x", a.x()).param("z", a.z());
         }
         int level = village.workshop(w.getId()).level();
-        if (a.convoy()) {
-            return Message.translation(KEYS + "state.convoy").param("level", Message.translation(Workshops.KEYS + "levelShort." + level))
+        Message levelName = Message.translation(Workshops.KEYS + "levelShort." + level);
+        Message state;
+        if (Convoys.waiting(world, village, w, a)) {
+            state = Message.translation(KEYS + "state.waiting").param("level", levelName).param("count", a.convoyCargo())
+                    .param("x", a.x()).param("z", a.z());
+        } else if (a.convoy()) {
+            state = Message.translation(KEYS + "state.convoy").param("level", levelName)
                     .param("porters", a.convoyPorters()).param("x", a.x()).param("z", a.z());
+        } else {
+            state = Message.translation(KEYS + "state.built").param("level", levelName).param("x", a.x()).param("z", a.z());
         }
-        return Message.translation(KEYS + "state.built").param("level", Message.translation(Workshops.KEYS + "levelShort." + level))
-                .param("x", a.x()).param("z", a.z());
+        int[] c = a.chest();
+        if (c == null) {
+            return state;
+        }
+        // Coffre de l'avant-poste : son contenu s'il est chargé, plus la production en attente d'y entrer.
+        int count = a.stockTotal();
+        com.hypixel.hytale.server.core.inventory.container.ItemContainer chest = AnnexChests.container(world, village, a);
+        if (chest != null) {
+            for (short slot = 0; slot < chest.getCapacity(); slot++) {
+                com.hypixel.hytale.server.core.inventory.ItemStack stack = chest.getItemStack(slot);
+                if (!com.hypixel.hytale.server.core.inventory.ItemStack.isEmpty(stack)) {
+                    count += stack.getQuantity();
+                }
+            }
+        }
+        return Message.translation(KEYS + "state.chest").param("state", state).param("count", count)
+                .param("x", c[0]).param("y", c[1]).param("z", c[2]).param("hour", AnnexChests.DEPART_HOUR);
     }
 
     @Override

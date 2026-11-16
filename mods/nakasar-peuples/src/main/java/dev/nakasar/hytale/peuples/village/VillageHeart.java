@@ -154,7 +154,7 @@ public final class VillageHeart {
     /** Blocs propres au village (cœur, tableau, dépôt, bannière) : jamais écrasés. */
     private static boolean isVillageBlock(People people, String name) {
         return Blocks.is(name, Villages.HEART_BLOCK) || Blocks.is(name, people.boardBlock())
-                || Blocks.is(name, people.depositBlock()) || Blocks.is(name, people.bannerBlock());
+                || people.isDepositBlock(name) || Blocks.is(name, people.bannerBlock());
     }
 
     /** Cases du cœur, du tableau, du dépôt et de la bannière du village (null : aucune). */
@@ -167,6 +167,15 @@ public final class VillageHeart {
         cells.add(key(village.x(), village.y() + 1, village.z()));
         int[] d = village.deposit();
         cells.add(key(d[0], d[1], d[2]));
+        int[] d2 = village.deposit2();
+        if (d2 != null) {
+            cells.add(key(d2[0], d2[1], d2[2]));
+        }
+        // Seconde case du futur grand coffre (palier 2) : le cœur n'y pose jamais rien.
+        int[] wide = Deposits.wideCell(village);
+        if (wide != null) {
+            cells.add(key(wide[0], wide[1], wide[2]));
+        }
         int[] b = village.board();
         cells.add(key(b[0], b[1], b[2]));
         if (village.hasBanner()) {
