@@ -17,12 +17,13 @@ Ce ne sont pas les [avant-postes du champion](avant-poste.md) : ceux-là naissen
 | --- | --- | --- |
 | **Ferme** | sur une terre fertile | blé livré au village chaque matin ; céréales ou primeurs |
 | **Mine** | près de la roche ou d'un flanc de colline | pierre livrée chaque matin ; filons de métal ou carrière |
+| **Bosquet** (Kweebecs seulement, à la place de la mine) | au milieu des arbres | plantes alchimiques rares livrées chaque matin (écarlate, azurée, chardon des tempêtes) ; massif écarlate ou mare azurée |
 | **Scierie** | au milieu des arbres | rondins livrés chaque matin ; charpente ou sève et graines |
 | **Pêcherie** | au bord de l'eau, au sec | poisson livré chaque matin ; fumoir ou viviers |
 | **Pavillon de chasse** | partout | viande livrée chaque matin ; pelleterie ou vénerie |
 | **Tour de guet** | partout | le village voit venir les raids 30 s plus tôt par niveau ; guetteurs ou sentinelles |
 
-Un avant-poste de chaque type par village. Les bâtiments viennent du jeu et prennent le style du peuple : ferme de séquoia kweebec, terrier trork, hutte feran, maison des Renoncés, temple slothian…
+Les Kweebecs, amis de la nature, ne minent pas et ne travaillent pas le métal : ils n'ont pas de mine mais un **bosquet** de plantes rares. Un avant-poste de chaque type par village. Les bâtiments viennent du jeu et prennent le style du peuple : ferme de séquoia kweebec, terrier trork, hutte feran, maison des Renoncés, temple slothian…
 
 ## Fonder un avant-poste
 

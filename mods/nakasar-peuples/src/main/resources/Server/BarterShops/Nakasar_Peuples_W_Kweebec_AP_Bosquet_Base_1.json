@@ -1,6 +1,6 @@
 {
-  "$Comment": "Boutique du niveau I du bâtiment de métier Kweebec_AP_Mine, générée par tools/generate_workshops.py.",
-  "DisplayNameKey": "nakasar_peuples.barter.W_Kweebec_AP_Mine_Base_1.title",
+  "$Comment": "Boutique du niveau I du bâtiment de métier Kweebec_AP_Bosquet, générée par tools/generate_workshops.py.",
+  "DisplayNameKey": "nakasar_peuples.barter.W_Kweebec_AP_Bosquet_Base_1.title",
   "RefreshInterval": {
     "Days": 3
   },
@@ -10,23 +10,7 @@
       "Type": "Fixed",
       "Trade": {
         "Output": {
-          "ItemId": "Rock_Stone_Cobble",
-          "Quantity": 16
-        },
-        "Input": [
-          {
-            "ItemId": "Nakasar_Peuples_Favor_Kweebec",
-            "Quantity": 1
-          }
-        ],
-        "Stock": 8
-      }
-    },
-    {
-      "Type": "Fixed",
-      "Trade": {
-        "Output": {
-          "ItemId": "Ingredient_Bar_Copper",
+          "ItemId": "Plant_Crop_Health1",
           "Quantity": 2
         },
         "Input": [
@@ -42,8 +26,24 @@
       "Type": "Fixed",
       "Trade": {
         "Output": {
-          "ItemId": "Ore_Copper",
-          "Quantity": 4
+          "ItemId": "Plant_Crop_Mana1",
+          "Quantity": 2
+        },
+        "Input": [
+          {
+            "ItemId": "Nakasar_Peuples_Favor_Kweebec",
+            "Quantity": 2
+          }
+        ],
+        "Stock": 8
+      }
+    },
+    {
+      "Type": "Fixed",
+      "Trade": {
+        "Output": {
+          "ItemId": "Plant_Crop_Stamina1",
+          "Quantity": 2
         },
         "Input": [
           {

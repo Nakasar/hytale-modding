@@ -23,7 +23,21 @@ ITEM_PREFIX = "Nakasar_Peuples_Annex_"
 # Les six types, dans l'ordre de l'onglet. Règle du terrain (Java Annexes.rule) : FERTILE (60 % de terre), ROCK (pierre
 # ou flanc de colline à 16 blocs), TREES (6 troncs à 24 blocs), WATER (eau à 12 blocs, emprise au sec), NONE.
 TYPES = ["Ferme", "Mine", "Scierie", "Pecherie", "Chasse", "Tour"]
-RULES = {"Ferme": "FERTILE", "Mine": "ROCK", "Scierie": "TREES", "Pecherie": "WATER", "Chasse": "NONE", "Tour": "NONE"}
+# Types propres à un peuple, à la place d'un type commun (Kevin, 2026-11-16) : les Kweebecs, amis de la nature, ne minent
+# pas et n'utilisent pas de métal ; leur bosquet de plantes rares remplace la mine.
+REPLACED = {"Kweebec": {"Mine": "Bosquet"}}
+# Tous les types, communs puis propres (objets de fondation, textes).
+ALL_TYPES = TYPES + sorted({t for r in REPLACED.values() for t in r.values()})
+
+
+def types(people):
+    """Types d'avant-postes du peuple, dans l'ordre de l'onglet."""
+    r = REPLACED.get(people, {})
+    return [r.get(t, t) for t in TYPES]
+
+
+RULES = {"Ferme": "FERTILE", "Mine": "ROCK", "Scierie": "TREES", "Pecherie": "WATER", "Chasse": "NONE", "Tour": "NONE",
+         "Bosquet": "TREES"}
 # Secondes d'annonce de plus avant un raid, par niveau de la tour de guet (Java Raids : 60 s de base).
 TOWER_WARN = 30
 # Villageois : 2 au niveau I, 1 de plus aux niveaux II et III.
@@ -34,6 +48,9 @@ NAMES = {  # (nom fr, nom en, rôle fr, rôle en, métier fr, métier en, icône
               "Fields and seeds; stores wheat in its chest every morning; a convoy takes it to the village at noon.", "Fermier", "Farmer", "Plant_Crop_Wheat_Item"),
     "Mine": ("Mine", "Mine", "Pierre et métaux ; range de la pierre dans son coffre chaque matin ; un convoi la porte au village à midi.",
              "Stone and metals; stores stone in its chest every morning; a convoy takes it to the village at noon.", "Mineur", "Miner", "Tool_Pickaxe_Crude"),
+    "Bosquet": ("Bosquet", "Grove", "Plantes rares et alchimiques ; range des herbes rares dans son coffre chaque matin ; un convoi les porte au village à midi.",
+                "Rare and alchemical plants; stores rare herbs in its chest every morning; a convoy takes them to the village at noon.",
+                "Herboriste", "Herbalist", "Plant_Crop_Health1"),
     "Scierie": ("Scierie", "Sawmill", "Bois et charpente ; range des rondins dans son coffre chaque matin ; un convoi les porte au village à midi.",
                 "Timber and carpentry; stores logs in its chest every morning; a convoy takes them to the village at noon.", "Scieur", "Sawyer", "Tool_Hatchet_Crude"),
     "Pecherie": ("Pêcherie", "Fishery", "Poissons et nasses ; range du poisson dans son coffre chaque matin ; un convoi le porte au village à midi.",
@@ -68,8 +85,9 @@ PREFABS = {
     "Kweebec": {
         "Ferme": [(NPC + "Kweebec/Redwood/Normal_Plot/Farm/Kweebec_Redwood_Normal_Plot_Farm_001", None),
                   (NPC + "Kweebec/Redwood/Small_Plot/House/Kweebec_Redwood_Small_Plot_House_001", "W")],
-        "Mine": [(NPC + "Kweebec/Redwood/Small_Plot/House/Kweebec_Redwood_Small_Plot_House_003", None),
-                 (NPC + "Kweebec/Redwood/Rock/Kweebec_Redwood_Rock_001", "E"), (ROCKS + "003", "W")],
+        "Bosquet": [(NPC + "Kweebec/Oak/Garden/Large/Kweebec_Oak_Garden_Large_003", None),
+                    (NPC + "Kweebec/Oak/Water_Pool/Kweebec_Oak_Water_Pool_005", "W"),
+                    (NPC + "Kweebec/Oak/Lampposts/Kweebec_Oak_Lampposts_004", "E")],
         "Scierie": [(NPC + "Kweebec/Redwood/Normal_Plot/House/Kweebec_Redwood_Normal_Plot_House_001", None),
                     (LUMBER + "Forest_Aspen/Trork_Resource_Lumber_Forest_Aspen_001", "E"),
                     (LUMBER + "Forest_Aspen/Trork_Resource_Lumber_Forest_Aspen_002", "W")],
@@ -133,7 +151,7 @@ PREFABS = {
 # Genres de villageois (4 par avant-poste, niveaux 1, 1, 2, 3) : rôles du mod Nakasar_Peuples_<Peuple>_<Genre>, ou
 # « @Rôle » vanilla pour les Trorks (pas de dialogue). Pas de Gatherer (ce sont des suiveurs d'escorte) ni de Merchant.
 WORKERS = {
-    "Kweebec": {"Ferme": ["Gardener", "Gardener", "Breeder", "WellKeeper"], "Mine": ["Builder", "Builder", "Guard", "Watcher"],
+    "Kweebec": {"Ferme": ["Gardener", "Gardener", "Breeder", "WellKeeper"], "Bosquet": ["Gardener", "Gardener", "Healer", "Watcher"],
                 "Scierie": ["Builder", "Builder", "Gardener", "Watcher"], "Pecherie": ["WellKeeper", "WellKeeper", "Gardener", "Watcher"],
                 "Chasse": ["Guard", "Guard", "Breeder", "Healer"], "Tour": ["Lookout", "Guard", "Guard", "Watcher"]},
     "Trork": {"Ferme": ["@Trork_Warrior", "@Trork_Warrior", "@Trork_Brawler", "@Trork_Shaman"],
@@ -157,7 +175,7 @@ DIALOGUE_ALIAS = {"Lookout": "Watcher"}
 
 # Gêneurs à chasser (commande de chasse), par peuple et type : rôles vanilla (tools/vanilla-refs-0.7.2.txt).
 HUNTS = {
-    "Kweebec": {"Ferme": ["Trork_Hunter", "Trork_Hunter"], "Mine": ["Scarak_Louse", "Scarak_Louse", "Scarak_Louse"],
+    "Kweebec": {"Ferme": ["Trork_Hunter", "Trork_Hunter"], "Bosquet": ["Scarak_Louse", "Scarak_Louse", "Scarak_Louse"],
                 "Scierie": ["Wolf_Black", "Wolf_Black"], "Pecherie": ["Trork_Warrior", "Trork_Hunter"], "Chasse": ["Mosshorn"],
                 "Tour": ["Trork_Warrior", "Trork_Warrior", "Trork_Brawler"]},
     "Trork": {"Ferme": ["Scarak_Louse", "Scarak_Louse"], "Mine": ["Scarak_Fighter", "Scarak_Fighter"],
@@ -178,6 +196,7 @@ HUNTS = {
 HUNT_TITLES = {
     "Ferme": ("Nuisibles des champs", "Pests in the fields"),
     "Mine": ("Menace des galeries", "Threat in the tunnels"),
+    "Bosquet": ("Nuisibles du bosquet", "Pests in the grove"),
     "Scierie": ("Rôdeurs des bois", "Prowlers in the woods"),
     "Pecherie": ("Rôdeurs des berges", "Prowlers on the banks"),
     "Chasse": ("Bête de la traque", "Quarry of the hunt"),
@@ -210,6 +229,20 @@ TYPE_DATA = {
                 "Bricks, marble and quartzite.", [("{brick}", 16, 1), ("Rock_Marble_Cobble", 8, 2)],
                 [("Rock_Quartzite_Brick", 12, 2), ("Rock_Calcite_Brick", 12, 2)], None)],
         delivery=("{stone}", 16)),
+    # Bosquet kweebec : plantes alchimiques vanilla (Health = écarlates, Mana = azurées, Stamina = des tempêtes).
+    "Bosquet": dict(
+        orders=[("Sap", "Gather", "Ingredient_Tree_Sap", 6, "Sève pour les semis", "Sap for the seedlings"),
+                ("Hoes", "Craft", "Tool_Hoe_Crude", 2, "Houes des herboristes", "Hoes for the herbalists")],
+        base=[("Plant_Crop_Health1", 2, 2), ("Plant_Crop_Mana1", 2, 2), ("Plant_Crop_Stamina1", 2, 2)],
+        specs=[("Ecarlate", "Massif écarlate", "Scarlet bed", "Plant_Crop_Health2", "Plantes écarlates rares et leurs graines.",
+                "Rare scarlet plants and their seeds.", [("Plant_Crop_Health2", 2, 3), ("Plant_Seeds_Health1", 2, 2)],
+                [("Plant_Crop_Health3", 1, 5), ("Plant_Seeds_Health2", 1, 4)], None),
+               ("Azur", "Mare azurée", "Azure pond", "Plant_Crop_Mana2",
+                "Plantes azurées et chardons des tempêtes, et leurs graines.",
+                "Azure plants and storm thistles, and their seeds.",
+                [("Plant_Crop_Mana2", 2, 3), ("Plant_Crop_Stamina2", 2, 3)],
+                [("Plant_Crop_Mana3", 1, 5), ("Plant_Crop_Stamina3", 1, 5)], None)],
+        delivery=("Plant_Crop_Health1", 1), extra=[("Plant_Crop_Mana1", 1), ("Plant_Crop_Stamina1", 1)]),
     "Scierie": dict(
         orders=[("Hatchets", "Craft", "Tool_Hatchet_Crude", 2, "Haches des bûcherons", "Axes for the woodcutters"),
                 ("Rope", "Gather", "Ingredient_Fibre", 12, "Fibres des cordages", "Fibre for the ropes")],

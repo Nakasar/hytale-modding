@@ -110,7 +110,8 @@ public final class Workshop implements JsonAssetWithMap<String, DefaultAssetMap<
      *   <li>{@code Rect} : emprise de tous les prefabs {@code [x0, x1, z0, z1]}, aplanie puis marquée pour le chantier ;</li>
      *   <li>{@code Workers} : ses villageois (métiers ; {@code Tier} = niveau de l'avant-poste où il arrive) ;</li>
      *   <li>{@code Materials} : prix de la fondation, pris au dépôt du village ; {@code Delivery} : lot livré chaque matin
-     *   au dépôt du village, multiplié par le niveau ;</li>
+     *   au coffre de l'avant-poste, multiplié par le niveau ; {@code Extra} : autres lots du même matin (le bosquet
+     *   kweebec produit plusieurs plantes) ;</li>
      *   <li>{@code Rule} : ce que le terrain doit offrir (FERTILE, ROCK, TREES, WATER ou NONE) ;</li>
      *   <li>{@code Warn} : secondes d'annonce de plus avant un raid sur le village (tour de guet), par niveau.</li>
      * </ul>
@@ -129,6 +130,8 @@ public final class Workshop implements JsonAssetWithMap<String, DefaultAssetMap<
                         (a, v) -> a.materials = v == null ? new VillageLayout.Material[0] : v, a -> a.materials).add()
                 .append(new KeyedCodec<>("Hours", Codec.INTEGER), (a, v) -> a.hours = v == null ? 24 : Math.max(0, v), a -> a.hours).add()
                 .append(new KeyedCodec<>("Delivery", VillageLayout.Material.CODEC), (a, v) -> a.delivery = v, a -> a.delivery).add()
+                .append(new KeyedCodec<>("Extra", new ArrayCodec<>(VillageLayout.Material.CODEC, VillageLayout.Material[]::new)),
+                        (a, v) -> a.extra = v == null ? new VillageLayout.Material[0] : v, a -> a.extra).add()
                 .append(new KeyedCodec<>("Decor", Codec.STRING_ARRAY), (a, v) -> a.decor = v == null ? new String[0] : v, a -> a.decor).add()
                 .append(new KeyedCodec<>("Warn", Codec.INTEGER), (a, v) -> a.warn = v == null ? 0 : Math.max(0, v), a -> a.warn).add()
                 .build();
@@ -143,6 +146,7 @@ public final class Workshop implements JsonAssetWithMap<String, DefaultAssetMap<
         VillageLayout.Material[] materials = new VillageLayout.Material[0];
         int hours = 24;
         VillageLayout.Material delivery;
+        VillageLayout.Material[] extra = new VillageLayout.Material[0];
         String[] decor = new String[0];
         int warn;
 
@@ -185,6 +189,16 @@ public final class Workshop implements JsonAssetWithMap<String, DefaultAssetMap<
 
         public VillageLayout.Material delivery() {
             return delivery;
+        }
+
+        /** Tous les lots du matin : {@link #delivery()} puis {@code Extra} (vide sans livraison). */
+        public List<VillageLayout.Material> lots() {
+            List<VillageLayout.Material> out = new ArrayList<>();
+            if (delivery != null) {
+                out.add(delivery);
+                out.addAll(List.of(extra));
+            }
+            return out;
         }
 
         public String[] decor() {
