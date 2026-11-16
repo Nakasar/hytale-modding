@@ -166,6 +166,8 @@ public final class PeuplesPlugin extends JavaPlugin {
 
         getCodecRegistry(Interaction.CODEC).register(OpenBoardInteraction.TYPE_ID, OpenBoardInteraction.class, OpenBoardInteraction.CODEC);
         getCodecRegistry(Interaction.CODEC).register(WarPaintInteraction.TYPE_ID, WarPaintInteraction.class, WarPaintInteraction.CODEC);
+        getCodecRegistry(Interaction.CODEC).register(dev.nakasar.hytale.peuples.review.ReviewSignInteraction.TYPE_ID,
+                dev.nakasar.hytale.peuples.review.ReviewSignInteraction.class, dev.nakasar.hytale.peuples.review.ReviewSignInteraction.CODEC);
 
         var entities = getEntityStoreRegistry();
         Villages.setResourceType(entities.registerResource(VillageRegistry.class, VillageRegistry.ID, VillageRegistry.CODEC));

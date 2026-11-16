@@ -1192,8 +1192,8 @@ public final class VillageCommand extends AbstractCommandCollection {
 
     /**
      * {@code revue [peuple] [--categorie <c>] [--rebatir]} (opérateurs) : envoie le joueur sur la carte plate de revue
-     * des bâtiments (paliers 1 à 4, {@link ReviewMap}), créée au premier appel, et bâtit les rectangles du peuple pas
-     * encore faits ; {@code --rebatir} les recolle tous (écrase les retouches à la main de ce peuple).
+     * des bâtiments (paliers 1 à 4, {@link ReviewMap}), créée au premier appel, et bâtit les rectangles pas encore faits
+     * (toute la carte, ou ceux du peuple donné) ; {@code --rebatir} les recolle (écrase les retouches à la main).
      */
     private static final class ReviewCommand extends AbstractPlayerCommand {
         private final OptionalArg<String> people = withOptionalArg("peuple", KEYS + "review.people", ArgTypes.STRING);
@@ -1208,33 +1208,24 @@ public final class VillageCommand extends AbstractCommandCollection {
 
         @Override
         protected void execute(CommandContext context, Store<EntityStore> store, Ref<EntityStore> ref, PlayerRef player, World world) {
-            ReviewMap.Section s = ReviewMap.section(people.get(context));
-            if (s == null) {
-                player.sendMessage(Message.translation(Villages.MESSAGES + "unknownPeople").param("people", people.get(context)));
+            // Sans peuple : toute la carte (Kevin : tous les prefabs de tous les villages et structures par défaut).
+            String asked = people.get(context);
+            String peopleId = asked == null ? null : ReviewMap.people(asked);
+            if (asked != null && peopleId == null) {
+                player.sendMessage(Message.translation(Villages.MESSAGES + "unknownPeople").param("people", asked));
                 return;
             }
-            ReviewMap.Category cat = null;
-            if (category.get(context) != null) {
-                String want = category.get(context).toLowerCase(java.util.Locale.ROOT).replace("-", "").replace(" ", "");
-                for (ReviewMap.Category c : s.categories) {
-                    String id = c.category.toLowerCase(java.util.Locale.ROOT);
-                    if (id.startsWith(want) || want.startsWith(id)) {
-                        cat = c;
-                        break;
-                    }
-                }
-            }
+            String cat = category.get(context);
             boolean again = Boolean.TRUE.equals(rebuild.get(context));
-            String peopleId = s.people;
-            ReviewMap.Category target = cat;
             ReviewMap.world().whenComplete((review, error) -> {
                 if (review == null) {
                     player.sendMessage(Message.translation(ReviewMap.KEYS + "noWorld"));
                     return;
                 }
+                ReviewMap.layout(review);
                 world.execute(() -> {
                     if (ref.isValid()) {
-                        ReviewMap.teleport(ref, store, review, s, target);
+                        ReviewMap.teleport(ref, store, review, peopleId, cat);
                     }
                 });
                 if (!ReviewMap.build(review, peopleId, again, player)) {
