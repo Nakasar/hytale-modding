@@ -1069,6 +1069,7 @@ public final class Annexes {
     public static void clearAll() {
         Convoys.clearAll();
         AnnexChests.clearAll();
+        AnnexMarkers.clearAll();
         PHASE.clear();
         BUSY.clear();
         SWEPT.clear();

@@ -63,6 +63,19 @@ def trork_figure(scale):
     return mask
 
 
+def annex_figure(scale):
+    """Avant-poste de métier : une cabane basse sous un fanion planté sur un mât."""
+    s = scale
+    mask = Image.new("L", (SIZE * s, SIZE * s), 0)
+    d = ImageDraw.Draw(mask)
+    d.polygon([(10 * s, 30 * s), (21 * s, 22 * s), (32 * s, 30 * s), (29 * s, 32 * s), (21 * s, 26 * s), (13 * s, 32 * s)], fill=255)
+    d.rectangle([14 * s, 31 * s, 28 * s, 41 * s], fill=255)
+    d.rectangle([19 * s, 34 * s, 23 * s, 41 * s], fill=0)  # porte
+    d.line([(36 * s, 41 * s), (36 * s, 7 * s)], fill=255, width=3 * s)  # mât
+    d.polygon([(37 * s, 7 * s), (46 * s, 11 * s), (37 * s, 16 * s)], fill=255)  # fanion
+    return mask
+
+
 def icon(fill, thickness, shape=figure):
     big = SIZE * SS
     mask = shape(SS)
@@ -84,6 +97,8 @@ def main():
     compass.save(OUT / "Nakasar_Peuples_KweebecCompass.png")
     icon((246, 222, 196, 255), 2, trork_figure).save(OUT / "Nakasar_Peuples_Trork.png")
     icon((232, 120, 84, 255), 3, trork_figure).save(OUT / "Nakasar_Peuples_TrorkCompass.png")
+    icon((240, 228, 190, 255), 2, annex_figure).save(OUT / "Nakasar_Peuples_Annex.png")
+    icon((226, 196, 106, 255), 3, annex_figure).save(OUT / "Nakasar_Peuples_AnnexCompass.png")
     print("icônes écrites dans", OUT.relative_to(ROOT))
     if args.preview:
         args.preview.mkdir(parents=True, exist_ok=True)

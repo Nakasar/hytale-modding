@@ -1351,6 +1351,13 @@ quarts des matériaux de la fondation), deux spécialités au niveau II, boutiqu
   fondation. Le coffre de l'avant-poste reste (le stock y entre, le reste tombe au sol). Zone pas chargée : la place
   reste dans `Ruins`, rasée au passage d'un joueur (`stepRuins`) ; ces places comptent pour l'écart de 48 blocs entre
   avant-postes. Un quart des matériaux de fondation rendu au dépôt (`REFUND_DIVISOR`, comme les terrains).
+- **Carte du monde** (Kevin 2026-11-16, `annex/AnnexMarkers`) : chaque avant-poste en travaux ou debout a un
+  marqueur sur la carte en jeu et la boussole (icône `Nakasar_Peuples_Annex{,Compass}.png` de
+  `tools/generate_map_icons.py`, nom `annex.marker` / `annex.marker.works` : « Mine (Village) »). Pas de bloc à
+  marqueur : un fournisseur `WorldMapManager.addMarkerProvider("nakasar_peuples_annexes")` par monde, nourri d'un
+  instantané refait toutes les 2 s par `VillageLifeSystem` (fil du monde). Visible pour un joueur qui a découvert le
+  village (marqueur de la bannière révélé par `VillageEntrySystem`) ; village sans bannière : visible de tous.
+  Un avant-poste détruit disparaît de la carte au rafraîchissement suivant.
 - **Routes à balises** (`annex/Routes.java`, `RouteBeaconSystems`) : l'objet `Nakasar_Peuples_Route_Beacon` (lanterne
   haute vanilla, 4 bâtons + 1 torche → 2 à l'établi) et ses variantes `Nakasar_Peuples_Route_Beacon_<Variante>`
   (Kevin 2026-11-16 : autres modèles vanilla, même recette, mélangeables ; liste `tools/outposts.BEACON["variants"]`,
@@ -1391,6 +1398,8 @@ Les tas de rondins et de pierres à côté des scieries et des mines sont les pr
    (cargaison au sol, gros malus de réputation).
 5. Remplir le dépôt du village (36 places au palier 2) : le convoi suivant ne part pas (annonce), la production
    s'accumule au coffre de l'avant-poste. Vider un peu le dépôt pendant qu'un convoi attend devant : il livre.
+6. Ouvrir la carte (M) : l'avant-poste y a son marqueur (cabane et fanion) au nom « Bâtiment (Village) », « en travaux »
+   pendant le chantier. Un second joueur qui n'a jamais approché le village ne le voit pas.
 
 ### À vérifier en jeu (avant-postes)
 
