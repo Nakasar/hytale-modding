@@ -236,7 +236,8 @@ public final class Deposits {
         return cells.size() == 1 && cells.get(0)[1] == 0 ? cells.get(0) : null;
     }
 
-    private static void drop(World world, int[] at, List<ItemStack> items) {
+    /** Fait tomber `items` au sol en `at` (rien n'est jamais perdu). */
+    public static void drop(World world, int[] at, List<ItemStack> items) {
         Store<EntityStore> store = world.getEntityStore().getStore();
         for (Holder<EntityStore> h : ItemComponent.generateItemDrops(store, items, new Vector3d(at[0] + 0.5, at[1] + 0.5, at[2] + 0.5),
                 new Rotation3f())) {

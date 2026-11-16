@@ -59,6 +59,20 @@ Debout, un avant-poste est un [bâtiment de métier](batiments-de-metier.md) com
   dépôt avec le reste : faites de la place et ils finissent leur livraison. Le coffre de l'avant-poste garde au plus
   trois jours de production ; au-delà, la production du jour est perdue.
 
+## Détruire un avant-poste
+
+À l'onglet **Avant-postes** du panneau du village, un avant-poste debout ou en travaux a un bouton **Détruire
+l'avant-poste** (rang **Ami**). Un second clic, sur **Confirmer la destruction**, le détruit :
+
+- ses villageois partent, le bâtiment, son panneau et son décor sont rasés, son niveau est perdu ;
+- son **coffre reste** avec tout son contenu (et la production qui attendait d'y entrer) : c'est désormais un coffre
+  ordinaire ;
+- un **quart des matériaux de la fondation** revient au dépôt du village ;
+- une nouvelle fondation du même type peut être reçue tout de suite au panneau.
+
+Si personne n'est près de l'avant-poste, il est rasé au premier passage d'un joueur. Pas de destruction tant que son
+convoi est sur la route : attendez qu'il arrive au village.
+
 ## Routes à balises
 
 Les porteurs vont tout droit de l'avant-poste au dépôt, quitte à buter sur une rivière ou une falaise. Pour leur

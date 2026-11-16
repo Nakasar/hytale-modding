@@ -34,7 +34,7 @@ import java.util.Map;
 
 /**
  * L'onglet « Avant-postes » du panneau du village : les six avant-postes de métier du peuple (état, coût, place),
- * avec le bouton qui remet la fondation. Mise en page par peuple ({@code AnnexPage_<Peuple>.ui},
+ * avec le bouton qui remet la fondation, et celui qui détruit un avant-poste (deux clics : le second confirme). Mise en page par peuple ({@code AnnexPage_<Peuple>.ui},
  * {@code tools/generate_workshop_ui.py}). Toute la logique est dans {@link Annexes}.
  */
 public final class AnnexPage extends InteractiveCustomUIPage<AnnexPage.Event> {
@@ -44,7 +44,7 @@ public final class AnnexPage extends InteractiveCustomUIPage<AnnexPage.Event> {
     private static final List<String> THEMED = List.of("Kweebec", "Trork", "Feran", "Renonce", "Slothian");
     private static final int CARDS = 6;
 
-    /** Donnée d'un clic : {@code Grant0..5}, {@code Back}. */
+    /** Donnée d'un clic : {@code Grant0..5}, {@code Destroy0..5}, {@code Back}. */
     public static final class Event {
         public static final BuilderCodec<Event> CODEC = BuilderCodec.builder(Event.class, Event::new)
                 .append(new KeyedCodec<>("Action", Codec.STRING), (e, v) -> e.action = v, e -> e.action)
@@ -55,6 +55,8 @@ public final class AnnexPage extends InteractiveCustomUIPage<AnnexPage.Event> {
     }
 
     private final String villageId;
+    /** Carte dont la destruction attend la confirmation (second clic), ou -1. */
+    private int confirm = -1;
 
     public AnnexPage(PlayerRef playerRef, Village village) {
         super(playerRef, CustomPageLifetime.CanDismiss, Event.CODEC);
@@ -94,12 +96,13 @@ public final class AnnexPage extends InteractiveCustomUIPage<AnnexPage.Event> {
         cmd.set("#Intro.TextSpans", block != null ? block
                 : Message.translation(KEYS + "page.intro").param("min", min).param("max", Annexes.MAX_DISTANCE));
         List<Workshop> catalog = Annexes.catalog(village);
+        boolean destroy = Annexes.destroyBlock(store, ref, village) == null;
         for (int i = 0; i < CARDS; i++) {
             if (i >= catalog.size()) {
                 cmd.set("#Annex" + i + ".Visible", false);
                 continue;
             }
-            card(cmd, events, world, store, village, catalog.get(i), i, block == null);
+            card(cmd, events, world, store, village, catalog.get(i), i, block == null, destroy, confirm == i);
         }
         cmd.set("#Rule.TextSpans", Message.translation(KEYS + "page.rule").param("tier", Message.translation(Tiers.nameKey(Annexes.MIN_TIER)))
                 .param("rank", Message.translation(Annexes.GRANT_RANK.nameKey())));
@@ -108,7 +111,7 @@ public final class AnnexPage extends InteractiveCustomUIPage<AnnexPage.Event> {
     }
 
     private static void card(UICommandBuilder cmd, UIEventBuilder events, World world, Store<EntityStore> store, Village village,
-                             Workshop w, int i, boolean allowed) {
+                             Workshop w, int i, boolean allowed, boolean destroy, boolean confirming) {
         String n = Integer.toString(i);
         if (w.icon() != null) {
             cmd.set("#AnnexIcon" + n + ".ItemId", w.icon());
@@ -116,19 +119,26 @@ public final class AnnexPage extends InteractiveCustomUIPage<AnnexPage.Event> {
         cmd.set("#AnnexName" + n + ".TextSpans", Message.translation(w.nameKey()));
         cmd.set("#AnnexRole" + n + ".TextSpans", Message.translation(KEYS + "role." + w.annex().type()));
         AnnexState a = village.annex(w.getId());
-        cmd.set("#AnnexState" + n + ".TextSpans", stateLine(world, store, village, w, a));
+        boolean destroyable = destroy && Annexes.destroyable(a);
+        confirming = confirming && destroyable;
+        cmd.set("#AnnexState" + n + ".TextSpans", confirming
+                ? Message.translation(KEYS + "destroy.warn").param("building", Message.translation(w.nameKey()))
+                .param("refund", Annexes.REFUND_DIVISOR)
+                : stateLine(world, store, village, w, a));
         String button = null;
-        if (allowed) {
-            if (a == null) {
-                button = "page.grant";
-            } else if (a.granted() && a.grantedDay() != GameClock.day(store)) {
-                button = "page.regive";
-            }
+        String action = "Grant" + n;
+        if (allowed && a == null) {
+            button = "page.grant";
+        } else if (allowed && a != null && a.granted() && a.grantedDay() != GameClock.day(store)) {
+            button = "page.regive";
+        } else if (destroyable) {
+            button = confirming ? "page.destroyConfirm" : "page.destroy";
+            action = "Destroy" + n;
         }
         cmd.set("#AnnexAction" + n + ".Visible", button != null);
         if (button != null) {
             cmd.set("#AnnexAction" + n + ".Text", Message.translation(KEYS + button));
-            events.addEventBinding(CustomUIEventBindingType.Activating, "#AnnexAction" + n, EventData.of("Action", "Grant" + n));
+            events.addEventBinding(CustomUIEventBindingType.Activating, "#AnnexAction" + n, EventData.of("Action", action));
         }
     }
 
@@ -197,7 +207,24 @@ public final class AnnexPage extends InteractiveCustomUIPage<AnnexPage.Event> {
             return;
         }
         String action = data.action;
-        if (action.startsWith("Grant")) {
+        int asked = confirm;
+        confirm = -1;
+        if (action.startsWith("Destroy")) {
+            List<Workshop> catalog = Annexes.catalog(village);
+            int i;
+            try {
+                i = Integer.parseInt(action.substring("Destroy".length()));
+            } catch (NumberFormatException e) {
+                i = -1;
+            }
+            if (i >= 0 && i < catalog.size()) {
+                if (asked == i) {
+                    Annexes.destroy(world, store, ref, playerRef, village, catalog.get(i));
+                } else {
+                    confirm = i;
+                }
+            }
+        } else if (action.startsWith("Grant")) {
             List<Workshop> catalog = Annexes.catalog(village);
             int i;
             try {

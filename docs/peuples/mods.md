@@ -1289,6 +1289,14 @@ quarts des matériaux de la fondation), deux spécialités au niveau II, boutiqu
   3 blocs/s. Un porteur tué lâche sa part au sol ; tué par un joueur, −80 de réputation auprès du village en plus
   du −40 du meurtre. Plus de porteur : livraison du jour perdue. Pas de nouveau convoi tant qu'un convoi est en route ;
   arrivé, il attend que le coffre du dépôt soit chargé pour livrer.
+- **Détruire** (Kevin 2026-11-16, `Annexes.destroy`) : bouton de l'onglet Avant-postes pour un avant-poste debout ou
+  en travaux, rang Ami (`destroyBlock`, sans condition de palier), deux clics (`AnnexPage.confirm`). Refusé tant qu'un
+  convoi est en route. Villageois renvoyés (`Villagers.dismiss`), état retiré (`Village.ruinAnnex` : l'avant-poste passe
+  dans le champ `Ruins` du village), puis `Annexes.demolish` : chantier, blocs de l'emprise au-dessus du sol (sauf
+  conteneurs), fluides et blocs non naturels jusqu'à 4 sous le sol rebouchés avec le sol du peuple, panneau, décor,
+  fondation. Le coffre de l'avant-poste reste (le stock y entre, le reste tombe au sol). Zone pas chargée : la place
+  reste dans `Ruins`, rasée au passage d'un joueur (`stepRuins`) ; ces places comptent pour l'écart de 48 blocs entre
+  avant-postes. Un quart des matériaux de fondation rendu au dépôt (`REFUND_DIVISOR`, comme les terrains).
 - **Routes à balises** (`annex/Routes.java`, `RouteBeaconSystems`) : l'objet `Nakasar_Peuples_Route_Beacon` (lanterne
   haute vanilla, 4 bâtons + 1 torche → 2 à l'établi) se pose n'importe où ; les balises sont communes à tous les
   villages (champ `Beacons` du registre des villages, retirées quand on casse le bloc). Deux balises à moins de
