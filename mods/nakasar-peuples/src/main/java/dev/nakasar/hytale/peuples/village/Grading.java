@@ -83,6 +83,7 @@ public final class Grading {
     private final List<Pad> pads = new ArrayList<>();
     private final Map<Long, BlockSection> sections = new HashMap<>();
     private String[] slabs = new String[0];
+    private BiPredicate<Integer, Integer> slabAllowed = (x, z) -> true;
 
     public Grading(World world) {
         this.chunks = world.getChunkStore();
@@ -113,6 +114,15 @@ public final class Grading {
     public Grading slabs(String[] slabs) {
         this.slabs = slabs == null ? new String[0] : slabs;
         return this;
+    }
+
+    /**
+     * Demi-blocs comme {@link #slabs(String[])}, jamais sur les colonnes que `allowed` refuse (emprises des bâtiments
+     * à venir, place : un demi-bloc y serait un « bloc gênant » du chantier, Kevin 2026-11-16).
+     */
+    public Grading slabs(String[] slabs, BiPredicate<Integer, Integer> allowed) {
+        this.slabAllowed = allowed == null ? (x, z) -> true : allowed;
+        return slabs(slabs);
     }
 
     /**
@@ -280,7 +290,7 @@ public final class Grading {
             for (int i = 0; i < w; i++) {
                 for (int k = 0; k < d; k++) {
                     int c = i * d + k;
-                    if (kind[c] == FREE && core[c]) {
+                    if (kind[c] == FREE && core[c] && higherNeighbour(target, kind, w, d, i, k)) {
                         softenStep(x0 + i, target[c], z0 + k, slabs);
                     }
                 }
@@ -322,6 +332,7 @@ public final class Grading {
         byte[] kind = new byte[w * d];
         int[] surface = new int[w * d];
         double[] height = new double[w * d];
+        List<int[]> restore = new ArrayList<>();
         for (int i = 0; i < w; i++) {
             for (int k = 0; k < d; k++) {
                 int x = rx0 + i, z = rz0 + k, c = i * d + k;
@@ -331,8 +342,13 @@ public final class Grading {
                 boolean border = i == 0 || k == 0 || i == w - 1 || k == d - 1;
                 if (s == Terrain.NONE) {
                     kind[c] = ANCHOR;
-                } else if (inside && occupied(x, s, z)) {
-                    kind[c] = PAD; // le bâtiment : reste à sa hauteur
+                } else if (inside) {
+                    // Toute l'emprise reste à la hauteur du bâtiment (enclos, potagers, cours du prefab : Kevin
+                    // 2026-11-16, enclos encaissés) ; une colonne libre qu'un passage précédent avait creusée y revient.
+                    kind[c] = PAD;
+                    if (s != h && !occupied(x, s, z) && untouched(x, s, z)) {
+                        restore.add(new int[] {x, s, z});
+                    }
                 } else if (border || (!inside && keep != null && keep.test(x, z)) || !untouched(x, s, z) || Math.abs(s - h) > 6) {
                     kind[c] = ANCHOR;
                 } else {
@@ -438,10 +454,7 @@ public final class Grading {
                 int t = lower[c] <= upper[c] ? Math.max(lower[c], Math.min(upper[c], want)) : s;
                 target[c] = t;
                 int x = rx0 + i, z = rz0 + k;
-                String top = Blocks.name(chunks, x, s, z);
-                // Base de terre nue laissée par le prefab (le « carré de terre ») : rendue au sol du peuple.
-                boolean bare = top != null && (top.equals(Terrain.DIRT) || top.startsWith("Soil_Dirt_Burnt"));
-                if (t == s && !bare) {
+                if (t == s) {
                     continue;
                 }
                 clearPlantsAbove(x, s, z);
@@ -451,16 +464,28 @@ public final class Grading {
                 for (int y = s + 1; y < t; y++) {
                     Blocks.set(chunks, x, y, z, Terrain.DIRT, 0);
                 }
-                Blocks.set(chunks, x, t, z, t == s && !bare ? top : ground, 0);
+                Blocks.set(chunks, x, t, z, ground, 0);
                 touched.add(column(x, z));
             }
+        }
+        for (int[] col : restore) {
+            int x = col[0], s = col[1], z = col[2];
+            clearPlantsAbove(x, s, z);
+            for (int y = h + 1; y <= s; y++) {
+                Blocks.set(chunks, x, y, z, null, 0);
+            }
+            for (int y = s + 1; y < h; y++) {
+                Blocks.set(chunks, x, y, z, Terrain.DIRT, 0);
+            }
+            Blocks.set(chunks, x, h, z, ground, 0);
+            touched.add(column(x, z));
         }
         if (slabs.length > 0) {
             for (int i = 0; i < w; i++) {
                 for (int k = 0; k < d; k++) {
                     int c = i * d + k;
                     // Seulement là où le relief a bougé ou au pied du bâtiment : pas de dalles sur la pente naturelle.
-                    if (kind[c] == FREE && (target[c] != surface[c] || nearKind(kind, w, d, i, k, PAD, 2))) {
+                    if (kind[c] == FREE && target[c] != surface[c] && higherNeighbour(target, kind, w, d, i, k)) {
                         softenStep(rx0 + i, target[c], rz0 + k, slabs);
                     }
                 }
@@ -479,6 +504,18 @@ public final class Grading {
                 }
             }
         }
+    }
+
+    /** Vrai si un voisin (4 directions) de la colonne, d'après les hauteurs visées, est exactement un bloc plus haut. */
+    private static boolean higherNeighbour(int[] target, byte[] kind, int w, int d, int i, int k) {
+        int[][] around = {{1, 0}, {-1, 0}, {0, 1}, {0, -1}};
+        for (int[] a : around) {
+            int ni = i + a[0], nk = k + a[1];
+            if (ni >= 0 && nk >= 0 && ni < w && nk < d && kind[ni * d + nk] != PAD && target[ni * d + nk] == target[i * d + k] + 1) {
+                return true;
+            }
+        }
+        return false;
     }
 
     private static boolean nearKind(byte[] kind, int w, int d, int i, int k, byte wanted, int reach) {
@@ -537,7 +574,7 @@ public final class Grading {
      * (terre, bois ou pierre du peuple) posé sur le sol, si l'air est libre au-dessus.
      */
     void softenStep(int x, int y, int z, String[] slabs) {
-        if (slabs.length == 0 || !Blocks.isEmpty(chunks, x, y + 1, z) || !Blocks.isEmpty(chunks, x, y + 2, z)) {
+        if (slabs.length == 0 || !slabAllowed.test(x, z) || !Blocks.isEmpty(chunks, x, y + 1, z) || !Blocks.isEmpty(chunks, x, y + 2, z)) {
             return;
         }
         String top = Blocks.name(chunks, x, y, z);
@@ -547,7 +584,8 @@ public final class Grading {
         int[][] around = {{1, 0}, {-1, 0}, {0, 1}, {0, -1}};
         for (int[] a : around) {
             String n = Blocks.name(chunks, x + a[0], y + 1, z + a[1]);
-            if (n != null && Terrain.isGround(n) && Blocks.isEmpty(chunks, x + a[0], y + 2, z + a[1])) {
+            // Voisin : vrai sol un bloc plus haut, jamais un autre demi-bloc (sinon les dalles se propagent en nappes).
+            if (n != null && Terrain.isGround(n) && !People.isVillageSlab(n) && Blocks.isEmpty(chunks, x + a[0], y + 2, z + a[1])) {
                 Blocks.set(chunks, x, y + 1, z, slabs[(int) (hash(x * 7 + 3, z * 13 + 5) * slabs.length)], 0);
                 return;
             }
@@ -588,7 +626,7 @@ public final class Grading {
     private void clearPlantsAbove(int x, int s, int z) {
         for (int y = s + 1; y <= s + 8; y++) {
             String name = Blocks.name(chunks, x, y, z);
-            if (!isSmallPlant(name)) {
+            if (!isSmallPlant(name) && !People.isVillageSlab(name)) {
                 return;
             }
             Blocks.set(chunks, x, y, z, null, 0);

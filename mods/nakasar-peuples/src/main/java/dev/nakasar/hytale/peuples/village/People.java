@@ -240,6 +240,26 @@ public enum People {
         };
     }
 
+    private static final java.util.Set<String> SLABS = new java.util.HashSet<>();
+
+    /**
+     * Vrai pour un demi-bloc d'adoucissement des villages ({@link #slabs()}) : compté comme du relief (jamais un « bloc
+     * gênant » de chantier), retiré quand une colonne est terrassée.
+     */
+    public static boolean isVillageSlab(String name) {
+        if (name == null) {
+            return false;
+        }
+        synchronized (SLABS) {
+            if (SLABS.isEmpty()) {
+                for (People p : values()) {
+                    SLABS.addAll(java.util.Arrays.asList(p.slabs()));
+                }
+            }
+            return SLABS.contains(name.startsWith("*") ? name.substring(1) : name);
+        }
+    }
+
     /** Sol de la place centrale. Étape 8. */
     public String plaza() {
         return switch (this) {

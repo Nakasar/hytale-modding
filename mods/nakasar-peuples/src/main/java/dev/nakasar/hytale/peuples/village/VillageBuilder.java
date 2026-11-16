@@ -47,6 +47,30 @@ public final class VillageBuilder {
     private VillageBuilder() {
     }
 
+    /** Comme Chantiers.slabAllowed, pour un village pas encore enregistré (cœur en (cx, cz)). */
+    private static BiPredicate<Integer, Integer> slabAllowed(VillageLayout layout, int cx, int cz) {
+        int p = layout.plazaRadius() + 1;
+        List<int[]> rects = new ArrayList<>();
+        for (VillageLayout.Building b : layout.buildings()) {
+            rects.add(b.rect());
+        }
+        for (VillageLayout.Plot plot : layout.plots()) {
+            rects.add(plot.rect());
+        }
+        return (x, z) -> {
+            int lx = x - cx, lz = z - cz;
+            if (Math.abs(lx) <= p && Math.abs(lz) <= p) {
+                return false;
+            }
+            for (int[] r : rects) {
+                if (lx >= r[0] - 1 && lx <= r[1] + 1 && lz >= r[2] - 1 && lz <= r[3] + 1) {
+                    return false;
+                }
+            }
+            return true;
+        };
+    }
+
     /** Colonnes de la place et des autres emprises (que le retour au relief d'un bâtiment ne touche pas). */
     private static BiPredicate<Integer, Integer> keepOthers(List<int[]> rects, int self, int[] plaza) {
         return (x, z) -> {
@@ -141,7 +165,8 @@ public final class VillageBuilder {
         // Un seul terrassement pour la place et toutes les emprises : talus doux entre elles, arbres retirés en entier.
         // Place aux coins arrondis et au bord effiloché (Kevin 2026-11-16 : plus de « carré de terre » autour du cœur),
         // arbres gardés quand seule leur couronne passe au-dessus d'un bâtiment, marches adoucies de demi-blocs.
-        Grading grading = new Grading(world).slabs(layout.people().slabs())
+        BiPredicate<Integer, Integer> slabOk = slabAllowed(layout, cx, cz);
+        Grading grading = new Grading(world).slabs(layout.people().slabs(), slabOk)
                 .pad(plaza[0], plaza[1], plaza[2], plaza[3], h0, 1, layout.people().plaza(), PLAZA_CLEARANCE, PLAZA_CORNER, PLAZA_FRAY);
         for (int i = 0; i < buildings.size(); i++) {
             int[] rect = rects.get(i);
@@ -168,7 +193,7 @@ public final class VillageBuilder {
             }
             int[] rect = rects.get(i);
             BiPredicate<Integer, Integer> keep = keepOthers(rects, i, plaza);
-            new Grading(world).slabs(layout.people().slabs())
+            new Grading(world).slabs(layout.people().slabs(), slabOk)
                     .settle(rect[0], rect[1], rect[2], rect[3], heights.get(i), layout.people().ground(), keep);
         }
 
