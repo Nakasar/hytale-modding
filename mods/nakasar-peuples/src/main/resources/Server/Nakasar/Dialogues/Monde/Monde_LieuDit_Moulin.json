@@ -1,8 +1,17 @@
 {
-  "$Comment": "Habitant d'un lieu-dit Moulin : troc du lieu-dit (élargi quand il est animé), marchands venus, propriétaire et lettre de ralliement (conquête), rumeurs. Généré par tools/generate_hamlets.py ; effets WorldAction et conditions WorldCheck (world/WorldDialogueTypes).",
+  "$Comment": "Habitant d'un lieu-dit Moulin : troc du lieu-dit (élargi quand il est animé), marchands venus, propriétaire et lettre de ralliement (conquête), rumeurs ; sous Toléré, méfiance : offrande de vivres et première commande du panneau pour se racheter. Généré par tools/generate_hamlets.py ; effets WorldAction et conditions WorldCheck (world/WorldDialogueTypes).",
   "NpcNameKey": "nakasar_peuples.dialogue.Monde_LieuDit_Moulin.npc",
   "RoleKey": "nakasar_peuples.dialogue.Monde_LieuDit_Moulin.role",
   "Entries": [
+    {
+      "Node": "Mefiance",
+      "Conditions": [
+        {
+          "Type": "WorldCheck",
+          "Check": "HamletWary"
+        }
+      ]
+    },
     {
       "Node": "Accueil"
     }
@@ -34,6 +43,39 @@
             }
           ],
           "Next": "Rumeur"
+        },
+        {
+          "TextKey": "nakasar_peuples.dialogue.Monde.aurevoir"
+        }
+      ]
+    },
+    {
+      "Id": "Mefiance",
+      "TextKey": "nakasar_peuples.dialogue.LieuDit.mefiance",
+      "Responses": [
+        {
+          "TextKey": "nakasar_peuples.dialogue.LieuDit.offrande",
+          "Effects": [
+            {
+              "Type": "WorldAction",
+              "Action": "HamletOffering"
+            }
+          ],
+          "Next": "Mefiance"
+        },
+        {
+          "TextKey": "nakasar_peuples.dialogue.LieuDit.travail",
+          "Effects": [
+            {
+              "Type": "WorldAction",
+              "Action": "HamletWork"
+            }
+          ],
+          "Next": "Mefiance"
+        },
+        {
+          "TextKey": "nakasar_peuples.dialogue.LieuDit.lieu",
+          "Next": "Lieu"
         },
         {
           "TextKey": "nakasar_peuples.dialogue.Monde.aurevoir"

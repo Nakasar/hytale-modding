@@ -76,6 +76,18 @@ def annex_figure(scale):
     return mask
 
 
+def hamlet_figure(scale):
+    """Lieu-dit : un poteau indicateur à deux planches fléchées (vers la gauche et vers la droite) sur une butte."""
+    s = scale
+    mask = Image.new("L", (SIZE * s, SIZE * s), 0)
+    d = ImageDraw.Draw(mask)
+    d.rectangle([22 * s, 9 * s, 26 * s, 39 * s], fill=255)  # poteau
+    d.polygon([(27 * s, 11 * s), (39 * s, 11 * s), (44 * s, 15 * s), (39 * s, 19 * s), (27 * s, 19 * s)], fill=255)  # planche vers la droite
+    d.polygon([(21 * s, 22 * s), (9 * s, 22 * s), (4 * s, 26 * s), (9 * s, 30 * s), (21 * s, 30 * s)], fill=255)  # planche vers la gauche
+    d.chord([12 * s, 36 * s, 36 * s, 46 * s], 180, 360, fill=255)  # butte
+    return mask
+
+
 def icon(fill, thickness, shape=figure):
     big = SIZE * SS
     mask = shape(SS)
@@ -99,6 +111,8 @@ def main():
     icon((232, 120, 84, 255), 3, trork_figure).save(OUT / "Nakasar_Peuples_TrorkCompass.png")
     icon((240, 228, 190, 255), 2, annex_figure).save(OUT / "Nakasar_Peuples_Annex.png")
     icon((226, 196, 106, 255), 3, annex_figure).save(OUT / "Nakasar_Peuples_AnnexCompass.png")
+    icon((222, 234, 248, 255), 2, hamlet_figure).save(OUT / "Nakasar_Peuples_Hamlet.png")
+    icon((128, 184, 232, 255), 3, hamlet_figure).save(OUT / "Nakasar_Peuples_HamletCompass.png")
     print("icônes écrites dans", OUT.relative_to(ROOT))
     if args.preview:
         args.preview.mkdir(parents=True, exist_ok=True)

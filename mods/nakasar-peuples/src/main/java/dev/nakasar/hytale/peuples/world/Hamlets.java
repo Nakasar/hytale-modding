@@ -455,6 +455,8 @@ public final class Hamlets {
                 enter(world, store, p, h);
             }
         }
+        // Lieux-dits posés et découverts sur la carte du monde et la boussole.
+        HamletMarkers.refresh(world, store);
     }
 
     // ---- Pose ----
@@ -898,6 +900,59 @@ public final class Hamlets {
         return true;
     }
 
+    // ---- Se racheter (Kevin, 16 novembre 2026 : Honni dans un lieu-dit, aucun moyen d'y remonter) ----
+
+    /** Réputation par vivre offert au tenancier. */
+    public static final int OFFERING_REP = 4;
+    /** Vivres acceptés par joueur, par lieu-dit et par jour de jeu. */
+    public static final int OFFERING_MAX = 10;
+
+    /** Vrai si le joueur n'est pas encore Toléré au lieu-dit : le tenancier se méfie (accueil, offrande, première commande). */
+    static boolean wary(World world, Store<EntityStore> store, Ref<EntityStore> ref, Place h) {
+        Village v = state(world, h);
+        return v != null && !Reputations.rank(store, ref, v).atLeast(Rank.TOLERE);
+    }
+
+    /**
+     * Offrande au tenancier : des vivres (objets {@code Food_*}, la viande crue pour les Trorks) contre
+     * {@value #OFFERING_REP} de réputation au lieu-dit chacun, {@value #OFFERING_MAX} par jour au plus, et jamais au-delà
+     * de Toléré (comme la viande des camps trorks) : ensuite, ce sont les commandes du panneau.
+     */
+    static boolean offer(World world, Store<EntityStore> store, Ref<EntityStore> ref, PlayerRef player, Place h) {
+        Village v = state(world, h);
+        if (v == null) {
+            return false;
+        }
+        int current = Reputations.villageValue(PeuplesPlayer.get(store, ref), v);
+        int need = Rank.TOLERE.min() - current;
+        if (need <= 0) {
+            DialogueSpeech.say(player, Message.translation(KEYS + "offering.enough"));
+            return false;
+        }
+        long day = GameClock.day(store);
+        String what = "hamletOffering:" + h.id;
+        int left = WorldLife.allowance(player.getUuid(), what, day, OFFERING_MAX);
+        if (left <= 0) {
+            DialogueSpeech.say(player, Message.translation(KEYS + "offering.today"));
+            return false;
+        }
+        int given = WorldLife.take(store, ref, WorldLife::isFood, Math.min(left, (need + OFFERING_REP - 1) / OFFERING_REP));
+        if (given <= 0) {
+            DialogueSpeech.say(player, Message.translation(KEYS + "offering.noFood"));
+            return false;
+        }
+        WorldLife.spend(player.getUuid(), what, day, given);
+        Reputations.change(world, store, ref, player, v, Math.min(need, given * OFFERING_REP), KEYS + "offering.reason");
+        DialogueSpeech.say(player, Message.translation(KEYS + "offering.done").param("count", given));
+        return true;
+    }
+
+    /** « Y a-t-il du travail ? » : la première commande du panneau est ouverte à qui n'est pas encore Toléré. */
+    static boolean sayWork(World world, Store<EntityStore> store, PlayerRef player, Place h) {
+        DialogueSpeech.say(player, Message.translation(KEYS + "offering.work"));
+        return true;
+    }
+
     private static void discover(World world, Store<EntityStore> store, PlayerRef player, Place h) {
         Ref<EntityStore> ref = player.getReference();
         PeuplesPlayer data = ref == null || !ref.isValid() ? null : PeuplesPlayer.ensure(store, ref);
@@ -999,6 +1054,7 @@ public final class Hamlets {
     }
 
     public static void clearAll() {
+        HamletMarkers.clearAll();
         ENTERED.clear();
         RESIDENTS.clear();
         RESIDENT_OF.clear();

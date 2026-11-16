@@ -35,9 +35,11 @@ Les lieux-dits se trouvent :
 
 Un lieu-dit n'est jamais collé à un village, à une auberge, à un avant-poste ou à un autre lieu-dit. Il se construit quand vous passez à proximité, sur un terrain sec et assez plat. Une mine préfère la roche, une ferme ou un moulin la bonne terre, une scierie la forêt. Les voyageurs vous parlent du lieu-dit le plus proche que vous n'avez pas encore vu.
 
+Une fois découvert, un lieu-dit apparaît sur votre carte et sur la boussole, avec un poteau indicateur.
+
 ## Commercer
 
-Un lieu-dit ne dépend d'aucun village : il a sa propre réputation, gagnée en remplissant ses commandes. Parlez au tenancier. Son troc se paie avec les faveurs du peuple, et il faut être au moins **Toléré** auprès du lieu-dit (ou auprès de son peuple). Demandez-lui « Parle-moi de cet endroit » : il vous dira qui vient commercer chez lui et à quel village il appartient (voir [La conquête des lieux-dits](conquete.md)).
+Un lieu-dit ne dépend d'aucun village : il a sa propre réputation, gagnée en remplissant ses commandes. Parlez au tenancier. Son troc se paie avec les faveurs du peuple, et il faut être au moins **Toléré** auprès du lieu-dit (ou auprès de son peuple). Tant que vous n'êtes pas Toléré, il se méfie : offrez-lui des vivres (n'importe quelle nourriture, +4 de réputation chacune, 10 par jour, jusqu'à Toléré), ou remplissez la **première commande** du panneau, ouverte à tous, même aux Honnis. Chez les Trorks, la viande jetée près de la place et mangée par un Trork compte aussi. Demandez-lui « Parle-moi de cet endroit » : il vous dira qui vient commercer chez lui et à quel village il appartient (voir [La conquête des lieux-dits](conquete.md)).
 
 ## Faire grandir un lieu-dit
 
