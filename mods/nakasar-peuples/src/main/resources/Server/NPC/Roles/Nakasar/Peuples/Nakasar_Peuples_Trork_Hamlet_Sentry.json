@@ -1,5 +1,5 @@
 {
-  "$Comment": "Garde d'une caserne de lieu-dit (world/Hamlets) ; ne se bat pas, il veille. Généré par tools/generate_world_life.py. Ne régénère jamais (VillageNoRegenSystem).",
+  "$Comment": "Garde d'une caserne de lieu-dit (world/Hamlets) ; ne se bat pas, il veille. Généré par tools/generate_world_life.py. Régénération vanilla hors combat (PNJ amical).",
   "Type": "Generic",
   "Appearance": "Trork_Warrior",
   "NameTranslationKey": "nakasar_peuples.npc.Trork_Hamlet_Sentry.name",

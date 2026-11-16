@@ -1,5 +1,5 @@
 {
-  "$Comment": "Le crieur d'un village kweebec : posé par Criers (Java) deux blocs au sud du tableau quand un joueur approche, immobile. L'utiliser ouvre son dialogue (Kweebec_Crieur, via VillagerUseSystem). Tué, il revient au matin suivant. Ne régénère jamais (VillageNoRegenSystem).",
+  "$Comment": "Le crieur d'un village kweebec : posé par Criers (Java) deux blocs au sud du tableau quand un joueur approche, immobile. L'utiliser ouvre son dialogue (Kweebec_Crieur, via VillagerUseSystem). Tué, il revient au matin suivant. Régénération vanilla hors combat (PNJ amical).",
   "Type": "Generic",
   "Appearance": "Kweebec_Sapling_Pink",
   "NameTranslationKey": "nakasar_peuples.npc.Kweebec_Crier.name",

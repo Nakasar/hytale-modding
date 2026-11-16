@@ -1,5 +1,5 @@
 {
-  "$Comment": "Chief d'un village feran (étape 8), généré par tools/generate_zones.py : copie du rôle kweebec sur l'apparence vanilla Feran_Windwalker. Ne régénère jamais (VillageNoRegenSystem).",
+  "$Comment": "Chief d'un village feran (étape 8), généré par tools/generate_zones.py : copie du rôle kweebec sur l'apparence vanilla Feran_Windwalker. Régénération vanilla hors combat (PNJ amical).",
   "Type": "Generic",
   "Appearance": "Feran_Windwalker",
   "NameTranslationKey": "nakasar_peuples.npc.Feran_Chief.name",

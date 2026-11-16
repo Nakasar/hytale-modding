@@ -46,7 +46,7 @@ import java.util.concurrent.ThreadLocalRandom;
  * Aux deux tiers puis au tiers de sa vie, il appelle ses renforts (les {@code Spawns} du modèle) et porte le composant
  * vanilla {@link Invulnerable} tant qu'ils vivent, comme les élites protégées des fractales ({@code minions.MinionShieldSystem}).
  * Sous le tiers, il frappe plus souvent. Il ne se soigne jamais (règle n° 1 : VillageNoRegenSystem coupe la régénération
- * vanilla de tout rôle {@code Nakasar_Peuples_*}, et rien ici ne rend de vie, ni sous bouclier ni hors combat).
+ * vanilla de tout rôle {@code Nakasar_Peuples_*} hostile, et rien ici ne rend de vie, ni sous bouclier ni hors combat).
  *
  * <p>Les tailles des zones et des tests de touche viennent des mêmes constantes ({@link Telegraphs}, règle n° 3).
  */

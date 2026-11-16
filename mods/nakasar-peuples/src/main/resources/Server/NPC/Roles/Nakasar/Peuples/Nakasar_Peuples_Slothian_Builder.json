@@ -1,5 +1,5 @@
 {
-  "$Comment": "Villageois à métier (Builder) d'un village slothian (étape 5), généré par tools/generate_slothians.py (étape 9). Posé par village/Villagers quand un joueur approche ; le Java déplace son point d'attache (poste le jour, logis la nuit) : loin de lui il y marche, près de lui il travaille (animation vanilla) ou flâne. L'utiliser ouvre le dialogue de son métier. Ne régénère jamais (VillageNoRegenSystem).",
+  "$Comment": "Villageois à métier (Builder) d'un village slothian (étape 5), généré par tools/generate_slothians.py (étape 9). Posé par village/Villagers quand un joueur approche ; le Java déplace son point d'attache (poste le jour, logis la nuit) : loin de lui il y marche, près de lui il travaille (animation vanilla) ou flâne. L'utiliser ouvre le dialogue de son métier. Régénération vanilla hors combat (PNJ amical).",
   "Type": "Generic",
   "Appearance": "Slothian_Villager",
   "NameTranslationKey": "nakasar_peuples.npc.Slothian_Builder.name",

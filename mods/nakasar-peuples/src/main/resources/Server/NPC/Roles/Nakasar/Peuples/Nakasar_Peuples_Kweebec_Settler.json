@@ -1,5 +1,5 @@
 {
-  "$Comment": "Colon Kweebec qui attend près du cœur d'un village au palier max (outpost/Settlers), généré par tools/generate_settlers.py à partir du cueilleur du peuple. Il flâne autour de son poste (point d'attache posé par le Java) ; lui parler ouvre le dialogue Colon. Ne régénère jamais.",
+  "$Comment": "Colon Kweebec qui attend près du cœur d'un village au palier max (outpost/Settlers), généré par tools/generate_settlers.py à partir du cueilleur du peuple. Il flâne autour de son poste (point d'attache posé par le Java) ; lui parler ouvre le dialogue Colon. Régénération vanilla hors combat (PNJ amical).",
   "Type": "Generic",
   "Appearance": "Kweebec_Sapling_Green",
   "NameTranslationKey": "nakasar_peuples.npc.Kweebec_Settler.name",

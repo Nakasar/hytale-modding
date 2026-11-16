@@ -1,5 +1,5 @@
 {
-  "$Comment": "Bête de la migration (Agneau mouflon), modèle vanilla Mouflon_Lamb : world/Calendar mène le troupeau ; abattue par un joueur, elle rapporte viande et peau (Java). Généré par tools/generate_world_life.py. Ne régénère jamais (VillageNoRegenSystem).",
+  "$Comment": "Bête de la migration (Agneau mouflon), modèle vanilla Mouflon_Lamb : world/Calendar mène le troupeau ; abattue par un joueur, elle rapporte viande et peau (Java). Généré par tools/generate_world_life.py. Régénération vanilla hors combat (PNJ amical).",
   "Type": "Generic",
   "Appearance": "Mouflon_Lamb",
   "NameTranslationKey": "nakasar_peuples.npc.Herd_Mouflon_Lamb.name",

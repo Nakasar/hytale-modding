@@ -141,8 +141,8 @@ def escorted(pid, kind, look, hp, follow):
     comment = (f"{what} {pid} d'une demande de {'caravane' if kind == 'Caravaneer' else 'récolte escortée'}, généré par "
                f"tools/generate_quests.py : copie du captif kweebec sur l'apparence vanilla {look}. Posé par "
                f"request/Expeditions au cœur du village ; il suit le joueur le plus proche à moins de {follow} blocs "
-               "et ne se bat pas. Les assaillants de sa demande le visent (RaidAttitudeSystem). Ne régénère jamais "
-               "(VillageNoRegenSystem).")
+               "et ne se bat pas. Les assaillants de sa demande le visent (RaidAttitudeSystem). Régénération vanilla "
+               "hors combat (PNJ amical).")
     write(ROLES / f"Nakasar_Peuples_{pid}_{kind}.json", {"$Comment": comment, **doc})
 
 

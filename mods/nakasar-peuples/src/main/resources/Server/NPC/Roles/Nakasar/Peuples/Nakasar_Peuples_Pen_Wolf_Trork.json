@@ -1,5 +1,5 @@
 {
-  "$Comment": "Bête d'enclos (Wolf_Trork_Hunter) d'un village du mod, générée par tools/generate_pens.py : modèle vanilla, flâne autour du centre de l'enclos (point d'attache posé par workshop/Livestock), n'attaque jamais. Pas de butin (Livestock), ne se régénère jamais (VillageNoRegenSystem).",
+  "$Comment": "Bête d'enclos (Wolf_Trork_Hunter) d'un village du mod, générée par tools/generate_pens.py : modèle vanilla, flâne autour du centre de l'enclos (point d'attache posé par workshop/Livestock), n'attaque jamais. Pas de butin (Livestock), régénération vanilla hors combat (PNJ amical).",
   "Type": "Generic",
   "Appearance": "Wolf_Trork_Hunter",
   "NameTranslationKey": "server.npcRoles.Wolf_Trork_Hunter.name",

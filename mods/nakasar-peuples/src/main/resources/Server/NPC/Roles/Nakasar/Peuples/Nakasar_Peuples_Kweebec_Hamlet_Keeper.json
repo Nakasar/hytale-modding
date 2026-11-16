@@ -1,5 +1,5 @@
 {
-  "$Comment": "Tenancier d'un lieu-dit (world/Hamlets) : on lui parle pour troquer. Généré par tools/generate_world_life.py. Ne régénère jamais (VillageNoRegenSystem).",
+  "$Comment": "Tenancier d'un lieu-dit (world/Hamlets) : on lui parle pour troquer. Généré par tools/generate_world_life.py. Régénération vanilla hors combat (PNJ amical).",
   "Type": "Generic",
   "Appearance": "Kweebec_Sapling_Brown",
   "NameTranslationKey": "nakasar_peuples.npc.Kweebec_Hamlet_Keeper.name",

@@ -38,7 +38,7 @@ def role(people, job, appearance, animation, radius):
         "$Comment": f"Villageois à métier ({job}) d'un village {people.lower()} (étape 5), généré par tools/generate_villagers.py. "
                     "Posé par village/Villagers quand un joueur approche ; le Java déplace son point d'attache (poste le jour, "
                     "logis la nuit) : loin de lui il y marche, près de lui il travaille (animation vanilla) ou flâne. "
-                    "L'utiliser ouvre le dialogue de son métier. Ne régénère jamais (VillageNoRegenSystem).",
+                    "L'utiliser ouvre le dialogue de son métier. Régénération vanilla hors combat (PNJ amical).",
         "Type": "Generic",
         "Appearance": appearance,
         "NameTranslationKey": f"nakasar_peuples.npc.{people}_{job}.name",

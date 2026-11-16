@@ -8,28 +8,42 @@ import com.hypixel.hytale.component.dependency.Order;
 import com.hypixel.hytale.component.dependency.SystemDependency;
 import com.hypixel.hytale.component.query.Query;
 import com.hypixel.hytale.component.system.tick.EntityTickingSystem;
+import com.hypixel.hytale.server.core.asset.type.attitude.Attitude;
 import com.hypixel.hytale.server.core.modules.entity.component.HealthRegenState;
 import com.hypixel.hytale.server.core.modules.entity.component.TransformComponent;
 import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
 import com.hypixel.hytale.server.npc.NPCPlugin;
 import com.hypixel.hytale.server.npc.entities.NPCEntity;
-import dev.nakasar.hytale.peuples.request.Criers;
+import com.hypixel.hytale.server.npc.role.support.WorldSupport;
 import dev.nakasar.hytale.peuples.request.RequestSpawns;
 import org.joml.Vector3d;
 
+import java.util.EnumSet;
 import java.util.List;
 import java.util.Set;
 
 /**
- * Aucun mob ne se régénère hors combat ou invulnérable (règle permanente de Kevin, AGENTS.md). Les prefabs vanilla des
- * villages font apparaître des Kweebecs (marqueurs d'apparition) : on coupe {@link HealthRegenState}, avant la
- * régénération vanilla, pour tout PNJ à moins de {@value #RADIUS} blocs d'un village du mod, comme le
- * {@code NoRegenSystem} du mod Vampires. Étape 3 : aussi, partout, les PNJ des demandes (bandes de Trorks, captif,
- * guetteur, crieur) et tout rôle du mod ({@code Nakasar_Peuples_*}).
+ * Régénération des PNJ du mod. Les PNJ amicaux (villageois, gardes, défenseurs, marchands, voyageurs, captifs,
+ * escortés, bêtes des enclos, troupeaux) gardent la régénération vanilla des PNJ ({@code Server/Entity/Stats/
+ * Health.json}, condition {@code RegenHealth} : +5 % toutes les 0,5 s après 15 s sans dégâts), demandée par Kevin le
+ * 16 novembre 2026. Les mobs hostiles ne se régénèrent JAMAIS (règle permanente n° 1, AGENTS.md) : on coupe
+ * {@link HealthRegenState}, avant {@code NPCPlugin.NPCEntityRegenerateStatsSystem}, pour
+ * <ul>
+ *   <li>tout PNJ dont l'attitude par défaut envers les joueurs est {@code Hostile} (chefs de demandes de boss,
+ *       assaillants des raids, et mobs vanilla hostiles), partout pour un rôle {@code Nakasar_Peuples_*} ou une
+ *       demande, à moins de {@value #RADIUS} blocs d'un village pour les autres ;</li>
+ *   <li>les PNJ des demandes de genre hostile ({@link #HOSTILE_KINDS} : bandes, embuscades, chefs et renforts), quel
+ *       que soit leur rôle.</li>
+ * </ul>
+ * Le composant n'est pas sauvegardé (pas de codec) et revient activé à chaque création du rôle.
  */
 public final class VillageNoRegenSystem extends EntityTickingSystem<EntityStore> {
 
     public static final int RADIUS = 96;
+
+    /** Genres de PNJ de demande qui combattent les joueurs. */
+    public static final Set<RequestSpawns.Kind> HOSTILE_KINDS = EnumSet.of(
+            RequestSpawns.Kind.FOE, RequestSpawns.Kind.AMBUSH, RequestSpawns.Kind.BOSS, RequestSpawns.Kind.ADD);
 
     private static final Query<EntityStore> QUERY = Query.and(NPCEntity.getComponentType(), HealthRegenState.getComponentType());
 
@@ -59,13 +73,17 @@ public final class VillageNoRegenSystem extends EntityTickingSystem<EntityStore>
         if (regen == null || !regen.isRegenEnabled()) {
             return;
         }
-        if (RequestSpawns.owner(chunk.getReferenceTo(index)) != null || Criers.isPosted(chunk.getReferenceTo(index))
-                || Villagers.posted(chunk.getReferenceTo(index)) != null) {
+        RequestSpawns.Owner owner = RequestSpawns.owner(chunk.getReferenceTo(index));
+        if (owner != null && HOSTILE_KINDS.contains(owner.kind())) {
             regen.setRegenEnabled(false);
             return;
         }
+        WorldSupport world = chunk.getComponent(index, WorldSupport.getComponentType());
+        if (world == null || world.getDefaultPlayerAttitude() != Attitude.HOSTILE) {
+            return; // PNJ amical, neutre ou indifférent : régénération vanilla
+        }
         NPCEntity npc = chunk.getComponent(index, NPCEntity.getComponentType());
-        if (npc != null && npc.getRoleName() != null && npc.getRoleName().startsWith("Nakasar_Peuples_")) {
+        if (owner != null || (npc != null && npc.getRoleName() != null && npc.getRoleName().startsWith("Nakasar_Peuples_"))) {
             regen.setRegenEnabled(false);
             return;
         }

@@ -1,5 +1,5 @@
 {
-  "$Comment": "Cueilleur Feran d'une demande de récolte escortée, généré par tools/generate_quests.py : copie du captif kweebec sur l'apparence vanilla Feran_Burrower. Posé par request/Expeditions au cœur du village ; il suit le joueur le plus proche à moins de 16 blocs et ne se bat pas. Les assaillants de sa demande le visent (RaidAttitudeSystem). Ne régénère jamais (VillageNoRegenSystem).",
+  "$Comment": "Cueilleur Feran d'une demande de récolte escortée, généré par tools/generate_quests.py : copie du captif kweebec sur l'apparence vanilla Feran_Burrower. Posé par request/Expeditions au cœur du village ; il suit le joueur le plus proche à moins de 16 blocs et ne se bat pas. Les assaillants de sa demande le visent (RaidAttitudeSystem). Régénération vanilla hors combat (PNJ amical).",
   "Type": "Generic",
   "Appearance": "Feran_Burrower",
   "NameTranslationKey": "nakasar_peuples.npc.Feran_Gatherer.name",

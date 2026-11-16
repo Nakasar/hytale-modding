@@ -1,5 +1,5 @@
 {
-  "$Comment": "Merchant d'un village feran (étape 8), généré par tools/generate_zones.py : copie du rôle kweebec sur l'apparence vanilla Feran_Civilian. Ne régénère jamais (VillageNoRegenSystem).",
+  "$Comment": "Merchant d'un village feran (étape 8), généré par tools/generate_zones.py : copie du rôle kweebec sur l'apparence vanilla Feran_Civilian. Régénération vanilla hors combat (PNJ amical).",
   "Type": "Generic",
   "Appearance": "Feran_Civilian",
   "NameTranslationKey": "nakasar_peuples.npc.Feran_Merchant.name",

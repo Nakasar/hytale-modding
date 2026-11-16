@@ -1,5 +1,5 @@
 {
-  "$Comment": "Habitant d'un lieu-dit (mineur, fermier, meunier, forgeron...) : world/Hamlets. Généré par tools/generate_world_life.py. Ne régénère jamais (VillageNoRegenSystem).",
+  "$Comment": "Habitant d'un lieu-dit (mineur, fermier, meunier, forgeron...) : world/Hamlets. Généré par tools/generate_world_life.py. Régénération vanilla hors combat (PNJ amical).",
   "Type": "Generic",
   "Appearance": "Kweebec_Sapling_HardHat",
   "NameTranslationKey": "nakasar_peuples.npc.Kweebec_Hamlet_Worker.name",

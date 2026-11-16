@@ -64,7 +64,8 @@ import dev.nakasar.hytale.peuples.klops.KlopsSystem;
  *       générés par {@code tools/generate_village_layouts.py}), bâtis par {@code VillageBuilder} ;</li>
  *   <li>{@link VillageSeeder} : un village kweebec posé tout seul près du point d'apparition du monde par défaut ;</li>
  *   <li>{@link VillageEntrySystem} : titre d'écran à l'entrée d'un village, bannière de carte révélée à l'approche ;</li>
- *   <li>{@link VillageNoRegenSystem} : les Kweebecs des prefabs ne se régénèrent pas (règle permanente, AGENTS.md).</li>
+ *   <li>{@link VillageNoRegenSystem} : seuls les PNJ hostiles (boss, assaillants, bandes) ne se régénèrent pas (règle
+ *       permanente, AGENTS.md) ; les PNJ amicaux gardent la régénération vanilla.</li>
  * </ul>
  * Étape 3, les demandes du tableau :
  * <ul>

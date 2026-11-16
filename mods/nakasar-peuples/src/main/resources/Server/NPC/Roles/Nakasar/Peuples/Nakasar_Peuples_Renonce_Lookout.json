@@ -1,5 +1,5 @@
 {
-  "$Comment": "Lookout d'un village renoncé (étape 8), généré par tools/generate_zones.py : copie du rôle kweebec sur l'apparence vanilla Outlander_Hunter. Ne régénère jamais (VillageNoRegenSystem).",
+  "$Comment": "Lookout d'un village renoncé (étape 8), généré par tools/generate_zones.py : copie du rôle kweebec sur l'apparence vanilla Outlander_Hunter. Régénération vanilla hors combat (PNJ amical).",
   "Type": "Generic",
   "Appearance": "Outlander_Hunter",
   "NameTranslationKey": "nakasar_peuples.npc.Renonce_Lookout.name",

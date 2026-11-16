@@ -89,7 +89,8 @@ import java.util.concurrent.ThreadLocalRandom;
  * </ol>
  *
  * <p>Règles permanentes (AGENTS.md) : assaillants et gardes sont des rôles du mod sur les modèles et les attaques des
- * Trorks et des Razorleaf vanilla ; aucun ne se régénère (VillageNoRegenSystem : moins de 96 blocs d'un village) ; aucune
+ * Trorks et des Razorleaf vanilla ; les assaillants ne se régénèrent jamais (VillageNoRegenSystem : rôles hostiles), les gardes amicaux gardent la
+ * régénération vanilla hors combat ; aucune
  * zone d'alerte (pas d'attaque spéciale). Les PNJ du raid ne sont pas sauvegardés.
  */
 public final class Raids {

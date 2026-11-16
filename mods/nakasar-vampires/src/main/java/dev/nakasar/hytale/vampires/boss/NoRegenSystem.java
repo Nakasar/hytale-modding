@@ -21,13 +21,16 @@ import java.util.Set;
  * AGENTS.md). La vie des PNJ vanilla remonte de 5 % toutes les 0,5 s après 15 s sans dégâts (Server/Entity/Stats/
  * Health.json, condition {@code RegenHealth}), donc justement hors combat ou sous le composant {@code Invulnerable} des
  * élites protégées : on coupe {@link HealthRegenState} à chaque tick, avant la régénération, pour les rôles
- * {@value #PREFIX}* partout et pour tous les PNJ (vanilla compris) des mondes du mod (fragment du Comté, îles de
+ * {@value #PREFIX}* partout (sauf ceux de Peuples d'Orbis, {@value #PEUPLES_PREFIX}*, réglés par ce mod) et pour tous les PNJ (vanilla compris) des mondes du mod (fragment du Comté, îles de
  * contrat, Tour de l'alchimiste : portails {@value #PREFIX}*). Les soins voulus (seigneurs, rouages) passent par le Java et ne valent qu'en combat
  * ({@link RecentDamage}).
  */
 public final class NoRegenSystem extends EntityTickingSystem<EntityStore> {
 
     public static final String PREFIX = "Nakasar_";
+
+    /** Rôles du mod Peuples d'Orbis, laissés à son propre {@code VillageNoRegenSystem}. */
+    static final String PEUPLES_PREFIX = "Nakasar_Peuples_";
 
     private static final Query<EntityStore> QUERY = Query.and(NPCEntity.getComponentType(), HealthRegenState.getComponentType());
 
@@ -59,6 +62,9 @@ public final class NoRegenSystem extends EntityTickingSystem<EntityStore> {
         }
         NPCEntity npc = chunk.getComponent(index, NPCEntity.getComponentType());
         String role = npc == null ? null : npc.getRoleName();
+        if (role != null && role.startsWith(PEUPLES_PREFIX) && !isModWorld(store)) {
+            return; // le mod Peuples d'Orbis règle lui-même ses PNJ (amicaux : régénération vanilla, hostiles : aucune)
+        }
         if ((role != null && role.startsWith(PREFIX)) || isModWorld(store)) {
             regen.setRegenEnabled(false);
         }

@@ -1,5 +1,5 @@
 {
-  "$Comment": "Lookout d'un village slothian (étape 9), généré par tools/generate_slothians.py : copie du rôle kweebec sur l'apparence vanilla Slothian_Scout. Ne régénère jamais (VillageNoRegenSystem).",
+  "$Comment": "Lookout d'un village slothian (étape 9), généré par tools/generate_slothians.py : copie du rôle kweebec sur l'apparence vanilla Slothian_Scout. Régénération vanilla hors combat (PNJ amical).",
   "Type": "Generic",
   "Appearance": "Slothian_Scout",
   "NameTranslationKey": "nakasar_peuples.npc.Slothian_Lookout.name",

@@ -1,5 +1,5 @@
 {
-  "$Comment": "Captive d'un village renoncé (étape 8), généré par tools/generate_zones.py : copie du rôle kweebec sur l'apparence vanilla Outlander_Peon. Ne régénère jamais (VillageNoRegenSystem).",
+  "$Comment": "Captive d'un village renoncé (étape 8), généré par tools/generate_zones.py : copie du rôle kweebec sur l'apparence vanilla Outlander_Peon. Régénération vanilla hors combat (PNJ amical).",
   "Type": "Generic",
   "Appearance": "Outlander_Peon",
   "NameTranslationKey": "nakasar_peuples.npc.Renonce_Captive.name",

@@ -1,5 +1,5 @@
 {
-  "$Comment": "Le chef d'un camp trork (étape 7), à l'est du cœur : la chaîne trork, jusqu'à la Peinture de guerre. Posé par Criers (Java) quand un joueur approche du camp, immobile. Tué, il revient au matin suivant. Ne régénère jamais (VillageNoRegenSystem). Groupe vanilla Trork : il suit le rang du joueur au camp.",
+  "$Comment": "Le chef d'un camp trork (étape 7), à l'est du cœur : la chaîne trork, jusqu'à la Peinture de guerre. Posé par Criers (Java) quand un joueur approche du camp, immobile. Tué, il revient au matin suivant. Régénération vanilla hors combat (PNJ amical). Groupe vanilla Trork : il suit le rang du joueur au camp.",
   "Type": "Generic",
   "Appearance": "Trork_Chieftain",
   "NameTranslationKey": "nakasar_peuples.npc.Trork_Chief.name",

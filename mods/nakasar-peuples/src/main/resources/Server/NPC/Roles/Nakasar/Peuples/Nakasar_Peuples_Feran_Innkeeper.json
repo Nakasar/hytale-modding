@@ -1,5 +1,5 @@
 {
-  "$Comment": "Aubergiste d'une auberge de relais (world/Inns). Généré par tools/generate_world_life.py. Ne régénère jamais (VillageNoRegenSystem).",
+  "$Comment": "Aubergiste d'une auberge de relais (world/Inns). Généré par tools/generate_world_life.py. Régénération vanilla hors combat (PNJ amical).",
   "Type": "Generic",
   "Appearance": "Feran_Burrower",
   "NameTranslationKey": "nakasar_peuples.npc.Feran_Innkeeper.name",

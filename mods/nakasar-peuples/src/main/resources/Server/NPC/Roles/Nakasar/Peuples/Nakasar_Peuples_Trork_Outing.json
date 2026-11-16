@@ -1,5 +1,5 @@
 {
-  "$Comment": "Villageois qui sort cueillir, pêcher, couper du bois ou garder les bêtes (world/Surroundings). Généré par tools/generate_world_life.py. Ne régénère jamais (VillageNoRegenSystem).",
+  "$Comment": "Villageois qui sort cueillir, pêcher, couper du bois ou garder les bêtes (world/Surroundings). Généré par tools/generate_world_life.py. Régénération vanilla hors combat (PNJ amical).",
   "Type": "Generic",
   "Appearance": "Trork_Hunter",
   "NameTranslationKey": "nakasar_peuples.npc.Trork_Outing.name",

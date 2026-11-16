@@ -1,5 +1,5 @@
 {
-  "$Comment": "Habitant d'un campement temporaire ou de réfugiés (world/Camps). Généré par tools/generate_world_life.py. Ne régénère jamais (VillageNoRegenSystem).",
+  "$Comment": "Habitant d'un campement temporaire ou de réfugiés (world/Camps). Généré par tools/generate_world_life.py. Régénération vanilla hors combat (PNJ amical).",
   "Type": "Generic",
   "Appearance": "Feran_Burrower",
   "NameTranslationKey": "nakasar_peuples.npc.Feran_Camper.name",

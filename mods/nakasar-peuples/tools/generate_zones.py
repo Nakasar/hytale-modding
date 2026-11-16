@@ -252,7 +252,7 @@ def service_roles(pid, spec):
         src = json.loads((ROLES / f"Nakasar_Peuples_Kweebec_{kind}.json").read_text(encoding="utf-8"))
         doc = copy.deepcopy(src)
         doc["$Comment"] = (f"{kind} d'un village {spec['adj'][0]} (étape 8), généré par tools/generate_zones.py : copie du "
-                           f"rôle kweebec sur l'apparence vanilla {look}. Ne régénère jamais (VillageNoRegenSystem).")
+                           f"rôle kweebec sur l'apparence vanilla {look}. Régénération vanilla hors combat (PNJ amical).")
         doc["Appearance"] = look
         doc["NameTranslationKey"] = f"nakasar_peuples.npc.{pid}_{kind}.name"
         write(ROLES / f"Nakasar_Peuples_{pid}_{kind}.json", {"$Comment": doc.pop("$Comment"), **doc})

@@ -36,8 +36,8 @@ import java.util.Set;
  * aucun joueur ne regarde (GDD : « par téléportation discrète si l'IA n'y arrive pas »). Le bâtisseur part sur le
  * chantier en cours, avec des aides (un par bâtiment, {@value #MAX_HELPERS} au plus) qui repartent à la fin.
  *
- * <p>Non sauvegardés, posés quand un joueur approche ; tué, un villageois revient au matin suivant. Ils ne se
- * régénèrent jamais ({@link VillageNoRegenSystem}).
+ * <p>Non sauvegardés, posés quand un joueur approche ; tué, un villageois revient au matin suivant. Ils se
+ * régénèrent hors combat (régénération vanilla des PNJ amicaux, {@link VillageNoRegenSystem}).
  */
 public final class Villagers {
 

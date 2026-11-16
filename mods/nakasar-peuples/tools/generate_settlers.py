@@ -47,7 +47,7 @@ def follow_role(gatherer, pid):
     role = copy.deepcopy(gatherer)
     role["$Comment"] = (f"Colon {pid} qui suit le joueur (outpost/Settlers), généré par tools/generate_settlers.py à partir du "
                         "cueilleur du peuple. Il suit le joueur le plus proche à moins de 40 blocs ; le Java le ramène près "
-                        "du joueur qu'il accompagne s'il est distancé. Ne se bat pas, ne régénère jamais (VillageNoRegenSystem).")
+                        "du joueur qu'il accompagne s'il est distancé. Ne se bat pas ; régénération vanilla hors combat (PNJ amical).")
     role["NameTranslationKey"] = f"nakasar_peuples.npc.{pid}_Settler.name"
     sensor = role["Instructions"][0]["Instructions"][0]["Sensor"]
     assert sensor["Type"] == "Player", pid
@@ -59,7 +59,7 @@ def idle_role(gatherer, pid):
     role = copy.deepcopy(gatherer)
     role["$Comment"] = (f"Colon {pid} qui attend près du cœur d'un village au palier max (outpost/Settlers), généré par "
                         "tools/generate_settlers.py à partir du cueilleur du peuple. Il flâne autour de son poste (point "
-                        "d'attache posé par le Java) ; lui parler ouvre le dialogue Colon. Ne régénère jamais.")
+                        "d'attache posé par le Java) ; lui parler ouvre le dialogue Colon. Régénération vanilla hors combat (PNJ amical).")
     role["NameTranslationKey"] = f"nakasar_peuples.npc.{pid}_Settler.name"
     role["Instructions"][0]["Instructions"] = [
         {

@@ -43,6 +43,7 @@ Plus loin de l'apparition, le monde devient hostile : la **soif** dans le déser
 
 ## Règles communes
 
-- Aucun PNJ ne régénère sa vie près d'un village, ni pendant un raid.
+- Les villageois, gardes, marchands et voyageurs regagnent leur vie peu à peu hors combat ; les ennemis (assaillants
+  des raids, bandes, chefs) ne se soignent jamais.
 - Un villageois tué revient au matin suivant (6 h) ; le tableau liste les absents.
 - Les zones rouges des attaques annoncées sont exactement la zone qui touche.

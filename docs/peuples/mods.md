@@ -330,7 +330,10 @@ plus de la hauteur de la place ; un prefab de décor n'est collé que si son emp
   au joueur qui passe à moins de 300 blocs, et il reste ensuite sur sa carte et sa boussole.
 - À moins de 40 blocs du cœur, un **titre d'écran** donne le nom du village, puis « peuple · rang · humeur » (le rang
   est « Étranger » jusqu'à l'étape 4). Il revient après être ressorti au-delà de 52 blocs.
-- `VillageNoRegenSystem` : aucun PNJ à moins de 96 blocs d'un village ne se régénère (règle permanente n° 1).
+- `VillageNoRegenSystem` : aucun PNJ **hostile** ne se régénère (règle permanente n° 1) : rôles du mod hostiles
+  (boss, assaillants), PNJ des demandes hostiles (bandes, embuscades, chefs, renforts) et mobs vanilla hostiles à
+  moins de 96 blocs d'un village. Les PNJ amicaux (villageois, gardes, marchands, voyageurs, bêtes) gardent la
+  régénération vanilla des PNJ : +5 % de vie toutes les 0,5 s après 15 s sans dégâts (Kevin, 16 novembre 2026).
 
 ### Nouvelles commandes
 
@@ -766,7 +769,8 @@ aussi sans pénalité.
    - Les demandes de défense sont remplies à la victoire et échouent à la défaite.
    - Le bilan s'affiche au tableau (page texte) et avec `/village raid`.
 
-Aucun PNJ du raid ne se soigne (règle n° 1 ; `VillageNoRegenSystem` couvre aussi les raids). Les apparences, armes,
+Aucun assaillant du raid ne se soigne (règle n° 1 ; `VillageNoRegenSystem` : rôles hostiles) ; les défenseurs du
+village gardent la régénération vanilla hors combat. Les apparences, armes,
 attaques, butins et sons sont vanilla (règle n° 2).
 
 ### Les PNJ du raid
@@ -1127,8 +1131,8 @@ pose l'état, le panneau, les commandes et la jauge ; la montée de niveau (comm
   attachées à son centre). Rôles vanilla `Tamed_*` d'abord ; sinon rôles du mod sur le modèle vanilla
   (`Nakasar_Peuples_Pen_{Wolf_Trork,Wolf_White,Tortoise,Archaeopteryx,Trillodon,Snail_Magma}`, Generic, flânent et
   n'attaquent jamais). **Aucun butin** : le rôle est marqué « butin déjà lâché » dès l'apparition (le système vanilla
-  `NPCDamageSystems.DropDeathItems` saute alors la liste de butin). Pas de régénération (`VillageNoRegenSystem`, 96
-  blocs). Tuée, une bête manque jusqu'au matin ; tuée par un joueur, **-5 de réputation** de village
+  `NPCDamageSystems.DropDeathItems` saute alors la liste de butin). Régénération vanilla hors combat (PNJ
+  amicaux). Tuée, une bête manque jusqu'au matin ; tuée par un joueur, **-5 de réputation** de village
   (`LivestockDeathSystem`).
 
 ### Nouvelles commandes
@@ -1441,8 +1445,8 @@ PR. Tout tourne dans le monde par défaut, seulement avec un joueur connecté (`
 - État sauvé : ressource de monde `WorldLifeRegistry`, parties de « clé=valeur » (TRAVELLERS, RELATIONS, TRAFFIC,
   CAMPS, INNS, TRACES, STRUCTURES, CALENDAR) ; les clés commençant par `~` sont des repères internes.
 - PNJ (`WorldLife.spawn`) : non sauvés, avec point d'attache ; budget 12 par joueur, 40 par monde ; posés par
-  `WorldLife.ground` (= `Terrain.safeSpot`, jamais dans l'eau, la lave ou un bloc). Rôles couverts par
-  `VillageNoRegenSystem` (préfixe `Nakasar_Peuples_`). Les PNJ parlants passent par `VillagerUseSystem` →
+  `WorldLife.ground` (= `Terrain.safeSpot`, jamais dans l'eau, la lave ou un bloc). Régénération vanilla
+  hors combat pour les rôles amicaux, aucune pour les hostiles (`VillageNoRegenSystem`). Les PNJ parlants passent par `VillagerUseSystem` →
   `WorldLife.talk` (dialogue du rôle), leur mort par `RequestDeathSystem` → `WorldLife.died`.
 - Camps de combat : `WorldLife.side(ref, clé, équipe)` lu par `WorldAttitudeSystem` (priorité 79) : même clé et autre
   équipe = hostile, même équipe = amical.
