@@ -16,6 +16,7 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
+import java.util.function.BiPredicate;
 import java.util.function.Consumer;
 
 /**
@@ -38,7 +39,28 @@ public final class VillageBuilder {
     private static final int MARGIN = 2;
     private static final int BLEND = 4;
 
+    /** Place : hauteur libre au-dessus (cœur, statues, arbre du rejeton), rayon des coins, largeur du bord effiloché. */
+    private static final int PLAZA_CLEARANCE = 10;
+    private static final int PLAZA_CORNER = 5;
+    private static final int PLAZA_FRAY = 3;
+
     private VillageBuilder() {
+    }
+
+    /** Colonnes de la place et des autres emprises (que le retour au relief d'un bâtiment ne touche pas). */
+    private static BiPredicate<Integer, Integer> keepOthers(List<int[]> rects, int self, int[] plaza) {
+        return (x, z) -> {
+            if (x >= plaza[0] && x <= plaza[1] && z >= plaza[2] && z <= plaza[3]) {
+                return true;
+            }
+            for (int j = 0; j < rects.size(); j++) {
+                int[] r = rects.get(j);
+                if (j != self && x >= r[0] && x <= r[1] && z >= r[2] && z <= r[3]) {
+                    return true;
+                }
+            }
+            return false;
+        };
     }
 
     /** Résultat d'une génération : le village, ou le message d'échec. */
@@ -117,10 +139,14 @@ public final class VillageBuilder {
         }
         int[] plaza = {cx - p, cx + p, cz - p, cz + p};
         // Un seul terrassement pour la place et toutes les emprises : talus doux entre elles, arbres retirés en entier.
-        Grading grading = new Grading(world).pad(plaza[0], plaza[1], plaza[2], plaza[3], h0, 1, layout.people().plaza());
+        // Place aux coins arrondis et au bord effiloché (Kevin 2026-11-16 : plus de « carré de terre » autour du cœur),
+        // arbres gardés quand seule leur couronne passe au-dessus d'un bâtiment, marches adoucies de demi-blocs.
+        Grading grading = new Grading(world).slabs(layout.people().slabs())
+                .pad(plaza[0], plaza[1], plaza[2], plaza[3], h0, 1, layout.people().plaza(), PLAZA_CLEARANCE, PLAZA_CORNER, PLAZA_FRAY);
         for (int i = 0; i < buildings.size(); i++) {
             int[] rect = rects.get(i);
-            grading.pad(rect[0], rect[1], rect[2], rect[3], heights.get(i), MARGIN, layout.people().ground());
+            grading.pad(rect[0], rect[1], rect[2], rect[3], heights.get(i), MARGIN, layout.people().ground(),
+                    buildings.get(i).height() + 1, 2, 0);
         }
         grading.apply(BLEND, layout.people().ground(), null);
 
@@ -133,6 +159,17 @@ public final class VillageBuilder {
                 built.add(b.id());
                 builtHeights.add(heights.get(i));
             }
+        }
+        // Une fois tout collé : le terrain que les prefabs n'occupent pas reprend le relief alentour.
+        for (int i = 0; i < buildings.size(); i++) {
+            VillageLayout.Building b = buildings.get(i);
+            if (!built.contains(b.id())) {
+                continue;
+            }
+            int[] rect = rects.get(i);
+            BiPredicate<Integer, Integer> keep = keepOthers(rects, i, plaza);
+            new Grading(world).slabs(layout.people().slabs())
+                    .settle(rect[0], rect[1], rect[2], rect[3], heights.get(i), layout.people().ground(), keep);
         }
 
         // Cœur du peuple (palier 0) : pièces vanilla et blocs de la place, puis dépôt, tableau et bannière à leurs places.

@@ -84,6 +84,9 @@ public final class Village {
             .append(new KeyedCodec<>("HeartTier", Codec.INTEGER), (v, i) -> v.heartTier = i == null ? -1 : i, v -> v.heartTier)
             .documentation("Dernier palier du cœur de village appliqué (VillageHeart), -1 : place d'avant les cœurs par peuple.")
             .add()
+            .append(new KeyedCodec<>("Settled", Codec.BOOLEAN), (v, b) -> v.settled = b != null && b, v -> v.settled)
+            .documentation("Vrai quand les bâtiments debout ont repris le relief alentour (Grading.settle, rattrapage une fois).")
+            .add()
             .append(new KeyedCodec<>("StreetsTier", Codec.INTEGER), (v, i) -> v.streetsTier = i == null ? -1 : i, v -> v.streetsTier)
             .documentation("Dernier palier dont les sentiers et le décor ont été posés (VillageStreets), -1 : aucun.")
             .add()
@@ -132,6 +135,7 @@ public final class Village {
     int tier;
     int heartTier = -1;
     int streetsTier = -1;
+    boolean settled;
     int essor;
     long created;
     String layout;
@@ -189,6 +193,7 @@ public final class Village {
         v.tier = tier;
         v.heartTier = heartTier;
         v.streetsTier = streetsTier;
+        v.settled = settled;
         v.essor = essor;
         v.created = created;
         v.layout = layout;
@@ -613,6 +618,15 @@ public final class Village {
     /** Dernier palier dont les sentiers et le décor ont été posés ({@link VillageStreets}), -1 : aucun. */
     public int streetsTier() {
         return streetsTier;
+    }
+
+    /** Vrai quand les bâtiments debout ont repris le relief alentour (rattrapage unique, {@link VillageStreets}). */
+    public boolean settled() {
+        return settled;
+    }
+
+    void setSettled(boolean value) {
+        settled = value;
     }
 
     void setStreetsTier(int value) {

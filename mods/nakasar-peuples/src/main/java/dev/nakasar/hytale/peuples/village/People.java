@@ -225,6 +225,21 @@ public enum People {
         };
     }
 
+    /**
+     * Demi-blocs vanilla posés sur les marches d'un bloc autour des bâtiments et de la place (Kevin 2026-11-16 :
+     * « adoucir les rebords avec des dalles en terre, bois et/ou pierre »), tirés au hasard par colonne.
+     */
+    public String[] slabs() {
+        return switch (this) {
+            case FERAN -> new String[] {"Soil_Gravel_Sand_Half", "Soil_Gravel_Sand_Half", "Rock_Sandstone_Cobble_Half"};
+            case RENONCE -> new String[] {"Soil_Snow_Half", "Soil_Snow_Half", "Rock_Slate_Cobble_Half"};
+            case SLOTHIAN -> new String[] {"Rock_Basalt_Cobble_Half", "Soil_Gravel_Half", "Wood_Tropicalwood_Planks_Half"};
+            case TRORK -> new String[] {"Soil_Gravel_Half", "Soil_Gravel_Half", "Wood_Softwood_Planks_Half"};
+            // Kweebec : sentier de terre, pavés moussus et planches (village Oak).
+            default -> new String[] {"Soil_Pathway_Half", "Rock_Stone_Cobble_Mossy_Half", "Wood_Hardwood_Planks_Half"};
+        };
+    }
+
     /** Sol de la place centrale. Étape 8. */
     public String plaza() {
         return switch (this) {
