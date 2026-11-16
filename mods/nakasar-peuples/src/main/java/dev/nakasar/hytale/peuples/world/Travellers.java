@@ -275,6 +275,22 @@ public final class Travellers {
                 for (Ref<EntityStore> ref : walk.alive()) {
                     OWNER.put(ref, t.id);
                 }
+                // Un joueur arrive : les chunks autour de lui sont chargés, on recalcule le trajet sur le terrain réel
+                // (pont posé, lac comblé), et chaque voyageur de cette route reprend au point le plus proche.
+                Routes.Path fresh = Links.refresh(world, from, to);
+                if (fresh != path) {
+                    for (Traveller o : all(world)) {
+                        if (o.from.equals(t.from) && o.to.equals(t.to)) {
+                            double[] was = path.point(o.at);
+                            o.at = fresh.closest(was[0], was[1], 0, fresh.length());
+                            Walk.of(o.walkKey()).reset(o.at);
+                            if (o != t) {
+                                save(world, o);
+                            }
+                        }
+                    }
+                    path = fresh;
+                }
             }
             followEscort(world, store, t, path, dt);
             if (t.kind == Kind.CARAVAN && t.ambush == 0 && t.at >= path.length() / 2) {

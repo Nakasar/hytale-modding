@@ -133,6 +133,11 @@ public final class Routes {
      * {@value #LINK} blocs au plus). Sans chemin, le trajet à pied sec de {@link LandPath}, ou la ligne droite.
      */
     public static Path path(World world, double fx, double fz, double tx, double tz) {
+        return path(world, fx, fz, tx, tz, false);
+    }
+
+    /** Comme {@link #path(World, double, double, double, double)} ; `fresh` : le trajet par la terre est recalculé. */
+    public static Path path(World world, double fx, double fz, double tx, double tz, boolean fresh) {
         VillageRegistry registry = Villages.registry(world);
         List<double[]> nodes = new ArrayList<>();
         nodes.add(new double[] {fx, fz});
@@ -179,7 +184,7 @@ public final class Routes {
         int beacons = 0;
         if (prev[1] < 0) {
             // Pas de route balisée complète : à pied sec par la terre (LandPath), sinon la ligne droite.
-            List<double[]> land = LandPath.find(world, fx, fz, tx, tz);
+            List<double[]> land = LandPath.find(world, fx, fz, tx, tz, fresh);
             if (land != null) {
                 points.addAll(land);
             } else {

@@ -104,6 +104,16 @@ public final class Links {
         return p;
     }
 
+    /**
+     * Recalcule la route de `from` vers `to` avec le terrain chargé maintenant (un joueur est près d'un voyageur : son
+     * terrain réel, pont ou remblai, compte). Rend la nouvelle route.
+     */
+    public static Routes.Path refresh(World world, Village from, Village to) {
+        Routes.Path p = Routes.path(world, from.x() + 0.5, from.z() + 0.5, to.x() + 0.5, to.z() + 0.5, true);
+        PATHS.put(from.id() + ">" + to.id(), p);
+        return p;
+    }
+
     // ---- Trafic ----
 
     /** Un passage de plus sur la liaison, le jour `day`. */

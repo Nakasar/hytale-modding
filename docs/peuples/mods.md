@@ -1550,8 +1550,12 @@ avant-postes, troupeaux de la migration, emplacement des auberges et vestiges, q
   pas sondé tous les 4 blocs, coins de lac interdits en diagonale, dénivelé 3 par bloc et 20 par bloc au-delà de 8),
   boîte = les deux points + max(192, 60 % de la distance), 6000 cases au plus ; puis lissage (on saute les points tant
   que la ligne reste sèche). Pas de passage ou pas de générateur : ligne droite. Log INFO `trajet à pied sec`.
-- Une route balisée complète reste prioritaire (les joueurs peuvent y avoir posé un pont). Le terrain modifié par les
-  joueurs n'est pas vu (seul le terrain généré compte). Trajets et colonnes gardés en mémoire pour la session.
+- Terrain réel là où le chunk est chargé (près d'un joueur) : premier bloc solide en descendant à ± 48 du sol généré
+  (pont, remblai = sol ; plantes, feuilles, troncs, branches ignorés), eau par `FluidSection`. Ces colonnes ne valent
+  que pour la recherche en cours ; le terrain généré, lui, est gardé en mémoire pour la session.
+- Quand un joueur arrive près d'un voyageur (ses PNJ apparaissent), `Links.refresh` recalcule le trajet sur le terrain
+  chargé et chaque voyageur de cette route reprend au point le plus proche (`Path.closest`, `Walk.reset`).
+- Une route balisée complète reste prioritaire (les joueurs peuvent y avoir posé un pont).
 - L'onglet Monde montre la progression sur la longueur du trajet réel.
 
 ### Onglets du panneau (`request/BoardTabs`)

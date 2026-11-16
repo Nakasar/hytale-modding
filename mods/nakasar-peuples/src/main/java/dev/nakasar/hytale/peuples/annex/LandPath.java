@@ -5,7 +5,11 @@ import com.hypixel.hytale.server.worldgen.biome.Biome;
 import com.hypixel.hytale.server.worldgen.chunk.ChunkGenerator;
 import com.hypixel.hytale.server.worldgen.chunk.ZoneBiomeResult;
 import com.hypixel.hytale.server.worldgen.container.WaterContainer;
+import com.hypixel.hytale.server.core.asset.type.blocktype.config.BlockType;
+import com.hypixel.hytale.server.core.universe.world.storage.ChunkStore;
 import dev.nakasar.hytale.peuples.PeuplesPlugin;
+import dev.nakasar.hytale.peuples.village.Blocks;
+import dev.nakasar.hytale.peuples.village.Terrain;
 import dev.nakasar.hytale.peuples.zone.Zones;
 
 import java.util.ArrayList;
@@ -29,7 +33,9 @@ import java.util.PriorityQueue;
  *   <li>pas de générateur (instances, mondes plats) ou pas de passage dans la limite de calcul : null, l'appelant garde
  *   la ligne droite.</li>
  * </ul>
- * Le terrain généré ne change pas : les trajets et les colonnes sondées sont gardés en mémoire pour la session.
+ * Là où le chunk est chargé (près d'un joueur), c'est le terrain réel qui compte : un pont posé, un lac comblé
+ * (Kevin, 16 novembre 2026). Les voyageurs recalculent leur trajet quand un joueur arrive près d'eux
+ * ({@code world/Travellers}). Les trajets et les colonnes du terrain généré sont gardés en mémoire pour la session.
  */
 public final class LandPath {
 
@@ -48,10 +54,14 @@ public final class LandPath {
 
     private static final int WET = Integer.MIN_VALUE;
     private static final int UNKNOWN = Integer.MIN_VALUE + 1;
+    private static final int UNLOADED_COLUMN = Integer.MIN_VALUE + 2;
+    /** Terrain réel : on cherche le sol à ± REAL_REACH blocs du sol généré (REAL_TOP si inconnu). */
+    private static final int REAL_REACH = 48;
+    private static final int REAL_TOP = 160;
     private static final int MAX_COLUMNS = 250_000;
     private static final int MAX_PATHS = 512;
 
-    /** Colonnes sondées, par graine de monde (clé x, z) : hauteur du sol, ou WET. */
+    /** Colonnes du terrain généré, par graine de monde (clé x, z) : sol << 1 | mouillé. */
     private static final Map<Integer, Map<Long, Integer>> COLUMNS = new HashMap<>();
     /** Trajets trouvés (clé des deux points arrondis au bloc) ; une liste vide = ligne droite. */
     private static final Map<String, List<double[]>> PATHS = new LinkedHashMap<>(64, 0.75f, true) {
@@ -74,24 +84,33 @@ public final class LandPath {
      * Points (x, z) d'un trajet à pied sec de (fx, fz) à (tx, tz), départ et arrivée compris, ou null pour la ligne
      * droite (déjà sèche, monde sans générateur, ou aucun passage trouvé).
      */
-    public static synchronized List<double[]> find(World world, double fx, double fz, double tx, double tz) {
+    public static List<double[]> find(World world, double fx, double fz, double tx, double tz) {
+        return find(world, fx, fz, tx, tz, false);
+    }
+
+    /**
+     * Comme {@link #find(World, double, double, double, double)} ; `fresh` : recalcule même si le trajet est en mémoire
+     * (un joueur arrive près du voyageur : les chunks autour de lui sont chargés, leur terrain réel compte).
+     */
+    public static synchronized List<double[]> find(World world, double fx, double fz, double tx, double tz, boolean fresh) {
         ChunkGenerator g = Zones.generator(world);
         if (g == null) {
             return null;
         }
         int seed = Zones.seed(world);
         String key = seed + ":" + Math.round(fx) + "," + Math.round(fz) + ">" + Math.round(tx) + "," + Math.round(tz);
-        List<double[]> cached = PATHS.get(key);
+        List<double[]> cached = fresh ? null : PATHS.get(key);
         if (cached != null) {
             return cached.isEmpty() ? null : cached;
         }
+        Probe p = new Probe(world, g, seed);
         List<double[]> path = null;
-        if (!dry(g, seed, fx, fz, tx, tz)) {
+        if (!dry(p, fx, fz, tx, tz)) {
             long t0 = System.nanoTime();
-            path = search(g, seed, fx, fz, tx, tz);
+            path = search(p, fx, fz, tx, tz);
             long ms = (System.nanoTime() - t0) / 1_000_000;
-            PeuplesPlugin.get().getLogger().atInfo().log("Peuples : trajet à pied sec %d,%d -> %d,%d : %s (%d ms)",
-                    (int) fx, (int) fz, (int) tx, (int) tz, path == null ? "aucun, ligne droite" : path.size() + " points", ms);
+            PeuplesPlugin.get().getLogger().atInfo().log("Peuples : trajet à pied sec %d,%d -> %d,%d : %s (%d ms, %d colonnes réelles)",
+                    (int) fx, (int) fz, (int) tx, (int) tz, path == null ? "aucun, ligne droite" : path.size() + " points", ms, p.realColumns);
         }
         PATHS.put(key, path == null ? List.of() : path);
         return path;
@@ -102,7 +121,7 @@ public final class LandPath {
     private record Node(int cx, int cz, double f) {
     }
 
-    private static List<double[]> search(ChunkGenerator g, int seed, double fx, double fz, double tx, double tz) {
+    private static List<double[]> search(Probe p, double fx, double fz, double tx, double tz) {
         double dist = Math.hypot(tx - fx, tz - fz);
         int margin = (int) Math.max(MIN_MARGIN, dist * 0.6);
         int minX = cell(Math.min(fx, tx) - margin);
@@ -137,7 +156,7 @@ public final class LandPath {
             expansions++;
             double ax = k == start ? fx : centre(n.cx());
             double az = k == start ? fz : centre(n.cz());
-            int here = height(g, seed, ax, az);
+            int here = p.height(ax, az);
             for (int[] d : dirs) {
                 int nx = n.cx() + d[0];
                 int nz = n.cz() + d[1];
@@ -148,14 +167,14 @@ public final class LandPath {
                 boolean isGoal = nk == goal;
                 double bx = isGoal ? tx : centre(nx);
                 double bz = isGoal ? tz : centre(nz);
-                int there = height(g, seed, bx, bz);
+                int there = p.height(bx, bz);
                 // L'arrivée (un cœur de village au bord de l'eau, un ponton) compte comme sèche.
-                if ((there == WET && !isGoal) || !dry(g, seed, ax, az, bx, bz)) {
+                if ((there == WET && !isGoal) || !dry(p, ax, az, bx, bz)) {
                     continue;
                 }
                 // En diagonale, les deux cases d'angle doivent être sèches (pas de coin de lac coupé).
-                if (d[0] != 0 && d[1] != 0 && (height(g, seed, centre(n.cx() + d[0]), centre(n.cz())) == WET
-                        || height(g, seed, centre(n.cx()), centre(n.cz() + d[1])) == WET)) {
+                if (d[0] != 0 && d[1] != 0 && (p.height(centre(n.cx() + d[0]), centre(n.cz())) == WET
+                        || p.height(centre(n.cx()), centre(n.cz() + d[1])) == WET)) {
                     continue;
                 }
                 boolean known = here != WET && here != UNKNOWN && there != WET && there != UNKNOWN;
@@ -189,17 +208,17 @@ public final class LandPath {
         if (start == goal) {
             cells.add(0, new double[] {fx, fz});
         }
-        return smooth(g, seed, cells);
+        return smooth(p, cells);
     }
 
     /** Saute les points intermédiaires tant que la ligne reste sèche (au plus 16 points d'un coup). */
-    private static List<double[]> smooth(ChunkGenerator g, int seed, List<double[]> pts) {
+    private static List<double[]> smooth(Probe p, List<double[]> pts) {
         List<double[]> out = new ArrayList<>();
         int i = 0;
         out.add(pts.get(0));
         while (i < pts.size() - 1) {
             int j = Math.min(pts.size() - 1, i + 16);
-            while (j > i + 1 && !dry(g, seed, pts.get(i)[0], pts.get(i)[1], pts.get(j)[0], pts.get(j)[1])) {
+            while (j > i + 1 && !dry(p, pts.get(i)[0], pts.get(i)[1], pts.get(j)[0], pts.get(j)[1])) {
                 j--;
             }
             out.add(pts.get(j));
@@ -211,53 +230,127 @@ public final class LandPath {
     // ---- Terrain ----
 
     /** Vrai si le segment ne passe sur aucune colonne mouillée (sondée tous les PROBE blocs, bouts exclus). */
-    private static boolean dry(ChunkGenerator g, int seed, double ax, double az, double bx, double bz) {
+    private static boolean dry(Probe p, double ax, double az, double bx, double bz) {
         double len = Math.hypot(bx - ax, bz - az);
         int steps = (int) Math.ceil(len / PROBE);
         for (int s = 1; s < steps; s++) {
             double f = (double) s / steps;
-            if (height(g, seed, ax + (bx - ax) * f, az + (bz - az) * f) == WET) {
+            if (p.height(ax + (bx - ax) * f, az + (bz - az) * f) == WET) {
                 return false;
             }
         }
         return true;
     }
 
-    /** Hauteur du sol généré en (x, z), ou WET si l'eau du biome la recouvre, ou UNKNOWN. */
-    static int height(ChunkGenerator g, int seed, double x, double z) {
-        int bx = (int) Math.floor(x);
-        int bz = (int) Math.floor(z);
-        long k = key(bx, bz);
-        Map<Long, Integer> columns = COLUMNS.computeIfAbsent(seed, s -> new LinkedHashMap<>(4096, 0.75f, true) {
-            @Override
-            protected boolean removeEldestEntry(Map.Entry<Long, Integer> eldest) {
-                return size() > MAX_COLUMNS;
+    /**
+     * Lecture du terrain pour une recherche. Là où le chunk est chargé (près d'un joueur), le terrain réel : le premier
+     * bloc solide en descendant (un pont ou un remblai de joueur compte comme sol, une plante ou des feuilles non) ou de
+     * l'eau. Ailleurs, le terrain généré, gardé en mémoire : le relief d'origine ne change pas. Les colonnes réelles ne
+     * valent que pour cette recherche (les joueurs construisent).
+     */
+    private static final class Probe {
+        final ChunkGenerator g;
+        final int seed;
+        final ChunkStore chunks;
+        final Terrain terrain;
+        final Map<Long, Integer> real = new HashMap<>();
+        int realColumns;
+
+        Probe(World world, ChunkGenerator g, int seed) {
+            this.g = g;
+            this.seed = seed;
+            this.chunks = world.getChunkStore();
+            this.terrain = new Terrain(world);
+        }
+
+        /** Hauteur du sol en (x, z), ou WET si l'eau le recouvre, ou UNKNOWN. */
+        int height(double x, double z) {
+            int bx = (int) Math.floor(x);
+            int bz = (int) Math.floor(z);
+            long k = key(bx, bz);
+            Integer r = real.get(k);
+            if (r != null) {
+                return r;
             }
-        });
-        Integer v = columns.get(k);
-        if (v != null) {
+            int gen = generated(bx, bz);
+            int ground = gen == UNKNOWN ? REAL_TOP : gen >> 1;
+            int h = actual(bx, bz, ground);
+            if (h != UNLOADED_COLUMN) {
+                real.put(k, h);
+                realColumns++;
+                return h;
+            }
+            int v = gen == UNKNOWN ? UNKNOWN : (gen & 1) == 1 ? WET : gen >> 1;
+            real.put(k, v);
             return v;
         }
-        int h;
-        try {
-            h = g.getHeight(seed, bx, bz);
-            ZoneBiomeResult r = g.getZoneBiomeResultAt(seed, bx, bz);
-            Biome biome = r == null ? null : r.getBiome();
-            WaterContainer water = biome == null ? null : biome.getWaterContainer();
-            if (water != null && water.hasEntries()) {
-                for (WaterContainer.Entry e : water.getEntries()) {
-                    int max = e.getMax(seed, bx, bz);
-                    if (max >= e.getMin(seed, bx, bz) && max > h && e.shouldPopulate(seed, bx, bz)) {
-                        h = WET;
-                        break;
+
+        /** Terrain réel de la colonne autour de `hint`, ou UNLOADED_COLUMN si son chunk n'est pas chargé. */
+        private int actual(int x, int z, int hint) {
+            int top = Math.min(Terrain.TOP, hint + REAL_REACH);
+            int bottom = Math.max(0, hint - REAL_REACH);
+            for (int y = top; y >= bottom; y--) {
+                int id = Blocks.id(chunks, x, y, z);
+                if (id == Blocks.UNLOADED) {
+                    return UNLOADED_COLUMN;
+                }
+                if (terrain.hasFluid(x, y, z)) {
+                    return WET;
+                }
+                if (id == BlockType.EMPTY_ID) {
+                    continue;
+                }
+                BlockType type = BlockType.getAssetMap().getAsset(id);
+                String name = type == null ? null : type.getId();
+                // Les arbres ne sont pas du relief (le terrain généré n'en a pas) : on passe entre eux.
+                if (name == null || name.startsWith("Plant_") || name.contains("Leaves") || name.contains("Trunk")
+                        || name.contains("Branch") || name.contains("Roots")) {
+                    continue;
+                }
+                if (name.contains("Fluid_")) {
+                    return WET;
+                }
+                return y;
+            }
+            return UNLOADED_COLUMN;
+        }
+
+        /** Terrain généré : sol &lt;&lt; 1 | 1 si l'eau du biome le recouvre, ou UNKNOWN. */
+        private int generated(int bx, int bz) {
+            long k = key(bx, bz);
+            Map<Long, Integer> columns = COLUMNS.computeIfAbsent(seed, s -> new LinkedHashMap<>(4096, 0.75f, true) {
+                @Override
+                protected boolean removeEldestEntry(Map.Entry<Long, Integer> eldest) {
+                    return size() > MAX_COLUMNS;
+                }
+            });
+            Integer v = columns.get(k);
+            if (v != null) {
+                return v;
+            }
+            int out;
+            try {
+                int h = g.getHeight(seed, bx, bz);
+                boolean wet = false;
+                ZoneBiomeResult r = g.getZoneBiomeResultAt(seed, bx, bz);
+                Biome biome = r == null ? null : r.getBiome();
+                WaterContainer water = biome == null ? null : biome.getWaterContainer();
+                if (water != null && water.hasEntries()) {
+                    for (WaterContainer.Entry e : water.getEntries()) {
+                        int max = e.getMax(seed, bx, bz);
+                        if (max >= e.getMin(seed, bx, bz) && max > h && e.shouldPopulate(seed, bx, bz)) {
+                            wet = true;
+                            break;
+                        }
                     }
                 }
+                out = (h << 1) | (wet ? 1 : 0);
+            } catch (RuntimeException e) {
+                out = UNKNOWN;
             }
-        } catch (RuntimeException e) {
-            h = UNKNOWN;
+            columns.put(k, out);
+            return out;
         }
-        columns.put(k, h);
-        return h;
     }
 
     private static double h(int cx, int cz, int gx, int gz) {
