@@ -20,6 +20,7 @@ import dev.nakasar.hytale.peuples.request.Requests;
 import dev.nakasar.hytale.peuples.village.AnnexState;
 import dev.nakasar.hytale.peuples.village.Blocks;
 import dev.nakasar.hytale.peuples.village.Chantiers;
+import dev.nakasar.hytale.peuples.village.Deposits;
 import dev.nakasar.hytale.peuples.village.Grading;
 import dev.nakasar.hytale.peuples.village.People;
 import dev.nakasar.hytale.peuples.village.SiteStyle;
@@ -84,6 +85,10 @@ public final class Annexes {
     /** Joueur à moins de cette distance : le chantier avance et se termine (chunks chargés). */
     public static final int WATCH_RADIUS = 96;
     private static final int MARGIN = 2;
+    /** Matériaux de la fondation rendus au dépôt quand l'avant-poste est détruit : un sur quatre (comme les terrains). */
+    public static final int REFUND_DIVISOR = 4;
+    /** Profondeur sous le terrain rebouchée quand l'avant-poste est rasé (mares, sols des prefabs). */
+    private static final int RAZE_DEPTH = 4;
     private static final int BLEND = 3;
     private static final HytaleLogger LOGGER = HytaleLogger.forEnclosingClass();
     /** Phase de chantier posée par avant-poste (mémoire de session). */
@@ -318,7 +323,8 @@ public final class Annexes {
             }
         }
         for (Village v : Villages.registry(world).all()) {
-            for (AnnexState other : v.annexes()) {
+            // Places d'avant-postes détruits pas encore rasées comptent aussi.
+            for (AnnexState other : concat(v.annexes(), v.ruins())) {
                 if (other.granted()) {
                     continue;
                 }
@@ -593,6 +599,7 @@ public final class Annexes {
 
     /** Chantiers des avant-postes (phases, fin) et livraisons du matin, pour les avant-postes près d'un joueur. */
     public static void step(World world, Store<EntityStore> store, Village village, List<Vector3d> players, float dt) {
+        stepRuins(world, village, players);
         long now = GameClock.seconds(store);
         for (AnnexState a : village.annexes()) {
             Workshop w = Workshop.get(a.id());
@@ -856,8 +863,197 @@ public final class Annexes {
         return list;
     }
 
+    // ---- Destruction (Kevin, 2026-11-16) ----
+
+    /** Pourquoi le joueur ne peut pas détruire un avant-poste de ce village, ou null (rang Ami, quel que soit le palier). */
+    public static Message destroyBlock(Store<EntityStore> store, Ref<EntityStore> ref, Village village) {
+        if (!Reputations.rank(store, ref, village).atLeast(GRANT_RANK)) {
+            return Message.translation(KEYS + "destroy.rank").param("rank", Message.translation(GRANT_RANK.nameKey()));
+        }
+        return null;
+    }
+
+    /** Vrai si l'avant-poste peut être détruit : en travaux ou debout, sans convoi sur la route. */
+    public static boolean destroyable(AnnexState a) {
+        return a != null && !a.granted() && (a.working() || a.built());
+    }
+
+    /**
+     * Détruit l'avant-poste `w` du village (onglet Avant-postes, après confirmation) : villageois renvoyés, bâtiment,
+     * panneau, décor et chantier retirés, un quart des matériaux de la fondation rendu au dépôt du village. Le coffre de
+     * l'avant-poste reste sur place avec son contenu (et la production en attente) : il devient un coffre ordinaire. Zone
+     * pas chargée : la place est rasée au premier passage d'un joueur. Refusé tant qu'un convoi est sur la route.
+     */
+    public static boolean destroy(World world, Store<EntityStore> store, Ref<EntityStore> ref, PlayerRef player, Village village,
+                                  Workshop w) {
+        Message block = destroyBlock(store, ref, village);
+        if (block != null) {
+            player.sendMessage(block);
+            return false;
+        }
+        AnnexState a = village.annex(w.getId());
+        if (!destroyable(a)) {
+            player.sendMessage(Message.translation(KEYS + "destroy.nothing"));
+            return false;
+        }
+        if (a.convoy()) {
+            player.sendMessage(Message.translation(KEYS + "destroy.convoy").param("building", Message.translation(w.nameKey())));
+            return false;
+        }
+        boolean built = a.built();
+        String key = key(village, w);
+        PHASE.remove(key);
+        SWEPT.remove(key);
+        Villagers.dismiss(store, village.id(), Villagers.ANNEX_PREFIX + w.getId() + "/");
+        village.ruinAnnex(w.getId());
+        boolean razed = demolish(world, village, w, a);
+        if (razed) {
+            village.forgetRuin(a);
+        }
+        ItemContainer deposit = Villages.depositChest(world, village);
+        if (deposit != null) {
+            for (VillageLayout.Material m : w.annex().materials()) {
+                int back = m.quantity() / REFUND_DIVISOR;
+                if (back > 0) {
+                    ItemStack rest = deposit.addItemStack(new ItemStack(m.itemId(), back)).getRemainder();
+                    if (!ItemStack.isEmpty(rest)) {
+                        Deposits.drop(world, village.deposit(), List.of(rest));
+                    }
+                }
+            }
+        }
+        Message name = Message.translation(w.nameKey());
+        Chantiers.announce(world, village, Message.translation(KEYS + "destroyed").param("player", player.getUsername())
+                .param("building", name), null, NotificationStyle.Warning);
+        player.sendMessage(Message.translation(KEYS + (razed ? "destroyedHere" : "destroyedLater")).param("building", name)
+                .param("x", a.x()).param("z", a.z()));
+        LOGGER.atInfo().log("Nakasar Peuples : %s détruit l'avant-poste %s (%s) de %s en %d %d %d, %s", player.getUsername(), w.getId(),
+                built ? "debout" : "en travaux", village.name(), a.x(), a.y(), a.z(), razed ? "rasé" : "à raser au passage d'un joueur");
+        return true;
+    }
+
+    /** Places d'avant-postes détruits à raser : au passage d'un joueur, quand la zone est chargée. */
+    static void stepRuins(World world, Village village, List<Vector3d> players) {
+        for (AnnexState ruin : village.ruins()) {
+            Workshop w = Workshop.get(ruin.id());
+            if (w == null || !w.isAnnex()) {
+                village.forgetRuin(ruin);
+                continue;
+            }
+            if (watched(ruin, players) && demolish(world, village, w, ruin)) {
+                village.forgetRuin(ruin);
+                LOGGER.atInfo().log("Nakasar Peuples : place de l'avant-poste détruit %s rasée en %d %d %d (%s)", w.getId(), ruin.x(),
+                        ruin.y(), ruin.z(), village.name());
+            }
+        }
+    }
+
+    /**
+     * Rase l'avant-poste `a` (déjà retiré du village) : chantier ou bâtiments de l'emprise au-dessus du sol (les
+     * conteneurs restent : objets des joueurs), fluides et sols posés sous le niveau du terrain rebouchés, panneau et
+     * décor retirés, fondation retirée. La production en attente entre dans le coffre de l'avant-poste, qui reste ; ce qui
+     * n'y tient pas tombe au sol. Faux (rien n'est touché) tant que la zone n'est pas chargée.
+     */
+    static boolean demolish(World world, Village village, Workshop w, AnnexState a) {
+        ChunkStore chunks = world.getChunkStore();
+        int[] r = worldRect(w, a);
+        int h = a.ground();
+        int[][] probes = {{a.x(), a.z()}, {r[0], r[2]}, {r[0], r[3]}, {r[1], r[2]}, {r[1], r[3]}};
+        for (int[] p : probes) {
+            if (Blocks.id(chunks, p[0], h, p[1]) == Blocks.UNLOADED) {
+                return false;
+            }
+        }
+        if (a.working()) {
+            site(world, village, w, a, 0);
+        }
+        String soil = village.people().ground();
+        int top = h + w.annex().height() + 2;
+        for (int x = r[0]; x <= r[1]; x++) {
+            for (int z = r[2]; z <= r[3]; z++) {
+                for (int y = top; y > h; y--) {
+                    String name = Blocks.name(chunks, x, y, z);
+                    if (name != null && !dev.nakasar.hytale.peuples.village.Burning.isContainer(world, x, y, z)) {
+                        Blocks.set(chunks, x, y, z, null, 0);
+                    }
+                    clearFluid(chunks, x, y, z);
+                }
+                // Mares, sols et dallages des prefabs sous le niveau du terrain : rebouchés avec le sol du peuple.
+                for (int y = h; y >= h - RAZE_DEPTH; y--) {
+                    String name = Blocks.name(chunks, x, y, z);
+                    boolean wet = clearFluid(chunks, x, y, z);
+                    if (wet || name != null && !natural(name) && !dev.nakasar.hytale.peuples.village.Burning.isContainer(world, x, y, z)) {
+                        Blocks.set(chunks, x, y, z, soil, 0);
+                    }
+                }
+            }
+        }
+        // Panneau de l'avant-poste (à la place de la fondation) et sa corde, ou la fondation d'un chantier.
+        String board = village.people().boardBlock();
+        for (int y = h - 1; y <= h + 4; y++) {
+            String name = Blocks.name(chunks, a.x(), y, a.z());
+            if (name != null && Blocks.is(name, board)) {
+                Workshops.unhangBoard(chunks, new int[] {a.x(), y, a.z()}, Blocks.rotation(chunks, a.x(), y, a.z()));
+                Blocks.set(chunks, a.x(), y, a.z(), null, 0);
+            }
+        }
+        clearFoundation(chunks, a.x(), a.y(), a.z());
+        for (String line : w.annex().decor()) {
+            String[] p = line.trim().split("\\s+");
+            if (p.length < 5) {
+                continue;
+            }
+            try {
+                int[] d = rotate(Integer.parseInt(p[0]), Integer.parseInt(p[2]), a.rotation());
+                Blocks.clearIf(chunks, a.x() + d[0], h + 1 + Integer.parseInt(p[1]), a.z() + d[1], p[4]);
+            } catch (NumberFormatException ignored) {
+                // Ligne mal formée : ValidateAssets la signale.
+            }
+        }
+        // Production en attente : au coffre de l'avant-poste (qui reste), le reste au sol.
+        if (a.stockTotal() > 0) {
+            ItemContainer chest = AnnexChests.container(world, village, a);
+            List<ItemStack> left = new ArrayList<>();
+            for (Map.Entry<String, Integer> e : a.stock().entrySet()) {
+                ItemStack stack = new ItemStack(e.getKey(), e.getValue());
+                ItemStack rest = chest == null ? stack : chest.addItemStack(stack).getRemainder();
+                if (!ItemStack.isEmpty(rest)) {
+                    left.add(rest);
+                }
+            }
+            a.setStock(Map.of());
+            if (!left.isEmpty()) {
+                int[] c = a.chest();
+                Deposits.drop(world, c != null ? c : new int[] {a.x(), h + 1, a.z()}, left);
+            }
+        }
+        Villagers.forgetGround();
+        return true;
+    }
+
+    /** Vide le fluide en (x, y, z) ; vrai s'il y en avait. */
+    private static boolean clearFluid(ChunkStore chunks, int x, int y, int z) {
+        com.hypixel.hytale.component.Ref<ChunkStore> ref = chunks.getChunkSectionReferenceAtBlock(x, y, z);
+        if (ref == null || !ref.isValid()) {
+            return false;
+        }
+        com.hypixel.hytale.server.core.universe.world.chunk.section.FluidSection fluids = chunks.getStore().getComponent(ref,
+                com.hypixel.hytale.server.core.universe.world.chunk.section.FluidSection.getComponentType());
+        if (fluids != null && fluids.getFluidId(x, y, z) != 0) {
+            fluids.setFluid(x, y, z, 0, (byte) 0);
+            return true;
+        }
+        return false;
+    }
+
     private static String key(Village village, Workshop w) {
         return village.id() + "/" + w.getId();
+    }
+
+    private static AnnexState[] concat(AnnexState[] a, AnnexState[] b) {
+        AnnexState[] out = java.util.Arrays.copyOf(a, a.length + b.length);
+        System.arraycopy(b, 0, out, a.length, b.length);
+        return out;
     }
 
     /** Oublie les phases de chantier (rechargement du mod). */

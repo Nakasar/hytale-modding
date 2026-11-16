@@ -99,6 +99,10 @@ public final class Village {
                     (v, a) -> v.annexes = a == null ? new AnnexState[0] : a, v -> v.annexes)
             .documentation("Avant-postes de métier rattachés au village : fondation, place, travaux, bâtiment debout.")
             .add()
+            .append(new KeyedCodec<>("Ruins", new ArrayCodec<>(AnnexState.CODEC, AnnexState[]::new)),
+                    (v, a) -> v.ruins = a == null ? new AnnexState[0] : a, v -> v.ruins)
+            .documentation("Avant-postes détruits depuis le panneau dont la zone n'était pas chargée : rasés au passage d'un joueur.")
+            .add()
             .append(new KeyedCodec<>("SettlerDay", Codec.LONG), (v, l) -> v.settlerDay = l == null ? Long.MIN_VALUE : l, v -> v.settlerDay)
             .documentation("Jour de jeu où le dernier colon est apparu (outpost/Settlers : un tous les 7 jours au palier max).")
             .add()
@@ -146,6 +150,7 @@ public final class Village {
     PlotState[] plots = new PlotState[0];
     WorkshopState[] workshops = new WorkshopState[0];
     AnnexState[] annexes = new AnnexState[0];
+    AnnexState[] ruins = new AnnexState[0];
     long settlerDay = Long.MIN_VALUE;
     boolean settlerActive;
     String settlerOwner;
@@ -207,6 +212,10 @@ public final class Village {
         v.annexes = new AnnexState[annexes.length];
         for (int i = 0; i < annexes.length; i++) {
             v.annexes[i] = annexes[i] == null ? null : annexes[i].copy();
+        }
+        v.ruins = new AnnexState[ruins.length];
+        for (int i = 0; i < ruins.length; i++) {
+            v.ruins[i] = ruins[i] == null ? null : ruins[i].copy();
         }
         v.workshops = new WorkshopState[workshops.length];
         for (int i = 0; i < workshops.length; i++) {
@@ -435,6 +444,27 @@ public final class Village {
     public void forgetAnnex(String workshopId) {
         annexes = java.util.Arrays.stream(annexes).filter(a -> a != null && !a.id.equals(workshopId)).toArray(AnnexState[]::new);
         forgetWorkshop(workshopId);
+    }
+
+    /** Avant-postes détruits pas encore rasés (zone pas chargée au moment de la destruction). */
+    public AnnexState[] ruins() {
+        return java.util.Arrays.stream(ruins).filter(java.util.Objects::nonNull).toArray(AnnexState[]::new);
+    }
+
+    /** Retire l'avant-poste `workshopId` du village et garde sa place à raser (thread du monde). */
+    public void ruinAnnex(String workshopId) {
+        AnnexState a = annex(workshopId);
+        forgetAnnex(workshopId);
+        if (a != null) {
+            AnnexState[] grown = java.util.Arrays.copyOf(ruins, ruins.length + 1);
+            grown[ruins.length] = a;
+            ruins = grown;
+        }
+    }
+
+    /** La place `ruin` est rasée : on l'oublie. */
+    public void forgetRuin(AnnexState ruin) {
+        ruins = java.util.Arrays.stream(ruins).filter(r -> r != null && r != ruin).toArray(AnnexState[]::new);
     }
 
     /** État sauvegardé du terrain `plotId` (E1, E2), créé vide s'il manque (thread du monde). */

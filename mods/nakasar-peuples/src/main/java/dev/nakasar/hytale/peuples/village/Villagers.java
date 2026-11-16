@@ -102,6 +102,15 @@ public final class Villagers {
         }
     }
 
+    /** Retire tout de suite les villageois des postes `group` (préfixe) du village : avant-poste détruit. */
+    public static synchronized void dismiss(Store<EntityStore> store, String villageId, String group) {
+        for (Key key : new ArrayList<>(BY_SLOT.keySet())) {
+            if (key.village().equals(villageId) && key.slot().startsWith(group)) {
+                despawn(store, key);
+            }
+        }
+    }
+
     /** Slots des villageois d'avant-poste : {@code AP_<bâtiment>/<métier>}. */
     public static final String ANNEX_PREFIX = "AP_";
 

@@ -120,7 +120,7 @@ public final class Burning {
     }
 
     /** Vrai si le bloc porte un inventaire (coffre, armoire) : on n'y touche jamais. */
-    static boolean isContainer(World world, int x, int y, int z) {
+    public static boolean isContainer(World world, int x, int y, int z) {
         return BlockModule.getComponent(ItemContainerBlock.getComponentType(), world, x, y, z) != null;
     }
 }
