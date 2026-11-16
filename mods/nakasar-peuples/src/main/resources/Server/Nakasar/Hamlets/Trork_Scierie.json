@@ -3,6 +3,7 @@
   "People": "Trork",
   "Type": "Scierie",
   "NameKey": "nakasar_peuples.hamlet.type.Scierie",
+  "Label": "Scierie trork",
   "Icon": "Tool_Hatchet_Crude",
   "Rule": "TREES",
   "Weight": 3,

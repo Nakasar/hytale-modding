@@ -215,8 +215,8 @@ BUSY = {
     "Chasse": [("Ingredient_Leather_Medium", 2, 2), ("Food_Wildmeat_Cooked", 4, 1)],
     "Bosquet": [("Plant_Seeds_Health1", 2, 2), ("Plant_Crop_Health2", 1, 4)],
 }
-# Paliers (Kevin, 16 novembre 2026) : chaque lieu-dit est un bâtiment de métier <Peuple>_LD_<Genre> du village de
-# rattachement, avec les niveaux I à III, commandes, spécialités et boutiques de son avant-poste équivalent
+# Paliers (Kevin, 16 novembre 2026) : chaque lieu-dit est un bâtiment de métier <Peuple>_LD_<Genre> à lui (il n'est
+# rattaché à aucun village : sa réputation, son dépôt et son état sont sauvés à part, Nakasar_Peuples_Hamlets), avec les niveaux I à III, commandes, spécialités et boutiques de son avant-poste équivalent
 # (tools/generate_workshops.py les copie). Le moulin et le comptoir suivent la ferme, la forge la mine.
 # Le moulin, la forge et le comptoir n'ont pas d'avant-poste équivalent : ils ont leurs paliers propres (OWN_TIERS,
 # choix de Kevin le 16 novembre 2026), dans le format de outposts.TYPE_DATA.

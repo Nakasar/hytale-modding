@@ -1622,7 +1622,7 @@ seulement dans l'air (bancs vanilla de la forge, caisses, sacs). Les emprises de
 
 Habitants (1 à 3) : rôles `Nakasar_Peuples_<Peuple>_Hamlet_{Keeper,Worker,Sentry}` (apparences vanilla du peuple),
 dialogue `Monde_LieuDit_<Genre>` (troc, « qui vient commercer ici ? », rumeurs). Troc `Nakasar_Peuples_Hamlet_<P>_<G>`
-en faveurs du peuple, au rang Toléré dans le village de rattachement ; `..._Anime` (plus de marchandises) quand le
+en faveurs du peuple, au rang Toléré auprès du lieu-dit (sa réputation propre, ou celle du peuple) ; `..._Anime` (plus de marchandises) quand le
 lieu-dit est animé. Les Kweebecs ne vendent rien en métal (caserne animée : flèches simples, cuir).
 
 ### Paliers (bâtiment de métier du lieu-dit)
@@ -1630,7 +1630,7 @@ lieu-dit est animé. Les Kweebecs ne vendent rien en métal (caserne animée : f
 Kevin (2026-11-16) : les bâtiments des lieux-dits ont les mêmes paliers que leur équivalent avant-poste. Chaque genre
 a un bâtiment de métier `<Peuple>_LD_<Genre>` (champ `Hamlet` du `Workshop`, généré par `tools/generate_workshops.py`
 depuis `hamlets.WORKSHOP_EQUIV`) qui copie l'avant-poste équivalent : niveaux I à III (jauge 200 / 400, palier du village
-exigé, commande de maître, chantier de 12 h aux matériaux du dépôt du village, décor), commandes du jour
+exigé, commande de maître, chantier de 12 h aux matériaux du dépôt du lieu-dit, décor), commandes du jour
 (`Requests/<Peuple>/LD_<Genre>`), deux spécialités au niveau II, boutiques par niveau et Part de l'Hôte.
 
 | Lieu-dit | Paliers de |
@@ -1649,12 +1649,22 @@ Paliers propres (commandes de blé et de fibres, de minerai et de charbon, de pe
 | Forge | lingots de cuivre, marteau, pioche | Armurerie (épées, hache, plastron de fer) ; Outillage (outils de fer, lingots) |
 | Comptoir | sel, épices, seau | Étoffes (rouleaux de coton, lin, laine, soie) ; Explorateurs (provisions, carte, torches) |
 
-- L'état (`WorkshopState`) est celui du village de rattachement, créé quand le lieu-dit est posé : **un lieu-dit de
-  chaque genre par village** (`Hamlets.pickFree` ; `/monde lieudit --genre` refuse un genre déjà pris).
+- **Indépendant** (Kevin, 2026-11-16 : « un lieu-dit n'est pas forcément rattaché à un village ») : chaque lieu-dit a
+  son état propre, un `Village` d'id `H:<lieu-dit>` (nom `Label` de l'asset, « Forge trork ») sauvé à part dans la
+  ressource `Nakasar_Peuples_Hamlets` (`village/HamletRegistry`), créé quand il est posé (ou au premier passage pour un
+  lieu-dit posé avant). Il n'est jamais dans `VillageRegistry.all()` (ni raids, ni villageois, ni chantiers, ni
+  essor) ; `VillageRegistry.byId` et `byWorkshopBoard` le trouvent, pour les commandes et le panneau.
+- **Réputation propre** (choix de Kevin) : clé `H:<lieu-dit>` dans la réputation du joueur, gagnée par ses commandes
+  (le peuple en reçoit un tiers, comme au village). Rang = le meilleur des deux, donc la réputation du peuple ouvre
+  aussi le troc. Palier fixé à 3 : les niveaux ne dépendent d'aucun village. Plusieurs lieux-dits du même genre peuvent
+  exister ; le village d'où il a été tiré ne sert qu'à choisir son peuple.
+- Dépôt : coffre du peuple posé à droite de la place (local `2, 0`, `Hamlets.placeDeposit`), pour les commandes de
+  récolte et les matériaux des améliorations ; reposé s'il disparaît et que sa case est libre.
 - Panneau de métier du peuple posé à gauche de la place (local `-2, 0`), tourné vers le marché (`Hamlets.placeBoard`,
   reposé par `Workshops.refresh` s'il manque) ; il ouvre la page du bâtiment de métier comme au village.
 - Le tenancier tient la boutique (toujours « présent ») ; un habitant de plus par niveau au-delà du I (3 au plus).
-- Pas de coffre ni de convoi : la production des avant-postes vers le dépôt n'est pas reprise.
+- Pas de convoi : la production des avant-postes vers le dépôt n'est pas reprise. Les commandes se tirent et les
+  améliorations se terminent quand un joueur est à moins de 64 blocs (`Hamlets.step` → `Workshops.refresh`).
 
 ### Où ils apparaissent
 
@@ -1666,7 +1676,7 @@ Paliers propres (commandes de blé et de fibres, de minerai et de charbon, de pe
 - Alentours d'un village : 60 % de chances d'un lieu-dit à 200-380 blocs, tourné vers le village.
 - Écarts : rayon du plan + 70 blocs d'un village, 140 entre lieux-dits, 64 d'un avant-poste, 60 de l'auberge (ou du
   milieu d'une liaison qui peut en avoir une). Terrain généré sec et relief ≤ 12 sur 24 blocs (`LandPath.drySite`).
-- Genre tiré selon les poids, si possible un que le village n'a pas encore.
+- Genre tiré selon les poids parmi ceux du peuple.
 
 Pose (`Hamlets.place`) quand un joueur passe à moins de 112 blocs, une recherche par pas : point tiré puis 8 directions
 à 14 et 28 blocs ; place chargée, sèche, relief ≤ 7, aucun bloc non naturel sous les toits ; la règle de terrain du
@@ -1682,14 +1692,13 @@ découvre (titre, drapeau `Hamlet:<id>`) ; les rumeurs citent le lieu-dit non d�
 
 `HamletTrips.morning` : pour chaque lieu-dit posé sans tournée (5 au plus dans le monde), 40 % de chances qu'un
 marchand (70 %) ou une caravane de 3 porteurs (30 %) parte d'un village à moins de 900 blocs (le plus proche a plus de
-chances), sauf si ce village est rival de celui du lieu-dit. Aller par `Routes.path` (route balisée ou trajet à pied
+chances). Aller par `Routes.path` (route balisée ou trajet à pied
 sec) du cœur du village à la place du marché, de jour seulement ; séjour de 3 heures de jeu sur la place ; retour. La
 simulation est celle des voyageurs (`Walk` : vrais PNJ à moins de 64 blocs d'un joueur, sinon 3 blocs/s).
 
 - Arrivée : chaque marcheur compte un passage au lieu-dit (`Links.pass`, clé `H:<id>`, fenêtre de 7 jours). À 4
-  passages, le lieu-dit devient **animé** : annonce aux joueurs proches et au village, troc élargi.
-- Retour : +1 d'essor au village (caravane : 1 par porteur rentré, 3 au plus), +1 de relation avec le village du
-  lieu-dit. Tous les marcheurs tués : annonce « jamais revenu ».
+  passages, le lieu-dit devient **animé** : annonce aux joueurs proches, troc élargi.
+- Retour : +1 d'essor au village (caravane : 1 par porteur rentré, 3 au plus). Tous les marcheurs tués : annonce « jamais revenu ».
 - Dialogue `Monde_Marchand_LieuDit` : troc des voyageurs du peuple (rang Toléré), « où vas-tu ? », rumeurs.
 
 État sauvé (partie `HamletTrips`) : `id = lieu-dit|village|M ou C|étape|blocs|marcheurs|fin du séjour` et
@@ -1710,8 +1719,9 @@ le lieu-dit le plus proche).
 3. `/monde commerce --genre caravane`, suivre la caravane jusqu'à la place, attendre 3 h de jeu, la voir repartir.
 4. Quatre passages en 7 jours (quatre `/monde commerce` d'un marchand, ou une caravane et un marchand) : annonce
    « animé », troc élargi.
-5. Panneau à gauche de la place : page du bâtiment de métier (niveau I, commandes). `/village niveauatelier
-   <Peuple>_LD_Forge 2` près du village de rattachement, choisir une spécialité, voir la boutique de niveau II et un
+5. Panneau à gauche de la place, coffre à droite : page du bâtiment de métier (niveau I, commandes) ; une commande
+   remplie monte la réputation du lieu-dit (pas celle d'un village). `/village niveauatelier <Peuple>_LD_Forge 2` près
+   du lieu-dit (200 blocs), choisir une spécialité, voir la boutique de niveau II et un
    troisième habitant.
 6. Nouveau monde avec plusieurs villages éloignés : lieux-dits le long des routes et autour des villages (`/monde etat`).
 

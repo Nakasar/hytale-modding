@@ -173,7 +173,7 @@ public final class Workshops {
 
     /** Tire les commandes du jour des bâtiments ouverts et pose leurs panneaux manquants (chaque seconde, RequestSystem). */
     public static void refresh(World world, Store<EntityStore> store, Village village) {
-        if (village.layout() == null) {
+        if (village.layout() == null && !village.isHamlet()) {
             return;
         }
         long now = GameClock.seconds(store);

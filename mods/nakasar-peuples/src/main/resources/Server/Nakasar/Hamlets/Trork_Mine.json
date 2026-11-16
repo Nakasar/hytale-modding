@@ -3,6 +3,7 @@
   "People": "Trork",
   "Type": "Mine",
   "NameKey": "nakasar_peuples.hamlet.type.Mine",
+  "Label": "Mine isolée trork",
   "Icon": "Tool_Pickaxe_Crude",
   "Rule": "ROCK",
   "Weight": 3,

@@ -139,7 +139,7 @@ def shop(sid, people, kind, busy):
     pfr, pen = PEOPLE_NAMES[people]
     write(RES / f"BarterShops/{sid}.json", {
         "$Comment": f"Troc du lieu-dit {name_fr} ({people}){' animé' if busy else ''}, généré par tools/generate_hamlets.py : "
-                    "faveurs du peuple contre marchandises vanilla ; ouvert au rang Toléré dans le village du lieu-dit.",
+                    "faveurs du peuple contre marchandises vanilla ; ouvert au rang Toléré auprès du lieu-dit (ou de son peuple).",
         "DisplayNameKey": f"nakasar_peuples.barter.{sid[len('Nakasar_Peuples_'):]}.title",
         "RefreshInterval": {"Days": 2},
         "RestockHour": 6,
@@ -170,6 +170,7 @@ def hamlet_assets():
                 "People": people,
                 "Type": kind,
                 "NameKey": f"nakasar_peuples.hamlet.type.{kind}",
+                "Label": f"{hamlets.NAMES[kind][0]} {PEOPLE_NAMES[people][0]}",
                 "Icon": hamlets.NAMES[kind][2],
                 "Rule": hamlets.RULES[kind],
                 "Weight": hamlets.WEIGHTS[kind],
@@ -271,8 +272,8 @@ def texts():
     p = "hamlet."
     rows = [
         ("discover", "Lieu-dit : {name} ({people})", "Hamlet: {name} ({people})"),
-        ("discoverLine", "Un lieu-dit {people}, rattaché à {village}. Les marchands des villages voisins y viennent commercer.",
-         "A {people} hamlet, tied to {village}. Merchants from nearby villages come here to trade."),
+        ("discoverLine", "Un lieu-dit {people}, libre de tout village. Les marchands des villages voisins y viennent commercer.",
+         "A {people} hamlet, bound to no village. Merchants from nearby villages come here to trade."),
         ("lively", "{name} est animé : les marchands se pressent, son troc s'élargit.",
          "{name} is lively: merchants crowd in, its wares grow."),
         ("visits.none", "Personne n'est venu depuis une semaine. Les routes sont calmes.",
@@ -281,7 +282,8 @@ def texts():
          "{count} merchants in 7 days; last one from {village}."),
         ("visits.lively", "{count} marchands en 7 jours ; dernier venu : {village}. On est animés !",
          "{count} merchants in 7 days; last one from {village}. We're lively!"),
-        ("shopRank", "Je ne commerce qu'avec les amis de {village} (rang Toléré).", "I only trade with friends of {village} (Tolerated rank)."),
+        ("shopRank", "Je ne commerce qu'avec ceux qu'on connaît ici ou chez les {people} (rang Toléré).",
+         "I only trade with those known here or among the {people} (Tolerated rank)."),
         ("trip.where.out", "Je vais à {hamlet}, puis je rentre à {village}.", "I'm going to {hamlet}, then back to {village}."),
         ("trip.where.stay", "Je commerce ici jusqu'à {hour} h, puis je rentre à {village}.", "I'm trading here until {hour}:00, then heading back to {village}."),
         ("trip.where.back", "Je rentre à {village} avec ce que j'ai acheté à {hamlet}.", "I'm heading back to {village} with what I bought at {hamlet}."),
@@ -298,12 +300,10 @@ def texts():
         ("cmd.trip.desc", "Un marchand du village le plus proche part vers le lieu-dit le plus proche (opérateurs).",
          "A merchant from the nearest village leaves for the nearest hamlet (operators)."),
         ("cmd.trip.arg", "caravane pour trois porteurs.", "caravane for three carriers."),
-        ("cmd.typeTaken", "{village} a déjà un lieu-dit de ce genre (un de chaque genre par village).",
-         "{village} already has a hamlet of this kind (one of each kind per village)."),
         ("cmd.blocked", "Pas de lieu-dit ici : {why}.", "No hamlet here: {why}."),
         ("cmd.none", "Aucun lieu-dit à moins de {range} blocs.", "No hamlet within {range} blocks."),
-        ("cmd.state", "Lieu-dit {name} ({people}, {village}) en {x}, {z} : {stage}, {visits} marchands en 7 jours.",
-         "Hamlet {name} ({people}, {village}) at {x}, {z}: {stage}, {visits} merchants in 7 days."),
+        ("cmd.state", "Lieu-dit {name} ({people}, niveau {level}) en {x}, {z} : {stage}, {visits} marchands en 7 jours.",
+         "Hamlet {name} ({people}, level {level}) at {x}, {z}: {stage}, {visits} merchants in 7 days."),
         ("cmd.stage.0", "pas encore posé", "not placed yet"),
         ("cmd.stage.1", "posé", "placed"),
         ("cmd.stage.2", "aucune place trouvée", "no site found"),

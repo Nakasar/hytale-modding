@@ -3,6 +3,7 @@
   "People": "Feran",
   "Type": "Comptoir",
   "NameKey": "nakasar_peuples.hamlet.type.Comptoir",
+  "Label": "Comptoir commercial feran",
   "Icon": "Furniture_Village_Crate",
   "Rule": "NONE",
   "Weight": 4,

@@ -3,6 +3,7 @@
   "People": "Feran",
   "Type": "Moulin",
   "NameKey": "nakasar_peuples.hamlet.type.Moulin",
+  "Label": "Moulin feran",
   "Icon": "Ingredient_Flour",
   "Rule": "FERTILE",
   "Weight": 3,

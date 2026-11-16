@@ -243,6 +243,11 @@ public final class Village {
         return id;
     }
 
+    /** Lieu-dit (world/Hamlets, {@link HamletRegistry}) plutôt que village. */
+    public boolean isHamlet() {
+        return HamletRegistry.isHamlet(id);
+    }
+
     public String name() {
         return name;
     }

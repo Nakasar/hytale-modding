@@ -168,6 +168,10 @@ public final class PeuplesPlugin extends JavaPlugin {
 
         var entities = getEntityStoreRegistry();
         Villages.setResourceType(entities.registerResource(VillageRegistry.class, VillageRegistry.ID, VillageRegistry.CODEC));
+        // Lieux-dits posés, sauvegardés à part des villages (réputation, dépôt, bâtiment de métier de chacun).
+        dev.nakasar.hytale.peuples.village.HamletRegistry.setResourceType(entities.registerResource(
+                dev.nakasar.hytale.peuples.village.HamletRegistry.class, dev.nakasar.hytale.peuples.village.HamletRegistry.ID,
+                dev.nakasar.hytale.peuples.village.HamletRegistry.CODEC));
         PeuplesPlayer.setComponentType(entities.registerComponent(PeuplesPlayer.class, PeuplesPlayer.ID, PeuplesPlayer.CODEC));
         entities.registerSystem(new VillageSeeder());
         // Étape 8 : zones 2 et 3 (oasis feran, Renoncés, soif, froid, ruche scarak, objets de passage).

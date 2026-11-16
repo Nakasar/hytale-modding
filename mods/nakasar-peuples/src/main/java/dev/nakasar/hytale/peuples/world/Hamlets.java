@@ -26,6 +26,7 @@ import dev.nakasar.hytale.peuples.village.AnnexState;
 import dev.nakasar.hytale.peuples.village.Blocks;
 import dev.nakasar.hytale.peuples.village.Chantiers;
 import dev.nakasar.hytale.peuples.village.Grading;
+import dev.nakasar.hytale.peuples.village.HamletRegistry;
 import dev.nakasar.hytale.peuples.village.People;
 import dev.nakasar.hytale.peuples.village.Terrain;
 import dev.nakasar.hytale.peuples.village.Village;
@@ -225,9 +226,34 @@ public final class Hamlets {
         return id == null ? null : get(world, id);
     }
 
-    /** Le village du lieu-dit (son troc, sa réputation). */
-    public static Village village(World world, Place h) {
+    /** Le village d'où le lieu-dit a été tiré (son peuple) ; il n'y est pas rattaché (Kevin, 16 novembre 2026). */
+    public static Village origin(World world, Place h) {
         return h == null ? null : Villages.registry(world).byId(h.village);
+    }
+
+    /**
+     * L'état propre du lieu-dit ({@link HamletRegistry}, id {@code H:<lieu-dit>}) : sa réputation, son dépôt et son
+     * bâtiment de métier. Null tant qu'il n'est pas posé.
+     */
+    public static Village state(World world, Place h) {
+        HamletRegistry r = h == null ? null : HamletRegistry.of(world);
+        return r == null ? null : r.byId(HamletRegistry.PREFIX + h.id);
+    }
+
+    /** Crée l'état propre d'un lieu-dit posé (s'il manque), avec l'état de son bâtiment de métier. */
+    static Village ensureState(World world, Place h) {
+        HamletRegistry r = HamletRegistry.of(world);
+        Hamlet type = h.type();
+        if (r == null || type == null || h.stage != BUILT) {
+            return null;
+        }
+        int[] m = h.market();
+        Village v = r.ensure(h.id, type.label(), type.people(), m[0], h.y, m[1]);
+        dev.nakasar.hytale.peuples.workshop.Workshop w = workshop(h);
+        if (w != null) {
+            v.workshop(w.getId());
+        }
+        return v;
     }
 
     /** Marchands venus ces 7 derniers jours. */
@@ -323,14 +349,7 @@ public final class Hamlets {
         if (!LandPath.drySite(world, x, z, 24, 12)) {
             return null;
         }
-        // Un lieu-dit de chaque genre par village : son bâtiment de métier (paliers) est un état du village.
-        Hamlet h = asset;
-        if (h != null && hasType(world, village, h)) {
-            return null;
-        }
-        if (h == null) {
-            h = pickFree(world, village, random);
-        }
+        Hamlet h = asset != null ? asset : Hamlet.pick(village.people(), random);
         if (h == null) {
             return null;
         }
@@ -350,29 +369,6 @@ public final class Hamlets {
         return p;
     }
 
-    /** Un genre du peuple que le village n'a pas encore, tiré selon les poids, ou null. */
-    private static Hamlet pickFree(World world, Village village, Random random) {
-        List<Hamlet> free = new ArrayList<>();
-        int total = 0;
-        for (Hamlet h : Hamlet.of(village.people())) {
-            if (!hasType(world, village, h)) {
-                free.add(h);
-                total += h.weight();
-            }
-        }
-        if (total <= 0) {
-            return null;
-        }
-        int r = random.nextInt(total);
-        for (Hamlet h : free) {
-            r -= h.weight();
-            if (r < 0) {
-                return h;
-            }
-        }
-        return free.get(free.size() - 1);
-    }
-
     /** Id du bâtiment de métier (paliers) du genre de lieu-dit, pour son peuple. */
     public static String workshopId(Hamlet type) {
         return type.people().id() + "_LD_" + type.type();
@@ -382,15 +378,6 @@ public final class Hamlets {
     public static dev.nakasar.hytale.peuples.workshop.Workshop workshop(Place h) {
         Hamlet type = h.type();
         return type == null ? null : dev.nakasar.hytale.peuples.workshop.Workshop.get(workshopId(type));
-    }
-
-    static boolean hasType(World world, Village village, Hamlet h) {
-        for (Place o : all(world)) {
-            if (o.stage != FAILED && o.village.equals(village.id()) && o.asset.equals(h.getId())) {
-                return true;
-            }
-        }
-        return false;
     }
 
     /** Ce qui empêche un lieu-dit en (x, z) (texte de journal), ou null. `self` : le lieu-dit qu'on déplace. */
@@ -449,8 +436,18 @@ public final class Hamlets {
             }
             if (!near) {
                 removeResidents(store, h.id);
-            } else if (live == null || live.isEmpty()) {
-                spawnResidents(world, store, h);
+            } else {
+                Village v = state(world, h);
+                if (v == null) {
+                    v = ensureState(world, h); // lieu-dit posé avant sa sauvegarde propre
+                }
+                if (v != null) {
+                    placeDeposit(world, h, v);
+                    dev.nakasar.hytale.peuples.workshop.Workshops.refresh(world, store, v);
+                }
+                if (live == null || live.isEmpty()) {
+                    spawnResidents(world, store, h);
+                }
             }
             for (PlayerRef p : WorldLife.playersNear(world, store, m[0], m[1], DISCOVER)) {
                 discover(world, store, p, h);
@@ -463,8 +460,7 @@ public final class Hamlets {
     /** Cherche la place et pose le lieu-dit ; sans effet tant que la zone n'est pas chargée. */
     static void place(World world, Store<EntityStore> store, Place h) {
         Hamlet type = h.type();
-        Village village = village(world, h);
-        if (type == null || village == null) {
+        if (type == null) {
             h.stage = FAILED;
             save(world, h);
             return;
@@ -499,7 +495,7 @@ public final class Hamlets {
                     why = b;
                     continue;
                 }
-                boolean rule = ruleOk(world, terrain, village.people(), type.rule(), rect, g);
+                boolean rule = ruleOk(world, terrain, type.people(), type.rule(), rect, g);
                 if (best == null || (rule && !ruled)) {
                     best = new int[] {cx, cz};
                     bestGround = g;
@@ -525,17 +521,20 @@ public final class Hamlets {
         h.x = best[0];
         h.z = best[1];
         h.rotation = Annexes.rotationFacing(h.rx - h.x, h.rz - h.z);
-        if (build(world, store, h, type, village.people(), bestGround)) {
+        if (build(world, store, h, type, type.people(), bestGround)) {
             h.stage = BUILT;
             h.y = bestGround;
             save(world, h);
+            // Son état propre naît ici (réputation, dépôt, bâtiment de métier au niveau I) : coffre et panneau devant la place.
+            Village v = ensureState(world, h);
             dev.nakasar.hytale.peuples.workshop.Workshop w = workshop(h);
-            if (w != null) {
-                // L'état du bâtiment de métier naît ici (niveau I) : panneau de commandes devant la place.
-                placeBoard(world, village, w, village.workshop(w.getId()));
+            if (v != null) {
+                placeDeposit(world, h, v);
+                if (w != null) {
+                    placeBoard(world, v, w, v.workshop(w.getId()));
+                }
             }
-            PeuplesPlugin.get().getLogger().atInfo().log("Peuples (lieux-dits) : %s posé en %d %d %d (%s)", h.asset, h.x, bestGround, h.z,
-                    village.name());
+            PeuplesPlugin.get().getLogger().atInfo().log("Peuples (lieux-dits) : %s posé en %d %d %d", h.asset, h.x, bestGround, h.z);
         }
     }
 
@@ -722,7 +721,7 @@ public final class Hamlets {
         Place h = null;
         for (Place o : all(world)) {
             Hamlet t = o.type();
-            if (o.stage == BUILT && o.village.equals(village.id()) && t != null && workshopId(t).equals(w.getId())) {
+            if (o.stage == BUILT && (HamletRegistry.PREFIX + o.id).equals(village.id()) && t != null && workshopId(t).equals(w.getId())) {
                 h = o;
             }
         }
@@ -746,6 +745,49 @@ public final class Hamlets {
                 dev.nakasar.hytale.peuples.workshop.Workshops.hangBoard(chunks, village, at[0], y, at[1], yaw);
                 PeuplesPlugin.get().getLogger().atInfo().log("Peuples (lieux-dits) : panneau de %s posé en %d %d %d (%s)", w.getId(),
                         at[0], y, at[1], village.name());
+                return;
+            }
+        }
+    }
+
+    // ---- Dépôt ----
+
+    /** Place locale du dépôt : à droite de la place, en face du panneau. */
+    private static final int[] DEPOSIT = {2, 0};
+
+    /**
+     * Pose le coffre de dépôt du peuple devant la place (commandes de récolte, matériaux des améliorations), une fois :
+     * ensuite il reste au joueur (ou se reprend s'il manque et que sa case est libre). Sans effet tant que la zone n'est
+     * pas chargée.
+     */
+    static void placeDeposit(World world, Place h, Village v) {
+        ChunkStore chunks = world.getChunkStore();
+        int[] d = v.deposit();
+        if (HamletRegistry.hasDeposit(v)) {
+            int id = Blocks.id(chunks, d[0], d[1], d[2]);
+            if (id == Blocks.UNLOADED || v.people().isDepositBlock(Blocks.name(chunks, d[0], d[1], d[2]))) {
+                return;
+            }
+            String here = Blocks.name(chunks, d[0], d[1], d[2]);
+            if (here == null || Terrain.isVegetation(here)) {
+                Blocks.set(chunks, d[0], d[1], d[2], v.people().depositBlock(), (h.rotation + 2) & 3);
+            }
+            return;
+        }
+        Terrain terrain = new Terrain(world);
+        int yaw = (h.rotation + 2) & 3;
+        for (int dd : new int[] {0, 1, -1}) {
+            int[] at = h.world(DEPOSIT[0] + dd, DEPOSIT[1]);
+            int y = dev.nakasar.hytale.peuples.workshop.Workshops.standY(chunks, terrain, at[0], at[1]);
+            if (y == dev.nakasar.hytale.peuples.workshop.Workshops.UNLOADED_SPOT) {
+                return;
+            }
+            if (y == Terrain.NONE) {
+                continue;
+            }
+            if (Blocks.set(chunks, at[0], y, at[1], v.people().depositBlock(), yaw)) {
+                HamletRegistry.setDeposit(v, at[0], y, at[1]);
+                PeuplesPlugin.get().getLogger().atInfo().log("Peuples (lieux-dits) : dépôt de %s posé en %d %d %d", h.id, at[0], y, at[1]);
                 return;
             }
         }
@@ -788,7 +830,7 @@ public final class Hamlets {
             return 0;
         }
         int base = type.residents().length;
-        Village v = village(world, h);
+        Village v = state(world, h);
         dev.nakasar.hytale.peuples.workshop.Workshop w = workshop(h);
         if (v == null || w == null || !dev.nakasar.hytale.peuples.workshop.Workshops.known(v, w.getId())) {
             return base;
@@ -816,15 +858,15 @@ public final class Hamlets {
         }
     }
 
-    /** Troc du lieu-dit : rang Toléré dans son village ; élargi quand il est animé. */
+    /** Troc du lieu-dit : rang Toléré auprès du lieu-dit (sa réputation propre, ou celle du peuple) ; élargi quand il est animé. */
     static boolean openShop(World world, Store<EntityStore> store, Ref<EntityStore> ref, PlayerRef player, Place h) {
-        Village v = village(world, h);
+        Village v = state(world, h);
         Hamlet type = h.type();
         if (v == null || type == null) {
             return false;
         }
         if (!Reputations.rank(store, ref, v).atLeast(Rank.TOLERE)) {
-            DialogueSpeech.say(player, Message.translation(KEYS + "shopRank").param("village", v.name()));
+            DialogueSpeech.say(player, Message.translation(KEYS + "shopRank").param("people", Message.translation(type.people().nameKey())));
             return false;
         }
         boolean busy = lively(world, h, GameClock.day(store));
@@ -850,12 +892,11 @@ public final class Hamlets {
             return;
         }
         data.setFlag(FLAG + h.id, true);
-        Village v = village(world, h);
         Hamlet type = h.type();
         Message people = Message.translation(type == null ? "?" : type.people().nameKey());
         Message title = Message.translation(KEYS + "discover").param("name", h.name()).param("people", people);
         player.sendMessage(title);
-        player.sendMessage(Message.translation(KEYS + "discoverLine").param("people", people).param("village", v == null ? "?" : v.name()));
+        player.sendMessage(Message.translation(KEYS + "discoverLine").param("people", people));
         NotificationUtil.sendNotification(player.getPacketHandler(), title, NotificationStyle.Default);
     }
 
@@ -864,10 +905,6 @@ public final class Hamlets {
         int[] m = h.market();
         Message msg = Message.translation(KEYS + "lively").param("name", h.name());
         WorldLife.announce(world, store, m[0], m[1], 96, msg, NotificationStyle.Success);
-        Village v = village(world, h);
-        if (v != null) {
-            Chantiers.announce(world, v, msg, null, NotificationStyle.Success);
-        }
     }
 
     /** Rumeur : un lieu-dit pas encore vu par le joueur (le plus proche). */

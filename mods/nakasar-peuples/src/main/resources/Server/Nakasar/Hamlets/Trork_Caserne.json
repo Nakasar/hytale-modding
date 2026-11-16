@@ -3,6 +3,7 @@
   "People": "Trork",
   "Type": "Caserne",
   "NameKey": "nakasar_peuples.hamlet.type.Caserne",
+  "Label": "Caserne trork",
   "Icon": "Weapon_Arrow_Crude",
   "Rule": "NONE",
   "Weight": 2,

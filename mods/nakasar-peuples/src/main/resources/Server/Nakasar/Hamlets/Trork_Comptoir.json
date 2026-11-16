@@ -3,6 +3,7 @@
   "People": "Trork",
   "Type": "Comptoir",
   "NameKey": "nakasar_peuples.hamlet.type.Comptoir",
+  "Label": "Comptoir commercial trork",
   "Icon": "Furniture_Village_Crate",
   "Rule": "NONE",
   "Weight": 4,
