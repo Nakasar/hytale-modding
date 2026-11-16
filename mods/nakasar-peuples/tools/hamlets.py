@@ -215,6 +215,12 @@ BUSY = {
     "Chasse": [("Ingredient_Leather_Medium", 2, 2), ("Food_Wildmeat_Cooked", 4, 1)],
     "Bosquet": [("Plant_Seeds_Health1", 2, 2), ("Plant_Crop_Health2", 1, 4)],
 }
+# Paliers (Kevin, 16 novembre 2026) : chaque lieu-dit est un bâtiment de métier <Peuple>_LD_<Genre> du village de
+# rattachement, avec les niveaux I à III, commandes, spécialités et boutiques de son avant-poste équivalent
+# (tools/generate_workshops.py les copie). Le moulin et le comptoir suivent la ferme, la forge la mine.
+WORKSHOP_EQUIV = {"Mine": "Mine", "Ferme": "Ferme", "Moulin": "Ferme", "Caserne": "Tour", "Forge": "Mine",
+                  "Comptoir": "Ferme", "Scierie": "Scierie", "Chasse": "Chasse", "Bosquet": "Bosquet"}
+
 # Variantes par peuple : les Kweebecs n'utilisent pas de métal (caserne animée : arcs et flèches simples, cuir).
 BUSY_BY_PEOPLE = {
     ("Kweebec", "Caserne"): [("Weapon_Arrow_Crude", 32, 2), ("Armor_Leather_Light_Chest", 1, 4)],

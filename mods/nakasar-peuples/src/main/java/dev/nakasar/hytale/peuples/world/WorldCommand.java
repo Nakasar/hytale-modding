@@ -415,6 +415,10 @@ public final class WorldCommand extends AbstractCommandCollection {
                     return;
                 }
             }
+            if (asset != null && Hamlets.hasType(world, v, asset)) {
+                player.sendMessage(Message.translation(Hamlets.KEYS + "cmd.typeTaken").param("village", v.name()));
+                return;
+            }
             int x = (int) Math.floor(at.x());
             int z = (int) Math.floor(at.z());
             Hamlets.Place h = Hamlets.create(world, "C" + Long.toString(System.currentTimeMillis(), 36), v, x, z, v.x(), v.z(), asset, new Random());

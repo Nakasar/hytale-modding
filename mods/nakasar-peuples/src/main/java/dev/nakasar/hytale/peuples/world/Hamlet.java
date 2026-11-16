@@ -183,6 +183,10 @@ public final class Hamlet implements JsonAssetWithMap<String, DefaultAssetMap<St
         return icon;
     }
 
+    public int weight() {
+        return weight;
+    }
+
     public String rule() {
         return rule;
     }

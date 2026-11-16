@@ -298,6 +298,8 @@ def texts():
         ("cmd.trip.desc", "Un marchand du village le plus proche part vers le lieu-dit le plus proche (opérateurs).",
          "A merchant from the nearest village leaves for the nearest hamlet (operators)."),
         ("cmd.trip.arg", "caravane pour trois porteurs.", "caravane for three carriers."),
+        ("cmd.typeTaken", "{village} a déjà un lieu-dit de ce genre (un de chaque genre par village).",
+         "{village} already has a hamlet of this kind (one of each kind per village)."),
         ("cmd.blocked", "Pas de lieu-dit ici : {why}.", "No hamlet here: {why}."),
         ("cmd.none", "Aucun lieu-dit à moins de {range} blocs.", "No hamlet within {range} blocks."),
         ("cmd.state", "Lieu-dit {name} ({people}, {village}) en {x}, {z} : {stage}, {visits} marchands en 7 jours.",

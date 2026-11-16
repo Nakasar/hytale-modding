@@ -1625,6 +1625,28 @@ dialogue `Monde_LieuDit_<Genre>` (troc, « qui vient commercer ici ? », rumeurs
 en faveurs du peuple, au rang Toléré dans le village de rattachement ; `..._Anime` (plus de marchandises) quand le
 lieu-dit est animé. Les Kweebecs ne vendent rien en métal (caserne animée : flèches simples, cuir).
 
+### Paliers (bâtiment de métier du lieu-dit)
+
+Kevin (2026-11-16) : les bâtiments des lieux-dits ont les mêmes paliers que leur équivalent avant-poste. Chaque genre
+a un bâtiment de métier `<Peuple>_LD_<Genre>` (champ `Hamlet` du `Workshop`, généré par `tools/generate_workshops.py`
+depuis `hamlets.WORKSHOP_EQUIV`) qui copie l'avant-poste équivalent : niveaux I à III (jauge 200 / 400, palier du village
+exigé, commande de maître, chantier de 12 h aux matériaux du dépôt du village, décor), commandes du jour
+(`Requests/<Peuple>/LD_<Genre>`), deux spécialités au niveau II, boutiques par niveau et Part de l'Hôte.
+
+| Lieu-dit | Paliers de |
+| --- | --- |
+| Mine, Forge | Mine |
+| Ferme, Moulin, Comptoir | Ferme |
+| Caserne | Tour de guet (sans effet en raid : elle ne garde pas le village) |
+| Scierie, Pavillon de chasse, Bosquet | Scierie, Pavillon de chasse, Bosquet |
+
+- L'état (`WorkshopState`) est celui du village de rattachement, créé quand le lieu-dit est posé : **un lieu-dit de
+  chaque genre par village** (`Hamlets.pickFree` ; `/monde lieudit --genre` refuse un genre déjà pris).
+- Panneau de métier du peuple posé à gauche de la place (local `-2, 0`), tourné vers le marché (`Hamlets.placeBoard`,
+  reposé par `Workshops.refresh` s'il manque) ; il ouvre la page du bâtiment de métier comme au village.
+- Le tenancier tient la boutique (toujours « présent ») ; un habitant de plus par niveau au-delà du I (3 au plus).
+- Pas de coffre ni de convoi : la production des avant-postes vers le dépôt n'est pas reprise.
+
 ### Où ils apparaissent
 
 `Hamlets.seed` (chaque matin, une fois pour toutes par liaison et par village, comme les vestiges ; marques
@@ -1679,7 +1701,10 @@ le lieu-dit le plus proche).
 3. `/monde commerce --genre caravane`, suivre la caravane jusqu'à la place, attendre 3 h de jeu, la voir repartir.
 4. Quatre passages en 7 jours (quatre `/monde commerce` d'un marchand, ou une caravane et un marchand) : annonce
    « animé », troc élargi.
-5. Nouveau monde avec plusieurs villages éloignés : lieux-dits le long des routes et autour des villages (`/monde etat`).
+5. Panneau à gauche de la place : page du bâtiment de métier (niveau I, commandes). `/village niveauatelier
+   <Peuple>_LD_Forge 2` près du village de rattachement, choisir une spécialité, voir la boutique de niveau II et un
+   troisième habitant.
+6. Nouveau monde avec plusieurs villages éloignés : lieux-dits le long des routes et autour des villages (`/monde etat`).
 
 ### À vérifier en jeu (lieux-dits)
 

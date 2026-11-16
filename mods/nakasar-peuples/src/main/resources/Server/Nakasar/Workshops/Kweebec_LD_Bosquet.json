@@ -1,0 +1,84 @@
+{
+  "$Comment": "Bâtiment de métier du lieu-dit « Bosquet d'herboriste » (world/Hamlets), aux paliers de l'avant-poste Kweebec_AP_Bosquet : généré par tools/generate_workshops.py (ne pas modifier à la main).",
+  "People": "Kweebec",
+  "Icon": "Plant_Crop_Health1",
+  "NameKey": "nakasar_peuples.workshop.Kweebec_LD_Bosquet.name",
+  "Board": [
+    0,
+    0,
+    0
+  ],
+  "Upgrades": [
+    {
+      "Level": 2,
+      "Hours": 12,
+      "Decor": [
+        "1 0 0 0 Furniture_Kweebec_Lantern"
+      ],
+      "Materials": [
+        {
+          "ItemId": "Wood_Oak_Trunk",
+          "Quantity": 16
+        },
+        {
+          "ItemId": "Rock_Stone_Cobble",
+          "Quantity": 12
+        },
+        {
+          "ItemId": "Ingredient_Fibre",
+          "Quantity": 6
+        }
+      ]
+    },
+    {
+      "Level": 3,
+      "Hours": 12,
+      "Decor": [
+        "-1 0 0 0 Furniture_Kweebec_Lantern",
+        "0 1 0 0 Furniture_Kweebec_Candle"
+      ],
+      "Materials": [
+        {
+          "ItemId": "Wood_Oak_Trunk",
+          "Quantity": 24
+        },
+        {
+          "ItemId": "Rock_Stone_Cobble",
+          "Quantity": 18
+        },
+        {
+          "ItemId": "Ingredient_Fibre",
+          "Quantity": 9
+        }
+      ]
+    }
+  ],
+  "Hamlet": "Bosquet",
+  "Specialties": [
+    {
+      "Id": "Ecarlate",
+      "NameKey": "nakasar_peuples.workshop.specialty.Kweebec_LD_Bosquet.Ecarlate",
+      "LineKey": "nakasar_peuples.workshop.specialtyLine.Kweebec_LD_Bosquet.Ecarlate",
+      "Icon": "Plant_Crop_Health2",
+      "Shops": [
+        "Nakasar_Peuples_W_Kweebec_LD_Bosquet_Ecarlate_2",
+        "Nakasar_Peuples_W_Kweebec_LD_Bosquet_Ecarlate_3"
+      ],
+      "ShareItem": "Plant_Crop_Health2",
+      "ShareQuantity": 2
+    },
+    {
+      "Id": "Azur",
+      "NameKey": "nakasar_peuples.workshop.specialty.Kweebec_LD_Bosquet.Azur",
+      "LineKey": "nakasar_peuples.workshop.specialtyLine.Kweebec_LD_Bosquet.Azur",
+      "Icon": "Plant_Crop_Mana2",
+      "Shops": [
+        "Nakasar_Peuples_W_Kweebec_LD_Bosquet_Azur_2",
+        "Nakasar_Peuples_W_Kweebec_LD_Bosquet_Azur_3"
+      ],
+      "ShareItem": "Plant_Crop_Mana2",
+      "ShareQuantity": 2
+    }
+  ],
+  "Shop": "Nakasar_Peuples_W_Kweebec_LD_Bosquet_Base_1"
+}

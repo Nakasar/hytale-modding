@@ -39,6 +39,19 @@ Un lieu-dit n'est jamais collé à un village, à une auberge, à un avant-poste
 
 Parlez au tenancier. Son troc se paie avec les faveurs du peuple, et il faut être au moins **Toléré** dans le village dont dépend le lieu-dit. Il peut aussi vous dire qui vient commercer chez lui.
 
+## Faire grandir un lieu-dit
+
+Chaque lieu-dit a un panneau à côté de sa place. Il marche comme celui d'un avant-poste : commandes du jour, savoir-faire, niveaux I à III avec une commande de maître et 12 heures de travaux (les matériaux sont pris au dépôt du village), une spécialité au niveau II, une boutique qui grandit avec le niveau et votre rang, et la Part de l'Hôte au niveau III. Un habitant de plus arrive à chaque niveau.
+
+| Lieu-dit | Il grandit comme |
+| --- | --- |
+| Mine, forge | une mine |
+| Ferme, moulin, comptoir | une ferme |
+| Caserne | une tour de guet (mais elle ne défend pas le village en cas de raid) |
+| Scierie, pavillon de chasse, bosquet | l'avant-poste du même nom |
+
+Un village n'a qu'un lieu-dit de chaque genre.
+
 ## Les marchands des villages
 
 Chaque matin, un marchand, ou une caravane de trois porteurs, peut partir d'un village voisin (jusqu'à 900 blocs) vers un lieu-dit. Il marche de jour, reste 3 heures sur la place du lieu-dit, puis rentre chez lui. Vous pouvez lui parler en route ou sur la place : il a le troc des voyageurs de son peuple.

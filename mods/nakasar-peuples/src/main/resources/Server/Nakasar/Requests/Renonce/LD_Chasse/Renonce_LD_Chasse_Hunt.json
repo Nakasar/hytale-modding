@@ -1,0 +1,25 @@
+{
+  "$Comment": "Commande du bâtiment de métier Renonce_LD_Chasse, générée par tools/generate_workshops.py (ne pas modifier à la main) : voir RequestTemplate.",
+  "People": "Renonce",
+  "Workshop": "Renonce_LD_Chasse",
+  "Type": "Hunt",
+  "MinLevel": 1,
+  "MaxLevel": 3,
+  "Weight": 1,
+  "TitleKey": "nakasar_peuples.request.Renonce_LD_Chasse_Hunt.title",
+  "TaskKey": "nakasar_peuples.request.Renonce_LD_Chasse_Hunt.task",
+  "Spawns": [
+    "Wolf_White",
+    "Wolf_White",
+    "Wolf_White"
+  ],
+  "Roles": [
+    "Wolf_White"
+  ],
+  "MinDistance": 60,
+  "MaxDistance": 110,
+  "Knowledge": 45,
+  "Essor": 5,
+  "Favors": 2,
+  "Reputation": 8
+}

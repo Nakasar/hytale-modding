@@ -1,0 +1,83 @@
+{
+  "$Comment": "Bâtiment de métier du lieu-dit « Scierie » (world/Hamlets), aux paliers de l'avant-poste Feran_AP_Scierie : généré par tools/generate_workshops.py (ne pas modifier à la main).",
+  "People": "Feran",
+  "Icon": "Tool_Hatchet_Crude",
+  "NameKey": "nakasar_peuples.workshop.Feran_LD_Scierie.name",
+  "Board": [
+    0,
+    0,
+    0
+  ],
+  "Upgrades": [
+    {
+      "Level": 2,
+      "Hours": 12,
+      "Decor": [
+        "1 0 0 0 Furniture_Feran_Torch"
+      ],
+      "Materials": [
+        {
+          "ItemId": "Wood_Dry_Trunk",
+          "Quantity": 12
+        },
+        {
+          "ItemId": "Ingredient_Fibre",
+          "Quantity": 6
+        },
+        {
+          "ItemId": "Ingredient_Salt",
+          "Quantity": 3
+        }
+      ]
+    },
+    {
+      "Level": 3,
+      "Hours": 12,
+      "Decor": [
+        "-1 0 0 0 Furniture_Feran_Torch_Tall"
+      ],
+      "Materials": [
+        {
+          "ItemId": "Wood_Dry_Trunk",
+          "Quantity": 18
+        },
+        {
+          "ItemId": "Ingredient_Fibre",
+          "Quantity": 9
+        },
+        {
+          "ItemId": "Ingredient_Salt",
+          "Quantity": 4
+        }
+      ]
+    }
+  ],
+  "Hamlet": "Scierie",
+  "Specialties": [
+    {
+      "Id": "Charpente",
+      "NameKey": "nakasar_peuples.workshop.specialty.Feran_LD_Scierie.Charpente",
+      "LineKey": "nakasar_peuples.workshop.specialtyLine.Feran_LD_Scierie.Charpente",
+      "Icon": "Wood_Softwood_Planks",
+      "Shops": [
+        "Nakasar_Peuples_W_Feran_LD_Scierie_Charpente_2",
+        "Nakasar_Peuples_W_Feran_LD_Scierie_Charpente_3"
+      ],
+      "ShareItem": "Wood_Softwood_Planks",
+      "ShareQuantity": 16
+    },
+    {
+      "Id": "Seve",
+      "NameKey": "nakasar_peuples.workshop.specialty.Feran_LD_Scierie.Seve",
+      "LineKey": "nakasar_peuples.workshop.specialtyLine.Feran_LD_Scierie.Seve",
+      "Icon": "Ingredient_Tree_Sap",
+      "Shops": [
+        "Nakasar_Peuples_W_Feran_LD_Scierie_Seve_2",
+        "Nakasar_Peuples_W_Feran_LD_Scierie_Seve_3"
+      ],
+      "ShareItem": "Ingredient_Tree_Sap",
+      "ShareQuantity": 4
+    }
+  ],
+  "Shop": "Nakasar_Peuples_W_Feran_LD_Scierie_Base_1"
+}

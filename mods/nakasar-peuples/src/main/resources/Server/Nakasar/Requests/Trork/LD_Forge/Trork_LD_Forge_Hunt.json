@@ -1,0 +1,24 @@
+{
+  "$Comment": "Commande du bâtiment de métier Trork_LD_Forge, générée par tools/generate_workshops.py (ne pas modifier à la main) : voir RequestTemplate.",
+  "People": "Trork",
+  "Workshop": "Trork_LD_Forge",
+  "Type": "Hunt",
+  "MinLevel": 1,
+  "MaxLevel": 3,
+  "Weight": 1,
+  "TitleKey": "nakasar_peuples.request.Trork_LD_Forge_Hunt.title",
+  "TaskKey": "nakasar_peuples.request.Trork_LD_Forge_Hunt.task",
+  "Spawns": [
+    "Scarak_Fighter",
+    "Scarak_Fighter"
+  ],
+  "Roles": [
+    "Scarak_Fighter"
+  ],
+  "MinDistance": 60,
+  "MaxDistance": 110,
+  "Knowledge": 45,
+  "Essor": 5,
+  "Favors": 2,
+  "Reputation": 8
+}

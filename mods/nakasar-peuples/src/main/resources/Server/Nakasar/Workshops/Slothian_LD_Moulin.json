@@ -1,0 +1,83 @@
+{
+  "$Comment": "Bâtiment de métier du lieu-dit « Moulin » (world/Hamlets), aux paliers de l'avant-poste Slothian_AP_Ferme : généré par tools/generate_workshops.py (ne pas modifier à la main).",
+  "People": "Slothian",
+  "Icon": "Ingredient_Flour",
+  "NameKey": "nakasar_peuples.workshop.Slothian_LD_Moulin.name",
+  "Board": [
+    0,
+    0,
+    0
+  ],
+  "Upgrades": [
+    {
+      "Level": 2,
+      "Hours": 12,
+      "Decor": [
+        "1 0 0 0 Furniture_Jungle_Torch"
+      ],
+      "Materials": [
+        {
+          "ItemId": "Wood_Jungle_Trunk",
+          "Quantity": 12
+        },
+        {
+          "ItemId": "Rock_Volcanic",
+          "Quantity": 12
+        },
+        {
+          "ItemId": "Furniture_Jungle_Candle",
+          "Quantity": 1
+        }
+      ]
+    },
+    {
+      "Level": 3,
+      "Hours": 12,
+      "Decor": [
+        "-1 0 0 0 Furniture_Jungle_Brazier"
+      ],
+      "Materials": [
+        {
+          "ItemId": "Wood_Jungle_Trunk",
+          "Quantity": 18
+        },
+        {
+          "ItemId": "Rock_Volcanic",
+          "Quantity": 18
+        },
+        {
+          "ItemId": "Furniture_Jungle_Candle",
+          "Quantity": 2
+        }
+      ]
+    }
+  ],
+  "Hamlet": "Moulin",
+  "Specialties": [
+    {
+      "Id": "Cereales",
+      "NameKey": "nakasar_peuples.workshop.specialty.Slothian_LD_Moulin.Cereales",
+      "LineKey": "nakasar_peuples.workshop.specialtyLine.Slothian_LD_Moulin.Cereales",
+      "Icon": "Plant_Crop_Corn_Item",
+      "Shops": [
+        "Nakasar_Peuples_W_Slothian_LD_Moulin_Cereales_2",
+        "Nakasar_Peuples_W_Slothian_LD_Moulin_Cereales_3"
+      ],
+      "ShareItem": "Plant_Crop_Corn_Item",
+      "ShareQuantity": 8
+    },
+    {
+      "Id": "Primeurs",
+      "NameKey": "nakasar_peuples.workshop.specialty.Slothian_LD_Moulin.Primeurs",
+      "LineKey": "nakasar_peuples.workshop.specialtyLine.Slothian_LD_Moulin.Primeurs",
+      "Icon": "Plant_Crop_Tomato_Item",
+      "Shops": [
+        "Nakasar_Peuples_W_Slothian_LD_Moulin_Primeurs_2",
+        "Nakasar_Peuples_W_Slothian_LD_Moulin_Primeurs_3"
+      ],
+      "ShareItem": "Plant_Crop_Tomato_Item",
+      "ShareQuantity": 6
+    }
+  ],
+  "Shop": "Nakasar_Peuples_W_Slothian_LD_Moulin_Base_1"
+}
