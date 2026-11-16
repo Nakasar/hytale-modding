@@ -30,6 +30,7 @@ import dev.nakasar.hytale.peuples.village.People;
 import dev.nakasar.hytale.peuples.village.Villagers;
 import dev.nakasar.hytale.peuples.village.Tiers;
 import dev.nakasar.hytale.peuples.raid.Raids;
+import dev.nakasar.hytale.peuples.review.ReviewMap;
 import dev.nakasar.hytale.peuples.village.Village;
 import dev.nakasar.hytale.peuples.village.VillageBoard;
 import dev.nakasar.hytale.peuples.village.VillageBuilder;
@@ -128,6 +129,7 @@ public final class VillageCommand extends AbstractCommandCollection {
         addSubCommand(new SettlerCommand());
         addSubCommand(new ZoneOneCommands.KlopsCommand());
         addSubCommand(new ZoneOneCommands.WarPaintCommand());
+        addSubCommand(new ReviewCommand());
         ZoneCommands.all().forEach(this::addSubCommand);
     }
 
@@ -1185,6 +1187,60 @@ public final class VillageCommand extends AbstractCommandCollection {
                 data.setFlag(chainFlag(village, i), i <= n);
             }
             player.sendMessage(Message.translation("nakasar_peuples.chain.set").param("done", n));
+        }
+    }
+
+    /**
+     * {@code revue [peuple] [--categorie <c>] [--rebatir]} (opérateurs) : envoie le joueur sur la carte plate de revue
+     * des bâtiments (paliers 1 à 4, {@link ReviewMap}), créée au premier appel, et bâtit les rectangles du peuple pas
+     * encore faits ; {@code --rebatir} les recolle tous (écrase les retouches à la main de ce peuple).
+     */
+    private static final class ReviewCommand extends AbstractPlayerCommand {
+        private final OptionalArg<String> people = withOptionalArg("peuple", KEYS + "review.people", ArgTypes.STRING);
+        private final OptionalArg<String> category = withOptionalArg("categorie", KEYS + "review.category", ArgTypes.STRING);
+        private final com.hypixel.hytale.server.core.command.system.arguments.system.FlagArg rebuild =
+                withFlagArg("rebatir", KEYS + "review.rebuild");
+
+        ReviewCommand() {
+            super("revue", KEYS + "review.desc");
+            requirePermission(ADMIN);
+        }
+
+        @Override
+        protected void execute(CommandContext context, Store<EntityStore> store, Ref<EntityStore> ref, PlayerRef player, World world) {
+            ReviewMap.Section s = ReviewMap.section(people.get(context));
+            if (s == null) {
+                player.sendMessage(Message.translation(Villages.MESSAGES + "unknownPeople").param("people", people.get(context)));
+                return;
+            }
+            ReviewMap.Category cat = null;
+            if (category.get(context) != null) {
+                String want = category.get(context).toLowerCase(java.util.Locale.ROOT).replace("-", "").replace(" ", "");
+                for (ReviewMap.Category c : s.categories) {
+                    String id = c.category.toLowerCase(java.util.Locale.ROOT);
+                    if (id.startsWith(want) || want.startsWith(id)) {
+                        cat = c;
+                        break;
+                    }
+                }
+            }
+            boolean again = Boolean.TRUE.equals(rebuild.get(context));
+            String peopleId = s.people;
+            ReviewMap.Category target = cat;
+            ReviewMap.world().whenComplete((review, error) -> {
+                if (review == null) {
+                    player.sendMessage(Message.translation(ReviewMap.KEYS + "noWorld"));
+                    return;
+                }
+                world.execute(() -> {
+                    if (ref.isValid()) {
+                        ReviewMap.teleport(ref, store, review, s, target);
+                    }
+                });
+                if (!ReviewMap.build(review, peopleId, again, player)) {
+                    player.sendMessage(Message.translation(ReviewMap.KEYS + "busy"));
+                }
+            });
         }
     }
 }
