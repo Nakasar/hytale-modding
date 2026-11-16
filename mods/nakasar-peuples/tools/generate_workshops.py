@@ -1023,12 +1023,56 @@ def write_annexes(items, roles, fr, en, errors):
         print(f"{wid} : {len(orders)} commandes + 2 de maître, emprise {local}, hauteur {height}")
 
 
+HAMLET_OWN = []
+
+
+def hamlet_tables(errors):
+    """Paliers propres des lieux-dits sans avant-poste équivalent (hamlets.OWN_TIERS), comme annex_tables."""
+    import hamlets
+    for people in PEOPLES:
+        sub = outposts.MAT[people]
+        for kind in hamlets.BUILDINGS[people]:
+            data = hamlets.OWN_TIERS.get(kind)
+            if data is None:
+                continue
+            wid = f"{people}_LD_{kind}"
+            orders = [(suffix, rtype, what.format(**sub), q, tf, te) for suffix, rtype, what, q, tf, te in data["orders"]]
+            orders.append(("Hunt", "Hunt", list(outposts.HUNTS[people][data["hunt_from"]]), 0) + data["hunt_titles"])
+            fmt = lambda trades: [(item.format(**sub), q, price) for item, q, price in trades]
+            SHOPS[wid] = {"Base": fmt(data["base"])}
+            choices = []
+            for sid, sfr, sen, icon, lfr, len_, two, three, _raid in data["specs"]:
+                SHOPS[wid][sid] = (fmt(two), fmt(three))
+                choices.append((sid, sfr, sen, icon, lfr, len_, []))
+            SPECIALTIES[wid] = ([], choices)
+            HAMLET_OWN.append((wid, people, kind, orders))
+
+
 def write_hamlet_workshops(items, roles, fr, en, errors):
     """Bâtiments de métier des lieux-dits (<Peuple>_LD_<Genre>) : copies des paliers de l'avant-poste équivalent."""
     import hamlets
     by_wid = {wid: (people, t, orders) for wid, people, t, orders in ANNEXES}
+    own = {wid: orders for wid, _p, _k, orders in HAMLET_OWN}
     for people in PEOPLES:
         for kind in hamlets.BUILDINGS[people]:
+            wid = f"{people}_LD_{kind}"
+            if wid in own:
+                name_fr, name_en, icon = hamlets.NAMES[kind][:3]
+                upgrades = [{"Level": level, "Hours": UPGRADE_HOURS, "Decor": DECOR[people][level],
+                             "Materials": [{"ItemId": i, "Quantity": max(1, q * num // den)} for i, q in outposts.FOUNDATION[people]]}
+                            for level, (num, den) in ANNEX_UPGRADE.items()]
+                doc = {
+                    "$Comment": f"Bâtiment de métier du lieu-dit « {name_fr} » (world/Hamlets), paliers propres de "
+                                "tools/hamlets.py OWN_TIERS : généré par tools/generate_workshops.py (ne pas modifier à la main).",
+                    "People": people, "Icon": icon, "NameKey": f"nakasar_peuples.workshop.{wid}.name", "Board": [0, 0, 0],
+                    "Upgrades": upgrades, "Hamlet": kind,
+                }
+                specialties(doc, wid, people, name_fr, name_en, items, roles, fr, en, errors)
+                (OUT / f"{wid}.json").write_text(json.dumps(doc, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
+                fr[f"workshop.{wid}.name"], en[f"workshop.{wid}.name"] = name_fr, name_en
+                write_orders(wid, people, REQUESTS / people / f"LD_{kind}", own[wid], items, roles, fr, en, errors)
+                print(f"{wid} : paliers propres, {len(own[wid])} commandes + 2 de maître")
+                continue
             ap = f"{people}_AP_{hamlets.WORKSHOP_EQUIV[kind]}"
             if ap not in by_wid:
                 errors.append(f"lieu-dit {people} {kind} : avant-poste équivalent absent {ap}")
@@ -1091,7 +1135,7 @@ def selling_rules(errors):
             asked[doc["People"]].add(doc["ItemId"])
             if doc["ItemId"] in village_sold[doc["People"]]:
                 errors.append(f"demande {path.stem} : {doc['ItemId']} est vendu par la boutique du village")
-    for wid, orders in [(w[0], w[7]) for w in WORKSHOPS] + [(a[0], a[3]) for a in ANNEXES]:
+    for wid, orders in [(w[0], w[7]) for w in WORKSHOPS] + [(a[0], a[3]) for a in ANNEXES] + [(h[0], h[3]) for h in HAMLET_OWN]:
         people = wid.split("_")[0]
         shops = SHOPS.get(wid, {})
         own = {t[0] for t in shops.get("Base", [])}
@@ -1265,6 +1309,7 @@ def main():
     layouts = {}
     twins = plot_workshops(fr, en, errors)
     annex_tables(errors)
+    hamlet_tables(errors)
     selling_rules(errors)
     for wid, layout_id, building_id, job_id, icon, name_fr, name_en, orders in WORKSHOPS:
         layout = layouts.setdefault(layout_id, json.loads((LAYOUTS / f"{layout_id}.json").read_text(encoding="utf-8")))

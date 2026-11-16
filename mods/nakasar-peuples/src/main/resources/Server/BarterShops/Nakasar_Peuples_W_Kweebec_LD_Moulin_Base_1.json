@@ -10,7 +10,23 @@
       "Type": "Fixed",
       "Trade": {
         "Output": {
-          "ItemId": "Plant_Seeds_Wheat",
+          "ItemId": "Ingredient_Flour",
+          "Quantity": 6
+        },
+        "Input": [
+          {
+            "ItemId": "Nakasar_Peuples_Favor_Kweebec",
+            "Quantity": 1
+          }
+        ],
+        "Stock": 8
+      }
+    },
+    {
+      "Type": "Fixed",
+      "Trade": {
+        "Output": {
+          "ItemId": "Ingredient_Dough",
           "Quantity": 4
         },
         "Input": [
@@ -26,24 +42,8 @@
       "Type": "Fixed",
       "Trade": {
         "Output": {
-          "ItemId": "Plant_Crop_Wheat_Item",
-          "Quantity": 8
-        },
-        "Input": [
-          {
-            "ItemId": "Nakasar_Peuples_Favor_Kweebec",
-            "Quantity": 1
-          }
-        ],
-        "Stock": 8
-      }
-    },
-    {
-      "Type": "Fixed",
-      "Trade": {
-        "Output": {
-          "ItemId": "Plant_Seeds_Carrot",
-          "Quantity": 4
+          "ItemId": "Food_Bread",
+          "Quantity": 2
         },
         "Input": [
           {

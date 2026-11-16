@@ -1,5 +1,5 @@
 {
-  "$Comment": "Bâtiment de métier du lieu-dit « Forge » (world/Hamlets), aux paliers de l'avant-poste Renonce_AP_Mine : généré par tools/generate_workshops.py (ne pas modifier à la main).",
+  "$Comment": "Bâtiment de métier du lieu-dit « Forge » (world/Hamlets), paliers propres de tools/hamlets.py OWN_TIERS : généré par tools/generate_workshops.py (ne pas modifier à la main).",
   "People": "Renonce",
   "Icon": "Ingredient_Bar_Iron",
   "NameKey": "nakasar_peuples.workshop.Renonce_LD_Forge.name",
@@ -55,28 +55,28 @@
   "Hamlet": "Forge",
   "Specialties": [
     {
-      "Id": "Filons",
-      "NameKey": "nakasar_peuples.workshop.specialty.Renonce_LD_Forge.Filons",
-      "LineKey": "nakasar_peuples.workshop.specialtyLine.Renonce_LD_Forge.Filons",
-      "Icon": "Ingredient_Bar_Iron",
+      "Id": "Armurerie",
+      "NameKey": "nakasar_peuples.workshop.specialty.Renonce_LD_Forge.Armurerie",
+      "LineKey": "nakasar_peuples.workshop.specialtyLine.Renonce_LD_Forge.Armurerie",
+      "Icon": "Weapon_Sword_Iron",
       "Shops": [
-        "Nakasar_Peuples_W_Renonce_LD_Forge_Filons_2",
-        "Nakasar_Peuples_W_Renonce_LD_Forge_Filons_3"
+        "Nakasar_Peuples_W_Renonce_LD_Forge_Armurerie_2",
+        "Nakasar_Peuples_W_Renonce_LD_Forge_Armurerie_3"
       ],
-      "ShareItem": "Ingredient_Bar_Iron",
-      "ShareQuantity": 2
+      "ShareItem": "Weapon_Sword_Copper",
+      "ShareQuantity": 1
     },
     {
-      "Id": "Carriere",
-      "NameKey": "nakasar_peuples.workshop.specialty.Renonce_LD_Forge.Carriere",
-      "LineKey": "nakasar_peuples.workshop.specialtyLine.Renonce_LD_Forge.Carriere",
-      "Icon": "Rock_Marble_Cobble",
+      "Id": "Outillage",
+      "NameKey": "nakasar_peuples.workshop.specialty.Renonce_LD_Forge.Outillage",
+      "LineKey": "nakasar_peuples.workshop.specialtyLine.Renonce_LD_Forge.Outillage",
+      "Icon": "Tool_Pickaxe_Iron",
       "Shops": [
-        "Nakasar_Peuples_W_Renonce_LD_Forge_Carriere_2",
-        "Nakasar_Peuples_W_Renonce_LD_Forge_Carriere_3"
+        "Nakasar_Peuples_W_Renonce_LD_Forge_Outillage_2",
+        "Nakasar_Peuples_W_Renonce_LD_Forge_Outillage_3"
       ],
-      "ShareItem": "Rock_Stone_Brick",
-      "ShareQuantity": 16
+      "ShareItem": "Tool_Hatchet_Copper",
+      "ShareQuantity": 1
     }
   ],
   "Shop": "Nakasar_Peuples_W_Renonce_LD_Forge_Base_1"

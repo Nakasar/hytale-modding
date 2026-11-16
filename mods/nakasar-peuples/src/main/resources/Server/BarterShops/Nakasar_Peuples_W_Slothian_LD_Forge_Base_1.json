@@ -10,22 +10,6 @@
       "Type": "Fixed",
       "Trade": {
         "Output": {
-          "ItemId": "Rock_Basalt_Cobble",
-          "Quantity": 16
-        },
-        "Input": [
-          {
-            "ItemId": "Nakasar_Peuples_Favor_Slothian",
-            "Quantity": 1
-          }
-        ],
-        "Stock": 8
-      }
-    },
-    {
-      "Type": "Fixed",
-      "Trade": {
-        "Output": {
           "ItemId": "Ingredient_Bar_Copper",
           "Quantity": 2
         },
@@ -42,13 +26,29 @@
       "Type": "Fixed",
       "Trade": {
         "Output": {
-          "ItemId": "Ore_Copper",
-          "Quantity": 4
+          "ItemId": "Tool_Hammer_Crude",
+          "Quantity": 1
         },
         "Input": [
           {
             "ItemId": "Nakasar_Peuples_Favor_Slothian",
             "Quantity": 2
+          }
+        ],
+        "Stock": 8
+      }
+    },
+    {
+      "Type": "Fixed",
+      "Trade": {
+        "Output": {
+          "ItemId": "Tool_Pickaxe_Copper",
+          "Quantity": 1
+        },
+        "Input": [
+          {
+            "ItemId": "Nakasar_Peuples_Favor_Slothian",
+            "Quantity": 3
           }
         ],
         "Stock": 8

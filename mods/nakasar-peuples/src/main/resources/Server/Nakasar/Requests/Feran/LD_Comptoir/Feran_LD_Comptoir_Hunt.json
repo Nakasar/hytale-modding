@@ -9,12 +9,13 @@
   "TitleKey": "nakasar_peuples.request.Feran_LD_Comptoir_Hunt.title",
   "TaskKey": "nakasar_peuples.request.Feran_LD_Comptoir_Hunt.task",
   "Spawns": [
-    "Scarak_Louse",
-    "Scarak_Louse",
-    "Scarak_Louse"
+    "Scarak_Fighter",
+    "Scarak_Fighter",
+    "Scarak_Defender"
   ],
   "Roles": [
-    "Scarak_Louse"
+    "Scarak_Defender",
+    "Scarak_Fighter"
   ],
   "MinDistance": 60,
   "MaxDistance": 110,

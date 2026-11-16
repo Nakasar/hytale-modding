@@ -10,7 +10,7 @@
       "Type": "Fixed",
       "Trade": {
         "Output": {
-          "ItemId": "Plant_Seeds_Wheat",
+          "ItemId": "Ingredient_Salt",
           "Quantity": 4
         },
         "Input": [
@@ -26,8 +26,8 @@
       "Type": "Fixed",
       "Trade": {
         "Output": {
-          "ItemId": "Plant_Crop_Wheat_Item",
-          "Quantity": 8
+          "ItemId": "Ingredient_Spices",
+          "Quantity": 3
         },
         "Input": [
           {
@@ -42,13 +42,13 @@
       "Type": "Fixed",
       "Trade": {
         "Output": {
-          "ItemId": "Plant_Seeds_Carrot",
-          "Quantity": 4
+          "ItemId": "Container_Bucket",
+          "Quantity": 1
         },
         "Input": [
           {
             "ItemId": "Nakasar_Peuples_Favor_Kweebec",
-            "Quantity": 1
+            "Quantity": 2
           }
         ],
         "Stock": 8

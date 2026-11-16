@@ -9,11 +9,13 @@
   "TitleKey": "nakasar_peuples.request.Renonce_LD_Comptoir_Hunt.title",
   "TaskKey": "nakasar_peuples.request.Renonce_LD_Comptoir_Hunt.task",
   "Spawns": [
-    "Wolf_White",
-    "Wolf_White"
+    "Outlander_Cultist",
+    "Outlander_Cultist",
+    "Outlander_Berserker"
   ],
   "Roles": [
-    "Wolf_White"
+    "Outlander_Berserker",
+    "Outlander_Cultist"
   ],
   "MinDistance": 60,
   "MaxDistance": 110,

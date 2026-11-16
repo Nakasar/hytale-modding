@@ -45,8 +45,11 @@ Chaque lieu-dit a un panneau à côté de sa place. Il marche comme celui d'un a
 
 | Lieu-dit | Il grandit comme |
 | --- | --- |
-| Mine, forge | une mine |
-| Ferme, moulin, comptoir | une ferme |
+| Mine | une mine |
+| Ferme | une ferme |
+| Moulin | ses propres paliers : spécialités Boulangerie ou Grenier |
+| Forge | ses propres paliers : spécialités Armurerie ou Outillage |
+| Comptoir | ses propres paliers : spécialités Étoffes ou Explorateurs |
 | Caserne | une tour de guet (mais elle ne défend pas le village en cas de raid) |
 | Scierie, pavillon de chasse, bosquet | l'avant-poste du même nom |
 

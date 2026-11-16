@@ -1635,10 +1635,19 @@ exigé, commande de maître, chantier de 12 h aux matériaux du dépôt du villa
 
 | Lieu-dit | Paliers de |
 | --- | --- |
-| Mine, Forge | Mine |
-| Ferme, Moulin, Comptoir | Ferme |
+| Mine | Mine |
+| Ferme | Ferme |
+| Moulin, Forge, Comptoir | paliers propres (`hamlets.OWN_TIERS`, choix de Kevin) : voir ci-dessous |
 | Caserne | Tour de guet (sans effet en raid : elle ne garde pas le village) |
 | Scierie, Pavillon de chasse, Bosquet | Scierie, Pavillon de chasse, Bosquet |
+
+Paliers propres (commandes de blé et de fibres, de minerai et de charbon, de peaux et de coton, plus une chasse) :
+
+| Lieu-dit | Boutique I | Spécialités (niveau II) |
+| --- | --- | --- |
+| Moulin | farine, pâte, pain | Boulangerie (pains, tartes) ; Grenier (foin, semences, riz) |
+| Forge | lingots de cuivre, marteau, pioche | Armurerie (épées, hache, plastron de fer) ; Outillage (outils de fer, lingots) |
+| Comptoir | sel, épices, seau | Étoffes (rouleaux de coton, lin, laine, soie) ; Explorateurs (provisions, carte, torches) |
 
 - L'état (`WorkshopState`) est celui du village de rattachement, créé quand le lieu-dit est posé : **un lieu-dit de
   chaque genre par village** (`Hamlets.pickFree` ; `/monde lieudit --genre` refuse un genre déjà pris).

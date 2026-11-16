@@ -9,11 +9,13 @@
   "TitleKey": "nakasar_peuples.request.Kweebec_LD_Comptoir_Hunt.title",
   "TaskKey": "nakasar_peuples.request.Kweebec_LD_Comptoir_Hunt.task",
   "Spawns": [
-    "Trork_Hunter",
-    "Trork_Hunter"
+    "Trork_Warrior",
+    "Trork_Warrior",
+    "Trork_Brawler"
   ],
   "Roles": [
-    "Trork_Hunter"
+    "Trork_Brawler",
+    "Trork_Warrior"
   ],
   "MinDistance": 60,
   "MaxDistance": 110,

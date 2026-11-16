@@ -1,5 +1,5 @@
 {
-  "$Comment": "Bâtiment de métier du lieu-dit « Comptoir commercial » (world/Hamlets), aux paliers de l'avant-poste Kweebec_AP_Ferme : généré par tools/generate_workshops.py (ne pas modifier à la main).",
+  "$Comment": "Bâtiment de métier du lieu-dit « Comptoir commercial » (world/Hamlets), paliers propres de tools/hamlets.py OWN_TIERS : généré par tools/generate_workshops.py (ne pas modifier à la main).",
   "People": "Kweebec",
   "Icon": "Furniture_Village_Crate",
   "NameKey": "nakasar_peuples.workshop.Kweebec_LD_Comptoir.name",
@@ -56,28 +56,28 @@
   "Hamlet": "Comptoir",
   "Specialties": [
     {
-      "Id": "Cereales",
-      "NameKey": "nakasar_peuples.workshop.specialty.Kweebec_LD_Comptoir.Cereales",
-      "LineKey": "nakasar_peuples.workshop.specialtyLine.Kweebec_LD_Comptoir.Cereales",
-      "Icon": "Plant_Crop_Corn_Item",
+      "Id": "Etoffes",
+      "NameKey": "nakasar_peuples.workshop.specialty.Kweebec_LD_Comptoir.Etoffes",
+      "LineKey": "nakasar_peuples.workshop.specialtyLine.Kweebec_LD_Comptoir.Etoffes",
+      "Icon": "Ingredient_Bolt_Cotton",
       "Shops": [
-        "Nakasar_Peuples_W_Kweebec_LD_Comptoir_Cereales_2",
-        "Nakasar_Peuples_W_Kweebec_LD_Comptoir_Cereales_3"
+        "Nakasar_Peuples_W_Kweebec_LD_Comptoir_Etoffes_2",
+        "Nakasar_Peuples_W_Kweebec_LD_Comptoir_Etoffes_3"
       ],
-      "ShareItem": "Plant_Crop_Corn_Item",
-      "ShareQuantity": 8
+      "ShareItem": "Ingredient_Bolt_Cotton",
+      "ShareQuantity": 1
     },
     {
-      "Id": "Primeurs",
-      "NameKey": "nakasar_peuples.workshop.specialty.Kweebec_LD_Comptoir.Primeurs",
-      "LineKey": "nakasar_peuples.workshop.specialtyLine.Kweebec_LD_Comptoir.Primeurs",
-      "Icon": "Plant_Crop_Tomato_Item",
+      "Id": "Explorateurs",
+      "NameKey": "nakasar_peuples.workshop.specialty.Kweebec_LD_Comptoir.Explorateurs",
+      "LineKey": "nakasar_peuples.workshop.specialtyLine.Kweebec_LD_Comptoir.Explorateurs",
+      "Icon": "Tool_Map",
       "Shops": [
-        "Nakasar_Peuples_W_Kweebec_LD_Comptoir_Primeurs_2",
-        "Nakasar_Peuples_W_Kweebec_LD_Comptoir_Primeurs_3"
+        "Nakasar_Peuples_W_Kweebec_LD_Comptoir_Explorateurs_2",
+        "Nakasar_Peuples_W_Kweebec_LD_Comptoir_Explorateurs_3"
       ],
-      "ShareItem": "Plant_Crop_Tomato_Item",
-      "ShareQuantity": 6
+      "ShareItem": "Food_Bread",
+      "ShareQuantity": 3
     }
   ],
   "Shop": "Nakasar_Peuples_W_Kweebec_LD_Comptoir_Base_1"

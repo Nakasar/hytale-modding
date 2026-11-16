@@ -9,11 +9,12 @@
   "TitleKey": "nakasar_peuples.request.Trork_LD_Comptoir_Hunt.title",
   "TaskKey": "nakasar_peuples.request.Trork_LD_Comptoir_Hunt.task",
   "Spawns": [
-    "Scarak_Louse",
-    "Scarak_Louse"
+    "Outlander_Berserker",
+    "Outlander_Cultist"
   ],
   "Roles": [
-    "Scarak_Louse"
+    "Outlander_Berserker",
+    "Outlander_Cultist"
   ],
   "MinDistance": 60,
   "MaxDistance": 110,

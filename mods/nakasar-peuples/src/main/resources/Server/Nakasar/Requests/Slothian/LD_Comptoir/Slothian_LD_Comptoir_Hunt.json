@@ -9,12 +9,13 @@
   "TitleKey": "nakasar_peuples.request.Slothian_LD_Comptoir_Hunt.title",
   "TaskKey": "nakasar_peuples.request.Slothian_LD_Comptoir_Hunt.task",
   "Spawns": [
-    "Larva_Void",
-    "Larva_Void",
-    "Larva_Void"
+    "Skeleton_Burnt_Soldier",
+    "Skeleton_Burnt_Soldier",
+    "Skeleton_Burnt_Knight"
   ],
   "Roles": [
-    "Larva_Void"
+    "Skeleton_Burnt_Knight",
+    "Skeleton_Burnt_Soldier"
   ],
   "MinDistance": 60,
   "MaxDistance": 110,

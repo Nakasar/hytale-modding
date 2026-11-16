@@ -218,8 +218,67 @@ BUSY = {
 # Paliers (Kevin, 16 novembre 2026) : chaque lieu-dit est un bâtiment de métier <Peuple>_LD_<Genre> du village de
 # rattachement, avec les niveaux I à III, commandes, spécialités et boutiques de son avant-poste équivalent
 # (tools/generate_workshops.py les copie). Le moulin et le comptoir suivent la ferme, la forge la mine.
-WORKSHOP_EQUIV = {"Mine": "Mine", "Ferme": "Ferme", "Moulin": "Ferme", "Caserne": "Tour", "Forge": "Mine",
-                  "Comptoir": "Ferme", "Scierie": "Scierie", "Chasse": "Chasse", "Bosquet": "Bosquet"}
+# Le moulin, la forge et le comptoir n'ont pas d'avant-poste équivalent : ils ont leurs paliers propres (OWN_TIERS,
+# choix de Kevin le 16 novembre 2026), dans le format de outposts.TYPE_DATA.
+WORKSHOP_EQUIV = {"Mine": "Mine", "Ferme": "Ferme", "Caserne": "Tour", "Scierie": "Scierie", "Chasse": "Chasse",
+                  "Bosquet": "Bosquet"}
+
+# Paliers propres : commandes (suffixe, type, objet, quantité, titres ≤ 24 caractères), boutique du niveau I
+# (objet, quantité, prix en faveurs), deux spécialités (id, noms, icône, lignes, échanges II, échanges III), et la chasse
+# du jour reprise de l'avant-poste `hunt_from` du peuple. Jamais un objet demandé n'est vendu par la même boutique.
+OWN_TIERS = {
+    "Moulin": {
+        "orders": [("Wheat", "Gather", "Plant_Crop_Wheat_Item", 16, "Blé pour la meule", "Wheat for the millstone"),
+                   ("Fibre", "Gather", "Ingredient_Fibre", 12, "Fibres pour les sacs", "Fibre for the sacks")],
+        "base": [("Ingredient_Flour", 6, 1), ("Ingredient_Dough", 4, 1), ("Food_Bread", 2, 1)],
+        "specs": [
+            ("Boulangerie", "Boulangerie", "Bakery", "Food_Bread", "Pains et tartes du four du moulin.",
+             "Bread and pies from the mill's oven.",
+             [("Food_Bread", 4, 1), ("Food_Pie_Apple", 1, 2)],
+             [("Food_Pie_Pumpkin", 1, 3), ("Recipe_Food_Pie_Apple", 1, 6)], None),
+            ("Grenier", "Grenier", "Granary", "Ingredient_Hay", "Foin, semences et grains rares.",
+             "Hay, seeds and rare grain.",
+             [("Ingredient_Hay", 8, 1), ("Plant_Seeds_Wheat", 6, 1)],
+             [("Plant_Crop_Rice_Item", 8, 2), ("Plant_Seeds_Wheat_Eternal", 1, 6)], None),
+        ],
+        "hunt_from": "Ferme",
+        "hunt_titles": ("Nuisibles du grenier", "Pests in the granary"),
+    },
+    "Forge": {
+        "orders": [("Ore", "Gather", "Ore_Copper", 8, "Minerai pour la forge", "Ore for the forge"),
+                   ("Coal", "Gather", "Ingredient_Charcoal", 12, "Charbon du foyer", "Charcoal for the hearth")],
+        "base": [("Ingredient_Bar_Copper", 2, 2), ("Tool_Hammer_Crude", 1, 2), ("Tool_Pickaxe_Copper", 1, 3)],
+        "specs": [
+            ("Armurerie", "Armurerie", "Armoury", "Weapon_Sword_Iron", "Épées, haches et armures de métal.",
+             "Metal swords, axes and armour.",
+             [("Weapon_Sword_Copper", 1, 3), ("Weapon_Axe_Copper", 1, 3)],
+             [("Weapon_Sword_Iron", 1, 5), ("Armor_Iron_Chest", 1, 6)], None),
+            ("Outillage", "Outillage", "Toolmaking", "Tool_Pickaxe_Iron", "Outils solides et lingots de fer.",
+             "Sturdy tools and iron bars.",
+             [("Tool_Hatchet_Copper", 1, 3), ("Ingredient_Bar_Iron", 2, 3)],
+             [("Tool_Pickaxe_Iron", 1, 6), ("Tool_Hammer_Iron", 1, 5)], None),
+        ],
+        "hunt_from": "Mine",
+        "hunt_titles": ("Menace de la forge", "Threat to the forge"),
+    },
+    "Comptoir": {
+        "orders": [("Hides", "Gather", "Ingredient_Hide_Light", 6, "Peaux pour le négoce", "Hides for trade"),
+                   ("Cotton", "Gather", "Plant_Crop_Cotton_Item", 12, "Coton pour l'étoffe", "Cotton for cloth")],
+        "base": [("Ingredient_Salt", 4, 1), ("Ingredient_Spices", 3, 1), ("Container_Bucket", 1, 2)],
+        "specs": [
+            ("Etoffes", "Étoffes", "Cloth", "Ingredient_Bolt_Cotton", "Rouleaux de coton, de lin et de soie.",
+             "Bolts of cotton, linen and silk.",
+             [("Ingredient_Bolt_Cotton", 1, 1), ("Ingredient_Bolt_Linen", 1, 1)],
+             [("Ingredient_Bolt_Wool", 1, 2), ("Ingredient_Bolt_Silk", 1, 4)], None),
+            ("Explorateurs", "Explorateurs", "Explorers", "Tool_Map", "Cartes et provisions pour la route.",
+             "Maps and supplies for the road.",
+             [("Food_Bread", 3, 1), ("Ingredient_Fibre", 12, 1)],
+             [("Tool_Map", 1, 3), ("Furniture_Crude_Torch", 8, 2)], None),
+        ],
+        "hunt_from": "Tour",
+        "hunt_titles": ("Pillards des routes", "Road raiders"),
+    },
+}
 
 # Variantes par peuple : les Kweebecs n'utilisent pas de métal (caserne animée : arcs et flèches simples, cuir).
 BUSY_BY_PEOPLE = {
