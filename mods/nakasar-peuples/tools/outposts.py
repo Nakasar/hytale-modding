@@ -293,16 +293,47 @@ TYPE_DATA = {
 NO_RAID = {"Trork"}
 
 # Textes des messages et de l'onglet (Java annex/), fr puis en, clés sans le préfixe « nakasar_peuples. ».
-# Balise de route (Java annex/Routes) : id = Routes.BEACON, liens à 32 blocs = Routes.LINK.
+# Balise de route (Java annex/Routes) : liens à 64 blocs = Routes.LINK. Plusieurs modèles vanilla, tous la même
+# balise (Routes.isBeacon : id = Routes.BEACON ou Routes.BEACON + "_<Variante>") et mélangeables sur une même route.
+# Chaque variante a sa recette à l'établi (même coût). L'id de base garde la haute lanterne du désert (balises déjà
+# posées) ; le kit de la quête « Baliser une route » donne la petite lanterne (generate_quests.ROUTE_KIT_ITEM).
 BEACON = {
     "item": "Nakasar_Peuples_Route_Beacon",
-    "parent": "Furniture_Desert_Lantern_Tall",
     "recipe": [("Ingredient_Stick", 4), ("Furniture_Crude_Torch", 1)],
     "output": 2,
     "name": ("Balise de route", "Route beacon"),
-    "description": ("Les convois des avant-postes vont de balise en balise vers le dépôt du village. Deux balises à moins de 32 blocs sont reliées.",
-                    "Outpost convoys walk from beacon to beacon to the village deposit. Two beacons less than 32 blocks apart are linked."),
+    "description": ("Les convois et les voyageurs vont de balise en balise. Deux balises à moins de 64 blocs sont reliées, "
+                    "quel que soit leur modèle.",
+                    "Convoys and travellers walk from beacon to beacon. Two beacons less than 64 blocks apart are linked, "
+                    "whatever their model."),
+    # Casser une balise rend CETTE balise : Gathering du parent vanilla (lu dans Assets.zip 0.7.2) + ItemId de la
+    # variante (sans ItemId, le bloc hérité rend l'objet vanilla du parent). Clé = type de récolte du parent.
+    "parent_gathering": {
+        "Furniture_Desert_Lantern_Tall": {"Breaking": {"GatherType": "Woods"}},
+        "Deco_Lantern": {"Soft": {"IsWeaponBreakable": False}},
+        "Furniture_Kweebec_Lantern": {"Soft": {"IsWeaponBreakable": False}},
+        "Furniture_Lumberjack_Lantern": {"Soft": {"IsWeaponBreakable": False}},
+        "Furniture_Crude_Torch": {"Soft": {"IsWeaponBreakable": False}},
+        "Furniture_Desert_Torch": {"Soft": {"IsWeaponBreakable": False}},
+        "Furniture_Feran_Torch_Tall": {"Soft": {"IsWeaponBreakable": False}},
+    },
+    # (suffixe d'id, parent vanilla, nom fr, nom en) ; suffixe vide = l'id de base.
+    "variants": [
+        ("", "Furniture_Desert_Lantern_Tall", "haute lanterne", "tall lantern"),
+        ("Lantern", "Deco_Lantern", "petite lanterne", "small lantern"),
+        ("Kweebec", "Furniture_Kweebec_Lantern", "lanterne kweebec", "Kweebec lantern"),
+        ("Lumberjack", "Furniture_Lumberjack_Lantern", "lanterne de bûcheron", "lumberjack lantern"),
+        ("Torch", "Furniture_Crude_Torch", "torche", "torch"),
+        ("Desert_Torch", "Furniture_Desert_Torch", "torche du désert", "desert torch"),
+        ("Feran_Torch", "Furniture_Feran_Torch_Tall", "grande torche feran", "tall Feran torch"),
+    ],
 }
+
+
+def beacon_id(suffix):
+    """Id de l'objet (et du bloc) d'une variante de balise."""
+    return BEACON["item"] + ("_" + suffix if suffix else "")
+
 
 LANG = {
     "annex.button": ("Avant-postes", "Outposts"),

@@ -1346,9 +1346,11 @@ quarts des matériaux de la fondation), deux spécialités au niveau II, boutiqu
   reste dans `Ruins`, rasée au passage d'un joueur (`stepRuins`) ; ces places comptent pour l'écart de 48 blocs entre
   avant-postes. Un quart des matériaux de fondation rendu au dépôt (`REFUND_DIVISOR`, comme les terrains).
 - **Routes à balises** (`annex/Routes.java`, `RouteBeaconSystems`) : l'objet `Nakasar_Peuples_Route_Beacon` (lanterne
-  haute vanilla, 4 bâtons + 1 torche → 2 à l'établi) se pose n'importe où ; les balises sont communes à tous les
+  haute vanilla, 4 bâtons + 1 torche → 2 à l'établi) et ses variantes `Nakasar_Peuples_Route_Beacon_<Variante>`
+  (Kevin 2026-11-16 : autres modèles vanilla, même recette, mélangeables ; liste `tools/outposts.BEACON["variants"]`,
+  reconnues par `Routes.isBeacon` = id de base ou préfixe `id_` ; chacune a `BlockType.Gathering` = récolte du parent + `ItemId` d'elle-même, sinon la casse rend l'objet vanilla du parent) se posent n'importe où ; les balises sont communes à tous les
   villages (champ `Beacons` du registre des villages, retirées quand on casse le bloc). Deux balises à moins de
-  32 blocs sont reliées ; la sortie de l'avant-poste, le dépôt et les cœurs des villages comptent comme balises.
+  64 blocs (`Routes.LINK`, 32 avant le 2026-11-16) sont reliées ; la sortie de l'avant-poste, le dépôt et les cœurs des villages comptent comme balises.
   Le convoi prend le plus court chemin (Dijkstra) ; sans route complète, la ligne droite. Point d'attache : 10 blocs
   devant mais jamais au-delà de la prochaine balise. Une balise posée ou retirée : route recalculée, le convoi reprend
   au point le plus proche. Sans PNJ, 4 blocs/s sur une route à balises. Les caravanes des demandes ne suivent pas
@@ -1405,9 +1407,9 @@ plus, 25 d'essor, 4 faveurs).
 - **Bouts** : sortie de l'avant-poste et dépôt du village, comme le convoi (`Convoys.ends`) ; cœur à cœur entre deux
   villages, comme `world/Links`.
 - **Avancement** : `Routes.gap` = plus courte distance entre ce qui est relié au départ et ce qui est relié à
-  l'arrivée (balises et cœurs, liens de 32 blocs), moins 32. Recalculé quand `beaconVersion` change. La tâche affiche
+  l'arrivée (balises et cœurs, liens de 64 blocs), moins 64. Recalculé quand `beaconVersion` change. La tâche affiche
   ce reste ; une notification à chaque gain de 24 blocs. Remplie dès que le reste vaut 0, où que soit le joueur.
-- **Départ** : `ItemId` × `Quantity` (4 balises) donnés à la prise.
+- **Départ** : `ItemId` × `Quantity` (4 balises `Routes.KIT_BEACON`, petite lanterne) donnés à la prise.
 
 À vérifier en jeu : tirage de la demande quand un avant-poste est bâti, reste affiché qui baisse en posant les balises,
 remplissage à la dernière balise.

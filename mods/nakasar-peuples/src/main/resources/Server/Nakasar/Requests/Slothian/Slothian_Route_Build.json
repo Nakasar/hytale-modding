@@ -7,7 +7,7 @@
   "Weight": 1,
   "TitleKey": "nakasar_peuples.request.Slothian_Route_Build.title",
   "TaskKey": "nakasar_peuples.request.Slothian_Route_Build.task",
-  "ItemId": "Nakasar_Peuples_Route_Beacon",
+  "ItemId": "Nakasar_Peuples_Route_Beacon_Lantern",
   "Quantity": 4,
   "MinDistance": 48,
   "MaxDistance": 700,

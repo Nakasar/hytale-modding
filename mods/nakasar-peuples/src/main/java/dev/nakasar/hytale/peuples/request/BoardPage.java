@@ -398,7 +398,7 @@ public final class BoardPage extends InteractiveCustomUIPage<BoardPage.Event> {
             case HARVEST -> "Tool_Sickle_Crude";
             case DESTROY -> "Tool_Pickaxe_Crude";
             case BOSS -> "Weapon_Battleaxe_Stone_Trork";
-            case ROUTE -> dev.nakasar.hytale.peuples.annex.Routes.BEACON;
+            case ROUTE -> dev.nakasar.hytale.peuples.annex.Routes.KIT_BEACON;
         };
     }
 

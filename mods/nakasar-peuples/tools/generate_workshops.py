@@ -913,30 +913,41 @@ def annex_workers(people, t, roles, errors):
 
 
 def write_beacon(items, fr, en, errors):
-    """Balise de route (Java annex/Routes) : lanterne haute vanilla, fabriquée à l'établi."""
+    """Balises de route (Java annex/Routes) : un objet par modèle vanilla, fabriqués à l'établi, tous la même balise."""
     b = outposts.BEACON
-    for i in [b["parent"]] + [i for i, _ in b["recipe"]]:
+    for i in [i for i, _ in b["recipe"]]:
         if i not in items:
             errors.append(f"{b['item']} : objet vanilla inconnu {i}")
-    doc = {
-        "$Comment": "Balise de route : les convois des avant-postes vont de balise en balise (Java annex/Routes, "
-                    "RouteBeaconSystems). Générée par tools/generate_workshops.py.",
-        "Parent": b["parent"],
-        "TranslationProperties": {"Name": f"nakasar_peuples.items.{b['item']}.name",
-                                  "Description": f"nakasar_peuples.items.{b['item']}.description"},
-        "Quality": "Uncommon",
-        "Recipe": {
-            "TimeSeconds": 2,
-            "KnowledgeRequired": False,
-            "Input": [{"ItemId": i, "Quantity": q} for i, q in b["recipe"]],
-            "BenchRequirement": [{"Type": "Crafting", "Id": "Workbench", "Categories": ["Workbench_Crafting"],
-                                  "RequiredTierLevel": 1}],
-            "OutputQuantity": b["output"],
-        },
-    }
-    (ANNEX_ITEMS / f"{b['item']}.json").write_text(json.dumps(doc, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
-    fr[f"items.{b['item']}.name"], en[f"items.{b['item']}.name"] = b["name"]
-    fr[f"items.{b['item']}.description"], en[f"items.{b['item']}.description"] = b["description"]
+    for suffix, parent, name_fr, name_en in b["variants"]:
+        item = outposts.beacon_id(suffix)
+        if parent not in items:
+            errors.append(f"{item} : objet vanilla inconnu {parent}")
+        if parent not in b["parent_gathering"]:
+            errors.append(f"{item} : récolte du parent {parent} inconnue (outposts.BEACON['parent_gathering'])")
+            continue
+        gathering = {kind: dict(drop, ItemId=item) for kind, drop in b["parent_gathering"][parent].items()}
+        doc = {
+            "$Comment": f"Balise de route ({name_fr}, modèle vanilla {parent}) : les convois et les voyageurs vont de "
+                        "balise en balise, toutes variantes confondues (Java annex/Routes, RouteBeaconSystems). "
+                        "Générée par tools/generate_workshops.py.",
+            "Parent": parent,
+            "TranslationProperties": {"Name": f"nakasar_peuples.items.{item}.name",
+                                      "Description": f"nakasar_peuples.items.{item}.description"},
+            "Quality": "Uncommon",
+            "BlockType": {"Gathering": gathering},
+            "Recipe": {
+                "TimeSeconds": 2,
+                "KnowledgeRequired": False,
+                "Input": [{"ItemId": i, "Quantity": q} for i, q in b["recipe"]],
+                "BenchRequirement": [{"Type": "Crafting", "Id": "Workbench", "Categories": ["Workbench_Crafting"],
+                                      "RequiredTierLevel": 1}],
+                "OutputQuantity": b["output"],
+            },
+        }
+        (ANNEX_ITEMS / f"{item}.json").write_text(json.dumps(doc, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
+        fr[f"items.{item}.name"] = f"{b['name'][0]} ({name_fr})"
+        en[f"items.{item}.name"] = f"{b['name'][1]} ({name_en})"
+        fr[f"items.{item}.description"], en[f"items.{item}.description"] = b["description"]
 
 
 def write_annexes(items, roles, fr, en, errors):

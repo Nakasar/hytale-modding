@@ -78,7 +78,10 @@ convoi est sur la route : attendez qu'il arrive au village.
 Les porteurs vont tout droit de l'avant-poste au dépôt, quitte à buter sur une rivière ou une falaise. Pour leur
 tracer un chemin, posez des **balises de route** : on en fabrique deux à l'établi avec 4 bâtons et une torche.
 
-- Deux balises à moins de **32 blocs** l'une de l'autre sont reliées. La sortie de l'avant-poste, le dépôt et le
+- La balise existe en plusieurs modèles, chacun avec sa recette à l'établi (même coût) : haute lanterne, petite
+  lanterne, lanterne kweebec, lanterne de bûcheron, torche, torche du désert et grande torche feran. Tous sont la même
+  balise : on peut les mélanger sur une même route.
+- Deux balises à moins de **64 blocs** l'une de l'autre sont reliées. La sortie de l'avant-poste, le dépôt et le
   cœur des villages comptent aussi comme des balises.
 - Les convois prennent le chemin le plus court de balise en balise. S'il manque un maillon, ils reprennent la ligne
   droite.
