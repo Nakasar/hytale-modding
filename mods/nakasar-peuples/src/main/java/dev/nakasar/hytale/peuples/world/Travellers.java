@@ -238,6 +238,7 @@ public final class Travellers {
         t.walkers = kind.walkers;
         t.cargo = kind == Kind.CARAVAN ? 3 : 0;
         save(world, t);
+        Links.trip(world, from.id(), to.id(), Links.TRIED);
         PeuplesPlugin.get().getLogger().atInfo().log("Peuples (monde vivant) : %s de %s vers %s", kind, from.name(), to.name());
         return t;
     }
@@ -370,6 +371,7 @@ public final class Travellers {
         }
         Store<EntityStore> store = world.getEntityStore().getStore();
         if (t.walkers <= 0) {
+            Links.trip(world, t.from, t.to, Links.FAILED);
             Village to = Villages.registry(world).byId(t.to);
             Village from = Villages.registry(world).byId(t.from);
             if (to != null && from != null) {
@@ -383,6 +385,7 @@ public final class Travellers {
 
     private static void arrive(World world, Store<EntityStore> store, Traveller t, Village from, Village to) {
         long day = GameClock.day(store);
+        Links.trip(world, from.id(), to.id(), Links.SUCCEEDED);
         // Chaque marcheur arrivé compte pour un passage (une caravane : ses trois porteurs).
         Links.pass(world, Links.key(from.id(), to.id()), day, Math.max(1, t.walkers));
         if (t.kind == Kind.CARAVAN && t.cargo > 0) {
@@ -467,6 +470,7 @@ public final class Travellers {
         if (!giveLetter(world, store, ref, player, to, parley ? from : null)) {
             return false;
         }
+        Links.trip(world, from.id(), to.id(), Links.SUCCEEDED); // la lettre poursuit sa route avec le joueur
         drop(world, store, t);
         return true;
     }

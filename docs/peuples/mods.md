@@ -1538,6 +1538,10 @@ Kevin (2026-11-16), refait d'après la maquette Claude Design « Panneau du vill
   tendu, rival), le troupeau en migration, 2 campements du village. Puis une fiche par voisin (liseré à la couleur de
   la relation) : peuple, distance, direction, valeur ; route balisée (`Routes.gap`), auberge ouverte, trêve, dernière
   escarmouche de la semaine gagnée / perdue / nulle (clé `~last:<liaison>` « jour|vainqueur »).
+  Ligne « Voyages d'ici » (Kevin, 2026-11-16) : voyages partis du village vers ce voisin, tentés / réussis / échoués,
+  depuis toujours (`Links.trip`/`trips`, clé `~trips:<de>><vers>` « t|r|é » dans la partie TRAFFIC) : tenté au
+  départ (`Travellers.start`), réussi à l'arrivée ou quand le messager confie sa lettre, échoué quand le dernier
+  marcheur meurt. 4 fiches au plus (la boussole garde 5 voisins, `#NbMore` dit le reste).
 - **En ce moment** (masqué s'il n'y a rien) : raid en cours, escarmouche (`Relations.fighting`), fête ici, fêtes
   ailleurs, foire en cours, migration (`Calendar.herdAt`).
 - **Agenda** (5 lignes, triées par jour puis heure) : escarmouche attendue (`pendingHour`), raid annoncé (`RaidRecord.night`),
