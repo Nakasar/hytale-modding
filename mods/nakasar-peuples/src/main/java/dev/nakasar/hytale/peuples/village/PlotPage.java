@@ -16,7 +16,7 @@ import com.hypixel.hytale.server.core.ui.builder.UIEventBuilder;
 import com.hypixel.hytale.server.core.universe.PlayerRef;
 import com.hypixel.hytale.server.core.universe.world.World;
 import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
-import dev.nakasar.hytale.peuples.request.BoardPage;
+import dev.nakasar.hytale.peuples.request.BoardTabs;
 import dev.nakasar.hytale.peuples.request.GameClock;
 import dev.nakasar.hytale.peuples.workshop.Workshop;
 import dev.nakasar.hytale.peuples.workshop.Workshops;
@@ -108,8 +108,7 @@ public final class PlotPage extends InteractiveCustomUIPage<PlotPage.Event> {
         }
         cmd.set("#Rule.TextSpans", Message.translation(KEYS + "page.rule").param("rank", Message.translation(Plots.CHOOSE_RANK.nameKey()))
                 .param("days", Plots.DEMOLISH_DAYS));
-        cmd.set("#Back.Text", Message.translation(KEYS + "page.back"));
-        events.addEventBinding(CustomUIEventBindingType.Activating, "#Back", EventData.of("Action", "Back"));
+        BoardTabs.fill(cmd, events, store, village);
     }
 
     private void card(UICommandBuilder cmd, UIEventBuilder events, World world, Store<EntityStore> store, Village village,
@@ -280,8 +279,7 @@ public final class PlotPage extends InteractiveCustomUIPage<PlotPage.Event> {
             }
         } else if (action.equals("Clear") && plot != null) {
             Plots.clear(store, ref, playerRef, village, plot);
-        } else if (action.equals("Back")) {
-            BoardPage.open(world, store, ref, playerRef, village);
+        } else if (BoardTabs.handle(action, world, store, ref, playerRef, village)) {
             return;
         }
         rebuild();

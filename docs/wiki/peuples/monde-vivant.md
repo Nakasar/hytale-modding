@@ -80,11 +80,11 @@ Voyageurs, aubergistes et campeurs racontent ce qui se passe : caravanes en rout
 
 ## L'onglet Monde du panneau
 
-Au panneau du village, le bouton **Monde** ouvre ce que le monde vivant fait autour de ce village :
+Le panneau du village a quatre onglets toujours visibles en haut : **Tableau**, **Emplacements**, **Avant-postes** et **Monde**, avec l'heure du jeu à droite. L'onglet Monde montre ce que le monde vivant fait autour du village :
 
-- **Sur les routes** : les voyageurs partis du village ou qui y viennent (où ils en sont), et les escarmouches avec ses voisins (en cours, attendue aujourd'hui, ou la dernière de la semaine et son vainqueur).
-- **Voisins** : chaque village relié, avec sa distance, sa direction, la relation, une trêve, la route balisée ou non, et l'auberge entre les deux.
-- **Au village** : la prochaine fête des moissons, la foire si elle se tient ici, le raid annoncé et les campements des alentours.
-- **Dans le monde** : la prochaine foire (où et quand), la migration en cours ou la prochaine, les fêtes en cours ailleurs.
+- **Voisins** : une boussole avec le village au centre, ses voisins (direction et distance, une couleur par relation : vert allié, gris neutre, rouge rival), le troupeau en migration et les campements du village. Sous la boussole, une fiche par voisin : relation, route balisée ou non, auberge, trêve, dernière escarmouche de la semaine.
+- **En ce moment** : ce qui se passe maintenant (raid, escarmouche, fête, foire, migration).
+- **Agenda** : les jours qui viennent (escarmouche attendue, raid, fête des moissons, foire et où, migration).
+- **Sur les routes** : les voyageurs partis du village ou qui y viennent, avec leur progression.
 
 `/monde etat` résume l'état du monde vivant.

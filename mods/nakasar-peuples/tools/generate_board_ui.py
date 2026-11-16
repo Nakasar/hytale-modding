@@ -44,8 +44,14 @@ MATERIALS = 5              # matériaux d'un chantier (4 au plus dans les plans 
 BUILDINGS = 4              # bâtiments listés d'un chantier en cours (les autres : « et N autres »)
 DEPOSIT = 9                # sortes d'objets montrées du dépôt
 
-WIDTH, HEIGHT = 1060, 740
+WIDTH, HEIGHT = 1060, 840   # PANEL_WIDTH x PANEL_HEIGHT : les quatre onglets du panneau ont la même taille
 LEFT_WIDTH = 548
+PANEL_WIDTH, PANEL_HEIGHT = WIDTH, HEIGHT
+
+# Onglets du panneau du village (request/BoardTabs.java), dans l'ordre de la barre. Maquette Claude Design
+# « Panneau du village — refonte » (16 novembre 2026) : les onglets en haut, toujours visibles.
+TABS = ("Board", "Plots", "Annexes", "World")
+TAB_WIDTH = 170
 
 
 def rgb(h):
@@ -72,6 +78,38 @@ def label(id_, style, text='""', anchor=None, extra=""):
     a = f"Anchor: ({anchor}); " if anchor else ""
     i = f" #{id_}" if id_ else ""
     return f"Label{i} {{ {a}Style: {style}; Text: {text};{extra} }}"
+
+
+def tab_strip(w, acc, active, indent="      "):
+    """Barre des onglets en haut du contenu : l'onglet ouvert en aplat à la couleur du peuple (#Tab<X>On), les autres en
+    boutons (#Tab<X>Button), l'heure du jeu à droite (#Clock), un filet de la couleur du peuple dessous. Chaque onglet
+    porte les deux formes (#Tab<X>Off enveloppe le bouton) (seule la visibilité diffère d'une page à l'autre) : BoardTabs remplit les mêmes ids partout."""
+    i = indent
+    w(f"{i}Group #Tabs {{")
+    w(f"{i}  LayoutMode: Left;")
+    w(f"{i}  Anchor: (Height: 38);")
+    for tab in TABS:
+        on = tab == active
+        w(f"{i}  Group #Tab{tab} {{")
+        w(f"{i}    LayoutMode: Full;")
+        w(f"{i}    Anchor: (Width: {TAB_WIDTH}, Height: 38, Right: 6);")
+        w(f"{i}    Group #Tab{tab}Off {{")
+        w(f"{i}      LayoutMode: Full;")
+        w(f"{i}      Anchor: (Full: 0);")
+        w(f"{i}      Visible: {'false' if on else 'true'};")
+        w(f'{i}      $C.@SecondaryTextButton #Tab{tab}Button {{ @Text = ""; @Anchor = Anchor(Full: 0); }}')
+        w(f"{i}    }}")
+        w(f"{i}    Group #Tab{tab}On {{")
+        w(f"{i}      Anchor: (Full: 0);")
+        w(f"{i}      Background: (Color: {acc});")
+        w(f"{i}      Visible: {'true' if on else 'false'};")
+        w(f'{i}      {label(f"Tab{tab}Label", "LabelStyle(FontSize: 14, RenderBold: true, RenderUppercase: true, TextColor: #10180e, HorizontalAlignment: Center, VerticalAlignment: Center)", anchor="Full: 0")}')
+        w(f"{i}    }}")
+        w(f"{i}  }}")
+    w(f"{i}  Group {{ FlexWeight: 1; }}")
+    w(f'{i}  {label("Clock", "LabelStyle(FontSize: 14, RenderBold: true, TextColor: #96a9be, HorizontalAlignment: End, VerticalAlignment: Center)", anchor="Width: 200")}')
+    w(f"{i}}}")
+    w(f"{i}Group {{ Anchor: (Height: 2, Bottom: 12); Background: (Color: {acc}); }}")
 
 
 def page(theme_id):
@@ -132,8 +170,9 @@ def page(theme_id):
     w("")
     w("    #Content {")
     w("      LayoutMode: Top;")
-    w("      Padding: (Full: 17, Top: 14);")
+    w("      Padding: (Full: 17, Top: 12);")
     w("")
+    tab_strip(w, acc, "Board")
     # ---- Bandeau du peuple
     w("      Group #Band {")
     w("        LayoutMode: Full;")
@@ -392,10 +431,7 @@ def page(theme_id):
     w("        Anchor: (Height: 44, Top: 12);")
     w(f'        {label("Absent", "@SmallWrap", extra=" FlexWeight: 1;")}')
     w('        $C.@TextButton #TurnIn { @Text = ""; @Anchor = Anchor(Right: 12, Width: 210); }')
-    w('        $C.@SecondaryTextButton #PlotsButton { @Text = ""; @Anchor = Anchor(Right: 10, Width: 150); }')
-    w('        $C.@SecondaryTextButton #AnnexButton { @Text = ""; @Anchor = Anchor(Right: 10, Width: 150); }')
-    w('        $C.@SecondaryTextButton #WorldButton { @Text = ""; @Anchor = Anchor(Right: 10, Width: 120); }')
-    w('        $C.@SecondaryTextButton #TextVersion { @Text = ""; @Anchor = Anchor(Width: 150); }')
+    w('        $C.@SecondaryTextButton #TextVersion { @Text = ""; @Anchor = Anchor(Width: 180); }')
     w("      }")
     w("    }")
     w("  }")

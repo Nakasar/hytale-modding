@@ -1652,7 +1652,10 @@ public class ValidateAssets {
         // Chaque id rempli par une page Java existe dans chacune de ses mises en page (BoardPage*.ui, WorkshopPage*.ui).
         for (String[] pageSpec : new String[][] {{"request/BoardPage.java", "BoardPage"}, {"workshop/WorkshopPage.java", "WorkshopPage"},
                 {"workshop/WorkshopSpecialtyPage.java", "WorkshopSpecialtyPage"}, {"village/PlotPage.java", "PlotPage"},
-                {"annex/AnnexPage.java", "AnnexPage"}, {"world/WorldPage.java", "WorldPage"}}) {
+                {"annex/AnnexPage.java", "AnnexPage"}, {"world/WorldPage.java", "WorldPage"},
+                // Barre des onglets du panneau : mêmes ids dans les quatre pages.
+                {"request/BoardTabs.java", "BoardPage"}, {"request/BoardTabs.java", "PlotPage"},
+                {"request/BoardTabs.java", "AnnexPage"}, {"request/BoardTabs.java", "WorldPage"}}) {
         Path java = root.getParent().getParent().resolve("java/dev/nakasar/hytale/peuples/" + pageSpec[0]);
         String pageName = pageSpec[1];
         if (Files.isRegularFile(java)) {

@@ -10,7 +10,7 @@ $C.@PageOverlay {
   LayoutMode: Middle;
 
   $C.@DecoratedContainer {
-    Anchor: (Width: 1040, Height: 800);
+    Anchor: (Width: 1060, Height: 840);
 
     #Title {
       Group {
@@ -22,7 +22,78 @@ $C.@PageOverlay {
 
     #Content {
       LayoutMode: Top;
-      Padding: (Full: 17, Top: 14);
+      Padding: (Full: 17, Top: 12);
+      Group #Tabs {
+        LayoutMode: Left;
+        Anchor: (Height: 38);
+        Group #TabBoard {
+          LayoutMode: Full;
+          Anchor: (Width: 170, Height: 38, Right: 6);
+          Group #TabBoardOff {
+            LayoutMode: Full;
+            Anchor: (Full: 0);
+            Visible: true;
+            $C.@SecondaryTextButton #TabBoardButton { @Text = ""; @Anchor = Anchor(Full: 0); }
+          }
+          Group #TabBoardOn {
+            Anchor: (Full: 0);
+            Background: (Color: #8fd0ea);
+            Visible: false;
+            Label #TabBoardLabel { Anchor: (Full: 0); Style: (FontSize: 14, RenderBold: true, RenderUppercase: true, TextColor: #10180e, HorizontalAlignment: Center, VerticalAlignment: Center); Text: ""; }
+          }
+        }
+        Group #TabPlots {
+          LayoutMode: Full;
+          Anchor: (Width: 170, Height: 38, Right: 6);
+          Group #TabPlotsOff {
+            LayoutMode: Full;
+            Anchor: (Full: 0);
+            Visible: false;
+            $C.@SecondaryTextButton #TabPlotsButton { @Text = ""; @Anchor = Anchor(Full: 0); }
+          }
+          Group #TabPlotsOn {
+            Anchor: (Full: 0);
+            Background: (Color: #8fd0ea);
+            Visible: true;
+            Label #TabPlotsLabel { Anchor: (Full: 0); Style: (FontSize: 14, RenderBold: true, RenderUppercase: true, TextColor: #10180e, HorizontalAlignment: Center, VerticalAlignment: Center); Text: ""; }
+          }
+        }
+        Group #TabAnnexes {
+          LayoutMode: Full;
+          Anchor: (Width: 170, Height: 38, Right: 6);
+          Group #TabAnnexesOff {
+            LayoutMode: Full;
+            Anchor: (Full: 0);
+            Visible: true;
+            $C.@SecondaryTextButton #TabAnnexesButton { @Text = ""; @Anchor = Anchor(Full: 0); }
+          }
+          Group #TabAnnexesOn {
+            Anchor: (Full: 0);
+            Background: (Color: #8fd0ea);
+            Visible: false;
+            Label #TabAnnexesLabel { Anchor: (Full: 0); Style: (FontSize: 14, RenderBold: true, RenderUppercase: true, TextColor: #10180e, HorizontalAlignment: Center, VerticalAlignment: Center); Text: ""; }
+          }
+        }
+        Group #TabWorld {
+          LayoutMode: Full;
+          Anchor: (Width: 170, Height: 38, Right: 6);
+          Group #TabWorldOff {
+            LayoutMode: Full;
+            Anchor: (Full: 0);
+            Visible: true;
+            $C.@SecondaryTextButton #TabWorldButton { @Text = ""; @Anchor = Anchor(Full: 0); }
+          }
+          Group #TabWorldOn {
+            Anchor: (Full: 0);
+            Background: (Color: #8fd0ea);
+            Visible: false;
+            Label #TabWorldLabel { Anchor: (Full: 0); Style: (FontSize: 14, RenderBold: true, RenderUppercase: true, TextColor: #10180e, HorizontalAlignment: Center, VerticalAlignment: Center); Text: ""; }
+          }
+        }
+        Group { FlexWeight: 1; }
+        Label #Clock { Anchor: (Width: 200); Style: (FontSize: 14, RenderBold: true, TextColor: #96a9be, HorizontalAlignment: End, VerticalAlignment: Center); Text: ""; }
+      }
+      Group { Anchor: (Height: 2, Bottom: 12); Background: (Color: #8fd0ea); }
       Label #Intro { Anchor: (Height: 40, Bottom: 10); Style: @Body; Text: ""; }
       Group #Plots {
         LayoutMode: Left;
@@ -164,9 +235,8 @@ $C.@PageOverlay {
       }
       Group {
         LayoutMode: Left;
-        Anchor: (Height: 44, Top: 12);
+        Anchor: (Height: 36, Top: 10);
         Label #Rule { Style: @SmallWrap; Text: ""; FlexWeight: 1; }
-        $C.@SecondaryTextButton #Back { @Text = ""; @Anchor = Anchor(Width: 240); }
       }
     }
   }

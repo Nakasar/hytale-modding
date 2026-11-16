@@ -13,7 +13,9 @@ Sortie : src/main/resources/Common/UI/Custom/Pages/Nakasar/Peuples/WorkshopPage_
 Les jauges réutilisent Board/Bar_<Peuple>.png (tools/generate_board_ui.py). Les ids sont ceux que remplit
 dev.nakasar.hytale.peuples.workshop.WorkshopPage.
 """
-from generate_board_ui import COMMON, MEMORIES, OUT, THEMES, label
+from PIL import Image, ImageDraw
+
+from generate_board_ui import COMMON, MEMORIES, OUT, PANEL_HEIGHT, PANEL_WIDTH, THEMES, label, tab_strip
 
 ORDERS = 3                 # Workshops.slots au niveau III
 MATERIALS = 4              # matériaux d'un chantier d'amélioration (3 dans les assets actuels)
@@ -378,8 +380,8 @@ def specialty_page(theme_id):
 
 PLOT_CARDS = 2             # terrains E1 et E2 (étape 6)
 PROJECTS = 5               # projets par peuple (tools/plots.py)
-PLOT_WIDTH = 1040
-PLOT_HEIGHT = 800
+PLOT_WIDTH = PANEL_WIDTH     # onglets du panneau : même taille que le tableau
+PLOT_HEIGHT = PANEL_HEIGHT
 
 
 def plot_page(theme_id):
@@ -414,7 +416,8 @@ def plot_page(theme_id):
     w("")
     w("    #Content {")
     w("      LayoutMode: Top;")
-    w("      Padding: (Full: 17, Top: 14);")
+    w("      Padding: (Full: 17, Top: 12);")
+    tab_strip(w, acc, "Plots")
     w(f'      {label("Intro", "@Body", anchor="Height: 40, Bottom: 10")}')
     w("      Group #Plots {")
     w("        LayoutMode: Left;")
@@ -465,9 +468,8 @@ def plot_page(theme_id):
     w("      }")
     w("      Group {")
     w("        LayoutMode: Left;")
-    w("        Anchor: (Height: 44, Top: 12);")
+    w("        Anchor: (Height: 36, Top: 10);")
     w(f'        {label("Rule", "@SmallWrap", extra=" FlexWeight: 1;")}')
-    w('        $C.@SecondaryTextButton #Back { @Text = ""; @Anchor = Anchor(Width: 240); }')
     w("      }")
     w("    }")
     w("  }")
@@ -513,7 +515,8 @@ def annex_page(theme_id):
     w("")
     w("    #Content {")
     w("      LayoutMode: Top;")
-    w("      Padding: (Full: 17, Top: 14);")
+    w("      Padding: (Full: 17, Top: 12);")
+    tab_strip(w, acc, "Annexes")
     w(f'      {label("Intro", "@Body", anchor="Height: 40, Bottom: 10")}')
     rows = (ANNEX_CARDS + ANNEX_COLUMNS - 1) // ANNEX_COLUMNS
     for r in range(rows):
@@ -555,9 +558,8 @@ def annex_page(theme_id):
         w("      }")
     w("      Group {")
     w("        LayoutMode: Left;")
-    w("        Anchor: (Height: 44, Top: 12);")
+    w("        Anchor: (Height: 36, Top: 10);")
     w(f'        {label("Rule", "@SmallWrap", extra=" FlexWeight: 1;")}')
-    w('        $C.@SecondaryTextButton #Back { @Text = ""; @Anchor = Anchor(Width: 240); }')
     w("      }")
     w("    }")
     w("  }")
@@ -567,13 +569,66 @@ def annex_page(theme_id):
     return "\n".join(L).replace("Style: LabelStyle(", "Style: (") + "\n"
 
 
-WORLD_CARDS = 4
+# Onglet Monde (maquette Claude Design « Panneau du village — refonte », 16 novembre 2026). Les tailles sont celles que
+# world/WorldPage place à la main : changer COMPASS_* ici, c'est les changer là-bas.
+COMPASS_BOX = 230          # côté de la boussole (px), centre au milieu
+COMPASS_RADIUS = 105       # rayon du bord : les voisins à 2400 blocs (Links) et au-delà
+COMPASS_RINGS = (500, 1000)  # anneaux tracés ; 1000 blocs = 3/4 du rayon (WorldPage.radius)
+COMPASS_LEFT = 90          # décalage de la boussole dans la colonne (410 px)
+MARKS = 8                  # 5 voisins, le troupeau, 2 campements
+MARK_KINDS = ("Ally", "Friendly", "Neutral", "Tense", "Rival", "Herd", "Camp")
+# Une couleur par relation, la même partout (dans WorldPage.STATE_COLORS) ; troupeau et campements en or.
+MARK_COLORS = {"Ally": "#9ed36a", "Friendly": "#c9e08a", "Neutral": "#a9b8c8", "Tense": "#e8b06a", "Rival": "#f08a7a",
+               "Herd": "#e8c46a", "Camp": "#e8c46a"}
+STATES = ("Ally", "Friendly", "Neutral", "Tense", "Rival")
+NEIGHBOUR_ROWS = 5
+AGENDA_ROWS = 5
+ROAD_ROWS = 4
+LEFT_COLUMN = 410
+
+
+def compass_png(path):
+    """Fond de la boussole : anneaux de 500 et 1000 blocs, bord, croix des points cardinaux (blanc, teinté par la page)."""
+    k = 4                                   # suréchantillonnage, puis réduction : traits nets
+    n = COMPASS_BOX * k
+    im = Image.new("RGBA", (n, n), (0, 0, 0, 0))
+    d = ImageDraw.Draw(im)
+    c = n / 2
+
+    def ring(r, alpha, width):
+        d.ellipse((c - r, c - r, c + r, c + r), outline=(255, 255, 255, alpha), width=width)
+
+    ring(COMPASS_RADIUS * k, 150, 2 * k)
+    for blocks in COMPASS_RINGS:
+        ring(COMPASS_RADIUS * k * 0.75 * blocks / 1000, 90, k)
+    d.line((c, c - COMPASS_RADIUS * k, c, c + COMPASS_RADIUS * k), fill=(255, 255, 255, 45), width=k)
+    d.line((c - COMPASS_RADIUS * k, c, c + COMPASS_RADIUS * k, c), fill=(255, 255, 255, 45), width=k)
+    im = im.resize((COMPASS_BOX, COMPASS_BOX), Image.LANCZOS)
+    path.parent.mkdir(parents=True, exist_ok=True)
+    im.save(path)
+
+
+def shape_png(path, kind, size=14):
+    """Marqueur blanc (rond ou losange), teinté par la page."""
+    k = 4
+    n = size * k
+    im = Image.new("RGBA", (n, n), (0, 0, 0, 0))
+    d = ImageDraw.Draw(im)
+    if kind == "dot":
+        d.ellipse((k, k, n - k, n - k), fill=(255, 255, 255, 255), outline=(16, 24, 14, 255), width=k)
+    else:
+        d.polygon(((n / 2, k), (n - k, n / 2), (n / 2, n - k), (k, n / 2)), fill=(255, 255, 255, 255),
+                  outline=(16, 24, 14, 255))
+    im = im.resize((size, size), Image.LANCZOS)
+    im.save(path)
 
 
 def world_page(theme_id):
-    """Onglet « Monde » du panneau du village (world/WorldPage) : quatre cartes de texte en deux rangées."""
+    """Onglet « Monde » du panneau du village (world/WorldPage) : à gauche la boussole des voisins et leurs fiches, à
+    droite « En ce moment », l'agenda des jours qui viennent et les voyageurs avec leur progression."""
     t = THEMES[theme_id]
     acc, band, title = t["accent"], t["band"], t["title"]
+    bar = f"Board/Bar_{theme_id}.png" if theme_id else "Board/Bar_Default.png"
     emblem = (f'Background: (TexturePath: "{MEMORIES}{t["emblem"]}.png", Color: {acc});' if t["emblem"]
               else "Visible: false;")
     L = []
@@ -583,8 +638,20 @@ def world_page(theme_id):
     w(f"// Généré par tools/generate_workshop_ui.py (thème {theme_id or 'neutre'}) : ne pas modifier à la main.")
     w("")
     w(f"@Accent = {acc};")
-    w("@Body = LabelStyle(FontSize: 14, TextColor: #c9d1d9, Wrap: true);")
+    w(f"@Section = LabelStyle(FontSize: 14, RenderBold: true, RenderUppercase: true, TextColor: {title}, VerticalAlignment: Center);")
+    w("@Small = LabelStyle(FontSize: 13, TextColor: #96a9be, VerticalAlignment: Center);")
     w("@SmallWrap = LabelStyle(FontSize: 13, TextColor: #96a9be, Wrap: true);")
+    w("@Name = LabelStyle(FontSize: 15, RenderBold: true, TextColor: #e8c46a, VerticalAlignment: Center);")
+    w("")
+    w("@Card = Group {")
+    w("  Background: (Color: #0c151e(0.7));")
+    w("};")
+    w("")
+    w("@Bar = ProgressBar {")
+    w(f'  Background: "{COMMON}ProgressBar.png";')
+    w(f'  BarTexturePath: "{bar}";')
+    w("  Value: 0;")
+    w("};")
     w("")
     w("$C.@PageOverlay {")
     w("  LayoutMode: Middle;")
@@ -602,32 +669,141 @@ def world_page(theme_id):
     w("")
     w("    #Content {")
     w("      LayoutMode: Top;")
-    w("      Padding: (Full: 17, Top: 14);")
-    w(f'      {label("Intro", "@SmallWrap", anchor="Height: 22, Bottom: 10")}')
-    for r in range(2):
-        w("      Group {")
-        w("        LayoutMode: Left;")
-        w("        FlexWeight: 1;")
-        w(f"        Anchor: (Bottom: {12 if r == 0 else 0});")
-        for c in range(2):
-            i = r * 2 + c
-            w(f"        Group #Card{i} {{")
-            w("          LayoutMode: Top;")
-            w("          FlexWeight: 1;")
-            w(f"          Anchor: (Right: {12 if c == 0 else 0});")
-            w("          Padding: (Horizontal: 14, Vertical: 10);")
-            w(f"          Background: (Color: {band}(0.75));")
-            w(f"          Group {{ Anchor: (Height: 3, Bottom: 8); Background: (Color: {acc}(0.6)); }}")
-            w(f'          {label(f"CardTitle{i}", f"LabelStyle(FontSize: 16, FontName: \"Secondary\", RenderBold: true, RenderUppercase: true, TextColor: {acc})", anchor="Height: 24, Bottom: 6")}')
-            w(f'          {label(f"CardBody{i}", "@Body", extra=" FlexWeight: 1;")}')
-            w("        }")
-        w("      }")
+    w("      Padding: (Full: 17, Top: 12);")
+    tab_strip(w, acc, "World")
     w("      Group {")
     w("        LayoutMode: Left;")
-    w("        Anchor: (Height: 44, Top: 12);")
-    w("        Group { FlexWeight: 1; }")
-    w('        $C.@SecondaryTextButton #Back { @Text = ""; @Anchor = Anchor(Width: 240); }')
+    w("        FlexWeight: 1;")
+    w("")
+    # ---- Colonne gauche : la boussole et les voisins
+    w("        Group #NeighbourColumn {")
+    w("          LayoutMode: Top;")
+    w(f"          Anchor: (Width: {LEFT_COLUMN}, Right: 18);")
+    w(f'          {label("NeighboursTitle", "@Section", anchor="Height: 22, Bottom: 6")}')
+    w("          @Card #Compass {")
+    w("            LayoutMode: Full;")
+    w(f"            Anchor: (Height: {COMPASS_BOX + 12}, Bottom: 10);")
+    w(f'            Group #CompassMap {{ Anchor: (Left: {COMPASS_LEFT}, Top: 6, Width: {COMPASS_BOX}, Height: {COMPASS_BOX}); '
+      f'Background: (TexturePath: "Board/Compass.png", Color: #a9b8c8); }}')
+    cx = COMPASS_LEFT + COMPASS_BOX // 2
+    cy = 6 + COMPASS_BOX // 2
+    w(f'            {label(None, "LabelStyle(FontSize: 12, RenderBold: true, TextColor: #96a9be, HorizontalAlignment: Center, VerticalAlignment: Center)", text="\"N\"", anchor=f"Left: {cx - 10}, Top: {cy - COMPASS_RADIUS - 16}, Width: 20, Height: 14")}')
+    for blocks in COMPASS_RINGS:
+        r = int(COMPASS_RADIUS * 0.75 * blocks / 1000)
+        w(f'            {label(None, "LabelStyle(FontSize: 10, TextColor: #6f8296, VerticalAlignment: Center)", text=f"\"{blocks}\"", anchor=f"Left: {cx + r + 2}, Top: {cy - 14}, Width: 40, Height: 12")}')
+    w(f'            Group #Here {{ Anchor: (Left: {cx - 8}, Top: {cy - 8}, Width: 16, Height: 16); '
+      f'Background: (TexturePath: "Board/Dot.png", Color: {acc}); }}')
+    for i in range(MARKS):
+        w(f"            Group #Mark{i} {{")
+        w("              LayoutMode: Top;")
+        w("              Anchor: (Left: 0, Top: 0, Width: 110, Height: 34);")
+        w("              Visible: false;")
+        w("              Group {")
+        w("                LayoutMode: Center;")
+        w("                Anchor: (Height: 14);")
+        w("                Group {")
+        w("                  LayoutMode: Full;")
+        w("                  Anchor: (Width: 14, Height: 14);")
+        for kind in MARK_KINDS:
+            shape = "Diamond" if kind == "Camp" else "Dot"
+            w(f'                  Group #Mark{kind}{i} {{ Anchor: (Full: 0); Background: (TexturePath: "Board/{shape}.png", '
+              f'Color: {MARK_COLORS[kind]}); Visible: false; }}')
+        w("                }")
+        w("              }")
+        w(f'              {label(f"MarkName{i}", "LabelStyle(FontSize: 11, RenderBold: true, TextColor: #c9d1d9, HorizontalAlignment: Center, VerticalAlignment: Center)", anchor="Height: 16, Top: 2")}')
+        w("            }")
+    w("          }")
+    w(f'          {label("NeighboursNone", "@SmallWrap", anchor="Height: 40", extra=" Visible: false;")}')
+    for i in range(NEIGHBOUR_ROWS):
+        w(f"          @Card #Nb{i} {{")
+        w("            LayoutMode: Left;")
+        w("            Anchor: (Height: 62, Bottom: 6);")
+        w("            Group {")
+        w("              LayoutMode: Full;")
+        w("              Anchor: (Width: 4);")
+        for st in STATES:
+            w(f"              Group #Nb{st}{i} {{ Anchor: (Full: 0); Background: (Color: {MARK_COLORS[st]}); Visible: false; }}")
+        w("            }")
+        w("            Group {")
+        w("              LayoutMode: Top;")
+        w("              FlexWeight: 1;")
+        w("              Padding: (Left: 10, Right: 10, Vertical: 4);")
+        w("              Group {")
+        w("                LayoutMode: Left;")
+        w("                Anchor: (Height: 20);")
+        w(f'                {label(f"NbName{i}", "@Name", extra=" FlexWeight: 1;")}')
+        w(f'                {label(f"NbState{i}", "LabelStyle(FontSize: 12, RenderBold: true, RenderUppercase: true, TextColor: #a9b8c8, HorizontalAlignment: End, VerticalAlignment: Center)", anchor="Width: 130")}')
+        w("              }")
+        w(f'              {label(f"NbLine{i}", "@Small", anchor="Height: 17")}')
+        w(f'              {label(f"NbExtras{i}", f"LabelStyle(FontSize: 12, RenderBold: true, TextColor: #b4c8c9, VerticalAlignment: Center)", anchor="Height: 17")}')
+        w("            }")
+        w("          }")
+    w("        }")
+    w("")
+    # ---- Colonne droite : en ce moment, agenda, voyageurs
+    w("        Group #CalendarColumn {")
+    w("          LayoutMode: Top;")
+    w("          FlexWeight: 1;")
+    w("          Group #Now {")
+    w("            LayoutMode: Left;")
+    w("            Anchor: (Height: 64, Bottom: 12);")
+    w("            Background: (Color: #e8c46a(0.16));")
+    w("            Group { Anchor: (Width: 4); Background: (Color: #e8c46a); }")
+    w("            Group {")
+    w("              LayoutMode: Top;")
+    w("              FlexWeight: 1;")
+    w("              Padding: (Horizontal: 12, Vertical: 6);")
+    w(f'              {label("NowTitle", "LabelStyle(FontSize: 12, RenderBold: true, RenderUppercase: true, TextColor: #e8c46a, VerticalAlignment: Center)", anchor="Height: 16")}')
+    w(f'              {label("NowText", "LabelStyle(FontSize: 14, RenderBold: true, TextColor: #f0e2b8, Wrap: true)", extra=" FlexWeight: 1;")}')
+    w("            }")
+    w("          }")
+    w(f'          {label("AgendaTitle", "@Section", anchor="Height: 22, Bottom: 6")}')
+    w(f'          {label("AgendaNone", "@SmallWrap", anchor="Height: 24", extra=" Visible: false;")}')
+    for i in range(AGENDA_ROWS):
+        w(f"          @Card #Ag{i} {{")
+        w("            LayoutMode: Left;")
+        w("            Anchor: (Height: 40, Bottom: 4);")
+        w("            Group {")
+        w("              LayoutMode: Full;")
+        w("              Anchor: (Width: 4);")
+        w(f"              Group #AgHere{i} {{ Anchor: (Full: 0); Background: (Color: {acc}); Visible: false; }}")
+        w("            }")
+        w(f'            {label(f"AgWhen{i}", "LabelStyle(FontSize: 13, RenderBold: true, RenderUppercase: true, TextColor: #e8c46a, VerticalAlignment: Center)", anchor="Width: 150, Left: 10")}')
+        w(f'            {label(f"AgText{i}", "LabelStyle(FontSize: 14, TextColor: #c9d1d9, VerticalAlignment: Center, Wrap: true)", anchor="Right: 10", extra=" FlexWeight: 1;")}')
+        w("          }")
+    w("          Group {")
+    w("            LayoutMode: Left;")
+    w("            Anchor: (Height: 22, Top: 10, Bottom: 6);")
+    w(f'            {label("RoadsTitle", "@Section", extra=" FlexWeight: 1;")}')
+    w(f'            {label("RoadsCount", "LabelStyle(FontSize: 13, TextColor: #96a9be, HorizontalAlignment: End, VerticalAlignment: Center)", anchor="Width: 220")}')
+    w("          }")
+    w(f'          {label("RoadsNone", "@SmallWrap", anchor="Height: 24", extra=" Visible: false;")}')
+    for i in range(ROAD_ROWS):
+        w(f"          @Card #Tr{i} {{")
+        w("            LayoutMode: Left;")
+        w("            Anchor: (Height: 52, Bottom: 6);")
+        w("            Padding: (Horizontal: 10, Vertical: 6);")
+        w("            Group {")
+        w("              LayoutMode: Full;")
+        w("              Anchor: (Width: 96, Height: 22, Top: 9, Right: 12);")
+        w("              Background: (Color: #1a2836);")
+        w(f'              {label(f"TrKind{i}", "LabelStyle(FontSize: 11, RenderBold: true, RenderUppercase: true, TextColor: #a9c4e6, HorizontalAlignment: Center, VerticalAlignment: Center)", anchor="Full: 0")}')
+        w("            }")
+        w("            Group {")
+        w("              LayoutMode: Top;")
+        w("              FlexWeight: 1;")
+        w(f'              {label(f"TrText{i}", "LabelStyle(FontSize: 14, RenderBold: true, TextColor: #d3d6db, VerticalAlignment: Center)", anchor="Height: 20")}')
+        w("              Group {")
+        w("                LayoutMode: Left;")
+        w("                Anchor: (Height: 18);")
+        w(f"                @Bar #TrBar{i} {{ Anchor: (Width: 240, Height: 8, Top: 5); }}")
+        w(f'                {label(f"TrLeft{i}", "@Small", anchor="Left: 10", extra=" FlexWeight: 1;")}')
+        w("              }")
+        w("            }")
+        w("          }")
+    w("        }")
     w("      }")
+    w(f'      {label("Totals", "@Small", anchor="Height: 24, Top: 6")}')
     w("    }")
     w("  }")
     w("}")
@@ -637,6 +813,9 @@ def world_page(theme_id):
 
 
 def main():
+    compass_png(OUT / "Board" / "Compass.png")
+    shape_png(OUT / "Board" / "Dot.png", "dot")
+    shape_png(OUT / "Board" / "Diamond.png", "diamond")
     for theme_id in THEMES:
         name = f"WorkshopPage_{theme_id}.ui" if theme_id else "WorkshopPage.ui"
         (OUT / name).write_text(page(theme_id), encoding="utf-8")

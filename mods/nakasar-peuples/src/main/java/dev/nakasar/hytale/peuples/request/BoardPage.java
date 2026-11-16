@@ -111,6 +111,7 @@ public final class BoardPage extends InteractiveCustomUIPage<BoardPage.Event> {
             return;
         }
         cmd.set("#PageTitle.TextSpans", Message.translation(BOARD + "title").param("name", village.name()));
+        BoardTabs.fill(cmd, events, store, village);
         band(cmd, world, store, ref, village);
         requests(cmd, events, store, ref, village);
         state(cmd, world, store, village);
@@ -376,22 +377,6 @@ public final class BoardPage extends InteractiveCustomUIPage<BoardPage.Event> {
         cmd.set("#Absent.TextSpans", absent.isEmpty() ? Message.translation(KEYS + "allHere") : lines(absent));
         cmd.set("#TurnIn.Text", Message.translation(KEYS + "turnIn"));
         events.addEventBinding(CustomUIEventBindingType.Activating, "#TurnIn", EventData.of("Action", "TurnIn"));
-        boolean plots = Chantiers.layout(village) != null && Chantiers.layout(village).plots().length > 0;
-        cmd.set("#PlotsButton.Visible", plots);
-        if (plots) {
-            cmd.set("#PlotsButton.Text", Message.translation(dev.nakasar.hytale.peuples.village.Plots.KEYS + "button"));
-            events.addEventBinding(CustomUIEventBindingType.Activating, "#PlotsButton", EventData.of("Action", "Plots"));
-        }
-        // Avant-postes de métier : l'onglet est toujours là (il dit le palier à atteindre).
-        boolean annexes = !dev.nakasar.hytale.peuples.annex.Annexes.catalog(village).isEmpty();
-        cmd.set("#AnnexButton.Visible", annexes);
-        if (annexes) {
-            cmd.set("#AnnexButton.Text", Message.translation(dev.nakasar.hytale.peuples.annex.Annexes.KEYS + "button"));
-            events.addEventBinding(CustomUIEventBindingType.Activating, "#AnnexButton", EventData.of("Action", "Annexes"));
-        }
-        // Onglet Monde : voyageurs, voisins, calendrier (monde vivant).
-        cmd.set("#WorldButton.Text", Message.translation(dev.nakasar.hytale.peuples.world.WorldPage.KEYS + "button"));
-        events.addEventBinding(CustomUIEventBindingType.Activating, "#WorldButton", EventData.of("Action", "World"));
         cmd.set("#TextVersion.Text", Message.translation(KEYS + "textVersion"));
         events.addEventBinding(CustomUIEventBindingType.Activating, "#TextVersion", EventData.of("Action", "Text"));
     }
@@ -482,14 +467,7 @@ public final class BoardPage extends InteractiveCustomUIPage<BoardPage.Event> {
         } else if (action.equals("Text")) {
             VillageBoard.open(world, store, ref, playerRef, village);
             return;
-        } else if (action.equals("Plots")) {
-            dev.nakasar.hytale.peuples.village.PlotPage.open(store, ref, playerRef, village);
-            return;
-        } else if (action.equals("World")) {
-            dev.nakasar.hytale.peuples.world.WorldPage.open(store, ref, playerRef, village);
-            return;
-        } else if (action.equals("Annexes")) {
-            dev.nakasar.hytale.peuples.annex.AnnexPage.open(store, ref, playerRef, village);
+        } else if (BoardTabs.handle(action, world, store, ref, playerRef, village)) {
             return;
         }
         rebuild();

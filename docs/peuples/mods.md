@@ -1499,12 +1499,30 @@ ce village, à 2400 blocs au plus. Sans `--vers`, vers le voisin le plus proche.
 
 ### Onglet Monde du panneau (`world/WorldPage`)
 
-Kevin (2026-11-16). Bouton `#WorldButton` du tableau, page `WorldPage_<Peuple>.ui` (`tools/generate_workshop_ui.py`),
-quatre cartes de texte (6 lignes au plus chacune) : Sur les routes (voyageurs dont `from` ou `to` est le village,
-escarmouches : `Relations.fighting`, `pendingHour`, `last` = nouvelle clé `~last:<liaison>` « jour|vainqueur »),
-Voisins (5 liaisons au plus : relation, trêve, `Routes.gap`, auberge ouverte), Au village (fête : `Calendar.upcoming`,
-foire ici, `Raids.status`, campements du village), Dans le monde (foire : `Calendar.nextFair`, migration :
-`Calendar.herdAt` ou prochaine date, fêtes en cours, totaux). La page se recalcule à chaque ouverture.
+Kevin (2026-11-16), refait d'après la maquette Claude Design « Panneau du village — refonte »
+(https://claude.ai/artifact/6bQjMFFoWYHqx5HJmsNeFj). Page `WorldPage_<Peuple>.ui` (`tools/generate_workshop_ui.py`,
+`world_page`), en deux colonnes :
+
+- **Voisins** : boussole `Board/Compass.png` (230 px, anneaux 500 et 1000 blocs, 1000 blocs aux 3/4 du rayon, bord à
+  `Links.MAX_LENGTH`), le village au centre, 8 marqueurs `#Mark<i>` placés par `setObject("#Mark<i>.Anchor", Anchor)`
+  (comme `MemoriesPage` vanilla) : les 5 voisins les plus proches (une couleur par relation : allié, ami, neutre,
+  tendu, rival), le troupeau en migration, 2 campements du village. Puis une fiche par voisin (liseré à la couleur de
+  la relation) : peuple, distance, direction, valeur ; route balisée (`Routes.gap`), auberge ouverte, trêve, dernière
+  escarmouche de la semaine gagnée / perdue / nulle (clé `~last:<liaison>` « jour|vainqueur »).
+- **En ce moment** (masqué s'il n'y a rien) : raid en cours, escarmouche (`Relations.fighting`), fête ici, fêtes
+  ailleurs, foire en cours, migration (`Calendar.herdAt`).
+- **Agenda** (5 lignes, triées par jour puis heure) : escarmouche attendue (`pendingHour`), raid annoncé (`RaidRecord.night`),
+  fête des moissons (`Calendar.upcoming`), foire (`Calendar.nextFair`, liseré si elle se tient ici), migration ; en
+  dernier ce qui manque (ferme de niveau II, village de palier 2).
+- **Sur les routes** (4 lignes) : voyageurs partis du village puis arrivants, genre coloré, jauge `at / longueur`.
+
+### Onglets du panneau (`request/BoardTabs`)
+
+Les quatre pages du panneau (Tableau, Emplacements, Avant-postes, Monde) ont la même taille (1060 × 840) et la même
+barre d'onglets en haut (`tab_strip` de `tools/generate_board_ui.py`) : `#Tab<X>On` (aplat à la couleur du peuple)
+pour l'onglet ouvert, `#Tab<X>Button` pour les autres, l'heure du jeu `#Clock`. Les anciens boutons du pied
+(`#PlotsButton`, `#AnnexButton`, `#WorldButton`, `#Back`) sont retirés. Emplacements est masqué sans terrains au plan,
+Avant-postes si le peuple n'en a pas. `ValidateAssets` vérifie les ids de `BoardTabs` dans les quatre pages.
 
 ### Tester en jeu (monde vivant)
 
