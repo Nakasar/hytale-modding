@@ -93,7 +93,7 @@ public final class WorldDialogueTypes {
                         }
                     };
                 }
-                case "HamletShop", "HamletVisits", "HamletOwner", "HamletRally" -> {
+                case "HamletShop", "HamletVisits", "HamletOwner", "HamletRally", "HamletOffering", "HamletWork" -> {
                     Hamlets.Place h = Hamlets.of(world, npc);
                     if (h == null) {
                         return false;
@@ -102,6 +102,8 @@ public final class WorldDialogueTypes {
                         case "HamletShop" -> Hamlets.openShop(world, c.store(), c.ref(), c.playerRef(), h);
                         case "HamletOwner" -> Allegiance.sayOwner(world, c.store(), c.playerRef(), h);
                         case "HamletRally" -> Allegiance.rally(world, c.store(), c.ref(), c.playerRef(), h);
+                        case "HamletOffering" -> Hamlets.offer(world, c.store(), c.ref(), c.playerRef(), h);
+                        case "HamletWork" -> Hamlets.sayWork(world, c.store(), c.playerRef(), h);
                         default -> Hamlets.sayVisits(world, c.store(), c.playerRef(), h);
                     };
                 }
@@ -177,6 +179,10 @@ public final class WorldDialogueTypes {
                 case "HamletRally" -> {
                     Hamlets.Place h = Hamlets.of(world, npc);
                     yield h != null && Allegiance.canRally(world, c.store(), c.ref(), h);
+                }
+                case "HamletWary" -> {
+                    Hamlets.Place h = Hamlets.of(world, npc);
+                    yield h != null && Hamlets.wary(world, c.store(), c.ref(), h);
                 }
                 case "CampOpen" -> {
                     Camps.Camp camp = Camps.of(world, npc);

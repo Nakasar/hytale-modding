@@ -101,7 +101,24 @@ public final class WorkshopPage extends InteractiveCustomUIPage<WorkshopPage.Eve
     }
 
     static Message title(Village village, Workshop w) {
+        if (village.isHamlet()) {
+            return hamletTitle(village, w, null);
+        }
         return Message.translation(KEYS + "title").param("building", Message.translation(w.nameKey())).param("village", village.name());
+    }
+
+    /**
+     * Titre du panneau d'un lieu-dit : son bâtiment et son peuple (« Mine isolée (Trork) »), et le village qui le tient.
+     * Le nom du lieu-dit est déjà celui de son bâtiment : « {building} de {village} » le doublait (« Mine isolée de Mine
+     * isolée trork »).
+     */
+    static Message hamletTitle(Village village, Workshop w, Village holder) {
+        String keys = dev.nakasar.hytale.peuples.world.Hamlets.KEYS;
+        Message people = Message.translation(village.people().nameKey());
+        Message building = Message.translation(w.nameKey());
+        return holder == null ? Message.translation(keys + "panelTitle").param("building", building).param("people", people)
+                : Message.translation(keys + "panelTitleHeld").param("building", building).param("people", people)
+                .param("village", holder.name());
     }
 
     @Override
@@ -117,7 +134,8 @@ public final class WorkshopPage extends InteractiveCustomUIPage<WorkshopPage.Eve
         WorkshopState state = village.workshop(w.getId());
         Village holder = dev.nakasar.hytale.peuples.world.Allegiance.holder(world, village);
         // Conquête : le panneau d'un lieu-dit tenu dit à quel village il appartient.
-        cmd.set("#PageTitle.TextSpans", holder == null ? title(village, w) : Message.translation(
+        cmd.set("#PageTitle.TextSpans", holder == null ? title(village, w)
+                : village.isHamlet() ? hamletTitle(village, w, holder) : Message.translation(
                 dev.nakasar.hytale.peuples.world.Heraldry.KEYS + "panel.title").param("building", Message.translation(w.nameKey()))
                 .param("hamlet", village.name()).param("village", holder.name()));
         band(cmd, events, village, w, state);
@@ -221,8 +239,10 @@ public final class WorkshopPage extends InteractiveCustomUIPage<WorkshopPage.Eve
             Requests.Status status = Requests.status(data, request);
             boolean taken = status == Requests.Status.TAKEN;
             boolean done = status == Requests.Status.DONE;
-            boolean available = !taken && !done && open;
-            boolean locked = !taken && !done && !open;
+            // Lieu-dit : la première case reste ouverte sous Toléré, pour se racheter.
+            boolean slotOpen = open || Workshops.canTake(store, ref, village, i);
+            boolean available = !taken && !done && slotOpen;
+            boolean locked = !taken && !done && !slotOpen;
             cmd.set("#RewardBox" + n + ".Visible", available);
             cmd.set("#TaskBox" + n + ".Visible", taken);
             cmd.set("#Detail" + n + ".Visible", done || locked);
@@ -460,16 +480,18 @@ public final class WorkshopPage extends InteractiveCustomUIPage<WorkshopPage.Eve
         lines.add(Message.translation(KEYS + "orders"));
         VillageRequest[] board = state.requests();
         int n = 0;
-        for (VillageRequest request : board) {
+        for (int slot = 0; slot < board.length; slot++) {
+            VillageRequest request = board[slot];
             RequestTemplate t = request == null ? null : request.template();
             if (t == null) {
                 continue;
             }
             n++;
+            boolean slotOpen = open || Workshops.canTake(store, ref, village, slot);
             String key = switch (Requests.status(data, request)) {
                 case TAKEN -> "text.taken";
                 case DONE -> "text.done";
-                default -> open ? "text.available" : "text.locked";
+                default -> slotOpen ? "text.available" : "text.locked";
             };
             lines.add(Message.translation(KEYS + "text.order").param("n", n).param("type", Message.translation(t.type().nameKey()))
                     .param("title", Requests.boardTitle(t)).param("state", Message.translation(KEYS + key)));

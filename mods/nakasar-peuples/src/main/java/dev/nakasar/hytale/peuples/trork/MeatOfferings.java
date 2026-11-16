@@ -82,6 +82,9 @@ public final class MeatOfferings extends RefSystem<EntityStore> {
         Vector3d at = new Vector3d(transform.getPosition());
         Village camp = Villages.registry(world).nearestOf(People.TRORK, at.x(), at.z(), CAMP_REACH);
         if (camp == null) {
+            camp = nearestHamlet(world, at); // lieu-dit trork : on s'y rachète aussi par la viande
+        }
+        if (camp == null) {
             return;
         }
         UUID dropper = null;
@@ -138,6 +141,24 @@ public final class MeatOfferings extends RefSystem<EntityStore> {
         }
         Reputations.change(world, store, ref, player, camp, gain, KEYS + "reason");
         PeuplesPlugin.get().getLogger().atInfo().log("Peuples : viande mangée au camp %s, +%d pour %s", camp.name(), gain, player.getUsername());
+    }
+
+    /** Lieu-dit trork posé le plus proche à moins de {@value #CAMP_REACH} blocs (sa réputation propre, id « H:… »), ou null. */
+    private static Village nearestHamlet(World world, Vector3d at) {
+        dev.nakasar.hytale.peuples.village.HamletRegistry hamlets = dev.nakasar.hytale.peuples.village.HamletRegistry.of(world);
+        if (hamlets == null) {
+            return null;
+        }
+        Village best = null;
+        double bestDistance = (double) CAMP_REACH * CAMP_REACH;
+        for (Village v : hamlets.all()) {
+            double d = v.horizontalDistanceSquared(at.x(), at.z());
+            if (v.people() == People.TRORK && d <= bestDistance) {
+                best = v;
+                bestDistance = d;
+            }
+        }
+        return best;
     }
 
     /** Vrai si un PNJ trork (rôle *Trork*, comme le groupe vanilla) est à moins de {@value #EATER_REACH} blocs. */

@@ -1642,6 +1642,21 @@ dialogue `Monde_LieuDit_<Genre>` (troc, « qui vient commercer ici ? », rumeurs
 en faveurs du peuple, au rang Toléré auprès du lieu-dit (sa réputation propre, ou celle du peuple) ; `..._Anime` (plus de marchandises) quand le
 lieu-dit est animé. Les Kweebecs ne vendent rien en métal (caserne animée : flèches simples, cuir).
 
+### Carte et réputation (Kevin, 2026-11-16)
+
+- **Carte** : `world/HamletMarkers`, fournisseur de marqueurs par monde comme `annex/AnnexMarkers`, refait à chaque pas
+  de `Hamlets.step`. Un lieu-dit posé apparaît sur la carte du monde et la boussole (icône poteau indicateur
+  `Nakasar_Peuples_Hamlet{,Compass}.png`, `tools/generate_map_icons.py`, nom « Mine isolée (Trork) ») dès que le joueur
+  l'a découvert (drapeau `Hamlet:<id>`, posé à 16 blocs de la place).
+- **Se racheter** : un joueur Honni ou Étranger au lieu-dit n'avait aucun moyen d'y monter (toutes les commandes et le
+  troc demandent Toléré). Comme la première demande d'un village, la **première case** du panneau d'un lieu-dit est
+  ouverte à tout rang (`Workshops.canTake(..., slot)`, `REDEEM_SLOT`). Sous Toléré, le tenancier accueille avec le nœud
+  `Mefiance` (condition `WorldCheck HamletWary`) : « J'apporte des vivres » (`HamletOffering` : objets `Food_*`, +4
+  chacun, 10 par jour et par lieu-dit, jamais au-delà de Toléré) et « Comment gagner votre confiance ? » (`HamletWork`).
+  Lieu-dit trork : la viande jetée près de la place et mangée par un Trork compte aussi (`MeatOfferings`, comme au camp).
+- **Titre du panneau** : « Mine isolée (Trork) » (`hamlet.panelTitle`), et « …, terre de {village} » s'il est tenu ;
+  l'ancien « {building} de {village} » doublait le nom (« Mine isolée de Mine isolée trork »).
+
 ### Paliers (bâtiment de métier du lieu-dit)
 
 Kevin (2026-11-16) : les bâtiments des lieux-dits ont les mêmes paliers que leur équivalent avant-poste. Chaque genre
@@ -1741,6 +1756,10 @@ le lieu-dit le plus proche).
    du lieu-dit (200 blocs), choisir une spécialité, voir la boutique de niveau II et un
    troisième habitant.
 6. Nouveau monde avec plusieurs villages éloignés : lieux-dits le long des routes et autour des villages (`/monde etat`).
+
+7. Carte : approcher d'un lieu-dit, ouvrir la carte (poteau indicateur à la place) et voir l'icône sur la boussole.
+8. Lieu-dit trork avec un joueur neuf (Honni, -250) : le tenancier se méfie ; offrir des vivres (+4 chacun, 10 par jour), prendre la
+   première commande du panneau (les deux autres restent fermées) ; le titre du panneau dit « Mine isolée (Trork) ».
 
 ### À vérifier en jeu (lieux-dits)
 

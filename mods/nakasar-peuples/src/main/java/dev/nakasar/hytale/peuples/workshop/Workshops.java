@@ -542,6 +542,18 @@ public final class Workshops {
         return Reputations.rank(store, ref, village).atLeast(TAKE_RANK);
     }
 
+    /**
+     * Vrai si le joueur peut prendre la commande de la case `slot` : rang Toléré, ou, dans un lieu-dit, la première case
+     * à tout rang (comme la première demande d'un village) : sans elle, un Honni ou un Étranger ne pourrait jamais y
+     * remonter (Kevin, 16 novembre 2026).
+     */
+    public static boolean canTake(Store<EntityStore> store, Ref<EntityStore> ref, Village village, int slot) {
+        return canTake(store, ref, village) || village.isHamlet() && slot == REDEEM_SLOT;
+    }
+
+    /** Case du panneau d'un lieu-dit ouverte sous Toléré, pour se racheter. */
+    public static final int REDEEM_SLOT = 0;
+
     /** Demandes et commandes suivies par le joueur, hors étapes de chaîne (qui n'expirent pas). */
     public static int followed(PeuplesPlayer state) {
         int n = 0;
@@ -567,7 +579,7 @@ public final class Workshops {
             player.sendMessage(Message.translation(Requests.KEYS + "noSuchSlot").param("slot", slot + 1));
             return false;
         }
-        if (!canTake(store, ref, village)) {
+        if (!canTake(store, ref, village, slot)) {
             player.sendMessage(Message.translation(KEYS + "locked").param("rank", Message.translation(TAKE_RANK.nameKey())));
             return false;
         }

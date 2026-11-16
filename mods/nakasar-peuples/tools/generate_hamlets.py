@@ -224,7 +224,7 @@ def resp(text, action=None, next_=None, check=None):
     return r
 
 
-def dialogue(did, comment, npc, role, nodes):
+def dialogue(did, comment, npc, role, nodes, entries=None):
     k = f"dialogue.{did}."
     t(k + "npc", *npc)
     t(k + "role", *role)
@@ -234,7 +234,7 @@ def dialogue(did, comment, npc, role, nodes):
         "$Comment": comment + " Généré par tools/generate_hamlets.py ; effets WorldAction et conditions WorldCheck (world/WorldDialogueTypes).",
         "NpcNameKey": f"nakasar_peuples.{k}npc",
         "RoleKey": f"nakasar_peuples.{k}role",
-        "Entries": [{"Node": "Accueil"}],
+        "Entries": (entries or []) + [{"Node": "Accueil"}],
         "Nodes": nodes,
     })
 
@@ -251,19 +251,29 @@ def dialogues():
     place = t("dialogue.LieuDit.lieu", "Parle-moi de cet endroit.", "Tell me about this place.")
     place_text = t("dialogue.LieuDit.lieuTexte", "Que veux-tu savoir ? Les marchands, nos maîtres… on sait tout, ici.",
                    "What do you want to know? The traders, our masters… we know everything here.")
+    # Se racheter (Kevin, 16 novembre 2026) : sous Toléré, le tenancier se méfie ; il prend des vivres (jusqu'à Toléré)
+    # et rappelle que la première commande du panneau est ouverte (Java Hamlets.wary/offer, Workshops.REDEEM_SLOT).
+    wary = t("dialogue.LieuDit.mefiance", "On ne te connaît pas bien, ici. Rends-nous service avant de parler affaires.",
+             "We don't know you well here. Do us a favour before we talk business.")
+    offer = t("dialogue.LieuDit.offrande", "J'apporte des vivres pour vous.", "I've brought you provisions.")
+    work = t("dialogue.LieuDit.travail", "Comment gagner votre confiance ?", "How can I earn your trust?")
     for kind in hamlets.TYPES:
         name_fr, name_en, _icon, hello_fr, hello_en = hamlets.NAMES[kind]
         did = f"Monde_LieuDit_{kind}"
         dialogue(did, f"Habitant d'un lieu-dit {name_fr} : troc du lieu-dit (élargi quand il est animé), marchands venus, "
-                      "propriétaire et lettre de ralliement (conquête), rumeurs.",
+                      "propriétaire et lettre de ralliement (conquête), rumeurs ; sous Toléré, méfiance : offrande de vivres "
+                      "et première commande du panneau pour se racheter.",
                  ("Habitant", "Resident"), (name_fr, name_en), [
             # Quatre réponses au plus par nœud : la vie du lieu-dit (marchands, propriétaire, lettre) dans « Lieu ».
             node("Accueil", t(f"dialogue.{did}.accueil", hello_fr, hello_en), [
                 resp(troc, "HamletShop"), resp(place, None, "Lieu"), rumour, bye]),
+            node("Mefiance", wary, [
+                resp(offer, "HamletOffering", "Mefiance"), resp(work, "HamletWork", "Mefiance"),
+                resp(place, None, "Lieu"), bye]),
             node("Lieu", place_text, [
                 resp(visits, "HamletVisits", "Lieu"), resp(owner, "HamletOwner", "Lieu"),
                 resp(rally, "HamletRally", "Lieu", "HamletRally"), resp(COMMON + "retour", None, "Accueil")]),
-        ])
+        ], entries=[{"Node": "Mefiance", "Conditions": [{"Type": "WorldCheck", "Check": "HamletWary"}]}])
     did = "Monde_Marchand_LieuDit"
     dialogue(did, "Marchand ou caravanier d'un village venu commercer dans un lieu-dit (world/HamletTrips).",
              ("Marchand", "Merchant"), ("Marchand en tournée", "Merchant on a round"), [
@@ -294,6 +304,17 @@ def texts():
          "{count} merchants in 7 days; last one from {village}."),
         ("visits.lively", "{count} marchands en 7 jours ; dernier venu : {village}. On est animés !",
          "{count} merchants in 7 days; last one from {village}. We're lively!"),
+        ("marker", "{name} ({people})", "{name} ({people})"),
+        ("panelTitle", "{building} ({people})", "{building} ({people})"),
+        ("panelTitleHeld", "{building} ({people}), terre de {village}", "{building} ({people}), land of {village}"),
+        ("offering.done", "Merci pour ces {count} vivres. On s'en souviendra.", "Thanks for these {count} provisions. We'll remember it."),
+        ("offering.today", "Tu nous as déjà assez donné aujourd'hui. Reviens demain.", "You've given us enough today. Come back tomorrow."),
+        ("offering.noFood", "Tu n'as rien à manger sur toi.", "You have nothing to eat on you."),
+        ("offering.enough", "Garde tes vivres : on te connaît, maintenant. Passe au panneau pour nos commandes.",
+         "Keep your provisions: we know you now. Check the board for our orders."),
+        ("offering.reason", "vivres offerts au lieu-dit", "provisions given to the hamlet"),
+        ("offering.work", "Apporte-nous des vivres, ou remplis la première commande du panneau : elle est ouverte à tous. Les autres attendront que tu sois Toléré.",
+         "Bring us provisions, or fill the first order on the board: it's open to everyone. The others wait until you're Tolerated."),
         ("shopRank", "Je ne commerce qu'avec ceux qu'on connaît ici ou chez les {people} (rang Toléré).",
          "I only trade with those known here or among the {people} (Tolerated rank)."),
         ("trip.where.out", "Je vais à {hamlet}, puis je rentre à {village}.", "I'm going to {hamlet}, then back to {village}."),
