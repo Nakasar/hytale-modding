@@ -5,7 +5,7 @@
     "Name": "nakasar_peuples.items.Nakasar_Peuples_Standard_Yellow_Leaf.name",
     "Description": "nakasar_peuples.items.Nakasar_Peuples_Standard_Yellow_Leaf.description"
   },
-  "Icon": "Icons/Nakasar/Peuples/Standards/Nakasar_Peuples_Standard_Yellow_Leaf.png",
+  "Icon": "Icons/ItemsGenerated/Nakasar_Peuples_Standard_Yellow_Leaf.png",
   "Quality": "Uncommon",
   "BlockType": {
     "CustomModelTexture": [

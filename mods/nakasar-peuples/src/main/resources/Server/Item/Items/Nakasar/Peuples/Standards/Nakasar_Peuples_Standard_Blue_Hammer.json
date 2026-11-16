@@ -5,7 +5,7 @@
     "Name": "nakasar_peuples.items.Nakasar_Peuples_Standard_Blue_Hammer.name",
     "Description": "nakasar_peuples.items.Nakasar_Peuples_Standard_Blue_Hammer.description"
   },
-  "Icon": "Icons/Nakasar/Peuples/Standards/Nakasar_Peuples_Standard_Blue_Hammer.png",
+  "Icon": "Icons/ItemsGenerated/Nakasar_Peuples_Standard_Blue_Hammer.png",
   "Quality": "Uncommon",
   "BlockType": {
     "CustomModelTexture": [

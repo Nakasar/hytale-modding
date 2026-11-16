@@ -5,7 +5,7 @@
     "Name": "nakasar_peuples.items.Nakasar_Peuples_Standard_Purple_Star.name",
     "Description": "nakasar_peuples.items.Nakasar_Peuples_Standard_Purple_Star.description"
   },
-  "Icon": "Icons/Nakasar/Peuples/Standards/Nakasar_Peuples_Standard_Purple_Star.png",
+  "Icon": "Icons/ItemsGenerated/Nakasar_Peuples_Standard_Purple_Star.png",
   "Quality": "Uncommon",
   "BlockType": {
     "CustomModelTexture": [

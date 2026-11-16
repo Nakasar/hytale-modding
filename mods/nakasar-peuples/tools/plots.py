@@ -338,7 +338,7 @@ COUNCIL_BASE = [("Ingredient_Bolt_Cotton", 2, 1), ("Ingredient_Stick", 8, 1), ("
 def council(prefab, kind, wood, extra, extra_fr, extra_en, dialogue=None):
     d = dict(id="Conseil", prefab=NPC + prefab, rotation=0, job="Conseiller", kind=kind, fr="Maison du conseil", en="Council house",
              job_fr="Conseiller", job_en="Councillor", icon="Recipe_Page",
-             orders=[("Bolts", "Gather", "Ingredient_Bolt_Cotton", 4, "Toile des bannières", "Cloth for the banners"),
+             orders=[("Cotton", "Gather", "Plant_Crop_Cotton_Item", 12, "Coton des bannières", "Cotton for the banners"),
                      ("Wood", "Gather", wood, 16, "Bois de la grande table", "Wood for the great table"),
                      ("Gifts", "Gather", extra, 6, extra_fr, extra_en)],
              base=COUNCIL_BASE, specs=COUNCIL_SPECS)

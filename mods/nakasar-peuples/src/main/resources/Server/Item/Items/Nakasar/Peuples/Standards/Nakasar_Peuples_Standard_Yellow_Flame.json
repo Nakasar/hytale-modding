@@ -5,7 +5,7 @@
     "Name": "nakasar_peuples.items.Nakasar_Peuples_Standard_Yellow_Flame.name",
     "Description": "nakasar_peuples.items.Nakasar_Peuples_Standard_Yellow_Flame.description"
   },
-  "Icon": "Icons/Nakasar/Peuples/Standards/Nakasar_Peuples_Standard_Yellow_Flame.png",
+  "Icon": "Icons/ItemsGenerated/Nakasar_Peuples_Standard_Yellow_Flame.png",
   "Quality": "Uncommon",
   "BlockType": {
     "CustomModelTexture": [

@@ -5,7 +5,7 @@
     "Name": "nakasar_peuples.items.Nakasar_Peuples_Standard_Red_Sun.name",
     "Description": "nakasar_peuples.items.Nakasar_Peuples_Standard_Red_Sun.description"
   },
-  "Icon": "Icons/Nakasar/Peuples/Standards/Nakasar_Peuples_Standard_Red_Sun.png",
+  "Icon": "Icons/ItemsGenerated/Nakasar_Peuples_Standard_Red_Sun.png",
   "Quality": "Uncommon",
   "BlockType": {
     "CustomModelTexture": [

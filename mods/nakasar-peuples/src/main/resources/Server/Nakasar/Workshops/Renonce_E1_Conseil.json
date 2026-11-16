@@ -1,0 +1,85 @@
+{
+  "$Comment": "Bâtiment de métier généré par tools/generate_workshops.py (ne pas modifier à la main) : voir dev.nakasar.hytale.peuples.workshop.Workshop.",
+  "People": "Renonce",
+  "Layout": "Renonce_Givre",
+  "Building": "E1_Conseil",
+  "Job": "Conseiller_E1",
+  "Icon": "Recipe_Page",
+  "NameKey": "nakasar_peuples.workshop.Renonce_E1_Conseil.name",
+  "Board": [
+    31,
+    -17,
+    0
+  ],
+  "Upgrades": [
+    {
+      "Level": 2,
+      "Hours": 12,
+      "Materials": [
+        {
+          "ItemId": "Wood_Fir_Trunk",
+          "Quantity": 24
+        },
+        {
+          "ItemId": "Wood_Hardwood_Planks",
+          "Quantity": 16
+        },
+        {
+          "ItemId": "Rock_Stone_Cobble",
+          "Quantity": 12
+        }
+      ],
+      "Decor": [
+        "1 0 0 0 Furniture_Lumberjack_Lantern"
+      ]
+    },
+    {
+      "Level": 3,
+      "Hours": 12,
+      "Materials": [
+        {
+          "ItemId": "Wood_Fir_Trunk",
+          "Quantity": 32
+        },
+        {
+          "ItemId": "Ingredient_Bolt_Wool",
+          "Quantity": 6
+        },
+        {
+          "ItemId": "Ingredient_Ice_Essence",
+          "Quantity": 6
+        }
+      ],
+      "Decor": [
+        "-1 0 0 0 Furniture_Lumberjack_Lantern"
+      ]
+    }
+  ],
+  "Specialties": [
+    {
+      "Id": "Diplomatie",
+      "NameKey": "nakasar_peuples.workshop.specialty.Renonce_E1_Conseil.Diplomatie",
+      "LineKey": "nakasar_peuples.workshop.specialtyLine.Renonce_E1_Conseil.Diplomatie",
+      "Icon": "Recipe_Page",
+      "Shops": [
+        "Nakasar_Peuples_W_Renonce_E1_Conseil_Diplomatie_2",
+        "Nakasar_Peuples_W_Renonce_E1_Conseil_Diplomatie_3"
+      ],
+      "ShareItem": "Ingredient_Bolt_Cotton",
+      "ShareQuantity": 4
+    },
+    {
+      "Id": "Garnison",
+      "NameKey": "nakasar_peuples.workshop.specialty.Renonce_E1_Conseil.Garnison",
+      "LineKey": "nakasar_peuples.workshop.specialtyLine.Renonce_E1_Conseil.Garnison",
+      "Icon": "Weapon_Shield_Iron",
+      "Shops": [
+        "Nakasar_Peuples_W_Renonce_E1_Conseil_Garnison_2",
+        "Nakasar_Peuples_W_Renonce_E1_Conseil_Garnison_3"
+      ],
+      "ShareItem": "Weapon_Shield_Copper",
+      "ShareQuantity": 1
+    }
+  ],
+  "Shop": "Nakasar_Peuples_W_Renonce_E1_Conseil_Base_1"
+}

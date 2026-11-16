@@ -250,6 +250,21 @@
       "Plot": "E1"
     },
     {
+      "Id": "E1_Conseil",
+      "Tier": 2,
+      "Prefab": "Npc/Feran/Portals_Oasis/Hut/Feran_Tier2_Hut_003",
+      "X": -1,
+      "Z": 40,
+      "Rotation": 0,
+      "MinX": -11,
+      "MaxX": 9,
+      "MinZ": -10,
+      "MaxZ": 10,
+      "MinY": -9,
+      "MaxY": 14,
+      "Plot": "E1"
+    },
+    {
       "Id": "E2_Caravanserail",
       "Tier": 3,
       "Prefab": "Npc/Feran/Portals_Oasis/Hut/Feran_Tier2_Hut_002",
@@ -322,6 +337,21 @@
       "MaxZ": 6,
       "MinY": 0,
       "MaxY": 1,
+      "Plot": "E2"
+    },
+    {
+      "Id": "E2_Conseil",
+      "Tier": 3,
+      "Prefab": "Npc/Feran/Portals_Oasis/Hut/Feran_Tier2_Hut_003",
+      "X": 56,
+      "Z": 0,
+      "Rotation": 0,
+      "MinX": -11,
+      "MaxX": 9,
+      "MinZ": -10,
+      "MaxZ": 10,
+      "MinY": -9,
+      "MaxY": 14,
       "Plot": "E2"
     }
   ],
@@ -534,6 +564,19 @@
       "Builder": false
     },
     {
+      "Id": "Conseiller_E1",
+      "Tier": 2,
+      "Role": "Nakasar_Peuples_Feran_Elder",
+      "Dialogue": "Feran_Elder",
+      "Building": "E1_Conseil",
+      "WorkX": -2,
+      "WorkZ": 28,
+      "Home": "E1_Conseil",
+      "HomeX": -2,
+      "HomeZ": 28,
+      "Builder": false
+    },
+    {
       "Id": "Caravaniere_E2",
       "Tier": 3,
       "Role": "Nakasar_Peuples_Feran_Merchant",
@@ -595,6 +638,19 @@
       "WorkZ": 0,
       "Home": "E2_Deuxieme_Enclos",
       "HomeX": 47,
+      "HomeZ": 0,
+      "Builder": false
+    },
+    {
+      "Id": "Conseiller_E2",
+      "Tier": 3,
+      "Role": "Nakasar_Peuples_Feran_Elder",
+      "Dialogue": "Feran_Elder",
+      "Building": "E2_Conseil",
+      "WorkX": 43,
+      "WorkZ": 0,
+      "Home": "E2_Conseil",
+      "HomeX": 43,
       "HomeZ": 0,
       "Builder": false
     }

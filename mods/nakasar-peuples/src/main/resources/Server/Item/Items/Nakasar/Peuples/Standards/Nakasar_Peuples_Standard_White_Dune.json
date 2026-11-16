@@ -5,7 +5,7 @@
     "Name": "nakasar_peuples.items.Nakasar_Peuples_Standard_White_Dune.name",
     "Description": "nakasar_peuples.items.Nakasar_Peuples_Standard_White_Dune.description"
   },
-  "Icon": "Icons/Nakasar/Peuples/Standards/Nakasar_Peuples_Standard_White_Dune.png",
+  "Icon": "Icons/ItemsGenerated/Nakasar_Peuples_Standard_White_Dune.png",
   "Quality": "Uncommon",
   "BlockType": {
     "CustomModelTexture": [

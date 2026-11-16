@@ -1735,3 +1735,100 @@ le lieu-dit le plus proche).
 - Emprises relevées pour les nouveaux prefabs (mine vanilla, silo, étal) : pas de bâtiment qui déborde sur un autre.
 - Les habitants restent près de la place (pas de laisse : ils errent selon leur rôle).
 - Le marchand attend bien sur la place et reprend la route après le séjour.
+
+## Conquête des lieux-dits (`world/Allegiance`, `Garrisons`, `Embassies`, `Sieges`, `Heraldry`, `Banners`)
+
+GDD « Villages et lieux-dits : allégeance et conquête » (Kevin, 16 novembre 2026). Les villages prennent et
+administrent les **lieux-dits** (jamais un autre village) ; la conquête n'est qu'occupation et rancœur (ni incendie
+ni perte de niveau).
+
+### Influence et propriétaire (`Allegiance`)
+
+- Chaque village à moins de 900 blocs a une influence de −100 à +100 sur chaque lieu-dit (le village d'origine part
+  à +10). Commerce : marchand +3, caravane +6, commande d'un joueur aux couleurs du village +2, tribut +1, gardes qui
+  repoussent une attaque +10. Tort : marchand tué par un joueur aux couleurs du village −10, habitant tué −15,
+  expédition contre le lieu-dit −40 (−10 aux voisins à 400 blocs), lieu-dit pris sans garde −20 au propriétaire.
+  Tous les 3 jours, chaque influence revient d'un point vers 0.
+- Changement de main : ambassade réussie, **ralliement spontané** (influence ≥ 80, ou 70 avec la spécialité
+  Diplomatie, 7 jours de suite et 30 points devant le propriétaire), conquête ; **sécession** quand l'influence du
+  propriétaire reste sous −20 trois jours de suite (sauf pendant l'occupation).
+- Plafond : 1 lieu-dit au palier 2, 3 au palier 3, +1 par niveau de la **Maison du conseil** (6e projet d'emplacement,
+  `plots.py COUNCIL`, spécialités Diplomatie et Garnison).
+- Administration : +1 d'essor par jour, un tribut par semaine (deux porteurs, genre T, lot selon le genre du lieu-dit
+  `TRIBUTE_LOTS` déposé au dépôt du village, +2 d'essor), marchands du propriétaire deux fois plus fréquents.
+- **Embargo** : les rivaux du propriétaire (relation ≤ Rival) n'y envoient plus de marchands ; les joueurs Étrangers
+  ou pires chez le propriétaire n'y troquent plus et n'y prennent plus de commandes.
+- Dialogue de l'habitant : nouveau nœud « Parle-moi de cet endroit » (marchands venus, « à qui appartient ce lieu ? »,
+  lettre de ralliement : +15 % à la prochaine ambassade du village dont le joueur porte les couleurs).
+- Rumeurs : dernier changement de main (7 jours), expédition en marche.
+
+### Gardes (`Garrisons`)
+
+1 garde (2 au palier 3), +1 avec Garnison, +1 dans une caserne, 4 au plus : combattants du peuple du propriétaire,
+posés autour de la place quand un joueur est proche, camp 0 de la clé `HG:<lieu-dit>`, hostiles aux joueurs Honnis du
+propriétaire. Un garde mort est remplacé par une relève (genre G) le lendemain matin (le jour même avec Garnison).
+
+### Ambassades (`Embassies`) et expéditions (`Sieges`)
+
+- **Ambassade** (palier 2, place libre) : 2 négociateurs et 1 garde, parlement d'une heure sur la place. Chance :
+  50 % + écart d'influence avec le propriétaire (10 à 95 %), +15 % escorte d'un Ami (32 blocs), +15 % Diplomatie,
+  +15 % lettre, −20 % par garde. Chassée si rival et gardes présents. Réussite +10 et le garde reste ; échec −5 et
+  7 jours d'attente. Conseil du matin : une chance sur cinq par village, 3 ambassades au plus dans le monde ; un joueur
+  Ami peut en demander une au tableau (3 faveurs).
+- **Expédition** (palier 3, contre un rival hors trêve) : 4 soldats (+1 Garnison), une chance sur dix par semaine,
+  une à la fois ; un joueur Hôte peut la demander (5 faveurs). Annoncée à 600 blocs. Assaut réel avec un joueur à
+  portée (300 s au plus, place prise 15 s sans garde), sinon réglé seul. Victoire : changement de main, occupation
+  7 jours (influence du vainqueur à −30, pas de troc animé), soldats restants en garde, relation −25. Défense : +10
+  au propriétaire, 14 jours d'attente. Réputation : défendre +50, attaquer +30 auprès de l'attaquant et −100 auprès
+  du lieu-dit.
+
+### Territoires (`Territories`)
+
+À moins de 250 blocs d'un lieu-dit gardé, ou de 200 blocs d'un village qui en tient un gardé : une embuscade sur deux
+est évitée, et les voyageurs d'un rival du maître des lieux renoncent quand le milieu de leur route y passe.
+
+### Blasons, bannières et couleurs (`Heraldry`, `Banners`, `Colours`)
+
+- `tools/generate_conquest.py` : 8 couleurs × 16 emblèmes (3 par peuple + l'étoile) = 128 bannières
+  `Nakasar_Peuples_Standard_<Couleur>_<Emblème>` sur le modèle vanilla de `Furniture_Outlander_Banner` (texture
+  dessinée), 8 fanions `Nakasar_Peuples_Pennant_<Couleur>` sur `Flag_Small.blockymodel`, une bannière vierge
+  (2 rouleaux de coton + 1 bâton au Métier à tisser). `--preview DIR` dessine la planche.
+- Blason tiré au hasard par village ; un **Hôte** le change à l'onglet Domaine (4 rouleaux de tissu, tous les 7 jours).
+- Un lieu-dit tenu porte jusqu'à 2 bannières aux murs (4 blocs au-dessus du sol, cherchées depuis la place) et un
+  fanion près de la place ; repeintes au changement de blason ou de main, retirées quand il redevient libre ; jamais
+  posées sur un bloc d'un joueur. Panneaux des bâtiments : « {bâtiment} — {lieu-dit}, terre de {village} » ; titre à
+  l'entrée du lieu-dit.
+- Un joueur **Ami** porte les couleurs d'un village (une à la fois, changeables tous les 3 jours) et brode ses
+  bannières vierges à son blason.
+
+### Onglet Domaine (`world/DomainPage`)
+
+Cinquième onglet du panneau du village (`DomainPage[_Peuple].ui`, `generate_workshop_ui.py domain_page`) : blason
+(couleur et emblème à faire défiler, adopter), couleurs du joueur et broderie, lieux-dits à portée (propriétaire,
+influence, gardes, occupation) avec les boutons Ambassade et Expédition. Écart avec le GDD : l'onglet est toujours
+visible (le GDD le réservait à la Maison du conseil niveau I) pour que les joueurs le découvrent.
+
+État sauvé (parties du monde vivant) : `ALLEGIANCE`, `INFLUENCE`, `GARRISONS`, `HERALDRY`, `BANNERS` (formats dans la
+Javadoc des classes).
+
+### Commandes (conquête)
+
+`/monde allegeance` (lieu-dit le plus proche : propriétaire, gardes, influences). Admin : `/monde ambassade <village>`,
+`/monde expedition <village>` (sans conditions), `/monde influence <village> <valeur>`,
+`/monde proprietaire <village|libre>`.
+
+### Tester en jeu (conquête)
+
+1. Près d'un lieu-dit posé : `/monde proprietaire <village>` puis `/monde allegeance` ; voir les gardes, les
+   bannières aux murs, le fanion, le titre à l'entrée et le panneau « terre de ».
+2. Tableau du village, onglet Domaine : changer le blason (Hôte, 4 rouleaux), voir les bannières du lieu-dit repeintes.
+3. Bannière vierge au Métier à tisser, porter les couleurs (Ami), broder.
+4. `/monde influence <village> 60` puis `/monde ambassade <village>` : suivre l'ambassade, attendre une heure de jeu.
+5. Deux villages rivaux : `/monde expedition <rival>`, défendre ou laisser faire ; occupation 7 jours.
+
+### À vérifier en jeu (conquête)
+
+- Place et rotation des bannières sur les murs (selon l'orientation du lieu-dit) et du fanion ; texture et
+  transparence de la queue d'aronde.
+- Les gardes restent à leur poste ; combat soldats contre gardes (camps de `HG:<lieu-dit>`).
+- Mise en page de l'onglet Domaine (cinq onglets de 150 de large).

@@ -5,7 +5,7 @@
     "Name": "nakasar_peuples.items.Nakasar_Peuples_Standard_White_Tower.name",
     "Description": "nakasar_peuples.items.Nakasar_Peuples_Standard_White_Tower.description"
   },
-  "Icon": "Icons/Nakasar/Peuples/Standards/Nakasar_Peuples_Standard_White_Tower.png",
+  "Icon": "Icons/ItemsGenerated/Nakasar_Peuples_Standard_White_Tower.png",
   "Quality": "Uncommon",
   "BlockType": {
     "CustomModelTexture": [

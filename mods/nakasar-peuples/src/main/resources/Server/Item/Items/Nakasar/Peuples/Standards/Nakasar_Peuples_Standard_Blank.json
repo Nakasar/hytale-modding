@@ -5,7 +5,7 @@
     "Name": "nakasar_peuples.items.Nakasar_Peuples_Standard_Blank.name",
     "Description": "nakasar_peuples.items.Nakasar_Peuples_Standard_Blank.description"
   },
-  "Icon": "Icons/Nakasar/Peuples/Standards/Nakasar_Peuples_Standard_Blank.png",
+  "Icon": "Icons/ItemsGenerated/Nakasar_Peuples_Standard_Blank.png",
   "Quality": "Common",
   "BlockType": {
     "CustomModelTexture": [

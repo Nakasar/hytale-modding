@@ -8,7 +8,7 @@ Sorties :
     Server/Item/Items/Nakasar/Peuples/Standards/Nakasar_Peuples_Standard_Blank.json                  bannière vierge
         (fabriquée au métier à tisser vanilla : 2 rouleaux de coton et un bâton)
     Common/Blocks/Nakasar/Peuples/Standards/*.png   textures (UV des modèles vanilla, voir plus bas)
-    Common/Icons/Nakasar/Peuples/Standards/*.png    icônes 64 × 64
+    Common/Icons/ItemsGenerated/Nakasar_Peuples_*.png    icônes 64 × 64
     bloc « Conquête » des deux fichiers .lang (remplacé sur place, ou ajouté en tête la première fois)
 
 Modèles et animations vanilla (règle n° 2) : la bannière est celle des ruines humaines
@@ -36,9 +36,9 @@ ROOT = TOOLS.parent
 RES = ROOT / "src/main/resources"
 ITEMS = RES / "Server/Item/Items/Nakasar/Peuples/Standards"
 TEXTURES = RES / "Common/Blocks/Nakasar/Peuples/Standards"
-ICONS = RES / "Common/Icons/Nakasar/Peuples/Standards"
+ICONS = RES / "Common/Icons/ItemsGenerated"
 TEX_PATH = "Blocks/Nakasar/Peuples/Standards/"
-ICON_PATH = "Icons/Nakasar/Peuples/Standards/"
+ICON_PATH = "Icons/ItemsGenerated/"
 LANG_BEGIN = "# ---- Conquête des lieux-dits (généré par tools/generate_conquest.py, ne pas modifier à la main) ----"
 LANG_END = "# ---- Fin de la conquête ----"
 PREFIX = "Nakasar_Peuples_Standard_"
@@ -410,6 +410,147 @@ def texts():
 # Textes du Java (clés nakasar_peuples.conquest.<clé>) ; {x} : paramètres.
 TEXTS = [
     ("arms", "Bannière {colour} {emblem}", "{colour} banner {emblem}"),
+    ("nobody", "personne", "nobody"),
+    # Blason (Heraldry)
+    ("arms.rank", "Il faut être Hôte de {village} pour changer son blason.", "You must be a Host of {village} to change its arms."),
+    ("arms.wait", "Le blason a changé il y a peu : encore {days} jour(s) avant de le reprendre.", "The arms changed recently: {days} more day(s) before changing them again."),
+    ("arms.same", "C'est déjà le blason du village.", "These are already the village's arms."),
+    ("arms.bolts", "Il faut {count} rouleaux de tissu pour coudre les nouvelles bannières.", "You need {count} bolts of cloth to sew the new banners."),
+    ("arms.changed", "{village} adopte un nouveau blason : {arms}. Ses lieux-dits seront repavoisés.", "{village} adopts new arms: {arms}. Its hamlets will be decked anew."),
+    # Couleurs du joueur (Colours)
+    ("colours.dropped", "Tu ne portes plus les couleurs de {village}.", "You no longer wear the colours of {village}."),
+    ("colours.rank", "Il faut être Ami de {village} pour porter ses couleurs.", "You must be a Friend of {village} to wear its colours."),
+    ("colours.wait", "Tu as changé de couleurs il y a peu : encore {days} jour(s).", "You changed colours recently: {days} more day(s)."),
+    ("colours.taken", "Tu portes désormais les couleurs de {village} ({arms}).", "You now wear the colours of {village} ({arms})."),
+    # Embargo, entrée, panneaux
+    ("embargo", "Nous ne commerçons pas avec les ennemis de {village}.", "We do not trade with the enemies of {village}."),
+    ("enter", "{hamlet}", "{hamlet}"),
+    ("enter.sub", "Terre de {village}", "Land of {village}"),
+    ("panel.title", "{building} — {hamlet}, terre de {village}", "{building} — {hamlet}, land of {village}"),
+    ("panel.line", "Ce lieu-dit appartient à {village}.", "This hamlet belongs to {village}."),
+    # Changements de main (Allegiance.setOwner)
+    ("owner.embassy", "{hamlet} se rallie à {village} après une ambassade (avant : {from}).", "{hamlet} joins {village} after an embassy (before: {from})."),
+    ("owner.rally", "{hamlet} se rallie de lui-même à {village} (avant : {from}).", "{hamlet} rallies to {village} of its own accord (before: {from})."),
+    ("owner.conquest", "{village} a pris {hamlet} par les armes (avant : {from}).", "{village} took {hamlet} by force (before: {from})."),
+    ("owner.secession", "{hamlet} rejoint {village} (avant : {from}).", "{hamlet} joins {village} (before: {from})."),
+    ("owner.command", "{hamlet} appartient désormais à {village} (avant : {from}).", "{hamlet} now belongs to {village} (before: {from})."),
+    ("owner.free", "{hamlet} rejette l'autorité de {village} et redevient libre.", "{hamlet} casts off the rule of {village} and is free again."),
+    ("occupation.end", "L'occupation de {hamlet} prend fin : le lieu-dit se résigne.", "The occupation of {hamlet} ends: the hamlet resigns itself."),
+    # Lettre de ralliement (dialogue)
+    ("letter.no", "Une lettre ? Il faudrait d'abord porter les couleurs d'un village dont nous voulons bien entendre parler.", "A letter? First wear the colours of a village we would care to hear from."),
+    ("letter.yes", "Bien. Je glisserai un mot en faveur de {village} au prochain émissaire.", "Good. I will put in a word for {village} with their next envoy."),
+    # Tribut
+    ("tribute.essor", "de l'essor", "growth"),
+    ("tribute.lot", "{count} × {item}", "{count} × {item}"),
+    ("tribute.home", "Le tribut de {hamlet} est arrivé : {what} et +{essor} d'essor.", "The tribute from {hamlet} has arrived: {what} and +{essor} growth."),
+    # Rumeurs
+    ("rumour.embassy", "On dit que {hamlet} s'est rallié à {village} après une ambassade.", "They say {hamlet} joined {village} after an embassy."),
+    ("rumour.rally", "On dit que {hamlet} s'est donné de lui-même à {village}.", "They say {hamlet} gave itself to {village}."),
+    ("rumour.conquest", "On dit que {village} a pris {hamlet} par les armes.", "They say {village} took {hamlet} by force."),
+    ("rumour.secession", "On dit que {hamlet} a rejeté l'autorité de {village}.", "They say {hamlet} cast off the rule of {village}."),
+    ("rumour.command", "On dit que {hamlet} a changé de maître : {village}.", "They say {hamlet} has a new master: {village}."),
+    ("rumour.expedition", "Une troupe de {village} marche sur {hamlet}.", "A troop from {village} is marching on {hamlet}."),
+    # « À qui appartient ce lieu ? »
+    ("say.free", "À personne ! Nous sommes libres, et nous comptons le rester.", "Nobody! We are free, and we mean to stay so."),
+    ("say.freeFavourite", "À personne pour l'instant… même si les gens de {village} sont bien vus ici.", "Nobody for now… though the folk of {village} are well liked here."),
+    ("say.occupied", "Les soldats de {village} tiennent la place. Encore {days} jour(s) sous leur botte, dit-on.", "The soldiers of {village} hold the place. {days} more day(s) under their boot, they say."),
+    ("say.owned.glad", "Nous sommes de {village}, et fiers de l'être. {guards} garde(s) veillent sur nous.", "We belong to {village}, and proudly. {guards} guard(s) watch over us."),
+    ("say.owned.fine", "Nous dépendons de {village}. {guards} garde(s) sont postés ici.", "We answer to {village}. {guards} guard(s) are posted here."),
+    ("say.owned.grumble", "{village} prétend nous tenir… ça ne durera pas toujours.", "{village} claims to rule us… it won't last forever."),
+    # Réputation
+    ("reason.embassy", "tu as attaqué une ambassade", "you attacked an embassy"),
+    ("reason.resident", "tu as tué un habitant d'un lieu-dit", "you killed a hamlet resident"),
+    ("reason.conquest", "tu as pris part à une conquête", "you took part in a conquest"),
+    ("reason.conquered", "tu as aidé à conquérir le lieu-dit", "you helped conquer the hamlet"),
+    ("reason.defence", "tu as défendu un lieu-dit", "you defended a hamlet"),
+    # Tournées
+    ("trip.kind.A", "Ambassade", "Embassy"),
+    ("trip.kind.E", "Expédition", "Expedition"),
+    ("trip.kind.T", "Tribut", "Tribute"),
+    ("trip.kind.G", "Relève de la garde", "Guard relief"),
+    ("trip.lost.A", "L'ambassade partie pour {hamlet} n'est jamais revenue.", "The embassy sent to {hamlet} never came back."),
+    ("trip.lost.E", "L'expédition partie pour {hamlet} a été anéantie.", "The expedition sent to {hamlet} was wiped out."),
+    ("trip.lost.T", "Les porteurs du tribut de {hamlet} ne sont jamais arrivés.", "The tribute porters from {hamlet} never arrived."),
+    ("trip.lost.G", "La relève partie pour {hamlet} n'est jamais arrivée.", "The relief sent to {hamlet} never arrived."),
+    # Ambassades
+    ("embassy.already", "{hamlet} appartient déjà au village.", "{hamlet} already belongs to the village."),
+    ("embassy.tier", "Le village doit atteindre le palier 2 pour tenir des lieux-dits.", "The village must reach tier 2 to hold hamlets."),
+    ("embassy.full", "{village} tient déjà {cap} lieu(x)-dit(s) : une Maison du conseil plus grande en permettrait davantage.", "{village} already holds {cap} hamlet(s): a bigger Council house would allow more."),
+    ("embassy.cooling", "{hamlet} ne veut plus entendre parler de nous pour quelques jours.", "{hamlet} won't hear from us for a few days."),
+    ("embassy.busy", "Une ambassade est déjà en route.", "An embassy is already on its way."),
+    ("embassy.far", "Ce lieu-dit est trop loin (plus de {range} blocs).", "This hamlet is too far away (more than {range} blocks)."),
+    ("embassy.left", "Une ambassade part pour {hamlet}.", "An embassy leaves for {hamlet}."),
+    ("embassy.warned", "Une ambassade de {village} se dirige vers {hamlet}.", "An embassy from {village} is heading for {hamlet}."),
+    ("embassy.rank", "Il faut être Ami de {village} pour demander une ambassade.", "You must be a Friend of {village} to request an embassy."),
+    ("embassy.offering", "Il faut {count} faveurs du peuple pour cette demande.", "This request takes {count} favours of the people."),
+    ("embassy.chased", "Les gardes de {owner} chassent l'ambassade de {village} hors de {hamlet} !", "The guards of {owner} drive the embassy of {village} out of {hamlet}!"),
+    ("embassy.parley", "L'ambassade de {village} parlemente sur la place de {hamlet}.", "The embassy of {village} parleys in the square of {hamlet}."),
+    ("embassy.failed", "{hamlet} repousse l'ambassade de {village} (chance : {chance} %).", "{hamlet} turns away the embassy of {village} (chance: {chance}%)."),
+    ("embassy.noRoom", "{hamlet} voudrait nous rejoindre, mais le village ne peut pas tenir un lieu-dit de plus.", "{hamlet} would join us, but the village cannot hold another hamlet."),
+    # Expéditions et sièges
+    ("siege.tier", "Le village doit atteindre le palier 3 pour lancer une expédition.", "The village must reach tier 3 to send an expedition."),
+    ("siege.free", "{hamlet} est libre : on le gagne par la parole, pas par les armes.", "{hamlet} is free: win it with words, not arms."),
+    ("siege.notRival", "{village} n'est pas un rival : pas d'expédition contre lui.", "{village} is not a rival: no expedition against it."),
+    ("siege.truce", "Une trêve lie le village à {village}.", "A truce binds the village to {village}."),
+    ("siege.cooling", "Le village se remet de sa dernière expédition.", "The village is recovering from its last expedition."),
+    ("siege.busy", "Une expédition est déjà en marche.", "An expedition is already marching."),
+    ("siege.rank", "Il faut être Hôte de {village} pour demander une expédition.", "You must be a Host of {village} to request an expedition."),
+    ("siege.announce", "{village} lève une troupe contre {hamlet}, tenu par {owner} !", "{village} raises a troop against {hamlet}, held by {owner}!"),
+    ("siege.assault", "La troupe de {village} donne l'assaut à {hamlet} !", "The troop of {village} storms {hamlet}!"),
+    ("siege.won", "{village} prend {hamlet} à {owner} !", "{village} takes {hamlet} from {owner}!"),
+    ("siege.repelled", "{hamlet} repousse l'assaut de {village} : {owner} garde le lieu-dit.", "{hamlet} repels the assault of {village}: {owner} keeps the hamlet."),
+    ("siege.lost", "La troupe partie pour {hamlet} a été anéantie.", "The troop sent to {hamlet} was wiped out."),
+    # Commandes
+    ("cmd.allegiance.desc", "Allégeance du lieu-dit le plus proche", "Allegiance of the nearest hamlet"),
+    ("cmd.village.arg", "Nom du village", "Village name"),
+    ("cmd.embassy.desc", "Une ambassade du village part vers le lieu-dit le plus proche", "Send an embassy from the village to the nearest hamlet"),
+    ("cmd.embassy.started", "Ambassade de {village} vers {hamlet} (chance actuelle : {chance} %).", "Embassy from {village} to {hamlet} (current chance: {chance}%)."),
+    ("cmd.expedition.desc", "Une expédition du village part vers le lieu-dit le plus proche", "Send an expedition from the village to the nearest hamlet"),
+    ("cmd.expedition.forced", "Conditions ignorées : {why}", "Conditions skipped: {why}"),
+    ("cmd.expedition.started", "Expédition de {village} vers {hamlet}.", "Expedition from {village} to {hamlet}."),
+    ("cmd.busy", "Impossible : une tournée de ce genre est déjà en route.", "Impossible: such a trip is already on its way."),
+    ("cmd.influence.arg", "Influence (-100 à 100)", "Influence (-100 to 100)"),
+    ("cmd.influence.desc", "Fixe l'influence d'un village sur le lieu-dit le plus proche", "Set a village's influence on the nearest hamlet"),
+    ("cmd.influence.set", "Influence de {village} sur {hamlet} : {value}", "Influence of {village} on {hamlet}: {value}"),
+    ("cmd.owner.arg", "Village propriétaire, ou « libre »", "Owner village, or « free »"),
+    ("cmd.owner.desc", "Donne le lieu-dit le plus proche à un village (ou le libère)", "Give the nearest hamlet to a village (or free it)"),
+    ("cmd.header", "{hamlet} : propriétaire {owner}, gardes {guards}/{target}, occupé {occupied}, jours de défaveur {low}, jours de ralliement {rally}",
+     "{hamlet}: owner {owner}, guards {guards}/{target}, occupied {occupied}, low days {low}, rally days {rally}"),
+    ("cmd.line", "  {village} : influence {value}, relation {relation}, lieux-dits {holds}/{cap}", "  {village}: influence {value}, relation {relation}, hamlets {holds}/{cap}"),
+    # Onglet Domaine (DomainPage)
+    ("page.tab", "Domaine", "Domain"),
+    ("page.title", "{village} — Domaine", "{village} — Domain"),
+    ("page.arms", "Blason du village", "Village arms"),
+    ("page.arms.hint", "Un Hôte peut changer le blason contre {count} rouleaux de tissu, une fois tous les {days} jours.", "A Host may change the arms for {count} bolts of cloth, once every {days} days."),
+    ("page.arms.pending", "Nouveau blason : {count} rouleaux de tissu pour coudre les bannières.", "New arms: {count} bolts of cloth to sew the banners."),
+    ("page.button.ColourPrev", "◀ Couleur", "◀ Colour"),
+    ("page.button.ColourNext", "Couleur ▶", "Colour ▶"),
+    ("page.button.EmblemPrev", "◀ Emblème", "◀ Emblem"),
+    ("page.button.EmblemNext", "Emblème ▶", "Emblem ▶"),
+    ("page.button.apply", "Adopter ce blason", "Adopt these arms"),
+    ("page.button.takeColours", "Porter ses couleurs", "Wear its colours"),
+    ("page.button.dropColours", "Quitter ses couleurs", "Drop its colours"),
+    ("page.button.embroider", "Broder mes bannières", "Embroider my banners"),
+    ("page.button.embassy", "Ambassade ({count} faveurs)", "Embassy ({count} favours)"),
+    ("page.button.expedition", "Expédition ({count} faveurs)", "Expedition ({count} favours)"),
+    ("page.colours", "Tes couleurs", "Your colours"),
+    ("page.colours.none", "Tu ne portes les couleurs d'aucun village.", "You wear no village's colours."),
+    ("page.colours.ours", "Tu portes les couleurs de {village}.", "You wear the colours of {village}."),
+    ("page.colours.other", "Tu portes les couleurs de {village}.", "You wear the colours of {village}."),
+    ("page.banners", "Bannières vierges dans ton sac : {count} (Métier à tisser).", "Blank banners in your bag: {count} (Loom)."),
+    ("page.embroidered", "{count} bannière(s) brodée(s) : {arms}.", "{count} banner(s) embroidered: {arms}."),
+    ("page.holdings", "Lieux-dits tenus : {count}/{cap} (Maison du conseil niveau {council})", "Hamlets held: {count}/{cap} (Council house level {council})"),
+    ("page.none", "Aucun lieu-dit à moins de {range} blocs.", "No hamlet within {range} blocks."),
+    ("page.row.name", "{hamlet} · {distance} blocs {dir}", "{hamlet} · {distance} blocks {dir}"),
+    ("page.row.free", "Libre", "Free"),
+    ("page.row.owner", "À {village}", "Held by {village}"),
+    ("page.row.influence", "Notre influence : {value}", "Our influence: {value}"),
+    ("page.row.state", "{influence} · gardes : {guards}", "{influence} · guards: {guards}"),
+    ("page.row.occupied", "{state} · occupé encore {days} jour(s)", "{state} · occupied for {days} more day(s)"),
+    ("page.rule", "Le commerce attire un lieu-dit, le tort l'éloigne. Un Ami peut demander une ambassade, un Hôte une expédition contre un rival.",
+     "Trade draws a hamlet in, harm drives it away. A Friend may request an embassy, a Host an expedition against a rival."),
+    ("page.embassy.sent", "L'ambassade part pour {hamlet}.", "The embassy leaves for {hamlet}."),
+    ("page.expedition.sent", "L'expédition se met en marche vers {hamlet}.", "The expedition marches on {hamlet}."),
 ]
 
 

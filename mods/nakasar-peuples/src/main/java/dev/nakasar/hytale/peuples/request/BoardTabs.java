@@ -15,11 +15,12 @@ import dev.nakasar.hytale.peuples.annex.Annexes;
 import dev.nakasar.hytale.peuples.village.PlotPage;
 import dev.nakasar.hytale.peuples.village.Plots;
 import dev.nakasar.hytale.peuples.village.Village;
+import dev.nakasar.hytale.peuples.world.DomainPage;
 import dev.nakasar.hytale.peuples.world.WorldPage;
 
 /**
  * Barre des onglets en haut du panneau du village (maquette Claude Design « Panneau du village — refonte », Kevin,
- * 16 novembre 2026) : Tableau, Emplacements, Avant-postes, Monde, et l'heure du jeu. Chaque page du panneau porte la
+ * 16 novembre 2026) : Tableau, Emplacements, Avant-postes, Monde, Domaine (conquête des lieux-dits), et l'heure du jeu. Chaque page du panneau porte la
  * même barre ({@code tab_strip} de {@code tools/generate_board_ui.py}) : l'onglet ouvert est un aplat
  * ({@code #Tab<X>On}), les autres des boutons ({@code #Tab<X>Button}). Les pages appellent {@link #fill} dans leur
  * {@code build} et {@link #handle} en tête de leur {@code handleDataEvent}.
@@ -38,6 +39,7 @@ public final class BoardTabs {
         tab(cmd, events, "#TabPlotsButton", "#TabPlotsLabel", "Plots", Message.translation(Plots.KEYS + "button"));
         tab(cmd, events, "#TabAnnexesButton", "#TabAnnexesLabel", "Annexes", Message.translation(Annexes.KEYS + "button"));
         tab(cmd, events, "#TabWorldButton", "#TabWorldLabel", "World", Message.translation(WorldPage.KEYS + "button"));
+        tab(cmd, events, "#TabDomainButton", "#TabDomainLabel", "Domain", Message.translation(DomainPage.KEYS + "tab"));
         // Emplacements : seulement si le plan du village en a ; Avant-postes : si le peuple en a (l'onglet dit le palier).
         cmd.set("#TabPlots.Visible", village != null && Plots.plots(village).length > 0);
         cmd.set("#TabAnnexes.Visible", village != null && !Annexes.catalog(village).isEmpty());
@@ -62,6 +64,7 @@ public final class BoardTabs {
             case "Plots" -> PlotPage.open(store, ref, playerRef, village);
             case "Annexes" -> AnnexPage.open(store, ref, playerRef, village);
             case "World" -> WorldPage.open(store, ref, playerRef, village);
+            case "Domain" -> DomainPage.open(store, ref, playerRef, village);
             default -> {
                 return false;
             }

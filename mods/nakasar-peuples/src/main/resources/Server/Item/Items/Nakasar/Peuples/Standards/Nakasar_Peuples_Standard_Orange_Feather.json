@@ -5,7 +5,7 @@
     "Name": "nakasar_peuples.items.Nakasar_Peuples_Standard_Orange_Feather.name",
     "Description": "nakasar_peuples.items.Nakasar_Peuples_Standard_Orange_Feather.description"
   },
-  "Icon": "Icons/Nakasar/Peuples/Standards/Nakasar_Peuples_Standard_Orange_Feather.png",
+  "Icon": "Icons/ItemsGenerated/Nakasar_Peuples_Standard_Orange_Feather.png",
   "Quality": "Uncommon",
   "BlockType": {
     "CustomModelTexture": [

@@ -5,7 +5,7 @@
     "Name": "nakasar_peuples.items.Nakasar_Peuples_Standard_Black_Axe.name",
     "Description": "nakasar_peuples.items.Nakasar_Peuples_Standard_Black_Axe.description"
   },
-  "Icon": "Icons/Nakasar/Peuples/Standards/Nakasar_Peuples_Standard_Black_Axe.png",
+  "Icon": "Icons/ItemsGenerated/Nakasar_Peuples_Standard_Black_Axe.png",
   "Quality": "Uncommon",
   "BlockType": {
     "CustomModelTexture": [

@@ -248,15 +248,21 @@ def dialogues():
     owner = t("dialogue.LieuDit.proprietaire", "À qui appartient ce lieu ?", "Who holds this place?")
     rally = t("dialogue.LieuDit.ralliement", "Écris-moi une lettre pour le village dont je porte les couleurs.",
               "Write me a letter for the village whose colours I wear.")
+    place = t("dialogue.LieuDit.lieu", "Parle-moi de cet endroit.", "Tell me about this place.")
+    place_text = t("dialogue.LieuDit.lieuTexte", "Que veux-tu savoir ? Les marchands, nos maîtres… on sait tout, ici.",
+                   "What do you want to know? The traders, our masters… we know everything here.")
     for kind in hamlets.TYPES:
         name_fr, name_en, _icon, hello_fr, hello_en = hamlets.NAMES[kind]
         did = f"Monde_LieuDit_{kind}"
         dialogue(did, f"Habitant d'un lieu-dit {name_fr} : troc du lieu-dit (élargi quand il est animé), marchands venus, "
                       "propriétaire et lettre de ralliement (conquête), rumeurs.",
                  ("Habitant", "Resident"), (name_fr, name_en), [
+            # Quatre réponses au plus par nœud : la vie du lieu-dit (marchands, propriétaire, lettre) dans « Lieu ».
             node("Accueil", t(f"dialogue.{did}.accueil", hello_fr, hello_en), [
-                resp(troc, "HamletShop"), resp(visits, "HamletVisits", "Accueil"), resp(owner, "HamletOwner", "Accueil"),
-                resp(rally, "HamletRally", "Accueil", "HamletRally"), rumour, bye]),
+                resp(troc, "HamletShop"), resp(place, None, "Lieu"), rumour, bye]),
+            node("Lieu", place_text, [
+                resp(visits, "HamletVisits", "Lieu"), resp(owner, "HamletOwner", "Lieu"),
+                resp(rally, "HamletRally", "Lieu", "HamletRally"), resp(COMMON + "retour", None, "Accueil")]),
         ])
     did = "Monde_Marchand_LieuDit"
     dialogue(did, "Marchand ou caravanier d'un village venu commercer dans un lieu-dit (world/HamletTrips).",

@@ -5,7 +5,7 @@
     "Name": "nakasar_peuples.items.Nakasar_Peuples_Standard_Green_Eye.name",
     "Description": "nakasar_peuples.items.Nakasar_Peuples_Standard_Green_Eye.description"
   },
-  "Icon": "Icons/Nakasar/Peuples/Standards/Nakasar_Peuples_Standard_Green_Eye.png",
+  "Icon": "Icons/ItemsGenerated/Nakasar_Peuples_Standard_Green_Eye.png",
   "Quality": "Uncommon",
   "BlockType": {
     "CustomModelTexture": [

@@ -5,7 +5,7 @@
     "Name": "nakasar_peuples.items.Nakasar_Peuples_Standard_Yellow_Mushroom.name",
     "Description": "nakasar_peuples.items.Nakasar_Peuples_Standard_Yellow_Mushroom.description"
   },
-  "Icon": "Icons/Nakasar/Peuples/Standards/Nakasar_Peuples_Standard_Yellow_Mushroom.png",
+  "Icon": "Icons/ItemsGenerated/Nakasar_Peuples_Standard_Yellow_Mushroom.png",
   "Quality": "Uncommon",
   "BlockType": {
     "CustomModelTexture": [

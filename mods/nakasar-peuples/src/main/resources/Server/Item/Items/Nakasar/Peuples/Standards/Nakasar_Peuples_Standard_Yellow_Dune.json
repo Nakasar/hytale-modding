@@ -5,7 +5,7 @@
     "Name": "nakasar_peuples.items.Nakasar_Peuples_Standard_Yellow_Dune.name",
     "Description": "nakasar_peuples.items.Nakasar_Peuples_Standard_Yellow_Dune.description"
   },
-  "Icon": "Icons/Nakasar/Peuples/Standards/Nakasar_Peuples_Standard_Yellow_Dune.png",
+  "Icon": "Icons/ItemsGenerated/Nakasar_Peuples_Standard_Yellow_Dune.png",
   "Quality": "Uncommon",
   "BlockType": {
     "CustomModelTexture": [
