@@ -1488,17 +1488,23 @@ prochaine foire, vestige le plus proche pas encore vu.
 
 ### Nouvelles commandes
 
-`/monde etat` pour tous. Admin (`nakasar.peuples.admin`) : `voyageur [genre]`, `embuscade`, `campement [genre]`,
-`auberge`, `relation [valeur]`, `escarmouche`, `fete`, `foire`, `migration`, `arret`.
+`/monde etat` pour tous. Admin (`nakasar.peuples.admin`) : `voyageur [--genre]`, `embuscade`, `campement [--genre]`,
+`auberge`, `relation [--valeur]`, `escarmouche`, `fete`, `foire`, `migration`, `arret`.
+
+Les options s'écrivent `--nom valeur` (ou `--nom=valeur`). `voyageur`, `auberge`, `relation` et `escarmouche`
+prennent `--vers <village>` (nom ou id, sans tenir compte des majuscules, accents, espaces et tirets ; un nom avec des
+espaces se met entre guillemets ou s'écrit collé) : la liaison va du village le plus proche du joueur (600 blocs) vers
+ce village, à 2400 blocs au plus. Sans `--vers`, vers le voisin le plus proche. Exemple :
+`/monde voyageur --genre caravane --vers <village>`.
 
 ### Tester en jeu (monde vivant)
 
-1. Deux villages proches : `/monde voyageur caravane`, suivre la caravane (escorte), `/monde embuscade` pendant le
+1. Deux villages proches : `/monde voyageur --genre caravane --vers <village>`, suivre la caravane (escorte), `/monde embuscade` pendant le
    trajet : bande de pillards, défendre.
-2. `/monde voyageur messager` : prendre la lettre, la porter au cœur du village destinataire.
+2. `/monde voyageur --genre messager` : prendre la lettre, la porter au cœur du village destinataire.
 3. `/monde auberge` : chantier puis auberge à mi-chemin ; parler à l'aubergiste.
-4. `/monde campement chasseurs`, aller voir, apporter la viande ; attendre son départ (blocs remis).
-5. `/monde relation -50` puis `/monde escarmouche` près des deux villages ; `/monde etat`.
+4. `/monde campement --genre chasseurs`, aller voir, apporter la viande ; attendre son départ (blocs remis).
+5. `/monde relation --valeur -50` puis `/monde escarmouche` près des deux villages ; `/monde etat`.
 6. `/monde fete`, `/monde foire` (course), `/monde migration` (ruée, zone rouge) ; `/monde arret`.
 
 ### À vérifier en jeu (monde vivant)
