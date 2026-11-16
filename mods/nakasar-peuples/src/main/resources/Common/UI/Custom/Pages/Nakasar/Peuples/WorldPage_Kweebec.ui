@@ -294,7 +294,7 @@ $C.@PageOverlay {
           Label #NeighboursNone { Anchor: (Height: 40); Style: @SmallWrap; Text: ""; Visible: false; }
           @Card #Nb0 {
             LayoutMode: Left;
-            Anchor: (Height: 62, Bottom: 6);
+            Anchor: (Height: 80, Bottom: 6);
             Group {
               LayoutMode: Full;
               Anchor: (Width: 4);
@@ -316,11 +316,12 @@ $C.@PageOverlay {
               }
               Label #NbLine0 { Anchor: (Height: 17); Style: @Small; Text: ""; }
               Label #NbExtras0 { Anchor: (Height: 17); Style: (FontSize: 12, RenderBold: true, TextColor: #b4c8c9, VerticalAlignment: Center); Text: ""; }
+              Label #NbTrips0 { Anchor: (Height: 17); Style: (FontSize: 12, TextColor: #c9d1d9, VerticalAlignment: Center); Text: ""; }
             }
           }
           @Card #Nb1 {
             LayoutMode: Left;
-            Anchor: (Height: 62, Bottom: 6);
+            Anchor: (Height: 80, Bottom: 6);
             Group {
               LayoutMode: Full;
               Anchor: (Width: 4);
@@ -342,11 +343,12 @@ $C.@PageOverlay {
               }
               Label #NbLine1 { Anchor: (Height: 17); Style: @Small; Text: ""; }
               Label #NbExtras1 { Anchor: (Height: 17); Style: (FontSize: 12, RenderBold: true, TextColor: #b4c8c9, VerticalAlignment: Center); Text: ""; }
+              Label #NbTrips1 { Anchor: (Height: 17); Style: (FontSize: 12, TextColor: #c9d1d9, VerticalAlignment: Center); Text: ""; }
             }
           }
           @Card #Nb2 {
             LayoutMode: Left;
-            Anchor: (Height: 62, Bottom: 6);
+            Anchor: (Height: 80, Bottom: 6);
             Group {
               LayoutMode: Full;
               Anchor: (Width: 4);
@@ -368,11 +370,12 @@ $C.@PageOverlay {
               }
               Label #NbLine2 { Anchor: (Height: 17); Style: @Small; Text: ""; }
               Label #NbExtras2 { Anchor: (Height: 17); Style: (FontSize: 12, RenderBold: true, TextColor: #b4c8c9, VerticalAlignment: Center); Text: ""; }
+              Label #NbTrips2 { Anchor: (Height: 17); Style: (FontSize: 12, TextColor: #c9d1d9, VerticalAlignment: Center); Text: ""; }
             }
           }
           @Card #Nb3 {
             LayoutMode: Left;
-            Anchor: (Height: 62, Bottom: 6);
+            Anchor: (Height: 80, Bottom: 6);
             Group {
               LayoutMode: Full;
               Anchor: (Width: 4);
@@ -394,34 +397,10 @@ $C.@PageOverlay {
               }
               Label #NbLine3 { Anchor: (Height: 17); Style: @Small; Text: ""; }
               Label #NbExtras3 { Anchor: (Height: 17); Style: (FontSize: 12, RenderBold: true, TextColor: #b4c8c9, VerticalAlignment: Center); Text: ""; }
+              Label #NbTrips3 { Anchor: (Height: 17); Style: (FontSize: 12, TextColor: #c9d1d9, VerticalAlignment: Center); Text: ""; }
             }
           }
-          @Card #Nb4 {
-            LayoutMode: Left;
-            Anchor: (Height: 62, Bottom: 6);
-            Group {
-              LayoutMode: Full;
-              Anchor: (Width: 4);
-              Group #NbAlly4 { Anchor: (Full: 0); Background: (Color: #9ed36a); Visible: false; }
-              Group #NbFriendly4 { Anchor: (Full: 0); Background: (Color: #c9e08a); Visible: false; }
-              Group #NbNeutral4 { Anchor: (Full: 0); Background: (Color: #a9b8c8); Visible: false; }
-              Group #NbTense4 { Anchor: (Full: 0); Background: (Color: #e8b06a); Visible: false; }
-              Group #NbRival4 { Anchor: (Full: 0); Background: (Color: #f08a7a); Visible: false; }
-            }
-            Group {
-              LayoutMode: Top;
-              FlexWeight: 1;
-              Padding: (Left: 10, Right: 10, Vertical: 4);
-              Group {
-                LayoutMode: Left;
-                Anchor: (Height: 20);
-                Label #NbName4 { Style: @Name; Text: ""; FlexWeight: 1; }
-                Label #NbState4 { Anchor: (Width: 130); Style: (FontSize: 12, RenderBold: true, RenderUppercase: true, TextColor: #a9b8c8, HorizontalAlignment: End, VerticalAlignment: Center); Text: ""; }
-              }
-              Label #NbLine4 { Anchor: (Height: 17); Style: @Small; Text: ""; }
-              Label #NbExtras4 { Anchor: (Height: 17); Style: (FontSize: 12, RenderBold: true, TextColor: #b4c8c9, VerticalAlignment: Center); Text: ""; }
-            }
-          }
+          Label #NbMore { Anchor: (Height: 18); Style: @Small; Text: ""; }
         }
 
         Group #CalendarColumn {

@@ -314,6 +314,7 @@ $C.@PageOverlay {
             $C.@SmallSecondaryTextButton #Action2 { @Text = ""; @Anchor = Anchor(Right: 14, Bottom: 14, Width: 136); }
           }
           Group { FlexWeight: 1; }
+          Label #NbMore { Anchor: (Height: 18); Style: @Small; Text: ""; }
         }
 
         Group #InfoColumn {

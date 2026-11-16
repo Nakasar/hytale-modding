@@ -48,6 +48,8 @@ public final class WorldPage extends InteractiveCustomUIPage<WorldPage.Event> {
     private static final String LAYOUT = "Pages/Nakasar/Peuples/WorldPage.ui";
     private static final List<String> THEMED = List.of("Kweebec", "Trork", "Feran", "Renonce", "Slothian");
     private static final int NEIGHBOURS = 5;
+    /** Fiches de voisins sous la boussole (generate_workshop_ui.py NEIGHBOUR_ROWS). */
+    private static final int NEIGHBOUR_ROWS = 4;
     private static final int MARKS = 8;
     private static final int CAMPS = 2;
     private static final int AGENDA = 5;
@@ -184,7 +186,11 @@ public final class WorldPage extends InteractiveCustomUIPage<WorldPage.Event> {
         if (links.isEmpty()) {
             cmd.set("#NeighboursNone.TextSpans", Message.translation(KEYS + "neighbours.none"));
         }
-        for (int i = 0; i < NEIGHBOURS; i++) {
+        cmd.set("#NbMore.Visible", links.size() > NEIGHBOUR_ROWS);
+        if (links.size() > NEIGHBOUR_ROWS) {
+            cmd.set("#NbMore.TextSpans", Message.translation(KEYS + "neighbours.more").param("count", links.size() - NEIGHBOUR_ROWS));
+        }
+        for (int i = 0; i < NEIGHBOUR_ROWS; i++) {
             if (i >= links.size()) {
                 cmd.set("#Nb" + i + ".Visible", false);
                 continue;
@@ -221,6 +227,12 @@ public final class WorldPage extends InteractiveCustomUIPage<WorldPage.Event> {
                 extras.add(Message.translation(KEYS + k).param("when", when(day - (Long) last[0], true)));
             }
             cmd.set("#NbExtras" + i + ".TextSpans", join(extras));
+            // Voyages partis d'ici vers ce voisin (Kevin, 16 novembre 2026) : tentés, réussis, échoués.
+            int[] trips = Links.trips(world, v.id(), other.id());
+            cmd.set("#NbTrips" + i + ".TextSpans", trips[0] == 0 ? Message.translation(KEYS + "neighbours.noTrips")
+                    : Message.translation(KEYS + "neighbours.trips").param("tried", trips[0]).param("ok", trips[1])
+                    .param("failed", trips[2]));
+            cmd.set("#NbTrips" + i + ".Style.TextColor", trips[2] > trips[1] ? "#f0a090" : "#c9d1d9");
         }
     }
 

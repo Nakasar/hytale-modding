@@ -218,6 +218,7 @@ def page(theme_id):
         w(f'            $C.@SmallSecondaryTextButton #Action{i} {{ @Text = ""; @Anchor = Anchor(Right: 14, Bottom: 14, Width: 136); }}')
         w("          }")
     w("          Group { FlexWeight: 1; }")
+    w(f'          {label("NbMore", "@Small", anchor="Height: 18")}')
     w("        }")
     w("")
     # ---- Colonne droite
@@ -624,7 +625,7 @@ MARK_KINDS = ("Ally", "Friendly", "Neutral", "Tense", "Rival", "Herd", "Camp")
 MARK_COLORS = {"Ally": "#9ed36a", "Friendly": "#c9e08a", "Neutral": "#a9b8c8", "Tense": "#e8b06a", "Rival": "#f08a7a",
                "Herd": "#e8c46a", "Camp": "#e8c46a"}
 STATES = ("Ally", "Friendly", "Neutral", "Tense", "Rival")
-NEIGHBOUR_ROWS = 5
+NEIGHBOUR_ROWS = 4         # fiches sous la boussole (la boussole montre 5 voisins)
 AGENDA_ROWS = 5
 ROAD_ROWS = 4
 LEFT_COLUMN = 410
@@ -760,7 +761,7 @@ def world_page(theme_id):
     for i in range(NEIGHBOUR_ROWS):
         w(f"          @Card #Nb{i} {{")
         w("            LayoutMode: Left;")
-        w("            Anchor: (Height: 62, Bottom: 6);")
+        w("            Anchor: (Height: 80, Bottom: 6);")
         w("            Group {")
         w("              LayoutMode: Full;")
         w("              Anchor: (Width: 4);")
@@ -779,8 +780,10 @@ def world_page(theme_id):
         w("              }")
         w(f'              {label(f"NbLine{i}", "@Small", anchor="Height: 17")}')
         w(f'              {label(f"NbExtras{i}", f"LabelStyle(FontSize: 12, RenderBold: true, TextColor: #b4c8c9, VerticalAlignment: Center)", anchor="Height: 17")}')
+        w(f'              {label(f"NbTrips{i}", "LabelStyle(FontSize: 12, TextColor: #c9d1d9, VerticalAlignment: Center)", anchor="Height: 17")}')
         w("            }")
         w("          }")
+    w(f'          {label("NbMore", "@Small", anchor="Height: 18")}')
     w("        }")
     w("")
     # ---- Colonne droite : en ce moment, agenda, voyageurs

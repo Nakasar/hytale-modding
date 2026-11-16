@@ -136,6 +136,38 @@ public final class Links {
         r.put(WorldLifeRegistry.Part.TRAFFIC, link, sb.toString());
     }
 
+    /** Issue d'un voyage, pour {@link #trip} : parti, arrivé, perdu en route. */
+    public static final int TRIED = 0;
+    public static final int SUCCEEDED = 1;
+    public static final int FAILED = 2;
+    /** Clé des voyages de `from` vers `to` (partie TRAFFIC) : « tentés|réussis|échoués », depuis toujours. */
+    private static final String TRIPS = "~trips:";
+
+    /** Un voyage de `from` vers `to` de plus dans la colonne `outcome` (TRIED, SUCCEEDED, FAILED). */
+    public static void trip(World world, String from, String to, int outcome) {
+        WorldLifeRegistry r = WorldLife.registry(world);
+        int[] n = trips(world, from, to);
+        n[outcome]++;
+        r.put(WorldLifeRegistry.Part.TRAFFIC, TRIPS + from + ">" + to, n[0] + "|" + n[1] + "|" + n[2]);
+    }
+
+    /** Voyages de `from` vers `to` : {tentés, réussis, échoués}. */
+    public static int[] trips(World world, String from, String to) {
+        int[] n = new int[3];
+        String v = WorldLife.registry(world).get(WorldLifeRegistry.Part.TRAFFIC, TRIPS + from + ">" + to);
+        if (v != null) {
+            String[] p = v.split("\\|");
+            for (int i = 0; i < Math.min(3, p.length); i++) {
+                try {
+                    n[i] = Integer.parseInt(p[i].trim());
+                } catch (NumberFormatException ignored) {
+                    // valeur abîmée : 0
+                }
+            }
+        }
+        return n;
+    }
+
     /** Passages sur la liaison pendant les {@value #WINDOW_DAYS} derniers jours. */
     public static int traffic(World world, String link, long day) {
         int n = 0;
