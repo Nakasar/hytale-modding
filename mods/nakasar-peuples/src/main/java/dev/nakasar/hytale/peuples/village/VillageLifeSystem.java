@@ -84,6 +84,8 @@ public final class VillageLifeSystem extends TickingSystem<EntityStore> {
         Villagers.step(world, store, players, dt);
         dev.nakasar.hytale.peuples.outpost.Settlers.step(world, store);
         dev.nakasar.hytale.peuples.workshop.Livestock.step(world, store, players);
+        // Avant-postes posés sur la carte du monde.
+        dev.nakasar.hytale.peuples.annex.AnnexMarkers.refresh(world);
     }
 
     private static boolean watched(Village village, List<Vector3d> players) {

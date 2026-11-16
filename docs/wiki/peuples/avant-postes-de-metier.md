@@ -58,6 +58,9 @@ Debout, un avant-poste est un [bâtiment de métier](batiments-de-metier.md) com
   l'avant-poste. Si le dépôt se remplit pendant le trajet, les porteurs livrent ce qui entre et attendent devant le
   dépôt avec le reste : faites de la place et ils finissent leur livraison. Le coffre de l'avant-poste garde au plus
   trois jours de production ; au-delà, la production du jour est perdue.
+- **Carte** : chaque avant-poste, en travaux ou debout, a son marqueur sur la carte du monde et sur la boussole (une
+  cabane et un fanion), avec le nom du bâtiment et de son village. Vous le voyez dès que vous avez découvert le
+  village.
 
 ## Détruire un avant-poste
 

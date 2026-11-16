@@ -51,6 +51,8 @@ Tout se passe dans l'onglet **Domaine** du panneau du village.
 | Changer le blason du village | Hôte | 4 rouleaux de tissu, une fois par semaine |
 | Demander une expédition contre un rival | Hôte | 5 faveurs du peuple |
 
+Chaque village est pavoisé à ses couleurs : une bannière à son blason au mur de ses bâtiments, côté place, et un fanion à chaque coin de la place. Quand un Hôte change le blason, tout le village est repeint.
+
 La **bannière vierge** se fabrique au Métier à tisser (2 rouleaux de coton et un bâton). Il existe 128 blasons : 8 couleurs et, pour chaque peuple, trois emblèmes plus l'étoile.
 
 Défendre un lieu-dit attaqué vous vaut la gratitude de son propriétaire ; prendre part à une conquête plaît au village attaquant, mais pas au lieu-dit.
