@@ -545,6 +545,10 @@ public final class Chantiers {
     /** Bloc du monde naturel : relief, plante, arbre (pas de planches, de briques ni de meubles). */
     static boolean natural(String name) {
         String base = name.startsWith("*") ? name.substring(1) : name;
+        // Demi-blocs d'adoucissement posés par le village : du relief, pas un bloc de joueur (Kevin 2026-11-16).
+        if (People.isVillageSlab(base)) {
+            return true;
+        }
         if (base.startsWith("Plant_") || base.startsWith("Ore_") || base.startsWith("Rubble_") || base.startsWith("Fluid_")) {
             return true;
         }
@@ -566,10 +570,37 @@ public final class Chantiers {
     static void prepare(World world, Terrain terrain, Village village, VillageLayout layout, VillageLayout.Building b, int h) {
         int[] r = b.rect();
         // Les arbres dont seule la couronne passe au-dessus du bâtiment restent debout ; marches adoucies de demi-blocs.
-        new Grading(world).slabs(village.people().slabs())
+        new Grading(world).slabs(village.people().slabs(), slabAllowed(village, layout))
                 .pad(village.x() + r[0], village.x() + r[1], village.z() + r[2], village.z() + r[3], h, MARGIN,
                         village.people().ground(), b.height() + 1, 2, 0)
                 .apply(BLEND, village.people().ground(), keep(village, layout, b));
+    }
+
+    /**
+     * Colonnes où un demi-bloc d'adoucissement peut aller : ni sur la place (et son pourtour), ni dans l'emprise d'un
+     * bâtiment du plan (même à venir), ni sur un terrain E1/E2. Kevin 2026-11-16 : les demi-dalles gênaient les chantiers.
+     */
+    static BiPredicate<Integer, Integer> slabAllowed(Village village, VillageLayout layout) {
+        int p = layout.plazaRadius() + 1;
+        List<int[]> rects = new ArrayList<>();
+        for (VillageLayout.Building b : layout.buildings()) {
+            rects.add(b.rect());
+        }
+        for (VillageLayout.Plot plot : layout.plots()) {
+            rects.add(plot.rect());
+        }
+        return (x, z) -> {
+            int lx = x - village.x(), lz = z - village.z();
+            if (Math.abs(lx) <= p && Math.abs(lz) <= p) {
+                return false;
+            }
+            for (int[] r : rects) {
+                if (lx >= r[0] - 1 && lx <= r[1] + 1 && lz >= r[2] - 1 && lz <= r[3] + 1) {
+                    return false;
+                }
+            }
+            return true;
+        };
     }
 
     /** Colonnes qu'un chantier ne retouche pas autour de `b` : la place et les emprises des autres bâtiments du plan. */
@@ -601,7 +632,7 @@ public final class Chantiers {
      */
     static void settle(World world, Village village, VillageLayout layout, VillageLayout.Building b, int h) {
         int[] r = b.rect();
-        new Grading(world).slabs(village.people().slabs()).settle(village.x() + r[0], village.x() + r[1],
+        new Grading(world).slabs(village.people().slabs(), slabAllowed(village, layout)).settle(village.x() + r[0], village.x() + r[1],
                 village.z() + r[2], village.z() + r[3], h, village.people().ground(), keep(village, layout, b));
     }
 

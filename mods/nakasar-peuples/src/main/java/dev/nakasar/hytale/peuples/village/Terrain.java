@@ -50,7 +50,8 @@ public final class Terrain {
 
     /** Vrai pour un bloc de relief naturel (terre, pierre, sable...) : ni plante, ni bois, ni meuble. */
     public static boolean isGround(String name) {
-        return name != null && (name.startsWith("Soil_") || name.startsWith("Rock_")) && !name.contains("_Brick");
+        return name != null && (name.startsWith("Soil_") || name.startsWith("Rock_")) && !name.contains("_Brick")
+                && !People.isVillageSlab(name); // demi-bloc d'adoucissement : posé SUR le sol, pas le sol
     }
 
     /** Vrai pour la végétation qu'on peut abattre en dégageant une emprise (arbres, feuillages, herbes, fleurs). */

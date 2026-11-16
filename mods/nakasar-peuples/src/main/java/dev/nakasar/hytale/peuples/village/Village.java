@@ -87,6 +87,9 @@ public final class Village {
             .append(new KeyedCodec<>("Settled", Codec.BOOLEAN), (v, b) -> v.settled = b != null && b, v -> v.settled)
             .documentation("Vrai quand les bâtiments debout ont repris le relief alentour (Grading.settle, rattrapage une fois).")
             .add()
+            .append(new KeyedCodec<>("ReliefVersion", Codec.INTEGER), (v, i) -> v.reliefVersion = i == null ? 0 : i, v -> v.reliefVersion)
+            .documentation("Version du retour au relief appliquée aux bâtiments debout (VillageStreets.RELIEF_VERSION).")
+            .add()
             .append(new KeyedCodec<>("StreetsTier", Codec.INTEGER), (v, i) -> v.streetsTier = i == null ? -1 : i, v -> v.streetsTier)
             .documentation("Dernier palier dont les sentiers et le décor ont été posés (VillageStreets), -1 : aucun.")
             .add()
@@ -136,6 +139,7 @@ public final class Village {
     int heartTier = -1;
     int streetsTier = -1;
     boolean settled;
+    int reliefVersion;
     int essor;
     long created;
     String layout;
@@ -194,6 +198,7 @@ public final class Village {
         v.heartTier = heartTier;
         v.streetsTier = streetsTier;
         v.settled = settled;
+        v.reliefVersion = reliefVersion;
         v.essor = essor;
         v.created = created;
         v.layout = layout;
@@ -627,6 +632,15 @@ public final class Village {
 
     void setSettled(boolean value) {
         settled = value;
+    }
+
+    /** Version du retour au relief appliquée aux bâtiments debout ({@link VillageStreets#RELIEF_VERSION}). */
+    public int reliefVersion() {
+        return reliefVersion;
+    }
+
+    void setReliefVersion(int value) {
+        reliefVersion = value;
     }
 
     void setStreetsTier(int value) {

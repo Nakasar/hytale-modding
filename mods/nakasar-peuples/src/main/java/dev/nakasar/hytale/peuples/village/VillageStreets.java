@@ -30,6 +30,13 @@ public final class VillageStreets {
     /** Écart de hauteur maximal entre le sol d'une case et la place (falaises, ravins : on n'y pose rien). */
     private static final int MAX_DROP = 10;
 
+    /**
+     * Version du retour au relief. 2 (Kevin 2026-11-16) : la v1 creusait l'intérieur des emprises (enclos encaissés) et
+     * ses demi-blocs se propageaient en nappes ; un village plus ancien est réparé une fois (demi-blocs retirés, emprises
+     * remises à la hauteur du bâtiment, relief rendu autour).
+     */
+    public static final int RELIEF_VERSION = 2;
+
     private static final Set<String> BUSY = Collections.synchronizedSet(new HashSet<>());
 
     private VillageStreets() {
@@ -38,7 +45,7 @@ public final class VillageStreets {
     /** Vrai si le village a des sentiers ou du décor à poser pour son palier. */
     public static boolean due(Village village) {
         VillageLayout layout = Chantiers.layout(village);
-        return layout != null && (!village.settled() || layout.streets().length > 0 && village.streetsTier() < village.tier())
+        return layout != null && (village.reliefVersion() < RELIEF_VERSION || layout.streets().length > 0 && village.streetsTier() < village.tier())
                 && !BUSY.contains(village.id()) && !Chantiers.busy(village);
     }
 
@@ -67,9 +74,10 @@ public final class VillageStreets {
         if (layout == null) {
             return;
         }
-        // Rattrapage unique des villages bâtis avant le retour au relief (Kevin 2026-11-16) : chaque bâtiment debout
-        // rend au terrain naturel les colonnes qu'il n'occupe pas (terre nue et carrés plats autour).
-        if (!village.settled()) {
+        // Rattrapage unique (et réparation de la v1) : demi-blocs d'adoucissement retirés, puis chaque bâtiment debout
+        // garde son emprise à sa hauteur et rend au terrain naturel la marge et les talus (Kevin 2026-11-16).
+        if (village.reliefVersion() < RELIEF_VERSION) {
+            int removed = village.settled() ? clearSlabs(world, village, layout) : 0;
             int count = 0;
             for (VillageLayout.Building b : layout.buildings()) {
                 int h = village.siteY(b.id());
@@ -79,7 +87,9 @@ public final class VillageStreets {
                 }
             }
             village.setSettled(true);
-            LOGGER.atInfo().log("Nakasar Peuples : relief rendu autour de %d bâtiments de %s", count, village.name());
+            village.setReliefVersion(RELIEF_VERSION);
+            LOGGER.atInfo().log("Nakasar Peuples : relief rendu autour de %d bâtiments de %s (%d demi-blocs retirés)",
+                    count, village.name(), removed);
         }
         int tier = village.tier();
         int from = village.streetsTier();
@@ -116,6 +126,45 @@ public final class VillageStreets {
         }
         village.setStreetsTier(tier);
         LOGGER.atInfo().log("Nakasar Peuples : sentiers de %s posés jusqu'au palier %d (%d cases, %d décors)", village.name(), tier, paths, decor);
+    }
+
+    /**
+     * Retire les demi-blocs d'adoucissement ({@link People#isVillageSlab}) posés sur le sol dans le rayon du village :
+     * ceux de la v1 couvraient des nappes entières. Le passage suivant en repose là où une vraie marche les demande.
+     */
+    private static int clearSlabs(World world, Village village, VillageLayout layout) {
+        ChunkStore chunks = world.getChunkStore();
+        int r = layout.radius() + Grading.SETTLE_REACH + 2;
+        int plaza = village.y() - 1;
+        int removed = 0;
+        int p = layout.plazaRadius() + 1;
+        for (int x = village.x() - r; x <= village.x() + r; x++) {
+            for (int z = village.z() - r; z <= village.z() + r; z++) {
+                // Jamais dans un bâtiment debout (ses planchers peuvent être des demi-blocs) ni sur la place du cœur.
+                if (Math.abs(x - village.x()) <= p && Math.abs(z - village.z()) <= p || insideStanding(village, layout, x, z)) {
+                    continue;
+                }
+                for (int y = plaza - MAX_DROP - 2; y <= plaza + MAX_DROP + 6; y++) {
+                    String name = Blocks.name(chunks, x, y, z);
+                    if (People.isVillageSlab(name) && !Blocks.isEmpty(chunks, x, y - 1, z) && Blocks.isEmpty(chunks, x, y + 1, z)) {
+                        Blocks.set(chunks, x, y, z, null, 0);
+                        removed++;
+                    }
+                }
+            }
+        }
+        return removed;
+    }
+
+    private static boolean insideStanding(Village village, VillageLayout layout, int x, int z) {
+        int lx = x - village.x(), lz = z - village.z();
+        for (VillageLayout.Building b : layout.buildings()) {
+            int[] r = b.rect();
+            if (village.isStanding(b.id()) && lx >= r[0] && lx <= r[1] && lz >= r[2] && lz <= r[3]) {
+                return true;
+            }
+        }
+        return false;
     }
 
     /** Pose une case de sentier si son sol est naturel. Vrai si le bloc a changé. */
