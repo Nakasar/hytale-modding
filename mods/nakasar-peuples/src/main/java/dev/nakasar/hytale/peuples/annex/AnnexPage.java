@@ -16,7 +16,7 @@ import com.hypixel.hytale.server.core.ui.builder.UIEventBuilder;
 import com.hypixel.hytale.server.core.universe.PlayerRef;
 import com.hypixel.hytale.server.core.universe.world.World;
 import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
-import dev.nakasar.hytale.peuples.request.BoardPage;
+import dev.nakasar.hytale.peuples.request.BoardTabs;
 import dev.nakasar.hytale.peuples.request.GameClock;
 import dev.nakasar.hytale.peuples.village.AnnexState;
 import dev.nakasar.hytale.peuples.village.Chantiers;
@@ -106,8 +106,7 @@ public final class AnnexPage extends InteractiveCustomUIPage<AnnexPage.Event> {
         }
         cmd.set("#Rule.TextSpans", Message.translation(KEYS + "page.rule").param("tier", Message.translation(Tiers.nameKey(Annexes.MIN_TIER)))
                 .param("rank", Message.translation(Annexes.GRANT_RANK.nameKey())));
-        cmd.set("#Back.Text", Message.translation(KEYS + "page.back"));
-        events.addEventBinding(CustomUIEventBindingType.Activating, "#Back", EventData.of("Action", "Back"));
+        BoardTabs.fill(cmd, events, store, village);
     }
 
     private static void card(UICommandBuilder cmd, UIEventBuilder events, World world, Store<EntityStore> store, Village village,
@@ -235,8 +234,7 @@ public final class AnnexPage extends InteractiveCustomUIPage<AnnexPage.Event> {
             if (i >= 0 && i < catalog.size()) {
                 Annexes.grant(world, store, ref, playerRef, village, catalog.get(i));
             }
-        } else if (action.equals("Back")) {
-            BoardPage.open(world, store, ref, playerRef, village);
+        } else if (BoardTabs.handle(action, world, store, ref, playerRef, village)) {
             return;
         }
         rebuild();

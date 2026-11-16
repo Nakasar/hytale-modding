@@ -78,4 +78,13 @@ Une fête dure 20 minutes, la foire 30 minutes.
 
 Voyageurs, aubergistes et campeurs racontent ce qui se passe : caravanes en route, campements, villages brouillés ou alliés, prochaine foire, vestiges que vous n'avez pas encore vus (avec la distance et la direction).
 
+## L'onglet Monde du panneau
+
+Le panneau du village a quatre onglets toujours visibles en haut : **Tableau**, **Emplacements**, **Avant-postes** et **Monde**, avec l'heure du jeu à droite. L'onglet Monde montre ce que le monde vivant fait autour du village :
+
+- **Voisins** : une boussole avec le village au centre, ses voisins (direction et distance, une couleur par relation : vert allié, gris neutre, rouge rival), le troupeau en migration et les campements du village. Sous la boussole, une fiche par voisin : relation, route balisée ou non, auberge, trêve, dernière escarmouche de la semaine.
+- **En ce moment** : ce qui se passe maintenant (raid, escarmouche, fête, foire, migration).
+- **Agenda** : les jours qui viennent (escarmouche attendue, raid, fête des moissons, foire et où, migration).
+- **Sur les routes** : les voyageurs partis du village ou qui y viennent, avec leur progression.
+
 `/monde etat` résume l'état du monde vivant.
