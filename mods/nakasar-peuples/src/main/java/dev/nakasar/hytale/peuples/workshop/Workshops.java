@@ -90,7 +90,24 @@ public final class Workshops {
                 out.add(w);
             }
         }
+        // Lieux-dits rattachés au village (world/Hamlets) : leur état naît quand le lieu-dit est posé.
+        for (WorkshopState s : village.workshops()) {
+            Workshop w = s == null ? null : Workshop.get(s.id());
+            if (w != null && w.isHamlet()) {
+                out.add(w);
+            }
+        }
         return out;
+    }
+
+    /** Le village a l'état du bâtiment (sans le créer). */
+    public static boolean known(Village village, String workshopId) {
+        for (WorkshopState s : village.workshops()) {
+            if (s != null && s.id().equals(workshopId)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     /**
@@ -98,6 +115,9 @@ public final class Workshops {
      * peut être absent jusqu'au matin, le panneau reste ouvert).
      */
     public static boolean open(Village village, Workshop w) {
+        if (w.isHamlet()) {
+            return known(village, w.getId()); // posé : son état existe
+        }
         if (w.isAnnex()) {
             dev.nakasar.hytale.peuples.village.AnnexState a = village.annex(w.getId());
             return a != null && a.built();
@@ -130,6 +150,9 @@ public final class Workshops {
 
     /** Métier du plan qui tient le bâtiment, ou null. */
     public static VillageLayout.Job job(Village village, Workshop w) {
+        if (w.isHamlet()) {
+            return null; // le tenancier du lieu-dit (world/Hamlets) tient la boutique
+        }
         if (w.isAnnex()) {
             // Le premier villageois de l'avant-poste tient sa boutique.
             return w.annex().workers().length == 0 ? null : w.annex().workers()[0];
@@ -150,7 +173,7 @@ public final class Workshops {
 
     /** Tire les commandes du jour des bâtiments ouverts et pose leurs panneaux manquants (chaque seconde, RequestSystem). */
     public static void refresh(World world, Store<EntityStore> store, Village village) {
-        if (village.layout() == null) {
+        if (village.layout() == null && !village.isHamlet()) {
             return;
         }
         long now = GameClock.seconds(store);
@@ -162,7 +185,7 @@ public final class Workshops {
             draw(store, village, w, state, false);
             if (!state.hasBoard()) {
                 placeBoard(world, village, w, state);
-            } else if (!RAISED.contains(village.id() + "/" + w.getId()) && raiseBoard(world, village, state)) {
+            } else if (!w.isHamlet() && !RAISED.contains(village.id() + "/" + w.getId()) && raiseBoard(world, village, state)) {
                 RAISED.add(village.id() + "/" + w.getId());
             }
         }
@@ -244,6 +267,10 @@ public final class Workshops {
     static void placeBoard(World world, Village village, Workshop w, WorkshopState state) {
         if (w.isAnnex()) {
             dev.nakasar.hytale.peuples.annex.Annexes.placeBoard(world, village, w, state);
+            return;
+        }
+        if (w.isHamlet()) {
+            dev.nakasar.hytale.peuples.world.Hamlets.placeBoard(world, village, w, state);
             return;
         }
         int[] spot = w.board();
@@ -912,6 +939,9 @@ public final class Workshops {
 
     /** Vrai si la boutique tient : son villageois est là (il revient au matin). */
     public static boolean keeperPresent(Village village, Workshop w) {
+        if (w.isHamlet()) {
+            return true; // le tenancier vit au lieu-dit (il apparaît quand un joueur approche)
+        }
         VillageLayout.Job job = job(village, w);
         if (job != null && w.isAnnex()) {
             return dev.nakasar.hytale.peuples.village.Villagers.presentAt(village, w.getId(), job.id());

@@ -59,6 +59,9 @@ public final class Hamlet implements JsonAssetWithMap<String, DefaultAssetMap<St
             .append(new KeyedCodec<>("NameKey", Codec.STRING), (h, v) -> h.nameKey = v, h -> h.nameKey)
             .documentation("Clé de langue du nom du genre.")
             .add()
+            .append(new KeyedCodec<>("Label", Codec.STRING), (h, v) -> h.label = v, h -> h.label)
+            .documentation("Nom en clair du lieu-dit (son état propre, comme le nom d'un village).")
+            .add()
             .append(new KeyedCodec<>("Icon", Codec.STRING), (h, v) -> h.icon = v, h -> h.icon)
             .documentation("Objet vanilla qui représente le lieu-dit.")
             .add()
@@ -97,6 +100,7 @@ public final class Hamlet implements JsonAssetWithMap<String, DefaultAssetMap<St
     String people;
     String type;
     String nameKey;
+    String label;
     String icon;
     String rule = "NONE";
     int weight = 1;
@@ -181,6 +185,15 @@ public final class Hamlet implements JsonAssetWithMap<String, DefaultAssetMap<St
 
     public String icon() {
         return icon;
+    }
+
+    /** Nom du lieu-dit dans les textes bruts (journal, panneau) : « Caserne feran ». */
+    public String label() {
+        return label == null || label.isEmpty() ? type : label;
+    }
+
+    public int weight() {
+        return weight;
     }
 
     public String rule() {

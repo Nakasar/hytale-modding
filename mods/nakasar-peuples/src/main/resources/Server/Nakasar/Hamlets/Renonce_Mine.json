@@ -3,6 +3,7 @@
   "People": "Renonce",
   "Type": "Mine",
   "NameKey": "nakasar_peuples.hamlet.type.Mine",
+  "Label": "Mine isolée renoncé",
   "Icon": "Tool_Pickaxe_Crude",
   "Rule": "ROCK",
   "Weight": 3,

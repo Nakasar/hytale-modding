@@ -37,16 +37,30 @@ Un lieu-dit n'est jamais collé à un village, à une auberge, à un avant-poste
 
 ## Commercer
 
-Parlez au tenancier. Son troc se paie avec les faveurs du peuple, et il faut être au moins **Toléré** dans le village dont dépend le lieu-dit. Il peut aussi vous dire qui vient commercer chez lui.
+Un lieu-dit ne dépend d'aucun village : il a sa propre réputation, gagnée en remplissant ses commandes. Parlez au tenancier. Son troc se paie avec les faveurs du peuple, et il faut être au moins **Toléré** auprès du lieu-dit (ou auprès de son peuple). Il peut aussi vous dire qui vient commercer chez lui.
+
+## Faire grandir un lieu-dit
+
+Chaque lieu-dit a un panneau à côté de sa place. Il marche comme celui d'un avant-poste : commandes du jour, savoir-faire, niveaux I à III avec une commande de maître et 12 heures de travaux (les matériaux sont pris dans le coffre de dépôt, à droite de la place), une spécialité au niveau II, une boutique qui grandit avec le niveau et votre rang, et la Part de l'Hôte au niveau III. Un habitant de plus arrive à chaque niveau.
+
+| Lieu-dit | Il grandit comme |
+| --- | --- |
+| Mine | une mine |
+| Ferme | une ferme |
+| Moulin | ses propres paliers : spécialités Boulangerie ou Grenier |
+| Forge | ses propres paliers : spécialités Armurerie ou Outillage |
+| Comptoir | ses propres paliers : spécialités Étoffes ou Explorateurs |
+| Caserne | une tour de guet (mais elle ne défend pas le village en cas de raid) |
+| Scierie, pavillon de chasse, bosquet | l'avant-poste du même nom |
+
+Ses niveaux ne dépendent d'aucun village : seuls comptent le savoir-faire et la commande de maître.
 
 ## Les marchands des villages
 
 Chaque matin, un marchand, ou une caravane de trois porteurs, peut partir d'un village voisin (jusqu'à 900 blocs) vers un lieu-dit. Il marche de jour, reste 3 heures sur la place du lieu-dit, puis rentre chez lui. Vous pouvez lui parler en route ou sur la place : il a le troc des voyageurs de son peuple.
 
-- **Lieu-dit animé** : quand 4 marchands sont venus en 7 jours (une caravane compte pour trois), le lieu-dit devient animé et son troc s'agrandit. Vous en êtes prévenu si vous êtes près de lui ou du village.
+- **Lieu-dit animé** : quand 4 marchands sont venus en 7 jours (une caravane compte pour trois), le lieu-dit devient animé et son troc s'agrandit. Vous en êtes prévenu si vous êtes près de lui.
 - **Retour** : le commerce fait grandir le village du marchand (un point d'essor, trois pour une caravane complète).
 - **Danger** : si tous les marcheurs sont tués en chemin, le village apprend que son marchand n'est jamais revenu.
-
-Un village ne va pas commercer chez les gens d'un village rival.
 
 Voir aussi [Le monde vivant](monde-vivant.md).

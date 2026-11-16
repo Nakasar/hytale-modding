@@ -1,0 +1,84 @@
+{
+  "$Comment": "Bâtiment de métier du lieu-dit « Pavillon de chasse » (world/Hamlets), aux paliers de l'avant-poste Kweebec_AP_Chasse : généré par tools/generate_workshops.py (ne pas modifier à la main).",
+  "People": "Kweebec",
+  "Icon": "Ingredient_Hide_Light",
+  "NameKey": "nakasar_peuples.workshop.Kweebec_LD_Chasse.name",
+  "Board": [
+    0,
+    0,
+    0
+  ],
+  "Upgrades": [
+    {
+      "Level": 2,
+      "Hours": 12,
+      "Decor": [
+        "1 0 0 0 Furniture_Kweebec_Lantern"
+      ],
+      "Materials": [
+        {
+          "ItemId": "Wood_Oak_Trunk",
+          "Quantity": 16
+        },
+        {
+          "ItemId": "Rock_Stone_Cobble",
+          "Quantity": 12
+        },
+        {
+          "ItemId": "Ingredient_Fibre",
+          "Quantity": 6
+        }
+      ]
+    },
+    {
+      "Level": 3,
+      "Hours": 12,
+      "Decor": [
+        "-1 0 0 0 Furniture_Kweebec_Lantern",
+        "0 1 0 0 Furniture_Kweebec_Candle"
+      ],
+      "Materials": [
+        {
+          "ItemId": "Wood_Oak_Trunk",
+          "Quantity": 24
+        },
+        {
+          "ItemId": "Rock_Stone_Cobble",
+          "Quantity": 18
+        },
+        {
+          "ItemId": "Ingredient_Fibre",
+          "Quantity": 9
+        }
+      ]
+    }
+  ],
+  "Hamlet": "Chasse",
+  "Specialties": [
+    {
+      "Id": "Pelleterie",
+      "NameKey": "nakasar_peuples.workshop.specialty.Kweebec_LD_Chasse.Pelleterie",
+      "LineKey": "nakasar_peuples.workshop.specialtyLine.Kweebec_LD_Chasse.Pelleterie",
+      "Icon": "Ingredient_Leather_Medium",
+      "Shops": [
+        "Nakasar_Peuples_W_Kweebec_LD_Chasse_Pelleterie_2",
+        "Nakasar_Peuples_W_Kweebec_LD_Chasse_Pelleterie_3"
+      ],
+      "ShareItem": "Ingredient_Hide_Medium",
+      "ShareQuantity": 4
+    },
+    {
+      "Id": "Venerie",
+      "NameKey": "nakasar_peuples.workshop.specialty.Kweebec_LD_Chasse.Venerie",
+      "LineKey": "nakasar_peuples.workshop.specialtyLine.Kweebec_LD_Chasse.Venerie",
+      "Icon": "Food_Wildmeat_Cooked",
+      "Shops": [
+        "Nakasar_Peuples_W_Kweebec_LD_Chasse_Venerie_2",
+        "Nakasar_Peuples_W_Kweebec_LD_Chasse_Venerie_3"
+      ],
+      "ShareItem": "Food_Wildmeat_Cooked",
+      "ShareQuantity": 4
+    }
+  ],
+  "Shop": "Nakasar_Peuples_W_Kweebec_LD_Chasse_Base_1"
+}

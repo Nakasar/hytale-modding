@@ -3,6 +3,7 @@
   "People": "Slothian",
   "Type": "Mine",
   "NameKey": "nakasar_peuples.hamlet.type.Mine",
+  "Label": "Mine isolée slothian",
   "Icon": "Tool_Pickaxe_Crude",
   "Rule": "ROCK",
   "Weight": 3,

@@ -324,6 +324,9 @@ public final class Workshop implements JsonAssetWithMap<String, DefaultAssetMap<
             .append(new KeyedCodec<>("Annex", Annex.CODEC), (w, v) -> w.annex = v, w -> w.annex)
             .documentation("Avant-poste de métier : bâtiment isolé hors du plan, fondé depuis le panneau du village.")
             .add()
+            .append(new KeyedCodec<>("Hamlet", Codec.STRING), (w, v) -> w.hamlet = v == null || v.isBlank() ? null : v, w -> w.hamlet)
+            .documentation("Lieu-dit (world/Hamlets) : genre du lieu-dit dont c'est le bâtiment, aux paliers de son avant-poste équivalent.")
+            .add()
             .validator(Workshop::validate)
             .build();
 
@@ -346,6 +349,7 @@ public final class Workshop implements JsonAssetWithMap<String, DefaultAssetMap<
     String shop;
     String twin;
     Annex annex;
+    String hamlet;
 
     Workshop() {
     }
@@ -404,6 +408,15 @@ public final class Workshop implements JsonAssetWithMap<String, DefaultAssetMap<
 
     public boolean isAnnex() {
         return annex != null;
+    }
+
+    /** Genre du lieu-dit (Mine, Ferme...) dont c'est le bâtiment, ou null. */
+    public String hamlet() {
+        return hamlet;
+    }
+
+    public boolean isHamlet() {
+        return hamlet != null;
     }
 
     @Override
@@ -508,7 +521,7 @@ public final class Workshop implements JsonAssetWithMap<String, DefaultAssetMap<
             if (w.annex.type == null || w.annex.item == null || w.annex.prefabs.length == 0 || w.annex.workers.length == 0) {
                 results.fail("Annex : Type, Item, Prefabs et Workers sont obligatoires");
             }
-        } else if (w.layout == null || w.building == null || w.job == null) {
+        } else if (w.hamlet == null && (w.layout == null || w.building == null || w.job == null)) {
             results.fail("Layout, Building et Job sont obligatoires");
         }
         if (w.board == null || w.board.length < 2) {

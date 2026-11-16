@@ -3,6 +3,7 @@
   "People": "Trork",
   "Type": "Chasse",
   "NameKey": "nakasar_peuples.hamlet.type.Chasse",
+  "Label": "Pavillon de chasse trork",
   "Icon": "Ingredient_Hide_Light",
   "Rule": "NONE",
   "Weight": 3,

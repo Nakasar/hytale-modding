@@ -3,6 +3,7 @@
   "People": "Kweebec",
   "Type": "Caserne",
   "NameKey": "nakasar_peuples.hamlet.type.Caserne",
+  "Label": "Caserne kweebec",
   "Icon": "Weapon_Arrow_Crude",
   "Rule": "NONE",
   "Weight": 2,

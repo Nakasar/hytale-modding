@@ -3,6 +3,7 @@
   "People": "Kweebec",
   "Type": "Bosquet",
   "NameKey": "nakasar_peuples.hamlet.type.Bosquet",
+  "Label": "Bosquet d'herboriste kweebec",
   "Icon": "Plant_Crop_Health1",
   "Rule": "TREES",
   "Weight": 3,

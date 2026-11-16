@@ -1,0 +1,24 @@
+{
+  "$Comment": "Commande du bâtiment de métier Renonce_LD_Forge, générée par tools/generate_workshops.py (ne pas modifier à la main) : voir RequestTemplate.",
+  "People": "Renonce",
+  "Workshop": "Renonce_LD_Forge",
+  "Type": "Hunt",
+  "MinLevel": 1,
+  "MaxLevel": 3,
+  "Weight": 1,
+  "TitleKey": "nakasar_peuples.request.Renonce_LD_Forge_Hunt.title",
+  "TaskKey": "nakasar_peuples.request.Renonce_LD_Forge_Hunt.task",
+  "Spawns": [
+    "Outlander_Cultist",
+    "Outlander_Cultist"
+  ],
+  "Roles": [
+    "Outlander_Cultist"
+  ],
+  "MinDistance": 60,
+  "MaxDistance": 110,
+  "Knowledge": 45,
+  "Essor": 5,
+  "Favors": 2,
+  "Reputation": 8
+}

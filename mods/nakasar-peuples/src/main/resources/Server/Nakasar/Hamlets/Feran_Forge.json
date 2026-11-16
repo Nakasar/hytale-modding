@@ -3,6 +3,7 @@
   "People": "Feran",
   "Type": "Forge",
   "NameKey": "nakasar_peuples.hamlet.type.Forge",
+  "Label": "Forge feran",
   "Icon": "Ingredient_Bar_Iron",
   "Rule": "NONE",
   "Weight": 3,

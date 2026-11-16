@@ -3,6 +3,7 @@
   "People": "Kweebec",
   "Type": "Ferme",
   "NameKey": "nakasar_peuples.hamlet.type.Ferme",
+  "Label": "Ferme isolée kweebec",
   "Icon": "Plant_Crop_Wheat_Item",
   "Rule": "FERTILE",
   "Weight": 4,

@@ -1,5 +1,5 @@
 {
-  "$Comment": "Troc du lieu-dit Comptoir commercial (Feran) animé, généré par tools/generate_hamlets.py : faveurs du peuple contre marchandises vanilla ; ouvert au rang Toléré dans le village du lieu-dit.",
+  "$Comment": "Troc du lieu-dit Comptoir commercial (Feran) animé, généré par tools/generate_hamlets.py : faveurs du peuple contre marchandises vanilla ; ouvert au rang Toléré auprès du lieu-dit (ou de son peuple).",
   "DisplayNameKey": "nakasar_peuples.barter.Hamlet_Feran_Comptoir_Anime.title",
   "RefreshInterval": {
     "Days": 2

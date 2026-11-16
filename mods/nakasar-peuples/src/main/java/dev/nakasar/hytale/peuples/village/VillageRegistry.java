@@ -235,8 +235,12 @@ public final class VillageRegistry implements Resource<EntityStore> {
                 return v;
             }
         }
-        return null;
+        // Lieux-dits (sauvegardés à part) : leurs commandes et leur réputation passent par leur id « H:… ».
+        return hamlets != null && HamletRegistry.isHamlet(id) ? hamlets.byId(id) : null;
     }
+
+    /** Lieux-dits du monde, posés par {@link Villages#registry} (non sauvegardé ici). */
+    transient HamletRegistry hamlets;
 
     /** Village dont le tableau est en (x, y, z), ou null. */
     public Village byBoard(int x, int y, int z) {
@@ -255,7 +259,7 @@ public final class VillageRegistry implements Resource<EntityStore> {
                 return v;
             }
         }
-        return null;
+        return hamlets == null ? null : hamlets.byWorkshopBoard(x, y, z);
     }
 
     /** Village dont le cœur est le plus proche de (x, y, z), à moins de `radius` blocs, ou null. */

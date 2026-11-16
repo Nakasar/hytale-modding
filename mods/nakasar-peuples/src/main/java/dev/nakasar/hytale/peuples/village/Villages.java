@@ -41,7 +41,11 @@ public final class Villages {
     }
 
     public static VillageRegistry registry(World world) {
-        return world.getEntityStore().getStore().getResource(resourceType);
+        VillageRegistry r = world.getEntityStore().getStore().getResource(resourceType);
+        if (r != null && r.hamlets == null) {
+            r.hamlets = HamletRegistry.of(world);
+        }
+        return r;
     }
 
     /** Résultat d'une fondation : le village, ou la clé du message d'échec. */
@@ -147,6 +151,9 @@ public final class Villages {
 
     /** Ajoute de l'essor (borné par le seuil du palier) ; rend le gain réel. */
     public static int addEssor(Village village, int amount) {
+        if (village.isHamlet()) {
+            return 0; // un lieu-dit n'a pas d'essor : il grandit par son bâtiment de métier
+        }
         return village.addEssor(amount);
     }
 
@@ -197,6 +204,9 @@ public final class Villages {
      * est chargée est signalé une fois dans le journal avec le bloc trouvé.
      */
     public static ItemContainer depositChest(World world, Village village) {
+        if (village.isHamlet() && !HamletRegistry.hasDeposit(village)) {
+            return null; // coffre du lieu-dit pas encore posé
+        }
         int[] d = village.deposit();
         if (Blocks.id(world.getChunkStore(), d[0], d[1], d[2]) == Blocks.UNLOADED) {
             return null;

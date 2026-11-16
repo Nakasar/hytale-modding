@@ -1,0 +1,90 @@
+{
+  "$Comment": "Boutique du niveau 2 du bâtiment de métier Trork_LD_Scierie, spécialité Seve, générée par tools/generate_workshops.py.",
+  "DisplayNameKey": "nakasar_peuples.barter.W_Trork_LD_Scierie_Seve_2.title",
+  "RefreshInterval": {
+    "Days": 3
+  },
+  "RestockHour": 6,
+  "TradeSlots": [
+    {
+      "Type": "Fixed",
+      "Trade": {
+        "Output": {
+          "ItemId": "Wood_Birch_Trunk",
+          "Quantity": 12
+        },
+        "Input": [
+          {
+            "ItemId": "Nakasar_Peuples_Favor_Trork",
+            "Quantity": 1
+          }
+        ],
+        "Stock": 8
+      }
+    },
+    {
+      "Type": "Fixed",
+      "Trade": {
+        "Output": {
+          "ItemId": "Ingredient_Stick",
+          "Quantity": 12
+        },
+        "Input": [
+          {
+            "ItemId": "Nakasar_Peuples_Favor_Trork",
+            "Quantity": 1
+          }
+        ],
+        "Stock": 8
+      }
+    },
+    {
+      "Type": "Fixed",
+      "Trade": {
+        "Output": {
+          "ItemId": "Ingredient_Tree_Bark",
+          "Quantity": 6
+        },
+        "Input": [
+          {
+            "ItemId": "Nakasar_Peuples_Favor_Trork",
+            "Quantity": 1
+          }
+        ],
+        "Stock": 8
+      }
+    },
+    {
+      "Type": "Fixed",
+      "Trade": {
+        "Output": {
+          "ItemId": "Ingredient_Tree_Sap",
+          "Quantity": 4
+        },
+        "Input": [
+          {
+            "ItemId": "Nakasar_Peuples_Favor_Trork",
+            "Quantity": 1
+          }
+        ],
+        "Stock": 6
+      }
+    },
+    {
+      "Type": "Fixed",
+      "Trade": {
+        "Output": {
+          "ItemId": "Plant_Seeds_Oak",
+          "Quantity": 2
+        },
+        "Input": [
+          {
+            "ItemId": "Nakasar_Peuples_Favor_Trork",
+            "Quantity": 1
+          }
+        ],
+        "Stock": 6
+      }
+    }
+  ]
+}

@@ -1,0 +1,17 @@
+{
+  "$Comment": "Commande du bâtiment de métier Feran_LD_Chasse, générée par tools/generate_workshops.py (ne pas modifier à la main) : voir RequestTemplate.",
+  "People": "Feran",
+  "Workshop": "Feran_LD_Chasse",
+  "Type": "Craft",
+  "MinLevel": 1,
+  "MaxLevel": 3,
+  "Weight": 1,
+  "TitleKey": "nakasar_peuples.request.Feran_LD_Chasse_Scrapers.title",
+  "TaskKey": "nakasar_peuples.request.Feran_LD_Chasse_Scrapers.task",
+  "ItemId": "Tool_Bark_Scraper",
+  "Quantity": 2,
+  "Knowledge": 40,
+  "Essor": 5,
+  "Favors": 1,
+  "Reputation": 6
+}

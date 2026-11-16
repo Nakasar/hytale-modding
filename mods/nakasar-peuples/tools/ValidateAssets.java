@@ -1266,9 +1266,16 @@ public class ValidateAssets {
             Path f = dir.resolve(e.getKey() + ".json");
             BsonDocument doc = BsonDocument.parse(Files.readString(f));
             List<String> problems = new ArrayList<>();
-            String layoutId = doc.containsKey("Annex") ? null : doc.getString("Layout").getValue();
+            boolean hamlet = doc.containsKey("Hamlet");
+            String layoutId = doc.containsKey("Annex") || hamlet ? null : doc.getString("Layout").getValue();
             Path layoutFile = layoutId == null ? null : layouts.resolve(layoutId + ".json");
-            if (doc.containsKey("Annex")) {
+            if (hamlet) {
+                // Lieu-dit : son genre doit exister pour le peuple (Nakasar/Hamlets/<Peuple>_<Genre>.json).
+                String asset = doc.getString("People").getValue() + "_" + doc.getString("Hamlet").getValue();
+                if (!Files.isRegularFile(root.resolve("Nakasar/Hamlets/" + asset + ".json"))) {
+                    problems.add("lieu-dit inconnu " + asset);
+                }
+            } else if (doc.containsKey("Annex")) {
                 checkAnnex(root, doc.getDocument("Annex"), prefabsFile, problems);
             } else if (!Files.isRegularFile(layoutFile)) {
                 problems.add("plan inconnu " + layoutId);
@@ -1458,6 +1465,11 @@ public class ValidateAssets {
                             problems.add("rôle d'habitant absent " + role);
                         }
                     }
+                }
+                // Paliers : le bâtiment de métier <Peuple>_LD_<Genre> (tools/generate_workshops.py).
+                String ld = doc.getString("People").getValue() + "_LD_" + doc.getString("Type").getValue();
+                if (!Files.isRegularFile(root.resolve("Nakasar/Workshops/" + ld + ".json"))) {
+                    problems.add("bâtiment de métier du lieu-dit absent " + ld);
                 }
                 String dialogue = doc.containsKey("Dialogue") ? doc.getString("Dialogue").getValue() : "";
                 try (Stream<Path> d = Files.walk(root.resolve("Nakasar/Dialogues"))) {

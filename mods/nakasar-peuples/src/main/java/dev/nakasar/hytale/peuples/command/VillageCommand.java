@@ -378,7 +378,7 @@ public final class VillageCommand extends AbstractCommandCollection {
     /** Bâtiment de métier `id` du village, ou null avec un message. */
     static dev.nakasar.hytale.peuples.workshop.Workshop workshop(PlayerRef player, Village village, String id) {
         dev.nakasar.hytale.peuples.workshop.Workshop w = dev.nakasar.hytale.peuples.workshop.Workshop.get(id);
-        if (w == null || !w.layout().equals(village.layout())) {
+        if (w == null || !dev.nakasar.hytale.peuples.workshop.Workshops.all(village).contains(w)) {
             player.sendMessage(Message.translation(dev.nakasar.hytale.peuples.workshop.Workshops.KEYS + "unknown").param("id", id));
             return null;
         }
@@ -448,7 +448,16 @@ public final class VillageCommand extends AbstractCommandCollection {
 
         @Override
         protected void execute(CommandContext context, Store<EntityStore> store, Ref<EntityStore> ref, PlayerRef player, World world) {
-            Village village = nearest(world, player);
+            // Bâtiment d'un lieu-dit (<Peuple>_LD_<Genre>) : celui du lieu-dit le plus proche, qui n'est d'aucun village.
+            Village village = null;
+            if (id.get(context).contains("_LD_")) {
+                Vector3d at = player.getTransform().getPosition();
+                village = dev.nakasar.hytale.peuples.world.Hamlets.state(world,
+                        dev.nakasar.hytale.peuples.world.Hamlets.nearest(world, at.x(), at.z(), 200));
+            }
+            if (village == null) {
+                village = nearest(world, player);
+            }
             dev.nakasar.hytale.peuples.workshop.Workshop w = village == null ? null : workshop(player, village, id.get(context));
             if (w == null) {
                 return;

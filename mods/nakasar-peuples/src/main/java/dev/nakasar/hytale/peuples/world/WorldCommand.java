@@ -369,10 +369,15 @@ public final class WorldCommand extends AbstractCommandCollection {
     /** Message d'état d'un lieu-dit (commande). */
     static Message describe(World world, Store<EntityStore> store, Hamlets.Place h) {
         Hamlet type = h.type();
-        Village v = Hamlets.village(world, h);
+        Village v = Hamlets.state(world, h);
+        int level = 0;
+        dev.nakasar.hytale.peuples.workshop.Workshop w = Hamlets.workshop(h);
+        if (v != null && w != null && dev.nakasar.hytale.peuples.workshop.Workshops.known(v, w.getId())) {
+            level = v.workshop(w.getId()).level();
+        }
         return Message.translation(Hamlets.KEYS + "cmd.state").param("name", h.name())
                 .param("people", Message.translation(type == null ? "?" : type.people().nameKey()))
-                .param("village", v == null ? "?" : v.name()).param("x", h.x()).param("z", h.z())
+                .param("level", level).param("x", h.x()).param("z", h.z())
                 .param("stage", Message.translation(Hamlets.KEYS + "cmd.stage." + h.stage()))
                 .param("visits", Hamlets.visits(world, h, GameClock.day(store)));
     }

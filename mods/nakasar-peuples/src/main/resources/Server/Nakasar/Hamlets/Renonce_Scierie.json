@@ -3,6 +3,7 @@
   "People": "Renonce",
   "Type": "Scierie",
   "NameKey": "nakasar_peuples.hamlet.type.Scierie",
+  "Label": "Scierie renoncé",
   "Icon": "Tool_Hatchet_Crude",
   "Rule": "TREES",
   "Weight": 3,

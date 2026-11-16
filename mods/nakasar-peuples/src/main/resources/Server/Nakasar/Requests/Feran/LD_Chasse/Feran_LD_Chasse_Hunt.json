@@ -1,0 +1,23 @@
+{
+  "$Comment": "Commande du bâtiment de métier Feran_LD_Chasse, générée par tools/generate_workshops.py (ne pas modifier à la main) : voir RequestTemplate.",
+  "People": "Feran",
+  "Workshop": "Feran_LD_Chasse",
+  "Type": "Hunt",
+  "MinLevel": 1,
+  "MaxLevel": 3,
+  "Weight": 1,
+  "TitleKey": "nakasar_peuples.request.Feran_LD_Chasse_Hunt.title",
+  "TaskKey": "nakasar_peuples.request.Feran_LD_Chasse_Hunt.task",
+  "Spawns": [
+    "Mosshorn"
+  ],
+  "Roles": [
+    "Mosshorn"
+  ],
+  "MinDistance": 60,
+  "MaxDistance": 110,
+  "Knowledge": 45,
+  "Essor": 5,
+  "Favors": 2,
+  "Reputation": 8
+}

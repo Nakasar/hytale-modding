@@ -1,0 +1,83 @@
+{
+  "$Comment": "Bâtiment de métier du lieu-dit « Moulin » (world/Hamlets), paliers propres de tools/hamlets.py OWN_TIERS : généré par tools/generate_workshops.py (ne pas modifier à la main).",
+  "People": "Feran",
+  "Icon": "Ingredient_Flour",
+  "NameKey": "nakasar_peuples.workshop.Feran_LD_Moulin.name",
+  "Board": [
+    0,
+    0,
+    0
+  ],
+  "Upgrades": [
+    {
+      "Level": 2,
+      "Hours": 12,
+      "Decor": [
+        "1 0 0 0 Furniture_Feran_Torch"
+      ],
+      "Materials": [
+        {
+          "ItemId": "Wood_Dry_Trunk",
+          "Quantity": 12
+        },
+        {
+          "ItemId": "Ingredient_Fibre",
+          "Quantity": 6
+        },
+        {
+          "ItemId": "Ingredient_Salt",
+          "Quantity": 3
+        }
+      ]
+    },
+    {
+      "Level": 3,
+      "Hours": 12,
+      "Decor": [
+        "-1 0 0 0 Furniture_Feran_Torch_Tall"
+      ],
+      "Materials": [
+        {
+          "ItemId": "Wood_Dry_Trunk",
+          "Quantity": 18
+        },
+        {
+          "ItemId": "Ingredient_Fibre",
+          "Quantity": 9
+        },
+        {
+          "ItemId": "Ingredient_Salt",
+          "Quantity": 4
+        }
+      ]
+    }
+  ],
+  "Hamlet": "Moulin",
+  "Specialties": [
+    {
+      "Id": "Boulangerie",
+      "NameKey": "nakasar_peuples.workshop.specialty.Feran_LD_Moulin.Boulangerie",
+      "LineKey": "nakasar_peuples.workshop.specialtyLine.Feran_LD_Moulin.Boulangerie",
+      "Icon": "Food_Bread",
+      "Shops": [
+        "Nakasar_Peuples_W_Feran_LD_Moulin_Boulangerie_2",
+        "Nakasar_Peuples_W_Feran_LD_Moulin_Boulangerie_3"
+      ],
+      "ShareItem": "Food_Bread",
+      "ShareQuantity": 4
+    },
+    {
+      "Id": "Grenier",
+      "NameKey": "nakasar_peuples.workshop.specialty.Feran_LD_Moulin.Grenier",
+      "LineKey": "nakasar_peuples.workshop.specialtyLine.Feran_LD_Moulin.Grenier",
+      "Icon": "Ingredient_Hay",
+      "Shops": [
+        "Nakasar_Peuples_W_Feran_LD_Moulin_Grenier_2",
+        "Nakasar_Peuples_W_Feran_LD_Moulin_Grenier_3"
+      ],
+      "ShareItem": "Ingredient_Hay",
+      "ShareQuantity": 8
+    }
+  ],
+  "Shop": "Nakasar_Peuples_W_Feran_LD_Moulin_Base_1"
+}

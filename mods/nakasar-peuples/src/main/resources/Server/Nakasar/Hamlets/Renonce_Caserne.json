@@ -3,6 +3,7 @@
   "People": "Renonce",
   "Type": "Caserne",
   "NameKey": "nakasar_peuples.hamlet.type.Caserne",
+  "Label": "Caserne renoncé",
   "Icon": "Weapon_Arrow_Crude",
   "Rule": "NONE",
   "Weight": 2,

@@ -162,6 +162,9 @@ public final class WorkshopPage extends InteractiveCustomUIPage<WorkshopPage.Eve
 
     /** Le villageois du bâtiment : présent, ou de retour au matin. */
     static Message keeperLine(Village village, Workshop w) {
+        if (w.isHamlet()) {
+            return Message.translation(KEYS + "keeper").param("name", Message.translation(KEYS + "hamletKeeper"));
+        }
         VillageLayout.Job job = Workshops.job(village, w);
         if (job == null) {
             return Message.translation(KEYS + "keeperNone");

@@ -3,6 +3,7 @@
   "People": "Feran",
   "Type": "Chasse",
   "NameKey": "nakasar_peuples.hamlet.type.Chasse",
+  "Label": "Pavillon de chasse feran",
   "Icon": "Ingredient_Hide_Light",
   "Rule": "NONE",
   "Weight": 3,

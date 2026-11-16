@@ -198,11 +198,6 @@ public final class HamletTrips {
             if (from == null) {
                 continue;
             }
-            Village home = Hamlets.village(world, h);
-            boolean rival = home != null && home != from && Relations.value(world, from, home) <= Relations.RIVAL;
-            if (rival) {
-                continue; // on ne va pas commercer chez les gens d'un village rival
-            }
             if (start(world, h, from, random.nextDouble() < CARAVAN_CHANCE) != null) {
                 count++;
             }
@@ -376,14 +371,10 @@ public final class HamletTrips {
         t.until = GameClock.seconds(store) + STAY_HOURS * 3600L;
     }
 
-    /** Retour au village : essor (caravane : un par porteur rentré), meilleure relation avec le village du lieu-dit. */
+    /** Retour au village : essor (caravane : un par porteur rentré). Le lieu-dit n'est rattaché à aucun village. */
     private static void home(World world, Store<EntityStore> store, Trip t, Village v, Hamlets.Place h) {
         int essor = t.caravan ? Math.min(CARAVAN_ESSOR, t.walkers) : MERCHANT_ESSOR;
         Villages.addEssor(v, essor);
-        Village owner = Hamlets.village(world, h);
-        if (owner != null && owner != v) {
-            Relations.change(world, v, owner, 1);
-        }
         Chantiers.announce(world, v, Message.translation(KEYS + "home").param("hamlet", h.name()).param("essor", essor), null,
                 NotificationStyle.Success);
         drop(world, store, t);
