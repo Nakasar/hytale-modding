@@ -292,9 +292,13 @@ $C.@PageOverlay {
             }
           }
           Label #NeighboursNone { Anchor: (Height: 40); Style: @SmallWrap; Text: ""; Visible: false; }
+          Group #NbList {
+            LayoutMode: TopScrolling;
+            ScrollbarStyle: $C.@DefaultScrollbarStyle;
+            FlexWeight: 1;
           @Card #Nb0 {
             LayoutMode: Left;
-            Anchor: (Height: 80, Bottom: 6);
+            Anchor: (Height: 80, Bottom: 6, Right: 10);
             Group {
               LayoutMode: Full;
               Anchor: (Width: 4);
@@ -321,7 +325,7 @@ $C.@PageOverlay {
           }
           @Card #Nb1 {
             LayoutMode: Left;
-            Anchor: (Height: 80, Bottom: 6);
+            Anchor: (Height: 80, Bottom: 6, Right: 10);
             Group {
               LayoutMode: Full;
               Anchor: (Width: 4);
@@ -348,7 +352,7 @@ $C.@PageOverlay {
           }
           @Card #Nb2 {
             LayoutMode: Left;
-            Anchor: (Height: 80, Bottom: 6);
+            Anchor: (Height: 80, Bottom: 6, Right: 10);
             Group {
               LayoutMode: Full;
               Anchor: (Width: 4);
@@ -375,7 +379,7 @@ $C.@PageOverlay {
           }
           @Card #Nb3 {
             LayoutMode: Left;
-            Anchor: (Height: 80, Bottom: 6);
+            Anchor: (Height: 80, Bottom: 6, Right: 10);
             Group {
               LayoutMode: Full;
               Anchor: (Width: 4);
@@ -400,7 +404,332 @@ $C.@PageOverlay {
               Label #NbTrips3 { Anchor: (Height: 17); Style: (FontSize: 12, TextColor: #c9d1d9, VerticalAlignment: Center); Text: ""; }
             }
           }
+          @Card #Nb4 {
+            LayoutMode: Left;
+            Anchor: (Height: 80, Bottom: 6, Right: 10);
+            Group {
+              LayoutMode: Full;
+              Anchor: (Width: 4);
+              Group #NbAlly4 { Anchor: (Full: 0); Background: (Color: #9ed36a); Visible: false; }
+              Group #NbFriendly4 { Anchor: (Full: 0); Background: (Color: #c9e08a); Visible: false; }
+              Group #NbNeutral4 { Anchor: (Full: 0); Background: (Color: #a9b8c8); Visible: false; }
+              Group #NbTense4 { Anchor: (Full: 0); Background: (Color: #e8b06a); Visible: false; }
+              Group #NbRival4 { Anchor: (Full: 0); Background: (Color: #f08a7a); Visible: false; }
+            }
+            Group {
+              LayoutMode: Top;
+              FlexWeight: 1;
+              Padding: (Left: 10, Right: 10, Vertical: 4);
+              Group {
+                LayoutMode: Left;
+                Anchor: (Height: 20);
+                Label #NbName4 { Style: @Name; Text: ""; FlexWeight: 1; }
+                Label #NbState4 { Anchor: (Width: 130); Style: (FontSize: 12, RenderBold: true, RenderUppercase: true, TextColor: #a9b8c8, HorizontalAlignment: End, VerticalAlignment: Center); Text: ""; }
+              }
+              Label #NbLine4 { Anchor: (Height: 17); Style: @Small; Text: ""; }
+              Label #NbExtras4 { Anchor: (Height: 17); Style: (FontSize: 12, RenderBold: true, TextColor: #b4c8c9, VerticalAlignment: Center); Text: ""; }
+              Label #NbTrips4 { Anchor: (Height: 17); Style: (FontSize: 12, TextColor: #c9d1d9, VerticalAlignment: Center); Text: ""; }
+            }
+          }
+          @Card #Nb5 {
+            LayoutMode: Left;
+            Anchor: (Height: 80, Bottom: 6, Right: 10);
+            Group {
+              LayoutMode: Full;
+              Anchor: (Width: 4);
+              Group #NbAlly5 { Anchor: (Full: 0); Background: (Color: #9ed36a); Visible: false; }
+              Group #NbFriendly5 { Anchor: (Full: 0); Background: (Color: #c9e08a); Visible: false; }
+              Group #NbNeutral5 { Anchor: (Full: 0); Background: (Color: #a9b8c8); Visible: false; }
+              Group #NbTense5 { Anchor: (Full: 0); Background: (Color: #e8b06a); Visible: false; }
+              Group #NbRival5 { Anchor: (Full: 0); Background: (Color: #f08a7a); Visible: false; }
+            }
+            Group {
+              LayoutMode: Top;
+              FlexWeight: 1;
+              Padding: (Left: 10, Right: 10, Vertical: 4);
+              Group {
+                LayoutMode: Left;
+                Anchor: (Height: 20);
+                Label #NbName5 { Style: @Name; Text: ""; FlexWeight: 1; }
+                Label #NbState5 { Anchor: (Width: 130); Style: (FontSize: 12, RenderBold: true, RenderUppercase: true, TextColor: #a9b8c8, HorizontalAlignment: End, VerticalAlignment: Center); Text: ""; }
+              }
+              Label #NbLine5 { Anchor: (Height: 17); Style: @Small; Text: ""; }
+              Label #NbExtras5 { Anchor: (Height: 17); Style: (FontSize: 12, RenderBold: true, TextColor: #b4c8c9, VerticalAlignment: Center); Text: ""; }
+              Label #NbTrips5 { Anchor: (Height: 17); Style: (FontSize: 12, TextColor: #c9d1d9, VerticalAlignment: Center); Text: ""; }
+            }
+          }
+          @Card #Nb6 {
+            LayoutMode: Left;
+            Anchor: (Height: 80, Bottom: 6, Right: 10);
+            Group {
+              LayoutMode: Full;
+              Anchor: (Width: 4);
+              Group #NbAlly6 { Anchor: (Full: 0); Background: (Color: #9ed36a); Visible: false; }
+              Group #NbFriendly6 { Anchor: (Full: 0); Background: (Color: #c9e08a); Visible: false; }
+              Group #NbNeutral6 { Anchor: (Full: 0); Background: (Color: #a9b8c8); Visible: false; }
+              Group #NbTense6 { Anchor: (Full: 0); Background: (Color: #e8b06a); Visible: false; }
+              Group #NbRival6 { Anchor: (Full: 0); Background: (Color: #f08a7a); Visible: false; }
+            }
+            Group {
+              LayoutMode: Top;
+              FlexWeight: 1;
+              Padding: (Left: 10, Right: 10, Vertical: 4);
+              Group {
+                LayoutMode: Left;
+                Anchor: (Height: 20);
+                Label #NbName6 { Style: @Name; Text: ""; FlexWeight: 1; }
+                Label #NbState6 { Anchor: (Width: 130); Style: (FontSize: 12, RenderBold: true, RenderUppercase: true, TextColor: #a9b8c8, HorizontalAlignment: End, VerticalAlignment: Center); Text: ""; }
+              }
+              Label #NbLine6 { Anchor: (Height: 17); Style: @Small; Text: ""; }
+              Label #NbExtras6 { Anchor: (Height: 17); Style: (FontSize: 12, RenderBold: true, TextColor: #b4c8c9, VerticalAlignment: Center); Text: ""; }
+              Label #NbTrips6 { Anchor: (Height: 17); Style: (FontSize: 12, TextColor: #c9d1d9, VerticalAlignment: Center); Text: ""; }
+            }
+          }
+          @Card #Nb7 {
+            LayoutMode: Left;
+            Anchor: (Height: 80, Bottom: 6, Right: 10);
+            Group {
+              LayoutMode: Full;
+              Anchor: (Width: 4);
+              Group #NbAlly7 { Anchor: (Full: 0); Background: (Color: #9ed36a); Visible: false; }
+              Group #NbFriendly7 { Anchor: (Full: 0); Background: (Color: #c9e08a); Visible: false; }
+              Group #NbNeutral7 { Anchor: (Full: 0); Background: (Color: #a9b8c8); Visible: false; }
+              Group #NbTense7 { Anchor: (Full: 0); Background: (Color: #e8b06a); Visible: false; }
+              Group #NbRival7 { Anchor: (Full: 0); Background: (Color: #f08a7a); Visible: false; }
+            }
+            Group {
+              LayoutMode: Top;
+              FlexWeight: 1;
+              Padding: (Left: 10, Right: 10, Vertical: 4);
+              Group {
+                LayoutMode: Left;
+                Anchor: (Height: 20);
+                Label #NbName7 { Style: @Name; Text: ""; FlexWeight: 1; }
+                Label #NbState7 { Anchor: (Width: 130); Style: (FontSize: 12, RenderBold: true, RenderUppercase: true, TextColor: #a9b8c8, HorizontalAlignment: End, VerticalAlignment: Center); Text: ""; }
+              }
+              Label #NbLine7 { Anchor: (Height: 17); Style: @Small; Text: ""; }
+              Label #NbExtras7 { Anchor: (Height: 17); Style: (FontSize: 12, RenderBold: true, TextColor: #b4c8c9, VerticalAlignment: Center); Text: ""; }
+              Label #NbTrips7 { Anchor: (Height: 17); Style: (FontSize: 12, TextColor: #c9d1d9, VerticalAlignment: Center); Text: ""; }
+            }
+          }
+          @Card #Nb8 {
+            LayoutMode: Left;
+            Anchor: (Height: 80, Bottom: 6, Right: 10);
+            Group {
+              LayoutMode: Full;
+              Anchor: (Width: 4);
+              Group #NbAlly8 { Anchor: (Full: 0); Background: (Color: #9ed36a); Visible: false; }
+              Group #NbFriendly8 { Anchor: (Full: 0); Background: (Color: #c9e08a); Visible: false; }
+              Group #NbNeutral8 { Anchor: (Full: 0); Background: (Color: #a9b8c8); Visible: false; }
+              Group #NbTense8 { Anchor: (Full: 0); Background: (Color: #e8b06a); Visible: false; }
+              Group #NbRival8 { Anchor: (Full: 0); Background: (Color: #f08a7a); Visible: false; }
+            }
+            Group {
+              LayoutMode: Top;
+              FlexWeight: 1;
+              Padding: (Left: 10, Right: 10, Vertical: 4);
+              Group {
+                LayoutMode: Left;
+                Anchor: (Height: 20);
+                Label #NbName8 { Style: @Name; Text: ""; FlexWeight: 1; }
+                Label #NbState8 { Anchor: (Width: 130); Style: (FontSize: 12, RenderBold: true, RenderUppercase: true, TextColor: #a9b8c8, HorizontalAlignment: End, VerticalAlignment: Center); Text: ""; }
+              }
+              Label #NbLine8 { Anchor: (Height: 17); Style: @Small; Text: ""; }
+              Label #NbExtras8 { Anchor: (Height: 17); Style: (FontSize: 12, RenderBold: true, TextColor: #b4c8c9, VerticalAlignment: Center); Text: ""; }
+              Label #NbTrips8 { Anchor: (Height: 17); Style: (FontSize: 12, TextColor: #c9d1d9, VerticalAlignment: Center); Text: ""; }
+            }
+          }
+          @Card #Nb9 {
+            LayoutMode: Left;
+            Anchor: (Height: 80, Bottom: 6, Right: 10);
+            Group {
+              LayoutMode: Full;
+              Anchor: (Width: 4);
+              Group #NbAlly9 { Anchor: (Full: 0); Background: (Color: #9ed36a); Visible: false; }
+              Group #NbFriendly9 { Anchor: (Full: 0); Background: (Color: #c9e08a); Visible: false; }
+              Group #NbNeutral9 { Anchor: (Full: 0); Background: (Color: #a9b8c8); Visible: false; }
+              Group #NbTense9 { Anchor: (Full: 0); Background: (Color: #e8b06a); Visible: false; }
+              Group #NbRival9 { Anchor: (Full: 0); Background: (Color: #f08a7a); Visible: false; }
+            }
+            Group {
+              LayoutMode: Top;
+              FlexWeight: 1;
+              Padding: (Left: 10, Right: 10, Vertical: 4);
+              Group {
+                LayoutMode: Left;
+                Anchor: (Height: 20);
+                Label #NbName9 { Style: @Name; Text: ""; FlexWeight: 1; }
+                Label #NbState9 { Anchor: (Width: 130); Style: (FontSize: 12, RenderBold: true, RenderUppercase: true, TextColor: #a9b8c8, HorizontalAlignment: End, VerticalAlignment: Center); Text: ""; }
+              }
+              Label #NbLine9 { Anchor: (Height: 17); Style: @Small; Text: ""; }
+              Label #NbExtras9 { Anchor: (Height: 17); Style: (FontSize: 12, RenderBold: true, TextColor: #b4c8c9, VerticalAlignment: Center); Text: ""; }
+              Label #NbTrips9 { Anchor: (Height: 17); Style: (FontSize: 12, TextColor: #c9d1d9, VerticalAlignment: Center); Text: ""; }
+            }
+          }
+          @Card #Nb10 {
+            LayoutMode: Left;
+            Anchor: (Height: 80, Bottom: 6, Right: 10);
+            Group {
+              LayoutMode: Full;
+              Anchor: (Width: 4);
+              Group #NbAlly10 { Anchor: (Full: 0); Background: (Color: #9ed36a); Visible: false; }
+              Group #NbFriendly10 { Anchor: (Full: 0); Background: (Color: #c9e08a); Visible: false; }
+              Group #NbNeutral10 { Anchor: (Full: 0); Background: (Color: #a9b8c8); Visible: false; }
+              Group #NbTense10 { Anchor: (Full: 0); Background: (Color: #e8b06a); Visible: false; }
+              Group #NbRival10 { Anchor: (Full: 0); Background: (Color: #f08a7a); Visible: false; }
+            }
+            Group {
+              LayoutMode: Top;
+              FlexWeight: 1;
+              Padding: (Left: 10, Right: 10, Vertical: 4);
+              Group {
+                LayoutMode: Left;
+                Anchor: (Height: 20);
+                Label #NbName10 { Style: @Name; Text: ""; FlexWeight: 1; }
+                Label #NbState10 { Anchor: (Width: 130); Style: (FontSize: 12, RenderBold: true, RenderUppercase: true, TextColor: #a9b8c8, HorizontalAlignment: End, VerticalAlignment: Center); Text: ""; }
+              }
+              Label #NbLine10 { Anchor: (Height: 17); Style: @Small; Text: ""; }
+              Label #NbExtras10 { Anchor: (Height: 17); Style: (FontSize: 12, RenderBold: true, TextColor: #b4c8c9, VerticalAlignment: Center); Text: ""; }
+              Label #NbTrips10 { Anchor: (Height: 17); Style: (FontSize: 12, TextColor: #c9d1d9, VerticalAlignment: Center); Text: ""; }
+            }
+          }
+          @Card #Nb11 {
+            LayoutMode: Left;
+            Anchor: (Height: 80, Bottom: 6, Right: 10);
+            Group {
+              LayoutMode: Full;
+              Anchor: (Width: 4);
+              Group #NbAlly11 { Anchor: (Full: 0); Background: (Color: #9ed36a); Visible: false; }
+              Group #NbFriendly11 { Anchor: (Full: 0); Background: (Color: #c9e08a); Visible: false; }
+              Group #NbNeutral11 { Anchor: (Full: 0); Background: (Color: #a9b8c8); Visible: false; }
+              Group #NbTense11 { Anchor: (Full: 0); Background: (Color: #e8b06a); Visible: false; }
+              Group #NbRival11 { Anchor: (Full: 0); Background: (Color: #f08a7a); Visible: false; }
+            }
+            Group {
+              LayoutMode: Top;
+              FlexWeight: 1;
+              Padding: (Left: 10, Right: 10, Vertical: 4);
+              Group {
+                LayoutMode: Left;
+                Anchor: (Height: 20);
+                Label #NbName11 { Style: @Name; Text: ""; FlexWeight: 1; }
+                Label #NbState11 { Anchor: (Width: 130); Style: (FontSize: 12, RenderBold: true, RenderUppercase: true, TextColor: #a9b8c8, HorizontalAlignment: End, VerticalAlignment: Center); Text: ""; }
+              }
+              Label #NbLine11 { Anchor: (Height: 17); Style: @Small; Text: ""; }
+              Label #NbExtras11 { Anchor: (Height: 17); Style: (FontSize: 12, RenderBold: true, TextColor: #b4c8c9, VerticalAlignment: Center); Text: ""; }
+              Label #NbTrips11 { Anchor: (Height: 17); Style: (FontSize: 12, TextColor: #c9d1d9, VerticalAlignment: Center); Text: ""; }
+            }
+          }
+          @Card #Nb12 {
+            LayoutMode: Left;
+            Anchor: (Height: 80, Bottom: 6, Right: 10);
+            Group {
+              LayoutMode: Full;
+              Anchor: (Width: 4);
+              Group #NbAlly12 { Anchor: (Full: 0); Background: (Color: #9ed36a); Visible: false; }
+              Group #NbFriendly12 { Anchor: (Full: 0); Background: (Color: #c9e08a); Visible: false; }
+              Group #NbNeutral12 { Anchor: (Full: 0); Background: (Color: #a9b8c8); Visible: false; }
+              Group #NbTense12 { Anchor: (Full: 0); Background: (Color: #e8b06a); Visible: false; }
+              Group #NbRival12 { Anchor: (Full: 0); Background: (Color: #f08a7a); Visible: false; }
+            }
+            Group {
+              LayoutMode: Top;
+              FlexWeight: 1;
+              Padding: (Left: 10, Right: 10, Vertical: 4);
+              Group {
+                LayoutMode: Left;
+                Anchor: (Height: 20);
+                Label #NbName12 { Style: @Name; Text: ""; FlexWeight: 1; }
+                Label #NbState12 { Anchor: (Width: 130); Style: (FontSize: 12, RenderBold: true, RenderUppercase: true, TextColor: #a9b8c8, HorizontalAlignment: End, VerticalAlignment: Center); Text: ""; }
+              }
+              Label #NbLine12 { Anchor: (Height: 17); Style: @Small; Text: ""; }
+              Label #NbExtras12 { Anchor: (Height: 17); Style: (FontSize: 12, RenderBold: true, TextColor: #b4c8c9, VerticalAlignment: Center); Text: ""; }
+              Label #NbTrips12 { Anchor: (Height: 17); Style: (FontSize: 12, TextColor: #c9d1d9, VerticalAlignment: Center); Text: ""; }
+            }
+          }
+          @Card #Nb13 {
+            LayoutMode: Left;
+            Anchor: (Height: 80, Bottom: 6, Right: 10);
+            Group {
+              LayoutMode: Full;
+              Anchor: (Width: 4);
+              Group #NbAlly13 { Anchor: (Full: 0); Background: (Color: #9ed36a); Visible: false; }
+              Group #NbFriendly13 { Anchor: (Full: 0); Background: (Color: #c9e08a); Visible: false; }
+              Group #NbNeutral13 { Anchor: (Full: 0); Background: (Color: #a9b8c8); Visible: false; }
+              Group #NbTense13 { Anchor: (Full: 0); Background: (Color: #e8b06a); Visible: false; }
+              Group #NbRival13 { Anchor: (Full: 0); Background: (Color: #f08a7a); Visible: false; }
+            }
+            Group {
+              LayoutMode: Top;
+              FlexWeight: 1;
+              Padding: (Left: 10, Right: 10, Vertical: 4);
+              Group {
+                LayoutMode: Left;
+                Anchor: (Height: 20);
+                Label #NbName13 { Style: @Name; Text: ""; FlexWeight: 1; }
+                Label #NbState13 { Anchor: (Width: 130); Style: (FontSize: 12, RenderBold: true, RenderUppercase: true, TextColor: #a9b8c8, HorizontalAlignment: End, VerticalAlignment: Center); Text: ""; }
+              }
+              Label #NbLine13 { Anchor: (Height: 17); Style: @Small; Text: ""; }
+              Label #NbExtras13 { Anchor: (Height: 17); Style: (FontSize: 12, RenderBold: true, TextColor: #b4c8c9, VerticalAlignment: Center); Text: ""; }
+              Label #NbTrips13 { Anchor: (Height: 17); Style: (FontSize: 12, TextColor: #c9d1d9, VerticalAlignment: Center); Text: ""; }
+            }
+          }
+          @Card #Nb14 {
+            LayoutMode: Left;
+            Anchor: (Height: 80, Bottom: 6, Right: 10);
+            Group {
+              LayoutMode: Full;
+              Anchor: (Width: 4);
+              Group #NbAlly14 { Anchor: (Full: 0); Background: (Color: #9ed36a); Visible: false; }
+              Group #NbFriendly14 { Anchor: (Full: 0); Background: (Color: #c9e08a); Visible: false; }
+              Group #NbNeutral14 { Anchor: (Full: 0); Background: (Color: #a9b8c8); Visible: false; }
+              Group #NbTense14 { Anchor: (Full: 0); Background: (Color: #e8b06a); Visible: false; }
+              Group #NbRival14 { Anchor: (Full: 0); Background: (Color: #f08a7a); Visible: false; }
+            }
+            Group {
+              LayoutMode: Top;
+              FlexWeight: 1;
+              Padding: (Left: 10, Right: 10, Vertical: 4);
+              Group {
+                LayoutMode: Left;
+                Anchor: (Height: 20);
+                Label #NbName14 { Style: @Name; Text: ""; FlexWeight: 1; }
+                Label #NbState14 { Anchor: (Width: 130); Style: (FontSize: 12, RenderBold: true, RenderUppercase: true, TextColor: #a9b8c8, HorizontalAlignment: End, VerticalAlignment: Center); Text: ""; }
+              }
+              Label #NbLine14 { Anchor: (Height: 17); Style: @Small; Text: ""; }
+              Label #NbExtras14 { Anchor: (Height: 17); Style: (FontSize: 12, RenderBold: true, TextColor: #b4c8c9, VerticalAlignment: Center); Text: ""; }
+              Label #NbTrips14 { Anchor: (Height: 17); Style: (FontSize: 12, TextColor: #c9d1d9, VerticalAlignment: Center); Text: ""; }
+            }
+          }
+          @Card #Nb15 {
+            LayoutMode: Left;
+            Anchor: (Height: 80, Bottom: 6, Right: 10);
+            Group {
+              LayoutMode: Full;
+              Anchor: (Width: 4);
+              Group #NbAlly15 { Anchor: (Full: 0); Background: (Color: #9ed36a); Visible: false; }
+              Group #NbFriendly15 { Anchor: (Full: 0); Background: (Color: #c9e08a); Visible: false; }
+              Group #NbNeutral15 { Anchor: (Full: 0); Background: (Color: #a9b8c8); Visible: false; }
+              Group #NbTense15 { Anchor: (Full: 0); Background: (Color: #e8b06a); Visible: false; }
+              Group #NbRival15 { Anchor: (Full: 0); Background: (Color: #f08a7a); Visible: false; }
+            }
+            Group {
+              LayoutMode: Top;
+              FlexWeight: 1;
+              Padding: (Left: 10, Right: 10, Vertical: 4);
+              Group {
+                LayoutMode: Left;
+                Anchor: (Height: 20);
+                Label #NbName15 { Style: @Name; Text: ""; FlexWeight: 1; }
+                Label #NbState15 { Anchor: (Width: 130); Style: (FontSize: 12, RenderBold: true, RenderUppercase: true, TextColor: #a9b8c8, HorizontalAlignment: End, VerticalAlignment: Center); Text: ""; }
+              }
+              Label #NbLine15 { Anchor: (Height: 17); Style: @Small; Text: ""; }
+              Label #NbExtras15 { Anchor: (Height: 17); Style: (FontSize: 12, RenderBold: true, TextColor: #b4c8c9, VerticalAlignment: Center); Text: ""; }
+              Label #NbTrips15 { Anchor: (Height: 17); Style: (FontSize: 12, TextColor: #c9d1d9, VerticalAlignment: Center); Text: ""; }
+            }
+          }
           Label #NbMore { Anchor: (Height: 18); Style: @Small; Text: ""; }
+          }
         }
 
         Group #CalendarColumn {

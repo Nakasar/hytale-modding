@@ -429,7 +429,14 @@ def page(theme_id):
     w("      Group {")
     w("        LayoutMode: Left;")
     w("        Anchor: (Height: 44, Top: 12);")
-    w(f'        {label("Absent", "@SmallWrap", extra=" FlexWeight: 1;")}')
+    # Absents en un paragraphe (Absences.boardSummary) dans une zone qui défile : un village où beaucoup manquent ne
+    # pousse plus le texte hors de la fenêtre.
+    w("        Group #AbsentScroll {")
+    w("          LayoutMode: TopScrolling;")
+    w("          ScrollbarStyle: $C.@DefaultScrollbarStyle;")
+    w("          FlexWeight: 1;")
+    w(f'          {label("Absent", "@SmallWrap", anchor="Right: 12")}')
+    w("        }")
     w('        $C.@TextButton #TurnIn { @Text = ""; @Anchor = Anchor(Right: 12, Width: 210); }')
     w('        $C.@SecondaryTextButton #TextVersion { @Text = ""; @Anchor = Anchor(Width: 180); }')
     w("      }")

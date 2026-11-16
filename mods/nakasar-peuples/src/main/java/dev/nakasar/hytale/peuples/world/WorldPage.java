@@ -48,8 +48,8 @@ public final class WorldPage extends InteractiveCustomUIPage<WorldPage.Event> {
     private static final String LAYOUT = "Pages/Nakasar/Peuples/WorldPage.ui";
     private static final List<String> THEMED = List.of("Kweebec", "Trork", "Feran", "Renonce", "Slothian");
     private static final int NEIGHBOURS = 5;
-    /** Fiches de voisins sous la boussole (generate_workshop_ui.py NEIGHBOUR_ROWS). */
-    private static final int NEIGHBOUR_ROWS = 4;
+    /** Fiches de voisins dans la liste qui défile sous la boussole (generate_workshop_ui.py NEIGHBOUR_ROWS). */
+    private static final int NEIGHBOUR_ROWS = 16;
     private static final int MARKS = 8;
     private static final int CAMPS = 2;
     private static final int AGENDA = 5;

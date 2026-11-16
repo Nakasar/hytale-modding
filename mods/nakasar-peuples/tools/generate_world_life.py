@@ -649,7 +649,7 @@ def texts():
             ("neighbours.trips", "Voyages d'ici : {tried} tenté(s), {ok} réussi(s), {failed} échoué(s)",
              "Trips from here: {tried} tried, {ok} succeeded, {failed} failed"),
             ("neighbours.noTrips", "Aucun voyage d'ici vers ce village pour l'instant", "No trip from here to this village yet"),
-            ("neighbours.more", "… et {count} autre(s) voisin(s) sur la boussole", "… and {count} more neighbour(s) on the compass"),
+            ("neighbours.more", "… et {count} voisin(s) plus loin", "… and {count} more distant neighbour(s)"),
             ("neighbours.lastWon", "Escarmouche gagnée {when}", "Skirmish won {when}"),
             ("neighbours.lastLost", "Escarmouche perdue {when}", "Skirmish lost {when}"),
             ("neighbours.lastDraw", "Escarmouche sans vainqueur {when}", "Skirmish without winner {when}"),

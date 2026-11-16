@@ -105,6 +105,7 @@ def page(theme_id):
     w("          Group {")
     w("            LayoutMode: Top;")
     w("            FlexWeight: 1;")
+    w("            Anchor: (Right: 24);")
     w(f'            {label("Name", f"LabelStyle(FontSize: 20, FontName: \"Secondary\", RenderBold: true, RenderUppercase: true, TextColor: {acc}, VerticalAlignment: Center)", anchor="Height: 30, Top: 2")}')
     w(f'            {label("Level", "LabelStyle(FontSize: 15, RenderBold: true, TextColor: #e8c46a, VerticalAlignment: Center)", anchor="Height: 22")}')
     w("            Group {")
@@ -112,7 +113,7 @@ def page(theme_id):
     w("              Anchor: (Height: 26, Top: 4);")
     w(f'              @Pill #KeeperPill {{ Anchor: (Height: 20, Right: 6, Top: 3); {label("Keeper", "@RepPillStyle")} }}')
     w(f'              {label("Specialty", "@Small", extra=" FlexWeight: 1;")}')
-    w('              $C.@SmallSecondaryTextButton #SpecialtyAction { @Text = ""; @Anchor = Anchor(Width: 170, Height: 26); }')
+    w('              $C.@SmallSecondaryTextButton #SpecialtyAction { @Text = ""; @Anchor = Anchor(Width: 240, Height: 26); }')
     w("            }")
     w("          }")
     w("")
@@ -625,7 +626,7 @@ MARK_KINDS = ("Ally", "Friendly", "Neutral", "Tense", "Rival", "Herd", "Camp")
 MARK_COLORS = {"Ally": "#9ed36a", "Friendly": "#c9e08a", "Neutral": "#a9b8c8", "Tense": "#e8b06a", "Rival": "#f08a7a",
                "Herd": "#e8c46a", "Camp": "#e8c46a"}
 STATES = ("Ally", "Friendly", "Neutral", "Tense", "Rival")
-NEIGHBOUR_ROWS = 4         # fiches sous la boussole (la boussole montre 5 voisins)
+NEIGHBOUR_ROWS = 16        # fiches sous la boussole, dans une liste qui défile (la boussole montre 5 voisins)
 AGENDA_ROWS = 5
 ROAD_ROWS = 4
 LEFT_COLUMN = 410
@@ -758,10 +759,16 @@ def world_page(theme_id):
         w("            }")
     w("          }")
     w(f'          {label("NeighboursNone", "@SmallWrap", anchor="Height: 40", extra=" Visible: false;")}')
+    # Liste qui défile (TopScrolling, comme #InfoColumn du panneau) : la hauteur restante sous la boussole, une fiche
+    # par voisin, la molette ou la barre pour voir les suivants.
+    w("          Group #NbList {")
+    w("            LayoutMode: TopScrolling;")
+    w("            ScrollbarStyle: $C.@DefaultScrollbarStyle;")
+    w("            FlexWeight: 1;")
     for i in range(NEIGHBOUR_ROWS):
         w(f"          @Card #Nb{i} {{")
         w("            LayoutMode: Left;")
-        w("            Anchor: (Height: 80, Bottom: 6);")
+        w("            Anchor: (Height: 80, Bottom: 6, Right: 10);")
         w("            Group {")
         w("              LayoutMode: Full;")
         w("              Anchor: (Width: 4);")
@@ -784,6 +791,7 @@ def world_page(theme_id):
         w("            }")
         w("          }")
     w(f'          {label("NbMore", "@Small", anchor="Height: 18")}')
+    w("          }")
     w("        }")
     w("")
     # ---- Colonne droite : en ce moment, agenda, voyageurs
