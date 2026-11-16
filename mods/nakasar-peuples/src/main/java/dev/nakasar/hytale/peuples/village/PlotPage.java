@@ -36,6 +36,10 @@ public final class PlotPage extends InteractiveCustomUIPage<PlotPage.Event> {
     private static final List<String> THEMED = List.of("Kweebec", "Trork", "Feran", "Renonce", "Slothian");
     private static final int CARDS = 2;
     private static final int PROJECTS = 5;
+    /** Matériaux du projet affichés en icônes par terrain (ids à plat {@code #PlotMat<terrain × MATERIALS + j>}). */
+    private static final int MATERIALS = 4;
+    private static final String OK = "#7ed957";
+    private static final String MISSING = "#e8c46a";
 
     /** Donnée d'un clic : {@code Select0..1}, {@code Action0..1}, {@code Choose0..4}, {@code Clear}, {@code Back}. */
     public static final class Event {
@@ -118,6 +122,7 @@ public final class PlotPage extends InteractiveCustomUIPage<PlotPage.Event> {
         cmd.set("#PlotStripe" + n + ".Visible", i == selected);
         cmd.set("#PlotName" + n + ".TextSpans", Message.translation(KEYS + "page.plot").param("plot", plot.id()));
         cmd.set("#PlotState" + n + ".TextSpans", stateLine(world, store, village, plot, s));
+        materials(cmd, world, village, plot, s, i);
         cmd.set("#PlotSelect" + n + ".Text", Message.translation(KEYS + (i == selected ? "page.selected" : "page.select")));
         events.addEventBinding(CustomUIEventBindingType.Activating, "#PlotSelect" + n, EventData.of("Action", "Select" + n));
         String action = null;
@@ -175,6 +180,36 @@ public final class PlotPage extends InteractiveCustomUIPage<PlotPage.Event> {
         }
         return Message.translation(KEYS + "state.chosen").param("building", name).param("list", materials)
                 .param("missing", Plots.materialList(missing));
+    }
+
+    /**
+     * Matériaux du projet choisi (pas encore lancé), comme ceux des chantiers du tableau (Kevin, 2026-11-16) : icône,
+     * quantité au dépôt / voulue, case verte quand il y en a assez. Cachés dans les autres états.
+     */
+    private static void materials(UICommandBuilder cmd, World world, Village village, VillageLayout.Plot plot, PlotState s, int i) {
+        boolean shown = Plots.isOpen(village, plot) && s.project() != null && !s.working() && !village.isBuilt(s.project());
+        cmd.set("#PlotMats" + i + ".Visible", shown);
+        if (!shown) {
+            return;
+        }
+        VillageLayout.Material[] materials = plot.materials();
+        Map<String, Integer> deposit = Villages.depositContents(world, village);
+        for (int j = 0; j < MATERIALS; j++) {
+            String k = Integer.toString(i * MATERIALS + j);
+            boolean has = j < materials.length;
+            cmd.set("#PlotMat" + k + ".Visible", has);
+            if (has) {
+                VillageLayout.Material m = materials[j];
+                int have = deposit == null ? 0 : Math.min(m.quantity(), deposit.getOrDefault(m.itemId(), 0));
+                boolean ok = have >= m.quantity();
+                cmd.set("#PlotMatIcon" + k + ".ItemId", m.itemId());
+                cmd.set("#PlotMatOk" + k + ".Visible", ok);
+                cmd.set("#PlotMatSlot" + k + ".Visible", !ok);
+                cmd.set("#PlotMatCount" + k + ".TextSpans", Message.translation("nakasar_peuples.boardPage.progress")
+                        .param("have", have).param("need", m.quantity()));
+                cmd.set("#PlotMatCount" + k + ".Style.TextColor", ok ? OK : MISSING);
+            }
+        }
     }
 
     private static Map<String, Integer> materialsOf(VillageLayout.Plot plot) {
