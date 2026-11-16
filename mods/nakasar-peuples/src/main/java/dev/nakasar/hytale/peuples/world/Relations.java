@@ -63,6 +63,8 @@ public final class Relations {
     public static final int SKIRMISH_REPUTATION = 15;
     public static final String KEYS = WorldLife.KEYS + "relation.";
     private static final String PENDING = "~sk:";
+    /** Issue de la dernière escarmouche d'une liaison : « jour|id du vainqueur » ({@code -} : match nul). */
+    private static final String LAST = "~last:";
 
     private record Skirmish(String link, double x, double z, List<Ref<EntityStore>> a, List<Ref<EntityStore>> b, long started) {
     }
@@ -249,6 +251,7 @@ public final class Relations {
             Village winner = random.nextDouble() < pa ? link.a() : link.b();
             Village loser = winner == link.a() ? link.b() : link.a();
             change(world, link.a(), link.b(), -5);
+            result(world, link.key(), GameClock.day(store), winner.id());
             Message m = Message.translation(KEYS + "skirmishAway").param("winner", winner.name()).param("loser", loser.name());
             Chantiers.announce(world, link.a(), m, null, NotificationStyle.Warning);
             Chantiers.announce(world, link.b(), m, null, NotificationStyle.Warning);
@@ -307,7 +310,9 @@ public final class Relations {
             return;
         }
         change(world, va, vb, -5);
-        if (timeout || s.a().isEmpty() == s.b().isEmpty()) {
+        boolean draw = timeout || s.a().isEmpty() == s.b().isEmpty();
+        result(world, s.link(), GameClock.day(store), draw ? null : (s.a().isEmpty() ? vb : va).id());
+        if (draw) {
             WorldLife.announce(world, store, s.x(), s.z(), Ambushes.WITNESS, Message.translation(KEYS + "skirmishDraw"), NotificationStyle.Default);
             return;
         }
@@ -317,6 +322,43 @@ public final class Relations {
             Reputations.change(world, store, p.getReference(), p, winner, SKIRMISH_REPUTATION, KEYS + "skirmishReason");
         }
         WorldLife.announce(world, store, s.x(), s.z(), Ambushes.WITNESS, m, NotificationStyle.Success);
+    }
+
+    private static void result(World world, String link, long day, String winner) {
+        WorldLife.registry(world).put(WorldLifeRegistry.Part.RELATIONS, LAST + link, day + "|" + (winner == null ? "-" : winner));
+    }
+
+    /** Escarmouche en cours sur la liaison (onglet Monde du panneau). */
+    static boolean fighting(String link) {
+        return SKIRMISHES.containsKey(link);
+    }
+
+    /** Heure de l'escarmouche prévue aujourd'hui sur la liaison, ou -1. */
+    static int pendingHour(World world, String link, long day) {
+        String v = WorldLife.registry(world).get(WorldLifeRegistry.Part.RELATIONS, PENDING + link);
+        if (v == null) {
+            return -1;
+        }
+        String[] p = v.split("\\|");
+        try {
+            return Long.parseLong(p[0]) == day ? Integer.parseInt(p[1]) : -1;
+        } catch (RuntimeException e) {
+            return -1;
+        }
+    }
+
+    /** Dernière escarmouche de la liaison : {jour, id du vainqueur ou null}, ou null. */
+    static Object[] last(World world, String link) {
+        String v = WorldLife.registry(world).get(WorldLifeRegistry.Part.RELATIONS, LAST + link);
+        if (v == null) {
+            return null;
+        }
+        String[] p = v.split("\\|");
+        try {
+            return new Object[] {Long.parseLong(p[0]), p.length < 2 || p[1].equals("-") ? null : p[1]};
+        } catch (RuntimeException e) {
+            return null;
+        }
     }
 
     /** Escarmouches en cours (commande). */

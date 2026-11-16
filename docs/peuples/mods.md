@@ -1497,6 +1497,15 @@ espaces se met entre guillemets ou s'écrit collé) : la liaison va du village l
 ce village, à 2400 blocs au plus. Sans `--vers`, vers le voisin le plus proche. Exemple :
 `/monde voyageur --genre caravane --vers <village>`.
 
+### Onglet Monde du panneau (`world/WorldPage`)
+
+Kevin (2026-11-16). Bouton `#WorldButton` du tableau, page `WorldPage_<Peuple>.ui` (`tools/generate_workshop_ui.py`),
+quatre cartes de texte (6 lignes au plus chacune) : Sur les routes (voyageurs dont `from` ou `to` est le village,
+escarmouches : `Relations.fighting`, `pendingHour`, `last` = nouvelle clé `~last:<liaison>` « jour|vainqueur »),
+Voisins (5 liaisons au plus : relation, trêve, `Routes.gap`, auberge ouverte), Au village (fête : `Calendar.upcoming`,
+foire ici, `Raids.status`, campements du village), Dans le monde (foire : `Calendar.nextFair`, migration :
+`Calendar.herdAt` ou prochaine date, fêtes en cours, totaux). La page se recalcule à chaque ouverture.
+
 ### Tester en jeu (monde vivant)
 
 1. Deux villages proches : `/monde voyageur --genre caravane --vers <village>`, suivre la caravane (escorte), `/monde embuscade` pendant le

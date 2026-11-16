@@ -389,6 +389,9 @@ public final class BoardPage extends InteractiveCustomUIPage<BoardPage.Event> {
             cmd.set("#AnnexButton.Text", Message.translation(dev.nakasar.hytale.peuples.annex.Annexes.KEYS + "button"));
             events.addEventBinding(CustomUIEventBindingType.Activating, "#AnnexButton", EventData.of("Action", "Annexes"));
         }
+        // Onglet Monde : voyageurs, voisins, calendrier (monde vivant).
+        cmd.set("#WorldButton.Text", Message.translation(dev.nakasar.hytale.peuples.world.WorldPage.KEYS + "button"));
+        events.addEventBinding(CustomUIEventBindingType.Activating, "#WorldButton", EventData.of("Action", "World"));
         cmd.set("#TextVersion.Text", Message.translation(KEYS + "textVersion"));
         events.addEventBinding(CustomUIEventBindingType.Activating, "#TextVersion", EventData.of("Action", "Text"));
     }
@@ -481,6 +484,9 @@ public final class BoardPage extends InteractiveCustomUIPage<BoardPage.Event> {
             return;
         } else if (action.equals("Plots")) {
             dev.nakasar.hytale.peuples.village.PlotPage.open(store, ref, playerRef, village);
+            return;
+        } else if (action.equals("World")) {
+            dev.nakasar.hytale.peuples.world.WorldPage.open(store, ref, playerRef, village);
             return;
         } else if (action.equals("Annexes")) {
             dev.nakasar.hytale.peuples.annex.AnnexPage.open(store, ref, playerRef, village);

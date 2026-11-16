@@ -553,9 +553,10 @@ $C.@PageOverlay {
         Anchor: (Height: 44, Top: 12);
         Label #Absent { Style: @SmallWrap; Text: ""; FlexWeight: 1; }
         $C.@TextButton #TurnIn { @Text = ""; @Anchor = Anchor(Right: 12, Width: 210); }
-        $C.@SecondaryTextButton #PlotsButton { @Text = ""; @Anchor = Anchor(Right: 12, Width: 180); }
-        $C.@SecondaryTextButton #AnnexButton { @Text = ""; @Anchor = Anchor(Right: 12, Width: 180); }
-        $C.@SecondaryTextButton #TextVersion { @Text = ""; @Anchor = Anchor(Width: 180); }
+        $C.@SecondaryTextButton #PlotsButton { @Text = ""; @Anchor = Anchor(Right: 10, Width: 150); }
+        $C.@SecondaryTextButton #AnnexButton { @Text = ""; @Anchor = Anchor(Right: 10, Width: 150); }
+        $C.@SecondaryTextButton #WorldButton { @Text = ""; @Anchor = Anchor(Right: 10, Width: 120); }
+        $C.@SecondaryTextButton #TextVersion { @Text = ""; @Anchor = Anchor(Width: 150); }
       }
     }
   }

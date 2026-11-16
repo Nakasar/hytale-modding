@@ -315,6 +315,30 @@ public final class Calendar {
         return best;
     }
 
+    /** Rendez-vous en cours dans le village : {@code feast} ou {@code fair} (onglet Monde du panneau). */
+    static boolean running(String kind, Village v) {
+        return GATHERINGS.containsKey(kind + ":" + v.id());
+    }
+
+    /** Position (x, z) du troupeau de la migration en cours, ou null. */
+    static double[] herdAt() {
+        Herd h = herd;
+        return h == null ? null : h.path.point(h.at);
+    }
+
+    /**
+     * Prochain jour du rendez-vous `key` (feast, fair, migration) à partir d'aujourd'hui : aujourd'hui s'il n'a pas
+     * encore eu lieu, sinon la fois suivante.
+     */
+    static long upcoming(World world, Store<EntityStore> store, String key, int every, int offset) {
+        long day = GameClock.day(store);
+        long d = next(day, every, offset);
+        if (d == day && WorldLife.registry(world).getLong(WorldLifeRegistry.Part.CALENDAR, key, Long.MIN_VALUE) == day) {
+            d = next(day + 1, every, offset);
+        }
+        return d;
+    }
+
     /** Village de la prochaine foire et dans combien de jours (rumeurs). */
     static Object[] nextFair(World world, long day) {
         long d = next(day, FAIR_EVERY, 7);

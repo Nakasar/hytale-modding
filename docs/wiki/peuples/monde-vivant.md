@@ -78,4 +78,13 @@ Une fête dure 20 minutes, la foire 30 minutes.
 
 Voyageurs, aubergistes et campeurs racontent ce qui se passe : caravanes en route, campements, villages brouillés ou alliés, prochaine foire, vestiges que vous n'avez pas encore vus (avec la distance et la direction).
 
+## L'onglet Monde du panneau
+
+Au panneau du village, le bouton **Monde** ouvre ce que le monde vivant fait autour de ce village :
+
+- **Sur les routes** : les voyageurs partis du village ou qui y viennent (où ils en sont), et les escarmouches avec ses voisins (en cours, attendue aujourd'hui, ou la dernière de la semaine et son vainqueur).
+- **Voisins** : chaque village relié, avec sa distance, sa direction, la relation, une trêve, la route balisée ou non, et l'auberge entre les deux.
+- **Au village** : la prochaine fête des moissons, la foire si elle se tient ici, le raid annoncé et les campements des alentours.
+- **Dans le monde** : la prochaine foire (où et quand), la migration en cours ou la prochaine, les fêtes en cours ailleurs.
+
 `/monde etat` résume l'état du monde vivant.

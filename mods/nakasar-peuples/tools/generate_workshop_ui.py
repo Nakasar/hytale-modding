@@ -567,6 +567,75 @@ def annex_page(theme_id):
     return "\n".join(L).replace("Style: LabelStyle(", "Style: (") + "\n"
 
 
+WORLD_CARDS = 4
+
+
+def world_page(theme_id):
+    """Onglet « Monde » du panneau du village (world/WorldPage) : quatre cartes de texte en deux rangées."""
+    t = THEMES[theme_id]
+    acc, band, title = t["accent"], t["band"], t["title"]
+    emblem = (f'Background: (TexturePath: "{MEMORIES}{t["emblem"]}.png", Color: {acc});' if t["emblem"]
+              else "Visible: false;")
+    L = []
+    w = L.append
+    w('$C = "../../../Common.ui";')
+    w("")
+    w(f"// Généré par tools/generate_workshop_ui.py (thème {theme_id or 'neutre'}) : ne pas modifier à la main.")
+    w("")
+    w(f"@Accent = {acc};")
+    w("@Body = LabelStyle(FontSize: 14, TextColor: #c9d1d9, Wrap: true);")
+    w("@SmallWrap = LabelStyle(FontSize: 13, TextColor: #96a9be, Wrap: true);")
+    w("")
+    w("$C.@PageOverlay {")
+    w("  LayoutMode: Middle;")
+    w("")
+    w("  $C.@DecoratedContainer {")
+    w(f"    Anchor: (Width: {PLOT_WIDTH}, Height: {PLOT_HEIGHT});")
+    w("")
+    w("    #Title {")
+    w("      Group {")
+    w("        LayoutMode: Center;")
+    w(f"        Group #TitleEmblem {{ Anchor: (Width: 26, Height: 26, Right: 8); {emblem} }}")
+    w(f'        Label #PageTitle {{ Style: (...$C.@TitleStyle, FontSize: 16, TextColor: {title}); }}')
+    w("      }")
+    w("    }")
+    w("")
+    w("    #Content {")
+    w("      LayoutMode: Top;")
+    w("      Padding: (Full: 17, Top: 14);")
+    w(f'      {label("Intro", "@SmallWrap", anchor="Height: 22, Bottom: 10")}')
+    for r in range(2):
+        w("      Group {")
+        w("        LayoutMode: Left;")
+        w("        FlexWeight: 1;")
+        w(f"        Anchor: (Bottom: {12 if r == 0 else 0});")
+        for c in range(2):
+            i = r * 2 + c
+            w(f"        Group #Card{i} {{")
+            w("          LayoutMode: Top;")
+            w("          FlexWeight: 1;")
+            w(f"          Anchor: (Right: {12 if c == 0 else 0});")
+            w("          Padding: (Horizontal: 14, Vertical: 10);")
+            w(f"          Background: (Color: {band}(0.75));")
+            w(f"          Group {{ Anchor: (Height: 3, Bottom: 8); Background: (Color: {acc}(0.6)); }}")
+            w(f'          {label(f"CardTitle{i}", f"LabelStyle(FontSize: 16, FontName: \"Secondary\", RenderBold: true, RenderUppercase: true, TextColor: {acc})", anchor="Height: 24, Bottom: 6")}')
+            w(f'          {label(f"CardBody{i}", "@Body", extra=" FlexWeight: 1;")}')
+            w("        }")
+        w("      }")
+    w("      Group {")
+    w("        LayoutMode: Left;")
+    w("        Anchor: (Height: 44, Top: 12);")
+    w("        Group { FlexWeight: 1; }")
+    w('        $C.@SecondaryTextButton #Back { @Text = ""; @Anchor = Anchor(Width: 240); }')
+    w("      }")
+    w("    }")
+    w("  }")
+    w("}")
+    w("")
+    w("$C.@BackButton {}")
+    return "\n".join(L).replace("Style: LabelStyle(", "Style: (") + "\n"
+
+
 def main():
     for theme_id in THEMES:
         name = f"WorkshopPage_{theme_id}.ui" if theme_id else "WorkshopPage.ui"
@@ -580,6 +649,9 @@ def main():
         print("écrit", name)
         name = f"AnnexPage_{theme_id}.ui" if theme_id else "AnnexPage.ui"
         (OUT / name).write_text(annex_page(theme_id), encoding="utf-8")
+        print("écrit", name)
+        name = f"WorldPage_{theme_id}.ui" if theme_id else "WorldPage.ui"
+        (OUT / name).write_text(world_page(theme_id), encoding="utf-8")
         print("écrit", name)
 
 
