@@ -481,6 +481,7 @@ def plot_page(theme_id):
 
 ANNEX_CARDS = 6            # avant-postes de métier par peuple (tools/outposts.py)
 ANNEX_COLUMNS = 3
+ANNEX_MATERIALS = 3        # matériaux de fondation affichés en icônes (tools/outposts.py FOUNDATION)
 
 
 def annex_page(theme_id):
@@ -498,6 +499,7 @@ def annex_page(theme_id):
     w(f"@Accent = {acc};")
     w("@Body = LabelStyle(FontSize: 14, TextColor: #c9d1d9, Wrap: true);")
     w("@SmallWrap = LabelStyle(FontSize: 13, TextColor: #96a9be, Wrap: true);")
+    w("@Count = LabelStyle(FontSize: 13, RenderBold: true, TextColor: #e8c46a, HorizontalAlignment: Center, VerticalAlignment: Center);")
     w("")
     w("$C.@PageOverlay {")
     w("  LayoutMode: Middle;")
@@ -537,10 +539,11 @@ def annex_page(theme_id):
             w(f"          Group {{ Anchor: (Height: 3, Bottom: 8); Background: (Color: {acc}(0.6)); }}")
             w("          Group {")
             w("            LayoutMode: Left;")
-            w("            Anchor: (Height: 56);")
+            # Rôle sur trois lignes au plus : l'en-tête leur laisse la place (Kevin, 2026-11-16 : texte qui chevauchait).
+            w("            Anchor: (Height: 84);")
             w("            Group {")
             w("              LayoutMode: Full;")
-            w("              Anchor: (Width: 56, Height: 56, Right: 10);")
+            w("              Anchor: (Width: 56, Height: 56, Right: 10, Bottom: 28);")
             w(f'              Background: (TexturePath: "{COMMON}IngredientSlot.png", Border: 24);')
             w(f"              ItemIcon #AnnexIcon{i} {{ Anchor: (Full: 7); ShowItemTooltip: true; }}")
             w("            }")
@@ -551,7 +554,26 @@ def annex_page(theme_id):
             w(f'              {label(f"AnnexRole{i}", "@SmallWrap", anchor="Top: 2")}')
             w("            }")
             w("          }")
-            w(f'          {label(f"AnnexState{i}", "@Body", anchor="Top: 8")}')
+            w(f'          {label(f"AnnexState{i}", "@Body", anchor="Top: 6")}')
+            # Matériaux de la fondation, comme ceux des chantiers du tableau : icône, présents au dépôt / voulus.
+            w(f"          Group #AnnexMats{i} {{")
+            w("            LayoutMode: Left;")
+            w("            Anchor: (Height: 74, Top: 6);")
+            for j in range(ANNEX_MATERIALS):
+                k = i * ANNEX_MATERIALS + j  # id à plat (carte i, matériau j) : AnnexPage.java le recalcule
+                w(f"            Group #AnnexMat{k} {{")
+                w("              LayoutMode: Top;")
+                w("              Anchor: (Width: 64, Right: 14);")
+                w("              Group {")
+                w("                LayoutMode: Full;")
+                w("                Anchor: (Width: 52, Height: 52, Left: 6);")
+                w(f'                Group #AnnexMatSlot{k} {{ Anchor: (Full: 0); Background: (TexturePath: "{COMMON}IngredientSlot.png", Border: 24); }}')
+                w(f'                Group #AnnexMatOk{k} {{ Anchor: (Full: 0); Background: (TexturePath: "{COMMON}IngredientSlotValid.png", Border: 24); Visible: false; }}')
+                w(f"                ItemIcon #AnnexMatIcon{k} {{ Anchor: (Full: 5); ShowItemTooltip: true; }}")
+                w("              }")
+                w(f'              Label #AnnexMatCount{k} {{ Anchor: (Height: 18, Top: 2); Style: @Count; Text: ""; }}')
+                w("            }")
+            w("          }")
             w("          Group { FlexWeight: 1; }")
             w(f'          $C.@SmallSecondaryTextButton #AnnexAction{i} {{ @Text = ""; @Anchor = Anchor(Height: 32); }}')
             w("        }")

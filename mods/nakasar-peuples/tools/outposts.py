@@ -360,6 +360,7 @@ LANG = {
                             "The {building} is razed ({x} {z}). A new foundation can be received at the board."),
     "annex.destroyedLater": ("L'avant-poste ({building}) est abandonné ({x} {z}) : il sera rasé au premier passage. Une nouvelle fondation peut être reçue au panneau.",
                              "The {building} is abandoned ({x} {z}): it will be razed on the first visit. A new foundation can be received at the board."),
+    "annex.state.foundation": ("Fondation, prise au dépôt du village :", "Foundation, taken from the village deposit:"),
     "annex.state.cost": ("Fondation : {list}, pris au dépôt.", "Foundation: {list}, taken from the deposit."),
     "annex.state.costMissing": ("Fondation : {list}. Il manque au dépôt : {missing}.", "Foundation: {list}. The deposit lacks: {missing}."),
     "annex.state.granted": ("Fondation remise à {player}, pas encore posée. {rule}", "Foundation given to {player}, not placed yet. {rule}"),
