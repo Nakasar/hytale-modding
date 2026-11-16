@@ -84,6 +84,9 @@ public final class Village {
             .append(new KeyedCodec<>("HeartTier", Codec.INTEGER), (v, i) -> v.heartTier = i == null ? -1 : i, v -> v.heartTier)
             .documentation("Dernier palier du cœur de village appliqué (VillageHeart), -1 : place d'avant les cœurs par peuple.")
             .add()
+            .append(new KeyedCodec<>("StreetsTier", Codec.INTEGER), (v, i) -> v.streetsTier = i == null ? -1 : i, v -> v.streetsTier)
+            .documentation("Dernier palier dont les sentiers et le décor ont été posés (VillageStreets), -1 : aucun.")
+            .add()
             .append(new KeyedCodec<>("Raid", RaidRecord.CODEC), (v, r) -> v.raid = r == null ? new RaidRecord() : r, v -> v.raid)
             .documentation("Raids du village (étape 6) : raid attendu, raid en cours, bilan du dernier.")
             .add()
@@ -124,6 +127,7 @@ public final class Village {
     int boardZ;
     int tier;
     int heartTier = -1;
+    int streetsTier = -1;
     int essor;
     long created;
     String layout;
@@ -179,6 +183,7 @@ public final class Village {
         v.boardZ = boardZ;
         v.tier = tier;
         v.heartTier = heartTier;
+        v.streetsTier = streetsTier;
         v.essor = essor;
         v.created = created;
         v.layout = layout;
@@ -573,6 +578,15 @@ public final class Village {
 
     void setHeartTier(int value) {
         heartTier = value;
+    }
+
+    /** Dernier palier dont les sentiers et le décor ont été posés ({@link VillageStreets}), -1 : aucun. */
+    public int streetsTier() {
+        return streetsTier;
+    }
+
+    void setStreetsTier(int value) {
+        streetsTier = value;
     }
 
     void setTier(int value) {

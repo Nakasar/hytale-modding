@@ -426,6 +426,34 @@ public final class VillageLayout implements JsonAssetWithMap<String, DefaultAsse
         }
     }
 
+    /**
+     * Sentiers et décor d'un palier (tools/village_streets.py) : cases de sentier {@code "x z Bloc"} et décor
+     * {@code "x z rotation P|B Id"} (P : petit prefab vanilla collé, B : bloc posé sur le sol), relatifs au cœur.
+     */
+    public static final class StreetStep {
+        public static final BuilderCodec<StreetStep> CODEC = BuilderCodec.builder(StreetStep.class, StreetStep::new)
+                .append(new KeyedCodec<>("Tier", Codec.INTEGER), (s, v) -> s.tier = v == null ? 0 : v, s -> s.tier).add()
+                .append(new KeyedCodec<>("Paths", Codec.STRING_ARRAY), (s, v) -> s.paths = v == null ? new String[0] : v, s -> s.paths).add()
+                .append(new KeyedCodec<>("Decor", Codec.STRING_ARRAY), (s, v) -> s.decor = v == null ? new String[0] : v, s -> s.decor).add()
+                .build();
+
+        int tier;
+        String[] paths = new String[0];
+        String[] decor = new String[0];
+
+        public int tier() {
+            return tier;
+        }
+
+        public String[] paths() {
+            return paths;
+        }
+
+        public String[] decor() {
+            return decor;
+        }
+    }
+
     public static final AssetBuilderCodec<String, VillageLayout> CODEC = AssetBuilderCodec.builder(VillageLayout.class, VillageLayout::new,
                     Codec.STRING, (l, id) -> l.id = id, l -> l.id, (l, data) -> l.data = data, l -> l.data)
             .append(new KeyedCodec<>("People", Codec.STRING), (l, v) -> l.people = v, l -> l.people)
@@ -454,6 +482,10 @@ public final class VillageLayout implements JsonAssetWithMap<String, DefaultAsse
             .append(new KeyedCodec<>("Heart", Heart.CODEC), (l, v) -> l.heart = v, l -> l.heart)
             .documentation("Cœur du village par peuple (place, pièces vanilla par palier), ou absent (place carrée d'avant).")
             .add()
+            .append(new KeyedCodec<>("Streets", new ArrayCodec<>(StreetStep.CODEC, StreetStep[]::new)),
+                    (l, v) -> l.streets = v == null ? new StreetStep[0] : v, l -> l.streets)
+            .documentation("Sentiers et décor entre les bâtiments, par palier (VillageStreets).")
+            .add()
             .validator(VillageLayout::validate)
             .build();
 
@@ -471,6 +503,7 @@ public final class VillageLayout implements JsonAssetWithMap<String, DefaultAsse
     Job[] jobs = new Job[0];
     Plot[] plots = new Plot[0];
     Heart heart;
+    StreetStep[] streets = new StreetStep[0];
 
     VillageLayout() {
     }
@@ -506,6 +539,11 @@ public final class VillageLayout implements JsonAssetWithMap<String, DefaultAsse
     /** Cœur du village par peuple, ou null. */
     public Heart heart() {
         return heart;
+    }
+
+    /** Sentiers et décor par palier (vide pour un plan sans). */
+    public StreetStep[] streets() {
+        return streets;
     }
 
     public int plazaRadius() {

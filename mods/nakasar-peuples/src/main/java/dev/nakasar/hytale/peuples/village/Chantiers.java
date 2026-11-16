@@ -735,6 +735,11 @@ public final class Chantiers {
         }));
     }
 
+    /** Vrai pendant qu'un chantier du village se finit ou se bâtit (chunks en chargement, collage). */
+    static boolean busy(Village village) {
+        return BUSY.contains(village.id());
+    }
+
     /** Charge les chunks du village puis lance `then` sur le thread du monde (commandes ; ne touche pas aux travaux). */
     public static void loadThen(World world, Village village, Runnable then) {
         VillageLayout layout = layout(village);
