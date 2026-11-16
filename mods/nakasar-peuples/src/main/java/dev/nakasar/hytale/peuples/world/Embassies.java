@@ -144,6 +144,13 @@ public final class Embassies {
     static void arrive(World world, Store<EntityStore> store, HamletTrips.Trip t, Village v, Hamlets.Place h) {
         Village owner = Allegiance.owner(world, h);
         int[] m = h.market();
+        if (owner != null && owner.id().equals(v.id())) {
+            // Le lieu-dit s'est rallié en chemin : rien à négocier, l'ambassade rentre.
+            t.leg = HamletTrips.BACK;
+            t.at = 0;
+            Walk.of(t.walkKey()).reset(0);
+            return;
+        }
         if (owner != null && Garrisons.count(world, h) > 0 && Relations.value(world, owner, v) <= Relations.RIVAL) {
             Allegiance.change(world, h, v, FAILURE);
             Allegiance.cool(world, h, v, GameClock.day(store) + COOLDOWN_DAYS);
@@ -208,20 +215,28 @@ public final class Embassies {
             return true;
         }
         Allegiance.change(world, h, v, SUCCESS);
+        Village now = Allegiance.owner(world, h);
+        if (now != null && now.id().equals(v.id())) {
+            return true; // rallié pendant le parlement : rien à prendre, l'ambassade rentre
+        }
         if (!Allegiance.canHold(world, v)) {
             Chantiers.announce(world, v, Message.translation(KEYS + "noRoom").param("hamlet", h.name()), null, NotificationStyle.Default);
             return true;
         }
         Allegiance.setOwner(world, store, h, v, "embassy");
-        // Le garde de l'ambassade reste sur place : un marcheur de moins sur le retour.
+        // Le garde de l'ambassade reste sur place, s'il a survécu à la route : un marcheur de moins sur le retour.
+        boolean guardAlive = t.walkers >= NEGOTIATORS + 1;
+        if (!guardAlive) {
+            return true; // le garde est tombé en route : les négociateurs rentrent, pas de garde offert
+        }
         Garrisons.add(world, h, v, 1);
         Walk walk = Walk.of(t.walkKey());
         List<Ref<EntityStore>> live = walk.alive();
-        if (!live.isEmpty() && t.walkers >= NEGOTIATORS + 1) {
+        if (!live.isEmpty()) {
             Ref<EntityStore> guard = live.remove(live.size() - 1);
             WorldLife.remove(store, guard);
         }
-        t.walkers = Math.max(0, t.walkers - 1);
+        t.walkers--;
         if (t.walkers <= 0) {
             HamletTrips.drop(world, store, t);
             return false;

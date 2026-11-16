@@ -4284,6 +4284,7 @@ conquest.siege.assault = La troupe de {village} donne l'assaut à {hamlet} !
 conquest.siege.won = {village} prend {hamlet} à {owner} !
 conquest.siege.repelled = {hamlet} repousse l'assaut de {village} : {owner} garde le lieu-dit.
 conquest.siege.lost = La troupe partie pour {hamlet} a été anéantie.
+conquest.siege.retreat = La troupe envoyée contre {hamlet} renonce et rentre au village.
 conquest.cmd.allegiance.desc = Allégeance du lieu-dit le plus proche
 conquest.cmd.village.arg = Nom du village
 conquest.cmd.embassy.desc = Une ambassade du village part vers le lieu-dit le plus proche

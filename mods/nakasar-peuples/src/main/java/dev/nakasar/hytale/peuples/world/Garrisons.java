@@ -113,8 +113,8 @@ public final class Garrisons {
 
     /** Le pas : gardes posés près des joueurs, retirés sinon ; joueurs Honnis repérés. */
     static void step(World world, Store<EntityStore> store, List<Vector3d> players) {
-        HOSTILE.clear();
         for (Hamlets.Place h : Hamlets.all(world)) {
+            HOSTILE.remove(h.id()); // seulement les lieux-dits de ce monde : les autres mondes ont leur propre pas
             List<Ref<EntityStore>> live = LIVE.get(h.id());
             if (live != null) {
                 live.removeIf(ref -> !ref.isValid());

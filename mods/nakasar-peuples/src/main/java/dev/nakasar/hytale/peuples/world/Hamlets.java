@@ -449,6 +449,7 @@ public final class Hamlets {
                     spawnResidents(world, store, h);
                 }
             }
+            leave(world, store, h);
             for (PlayerRef p : WorldLife.playersNear(world, store, m[0], m[1], DISCOVER)) {
                 discover(world, store, p, h);
                 enter(world, store, p, h);
@@ -915,9 +916,12 @@ public final class Hamlets {
     /** Joueurs déjà accueillis sur la place de chaque lieu-dit (titre « terre de … » une fois par passage). */
     private static final Map<String, java.util.Set<java.util.UUID>> ENTERED = new ConcurrentHashMap<>();
 
-    /** Conquête : en arrivant sur la place d'un lieu-dit tenu, le joueur voit à qui il appartient (une fois par passage). */
-    private static void enter(World world, Store<EntityStore> store, PlayerRef player, Place h) {
-        java.util.Set<java.util.UUID> inside = ENTERED.computeIfAbsent(h.id, k -> ConcurrentHashMap.newKeySet());
+    /** Oublie les joueurs sortis de la place (ou partis) : ils reverront le titre au prochain passage. À chaque pas. */
+    private static void leave(World world, Store<EntityStore> store, Place h) {
+        java.util.Set<java.util.UUID> inside = ENTERED.get(h.id);
+        if (inside == null || inside.isEmpty()) {
+            return;
+        }
         int[] m = h.market();
         Map<java.util.UUID, PlayerRef> online = new java.util.HashMap<>();
         for (PlayerRef p : world.getPlayerRefs()) {
@@ -931,6 +935,11 @@ public final class Hamlets {
             Vector3d at = Requests.position(store, p.getReference());
             return at == null || (at.x() - m[0]) * (at.x() - m[0]) + (at.z() - m[1]) * (at.z() - m[1]) > (DISCOVER + 16) * (DISCOVER + 16);
         });
+    }
+
+    /** Conquête : en arrivant sur la place d'un lieu-dit tenu, le joueur voit à qui il appartient (une fois par passage). */
+    private static void enter(World world, Store<EntityStore> store, PlayerRef player, Place h) {
+        java.util.Set<java.util.UUID> inside = ENTERED.computeIfAbsent(h.id, k -> ConcurrentHashMap.newKeySet());
         if (!inside.add(player.getUuid())) {
             return;
         }

@@ -23,7 +23,11 @@ import java.util.List;
  * zone n'est pas chargée (un joueur à moins de {@value #RANGE} blocs), et on ne remplace jamais un bloc posé par un
  * joueur à la place d'une bannière.
  *
- * <p>État sauvé ({@link WorldLifeRegistry.Part#BANNERS}) : {@code lieu-dit = x,y,z,rotation,S ou P;...}.
+ * <p>Une bannière posée puis retrouvée vide (cassée par un joueur, qui garde l'objet) n'est pas reposée : sa place est
+ * oubliée, et un lieu-dit sans plus aucune place est marqué {@value #NONE} jusqu'au prochain changement de propriétaire
+ * ou de blason (pas de bannières à l'infini, pas de recherche à chaque pas).
+ *
+ * <p>État sauvé ({@link WorldLifeRegistry.Part#BANNERS}) : {@code lieu-dit = x,y,z,rotation,S ou P;...}, ou {@value #NONE}.
  */
 public final class Banners {
 
@@ -32,6 +36,8 @@ public final class Banners {
     public static final int RANGE = 96;
     /** Pas au plus depuis la place vers le bâtiment pour trouver un mur. */
     private static final int REACH = 12;
+    /** Plus de place (aucune trouvée, ou toutes retirées) : rien à poser jusqu'au prochain repavoisement. */
+    static final String NONE = "-";
     /** Colonnes (x local) d'où partir vers le bâtiment. */
     private static final int[] LANES = {-2, 2, -5, 5, 0};
     /** Places du fanion (coordonnées locales), la première libre. */
@@ -49,7 +55,7 @@ public final class Banners {
     private static List<Spot> read(World world, Hamlets.Place h) {
         List<Spot> out = new ArrayList<>();
         String v = WorldLife.registry(world).get(WorldLifeRegistry.Part.BANNERS, h.id());
-        if (v == null || v.isEmpty()) {
+        if (v == null || v.isEmpty() || NONE.equals(v)) {
             return out;
         }
         for (String part : v.split(";")) {
@@ -81,8 +87,11 @@ public final class Banners {
         }
     }
 
-    /** Le propriétaire a changé : repeint tout de suite si la zone est chargée (sinon au prochain pas près d'un joueur). */
+    /** Le propriétaire ou le blason a changé : on cherche de nouveau les places, repeint tout de suite si la zone est chargée. */
     static void repaint(World world, Hamlets.Place h) {
+        if (NONE.equals(WorldLife.registry(world).get(WorldLifeRegistry.Part.BANNERS, h.id()))) {
+            WorldLife.registry(world).put(WorldLifeRegistry.Part.BANNERS, h.id(), null);
+        }
         sync(world, h);
     }
 
@@ -102,12 +111,19 @@ public final class Banners {
         }
         ChunkStore chunks = world.getChunkStore();
         Village owner = Allegiance.owner(world, h);
+        String raw = WorldLife.registry(world).get(WorldLifeRegistry.Part.BANNERS, h.id());
         List<Spot> spots = read(world, h);
-        if (owner != null && spots.isEmpty()) {
+        boolean fresh = false;
+        if (owner != null && raw == null) {
             spots = find(world, h);
+            if (spots == null) {
+                return; // zone pas chargée
+            }
             if (spots.isEmpty()) {
+                WorldLife.registry(world).put(WorldLifeRegistry.Part.BANNERS, h.id(), NONE);
                 return;
             }
+            fresh = true;
         }
         Heraldry.Arms arms = owner == null ? null : Heraldry.of(world, owner);
         List<Spot> keep = new ArrayList<>();
@@ -119,6 +135,10 @@ public final class Banners {
                 continue;
             }
             String here = Blocks.name(chunks, s.x(), s.y(), s.z());
+            if (here == null && !fresh && arms != null) {
+                changed = true; // posée puis retirée (le joueur a gardé l'objet) : on ne la repose pas
+                continue;
+            }
             boolean ours = here == null || Heraldry.isStandard(here) || Heraldry.isPennant(here);
             if (!ours) {
                 changed = true; // un joueur a pris la place : on l'oublie
@@ -137,12 +157,14 @@ public final class Banners {
             }
             keep.add(s);
         }
-        if (changed || !keep.equals(read(world, h))) {
+        if (owner != null && keep.isEmpty()) {
+            WorldLife.registry(world).put(WorldLifeRegistry.Part.BANNERS, h.id(), NONE);
+        } else if (changed || fresh || !keep.equals(read(world, h))) {
             write(world, h, keep);
         }
     }
 
-    /** Cherche les places des bannières (murs du bâtiment) et du fanion ; vide si la zone n'est pas chargée. */
+    /** Cherche les places des bannières (murs du bâtiment) et du fanion ; null si la zone n'est pas chargée, vide s'il n'y en a pas. */
     private static List<Spot> find(World world, Hamlets.Place h) {
         ChunkStore chunks = world.getChunkStore();
         Terrain terrain = new Terrain(world);
@@ -156,7 +178,7 @@ public final class Banners {
             int[] start = h.world(lane, 1);
             int ground = terrain.surface(start[0], start[1]);
             if (ground == Terrain.NONE) {
-                return List.of();
+                return null;
             }
             int y = Math.max(ground, h.y) + HEIGHT;
             int x = start[0], z = start[1];
@@ -164,7 +186,7 @@ public final class Banners {
                 int nx = x + back[0], nz = z + back[1];
                 int id = Blocks.id(chunks, nx, y, nz);
                 if (id == Blocks.UNLOADED) {
-                    return List.of();
+                    return null;
                 }
                 if (Blocks.solid(chunks, nx, y, nz)) {
                     if (Blocks.isEmpty(chunks, x, y, z) && Blocks.isEmpty(chunks, x, y - 1, z) && Blocks.isEmpty(chunks, x, y - 2, z)
@@ -181,7 +203,7 @@ public final class Banners {
             int[] at = h.world(p[0], p[1]);
             int y = Workshops.standY(chunks, terrain, at[0], at[1]);
             if (y == Workshops.UNLOADED_SPOT) {
-                return List.of();
+                return null;
             }
             if (y != Terrain.NONE && Blocks.isEmpty(chunks, at[0], y, at[1])) {
                 out.add(new Spot(at[0], y, at[1], h.rotation & 3, false));

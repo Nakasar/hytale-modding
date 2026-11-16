@@ -1778,7 +1778,7 @@ propriétaire. Un garde mort est remplacé par une relève (genre G) le lendemai
 - **Expédition** (palier 3, contre un rival hors trêve) : 4 soldats (+1 Garnison), une chance sur dix par semaine,
   une à la fois ; un joueur Hôte peut la demander (5 faveurs). Annoncée à 600 blocs. Assaut réel avec un joueur à
   portée (300 s au plus, place prise 15 s sans garde), sinon réglé seul. Victoire : changement de main, occupation
-  7 jours (influence du vainqueur à −30, pas de troc animé), soldats restants en garde, relation −25. Défense : +10
+  7 jours (influence du vainqueur à −15, au-dessus du seuil de sécession, pas de troc animé), soldats restants en garde, relation −25. Défense : +10
   au propriétaire, 14 jours d'attente. Réputation : défendre +50, attaquer +30 auprès de l'attaquant et −100 auprès
   du lieu-dit.
 

@@ -180,10 +180,12 @@ public final class Sieges {
         Village owner = Allegiance.owner(world, h);
         if (owner == null) {
             // Le lieu-dit s'est libéré en chemin : il est pris sans combat.
-            if (Allegiance.canHold(world, v)) {
-                Allegiance.occupy(world, store, h, v);
-                Garrisons.add(world, h, v, t.walkers);
+            if (!Allegiance.canHold(world, v)) {
+                retreat(world, store, t, v, h); // plus de place au village : la troupe rentre
+                return;
             }
+            Allegiance.occupy(world, store, h, v);
+            Garrisons.add(world, h, v, t.walkers);
             HamletTrips.drop(world, store, t);
             return;
         }
@@ -212,6 +214,10 @@ public final class Sieges {
         if (owner == null || owner.id().equals(v.id())) {
             SIEGES.remove(h.id());
             arrive(world, store, players, t, v, h);
+            return HamletTrips.get(world, t.id()) != null;
+        }
+        if (Relations.value(world, owner, v) > Relations.RIVAL || Relations.truce(world, owner, v, GameClock.day(store))) {
+            retreat(world, store, t, v, h); // le lieu-dit a changé de main en chemin : plus un rival, on rentre
             return HamletTrips.get(world, t.id()) != null;
         }
         if (s == null || !WorldLife.near(players, m[0], m[1], WorldLife.REAL_RANGE)) {
@@ -250,7 +256,7 @@ public final class Sieges {
                 s.clearSince = now;
             } else if (now - s.clearSince >= CLEAR_SECONDS * 1000L) {
                 win(world, store, t, v, h, owner, s.guards);
-                return false;
+                return HamletTrips.get(world, t.id()) != null; // la troupe peut rentrer (plus de place)
             }
         } else {
             s.clearSince = 0;
@@ -258,7 +264,7 @@ public final class Sieges {
         if (now - s.started >= ASSAULT_SECONDS * 1000L) {
             if (t.walkers > guards) {
                 win(world, store, t, v, h, owner, s.guards);
-                return false;
+                return HamletTrips.get(world, t.id()) != null; // la troupe peut rentrer (plus de place)
             }
             defend(world, store, t, v, h, owner);
             return HamletTrips.get(world, t.id()) != null;
@@ -281,16 +287,16 @@ public final class Sieges {
             if (guards > 0 && random.nextBoolean()) {
                 Garrisons.setCount(world, h, guards - 1);
             }
-            if (t.walkers <= 0) {
-                defend(world, store, t, v, h, owner);
-                return;
-            }
             defend(world, store, t, v, h, owner);
         }
     }
 
     private static void win(World world, Store<EntityStore> store, HamletTrips.Trip t, Village v, Hamlets.Place h, Village owner, int guardsAtStart) {
         SIEGES.remove(h.id());
+        if (!Allegiance.canHold(world, v)) {
+            retreat(world, store, t, v, h); // le village a gagné un autre lieu-dit pendant la marche : pas de place
+            return;
+        }
         if (guardsAtStart <= 0) {
             Allegiance.change(world, h, owner, Allegiance.ABANDONED);
         }
@@ -347,7 +353,27 @@ public final class Sieges {
             return;
         }
         SIEGES.remove(h.id());
+        Allegiance.expeditionCool(world, v, GameClock.day(store) + COOLDOWN_DAYS);
         Chantiers.announce(world, v, Message.translation(KEYS + "lost").param("hamlet", h.name()), null, NotificationStyle.Warning);
+    }
+
+    /** La troupe renonce et rentre (plus de place au village, ou plus de rival à combattre) ; délai avant la suivante. */
+    private static void retreat(World world, Store<EntityStore> store, HamletTrips.Trip t, Village v, Hamlets.Place h) {
+        SIEGES.remove(h.id());
+        Allegiance.expeditionCool(world, v, GameClock.day(store) + COOLDOWN_DAYS);
+        Chantiers.announce(world, v, Message.translation(KEYS + "retreat").param("hamlet", h.name()), null, NotificationStyle.Default);
+        if (t.walkers <= 0) {
+            HamletTrips.drop(world, store, t);
+            return;
+        }
+        t.leg = HamletTrips.BACK;
+        t.at = 0;
+        Walk.of(t.walkKey()).reset(0);
+    }
+
+    /** La tournée d'expédition est finie, quelle qu'en soit la raison : plus de siège en cours. */
+    static void forget(String hamlet) {
+        SIEGES.remove(hamlet);
     }
 
     public static void clearAll() {

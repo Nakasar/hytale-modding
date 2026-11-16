@@ -500,6 +500,7 @@ TEXTS = [
     ("siege.won", "{village} prend {hamlet} à {owner} !", "{village} takes {hamlet} from {owner}!"),
     ("siege.repelled", "{hamlet} repousse l'assaut de {village} : {owner} garde le lieu-dit.", "{hamlet} repels the assault of {village}: {owner} keeps the hamlet."),
     ("siege.lost", "La troupe partie pour {hamlet} a été anéantie.", "The troop sent to {hamlet} was wiped out."),
+    ("siege.retreat", "La troupe envoyée contre {hamlet} renonce et rentre au village.", "The troop sent against {hamlet} gives up and heads home."),
     # Commandes
     ("cmd.allegiance.desc", "Allégeance du lieu-dit le plus proche", "Allegiance of the nearest hamlet"),
     ("cmd.village.arg", "Nom du village", "Village name"),

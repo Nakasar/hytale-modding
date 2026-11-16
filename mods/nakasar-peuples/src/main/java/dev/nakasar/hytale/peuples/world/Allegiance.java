@@ -73,7 +73,7 @@ public final class Allegiance {
     public static final int EXPEDITION_NEAR = -10;
     public static final int NEAR_RANGE = 400;
     public static final int ABANDONED = -20;
-    public static final int OCCUPIED_INFLUENCE = -30;
+    public static final int OCCUPIED_INFLUENCE = -15; // au-dessus de SECESSION : la rancœur sans sécession assurée à la fin de l'occupation
     public static final int FAVOURITE = 30;
     public static final int FAVOURITE_LEAD = 10;
     public static final int EMBASSY_MIN = 40;
@@ -398,8 +398,8 @@ public final class Allegiance {
     public static void setOwner(World world, Store<EntityStore> store, Hamlets.Place h, Village to, String cause) {
         State s = state(world, h.id());
         Village from = s.owner.isEmpty() ? null : Villages.registry(world).byId(s.owner);
-        if (to != null && to.id().equals(s.owner)) {
-            return;
+        if (to == null ? s.owner.isEmpty() : to.id().equals(s.owner)) {
+            return; // déjà à lui (ou déjà libre)
         }
         long day = GameClock.day(store);
         s.owner = to == null ? "" : to.id();
@@ -477,7 +477,21 @@ public final class Allegiance {
     // ---- Délais ----
 
     static boolean cooling(World world, Hamlets.Place h, Village v, long day) {
-        return WorldLife.registry(world).getLong(WorldLifeRegistry.Part.ALLEGIANCE, COOL + h.id() + "|" + v.id(), Long.MIN_VALUE) > day;
+        return running(world, COOL + h.id() + "|" + v.id(), day);
+    }
+
+    /** Vrai tant que le délai de la marque court ; une marque échue est effacée (la partie ne grossit pas). */
+    private static boolean running(World world, String key, long day) {
+        WorldLifeRegistry r = WorldLife.registry(world);
+        long until = r.getLong(WorldLifeRegistry.Part.ALLEGIANCE, key, Long.MIN_VALUE);
+        if (until == Long.MIN_VALUE) {
+            return false;
+        }
+        if (until <= day) {
+            r.put(WorldLifeRegistry.Part.ALLEGIANCE, key, null);
+            return false;
+        }
+        return true;
     }
 
     static void cool(World world, Hamlets.Place h, Village v, long until) {
@@ -485,7 +499,7 @@ public final class Allegiance {
     }
 
     static boolean expeditionCooling(World world, Village v, long day) {
-        return WorldLife.registry(world).getLong(WorldLifeRegistry.Part.ALLEGIANCE, EXPCOOL + v.id(), Long.MIN_VALUE) > day;
+        return running(world, EXPCOOL + v.id(), day);
     }
 
     static void expeditionCool(World world, Village v, long until) {
@@ -532,6 +546,12 @@ public final class Allegiance {
         boolean drift = r.getLong(WorldLifeRegistry.Part.ALLEGIANCE, DRIFT, Long.MIN_VALUE) + DRIFT_DAYS <= day;
         if (drift) {
             r.put(WorldLifeRegistry.Part.ALLEGIANCE, DRIFT, Long.toString(day));
+            // Délais échus : effacés (sinon chaque échec d'ambassade resterait sauvé pour toujours).
+            for (String key : new ArrayList<>(r.part(WorldLifeRegistry.Part.ALLEGIANCE).keySet())) {
+                if (key.startsWith(COOL) || key.startsWith(EXPCOOL)) {
+                    running(world, key, day);
+                }
+            }
             for (Map.Entry<String, String> e : new ArrayList<>(r.part(WorldLifeRegistry.Part.INFLUENCE).entrySet())) {
                 try {
                     int v = Integer.parseInt(e.getValue());

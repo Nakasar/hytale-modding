@@ -186,6 +186,9 @@ public final class HamletTrips {
     }
 
     static void drop(World world, Store<EntityStore> store, Trip t) {
+        if (t.kind == EXPEDITION) {
+            Sieges.forget(t.hamlet); // sinon le lieu-dit resterait « assiégé » (gardes sans laisse) jusqu'au redémarrage
+        }
         WorldLife.registry(world).put(WorldLifeRegistry.Part.HAMLET_TRIPS, t.id, null);
         Walk.end(store, t.walkKey());
         PATHS.remove(t.id + ":0");
