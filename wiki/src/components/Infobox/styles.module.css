@@ -3,9 +3,9 @@
   clear: right;
   width: 300px;
   margin: 0 0 1rem 1.5rem;
-  border: 1px solid var(--ifm-color-emphasis-300);
-  border-radius: 6px;
-  background: var(--ifm-color-emphasis-100);
+  border: 1px solid var(--mod-band-border);
+  border-radius: 10px;
+  background: var(--ifm-background-surface-color);
   font-size: 0.875rem;
   line-height: 1.4;
   overflow: hidden;
@@ -13,21 +13,23 @@
 
 .title {
   padding: 0.5rem 0.75rem;
-  background: var(--ifm-color-primary-darkest);
+  background: var(--mod-deep);
   color: #fff;
+  font-family: var(--ifm-heading-font-family);
   font-weight: 700;
-  font-size: 1rem;
+  font-size: 1.05rem;
   text-align: center;
 }
 
 .kind {
   padding: 0.2rem 0.75rem;
-  background: var(--ifm-color-emphasis-200);
+  background: var(--mod-band);
+  color: var(--mod-label);
   text-align: center;
-  font-size: 0.8rem;
+  font-size: 0.75rem;
   font-weight: 600;
   text-transform: uppercase;
-  letter-spacing: 0.04em;
+  letter-spacing: 0.1em;
 }
 
 .figure {
@@ -100,7 +102,8 @@
 
 .section {
   padding: 0.3rem 0.75rem;
-  background: var(--ifm-color-emphasis-200);
+  background: var(--mod-band);
+  color: var(--mod-label);
   font-weight: 700;
   text-align: center;
 }

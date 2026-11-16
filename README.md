@@ -23,7 +23,7 @@ Les notes communes aux mods (API serveur, PNJ) restent à la racine de `docs/`.
 | Lance | Lance de fer à deux mains : enchaînement, coup chargé, compétence ultime |
 | Armes en argent | Version en argent de chaque arme standard, de la lance du mod et des flèches : double dégâts contre les vampires (Comte, Comtesse, rejetons) |
 
-Le guide du joueur (fragment, structures, bestiaire, brèches, objets) est un wiki publié sur GitHub Pages : https://nakasar.github.io/hytale-modding/ (sources Markdown dans [docs/wiki](docs/wiki/README.md), site Docusaurus dans [wiki](wiki/), aperçu local : `cd wiki && npm ci && npm start`).
+Le guide du joueur des trois mods est un wiki publié sur GitHub Pages : https://nakasar.github.io/hytale-modding/ (sources Markdown dans [docs/wiki](docs/wiki/), un dossier par mod : `vampires/`, `fractales/`, `peuples/` ; site Docusaurus dans [wiki](wiki/), aperçu local : `cd wiki && npm ci && npm start`). Pour ajouter une rubrique à un mod : sa barre latérale dans `wiki/sidebars.js` et sa barre de sections dans `wiki/src/mods.js`.
 Le détail du mod (fichiers, chaînes d'interactions, camps, réglages) est dans [docs/vampires/mods.md](docs/vampires/mods.md).
 L'histoire et la progression visées (voie des chasseurs, voie occulte, joueur vampire, zones à venir) : [docs/vampires/histoire-progression.md](docs/vampires/histoire-progression.md).
 

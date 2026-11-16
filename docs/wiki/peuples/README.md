@@ -1,3 +1,7 @@
+---
+sidebar_label: Présentation
+---
+
 # Peuples d'Orbis
 
 <Infobox pending title="Peuples d'Orbis" kind="Mod" icon="/jeu/UI/WorldMap/MapMarkers/Nakasar_Peuples_Kweebec.png" caption="Marqueur de village">

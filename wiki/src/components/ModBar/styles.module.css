@@ -1,0 +1,59 @@
+.bar {
+  height: var(--nk-modbar-height);
+  background: var(--mod-band);
+  border-bottom: 1px solid var(--mod-band-border);
+}
+
+.inner {
+  display: flex;
+  height: 100%;
+  align-items: center;
+  gap: 0.25rem 0.5rem;
+  padding: 0.4rem var(--ifm-navbar-padding-horizontal);
+  overflow-x: auto;
+  scrollbar-width: thin;
+}
+
+.name {
+  margin-right: 0.75rem;
+  font-family: var(--ifm-heading-font-family);
+  font-weight: 700;
+  font-size: 0.95rem;
+  white-space: nowrap;
+  color: var(--mod-label);
+}
+
+.name:hover {
+  color: var(--mod-label);
+  text-decoration: none;
+}
+
+.list {
+  display: flex;
+  gap: 0.25rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.link {
+  display: block;
+  padding: 0.35rem 0.75rem;
+  border-radius: 6px;
+  font-size: 0.875rem;
+  white-space: nowrap;
+  color: var(--mod-on-band);
+}
+
+.link:hover {
+  background: var(--mod-active);
+  color: var(--mod-on-band);
+  text-decoration: none;
+}
+
+.active,
+.active:hover {
+  background: var(--mod-active);
+  font-weight: 600;
+  color: var(--ifm-font-color-base);
+}
