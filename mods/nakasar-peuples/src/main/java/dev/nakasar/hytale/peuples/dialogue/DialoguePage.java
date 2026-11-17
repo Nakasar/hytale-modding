@@ -56,6 +56,8 @@ public final class DialoguePage extends InteractiveCustomUIPage<DialoguePage.Eve
     private boolean camera;
     private Ref<EntityStore> npc;
     private Ref<EntityStore> talker;
+    /** L'habitant que montre le PNJ (générations de villageois) : son nom remplace celui du dialogue. */
+    private dev.nakasar.hytale.peuples.population.Population.Identity identity;
 
     public DialoguePage(PlayerRef playerRef, Dialogue dialogue, DialogueNode start) {
         this(playerRef, dialogue, start, null);
@@ -68,6 +70,10 @@ public final class DialoguePage extends InteractiveCustomUIPage<DialoguePage.Eve
         this.start = start;
         this.portrait = portrait;
         this.node = start;
+    }
+
+    void identity(dev.nakasar.hytale.peuples.population.Population.Identity identity) {
+        this.identity = identity;
     }
 
     /** Ce que le PNJ dit déjà à l'ouverture, sous sa première réplique. */
@@ -94,7 +100,8 @@ public final class DialoguePage extends InteractiveCustomUIPage<DialoguePage.Eve
         cmd.append(LAYOUT);
         World world = store.getExternalData().getWorld();
         DialogueContext context = DialogueContext.of(world, store, ref, playerRef);
-        cmd.set("#NpcName.TextSpans", dialogue.npcNameKey() == null ? Message.raw("?") : Message.translation(dialogue.npcNameKey()));
+        cmd.set("#NpcName.TextSpans", identity != null ? identity.name()
+                : dialogue.npcNameKey() == null ? Message.raw("?") : Message.translation(dialogue.npcNameKey()));
         cmd.set("#NpcRole.Visible", dialogue.roleKey() != null);
         cmd.set("#NpcRole.TextSpans", dialogue.roleKey() == null ? Message.raw(" ") : Message.translation(dialogue.roleKey()));
         Message standing = Dialogues.standing(dialogue, context);
@@ -110,6 +117,9 @@ public final class DialoguePage extends InteractiveCustomUIPage<DialoguePage.Eve
         cmd.set("#Line.TextSpans", line == null ? Message.raw(" ") : line);
         // À l'ouverture, le PNJ parle des PNJ du village tués aujourd'hui (ils reviennent au matin).
         Message aside = node == start ? dev.nakasar.hytale.peuples.village.Absences.aside(dialogue, context) : null;
+        if (aside == null && node == start && identity != null) {
+            aside = identity.about();
+        }
         cmd.set("#Aside.Visible", aside != null);
         cmd.set("#Aside.TextSpans", aside == null ? Message.raw(" ") : aside);
         DialogueResponse[] responses = node == null ? new DialogueResponse[0] : node.responses();

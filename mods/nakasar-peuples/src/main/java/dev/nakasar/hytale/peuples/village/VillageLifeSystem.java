@@ -80,6 +80,8 @@ public final class VillageLifeSystem extends TickingSystem<EntityStore> {
                 Chantiers.grow(world, village);
             }
             Plots.step(world, store, village);
+            // Générations : naissances, âges, passations, morts, tombes.
+            dev.nakasar.hytale.peuples.population.Population.step(world, store, village);
         }
         Villagers.step(world, store, players, dt);
         dev.nakasar.hytale.peuples.outpost.Settlers.step(world, store);

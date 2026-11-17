@@ -92,9 +92,21 @@ public final class Criers {
             if (village.horizontalDistanceSquared(at.x(), at.z()) > (double) RANGE * RANGE) {
                 continue;
             }
+            boolean raid = dev.nakasar.hytale.peuples.raid.Raids.isActive(village);
             for (Post post : Post.values()) {
                 Key key = new Key(village.id(), post);
                 Ref<EntityStore> npc = BY_VILLAGE.get(key);
+                if (raid || !held(village, post, store)) {
+                    // Raid : il s'enferme chez lui ; poste vacant (générations) : personne ne le tient.
+                    if (npc != null) {
+                        BY_VILLAGE.remove(key);
+                        SPAWNED.remove(npc);
+                        if (npc.isValid()) {
+                            store.removeEntity(npc, RemoveReason.REMOVE);
+                        }
+                    }
+                    continue;
+                }
                 if (npc != null && npc.isValid()) {
                     continue;
                 }
@@ -109,6 +121,20 @@ public final class Criers {
                 spawn(store, village, post);
             }
         }
+    }
+
+    /** Vrai si le poste a un titulaire valide (générations de villageois), ou si le village ne les vit pas. */
+    private static boolean held(Village village, Post post, Store<EntityStore> store) {
+        if (!dev.nakasar.hytale.peuples.population.Population.applies(village) || !village.population().seeded()) {
+            return true;
+        }
+        String id = switch (post) {
+            case CRIER -> dev.nakasar.hytale.peuples.population.Population.CRIER;
+            case MERCHANT -> dev.nakasar.hytale.peuples.population.Population.MERCHANT;
+            case CHIEF -> dev.nakasar.hytale.peuples.population.Population.CHIEF;
+        };
+        dev.nakasar.hytale.peuples.population.Inhabitant h = village.population().holder(id);
+        return h != null && !h.convalescent(GameClock.day(store));
     }
 
     /** Où se tient le crieur : deux blocs au sud du tableau. */

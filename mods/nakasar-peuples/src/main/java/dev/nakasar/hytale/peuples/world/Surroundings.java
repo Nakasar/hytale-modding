@@ -25,6 +25,9 @@ import dev.nakasar.hytale.peuples.village.Villages;
 import dev.nakasar.hytale.peuples.dialogue.DialogueSpeech;
 import org.joml.Vector3d;
 
+import dev.nakasar.hytale.peuples.population.Ages;
+import dev.nakasar.hytale.peuples.population.Inhabitant;
+import dev.nakasar.hytale.peuples.population.Population;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.IdentityHashMap;
@@ -304,11 +307,30 @@ public final class Surroundings {
     // ---- Enfants ----
 
     private static void children(World world, Store<EntityStore> store, Village v, Life life, int count, boolean out, long now) {
+        // Générations : les enfants qui jouent sont les vrais enfants du village (nommés, ils grandissent).
+        boolean gens = Population.applies(v) && v.population().seeded();
+        long day = GameClock.day(store);
+        List<String> kids = new ArrayList<>();
+        if (gens) {
+            for (Inhabitant h : v.population().living()) {
+                if (h.stage(day) == Ages.Stage.CHILD) {
+                    kids.add(h.id());
+                }
+            }
+            count = Math.min(kids.size(), count + 1);
+        }
+        java.util.Set<String> shown = new java.util.HashSet<>();
         life.children.removeIf(r -> {
-            if (r.isValid()) {
+            String id = Population.boundId(r);
+            if (r.isValid() && (!gens || (id != null && kids.contains(id)))) {
+                if (id != null) {
+                    shown.add(id);
+                }
                 return false;
             }
             CHILD_OF.remove(r);
+            Population.unbind(r);
+            WorldLife.remove(store, r); // grandi (apprenti) : il quitte les jeux
             return true;
         });
         if (!out) {
@@ -317,11 +339,22 @@ public final class Surroundings {
         }
         ThreadLocalRandom random = ThreadLocalRandom.current();
         if (life.children.size() < count && WorldLife.budget(world, 1)) {
-            Vector3d at = WorldLife.ground(world, v.x() + random.nextInt(-8, 9), v.z() + random.nextInt(-8, 9), 6);
+            String kid = null;
+            for (String id : kids) {
+                if (!shown.contains(id)) {
+                    kid = id;
+                    break;
+                }
+            }
+            Vector3d at = gens && kid == null ? null
+                    : WorldLife.ground(world, v.x() + random.nextInt(-8, 9), v.z() + random.nextInt(-8, 9), 6);
             Ref<EntityStore> ref = at == null ? null : WorldLife.spawn(store, childRole(v.people()), at, 0f);
             if (ref != null) {
                 WorldLife.talker(ref, Surroundings::talk);
                 CHILD_OF.put(ref, v.id());
+                if (kid != null) {
+                    Population.bind(ref, v.id(), kid);
+                }
                 life.children.add(ref);
             }
         }
@@ -340,6 +373,7 @@ public final class Surroundings {
     private static void removeChildren(Store<EntityStore> store, Life life) {
         for (Ref<EntityStore> r : life.children) {
             CHILD_OF.remove(r);
+            Population.unbind(r);
             WorldLife.remove(store, r);
         }
         life.children.clear();
@@ -430,6 +464,7 @@ public final class Surroundings {
     /** Le PNJ n'est plus (retiré ou mort). */
     static void forget(Ref<EntityStore> ref) {
         CHILD_OF.remove(ref);
+        Population.unbind(ref);
     }
 
     public static void clearAll() {

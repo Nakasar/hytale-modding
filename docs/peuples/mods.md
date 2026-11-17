@@ -1871,6 +1871,90 @@ Javadoc des classes).
 - Les gardes restent à leur poste ; combat soldats contre gardes (camps de `HG:<lieu-dit>`).
 - Mise en page de l'onglet Domaine (cinq onglets de 150 de large).
 
+## Générations de villageois (`population/`)
+
+Proposition validée par Kevin le 16 novembre 2026 (Claude Doc « Peuples d'Orbis — Générations de villageois »,
+réponses dans la colonne « Décision de Kevin »). Page joueur : `docs/wiki/peuples/habitants.md`.
+
+### Registre (`Population`, `PopulationState`, `Inhabitant`)
+
+- Chaque village à plan (pas un lieu-dit) a un registre sauvegardé (`Village.Population`) : habitants (`Inhabitant` :
+  prénom ou `NameKey` d'un fondateur, nom de famille, jour de naissance, parents, foyer, poste, vocation, trait,
+  blessure, mort, cause, parrain, origine, tombe), chronique (80 lignes), nouveau-né et prénoms proposés, refuge,
+  postes vacants.
+- Au premier passage, les villageois d'avant (postes du plan, chef, crieur, marchand) deviennent les **fondateurs**,
+  avec leur nom de dialogue et un âge tiré.
+- `Population.step` (pas de `VillageLifeSystem`, village veillé) rejoue chaque matin passé (200 au plus), avec un
+  tirage fixe par village et par jour (`seedOf`).
+- Âges (`Ages`) : année de 28 jours ; enfant < 14, apprenti < 28, adulte < 112, ancien ; mort de vieillesse de 140
+  (1 chance sur 14 par jour) à 168 (sûre).
+- Matin : vieillesse, passages d'âge (vocation à 14 jours, réputation +20 au parrain connecté), passations (titulaire
+  ancien → apprenti adulte), postes vides (héritier, adulte sans poste, sinon arrivant si le poste n'a jamais été
+  vacant ou l'est depuis 3 jours), arrivant quand le village a moins de 4 adultes, orphelins et sans-logis recueillis
+  (refuge, sinon un foyer avec un adulte), naissance.
+- Naissance : écart de 7 jours, pas de deuil ni de bâtiment brûlé, 1/7, un lit libre (`beds` : un lit par métier qui
+  dort dans la maison + 2, 28 habitants au plus), un foyer avec un adulte, 6 vivres pris au dépôt (`Food_*`,
+  `Plant_Crop_*`, `Plant_Fruit_*`). Nom de famille d'un des deux parents. Prénom tiré (`Names`) ; un Ami choisit parmi
+  3 jusqu'au lendemain et devient parrain.
+- Mort (`die`) : poste vacant, deuil (1 jour vieillesse, 3 jours incendie), tombe à poser (`Cemetery` : rangées
+  hors du plan, côté tiré de l'id du village, `Nakasar_Peuples_Tombstone` incassable ; lecture
+  `ReadTombInteraction`).
+
+### PNJ (`village/Villagers`, `request/Criers`, `world/Surroundings`, `Population.identity`)
+
+- Un poste vacant reste sans PNJ (sa boutique et ses commandes ferment) ; un titulaire blessé aussi. Chef, crieur et
+  marchand pareil.
+- Habitants sans poste montés (8 au plus, slot `hab:<id>`) : apprenti près du poste de son maître, adulte devant son
+  logis, ancien retiré sur la place ; chez eux la nuit. Rôles `Nakasar_Peuples_<Peuple>_{Apprentice,Resident,Retired}`
+  et dialogues `<Peuple>_<Sorte>` (`tools/generate_population.py`).
+- Raid actif : chaque villageois rentre devant son logis (ou le refuge) et disparaît à 3 blocs ou au bout de 30 s ; chef,
+  crieur, marchand disparaissent tout de suite ; rien ne réapparaît avant la fin du raid.
+- Les enfants qui jouent sur la place sont les vrais enfants du registre (jusqu'à palier + 1, liés par
+  `Population.bind`) ; un enfant devenu apprenti quitte les jeux.
+- Fenêtre de dialogue : le nom affiché est celui de la fiche (`#NpcName`), et la ligne sous la réplique (`#Aside`, s'il
+  n'y a pas d'absence à dire) donne âge, parents ou origine, parrain.
+
+### Raids (`RaidLosses`, `raid/Raids`)
+
+- Gardes : chaque garde posé est lié à un habitant valide (titulaires de garde, puis braves, puis les autres). Tombé, il
+  est blessé jusqu'au lendemain inclus (`Wounded`), jamais mort.
+- Raid perdu (Kevin) : un grand bâtiment debout du plus haut palier au hasard (comme avant). Bâtiment de métier ou projet
+  de terrain au niveau II+ : il perd un niveau (connaissance 0, amélioration annulée, commandes retirées), personne ne
+  meurt, le palier reste. Sinon `Chantiers.burn` (palier −1) : son responsable meurt (titulaire du poste qui y travaille,
+  sinon l'adulte le plus âgé du foyer, même s'il défendait) ; les autres habitants vont au refuge de l'Hôte (palier 2+)
+  ou au camp de réfugiés (`Camps.refugees`).
+- Le bilan aux défenseurs a une ligne de plus (niveau perdu, ou mort du responsable).
+
+### Onglet Habitants (`PeoplePage`)
+
+Recensement, liste paginée (9 par page), nouveau-né à nommer (3 boutons), refuge (Hôte, cycle des grands bâtiments
+debout), orientation d'un apprenti (Hôte, tous les 7 jours), 7 dernières lignes de chronique. Mise en page
+`PeoplePage_<Peuple>.ui` (`tools/generate_population.py`). Barre d'onglets : six onglets de 128 px.
+
+### Commandes (générations)
+
+- `/village habitants` : les habitants avec leur id.
+- `/village vieillir <jours>` : rejoue les matins (naissances, passations, morts).
+- `/village naissance` : naissance tout de suite (lit, foyer et 6 vivres toujours demandés).
+- `/village deces <id> [incendie]` : un habitant meurt.
+
+### Tester en jeu (générations)
+
+1. Près d'un village : `/village habitants` (fondateurs inscrits), ouvrir le panneau, onglet Habitants.
+2. Mettre 6 vivres au dépôt, `/village naissance`, choisir un prénom (Ami) ; parler à un enfant sur la place.
+3. `/village vieillir 14` : l'enfant devient apprenti et suit son maître ; `/village vieillir 100` : passations.
+4. `/village deces <id>` : tombe au cimetière, lire l'épitaphe ; poste vide 3 jours puis arrivant.
+5. Raid (`/village raid lancer`) : les villageois rentrent ; perdre le raid sur un bâtiment de métier niveau II, puis
+   sur une maison avec un refuge désigné.
+
+### À vérifier en jeu (générations)
+
+- Échelle 0,8 des apprentis (modèle `Parent` + `MinScale`/`MaxScale`), place des tombes (sol, rotation vers le
+  village).
+- Mise en page de l'onglet Habitants et des six onglets à 128 px.
+- Les villageois rentrent bien chez eux à l'annonce d'un raid (pas de PNJ coincé dehors).
+- Les dialogues des autres PNJ citent encore les fondateurs par leur nom après leur mort.
+
 ## Carte de revue des bâtiments, paliers 1 à 4 (`review/ReviewMap`, `tools/building_tiers.py`)
 
 Kevin, 16 novembre 2026 (« parking à idées » du tableau blanc) : les bâtiments de base, d'artisan, les projets de
