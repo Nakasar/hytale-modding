@@ -2,13 +2,13 @@
 
 Mods pour **Hytale** (serveur `0.7.x`, « Update 7 »), développés par Nakasar.
 
-Trois mods, chacun avec son dossier de documentation :
+Deux mods dans ce dépôt, chacun avec son dossier de documentation, et un troisième dans son propre dépôt :
 
 | Mod | Code | Documentation |
 |-----|------|---------------|
 | **Vampires** : le domaine du Comte vampire (plugin Java + pack d'assets, artefact `Nakasar-Vampires-<version>.jar`) | `mods/nakasar-vampires` | [docs/vampires](docs/vampires/) |
 | **Fractales des Brumes** : les fractales de Guild Wars 2 transposées dans Hytale, pour 1 à 5 joueurs (en cours : socle, Observatoire, progression, instabilités, fractales Falaise, Inclassable, Volcanique, Océan solide, Marais et Tempête de neige, fractales du jour, cosmétiques, wiki) | `mods/nakasar-fractals` | [docs/fractales](docs/fractales/) |
-| **Peuples d'Orbis** : des villages vivants des peuples d'Orbis (Kweebecs, Trorks, Feran...) qui grandissent avec l'aide du joueur, façon Millénaire (en cours : socle, villages, tableau, dialogues) | `mods/nakasar-peuples` | [docs/peuples](docs/peuples/mods.md) |
+| **Peuples d'Orbis** : des villages vivants des peuples d'Orbis (Kweebecs, Trorks, Feran...) qui grandissent avec l'aide du joueur, façon Millénaire (en cours : socle, villages, tableau, dialogues) | dépôt [Nakasar/peoples-of-orbis](https://github.com/Nakasar/peoples-of-orbis) | [wiki](https://orbis.nakasar.xyz) |
 
 Les notes communes aux mods (API serveur, PNJ) restent à la racine de `docs/`.
 
@@ -23,7 +23,7 @@ Les notes communes aux mods (API serveur, PNJ) restent à la racine de `docs/`.
 | Lance | Lance de fer à deux mains : enchaînement, coup chargé, compétence ultime |
 | Armes en argent | Version en argent de chaque arme standard, de la lance du mod et des flèches : double dégâts contre les vampires (Comte, Comtesse, rejetons) |
 
-Le guide du joueur des trois mods est un wiki publié sur GitHub Pages : https://nakasar.github.io/hytale-modding/ (sources Markdown dans [docs/wiki](docs/wiki/), un dossier par mod : `vampires/`, `fractales/`, `peuples/` ; site Docusaurus dans [wiki](wiki/), aperçu local : `cd wiki && npm ci && npm start`). Pour ajouter une rubrique à un mod : sa barre latérale dans `wiki/sidebars.js` et sa barre de sections dans `wiki/src/mods.js`.
+Le guide du joueur des mods Vampires et Fractales est un wiki publié sur GitHub Pages : https://nakasar.github.io/hytale-modding/ (sources Markdown dans [docs/wiki](docs/wiki/), un dossier par mod : `vampires/`, `fractales/` ; Peuples d'Orbis a son propre wiki, https://orbis.nakasar.xyz, vers lequel redirigent les anciennes adresses `/peuples/...` ; site Docusaurus dans [wiki](wiki/), aperçu local : `cd wiki && npm ci && npm start`). Pour ajouter une rubrique à un mod : sa barre latérale dans `wiki/sidebars.js` et sa barre de sections dans `wiki/src/mods.js`.
 Le détail du mod (fichiers, chaînes d'interactions, camps, réglages) est dans [docs/vampires/mods.md](docs/vampires/mods.md).
 L'histoire et la progression visées (voie des chasseurs, voie occulte, joueur vampire, zones à venir) : [docs/vampires/histoire-progression.md](docs/vampires/histoire-progression.md).
 
@@ -274,7 +274,6 @@ Création de PNJ (rôles, IA, modèles, apparitions) : [docs/npc-0.7.2.md](docs/
 
 - `mods/nakasar-vampires/build/libs/Nakasar-Vampires-0.1.0.jar`
 - `mods/nakasar-fractals/build/libs/Nakasar-Fractals-0.1.0.jar`
-- `mods/nakasar-peuples/build/libs/Nakasar-Peuples-0.1.0.jar`
 
 `build` lance aussi `validateJson`, qui vérifie la syntaxe de tous les JSON d'assets (le parseur du
 serveur est strict : une virgule en trop fait échouer le chargement du mod).

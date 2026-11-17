@@ -1,6 +1,0 @@
-{
-  "$Comment": "PNJ kweebecs du mod (crieur, marchand, guetteur, captif) : rattachés au groupe de réputation Nakasar_Peuples_Kweebec comme les Kweebecs vanilla.",
-  "IncludeRoles": [
-    "Nakasar_Peuples_Kweebec*"
-  ]
-}

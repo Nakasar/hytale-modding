@@ -1,7 +1,8 @@
 # Consignes pour les agents
 
-Ce dépôt contient les mods Hytale de Nakasar (`mods/nakasar-vampires`, `mods/nakasar-fractals`, `mods/nakasar-peuples`). La documentation est
-rédigée en français.
+Ce dépôt contient les mods Hytale de Nakasar (`mods/nakasar-vampires`, `mods/nakasar-fractals`). Le mod Peuples d'Orbis a
+son propre dépôt, [Nakasar/peoples-of-orbis](https://github.com/Nakasar/peoples-of-orbis) ; les règles ci-dessous valent
+aussi pour lui. La documentation est rédigée en français.
 
 ## Règles permanentes (valables pour TOUS les mods)
 

@@ -62,7 +62,7 @@ export const MODS = [
     id: "peuples",
     name: "Peuples d'Orbis",
     pack: "Nakasar : Peuples",
-    to: "/peuples",
+    to: "https://orbis.nakasar.xyz",
     image: "peuples",
     pitch:
       "Des villages vivants qui grandissent avec votre aide, de la forêt kweebec au monastère slothian au bord du Vide, jusqu'à devenir le Champion d'un peuple.",
@@ -72,22 +72,9 @@ export const MODS = [
       ["4", "zones"],
       ["6", "rangs"],
     ],
-    sections: [
-      { label: "Présentation", to: "/peuples", exact: true },
-      { label: "Réputation", to: "/peuples/reputation" },
-      { label: "Vivre au village", to: "/peuples/villages", match: ["/peuples/villages", "/peuples/monde-vivant", "/peuples/climats"] },
-      {
-        label: "Les peuples",
-        to: "/peuples/kweebecs",
-        match: ["/peuples/kweebecs", "/peuples/trorks", "/peuples/feran", "/peuples/renonces", "/peuples/slothians"],
-      },
-      {
-        label: "Bâtiments",
-        to: "/peuples/batiments",
-        match: ["/peuples/batiments", "/peuples/batiments-de-metier", "/peuples/emplacements", "/peuples/avant-postes-de-metier"],
-      },
-      { label: "Avant-poste", to: "/peuples/avant-poste" },
-    ],
+    // Le mod a son propre dépôt (Nakasar/peoples-of-orbis) et son propre wiki : la carte de l'accueil y mène.
+    external: true,
+    sections: [],
   },
 ];
 
@@ -97,7 +84,7 @@ function under(path, prefix) {
 
 /** Le mod d'une URL du site (sans baseUrl), ou null pour les pages communes. */
 export function modOf(path) {
-  return MODS.find((mod) => under(path, mod.to)) ?? null;
+  return MODS.find((mod) => !mod.external && under(path, mod.to)) ?? null;
 }
 
 /** La rubrique active d'un mod pour cette URL. */

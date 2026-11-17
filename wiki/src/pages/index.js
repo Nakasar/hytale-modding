@@ -17,7 +17,7 @@ const IMAGES = {
     alt: "Carte de l'Observatoire, le hub des fractales",
   },
   peuples: {
-    src: require("../../../docs/wiki/images/peuples/batiments/kweebec_00_coeur.jpg").default,
+    src: require("../../../docs/wiki/images/peuples_kweebec_coeur.jpg").default,
     alt: "Le cœur d'un village kweebec",
   },
 };
@@ -70,8 +70,8 @@ export default function Home() {
             Wiki des mods Nakasar
           </Heading>
           <p className={styles.lead}>
-            Trois mods, trois mondes. Chaque mod a son onglet, sa couleur et ses rubriques ; la recherche couvre
-            tout le wiki. Ils se jouent seuls ou ensemble.
+            Trois mods, trois mondes. Chaque mod a son onglet, sa couleur et ses rubriques ; Peuples d'Orbis a son
+            propre wiki. Ils se jouent seuls ou ensemble.
           </p>
         </header>
         <section className={styles.cards} aria-label="Les trois mods">

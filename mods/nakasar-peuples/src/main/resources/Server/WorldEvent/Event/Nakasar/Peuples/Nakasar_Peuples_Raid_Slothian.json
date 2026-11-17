@@ -1,8 +1,0 @@
-{
-  "$Comment": "Raid sur un village Slothian (étape 9), généré par tools/generate_slothians.py (même principe que Nakasar_Peuples_Raid_Warn).",
-  "Root": "Nakasar_Peuples_Raid_Slothian_Warn",
-  "IterationCount": 1,
-  "InstanceCountMax": -1,
-  "Name": "nakasar_peuples.raid.event.name.Slothian",
-  "Icon": "UI/WorldMap/MapMarkers/GoblinBreach.png"
-}

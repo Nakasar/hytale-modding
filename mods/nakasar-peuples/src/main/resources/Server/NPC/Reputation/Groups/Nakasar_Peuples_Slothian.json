@@ -1,7 +1,0 @@
-{
-  "$Comment": "Réputation de peuple slothian (étape 9) : ReputationPlugin vanilla. Le jeu n'a pas de groupe de PNJ slothian vanilla (rôle Slothian abstrait) : seuls les Slothians du mod comptent.",
-  "NPCGroups": [
-    "Nakasar_Peuples_Slothian"
-  ],
-  "InitialReputationValue": 0
-}

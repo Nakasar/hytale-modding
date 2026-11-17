@@ -1,7 +1,0 @@
-{
-  "$Comment": "Réputation de peuple Renonce (étape 8) : ReputationPlugin vanilla (les Outlanders vanilla sont le culte : exclus).",
-  "NPCGroups": [
-    "Nakasar_Peuples_Renonce"
-  ],
-  "InitialReputationValue": 0
-}

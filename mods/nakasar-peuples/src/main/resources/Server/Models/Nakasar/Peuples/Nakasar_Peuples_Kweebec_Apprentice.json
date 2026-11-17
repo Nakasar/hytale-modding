@@ -1,6 +1,0 @@
-{
-  "$Comment": "Apprenti kweebec (générations de villageois) : le modèle vanilla Kweebec_Sapling_Green à l'échelle 0,8, entre l'enfant et l'adulte. Généré par tools/generate_population.py.",
-  "Parent": "Kweebec_Sapling_Green",
-  "MinScale": 0.8,
-  "MaxScale": 0.8
-}

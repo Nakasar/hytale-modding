@@ -1,6 +1,0 @@
-{
-  "$Comment": "Enfant Renonce : pas d'enfant vanilla, donc le modèle adulte Outlander_Peon à l'échelle 0,6 (Kevin, 15 novembre 2026).",
-  "Parent": "Outlander_Peon",
-  "MinScale": 0.6,
-  "MaxScale": 0.6
-}
