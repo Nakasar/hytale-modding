@@ -1,0 +1,53 @@
+{
+  "$Comment": "Dialogue de l'habitant sans poste Apprentice (générations de villageois), généré par tools/generate_population.py. Le nom affiché est celui de sa fiche, la ligne sous la réplique dit son âge et ses parents.",
+  "NpcNameKey": "nakasar_peuples.npc.Renonce_Apprentice.name",
+  "RoleKey": "nakasar_peuples.dialogue.Renonce_Apprentice.role",
+  "People": "Renonce",
+  "Entries": [
+    {
+      "Node": "Abri",
+      "Conditions": [
+        {
+          "Type": "Raid",
+          "State": "Active"
+        }
+      ]
+    },
+    {
+      "Node": "Accueil"
+    }
+  ],
+  "Nodes": [
+    {
+      "Id": "Accueil",
+      "TextKey": "nakasar_peuples.dialogue.Renonce_Apprentice.accueil",
+      "Responses": [
+        {
+          "TextKey": "nakasar_peuples.population.dialogue.life",
+          "Next": "Vie"
+        },
+        {
+          "TextKey": "nakasar_peuples.dialogue.job.aurevoir"
+        }
+      ]
+    },
+    {
+      "Id": "Vie",
+      "TextKey": "nakasar_peuples.dialogue.Renonce_Apprentice.vie",
+      "Responses": [
+        {
+          "TextKey": "nakasar_peuples.dialogue.job.aurevoir"
+        }
+      ]
+    },
+    {
+      "Id": "Abri",
+      "TextKey": "nakasar_peuples.population.dialogue.shelter",
+      "Responses": [
+        {
+          "TextKey": "nakasar_peuples.dialogue.job.aurevoir"
+        }
+      ]
+    }
+  ]
+}

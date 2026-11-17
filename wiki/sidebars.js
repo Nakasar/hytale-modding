@@ -148,6 +148,7 @@ const sidebars = {
       items: [
         "peuples/reputation",
         "peuples/villages",
+        "peuples/habitants",
         "peuples/monde-vivant",
         "peuples/lieux-dits",
         "peuples/conquete",

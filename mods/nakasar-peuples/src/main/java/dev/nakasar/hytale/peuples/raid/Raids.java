@@ -159,6 +159,8 @@ public final class Raids {
         int byPlayers;
         int byGuards;
         int fallen;
+        /** Habitants nommés tombés en défendant (générations) : blessés à la fin du raid. */
+        final List<String> wounded = new ArrayList<>();
         boolean eventRunning;
         /** PV des gardes (spécialités de garde, étape 5) et gardes déjà renforcés. */
         float guardHealth = 1f;
@@ -505,6 +507,10 @@ public final class Raids {
         int guards = DEFENDERS[Math.max(0, Math.min(3, village.tier()))] + bonus.guards()
                 + dev.nakasar.hytale.peuples.world.Relations.reinforcements(world, village);
         String role = defenderRole(village.people());
+        // Générations : chaque garde est un habitant nommé (gardes, puis braves, puis les autres adultes valides).
+        List<dev.nakasar.hytale.peuples.population.Inhabitant> named = dev.nakasar.hytale.peuples.population.RaidLosses
+                .defenders(village, GameClock.day(store), bonus.posts().size() + guards);
+        int nextNamed = 0;
         for (int[] post : bonus.posts()) {
             int[] safe = terrain.safeSpot(post[0], post[1], 4);
             if (safe == null) {
@@ -513,6 +519,9 @@ public final class Raids {
             Vector3d spot = new Vector3d(safe[0] + 0.5, safe[1], safe[2] + 0.5);
             Ref<EntityStore> ref = spawn(store, village, Kind.DEFENDER, role, spot, (float) random.nextDouble(-Math.PI, Math.PI));
             if (ref != null) {
+                if (nextNamed < named.size()) {
+                    dev.nakasar.hytale.peuples.population.Population.bind(ref, village.id(), named.get(nextNamed++).id());
+                }
                 a.defenders.add(ref);
                 leash(store, ref, spot);
             }
@@ -528,6 +537,9 @@ public final class Raids {
             Vector3d spot = new Vector3d(safe[0] + 0.5, safe[1], safe[2] + 0.5);
             Ref<EntityStore> ref = spawn(store, village, Kind.DEFENDER, role, spot, (float) -angle);
             if (ref != null) {
+                if (nextNamed < named.size()) {
+                    dev.nakasar.hytale.peuples.population.Population.bind(ref, village.id(), named.get(nextNamed++).id());
+                }
                 a.defenders.add(ref);
                 leash(store, ref, spot);
             }
@@ -628,16 +640,22 @@ public final class Raids {
         stopEvent(store, a);
         int killed = a.byPlayers + a.byGuards;
         String burnt = null;
+        dev.nakasar.hytale.peuples.population.RaidLosses.Loss loss = null;
+        // Générations : les défenseurs nommés tombés sont blessés (un jour de repos), jamais morts.
+        for (String id : a.wounded) {
+            dev.nakasar.hytale.peuples.population.RaidLosses.wound(store, village, id);
+        }
+        for (Ref<EntityStore> d : a.defenders) {
+            dev.nakasar.hytale.peuples.population.Population.unbind(d);
+        }
         if (victory) {
             Villages.addEssor(village, ESSOR_WIN);
         } else {
-            VillageLayout.Building b = Chantiers.burn(world, village, null, true);
-            burnt = b == null ? null : b.id();
-            if (b != null) {
-                // Monde vivant (étape 4) : les habitants du bâtiment brûlé campent au bord du village jusqu'à sa
-                // reconstruction ; des arbres brûlés gardent la trace du raid.
-                dev.nakasar.hytale.peuples.world.Camps.refugees(world, store, village, b.id());
-            }
+            // Un bâtiment au hasard : à niveaux, il perd un niveau ; sinon il brûle, son responsable meurt et les autres
+            // habitants vont au refuge ou campent au bord du village (population/RaidLosses).
+            loss = dev.nakasar.hytale.peuples.population.RaidLosses.apply(world, store, village);
+            VillageLayout.Building b = loss == null ? null : loss.building();
+            burnt = b == null || loss.levelLost() ? null : b.id();
             if (b == null) {
                 // Village sans plan (fondé à la main) : rien à brûler, la jauge d'essor se vide.
                 Villages.addEssor(village, -village.essor());
@@ -659,6 +677,9 @@ public final class Raids {
                         .param("favor", VillageBoard.itemName(village.people().favorItem()))
                         .param("building", burnt == null ? Message.translation(KEYS + "noBuilding") : Message.translation(Chantiers.buildingKey(burnt)));
                 p.sendMessage(report);
+                if (loss != null) {
+                    p.sendMessage(dev.nakasar.hytale.peuples.population.RaidLosses.report(village, loss));
+                }
                 EventTitleUtil.showEventTitleToPlayer(p, Message.translation(victory ? KEYS + "title.won" : KEYS + "title.lost"),
                         Message.raw(village.name()), EventTitleStyle.Default, null, 4f, 0.5f, 1f);
                 if (victory) {
@@ -771,6 +792,11 @@ public final class Raids {
         } else {
             a.defenders.remove(ref);
             a.fallen++;
+            String who = dev.nakasar.hytale.peuples.population.Population.boundId(ref);
+            dev.nakasar.hytale.peuples.population.Population.unbind(ref);
+            if (who != null) {
+                a.wounded.add(who);
+            }
         }
     }
 
@@ -811,6 +837,7 @@ public final class Raids {
         all.addAll(a.defenders);
         for (Ref<EntityStore> r : all) {
             OWNERS.remove(r);
+            dev.nakasar.hytale.peuples.population.Population.unbind(r);
             if (r.isValid()) {
                 store.removeEntity(r, RemoveReason.REMOVE);
             }
@@ -836,6 +863,7 @@ public final class Raids {
         refs.removeIf(r -> {
             if (!r.isValid()) {
                 OWNERS.remove(r);
+                dev.nakasar.hytale.peuples.population.Population.unbind(r);
                 return true;
             }
             return false;

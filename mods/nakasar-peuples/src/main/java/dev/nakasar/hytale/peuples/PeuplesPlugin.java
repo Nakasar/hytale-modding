@@ -184,6 +184,8 @@ public final class PeuplesPlugin extends JavaPlugin {
                 dev.nakasar.hytale.peuples.zone.ZoneRegistry.CODEC));
         getCodecRegistry(Interaction.CODEC).register(dev.nakasar.hytale.peuples.zone.ZoneItemInteraction.TYPE_ID,
                 dev.nakasar.hytale.peuples.zone.ZoneItemInteraction.class, dev.nakasar.hytale.peuples.zone.ZoneItemInteraction.CODEC);
+        getCodecRegistry(Interaction.CODEC).register(dev.nakasar.hytale.peuples.population.ReadTombInteraction.TYPE_ID,
+                dev.nakasar.hytale.peuples.population.ReadTombInteraction.class, dev.nakasar.hytale.peuples.population.ReadTombInteraction.CODEC);
         getCodecRegistry(Interaction.CODEC).register(dev.nakasar.hytale.peuples.zone.EchoSpringInteraction.TYPE_ID,
                 dev.nakasar.hytale.peuples.zone.EchoSpringInteraction.class, dev.nakasar.hytale.peuples.zone.EchoSpringInteraction.CODEC);
         entities.registerSystem(new dev.nakasar.hytale.peuples.zone.ZoneSeeder());
@@ -254,6 +256,7 @@ public final class PeuplesPlugin extends JavaPlugin {
         RequestHud.clearAll();
         VillageBlockSystem.clearAll();
         Villagers.clearAll();
+        dev.nakasar.hytale.peuples.population.Population.clearAll();
         dev.nakasar.hytale.peuples.annex.Annexes.clearAll();
         dev.nakasar.hytale.peuples.workshop.Livestock.clearAll();
         dev.nakasar.hytale.peuples.village.Plots.clearAll();
