@@ -8061,7 +8061,7 @@ klops.routeNoneSaid = Pour l'instant, je n'ai aucun village où passer.
 # ---- Carte de revue des bâtiments (/village revue) ----
 command.review.desc = Carte plate de revue de tous les bâtiments et structures (paliers 1 à 4) : y aller et bâtir ce qui manque.
 command.review.people = Peuple seul à bâtir et où arriver (toute la carte par défaut) : kweebec, trork, feran, renonce, slothian, monde
-command.review.category = Catégorie où arriver : coeur, base, artisan, projet, avantposte, lieudit (monde : auberge, camp, vestige, source)
+command.review.category = Catégorie où arriver : coeur, base, artisan, projet, production, ouvrage, lieudit (monde : auberge, camp, vestige, source)
 command.review.rebuild = Recolle tous les rectangles demandés (écrase les retouches à la main)
 review.start = Carte de revue : {count} rectangle(s) à bâtir.
 review.progress = Carte de revue : {done}/{count} rectangles bâtis.

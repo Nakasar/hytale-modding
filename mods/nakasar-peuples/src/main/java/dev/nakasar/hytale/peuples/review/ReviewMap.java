@@ -40,7 +40,7 @@ import java.util.concurrent.CompletableFuture;
 
 /**
  * Carte plate de revue des bâtiments (Kevin, 16 novembre 2026, « parking à idées » du tableau blanc, puis ses retours
- * du même jour) : tous les bâtiments des cinq peuples (cœur, base, artisan, projets, avant-postes, lieux-dits) en leurs
+ * du même jour) : tous les bâtiments des cinq peuples (cœur, base, artisan, projets, production, ouvrages, lieux-dits) en leurs
  * quatre paliers, et les structures du monde vivant (auberges, campements, vestiges, Source de l'Écho), chacun dans
  * son rectangle liseré de laine rouge sur un monde plat. Kevin y retouche les prefabs à la main en créatif.
  *
@@ -62,7 +62,7 @@ public final class ReviewMap {
 
     private static final HytaleLogger LOGGER = HytaleLogger.forEnclosingClass();
     private static final String RESOURCE = "/nakasar-peuples/revue-batiments.json";
-    public static final String WORLD_DEFAULT = "nakasar_revue_batiments_v2";
+    public static final String WORLD_DEFAULT = "nakasar_revue_batiments_v3";
     static final String STATE_FILE = "nakasar_revue_batiments.txt";
     static final String PLAN_FILE = "nakasar_revue_batiments_plan.txt";
     public static final String KEYS = "nakasar_peuples.review.";
@@ -138,6 +138,12 @@ public final class ReviewMap {
         List<String> clear;
         @SerializedName("Notes")
         List<String> notes;
+        /**
+         * Emplacement réservé (largeur, profondeur) d'un bâtiment prévu qui n'a pas encore de prefab : rectangle vide à
+         * son nom.
+         */
+        @SerializedName("Reserve")
+        int[] reserve;
     }
 
     static synchronized Data data() {
@@ -198,6 +204,10 @@ public final class ReviewMap {
     /** Boîte mesurée d'une composition autour de son origine : x0, x1, z0, z1, haut. */
     private static int[] measure(Tier t) {
         int[] box = null;
+        if (t.reserve != null && t.reserve.length == 2) {
+            int w = t.reserve[0], d = t.reserve[1];
+            box = new int[]{-w / 2, w - 1 - w / 2, -d / 2, d - 1 - d / 2, 1};
+        }
         for (String line : t.pieces) {
             String[] p = line.trim().split("\\s+");
             if (p.length < 5) {

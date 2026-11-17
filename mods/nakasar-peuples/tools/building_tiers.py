@@ -44,13 +44,27 @@ PEOPLES = ["Kweebec", "Trork", "Feran", "Renonce", "Slothian"]
 PEOPLE_NAMES = {"Kweebec": "Kweebec", "Trork": "Trork", "Feran": "Feran", "Renonce": "Renoncé", "Slothian": "Slothian",
                 "Monde": "Monde"}
 ZONE_OF = {1: "zone 1", 2: "zone 2 (désert)", 3: "zone 3 (givre)", 4: "zone 4 (Slothians)"}
-CATEGORIES = ["Coeur", "Base", "Artisan", "Projet", "AvantPoste", "LieuDit", "Auberge", "Camp", "Vestige", "Source"]
+CATEGORIES = ["Coeur", "Base", "Artisan", "Projet", "Production", "Ouvrage", "LieuDit", "Auberge", "Camp", "Vestige",
+              "Source"]
 CATEGORY_NAMES = {"Coeur": "Cœur du village", "Base": "Bâtiment de base", "Artisan": "Bâtiment d'artisan",
-                  "Projet": "Projet de terrain", "AvantPoste": "Avant-poste", "LieuDit": "Lieu-dit",
+                  "Projet": "Projet de terrain", "Production": "Production (dehors)",
+                  "Ouvrage": "Ouvrage (infrastructure)", "LieuDit": "Lieu-dit",
                   "Auberge": "Auberge", "Camp": "Campement", "Vestige": "Vestige", "Source": "Source de l'Écho"}
-# Catégories à quatre paliers (les projets de terrain E1/E2 sont des bâtiments d'artisan) ; les autres n'ont qu'un
-# rectangle.
-TIERED = {"Coeur", "Base", "Artisan", "Projet", "AvantPoste", "LieuDit"}
+# Catégories à quatre paliers ; les structures du monde n'ont qu'un rectangle.
+TIERED = {"Coeur", "Base", "Artisan", "Projet", "Production", "Ouvrage", "LieuDit"}
+# Catégories des projets de terrain (champ Category des Workshops, tools/plots.py).
+PROJECT_CATEGORIES = {"Artisanat": "Artisanat", "Defense": "Défense", "Diplomatie": "Diplomatie", "Savoir": "Savoir",
+                      "Culte": "Culte", "Elevage": "Élevage"}
+# Bâtiments prévus par le doc « Structurer les types de bâtiments » (Kevin, 2026-11-16) qui n'ont pas encore de prefab :
+# un emplacement réservé à leur nom (rectangle vide de la taille d'un terrain de projet, 24 × 24).
+RESERVE_SIZE = (24, 24)
+RESERVED = {
+    people: [("Production", "Production_Regionale", "Production régionale (type régional à définir)",
+              "doc Structurer les types de bâtiments : type régional, ressource de luxe du biome")]
+    for people in PEOPLES}
+RESERVED["Slothian"].append(("Projet", "Atelier_A_Definir", "Atelier d'artisanat slothian (à définir)",
+                             "doc Structurer les types de bâtiments : les Slothians n'ont pas encore d'atelier"))
+RESERVED_CATEGORY_NAMES = {("Slothian", "Atelier_A_Definir"): "Projet de terrain · Artisanat"}
 
 NPC = "Npc/"
 
@@ -256,18 +270,30 @@ def layout_file(people):
 
 def village_entries(people):
     out = []
+    seen_projects = set()
     for b in layout_of(people)["Buildings"]:
         bid = b["Id"]
-        if bid.startswith("E2_"):
-            continue  # même prefab que le projet E1 (vérifié) : un seul exemplaire
-        if bid.startswith("E1_"):
-            cat, wid, name_id = "Projet", f"{people}_{bid}", bid[3:]
+        category_name = None
+        if re.match(r"E\d_", bid):
+            # Terrains E1, E2, E3 : même catalogue, même prefab par projet (vérifié) ; un seul exemplaire du projet.
+            name_id = bid[3:]
+            if name_id in seen_projects:
+                continue
+            seen_projects.add(name_id)
+            wid = f"{people}_{bid}"
+            ws = json.loads((NAK / "Workshops" / f"{wid}.json").read_text(encoding="utf-8"))
+            if ws.get("Legacy"):
+                continue  # projet hérité (doublait un avant-poste de production) : plus construit
+            cat, bid = "Projet", "Projet_" + name_id
+            category_name = "Projet de terrain · " + PROJECT_CATEGORIES.get(ws.get("Category"), ws.get("Category"))
+            source = "projet de terrain (E1, E2 ou E3)"
         else:
             wid, name_id = f"{people}_{bid}", bid
             cat = "Artisan" if (NAK / "Workshops" / f"{wid}.json").exists() else "Base"
+            source = f"village, palier de village {b['Tier']}"
         name = LANG_FR.get(f"workshop.{wid}.name") if cat != "Base" else None
         out.append({"People": people, "Category": cat, "Id": bid, "Name": name or nice(name_id),
-                    "Source": f"village, palier de village {b['Tier']}", "Pieces": [(b["Prefab"], 0, 0, 0, 0)],
+                    "CategoryName": category_name, "Source": source, "Pieces": [(b["Prefab"], 0, 0, 0, 0)],
                     "Optional": []})
     return out
 
@@ -276,13 +302,19 @@ def annex_entries(people):
     out = []
     for f in sorted((NAK / "Workshops").glob(f"{people}_AP_*.json")):
         d = json.loads(f.read_text(encoding="utf-8"))
+        if d["Annex"].get("Slot", 1) > 1:
+            continue  # place 2, 3... d'un ouvrage : copie du même bâtiment
         pieces = []
         for line in d["Annex"]["Prefabs"]:
             p = line.split()
             pieces.append((p[0], int(p[1]), 0, int(p[2]), int(p[3]) if len(p) > 3 else 0))
-        out.append({"People": people, "Category": "AvantPoste", "Id": "AP_" + d["Annex"]["Type"],
+        production = d["Annex"].get("Family") == "Production"
+        limit = d["Annex"].get("Limit", 1)
+        out.append({"People": people, "Category": "Production" if production else "Ouvrage",
+                    "Id": "AP_" + d["Annex"]["Type"],
                     "Name": LANG_FR.get(f"workshop.{f.stem}.name") or nice(d["Annex"]["Type"]),
-                    "Source": "avant-poste de métier", "Pieces": pieces, "Optional": []})
+                    "Source": "bâtiment de production, un par village" if production
+                    else f"ouvrage, {limit} par village au plus", "Pieces": pieces, "Optional": []})
     return out
 
 
@@ -380,7 +412,16 @@ def grow(pieces, tier, notes):
     return out
 
 
+def reserved_entries(people):
+    return [{"People": people, "Category": cat, "Id": ident, "Name": name, "Source": source, "Reserved": True,
+             "CategoryName": RESERVED_CATEGORY_NAMES.get((people, ident))}
+            for cat, ident, name, source in RESERVED.get(people, [])]
+
+
 def tiers_of(e):
+    if e.get("Reserved"):
+        return [{"Tier": t, "Pieces": [], "Blocks": [], "Clear": [], "Reserve": list(RESERVE_SIZE),
+                 "Notes": ["pas encore de prefab : emplacement réservé"]} for t in (1, 2, 3, 4)]
     if e["Category"] == "Coeur":
         return e["Tiers"]
     if e["Category"] not in TIERED:
@@ -417,7 +458,8 @@ def fmt(p):
 def main():
     sections = []
     for people in PEOPLES:
-        entries = [heart_entry(people)] + village_entries(people) + annex_entries(people) + hamlet_entries(people)
+        entries = ([heart_entry(people)] + village_entries(people) + annex_entries(people) + hamlet_entries(people)
+                   + reserved_entries(people))
         sections.append((people, entries))
     sections.append(("Monde", world_entries()))
     doc = {
@@ -425,7 +467,7 @@ def main():
                     "à la main) ; lue par dev.nakasar.hytale.peuples.review.ReviewMap (/village revue). Pièces : "
                     "« chemin dx dy dz rotation » ; blocs : « dx dy dz rotation Bloc » (dy 0 = posé sur le sol, Empty "
                     "= vider) ; Clear : « dx dy dz Bloc » retiré s'il est là.",
-        "World": "nakasar_revue_batiments_v2",
+        "World": "nakasar_revue_batiments_v3",
         "Sections": [],
     }
     total_cells = 0
@@ -444,7 +486,7 @@ def main():
                                 RES / "Prefabs" / (path + ".prefab.json")).exists():
                             missing.add(path)
                 total_cells += len(tiers)
-                rows.append({"Category": c, "CategoryName": CATEGORY_NAMES[c], "Id": e["Id"], "Name": e["Name"],
+                rows.append({"Category": c, "CategoryName": e.get("CategoryName") or CATEGORY_NAMES[c], "Id": e["Id"], "Name": e["Name"],
                              "Source": e["Source"], "Tiers": tiers})
         doc["Sections"].append({"People": people, "Name": PEOPLE_NAMES[people], "Rows": rows})
     if missing:

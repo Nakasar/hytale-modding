@@ -8061,7 +8061,7 @@ klops.routeNoneSaid = For now, I have no village to visit.
 # ---- Building review map (/village revue) ----
 command.review.desc = Flat review map of every building and structure (tiers 1 to 4): go there and build what is missing.
 command.review.people = Only this people to build and arrive at (whole map by default): kweebec, trork, feran, renonce, slothian, monde
-command.review.category = Category to arrive at: coeur, base, artisan, projet, avantposte, lieudit (monde: auberge, camp, vestige, source)
+command.review.category = Category to arrive at: coeur, base, artisan, projet, production, ouvrage, lieudit (monde: auberge, camp, vestige, source)
 command.review.rebuild = Pastes every requested rectangle again (overwrites hand edits)
 review.start = Review map: {count} rectangle(s) to build.
 review.progress = Review map: {done}/{count} rectangles built.
