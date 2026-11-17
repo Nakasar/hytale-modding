@@ -130,6 +130,10 @@ public final class VillageCommand extends AbstractCommandCollection {
         addSubCommand(new ZoneOneCommands.KlopsCommand());
         addSubCommand(new ZoneOneCommands.WarPaintCommand());
         addSubCommand(new ReviewCommand());
+        addSubCommand(new InhabitantsCommand());
+        addSubCommand(new AgeCommand());
+        addSubCommand(new BirthCommand());
+        addSubCommand(new DeathCommand());
         ZoneCommands.all().forEach(this::addSubCommand);
     }
 
@@ -889,6 +893,99 @@ public final class VillageCommand extends AbstractCommandCollection {
             }
             if (!Chantiers.finish(world, village, Villagers::forgetGround)) {
                 player.sendMessage(Message.translation(Chantiers.KEYS + "busy"));
+            }
+        }
+    }
+
+    // ---- Générations de villageois (population/) ----
+
+    /** {@code /village habitants} : les habitants du village le plus proche, avec leur id, stade, âge et poste. */
+    private static final class InhabitantsCommand extends AbstractPlayerCommand {
+        InhabitantsCommand() {
+            super("habitants", KEYS + "inhabitants.desc");
+            requirePermission(ADMIN);
+        }
+
+        @Override
+        protected void execute(CommandContext context, Store<EntityStore> store, Ref<EntityStore> ref, PlayerRef player, World world) {
+            Village village = nearest(world, player);
+            if (village == null) {
+                return;
+            }
+            if (!dev.nakasar.hytale.peuples.population.Population.applies(village)) {
+                player.sendMessage(Message.translation(dev.nakasar.hytale.peuples.population.Population.KEYS + "page.none"));
+                return;
+            }
+            dev.nakasar.hytale.peuples.population.Population.step(world, store, village);
+            long day = dev.nakasar.hytale.peuples.request.GameClock.day(store);
+            var p = village.population();
+            player.sendMessage(Message.translation(KEYS + "inhabitants.header").param("village", village.name()).param("count", p.living().size()));
+            for (var h : p.living()) {
+                player.sendMessage(Message.translation(KEYS + "inhabitants.line").param("id", h.id()).param("name", h.fullName())
+                        .param("line", dev.nakasar.hytale.peuples.population.PeoplePage.describe(village, h, day)));
+            }
+        }
+    }
+
+    /** {@code /village vieillir <jours>} : le village vieillit d'autant de jours (matins rejoués). */
+    private static final class AgeCommand extends AbstractPlayerCommand {
+        private final RequiredArg<Integer> days = withRequiredArg("jours", KEYS + "age.arg", ArgTypes.INTEGER);
+
+        AgeCommand() {
+            super("vieillir", KEYS + "age.desc");
+            requirePermission(ADMIN);
+        }
+
+        @Override
+        protected void execute(CommandContext context, Store<EntityStore> store, Ref<EntityStore> ref, PlayerRef player, World world) {
+            Village village = nearest(world, player);
+            if (village == null || !dev.nakasar.hytale.peuples.population.Population.applies(village)) {
+                return;
+            }
+            int n = Math.max(1, Math.min(dev.nakasar.hytale.peuples.population.Population.CATCH_UP, days.get(context)));
+            dev.nakasar.hytale.peuples.population.Population.age(world, store, village, n);
+            player.sendMessage(Message.translation(KEYS + "age.done").param("village", village.name()).param("days", n));
+        }
+    }
+
+    /** {@code /village naissance} : une naissance tout de suite (lits et vivres du dépôt toujours demandés). */
+    private static final class BirthCommand extends AbstractPlayerCommand {
+        BirthCommand() {
+            super("naissance", KEYS + "birth.desc");
+            requirePermission(ADMIN);
+        }
+
+        @Override
+        protected void execute(CommandContext context, Store<EntityStore> store, Ref<EntityStore> ref, PlayerRef player, World world) {
+            Village village = nearest(world, player);
+            if (village == null || !dev.nakasar.hytale.peuples.population.Population.applies(village)) {
+                return;
+            }
+            boolean born = dev.nakasar.hytale.peuples.population.Population.forceBirth(world, store, village);
+            player.sendMessage(Message.translation(KEYS + (born ? "birth.done" : "birth.failed")).param("food",
+                    dev.nakasar.hytale.peuples.population.Population.BIRTH_FOOD));
+        }
+    }
+
+    /** {@code /village deces <id> [incendie]} : un habitant meurt (de vieillesse, ou dans l'incendie). */
+    private static final class DeathCommand extends AbstractPlayerCommand {
+        private final RequiredArg<String> id = withRequiredArg("id", KEYS + "death.arg", ArgTypes.STRING);
+        private final OptionalArg<String> cause = withOptionalArg("cause", KEYS + "death.cause", ArgTypes.STRING);
+
+        DeathCommand() {
+            super("deces", KEYS + "death.desc");
+            requirePermission(ADMIN);
+        }
+
+        @Override
+        protected void execute(CommandContext context, Store<EntityStore> store, Ref<EntityStore> ref, PlayerRef player, World world) {
+            Village village = nearest(world, player);
+            if (village == null || !dev.nakasar.hytale.peuples.population.Population.applies(village)) {
+                return;
+            }
+            String c = "incendie".equals(cause.get(context)) || "fire".equals(cause.get(context)) ? "fire" : "age";
+            if (!dev.nakasar.hytale.peuples.population.Population.kill(world, store, village, id.get(context), c)) {
+                player.sendMessage(Message.translation(KEYS + "death.unknown").param("id", id.get(context)));
             }
         }
     }

@@ -1,0 +1,329 @@
+$C = "../../../Common.ui";
+
+// Généré par tools/generate_population.py (thème Renonce) : ne pas modifier à la main.
+
+@Accent = #8fd0ea;
+@Section = LabelStyle(FontSize: 15, RenderBold: true, RenderUppercase: true, TextColor: #bfe2ee, VerticalAlignment: Center);
+@Body = LabelStyle(FontSize: 14, TextColor: #c9d1d9, Wrap: true);
+@SmallWrap = LabelStyle(FontSize: 13, TextColor: #96a9be, Wrap: true);
+
+$C.@PageOverlay {
+  LayoutMode: Middle;
+
+  $C.@DecoratedContainer {
+    Anchor: (Width: 1060, Height: 840);
+
+    #Title {
+      Group {
+        LayoutMode: Center;
+        Group #TitleEmblem { Anchor: (Width: 26, Height: 26, Right: 8); Background: (TexturePath: "../../Memories/categories/Outlander.png", Color: #8fd0ea); }
+        Label #PageTitle { Style: (...$C.@TitleStyle, FontSize: 16, TextColor: #bfe2ee); }
+      }
+    }
+
+    #Content {
+      LayoutMode: Top;
+      Padding: (Full: 17, Top: 12);
+      Group #Tabs {
+        LayoutMode: Left;
+        Anchor: (Height: 38);
+        Group #TabBoard {
+          LayoutMode: Full;
+          Anchor: (Width: 128, Height: 38, Right: 6);
+          Group #TabBoardOff {
+            LayoutMode: Full;
+            Anchor: (Full: 0);
+            Visible: true;
+            $C.@SecondaryTextButton #TabBoardButton { @Text = ""; @Anchor = Anchor(Full: 0); }
+          }
+          Group #TabBoardOn {
+            Anchor: (Full: 0);
+            Background: (Color: #8fd0ea);
+            Visible: false;
+            Label #TabBoardLabel { Anchor: (Full: 0); Style: (FontSize: 14, RenderBold: true, RenderUppercase: true, TextColor: #10180e, HorizontalAlignment: Center, VerticalAlignment: Center); Text: ""; }
+          }
+        }
+        Group #TabPlots {
+          LayoutMode: Full;
+          Anchor: (Width: 128, Height: 38, Right: 6);
+          Group #TabPlotsOff {
+            LayoutMode: Full;
+            Anchor: (Full: 0);
+            Visible: true;
+            $C.@SecondaryTextButton #TabPlotsButton { @Text = ""; @Anchor = Anchor(Full: 0); }
+          }
+          Group #TabPlotsOn {
+            Anchor: (Full: 0);
+            Background: (Color: #8fd0ea);
+            Visible: false;
+            Label #TabPlotsLabel { Anchor: (Full: 0); Style: (FontSize: 14, RenderBold: true, RenderUppercase: true, TextColor: #10180e, HorizontalAlignment: Center, VerticalAlignment: Center); Text: ""; }
+          }
+        }
+        Group #TabAnnexes {
+          LayoutMode: Full;
+          Anchor: (Width: 128, Height: 38, Right: 6);
+          Group #TabAnnexesOff {
+            LayoutMode: Full;
+            Anchor: (Full: 0);
+            Visible: true;
+            $C.@SecondaryTextButton #TabAnnexesButton { @Text = ""; @Anchor = Anchor(Full: 0); }
+          }
+          Group #TabAnnexesOn {
+            Anchor: (Full: 0);
+            Background: (Color: #8fd0ea);
+            Visible: false;
+            Label #TabAnnexesLabel { Anchor: (Full: 0); Style: (FontSize: 14, RenderBold: true, RenderUppercase: true, TextColor: #10180e, HorizontalAlignment: Center, VerticalAlignment: Center); Text: ""; }
+          }
+        }
+        Group #TabWorld {
+          LayoutMode: Full;
+          Anchor: (Width: 128, Height: 38, Right: 6);
+          Group #TabWorldOff {
+            LayoutMode: Full;
+            Anchor: (Full: 0);
+            Visible: true;
+            $C.@SecondaryTextButton #TabWorldButton { @Text = ""; @Anchor = Anchor(Full: 0); }
+          }
+          Group #TabWorldOn {
+            Anchor: (Full: 0);
+            Background: (Color: #8fd0ea);
+            Visible: false;
+            Label #TabWorldLabel { Anchor: (Full: 0); Style: (FontSize: 14, RenderBold: true, RenderUppercase: true, TextColor: #10180e, HorizontalAlignment: Center, VerticalAlignment: Center); Text: ""; }
+          }
+        }
+        Group #TabDomain {
+          LayoutMode: Full;
+          Anchor: (Width: 128, Height: 38, Right: 6);
+          Group #TabDomainOff {
+            LayoutMode: Full;
+            Anchor: (Full: 0);
+            Visible: true;
+            $C.@SecondaryTextButton #TabDomainButton { @Text = ""; @Anchor = Anchor(Full: 0); }
+          }
+          Group #TabDomainOn {
+            Anchor: (Full: 0);
+            Background: (Color: #8fd0ea);
+            Visible: false;
+            Label #TabDomainLabel { Anchor: (Full: 0); Style: (FontSize: 14, RenderBold: true, RenderUppercase: true, TextColor: #10180e, HorizontalAlignment: Center, VerticalAlignment: Center); Text: ""; }
+          }
+        }
+        Group #TabPeople {
+          LayoutMode: Full;
+          Anchor: (Width: 128, Height: 38, Right: 6);
+          Group #TabPeopleOff {
+            LayoutMode: Full;
+            Anchor: (Full: 0);
+            Visible: false;
+            $C.@SecondaryTextButton #TabPeopleButton { @Text = ""; @Anchor = Anchor(Full: 0); }
+          }
+          Group #TabPeopleOn {
+            Anchor: (Full: 0);
+            Background: (Color: #8fd0ea);
+            Visible: true;
+            Label #TabPeopleLabel { Anchor: (Full: 0); Style: (FontSize: 14, RenderBold: true, RenderUppercase: true, TextColor: #10180e, HorizontalAlignment: Center, VerticalAlignment: Center); Text: ""; }
+          }
+        }
+        Group { FlexWeight: 1; }
+        Label #Clock { Anchor: (Width: 200); Style: (FontSize: 14, RenderBold: true, TextColor: #96a9be, HorizontalAlignment: End, VerticalAlignment: Center); Text: ""; }
+      }
+      Group { Anchor: (Height: 2, Bottom: 12); Background: (Color: #8fd0ea); }
+      Group {
+        LayoutMode: Left;
+        FlexWeight: 1;
+        Group #Left {
+          LayoutMode: Top;
+          Anchor: (Width: 590, Right: 14);
+          Label #Census { Anchor: (Height: 22); Style: (FontSize: 14, RenderBold: true, TextColor: #e8c46a, VerticalAlignment: Center); Text: ""; }
+          Label #ListHeader { Anchor: (Height: 22, Top: 6, Bottom: 6); Style: @Section; Text: ""; }
+          Group #Row0 {
+            LayoutMode: Left;
+            Anchor: (Height: 48, Bottom: 4);
+            Padding: (Horizontal: 12, Vertical: 3);
+            Background: (Color: #173246(0.55));
+            Group {
+              LayoutMode: Top;
+              FlexWeight: 1;
+              Label #RowName0 { Anchor: (Height: 20); Style: (FontSize: 15, RenderBold: true, TextColor: #8fd0ea, VerticalAlignment: Center); Text: ""; }
+              Label #RowLine0 { Anchor: (Height: 22); Style: (FontSize: 13, TextColor: #96a9be, Wrap: true); Text: ""; }
+            }
+            $C.@SmallSecondaryTextButton #RowOrient0 { @Text = ""; @Anchor = Anchor(Width: 120, Height: 30, Left: 8, Top: 6); }
+          }
+          Group #Row1 {
+            LayoutMode: Left;
+            Anchor: (Height: 48, Bottom: 4);
+            Padding: (Horizontal: 12, Vertical: 3);
+            Background: (Color: #173246(0.55));
+            Group {
+              LayoutMode: Top;
+              FlexWeight: 1;
+              Label #RowName1 { Anchor: (Height: 20); Style: (FontSize: 15, RenderBold: true, TextColor: #8fd0ea, VerticalAlignment: Center); Text: ""; }
+              Label #RowLine1 { Anchor: (Height: 22); Style: (FontSize: 13, TextColor: #96a9be, Wrap: true); Text: ""; }
+            }
+            $C.@SmallSecondaryTextButton #RowOrient1 { @Text = ""; @Anchor = Anchor(Width: 120, Height: 30, Left: 8, Top: 6); }
+          }
+          Group #Row2 {
+            LayoutMode: Left;
+            Anchor: (Height: 48, Bottom: 4);
+            Padding: (Horizontal: 12, Vertical: 3);
+            Background: (Color: #173246(0.55));
+            Group {
+              LayoutMode: Top;
+              FlexWeight: 1;
+              Label #RowName2 { Anchor: (Height: 20); Style: (FontSize: 15, RenderBold: true, TextColor: #8fd0ea, VerticalAlignment: Center); Text: ""; }
+              Label #RowLine2 { Anchor: (Height: 22); Style: (FontSize: 13, TextColor: #96a9be, Wrap: true); Text: ""; }
+            }
+            $C.@SmallSecondaryTextButton #RowOrient2 { @Text = ""; @Anchor = Anchor(Width: 120, Height: 30, Left: 8, Top: 6); }
+          }
+          Group #Row3 {
+            LayoutMode: Left;
+            Anchor: (Height: 48, Bottom: 4);
+            Padding: (Horizontal: 12, Vertical: 3);
+            Background: (Color: #173246(0.55));
+            Group {
+              LayoutMode: Top;
+              FlexWeight: 1;
+              Label #RowName3 { Anchor: (Height: 20); Style: (FontSize: 15, RenderBold: true, TextColor: #8fd0ea, VerticalAlignment: Center); Text: ""; }
+              Label #RowLine3 { Anchor: (Height: 22); Style: (FontSize: 13, TextColor: #96a9be, Wrap: true); Text: ""; }
+            }
+            $C.@SmallSecondaryTextButton #RowOrient3 { @Text = ""; @Anchor = Anchor(Width: 120, Height: 30, Left: 8, Top: 6); }
+          }
+          Group #Row4 {
+            LayoutMode: Left;
+            Anchor: (Height: 48, Bottom: 4);
+            Padding: (Horizontal: 12, Vertical: 3);
+            Background: (Color: #173246(0.55));
+            Group {
+              LayoutMode: Top;
+              FlexWeight: 1;
+              Label #RowName4 { Anchor: (Height: 20); Style: (FontSize: 15, RenderBold: true, TextColor: #8fd0ea, VerticalAlignment: Center); Text: ""; }
+              Label #RowLine4 { Anchor: (Height: 22); Style: (FontSize: 13, TextColor: #96a9be, Wrap: true); Text: ""; }
+            }
+            $C.@SmallSecondaryTextButton #RowOrient4 { @Text = ""; @Anchor = Anchor(Width: 120, Height: 30, Left: 8, Top: 6); }
+          }
+          Group #Row5 {
+            LayoutMode: Left;
+            Anchor: (Height: 48, Bottom: 4);
+            Padding: (Horizontal: 12, Vertical: 3);
+            Background: (Color: #173246(0.55));
+            Group {
+              LayoutMode: Top;
+              FlexWeight: 1;
+              Label #RowName5 { Anchor: (Height: 20); Style: (FontSize: 15, RenderBold: true, TextColor: #8fd0ea, VerticalAlignment: Center); Text: ""; }
+              Label #RowLine5 { Anchor: (Height: 22); Style: (FontSize: 13, TextColor: #96a9be, Wrap: true); Text: ""; }
+            }
+            $C.@SmallSecondaryTextButton #RowOrient5 { @Text = ""; @Anchor = Anchor(Width: 120, Height: 30, Left: 8, Top: 6); }
+          }
+          Group #Row6 {
+            LayoutMode: Left;
+            Anchor: (Height: 48, Bottom: 4);
+            Padding: (Horizontal: 12, Vertical: 3);
+            Background: (Color: #173246(0.55));
+            Group {
+              LayoutMode: Top;
+              FlexWeight: 1;
+              Label #RowName6 { Anchor: (Height: 20); Style: (FontSize: 15, RenderBold: true, TextColor: #8fd0ea, VerticalAlignment: Center); Text: ""; }
+              Label #RowLine6 { Anchor: (Height: 22); Style: (FontSize: 13, TextColor: #96a9be, Wrap: true); Text: ""; }
+            }
+            $C.@SmallSecondaryTextButton #RowOrient6 { @Text = ""; @Anchor = Anchor(Width: 120, Height: 30, Left: 8, Top: 6); }
+          }
+          Group #Row7 {
+            LayoutMode: Left;
+            Anchor: (Height: 48, Bottom: 4);
+            Padding: (Horizontal: 12, Vertical: 3);
+            Background: (Color: #173246(0.55));
+            Group {
+              LayoutMode: Top;
+              FlexWeight: 1;
+              Label #RowName7 { Anchor: (Height: 20); Style: (FontSize: 15, RenderBold: true, TextColor: #8fd0ea, VerticalAlignment: Center); Text: ""; }
+              Label #RowLine7 { Anchor: (Height: 22); Style: (FontSize: 13, TextColor: #96a9be, Wrap: true); Text: ""; }
+            }
+            $C.@SmallSecondaryTextButton #RowOrient7 { @Text = ""; @Anchor = Anchor(Width: 120, Height: 30, Left: 8, Top: 6); }
+          }
+          Group #Row8 {
+            LayoutMode: Left;
+            Anchor: (Height: 48, Bottom: 0);
+            Padding: (Horizontal: 12, Vertical: 3);
+            Background: (Color: #173246(0.55));
+            Group {
+              LayoutMode: Top;
+              FlexWeight: 1;
+              Label #RowName8 { Anchor: (Height: 20); Style: (FontSize: 15, RenderBold: true, TextColor: #8fd0ea, VerticalAlignment: Center); Text: ""; }
+              Label #RowLine8 { Anchor: (Height: 22); Style: (FontSize: 13, TextColor: #96a9be, Wrap: true); Text: ""; }
+            }
+            $C.@SmallSecondaryTextButton #RowOrient8 { @Text = ""; @Anchor = Anchor(Width: 120, Height: 30, Left: 8, Top: 6); }
+          }
+          Group { FlexWeight: 1; }
+          Group {
+            LayoutMode: Left;
+            Anchor: (Height: 30, Top: 6);
+            $C.@SmallSecondaryTextButton #Prev { @Text = ""; @Anchor = Anchor(Width: 110, Height: 30); }
+            Label #PageLine { Style: (FontSize: 13, TextColor: #96a9be, HorizontalAlignment: Center, VerticalAlignment: Center); Text: ""; FlexWeight: 1; }
+            $C.@SmallSecondaryTextButton #Next { @Text = ""; @Anchor = Anchor(Width: 110, Height: 30); }
+          }
+        }
+        Group #Right {
+          LayoutMode: Top;
+          FlexWeight: 1;
+          Group {
+            LayoutMode: Top;
+            Anchor: (Bottom: 8);
+            Padding: (Horizontal: 14, Vertical: 8);
+            Background: (Color: #173246(0.75));
+            Label #BirthHeader { Anchor: (Height: 22); Style: @Section; Text: ""; }
+            Label #BirthLine { Anchor: (Height: 52, Top: 2); Style: @SmallWrap; Text: ""; }
+            Group {
+              LayoutMode: Left;
+              Anchor: (Height: 30, Top: 4);
+              $C.@SmallSecondaryTextButton #Name0 { @Text = ""; @Anchor = Anchor(Width: 118, Height: 30, Right: 6); }
+              $C.@SmallSecondaryTextButton #Name1 { @Text = ""; @Anchor = Anchor(Width: 118, Height: 30, Right: 6); }
+              $C.@SmallSecondaryTextButton #Name2 { @Text = ""; @Anchor = Anchor(Width: 118, Height: 30, Right: 6); }
+            }
+          }
+          Group {
+            LayoutMode: Top;
+            Anchor: (Bottom: 8);
+            Padding: (Horizontal: 14, Vertical: 8);
+            Background: (Color: #173246(0.75));
+            Label #RefugeHeader { Anchor: (Height: 22); Style: @Section; Text: ""; }
+            Label #RefugeLine { Anchor: (Height: 36, Top: 2); Style: @SmallWrap; Text: ""; }
+            Group {
+              LayoutMode: Left;
+              Anchor: (Height: 30, Top: 4);
+              $C.@SmallSecondaryTextButton #Refuge { @Text = ""; @Anchor = Anchor(Width: 220, Height: 30, Right: 6); }
+            }
+          }
+          Group {
+            LayoutMode: Top;
+            Anchor: (Bottom: 8);
+            Padding: (Horizontal: 14, Vertical: 8);
+            Background: (Color: #173246(0.75));
+            Label #OrientHeader { Anchor: (Height: 22); Style: @Section; Text: ""; }
+            Label #OrientLine { Anchor: (Height: 44, Top: 2); Style: @SmallWrap; Text: ""; }
+            Group #OrientControls {
+              LayoutMode: Left;
+              Anchor: (Height: 30, Top: 4);
+              $C.@SmallSecondaryTextButton #OrientPrev { @Text = ""; @Anchor = Anchor(Width: 100, Height: 30, Right: 6); }
+              $C.@SmallSecondaryTextButton #OrientNext { @Text = ""; @Anchor = Anchor(Width: 100, Height: 30, Right: 6); }
+              $C.@SmallSecondaryTextButton #OrientApply { @Text = ""; @Anchor = Anchor(Width: 150, Height: 30, Right: 6); }
+            }
+          }
+          Label #ChronicleHeader { Anchor: (Height: 22, Top: 2, Bottom: 2); Style: @Section; Text: ""; }
+          Label #Chron0 { Anchor: (Height: 30); Style: @SmallWrap; Text: ""; }
+          Label #Chron1 { Anchor: (Height: 30); Style: @SmallWrap; Text: ""; }
+          Label #Chron2 { Anchor: (Height: 30); Style: @SmallWrap; Text: ""; }
+          Label #Chron3 { Anchor: (Height: 30); Style: @SmallWrap; Text: ""; }
+          Label #Chron4 { Anchor: (Height: 30); Style: @SmallWrap; Text: ""; }
+          Label #Chron5 { Anchor: (Height: 30); Style: @SmallWrap; Text: ""; }
+          Label #Chron6 { Anchor: (Height: 30); Style: @SmallWrap; Text: ""; }
+        }
+      }
+      Group {
+        LayoutMode: Left;
+        Anchor: (Height: 36, Top: 8);
+        Label #Rule { Style: @SmallWrap; Text: ""; FlexWeight: 1; }
+      }
+    }
+  }
+}
+
+$C.@BackButton {}
