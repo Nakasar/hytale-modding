@@ -55,6 +55,17 @@
       ]
     }
   ],
+  "Category": "Artisanat",
+  "Inputs": [
+    {
+      "ItemId": "Food_Wildmeat_Raw",
+      "Quantity": 3
+    },
+    {
+      "ItemId": "Ingredient_Salt",
+      "Quantity": 1
+    }
+  ],
   "Specialties": [
     {
       "Id": "Viandes_Fumees",

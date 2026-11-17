@@ -55,6 +55,7 @@
   ],
   "Annex": {
     "Type": "Scierie",
+    "Family": "Production",
     "Item": "Nakasar_Peuples_Annex_Scierie",
     "Rule": "TREES",
     "Prefabs": [
@@ -141,6 +142,7 @@
     "Decor": [
       "2 0 -1 0 Furniture_Kweebec_Lantern"
     ],
+    "Tier": 2,
     "Delivery": {
       "ItemId": "Wood_Oak_Trunk",
       "Quantity": 8

@@ -1,0 +1,18 @@
+{
+  "$Comment": "Commande de maître du niveau 2 du bâtiment de métier Feran_E3_Deuxieme_Enclos, générée par tools/generate_workshops.py (ne pas modifier à la main) : voir RequestTemplate.",
+  "People": "Feran",
+  "Workshop": "Feran_E3_Deuxieme_Enclos",
+  "Master": true,
+  "Type": "Gather",
+  "MinLevel": 2,
+  "MaxLevel": 2,
+  "Weight": 1,
+  "TitleKey": "nakasar_peuples.request.Feran_E3_Deuxieme_Enclos_Master_2.title",
+  "TaskKey": "nakasar_peuples.request.Feran_E3_Deuxieme_Enclos_Master_2.task",
+  "ItemId": "Plant_Crop_Rice_Item",
+  "Quantity": 32,
+  "Knowledge": 0,
+  "Essor": 15,
+  "Favors": 3,
+  "Reputation": 15
+}

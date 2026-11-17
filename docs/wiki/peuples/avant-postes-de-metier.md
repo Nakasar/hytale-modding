@@ -1,17 +1,19 @@
-# Avant-postes de métier
+# Bâtiments de production
 
-<Infobox pending title="Avant-poste de métier" kind="Lieu">
-<Info label="Village">palier 3 (bourg) au moins</Info>
+<Infobox pending title="Bâtiment de production" kind="Lieu">
+<Info label="Village">palier 2 (village) au moins</Info>
 <Info label="Rang">Ami pour recevoir et poser la fondation</Info>
 <Info label="Distance">du bord du village + 20 blocs à 256 blocs du cœur</Info>
 <Info label="Chantier">24 heures de jeu</Info>
 </Infobox>
 
-Un bourg peut fonder de petits **avant-postes** isolés dans la nature : un seul bâtiment au rôle précis, quelques villageois pour y travailler, et son propre panneau. Chaque avant-poste reste rattaché à son village.
+Dès le palier 2, un village peut fonder de petits **avant-postes de production** isolés dans la nature : un seul bâtiment qui récolte une ressource, quelques villageois pour y travailler, et son propre panneau. Chaque avant-poste reste rattaché à son village.
+
+Les tours, postes routiers, fortins et forteresses sont une autre famille, les [ouvrages](infrastructures.md) : ils se posent aussi dehors, mais en plusieurs exemplaires, et un rival peut les prendre.
 
 Ce ne sont pas les [avant-postes du champion](avant-poste.md) : ceux-là naissent d'une pierre, ceux-ci d'une **fondation** remise au panneau du village.
 
-## Les six avant-postes
+## Les avant-postes de production
 
 | Avant-poste | Où le poser | Ce qu'il apporte |
 | --- | --- | --- |
@@ -21,13 +23,30 @@ Ce ne sont pas les [avant-postes du champion](avant-poste.md) : ceux-là naissen
 | **Scierie** | au milieu des arbres | rondins livrés chaque matin ; charpente ou sève et graines |
 | **Pêcherie** | au bord de l'eau, au sec | poisson livré chaque matin ; fumoir ou viviers |
 | **Pavillon de chasse** | partout | viande livrée chaque matin ; pelleterie ou vénerie |
-| **Tour de guet** | partout | le village voit venir les raids 30 s plus tôt par niveau ; guetteurs ou sentinelles |
 
-Les Kweebecs, amis de la nature, ne minent pas et ne travaillent pas le métal : ils n'ont pas de mine mais un **bosquet** de plantes rares. Un avant-poste de chaque type par village. Les bâtiments viennent du jeu et prennent le style du peuple : ferme de séquoia kweebec, terrier trork, hutte feran, maison des Renoncés, temple slothian…
+Les Kweebecs, amis de la nature, ne minent pas et ne travaillent pas le métal : ils n'ont pas de mine mais un **bosquet** de plantes rares. Un avant-poste de chaque type par village.
+
+## Le gisement
+
+L'endroit où vous posez la fondation fixe pour toujours le **rendement** de l'avant-poste. Le message de pose le dit :
+
+| Gisement | Production |
+| --- | --- |
+| **Riche** | +50 % |
+| **Ordinaire** | normale |
+| **Pauvre** | −25 % |
+
+- **Ferme** : riche sur une terre fertile presque partout (80 %) avec de l'eau à moins de 8 blocs ; ordinaire avec de l'eau à moins de 16 blocs.
+- **Mine** : riche si un filon de minerai est visible tout près.
+- **Scierie** et **Bosquet** : riches avec au moins 30 troncs autour, ordinaires dès 12.
+- **Pêcherie** : selon l'étendue d'eau, riche à partir de 120 blocs d'eau, ordinaire dès 40.
+- **Pavillon de chasse** : riche loin de tout village (192 blocs et plus, là où vivent les troupeaux), pauvre à moins de 96 blocs.
+
+L'onglet **Production** du panneau rappelle le gisement de chaque avant-poste. Les bâtiments viennent du jeu et prennent le style du peuple : ferme de séquoia kweebec, terrier trork, hutte feran, maison des Renoncés, temple slothian…
 
 ## Fonder un avant-poste
 
-1. Au panneau du village, le bouton **Avant-postes** montre les six types et leur coût.
+1. Au panneau du village, l'onglet **Production** montre les types du peuple et leur coût.
 2. Réunir au **dépôt** du village les matériaux de la fondation, puis **Recevoir la fondation** (rang **Ami**).
 3. Aller là où vous voulez bâtir et **poser la fondation**. Le bâtiment s'élève devant vous, l'entrée de votre côté.
 4. Si la place ne convient pas, la fondation n'est pas posée et un message dit pourquoi : trop près ou trop loin du village, trop près d'un autre village ou d'un autre avant-poste, dans l'eau, terrain trop accidenté, construction dans le chemin, ou sol qui ne va pas au métier.
@@ -64,7 +83,7 @@ Debout, un avant-poste est un [bâtiment de métier](batiments-de-metier.md) com
 
 ## Détruire un avant-poste
 
-À l'onglet **Avant-postes** du panneau du village, un avant-poste debout ou en travaux a un bouton **Détruire
+À l'onglet **Production** du panneau du village, un avant-poste debout ou en travaux a un bouton **Détruire
 l'avant-poste** (rang **Ami**). Un second clic, sur **Confirmer la destruction**, le détruit :
 
 - ses villageois partent, le bâtiment, son panneau et son décor sont rasés, son niveau est perdu ;

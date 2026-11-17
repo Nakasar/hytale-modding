@@ -97,6 +97,8 @@ public final class Allegiance {
     public static final String COUNCIL = "Conseil";
     public static final String DIPLOMACY = "Diplomatie";
     public static final String GARRISON = "Garnison";
+    /** Spécialité de l'Ambassade qui remplace la Garnison (partie à la Caserne) : relations qui remontent deux fois plus vite. */
+    public static final String HERALDS = "Herauts";
     /** Lots du tribut par genre de lieu-dit (un quart de la production ; un tiers avec la Maison du conseil III). */
     private static final Map<String, Object[]> TRIBUTE_LOTS = Map.of(
             "Mine", new Object[] {"Ore_Iron", 4},
@@ -293,6 +295,9 @@ public final class Allegiance {
 
     /** Vrai si la Maison du conseil du village a cette spécialité ({@value #DIPLOMACY} ou {@value #GARRISON}). */
     public static boolean councilSpecialty(Village v, String specialty) {
+        if (GARRISON.equals(specialty) && dev.nakasar.hytale.peuples.workshop.Projects.garrisonBonus(v) > 0) {
+            return true; // la Garnison est passée à la Caserne (Kevin, 2026-11-16)
+        }
         WorkshopState s = v == null ? null : council(v);
         return s != null && specialty.equals(s.specialty());
     }
@@ -302,7 +307,7 @@ public final class Allegiance {
         if (v == null || v.isHamlet() || v.tier() < 2) {
             return 0;
         }
-        return (v.tier() >= 3 ? 3 : 1) + councilLevel(v);
+        return (v.tier() >= 3 ? 3 : 1) + councilLevel(v) + dev.nakasar.hytale.peuples.annex.Infrastructures.ownFortress(v);
     }
 
     public static boolean canHold(World world, Village v) {
@@ -504,11 +509,11 @@ public final class Allegiance {
         WorldLife.registry(world).put(WorldLifeRegistry.Part.ALLEGIANCE, COOL + h.id() + "|" + v.id(), Long.toString(until));
     }
 
-    static boolean expeditionCooling(World world, Village v, long day) {
+    public static boolean expeditionCooling(World world, Village v, long day) {
         return running(world, EXPCOOL + v.id(), day);
     }
 
-    static void expeditionCool(World world, Village v, long until) {
+    public static void expeditionCool(World world, Village v, long until) {
         WorldLife.registry(world).put(WorldLifeRegistry.Part.ALLEGIANCE, EXPCOOL + v.id(), Long.toString(until));
     }
 
@@ -627,6 +632,7 @@ public final class Allegiance {
         Garrisons.morning(world, store, day);
         Embassies.morning(world, store, day, random);
         Sieges.morning(world, store, day, random);
+        dev.nakasar.hytale.peuples.annex.Ouvrages.morning(world, store, day, random);
     }
 
     /** Influence de départ : le village d'origine à +{@value #ORIGIN_START} (une fois). */

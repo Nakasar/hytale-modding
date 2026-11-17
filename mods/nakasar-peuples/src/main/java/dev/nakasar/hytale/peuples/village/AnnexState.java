@@ -21,6 +21,8 @@ public final class AnnexState {
     public static final int WORKS = 1;
     /** Bâtiment debout : l'avant-poste est ouvert. */
     public static final int BUILT = 2;
+    /** Ouvrage rasé par un adversaire : la place reste, on le relève pour la moitié de la fondation et 12 h. */
+    public static final int RUIN = 3;
 
     public static final BuilderCodec<AnnexState> CODEC = BuilderCodec.builder(AnnexState.class, AnnexState::new)
             .append(new KeyedCodec<>("Id", Codec.STRING), (a, v) -> a.id = v == null ? "" : v, a -> a.id)
@@ -79,6 +81,33 @@ public final class AnnexState {
             .append(new KeyedCodec<>("ProduceDay", Codec.LONG), (a, l) -> a.produceDay = l == null ? Long.MIN_VALUE : l, a -> a.produceDay)
             .documentation("Jour de jeu de la dernière production déposée au coffre de l'avant-poste.")
             .add()
+            .append(new KeyedCodec<>("Yield", Codec.DOUBLE), (a, v) -> a.yield = v == null || v <= 0 ? 1.0 : v, a -> a.yield)
+            .documentation("Rendement du gisement mesuré à la pose : 0,75 maigre, 1 correct, 1,5 riche (production du matin).")
+            .add()
+            .append(new KeyedCodec<>("Occupant", Codec.STRING), (a, v) -> a.occupant = v == null || v.isBlank() ? null : v, a -> a.occupant)
+            .documentation("Ouvrage pris par un village rival : son id (l'effet de l'ouvrage lui profite), ou vide.")
+            .add()
+            .append(new KeyedCodec<>("OccupiedDay", Codec.LONG), (a, l) -> a.occupiedDay = l == null ? Long.MIN_VALUE : l, a -> a.occupiedDay)
+            .documentation("Jour de jeu de la prise de l'ouvrage.")
+            .add()
+            .append(new KeyedCodec<>("Lost", Codec.BOOLEAN), (a, v) -> a.lost = v != null && v, a -> a.lost)
+            .documentation("Occupé depuis 14 jours sans reprise : définitivement au rival, ne compte plus pour le propriétaire.")
+            .add()
+            .append(new KeyedCodec<>("Garrison", Codec.INTEGER), (a, v) -> a.garrison = v == null ? -1 : v, a -> a.garrison)
+            .documentation("Gardes de l'occupant dans l'ouvrage (-1 : les villageois du propriétaire le gardent).")
+            .add()
+            .append(new KeyedCodec<>("Cleared", Codec.BOOLEAN), (a, v) -> a.cleared = v != null && v, a -> a.cleared)
+            .documentation("Ouvrage rasé : vrai une fois ses blocs retirés (zone chargée).")
+            .add()
+            .append(new KeyedCodec<>("SiegeBy", Codec.STRING), (a, v) -> a.siegeBy = v == null || v.isBlank() ? null : v, a -> a.siegeBy)
+            .documentation("Expédition en marche contre l'ouvrage : village qui l'envoie, ou vide.")
+            .add()
+            .append(new KeyedCodec<>("SiegeArrive", Codec.LONG), (a, l) -> a.siegeArrive = l == null ? 0L : l, a -> a.siegeArrive)
+            .documentation("Arrivée de l'expédition devant l'ouvrage (secondes de jeu).")
+            .add()
+            .append(new KeyedCodec<>("SiegeSoldiers", Codec.INTEGER), (a, v) -> a.siegeSoldiers = v == null ? 0 : v, a -> a.siegeSoldiers)
+            .documentation("Soldats de l'expédition encore en vie.")
+            .add()
             .build();
 
     String id = "";
@@ -104,6 +133,116 @@ public final class AnnexState {
     int chestZ;
     Map<String, Integer> stock = new LinkedHashMap<>();
     long produceDay = Long.MIN_VALUE;
+    double yield = 1.0;
+    String occupant;
+    long occupiedDay = Long.MIN_VALUE;
+    boolean lost;
+    int garrison = -1;
+    String siegeBy;
+    long siegeArrive;
+    int siegeSoldiers;
+    boolean cleared;
+
+    public boolean cleared() {
+        return cleared;
+    }
+
+    public void setCleared(boolean value) {
+        this.cleared = value;
+    }
+
+    /** Rendement du gisement (0,75 / 1 / 1,5). */
+    public double yieldFactor() {
+        return yield;
+    }
+
+    public void setYield(double value) {
+        this.yield = value <= 0 ? 1.0 : value;
+    }
+
+    public boolean ruined() {
+        return stage == RUIN;
+    }
+
+    /** Ouvrage rasé : place gardée pour le relever (thread du monde). */
+    public void markRuin() {
+        this.stage = RUIN;
+        this.cleared = false;
+        this.occupant = null;
+        this.occupiedDay = Long.MIN_VALUE;
+        this.garrison = -1;
+        this.lost = false;
+        clearSiege();
+    }
+
+    /** Village rival qui tient l'ouvrage, ou null. */
+    public String occupant() {
+        return occupant;
+    }
+
+    public boolean occupied() {
+        return occupant != null;
+    }
+
+    public long occupiedDay() {
+        return occupiedDay;
+    }
+
+    public boolean lost() {
+        return lost;
+    }
+
+    public void setLost(boolean value) {
+        this.lost = value;
+    }
+
+    public int garrison() {
+        return garrison;
+    }
+
+    public void setGarrison(int value) {
+        this.garrison = value;
+    }
+
+    /** Pris par `village` le jour `day` avec `guards` soldats restants ; null libère l'ouvrage (repris). */
+    public void occupy(String village, long day, int guards) {
+        this.occupant = village;
+        this.occupiedDay = village == null ? Long.MIN_VALUE : day;
+        this.garrison = village == null ? -1 : guards;
+        this.lost = false;
+    }
+
+    public String siegeBy() {
+        return siegeBy;
+    }
+
+    public long siegeArrive() {
+        return siegeArrive;
+    }
+
+    public int siegeSoldiers() {
+        return siegeSoldiers;
+    }
+
+    public boolean besieged() {
+        return siegeBy != null;
+    }
+
+    public void startSiege(String village, long arrive, int soldiers) {
+        this.siegeBy = village;
+        this.siegeArrive = arrive;
+        this.siegeSoldiers = soldiers;
+    }
+
+    public void setSiegeSoldiers(int value) {
+        this.siegeSoldiers = Math.max(0, value);
+    }
+
+    public void clearSiege() {
+        this.siegeBy = null;
+        this.siegeArrive = 0L;
+        this.siegeSoldiers = 0;
+    }
 
     AnnexState() {
     }
@@ -444,6 +583,15 @@ public final class AnnexState {
         c.chestZ = chestZ;
         c.stock = new LinkedHashMap<>(stock);
         c.produceDay = produceDay;
+        c.yield = yield;
+        c.occupant = occupant;
+        c.occupiedDay = occupiedDay;
+        c.lost = lost;
+        c.garrison = garrison;
+        c.siegeBy = siegeBy;
+        c.siegeArrive = siegeArrive;
+        c.siegeSoldiers = siegeSoldiers;
+        c.cleared = cleared;
         return c;
     }
 }

@@ -201,6 +201,9 @@ public final class AnnexPage extends InteractiveCustomUIPage<AnnexPage.Event> {
         } else {
             state = Message.translation(KEYS + "state.built").param("level", levelName).param("x", a.x()).param("z", a.z());
         }
+        // Qualité du gisement (rendement fixé à la pose).
+        state = Message.translation(KEYS + "state.withYield").param("state", state)
+                .param("yield", Message.translation(KEYS + "state.yield." + Annexes.yieldKey(a.yieldFactor())));
         int[] c = a.chest();
         if (c == null) {
             return state;

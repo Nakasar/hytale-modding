@@ -1,0 +1,17 @@
+{
+  "$Comment": "Commande du bâtiment de métier Trork_AP_Forteresse, générée par tools/generate_workshops.py (ne pas modifier à la main) : voir RequestTemplate.",
+  "People": "Trork",
+  "Workshop": "Trork_AP_Forteresse",
+  "Type": "Craft",
+  "MinLevel": 1,
+  "MaxLevel": 3,
+  "Weight": 1,
+  "TitleKey": "nakasar_peuples.request.Trork_AP_Forteresse_Torches.title",
+  "TaskKey": "nakasar_peuples.request.Trork_AP_Forteresse_Torches.task",
+  "ItemId": "Furniture_Crude_Torch",
+  "Quantity": 8,
+  "Knowledge": 40,
+  "Essor": 5,
+  "Favors": 1,
+  "Reputation": 6
+}

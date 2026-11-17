@@ -334,8 +334,8 @@ public final class Villagers {
     private static Map<String, Want> annexWanted(World world, Village village, AnnexState annex, boolean night) {
         Map<String, Want> out = new LinkedHashMap<>();
         dev.nakasar.hytale.peuples.workshop.Workshop w = dev.nakasar.hytale.peuples.workshop.Workshop.get(annex.id());
-        if (w == null || !w.isAnnex()) {
-            return out;
+        if (w == null || !w.isAnnex() || annex.occupied() || annex.ruined()) {
+            return out; // ouvrage pris par un rival (sa garnison le tient) ou rasé : personne du village
         }
         int level = village.workshop(w.getId()).level();
         VillageLayout.Job[] workers = w.annex().workers();

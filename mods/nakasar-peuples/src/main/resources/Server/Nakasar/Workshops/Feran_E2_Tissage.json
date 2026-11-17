@@ -55,6 +55,13 @@
       ]
     }
   ],
+  "Category": "Artisanat",
+  "Inputs": [
+    {
+      "ItemId": "Plant_Crop_Cotton_Item",
+      "Quantity": 4
+    }
+  ],
   "Specialties": [
     {
       "Id": "Lin_Coton",

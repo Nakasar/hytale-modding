@@ -56,6 +56,17 @@
       ]
     }
   ],
+  "Category": "Artisanat",
+  "Inputs": [
+    {
+      "ItemId": "Plant_Flower_Common_Blue",
+      "Quantity": 3
+    },
+    {
+      "ItemId": "Ingredient_Life_Essence",
+      "Quantity": 1
+    }
+  ],
   "Specialties": [
     {
       "Id": "Potions_Vie",

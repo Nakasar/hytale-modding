@@ -1,0 +1,169 @@
+{
+  "$Comment": "Place 2 de l'ouvrage Renonce_AP_Poste (copie générée par tools/generate_workshops.py).",
+  "People": "Renonce",
+  "Icon": "Furniture_Desert_Lantern_Tall",
+  "NameKey": "nakasar_peuples.workshop.Renonce_AP_Poste.name",
+  "Board": [
+    0,
+    0,
+    0
+  ],
+  "Upgrades": [
+    {
+      "Level": 2,
+      "Hours": 12,
+      "Decor": [
+        "1 0 0 0 Furniture_Lumberjack_Lantern"
+      ],
+      "Materials": [
+        {
+          "ItemId": "Wood_Fir_Trunk",
+          "Quantity": 16
+        },
+        {
+          "ItemId": "Rock_Stone_Cobble",
+          "Quantity": 12
+        },
+        {
+          "ItemId": "Ingredient_Hide_Heavy",
+          "Quantity": 2
+        }
+      ]
+    },
+    {
+      "Level": 3,
+      "Hours": 12,
+      "Decor": [
+        "-1 0 0 0 Furniture_Lumberjack_Lantern"
+      ],
+      "Materials": [
+        {
+          "ItemId": "Wood_Fir_Trunk",
+          "Quantity": 24
+        },
+        {
+          "ItemId": "Rock_Stone_Cobble",
+          "Quantity": 18
+        },
+        {
+          "ItemId": "Ingredient_Hide_Heavy",
+          "Quantity": 3
+        }
+      ]
+    }
+  ],
+  "Annex": {
+    "Type": "Poste",
+    "Family": "Infrastructure",
+    "Item": "Nakasar_Peuples_Annex_Poste",
+    "Rule": "ROAD",
+    "Prefabs": [
+      "Npc/Outlander/Gates/Tier1/Outlander_Gates_Tier1_001 0 -7 0",
+      "Npc/Outlander/Braziers/Outlander_Braziers_Npc_Outlander_Brazier_001 8 -7 0"
+    ],
+    "Rect": [
+      -6,
+      10,
+      -11,
+      -2
+    ],
+    "Height": 10,
+    "Workers": [
+      {
+        "Id": "AP_Poste_1",
+        "Tier": 1,
+        "Role": "Nakasar_Peuples_Renonce_Guard",
+        "Dialogue": "Renonce_Guard",
+        "Building": "",
+        "WorkX": -2,
+        "WorkZ": -1,
+        "Home": "",
+        "HomeX": -2,
+        "HomeZ": -2,
+        "Builder": false
+      },
+      {
+        "Id": "AP_Poste_2",
+        "Tier": 1,
+        "Role": "Nakasar_Peuples_Renonce_Lookout",
+        "Dialogue": "Renonce_Watcher",
+        "Building": "",
+        "WorkX": 2,
+        "WorkZ": -1,
+        "Home": "",
+        "HomeX": 2,
+        "HomeZ": -2,
+        "Builder": false
+      },
+      {
+        "Id": "AP_Poste_3",
+        "Tier": 3,
+        "Role": "Nakasar_Peuples_Renonce_Hunter",
+        "Dialogue": "Renonce_Hunter",
+        "Building": "",
+        "WorkX": -4,
+        "WorkZ": -1,
+        "Home": "",
+        "HomeX": -4,
+        "HomeZ": -2,
+        "Builder": false
+      }
+    ],
+    "Materials": [
+      {
+        "ItemId": "Wood_Fir_Trunk",
+        "Quantity": 32
+      },
+      {
+        "ItemId": "Rock_Stone_Cobble",
+        "Quantity": 24
+      },
+      {
+        "ItemId": "Ingredient_Hide_Heavy",
+        "Quantity": 4
+      }
+    ],
+    "Hours": 24,
+    "Decor": [
+      "2 0 -1 0 Furniture_Lumberjack_Lantern"
+    ],
+    "Tier": 2,
+    "Limit": 4,
+    "MinDistance": 0,
+    "MaxDistance": 600,
+    "Spacing": 128,
+    "Slot": 2,
+    "Beacon": 8
+  },
+  "Specialties": [
+    {
+      "Id": "Relais",
+      "NameKey": "nakasar_peuples.workshop.specialty.Renonce_AP_Poste.Relais",
+      "LineKey": "nakasar_peuples.workshop.specialtyLine.Renonce_AP_Poste.Relais",
+      "Icon": "Tool_Map",
+      "Shops": [
+        "Nakasar_Peuples_W_Renonce_AP_Poste_Relais_2",
+        "Nakasar_Peuples_W_Renonce_AP_Poste_Relais_3"
+      ],
+      "ShareItem": "Tool_Map",
+      "ShareQuantity": 1
+    },
+    {
+      "Id": "Peage",
+      "NameKey": "nakasar_peuples.workshop.specialty.Renonce_AP_Poste.Peage",
+      "LineKey": "nakasar_peuples.workshop.specialtyLine.Renonce_AP_Poste.Peage",
+      "Icon": "Weapon_Spear_Crude",
+      "Raid": {
+        "Guards": 1
+      },
+      "Shops": [
+        "Nakasar_Peuples_W_Renonce_AP_Poste_Peage_2",
+        "Nakasar_Peuples_W_Renonce_AP_Poste_Peage_3"
+      ],
+      "ShareItem": "Weapon_Spear_Crude",
+      "ShareQuantity": 1
+    }
+  ],
+  "Shop": "Nakasar_Peuples_W_Renonce_AP_Poste_Base_1",
+  "Orders": "Renonce_AP_Poste"
+}

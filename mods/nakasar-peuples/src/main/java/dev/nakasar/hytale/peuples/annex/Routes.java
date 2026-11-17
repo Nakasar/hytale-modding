@@ -278,6 +278,17 @@ public final class Routes {
         return seen;
     }
 
+    /** Distance (blocs) de (x, z) à la balise de route la plus proche, ou {@link Double#MAX_VALUE} sans balise. */
+    public static double nearestBeacon(World world, double x, double z) {
+        double best = Double.MAX_VALUE;
+        for (int[] b : Villages.registry(world).beacons()) {
+            double dx = b[0] + 0.5 - x;
+            double dz = b[2] + 0.5 - z;
+            best = Math.min(best, dx * dx + dz * dz);
+        }
+        return best == Double.MAX_VALUE ? best : Math.sqrt(best);
+    }
+
     /** Balises reliées à (x, z) (à moins de {@value #LINK} blocs), elle non comprise. */
     public static int links(World world, int x, int z) {
         int n = 0;

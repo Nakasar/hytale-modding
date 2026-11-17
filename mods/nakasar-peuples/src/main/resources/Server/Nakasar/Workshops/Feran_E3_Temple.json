@@ -1,0 +1,86 @@
+{
+  "$Comment": "Bâtiment de métier généré par tools/generate_workshops.py (ne pas modifier à la main) : voir dev.nakasar.hytale.peuples.workshop.Workshop.",
+  "People": "Feran",
+  "Layout": "Feran_Oasis",
+  "Building": "E3_Temple",
+  "Job": "Pretre_E3",
+  "Icon": "Furniture_Feran_Candle",
+  "NameKey": "nakasar_peuples.workshop.Feran_E3_Temple.name",
+  "Board": [
+    -47,
+    3,
+    1
+  ],
+  "Upgrades": [
+    {
+      "Level": 2,
+      "Hours": 12,
+      "Materials": [
+        {
+          "ItemId": "Rock_Sandstone",
+          "Quantity": 24
+        },
+        {
+          "ItemId": "Wood_Palm_Trunk",
+          "Quantity": 16
+        },
+        {
+          "ItemId": "Ingredient_Fabric_Scrap_Linen",
+          "Quantity": 12
+        }
+      ],
+      "Decor": [
+        "1 0 0 0 Furniture_Feran_Torch"
+      ]
+    },
+    {
+      "Level": 3,
+      "Hours": 12,
+      "Materials": [
+        {
+          "ItemId": "Rock_Sandstone",
+          "Quantity": 32
+        },
+        {
+          "ItemId": "Ingredient_Feathers_Light",
+          "Quantity": 8
+        },
+        {
+          "ItemId": "Plant_Cactus_1",
+          "Quantity": 8
+        }
+      ],
+      "Decor": [
+        "-1 0 0 0 Furniture_Feran_Torch_Tall"
+      ]
+    }
+  ],
+  "Category": "Culte",
+  "Specialties": [
+    {
+      "Id": "Protection",
+      "NameKey": "nakasar_peuples.workshop.specialty.Feran_E3_Temple.Protection",
+      "LineKey": "nakasar_peuples.workshop.specialtyLine.Feran_E3_Temple.Protection",
+      "Icon": "Potion_Health_Small",
+      "Shops": [
+        "Nakasar_Peuples_W_Feran_E3_Temple_Protection_2",
+        "Nakasar_Peuples_W_Feran_E3_Temple_Protection_3"
+      ],
+      "ShareItem": "Potion_Health_Small",
+      "ShareQuantity": 2
+    },
+    {
+      "Id": "Benediction",
+      "NameKey": "nakasar_peuples.workshop.specialty.Feran_E3_Temple.Benediction",
+      "LineKey": "nakasar_peuples.workshop.specialtyLine.Feran_E3_Temple.Benediction",
+      "Icon": "Food_Kebab_Fruit",
+      "Shops": [
+        "Nakasar_Peuples_W_Feran_E3_Temple_Benediction_2",
+        "Nakasar_Peuples_W_Feran_E3_Temple_Benediction_3"
+      ],
+      "ShareItem": "Food_Kebab_Fruit",
+      "ShareQuantity": 2
+    }
+  ],
+  "Shop": "Nakasar_Peuples_W_Feran_E3_Temple_Base_1"
+}

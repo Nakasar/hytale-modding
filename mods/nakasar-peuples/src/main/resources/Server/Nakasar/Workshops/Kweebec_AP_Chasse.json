@@ -55,6 +55,7 @@
   ],
   "Annex": {
     "Type": "Chasse",
+    "Family": "Production",
     "Item": "Nakasar_Peuples_Annex_Chasse",
     "Rule": "NONE",
     "Prefabs": [
@@ -141,6 +142,7 @@
     "Decor": [
       "2 0 -1 0 Furniture_Kweebec_Lantern"
     ],
+    "Tier": 2,
     "Delivery": {
       "ItemId": "Food_Wildmeat_Raw",
       "Quantity": 3

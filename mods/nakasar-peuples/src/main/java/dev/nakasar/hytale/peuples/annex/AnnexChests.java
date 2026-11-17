@@ -149,6 +149,10 @@ public final class AnnexChests {
         }
     }
 
+    static int lotSize(VillageLayout.Material lot, int level, double yield) {
+        return Math.max(1, (int) Math.round(lot.quantity() * level * yield));
+    }
+
     /** Production du matin, une fois par jour de jeu : au stock, rangée au coffre au pas même s'il est chargé. */
     private static void produce(World world, Store<EntityStore> store, Village village, Workshop w, AnnexState a) {
         long day = GameClock.day(store);
@@ -161,9 +165,11 @@ public final class AnnexChests {
         }
         a.setProduceDay(day);
         int level = Math.max(1, village.workshop(w.getId()).level());
+        // Gisement (Kevin, 2026-11-16) : maigre -25 %, riche +50 %, au moins 1 par lot.
+        double yield = a.yieldFactor();
         int amount = 0;
         for (VillageLayout.Material lot : w.annex().lots()) {
-            amount += lot.quantity() * level;
+            amount += lotSize(lot, level, yield);
         }
         int room = amount * STOCK_DAYS - a.stockTotal();
         if (room <= 0) {
@@ -172,7 +178,7 @@ public final class AnnexChests {
             return;
         }
         for (VillageLayout.Material lot : w.annex().lots()) {
-            int n = Math.min(room, lot.quantity() * level);
+            int n = Math.min(room, lotSize(lot, level, yield));
             a.addStock(lot.itemId(), n);
             room -= n;
         }

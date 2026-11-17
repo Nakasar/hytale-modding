@@ -1,5 +1,5 @@
 {
-  "$Comment": "Fondation d'avant-poste « Scierie », remise au panneau d'un village de palier 3 et posée là où l'on veut bâtir (Java annex/AnnexPlaceSystem). Générée par tools/generate_workshops.py.",
+  "$Comment": "Fondation d'avant-poste « Scierie », remise au panneau d'un village et posée là où l'on veut bâtir (Java annex/AnnexPlaceSystem). Générée par tools/generate_workshops.py.",
   "Parent": "Furniture_Construction_Sign",
   "TranslationProperties": {
     "Name": "nakasar_peuples.items.Nakasar_Peuples_Annex_Scierie.name",

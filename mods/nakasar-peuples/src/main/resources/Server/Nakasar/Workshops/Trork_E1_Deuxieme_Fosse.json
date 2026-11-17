@@ -56,6 +56,7 @@
     }
   ],
   "Twin": "Trork_Fosse_Aux_Betes",
+  "Category": "Elevage",
   "Livestock": [
     "Tamed_Boar",
     "Tamed_Boar_Piglet"

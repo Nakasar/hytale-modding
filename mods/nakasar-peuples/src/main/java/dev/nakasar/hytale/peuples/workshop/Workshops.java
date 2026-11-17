@@ -120,7 +120,7 @@ public final class Workshops {
         }
         if (w.isAnnex()) {
             dev.nakasar.hytale.peuples.village.AnnexState a = village.annex(w.getId());
-            return a != null && a.built();
+            return a != null && a.built() && !a.occupied(); // un ouvrage pris par un rival est fermé au propriétaire
         }
         if (!village.isStanding(w.building())) {
             return false;
@@ -179,6 +179,17 @@ public final class Workshops {
         long now = GameClock.seconds(store);
         for (Workshop w : opened(village)) {
             WorkshopState state = village.workshop(w.getId());
+            if (state.specialty() != null && w.specialty(state.specialty()) == null) {
+                // Spécialité retirée (Garnison de l'Ambassade, partie à la Caserne) : nouveau choix gratuit.
+                PeuplesPlugin.get().getLogger().atInfo().log("Peuples : spécialité %s retirée de %s (%s), choix gratuit",
+                        state.specialty(), w.getId(), village.name());
+                state.setSpecialty(null);
+                state.setReconverted(Long.MIN_VALUE);
+            }
+            if (w.inputs().length > 0 && state.inputDay() != GameClock.day(store)) {
+                // Prélèvement du jour pas encore fait (dépôt pas chargé au changement de jour) : on réessaie ici.
+                Inputs.consume(world, village, w, GameClock.day(store));
+            }
             if (state.upgrading() && now >= state.upgradeEnd()) {
                 finishUpgrade(world, store, village, w, state);
             }
@@ -226,7 +237,7 @@ public final class Workshops {
 
     /** Une commande au poids, d'abord parmi celles pas encore au panneau. */
     private static RequestTemplate pick(WorkshopState state, Workshop w, Random random, List<String> used) {
-        List<RequestTemplate> all = RequestTemplate.forWorkshop(w.getId(), state.level(), state.specialty());
+        List<RequestTemplate> all = RequestTemplate.forWorkshop(w.orders(), state.level(), state.specialty());
         List<RequestTemplate> pool = new ArrayList<>();
         for (RequestTemplate t : all) {
             if (!used.contains(t.getId())) {
@@ -615,7 +626,7 @@ public final class Workshops {
      * Rend l'essor réellement gagné (0 si un autre joueur l'a déjà remplie).
      */
     public static int fulfilled(World world, Store<EntityStore> store, PlayerRef player, Village village, RequestTemplate t, String requestId) {
-        Workshop w = Workshop.get(t.workshop());
+        Workshop w = holder(village, t.workshop(), requestId);
         if (w == null) {
             return 0;
         }
@@ -639,7 +650,7 @@ public final class Workshops {
         int max = threshold(ws.level());
         if (max > 0 && t.knowledge() > 0) {
             int before = ws.knowledge();
-            ws.setKnowledge(Math.min(max, before + t.knowledge()));
+            ws.setKnowledge(Math.min(max, before + Projects.knowledge(village, t.knowledge())));
             int added = ws.knowledge() - before;
             if (added > 0) {
                 Message name = Message.translation(w.nameKey());
@@ -659,6 +670,24 @@ public final class Workshops {
         return gained;
     }
 
+    /**
+     * Le bâtiment du village qui porte la commande `requestId` du modèle de commandes `orders` : celui-ci, ou une autre
+     * place du même ouvrage (places 2 et suivantes, champ Orders). Par défaut le bâtiment `orders`.
+     */
+    static Workshop holder(Village village, String orders, String requestId) {
+        Workshop base = Workshop.get(orders);
+        if (base == null || !base.isAnnex() || !base.annex().infrastructure()) {
+            return base;
+        }
+        for (Workshop o : Workshop.slots(village.people(), base.annex().type())) {
+            WorkshopState os = village.workshopIfPresent(o.getId());
+            if (os != null && (os.slotOf(requestId) >= 0 || requestId.equals(masterId(village, o, os)))) {
+                return o;
+            }
+        }
+        return base;
+    }
+
     // ---- Montée de niveau (étape 2) : commande de maître puis chantier d'amélioration ----
 
     /** Id (par village, bâtiment, niveau et reconversion) de la commande de maître du niveau en cours. */
@@ -668,7 +697,7 @@ public final class Workshops {
 
     /** Commande de maître du niveau en cours, ou null. */
     public static RequestTemplate master(Workshop w, WorkshopState state) {
-        return RequestTemplate.master(w.getId(), state.level(), state.specialty());
+        return RequestTemplate.master(w.orders(), state.level(), state.specialty());
     }
 
     /** Ce qui manque au bâtiment pour son prochain niveau. */
@@ -971,6 +1000,11 @@ public final class Workshops {
             player.sendMessage(Message.translation(KEYS + "shopAbsent").param("hour", GameClock.MORNING));
             return false;
         }
+        if (!Inputs.running(village, w)) {
+            // Atelier à l'arrêt : ses ressources du matin manquaient au dépôt.
+            player.sendMessage(Message.translation(KEYS + "shopStopped").param("list", Inputs.list(Inputs.needs(village, w))));
+            return false;
+        }
         String id = shop(w, ws, shopLevel(store, ref, village, ws));
         if (id == null) {
             player.sendMessage(Message.translation(KEYS + "shopRank").param("rank", Message.translation(Rank.TOLERE.nameKey())));
@@ -990,6 +1024,9 @@ public final class Workshops {
         WorkshopState ws = village.workshop(w.getId());
         if (shareSpecialty(w, ws) == null) {
             return Message.translation(KEYS + "shareLevel");
+        }
+        if (!Inputs.running(village, w)) {
+            return Message.translation(KEYS + "shopStopped").param("list", Inputs.list(Inputs.needs(village, w)));
         }
         if (!Reputations.rank(store, ref, village).atLeast(SHARE_RANK)) {
             return Message.translation(KEYS + "shareRank").param("rank", Message.translation(SHARE_RANK.nameKey()));
@@ -1062,6 +1099,7 @@ public final class Workshops {
                 }
             }
         }
+        guards += Projects.raidGuards(village); // Caserne : 1 + son niveau
         return guards == 0 && posts.isEmpty() && health == 1f ? RaidBonus.NONE : new RaidBonus(guards, posts, health);
     }
 

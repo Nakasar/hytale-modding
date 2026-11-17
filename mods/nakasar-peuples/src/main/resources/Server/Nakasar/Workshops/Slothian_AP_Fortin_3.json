@@ -1,0 +1,197 @@
+{
+  "$Comment": "Place 3 de l'ouvrage Slothian_AP_Fortin (copie générée par tools/generate_workshops.py).",
+  "People": "Slothian",
+  "Icon": "Weapon_Shield_Wood",
+  "NameKey": "nakasar_peuples.workshop.Slothian_AP_Fortin.name",
+  "Board": [
+    0,
+    0,
+    0
+  ],
+  "Upgrades": [
+    {
+      "Level": 2,
+      "Hours": 12,
+      "Decor": [
+        "1 0 0 0 Furniture_Jungle_Torch"
+      ],
+      "Materials": [
+        {
+          "ItemId": "Wood_Jungle_Trunk",
+          "Quantity": 12
+        },
+        {
+          "ItemId": "Rock_Volcanic",
+          "Quantity": 12
+        },
+        {
+          "ItemId": "Furniture_Jungle_Candle",
+          "Quantity": 1
+        }
+      ]
+    },
+    {
+      "Level": 3,
+      "Hours": 12,
+      "Decor": [
+        "-1 0 0 0 Furniture_Jungle_Brazier"
+      ],
+      "Materials": [
+        {
+          "ItemId": "Wood_Jungle_Trunk",
+          "Quantity": 18
+        },
+        {
+          "ItemId": "Rock_Volcanic",
+          "Quantity": 18
+        },
+        {
+          "ItemId": "Furniture_Jungle_Candle",
+          "Quantity": 2
+        }
+      ]
+    }
+  ],
+  "Annex": {
+    "Type": "Fortin",
+    "Family": "Infrastructure",
+    "Item": "Nakasar_Peuples_Annex_Fortin",
+    "Rule": "NONE",
+    "Prefabs": [
+      "Npc/Slothian/Disabled/House/Medium/Slothian_Disabled_House_Medium_001 0 -12 0",
+      "Monuments/Incidental/Slothian/Land/Temple/Incidental_Slothian_Slothian_Temple_003 -15 -14 0"
+    ],
+    "Rect": [
+      -19,
+      10,
+      -26,
+      -2
+    ],
+    "Height": 17,
+    "Workers": [
+      {
+        "Id": "AP_Fortin_1",
+        "Tier": 1,
+        "Role": "Nakasar_Peuples_Slothian_Guard",
+        "Dialogue": "Slothian_Guard",
+        "Building": "",
+        "WorkX": -2,
+        "WorkZ": -1,
+        "Home": "",
+        "HomeX": -2,
+        "HomeZ": -2,
+        "Builder": false
+      },
+      {
+        "Id": "AP_Fortin_2",
+        "Tier": 1,
+        "Role": "Nakasar_Peuples_Slothian_Guard",
+        "Dialogue": "Slothian_Guard",
+        "Building": "",
+        "WorkX": 2,
+        "WorkZ": -1,
+        "Home": "",
+        "HomeX": 2,
+        "HomeZ": -2,
+        "Builder": false
+      },
+      {
+        "Id": "AP_Fortin_3",
+        "Tier": 1,
+        "Role": "Nakasar_Peuples_Slothian_Lookout",
+        "Dialogue": "Slothian_Watcher",
+        "Building": "",
+        "WorkX": -4,
+        "WorkZ": -1,
+        "Home": "",
+        "HomeX": -4,
+        "HomeZ": -2,
+        "Builder": false
+      },
+      {
+        "Id": "AP_Fortin_4",
+        "Tier": 2,
+        "Role": "Nakasar_Peuples_Slothian_Guard",
+        "Dialogue": "Slothian_Guard",
+        "Building": "",
+        "WorkX": 4,
+        "WorkZ": -1,
+        "Home": "",
+        "HomeX": 4,
+        "HomeZ": -2,
+        "Builder": false
+      },
+      {
+        "Id": "AP_Fortin_5",
+        "Tier": 3,
+        "Role": "Nakasar_Peuples_Slothian_Monk",
+        "Dialogue": "Slothian_Monk",
+        "Building": "",
+        "WorkX": -6,
+        "WorkZ": -1,
+        "Home": "",
+        "HomeX": -6,
+        "HomeZ": -2,
+        "Builder": false
+      }
+    ],
+    "Materials": [
+      {
+        "ItemId": "Wood_Jungle_Trunk",
+        "Quantity": 24
+      },
+      {
+        "ItemId": "Rock_Volcanic",
+        "Quantity": 24
+      },
+      {
+        "ItemId": "Furniture_Jungle_Candle",
+        "Quantity": 3
+      }
+    ],
+    "Hours": 48,
+    "Decor": [
+      "2 0 -1 0 Furniture_Jungle_Torch"
+    ],
+    "Tier": 3,
+    "Limit": 2,
+    "MinDistance": 200,
+    "MaxDistance": 600,
+    "Spacing": 96,
+    "Slot": 3
+  },
+  "Specialties": [
+    {
+      "Id": "Avant_Garde",
+      "NameKey": "nakasar_peuples.workshop.specialty.Slothian_AP_Fortin.Avant_Garde",
+      "LineKey": "nakasar_peuples.workshop.specialtyLine.Slothian_AP_Fortin.Avant_Garde",
+      "Icon": "Weapon_Spear_Iron",
+      "Raid": {
+        "Guards": 1
+      },
+      "Shops": [
+        "Nakasar_Peuples_W_Slothian_AP_Fortin_Avant_Garde_2",
+        "Nakasar_Peuples_W_Slothian_AP_Fortin_Avant_Garde_3"
+      ],
+      "ShareItem": "Weapon_Spear_Copper",
+      "ShareQuantity": 1
+    },
+    {
+      "Id": "Remparts",
+      "NameKey": "nakasar_peuples.workshop.specialty.Slothian_AP_Fortin.Remparts",
+      "LineKey": "nakasar_peuples.workshop.specialtyLine.Slothian_AP_Fortin.Remparts",
+      "Icon": "Weapon_Shield_Copper",
+      "Raid": {
+        "Health": 1.25
+      },
+      "Shops": [
+        "Nakasar_Peuples_W_Slothian_AP_Fortin_Remparts_2",
+        "Nakasar_Peuples_W_Slothian_AP_Fortin_Remparts_3"
+      ],
+      "ShareItem": "Weapon_Shield_Copper",
+      "ShareQuantity": 1
+    }
+  ],
+  "Shop": "Nakasar_Peuples_W_Slothian_AP_Fortin_Base_1",
+  "Orders": "Slothian_AP_Fortin"
+}

@@ -1,0 +1,17 @@
+{
+  "$Comment": "Commande du bâtiment de métier Feran_E2_Caserne, générée par tools/generate_workshops.py (ne pas modifier à la main) : voir RequestTemplate.",
+  "People": "Feran",
+  "Workshop": "Feran_E2_Caserne",
+  "Type": "Gather",
+  "MinLevel": 1,
+  "MaxLevel": 3,
+  "Weight": 1,
+  "TitleKey": "nakasar_peuples.request.Feran_E2_Caserne_Straps.title",
+  "TaskKey": "nakasar_peuples.request.Feran_E2_Caserne_Straps.task",
+  "ItemId": "Ingredient_Fibre",
+  "Quantity": 10,
+  "Knowledge": 30,
+  "Essor": 5,
+  "Favors": 1,
+  "Reputation": 5
+}

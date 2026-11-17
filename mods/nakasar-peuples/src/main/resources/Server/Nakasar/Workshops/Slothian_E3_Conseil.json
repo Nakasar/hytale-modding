@@ -1,0 +1,86 @@
+{
+  "$Comment": "Bâtiment de métier généré par tools/generate_workshops.py (ne pas modifier à la main) : voir dev.nakasar.hytale.peuples.workshop.Workshop.",
+  "People": "Slothian",
+  "Layout": "Slothian_Monastere",
+  "Building": "E3_Conseil",
+  "Job": "Conseiller_E3",
+  "Icon": "Recipe_Page",
+  "NameKey": "nakasar_peuples.workshop.Slothian_E3_Conseil.name",
+  "Board": [
+    -39,
+    -21,
+    1
+  ],
+  "Upgrades": [
+    {
+      "Level": 2,
+      "Hours": 12,
+      "Materials": [
+        {
+          "ItemId": "Rock_Basalt_Brick",
+          "Quantity": 16
+        },
+        {
+          "ItemId": "Wood_Hardwood_Planks",
+          "Quantity": 16
+        },
+        {
+          "ItemId": "Soil_Ash",
+          "Quantity": 8
+        }
+      ],
+      "Decor": [
+        "1 0 0 0 Furniture_Jungle_Torch"
+      ]
+    },
+    {
+      "Level": 3,
+      "Hours": 12,
+      "Materials": [
+        {
+          "ItemId": "Rock_Basalt_Brick",
+          "Quantity": 32
+        },
+        {
+          "ItemId": "Furniture_Jungle_Candle",
+          "Quantity": 4
+        },
+        {
+          "ItemId": "Ingredient_Fire_Essence",
+          "Quantity": 6
+        }
+      ],
+      "Decor": [
+        "-1 0 0 0 Furniture_Jungle_Brazier"
+      ]
+    }
+  ],
+  "Category": "Diplomatie",
+  "Specialties": [
+    {
+      "Id": "Diplomatie",
+      "NameKey": "nakasar_peuples.workshop.specialty.Slothian_E3_Conseil.Diplomatie",
+      "LineKey": "nakasar_peuples.workshop.specialtyLine.Slothian_E3_Conseil.Diplomatie",
+      "Icon": "Recipe_Page",
+      "Shops": [
+        "Nakasar_Peuples_W_Slothian_E3_Conseil_Diplomatie_2",
+        "Nakasar_Peuples_W_Slothian_E3_Conseil_Diplomatie_3"
+      ],
+      "ShareItem": "Ingredient_Bolt_Cotton",
+      "ShareQuantity": 4
+    },
+    {
+      "Id": "Herauts",
+      "NameKey": "nakasar_peuples.workshop.specialty.Slothian_E3_Conseil.Herauts",
+      "LineKey": "nakasar_peuples.workshop.specialtyLine.Slothian_E3_Conseil.Herauts",
+      "Icon": "Deco_Scroll",
+      "Shops": [
+        "Nakasar_Peuples_W_Slothian_E3_Conseil_Herauts_2",
+        "Nakasar_Peuples_W_Slothian_E3_Conseil_Herauts_3"
+      ],
+      "ShareItem": "Deco_Scroll",
+      "ShareQuantity": 2
+    }
+  ],
+  "Shop": "Nakasar_Peuples_W_Slothian_E3_Conseil_Base_1"
+}

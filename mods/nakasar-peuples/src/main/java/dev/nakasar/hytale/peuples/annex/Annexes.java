@@ -66,8 +66,8 @@ import java.util.concurrent.ConcurrentHashMap;
 public final class Annexes {
 
     public static final String KEYS = "nakasar_peuples.annex.";
-    /** Palier du village qu'il faut pour fonder un avant-poste (Kevin : palier 3 minimum). */
-    public static final int MIN_TIER = 3;
+    /** Palier du village qui ouvre la production (Kevin, 2026-11-16 : tout au palier 2 ; chaque ouvrage a le sien). */
+    public static final int MIN_TIER = 2;
     /** Rang qui reçoit une fondation au panneau du village. */
     public static final Rank GRANT_RANK = Rank.AMI;
     /** Rang qui pose la fondation. */
@@ -148,15 +148,56 @@ public final class Annexes {
 
     // ---- Catalogue et fondations (onglet du panneau) ----
 
-    /** Avant-postes que le peuple du village peut fonder, triés par id. */
+    /** Bâtiments de production que le peuple du village peut fonder (un par type), triés par id. */
     public static List<Workshop> catalog(Village village) {
-        return Workshop.annexes(village.people());
+        return catalog(village, Workshop.Annex.PRODUCTION);
+    }
+
+    /** Types de la famille `family` du peuple : la place 1 de chaque type, triés par id. */
+    public static List<Workshop> catalog(Village village, String family) {
+        List<Workshop> out = new ArrayList<>();
+        for (Workshop w : Workshop.annexes(village.people())) {
+            if (w.annex().family().equals(family) && w.annex().slot() == 1) {
+                out.add(w);
+            }
+        }
+        return out;
+    }
+
+    /** Ouvrages (ou bâtiment) de ce type que le village compte dans sa limite : fondation remise, chantier, debout, occupé, ruine (pas perdu). */
+    public static List<AnnexState> counted(Village village, Workshop type) {
+        List<AnnexState> out = new ArrayList<>();
+        for (Workshop w : Workshop.slots(village.people(), type.annex().type())) {
+            AnnexState a = village.annex(w.getId());
+            if (a != null && !a.lost()) {
+                out.add(a);
+            }
+        }
+        return out;
+    }
+
+    /** Place libre pour un nouvel ouvrage du type (aucun état au village), ou null : limite atteinte ou plus de place. */
+    public static Workshop freeSlot(Village village, Workshop type) {
+        if (counted(village, type).size() >= type.annex().limit()) {
+            return null;
+        }
+        for (Workshop w : Workshop.slots(village.people(), type.annex().type())) {
+            if (village.annex(w.getId()) == null) {
+                return w;
+            }
+        }
+        return null;
     }
 
     /** Pourquoi le joueur ne peut pas recevoir de fondation dans ce village, ou null. */
     public static Message block(Store<EntityStore> store, Ref<EntityStore> ref, Village village) {
-        if (village.tier() < MIN_TIER) {
-            return Message.translation(KEYS + "lockedTier").param("tier", Message.translation(Tiers.nameKey(MIN_TIER)));
+        return block(store, ref, village, MIN_TIER);
+    }
+
+    /** Idem pour un bâtiment qui demande le palier `tier`. */
+    public static Message block(Store<EntityStore> store, Ref<EntityStore> ref, Village village, int tier) {
+        if (village.tier() < tier) {
+            return Message.translation(KEYS + "lockedTier").param("tier", Message.translation(Tiers.nameKey(tier)));
         }
         if (!Reputations.rank(store, ref, village).atLeast(GRANT_RANK)) {
             return Message.translation(KEYS + "lockedRank").param("rank", Message.translation(GRANT_RANK.nameKey()));
@@ -187,10 +228,28 @@ public final class Annexes {
      */
     public static boolean grant(World world, Store<EntityStore> store, Ref<EntityStore> ref, PlayerRef player, Village village,
                                 Workshop w) {
-        Message block = block(store, ref, village);
+        Message block = block(store, ref, village, w.annex().tier());
         if (block != null) {
             player.sendMessage(block);
             return false;
+        }
+        if (w.annex().infrastructure()) {
+            // Ouvrage : une fondation remise et pas posée se reprend ; sinon une nouvelle place, dans la limite.
+            for (AnnexState other : counted(village, w)) {
+                if (other.granted()) {
+                    w = Workshop.get(other.id());
+                    break;
+                }
+            }
+            if (village.annex(w.getId()) == null || !village.annex(w.getId()).granted()) {
+                Workshop slot = freeSlot(village, w);
+                if (slot == null) {
+                    player.sendMessage(Message.translation(KEYS + "limit").param("building", Message.translation(w.nameKey()))
+                            .param("limit", w.annex().limit()));
+                    return false;
+                }
+                w = slot;
+            }
         }
         AnnexState a = village.annex(w.getId());
         long day = GameClock.day(store);
@@ -290,8 +349,8 @@ public final class Annexes {
     public static Message check(World world, Store<EntityStore> store, Ref<EntityStore> ref, Village village, Workshop w,
                                 int x, int y, int z, int rotation) {
         Workshop.Annex spec = w.annex();
-        if (village.tier() < MIN_TIER) {
-            return Message.translation(KEYS + "lockedTier").param("tier", Message.translation(Tiers.nameKey(MIN_TIER)));
+        if (village.tier() < spec.tier()) {
+            return Message.translation(KEYS + "lockedTier").param("tier", Message.translation(Tiers.nameKey(spec.tier())));
         }
         if (ref != null && !Reputations.rank(store, ref, village).atLeast(PLACE_RANK)) {
             return Message.translation(KEYS + "placeRank").param("rank", Message.translation(PLACE_RANK.nameKey()))
@@ -300,13 +359,20 @@ public final class Annexes {
         VillageLayout layout = Chantiers.layout(village);
         int radius = layout == null ? 64 : layout.radius();
         int distance = (int) Math.sqrt(village.horizontalDistanceSquared(x, z));
-        if (distance < radius + VILLAGE_GAP) {
+        int nearest = minDistance(village, spec);
+        if (distance < nearest) {
             return Message.translation(KEYS + "tooNear").param("village", village.name()).param("distance", distance)
-                    .param("min", radius + VILLAGE_GAP);
+                    .param("min", nearest);
         }
-        if (distance > MAX_DISTANCE) {
+        if (distance > spec.maxDistance()) {
             return Message.translation(KEYS + "tooFar").param("village", village.name()).param("distance", distance)
-                    .param("max", MAX_DISTANCE);
+                    .param("max", spec.maxDistance());
+        }
+        if (spec.beacon() > 0) {
+            double beacon = Routes.nearestBeacon(world, x + 0.5, z + 0.5);
+            if (beacon > spec.beacon()) {
+                return Message.translation(KEYS + "rule.ROAD").param("distance", spec.beacon());
+            }
         }
         int[] rect = worldRect(spec, x, z, rotation);
         int half = Math.max(rect[1] - rect[0], rect[3] - rect[2]) / 2 + 1;
@@ -329,18 +395,21 @@ public final class Annexes {
                     continue;
                 }
                 double d = other.distanceSquared(x + 0.5, z + 0.5);
-                if (d < (double) ANNEX_SPACING * ANNEX_SPACING) {
+                Workshop sameType = Workshop.get(other.id());
+                int spacing = sameType != null && sameType.isAnnex() && sameType.annex().type().equals(spec.type())
+                        ? Math.max(ANNEX_SPACING, spec.spacing()) : ANNEX_SPACING;
+                if (d < (double) spacing * spacing) {
                     Workshop ow = Workshop.get(other.id());
                     return Message.translation(KEYS + "otherAnnex")
                             .param("building", ow == null ? Message.raw(other.id()) : Message.translation(ow.nameKey()))
-                            .param("village", v.name()).param("distance", (int) Math.sqrt(d)).param("min", ANNEX_SPACING);
+                            .param("village", v.name()).param("distance", (int) Math.sqrt(d)).param("min", spacing);
                 }
             }
         }
         for (Outpost o : Outposts.all(world)) {
             double dx = o.x() - x;
             double dz = o.z() - z;
-            int min = MAX_DISTANCE;
+            int min = MAX_DISTANCE; // avant-poste de champion prévu : MAX_DISTANCE autour de lui
             if (o.waiting() && dx * dx + dz * dz < (double) min * min) {
                 return Message.translation(KEYS + "outpostPlanned").param("distance", (int) Math.sqrt(dx * dx + dz * dz));
             }
@@ -389,6 +458,137 @@ public final class Annexes {
             return rule;
         }
         return null;
+    }
+
+    /** Distance minimale au cœur pour ce bâtiment : celle de l'ouvrage, jamais sous le bord du village + 20. */
+    public static int minDistance(Village village, Workshop.Annex spec) {
+        VillageLayout layout = Chantiers.layout(village);
+        int edge = (layout == null ? 64 : layout.radius()) + VILLAGE_GAP;
+        return Math.max(edge, spec.minDistance());
+    }
+
+    // ---- Gisement (Kevin, 2026-11-16) : maigre -25 %, correct, riche +50 % ----
+
+    public static final double POOR = 0.75;
+    public static final double RICH = 1.5;
+
+    /**
+     * Rendement de la place pour un bâtiment de production : {@link #POOR} (minimum de la règle seulement), 1 (correct) ou
+     * {@link #RICH}. Terrain chargé. Les ouvrages et les types sans gisement rendent 1.
+     */
+    public static double deposit(World world, Terrain terrain, Village village, Workshop.Annex spec, int[] rect, int ground) {
+        if (spec.infrastructure() || spec.delivery() == null) {
+            return 1.0;
+        }
+        ChunkStore chunks = world.getChunkStore();
+        switch (spec.rule()) {
+            case "FERTILE" -> {
+                int total = 0;
+                int fertile = 0;
+                for (int x = rect[0]; x <= rect[1]; x += 2) {
+                    for (int z = rect[2]; z <= rect[3]; z += 2) {
+                        String top = terrain.surfaceBlock(x, z);
+                        total++;
+                        if (top != null && (top.startsWith("Soil_Grass") || top.startsWith("Soil_Dirt") || top.startsWith("Soil_Mud")
+                                || village.people().suitsSite(top))) {
+                            fertile++;
+                        }
+                    }
+                }
+                int percent = total == 0 ? 0 : 100 * fertile / total;
+                int water = waterWithin(terrain, rect, 16);
+                int close = waterWithin(terrain, rect, 8);
+                if (percent >= 80 && close > 0) {
+                    return RICH;
+                }
+                return water > 0 ? 1.0 : POOR;
+            }
+            case "ROCK" -> {
+                // Minerai visible (affleurant) à 16 blocs : riche ; pierre ou flanc : correct (le minimum de la règle).
+                for (int x = rect[0] - 16; x <= rect[1] + 16; x += 2) {
+                    for (int z = rect[2] - 16; z <= rect[3] + 16; z += 2) {
+                        int h = terrain.surface(x, z);
+                        if (h == Terrain.NONE) {
+                            continue;
+                        }
+                        for (int y = h - 2; y <= h + 2; y++) {
+                            String name = Blocks.name(chunks, x, y, z);
+                            if (name != null && name.startsWith("Ore_")) {
+                                return RICH;
+                            }
+                        }
+                    }
+                }
+                return 1.0;
+            }
+            case "TREES" -> {
+                int trunks = trunks(world, terrain, rect);
+                return trunks >= 30 ? RICH : trunks >= 12 ? 1.0 : POOR;
+            }
+            case "WATER" -> {
+                int water = 0;
+                for (int x = rect[0] - 24; x <= rect[1] + 24; x++) {
+                    for (int z = rect[2] - 24; z <= rect[3] + 24; z++) {
+                        int h = terrain.surface(x, z);
+                        if (h != Terrain.NONE && terrain.hasFluid(x, h + 1, z)) {
+                            water++;
+                        }
+                    }
+                }
+                return water >= 120 ? RICH : water >= 40 ? 1.0 : POOR;
+            }
+            case "NONE" -> {
+                // Pavillon de chasse : correct à 96 blocs de tout cœur de village, riche en pleine nature (192 blocs : là
+                // où le jeu fait naître ses troupeaux, loin des villages).
+                double nearest = Double.MAX_VALUE;
+                for (Village v : Villages.registry(world).all()) {
+                    nearest = Math.min(nearest, v.horizontalDistanceSquared((rect[0] + rect[1]) / 2.0, (rect[2] + rect[3]) / 2.0));
+                }
+                return nearest < 96.0 * 96.0 ? POOR : nearest >= 192.0 * 192.0 ? RICH : 1.0;
+            }
+            default -> {
+                return 1.0;
+            }
+        }
+    }
+
+    private static int waterWithin(Terrain terrain, int[] rect, int range) {
+        int water = 0;
+        for (int x = rect[0] - range; x <= rect[1] + range; x += 2) {
+            for (int z = rect[2] - range; z <= rect[3] + range; z += 2) {
+                int h = terrain.surface(x, z);
+                if (h != Terrain.NONE && terrain.hasFluid(x, h + 1, z)) {
+                    water++;
+                }
+            }
+        }
+        return water;
+    }
+
+    private static int trunks(World world, Terrain terrain, int[] rect) {
+        ChunkStore chunks = world.getChunkStore();
+        int trunks = 0;
+        for (int x = rect[0] - 24; x <= rect[1] + 24; x += 2) {
+            for (int z = rect[2] - 24; z <= rect[3] + 24; z += 2) {
+                int h = terrain.surface(x, z);
+                if (h == Terrain.NONE) {
+                    continue;
+                }
+                for (int y = h + 1; y <= h + 3; y++) {
+                    String name = Blocks.name(chunks, x, y, z);
+                    if (name != null && name.startsWith("Wood_") && name.contains("_Trunk")) {
+                        trunks++;
+                        break;
+                    }
+                }
+            }
+        }
+        return trunks;
+    }
+
+    /** Nom du rendement (maigre, correct, riche) pour les messages. */
+    public static String yieldKey(double yield) {
+        return yield >= RICH ? "rich" : yield <= POOR ? "poor" : "fair";
     }
 
     /** Ce que le terrain doit offrir selon le type (ferme, mine, scierie, pêcherie), ou null s'il l'offre. */
@@ -518,6 +718,8 @@ public final class Annexes {
         long now = GameClock.seconds(store);
         p.state().startWorks(x, y, z, rotation, ground, now, now + spec.hours() * 3600L);
         Village village = p.village();
+        double yield = deposit(world, new Terrain(world), village, spec, rect, ground);
+        p.state().setYield(yield);
         Workshop w = p.workshop();
         AnnexState a = p.state();
         world.execute(() -> {
@@ -530,6 +732,9 @@ public final class Annexes {
                 .param("building", name).param("hours", spec.hours()), null, NotificationStyle.Success);
         player.sendMessage(Message.translation(KEYS + "startedHere").param("building", name).param("village", village.name())
                 .param("hours", spec.hours()));
+        if (!spec.infrastructure() && spec.delivery() != null) {
+            player.sendMessage(Message.translation(KEYS + "yield." + yieldKey(yield)));
+        }
         LOGGER.atInfo().log("Nakasar Peuples : avant-poste %s fondé en %d %d %d (rotation %d) par %s pour %s", w.getId(), x, y, z,
                 rotation, player.getUsername(), village.name());
     }
@@ -616,6 +821,16 @@ public final class Annexes {
                 continue;
             }
             String key = key(village, w);
+            if (a.ruined()) {
+                // Ouvrage rasé (raid perdu) : ses blocs partent au passage d'un joueur, la place reste à relever.
+                if (!a.cleared() && watched(a, players) && demolish(world, village, w, a)) {
+                    a.setCleared(true);
+                }
+                continue;
+            }
+            if (a.built() && a.occupied()) {
+                continue; // pris par un rival : plus de production ni de convoi pour le propriétaire
+            }
             if (a.built()) {
                 if (!SWEPT.contains(key) && watched(a, players)) {
                     // Avant-postes bâtis avant le correctif : le panneau de chantier était resté sur place.
@@ -813,16 +1028,9 @@ public final class Annexes {
         }
     }
 
-    /** Secondes d'annonce de plus avant un raid sur le village : tours de guet debout, par niveau. */
-    public static int raidWarnBonus(Village village) {
-        int bonus = 0;
-        for (AnnexState a : village.annexes()) {
-            Workshop w = Workshop.get(a.id());
-            if (a.built() && w != null && w.isAnnex()) {
-                bonus += w.annex().warn() * village.workshop(w.getId()).level();
-            }
-        }
-        return bonus;
+    /** Secondes d'annonce de plus avant un raid sur le village : tours de garde tenues près du cœur, par niveau. */
+    public static int raidWarnBonus(World world, Village village) {
+        return Infrastructures.raidWarnBonus(world, village);
     }
 
     /** Commande {@code /village finir} : les travaux d'avant-poste en cours finissent au prochain pas ; leur nombre. */
@@ -882,9 +1090,9 @@ public final class Annexes {
         return null;
     }
 
-    /** Vrai si l'avant-poste peut être détruit : en travaux ou debout, sans convoi sur la route. */
+    /** Vrai si l'avant-poste peut être détruit : en travaux, debout (pas pris, pas assiégé) ou en ruine. */
     public static boolean destroyable(AnnexState a) {
-        return a != null && !a.granted() && (a.working() || a.built());
+        return a != null && !a.granted() && !a.occupied() && !a.besieged() && (a.working() || a.built() || a.ruined());
     }
 
     /**
@@ -908,6 +1116,17 @@ public final class Annexes {
         if (a.convoy()) {
             player.sendMessage(Message.translation(KEYS + "destroy.convoy").param("building", Message.translation(w.nameKey())));
             return false;
+        }
+        if (a.ruined()) {
+            // Ruine d'ouvrage : on libère la place (pas de remboursement, la fondation a déjà été perdue).
+            if (!a.cleared() && !demolish(world, village, w, a)) {
+                player.sendMessage(Message.translation(KEYS + "unloaded"));
+                return false;
+            }
+            village.forgetAnnex(w.getId());
+            Chantiers.announce(world, village, Message.translation(KEYS + "destroyed").param("player", player.getUsername())
+                    .param("building", Message.translation(w.nameKey())), null, NotificationStyle.Warning);
+            return true;
         }
         boolean built = a.built();
         String key = key(village, w);
@@ -1073,5 +1292,6 @@ public final class Annexes {
         PHASE.clear();
         BUSY.clear();
         SWEPT.clear();
+        Ouvrages.clearAll();
     }
 }

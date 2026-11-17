@@ -1,0 +1,17 @@
+{
+  "$Comment": "Commande du bâtiment de métier Trork_AP_Poste, générée par tools/generate_workshops.py (ne pas modifier à la main) : voir RequestTemplate.",
+  "People": "Trork",
+  "Workshop": "Trork_AP_Poste",
+  "Type": "Gather",
+  "MinLevel": 1,
+  "MaxLevel": 3,
+  "Weight": 1,
+  "TitleKey": "nakasar_peuples.request.Trork_AP_Poste_Rope.title",
+  "TaskKey": "nakasar_peuples.request.Trork_AP_Poste_Rope.task",
+  "ItemId": "Ingredient_Fibre",
+  "Quantity": 12,
+  "Knowledge": 30,
+  "Essor": 5,
+  "Favors": 1,
+  "Reputation": 5
+}

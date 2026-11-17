@@ -55,6 +55,7 @@
       ]
     }
   ],
+  "Legacy": true,
   "Specialties": [
     {
       "Id": "Bois",

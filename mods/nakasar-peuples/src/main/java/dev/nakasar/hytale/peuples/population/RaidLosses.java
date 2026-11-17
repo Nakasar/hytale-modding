@@ -40,6 +40,14 @@ public final class RaidLosses {
 
     /** Applique la perte du raid ; null si rien n'est debout (village sans plan). */
     public static Loss apply(World world, Store<EntityStore> store, Village village) {
+        return apply(world, store, village, true);
+    }
+
+    /**
+     * Applique la perte du raid ; {@code dropTier} faux (Forteresse tenue, annex/Infrastructures) : le bâtiment brûle
+     * mais le village garde son palier.
+     */
+    public static Loss apply(World world, Store<EntityStore> store, Village village, boolean dropTier) {
         VillageLayout layout = Chantiers.layout(village);
         if (layout == null) {
             return null;
@@ -81,7 +89,7 @@ public final class RaidLosses {
                 }
             }
         }
-        VillageLayout.Building b = Chantiers.burn(world, village, target.id(), true);
+        VillageLayout.Building b = Chantiers.burn(world, village, target.id(), dropTier);
         if (b == null) {
             return null;
         }

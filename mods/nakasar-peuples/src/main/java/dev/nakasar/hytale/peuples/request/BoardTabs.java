@@ -12,6 +12,8 @@ import com.hypixel.hytale.server.core.universe.world.World;
 import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
 import dev.nakasar.hytale.peuples.annex.AnnexPage;
 import dev.nakasar.hytale.peuples.annex.Annexes;
+import dev.nakasar.hytale.peuples.annex.OuvragePage;
+import dev.nakasar.hytale.peuples.workshop.Workshop;
 import dev.nakasar.hytale.peuples.village.PlotPage;
 import dev.nakasar.hytale.peuples.village.Plots;
 import dev.nakasar.hytale.peuples.village.Village;
@@ -20,7 +22,7 @@ import dev.nakasar.hytale.peuples.world.WorldPage;
 
 /**
  * Barre des onglets en haut du panneau du village (maquette Claude Design « Panneau du village — refonte », Kevin,
- * 16 novembre 2026) : Tableau, Emplacements, Avant-postes, Monde, Domaine (conquête des lieux-dits), Commerce (routes
+ * 16 novembre 2026) : Tableau, Projets, Production, Ouvrages, Monde, Domaine (conquête des lieux-dits), Commerce (routes
  * commerciales), Habitants (générations), et l'heure du jeu. Chaque page du panneau porte la
  * même barre ({@code tab_strip} de {@code tools/generate_board_ui.py}) : l'onglet ouvert est un aplat
  * ({@code #Tab<X>On}), les autres des boutons ({@code #Tab<X>Button}). Les pages appellent {@link #fill} dans leur
@@ -39,6 +41,7 @@ public final class BoardTabs {
         tab(cmd, events, "#TabBoardButton", "#TabBoardLabel", "Board", Message.translation(WorldPage.KEYS + "tab.board"));
         tab(cmd, events, "#TabPlotsButton", "#TabPlotsLabel", "Plots", Message.translation(Plots.KEYS + "button"));
         tab(cmd, events, "#TabAnnexesButton", "#TabAnnexesLabel", "Annexes", Message.translation(Annexes.KEYS + "button"));
+        tab(cmd, events, "#TabWorksButton", "#TabWorksLabel", "Works", Message.translation(Annexes.KEYS + "works.tab"));
         tab(cmd, events, "#TabWorldButton", "#TabWorldLabel", "World", Message.translation(WorldPage.KEYS + "button"));
         tab(cmd, events, "#TabDomainButton", "#TabDomainLabel", "Domain", Message.translation(DomainPage.KEYS + "tab"));
         tab(cmd, events, "#TabTradeButton", "#TabTradeLabel", "Trade", Message.translation(dev.nakasar.hytale.peuples.world.TradePage.TAB));
@@ -47,6 +50,7 @@ public final class BoardTabs {
         // Emplacements : seulement si le plan du village en a ; Avant-postes : si le peuple en a (l'onglet dit le palier).
         cmd.set("#TabPlots.Visible", village != null && Plots.plots(village).length > 0);
         cmd.set("#TabAnnexes.Visible", village != null && !Annexes.catalog(village).isEmpty());
+        cmd.set("#TabWorks.Visible", village != null && !Annexes.catalog(village, Workshop.Annex.INFRASTRUCTURE).isEmpty());
         // Habitants : les villages qui vivent les générations (plan, pas un lieu-dit).
         cmd.set("#TabPeople.Visible", dev.nakasar.hytale.peuples.population.Population.applies(village));
         cmd.set("#Clock.TextSpans", Message.translation(WorldPage.KEYS + "clock").param("day", GameClock.day(store) + 1)
@@ -69,6 +73,7 @@ public final class BoardTabs {
             case "Board" -> BoardPage.open(world, store, ref, playerRef, village);
             case "Plots" -> PlotPage.open(store, ref, playerRef, village);
             case "Annexes" -> AnnexPage.open(store, ref, playerRef, village);
+            case "Works" -> OuvragePage.open(store, ref, playerRef, village);
             case "World" -> WorldPage.open(store, ref, playerRef, village);
             case "Domain" -> DomainPage.open(store, ref, playerRef, village);
             case "Trade" -> dev.nakasar.hytale.peuples.world.TradePage.open(store, ref, playerRef, village);

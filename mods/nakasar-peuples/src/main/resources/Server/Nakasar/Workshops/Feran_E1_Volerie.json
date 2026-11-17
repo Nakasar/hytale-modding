@@ -55,6 +55,13 @@
       ]
     }
   ],
+  "Category": "Artisanat",
+  "Inputs": [
+    {
+      "ItemId": "Food_Wildmeat_Raw",
+      "Quantity": 2
+    }
+  ],
   "Specialties": [
     {
       "Id": "Plumes",

@@ -1,0 +1,17 @@
+{
+  "$Comment": "Commande du bâtiment de métier Kweebec_E3_Menuiserie, générée par tools/generate_workshops.py (ne pas modifier à la main) : voir RequestTemplate.",
+  "People": "Kweebec",
+  "Workshop": "Kweebec_E3_Menuiserie",
+  "Type": "Gather",
+  "MinLevel": 1,
+  "MaxLevel": 3,
+  "Weight": 1,
+  "TitleKey": "nakasar_peuples.request.Kweebec_E3_Menuiserie_Sap.title",
+  "TaskKey": "nakasar_peuples.request.Kweebec_E3_Menuiserie_Sap.task",
+  "ItemId": "Ingredient_Tree_Sap",
+  "Quantity": 4,
+  "Knowledge": 30,
+  "Essor": 5,
+  "Favors": 1,
+  "Reputation": 5
+}

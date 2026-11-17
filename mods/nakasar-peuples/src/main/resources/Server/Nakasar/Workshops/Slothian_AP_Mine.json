@@ -54,6 +54,7 @@
   ],
   "Annex": {
     "Type": "Mine",
+    "Family": "Production",
     "Item": "Nakasar_Peuples_Annex_Mine",
     "Rule": "ROCK",
     "Prefabs": [
@@ -139,6 +140,7 @@
     "Decor": [
       "2 0 -1 0 Furniture_Jungle_Torch"
     ],
+    "Tier": 2,
     "Delivery": {
       "ItemId": "Rock_Basalt_Cobble",
       "Quantity": 16

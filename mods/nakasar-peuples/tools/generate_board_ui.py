@@ -50,9 +50,9 @@ PANEL_WIDTH, PANEL_HEIGHT = WIDTH, HEIGHT
 
 # Onglets du panneau du village (request/BoardTabs.java), dans l'ordre de la barre. Maquette Claude Design
 # « Panneau du village — refonte » (16 novembre 2026) : les onglets en haut, toujours visibles.
-TABS = ("Board", "Plots", "Annexes", "World", "Domain", "Trade", "People")
-TAB_WIDTH = 120  # sept onglets et l'heure (CLOCK_WIDTH) tiennent dans les 1060 px du panneau
-CLOCK_WIDTH = 120
+TABS = ("Board", "Plots", "Annexes", "Works", "World", "Domain", "Trade", "People")
+TAB_WIDTH = 106  # huit onglets et l'heure (CLOCK_WIDTH) tiennent dans les 1060 px du panneau
+CLOCK_WIDTH = 110
 
 
 def rgb(h):

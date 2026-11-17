@@ -168,6 +168,7 @@ const sidebars = {
         "peuples/batiments-de-metier",
         "peuples/emplacements",
         "peuples/avant-postes-de-metier",
+        "peuples/infrastructures",
         {
           type: "category",
           label: "Bâtiments des villages",
