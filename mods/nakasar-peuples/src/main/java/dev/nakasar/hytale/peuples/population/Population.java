@@ -201,13 +201,29 @@ public final class Population {
         }
         if (p.lastDay < day) {
             refreshNeighbours(world);
-            long from = Math.max(p.lastDay + 1, day - CATCH_UP);
+            long from = Math.max(p.lastDay + 1, day - CATCH_UP + 1);
+            if (from > p.lastDay + 1) {
+                // Jours trop anciens sautés : les passages d'âge qui y tombaient n'ont pas donné de vocation.
+                catchUpVocations(village, p, from);
+            }
             for (long d = from; d <= day; d++) {
                 morning(world, store, village, p, d, d == day);
             }
             p.lastDay = day;
         }
         Cemetery.placePending(world, village, p);
+    }
+
+    /** Après un saut de jours : une vocation aux apprentis et adultes sans poste qui n'en ont pas. */
+    static void catchUpVocations(Village village, PopulationState p, long day) {
+        Random random = new Random(seedOf(village.id(), day) ^ 0x70cL);
+        List<Post> posts = posts(village);
+        for (Inhabitant h : p.living()) {
+            Ages.Stage s = h.stage(day);
+            if (!h.hasJob() && h.vocation.isEmpty() && (s == Ages.Stage.APPRENTICE || s == Ages.Stage.ADULT)) {
+                chooseVocation(village, p, h, posts, random, day);
+            }
+        }
     }
 
     /** Les villageois d'avant les générations reçoivent leur fiche : leurs noms sont gardés, leur âge tiré. */
@@ -304,7 +320,7 @@ public final class Population {
             }
             Inhabitant taker = heir(p, post.id(), day);
             if (taker == null) {
-                taker = idleAdult(p, day);
+                taker = idleAdult(village, p, day);
             }
             long since = p.vacantSince(post.id());
             if (taker == null && (since == Inhabitant.NONE || day - since >= VACANCY_DAYS)) {
@@ -330,7 +346,7 @@ public final class Population {
             Ages.Stage s = h.stage(day);
             boolean young = s == Ages.Stage.CHILD || s == Ages.Stage.APPRENTICE;
             boolean homeless = h.home.isEmpty() || !village.isStanding(h.home);
-            if ((young && !adultAt(p, h.home, day, h)) || (homeless && (p.refuge == null || !h.home.equals(p.refuge)))) {
+            if ((young && !adultAt(p, h.home, day, h)) || (homeless && !(refugeOpen(village, p) && h.home.equals(p.refuge)))) {
                 String home = homeless && refugeOpen(village, p) ? p.refuge : fosterHome(village, p, day, h);
                 if (home != null && !home.equals(h.home)) {
                     h.home = home;
@@ -400,7 +416,10 @@ public final class Population {
         }
     }
 
-    /** Luxes des routes commerciales : les naissances ne les mangent pas (ils prolongent l'accès du village). */
+    /**
+     * Luxes des routes commerciales : les naissances ne les mangent pas (ils prolongent l'accès du village).
+     * TODO après la PR #170 (routes commerciales) : lire TradeGoods.LUXURIES au lieu de cette copie.
+     */
     static final java.util.Set<String> LUXURIES = java.util.Set.of("Plant_Fruit_Azure", "Food_Cheese", "Food_Fish_Raw_Rare", "Food_Pie_Apple");
 
     /** Vivres du dépôt : nourriture et récoltes, hors luxes. */
@@ -518,16 +537,21 @@ public final class Population {
     /** L'apprenti devenu adulte, sans poste, qui a appris `job` ; null s'il n'y en a pas. */
     private static Inhabitant heir(PopulationState p, String job, long day) {
         for (Inhabitant h : p.inhabitants) {
-            if (h.alive() && !h.hasJob() && job.equals(h.vocation) && h.stage(day) == Ages.Stage.ADULT) {
+            if (h.alive() && !h.hasJob() && job.equals(h.vocation) && h.stage(day) == Ages.Stage.ADULT && !h.convalescent(day)) {
                 return h;
             }
         }
         return null;
     }
 
-    private static Inhabitant idleAdult(PopulationState p, long day) {
+    /**
+     * Un adulte valide sans poste qui n'attend pas une passation : sans vocation, ou dont le métier appris n'existe plus
+     * ou n'a pas de titulaire. Un héritier qui attend la retraite de son maître n'est pas pris par un autre poste.
+     */
+    private static Inhabitant idleAdult(Village village, PopulationState p, long day) {
         for (Inhabitant h : p.inhabitants) {
-            if (h.alive() && !h.hasJob() && h.stage(day) == Ages.Stage.ADULT && !h.convalescent(day)) {
+            if (h.alive() && !h.hasJob() && h.stage(day) == Ages.Stage.ADULT && !h.convalescent(day)
+                    && (h.vocation.isEmpty() || post(village, h.vocation) == null || p.holder(h.vocation) == null)) {
                 return h;
             }
         }
@@ -877,7 +901,7 @@ public final class Population {
         } else if (posted != null) {
             villageId = posted.village();
             if (posted.slot().startsWith(dev.nakasar.hytale.peuples.village.Villagers.RESIDENT)) {
-                inhabitant = posted.slot().substring(dev.nakasar.hytale.peuples.village.Villagers.RESIDENT.length());
+                inhabitant = dev.nakasar.hytale.peuples.village.Villagers.residentId(posted.slot());
             } else {
                 post = posted.slot();
             }

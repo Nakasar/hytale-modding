@@ -39,7 +39,7 @@ Chaque maison a un lit par villageois à métier qui y dort, plus deux pour la f
 
 ## Les raids
 
-- À l'annonce d'un raid, tous les habitants **rentrent chez eux** et s'y enferment : ils sont à l'abri.
+- À l'annonce d'un raid, les habitants **rentrent chez eux** et s'y enferment : ils sont à l'abri. Les gardes, les guetteurs et le chef restent dehors.
 - Les gardes qui défendent le village sont des habitants nommés. Un garde tombé est **blessé** : il se repose jusqu'au surlendemain, il ne meurt pas.
 - Raid **gagné** : personne ne meurt.
 - Raid **perdu** : un grand bâtiment est tiré au hasard.

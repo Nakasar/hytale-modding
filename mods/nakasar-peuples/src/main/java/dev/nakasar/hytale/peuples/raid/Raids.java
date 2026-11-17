@@ -793,6 +793,7 @@ public final class Raids {
             a.defenders.remove(ref);
             a.fallen++;
             String who = dev.nakasar.hytale.peuples.population.Population.boundId(ref);
+            dev.nakasar.hytale.peuples.population.Population.unbind(ref);
             if (who != null) {
                 a.wounded.add(who);
             }
@@ -836,6 +837,7 @@ public final class Raids {
         all.addAll(a.defenders);
         for (Ref<EntityStore> r : all) {
             OWNERS.remove(r);
+            dev.nakasar.hytale.peuples.population.Population.unbind(r);
             if (r.isValid()) {
                 store.removeEntity(r, RemoveReason.REMOVE);
             }
@@ -861,6 +863,7 @@ public final class Raids {
         refs.removeIf(r -> {
             if (!r.isValid()) {
                 OWNERS.remove(r);
+                dev.nakasar.hytale.peuples.population.Population.unbind(r);
                 return true;
             }
             return false;

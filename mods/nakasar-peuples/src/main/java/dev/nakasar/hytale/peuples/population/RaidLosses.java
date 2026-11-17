@@ -153,7 +153,7 @@ public final class RaidLosses {
         return oldest;
     }
 
-    /** Raids : choisit les défenseurs parmi les habitants valides (titulaires de garde, puis les braves, puis les autres). */
+    /** Raids : choisit les défenseurs parmi les adultes valides (les braves d'abord), hors gardes et guetteurs en poste. */
     public static List<Inhabitant> defenders(Village village, long day, int count) {
         List<Inhabitant> out = new ArrayList<>();
         if (!Population.applies(village) || !village.population().seeded()) {
@@ -161,7 +161,8 @@ public final class RaidLosses {
         }
         List<Inhabitant> pool = new ArrayList<>();
         for (Inhabitant h : village.population().living()) {
-            if (Population.ableAdult(h, day)) {
+            // Les gardes et guetteurs en poste restent dehors sous leur propre PNJ : pas de double.
+            if (Population.ableAdult(h, day) && !(h.hasJob() && Traits.matches(Traits.BRAVE, h.job))) {
                 pool.add(h);
             }
         }
@@ -173,10 +174,7 @@ public final class RaidLosses {
     }
 
     private static int rank(Inhabitant h) {
-        if (h.hasJob() && Traits.matches(Traits.BRAVE, h.job)) {
-            return 0;
-        }
-        return Traits.BRAVE.equals(h.trait) ? 1 : 2;
+        return Traits.BRAVE.equals(h.trait) ? 0 : 1;
     }
 
     /** Un défenseur nommé est tombé : blessé, il se repose jusqu'au lendemain (pas de mort hors incendie). */

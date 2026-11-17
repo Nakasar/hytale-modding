@@ -71,8 +71,18 @@ public final class Villagers {
         }
     }
 
-    /** Slots des habitants sans poste (apprentis, adultes sans métier, anciens) : {@code hab:<id de l'habitant>}. */
+    /**
+     * Slots des habitants sans poste (apprentis, adultes sans métier, anciens) : {@code hab:<id>:<sorte>}. La sorte est
+     * dans le slot : un habitant qui change de stade quitte son slot, son PNJ est refait avec le bon rôle.
+     */
     public static final String RESIDENT = "hab:";
+
+    /** Id de l'habitant d'un slot {@code hab:<id>:<sorte>}. */
+    public static String residentId(String slot) {
+        String rest = slot.substring(RESIDENT.length());
+        int colon = rest.indexOf(':');
+        return colon < 0 ? rest : rest.substring(0, colon);
+    }
     /** Habitants sans poste montés au plus par village. */
     public static final int MAX_RESIDENTS = 8;
     /** Pendant un raid, un villageois arrivé à moins de ces blocs de chez lui, ou en route depuis ces secondes, s'enferme. */
@@ -193,6 +203,12 @@ public final class Villagers {
             Map<String, Want> sheltered = new LinkedHashMap<>();
             for (Map.Entry<String, Want> e : out.entrySet()) {
                 Want home = e.getValue();
+                VillageLayout.Job job = e.getKey().startsWith(RESIDENT) ? null : layout.job(e.getKey());
+                if (job != null && dev.nakasar.hytale.peuples.population.Traits.matches(dev.nakasar.hytale.peuples.population.Traits.BRAVE, job.id())) {
+                    // Gardes et guetteurs restent à leur poste : « Aux armes ! » (dialogues de raid).
+                    sheltered.put(e.getKey(), home);
+                    continue;
+                }
                 sheltered.put(e.getKey(), new Want(home.role(), home.dialogue(), shelterOf(world, village, layout, e.getKey(), home), true));
             }
             return sheltered;
@@ -204,7 +220,7 @@ public final class Villagers {
     private static Vector3d shelterOf(World world, Village village, VillageLayout layout, String slot, Want want) {
         String home = null;
         if (slot.startsWith(RESIDENT)) {
-            dev.nakasar.hytale.peuples.population.Inhabitant h = village.population().byId(slot.substring(RESIDENT.length()));
+            dev.nakasar.hytale.peuples.population.Inhabitant h = village.population().byId(residentId(slot));
             home = h == null ? null : h.home();
         } else {
             VillageLayout.Job job = layout.job(slot);
@@ -306,7 +322,7 @@ public final class Villagers {
             }
             String role = "Nakasar_Peuples_" + village.people().id() + "_" + kind;
             String dialogue = village.people().id() + "_" + kind;
-            out.put(RESIDENT + h.id(), new Want(role, dialogue, ground(world, village, spot)));
+            out.put(RESIDENT + h.id() + ":" + kind, new Want(role, dialogue, ground(world, village, spot)));
             n++;
         }
     }

@@ -96,8 +96,9 @@ public final class Criers {
             for (Post post : Post.values()) {
                 Key key = new Key(village.id(), post);
                 Ref<EntityStore> npc = BY_VILLAGE.get(key);
-                if (raid || !held(village, post, store)) {
-                    // Raid : il s'enferme chez lui ; poste vacant (générations) : personne ne le tient.
+                if ((raid && post != Post.CHIEF) || !held(village, post, store)) {
+                    // Raid : crieur et marchand s'enferment chez eux (le chef reste sur la place, il a ses mots de raid) ;
+                    // poste vacant (générations) : personne ne le tient.
                     if (npc != null) {
                         BY_VILLAGE.remove(key);
                         SPAWNED.remove(npc);

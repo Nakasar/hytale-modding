@@ -1907,8 +1907,10 @@ réponses dans la colonne « Décision de Kevin »). Page joueur : `docs/wiki/pe
 - Habitants sans poste montés (8 au plus, slot `hab:<id>`) : apprenti près du poste de son maître, adulte devant son
   logis, ancien retiré sur la place ; chez eux la nuit. Rôles `Nakasar_Peuples_<Peuple>_{Apprentice,Resident,Retired}`
   et dialogues `<Peuple>_<Sorte>` (`tools/generate_population.py`).
-- Raid actif : chaque villageois rentre devant son logis (ou le refuge) et disparaît à 3 blocs ou au bout de 30 s ; chef,
-  crieur, marchand disparaissent tout de suite ; rien ne réapparaît avant la fin du raid.
+- Raid actif : chaque villageois rentre devant son logis (ou le refuge) et disparaît à 3 blocs ou au bout de 30 s ;
+  crieur et marchand disparaissent tout de suite ; rien ne réapparaît avant la fin du raid. Les gardes et guetteurs en
+  poste (métiers « braves ») et le chef restent dehors : leurs dialogues de raid (« Aux armes ! ») restent atteignables.
+- Un habitant sans poste a le slot `hab:<id>:<sorte>` : changer de stade change de slot et refait le PNJ.
 - Les enfants qui jouent sur la place sont les vrais enfants du registre (jusqu'à palier + 1, liés par
   `Population.bind`) ; un enfant devenu apprenti quitte les jeux.
 - Fenêtre de dialogue : le nom affiché est celui de la fiche (`#NpcName`), et la ligne sous la réplique (`#Aside`, s'il
@@ -1916,7 +1918,7 @@ réponses dans la colonne « Décision de Kevin »). Page joueur : `docs/wiki/pe
 
 ### Raids (`RaidLosses`, `raid/Raids`)
 
-- Gardes : chaque garde posé est lié à un habitant valide (titulaires de garde, puis braves, puis les autres). Tombé, il
+- Gardes : chaque garde posé est lié à un adulte valide (les braves d'abord, hors gardes et guetteurs en poste). Tombé, il
   est blessé jusqu'au lendemain inclus (`Wounded`), jamais mort.
 - Raid perdu (Kevin) : un grand bâtiment debout du plus haut palier au hasard (comme avant). Bâtiment de métier ou projet
   de terrain au niveau II+ : il perd un niveau (connaissance 0, amélioration annulée, commandes retirées), personne ne
