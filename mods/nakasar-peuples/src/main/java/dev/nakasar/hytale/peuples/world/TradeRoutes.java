@@ -528,25 +528,26 @@ public final class TradeRoutes {
     }
 
     /**
-     * Les cases que la caravane vers `receiver` peut porter : toutes si l'équilibre tient ou si le crédit paie le manque
-     * (il est alors consommé) ; sinon on retire la case la plus lourde jusqu'à tenir.
+     * Les cases que la caravane vers `receiver` peut porter : celles que couvrent ses exportations plus son crédit, en
+     * retirant d'abord la case la plus lourde. Le crédit n'est pas débité ici : {@link #spendCredit} le fait une fois la
+     * cargaison chargée.
      */
     static List<String> cleared(Route r, String receiver) {
         List<String> cases = new ArrayList<>(r.importsOf(receiver));
-        int deficit = deficit(r, receiver);
-        if (deficit == 0) {
-            return cases;
-        }
-        if (r.credit(receiver) >= deficit) {
-            r.addCredit(receiver, -deficit);
-            return cases;
-        }
         int budget = weight(r.exportsOf(receiver)) + r.credit(receiver);
         cases.sort((x, y) -> TradeGoods.grade(y).weight() - TradeGoods.grade(x).weight());
         while (!cases.isEmpty() && weight(cases) > budget) {
             cases.remove(0);
         }
         return cases;
+    }
+
+    /** Débite le crédit de `receiver` du manque de poids de ce que la caravane porte vraiment. */
+    static void spendCredit(Route r, String receiver, List<String> loaded) {
+        int used = weight(loaded) - weight(r.exportsOf(receiver));
+        if (used > 0) {
+            r.addCredit(receiver, -Math.min(used, r.credit(receiver)));
+        }
     }
 
     // ---- Matin ----
@@ -582,6 +583,11 @@ public final class TradeRoutes {
             }
             if (r.auto) {
                 autoCases(world, r, x, y, day);
+                if (r.exportsA.isEmpty()) {
+                    // Plus rien à échanger dans les deux sens : la route autonome libère ses places.
+                    drop(world, store, r, "idle");
+                    continue;
+                }
             }
             if (day >= r.next) {
                 TradeCaravans.dispatch(world, store, r, x, y);
@@ -627,47 +633,73 @@ public final class TradeRoutes {
                 continue;
             }
             for (Village o : candidates(world, v)) {
-                if (used(world, o) < slots(world, o, day)) {
-                    Route r = create(world, v, o, true, day);
-                    autoCases(world, r, v, o, day);
-                    save(world, r);
-                    autos++;
-                    break;
+                if (used(world, o) >= slots(world, o, day)) {
+                    continue;
                 }
+                Route trial = new Route(v.id(), o.id());
+                autoCases(world, trial, v, o, day);
+                if (trial.exportsA.isEmpty()) {
+                    continue; // rien à échanger : pas de route morte qui occuperait les places
+                }
+                Route r = create(world, v, o, true, day);
+                r.exportsA.addAll(trial.exportsA);
+                r.exportsB.addAll(trial.exportsB);
+                save(world, r);
+                autos++;
+                break;
             }
         }
     }
 
     /**
-     * Cases d'une route autonome : chaque bout exporte ce qu'il produit et dont l'autre manque, luxes d'abord, sans
-     * dépasser le niveau ; les deux côtés gardent le même nombre de cases (équilibre à peu près tenu).
+     * Cases d'une route autonome : chaque bout exporte ce qu'il produit et dont l'autre manque, par paires de même classe
+     * (luxe contre luxe, puis fine, puis commune) pour que l'équilibre tienne sans crédit ; au plus le niveau de la route.
      */
     static void autoCases(World world, Route r, Village x, Village y, long day) {
-        List<String> fromX = pickAuto(world, r, x, y, day);
-        List<String> fromY = pickAuto(world, r, y, x, day);
-        int n = Math.min(r.level, Math.max(1, Math.min(fromX.size(), fromY.size())));
-        r.exportsOf(x.id()).clear();
-        r.exportsOf(y.id()).clear();
-        r.exportsOf(x.id()).addAll(fromX.subList(0, Math.min(n, fromX.size())));
-        r.exportsOf(y.id()).addAll(fromY.subList(0, Math.min(n, fromY.size())));
+        List<String> fromX = new ArrayList<>(pickAuto(world, r, x, y, day));
+        List<String> fromY = new ArrayList<>(pickAuto(world, r, y, x, day));
+        List<String> outX = r.exportsOf(x.id());
+        List<String> outY = r.exportsOf(y.id());
+        outX.clear();
+        outY.clear();
+        for (TradeGoods.Grade g : new TradeGoods.Grade[] {TradeGoods.Grade.LUXURY, TradeGoods.Grade.FINE, TradeGoods.Grade.COMMON}) {
+            while (outX.size() < r.level) {
+                String a = first(fromX, g);
+                String b = first(fromY, g);
+                if (a == null || b == null) {
+                    break;
+                }
+                outX.add(a);
+                outY.add(b);
+                fromX.remove(a);
+                fromY.remove(b);
+            }
+        }
+    }
+
+    private static String first(List<String> items, TradeGoods.Grade g) {
+        for (String item : items) {
+            if (TradeGoods.grade(item) == g) {
+                return item;
+            }
+        }
+        return null;
     }
 
     private static List<String> pickAuto(World world, Route r, Village sender, Village receiver, long day) {
         Map<String, TradeCatalogue.Source> cat = TradeCatalogue.of(world, sender, r.key, day);
-        List<String> lux = new ArrayList<>();
+        // Ce qui manque au receveur d'abord (sans exclure ce qu'il a déjà : la route garde ses cases d'un jour à l'autre).
+        List<String> lacking = new ArrayList<>();
         List<String> rest = new ArrayList<>();
+        TradeGoods.Luxury own = TradeGoods.terroir(receiver.people());
         for (String item : cat.keySet()) {
-            if (!TradeGoods.allowed(receiver.people(), item) || TradeAccess.has(world, receiver, item, day + 2)) {
+            if (!TradeGoods.allowed(receiver.people(), item) || (own != null && own.item().equals(item))) {
                 continue;
             }
-            TradeGoods.Luxury own = TradeGoods.terroir(receiver.people());
-            if (own != null && own.item().equals(item)) {
-                continue;
-            }
-            (TradeGoods.isLuxury(item) ? lux : rest).add(item);
+            (TradeAccess.has(world, receiver, item, day) ? rest : lacking).add(item);
         }
-        lux.addAll(rest);
-        return lux;
+        lacking.addAll(rest);
+        return lacking;
     }
 
     // ---- Livraisons ----

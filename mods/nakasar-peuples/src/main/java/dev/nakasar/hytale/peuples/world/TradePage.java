@@ -114,7 +114,7 @@ public final class TradePage extends InteractiveCustomUIPage<TradePage.Event> {
                 : Message.translation(KEYS + "lux.next").param("tier", Message.translation(dev.nakasar.hytale.peuples.village.Tiers.nameKey(target)))
                 .param("need", TradeAccess.needAt(target));
         cmd.set("#LuxHeader.TextSpans", Message.translation(KEYS + "lux.header").param("count", count).param("total", TradeGoods.LUXURIES.size()));
-        cmd.set("#LuxLine.TextSpans", Message.translation(KEYS + "lux.line").param("need", need).param("bonus", TradeAccess.bonus(v)));
+        cmd.set("#LuxLine.TextSpans", Message.translation(KEYS + "lux.line").param("need", need).param("bonus", TradeAccess.bonus(world, v, day)));
         TradeGoods.Luxury own = TradeGoods.terroir(v.people());
         for (int i = 0; i < TradeGoods.LUXURIES.size(); i++) {
             TradeGoods.Luxury l = TradeGoods.LUXURIES.get(i);

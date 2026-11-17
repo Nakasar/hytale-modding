@@ -350,7 +350,7 @@ public final class WorldCommand extends AbstractCommandCollection {
                     TradeAccess.force(world, v, l.item(), day, TradeAccess.DELIVERY_DAYS);
                 }
                 player.sendMessage(Message.translation(TradeRoutes.KEYS + "cmd.access").param("village", v.name())
-                        .param("count", TradeAccess.count(world, v, day)).param("bonus", TradeAccess.bonus(v)));
+                        .param("count", TradeAccess.count(world, v, day)).param("bonus", TradeAccess.bonus(world, v, day)));
                 return;
             }
             String dest = to.get(context);
@@ -411,7 +411,7 @@ public final class WorldCommand extends AbstractCommandCollection {
             }
             player.sendMessage(Message.translation(TradeRoutes.KEYS + "cmd.header").param("village", v.name()).param("count", routes.size())
                     .param("slots", TradeRoutes.slots(world, v, day)).param("luxuries", TradeAccess.count(world, v, day))
-                    .param("bonus", TradeAccess.bonus(v)));
+                    .param("bonus", TradeAccess.bonus(world, v, day)));
             for (TradeRoutes.Route x : TradeRoutes.of(world, v)) {
                 player.sendMessage(TradeRoutes.describe(world, x));
             }

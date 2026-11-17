@@ -1900,8 +1900,12 @@ Textes, onglet, demandes et dialogue : `tools/generate_trade.py`.
   dans la boîte `~inbox:<village>`, vidée quand le dépôt est chargé), accès, +1 essor, passage `Links.pass`, influence
   du lieu-dit (`Allegiance.merchantArrived`). Dialogue `Monde_Commerce` (TradeShop, TradeWhere), rumeurs.
 - **Accès** (`TradeAccess`, partie `TradeAccess`, `village|objet = dernier jour`) : 7 jours par livraison. Au matin,
-  2 luxes du dépôt chargé prolongent de 3 jours un accès qui finit (dont ceux des demandes « Luxe d'ailleurs »,
-  `Requests/<Peuple>/Luxe/`, Gather palier ≥ 2, tirées seulement si le village n'a pas ce luxe).
+  2 luxes du dépôt chargé prolongent de 3 jours un accès qui finit. Une demande « Luxe d'ailleurs » remplie
+  (`Requests/<Peuple>/Luxe/`, Gather palier ≥ 2, tirée seulement si le village n'a pas ce luxe) donne 3 jours d'accès
+  (`Requests.fulfil` → `TradeAccess.delivered` : la demande retire les luxes du dépôt). Bonus d'essor calculé à la volée.
+- Routes autonomes : cases par paires de même classe (équilibre sans crédit) ; ouvertes seulement s'il y a quelque
+  chose à échanger, fermées dès qu'il n'y a plus rien. Crédit débité du manque réel une fois la caravane chargée ;
+  route fermée ou rompue : la cargaison en route revient au dépôt de départ.
 - **Luxes** : `Plant_Fruit_Azure` (Kweebec), `Ingredient_Leather_Heavy` (Trork), `Ingredient_Spices` (Feran),
   `Food_Cheese` (Renoncé), `Ingredient_Crystal_Purple` (Slothian), `Ingredient_Bar_Gold`, `Ingredient_Bolt_Silk`,
   `Food_Fish_Raw_Rare`, `Food_Pie_Apple`. Compte = luxes en accès + terroir au palier ≥ 2 (Kevin). Chantier du palier

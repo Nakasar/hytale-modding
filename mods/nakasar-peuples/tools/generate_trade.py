@@ -290,6 +290,8 @@ TEXTS = [
     ("downgraded", "Trois caravanes perdues : la route entre {a} et {b} retombe au niveau {level}.",
      "Three caravans lost: the route between {a} and {b} drops back to level {level}."),
     ("closed", "La route commerciale entre {a} et {b} est fermée.", "The trade route between {a} and {b} is closed."),
+    ("idle", "La route autonome entre {a} et {b} n'a plus rien à échanger : elle est fermée.",
+     "The autonomous route between {a} and {b} has nothing left to trade: it is closed."),
     ("broken", "Quatorze jours de brouille : la route entre {a} et {b} est rompue.",
      "Fourteen days of quarrel: the route between {a} and {b} is broken."),
     ("suspended", "La route entre {a} et {b} est suspendue (rivalité ou embargo) ; elle sera rompue dans {days} jours.",

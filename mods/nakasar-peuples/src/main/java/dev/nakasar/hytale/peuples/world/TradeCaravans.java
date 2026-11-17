@@ -159,10 +159,16 @@ public final class TradeCaravans {
         Ambushes.cancel(store, c.walkKey());
     }
 
-    /** La route est fermée : ses caravanes rentrent (retirées, cargaison perdue pour personne). */
+    /** La route est fermée : ses caravanes rentrent, leur cargaison revient au dépôt du village de départ. */
     static void dropRoute(World world, Store<EntityStore> store, String route) {
         for (Caravan c : all(world)) {
             if (c.route.equals(route)) {
+                Village from = TradeRoutes.village(world, c.from);
+                if (from != null && !c.cargo.isEmpty()) {
+                    List<ItemStack> goods = new ArrayList<>();
+                    c.cargo.forEach((item, n) -> goods.add(new ItemStack(item, n)));
+                    TradeRoutes.deliver(world, from, goods);
+                }
                 drop(world, store, c);
             }
         }
@@ -220,6 +226,7 @@ public final class TradeCaravans {
             TradeRoutes.announce(world, from, Message.translation(TradeRoutes.KEYS + "empty").param("to", TradeRoutes.name(world, to)), NotificationStyle.Warning);
             return null;
         }
+        TradeRoutes.spendCredit(r, to.id(), new ArrayList<>(c.cargo.keySet()));
         save(world, c);
         PeuplesPlugin.get().getLogger().atInfo().log("Peuples (commerce) : caravane %s → %s (%s)", from.id(), to.id(), c.format());
         return c;

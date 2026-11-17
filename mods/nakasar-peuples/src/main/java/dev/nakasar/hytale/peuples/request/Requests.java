@@ -545,6 +545,10 @@ public final class Requests {
         if (t == null || village == null) {
             return;
         }
+        // Routes commerciales : « Luxe d'ailleurs » remplie, le village a ce luxe trois jours de plus.
+        if (t.getId().contains(dev.nakasar.hytale.peuples.world.TradeAccess.REQUEST_MARK)) {
+            dev.nakasar.hytale.peuples.world.TradeAccess.delivered(world, village, t.itemId(), GameClock.day(store));
+        }
         // Conquête : une commande de lieu-dit rendue aux couleurs d'un village lui gagne de l'influence.
         dev.nakasar.hytale.peuples.world.Allegiance.playerOrder(world, store, ref, village);
         if (t.favors() > 0) {

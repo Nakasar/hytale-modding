@@ -86,6 +86,7 @@ world.trade.opened = Une route commerciale s'ouvre entre {a} et {b}.
 world.trade.raised = La route entre {a} et {b} passe au niveau {level}.
 world.trade.downgraded = Trois caravanes perdues : la route entre {a} et {b} retombe au niveau {level}.
 world.trade.closed = La route commerciale entre {a} et {b} est fermée.
+world.trade.idle = La route autonome entre {a} et {b} n'a plus rien à échanger : elle est fermée.
 world.trade.broken = Quatorze jours de brouille : la route entre {a} et {b} est rompue.
 world.trade.suspended = La route entre {a} et {b} est suspendue (rivalité ou embargo) ; elle sera rompue dans {days} jours.
 world.trade.empty = La caravane vers {to} ne part pas : le dépôt n'a rien de ce qu'elle devait porter.

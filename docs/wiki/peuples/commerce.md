@@ -58,7 +58,7 @@ Neuf ressources sont des **luxes** :
 
 Un luxe compte tant que le village y a accès ; celui de son terroir compte dès le palier 2. Il en faut **1** pour le chantier du palier 2, **3** pour celui du palier 3 et **4** pour qu'un colon vienne. Chaque luxe en plus donne **+5 % d'essor** (+25 % au plus). Un village ne perd jamais son palier faute de luxes.
 
-Deux luxes posés au dépôt prolongent l'accès de 3 jours quand il touche à sa fin : les demandes **Luxe d'ailleurs** du tableau (à partir du palier 2) vous demandent justement un luxe qui manque au village.
+Deux luxes posés au dépôt prolongent l'accès de 3 jours quand il touche à sa fin. Les demandes **Luxe d'ailleurs** du tableau (à partir du palier 2) vous demandent un luxe qui manque au village : une fois remplie, le village y a accès 3 jours.
 
 ## Sur la route
 

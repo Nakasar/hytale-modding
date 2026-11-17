@@ -38,8 +38,6 @@ public final class TradeAccess {
     /** Marque des demandes « Luxe d'ailleurs » (ids {@code <Peuple>_Luxe_<luxe>}, tools/generate_trade.py). */
     public static final String REQUEST_MARK = "_Luxe_";
 
-    /** Bonus d'essor (%) par village, recalculé chaque matin et à chaque livraison. */
-    private static final Map<String, Integer> BONUS = new ConcurrentHashMap<>();
     /** Reste fractionnaire du bonus d'essor par village (centièmes). */
     private static final Map<String, Integer> CARRY = new ConcurrentHashMap<>();
 
@@ -57,7 +55,11 @@ public final class TradeAccess {
         if (until > was) {
             part(world).put(key, Long.toString(until));
         }
-        refresh(world, v, day);
+    }
+
+    /** Un joueur a rempli une demande « Luxe d'ailleurs » : {@value #CONSUME_DAYS} jours d'accès de plus. */
+    public static void delivered(World world, Village v, String item, long day) {
+        grant(world, v, item, Math.max(day, until(world, v, item)) + CONSUME_DAYS, day);
     }
 
     /** Dernier jour d'accès (ou {@code Long.MIN_VALUE}). */
@@ -129,27 +131,21 @@ public final class TradeAccess {
         return v.isHamlet() ? 0 : Math.max(0, SETTLER - count(world, v, day));
     }
 
-    /** Bonus d'essor (%) du village (cache du matin). */
-    public static int bonus(Village v) {
-        return BONUS.getOrDefault(v.id(), 0);
-    }
-
-    static void refresh(World world, Village v, long day) {
+    /** Bonus d'essor (%) du village ce jour, calculé à la volée (rien à perdre au redémarrage). */
+    public static int bonus(World world, Village v, long day) {
         if (v.isHamlet()) {
-            return;
+            return 0;
         }
         int extra = count(world, v, day) - needAt(v.tier());
-        int bonus = Math.min(BONUS_MAX, Math.max(0, extra) * BONUS_STEP);
-        if (bonus > 0) {
-            BONUS.put(v.id(), bonus);
-        } else {
-            BONUS.remove(v.id());
-        }
+        return Math.min(BONUS_MAX, Math.max(0, extra) * BONUS_STEP);
     }
 
     /** Essor en plus pour un gain de `amount` (bonus des luxes, avec reste fractionnaire). Appelé par {@link Villages#addEssor}. */
     public static int extraEssor(Village v, int amount) {
-        int bonus = bonus(v);
+        // Les routes commerciales vivent dans le monde par défaut (WorldLifeSystem).
+        World world = com.hypixel.hytale.server.core.universe.Universe.get().getDefaultWorld();
+        int bonus = world == null || amount <= 0 ? 0
+                : bonus(world, v, dev.nakasar.hytale.peuples.request.GameClock.day(world.getEntityStore().getStore()));
         if (bonus <= 0 || amount <= 0) {
             return 0;
         }
@@ -180,8 +176,7 @@ public final class TradeAccess {
                     }
                 }
             }
-            refresh(world, v, day);
-        }
+            }
     }
 
     /** Admin : ouvre l'accès à un objet (commande). */
@@ -190,7 +185,6 @@ public final class TradeAccess {
     }
 
     public static void clearAll() {
-        BONUS.clear();
         CARRY.clear();
     }
 }
