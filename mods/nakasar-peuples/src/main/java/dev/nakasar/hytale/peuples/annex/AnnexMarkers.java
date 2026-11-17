@@ -59,8 +59,14 @@ public final class AnnexMarkers {
                 }
                 Workshop w = Workshop.get(a.id());
                 Message building = w != null ? Message.translation(w.nameKey()) : Message.raw(a.id());
-                Message name = Message.translation(KEYS + (a.working() ? "marker.works" : "marker"))
-                        .param("building", building).param("village", village.name());
+                // Ouvrages : l'occupant, le siège ou la ruine se lisent dans le nom du repère.
+                Village holder = a.occupied() ? Villages.registry(world).byId(a.occupant()) : null;
+                Village besieger = a.besieged() ? Villages.registry(world).byId(a.siegeBy()) : null;
+                String key = a.ruined() ? "marker.ruin" : a.working() ? "marker.works" : besieger != null ? "marker.besieged"
+                        : holder != null ? "marker.occupied" : "marker";
+                Message name = Message.translation(KEYS + key)
+                        .param("building", building).param("village", village.name())
+                        .param("holder", holder == null ? "?" : holder.name()).param("by", besieger == null ? "?" : besieger.name());
                 MapMarker marker = new MapMarkerBuilder("Nakasar_Peuples_Annex_" + village.id() + "_" + a.id(), ICON,
                         new Transform(a.x() + 0.5, a.y(), a.z() + 0.5))
                         .withName(name).withCompassImage(COMPASS_ICON).build();

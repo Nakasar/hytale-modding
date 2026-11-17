@@ -1413,6 +1413,50 @@ Les tas de rondins et de pierres à côté des scieries et des mines sont les pr
 - Les cibles des commandes de chasse apparaissent autour du village, pas de l'avant-poste.
 - Les Feran n'ont qu'une petite hutte vanilla (`Tier3_Huts_001`) : cinq de leurs avant-postes se ressemblent.
 
+## Familles de bâtiments : production, ouvrages, projets
+
+Kevin (2026-11-16, doc « Structurer les types de bâtiments », commentaires inclus) : trois familles sur le même socle
+(bâtiment de métier, rang Ami).
+
+- **Production** (`Workshop.Annex.Family` = `Production`, `tools/outposts.py` `TYPES`) : Ferme, Mine/Bosquet, Scierie,
+  Pêcherie, Chasse ; un par type, dès le palier 2 (`PRODUCTION_TIER`). Le gisement est mesuré à la pose
+  (`Annexes.deposit`) et sauvé dans `AnnexState.Yield` (×1,5 riche, ×0,75 pauvre) ; `AnnexChests.lotSize` l'applique.
+- **Infrastructure / ouvrages** (`Family` = `Infrastructure`, `outposts.INFRA_DATA`) : Tour de garde (6, palier 2),
+  Poste routier (4, palier 2, règle `ROAD` : balise à moins de `Beacon` blocs), Fortin (2, palier 3), Forteresse (1,
+  palier 3). Plusieurs exemplaires = copies d'asset `<P>_AP_<Type>_<n>` (champ `Slot`, `Orders` → commandes du
+  modèle ; `Workshop.orders()`, `Workshops.holder`). Les limites ne bornent que la construction (`Annexes.counted`
+  ignore les ouvrages perdus). Effets dans `annex/Infrastructures` (annonce de raid, embuscades épargnées, territoire,
+  gardes de lieu-dit, palier gardé, +1 lieu-dit). Capture et siège dans `annex/Ouvrages` : demande Hôte + 5 faveurs
+  au village rival (relation ≤ −40, palier 3, pas de trêve, recharge d'expédition), marche minutée
+  (`MARCH_PER_BLOCK`), assaut réel si un joueur est à `WorldLife.REAL_RANGE` (disque de prise 6 blocs, 15 s,
+  particule `Warning_60`), sinon résolution par forces ; reprise par le propriétaire (Ami), perte après 14 jours,
+  reprise spontanée au bout de 3 jours. Un raid sur quatre vise un ouvrage à 400 blocs (`Raids.begin`), perdu il le
+  rase (`Ouvrages.raze`, bilan `raid.report.ouvrage`) ; ruine dégagée au passage, reconstruction à moitié prix, 12 h.
+  Onglet **Ouvrages** (`annex/OuvragePage`, `OuvragePage*.ui` de `tools/generate_workshop_ui.py`).
+- **Projets** (`tools/plots.py`) : terrains E1 (palier 2), E2 (palier 3), E3 (palier 2). `category` / `legacy` par
+  projet → champs `Category` / `Legacy` du Workshop ; `Plots.refusal` : un projet par catégorie sauf Artisanat (3),
+  projets hérités cachés du catalogue (ceux déjà bâtis tournent encore). Effets dans `workshop/Projects` (Caserne
+  1 + niveau gardes en raid, Garnison +1 garde, Bibliothèque savoir-faire +15 %, Temple essor +10 %, Protection 1/2).
+  L'Ambassade garde l'id `Conseil` ; Garnison y est remplacée par Hérauts (`Relations` : remontée ×2) et une
+  spécialité retirée est effacée avec choix gratuit (`Workshops.refresh`). Ateliers : `plots.INPUTS` → `Inputs` du
+  Workshop, prélevés chaque matin par `workshop/Inputs` ; à l'arrêt sans eux (`WorkshopState.Stopped` : boutique et
+  Part de l'Hôte fermées).
+
+### Pas encore fait (familles)
+
+- Poste routier : halte de nuit des convois ; Fortin comme point de départ des expéditions ; gardes d'ouvrage plus
+  solides avec la Caserne ; forteresse prise comptée pour le plafond de lieux-dits de l'occupant.
+- Bibliothèque : effets Cartographes (carte) et Maîtres (commandes de maître réduites) ; Temple : Bénédiction et fête
+  hebdomadaire ; Négociants à 30 d'influence (la spécialité garde l'effet de l'ancienne Diplomatie).
+- Slothians : pas encore d'atelier ; les Renoncés n'ont pas de Caserne (Chenil = Défense, sans Garnison).
+- Carte : le nom du repère dit occupant, siège ou ruine ; pas de couleur de bannière ni de clignotement.
+
+### À vérifier en jeu (familles)
+
+- Les trois terrains de la page Projets (largeur des boutons), la liste qui défile.
+- Les prefabs des nouveaux projets (orientation, entrée) et les gisements mesurés.
+- Le disque de prise d'un ouvrage et la reprise.
+
 ## Quête « Baliser une route » (`request/RouteQuests`)
 
 Kevin (2026-11-15) : au lieu de générer des routes, une demande de village invite le joueur à en baliser une. Type
