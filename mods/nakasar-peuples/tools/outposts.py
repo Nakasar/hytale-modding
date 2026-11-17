@@ -607,7 +607,7 @@ LANG = {
     "annex.ouvrage.announce": ("{village} marche sur {building} de {owner} (tenu par {holder}), en {x} {z}.", "{village} marches on the {building} of {owner} (held by {holder}), at {x} {z}."),
     "annex.ouvrage.retakeAnnounce": ("{village} part reprendre son ouvrage ({building}) à {holder}, en {x} {z}.", "{village} sets out to retake its {building} from {holder}, at {x} {z}."),
     "annex.ouvrage.lost": ("{building} est définitivement perdu au profit de {village} ({days} jours sans le reprendre).", "{building} is lost for good to {village} ({days} days without retaking it)."),
-    "annex.ouvrage.assault": ("Assaut de {village} sur {building} ! Ses soldats doivent tenir le cercle 15 s sans défenseur dedans.", "{village} assaults the {building}! Its soldiers must hold the circle for 15 s with no defender inside."),
+    "annex.ouvrage.assault": ("Assaut de {village} sur {building} ! Son camp doit tenir le cercle 15 s sans défenseur dedans : soldats et joueurs comptent.", "{village} assaults the {building}! Its side must hold the circle for 15 s with no defender inside: soldiers and players count."),
     "annex.ouvrage.taken": ("{village} a pris {building} de {owner} à {holder}.", "{village} took the {building} of {owner} from {holder}."),
     "annex.ouvrage.retaken": ("{village} a repris son ouvrage ({building}) à {holder}.", "{village} retook its {building} from {holder}."),
     "annex.ouvrage.repelled": ("L'assaut de {village} sur {building} est repoussé par {holder}.", "The assault of {village} on the {building} is repelled by {holder}."),

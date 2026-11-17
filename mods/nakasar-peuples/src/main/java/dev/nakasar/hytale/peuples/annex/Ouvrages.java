@@ -43,7 +43,7 @@ import java.util.concurrent.ConcurrentHashMap;
  *   {@value #OFFERING} faveurs. La troupe marche ({@value #MARCH_PER_BLOCK} s de jeu par bloc, une heure au moins) ;
  *   pendant ce temps l'ouvrage est assiégé et son effet suspendu ;</li>
  *   <li><b>Assaut</b> : un joueur à moins de {@value WorldLife#REAL_RANGE} blocs, c'est un vrai combat (soldats camp 1
- *   contre gardes camp 0) : l'attaquant doit tenir seul le disque de capture de {@value #CAPTURE_RADIUS} blocs autour du
+ *   contre gardes camp 0) : l'attaquant (soldats et joueurs de son camp) doit tenir seul le disque de capture de {@value #CAPTURE_RADIUS} blocs autour du
  *   panneau pendant {@value #CAPTURE_SECONDS} s (disque rouge au sol, à sa taille exacte), {@value #ASSAULT_SECONDS} s au
  *   plus. Personne : réglé seul (soldats × palier contre gardes × palier + tours de garde proches, à 20 % près). Les
  *   combattants sont des rôles de défenseurs amicaux envers les joueurs : ils gardent la régénération vanilla hors
@@ -373,11 +373,14 @@ public final class Ouvrages {
         for (Ref<EntityStore> ref : f.attackers) {
             WorldLife.leash(store, ref, centre);
         }
-        if (f.attackers.isEmpty()) {
+        // Les joueurs comptent aussi (Kevin, 2026-11-17) : un joueur dans le disque est du camp du village où son rang est
+        // le plus haut (Ami au moins) ; à rang égal, il ne compte pour personne.
+        int[] players = playersWithin(world, store, centre, attacker, holder);
+        if (f.attackers.isEmpty() && players[0] == 0) {
             defend(world, store, w, attacker, holder);
             return;
         }
-        boolean held = f.defenders.isEmpty() && anyWithin(store, f.attackers, centre);
+        boolean held = f.defenders.isEmpty() && players[1] == 0 && (players[0] > 0 || anyWithin(store, f.attackers, centre));
         if (held) {
             if (f.clearSince == 0) {
                 f.clearSince = now;
@@ -389,12 +392,35 @@ public final class Ouvrages {
             f.clearSince = 0;
         }
         if (now - f.started >= ASSAULT_SECONDS * 1000L) {
-            if (f.attackers.size() > f.defenders.size()) {
-                win(world, store, w, attacker, holder, f.attackers.size());
+            if (f.attackers.size() + players[0] > f.defenders.size() + players[1]) {
+                win(world, store, w, attacker, holder, Math.max(1, f.attackers.size()));
             } else {
                 defend(world, store, w, attacker, holder);
             }
         }
+    }
+
+    /** Joueurs dans le disque de prise : {camp attaquant, camp défenseur}. */
+    private static int[] playersWithin(World world, Store<EntityStore> store, Vector3d centre, Village attacker, Village holder) {
+        int[] out = new int[2];
+        for (PlayerRef p : world.getPlayerRefs()) {
+            Ref<EntityStore> ref = p.getReference();
+            if (ref == null || !ref.isValid()) {
+                continue;
+            }
+            Vector3d at = Requests.position(store, ref);
+            if (at == null || !Telegraphs.inCircle(at, centre, CAPTURE_RADIUS)) {
+                continue;
+            }
+            Rank forAttacker = Reputations.rank(store, ref, attacker);
+            Rank forHolder = Reputations.rank(store, ref, holder);
+            if (forAttacker.atLeast(Rank.AMI) && forAttacker != forHolder && forAttacker.atLeast(forHolder)) {
+                out[0]++;
+            } else if (forHolder.atLeast(Rank.AMI) && forHolder != forAttacker && forHolder.atLeast(forAttacker)) {
+                out[1]++;
+            }
+        }
+        return out;
     }
 
     private static boolean anyWithin(Store<EntityStore> store, List<Ref<EntityStore>> refs, Vector3d centre) {
