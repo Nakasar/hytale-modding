@@ -59,9 +59,37 @@ public final class Villagers {
     public record Posted(String village, String slot, String dialogue) {
     }
 
-    /** Ce qu'un poste veut : rôle, dialogue, cible du moment. */
-    private record Want(String role, String dialogue, Vector3d target) {
+    /** Ce qu'un poste veut : rôle, dialogue, cible du moment ; `shelter` : il rentre se mettre à l'abri (raid). */
+    private record Want(String role, String dialogue, Vector3d target, boolean shelter) {
+
+        Want(String role, String dialogue, Vector3d target) {
+            this(role, dialogue, target, false);
+        }
+
+        Want sheltering() {
+            return new Want(role, dialogue, target, true);
+        }
     }
+
+    /**
+     * Slots des habitants sans poste (apprentis, adultes sans métier, anciens) : {@code hab:<id>:<sorte>}. La sorte est
+     * dans le slot : un habitant qui change de stade quitte son slot, son PNJ est refait avec le bon rôle.
+     */
+    public static final String RESIDENT = "hab:";
+
+    /** Id de l'habitant d'un slot {@code hab:<id>:<sorte>}. */
+    public static String residentId(String slot) {
+        String rest = slot.substring(RESIDENT.length());
+        int colon = rest.indexOf(':');
+        return colon < 0 ? rest : rest.substring(0, colon);
+    }
+    /** Habitants sans poste montés au plus par village. */
+    public static final int MAX_RESIDENTS = 8;
+    /** Pendant un raid, un villageois arrivé à moins de ces blocs de chez lui, ou en route depuis ces secondes, s'enferme. */
+    private static final double SHELTER_REACH = 3.0;
+    private static final float SHELTER_SECONDS = 30f;
+    /** Temps passé par chaque villageois à rentrer s'abriter. */
+    private static final Map<Ref<EntityStore>, Float> SHELTERING = new IdentityHashMap<>();
 
     private static final Map<Key, Ref<EntityStore>> BY_SLOT = new HashMap<>();
     private static final Map<Ref<EntityStore>, Posted> POSTED = Collections.synchronizedMap(new IdentityHashMap<>());
@@ -98,7 +126,7 @@ public final class Villagers {
             if (!near(village, players, RANGE)) {
                 continue;
             }
-            place(world, store, village, wanted(world, village, layout, night), null, players, day, dt);
+            place(world, store, village, wanted(world, village, layout, night, day), null, players, day, dt);
         }
     }
 
@@ -138,6 +166,20 @@ public final class Villagers {
                     ref = null;
                 }
                 Want want = e.getValue();
+                if (want.shelter()) {
+                    // Raid : personne ne sort ; celui qui est dehors rentre chez lui et s'y enferme (retiré, intouchable).
+                    if (ref != null) {
+                        follow(store, ref, want.target(), players, dt);
+                        Vector3d at = Requests.position(store, ref);
+                        float t = SHELTERING.getOrDefault(ref, 0f) + dt;
+                        SHELTERING.put(ref, t);
+                        if (at == null || at.distanceSquared(want.target()) <= SHELTER_REACH * SHELTER_REACH || t >= SHELTER_SECONDS) {
+                            SHELTERING.remove(ref);
+                            despawn(store, key);
+                        }
+                    }
+                    continue;
+                }
                 if (ref == null) {
                     Long death = DEATHS.get(key);
                     if (death != null && death >= day) {
@@ -151,9 +193,51 @@ public final class Villagers {
         }
     }
 
-    /** Postes voulus dans le village : métiers ouverts et aides du chantier, avec leur cible du moment. */
-    private static Map<String, Want> wanted(World world, Village village, VillageLayout layout, boolean night) {
+    /**
+     * Postes voulus dans le village : métiers ouverts tenus par un habitant valide, aides du chantier, habitants sans
+     * poste, avec leur cible du moment. Pendant un raid, tous rentrent s'abriter ({@link Want#shelter}).
+     */
+    private static Map<String, Want> wanted(World world, Village village, VillageLayout layout, boolean night, long day) {
+        Map<String, Want> out = wantedOutside(world, village, layout, night, day);
+        if (dev.nakasar.hytale.peuples.raid.Raids.isActive(village)) {
+            Map<String, Want> sheltered = new LinkedHashMap<>();
+            for (Map.Entry<String, Want> e : out.entrySet()) {
+                Want home = e.getValue();
+                VillageLayout.Job job = e.getKey().startsWith(RESIDENT) ? null : layout.job(e.getKey());
+                if (job != null && dev.nakasar.hytale.peuples.population.Traits.matches(dev.nakasar.hytale.peuples.population.Traits.BRAVE, job.id())) {
+                    // Gardes et guetteurs restent à leur poste : « Aux armes ! » (dialogues de raid).
+                    sheltered.put(e.getKey(), home);
+                    continue;
+                }
+                sheltered.put(e.getKey(), new Want(home.role(), home.dialogue(), shelterOf(world, village, layout, e.getKey(), home), true));
+            }
+            return sheltered;
+        }
+        return out;
+    }
+
+    /** Où rentre s'abriter le villageois du slot : son logis (refuge désigné pour un sans-logis), sinon où il est. */
+    private static Vector3d shelterOf(World world, Village village, VillageLayout layout, String slot, Want want) {
+        String home = null;
+        if (slot.startsWith(RESIDENT)) {
+            dev.nakasar.hytale.peuples.population.Inhabitant h = village.population().byId(residentId(slot));
+            home = h == null ? null : h.home();
+        } else {
+            VillageLayout.Job job = layout.job(slot);
+            home = job == null ? null : job.home();
+        }
+        if (home == null || home.isEmpty() || !village.isStanding(home)) {
+            String refuge = village.population().refuge();
+            home = refuge != null && dev.nakasar.hytale.peuples.population.Population.refugeOpen(village, village.population()) ? refuge : null;
+        }
+        VillageLayout.Building b = home == null ? null : layout.building(home);
+        return b == null ? want.target() : ground(world, village, front(b));
+    }
+
+    private static Map<String, Want> wantedOutside(World world, Village village, VillageLayout layout, boolean night, long day) {
         Map<String, Want> out = new LinkedHashMap<>();
+        dev.nakasar.hytale.peuples.population.PopulationState pop =
+                dev.nakasar.hytale.peuples.population.Population.applies(village) && village.population().seeded() ? village.population() : null;
         ChantierState chantier = village.chantier();
         List<VillageLayout.Building> works = new ArrayList<>();
         if (chantier != null) {
@@ -168,6 +252,13 @@ public final class Villagers {
         for (VillageLayout.Job job : layout.jobs()) {
             if (job.tier() > village.tier() || (!job.building().isEmpty() && !village.isStanding(job.building()))) {
                 continue;
+            }
+            if (pop != null) {
+                // Générations : un poste vacant reste vide, un titulaire blessé en défendant le village se repose.
+                dev.nakasar.hytale.peuples.population.Inhabitant holder = pop.holder(job.id());
+                if (holder == null || holder.convalescent(day)) {
+                    continue;
+                }
             }
             if (job.builder()) {
                 builder = job;
@@ -189,7 +280,51 @@ public final class Villagers {
                 out.put(HELPER + b.id(), new Want(builder.role(), builder.dialogue(), ground(world, village, front(b))));
             }
         }
+        if (pop != null) {
+            residents(world, village, layout, pop, night, day, out);
+        }
         return out;
+    }
+
+    /**
+     * Habitants sans poste : l'apprenti suit son maître (à côté de son poste) le jour, l'adulte sans métier reste devant
+     * son logis, l'ancien retiré s'assoit sur la place ; la nuit, chacun rentre chez lui. Les enfants sont à
+     * world/Surroundings.
+     */
+    private static void residents(World world, Village village, VillageLayout layout,
+                                  dev.nakasar.hytale.peuples.population.PopulationState pop, boolean night, long day, Map<String, Want> out) {
+        int n = 0;
+        for (dev.nakasar.hytale.peuples.population.Inhabitant h : pop.living()) {
+            if (n >= MAX_RESIDENTS) {
+                return;
+            }
+            dev.nakasar.hytale.peuples.population.Ages.Stage stage = h.stage(day);
+            if (h.hasJob() || stage == dev.nakasar.hytale.peuples.population.Ages.Stage.CHILD || h.convalescent(day)) {
+                continue;
+            }
+            VillageLayout.Building home = h.home().isEmpty() || !village.isStanding(h.home()) ? null : layout.building(h.home());
+            int offset = Math.floorMod(h.id().hashCode(), 5) - 2;
+            int[] spot;
+            String kind;
+            if (stage == dev.nakasar.hytale.peuples.population.Ages.Stage.APPRENTICE) {
+                kind = "Apprentice";
+                VillageLayout.Job master = layout.job(h.vocation());
+                spot = master != null && !night && pop.holder(master.id()) != null ? master.work()
+                        : home != null ? front(home) : new int[] {0, 0};
+                spot = new int[] {spot[0] + 1, spot[1] + (offset == 0 ? 1 : offset)};
+            } else if (stage == dev.nakasar.hytale.peuples.population.Ages.Stage.ELDER) {
+                kind = "Retired";
+                spot = night && home != null ? front(home) : new int[] {offset * 2, 4 + Math.abs(offset)};
+            } else {
+                kind = "Resident";
+                spot = home != null ? front(home) : new int[] {offset * 3, -5};
+                spot = new int[] {spot[0] + offset, spot[1]};
+            }
+            String role = "Nakasar_Peuples_" + village.people().id() + "_" + kind;
+            String dialogue = village.people().id() + "_" + kind;
+            out.put(RESIDENT + h.id() + ":" + kind, new Want(role, dialogue, ground(world, village, spot)));
+            n++;
+        }
     }
 
     /**
@@ -339,6 +474,7 @@ public final class Villagers {
         if (ref != null) {
             POSTED.remove(ref);
             STUCK.remove(ref);
+            SHELTERING.remove(ref);
             if (ref.isValid()) {
                 store.removeEntity(ref, RemoveReason.REMOVE);
             }
@@ -475,6 +611,7 @@ public final class Villagers {
         DEATHS.clear();
         DEAD_DIALOGUE.clear();
         STUCK.clear();
+        SHELTERING.clear();
         GROUND.clear();
         SHIFTED.clear();
     }

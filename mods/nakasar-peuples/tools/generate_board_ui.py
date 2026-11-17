@@ -50,8 +50,9 @@ PANEL_WIDTH, PANEL_HEIGHT = WIDTH, HEIGHT
 
 # Onglets du panneau du village (request/BoardTabs.java), dans l'ordre de la barre. Maquette Claude Design
 # « Panneau du village — refonte » (16 novembre 2026) : les onglets en haut, toujours visibles.
-TABS = ("Board", "Plots", "Annexes", "Works", "World", "Domain")
-TAB_WIDTH = 128
+TABS = ("Board", "Plots", "Annexes", "Works", "World", "Domain", "Trade", "People")
+TAB_WIDTH = 106  # huit onglets et l'heure (CLOCK_WIDTH) tiennent dans les 1060 px du panneau
+CLOCK_WIDTH = 110
 
 
 def rgb(h):
@@ -107,7 +108,7 @@ def tab_strip(w, acc, active, indent="      "):
         w(f"{i}    }}")
         w(f"{i}  }}")
     w(f"{i}  Group {{ FlexWeight: 1; }}")
-    w(f'{i}  {label("Clock", "LabelStyle(FontSize: 14, RenderBold: true, TextColor: #96a9be, HorizontalAlignment: End, VerticalAlignment: Center)", anchor="Width: 200")}')
+    w(f'{i}  {label("Clock", "LabelStyle(FontSize: 14, RenderBold: true, TextColor: #96a9be, HorizontalAlignment: End, VerticalAlignment: Center)", anchor=f"Width: {CLOCK_WIDTH}")}')
     w(f"{i}}}")
     w(f"{i}Group {{ Anchor: (Height: 2, Bottom: 12); Background: (Color: {acc}); }}")
 

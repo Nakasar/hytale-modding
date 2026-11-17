@@ -333,6 +333,11 @@ public final class BoardPage extends InteractiveCustomUIPage<BoardPage.Event> {
             } else {
                 cmd.set("#ChantierInfo.Visible", false);
             }
+            int lacking = dev.nakasar.hytale.peuples.world.TradeAccess.missingFor(world, village, target, GameClock.day(store));
+            if (lacking > 0) {
+                notes.add(Message.translation(dev.nakasar.hytale.peuples.world.TradeRoutes.KEYS + "board.luxuries")
+                        .param("need", dev.nakasar.hytale.peuples.world.TradeAccess.needAt(target)).param("missing", lacking));
+            }
             Map<VillageLayout.Building, Chantiers.Obstacles> blocked = Chantiers.blocked(world, village);
             blocked.forEach((b, o) -> notes.add(blockedShort(b, o)));
             if (!blocked.isEmpty()) {

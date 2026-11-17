@@ -1915,6 +1915,136 @@ Javadoc des classes).
 - Les gardes restent à leur poste ; combat soldats contre gardes (camps de `HG:<lieu-dit>`).
 - Mise en page de l'onglet Domaine (cinq onglets de 150 de large).
 
+## Routes commerciales et luxes (`world/TradeRoutes`, `TradeCaravans`, `TradeAccess`, `TradeCatalogue`, `TradeGoods`, `TradePage`)
+
+Proposition « routes commerciales et luxes » (Kevin, 16 novembre 2026, toutes les questions tranchées le même jour).
+Textes, onglet, demandes et dialogue : `tools/generate_trade.py`.
+
+- **Route** (`TradeRoutes`, partie `TradeRoutes` du registre) : village ↔ village d'une liaison (≤ 2400, relation >
+  Rival) ou village ↔ lieu-dit posé sans embargo (pseudo-village `H:<lieu-dit>`). Ouverte à l'onglet Commerce par un
+  joueur Ami du village et Toléré du partenaire (5 faveurs), ou par le conseil du matin (1/10 par village avec une
+  place libre, 6 routes autonomes au plus par monde ; cases choisies seules, luxes manquants d'abord). Places : palier
+  0/1/2/3 → 0/1/2/3, + niveau de la Halle marchande (atelier `*_Halle`, fil des familles de bâtiments ; 0 tant qu'il
+  n'existe pas) ; lieu-dit 2, 3 animé.
+- **Niveaux** I/II/III : 1/2/3 cases d'export par côté, caravane tous les 3/2/1 jours. II : `Routes.gap == 0`, 8
+  arrivées, palier 2 des deux bouts ; III : 20 arrivées, palier 3 d'un bout, auberge ouverte si la liaison ≥ 400
+  (`Inns`). 5 faveurs par niveau. 3 caravanes perdues d'affilée : −1 niveau. Rivalité ou embargo : suspendue, rompue
+  après 14 jours.
+- **Catalogue** (`TradeCatalogue`) : lots et livraison des avant-postes debout, boutiques de spécialité des ateliers
+  niveau ≥ II, objet du tribut des lieux-dits tenus (`Allegiance.tributeItem`), luxe du terroir au palier ≥ 2,
+  réexportation de tout ce qu'importe une autre route active ; lieu-dit : boutiques de son bâtiment de métier.
+  `TradeGoods.allowed` : jamais d'objet `Nakasar_`, aucun métal pour les Kweebecs.
+- **Classes** (`TradeGoods.grade`) : commune 16/24/32 par case, fine 6/9/12, luxe 2/3/4 ; poids 1/2/3. Manque de
+  poids d'un côté (`deficit`) : payé par le crédit (1 faveur = 3) ou la case importée la plus lourde reste à quai.
+- **Caravane** (`TradeCaravans`, partie `TradeCaravans`) : une par sens au jour du départ, 2 porteurs (3 dès le
+  niveau II), marche `Walk` par `Links.path`, de jour. Cargaison prise au dépôt chargé (`Requests.take`), sinon
+  chargement plein des sources produites (pas des réexportations) ; le luxe du terroir n'est jamais pris au dépôt. À
+  mi-chemin : 1/6 (1/12 route balisée), évitée par `Territories.spared` ; témoin → `Ambushes.roll(force)`, sinon −⅓ de
+  chaque marchandise. Porteurs tous tués : cargaison au sol (`Deposits.drop`), perte comptée. Arrivée : dépôt (le reste
+  dans la boîte `~inbox:<village>`, vidée quand le dépôt est chargé), accès, +1 essor, passage `Links.pass`, influence
+  du lieu-dit (`Allegiance.merchantArrived`). Dialogue `Monde_Commerce` (TradeShop, TradeWhere), rumeurs.
+- **Accès** (`TradeAccess`, partie `TradeAccess`, `village|objet = dernier jour`) : 7 jours par livraison. Au matin,
+  2 luxes du dépôt chargé prolongent de 3 jours un accès qui finit. Une demande « Luxe d'ailleurs » remplie
+  (`Requests/<Peuple>/Luxe/`, Gather palier ≥ 2, tirée seulement si le village n'a pas ce luxe) donne 3 jours d'accès
+  (`Requests.fulfil` → `TradeAccess.delivered` : la demande retire les luxes du dépôt). Bonus d'essor calculé à la volée.
+- Routes autonomes : cases par paires de même classe (équilibre sans crédit) ; ouvertes seulement s'il y a quelque
+  chose à échanger, fermées dès qu'il n'y a plus rien. Crédit débité du manque réel une fois la caravane chargée ;
+  route fermée ou rompue : la cargaison en route revient au dépôt de départ.
+- **Luxes** : `Plant_Fruit_Azure` (Kweebec), `Ingredient_Leather_Heavy` (Trork), `Ingredient_Spices` (Feran),
+  `Food_Cheese` (Renoncé), `Ingredient_Crystal_Purple` (Slothian), `Ingredient_Bar_Gold`, `Ingredient_Bolt_Silk`,
+  `Food_Fish_Raw_Rare`, `Food_Pie_Apple`. Compte = luxes en accès + terroir au palier ≥ 2 (Kevin). Chantier du palier
+  2 : 1 (bloqueur `Chantiers.Block.LUXURY`, note au tableau), palier 3 : 3, colon : 4 (`Settlers.step`). +5 % d'essor
+  par luxe au-delà de ce que demande le palier atteint, 25 % au plus (`Villages.addEssor`, reste fractionnaire).
+- **Onglet Commerce** (`TradePage`, `TradePage_<Peuple>.ui`, 6e onglet, `TAB_WIDTH` 128) : luxes, routes (cases qui
+  défilent au clic, niveau, crédit, fermeture), partenaires, étal des importations (demi-chargement de niveau I pris
+  au dépôt contre 1 faveur, rang Toléré).
+- Commande `/monde route [--faire liste|ouvrir|niveau|depart|acces|fermer] [--vers village]`.
+## Générations de villageois (`population/`)
+
+Proposition validée par Kevin le 16 novembre 2026 (Claude Doc « Peuples d'Orbis — Générations de villageois »,
+réponses dans la colonne « Décision de Kevin »). Page joueur : `docs/wiki/peuples/habitants.md`.
+
+### Registre (`Population`, `PopulationState`, `Inhabitant`)
+
+- Chaque village à plan (pas un lieu-dit) a un registre sauvegardé (`Village.Population`) : habitants (`Inhabitant` :
+  prénom ou `NameKey` d'un fondateur, nom de famille, jour de naissance, parents, foyer, poste, vocation, trait,
+  blessure, mort, cause, parrain, origine, tombe), chronique (80 lignes), nouveau-né et prénoms proposés, refuge,
+  postes vacants.
+- Au premier passage, les villageois d'avant (postes du plan, chef, crieur, marchand) deviennent les **fondateurs**,
+  avec leur nom de dialogue et un âge tiré.
+- `Population.step` (pas de `VillageLifeSystem`, village veillé) rejoue chaque matin passé (200 au plus), avec un
+  tirage fixe par village et par jour (`seedOf`).
+- Âges (`Ages`) : année de 28 jours ; enfant < 14, apprenti < 28, adulte < 112, ancien ; mort de vieillesse de 140
+  (1 chance sur 14 par jour) à 168 (sûre).
+- Matin : vieillesse, passages d'âge (vocation à 14 jours, réputation +20 au parrain connecté), passations (titulaire
+  ancien → apprenti adulte), postes vides (héritier, adulte sans poste, sinon arrivant si le poste n'a jamais été
+  vacant ou l'est depuis 3 jours), arrivant quand le village a moins de 4 adultes, orphelins et sans-logis recueillis
+  (refuge, sinon un foyer avec un adulte), naissance.
+- Naissance : écart de 7 jours, pas de deuil ni de bâtiment brûlé, 1/7, un lit libre (`beds` : un lit par métier qui
+  dort dans la maison + 2, 28 habitants au plus), un foyer avec un adulte, 6 vivres pris au dépôt (`Food_*`,
+  `Plant_Crop_*`, `Plant_Fruit_*`). Nom de famille d'un des deux parents. Prénom tiré (`Names`) ; un Ami choisit parmi
+  3 jusqu'au lendemain et devient parrain.
+- Mort (`die`) : poste vacant, deuil (1 jour vieillesse, 3 jours incendie), tombe à poser (`Cemetery` : rangées
+  hors du plan, côté tiré de l'id du village, `Nakasar_Peuples_Tombstone` incassable ; lecture
+  `ReadTombInteraction`).
+
+### PNJ (`village/Villagers`, `request/Criers`, `world/Surroundings`, `Population.identity`)
+
+- Un poste vacant reste sans PNJ (sa boutique et ses commandes ferment) ; un titulaire blessé aussi. Chef, crieur et
+  marchand pareil.
+- Habitants sans poste montés (8 au plus, slot `hab:<id>`) : apprenti près du poste de son maître, adulte devant son
+  logis, ancien retiré sur la place ; chez eux la nuit. Rôles `Nakasar_Peuples_<Peuple>_{Apprentice,Resident,Retired}`
+  et dialogues `<Peuple>_<Sorte>` (`tools/generate_population.py`).
+- Raid actif : chaque villageois rentre devant son logis (ou le refuge) et disparaît à 3 blocs ou au bout de 30 s ;
+  crieur et marchand disparaissent tout de suite ; rien ne réapparaît avant la fin du raid. Les gardes et guetteurs en
+  poste (métiers « braves ») et le chef restent dehors : leurs dialogues de raid (« Aux armes ! ») restent atteignables.
+- Un habitant sans poste a le slot `hab:<id>:<sorte>` : changer de stade change de slot et refait le PNJ.
+- Les enfants qui jouent sur la place sont les vrais enfants du registre (jusqu'à palier + 1, liés par
+  `Population.bind`) ; un enfant devenu apprenti quitte les jeux.
+- Fenêtre de dialogue : le nom affiché est celui de la fiche (`#NpcName`), et la ligne sous la réplique (`#Aside`, s'il
+  n'y a pas d'absence à dire) donne âge, parents ou origine, parrain.
+
+### Raids (`RaidLosses`, `raid/Raids`)
+
+- Gardes : chaque garde posé est lié à un adulte valide (les braves d'abord, hors gardes et guetteurs en poste). Tombé, il
+  est blessé jusqu'au lendemain inclus (`Wounded`), jamais mort.
+- Raid perdu (Kevin) : un grand bâtiment debout du plus haut palier au hasard (comme avant). Bâtiment de métier ou projet
+  de terrain au niveau II+ : il perd un niveau (connaissance 0, amélioration annulée, commandes retirées), personne ne
+  meurt, le palier reste. Sinon `Chantiers.burn` (palier −1) : son responsable meurt (titulaire du poste qui y travaille,
+  sinon l'adulte le plus âgé du foyer, même s'il défendait) ; les autres habitants vont au refuge de l'Hôte (palier 2+)
+  ou au camp de réfugiés (`Camps.refugees`).
+- Le bilan aux défenseurs a une ligne de plus (niveau perdu, ou mort du responsable).
+
+### Onglet Habitants (`PeoplePage`)
+
+Recensement, liste paginée (9 par page), nouveau-né à nommer (3 boutons), refuge (Hôte, cycle des grands bâtiments
+debout), orientation d'un apprenti (Hôte, tous les 7 jours), 7 dernières lignes de chronique. Mise en page
+`PeoplePage_<Peuple>.ui` (`tools/generate_population.py`). Barre d'onglets : six onglets de 128 px.
+
+### Commandes (générations)
+
+- `/village habitants` : les habitants avec leur id.
+- `/village vieillir <jours>` : rejoue les matins (naissances, passations, morts).
+- `/village naissance` : naissance tout de suite (lit, foyer et 6 vivres toujours demandés).
+- `/village deces <id> [incendie]` : un habitant meurt.
+
+### Tester en jeu (générations)
+
+1. Près d'un village : `/village habitants` (fondateurs inscrits), ouvrir le panneau, onglet Habitants.
+2. Mettre 6 vivres au dépôt, `/village naissance`, choisir un prénom (Ami) ; parler à un enfant sur la place.
+3. `/village vieillir 14` : l'enfant devient apprenti et suit son maître ; `/village vieillir 100` : passations.
+4. `/village deces <id>` : tombe au cimetière, lire l'épitaphe ; poste vide 3 jours puis arrivant.
+5. Raid (`/village raid lancer`) : les villageois rentrent ; perdre le raid sur un bâtiment de métier niveau II, puis
+   sur une maison avec un refuge désigné.
+
+### À vérifier en jeu (générations)
+
+- Échelle 0,8 des apprentis (modèle `Parent` + `MinScale`/`MaxScale`), place des tombes (sol, rotation vers le
+  village).
+- Mise en page de l'onglet Habitants et des six onglets à 128 px.
+- Les villageois rentrent bien chez eux à l'annonce d'un raid (pas de PNJ coincé dehors).
+- Les dialogues des autres PNJ citent encore les fondateurs par leur nom après leur mort.
+
 ## Carte de revue des bâtiments, paliers 1 à 4 (`review/ReviewMap`, `tools/building_tiers.py`)
 
 Kevin, 16 novembre 2026 (« parking à idées » du tableau blanc) : les bâtiments de base, d'artisan, les projets de

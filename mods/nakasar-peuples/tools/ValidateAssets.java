@@ -1783,11 +1783,11 @@ public class ValidateAssets {
         for (String[] pageSpec : new String[][] {{"request/BoardPage.java", "BoardPage"}, {"workshop/WorkshopPage.java", "WorkshopPage"},
                 {"workshop/WorkshopSpecialtyPage.java", "WorkshopSpecialtyPage"}, {"village/PlotPage.java", "PlotPage"},
                 {"annex/AnnexPage.java", "AnnexPage"}, {"world/WorldPage.java", "WorldPage"},
-                {"world/DomainPage.java", "DomainPage"},
-                // Barre des onglets du panneau : mêmes ids dans les cinq pages.
+                {"world/DomainPage.java", "DomainPage"}, {"population/PeoplePage.java", "PeoplePage"},
+                // Barre des onglets du panneau : mêmes ids dans les six pages.
                 {"request/BoardTabs.java", "BoardPage"}, {"request/BoardTabs.java", "PlotPage"},
                 {"request/BoardTabs.java", "AnnexPage"}, {"request/BoardTabs.java", "WorldPage"},
-                {"request/BoardTabs.java", "DomainPage"}}) {
+                {"request/BoardTabs.java", "DomainPage"}, {"request/BoardTabs.java", "PeoplePage"}}) {
         Path java = root.getParent().getParent().resolve("java/dev/nakasar/hytale/peuples/" + pageSpec[0]);
         String pageName = pageSpec[1];
         if (Files.isRegularFile(java)) {

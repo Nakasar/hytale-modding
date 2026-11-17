@@ -59,6 +59,7 @@ public final class Rumours {
             }
         }
         out.addAll(HamletTrips.rumours(world));
+        out.addAll(TradeCaravans.rumours(world));
         out.addAll(Allegiance.rumours(world, day));
         Message hamlet = Hamlets.rumour(world, store, player);
         if (hamlet != null) {

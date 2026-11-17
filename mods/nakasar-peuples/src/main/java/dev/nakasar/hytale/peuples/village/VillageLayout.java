@@ -580,6 +580,16 @@ public final class VillageLayout implements JsonAssetWithMap<String, DefaultAsse
         return null;
     }
 
+    /** Métier d'id `id`, ou null. */
+    public Job job(String id) {
+        for (Job j : jobs) {
+            if (j.id().equals(id)) {
+                return j;
+            }
+        }
+        return null;
+    }
+
     /** Bâtiment d'id `id`, ou null. */
     public Building building(String id) {
         for (Building b : buildings) {

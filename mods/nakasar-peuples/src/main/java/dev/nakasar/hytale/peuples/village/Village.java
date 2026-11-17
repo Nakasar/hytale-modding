@@ -2,6 +2,7 @@ package dev.nakasar.hytale.peuples.village;
 
 import com.hypixel.hytale.codec.Codec;
 import com.hypixel.hytale.codec.KeyedCodec;
+import dev.nakasar.hytale.peuples.population.PopulationState;
 import com.hypixel.hytale.codec.builder.BuilderCodec;
 import com.hypixel.hytale.codec.codecs.array.ArrayCodec;
 import dev.nakasar.hytale.peuples.request.VillageRequest;
@@ -121,6 +122,9 @@ public final class Village {
             .append(new KeyedCodec<>("SettlerOwner", Codec.STRING), (v, s) -> v.settlerOwner = s, v -> v.settlerOwner)
             .documentation("UUID du joueur que le colon suit, ou absent s'il attend au village.")
             .add()
+            .append(new KeyedCodec<>("Population", PopulationState.CODEC), (v, p) -> v.population = p, v -> v.population)
+            .documentation("Habitants nommés, lignées et chronique du village (population/Population).")
+            .add()
             .build();
 
     String id = "";
@@ -166,6 +170,7 @@ public final class Village {
     long settlerDay = Long.MIN_VALUE;
     boolean settlerActive;
     String settlerOwner;
+    PopulationState population;
 
     Village() {
     }
@@ -224,6 +229,7 @@ public final class Village {
         v.settlerDay = settlerDay;
         v.settlerActive = settlerActive;
         v.settlerOwner = settlerOwner;
+        v.population = population == null ? null : population.copy();
         v.annexes = new AnnexState[annexes.length];
         for (int i = 0; i < annexes.length; i++) {
             v.annexes[i] = annexes[i] == null ? null : annexes[i].copy();
@@ -678,6 +684,14 @@ public final class Village {
     }
 
     /** UUID du joueur que suit le colon, ou null. */
+    /** Registre des habitants, créé à la première demande. */
+    public PopulationState population() {
+        if (population == null) {
+            population = new PopulationState();
+        }
+        return population;
+    }
+
     public String settlerOwner() {
         return settlerOwner;
     }
