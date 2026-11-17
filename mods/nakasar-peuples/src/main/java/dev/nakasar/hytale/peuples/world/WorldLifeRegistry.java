@@ -52,7 +52,13 @@ public final class WorldLifeRegistry implements Resource<EntityStore> {
         /** Blasons des villages : village = couleur|emblème|jour du dernier changement ({@link Heraldry}). */
         HERALDRY("Heraldry"),
         /** Bannières et fanions posés dans les lieux-dits : id = places ({@link Banners}). */
-        BANNERS("Banners");
+        BANNERS("Banners"),
+        /** Routes commerciales : « a|b » = état, plus les boîtes « ~inbox:village » ({@link TradeRoutes}). */
+        TRADE_ROUTES("TradeRoutes"),
+        /** Caravanes de commerce en route : id = état ({@link TradeCaravans}). */
+        TRADE_CARAVANS("TradeCaravans"),
+        /** Accès aux ressources : « village|objet » = dernier jour d'accès ({@link TradeAccess}). */
+        TRADE_ACCESS("TradeAccess");
 
         final String key;
 
@@ -105,6 +111,15 @@ public final class WorldLifeRegistry implements Resource<EntityStore> {
             .documentation("Monde vivant : « clé=valeur », lu par le Java du mod.")
             .add()
             .append(new KeyedCodec<>(Part.BANNERS.key, Codec.STRING_ARRAY), (r, a) -> r.read(Part.BANNERS, a), r -> r.write(Part.BANNERS))
+            .documentation("Monde vivant : « clé=valeur », lu par le Java du mod.")
+            .add()
+            .append(new KeyedCodec<>(Part.TRADE_ROUTES.key, Codec.STRING_ARRAY), (r, a) -> r.read(Part.TRADE_ROUTES, a), r -> r.write(Part.TRADE_ROUTES))
+            .documentation("Monde vivant : « clé=valeur », lu par le Java du mod.")
+            .add()
+            .append(new KeyedCodec<>(Part.TRADE_CARAVANS.key, Codec.STRING_ARRAY), (r, a) -> r.read(Part.TRADE_CARAVANS, a), r -> r.write(Part.TRADE_CARAVANS))
+            .documentation("Monde vivant : « clé=valeur », lu par le Java du mod.")
+            .add()
+            .append(new KeyedCodec<>(Part.TRADE_ACCESS.key, Codec.STRING_ARRAY), (r, a) -> r.read(Part.TRADE_ACCESS, a), r -> r.write(Part.TRADE_ACCESS))
             .documentation("Monde vivant : « clé=valeur », lu par le Java du mod.")
             .add()
             .build();

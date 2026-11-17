@@ -416,15 +416,9 @@ public final class Population {
         }
     }
 
-    /**
-     * Luxes des routes commerciales : les naissances ne les mangent pas (ils prolongent l'accès du village).
-     * TODO après la PR #170 (routes commerciales) : lire TradeGoods.LUXURIES au lieu de cette copie.
-     */
-    static final java.util.Set<String> LUXURIES = java.util.Set.of("Plant_Fruit_Azure", "Food_Cheese", "Food_Fish_Raw_Rare", "Food_Pie_Apple");
-
-    /** Vivres du dépôt : nourriture et récoltes, hors luxes. */
+    /** Vivres du dépôt : nourriture et récoltes, hors luxes des routes commerciales (le village les garde pour son accès). */
     static boolean isFood(String itemId) {
-        return itemId != null && !LUXURIES.contains(itemId)
+        return itemId != null && !dev.nakasar.hytale.peuples.world.TradeGoods.isLuxury(itemId)
                 && (itemId.startsWith("Food_") || itemId.startsWith("Plant_Crop_") || itemId.startsWith("Plant_Fruit_"));
     }
 

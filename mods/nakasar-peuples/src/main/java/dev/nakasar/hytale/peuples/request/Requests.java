@@ -117,7 +117,10 @@ public final class Requests {
         // Une caravane a besoin d'un autre village où aller (Expeditions.available).
         World world = store.getExternalData().getWorld();
         all.removeIf(t -> !Expeditions.available(world, village, t)
-                || (t.type() == RequestType.ROUTE && !RouteQuests.available(world, village, t)));
+                || (t.type() == RequestType.ROUTE && !RouteQuests.available(world, village, t))
+                // « Luxe d'ailleurs » : seulement pour un luxe que le village n'a pas (routes commerciales).
+                || (t.getId().contains(dev.nakasar.hytale.peuples.world.TradeAccess.REQUEST_MARK)
+                    && !dev.nakasar.hytale.peuples.world.TradeAccess.wanted(world, village, t.itemId(), GameClock.day(store))));
         List<RequestTemplate> pool = new ArrayList<>();
         for (RequestTemplate t : all) {
             if (!usedTypes.contains(t.type()) && !usedTemplates.contains(t.getId())) {
@@ -541,6 +544,10 @@ public final class Requests {
         state.markDone(r.id(), r.villageId());
         if (t == null || village == null) {
             return;
+        }
+        // Routes commerciales : « Luxe d'ailleurs » remplie, le village a ce luxe trois jours de plus.
+        if (t.getId().contains(dev.nakasar.hytale.peuples.world.TradeAccess.REQUEST_MARK)) {
+            dev.nakasar.hytale.peuples.world.TradeAccess.delivered(world, village, t.itemId(), GameClock.day(store));
         }
         // Conquête : une commande de lieu-dit rendue aux couleurs d'un village lui gagne de l'influence.
         dev.nakasar.hytale.peuples.world.Allegiance.playerOrder(world, store, ref, village);

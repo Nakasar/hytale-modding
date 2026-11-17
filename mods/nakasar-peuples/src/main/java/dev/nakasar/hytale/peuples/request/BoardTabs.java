@@ -20,7 +20,8 @@ import dev.nakasar.hytale.peuples.world.WorldPage;
 
 /**
  * Barre des onglets en haut du panneau du village (maquette Claude Design « Panneau du village — refonte », Kevin,
- * 16 novembre 2026) : Tableau, Emplacements, Avant-postes, Monde, Domaine (conquête des lieux-dits), Habitants (générations), et l'heure du jeu. Chaque page du panneau porte la
+ * 16 novembre 2026) : Tableau, Emplacements, Avant-postes, Monde, Domaine (conquête des lieux-dits), Commerce (routes
+ * commerciales), Habitants (générations), et l'heure du jeu. Chaque page du panneau porte la
  * même barre ({@code tab_strip} de {@code tools/generate_board_ui.py}) : l'onglet ouvert est un aplat
  * ({@code #Tab<X>On}), les autres des boutons ({@code #Tab<X>Button}). Les pages appellent {@link #fill} dans leur
  * {@code build} et {@link #handle} en tête de leur {@code handleDataEvent}.
@@ -40,6 +41,7 @@ public final class BoardTabs {
         tab(cmd, events, "#TabAnnexesButton", "#TabAnnexesLabel", "Annexes", Message.translation(Annexes.KEYS + "button"));
         tab(cmd, events, "#TabWorldButton", "#TabWorldLabel", "World", Message.translation(WorldPage.KEYS + "button"));
         tab(cmd, events, "#TabDomainButton", "#TabDomainLabel", "Domain", Message.translation(DomainPage.KEYS + "tab"));
+        tab(cmd, events, "#TabTradeButton", "#TabTradeLabel", "Trade", Message.translation(dev.nakasar.hytale.peuples.world.TradePage.TAB));
         tab(cmd, events, "#TabPeopleButton", "#TabPeopleLabel", "People",
                 Message.translation(dev.nakasar.hytale.peuples.population.Population.KEYS + "page.tab"));
         // Emplacements : seulement si le plan du village en a ; Avant-postes : si le peuple en a (l'onglet dit le palier).
@@ -69,6 +71,7 @@ public final class BoardTabs {
             case "Annexes" -> AnnexPage.open(store, ref, playerRef, village);
             case "World" -> WorldPage.open(store, ref, playerRef, village);
             case "Domain" -> DomainPage.open(store, ref, playerRef, village);
+            case "Trade" -> dev.nakasar.hytale.peuples.world.TradePage.open(store, ref, playerRef, village);
             case "People" -> dev.nakasar.hytale.peuples.population.PeoplePage.open(store, ref, playerRef, village);
             default -> {
                 return false;

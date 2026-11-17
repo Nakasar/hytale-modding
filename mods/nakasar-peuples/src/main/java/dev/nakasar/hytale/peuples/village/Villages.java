@@ -154,7 +154,8 @@ public final class Villages {
         if (village.isHamlet()) {
             return 0; // un lieu-dit n'a pas d'essor : il grandit par son bâtiment de métier
         }
-        return village.addEssor(amount);
+        // Luxes en plus de ce que demande le palier : jusqu'à +25 % d'essor (routes commerciales).
+        return village.addEssor(amount + dev.nakasar.hytale.peuples.world.TradeAccess.extraEssor(village, amount));
     }
 
     /** Remplace les demandes du tableau (tirage du matin). */

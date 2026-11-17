@@ -102,6 +102,7 @@ public final class Settlers {
         long day = GameClock.day(store);
         for (Village village : new ArrayList<>(Villages.registry(world).all())) {
             if (!village.settlerActive() && village.tier() >= Tiers.MAX
+                    && dev.nakasar.hytale.peuples.world.TradeAccess.missingForSettler(world, village, day) == 0
                     && (village.settlerDay() == Long.MIN_VALUE || day - village.settlerDay() >= COOLDOWN_DAYS)) {
                 village.startSettler(day);
                 PeuplesPlugin.get().getLogger().atInfo().log("Peuples : un colon arrive au village %s", village.name());

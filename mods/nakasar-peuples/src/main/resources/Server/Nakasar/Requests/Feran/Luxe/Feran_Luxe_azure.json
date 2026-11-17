@@ -1,0 +1,15 @@
+{
+  "$Comment": "Demande « Luxe d'ailleurs » (routes commerciales), générée par tools/generate_trade.py : tirée seulement si le village n'a pas ce luxe (world/TradeAccess.wanted).",
+  "People": "Feran",
+  "Type": "Gather",
+  "MinTier": 2,
+  "MaxTier": 3,
+  "Weight": 1,
+  "TitleKey": "nakasar_peuples.request.Feran_Luxe_azure.title",
+  "TaskKey": "nakasar_peuples.request.Feran_Luxe_azure.task",
+  "ItemId": "Plant_Fruit_Azure",
+  "Quantity": 4,
+  "Essor": 15,
+  "Favors": 2,
+  "Reputation": 10
+}

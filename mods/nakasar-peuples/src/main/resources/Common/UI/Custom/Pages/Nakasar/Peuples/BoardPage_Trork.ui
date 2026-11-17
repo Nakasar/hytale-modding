@@ -55,7 +55,7 @@ $C.@PageOverlay {
         Anchor: (Height: 38);
         Group #TabBoard {
           LayoutMode: Full;
-          Anchor: (Width: 128, Height: 38, Right: 6);
+          Anchor: (Width: 120, Height: 38, Right: 6);
           Group #TabBoardOff {
             LayoutMode: Full;
             Anchor: (Full: 0);
@@ -71,7 +71,7 @@ $C.@PageOverlay {
         }
         Group #TabPlots {
           LayoutMode: Full;
-          Anchor: (Width: 128, Height: 38, Right: 6);
+          Anchor: (Width: 120, Height: 38, Right: 6);
           Group #TabPlotsOff {
             LayoutMode: Full;
             Anchor: (Full: 0);
@@ -87,7 +87,7 @@ $C.@PageOverlay {
         }
         Group #TabAnnexes {
           LayoutMode: Full;
-          Anchor: (Width: 128, Height: 38, Right: 6);
+          Anchor: (Width: 120, Height: 38, Right: 6);
           Group #TabAnnexesOff {
             LayoutMode: Full;
             Anchor: (Full: 0);
@@ -103,7 +103,7 @@ $C.@PageOverlay {
         }
         Group #TabWorld {
           LayoutMode: Full;
-          Anchor: (Width: 128, Height: 38, Right: 6);
+          Anchor: (Width: 120, Height: 38, Right: 6);
           Group #TabWorldOff {
             LayoutMode: Full;
             Anchor: (Full: 0);
@@ -119,7 +119,7 @@ $C.@PageOverlay {
         }
         Group #TabDomain {
           LayoutMode: Full;
-          Anchor: (Width: 128, Height: 38, Right: 6);
+          Anchor: (Width: 120, Height: 38, Right: 6);
           Group #TabDomainOff {
             LayoutMode: Full;
             Anchor: (Full: 0);
@@ -133,9 +133,25 @@ $C.@PageOverlay {
             Label #TabDomainLabel { Anchor: (Full: 0); Style: (FontSize: 14, RenderBold: true, RenderUppercase: true, TextColor: #10180e, HorizontalAlignment: Center, VerticalAlignment: Center); Text: ""; }
           }
         }
+        Group #TabTrade {
+          LayoutMode: Full;
+          Anchor: (Width: 120, Height: 38, Right: 6);
+          Group #TabTradeOff {
+            LayoutMode: Full;
+            Anchor: (Full: 0);
+            Visible: true;
+            $C.@SecondaryTextButton #TabTradeButton { @Text = ""; @Anchor = Anchor(Full: 0); }
+          }
+          Group #TabTradeOn {
+            Anchor: (Full: 0);
+            Background: (Color: #e0773e);
+            Visible: false;
+            Label #TabTradeLabel { Anchor: (Full: 0); Style: (FontSize: 14, RenderBold: true, RenderUppercase: true, TextColor: #10180e, HorizontalAlignment: Center, VerticalAlignment: Center); Text: ""; }
+          }
+        }
         Group #TabPeople {
           LayoutMode: Full;
-          Anchor: (Width: 128, Height: 38, Right: 6);
+          Anchor: (Width: 120, Height: 38, Right: 6);
           Group #TabPeopleOff {
             LayoutMode: Full;
             Anchor: (Full: 0);
@@ -150,7 +166,7 @@ $C.@PageOverlay {
           }
         }
         Group { FlexWeight: 1; }
-        Label #Clock { Anchor: (Width: 200); Style: (FontSize: 14, RenderBold: true, TextColor: #96a9be, HorizontalAlignment: End, VerticalAlignment: Center); Text: ""; }
+        Label #Clock { Anchor: (Width: 120); Style: (FontSize: 14, RenderBold: true, TextColor: #96a9be, HorizontalAlignment: End, VerticalAlignment: Center); Text: ""; }
       }
       Group { Anchor: (Height: 2, Bottom: 12); Background: (Color: #e0773e); }
       Group #Band {

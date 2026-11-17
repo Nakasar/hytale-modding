@@ -64,7 +64,7 @@ public final class Chantiers {
 
     /** Ce qui empêche un chantier de commencer. */
     public enum Block {
-        NONE, NO_LAYOUT, MAX_TIER, ACTIVE, ESSOR, DEPOSIT, MATERIALS, BUSY, NOTHING_TO_BUILD
+        NONE, NO_LAYOUT, MAX_TIER, ACTIVE, ESSOR, LUXURY, DEPOSIT, MATERIALS, BUSY, NOTHING_TO_BUILD
     }
 
     /** Plan du village, ou null (village fondé à la main : pas de chantier). */
@@ -128,6 +128,11 @@ public final class Chantiers {
         }
         if (village.essor() < Tiers.threshold(village.tier())) {
             return Block.ESSOR;
+        }
+        // Routes commerciales : le palier 2 demande un luxe, le palier 3 trois (le terroir compte dès le palier 2).
+        if (dev.nakasar.hytale.peuples.world.TradeAccess.missingFor(world, village, target,
+                dev.nakasar.hytale.peuples.request.GameClock.day(world.getEntityStore().getStore())) > 0) {
+            return Block.LUXURY;
         }
         Map<String, Integer> missing = missing(world, village, spec);
         if (missing == null) {

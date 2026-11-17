@@ -1871,6 +1871,50 @@ Javadoc des classes).
 - Les gardes restent à leur poste ; combat soldats contre gardes (camps de `HG:<lieu-dit>`).
 - Mise en page de l'onglet Domaine (cinq onglets de 150 de large).
 
+## Routes commerciales et luxes (`world/TradeRoutes`, `TradeCaravans`, `TradeAccess`, `TradeCatalogue`, `TradeGoods`, `TradePage`)
+
+Proposition « routes commerciales et luxes » (Kevin, 16 novembre 2026, toutes les questions tranchées le même jour).
+Textes, onglet, demandes et dialogue : `tools/generate_trade.py`.
+
+- **Route** (`TradeRoutes`, partie `TradeRoutes` du registre) : village ↔ village d'une liaison (≤ 2400, relation >
+  Rival) ou village ↔ lieu-dit posé sans embargo (pseudo-village `H:<lieu-dit>`). Ouverte à l'onglet Commerce par un
+  joueur Ami du village et Toléré du partenaire (5 faveurs), ou par le conseil du matin (1/10 par village avec une
+  place libre, 6 routes autonomes au plus par monde ; cases choisies seules, luxes manquants d'abord). Places : palier
+  0/1/2/3 → 0/1/2/3, + niveau de la Halle marchande (atelier `*_Halle`, fil des familles de bâtiments ; 0 tant qu'il
+  n'existe pas) ; lieu-dit 2, 3 animé.
+- **Niveaux** I/II/III : 1/2/3 cases d'export par côté, caravane tous les 3/2/1 jours. II : `Routes.gap == 0`, 8
+  arrivées, palier 2 des deux bouts ; III : 20 arrivées, palier 3 d'un bout, auberge ouverte si la liaison ≥ 400
+  (`Inns`). 5 faveurs par niveau. 3 caravanes perdues d'affilée : −1 niveau. Rivalité ou embargo : suspendue, rompue
+  après 14 jours.
+- **Catalogue** (`TradeCatalogue`) : lots et livraison des avant-postes debout, boutiques de spécialité des ateliers
+  niveau ≥ II, objet du tribut des lieux-dits tenus (`Allegiance.tributeItem`), luxe du terroir au palier ≥ 2,
+  réexportation de tout ce qu'importe une autre route active ; lieu-dit : boutiques de son bâtiment de métier.
+  `TradeGoods.allowed` : jamais d'objet `Nakasar_`, aucun métal pour les Kweebecs.
+- **Classes** (`TradeGoods.grade`) : commune 16/24/32 par case, fine 6/9/12, luxe 2/3/4 ; poids 1/2/3. Manque de
+  poids d'un côté (`deficit`) : payé par le crédit (1 faveur = 3) ou la case importée la plus lourde reste à quai.
+- **Caravane** (`TradeCaravans`, partie `TradeCaravans`) : une par sens au jour du départ, 2 porteurs (3 dès le
+  niveau II), marche `Walk` par `Links.path`, de jour. Cargaison prise au dépôt chargé (`Requests.take`), sinon
+  chargement plein des sources produites (pas des réexportations) ; le luxe du terroir n'est jamais pris au dépôt. À
+  mi-chemin : 1/6 (1/12 route balisée), évitée par `Territories.spared` ; témoin → `Ambushes.roll(force)`, sinon −⅓ de
+  chaque marchandise. Porteurs tous tués : cargaison au sol (`Deposits.drop`), perte comptée. Arrivée : dépôt (le reste
+  dans la boîte `~inbox:<village>`, vidée quand le dépôt est chargé), accès, +1 essor, passage `Links.pass`, influence
+  du lieu-dit (`Allegiance.merchantArrived`). Dialogue `Monde_Commerce` (TradeShop, TradeWhere), rumeurs.
+- **Accès** (`TradeAccess`, partie `TradeAccess`, `village|objet = dernier jour`) : 7 jours par livraison. Au matin,
+  2 luxes du dépôt chargé prolongent de 3 jours un accès qui finit. Une demande « Luxe d'ailleurs » remplie
+  (`Requests/<Peuple>/Luxe/`, Gather palier ≥ 2, tirée seulement si le village n'a pas ce luxe) donne 3 jours d'accès
+  (`Requests.fulfil` → `TradeAccess.delivered` : la demande retire les luxes du dépôt). Bonus d'essor calculé à la volée.
+- Routes autonomes : cases par paires de même classe (équilibre sans crédit) ; ouvertes seulement s'il y a quelque
+  chose à échanger, fermées dès qu'il n'y a plus rien. Crédit débité du manque réel une fois la caravane chargée ;
+  route fermée ou rompue : la cargaison en route revient au dépôt de départ.
+- **Luxes** : `Plant_Fruit_Azure` (Kweebec), `Ingredient_Leather_Heavy` (Trork), `Ingredient_Spices` (Feran),
+  `Food_Cheese` (Renoncé), `Ingredient_Crystal_Purple` (Slothian), `Ingredient_Bar_Gold`, `Ingredient_Bolt_Silk`,
+  `Food_Fish_Raw_Rare`, `Food_Pie_Apple`. Compte = luxes en accès + terroir au palier ≥ 2 (Kevin). Chantier du palier
+  2 : 1 (bloqueur `Chantiers.Block.LUXURY`, note au tableau), palier 3 : 3, colon : 4 (`Settlers.step`). +5 % d'essor
+  par luxe au-delà de ce que demande le palier atteint, 25 % au plus (`Villages.addEssor`, reste fractionnaire).
+- **Onglet Commerce** (`TradePage`, `TradePage_<Peuple>.ui`, 6e onglet, `TAB_WIDTH` 128) : luxes, routes (cases qui
+  défilent au clic, niveau, crédit, fermeture), partenaires, étal des importations (demi-chargement de niveau I pris
+  au dépôt contre 1 faveur, rang Toléré).
+- Commande `/monde route [--faire liste|ouvrir|niveau|depart|acces|fermer] [--vers village]`.
 ## Générations de villageois (`population/`)
 
 Proposition validée par Kevin le 16 novembre 2026 (Claude Doc « Peuples d'Orbis — Générations de villageois »,
