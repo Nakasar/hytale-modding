@@ -1,6 +1,0 @@
-{
-  "$Comment": "Apprenti trork (générations de villageois) : le modèle vanilla Trork à l'échelle 0,8, entre l'enfant et l'adulte. Généré par tools/generate_population.py.",
-  "Parent": "Trork",
-  "MinScale": 0.8,
-  "MaxScale": 0.8
-}

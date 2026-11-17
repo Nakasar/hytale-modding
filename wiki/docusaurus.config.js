@@ -1,6 +1,8 @@
-// Wiki joueur des mods Nakasar (Vampires, Fractales des Brumes, Peuples d'Orbis). Les pages sont le Markdown de ../docs/wiki ; le site est publié sur
+// Wiki joueur des mods Nakasar (Vampires, Fractales des Brumes). Les pages sont le Markdown de ../docs/wiki ; le site est publié sur
 // GitHub Pages par .github/workflows/wiki.yml. Aperçu local : npm ci puis npm start. Chaque mod a son dossier
-// (docs/wiki/vampires, fractales, peuples), son onglet, sa barre latérale et sa teinte (src/mods.js).
+// (docs/wiki/vampires, fractales), son onglet, sa barre latérale et sa teinte (src/mods.js). Peuples d'Orbis a son
+// propre dépôt et son wiki (https://orbis.nakasar.xyz) : les anciennes adresses /peuples/... y redirigent
+// (pages statiques de static/peuples).
 import { themes as prismThemes } from "prism-react-renderer";
 
 /** @type {import('@docusaurus/types').Config} */
@@ -71,7 +73,7 @@ const config = {
         items: [
           { type: "docSidebar", sidebarId: "vampires", label: "Vampires & Chasseurs", position: "left", className: "nk-mod-tab nk-mod-tab--vampires" },
           { type: "docSidebar", sidebarId: "fractales", label: "Fractales des Brumes", position: "left", className: "nk-mod-tab nk-mod-tab--fractales" },
-          { type: "docSidebar", sidebarId: "peuples", label: "Peuples d'Orbis", position: "left", className: "nk-mod-tab nk-mod-tab--peuples" },
+          { href: "https://orbis.nakasar.xyz", label: "Peuples d'Orbis", position: "left", className: "nk-mod-tab nk-mod-tab--peuples" },
           { href: "https://github.com/Nakasar/hytale-modding", label: "GitHub", position: "right" },
         ],
       },
@@ -80,7 +82,7 @@ const config = {
         links: [
           { label: "Vampires & Chasseurs", to: "/vampires" },
           { label: "Fractales des Brumes", to: "/fractales" },
-          { label: "Peuples d'Orbis", to: "/peuples" },
+          { label: "Peuples d'Orbis", href: "https://orbis.nakasar.xyz" },
           { label: "GitHub", href: "https://github.com/Nakasar/hytale-modding" },
         ],
         copyright: "Mods Nakasar pour Hytale. Chiffres lus dans les fichiers des mods.",

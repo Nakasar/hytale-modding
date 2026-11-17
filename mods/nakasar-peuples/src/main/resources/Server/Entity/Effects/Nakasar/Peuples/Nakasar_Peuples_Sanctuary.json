@@ -1,8 +1,0 @@
-{
-  "$Comment": "Abri du Vide (zone 4, près d'un brasero, d'un feu ou dans le monastère) : la corruption redescend.",
-  "Name": "nakasar_peuples.effects.Nakasar_Peuples_Sanctuary",
-  "StatusEffectIcon": "UI/StatusEffects/Nakasar/Peuples/Sanctuary.png",
-  "OverlapBehavior": "Overwrite",
-  "Infinite": false,
-  "Duration": 1.5
-}

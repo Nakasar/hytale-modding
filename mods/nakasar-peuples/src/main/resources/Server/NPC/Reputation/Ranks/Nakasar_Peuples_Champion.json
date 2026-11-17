@@ -1,6 +1,0 @@
-{
-  "$Comment": "Rang « Champion » des Peuples d'Orbis (étape 4), pour tous les groupes de réputation Nakasar_Peuples_* du ReputationPlugin vanilla. Bornes : MinValue comprise, MaxValue exclue, contiguës avec les rangs voisins ; mêmes valeurs que l'enum Java reputation/Rank (vérifié par validateAssets). Attitude des PNJ du peuple envers un joueur de ce rang.",
-  "MinValue": 1000,
-  "MaxValue": 100000,
-  "Attitude": "Revered"
-}

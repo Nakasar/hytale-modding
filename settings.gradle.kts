@@ -24,5 +24,4 @@ rootProject.name = "hytale-modding"
 
 include(":mods:nakasar-vampires")
 include(":mods:nakasar-fractals")
-include(":mods:nakasar-peuples")
 

@@ -1,7 +1,0 @@
-{
-  "$Comment": "Corruption du Vide de la zone 4 : une part des PV max par seconde selon les piles, que l'armure ne réduit pas.",
-  "BypassResistances": true,
-  "DurabilityLoss": false,
-  "StaminaLoss": false,
-  "DamageTextColor": "#c8a0ff"
-}

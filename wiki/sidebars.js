@@ -139,52 +139,6 @@ const sidebars = {
       items: ["fractales/potions", "fractales/runes-et-soutien", "fractales/cosmetiques"],
     },
   ],
-  peuples: [
-    "peuples/README",
-    {
-      type: "category",
-      label: "Vivre avec les peuples",
-      collapsed: false,
-      items: [
-        "peuples/reputation",
-        "peuples/villages",
-        "peuples/habitants",
-        "peuples/monde-vivant",
-        "peuples/lieux-dits",
-        "peuples/conquete",
-        "peuples/commerce",
-        "peuples/climats",
-      ],
-    },
-    {
-      type: "category",
-      label: "Les peuples",
-      items: ["peuples/kweebecs", "peuples/trorks", "peuples/feran", "peuples/renonces", "peuples/slothians"],
-    },
-    {
-      type: "category",
-      label: "Bâtiments et métiers",
-      items: [
-        "peuples/batiments-de-metier",
-        "peuples/emplacements",
-        "peuples/avant-postes-de-metier",
-        "peuples/infrastructures",
-        {
-          type: "category",
-          label: "Bâtiments des villages",
-          link: { type: "doc", id: "peuples/batiments/README" },
-          items: [
-            "peuples/batiments/kweebecs",
-            "peuples/batiments/trorks",
-            "peuples/batiments/feran",
-            "peuples/batiments/renonces",
-            "peuples/batiments/slothians",
-          ],
-        },
-      ],
-    },
-    "peuples/avant-poste",
-  ],
 };
 
 export default sidebars;

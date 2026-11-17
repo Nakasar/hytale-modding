@@ -1,6 +1,0 @@
-{
-  "$Comment": "Apprenti feran (générations de villageois) : le modèle vanilla Feran_Burrower à l'échelle 0,8, entre l'enfant et l'adulte. Généré par tools/generate_population.py.",
-  "Parent": "Feran_Burrower",
-  "MinScale": 0.8,
-  "MaxScale": 0.8
-}

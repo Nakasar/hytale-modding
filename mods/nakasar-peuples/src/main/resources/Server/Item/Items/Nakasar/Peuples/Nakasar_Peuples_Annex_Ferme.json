@@ -1,9 +1,0 @@
-{
-  "$Comment": "Fondation d'avant-poste « Ferme », remise au panneau d'un village et posée là où l'on veut bâtir (Java annex/AnnexPlaceSystem). Générée par tools/generate_workshops.py.",
-  "Parent": "Furniture_Construction_Sign",
-  "TranslationProperties": {
-    "Name": "nakasar_peuples.items.Nakasar_Peuples_Annex_Ferme.name",
-    "Description": "nakasar_peuples.items.Nakasar_Peuples_Annex_Ferme.description"
-  },
-  "Quality": "Uncommon"
-}

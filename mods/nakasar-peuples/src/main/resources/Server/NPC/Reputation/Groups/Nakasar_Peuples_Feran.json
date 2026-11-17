@@ -1,8 +1,0 @@
-{
-  "$Comment": "Réputation de peuple Feran (étape 8) : ReputationPlugin vanilla, Feran vanilla compris.",
-  "NPCGroups": [
-    "Feran",
-    "Nakasar_Peuples_Feran"
-  ],
-  "InitialReputationValue": 0
-}
