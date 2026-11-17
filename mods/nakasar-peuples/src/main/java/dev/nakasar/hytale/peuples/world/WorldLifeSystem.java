@@ -76,6 +76,7 @@ public final class WorldLifeSystem extends TickingSystem<EntityStore> {
                     Hamlets.step(world, s, players);
                     HamletTrips.step(world, s, players, slowDt);
                     Garrisons.step(world, s, players);
+                    dev.nakasar.hytale.peuples.annex.Ouvrages.step(world, s, players);
                     Banners.step(world, s, players);
                     Camps.step(world, s, players);
                     Relations.step(world, s, players);

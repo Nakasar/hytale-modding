@@ -175,7 +175,9 @@ public final class Relations {
             int[] v = read(world, l.a(), l.b());
             int base = base(l.a().people(), l.b().people());
             if (v[0] != base && Math.floorMod(day, (long) DRIFT_DAYS) == 0) {
-                v[0] += v[0] < base ? 1 : -1;
+                // Ambassade, spécialité Hérauts : la relation remonte deux fois plus vite.
+                boolean heralds = Allegiance.councilSpecialty(l.a(), Allegiance.HERALDS) || Allegiance.councilSpecialty(l.b(), Allegiance.HERALDS);
+                v[0] += v[0] < base ? (heralds ? Math.min(2, base - v[0]) : 1) : -1;
             }
             if (Math.floorMod(day, 7L) == 0 && random.nextDouble() < QUARREL_CHANCE) {
                 v[0] = Math.max(MIN, v[0] + QUARREL);

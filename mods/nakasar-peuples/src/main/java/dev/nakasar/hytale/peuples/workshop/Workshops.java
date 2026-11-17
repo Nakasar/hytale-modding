@@ -120,7 +120,7 @@ public final class Workshops {
         }
         if (w.isAnnex()) {
             dev.nakasar.hytale.peuples.village.AnnexState a = village.annex(w.getId());
-            return a != null && a.built();
+            return a != null && a.built() && !a.occupied(); // un ouvrage pris par un rival est fermé au propriétaire
         }
         if (!village.isStanding(w.building())) {
             return false;
@@ -639,7 +639,7 @@ public final class Workshops {
         int max = threshold(ws.level());
         if (max > 0 && t.knowledge() > 0) {
             int before = ws.knowledge();
-            ws.setKnowledge(Math.min(max, before + t.knowledge()));
+            ws.setKnowledge(Math.min(max, before + Projects.knowledge(village, t.knowledge())));
             int added = ws.knowledge() - before;
             if (added > 0) {
                 Message name = Message.translation(w.nameKey());
@@ -1080,6 +1080,7 @@ public final class Workshops {
                 }
             }
         }
+        guards += Projects.raidGuards(village); // Caserne : 1 + son niveau
         return guards == 0 && posts.isEmpty() && health == 1f ? RaidBonus.NONE : new RaidBonus(guards, posts, health);
     }
 

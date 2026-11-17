@@ -1,0 +1,210 @@
+{
+  "$Comment": "Place 3 de l'ouvrage Renonce_AP_Forteresse (copie générée par tools/generate_workshops.py).",
+  "People": "Renonce",
+  "Icon": "Weapon_Shield_Iron",
+  "NameKey": "nakasar_peuples.workshop.Renonce_AP_Forteresse.name",
+  "Board": [
+    0,
+    0,
+    0
+  ],
+  "Upgrades": [
+    {
+      "Level": 2,
+      "Hours": 12,
+      "Decor": [
+        "1 0 0 0 Furniture_Lumberjack_Lantern"
+      ],
+      "Materials": [
+        {
+          "ItemId": "Wood_Fir_Trunk",
+          "Quantity": 16
+        },
+        {
+          "ItemId": "Rock_Stone_Cobble",
+          "Quantity": 12
+        },
+        {
+          "ItemId": "Ingredient_Hide_Heavy",
+          "Quantity": 2
+        }
+      ]
+    },
+    {
+      "Level": 3,
+      "Hours": 12,
+      "Decor": [
+        "-1 0 0 0 Furniture_Lumberjack_Lantern"
+      ],
+      "Materials": [
+        {
+          "ItemId": "Wood_Fir_Trunk",
+          "Quantity": 24
+        },
+        {
+          "ItemId": "Rock_Stone_Cobble",
+          "Quantity": 18
+        },
+        {
+          "ItemId": "Ingredient_Hide_Heavy",
+          "Quantity": 3
+        }
+      ]
+    }
+  ],
+  "Annex": {
+    "Type": "Forteresse",
+    "Family": "Infrastructure",
+    "Item": "Nakasar_Peuples_Annex_Forteresse",
+    "Rule": "NONE",
+    "Prefabs": [
+      "Npc/Outlander/Forts/Tier2/Outlander_Forts_Tier2_001 -1 -16 0",
+      "Npc/Outlander/Towers/Tier2/Outlander_Towers_Tier2_001 18 -16 0"
+    ],
+    "Rect": [
+      -14,
+      22,
+      -29,
+      -2
+    ],
+    "Height": 22,
+    "Workers": [
+      {
+        "Id": "AP_Forteresse_1",
+        "Tier": 1,
+        "Role": "Nakasar_Peuples_Renonce_Guard",
+        "Dialogue": "Renonce_Guard",
+        "Building": "",
+        "WorkX": -2,
+        "WorkZ": -1,
+        "Home": "",
+        "HomeX": -2,
+        "HomeZ": -2,
+        "Builder": false
+      },
+      {
+        "Id": "AP_Forteresse_2",
+        "Tier": 1,
+        "Role": "Nakasar_Peuples_Renonce_Guard",
+        "Dialogue": "Renonce_Guard",
+        "Building": "",
+        "WorkX": 2,
+        "WorkZ": -1,
+        "Home": "",
+        "HomeX": 2,
+        "HomeZ": -2,
+        "Builder": false
+      },
+      {
+        "Id": "AP_Forteresse_3",
+        "Tier": 1,
+        "Role": "Nakasar_Peuples_Renonce_Guard",
+        "Dialogue": "Renonce_Guard",
+        "Building": "",
+        "WorkX": -4,
+        "WorkZ": -1,
+        "Home": "",
+        "HomeX": -4,
+        "HomeZ": -2,
+        "Builder": false
+      },
+      {
+        "Id": "AP_Forteresse_4",
+        "Tier": 1,
+        "Role": "Nakasar_Peuples_Renonce_Lookout",
+        "Dialogue": "Renonce_Watcher",
+        "Building": "",
+        "WorkX": 4,
+        "WorkZ": -1,
+        "Home": "",
+        "HomeX": 4,
+        "HomeZ": -2,
+        "Builder": false
+      },
+      {
+        "Id": "AP_Forteresse_5",
+        "Tier": 2,
+        "Role": "Nakasar_Peuples_Renonce_Hunter",
+        "Dialogue": "Renonce_Hunter",
+        "Building": "",
+        "WorkX": -6,
+        "WorkZ": -1,
+        "Home": "",
+        "HomeX": -6,
+        "HomeZ": -2,
+        "Builder": false
+      },
+      {
+        "Id": "AP_Forteresse_6",
+        "Tier": 3,
+        "Role": "Nakasar_Peuples_Renonce_Watcher",
+        "Dialogue": "Renonce_Watcher",
+        "Building": "",
+        "WorkX": 6,
+        "WorkZ": -1,
+        "Home": "",
+        "HomeX": 6,
+        "HomeZ": -2,
+        "Builder": false
+      }
+    ],
+    "Materials": [
+      {
+        "ItemId": "Wood_Fir_Trunk",
+        "Quantity": 32
+      },
+      {
+        "ItemId": "Rock_Stone_Cobble",
+        "Quantity": 24
+      },
+      {
+        "ItemId": "Ingredient_Hide_Heavy",
+        "Quantity": 4
+      }
+    ],
+    "Hours": 48,
+    "Decor": [
+      "2 0 -1 0 Furniture_Lumberjack_Lantern"
+    ],
+    "Tier": 3,
+    "Limit": 1,
+    "MinDistance": 96,
+    "MaxDistance": 256,
+    "Spacing": 96,
+    "Slot": 3
+  },
+  "Specialties": [
+    {
+      "Id": "Garnison_Royale",
+      "NameKey": "nakasar_peuples.workshop.specialty.Renonce_AP_Forteresse.Garnison_Royale",
+      "LineKey": "nakasar_peuples.workshop.specialtyLine.Renonce_AP_Forteresse.Garnison_Royale",
+      "Icon": "Weapon_Sword_Iron",
+      "Raid": {
+        "Guards": 2
+      },
+      "Shops": [
+        "Nakasar_Peuples_W_Renonce_AP_Forteresse_Garnison_Royale_2",
+        "Nakasar_Peuples_W_Renonce_AP_Forteresse_Garnison_Royale_3"
+      ],
+      "ShareItem": "Weapon_Sword_Copper",
+      "ShareQuantity": 1
+    },
+    {
+      "Id": "Donjon",
+      "NameKey": "nakasar_peuples.workshop.specialty.Renonce_AP_Forteresse.Donjon",
+      "LineKey": "nakasar_peuples.workshop.specialtyLine.Renonce_AP_Forteresse.Donjon",
+      "Icon": "Armor_Iron_Head",
+      "Raid": {
+        "Health": 1.5
+      },
+      "Shops": [
+        "Nakasar_Peuples_W_Renonce_AP_Forteresse_Donjon_2",
+        "Nakasar_Peuples_W_Renonce_AP_Forteresse_Donjon_3"
+      ],
+      "ShareItem": "Armor_Leather_Light_Chest",
+      "ShareQuantity": 1
+    }
+  ],
+  "Shop": "Nakasar_Peuples_W_Renonce_AP_Forteresse_Base_1",
+  "Orders": "Renonce_AP_Forteresse"
+}

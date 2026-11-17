@@ -1,0 +1,211 @@
+{
+  "$Comment": "Place 3 de l'ouvrage Slothian_AP_Forteresse (copie générée par tools/generate_workshops.py).",
+  "People": "Slothian",
+  "Icon": "Weapon_Shield_Iron",
+  "NameKey": "nakasar_peuples.workshop.Slothian_AP_Forteresse.name",
+  "Board": [
+    0,
+    0,
+    0
+  ],
+  "Upgrades": [
+    {
+      "Level": 2,
+      "Hours": 12,
+      "Decor": [
+        "1 0 0 0 Furniture_Jungle_Torch"
+      ],
+      "Materials": [
+        {
+          "ItemId": "Wood_Jungle_Trunk",
+          "Quantity": 12
+        },
+        {
+          "ItemId": "Rock_Volcanic",
+          "Quantity": 12
+        },
+        {
+          "ItemId": "Furniture_Jungle_Candle",
+          "Quantity": 1
+        }
+      ]
+    },
+    {
+      "Level": 3,
+      "Hours": 12,
+      "Decor": [
+        "-1 0 0 0 Furniture_Jungle_Brazier"
+      ],
+      "Materials": [
+        {
+          "ItemId": "Wood_Jungle_Trunk",
+          "Quantity": 18
+        },
+        {
+          "ItemId": "Rock_Volcanic",
+          "Quantity": 18
+        },
+        {
+          "ItemId": "Furniture_Jungle_Candle",
+          "Quantity": 2
+        }
+      ]
+    }
+  ],
+  "Annex": {
+    "Type": "Forteresse",
+    "Family": "Infrastructure",
+    "Item": "Nakasar_Peuples_Annex_Forteresse",
+    "Rule": "NONE",
+    "Prefabs": [
+      "Npc/Slothian/Disabled/Temple/Medium/Slothian_Disabled_Temple_Medium_001 0 -15 0",
+      "Monuments/Incidental/Slothian/Land/Temple/Incidental_Slothian_Slothian_Temple_001 -15 -15 0",
+      "Monuments/Incidental/Slothian/Land/Temple/Incidental_Slothian_Slothian_Temple_003 14 -14 0"
+    ],
+    "Rect": [
+      -19,
+      19,
+      -27,
+      -2
+    ],
+    "Height": 31,
+    "Workers": [
+      {
+        "Id": "AP_Forteresse_1",
+        "Tier": 1,
+        "Role": "Nakasar_Peuples_Slothian_Guard",
+        "Dialogue": "Slothian_Guard",
+        "Building": "",
+        "WorkX": -2,
+        "WorkZ": -1,
+        "Home": "",
+        "HomeX": -2,
+        "HomeZ": -2,
+        "Builder": false
+      },
+      {
+        "Id": "AP_Forteresse_2",
+        "Tier": 1,
+        "Role": "Nakasar_Peuples_Slothian_Guard",
+        "Dialogue": "Slothian_Guard",
+        "Building": "",
+        "WorkX": 2,
+        "WorkZ": -1,
+        "Home": "",
+        "HomeX": 2,
+        "HomeZ": -2,
+        "Builder": false
+      },
+      {
+        "Id": "AP_Forteresse_3",
+        "Tier": 1,
+        "Role": "Nakasar_Peuples_Slothian_Guard",
+        "Dialogue": "Slothian_Guard",
+        "Building": "",
+        "WorkX": -4,
+        "WorkZ": -1,
+        "Home": "",
+        "HomeX": -4,
+        "HomeZ": -2,
+        "Builder": false
+      },
+      {
+        "Id": "AP_Forteresse_4",
+        "Tier": 1,
+        "Role": "Nakasar_Peuples_Slothian_Lookout",
+        "Dialogue": "Slothian_Watcher",
+        "Building": "",
+        "WorkX": 4,
+        "WorkZ": -1,
+        "Home": "",
+        "HomeX": 4,
+        "HomeZ": -2,
+        "Builder": false
+      },
+      {
+        "Id": "AP_Forteresse_5",
+        "Tier": 2,
+        "Role": "Nakasar_Peuples_Slothian_Guard",
+        "Dialogue": "Slothian_Guard",
+        "Building": "",
+        "WorkX": -6,
+        "WorkZ": -1,
+        "Home": "",
+        "HomeX": -6,
+        "HomeZ": -2,
+        "Builder": false
+      },
+      {
+        "Id": "AP_Forteresse_6",
+        "Tier": 3,
+        "Role": "Nakasar_Peuples_Slothian_Watcher",
+        "Dialogue": "Slothian_Watcher",
+        "Building": "",
+        "WorkX": 6,
+        "WorkZ": -1,
+        "Home": "",
+        "HomeX": 6,
+        "HomeZ": -2,
+        "Builder": false
+      }
+    ],
+    "Materials": [
+      {
+        "ItemId": "Wood_Jungle_Trunk",
+        "Quantity": 24
+      },
+      {
+        "ItemId": "Rock_Volcanic",
+        "Quantity": 24
+      },
+      {
+        "ItemId": "Furniture_Jungle_Candle",
+        "Quantity": 3
+      }
+    ],
+    "Hours": 48,
+    "Decor": [
+      "2 0 -1 0 Furniture_Jungle_Torch"
+    ],
+    "Tier": 3,
+    "Limit": 1,
+    "MinDistance": 96,
+    "MaxDistance": 256,
+    "Spacing": 96,
+    "Slot": 3
+  },
+  "Specialties": [
+    {
+      "Id": "Garnison_Royale",
+      "NameKey": "nakasar_peuples.workshop.specialty.Slothian_AP_Forteresse.Garnison_Royale",
+      "LineKey": "nakasar_peuples.workshop.specialtyLine.Slothian_AP_Forteresse.Garnison_Royale",
+      "Icon": "Weapon_Sword_Iron",
+      "Raid": {
+        "Guards": 2
+      },
+      "Shops": [
+        "Nakasar_Peuples_W_Slothian_AP_Forteresse_Garnison_Royale_2",
+        "Nakasar_Peuples_W_Slothian_AP_Forteresse_Garnison_Royale_3"
+      ],
+      "ShareItem": "Weapon_Sword_Copper",
+      "ShareQuantity": 1
+    },
+    {
+      "Id": "Donjon",
+      "NameKey": "nakasar_peuples.workshop.specialty.Slothian_AP_Forteresse.Donjon",
+      "LineKey": "nakasar_peuples.workshop.specialtyLine.Slothian_AP_Forteresse.Donjon",
+      "Icon": "Armor_Iron_Head",
+      "Raid": {
+        "Health": 1.5
+      },
+      "Shops": [
+        "Nakasar_Peuples_W_Slothian_AP_Forteresse_Donjon_2",
+        "Nakasar_Peuples_W_Slothian_AP_Forteresse_Donjon_3"
+      ],
+      "ShareItem": "Armor_Leather_Light_Chest",
+      "ShareQuantity": 1
+    }
+  ],
+  "Shop": "Nakasar_Peuples_W_Slothian_AP_Forteresse_Base_1",
+  "Orders": "Slothian_AP_Forteresse"
+}

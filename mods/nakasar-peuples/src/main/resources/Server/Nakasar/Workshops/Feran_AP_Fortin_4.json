@@ -1,0 +1,197 @@
+{
+  "$Comment": "Place 4 de l'ouvrage Feran_AP_Fortin (copie générée par tools/generate_workshops.py).",
+  "People": "Feran",
+  "Icon": "Weapon_Shield_Wood",
+  "NameKey": "nakasar_peuples.workshop.Feran_AP_Fortin.name",
+  "Board": [
+    0,
+    0,
+    0
+  ],
+  "Upgrades": [
+    {
+      "Level": 2,
+      "Hours": 12,
+      "Decor": [
+        "1 0 0 0 Furniture_Feran_Torch"
+      ],
+      "Materials": [
+        {
+          "ItemId": "Wood_Dry_Trunk",
+          "Quantity": 12
+        },
+        {
+          "ItemId": "Ingredient_Fibre",
+          "Quantity": 6
+        },
+        {
+          "ItemId": "Ingredient_Salt",
+          "Quantity": 3
+        }
+      ]
+    },
+    {
+      "Level": 3,
+      "Hours": 12,
+      "Decor": [
+        "-1 0 0 0 Furniture_Feran_Torch_Tall"
+      ],
+      "Materials": [
+        {
+          "ItemId": "Wood_Dry_Trunk",
+          "Quantity": 18
+        },
+        {
+          "ItemId": "Ingredient_Fibre",
+          "Quantity": 9
+        },
+        {
+          "ItemId": "Ingredient_Salt",
+          "Quantity": 4
+        }
+      ]
+    }
+  ],
+  "Annex": {
+    "Type": "Fortin",
+    "Family": "Infrastructure",
+    "Item": "Nakasar_Peuples_Annex_Fortin",
+    "Rule": "NONE",
+    "Prefabs": [
+      "Npc/Feran/Tier3/Walls/Feran_Tier3_Walls_001 -2 -6 0",
+      "Npc/Feran/Portals_Oasis/Pillar_Hut/Feran_Tier3_Hut_001 -12 -9 0"
+    ],
+    "Rect": [
+      -18,
+      6,
+      -15,
+      -2
+    ],
+    "Height": 6,
+    "Workers": [
+      {
+        "Id": "AP_Fortin_1",
+        "Tier": 1,
+        "Role": "Nakasar_Peuples_Feran_Guard",
+        "Dialogue": "Feran_Guard",
+        "Building": "",
+        "WorkX": -2,
+        "WorkZ": -1,
+        "Home": "",
+        "HomeX": -2,
+        "HomeZ": -2,
+        "Builder": false
+      },
+      {
+        "Id": "AP_Fortin_2",
+        "Tier": 1,
+        "Role": "Nakasar_Peuples_Feran_Guard",
+        "Dialogue": "Feran_Guard",
+        "Building": "",
+        "WorkX": 2,
+        "WorkZ": -1,
+        "Home": "",
+        "HomeX": 2,
+        "HomeZ": -2,
+        "Builder": false
+      },
+      {
+        "Id": "AP_Fortin_3",
+        "Tier": 1,
+        "Role": "Nakasar_Peuples_Feran_Lookout",
+        "Dialogue": "Feran_Watcher",
+        "Building": "",
+        "WorkX": -4,
+        "WorkZ": -1,
+        "Home": "",
+        "HomeX": -4,
+        "HomeZ": -2,
+        "Builder": false
+      },
+      {
+        "Id": "AP_Fortin_4",
+        "Tier": 2,
+        "Role": "Nakasar_Peuples_Feran_Guard",
+        "Dialogue": "Feran_Guard",
+        "Building": "",
+        "WorkX": 4,
+        "WorkZ": -1,
+        "Home": "",
+        "HomeX": 4,
+        "HomeZ": -2,
+        "Builder": false
+      },
+      {
+        "Id": "AP_Fortin_5",
+        "Tier": 3,
+        "Role": "Nakasar_Peuples_Feran_Watcher",
+        "Dialogue": "Feran_Watcher",
+        "Building": "",
+        "WorkX": -6,
+        "WorkZ": -1,
+        "Home": "",
+        "HomeX": -6,
+        "HomeZ": -2,
+        "Builder": false
+      }
+    ],
+    "Materials": [
+      {
+        "ItemId": "Wood_Dry_Trunk",
+        "Quantity": 24
+      },
+      {
+        "ItemId": "Ingredient_Fibre",
+        "Quantity": 12
+      },
+      {
+        "ItemId": "Ingredient_Salt",
+        "Quantity": 6
+      }
+    ],
+    "Hours": 48,
+    "Decor": [
+      "2 0 -1 0 Furniture_Feran_Torch"
+    ],
+    "Tier": 3,
+    "Limit": 2,
+    "MinDistance": 200,
+    "MaxDistance": 600,
+    "Spacing": 96,
+    "Slot": 4
+  },
+  "Specialties": [
+    {
+      "Id": "Avant_Garde",
+      "NameKey": "nakasar_peuples.workshop.specialty.Feran_AP_Fortin.Avant_Garde",
+      "LineKey": "nakasar_peuples.workshop.specialtyLine.Feran_AP_Fortin.Avant_Garde",
+      "Icon": "Weapon_Spear_Iron",
+      "Raid": {
+        "Guards": 1
+      },
+      "Shops": [
+        "Nakasar_Peuples_W_Feran_AP_Fortin_Avant_Garde_2",
+        "Nakasar_Peuples_W_Feran_AP_Fortin_Avant_Garde_3"
+      ],
+      "ShareItem": "Weapon_Spear_Copper",
+      "ShareQuantity": 1
+    },
+    {
+      "Id": "Remparts",
+      "NameKey": "nakasar_peuples.workshop.specialty.Feran_AP_Fortin.Remparts",
+      "LineKey": "nakasar_peuples.workshop.specialtyLine.Feran_AP_Fortin.Remparts",
+      "Icon": "Weapon_Shield_Copper",
+      "Raid": {
+        "Health": 1.25
+      },
+      "Shops": [
+        "Nakasar_Peuples_W_Feran_AP_Fortin_Remparts_2",
+        "Nakasar_Peuples_W_Feran_AP_Fortin_Remparts_3"
+      ],
+      "ShareItem": "Weapon_Shield_Copper",
+      "ShareQuantity": 1
+    }
+  ],
+  "Shop": "Nakasar_Peuples_W_Feran_AP_Fortin_Base_1",
+  "Orders": "Feran_AP_Fortin"
+}

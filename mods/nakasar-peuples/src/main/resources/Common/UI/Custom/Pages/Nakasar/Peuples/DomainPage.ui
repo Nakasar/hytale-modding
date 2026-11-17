@@ -29,7 +29,7 @@ $C.@PageOverlay {
         Anchor: (Height: 38);
         Group #TabBoard {
           LayoutMode: Full;
-          Anchor: (Width: 150, Height: 38, Right: 6);
+          Anchor: (Width: 128, Height: 38, Right: 6);
           Group #TabBoardOff {
             LayoutMode: Full;
             Anchor: (Full: 0);
@@ -45,7 +45,7 @@ $C.@PageOverlay {
         }
         Group #TabPlots {
           LayoutMode: Full;
-          Anchor: (Width: 150, Height: 38, Right: 6);
+          Anchor: (Width: 128, Height: 38, Right: 6);
           Group #TabPlotsOff {
             LayoutMode: Full;
             Anchor: (Full: 0);
@@ -61,7 +61,7 @@ $C.@PageOverlay {
         }
         Group #TabAnnexes {
           LayoutMode: Full;
-          Anchor: (Width: 150, Height: 38, Right: 6);
+          Anchor: (Width: 128, Height: 38, Right: 6);
           Group #TabAnnexesOff {
             LayoutMode: Full;
             Anchor: (Full: 0);
@@ -75,9 +75,25 @@ $C.@PageOverlay {
             Label #TabAnnexesLabel { Anchor: (Full: 0); Style: (FontSize: 14, RenderBold: true, RenderUppercase: true, TextColor: #10180e, HorizontalAlignment: Center, VerticalAlignment: Center); Text: ""; }
           }
         }
+        Group #TabWorks {
+          LayoutMode: Full;
+          Anchor: (Width: 128, Height: 38, Right: 6);
+          Group #TabWorksOff {
+            LayoutMode: Full;
+            Anchor: (Full: 0);
+            Visible: true;
+            $C.@SecondaryTextButton #TabWorksButton { @Text = ""; @Anchor = Anchor(Full: 0); }
+          }
+          Group #TabWorksOn {
+            Anchor: (Full: 0);
+            Background: (Color: #7a9cc6);
+            Visible: false;
+            Label #TabWorksLabel { Anchor: (Full: 0); Style: (FontSize: 14, RenderBold: true, RenderUppercase: true, TextColor: #10180e, HorizontalAlignment: Center, VerticalAlignment: Center); Text: ""; }
+          }
+        }
         Group #TabWorld {
           LayoutMode: Full;
-          Anchor: (Width: 150, Height: 38, Right: 6);
+          Anchor: (Width: 128, Height: 38, Right: 6);
           Group #TabWorldOff {
             LayoutMode: Full;
             Anchor: (Full: 0);
@@ -93,7 +109,7 @@ $C.@PageOverlay {
         }
         Group #TabDomain {
           LayoutMode: Full;
-          Anchor: (Width: 150, Height: 38, Right: 6);
+          Anchor: (Width: 128, Height: 38, Right: 6);
           Group #TabDomainOff {
             LayoutMode: Full;
             Anchor: (Full: 0);

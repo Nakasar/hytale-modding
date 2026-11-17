@@ -162,6 +162,8 @@ public final class Raids {
         boolean eventRunning;
         /** PV des gardes (spécialités de garde, étape 5) et gardes déjà renforcés. */
         float guardHealth = 1f;
+        /** Ouvrage visé (Kevin, 2026-11-16 : un raid sur quatre), id de son bâtiment de métier, ou null : le village. */
+        String ouvrage;
         final Set<Ref<EntityStore>> boosted = Collections.newSetFromMap(new IdentityHashMap<>());
 
         Active(String villageId, long night, UUID eventId) {
@@ -532,6 +534,16 @@ public final class Raids {
                 leash(store, ref, spot);
             }
         }
+        // Un raid sur quatre vise un ouvrage du village à moins de 400 blocs (Infrastructures) : perdu, il le rase.
+        java.util.List<dev.nakasar.hytale.peuples.annex.Infrastructures.Work> targets =
+                dev.nakasar.hytale.peuples.annex.Infrastructures.raidTargets(world, village);
+        if (!targets.isEmpty() && random.nextInt(4) == 0) {
+            dev.nakasar.hytale.peuples.annex.Infrastructures.Work target = targets.get(random.nextInt(targets.size()));
+            a.ouvrage = target.workshop().getId();
+            announce(world, store, village, a, Message.translation(KEYS + "ouvrage.target")
+                    .param("building", Message.translation(target.workshop().nameKey()))
+                    .param("x", target.state().x()).param("z", target.state().z()), null, null, NotificationStyle.Warning);
+        }
         Vector3i camp = camps.get(0);
         Message direction = Message.translation(Villages.MESSAGES + "dir." + Requests.direction(camp.x() - village.x(), camp.z() - village.z()));
         Message warn = Message.translation(KEYS + "warning").param("village", village.name()).param("direction", direction)
@@ -628,11 +640,31 @@ public final class Raids {
         stopEvent(store, a);
         int killed = a.byPlayers + a.byGuards;
         String burnt = null;
+        // Défaite adoucie par un ouvrage ou un projet (doc « Structurer les types de bâtiments ») : bilan à part.
+        String softened = null;
+        Message softBuilding = null;
         if (victory) {
             Villages.addEssor(village, ESSOR_WIN);
+        } else if (a.ouvrage != null && dev.nakasar.hytale.peuples.annex.Ouvrages.raze(world, store, village, a.ouvrage, null)) {
+            // Raid sur un ouvrage : l'ouvrage est rasé, le village ne brûle pas et garde son palier.
+            burnt = null;
+            softened = "report.ouvrage";
+            dev.nakasar.hytale.peuples.workshop.Workshop w = dev.nakasar.hytale.peuples.workshop.Workshop.get(a.ouvrage);
+            softBuilding = w == null ? Message.raw(a.ouvrage) : Message.translation(w.nameKey());
+        } else if (dev.nakasar.hytale.peuples.workshop.Projects.spared(village)) {
+            // Temple, spécialité Protection : une fois sur deux, rien ne brûle.
+            burnt = null;
+            softened = "report.spared";
+            announce(world, store, village, a, Message.translation(KEYS + "templeSpared"), null, null, NotificationStyle.Success);
         } else {
-            VillageLayout.Building b = Chantiers.burn(world, village, null, true);
+            // Forteresse tenue : un bâtiment brûle mais le village garde son palier (Infrastructures).
+            boolean keeps = dev.nakasar.hytale.peuples.annex.Infrastructures.keepsTier(world, village);
+            VillageLayout.Building b = Chantiers.burn(world, village, null, !keeps);
             burnt = b == null ? null : b.id();
+            if (keeps && b != null) {
+                softened = "report.kept";
+                softBuilding = Message.translation(Chantiers.buildingKey(b.id()));
+            }
             if (b != null) {
                 // Monde vivant (étape 4) : les habitants du bâtiment brûlé campent au bord du village jusqu'à sa
                 // reconstruction ; des arbres brûlés gardent la trace du raid.
@@ -652,12 +684,14 @@ public final class Raids {
             }
             boolean took = a.participants.contains(p.getUuid());
             if (took) {
-                Message report = Message.translation(victory ? KEYS + "report.won" : key(village.people(), "report.lost." + why))
+                String reportKey = victory ? KEYS + "report.won" : softened != null ? KEYS + softened : key(village.people(), "report.lost." + why);
+                Message report = Message.translation(reportKey)
                         .param("village", village.name()).param("killed", killed).param("raiders", a.total)
                         .param("byPlayers", a.byPlayers).param("byGuards", a.byGuards).param("fallen", a.fallen)
                         .param("enemy", enemy).param("rep", REP_WIN).param("essor", ESSOR_WIN).param("favors", FAVORS_WIN)
                         .param("favor", VillageBoard.itemName(village.people().favorItem()))
-                        .param("building", burnt == null ? Message.translation(KEYS + "noBuilding") : Message.translation(Chantiers.buildingKey(burnt)));
+                        .param("building", softBuilding != null ? softBuilding
+                                : burnt == null ? Message.translation(KEYS + "noBuilding") : Message.translation(Chantiers.buildingKey(burnt)));
                 p.sendMessage(report);
                 EventTitleUtil.showEventTitleToPlayer(p, Message.translation(victory ? KEYS + "title.won" : KEYS + "title.lost"),
                         Message.raw(village.name()), EventTitleStyle.Default, null, 4f, 0.5f, 1f);

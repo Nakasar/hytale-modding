@@ -96,6 +96,9 @@ public final class AnnexState {
             .append(new KeyedCodec<>("Garrison", Codec.INTEGER), (a, v) -> a.garrison = v == null ? -1 : v, a -> a.garrison)
             .documentation("Gardes de l'occupant dans l'ouvrage (-1 : les villageois du propriétaire le gardent).")
             .add()
+            .append(new KeyedCodec<>("Cleared", Codec.BOOLEAN), (a, v) -> a.cleared = v != null && v, a -> a.cleared)
+            .documentation("Ouvrage rasé : vrai une fois ses blocs retirés (zone chargée).")
+            .add()
             .append(new KeyedCodec<>("SiegeBy", Codec.STRING), (a, v) -> a.siegeBy = v == null || v.isBlank() ? null : v, a -> a.siegeBy)
             .documentation("Expédition en marche contre l'ouvrage : village qui l'envoie, ou vide.")
             .add()
@@ -138,6 +141,15 @@ public final class AnnexState {
     String siegeBy;
     long siegeArrive;
     int siegeSoldiers;
+    boolean cleared;
+
+    public boolean cleared() {
+        return cleared;
+    }
+
+    public void setCleared(boolean value) {
+        this.cleared = value;
+    }
 
     /** Rendement du gisement (0,75 / 1 / 1,5). */
     public double yieldFactor() {
@@ -155,6 +167,7 @@ public final class AnnexState {
     /** Ouvrage rasé : place gardée pour le relever (thread du monde). */
     public void markRuin() {
         this.stage = RUIN;
+        this.cleared = false;
         this.occupant = null;
         this.occupiedDay = Long.MIN_VALUE;
         this.garrison = -1;
@@ -578,6 +591,7 @@ public final class AnnexState {
         c.siegeBy = siegeBy;
         c.siegeArrive = siegeArrive;
         c.siegeSoldiers = siegeSoldiers;
+        c.cleared = cleared;
         return c;
     }
 }

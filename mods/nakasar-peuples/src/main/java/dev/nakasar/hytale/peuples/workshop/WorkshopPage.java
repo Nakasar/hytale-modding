@@ -86,6 +86,15 @@ public final class WorkshopPage extends InteractiveCustomUIPage<WorkshopPage.Eve
             playerRef.sendMessage(Message.translation(KEYS + "notHere"));
             return;
         }
+        dev.nakasar.hytale.peuples.village.AnnexState annex = workshop.isAnnex() ? village.annex(workshop.getId()) : null;
+        if (annex != null && (annex.occupied() || annex.ruined())) {
+            // Ouvrage pris par un rival (panneau fermé aux joueurs du propriétaire) ou rasé.
+            Village occupant = annex.occupied() ? dev.nakasar.hytale.peuples.village.Villages.registry(world).byId(annex.occupant()) : null;
+            playerRef.sendMessage(annex.occupied()
+                    ? Message.translation("nakasar_peuples.annex.ouvrage.closed").param("village", occupant == null ? "?" : occupant.name())
+                    : Message.translation("nakasar_peuples.annex.ouvrage.ruined"));
+            return;
+        }
         Workshops.draw(store, village, workshop, village.workshop(workshop.getId()), false);
         if (text) {
             Message title = title(village, workshop);

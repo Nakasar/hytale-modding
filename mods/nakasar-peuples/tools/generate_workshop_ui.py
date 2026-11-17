@@ -502,7 +502,7 @@ def plot_page(theme_id):
     return "\n".join(L).replace("Style: LabelStyle(", "Style: (") + "\n"
 
 
-ANNEX_CARDS = 6            # avant-postes de métier par peuple (tools/outposts.py)
+ANNEX_CARDS = 6            # bâtiments de production par peuple (tools/outposts.TYPES : 5, une carte vide)
 ANNEX_COLUMNS = 3
 ANNEX_MATERIALS = 3        # matériaux de fondation affichés en icônes (tools/outposts.py FOUNDATION)
 
@@ -604,6 +604,138 @@ def annex_page(theme_id):
     w("      Group {")
     w("        LayoutMode: Left;")
     w("        Anchor: (Height: 36, Top: 10);")
+    w(f'        {label("Rule", "@SmallWrap", extra=" FlexWeight: 1;")}')
+    w("      }")
+    w("    }")
+    w("  }")
+    w("}")
+    w("")
+    w("$C.@BackButton {}")
+    return "\n".join(L).replace("Style: LabelStyle(", "Style: (") + "\n"
+
+
+WORKS_TYPES = 4           # ouvrages par peuple (tools/outposts.INFRA) : une carte chacun
+WORKS_ROWS = 16           # lignes de la liste (ouvrages du village, puis ouvrages rivaux à attaquer) : OuvragePage.ROWS
+WORKS_MATERIALS = 3
+
+
+def works_page(theme_id):
+    """Onglet « Ouvrages » du panneau : une carte par type (compteur, coût, fondation), puis la liste qui défile des
+    ouvrages du village (état, Détruire, Reprendre, Relever) et des ouvrages rivaux qu'il peut attaquer."""
+    t = THEMES[theme_id]
+    acc, band, title = t["accent"], t["band"], t["title"]
+    emblem = (f'Background: (TexturePath: "{MEMORIES}{t["emblem"]}.png", Color: {acc});' if t["emblem"]
+              else "Visible: false;")
+    L = []
+    w = L.append
+    w('$C = "../../../Common.ui";')
+    w("")
+    w(f"// Généré par tools/generate_workshop_ui.py (thème {theme_id or 'neutre'}) : ne pas modifier à la main.")
+    w("")
+    w(f"@Accent = {acc};")
+    w("@Body = LabelStyle(FontSize: 14, TextColor: #c9d1d9, Wrap: true);")
+    w("@SmallWrap = LabelStyle(FontSize: 13, TextColor: #96a9be, Wrap: true);")
+    w("@Count = LabelStyle(FontSize: 12, RenderBold: true, TextColor: #e8c46a, HorizontalAlignment: Center, VerticalAlignment: Center);")
+    w("")
+    w("$C.@PageOverlay {")
+    w("  LayoutMode: Middle;")
+    w("")
+    w("  $C.@DecoratedContainer {")
+    w(f"    Anchor: (Width: {PLOT_WIDTH}, Height: {PLOT_HEIGHT});")
+    w("")
+    w("    #Title {")
+    w("      Group {")
+    w("        LayoutMode: Center;")
+    w(f"        Group #TitleEmblem {{ Anchor: (Width: 26, Height: 26, Right: 8); {emblem} }}")
+    w(f'        Label #PageTitle {{ Style: (...$C.@TitleStyle, FontSize: 16, TextColor: {title}); }}')
+    w("      }")
+    w("    }")
+    w("")
+    w("    #Content {")
+    w("      LayoutMode: Top;")
+    w("      Padding: (Full: 17, Top: 12);")
+    tab_strip(w, acc, "Works")
+    w(f'      {label("Intro", "@Body", anchor="Height: 40, Bottom: 8")}')
+    w("      Group #WorkTypes {")
+    w("        LayoutMode: Left;")
+    w("        Anchor: (Height: 196, Bottom: 10);")
+    for i in range(WORKS_TYPES):
+        w(f"        Group #Type{i} {{")
+        w("          LayoutMode: Top;")
+        w("          FlexWeight: 1;")
+        w(f"          Anchor: (Right: {10 if i < WORKS_TYPES - 1 else 0});")
+        w("          Padding: (Horizontal: 12, Vertical: 8);")
+        w(f"          Background: (Color: {band}(0.75));")
+        w(f"          Group {{ Anchor: (Height: 3, Bottom: 6); Background: (Color: {acc}(0.6)); }}")
+        w("          Group {")
+        w("            LayoutMode: Left;")
+        w("            Anchor: (Height: 46);")
+        w("            Group {")
+        w("              LayoutMode: Full;")
+        w("              Anchor: (Width: 42, Height: 42, Right: 8);")
+        w(f'              Background: (TexturePath: "{COMMON}IngredientSlot.png", Border: 24);')
+        w(f"              ItemIcon #TypeIcon{i} {{ Anchor: (Full: 5); ShowItemTooltip: true; }}")
+        w("            }")
+        w("            Group {")
+        w("              LayoutMode: Top;")
+        w("              FlexWeight: 1;")
+        w(f'              {label(f"TypeName{i}", f"LabelStyle(FontSize: 14, FontName: \"Secondary\", RenderBold: true, RenderUppercase: true, TextColor: {acc})", anchor="Height: 20")}')
+        w(f'              {label(f"TypeCount{i}", "LabelStyle(FontSize: 13, RenderBold: true, TextColor: #e8c46a)", anchor="Height: 18")}')
+        w("            }")
+        w("          }")
+        w(f'          {label(f"TypeRole{i}", "@SmallWrap", anchor="Height: 54, Top: 2")}')
+        w(f"          Group #TypeMats{i} {{")
+        w("            LayoutMode: Left;")
+        w("            Anchor: (Height: 50, Top: 2);")
+        for j in range(WORKS_MATERIALS):
+            k = i * WORKS_MATERIALS + j
+            w(f"            Group #TypeMat{k} {{")
+            w("              LayoutMode: Top;")
+            w("              Anchor: (Width: 46, Right: 6);")
+            w("              Group {")
+            w("                LayoutMode: Full;")
+            w("                Anchor: (Width: 34, Height: 34, Left: 6);")
+            w(f'                Group #TypeMatSlot{k} {{ Anchor: (Full: 0); Background: (TexturePath: "{COMMON}IngredientSlot.png", Border: 24); }}')
+            w(f'                Group #TypeMatOk{k} {{ Anchor: (Full: 0); Background: (TexturePath: "{COMMON}IngredientSlotValid.png", Border: 24); Visible: false; }}')
+            w(f"                ItemIcon #TypeMatIcon{k} {{ Anchor: (Full: 3); ShowItemTooltip: true; }}")
+            w("              }")
+            w(f'              Label #TypeMatCount{k} {{ Anchor: (Height: 14, Top: 1); Style: @Count; Text: ""; }}')
+            w("            }")
+        w("          }")
+        w("          Group { FlexWeight: 1; }")
+        w(f'          $C.@SmallSecondaryTextButton #TypeAction{i} {{ @Text = ""; @Anchor = Anchor(Height: 30); }}')
+        w("        }")
+    w("      }")
+    w("      // Ouvrages du village et ouvrages rivaux : liste qui défile (TopScrolling, comme les listes vanilla).")
+    w("      Group #WorkList {")
+    w("        LayoutMode: TopScrolling;")
+    w("        ScrollbarStyle: $C.@DefaultScrollbarStyle;")
+    w("        FlexWeight: 1;")
+    w(f'        {label("ListEmpty", "@SmallWrap", anchor="Height: 24")}')
+    for i in range(WORKS_ROWS):
+        w(f"        Group #Row{i} {{")
+        w("          LayoutMode: Left;")
+        w("          Anchor: (Height: 58, Bottom: 6, Right: 10);")
+        w("          Padding: (Horizontal: 10, Vertical: 6);")
+        w(f"          Background: (Color: {band}(0.6));")
+        w("          Group {")
+        w("            LayoutMode: Full;")
+        w("            Anchor: (Width: 42, Height: 42, Right: 10);")
+        w(f'            Background: (TexturePath: "{COMMON}IngredientSlot.png", Border: 24);')
+        w(f"            ItemIcon #RowIcon{i} {{ Anchor: (Full: 5); ShowItemTooltip: false; }}")
+        w("          }")
+        w("          Group {")
+        w("            LayoutMode: Top;")
+        w("            FlexWeight: 1;")
+        w(f'            {label(f"RowName{i}", f"LabelStyle(FontSize: 14, RenderBold: true, TextColor: {acc})", anchor="Height: 18")}')
+        w(f'            {label(f"RowState{i}", "LabelStyle(FontSize: 13, TextColor: #c9d1d9, Wrap: true)", anchor="Height: 30")}')
+        w("          }")
+        w(f'          $C.@SmallSecondaryTextButton #RowAction{i} {{ @Text = ""; @Anchor = Anchor(Width: 200, Height: 30, Left: 10, Top: 6); }}')
+        w("        }")
+    w("      }")
+    w("      Group {")
+    w("        LayoutMode: Left;")
+    w("        Anchor: (Height: 34, Top: 8);")
     w(f'        {label("Rule", "@SmallWrap", extra=" FlexWeight: 1;")}')
     w("      }")
     w("    }")
@@ -1028,6 +1160,9 @@ def main():
         print("écrit", name)
         name = f"AnnexPage_{theme_id}.ui" if theme_id else "AnnexPage.ui"
         (OUT / name).write_text(annex_page(theme_id), encoding="utf-8")
+        print("écrit", name)
+        name = f"OuvragePage_{theme_id}.ui" if theme_id else "OuvragePage.ui"
+        (OUT / name).write_text(works_page(theme_id), encoding="utf-8")
         print("écrit", name)
         name = f"WorldPage_{theme_id}.ui" if theme_id else "WorldPage.ui"
         (OUT / name).write_text(world_page(theme_id), encoding="utf-8")

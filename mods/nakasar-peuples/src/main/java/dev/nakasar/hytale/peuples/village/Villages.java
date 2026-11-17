@@ -154,7 +154,7 @@ public final class Villages {
         if (village.isHamlet()) {
             return 0; // un lieu-dit n'a pas d'essor : il grandit par son bâtiment de métier
         }
-        return village.addEssor(amount);
+        return village.addEssor(dev.nakasar.hytale.peuples.workshop.Projects.essor(village, amount)); // Temple : +10 %
     }
 
     /** Remplace les demandes du tableau (tirage du matin). */

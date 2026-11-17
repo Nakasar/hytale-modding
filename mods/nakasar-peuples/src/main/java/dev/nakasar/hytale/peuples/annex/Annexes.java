@@ -821,6 +821,16 @@ public final class Annexes {
                 continue;
             }
             String key = key(village, w);
+            if (a.ruined()) {
+                // Ouvrage rasé (raid perdu) : ses blocs partent au passage d'un joueur, la place reste à relever.
+                if (!a.cleared() && watched(a, players) && demolish(world, village, w, a)) {
+                    a.setCleared(true);
+                }
+                continue;
+            }
+            if (a.built() && a.occupied()) {
+                continue; // pris par un rival : plus de production ni de convoi pour le propriétaire
+            }
             if (a.built()) {
                 if (!SWEPT.contains(key) && watched(a, players)) {
                     // Avant-postes bâtis avant le correctif : le panneau de chantier était resté sur place.
@@ -1080,9 +1090,9 @@ public final class Annexes {
         return null;
     }
 
-    /** Vrai si l'avant-poste peut être détruit : en travaux ou debout, sans convoi sur la route. */
+    /** Vrai si l'avant-poste peut être détruit : en travaux, debout (pas pris, pas assiégé) ou en ruine. */
     public static boolean destroyable(AnnexState a) {
-        return a != null && !a.granted() && (a.working() || a.built());
+        return a != null && !a.granted() && !a.occupied() && !a.besieged() && (a.working() || a.built() || a.ruined());
     }
 
     /**
@@ -1106,6 +1116,17 @@ public final class Annexes {
         if (a.convoy()) {
             player.sendMessage(Message.translation(KEYS + "destroy.convoy").param("building", Message.translation(w.nameKey())));
             return false;
+        }
+        if (a.ruined()) {
+            // Ruine d'ouvrage : on libère la place (pas de remboursement, la fondation a déjà été perdue).
+            if (!a.cleared() && !demolish(world, village, w, a)) {
+                player.sendMessage(Message.translation(KEYS + "unloaded"));
+                return false;
+            }
+            village.forgetAnnex(w.getId());
+            Chantiers.announce(world, village, Message.translation(KEYS + "destroyed").param("player", player.getUsername())
+                    .param("building", Message.translation(w.nameKey())), null, NotificationStyle.Warning);
+            return true;
         }
         boolean built = a.built();
         String key = key(village, w);
@@ -1271,5 +1292,6 @@ public final class Annexes {
         PHASE.clear();
         BUSY.clear();
         SWEPT.clear();
+        Ouvrages.clearAll();
     }
 }
