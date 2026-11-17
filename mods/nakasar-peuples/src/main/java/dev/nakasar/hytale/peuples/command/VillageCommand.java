@@ -1290,7 +1290,8 @@ public final class VillageCommand extends AbstractCommandCollection {
     /**
      * {@code revue [peuple] [--categorie <c>] [--rebatir]} (opérateurs) : envoie le joueur sur la carte plate de revue
      * des bâtiments (paliers 1 à 4, {@link ReviewMap}), créée au premier appel, et bâtit les rectangles pas encore faits
-     * (toute la carte, ou ceux du peuple donné) ; {@code --rebatir} les recolle (écrase les retouches à la main).
+     * (toute la carte, ou ceux du peuple donné). Le monde est écrasé par un monde neuf quand la carte a changé, ou avec
+     * {@code --rebatir} (retouches non enregistrées en prefab perdues).
      */
     private static final class ReviewCommand extends AbstractPlayerCommand {
         private final OptionalArg<String> people = withOptionalArg("peuple", KEYS + "review.people", ArgTypes.STRING);
@@ -1314,9 +1315,12 @@ public final class VillageCommand extends AbstractCommandCollection {
             }
             String cat = category.get(context);
             boolean again = Boolean.TRUE.equals(rebuild.get(context));
-            ReviewMap.world().whenComplete((review, error) -> {
+            ReviewMap.world(again).whenComplete((review, error) -> {
                 if (review == null) {
-                    player.sendMessage(Message.translation(ReviewMap.KEYS + "noWorld"));
+                    Throwable cause = error instanceof java.util.concurrent.CompletionException && error.getCause() != null
+                            ? error.getCause() : error;
+                    player.sendMessage(Message.translation(ReviewMap.KEYS
+                            + (cause instanceof ReviewMap.OccupiedException ? "occupied" : "noWorld")));
                     return;
                 }
                 ReviewMap.layout(review);
@@ -1325,7 +1329,7 @@ public final class VillageCommand extends AbstractCommandCollection {
                         ReviewMap.teleport(ref, store, review, peopleId, cat);
                     }
                 });
-                if (!ReviewMap.build(review, peopleId, again, player)) {
+                if (!ReviewMap.build(review, peopleId, false, player)) {
                     player.sendMessage(Message.translation(ReviewMap.KEYS + "busy"));
                 }
             });

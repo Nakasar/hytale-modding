@@ -2071,6 +2071,21 @@ Un palier sans version plus grande en vanilla reste identique au précédent ave
 grande : à retoucher à la main » (environ 40 à 50 par peuple) : c'est là que la retouche sur la carte sert. Ces paliers ne
 sont **pas encore branchés au jeu** (chantiers, niveaux I-III des bâtiments de métier) : la carte sert à les valider.
 
+Mise à jour du 17 novembre 2026 (Kevin, après les familles de bâtiments #172) :
+
+- projets de terrain E1, E2 et E3 : un seul rectangle par projet (même prefab sur les trois terrains), panneau
+  « Projet de terrain · <catégorie> » (Artisanat, Défense, Diplomatie, Savoir, Culte, Élevage) ; la Caserne, la
+  Bibliothèque et le Temple de chaque peuple y entrent ;
+- les avant-postes se rangent en **Production** (Ferme, Mine ou Bosquet, Scierie, Pêcherie, Chasse) et **Ouvrage**
+  (Tour de garde, Poste routier, Fortin, Forteresse), une seule fois chacun (les places 2, 3... d'un ouvrage sont des
+  copies) ;
+- retirés : les projets hérités (`Legacy` : Grand bassin, Camp de bûcherons, Carrière, Citerne, Cabanes de pêche,
+  Puits de basalte), qui ne se construisent plus ;
+- emplacements réservés (rectangle vide de 24 × 24 à leur nom, champ `Reserve`, liste `RESERVED` du script) pour les
+  bâtiments prévus sans prefab : la production régionale de chaque peuple et l'atelier slothian ;
+- un seul monde `nakasar_revue_batiments`, sans suffixe de version (Kevin) : écrasé quand la carte change (voir plus
+  bas) ; les mondes `nakasar_revue_batiments_v2` et `_v3` des essais peuvent être supprimés.
+
 Colonne « Monde » : auberges, campements, vestiges et Source de l'Écho (lus dans `world/Inns`, `world/Camps`,
 `world/Traces`), un seul rectangle chacun (pas de paliers).
 
@@ -2078,18 +2093,22 @@ Régénérer après un changement des plans, avant-postes, lieux-dits ou structu
 
     python3 mods/nakasar-peuples/tools/building_tiers.py
 
-Le script écrit `src/main/resources/nakasar-peuples/revue-batiments.json` (203 bâtiments et structures, 713
+Le script écrit `src/main/resources/nakasar-peuples/revue-batiments.json` (229 bâtiments et structures, 817
 rectangles) et refuse un bloc ou un prefab inconnu (listes `vanilla-*-0.7.2.txt` et prefabs du mod).
 
 ### La carte (`/village revue`)
 
 - `/village revue [peuple] [--categorie <c>] [--rebatir]` (opérateurs) : crée au premier appel le monde
-  `nakasar_revue_batiments_v2` (générateur plat vanilla, créatif, sans PNJ), y envoie le joueur au nord de la colonne
+  `nakasar_revue_batiments` (générateur plat vanilla, créatif, sans PNJ), y envoie le joueur au nord de la colonne
   du peuple (la première par défaut) ou devant la catégorie, et bâtit les rectangles pas encore faits : **toute la
   carte** sans peuple, sinon ce peuple seul (`monde` pour les structures). Un message tous les 25 rectangles.
-- `--rebatir` recolle les rectangles demandés : **écrase les retouches** faites à la main.
+- Le monde est **écrasé** par un monde neuf quand la carte a changé (empreinte SHA-256 de `revue-batiments.json`
+  gardée dans `nakasar_revue_batiments_carte.txt` du dossier du monde ; un monde sans empreinte, comme celui de la
+  première version, est écrasé aussi) ou avec `--rebatir`. L'ancien dossier part dans le dossier des mondes supprimés
+  du serveur. Refusé tant qu'un joueur est dans le monde de revue. Les retouches non enregistrées en prefab sont
+  perdues.
 - Une colonne par peuple d'ouest en est (Kweebec, Trork, Feran, Renoncé, Slothian, Monde), une rangée par bâtiment du
-  nord au sud (cœur, base, artisan, projets, avant-postes, lieux-dits), les paliers 1 → 4 d'ouest en est.
+  nord au sud (cœur, base, artisan, projets, production, ouvrages, lieux-dits), les paliers 1 → 4 d'ouest en est.
 - Les rectangles d'un même bâtiment ont la même taille : la plus grande boîte de ses paliers (mesurée sur les prefabs
   chargés) plus 3 blocs d'herbe de marge, liseré de laine rouge `Cloth_Block_Wool_Red` au sol. Chaque palier est
   centré dans son rectangle.
@@ -2098,10 +2117,8 @@ rectangles) et refuse un bloc ou un prefab inconnu (listes `vanilla-*-0.7.2.txt`
   prefabs collés et les notes (`review/ReviewSignInteraction`).
 - Le plan mesuré (taille de chaque bâtiment, place de chaque palier) est gardé dans `nakasar_revue_batiments_plan.txt`
   du dossier du monde : un prefab retouché puis rechargé ne décale jamais la carte. Les rectangles faits sont listés
-  dans `nakasar_revue_batiments.txt` : relancer la commande ne touche jamais à un rectangle déjà bâti. Un bâtiment
-  ajouté au milieu du JSON décale ceux qui le suivent dans sa colonne : dans ce cas, repartir d'un monde neuf.
-- L'ancien monde `nakasar_revue_batiments` (première version, liseré de briques et textes flottants) peut être
-  supprimé.
+  dans `nakasar_revue_batiments.txt` : relancer la commande ne touche jamais à un rectangle déjà bâti tant que
+  la carte ne change pas.
 
 ### À vérifier en jeu (carte de revue)
 
