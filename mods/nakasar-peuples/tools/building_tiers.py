@@ -467,7 +467,7 @@ def main():
                     "à la main) ; lue par dev.nakasar.hytale.peuples.review.ReviewMap (/village revue). Pièces : "
                     "« chemin dx dy dz rotation » ; blocs : « dx dy dz rotation Bloc » (dy 0 = posé sur le sol, Empty "
                     "= vider) ; Clear : « dx dy dz Bloc » retiré s'il est là.",
-        "World": "nakasar_revue_batiments_v3",
+        "World": "nakasar_revue_batiments",
         "Sections": [],
     }
     total_cells = 0

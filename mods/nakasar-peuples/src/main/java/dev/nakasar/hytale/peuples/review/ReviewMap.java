@@ -55,16 +55,18 @@ import java.util.concurrent.CompletableFuture;
  * <p>Les compositions viennent de {@code nakasar-peuples/revue-batiments.json}, écrit par
  * {@code tools/building_tiers.py}. Les tailles se mesurent ici sur les prefabs chargés, une fois par monde : le plan
  * obtenu est gardé dans {@value #PLAN_FILE} (dossier du monde) pour qu'un prefab retouché puis rechargé ne décale
- * jamais la carte. Un rectangle n'est bâti qu'une fois (liste dans {@value #STATE_FILE}) pour ne jamais écraser une
- * retouche, sauf demande explicite ({@code --rebatir}).
+ * jamais la carte. Un rectangle n'est bâti qu'une fois (liste dans {@value #STATE_FILE}). Un seul monde de revue,
+ * {@value #WORLD_DEFAULT} : il est écrasé par un monde neuf quand la carte change (empreinte dans
+ * {@value #SIGNATURE_FILE}) ou sur demande ({@code --rebatir}).
  */
 public final class ReviewMap {
 
     private static final HytaleLogger LOGGER = HytaleLogger.forEnclosingClass();
     private static final String RESOURCE = "/nakasar-peuples/revue-batiments.json";
-    public static final String WORLD_DEFAULT = "nakasar_revue_batiments_v3";
+    public static final String WORLD_DEFAULT = "nakasar_revue_batiments";
     static final String STATE_FILE = "nakasar_revue_batiments.txt";
     static final String PLAN_FILE = "nakasar_revue_batiments_plan.txt";
+    static final String SIGNATURE_FILE = "nakasar_revue_batiments_carte.txt";
     public static final String KEYS = "nakasar_peuples.review.";
     /** Haut du sol du monde plat (couches ci-dessous : pierre, terre, herbe). */
     static final int GROUND = 80;
@@ -84,6 +86,7 @@ public final class ReviewMap {
     private static final int REPORT_EVERY = 25;
 
     private static Data data;
+    private static String signature;
     private static final Map<String, Layout> LAYOUTS = new HashMap<>();
     private static boolean running;
 
@@ -351,17 +354,88 @@ public final class ReviewMap {
         return data().world == null ? WORLD_DEFAULT : data().world;
     }
 
-    /** Le monde de revue, chargé ou créé (générateur plat vanilla, créatif, sans apparition de PNJ). */
-    public static CompletableFuture<World> world() {
+    /** Le monde de revue est occupé : on ne l'écrase pas tant qu'un joueur s'y trouve. */
+    public static final class OccupiedException extends RuntimeException {
+        OccupiedException(String world) {
+            super("monde de revue " + world + " occupé");
+        }
+    }
+
+    /**
+     * Empreinte de la carte (SHA-256 de {@code revue-batiments.json}) : un monde bâti d'après une autre carte est
+     * écrasé (Kevin, 17 novembre 2026 : un seul monde {@value #WORLD_DEFAULT}, sans suffixe de version).
+     */
+    static synchronized String signature() {
+        if (signature == null) {
+            try (InputStream in = ReviewMap.class.getResourceAsStream(RESOURCE)) {
+                if (in == null) {
+                    throw new IllegalStateException("ressource absente " + RESOURCE);
+                }
+                byte[] hash = java.security.MessageDigest.getInstance("SHA-256").digest(in.readAllBytes());
+                signature = java.util.HexFormat.of().formatHex(hash, 0, 12);
+            } catch (IOException | java.security.NoSuchAlgorithmException e) {
+                throw new IllegalStateException("empreinte de " + RESOURCE, e);
+            }
+        }
+        return signature;
+    }
+
+    private static String savedSignature(Path dir) {
+        try {
+            Path f = dir.resolve(SIGNATURE_FILE);
+            return Files.exists(f) ? Files.readString(f, StandardCharsets.UTF_8).trim() : null;
+        } catch (IOException e) {
+            return null;
+        }
+    }
+
+    /**
+     * Le monde de revue {@value #WORLD_DEFAULT}, chargé tel quel s'il a été bâti d'après la carte actuelle, sinon
+     * (carte changée, ancien monde sans empreinte) ou si `overwrite` : écrasé par un monde neuf (générateur plat
+     * vanilla, créatif, sans apparition de PNJ). L'ancien dossier part dans le dossier des mondes supprimés du serveur.
+     * Échoue avec {@link OccupiedException} si un joueur est dans le monde à écraser.
+     */
+    public static CompletableFuture<World> world(boolean overwrite) {
         String name = worldName();
         Universe universe = Universe.get();
+        Path dir = universe.getWorldsPath().resolve(name);
+        boolean current = !overwrite && signature().equals(savedSignature(dir));
         World loaded = universe.getWorld(name);
         if (loaded != null) {
-            return CompletableFuture.completedFuture(loaded);
+            if (current) {
+                return CompletableFuture.completedFuture(loaded);
+            }
+            if (loaded.getPlayerCount() > 0) {
+                return CompletableFuture.failedFuture(new OccupiedException(name));
+            }
+            LOGGER.atInfo().log("Nakasar Peuples : monde de revue %s écrasé (carte changée ou --rebatir)", name);
+            universe.removeWorld(name);
+        } else if (universe.isWorldLoadable(name)) {
+            if (current) {
+                return universe.loadWorld(name);
+            }
+            LOGGER.atInfo().log("Nakasar Peuples : monde de revue %s écrasé (carte changée ou --rebatir)", name);
         }
-        if (universe.isWorldLoadable(name)) {
-            return universe.loadWorld(name);
+        synchronized (ReviewMap.class) {
+            LAYOUTS.remove(name);
         }
+        if (Files.exists(dir)) {
+            try {
+                Path trash = universe.getWorldsDeletedPath();
+                Files.createDirectories(trash);
+                Files.move(dir, trash.resolve(name + "_" + System.currentTimeMillis()));
+            } catch (IOException e) {
+                LOGGER.atWarning().withCause(e).log("Nakasar Peuples : revue, ancien monde %s non déplacé", dir);
+                return CompletableFuture.failedFuture(e);
+            }
+        }
+        return create(universe, name).thenApply(world -> {
+            writeLines(worldFile(world, SIGNATURE_FILE), List.of(signature()));
+            return world;
+        });
+    }
+
+    private static CompletableFuture<World> create(Universe universe, String name) {
         String env = Environment.UNKNOWN.getId();
         FlatWorldGenProvider flat = new FlatWorldGenProvider(FlatWorldGenProvider.DEFAULT_TINT, new FlatWorldGenProvider.Layer[] {
                 new FlatWorldGenProvider.Layer(0, GROUND - 3, env, "Rock_Stone"),
