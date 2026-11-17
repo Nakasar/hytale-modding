@@ -54,6 +54,7 @@
   ],
   "Annex": {
     "Type": "Pecherie",
+    "Family": "Production",
     "Item": "Nakasar_Peuples_Annex_Pecherie",
     "Rule": "WATER",
     "Prefabs": [
@@ -140,6 +141,7 @@
     "Decor": [
       "2 0 -1 0 Furniture_Crude_Torch"
     ],
+    "Tier": 2,
     "Delivery": {
       "ItemId": "Food_Fish_Raw",
       "Quantity": 3

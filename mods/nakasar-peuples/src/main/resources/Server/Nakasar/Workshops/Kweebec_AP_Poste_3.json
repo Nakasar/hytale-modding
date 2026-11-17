@@ -1,0 +1,170 @@
+{
+  "$Comment": "Place 3 de l'ouvrage Kweebec_AP_Poste (copie générée par tools/generate_workshops.py).",
+  "People": "Kweebec",
+  "Icon": "Furniture_Desert_Lantern_Tall",
+  "NameKey": "nakasar_peuples.workshop.Kweebec_AP_Poste.name",
+  "Board": [
+    0,
+    0,
+    0
+  ],
+  "Upgrades": [
+    {
+      "Level": 2,
+      "Hours": 12,
+      "Decor": [
+        "1 0 0 0 Furniture_Kweebec_Lantern"
+      ],
+      "Materials": [
+        {
+          "ItemId": "Wood_Oak_Trunk",
+          "Quantity": 16
+        },
+        {
+          "ItemId": "Rock_Stone_Cobble",
+          "Quantity": 12
+        },
+        {
+          "ItemId": "Ingredient_Fibre",
+          "Quantity": 6
+        }
+      ]
+    },
+    {
+      "Level": 3,
+      "Hours": 12,
+      "Decor": [
+        "-1 0 0 0 Furniture_Kweebec_Lantern",
+        "0 1 0 0 Furniture_Kweebec_Candle"
+      ],
+      "Materials": [
+        {
+          "ItemId": "Wood_Oak_Trunk",
+          "Quantity": 24
+        },
+        {
+          "ItemId": "Rock_Stone_Cobble",
+          "Quantity": 18
+        },
+        {
+          "ItemId": "Ingredient_Fibre",
+          "Quantity": 9
+        }
+      ]
+    }
+  ],
+  "Annex": {
+    "Type": "Poste",
+    "Family": "Infrastructure",
+    "Item": "Nakasar_Peuples_Annex_Poste",
+    "Rule": "ROAD",
+    "Prefabs": [
+      "Npc/Kweebec/Oak/Guard_Towers/Kweebec_Oak_Guard_Towers_001 0 -7 0",
+      "Npc/Kweebec/Oak/Lampposts/Kweebec_Oak_Lampposts_004 7 -6 0"
+    ],
+    "Rect": [
+      -5,
+      10,
+      -12,
+      -2
+    ],
+    "Height": 7,
+    "Workers": [
+      {
+        "Id": "AP_Poste_1",
+        "Tier": 1,
+        "Role": "Nakasar_Peuples_Kweebec_Guard",
+        "Dialogue": "Kweebec_Guard",
+        "Building": "",
+        "WorkX": -2,
+        "WorkZ": -1,
+        "Home": "",
+        "HomeX": -2,
+        "HomeZ": -2,
+        "Builder": false
+      },
+      {
+        "Id": "AP_Poste_2",
+        "Tier": 1,
+        "Role": "Nakasar_Peuples_Kweebec_Lookout",
+        "Dialogue": "Kweebec_Watcher",
+        "Building": "",
+        "WorkX": 2,
+        "WorkZ": -1,
+        "Home": "",
+        "HomeX": 2,
+        "HomeZ": -2,
+        "Builder": false
+      },
+      {
+        "Id": "AP_Poste_3",
+        "Tier": 3,
+        "Role": "Nakasar_Peuples_Kweebec_Guard",
+        "Dialogue": "Kweebec_Guard",
+        "Building": "",
+        "WorkX": -4,
+        "WorkZ": -1,
+        "Home": "",
+        "HomeX": -4,
+        "HomeZ": -2,
+        "Builder": false
+      }
+    ],
+    "Materials": [
+      {
+        "ItemId": "Wood_Oak_Trunk",
+        "Quantity": 32
+      },
+      {
+        "ItemId": "Rock_Stone_Cobble",
+        "Quantity": 24
+      },
+      {
+        "ItemId": "Ingredient_Fibre",
+        "Quantity": 12
+      }
+    ],
+    "Hours": 24,
+    "Decor": [
+      "2 0 -1 0 Furniture_Kweebec_Lantern"
+    ],
+    "Tier": 2,
+    "Limit": 4,
+    "MinDistance": 0,
+    "MaxDistance": 600,
+    "Spacing": 128,
+    "Slot": 3,
+    "Beacon": 8
+  },
+  "Specialties": [
+    {
+      "Id": "Relais",
+      "NameKey": "nakasar_peuples.workshop.specialty.Kweebec_AP_Poste.Relais",
+      "LineKey": "nakasar_peuples.workshop.specialtyLine.Kweebec_AP_Poste.Relais",
+      "Icon": "Tool_Map",
+      "Shops": [
+        "Nakasar_Peuples_W_Kweebec_AP_Poste_Relais_2",
+        "Nakasar_Peuples_W_Kweebec_AP_Poste_Relais_3"
+      ],
+      "ShareItem": "Tool_Map",
+      "ShareQuantity": 1
+    },
+    {
+      "Id": "Peage",
+      "NameKey": "nakasar_peuples.workshop.specialty.Kweebec_AP_Poste.Peage",
+      "LineKey": "nakasar_peuples.workshop.specialtyLine.Kweebec_AP_Poste.Peage",
+      "Icon": "Weapon_Spear_Crude",
+      "Raid": {
+        "Guards": 1
+      },
+      "Shops": [
+        "Nakasar_Peuples_W_Kweebec_AP_Poste_Peage_2",
+        "Nakasar_Peuples_W_Kweebec_AP_Poste_Peage_3"
+      ],
+      "ShareItem": "Weapon_Spear_Crude",
+      "ShareQuantity": 1
+    }
+  ],
+  "Shop": "Nakasar_Peuples_W_Kweebec_AP_Poste_Base_1",
+  "Orders": "Kweebec_AP_Poste"
+}

@@ -296,7 +296,7 @@ public final class Allegiance {
         if (v == null || v.isHamlet() || v.tier() < 2) {
             return 0;
         }
-        return (v.tier() >= 3 ? 3 : 1) + councilLevel(v);
+        return (v.tier() >= 3 ? 3 : 1) + councilLevel(v) + dev.nakasar.hytale.peuples.annex.Infrastructures.ownFortress(v);
     }
 
     public static boolean canHold(World world, Village v) {

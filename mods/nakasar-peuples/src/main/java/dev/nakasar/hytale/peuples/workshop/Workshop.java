@@ -134,7 +134,18 @@ public final class Workshop implements JsonAssetWithMap<String, DefaultAssetMap<
                         (a, v) -> a.extra = v == null ? new VillageLayout.Material[0] : v, a -> a.extra).add()
                 .append(new KeyedCodec<>("Decor", Codec.STRING_ARRAY), (a, v) -> a.decor = v == null ? new String[0] : v, a -> a.decor).add()
                 .append(new KeyedCodec<>("Warn", Codec.INTEGER), (a, v) -> a.warn = v == null ? 0 : Math.max(0, v), a -> a.warn).add()
+                .append(new KeyedCodec<>("Family", Codec.STRING), (a, v) -> a.family = v == null ? "Production" : v, a -> a.family).add()
+                .append(new KeyedCodec<>("Tier", Codec.INTEGER), (a, v) -> a.tier = v == null ? 2 : Math.max(0, v), a -> a.tier).add()
+                .append(new KeyedCodec<>("Limit", Codec.INTEGER), (a, v) -> a.limit = v == null ? 1 : Math.max(1, v), a -> a.limit).add()
+                .append(new KeyedCodec<>("Slot", Codec.INTEGER), (a, v) -> a.slot = v == null ? 1 : Math.max(1, v), a -> a.slot).add()
+                .append(new KeyedCodec<>("MinDistance", Codec.INTEGER), (a, v) -> a.minDistance = v == null ? 0 : Math.max(0, v), a -> a.minDistance).add()
+                .append(new KeyedCodec<>("MaxDistance", Codec.INTEGER), (a, v) -> a.maxDistance = v == null ? 256 : Math.max(16, v), a -> a.maxDistance).add()
+                .append(new KeyedCodec<>("Spacing", Codec.INTEGER), (a, v) -> a.spacing = v == null ? 0 : Math.max(0, v), a -> a.spacing).add()
+                .append(new KeyedCodec<>("Beacon", Codec.INTEGER), (a, v) -> a.beacon = v == null ? 0 : Math.max(0, v), a -> a.beacon).add()
                 .build();
+
+        public static final String PRODUCTION = "Production";
+        public static final String INFRASTRUCTURE = "Infrastructure";
 
         String type;
         String item;
@@ -149,6 +160,57 @@ public final class Workshop implements JsonAssetWithMap<String, DefaultAssetMap<
         VillageLayout.Material[] extra = new VillageLayout.Material[0];
         String[] decor = new String[0];
         int warn;
+        String family = PRODUCTION;
+        int tier = 2;
+        int limit = 1;
+        int slot = 1;
+        int minDistance;
+        int maxDistance = 256;
+        int spacing;
+        int beacon;
+
+        /** Famille : {@value #PRODUCTION} (un par type) ou {@value #INFRASTRUCTURE} (ouvrage, limite propre, capturable). */
+        public String family() {
+            return family;
+        }
+
+        public boolean infrastructure() {
+            return INFRASTRUCTURE.equals(family);
+        }
+
+        /** Palier du village qu'il faut pour en recevoir la fondation. */
+        public int tier() {
+            return tier;
+        }
+
+        /** Ouvrages de ce type qu'un village peut bâtir (debout et en chantier ; une capture peut la dépasser). */
+        public int limit() {
+            return limit;
+        }
+
+        /** Place de l'ouvrage parmi ceux du même type (1 : l'id historique sans suffixe). */
+        public int slot() {
+            return slot;
+        }
+
+        /** Distance minimale au cœur (0 : le bord du village + 20, qui reste de toute façon le plancher). */
+        public int minDistance() {
+            return minDistance;
+        }
+
+        public int maxDistance() {
+            return maxDistance;
+        }
+
+        /** Écart minimal avec un autre ouvrage du même type, tous villages confondus (0 : l'écart commun seulement). */
+        public int spacing() {
+            return spacing;
+        }
+
+        /** Distance maximale à une balise de route (0 : pas de balise demandée). */
+        public int beacon() {
+            return beacon;
+        }
 
         public String type() {
             return type;
@@ -324,6 +386,19 @@ public final class Workshop implements JsonAssetWithMap<String, DefaultAssetMap<
             .append(new KeyedCodec<>("Annex", Annex.CODEC), (w, v) -> w.annex = v, w -> w.annex)
             .documentation("Avant-poste de métier : bâtiment isolé hors du plan, fondé depuis le panneau du village.")
             .add()
+            .append(new KeyedCodec<>("Orders", Codec.STRING), (w, v) -> w.orders = v == null || v.isBlank() ? null : v, w -> w.orders)
+            .documentation("Bâtiment dont celui-ci reprend les commandes (places 2 et suivantes d'un ouvrage).")
+            .add()
+            .append(new KeyedCodec<>("Category", Codec.STRING), (w, v) -> w.category = v == null || v.isBlank() ? null : v, w -> w.category)
+            .documentation("Projet de terrain : catégorie (Defense, Diplomatie, Savoir, Culte, Artisanat ; vide : hors catégorie).")
+            .add()
+            .append(new KeyedCodec<>("Legacy", Codec.BOOLEAN), (w, v) -> w.legacy = v != null && v, w -> w.legacy)
+            .documentation("Projet retiré du catalogue (doublon d'une production) : un bâtiment déjà debout reste, on ne le choisit plus.")
+            .add()
+            .append(new KeyedCodec<>("Inputs", new ArrayCodec<>(VillageLayout.Material.CODEC, VillageLayout.Material[]::new)),
+                    (w, v) -> w.inputs = v == null ? new VillageLayout.Material[0] : v, w -> w.inputs)
+            .documentation("Atelier : objets pris au dépôt chaque matin (× niveau) ; sans eux, l'atelier est à l'arrêt ce jour-là.")
+            .add()
             .append(new KeyedCodec<>("Hamlet", Codec.STRING), (w, v) -> w.hamlet = v == null || v.isBlank() ? null : v, w -> w.hamlet)
             .documentation("Lieu-dit (world/Hamlets) : genre du lieu-dit dont c'est le bâtiment, aux paliers de son avant-poste équivalent.")
             .add()
@@ -350,6 +425,10 @@ public final class Workshop implements JsonAssetWithMap<String, DefaultAssetMap<
     String twin;
     Annex annex;
     String hamlet;
+    String orders;
+    String category;
+    boolean legacy;
+    VillageLayout.Material[] inputs = new VillageLayout.Material[0];
 
     Workshop() {
     }
@@ -398,6 +477,37 @@ public final class Workshop implements JsonAssetWithMap<String, DefaultAssetMap<
             }
         }
         out.sort((a, b) -> a.id.compareTo(b.id));
+        return out;
+    }
+
+    /** Bâtiment dont on tire les commandes (son propre id, ou celui de la place 1 d'un ouvrage). */
+    public String orders() {
+        return orders != null ? orders : id;
+    }
+
+    /** Catégorie d'un projet de terrain, ou null (hors catégorie). */
+    public String category() {
+        return category;
+    }
+
+    public boolean legacy() {
+        return legacy;
+    }
+
+    /** Objets consommés chaque matin par niveau (atelier), vide sinon. */
+    public VillageLayout.Material[] inputs() {
+        return inputs;
+    }
+
+    /** Places de l'ouvrage de type `type` du peuple, par place croissante (une seule pour la production). */
+    public static List<Workshop> slots(People people, String type) {
+        List<Workshop> out = new ArrayList<>();
+        for (Workshop w : annexes(people)) {
+            if (type.equals(w.annex.type)) {
+                out.add(w);
+            }
+        }
+        out.sort((a, b) -> Integer.compare(a.annex.slot, b.annex.slot));
         return out;
     }
 

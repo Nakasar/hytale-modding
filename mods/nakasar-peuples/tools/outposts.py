@@ -22,26 +22,65 @@ LUMBER = NPC + "Trork/Resource/Lumber/"
 ITEM_PREFIX = "Nakasar_Peuples_Annex_"
 # Les six types, dans l'ordre de l'onglet. Règle du terrain (Java Annexes.rule) : FERTILE (60 % de terre), ROCK (pierre
 # ou flanc de colline à 16 blocs), TREES (6 troncs à 24 blocs), WATER (eau à 12 blocs, emprise au sec), NONE.
-TYPES = ["Ferme", "Mine", "Scierie", "Pecherie", "Chasse", "Tour"]
+# Familles de bâtiments (Kevin, 2026-11-16, doc « Structurer les types de bâtiments ») : la Production récolte (un de
+# chaque type par village, palier 2), l'Infrastructure protège, relie ou tient le terrain (limite propre à chaque
+# ouvrage, capturable). Les deux se posent par fondation, hors du village.
+TYPES = ["Ferme", "Mine", "Scierie", "Pecherie", "Chasse"]
+# Infrastructures (ouvrages), dans l'ordre de l'onglet « Ouvrages ». La Tour de guet devient la Tour de garde.
+INFRA = ["Tour", "Poste", "Fortin", "Forteresse"]
 # Types propres à un peuple, à la place d'un type commun (Kevin, 2026-11-16) : les Kweebecs, amis de la nature, ne minent
 # pas et n'utilisent pas de métal ; leur bosquet de plantes rares remplace la mine.
 REPLACED = {"Kweebec": {"Mine": "Bosquet"}}
-# Tous les types, communs puis propres (objets de fondation, textes).
-ALL_TYPES = TYPES + sorted({t for r in REPLACED.values() for t in r.values()})
+# Tous les types, communs puis propres, puis les ouvrages (objets de fondation, textes).
+ALL_TYPES = TYPES + sorted({t for r in REPLACED.values() for t in r.values()}) + INFRA
 
 
 def types(people):
-    """Types d'avant-postes du peuple, dans l'ordre de l'onglet."""
+    """Types de production du peuple, dans l'ordre de l'onglet."""
     r = REPLACED.get(people, {})
     return [r.get(t, t) for t in TYPES]
 
 
+def all_types(people):
+    """Production puis ouvrages du peuple."""
+    return types(people) + INFRA
+
+
 RULES = {"Ferme": "FERTILE", "Mine": "ROCK", "Scierie": "TREES", "Pecherie": "WATER", "Chasse": "NONE", "Tour": "NONE",
-         "Bosquet": "TREES"}
-# Secondes d'annonce de plus avant un raid, par niveau de la tour de guet (Java Raids : 60 s de base).
+         "Bosquet": "TREES", "Poste": "ROAD", "Fortin": "NONE", "Forteresse": "NONE"}
+# Secondes d'annonce de plus avant un raid, par niveau de chaque tour de garde à moins de 160 blocs du cœur (Java
+# Raids : 60 s de base).
 TOWER_WARN = 30
-# Villageois : 2 au niveau I, 1 de plus aux niveaux II et III.
+# Palier du village qui ouvre la production (Kevin : tout au palier 2).
+PRODUCTION_TIER = 2
+# Ouvrages : limite (construction seulement : un ouvrage capturé peut la dépasser), palier, distance au cœur (min, max ;
+# le min ne descend jamais sous le bord du village + 20), écart entre deux ouvrages du même type, heures de chantier,
+# gardes aux niveaux I, II, III (= villageois de l'ouvrage), et blocs de la balise de route la plus proche (Poste).
+INFRA_DATA = {
+    "Tour": dict(limit=6, tier=2, min=64, max=400, spacing=96, hours=24, guards=(2, 3, 4)),
+    "Poste": dict(limit=4, tier=2, min=0, max=600, spacing=128, hours=24, guards=(2, 2, 3), beacon=8),
+    "Fortin": dict(limit=2, tier=3, min=200, max=600, spacing=96, hours=48, guards=(3, 4, 5)),
+    "Forteresse": dict(limit=1, tier=3, min=96, max=256, spacing=96, hours=48, guards=(4, 5, 6)),
+}
+# Villageois de la production : 2 au niveau I, 1 de plus aux niveaux II et III.
 WORKER_TIERS = [1, 1, 2, 3]
+
+
+def worker_tiers(t):
+    """Niveau d'arrivée de chaque villageois du type `t` (gardes I/II/III des ouvrages)."""
+    if t not in INFRA_DATA:
+        return WORKER_TIERS
+    g = INFRA_DATA[t]["guards"]
+    return [1] * g[0] + [2] * (g[1] - g[0]) + [3] * (g[2] - g[1])
+
+
+def family(t):
+    return "Infrastructure" if t in INFRA else "Production"
+
+
+# Gisement (rendement d'une production selon la place, Java Annexes.yield) : seuils « correct » et « riche » au-delà du
+# minimum de la règle. Maigre −25 %, correct ×1, riche +50 % chaque matin (Kevin : OK).
+YIELD = {"Maigre": 0.75, "Correct": 1.0, "Riche": 1.5}
 
 NAMES = {  # (nom fr, nom en, rôle fr, rôle en, métier fr, métier en, icône vanilla)
     "Ferme": ("Ferme", "Farm", "Champs et semences ; range du blé dans son coffre chaque matin ; un convoi le porte au village à midi.",
@@ -57,8 +96,14 @@ NAMES = {  # (nom fr, nom en, rôle fr, rôle en, métier fr, métier en, icône
                  "Fish and traps; stores fish in its chest every morning; a convoy takes it to the village at noon.", "Pêcheur", "Fisher", "Food_Fish_Raw"),
     "Chasse": ("Pavillon de chasse", "Hunting lodge", "Gibier et peaux ; range de la viande dans son coffre chaque matin ; un convoi la porte au village à midi.",
                "Game and hides; stores meat in its chest every morning; a convoy takes it to the village at noon.", "Veneur", "Huntsman", "Ingredient_Hide_Light"),
-    "Tour": ("Tour de guet", "Watchtower", "Le village voit venir les raids 30 s plus tôt par niveau ; gardes plus nombreux.",
-             "The village sees raids coming 30 s earlier per level; more guards.", "Guetteur", "Lookout", "Weapon_Arrow_Crude"),
+    "Tour": ("Tour de garde", "Guard tower", "À moins de 160 blocs du cœur, le village voit venir les raids 30 s plus tôt par niveau ; embuscades deux fois moins fréquentes sur les routes à moins de 48 blocs.",
+             "Within 160 blocks of the heart, the village sees raids coming 30 s earlier per level; half as many ambushes on roads within 48 blocks.", "Guetteur", "Lookout", "Weapon_Arrow_Crude"),
+    "Poste": ("Poste routier", "Road post", "Posé près d'une balise de route : plus aucune embuscade à moins de 64 blocs.",
+              "Placed by a route beacon: no more ambushes within 64 blocks.", "Garde des routes", "Road warden", "Furniture_Desert_Lantern_Tall"),
+    "Fortin": ("Fortin", "Fort", "Étend le territoire du village de 96 blocs autour ; +1 garde aux lieux-dits tenus à moins de 200 blocs.",
+               "Extends the village territory 96 blocks around; +1 guard in held hamlets within 200 blocks.", "Soldat", "Soldier", "Weapon_Shield_Wood"),
+    "Forteresse": ("Forteresse", "Fortress", "Un raid perdu brûle un bâtiment mais ne fait plus perdre de palier ; +1 lieu-dit tenu.",
+                   "A lost raid burns a building but no longer costs a tier; +1 held hamlet.", "Capitaine", "Captain", "Weapon_Shield_Iron"),
 }
 
 # Matériaux propres au peuple : bois, pierre taillée, brique.
@@ -98,6 +143,13 @@ PREFABS = {
                    (NPC + "Kweebec/Oak/Lampposts/Kweebec_Oak_Lampposts_008", "W")],
         "Tour": [(NPC + "Kweebec/Oak/Guard_Towers/Kweebec_Oak_Guard_Towers_004", None),
                  (NPC + "Kweebec/Oak/Lampposts/Kweebec_Oak_Lampposts_005", "E")],
+        "Poste": [(NPC + "Kweebec/Oak/Guard_Towers/Kweebec_Oak_Guard_Towers_001", None),
+                  (NPC + "Kweebec/Oak/Lampposts/Kweebec_Oak_Lampposts_004", "E")],
+        "Fortin": [(NPC + "Kweebec/Swamp/Guards/Kweebec_Swamp_Guards_002", None),
+                   (NPC + "Kweebec/Oak/Guard_Towers/Kweebec_Oak_Guard_Towers_003", "E")],
+        "Forteresse": [(NPC + "Kweebec/Oak/Houses_Guard/Kweebec_Oak_Houses_Guard_001", None),
+                       (NPC + "Kweebec/Oak/Guard_Towers/Kweebec_Oak_Guard_Towers_002", "E"),
+                       (NPC + "Kweebec/Oak/Guard_Towers/Kweebec_Oak_Guard_Towers_005", "W")],
     },
     "Trork": {
         "Ferme": [(NPC + "Trork/Tent/Trork_Tent_001", None), (NPC + "Trork/Bonfire/Trork_Bonfire_Trork_Bonfire_002", "E"),
@@ -111,6 +163,13 @@ PREFABS = {
         "Chasse": [(NPC + "Trork/Trap/Trork_Trap_Trork_Trap_001", None), (NPC + "Trork/Tent/Trork_Tent_001", "W")],
         "Tour": [(NPC + "Trork/Tier_1/Watchtower/Trork_Tier_1_Watchtower_001", None),
                  (NPC + "Trork/Warning/Trork_Warning_Trork_Warning_002", "E")],
+        "Poste": [(NPC + "Trork/Tent/Trork_Tent_001", None), (NPC + "Trork/Warning/Trork_Warning_Trork_Warning_001", "E")],
+        "Fortin": [(NPC + "Trork/Warehouse/Trork_Warehouse_Trork_Warehouse_001", None),
+                   (NPC + "Trork/Tier_1/Watchtower/Trork_Tier_1_Watchtower_001", "W"),
+                   (NPC + "Trork/Tier_2/Watchtower/Trork_Tier_2_Watchtower_002", "E")],
+        "Forteresse": [(NPC + "Trork/Tier_3/Watchtower/Trork_Tier_3_Watchtower_001", None),
+                       (NPC + "Trork/Tier_2/Watchtower/Trork_Tier_2_Watchtower_001", "W"),
+                       (NPC + "Trork/Warehouse/Trork_Warehouse_Trork_Warehouse_001", "E")],
     },
     "Feran": {
         "Ferme": [(NPC + "Feran/Tier3/Huts/Feran_Tier3_Huts_001", None), (NPC + "Feran/Tier2/Wall/Feran_Tier2_Wall_002", "E")],
@@ -122,6 +181,12 @@ PREFABS = {
         "Chasse": [(NPC + "Feran/Tier3/Huts/Feran_Tier3_Huts_001", None),
                    (NPC + "Outlander/Braziers/Outlander_Braziers_Npc_Outlander_Brazier_001", "E")],
         "Tour": [(NPC + "Feran/Portals_Oasis/Pillar_Hut/Feran_Tier3_Hut_001", None)],
+        "Poste": [(NPC + "Feran/Tier2/Hut/Feran_Tier2_Hut_003", None), (NPC + "Feran/Tier2/Wall/Feran_Tier2_Wall_002", "E")],
+        "Fortin": [(NPC + "Feran/Tier3/Walls/Feran_Tier3_Walls_001", None),
+                   (NPC + "Feran/Portals_Oasis/Pillar_Hut/Feran_Tier3_Hut_001", "W")],
+        "Forteresse": [(NPC + "Feran/Portals_Oasis/Chieftain/Feran_Tier2_Chieftain_001", None),
+                       (NPC + "Feran/Tier2/Wall/Feran_Tier2_Wall_004", "W"),
+                       (NPC + "Feran/Tier2/Wall/Feran_Tier2_Wall_003", "E")],
     },
     "Renonce": {
         "Ferme": [(NPC + "Outlander/Houses/Tier1/Outlander_Houses_Tier1_004", None),
@@ -135,6 +200,12 @@ PREFABS = {
         "Chasse": [(NPC + "Outlander/Houses/Tier1/Outlander_Houses_Tier1_006", None),
                    (NPC + "Outlander/Braziers/Outlander_Braziers_Npc_Outlander_Brazier_001", "W")],
         "Tour": [(NPC + "Outlander/Towers/Tier2/Outlander_Towers_Tier2_002", None)],
+        "Poste": [(NPC + "Outlander/Gates/Tier1/Outlander_Gates_Tier1_001", None),
+                  (NPC + "Outlander/Braziers/Outlander_Braziers_Npc_Outlander_Brazier_001", "E")],
+        "Fortin": [(NPC + "Outlander/Forts/Tier1/Outlander_Forts_Tier1_006", None),
+                   (NPC + "Outlander/Towers/Tier1/Outlander_Towers_Tier1_001", "W")],
+        "Forteresse": [(NPC + "Outlander/Forts/Tier2/Outlander_Forts_Tier2_001", None),
+                       (NPC + "Outlander/Towers/Tier2/Outlander_Towers_Tier2_001", "E")],
     },
     "Slothian": {
         "Ferme": [(MON + "Merchant/Incidental_Slothian_Merchant_Slothian_Merchant_001", None),
@@ -145,6 +216,12 @@ PREFABS = {
         "Pecherie": [(NPC + "Slothian/Disabled/House/Small/Slothian_Disabled_House_Small_003", None)],
         "Chasse": [(MON + "Hunting/Incidental_Slothian_Slothian_Hunting_001", None)],
         "Tour": [(MON + "Temple/Incidental_Slothian_Slothian_Temple_003", None)],
+        "Poste": [(NPC + "Slothian/Disabled/Gate/Slothian_Disabled_Gate_002", None)],
+        "Fortin": [(NPC + "Slothian/Disabled/House/Medium/Slothian_Disabled_House_Medium_001", None),
+                   (MON + "Temple/Incidental_Slothian_Slothian_Temple_003", "W")],
+        "Forteresse": [(NPC + "Slothian/Disabled/Temple/Medium/Slothian_Disabled_Temple_Medium_001", None),
+                       (MON + "Temple/Incidental_Slothian_Slothian_Temple_001", "W"),
+                       (MON + "Temple/Incidental_Slothian_Slothian_Temple_003", "E")],
     },
 }
 
@@ -153,22 +230,33 @@ PREFABS = {
 WORKERS = {
     "Kweebec": {"Ferme": ["Gardener", "Gardener", "Breeder", "WellKeeper"], "Bosquet": ["Gardener", "Gardener", "Healer", "Watcher"],
                 "Scierie": ["Builder", "Builder", "Gardener", "Watcher"], "Pecherie": ["WellKeeper", "WellKeeper", "Gardener", "Watcher"],
-                "Chasse": ["Guard", "Guard", "Breeder", "Healer"], "Tour": ["Lookout", "Guard", "Guard", "Watcher"]},
+                "Chasse": ["Guard", "Guard", "Breeder", "Healer"], "Tour": ["Lookout", "Guard", "Guard", "Watcher"],
+                "Poste": ["Guard", "Lookout", "Guard"], "Fortin": ["Guard", "Guard", "Lookout", "Guard", "Watcher"],
+                "Forteresse": ["Guard", "Guard", "Guard", "Lookout", "Guard", "Watcher"]},
     "Trork": {"Ferme": ["@Trork_Warrior", "@Trork_Warrior", "@Trork_Brawler", "@Trork_Shaman"],
               "Mine": ["@Trork_Brawler", "@Trork_Brawler", "@Trork_Warrior", "@Trork_Guard"],
               "Scierie": ["@Trork_Warrior", "@Trork_Brawler", "@Trork_Warrior", "@Trork_Sentry"],
               "Pecherie": ["@Trork_Hunter", "@Trork_Warrior", "@Trork_Hunter", "@Trork_Shaman"],
               "Chasse": ["@Trork_Hunter", "@Trork_Hunter", "@Trork_Warrior", "@Trork_Sentry"],
-              "Tour": ["@Trork_Sentry", "@Trork_Guard", "@Trork_Guard", "@Trork_Shaman"]},
+              "Tour": ["@Trork_Sentry", "@Trork_Guard", "@Trork_Guard", "@Trork_Shaman"],
+              "Poste": ["@Trork_Sentry", "@Trork_Guard", "@Trork_Warrior"],
+              "Fortin": ["@Trork_Guard", "@Trork_Guard", "@Trork_Sentry", "@Trork_Warrior", "@Trork_Brawler"],
+              "Forteresse": ["@Trork_Guard", "@Trork_Guard", "@Trork_Brawler", "@Trork_Sentry", "@Trork_Warrior", "@Trork_Shaman"]},
     "Feran": {"Ferme": ["Breeder", "WellKeeper", "Breeder", "Watcher"], "Mine": ["Builder", "Builder", "Guard", "Watcher"],
               "Scierie": ["Builder", "Builder", "Watcher", "Breeder"], "Pecherie": ["WellKeeper", "WellKeeper", "Breeder", "Watcher"],
-              "Chasse": ["Guard", "Guard", "Breeder", "Lookout"], "Tour": ["Lookout", "Guard", "Guard", "Watcher"]},
+              "Chasse": ["Guard", "Guard", "Breeder", "Lookout"], "Tour": ["Lookout", "Guard", "Guard", "Watcher"],
+              "Poste": ["Guard", "Lookout", "Guard"], "Fortin": ["Guard", "Guard", "Lookout", "Guard", "Watcher"],
+              "Forteresse": ["Guard", "Guard", "Guard", "Lookout", "Guard", "Watcher"]},
     "Renonce": {"Ferme": ["Breeder", "Breeder", "Builder", "Watcher"], "Mine": ["Builder", "Builder", "Guard", "Watcher"],
                 "Scierie": ["Builder", "Builder", "Hunter", "Watcher"], "Pecherie": ["Hunter", "Hunter", "Builder", "Watcher"],
-                "Chasse": ["Hunter", "Hunter", "Guard", "Breeder"], "Tour": ["Lookout", "Guard", "Guard", "Watcher"]},
+                "Chasse": ["Hunter", "Hunter", "Guard", "Breeder"], "Tour": ["Lookout", "Guard", "Guard", "Watcher"],
+                "Poste": ["Guard", "Lookout", "Hunter"], "Fortin": ["Guard", "Guard", "Lookout", "Hunter", "Watcher"],
+                "Forteresse": ["Guard", "Guard", "Guard", "Lookout", "Hunter", "Watcher"]},
     "Slothian": {"Ferme": ["Breeder", "Breeder", "Monk", "Watcher"], "Mine": ["Builder", "Builder", "AshBearer", "Guard"],
                  "Scierie": ["Builder", "Builder", "AshBearer", "Watcher"], "Pecherie": ["Monk", "Monk", "Breeder", "Watcher"],
-                 "Chasse": ["Guard", "Guard", "Breeder", "Watcher"], "Tour": ["Lookout", "Guard", "Guard", "Monk"]},
+                 "Chasse": ["Guard", "Guard", "Breeder", "Watcher"], "Tour": ["Lookout", "Guard", "Guard", "Monk"],
+                 "Poste": ["Guard", "Lookout", "Monk"], "Fortin": ["Guard", "Guard", "Lookout", "Guard", "Monk"],
+                 "Forteresse": ["Guard", "Guard", "Guard", "Lookout", "Guard", "Watcher"]},
 }
 # Dialogue d'un genre sans fichier <Peuple>_<Genre> (Server/Nakasar/Dialogues) : celui-ci.
 DIALOGUE_ALIAS = {"Lookout": "Watcher"}
@@ -201,7 +289,14 @@ HUNT_TITLES = {
     "Pecherie": ("Rôdeurs des berges", "Prowlers on the banks"),
     "Chasse": ("Bête de la traque", "Quarry of the hunt"),
     "Tour": ("Éclaireurs ennemis", "Enemy scouts"),
+    "Poste": ("Détrousseurs de la route", "Highwaymen"),
+    "Fortin": ("Avant-garde ennemie", "Enemy vanguard"),
+    "Forteresse": ("Assiégeants", "Besiegers"),
 }
+# Les ouvrages chassent les gêneurs de la tour de garde.
+for _p in HUNTS:
+    for _t in ("Poste", "Fortin", "Forteresse"):
+        HUNTS[_p][_t] = list(HUNTS[_p]["Tour"])
 
 # Par type : deux commandes (les commandes de maître I et II les reprennent en grand), puis la chasse ; boutique du
 # niveau I ; deux spécialités (id, nom fr, nom en, icône, ligne fr, ligne en, [niveau II], [niveau III], effet en raid) ;
@@ -288,6 +383,46 @@ TYPE_DATA = {
                 [("Armor_Leather_Light_Chest", 1, 4), ("Potion_Health_Small", 2, 2)],
                 [("Weapon_Spear_Stone_Trork", 1, 4), ("Potion_Health_Small", 4, 3)], {"Health": 1.25})],
         delivery=None),
+    "Poste": dict(
+        orders=[("Rope", "Gather", "Ingredient_Fibre", 12, "Cordes de la barrière", "Rope for the barrier"),
+                ("Sticks", "Gather", "Ingredient_Stick", 16, "Bois de la barrière", "Wood for the barrier")],
+        base=[("Furniture_Crude_Torch", 4, 1), ("Food_Bread", 2, 1)],
+        specs=[("Relais", "Relais", "Relay", "Tool_Map", "Cartes et provisions de route.", "Maps and road supplies.",
+                [("Tool_Map", 1, 3), ("Food_Bread", 4, 1)], [("Potion_Health_Small", 3, 2), ("Food_Wildmeat_Cooked", 4, 1)], None),
+               ("Peage", "Péage", "Toll", "Weapon_Spear_Crude", "Lances et boucliers ; en raid, +1 garde au village.",
+                "Spears and shields; in raids, +1 guard in the village.", [("Weapon_Spear_Crude", 1, 2), ("Weapon_Shield_Wood", 1, 2)],
+                [("Weapon_Spear_Iron", 1, 4), ("Weapon_Shield_Copper", 1, 4)], {"Guards": 1})],
+        delivery=None),
+    "Fortin": dict(
+        orders=[("Logs", "Gather", "{wood}", 24, "Rondins de la palissade", "Logs for the palisade"),
+                ("Hides", "Gather", "Ingredient_Hide_Light", 6, "Peaux des tentes", "Hides for the tents")],
+        base=[("Weapon_Arrow_Crude", 16, 1), ("Weapon_Shield_Wood", 1, 2)],
+        specs=[("Avant_Garde", "Avant-garde", "Vanguard", "Weapon_Spear_Iron", "Lances et flèches ; en raid, +1 garde au village.",
+                "Spears and arrows; in raids, +1 guard in the village.", [("Weapon_Spear_Copper", 1, 3), ("Weapon_Arrow_Iron", 12, 2)],
+                [("Weapon_Spear_Iron", 1, 4), ("Weapon_Arrow_Iron", 24, 3)], {"Guards": 1}),
+               ("Remparts", "Remparts", "Ramparts", "Weapon_Shield_Copper", "Boucliers ; en raid, des gardes plus solides.",
+                "Shields; sturdier guards in raids.", [("Weapon_Shield_Copper", 1, 3), ("Potion_Health_Small", 2, 2)],
+                [("Weapon_Shield_Iron", 1, 5), ("Potion_Health_Small", 4, 3)], {"Health": 1.25})],
+        delivery=None),
+    "Forteresse": dict(
+        orders=[("Stone", "Gather", "{stone}", 32, "Pierres des remparts", "Stones for the ramparts"),
+                ("Torches", "Craft", "Furniture_Crude_Torch", 8, "Torches des remparts", "Torches for the ramparts")],
+        base=[("Weapon_Arrow_Crude", 24, 1), ("Potion_Health_Small", 2, 2)],
+        specs=[("Garnison_Royale", "Garnison", "Garrison", "Weapon_Sword_Iron", "Épées et boucliers ; en raid, +2 gardes au village.",
+                "Swords and shields; in raids, +2 guards in the village.", [("Weapon_Sword_Copper", 1, 3), ("Weapon_Shield_Copper", 1, 3)],
+                [("Weapon_Sword_Iron", 1, 5), ("Weapon_Shield_Iron", 1, 5)], {"Guards": 2}),
+               ("Donjon", "Donjon", "Keep", "Armor_Iron_Head", "Armures ; en raid, des gardes bien plus solides.",
+                "Armour; much sturdier guards in raids.", [("Armor_Leather_Light_Chest", 1, 4), ("Potion_Health_Small", 4, 2)],
+                [("Armor_Iron_Head", 1, 6), ("Potion_Health", 1, 4)], {"Health": 1.5})],
+        delivery=None),
+}
+# Les Kweebecs n'utilisent pas de métal : leurs ouvrages vendent bois, os et pierre (pas d'armes ni d'armures en métal).
+KWEEBEC_NO_METAL = {
+    ("Poste", "Peage"): ([("Weapon_Spear_Crude", 1, 2), ("Weapon_Shield_Wood", 1, 2)], [("Weapon_Spear_Leaf", 1, 4), ("Weapon_Shortbow_Crude", 1, 3)]),
+    ("Fortin", "Avant_Garde"): ([("Weapon_Spear_Crude", 1, 2), ("Weapon_Arrow_Crude", 24, 1)], [("Weapon_Spear_Leaf", 1, 4), ("Weapon_Spear_Bone", 1, 4)]),
+    ("Fortin", "Remparts"): ([("Weapon_Shield_Wood", 1, 2), ("Potion_Health_Small", 2, 2)], [("Armor_Leather_Light_Chest", 1, 4), ("Potion_Health_Small", 4, 3)]),
+    ("Forteresse", "Garnison_Royale"): ([("Weapon_Spear_Leaf", 1, 3), ("Weapon_Shield_Wood", 1, 2)], [("Weapon_Spear_Bone", 1, 4), ("Weapon_Shortbow_Crude", 1, 3)]),
+    ("Forteresse", "Donjon"): ([("Armor_Leather_Light_Chest", 1, 4), ("Potion_Health_Small", 4, 2)], [("Armor_Leather_Light_Head", 1, 4), ("Potion_Health", 1, 4)]),
 }
 # Les Trorks ne subissent pas de raid : leur tour n'a pas d'effet en raid (spécialités sans « Raid »).
 NO_RAID = {"Trork"}

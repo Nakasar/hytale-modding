@@ -71,6 +71,8 @@ public final class Garrisons {
         if (type != null && "Caserne".equals(type.type())) {
             n++;
         }
+        int[] m = h.market();
+        n += dev.nakasar.hytale.peuples.annex.Infrastructures.hamletGuards(world, owner, m[0], m[1]);
         return Math.min(POSTS.length, n);
     }
 

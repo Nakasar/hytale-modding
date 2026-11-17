@@ -55,6 +55,7 @@
   ],
   "Annex": {
     "Type": "Tour",
+    "Family": "Infrastructure",
     "Item": "Nakasar_Peuples_Annex_Tour",
     "Rule": "NONE",
     "Prefabs": [
@@ -140,6 +141,12 @@
     "Decor": [
       "2 0 -1 0 Furniture_Kweebec_Lantern"
     ],
+    "Tier": 2,
+    "Limit": 6,
+    "MinDistance": 64,
+    "MaxDistance": 400,
+    "Spacing": 96,
+    "Slot": 1,
     "Warn": 30
   },
   "Specialties": [

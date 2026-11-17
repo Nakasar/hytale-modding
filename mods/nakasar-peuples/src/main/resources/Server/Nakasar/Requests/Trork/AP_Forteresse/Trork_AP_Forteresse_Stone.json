@@ -1,0 +1,17 @@
+{
+  "$Comment": "Commande du bâtiment de métier Trork_AP_Forteresse, générée par tools/generate_workshops.py (ne pas modifier à la main) : voir RequestTemplate.",
+  "People": "Trork",
+  "Workshop": "Trork_AP_Forteresse",
+  "Type": "Gather",
+  "MinLevel": 1,
+  "MaxLevel": 3,
+  "Weight": 1,
+  "TitleKey": "nakasar_peuples.request.Trork_AP_Forteresse_Stone.title",
+  "TaskKey": "nakasar_peuples.request.Trork_AP_Forteresse_Stone.task",
+  "ItemId": "Rock_Shale_Cobble",
+  "Quantity": 32,
+  "Knowledge": 30,
+  "Essor": 5,
+  "Favors": 1,
+  "Reputation": 5
+}

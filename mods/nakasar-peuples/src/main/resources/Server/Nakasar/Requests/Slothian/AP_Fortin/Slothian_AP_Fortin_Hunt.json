@@ -1,0 +1,26 @@
+{
+  "$Comment": "Commande du bâtiment de métier Slothian_AP_Fortin, générée par tools/generate_workshops.py (ne pas modifier à la main) : voir RequestTemplate.",
+  "People": "Slothian",
+  "Workshop": "Slothian_AP_Fortin",
+  "Type": "Hunt",
+  "MinLevel": 1,
+  "MaxLevel": 3,
+  "Weight": 1,
+  "TitleKey": "nakasar_peuples.request.Slothian_AP_Fortin_Hunt.title",
+  "TaskKey": "nakasar_peuples.request.Slothian_AP_Fortin_Hunt.task",
+  "Spawns": [
+    "Skeleton_Burnt_Soldier",
+    "Skeleton_Burnt_Soldier",
+    "Skeleton_Burnt_Knight"
+  ],
+  "Roles": [
+    "Skeleton_Burnt_Knight",
+    "Skeleton_Burnt_Soldier"
+  ],
+  "MinDistance": 60,
+  "MaxDistance": 110,
+  "Knowledge": 45,
+  "Essor": 5,
+  "Favors": 2,
+  "Reputation": 8
+}

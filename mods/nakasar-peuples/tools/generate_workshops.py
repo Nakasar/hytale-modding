@@ -845,7 +845,7 @@ def annex_tables(errors):
     """Commandes, spécialités et boutiques des avant-postes, ajoutées aux tables du script (avant selling_rules)."""
     for people in PEOPLES:
         sub = outposts.MAT[people]
-        for t in outposts.types(people):
+        for t in outposts.all_types(people):
             data = outposts.TYPE_DATA[t]
             wid = f"{people}_AP_{t}"
             orders = [(suffix, rtype, what.format(**sub), q, tf, te) for suffix, rtype, what, q, tf, te in data["orders"]]
@@ -854,6 +854,8 @@ def annex_tables(errors):
             SHOPS[wid] = {"Base": fmt(data["base"])}
             choices = []
             for sid, sfr, sen, icon, lfr, len_, two, three, raid in data["specs"]:
+                if people == "Kweebec" and (t, sid) in outposts.KWEEBEC_NO_METAL:
+                    two, three = outposts.KWEEBEC_NO_METAL[(t, sid)]
                 SHOPS[wid][sid] = (fmt(two), fmt(three))
                 choices.append((sid, sfr, sen, icon, lfr, len_, []))
                 if raid and people not in outposts.NO_RAID:
@@ -895,8 +897,11 @@ def annex_layout(people, t, bounds, errors):
 
 def annex_workers(people, t, roles, errors):
     out = []
-    for i, (kind, tier) in enumerate(zip(outposts.WORKERS[people][t], outposts.WORKER_TIERS)):
-        x = (-2, 2, -4, 4)[i]
+    tiers = outposts.worker_tiers(t)
+    if len(outposts.WORKERS[people][t]) != len(tiers):
+        errors.append(f"{people}_AP_{t} : {len(outposts.WORKERS[people][t])} villageois pour {len(tiers)} places (outposts.INFRA_DATA)")
+    for i, (kind, tier) in enumerate(zip(outposts.WORKERS[people][t], tiers)):
+        x = (-2, 2, -4, 4, -6, 6)[i]
         if kind.startswith("@"):
             role, dialogue = kind[1:], ""
             if role not in roles:
@@ -958,7 +963,7 @@ def write_annexes(items, roles, fr, en, errors):
         name_fr, name_en, role_fr, role_en, job_fr, job_en, icon = outposts.NAMES[t]
         item = outposts.ITEM_PREFIX + t
         doc = {
-            "$Comment": f"Fondation d'avant-poste « {name_fr} », remise au panneau d'un village de palier 3 et posée là où "
+            "$Comment": f"Fondation d'avant-poste « {name_fr} », remise au panneau d'un village et posée là où "
                         "l'on veut bâtir (Java annex/AnnexPlaceSystem). Générée par tools/generate_workshops.py.",
             "Parent": "Furniture_Construction_Sign",
             "TranslationProperties": {"Name": f"nakasar_peuples.items.{item}.name",
@@ -970,7 +975,7 @@ def write_annexes(items, roles, fr, en, errors):
         fr[f"items.{item}.description"] = f"À poser là où vous voulez bâtir l'avant-poste ({role_fr[0].lower()}{role_fr[1:]})"
         en[f"items.{item}.description"] = f"Place it where you want to build the outpost ({role_en[0].lower()}{role_en[1:]})"
         fr[f"annex.role.{t}"], en[f"annex.role.{t}"] = role_fr, role_en
-        for i in range(len(outposts.WORKER_TIERS)):
+        for i in range(len(outposts.worker_tiers(t))):
             fr[f"job.AP_{t}_{i + 1}"], en[f"job.AP_{t}_{i + 1}"] = job_fr, job_en
     write_beacon(items, fr, en, errors)
     for key, (f, e) in outposts.LANG.items():
@@ -987,9 +992,17 @@ def write_annexes(items, roles, fr, en, errors):
         upgrades = [{"Level": level, "Hours": UPGRADE_HOURS, "Decor": DECOR[people][level],
                      "Materials": [{"ItemId": i, "Quantity": max(1, q * num // den)} for i, q in outposts.FOUNDATION[people]]}
                     for level, (num, den) in ANNEX_UPGRADE.items()]
-        annex = {"Type": t, "Item": outposts.ITEM_PREFIX + t, "Rule": outposts.RULES[t], "Prefabs": prefabs, "Rect": local,
-                 "Height": height, "Workers": annex_workers(people, t, roles, errors), "Materials": materials, "Hours": 24,
-                 "Decor": ["2 0 -1 0 " + DECOR[people][2][0].split()[-1]]}
+        infra = outposts.INFRA_DATA.get(t)
+        annex = {"Type": t, "Family": outposts.family(t), "Item": outposts.ITEM_PREFIX + t, "Rule": outposts.RULES[t],
+                 "Prefabs": prefabs, "Rect": local, "Height": height, "Workers": annex_workers(people, t, roles, errors),
+                 "Materials": materials, "Hours": infra["hours"] if infra else 24,
+                 "Decor": ["2 0 -1 0 " + DECOR[people][2][0].split()[-1]],
+                 "Tier": infra["tier"] if infra else outposts.PRODUCTION_TIER}
+        if infra:
+            annex.update({"Limit": infra["limit"], "MinDistance": infra["min"], "MaxDistance": infra["max"],
+                          "Spacing": infra["spacing"], "Slot": 1})
+            if "beacon" in infra:
+                annex["Beacon"] = infra["beacon"]
         delivery = outposts.TYPE_DATA[t]["delivery"]
         if delivery:
             lot = delivery[0].format(**outposts.MAT[people])
@@ -1019,6 +1032,17 @@ def write_annexes(items, roles, fr, en, errors):
         specialties(doc, wid, people, name_fr, name_en, items, roles, fr, en, errors)
         (OUT / f"{wid}.json").write_text(json.dumps(doc, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
         fr[f"workshop.{wid}.name"], en[f"workshop.{wid}.name"] = name_fr, name_en
+        # Ouvrages : une place de plus par ouvrage permis (<wid>_2 ... <wid>_<limite>), même bâtiment, mêmes commandes
+        # (Orders), spécialités et boutiques ; la place 1 garde l'id historique (une Tour de guet debout devient la
+        # première Tour de garde). Deux places de réserve au-delà de la limite (le Java ne les remet jamais, mais une
+        # limite relevée plus tard garde les ids).
+        if infra:
+            for n in range(2, infra["limit"] + 3):
+                copy = json.loads(json.dumps(doc))
+                copy["$Comment"] = f"Place {n} de l'ouvrage {wid} (copie générée par tools/generate_workshops.py)."
+                copy["Orders"] = wid
+                copy["Annex"]["Slot"] = n
+                (OUT / f"{wid}_{n}.json").write_text(json.dumps(copy, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
         write_orders(wid, people, REQUESTS / people / f"AP_{t}", orders, items, roles, fr, en, errors)
         print(f"{wid} : {len(orders)} commandes + 2 de maître, emprise {local}, hauteur {height}")
 

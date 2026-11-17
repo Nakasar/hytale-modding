@@ -485,7 +485,7 @@ public final class Raids {
         }
         long night = GameClock.day(store);
         Active a = new Active(village.id(), night, UUID.randomUUID());
-        a.warn = WARN_SECONDS + dev.nakasar.hytale.peuples.annex.Annexes.raidWarnBonus(village);
+        a.warn = WARN_SECONDS + dev.nakasar.hytale.peuples.annex.Annexes.raidWarnBonus(world, village);
         a.camps.addAll(camps);
         ACTIVE.put(village.id(), a);
         village.raid().setActive(true);

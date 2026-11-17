@@ -22,6 +22,11 @@ public final class Territories {
 
     /** Le village maître du territoire en (x, z) : celui d'un lieu-dit gardé proche, ou null. */
     public static Village master(World world, double x, double z) {
+        // Un fortin actif étend le territoire de son village (Infrastructures).
+        Village fort = dev.nakasar.hytale.peuples.annex.Infrastructures.territory(world, x, z);
+        if (fort != null) {
+            return fort;
+        }
         Village best = null;
         double bestD = (double) HAMLET_RANGE * HAMLET_RANGE;
         for (Hamlets.Place h : Hamlets.all(world)) {
@@ -56,6 +61,9 @@ public final class Territories {
 
     /** Vrai si une embuscade à cet endroit est évitée (une sur deux en territoire gardé). */
     static boolean spared(World world, double[] here) {
+        if (here != null && dev.nakasar.hytale.peuples.annex.Infrastructures.spares(world, here[0], here[1])) {
+            return true; // poste routier proche, ou tour de garde une fois sur deux
+        }
         return here != null && master(world, here[0], here[1]) != null && java.util.concurrent.ThreadLocalRandom.current().nextBoolean();
     }
 

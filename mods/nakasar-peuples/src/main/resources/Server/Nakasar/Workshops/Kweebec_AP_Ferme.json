@@ -55,6 +55,7 @@
   ],
   "Annex": {
     "Type": "Ferme",
+    "Family": "Production",
     "Item": "Nakasar_Peuples_Annex_Ferme",
     "Rule": "FERTILE",
     "Prefabs": [
@@ -140,6 +141,7 @@
     "Decor": [
       "2 0 -1 0 Furniture_Kweebec_Lantern"
     ],
+    "Tier": 2,
     "Delivery": {
       "ItemId": "Plant_Crop_Wheat_Item",
       "Quantity": 6

@@ -226,7 +226,7 @@ public final class Workshops {
 
     /** Une commande au poids, d'abord parmi celles pas encore au panneau. */
     private static RequestTemplate pick(WorkshopState state, Workshop w, Random random, List<String> used) {
-        List<RequestTemplate> all = RequestTemplate.forWorkshop(w.getId(), state.level(), state.specialty());
+        List<RequestTemplate> all = RequestTemplate.forWorkshop(w.orders(), state.level(), state.specialty());
         List<RequestTemplate> pool = new ArrayList<>();
         for (RequestTemplate t : all) {
             if (!used.contains(t.getId())) {
@@ -615,7 +615,7 @@ public final class Workshops {
      * Rend l'essor réellement gagné (0 si un autre joueur l'a déjà remplie).
      */
     public static int fulfilled(World world, Store<EntityStore> store, PlayerRef player, Village village, RequestTemplate t, String requestId) {
-        Workshop w = Workshop.get(t.workshop());
+        Workshop w = holder(village, t.workshop(), requestId);
         if (w == null) {
             return 0;
         }
@@ -659,6 +659,24 @@ public final class Workshops {
         return gained;
     }
 
+    /**
+     * Le bâtiment du village qui porte la commande `requestId` du modèle de commandes `orders` : celui-ci, ou une autre
+     * place du même ouvrage (places 2 et suivantes, champ Orders). Par défaut le bâtiment `orders`.
+     */
+    static Workshop holder(Village village, String orders, String requestId) {
+        Workshop base = Workshop.get(orders);
+        if (base == null || !base.isAnnex() || !base.annex().infrastructure()) {
+            return base;
+        }
+        for (Workshop o : Workshop.slots(village.people(), base.annex().type())) {
+            WorkshopState os = village.workshopIfPresent(o.getId());
+            if (os != null && (os.slotOf(requestId) >= 0 || requestId.equals(masterId(village, o, os)))) {
+                return o;
+            }
+        }
+        return base;
+    }
+
     // ---- Montée de niveau (étape 2) : commande de maître puis chantier d'amélioration ----
 
     /** Id (par village, bâtiment, niveau et reconversion) de la commande de maître du niveau en cours. */
@@ -668,7 +686,7 @@ public final class Workshops {
 
     /** Commande de maître du niveau en cours, ou null. */
     public static RequestTemplate master(Workshop w, WorkshopState state) {
-        return RequestTemplate.master(w.getId(), state.level(), state.specialty());
+        return RequestTemplate.master(w.orders(), state.level(), state.specialty());
     }
 
     /** Ce qui manque au bâtiment pour son prochain niveau. */

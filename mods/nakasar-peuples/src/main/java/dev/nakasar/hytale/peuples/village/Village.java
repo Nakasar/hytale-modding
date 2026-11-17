@@ -432,6 +432,16 @@ public final class Village {
         return created;
     }
 
+    /** État du bâtiment de métier `workshopId` s'il existe déjà, sans le créer. */
+    public WorkshopState workshopIfPresent(String workshopId) {
+        for (WorkshopState w : workshops) {
+            if (w != null && w.id.equals(workshopId)) {
+                return w;
+            }
+        }
+        return null;
+    }
+
     /** Avant-postes connus du village (copie du tableau, objets sauvegardés). */
     public AnnexState[] annexes() {
         return java.util.Arrays.stream(annexes).filter(java.util.Objects::nonNull).toArray(AnnexState[]::new);
