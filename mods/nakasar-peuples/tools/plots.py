@@ -254,8 +254,10 @@ PROJECTS = {
              specs=[("Loups_Garde", "Loups de garde", "Guard wolves", "Ingredient_Hide_Heavy", "Peaux et harnais ; en raid, +1 garde.",
                      "Hides and harness; +1 guard in raids.", [("Ingredient_Hide_Heavy", 2, 1), ("Armor_Leather_Medium_Head", 1, 3)],
                      [("Armor_Leather_Medium_Chest", 1, 4), ("Tool_Capture_Crate", 1, 4)], {"Guards": 1}),
-                    ("Traineaux", "Traîneaux", "Sleds", "Ingredient_Strap_Leather", "Sangles, bois et cartes du givre.",
-                     "Straps, wood and frost maps.", [("Ingredient_Strap_Leather", 4, 1), ("Wood_Fir_Trunk", 16, 1)],
+                    # Le Chenil tient lieu de Caserne chez les Renoncés : Garnison remplace les Traîneaux (même boutique).
+                    ("Garnison", "Garnison", "Garrison", "Ingredient_Strap_Leather",
+                     "Un garde de plus dans chaque lieu-dit, ouvrage et expédition ; sangles, bois et cartes du givre.",
+                     "One more guard in each hamlet, work and expedition; straps, wood and frost maps.", [("Ingredient_Strap_Leather", 4, 1), ("Wood_Fir_Trunk", 16, 1)],
                      [("Tool_Map", 1, 4), ("Armor_Wool_Legs", 1, 4)], None)]),
         dict(id="Deuxieme_Bergerie", category="Elevage", prefab=PEN + "Renonce_Pen", rotation=0, job="Berger_Bis", kind="Breeder",
              fr="Deuxième bergerie", en="Second fold", job_fr="Berger", job_en="Shepherd", icon="Ingredient_Fabric_Scrap_Wool",

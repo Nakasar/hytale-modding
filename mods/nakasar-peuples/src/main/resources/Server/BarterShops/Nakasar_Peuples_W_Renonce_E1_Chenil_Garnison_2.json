@@ -1,6 +1,6 @@
 {
-  "$Comment": "Boutique du niveau 2 du bâtiment de métier Renonce_E1_Chenil, spécialité Traineaux, générée par tools/generate_workshops.py.",
-  "DisplayNameKey": "nakasar_peuples.barter.W_Renonce_E1_Chenil_Traineaux_2.title",
+  "$Comment": "Boutique du niveau 2 du bâtiment de métier Renonce_E1_Chenil, spécialité Garnison, générée par tools/generate_workshops.py.",
+  "DisplayNameKey": "nakasar_peuples.barter.W_Renonce_E1_Chenil_Garnison_2.title",
   "RefreshInterval": {
     "Days": 3
   },

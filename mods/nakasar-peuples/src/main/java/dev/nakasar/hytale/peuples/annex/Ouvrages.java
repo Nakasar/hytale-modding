@@ -46,7 +46,8 @@ import java.util.concurrent.ConcurrentHashMap;
  *   contre gardes camp 0) : l'attaquant doit tenir seul le disque de capture de {@value #CAPTURE_RADIUS} blocs autour du
  *   panneau pendant {@value #CAPTURE_SECONDS} s (disque rouge au sol, à sa taille exacte), {@value #ASSAULT_SECONDS} s au
  *   plus. Personne : réglé seul (soldats × palier contre gardes × palier + tours de garde proches, à 20 % près). Les
- *   gardes ne regagnent pas de vie (VillageNoRegenSystem : ce sont des PNJ du monde vivant hostiles à l'attaquant) ;</li>
+ *   combattants sont des rôles de défenseurs amicaux envers les joueurs : ils gardent la régénération vanilla hors
+ *   combat (exception de la règle n° 1). Les gardes tombés restent comptés si l'assaut repasse sans témoin ;</li>
  *   <li><b>Capture</b> : l'ouvrage passe à l'attaquant, même au-delà de ses limites (Kevin) ; ses soldats restants le
  *   gardent. Le propriétaire peut le reprendre (bouton Reprendre au panneau, rang Ami, sans frais) ; au palier 3 il lance
  *   lui-même sa reprise après {@value #RETAKE_DAYS} jours ; au bout de {@value #LOST_DAYS} jours l'ouvrage est perdu
@@ -90,6 +91,10 @@ public final class Ouvrages {
     }
 
     private static final Map<String, Fight> FIGHTS = new ConcurrentHashMap<>();
+    /** Gardes du propriétaire tués pendant le siège en cours (l'ouvrage non pris n'a pas de garnison sauvée). */
+    private static final Map<String, Integer> FALLEN = new ConcurrentHashMap<>();
+    /** Recharge après une reprise ratée par le propriétaire : courte, pour qu'il puisse réessayer avant la perte. */
+    public static final int RETAKE_COOLDOWN_DAYS = 2;
 
     private Ouvrages() {
     }
@@ -126,6 +131,11 @@ public final class Ouvrages {
             }
         }
         return n + dev.nakasar.hytale.peuples.workshop.Projects.garrisonBonus(w.owner());
+    }
+
+    /** Gardes encore debout pour le siège en cours : {@link #defenders} moins ceux tombés dans un assaut réel. */
+    static int standing(Infrastructures.Work w) {
+        return w.state().occupied() ? defenders(w) : Math.max(0, defenders(w) - FALLEN.getOrDefault(key(w), 0));
     }
 
     // ---- Lancer une expédition ----
@@ -320,7 +330,7 @@ public final class Ouvrages {
         }
         if (!f.spawned) {
             int soldiers = a.siegeSoldiers();
-            int guards = defenders(w);
+            int guards = standing(w);
             if (!WorldLife.budget(world, soldiers + guards)) {
                 return;
             }
@@ -406,8 +416,13 @@ public final class Ouvrages {
 
     private static void guardDied(World world, String key, Ref<EntityStore> npc) {
         Infrastructures.Work w = byKey(world, key);
-        if (w != null && w.state().occupied()) {
+        if (w == null) {
+            return;
+        }
+        if (w.state().occupied()) {
             w.state().setGarrison(Math.max(0, w.state().garrison() - 1));
+        } else {
+            FALLEN.merge(key, 1, Integer::sum); // compté si l'assaut repasse en résolution sans témoin
         }
     }
 
@@ -420,7 +435,7 @@ public final class Ouvrages {
     private static void autoResolve(World world, Store<EntityStore> store, Infrastructures.Work w, Village attacker, Village holder) {
         Random random = new Random();
         int soldiers = w.state().siegeSoldiers();
-        int guards = defenders(w);
+        int guards = standing(w);
         int towers = 0;
         for (Infrastructures.Work t : Infrastructures.held(world, holder, Infrastructures.TOWER)) {
             if (t != w && t.distanceSquared(w.state().x(), w.state().z()) <= 160.0 * 160.0) {
@@ -448,7 +463,10 @@ public final class Ouvrages {
         if (retake) {
             a.occupy(null, day, 0);
         } else {
+            // Un ouvrage déjà perdu pour son propriétaire le reste quand un tiers le prend.
+            boolean wasLost = a.lost();
             a.occupy(attacker.id(), day, Math.max(1, survivors));
+            a.setLost(wasLost);
             Villagers.dismiss(store, w.owner().id(), Villagers.ANNEX_PREFIX + w.workshop().getId() + "/");
         }
         Relations.change(world, attacker, holder, RELATION_LOSS);
@@ -467,7 +485,8 @@ public final class Ouvrages {
 
     private static void defend(World world, Store<EntityStore> store, Infrastructures.Work w, Village attacker, Village holder) {
         end(store, w);
-        Allegiance.expeditionCool(world, attacker, GameClock.day(store) + COOLDOWN_DAYS);
+        boolean retake = w.owner().id().equals(attacker.id());
+        Allegiance.expeditionCool(world, attacker, GameClock.day(store) + (retake ? RETAKE_COOLDOWN_DAYS : COOLDOWN_DAYS));
         Message m = Message.translation(KEYS + "repelled").param("village", attacker.name())
                 .param("building", Message.translation(w.workshop().nameKey())).param("holder", holder.name());
         Chantiers.announce(world, holder, m, null, NotificationStyle.Success);
@@ -477,6 +496,7 @@ public final class Ouvrages {
 
     private static void end(Store<EntityStore> store, Infrastructures.Work w) {
         w.state().clearSiege();
+        FALLEN.remove(key(w));
         Fight f = FIGHTS.remove(key(w));
         if (f != null) {
             release(store, f);

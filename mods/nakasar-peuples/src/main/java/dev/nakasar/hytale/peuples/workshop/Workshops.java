@@ -186,6 +186,10 @@ public final class Workshops {
                 state.setSpecialty(null);
                 state.setReconverted(Long.MIN_VALUE);
             }
+            if (w.inputs().length > 0 && state.inputDay() != GameClock.day(store)) {
+                // Prélèvement du jour pas encore fait (dépôt pas chargé au changement de jour) : on réessaie ici.
+                Inputs.consume(world, village, w, GameClock.day(store));
+            }
             if (state.upgrading() && now >= state.upgradeEnd()) {
                 finishUpgrade(world, store, village, w, state);
             }

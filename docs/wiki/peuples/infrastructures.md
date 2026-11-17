@@ -27,7 +27,7 @@ Les limites ne bornent que la construction. Un village qui prend deux tours à u
 Un joueur de rang **Hôte** d'un village peut le lancer contre l'ouvrage d'un village **rival** (relation −40 ou moins, pas de trêve) pour **5 faveurs**. Le village attaquant doit être de palier 3 et ne pas avoir lancé d'expédition récemment.
 
 1. Les soldats marchent vers l'ouvrage (plus l'ouvrage est loin, plus la marche est longue). Pendant ce temps, l'ouvrage est **assiégé** : son effet ne joue plus.
-2. À l'arrivée, si un joueur est près de l'ouvrage, le combat a lieu pour de vrai : soldats contre gardes. Un **cercle** marque la zone de prise (6 blocs) ; tenir le cercle 15 s sans défenseur dedans prend l'ouvrage. Sans joueur, l'issue se décide selon les forces.
+2. À l'arrivée, si un joueur est près de l'ouvrage, le combat a lieu pour de vrai : soldats contre gardes. Un **cercle** marque la zone de prise (6 blocs) : quand aucun garde n'y reste et qu'un soldat de l'attaquant le tient 15 s, l'ouvrage est pris. Aidez les soldats en abattant les gardes. Sans joueur, l'issue se décide selon les forces.
 3. Pris, l'ouvrage passe à l'attaquant, qui y laisse une garnison. Son panneau est fermé aux joueurs du propriétaire.
 
 Le propriétaire peut le **reprendre** (bouton Reprendre de l'onglet Ouvrages, rang Ami). S'il ne le reprend pas en **14 jours**, l'ouvrage est perdu pour de bon. Un village de palier 3 tente aussi de lui-même de reprendre son ouvrage après 3 jours.

@@ -1448,7 +1448,7 @@ Kevin (2026-11-16, doc « Structurer les types de bâtiments », commentaires in
   solides avec la Caserne ; forteresse prise comptée pour le plafond de lieux-dits de l'occupant.
 - Bibliothèque : effets Cartographes (carte) et Maîtres (commandes de maître réduites) ; Temple : Bénédiction et fête
   hebdomadaire ; Négociants à 30 d'influence (la spécialité garde l'effet de l'ancienne Diplomatie).
-- Slothians : pas encore d'atelier ; les Renoncés n'ont pas de Caserne (Chenil = Défense, sans Garnison).
+- Slothians : pas encore d'atelier. Les Renoncés n'ont pas de Caserne : leur Chenil (Défense) prend Garnison à la place des Traîneaux.
 - Carte : le nom du repère dit occupant, siège ou ruine ; pas de couleur de bannière ni de clignotement.
 
 ### À vérifier en jeu (familles)

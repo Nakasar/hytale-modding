@@ -73,13 +73,13 @@
       "ShareQuantity": 2
     },
     {
-      "Id": "Traineaux",
-      "NameKey": "nakasar_peuples.workshop.specialty.Renonce_E1_Chenil.Traineaux",
-      "LineKey": "nakasar_peuples.workshop.specialtyLine.Renonce_E1_Chenil.Traineaux",
+      "Id": "Garnison",
+      "NameKey": "nakasar_peuples.workshop.specialty.Renonce_E1_Chenil.Garnison",
+      "LineKey": "nakasar_peuples.workshop.specialtyLine.Renonce_E1_Chenil.Garnison",
       "Icon": "Ingredient_Strap_Leather",
       "Shops": [
-        "Nakasar_Peuples_W_Renonce_E1_Chenil_Traineaux_2",
-        "Nakasar_Peuples_W_Renonce_E1_Chenil_Traineaux_3"
+        "Nakasar_Peuples_W_Renonce_E1_Chenil_Garnison_2",
+        "Nakasar_Peuples_W_Renonce_E1_Chenil_Garnison_3"
       ],
       "ShareItem": "Ingredient_Strap_Leather",
       "ShareQuantity": 4
