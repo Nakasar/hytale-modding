@@ -400,9 +400,13 @@ public final class Population {
         }
     }
 
-    /** Vivres du dépôt : nourriture et récoltes. */
+    /** Luxes des routes commerciales : les naissances ne les mangent pas (ils prolongent l'accès du village). */
+    static final java.util.Set<String> LUXURIES = java.util.Set.of("Plant_Fruit_Azure", "Food_Cheese", "Food_Fish_Raw_Rare", "Food_Pie_Apple");
+
+    /** Vivres du dépôt : nourriture et récoltes, hors luxes. */
     static boolean isFood(String itemId) {
-        return itemId != null && (itemId.startsWith("Food_") || itemId.startsWith("Plant_Crop_") || itemId.startsWith("Plant_Fruit_"));
+        return itemId != null && !LUXURIES.contains(itemId)
+                && (itemId.startsWith("Food_") || itemId.startsWith("Plant_Crop_") || itemId.startsWith("Plant_Fruit_"));
     }
 
     private static int takeFood(ItemContainer chest, int wanted) {
