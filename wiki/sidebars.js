@@ -151,6 +151,7 @@ const sidebars = {
         "peuples/monde-vivant",
         "peuples/lieux-dits",
         "peuples/conquete",
+        "peuples/commerce",
         "peuples/climats",
       ],
     },

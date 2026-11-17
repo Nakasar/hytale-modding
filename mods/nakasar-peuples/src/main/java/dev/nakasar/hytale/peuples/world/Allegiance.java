@@ -108,6 +108,12 @@ public final class Allegiance {
             "Chasse", new Object[] {"Ingredient_Hide_Light", 4},
             "Bosquet", new Object[] {"Plant_Crop_Health1", 4});
 
+    /** Objet du tribut d'un genre de lieu-dit (Mine, Ferme...), ou null (routes commerciales : le village le réexporte). */
+    public static String tributeItem(String hamletType) {
+        Object[] lot = hamletType == null ? null : TRIBUTE_LOTS.get(hamletType);
+        return lot == null ? null : (String) lot[0];
+    }
+
     private static final String LETTER = "~letter:";
     private static final String COOL = "~cool:";
     private static final String EXPCOOL = "~expcool:";

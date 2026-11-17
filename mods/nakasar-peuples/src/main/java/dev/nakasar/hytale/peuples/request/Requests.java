@@ -117,7 +117,10 @@ public final class Requests {
         // Une caravane a besoin d'un autre village où aller (Expeditions.available).
         World world = store.getExternalData().getWorld();
         all.removeIf(t -> !Expeditions.available(world, village, t)
-                || (t.type() == RequestType.ROUTE && !RouteQuests.available(world, village, t)));
+                || (t.type() == RequestType.ROUTE && !RouteQuests.available(world, village, t))
+                // « Luxe d'ailleurs » : seulement pour un luxe que le village n'a pas (routes commerciales).
+                || (t.getId().contains(dev.nakasar.hytale.peuples.world.TradeAccess.REQUEST_MARK)
+                    && !dev.nakasar.hytale.peuples.world.TradeAccess.wanted(world, village, t.itemId(), GameClock.day(store))));
         List<RequestTemplate> pool = new ArrayList<>();
         for (RequestTemplate t : all) {
             if (!usedTypes.contains(t.type()) && !usedTemplates.contains(t.getId())) {

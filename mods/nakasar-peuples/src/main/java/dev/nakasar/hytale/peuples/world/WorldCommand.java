@@ -50,6 +50,7 @@ public final class WorldCommand extends AbstractCommandCollection {
         addSubCommand(new OwnerCommand());
         addSubCommand(new RelationCommand());
         addSubCommand(new SkirmishCommand());
+        addSubCommand(new TradeRouteCommand());
         addSubCommand(new CalendarCommand("fete"));
         addSubCommand(new CalendarCommand("foire"));
         addSubCommand(new CalendarCommand("migration"));
@@ -320,6 +321,108 @@ public final class WorldCommand extends AbstractCommandCollection {
             int now = Relations.value(world, l.a(), l.b());
             player.sendMessage(Message.translation(KEYS + "relation.done").param("a", l.a().name()).param("b", l.b().name())
                     .param("value", now).param("state", Message.translation(Relations.KEYS + "state." + Relations.state(now))));
+        }
+    }
+
+    /**
+     * {@code /monde route [--faire liste|ouvrir|niveau|depart|acces|fermer] [--vers village]} : les routes commerciales du
+     * village le plus proche ; ouvrir une route vers `vers` (ou le premier partenaire possible), monter son niveau sans
+     * condition, faire partir les caravanes tout de suite, ouvrir l'accès aux neuf luxes pour 7 jours, fermer la route.
+     */
+    private static final class TradeRouteCommand extends AdminCommand {
+        private final OptionalArg<String> what = withOptionalArg("faire", TradeRoutes.KEYS + "cmd.what.arg", ArgTypes.STRING);
+        private final OptionalArg<String> to = withOptionalArg("vers", KEYS + "to.arg", ArgTypes.STRING);
+
+        TradeRouteCommand() {
+            super("route", TradeRoutes.KEYS + "cmd.desc");
+        }
+
+        @Override
+        protected void execute(CommandContext context, Store<EntityStore> store, Ref<EntityStore> ref, PlayerRef player, World world) {
+            Village v = nearest(world, player);
+            if (v == null) {
+                return;
+            }
+            long day = GameClock.day(store);
+            String action = what.get(context) == null ? "liste" : what.get(context).toLowerCase(Locale.ROOT);
+            if (action.equals("acces")) {
+                for (TradeGoods.Luxury l : TradeGoods.LUXURIES) {
+                    TradeAccess.force(world, v, l.item(), day, TradeAccess.DELIVERY_DAYS);
+                }
+                player.sendMessage(Message.translation(TradeRoutes.KEYS + "cmd.access").param("village", v.name())
+                        .param("count", TradeAccess.count(world, v, day)).param("bonus", TradeAccess.bonus(v)));
+                return;
+            }
+            String dest = to.get(context);
+            Village o = dest == null ? null : byName(world, dest);
+            if (dest != null && o == null) {
+                player.sendMessage(Message.translation(KEYS + "noSuchVillage").param("name", dest));
+                return;
+            }
+            if (action.equals("ouvrir")) {
+                if (o == null) {
+                    List<Village> c = TradeRoutes.candidates(world, v);
+                    o = c.isEmpty() ? null : c.get(0);
+                }
+                if (o == null || TradeRoutes.between(world, v, o) != null) {
+                    player.sendMessage(Message.translation(TradeRoutes.KEYS + "why.partner").param("village", o == null ? "?" : o.name()));
+                    return;
+                }
+                TradeRoutes.Route r = TradeRoutes.create(world, v, o, true, day);
+                TradeRoutes.autoCases(world, r, v, o, day);
+                TradeRoutes.save(world, r);
+                player.sendMessage(TradeRoutes.describe(world, r));
+                return;
+            }
+            List<TradeRoutes.Route> routes = TradeRoutes.of(world, v);
+            TradeRoutes.Route r = null;
+            for (TradeRoutes.Route x : routes) {
+                if (o == null || x.has(o.id())) {
+                    r = x;
+                    break;
+                }
+            }
+            switch (action) {
+                case "niveau" -> {
+                    if (r != null && r.level < TradeRoutes.MAX_LEVEL) {
+                        r.level++;
+                        TradeRoutes.save(world, r);
+                    }
+                }
+                case "depart" -> {
+                    if (r != null) {
+                        Village a = TradeRoutes.village(world, r.a);
+                        Village b = TradeRoutes.village(world, r.b);
+                        if (a != null && b != null) {
+                            TradeCaravans.dispatch(world, store, r, a, b);
+                            TradeCaravans.dispatch(world, store, r, b, a);
+                            TradeRoutes.save(world, r);
+                        }
+                    }
+                }
+                case "fermer" -> {
+                    if (r != null) {
+                        TradeRoutes.drop(world, store, r, "closed");
+                        r = null;
+                    }
+                }
+                default -> {
+                }
+            }
+            player.sendMessage(Message.translation(TradeRoutes.KEYS + "cmd.header").param("village", v.name()).param("count", routes.size())
+                    .param("slots", TradeRoutes.slots(world, v, day)).param("luxuries", TradeAccess.count(world, v, day))
+                    .param("bonus", TradeAccess.bonus(v)));
+            for (TradeRoutes.Route x : TradeRoutes.of(world, v)) {
+                player.sendMessage(TradeRoutes.describe(world, x));
+            }
+            for (TradeCaravans.Caravan c : TradeCaravans.all(world)) {
+                if (c.from.equals(v.id()) || c.to.equals(v.id())) {
+                    player.sendMessage(TradeCaravans.describe(world, c));
+                }
+            }
+            if (r == null && !action.equals("liste") && !action.equals("fermer")) {
+                player.sendMessage(Message.translation(TradeRoutes.KEYS + "cmd.noRoute"));
+            }
         }
     }
 
