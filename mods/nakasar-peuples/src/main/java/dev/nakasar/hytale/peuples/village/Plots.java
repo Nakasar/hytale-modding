@@ -24,7 +24,7 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
- * Les terrains libres E1 et E2 des villages (GDD des bâtiments de métier, étape 6). Kevin (2026-11-15) : E1 s'ouvre au
+ * Les terrains libres E1, E2 et E3 des villages (GDD des bâtiments de métier, étape 6). Kevin (2026-11-15) : E1 s'ouvre au
  * palier 2, E2 au palier 3 ; les piquets du terrain réservé apparaissent un palier plus tôt. Au panneau du village
  * (page {@link PlotPage}), un joueur de rang {@link #CHOOSE_RANK Ami} choisit un des 5 projets du peuple ; tant que le
  * chantier n'est pas lancé, on peut en changer sans frais. Lancer le chantier prend ses matériaux au dépôt ;
@@ -75,6 +75,63 @@ public final class Plots {
         return out;
     }
 
+    /**
+     * Catalogue du terrain tel que le panneau le montre : sans les projets hérités (ils doublent un bâtiment de
+     * production, doc « Structurer les types de bâtiments »), sauf celui déjà choisi ou bâti sur ce terrain.
+     */
+    public static List<VillageLayout.Building> catalog(Village village, String plotId) {
+        String current = village.plot(plotId).project();
+        List<VillageLayout.Building> out = new ArrayList<>();
+        for (VillageLayout.Building b : projects(village, plotId)) {
+            Workshop w = workshop(village, b.id());
+            if (w != null && w.legacy() && !b.id().equals(current)) {
+                continue;
+            }
+            out.add(b);
+        }
+        return out;
+    }
+
+    /** Catégorie du projet d'un bâtiment d'emplacement (Defense, Diplomatie, Savoir, Culte, Artisanat, Elevage), ou null. */
+    public static String category(Village village, String buildingId) {
+        Workshop w = workshop(village, buildingId);
+        return w == null ? null : w.category();
+    }
+
+    /** Terrains autres que `plotId` dont le projet (choisi, en chantier ou bâti) est de la catégorie. */
+    public static int categoryCount(Village village, String plotId, String category) {
+        int n = 0;
+        for (VillageLayout.Plot p : plots(village)) {
+            String project = village.plot(p.id()).project();
+            if (!p.id().equals(plotId) && project != null && category.equals(category(village, project))) {
+                n++;
+            }
+        }
+        return n;
+    }
+
+    /**
+     * Pourquoi ce projet ne peut pas être choisi sur ce terrain (clé sous {@link #KEYS}), ou null : projet hérité,
+     * déjà sur un autre terrain, ou catégorie pleine (une par catégorie, trois ateliers).
+     */
+    public static String refusal(Village village, String plotId, VillageLayout.Building b) {
+        if (b.id().equals(village.plot(plotId).project())) {
+            return null;
+        }
+        Workshop w = workshop(village, b.id());
+        if (w != null && w.legacy()) {
+            return "legacy";
+        }
+        if (takenElsewhere(village, plotId, projectId(b))) {
+            return "taken";
+        }
+        String category = w == null ? null : w.category();
+        if (category != null && categoryCount(village, plotId, category) >= dev.nakasar.hytale.peuples.workshop.Projects.max(category)) {
+            return "categoryFull";
+        }
+        return null;
+    }
+
     /** Id du projet d'un bâtiment d'emplacement ({@code E1_Archerie} → {@code Archerie}). */
     public static String projectId(VillageLayout.Building b) {
         return b.plot() != null && b.id().startsWith(b.plot() + "_") ? b.id().substring(b.plot().length() + 1) : b.id();
@@ -108,11 +165,6 @@ public final class Plots {
         return false;
     }
 
-    /** Un deuxième élevage peut être pris sur les deux terrains (GDD) : le seul projet qui peut se répéter. */
-    static boolean repeatable(String projectId) {
-        return projectId.startsWith("Deuxieme_");
-    }
-
     // ---- Ce que le joueur peut faire ----
 
     /** Pourquoi le joueur ne peut rien décider sur le terrain (rang, terrain fermé), ou null. */
@@ -144,9 +196,11 @@ public final class Plots {
         if (b == null || !plot.id().equals(b.plot())) {
             return false;
         }
-        String project = projectId(b);
-        if (!repeatable(project) && takenElsewhere(village, plot.id(), project)) {
-            player.sendMessage(Message.translation(KEYS + "taken"));
+        String refusal = refusal(village, plot.id(), b);
+        if (refusal != null) {
+            String category = category(village, b.id());
+            player.sendMessage(Message.translation(KEYS + refusal).param("category",
+                    Message.translation(KEYS + "category." + (category == null ? "none" : category))));
             return false;
         }
         s.setProject(b.id());

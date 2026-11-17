@@ -1,0 +1,86 @@
+{
+  "$Comment": "Bâtiment de métier généré par tools/generate_workshops.py (ne pas modifier à la main) : voir dev.nakasar.hytale.peuples.workshop.Workshop.",
+  "People": "Renonce",
+  "Layout": "Renonce_Givre",
+  "Building": "E1_Temple",
+  "Job": "Pretre_E1",
+  "Icon": "Furniture_Tavern_Candle",
+  "NameKey": "nakasar_peuples.workshop.Renonce_E1_Temple.name",
+  "Board": [
+    31,
+    -22,
+    0
+  ],
+  "Upgrades": [
+    {
+      "Level": 2,
+      "Hours": 12,
+      "Materials": [
+        {
+          "ItemId": "Wood_Fir_Trunk",
+          "Quantity": 24
+        },
+        {
+          "ItemId": "Wood_Hardwood_Planks",
+          "Quantity": 16
+        },
+        {
+          "ItemId": "Rock_Stone_Cobble",
+          "Quantity": 12
+        }
+      ],
+      "Decor": [
+        "1 0 0 0 Furniture_Lumberjack_Lantern"
+      ]
+    },
+    {
+      "Level": 3,
+      "Hours": 12,
+      "Materials": [
+        {
+          "ItemId": "Wood_Fir_Trunk",
+          "Quantity": 32
+        },
+        {
+          "ItemId": "Ingredient_Bolt_Wool",
+          "Quantity": 6
+        },
+        {
+          "ItemId": "Ingredient_Ice_Essence",
+          "Quantity": 6
+        }
+      ],
+      "Decor": [
+        "-1 0 0 0 Furniture_Lumberjack_Lantern"
+      ]
+    }
+  ],
+  "Category": "Culte",
+  "Specialties": [
+    {
+      "Id": "Protection",
+      "NameKey": "nakasar_peuples.workshop.specialty.Renonce_E1_Temple.Protection",
+      "LineKey": "nakasar_peuples.workshop.specialtyLine.Renonce_E1_Temple.Protection",
+      "Icon": "Potion_Health_Small",
+      "Shops": [
+        "Nakasar_Peuples_W_Renonce_E1_Temple_Protection_2",
+        "Nakasar_Peuples_W_Renonce_E1_Temple_Protection_3"
+      ],
+      "ShareItem": "Potion_Health_Small",
+      "ShareQuantity": 2
+    },
+    {
+      "Id": "Benediction",
+      "NameKey": "nakasar_peuples.workshop.specialty.Renonce_E1_Temple.Benediction",
+      "LineKey": "nakasar_peuples.workshop.specialtyLine.Renonce_E1_Temple.Benediction",
+      "Icon": "Food_Bread",
+      "Shops": [
+        "Nakasar_Peuples_W_Renonce_E1_Temple_Benediction_2",
+        "Nakasar_Peuples_W_Renonce_E1_Temple_Benediction_3"
+      ],
+      "ShareItem": "Food_Bread",
+      "ShareQuantity": 2
+    }
+  ],
+  "Shop": "Nakasar_Peuples_W_Renonce_E1_Temple_Base_1"
+}

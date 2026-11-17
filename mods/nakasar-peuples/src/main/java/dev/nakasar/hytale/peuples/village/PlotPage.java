@@ -34,8 +34,8 @@ public final class PlotPage extends InteractiveCustomUIPage<PlotPage.Event> {
     private static final String LAYOUT = "Pages/Nakasar/Peuples/PlotPage.ui";
     private static final String KEYS = Plots.KEYS;
     private static final List<String> THEMED = List.of("Kweebec", "Trork", "Feran", "Renonce", "Slothian");
-    private static final int CARDS = 2;
-    private static final int PROJECTS = 6;
+    private static final int CARDS = 3;
+    private static final int PROJECTS = 10;
     /** Matériaux du projet affichés en icônes par terrain (ids à plat {@code #PlotMat<terrain × MATERIALS + j>}). */
     private static final int MATERIALS = 4;
     private static final String OK = "#7ed957";
@@ -226,7 +226,7 @@ public final class PlotPage extends InteractiveCustomUIPage<PlotPage.Event> {
         PlotState s = village.plot(plot.id());
         boolean locked = s.working() || (s.project() != null && village.isBuilt(s.project()));
         boolean allowed = Plots.block(store, ref, village, plot) == null;
-        List<VillageLayout.Building> projects = Plots.projects(village, plot.id());
+        List<VillageLayout.Building> projects = Plots.catalog(village, plot.id());
         for (int j = 0; j < PROJECTS; j++) {
             String n = Integer.toString(j);
             if (j >= projects.size()) {
@@ -239,10 +239,10 @@ public final class PlotPage extends InteractiveCustomUIPage<PlotPage.Event> {
                 cmd.set("#ProjIcon" + n + ".ItemId", w.icon());
             }
             cmd.set("#ProjName" + n + ".TextSpans", Message.translation(Chantiers.buildingKey(b.id())));
-            String project = Plots.projectId(b);
             boolean chosen = b.id().equals(s.project());
-            boolean taken = !chosen && !Plots.repeatable(project) && Plots.takenElsewhere(village, plot.id(), project);
-            cmd.set("#ProjLine" + n + ".TextSpans", projectLine(village, w, taken));
+            String refusal = chosen ? null : Plots.refusal(village, plot.id(), b);
+            boolean taken = refusal != null;
+            cmd.set("#ProjLine" + n + ".TextSpans", projectLine(village, w, refusal));
             String button = null;
             if (allowed && !locked) {
                 button = chosen ? "page.clear" : taken ? null : s.project() == null ? "page.choose" : "page.switch";
@@ -257,9 +257,10 @@ public final class PlotPage extends InteractiveCustomUIPage<PlotPage.Event> {
     }
 
     /** Le villageois du projet et ses spécialités (ou « déjà sur l'autre terrain »). */
-    private static Message projectLine(Village village, Workshop w, boolean taken) {
-        if (taken) {
-            return Message.translation(KEYS + "page.taken");
+    private static Message projectLine(Village village, Workshop w, String refusal) {
+        Message category = Message.translation(KEYS + "category." + (w == null || w.category() == null ? "none" : w.category()));
+        if (refusal != null) {
+            return Message.translation(KEYS + "page." + refusal).param("category", category);
         }
         if (w == null) {
             return Message.empty();
@@ -273,7 +274,13 @@ public final class PlotPage extends InteractiveCustomUIPage<PlotPage.Event> {
             specs.insert(Message.translation(all[i].nameKey()));
         }
         Message keeper = Message.translation("nakasar_peuples.job." + w.job());
-        return Message.translation(KEYS + "page.projectLine").param("job", keeper).param("specialties", specs);
+        Message line = Message.translation(KEYS + "page.projectLine").param("category", category).param("job", keeper).param("specialties", specs);
+        java.util.Map<String, Integer> needs = dev.nakasar.hytale.peuples.workshop.Inputs.needs(village, w);
+        if (!needs.isEmpty()) {
+            line = Message.translation(KEYS + "page.projectInputs").param("line", line)
+                    .param("list", dev.nakasar.hytale.peuples.workshop.Inputs.list(needs));
+        }
+        return line;
     }
 
     @Override
@@ -308,7 +315,7 @@ public final class PlotPage extends InteractiveCustomUIPage<PlotPage.Event> {
             }
         } else if (action.startsWith("Choose") && plot != null) {
             int j = index(action, "Choose");
-            List<VillageLayout.Building> projects = Plots.projects(village, plot.id());
+            List<VillageLayout.Building> projects = Plots.catalog(village, plot.id());
             if (j >= 0 && j < projects.size()) {
                 Plots.choose(world, store, ref, playerRef, village, plot, projects.get(j).id());
             }

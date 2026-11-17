@@ -55,6 +55,7 @@
       ]
     }
   ],
+  "Category": "Diplomatie",
   "Specialties": [
     {
       "Id": "Diplomatie",
@@ -69,16 +70,16 @@
       "ShareQuantity": 4
     },
     {
-      "Id": "Garnison",
-      "NameKey": "nakasar_peuples.workshop.specialty.Slothian_E1_Conseil.Garnison",
-      "LineKey": "nakasar_peuples.workshop.specialtyLine.Slothian_E1_Conseil.Garnison",
-      "Icon": "Weapon_Shield_Iron",
+      "Id": "Herauts",
+      "NameKey": "nakasar_peuples.workshop.specialty.Slothian_E1_Conseil.Herauts",
+      "LineKey": "nakasar_peuples.workshop.specialtyLine.Slothian_E1_Conseil.Herauts",
+      "Icon": "Deco_Scroll",
       "Shops": [
-        "Nakasar_Peuples_W_Slothian_E1_Conseil_Garnison_2",
-        "Nakasar_Peuples_W_Slothian_E1_Conseil_Garnison_3"
+        "Nakasar_Peuples_W_Slothian_E1_Conseil_Herauts_2",
+        "Nakasar_Peuples_W_Slothian_E1_Conseil_Herauts_3"
       ],
-      "ShareItem": "Weapon_Shield_Copper",
-      "ShareQuantity": 1
+      "ShareItem": "Deco_Scroll",
+      "ShareQuantity": 2
     }
   ],
   "Shop": "Nakasar_Peuples_W_Slothian_E1_Conseil_Base_1"

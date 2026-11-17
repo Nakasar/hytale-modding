@@ -1356,8 +1356,14 @@ public class ValidateAssets {
                     problems.add("bête : rôle vanilla non relevé " + a + " (tools/vanilla-refs-0.7.2.txt)");
                 }
             }
-            if (e.getValue() < MIN_WORKSHOP_ORDERS) {
-                problems.add(e.getValue() + " commande(s), il en faut au moins " + MIN_WORKSHOP_ORDERS);
+            // Copie d'un ouvrage (champ Orders) : elle partage les commandes de son modèle.
+            String ordersOf = doc.containsKey("Orders") ? doc.getString("Orders").getValue() : null;
+            int count = ordersOf != null ? orders.getOrDefault(ordersOf, 0) : e.getValue();
+            if (ordersOf != null && !orders.containsKey(ordersOf)) {
+                problems.add("Orders : bâtiment de métier inconnu " + ordersOf);
+            }
+            if (count < MIN_WORKSHOP_ORDERS) {
+                problems.add(count + " commande(s), il en faut au moins " + MIN_WORKSHOP_ORDERS);
             }
             if (problems.isEmpty()) {
                 System.out.println("OK    bâtiment de métier " + e.getKey() + " (" + e.getValue() + " commandes)");
@@ -1370,7 +1376,7 @@ public class ValidateAssets {
         return errors;
     }
 
-    private static final Set<String> ANNEX_RULES = Set.of("FERTILE", "ROCK", "TREES", "WATER", "NONE");
+    private static final Set<String> ANNEX_RULES = Set.of("FERTILE", "ROCK", "TREES", "WATER", "NONE", "ROAD");
 
     /**
      * Avant-poste de métier (champ {@code Annex}, tools/outposts.py) : prefabs vanilla relevés ({@code -Dprefabs}) au

@@ -627,15 +627,28 @@ PAGE = {
     "workshop.levelUp": ("{building} passe au {level} !", "{building} reaches {level}!"),
     "workshop.levelUpTitle": ("{building} : {level}", "{building}: {level}"),
     "workshop.taken": ("Commande prise : {title} ({building}).", "Order taken: {title} ({building})."),
+    "workshop.shopStopped": ("L'atelier est à l'arrêt aujourd'hui : il lui manquait au dépôt ce matin {list}. Apportez-les et il reprendra demain.",
+                             "The workshop is idle today: this morning the deposit lacked {list}. Bring them and it resumes tomorrow."),
+    "workshop.inputsStopped": ("{building} s'arrête : il manque au dépôt {list} pour la journée.", "{building} stops: the deposit lacks {list} for the day."),
+    "workshop.inputsBack": ("{building} a ses ressources du jour : la boutique rouvre.", "{building} has its resources for the day: the shop reopens."),
     "workshop.specialtyTwin": ("Déjà la spécialité de {building} : un autre élevage doit en prendre une autre.",
                                "Already the specialty of {building}: another pen must pick another one."),
     # Étape 6 : emplacements libres E1 et E2 (village/Plots, page PlotPage).
-    "plot.button": ("Emplacements", "Free plots"),
+    "plot.button": ("Projets", "Projects"),
     "plot.none": ("Ce village n'a pas d'emplacement libre.", "This village has no free plot."),
     "plot.locked": ("Ce terrain s'ouvre au palier {tier}.", "This plot opens at tier {tier}."),
     "plot.rank": ("Il faut le rang {rank} pour décider de ce terrain.", "You need rank {rank} to decide about this plot."),
     "plot.busy": ("Le terrain a déjà un chantier ou un bâtiment.", "The plot already has works or a building."),
-    "plot.taken": ("Ce projet est déjà sur l'autre terrain.", "This project is already on the other plot."),
+    "plot.taken": ("Ce projet est déjà sur un autre terrain.", "This project is already on another plot."),
+    "plot.legacy": ("Ce projet n'est plus proposé : il doublait un bâtiment de production.", "This project is no longer offered: it duplicated a production building."),
+    "plot.categoryFull": ("Le village a déjà son projet de la catégorie {category} (trois ateliers au plus).", "The village already has its {category} project (three workshops at most)."),
+    "plot.category.Defense": ("Défense", "Defence"),
+    "plot.category.Diplomatie": ("Diplomatie", "Diplomacy"),
+    "plot.category.Savoir": ("Savoir", "Knowledge"),
+    "plot.category.Culte": ("Culte", "Cult"),
+    "plot.category.Artisanat": ("Artisanat", "Crafts"),
+    "plot.category.Elevage": ("Élevage", "Breeding"),
+    "plot.category.none": ("Hors catégorie", "No category"),
     "plot.chosen": ("{player} choisit {building} pour le terrain {plot}.", "{player} picks {building} for plot {plot}."),
     "plot.noProject": ("Choisissez d'abord un projet pour ce terrain.", "Pick a project for this plot first."),
     "plot.missing": ("Il manque au dépôt du village : {list}.", "The village deposit still lacks: {list}."),
@@ -649,21 +662,24 @@ PAGE = {
     "plot.hurried": ("Les chantiers d'emplacement finissent au prochain pas du village.", "The plot works finish at the village's next step."),
     "plot.material": ("{count} × {item}", "{count} × {item}"),
     "plot.page.orphan": ("Ce village n'existe plus.", "This village no longer exists."),
-    "plot.page.title": ("Emplacements de {village}", "Free plots of {village}"),
-    "plot.page.intro": ("Deux terrains réservés pour les bâtiments que le village choisit. Choisissez un projet, réunissez ses matériaux au dépôt, puis lancez le chantier.",
-                        "Two plots kept for the buildings the village chooses. Pick a project, gather its materials in the deposit, then start the works."),
+    "plot.page.title": ("Projets de {village}", "Projects of {village}"),
+    "plot.page.intro": ("Trois terrains pour les bâtiments que le village choisit : un projet par catégorie (Défense, Diplomatie, Savoir, Culte), jusqu'à trois ateliers. Choisissez, réunissez les matériaux au dépôt, puis lancez le chantier.",
+                        "Three plots for the buildings the village chooses: one project per category (Defence, Diplomacy, Knowledge, Cult), up to three workshops. Pick one, gather the materials in the deposit, then start the works."),
     "plot.page.plot": ("Terrain {plot}", "Plot {plot}"),
-    "plot.page.select": ("Voir les projets", "See projects"),
-    "plot.page.selected": ("Projets affichés", "Projects shown"),
+    "plot.page.select": ("Projets", "Projects"),
+    "plot.page.selected": ("Affichés", "Shown"),
     "plot.page.start": ("Lancer le chantier", "Start the works"),
-    "plot.page.busy": ("Chantier en cours · {hours} h", "Works underway · {hours} h"),
+    "plot.page.busy": ("En chantier · {hours} h", "Building · {hours} h"),
     "plot.page.demolish": ("Démolir", "Demolish"),
     "plot.page.catalog": ("Projets pour le terrain {plot}", "Projects for plot {plot}"),
     "plot.page.choose": ("Choisir", "Choose"),
     "plot.page.switch": ("Choisir à la place", "Choose instead"),
     "plot.page.clear": ("Renoncer", "Give up"),
-    "plot.page.taken": ("Déjà sur l'autre terrain.", "Already on the other plot."),
-    "plot.page.projectLine": ("{job} · {specialties}", "{job} · {specialties}"),
+    "plot.page.taken": ("Déjà sur un autre terrain.", "Already on another plot."),
+    "plot.page.legacy": ("Projet hérité : il n'est plus proposé.", "Legacy project: no longer offered."),
+    "plot.page.categoryFull": ("{category} : le village a déjà son projet de cette catégorie.", "{category}: the village already has a project of this kind."),
+    "plot.page.projectLine": ("{category} · {job} · {specialties}", "{category} · {job} · {specialties}"),
+    "plot.page.projectInputs": ("{line} · consomme chaque jour {list}", "{line} · uses {list} each day"),
     "plot.page.rule": ("Choisir, lancer ou démolir demande le rang {rank}. Démolir rend un quart des matériaux, une fois tous les {days} jours par terrain.",
                        "Choosing, starting or demolishing needs rank {rank}. Demolishing gives back a quarter of the materials, once every {days} days per plot."),
     "plot.page.back": ("Retour au panneau", "Back to the board"),
@@ -783,6 +799,9 @@ LAYOUT_PEOPLE = {"Kweebec_Oak": "Kweebec", "Trork_Camp": "Trork", "Feran_Oasis":
                  "Slothian_Monastere": "Slothian"}
 
 
+PLOT_META = {}
+
+
 def plot_workshops(fr, en, errors):
     """Étape 6 : un bâtiment de métier par projet et par terrain (tools/plots.py), ajouté aux tables du script.
 
@@ -791,11 +810,14 @@ def plot_workshops(fr, en, errors):
     """
     twins = {}
     by_id = {w[0]: w for w in WORKSHOPS}
+    # Catégorie, projet hérité et ressources du matin des ateliers (doc « Structurer les types de bâtiments »).
     for layout_id, projects in plots.PROJECTS.items():
         people = LAYOUT_PEOPLE[layout_id]
         for pid in sorted(plots.PLOTS[layout_id]):
             for project in projects:
                 wid = f"{people}_{pid}_{project['id']}"
+                PLOT_META[wid] = (project.get("category"), bool(project.get("legacy")),
+                                  plots.INPUTS.get((layout_id, project["id"]), []))
                 bid = plots.building_id(pid, project["id"])
                 jid = plots.job_id(pid, project["job"])
                 fr[f"building.{bid}"], en[f"building.{bid}"] = project["fr"], project["en"]
@@ -1362,6 +1384,17 @@ def main():
         }
         if wid in twins:
             doc["Twin"] = twins[wid]
+        if wid in PLOT_META:
+            category, legacy, inputs = PLOT_META[wid]
+            if category:
+                doc["Category"] = category
+            if legacy:
+                doc["Legacy"] = True
+            for item, _ in inputs:
+                if item not in items:
+                    errors.append(f"{wid} : ressource d'atelier inconnue {item}")
+            if inputs:
+                doc["Inputs"] = [{"ItemId": i, "Quantity": q} for i, q in inputs]
         specialties(doc, wid, people, name_fr, name_en, items, roles, fr, en, errors, building)
         (OUT / f"{wid}.json").write_text(json.dumps(doc, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
         fr[f"workshop.{wid}.name"] = name_fr

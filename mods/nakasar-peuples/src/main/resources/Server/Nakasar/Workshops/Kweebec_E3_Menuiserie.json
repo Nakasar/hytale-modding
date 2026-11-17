@@ -1,0 +1,93 @@
+{
+  "$Comment": "Bâtiment de métier généré par tools/generate_workshops.py (ne pas modifier à la main) : voir dev.nakasar.hytale.peuples.workshop.Workshop.",
+  "People": "Kweebec",
+  "Layout": "Kweebec_Oak",
+  "Building": "E3_Menuiserie",
+  "Job": "Menuisier_E3",
+  "Icon": "Furniture_Kweebec_Stool",
+  "NameKey": "nakasar_peuples.workshop.Kweebec_E3_Menuiserie.name",
+  "Board": [
+    -48,
+    22,
+    1
+  ],
+  "Upgrades": [
+    {
+      "Level": 2,
+      "Hours": 12,
+      "Materials": [
+        {
+          "ItemId": "Wood_Oak_Trunk",
+          "Quantity": 24
+        },
+        {
+          "ItemId": "Wood_Hardwood_Planks",
+          "Quantity": 16
+        },
+        {
+          "ItemId": "Soil_Clay_Brick",
+          "Quantity": 12
+        }
+      ],
+      "Decor": [
+        "1 0 0 0 Furniture_Kweebec_Lantern"
+      ]
+    },
+    {
+      "Level": 3,
+      "Hours": 12,
+      "Materials": [
+        {
+          "ItemId": "Wood_Oak_Trunk",
+          "Quantity": 32
+        },
+        {
+          "ItemId": "Plant_Leaves_Oak",
+          "Quantity": 16
+        },
+        {
+          "ItemId": "Plant_Sapling_Oak",
+          "Quantity": 2
+        }
+      ],
+      "Decor": [
+        "-1 0 0 0 Furniture_Kweebec_Lantern",
+        "0 1 0 0 Furniture_Kweebec_Candle"
+      ]
+    }
+  ],
+  "Category": "Artisanat",
+  "Inputs": [
+    {
+      "ItemId": "Wood_Birch_Trunk",
+      "Quantity": 6
+    }
+  ],
+  "Specialties": [
+    {
+      "Id": "Mobilier",
+      "NameKey": "nakasar_peuples.workshop.specialty.Kweebec_E3_Menuiserie.Mobilier",
+      "LineKey": "nakasar_peuples.workshop.specialtyLine.Kweebec_E3_Menuiserie.Mobilier",
+      "Icon": "Furniture_Kweebec_Table",
+      "Shops": [
+        "Nakasar_Peuples_W_Kweebec_E3_Menuiserie_Mobilier_2",
+        "Nakasar_Peuples_W_Kweebec_E3_Menuiserie_Mobilier_3"
+      ],
+      "ShareItem": "Furniture_Kweebec_Stool",
+      "ShareQuantity": 1
+    },
+    {
+      "Id": "Lanternes",
+      "NameKey": "nakasar_peuples.workshop.specialty.Kweebec_E3_Menuiserie.Lanternes",
+      "LineKey": "nakasar_peuples.workshop.specialtyLine.Kweebec_E3_Menuiserie.Lanternes",
+      "Icon": "Furniture_Kweebec_Lantern",
+      "Shops": [
+        "Nakasar_Peuples_W_Kweebec_E3_Menuiserie_Lanternes_2",
+        "Nakasar_Peuples_W_Kweebec_E3_Menuiserie_Lanternes_3"
+      ],
+      "ShareItem": "Furniture_Kweebec_Lantern",
+      "ShareQuantity": 2
+    }
+  ],
+  "Shop": "Nakasar_Peuples_W_Kweebec_E3_Menuiserie_Base_1"
+}

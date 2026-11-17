@@ -380,9 +380,9 @@ def specialty_page(theme_id):
     return "\n".join(L).replace("Style: LabelStyle(", "Style: (") + "\n"
 
 
-PLOT_CARDS = 2             # terrains E1 et E2 (étape 6)
+PLOT_CARDS = 3             # terrains E1, E2 et E3 (doc « Structurer les types de bâtiments », Kevin 2026-11-16)
 PLOT_MATERIALS = 4         # matériaux d'un projet affichés en icônes (ids à plat #PlotMat<terrain × 4 + j>)
-PROJECTS = 6               # projets par peuple (tools/plots.py, Maison du conseil comprise)
+PROJECTS = 10              # projets par peuple (tools/plots.py, Ambassade, Caserne, Bibliothèque, Temple compris)
 PLOT_WIDTH = PANEL_WIDTH     # onglets du panneau : même taille que le tableau
 PLOT_HEIGHT = PANEL_HEIGHT
 
@@ -444,10 +444,10 @@ def plot_page(theme_id):
             k = i * PLOT_MATERIALS + j
             w(f"            Group #PlotMat{k} {{")
             w("              LayoutMode: Top;")
-            w("              Anchor: (Width: 64, Right: 14);")
+            w(f"              Anchor: (Width: 56{', Right: 8' if j < PLOT_MATERIALS - 1 else ''});")
             w("              Group {")
             w("                LayoutMode: Full;")
-            w("                Anchor: (Width: 52, Height: 52, Left: 6);")
+            w("                Anchor: (Width: 52, Height: 52, Left: 2);")
             w(f'                Group #PlotMatSlot{k} {{ Anchor: (Full: 0); Background: (TexturePath: "{COMMON}IngredientSlot.png", Border: 24); }}')
             w(f'                Group #PlotMatOk{k} {{ Anchor: (Full: 0); Background: (TexturePath: "{COMMON}IngredientSlotValid.png", Border: 24); Visible: false; }}')
             w(f"                ItemIcon #PlotMatIcon{k} {{ Anchor: (Full: 5); ShowItemTooltip: true; }}")
@@ -459,14 +459,15 @@ def plot_page(theme_id):
         w("          Group {")
         w("            LayoutMode: Left;")
         w("            Anchor: (Height: 32);")
-        w(f'            $C.@SmallSecondaryTextButton #PlotSelect{i} {{ @Text = ""; @Anchor = Anchor(Width: 200, Height: 32, Right: 10); }}')
-        w(f'            $C.@SmallSecondaryTextButton #PlotAction{i} {{ @Text = ""; @Anchor = Anchor(Width: 240, Height: 32); }}')
+        w(f'            $C.@SmallSecondaryTextButton #PlotSelect{i} {{ @Text = ""; @Anchor = Anchor(Width: 110, Height: 32, Right: 8); }}')
+        w(f'            $C.@SmallSecondaryTextButton #PlotAction{i} {{ @Text = ""; @Anchor = Anchor(Width: 170, Height: 32); }}')
         w("          }")
         w("        }")
     w("      }")
     w(f'      {label("CatalogHeader", f"LabelStyle(FontSize: 15, RenderBold: true, RenderUppercase: true, TextColor: {title})", anchor="Height: 24, Top: 14, Bottom: 6")}')
     w("      Group #Catalog {")
-    w("        LayoutMode: Top;")
+    w("        LayoutMode: TopScrolling;")
+    w("        ScrollbarStyle: $C.@DefaultScrollbarStyle;")
     w("        FlexWeight: 1;")
     for j in range(PROJECTS):
         w(f"        Group #Proj{j} {{")

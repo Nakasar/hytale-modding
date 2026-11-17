@@ -145,10 +145,10 @@ $C.@PageOverlay {
             Anchor: (Height: 74, Top: 6);
             Group #PlotMat0 {
               LayoutMode: Top;
-              Anchor: (Width: 64, Right: 14);
+              Anchor: (Width: 56, Right: 8);
               Group {
                 LayoutMode: Full;
-                Anchor: (Width: 52, Height: 52, Left: 6);
+                Anchor: (Width: 52, Height: 52, Left: 2);
                 Group #PlotMatSlot0 { Anchor: (Full: 0); Background: (TexturePath: "../../../Common/IngredientSlot.png", Border: 24); }
                 Group #PlotMatOk0 { Anchor: (Full: 0); Background: (TexturePath: "../../../Common/IngredientSlotValid.png", Border: 24); Visible: false; }
                 ItemIcon #PlotMatIcon0 { Anchor: (Full: 5); ShowItemTooltip: true; }
@@ -157,10 +157,10 @@ $C.@PageOverlay {
             }
             Group #PlotMat1 {
               LayoutMode: Top;
-              Anchor: (Width: 64, Right: 14);
+              Anchor: (Width: 56, Right: 8);
               Group {
                 LayoutMode: Full;
-                Anchor: (Width: 52, Height: 52, Left: 6);
+                Anchor: (Width: 52, Height: 52, Left: 2);
                 Group #PlotMatSlot1 { Anchor: (Full: 0); Background: (TexturePath: "../../../Common/IngredientSlot.png", Border: 24); }
                 Group #PlotMatOk1 { Anchor: (Full: 0); Background: (TexturePath: "../../../Common/IngredientSlotValid.png", Border: 24); Visible: false; }
                 ItemIcon #PlotMatIcon1 { Anchor: (Full: 5); ShowItemTooltip: true; }
@@ -169,10 +169,10 @@ $C.@PageOverlay {
             }
             Group #PlotMat2 {
               LayoutMode: Top;
-              Anchor: (Width: 64, Right: 14);
+              Anchor: (Width: 56, Right: 8);
               Group {
                 LayoutMode: Full;
-                Anchor: (Width: 52, Height: 52, Left: 6);
+                Anchor: (Width: 52, Height: 52, Left: 2);
                 Group #PlotMatSlot2 { Anchor: (Full: 0); Background: (TexturePath: "../../../Common/IngredientSlot.png", Border: 24); }
                 Group #PlotMatOk2 { Anchor: (Full: 0); Background: (TexturePath: "../../../Common/IngredientSlotValid.png", Border: 24); Visible: false; }
                 ItemIcon #PlotMatIcon2 { Anchor: (Full: 5); ShowItemTooltip: true; }
@@ -181,10 +181,10 @@ $C.@PageOverlay {
             }
             Group #PlotMat3 {
               LayoutMode: Top;
-              Anchor: (Width: 64, Right: 14);
+              Anchor: (Width: 56);
               Group {
                 LayoutMode: Full;
-                Anchor: (Width: 52, Height: 52, Left: 6);
+                Anchor: (Width: 52, Height: 52, Left: 2);
                 Group #PlotMatSlot3 { Anchor: (Full: 0); Background: (TexturePath: "../../../Common/IngredientSlot.png", Border: 24); }
                 Group #PlotMatOk3 { Anchor: (Full: 0); Background: (TexturePath: "../../../Common/IngredientSlotValid.png", Border: 24); Visible: false; }
                 ItemIcon #PlotMatIcon3 { Anchor: (Full: 5); ShowItemTooltip: true; }
@@ -196,14 +196,14 @@ $C.@PageOverlay {
           Group {
             LayoutMode: Left;
             Anchor: (Height: 32);
-            $C.@SmallSecondaryTextButton #PlotSelect0 { @Text = ""; @Anchor = Anchor(Width: 200, Height: 32, Right: 10); }
-            $C.@SmallSecondaryTextButton #PlotAction0 { @Text = ""; @Anchor = Anchor(Width: 240, Height: 32); }
+            $C.@SmallSecondaryTextButton #PlotSelect0 { @Text = ""; @Anchor = Anchor(Width: 110, Height: 32, Right: 8); }
+            $C.@SmallSecondaryTextButton #PlotAction0 { @Text = ""; @Anchor = Anchor(Width: 170, Height: 32); }
           }
         }
         Group #Plot1 {
           LayoutMode: Top;
           FlexWeight: 1;
-          Anchor: (Right: 0);
+          Anchor: (Right: 14);
           Padding: (Horizontal: 16, Vertical: 12);
           Background: (Color: #4a2216(0.75));
           Group #PlotStripe1 { Anchor: (Height: 3, Bottom: 10); Background: (Color: #e0773e(0.6)); }
@@ -214,10 +214,10 @@ $C.@PageOverlay {
             Anchor: (Height: 74, Top: 6);
             Group #PlotMat4 {
               LayoutMode: Top;
-              Anchor: (Width: 64, Right: 14);
+              Anchor: (Width: 56, Right: 8);
               Group {
                 LayoutMode: Full;
-                Anchor: (Width: 52, Height: 52, Left: 6);
+                Anchor: (Width: 52, Height: 52, Left: 2);
                 Group #PlotMatSlot4 { Anchor: (Full: 0); Background: (TexturePath: "../../../Common/IngredientSlot.png", Border: 24); }
                 Group #PlotMatOk4 { Anchor: (Full: 0); Background: (TexturePath: "../../../Common/IngredientSlotValid.png", Border: 24); Visible: false; }
                 ItemIcon #PlotMatIcon4 { Anchor: (Full: 5); ShowItemTooltip: true; }
@@ -226,10 +226,10 @@ $C.@PageOverlay {
             }
             Group #PlotMat5 {
               LayoutMode: Top;
-              Anchor: (Width: 64, Right: 14);
+              Anchor: (Width: 56, Right: 8);
               Group {
                 LayoutMode: Full;
-                Anchor: (Width: 52, Height: 52, Left: 6);
+                Anchor: (Width: 52, Height: 52, Left: 2);
                 Group #PlotMatSlot5 { Anchor: (Full: 0); Background: (TexturePath: "../../../Common/IngredientSlot.png", Border: 24); }
                 Group #PlotMatOk5 { Anchor: (Full: 0); Background: (TexturePath: "../../../Common/IngredientSlotValid.png", Border: 24); Visible: false; }
                 ItemIcon #PlotMatIcon5 { Anchor: (Full: 5); ShowItemTooltip: true; }
@@ -238,10 +238,10 @@ $C.@PageOverlay {
             }
             Group #PlotMat6 {
               LayoutMode: Top;
-              Anchor: (Width: 64, Right: 14);
+              Anchor: (Width: 56, Right: 8);
               Group {
                 LayoutMode: Full;
-                Anchor: (Width: 52, Height: 52, Left: 6);
+                Anchor: (Width: 52, Height: 52, Left: 2);
                 Group #PlotMatSlot6 { Anchor: (Full: 0); Background: (TexturePath: "../../../Common/IngredientSlot.png", Border: 24); }
                 Group #PlotMatOk6 { Anchor: (Full: 0); Background: (TexturePath: "../../../Common/IngredientSlotValid.png", Border: 24); Visible: false; }
                 ItemIcon #PlotMatIcon6 { Anchor: (Full: 5); ShowItemTooltip: true; }
@@ -250,10 +250,10 @@ $C.@PageOverlay {
             }
             Group #PlotMat7 {
               LayoutMode: Top;
-              Anchor: (Width: 64, Right: 14);
+              Anchor: (Width: 56);
               Group {
                 LayoutMode: Full;
-                Anchor: (Width: 52, Height: 52, Left: 6);
+                Anchor: (Width: 52, Height: 52, Left: 2);
                 Group #PlotMatSlot7 { Anchor: (Full: 0); Background: (TexturePath: "../../../Common/IngredientSlot.png", Border: 24); }
                 Group #PlotMatOk7 { Anchor: (Full: 0); Background: (TexturePath: "../../../Common/IngredientSlotValid.png", Border: 24); Visible: false; }
                 ItemIcon #PlotMatIcon7 { Anchor: (Full: 5); ShowItemTooltip: true; }
@@ -265,14 +265,84 @@ $C.@PageOverlay {
           Group {
             LayoutMode: Left;
             Anchor: (Height: 32);
-            $C.@SmallSecondaryTextButton #PlotSelect1 { @Text = ""; @Anchor = Anchor(Width: 200, Height: 32, Right: 10); }
-            $C.@SmallSecondaryTextButton #PlotAction1 { @Text = ""; @Anchor = Anchor(Width: 240, Height: 32); }
+            $C.@SmallSecondaryTextButton #PlotSelect1 { @Text = ""; @Anchor = Anchor(Width: 110, Height: 32, Right: 8); }
+            $C.@SmallSecondaryTextButton #PlotAction1 { @Text = ""; @Anchor = Anchor(Width: 170, Height: 32); }
+          }
+        }
+        Group #Plot2 {
+          LayoutMode: Top;
+          FlexWeight: 1;
+          Anchor: (Right: 0);
+          Padding: (Horizontal: 16, Vertical: 12);
+          Background: (Color: #4a2216(0.75));
+          Group #PlotStripe2 { Anchor: (Height: 3, Bottom: 10); Background: (Color: #e0773e(0.6)); }
+          Label #PlotName2 { Anchor: (Height: 24); Style: (FontSize: 17, FontName: "Secondary", RenderBold: true, RenderUppercase: true, TextColor: #e0773e); Text: ""; }
+          Label #PlotState2 { Anchor: (Top: 6); Style: @Body; Text: ""; }
+          Group #PlotMats2 {
+            LayoutMode: Left;
+            Anchor: (Height: 74, Top: 6);
+            Group #PlotMat8 {
+              LayoutMode: Top;
+              Anchor: (Width: 56, Right: 8);
+              Group {
+                LayoutMode: Full;
+                Anchor: (Width: 52, Height: 52, Left: 2);
+                Group #PlotMatSlot8 { Anchor: (Full: 0); Background: (TexturePath: "../../../Common/IngredientSlot.png", Border: 24); }
+                Group #PlotMatOk8 { Anchor: (Full: 0); Background: (TexturePath: "../../../Common/IngredientSlotValid.png", Border: 24); Visible: false; }
+                ItemIcon #PlotMatIcon8 { Anchor: (Full: 5); ShowItemTooltip: true; }
+              }
+              Label #PlotMatCount8 { Anchor: (Height: 18, Top: 2); Style: @Count; Text: ""; }
+            }
+            Group #PlotMat9 {
+              LayoutMode: Top;
+              Anchor: (Width: 56, Right: 8);
+              Group {
+                LayoutMode: Full;
+                Anchor: (Width: 52, Height: 52, Left: 2);
+                Group #PlotMatSlot9 { Anchor: (Full: 0); Background: (TexturePath: "../../../Common/IngredientSlot.png", Border: 24); }
+                Group #PlotMatOk9 { Anchor: (Full: 0); Background: (TexturePath: "../../../Common/IngredientSlotValid.png", Border: 24); Visible: false; }
+                ItemIcon #PlotMatIcon9 { Anchor: (Full: 5); ShowItemTooltip: true; }
+              }
+              Label #PlotMatCount9 { Anchor: (Height: 18, Top: 2); Style: @Count; Text: ""; }
+            }
+            Group #PlotMat10 {
+              LayoutMode: Top;
+              Anchor: (Width: 56, Right: 8);
+              Group {
+                LayoutMode: Full;
+                Anchor: (Width: 52, Height: 52, Left: 2);
+                Group #PlotMatSlot10 { Anchor: (Full: 0); Background: (TexturePath: "../../../Common/IngredientSlot.png", Border: 24); }
+                Group #PlotMatOk10 { Anchor: (Full: 0); Background: (TexturePath: "../../../Common/IngredientSlotValid.png", Border: 24); Visible: false; }
+                ItemIcon #PlotMatIcon10 { Anchor: (Full: 5); ShowItemTooltip: true; }
+              }
+              Label #PlotMatCount10 { Anchor: (Height: 18, Top: 2); Style: @Count; Text: ""; }
+            }
+            Group #PlotMat11 {
+              LayoutMode: Top;
+              Anchor: (Width: 56);
+              Group {
+                LayoutMode: Full;
+                Anchor: (Width: 52, Height: 52, Left: 2);
+                Group #PlotMatSlot11 { Anchor: (Full: 0); Background: (TexturePath: "../../../Common/IngredientSlot.png", Border: 24); }
+                Group #PlotMatOk11 { Anchor: (Full: 0); Background: (TexturePath: "../../../Common/IngredientSlotValid.png", Border: 24); Visible: false; }
+                ItemIcon #PlotMatIcon11 { Anchor: (Full: 5); ShowItemTooltip: true; }
+              }
+              Label #PlotMatCount11 { Anchor: (Height: 18, Top: 2); Style: @Count; Text: ""; }
+            }
+          }
+          Group { FlexWeight: 1; }
+          Group {
+            LayoutMode: Left;
+            Anchor: (Height: 32);
+            $C.@SmallSecondaryTextButton #PlotSelect2 { @Text = ""; @Anchor = Anchor(Width: 110, Height: 32, Right: 8); }
+            $C.@SmallSecondaryTextButton #PlotAction2 { @Text = ""; @Anchor = Anchor(Width: 170, Height: 32); }
           }
         }
       }
       Label #CatalogHeader { Anchor: (Height: 24, Top: 14, Bottom: 6); Style: (FontSize: 15, RenderBold: true, RenderUppercase: true, TextColor: #e8b48a); Text: ""; }
       Group #Catalog {
-        LayoutMode: Top;
+        LayoutMode: TopScrolling;
+        ScrollbarStyle: $C.@DefaultScrollbarStyle;
         FlexWeight: 1;
         Group #Proj0 {
           LayoutMode: Left;
@@ -371,7 +441,7 @@ $C.@PageOverlay {
         }
         Group #Proj5 {
           LayoutMode: Left;
-          Anchor: (Height: 60, Bottom: 0);
+          Anchor: (Height: 60, Bottom: 4);
           Padding: (Horizontal: 12, Vertical: 5);
           Background: (Color: #4a2216(0.55));
           Group {
@@ -387,6 +457,82 @@ $C.@PageOverlay {
             Label #ProjLine5 { Anchor: (Top: 2); Style: @SmallWrap; Text: ""; }
           }
           $C.@SmallSecondaryTextButton #ProjChoose5 { @Text = ""; @Anchor = Anchor(Width: 200, Height: 32, Left: 12); }
+        }
+        Group #Proj6 {
+          LayoutMode: Left;
+          Anchor: (Height: 60, Bottom: 4);
+          Padding: (Horizontal: 12, Vertical: 5);
+          Background: (Color: #4a2216(0.55));
+          Group {
+            LayoutMode: Full;
+            Anchor: (Width: 50, Height: 50, Right: 12);
+            Background: (TexturePath: "../../../Common/IngredientSlot.png", Border: 24);
+            ItemIcon #ProjIcon6 { Anchor: (Full: 7); ShowItemTooltip: true; }
+          }
+          Group {
+            LayoutMode: Top;
+            FlexWeight: 1;
+            Label #ProjName6 { Anchor: (Height: 20); Style: (FontSize: 15, RenderBold: true, TextColor: #e0773e); Text: ""; }
+            Label #ProjLine6 { Anchor: (Top: 2); Style: @SmallWrap; Text: ""; }
+          }
+          $C.@SmallSecondaryTextButton #ProjChoose6 { @Text = ""; @Anchor = Anchor(Width: 200, Height: 32, Left: 12); }
+        }
+        Group #Proj7 {
+          LayoutMode: Left;
+          Anchor: (Height: 60, Bottom: 4);
+          Padding: (Horizontal: 12, Vertical: 5);
+          Background: (Color: #4a2216(0.55));
+          Group {
+            LayoutMode: Full;
+            Anchor: (Width: 50, Height: 50, Right: 12);
+            Background: (TexturePath: "../../../Common/IngredientSlot.png", Border: 24);
+            ItemIcon #ProjIcon7 { Anchor: (Full: 7); ShowItemTooltip: true; }
+          }
+          Group {
+            LayoutMode: Top;
+            FlexWeight: 1;
+            Label #ProjName7 { Anchor: (Height: 20); Style: (FontSize: 15, RenderBold: true, TextColor: #e0773e); Text: ""; }
+            Label #ProjLine7 { Anchor: (Top: 2); Style: @SmallWrap; Text: ""; }
+          }
+          $C.@SmallSecondaryTextButton #ProjChoose7 { @Text = ""; @Anchor = Anchor(Width: 200, Height: 32, Left: 12); }
+        }
+        Group #Proj8 {
+          LayoutMode: Left;
+          Anchor: (Height: 60, Bottom: 4);
+          Padding: (Horizontal: 12, Vertical: 5);
+          Background: (Color: #4a2216(0.55));
+          Group {
+            LayoutMode: Full;
+            Anchor: (Width: 50, Height: 50, Right: 12);
+            Background: (TexturePath: "../../../Common/IngredientSlot.png", Border: 24);
+            ItemIcon #ProjIcon8 { Anchor: (Full: 7); ShowItemTooltip: true; }
+          }
+          Group {
+            LayoutMode: Top;
+            FlexWeight: 1;
+            Label #ProjName8 { Anchor: (Height: 20); Style: (FontSize: 15, RenderBold: true, TextColor: #e0773e); Text: ""; }
+            Label #ProjLine8 { Anchor: (Top: 2); Style: @SmallWrap; Text: ""; }
+          }
+          $C.@SmallSecondaryTextButton #ProjChoose8 { @Text = ""; @Anchor = Anchor(Width: 200, Height: 32, Left: 12); }
+        }
+        Group #Proj9 {
+          LayoutMode: Left;
+          Anchor: (Height: 60, Bottom: 0);
+          Padding: (Horizontal: 12, Vertical: 5);
+          Background: (Color: #4a2216(0.55));
+          Group {
+            LayoutMode: Full;
+            Anchor: (Width: 50, Height: 50, Right: 12);
+            Background: (TexturePath: "../../../Common/IngredientSlot.png", Border: 24);
+            ItemIcon #ProjIcon9 { Anchor: (Full: 7); ShowItemTooltip: true; }
+          }
+          Group {
+            LayoutMode: Top;
+            FlexWeight: 1;
+            Label #ProjName9 { Anchor: (Height: 20); Style: (FontSize: 15, RenderBold: true, TextColor: #e0773e); Text: ""; }
+            Label #ProjLine9 { Anchor: (Top: 2); Style: @SmallWrap; Text: ""; }
+          }
+          $C.@SmallSecondaryTextButton #ProjChoose9 { @Text = ""; @Anchor = Anchor(Width: 200, Height: 32, Left: 12); }
         }
       }
       Group {

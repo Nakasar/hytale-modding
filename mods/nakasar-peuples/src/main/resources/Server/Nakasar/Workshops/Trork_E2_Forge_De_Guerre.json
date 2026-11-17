@@ -55,6 +55,17 @@
       ]
     }
   ],
+  "Category": "Artisanat",
+  "Inputs": [
+    {
+      "ItemId": "Ingredient_Bone_Fragment",
+      "Quantity": 4
+    },
+    {
+      "ItemId": "Ingredient_Bar_Copper",
+      "Quantity": 1
+    }
+  ],
   "Specialties": [
     {
       "Id": "Armes_Os",

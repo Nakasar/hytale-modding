@@ -56,6 +56,13 @@
       ]
     }
   ],
+  "Category": "Artisanat",
+  "Inputs": [
+    {
+      "ItemId": "Wood_Birch_Trunk",
+      "Quantity": 6
+    }
+  ],
   "Specialties": [
     {
       "Id": "Mobilier",

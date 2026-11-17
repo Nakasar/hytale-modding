@@ -60,6 +60,12 @@ public final class WorkshopState {
             .append(new KeyedCodec<>("ShareTaken", Codec.STRING_ARRAY), (w, a) -> w.shareTaken = a == null ? new String[0] : a, w -> w.shareTaken)
             .documentation("Joueurs (UUID) qui ont déjà pris leur lot du jour.")
             .add()
+            .append(new KeyedCodec<>("InputDay", Codec.LONG), (w, l) -> w.inputDay = l == null ? Long.MIN_VALUE : l, w -> w.inputDay)
+            .documentation("Atelier : jour de jeu du dernier prélèvement de ses ressources au dépôt (workshop/Inputs).")
+            .add()
+            .append(new KeyedCodec<>("Stopped", Codec.BOOLEAN), (w, b) -> w.stopped = b != null && b, w -> w.stopped)
+            .documentation("Atelier à l'arrêt ce jour : ressources du matin absentes du dépôt (boutique et Part de l'Hôte fermées).")
+            .add()
             .build();
 
     String id = "";
@@ -79,6 +85,8 @@ public final class WorkshopState {
     int round;
     long shareDay = Long.MIN_VALUE;
     String[] shareTaken = new String[0];
+    long inputDay = Long.MIN_VALUE;
+    boolean stopped;
 
     WorkshopState() {
     }
@@ -106,6 +114,8 @@ public final class WorkshopState {
         w.upgradeEnd = upgradeEnd;
         w.reconverted = reconverted;
         w.round = round;
+        w.inputDay = inputDay;
+        w.stopped = stopped;
         return w;
     }
 
@@ -224,6 +234,21 @@ public final class WorkshopState {
     public void clearUpgrade() {
         upgradeStart = 0L;
         upgradeEnd = 0L;
+    }
+
+    /** Jour du dernier prélèvement des ressources de l'atelier (Long.MIN_VALUE : jamais). */
+    public long inputDay() {
+        return inputDay;
+    }
+
+    /** Vrai si l'atelier est à l'arrêt ce jour (ressources du matin manquantes). */
+    public boolean stopped() {
+        return stopped;
+    }
+
+    public void setInputs(long day, boolean stopped) {
+        this.inputDay = day;
+        this.stopped = stopped;
     }
 
     /** Jour du dernier choix de spécialité (Long.MIN_VALUE : jamais). */

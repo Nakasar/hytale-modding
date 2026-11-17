@@ -56,6 +56,7 @@
     }
   ],
   "Twin": "Renonce_Bergerie_Du_Givre",
+  "Category": "Elevage",
   "Livestock": [
     "Tamed_Mouflon",
     "Tamed_Mouflon_Lamb"

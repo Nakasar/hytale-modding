@@ -105,5 +105,7 @@ public final class WorldLifeSystem extends TickingSystem<EntityStore> {
         Hamlets.seed(world);
         HamletTrips.morning(world, store, random);
         Allegiance.morning(world, store, day, random);
+        // Ateliers : ressources du jour prises au dépôt, sinon à l'arrêt (workshop/Inputs).
+        dev.nakasar.hytale.peuples.workshop.Inputs.morning(world, store);
     }
 }

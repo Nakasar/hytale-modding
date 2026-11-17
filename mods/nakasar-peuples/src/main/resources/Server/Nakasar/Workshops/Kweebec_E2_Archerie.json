@@ -56,6 +56,17 @@
       ]
     }
   ],
+  "Category": "Artisanat",
+  "Inputs": [
+    {
+      "ItemId": "Wood_Ash_Trunk",
+      "Quantity": 4
+    },
+    {
+      "ItemId": "Ingredient_Fibre",
+      "Quantity": 4
+    }
+  ],
   "Specialties": [
     {
       "Id": "Arcs_Legers",

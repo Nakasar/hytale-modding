@@ -1,0 +1,17 @@
+{
+  "$Comment": "Commande du bâtiment de métier Renonce_E3_Forge, générée par tools/generate_workshops.py (ne pas modifier à la main) : voir RequestTemplate.",
+  "People": "Renonce",
+  "Workshop": "Renonce_E3_Forge",
+  "Type": "Gather",
+  "MinLevel": 1,
+  "MaxLevel": 3,
+  "Weight": 1,
+  "TitleKey": "nakasar_peuples.request.Renonce_E3_Forge_Charcoal.title",
+  "TaskKey": "nakasar_peuples.request.Renonce_E3_Forge_Charcoal.task",
+  "ItemId": "Ingredient_Charcoal",
+  "Quantity": 12,
+  "Knowledge": 30,
+  "Essor": 5,
+  "Favors": 1,
+  "Reputation": 5
+}

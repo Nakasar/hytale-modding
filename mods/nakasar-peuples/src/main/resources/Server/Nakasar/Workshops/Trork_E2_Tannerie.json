@@ -55,6 +55,13 @@
       ]
     }
   ],
+  "Category": "Artisanat",
+  "Inputs": [
+    {
+      "ItemId": "Ingredient_Hide_Light",
+      "Quantity": 3
+    }
+  ],
   "Specialties": [
     {
       "Id": "Cuirs",

@@ -1,0 +1,17 @@
+{
+  "$Comment": "Commande du bâtiment de métier Renonce_E3_Bibliotheque, générée par tools/generate_workshops.py (ne pas modifier à la main) : voir RequestTemplate.",
+  "People": "Renonce",
+  "Workshop": "Renonce_E3_Bibliotheque",
+  "Type": "Gather",
+  "MinLevel": 1,
+  "MaxLevel": 3,
+  "Weight": 1,
+  "TitleKey": "nakasar_peuples.request.Renonce_E3_Bibliotheque_Ink.title",
+  "TaskKey": "nakasar_peuples.request.Renonce_E3_Bibliotheque_Ink.task",
+  "ItemId": "Ingredient_Charcoal",
+  "Quantity": 6,
+  "Knowledge": 30,
+  "Essor": 5,
+  "Favors": 1,
+  "Reputation": 5
+}

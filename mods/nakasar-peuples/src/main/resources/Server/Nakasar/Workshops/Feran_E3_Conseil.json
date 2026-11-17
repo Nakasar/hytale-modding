@@ -1,0 +1,86 @@
+{
+  "$Comment": "Bâtiment de métier généré par tools/generate_workshops.py (ne pas modifier à la main) : voir dev.nakasar.hytale.peuples.workshop.Workshop.",
+  "People": "Feran",
+  "Layout": "Feran_Oasis",
+  "Building": "E3_Conseil",
+  "Job": "Conseiller_E3",
+  "Icon": "Recipe_Page",
+  "NameKey": "nakasar_peuples.workshop.Feran_E3_Conseil.name",
+  "Board": [
+    -46,
+    3,
+    1
+  ],
+  "Upgrades": [
+    {
+      "Level": 2,
+      "Hours": 12,
+      "Materials": [
+        {
+          "ItemId": "Rock_Sandstone",
+          "Quantity": 24
+        },
+        {
+          "ItemId": "Wood_Palm_Trunk",
+          "Quantity": 16
+        },
+        {
+          "ItemId": "Ingredient_Fabric_Scrap_Linen",
+          "Quantity": 12
+        }
+      ],
+      "Decor": [
+        "1 0 0 0 Furniture_Feran_Torch"
+      ]
+    },
+    {
+      "Level": 3,
+      "Hours": 12,
+      "Materials": [
+        {
+          "ItemId": "Rock_Sandstone",
+          "Quantity": 32
+        },
+        {
+          "ItemId": "Ingredient_Feathers_Light",
+          "Quantity": 8
+        },
+        {
+          "ItemId": "Plant_Cactus_1",
+          "Quantity": 8
+        }
+      ],
+      "Decor": [
+        "-1 0 0 0 Furniture_Feran_Torch_Tall"
+      ]
+    }
+  ],
+  "Category": "Diplomatie",
+  "Specialties": [
+    {
+      "Id": "Diplomatie",
+      "NameKey": "nakasar_peuples.workshop.specialty.Feran_E3_Conseil.Diplomatie",
+      "LineKey": "nakasar_peuples.workshop.specialtyLine.Feran_E3_Conseil.Diplomatie",
+      "Icon": "Recipe_Page",
+      "Shops": [
+        "Nakasar_Peuples_W_Feran_E3_Conseil_Diplomatie_2",
+        "Nakasar_Peuples_W_Feran_E3_Conseil_Diplomatie_3"
+      ],
+      "ShareItem": "Ingredient_Bolt_Cotton",
+      "ShareQuantity": 4
+    },
+    {
+      "Id": "Herauts",
+      "NameKey": "nakasar_peuples.workshop.specialty.Feran_E3_Conseil.Herauts",
+      "LineKey": "nakasar_peuples.workshop.specialtyLine.Feran_E3_Conseil.Herauts",
+      "Icon": "Deco_Scroll",
+      "Shops": [
+        "Nakasar_Peuples_W_Feran_E3_Conseil_Herauts_2",
+        "Nakasar_Peuples_W_Feran_E3_Conseil_Herauts_3"
+      ],
+      "ShareItem": "Deco_Scroll",
+      "ShareQuantity": 2
+    }
+  ],
+  "Shop": "Nakasar_Peuples_W_Feran_E3_Conseil_Base_1"
+}

@@ -56,6 +56,7 @@
     }
   ],
   "Twin": "Slothian_Bauge_De_Veille",
+  "Category": "Elevage",
   "Livestock": [
     "Tamed_Pig_Wild",
     "Tamed_Pig_Wild_Piglet"

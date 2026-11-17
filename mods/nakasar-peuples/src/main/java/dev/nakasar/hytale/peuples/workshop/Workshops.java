@@ -179,6 +179,13 @@ public final class Workshops {
         long now = GameClock.seconds(store);
         for (Workshop w : opened(village)) {
             WorkshopState state = village.workshop(w.getId());
+            if (state.specialty() != null && w.specialty(state.specialty()) == null) {
+                // Spécialité retirée (Garnison de l'Ambassade, partie à la Caserne) : nouveau choix gratuit.
+                PeuplesPlugin.get().getLogger().atInfo().log("Peuples : spécialité %s retirée de %s (%s), choix gratuit",
+                        state.specialty(), w.getId(), village.name());
+                state.setSpecialty(null);
+                state.setReconverted(Long.MIN_VALUE);
+            }
             if (state.upgrading() && now >= state.upgradeEnd()) {
                 finishUpgrade(world, store, village, w, state);
             }
@@ -989,6 +996,11 @@ public final class Workshops {
             player.sendMessage(Message.translation(KEYS + "shopAbsent").param("hour", GameClock.MORNING));
             return false;
         }
+        if (!Inputs.running(village, w)) {
+            // Atelier à l'arrêt : ses ressources du matin manquaient au dépôt.
+            player.sendMessage(Message.translation(KEYS + "shopStopped").param("list", Inputs.list(Inputs.needs(village, w))));
+            return false;
+        }
         String id = shop(w, ws, shopLevel(store, ref, village, ws));
         if (id == null) {
             player.sendMessage(Message.translation(KEYS + "shopRank").param("rank", Message.translation(Rank.TOLERE.nameKey())));
@@ -1008,6 +1020,9 @@ public final class Workshops {
         WorkshopState ws = village.workshop(w.getId());
         if (shareSpecialty(w, ws) == null) {
             return Message.translation(KEYS + "shareLevel");
+        }
+        if (!Inputs.running(village, w)) {
+            return Message.translation(KEYS + "shopStopped").param("list", Inputs.list(Inputs.needs(village, w)));
         }
         if (!Reputations.rank(store, ref, village).atLeast(SHARE_RANK)) {
             return Message.translation(KEYS + "shareRank").param("rank", Message.translation(SHARE_RANK.nameKey()));

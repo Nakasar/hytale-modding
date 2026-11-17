@@ -1,0 +1,89 @@
+{
+  "$Comment": "Bâtiment de métier généré par tools/generate_workshops.py (ne pas modifier à la main) : voir dev.nakasar.hytale.peuples.workshop.Workshop.",
+  "People": "Slothian",
+  "Layout": "Slothian_Monastere",
+  "Building": "E3_Caserne",
+  "Job": "Capitaine_E3",
+  "Icon": "Weapon_Shield_Wood",
+  "NameKey": "nakasar_peuples.workshop.Slothian_E3_Caserne.name",
+  "Board": [
+    -39,
+    -21,
+    1
+  ],
+  "Upgrades": [
+    {
+      "Level": 2,
+      "Hours": 12,
+      "Materials": [
+        {
+          "ItemId": "Rock_Basalt_Brick",
+          "Quantity": 16
+        },
+        {
+          "ItemId": "Wood_Hardwood_Planks",
+          "Quantity": 16
+        },
+        {
+          "ItemId": "Soil_Ash",
+          "Quantity": 8
+        }
+      ],
+      "Decor": [
+        "1 0 0 0 Furniture_Jungle_Torch"
+      ]
+    },
+    {
+      "Level": 3,
+      "Hours": 12,
+      "Materials": [
+        {
+          "ItemId": "Rock_Basalt_Brick",
+          "Quantity": 32
+        },
+        {
+          "ItemId": "Furniture_Jungle_Candle",
+          "Quantity": 4
+        },
+        {
+          "ItemId": "Ingredient_Fire_Essence",
+          "Quantity": 6
+        }
+      ],
+      "Decor": [
+        "-1 0 0 0 Furniture_Jungle_Brazier"
+      ]
+    }
+  ],
+  "Category": "Defense",
+  "Specialties": [
+    {
+      "Id": "Milice",
+      "NameKey": "nakasar_peuples.workshop.specialty.Slothian_E3_Caserne.Milice",
+      "LineKey": "nakasar_peuples.workshop.specialtyLine.Slothian_E3_Caserne.Milice",
+      "Icon": "Weapon_Spear_Crude",
+      "Raid": {
+        "Guards": 2
+      },
+      "Shops": [
+        "Nakasar_Peuples_W_Slothian_E3_Caserne_Milice_2",
+        "Nakasar_Peuples_W_Slothian_E3_Caserne_Milice_3"
+      ],
+      "ShareItem": "Weapon_Spear_Crude",
+      "ShareQuantity": 2
+    },
+    {
+      "Id": "Garnison",
+      "NameKey": "nakasar_peuples.workshop.specialty.Slothian_E3_Caserne.Garnison",
+      "LineKey": "nakasar_peuples.workshop.specialtyLine.Slothian_E3_Caserne.Garnison",
+      "Icon": "Weapon_Shield_Wood",
+      "Shops": [
+        "Nakasar_Peuples_W_Slothian_E3_Caserne_Garnison_2",
+        "Nakasar_Peuples_W_Slothian_E3_Caserne_Garnison_3"
+      ],
+      "ShareItem": "Weapon_Shield_Wood",
+      "ShareQuantity": 2
+    }
+  ],
+  "Shop": "Nakasar_Peuples_W_Slothian_E3_Caserne_Base_1"
+}

@@ -1,0 +1,17 @@
+{
+  "$Comment": "Commande du bâtiment de métier Slothian_E3_Conseil, générée par tools/generate_workshops.py (ne pas modifier à la main) : voir RequestTemplate.",
+  "People": "Slothian",
+  "Workshop": "Slothian_E3_Conseil",
+  "Type": "Gather",
+  "MinLevel": 1,
+  "MaxLevel": 3,
+  "Weight": 1,
+  "TitleKey": "nakasar_peuples.request.Slothian_E3_Conseil_Gifts.title",
+  "TaskKey": "nakasar_peuples.request.Slothian_E3_Conseil_Gifts.task",
+  "ItemId": "Furniture_Jungle_Candle",
+  "Quantity": 6,
+  "Knowledge": 30,
+  "Essor": 5,
+  "Favors": 1,
+  "Reputation": 5
+}
